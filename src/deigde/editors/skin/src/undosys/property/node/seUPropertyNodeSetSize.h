@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetSize(sePropertyNode::Ref node, const decPoint3 &newValue);
+	seUPropertyNodeSetSize(sePropertyNode *node, const decPoint3 &newValue);
 	
 protected:
 	/** \brief Clean up undo. */

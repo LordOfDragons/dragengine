@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakGestureSet::ceUCAASpeakGestureSet(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref gesture, ceStrip::Ref newStrip){
+ceUCAASpeakGestureSet::ceUCAASpeakGestureSet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture, ceStrip *newStrip){
 	if(!topic || !actorSpeak || !gesture || !newStrip){
 		DETHROW(deeInvalidParam);
 	}

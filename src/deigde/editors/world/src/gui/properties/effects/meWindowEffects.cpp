@@ -185,7 +185,7 @@ void meWindowEffects::UpdateEffectsList(){
 	}
 }
 
-void meWindowEffects::DisplayPanelFor(deEffect::Ref engEffect){
+void meWindowEffects::DisplayPanelFor(deEffect *engEffect){
 	deEffectVisitorIdentify identify;
 	
 	// remove the old panel if existing

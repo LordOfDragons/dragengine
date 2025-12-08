@@ -638,7 +638,7 @@ void deComponent::SetDynamicSkin(deDynamicSkin *dynamicSkin){
 // Decals
 ////////////
 
-void deComponent::AddDecal(deDecal::Ref decal){
+void deComponent::AddDecal(deDecal *decal){
 	if(!decal || decal->GetParentComponent() || decal->GetParentHeightTerrainSector()){
 		DETHROW(deeInvalidParam);
 	}
@@ -668,7 +668,7 @@ void deComponent::AddDecal(deDecal::Ref decal){
 	}
 }
 
-void deComponent::RemoveDecal(deDecal::Ref decal){
+void deComponent::RemoveDecal(deDecal *decal){
 	if(!decal || decal->GetParentComponent() != this){
 		DETHROW(deeInvalidParam);
 	}

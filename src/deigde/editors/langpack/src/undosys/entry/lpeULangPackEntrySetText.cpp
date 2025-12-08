@@ -40,7 +40,7 @@
 ////////////////////////////
 
 lpeULangPackEntrySetText::lpeULangPackEntrySetText(
-	lpeLangPackEntry::Ref entry, const decUnicodeString &newName) :
+	lpeLangPackEntry *entry, const decUnicodeString &newName) :
 
 pNewText(newName)
 {

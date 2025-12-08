@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPasteSource::seUPasteSource(seSynthesizer::Ref synthesizer, const seSourceList &sourceList, int index) :
+seUPasteSource::seUPasteSource(seSynthesizer *synthesizer, const seSourceList &sourceList, int index) :
 
 pIndex(index)
 {

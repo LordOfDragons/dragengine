@@ -47,7 +47,7 @@
 ////////////////////////////
 
 gdeWPSTIMOCCamera::gdeWPSTIMOCCamera(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCCamera::Ref camera, int index) :
+	gdeOCCamera *camera, int index) :
 gdeWPSTIMOCSubObject(tree, etObjectClassCamera, objectClass, index)
 {
 	if(!camera){

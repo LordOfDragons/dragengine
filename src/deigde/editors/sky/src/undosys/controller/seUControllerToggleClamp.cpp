@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerToggleClamp::seUControllerToggleClamp(seController::Ref controller) :
+seUControllerToggleClamp::seUControllerToggleClamp(seController *controller) :
 pController(NULL)
 {
 	if(!controller){

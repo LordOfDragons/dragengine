@@ -238,7 +238,7 @@ void deoglRBillboard::UpdateOctreeNode(){
 
 
 
-void deoglRBillboard::SetSkin(deoglRSkin::Ref skin){
+void deoglRBillboard::SetSkin(deoglRSkin *skin){
 	if(skin == pSkin){
 		return;
 	}
@@ -252,7 +252,7 @@ void deoglRBillboard::SetSkin(deoglRSkin::Ref skin){
 	pWorldComputeElement->ComputeUpdateElementAndGeometries();
 }
 
-void deoglRBillboard::SetDynamicSkin(deoglRDynamicSkin::Ref dynamicSkin){
+void deoglRBillboard::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	// NOTE this is called from the main thread during synchronization
 	if(dynamicSkin == pDynamicSkin){
 		return;
@@ -707,7 +707,7 @@ void deoglRBillboard::SetWorldMarkedRemove(bool marked){
 	pWorldMarkedRemove = marked;
 }
 
-void deoglRBillboard::SetRenderEnvMap(deoglEnvironmentMap::Ref envmap){
+void deoglRBillboard::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	// note about the switch process. we have to wait setting the fading environment map until the
 	// new environment map has been set. if this is not done the SetRenderEnvMapFade function tries
 	// to add the billboard to the billboard list of the same environment map as the current one
@@ -743,7 +743,7 @@ void deoglRBillboard::SetRenderEnvMap(deoglEnvironmentMap::Ref envmap){
 	}
 }
 
-void deoglRBillboard::SetRenderEnvMapFade(deoglEnvironmentMap::Ref envmap){
+void deoglRBillboard::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
 	if(envmap == pRenderEnvMapFade){
 		return;
 	}
@@ -848,7 +848,7 @@ void deoglRBillboard::InvalidateRenderEnvMap(){
 	pDirtyRenderEnvMap = true;
 }
 
-void deoglRBillboard::InvalidateRenderEnvMapIf(deoglEnvironmentMap::Ref envmap){
+void deoglRBillboard::InvalidateRenderEnvMapIf(deoglEnvironmentMap *envmap){
 	if(pRenderEnvMap == envmap || pRenderEnvMapFade == envmap){
 		InvalidateRenderEnvMap();
 	}

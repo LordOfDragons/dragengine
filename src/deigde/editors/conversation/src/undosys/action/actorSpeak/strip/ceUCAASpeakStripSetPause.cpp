@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakStripSetPause::ceUCAASpeakStripSetPause(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak,
-ceStrip::Ref word, float newPause){
+ceUCAASpeakStripSetPause::ceUCAASpeakStripSetPause(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *word, float newPause){
 	if(!topic || !actorSpeak || !word){
 		DETHROW(deeInvalidParam);
 	}

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetRotation::gdeUOCCameraSetRotation(gdeObjectClass::Ref objectClass,
-gdeOCCamera::Ref camera, const decVector &newValue) :
+gdeUOCCameraSetRotation::gdeUOCCameraSetRotation(gdeObjectClass *objectClass,
+gdeOCCamera *camera, const decVector &newValue) :
 
 pCamera(NULL)
 {

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleMathSetOp(meHTVegetationLayer::Ref vlayer, meHTVRuleMath::Ref rule, meHTVRuleMath::eOperators nop);
+	meUHTVRuleMathSetOp(meHTVegetationLayer *vlayer, meHTVRuleMath *rule, meHTVRuleMath::eOperators nop);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleMathSetOp();
 	/*@}*/

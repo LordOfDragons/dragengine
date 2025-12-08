@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetPosition::gdeUOCNavBlockerSetPosition(gdeObjectClass::Ref objectClass,
-gdeOCNavigationBlocker::Ref navblocker, const decVector &newValue) :
+gdeUOCNavBlockerSetPosition::gdeUOCNavBlockerSetPosition(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navblocker, const decVector &newValue) :
 
 pNavBlocker(NULL)
 {

@@ -170,7 +170,7 @@ pPreventUpdate(false)
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, form, formLine;
+	igdeContainer *content, form, formLine;
 	
 	pListener.TakeOver(new meWPSObjectShapeListener(*this));
 	
@@ -215,7 +215,7 @@ meWPSObjectShape::~meWPSObjectShape(){
 // Management
 ///////////////
 
-void meWPSObjectShape::SetWorld(meWorld::Ref world){
+void meWPSObjectShape::SetWorld(meWorld *world){
 	if(world == pWorld){
 		return;
 	}

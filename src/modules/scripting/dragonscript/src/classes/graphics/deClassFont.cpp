@@ -433,7 +433,7 @@ void deClassFont::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassFont::PushFont(dsRunTime *rt, deFont::Ref font, int size){
+void deClassFont::PushFont(dsRunTime *rt, deFont *font, int size){
 	if(!rt || size < 1){
 		DSTHROW(dueInvalidParam);
 	}

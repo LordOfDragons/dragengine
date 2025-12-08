@@ -38,7 +38,7 @@ const char * const gdeClipboardDataOCEnvMapProbe::TYPE_NAME = "OCEnvMapProbe";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCEnvMapProbe::gdeClipboardDataOCEnvMapProbe(gdeOCEnvMapProbe::Ref envMapProbe) :
+gdeClipboardDataOCEnvMapProbe::gdeClipboardDataOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe) :
 igdeClipboardData(TYPE_NAME)
 {
 	if(!envMapProbe){

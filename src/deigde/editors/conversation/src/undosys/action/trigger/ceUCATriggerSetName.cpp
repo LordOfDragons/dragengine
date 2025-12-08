@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCATriggerSetName::ceUCATriggerSetName(ceConversationTopic::Ref topic, ceCATrigger::Ref action, const char *newName){
+ceUCATriggerSetName::ceUCATriggerSetName(ceConversationTopic *topic, ceCATrigger *action, const char *newName){
 	if(!topic || !action || !newName){
 		DETHROW(deeInvalidParam);
 	}

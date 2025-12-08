@@ -362,7 +362,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
 	pListener.TakeOver(new gdeWPSOCNavigationSpaceListener(*this));
 	
@@ -426,7 +426,7 @@ gdeWPSOCNavigationSpace::~gdeWPSOCNavigationSpace(){
 // Management
 ///////////////
 
-void gdeWPSOCNavigationSpace::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPSOCNavigationSpace::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

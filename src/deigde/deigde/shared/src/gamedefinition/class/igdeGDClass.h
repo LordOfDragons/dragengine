@@ -247,7 +247,7 @@ public:
 	inline deImage *GetPreviewImage() const{ return pPreviewImage; }
 	
 	/** \brief Set preview image or NULL if not created yet. */
-	void SetPreviewImage(deImage::Ref image);
+	void SetPreviewImage(deImage *image);
 	
 	/** \brief Default inherit property prefix. */
 	inline const decString &GetDefaultInheritPropertyPrefix() const{ return pDefaultInheritPropertyPrefix; }
@@ -468,7 +468,7 @@ public:
 	inline const igdeGDCSnapPointList &GetSnapPointList() const{ return pSnapPoints; }
 	
 	/** \brief Add snap point. */
-	void AddSnapPoint(igdeGDCSnapPoint::Ref snappoint);
+	void AddSnapPoint(igdeGDCSnapPoint *snappoint);
 	
 	/** \brief Remove snap point. */
 	void RemoveSnapPoint(igdeGDCSnapPoint *snapppoint);

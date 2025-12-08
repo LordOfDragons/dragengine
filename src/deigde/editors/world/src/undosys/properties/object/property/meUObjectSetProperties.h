@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	meUObjectSetProperties(meObject::Ref object, const decStringDictionary &newValues);
+	meUObjectSetProperties(meObject *object, const decStringDictionary &newValues);
 	
 protected:
 	/** \brief Clean up undo. */

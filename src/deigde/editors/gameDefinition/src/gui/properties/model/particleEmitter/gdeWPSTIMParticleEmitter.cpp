@@ -45,7 +45,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMParticleEmitter::gdeWPSTIMParticleEmitter(gdeWPSTreeModel &tree, gdeParticleEmitter::Ref particleEmitter) :
+gdeWPSTIMParticleEmitter::gdeWPSTIMParticleEmitter(gdeWPSTreeModel &tree, gdeParticleEmitter *particleEmitter) :
 gdeWPSTreeItemModel(tree, etParticleEmitter)
 {
 	if(!particleEmitter){

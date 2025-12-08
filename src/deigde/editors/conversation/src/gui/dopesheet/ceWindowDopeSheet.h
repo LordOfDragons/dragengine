@@ -158,7 +158,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation to monitor. */
-	void SetConversation(ceConversation::Ref conversation);
+	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Active file. */
 	ceConversationFile *GetFile() const;

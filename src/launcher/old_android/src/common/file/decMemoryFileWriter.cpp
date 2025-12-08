@@ -38,7 +38,7 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decMemoryFileWriter::decMemoryFileWriter(decMemoryFile::Ref memoryFile, bool append) :
+decMemoryFileWriter::decMemoryFileWriter(decMemoryFile *memoryFile, bool append) :
 
 pPosition(0)
 {

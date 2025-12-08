@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkSetRepeat::seULinkSetRepeat(seLink::Ref link, int newRepeat) :
+seULinkSetRepeat::seULinkSetRepeat(seLink *link, int newRepeat) :
 
 pNewRepeat(newRepeat)
 {

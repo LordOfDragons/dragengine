@@ -524,7 +524,7 @@ deAnimatorRuleForeignState *deClassARForeignState::GetRule(dsRealObject *myself)
 	return ((sARFStaNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARForeignState::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
+void deClassARForeignState::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -544,7 +544,7 @@ void deClassARForeignState::AssignAnimator(dsRealObject *myself, deAnimator::Ref
 	nd.animator = animator;
 }
 
-void deClassARForeignState::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleForeignState::Ref rule){
+void deClassARForeignState::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleForeignState *rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

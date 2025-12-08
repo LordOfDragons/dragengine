@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetSpotSmoothness::gdeUOCLightSetSpotSmoothness(gdeObjectClass::Ref objectClass,
-gdeOCLight::Ref light, float newValue) :
+gdeUOCLightSetSpotSmoothness::gdeUOCLightSetSpotSmoothness(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

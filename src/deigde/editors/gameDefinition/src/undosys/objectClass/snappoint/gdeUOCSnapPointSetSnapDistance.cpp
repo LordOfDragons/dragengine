@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCSnapPointSetSnapDistance::gdeUOCSnapPointSetSnapDistance(
-gdeObjectClass::Ref objectClass, gdeOCSnapPoint::Ref snapPoint, float newValue) :
+gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint, float newValue) :
 
 
 pNewValue(newValue)

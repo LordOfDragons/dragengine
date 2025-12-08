@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeSetMoveName::saeUPhonemeSetMoveName(saePhoneme::Ref phoneme, const char *newName){
+saeUPhonemeSetMoveName::saeUPhonemeSetMoveName(saePhoneme *phoneme, const char *newName){
 	if(!phoneme || !newName) DETHROW(deeInvalidParam);
 	
 	pPhoneme = NULL;

@@ -359,7 +359,7 @@ deLumimeter *deClassLumimeter::GetLumimeter(dsRealObject *myself) const{
 	return ((sLumimeterNatDat*)p_GetNativeData(myself->GetBuffer()))->lumimeter;
 }
 
-void deClassLumimeter::PushLumimeter(dsRunTime *rt, deLumimeter::Ref lumimeter){
+void deClassLumimeter::PushLumimeter(dsRunTime *rt, deLumimeter *lumimeter){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

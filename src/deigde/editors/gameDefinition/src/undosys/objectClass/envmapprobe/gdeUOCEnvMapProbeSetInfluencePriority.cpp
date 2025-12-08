@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCEnvMapProbeSetInfluencePriority::gdeUOCEnvMapProbeSetInfluencePriority(
-gdeObjectClass::Ref objectClass, gdeOCEnvMapProbe::Ref envMapProbe, int newValue) :
+gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe, int newValue) :
 
 pEnvMapProbe(NULL)
 {

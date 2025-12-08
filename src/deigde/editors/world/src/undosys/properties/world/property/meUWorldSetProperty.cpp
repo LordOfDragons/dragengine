@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldSetProperty::meUWorldSetProperty(meWorld::Ref world, const char *key,
+meUWorldSetProperty::meUWorldSetProperty(meWorld *world, const char *key,
 const char *oldValue, const char *newValue) :
 
 pKey(key),

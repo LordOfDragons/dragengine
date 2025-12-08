@@ -66,7 +66,7 @@ reRigPush *reSelectionPushes::GetPushAt(int index) const{
 	return pPushes[index];
 }
 
-bool reSelectionPushes::HasPush(reRigPush::Ref push) const{
+bool reSelectionPushes::HasPush(reRigPush *push) const{
 	if(!push) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -79,7 +79,7 @@ bool reSelectionPushes::HasPush(reRigPush::Ref push) const{
 	return false;
 }
 	
-int reSelectionPushes::IndexOfPush(reRigPush::Ref push) const{
+int reSelectionPushes::IndexOfPush(reRigPush *push) const{
 	if(!push) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -105,7 +105,7 @@ int reSelectionPushes::IndexOfPushWith(deColliderVolume *collider) const{
 	return -1;
 }
 
-void reSelectionPushes::AddPush(reRigPush::Ref push){
+void reSelectionPushes::AddPush(reRigPush *push){
 	if(HasPush(push)) DETHROW(deeInvalidParam);
 	
 	if(pPushCount == pPushSize){
@@ -131,7 +131,7 @@ void reSelectionPushes::AddPush(reRigPush::Ref push){
 	}
 }
 
-void reSelectionPushes::RemovePush(reRigPush::Ref push){
+void reSelectionPushes::RemovePush(reRigPush *push){
 	int i, index = IndexOfPush(push);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -174,7 +174,7 @@ bool reSelectionPushes::HasActivePush() const{
 	return pActivePush != NULL;
 }
 
-void reSelectionPushes::SetActivePush(reRigPush::Ref push){
+void reSelectionPushes::SetActivePush(reRigPush *push){
 	if(push != pActivePush){
 		if(push && !HasPush(push)) DETHROW(deeInvalidParam);
 		

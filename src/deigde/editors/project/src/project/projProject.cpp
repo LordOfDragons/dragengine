@@ -127,7 +127,7 @@ void projProject::SetPathCapture(const char *path){
 // Profiles
 /////////////
 
-void projProject::AddProfile(projProfile::Ref profile){
+void projProject::AddProfile(projProfile *profile){
 	pProfiles.Add(profile);
 	profile->SetProject(this);
 	NotifyProfileStructureChanged();
@@ -137,7 +137,7 @@ void projProject::AddProfile(projProfile::Ref profile){
 	}
 }
 
-void projProject::RemoveProfile(projProfile::Ref profile){
+void projProject::RemoveProfile(projProfile *profile){
 	if(!profile || profile->GetProject() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -176,7 +176,7 @@ void projProject::RemoveAllProfiles(){
 
 
 
-void projProject::SetActiveProfile(projProfile::Ref profile){
+void projProject::SetActiveProfile(projProfile *profile){
 	if(profile == pActiveProfile){
 		return;
 	}
@@ -199,7 +199,7 @@ void projProject::NotifyProfileStructureChanged(){
 	pRemoteServer->OnProfileStructureChanged();
 }
 
-void projProject::NotifyProfileChanged(projProfile::Ref profile){
+void projProject::NotifyProfileChanged(projProfile *profile){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -212,7 +212,7 @@ void projProject::NotifyProfileChanged(projProfile::Ref profile){
 	pRemoteServer->OnProfileChanged(profile);
 }
 
-void projProject::NotifyProfileNameChanged(projProfile::Ref profile){
+void projProject::NotifyProfileNameChanged(projProfile *profile){
 	const int count = pListeners.GetCount();
 	int i;
 	

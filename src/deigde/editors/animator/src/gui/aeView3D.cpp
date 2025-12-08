@@ -417,7 +417,7 @@ aeView3D::~aeView3D(){
 void aeView3D::ResetView(){
 }
 
-void aeView3D::SetAnimator(aeAnimator::Ref animator){
+void aeView3D::SetAnimator(aeAnimator *animator){
 	if(animator == pAnimator){
 		return;
 	}

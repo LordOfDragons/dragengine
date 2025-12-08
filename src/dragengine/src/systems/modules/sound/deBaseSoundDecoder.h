@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound decoder peer. */
-	deBaseSoundDecoder(decBaseFileReader::Ref file);
+	deBaseSoundDecoder(decBaseFileReader *file);
 	
 	/** \brief Clean up sound decoder object. */
 	virtual ~deBaseSoundDecoder();

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUAddPush::reUAddPush(reRig::Ref rig, reRigPush::Ref push){
+reUAddPush::reUAddPush(reRig *rig, reRigPush *push){
 	if(!rig || !push) DETHROW(deeInvalidParam);
 	
 	pRig = rig;

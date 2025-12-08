@@ -271,13 +271,13 @@ public:
 	inline ceActorPose *GetActivePose() const{ return pActivePose; }
 	
 	/** \brief Set active pose or \em NULL. */
-	void SetActivePose(ceActorPose::Ref pose);
+	void SetActivePose(ceActorPose *pose);
 	
 	/** \brief Notify all poses changed. */
 	void NotifyPosesChanged();
 	
 	/** \brief Notify all pose gestures changed. */
-	void NotifyPoseGesturesChanged(ceActorPose::Ref pose);
+	void NotifyPoseGesturesChanged(ceActorPose *pose);
 	
 	/** Play a voice audio sound file. */
 	void PlayVoiceAudio(deSound *sound);
@@ -308,17 +308,17 @@ public:
 	/** Remove all play face poses. */
 	void RemoveAllPlayFacePoses();
 	/** Adds a play face pose. */
-	void AddPlayFacePose(ceFacePose::Ref facePose, float pause, float length);
+	void AddPlayFacePose(ceFacePose *facePose, float pause, float length);
 	
 	/** Remove all play head look-ats. */
 	void RemoveAllPlayHeadLookAts();
 	/** Adds a play head look-at. */
-	void AddPlayHeadLookAt(ceTarget::Ref lookAt, float pause, float duration);
+	void AddPlayHeadLookAt(ceTarget *lookAt, float pause, float duration);
 	
 	/** Remove all play head look-ats. */
 	void RemoveAllPlayEyesLookAts();
 	/** Adds a play head look-at. */
-	void AddPlayEyesLookAt(ceTarget::Ref lookAt, float pause, float duration);
+	void AddPlayEyesLookAt(ceTarget *lookAt, float pause, float duration);
 	
 	/** \brief Determines if the actor causes waiting if the playback checks for actor waiting. */
 	inline bool GetWaiting() const{ return pWaiting; }

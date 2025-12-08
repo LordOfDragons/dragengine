@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceOptionMove::ceUCAPChoiceOptionMove(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref playerChoice, ceCAPlayerChoiceOption::Ref option, int newIndex){
+ceUCAPChoiceOptionMove::ceUCAPChoiceOptionMove(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option, int newIndex){
 	if(!topic || !playerChoice || !option) DETHROW(deeInvalidParam);
 	
 	int count = playerChoice->GetOptions().GetCount();

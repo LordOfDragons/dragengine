@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSetTextureProperties(gdeObjectClass::Ref objectClass, const gdePropertyList &newValue);
+	gdeUOCSetTextureProperties(gdeObjectClass *objectClass, const gdePropertyList &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

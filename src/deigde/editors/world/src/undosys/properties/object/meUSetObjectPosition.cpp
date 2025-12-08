@@ -36,7 +36,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUSetObjectPosition::meUSetObjectPosition(meObject::Ref object, const decDVector &newPosition){
+meUSetObjectPosition::meUSetObjectPosition(meObject *object, const decDVector &newPosition){
 	if(!object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();

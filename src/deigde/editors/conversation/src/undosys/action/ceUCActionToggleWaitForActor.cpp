@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCActionToggleWaitForActor::ceUCActionToggleWaitForActor(
-ceConversationTopic::Ref topic, ceConversationAction::Ref action)
+ceConversationTopic *topic, ceConversationAction *action)
 {
 	if(!topic) DETHROW(deeInvalidParam);
 	

@@ -54,7 +54,7 @@ sePropertyNodeSelection::~sePropertyNodeSelection(){
 // Management
 ///////////////
 
-void sePropertyNodeSelection::Add(sePropertyNode::Ref node){
+void sePropertyNodeSelection::Add(sePropertyNode *node){
 	if(!node){
 		DETHROW(deeInvalidParam);
 	}
@@ -72,7 +72,7 @@ void sePropertyNodeSelection::Add(sePropertyNode::Ref node){
 	}
 }
 
-void sePropertyNodeSelection::Remove(sePropertyNode::Ref node){
+void sePropertyNodeSelection::Remove(sePropertyNode *node){
 	if(!node){
 		DETHROW(deeInvalidParam);
 	}
@@ -161,7 +161,7 @@ bool sePropertyNodeSelection::HasActive() const{
 	return pActive != NULL;
 }
 
-void sePropertyNodeSelection::SetActive(sePropertyNode::Ref node){
+void sePropertyNodeSelection::SetActive(sePropertyNode *node){
 	if(node == pActive){
 		return;
 	}

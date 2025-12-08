@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkRemove::seULinkRemove(seLink::Ref link) :
+seULinkRemove::seULinkRemove(seLink *link) :
 
 pTargets(NULL),
 pTargetCount(0)

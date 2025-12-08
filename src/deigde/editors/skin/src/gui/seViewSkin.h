@@ -69,7 +69,7 @@ public:
 	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin(seSkin::Ref skin);
+	void SetSkin(seSkin *skin);
 	
 	/** \brief Game like frame update. */
 	virtual void OnFrameUpdate(float elapsed);

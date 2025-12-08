@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectTextureTCOffset(meObjectTexture::Ref texture, const decVector2 &newOffset);
+	meUObjectTextureTCOffset(meObjectTexture *texture, const decVector2 &newOffset);
 	
 protected:
 	/** \brief Clean up undo object. */

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCSnapPoint(gdeOCSnapPoint::Ref snapPoint);
+	gdeClipboardDataOCSnapPoint(gdeOCSnapPoint *snapPoint);
 	
 protected:
 	/**

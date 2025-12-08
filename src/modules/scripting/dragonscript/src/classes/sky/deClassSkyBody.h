@@ -63,7 +63,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push body. */
-	void PushBody(dsRunTime *rt, deSky::Ref sky, int layer, int index);
+	void PushBody(dsRunTime *rt, deSky *sky, int layer, int index);
 	/*@}*/
 	
 	

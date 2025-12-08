@@ -44,8 +44,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAPChoiceActionPaste(ceConversationTopic *topic, ceCAPlayerChoice::Ref playerChoice,
-		ceCAPlayerChoiceOption::Ref option, const ceConversationActionList &actions, int index);
+	ceUCAPChoiceActionPaste(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
+		ceCAPlayerChoiceOption *option, const ceConversationActionList &actions, int index);
 protected:
 	/** \brief Clean up undo. */
 	~ceUCAPChoiceActionPaste() override;

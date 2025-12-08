@@ -267,7 +267,7 @@ deSkin *deSkinManager::LoadDefault(){
 
 
 
-void deSkinManager::AddLoadedSkin(deSkin::Ref skin){
+void deSkinManager::AddLoadedSkin(deSkin *skin){
 	if(!skin){
 		DETHROW(deeInvalidParam);
 	}

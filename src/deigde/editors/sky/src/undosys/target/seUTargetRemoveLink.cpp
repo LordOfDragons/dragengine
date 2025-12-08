@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUTargetRemoveLink::seUTargetRemoveLink(seLayer::Ref layer,
-deSkyLayer::eTargets target, seLink::Ref link) :
+seUTargetRemoveLink::seUTargetRemoveLink(seLayer *layer,
+deSkyLayer::eTargets target, seLink *link) :
 
 pTarget(target)
 {

@@ -127,7 +127,7 @@ igdeGameProject *igdeLoadSaveSystem::LoadGameProject(const char *filename){
 	return project;
 }
 
-void igdeLoadSaveSystem::SaveGameProject(igdeGameProject::Ref project, const char *filename){
+void igdeLoadSaveSystem::SaveGameProject(igdeGameProject *project, const char *filename){
 	if(!project || !filename){
 		DETHROW(deeInvalidParam);
 	}

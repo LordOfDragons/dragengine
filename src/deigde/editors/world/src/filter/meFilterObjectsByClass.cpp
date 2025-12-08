@@ -65,7 +65,7 @@ void meFilterObjectsByClass::SetRejectGhosts(bool rejectGhosts){
 	pRejectGhosts = rejectGhosts;
 }
 
-void meFilterObjectsByClass::SetRejectObject(meObject::Ref object){
+void meFilterObjectsByClass::SetRejectObject(meObject *object){
 	if(object != pRejectObject){
 		if(pRejectObject) pRejectObject->FreeReference();
 		
@@ -91,7 +91,7 @@ void meFilterObjectsByClass::SetClassNamesFrom(const decStringSet &set){
 
 
 
-bool meFilterObjectsByClass::AcceptObject(meObject::Ref object) const{
+bool meFilterObjectsByClass::AcceptObject(meObject *object) const{
 	if(!object) DETHROW(deeInvalidParam);
 	
 	const decString &objclass = object->GetClassName();

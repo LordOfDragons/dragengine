@@ -143,7 +143,7 @@ void deoglRParticleEmitterInstanceType::SetIndexCount(int count){
 
 
 
-void deoglRParticleEmitterInstanceType::SetDynamicSkin(deoglRDynamicSkin::Ref dynamicSkin){
+void deoglRParticleEmitterInstanceType::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
@@ -152,7 +152,7 @@ void deoglRParticleEmitterInstanceType::SetDynamicSkin(deoglRDynamicSkin::Ref dy
 	MarkTUCsDirty();
 }
 
-void deoglRParticleEmitterInstanceType::SetUseSkin(deoglRSkin::Ref skin){
+void deoglRParticleEmitterInstanceType::SetUseSkin(deoglRSkin *skin){
 	if(skin == pUseSkin){
 		return;
 	}

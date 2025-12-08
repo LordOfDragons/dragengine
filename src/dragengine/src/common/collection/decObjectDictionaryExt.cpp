@@ -51,7 +51,7 @@ next(nullptr)
 {
 }
 
-decObjectDictionaryExt::sDictEntry::sDictEntry(unsigned int nhash, const void *nkey, deObject::Ref nvalue) :
+decObjectDictionaryExt::sDictEntry::sDictEntry(unsigned int nhash, const void *nkey, deObject *nvalue) :
 hash(nhash),
 key(nkey),
 value(nvalue),
@@ -64,7 +64,7 @@ decObjectDictionaryExt::sDictEntry::~sDictEntry(){
 	next = nullptr;
 }
 
-void decObjectDictionaryExt::sDictEntry::SetValue(deObject::Ref nvalue){
+void decObjectDictionaryExt::sDictEntry::SetValue(deObject *nvalue){
 	if(nvalue != value){
 		value = nvalue;
 	}
@@ -201,7 +201,7 @@ bool decObjectDictionaryExt::GetAt(const void *key, unsigned int hash, deObject 
 	return false;
 }
 
-void decObjectDictionaryExt::SetAt(const void *key, unsigned int hash, deObject::Ref value){
+void decObjectDictionaryExt::SetAt(const void *key, unsigned int hash, deObject *value){
 	if(!key){
 		DETHROW(deeNullPointer);
 	}

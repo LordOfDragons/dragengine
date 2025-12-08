@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerSetUpper::peeUControllerSetUpper(peeController::Ref controller, float newValue) :
+peeUControllerSetUpper::peeUControllerSetUpper(peeController *controller, float newValue) :
 
 pNewUpper(newValue)
 {

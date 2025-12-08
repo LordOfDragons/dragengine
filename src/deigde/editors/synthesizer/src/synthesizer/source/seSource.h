@@ -229,22 +229,22 @@ public:
 	inline seEffect *GetActiveEffect() const{ return pActiveEffect; }
 	
 	/** \brief Set active effect or \em NULL if none is active. */
-	void SetActiveEffect(seEffect::Ref effect);
+	void SetActiveEffect(seEffect *effect);
 	
 	/** \brief Effects. */
 	inline const seEffectList &GetEffects() const{ return pEffects; }
 	
 	/** \brief Add effect. */
-	void AddEffect(seEffect::Ref effect);
+	void AddEffect(seEffect *effect);
 	
 	/** \brief Insert effect. */
-	void InsertEffectAt(seEffect::Ref effect, int index);
+	void InsertEffectAt(seEffect *effect, int index);
 	
 	/** \brief Move effect. */
-	void MoveEffectTo(seEffect::Ref effect, int index);
+	void MoveEffectTo(seEffect *effect, int index);
 	
 	/** \brief Remove effect. */
-	void RemoveEffect(seEffect::Ref effect);
+	void RemoveEffect(seEffect *effect);
 	
 	/** \brief Remove all effects. */
 	void RemoveAllEffects();

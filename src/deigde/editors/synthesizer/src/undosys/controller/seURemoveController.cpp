@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seURemoveController::seURemoveController(seSynthesizer::Ref synthesizer, seController::Ref controller) :
+seURemoveController::seURemoveController(seSynthesizer *synthesizer, seController *controller) :
 
 pController(NULL)
 {

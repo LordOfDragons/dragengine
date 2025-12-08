@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveCamera::gdeUOCRemoveCamera(gdeObjectClass::Ref objectClass, gdeOCCamera::Ref camera) :
+gdeUOCRemoveCamera::gdeUOCRemoveCamera(gdeObjectClass *objectClass, gdeOCCamera *camera) :
 
 pCamera(NULL)
 {

@@ -367,7 +367,7 @@ void deoglRRenderWindow::SetIcon(deoglPixelBuffer *icon){
 
 
 
-void deoglRRenderWindow::SetRCanvasView(deoglRCanvasView::Ref rcanvasView){
+void deoglRRenderWindow::SetRCanvasView(deoglRCanvasView *rcanvasView){
 	if(rcanvasView == pRCanvasView){
 		return;
 	}

@@ -200,7 +200,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
 	pListener.TakeOver(new meWPAddListener(*this));
 	
@@ -245,7 +245,7 @@ meWPAdd::~meWPAdd(){
 // Management
 ///////////////
 
-void meWPAdd::SetWorld(meWorld::Ref world){
+void meWPAdd::SetWorld(meWorld *world){
 	if(world == pWorld){
 		return;
 	}

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetScaling::gdeUOCEnvMapProbeSetScaling(gdeObjectClass::Ref objectClass,
-gdeOCEnvMapProbe::Ref envMapProbe, const decVector &newValue) :
+gdeUOCEnvMapProbeSetScaling::gdeUOCEnvMapProbeSetScaling(gdeObjectClass *objectClass,
+gdeOCEnvMapProbe *envMapProbe, const decVector &newValue) :
 
 pEnvMapProbe(NULL)
 {

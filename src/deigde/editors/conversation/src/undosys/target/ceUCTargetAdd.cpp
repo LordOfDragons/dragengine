@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetAdd::ceUCTargetAdd(ceConversation::Ref conversation, ceTarget::Ref target){
+ceUCTargetAdd::ceUCTargetAdd(ceConversation *conversation, ceTarget *target){
 	if(!conversation || !target) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;

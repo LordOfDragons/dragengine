@@ -43,7 +43,7 @@ private:
 	bool pSuccess;
 	
 public:
-	cWaitableTask(deoglRenderThread &renderThread, deoglLoaderThreadTask::Ref task) :
+	cWaitableTask(deoglRenderThread &renderThread, deoglLoaderThreadTask *task) :
 	pRenderThread(renderThread),
 	pTask(task),
 	pSuccess(true){
@@ -200,7 +200,7 @@ void deoglLoaderThread::EnableContext(bool enable){
 	}
 }
 
-bool deoglLoaderThread::AddTask(deoglLoaderThreadTask::Ref task){
+bool deoglLoaderThread::AddTask(deoglLoaderThreadTask *task){
 	DEASSERT_NOTNULL(task);
 	
 	const deMutexGuard guard(pMutex);
@@ -217,7 +217,7 @@ bool deoglLoaderThread::AddTask(deoglLoaderThreadTask::Ref task){
 	return true;
 }
 
-bool deoglLoaderThread::AwaitTask(deoglLoaderThreadTask::Ref task){
+bool deoglLoaderThread::AwaitTask(deoglLoaderThreadTask *task){
 	DEASSERT_NOTNULL(task)
 	
 	const deTObjectReference<cWaitableTask> waitableTask(deTObjectReference<cWaitableTask>::New(

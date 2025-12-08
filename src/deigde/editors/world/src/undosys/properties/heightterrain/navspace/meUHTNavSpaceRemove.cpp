@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceRemove::meUHTNavSpaceRemove(meHeightTerrainSector::Ref sector, meHeightTerrainNavSpace::Ref navspace) :
+meUHTNavSpaceRemove::meUHTNavSpaceRemove(meHeightTerrainSector *sector, meHeightTerrainNavSpace *navspace) :
 pSector(NULL)
 {
 	if(!sector || !navspace){

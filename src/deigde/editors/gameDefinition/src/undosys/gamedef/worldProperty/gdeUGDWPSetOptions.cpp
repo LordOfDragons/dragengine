@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPSetOptions::gdeUGDWPSetOptions(gdeGameDefinition::Ref gamedef,
-gdeProperty::Ref property, const decStringList &newValue) :
+gdeUGDWPSetOptions::gdeUGDWPSetOptions(gdeGameDefinition *gamedef,
+gdeProperty *property, const decStringList &newValue) :
 
 pProperty(NULL)
 {

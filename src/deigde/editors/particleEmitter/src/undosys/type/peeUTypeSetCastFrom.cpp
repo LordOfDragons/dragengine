@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetCastFrom::peeUTypeSetCastFrom(peeType::Ref type, deParticleEmitterType::eCastFrom newCastFrom){
+peeUTypeSetCastFrom::peeUTypeSetCastFrom(peeType *type, deParticleEmitterType::eCastFrom newCastFrom){
 	if(!type){
 		DETHROW(deeInvalidParam);
 	}

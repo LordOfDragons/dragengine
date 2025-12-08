@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSnapPointSetPosition::gdeUOCSnapPointSetPosition(gdeObjectClass::Ref objectClass,
-gdeOCSnapPoint::Ref snapPoint, const decVector &newValue) :
+gdeUOCSnapPointSetPosition::gdeUOCSnapPointSetPosition(gdeObjectClass *objectClass,
+gdeOCSnapPoint *snapPoint, const decVector &newValue) :
 
 pSnapPoint(NULL)
 {

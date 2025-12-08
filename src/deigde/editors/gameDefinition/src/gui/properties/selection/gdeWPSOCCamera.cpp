@@ -277,7 +277,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
 	pListener.TakeOver(new gdeWPSOCCameraListener(*this));
 	
@@ -320,7 +320,7 @@ gdeWPSOCCamera::~gdeWPSOCCamera(){
 // Management
 ///////////////
 
-void gdeWPSOCCamera::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPSOCCamera::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

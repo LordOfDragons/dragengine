@@ -47,7 +47,7 @@ public:
 	 * \brief Create memory file reader for the given memory file.
 	 * \throws deeInvalidParam \em memoryFile is NULL.
 	 */
-	decMemoryFileReader(decMemoryFile::Ref memoryFile);
+	decMemoryFileReader(decMemoryFile *memoryFile);
 	
 protected:
 	/**

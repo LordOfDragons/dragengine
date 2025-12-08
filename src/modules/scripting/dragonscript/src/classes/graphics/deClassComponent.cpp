@@ -1480,7 +1480,7 @@ deComponent *deClassComponent::GetComponent(dsRealObject *myself) const{
 	return ((sCompNatDat*)p_GetNativeData(myself->GetBuffer()))->component;
 }
 
-void deClassComponent::PushComponent(dsRunTime *rt, deComponent::Ref component){
+void deClassComponent::PushComponent(dsRunTime *rt, deComponent *component){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

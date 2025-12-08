@@ -72,7 +72,7 @@ public:
 	inline meObject *GetParentObject() const{ return pParentObject; }
 	
 	/** \brief Set parent object. */
-	void SetParentObject(meObject::Ref object);
+	void SetParentObject(meObject *object);
 	
 	/** \brief Attach decal to parent. */
 	void AttachToParent();

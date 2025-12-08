@@ -90,10 +90,10 @@ public:
 	inline const ceConversationTopicList &GetTopicList() const{ return pTopics; }
 	
 	/** \brief Add topic. */
-	void AddTopic(ceConversationTopic::Ref topic);
+	void AddTopic(ceConversationTopic *topic);
 	
 	/** \brief Remove topic. */
-	void RemoveTopic(ceConversationTopic::Ref topic);
+	void RemoveTopic(ceConversationTopic *topic);
 	
 	/** \brief Remove all topics. */
 	void RemoveAllTopics();
@@ -102,7 +102,7 @@ public:
 	inline ceConversationTopic *GetActiveTopic() const{ return pActiveTopic; }
 	
 	/** \brief Set active topic or \em NULL if none is active. */
-	void SetActiveTopic(ceConversationTopic::Ref topic);
+	void SetActiveTopic(ceConversationTopic *topic);
 	/*@}*/
 };
 

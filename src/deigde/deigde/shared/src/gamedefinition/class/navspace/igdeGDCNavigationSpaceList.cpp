@@ -62,15 +62,15 @@ igdeGDCNavigationSpace *igdeGDCNavigationSpaceList::GetAt(int index) const{
 	return (igdeGDCNavigationSpace*)pNavigationSpaces.GetAt(index);
 }
 
-int igdeGDCNavigationSpaceList::IndexOf(igdeGDCNavigationSpace::Ref navSpace) const{
+int igdeGDCNavigationSpaceList::IndexOf(igdeGDCNavigationSpace *navSpace) const{
 	return pNavigationSpaces.IndexOf(navSpace);
 }
 
-bool igdeGDCNavigationSpaceList::Has(igdeGDCNavigationSpace::Ref navSpace) const{
+bool igdeGDCNavigationSpaceList::Has(igdeGDCNavigationSpace *navSpace) const{
 	return pNavigationSpaces.Has(navSpace);
 }
 
-void igdeGDCNavigationSpaceList::Add(igdeGDCNavigationSpace::Ref navSpace){
+void igdeGDCNavigationSpaceList::Add(igdeGDCNavigationSpace *navSpace){
 	if(!navSpace){
 		DETHROW(deeInvalidParam);
 	}
@@ -78,7 +78,7 @@ void igdeGDCNavigationSpaceList::Add(igdeGDCNavigationSpace::Ref navSpace){
 	pNavigationSpaces.Add(navSpace);
 }
 
-void igdeGDCNavigationSpaceList::InsertAt(igdeGDCNavigationSpace::Ref navSpace, int index){
+void igdeGDCNavigationSpaceList::InsertAt(igdeGDCNavigationSpace *navSpace, int index){
 	if(!navSpace){
 		DETHROW(deeInvalidParam);
 	}
@@ -86,11 +86,11 @@ void igdeGDCNavigationSpaceList::InsertAt(igdeGDCNavigationSpace::Ref navSpace, 
 	pNavigationSpaces.Insert(navSpace, index);
 }
 
-void igdeGDCNavigationSpaceList::MoveTo(igdeGDCNavigationSpace::Ref navSpace, int index){
+void igdeGDCNavigationSpaceList::MoveTo(igdeGDCNavigationSpace *navSpace, int index){
 	pNavigationSpaces.Move(navSpace, index);
 }
 
-void igdeGDCNavigationSpaceList::Remove(igdeGDCNavigationSpace::Ref navSpace){
+void igdeGDCNavigationSpaceList::Remove(igdeGDCNavigationSpace *navSpace){
 	pNavigationSpaces.Remove(navSpace);
 }
 

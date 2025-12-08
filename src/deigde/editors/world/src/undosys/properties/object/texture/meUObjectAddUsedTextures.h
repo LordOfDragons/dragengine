@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectAddUsedTextures(meObject::Ref object);
+	meUObjectAddUsedTextures(meObject *object);
 	
 protected:
 	/** \brief Clean up undo object. */

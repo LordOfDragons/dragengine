@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertySetConstructedColor::seUPropertySetConstructedColor(
-seProperty::Ref property, const decColor &newValue) :
+seProperty *property, const decColor &newValue) :
 
 
 pNewValue(newValue)

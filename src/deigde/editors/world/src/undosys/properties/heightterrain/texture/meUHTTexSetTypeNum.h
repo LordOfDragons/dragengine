@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTTexSetTypeNum(meHeightTerrainTexture::Ref texture, int newTypeNumber);
+	meUHTTexSetTypeNum(meHeightTerrainTexture *texture, int newTypeNumber);
 	
 protected:
 	/** \brief Clean up object. */

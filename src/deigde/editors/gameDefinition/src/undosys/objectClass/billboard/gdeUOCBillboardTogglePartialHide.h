@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCBillboardTogglePartialHide(gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard);
+	gdeUOCBillboardTogglePartialHide(gdeObjectClass *objectClass, gdeOCBillboard *billboard);
 	
 protected:
 	/** \brief Clean up undo action. */

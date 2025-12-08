@@ -168,7 +168,7 @@ void deoglRComponentTexture::SetTransform(const decTexMatrix2 &matrix){
 
 
 
-void deoglRComponentTexture::SetSkin(deoglRSkin::Ref skin){
+void deoglRComponentTexture::SetSkin(deoglRSkin *skin){
 	if(skin == pSkin){
 		return;
 	}
@@ -180,7 +180,7 @@ void deoglRComponentTexture::SetSkin(deoglRSkin::Ref skin){
 	pUpdateRenderTaskFilters();
 }
 
-void deoglRComponentTexture::SetDynamicSkin(deoglRDynamicSkin::Ref dynamicSkin){
+void deoglRComponentTexture::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	if(dynamicSkin == pDynamicSkin){
 		return;
 	}

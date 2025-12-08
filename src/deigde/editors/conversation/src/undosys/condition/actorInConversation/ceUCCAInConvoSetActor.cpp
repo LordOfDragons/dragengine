@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCAInConvoSetActor::ceUCCAInConvoSetActor(ceConversationTopic::Ref topic,
-ceConversationAction::Ref action, ceCConditionActorInConversation::Ref condition, const char *newID) :
+ceUCCAInConvoSetActor::ceUCCAInConvoSetActor(ceConversationTopic *topic,
+ceConversationAction *action, ceCConditionActorInConversation *condition, const char *newID) :
 
 
 pCondition(NULL)

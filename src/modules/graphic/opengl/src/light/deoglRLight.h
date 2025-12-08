@@ -285,7 +285,7 @@ public:
 	inline deoglRCanvasView *GetLightCanvas() const{ return pLightCanvas; }
 	
 	/** Set light canvas or \em NULL if not used. */
-	void SetLightCanvas(deoglRCanvasView::Ref canvas);
+	void SetLightCanvas(deoglRCanvasView *canvas);
 	
 	/** Light color. */
 	inline const decColor &GetColor() const{ return pColor; }
@@ -327,13 +327,13 @@ public:
 	inline deoglRSkin *GetLightSkin() const{ return pLightSkin; }
 	
 	/** Set light skin or \em NULL if not used. */
-	void SetLightSkin(deoglRSkin::Ref skin);
+	void SetLightSkin(deoglRSkin *skin);
 	
 	/** Dynamic skin or \em NULL if not used. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or \em NULL if not used. */
-	void SetDynamicSkin(deoglRDynamicSkin::Ref dynamicSkin);
+	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
 	
 	/** Light texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }

@@ -212,7 +212,7 @@ deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filenam
 	return model;
 }
 
-void deModelManager::AddLoadedModel(deModel::Ref model){
+void deModelManager::AddLoadedModel(deModel *model){
 	if(!model){
 		DETHROW(deeInvalidParam);
 	}

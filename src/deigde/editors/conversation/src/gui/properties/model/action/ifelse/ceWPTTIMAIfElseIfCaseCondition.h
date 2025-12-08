@@ -47,7 +47,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	ceWPTTIMAIfElseIfCaseCondition(ceWindowMain &windowMain,
-		ceConversation &conversation, ceCAIfElse&ifElse, ceCAIfElseCase::Ref ifCase);
+		ceConversation &conversation, ceCAIfElse&ifElse, ceCAIfElseCase *ifCase);
 	
 protected:
 	/** \brief Clean up tree item model. */

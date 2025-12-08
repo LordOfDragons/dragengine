@@ -71,7 +71,7 @@ public:
 	/** Text box text or NULL if not owning one. */
 	inline ceTextBoxText *GetTextBoxText() const{ return pTextBoxText; }
 	/** Sets the text box text or NULL if not owning one. */
-	void SetTextBoxText(ceTextBoxText::Ref text);
+	void SetTextBoxText(ceTextBoxText *text);
 	
 	/** Determines if the speech is done. */
 	bool IsSpeechDone() const;

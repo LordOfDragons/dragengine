@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerSetOffset(seLayer::Ref layer, const decVector &newOffset);
+	seULayerSetOffset(seLayer *layer, const decVector &newOffset);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -64,7 +64,7 @@ public:
 	/** Retrieves the dynamic skin from an object. */
 	deDynamicSkin *GetDynamicSkin(dsRealObject *myself) const;
 	/** Pushes a dynamic skin. */
-	void PushDynamicSkin(dsRunTime *rt, deDynamicSkin::Ref dynamicSkin);
+	void PushDynamicSkin(dsRunTime *rt, deDynamicSkin *dynamicSkin);
 	
 	inline dsClass *GetClassDynamicSkinRenderableType() const{ return pClsDynamicSkinRenderableType; }
 	/*@}*/

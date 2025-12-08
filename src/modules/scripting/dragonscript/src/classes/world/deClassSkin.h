@@ -67,7 +67,7 @@ public:
 	deSkin *GetSkin(dsRealObject *myself) const;
 	
 	/** \brief Pushe skin. */
-	void PushSkin(dsRunTime *rt, deSkin::Ref skin);
+	void PushSkin(dsRunTime *rt, deSkin *skin);
 	
 	inline dsClass *GetClassSkinPropertyType() const{ return pClsSkinPropertyType; }
 	/*@}*/

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetBlockingPriority::gdeUOCNavSpaceSetBlockingPriority(gdeObjectClass::Ref objectClass,
-gdeOCNavigationSpace::Ref navspace, int newValue) :
+gdeUOCNavSpaceSetBlockingPriority::gdeUOCNavSpaceSetBlockingPriority(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, int newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !navspace){

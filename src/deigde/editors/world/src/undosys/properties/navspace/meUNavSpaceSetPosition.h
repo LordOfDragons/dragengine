@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUNavSpaceSetPosition(meNavigationSpace::Ref navspace, const decDVector &newPosition);
+	meUNavSpaceSetPosition(meNavigationSpace *navspace, const decDVector &newPosition);
 	
 protected:
 	/** \brief Clean up object. */

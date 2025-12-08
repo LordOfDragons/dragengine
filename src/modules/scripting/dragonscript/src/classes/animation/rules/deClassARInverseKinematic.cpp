@@ -490,7 +490,7 @@ deAnimatorRuleInverseKinematic *deClassARInverseKinematic::GetRule(dsRealObject 
 	return ((sARIKNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARInverseKinematic::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
+void deClassARInverseKinematic::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -510,7 +510,7 @@ void deClassARInverseKinematic::AssignAnimator(dsRealObject *myself, deAnimator:
 	nd.animator = animator;
 }
 
-void deClassARInverseKinematic::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleInverseKinematic::Ref rule){
+void deClassARInverseKinematic::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleInverseKinematic *rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

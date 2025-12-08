@@ -100,7 +100,7 @@ public:
 	deoglDynamicTBOBlock *AddBlock(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = NULL);
 	
 	/** Remove block returning the space to the pool of free space. */
-	void RemoveBlock(deoglDynamicTBOBlock::Ref block);
+	void RemoveBlock(deoglDynamicTBOBlock *block);
 	
 	/**
 	 * Index of first empty block TBO fits in or NULL if not found. If the only empty block

@@ -49,7 +49,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUBoneMirror::reUBoneMirror(reRig::Ref rig){
+reUBoneMirror::reUBoneMirror(reRig *rig){
 	const reSelectionBones &selection = *rig->GetSelectionBones();
 	int b, boneCount = selection.GetBoneCount();
 	int c, constraintCount;
@@ -434,7 +434,7 @@ void reUBoneMirror::pCleanUp(){
 
 
 
-reRigBone *reUBoneMirror::pGetBoneWithMirroredName(reRig::Ref rig, reRigBone *bone) const{
+reRigBone *reUBoneMirror::pGetBoneWithMirroredName(reRig *rig, reRigBone *bone) const{
 	const decString nameBone(bone->GetName().GetLower());
 	decString findName;
 	

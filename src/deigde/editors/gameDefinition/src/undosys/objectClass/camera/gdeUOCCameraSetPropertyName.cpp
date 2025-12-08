@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetPropertyName::gdeUOCCameraSetPropertyName(gdeObjectClass::Ref objectClass,
-gdeOCCamera::Ref camera, const char *newValue) :
+gdeUOCCameraSetPropertyName::gdeUOCCameraSetPropertyName(gdeObjectClass *objectClass,
+gdeOCCamera *camera, const char *newValue) :
 
 pCamera(NULL)
 {

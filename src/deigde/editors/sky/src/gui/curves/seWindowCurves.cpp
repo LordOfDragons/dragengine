@@ -152,7 +152,7 @@ seWindowCurves::~seWindowCurves(){
 // Management
 ///////////////
 
-void seWindowCurves::SetSky(seSky::Ref sky){
+void seWindowCurves::SetSky(seSky *sky){
 	if(sky == pSky){
 		return;
 	}

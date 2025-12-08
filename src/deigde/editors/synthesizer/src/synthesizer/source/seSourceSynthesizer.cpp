@@ -298,7 +298,7 @@ seController *seSourceSynthesizer::GetControllerAt(int position) const{
 	return pConnections[position];
 }
 
-void seSourceSynthesizer::SetControllerAt(int position, seController::Ref controller){
+void seSourceSynthesizer::SetControllerAt(int position, seController *controller){
 	if(position < 0 || position >= pConnectionCount){
 		DETHROW(deeInvalidParam);
 	}

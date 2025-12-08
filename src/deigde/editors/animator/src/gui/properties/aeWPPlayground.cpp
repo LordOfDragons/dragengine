@@ -476,7 +476,7 @@ pControllerCount(0)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
 	pListener.TakeOver(new aeWPPlaygroundListener(*this));
 	
@@ -579,7 +579,7 @@ aeWPPlayground::~aeWPPlayground(){
 // Management
 ///////////////
 
-void aeWPPlayground::SetAnimator(aeAnimator::Ref animator){
+void aeWPPlayground::SetAnimator(aeAnimator *animator){
 	if(animator == pAnimator){
 		return;
 	}

@@ -76,7 +76,7 @@ public:
 	inline seSky *GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
-	void SetSky(seSky::Ref sky);
+	void SetSky(seSky *sky);
 	
 	/** \brief Active link or \em NULL. */
 	seLink *GetLink() const;

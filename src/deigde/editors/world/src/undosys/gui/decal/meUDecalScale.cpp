@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalScale::meUDecalScale(meWorld::Ref world){
+meUDecalScale::meUDecalScale(meWorld *world){
 	if(!world) DETHROW(deeInvalidParam);
 	
 	const meDecalList &selection = world->GetSelectionDecal().GetSelected();

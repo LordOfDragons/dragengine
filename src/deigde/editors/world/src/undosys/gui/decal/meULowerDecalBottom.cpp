@@ -37,7 +37,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meULowerDecalBottom::meULowerDecalBottom(meWorld *world, meDecal::Ref decal){
+meULowerDecalBottom::meULowerDecalBottom(meWorld *world, meDecal *decal){
 	if(!world || !decal) DETHROW(deeInvalidParam);
 	
 	if(!decal->GetParentObject()) DETHROW(deeInvalidParam);

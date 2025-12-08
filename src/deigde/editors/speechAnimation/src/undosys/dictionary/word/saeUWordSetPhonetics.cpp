@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUWordSetPhonetics::saeUWordSetPhonetics(saeWord::Ref word, const decUnicodeString &newPhonetics){
+saeUWordSetPhonetics::saeUWordSetPhonetics(saeWord *word, const decUnicodeString &newPhonetics){
 	if(!word) DETHROW(deeInvalidParam);
 	
 	pWord = NULL;

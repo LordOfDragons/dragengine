@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCTextureSetProperties::gdeUOCCTextureSetProperties(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, gdeOCComponentTexture::Ref texture, const decStringDictionary &newValue) :
+gdeUOCCTextureSetProperties::gdeUOCCTextureSetProperties(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture, const decStringDictionary &newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !component || !texture){

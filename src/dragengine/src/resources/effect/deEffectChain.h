@@ -72,17 +72,17 @@ public:
 	deEffect *GetEffectAt(int index) const;
 	
 	/** \brief Given effect is already part of the chain. */
-	bool HasEffect(deEffect::Ref effect) const;
+	bool HasEffect(deEffect *effect) const;
 	
 	/** \brief Position of the given effect in the chain or -1 if not part of it. */
-	int IndexOfEffect(deEffect::Ref effect) const;
+	int IndexOfEffect(deEffect *effect) const;
 	
 	/**
 	 * \brief Add effect to the chain.
 	 * 
 	 * Throws an exception if already in the chain.
 	 */
-	void AddEffect(deEffect::Ref effect);
+	void AddEffect(deEffect *effect);
 	
 	/**
 	 * \brief Insert effect at the given position to the chain.
@@ -90,10 +90,10 @@ public:
 	 * Throws an exception if already already part of it. The new effect is inserted
 	 * at the given position moving all effects after it up one position.
 	 */
-	void InsertEffect(deEffect::Ref effect, int position);
+	void InsertEffect(deEffect *effect, int position);
 	
 	/** \brief Removes the given effect from the chain. */
-	void RemoveEffect(deEffect::Ref effect);
+	void RemoveEffect(deEffect *effect);
 	
 	/** \brief Removes all effects from the chain. */
 	void RemoveAllEffects();
@@ -103,7 +103,7 @@ public:
 	 * 
 	 * The effect is placed at the new position moving all effects after it up one position.
 	 */
-	void MoveEffect(deEffect::Ref effect, int newPosition);
+	void MoveEffect(deEffect *effect, int newPosition);
 	/*@}*/
 	
 	

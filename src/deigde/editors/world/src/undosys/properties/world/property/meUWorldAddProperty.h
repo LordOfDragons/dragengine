@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUWorldAddProperty(meWorld::Ref world, const char *key, const char *value);
+	meUWorldAddProperty(meWorld *world, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */

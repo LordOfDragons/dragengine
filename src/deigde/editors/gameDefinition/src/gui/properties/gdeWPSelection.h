@@ -97,7 +97,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not present. */
-	void SetGameDefinition(gdeGameDefinition::Ref gameDefinition);
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Tree model or NULL. */
 	inline gdeWPSTreeModel *GetModelTreeObjects() const{ return pModelTreeObjects; }

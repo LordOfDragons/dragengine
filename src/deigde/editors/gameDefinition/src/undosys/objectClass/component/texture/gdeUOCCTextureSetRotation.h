@@ -55,8 +55,8 @@ public:
 	/** \rotation Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCTextureSetRotation(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component,
-		gdeOCComponentTexture::Ref texture, float newValue);
+	gdeUOCCTextureSetRotation(gdeObjectClass *objectClass, gdeOCComponent *component,
+		gdeOCComponentTexture *texture, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

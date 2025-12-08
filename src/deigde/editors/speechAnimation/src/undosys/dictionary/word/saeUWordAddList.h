@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUWordAddList(saeSAnimation::Ref sanimation, const saeWordList &words);
+	saeUWordAddList(saeSAnimation *sanimation, const saeWordList &words);
 	
 protected:
 	/** Clean up undo. */

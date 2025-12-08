@@ -86,7 +86,7 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
-	void SetSynthesizer(seSynthesizer::Ref synthesizer);
+	void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	/** \brief Source or \em NULL if not set. */
 	seSource *GetSource() const;

@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCHasActorToggleNegate(ceConversationTopic::Ref topic, ceConversationAction::Ref action, ceCConditionHasActor::Ref hasActor);
+	ceUCCHasActorToggleNegate(ceConversationTopic *topic, ceConversationAction *action, ceCConditionHasActor *hasActor);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCHasActorToggleNegate();

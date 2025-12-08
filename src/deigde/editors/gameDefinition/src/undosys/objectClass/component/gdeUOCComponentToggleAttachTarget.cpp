@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCComponentToggleAttachTarget::gdeUOCComponentToggleAttachTarget(
-gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component) :
+gdeObjectClass *objectClass, gdeOCComponent *component) :
 
 pComponent(NULL)
 {

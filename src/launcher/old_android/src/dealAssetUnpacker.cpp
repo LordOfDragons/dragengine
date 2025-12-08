@@ -96,7 +96,7 @@ int ZCALLBACK minizip_error_file_func(voidpf opaque,voidpf stream){
 // Constructor, destructor
 ////////////////////////////
 
-dealAssetUnpacker::dealAssetUnpacker(deLogger::Ref logger) :
+dealAssetUnpacker::dealAssetUnpacker(deLogger *logger) :
 
 pAsset(NULL),
 pUnpacking(false),

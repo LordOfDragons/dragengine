@@ -52,7 +52,7 @@ deoglRenderPlanEnvMap::~deoglRenderPlanEnvMap(){
 // Management
 ///////////////
 
-void deoglRenderPlanEnvMap::SetEnvMap(deoglEnvironmentMap::Ref envmap){
+void deoglRenderPlanEnvMap::SetEnvMap(deoglEnvironmentMap *envmap){
 	if(envmap == pEnvMap){
 		return;
 	}

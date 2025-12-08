@@ -112,7 +112,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(projProject::Ref project, projProfile *profile) = 0;
+	virtual igdeUndo *OnAction(projProject *project, projProfile *profile) = 0;
 	
 	virtual void Update(){
 		const projProject * const project = pPanel.GetProject();
@@ -144,7 +144,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject::Ref project,
+	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject *project,
 		projProfile *profile) = 0;
 };
 
@@ -172,7 +172,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextArea *textArea, projProject::Ref project,
+	virtual igdeUndo *OnChanged(igdeTextArea *textArea, projProject *project,
 		projProfile *profile) = 0;
 };
 
@@ -200,7 +200,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditPoint *editPoint, projProject::Ref project,
+	virtual igdeUndo *OnChanged(igdeEditPoint *editPoint, projProject *project,
 		projProfile *profile) = 0;
 };
 
@@ -235,7 +235,7 @@ class cTextName : public cBaseTextFieldListener{
 public:
 	cTextName(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject::Ref project,
+	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject *project,
 	projProfile *profile){
 		const decString &name = textField->GetText();
 		if(name == profile->GetName()){
@@ -683,7 +683,7 @@ pWindowMain(windowMain)
 	helper.Button(sidePanel, windowMain.GetActionProfileRemove());
 	helper.Button(sidePanel, windowMain.GetActionProfileDuplicate());
 	
-	igdeContainer::Ref groupBox, formLine;
+	igdeContainer *groupBox, formLine;
 	helper.GroupBoxStaticFlow(sidePanel, groupBox, "Content:");
 	helper.Button(groupBox, windowMain.GetActionShowContent());
 	
@@ -769,7 +769,7 @@ pWindowMain(windowMain)
 	groupBox.TakeOver(new igdeGroupBox(env, "Processing Parameters:", false));
 	sidePanel->AddChild(groupBox);
 	
-	igdeContainer::Ref subGroup, subGroup2;
+	igdeContainer *subGroup, subGroup2;
 	subGroup.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaX));
 	groupBox->AddChild(subGroup);
 	
@@ -849,7 +849,7 @@ projPanelProfiles::~projPanelProfiles(){
 // Management
 ///////////////
 
-void projPanelProfiles::SetProject(projProject::Ref project){
+void projPanelProfiles::SetProject(projProject *project){
 	if(project == pProject){
 		return;
 	}

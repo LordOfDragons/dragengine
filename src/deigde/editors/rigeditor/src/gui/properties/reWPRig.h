@@ -74,7 +74,7 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig(reRig::Ref rig);
+	void SetRig(reRig *rig);
 	
 	/** \brief Update root bone list. */
 	void UpdateRootBoneList();

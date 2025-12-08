@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeUSkinSetPath::gdeUSkinSetPath(
-gdeSkin::Ref skin, const char *newValue) :
+gdeSkin *skin, const char *newValue) :
 pSkin(NULL)
 {
 	if(!skin){

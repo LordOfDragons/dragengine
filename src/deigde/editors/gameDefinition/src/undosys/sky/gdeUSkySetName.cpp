@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeUSkySetName::gdeUSkySetName(
-gdeSky::Ref sky, const char *newValue) :
+gdeSky *sky, const char *newValue) :
 pSky(NULL)
 {
 	if(!sky){

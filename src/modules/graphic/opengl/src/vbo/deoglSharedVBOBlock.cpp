@@ -83,7 +83,7 @@ void deoglSharedVBOBlock::DelayedRemove(){
 		deoglSharedVBOBlock * const pVBOBlock;
 		
 	public:
-		cDelayedRemove(deoglSharedVBOBlock::Ref vboBlock) : pVBOBlock(vboBlock){
+		cDelayedRemove(deoglSharedVBOBlock *vboBlock) : pVBOBlock(vboBlock){
 		}
 		
 	protected:

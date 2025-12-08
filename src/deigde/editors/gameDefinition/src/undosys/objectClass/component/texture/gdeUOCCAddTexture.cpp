@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCAddTexture::gdeUOCCAddTexture(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, gdeOCComponentTexture::Ref texture) :
+gdeUOCCAddTexture::gdeUOCCAddTexture(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !component || !texture){

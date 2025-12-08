@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddTexture::gdeUOCAddTexture(gdeObjectClass::Ref objectClass, gdeOCComponentTexture::Ref texture) :
+gdeUOCAddTexture::gdeUOCAddTexture(gdeObjectClass *objectClass, gdeOCComponentTexture *texture) :
 
 pTexture(NULL)
 {

@@ -768,7 +768,7 @@ deAnimatorInstance *&instance, int &index) const{
 	index = nd.index;
 }
 
-void deClassAnimatorController::PushController(dsRunTime *rt, deAnimator::Ref animator, int index){
+void deClassAnimatorController::PushController(dsRunTime *rt, deAnimator *animator, int index){
 	if(!rt || !animator || index < 0 || index >= animator->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -781,7 +781,7 @@ void deClassAnimatorController::PushController(dsRunTime *rt, deAnimator::Ref an
 	nd.index = index;
 }
 
-void deClassAnimatorController::PushController(dsRunTime *rt, deAnimatorInstance::Ref instance, int index){
+void deClassAnimatorController::PushController(dsRunTime *rt, deAnimatorInstance *instance, int index){
 	if(!rt || !instance || index < 0 || index >= instance->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}

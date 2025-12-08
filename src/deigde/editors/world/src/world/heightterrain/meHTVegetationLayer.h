@@ -120,23 +120,23 @@ public:
 	/** Retrieves the variation at the given index. */
 	meHTVVariation *GetVariationAt(int index) const;
 	/** Retrieves the index of the variation or -1 if not found. */
-	int IndexOfVariation(meHTVVariation::Ref variation) const;
+	int IndexOfVariation(meHTVVariation *variation) const;
 	/** Determines if the variation exists. */
-	bool HasVariation(meHTVVariation::Ref variation) const;
+	bool HasVariation(meHTVVariation *variation) const;
 	/** Adds a variation. */
-	void AddVariation(meHTVVariation::Ref variation);
+	void AddVariation(meHTVVariation *variation);
 	/** Inserts a variation. */
-	void InsertVariation(int before, meHTVVariation::Ref variation);
+	void InsertVariation(int before, meHTVVariation *variation);
 	/** Moves a variation to a new position. */
-	void MoveVariation(meHTVVariation::Ref variation, int moveTo);
+	void MoveVariation(meHTVVariation *variation, int moveTo);
 	/** Removes a variation. */
-	void RemoveVariation(meHTVVariation::Ref variation);
+	void RemoveVariation(meHTVVariation *variation);
 	/** Removes all variations. */
 	void RemoveAllVariations();
 	/** Retrieves the active variation or NULL. */
 	inline meHTVVariation *GetActiveVariation() const{ return pActiveVariation; }
 	/** Sets the active variation or NULL. */
-	void SetActiveVariation(meHTVVariation::Ref variation);
+	void SetActiveVariation(meHTVVariation *variation);
 	/*@}*/
 	
 	/** \name Rule */
@@ -146,23 +146,23 @@ public:
 	/** Retrieves the rule at the given index. */
 	meHTVRule *GetRuleAt(int index) const;
 	/** Retrieves the index of the rule or -1 if not found. */
-	int IndexOfRule(meHTVRule::Ref rule) const;
+	int IndexOfRule(meHTVRule *rule) const;
 	/** Determines if the rule exists. */
-	bool HasRule(meHTVRule::Ref rule) const;
+	bool HasRule(meHTVRule *rule) const;
 	/** Adds a rule. */
-	void AddRule(meHTVRule::Ref rule);
+	void AddRule(meHTVRule *rule);
 	/** Removes a rule. */
-	void RemoveRule(meHTVRule::Ref rule);
+	void RemoveRule(meHTVRule *rule);
 	/** Removes all rules. */
 	void RemoveAllRules();
 	/** Retrieves the active rule or NULL. */
 	inline meHTVRule *GetActiveRule() const{ return pActiveRule; }
 	/** Sets the active rule or NULL. */
-	void SetActiveRule(meHTVRule::Ref rule);
+	void SetActiveRule(meHTVRule *rule);
 	/** Notifies the world that a rule changed. */
-	void NotifyRuleChanged(meHTVRule::Ref rule);
+	void NotifyRuleChanged(meHTVRule *rule);
 	/** Notifies the world that a rule moved. */
-	void NotifyRuleMoved(meHTVRule::Ref rule);
+	void NotifyRuleMoved(meHTVRule *rule);
 	
 	/** Evaluates the rules. */
 	void EvaluateRules(meHTVEvaluationEnvironment &evalEnv);
@@ -175,13 +175,13 @@ public:
 	/** Retrieves the link at the given index. */
 	meHTVRLink *GetLinkAt(int index) const;
 	/** Retrieves the index of the link or -1 if not found. */
-	int IndexOfLink(meHTVRLink::Ref link) const;
+	int IndexOfLink(meHTVRLink *link) const;
 	/** Determines if the link exists. */
-	bool HasLink(meHTVRLink::Ref link) const;
+	bool HasLink(meHTVRLink *link) const;
 	/** Adds a link. */
-	void AddLink(meHTVRLink::Ref link);
+	void AddLink(meHTVRLink *link);
 	/** Removes a link. */
-	void RemoveLink(meHTVRLink::Ref link);
+	void RemoveLink(meHTVRLink *link);
 	/** Removes all links. */
 	void RemoveAllLinks();
 	

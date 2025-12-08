@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyConstructedFromImage::seUPropertyConstructedFromImage(seProperty::Ref property) :
+seUPropertyConstructedFromImage::seUPropertyConstructedFromImage(seProperty *property) :
 
 pOldContent(NULL)
 {

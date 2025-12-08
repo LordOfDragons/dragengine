@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURemoveController::aeURemoveController(aeAnimator::Ref animator, aeController::Ref controller) :
+aeURemoveController::aeURemoveController(aeAnimator *animator, aeController *controller) :
 
 
 pIndex(-1)

@@ -62,7 +62,7 @@ public:
 	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
 	
 	/** \brief Set language pack or NULL. */
-	void SetLangPack(lpeLangPack::Ref langpack);
+	void SetLangPack(lpeLangPack *langpack);
 	/*@}*/
 };
 

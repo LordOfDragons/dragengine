@@ -176,7 +176,7 @@ pPreventUpdate(false)
 {
 	igdeEnvironment &env = wpSource.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref groupBox, formLine;
+	igdeContainer *groupBox, formLine;
 	
 	
 	helper.GroupBox(*this, groupBox, "Synthesizer:");

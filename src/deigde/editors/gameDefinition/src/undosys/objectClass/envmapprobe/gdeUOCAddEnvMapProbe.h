@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCAddEnvMapProbe(gdeObjectClass::Ref objectClass, gdeOCEnvMapProbe::Ref envMapProbe);
+	gdeUOCAddEnvMapProbe(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe);
 	
 protected:
 	/** \brief Clean up undo action. */

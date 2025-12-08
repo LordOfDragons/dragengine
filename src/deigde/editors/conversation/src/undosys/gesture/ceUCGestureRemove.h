@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCGestureRemove(ceGesture::Ref gesture);
+	ceUCGestureRemove(ceGesture *gesture);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCGestureRemove();

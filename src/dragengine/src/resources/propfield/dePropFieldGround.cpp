@@ -67,7 +67,7 @@ void dePropFieldGround::Clear(){
 	}
 }
 
-void dePropFieldGround::SetHeightTerrain(deHeightTerrain::Ref heightTerrain){
+void dePropFieldGround::SetHeightTerrain(deHeightTerrain *heightTerrain){
 	if(heightTerrain != pHeightTerrain){
 		if(pHeightTerrain) pHeightTerrain->FreeReference();
 		pHeightTerrain = heightTerrain;
@@ -86,7 +86,7 @@ deComponent *dePropFieldGround::GetComponentAt(int index) const{
 	return pComponents[index];
 }
 
-int dePropFieldGround::IndexOfComponent(deComponent::Ref component) const{
+int dePropFieldGround::IndexOfComponent(deComponent *component) const{
 	if(!component) DETHROW(deeInvalidParam);
 	
 	int t;
@@ -100,7 +100,7 @@ int dePropFieldGround::IndexOfComponent(deComponent::Ref component) const{
 	return -1;
 }
 
-bool dePropFieldGround::HasComponent(deComponent::Ref component) const{
+bool dePropFieldGround::HasComponent(deComponent *component) const{
 	if(!component) DETHROW(deeInvalidParam);
 	
 	int t;
@@ -114,7 +114,7 @@ bool dePropFieldGround::HasComponent(deComponent::Ref component) const{
 	return false;
 }
 
-void dePropFieldGround::AddComponent(deComponent::Ref component){
+void dePropFieldGround::AddComponent(deComponent *component){
 	if(!component) DETHROW(deeInvalidParam);
 	
 	if(pComponentCount == pComponentSize){
@@ -133,7 +133,7 @@ void dePropFieldGround::AddComponent(deComponent::Ref component){
 	pComponentCount++;
 }
 
-void dePropFieldGround::RemoveComponent(deComponent::Ref component){
+void dePropFieldGround::RemoveComponent(deComponent *component){
 	int i, index = IndexOfComponent(component);
 	
 	if(index == -1) DETHROW(deeInvalidParam);

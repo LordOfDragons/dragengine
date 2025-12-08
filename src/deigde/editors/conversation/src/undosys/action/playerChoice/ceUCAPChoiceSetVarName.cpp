@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceSetVarName::ceUCAPChoiceSetVarName(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref playerChoice, const char *newName){
+ceUCAPChoiceSetVarName::ceUCAPChoiceSetVarName(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, const char *newName){
 	if(!topic || !playerChoice || !newName){
 		DETHROW(deeInvalidParam);
 	}

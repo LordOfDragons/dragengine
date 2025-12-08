@@ -62,15 +62,15 @@ igdeGDCComponent *igdeGDCComponentList::GetAt(int index) const{
 	return (igdeGDCComponent*)pComponents.GetAt(index);
 }
 
-int igdeGDCComponentList::IndexOf(igdeGDCComponent::Ref component) const{
+int igdeGDCComponentList::IndexOf(igdeGDCComponent *component) const{
 	return pComponents.IndexOf(component);
 }
 
-bool igdeGDCComponentList::Has(igdeGDCComponent::Ref component) const{
+bool igdeGDCComponentList::Has(igdeGDCComponent *component) const{
 	return pComponents.Has(component);
 }
 
-void igdeGDCComponentList::Add(igdeGDCComponent::Ref component){
+void igdeGDCComponentList::Add(igdeGDCComponent *component){
 	if(!component){
 		DETHROW(deeInvalidParam);
 	}
@@ -78,7 +78,7 @@ void igdeGDCComponentList::Add(igdeGDCComponent::Ref component){
 	pComponents.Add(component);
 }
 
-void igdeGDCComponentList::InsertAt(igdeGDCComponent::Ref component, int index){
+void igdeGDCComponentList::InsertAt(igdeGDCComponent *component, int index){
 	if(!component){
 		DETHROW(deeInvalidParam);
 	}
@@ -86,11 +86,11 @@ void igdeGDCComponentList::InsertAt(igdeGDCComponent::Ref component, int index){
 	pComponents.Insert(component, index);
 }
 
-void igdeGDCComponentList::MoveTo(igdeGDCComponent::Ref component, int index){
+void igdeGDCComponentList::MoveTo(igdeGDCComponent *component, int index){
 	pComponents.Move(component, index);
 }
 
-void igdeGDCComponentList::Remove(igdeGDCComponent::Ref component){
+void igdeGDCComponentList::Remove(igdeGDCComponent *component){
 	pComponents.Remove(component);
 }
 

@@ -91,7 +91,7 @@ public:
 		}
 	}
 	
-	virtual void OnAction(seSkin::Ref skin, seDynamicSkinRenderable *renderable) = 0;
+	virtual void OnAction(seSkin *skin, seDynamicSkinRenderable *renderable) = 0;
 	
 	virtual void Update(){
 		seSkin * const skin = pPanel.GetSkin();
@@ -126,7 +126,7 @@ public:
 		}
 	}
 	
-	virtual void OnChanged(igdeTextField &textField, seSkin::Ref skin, seDynamicSkinRenderable *renderable) = 0;
+	virtual void OnChanged(igdeTextField &textField, seSkin *skin, seDynamicSkinRenderable *renderable) = 0;
 };
 
 class cBaseEditPathListener : public igdeEditPathListener{
@@ -144,7 +144,7 @@ public:
 		}
 	}
 	
-	virtual void OnChanged(igdeEditPath &editPath, seSkin::Ref skin, seDynamicSkinRenderable *renderable) = 0;
+	virtual void OnChanged(igdeEditPath &editPath, seSkin *skin, seDynamicSkinRenderable *renderable) = 0;
 };
 
 class cBaseColorBoxListener : public igdeColorBoxListener{
@@ -162,7 +162,7 @@ public:
 		}
 	}
 	
-	virtual void OnChanged(igdeColorBox &colorBox, seSkin::Ref skin, seDynamicSkinRenderable *renderable) = 0;
+	virtual void OnChanged(igdeColorBox &colorBox, seSkin *skin, seDynamicSkinRenderable *renderable) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -180,7 +180,7 @@ public:
 		}
 	}
 	
-	virtual void OnChanged(igdeComboBox &comboBox, seSkin::Ref skin, seDynamicSkinRenderable *renderable) = 0;
+	virtual void OnChanged(igdeComboBox &comboBox, seSkin *skin, seDynamicSkinRenderable *renderable) = 0;
 };
 
 class cBaseEditSliderTextListener : public igdeEditSliderTextListener{
@@ -202,7 +202,7 @@ public:
 		OnSliderTextValueChanged(sliderText);
 	}
 	
-	virtual void OnChanged(igdeEditSliderText &sliderText, seSkin::Ref skin, seDynamicSkinRenderable *renderable) = 0;
+	virtual void OnChanged(igdeEditSliderText &sliderText, seSkin *skin, seDynamicSkinRenderable *renderable) = 0;
 };
 
 
@@ -244,7 +244,7 @@ public:
 	cActionRemoveRenderable(seWPDynamicSkin &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove renderable"){}
 	
-	void OnAction(seSkin::Ref skin, seDynamicSkinRenderable *renderable) override{
+	void OnAction(seSkin *skin, seDynamicSkinRenderable *renderable) override{
 		skin->GetDynamicSkin().RemoveRenderable(renderable);
 	}
 };
@@ -272,7 +272,7 @@ class cTextRenderableName : public cBaseTextFieldListener{
 public:
 	cTextRenderableName(seWPDynamicSkin &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField &textField, seSkin::Ref skin, seDynamicSkinRenderable *renderable){
+	virtual void OnChanged(igdeTextField &textField, seSkin *skin, seDynamicSkinRenderable *renderable){
 		if(renderable->GetName() == textField.GetText()){
 			return;
 		}
@@ -415,7 +415,7 @@ igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, panel, groupBox, form, formLine;
+	igdeContainer *content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener.TakeOver(new seWPDynamicSkinListener(*this));
@@ -510,7 +510,7 @@ seWPDynamicSkin::~seWPDynamicSkin(){
 // Management
 ///////////////
 
-void seWPDynamicSkin::SetSkin(seSkin::Ref skin){
+void seWPDynamicSkin::SetSkin(seSkin *skin){
 	if(skin == pSkin){
 		return;
 	}

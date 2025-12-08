@@ -111,7 +111,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig::Ref rig, reRigConstraint::Ref constraint) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig *rig, reRigConstraint *constraint) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -134,7 +134,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig::Ref rig, reRigConstraint::Ref constraint) = 0;
+	virtual igdeUndo *OnChanged(const decVector &vector, reRig *rig, reRigConstraint *constraint) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -159,7 +159,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(reRig::Ref rig, reRigConstraint::Ref constraint) = 0;
+	virtual igdeUndo *OnAction(reRig *rig, reRigConstraint *constraint) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -182,7 +182,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig::Ref rig, reRigConstraint::Ref constraint) = 0;
+	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigConstraint *constraint) = 0;
 };
 
 
@@ -193,7 +193,7 @@ public:
 	cComboTarget(reWPConstraint &panel, bool &preventUpdate) :
 	cBaseComboBoxListener(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig*, reRigConstraint *constraint){
 		if(pPreventUpdate){
 			return nullptr;
 		}
@@ -211,7 +211,7 @@ class cEditPosition : public cBaseEditVectorListener{
 public:
 	cEditPosition(reWPConstraint &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigConstraint *constraint){
 		return !vector.IsEqualTo(constraint->GetPosition())
 			? new reUConstraintSetPosition(constraint, vector) : nullptr;
 	}
@@ -221,7 +221,7 @@ class cEditRotation : public cBaseEditVectorListener{
 public:
 	cEditRotation(reWPConstraint &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigConstraint *constraint){
 		return !vector.IsEqualTo(constraint->GetOrientation())
 			? new reUConstraintSetOrientation(constraint, vector) : nullptr;
 	}
@@ -231,7 +231,7 @@ class cEditOffset : public cBaseEditVectorListener{
 public:
 	cEditOffset(reWPConstraint &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigConstraint *constraint){
 		return !vector.IsEqualTo(constraint->GetOffset())
 			? new reUConstraintSetOffset(constraint, vector) : nullptr;
 	}
@@ -243,7 +243,7 @@ public:
 	cTextDofLower(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
 	cBaseTextFieldListener(panel), pDof(dof){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint){
 		const reRigConstraintDof &dof = constraint->GetDof(pDof);
 		const float value = textField->GetFloat();
 		return fabsf(value - dof.GetLowerLimit()) > dof.GetThresholdLimits()
@@ -257,7 +257,7 @@ public:
 	cTextDofUpper(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
 	cBaseTextFieldListener(panel), pDof(dof){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint){
 		const reRigConstraintDof &dof = constraint->GetDof(pDof);
 		const float value = textField->GetFloat();
 		return fabsf(value - dof.GetUpperLimit()) > dof.GetThresholdLimits()
@@ -271,7 +271,7 @@ public:
 	cTextDofFrictionStatic(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
 	cBaseTextFieldListener(panel), pDof(dof){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint){
 		const float value = textField->GetFloat();
 		return fabsf(value - constraint->GetDof(pDof).GetStaticFriction()) > FLOAT_SAFE_EPSILON
 			? new reUConstraintDofSetStaticFriction(constraint, pDof, value) : nullptr;
@@ -284,7 +284,7 @@ public:
 	cTextDofFrictionKinematic(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
 	cBaseTextFieldListener(panel), pDof(dof){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint){
 		const float value = textField->GetFloat();
 		return fabsf(value - constraint->GetDof(pDof).GetKinematicFriction()) > FLOAT_SAFE_EPSILON
 			? new reUConstraintDofSetKinematicFriction(constraint, pDof, value) : nullptr;
@@ -297,7 +297,7 @@ public:
 	cTextDofSpringStiffness(reWPConstraint &panel, deColliderConstraint::eDegreesOfFreedom dof) :
 	cBaseTextFieldListener(panel), pDof(dof){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint){
 		const float value = textField->GetFloat();
 		return fabsf(value - constraint->GetDof(pDof).GetSpringStiffness()) > FLOAT_SAFE_EPSILON
 			? new reUConstraintDofSetSpringStiffness(constraint, pDof, value) : nullptr;
@@ -308,7 +308,7 @@ class cTextDampingLinear : public cBaseTextFieldListener{
 public:
 	cTextDampingLinear(reWPConstraint &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint){
 		const float value = textField->GetFloat();
 		return fabsf(value - constraint->GetLinearDamping()) > FLOAT_SAFE_EPSILON
 			? new reUConstraintSetDampingLinear(constraint, value) : nullptr;
@@ -319,7 +319,7 @@ class cTextDampingAngular : public cBaseTextFieldListener{
 public:
 	cTextDampingAngular(reWPConstraint &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint){
 		const float value = textField->GetFloat();
 		return fabsf(value - constraint->GetAngularDamping()) > FLOAT_SAFE_EPSILON
 			? new reUConstraintSetDampingAngular(constraint, value) : nullptr;
@@ -330,7 +330,7 @@ class cTextDampingSpring : public cBaseTextFieldListener{
 public:
 	cTextDampingSpring(reWPConstraint &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint){
 		const float value = textField->GetFloat();
 		return fabsf(value - constraint->GetSpringDamping()) > FLOAT_SAFE_EPSILON
 			? new reUConstraintSetDampingSpring(constraint, value) : nullptr;
@@ -342,7 +342,7 @@ public:
 	cCheckRope(reWPConstraint &panel) : cBaseAction(panel, "Use rope physics",
 		"Determines if this constraint is a rope constraint."){ }
 	
-	virtual igdeUndo *OnAction(reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnAction(reRig*, reRigConstraint *constraint){
 		return new reUConstraintToggleIsRope(constraint);
 	}
 };
@@ -351,7 +351,7 @@ class cTextBreakingThreshold : public cBaseTextFieldListener{
 public:
 	cTextBreakingThreshold(reWPConstraint &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig*, reRigConstraint *constraint){
 		const float value = textField->GetFloat();
 		return fabsf(value - constraint->GetBreakingThreshold()) > FLOAT_SAFE_EPSILON
 			? new reUConstraintSetBreakingThreshold(constraint, value) : nullptr;
@@ -363,7 +363,7 @@ public:
 	cCheckShowJointError(reWPConstraint &panel) : cBaseAction(panel, "Show joint error",
 		"Shows joint errors visually during simulation."){}
 	
-	virtual igdeUndo *OnAction(reRig*, reRigConstraint::Ref constraint){
+	virtual igdeUndo *OnAction(reRig*, reRigConstraint *constraint){
 		constraint->SetShowJointError(!constraint->GetShowJointError());
 		return nullptr;
 	}
@@ -385,7 +385,7 @@ pWindowProperties(windowProperties),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener.TakeOver(new reWPConstraintListener(*this));
@@ -491,7 +491,7 @@ reWPConstraint::~reWPConstraint(){
 // Management
 ///////////////
 
-void reWPConstraint::SetRig(reRig::Ref rig){
+void reWPConstraint::SetRig(reRig *rig){
 	if(rig == pRig){
 		return;
 	}
@@ -511,7 +511,7 @@ void reWPConstraint::SetRig(reRig::Ref rig){
 	}
 }
 
-void reWPConstraint::SetConstraint(reRigConstraint::Ref constraint){
+void reWPConstraint::SetConstraint(reRigConstraint *constraint){
 	if(constraint == pConstraint){
 		return;
 	}

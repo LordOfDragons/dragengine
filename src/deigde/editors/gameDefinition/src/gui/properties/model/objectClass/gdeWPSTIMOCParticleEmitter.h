@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCParticleEmitter(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCParticleEmitter::Ref particleEmitter, int index);
+		gdeOCParticleEmitter *particleEmitter, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

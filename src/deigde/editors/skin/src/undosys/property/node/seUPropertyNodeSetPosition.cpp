@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeSetPosition::seUPropertyNodeSetPosition(
-sePropertyNode::Ref node, const decPoint3 &newValue) :
+sePropertyNode *node, const decPoint3 &newValue) :
 
 pNewValue(newValue)
 {

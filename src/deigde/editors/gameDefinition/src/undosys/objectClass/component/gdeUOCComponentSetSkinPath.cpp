@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetSkinPath::gdeUOCComponentSetSkinPath(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, const char *newValue) :
+gdeUOCComponentSetSkinPath::gdeUOCComponentSetSkinPath(gdeObjectClass *objectClass,
+gdeOCComponent *component, const char *newValue) :
 
 pComponent(NULL)
 {

@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetCurve(seSkyLayer::Ref layer, seProperty *property);
+	seUPropertySetCurve(seSkyLayer *layer, seProperty *property);
 	/** \brief Clean up undo. */
 	virtual ~seUPropertySetCurve();
 	/*@}*/

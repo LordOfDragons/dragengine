@@ -54,7 +54,7 @@ meWPUndoHistory::~meWPUndoHistory(){
 // Management
 ///////////////
 
-void meWPUndoHistory::SetWorld(meWorld::Ref world){
+void meWPUndoHistory::SetWorld(meWorld *world){
 	if(world == pWorld){
 		return;
 	}

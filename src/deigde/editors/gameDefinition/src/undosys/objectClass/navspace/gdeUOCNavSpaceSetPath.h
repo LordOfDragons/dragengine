@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetPath(gdeObjectClass::Ref objectClass,
-		gdeOCNavigationSpace::Ref navspace, const char *newValue);
+	gdeUOCNavSpaceSetPath(gdeObjectClass *objectClass,
+		gdeOCNavigationSpace *navspace, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

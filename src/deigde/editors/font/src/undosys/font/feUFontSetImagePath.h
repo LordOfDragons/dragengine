@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUFontSetImagePath(feFontImage::Ref image, const char *newPath);
+	feUFontSetImagePath(feFontImage *image, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -64,22 +64,22 @@ public:
 	igdeGDCParticleEmitter *GetAt(int index) const;
 	
 	/** \brief Index of an emitter or -1 if not found. */
-	int IndexOf(igdeGDCParticleEmitter::Ref emitter) const;
+	int IndexOf(igdeGDCParticleEmitter *emitter) const;
 	
 	/** \brief Determines if an emitter exists. */
-	bool Has(igdeGDCParticleEmitter::Ref emitter) const;
+	bool Has(igdeGDCParticleEmitter *emitter) const;
 	
 	/** \brief Adds an emitter. */
-	void Add(igdeGDCParticleEmitter::Ref emitter);
+	void Add(igdeGDCParticleEmitter *emitter);
 	
 	/** \brief Inserts a new emitter. */
-	void InsertAt(igdeGDCParticleEmitter::Ref emitter, int index);
+	void InsertAt(igdeGDCParticleEmitter *emitter, int index);
 	
 	/** \brief Moves an emitter to a new position. */
-	void MoveTo(igdeGDCParticleEmitter::Ref emitter, int index);
+	void MoveTo(igdeGDCParticleEmitter *emitter, int index);
 	
 	/** \brief Removes an emitter. */
-	void Remove(igdeGDCParticleEmitter::Ref emitter);
+	void Remove(igdeGDCParticleEmitter *emitter);
 	
 	/** \brief Removes all emitters. */
 	void RemoveAll();

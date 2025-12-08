@@ -43,7 +43,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUPasteObject::meUPasteObject(meWorld::Ref world, meClipboardDataObject *clip){
+meUPasteObject::meUPasteObject(meWorld *world, meClipboardDataObject *clip){
 	if(!world || !clip){
 		DETHROW(deeInvalidParam);
 	}

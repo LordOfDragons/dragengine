@@ -114,7 +114,7 @@ devkDescriptorPoolSlot * devkDescriptorPoolPool::Get(){
 	return new devkDescriptorPoolSlot(*this, set);
 }
 
-void devkDescriptorPoolPool::Return(devkDescriptorPoolSlot::Ref slot){
+void devkDescriptorPoolPool::Return(devkDescriptorPoolSlot *slot){
 	if(!slot){
 		DETHROW_INFO(deeNullPointer, "slot");
 	}

@@ -705,7 +705,7 @@ void meObject::UpdateDDSObjectShapes(){
 
 
 
-void meObject::SetAttachedTo(meObject::Ref object){
+void meObject::SetAttachedTo(meObject *object){
 	if(object == pAttachedTo){
 		return;
 	}
@@ -1021,15 +1021,15 @@ bool meObject::HasLinkTo(meObject *target) const{
 	return GetLinkTo(target) != NULL;
 }
 
-bool meObject::HasLink(meObjectLink::Ref link) const{
+bool meObject::HasLink(meObjectLink *link) const{
 	return pLinks.Has(link);
 }
 
-int meObject::IndexOfLink(meObjectLink::Ref link) const{
+int meObject::IndexOfLink(meObjectLink *link) const{
 	return pLinks.IndexOf(link);
 }
 
-void meObject::AddLink(meObjectLink::Ref link){
+void meObject::AddLink(meObjectLink *link){
 	pLinks.Add(link);
 	
 	if(pWorld){
@@ -1040,7 +1040,7 @@ void meObject::AddLink(meObjectLink::Ref link){
 	}
 }
 
-void meObject::RemoveLink(meObjectLink::Ref link){
+void meObject::RemoveLink(meObjectLink *link){
 	const int index = pLinks.IndexOf(link);
 	if(index == -1){
 		DETHROW(deeInvalidParam);
@@ -1060,7 +1060,7 @@ void meObject::RemoveAllLinks(){
 	pLinks.RemoveAll();
 }
 
-bool meObject::CanLinkTo(meObject::Ref object) const{
+bool meObject::CanLinkTo(meObject *object) const{
 	if(!object){
 		DETHROW(deeInvalidParam);
 	}
@@ -1223,7 +1223,7 @@ bool meObject::HasTextureNamed(const char *name) const{
 	return false;
 }
 
-int meObject::IndexOfTexture(meObjectTexture::Ref texture) const{
+int meObject::IndexOfTexture(meObjectTexture *texture) const{
 	if(!texture) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1247,7 +1247,7 @@ int meObject::IndexOfTextureNamed(const char *name) const{
 	return -1;
 }
 
-bool meObject::HasTexture(meObjectTexture::Ref texture) const{
+bool meObject::HasTexture(meObjectTexture *texture) const{
 	if(!texture) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1258,7 +1258,7 @@ bool meObject::HasTexture(meObjectTexture::Ref texture) const{
 	return false;
 }
 
-void meObject::AddTexture(meObjectTexture::Ref texture){
+void meObject::AddTexture(meObjectTexture *texture){
 	if(!texture || HasTextureNamed(texture->GetName())) DETHROW(deeInvalidParam);
 	
 	if(pTextureCount == pTextureSize){
@@ -1285,7 +1285,7 @@ void meObject::AddTexture(meObjectTexture::Ref texture){
 	}
 }
 
-void meObject::RemoveTexture(meObjectTexture::Ref texture){
+void meObject::RemoveTexture(meObjectTexture *texture){
 	const int index = IndexOfTexture(texture);
 	if(index == -1){
 		DETHROW(deeInvalidParam);
@@ -1332,7 +1332,7 @@ void meObject::RemoveAllTextures(){
 	}
 }
 
-void meObject::SetActiveTexture(meObjectTexture::Ref texture){
+void meObject::SetActiveTexture(meObjectTexture *texture){
 	if(texture != pActiveTexture){
 		pActiveTexture = texture;
 		
@@ -1728,7 +1728,7 @@ meDecal *meObject::GetDecalAt(int index) const{
 	return pDecals[index];
 }
 
-int meObject::IndexOfDecal(meDecal::Ref decal) const{
+int meObject::IndexOfDecal(meDecal *decal) const{
 	if(!decal){
 		return -1;
 	}
@@ -1742,7 +1742,7 @@ int meObject::IndexOfDecal(meDecal::Ref decal) const{
 	return -1;
 }
 
-bool meObject::HasDecal(meDecal::Ref decal) const{
+bool meObject::HasDecal(meDecal *decal) const{
 	if(!decal){
 		return false;
 	}
@@ -1756,7 +1756,7 @@ bool meObject::HasDecal(meDecal::Ref decal) const{
 	return false;
 }
 
-void meObject::AddDecal(meDecal::Ref decal){
+void meObject::AddDecal(meDecal *decal){
 	DEASSERT_FALSE(HasDecal(decal))
 	
 	if(pDecalCount == pDecalSize){
@@ -1779,7 +1779,7 @@ void meObject::AddDecal(meDecal::Ref decal){
 	if(pWorld) pWorld->SetChanged(true);
 }
 
-void meObject::InsertDecalAt(meDecal::Ref decal, int index){
+void meObject::InsertDecalAt(meDecal *decal, int index){
 	DEASSERT_FALSE(HasDecal(decal))
 	DEASSERT_TRUE(index >= 0)
 	DEASSERT_TRUE(index <= pDecalCount)
@@ -1797,7 +1797,7 @@ void meObject::InsertDecalAt(meDecal::Ref decal, int index){
 	if(pWorld) pWorld->SetChanged(true);
 }
 
-void meObject::RemoveDecal(meDecal::Ref decal){
+void meObject::RemoveDecal(meDecal *decal){
 	int i, index = IndexOfDecal(decal);
 	DEASSERT_TRUE(index != -1)
 	
@@ -1823,7 +1823,7 @@ void meObject::RemoveAllDecals(){
 	if(pWorld) pWorld->SetChanged(true);
 }
 
-void meObject::MoveDecalTo(meDecal::Ref decal, int index){
+void meObject::MoveDecalTo(meDecal *decal, int index){
 	if(index < 0 || index > pDecalCount) DETHROW(deeInvalidParam);
 	int i, oldIndex = IndexOfDecal(decal);
 	if(oldIndex == -1) DETHROW(deeInvalidParam);

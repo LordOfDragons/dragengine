@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCPSetDefaultValue(gdeObjectClass::Ref objectClass, gdeProperty::Ref property,
+	gdeUOCPSetDefaultValue(gdeObjectClass *objectClass, gdeProperty *property,
 		const char *newValue, const char *oldValue);
 	
 protected:

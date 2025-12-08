@@ -40,7 +40,7 @@
 ////////////////////////////
 
 projUProfileSetRequiredExtensions::projUProfileSetRequiredExtensions(
-projProfile::Ref profile, const decStringSet &newValue) :
+projProfile *profile, const decStringSet &newValue) :
 
 pNewValue(newValue)
 {

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetHeightScaling::meUHTSetHeightScaling(meWorld::Ref world, meHeightTerrain *heightTerrain, float newHeightScaling){
+meUHTSetHeightScaling::meUHTSetHeightScaling(meWorld *world, meHeightTerrain *heightTerrain, float newHeightScaling){
 	if(!world || !heightTerrain){
 		DETHROW(deeInvalidParam);
 	}

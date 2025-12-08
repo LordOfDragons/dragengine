@@ -47,7 +47,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectAddUsedTextures::meUObjectAddUsedTextures(meObject::Ref object){
+meUObjectAddUsedTextures::meUObjectAddUsedTextures(meObject *object){
 	if(!object){
 		DETHROW(deeInvalidParam);
 	}

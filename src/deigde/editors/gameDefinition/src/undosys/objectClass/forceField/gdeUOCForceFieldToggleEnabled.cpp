@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCForceFieldToggleEnabled::gdeUOCForceFieldToggleEnabled(
-	gdeObjectClass::Ref objectClass, gdeOCForceField::Ref forceField) :
+	gdeObjectClass *objectClass, gdeOCForceField *forceField) :
 
 pForceField(NULL)
 {

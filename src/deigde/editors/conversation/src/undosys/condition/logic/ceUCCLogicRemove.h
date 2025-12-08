@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCLogicRemove(ceConversationTopic::Ref topic, ceConversationAction::Ref action, ceCConditionLogic::Ref logic, ceConversationCondition::Ref condition);
+	ceUCCLogicRemove(ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic, ceConversationCondition *condition);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCLogicRemove();

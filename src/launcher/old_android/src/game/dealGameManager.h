@@ -89,7 +89,7 @@ public:
 	inline dealGameProfile *GetActiveProfile() const{ return pActiveProfile; }
 	
 	/** \brief Set active profile or \em NULL if none is active. */
-	void SetActiveProfile(dealGameProfile::Ref profile);
+	void SetActiveProfile(dealGameProfile *profile);
 	
 	/** \brief Default profile. */
 	inline dealGameProfile *GetDefaultProfile() const{ return pDefaultProfile; }

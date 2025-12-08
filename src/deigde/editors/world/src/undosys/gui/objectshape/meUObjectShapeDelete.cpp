@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectShapesDelete::meUObjectShapesDelete(meObject::Ref object, const char *property, const meObjectShapeList &list){
+meUObjectShapesDelete::meUObjectShapesDelete(meObject *object, const char *property, const meObjectShapeList &list){
 	if(list.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}

@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetTexUVRotation(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture, float newRotation);
+	meUHTSetTexUVRotation(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, float newRotation);
 	
 protected:
 	/** \brief Clean up object. */

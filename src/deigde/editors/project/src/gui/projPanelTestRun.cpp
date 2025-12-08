@@ -350,7 +350,7 @@ projPanelTestRun::~projPanelTestRun(){
 // Management
 ///////////////
 
-void projPanelTestRun::SetProject(projProject::Ref project){
+void projPanelTestRun::SetProject(projProject *project){
 	if(project == pProject){
 		return;
 	}

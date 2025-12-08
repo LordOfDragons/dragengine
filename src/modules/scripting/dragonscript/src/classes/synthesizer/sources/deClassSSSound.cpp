@@ -339,7 +339,7 @@ deSynthesizerSourceSound *deClassSSSound::GetSource(dsRealObject *myself) const{
 	return ((sSSSoundNatDat*)p_GetNativeData(myself->GetBuffer()))->source;
 }
 
-void deClassSSSound::AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref synthesizer){
+void deClassSSSound::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -359,7 +359,7 @@ void deClassSSSound::AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref 
 	nd.synthesizer = synthesizer;
 }
 
-void deClassSSSound::PushSource(dsRunTime *rt, deSynthesizer::Ref synthesizer, deSynthesizerSourceSound::Ref source){
+void deClassSSSound::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceSound *source){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

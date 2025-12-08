@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeSetModelPath(peeType::Ref type, const char *newPath);
+	peeUTypeSetModelPath(peeType *type, const char *newPath);
 	
 protected:
 	/** \brief Clean up the undo action. */

@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUControllerAdd(seSky::Ref sky, seController::Ref controller);
+	seUControllerAdd(seSky *sky, seController *controller);
 	
 protected:
 	/** \brief Clean up undo action. */

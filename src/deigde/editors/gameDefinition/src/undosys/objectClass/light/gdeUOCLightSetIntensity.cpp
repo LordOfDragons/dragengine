@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetIntensity::gdeUOCLightSetIntensity(gdeObjectClass::Ref objectClass,
-gdeOCLight::Ref light, float newValue) :
+gdeUOCLightSetIntensity::gdeUOCLightSetIntensity(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

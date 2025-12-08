@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalTCRotation::meUDecalTCRotation(meDecal::Ref decal, float newRotation){
+meUDecalTCRotation::meUDecalTCRotation(meDecal *decal, float newRotation){
 	if(!decal){
 		DETHROW(deeInvalidParam);
 	}

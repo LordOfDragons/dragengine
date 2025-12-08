@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetLightOrientation::seULayerSetLightOrientation(seLayer::Ref layer,
+seULayerSetLightOrientation::seULayerSetLightOrientation(seLayer *layer,
 const decVector &newOrientation) :
 
 pNewOrientation(newOrientation)

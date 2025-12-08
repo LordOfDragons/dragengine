@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCCLogicRemoveAll(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
-		ceCConditionLogic::Ref logic);
+	ceUCCLogicRemoveAll(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionLogic *logic);
 	
 	/** \brief Clean up undo object. */
 	virtual ~ceUCCLogicRemoveAll();

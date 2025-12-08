@@ -40,7 +40,7 @@
 ////////////////////////////
 
 lpeULangPackSetDescription::lpeULangPackSetDescription(
-	lpeLangPack::Ref langpack, const decUnicodeString &newDescription) :
+	lpeLangPack *langpack, const decUnicodeString &newDescription) :
 
 pNewDescription(newDescription)
 {

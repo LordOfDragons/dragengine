@@ -78,7 +78,7 @@ public:
 		}
 	}
 	
-	virtual void OnChanged(igdeTextField *textField, reRig::Ref rig, reRigPush::Ref push) = 0;
+	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -96,7 +96,7 @@ public:
 		}
 	}
 	
-	virtual void OnChanged(const decVector &vector, reRig::Ref rig, reRigPush::Ref push) = 0;
+	virtual void OnChanged(const decVector &vector, reRig *rig, reRigPush *push) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -114,7 +114,7 @@ public:
 		}
 	}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox, reRig::Ref rig, reRigPush::Ref push) = 0;
+	virtual void OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigPush *push) = 0;
 };
 
 
@@ -123,7 +123,7 @@ class cComboType : public cBaseComboBoxListener{
 public:
 	cComboType(reWPPush &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox, reRig::Ref rig, reRigPush::Ref push){
+	virtual void OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigPush *push){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(selection){
 			push->SetType((reRigPush::ePushTypes)(intptr_t)selection->GetData());
@@ -135,7 +135,7 @@ class cEditPosition : public cBaseEditVectorListener{
 public:
 	cEditPosition(reWPPush &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual void OnChanged(const decVector &vector, reRig::Ref rig, reRigPush::Ref push){
+	virtual void OnChanged(const decVector &vector, reRig *rig, reRigPush *push){
 		push->SetPosition(vector);
 	}
 };
@@ -144,7 +144,7 @@ class cEditRotation : public cBaseEditVectorListener{
 public:
 	cEditRotation(reWPPush &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual void OnChanged(const decVector &vector, reRig::Ref rig, reRigPush::Ref push){
+	virtual void OnChanged(const decVector &vector, reRig *rig, reRigPush *push){
 		push->SetOrientation(vector);
 	}
 };
@@ -153,7 +153,7 @@ class cTextImpuls : public cBaseTextFieldListener{
 public:
 	cTextImpuls(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField *textField, reRig::Ref rig, reRigPush::Ref push){
+	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push){
 		push->SetImpuls(textField->GetFloat());
 	}
 };
@@ -162,7 +162,7 @@ class cTextRayCount : public cBaseTextFieldListener{
 public:
 	cTextRayCount(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField *textField, reRig::Ref rig, reRigPush::Ref push){
+	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push){
 		push->SetRayCount(textField->GetInteger());
 	}
 };
@@ -171,7 +171,7 @@ class cTextConeAngle : public cBaseTextFieldListener{
 public:
 	cTextConeAngle(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField *textField, reRig::Ref rig, reRigPush::Ref push){
+	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push){
 		push->SetConeAngle(textField->GetFloat());
 	}
 };
@@ -191,7 +191,7 @@ igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener.TakeOver(new reWPPushListener(*this));
@@ -229,7 +229,7 @@ reWPPush::~reWPPush(){
 // Management
 ///////////////
 
-void reWPPush::SetRig(reRig::Ref rig){
+void reWPPush::SetRig(reRig *rig){
 	if(rig == pRig){
 		return;
 	}
@@ -249,7 +249,7 @@ void reWPPush::SetRig(reRig::Ref rig){
 	}
 }
 
-void reWPPush::SetPush(reRigPush::Ref push){
+void reWPPush::SetPush(reRigPush *push){
 	if(push == pPush){
 		return;
 	}

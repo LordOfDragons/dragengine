@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetValue::seUPropertySetValue(seProperty::Ref property, float newValue){
+seUPropertySetValue::seUPropertySetValue(seProperty *property, float newValue){
 	if(!property) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;

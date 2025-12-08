@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetImageDistance::gdeUOCCameraSetImageDistance(gdeObjectClass::Ref objectClass,
-gdeOCCamera::Ref camera, float newValue) :
+gdeUOCCameraSetImageDistance::gdeUOCCameraSetImageDistance(gdeObjectClass *objectClass,
+gdeOCCamera *camera, float newValue) :
 
 pCamera(NULL)
 {

@@ -268,7 +268,7 @@ decMemoryFile *deClassMemoryFile::GetMemoryFile(dsRealObject *myself) const{
 	return ((const sMemFileNatDat *)p_GetNativeData(myself->GetBuffer()))->memoryFile;
 }
 
-void deClassMemoryFile::PushMemoryFile(dsRunTime *rt, decMemoryFile::Ref memoryFile){
+void deClassMemoryFile::PushMemoryFile(dsRunTime *rt, decMemoryFile *memoryFile){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

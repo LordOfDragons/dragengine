@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerSetLightColor(seLayer::Ref layer, const decColor &newColor);
+	seULayerSetLightColor(seLayer *layer, const decColor &newColor);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceTypeRemove::meUHTNavSpaceTypeRemove(meHeightTerrainNavSpaceType::Ref type) :
+meUHTNavSpaceTypeRemove::meUHTNavSpaceTypeRemove(meHeightTerrainNavSpaceType *type) :
 
 pType(NULL)
 {

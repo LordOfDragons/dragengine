@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACShotSetDuration::ceUCACShotSetDuration(ceConversationTopic::Ref topic, ceCACameraShot::Ref cameraShot, float newDuration){
+ceUCACShotSetDuration::ceUCACShotSetDuration(ceConversationTopic *topic, ceCACameraShot *cameraShot, float newDuration){
 	if(!topic) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

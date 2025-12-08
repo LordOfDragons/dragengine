@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetPropertyName::gdeUOCComponentSetPropertyName(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, gdeOCComponent::eProperties property, const char *newValue) :
+gdeUOCComponentSetPropertyName::gdeUOCComponentSetPropertyName(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponent::eProperties property, const char *newValue) :
 
 
 pProperty(property)

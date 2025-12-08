@@ -250,7 +250,7 @@ public:
 	inline sePropertyNode *GetMask() const{ return pMask; }
 	
 	/** Set mask node or \em NULL if not masked. */
-	void SetMask(sePropertyNode::Ref mask);
+	void SetMask(sePropertyNode *mask);
 	
 	/** Combine mode. */
 	inline deSkinPropertyNode::eCombineModes GetCombineMode() const{ return pCombineMode; }

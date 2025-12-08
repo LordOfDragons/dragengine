@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureCopyToSelected::meUObjectTextureCopyToSelected(const meObjectList &list, meObjectTexture::Ref texture){
+meUObjectTextureCopyToSelected::meUObjectTextureCopyToSelected(const meObjectList &list, meObjectTexture *texture){
 	const char *textureName = texture->GetName().GetString();
 	meUndoDataObjectTexture::Ref undoData = NULL;
 	const int count = list.GetCount();

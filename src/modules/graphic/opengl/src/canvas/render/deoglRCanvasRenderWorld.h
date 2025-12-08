@@ -59,7 +59,7 @@ public:
 	inline deoglRCamera *GetCamera() const{ return pCamera; }
 	
 	/** Set camera or \em NULL if not set. */
-	void SetCamera(deoglRCamera::Ref camera);
+	void SetCamera(deoglRCamera *camera);
 	
 	
 	

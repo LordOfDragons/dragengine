@@ -212,8 +212,8 @@ void fbxSkinModule::pLoadMaterial(deSkin &skin, fbxScene &scene, const fbxMateri
 		decPointerList texConns;
 		scene.FindConnections(idMaterial, texConns);
 		
-		fbxTexture::Ref fbxTexDiffuseColor, fbxTexSpecularColor, fbxTexShininess;
-		fbxTexture::Ref fbxTexEmissiveColor, fbxTexTransparencyFactor;
+		fbxTexture *fbxTexDiffuseColor, fbxTexSpecularColor, fbxTexShininess;
+		fbxTexture *fbxTexEmissiveColor, fbxTexTransparencyFactor;
 		fbxTexture::Ref fbxTexBump;
 		
 		const int texConnCount = texConns.GetCount();

@@ -35,7 +35,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUGlyphSetHeight::feUGlyphSetHeight(feFontGlyph::Ref glyph, int newValue){
+feUGlyphSetHeight::feUGlyphSetHeight(feFontGlyph *glyph, int newValue){
 	SetShortInfo("GLyph set height");
 	
 	pOldValue = glyph->GetHeight();

@@ -48,7 +48,7 @@
 ////////////////////////////
 
 gdeWPSTIMOCComponent::gdeWPSTIMOCComponent(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCComponent::Ref component, int index) :
+	gdeOCComponent *component, int index) :
 gdeWPSTIMOCSubObject(tree, etObjectClassComponent, objectClass, index)
 {
 	if(!component){

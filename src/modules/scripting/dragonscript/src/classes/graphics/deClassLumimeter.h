@@ -60,7 +60,7 @@ public:
 	virtual void CreateClassMembers(dsEngine *engine);
 	
 	deLumimeter *GetLumimeter(dsRealObject *myself) const;
-	void PushLumimeter(dsRunTime *rt, deLumimeter::Ref lumimeter);
+	void PushLumimeter(dsRunTime *rt, deLumimeter *lumimeter);
 	
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }

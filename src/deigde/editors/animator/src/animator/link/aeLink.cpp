@@ -140,7 +140,7 @@ void aeLink::SetName(const char *name){
 	}
 }
 
-void aeLink::SetController(aeController::Ref controller, bool notify){
+void aeLink::SetController(aeController *controller, bool notify){
 	if(controller == pController){
 		return;
 	}

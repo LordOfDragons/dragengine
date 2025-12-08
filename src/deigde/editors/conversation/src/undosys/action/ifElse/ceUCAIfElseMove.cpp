@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseMove::ceUCAIfElseMove(ceConversationTopic::Ref topic, ceCAIfElse::Ref ifElse,
-ceCAIfElseCase::Ref ifcase, ceConversationAction::Ref action, int newIndex){
+ceUCAIfElseMove::ceUCAIfElseMove(ceConversationTopic *topic, ceCAIfElse *ifElse,
+ceCAIfElseCase *ifcase, ceConversationAction *action, int newIndex){
 	if(!topic || !ifElse || !action){
 		DETHROW(deeInvalidParam);
 	}

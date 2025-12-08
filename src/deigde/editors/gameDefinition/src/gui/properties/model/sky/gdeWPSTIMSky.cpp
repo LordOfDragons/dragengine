@@ -45,7 +45,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMSky::gdeWPSTIMSky(gdeWPSTreeModel &tree, gdeSky::Ref sky) :
+gdeWPSTIMSky::gdeWPSTIMSky(gdeWPSTreeModel &tree, gdeSky *sky) :
 gdeWPSTreeItemModel(tree, etSky)
 {
 	if(!sky){

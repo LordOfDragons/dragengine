@@ -760,7 +760,7 @@ pPanelCTrigger(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref groupBox, formLine;
+	igdeContainer *groupBox, formLine;
 	
 	pListener.TakeOver(new ceWPTopicListener(*this));
 	
@@ -864,7 +864,7 @@ ceWPTopic::~ceWPTopic(){
 // Management
 ///////////////
 
-void ceWPTopic::SetConversation(ceConversation::Ref conversation){
+void ceWPTopic::SetConversation(ceConversation *conversation){
 	if(conversation == pConversation){
 		return;
 	}

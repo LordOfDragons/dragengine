@@ -55,7 +55,7 @@ public:
 	typedef deTObjectReference<meUObjectTextureSetSkin> Ref;
 	
 	// constructor, destructor
-	meUObjectTextureSetSkin(meObjectTexture::Ref texture, const char *newskin);
+	meUObjectTextureSetSkin(meObjectTexture *texture, const char *newskin);
 	meUObjectTextureSetSkin(meObjectTextureList &textures, const char *newskin);
 	
 protected:

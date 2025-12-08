@@ -59,7 +59,7 @@ public:
 	/** Retrieves the occlusion mesh or NULL if object is NULL. */
 	deOcclusionMesh *GetOcclusionMesh(dsRealObject *object) const;
 	/** Pushes an occlusion mesh on the stack (pushes nil if instance is NULL). */
-	void PushOcclusionMesh(dsRunTime *rt, deOcclusionMesh::Ref occlusionMesh);
+	void PushOcclusionMesh(dsRunTime *rt, deOcclusionMesh *occlusionMesh);
 	/*@}*/
 	
 private:

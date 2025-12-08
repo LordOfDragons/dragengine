@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetDescription::projUProfileSetDescription(projProfile::Ref profile, const char *newValue) :
+projUProfileSetDescription::projUProfileSetDescription(projProfile *profile, const char *newValue) :
 
 pNewValue(newValue)
 {

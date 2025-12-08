@@ -137,7 +137,7 @@ void seWindowMain::ResetViews(){
 
 
 
-void seWindowMain::SetSynthesizer(seSynthesizer::Ref synthesizer){
+void seWindowMain::SetSynthesizer(seSynthesizer *synthesizer){
 	if(synthesizer == pSynthesizer){
 		return;
 	}
@@ -200,7 +200,7 @@ deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group){
 	seSource * const activeSource = pSynthesizer->GetActiveSource();
 	int index = pSynthesizer->GetSources().GetCount();
 	seSourceGroup *parentGroup = NULL;
-	igdeUndo::Ref undoGroup, undo;
+	igdeUndo *undoGroup, undo;
 	
 	if(activeSource){
 		parentGroup = activeSource->GetParentGroup();
@@ -420,7 +420,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSynthesizer::Ref synthesizer) = 0;
+	virtual igdeUndo *OnAction(seSynthesizer *synthesizer) = 0;
 	
 	virtual void Update(){
 		if(pWindow.GetSynthesizer()){
@@ -465,7 +465,7 @@ public:
 		"Open synthesizer from file", deInputEvent::ekcO, deInputEvent::esmControl,
 		deInputEvent::ekcO){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer::Ref synthesizer){
+	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
 		decString filename(synthesizer->GetFilePath());
 		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Synthesizer",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -484,7 +484,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
 		"Saves the synthesizer under a differen file", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer::Ref synthesizer){
+	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
 		decString filename(synthesizer->GetFilePath());
 		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Synthesizer",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -505,7 +505,7 @@ public:
 		SetIcon(window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave));
 	}
 	
-	virtual igdeUndo *OnAction(seSynthesizer::Ref synthesizer){
+	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
 		if(synthesizer->GetSaved()){
 			if(synthesizer->GetChanged()){
 				pWindow.SaveSynthesizer(synthesizer->GetFilePath());
@@ -570,7 +570,7 @@ public:
 		"Add", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add controller", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer::Ref synthesizer){
+	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
 		const seControllerList &list = synthesizer->GetControllers();
 		decString name("Controller");
 		int number = 2;
@@ -589,7 +589,7 @@ public:
 		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove controller", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer::Ref synthesizer){
+	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
 		return new seURemoveController(synthesizer, synthesizer->GetActiveController());
 	}
 	
@@ -604,7 +604,7 @@ public:
 		"Move Up", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 		"Move controller up", deInputEvent::ekcU){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer::Ref synthesizer){
+	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
 		return new seUMoveControllerUp(synthesizer, synthesizer->GetActiveController());
 	}
 	
@@ -619,7 +619,7 @@ public:
 		"Move Down", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 		"Move controller down", deInputEvent::ekcD){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer::Ref synthesizer){
+	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
 		return new seUMoveControllerDown(synthesizer, synthesizer->GetActiveController());
 	}
 	
@@ -637,11 +637,11 @@ public:
 		int modifiers = deInputEvent::esmNone, deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined) :
 	cActionBase(window, text, icon, description, mnemonic, modifiers, keyCode){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer::Ref synthesizer){
+	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
 		return synthesizer->GetActiveSource() ? OnActionSource(synthesizer, synthesizer->GetActiveSource()) : NULL;
 	}
 	
-	virtual igdeUndo *OnActionSource(seSynthesizer::Ref synthesizer, seSource *source) = 0;
+	virtual igdeUndo *OnActionSource(seSynthesizer *synthesizer, seSource *source) = 0;
 	
 	void Update(const seSynthesizer &synthesizer) override{
 		if(synthesizer.GetActiveSource()){
@@ -705,7 +705,7 @@ public:
 		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove source", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnActionSource(seSynthesizer::Ref synthesizer, seSource *source){
+	virtual igdeUndo *OnActionSource(seSynthesizer *synthesizer, seSource *source){
 		if(source->GetParentGroup()){
 			return new seUSourceGroupRemoveSource(source->GetParentGroup(), source);
 			
@@ -721,7 +721,7 @@ public:
 		"Move Up", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 		"Move source up", deInputEvent::ekcU){}
 	
-	virtual igdeUndo *OnActionSource(seSynthesizer::Ref synthesizer, seSource *source){
+	virtual igdeUndo *OnActionSource(seSynthesizer *synthesizer, seSource *source){
 		if(source->GetParentGroup()){
 			return new seUSourceGroupMoveSourceUp(source->GetParentGroup(), source);
 			
@@ -743,7 +743,7 @@ public:
 		"Move Down", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 		"Move source down", deInputEvent::ekcD){}
 	
-	virtual igdeUndo *OnActionSource(seSynthesizer::Ref synthesizer, seSource *source){
+	virtual igdeUndo *OnActionSource(seSynthesizer *synthesizer, seSource *source){
 		if(source->GetParentGroup()){
 			return new seUSourceGroupMoveSourceDown(source->GetParentGroup(), source);
 			
@@ -768,11 +768,11 @@ public:
 		int modifiers = deInputEvent::esmNone, deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined) :
 	cActionBaseSource(window, text, icon, description, mnemonic, modifiers, keyCode){}
 	
-	virtual igdeUndo *OnActionSource(seSynthesizer::Ref synthesizer, seSource *source){
+	virtual igdeUndo *OnActionSource(seSynthesizer *synthesizer, seSource *source){
 		return source->GetActiveEffect() ? OnActionEffect(synthesizer, source, source->GetActiveEffect()) : NULL;
 	}
 	
-	virtual igdeUndo *OnActionEffect(seSynthesizer::Ref synthesizer, seSource *source, seEffect *effect) = 0;
+	virtual igdeUndo *OnActionEffect(seSynthesizer *synthesizer, seSource *source, seEffect *effect) = 0;
 	
 	void UpdateSource(const seSynthesizer &synthesizer, const seSource &source) override{
 		if(source.GetActiveEffect()){

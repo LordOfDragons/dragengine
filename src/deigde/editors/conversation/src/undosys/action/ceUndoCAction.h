@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUndoCAction(ceConversationAction::Ref action, ceConversationTopic::Ref topic);
+	ceUndoCAction(ceConversationAction *action, ceConversationTopic *topic);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUndoCAction();

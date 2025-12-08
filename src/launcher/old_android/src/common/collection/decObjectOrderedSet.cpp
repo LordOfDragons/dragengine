@@ -101,7 +101,7 @@ deObject *decObjectOrderedSet::GetAt(int index) const{
 	return pObjects[index];
 }
 
-int decObjectOrderedSet::IndexOf(deObject::Ref object) const{
+int decObjectOrderedSet::IndexOf(deObject *object) const{
 	int p;
 	
 	for(p=0; p<pObjectCount; p++){
@@ -113,7 +113,7 @@ int decObjectOrderedSet::IndexOf(deObject::Ref object) const{
 	return -1;
 }
 
-bool decObjectOrderedSet::Has(deObject::Ref object) const{
+bool decObjectOrderedSet::Has(deObject *object) const{
 	int p;
 	
 	for(p=0; p<pObjectCount; p++){
@@ -125,7 +125,7 @@ bool decObjectOrderedSet::Has(deObject::Ref object) const{
 	return false;
 }
 
-void decObjectOrderedSet::Add(deObject::Ref object){
+void decObjectOrderedSet::Add(deObject *object){
 	if(Has(object)){
 		DETHROW(deeInvalidParam);
 	}
@@ -145,7 +145,7 @@ void decObjectOrderedSet::Add(deObject::Ref object){
 	pObjectCount++;
 }
 
-void decObjectOrderedSet::AddIfAbsent(deObject::Ref object){
+void decObjectOrderedSet::AddIfAbsent(deObject *object){
 	if(Has(object)){
 		return;
 	}
@@ -165,7 +165,7 @@ void decObjectOrderedSet::AddIfAbsent(deObject::Ref object){
 	pObjectCount++;
 }
 
-void decObjectOrderedSet::Insert(deObject::Ref object, int index){
+void decObjectOrderedSet::Insert(deObject *object, int index){
 	if(Has(object) || index < 0 || index > pObjectCount){
 		DETHROW(deeInvalidParam);
 	}
@@ -190,7 +190,7 @@ void decObjectOrderedSet::Insert(deObject::Ref object, int index){
 	pObjectCount++;
 }
 
-void decObjectOrderedSet::Move(deObject::Ref object, int to){
+void decObjectOrderedSet::Move(deObject *object, int to){
 	int i, from = IndexOf(object);
 	deObject *tempObject;
 	
@@ -220,7 +220,7 @@ void decObjectOrderedSet::Move(deObject::Ref object, int to){
 	}
 }
 
-void decObjectOrderedSet::Remove(deObject::Ref object){
+void decObjectOrderedSet::Remove(deObject *object){
 	int p, position = IndexOf(object);
 	
 	if(position == -1){
@@ -236,7 +236,7 @@ void decObjectOrderedSet::Remove(deObject::Ref object){
 	pObjectCount--;
 }
 
-void decObjectOrderedSet::RemoveIfPresent(deObject::Ref object){
+void decObjectOrderedSet::RemoveIfPresent(deObject *object){
 	int p, position = IndexOf(object);
 	
 	if(position == -1){

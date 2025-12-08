@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUAddSky::gdeUAddSky(gdeGameDefinition::Ref gameDefinition, gdeSky::Ref sky) :
+gdeUAddSky::gdeUAddSky(gdeGameDefinition *gameDefinition, gdeSky *sky) :
 pGameDefinition(NULL)
 {
 	if(!gameDefinition || !sky){

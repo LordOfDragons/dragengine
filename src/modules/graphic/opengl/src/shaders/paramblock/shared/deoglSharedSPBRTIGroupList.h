@@ -101,7 +101,7 @@ public:
 	 * 
 	 * \warning For use by deoglSharedSPBRTIGroup only.
 	 */
-	void Remove(deoglSharedSPBRTIGroup::Ref group);
+	void Remove(deoglSharedSPBRTIGroup *group);
 	/*@}*/
 };
 

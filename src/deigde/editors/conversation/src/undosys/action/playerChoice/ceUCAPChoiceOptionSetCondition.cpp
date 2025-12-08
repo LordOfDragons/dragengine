@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceOptionSetCondition::ceUCAPChoiceOptionSetCondition(ceConversationTopic::Ref topic,
-ceCAPlayerChoice::Ref ifElse, ceCAPlayerChoiceOption::Ref ifcase, ceConversationCondition::Ref newCondition) :
+ceUCAPChoiceOptionSetCondition::ceUCAPChoiceOptionSetCondition(ceConversationTopic *topic,
+ceCAPlayerChoice *ifElse, ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition) :
 
 
 

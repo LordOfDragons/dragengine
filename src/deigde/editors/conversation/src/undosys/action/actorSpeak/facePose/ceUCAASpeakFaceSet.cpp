@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakFaceSet::ceUCAASpeakFaceSet(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref facePose, ceStrip::Ref newStrip){
+ceUCAASpeakFaceSet::ceUCAASpeakFaceSet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *facePose, ceStrip *newStrip){
 	if(!topic || !actorSpeak || !facePose || !newStrip){
 		DETHROW(deeInvalidParam);
 	}

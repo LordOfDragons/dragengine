@@ -299,7 +299,7 @@ deLanguagePack *deClassLanguagePack::GetLanguagePack(dsRealObject *myself) const
 	return ((sLPNatDat*)p_GetNativeData(myself->GetBuffer()))->langPack;
 }
 
-void deClassLanguagePack::PushLanguagePack(dsRunTime *rt, deLanguagePack::Ref langPack){
+void deClassLanguagePack::PushLanguagePack(dsRunTime *rt, deLanguagePack *langPack){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

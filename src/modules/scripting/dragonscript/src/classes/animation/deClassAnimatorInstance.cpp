@@ -656,7 +656,7 @@ deAnimatorInstance *deClassAnimatorInstance::GetAnimatorInstance(dsRealObject *o
 	return ((sArINatDat*)p_GetNativeData(object->GetBuffer()))->instance;
 }
 
-void deClassAnimatorInstance::PushAnimatorInstance(dsRunTime *rt, deAnimatorInstance::Ref instance){
+void deClassAnimatorInstance::PushAnimatorInstance(dsRunTime *rt, deAnimatorInstance *instance){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

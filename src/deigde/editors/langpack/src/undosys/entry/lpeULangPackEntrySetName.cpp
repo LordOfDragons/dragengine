@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeULangPackEntrySetName::lpeULangPackEntrySetName(lpeLangPackEntry::Ref entry, const char *newName) :
+lpeULangPackEntrySetName::lpeULangPackEntrySetName(lpeLangPackEntry *entry, const char *newName) :
 
 pNewName(newName)
 {

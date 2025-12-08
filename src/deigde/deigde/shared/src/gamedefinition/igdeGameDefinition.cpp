@@ -153,7 +153,7 @@ void igdeGameDefinition::UpdateWithFound(const igdeGameDefinition &gameDefinitio
 // Engine Objects
 ///////////////////
 
-void igdeGameDefinition::SetDefaultModel(deModel::Ref model){
+void igdeGameDefinition::SetDefaultModel(deModel *model){
 	if(pDefaultModel){
 		pDefaultModel = NULL;
 	}
@@ -161,7 +161,7 @@ void igdeGameDefinition::SetDefaultModel(deModel::Ref model){
 	pDefaultModel = model;
 }
 
-void igdeGameDefinition::SetDefaultSkin(deSkin::Ref skin){
+void igdeGameDefinition::SetDefaultSkin(deSkin *skin){
 	if(pDefaultSkin){
 		pDefaultSkin = NULL;
 	}

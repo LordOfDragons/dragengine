@@ -59,7 +59,7 @@ public:
 	/** Retrieves the instance or NULL if myself is NULL. */
 	deParticleEmitterInstance *GetInstance(dsRealObject *myself) const;
 	/** Pushes the instance which can be NULL. */
-	void PushInstance(dsRunTime *rt, deParticleEmitterInstance::Ref instance);
+	void PushInstance(dsRunTime *rt, deParticleEmitterInstance *instance);
 	/*@}*/
 	
 private:

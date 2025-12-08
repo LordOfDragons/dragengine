@@ -297,7 +297,7 @@ void deoglRDecal::SetDirtyVBO(){
 
 
 
-void deoglRDecal::SetSkin(deoglRSkin::Ref skin){
+void deoglRDecal::SetSkin(deoglRSkin *skin){
 	if(skin == pSkin){
 		return;
 	}
@@ -315,7 +315,7 @@ void deoglRDecal::SetSkin(deoglRSkin::Ref skin){
 	pRequiresPrepareForRender();
 }
 
-void deoglRDecal::SetDynamicSkin(deoglRDynamicSkin::Ref dynamicSkin){
+void deoglRDecal::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	if(dynamicSkin == pDynamicSkin){
 		return;
 	}

@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetTexMask::meUHTSetTexMask(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture, const char *newPath){
+meUHTSetTexMask::meUHTSetTexMask(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const char *newPath){
 	if(!world || !sector || !texture || !newPath) DETHROW(deeInvalidParam);
 	
 	pWorld = world;

@@ -72,7 +72,7 @@ public:
 	inline seSky *GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
-	void SetSky(seSky::Ref sky);
+	void SetSky(seSky *sky);
 	
 	/** \brief Game like frame update. */
 	virtual void OnFrameUpdate(float elapsed);

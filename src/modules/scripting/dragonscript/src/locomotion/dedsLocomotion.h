@@ -396,31 +396,31 @@ public:
 	inline deColliderCollisionTest *GetCCTTiltSingle() const{ return pCCTTiltSingle; }
 	
 	/** \brief Set single collider collision test for tilt calculation or NULL if not set. */
-	void SetCCTTiltSingle(deColliderCollisionTest::Ref collisionTest);
+	void SetCCTTiltSingle(deColliderCollisionTest *collisionTest);
 	
 	/** \brief Front left collider collision test for tilt calculation or NULL if not set. */
 	inline deColliderCollisionTest *GetCCTTiltFrontLeft() const{ return pCCTTiltFrontLeft; }
 	
 	/** \brief Set front left collider collision test for tilt calculation or NULL if not set. */
-	void SetCCTTiltFrontLeft(deColliderCollisionTest::Ref collisionTest);
+	void SetCCTTiltFrontLeft(deColliderCollisionTest *collisionTest);
 	
 	/** \brief Front right collider collision test for tilt calculation or NULL if not set. */
 	inline deColliderCollisionTest *GetCCTTiltFrontRight() const{ return pCCTTiltFrontRight; }
 	
 	/** \brief Set front right collider collision test for tilt calculation or NULL if not set. */
-	void SetCCTTiltFrontRight(deColliderCollisionTest::Ref collisionTest);
+	void SetCCTTiltFrontRight(deColliderCollisionTest *collisionTest);
 	
 	/** \brief Back left collider collision test for tilt calculation or NULL if not set. */
 	inline deColliderCollisionTest *GetCCTTiltBackLeft() const{ return pCCTTiltBackLeft; }
 	
 	/** \brief Set back left collider collision test for tilt calculation or NULL if not set. */
-	void SetCCTTiltBackLeft(deColliderCollisionTest::Ref collisionTest);
+	void SetCCTTiltBackLeft(deColliderCollisionTest *collisionTest);
 	
 	/** \brief Back right collider collision test for tilt calculation or NULL if not set. */
 	inline deColliderCollisionTest *GetCCTTiltBackRight() const{ return pCCTTiltBackRight; }
 	
 	/** \brief Set back right collider collision test for tilt calculation or NULL if not set. */
-	void SetCCTTiltBackRight(deColliderCollisionTest::Ref collisionTest);
+	void SetCCTTiltBackRight(deColliderCollisionTest *collisionTest);
 	
 	
 	
@@ -504,7 +504,7 @@ public:
 	inline deCollider *GetAICollider() const{ return pAICollider; }
 	
 	/** \brief Set AI Collider to update or NULL if not used. */
-	void SetAICollider(deCollider::Ref collider);
+	void SetAICollider(deCollider *collider);
 	
 	/** \brief Determine if the angular velocity of the AI collider is updated. */
 	inline bool GetUpdateAIColliderAngularVelocity() const{ return pUpdateAIColliderAngularVelocity; }

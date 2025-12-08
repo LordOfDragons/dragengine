@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCLight(gdeOCLight::Ref light);
+	gdeClipboardDataOCLight(gdeOCLight *light);
 	
 protected:
 	/**

@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveNavBlocker::gdeUOCRemoveNavBlocker(gdeObjectClass::Ref objectClass, gdeOCNavigationBlocker::Ref navblocker) :
+gdeUOCRemoveNavBlocker::gdeUOCRemoveNavBlocker(gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker) :
 
 pNavBlocker(NULL)
 {

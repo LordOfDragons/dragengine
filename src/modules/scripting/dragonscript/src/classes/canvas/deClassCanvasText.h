@@ -72,7 +72,7 @@ public:
 	 * \brief Push canvas text onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushCanvas(dsRunTime *rt, deCanvasText::Ref canvas);
+	void PushCanvas(dsRunTime *rt, deCanvasText *canvas);
 	/*@}*/
 	
 private:

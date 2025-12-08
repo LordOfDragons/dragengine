@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectSetProperties::meUObjectSetProperties(meObject::Ref object, const decStringDictionary &newValues) :
+meUObjectSetProperties::meUObjectSetProperties(meObject *object, const decStringDictionary &newValues) :
 
 pNewValues(newValues)
 {

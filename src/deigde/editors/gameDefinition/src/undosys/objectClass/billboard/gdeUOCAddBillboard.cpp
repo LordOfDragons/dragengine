@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddBillboard::gdeUOCAddBillboard(gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard) :
+gdeUOCAddBillboard::gdeUOCAddBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
 
 pBillboard(NULL)
 {

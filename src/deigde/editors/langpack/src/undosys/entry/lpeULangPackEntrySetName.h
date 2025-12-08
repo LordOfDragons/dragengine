@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	lpeULangPackEntrySetName(lpeLangPackEntry::Ref entry, const char *newName);
+	lpeULangPackEntrySetName(lpeLangPackEntry *entry, const char *newName);
 	
 protected:
 	/** \brief Clean up undo action. */

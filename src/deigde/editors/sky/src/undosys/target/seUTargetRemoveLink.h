@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUTargetRemoveLink(seLayer::Ref layer, deSkyLayer::eTargets target, seLink::Ref link);
+	seUTargetRemoveLink(seLayer *layer, deSkyLayer::eTargets target, seLink *link);
 	
 protected:
 	/** \brief Clean up undo action. */

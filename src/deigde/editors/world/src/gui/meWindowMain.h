@@ -119,8 +119,8 @@ private:
 	igdeAction::Ref pActionEditMaskPaintMode;
 	igdeAction::Ref pActionEditVisPaintMode;
 	igdeAction::Ref pActionEditModeNavSpaceEdit;
-	igdeAction::Ref pActionEditLockAxisX, pActionEditLockAxisY, pActionEditLockAxisZ;
-	igdeAction::Ref pActionEditUseLocal, pActionEditLockAxisFlip;
+	igdeAction *pActionEditLockAxisX, pActionEditLockAxisY, pActionEditLockAxisZ;
+	igdeAction *pActionEditUseLocal, pActionEditLockAxisFlip;
 	igdeAction::Ref pActionEditSnapSnapPoints;
 	igdeAction::Ref pActionEditRPCenterActive;
 	igdeAction::Ref pActionEditRPCenterSelected;
@@ -254,7 +254,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
-	void SetWorld(meWorld::Ref world);
+	void SetWorld(meWorld *world);
 	
 	/** Create world. */
 	void CreateNewWorld();

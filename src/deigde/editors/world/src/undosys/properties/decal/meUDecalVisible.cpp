@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalVisible::meUDecalVisible(meDecal::Ref decal){
+meUDecalVisible::meUDecalVisible(meDecal *decal){
 	if(!decal){
 		DETHROW(deeInvalidParam);
 	}

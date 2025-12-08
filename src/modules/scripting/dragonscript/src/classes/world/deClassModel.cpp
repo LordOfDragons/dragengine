@@ -338,7 +338,7 @@ deModel *deClassModel::GetModel(dsRealObject *myself) const{
 	return ((sMdlNatDat*)p_GetNativeData(myself->GetBuffer()))->model;
 }
 
-void deClassModel::PushModel(dsRunTime *rt, deModel::Ref model){
+void deClassModel::PushModel(dsRunTime *rt, deModel *model){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUSkySetPath(gdeSky::Ref sky, const char *newValue);
+	gdeUSkySetPath(gdeSky *sky, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

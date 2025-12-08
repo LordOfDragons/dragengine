@@ -66,7 +66,7 @@ public:
 	inline dealGameProfile *GetGameProfile() const{ return pGameProfile; }
 	
 	/** \brief Set game profile. */
-	void SetGameProfile(dealGameProfile::Ref profile);
+	void SetGameProfile(dealGameProfile *profile);
 	
 	/** \brief Run arguments. */
 	inline const decString &GetRunArguments() const{ return pRunArguments; }

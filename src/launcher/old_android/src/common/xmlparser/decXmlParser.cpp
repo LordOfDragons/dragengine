@@ -53,7 +53,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-decXmlParser::decXmlParser(deLogger::Ref logger){
+decXmlParser::decXmlParser(deLogger *logger){
 	if(!logger) DETHROW(deeInvalidParam);
 	
 	pLogger = NULL;
@@ -92,7 +92,7 @@ decXmlParser::~decXmlParser(){
 // Management
 ///////////////
 
-bool decXmlParser::ParseXml(decBaseFileReader::Ref file, decXmlDocument *doc){
+bool decXmlParser::ParseXml(decBaseFileReader *file, decXmlDocument *doc){
 	if(!doc) DETHROW(deeInvalidParam);
 	PrepareParse(file);
 	try{
@@ -121,7 +121,7 @@ void decXmlParser::UnexpectedToken(int line, int pos, const char *token){
 // Parsing tokens
 ///////////////////
 
-void decXmlParser::PrepareParse(decBaseFileReader::Ref file){
+void decXmlParser::PrepareParse(decBaseFileReader *file){
 	if(!file) DETHROW(deeInvalidParam);
 	pFile = file;
 	pFilePos = file->GetPosition();

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTopicDuplicate::ceUCTopicDuplicate(ceConversationFile::Ref file, const ceConversationTopic &topic, const char *newID) :
+ceUCTopicDuplicate::ceUCTopicDuplicate(ceConversationFile *file, const ceConversationTopic &topic, const char *newID) :
 pFile(NULL)
 {
 	if(!file){

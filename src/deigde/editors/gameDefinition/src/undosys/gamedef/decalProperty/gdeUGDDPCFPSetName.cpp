@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPCFPSetName::gdeUGDDPCFPSetName(gdeGameDefinition::Ref gamedef,
-gdeProperty::Ref property, gdeFilePattern::Ref filePattern, const char *newValue) :
+gdeUGDDPCFPSetName::gdeUGDDPCFPSetName(gdeGameDefinition *gamedef,
+gdeProperty *property, gdeFilePattern *filePattern, const char *newValue) :
 
 pProperty(NULL)
 {

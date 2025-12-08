@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetTexUVScaling(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture, const decVector2 &newScaling);
+	meUHTSetTexUVScaling(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const decVector2 &newScaling);
 	
 protected:
 	/** \brief Clean up object. */

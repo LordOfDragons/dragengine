@@ -639,7 +639,7 @@ reView3D::~reView3D(){
 void reView3D::ResetView(){
 }
 
-void reView3D::SetRig(reRig::Ref rig){
+void reView3D::SetRig(reRig *rig){
 	if(rig == pRig){
 		return;
 	}

@@ -101,7 +101,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator::Ref animator, aeRule *rule) = 0;
+	virtual igdeUndo *OnAction(aeAnimator *animator, aeRule *rule) = 0;
 	
 	virtual void Update(){
 		aeAnimator * const animator = pPanel.GetAnimator();
@@ -141,7 +141,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut rule into clipboard"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator::Ref animator, aeRule *rule){
+	virtual igdeUndo *OnAction(aeAnimator *animator, aeRule *rule){
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
 			aeClipboardDataRule::Ref::NewWith(rule));
 		
@@ -162,7 +162,7 @@ public:
 	cActionPaste(aeWPRule &panel, const char *name, igdeIcon *icon, const char *description, bool insert) :
 		cBaseAction(panel, name, icon, description), pInsert(insert){}
 	
-	virtual igdeUndo *OnAction(aeAnimator::Ref animator, aeRule *rule){
+	virtual igdeUndo *OnAction(aeAnimator *animator, aeRule *rule){
 		aeClipboardDataRule * const cdata = (aeClipboardDataRule*)pPanel.GetWindowProperties()
 			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataRule::TYPE_NAME);
 		if(!cdata){
@@ -349,7 +349,7 @@ pActivePanel(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
 	pListener.TakeOver(new aeWPRuleListener(*this));
 	
@@ -419,7 +419,7 @@ aeWPRule::~aeWPRule(){
 // Management
 ///////////////
 
-void aeWPRule::SetAnimator(aeAnimator::Ref animator){
+void aeWPRule::SetAnimator(aeAnimator *animator){
 	if(animator == pAnimator){
 		return;
 	}

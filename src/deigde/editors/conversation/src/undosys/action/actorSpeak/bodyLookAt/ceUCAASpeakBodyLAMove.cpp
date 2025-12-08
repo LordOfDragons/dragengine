@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakBodyLAMove::ceUCAASpeakBodyLAMove(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak,
-ceStrip::Ref bodyLookAt, int newIndex){
+ceUCAASpeakBodyLAMove::ceUCAASpeakBodyLAMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *bodyLookAt, int newIndex){
 	if(!topic || !actorSpeak || !bodyLookAt){
 		DETHROW(deeInvalidParam);
 	}

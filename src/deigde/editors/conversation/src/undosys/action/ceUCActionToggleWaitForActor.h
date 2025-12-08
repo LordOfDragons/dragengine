@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionToggleWaitForActor(ceConversationTopic::Ref topic, ceConversationAction::Ref action);
+	ceUCActionToggleWaitForActor(ceConversationTopic *topic, ceConversationAction *action);
 	
 protected:
 	/** \brief Clean up undo. */

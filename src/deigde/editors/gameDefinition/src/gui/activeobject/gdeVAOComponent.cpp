@@ -93,7 +93,7 @@
 ////////////////////////////
 
 gdeVAOComponent::gdeVAOComponent(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCComponent::Ref occomponent) :
+	const decString &propertyPrefix, gdeOCComponent *occomponent) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCComponent(occomponent),
 pPlayback(false)

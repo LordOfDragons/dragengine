@@ -83,7 +83,7 @@ public:
 	inline dealDialog *GetPopupDialog() const{ return pPopupDialog; }
 	
 	/** \brief Pop up or down dialog replacing the previous one if set. */
-	void SetPopupDialog(dealDialog::Ref dialog);
+	void SetPopupDialog(dealDialog *dialog);
 	
 	
 	

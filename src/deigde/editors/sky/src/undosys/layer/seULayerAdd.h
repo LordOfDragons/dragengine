@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerAdd(seSky::Ref sky, seLayer::Ref layer);
+	seULayerAdd(seSky *sky, seLayer *layer);
 	
 protected:
 	/** \brief Clean up undo action. */

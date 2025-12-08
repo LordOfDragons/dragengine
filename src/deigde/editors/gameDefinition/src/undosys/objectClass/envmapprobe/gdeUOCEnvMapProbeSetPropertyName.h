@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetPropertyName(gdeObjectClass::Ref objectClass, gdeOCEnvMapProbe::Ref envMapProbe,
+	gdeUOCEnvMapProbeSetPropertyName(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe,
 		gdeOCEnvMapProbe::eProperties property, const char *newValue);
 	
 protected:

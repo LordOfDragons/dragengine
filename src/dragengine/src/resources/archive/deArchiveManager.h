@@ -79,7 +79,7 @@ public:
 	
 	/** \brief Create archive container. */
 	deArchiveContainer *CreateContainer(const decPath &rootPath,
-		deArchive::Ref archive, const decPath &archivePath);
+		deArchive *archive, const decPath &archivePath);
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

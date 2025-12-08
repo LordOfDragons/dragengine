@@ -88,13 +88,13 @@ public:
 	inline deWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world to use for collision testing or null if not set. */
-	void SetWorld(deWorld::Ref world);
+	void SetWorld(deWorld *world);
 	
 	/** \brief Touch sensor to use for testing collisions or null if not set. */
 	inline deTouchSensor *GetTouchSensor() const{ return pTouchSensor; }
 	
 	/** \brief Set touch sensor to use for testing collisions or null if not set. */
-	void SetTouchSensor(deTouchSensor::Ref touchSensor);
+	void SetTouchSensor(deTouchSensor *touchSensor);
 	
 	
 	

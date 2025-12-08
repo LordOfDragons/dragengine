@@ -288,7 +288,7 @@ deCaptureCanvas *deClassCaptureCanvas::GetCaptureCanvas(dsRealObject *myself) co
 	return ((sCapCanNatDat*)p_GetNativeData(myself->GetBuffer()))->captureCanvas;
 }
 
-void deClassCaptureCanvas::PushCaptureCanvas(dsRunTime *rt, deCaptureCanvas::Ref captureCanvas){
+void deClassCaptureCanvas::PushCaptureCanvas(dsRunTime *rt, deCaptureCanvas *captureCanvas){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

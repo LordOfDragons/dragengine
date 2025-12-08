@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCAASpeakHeadLAFromEyesLA(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak);
+	ceUCAASpeakHeadLAFromEyesLA(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCAASpeakHeadLAFromEyesLA();

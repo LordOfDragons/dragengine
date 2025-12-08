@@ -68,7 +68,7 @@ void feViewFIImage::ResetView(){
 }
 
 
-void feViewFIImage::SetFont(feFont::Ref font){
+void feViewFIImage::SetFont(feFont *font){
 	if(font == pFont){
 		return;
 	}

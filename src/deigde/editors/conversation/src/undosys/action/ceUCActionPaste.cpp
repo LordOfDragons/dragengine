@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionPaste::ceUCActionPaste(ceConversationTopic::Ref topic, const ceConversationActionList &actions, int index){
+ceUCActionPaste::ceUCActionPaste(ceConversationTopic *topic, const ceConversationActionList &actions, int index){
 	if(!topic || actions.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}

@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAActorAddSetAliasID(ceConversationTopic::Ref topic, ceCAActorAdd::Ref action, const char *newAliasID);
+	ceUCAActorAddSetAliasID(ceConversationTopic *topic, ceCAActorAdd *action, const char *newAliasID);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCAActorAddSetAliasID();
 	/*@}*/

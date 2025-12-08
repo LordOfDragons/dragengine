@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetHalfIntDist::gdeUOCLightSetHalfIntDist(gdeObjectClass::Ref objectClass,
-gdeOCLight::Ref light, float newValue) :
+gdeUOCLightSetHalfIntDist::gdeUOCLightSetHalfIntDist(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

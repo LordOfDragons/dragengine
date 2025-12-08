@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCTextureSetName(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component,
-		gdeOCComponentTexture::Ref texture, const char *newValue);
+	gdeUOCCTextureSetName(gdeObjectClass *objectClass, gdeOCComponent *component,
+		gdeOCComponentTexture *texture, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

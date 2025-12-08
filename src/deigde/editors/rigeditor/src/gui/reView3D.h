@@ -86,7 +86,7 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig(reRig::Ref rig);
+	void SetRig(reRig *rig);
 	
 	/** \brief Game like frame update. */
 	virtual void OnFrameUpdate(float elapsed);

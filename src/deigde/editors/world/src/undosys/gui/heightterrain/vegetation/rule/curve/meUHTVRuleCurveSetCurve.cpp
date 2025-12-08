@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleCurveSetCurve::meUHTVRuleCurveSetCurve(meHTVegetationLayer::Ref vlayer,
-	meHTVRuleCurve::Ref rule, const decCurveBezier &newCurve) :
+meUHTVRuleCurveSetCurve::meUHTVRuleCurveSetCurve(meHTVegetationLayer *vlayer,
+	meHTVRuleCurve *rule, const decCurveBezier &newCurve) :
 
 pNewCurve(newCurve)
 {

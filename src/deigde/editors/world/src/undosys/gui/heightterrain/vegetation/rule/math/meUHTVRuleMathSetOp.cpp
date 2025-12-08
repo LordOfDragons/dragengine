@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleMathSetOp::meUHTVRuleMathSetOp(meHTVegetationLayer::Ref vlayer, meHTVRuleMath::Ref rule, meHTVRuleMath::eOperators nop){
+meUHTVRuleMathSetOp::meUHTVRuleMathSetOp(meHTVegetationLayer *vlayer, meHTVRuleMath *rule, meHTVRuleMath::eOperators nop){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;

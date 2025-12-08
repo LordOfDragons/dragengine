@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUGDDPToggleIdentifierUsage::gdeUGDDPToggleIdentifierUsage(
-gdeGameDefinition::Ref gamedef, gdeProperty::Ref property) :
+gdeGameDefinition *gamedef, gdeProperty *property) :
 
 pProperty(NULL)
 {

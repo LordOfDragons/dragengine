@@ -387,7 +387,7 @@ void deClassInputDeviceAxis::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassInputDeviceAxis::PushAxis(dsRunTime *rt, dedsInputDevice::Ref device, int index){
+void deClassInputDeviceAxis::PushAxis(dsRunTime *rt, dedsInputDevice *device, int index){
 	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetAxisCount()){
 		DSTHROW(dueInvalidParam);
 	}

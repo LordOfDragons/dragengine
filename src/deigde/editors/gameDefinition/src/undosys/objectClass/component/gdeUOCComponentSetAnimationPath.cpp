@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetAnimationPath::gdeUOCComponentSetAnimationPath(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, const char *newValue) :
+gdeUOCComponentSetAnimationPath::gdeUOCComponentSetAnimationPath(gdeObjectClass *objectClass,
+gdeOCComponent *component, const char *newValue) :
 
 pComponent(NULL)
 {

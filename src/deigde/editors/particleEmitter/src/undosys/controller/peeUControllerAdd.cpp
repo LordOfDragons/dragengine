@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerAdd::peeUControllerAdd(peeEmitter::Ref emitter, peeController::Ref controller){
+peeUControllerAdd::peeUControllerAdd(peeEmitter *emitter, peeController *controller){
 	if(!emitter || !controller){
 		DETHROW(deeInvalidParam);
 	}

@@ -129,7 +129,7 @@ void dealWidgetOptionBox::SetImage(dealImage *image){
 
 
 
-void dealWidgetOptionBox::SetGroup(dealWidgetOptionGroup::Ref group){
+void dealWidgetOptionBox::SetGroup(dealWidgetOptionGroup *group){
 	if(group == pGroup){
 		return;
 	}

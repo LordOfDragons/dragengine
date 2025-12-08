@@ -133,7 +133,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition to monitor. */
-	void SetGameDefinition(gdeGameDefinition::Ref gameDefinition);
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Debug drawer. */
 	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }

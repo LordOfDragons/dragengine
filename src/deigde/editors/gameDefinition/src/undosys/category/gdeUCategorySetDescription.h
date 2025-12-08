@@ -52,7 +52,7 @@ public:
 	/*@{*/
 	/** \brief Create undo action. */
 	gdeUCategorySetDescription(gdeGameDefinition *gameDefintiion,
-		gdeCategory::Ref category, eCategoryType type, const char *newValue);
+		gdeCategory *category, eCategoryType type, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -503,7 +503,7 @@ void reRigConstraint::SetBreakingThreshold(float impulseThreshold){
 
 
 
-void reRigConstraint::SetConstraintBone(reRigBone::Ref bone){
+void reRigConstraint::SetConstraintBone(reRigBone *bone){
 	if(bone == pConstraintBone){
 		return;
 	}

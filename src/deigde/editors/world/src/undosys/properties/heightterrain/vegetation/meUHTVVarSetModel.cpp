@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVVarSetModel::meUHTVVarSetModel(meHTVVariation::Ref variation, const char *newPath){
+meUHTVVarSetModel::meUHTVVarSetModel(meHTVVariation *variation, const char *newPath){
 	if(!variation || !newPath) DETHROW(deeInvalidParam);
 	
 	pVariation = variation;

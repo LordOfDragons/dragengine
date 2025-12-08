@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetRollOff::gdeUOCSpeakerSetRollOff(gdeObjectClass::Ref objectClass,
-gdeOCSpeaker::Ref speaker, float newValue) :
+gdeUOCSpeakerSetRollOff::gdeUOCSpeakerSetRollOff(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, float newValue) :
 
 pSpeaker(NULL)
 {

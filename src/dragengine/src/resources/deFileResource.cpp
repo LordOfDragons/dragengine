@@ -40,7 +40,7 @@
 ////////////////////////////
 
 deFileResource::deFileResource(deFileResourceManager *resourceManager,
-	deVirtualFileSystem::Ref vfs, const char *filename, TIME_SYSTEM modificationTime) : 
+	deVirtualFileSystem *vfs, const char *filename, TIME_SYSTEM modificationTime) : 
 deResource(resourceManager),
 pFilename(filename),
 pModificationTime(modificationTime),

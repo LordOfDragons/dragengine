@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAMusicSetName::ceUCAMusicSetName(ceConversationTopic::Ref topic, ceCAMusic::Ref music, const char *newName){
+ceUCAMusicSetName::ceUCAMusicSetName(ceConversationTopic *topic, ceCAMusic *music, const char *newName){
 	if(!topic || !newName) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

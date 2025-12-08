@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetRadius::gdeUOCForceFieldSetRadius(gdeObjectClass::Ref objectClass,
-gdeOCForceField::Ref forceField, float newValue) :
+gdeUOCForceFieldSetRadius::gdeUOCForceFieldSetRadius(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, float newValue) :
 
 pForceField(NULL)
 {

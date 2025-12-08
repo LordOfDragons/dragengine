@@ -227,13 +227,13 @@ public:
 	/** \brief Determines if a link exists to another object. */
 	bool HasLinkTo(meObject *target) const;
 	/** \brief Determines if a link exists. */
-	bool HasLink(meObjectLink::Ref link) const;
+	bool HasLink(meObjectLink *link) const;
 	/** \brief Retrieves the index of a link or -1 if not found. */
-	int IndexOfLink(meObjectLink::Ref link) const;
+	int IndexOfLink(meObjectLink *link) const;
 	/** \brief Adds a link. */
-	void AddLink(meObjectLink::Ref link);
+	void AddLink(meObjectLink *link);
 	/** \brief Removes a link. */
-	void RemoveLink(meObjectLink::Ref link);
+	void RemoveLink(meObjectLink *link);
 	/** \brief Removes all links. */
 	void RemoveAllLinks();
 	
@@ -243,7 +243,7 @@ public:
 	 *          other object exists as a link partner (either directly or as superclass)
 	 *          in the game definition of this object.
 	 */
-	bool CanLinkTo(meObject::Ref object) const;
+	bool CanLinkTo(meObject *object) const;
 	/*@}*/
 	
 	/** \brief Updates the component mostly playing the animation if any. */
@@ -292,7 +292,7 @@ public:
 	inline meObject *GetAttachedTo() const{ return pAttachedTo; }
 	
 	/** \brief Set object this object is attached to or \em NULL. */
-	void SetAttachedTo(meObject::Ref object);
+	void SetAttachedTo(meObject *object);
 	
 	/** \brief List of attached objects. */
 	inline meObjectList &GetAttachedObjectsList(){ return pAttachedObjectsList; }
@@ -344,19 +344,19 @@ public:
 	/** \brief Retrieves the decal at the given index. */
 	meDecal *GetDecalAt(int index) const;
 	/** \brief Retrieves the index of the decal of -1 if not found. */
-	int IndexOfDecal(meDecal::Ref decal) const;
+	int IndexOfDecal(meDecal *decal) const;
 	/** \brief Determines if the decal exists. */
-	bool HasDecal(meDecal::Ref decal) const;
+	bool HasDecal(meDecal *decal) const;
 	/** \brief Adds a decal. */
-	void AddDecal(meDecal::Ref decal);
+	void AddDecal(meDecal *decal);
 	/** \brief Inserts a decal at the given location. */
-	void InsertDecalAt(meDecal::Ref decal, int index);
+	void InsertDecalAt(meDecal *decal, int index);
 	/** \brief Removes a decal. */
-	void RemoveDecal(meDecal::Ref decal);
+	void RemoveDecal(meDecal *decal);
 	/** \brief Removes all decals. */
 	void RemoveAllDecals();
 	/** \brief Moves a decal to a new location. */
-	void MoveDecalTo(meDecal::Ref decal, int index);
+	void MoveDecalTo(meDecal *decal, int index);
 	/*@}*/
 	
 	/** \name Collision Detection */
@@ -388,21 +388,21 @@ public:
 	/** \brief Determines if a texture with the given name exists. */
 	bool HasTextureNamed(const char *name) const;
 	/** \brief Retrieves the index of the texture or -1 if not found. */
-	int IndexOfTexture(meObjectTexture::Ref texture) const;
+	int IndexOfTexture(meObjectTexture *texture) const;
 	/** \brief Retrieves the index of the texture with the given name or -1 if not found. */
 	int IndexOfTextureNamed(const char *name) const;
 	/** \brief Determines if the texture exists. */
-	bool HasTexture(meObjectTexture::Ref texture) const;
+	bool HasTexture(meObjectTexture *texture) const;
 	/** \brief Adds a texture. */
-	void AddTexture(meObjectTexture::Ref texture);
+	void AddTexture(meObjectTexture *texture);
 	/** \brief Removes a texture. */
-	void RemoveTexture(meObjectTexture::Ref texture);
+	void RemoveTexture(meObjectTexture *texture);
 	/** \brief Removes all textures. */
 	void RemoveAllTextures();
 	/** \brief Retrieves the active texture or NULL. */
 	inline meObjectTexture *GetActiveTexture() const{ return pActiveTexture; }
 	/** \brief Sets the active texture or NULL. */
-	void SetActiveTexture(meObjectTexture::Ref texture);
+	void SetActiveTexture(meObjectTexture *texture);
 	/** \brief Updates the engine component textures. */
 	void UpdateComponentTextures();
 	/**

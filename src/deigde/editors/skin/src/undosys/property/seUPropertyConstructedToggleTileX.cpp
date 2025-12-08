@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyConstructedToggleTileX::seUPropertyConstructedToggleTileX(seProperty::Ref property) :
+seUPropertyConstructedToggleTileX::seUPropertyConstructedToggleTileX(seProperty *property) :
 pProperty(NULL)
 {
 	if(!property){

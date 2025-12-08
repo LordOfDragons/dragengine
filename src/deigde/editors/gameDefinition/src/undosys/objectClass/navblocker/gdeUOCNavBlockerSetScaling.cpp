@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetScaling::gdeUOCNavBlockerSetScaling(gdeObjectClass::Ref objectClass,
-gdeOCNavigationBlocker::Ref navblocker, const decVector &newValue) :
+gdeUOCNavBlockerSetScaling::gdeUOCNavBlockerSetScaling(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navblocker, const decVector &newValue) :
 
 pNavBlocker(NULL)
 {

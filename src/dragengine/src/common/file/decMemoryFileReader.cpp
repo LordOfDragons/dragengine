@@ -38,7 +38,7 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decMemoryFileReader::decMemoryFileReader(decMemoryFile::Ref memoryFile) :
+decMemoryFileReader::decMemoryFileReader(decMemoryFile *memoryFile) :
 
 pPosition(0)
 {

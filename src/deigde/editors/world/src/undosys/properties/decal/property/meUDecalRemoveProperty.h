@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo decal. */
-	meUDecalRemoveProperty(meDecal::Ref decal, const char *key, const char *value);
+	meUDecalRemoveProperty(meDecal *decal, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo decal. */

@@ -359,7 +359,7 @@ deConnection *deClassConnection::GetConnection(dsRealObject *myself) const{
 	return ((sConNatDat*)p_GetNativeData(myself->GetBuffer()))->connection;
 }
 
-void deClassConnection::PushConnection(dsRunTime *rt, deConnection::Ref connection){
+void deClassConnection::PushConnection(dsRunTime *rt, deConnection *connection){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

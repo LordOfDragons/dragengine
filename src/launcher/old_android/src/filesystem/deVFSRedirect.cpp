@@ -41,7 +41,7 @@
 ////////////////////////////
 
 deVFSRedirect::deVFSRedirect(const decPath &rootPath, const decPath &redirectPath,
-deVFSContainer::Ref container) :
+deVFSContainer *container) :
 deVFSContainer(rootPath),
 pRedirectPath(redirectPath),
 pContainer(container),
@@ -53,7 +53,7 @@ pHoldVFSReference(false)
 }
 
 deVFSRedirect::deVFSRedirect(const decPath &rootPath, const decPath &redirectPath,
-deVirtualFileSystem::Ref vfs, bool holdVFSReference) :
+deVirtualFileSystem *vfs, bool holdVFSReference) :
 deVFSContainer(rootPath),
 pRedirectPath(redirectPath),
 pVFS(vfs),

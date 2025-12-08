@@ -64,7 +64,7 @@ deoglRCanvasRenderWorld::~deoglRCanvasRenderWorld(){
 // Management
 ///////////////
 
-void deoglRCanvasRenderWorld::SetCamera(deoglRCamera::Ref camera){
+void deoglRCanvasRenderWorld::SetCamera(deoglRCamera *camera){
 	if(camera == pCamera){
 		return;
 	}

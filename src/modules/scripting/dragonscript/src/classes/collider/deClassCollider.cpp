@@ -2097,7 +2097,7 @@ deCollider *deClassCollider::GetCollider(dsRealObject *myself) const {
 	return ((sColNatDat*)p_GetNativeData(myself->GetBuffer()))->collider;
 }
 
-void deClassCollider::AssignCollider(dsRealObject *myself, deCollider::Ref collider){
+void deClassCollider::AssignCollider(dsRealObject *myself, deCollider *collider){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -2115,7 +2115,7 @@ void deClassCollider::AssignCollider(dsRealObject *myself, deCollider::Ref colli
 	nd.collider = collider;
 }
 
-void deClassCollider::PushCollider(dsRunTime *rt, deCollider::Ref collider){
+void deClassCollider::PushCollider(dsRunTime *rt, deCollider *collider){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

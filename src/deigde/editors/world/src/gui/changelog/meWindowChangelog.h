@@ -69,7 +69,7 @@ public:
 	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set world. */
-	void SetWorld(meWorld::Ref world);
+	void SetWorld(meWorld *world);
 	
 	/** \brief Update changelog list. */
 	void UpdateChangelog();

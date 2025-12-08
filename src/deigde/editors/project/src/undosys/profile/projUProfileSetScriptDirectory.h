@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetScriptDirectory(projProfile::Ref profile, const char *newValue);
+	projUProfileSetScriptDirectory(projProfile *profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileSetScriptDirectory();

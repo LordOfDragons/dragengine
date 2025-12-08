@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetApplicationType::gdeUOCForceFieldSetApplicationType(gdeObjectClass::Ref objectClass,
-gdeOCForceField::Ref forceField, deForceField::eApplicationTypes newValue) :
+gdeUOCForceFieldSetApplicationType::gdeUOCForceFieldSetApplicationType(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, deForceField::eApplicationTypes newValue) :
 
 pForceField(NULL)
 {

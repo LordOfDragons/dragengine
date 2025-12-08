@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightToggleActivated::gdeUOCLightToggleActivated(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light) :
+gdeUOCLightToggleActivated::gdeUOCLightToggleActivated(gdeObjectClass *objectClass, gdeOCLight *light) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

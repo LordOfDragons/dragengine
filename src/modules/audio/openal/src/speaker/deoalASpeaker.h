@@ -179,8 +179,8 @@ public:
 	 * Set source.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void SetSource(deoalASound::Ref sound, deoalASynthesizerInstance::Ref synthesizer,
-		deoalAVideoPlayer::Ref videoPlayer);
+	void SetSource(deoalASound *sound, deoalASynthesizerInstance *synthesizer,
+		deoalAVideoPlayer *videoPlayer);
 	
 	/** Sound decoder or NULL. */
 	inline deSoundDecoder *GetSoundDecoder() const{ return pSoundDecoder; }

@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUObjectDropToGround(meWorld::Ref world, const meObjectList &objects);
+	meUObjectDropToGround(meWorld *world, const meObjectList &objects);
 	/** \brief Clean up object. */
 	virtual ~meUObjectDropToGround();
 	/*@}*/

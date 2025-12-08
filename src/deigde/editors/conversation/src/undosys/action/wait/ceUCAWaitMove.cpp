@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitMove::ceUCAWaitMove(ceConversationTopic::Ref topic, ceCAWait::Ref wait, ceConversationAction::Ref action, int newIndex){
+ceUCAWaitMove::ceUCAWaitMove(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action, int newIndex){
 	if(!topic || !wait || !action) DETHROW(deeInvalidParam);
 	
 	int count = 0;

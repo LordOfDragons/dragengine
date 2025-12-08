@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPCFPAdd::gdeUOCPCFPAdd(gdeObjectClass::Ref objectClass,
-gdeProperty::Ref property, gdeFilePattern::Ref filePattern) :
+gdeUOCPCFPAdd::gdeUOCPCFPAdd(gdeObjectClass *objectClass,
+gdeProperty *property, gdeFilePattern *filePattern) :
 
 pProperty(NULL)
 {

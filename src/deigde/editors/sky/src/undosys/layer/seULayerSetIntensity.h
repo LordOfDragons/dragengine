@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerSetIntensity(seLayer::Ref layer, float newIntensity);
+	seULayerSetIntensity(seLayer *layer, float newIntensity);
 	
 protected:
 	/** \brief Clean up undo action. */

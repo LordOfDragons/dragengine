@@ -94,7 +94,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font) = 0;
 };
 
 
@@ -103,7 +103,7 @@ class cTextImagePath : public cBaseTextFieldListener{
 public:
 	cTextImagePath(feWPFont &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font){
 		feFontImage * const image = font->GetFontImage();
 		if(image->GetFilename() == textField->GetText()){
 			return NULL;
@@ -157,7 +157,7 @@ class cTextLineHeight : public cBaseTextFieldListener{
 public:
 	cTextLineHeight(feWPFont &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font){
 		const int lineHeight = textField->GetInteger();
 		if(lineHeight == font->GetLineHeight()){
 			return NULL;
@@ -187,7 +187,7 @@ class cTextBaseLine : public cBaseTextFieldListener{
 public:
 	cTextBaseLine(feWPFont &panel) : cBaseTextFieldListener(panel){}
 	
-	igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font) override{
+	igdeUndo *OnChanged(igdeTextField *textField, feFont *font) override{
 		const int baseLine = textField->GetInteger();
 		return baseLine != font->GetBaseLine() ? new feUFontSetBaseLine(font, baseLine) : nullptr;
 	}
@@ -208,7 +208,7 @@ igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener.TakeOver(new feWPFontListener(*this));
@@ -241,7 +241,7 @@ feWPFont::~feWPFont(){
 // Management
 ///////////////
 
-void feWPFont::SetFont(feFont::Ref font){
+void feWPFont::SetFont(feFont *font){
 	if(font == pFont){
 		return;
 	}

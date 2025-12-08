@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerRemove::seULayerRemove(seLayer::Ref layer) :
+seULayerRemove::seULayerRemove(seLayer *layer) :
 
 
 pIndex(0)

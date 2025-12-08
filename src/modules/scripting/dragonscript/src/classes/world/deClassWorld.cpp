@@ -2023,7 +2023,7 @@ deWorld *deClassWorld::GetWorld(dsRealObject *myself) const{
 	return ((sWorldNatDat*)p_GetNativeData(myself->GetBuffer()))->world;
 }
 
-void deClassWorld::PushWorld(dsRunTime *rt, deWorld::Ref world){
+void deClassWorld::PushWorld(dsRunTime *rt, deWorld *world){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

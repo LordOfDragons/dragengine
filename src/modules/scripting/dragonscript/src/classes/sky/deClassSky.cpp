@@ -400,7 +400,7 @@ deSky *deClassSky::GetSky(dsRealObject *myself) const{
 	return ((sSkyNatDat*)p_GetNativeData(myself->GetBuffer()))->sky;
 }
 
-void deClassSky::PushSky(dsRunTime *rt, deSky::Ref sky){
+void deClassSky::PushSky(dsRunTime *rt, deSky *sky){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

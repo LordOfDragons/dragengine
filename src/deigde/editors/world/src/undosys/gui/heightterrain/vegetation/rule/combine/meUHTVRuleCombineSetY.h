@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleCombineSetY(meHTVegetationLayer::Ref vlayer, meHTVRuleCombine::Ref rule, float ny);
+	meUHTVRuleCombineSetY(meHTVegetationLayer *vlayer, meHTVRuleCombine *rule, float ny);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleCombineSetY();
 	/*@}*/

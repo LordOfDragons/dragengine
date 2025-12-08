@@ -344,7 +344,7 @@ void igdeWPSky::OnDestroyed(igdeAction *action){
 void igdeWPSky::pCreateContent(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref form, frameLine;
+	igdeContainer *form, frameLine;
 	
 	form.TakeOver(new igdeContainerForm(env));
 	AddChild(form);

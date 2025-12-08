@@ -87,7 +87,7 @@ ceCAWait::~ceCAWait(){
 // Management
 ///////////////
 
-void ceCAWait::SetCondition(ceConversationCondition::Ref condition){
+void ceCAWait::SetCondition(ceConversationCondition *condition){
 	if(condition != pCondition){
 		pCondition = condition;
 	}

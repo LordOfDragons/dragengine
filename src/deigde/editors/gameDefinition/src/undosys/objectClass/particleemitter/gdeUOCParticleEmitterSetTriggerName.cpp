@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetTriggerName::gdeUOCParticleEmitterSetTriggerName(gdeObjectClass::Ref objectClass,
-gdeOCParticleEmitter::Ref particleEmitter, gdeOCParticleEmitter::eTriggers trigger, const char *newValue) :
+gdeUOCParticleEmitterSetTriggerName::gdeUOCParticleEmitterSetTriggerName(gdeObjectClass *objectClass,
+gdeOCParticleEmitter *particleEmitter, gdeOCParticleEmitter::eTriggers trigger, const char *newValue) :
 
 
 pTrigger(trigger)

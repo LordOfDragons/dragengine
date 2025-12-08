@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectSnapToGrid::meUObjectSnapToGrid(meWorld::Ref world, const meObjectList &objects, float grid) :
+meUObjectSnapToGrid::meUObjectSnapToGrid(meWorld *world, const meObjectList &objects, float grid) :
 
 pObjects(NULL),
 pObjectCount(0),

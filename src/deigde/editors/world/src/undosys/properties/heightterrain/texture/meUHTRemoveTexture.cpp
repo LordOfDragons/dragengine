@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTRemoveTexture::meUHTRemoveTexture(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture){
+meUHTRemoveTexture::meUHTRemoveTexture(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture){
 	if(!world || !sector || !texture) DETHROW(deeInvalidParam);
 	
 	pWorld = world;

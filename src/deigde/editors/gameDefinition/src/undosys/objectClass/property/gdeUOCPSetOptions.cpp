@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPSetOptions::gdeUOCPSetOptions(gdeObjectClass::Ref objectClass,
-gdeProperty::Ref property, const decStringList &newValue) :
+gdeUOCPSetOptions::gdeUOCPSetOptions(gdeObjectClass *objectClass,
+gdeProperty *property, const decStringList &newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !property){

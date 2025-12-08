@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCASetAParamSetName::ceUCASetAParamSetName(ceConversationTopic::Ref topic, ceCASetActorParameter::Ref action, const char *newName){
+ceUCASetAParamSetName::ceUCASetAParamSetName(ceConversationTopic *topic, ceCASetActorParameter *action, const char *newName){
 	if(!topic || !action || !newName) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo data object. */
-	meUndoDataObjectProperty(meObject::Ref object);
+	meUndoDataObjectProperty(meObject *object);
 	
 protected:
 	/** \brief Clean up undo data object. */

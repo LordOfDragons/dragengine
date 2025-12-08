@@ -161,8 +161,8 @@ void deoalASpeaker::SetBackLink(deoalSpeaker *speaker){
 
 
 
-void deoalASpeaker::SetSource(deoalASound::Ref sound, deoalASynthesizerInstance::Ref synthesizer,
-deoalAVideoPlayer::Ref videoPlayer){
+void deoalASpeaker::SetSource(deoalASound *sound, deoalASynthesizerInstance *synthesizer,
+deoalAVideoPlayer *videoPlayer){
 	// WARNING Called during synchronization time from main thread.
 	
 	if(pSound == sound && pSynthesizer == synthesizer && pVideoPlayer == videoPlayer){

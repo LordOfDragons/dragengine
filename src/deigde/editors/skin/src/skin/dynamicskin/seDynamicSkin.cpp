@@ -103,7 +103,7 @@ void seDynamicSkin::Update(float elapsed){
 // Renderables
 ////////////////
 
-void seDynamicSkin::AddRenderable(seDynamicSkinRenderable::Ref renderable){
+void seDynamicSkin::AddRenderable(seDynamicSkinRenderable *renderable){
 	if(!renderable || pRenderableList.HasNamed(renderable->GetName().GetString())){
 		DETHROW(deeInvalidParam);
 	}
@@ -118,7 +118,7 @@ void seDynamicSkin::AddRenderable(seDynamicSkinRenderable::Ref renderable){
 	}
 }
 
-void seDynamicSkin::RemoveRenderable(seDynamicSkinRenderable::Ref renderable){
+void seDynamicSkin::RemoveRenderable(seDynamicSkinRenderable *renderable){
 	if(!pRenderableList.Has(renderable)){
 		DETHROW(deeInvalidParam);
 	}
@@ -162,7 +162,7 @@ bool seDynamicSkin::HasActiveRenderable() const{
 	return pActiveRenderable != NULL;
 }
 
-void seDynamicSkin::SetActiveRenderable(seDynamicSkinRenderable::Ref renderable){
+void seDynamicSkin::SetActiveRenderable(seDynamicSkinRenderable *renderable){
 	if(renderable != pActiveRenderable){
 		if(pActiveRenderable){
 			pActiveRenderable->SetActive(false);

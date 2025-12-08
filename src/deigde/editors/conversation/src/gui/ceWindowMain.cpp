@@ -235,7 +235,7 @@ void ceWindowMain::ResetViews(){
 
 
 
-void ceWindowMain::SetConversation(ceConversation::Ref conversation){
+void ceWindowMain::SetConversation(ceConversation *conversation){
 	if(conversation == pConversation){
 		return;
 	}
@@ -491,7 +491,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(ceConversation::Ref conversation) = 0;
+	virtual igdeUndo *OnAction(ceConversation *conversation) = 0;
 	
 	virtual void Update(){
 		if(pWindow.GetConversation()){
@@ -562,7 +562,7 @@ public:
 		"Save As...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
 		"Saves conversation under a differen file", deInputEvent::ekcA){}
 	
-	virtual igdeUndo * OnAction(ceConversation::Ref conversation){
+	virtual igdeUndo * OnAction(ceConversation *conversation){
 		decString filename(conversation->GetFilePath());
 		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Conversation",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -583,7 +583,7 @@ public:
 		SetMnemonic(deInputEvent::ekcS);
 	}
 	
-	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
+	virtual igdeUndo *OnAction(ceConversation *conversation){
 		if(conversation->GetSaved()){
 			if(conversation->GetChanged()){
 				pWindow.SaveConversation(conversation->GetFilePath());
@@ -645,7 +645,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Loads a conversation test setup from file"){}
 	
-	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
+	virtual igdeUndo *OnAction(ceConversation *conversation){
 		decString filename(conversation->GetCTSPath());
 		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Conversation Test Setup",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -666,7 +666,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
 		"Saves a conversation test setup from file"){}
 	
-	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
+	virtual igdeUndo *OnAction(ceConversation *conversation){
 		decString filename(conversation->GetCTSPath());
 		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Conversation Test Setup",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -687,7 +687,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Loads a conversation actor setup from file"){}
 	
-	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
+	virtual igdeUndo *OnAction(ceConversation *conversation){
 		decString filename(conversation->GetCTAPath());
 		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Conversation Actor Setup",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -706,7 +706,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
 		"Saves a conversation actor setup from file"){}
 	
-	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
+	virtual igdeUndo *OnAction(ceConversation *conversation){
 		ceConversationActor * const actor = conversation->GetActiveActor();
 		if(!actor){
 			return NULL;
@@ -731,7 +731,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Loads a conversation test game state from file"){}
 	
-	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
+	virtual igdeUndo *OnAction(ceConversation *conversation){
 		decString filename(conversation->GetCTFIPath());
 		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Conversation Test Game State",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -752,7 +752,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
 		"Saves a conversation test game state from file"){}
 	
-	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
+	virtual igdeUndo *OnAction(ceConversation *conversation){
 		decString filename(conversation->GetCTFIPath());
 		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Conversation Test Game State",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -772,7 +772,7 @@ public:
 		"Show Rule of Thirds aid", NULL,
 		"Show Rule of Thirds aid", deInputEvent::ekcT){}
 	
-	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
+	virtual igdeUndo *OnAction(ceConversation *conversation){
 		conversation->SetShowRuleOfThirdsAid(!conversation->GetShowRuleOfThirdsAid());
 		return NULL;
 	}
@@ -791,7 +791,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Load language pack attaching it to conversation"){}
 	
-	igdeUndo *OnAction(ceConversation::Ref conversation) override{
+	igdeUndo *OnAction(ceConversation *conversation) override{
 		decString filename(conversation->GetLangPackPath());
 		if(igdeCommonDialogs::GetFileOpen(&pWindow, "Open Language Pack",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -809,7 +809,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Detach language pack from conversation"){}
 	
-	igdeUndo *OnAction(ceConversation::Ref conversation) override{
+	igdeUndo *OnAction(ceConversation *conversation) override{
 		ceLangPack * const langpack = conversation->GetLanguagePack();
 		if(!langpack){
 			return nullptr;
@@ -845,7 +845,7 @@ public:
 	cActionViewMissingWords(ceWindowMain &window) : cActionBase(window, "Missing Words...",
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSearch), "Show missing words"){}
 	
-	igdeUndo *OnAction(ceConversation::Ref conversation) override{
+	igdeUndo *OnAction(ceConversation *conversation) override{
 		decStringSet missingWords;
 		const ceConversationFileList &groups = conversation->GetFileList();
 		const int groupCount = groups.GetCount();

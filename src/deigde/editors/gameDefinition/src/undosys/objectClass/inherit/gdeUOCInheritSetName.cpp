@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCInheritSetName::gdeUOCInheritSetName(gdeObjectClass::Ref objectClass,
-gdeOCInherit::Ref inherit, const char *newValue) :
+gdeUOCInheritSetName::gdeUOCInheritSetName(gdeObjectClass *objectClass,
+gdeOCInherit *inherit, const char *newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !inherit){

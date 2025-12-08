@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceGroupAddSource::seUSourceGroupAddSource(seSourceGroup::Ref group, seSource::Ref source, int index) :
+seUSourceGroupAddSource::seUSourceGroupAddSource(seSourceGroup *group, seSource *source, int index) :
 
 
 pIndex(index)

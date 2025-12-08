@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUParticleEmitterSetPath(gdeParticleEmitter::Ref particleEmitter, const char *newValue);
+	gdeUParticleEmitterSetPath(gdeParticleEmitter *particleEmitter, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

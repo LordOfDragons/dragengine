@@ -679,7 +679,7 @@ deColliderRig *deClassColliderRig::GetCollider(dsRealObject *myself) const{
 	return ((sColRigNatDat*)p_GetNativeData(myself->GetBuffer()))->collider;
 }
 
-void deClassColliderRig::PushCollider(dsRunTime *rt, deColliderRig::Ref collider){
+void deClassColliderRig::PushCollider(dsRunTime *rt, deColliderRig *collider){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -706,7 +706,7 @@ void deClassColliderRig::PushCollider(dsRunTime *rt, deColliderRig::Ref collider
 	}
 }
 
-void deClassColliderRig::AssignCollider(dsRealObject *myself, deColliderRig::Ref collider){
+void deClassColliderRig::AssignCollider(dsRealObject *myself, deColliderRig *collider){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}

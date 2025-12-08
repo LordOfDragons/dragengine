@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetColRespType::gdeUOCComponentSetColRespType(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, deCollider::eResponseType newValue) :
+gdeUOCComponentSetColRespType::gdeUOCComponentSetColRespType(gdeObjectClass *objectClass,
+gdeOCComponent *component, deCollider::eResponseType newValue) :
 
 pComponent(NULL)
 {

@@ -80,7 +80,7 @@ seSourceGroup::~seSourceGroup(){
 // Management
 ///////////////
 
-void seSourceGroup::AddSource(seSource::Ref source){
+void seSourceGroup::AddSource(seSource *source){
 	pSources.Add(source);
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
@@ -94,7 +94,7 @@ void seSourceGroup::AddSource(seSource::Ref source){
 	}
 }
 
-void seSourceGroup::InsertSourceAt(seSource::Ref source, int index){
+void seSourceGroup::InsertSourceAt(seSource *source, int index){
 	pSources.Insert(source, index);
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
@@ -108,7 +108,7 @@ void seSourceGroup::InsertSourceAt(seSource::Ref source, int index){
 	}
 }
 
-void seSourceGroup::MoveSourceTo(seSource::Ref source, int index){
+void seSourceGroup::MoveSourceTo(seSource *source, int index){
 	pSources.Move(source, index);
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
@@ -118,7 +118,7 @@ void seSourceGroup::MoveSourceTo(seSource::Ref source, int index){
 	}
 }
 
-void seSourceGroup::RemoveSource(seSource::Ref source){
+void seSourceGroup::RemoveSource(seSource *source){
 	if(!pSources.Has(source)){
 		DETHROW(deeInvalidParam);
 	}

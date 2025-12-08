@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	meLoadXMLWorldTask(meLoadSaveSystem *lssys, meWorld *world, decBaseFileReader::Ref file);
+	meLoadXMLWorldTask(meLoadSaveSystem *lssys, meWorld *world, decBaseFileReader *file);
 	
 	/** \brief Clean up task. */
 	virtual ~meLoadXMLWorldTask();

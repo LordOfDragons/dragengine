@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMCategory::gdeWPSTIMCategory(gdeWPSTreeModel &tree, eTypes type, gdeCategory::Ref category) :
+gdeWPSTIMCategory::gdeWPSTIMCategory(gdeWPSTreeModel &tree, eTypes type, gdeCategory *category) :
 gdeWPSTreeItemModel(tree, type)
 {
 	if(!category){

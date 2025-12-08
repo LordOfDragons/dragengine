@@ -681,7 +681,7 @@ deDynamicSkin *deClassDynamicSkin::GetDynamicSkin(dsRealObject *myself) const{
 	return ((sDSkinNatDat*)p_GetNativeData(myself->GetBuffer()))->dynamicSkin;
 }
 
-void deClassDynamicSkin::PushDynamicSkin(dsRunTime *rt, deDynamicSkin::Ref dynamicSkin){
+void deClassDynamicSkin::PushDynamicSkin(dsRunTime *rt, deDynamicSkin *dynamicSkin){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

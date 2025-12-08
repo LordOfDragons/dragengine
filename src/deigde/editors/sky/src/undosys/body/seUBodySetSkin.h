@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUBodySetSkin(seBody::Ref body, const char *newSkin);
+	seUBodySetSkin(seBody *body, const char *newSkin);
 	
 protected:
 	/** \brief Clean up undo action. */

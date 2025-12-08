@@ -58,7 +58,7 @@ deSynthesizerSourceSynthesizer::~deSynthesizerSourceSynthesizer(){
 // Management
 ///////////////
 
-void deSynthesizerSourceSynthesizer::SetSynthesizer(deSynthesizer::Ref synthesizer){
+void deSynthesizerSourceSynthesizer::SetSynthesizer(deSynthesizer *synthesizer){
 	if(synthesizer == pSynthesizer){
 		return;
 	}

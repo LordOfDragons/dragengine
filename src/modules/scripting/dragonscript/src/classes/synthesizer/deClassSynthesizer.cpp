@@ -534,7 +534,7 @@ deSynthesizer *deClassSynthesizer::GetSynthesizer(dsRealObject *myself) const{
 	return ((sSynNatDat*)p_GetNativeData(myself->GetBuffer()))->synthesizer;
 }
 
-void deClassSynthesizer::PushSynthesizer(dsRunTime *rt, deSynthesizer::Ref synthesizer){
+void deClassSynthesizer::PushSynthesizer(dsRunTime *rt, deSynthesizer *synthesizer){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

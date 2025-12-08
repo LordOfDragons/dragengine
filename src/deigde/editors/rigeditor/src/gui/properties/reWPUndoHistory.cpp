@@ -54,7 +54,7 @@ reWPUndoHistory::~reWPUndoHistory(){
 // Management
 ///////////////
 
-void reWPUndoHistory::SetRig(reRig::Ref rig){
+void reWPUndoHistory::SetRig(reRig *rig){
 	if(rig == pRig){
 		return;
 	}

@@ -63,7 +63,7 @@ public:
 	 * \param[in] redirectPath Path to redirect to in \em vfs.
 	 * \param[in] container Container to redirect to.
 	 */
-	deVFSRedirect(const decPath &rootPath, const decPath &redirectPath, deVFSContainer::Ref container);
+	deVFSRedirect(const decPath &rootPath, const decPath &redirectPath, deVFSContainer *container);
 	
 	/**
 	 * \brief Create container redirecting to \em redirectPath in a virtual file system.
@@ -80,7 +80,7 @@ public:
 	 * \param[in] holfVFSReference Container holds a reference to \em vfs.
 	 */
 	deVFSRedirect(const decPath &rootPath, const decPath &redirectPath,
-		deVirtualFileSystem::Ref vfs, bool holdVFSReference);
+		deVirtualFileSystem *vfs, bool holdVFSReference);
 	
 protected:
 	/**

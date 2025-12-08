@@ -54,7 +54,7 @@ lpeWPUndoHistory::~lpeWPUndoHistory(){
 // Management
 ///////////////
 
-void lpeWPUndoHistory::SetLangPack(lpeLangPack::Ref langpack){
+void lpeWPUndoHistory::SetLangPack(lpeLangPack *langpack){
 	if(langpack == pLangPack){
 		return;
 	}

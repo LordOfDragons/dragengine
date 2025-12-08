@@ -61,7 +61,7 @@ deoglRDSRenderableCanvas::~deoglRDSRenderableCanvas(){
 // Management
 ///////////////
 
-void deoglRDSRenderableCanvas::SetCanvas(deoglRCanvasView::Ref canvas){
+void deoglRDSRenderableCanvas::SetCanvas(deoglRCanvasView *canvas){
 	if(canvas == pCanvas){
 		return;
 	}

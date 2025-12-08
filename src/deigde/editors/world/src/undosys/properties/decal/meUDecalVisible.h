@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalVisible(meDecal::Ref decal);
+	meUDecalVisible(meDecal *decal);
 	
 protected:
 	/** \brief Clean up undo object. */

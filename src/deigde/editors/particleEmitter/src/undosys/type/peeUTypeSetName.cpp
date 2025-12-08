@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetName::peeUTypeSetName(peeType::Ref type, const char *newName){
+peeUTypeSetName::peeUTypeSetName(peeType *type, const char *newName){
 	if(!type || !newName){
 		DETHROW(deeInvalidParam);
 	}

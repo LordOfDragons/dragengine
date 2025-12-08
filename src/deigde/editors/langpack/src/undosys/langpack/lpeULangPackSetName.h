@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	lpeULangPackSetName(lpeLangPack::Ref langpack, const decUnicodeString &newName);
+	lpeULangPackSetName(lpeLangPack *langpack, const decUnicodeString &newName);
 	
 protected:
 	/** \brief Clean up undo. */

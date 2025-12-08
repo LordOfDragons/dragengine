@@ -881,7 +881,7 @@ aeAttachment *aeAnimator::GetAttachmentNamed(const char *name) const{
 	return NULL;
 }
 
-int aeAnimator::IndexOfAttachment(aeAttachment::Ref attachment) const{
+int aeAnimator::IndexOfAttachment(aeAttachment *attachment) const{
 	if(!attachment) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -894,7 +894,7 @@ int aeAnimator::IndexOfAttachment(aeAttachment::Ref attachment) const{
 	return -1;
 }
 
-bool aeAnimator::HasAttachment(aeAttachment::Ref attachment) const{
+bool aeAnimator::HasAttachment(aeAttachment *attachment) const{
 	return IndexOfAttachment(attachment) != -1;
 }
 
@@ -913,7 +913,7 @@ bool aeAnimator::HasAttachmentNamed(const char *name) const{
 	return false;
 }
 
-void aeAnimator::AddAttachment(aeAttachment::Ref attachment){
+void aeAnimator::AddAttachment(aeAttachment *attachment){
 	if(HasAttachment(attachment)) DETHROW(deeInvalidParam);
 	
 	if(pAttachmentCount == pAttachmentSize){
@@ -934,7 +934,7 @@ void aeAnimator::AddAttachment(aeAttachment::Ref attachment){
 	NotifyAttachmentStructureChanged();
 }
 
-void aeAnimator::RemoveAttachment(aeAttachment::Ref attachment){
+void aeAnimator::RemoveAttachment(aeAttachment *attachment){
 	int i, index = IndexOfAttachment(attachment);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -961,7 +961,7 @@ void aeAnimator::RemoveAllAttachments(){
 	NotifyAttachmentStructureChanged();
 }
 
-void aeAnimator::SetActiveAttachment(aeAttachment::Ref attachment){
+void aeAnimator::SetActiveAttachment(aeAttachment *attachment){
 	if(attachment != pActiveAttachment){
 		pActiveAttachment = attachment;
 		
@@ -1004,7 +1004,7 @@ aeAnimatorNotifier *aeAnimator::GetNotifierAt(int index) const{
 	return pNotifiers[index];
 }
 
-int aeAnimator::IndexOfNotifier(aeAnimatorNotifier::Ref notifier) const{
+int aeAnimator::IndexOfNotifier(aeAnimatorNotifier *notifier) const{
 	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1015,7 +1015,7 @@ int aeAnimator::IndexOfNotifier(aeAnimatorNotifier::Ref notifier) const{
 	return -1;
 }
 
-bool aeAnimator::HasNotifier(aeAnimatorNotifier::Ref notifier) const{
+bool aeAnimator::HasNotifier(aeAnimatorNotifier *notifier) const{
 	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1026,7 +1026,7 @@ bool aeAnimator::HasNotifier(aeAnimatorNotifier::Ref notifier) const{
 	return false;
 }
 
-void aeAnimator::AddNotifier(aeAnimatorNotifier::Ref notifier){
+void aeAnimator::AddNotifier(aeAnimatorNotifier *notifier){
 	if(HasNotifier(notifier)) DETHROW(deeInvalidParam);
 	
 	if(pNotifierCount == pNotifierSize){
@@ -1044,7 +1044,7 @@ void aeAnimator::AddNotifier(aeAnimatorNotifier::Ref notifier){
 	pNotifierCount++;
 }
 
-void aeAnimator::RemoveNotifier(aeAnimatorNotifier::Ref notifier){
+void aeAnimator::RemoveNotifier(aeAnimatorNotifier *notifier){
 	int i, index = IndexOfNotifier(notifier);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -1305,7 +1305,7 @@ void aeAnimator::NotifyActiveAttachmentChanged(){
 	}
 }
 
-void aeAnimator::NotifyAttachmentChanged(aeAttachment::Ref attachment){
+void aeAnimator::NotifyAttachmentChanged(aeAttachment *attachment){
 	if(!attachment) DETHROW(deeInvalidParam);
 	int n;
 	

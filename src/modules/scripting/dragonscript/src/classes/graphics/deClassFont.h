@@ -66,7 +66,7 @@ public:
 	int GetFontSize(dsRealObject *object) const;
 	
 	/** \brief Pushe font on stack or null object if \em font is \em NULL. */
-	void PushFont(dsRunTime *rt, deFont::Ref font, int size);
+	void PushFont(dsRunTime *rt, deFont *font, int size);
 	
 	
 	

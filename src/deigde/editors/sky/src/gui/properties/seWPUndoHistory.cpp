@@ -54,7 +54,7 @@ seWPUndoHistory::~seWPUndoHistory(){
 // Management
 ///////////////
 
-void seWPUndoHistory::SetSky(seSky::Ref sky){
+void seWPUndoHistory::SetSky(seSky *sky){
 	if(sky == pSky){
 		return;
 	}

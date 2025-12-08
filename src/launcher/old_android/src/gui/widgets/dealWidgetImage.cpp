@@ -42,7 +42,7 @@
 // Constructors, destructors
 //////////////////////////////
 
-dealWidgetImage::dealWidgetImage(dealDisplay &display, dealImage::Ref image) :
+dealWidgetImage::dealWidgetImage(dealDisplay &display, dealImage *image) :
 dealWidget(display),
 pColorize(1.0f, 1.0f, 1.0f),
 pScaling(1.0f){
@@ -57,7 +57,7 @@ dealWidgetImage::~dealWidgetImage(){
 // Management
 ///////////////
 
-void dealWidgetImage::SetImage(dealImage::Ref image){
+void dealWidgetImage::SetImage(dealImage *image){
 	if(image == pImage){
 		return;
 	}

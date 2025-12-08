@@ -239,7 +239,7 @@ lpeLangPack *lpeLoadSaveSystem::LoadLangPack(const char *filename){
 	return langpack;
 }
 
-void lpeLoadSaveSystem::SaveLangPack(lpeLangPack::Ref langpack, const char *filename){
+void lpeLoadSaveSystem::SaveLangPack(lpeLangPack *langpack, const char *filename){
 	if(!langpack || !filename) DETHROW(deeInvalidParam);
 	decBaseFileWriter::Ref fileWriter = NULL;
 	decPath path;

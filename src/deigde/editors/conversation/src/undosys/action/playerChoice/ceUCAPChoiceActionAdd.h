@@ -52,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAPChoiceActionAdd(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref playerChoice,
-		ceCAPlayerChoiceOption::Ref option, ceConversationAction::Ref action, int index);
+	ceUCAPChoiceActionAdd(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
+		ceCAPlayerChoiceOption *option, ceConversationAction *action, int index);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAPChoiceActionAdd();

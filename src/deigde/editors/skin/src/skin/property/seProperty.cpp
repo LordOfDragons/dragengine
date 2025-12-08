@@ -273,7 +273,7 @@ void seProperty::SetMappedComponent(int index, seMapped *mapped){
 
 
 
-void seProperty::SetNodeGroup(sePropertyNodeGroup::Ref nodeGroup){
+void seProperty::SetNodeGroup(sePropertyNodeGroup *nodeGroup){
 	if(!nodeGroup || nodeGroup->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
@@ -295,7 +295,7 @@ void seProperty::UpdateEngineNodeGroup(){
 	// TODO
 }
 
-void seProperty::SetActiveNodeGroup(sePropertyNodeGroup::Ref node){
+void seProperty::SetActiveNodeGroup(sePropertyNodeGroup *node){
 	if(node == pActiveNodeGroup){
 		return;
 	}

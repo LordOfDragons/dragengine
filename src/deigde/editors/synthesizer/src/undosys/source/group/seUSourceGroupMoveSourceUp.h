@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceGroupMoveSourceUp(seSourceGroup::Ref group, seSource::Ref source);
+	seUSourceGroupMoveSourceUp(seSourceGroup *group, seSource *source);
 	
 protected:
 	/** \brief Clean up undo action. */

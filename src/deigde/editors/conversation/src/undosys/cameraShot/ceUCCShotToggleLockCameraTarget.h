@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCCShotToggleLockCameraTarget(ceCameraShot::Ref cameraShot);
+	ceUCCShotToggleLockCameraTarget(ceCameraShot *cameraShot);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCCShotToggleLockCameraTarget();
 	/*@}*/

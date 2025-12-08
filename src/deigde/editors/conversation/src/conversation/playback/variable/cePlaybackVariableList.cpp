@@ -75,7 +75,7 @@ cePlaybackVariable *cePlaybackVariableList::GetNamed(const char *name) const{
 	return NULL;
 }
 
-int cePlaybackVariableList::IndexOf(cePlaybackVariable::Ref variable) const{
+int cePlaybackVariableList::IndexOf(cePlaybackVariable *variable) const{
 	return pVariables.IndexOf(variable);
 }
 
@@ -92,7 +92,7 @@ int cePlaybackVariableList::IndexOfNamed(const char *name) const{
 	return -1;
 }
 
-bool cePlaybackVariableList::Has(cePlaybackVariable::Ref variable) const{
+bool cePlaybackVariableList::Has(cePlaybackVariable *variable) const{
 	return pVariables.Has(variable);
 }
 
@@ -122,7 +122,7 @@ void cePlaybackVariableList::Set(const char *name, int value){
 	}
 }
 
-void cePlaybackVariableList::Remove(cePlaybackVariable::Ref variable){
+void cePlaybackVariableList::Remove(cePlaybackVariable *variable){
 	pVariables.Remove(variable);
 }
 

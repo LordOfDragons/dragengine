@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUDeleteNavSpace(meWorld::Ref world);
+	meUDeleteNavSpace(meWorld *world);
 	
 	/** \brief Clean up undo object. */
 	virtual ~meUDeleteNavSpace();

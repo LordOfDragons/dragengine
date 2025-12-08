@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetTransparency::seULayerSetTransparency(seLayer::Ref layer, float newTransparency) :
+seULayerSetTransparency::seULayerSetTransparency(seLayer *layer, float newTransparency) :
 
 pNewTransparency(newTransparency)
 {

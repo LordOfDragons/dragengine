@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeShapeSetLineColor::seUPropertyNodeShapeSetLineColor(
-sePropertyNodeShape::Ref node, const decColor &newValue) :
+sePropertyNodeShape *node, const decColor &newValue) :
 
 pNewValue(newValue)
 {

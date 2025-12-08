@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProjectSetGameObject(projProject::Ref project, const char *newValue);
+	projUProjectSetGameObject(projProject *project, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProjectSetGameObject();

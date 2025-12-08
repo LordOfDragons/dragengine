@@ -55,7 +55,7 @@
 
 ceWPTTIMAPlayerChoiceOptionCondition::ceWPTTIMAPlayerChoiceOptionCondition(
 ceWindowMain &windowMain, ceConversation &conversation, ceCAPlayerChoice &playerChoice,
-ceCAPlayerChoiceOption::Ref option) :
+ceCAPlayerChoiceOption *option) :
 ceWPTTIMConditionContainer(windowMain, conversation, playerChoice, etActionPlayerChoiceOptionCondition)
 {
 	if(!option){

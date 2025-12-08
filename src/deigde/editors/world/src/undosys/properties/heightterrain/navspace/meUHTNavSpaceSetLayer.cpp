@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceSetLayer::meUHTNavSpaceSetLayer(meHeightTerrainNavSpace::Ref navspace, int newLayer) :
+meUHTNavSpaceSetLayer::meUHTNavSpaceSetLayer(meHeightTerrainNavSpace *navspace, int newLayer) :
 
 pNewLayer(newLayer)
 {

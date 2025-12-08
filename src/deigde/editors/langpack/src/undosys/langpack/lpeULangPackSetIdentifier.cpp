@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeULangPackSetIdentifier::lpeULangPackSetIdentifier(lpeLangPack::Ref langpack, const char *newIdentifier) :
+lpeULangPackSetIdentifier::lpeULangPackSetIdentifier(lpeLangPack *langpack, const char *newIdentifier) :
 
 pNewIdentifier(newIdentifier)
 {

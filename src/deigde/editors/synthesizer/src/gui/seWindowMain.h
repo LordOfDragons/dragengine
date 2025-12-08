@@ -171,7 +171,7 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer. */
-	void SetSynthesizer(seSynthesizer::Ref synthesizer);
+	void SetSynthesizer(seSynthesizer *synthesizer);
 	
 	
 	

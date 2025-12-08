@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeURemoveSkin::gdeURemoveSkin(
-gdeGameDefinition::Ref gameDefinition, gdeSkin::Ref skin) :
+gdeGameDefinition *gameDefinition, gdeSkin *skin) :
 
 pSkin(NULL)
 {

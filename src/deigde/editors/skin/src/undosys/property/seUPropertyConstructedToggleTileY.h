@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUPropertyConstructedToggleTileY(seProperty::Ref property);
+	seUPropertyConstructedToggleTileY(seProperty *property);
 	
 protected:
 	/** \brief Clean up undo. */

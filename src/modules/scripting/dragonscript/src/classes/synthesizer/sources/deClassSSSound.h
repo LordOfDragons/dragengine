@@ -86,10 +86,10 @@ public:
 	deSynthesizerSourceSound *GetSource(dsRealObject *myself) const;
 	
 	/** \brief Assigns synthesizer or \em NULL. */
-	void AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref synthesizer);
+	void AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer);
 	
 	/** \brief Pushes a source. */
-	void PushSource(dsRunTime *rt, deSynthesizer::Ref synthesizer, deSynthesizerSourceSound::Ref source);
+	void PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceSound *source);
 	
 	inline dsClass *GetClassSSSoundTarget() const{ return pClsSSSoundTarget; }
 	/*@}*/

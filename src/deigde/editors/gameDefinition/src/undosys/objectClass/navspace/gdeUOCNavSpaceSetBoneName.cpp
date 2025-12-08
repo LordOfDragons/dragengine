@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetBoneName::gdeUOCNavSpaceSetBoneName(gdeObjectClass::Ref objectClass,
-gdeOCNavigationSpace::Ref navSpace, const char *newValue) :
+gdeUOCNavSpaceSetBoneName::gdeUOCNavSpaceSetBoneName(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navSpace, const char *newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !navSpace){

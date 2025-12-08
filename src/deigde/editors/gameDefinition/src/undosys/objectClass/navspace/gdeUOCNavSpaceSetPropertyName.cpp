@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetPropertyName::gdeUOCNavSpaceSetPropertyName(gdeObjectClass::Ref objectClass,
-gdeOCNavigationSpace::Ref navspace, gdeOCNavigationSpace::eProperties property, const char *newValue) :
+gdeUOCNavSpaceSetPropertyName::gdeUOCNavSpaceSetPropertyName(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, gdeOCNavigationSpace::eProperties property, const char *newValue) :
 
 pProperty(property)
 {

@@ -365,7 +365,7 @@ public:
 	inline gdeGameDefinition *GetActiveGameDefinition() const{ return pActiveGameDefinition; }
 	
 	/** \brief Set active game definition. */
-	void SetActiveGameDefinition(gdeGameDefinition::Ref gameDefinition);
+	void SetActiveGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Create new game definition. */
 	void CreateNewGameDefinition();

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSnapPointSetName::gdeUOCSnapPointSetName(gdeObjectClass::Ref objectClass,
-gdeOCSnapPoint::Ref snapPoint, const char *newValue) :
+gdeUOCSnapPointSetName::gdeUOCSnapPointSetName(gdeObjectClass *objectClass,
+gdeOCSnapPoint *snapPoint, const char *newValue) :
 
 pSnapPoint(NULL)
 {

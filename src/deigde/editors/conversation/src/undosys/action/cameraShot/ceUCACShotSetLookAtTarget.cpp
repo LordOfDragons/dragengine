@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACShotSetLookAtTarget::ceUCACShotSetLookAtTarget(ceConversationTopic::Ref topic, ceCACameraShot::Ref cameraShot, const char *newTarget){
+ceUCACShotSetLookAtTarget::ceUCACShotSetLookAtTarget(ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newTarget){
 	if(!topic || !newTarget) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

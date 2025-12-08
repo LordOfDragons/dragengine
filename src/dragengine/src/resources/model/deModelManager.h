@@ -86,7 +86,7 @@ public:
 	 * This method is to be used only by the resource loader to add an model that has
 	 * been loaded asynchronously.
 	 */
-	void AddLoadedModel(deModel::Ref model);
+	void AddLoadedModel(deModel *model);
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerMoveDown::seUControllerMoveDown(seController::Ref controller) :
+seUControllerMoveDown::seUControllerMoveDown(seController *controller) :
 
 pIndex(0)
 {

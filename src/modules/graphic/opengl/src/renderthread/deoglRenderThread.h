@@ -281,19 +281,19 @@ public:
 	inline deoglRCanvasView *GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
 	
 	/** Set input overlay canvas view or nullptr. */
-	void SetCanvasInputOverlay(deoglRCanvasView::Ref canvas);
+	void SetCanvasInputOverlay(deoglRCanvasView *canvas);
 	
 	/** Debug overlay canvas view or nullptr. */
 	inline deoglRCanvasView *GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
 	
 	/** Set debug overlay canvas view or nullptr. */
-	void SetCanvasDebugOverlay(deoglRCanvasView::Ref canvas);
+	void SetCanvasDebugOverlay(deoglRCanvasView *canvas);
 	
 	/** Overlay canvas view or nullptr. */
 	inline deoglRCanvasView *GetCanvasOverlay() const{ return pCanvasOverlay; }
 	
 	/** Set overlay canvas view or nullptr. */
-	void SetCanvasOverlay(deoglRCanvasView::Ref canvas);
+	void SetCanvasOverlay(deoglRCanvasView *canvas);
 	
 	
 	

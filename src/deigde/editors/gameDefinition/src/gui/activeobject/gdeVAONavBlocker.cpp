@@ -53,7 +53,7 @@
 ////////////////////////////
 
 gdeVAONavBlocker::gdeVAONavBlocker(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCNavigationBlocker::Ref ocnavblocker) :
+	const decString &propertyPrefix, gdeOCNavigationBlocker *ocnavblocker) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCNavBlocker(ocnavblocker),
 pDDSBlocker(NULL)

@@ -653,7 +653,7 @@ deDebugDrawer* deClassDebugDrawer::GetDebugDrawer(dsRealObject *myself) const{
 	return ((sDDNatDat*)p_GetNativeData(myself->GetBuffer()))->ddrawer;
 }
 
-void deClassDebugDrawer::PushDebugDrawer(dsRunTime *rt, deDebugDrawer::Ref debugDrawer){
+void deClassDebugDrawer::PushDebugDrawer(dsRunTime *rt, deDebugDrawer *debugDrawer){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

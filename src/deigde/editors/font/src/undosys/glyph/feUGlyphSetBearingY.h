@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUGlyphSetBearingY(feFontGlyph::Ref glyph, int newValue);
+	feUGlyphSetBearingY(feFontGlyph *glyph, int newValue);
 	
 protected:
 	/** \brief Clean up undo. */

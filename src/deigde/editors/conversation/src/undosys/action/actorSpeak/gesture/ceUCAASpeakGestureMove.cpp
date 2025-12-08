@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakGestureMove::ceUCAASpeakGestureMove(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak,
-ceStrip::Ref gesture, int newIndex){
+ceUCAASpeakGestureMove::ceUCAASpeakGestureMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *gesture, int newIndex){
 	if(!topic || !actorSpeak || !gesture){
 		DETHROW(deeInvalidParam);
 	}

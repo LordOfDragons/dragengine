@@ -147,7 +147,7 @@ bool lpeWindowMain::QuitRequest(){
 
 
 
-void lpeWindowMain::SetLangPack(lpeLangPack::Ref langpack){
+void lpeWindowMain::SetLangPack(lpeLangPack *langpack){
 	if(langpack == pLangPack){
 		return;
 	}
@@ -204,7 +204,7 @@ lpeLangPack *lpeWindowMain::GetReferenceLangPack() const{
 	return pViewLangPack->GetReferenceLangPack();
 }
 
-void lpeWindowMain::SetReferenceLangPack(lpeLangPack::Ref langpack){
+void lpeWindowMain::SetReferenceLangPack(lpeLangPack *langpack){
 	pViewLangPack->SetReferenceLangPack(langpack);
 }
 

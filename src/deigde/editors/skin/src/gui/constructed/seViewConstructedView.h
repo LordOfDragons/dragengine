@@ -137,7 +137,7 @@ public:
 	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or \em NULL. */
-	void SetSkin(seSkin::Ref skin);
+	void SetSkin(seSkin *skin);
 	
 	
 	

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetShapeList::gdeUOCNavBlockerSetShapeList(gdeObjectClass::Ref objectClass,
-gdeOCNavigationBlocker::Ref navblocker, const decShapeList &newValue) :
+gdeUOCNavBlockerSetShapeList::gdeUOCNavBlockerSetShapeList(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navblocker, const decShapeList &newValue) :
 
 pNavBlocker(NULL)
 {

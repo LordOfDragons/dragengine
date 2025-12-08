@@ -55,7 +55,7 @@ gdeWPUndoHistory::~gdeWPUndoHistory(){
 // Management
 ///////////////
 
-void gdeWPUndoHistory::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPUndoHistory::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

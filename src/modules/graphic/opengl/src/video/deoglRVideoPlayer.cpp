@@ -71,7 +71,7 @@ deoglRVideoPlayer::~deoglRVideoPlayer(){
 // Management
 ///////////////
 
-void deoglRVideoPlayer::SetVideo(deoglRVideo::Ref video){
+void deoglRVideoPlayer::SetVideo(deoglRVideo *video){
 	if(video == pVideo){
 		return;
 	}

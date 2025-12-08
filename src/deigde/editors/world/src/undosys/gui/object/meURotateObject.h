@@ -43,7 +43,7 @@ private:
 	
 public:
 	// constructor, destructor
-	meURotateObject(meWorld::Ref world, const meObjectList &objects);
+	meURotateObject(meWorld *world, const meObjectList &objects);
 	virtual ~meURotateObject();
 	
 	// undo and redo operations

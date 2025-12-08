@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUTextureRemove::seUTextureRemove(seTexture::Ref texture){
+seUTextureRemove::seUTextureRemove(seTexture *texture){
 	if(!texture) DETHROW(deeInvalidParam);
 	
 	seSkin::Ref skin = texture->GetSkin();

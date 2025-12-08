@@ -93,7 +93,7 @@ public:
 	 * This method is to be used only by the resource loader to add an skin that has been
 	 * loaded asynchronously.
 	 */
-	void AddLoadedSkin(deSkin::Ref skin);
+	void AddLoadedSkin(deSkin *skin);
 	
 	/** \brief Load resources used in properties. */
 	void LoadPropertyResources(deSkin &skin);

@@ -253,7 +253,7 @@ deCanvasImage *deClassCanvasImage::GetCanvas(dsRealObject *myself) const {
 	return ((sCImageNatDat*)p_GetNativeData(myself->GetBuffer()))->canvas;
 }
 
-void deClassCanvasImage::PushCanvas(dsRunTime *rt, deCanvasImage::Ref canvas){
+void deClassCanvasImage::PushCanvas(dsRunTime *rt, deCanvasImage *canvas){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

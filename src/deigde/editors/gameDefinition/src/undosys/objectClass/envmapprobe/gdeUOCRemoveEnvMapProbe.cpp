@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveEnvMapProbe::gdeUOCRemoveEnvMapProbe(gdeObjectClass::Ref objectClass, gdeOCEnvMapProbe::Ref envMapProbe) :
+gdeUOCRemoveEnvMapProbe::gdeUOCRemoveEnvMapProbe(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe) :
 
 pEnvMapProbe(NULL)
 {

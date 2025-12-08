@@ -467,7 +467,7 @@ void seSkin::UpdateResources(){
 // Mapped
 ///////////
 
-void seSkin::AddMapped(seMapped::Ref mapped){
+void seSkin::AddMapped(seMapped *mapped){
 	pMappedList.Add(mapped);
 	mapped->SetSkin(this);
 	NotifyMappedStructureChanged();
@@ -477,7 +477,7 @@ void seSkin::AddMapped(seMapped::Ref mapped){
 	}
 }
 
-void seSkin::RemoveMapped(seMapped::Ref mapped){
+void seSkin::RemoveMapped(seMapped *mapped){
 	DEASSERT_NOTNULL(mapped)
 	DEASSERT_TRUE(mapped->GetSkin() == this)
 	
@@ -518,7 +518,7 @@ bool seSkin::HasActiveMapped() const{
 	return pActiveMapped != nullptr;
 }
 
-void seSkin::SetActiveMapped(seMapped::Ref mapped){
+void seSkin::SetActiveMapped(seMapped *mapped){
 	if(mapped == pActiveMapped){
 		return;
 	}
@@ -541,7 +541,7 @@ void seSkin::SetActiveMapped(seMapped::Ref mapped){
 // Textures
 /////////////
 
-void seSkin::AddTexture(seTexture::Ref texture){
+void seSkin::AddTexture(seTexture *texture){
 	pTextureList.Add(texture);
 	texture->SetSkin(this);
 	NotifyTextureStructureChanged();
@@ -551,7 +551,7 @@ void seSkin::AddTexture(seTexture::Ref texture){
 	}
 }
 
-void seSkin::RemoveTexture(seTexture::Ref texture){
+void seSkin::RemoveTexture(seTexture *texture){
 	if(!texture || texture->GetSkin() != this) DETHROW(deeInvalidParam);
 	
 	if(texture->GetActive()){
@@ -591,7 +591,7 @@ bool seSkin::HasActiveTexture() const{
 	return pActiveTexture != NULL;
 }
 
-void seSkin::SetActiveTexture(seTexture::Ref texture){
+void seSkin::SetActiveTexture(seTexture *texture){
 	if(texture != pActiveTexture){
 		if(pActiveTexture){
 			pActiveTexture->SetActive(false);
@@ -704,7 +704,7 @@ void seSkin::NotifyMappedStructureChanged(){
 	Invalidate();
 }
 
-void seSkin::NotifyMappedChanged(seMapped::Ref mapped){
+void seSkin::NotifyMappedChanged(seMapped *mapped){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -721,7 +721,7 @@ void seSkin::NotifyMappedChanged(seMapped::Ref mapped){
 	}
 }
 
-void seSkin::NotifyMappedNameChanged(seMapped::Ref mapped){
+void seSkin::NotifyMappedNameChanged(seMapped *mapped){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -757,7 +757,7 @@ void seSkin::NotifyTextureStructureChanged(){
 	pDirtySkinAssignment = true;
 }
 
-void seSkin::NotifyTextureChanged(seTexture::Ref texture){
+void seSkin::NotifyTextureChanged(seTexture *texture){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -769,7 +769,7 @@ void seSkin::NotifyTextureChanged(seTexture::Ref texture){
 	Invalidate();
 }
 
-void seSkin::NotifyTextureNameChanged(seTexture::Ref texture){
+void seSkin::NotifyTextureNameChanged(seTexture *texture){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -793,7 +793,7 @@ void seSkin::NotifyActiveTextureChanged(){
 
 
 
-void seSkin::NotifyPropertyStructureChanged(seTexture::Ref texture){
+void seSkin::NotifyPropertyStructureChanged(seTexture *texture){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -805,7 +805,7 @@ void seSkin::NotifyPropertyStructureChanged(seTexture::Ref texture){
 	Invalidate();
 }
 
-void seSkin::NotifyPropertyChanged(seTexture::Ref texture, seProperty *property){
+void seSkin::NotifyPropertyChanged(seTexture *texture, seProperty *property){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -817,7 +817,7 @@ void seSkin::NotifyPropertyChanged(seTexture::Ref texture, seProperty *property)
 	Invalidate();
 }
 
-void seSkin::NotifyActivePropertyChanged(seTexture::Ref texture){
+void seSkin::NotifyActivePropertyChanged(seTexture *texture){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -826,7 +826,7 @@ void seSkin::NotifyActivePropertyChanged(seTexture::Ref texture){
 	}
 }
 
-void seSkin::NotifyPropertyNodeStructureChanged(seTexture::Ref texture, seProperty *property){
+void seSkin::NotifyPropertyNodeStructureChanged(seTexture *texture, seProperty *property){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -838,7 +838,7 @@ void seSkin::NotifyPropertyNodeStructureChanged(seTexture::Ref texture, seProper
 	Invalidate();
 }
 
-void seSkin::NotifyPropertyNodeChanged(seTexture::Ref texture, seProperty *property, sePropertyNode *node){
+void seSkin::NotifyPropertyNodeChanged(seTexture *texture, seProperty *property, sePropertyNode *node){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -850,7 +850,7 @@ void seSkin::NotifyPropertyNodeChanged(seTexture::Ref texture, seProperty *prope
 	Invalidate();
 }
 
-void seSkin::NotifyPropertyActiveNodeChanged(seTexture::Ref texture, seProperty *property){
+void seSkin::NotifyPropertyActiveNodeChanged(seTexture *texture, seProperty *property){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -859,7 +859,7 @@ void seSkin::NotifyPropertyActiveNodeChanged(seTexture::Ref texture, seProperty 
 	}
 }
 
-void seSkin::NotifyPropertyNodeSelectionChanged(seTexture::Ref texture, seProperty *property){
+void seSkin::NotifyPropertyNodeSelectionChanged(seTexture *texture, seProperty *property){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -868,7 +868,7 @@ void seSkin::NotifyPropertyNodeSelectionChanged(seTexture::Ref texture, seProper
 	}
 }
 
-void seSkin::NotifyPropertyActiveNodeGroupChanged(seTexture::Ref texture, seProperty *property){
+void seSkin::NotifyPropertyActiveNodeGroupChanged(seTexture *texture, seProperty *property){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -877,7 +877,7 @@ void seSkin::NotifyPropertyActiveNodeGroupChanged(seTexture::Ref texture, seProp
 	}
 }
 
-void seSkin::NotifyPropertyActiveNodeLayerChanged(seTexture::Ref texture, seProperty *property){
+void seSkin::NotifyPropertyActiveNodeLayerChanged(seTexture *texture, seProperty *property){
 	const int count = pListeners.GetCount();
 	int i;
 	

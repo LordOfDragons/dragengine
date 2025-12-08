@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCBillboardSetPropertyName(gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard,
+	gdeUOCBillboardSetPropertyName(gdeObjectClass *objectClass, gdeOCBillboard *billboard,
 		gdeOCBillboard::eProperties property, const char *newValue);
 	
 protected:

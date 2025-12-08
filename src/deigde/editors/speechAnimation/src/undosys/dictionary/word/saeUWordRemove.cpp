@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUWordRemove::saeUWordRemove(saeWord::Ref word){
+saeUWordRemove::saeUWordRemove(saeWord *word){
 	if(!word) DETHROW(deeInvalidParam);
 	
 	saeSAnimation::Ref sanimation = word->GetSAnimation();

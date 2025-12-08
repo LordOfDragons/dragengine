@@ -89,7 +89,7 @@ public:
 	ceConversation *LoadConversation(const char *filename);
 	
 	/** \brief Save conversation to file. */
-	void SaveConversation(ceConversation::Ref conversation, const char *filename);
+	void SaveConversation(ceConversation *conversation, const char *filename);
 	
 	/** \brief File pattern list. */
 	inline const igdeFilePatternList *GetConversationFilePatterns() const{ return &pFPConversation; }

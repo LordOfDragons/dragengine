@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUPNGroupAddNode::seUPNGroupAddNode(
-sePropertyNodeGroup::Ref node, sePropertyNode::Ref child) :
+sePropertyNodeGroup *node, sePropertyNode *child) :
 
 pChild(NULL)
 {

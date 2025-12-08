@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalRotate::meUDecalRotate(meWorld::Ref world){
+meUDecalRotate::meUDecalRotate(meWorld *world){
 	if(!world) DETHROW(deeInvalidParam);
 	
 	const meDecalList &selection = world->GetSelectionDecal().GetSelected();

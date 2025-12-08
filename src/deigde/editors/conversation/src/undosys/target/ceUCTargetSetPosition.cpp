@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetSetPosition::ceUCTargetSetPosition(ceTarget::Ref target, const decVector &newPosition){
+ceUCTargetSetPosition::ceUCTargetSetPosition(ceTarget *target, const decVector &newPosition){
 	if(!target) DETHROW(deeInvalidParam);
 	
 	pTarget = NULL;

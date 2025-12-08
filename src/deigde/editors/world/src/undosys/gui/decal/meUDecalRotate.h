@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo. */
-	meUDecalRotate(meWorld::Ref world);
+	meUDecalRotate(meWorld *world);
 	/** \brief Clean up undo. */
 	virtual ~meUDecalRotate();
 	/*@}*/

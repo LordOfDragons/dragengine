@@ -49,7 +49,7 @@
 ////////////////////////////
 
 ceUCTopicSetID::ceUCTopicSetID(const ceConversation &conversation,
-ceConversationTopic::Ref topic, const char *newID) :
+ceConversationTopic *topic, const char *newID) :
 
 pNewID(newID)
 {
@@ -118,7 +118,7 @@ void ceUCTopicSetID::pSetID(const char *id){
 	}
 }
 
-void ceUCTopicSetID::pAddSnippets(ceConversationTopic::Ref topic, const char *matchGroupID,
+void ceUCTopicSetID::pAddSnippets(ceConversationTopic *topic, const char *matchGroupID,
 const char *matchTopicID, const ceConversationActionList &actions){
 	const int count = actions.GetCount();
 	int i;

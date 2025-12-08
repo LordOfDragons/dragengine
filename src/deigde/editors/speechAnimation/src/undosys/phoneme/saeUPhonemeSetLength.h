@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeSetLength(saePhoneme::Ref phoneme, float newLength);
+	saeUPhonemeSetLength(saePhoneme *phoneme, float newLength);
 	
 protected:
 	/** Clean up undo. */

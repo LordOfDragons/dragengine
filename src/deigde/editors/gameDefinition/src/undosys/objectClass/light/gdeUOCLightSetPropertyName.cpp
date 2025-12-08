@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetPropertyName::gdeUOCLightSetPropertyName(gdeObjectClass::Ref objectClass,
-gdeOCLight::Ref light, gdeOCLight::eProperties property, const char *newValue) :
+gdeUOCLightSetPropertyName::gdeUOCLightSetPropertyName(gdeObjectClass *objectClass,
+gdeOCLight *light, gdeOCLight::eProperties property, const char *newValue) :
 
 pProperty(property)
 {

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetRotation(sePropertyNode::Ref node, float newValue);
+	seUPropertyNodeSetRotation(sePropertyNode *node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */

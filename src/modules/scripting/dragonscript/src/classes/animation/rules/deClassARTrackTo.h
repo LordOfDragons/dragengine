@@ -83,10 +83,10 @@ public:
 	deAnimatorRuleTrackTo *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator(dsRealObject *myself, deAnimator::Ref animator);
+	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
 	
 	/** \brief Pushes a rule. */
-	void PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleTrackTo::Ref rule);
+	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleTrackTo *rule);
 	
 	inline dsClass *GetClassARTrackToTarget() const{ return pClsARTrackToTarget; }
 	inline dsClass *GetClassARTrackToAxis() const{ return pClsARTrackToAxis; }

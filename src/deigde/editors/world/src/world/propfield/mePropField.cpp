@@ -132,7 +132,7 @@ mePropFieldType *mePropField::GetTypeAt(int index) const{
 	return pTypes[index];
 }
 
-int mePropField::IndexOfType(mePropFieldType::Ref type) const{
+int mePropField::IndexOfType(mePropFieldType *type) const{
 	if(!type) DETHROW(deeInvalidParam);
 	int t;
 	
@@ -145,7 +145,7 @@ int mePropField::IndexOfType(mePropFieldType::Ref type) const{
 	return -1;
 }
 
-void mePropField::AddType(mePropFieldType::Ref type){
+void mePropField::AddType(mePropFieldType *type){
 	if(!type) DETHROW(deeInvalidParam);
 	
 	if(pTypeCount == pTypeSize){
@@ -180,7 +180,7 @@ void mePropField::AddType(mePropFieldType::Ref type){
 	}
 }
 
-void mePropField::RemoveType(mePropFieldType::Ref type){
+void mePropField::RemoveType(mePropFieldType *type){
 	int t, index = IndexOfType(type);
 	if(index == -1) DETHROW(deeInvalidParam);
 	

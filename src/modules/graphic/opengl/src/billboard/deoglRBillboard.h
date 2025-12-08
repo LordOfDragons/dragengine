@@ -182,7 +182,7 @@ public:
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL if not set. */
-	void SetSkin(deoglRSkin::Ref skin);
+	void SetSkin(deoglRSkin *skin);
 	
 	/** Skin texture to use or NULL if not present. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }
@@ -191,7 +191,7 @@ public:
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or NULL if not set. */
-	void SetDynamicSkin(deoglRDynamicSkin::Ref dynamicSkin);
+	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
 	
 	/** Update skin. */
 	void UpdateSkin(float elapsed);
@@ -455,13 +455,13 @@ public:
 	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
 	/** Set render environment map or NULL if not assigned yet. */
-	void SetRenderEnvMap(deoglEnvironmentMap::Ref envmap);
+	void SetRenderEnvMap(deoglEnvironmentMap *envmap);
 	
 	/** Fading render environment map or NULL if not used. */
 	inline deoglEnvironmentMap *GetRenderEnvMapFade() const{ return pRenderEnvMapFade; }
 	
 	/** Set fading render environment map or NULL if not used. */
-	void SetRenderEnvMapFade(deoglEnvironmentMap::Ref envmap);
+	void SetRenderEnvMapFade(deoglEnvironmentMap *envmap);
 	
 	/** Render environment map fade per time. */
 	inline float GetRenderEnvMapFadePerTime() const{ return pRenderEnvMapFadePerTime; }
@@ -485,7 +485,7 @@ public:
 	void InvalidateRenderEnvMap();
 	
 	/** Invalidate render environment map. */
-	void InvalidateRenderEnvMapIf(deoglEnvironmentMap::Ref envmap);
+	void InvalidateRenderEnvMapIf(deoglEnvironmentMap *envmap);
 	
 	/** The world reference point changed. */
 	void WorldReferencePointChanged();

@@ -55,7 +55,7 @@ pDirtyTextSize(true)
 {
 }
 
-dealWidgetLabel::dealWidgetLabel(dealDisplay &display, dealFont::Ref font, int fontSize, const char *text) :
+dealWidgetLabel::dealWidgetLabel(dealDisplay &display, dealFont *font, int fontSize, const char *text) :
 dealWidget(display),
 pFontSize(0),
 pText(text),
@@ -76,7 +76,7 @@ dealWidgetLabel::~dealWidgetLabel(){
 // Management
 ///////////////
 
-void dealWidgetLabel::SetFont(dealFont::Ref font){
+void dealWidgetLabel::SetFont(dealFont *font){
 	if(font == pFont){
 		return;
 	}

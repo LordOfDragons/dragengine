@@ -69,7 +69,7 @@ public:
 	dedsCollisionTester *GetCollisionTester(dsRealObject *myself) const;
 	
 	/** \brief Push collision tester or NULL onto the stack. */
-	void PushCollisionTester(dsRunTime *rt, dedsCollisionTester::Ref collisionTester);
+	void PushCollisionTester(dsRunTime *rt, dedsCollisionTester *collisionTester);
 	/*@}*/
 	
 private:

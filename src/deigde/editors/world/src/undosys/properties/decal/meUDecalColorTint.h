@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalColorTint(meDecal::Ref decal, const decColor &newColor);
+	meUDecalColorTint(meDecal *decal, const decColor &newColor);
 	
 protected:
 	/** \brief Clean up undo object. */

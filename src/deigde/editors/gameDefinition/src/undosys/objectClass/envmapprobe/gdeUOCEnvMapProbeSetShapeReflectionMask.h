@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetShapeReflectionMask(gdeObjectClass::Ref objectClass,
+	gdeUOCEnvMapProbeSetShapeReflectionMask(gdeObjectClass *objectClass,
 		gdeOCEnvMapProbe *component, const decShapeList &newValue);
 	
 protected:

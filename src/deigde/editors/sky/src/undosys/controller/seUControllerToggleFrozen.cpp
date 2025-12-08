@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerToggleFrozen::seUControllerToggleFrozen(seController::Ref controller) :
+seUControllerToggleFrozen::seUControllerToggleFrozen(seController *controller) :
 pController(NULL)
 {
 	if(!controller){

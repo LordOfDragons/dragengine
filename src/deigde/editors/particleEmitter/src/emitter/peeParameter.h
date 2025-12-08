@@ -80,11 +80,11 @@ public:
 	/** Retrieves the curve controller for the cast value. */
 	inline peeController *GetControllerValue() const{ return pControllerValue; }
 	/** Sets the curve controller for the cast value. */
-	void SetControllerValue(peeController::Ref controller);
+	void SetControllerValue(peeController *controller);
 	/** Retrieves the curve controller for the cast value spread. */
 	inline peeController *GetControllerSpread() const{ return pControllerSpread; }
 	/** Sets the curve controller for the cast value spread. */
-	void SetControllerSpread(peeController::Ref controller);
+	void SetControllerSpread(peeController *controller);
 	/** Retrieves the cast value curve. */
 	inline const decCurveBezier &GetCurveValue() const{ return pCurveValue; }
 	/** Sets the cast value curve. */

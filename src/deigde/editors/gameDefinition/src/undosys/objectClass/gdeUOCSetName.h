@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSetName(gdeObjectClass::Ref objectClass, const char *newValue);
+	gdeUOCSetName(gdeObjectClass *objectClass, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

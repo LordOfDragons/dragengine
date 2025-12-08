@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceTypeSetName::meUHTNavSpaceTypeSetName(meHeightTerrainNavSpaceType::Ref type, const char *newName) :
+meUHTNavSpaceTypeSetName::meUHTNavSpaceTypeSetName(meHeightTerrainNavSpaceType *type, const char *newName) :
 
 pNewName(newName)
 {

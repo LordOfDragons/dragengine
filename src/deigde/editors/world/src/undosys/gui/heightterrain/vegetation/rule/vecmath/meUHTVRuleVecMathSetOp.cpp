@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleVecMathSetOp::meUHTVRuleVecMathSetOp(meHTVegetationLayer::Ref vlayer,
-	meHTVRuleVectorMath::Ref rule, meHTVRuleVectorMath::eOperators nop) :
+meUHTVRuleVecMathSetOp::meUHTVRuleVecMathSetOp(meHTVegetationLayer *vlayer,
+	meHTVRuleVectorMath *rule, meHTVRuleVectorMath::eOperators nop) :
 
 pNewOp(nop)
 {

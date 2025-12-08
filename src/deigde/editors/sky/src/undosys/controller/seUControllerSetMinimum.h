@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUControllerSetMinimum(seController::Ref controller, float newMinimum);
+	seUControllerSetMinimum(seController *controller, float newMinimum);
 	
 	/** \brief Clean up undo action. */
     virtual ~seUControllerSetMinimum();

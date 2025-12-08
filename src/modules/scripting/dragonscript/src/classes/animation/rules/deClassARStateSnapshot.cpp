@@ -335,7 +335,7 @@ deAnimatorRuleStateSnapshot *deClassARStateSnapshot::GetRule(dsRealObject *mysel
 	return ((sARSnapNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARStateSnapshot::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
+void deClassARStateSnapshot::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -355,7 +355,7 @@ void deClassARStateSnapshot::AssignAnimator(dsRealObject *myself, deAnimator::Re
 	nd.animator = animator;
 }
 
-void deClassARStateSnapshot::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleStateSnapshot::Ref rule){
+void deClassARStateSnapshot::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleStateSnapshot *rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

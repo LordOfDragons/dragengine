@@ -76,7 +76,7 @@ public:
 	inline deoglRVideo *GetVideo() const{ return pVideo; }
 	
 	/** Set render video or \em NULL if not set. */
-	void SetVideo(deoglRVideo::Ref video);
+	void SetVideo(deoglRVideo *video);
 	
 	/** Cached frame or -1 if not set. */
 	inline deoglTexture *GetCachedFrameTexture() const{ return pCachedFrameTexture; }

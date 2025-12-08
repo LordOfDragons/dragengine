@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUAddObject::meUAddObject(meWorld::Ref world, meObject::Ref object){
+meUAddObject::meUAddObject(meWorld *world, meObject *object){
 	if(!world || !object){
 		DETHROW(deeInvalidParam);
 	}
@@ -50,7 +50,7 @@ meUAddObject::meUAddObject(meWorld::Ref world, meObject::Ref object){
 	pObject = object;
 }
 
-meUAddObject::meUAddObject(meWorld::Ref world, const decDVector &position, const char *classname){
+meUAddObject::meUAddObject(meWorld *world, const decDVector &position, const char *classname){
 	if(!world || !classname){
 		DETHROW(deeInvalidParam);
 	}

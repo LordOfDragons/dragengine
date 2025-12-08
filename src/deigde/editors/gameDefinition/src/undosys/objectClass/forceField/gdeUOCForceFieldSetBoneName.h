@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetBoneName(gdeObjectClass::Ref objectClass,
-		gdeOCForceField::Ref forceField, const char *newValue);
+	gdeUOCForceFieldSetBoneName(gdeObjectClass *objectClass,
+		gdeOCForceField *forceField, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

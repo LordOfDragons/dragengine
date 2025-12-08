@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupAddRule::aeURuleGroupAddRule(aeRuleGroup::Ref group, aeRule::Ref rule, int index){
+aeURuleGroupAddRule::aeURuleGroupAddRule(aeRuleGroup *group, aeRule *rule, int index){
 	if(!group || !rule){
 		DETHROW(deeInvalidParam);
 	}

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUCategorySetDescription::gdeUCategorySetDescription(gdeGameDefinition *gameDefinition,
-gdeCategory::Ref category, eCategoryType type, const char *newValue) :
+gdeCategory *category, eCategoryType type, const char *newValue) :
 gdeUCategoryBase(gameDefinition, type)
 {
 	if(!category){

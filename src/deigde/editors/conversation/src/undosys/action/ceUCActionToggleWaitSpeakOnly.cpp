@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCActionToggleWaitSpeakOnly::ceUCActionToggleWaitSpeakOnly(
-ceConversationTopic::Ref topic, ceConversationAction::Ref action)
+ceConversationTopic *topic, ceConversationAction *action)
 {
 	DEASSERT_NOTNULL(topic)
 	

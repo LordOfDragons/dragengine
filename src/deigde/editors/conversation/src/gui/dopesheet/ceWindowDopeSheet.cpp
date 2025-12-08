@@ -340,7 +340,7 @@ pVAPreview(NULL)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainer::Ref panel, panel2, panel3, panel4, panel5;
+	igdeContainer *panel, panel2, panel3, panel4, panel5;
 	int i;
 	
 	pListener.TakeOver(new ceWindowDopeSheetListener(*this));
@@ -440,7 +440,7 @@ ceWindowDopeSheet::~ceWindowDopeSheet(){
 // Management
 ///////////////
 
-void ceWindowDopeSheet::SetConversation(ceConversation::Ref conversation){
+void ceWindowDopeSheet::SetConversation(ceConversation *conversation){
 	if(conversation == pConversation){
 		return;
 	}

@@ -57,7 +57,7 @@ public:
 	inline dealImage *GetImage() const{ return pImage; }
 	
 	/** \brief Set image or \em NULL if not set. */
-	void SetImage(dealImage::Ref image);
+	void SetImage(dealImage *image);
 	
 	/** \brief Colorize color. */
 	inline const decColor &GetColorize() const{ return pColorize; }

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCSetHideTags::gdeUOCSetHideTags(
-gdeObjectClass::Ref objectClass, const decStringSet &newValue) :
+gdeObjectClass *objectClass, const decStringSet &newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass){

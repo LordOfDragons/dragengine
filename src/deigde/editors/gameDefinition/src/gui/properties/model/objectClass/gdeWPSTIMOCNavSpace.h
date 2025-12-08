@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCNavSpace(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCNavigationSpace::Ref navSpace, int index);
+		gdeOCNavigationSpace *navSpace, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

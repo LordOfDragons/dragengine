@@ -334,7 +334,7 @@ void deClassInputDeviceComponent::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassInputDeviceComponent::PushComponent(dsRunTime *rt, dedsInputDevice::Ref device, int index){
+void deClassInputDeviceComponent::PushComponent(dsRunTime *rt, dedsInputDevice *device, int index){
 	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetComponentCount()){
 		DSTHROW(dueInvalidParam);
 	}

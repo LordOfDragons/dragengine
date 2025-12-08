@@ -134,8 +134,8 @@ public:
 	
 private:
 	void pCreateCompoundShape();
-	void pAddCollisionShape(debpBulletShape::Ref collisionShape);
-	void pAddTransformedCollisionShape(debpBulletShape::Ref collisionShape, const btTransform &transform);
+	void pAddCollisionShape(debpBulletShape *collisionShape);
+	void pAddTransformedCollisionShape(debpBulletShape *collisionShape, const btTransform &transform);
 	void pDebugPrintShape(dePhysicsBullet &bullet, const btCollisionShape &shape, const char *prefix = "") const;
 };
 

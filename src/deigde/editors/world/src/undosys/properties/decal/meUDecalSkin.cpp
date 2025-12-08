@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalSkin::meUDecalSkin(meDecal::Ref decal, const char *newskin){
+meUDecalSkin::meUDecalSkin(meDecal *decal, const char *newskin){
 	if(!decal || !newskin){
 		DETHROW(deeInvalidParam);
 	}

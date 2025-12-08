@@ -192,14 +192,14 @@ public:
 	 * \throws deeInvalidParam \em speaker is NULL.
 	 * \throws deeInvalidParam \em speaker has a parent world.
 	 */
-	void AddSpeaker(deSpeaker::Ref speaker);
+	void AddSpeaker(deSpeaker *speaker);
 	
 	/**
 	 * \brief Remove speaker.
 	 * \throws deeInvalidParam \em speaker is NULL.
 	 * \throws deeInvalidParam Parent world of \em speaker is not this world.
 	 */
-	void RemoveSpeaker(deSpeaker::Ref speaker);
+	void RemoveSpeaker(deSpeaker *speaker);
 	
 	/** \brief Remove all speakers. */
 	void RemoveAllSpeakers();

@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetCollisionResponse::peeUTypeSetCollisionResponse(peeType::Ref type,
+peeUTypeSetCollisionResponse::peeUTypeSetCollisionResponse(peeType *type,
 deParticleEmitterType::eCollisionResponses newResponse) :
 
 pNewResponse(newResponse)

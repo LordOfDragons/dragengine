@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetRotation::seUPropertyNodeSetRotation(sePropertyNode::Ref node, float newValue) :
+seUPropertyNodeSetRotation::seUPropertyNodeSetRotation(sePropertyNode *node, float newValue) :
 
 pNewValue(newValue)
 {

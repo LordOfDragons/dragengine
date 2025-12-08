@@ -62,7 +62,7 @@ dedsStyledTextNode* dedsSTNParagraph::GetNodeAt(int index) const{
 	return pNodes[index];
 }
 
-int dedsSTNParagraph::IndexOfNode(dedsStyledTextNode::Ref node) const{
+int dedsSTNParagraph::IndexOfNode(dedsStyledTextNode *node) const{
 	if(!node) DSTHROW(dueInvalidParam);
 	
 	int n;
@@ -76,7 +76,7 @@ int dedsSTNParagraph::IndexOfNode(dedsStyledTextNode::Ref node) const{
 	return -1;
 }
 
-bool dedsSTNParagraph::HasNode(dedsStyledTextNode::Ref node) const{
+bool dedsSTNParagraph::HasNode(dedsStyledTextNode *node) const{
 	if(!node) DSTHROW(dueInvalidParam);
 	
 	int n;
@@ -90,7 +90,7 @@ bool dedsSTNParagraph::HasNode(dedsStyledTextNode::Ref node) const{
 	return false;
 }
 
-void dedsSTNParagraph::AddNode(dedsStyledTextNode::Ref node){
+void dedsSTNParagraph::AddNode(dedsStyledTextNode *node){
 	if(HasNode(node)) DSTHROW(dueInvalidParam);
 	
 	if(pNodeCount == pNodeSize){
@@ -109,7 +109,7 @@ void dedsSTNParagraph::AddNode(dedsStyledTextNode::Ref node){
 	pNodeCount++;
 }
 
-void dedsSTNParagraph::RemoveNode(dedsStyledTextNode::Ref node){
+void dedsSTNParagraph::RemoveNode(dedsStyledTextNode *node){
 	int n, index = IndexOfNode(node);
 	
 	if(index == -1) DSTHROW(dueInvalidParam);

@@ -143,7 +143,7 @@ private:
 		cArchiveDirectory *GetDirectoryByPath(const decPath &path);
 		
 		/** \brief Add directory. */
-		void AddDirectory(cArchiveDirectory::Ref directory);
+		void AddDirectory(cArchiveDirectory *directory);
 		
 		
 		
@@ -163,7 +163,7 @@ private:
 		cArchiveFile *GetFileByPath(const decPath &path) const;
 		
 		/** \brief Add file. */
-		void AddFile(cArchiveFile::Ref file);
+		void AddFile(cArchiveFile *file);
 	};
 	
 	
@@ -182,7 +182,7 @@ public:
 	/*@{*/
 	/** \brief Create container. */
 	dealVFSZipArchive(dealEngineInstance &engineInstance,
-		decBaseFileReader::Ref fileReader, const decPath &pathRoot);
+		decBaseFileReader *fileReader, const decPath &pathRoot);
 	
 protected:
 	/**

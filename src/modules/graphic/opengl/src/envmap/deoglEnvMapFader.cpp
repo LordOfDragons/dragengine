@@ -62,7 +62,7 @@ void deoglEnvMapFader::SetFadePerTime(float fadePerTime){
 	}
 }
 
-void deoglEnvMapFader::FadeTo(deoglEnvironmentMap::Ref envmap){
+void deoglEnvMapFader::FadeTo(deoglEnvironmentMap *envmap){
 	if(envmap == pEnvMapActive){
 		return;
 	}
@@ -94,7 +94,7 @@ void deoglEnvMapFader::FadeTo(deoglEnvironmentMap::Ref envmap){
 	//printf( "fadeto %p: active=%p fading=%p delayed=%p\n", envmap, pEnvMapActive, pEnvMapFading, pEnvMapDelayed );
 }
 
-void deoglEnvMapFader::Drop(deoglEnvironmentMap::Ref envmap){
+void deoglEnvMapFader::Drop(deoglEnvironmentMap *envmap){
 	if(!envmap){
 		DETHROW(deeInvalidParam);
 	}

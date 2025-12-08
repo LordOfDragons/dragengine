@@ -81,10 +81,10 @@ public:
 	deAnimatorRuleMirror *GetRule(dsRealObject *myself) const;
 	
 	/** Assigns animator or nullptr. */
-	void AssignAnimator(dsRealObject *myself, deAnimator::Ref animator);
+	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
 	
 	/** Pushes a rule. */
-	void PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleMirror::Ref rule);
+	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleMirror *rule);
 	
 	inline dsClass *GetClassARMirrorTarget() const{ return pClsARMirrorTarget; }
 	inline dsClass *GetClassARMirrorMirrorAxis() const{ return pClsARMirrorMirrorAxis; }

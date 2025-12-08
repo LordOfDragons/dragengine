@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCTextureSetRotation::gdeUOCCTextureSetRotation(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, gdeOCComponentTexture::Ref texture, float newValue) :
+gdeUOCCTextureSetRotation::gdeUOCCTextureSetRotation(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture, float newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !component || !texture){

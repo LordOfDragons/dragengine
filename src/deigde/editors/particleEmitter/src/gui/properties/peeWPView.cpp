@@ -177,7 +177,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox;
+	igdeContainer *content, groupBox;
 	
 	pListener.TakeOver(new peeWPViewListener(*this));
 	
@@ -214,7 +214,7 @@ peeWPView::~peeWPView(){
 // Management
 ///////////////
 
-void peeWPView::SetEmitter(peeEmitter::Ref emitter){
+void peeWPView::SetEmitter(peeEmitter *emitter){
 	if(emitter == pEmitter){
 		return;
 	}

@@ -73,7 +73,7 @@ public:
 	inline peeEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
-	void SetEmitter(peeEmitter::Ref emitter);
+	void SetEmitter(peeEmitter *emitter);
 	
 	/** \brief Game like frame update. */
 	virtual void OnFrameUpdate(float elapsed);

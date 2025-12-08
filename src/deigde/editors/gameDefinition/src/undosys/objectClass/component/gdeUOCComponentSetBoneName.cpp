@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetBoneName::gdeUOCComponentSetBoneName(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, const char *newValue) :
+gdeUOCComponentSetBoneName::gdeUOCComponentSetBoneName(gdeObjectClass *objectClass,
+gdeOCComponent *component, const char *newValue) :
 
 pComponent(NULL)
 {

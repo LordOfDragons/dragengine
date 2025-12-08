@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCVarSetTestValue::ceUCCVarSetTestValue(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
-ceCConditionVariable::Ref condition, int newValue){
+ceUCCVarSetTestValue::ceUCCVarSetTestValue(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionVariable *condition, int newValue){
 	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

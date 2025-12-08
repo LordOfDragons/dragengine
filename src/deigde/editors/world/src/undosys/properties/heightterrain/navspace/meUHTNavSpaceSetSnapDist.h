@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceSetSnapDist(meHeightTerrainNavSpace::Ref navspace, float newSnapDist);
+	meUHTNavSpaceSetSnapDist(meHeightTerrainNavSpace *navspace, float newSnapDist);
 	
 protected:
 	/** \brief Clean up undo action. */

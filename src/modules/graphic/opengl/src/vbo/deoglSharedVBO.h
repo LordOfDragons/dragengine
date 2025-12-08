@@ -116,7 +116,7 @@ public:
 	 */
 	deoglSharedVBOBlock *AddBlock(int size, int indexCount = 0);
 	/** Removes a block of data returning the space to the pool of free space. */
-	void RemoveBlock(deoglSharedVBOBlock::Ref block);
+	void RemoveBlock(deoglSharedVBOBlock *block);
 	
 	/** Index of first empty block with minimum size and index count available or NULL if not found. */
 	int IndexOfEmptyBlockWithMinSize(int size, int indexCount);

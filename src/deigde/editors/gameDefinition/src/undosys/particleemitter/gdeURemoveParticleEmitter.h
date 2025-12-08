@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeURemoveParticleEmitter(gdeGameDefinition::Ref gameDefinition, gdeParticleEmitter::Ref particleEmitter);
+	gdeURemoveParticleEmitter(gdeGameDefinition *gameDefinition, gdeParticleEmitter *particleEmitter);
 	
 protected:
 	/** \brief Clean up undo action. */

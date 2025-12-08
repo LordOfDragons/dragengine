@@ -324,7 +324,7 @@ void sePropertyNode::SetTransparency(float transparency){
 	NotifyChanged();
 }
 
-void sePropertyNode::SetMask(sePropertyNode::Ref mask){
+void sePropertyNode::SetMask(sePropertyNode *mask){
 	if(mask == pMask){
 		return;
 	}

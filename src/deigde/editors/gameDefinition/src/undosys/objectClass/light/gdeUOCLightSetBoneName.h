@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetBoneName(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light, const char *newValue);
+	gdeUOCLightSetBoneName(gdeObjectClass *objectClass, gdeOCLight *light, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

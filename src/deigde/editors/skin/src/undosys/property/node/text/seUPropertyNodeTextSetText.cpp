@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeTextSetText::seUPropertyNodeTextSetText(
-sePropertyNodeText::Ref node, const char *newValue) :
+sePropertyNodeText *node, const char *newValue) :
 
 pNewValue(newValue)
 {

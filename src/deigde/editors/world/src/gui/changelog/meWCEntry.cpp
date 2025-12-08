@@ -64,21 +64,21 @@ void meWCEntry::SetSector(const decPoint3 &sector){
 	pSector = sector;
 }
 
-void meWCEntry::SetWorld(meWorld::Ref world){
+void meWCEntry::SetWorld(meWorld *world){
 	if(world == pWorld){
 		return;
 	}
 	pWorld = world;
 }
 
-void meWCEntry::SetHTTexture(meHeightTerrainTexture::Ref texture){
+void meWCEntry::SetHTTexture(meHeightTerrainTexture *texture){
 	if(texture == pHTTexture){
 		return;
 	}
 	pHTTexture = texture;
 }
 
-void meWCEntry::SetHTNavSpace(meHeightTerrainNavSpace::Ref navspace){
+void meWCEntry::SetHTNavSpace(meHeightTerrainNavSpace *navspace){
 	if(navspace == pHTNavSpace){
 		return;
 	}

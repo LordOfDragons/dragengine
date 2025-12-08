@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUMoveObject::meUMoveObject(meWorld::Ref world, const meObjectList &objects){
+meUMoveObject::meUMoveObject(meWorld *world, const meObjectList &objects){
 	if(!world){
 		DETHROW(deeInvalidParam);
 	}

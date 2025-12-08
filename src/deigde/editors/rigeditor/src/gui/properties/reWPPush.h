@@ -76,13 +76,13 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig(reRig::Ref rig);
+	void SetRig(reRig *rig);
 	
 	/** \brief Push. */
 	inline reRigPush *GetPush() const{ return pPush; }
 	
 	/** \brief Set push. */
-	void SetPush(reRigPush::Ref push);
+	void SetPush(reRigPush *push);
 	
 	/** \brief Update push. */
 	void UpdatePush();

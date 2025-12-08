@@ -104,7 +104,7 @@ pDialogEngine(dialogEngine)
 {
 	igdeEnvironment &env = dialogEngine.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainer::Ref groupBox, panel;
+	igdeContainer *groupBox, panel;
 	
 	
 	helper.GroupBoxStaticFlow(*this, groupBox, "Engine Status:");

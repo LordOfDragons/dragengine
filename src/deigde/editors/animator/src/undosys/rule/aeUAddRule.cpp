@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUAddRule::aeUAddRule(aeAnimator::Ref animator, aeRule::Ref rule, int index){
+aeUAddRule::aeUAddRule(aeAnimator *animator, aeRule *rule, int index){
 	if(!animator || !rule){
 		DETHROW(deeInvalidParam);
 	}

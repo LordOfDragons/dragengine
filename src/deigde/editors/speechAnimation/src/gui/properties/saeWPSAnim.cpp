@@ -107,7 +107,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, saeSAnimation::Ref sanimation) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, saeSAnimation *sanimation) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -136,7 +136,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation) = 0;
+	virtual igdeUndo *OnAction(saeSAnimation *sanimation) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -158,7 +158,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, saeSAnimation::Ref sanimation) = 0;
+	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, saeSAnimation *sanimation) = 0;
 };
 
 class cBaseEditPathListener : public igdeEditPathListener{
@@ -180,7 +180,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decString &path, saeSAnimation::Ref sanimation) = 0;
+	virtual igdeUndo *OnChanged(const decString &path, saeSAnimation *sanimation) = 0;
 };
 
 
@@ -189,7 +189,7 @@ class cEditRigPath : public cBaseEditPathListener{
 public:
 	cEditRigPath(saeWPSAnim &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decString &path, saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnChanged(const decString &path, saeSAnimation *sanimation){
 		if(path == sanimation->GetRigPath()){
 			return nullptr;
 		}
@@ -201,7 +201,7 @@ class cEditAnimationPath : public cBaseEditPathListener{
 public:
 	cEditAnimationPath(saeWPSAnim &panel) : cBaseEditPathListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decString &path, saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnChanged(const decString &path, saeSAnimation *sanimation){
 		if(path == sanimation->GetAnimationPath()){
 			return nullptr;
 		}
@@ -213,7 +213,7 @@ class cComboNeutralMove : public cBaseComboBoxListener{
 public:
 	cComboNeutralMove(saeWPSAnim &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, saeSAnimation *sanimation){
 		const decString &name = comboBox->GetText();
 		if(name == sanimation->GetNeutralMoveName()){
 			return nullptr;
@@ -228,7 +228,7 @@ public:
 	cActionNeutralVertexPositionSetsAdd(saeWPSAnim &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add vertex position set"){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
 		const decString &name = pPanel.GetCBNeutralVertexPositionSetText();
 		if(name.IsEmpty() || sanimation->GetNeutralVertexPositionSets().Has(name)){
 			return nullptr;
@@ -251,7 +251,7 @@ public:
 	cActionNeutralVertexPositionSetsRemove(saeWPSAnim &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove vertex position set"){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
 		const decString &name = pPanel.GetCBNeutralVertexPositionSetText();
 		if(name.IsEmpty() || !sanimation->GetNeutralVertexPositionSets().Has(name)){
 			return nullptr;
@@ -274,7 +274,7 @@ public:
 	cActionNeutralVertexPositionSetsClear(saeWPSAnim &panel) : cBaseAction(panel, "Clear",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all vertex position sets"){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
 		return sanimation->GetNeutralVertexPositionSets().GetCount() > 0
 			? new saeUSAnimSetNeutralVertexPositionSets(sanimation, decStringSet()) : nullptr;
 	}
@@ -317,7 +317,7 @@ class cComboPhoneme : public cBaseComboBoxListener{
 public:
 	cComboPhoneme(saeWPSAnim &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, saeSAnimation *sanimation){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(selection){
 			sanimation->SetActivePhoneme((saePhoneme*)selection->GetData());
@@ -333,7 +333,7 @@ class cBasePhonemeTextFieldListener : public cBaseTextFieldListener{
 public:
 	cBasePhonemeTextFieldListener(saeWPSAnim &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, saeSAnimation *sanimation){
 		saePhoneme * const phoneme = pPanel.GetActivePhoneme();
 		if(!phoneme){
 			return nullptr;
@@ -342,7 +342,7 @@ public:
 	}
 	
 	virtual igdeUndo *OnChanged(igdeTextField *textField,
-		saeSAnimation::Ref sanimation, saePhoneme * phoneme) = 0;
+		saeSAnimation *sanimation, saePhoneme * phoneme) = 0;
 };
 
 class cTextPhonemeIpa : public cBasePhonemeTextFieldListener{
@@ -350,7 +350,7 @@ public:
 	cTextPhonemeIpa(saeWPSAnim &panel) : cBasePhonemeTextFieldListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeTextField *textField,
-	saeSAnimation::Ref sanimation, saePhoneme * phoneme){
+	saeSAnimation *sanimation, saePhoneme * phoneme){
 		decUnicodeString ipaText;
 		try{
 			ipaText = decUnicodeString::NewFromUTF8(textField->GetText());
@@ -389,7 +389,7 @@ public:
 	cTextPhonemeSampleText(saeWPSAnim &panel) : cBasePhonemeTextFieldListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeTextField *textField,
-	saeSAnimation::Ref sanimation, saePhoneme * phoneme){
+	saeSAnimation *sanimation, saePhoneme * phoneme){
 		if(textField->GetText() == phoneme->GetSampleText()){
 			return nullptr;
 		}
@@ -452,7 +452,7 @@ class cComboWord : public cBaseComboBoxListener{
 public:
 	cComboWord(saeWPSAnim &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, saeSAnimation *sanimation){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(selection){
 			sanimation->SetActiveWord((saeWord*)selection->GetData());
@@ -468,7 +468,7 @@ class cBaseWordTextFieldListener : public cBaseTextFieldListener{
 public:
 	cBaseWordTextFieldListener(saeWPSAnim &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, saeSAnimation *sanimation){
 		saeWord * const word = pPanel.GetActiveWord();
 		if(!word){
 			return nullptr;
@@ -477,7 +477,7 @@ public:
 	}
 	
 	virtual igdeUndo *OnChanged(igdeTextField *textField,
-		saeSAnimation::Ref sanimation, saeWord * word) = 0;
+		saeSAnimation *sanimation, saeWord * word) = 0;
 };
 
 class cTextWordName : public cBaseWordTextFieldListener{
@@ -485,7 +485,7 @@ public:
 	cTextWordName(saeWPSAnim &panel) : cBaseWordTextFieldListener(panel){}
 	
 	virtual igdeUndo *OnChanged(igdeTextField *textField,
-	saeSAnimation::Ref sanimation, saeWord * word){
+	saeSAnimation *sanimation, saeWord * word){
 		const decString &name = textField->GetText();
 		if(name == word->GetName()){
 			return nullptr;
@@ -580,7 +580,7 @@ igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener.TakeOver(new saeWPSAnimListener(*this));
@@ -664,7 +664,7 @@ saeWPSAnim::~saeWPSAnim(){
 // Management
 ///////////////
 
-void saeWPSAnim::SetSAnimation(saeSAnimation::Ref sanimation){
+void saeWPSAnim::SetSAnimation(saeSAnimation *sanimation){
 	if(sanimation == pSAnimation){
 		return;
 	}

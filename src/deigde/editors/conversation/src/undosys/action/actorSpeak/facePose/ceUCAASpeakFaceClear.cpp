@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakFaceClear::ceUCAASpeakFaceClear(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak) :
+ceUCAASpeakFaceClear::ceUCAASpeakFaceClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
 pTopic(NULL)
 {
 	if(!topic || !actorSpeak){

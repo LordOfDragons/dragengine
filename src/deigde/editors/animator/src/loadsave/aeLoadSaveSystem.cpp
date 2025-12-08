@@ -111,7 +111,7 @@ aeAnimator *aeLoadSaveSystem::LoadAnimator(const char* filename){
 	return animator;
 }
 
-void aeLoadSaveSystem::SaveAnimator(aeAnimator::Ref animator, const char *filename){
+void aeLoadSaveSystem::SaveAnimator(aeAnimator *animator, const char *filename){
 	if(!animator){
 		DETHROW(deeInvalidParam);
 	}

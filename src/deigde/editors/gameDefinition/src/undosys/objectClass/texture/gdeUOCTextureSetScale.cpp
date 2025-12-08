@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTextureSetScale::gdeUOCTextureSetScale(gdeObjectClass::Ref objectClass,
-gdeOCComponentTexture::Ref texture, const decVector2 &newValue) :
+gdeUOCTextureSetScale::gdeUOCTextureSetScale(gdeObjectClass *objectClass,
+gdeOCComponentTexture *texture, const decVector2 &newValue) :
 
 pTexture(NULL)
 {

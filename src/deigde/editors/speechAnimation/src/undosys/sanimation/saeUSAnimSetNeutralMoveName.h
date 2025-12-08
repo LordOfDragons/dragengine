@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUSAnimSetNeutralMoveName(saeSAnimation::Ref sanimation, const char *newName);
+	saeUSAnimSetNeutralMoveName(saeSAnimation *sanimation, const char *newName);
 	
 protected:
 	/** Clean up undo. */

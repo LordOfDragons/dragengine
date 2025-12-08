@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetPlaySpeed::gdeUOCSpeakerSetPlaySpeed(gdeObjectClass::Ref objectClass,
-	gdeOCSpeaker::Ref speaker, float newValue) :
+gdeUOCSpeakerSetPlaySpeed::gdeUOCSpeakerSetPlaySpeed(gdeObjectClass *objectClass,
+	gdeOCSpeaker *speaker, float newValue) :
 
 pSpeaker(NULL)
 {

@@ -85,7 +85,7 @@ void seLink::NotifyCurveChanged(){
 	}
 }
 
-void seLink::SetController(seController::Ref controller){
+void seLink::SetController(seController *controller){
 	if(controller == pController){
 		return;
 	}

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUAddSource::seUAddSource(seSynthesizer::Ref synthesizer, seSource::Ref source, int index) :
+seUAddSource::seUAddSource(seSynthesizer *synthesizer, seSource *source, int index) :
 
 pIndex(index)
 {

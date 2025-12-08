@@ -58,14 +58,14 @@ igdeGDSkyManager::~igdeGDSkyManager(){
 // Management
 ///////////////
 
-void igdeGDSkyManager::AddSky(igdeGDSky::Ref sky){
+void igdeGDSkyManager::AddSky(igdeGDSky *sky){
 	if(!sky){
 		DETHROW(deeInvalidParam);
 	}
 	pSkyList.Add(sky);
 }
 
-void igdeGDSkyManager::RemoveSky(igdeGDSky::Ref sky){
+void igdeGDSkyManager::RemoveSky(igdeGDSky *sky){
 	pSkyList.Remove(sky);
 }
 

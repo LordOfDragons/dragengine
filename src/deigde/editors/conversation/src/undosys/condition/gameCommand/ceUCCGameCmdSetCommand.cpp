@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCGameCmdSetCommand::ceUCCGameCmdSetCommand(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
-ceCConditionGameCommand::Ref condition, const char *newCommand){
+ceUCCGameCmdSetCommand::ceUCCGameCmdSetCommand(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionGameCommand *condition, const char *newCommand){
 	if(!topic || !action || !condition || !newCommand){
 		DETHROW(deeInvalidParam);
 	}

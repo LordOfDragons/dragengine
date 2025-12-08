@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCACommandSetActor::ceUCCACommandSetActor(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
-ceCConditionActorCommand::Ref condition, const char *newActor){
+ceUCCACommandSetActor::ceUCCACommandSetActor(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionActorCommand *condition, const char *newActor){
 	if(!topic || !action || !condition){
 		DETHROW(deeInvalidParam);
 	}

@@ -49,7 +49,7 @@ private:
 	deoglTexture *pTextureMin, *pTextureMax;
 	decObjectList pFBOs;
 	
-	const deoglPixelBuffer::Ref pPixBufBoundaryMin, pPixBufBoundaryMax;
+	const deoglPixelBuffer *pPixBufBoundaryMin, pPixBufBoundaryMax;
 	
 	int pSize;
 	int pLevelCount;

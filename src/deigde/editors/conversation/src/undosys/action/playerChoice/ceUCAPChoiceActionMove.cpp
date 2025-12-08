@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceActionMove::ceUCAPChoiceActionMove(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref playerChoice,
-ceCAPlayerChoiceOption::Ref option, ceConversationAction::Ref action, int newIndex){
+ceUCAPChoiceActionMove::ceUCAPChoiceActionMove(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
+ceCAPlayerChoiceOption *option, ceConversationAction *action, int newIndex){
 	if(!topic || !playerChoice || !action){
 		DETHROW(deeInvalidParam);
 	}

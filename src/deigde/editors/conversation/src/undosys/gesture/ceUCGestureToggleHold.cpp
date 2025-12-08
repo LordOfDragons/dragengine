@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCGestureToggleHold::ceUCGestureToggleHold(ceGesture::Ref gesture) :
+ceUCGestureToggleHold::ceUCGestureToggleHold(ceGesture *gesture) :
 pGesture(NULL)
 {
 	if(!gesture){

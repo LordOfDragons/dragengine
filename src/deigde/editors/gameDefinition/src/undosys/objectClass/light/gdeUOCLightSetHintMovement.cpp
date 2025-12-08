@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetHintMovement::gdeUOCLightSetHintMovement(gdeObjectClass::Ref objectClass,
-gdeOCLight::Ref light, deLight::eMovementHints newValue) :
+gdeUOCLightSetHintMovement::gdeUOCLightSetHintMovement(gdeObjectClass *objectClass,
+gdeOCLight *light, deLight::eMovementHints newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

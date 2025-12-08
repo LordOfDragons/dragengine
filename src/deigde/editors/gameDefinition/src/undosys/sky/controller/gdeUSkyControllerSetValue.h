@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUSkyControllerSetValue(gdeSky::Ref sky, gdeSkyController::Ref controller, float newValue);
+	gdeUSkyControllerSetValue(gdeSky *sky, gdeSkyController *controller, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

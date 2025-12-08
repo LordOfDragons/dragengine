@@ -114,16 +114,16 @@ public:
 	inline igdeTriggerTarget *GetTarget() const{ return pTarget; }
 	
 	/** \brief Set trigger target or NULL. */
-	void SetTarget(igdeTriggerTarget::Ref target);
+	void SetTarget(igdeTriggerTarget *target);
 	
 	/** \brief Target listener or NULL. */
 	inline igdeTriggerListener *GetTargetListener() const{ return pTargetListener; }
 	
 	/** \brief Set target listener or NULL. */
-	void SetTargetListener(igdeTriggerListener::Ref listener);
+	void SetTargetListener(igdeTriggerListener *listener);
 	
 	/** \brief Link trigger targets using the given trigger table. */
-	void LinkTargets(igdeTriggerTargetList &triggerTable, igdeTriggerListener::Ref listener);
+	void LinkTargets(igdeTriggerTargetList &triggerTable, igdeTriggerListener *listener);
 	
 	/** \brief Unlink trigger targets. */
 	void UnlinkTargets();

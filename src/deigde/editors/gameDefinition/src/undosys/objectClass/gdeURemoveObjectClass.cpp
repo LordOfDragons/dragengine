@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeURemoveObjectClass::gdeURemoveObjectClass(gdeGameDefinition::Ref gameDefinition, gdeObjectClass::Ref objectClass) :
+gdeURemoveObjectClass::gdeURemoveObjectClass(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass) :
 pGameDefinition(NULL)
 {
 	if(!gameDefinition || !objectClass){

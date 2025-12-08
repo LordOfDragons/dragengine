@@ -82,10 +82,10 @@ public:
 	 * \brief Push collider onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is NULL.
 	 */
-	void PushCollider(dsRunTime *rt, deCollider::Ref collider);
+	void PushCollider(dsRunTime *rt, deCollider *collider);
 	
 	/** \brief Assigns collider or \em NULL. */
-	void AssignCollider(dsRealObject *myself, deCollider::Ref collider);
+	void AssignCollider(dsRealObject *myself, deCollider *collider);
 	/*@}*/
 	
 	

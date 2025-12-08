@@ -53,9 +53,9 @@ public:
 	/** Retrieves the list of selected object shapes. */
 	inline const meObjectShapeList &GetSelected() const{ return pSelection; }
 	/** Adds an object shape to the selection if not included already. */
-	void Add(meObjectShape::Ref objectShape);
+	void Add(meObjectShape *objectShape);
 	/** Removes an object shape from the selection if included. */
-	void Remove(meObjectShape::Ref objectShape);
+	void Remove(meObjectShape *objectShape);
 	/** Removes all object shapes from the selection. */
 	void RemoveAll();
 	

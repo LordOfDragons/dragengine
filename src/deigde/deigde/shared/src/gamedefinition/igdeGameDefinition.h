@@ -232,13 +232,13 @@ public:
 	inline deModel *GetDefaultModel() const{ return pDefaultModel; }
 	
 	/** \brief Set default model. */
-	void SetDefaultModel(deModel::Ref model);
+	void SetDefaultModel(deModel *model);
 	
 	/** \brief Default skin. */
 	inline deSkin *GetDefaultSkin() const{ return pDefaultSkin; }
 	
 	/** \brief Set default skin. */
-	void SetDefaultSkin(deSkin::Ref skin);
+	void SetDefaultSkin(deSkin *skin);
 	
 	/** \brief Update engine objects. */
 	virtual void UpdateEngineObjects();

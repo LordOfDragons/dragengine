@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRulePCSetRadius(meHTVegetationLayer::Ref vlayer, meHTVRulePropCount::Ref rule, float nradius);
+	meUHTVRulePCSetRadius(meHTVegetationLayer *vlayer, meHTVRulePropCount *rule, float nradius);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRulePCSetRadius();
 	/*@}*/

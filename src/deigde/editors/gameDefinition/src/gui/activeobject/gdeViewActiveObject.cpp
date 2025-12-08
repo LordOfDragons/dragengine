@@ -173,7 +173,7 @@ gdeViewActiveObject::~gdeViewActiveObject(){
 void gdeViewActiveObject::ResetView(){
 }
 
-void gdeViewActiveObject::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeViewActiveObject::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

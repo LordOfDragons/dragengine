@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakSetTextBoxText(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, const decUnicodeString &newText);
+	ceUCAASpeakSetTextBoxText(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const decUnicodeString &newText);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakSetTextBoxText();

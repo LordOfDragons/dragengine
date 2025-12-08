@@ -36,7 +36,7 @@
 // Class deBaseSoundDecoder
 /////////////////////////////
 
-deBaseSoundDecoder::deBaseSoundDecoder(decBaseFileReader::Ref file) :
+deBaseSoundDecoder::deBaseSoundDecoder(decBaseFileReader *file) :
 pFile(NULL)
 {
 	if(!file){

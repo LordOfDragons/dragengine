@@ -40,7 +40,7 @@ public:
 	
 	decUniqueID id;
 	decString function;
-	deServiceObject::Ref data, request;
+	deServiceObject *data, request;
 	
 	
 	/** \name Constructors and Destructors */

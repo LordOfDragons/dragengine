@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUControllerSetName(peeController::Ref controller, const char *newName);
+	peeUControllerSetName(peeController *controller, const char *newName);
 	
 protected:
 	/** \brief Clean up the undo action. */

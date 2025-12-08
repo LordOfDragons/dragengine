@@ -458,7 +458,7 @@ void deClassInputDeviceButton::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassInputDeviceButton::PushButton(dsRunTime *rt, dedsInputDevice::Ref device, int index){
+void deClassInputDeviceButton::PushButton(dsRunTime *rt, dedsInputDevice *device, int index){
 	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetButtonCount()){
 		DSTHROW(dueInvalidParam);
 	}

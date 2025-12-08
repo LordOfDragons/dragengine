@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTopicAdd::ceUCTopicAdd(ceConversationFile::Ref file, ceConversationTopic::Ref topic){
+ceUCTopicAdd::ceUCTopicAdd(ceConversationFile *file, ceConversationTopic *topic){
 	if(!file || !topic) DETHROW(deeInvalidParam);
 	
 	pFile = NULL;

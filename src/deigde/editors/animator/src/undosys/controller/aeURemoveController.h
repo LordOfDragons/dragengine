@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURemoveController(aeAnimator::Ref animator, aeController::Ref controller);
+	aeURemoveController(aeAnimator *animator, aeController *controller);
 	
 protected:
 	/** Clean up undo. */

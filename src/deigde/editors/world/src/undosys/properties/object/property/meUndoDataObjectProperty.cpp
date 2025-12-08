@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataObjectProperty::meUndoDataObjectProperty(meObject::Ref object) :
+meUndoDataObjectProperty::meUndoDataObjectProperty(meObject *object) :
 
 pPropertyExists(false)
 {

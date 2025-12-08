@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldSetGravity::meUWorldSetGravity(meWorld::Ref world, const decVector &newValue) :
+meUWorldSetGravity::meUWorldSetGravity(meWorld *world, const decVector &newValue) :
 
 pNewValue(newValue)
 {

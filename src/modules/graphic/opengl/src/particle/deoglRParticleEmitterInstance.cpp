@@ -146,7 +146,7 @@ deoglRParticleEmitterInstance::~deoglRParticleEmitterInstance(){
 // Management
 ///////////////
 
-void deoglRParticleEmitterInstance::SetEmitter(deoglRParticleEmitter::Ref emitter){
+void deoglRParticleEmitterInstance::SetEmitter(deoglRParticleEmitter *emitter){
 	if(emitter == pEmitter){
 		return;
 	}
@@ -259,7 +259,7 @@ void deoglRParticleEmitterInstance::UpdateExtends(const deParticleEmitterInstanc
 
 
 
-void deoglRParticleEmitterInstance::SetRenderEnvMap(deoglEnvironmentMap::Ref envmap){
+void deoglRParticleEmitterInstance::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	if(envmap == pRenderEnvMap){
 		return;
 	}
@@ -336,7 +336,7 @@ void deoglRParticleEmitterInstance::InvalidateRenderEnvMap(){
 	pDirtyRenderEnvMap = true;
 }
 
-void deoglRParticleEmitterInstance::InvalidateRenderEnvMapIf(deoglEnvironmentMap::Ref envmap){
+void deoglRParticleEmitterInstance::InvalidateRenderEnvMapIf(deoglEnvironmentMap *envmap){
 	if(pRenderEnvMap == envmap){
 		InvalidateRenderEnvMap();
 	}

@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetIcons::projUProfileSetIcons(projProfile::Ref profile, const decStringSet &newValue) :
+projUProfileSetIcons::projUProfileSetIcons(projProfile *profile, const decStringSet &newValue) :
 
 pNewValue(newValue)
 {

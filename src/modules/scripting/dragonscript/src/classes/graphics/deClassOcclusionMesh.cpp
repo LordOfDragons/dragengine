@@ -239,7 +239,7 @@ deOcclusionMesh *deClassOcclusionMesh::GetOcclusionMesh(dsRealObject *object) co
 	return ((sOccMNatDat*)p_GetNativeData(object->GetBuffer()))->occlusionMesh;
 }
 
-void deClassOcclusionMesh::PushOcclusionMesh(dsRunTime *rt, deOcclusionMesh::Ref occlusionMesh){
+void deClassOcclusionMesh::PushOcclusionMesh(dsRunTime *rt, deOcclusionMesh *occlusionMesh){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

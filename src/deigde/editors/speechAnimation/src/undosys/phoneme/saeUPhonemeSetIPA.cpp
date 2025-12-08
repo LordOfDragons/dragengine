@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeSetIPA::saeUPhonemeSetIPA(saePhoneme::Ref phoneme, int newIPA){
+saeUPhonemeSetIPA::saeUPhonemeSetIPA(saePhoneme *phoneme, int newIPA){
 	if(!phoneme) DETHROW(deeInvalidParam);
 	
 	pPhoneme = NULL;

@@ -372,7 +372,7 @@ void ceConversationActor::SetBoneHeadRotator(const char *bone){
 
 
 
-void ceConversationActor::SetActivePose(ceActorPose::Ref pose){
+void ceConversationActor::SetActivePose(ceActorPose *pose){
 	if(pose == pActivePose){
 		return;
 	}
@@ -402,7 +402,7 @@ void ceConversationActor::NotifyPosesChanged(){
 	}
 }
 
-void ceConversationActor::NotifyPoseGesturesChanged(ceActorPose::Ref pose){
+void ceConversationActor::NotifyPoseGesturesChanged(ceActorPose *pose){
 // 	RemoveAllPlayGestures();
 	
 	if(pConversation){
@@ -486,7 +486,7 @@ void ceConversationActor::RemoveAllPlayFacePoses(){
 	pPlayFacePoseRunning = false;
 }
 
-void ceConversationActor::AddPlayFacePose(ceFacePose::Ref facePose, float pause, float length){
+void ceConversationActor::AddPlayFacePose(ceFacePose *facePose, float pause, float length){
 	if(pPlayFacePoseCount == pPlayFacePoseSize){
 		int newSize = pPlayFacePoseSize + 20;
 		sFacePose *newArray = new sFacePose[newSize];
@@ -522,7 +522,7 @@ void ceConversationActor::RemoveAllPlayHeadLookAts(){
 	pPlayHeadLARunning = false;
 }
 
-void ceConversationActor::AddPlayHeadLookAt(ceTarget::Ref lookAt, float pause, float duration){
+void ceConversationActor::AddPlayHeadLookAt(ceTarget *lookAt, float pause, float duration){
 	if(pPlayHeadLACount == pPlayHeadLASize){
 		int newSize = pPlayFacePoseSize + 20;
 		sLookAt *newArray = new sLookAt[newSize];
@@ -558,7 +558,7 @@ void ceConversationActor::RemoveAllPlayEyesLookAts(){
 	pPlayEyesLARunning = false;
 }
 
-void ceConversationActor::AddPlayEyesLookAt(ceTarget::Ref lookAt, float pause, float duration){
+void ceConversationActor::AddPlayEyesLookAt(ceTarget *lookAt, float pause, float duration){
 	if(pPlayEyesLACount == pPlayEyesLASize){
 		int newSize = pPlayFacePoseSize + 20;
 		sLookAt *newArray = new sLookAt[newSize];

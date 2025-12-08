@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodySetSize::seUBodySetSize(seBody::Ref body, const decVector2 &newSize) :
+seUBodySetSize::seUBodySetSize(seBody *body, const decVector2 &newSize) :
 
 pNewSize(newSize)
 {

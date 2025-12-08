@@ -49,9 +49,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUAddObject(meWorld::Ref world, meObject::Ref object);
+	meUAddObject(meWorld *world, meObject *object);
 	/** \brief Create new undo object. */
-	meUAddObject(meWorld::Ref world, const decDVector &position, const char *classname);
+	meUAddObject(meWorld *world, const decDVector &position, const char *classname);
 	/** \brief Clean up undo object. */
 	virtual ~meUAddObject();
 	/*@}*/

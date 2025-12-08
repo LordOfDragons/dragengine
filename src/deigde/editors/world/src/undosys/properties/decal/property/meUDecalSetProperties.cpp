@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalSetProperties::meUDecalSetProperties(meDecal::Ref decal, const decStringDictionary &newValues) :
+meUDecalSetProperties::meUDecalSetProperties(meDecal *decal, const decStringDictionary &newValues) :
 
 pNewValues(newValues)
 {

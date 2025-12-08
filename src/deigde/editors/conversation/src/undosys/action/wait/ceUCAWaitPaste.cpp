@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitPaste::ceUCAWaitPaste(ceConversationTopic *topic, ceCAWait::Ref wait,
+ceUCAWaitPaste::ceUCAWaitPaste(ceConversationTopic *topic, ceCAWait *wait,
 const ceConversationActionList &actions, int index) :
 ceUCActionPaste(topic, actions, index)
 {

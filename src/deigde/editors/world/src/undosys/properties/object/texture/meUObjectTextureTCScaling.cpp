@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureTCScaling::meUObjectTextureTCScaling(meObjectTexture::Ref texture, const decVector2 &newScaling){
+meUObjectTextureTCScaling::meUObjectTextureTCScaling(meObjectTexture *texture, const decVector2 &newScaling){
 	if(!texture){
 		DETHROW(deeInvalidParam);
 	}

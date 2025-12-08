@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASetAParamSetName(ceConversationTopic::Ref topic, ceCASetActorParameter::Ref action, const char *newName);
+	ceUCASetAParamSetName(ceConversationTopic *topic, ceCASetActorParameter *action, const char *newName);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCASetAParamSetName();

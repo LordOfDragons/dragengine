@@ -51,9 +51,9 @@ public:
 	/** Retrieves the list of selected objects. */
 	inline const meObjectList &GetSelected() const{ return pSelection; }
 	/** Adds a objects to the selection if not included already. */
-	void Add(meObject::Ref object);
+	void Add(meObject *object);
 	/** Removes a objects from the selection if included. */
-	void Remove(meObject::Ref object);
+	void Remove(meObject *object);
 	/** Removes all objects from the selection. */
 	void RemoveAll();
 	
@@ -62,7 +62,7 @@ public:
 	/** Determines if there is an active objects. */
 	bool HasActive() const;
 	/** Sets the active objects or NULL if there is none. */
-	void SetActive(meObject::Ref object);
+	void SetActive(meObject *object);
 	/** Activate the first objects in the selection. */
 	void ActivateNext();
 	

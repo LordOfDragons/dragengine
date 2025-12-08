@@ -38,7 +38,7 @@ const char * const gdeClipboardDataOCNavBlocker::TYPE_NAME = "OCNavBlocker";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCNavBlocker::gdeClipboardDataOCNavBlocker(gdeOCNavigationBlocker::Ref navBlocker) :
+gdeClipboardDataOCNavBlocker::gdeClipboardDataOCNavBlocker(gdeOCNavigationBlocker *navBlocker) :
 igdeClipboardData(TYPE_NAME)
 {
 	if(!navBlocker){

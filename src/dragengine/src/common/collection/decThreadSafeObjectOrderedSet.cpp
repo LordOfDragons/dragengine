@@ -100,7 +100,7 @@ deThreadSafeObject *decThreadSafeObjectOrderedSet::GetAt(int index) const{
 	return pObjects[index];
 }
 
-int decThreadSafeObjectOrderedSet::IndexOf(deThreadSafeObject::Ref object) const{
+int decThreadSafeObjectOrderedSet::IndexOf(deThreadSafeObject *object) const{
 	int p;
 	
 	for(p=0; p<pObjectCount; p++){
@@ -112,7 +112,7 @@ int decThreadSafeObjectOrderedSet::IndexOf(deThreadSafeObject::Ref object) const
 	return -1;
 }
 
-bool decThreadSafeObjectOrderedSet::Has(deThreadSafeObject::Ref object) const{
+bool decThreadSafeObjectOrderedSet::Has(deThreadSafeObject *object) const{
 	int p;
 	
 	for(p=0; p<pObjectCount; p++){
@@ -124,7 +124,7 @@ bool decThreadSafeObjectOrderedSet::Has(deThreadSafeObject::Ref object) const{
 	return false;
 }
 
-void decThreadSafeObjectOrderedSet::SetAt(int index, deThreadSafeObject::Ref object){
+void decThreadSafeObjectOrderedSet::SetAt(int index, deThreadSafeObject *object){
 	if(index < 0 || index >= pObjectCount){
 		DETHROW(deeInvalidParam);
 	}
@@ -144,7 +144,7 @@ void decThreadSafeObjectOrderedSet::SetAt(int index, deThreadSafeObject::Ref obj
 	pObjects[index] = object;
 }
 
-void decThreadSafeObjectOrderedSet::Add(deThreadSafeObject::Ref object){
+void decThreadSafeObjectOrderedSet::Add(deThreadSafeObject *object){
 	if(Has(object)){
 		DETHROW(deeInvalidParam);
 	}
@@ -164,7 +164,7 @@ void decThreadSafeObjectOrderedSet::Add(deThreadSafeObject::Ref object){
 	pObjectCount++;
 }
 
-void decThreadSafeObjectOrderedSet::AddIfAbsent(deThreadSafeObject::Ref object){
+void decThreadSafeObjectOrderedSet::AddIfAbsent(deThreadSafeObject *object){
 	if(Has(object)){
 		return;
 	}
@@ -184,7 +184,7 @@ void decThreadSafeObjectOrderedSet::AddIfAbsent(deThreadSafeObject::Ref object){
 	pObjectCount++;
 }
 
-void decThreadSafeObjectOrderedSet::Insert(deThreadSafeObject::Ref object, int index){
+void decThreadSafeObjectOrderedSet::Insert(deThreadSafeObject *object, int index){
 	if(Has(object) || index < 0 || index > pObjectCount){
 		DETHROW(deeInvalidParam);
 	}
@@ -209,7 +209,7 @@ void decThreadSafeObjectOrderedSet::Insert(deThreadSafeObject::Ref object, int i
 	pObjectCount++;
 }
 
-void decThreadSafeObjectOrderedSet::Move(deThreadSafeObject::Ref object, int to){
+void decThreadSafeObjectOrderedSet::Move(deThreadSafeObject *object, int to){
 	const int from = IndexOf(object);
 	if(from == -1 || to < 0 || to >= pObjectCount){
 		DETHROW(deeInvalidParam);
@@ -232,7 +232,7 @@ void decThreadSafeObjectOrderedSet::Move(deThreadSafeObject::Ref object, int to)
 	pObjects[to] = tempObject;
 }
 
-void decThreadSafeObjectOrderedSet::Remove(deThreadSafeObject::Ref object){
+void decThreadSafeObjectOrderedSet::Remove(deThreadSafeObject *object){
 	int p, position = IndexOf(object);
 	
 	if(position == -1){
@@ -248,7 +248,7 @@ void decThreadSafeObjectOrderedSet::Remove(deThreadSafeObject::Ref object){
 	pObjectCount--;
 }
 
-void decThreadSafeObjectOrderedSet::RemoveIfPresent(deThreadSafeObject::Ref object){
+void decThreadSafeObjectOrderedSet::RemoveIfPresent(deThreadSafeObject *object){
 	int p, position = IndexOf(object);
 	
 	if(position == -1){

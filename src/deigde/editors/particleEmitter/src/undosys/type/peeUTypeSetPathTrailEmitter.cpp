@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetPathTrailEmitter::peeUTypeSetPathTrailEmitter(peeType::Ref type, const char *newPath){
+peeUTypeSetPathTrailEmitter::peeUTypeSetPathTrailEmitter(peeType *type, const char *newPath){
 	if(!type || !newPath){
 		DETHROW(deeInvalidParam);
 	}

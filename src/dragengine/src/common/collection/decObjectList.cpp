@@ -100,7 +100,7 @@ deObject *decObjectList::GetAt(int index) const{
 	return pObjects[index];
 }
 
-void decObjectList::SetAt(int index, deObject::Ref object){
+void decObjectList::SetAt(int index, deObject *object){
 	if(index < 0 || index >= pObjectCount){
 		DETHROW(deeInvalidParam);
 	}
@@ -114,7 +114,7 @@ void decObjectList::SetAt(int index, deObject::Ref object){
 	}
 }
 
-int decObjectList::IndexOf(deObject::Ref object) const{
+int decObjectList::IndexOf(deObject *object) const{
 	int p;
 	
 	for(p=0; p<pObjectCount; p++){
@@ -126,7 +126,7 @@ int decObjectList::IndexOf(deObject::Ref object) const{
 	return -1;
 }
 
-int decObjectList::IndexOf(deObject::Ref object, int start) const{
+int decObjectList::IndexOf(deObject *object, int start) const{
 	if(start < 0 || start >= pObjectCount){
 		DETHROW(deeInvalidParam);
 	}
@@ -142,7 +142,7 @@ int decObjectList::IndexOf(deObject::Ref object, int start) const{
 	return -1;
 }
 
-bool decObjectList::Has(deObject::Ref object) const{
+bool decObjectList::Has(deObject *object) const{
 	int p;
 	
 	for(p=0; p<pObjectCount; p++){
@@ -154,7 +154,7 @@ bool decObjectList::Has(deObject::Ref object) const{
 	return false;
 }
 
-int decObjectList::CountOccurance(deObject::Ref object) const{
+int decObjectList::CountOccurance(deObject *object) const{
 	int p, occuranceCount = 0;
 	
 	for(p=0; p<pObjectCount; p++){
@@ -166,7 +166,7 @@ int decObjectList::CountOccurance(deObject::Ref object) const{
 	return occuranceCount;
 }
 
-void decObjectList::Add(deObject::Ref object){
+void decObjectList::Add(deObject *object){
 	if(pObjectCount == pObjectSize){
 		int newSize = pObjectSize * 3 / 2 + 1;
 		deObject **newArray = new deObject*[newSize];
@@ -182,7 +182,7 @@ void decObjectList::Add(deObject::Ref object){
 	pObjectCount++;
 }
 
-void decObjectList::Insert(deObject::Ref object, int index){
+void decObjectList::Insert(deObject *object, int index){
 	if(index < 0 || index > pObjectCount){
 		DETHROW(deeInvalidParam);
 	}

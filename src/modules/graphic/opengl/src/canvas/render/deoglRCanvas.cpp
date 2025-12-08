@@ -90,7 +90,7 @@ void deoglRCanvas::SetBlendMode(deCanvas::eBlendModes mode){
 	pBlendMode = mode;
 }
 
-void deoglRCanvas::SetMask(deoglRCanvas::Ref mask){
+void deoglRCanvas::SetMask(deoglRCanvas *mask){
 	if(mask == pMask){
 		return;
 	}

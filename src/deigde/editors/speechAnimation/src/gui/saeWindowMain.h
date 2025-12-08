@@ -133,7 +133,7 @@ public:
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
-	void SetSAnimation(saeSAnimation::Ref sanimation);
+	void SetSAnimation(saeSAnimation *sanimation);
 	
 	/** Create new speech animation. */
 	void CreateNewSAnimation();

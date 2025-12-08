@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldSetProperties::meUWorldSetProperties(meWorld::Ref world, const decStringDictionary &newValues) :
+meUWorldSetProperties::meUWorldSetProperties(meWorld *world, const decStringDictionary &newValues) :
 
 pNewValues(newValues)
 {

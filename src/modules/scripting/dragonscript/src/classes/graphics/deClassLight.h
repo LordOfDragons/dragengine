@@ -69,7 +69,7 @@ public:
 	deLight *GetLight(dsRealObject *myself) const;
 	
 	/** \brief Push light to stack or \em null light is \em NULL. */
-	void PushLight(dsRunTime *rt, deLight::Ref light);
+	void PushLight(dsRunTime *rt, deLight *light);
 	
 	inline dsClass *GetClassLightType() const{ return pClsLightType; }
 	inline dsClass *GetClassLightHintMovement() const{ return pClsLightHintMovement; }

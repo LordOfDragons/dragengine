@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTexPropertyAdd::gdeUOCTexPropertyAdd(gdeObjectClass::Ref objectClass, gdeProperty::Ref property) :
+gdeUOCTexPropertyAdd::gdeUOCTexPropertyAdd(gdeObjectClass *objectClass, gdeProperty *property) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !property){

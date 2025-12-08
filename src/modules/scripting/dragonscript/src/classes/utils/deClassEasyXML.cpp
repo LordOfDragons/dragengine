@@ -391,7 +391,7 @@ dedsXmlDocument *deClassEasyXML::GetDocument(dsRealObject *myself) const{
 	return ((sXMLNatDat*)p_GetNativeData(myself->GetBuffer()))->document;
 }
 
-void deClassEasyXML::PushDocument(dsRunTime *rt, dedsXmlDocument::Ref document){
+void deClassEasyXML::PushDocument(dsRunTime *rt, dedsXmlDocument *document){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	meWVNode(meWindowVegetation &windowVegetation, meHTVRule::Ref rule);
+	meWVNode(meWindowVegetation &windowVegetation, meHTVRule *rule);
 	
 protected:
 	/** \brief Clean up object. */

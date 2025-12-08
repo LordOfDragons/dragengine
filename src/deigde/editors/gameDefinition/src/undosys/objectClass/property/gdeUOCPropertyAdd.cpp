@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPropertyAdd::gdeUOCPropertyAdd(gdeObjectClass::Ref objectClass, gdeProperty::Ref property) :
+gdeUOCPropertyAdd::gdeUOCPropertyAdd(gdeObjectClass *objectClass, gdeProperty *property) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !property){

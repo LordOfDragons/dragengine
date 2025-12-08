@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetPosition::gdeUOCBillboardSetPosition(gdeObjectClass::Ref objectClass,
-gdeOCBillboard::Ref billboard, const decVector &newValue) :
+gdeUOCBillboardSetPosition::gdeUOCBillboardSetPosition(gdeObjectClass *objectClass,
+gdeOCBillboard *billboard, const decVector &newValue) :
 
 pBillboard(NULL)
 {

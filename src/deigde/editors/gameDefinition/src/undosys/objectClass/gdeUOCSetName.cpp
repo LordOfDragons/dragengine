@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetName::gdeUOCSetName(gdeObjectClass::Ref objectClass, const char *newValue) :
+gdeUOCSetName::gdeUOCSetName(gdeObjectClass *objectClass, const char *newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass){

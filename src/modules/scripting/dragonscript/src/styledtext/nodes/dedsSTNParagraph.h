@@ -59,13 +59,13 @@ public:
 	/** Retrieves the child node at the given index. */
 	dedsStyledTextNode *GetNodeAt(int index) const;
 	/** Retrieves the index of a child node or -1 if not found. */
-	int IndexOfNode(dedsStyledTextNode::Ref node) const;
+	int IndexOfNode(dedsStyledTextNode *node) const;
 	/** Determines if a child node exists in the container. */
-	bool HasNode(dedsStyledTextNode::Ref node) const;
+	bool HasNode(dedsStyledTextNode *node) const;
 	/** Adds a child node. */
-	void AddNode(dedsStyledTextNode::Ref node);
+	void AddNode(dedsStyledTextNode *node);
 	/** Removes a child node. */
-	void RemoveNode(dedsStyledTextNode::Ref node);
+	void RemoveNode(dedsStyledTextNode *node);
 	/** Removes all child nodes. */
 	void RemoveAllNodes();
 	/*@}*/

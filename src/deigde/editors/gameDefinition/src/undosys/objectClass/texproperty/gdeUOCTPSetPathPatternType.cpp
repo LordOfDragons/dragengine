@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPSetPathPatternType::gdeUOCTPSetPathPatternType(gdeObjectClass::Ref objectClass,
-gdeProperty::Ref property, gdeProperty::ePathPatternTypes newValue) :
+gdeUOCTPSetPathPatternType::gdeUOCTPSetPathPatternType(gdeObjectClass *objectClass,
+gdeProperty *property, gdeProperty::ePathPatternTypes newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !property){

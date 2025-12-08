@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAGameCmdSetCommand::ceUCAGameCmdSetCommand(ceConversationTopic::Ref topic, ceCAGameCommand::Ref action, const char *newCommand){
+ceUCAGameCmdSetCommand::ceUCAGameCmdSetCommand(ceConversationTopic *topic, ceCAGameCommand *action, const char *newCommand){
 	if(!topic || !newCommand){
 		DETHROW(deeInvalidParam);
 	}

@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUNavSpaceSetPosition::meUNavSpaceSetPosition(meNavigationSpace::Ref navspace, const decDVector &newPosition){
+meUNavSpaceSetPosition::meUNavSpaceSetPosition(meNavigationSpace *navspace, const decDVector &newPosition){
 	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}

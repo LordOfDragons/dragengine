@@ -86,7 +86,7 @@ devkCommandBuffer *devkCommandPool::GetCommandBuffer(){
 	return new devkCommandBuffer(*this);
 }
 
-void devkCommandPool::ReturnCommandBuffer(devkCommandBuffer::Ref commandBuffer){
+void devkCommandPool::ReturnCommandBuffer(devkCommandBuffer *commandBuffer){
 	DEASSERT_NOTNULL(commandBuffer)
 	if(&commandBuffer->GetPool() != this){
 		DETHROW_INFO(deeInvalidParam, "commandBuffer pool mismatch");

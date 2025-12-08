@@ -957,7 +957,7 @@ deNavigationSpace *deClassNavigationSpace::GetNavigationSpace(dsRealObject *myse
 	return ((const sNavSpaceNatDat *)p_GetNativeData(myself->GetBuffer()))->navspace;
 }
 
-void deClassNavigationSpace::PushNavigationSpace(dsRunTime *rt, deNavigationSpace::Ref navspace){
+void deClassNavigationSpace::PushNavigationSpace(dsRunTime *rt, deNavigationSpace *navspace){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

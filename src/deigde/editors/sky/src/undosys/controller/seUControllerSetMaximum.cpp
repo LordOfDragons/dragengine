@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerSetMaximum::seUControllerSetMaximum(seController::Ref controller, float newMaximum) :
+seUControllerSetMaximum::seUControllerSetMaximum(seController *controller, float newMaximum) :
 
 pNewMaximum(newMaximum)
 {

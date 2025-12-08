@@ -290,7 +290,7 @@ deoglShaderPreprocessorSymbol *deoglShaderPreprocessor::GetSymbolNamed(const cha
 	return (deoglShaderPreprocessorSymbol*)object;
 }
 
-void deoglShaderPreprocessor::SetSymbol(deoglShaderPreprocessorSymbol::Ref symbol){
+void deoglShaderPreprocessor::SetSymbol(deoglShaderPreprocessorSymbol *symbol){
 	if(!symbol){
 		DETHROW(deeInvalidParam);
 	}

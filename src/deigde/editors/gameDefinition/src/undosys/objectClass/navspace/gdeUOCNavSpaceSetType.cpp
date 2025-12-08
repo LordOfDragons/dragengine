@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetType::gdeUOCNavSpaceSetType(gdeObjectClass::Ref objectClass,
-gdeOCNavigationSpace::Ref navspacer, deNavigationSpace::eSpaceTypes newValue) :
+gdeUOCNavSpaceSetType::gdeUOCNavSpaceSetType(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspacer, deNavigationSpace::eSpaceTypes newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !navspacer){

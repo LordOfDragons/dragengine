@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCBillboard(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCBillboard::Ref billboard, int index);
+		gdeOCBillboard *billboard, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

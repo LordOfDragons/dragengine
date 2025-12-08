@@ -76,7 +76,7 @@ private:
 	eCameraHandling pCameraHandling;
 	ceTextBoxText::Ref pTextBoxText;
 	cePlaybackCamera *pCamera;
-	cePlaybackActionStack::Ref pMainActionStack, pActiveActionStack;
+	cePlaybackActionStack *pMainActionStack, pActiveActionStack;
 	decObjectOrderedSet pSideActionStacks;
 	cePlaybackCommandList pCommandList;
 	cePlaybackVariableList pVariableList;
@@ -116,7 +116,7 @@ public:
 	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** Set topic to play back. */
-	void SetTopic(ceConversationTopic::Ref topic);
+	void SetTopic(ceConversationTopic *topic);
 	
 	
 	
@@ -183,7 +183,7 @@ public:
 	
 	
 	/** Play single action. */
-	void PlaySingleAction(ceConversationAction::Ref action, float time);
+	void PlaySingleAction(ceConversationAction *action, float time);
 	
 	
 	
@@ -235,7 +235,7 @@ public:
 	
 private:
 	void pProcessActions(float elapsed);
-	void SetLastPlayedAction(ceConversationTopic::Ref topic, ceConversationAction::Ref action);
+	void SetLastPlayedAction(ceConversationTopic *topic, ceConversationAction *action);
 };
 
 #endif

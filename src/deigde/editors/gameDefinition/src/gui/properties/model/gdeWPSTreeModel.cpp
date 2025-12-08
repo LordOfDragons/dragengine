@@ -95,7 +95,7 @@ public:
 ////////////////////////////
 
 gdeWPSTreeModel::gdeWPSTreeModel(igdeTreeList &treeList, gdeWindowMain &windowMain,
-	gdeGameDefinition::Ref gameDefinition) :
+	gdeGameDefinition *gameDefinition) :
 pTreeList(treeList),
 pWindowMain(windowMain),
 pListener(NULL),

@@ -58,7 +58,7 @@ deoglRDSRenderableCamera::~deoglRDSRenderableCamera(){
 // Management
 ///////////////
 
-void deoglRDSRenderableCamera::SetCamera(deoglRCamera::Ref camera){
+void deoglRDSRenderableCamera::SetCamera(deoglRCamera *camera){
 	if(camera == pCamera){
 		return;
 	}

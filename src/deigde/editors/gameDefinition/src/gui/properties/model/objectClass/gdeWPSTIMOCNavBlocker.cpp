@@ -47,7 +47,7 @@
 ////////////////////////////
 
 gdeWPSTIMOCNavBlocker::gdeWPSTIMOCNavBlocker(gdeWPSTreeModel &tree,
-	gdeObjectClass *objectClass, gdeOCNavigationBlocker::Ref navBlocker, int index) :
+	gdeObjectClass *objectClass, gdeOCNavigationBlocker *navBlocker, int index) :
 gdeWPSTIMOCSubObject(tree, etObjectClassNavigationBlocker, objectClass, index)
 {
 	if(!navBlocker){

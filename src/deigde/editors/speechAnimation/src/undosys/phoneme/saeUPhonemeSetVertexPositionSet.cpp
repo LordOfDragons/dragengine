@@ -34,7 +34,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeSetVertexPositionSet::saeUPhonemeSetVertexPositionSet(saePhoneme::Ref phoneme, const char *newName) :
+saeUPhonemeSetVertexPositionSet::saeUPhonemeSetVertexPositionSet(saePhoneme *phoneme, const char *newName) :
 
 pNewName(newName)
 {

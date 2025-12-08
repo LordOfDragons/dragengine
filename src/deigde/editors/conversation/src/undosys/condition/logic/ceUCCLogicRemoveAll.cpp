@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCLogicRemoveAll::ceUCCLogicRemoveAll(ceConversationTopic::Ref topic,
-ceConversationAction::Ref action, ceCConditionLogic::Ref logic) :
+ceUCCLogicRemoveAll::ceUCCLogicRemoveAll(ceConversationTopic *topic,
+ceConversationAction *action, ceCConditionLogic *logic) :
 
 pAction(NULL)
 {

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetPathSound::gdeUOCSpeakerSetPathSound(gdeObjectClass::Ref objectClass,
-gdeOCSpeaker::Ref speaker, const char *newValue) :
+gdeUOCSpeakerSetPathSound::gdeUOCSpeakerSetPathSound(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, const char *newValue) :
 
 pSpeaker(NULL)
 {

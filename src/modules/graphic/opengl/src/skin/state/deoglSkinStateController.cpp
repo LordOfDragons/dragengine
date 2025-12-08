@@ -114,7 +114,7 @@ deoglSharedVideoPlayer *deoglSkinStateController::GetSharedVideoPlayerAt(int ind
 	return pSharedVideoPlayers[index];
 }
 
-void deoglSkinStateController::SetVideoPlayerAt(int index, deVideoPlayer::Ref videoPlayer){
+void deoglSkinStateController::SetVideoPlayerAt(int index, deVideoPlayer *videoPlayer){
 	pVideoPlayers.SetAt(index, videoPlayer);
 }
 

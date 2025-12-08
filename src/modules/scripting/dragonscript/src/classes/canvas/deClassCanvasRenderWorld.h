@@ -72,7 +72,7 @@ public:
 	 * \brief Push canvas render world onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushCanvas(dsRunTime *rt, deCanvasRenderWorld::Ref canvas);
+	void PushCanvas(dsRunTime *rt, deCanvasRenderWorld *canvas);
 	/*@}*/
 	
 private:

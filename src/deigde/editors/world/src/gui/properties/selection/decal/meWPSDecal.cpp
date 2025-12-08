@@ -469,7 +469,7 @@ pWPSelection(wpselection)
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
 	pListener.TakeOver(new meWPSDecalListener(*this));
 	
@@ -538,7 +538,7 @@ meWPSDecal::~meWPSDecal(){
 // Management
 ///////////////
 
-void meWPSDecal::SetWorld(meWorld::Ref world){
+void meWPSDecal::SetWorld(meWorld *world){
 	if(world == pWorld){
 		return;
 	}

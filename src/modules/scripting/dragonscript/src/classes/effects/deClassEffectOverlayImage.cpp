@@ -211,7 +211,7 @@ deEffectOverlayImage *deClassEffectOverlayImage::GetEffect(dsRealObject *myself)
 	return ((sEffOverImgMatrixNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
-void deClassEffectOverlayImage::PushEffect(dsRunTime *rt, deEffectOverlayImage::Ref effect){
+void deClassEffectOverlayImage::PushEffect(dsRunTime *rt, deEffectOverlayImage *effect){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

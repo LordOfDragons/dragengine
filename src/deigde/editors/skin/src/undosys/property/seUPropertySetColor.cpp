@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetColor::seUPropertySetColor(seProperty::Ref property, const decColor &newColor){
+seUPropertySetColor::seUPropertySetColor(seProperty *property, const decColor &newColor){
 	if(!property) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;

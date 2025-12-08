@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCAddTexture(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component, gdeOCComponentTexture::Ref texture);
+	gdeUOCCAddTexture(gdeObjectClass *objectClass, gdeOCComponent *component, gdeOCComponentTexture *texture);
 	
 protected:
 	/** \brief Clean up undo action. */

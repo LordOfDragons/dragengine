@@ -66,7 +66,7 @@ public:
 	deSynthesizer *GetSynthesizer(dsRealObject *object) const;
 	
 	/** \brief Push synthesizer on the stack (pushes \em nil if instance is \em NULL). */
-	void PushSynthesizer(dsRunTime *rt, deSynthesizer::Ref synthesizer);
+	void PushSynthesizer(dsRunTime *rt, deSynthesizer *synthesizer);
 	/*@}*/
 	
 	

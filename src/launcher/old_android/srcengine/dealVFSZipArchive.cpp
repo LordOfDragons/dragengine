@@ -222,7 +222,7 @@ dealVFSZipArchive::cArchiveDirectory *dealVFSZipArchive::cArchiveDirectory
 	return directory;
 }
 
-void dealVFSZipArchive::cArchiveDirectory::AddDirectory(cArchiveDirectory::Ref directory){
+void dealVFSZipArchive::cArchiveDirectory::AddDirectory(cArchiveDirectory *directory){
 	if(!directory || HasDirectoryNamed(directory->GetFilename()) || HasFileNamed(directory->GetFilename())){
 		DETHROW(deeInvalidParam);
 	}
@@ -291,7 +291,7 @@ dealVFSZipArchive::cArchiveFile *dealVFSZipArchive::cArchiveDirectory
 	return directory->GetFileNamed(path.GetComponentAt(count - 1));
 }
 
-void dealVFSZipArchive::cArchiveDirectory::AddFile(cArchiveFile::Ref file){
+void dealVFSZipArchive::cArchiveDirectory::AddFile(cArchiveFile *file){
 	if(!file || HasDirectoryNamed(file->GetFilename()) || HasFileNamed(file->GetFilename())){
 		DETHROW(deeInvalidParam);
 	}
@@ -307,7 +307,7 @@ void dealVFSZipArchive::cArchiveDirectory::AddFile(cArchiveFile::Ref file){
 ////////////////////////////
 
 dealVFSZipArchive::dealVFSZipArchive(dealEngineInstance &engineInstance,
-decBaseFileReader::Ref fileReader, const decPath &pathRoot) :
+decBaseFileReader *fileReader, const decPath &pathRoot) :
 deVFSContainer(pathRoot),
 pEngineInstance(engineInstance),
 pZipFile(NULL)

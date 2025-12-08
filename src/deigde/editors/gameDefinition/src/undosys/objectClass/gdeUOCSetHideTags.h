@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSetHideTags(gdeObjectClass::Ref objectClass, const decStringSet &newValue);
+	gdeUOCSetHideTags(gdeObjectClass *objectClass, const decStringSet &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

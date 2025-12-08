@@ -314,7 +314,7 @@ public:
 		}
 		
 		igdeEnvironment &env = menu.GetEnvironment();
-		igdeMenuCascade::Ref subMenu, subMenu2;
+		igdeMenuCascade *subMenu, subMenu2;
 		igdeUIHelper &helper = env.GetUIHelper();
 		
 		
@@ -455,7 +455,7 @@ meWindowVegetation::~meWindowVegetation(){
 // Management
 ///////////////
 
-void meWindowVegetation::SetWorld(meWorld::Ref world){
+void meWindowVegetation::SetWorld(meWorld *world){
 	if(world == pWorld){
 		return;
 	}
@@ -486,7 +486,7 @@ void meWindowVegetation::SetSector(const decPoint &sector){
 	SetVLayer(vlayer);
 }
 
-void meWindowVegetation::SetVLayer(meHTVegetationLayer::Ref vlayer){
+void meWindowVegetation::SetVLayer(meHTVegetationLayer *vlayer){
 	if(!pWorld && vlayer){
 		DETHROW(deeInvalidParam);
 	}

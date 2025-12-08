@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetBoneName::gdeUOCSpeakerSetBoneName(gdeObjectClass::Ref objectClass,
-gdeOCSpeaker::Ref speaker, const char *newValue) :
+gdeUOCSpeakerSetBoneName::gdeUOCSpeakerSetBoneName(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, const char *newValue) :
 
 pSpeaker(NULL)
 {

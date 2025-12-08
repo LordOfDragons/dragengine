@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUTargetAddLink::seUTargetAddLink(seLayer::Ref layer, deSkyLayer::eTargets target, seLink::Ref link) :
+seUTargetAddLink::seUTargetAddLink(seLayer *layer, deSkyLayer::eTargets target, seLink *link) :
 
 pTarget(target)
 {

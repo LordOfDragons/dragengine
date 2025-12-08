@@ -38,7 +38,7 @@ const char * const gdeClipboardDataProperty::TYPE_NAME = "Property";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataProperty::gdeClipboardDataProperty(gdeProperty::Ref property) :
+gdeClipboardDataProperty::gdeClipboardDataProperty(gdeProperty *property) :
 igdeClipboardData(TYPE_NAME)
 {
 	if(!property){

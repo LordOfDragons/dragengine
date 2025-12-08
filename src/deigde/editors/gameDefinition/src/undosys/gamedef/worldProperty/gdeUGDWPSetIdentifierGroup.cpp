@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUGDWPSetIdentifierGroup::gdeUGDWPSetIdentifierGroup(
-gdeGameDefinition::Ref gamedef, gdeProperty::Ref property, const char *newValue) :
+gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue) :
 
 pProperty(NULL)
 {

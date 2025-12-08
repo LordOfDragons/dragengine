@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUBodySetColor(seBody::Ref body, const decColor &newColor);
+	seUBodySetColor(seBody *body, const decColor &newColor);
 	
 protected:
 	/** \brief Clean up undo action. */

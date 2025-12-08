@@ -184,7 +184,7 @@ void deoglRWorld::MarkSkyOrderDirty(){
 
 
 
-void deoglRWorld::SetHeightTerrain(deoglRHeightTerrain::Ref heightTerrain){
+void deoglRWorld::SetHeightTerrain(deoglRHeightTerrain *heightTerrain){
 	if(heightTerrain == pHeightTerrain){
 		return;
 	}
@@ -472,7 +472,7 @@ void deoglRWorld::PrepareForRenderRender(deoglRenderPlan &plan, const deoglRende
 		SPECIAL_TIMER_PRINT("PropFields")
 }
 
-void deoglRWorld::AddPrepareForRenderComponent(deoglRComponent::Ref component){
+void deoglRWorld::AddPrepareForRenderComponent(deoglRComponent *component){
 	if(!component){
 		DETHROW(deeInvalidParam);
 	}
@@ -481,7 +481,7 @@ void deoglRWorld::AddPrepareForRenderComponent(deoglRComponent::Ref component){
 	}
 }
 
-void deoglRWorld::RemovePrepareForRenderComponent(deoglRComponent::Ref component){
+void deoglRWorld::RemovePrepareForRenderComponent(deoglRComponent *component){
 	if(!component){
 		DETHROW(deeInvalidParam);
 	}
@@ -490,7 +490,7 @@ void deoglRWorld::RemovePrepareForRenderComponent(deoglRComponent::Ref component
 	}
 }
 
-void deoglRWorld::AddPrepareForRenderBillboard(deoglRBillboard::Ref billboard){
+void deoglRWorld::AddPrepareForRenderBillboard(deoglRBillboard *billboard){
 	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
@@ -499,7 +499,7 @@ void deoglRWorld::AddPrepareForRenderBillboard(deoglRBillboard::Ref billboard){
 	}
 }
 
-void deoglRWorld::RemovePrepareForRenderBillboard(deoglRBillboard::Ref billboard){
+void deoglRWorld::RemovePrepareForRenderBillboard(deoglRBillboard *billboard){
 	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
@@ -722,7 +722,7 @@ void deoglRWorld::RemoveRemovalMarkedParticleEmitterInstances(){
 // Components
 ///////////////
 
-void deoglRWorld::AddComponent(deoglRComponent::Ref component){
+void deoglRWorld::AddComponent(deoglRComponent *component){
 	DEASSERT_NOTNULL(component)
 	
 	if(component->GetParentWorld()){
@@ -750,7 +750,7 @@ void deoglRWorld::AddComponent(deoglRComponent::Ref component){
 	AddPrepareForRenderComponent(component);
 }
 
-void deoglRWorld::RemoveComponent(deoglRComponent::Ref component){
+void deoglRWorld::RemoveComponent(deoglRComponent *component){
 	DEASSERT_TRUE(component->GetParentWorld() == this)
 	
 	RemovePrepareForRenderComponent(component);
@@ -1091,7 +1091,7 @@ void deoglRWorld::RemoveRemovalMarkedLumimeters(){
 // Billboards
 ///////////////
 
-void deoglRWorld::AddBillboard(deoglRBillboard::Ref billboard){
+void deoglRWorld::AddBillboard(deoglRBillboard *billboard){
 	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
@@ -1123,7 +1123,7 @@ void deoglRWorld::AddBillboard(deoglRBillboard::Ref billboard){
 	AddPrepareForRenderBillboard(billboard);
 }
 
-void deoglRWorld::RemoveBillboard(deoglRBillboard::Ref billboard){
+void deoglRWorld::RemoveBillboard(deoglRBillboard *billboard){
 	if(billboard->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1246,7 +1246,7 @@ void deoglRWorld::RemoveRemovalMarkedSkies(){
 	}
 }
 
-void deoglRWorld::SkiesNotifyUpdateStaticComponent(deoglRComponent::Ref component){
+void deoglRWorld::SkiesNotifyUpdateStaticComponent(deoglRComponent *component){
 	int count = pSkies.GetCount();
 	int i;
 	for(i=0; i<count; i++){
@@ -1387,7 +1387,7 @@ void deoglRWorld::RemoveAllGICascades(){
 	pGIStates.RemoveAll();
 }
 
-void deoglRWorld::GIStatesNotifyComponentEnteredWorld(deoglRComponent::Ref component){
+void deoglRWorld::GIStatesNotifyComponentEnteredWorld(deoglRComponent *component){
 	const int count = pGIStates.GetCount();
 	int i;
 	for(i=0; i<count; i++){
@@ -1395,7 +1395,7 @@ void deoglRWorld::GIStatesNotifyComponentEnteredWorld(deoglRComponent::Ref compo
 	}
 }
 
-void deoglRWorld::GIStatesNotifyComponentChangedLayerMask(deoglRComponent::Ref component){
+void deoglRWorld::GIStatesNotifyComponentChangedLayerMask(deoglRComponent *component){
 	const int count = pGIStates.GetCount();
 	int i;
 	for(i=0; i<count; i++){
@@ -1403,7 +1403,7 @@ void deoglRWorld::GIStatesNotifyComponentChangedLayerMask(deoglRComponent::Ref c
 	}
 }
 
-void deoglRWorld::GIStatesNotifyComponentBecameVisible(deoglRComponent::Ref component){
+void deoglRWorld::GIStatesNotifyComponentBecameVisible(deoglRComponent *component){
 	const int count = pGIStates.GetCount();
 	int i;
 	for(i=0; i<count; i++){
@@ -1411,7 +1411,7 @@ void deoglRWorld::GIStatesNotifyComponentBecameVisible(deoglRComponent::Ref comp
 	}
 }
 
-void deoglRWorld::GIStatesNotifyComponentChangedGIImportance(deoglRComponent::Ref component){
+void deoglRWorld::GIStatesNotifyComponentChangedGIImportance(deoglRComponent *component){
 	const int count = pGIStates.GetCount();
 	int i;
 	for(i=0; i<count; i++){

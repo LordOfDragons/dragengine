@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveCamera(gdeObjectClass::Ref objectClass, gdeOCCamera::Ref camera);
+	gdeUOCRemoveCamera(gdeObjectClass *objectClass, gdeOCCamera *camera);
 	
 protected:
 	/** \brief Clean up undo action. */

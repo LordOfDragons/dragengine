@@ -44,7 +44,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTImportVisibilityImage::meUHTImportVisibilityImage(meWorld::Ref world, meHeightTerrainSector *sector, deImage *image){
+meUHTImportVisibilityImage::meUHTImportVisibilityImage(meWorld *world, meHeightTerrainSector *sector, deImage *image){
 	if(!world || !sector || !image) DETHROW(deeInvalidParam);
 	
 	if(image->GetComponentCount() != 1) DETHROW(deeInvalidParam);

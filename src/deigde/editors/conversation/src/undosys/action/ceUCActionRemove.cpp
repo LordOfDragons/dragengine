@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionRemove::ceUCActionRemove(ceConversationTopic::Ref topic, ceConversationAction::Ref action){
+ceUCActionRemove::ceUCActionRemove(ceConversationTopic *topic, ceConversationAction *action){
 	if(!topic || !action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

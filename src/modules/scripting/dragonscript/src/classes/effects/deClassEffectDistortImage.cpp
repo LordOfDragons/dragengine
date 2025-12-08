@@ -216,7 +216,7 @@ deEffectDistortImage *deClassEffectDistortImage::GetEffect(dsRealObject *myself)
 	return ((sEffDistImgMatrixNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
-void deClassEffectDistortImage::PushEffect(dsRunTime *rt, deEffectDistortImage::Ref effect){
+void deClassEffectDistortImage::PushEffect(dsRunTime *rt, deEffectDistortImage *effect){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

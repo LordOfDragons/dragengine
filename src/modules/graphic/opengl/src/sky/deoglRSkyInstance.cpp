@@ -96,7 +96,7 @@ void deoglRSkyInstance::SetParentWorld(deoglRWorld *world){
 
 
 
-void deoglRSkyInstance::SetRSky(deoglRSky::Ref rsky){
+void deoglRSkyInstance::SetRSky(deoglRSky *rsky){
 	// called during synchronization time
 	if(rsky == pRSky){
 		return;

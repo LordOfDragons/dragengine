@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupMoveRuleDown::aeURuleGroupMoveRuleDown(aeRuleGroup::Ref group, aeRule::Ref rule){
+aeURuleGroupMoveRuleDown::aeURuleGroupMoveRuleDown(aeRuleGroup *group, aeRule *rule){
 	if(!group || !rule){
 		DETHROW(deeInvalidParam);
 	}

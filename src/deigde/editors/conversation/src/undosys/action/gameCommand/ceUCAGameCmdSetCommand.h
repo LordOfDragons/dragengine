@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAGameCmdSetCommand(ceConversationTopic::Ref topic, ceCAGameCommand::Ref action, const char *newCommand);
+	ceUCAGameCmdSetCommand(ceConversationTopic *topic, ceCAGameCommand *action, const char *newCommand);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCAGameCmdSetCommand();
 	/*@}*/

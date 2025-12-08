@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceTypeSetType::meUHTNavSpaceTypeSetType(meHeightTerrainNavSpaceType::Ref type, int newType) :
+meUHTNavSpaceTypeSetType::meUHTNavSpaceTypeSetType(meHeightTerrainNavSpaceType *type, int newType) :
 
 pNewType(newType)
 {

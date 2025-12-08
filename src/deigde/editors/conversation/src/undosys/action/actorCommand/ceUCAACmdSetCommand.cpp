@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAACmdSetCommand::ceUCAACmdSetCommand(ceConversationTopic::Ref topic, ceCAActorCommand::Ref action, const char *newCommand){
+ceUCAACmdSetCommand::ceUCAACmdSetCommand(ceConversationTopic *topic, ceCAActorCommand *action, const char *newCommand){
 	if(!topic || !newCommand) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

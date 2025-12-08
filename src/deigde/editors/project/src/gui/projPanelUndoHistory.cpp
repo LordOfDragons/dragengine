@@ -54,7 +54,7 @@ projPanelUndoHistory::~projPanelUndoHistory(){
 // Management
 ///////////////
 
-void projPanelUndoHistory::SetProject(projProject::Ref project){
+void projPanelUndoHistory::SetProject(projProject *project){
 	if(project == pProject){
 		return;
 	}

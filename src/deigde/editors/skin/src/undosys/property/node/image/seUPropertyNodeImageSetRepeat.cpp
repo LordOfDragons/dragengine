@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeImageSetRepeat::seUPropertyNodeImageSetRepeat(
-sePropertyNodeImage::Ref node, const decPoint &newValue) :
+sePropertyNodeImage *node, const decPoint &newValue) :
 
 pNewValue(newValue)
 {

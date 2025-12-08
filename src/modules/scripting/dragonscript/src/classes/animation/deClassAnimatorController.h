@@ -68,10 +68,10 @@ public:
 		deAnimatorInstance *&instance, int &index) const;
 	
 	/** \brief Push controller. */
-	void PushController(dsRunTime *rt, deAnimator::Ref animator, int index);
+	void PushController(dsRunTime *rt, deAnimator *animator, int index);
 	
 	/** \brief Push controller. */
-	void PushController(dsRunTime *rt, deAnimatorInstance::Ref instance, int index);
+	void PushController(dsRunTime *rt, deAnimatorInstance *instance, int index);
 	/*@}*/
 	
 	

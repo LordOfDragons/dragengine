@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPCFPSetName::gdeUOCPCFPSetName(gdeObjectClass::Ref objectClass,
-gdeProperty::Ref property, gdeFilePattern::Ref filePattern, const char *newValue) :
+gdeUOCPCFPSetName::gdeUOCPCFPSetName(gdeObjectClass *objectClass,
+gdeProperty *property, gdeFilePattern *filePattern, const char *newValue) :
 
 pProperty(NULL)
 {

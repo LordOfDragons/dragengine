@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetShear::seUPropertyNodeSetShear(sePropertyNode::Ref node, float newValue) :
+seUPropertyNodeSetShear::seUPropertyNodeSetShear(sePropertyNode *node, float newValue) :
 
 pNewValue(newValue)
 {

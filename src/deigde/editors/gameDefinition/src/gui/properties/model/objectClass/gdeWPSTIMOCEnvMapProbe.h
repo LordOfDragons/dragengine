@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCEnvMapProbe(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCEnvMapProbe::Ref envMapProbe, int index);
+		gdeOCEnvMapProbe *envMapProbe, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

@@ -58,7 +58,7 @@ public:
 	inline deoglRVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Set video player. */
-	void SetVideoPlayer(deoglRVideoPlayer::Ref videoPlayer);
+	void SetVideoPlayer(deoglRVideoPlayer *videoPlayer);
 	
 	/** Prepare for render. */
 	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;

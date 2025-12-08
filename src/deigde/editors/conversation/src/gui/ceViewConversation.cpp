@@ -272,7 +272,7 @@ ceViewConversation::~ceViewConversation(){
 void ceViewConversation::ResetView(){
 }
 
-void ceViewConversation::SetConversation(ceConversation::Ref conversation){
+void ceViewConversation::SetConversation(ceConversation *conversation){
 	if(conversation == pConversation){
 		return;
 	}

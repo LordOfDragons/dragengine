@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitRemove::ceUCAWaitRemove(ceConversationTopic::Ref topic, ceCAWait::Ref wait, ceConversationAction::Ref action){
+ceUCAWaitRemove::ceUCAWaitRemove(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action){
 	if(!topic || !wait || !action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

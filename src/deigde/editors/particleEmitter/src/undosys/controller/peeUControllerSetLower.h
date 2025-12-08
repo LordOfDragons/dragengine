@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	peeUControllerSetLower(peeController::Ref controller, float newValue);
+	peeUControllerSetLower(peeController *controller, float newValue);
 	
 	/** \brief Clean up undo action. */
     virtual ~peeUControllerSetLower();

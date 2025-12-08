@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerMoveUp::peeUControllerMoveUp(peeController::Ref controller){
+peeUControllerMoveUp::peeUControllerMoveUp(peeController *controller){
 	if(!controller) DETHROW(deeInvalidParam);
 	
 	peeEmitter *emitter = controller->GetEmitter();

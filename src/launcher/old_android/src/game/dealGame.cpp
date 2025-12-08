@@ -214,13 +214,13 @@ void dealGame::SetCanRun(bool canRun){
 
 
 
-void dealGame::SetGlobalProfile(dealGameProfile::Ref profile){
+void dealGame::SetGlobalProfile(dealGameProfile *profile){
 	if(profile != pGlobalProfile){
 		pGlobalProfile = profile;
 	}
 }
 
-void dealGame::SetGameProfile(dealGameProfile::Ref profile){
+void dealGame::SetGameProfile(dealGameProfile *profile){
 	if(profile != pGameProfile){
 		pGameProfile = profile;
 	}

@@ -78,7 +78,7 @@ deWorld *spTypeWorld::WorldFromObject(PyObject *object){
 	}
 }
 
-PyObject *spTypeWorld::ObjectFromWorld(deWorld::Ref world){
+PyObject *spTypeWorld::ObjectFromWorld(deWorld *world){
 	if(world){
 		PyObject *pyoWorld = CreatePyObject();
 		

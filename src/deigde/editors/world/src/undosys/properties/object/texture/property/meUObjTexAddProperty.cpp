@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjTexAddProperty::meUObjTexAddProperty(meObjectTexture::Ref texture, const char *key, const char *value) :
+meUObjTexAddProperty::meUObjTexAddProperty(meObjectTexture *texture, const char *key, const char *value) :
 pTexture(texture),
 pKey(key),
 pValue(value)

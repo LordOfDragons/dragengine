@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetCamOrbitTo(ceCameraShot::Ref cameraShot, const decVector &newRot);
+	ceUCCShotSetCamOrbitTo(ceCameraShot *cameraShot, const decVector &newRot);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetCamOrbitTo();

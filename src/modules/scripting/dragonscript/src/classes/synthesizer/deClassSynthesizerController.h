@@ -68,10 +68,10 @@ public:
 		deSynthesizerInstance *&instance, int &index) const;
 	
 	/** \brief Push controller. */
-	void PushController(dsRunTime *rt, deSynthesizer::Ref synthesizer, int index);
+	void PushController(dsRunTime *rt, deSynthesizer *synthesizer, int index);
 	
 	/** \brief Push controller. */
-	void PushController(dsRunTime *rt, deSynthesizerInstance::Ref instance, int index);
+	void PushController(dsRunTime *rt, deSynthesizerInstance *instance, int index);
 	/*@}*/
 	
 	

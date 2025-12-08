@@ -437,7 +437,7 @@ void deoglRComponent::SetModel(deoglRModel *model){
 	pRequiresPrepareForRender();
 }
 
-void deoglRComponent::SetSkin(deoglRSkin::Ref skin){
+void deoglRComponent::SetSkin(deoglRSkin *skin){
 	if(skin == pSkin){
 		return;
 	}
@@ -462,7 +462,7 @@ void deoglRComponent::RigChanged(){
 	MarkOccMeshParamBlockDirty();
 }
 
-void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSkin::Ref dynamicSkin){
+void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSkin *dynamicSkin){
 	// NOTE this is called from the main thread during synchronization
 	if(dynamicSkin == pDynamicSkin){
 		return;
@@ -490,7 +490,7 @@ void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSki
 	pSkinRendered.SetDirty();
 }
 
-void deoglRComponent::SetOcclusionMesh(deoglROcclusionMesh::Ref occlusionMesh){
+void deoglRComponent::SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh){
 	if(occlusionMesh == pOcclusionMesh){
 		return;
 	}
@@ -1064,7 +1064,7 @@ bool deoglRComponent::IsGIStatic() const{
 
 
 
-void deoglRComponent::SetRenderEnvMap(deoglEnvironmentMap::Ref envmap){
+void deoglRComponent::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	// note about the switch process. we have to wait setting the fading environment map until the
 	// new environment map has been set. if this is not done the SetRenderEnvMapFade function tries
 	// to add the component to the component list of the same environment map as the current one
@@ -1100,7 +1100,7 @@ void deoglRComponent::SetRenderEnvMap(deoglEnvironmentMap::Ref envmap){
 	}
 }
 
-void deoglRComponent::SetRenderEnvMapFade(deoglEnvironmentMap::Ref envmap){
+void deoglRComponent::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
 	if(envmap == pRenderEnvMapFade){
 		return;
 	}
@@ -1158,7 +1158,7 @@ void deoglRComponent::InvalidateRenderEnvMap(){
 	pRequiresPrepareForRender();
 }
 
-void deoglRComponent::InvalidateRenderEnvMapIf(deoglEnvironmentMap::Ref envmap){
+void deoglRComponent::InvalidateRenderEnvMapIf(deoglEnvironmentMap *envmap){
 	if(pRenderEnvMap == envmap || pRenderEnvMapFade == envmap){
 		InvalidateRenderEnvMap();
 	}

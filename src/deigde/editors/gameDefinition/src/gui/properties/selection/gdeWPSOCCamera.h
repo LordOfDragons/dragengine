@@ -48,9 +48,9 @@ private:
 	
 	gdeGameDefinition::Ref pGameDefinition;
 	
-	igdeTextField::Ref pEditFov, pEditFovRatio, pEditImageDistance, pEditViewDistance;
-	igdeEditVector::Ref pEditPosition, pEditRotation;
-	igdeComboBox::Ref pCBPropertyName, pCBPropertyPosition, pCBPropertyRotation;
+	igdeTextField *pEditFov, pEditFovRatio, pEditImageDistance, pEditViewDistance;
+	igdeEditVector *pEditPosition, pEditRotation;
+	igdeComboBox *pCBPropertyName, pCBPropertyPosition, pCBPropertyRotation;
 	
 	
 	
@@ -74,7 +74,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition(gdeGameDefinition::Ref gameDefinition);
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	

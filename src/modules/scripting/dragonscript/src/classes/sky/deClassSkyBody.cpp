@@ -323,7 +323,7 @@ void deClassSkyBody::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassSkyBody::PushBody(dsRunTime *rt, deSky::Ref sky, int layer, int index){
+void deClassSkyBody::PushBody(dsRunTime *rt, deSky *sky, int layer, int index){
 	if(!rt || !sky){
 		DSTHROW(dueInvalidParam);
 	}

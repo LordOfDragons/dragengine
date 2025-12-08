@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetFov::gdeUOCCameraSetFov(gdeObjectClass::Ref objectClass, gdeOCCamera::Ref camera, float newValue) :
+gdeUOCCameraSetFov::gdeUOCCameraSetFov(gdeObjectClass *objectClass, gdeOCCamera *camera, float newValue) :
 
 pCamera(NULL)
 {

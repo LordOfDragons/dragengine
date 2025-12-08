@@ -134,13 +134,13 @@ public:
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL if there is none. */
-	void SetSkin(deoglRSkin::Ref skin);
+	void SetSkin(deoglRSkin *skin);
 	
 	/** Dynamic skin or NULL if there is none. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or NULL if there is none. */
-	void SetDynamicSkin(deoglRDynamicSkin::Ref dynamicSkin);
+	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
 	
 	/** Skin state or NULL if there is none. */
 	inline deoglSkinState *GetSkinState() const{ return pSkinState; }

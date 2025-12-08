@@ -117,7 +117,7 @@ public:
 	inline deImage *GetHeightImage() const{ return pHeightImage; }
 	
 	/** \brief Set height image or NULL if not set. */
-	void SetHeightImage(deImage::Ref heightImage);
+	void SetHeightImage(deImage *heightImage);
 	
 	/** \brief Calculates the extends. */
 	void CalculateExtends(decVector &minExtend, decVector &maxExtend);

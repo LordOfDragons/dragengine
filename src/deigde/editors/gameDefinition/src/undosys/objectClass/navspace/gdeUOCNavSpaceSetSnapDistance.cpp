@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetSnapDistance::gdeUOCNavSpaceSetSnapDistance(gdeObjectClass::Ref objectClass,
-gdeOCNavigationSpace::Ref navspace, float newValue) :
+gdeUOCNavSpaceSetSnapDistance::gdeUOCNavSpaceSetSnapDistance(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, float newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !navspace){

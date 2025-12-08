@@ -67,7 +67,7 @@ reRigBone *reSelectionBones::GetBoneAt(int index) const{
 	return pBones[index];
 }
 
-bool reSelectionBones::HasBone(reRigBone::Ref bone) const{
+bool reSelectionBones::HasBone(reRigBone *bone) const{
 	if(!bone) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -80,7 +80,7 @@ bool reSelectionBones::HasBone(reRigBone::Ref bone) const{
 	return false;
 }
 	
-int reSelectionBones::IndexOfBone(reRigBone::Ref bone) const{
+int reSelectionBones::IndexOfBone(reRigBone *bone) const{
 	if(!bone) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -106,7 +106,7 @@ int reSelectionBones::IndexOfBoneWith(deColliderVolume *collider) const{
 	return -1;
 }
 
-void reSelectionBones::AddBone(reRigBone::Ref bone){
+void reSelectionBones::AddBone(reRigBone *bone){
 	if(HasBone(bone)) DETHROW(deeInvalidParam);
 	
 	if(pBoneCount == pBoneSize){
@@ -132,7 +132,7 @@ void reSelectionBones::AddBone(reRigBone::Ref bone){
 	}
 }
 
-void reSelectionBones::RemoveBone(reRigBone::Ref bone){
+void reSelectionBones::RemoveBone(reRigBone *bone){
 	int i, index = IndexOfBone(bone);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -175,7 +175,7 @@ bool reSelectionBones::HasActiveBone() const{
 	return pActiveBone != NULL;
 }
 
-void reSelectionBones::SetActiveBone(reRigBone::Ref bone){
+void reSelectionBones::SetActiveBone(reRigBone *bone){
 	if(bone != pActiveBone){
 		if(bone && !HasBone(bone)) DETHROW(deeInvalidParam);
 		

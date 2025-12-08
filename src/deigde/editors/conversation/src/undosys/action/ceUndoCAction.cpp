@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUndoCAction::ceUndoCAction(ceConversationAction::Ref action, ceConversationTopic::Ref topic){
+ceUndoCAction::ceUndoCAction(ceConversationAction *action, ceConversationTopic *topic){
 	if(!action || !topic) DETHROW(deeInvalidParam);
 	
 	pAction = NULL;

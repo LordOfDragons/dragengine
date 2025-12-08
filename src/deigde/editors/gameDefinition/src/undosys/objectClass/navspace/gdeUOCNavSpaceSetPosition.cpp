@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetPosition::gdeUOCNavSpaceSetPosition(gdeObjectClass::Ref objectClass,
-gdeOCNavigationSpace::Ref navspace, const decVector &newValue) :
+gdeUOCNavSpaceSetPosition::gdeUOCNavSpaceSetPosition(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, const decVector &newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !navspace){

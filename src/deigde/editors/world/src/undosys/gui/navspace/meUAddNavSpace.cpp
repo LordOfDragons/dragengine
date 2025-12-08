@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUAddNavSpace::meUAddNavSpace(meWorld::Ref world, const decPoint3 &sector, meNavigationSpace::Ref navspace) :
+meUAddNavSpace::meUAddNavSpace(meWorld *world, const decPoint3 &sector, meNavigationSpace *navspace) :
 
 pNavSpace(NULL)
 {

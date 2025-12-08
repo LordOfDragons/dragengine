@@ -57,8 +57,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCTextureSetOffset(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component,
-		gdeOCComponentTexture::Ref texture, const decVector2 &newValue);
+	gdeUOCCTextureSetOffset(gdeObjectClass *objectClass, gdeOCComponent *component,
+		gdeOCComponentTexture *texture, const decVector2 &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

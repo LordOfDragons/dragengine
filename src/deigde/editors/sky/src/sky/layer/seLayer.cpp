@@ -265,7 +265,7 @@ void seLayer::UpdateRelativeResources(){
 // Bodies
 ///////////
 
-void seLayer::AddBody(seBody::Ref body){
+void seLayer::AddBody(seBody *body){
 	if(!body){
 		DETHROW(deeInvalidParam);
 	}
@@ -282,7 +282,7 @@ void seLayer::AddBody(seBody::Ref body){
 	}
 }
 
-void seLayer::InsertBodyAt(seBody::Ref body, int index){
+void seLayer::InsertBodyAt(seBody *body, int index){
 	if(!body){
 		DETHROW(deeInvalidParam);
 	}
@@ -299,7 +299,7 @@ void seLayer::InsertBodyAt(seBody::Ref body, int index){
 	}
 }
 
-void seLayer::MoveBodyTo(seBody::Ref body, int index){
+void seLayer::MoveBodyTo(seBody *body, int index){
 	pBodies.MoveTo(body, index);
 	
 	if(pSky){
@@ -307,7 +307,7 @@ void seLayer::MoveBodyTo(seBody::Ref body, int index){
 	}
 }
 
-void seLayer::RemoveBody(seBody::Ref body){
+void seLayer::RemoveBody(seBody *body){
 	if(!pBodies.Has(body)){
 		DETHROW(deeInvalidParam);
 	}
@@ -351,7 +351,7 @@ void seLayer::RemoveAllBodies(){
 	}
 }
 
-void seLayer::SetActiveBody(seBody::Ref body){
+void seLayer::SetActiveBody(seBody *body){
 	if(body == pActiveBody){
 		return;
 	}

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetRange::gdeUOCLightSetRange(gdeObjectClass::Ref objectClass,
-gdeOCLight::Ref light, float newValue) :
+gdeUOCLightSetRange::gdeUOCLightSetRange(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

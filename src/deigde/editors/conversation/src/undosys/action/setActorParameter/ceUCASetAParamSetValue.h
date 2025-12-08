@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASetAParamSetValue(ceConversationTopic::Ref topic, ceCASetActorParameter::Ref action, int newValue);
+	ceUCASetAParamSetValue(ceConversationTopic *topic, ceCASetActorParameter *action, int newValue);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCASetAParamSetValue();

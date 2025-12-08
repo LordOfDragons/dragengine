@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCLogicPaste::ceUCCLogicPaste(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
-ceCConditionLogic::Ref logic, const ceConversationConditionList &conditions){
+ceUCCLogicPaste::ceUCCLogicPaste(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionLogic *logic, const ceConversationConditionList &conditions){
 	if(!topic || !action || !logic || conditions.GetCount() == 0) DETHROW(deeInvalidParam);
 	
 	const int count = conditions.GetCount();

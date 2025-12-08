@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetAudioModelPath::gdeUOCComponentSetAudioModelPath(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, const char *newValue) :
+gdeUOCComponentSetAudioModelPath::gdeUOCComponentSetAudioModelPath(gdeObjectClass *objectClass,
+gdeOCComponent *component, const char *newValue) :
 
 pComponent(NULL)
 {

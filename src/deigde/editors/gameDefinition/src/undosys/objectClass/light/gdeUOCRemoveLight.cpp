@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveLight::gdeUOCRemoveLight(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light) :
+gdeUOCRemoveLight::gdeUOCRemoveLight(gdeObjectClass *objectClass, gdeOCLight *light) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

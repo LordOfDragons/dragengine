@@ -155,10 +155,10 @@ public:
 	inline deoalAComponent *GetRootComponent() const{ return pRootComponent; }
 	
 	/** Add component. */
-	void AddComponent(deoalAComponent::Ref component);
+	void AddComponent(deoalAComponent *component);
 	
 	/** Remove component. */
-	void RemoveComponent(deoalAComponent::Ref component);
+	void RemoveComponent(deoalAComponent *component);
 	
 	/** Remove all component. */
 	void RemoveAllComponents();
@@ -181,13 +181,13 @@ public:
 	 * Add speaker.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void AddSpeaker(deoalASpeaker::Ref speaker);
+	void AddSpeaker(deoalASpeaker *speaker);
 	
 	/**
 	 * Remove speaker.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void RemoveSpeaker(deoalASpeaker::Ref speaker);
+	void RemoveSpeaker(deoalASpeaker *speaker);
 	
 	/**
 	 * Remove all speaker.
@@ -213,10 +213,10 @@ public:
 	inline deoalAMicrophone *GetRootMicrophone() const{ return pRootMicrophone; }
 	
 	/** Add microphone. */
-	void AddMicrophone(deoalAMicrophone::Ref microphone);
+	void AddMicrophone(deoalAMicrophone *microphone);
 	
 	/** Remove microphone. */
-	void RemoveMicrophone(deoalAMicrophone::Ref microphone);
+	void RemoveMicrophone(deoalAMicrophone *microphone);
 	
 	/** Remove all microphone. */
 	void RemoveAllMicrophones();
@@ -239,13 +239,13 @@ public:
 	 * Add sound level meter.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void AddSoundLevelMeter(deoalASoundLevelMeter::Ref soundLevelMeter);
+	void AddSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter);
 	
 	/**
 	 * Remove sound level meter.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void RemoveSoundLevelMeter(deoalASoundLevelMeter::Ref soundLevelMeter);
+	void RemoveSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter);
 	
 	/**
 	 * Remove all sound level meter.

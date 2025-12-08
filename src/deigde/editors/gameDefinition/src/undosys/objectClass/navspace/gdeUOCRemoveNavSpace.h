@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveNavSpace(gdeObjectClass::Ref objectClass, gdeOCNavigationSpace::Ref navspace);
+	gdeUOCRemoveNavSpace(gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace);
 	
 protected:
 	/** \brief Clean up undo action. */

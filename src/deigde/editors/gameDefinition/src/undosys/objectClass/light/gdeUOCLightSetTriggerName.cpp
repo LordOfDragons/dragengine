@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetTriggerName::gdeUOCLightSetTriggerName(gdeObjectClass::Ref objectClass,
-gdeOCLight::Ref light, gdeOCLight::eTriggers trigger, const char *newValue) :
+gdeUOCLightSetTriggerName::gdeUOCLightSetTriggerName(gdeObjectClass *objectClass,
+gdeOCLight *light, gdeOCLight::eTriggers trigger, const char *newValue) :
 
 pTrigger(trigger)
 {

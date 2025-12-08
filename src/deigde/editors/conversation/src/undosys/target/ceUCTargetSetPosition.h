@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetSetPosition(ceTarget::Ref target, const decVector &newPosition);
+	ceUCTargetSetPosition(ceTarget *target, const decVector &newPosition);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCTargetSetPosition();

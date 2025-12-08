@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetPathHI::meUHTSetPathHI(meWorld::Ref world, meHeightTerrainSector *sector, const char *newPath){
+meUHTSetPathHI::meUHTSetPathHI(meWorld *world, meHeightTerrainSector *sector, const char *newPath){
 	if(!world || !sector || !newPath) DETHROW(deeInvalidParam);
 	
 	pWorld = world;

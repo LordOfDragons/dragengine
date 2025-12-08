@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectShapeRotate::meUObjectShapeRotate(meObject::Ref object, const char *property,
+meUObjectShapeRotate::meUObjectShapeRotate(meObject *object, const char *property,
 const meObjectShapeList &list){
 	if(list.GetCount() == 0){
 		DETHROW(deeInvalidParam);

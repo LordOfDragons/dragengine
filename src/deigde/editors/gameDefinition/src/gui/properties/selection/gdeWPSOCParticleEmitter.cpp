@@ -341,7 +341,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
 	pListener.TakeOver(new gdeWPSOCParticleEmitterListener(*this));
 	
@@ -397,7 +397,7 @@ gdeWPSOCParticleEmitter::~gdeWPSOCParticleEmitter(){
 // Management
 ///////////////
 
-void gdeWPSOCParticleEmitter::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPSOCParticleEmitter::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

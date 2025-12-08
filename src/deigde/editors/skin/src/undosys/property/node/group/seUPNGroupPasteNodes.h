@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPNGroupPasteNodes(sePropertyNodeGroup::Ref group, int layer,
+	seUPNGroupPasteNodes(sePropertyNodeGroup *group, int layer,
 		const seClipboardDataPropertyNode &clipboardData);
 	
 protected:

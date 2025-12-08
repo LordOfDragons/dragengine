@@ -44,8 +44,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAIfElsePaste(ceConversationTopic *topic, ceCAIfElse::Ref ifElse,
-	ceCAIfElseCase::Ref ifcase, const ceConversationActionList &actions, int index);
+	ceUCAIfElsePaste(ceConversationTopic *topic, ceCAIfElse *ifElse,
+	ceCAIfElseCase *ifcase, const ceConversationActionList &actions, int index);
 	
 	/** \brief Clean up undo object. */
 	~ceUCAIfElsePaste() override;

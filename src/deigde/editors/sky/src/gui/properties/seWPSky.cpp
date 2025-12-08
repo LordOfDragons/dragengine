@@ -93,7 +93,7 @@ igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener.TakeOver(new seWPSkyListener(*this));
@@ -115,7 +115,7 @@ seWPSky::~seWPSky(){
 // Management
 ///////////////
 
-void seWPSky::SetSky(seSky::Ref sky){
+void seWPSky::SetSky(seSky *sky){
 	if(sky == pSky){
 		return;
 	}

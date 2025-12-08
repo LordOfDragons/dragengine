@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDSetBaseGameDefIDs(gdeWindowMain &windowMain, gdeGameDefinition::Ref gameDefinition,
+	gdeUGDSetBaseGameDefIDs(gdeWindowMain &windowMain, gdeGameDefinition *gameDefinition,
 		const decStringList &newValue);
 	
 protected:

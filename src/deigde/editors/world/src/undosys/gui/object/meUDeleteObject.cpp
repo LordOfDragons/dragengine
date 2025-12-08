@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDeleteObject::meUDeleteObject(meWorld::Ref world) :
+meUDeleteObject::meUDeleteObject(meWorld *world) :
 pWorld(NULL)
 {
 	if(!world){

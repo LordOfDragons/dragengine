@@ -285,7 +285,7 @@ deSound *deClassSound::GetSound(dsRealObject *myself) const{
 	return ((sSndNatDat*)p_GetNativeData(myself->GetBuffer()))->sound;
 }
 
-void deClassSound::PushSound(dsRunTime *rt, deSound::Ref sound){
+void deClassSound::PushSound(dsRunTime *rt, deSound *sound){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

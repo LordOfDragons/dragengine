@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSnapPointSetRotation::gdeUOCSnapPointSetRotation(gdeObjectClass::Ref objectClass,
-gdeOCSnapPoint::Ref snapPoint, const decVector &newValue) :
+gdeUOCSnapPointSetRotation::gdeUOCSnapPointSetRotation(gdeObjectClass *objectClass,
+gdeOCSnapPoint *snapPoint, const decVector &newValue) :
 
 pSnapPoint(NULL)
 {

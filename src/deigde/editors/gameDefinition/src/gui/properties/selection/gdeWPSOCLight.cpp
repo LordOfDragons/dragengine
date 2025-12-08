@@ -548,7 +548,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
 	pListener.TakeOver(new gdeWPSOCLightListener(*this));
 	
@@ -662,7 +662,7 @@ gdeWPSOCLight::~gdeWPSOCLight(){
 // Management
 ///////////////
 
-void gdeWPSOCLight::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPSOCLight::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

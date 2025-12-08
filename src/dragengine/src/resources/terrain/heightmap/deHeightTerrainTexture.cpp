@@ -59,7 +59,7 @@ deHeightTerrainTexture::~deHeightTerrainTexture(){
 ///////////////
 
 
-void deHeightTerrainTexture::SetSkin(deSkin::Ref skin){
+void deHeightTerrainTexture::SetSkin(deSkin *skin){
 	if(pSkin) pSkin->FreeReference();
 	
 	pSkin = skin;
@@ -83,7 +83,7 @@ void deHeightTerrainTexture::SetProjectionRotation(float rotation){
 
 
 
-void deHeightTerrainTexture::SetMaskImage(deImage::Ref image){
+void deHeightTerrainTexture::SetMaskImage(deImage *image){
 	if(pMaskImage) pMaskImage->FreeReference();
 	
 	pMaskImage = image;

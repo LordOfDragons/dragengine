@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetImagePath::seUPropertySetImagePath(seProperty::Ref property, const char *newPath){
+seUPropertySetImagePath::seUPropertySetImagePath(seProperty *property, const char *newPath){
 	if(!property || !newPath) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;

@@ -298,7 +298,7 @@ void seSky::SetBgColor(const decColor &color){
 // Controllers
 ////////////////
 
-void seSky::AddController(seController::Ref controller){
+void seSky::AddController(seController *controller){
 	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
@@ -314,7 +314,7 @@ void seSky::AddController(seController::Ref controller){
 	}
 }
 
-void seSky::InsertControllerAt(seController::Ref controller, int index){
+void seSky::InsertControllerAt(seController *controller, int index){
 	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
@@ -335,7 +335,7 @@ void seSky::InsertControllerAt(seController::Ref controller, int index){
 	}
 }
 
-void seSky::MoveControllerTo(seController::Ref controller, int index){
+void seSky::MoveControllerTo(seController *controller, int index){
 	pControllers.MoveTo(controller, index);
 	
 	const int count = pControllers.GetCount();
@@ -347,7 +347,7 @@ void seSky::MoveControllerTo(seController::Ref controller, int index){
 	NotifyControllerStructureChanged();
 }
 
-void seSky::RemoveController(seController::Ref controller){
+void seSky::RemoveController(seController *controller){
 	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
@@ -393,7 +393,7 @@ void seSky::RemoveAllControllers(){
 	NotifyControllerStructureChanged();
 }
 
-void seSky::SetActiveController(seController::Ref controller){
+void seSky::SetActiveController(seController *controller){
 	if(controller == pActiveController){
 		return;
 	}
@@ -411,7 +411,7 @@ void seSky::SetActiveController(seController::Ref controller){
 	NotifyActiveControllerChanged();
 }
 
-int seSky::CountControllerUsage(seController::Ref controller) const{
+int seSky::CountControllerUsage(seController *controller) const{
 	const int layerCount = pLayers.GetCount();
 	int usageCount = 0;
 	int i, j, k;
@@ -437,7 +437,7 @@ int seSky::CountControllerUsage(seController::Ref controller) const{
 // Links
 //////////
 
-void seSky::AddLink(seLink::Ref link){
+void seSky::AddLink(seLink *link){
 	if(!link){
 		DETHROW(deeInvalidParam);
 	}
@@ -453,7 +453,7 @@ void seSky::AddLink(seLink::Ref link){
 	}
 }
 
-void seSky::RemoveLink(seLink::Ref link){
+void seSky::RemoveLink(seLink *link){
 	if(!link){
 		DETHROW(deeInvalidParam);
 	}
@@ -499,7 +499,7 @@ void seSky::RemoveAllLinks(){
 	NotifyLinkStructureChanged();
 }
 
-void seSky::SetActiveLink(seLink::Ref link){
+void seSky::SetActiveLink(seLink *link){
 	if(link == pActiveLink){
 		return;
 	}
@@ -517,7 +517,7 @@ void seSky::SetActiveLink(seLink::Ref link){
 	NotifyActiveLinkChanged();
 }
 
-int seSky::CountLinkUsage(seLink::Ref link) const{
+int seSky::CountLinkUsage(seLink *link) const{
 	const int layerCount = pLayers.GetCount();
 	int usageCount = 0;
 	int i, j;
@@ -539,7 +539,7 @@ int seSky::CountLinkUsage(seLink::Ref link) const{
 // Layers
 ///////////
 
-void seSky::AddLayer(seLayer::Ref layer){
+void seSky::AddLayer(seLayer *layer){
 	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
@@ -554,7 +554,7 @@ void seSky::AddLayer(seLayer::Ref layer){
 	}
 }
 
-void seSky::InsertLayerAt(seLayer::Ref layer, int index){
+void seSky::InsertLayerAt(seLayer *layer, int index){
 	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
@@ -569,12 +569,12 @@ void seSky::InsertLayerAt(seLayer::Ref layer, int index){
 	}
 }
 
-void seSky::MoveLayerTo(seLayer::Ref layer, int index){
+void seSky::MoveLayerTo(seLayer *layer, int index){
 	pLayers.MoveTo(layer, index);
 	NotifyLayerStructureChanged();
 }
 
-void seSky::RemoveLayer(seLayer::Ref layer){
+void seSky::RemoveLayer(seLayer *layer){
 	if(!layer){
 		DETHROW(deeInvalidParam);
 	}
@@ -614,7 +614,7 @@ void seSky::RemoveAllLayers(){
 	NotifyLayerStructureChanged();
 }
 
-void seSky::SetActiveLayer(seLayer::Ref layer){
+void seSky::SetActiveLayer(seLayer *layer){
 	if(layer == pActiveLayer){
 		return;
 	}
@@ -723,7 +723,7 @@ void seSky::NotifyControllerStructureChanged(){
 	pNeedsRebuildSky = true;
 }
 
-void seSky::NotifyControllerChanged(seController::Ref controller){
+void seSky::NotifyControllerChanged(seController *controller){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -735,7 +735,7 @@ void seSky::NotifyControllerChanged(seController::Ref controller){
 	pNeedsRebuildSky = true;
 }
 
-void seSky::NotifyControllerNameChanged(seController::Ref controller){
+void seSky::NotifyControllerNameChanged(seController *controller){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -744,7 +744,7 @@ void seSky::NotifyControllerNameChanged(seController::Ref controller){
 	}
 }
 
-void seSky::NotifyControllerValueChanged(seController::Ref controller){
+void seSky::NotifyControllerValueChanged(seController *controller){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -797,7 +797,7 @@ void seSky::NotifyLinkChanged(seLink *controller){
 	pNeedsRebuildSky = true;
 }
 
-void seSky::NotifyLinkNameChanged(seLink::Ref link){
+void seSky::NotifyLinkNameChanged(seLink *link){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -840,7 +840,7 @@ void seSky::NotifyLayerStructureChanged(){
 	pNeedsRebuildSky = true;
 }
 
-void seSky::NotifyLayerChanged(seLayer::Ref layer){
+void seSky::NotifyLayerChanged(seLayer *layer){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -852,7 +852,7 @@ void seSky::NotifyLayerChanged(seLayer::Ref layer){
 	pNeedsRebuildSky = true;
 }
 
-void seSky::NotifyLayerNameChanged(seLayer::Ref layer){
+void seSky::NotifyLayerNameChanged(seLayer *layer){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -883,7 +883,7 @@ void seSky::NotifyActiveLayerChanged(){
 
 
 
-void seSky::NotifyBodyStructureChanged(seLayer::Ref layer){
+void seSky::NotifyBodyStructureChanged(seLayer *layer){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -895,7 +895,7 @@ void seSky::NotifyBodyStructureChanged(seLayer::Ref layer){
 	pNeedsRebuildSky = true;
 }
 
-void seSky::NotifyBodyChanged(seLayer::Ref layer, seBody *body){
+void seSky::NotifyBodyChanged(seLayer *layer, seBody *body){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -907,7 +907,7 @@ void seSky::NotifyBodyChanged(seLayer::Ref layer, seBody *body){
 	pNeedsRebuildSky = true;
 }
 
-void seSky::NotifyBodySelectionChanged(seLayer::Ref layer){
+void seSky::NotifyBodySelectionChanged(seLayer *layer){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -916,7 +916,7 @@ void seSky::NotifyBodySelectionChanged(seLayer::Ref layer){
 	}
 }
 
-void seSky::NotifyActiveBodyChanged(seLayer::Ref layer){
+void seSky::NotifyActiveBodyChanged(seLayer *layer){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -927,7 +927,7 @@ void seSky::NotifyActiveBodyChanged(seLayer::Ref layer){
 
 
 
-void seSky::NotifyTargetChanged(seLayer::Ref layer, deSkyLayer::eTargets target){
+void seSky::NotifyTargetChanged(seLayer *layer, deSkyLayer::eTargets target){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -939,7 +939,7 @@ void seSky::NotifyTargetChanged(seLayer::Ref layer, deSkyLayer::eTargets target)
 	pNeedsRebuildSky = true;
 }
 
-void seSky::NotifyActiveTargetChanged(seLayer::Ref layer){
+void seSky::NotifyActiveTargetChanged(seLayer *layer){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	

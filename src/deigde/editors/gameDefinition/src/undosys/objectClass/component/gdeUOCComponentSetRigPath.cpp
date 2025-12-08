@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetRigPath::gdeUOCComponentSetRigPath(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, const char *newValue) :
+gdeUOCComponentSetRigPath::gdeUOCComponentSetRigPath(gdeObjectClass *objectClass,
+gdeOCComponent *component, const char *newValue) :
 
 pComponent(NULL)
 {

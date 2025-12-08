@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitSetCondition::ceUCAWaitSetCondition(ceConversationTopic::Ref topic, ceCAWait::Ref wait, ceConversationCondition::Ref newCondition){
+ceUCAWaitSetCondition::ceUCAWaitSetCondition(ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition){
 	if(!topic || !wait) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

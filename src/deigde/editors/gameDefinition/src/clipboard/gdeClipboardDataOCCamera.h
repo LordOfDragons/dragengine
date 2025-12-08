@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCCamera(gdeOCCamera::Ref camera);
+	gdeClipboardDataOCCamera(gdeOCCamera *camera);
 	
 protected:
 	/**

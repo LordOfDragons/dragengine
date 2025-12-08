@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetSimulationType::peeUTypeSetSimulationType(peeType::Ref type,
+peeUTypeSetSimulationType::peeUTypeSetSimulationType(peeType *type,
 deParticleEmitterType::eSimulationTypes newSimType) :
 
 pNewSimType(newSimType)

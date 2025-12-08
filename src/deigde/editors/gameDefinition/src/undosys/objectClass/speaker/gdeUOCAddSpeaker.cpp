@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddSpeaker::gdeUOCAddSpeaker(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker) :
+gdeUOCAddSpeaker::gdeUOCAddSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) :
 
 pSpeaker(NULL)
 {

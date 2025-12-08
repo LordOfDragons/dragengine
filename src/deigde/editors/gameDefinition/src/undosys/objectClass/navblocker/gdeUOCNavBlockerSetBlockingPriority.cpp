@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetBlockingPriority::gdeUOCNavBlockerSetBlockingPriority(gdeObjectClass::Ref objectClass,
-gdeOCNavigationBlocker::Ref navblocker, int newValue) :
+gdeUOCNavBlockerSetBlockingPriority::gdeUOCNavBlockerSetBlockingPriority(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navblocker, int newValue) :
 
 pNavBlocker(NULL)
 {

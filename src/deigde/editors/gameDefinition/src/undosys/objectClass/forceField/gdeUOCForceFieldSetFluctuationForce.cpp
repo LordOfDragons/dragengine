@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCForceFieldSetFluctuationForce::gdeUOCForceFieldSetFluctuationForce(
-gdeObjectClass::Ref objectClass, gdeOCForceField::Ref forceField, float newValue) :
+gdeObjectClass *objectClass, gdeOCForceField *forceField, float newValue) :
 
 pForceField(NULL)
 {

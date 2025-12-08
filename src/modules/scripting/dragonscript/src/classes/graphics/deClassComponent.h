@@ -70,7 +70,7 @@ public:
 	// internal functions
 	void CreateClassMembers(dsEngine *engine);
 	deComponent *GetComponent(dsRealObject *This) const;
-	void PushComponent(dsRunTime *rt, deComponent::Ref component);
+	void PushComponent(dsRunTime *rt, deComponent *component);
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	
 	inline deClassModel *GetClassModel() const{ return pClsMdl; }

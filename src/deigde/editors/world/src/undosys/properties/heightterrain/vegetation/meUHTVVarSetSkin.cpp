@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVVarSetSkin::meUHTVVarSetSkin(meHTVVariation::Ref variation, const char *newPath){
+meUHTVVarSetSkin::meUHTVVarSetSkin(meHTVVariation *variation, const char *newPath){
 	if(!variation || !newPath) DETHROW(deeInvalidParam);
 	
 	pVariation = variation;

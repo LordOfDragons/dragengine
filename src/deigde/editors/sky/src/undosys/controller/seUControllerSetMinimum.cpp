@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerSetMinimum::seUControllerSetMinimum(seController::Ref controller, float newMinimum) :
+seUControllerSetMinimum::seUControllerSetMinimum(seController *controller, float newMinimum) :
 
 pNewMinimum(newMinimum)
 {

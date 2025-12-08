@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUAddSkin::gdeUAddSkin(gdeGameDefinition::Ref gameDefinition, gdeSkin::Ref skin) :
+gdeUAddSkin::gdeUAddSkin(gdeGameDefinition *gameDefinition, gdeSkin *skin) :
 
 pSkin(NULL)
 {

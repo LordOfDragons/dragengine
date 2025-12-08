@@ -60,7 +60,7 @@ public:
 	/** Retrieves the environment map or NULL if not set. */
 	inline deoglEnvironmentMap *GetEnvMap() const{ return pEnvMap; }
 	/** Sets the environment map or NULL if not set. */
-	void SetEnvMap(deoglEnvironmentMap::Ref envmap);
+	void SetEnvMap(deoglEnvironmentMap *envmap);
 	/** Retrieves the distance of the environment map to the camera. */
 	inline float GetDistance() const{ return pDistance; }
 	/** Sets the distance of the environment map to the camera. */

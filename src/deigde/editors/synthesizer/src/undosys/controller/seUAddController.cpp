@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUAddController::seUAddController(seSynthesizer::Ref synthesizer, seController::Ref controller) :
+seUAddController::seUAddController(seSynthesizer *synthesizer, seController *controller) :
 
 pController(NULL)
 {

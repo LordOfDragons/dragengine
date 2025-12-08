@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	peeUTypeSetCastFrom(peeType::Ref type, deParticleEmitterType::eCastFrom newCastFrom);
+	peeUTypeSetCastFrom(peeType *type, deParticleEmitterType::eCastFrom newCastFrom);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceMoveEffectUp::seUSourceMoveEffectUp(seSource::Ref source, seEffect::Ref effect) :
+seUSourceMoveEffectUp::seUSourceMoveEffectUp(seSource *source, seEffect *effect) :
 pSource(NULL)
 {
 	if(!effect || !source){

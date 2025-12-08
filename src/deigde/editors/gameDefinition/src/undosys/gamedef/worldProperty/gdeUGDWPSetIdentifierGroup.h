@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDWPSetIdentifierGroup(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property, const char *newValue);
+	gdeUGDWPSetIdentifierGroup(gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

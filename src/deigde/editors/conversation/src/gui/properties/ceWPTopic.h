@@ -148,7 +148,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
-	void SetConversation(ceConversation::Ref conversation);
+	void SetConversation(ceConversation *conversation);
 	
 	/** Action tree model. */
 	inline ceWPTTreeModel *GetActionTreeModel() const{ return pModelTreeActions; }

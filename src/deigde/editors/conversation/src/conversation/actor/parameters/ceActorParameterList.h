@@ -56,17 +56,17 @@ public:
 	/** Retrieves the named parameter or NULL if not found. */
 	ceActorParameter *GetNamed(const char *name) const;
 	/** Retrieves the index of a parameter or -1 if not found. */
-	int IndexOf(ceActorParameter::Ref parameter) const;
+	int IndexOf(ceActorParameter *parameter) const;
 	/** Retrieves the index of a named parameter or -1 if not found. */
 	int IndexOfNamed(const char *name) const;
 	/** Determines if a parameter exists. */
-	bool Has(ceActorParameter::Ref parameter) const;
+	bool Has(ceActorParameter *parameter) const;
 	/** Determines if a named parameter exists. */
 	bool HasNamed(const char *name) const;
 	/** Sets a parameter adding it if not existing. */
 	void Set(const char *name, int value);
 	/** Removes a parameter. */
-	void Remove(ceActorParameter::Ref parameter);
+	void Remove(ceActorParameter *parameter);
 	/** Removes all parameters. */
 	void RemoveAll();
 	

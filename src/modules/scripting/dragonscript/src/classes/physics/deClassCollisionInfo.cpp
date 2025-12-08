@@ -497,7 +497,7 @@ deCollisionInfo *deClassCollisionInfo::GetInfo(dsRealObject *myself) const{
 	return ((sCINatDat*)p_GetNativeData(myself->GetBuffer()))->info;
 }
 
-void deClassCollisionInfo::PushInfo(dsRunTime *rt, deCollisionInfo::Ref info){
+void deClassCollisionInfo::PushInfo(dsRunTime *rt, deCollisionInfo *info){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

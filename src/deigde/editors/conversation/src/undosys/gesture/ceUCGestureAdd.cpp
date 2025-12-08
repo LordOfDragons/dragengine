@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCGestureAdd::ceUCGestureAdd(ceConversation::Ref conversation, ceGesture::Ref gesture){
+ceUCGestureAdd::ceUCGestureAdd(ceConversation *conversation, ceGesture *gesture){
 	if(!conversation || !gesture) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;

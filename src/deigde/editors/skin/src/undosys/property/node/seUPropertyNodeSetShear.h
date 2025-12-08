@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetShear(sePropertyNode::Ref node, float newValue);
+	seUPropertyNodeSetShear(sePropertyNode *node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */

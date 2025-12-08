@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetPath::gdeUOCParticleEmitterSetPath(gdeObjectClass::Ref objectClass,
-gdeOCParticleEmitter::Ref particleEmitter, const char *newValue) :
+gdeUOCParticleEmitterSetPath::gdeUOCParticleEmitterSetPath(gdeObjectClass *objectClass,
+gdeOCParticleEmitter *particleEmitter, const char *newValue) :
 
 pParticleEmitter(NULL)
 {

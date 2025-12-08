@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUObjTexAddProperty(meObjectTexture::Ref texture, const char *key, const char *value);
+	meUObjTexAddProperty(meObjectTexture *texture, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */

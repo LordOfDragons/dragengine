@@ -54,7 +54,7 @@
 ////////////////////////////
 
 ceWPTTIMAIfElseIfCaseCondition::ceWPTTIMAIfElseIfCaseCondition(ceWindowMain &windowMain,
-ceConversation &conversation, ceCAIfElse &ifElse, ceCAIfElseCase::Ref ifCase) :
+ceConversation &conversation, ceCAIfElse &ifElse, ceCAIfElseCase *ifCase) :
 ceWPTTIMConditionContainer(windowMain, conversation, ifElse, etActionIfElseCaseCondition)
 {
 	if(!ifCase){

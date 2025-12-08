@@ -499,7 +499,7 @@ deMicrophone *deClassMicrophone::GetMicrophone(dsRealObject *myself) const{
 	return ((sMicNatDat*)p_GetNativeData(myself->GetBuffer()))->microphone;
 }
 
-void deClassMicrophone::PushMicrophone(dsRunTime *rt, deMicrophone::Ref microphone){
+void deClassMicrophone::PushMicrophone(dsRunTime *rt, deMicrophone *microphone){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

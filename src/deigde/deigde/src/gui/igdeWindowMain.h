@@ -267,7 +267,7 @@ public:
 	/** Retrieves the active game project. */
 	inline igdeGameProject *GetGameProject() const{ return pGameProject; }
 	/** Sets the active game project. */
-	void SetGameProject(igdeGameProject::Ref project);
+	void SetGameProject(igdeGameProject *project);
 	/**
 	 * Creates a new game project.
 	 * \returns True of the project has been created or false otherwise.

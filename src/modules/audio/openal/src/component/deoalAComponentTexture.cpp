@@ -64,7 +64,7 @@ deoalAComponentTexture::~deoalAComponentTexture(){
 // Management
 ///////////////
 
-void deoalAComponentTexture::SetSkin(deoalASkin::Ref skin){
+void deoalAComponentTexture::SetSkin(deoalASkin *skin){
 	if(skin == pSkin){
 		return;
 	}

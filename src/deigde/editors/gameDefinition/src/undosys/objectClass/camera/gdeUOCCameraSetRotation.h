@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCameraSetRotation(gdeObjectClass::Ref objectClass, gdeOCCamera::Ref camera, const decVector &newValue);
+	gdeUOCCameraSetRotation(gdeObjectClass *objectClass, gdeOCCamera *camera, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

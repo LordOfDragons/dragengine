@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUWordAdd::saeUWordAdd(saeSAnimation::Ref sanimation, saeWord::Ref word){
+saeUWordAdd::saeUWordAdd(saeSAnimation *sanimation, saeWord *word){
 	if(!sanimation || !word) DETHROW(deeInvalidParam);
 	
 	pSAnimation = NULL;

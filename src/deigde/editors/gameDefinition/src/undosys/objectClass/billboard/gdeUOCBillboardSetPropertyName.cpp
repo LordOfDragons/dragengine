@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetPropertyName::gdeUOCBillboardSetPropertyName(gdeObjectClass::Ref objectClass,
-gdeOCBillboard::Ref billboard, gdeOCBillboard::eProperties property, const char *newValue) :
+gdeUOCBillboardSetPropertyName::gdeUOCBillboardSetPropertyName(gdeObjectClass *objectClass,
+gdeOCBillboard *billboard, gdeOCBillboard::eProperties property, const char *newValue) :
 
 
 pProperty(property)

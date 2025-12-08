@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTextureSetColorTint::gdeUOCTextureSetColorTint(gdeObjectClass::Ref objectClass,
-gdeOCComponentTexture::Ref texture, const decColor &newValue) :
+gdeUOCTextureSetColorTint::gdeUOCTextureSetColorTint(gdeObjectClass *objectClass,
+gdeOCComponentTexture *texture, const decColor &newValue) :
 
 pTexture(NULL)
 {

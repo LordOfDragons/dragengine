@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveParticleEmitter::gdeUOCRemoveParticleEmitter(gdeObjectClass::Ref objectClass, gdeOCParticleEmitter::Ref particleEmitter) :
+gdeUOCRemoveParticleEmitter::gdeUOCRemoveParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) :
 
 pParticleEmitter(NULL)
 {

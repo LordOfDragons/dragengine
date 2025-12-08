@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleMultiMathSetOp(meHTVegetationLayer::Ref vlayer, meHTVRuleMultiMath::Ref rule,
+	meUHTVRuleMultiMathSetOp(meHTVegetationLayer *vlayer, meHTVRuleMultiMath *rule,
 		meHTVRuleMultiMath::eOperators nop);
 	
 	/** \brief Clean up object. */

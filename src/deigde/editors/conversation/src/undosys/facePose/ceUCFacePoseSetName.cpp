@@ -50,7 +50,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFacePoseSetName::ceUCFacePoseSetName(ceFacePose::Ref facePose, const char *newName){
+ceUCFacePoseSetName::ceUCFacePoseSetName(ceFacePose *facePose, const char *newName){
 	if(!facePose || !newName) DETHROW(deeInvalidParam);
 	
 	const ceConversationFileList &fileList = facePose->GetConversation()->GetFileList();

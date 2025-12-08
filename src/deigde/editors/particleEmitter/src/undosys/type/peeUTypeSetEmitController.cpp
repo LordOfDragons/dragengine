@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetEmitController::peeUTypeSetEmitController(peeType::Ref type,
+peeUTypeSetEmitController::peeUTypeSetEmitController(peeType *type,
 deParticleEmitterType::eEmitControllers controller, const char *newTarget) :
 
 pController(controller),

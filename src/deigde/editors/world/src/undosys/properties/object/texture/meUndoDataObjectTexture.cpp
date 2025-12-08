@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataObjectTexture::meUndoDataObjectTexture(meObject::Ref object){
+meUndoDataObjectTexture::meUndoDataObjectTexture(meObject *object){
 	if(!object){
 		DETHROW(deeInvalidParam);
 	}
@@ -61,13 +61,13 @@ meUndoDataObjectTexture::~meUndoDataObjectTexture(){
 // Management
 ///////////////
 
-void meUndoDataObjectTexture::SetOldTexture(meObjectTexture::Ref texture){
+void meUndoDataObjectTexture::SetOldTexture(meObjectTexture *texture){
 	if(texture != pOldTexture){
 		pOldTexture = texture;
 	}
 }
 
-void meUndoDataObjectTexture::SetNewTexture(meObjectTexture::Ref texture){
+void meUndoDataObjectTexture::SetNewTexture(meObjectTexture *texture){
 	if(texture != pNewTexture){
 		pNewTexture = texture;
 	}

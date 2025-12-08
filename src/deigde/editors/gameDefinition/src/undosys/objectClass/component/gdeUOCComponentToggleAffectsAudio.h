@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentToggleAffectsAudio(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component);
+	gdeUOCComponentToggleAffectsAudio(gdeObjectClass *objectClass, gdeOCComponent *component);
 	
 protected:
 	/** \brief Clean up undo action. */

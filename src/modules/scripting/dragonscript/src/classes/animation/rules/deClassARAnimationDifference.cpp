@@ -382,7 +382,7 @@ deAnimatorRuleAnimationDifference *deClassARAnimationDifference::GetRule(dsRealO
 	return ((sARAnimDiffNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARAnimationDifference::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
+void deClassARAnimationDifference::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -402,7 +402,7 @@ void deClassARAnimationDifference::AssignAnimator(dsRealObject *myself, deAnimat
 	nd.animator = animator;
 }
 
-void deClassARAnimationDifference::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleAnimationDifference::Ref rule){
+void deClassARAnimationDifference::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleAnimationDifference *rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPCFPSetPattern::gdeUGDWPCFPSetPattern(gdeGameDefinition::Ref gamedef,
-gdeProperty::Ref property, gdeFilePattern::Ref filePattern, const char *newValue) :
+gdeUGDWPCFPSetPattern::gdeUGDWPCFPSetPattern(gdeGameDefinition *gamedef,
+gdeProperty *property, gdeFilePattern *filePattern, const char *newValue) :
 
 pProperty(NULL)
 {

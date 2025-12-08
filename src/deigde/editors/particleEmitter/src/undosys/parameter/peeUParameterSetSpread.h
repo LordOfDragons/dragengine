@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUParameterSetSpread(peeType::Ref type, peeParameter* parameter, float newSpread);
+	peeUParameterSetSpread(peeType *type, peeParameter* parameter, float newSpread);
 	
 protected:
 	/** \brief Clean up the undo action. */

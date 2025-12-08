@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meMapIDGroup::meMapIDGroup(igdeGDProperty::Ref property, meIDGroup::Ref group, const decString &propertyPrefix) :
+meMapIDGroup::meMapIDGroup(igdeGDProperty *property, meIDGroup *group, const decString &propertyPrefix) :
 
 pPropertyPrefix(propertyPrefix)
 {

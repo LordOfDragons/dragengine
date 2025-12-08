@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectSetProperty::meUObjectSetProperty(meObject::Ref object, const char *key, const char *oldValue, const char *newValue){
+meUObjectSetProperty::meUObjectSetProperty(meObject *object, const char *key, const char *oldValue, const char *newValue){
 	if(!object || !key || !oldValue || !newValue){
 		DETHROW(deeInvalidParam);
 	}

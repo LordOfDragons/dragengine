@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUGlyphSetWidth::feUGlyphSetWidth(feFontGlyph::Ref glyph, int newWidth){
+feUGlyphSetWidth::feUGlyphSetWidth(feFontGlyph *glyph, int newWidth){
 	SetShortInfo("GLyph set width");
 	
 	pOldWidth = glyph->GetWidth();

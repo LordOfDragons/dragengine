@@ -77,7 +77,7 @@ public:
 	void AddLSWorld(meLSWorld *world);
 	meWorld *LoadWorld(const char *filename, igdeGameDefinition *gameDefinition,
 		igdeStepableTask **task);
-	void SaveWorld(meWorld::Ref world, const char *filename);
+	void SaveWorld(meWorld *world, const char *filename);
 	
 	// height terrain sectors
 	/** Retrieves the number of height terrain loaders. */

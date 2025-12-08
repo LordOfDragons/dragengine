@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeUOCSetTextureProperties::gdeUOCSetTextureProperties(
-gdeObjectClass::Ref objectClass, const gdePropertyList &newValue) :
+gdeObjectClass *objectClass, const gdePropertyList &newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass){

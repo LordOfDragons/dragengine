@@ -198,7 +198,7 @@ void deSsdkServiceSteam::RequestCurrentStats(const decUniqueID &id){
 
 void deSsdkServiceSteam::GetStats(const decUniqueID &id, const deServiceObject& request){
 	const deServiceObject::Ref response(deServiceObject::Ref::NewWith());
-	deServiceObject::Ref soIn, soResp;
+	deServiceObject *soIn, soResp;
 	int i, count;
 	
 	response->SetStringChildAt("function", "getStats");
@@ -333,7 +333,7 @@ deServiceObject::Ref deSsdkServiceSteam::GetUserInfo(){
 
 void deSsdkServiceSteam::SetStats(const decUniqueID &id, const deServiceObject &request){
 	const deServiceObject::Ref response(deServiceObject::Ref::NewWith());
-	deServiceObject::Ref soIn, soResp;
+	deServiceObject *soIn, soResp;
 	int i, count;
 	
 	// stats

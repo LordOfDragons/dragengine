@@ -53,7 +53,7 @@ lpeLangPackEntrySelection::~lpeLangPackEntrySelection(){
 // Management
 ///////////////
 
-void lpeLangPackEntrySelection::Add(lpeLangPackEntry::Ref entry){
+void lpeLangPackEntrySelection::Add(lpeLangPackEntry *entry){
 	DEASSERT_NOTNULL(entry)
 	
 	entry->SetSelected(true);
@@ -63,7 +63,7 @@ void lpeLangPackEntrySelection::Add(lpeLangPackEntry::Ref entry){
 	}
 }
 
-void lpeLangPackEntrySelection::Remove(lpeLangPackEntry::Ref entry){
+void lpeLangPackEntrySelection::Remove(lpeLangPackEntry *entry){
 	DEASSERT_NOTNULL(entry)
 	
 	entry->SetSelected(false);
@@ -90,7 +90,7 @@ bool lpeLangPackEntrySelection::HasActive() const{
 	return pActive != NULL;
 }
 
-void lpeLangPackEntrySelection::SetActive(lpeLangPackEntry::Ref entry){
+void lpeLangPackEntrySelection::SetActive(lpeLangPackEntry *entry){
 	if(entry == pActive){
 		return;
 	}

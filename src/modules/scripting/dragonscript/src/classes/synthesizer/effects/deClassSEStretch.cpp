@@ -320,7 +320,7 @@ deSynthesizerEffectStretch *deClassSEStretch::GetEffect(dsRealObject *myself) co
 	return ((sSEStretchNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
-void deClassSEStretch::AssignSynthesizer(dsRealObject *myself, deSynthesizerSource::Ref source){
+void deClassSEStretch::AssignSynthesizer(dsRealObject *myself, deSynthesizerSource *source){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -340,7 +340,7 @@ void deClassSEStretch::AssignSynthesizer(dsRealObject *myself, deSynthesizerSour
 	nd.source = source;
 }
 
-void deClassSEStretch::PushEffect(dsRunTime *rt, deSynthesizerSource::Ref source, deSynthesizerEffectStretch::Ref effect){
+void deClassSEStretch::PushEffect(dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffectStretch *effect){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

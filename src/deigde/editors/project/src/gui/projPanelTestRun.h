@@ -117,7 +117,7 @@ public:
 	inline projProject *GetProject() const{ return pProject; }
 	
 	/** \brief Set synthesizer. */
-	void SetProject(projProject::Ref project);
+	void SetProject(projProject *project);
 	
 	/** \brief Test runner or \em NULL. */
 	inline projTestRunner *GetTestRunner() const{ return pTestRunner; }

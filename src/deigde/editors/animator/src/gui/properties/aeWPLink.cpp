@@ -113,7 +113,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator::Ref animator, aeLink *link) = 0;
+	virtual igdeUndo *OnAction(aeAnimator *animator, aeLink *link) = 0;
 	
 	virtual void Update(){
 		aeAnimator * const animator = pPanel.GetAnimator();
@@ -578,7 +578,7 @@ pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
 	pListener.TakeOver(new aeWPLinkListener(*this));
 	
@@ -658,7 +658,7 @@ aeWPLink::~aeWPLink(){
 // Management
 ///////////////
 
-void aeWPLink::SetAnimator(aeAnimator::Ref animator){
+void aeWPLink::SetAnimator(aeAnimator *animator){
 	if(animator == pAnimator){
 		return;
 	}

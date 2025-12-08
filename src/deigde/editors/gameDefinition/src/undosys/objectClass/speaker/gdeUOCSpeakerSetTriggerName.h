@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetTriggerName(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker,
+	gdeUOCSpeakerSetTriggerName(gdeObjectClass *objectClass, gdeOCSpeaker *speaker,
 		gdeOCSpeaker::eTriggers trigger, const char *newValue);
 	
 protected:

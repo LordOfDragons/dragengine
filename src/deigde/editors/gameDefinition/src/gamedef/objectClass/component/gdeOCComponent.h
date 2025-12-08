@@ -285,7 +285,7 @@ public:
 	inline gdeOCComponentTexture *GetActiveTexture() const{ return pActiveTexture; }
 	
 	/** \brief Set active texture or \em NULL if none. */
-	void SetActiveTexture(gdeOCComponentTexture::Ref texture);
+	void SetActiveTexture(gdeOCComponentTexture *texture);
 	/*@}*/
 };
 

@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUPasteRule::aeUPasteRule(aeAnimator::Ref animator, const aeRuleList &ruleList, int index) :
+aeUPasteRule::aeUPasteRule(aeAnimator *animator, const aeRuleList &ruleList, int index) :
 
 pIndex(index){
 	const int ruleCount = ruleList.GetCount();

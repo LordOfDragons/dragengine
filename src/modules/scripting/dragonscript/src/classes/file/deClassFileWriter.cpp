@@ -575,7 +575,7 @@ int deClassFileWriter::GetStreamVersion(dsRealObject *myself) const{
 	return ((const sFileWriterNatDat *)p_GetNativeData(myself->GetBuffer()))->streamVersion;
 }
 
-void deClassFileWriter::PushFileWriter(dsRunTime *rt, decBaseFileWriter::Ref fileWriter){
+void deClassFileWriter::PushFileWriter(dsRunTime *rt, decBaseFileWriter *fileWriter){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFacePoseRemove::ceUCFacePoseRemove(ceFacePose::Ref facePose){
+ceUCFacePoseRemove::ceUCFacePoseRemove(ceFacePose *facePose){
 	if(!facePose) DETHROW(deeInvalidParam);
 	
 	ceConversation::Ref conversation = facePose->GetConversation();

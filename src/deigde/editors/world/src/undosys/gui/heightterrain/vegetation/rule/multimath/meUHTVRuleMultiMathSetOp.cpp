@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleMultiMathSetOp::meUHTVRuleMultiMathSetOp(meHTVegetationLayer::Ref vlayer,
-	meHTVRuleMultiMath::Ref rule, meHTVRuleMultiMath::eOperators nop)
+meUHTVRuleMultiMathSetOp::meUHTVRuleMultiMathSetOp(meHTVegetationLayer *vlayer,
+	meHTVRuleMultiMath *rule, meHTVRuleMultiMath::eOperators nop)
 {
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	

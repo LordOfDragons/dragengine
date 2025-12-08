@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeData::seUPropertyNodeData(sePropertyNode::Ref node) :
+seUPropertyNodeData::seUPropertyNodeData(sePropertyNode *node) :
 pNode(NULL)
 {
 	if(!node){

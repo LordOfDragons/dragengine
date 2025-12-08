@@ -124,7 +124,7 @@ seWPView::~seWPView(){
 // Management
 ///////////////
 
-void seWPView::SetSky(seSky::Ref sky){
+void seWPView::SetSky(seSky *sky){
 	if(sky == pSky){
 		return;
 	}

@@ -64,22 +64,22 @@ public:
 	igdeGDCLight *GetAt(int index) const;
 	
 	/** \brief Index of an light or -1 if not found. */
-	int IndexOf(igdeGDCLight::Ref light) const;
+	int IndexOf(igdeGDCLight *light) const;
 	
 	/** \brief Determines if an light exists. */
-	bool Has(igdeGDCLight::Ref light) const;
+	bool Has(igdeGDCLight *light) const;
 	
 	/** \brief Adds an light. */
-	void Add(igdeGDCLight::Ref light);
+	void Add(igdeGDCLight *light);
 	
 	/** \brief Inserts a new light. */
-	void InsertAt(igdeGDCLight::Ref light, int index);
+	void InsertAt(igdeGDCLight *light, int index);
 	
 	/** \brief Moves an light to a new position. */
-	void MoveTo(igdeGDCLight::Ref light, int index);
+	void MoveTo(igdeGDCLight *light, int index);
 	
 	/** \brief Removes an light. */
-	void Remove(igdeGDCLight::Ref light);
+	void Remove(igdeGDCLight *light);
 	
 	/** \brief Removes all lights. */
 	void RemoveAll();

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUAddSky(gdeGameDefinition::Ref gameDefinition, gdeSky::Ref sky);
+	gdeUAddSky(gdeGameDefinition *gameDefinition, gdeSky *sky);
 	
 protected:
 	/** \brief Clean up undo action. */

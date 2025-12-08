@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakSetMovement::ceUCAASpeakSetMovement(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, const char *newMovement){
+ceUCAASpeakSetMovement::ceUCAASpeakSetMovement(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newMovement){
 	if(!topic || !newMovement) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

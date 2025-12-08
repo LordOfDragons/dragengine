@@ -42,7 +42,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitPaste(ceConversationTopic *topic, ceCAWait::Ref wait,
+	ceUCAWaitPaste(ceConversationTopic *topic, ceCAWait *wait,
 		const ceConversationActionList &actions, int index);
 protected:
 	/** \brief Clean up undo. */

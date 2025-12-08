@@ -173,7 +173,7 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNode::meWVNode(meWindowVegetation &windowVegetation, meHTVRule::Ref rule) :
+meWVNode::meWVNode(meWindowVegetation &windowVegetation, meHTVRule *rule) :
 igdeNVNode(windowVegetation.GetEnvironment(), "Rule"),
 pWindowVegetation(windowVegetation)
 {

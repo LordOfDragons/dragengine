@@ -92,11 +92,11 @@ public:
 	/** Retrieves the type at the given index. */
 	mePropFieldType *GetTypeAt(int index) const;
 	/** Retrieves the index of the given type or -1 if not found. */
-	int IndexOfType(mePropFieldType::Ref type) const;
+	int IndexOfType(mePropFieldType *type) const;
 	/** Adds a new type. */
-	void AddType(mePropFieldType::Ref type);
+	void AddType(mePropFieldType *type);
 	/** Removes a type. */
-	void RemoveType(mePropFieldType::Ref type);
+	void RemoveType(mePropFieldType *type);
 	/** Removes all types. */
 	void RemoveAllTypes();
 	/*@}*/

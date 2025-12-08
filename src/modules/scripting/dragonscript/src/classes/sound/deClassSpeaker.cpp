@@ -801,7 +801,7 @@ deSpeaker *deClassSpeaker::GetSpeaker(dsRealObject *myself) const{
 	return ((sSpkNatDat*)p_GetNativeData(myself->GetBuffer()))->speaker;
 }
 
-void deClassSpeaker::PushSpeaker(dsRunTime *rt, deSpeaker::Ref speaker){
+void deClassSpeaker::PushSpeaker(dsRunTime *rt, deSpeaker *speaker){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

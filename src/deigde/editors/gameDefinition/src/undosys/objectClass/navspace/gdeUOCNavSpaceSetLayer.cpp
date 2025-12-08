@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetLayer::gdeUOCNavSpaceSetLayer(gdeObjectClass::Ref objectClass,
-gdeOCNavigationSpace::Ref navspace, int newValue) :
+gdeUOCNavSpaceSetLayer::gdeUOCNavSpaceSetLayer(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, int newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !navspace){

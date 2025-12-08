@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetValue::peeUParameterSetValue(peeType::Ref type, peeParameter *parameter, float newValue){
+peeUParameterSetValue::peeUParameterSetValue(peeType *type, peeParameter *parameter, float newValue){
 	if(!type || !parameter){
 		DETHROW(deeInvalidParam);
 	}

@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataDecalProperty::meUndoDataDecalProperty(meDecal::Ref decal){
+meUndoDataDecalProperty::meUndoDataDecalProperty(meDecal *decal){
 	if(!decal){
 		DETHROW(deeInvalidParam);
 	}

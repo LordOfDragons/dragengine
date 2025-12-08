@@ -81,21 +81,21 @@ public:
 		const char *basePath, bool asynchron);
 	
 	/** \brief Save sound to the given file. */
-	void SaveSound(deSound::Ref sound, const char *filename);
+	void SaveSound(deSound *sound, const char *filename);
 	
 	/** \brief Save sound to the given file. */
-	void SaveSound(deVirtualFileSystem *vfs, deSound::Ref sound, const char *filename);
+	void SaveSound(deVirtualFileSystem *vfs, deSound *sound, const char *filename);
 	
 	/**
 	 * \brief Add loaded sound.
 	 * \warning This method is to be used only by the resource loader!
 	 */
-	void AddLoadedSound(deSound::Ref sound);
+	void AddLoadedSound(deSound *sound);
 	
 	
 	
 	/** \brief Create sound decoder. */
-	deSoundDecoder *CreateDecoder(deSound::Ref sound);
+	deSoundDecoder *CreateDecoder(deSound *sound);
 	
 	
 	

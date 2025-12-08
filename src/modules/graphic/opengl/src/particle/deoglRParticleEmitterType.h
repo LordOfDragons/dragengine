@@ -154,7 +154,7 @@ public:
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin. */
-	void SetSkin(deoglRSkin::Ref skin);
+	void SetSkin(deoglRSkin *skin);
 	
 	/** Particles emit light. */
 	inline bool GetEmitLight() const{ return pEmitLight; }

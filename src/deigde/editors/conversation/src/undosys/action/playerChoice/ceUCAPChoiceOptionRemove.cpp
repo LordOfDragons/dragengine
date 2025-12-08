@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceOptionRemove::ceUCAPChoiceOptionRemove(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref playerChoice, ceCAPlayerChoiceOption::Ref option){
+ceUCAPChoiceOptionRemove::ceUCAPChoiceOptionRemove(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option){
 	if(!topic || !playerChoice || !option) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

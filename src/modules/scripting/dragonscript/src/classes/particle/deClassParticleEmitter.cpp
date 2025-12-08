@@ -1039,7 +1039,7 @@ deParticleEmitter *deClassParticleEmitter::GetParticleEmitter(dsRealObject *myse
 	return ((sPENatDat*)p_GetNativeData(myself->GetBuffer()))->emitter;
 }
 
-void deClassParticleEmitter::PushParticleEmitter(dsRunTime *rt, deParticleEmitter::Ref emitter){
+void deClassParticleEmitter::PushParticleEmitter(dsRunTime *rt, deParticleEmitter *emitter){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

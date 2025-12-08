@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalTCRotation(meDecal::Ref decal, float newRotation);
+	meUDecalTCRotation(meDecal *decal, float newRotation);
 	
 protected:
 	/** \brief Clean up undo object. */

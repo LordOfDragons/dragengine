@@ -43,7 +43,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleMove::meUHTVRuleMove(meHTVegetationLayer::Ref vlayer, meHTVRule::Ref rule){
+meUHTVRuleMove::meUHTVRuleMove(meHTVegetationLayer *vlayer, meHTVRule *rule){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;

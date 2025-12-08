@@ -274,7 +274,7 @@ void deClassSkyLink::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassSkyLink::PushLink(dsRunTime *rt, deSky::Ref sky, int index){
+void deClassSkyLink::PushLink(dsRunTime *rt, deSky *sky, int index){
 	if(!rt || !sky || index < 0 || index >= sky->GetLinkCount()){
 		DSTHROW(dueInvalidParam);
 	}

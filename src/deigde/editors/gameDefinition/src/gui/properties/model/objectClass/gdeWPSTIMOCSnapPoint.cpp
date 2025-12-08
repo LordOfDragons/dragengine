@@ -47,7 +47,7 @@
 ////////////////////////////
 
 gdeWPSTIMOCSnapPoint::gdeWPSTIMOCSnapPoint(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCSnapPoint::Ref snapPoint, int index) :
+	gdeOCSnapPoint *snapPoint, int index) :
 gdeWPSTIMOCSubObject(tree, etObjectClassSnapPoint, objectClass, index),
 pIndex(index)
 {

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUSkyControllerAdd::gdeUSkyControllerAdd(gdeSky::Ref sky, gdeSkyController::Ref controller) :
+gdeUSkyControllerAdd::gdeUSkyControllerAdd(gdeSky *sky, gdeSkyController *controller) :
 
 pController(NULL)
 {

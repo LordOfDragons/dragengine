@@ -511,7 +511,7 @@ deBillboard *deClassBillboard::GetBillboard(dsRealObject *myself) const{
 	return ((sBillboardNatDat*)p_GetNativeData(myself->GetBuffer()))->billboard;
 }
 
-void deClassBillboard::PushBillboard(dsRunTime *rt, deBillboard::Ref billboard){
+void deClassBillboard::PushBillboard(dsRunTime *rt, deBillboard *billboard){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

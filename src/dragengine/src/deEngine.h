@@ -256,7 +256,7 @@ public:
 	inline deLogger *GetLogger() const{ return pLogger; }
 	
 	/** \brief Set logger. */
-	void SetLogger(deLogger::Ref logger);
+	void SetLogger(deLogger *logger);
 	/*@}*/
 	
 	

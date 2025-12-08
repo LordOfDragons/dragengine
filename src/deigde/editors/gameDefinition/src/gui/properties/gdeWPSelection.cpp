@@ -224,7 +224,7 @@ gdeWPSelection::~gdeWPSelection(){
 // Management
 ///////////////
 
-void gdeWPSelection::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPSelection::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

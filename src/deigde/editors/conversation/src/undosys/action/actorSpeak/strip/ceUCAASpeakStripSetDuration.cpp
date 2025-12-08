@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakStripSetDuration::ceUCAASpeakStripSetDuration(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak,
-ceStrip::Ref strip, float newDuration){
+ceUCAASpeakStripSetDuration::ceUCAASpeakStripSetDuration(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *strip, float newDuration){
 	if(!topic || !actorSpeak || !strip){
 		DETHROW(deeInvalidParam);
 	}

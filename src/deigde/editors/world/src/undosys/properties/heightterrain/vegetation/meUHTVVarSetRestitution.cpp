@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVVarSetRestitution::meUHTVVarSetRestitution(meHTVVariation::Ref variation, float newRestitution){
+meUHTVVarSetRestitution::meUHTVVarSetRestitution(meHTVVariation *variation, float newRestitution){
 	if(!variation) DETHROW(deeInvalidParam);
 	
 	pVariation = variation;

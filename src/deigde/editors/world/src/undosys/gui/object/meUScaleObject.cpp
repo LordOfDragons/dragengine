@@ -44,7 +44,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUScaleObject::meUScaleObject(meWorld::Ref world, const meObjectList &objects){
+meUScaleObject::meUScaleObject(meWorld *world, const meObjectList &objects){
 	if(!world){
 		DETHROW(deeInvalidParam);
 	}

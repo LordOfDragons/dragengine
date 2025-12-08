@@ -722,7 +722,7 @@ deNavigator *deClassNavigator::GetNavigator(dsRealObject *myself) const{
 	return ((const sNavNatDat *)p_GetNativeData(myself->GetBuffer()))->navigator;
 }
 
-void deClassNavigator::PushNavigator(dsRunTime *rt, deNavigator::Ref navigator){
+void deClassNavigator::PushNavigator(dsRunTime *rt, deNavigator *navigator){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

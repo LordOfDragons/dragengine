@@ -85,13 +85,13 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig(reRig::Ref rig);
+	void SetRig(reRig *rig);
 	
 	/** \brief Bone. */
 	inline reRigBone *GetBone() const{ return pBone; }
 	
 	/** \brief Set bone. */
-	void SetBone(reRigBone::Ref bone);
+	void SetBone(reRigBone *bone);
 	
 	/** \brief Update list of possible parent bone names. */
 	void UpdateParentBoneList();

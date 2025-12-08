@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerSetTransparency(seLayer::Ref layer, float newTransparency);
+	seULayerSetTransparency(seLayer *layer, float newTransparency);
 	
 protected:
 	/** \brief Clean up undo action. */

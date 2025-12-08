@@ -77,7 +77,7 @@ public:
 	devkCommandBuffer *GetCommandBuffer();
 	
 	/** Return command buffer to pool. */
-	void ReturnCommandBuffer(devkCommandBuffer::Ref commandBuffer);
+	void ReturnCommandBuffer(devkCommandBuffer *commandBuffer);
 	/*@}*/
 	
 	

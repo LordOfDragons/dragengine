@@ -162,7 +162,7 @@ public:
 	 * \note Make sure a valid game definition is set before using this object in the editors.
 	 *       If the game definition name is not found set it to a default game definition instead.
 	 */
-	void SetProjectGameDefinition(igdeGameDefinition::Ref gameDefinition);
+	void SetProjectGameDefinition(igdeGameDefinition *gameDefinition);
 	
 	/**
 	 * \brief XML Element Class game definition.

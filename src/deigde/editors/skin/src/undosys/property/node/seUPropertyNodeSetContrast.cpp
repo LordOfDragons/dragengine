@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetContrast::seUPropertyNodeSetContrast(sePropertyNode::Ref node, float newValue) :
+seUPropertyNodeSetContrast::seUPropertyNodeSetContrast(sePropertyNode *node, float newValue) :
 
 pNewValue(newValue)
 {

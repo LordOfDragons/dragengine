@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCNavBlocker(gdeOCNavigationBlocker::Ref navBlocker);
+	gdeClipboardDataOCNavBlocker(gdeOCNavigationBlocker *navBlocker);
 	
 protected:
 	/**

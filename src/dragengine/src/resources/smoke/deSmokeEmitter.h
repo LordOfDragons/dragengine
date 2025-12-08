@@ -190,7 +190,7 @@ public:
 	inline deComponent *GetComponent() const{ return pComponent; }
 	
 	/** \brief Set component used for casting or NULL. */
-	void SetComponent(deComponent::Ref component);
+	void SetComponent(deComponent *component);
 	
 	/** \brief Texture to use from the component skin to cast particles from. */
 	inline int GetCastTexture() const{ return pCastTexture; }
@@ -202,7 +202,7 @@ public:
 	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set mode of the particle instances or NULL. */
-	void SetSkin(deSkin::Ref skin);
+	void SetSkin(deSkin *skin);
 	
 	/** \brief Collision filter. */
 	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }

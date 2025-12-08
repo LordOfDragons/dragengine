@@ -222,7 +222,7 @@ seSkin *seLoadSaveSystem::LoadSkin(const char *filename, igdeGameDefinition *gam
 	return skin;
 }
 
-void seLoadSaveSystem::SaveSkin(seSkin::Ref skin, const char *filename){
+void seLoadSaveSystem::SaveSkin(seSkin *skin, const char *filename){
 	if(!skin || !filename) DETHROW(deeInvalidParam);
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
 	decBaseFileWriter::Ref fileWriter = NULL;

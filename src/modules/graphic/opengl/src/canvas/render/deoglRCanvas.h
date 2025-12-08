@@ -128,7 +128,7 @@ public:
 	inline deoglRCanvas *GetMask() const{ return pMask; }
 	
 	/** Set mask. */
-	void SetMask(deoglRCanvas::Ref mask);
+	void SetMask(deoglRCanvas *mask);
 	
 	/** Visible. */
 	inline bool GetVisible() const{ return pVisible; }

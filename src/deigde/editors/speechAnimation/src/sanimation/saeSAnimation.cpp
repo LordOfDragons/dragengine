@@ -482,7 +482,7 @@ void saeSAnimation::Update(float elapsed){
 // Phonemes
 /////////////
 
-void saeSAnimation::AddPhoneme(saePhoneme::Ref phoneme){
+void saeSAnimation::AddPhoneme(saePhoneme *phoneme){
 	pPhonemeList.Add(phoneme);
 	phoneme->SetSAnimation(this);
 	NotifyPhonemeStructureChanged();
@@ -492,7 +492,7 @@ void saeSAnimation::AddPhoneme(saePhoneme::Ref phoneme){
 	}
 }
 
-void saeSAnimation::RemovePhoneme(saePhoneme::Ref phoneme){
+void saeSAnimation::RemovePhoneme(saePhoneme *phoneme){
 	if(!phoneme || phoneme->GetSAnimation() != this) DETHROW(deeInvalidParam);
 	
 	if(phoneme->GetActive()){
@@ -531,7 +531,7 @@ bool saeSAnimation::HasActivePhoneme() const{
 	return pActivePhoneme != NULL;
 }
 
-void saeSAnimation::SetActivePhoneme(saePhoneme::Ref phoneme){
+void saeSAnimation::SetActivePhoneme(saePhoneme *phoneme){
 	if(phoneme == pActivePhoneme){
 		return;
 	}
@@ -554,7 +554,7 @@ void saeSAnimation::SetActivePhoneme(saePhoneme::Ref phoneme){
 // Words
 /////////////
 
-void saeSAnimation::AddWord(saeWord::Ref word){
+void saeSAnimation::AddWord(saeWord *word){
 	pWordList.Add(word);
 	word->SetSAnimation(this);
 	NotifyWordStructureChanged();
@@ -564,7 +564,7 @@ void saeSAnimation::AddWord(saeWord::Ref word){
 	}
 }
 
-void saeSAnimation::RemoveWord(saeWord::Ref word){
+void saeSAnimation::RemoveWord(saeWord *word){
 	if(!word || word->GetSAnimation() != this) DETHROW(deeInvalidParam);
 	
 	if(word->GetActive()){
@@ -603,7 +603,7 @@ bool saeSAnimation::HasActiveWord() const{
 	return pActiveWord != NULL;
 }
 
-void saeSAnimation::SetActiveWord(saeWord::Ref word){
+void saeSAnimation::SetActiveWord(saeWord *word){
 	if(word == pActiveWord){
 		return;
 	}
@@ -722,7 +722,7 @@ void saeSAnimation::NotifyPhonemeStructureChanged(){
 	pDirtyAnimator = true;
 }
 
-void saeSAnimation::NotifyPhonemeChanged(saePhoneme::Ref phoneme){
+void saeSAnimation::NotifyPhonemeChanged(saePhoneme *phoneme){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -756,7 +756,7 @@ void saeSAnimation::NotifyWordStructureChanged(){
 	SetChanged(true);
 }
 
-void saeSAnimation::NotifyWordNameChanged(saeWord::Ref word){
+void saeSAnimation::NotifyWordNameChanged(saeWord *word){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -767,7 +767,7 @@ void saeSAnimation::NotifyWordNameChanged(saeWord::Ref word){
 	SetChanged(true);
 }
 
-void saeSAnimation::NotifyWordChanged(saeWord::Ref word){
+void saeSAnimation::NotifyWordChanged(saeWord *word){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	

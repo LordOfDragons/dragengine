@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetHintLightImportance::gdeUOCLightSetHintLightImportance(gdeObjectClass::Ref objectClass,
-gdeOCLight::Ref light, int newValue) :
+gdeUOCLightSetHintLightImportance::gdeUOCLightSetHintLightImportance(gdeObjectClass *objectClass,
+gdeOCLight *light, int newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

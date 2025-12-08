@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetSectorResolution::meUHTSetSectorResolution(meWorld::Ref world,
+meUHTSetSectorResolution::meUHTSetSectorResolution(meWorld *world,
 meHeightTerrain *heightTerrain, int newSectorResolution){
 	if(!world || !heightTerrain){
 		DETHROW(deeInvalidParam);

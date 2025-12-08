@@ -54,7 +54,7 @@ meObjectSelection::~meObjectSelection(){
 // Management
 ///////////////
 
-void meObjectSelection::Add(meObject::Ref object){
+void meObjectSelection::Add(meObject *object){
 	if(!object){
 		DETHROW(deeInvalidParam);
 	}
@@ -63,7 +63,7 @@ void meObjectSelection::Add(meObject::Ref object){
 	pSelection.AddIfAbsent(object);
 }
 
-void meObjectSelection::Remove(meObject::Ref object){
+void meObjectSelection::Remove(meObject *object){
 	if(!object){
 		DETHROW(deeInvalidParam);
 	}
@@ -89,7 +89,7 @@ bool meObjectSelection::HasActive() const{
 	return pActive != NULL;
 }
 
-void meObjectSelection::SetActive(meObject::Ref object){
+void meObjectSelection::SetActive(meObject *object){
 	if(pActive){
 		pActive->SetActive(false);
 	}

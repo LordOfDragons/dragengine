@@ -62,11 +62,11 @@ public:
 	/*@{*/
 	/** \brief Create and add. */
 	static void CreateAndAdd(igdeContainer &parent, igdeUIHelper &helper,
-		igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener::Ref listener);
+		igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener);
 	
 	static void CreateAndAdd(igdeContainer &form, igdeUIHelper &helper, const char *label,
 		const char *description, igdeEditPropertyValue::Ref &widget,
-		igdeEditPropertyValueListener::Ref listener);
+		igdeEditPropertyValueListener *listener);
 	
 	/** \brief Set value. */
 	void SetValue(const decString &value, const gdeProperty &property);

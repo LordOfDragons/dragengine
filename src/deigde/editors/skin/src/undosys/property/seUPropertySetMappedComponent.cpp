@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertySetMappedComponent::seUPropertySetMappedComponent(
-	seProperty::Ref property, int index, seMapped *newValue) :
+	seProperty *property, int index, seMapped *newValue) :
 
 pIndex(index),
 pOldValue(property ? property->GetMappedComponent(index) : nullptr),

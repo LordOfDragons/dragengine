@@ -59,7 +59,7 @@ public:
 	typedef deTObjectReference<meUSetObjectClass> Ref;
 	
 	// constructor, destructor
-	meUSetObjectClass(meObject::Ref object, const char *newcname);
+	meUSetObjectClass(meObject *object, const char *newcname);
 	meUSetObjectClass(meObjectList &objects, const char *newcname);
 	
 protected:

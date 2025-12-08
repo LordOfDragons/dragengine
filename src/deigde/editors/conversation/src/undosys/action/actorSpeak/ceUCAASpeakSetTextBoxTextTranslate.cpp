@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAASpeakSetTextBoxTextTranslate::ceUCAASpeakSetTextBoxTextTranslate(
-ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, const char *newText) :
+ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newText) :
 
 pNewText(newText)
 {

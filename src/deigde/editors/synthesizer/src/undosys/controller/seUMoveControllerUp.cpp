@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMoveControllerUp::seUMoveControllerUp(seSynthesizer::Ref synthesizer, seController::Ref controller) :
+seUMoveControllerUp::seUMoveControllerUp(seSynthesizer *synthesizer, seController *controller) :
 
 pController(NULL)
 {

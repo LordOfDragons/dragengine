@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceGroupMoveSourceUp::seUSourceGroupMoveSourceUp(seSourceGroup::Ref group, seSource::Ref source) :
+seUSourceGroupMoveSourceUp::seUSourceGroupMoveSourceUp(seSourceGroup *group, seSource *source) :
 
 pSource(NULL)
 {

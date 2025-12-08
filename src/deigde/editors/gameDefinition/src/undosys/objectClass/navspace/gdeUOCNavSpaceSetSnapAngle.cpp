@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetSnapAngle::gdeUOCNavSpaceSetSnapAngle(gdeObjectClass::Ref objectClass,
-gdeOCNavigationSpace::Ref navspace, float newValue) :
+gdeUOCNavSpaceSetSnapAngle::gdeUOCNavSpaceSetSnapAngle(gdeObjectClass *objectClass,
+gdeOCNavigationSpace *navspace, float newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !navspace){

@@ -60,7 +60,7 @@
 ////////////////////////////
 
 gdeVAONavSpace::gdeVAONavSpace(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCNavigationSpace::Ref ocnavspace) :
+	const decString &propertyPrefix, gdeOCNavigationSpace *ocnavspace) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCNavSpace(ocnavspace),
 pDDSSpace(NULL),

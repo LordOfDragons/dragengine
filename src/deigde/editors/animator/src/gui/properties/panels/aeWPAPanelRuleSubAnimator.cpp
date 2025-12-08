@@ -260,7 +260,7 @@ pPreventUpdate(false)
 {
 	igdeEnvironment &env = wpRule.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref groupBox, formLine;
+	igdeContainer *groupBox, formLine;
 	
 	
 	helper.GroupBox(*this, groupBox, "Sub Animator:");

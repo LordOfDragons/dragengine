@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCEnvMapProbeSetInfluenceBorderSize::gdeUOCEnvMapProbeSetInfluenceBorderSize(
-gdeObjectClass::Ref objectClass, gdeOCEnvMapProbe::Ref envMapProbe, float newValue) :
+gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe, float newValue) :
 
 pEnvMapProbe(NULL)
 {

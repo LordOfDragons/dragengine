@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetAmbientRatio::gdeUOCLightSetAmbientRatio(gdeObjectClass::Ref objectClass,
-gdeOCLight::Ref light, float newValue) :
+gdeUOCLightSetAmbientRatio::gdeUOCLightSetAmbientRatio(gdeObjectClass *objectClass,
+gdeOCLight *light, float newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

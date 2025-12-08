@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakGestureRemove::ceUCAASpeakGestureRemove(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref gesture){
+ceUCAASpeakGestureRemove::ceUCAASpeakGestureRemove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture){
 	if(!topic || !actorSpeak || !gesture){
 		DETHROW(deeInvalidParam);
 	}

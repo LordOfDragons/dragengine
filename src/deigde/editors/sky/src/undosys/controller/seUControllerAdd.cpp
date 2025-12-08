@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerAdd::seUControllerAdd(seSky::Ref sky, seController::Ref controller) :
+seUControllerAdd::seUControllerAdd(seSky *sky, seController *controller) :
 
 pController(NULL)
 {

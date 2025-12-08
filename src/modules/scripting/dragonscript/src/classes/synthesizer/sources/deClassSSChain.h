@@ -87,10 +87,10 @@ public:
 	deSynthesizerSourceChain *GetSource(dsRealObject *myself) const;
 	
 	/** \brief Assigns synthesizer or \em NULL. */
-	void AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref synthesizer);
+	void AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer);
 	
 	/** \brief Pushes a source. */
-	void PushSource(dsRunTime *rt, deSynthesizer::Ref synthesizer, deSynthesizerSourceChain::Ref source);
+	void PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceChain *source);
 	
 	inline dsClass *GetClassSSChainTarget() const{ return pClsSSChainTarget; }
 	/*@}*/

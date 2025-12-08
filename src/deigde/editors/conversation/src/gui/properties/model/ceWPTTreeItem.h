@@ -72,22 +72,22 @@ public:
 	inline ceWPTTreeItemModel *GetModel() const{ return pModel; }
 	
 	/** \brief Set model or \em NULL. */
-	void SetModel(ceWPTTreeItemModel::Ref model);
+	void SetModel(ceWPTTreeItemModel *model);
 	
 	
 	
 	/** \brief Add item with model. */
-	void AddItem(ceWPTTreeItemModel::Ref model);
+	void AddItem(ceWPTTreeItemModel *model);
 	
 	/** \brief Insert item with model at position. */
-	void InsertItem(ceWPTTreeItemModel::Ref model, int position);
+	void InsertItem(ceWPTTreeItemModel *model, int position);
 	
 	/**
 	 * \brief Remove item for model.
 	 * 
 	 * Clears model from removed item if present.
 	 */
-	void RemoveItem(ceWPTTreeItemModel::Ref model);
+	void RemoveItem(ceWPTTreeItemModel *model);
 	
 	/**
 	 * \brief Remove all child items.

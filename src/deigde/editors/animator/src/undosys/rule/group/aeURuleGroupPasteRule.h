@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleGroupPasteRule(aeRuleGroup::Ref group, const aeRuleList &ruleList, int index);
+	aeURuleGroupPasteRule(aeRuleGroup *group, const aeRuleList &ruleList, int index);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleGroupPasteRule();

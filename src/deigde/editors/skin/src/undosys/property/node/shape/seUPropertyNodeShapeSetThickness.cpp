@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeShapeSetThickness::seUPropertyNodeShapeSetThickness(
-sePropertyNodeShape::Ref node, float newValue) :
+sePropertyNodeShape *node, float newValue) :
 
 pNewValue(newValue)
 {

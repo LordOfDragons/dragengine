@@ -160,7 +160,7 @@ void seWindowMain::ResetViews(){
 
 
 
-void seWindowMain::SetSky(seSky::Ref sky){
+void seWindowMain::SetSky(seSky *sky){
 	if(sky == pSky){
 		return;
 	}

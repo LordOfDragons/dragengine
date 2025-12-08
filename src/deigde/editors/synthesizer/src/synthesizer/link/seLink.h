@@ -100,7 +100,7 @@ public:
 	inline seController *GetController() const{ return pController; }
 	
 	/** \brief Set controller or \em NULL. */
-	void SetController(seController::Ref controller);
+	void SetController(seController *controller);
 	
 	/** \brief Repeat count of input value. */
 	inline int GetRepeat() const{ return pRepeat; }

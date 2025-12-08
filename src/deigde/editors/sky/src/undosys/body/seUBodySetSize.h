@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUBodySetSize(seBody::Ref body, const decVector2 &newSize);
+	seUBodySetSize(seBody *body, const decVector2 &newSize);
 	
 protected:
 	/** \brief Clean up undo action. */

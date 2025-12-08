@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPNGroupPasteNodes::seUPNGroupPasteNodes(sePropertyNodeGroup::Ref group,
+seUPNGroupPasteNodes::seUPNGroupPasteNodes(sePropertyNodeGroup *group,
 int layer, const seClipboardDataPropertyNode &clipboardData) :
 
 pLayer(layer)

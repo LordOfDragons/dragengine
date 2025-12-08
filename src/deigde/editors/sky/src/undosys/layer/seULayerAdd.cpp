@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerAdd::seULayerAdd(seSky::Ref sky, seLayer::Ref layer) :
+seULayerAdd::seULayerAdd(seSky *sky, seLayer *layer) :
 
 pLayer(NULL)
 {

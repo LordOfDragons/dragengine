@@ -91,7 +91,7 @@ seViewSynthesizer::~seViewSynthesizer(){
 // Management
 ///////////////
 
-void seViewSynthesizer::SetSynthesizer(seSynthesizer::Ref synthesizer){
+void seViewSynthesizer::SetSynthesizer(seSynthesizer *synthesizer){
 	if(synthesizer == pSynthesizer){
 		return;
 	}

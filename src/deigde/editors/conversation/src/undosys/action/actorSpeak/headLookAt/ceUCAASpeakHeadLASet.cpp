@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakHeadLASet::ceUCAASpeakHeadLASet(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref headLookAt, ceStrip::Ref newStrip){
+ceUCAASpeakHeadLASet::ceUCAASpeakHeadLASet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, ceStrip *newStrip){
 	if(!topic || !actorSpeak || !headLookAt || !newStrip){
 		DETHROW(deeInvalidParam);
 	}

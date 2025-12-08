@@ -67,28 +67,28 @@ public:
 	igdeGDCCTexture *GetNamed(const char *name) const;
 	
 	/** \brief Index of an texture or -1 if not found. */
-	int IndexOf(igdeGDCCTexture::Ref texture) const;
+	int IndexOf(igdeGDCCTexture *texture) const;
 	
 	/** \brief Index of a named texture or -1 if not found. */
 	int IndexOfNamed(const char *name) const;
 	
 	/** \brief Determines if an texture exists. */
-	bool Has(igdeGDCCTexture::Ref texture) const;
+	bool Has(igdeGDCCTexture *texture) const;
 	
 	/** \brief Determines if an named texture exists. */
 	bool HasNamed(const char *name) const;
 	
 	/** \brief Adds an texture. */
-	void Add(igdeGDCCTexture::Ref texture);
+	void Add(igdeGDCCTexture *texture);
 	
 	/** \brief Inserts a new texture. */
-	void InsertAt(igdeGDCCTexture::Ref texture, int index);
+	void InsertAt(igdeGDCCTexture *texture, int index);
 	
 	/** \brief Moves an texture to a new position. */
-	void MoveTo(igdeGDCCTexture::Ref texture, int index);
+	void MoveTo(igdeGDCCTexture *texture, int index);
 	
 	/** \brief Removes an texture. */
-	void Remove(igdeGDCCTexture::Ref texture);
+	void Remove(igdeGDCCTexture *texture);
 	
 	/** \brief Removes all textures. */
 	void RemoveAll();

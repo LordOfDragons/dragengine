@@ -60,10 +60,10 @@ public:
 	inline const sePropertyNodeList &GetSelected() const{ return pSelection; }
 	
 	/** \brief Add node to selection if absent. */
-	void Add(sePropertyNode::Ref node);
+	void Add(sePropertyNode *node);
 	
 	/** \brief Remove node from selection if present. */
-	void Remove(sePropertyNode::Ref node);
+	void Remove(sePropertyNode *node);
 	
 	/** \brief Remove all nodes from selection. */
 	void RemoveAll();

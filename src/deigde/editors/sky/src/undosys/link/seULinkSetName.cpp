@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkSetName::seULinkSetName(seLink::Ref link, const char *newName) :
+seULinkSetName::seULinkSetName(seLink *link, const char *newName) :
 
 pNewName(newName)
 {

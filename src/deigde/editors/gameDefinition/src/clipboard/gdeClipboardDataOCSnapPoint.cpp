@@ -38,7 +38,7 @@ const char * const gdeClipboardDataOCSnapPoint::TYPE_NAME = "OCSnapPoint";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCSnapPoint::gdeClipboardDataOCSnapPoint(gdeOCSnapPoint::Ref snapPoint) :
+gdeClipboardDataOCSnapPoint::gdeClipboardDataOCSnapPoint(gdeOCSnapPoint *snapPoint) :
 igdeClipboardData(TYPE_NAME)
 {
 	if(!snapPoint){

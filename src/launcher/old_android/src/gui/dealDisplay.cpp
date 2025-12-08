@@ -242,7 +242,7 @@ void dealDisplay::ConfigChanged(){
 
 
 
-void dealDisplay::SetDialog(dealDialog::Ref dialog){
+void dealDisplay::SetDialog(dealDialog *dialog){
 	if(pDialog == dialog){
 		return;
 	}
@@ -261,7 +261,7 @@ void dealDisplay::SetDialog(dealDialog::Ref dialog){
 	}
 }
 
-void dealDisplay::SetCaptureWidget(dealWidget::Ref widget){
+void dealDisplay::SetCaptureWidget(dealWidget *widget){
 	if(widget == pCaptureWidget){
 		return;
 	}

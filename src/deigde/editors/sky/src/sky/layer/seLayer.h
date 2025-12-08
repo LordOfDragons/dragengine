@@ -211,16 +211,16 @@ public:
 	const seBodyList &GetBodies() const{ return pBodies; }
 	
 	/** \brief Add body. */
-	void AddBody(seBody::Ref body);
+	void AddBody(seBody *body);
 	
 	/** \brief Insert body. */
-	void InsertBodyAt(seBody::Ref body, int index);
+	void InsertBodyAt(seBody *body, int index);
 	
 	/** \brief Move body. */
-	void MoveBodyTo(seBody::Ref body, int index);
+	void MoveBodyTo(seBody *body, int index);
 	
 	/** \brief Removes body. */
-	void RemoveBody(seBody::Ref body);
+	void RemoveBody(seBody *body);
 	
 	/** \brief Remove all bodies. */
 	void RemoveAllBodies();
@@ -229,7 +229,7 @@ public:
 	inline seBody *GetActiveBody() const{ return pActiveBody; }
 	
 	/** \brief Set active body or \em NULL. */
-	void SetActiveBody(seBody::Ref body);
+	void SetActiveBody(seBody *body);
 	/*@}*/
 	
 	

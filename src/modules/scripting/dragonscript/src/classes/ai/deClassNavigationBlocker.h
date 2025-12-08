@@ -60,7 +60,7 @@ public:
 	/** \brief Retrieves the navigation blocker or NULL if myself is NULL. */
 	deNavigationBlocker *GetNavigationBlocker(dsRealObject *myself) const;
 	/** \brief Pushes the navigation blocker which can be NULL. */
-	void PushNavigationBlocker(dsRunTime *rt, deNavigationBlocker::Ref blocker);
+	void PushNavigationBlocker(dsRunTime *rt, deNavigationBlocker *blocker);
 	
 	inline dsClass *GetClassNavigationSpaceType() const{ return pClsNavigationSpaceType; }
 	/*@}*/

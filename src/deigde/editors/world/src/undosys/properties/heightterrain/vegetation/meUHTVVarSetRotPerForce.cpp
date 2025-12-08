@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVVarSetRotPerForce::meUHTVVarSetRotPerForce(meHTVVariation::Ref variation, float newRotPerForce){
+meUHTVVarSetRotPerForce::meUHTVVarSetRotPerForce(meHTVVariation *variation, float newRotPerForce){
 	if(!variation) DETHROW(deeInvalidParam);
 	
 	pVariation = variation;

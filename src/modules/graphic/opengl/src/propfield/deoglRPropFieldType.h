@@ -103,7 +103,7 @@ public:
 	 * Set model or NULL if not set.
 	 * \warning Called during synchronization from main thread.
 	 */
-	void SetModel(deoglRModel::Ref model);
+	void SetModel(deoglRModel *model);
 	
 	/** Skin or NULL if not set. */
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
@@ -112,7 +112,7 @@ public:
 	 * Set skin or NULL if not set.
 	 * \warning Called during synchronization from main thread.
 	 */
-	void SetSkin(deoglRSkin::Ref skin);
+	void SetSkin(deoglRSkin *skin);
 	
 	/** Skin texture to use or NULL if not valid. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }

@@ -123,7 +123,7 @@ public:
 	inline seSky *GetSky() const{ return pSky; }
 	
 	/** \brief Set sky to monitor. */
-	void SetSky(seSky::Ref sky);
+	void SetSky(seSky *sky);
 	
 	/** \brief Sky path changed. */
 	void OnSkyPathChanged();

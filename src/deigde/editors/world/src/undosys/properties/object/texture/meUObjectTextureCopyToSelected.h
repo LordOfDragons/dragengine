@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectTextureCopyToSelected(const meObjectList &list, meObjectTexture::Ref texture);
+	meUObjectTextureCopyToSelected(const meObjectList &list, meObjectTexture *texture);
 	
 protected:
 	/** \brief Clean up undo object. */

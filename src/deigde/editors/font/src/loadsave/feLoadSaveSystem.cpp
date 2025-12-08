@@ -220,7 +220,7 @@ feFont *feLoadSaveSystem::LoadFont(const char *filename, igdeGameDefinition *gam
 	return font;
 }
 
-void feLoadSaveSystem::SaveFont(feFont::Ref font, const char *filename){
+void feLoadSaveSystem::SaveFont(feFont *font, const char *filename){
 	if(!font || !filename) DETHROW(deeInvalidParam);
 	deEngine *engine = pWndMain->GetEngine();
 	decBaseFileWriter::Ref fileWriter = NULL;

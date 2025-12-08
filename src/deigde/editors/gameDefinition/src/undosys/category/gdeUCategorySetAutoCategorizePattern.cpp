@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUCategorySetAutoCategorizePattern::gdeUCategorySetAutoCategorizePattern(
-	gdeGameDefinition *gameDefinition, gdeCategory::Ref category, eCategoryType type,
+	gdeGameDefinition *gameDefinition, gdeCategory *category, eCategoryType type,
 	const decStringSet &newValue) :
 gdeUCategoryBase(gameDefinition, type),
 pNewValue(newValue)

@@ -66,7 +66,7 @@ public:
 	deSynthesizerInstance *GetSynthesizerInstance(dsRealObject *object) const;
 	
 	/** \brief Push animator instance or NULL on the stack. */
-	void PushSynthesizerInstance(dsRunTime *rt, deSynthesizerInstance::Ref instance);
+	void PushSynthesizerInstance(dsRunTime *rt, deSynthesizerInstance *instance);
 	/*@}*/
 	
 	

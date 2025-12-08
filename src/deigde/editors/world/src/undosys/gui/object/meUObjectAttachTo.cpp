@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectAttachTo::meUObjectAttachTo(meWorld::Ref world, const meObjectList &objects, meObject::Ref attachTo){
+meUObjectAttachTo::meUObjectAttachTo(meWorld *world, const meObjectList &objects, meObject *attachTo){
 	if(!world){
 		DETHROW(deeInvalidParam);
 	}

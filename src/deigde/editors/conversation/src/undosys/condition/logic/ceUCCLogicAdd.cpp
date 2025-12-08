@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCLogicAdd::ceUCCLogicAdd(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
-ceCConditionLogic::Ref logic, ceConversationCondition::Ref condition){
+ceUCCLogicAdd::ceUCCLogicAdd(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionLogic *logic, ceConversationCondition *condition){
 	if(!topic || !action || !logic || !condition) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

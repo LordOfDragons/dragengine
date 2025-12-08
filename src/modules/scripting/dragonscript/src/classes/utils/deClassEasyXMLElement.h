@@ -65,7 +65,7 @@ public:
 	decXmlElement *GetElement(dsRealObject *myself) const;
 	
 	/** \brief Push xml element or \em NULL if \em element is \em NULL. */
-	void PushElement(dsRunTime *rt, decXmlElement::Ref element);
+	void PushElement(dsRunTime *rt, decXmlElement *element);
 	
 	inline dsClass *GetClassEasyXMLElementType() const{ return pClsEasyXMLElementType; }
 	

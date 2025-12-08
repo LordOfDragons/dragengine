@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerMoveDown::seULayerMoveDown(seLayer::Ref layer) :
+seULayerMoveDown::seULayerMoveDown(seLayer *layer) :
 
 pIndex(0)
 {

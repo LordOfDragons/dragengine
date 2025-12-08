@@ -119,7 +119,7 @@ pDialogEngine(dialogEngine)
 {
 	igdeEnvironment &env = dialogEngine.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainer::Ref groupBox, line;
+	igdeContainer *groupBox, line;
 	
 	
 	line.TakeOver(new igdeContainerForm(env));

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCSnapPointToggleSnapToRotation::gdeUOCSnapPointToggleSnapToRotation(
-gdeObjectClass::Ref objectClass, gdeOCSnapPoint::Ref snapPoint) :
+gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint) :
 
 pSnapPoint(NULL)
 {

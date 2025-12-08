@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCTextureSetColorTint::gdeUOCCTextureSetColorTint(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, gdeOCComponentTexture::Ref texture, const decColor &newValue) :
+gdeUOCCTextureSetColorTint::gdeUOCCTextureSetColorTint(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture, const decColor &newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !component || !texture){

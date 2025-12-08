@@ -39,7 +39,7 @@ const char * const gdeClipboardDataOCParticleEmitter::TYPE_NAME = "OCParticleEmi
 ////////////////////////////
 
 gdeClipboardDataOCParticleEmitter::gdeClipboardDataOCParticleEmitter(
-gdeOCParticleEmitter::Ref particleEmitter) :
+gdeOCParticleEmitter *particleEmitter) :
 igdeClipboardData(TYPE_NAME)
 {
 	if(!particleEmitter){

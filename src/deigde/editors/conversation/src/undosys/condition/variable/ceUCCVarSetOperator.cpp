@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCVarSetOperator::ceUCCVarSetOperator(ceConversationTopic::Ref topic,
-ceConversationAction::Ref action, ceCConditionVariable::Ref condition,
+ceUCCVarSetOperator::ceUCCVarSetOperator(ceConversationTopic *topic,
+ceConversationAction *action, ceCConditionVariable *condition,
 ceCConditionVariable::eOperators newOperator){
 	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	

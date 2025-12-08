@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetImagePath(seProperty::Ref property, const char *newPath);
+	seUPropertySetImagePath(seProperty *property, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo. */

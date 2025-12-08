@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUControllerToggleClamp(peeController::Ref controller);
+	peeUControllerToggleClamp(peeController *controller);
 	
 protected:
 	/** \brief Clean up the undo action. */

@@ -50,7 +50,7 @@
 ////////////////////////////
 
 ceWPTTIMAIfElseIfCase::ceWPTTIMAIfElseIfCase(ceWindowMain &windowMain,
-ceConversation &conversation, ceCAIfElse &ifElse, ceCAIfElseCase::Ref ifCase, int index) :
+ceConversation &conversation, ceCAIfElse &ifElse, ceCAIfElseCase *ifCase, int index) :
 ceWPTTreeItemModel(windowMain, conversation, etActionIfElseCase),
 pIndex(index)
 {

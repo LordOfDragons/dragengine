@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \birief Create undo. */
-	ceUCCAParamSetTestVariable(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
-		ceCConditionActorParameter::Ref condition, const char *newVariable);
+	ceUCCAParamSetTestVariable(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionActorParameter *condition, const char *newVariable);
 	
 protected:
 	/** \brief Clean up undo. */

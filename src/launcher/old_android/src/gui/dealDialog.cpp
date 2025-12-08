@@ -68,7 +68,7 @@ void dealDialog::SetTitle(const char *title){
 	pTitle = title;
 }
 
-void dealDialog::SetPopupDialog(dealDialog::Ref dialog){
+void dealDialog::SetPopupDialog(dealDialog *dialog){
 	if(pPopupDialog == dialog){
 		return;
 	}

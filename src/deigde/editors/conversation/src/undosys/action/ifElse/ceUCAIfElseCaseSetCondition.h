@@ -52,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAIfElseCaseSetCondition(ceConversationTopic::Ref topic, ceCAIfElse::Ref ifElse,
-	ceCAIfElseCase::Ref ifcase, ceConversationCondition::Ref newCondition);
+	ceUCAIfElseCaseSetCondition(ceConversationTopic *topic, ceCAIfElse *ifElse,
+	ceCAIfElseCase *ifcase, ceConversationCondition *newCondition);
 	
 	/** \brief Clean up undo object. */
 	virtual ~ceUCAIfElseCaseSetCondition();

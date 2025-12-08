@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetCurve::peeUParameterSetCurve(peeType::Ref type,
+peeUParameterSetCurve::peeUParameterSetCurve(peeType *type,
 	peeParameter *parameter, const decCurveBezier &newCurve) :
 
 pParameter(NULL),

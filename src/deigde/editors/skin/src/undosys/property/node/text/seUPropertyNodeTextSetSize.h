@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeTextSetSize(sePropertyNodeText::Ref node, float newValue);
+	seUPropertyNodeTextSetSize(sePropertyNodeText *node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */

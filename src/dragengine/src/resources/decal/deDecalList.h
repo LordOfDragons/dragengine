@@ -71,13 +71,13 @@ public:
 	deDecal *GetDecalAt(int index) const;
 	
 	/** \brief Determines if a decal exists. */
-	bool HasDecal(deDecal::Ref decal) const;
+	bool HasDecal(deDecal *decal) const;
 	
 	/** \brief Index of the decal or -1 if not found. */
-	int IndexOfDecal(deDecal::Ref decal) const;
+	int IndexOfDecal(deDecal *decal) const;
 	
 	/** \brief Adds a decal. */
-	void AddDecal(deDecal::Ref decal);
+	void AddDecal(deDecal *decal);
 	
 	/** \brief Removes all decals. */
 	void RemoveAllDecals();

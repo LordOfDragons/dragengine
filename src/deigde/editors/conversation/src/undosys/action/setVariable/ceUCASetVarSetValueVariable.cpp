@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCASetVarSetValueVariable::ceUCASetVarSetValueVariable(
-ceConversationTopic::Ref topic, ceCASetVariable::Ref action, const char *newName) :
+ceConversationTopic *topic, ceCASetVariable *action, const char *newName) :
 
 pNewName(newName)
 {

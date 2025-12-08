@@ -40,7 +40,7 @@ private:
 	deoglFramebufferManager pManager;
 	
 	deoglFramebuffer *pActive;
-	const deoglFramebuffer::Ref pPrimary, pEnvMap, pEnvMapMaterial;
+	const deoglFramebuffer *pPrimary, pEnvMap, pEnvMapMaterial;
 	
 	
 public:

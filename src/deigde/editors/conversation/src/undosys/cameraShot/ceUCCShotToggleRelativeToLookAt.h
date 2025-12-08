@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotToggleRelativeToLookAt(ceCameraShot::Ref cameraShot);
+	ceUCCShotToggleRelativeToLookAt(ceCameraShot *cameraShot);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotToggleRelativeToLookAt();

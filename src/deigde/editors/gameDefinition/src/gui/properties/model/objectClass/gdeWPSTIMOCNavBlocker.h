@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCNavBlocker(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCNavigationBlocker::Ref navBlocker, int index);
+		gdeOCNavigationBlocker *navBlocker, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

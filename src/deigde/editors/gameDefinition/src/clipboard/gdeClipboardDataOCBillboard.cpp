@@ -38,7 +38,7 @@ const char * const gdeClipboardDataOCBillboard::TYPE_NAME = "OCBillboard";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCBillboard::gdeClipboardDataOCBillboard(gdeOCBillboard::Ref billboard) :
+gdeClipboardDataOCBillboard::gdeClipboardDataOCBillboard(gdeOCBillboard *billboard) :
 igdeClipboardData(TYPE_NAME)
 {
 	if(!billboard){

@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerToggleClamp::peeUControllerToggleClamp(peeController::Ref controller){
+peeUControllerToggleClamp::peeUControllerToggleClamp(peeController *controller){
 	if(!controller) DETHROW(deeInvalidParam);
 	
 	pController = NULL;

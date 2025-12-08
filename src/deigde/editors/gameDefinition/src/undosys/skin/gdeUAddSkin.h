@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUAddSkin(gdeGameDefinition::Ref gameDefinition, gdeSkin::Ref skin);
+	gdeUAddSkin(gdeGameDefinition *gameDefinition, gdeSkin *skin);
 	
 protected:
 	/** \brief Clean up undo action. */

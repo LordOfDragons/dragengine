@@ -282,7 +282,7 @@ pWindowProperties(windowProperties),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener.TakeOver(new seWPViewListener(*this));
@@ -329,7 +329,7 @@ seWPView::~seWPView(){
 // Management
 ///////////////
 
-void seWPView::SetSkin(seSkin::Ref skin){
+void seWPView::SetSkin(seSkin *skin){
 	if(skin == pSkin){
 		return;
 	}

@@ -478,7 +478,7 @@ deEnvMapProbe *deClassEnvMapProbe::GetEnvMapProbe(dsRealObject *object) const{
 	return ((sEmpNatDat*)p_GetNativeData(object->GetBuffer()))->envMapProbe;
 }
 
-void deClassEnvMapProbe::PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe::Ref envMapProbe){
+void deClassEnvMapProbe::PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe *envMapProbe){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

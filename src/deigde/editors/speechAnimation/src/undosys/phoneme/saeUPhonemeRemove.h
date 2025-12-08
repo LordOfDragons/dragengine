@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeRemove(saePhoneme::Ref phoneme);
+	saeUPhonemeRemove(saePhoneme *phoneme);
 	
 protected:
 	/** Clean up undo. */

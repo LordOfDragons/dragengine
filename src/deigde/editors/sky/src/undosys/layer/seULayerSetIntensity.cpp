@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetIntensity::seULayerSetIntensity(seLayer::Ref layer, float newIntensity) :
+seULayerSetIntensity::seULayerSetIntensity(seLayer *layer, float newIntensity) :
 
 pNewIntensity(newIntensity)
 {

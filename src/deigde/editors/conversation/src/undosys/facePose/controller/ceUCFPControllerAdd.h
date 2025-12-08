@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCFPControllerAdd(ceFacePose::Ref facePose, ceControllerValue::Ref controller);
+	ceUCFPControllerAdd(ceFacePose *facePose, ceControllerValue *controller);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCFPControllerAdd();

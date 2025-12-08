@@ -384,7 +384,7 @@ deSynthesizerSource *deClassSynthesizerSource::GetSource(dsRealObject *myself) c
 	return ((sSynSNatDat*)p_GetNativeData(myself->GetBuffer()))->source;
 }
 
-void deClassSynthesizerSource::AssignSource(dsRealObject *myself, deSynthesizerSource::Ref source){
+void deClassSynthesizerSource::AssignSource(dsRealObject *myself, deSynthesizerSource *source){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -402,7 +402,7 @@ void deClassSynthesizerSource::AssignSource(dsRealObject *myself, deSynthesizerS
 	nd.source = source;
 }
 
-void deClassSynthesizerSource::AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref synthesizer){
+void deClassSynthesizerSource::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -420,7 +420,7 @@ void deClassSynthesizerSource::AssignSynthesizer(dsRealObject *myself, deSynthes
 	nd.synthesizer = synthesizer;
 }
 
-void deClassSynthesizerSource::PushSource(dsRunTime *rt, deSynthesizer::Ref synthesizer, deSynthesizerSource::Ref source){
+void deClassSynthesizerSource::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSource *source){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

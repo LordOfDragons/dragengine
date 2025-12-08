@@ -239,7 +239,7 @@ deNetworkMessage *deClassNetworkMessage::GetNetworkMessage(dsRealObject *myself)
 	return ((sNMNatDat*)p_GetNativeData(myself->GetBuffer()))->message;
 }
 
-void deClassNetworkMessage::PushNetworkMessage(dsRunTime *rt, deNetworkMessage::Ref message){
+void deClassNetworkMessage::PushNetworkMessage(dsRunTime *rt, deNetworkMessage *message){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

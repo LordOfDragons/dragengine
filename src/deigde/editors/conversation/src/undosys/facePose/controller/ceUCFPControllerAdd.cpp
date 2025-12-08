@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFPControllerAdd::ceUCFPControllerAdd(ceFacePose::Ref facePose, ceControllerValue::Ref controller){
+ceUCFPControllerAdd::ceUCFPControllerAdd(ceFacePose *facePose, ceControllerValue *controller){
 	if(!facePose || !controller){
 		DETHROW(deeInvalidParam);
 	}

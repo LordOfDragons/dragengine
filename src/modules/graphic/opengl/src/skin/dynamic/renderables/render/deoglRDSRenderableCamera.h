@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set camera. */
-	void SetCamera(deoglRCamera::Ref camera);
+	void SetCamera(deoglRCamera *camera);
 	
 	/** Prepare for render. */
 	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;

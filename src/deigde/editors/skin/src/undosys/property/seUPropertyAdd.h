@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyAdd(seTexture::Ref texture, const sePropertyList &properties);
+	seUPropertyAdd(seTexture *texture, const sePropertyList &properties);
 	
 protected:
 	/** \brief Clean up undo. */

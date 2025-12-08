@@ -123,7 +123,7 @@ public:
 	/** Retrieves the host object or NULL if not attached to any object. */
 	inline meObject *GetHostObject() const{ return pHostObject; }
 	/** Sets the host object or NULL if not attached to any object. */
-	void SetHostObject(meObject::Ref object);
+	void SetHostObject(meObject *object);
 	/** Determines if this lumimeter has a host object. */
 	bool HasHostObject() const;
 	/*@}*/

@@ -69,7 +69,7 @@ void cePlaybackActor::SetTextBox(ceTextBox *textBox){
 	pTextBox = textBox;
 }
 
-void cePlaybackActor::SetTextBoxText(ceTextBoxText::Ref text){
+void cePlaybackActor::SetTextBoxText(ceTextBoxText *text){
 	if(text != pTextBoxText){
 		if(pTextBoxText){
 			if(pTextBox){

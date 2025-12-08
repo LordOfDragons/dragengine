@@ -35,7 +35,7 @@
 // Class deBaseArchiveContainer
 /////////////////////////////////
 
-deBaseArchiveContainer::deBaseArchiveContainer(decBaseFileReader::Ref reader) :
+deBaseArchiveContainer::deBaseArchiveContainer(decBaseFileReader *reader) :
 pReader(NULL)
 {
 	if(!reader){

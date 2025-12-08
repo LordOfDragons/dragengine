@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCTPSetIdentifierGroup(gdeObjectClass::Ref objectClass, gdeProperty::Ref property, const char *newValue);
+	gdeUOCTPSetIdentifierGroup(gdeObjectClass *objectClass, gdeProperty *property, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

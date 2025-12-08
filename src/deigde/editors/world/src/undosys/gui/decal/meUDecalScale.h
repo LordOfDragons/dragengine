@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo. */
-	meUDecalScale(meWorld::Ref world);
+	meUDecalScale(meWorld *world);
 	/** \brief Clean up undo. */
 	virtual ~meUDecalScale();
 	/*@}*/

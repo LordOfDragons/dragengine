@@ -163,7 +163,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox;
+	igdeContainer *content, groupBox;
 	
 // 	pListener = new meWPViewListener( *this );
 	

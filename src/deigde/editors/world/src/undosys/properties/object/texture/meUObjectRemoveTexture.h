@@ -49,7 +49,7 @@ public:
 	typedef deTObjectReference<meUObjectRemoveTexture> Ref;
 	
 	// constructor, destructor
-	meUObjectRemoveTexture(meObjectTexture::Ref texture);
+	meUObjectRemoveTexture(meObjectTexture *texture);
 	
 protected:
 	virtual ~meUObjectRemoveTexture();

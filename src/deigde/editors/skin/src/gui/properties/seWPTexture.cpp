@@ -119,7 +119,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSkin::Ref skin, seTexture *texture) = 0;
+	virtual igdeUndo *OnAction(seSkin *skin, seTexture *texture) = 0;
 	
 	virtual void Update(){
 		seSkin * const skin = pPanel.GetSkin();
@@ -144,11 +144,11 @@ public:
 	cBaseActionProperty(seWPTexture &panel, const char *text, igdeIcon *icon,
 		const char *description) : cBaseAction(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnAction(seSkin::Ref skin, seTexture *texture){
+	virtual igdeUndo *OnAction(seSkin *skin, seTexture *texture){
 		return pPanel.GetProperty() ? OnActionProperty(skin, texture, pPanel.GetProperty()) : nullptr;
 	}
 	
-	virtual igdeUndo *OnActionProperty(seSkin::Ref skin, seTexture *texture, seProperty *property) = 0;
+	virtual igdeUndo *OnActionProperty(seSkin *skin, seTexture *texture, seProperty *property) = 0;
 	
 	
 	void Update(const seSkin &skin, const seTexture &texture) override{
@@ -189,7 +189,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin::Ref skin,
+	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin *skin,
 		seTexture *texture, seProperty *property) = 0;
 };
 
@@ -214,7 +214,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, seSkin::Ref skin,
+	virtual igdeUndo *OnChanged(igdeEditPath &editPath, seSkin *skin,
 		seTexture *texture, seProperty *property) = 0;
 };
 
@@ -239,7 +239,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin::Ref skin,
+	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin *skin,
 		seTexture *texture, seProperty *property) = 0;
 };
 
@@ -594,7 +594,7 @@ pRequiresUpdate(false),
 pPreventUpdateMappedTarget(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, panel, groupBox, form, formLine;
+	igdeContainer *content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener.TakeOver(new seWPTextureListener(*this));
@@ -745,7 +745,7 @@ seWPTexture::~seWPTexture(){
 // Management
 ///////////////
 
-void seWPTexture::SetSkin(seSkin::Ref skin){
+void seWPTexture::SetSkin(seSkin *skin){
 	if(skin == pSkin){
 		return;
 	}

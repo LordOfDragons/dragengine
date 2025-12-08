@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionSetDelay::ceUCActionSetDelay(ceConversationTopic::Ref topic, ceConversationAction::Ref action, float newDelay){
+ceUCActionSetDelay::ceUCActionSetDelay(ceConversationTopic *topic, ceConversationAction *action, float newDelay){
 	if(!topic) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

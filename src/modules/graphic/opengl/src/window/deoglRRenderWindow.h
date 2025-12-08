@@ -251,7 +251,7 @@ public:
 	inline deoglRCanvasView *GetRCanvasView() const{ return pRCanvasView; }
 	
 	/** Set render canvas view or \em NULL if not set. */
-	void SetRCanvasView(deoglRCanvasView::Ref rcanvasView);
+	void SetRCanvasView(deoglRCanvasView *rcanvasView);
 	
 	/** Drop render canvas view if not \em NULL. */
 	void DropRCanvasView();

@@ -66,7 +66,7 @@ public:
 	dedsNavigationInfo *GetNavigationInfo(dsRealObject *myself) const;
 	
 	/** \brief Pushe navigation info or \em NULL. */
-	void PushNavigationInfo(dsRunTime *rt, dedsNavigationInfo::Ref info);
+	void PushNavigationInfo(dsRunTime *rt, dedsNavigationInfo *info);
 	/*@}*/
 	
 	

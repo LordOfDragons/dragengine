@@ -236,10 +236,10 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditString(igdeContainer &form, const char *label, const char *description,
-		igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener);
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener);
 	
 	void EditString(igdeContainer &form, const char *label, const char *description,
-		int rows, igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener);
+		int rows, igdeTextField::Ref &textField, igdeTextFieldListener *listener);
 	
 	/**
 	 * \brief Add text field.
@@ -247,16 +247,16 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditString(igdeContainer &parent, const char *description,
-		igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener);
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener);
 	
 	void EditString(igdeContainer &parent, const char *description, int rows,
-		igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener);
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener);
 	
 	void EditString(const char *description, igdeTextField::Ref &textField,
-		igdeTextFieldListener::Ref listener);
+		igdeTextFieldListener *listener);
 	
 	void EditString(const char *description, int rows, igdeTextField::Ref &textField,
-		igdeTextFieldListener::Ref listener);
+		igdeTextFieldListener *listener);
 	
 	
 	
@@ -296,11 +296,11 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditFloat(igdeContainer &form, const char *label, const char *description,
-		igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener);
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener);
 	
 	void EditFloat(igdeContainer &form, const char *label, const char *description,
 		int columns, int precision, igdeTextField::Ref &textField,
-		igdeTextFieldListener::Ref listener);
+		igdeTextFieldListener *listener);
 	
 	/**
 	 * \brief Add text field.
@@ -308,16 +308,16 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditFloat(igdeContainer &parent, const char *description,
-		igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener);
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener);
 	
 	void EditFloat(igdeContainer &parent, const char *description, int columns, int precision,
-		igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener);
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener);
 	
 	void EditFloat(const char *description, igdeTextField::Ref &textField,
-		igdeTextFieldListener::Ref listener);
+		igdeTextFieldListener *listener);
 	
 	void EditFloat(const char *description, int columns, int precision,
-		igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener);
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener);
 	
 	
 	
@@ -327,10 +327,10 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditInteger(igdeContainer &form, const char *label, const char *description,
-		igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener);
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener);
 	
 	void EditInteger(igdeContainer &form, const char *label, const char *description,
-		int columns, igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener);
+		int columns, igdeTextField::Ref &textField, igdeTextFieldListener *listener);
 	
 	/**
 	 * \brief Add text field.
@@ -338,16 +338,16 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditInteger(igdeContainer &parent, const char *description,
-		igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener);
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener);
 	
 	void EditInteger(igdeContainer &parent, const char *description, int columns,
-		igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener);
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener);
 	
 	void EditInteger(const char *description, igdeTextField::Ref &textField,
-		igdeTextFieldListener::Ref listener);
+		igdeTextFieldListener *listener);
 	
 	void EditInteger(const char *description, int columns, igdeTextField::Ref &textField,
-		igdeTextFieldListener::Ref listener);
+		igdeTextFieldListener *listener);
 	
 	
 	
@@ -462,12 +462,12 @@ public:
 	 * \brief Form line with empty label check box,
 	 */
 	void CheckBox(igdeContainer &form, igdeCheckBox::Ref &checkBox,
-		igdeAction::Ref action, bool takeOverAction = false);
+		igdeAction *action, bool takeOverAction = false);
 	
 	void CheckBox(igdeContainer &form, const char *text, const char *description,
 		igdeCheckBox::Ref &checkBox);
 	
-	void CheckBox(igdeCheckBox::Ref &checkBox, igdeAction::Ref action, bool takeOverAction = false);
+	void CheckBox(igdeCheckBox::Ref &checkBox, igdeAction *action, bool takeOverAction = false);
 	
 	void CheckBox(const char *text, const char *description, igdeCheckBox::Ref &checkBox);
 	
@@ -475,7 +475,7 @@ public:
 	 * \brief Check box without form line.
 	 */
 	void CheckBoxOnly(igdeContainer &parent , igdeCheckBox::Ref &checkBox,
-		igdeAction::Ref action, bool takeOverAction = false);
+		igdeAction *action, bool takeOverAction = false);
 	
 	void CheckBoxOnly(igdeContainer &parent, const char *text, const char *description,
 		igdeCheckBox::Ref &checkBox);
@@ -766,12 +766,12 @@ public:
 	/**
 	 * \brief Add button.
 	 */
-	void Button(igdeContainer &parent, igdeAction::Ref action, bool takeOverAction = false);
+	void Button(igdeContainer &parent, igdeAction *action, bool takeOverAction = false);
 	
-	void Button(igdeContainer &parent, igdeButton::Ref &button, igdeAction::Ref action,
+	void Button(igdeContainer &parent, igdeButton::Ref &button, igdeAction *action,
 		bool takeOverAction = false);
 	
-	void Button(igdeButton::Ref &button, igdeAction::Ref action, bool takeOverAction = false);
+	void Button(igdeButton::Ref &button, igdeAction *action, bool takeOverAction = false);
 	
 	void Button(igdeContainer &parent, igdeButton::Ref &button, const igdeAction::Ref &action);
 	
@@ -780,12 +780,12 @@ public:
 	/**
 	 * \brief Add toggle button.
 	 */
-	void ToggleButton(igdeContainer &parent, igdeAction::Ref action, bool takeOverAction = false);
+	void ToggleButton(igdeContainer &parent, igdeAction *action, bool takeOverAction = false);
 	
 	void ToggleButton(igdeContainer &parent, igdeToggleButton::Ref &button,
-		igdeAction::Ref action, bool takeOverAction = false);
+		igdeAction *action, bool takeOverAction = false);
 	
-	void ToggleButton(igdeToggleButton::Ref &button, igdeAction::Ref action, bool takeOverAction = false);
+	void ToggleButton(igdeToggleButton::Ref &button, igdeAction *action, bool takeOverAction = false);
 	
 	
 	
@@ -891,58 +891,58 @@ public:
 	/**
 	 * \brief Add sky wrapper properties panel.
 	 */
-	void WPSky(igdeContainer &parent, igdeAction::Ref action, const char *title,
+	void WPSky(igdeContainer &parent, igdeAction *action, const char *title,
 		bool stretchLast = false, bool collapsed = false, bool takeOverAction = false);
 	
-	void WPSky(igdeContainer &parent, igdeWPSky::Ref &panel, igdeAction::Ref action,
+	void WPSky(igdeContainer &parent, igdeWPSky::Ref &panel, igdeAction *action,
 		const char *title, bool stretchLast = false, bool collapsed = false,
 		bool takeOverAction = false);
 	
-	void WPSky(igdeWPSky::Ref &panel, igdeAction::Ref action, bool takeOverAction = false);
+	void WPSky(igdeWPSky::Ref &panel, igdeAction *action, bool takeOverAction = false);
 	
 	
 	
 	/**
 	 * \brief Add camera wrapper properties panel.
 	 */
-	void WPCamera(igdeContainer &parent, igdeAction::Ref action, const char *title,
+	void WPCamera(igdeContainer &parent, igdeAction *action, const char *title,
 		bool stretchLast = false, bool collapsed = false, bool takeOverAction = false);
 	
-	void WPCamera(igdeContainer &parent, igdeWPCamera::Ref &panel, igdeAction::Ref action,
+	void WPCamera(igdeContainer &parent, igdeWPCamera::Ref &panel, igdeAction *action,
 		const char *title, bool stretchLast = false, bool collapsed = false,
 		bool takeOverAction = false);
 	
-	void WPCamera(igdeWPCamera::Ref &panel, igdeAction::Ref action, bool takeOverAction = false);
+	void WPCamera(igdeWPCamera::Ref &panel, igdeAction *action, bool takeOverAction = false);
 	
 	
 	
 	/**
 	 * \brief Add object wrapper properties panel.
 	 */
-	void WPWObject(igdeContainer &parent, igdeAction::Ref action, const char *title,
+	void WPWObject(igdeContainer &parent, igdeAction *action, const char *title,
 		bool stretchLast = false, bool collapsed = false, bool takeOverAction = false);
 	
-	void WPWObject(igdeContainer &parent, igdeWPWObject::Ref &panel, igdeAction::Ref action,
+	void WPWObject(igdeContainer &parent, igdeWPWObject::Ref &panel, igdeAction *action,
 		const char *title, bool stretchLast = false, bool collapsed = false,
 		bool takeOverAction = false);
 	
-	void WPWObject(igdeWPWObject::Ref &panel, igdeAction::Ref action, bool takeOverAction = false);
+	void WPWObject(igdeWPWObject::Ref &panel, igdeAction *action, bool takeOverAction = false);
 	
 	
 	
 	/** \brief Add edit tags panel. */
-	void EditTags(igdeEditTags::Ref &editTags, igdeAction::Ref action, bool takeOverAction = false);
+	void EditTags(igdeEditTags::Ref &editTags, igdeAction *action, bool takeOverAction = false);
 	
 	void EditTags(igdeContainer &parent, igdeEditTags::Ref &editTags,
-		igdeAction::Ref action, bool takeOverAction = false);
+		igdeAction *action, bool takeOverAction = false);
 	
 	
 	
 	/** \brief Add toggle tags panel. */
 	void ToggleTags(igdeContainer &parent, igdeToggleTags::Ref &toggleTags,
-		igdeAction::Ref action, bool takeOverAction = false);
+		igdeAction *action, bool takeOverAction = false);
 	
-	void ToggleTags(igdeToggleTags::Ref &toggleTags, igdeAction::Ref action, bool takeOverAction = false);
+	void ToggleTags(igdeToggleTags::Ref &toggleTags, igdeAction *action, bool takeOverAction = false);
 	
 	
 	
@@ -957,27 +957,27 @@ public:
 	/**
 	 * \brief Add trigger table properties panel.
 	 */
-	void WPTriggerTable(igdeContainer &parent, igdeAction::Ref action, const char *title,
+	void WPTriggerTable(igdeContainer &parent, igdeAction *action, const char *title,
 		bool stretchLast = false, bool collapsed = false, bool takeOverAction = false);
 	
 	void WPTriggerTable(igdeContainer &parent, igdeWPTriggerTable::Ref &panel,
-		igdeAction::Ref action, const char *title, bool stretchLast = false, bool collapsed = false,
+		igdeAction *action, const char *title, bool stretchLast = false, bool collapsed = false,
 		bool takeOverAction = false);
 	
-	void WPTriggerTable(igdeWPTriggerTable::Ref &panel, igdeAction::Ref action, bool takeOverAction = false);
+	void WPTriggerTable(igdeWPTriggerTable::Ref &panel, igdeAction *action, bool takeOverAction = false);
 	
 	
 	
 	/** \brief Add menu command. */
-	void MenuCommand(igdeMenuCascade &menu, igdeAction::Ref action, bool takeOverAction = false);
+	void MenuCommand(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction = false);
 	void MenuCommand(igdeMenuCascade &menu, const igdeAction::Ref &action);
 	
 	/** \brief Add menu check. */
-	void MenuCheck(igdeMenuCascade &menu, igdeAction::Ref action, bool takeOverAction = false);
+	void MenuCheck(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction = false);
 	void MenuCheck(igdeMenuCascade &menu, const igdeAction::Ref &action);
 	
 	/** \brief Add menu option. */
-	void MenuOption(igdeMenuCascade &menu, igdeAction::Ref action, bool takeOverAction = false);
+	void MenuOption(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction = false);
 	void MenuOption(igdeMenuCascade &menu, const igdeAction::Ref &action);
 	
 	/** \brief Add menu separator. */
@@ -990,10 +990,10 @@ public:
 	
 	
 	/** \brief Add toolbar button. */
-	void ToolBarButton(igdeToolBar &toolBar, igdeAction::Ref action, bool takeOverAction = false);
+	void ToolBarButton(igdeToolBar &toolBar, igdeAction *action, bool takeOverAction = false);
 	
 	/** \brief Add toolbar toggle button. */
-	void ToolBarToggleButton(igdeToolBar &toolBar, igdeAction::Ref action, bool takeOverAction = false);
+	void ToolBarToggleButton(igdeToolBar &toolBar, igdeAction *action, bool takeOverAction = false);
 	
 	/** \brief Add toolbar separator. */
 	void ToolBarSeparator(igdeToolBar &toolBar);

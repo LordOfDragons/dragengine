@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCTPSetMaxValue(gdeObjectClass::Ref objectClass, gdeProperty::Ref property, float newValue);
+	gdeUOCTPSetMaxValue(gdeObjectClass *objectClass, gdeProperty *property, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -76,7 +76,7 @@ public:
 	devkDescriptorPoolSlot *Get();
 	
 	/** Return slot to pool. */
-	void Return(devkDescriptorPoolSlot::Ref slot);
+	void Return(devkDescriptorPoolSlot *slot);
 	/*@}*/
 	
 	

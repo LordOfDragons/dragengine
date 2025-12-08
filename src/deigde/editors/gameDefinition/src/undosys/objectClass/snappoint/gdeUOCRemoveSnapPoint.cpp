@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveSnapPoint::gdeUOCRemoveSnapPoint(gdeObjectClass::Ref objectClass, gdeOCSnapPoint::Ref snapPoint) :
+gdeUOCRemoveSnapPoint::gdeUOCRemoveSnapPoint(gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint) :
 
 pSnapPoint(NULL)
 {

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectAddProperty::meUObjectAddProperty(meObject::Ref object, const char *key, const char *value){
+meUObjectAddProperty::meUObjectAddProperty(meObject *object, const char *key, const char *value){
 	if(!object || !key || strlen(key) == 0 || !value){
 		DETHROW(deeInvalidParam);
 	}

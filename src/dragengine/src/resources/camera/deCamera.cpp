@@ -371,7 +371,7 @@ deEffect *deCamera::GetEffectAt(int index) const{
 	return pEffects->GetEffectAt(index);
 }
 
-void deCamera::AddEffect(deEffect::Ref effect){
+void deCamera::AddEffect(deEffect *effect){
 	pEffects->AddEffect(effect);
 	
 	if(pPeerGraphic){
@@ -379,7 +379,7 @@ void deCamera::AddEffect(deEffect::Ref effect){
 	}
 }
 
-void deCamera::RemoveEffect(deEffect::Ref effect){
+void deCamera::RemoveEffect(deEffect *effect){
 	const int index = pEffects->IndexOfEffect(effect);
 	if(index == -1){
 		DETHROW(deeInvalidParam);

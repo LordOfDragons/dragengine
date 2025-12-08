@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectRemoveAllTextures(meObject::Ref object);
+	meUObjectRemoveAllTextures(meObject *object);
 	
 protected:
 	/** \brief Clean up undo object. */

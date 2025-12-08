@@ -98,7 +98,7 @@ deoglRPropFieldType::~deoglRPropFieldType(){
 // Management
 ///////////////
 
-void deoglRPropFieldType::SetModel(deoglRModel::Ref model){
+void deoglRPropFieldType::SetModel(deoglRModel *model){
 	if(model == pModel){
 		return;
 	}
@@ -113,7 +113,7 @@ void deoglRPropFieldType::SetModel(deoglRModel::Ref model){
 	}
 }
 
-void deoglRPropFieldType::SetSkin(deoglRSkin::Ref skin){
+void deoglRPropFieldType::SetSkin(deoglRSkin *skin){
 	if(skin == pSkin){
 		return;
 	}

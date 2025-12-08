@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeSetColorize::seUPropertyNodeSetColorize(
-sePropertyNode::Ref node, const decColor &newValue) :
+sePropertyNode *node, const decColor &newValue) :
 
 pNewValue(newValue)
 {

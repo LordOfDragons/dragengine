@@ -66,7 +66,7 @@ public:
 	deService *GetService(dsRealObject *myself) const;
 	
 	/** Push service which can be nullptr. */
-	void PushService(dsRunTime *rt, deService::Ref service);
+	void PushService(dsRunTime *rt, deService *service);
 	
 	/** Next identifier. */
 	decUniqueID NextId();

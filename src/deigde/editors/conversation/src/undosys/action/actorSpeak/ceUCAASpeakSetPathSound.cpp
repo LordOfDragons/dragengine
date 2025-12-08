@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakSetPathSound::ceUCAASpeakSetPathSound(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, const char *newPath){
+ceUCAASpeakSetPathSound::ceUCAASpeakSetPathSound(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newPath){
 	if(!topic || !newPath) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

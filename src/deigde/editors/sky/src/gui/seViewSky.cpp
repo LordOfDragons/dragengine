@@ -95,7 +95,7 @@ seViewSky::~seViewSky(){
 void seViewSky::ResetView(){
 }
 
-void seViewSky::SetSky(seSky::Ref sky){
+void seViewSky::SetSky(seSky *sky){
 	if(sky == pSky){
 		return;
 	}

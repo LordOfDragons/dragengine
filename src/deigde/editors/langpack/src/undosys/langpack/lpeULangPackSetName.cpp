@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeULangPackSetName::lpeULangPackSetName(lpeLangPack::Ref langpack, const decUnicodeString &newName) :
+lpeULangPackSetName::lpeULangPackSetName(lpeLangPack *langpack, const decUnicodeString &newName) :
 
 pNewName(newName)
 {

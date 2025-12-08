@@ -130,7 +130,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky::Ref sky, seLayer *layer) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky *sky, seLayer *layer) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -153,7 +153,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, seSky::Ref sky, seLayer *layer) = 0;
+	virtual igdeUndo *OnChanged(const decVector &vector, seSky *sky, seLayer *layer) = 0;
 };
 
 class cBaseEditVector2Listener : public igdeEditVector2Listener{
@@ -176,7 +176,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector2 &vector, seSky::Ref sky, seLayer *layer) = 0;
+	virtual igdeUndo *OnChanged(const decVector2 &vector, seSky *sky, seLayer *layer) = 0;
 };
 
 class cBaseColorBoxListener : public igdeColorBoxListener{
@@ -199,7 +199,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decColor &color, seSky::Ref sky, seLayer *layer) = 0;
+	virtual igdeUndo *OnChanged(const decColor &color, seSky *sky, seLayer *layer) = 0;
 };
 
 class cBasePathListener : public igdeEditPathListener{
@@ -222,7 +222,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decString &path, seSky::Ref sky, seLayer *layer) = 0;
+	virtual igdeUndo *OnChanged(const decString &path, seSky *sky, seLayer *layer) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -254,7 +254,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSky::Ref sky) = 0;
+	virtual igdeUndo *OnAction(seSky *sky) = 0;
 	
 	virtual void Update(){
 		seSky * const sky = pPanel.GetSky();
@@ -282,7 +282,7 @@ public:
 	cBaseActionLayer(seWPLayer &panel, const char *text, igdeIcon *icon, const char *description) :
 	cBaseAction(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnAction(seSky::Ref sky){
+	virtual igdeUndo *OnAction(seSky *sky){
 		seLayer * const layer = pPanel.GetLayer();
 		if(layer){
 			return OnActionLayer(sky, layer);
@@ -292,7 +292,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnActionLayer(seSky::Ref sky, seLayer *layer) = 0;
+	virtual igdeUndo *OnActionLayer(seSky *sky, seLayer *layer) = 0;
 	
 	void UpdateSky (const seSky &sky) override{
 		seLayer * const layer = pPanel.GetLayer();
@@ -342,7 +342,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add a layer to the end of the list."){}
 	
-	virtual igdeUndo *OnAction(seSky::Ref sky){
+	virtual igdeUndo *OnAction(seSky *sky){
 		const seLayer::Ref layer(seLayer::Ref::NewWith(pPanel.GetEnvironment()));
 		return new seULayerAdd(sky, layer);
 	}
@@ -841,7 +841,7 @@ igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine, frameLine2;
+	igdeContainer *content, groupBox, frameLine, frameLine2;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener.TakeOver(new seWPLayerListener(*this));
@@ -965,7 +965,7 @@ seWPLayer::~seWPLayer(){
 // Management
 ///////////////
 
-void seWPLayer::SetSky(seSky::Ref sky){
+void seWPLayer::SetSky(seSky *sky){
 	if(sky == pSky){
 		return;
 	}

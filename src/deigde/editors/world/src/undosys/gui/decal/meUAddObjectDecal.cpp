@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUAddObjectDecal::meUAddObjectDecal(meWorld *world, meObject::Ref parentObject){
+meUAddObjectDecal::meUAddObjectDecal(meWorld *world, meObject *parentObject){
 	if(!world || !parentObject) DETHROW(deeInvalidParam);
 	
 	pWorld = world;

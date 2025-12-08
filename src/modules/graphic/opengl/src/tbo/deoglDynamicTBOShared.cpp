@@ -201,7 +201,7 @@ deoglDynamicTBOBlock *deoglDynamicTBOShared::AddBlock(deoglDynamicTBO *tbo, deog
 	return block;
 }
 
-void deoglDynamicTBOShared::RemoveBlock(deoglDynamicTBOBlock::Ref block){
+void deoglDynamicTBOShared::RemoveBlock(deoglDynamicTBOBlock *block){
 	int index = pBlocks.IndexOf(block);
 	if(index == -1){
 		DETHROW(deeInvalidParam);

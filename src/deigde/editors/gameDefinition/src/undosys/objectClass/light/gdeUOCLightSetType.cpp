@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetType::gdeUOCLightSetType(gdeObjectClass::Ref objectClass,
-gdeOCLight::Ref light, deLight::eLightTypes newValue) :
+gdeUOCLightSetType::gdeUOCLightSetType(gdeObjectClass *objectClass,
+gdeOCLight *light, deLight::eLightTypes newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

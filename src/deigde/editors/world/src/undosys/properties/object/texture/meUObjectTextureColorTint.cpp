@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureColorTint::meUObjectTextureColorTint(meObjectTexture::Ref texture, const decColor &newColor){
+meUObjectTextureColorTint::meUObjectTextureColorTint(meObjectTexture *texture, const decColor &newColor){
 	if(!texture){
 		DETHROW(deeInvalidParam);
 	}

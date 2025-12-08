@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetCamDistTo(ceCameraShot::Ref cameraShot, float newDist);
+	ceUCCShotSetCamDistTo(ceCameraShot *cameraShot, float newDist);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetCamDistTo();

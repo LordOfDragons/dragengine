@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetPosition::gdeUOCSpeakerSetPosition(gdeObjectClass::Ref objectClass,
-gdeOCSpeaker::Ref speaker, const decVector &newValue) :
+gdeUOCSpeakerSetPosition::gdeUOCSpeakerSetPosition(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, const decVector &newValue) :
 
 pSpeaker(NULL)
 {

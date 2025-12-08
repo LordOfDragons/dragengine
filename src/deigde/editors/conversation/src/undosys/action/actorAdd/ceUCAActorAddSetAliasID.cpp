@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAActorAddSetAliasID::ceUCAActorAddSetAliasID(ceConversationTopic::Ref topic, ceCAActorAdd::Ref action, const char *newAliasID){
+ceUCAActorAddSetAliasID::ceUCAActorAddSetAliasID(ceConversationTopic *topic, ceCAActorAdd *action, const char *newAliasID){
 	if(!topic || !newAliasID){
 		DETHROW(deeInvalidParam);
 	}

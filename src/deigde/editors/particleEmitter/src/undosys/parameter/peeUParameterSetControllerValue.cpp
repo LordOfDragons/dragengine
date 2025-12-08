@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetControllerValue::peeUParameterSetControllerValue(peeType::Ref type, peeParameter *parameter, peeController *newController){
+peeUParameterSetControllerValue::peeUParameterSetControllerValue(peeType *type, peeParameter *parameter, peeController *newController){
 	if(!type || !parameter){
 		DETHROW(deeInvalidParam);
 	}

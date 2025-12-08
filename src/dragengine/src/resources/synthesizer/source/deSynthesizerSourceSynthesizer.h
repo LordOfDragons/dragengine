@@ -70,7 +70,7 @@ public:
 	inline deSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or NULL if silent. */
-	void SetSynthesizer(deSynthesizer::Ref synthesizer);
+	void SetSynthesizer(deSynthesizer *synthesizer);
 	
 	
 	

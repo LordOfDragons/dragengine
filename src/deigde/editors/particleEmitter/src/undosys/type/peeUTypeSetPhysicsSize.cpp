@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetPhysicsSize::peeUTypeSetPhysicsSize(peeType::Ref type, float newSize){
+peeUTypeSetPhysicsSize::peeUTypeSetPhysicsSize(peeType *type, float newSize){
 	if(!type){
 		DETHROW(deeInvalidParam);
 	}

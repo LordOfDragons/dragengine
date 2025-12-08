@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddComponent::gdeUOCAddComponent(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component) :
+gdeUOCAddComponent::gdeUOCAddComponent(gdeObjectClass *objectClass, gdeOCComponent *component) :
 
 pComponent(NULL)
 {

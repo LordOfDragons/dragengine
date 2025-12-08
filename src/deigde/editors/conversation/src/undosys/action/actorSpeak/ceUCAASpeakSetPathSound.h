@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakSetPathSound(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, const char *newPath);
+	ceUCAASpeakSetPathSound(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newPath);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakSetPathSound();

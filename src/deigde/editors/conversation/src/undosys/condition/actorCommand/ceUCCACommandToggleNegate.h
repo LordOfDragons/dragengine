@@ -49,8 +49,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCCACommandToggleNegate(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
-		ceCConditionActorCommand::Ref actorCommand);
+	ceUCCACommandToggleNegate(ceConversationTopic *topic, ceConversationAction *action,
+		ceCConditionActorCommand *actorCommand);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCCACommandToggleNegate();
 	/*@}*/

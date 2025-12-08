@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUSAnimSetNeutralMoveName::saeUSAnimSetNeutralMoveName(saeSAnimation::Ref sanimation, const char *newName){
+saeUSAnimSetNeutralMoveName::saeUSAnimSetNeutralMoveName(saeSAnimation *sanimation, const char *newName){
 	if(!sanimation || !newName) DETHROW(deeInvalidParam);
 	
 	pSAnimation = NULL;

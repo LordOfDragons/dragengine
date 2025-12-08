@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUCategoryToggleHidden::gdeUCategoryToggleHidden(gdeGameDefinition *gameDefinition,
-gdeCategory::Ref category, eCategoryType type) :
+gdeCategory *category, eCategoryType type) :
 gdeUCategoryBase(gameDefinition, type)
 {
 	if(!category){

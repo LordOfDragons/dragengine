@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPCFPRemove::gdeUGDDPCFPRemove(gdeGameDefinition::Ref gamedef,
-gdeProperty::Ref property, gdeFilePattern::Ref filePattern) :
+gdeUGDDPCFPRemove::gdeUGDDPCFPRemove(gdeGameDefinition *gamedef,
+gdeProperty *property, gdeFilePattern *filePattern) :
 
 pProperty(NULL)
 {

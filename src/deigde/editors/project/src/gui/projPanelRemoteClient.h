@@ -61,14 +61,14 @@ private:
 	
 	int pMaxLines;
 	
-	igdeTextField::Ref pEditName, pEditAddress;
+	igdeTextField *pEditName, pEditAddress;
 	igdeButton::Ref pBtnDisconnect;
 	
 	igdeButton::Ref pBtnSynchronize;
 	igdeTextField::Ref pEditSyncState;
 	
 	igdeComboBox::Ref pCBLaunchProfile;
-	igdeButton::Ref pBtnStart, pBtnStop, pBtnKill;
+	igdeButton *pBtnStart, pBtnStop, pBtnKill;
 	
 	igdeTabBook::Ref pTabContent;
 	

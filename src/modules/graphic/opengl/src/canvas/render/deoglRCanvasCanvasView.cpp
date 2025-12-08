@@ -60,7 +60,7 @@ deoglRCanvasCanvasView::~deoglRCanvasCanvasView(){
 // Management
 ///////////////
 
-void deoglRCanvasCanvasView::SetCanvasView(deoglRCanvasView::Ref canvasView){
+void deoglRCanvasCanvasView::SetCanvasView(deoglRCanvasView *canvasView){
 	if(canvasView == pCanvasView){
 		return;
 	}

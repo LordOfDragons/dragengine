@@ -102,7 +102,7 @@ peeEmitter *peeLoadSaveSystem::LoadEmitter(const char *filename){
 	return emitter;
 }
 
-void peeLoadSaveSystem::SaveEmitter(peeEmitter::Ref emitter, const char *filename){
+void peeLoadSaveSystem::SaveEmitter(peeEmitter *emitter, const char *filename){
 	if(!emitter || !filename) DETHROW(deeInvalidParam);
 	
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();

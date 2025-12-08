@@ -64,7 +64,7 @@ public:
 	/**
 	 * \brief Pushe memory file on stack.
 	 * \details Memory file can be \em NULL in which case a null object is pushed. */
-	void PushMemoryFile(dsRunTime *rt, decMemoryFile::Ref memoryFile);
+	void PushMemoryFile(dsRunTime *rt, decMemoryFile *memoryFile);
 	
 	/** \brief Script module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }

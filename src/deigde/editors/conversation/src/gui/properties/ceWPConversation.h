@@ -131,7 +131,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation. */
-	void SetConversation(ceConversation::Ref conversation);
+	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Update conversation. */
 	void UpdateConversation();

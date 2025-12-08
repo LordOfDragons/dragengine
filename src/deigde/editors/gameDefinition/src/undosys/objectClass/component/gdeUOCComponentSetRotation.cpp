@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetRotation::gdeUOCComponentSetRotation(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, const decVector &newValue) :
+gdeUOCComponentSetRotation::gdeUOCComponentSetRotation(gdeObjectClass *objectClass,
+gdeOCComponent *component, const decVector &newValue) :
 
 pComponent(NULL)
 {

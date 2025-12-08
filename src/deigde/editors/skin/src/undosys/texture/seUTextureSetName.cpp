@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUTextureSetName::seUTextureSetName(seTexture::Ref texture, const char *newName){
+seUTextureSetName::seUTextureSetName(seTexture *texture, const char *newName){
 	if(!texture || !newName) DETHROW(deeInvalidParam);
 	
 	pTexture = NULL;

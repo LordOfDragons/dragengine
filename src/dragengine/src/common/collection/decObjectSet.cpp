@@ -101,7 +101,7 @@ deObject *decObjectSet::GetAt(int index) const{
 	return pObjects[index];
 }
 
-bool decObjectSet::Has(deObject::Ref object) const{
+bool decObjectSet::Has(deObject *object) const{
 	int p;
 	
 	for(p=0; p<pObjectCount; p++){
@@ -113,7 +113,7 @@ bool decObjectSet::Has(deObject::Ref object) const{
 	return false;
 }
 
-void decObjectSet::Add(deObject::Ref object){
+void decObjectSet::Add(deObject *object){
 	if(Has(object)){
 		DETHROW(deeInvalidParam);
 	}
@@ -133,7 +133,7 @@ void decObjectSet::Add(deObject::Ref object){
 	pObjectCount++;
 }
 
-void decObjectSet::AddIfAbsent(deObject::Ref object){
+void decObjectSet::AddIfAbsent(deObject *object){
 	if(Has(object)){
 		return;
 	}
@@ -153,7 +153,7 @@ void decObjectSet::AddIfAbsent(deObject::Ref object){
 	pObjectCount++;
 }
 
-void decObjectSet::Remove(deObject::Ref object){
+void decObjectSet::Remove(deObject *object){
 	const int position = pIndexOf(object);
 	
 	if(position == -1){
@@ -170,7 +170,7 @@ void decObjectSet::Remove(deObject::Ref object){
 	}
 }
 
-void decObjectSet::RemoveIfPresent(deObject::Ref object){
+void decObjectSet::RemoveIfPresent(deObject *object){
 	const int position = pIndexOf(object);
 	
 	if(position == -1){
@@ -462,7 +462,7 @@ decObjectSet &decObjectSet::operator+=(const decObjectSet &set){
 // Private Functions
 //////////////////////
 
-int decObjectSet::pIndexOf(deObject::Ref object) const{
+int decObjectSet::pIndexOf(deObject *object) const{
 	int p;
 	
 	for(p=0; p<pObjectCount; p++){

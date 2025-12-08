@@ -48,8 +48,8 @@ private:
 	feWPGlyphListener::Ref pListener;
 	
 	igdeComboBox::Ref pCBGlyph;
-	igdeButton::Ref pBtnGlyphAdd, pBtnGlyphDel;
-	igdeTextField::Ref pEditU, pEditV, pEditWidth, pEditHeight, pEditBearing,
+	igdeButton *pBtnGlyphAdd, pBtnGlyphDel;
+	igdeTextField *pEditU, pEditV, pEditWidth, pEditHeight, pEditBearing,
 		pEditBearingY, pEditAdvance;
 	
 	
@@ -75,13 +75,13 @@ public:
 	inline feFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont(feFont::Ref font);
+	void SetFont(feFont *font);
 	
 	/** \brief Glyph. */
 	inline feFontGlyph *GetGlyph() const{ return pGlyph; }
 	
 	/** \brief Set glyph. */
-	void SetGlyph(feFontGlyph::Ref glyph);
+	void SetGlyph(feFontGlyph *glyph);
 	
 	/** \brief Update glyph list. */
 	void UpdateGlyphList();

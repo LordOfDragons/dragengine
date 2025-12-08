@@ -58,7 +58,7 @@ public:
 	inline deoglRVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Set video player or \em NULL if not set. */
-	void SetVideoPlayer(deoglRVideoPlayer::Ref videoPlayer);
+	void SetVideoPlayer(deoglRVideoPlayer *videoPlayer);
 	
 	/** Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTCTransform() const{ return pTCTransform; }

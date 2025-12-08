@@ -104,7 +104,7 @@ void ceConversationFile::SetID(const char *id){
 // Topics
 ///////////
 
-void ceConversationFile::AddTopic(ceConversationTopic::Ref topic){
+void ceConversationFile::AddTopic(ceConversationTopic *topic){
 	if(!topic || pTopics.HasWithID(topic->GetID().GetString()) || topic->GetFile()){
 		DETHROW(deeInvalidParam);
 	}
@@ -121,7 +121,7 @@ void ceConversationFile::AddTopic(ceConversationTopic::Ref topic){
 	}
 }
 
-void ceConversationFile::RemoveTopic(ceConversationTopic::Ref topic){
+void ceConversationFile::RemoveTopic(ceConversationTopic *topic){
 	if(!topic || !pTopics.Has(topic)){
 		DETHROW(deeInvalidParam);
 	}
@@ -164,7 +164,7 @@ void ceConversationFile::RemoveAllTopics(){
 	}
 }
 
-void ceConversationFile::SetActiveTopic(ceConversationTopic::Ref topic){
+void ceConversationFile::SetActiveTopic(ceConversationTopic *topic){
 	if(topic == pActiveTopic){
 		return;
 	}

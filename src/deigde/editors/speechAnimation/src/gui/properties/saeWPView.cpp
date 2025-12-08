@@ -158,7 +158,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox;
+	igdeContainer *content, groupBox;
 	igdeAction::Ref action;
 	
 	pListener.TakeOver(new saeWPViewListener(*this));
@@ -193,7 +193,7 @@ saeWPView::~saeWPView(){
 // Management
 ///////////////
 
-void saeWPView::SetSAnimation(saeSAnimation::Ref sanimation){
+void saeWPView::SetSAnimation(saeSAnimation *sanimation){
 	if(sanimation == pSAnimation){
 		return;
 	}

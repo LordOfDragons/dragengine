@@ -66,7 +66,7 @@ public:
 	deDecal *GetDecal(dsRealObject *myself) const;
 	
 	/** \brief Pushe decal. */
-	void PushDecal(dsRunTime *rt, deDecal::Ref decal);
+	void PushDecal(dsRunTime *rt, deDecal *decal);
 	/*@}*/
 	
 	

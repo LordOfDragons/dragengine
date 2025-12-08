@@ -45,7 +45,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCSnapPoint(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCSnapPoint::Ref snapPoint, int index);
+		gdeOCSnapPoint *snapPoint, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

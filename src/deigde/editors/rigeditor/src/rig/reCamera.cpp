@@ -61,7 +61,7 @@ reCamera::~reCamera(){
 // Management
 ///////////////
 
-void reCamera::SetBone(reRigBone::Ref bone){
+void reCamera::SetBone(reRigBone *bone){
 	if(bone != pBone){
 		if(pBone) pBone->FreeReference();
 		

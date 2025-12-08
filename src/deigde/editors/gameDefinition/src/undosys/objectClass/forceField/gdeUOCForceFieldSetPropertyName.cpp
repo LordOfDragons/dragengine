@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetPropertyName::gdeUOCForceFieldSetPropertyName(gdeObjectClass::Ref objectClass,
-gdeOCForceField::Ref forceField, gdeOCForceField::eProperties property, const char *newValue) :
+gdeUOCForceFieldSetPropertyName::gdeUOCForceFieldSetPropertyName(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, gdeOCForceField::eProperties property, const char *newValue) :
 
 
 pProperty(property)

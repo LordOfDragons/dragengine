@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetScaleMode::gdeUOCSetScaleMode(gdeObjectClass::Ref objectClass,
+gdeUOCSetScaleMode::gdeUOCSetScaleMode(gdeObjectClass *objectClass,
 gdeObjectClass::eScaleModes newValue) :
 pObjectClass(NULL)
 {

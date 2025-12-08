@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUSkyControllerAdd(gdeSky::Ref sky, gdeSkyController::Ref controller);
+	gdeUSkyControllerAdd(gdeSky *sky, gdeSkyController *controller);
 	
 protected:
 	/** \brief Clean up undo action. */

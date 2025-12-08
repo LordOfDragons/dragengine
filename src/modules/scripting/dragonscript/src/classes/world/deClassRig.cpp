@@ -672,7 +672,7 @@ deRig *deClassRig::GetRig(dsRealObject *myself) const{
 	return ((sRigNatDat*)p_GetNativeData(myself->GetBuffer()))->rig;
 }
 
-void deClassRig::PushRig(dsRunTime *rt, deRig::Ref rig){
+void deClassRig::PushRig(dsRunTime *rt, deRig *rig){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

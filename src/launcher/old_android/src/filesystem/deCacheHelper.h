@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create cache helper building the mapping from the cache directory. */
-	deCacheHelper(deVirtualFileSystem::Ref vfs, const decPath &cachePath);
+	deCacheHelper(deVirtualFileSystem *vfs, const decPath &cachePath);
 	
 	/** \brief Clean up cache helper. */
 	~deCacheHelper();

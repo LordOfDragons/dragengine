@@ -80,8 +80,8 @@ public:
 	
 private:
 	void pCleanUp();
-	void pAddTargetsForSource(seLink *link, int targetCount, seSource::Ref source);
-	void pAddTarget(int targetCount, seSource::Ref source, seControllerTarget *target);
+	void pAddTargetsForSource(seLink *link, int targetCount, seSource *source);
+	void pAddTarget(int targetCount, seSource *source, seControllerTarget *target);
 };
 
 #endif

@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetModelPath::peeUTypeSetModelPath(peeType::Ref type, const char *newPath){
+peeUTypeSetModelPath::peeUTypeSetModelPath(peeType *type, const char *newPath){
 	if(!type || !newPath){
 		DETHROW(deeInvalidParam);
 	}

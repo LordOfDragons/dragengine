@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataNavSpace::meUndoDataNavSpace(meNavigationSpace::Ref navspace) :
+meUndoDataNavSpace::meUndoDataNavSpace(meNavigationSpace *navspace) :
 pNavSpace(NULL)
 {
 	if(!navspace){

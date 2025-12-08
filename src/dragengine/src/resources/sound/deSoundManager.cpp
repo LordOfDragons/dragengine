@@ -166,11 +166,11 @@ const char *basePath, bool asynchron){
 	return sound;
 }
 
-void deSoundManager::SaveSound(deSound::Ref sound, const char *filename){
+void deSoundManager::SaveSound(deSound *sound, const char *filename){
 	return SaveSound(GetEngine()->GetVirtualFileSystem(), sound, filename);
 }
 
-void deSoundManager::SaveSound(deVirtualFileSystem *vfs, deSound::Ref sound, const char *filename){
+void deSoundManager::SaveSound(deVirtualFileSystem *vfs, deSound *sound, const char *filename){
 	if(!sound || !vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
@@ -190,7 +190,7 @@ void deSoundManager::SaveSound(deVirtualFileSystem *vfs, deSound::Ref sound, con
 	}
 }
 
-void deSoundManager::AddLoadedSound(deSound::Ref sound){
+void deSoundManager::AddLoadedSound(deSound *sound){
 	if(!sound){
 		DETHROW(deeInvalidParam);
 	}
@@ -200,7 +200,7 @@ void deSoundManager::AddLoadedSound(deSound::Ref sound){
 
 
 
-deSoundDecoder *deSoundManager::CreateDecoder(deSound::Ref sound){
+deSoundDecoder *deSoundManager::CreateDecoder(deSound *sound){
 	if(!sound || !sound->GetVirtualFileSystem()){
 		DETHROW(deeInvalidParam);
 	}

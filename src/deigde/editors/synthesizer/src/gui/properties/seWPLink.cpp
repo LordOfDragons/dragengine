@@ -272,7 +272,7 @@ pPreventUpdate(false)
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
 	pListener.TakeOver(new seWPLinkListener(*this));
 	
@@ -318,7 +318,7 @@ seWPLink::~seWPLink(){
 // Management
 ///////////////
 
-void seWPLink::SetSynthesizer(seSynthesizer::Ref synthesizer){
+void seWPLink::SetSynthesizer(seSynthesizer *synthesizer){
 	if(synthesizer == pSynthesizer){
 		return;
 	}

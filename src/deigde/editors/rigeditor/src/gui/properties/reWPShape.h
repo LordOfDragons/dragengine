@@ -84,13 +84,13 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig(reRig::Ref rig);
+	void SetRig(reRig *rig);
 	
 	/** \brief Shape. */
 	inline reRigShape *GetShape() const{ return pShape; }
 	
 	/** \brief Set shape. */
-	void SetShape(reRigShape::Ref shape);
+	void SetShape(reRigShape *shape);
 	
 	/** \brief Update shape. */
 	void UpdateShape();

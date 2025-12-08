@@ -345,10 +345,10 @@ public:
 	deEffect *GetEffectAt(int index) const;
 	
 	/** \brief Adds an effect. */
-	void AddEffect(deEffect::Ref effect);
+	void AddEffect(deEffect *effect);
 	
 	/** \brief Removes an effect. */
-	void RemoveEffect(deEffect::Ref effect);
+	void RemoveEffect(deEffect *effect);
 	
 	/** \brief Removes all effects. */
 	void RemoveAllEffects();

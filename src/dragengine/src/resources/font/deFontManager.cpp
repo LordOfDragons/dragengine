@@ -472,7 +472,7 @@ void deFontManager::ReleaseLeakingResources(){
 	pFonts.RemoveAll(); // wo do not delete them to avoid crashes. better leak than crash
 }
 
-void deFontManager::AddLoadedFont(deFont::Ref font){
+void deFontManager::AddLoadedFont(deFont *font){
 	DEASSERT_NOTNULL(font)
 	
 	pFonts.Add(font);
@@ -551,7 +551,7 @@ void deFontManager::SystemGraphicUnload(){
 // Private Functions
 //////////////////////
 
-void deFontManager::pLoadFontSources(deFont::Ref font){
+void deFontManager::pLoadFontSources(deFont *font){
 	deImageManager &imageMgr = *GetImageManager();
 	deImage::Ref newImage = NULL;
 	

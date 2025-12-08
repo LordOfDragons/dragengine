@@ -212,7 +212,7 @@ deEffectColorMatrix *deClassEffectColorMatrix::GetEffect(dsRealObject *myself) c
 	return ((sEffClrMatMatrixNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
-void deClassEffectColorMatrix::PushEffect(dsRunTime *rt, deEffectColorMatrix::Ref effect){
+void deClassEffectColorMatrix::PushEffect(dsRunTime *rt, deEffectColorMatrix *effect){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUTextureRemove(seTexture::Ref texture);
+	seUTextureRemove(seTexture *texture);
 	
 protected:
 	/** \brief Clean up undo. */

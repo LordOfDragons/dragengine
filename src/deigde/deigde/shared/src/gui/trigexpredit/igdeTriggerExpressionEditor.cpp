@@ -452,7 +452,7 @@ void igdeTriggerExpressionEditor::UpdateTree(){
 	UpdateExpressionComponent();
 }
 
-void igdeTriggerExpressionEditor::AddComponentToTree(igdeTreeItem *parent, igdeTriggerExpressionComponent::Ref component){
+void igdeTriggerExpressionEditor::AddComponentToTree(igdeTreeItem *parent, igdeTriggerExpressionComponent *component){
 	decString text;
 	
 	if(component){
@@ -504,7 +504,7 @@ void igdeTriggerExpressionEditor::AddComponentToTree(igdeTreeItem *parent, igdeT
 	}
 }
 
-void igdeTriggerExpressionEditor::UpdateComponentInTree(igdeTreeItem *item, igdeTriggerExpressionComponent::Ref component){
+void igdeTriggerExpressionEditor::UpdateComponentInTree(igdeTreeItem *item, igdeTriggerExpressionComponent *component){
 	decString text;
 	
 	if(component){
@@ -669,7 +669,7 @@ void igdeTriggerExpressionEditor::OnParameterChanged(igdeAction*){
 void igdeTriggerExpressionEditor::pCreateContent(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainer::Ref form, panel, panel2, groupBox;
+	igdeContainer *form, panel, panel2, groupBox;
 	igdeContainerBorder::Ref groupBorder;
 	
 	// expression string

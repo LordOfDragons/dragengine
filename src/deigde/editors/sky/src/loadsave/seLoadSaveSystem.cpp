@@ -108,7 +108,7 @@ seSky *seLoadSaveSystem::LoadSky(const char *filename){
 	return sky;
 }
 
-void seLoadSaveSystem::SaveSky(seSky::Ref sky, const char *filename){
+void seLoadSaveSystem::SaveSky(seSky *sky, const char *filename){
 	if(!sky || !filename){
 		DETHROW(deeInvalidParam);
 	}

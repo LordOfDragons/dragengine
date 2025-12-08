@@ -73,7 +73,7 @@ public:
 	/** \brief Retrieves the collision shape or NULL if not set. */
 	inline debpBulletShape *GetShape() const{ return pShape; }
 	/** \brief Sets the collision shape or NULL if not set. */
-	void SetShape(debpBulletShape::Ref shape);
+	void SetShape(debpBulletShape *shape);
 	
 	/** \brief Retrieves the position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }

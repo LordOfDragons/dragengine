@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveInherit::gdeUOCRemoveInherit(gdeObjectClass::Ref objectClass, gdeOCInherit::Ref inherit) :
+gdeUOCRemoveInherit::gdeUOCRemoveInherit(gdeObjectClass *objectClass, gdeOCInherit *inherit) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !inherit){

@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetRotation(gdeObjectClass::Ref objectClass,
-		gdeOCComponent::Ref component, const decVector &newValue);
+	gdeUOCComponentSetRotation(gdeObjectClass *objectClass,
+		gdeOCComponent *component, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

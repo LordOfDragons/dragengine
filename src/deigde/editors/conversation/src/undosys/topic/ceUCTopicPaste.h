@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCTopicPaste(ceConversationFile::Ref file, const ceConversationTopicList &topics);
+	ceUCTopicPaste(ceConversationFile *file, const ceConversationTopicList &topics);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCTopicPaste();

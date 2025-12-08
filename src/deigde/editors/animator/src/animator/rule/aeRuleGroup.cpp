@@ -92,7 +92,7 @@ aeRuleGroup::~aeRuleGroup(){
 // Management
 ///////////////
 
-void aeRuleGroup::AddRule(aeRule::Ref rule){
+void aeRuleGroup::AddRule(aeRule *rule){
 	pRules.Add(rule);
 	
 	aeAnimator * const animator = GetAnimator();
@@ -106,7 +106,7 @@ void aeRuleGroup::AddRule(aeRule::Ref rule){
 	}
 }
 
-void aeRuleGroup::InsertRuleAt(aeRule::Ref rule, int index){
+void aeRuleGroup::InsertRuleAt(aeRule *rule, int index){
 	pRules.Insert(rule, index);
 	
 	aeAnimator * const animator = GetAnimator();
@@ -120,7 +120,7 @@ void aeRuleGroup::InsertRuleAt(aeRule::Ref rule, int index){
 	}
 }
 
-void aeRuleGroup::MoveRuleTo(aeRule::Ref rule, int index){
+void aeRuleGroup::MoveRuleTo(aeRule *rule, int index){
 	pRules.Move(rule, index);
 	
 	aeAnimator * const animator = GetAnimator();
@@ -130,7 +130,7 @@ void aeRuleGroup::MoveRuleTo(aeRule::Ref rule, int index){
 	}
 }
 
-void aeRuleGroup::RemoveRule(aeRule::Ref rule){
+void aeRuleGroup::RemoveRule(aeRule *rule){
 	if(!pRules.Has(rule)){
 		DETHROW(deeInvalidParam);
 	}

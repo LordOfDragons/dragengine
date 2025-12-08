@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \briefCreate xml parser. */
-	decXmlParser(deLogger::Ref logger);
+	decXmlParser(deLogger *logger);
 	
 	/** Clean up xml parser. */
 	virtual ~decXmlParser();
@@ -98,7 +98,7 @@ public:
 	 * 
 	 * \return true on success or false otherwise
 	 */
-	bool ParseXml(decBaseFileReader::Ref file, decXmlDocument *doc);
+	bool ParseXml(decBaseFileReader *file, decXmlDocument *doc);
 	/*@}*/
 	
 	
@@ -139,7 +139,7 @@ public:
 	 */
 	/*@{*/
 	/** \brief Prepare parsing the file by reseting all counters. */
-	void PrepareParse(decBaseFileReader::Ref file);
+	void PrepareParse(decBaseFileReader *file);
 	
 	/** \brief Parse XML file. */
 	void ParseDocument(decXmlDocument *doc);

@@ -56,7 +56,7 @@ igdeTriggerExpression::~igdeTriggerExpression(){
 // Management
 ///////////////
 
-void igdeTriggerExpression::SetRootComponent(igdeTriggerExpressionComponent::Ref component){
+void igdeTriggerExpression::SetRootComponent(igdeTriggerExpressionComponent *component){
 	if(component != pRootComponent){
 		pRootComponent = component;
 	}

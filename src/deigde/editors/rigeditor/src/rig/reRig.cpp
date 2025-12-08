@@ -999,7 +999,7 @@ reRigBone *reRig::GetBoneWithOrder(int order) const{
 	return NULL;
 }
 
-int reRig::IndexOfBone(reRigBone::Ref bone) const{
+int reRig::IndexOfBone(reRigBone *bone) const{
 	if(!bone) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1010,7 +1010,7 @@ int reRig::IndexOfBone(reRigBone::Ref bone) const{
 	return -1;
 }
 
-bool reRig::HasBone(reRigBone::Ref bone) const{
+bool reRig::HasBone(reRigBone *bone) const{
 	if(!bone) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1021,7 +1021,7 @@ bool reRig::HasBone(reRigBone::Ref bone) const{
 	return false;
 }
 
-void reRig::AddBone(reRigBone::Ref bone){
+void reRig::AddBone(reRigBone *bone){
 	if(HasBone(bone)) DETHROW(deeInvalidParam);
 	
 	if(pBoneCount == pBoneSize){
@@ -1045,7 +1045,7 @@ void reRig::AddBone(reRigBone::Ref bone){
 	NotifyBoneCountChanged();
 }
 
-void reRig::RemoveBone(reRigBone::Ref bone){
+void reRig::RemoveBone(reRigBone *bone){
 	int i, index = IndexOfBone(bone);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -1110,7 +1110,7 @@ void reRig::SetAllBonesVisited(bool visited){
 	}
 }
 
-void reRig::SetRootBone(reRigBone::Ref rootBone){
+void reRig::SetRootBone(reRigBone *rootBone){
 	if(rootBone != pRootBone){
 		pRootBone = rootBone;
 		NotifyRigChanged();
@@ -1141,7 +1141,7 @@ reRigShape *reRig::GetShapeWith(deColliderVolume *collider) const{
 	return NULL;
 }
 
-int reRig::IndexOfShape(reRigShape::Ref shape) const{
+int reRig::IndexOfShape(reRigShape *shape) const{
 	if(!shape) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1152,7 +1152,7 @@ int reRig::IndexOfShape(reRigShape::Ref shape) const{
 	return -1;
 }
 
-bool reRig::HasShape(reRigShape::Ref shape) const{
+bool reRig::HasShape(reRigShape *shape) const{
 	if(!shape) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1163,7 +1163,7 @@ bool reRig::HasShape(reRigShape::Ref shape) const{
 	return false;
 }
 
-void reRig::AddShape(reRigShape::Ref shape){
+void reRig::AddShape(reRigShape *shape){
 	if(HasShape(shape)) DETHROW(deeInvalidParam);
 	
 	if(pShapeCount == pShapeSize){
@@ -1184,7 +1184,7 @@ void reRig::AddShape(reRigShape::Ref shape){
 	NotifyShapeCountChanged();
 }
 
-void reRig::RemoveShape(reRigShape::Ref shape){
+void reRig::RemoveShape(reRigShape *shape){
 	int i, index = IndexOfShape(shape);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -1231,7 +1231,7 @@ reRigConstraint *reRig::GetConstraintWith(deColliderVolume *collider) const{
 	return NULL;
 }
 
-int reRig::IndexOfConstraint(reRigConstraint::Ref constraint) const{
+int reRig::IndexOfConstraint(reRigConstraint *constraint) const{
 	if(!constraint) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1242,7 +1242,7 @@ int reRig::IndexOfConstraint(reRigConstraint::Ref constraint) const{
 	return -1;
 }
 
-bool reRig::HasConstraint(reRigConstraint::Ref constraint) const{
+bool reRig::HasConstraint(reRigConstraint *constraint) const{
 	if(!constraint) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1253,7 +1253,7 @@ bool reRig::HasConstraint(reRigConstraint::Ref constraint) const{
 	return false;
 }
 
-void reRig::AddConstraint(reRigConstraint::Ref constraint){
+void reRig::AddConstraint(reRigConstraint *constraint){
 	if(HasConstraint(constraint)) DETHROW(deeInvalidParam);
 	
 	if(pConstraintCount == pConstraintSize){
@@ -1288,7 +1288,7 @@ void reRig::AddConstraint(reRigConstraint::Ref constraint){
 	constraint->SetEngineConstraint(engConstraint);
 }
 
-void reRig::RemoveConstraint(reRigConstraint::Ref constraint){
+void reRig::RemoveConstraint(reRigConstraint *constraint){
 	int i, index = IndexOfConstraint(constraint);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -1350,7 +1350,7 @@ reRigPush *reRig::GetPushWith(deColliderVolume *collider) const{
 	return NULL;
 }
 
-int reRig::IndexOfPush(reRigPush::Ref push) const{
+int reRig::IndexOfPush(reRigPush *push) const{
 	if(!push) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1361,7 +1361,7 @@ int reRig::IndexOfPush(reRigPush::Ref push) const{
 	return -1;
 }
 
-bool reRig::HasPush(reRigPush::Ref push) const{
+bool reRig::HasPush(reRigPush *push) const{
 	if(!push) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1372,7 +1372,7 @@ bool reRig::HasPush(reRigPush::Ref push) const{
 	return false;
 }
 
-void reRig::AddPush(reRigPush::Ref push){
+void reRig::AddPush(reRigPush *push){
 	if(HasPush(push)) DETHROW(deeInvalidParam);
 	
 	if(pPushCount == pPushSize){
@@ -1393,7 +1393,7 @@ void reRig::AddPush(reRigPush::Ref push){
 	NotifyPushCountChanged();
 }
 
-void reRig::RemovePush(reRigPush::Ref push){
+void reRig::RemovePush(reRigPush *push){
 	int i, index = IndexOfPush(push);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -1427,7 +1427,7 @@ reRigNotifier *reRig::GetNotifierAt(int index) const{
 	return pNotifiers[index];
 }
 
-int reRig::IndexOfNotifier(reRigNotifier::Ref notifier) const{
+int reRig::IndexOfNotifier(reRigNotifier *notifier) const{
 	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1438,7 +1438,7 @@ int reRig::IndexOfNotifier(reRigNotifier::Ref notifier) const{
 	return -1;
 }
 
-bool reRig::HasNotifier(reRigNotifier::Ref notifier) const{
+bool reRig::HasNotifier(reRigNotifier *notifier) const{
 	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1449,7 +1449,7 @@ bool reRig::HasNotifier(reRigNotifier::Ref notifier) const{
 	return false;
 }
 
-void reRig::AddNotifier(reRigNotifier::Ref notifier){
+void reRig::AddNotifier(reRigNotifier *notifier){
 	if(HasNotifier(notifier)) DETHROW(deeInvalidParam);
 	
 	if(pNotifierCount == pNotifierSize){
@@ -1467,7 +1467,7 @@ void reRig::AddNotifier(reRigNotifier::Ref notifier){
 	pNotifierCount++;
 }
 
-void reRig::RemoveNotifier(reRigNotifier::Ref notifier){
+void reRig::RemoveNotifier(reRigNotifier *notifier){
 	int i, index = IndexOfNotifier(notifier);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -1601,7 +1601,7 @@ void reRig::NotifyBoneCountChanged(){
 	SetChanged(true);
 }
 
-void reRig::NotifyBoneChanged(reRigBone::Ref bone){
+void reRig::NotifyBoneChanged(reRigBone *bone){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1612,7 +1612,7 @@ void reRig::NotifyBoneChanged(reRigBone::Ref bone){
 	SetChanged(true);
 }
 
-void reRig::NotifyBoneSelectedChanged(reRigBone::Ref bone){
+void reRig::NotifyBoneSelectedChanged(reRigBone *bone){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1636,7 +1636,7 @@ void reRig::NotifyActiveBoneChanged(){
 	}
 }
 
-void reRig::NotifyAllBoneChanged(reRigBone::Ref bone){
+void reRig::NotifyAllBoneChanged(reRigBone *bone){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1660,7 +1660,7 @@ void reRig::NotifyShapeCountChanged(){
 	SetChanged(true);
 }
 
-void reRig::NotifyShapeChanged(reRigShape::Ref shape){
+void reRig::NotifyShapeChanged(reRigShape *shape){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1671,7 +1671,7 @@ void reRig::NotifyShapeChanged(reRigShape::Ref shape){
 	SetChanged(true);
 }
 
-void reRig::NotifyShapeSelectedChanged(reRigShape::Ref shape){
+void reRig::NotifyShapeSelectedChanged(reRigShape *shape){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1695,7 +1695,7 @@ void reRig::NotifyActiveShapeChanged(){
 	}
 }
 
-void reRig::NotifyAllShapeChanged(reRigShape::Ref shape){
+void reRig::NotifyAllShapeChanged(reRigShape *shape){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1720,7 +1720,7 @@ void reRig::NotifyConstraintCountChanged(){
 	SetChanged(true);
 }
 
-void reRig::NotifyConstraintChanged(reRigConstraint::Ref constraint){
+void reRig::NotifyConstraintChanged(reRigConstraint *constraint){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1731,7 +1731,7 @@ void reRig::NotifyConstraintChanged(reRigConstraint::Ref constraint){
 	SetChanged(true);
 }
 
-void reRig::NotifyConstraintSelectedChanged(reRigConstraint::Ref constraint){
+void reRig::NotifyConstraintSelectedChanged(reRigConstraint *constraint){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1755,7 +1755,7 @@ void reRig::NotifyActiveConstraintChanged(){
 	}
 }
 
-void reRig::NotifyAllConstraintChanged(reRigConstraint::Ref constraint){
+void reRig::NotifyAllConstraintChanged(reRigConstraint *constraint){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1766,7 +1766,7 @@ void reRig::NotifyAllConstraintChanged(reRigConstraint::Ref constraint){
 	SetChanged(true);
 }
 
-void reRig::NotifyAllConstraintDofChanged(reRigConstraint::Ref constraint, deColliderConstraint::eDegreesOfFreedom dof){
+void reRig::NotifyAllConstraintDofChanged(reRigConstraint *constraint, deColliderConstraint::eDegreesOfFreedom dof){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1787,7 +1787,7 @@ void reRig::NotifyPushCountChanged(){
 	}
 }
 
-void reRig::NotifyPushChanged(reRigPush::Ref push){
+void reRig::NotifyPushChanged(reRigPush *push){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1795,7 +1795,7 @@ void reRig::NotifyPushChanged(reRigPush::Ref push){
 	}
 }
 
-void reRig::NotifyPushSelectedChanged(reRigPush::Ref push){
+void reRig::NotifyPushSelectedChanged(reRigPush *push){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){

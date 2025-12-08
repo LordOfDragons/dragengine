@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerSetName::peeUControllerSetName(peeController::Ref controller, const char *newName){
+peeUControllerSetName::peeUControllerSetName(peeController *controller, const char *newName){
 	if(!controller || !newName) DETHROW(deeInvalidParam);
 	
 	pController = NULL;

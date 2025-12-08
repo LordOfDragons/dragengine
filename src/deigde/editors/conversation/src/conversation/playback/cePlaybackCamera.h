@@ -125,7 +125,7 @@ public:
 	/** Retrieves the camera target or NULL if not set. */
 	inline ceTarget *GetCameraTarget() const{ return pCameraTarget; }
 	/** Sets the camera target or NULL if not set. */
-	void SetCameraTarget(ceTarget::Ref target);
+	void SetCameraTarget(ceTarget *target);
 	/** Retrieves the start camera position. */
 	inline const decVector &GetOffsetCameraFrom() const{ return pOffsetCameraFrom; }
 	/** Sets the start camera position. */
@@ -154,7 +154,7 @@ public:
 	/** Retrieves the look-at target or NULL if not set. */
 	inline ceTarget *GetLookAtTarget() const{ return pLookAtTarget; }
 	/** Sets the look-at target or NULL if not set. */
-	void SetLookAtTarget(ceTarget::Ref target);
+	void SetLookAtTarget(ceTarget *target);
 	/** Retrieves the start look-at position. */
 	inline const decVector &GetLookAtFrom() const{ return pOffsetLookAtFrom; }
 	/** Sets the start look-at position. */

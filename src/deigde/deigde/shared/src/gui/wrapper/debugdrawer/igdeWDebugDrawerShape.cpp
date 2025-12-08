@@ -181,7 +181,7 @@ igdeWDebugDrawerShape::~igdeWDebugDrawerShape(){
 // Management
 ///////////////
 
-void igdeWDebugDrawerShape::SetParentDebugDrawer(deDebugDrawer::Ref debugDrawer){
+void igdeWDebugDrawerShape::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
 	if(debugDrawer == pEngDebugDrawer){
 		return;
 	}

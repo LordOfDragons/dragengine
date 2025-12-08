@@ -133,13 +133,13 @@ public:
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or NULL if there is none. */
-	void SetDynamicSkin(deoglRDynamicSkin::Ref dynamicSkin);
+	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
 	
 	/** Skin to use. */
 	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }
 	
 	/** Set skin to use. */
-	void SetUseSkin(deoglRSkin::Ref skin);
+	void SetUseSkin(deoglRSkin *skin);
 	
 	/** Skin texture number to use. */
 	inline int GetUseTextureNumber() const{ return pUseTextureNumber; }

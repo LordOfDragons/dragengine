@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodyAdd::seUBodyAdd(seLayer::Ref layer, seBody::Ref body) :
+seUBodyAdd::seUBodyAdd(seLayer *layer, seBody *body) :
 
 pBody(NULL)
 {

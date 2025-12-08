@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectRemoveTexture::meUObjectRemoveTexture(meObjectTexture::Ref texture){
+meUObjectRemoveTexture::meUObjectRemoveTexture(meObjectTexture *texture){
 	if(!texture) DETHROW(deeInvalidParam);
 	
 	meObject::Ref object = texture->GetObject();

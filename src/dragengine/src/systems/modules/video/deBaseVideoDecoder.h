@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create video image decoder. */
-	deBaseVideoDecoder(decBaseFileReader::Ref file);
+	deBaseVideoDecoder(decBaseFileReader *file);
 	
 	/** \brief Clean up video image decoder. */
 	virtual ~deBaseVideoDecoder();

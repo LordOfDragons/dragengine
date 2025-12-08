@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveSpeaker::gdeUOCRemoveSpeaker(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker) :
+gdeUOCRemoveSpeaker::gdeUOCRemoveSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) :
 
 pSpeaker(NULL)
 {

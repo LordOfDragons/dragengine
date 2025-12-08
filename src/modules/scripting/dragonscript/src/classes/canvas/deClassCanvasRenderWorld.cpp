@@ -300,7 +300,7 @@ deCanvasRenderWorld *deClassCanvasRenderWorld::GetCanvas(dsRealObject *myself) c
 	return ((sCRenWNatDat*)p_GetNativeData(myself->GetBuffer()))->canvas;
 }
 
-void deClassCanvasRenderWorld::PushCanvas(dsRunTime *rt, deCanvasRenderWorld::Ref canvas){
+void deClassCanvasRenderWorld::PushCanvas(dsRunTime *rt, deCanvasRenderWorld *canvas){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

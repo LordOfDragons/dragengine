@@ -582,7 +582,7 @@ deAnimatorRuleLimit *deClassARLimit::GetRule(dsRealObject *myself) const{
 	return ((sARLimitNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARLimit::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
+void deClassARLimit::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -602,7 +602,7 @@ void deClassARLimit::AssignAnimator(dsRealObject *myself, deAnimator::Ref animat
 	nd.animator = animator;
 }
 
-void deClassARLimit::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleLimit::Ref rule){
+void deClassARLimit::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleLimit *rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

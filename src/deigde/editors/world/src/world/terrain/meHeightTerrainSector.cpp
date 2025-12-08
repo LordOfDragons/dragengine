@@ -852,7 +852,7 @@ bool meHeightTerrainSector::HasTextureNamed(const char *name) const{
 	return false;
 }
 
-int meHeightTerrainSector::IndexOfTexture(meHeightTerrainTexture::Ref texture) const{
+int meHeightTerrainSector::IndexOfTexture(meHeightTerrainTexture *texture) const{
 	int i;
 	for(i=0; i<pTextureCount; i++){
 		if(texture == pTextures[i]){
@@ -872,7 +872,7 @@ int meHeightTerrainSector::IndexOfTextureNamed(const char *name) const{
 	return -1;
 }
 
-bool meHeightTerrainSector::HasTexture(meHeightTerrainTexture::Ref texture) const{
+bool meHeightTerrainSector::HasTexture(meHeightTerrainTexture *texture) const{
 	int i;
 	for(i=0; i<pTextureCount; i++){
 		if(texture == pTextures[i]){
@@ -882,7 +882,7 @@ bool meHeightTerrainSector::HasTexture(meHeightTerrainTexture::Ref texture) cons
 	return false;
 }
 
-void meHeightTerrainSector::AddTexture(meHeightTerrainTexture::Ref texture){
+void meHeightTerrainSector::AddTexture(meHeightTerrainTexture *texture){
 	if(!texture || HasTextureNamed(texture->GetName())) DETHROW(deeInvalidParam);
 	
 	deHeightTerrainTexture *engTexture = NULL;
@@ -925,7 +925,7 @@ void meHeightTerrainSector::AddTexture(meHeightTerrainTexture::Ref texture){
 	if(!pActiveTexture) SetActiveTexture(texture);
 }
 
-void meHeightTerrainSector::RemoveTexture(meHeightTerrainTexture::Ref texture){
+void meHeightTerrainSector::RemoveTexture(meHeightTerrainTexture *texture){
 	int i, index = IndexOfTexture(texture);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -981,7 +981,7 @@ void meHeightTerrainSector::RemoveAllTextures(){
 	}
 }
 
-void meHeightTerrainSector::SetActiveTexture(meHeightTerrainTexture::Ref texture){
+void meHeightTerrainSector::SetActiveTexture(meHeightTerrainTexture *texture){
 	if(texture != pActiveTexture){
 		pActiveTexture = texture;
 		
@@ -1067,7 +1067,7 @@ meHeightTerrainPFLayer *meHeightTerrainSector::GetPFLayerAt(int index) const{
 	return pPFLayers[index];
 }
 
-int meHeightTerrainSector::IndexOfPFLayer(meHeightTerrainPFLayer::Ref pflayer) const{
+int meHeightTerrainSector::IndexOfPFLayer(meHeightTerrainPFLayer *pflayer) const{
 	if(!pflayer) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1078,7 +1078,7 @@ int meHeightTerrainSector::IndexOfPFLayer(meHeightTerrainPFLayer::Ref pflayer) c
 	return -1;
 }
 
-bool meHeightTerrainSector::HasPFLayer(meHeightTerrainPFLayer::Ref pflayer) const{
+bool meHeightTerrainSector::HasPFLayer(meHeightTerrainPFLayer *pflayer) const{
 	if(!pflayer) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1089,7 +1089,7 @@ bool meHeightTerrainSector::HasPFLayer(meHeightTerrainPFLayer::Ref pflayer) cons
 	return false;
 }
 
-void meHeightTerrainSector::AddPFLayer(meHeightTerrainPFLayer::Ref pflayer){
+void meHeightTerrainSector::AddPFLayer(meHeightTerrainPFLayer *pflayer){
 	if(!pflayer) DETHROW(deeInvalidParam);
 	
 	if(pPFLayerCount == pPFLayerSize){
@@ -1116,7 +1116,7 @@ void meHeightTerrainSector::AddPFLayer(meHeightTerrainPFLayer::Ref pflayer){
 	if(!pActivePFLayer) SetActivePFLayer(pflayer);
 }
 
-void meHeightTerrainSector::RemovePFLayer(meHeightTerrainPFLayer::Ref pflayer){
+void meHeightTerrainSector::RemovePFLayer(meHeightTerrainPFLayer *pflayer){
 	int i, index = IndexOfPFLayer(pflayer);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -1150,7 +1150,7 @@ void meHeightTerrainSector::RemoveAllPFLayers(){
 	}
 }
 
-void meHeightTerrainSector::SetActivePFLayer(meHeightTerrainPFLayer::Ref pflayer){
+void meHeightTerrainSector::SetActivePFLayer(meHeightTerrainPFLayer *pflayer){
 	if(pflayer != pActivePFLayer){
 		pActivePFLayer = pflayer;
 		

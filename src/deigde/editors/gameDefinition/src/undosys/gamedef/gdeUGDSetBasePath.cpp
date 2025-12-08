@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDSetBasePath::gdeUGDSetBasePath(gdeGameDefinition::Ref gameDefinition, const char *newValue) :
+gdeUGDSetBasePath::gdeUGDSetBasePath(gdeGameDefinition *gameDefinition, const char *newValue) :
 
 pNewValue(newValue)
 {

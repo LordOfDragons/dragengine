@@ -53,7 +53,7 @@ public:
 	deCanvas *CanvasFromObject(PyObject *object);
 	
 	/** \brief Create object from a graphics or \em None if object is \em NULL. */
-	PyObject *ObjectFromCanvas(deCanvas::Ref canvas);
+	PyObject *ObjectFromCanvas(deCanvas *canvas);
 	
 	
 	

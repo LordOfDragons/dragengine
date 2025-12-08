@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUObjectSetScaling(meObject::Ref object, const decVector &nscaling);
+	meUObjectSetScaling(meObject *object, const decVector &nscaling);
 	
 protected:
 	/** \brief Clean up undo action. */

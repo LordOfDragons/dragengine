@@ -37,7 +37,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetValueType::seUPropertySetValueType(seProperty::Ref property, seProperty::eValueTypes newType){
+seUPropertySetValueType::seUPropertySetValueType(seProperty *property, seProperty::eValueTypes newType){
 	if(!property) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;

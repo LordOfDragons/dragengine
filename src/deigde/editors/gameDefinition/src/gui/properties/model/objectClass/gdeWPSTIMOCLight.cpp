@@ -48,7 +48,7 @@
 ////////////////////////////
 
 gdeWPSTIMOCLight::gdeWPSTIMOCLight(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCLight::Ref light, int index) :
+	gdeOCLight *light, int index) :
 gdeWPSTIMOCSubObject(tree, etObjectClassLight, objectClass, index)
 {
 	if(!light){

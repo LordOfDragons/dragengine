@@ -77,21 +77,21 @@ void igdeTriggerExpressionComponent::SetTargetName(const char *name){
 	pTargetName = name;
 }
 
-void igdeTriggerExpressionComponent::SetTarget(igdeTriggerTarget::Ref target){
+void igdeTriggerExpressionComponent::SetTarget(igdeTriggerTarget *target){
 	if(target == pTarget){
 		return;
 	}
 	pTarget = target;
 }
 
-void igdeTriggerExpressionComponent::SetTargetListener(igdeTriggerListener::Ref listener){
+void igdeTriggerExpressionComponent::SetTargetListener(igdeTriggerListener *listener){
 	if(listener == pTargetListener){
 		return;
 	}
 	pTargetListener = listener;
 }
 
-void igdeTriggerExpressionComponent::LinkTargets(igdeTriggerTargetList &triggerTable, igdeTriggerListener::Ref listener){
+void igdeTriggerExpressionComponent::LinkTargets(igdeTriggerTargetList &triggerTable, igdeTriggerListener *listener){
 	if(pTargetListener){
 		pTarget->RemoveListener(pTargetListener);
 	}

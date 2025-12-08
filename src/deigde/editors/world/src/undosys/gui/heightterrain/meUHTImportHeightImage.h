@@ -61,7 +61,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTImportHeightImage(meWorld::Ref world, meHeightTerrainSector *sector, deImage *image);
+	meUHTImportHeightImage(meWorld *world, meHeightTerrainSector *sector, deImage *image);
 	/** \brief Clean up object. */
 	virtual ~meUHTImportHeightImage();
 	/*@}*/

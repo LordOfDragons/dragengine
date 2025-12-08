@@ -58,7 +58,7 @@ public:
 	// internal functions
 	void CreateClassMembers(dsEngine *engine);
 	deSpeaker *GetSpeaker(dsRealObject *myself) const;
-	void PushSpeaker(dsRunTime *rt, deSpeaker::Ref speaker);
+	void PushSpeaker(dsRunTime *rt, deSpeaker *speaker);
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	

@@ -435,21 +435,21 @@ public:
 	/** Retrieves the attachment with the given name or NULL if not found. */
 	aeAttachment *GetAttachmentNamed(const char *name) const;
 	/** Retrieves the index of the attachment or -1 if not found. */
-	int IndexOfAttachment(aeAttachment::Ref attachment) const;
+	int IndexOfAttachment(aeAttachment *attachment) const;
 	/** Determines if the attachment exists. */
-	bool HasAttachment(aeAttachment::Ref attachment) const;
+	bool HasAttachment(aeAttachment *attachment) const;
 	/** Determines if the attachment exists. */
 	bool HasAttachmentNamed(const char *name) const;
 	/** Adds a new attachment. */
-	void AddAttachment(aeAttachment::Ref attachment);
+	void AddAttachment(aeAttachment *attachment);
 	/** Removes the given attachment. */
-	void RemoveAttachment(aeAttachment::Ref attachment);
+	void RemoveAttachment(aeAttachment *attachment);
 	/** Removes all attachments. */
 	void RemoveAllAttachments();
 	/** Retrieves the active attachment or NULL. */
 	inline aeAttachment *GetActiveAttachment() const{ return pActiveAttachment; }
 	/** Sets the active attachment or NULL. */
-	void SetActiveAttachment(aeAttachment::Ref attachment);
+	void SetActiveAttachment(aeAttachment *attachment);
 	
 	/** Attach all attachments. */
 	void AttachAttachments();
@@ -466,13 +466,13 @@ public:
 	/** Retrieves the notifier at the given index. */
 	aeAnimatorNotifier *GetNotifierAt(int index) const;
 	/** Retrieves the index of the notifier or -1 if not found. */
-	int IndexOfNotifier(aeAnimatorNotifier::Ref notifier) const;
+	int IndexOfNotifier(aeAnimatorNotifier *notifier) const;
 	/** Determines if the notifier exists. */
-	bool HasNotifier(aeAnimatorNotifier::Ref notifier) const;
+	bool HasNotifier(aeAnimatorNotifier *notifier) const;
 	/** Adds a new notifier. */
-	void AddNotifier(aeAnimatorNotifier::Ref notifier);
+	void AddNotifier(aeAnimatorNotifier *notifier);
 	/** Removes the given notifier. */
-	void RemoveNotifier(aeAnimatorNotifier::Ref notifier);
+	void RemoveNotifier(aeAnimatorNotifier *notifier);
 	/** Removes all notifiers. */
 	void RemoveAllNotifiers();
 	
@@ -531,7 +531,7 @@ public:
 	/** Notifies all that the active attachment has changed. */
 	void NotifyActiveAttachmentChanged();
 	/** Notifies all that a attachment has changed. */
-	void NotifyAttachmentChanged(aeAttachment::Ref attachment);
+	void NotifyAttachmentChanged(aeAttachment *attachment);
 	/** Notifies all that the count of attachments changed. */
 	void NotifyAttachmentStructureChanged();
 	

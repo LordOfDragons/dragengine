@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeShapeSetType(sePropertyNodeShape::Ref node,
+	seUPropertyNodeShapeSetType(sePropertyNodeShape *node,
 		deSkinPropertyNodeShape::eShapeTypes newValue);
 	
 protected:

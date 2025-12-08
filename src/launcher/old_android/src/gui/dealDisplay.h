@@ -123,13 +123,13 @@ public:
 	inline dealDialog *GetDialog() const{ return pDialog; }
 	
 	/** \brief Set dialog or \em NULL to show none. */
-	void SetDialog(dealDialog::Ref dialog);
+	void SetDialog(dealDialog *dialog);
 	
 	/** \brief Capture widget or \em NULL if not set. */
 	inline dealWidget *GetCaptureWidget() const{ return pCaptureWidget; }
 	
 	/** \brief Set capture widget or \em NULL if not set. */
-	void SetCaptureWidget(dealWidget::Ref widget);
+	void SetCaptureWidget(dealWidget *widget);
 	
 	
 	

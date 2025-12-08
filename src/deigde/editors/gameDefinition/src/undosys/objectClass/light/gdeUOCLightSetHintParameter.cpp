@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetHintParameter::gdeUOCLightSetHintParameter(gdeObjectClass::Ref objectClass,
-gdeOCLight::Ref light, deLight::eParameterHints newValue) :
+gdeUOCLightSetHintParameter::gdeUOCLightSetHintParameter(gdeObjectClass *objectClass,
+gdeOCLight *light, deLight::eParameterHints newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

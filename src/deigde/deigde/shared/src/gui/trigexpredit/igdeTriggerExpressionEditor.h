@@ -133,10 +133,10 @@ public:
 	void UpdateTree();
 	
 	/** \brief Add expression component to tree. */
-	void AddComponentToTree(igdeTreeItem *parent, igdeTriggerExpressionComponent::Ref component);
+	void AddComponentToTree(igdeTreeItem *parent, igdeTriggerExpressionComponent *component);
 	
 	/** \brief Update expresion component in the tree. */
-	void UpdateComponentInTree(igdeTreeItem *item, igdeTriggerExpressionComponent::Ref component);
+	void UpdateComponentInTree(igdeTreeItem *item, igdeTriggerExpressionComponent *component);
 	
 	/** \brief Update expression component currently selected in the tree. */
 	void UpdateExpressionComponent();

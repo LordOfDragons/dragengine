@@ -66,7 +66,7 @@ public:
 	deNetworkState *GetNetworkState(dsRealObject *myself) const;
 	
 	/** \brief Push network state. */
-	void PushNetworkState(dsRunTime *rt, deNetworkState::Ref state);
+	void PushNetworkState(dsRunTime *rt, deNetworkState *state);
 	
 	inline dsClass *GetClassNetworkStateValueType() const{ return pClsNetworkStateValueType; }
 	inline dsClass *GetClassNetworkStateValueFormat() const{ return pClsNetworkStateValueFormat; }

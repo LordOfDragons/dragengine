@@ -426,7 +426,7 @@ deCanvasPaint *deClassCanvasPaint::GetCanvas(dsRealObject *myself) const {
 	return ((sCPaintNatDat*)p_GetNativeData(myself->GetBuffer()))->canvas;
 }
 
-void deClassCanvasPaint::PushCanvas(dsRunTime *rt, deCanvasPaint::Ref canvas){
+void deClassCanvasPaint::PushCanvas(dsRunTime *rt, deCanvasPaint *canvas){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

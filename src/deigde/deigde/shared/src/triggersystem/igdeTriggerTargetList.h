@@ -67,19 +67,19 @@ public:
 	igdeTriggerTarget *GetNamedAddIfMissing(const char *name);
 	
 	/** \brief Index of target or -1 if absent. */
-	int IndexOf(igdeTriggerTarget::Ref target) const;
+	int IndexOf(igdeTriggerTarget *target) const;
 	
 	/** \brief Target is present. */
-	bool Has(igdeTriggerTarget::Ref target) const;
+	bool Has(igdeTriggerTarget *target) const;
 	
 	/** \brief Named target is present. */
 	bool HasNamed(const char *name) const;
 	
 	/** \brief Add target throwing exception if present. */
-	void Add(igdeTriggerTarget::Ref target);
+	void Add(igdeTriggerTarget *target);
 	
 	/** \brief Remove target throwing exception if absent. */
-	void Remove(igdeTriggerTarget::Ref target);
+	void Remove(igdeTriggerTarget *target);
 	
 	/** \brief Remove all targets. */
 	void RemoveAll();

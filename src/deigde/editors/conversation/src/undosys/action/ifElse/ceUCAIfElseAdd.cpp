@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseAdd::ceUCAIfElseAdd(ceConversationTopic::Ref topic, ceCAIfElse::Ref ifElse,
-ceCAIfElseCase::Ref ifcase, ceConversationAction::Ref action, int index){
+ceUCAIfElseAdd::ceUCAIfElseAdd(ceConversationTopic *topic, ceCAIfElse *ifElse,
+ceCAIfElseCase *ifcase, ceConversationAction *action, int index){
 	if(!topic || !ifElse || !action){
 		DETHROW(deeInvalidParam);
 	}

@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceGroupRemoveSource::seUSourceGroupRemoveSource(seSourceGroup::Ref group, seSource::Ref source) :
+seUSourceGroupRemoveSource::seUSourceGroupRemoveSource(seSourceGroup *group, seSource *source) :
 
 pSource(NULL)
 {

@@ -1291,7 +1291,7 @@ decXmlElement *deClassEasyXMLElement::GetElement(dsRealObject *myself) const{
 	return ((sXMLElNatDat*)p_GetNativeData(myself->GetBuffer()))->element;
 }
 
-void deClassEasyXMLElement::PushElement(dsRunTime *rt, decXmlElement::Ref element){
+void deClassEasyXMLElement::PushElement(dsRunTime *rt, decXmlElement *element){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

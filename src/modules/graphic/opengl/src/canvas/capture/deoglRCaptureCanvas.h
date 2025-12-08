@@ -74,7 +74,7 @@ public:
 	inline deoglRCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** Set canvas view. */
-	void SetCanvasView(deoglRCanvasView::Ref canvasView);
+	void SetCanvasView(deoglRCanvasView *canvasView);
 	
 	/** Pixel buffer or \em NULL if no capture is pending. */
 	inline const deoglPixelBuffer::Ref &GetPixelBuffer() const{ return pPixelBuffer; }

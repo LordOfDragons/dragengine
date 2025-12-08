@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetPropertyName::gdeUOCNavBlockerSetPropertyName(gdeObjectClass::Ref objectClass,
-gdeOCNavigationBlocker::Ref navblocker, gdeOCNavigationBlocker::eProperties property, const char *newValue) :
+gdeUOCNavBlockerSetPropertyName::gdeUOCNavBlockerSetPropertyName(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navblocker, gdeOCNavigationBlocker::eProperties property, const char *newValue) :
 
 
 pProperty(property)

@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCASnippetSetFile::ceUCASnippetSetFile(ceConversationTopic::Ref topic, ceCASnippet::Ref snippet, const char *newFile){
+ceUCASnippetSetFile::ceUCASnippetSetFile(ceConversationTopic *topic, ceCASnippet *snippet, const char *newFile){
 	if(!topic || !newFile) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

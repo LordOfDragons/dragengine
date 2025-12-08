@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCCamera(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCCamera::Ref camera, int index);
+		gdeOCCamera *camera, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

@@ -981,7 +981,7 @@ deLight *deClassLight::GetLight(dsRealObject *myself) const{
 	return ((sLigNatDat*)p_GetNativeData(myself->GetBuffer()))->light;
 }
 
-void deClassLight::PushLight(dsRunTime *rt, deLight::Ref light){
+void deClassLight::PushLight(dsRunTime *rt, deLight *light){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

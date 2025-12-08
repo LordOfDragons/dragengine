@@ -103,7 +103,7 @@ public:
 	inline peeEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
-	void SetEmitter(peeEmitter::Ref emitter);
+	void SetEmitter(peeEmitter *emitter);
 	
 	/** \brief Update curve. */
 	void UpdateCurve();

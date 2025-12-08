@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCGestureSetAnimator::ceUCGestureSetAnimator(ceGesture::Ref gesture, const char *newAnimator){
+ceUCGestureSetAnimator::ceUCGestureSetAnimator(ceGesture *gesture, const char *newAnimator){
 	if(!gesture || !newAnimator) DETHROW(deeInvalidParam);
 	
 	pGesture = NULL;

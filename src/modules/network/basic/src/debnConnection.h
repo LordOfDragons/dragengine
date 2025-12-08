@@ -140,10 +140,10 @@ public:
 	void InvalidateState(debnState *state);
 	
 	/** \brief Message matches connection. */
-	bool Matches(const debnSocket::Ref bnSocket, const debnAddress &address) const;
+	bool Matches(const debnSocket *bnSocket, const debnAddress &address) const;
 	
 	/** \brief Accept connection. */
-	void AcceptConnection(debnSocket::Ref bnSocket, const debnAddress &address, eProtocols protocol);
+	void AcceptConnection(debnSocket *bnSocket, const debnAddress &address, eProtocols protocol);
 	
 	/** \brief Process connection ack message. */
 	void ProcessConnectionAck(decBaseFileReader &reader);

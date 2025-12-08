@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitMove(ceConversationTopic::Ref topic, ceCAWait::Ref wait, ceConversationAction::Ref action, int newIndex);
+	ceUCAWaitMove(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action, int newIndex);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAWaitMove();

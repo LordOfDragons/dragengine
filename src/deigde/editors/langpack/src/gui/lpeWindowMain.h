@@ -134,7 +134,7 @@ public:
 	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
 	
 	/** Set language pack. */
-	void SetLangPack(lpeLangPack::Ref langpack);
+	void SetLangPack(lpeLangPack *langpack);
 	
 	/** Create new language pack. */
 	void CreateNewLangPack();
@@ -146,7 +146,7 @@ public:
 	lpeLangPack *GetReferenceLangPack() const;
 	
 	/** Set reference language pack. */
-	void SetReferenceLangPack(lpeLangPack::Ref langpack);
+	void SetReferenceLangPack(lpeLangPack *langpack);
 	
 	/** Select next missing language pack entry. */
 	void SelectNextMissingEntry();

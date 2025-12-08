@@ -581,7 +581,7 @@ pViewMode(evmPreview)
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainerSplitted::Ref content;
-	igdeContainer::Ref groupBox, form, frameLine;
+	igdeContainer *groupBox, form, frameLine;
 	
 	
 	pListener.TakeOver(new meWPBrowserListener(*this));
@@ -683,7 +683,7 @@ meWPBrowser::~meWPBrowser(){
 // Management
 ///////////////
 
-void meWPBrowser::SetWorld(meWorld::Ref world){
+void meWPBrowser::SetWorld(meWorld *world){
 	if(world == pWorld){
 		return;
 	}

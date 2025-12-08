@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCTriggerSetTestMode::ceUCCTriggerSetTestMode(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
-ceCConditionTrigger::Ref condition, ceCConditionTrigger::eTestModes newTestMode){
+ceUCCTriggerSetTestMode::ceUCCTriggerSetTestMode(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionTrigger *condition, ceCConditionTrigger::eTestModes newTestMode){
 	if(!topic || !action || !condition){
 		DETHROW(deeInvalidParam);
 	}

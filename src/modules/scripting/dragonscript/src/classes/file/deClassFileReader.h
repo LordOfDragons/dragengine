@@ -57,7 +57,7 @@ public:
 	/** Retrieves the stream version. */
 	int GetStreamVersion(dsRealObject *myself) const;
 	/** Pushes the file reader on the stack. File reader can be NULL to push a null object. */
-	void PushFileReader(dsRunTime *rt, decBaseFileReader::Ref fileReader);
+	void PushFileReader(dsRunTime *rt, decBaseFileReader *fileReader);
 	/** Retrieves the dragon script module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/*@}*/

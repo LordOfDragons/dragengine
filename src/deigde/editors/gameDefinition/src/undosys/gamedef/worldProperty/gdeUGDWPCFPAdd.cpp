@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPCFPAdd::gdeUGDWPCFPAdd(gdeGameDefinition::Ref gamedef,
-gdeProperty::Ref property, gdeFilePattern::Ref filePattern) :
+gdeUGDWPCFPAdd::gdeUGDWPCFPAdd(gdeGameDefinition *gamedef,
+gdeProperty *property, gdeFilePattern *filePattern) :
 
 pProperty(NULL)
 {

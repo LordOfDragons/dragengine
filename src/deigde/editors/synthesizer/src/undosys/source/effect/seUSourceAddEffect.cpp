@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceAddEffect::seUSourceAddEffect(seSource::Ref source, seEffect::Ref effect, int index) :
+seUSourceAddEffect::seUSourceAddEffect(seSource *source, seEffect *effect, int index) :
 
 pIndex(index)
 {

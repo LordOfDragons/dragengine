@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerSetSkin(seLayer::Ref layer, const char *newSkin);
+	seULayerSetSkin(seLayer *layer, const char *newSkin);
 	
 protected:
 	/** \brief Clean up undo action. */

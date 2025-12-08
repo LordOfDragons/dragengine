@@ -54,7 +54,7 @@ peeWPUndoHistory::~peeWPUndoHistory(){
 // Management
 ///////////////
 
-void peeWPUndoHistory::SetEmitter(peeEmitter::Ref emitter){
+void peeWPUndoHistory::SetEmitter(peeEmitter *emitter){
 	if(emitter == pEmitter){
 		return;
 	}

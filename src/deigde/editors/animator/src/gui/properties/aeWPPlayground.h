@@ -115,7 +115,7 @@ public:
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator(aeAnimator::Ref animator);
+	void SetAnimator(aeAnimator *animator);
 	
 	/** Leg. */
 	aeAnimatorLocomotionLeg *GetLeg() const;

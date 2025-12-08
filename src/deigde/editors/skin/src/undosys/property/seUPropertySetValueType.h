@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetValueType(seProperty::Ref property, seProperty::eValueTypes newType);
+	seUPropertySetValueType(seProperty *property, seProperty::eValueTypes newType);
 	
 protected:
 	/** \brief Clean up undo. */

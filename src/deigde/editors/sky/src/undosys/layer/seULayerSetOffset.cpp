@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetOffset::seULayerSetOffset(seLayer::Ref layer, const decVector &newOffset) :
+seULayerSetOffset::seULayerSetOffset(seLayer *layer, const decVector &newOffset) :
 
 pNewOffset(newOffset)
 {

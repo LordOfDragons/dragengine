@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalAddProperty::meUDecalAddProperty(meDecal::Ref decal, const char *key, const char *value) :
+meUDecalAddProperty::meUDecalAddProperty(meDecal *decal, const char *key, const char *value) :
 pDecal(NULL)
 {
 	if(!decal || !key || strlen(key) == 0 || !value){

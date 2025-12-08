@@ -52,7 +52,7 @@
 ////////////////////////////
 
 ceWPTTIMAWaitCondition::ceWPTTIMAWaitCondition(
-ceWindowMain &windowMain, ceConversation &conversation, ceCAWait::Ref action) :
+ceWindowMain &windowMain, ceConversation &conversation, ceCAWait *action) :
 ceWPTTIMConditionContainer(windowMain, conversation, *action, etActionWaitCondition)
 {
 	if(!action){

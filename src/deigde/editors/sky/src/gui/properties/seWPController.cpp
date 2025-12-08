@@ -96,7 +96,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky::Ref sky, seController *controller) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky *sky, seController *controller) = 0;
 };
 
 class cBaseEditSliderTextListener : public igdeEditSliderTextListener{
@@ -119,7 +119,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(float value, seSky::Ref sky, seController *controller) = 0;
+	virtual igdeUndo *OnChanged(float value, seSky *sky, seController *controller) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -151,7 +151,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSky::Ref sky) = 0;
+	virtual igdeUndo *OnAction(seSky *sky) = 0;
 };
 
 class cBaseActionController : public cBaseAction{
@@ -165,7 +165,7 @@ public:
 	cBaseActionController(seWPController &panel, const char *text, igdeIcon *icon, const char *description) :
 	cBaseAction(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnAction(seSky::Ref sky){
+	virtual igdeUndo *OnAction(seSky *sky){
 		seController * const controller = pPanel.GetController();
 		if(controller){
 			return OnActionController(sky, controller);
@@ -175,7 +175,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnActionController(seSky::Ref sky, seController *controller) = 0;
+	virtual igdeUndo *OnActionController(seSky *sky, seController *controller) = 0;
 };
 
 
@@ -217,7 +217,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add a controller to the end of the list."){}
 	
-	virtual igdeUndo *OnAction(seSky::Ref sky){
+	virtual igdeUndo *OnAction(seSky *sky){
 		return new seUControllerAdd(sky, seController::Ref::NewWith());
 	}
 };
@@ -228,7 +228,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove the selected controller."){}
 	
-	virtual igdeUndo *OnActionController(seSky::Ref sky, seController *controller){
+	virtual igdeUndo *OnActionController(seSky *sky, seController *controller){
 		const int usageCount = sky->CountControllerUsage(controller);
 		
 		if(usageCount > 0 && igdeCommonDialogs::QuestionFormat(
@@ -374,7 +374,7 @@ igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener.TakeOver(new seWPControllerListener(*this));
@@ -421,7 +421,7 @@ seWPController::~seWPController(){
 // Management
 ///////////////
 
-void seWPController::SetSky(seSky::Ref sky){
+void seWPController::SetSky(seSky *sky){
 	if(sky == pSky){
 		return;
 	}

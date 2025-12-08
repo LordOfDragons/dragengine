@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetIdentifier::projUProfileSetIdentifier(projProfile::Ref profile, const decUuid &newValue) :
+projUProfileSetIdentifier::projUProfileSetIdentifier(projProfile *profile, const decUuid &newValue) :
 
 pNewValue(newValue)
 {

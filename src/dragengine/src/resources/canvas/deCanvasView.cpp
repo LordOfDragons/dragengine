@@ -54,7 +54,7 @@ deCanvasView::~deCanvasView(){
 // Management
 ///////////////
 
-void deCanvasView::AddCanvas(deCanvas::Ref canvas){
+void deCanvasView::AddCanvas(deCanvas *canvas){
 	if(!canvas || canvas->GetParentMask() || canvas->GetParentView()){
 		DETHROW(deeInvalidParam);
 	}
@@ -76,7 +76,7 @@ void deCanvasView::AddCanvas(deCanvas::Ref canvas){
 	NotifyContentChanged();
 }
 
-void deCanvasView::RemoveCanvas(deCanvas::Ref canvas){
+void deCanvasView::RemoveCanvas(deCanvas *canvas){
 	if(!canvas || canvas->GetParentMask() || canvas->GetParentView() != this){
 		DETHROW(deeInvalidParam);
 	}

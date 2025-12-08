@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUPropertySetMappedComponent(seProperty::Ref property, int index, seMapped *newValue);
+	seUPropertySetMappedComponent(seProperty *property, int index, seMapped *newValue);
 	
 protected:
 	/** Clean up undo. */

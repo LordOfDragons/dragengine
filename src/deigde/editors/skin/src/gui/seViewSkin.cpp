@@ -87,7 +87,7 @@ seViewSkin::~seViewSkin(){
 void seViewSkin::ResetView(){
 }
 
-void seViewSkin::SetSkin(seSkin::Ref skin){
+void seViewSkin::SetSkin(seSkin *skin){
 	if(skin == pSkin){
 		return;
 	}

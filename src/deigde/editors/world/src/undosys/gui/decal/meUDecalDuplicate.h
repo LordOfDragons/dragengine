@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUDecalDuplicate(meWorld::Ref world, const decVector &offset);
+	meUDecalDuplicate(meWorld *world, const decVector &offset);
 	
 	/** \brief Clean up undo object. */
 	virtual ~meUDecalDuplicate();

@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reURigSetRootBone::reURigSetRootBone(reRig *rig, reRigBone::Ref rootBone){
+reURigSetRootBone::reURigSetRootBone(reRig *rig, reRigBone *rootBone){
 	if(!rig || !rootBone) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Set Rig Root Bone");

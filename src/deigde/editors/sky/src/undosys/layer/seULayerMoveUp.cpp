@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerMoveUp::seULayerMoveUp(seLayer::Ref layer) :
+seULayerMoveUp::seULayerMoveUp(seLayer *layer) :
 
 pIndex(0)
 {

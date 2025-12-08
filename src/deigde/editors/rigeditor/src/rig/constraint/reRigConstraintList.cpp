@@ -59,7 +59,7 @@ reRigConstraint *reRigConstraintList::GetConstraintAt(int index) const{
 	return pConstraints[index];
 }
 
-int reRigConstraintList::IndexOfConstraint(reRigConstraint::Ref constraint) const{
+int reRigConstraintList::IndexOfConstraint(reRigConstraint *constraint) const{
 	if(!constraint) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -70,7 +70,7 @@ int reRigConstraintList::IndexOfConstraint(reRigConstraint::Ref constraint) cons
 	return -1;
 }
 
-bool reRigConstraintList::HasConstraint(reRigConstraint::Ref constraint) const{
+bool reRigConstraintList::HasConstraint(reRigConstraint *constraint) const{
 	if(!constraint) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -81,7 +81,7 @@ bool reRigConstraintList::HasConstraint(reRigConstraint::Ref constraint) const{
 	return false;
 }
 
-void reRigConstraintList::AddConstraint(reRigConstraint::Ref constraint){
+void reRigConstraintList::AddConstraint(reRigConstraint *constraint){
 	if(HasConstraint(constraint)) DETHROW(deeInvalidParam);
 	
 	if(pConstraintCount == pConstraintSize){
@@ -99,7 +99,7 @@ void reRigConstraintList::AddConstraint(reRigConstraint::Ref constraint){
 	pConstraintCount++;
 }
 
-void reRigConstraintList::RemoveConstraint(reRigConstraint::Ref constraint){
+void reRigConstraintList::RemoveConstraint(reRigConstraint *constraint){
 	int i, index = IndexOfConstraint(constraint);
 	if(index == -1) DETHROW(deeInvalidParam);
 	

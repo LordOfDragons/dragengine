@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetPathPFCache::meUHTSetPathPFCache(meWorld::Ref world, meHeightTerrainSector *sector, const char *newPath){
+meUHTSetPathPFCache::meUHTSetPathPFCache(meWorld *world, meHeightTerrainSector *sector, const char *newPath){
 	if(!world || !sector || !newPath) DETHROW(deeInvalidParam);
 	
 	pWorld = world;

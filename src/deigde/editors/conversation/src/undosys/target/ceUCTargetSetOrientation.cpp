@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetSetOrientation::ceUCTargetSetOrientation(ceTarget::Ref target, const decVector &newOrientation){
+ceUCTargetSetOrientation::ceUCTargetSetOrientation(ceTarget *target, const decVector &newOrientation){
 	if(!target) DETHROW(deeInvalidParam);
 	
 	pTarget = NULL;

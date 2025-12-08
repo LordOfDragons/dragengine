@@ -172,7 +172,7 @@ void feWindowMain::SetGenFontConfig(const igdeFont::sConfiguration &config){
 	pGenFontConfig = config;
 }
 
-void feWindowMain::SetFont(feFont::Ref font){
+void feWindowMain::SetFont(feFont *font){
 	if(font == pFont){
 		return;
 	}

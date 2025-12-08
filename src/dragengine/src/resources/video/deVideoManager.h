@@ -87,24 +87,24 @@ public:
 		const char *basePath, bool asynchron);
 	
 	/** \brief Save video to file. */
-	void SaveVideo(deVideo::Ref video, const char *filename);
+	void SaveVideo(deVideo *video, const char *filename);
 	
 	/** \brief Save video to file. */
-	void SaveVideo(deVirtualFileSystem *vfs, deVideo::Ref video, const char *filename);
+	void SaveVideo(deVirtualFileSystem *vfs, deVideo *video, const char *filename);
 	
 	/**
 	 * \brief Add loaded video.
 	 * \warning This method is to be used only by the resource loader!
 	 */
-	void AddLoadedVideo(deVideo::Ref video);
+	void AddLoadedVideo(deVideo *video);
 	
 	
 	
 	/** \brief Create video decoder. */
-	deVideoDecoder *CreateDecoder(deVideo::Ref video);
+	deVideoDecoder *CreateDecoder(deVideo *video);
 	
 	/** \brief Create audio decoder or NULL if video has no audio. */
-	deVideoAudioDecoder *CreateAudioDecoder(deVideo::Ref video);
+	deVideoAudioDecoder *CreateAudioDecoder(deVideo *video);
 	
 	
 	

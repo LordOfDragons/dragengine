@@ -37,7 +37,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUCameraRotateObject::meUCameraRotateObject(meObject::Ref object){
+meUCameraRotateObject::meUCameraRotateObject(meObject *object){
 	DEASSERT_NOTNULL(object)
 	
 	pOldRotation = object->GetRotation();

@@ -208,7 +208,7 @@ const char *filename, const char *basePath){
 
 
 
-void deOcclusionMeshManager::AddLoadedOcclusionMesh(deOcclusionMesh::Ref occmesh){
+void deOcclusionMeshManager::AddLoadedOcclusionMesh(deOcclusionMesh *occmesh){
 	if(!occmesh){
 		DETHROW(deeInvalidParam);
 	}

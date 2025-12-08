@@ -34,7 +34,7 @@
  */
 class deoxrDPBaseTwoHandController : public deoxrDeviceProfile{
 protected:
-	deoxrDevice::Ref pDeviceLeft, pDeviceRight;
+	deoxrDevice *pDeviceLeft, pDeviceRight;
 	deoxrPath pPathHandLeft,pPathHandRight;
 	
 	

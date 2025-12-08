@@ -362,7 +362,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -428,7 +428,7 @@ gdeWPSOCNavigationBlocker::~gdeWPSOCNavigationBlocker(){
 // Management
 ///////////////
 
-void gdeWPSOCNavigationBlocker::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPSOCNavigationBlocker::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

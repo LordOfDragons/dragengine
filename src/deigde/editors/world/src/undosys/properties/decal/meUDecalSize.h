@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalSize(meDecal::Ref decal, const decVector &newSize);
+	meUDecalSize(meDecal *decal, const decVector &newSize);
 	
 protected:
 	/** \brief Clean up undo object. */

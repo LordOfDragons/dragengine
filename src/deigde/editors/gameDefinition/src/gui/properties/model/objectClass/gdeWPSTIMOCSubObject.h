@@ -44,7 +44,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCSubObject(gdeWPSTreeModel &tree, eTypes type, gdeObjectClass::Ref objectClass, int index);
+	gdeWPSTIMOCSubObject(gdeWPSTreeModel &tree, eTypes type, gdeObjectClass *objectClass, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

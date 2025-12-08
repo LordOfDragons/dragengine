@@ -206,7 +206,7 @@ public:
 	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	/** Set debug drawer or \em NULL if not activated. */
-	void SetDebugDrawer(deDebugDrawer::Ref debugDrawer);
+	void SetDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** Debug drawer shape or \em NULL if not ativated. */
 	inline deDebugDrawerShape *GetDDSShape() const{ return pDDSShape; }

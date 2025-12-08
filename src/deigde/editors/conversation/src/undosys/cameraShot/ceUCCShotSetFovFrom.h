@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetFovFrom(ceCameraShot::Ref cameraShot, float newFov);
+	ceUCCShotSetFovFrom(ceCameraShot *cameraShot, float newFov);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetFovFrom();

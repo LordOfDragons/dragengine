@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetPathPFCache(meWorld::Ref world, meHeightTerrainSector *sector, const char *newPath);
+	meUHTSetPathPFCache(meWorld *world, meHeightTerrainSector *sector, const char *newPath);
 	
 protected:
 	/** \brief Clean up object. */

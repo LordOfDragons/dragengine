@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAIfElseRemoveAll(ceConversationTopic::Ref topic, ceCAIfElse::Ref ifElse, ceCAIfElseCase::Ref ifcase);
+	ceUCAIfElseRemoveAll(ceConversationTopic *topic, ceCAIfElse *ifElse, ceCAIfElseCase *ifcase);
 	
 	/** \brief Clean up undo object. */
 	virtual ~ceUCAIfElseRemoveAll();

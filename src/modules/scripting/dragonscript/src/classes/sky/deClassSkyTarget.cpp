@@ -264,7 +264,7 @@ void deClassSkyTarget::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassSkyTarget::PushTarget(dsRunTime *rt, deSky::Ref sky, int layer,
+void deClassSkyTarget::PushTarget(dsRunTime *rt, deSky *sky, int layer,
 deSkyLayer::eTargets target){
 	if(!rt || !sky || layer < 0 || layer >= sky->GetLayerCount()
 	|| target < deSkyLayer::etOffsetX || target > deSkyLayer::etAmbientIntensity){

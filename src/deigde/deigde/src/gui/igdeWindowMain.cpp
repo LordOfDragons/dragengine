@@ -710,7 +710,7 @@ bool igdeWindowMain::ProcessCommandLine(const decUnicodeStringList &arguments){
 
 
 
-void igdeWindowMain::SetGameProject(igdeGameProject::Ref project){
+void igdeWindowMain::SetGameProject(igdeGameProject *project){
 	if(project == pGameProject){
 		return;
 	}

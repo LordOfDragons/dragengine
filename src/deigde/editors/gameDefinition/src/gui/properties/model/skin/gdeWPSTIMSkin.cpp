@@ -45,7 +45,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMSkin::gdeWPSTIMSkin(gdeWPSTreeModel &tree, gdeSkin::Ref skin) :
+gdeWPSTIMSkin::gdeWPSTIMSkin(gdeWPSTreeModel &tree, gdeSkin *skin) :
 gdeWPSTreeItemModel(tree, etSkin)
 {
 	if(!skin){

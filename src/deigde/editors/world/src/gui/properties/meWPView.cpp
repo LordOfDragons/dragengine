@@ -545,7 +545,7 @@ pPreventUpdateCamera(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, form, formLine;
+	igdeContainer *content, groupBox, form, formLine;
 	igdeActionContextMenu::Ref actionMenu;
 	
 	pListener.TakeOver(new meWPViewListener(*this));
@@ -656,7 +656,7 @@ meWPView::~meWPView(){
 // Management
 ///////////////
 
-void meWPView::SetWorld(meWorld::Ref world){
+void meWPView::SetWorld(meWorld *world){
 	if(world == pWorld){
 		return;
 	}

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetRotation::gdeUOCEnvMapProbeSetRotation(gdeObjectClass::Ref objectClass,
-gdeOCEnvMapProbe::Ref envMapProbe, const decVector &newValue) :
+gdeUOCEnvMapProbeSetRotation::gdeUOCEnvMapProbeSetRotation(gdeObjectClass *objectClass,
+gdeOCEnvMapProbe *envMapProbe, const decVector &newValue) :
 
 pEnvMapProbe(NULL)
 {

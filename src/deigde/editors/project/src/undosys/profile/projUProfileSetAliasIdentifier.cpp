@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetAliasIdentifier::projUProfileSetAliasIdentifier(projProfile::Ref profile, const char *newValue) :
+projUProfileSetAliasIdentifier::projUProfileSetAliasIdentifier(projProfile *profile, const char *newValue) :
 
 pNewValue(newValue)
 {

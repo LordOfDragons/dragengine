@@ -50,7 +50,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCGestureSetName::ceUCGestureSetName(ceGesture::Ref gesture, const char *newName){
+ceUCGestureSetName::ceUCGestureSetName(ceGesture *gesture, const char *newName){
 	if(!gesture || !newName) DETHROW(deeInvalidParam);
 	
 	const ceConversationFileList &fileList = gesture->GetConversation()->GetFileList();

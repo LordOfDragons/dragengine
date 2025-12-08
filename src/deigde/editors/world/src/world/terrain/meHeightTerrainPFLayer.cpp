@@ -260,7 +260,7 @@ meHeightTerrainPFType *meHeightTerrainPFLayer::GetTypeAt(int index) const{
 	return pTypes[index];
 }
 
-int meHeightTerrainPFLayer::IndexOfType(meHeightTerrainPFType::Ref type) const{
+int meHeightTerrainPFLayer::IndexOfType(meHeightTerrainPFType *type) const{
 	if(!type){
 		DETHROW(deeInvalidParam);
 	}
@@ -275,7 +275,7 @@ int meHeightTerrainPFLayer::IndexOfType(meHeightTerrainPFType::Ref type) const{
 	return -1;
 }
 
-bool meHeightTerrainPFLayer::HasType(meHeightTerrainPFType::Ref type) const{
+bool meHeightTerrainPFLayer::HasType(meHeightTerrainPFType *type) const{
 	if(!type){
 		DETHROW(deeInvalidParam);
 	}
@@ -290,7 +290,7 @@ bool meHeightTerrainPFLayer::HasType(meHeightTerrainPFType::Ref type) const{
 	return false;
 }
 
-void meHeightTerrainPFLayer::AddType(meHeightTerrainPFType::Ref type){
+void meHeightTerrainPFLayer::AddType(meHeightTerrainPFType *type){
 	if(!type){
 		DETHROW(deeInvalidParam);
 	}
@@ -317,7 +317,7 @@ void meHeightTerrainPFLayer::AddType(meHeightTerrainPFType::Ref type){
 	}
 }
 
-void meHeightTerrainPFLayer::RemoveType(meHeightTerrainPFType::Ref type){
+void meHeightTerrainPFLayer::RemoveType(meHeightTerrainPFType *type){
 	const int index = IndexOfType(type);
 	if(index == -1){
 		DETHROW(deeInvalidParam);

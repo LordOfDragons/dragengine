@@ -48,7 +48,7 @@
 ////////////////////////////
 
 gdeWPSTIMOCBillboard::gdeWPSTIMOCBillboard(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCBillboard::Ref billboard, int index) :
+	gdeOCBillboard *billboard, int index) :
 gdeWPSTIMOCSubObject(tree, etObjectClassBillboard, objectClass, index)
 {
 	if(!billboard){

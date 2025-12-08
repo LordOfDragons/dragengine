@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetColor::seULayerSetColor(seLayer::Ref layer, const decColor &newColor) :
+seULayerSetColor::seULayerSetColor(seLayer *layer, const decColor &newColor) :
 
 pNewColor(newColor)
 {

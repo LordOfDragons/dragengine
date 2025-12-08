@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyRemove::seUPropertyRemove(seProperty::Ref property){
+seUPropertyRemove::seUPropertyRemove(seProperty *property){
 	if(!property) DETHROW(deeInvalidParam);
 	
 	seTexture::Ref texture = property->GetTexture();

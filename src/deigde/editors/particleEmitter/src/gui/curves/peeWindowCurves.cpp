@@ -168,7 +168,7 @@ peeWindowCurves::~peeWindowCurves(){
 // Management
 ///////////////
 
-void peeWindowCurves::SetEmitter(peeEmitter::Ref emitter){
+void peeWindowCurves::SetEmitter(peeEmitter *emitter){
 	if(emitter == pEmitter){
 		return;
 	}

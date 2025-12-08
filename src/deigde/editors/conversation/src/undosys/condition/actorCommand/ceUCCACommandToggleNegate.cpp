@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCACommandToggleNegate::ceUCCACommandToggleNegate(ceConversationTopic::Ref topic,
-ceConversationAction::Ref action, ceCConditionActorCommand::Ref actorCommand){
+ceUCCACommandToggleNegate::ceUCCACommandToggleNegate(ceConversationTopic *topic,
+ceConversationAction *action, ceCConditionActorCommand *actorCommand){
 	if(!topic || !action || !actorCommand){
 		DETHROW(deeInvalidParam);
 	}

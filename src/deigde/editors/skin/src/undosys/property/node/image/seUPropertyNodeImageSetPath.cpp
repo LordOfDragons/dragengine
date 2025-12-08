@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeImageSetPath::seUPropertyNodeImageSetPath(
-sePropertyNodeImage::Ref node, const char *newValue) :
+sePropertyNodeImage *node, const char *newValue) :
 
 pNewValue(newValue)
 {

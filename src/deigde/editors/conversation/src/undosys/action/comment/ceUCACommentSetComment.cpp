@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACommentSetComment::ceUCACommentSetComment(ceConversationTopic::Ref topic, ceCAComment::Ref action, const char *newComment){
+ceUCACommentSetComment::ceUCACommentSetComment(ceConversationTopic *topic, ceCAComment *action, const char *newComment){
 	if(!topic || !newComment){
 		DETHROW(deeInvalidParam);
 	}

@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakSetTextBoxTextStyle::ceUCAASpeakSetTextBoxTextStyle(ceConversationTopic::Ref topic,
-ceCAActorSpeak::Ref actorSpeak, const char *newText){
+ceUCAASpeakSetTextBoxTextStyle::ceUCAASpeakSetTextBoxTextStyle(ceConversationTopic *topic,
+ceCAActorSpeak *actorSpeak, const char *newText){
 	if(!topic){
 		DETHROW(deeInvalidParam);
 	}

@@ -90,7 +90,7 @@ public:
 	inline deDebugDrawer *GetParentDebugDrawer() const{ return pEngDebugDrawer; }
 	
 	/** \brief Set parent debug drawer or NULL. */
-	void SetParentDebugDrawer(deDebugDrawer::Ref debugDrawer);
+	void SetParentDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** \brief Position. */
 	inline const decVector &GetPosition() const{ return pPosition; }

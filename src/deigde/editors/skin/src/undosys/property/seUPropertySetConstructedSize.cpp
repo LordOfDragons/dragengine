@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUPropertySetConstructedSize::seUPropertySetConstructedSize(
-seProperty::Ref property, const decPoint3 &newValue) :
+seProperty *property, const decPoint3 &newValue) :
 
 
 pNewValue(newValue)

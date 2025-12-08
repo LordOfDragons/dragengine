@@ -72,7 +72,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMObjectClass::gdeWPSTIMObjectClass(gdeWPSTreeModel &tree, gdeObjectClass::Ref objectClass) :
+gdeWPSTIMObjectClass::gdeWPSTIMObjectClass(gdeWPSTreeModel &tree, gdeObjectClass *objectClass) :
 gdeWPSTreeItemModel(tree, etObjectClass)
 {
 	if(!objectClass){

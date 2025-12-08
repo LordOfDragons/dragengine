@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACoordSysAddSetAliasID::ceUCACoordSysAddSetAliasID(ceConversationTopic::Ref topic,
-ceCACoordSystemAdd::Ref action, const char *newAliasID){
+ceUCACoordSysAddSetAliasID::ceUCACoordSysAddSetAliasID(ceConversationTopic *topic,
+ceCACoordSystemAdd *action, const char *newAliasID){
 	if(!topic || !newAliasID){
 		DETHROW(deeInvalidParam);
 	}

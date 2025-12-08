@@ -74,7 +74,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld(meWorld::Ref world);
+	void SetWorld(meWorld *world);
 	
 	/** \brief Element mode changed. */
 	void ElementModeChanged();

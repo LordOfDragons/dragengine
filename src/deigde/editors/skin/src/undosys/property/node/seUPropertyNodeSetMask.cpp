@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetMask::seUPropertyNodeSetMask(sePropertyNode::Ref node, sePropertyNode::Ref mask) :
+seUPropertyNodeSetMask::seUPropertyNodeSetMask(sePropertyNode *node, sePropertyNode *mask) :
 
 pMask(NULL)
 {

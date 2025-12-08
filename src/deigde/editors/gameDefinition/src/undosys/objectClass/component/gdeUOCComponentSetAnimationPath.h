@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetAnimationPath(gdeObjectClass::Ref objectClass,
-		gdeOCComponent::Ref component, const char *newValue);
+	gdeUOCComponentSetAnimationPath(gdeObjectClass *objectClass,
+		gdeOCComponent *component, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

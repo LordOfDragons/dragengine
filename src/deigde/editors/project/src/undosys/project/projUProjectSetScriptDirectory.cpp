@@ -40,7 +40,7 @@
 ////////////////////////////
 
 projUProjectSetScriptDirectory::projUProjectSetScriptDirectory(
-projProject::Ref project, const char *newValue) :
+projProject *project, const char *newValue) :
 
 pNewValue(newValue)
 {

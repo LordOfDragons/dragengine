@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetSectorSize::meUHTSetSectorSize(meWorld::Ref world, meHeightTerrain *heightTerrain, float newSectorSize){
+meUHTSetSectorSize::meUHTSetSectorSize(meWorld *world, meHeightTerrain *heightTerrain, float newSectorSize){
 	if(!world || !heightTerrain){
 		DETHROW(deeInvalidParam);
 	}

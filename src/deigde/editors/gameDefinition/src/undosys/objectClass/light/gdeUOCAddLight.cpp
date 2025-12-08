@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddLight::gdeUOCAddLight(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light) :
+gdeUOCAddLight::gdeUOCAddLight(gdeObjectClass *objectClass, gdeOCLight *light) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

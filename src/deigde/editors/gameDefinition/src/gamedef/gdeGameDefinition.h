@@ -321,13 +321,13 @@ public:
 	inline const decString &GetDefaultSkin() const{ return pDefaultSkin; }
 	
 	/** Set path to skin. */
-	void SetDefaultSkin(const char::Ref skin);
+	void SetDefaultSkin(const char *skin);
 	
 	/** Path to sky. */
 	inline const decString &GetDefaultSky() const{ return pDefaultSky; }
 	
 	/** Set path to sky. */
-	void SetDefaultSky(const char::Ref sky);
+	void SetDefaultSky(const char *sky);
 	
 	
 	
@@ -357,7 +357,7 @@ public:
 	inline gdeCategory *GetActiveCategory() const{ return pActiveCategory; }
 	
 	/** Set active category or \em NULL if not set. */
-	void SetActiveCategory(gdeCategory::Ref category);
+	void SetActiveCategory(gdeCategory *category);
 	
 	
 	
@@ -472,10 +472,10 @@ public:
 	inline const gdeObjectClassList &GetObjectClasses() const{ return pObjectClasses; }
 	
 	/** Add object class. */
-	void AddObjectClass(gdeObjectClass::Ref objectClass);
+	void AddObjectClass(gdeObjectClass *objectClass);
 	
 	/** Remove object class. */
-	void RemoveObjectClass(gdeObjectClass::Ref objectClass);
+	void RemoveObjectClass(gdeObjectClass *objectClass);
 	
 	/** Remove all object classes. */
 	void RemoveAllObjectClasses();
@@ -492,7 +492,7 @@ public:
 	inline gdeObjectClass *GetActiveObjectClass() const{ return pActiveObjectClass; }
 	
 	/** Set active object class or \em NULL if none is active. */
-	void SetActiveObjectClass(gdeObjectClass::Ref objectClass);
+	void SetActiveObjectClass(gdeObjectClass *objectClass);
 	
 	/** Active object class is set. */
 	bool HasActiveObjectClass() const;
@@ -503,7 +503,7 @@ public:
 	inline gdeOCBillboard *GetActiveOCBillboard() const{ return pActiveOCBillboard; }
 	
 	/** Set active object class billboard or \em NULL if none is active. */
-	void SetActiveOCBillboard(gdeOCBillboard::Ref billboard);
+	void SetActiveOCBillboard(gdeOCBillboard *billboard);
 	
 	/** Active object class billboard is set. */
 	bool HasActiveOCBillboard() const;
@@ -514,7 +514,7 @@ public:
 	inline gdeOCCamera *GetActiveOCCamera() const{ return pActiveOCCamera; }
 	
 	/** Set active object class camera or \em NULL if none is active. */
-	void SetActiveOCCamera(gdeOCCamera::Ref camera);
+	void SetActiveOCCamera(gdeOCCamera *camera);
 	
 	/** Active object class camera is set. */
 	bool HasActiveOCCamera() const;
@@ -525,7 +525,7 @@ public:
 	inline gdeOCComponent *GetActiveOCComponent() const{ return pActiveOCComponent; }
 	
 	/** Set active object class component or \em NULL if none is active. */
-	void SetActiveOCComponent(gdeOCComponent::Ref component);
+	void SetActiveOCComponent(gdeOCComponent *component);
 	
 	/** Active object class component is set. */
 	bool HasActiveOCComponent() const;
@@ -536,7 +536,7 @@ public:
 	inline gdeOCEnvMapProbe *GetActiveOCEnvMapProbe() const{ return pActiveOCEnvMapProbe; }
 	
 	/** Set active object class environment map probe or \em NULL if none is active. */
-	void SetActiveOCEnvMapProbe(gdeOCEnvMapProbe::Ref envMapProbe);
+	void SetActiveOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe);
 	
 	/** Active object class environment map probe is set. */
 	bool HasActiveOCEnvMapProbe() const;
@@ -547,7 +547,7 @@ public:
 	inline gdeOCLight *GetActiveOCLight() const{ return pActiveOCLight; }
 	
 	/** Set active object class light or \em NULL if none is active. */
-	void SetActiveOCLight(gdeOCLight::Ref light);
+	void SetActiveOCLight(gdeOCLight *light);
 	
 	/** Active object class light is set. */
 	bool HasActiveOCLight() const;
@@ -558,7 +558,7 @@ public:
 	inline gdeOCNavigationBlocker *GetActiveOCNavigationBlocker() const{ return pActiveOCNavigationBlocker; }
 	
 	/** Set active object class navigation blocker or \em NULL if none is active. */
-	void SetActiveOCNavigationBlocker(gdeOCNavigationBlocker::Ref navblocker);
+	void SetActiveOCNavigationBlocker(gdeOCNavigationBlocker *navblocker);
 	
 	/** Active object class navigation blocker is set. */
 	bool HasActiveOCNavigationBlocker() const;
@@ -580,7 +580,7 @@ public:
 	inline gdeOCParticleEmitter *GetActiveOCParticleEmitter() const{ return pActiveOCParticleEmitter; }
 	
 	/** Set active object class particle emitter or \em NULL if none is active. */
-	void SetActiveOCParticleEmitter(gdeOCParticleEmitter::Ref emitter);
+	void SetActiveOCParticleEmitter(gdeOCParticleEmitter *emitter);
 	
 	/** Active object class particle emitter is set. */
 	bool HasActiveOCParticleEmitter() const;
@@ -591,7 +591,7 @@ public:
 	inline gdeOCForceField *GetActiveOCForceField() const{ return pActiveOCForceField; }
 	
 	/** Set active object class force field or \em NULL if none is active. */
-	void SetActiveOCForceField(gdeOCForceField::Ref field);
+	void SetActiveOCForceField(gdeOCForceField *field);
 	
 	/** Active object class force field is set. */
 	bool HasActiveOCForceField() const;
@@ -602,7 +602,7 @@ public:
 	inline gdeOCSnapPoint *GetActiveOCSnapPoint() const{ return pActiveOCSnapPoint; }
 	
 	/** Set active object class snap point or \em NULL if none is active. */
-	void SetActiveOCSnapPoint(gdeOCSnapPoint::Ref snappoint);
+	void SetActiveOCSnapPoint(gdeOCSnapPoint *snappoint);
 	
 	/** Active object class snap point is set. */
 	bool HasActiveOCSnapPoint() const;
@@ -613,7 +613,7 @@ public:
 	inline gdeOCSpeaker *GetActiveOCSpeaker() const{ return pActiveOCSpeaker; }
 	
 	/** Set active object class speaker or \em NULL if none is active. */
-	void SetActiveOCSpeaker(gdeOCSpeaker::Ref speaker);
+	void SetActiveOCSpeaker(gdeOCSpeaker *speaker);
 	
 	/** Active object class speaker is set. */
 	bool HasActiveOCSpeaker() const;
@@ -639,10 +639,10 @@ public:
 	inline const gdeParticleEmitterList &GetParticleEmitters() const{ return pParticleEmitters; }
 	
 	/** Add particle emitter. */
-	void AddParticleEmitter(gdeParticleEmitter::Ref particleEmitter);
+	void AddParticleEmitter(gdeParticleEmitter *particleEmitter);
 	
 	/** Remove particle emitter. */
-	void RemoveParticleEmitter(gdeParticleEmitter::Ref particleEmitter);
+	void RemoveParticleEmitter(gdeParticleEmitter *particleEmitter);
 	
 	/** Remove all particle emitters. */
 	void RemoveAllParticleEmitters();
@@ -651,7 +651,7 @@ public:
 	inline gdeParticleEmitter *GetActiveParticleEmitter() const{ return pActiveParticleEmitter; }
 	
 	/** Set active particle emitter or \em NULL if none is active. */
-	void SetActiveParticleEmitter(gdeParticleEmitter::Ref particleEmitter);
+	void SetActiveParticleEmitter(gdeParticleEmitter *particleEmitter);
 	
 	/** Active particle emitter is set. */
 	bool HasActiveParticleEmitter() const;
@@ -784,136 +784,136 @@ public:
 	void NotifyObjectClassStructureChanged();
 	
 	/** Notify listeners object class changed. */
-	void NotifyObjectClassChanged(gdeObjectClass::Ref objectClass);
+	void NotifyObjectClassChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class name changed. */
-	void NotifyObjectClassNameChanged(gdeObjectClass::Ref objectClass);
+	void NotifyObjectClassNameChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class property changed. */
-	void NotifyOCPropertyChanged(gdeObjectClass::Ref objectClass, gdeProperty *property);
+	void NotifyOCPropertyChanged(gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** Notify listeners object class property name changed. */
-	void NotifyOCPropertyNameChanged(gdeObjectClass::Ref objectClass, gdeProperty *property);
+	void NotifyOCPropertyNameChanged(gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** Notify listeners object class properties changed. */
-	void NotifyOCPropertiesChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCPropertiesChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class property values changed. */
-	void NotifyOCPropertyValuesChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCPropertyValuesChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class texture property changed. */
-	void NotifyOCTexturePropertyChanged(gdeObjectClass::Ref objectClass, gdeProperty *property);
+	void NotifyOCTexturePropertyChanged(gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** Notify listeners object class texture property name changed. */
-	void NotifyOCTexturePropertyNameChanged(gdeObjectClass::Ref objectClass, gdeProperty *property);
+	void NotifyOCTexturePropertyNameChanged(gdeObjectClass *objectClass, gdeProperty *property);
 	
 	/** Notify listeners object class texture properties changed. */
-	void NotifyOCTexturePropertiesChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCTexturePropertiesChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class inherit changed. */
-	void NotifyOCInheritChanged(gdeObjectClass::Ref objectClass, gdeOCInherit *inherit);
+	void NotifyOCInheritChanged(gdeObjectClass *objectClass, gdeOCInherit *inherit);
 	
 	/** Notify listeners object class inherits changed. */
-	void NotifyOCInheritsChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCInheritsChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class billboards changed. */
-	void NotifyOCBillboardsChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCBillboardsChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class billboard changed. */
-	void NotifyOCBillboardChanged(gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard);
+	void NotifyOCBillboardChanged(gdeObjectClass *objectClass, gdeOCBillboard *billboard);
 	
 	/** Notify listeners object class cameras changed. */
-	void NotifyOCCamerasChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCCamerasChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class camera changed. */
-	void NotifyOCCameraChanged(gdeObjectClass::Ref objectClass, gdeOCCamera::Ref camera);
+	void NotifyOCCameraChanged(gdeObjectClass *objectClass, gdeOCCamera *camera);
 	
 	/** Notify listeners object class components changed. */
-	void NotifyOCComponentsChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCComponentsChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class component changed. */
-	void NotifyOCComponentChanged(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component);
+	void NotifyOCComponentChanged(gdeObjectClass *objectClass, gdeOCComponent *component);
 	
 	/** Notify listeners object class component active texture changed. */
-	void NotifyOCComponentActiveTextureChanged(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component);
+	void NotifyOCComponentActiveTextureChanged(gdeObjectClass *objectClass, gdeOCComponent *component);
 	
 	/** Notify listeners object class component texture changed. */
-	void NotifyOCComponentTextureChanged(gdeObjectClass::Ref objectClass,
-		gdeOCComponent::Ref component, gdeOCComponentTexture *texture);
+	void NotifyOCComponentTextureChanged(gdeObjectClass *objectClass,
+		gdeOCComponent *component, gdeOCComponentTexture *texture);
 	
 	/** Notify listeners object class component texture name changed. */
-	void NotifyOCComponentTextureNameChanged(gdeObjectClass::Ref objectClass,
-		gdeOCComponent::Ref component, gdeOCComponentTexture *texture);
+	void NotifyOCComponentTextureNameChanged(gdeObjectClass *objectClass,
+		gdeOCComponent *component, gdeOCComponentTexture *texture);
 	
 	/** Notify listeners object class component texture properties changed. */
-	void NotifyOCComponentTexturePropertiesChanged(gdeObjectClass::Ref objectClass,
-		gdeOCComponent::Ref component, gdeOCComponentTexture *texture);
+	void NotifyOCComponentTexturePropertiesChanged(gdeObjectClass *objectClass,
+		gdeOCComponent *component, gdeOCComponentTexture *texture);
 	
 	/** Notify listeners object class environment map probes changed. */
-	void NotifyOCEnvMapProbesChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCEnvMapProbesChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class environment map probe changed. */
-	void NotifyOCEnvMapProbeChanged(gdeObjectClass::Ref objectClass, gdeOCEnvMapProbe::Ref envMapProbe);
+	void NotifyOCEnvMapProbeChanged(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe);
 	
 	/** Notify listeners object class lights changed. */
-	void NotifyOCLightsChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCLightsChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class light changed. */
-	void NotifyOCLightChanged(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light);
+	void NotifyOCLightChanged(gdeObjectClass *objectClass, gdeOCLight *light);
 	
 	/** Notify listeners object class navigation blockers changed. */
-	void NotifyOCNavigationBlockersChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCNavigationBlockersChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class navigation blocker changed. */
-	void NotifyOCNavigationBlockerChanged(gdeObjectClass::Ref objectClass, gdeOCNavigationBlocker::Ref navblocker);
+	void NotifyOCNavigationBlockerChanged(gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker);
 	
 	/** Notify listeners object class navigation spaces changed. */
-	void NotifyOCNavigationSpacesChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCNavigationSpacesChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class navigation space changed. */
-	void NotifyOCNavigationSpaceChanged(gdeObjectClass::Ref objectClass, gdeOCNavigationSpace *navspace);
+	void NotifyOCNavigationSpaceChanged(gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace);
 	
 	/** Notify listeners object class particle emitters changed. */
-	void NotifyOCParticleEmittersChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCParticleEmittersChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class particle emitter changed. */
-	void NotifyOCParticleEmitterChanged(gdeObjectClass::Ref objectClass, gdeOCParticleEmitter::Ref emitter);
+	void NotifyOCParticleEmitterChanged(gdeObjectClass *objectClass, gdeOCParticleEmitter *emitter);
 	
 	/** Notify listeners object class force fields changed. */
-	void NotifyOCForceFieldsChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCForceFieldsChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class force field changed. */
-	void NotifyOCForceFieldChanged(gdeObjectClass::Ref objectClass, gdeOCForceField::Ref field);
+	void NotifyOCForceFieldChanged(gdeObjectClass *objectClass, gdeOCForceField *field);
 	
 	/** Notify listeners object class snap points changed. */
-	void NotifyOCSnapPointsChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCSnapPointsChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class snap point changed. */
-	void NotifyOCSnapPointChanged(gdeObjectClass::Ref objectClass, gdeOCSnapPoint::Ref snappoint);
+	void NotifyOCSnapPointChanged(gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint);
 	
 	/** Notify listeners object class snap point name changed. */
-	void NotifyOCSnapPointNameChanged(gdeObjectClass::Ref objectClass, gdeOCSnapPoint::Ref snappoint);
+	void NotifyOCSnapPointNameChanged(gdeObjectClass *objectClass, gdeOCSnapPoint *snappoint);
 	
 	/** Notify listeners object class speakers changed. */
-	void NotifyOCSpeakersChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCSpeakersChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class speaker changed. */
-	void NotifyOCSpeakerChanged(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker);
+	void NotifyOCSpeakerChanged(gdeObjectClass *objectClass, gdeOCSpeaker *speaker);
 	
 	/** Notify listeners object class world changed. */
-	void NotifyOCWorldsChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCWorldsChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class world changed. */
-	void NotifyOCWorldChanged(gdeObjectClass::Ref objectClass, gdeOCWorld *world);
+	void NotifyOCWorldChanged(gdeObjectClass *objectClass, gdeOCWorld *world);
 	
 	/** Notify listeners object class textures changed. */
-	void NotifyOCTexturesChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCTexturesChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners object class texture changed. */
-	void NotifyOCTextureChanged(gdeObjectClass::Ref objectClass, gdeOCComponentTexture *texture);
+	void NotifyOCTextureChanged(gdeObjectClass *objectClass, gdeOCComponentTexture *texture);
 	
 	/** Notify listeners object class active texture changed. */
-	void NotifyOCActiveTextureChanged(gdeObjectClass::Ref objectClass);
+	void NotifyOCActiveTextureChanged(gdeObjectClass *objectClass);
 	
 	/** Notify listeners active object class changed. */
 	void NotifyActiveObjectClassChanged();
@@ -960,10 +960,10 @@ public:
 	void NotifyParticleEmitterStructureChanged();
 	
 	/** Notify listeners particle emitter changed. */
-	void NotifyParticleEmitterChanged(gdeParticleEmitter::Ref particleEmitter);
+	void NotifyParticleEmitterChanged(gdeParticleEmitter *particleEmitter);
 	
 	/** Notify listeners particle emitter name changed. */
-	void NotifyParticleEmitterNameChanged(gdeParticleEmitter::Ref particleEmitter);
+	void NotifyParticleEmitterNameChanged(gdeParticleEmitter *particleEmitter);
 	
 	/** Notify listeners active particle emitter changed. */
 	void NotifyActiveParticleEmitterChanged();

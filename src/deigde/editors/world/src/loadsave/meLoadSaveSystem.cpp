@@ -165,7 +165,7 @@ igdeGameDefinition *gameDefinition, igdeStepableTask **task){
 	}
 }
 
-void meLoadSaveSystem::SaveWorld(meWorld::Ref world, const char *filename){
+void meLoadSaveSystem::SaveWorld(meWorld *world, const char *filename){
 	if(!world || !filename) DETHROW(deeInvalidParam);
 	
 	meLSWorld * const lsWorld = FindLSWorldMatching(filename);

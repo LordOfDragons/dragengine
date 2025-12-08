@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeShapeSetType::seUPropertyNodeShapeSetType(
-sePropertyNodeShape::Ref node, deSkinPropertyNodeShape::eShapeTypes newValue) :
+sePropertyNodeShape *node, deSkinPropertyNodeShape::eShapeTypes newValue) :
 
 pNewValue(newValue)
 {

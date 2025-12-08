@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPSetType::gdeUGDDPSetType(gdeGameDefinition::Ref gamedef,
-gdeProperty::Ref property, gdeProperty::ePropertyTypes newValue) :
+gdeUGDDPSetType::gdeUGDDPSetType(gdeGameDefinition *gamedef,
+gdeProperty *property, gdeProperty::ePropertyTypes newValue) :
 
 pProperty(NULL)
 {

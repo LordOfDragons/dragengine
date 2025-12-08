@@ -71,13 +71,13 @@ public:
 	/** Rules. */
 	inline const aeRuleList &GetRules() const{ return pRules; }
 	/** Add a new rule. */
-	void AddRule(aeRule::Ref rule);
+	void AddRule(aeRule *rule);
 	/** Insert a new rule. */
-	void InsertRuleAt(aeRule::Ref rule, int index);
+	void InsertRuleAt(aeRule *rule, int index);
 	/** Move a rule to a new position. */
-	void MoveRuleTo(aeRule::Ref rule, int index);
+	void MoveRuleTo(aeRule *rule, int index);
 	/** Remove the given rule. */
-	void RemoveRule(aeRule::Ref rule);
+	void RemoveRule(aeRule *rule);
 	/** Remove all rules. */
 	void RemoveAllRules();
 	

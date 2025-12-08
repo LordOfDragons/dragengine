@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionAdd::ceUCActionAdd(ceConversationTopic::Ref topic, ceConversationAction::Ref action, int index){
+ceUCActionAdd::ceUCActionAdd(ceConversationTopic *topic, ceConversationAction *action, int index){
 	if(!topic || !action){
 		DETHROW(deeInvalidParam);
 	}

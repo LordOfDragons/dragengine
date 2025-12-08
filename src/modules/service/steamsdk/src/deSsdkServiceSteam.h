@@ -53,7 +53,7 @@ private:
 	decObjectList pPendingRequests;
 	decString pEncAppTicket;
 	
-	deImage::Ref pAuthProviderIcon, pAuthProviderImage;
+	deImage *pAuthProviderIcon, pAuthProviderImage;
 	
 	
 public:

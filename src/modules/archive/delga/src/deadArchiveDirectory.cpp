@@ -124,7 +124,7 @@ deadArchiveDirectory *deadArchiveDirectory::GetDirectoryByPath(const decPath &pa
 	return directory;
 }
 
-void deadArchiveDirectory::AddDirectory(deadArchiveDirectory::Ref directory){
+void deadArchiveDirectory::AddDirectory(deadArchiveDirectory *directory){
 	if(!directory){
 		DETHROW(deeInvalidParam);
 	}

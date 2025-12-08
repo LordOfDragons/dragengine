@@ -269,15 +269,15 @@ public:
 	/** Retrieves the target list read-only. */
 	inline const ceTargetList &GetTargetList() const{ return pTargetList; }
 	/** Adds a target. */
-	void AddTarget(ceTarget::Ref target);
+	void AddTarget(ceTarget *target);
 	/** Removes a target. */
-	void RemoveTarget(ceTarget::Ref target);
+	void RemoveTarget(ceTarget *target);
 	/** Remove all targets. */
 	void RemoveAllTargets();
 	/** Retrieves the active target or NULL if none is active. */
 	inline ceTarget *GetActiveTarget() const{ return pActiveTarget; }
 	/** Sets the active target or NULL if none is active. */
-	void SetActiveTarget(ceTarget::Ref target);
+	void SetActiveTarget(ceTarget *target);
 	
 	/** Named target including imported conversations. */
 	ceTarget *GetTargetNamed(const char *name) const;
@@ -292,15 +292,15 @@ public:
 	/** Retrieves the camera shot list read-only. */
 	inline const ceCameraShotList &GetCameraShotList() const{ return pCameraShotList; }
 	/** Adds a camera shot. */
-	void AddCameraShot(ceCameraShot::Ref cameraShot);
+	void AddCameraShot(ceCameraShot *cameraShot);
 	/** Removes a camera shot. */
-	void RemoveCameraShot(ceCameraShot::Ref cameraShot);
+	void RemoveCameraShot(ceCameraShot *cameraShot);
 	/** Remove all camera shots. */
 	void RemoveAllCameraShots();
 	/** Retrieves the active camera shot or NULL if none is active. */
 	inline ceCameraShot *GetActiveCameraShot() const{ return pActiveCameraShot; }
 	/** Sets the active camera shot or NULL if none is active. */
-	void SetActiveCameraShot(ceCameraShot::Ref cameraShot);
+	void SetActiveCameraShot(ceCameraShot *cameraShot);
 	
 	/** Named camera shot including imported conversations. */
 	ceCameraShot *GetCameraShotNamed(const char *name) const;
@@ -317,15 +317,15 @@ public:
 	/** Retrieves the gesture list read-only. */
 	inline const ceGestureList &GetGestureList() const{ return pGestureList; }
 	/** Adds a gesture. */
-	void AddGesture(ceGesture::Ref gesture);
+	void AddGesture(ceGesture *gesture);
 	/** Removes a gesture. */
-	void RemoveGesture(ceGesture::Ref gesture);
+	void RemoveGesture(ceGesture *gesture);
 	/** Remove all gestures. */
 	void RemoveAllGestures();
 	/** Retrieves the active gesture or NULL if none is active. */
 	inline ceGesture *GetActiveGesture() const{ return pActiveGesture; }
 	/** Sets the active gesture or NULL if none is active. */
-	void SetActiveGesture(ceGesture::Ref gesture);
+	void SetActiveGesture(ceGesture *gesture);
 	
 	/** Named gesture including imported conversations. */
 	ceGesture *GetGestureNamed(const char *name) const;
@@ -345,15 +345,15 @@ public:
 	/** Retrieves the face pose list read-only. */
 	inline const ceFacePoseList &GetFacePoseList() const{ return pFacePoseList; }
 	/** Adds a face pose. */
-	void AddFacePose(ceFacePose::Ref facePose);
+	void AddFacePose(ceFacePose *facePose);
 	/** Removes a face pose. */
-	void RemoveFacePose(ceFacePose::Ref facePose);
+	void RemoveFacePose(ceFacePose *facePose);
 	/** Remove all face poses. */
 	void RemoveAllFacePoses();
 	/** Retrieves the active face pose or NULL if none is active. */
 	inline ceFacePose *GetActiveFacePose() const{ return pActiveFacePose; }
 	/** Sets the active face pose or NULL if none is active. */
-	void SetActiveFacePose(ceFacePose::Ref facePose);
+	void SetActiveFacePose(ceFacePose *facePose);
 	
 	/** Named face pose including imported conversations. */
 	ceFacePose *GetFacePoseNamed(const char *name) const;
@@ -370,15 +370,15 @@ public:
 	/** Retrieves the file list read-only. */
 	inline const ceConversationFileList &GetFileList() const{ return pFileList; }
 	/** Adds an file. */
-	void AddFile(ceConversationFile::Ref file);
+	void AddFile(ceConversationFile *file);
 	/** Removes an file. */
-	void RemoveFile(ceConversationFile::Ref file);
+	void RemoveFile(ceConversationFile *file);
 	/** Remove all files. */
 	void RemoveAllFiles();
 	/** Retrieves the active texture or NULL if none is active. */
 	inline ceConversationFile *GetActiveFile() const{ return pActiveFile; }
 	/** Sets the active file or NULL if none is active. */
-	void SetActiveFile(ceConversationFile::Ref file);
+	void SetActiveFile(ceConversationFile *file);
 	
 	/** Named file including imported conversations. */
 	ceConversationFile *GetFileWithID(const char *name) const;
@@ -402,9 +402,9 @@ public:
 	/** Retrieves the actor list read-only. */
 	inline const ceConversationActorList &GetActorList() const{ return pActorList; }
 	/** Adds a new actor. */
-	void AddActor(ceConversationActor::Ref actor);
+	void AddActor(ceConversationActor *actor);
 	/** Removes a actor. */
-	void RemoveActor(ceConversationActor::Ref actor);
+	void RemoveActor(ceConversationActor *actor);
 	/** Removes all actors. */
 	void RemoveAllActors();
 	/** Retrieves the active texture or NULL if none is active. */
@@ -412,7 +412,7 @@ public:
 	/** Determines if there is an active actor or not. */
 	bool HasActiveActor() const;
 	/** Sets the active actor or NULL if none is active. */
-	void SetActiveActor(ceConversationActor::Ref actor);
+	void SetActiveActor(ceConversationActor *actor);
 	/*@}*/
 	
 	
@@ -422,9 +422,9 @@ public:
 	/** Retrieves the coordinate system list read-only. */
 	inline const ceCoordSystemList &GetCoordSystemList() const{ return pCoordSystemList; }
 	/** Adds a new coordinate system. */
-	void AddCoordSystem(ceCoordSystem::Ref coordSystem);
+	void AddCoordSystem(ceCoordSystem *coordSystem);
 	/** Removes a coordinate system. */
-	void RemoveCoordSystem(ceCoordSystem::Ref coordSystem);
+	void RemoveCoordSystem(ceCoordSystem *coordSystem);
 	/** Removes all coordinate system. */
 	void RemoveAllCoordSystems();
 	/** Retrieves the active coordinate system or NULL if none is active. */
@@ -432,7 +432,7 @@ public:
 	/** Determines if there is an active coordinate system or not. */
 	bool HasActiveCoordSystem() const;
 	/** Sets the active coordinate system or NULL if none is active. */
-	void SetActiveCoordSystem(ceCoordSystem::Ref coordSystem);
+	void SetActiveCoordSystem(ceCoordSystem *coordSystem);
 	/*@}*/
 	
 	
@@ -442,9 +442,9 @@ public:
 	/** Retrieves the prop list read-only. */
 	inline const cePropList &GetPropList() const{ return pPropList; }
 	/** Adds a prop. */
-	void AddProp(ceProp::Ref prop);
+	void AddProp(ceProp *prop);
 	/** Removes a prop. */
-	void RemoveProp(ceProp::Ref prop);
+	void RemoveProp(ceProp *prop);
 	/** Removes all props. */
 	void RemoveAllProps();
 	/** Retrieves the active prop or NULL if none is active. */
@@ -452,7 +452,7 @@ public:
 	/** Determines if there is an active prop or not. */
 	bool HasActiveProp() const;
 	/** Sets the active prop or NULL if none is active. */
-	void SetActiveProp(ceProp::Ref prop);
+	void SetActiveProp(ceProp *prop);
 	/*@}*/
 	
 	
@@ -482,21 +482,21 @@ public:
 	/** Notifies all that the target count or order changed. */
 	void NotifyTargetStructureChanged();
 	/** Notifies all that a target changed. */
-	void NotifyTargetChanged(ceTarget::Ref target);
+	void NotifyTargetChanged(ceTarget *target);
 	/** Notifies all that the active target changed. */
 	void NotifyActiveTargetChanged();
 	
 	/** Notifies all that the camera shot count or order changed. */
 	void NotifyCameraShotStructureChanged();
 	/** Notifies all that a camera shot changed. */
-	void NotifyCameraShotChanged(ceCameraShot::Ref cameraShot);
+	void NotifyCameraShotChanged(ceCameraShot *cameraShot);
 	/** Notifies all that the active camera shot changed. */
 	void NotifyActiveCameraShotChanged();
 	
 	/** Notifies all that the gesture count or order changed. */
 	void NotifyGestureStructureChanged();
 	/** Notifies all that a gesture changed. */
-	void NotifyGestureChanged(ceGesture::Ref gesture);
+	void NotifyGestureChanged(ceGesture *gesture);
 	/** Notifies all that the active gesture changed. */
 	void NotifyActiveGestureChanged();
 	
@@ -505,39 +505,39 @@ public:
 	/** Notifies all that the face pose count or order changed. */
 	void NotifyFacePoseStructureChanged();
 	/** Notifies all that a face pose changed. */
-	void NotifyFacePoseChanged(ceFacePose::Ref facePose);
+	void NotifyFacePoseChanged(ceFacePose *facePose);
 	/** Notifies all that the active face pose changed. */
 	void NotifyActiveFacePoseChanged();
 	
 	/** Notifies all that the file count or order changed. */
 	void NotifyFileStructureChanged();
 	/** Notifies all that a file changed. */
-	void NotifyFileChanged(ceConversationFile::Ref file);
+	void NotifyFileChanged(ceConversationFile *file);
 	/** Notifies all that the file actor changed. */
 	void NotifyActiveFileChanged();
 	
 	/** Notifies all that the topic count or order changed. */
-	void NotifyTopicStructureChanged(ceConversationFile::Ref file);
+	void NotifyTopicStructureChanged(ceConversationFile *file);
 	/** Notifies all that a topic changed. */
-	void NotifyTopicChanged(ceConversationFile::Ref file, ceConversationTopic *topic);
+	void NotifyTopicChanged(ceConversationFile *file, ceConversationTopic *topic);
 	/** Notifies all that the active topic changed. */
-	void NotifyActiveTopicChanged(ceConversationFile::Ref file);
+	void NotifyActiveTopicChanged(ceConversationFile *file);
 	
 	/** Notifies all that the action structure changed. */
-	void NotifyActionStructureChanged(ceConversationFile::Ref file, ceConversationTopic *topic, ceConversationAction *action);
+	void NotifyActionStructureChanged(ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action);
 	/** Notifies all that an action changed. */
-	void NotifyActionChanged(ceConversationFile::Ref file, ceConversationTopic *topic, ceConversationAction *action);
+	void NotifyActionChanged(ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action);
 	
 	/** Notifies all that the condition structure changed. */
-	void NotifyConditionStructureChanged(ceConversationFile::Ref file,
+	void NotifyConditionStructureChanged(ceConversationFile *file,
 		ceConversationTopic *topic, ceConversationAction *action);
 	
 	/** Notifies all that an condition changed. */
-	void NotifyConditionChanged(ceConversationFile::Ref file, ceConversationTopic *topic,
+	void NotifyConditionChanged(ceConversationFile *file, ceConversationTopic *topic,
 		ceConversationAction *action, ceConversationCondition *condition);
 	
 	/** Notifies all that the active element changed. */
-	void NotifyActiveChanged(ceConversationFile::Ref file, ceConversationTopic *topic);
+	void NotifyActiveChanged(ceConversationFile *file, ceConversationTopic *topic);
 	
 	
 	
@@ -545,22 +545,22 @@ public:
 	void NotifyActorStructureChanged();
 	
 	/** Notifies all that an actor changed. */
-	void NotifyActorChanged(ceConversationActor::Ref actor);
+	void NotifyActorChanged(ceConversationActor *actor);
 	
 	/** Notify all actor active pose changed. */
-	void NotifyActorActivePoseChanged(ceConversationActor::Ref actor);
+	void NotifyActorActivePoseChanged(ceConversationActor *actor);
 	
 	/** Notify listeners actor commands changed. */
-	void NotifyActorCommandsChanged(ceConversationActor::Ref actor);
+	void NotifyActorCommandsChanged(ceConversationActor *actor);
 	
 	/** Notify listeners actor poses changed. */
-	void NotifyActorPosesChanged(ceConversationActor::Ref actor);
+	void NotifyActorPosesChanged(ceConversationActor *actor);
 	
 	/** Notify listeners actor pose gestures changed. */
-	void NotifyActorPoseGesturesChanged(ceConversationActor::Ref actor, ceActorPose *pose);
+	void NotifyActorPoseGesturesChanged(ceConversationActor *actor, ceActorPose *pose);
 	
 	/** Notify all actor parameters changed. */
-	void NotifyActorParametersChanged(ceConversationActor::Ref actor);
+	void NotifyActorParametersChanged(ceConversationActor *actor);
 	
 	/** Notify all active actor changed. */
 	void NotifyActiveActorChanged();
@@ -570,14 +570,14 @@ public:
 	/** Notifies all that the coordinate system count or order changed. */
 	void NotifyCoordSystemStructureChanged();
 	/** Notifies all that an coordinate system changed. */
-	void NotifyCoordSystemChanged(ceCoordSystem::Ref coordSystem);
+	void NotifyCoordSystemChanged(ceCoordSystem *coordSystem);
 	/** Notifies all that the active coordinate system changed. */
 	void NotifyActiveCoordSystemChanged();
 	
 	/** Notifies all that the prop count or order changed. */
 	void NotifyPropStructureChanged();
 	/** Notifies all that a prop changed. */
-	void NotifyPropChanged(ceProp::Ref prop);
+	void NotifyPropChanged(ceProp *prop);
 	/** Notifies all that the active prop changed. */
 	void NotifyActivePropChanged();
 	

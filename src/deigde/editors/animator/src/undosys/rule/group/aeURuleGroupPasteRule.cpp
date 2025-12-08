@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupPasteRule::aeURuleGroupPasteRule(aeRuleGroup::Ref group, const aeRuleList &ruleList, int index) :
+aeURuleGroupPasteRule::aeURuleGroupPasteRule(aeRuleGroup *group, const aeRuleList &ruleList, int index) :
 
 pIndex(index){
 	const int ruleCount = ruleList.GetCount();

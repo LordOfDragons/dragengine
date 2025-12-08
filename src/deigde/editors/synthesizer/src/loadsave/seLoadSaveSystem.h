@@ -71,7 +71,7 @@ public:
 	seSynthesizer *LoadSynthesizer(const char *filename, const char *basePath = "/");
 	
 	/** \brief Save synthesizer to file. */
-	void SaveSynthesizer(seSynthesizer::Ref synthesizer, const char *filename);
+	void SaveSynthesizer(seSynthesizer *synthesizer, const char *filename);
 	
 	/** \brief Synthesizer file pattern list. */
 	inline const igdeFilePatternList &GetSynthesizerFilePatterns() const{ return pFPSynthesizer; }

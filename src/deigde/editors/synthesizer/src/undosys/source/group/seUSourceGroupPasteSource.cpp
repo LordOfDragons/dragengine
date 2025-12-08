@@ -42,7 +42,7 @@
 ////////////////////////////
 
 seUSourceGroupPasteSource::seUSourceGroupPasteSource(
-seSourceGroup::Ref group, const seSourceList &sourceList, int index) :
+seSourceGroup *group, const seSourceList &sourceList, int index) :
 
 pIndex(index)
 {

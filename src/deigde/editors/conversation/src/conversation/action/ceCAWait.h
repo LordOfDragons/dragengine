@@ -76,7 +76,7 @@ public:
 	/** Retrieves the condition or NULL if there is none. */
 	inline ceConversationCondition *GetCondition() const{ return pCondition; }
 	/** Sets the condition or NULL if there is none. */
-	void SetCondition(ceConversationCondition::Ref condition);
+	void SetCondition(ceConversationCondition *condition);
 	/** Retrieves the interval to check the condition. */
 	inline float GetInterval() const{ return pInterval; }
 	/** Sets the interval to check the condition. */

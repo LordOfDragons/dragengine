@@ -38,7 +38,7 @@ const char * const gdeClipboardDataOCCamera::TYPE_NAME = "OCCamera";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCCamera::gdeClipboardDataOCCamera(gdeOCCamera::Ref camera) :
+gdeClipboardDataOCCamera::gdeClipboardDataOCCamera(gdeOCCamera *camera) :
 igdeClipboardData(TYPE_NAME)
 {
 	if(!camera){

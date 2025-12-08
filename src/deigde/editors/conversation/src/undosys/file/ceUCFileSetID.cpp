@@ -49,7 +49,7 @@
 ////////////////////////////
 
 ceUCFileSetID::ceUCFileSetID(const ceConversation &conversation,
-ceConversationFile::Ref file, const char *newID) :
+ceConversationFile *file, const char *newID) :
 
 pNewID(newID)
 {

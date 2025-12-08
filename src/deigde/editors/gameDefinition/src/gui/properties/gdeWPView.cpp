@@ -126,7 +126,7 @@ gdeWPView::~gdeWPView(){
 // Management
 ///////////////
 
-void gdeWPView::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPView::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

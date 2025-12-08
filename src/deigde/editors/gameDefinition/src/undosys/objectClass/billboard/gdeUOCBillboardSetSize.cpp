@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetSize::gdeUOCBillboardSetSize(gdeObjectClass::Ref objectClass,
-gdeOCBillboard::Ref billboard, const decVector2 &newValue) :
+gdeUOCBillboardSetSize::gdeUOCBillboardSetSize(gdeObjectClass *objectClass,
+gdeOCBillboard *billboard, const decVector2 &newValue) :
 
 pBillboard(NULL)
 {

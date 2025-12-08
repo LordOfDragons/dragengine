@@ -42,7 +42,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMParticleEmitter(gdeWPSTreeModel &tree, gdeParticleEmitter::Ref particleEmitter);
+	gdeWPSTIMParticleEmitter(gdeWPSTreeModel &tree, gdeParticleEmitter *particleEmitter);
 	
 protected:
 	/** \brief Clean up tree item model. */

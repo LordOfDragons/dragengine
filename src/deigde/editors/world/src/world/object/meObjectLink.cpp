@@ -49,7 +49,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meObjectLink::meObjectLink(igdeEnvironment *environment, meObject::Ref anchor, meObject::Ref target){
+meObjectLink::meObjectLink(igdeEnvironment *environment, meObject *anchor, meObject *target){
 	if(!environment || !anchor || !target){
 		DETHROW(deeInvalidParam);
 	}

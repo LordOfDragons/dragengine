@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new object link. */
-	meObjectLink(igdeEnvironment *environment, meObject::Ref anchor, meObject::Ref target);
+	meObjectLink(igdeEnvironment *environment, meObject *anchor, meObject *target);
 	/** \brief Cleans up an object link. */
 	virtual ~meObjectLink();
 	/*@}*/

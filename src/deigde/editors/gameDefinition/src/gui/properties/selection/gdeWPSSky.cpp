@@ -332,7 +332,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
 	pListener.TakeOver(new gdeWPSSkyListener(*this));
 	
@@ -378,7 +378,7 @@ gdeWPSSky::~gdeWPSSky(){
 // Management
 ///////////////
 
-void gdeWPSSky::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPSSky::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

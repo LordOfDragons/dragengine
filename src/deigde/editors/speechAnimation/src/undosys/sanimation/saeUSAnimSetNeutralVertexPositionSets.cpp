@@ -36,7 +36,7 @@
 ////////////////////////////
 
 saeUSAnimSetNeutralVertexPositionSets::saeUSAnimSetNeutralVertexPositionSets(
-	saeSAnimation::Ref sanimation, const decStringSet &sets) :
+	saeSAnimation *sanimation, const decStringSet &sets) :
 
 pNewSets(sets)
 {

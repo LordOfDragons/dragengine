@@ -131,7 +131,7 @@ void deoalAComponent::PrepareQuickDispose(){
 
 
 
-void deoalAComponent::SetModel(deoalAModel::Ref model, const decStringList *textureNames){
+void deoalAComponent::SetModel(deoalAModel *model, const decStringList *textureNames){
 	if(model == pModel && textureNames == pTextureNames){
 		return;
 	}
@@ -154,7 +154,7 @@ void deoalAComponent::SetModel(deoalAModel::Ref model, const decStringList *text
 	pUpdateModelRigMappings();
 }
 
-void deoalAComponent::SetSkin(deoalASkin::Ref skin){
+void deoalAComponent::SetSkin(deoalASkin *skin){
 	if(skin == pSkin){
 		return;
 	}

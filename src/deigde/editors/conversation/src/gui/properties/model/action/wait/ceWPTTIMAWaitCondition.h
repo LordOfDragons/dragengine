@@ -45,7 +45,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	ceWPTTIMAWaitCondition(ceWindowMain &windowMain,
-		ceConversation &conversation, ceCAWait::Ref action);
+		ceConversation &conversation, ceCAWait *action);
 	
 protected:
 	/** \brief Clean up tree item model. */

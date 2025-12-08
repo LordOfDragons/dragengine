@@ -62,33 +62,33 @@ igdeGDCForceField *igdeGDCForceFieldList::GetAt(int index) const{
 	return (igdeGDCForceField*)pFields.GetAt(index);
 }
 
-int igdeGDCForceFieldList::IndexOf(igdeGDCForceField::Ref field) const{
+int igdeGDCForceFieldList::IndexOf(igdeGDCForceField *field) const{
 	return pFields.IndexOf(field);
 }
 
-bool igdeGDCForceFieldList::Has(igdeGDCForceField::Ref field) const{
+bool igdeGDCForceFieldList::Has(igdeGDCForceField *field) const{
 	return pFields.Has(field);
 }
 
-void igdeGDCForceFieldList::Add(igdeGDCForceField::Ref field){
+void igdeGDCForceFieldList::Add(igdeGDCForceField *field){
 	if(!field){
 		DETHROW(deeInvalidParam);
 	}
 	pFields.Add(field);
 }
 
-void igdeGDCForceFieldList::InsertAt(igdeGDCForceField::Ref field, int index){
+void igdeGDCForceFieldList::InsertAt(igdeGDCForceField *field, int index){
 	if(!field){
 		DETHROW(deeInvalidParam);
 	}
 	pFields.Insert(field, index);
 }
 
-void igdeGDCForceFieldList::MoveTo(igdeGDCForceField::Ref field, int index){
+void igdeGDCForceFieldList::MoveTo(igdeGDCForceField *field, int index){
 	pFields.Move(field, index);
 }
 
-void igdeGDCForceFieldList::Remove(igdeGDCForceField::Ref field){
+void igdeGDCForceFieldList::Remove(igdeGDCForceField *field){
 	pFields.Remove(field);
 }
 

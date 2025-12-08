@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeSetIPA(saePhoneme::Ref phoneme, int newIPA);
+	saeUPhonemeSetIPA(saePhoneme *phoneme, int newIPA);
 	
 protected:
 	/** Clean up undo. */

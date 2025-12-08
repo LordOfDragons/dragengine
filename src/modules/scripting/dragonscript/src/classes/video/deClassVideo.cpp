@@ -307,7 +307,7 @@ deVideo *deClassVideo::GetVideo(dsRealObject *myself) const{
 	return ((sVidNatDat*)p_GetNativeData(myself->GetBuffer()))->video;
 }
 
-void deClassVideo::PushVideo(dsRunTime *rt, deVideo::Ref video){
+void deClassVideo::PushVideo(dsRunTime *rt, deVideo *video){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightToggleCastShadows::gdeUOCLightToggleCastShadows(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light) :
+gdeUOCLightToggleCastShadows::gdeUOCLightToggleCastShadows(gdeObjectClass *objectClass, gdeOCLight *light) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

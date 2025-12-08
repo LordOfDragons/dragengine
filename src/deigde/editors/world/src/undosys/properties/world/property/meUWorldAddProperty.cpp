@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldAddProperty::meUWorldAddProperty(meWorld::Ref world, const char *key, const char *value) :
+meUWorldAddProperty::meUWorldAddProperty(meWorld *world, const char *key, const char *value) :
 
 pKey(key),
 pValue(value)

@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCAParamSetTestVariable::ceUCCAParamSetTestVariable(ceConversationTopic::Ref topic,
-ceConversationAction::Ref action, ceCConditionActorParameter::Ref condition, const char *newVariable) :
+ceUCCAParamSetTestVariable::ceUCCAParamSetTestVariable(ceConversationTopic *topic,
+ceConversationAction *action, ceCConditionActorParameter *condition, const char *newVariable) :
 
 
 

@@ -500,7 +500,7 @@ deSynthesizerInstance *&instance, int &index) const{
 	index = nd.index;
 }
 
-void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizer::Ref synthesizer, int index){
+void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizer *synthesizer, int index){
 	if(!rt || !synthesizer || index < 0 || index >= synthesizer->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -513,7 +513,7 @@ void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizer::
 	nd.index = index;
 }
 
-void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizerInstance::Ref instance, int index){
+void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizerInstance *instance, int index){
 	if(!rt || !instance || index < 0 || index >= instance->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}

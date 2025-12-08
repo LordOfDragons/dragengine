@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeSetPathCollisionEmitter(peeType::Ref type, const char *newPath);
+	peeUTypeSetPathCollisionEmitter(peeType *type, const char *newPath);
 	
 protected:
 	/** \brief Clean up the undo action. */

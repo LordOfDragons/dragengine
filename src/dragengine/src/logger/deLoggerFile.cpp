@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deLoggerFile::deLoggerFile(decBaseFileWriter::Ref writer) :
+deLoggerFile::deLoggerFile(decBaseFileWriter *writer) :
 pWriter(NULL)
 {
 	if(!writer){

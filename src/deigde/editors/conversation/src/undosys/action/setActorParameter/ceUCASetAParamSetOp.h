@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASetAParamSetOp(ceConversationTopic::Ref topic, ceCASetActorParameter::Ref action,
+	ceUCASetAParamSetOp(ceConversationTopic *topic, ceCASetActorParameter *action,
 		ceCASetActorParameter::eOperators newOperator);
 protected:
 	/** \brief Clean up undo. */

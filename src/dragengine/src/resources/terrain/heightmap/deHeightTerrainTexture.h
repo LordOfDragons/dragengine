@@ -76,7 +76,7 @@ public:
 	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not set. */
-	void SetSkin(deSkin::Ref skin);
+	void SetSkin(deSkin *skin);
 	
 	/** \brief Projection offset. */
 	inline const decVector2 &GetProjectionOffset() const{ return pProjOffset; }
@@ -100,7 +100,7 @@ public:
 	inline deImage *GetMaskImage() const{ return pMaskImage; }
 	
 	/** \brief Set mask image or NULL if not set. */
-	void SetMaskImage(deImage::Ref image);
+	void SetMaskImage(deImage *image);
 	/*@}*/
 };
 

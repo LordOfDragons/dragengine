@@ -78,7 +78,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation to monitor. */
-	void SetConversation(ceConversation::Ref conversation);
+	void SetConversation(ceConversation *conversation);
 	
 	/** \brief Viewport boundary using the ratio stored in the conversation object if existing. */
 	void GetViewportWithRatio(decBoundary &viewport) const;

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetType::gdeUOCNavBlockerSetType(gdeObjectClass::Ref objectClass,
-gdeOCNavigationBlocker::Ref navblocker, deNavigationSpace::eSpaceTypes newValue) :
+gdeUOCNavBlockerSetType::gdeUOCNavBlockerSetType(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navblocker, deNavigationSpace::eSpaceTypes newValue) :
 
 pNavBlocker(NULL)
 {

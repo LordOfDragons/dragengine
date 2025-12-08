@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeWPSTIMOCSubObject::gdeWPSTIMOCSubObject(gdeWPSTreeModel &tree, eTypes type,
-	gdeObjectClass::Ref objectClass, int index) :
+	gdeObjectClass *objectClass, int index) :
 gdeWPSTreeItemModel(tree, type),
 pIndex(index)
 {

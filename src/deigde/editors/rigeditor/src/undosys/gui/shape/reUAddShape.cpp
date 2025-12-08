@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUAddShape::reUAddShape(reRig::Ref rig, reRigBone::Ref bone, reRigShape::Ref shape){
+reUAddShape::reUAddShape(reRig *rig, reRigBone *bone, reRigShape *shape){
 	if(!shape || (!rig && !bone)) DETHROW(deeInvalidParam);
 	
 	pRig = rig;

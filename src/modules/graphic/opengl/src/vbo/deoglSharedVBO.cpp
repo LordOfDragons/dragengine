@@ -290,7 +290,7 @@ deoglSharedVBOBlock *deoglSharedVBO::AddBlock(int size, int indexCount){
 	return block;
 }
 
-void deoglSharedVBO::RemoveBlock(deoglSharedVBOBlock::Ref block){
+void deoglSharedVBO::RemoveBlock(deoglSharedVBOBlock *block){
 	int index = pBlocks.IndexOf(block);
 	if(index == -1){
 		DETHROW(deeInvalidParam);

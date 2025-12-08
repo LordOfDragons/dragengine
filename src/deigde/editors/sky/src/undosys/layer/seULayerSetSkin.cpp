@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetSkin::seULayerSetSkin(seLayer::Ref layer, const char *newSkin) :
+seULayerSetSkin::seULayerSetSkin(seLayer *layer, const char *newSkin) :
 
 pNewSkin(newSkin)
 {

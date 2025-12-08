@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUHTVVarSetSkin(meHTVVariation::Ref variation, const char *newPath);
+	meUHTVVarSetSkin(meHTVVariation *variation, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo object. */

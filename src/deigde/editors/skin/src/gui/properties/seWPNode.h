@@ -120,7 +120,7 @@ public:
 	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin. */
-	void SetSkin(seSkin::Ref skin);
+	void SetSkin(seSkin *skin);
 	
 	/** Skin path changed. */
 	void OnSkinPathChanged();

@@ -120,7 +120,7 @@ public:
 	inline debpBulletShape *GetShape() const{ return pShape; }
 	
 	/** \brief Set collision shape or \em NULL. */
-	void SetShape(debpBulletShape::Ref shape);
+	void SetShape(debpBulletShape *shape);
 	
 	/** \brief Shape surface. */
 	inline float GetShapeSurface() const{ return pShapeSurface; }

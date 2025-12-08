@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalPosition::meUDecalPosition(meDecal::Ref decal, const decDVector &newPosition){
+meUDecalPosition::meUDecalPosition(meDecal *decal, const decDVector &newPosition){
 	if(!decal){
 		DETHROW(deeInvalidParam);
 	}

@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetAmbientRatio(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light, float newValue);
+	gdeUOCLightSetAmbientRatio(gdeObjectClass *objectClass, gdeOCLight *light, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

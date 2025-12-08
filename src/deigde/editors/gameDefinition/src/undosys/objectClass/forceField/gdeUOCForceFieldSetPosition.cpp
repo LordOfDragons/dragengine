@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetPosition::gdeUOCForceFieldSetPosition(gdeObjectClass::Ref objectClass,
-gdeOCForceField::Ref forceField, const decVector &newValue) :
+gdeUOCForceFieldSetPosition::gdeUOCForceFieldSetPosition(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, const decVector &newValue) :
 
 pForceField(NULL)
 {

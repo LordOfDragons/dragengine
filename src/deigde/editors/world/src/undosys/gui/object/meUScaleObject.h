@@ -43,7 +43,7 @@ private:
 	
 public:
 	// constructor, destructor
-	meUScaleObject(meWorld::Ref world, const meObjectList &objects);
+	meUScaleObject(meWorld *world, const meObjectList &objects);
 	virtual ~meUScaleObject();
 	// undo and redo operations
 	virtual void Undo();

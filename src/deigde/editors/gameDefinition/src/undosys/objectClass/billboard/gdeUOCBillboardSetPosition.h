@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCBillboardSetPosition(gdeObjectClass::Ref objectClass,
-		gdeOCBillboard::Ref billboard, const decVector &newValue);
+	gdeUOCBillboardSetPosition(gdeObjectClass *objectClass,
+		gdeOCBillboard *billboard, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

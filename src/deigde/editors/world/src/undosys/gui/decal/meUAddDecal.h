@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	meUAddDecal(meWorld::Ref world, meDecal::Ref decal);
+	meUAddDecal(meWorld *world, meDecal *decal);
 	/** \brief Clean up undo. */
 	virtual ~meUAddDecal();
 	/*@}*/

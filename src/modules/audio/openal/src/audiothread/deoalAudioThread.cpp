@@ -611,7 +611,7 @@ void deoalAudioThread::Run(){
 
 
 
-void deoalAudioThread::SetActiveMicrophone(deoalAMicrophone::Ref microphone){
+void deoalAudioThread::SetActiveMicrophone(deoalAMicrophone *microphone){
 	// WARNING called from the main thread
 	
 	if(pDeactiveMicrophone){

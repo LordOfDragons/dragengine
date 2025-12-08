@@ -60,7 +60,7 @@ deoglRCanvasVideoPlayer::~deoglRCanvasVideoPlayer(){
 // Management
 ///////////////
 
-void deoglRCanvasVideoPlayer::SetVideoPlayer(deoglRVideoPlayer::Ref videoPlayer){
+void deoglRCanvasVideoPlayer::SetVideoPlayer(deoglRVideoPlayer *videoPlayer){
 	if(videoPlayer == pVideoPlayer){
 		return;
 	}

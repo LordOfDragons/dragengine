@@ -62,15 +62,15 @@ igdeGDCBillboard *igdeGDCBillboardList::GetAt(int index) const{
 	return (igdeGDCBillboard*)pBillboards.GetAt(index);
 }
 
-int igdeGDCBillboardList::IndexOf(igdeGDCBillboard::Ref billboard) const{
+int igdeGDCBillboardList::IndexOf(igdeGDCBillboard *billboard) const{
 	return pBillboards.IndexOf(billboard);
 }
 
-bool igdeGDCBillboardList::Has(igdeGDCBillboard::Ref billboard) const{
+bool igdeGDCBillboardList::Has(igdeGDCBillboard *billboard) const{
 	return pBillboards.Has(billboard);
 }
 
-void igdeGDCBillboardList::Add(igdeGDCBillboard::Ref billboard){
+void igdeGDCBillboardList::Add(igdeGDCBillboard *billboard){
 	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
@@ -78,7 +78,7 @@ void igdeGDCBillboardList::Add(igdeGDCBillboard::Ref billboard){
 	pBillboards.Add(billboard);
 }
 
-void igdeGDCBillboardList::InsertAt(igdeGDCBillboard::Ref billboard, int index){
+void igdeGDCBillboardList::InsertAt(igdeGDCBillboard *billboard, int index){
 	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
@@ -86,11 +86,11 @@ void igdeGDCBillboardList::InsertAt(igdeGDCBillboard::Ref billboard, int index){
 	pBillboards.Insert(billboard, index);
 }
 
-void igdeGDCBillboardList::MoveTo(igdeGDCBillboard::Ref billboard, int index){
+void igdeGDCBillboardList::MoveTo(igdeGDCBillboard *billboard, int index){
 	pBillboards.Move(billboard, index);
 }
 
-void igdeGDCBillboardList::Remove(igdeGDCBillboard::Ref billboard){
+void igdeGDCBillboardList::Remove(igdeGDCBillboard *billboard){
 	pBillboards.Remove(billboard);
 }
 

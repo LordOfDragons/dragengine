@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetBoneName::gdeUOCBillboardSetBoneName(gdeObjectClass::Ref objectClass,
-gdeOCBillboard::Ref billboard, const char *newValue) :
+gdeUOCBillboardSetBoneName::gdeUOCBillboardSetBoneName(gdeObjectClass *objectClass,
+gdeOCBillboard *billboard, const char *newValue) :
 
 pBillboard(NULL)
 {

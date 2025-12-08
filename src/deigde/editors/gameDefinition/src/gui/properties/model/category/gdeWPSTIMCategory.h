@@ -43,7 +43,7 @@ protected:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMCategory(gdeWPSTreeModel &tree, eTypes type, gdeCategory::Ref category);
+	gdeWPSTIMCategory(gdeWPSTreeModel &tree, eTypes type, gdeCategory *category);
 	
 protected:
 	/** \brief Clean up tree item model. */

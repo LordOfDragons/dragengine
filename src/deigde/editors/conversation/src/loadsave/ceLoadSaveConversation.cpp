@@ -891,7 +891,7 @@ void ceLoadSaveConversation::pWriteActionComment(decXmlWriter &writer, const ceC
 }
 
 void ceLoadSaveConversation::pWriteCondition(decXmlWriter &writer,
-ceConversationCondition::Ref condition){
+ceConversationCondition *condition){
 	switch(condition->GetType()){
 	case ceConversationCondition::ectLogic:
 		pWriteConditionLogic(writer, *((ceCConditionLogic*)condition));

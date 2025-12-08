@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetRenderableName::seUPropertySetRenderableName(seProperty::Ref property, const char *newName){
+seUPropertySetRenderableName::seUPropertySetRenderableName(seProperty *property, const char *newName){
 	if(!property || !newName) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;

@@ -68,7 +68,7 @@ public:
 	inline ceConversationCondition *GetCondition() const{ return pCondition; }
 	
 	/** \brief Set condition or \em NULL if there is none. */
-	void SetCondition(ceConversationCondition::Ref condition);
+	void SetCondition(ceConversationCondition *condition);
 	
 	/** \brief List of actions. */
 	inline ceConversationActionList &GetActions(){ return pActions; }

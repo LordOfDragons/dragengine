@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionSetWaitForActorID(ceConversationTopic::Ref topic, ceConversationAction::Ref action, const char *newID);
+	ceUCActionSetWaitForActorID(ceConversationTopic *topic, ceConversationAction *action, const char *newID);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCActionSetWaitForActorID();

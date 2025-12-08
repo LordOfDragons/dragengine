@@ -434,13 +434,13 @@ public:
 	/** Retrieves the bone with the given order or NULL if not found. */
 	reRigBone *GetBoneWithOrder(int order) const;
 	/** Retrieves the index of the bone or -1 if not found. */
-	int IndexOfBone(reRigBone::Ref bone) const;
+	int IndexOfBone(reRigBone *bone) const;
 	/** Determines if the bone exists. */
-	bool HasBone(reRigBone::Ref bone) const;
+	bool HasBone(reRigBone *bone) const;
 	/** Adds a new bone. */
-	void AddBone(reRigBone::Ref bone);
+	void AddBone(reRigBone *bone);
 	/** Removes the given bone. */
-	void RemoveBone(reRigBone::Ref bone);
+	void RemoveBone(reRigBone *bone);
 	/** Removes all bones. */
 	void RemoveAllBones();
 	
@@ -452,7 +452,7 @@ public:
 	/** Retrieves the root bone or NULL if not set. */
 	inline reRigBone *GetRootBone() const{ return pRootBone; }
 	/** Sets the root bone or NULL if not set. */
-	void SetRootBone(reRigBone::Ref rootBone);
+	void SetRootBone(reRigBone *rootBone);
 	/*@}*/
 	
 	/** @name Shapes */
@@ -464,13 +464,13 @@ public:
 	/** Retrieves the shape with the given collider or NULL if not found. */
 	reRigShape *GetShapeWith(deColliderVolume *collider) const;
 	/** Retrieves the index of the shape or -1 if not found. */
-	int IndexOfShape(reRigShape::Ref shape) const;
+	int IndexOfShape(reRigShape *shape) const;
 	/** Determines if the shape exists. */
-	bool HasShape(reRigShape::Ref shape) const;
+	bool HasShape(reRigShape *shape) const;
 	/** Adds a new shape. */
-	void AddShape(reRigShape::Ref shape);
+	void AddShape(reRigShape *shape);
 	/** Removes the given shape. */
-	void RemoveShape(reRigShape::Ref shape);
+	void RemoveShape(reRigShape *shape);
 	/** Removes all shapes. */
 	void RemoveAllShapes();
 	/*@}*/
@@ -484,13 +484,13 @@ public:
 	/** Retrieves the constraint with the given collider or NULL if not found. */
 	reRigConstraint *GetConstraintWith(deColliderVolume *collider) const;
 	/** Retrieves the index of the constraint or -1 if not found. */
-	int IndexOfConstraint(reRigConstraint::Ref constraint) const;
+	int IndexOfConstraint(reRigConstraint *constraint) const;
 	/** Determines if the constraint exists. */
-	bool HasConstraint(reRigConstraint::Ref constraint) const;
+	bool HasConstraint(reRigConstraint *constraint) const;
 	/** Adds a new constraint. */
-	void AddConstraint(reRigConstraint::Ref constraint);
+	void AddConstraint(reRigConstraint *constraint);
 	/** Removes the given constraint. */
-	void RemoveConstraint(reRigConstraint::Ref constraint);
+	void RemoveConstraint(reRigConstraint *constraint);
 	/** Removes all constraints. */
 	void RemoveAllConstraints();
 	/*@}*/
@@ -504,13 +504,13 @@ public:
 	/** Retrieves the push with the given collider or NULL if not found. */
 	reRigPush *GetPushWith(deColliderVolume *collider) const;
 	/** Retrieves the index of the push or -1 if not found. */
-	int IndexOfPush(reRigPush::Ref push) const;
+	int IndexOfPush(reRigPush *push) const;
 	/** Determines if the push exists. */
-	bool HasPush(reRigPush::Ref push) const;
+	bool HasPush(reRigPush *push) const;
 	/** Adds a new push. */
-	void AddPush(reRigPush::Ref push);
+	void AddPush(reRigPush *push);
 	/** Removes the given push. */
-	void RemovePush(reRigPush::Ref push);
+	void RemovePush(reRigPush *push);
 	/** Removes all pushes. */
 	void RemoveAllPushes();
 	/*@}*/
@@ -522,13 +522,13 @@ public:
 	/** Retrieves the notifier at the given index. */
 	reRigNotifier *GetNotifierAt(int index) const;
 	/** Retrieves the index of the notifier or -1 if not found. */
-	int IndexOfNotifier(reRigNotifier::Ref notifier) const;
+	int IndexOfNotifier(reRigNotifier *notifier) const;
 	/** Determines if the notifier exists. */
-	bool HasNotifier(reRigNotifier::Ref notifier) const;
+	bool HasNotifier(reRigNotifier *notifier) const;
 	/** Adds a new notifier. */
-	void AddNotifier(reRigNotifier::Ref notifier);
+	void AddNotifier(reRigNotifier *notifier);
 	/** Removes the given notifier. */
-	void RemoveNotifier(reRigNotifier::Ref notifier);
+	void RemoveNotifier(reRigNotifier *notifier);
 	/** Removes all notifiers. */
 	void RemoveAllNotifiers();
 	
@@ -560,50 +560,50 @@ public:
 	/** Notifies all that the number of bones changed. */
 	void NotifyBoneCountChanged();
 	/** Notifies all that a bone changed. */
-	void NotifyBoneChanged(reRigBone::Ref bone);
+	void NotifyBoneChanged(reRigBone *bone);
 	/** Notifies all that a bone changed selection state. */
-	void NotifyBoneSelectedChanged(reRigBone::Ref bone);
+	void NotifyBoneSelectedChanged(reRigBone *bone);
 	/** Notifies all that all bones have been deselected. */
 	void NotifyAllBonesDeselected();
 	/** Notifies all that the active bone changed. */
 	void NotifyActiveBoneChanged();
 	/** Notifies all that a bone changed. */
-	void NotifyAllBoneChanged(reRigBone::Ref bone);
+	void NotifyAllBoneChanged(reRigBone *bone);
 	
 	/** Notifies all that the number of shapes changed. */
 	void NotifyShapeCountChanged();
 	/** Notifies all that a shape changed. */
-	void NotifyShapeChanged(reRigShape::Ref shape);
+	void NotifyShapeChanged(reRigShape *shape);
 	/** Notifies all that a shape changed selection state. */
-	void NotifyShapeSelectedChanged(reRigShape::Ref shape);
+	void NotifyShapeSelectedChanged(reRigShape *shape);
 	/** Notifies all that all shapes have been deselected. */
 	void NotifyAllShapesDeselected();
 	/** Notifies all that the active shape changed. */
 	void NotifyActiveShapeChanged();
 	/** Notifies all that a shape changed. */
-	void NotifyAllShapeChanged(reRigShape::Ref shape);
+	void NotifyAllShapeChanged(reRigShape *shape);
 	
 	/** Notifies all that the number of constraints changed. */
 	void NotifyConstraintCountChanged();
 	/** Notifies all that a constraint changed. */
-	void NotifyConstraintChanged(reRigConstraint::Ref constraint);
+	void NotifyConstraintChanged(reRigConstraint *constraint);
 	/** Notifies all that a constraint changed selection state. */
-	void NotifyConstraintSelectedChanged(reRigConstraint::Ref constraint);
+	void NotifyConstraintSelectedChanged(reRigConstraint *constraint);
 	/** Notifies all that all constraints have been deselected. */
 	void NotifyAllConstraintsDeselected();
 	/** Notifies all that the active constraint changed. */
 	void NotifyActiveConstraintChanged();
 	/** Notifies all that a constraint changed. */
-	void NotifyAllConstraintChanged(reRigConstraint::Ref constraint);
+	void NotifyAllConstraintChanged(reRigConstraint *constraint);
 	/** Notifies all that a constraint degree of freedom changed. */
-	void NotifyAllConstraintDofChanged(reRigConstraint::Ref constraint, deColliderConstraint::eDegreesOfFreedom dof);
+	void NotifyAllConstraintDofChanged(reRigConstraint *constraint, deColliderConstraint::eDegreesOfFreedom dof);
 	
 	/** Notifies all that the number of pushes changed. */
 	void NotifyPushCountChanged();
 	/** Notifies all that a push changed. */
-	void NotifyPushChanged(reRigPush::Ref push);
+	void NotifyPushChanged(reRigPush *push);
 	/** Notifies all that a push changed selection state. */
-	void NotifyPushSelectedChanged(reRigPush::Ref push);
+	void NotifyPushSelectedChanged(reRigPush *push);
 	/** Notifies all that all pushes have been deselected. */
 	void NotifyAllPushesDeselected();
 	/** Notifies all that the active push changed. */

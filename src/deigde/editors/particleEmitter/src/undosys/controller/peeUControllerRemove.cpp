@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerRemove::peeUControllerRemove(peeController::Ref controller){
+peeUControllerRemove::peeUControllerRemove(peeController *controller){
 	if(!controller) DETHROW(deeInvalidParam);
 	
 	peeEmitter::Ref emitter = controller->GetEmitter();

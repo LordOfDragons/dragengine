@@ -62,15 +62,15 @@ igdeGDCParticleEmitter *igdeGDCParticleEmitterList::GetAt(int index) const{
 	return (igdeGDCParticleEmitter*)pEmitters.GetAt(index);
 }
 
-int igdeGDCParticleEmitterList::IndexOf(igdeGDCParticleEmitter::Ref emitter) const{
+int igdeGDCParticleEmitterList::IndexOf(igdeGDCParticleEmitter *emitter) const{
 	return pEmitters.IndexOf(emitter);
 }
 
-bool igdeGDCParticleEmitterList::Has(igdeGDCParticleEmitter::Ref emitter) const{
+bool igdeGDCParticleEmitterList::Has(igdeGDCParticleEmitter *emitter) const{
 	return pEmitters.Has(emitter);
 }
 
-void igdeGDCParticleEmitterList::Add(igdeGDCParticleEmitter::Ref emitter){
+void igdeGDCParticleEmitterList::Add(igdeGDCParticleEmitter *emitter){
 	if(!emitter){
 		DETHROW(deeInvalidParam);
 	}
@@ -78,7 +78,7 @@ void igdeGDCParticleEmitterList::Add(igdeGDCParticleEmitter::Ref emitter){
 	pEmitters.Add(emitter);
 }
 
-void igdeGDCParticleEmitterList::InsertAt(igdeGDCParticleEmitter::Ref emitter, int index){
+void igdeGDCParticleEmitterList::InsertAt(igdeGDCParticleEmitter *emitter, int index){
 	if(!emitter){
 		DETHROW(deeInvalidParam);
 	}
@@ -86,11 +86,11 @@ void igdeGDCParticleEmitterList::InsertAt(igdeGDCParticleEmitter::Ref emitter, i
 	pEmitters.Insert(emitter, index);
 }
 
-void igdeGDCParticleEmitterList::MoveTo(igdeGDCParticleEmitter::Ref emitter, int index){
+void igdeGDCParticleEmitterList::MoveTo(igdeGDCParticleEmitter *emitter, int index){
 	pEmitters.Move(emitter, index);
 }
 
-void igdeGDCParticleEmitterList::Remove(igdeGDCParticleEmitter::Ref emitter){
+void igdeGDCParticleEmitterList::Remove(igdeGDCParticleEmitter *emitter){
 	pEmitters.Remove(emitter);
 }
 

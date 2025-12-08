@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUFontImportImage(feFontImage::Ref fontImage, deImage *newImage, const char *newPath);
+	feUFontImportImage(feFontImage *fontImage, deImage *newImage, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo. */

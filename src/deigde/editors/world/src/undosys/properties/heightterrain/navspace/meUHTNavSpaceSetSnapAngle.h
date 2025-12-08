@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceSetSnapAngle(meHeightTerrainNavSpace::Ref navspace, float newSnapAngle);
+	meUHTNavSpaceSetSnapAngle(meHeightTerrainNavSpace *navspace, float newSnapAngle);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleCurveSetCurve(meHTVegetationLayer::Ref vlayer, meHTVRuleCurve::Ref rule, const decCurveBezier &newCurve);
+	meUHTVRuleCurveSetCurve(meHTVegetationLayer *vlayer, meHTVRuleCurve *rule, const decCurveBezier &newCurve);
 	
 protected:
 	/** \brief Clean up object. */

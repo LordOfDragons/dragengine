@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUAddShape(reRig::Ref rig, reRigBone::Ref bone, reRigShape::Ref shape);
+	reUAddShape(reRig *rig, reRigBone *bone, reRigShape *shape);
 	
 protected:
 	/** \brief Clean up undo. */

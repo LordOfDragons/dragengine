@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetParameter(ceCameraShot::Ref cameraShot, int parameter);
+	ceUCCShotSetParameter(ceCameraShot *cameraShot, int parameter);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetParameter();

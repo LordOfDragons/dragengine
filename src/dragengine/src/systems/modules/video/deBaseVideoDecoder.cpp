@@ -35,7 +35,7 @@
 // Class deBaseVideoDecoder
 /////////////////////////////
 
-deBaseVideoDecoder::deBaseVideoDecoder(decBaseFileReader::Ref file) :
+deBaseVideoDecoder::deBaseVideoDecoder(decBaseFileReader *file) :
 pFile(NULL)
 {
 	if(!file){

@@ -160,7 +160,7 @@ public:
 	inline deoglRHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Set height terrain or \em NULL if not set. */
-	void SetHeightTerrain(deoglRHeightTerrain::Ref heightTerrain);
+	void SetHeightTerrain(deoglRHeightTerrain *heightTerrain);
 	
 	
 	
@@ -213,11 +213,11 @@ protected:
 	void PrepareForRenderRender(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 public:
 	
-	void AddPrepareForRenderComponent(deoglRComponent::Ref component);
-	void RemovePrepareForRenderComponent(deoglRComponent::Ref component);
+	void AddPrepareForRenderComponent(deoglRComponent *component);
+	void RemovePrepareForRenderComponent(deoglRComponent *component);
 	
-	void AddPrepareForRenderBillboard(deoglRBillboard::Ref billboard);
-	void RemovePrepareForRenderBillboard(deoglRBillboard::Ref billboard);
+	void AddPrepareForRenderBillboard(deoglRBillboard *billboard);
+	void RemovePrepareForRenderBillboard(deoglRBillboard *billboard);
 	
 	void AddPrepareForRenderLight(deoglRLight *light);
 	void RemovePrepareForRenderLight(deoglRLight *light);
@@ -314,10 +314,10 @@ public:
 	inline deoglRComponent *GetRootComponent() const{ return pRootComponent; }
 	
 	/** Add component. */
-	void AddComponent(deoglRComponent::Ref component);
+	void AddComponent(deoglRComponent *component);
 	
 	/** Remove component. */
-	void RemoveComponent(deoglRComponent::Ref component);
+	void RemoveComponent(deoglRComponent *component);
 	
 	/** Remove all component. */
 	void RemoveAllComponents();
@@ -450,10 +450,10 @@ public:
 	inline deoglRBillboard *GetRootBillboard() const{ return pRootBillboard; }
 	
 	/** Add billboard. */
-	void AddBillboard(deoglRBillboard::Ref billboard);
+	void AddBillboard(deoglRBillboard *billboard);
 	
 	/** Remove billboard. */
-	void RemoveBillboard(deoglRBillboard::Ref billboard);
+	void RemoveBillboard(deoglRBillboard *billboard);
 	
 	/** Remove all billboard. */
 	void RemoveAllBillboards();
@@ -485,7 +485,7 @@ public:
 	void RemoveRemovalMarkedSkies();
 	
 	/** Notify skies render static component changed requiring updates. */
-	void SkiesNotifyUpdateStaticComponent(deoglRComponent::Ref component);
+	void SkiesNotifyUpdateStaticComponent(deoglRComponent *component);
 	/*@}*/
 	
 	
@@ -534,16 +534,16 @@ public:
 	void RemoveAllGICascades();
 	
 	/** Notify GI states component entered world. */
-	void GIStatesNotifyComponentEnteredWorld(deoglRComponent::Ref component);
+	void GIStatesNotifyComponentEnteredWorld(deoglRComponent *component);
 	
 	/** Notify GI states component changed layer mask. */
-	void GIStatesNotifyComponentChangedLayerMask(deoglRComponent::Ref component);
+	void GIStatesNotifyComponentChangedLayerMask(deoglRComponent *component);
 	
 	/** Notify GI states component became visible. */
-	void GIStatesNotifyComponentBecameVisible(deoglRComponent::Ref component);
+	void GIStatesNotifyComponentBecameVisible(deoglRComponent *component);
 	
 	/** Notify GI states component changed gi importance. */
-	void GIStatesNotifyComponentChangedGIImportance(deoglRComponent::Ref component);
+	void GIStatesNotifyComponentChangedGIImportance(deoglRComponent *component);
 	/*@}*/
 	
 	

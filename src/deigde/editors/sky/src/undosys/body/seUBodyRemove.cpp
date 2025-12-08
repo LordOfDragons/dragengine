@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodyRemove::seUBodyRemove(seBody::Ref body) :
+seUBodyRemove::seUBodyRemove(seBody *body) :
 
 
 pIndex(0)

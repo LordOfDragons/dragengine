@@ -64,7 +64,7 @@ public:
 	dedsXmlDocument *GetDocument(dsRealObject *myself) const;
 	
 	/** \brief Push xml document or \em NULL if \em document is \em NULL. */
-	void PushDocument(dsRunTime *rt, dedsXmlDocument::Ref document);
+	void PushDocument(dsRunTime *rt, dedsXmlDocument *document);
 	/*@}*/
 	
 	

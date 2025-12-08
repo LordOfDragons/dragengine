@@ -237,7 +237,7 @@ deColliderVolume *deClassColliderVolume::GetCollider(dsRealObject *myself) const
 	return ((sColVolNatDat*)p_GetNativeData(myself->GetBuffer()))->collider;
 }
 
-void deClassColliderVolume::PushCollider(dsRunTime *rt, deColliderVolume::Ref collider){
+void deClassColliderVolume::PushCollider(dsRunTime *rt, deColliderVolume *collider){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

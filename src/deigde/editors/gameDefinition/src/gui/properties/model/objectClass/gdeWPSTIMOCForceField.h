@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCForceField(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCForceField::Ref forceField, int index);
+		gdeOCForceField *forceField, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

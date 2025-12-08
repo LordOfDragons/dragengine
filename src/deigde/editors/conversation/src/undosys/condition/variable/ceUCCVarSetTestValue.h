@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCVarSetTestValue(ceConversationTopic::Ref topic, ceConversationAction::Ref action, ceCConditionVariable::Ref condition, int newValue);
+	ceUCCVarSetTestValue(ceConversationTopic *topic, ceConversationAction *action, ceCConditionVariable *condition, int newValue);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCVarSetTestValue();

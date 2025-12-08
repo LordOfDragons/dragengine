@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMoveSourceUp::seUMoveSourceUp(seSynthesizer::Ref synthesizer, seSource::Ref source) :
+seUMoveSourceUp::seUMoveSourceUp(seSynthesizer *synthesizer, seSource *source) :
 pSynthesizer(NULL)
 {
 	if(!synthesizer || !source){

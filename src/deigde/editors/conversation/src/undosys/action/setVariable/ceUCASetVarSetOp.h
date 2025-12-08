@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASetVarSetOp(ceConversationTopic::Ref topic, ceCASetVariable::Ref action,
+	ceUCASetVarSetOp(ceConversationTopic *topic, ceCASetVariable *action,
 		ceCASetVariable::eOperators newOperator);
 protected:
 	/** \brief Clean up undo. */

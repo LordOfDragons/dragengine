@@ -305,7 +305,7 @@ void deHeightTerrainSector::RemoveAllTextures(){
 // Decals
 ///////////
 
-void deHeightTerrainSector::AddDecal(deDecal::Ref decal){
+void deHeightTerrainSector::AddDecal(deDecal *decal){
 	if(!decal || decal->GetParentComponent() || decal->GetParentHeightTerrainSector()){
 		DETHROW(deeInvalidParam);
 	}
@@ -334,7 +334,7 @@ void deHeightTerrainSector::AddDecal(deDecal::Ref decal){
 	}
 }
 
-void deHeightTerrainSector::RemoveDecal(deDecal::Ref decal){
+void deHeightTerrainSector::RemoveDecal(deDecal *decal){
 	if(!decal || decal->GetParentHeightTerrainSector() != this){
 		DETHROW(deeInvalidParam);
 	}

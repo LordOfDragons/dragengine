@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPSetPathPatternType::gdeUGDWPSetPathPatternType(gdeGameDefinition::Ref gamedef,
-gdeProperty::Ref property, gdeProperty::ePathPatternTypes newValue) :
+gdeUGDWPSetPathPatternType::gdeUGDWPSetPathPatternType(gdeGameDefinition *gamedef,
+gdeProperty *property, gdeProperty::ePathPatternTypes newValue) :
 
 pProperty(NULL)
 {

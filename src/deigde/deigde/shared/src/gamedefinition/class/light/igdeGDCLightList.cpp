@@ -62,15 +62,15 @@ igdeGDCLight *igdeGDCLightList::GetAt(int index) const{
 	return (igdeGDCLight*)pLights.GetAt(index);
 }
 
-int igdeGDCLightList::IndexOf(igdeGDCLight::Ref light) const{
+int igdeGDCLightList::IndexOf(igdeGDCLight *light) const{
 	return pLights.IndexOf(light);
 }
 
-bool igdeGDCLightList::Has(igdeGDCLight::Ref light) const{
+bool igdeGDCLightList::Has(igdeGDCLight *light) const{
 	return pLights.Has(light);
 }
 
-void igdeGDCLightList::Add(igdeGDCLight::Ref light){
+void igdeGDCLightList::Add(igdeGDCLight *light){
 	if(!light){
 		DETHROW(deeInvalidParam);
 	}
@@ -78,7 +78,7 @@ void igdeGDCLightList::Add(igdeGDCLight::Ref light){
 	pLights.Add(light);
 }
 
-void igdeGDCLightList::InsertAt(igdeGDCLight::Ref light, int index){
+void igdeGDCLightList::InsertAt(igdeGDCLight *light, int index){
 	if(!light){
 		DETHROW(deeInvalidParam);
 	}
@@ -86,11 +86,11 @@ void igdeGDCLightList::InsertAt(igdeGDCLight::Ref light, int index){
 	pLights.Insert(light, index);
 }
 
-void igdeGDCLightList::MoveTo(igdeGDCLight::Ref light, int index){
+void igdeGDCLightList::MoveTo(igdeGDCLight *light, int index){
 	pLights.Move(light, index);
 }
 
-void igdeGDCLightList::Remove(igdeGDCLight::Ref light){
+void igdeGDCLightList::Remove(igdeGDCLight *light){
 	pLights.Remove(light);
 }
 

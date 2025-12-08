@@ -85,7 +85,7 @@ public:
 	inline peeEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
-	void SetEmitter(peeEmitter::Ref emitter);
+	void SetEmitter(peeEmitter *emitter);
 	
 	/** \brief Active controller or \em NULL. */
 	peeController *GetController() const;

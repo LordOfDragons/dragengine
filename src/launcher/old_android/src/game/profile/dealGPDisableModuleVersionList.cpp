@@ -81,7 +81,7 @@ dealGPDisableModuleVersion *dealGPDisableModuleVersionList::GetWith(const char *
 	return NULL;
 }
 
-bool dealGPDisableModuleVersionList::Has(dealGPDisableModuleVersion::Ref entry) const{
+bool dealGPDisableModuleVersionList::Has(dealGPDisableModuleVersion *entry) const{
 	return pList.Has(entry);
 }
 
@@ -89,7 +89,7 @@ bool dealGPDisableModuleVersionList::HasWith(const char *name, const char *versi
 	return GetWith(name, version) != NULL;
 }
 
-int dealGPDisableModuleVersionList::IndexOf(dealGPDisableModuleVersion::Ref entry) const{
+int dealGPDisableModuleVersionList::IndexOf(dealGPDisableModuleVersion *entry) const{
 	return pList.IndexOf(entry);
 }
 
@@ -111,14 +111,14 @@ int dealGPDisableModuleVersionList::IndexOfWith(const char *name, const char *ve
 	return -1;
 }
 
-void dealGPDisableModuleVersionList::Add(dealGPDisableModuleVersion::Ref entry){
+void dealGPDisableModuleVersionList::Add(dealGPDisableModuleVersion *entry){
 	if(!entry || HasWith(entry->GetName(), entry->GetVersion())){
 		DETHROW(deeInvalidParam);
 	}
 	pList.Add(entry);
 }
 
-void dealGPDisableModuleVersionList::Remove(dealGPDisableModuleVersion::Ref entry){
+void dealGPDisableModuleVersionList::Remove(dealGPDisableModuleVersion *entry){
 	const int index = IndexOf(entry);
 	
 	if(index == -1){

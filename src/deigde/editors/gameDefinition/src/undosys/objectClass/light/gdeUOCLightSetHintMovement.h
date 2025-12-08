@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetHintMovement(gdeObjectClass::Ref objectClass,
-		gdeOCLight::Ref light, deLight::eMovementHints newValue);
+	gdeUOCLightSetHintMovement(gdeObjectClass *objectClass,
+		gdeOCLight *light, deLight::eMovementHints newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

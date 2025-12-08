@@ -65,15 +65,15 @@ public:
 	/** Retrieves the shape at the given index. */
 	reRigShape *GetShapeAt(int index) const;
 	/** Determines if the given shape exists. */
-	bool HasShape(reRigShape::Ref shape) const;
+	bool HasShape(reRigShape *shape) const;
 	/** Retrieves the index of the given shape or -1 if not found. */
-	int IndexOfShape(reRigShape::Ref shape) const;
+	int IndexOfShape(reRigShape *shape) const;
 	/** Retrieves the index of the shape with the given collider or -1 if not found. */
 	int IndexOfShapeWith(deColliderVolume *collider) const;
 	/** Adds a shape if not existing already. */
-	void AddShape(reRigShape::Ref shape);
+	void AddShape(reRigShape *shape);
 	/** Removes a shape if existing. */
-	void RemoveShape(reRigShape::Ref shape);
+	void RemoveShape(reRigShape *shape);
 	/** Removes all shapes. */
 	void RemoveAllShapes();
 	
@@ -82,7 +82,7 @@ public:
 	/** Determines if an active shape exists. */
 	bool HasActiveShape() const;
 	/** Sets the acitve shape or NULL. */
-	void SetActiveShape(reRigShape::Ref shape);
+	void SetActiveShape(reRigShape *shape);
 	
 	/** Removes all shapes and sets the active shape to NULL. */
 	void Reset();

@@ -42,7 +42,7 @@ const char * const seClipboardDataSource::TYPE_NAME = "source";
 // Constructor, destructor
 ////////////////////////////
 
-seClipboardDataSource::seClipboardDataSource(seSource::Ref source) :
+seClipboardDataSource::seClipboardDataSource(seSource *source) :
 igdeClipboardData(TYPE_NAME)
 {
 	seSource::Ref copySource = NULL;

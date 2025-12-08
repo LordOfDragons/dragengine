@@ -354,7 +354,7 @@ deSynthesizerSourceChain *deClassSSChain::GetSource(dsRealObject *myself) const{
 	return ((sSSSoundNatDat*)p_GetNativeData(myself->GetBuffer()))->source;
 }
 
-void deClassSSChain::AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref synthesizer){
+void deClassSSChain::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -374,7 +374,7 @@ void deClassSSChain::AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref 
 	nd.synthesizer = synthesizer;
 }
 
-void deClassSSChain::PushSource(dsRunTime *rt, deSynthesizer::Ref synthesizer, deSynthesizerSourceChain::Ref source){
+void deClassSSChain::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceChain *source){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

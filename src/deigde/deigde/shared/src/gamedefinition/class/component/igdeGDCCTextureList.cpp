@@ -78,7 +78,7 @@ igdeGDCCTexture *igdeGDCCTextureList::GetNamed(const char *name) const{
 	return NULL;
 }
 
-int igdeGDCCTextureList::IndexOf(igdeGDCCTexture::Ref texture) const{
+int igdeGDCCTextureList::IndexOf(igdeGDCCTexture *texture) const{
 	return pTextures.IndexOf(texture);
 }
 
@@ -95,7 +95,7 @@ int igdeGDCCTextureList::IndexOfNamed(const char *name) const{
 	return -1;
 }
 
-bool igdeGDCCTextureList::Has(igdeGDCCTexture::Ref texture) const{
+bool igdeGDCCTextureList::Has(igdeGDCCTexture *texture) const{
 	return pTextures.Has(texture);
 }
 
@@ -103,7 +103,7 @@ bool igdeGDCCTextureList::HasNamed(const char *name) const{
 	return GetNamed(name) != NULL;
 }
 
-void igdeGDCCTextureList::Add(igdeGDCCTexture::Ref texture){
+void igdeGDCCTextureList::Add(igdeGDCCTexture *texture){
 	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
@@ -111,7 +111,7 @@ void igdeGDCCTextureList::Add(igdeGDCCTexture::Ref texture){
 	pTextures.Add(texture);
 }
 
-void igdeGDCCTextureList::InsertAt(igdeGDCCTexture::Ref texture, int index){
+void igdeGDCCTextureList::InsertAt(igdeGDCCTexture *texture, int index){
 	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
@@ -119,11 +119,11 @@ void igdeGDCCTextureList::InsertAt(igdeGDCCTexture::Ref texture, int index){
 	pTextures.Insert(texture, index);
 }
 
-void igdeGDCCTextureList::MoveTo(igdeGDCCTexture::Ref texture, int index){
+void igdeGDCCTextureList::MoveTo(igdeGDCCTexture *texture, int index){
 	pTextures.Move(texture, index);
 }
 
-void igdeGDCCTextureList::Remove(igdeGDCCTexture::Ref texture){
+void igdeGDCCTextureList::Remove(igdeGDCCTexture *texture){
 	pTextures.Remove(texture);
 }
 

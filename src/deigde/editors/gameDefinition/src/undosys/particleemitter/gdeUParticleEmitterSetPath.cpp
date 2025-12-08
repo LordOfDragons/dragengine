@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeUParticleEmitterSetPath::gdeUParticleEmitterSetPath(
-gdeParticleEmitter::Ref particleEmitter, const char *newValue) :
+gdeParticleEmitter *particleEmitter, const char *newValue) :
 pParticleEmitter(NULL)
 {
 	if(!particleEmitter){

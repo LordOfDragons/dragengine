@@ -89,7 +89,7 @@ public:
 	 * 
 	 * \warning To be used only by deResourceLoader.
 	 */
-	void AddLoadedFont(deFont::Ref font);
+	void AddLoadedFont(deFont *font);
 	
 	/**
 	 * \brief Load font size if supported and required.
@@ -130,7 +130,7 @@ public:
 	
 	
 private:
-	void pLoadFontSources(deFont::Ref font);
+	void pLoadFontSources(deFont *font);
 };
 
 #endif

@@ -47,7 +47,7 @@ public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new base xml read/save. */
-	dealBaseXML(deLogger::Ref logger, const char *loggerSource);
+	dealBaseXML(deLogger *logger, const char *loggerSource);
 	/** Cleans up the base xml read/save. */
 	virtual ~dealBaseXML();
 	/*@}*/

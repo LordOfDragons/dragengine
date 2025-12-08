@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUTextureAdd::seUTextureAdd(seSkin::Ref skin, seTexture::Ref texture){
+seUTextureAdd::seUTextureAdd(seSkin *skin, seTexture *texture){
 	if(!skin || !texture) DETHROW(deeInvalidParam);
 	
 	pSkin = NULL;

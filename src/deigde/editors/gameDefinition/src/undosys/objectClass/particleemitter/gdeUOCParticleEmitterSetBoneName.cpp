@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetBoneName::gdeUOCParticleEmitterSetBoneName(gdeObjectClass::Ref objectClass,
-gdeOCParticleEmitter::Ref particleEmitter, const char *newValue) :
+gdeUOCParticleEmitterSetBoneName::gdeUOCParticleEmitterSetBoneName(gdeObjectClass *objectClass,
+gdeOCParticleEmitter *particleEmitter, const char *newValue) :
 
 pParticleEmitter(NULL)
 {

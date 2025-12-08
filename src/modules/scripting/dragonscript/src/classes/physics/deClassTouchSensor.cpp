@@ -848,7 +848,7 @@ deTouchSensor *deClassTouchSensor::GetTouchSensor(dsRealObject *myself) const{
 	return ((sTSNatDat*)p_GetNativeData(myself->GetBuffer()))->touchSensor;
 }
 
-void deClassTouchSensor::PushTouchSensor(dsRunTime *rt, deTouchSensor::Ref touchSensor){
+void deClassTouchSensor::PushTouchSensor(dsRunTime *rt, deTouchSensor *touchSensor){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

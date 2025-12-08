@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakWordMove::ceUCAASpeakWordMove(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak,
-ceStrip::Ref word, int newIndex){
+ceUCAASpeakWordMove::ceUCAASpeakWordMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *word, int newIndex){
 	if(!topic || !actorSpeak || !word){
 		DETHROW(deeInvalidParam);
 	}

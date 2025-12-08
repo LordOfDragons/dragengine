@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodyMoveDown::seUBodyMoveDown(seBody::Ref body) :
+seUBodyMoveDown::seUBodyMoveDown(seBody *body) :
 
 pIndex(0)
 {

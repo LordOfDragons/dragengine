@@ -954,7 +954,7 @@ pDirtyEngModelTexNames(true)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
 	pListener.TakeOver(new gdeWPSOCComponentListener(*this));
 	
@@ -1090,7 +1090,7 @@ gdeWPSOCComponent::~gdeWPSOCComponent(){
 // Management
 ///////////////
 
-void gdeWPSOCComponent::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPSOCComponent::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

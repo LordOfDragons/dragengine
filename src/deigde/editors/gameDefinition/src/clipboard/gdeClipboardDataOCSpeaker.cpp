@@ -38,7 +38,7 @@ const char * const gdeClipboardDataOCSpeaker::TYPE_NAME = "OCSpeaker";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCSpeaker::gdeClipboardDataOCSpeaker(gdeOCSpeaker::Ref speaker) :
+gdeClipboardDataOCSpeaker::gdeClipboardDataOCSpeaker(gdeOCSpeaker *speaker) :
 igdeClipboardData(TYPE_NAME)
 {
 	if(!speaker){

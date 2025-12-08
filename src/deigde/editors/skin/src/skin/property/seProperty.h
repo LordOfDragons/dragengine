@@ -232,7 +232,7 @@ public:
 	inline sePropertyNodeGroup *GetNodeGroup() const{ return pNodeGroup; }
 	
 	/** \brief Set node group. */
-	void SetNodeGroup(sePropertyNodeGroup::Ref nodeGroup);
+	void SetNodeGroup(sePropertyNodeGroup *nodeGroup);
 	
 	/** \brief Engine node group or \em NULL if not set. */
 	inline deSkinPropertyNodeGroup *GetEngineNodeGroup() const{ return pEngNodeGroup; }
@@ -248,7 +248,7 @@ public:
 	inline sePropertyNodeGroup *GetActiveNodeGroup() const{ return pActiveNodeGroup; }
 	
 	/** \brief Set active node group or \em NULL. */
-	void SetActiveNodeGroup(sePropertyNodeGroup::Ref node);
+	void SetActiveNodeGroup(sePropertyNodeGroup *node);
 	
 	/** \brief Active node layer or \em NULL. */
 	inline int GetActiveNodeLayer() const{ return pActiveNodeLayer; }

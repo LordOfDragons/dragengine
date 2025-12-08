@@ -76,7 +76,7 @@ public:
 	inline feFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont(feFont::Ref font);
+	void SetFont(feFont *font);
 	
 	/** \brief Set if rendering is enabled. */
 	void SetEnableRendering(bool enable);

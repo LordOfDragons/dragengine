@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASnippetSetTopic(ceConversationTopic::Ref topic, ceCASnippet::Ref snippet, const char *newTopic);
+	ceUCASnippetSetTopic(ceConversationTopic *topic, ceCASnippet *snippet, const char *newTopic);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCASnippetSetTopic();

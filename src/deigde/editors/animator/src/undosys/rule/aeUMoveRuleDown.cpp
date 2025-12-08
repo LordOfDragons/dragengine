@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUMoveRuleDown::aeUMoveRuleDown(aeAnimator::Ref animator, aeRule::Ref rule){
+aeUMoveRuleDown::aeUMoveRuleDown(aeAnimator *animator, aeRule *rule){
 	if(!animator || !rule) DETHROW(deeInvalidParam);
 	
 	pAnimator = NULL;

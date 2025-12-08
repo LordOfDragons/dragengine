@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFileDuplicate::ceUCFileDuplicate(ceConversation::Ref conversation, const ceConversationFile &file, const char *newID) :
+ceUCFileDuplicate::ceUCFileDuplicate(ceConversation *conversation, const ceConversationFile &file, const char *newID) :
 
 pFile(NULL)
 {

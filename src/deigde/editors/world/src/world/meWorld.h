@@ -518,13 +518,13 @@ public:
 	/** Retrieves the notifier at the given index. */
 	meWorldNotifier *GetNotifierAt(int index) const;
 	/** Retrieves the index of the notifier or -1 if not found. */
-	int IndexOfNotifier(meWorldNotifier::Ref notifier) const;
+	int IndexOfNotifier(meWorldNotifier *notifier) const;
 	/** Determines if the notifier exists. */
-	bool HasNotifier(meWorldNotifier::Ref notifier) const;
+	bool HasNotifier(meWorldNotifier *notifier) const;
 	/** Adds a new notifier. */
-	void AddNotifier(meWorldNotifier::Ref notifier);
+	void AddNotifier(meWorldNotifier *notifier);
 	/** Removes the given notifier. */
-	void RemoveNotifier(meWorldNotifier::Ref notifier);
+	void RemoveNotifier(meWorldNotifier *notifier);
 	/** Removes all notifiers. */
 	void RemoveAllNotifiers();
 	

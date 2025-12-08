@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUBodyAdd(seLayer::Ref layer, seBody::Ref body);
+	seUBodyAdd(seLayer *layer, seBody *body);
 	
 protected:
 	/** \brief Clean up undo action. */

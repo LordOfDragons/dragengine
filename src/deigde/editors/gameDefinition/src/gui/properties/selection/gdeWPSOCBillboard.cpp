@@ -415,7 +415,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
 	pListener.TakeOver(new gdeWPSOCBillboardListener(*this));
 	
@@ -472,7 +472,7 @@ gdeWPSOCBillboard::~gdeWPSOCBillboard(){
 // Management
 ///////////////
 
-void gdeWPSOCBillboard::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPSOCBillboard::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

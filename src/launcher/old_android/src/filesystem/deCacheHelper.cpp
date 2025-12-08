@@ -54,7 +54,7 @@ number of files per directory limited improving searching for free slots.
 // Constructor, destructor
 ////////////////////////////
 
-deCacheHelper::deCacheHelper(deVirtualFileSystem::Ref vfs, const decPath &cachePath) :
+deCacheHelper::deCacheHelper(deVirtualFileSystem *vfs, const decPath &cachePath) :
 
 pCachePath(cachePath),
 pCompressionMethod(ecmZCompression)

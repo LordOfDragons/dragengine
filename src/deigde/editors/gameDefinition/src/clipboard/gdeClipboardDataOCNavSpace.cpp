@@ -38,7 +38,7 @@ const char * const gdeClipboardDataOCNavSpace::TYPE_NAME = "OCNavSpace";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCNavSpace::gdeClipboardDataOCNavSpace(gdeOCNavigationSpace::Ref navSpace) :
+gdeClipboardDataOCNavSpace::gdeClipboardDataOCNavSpace(gdeOCNavigationSpace *navSpace) :
 igdeClipboardData(TYPE_NAME)
 {
 	if(!navSpace){

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCBillboardToggleSizeFixedToScreen(gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard);
+	gdeUOCBillboardToggleSizeFixedToScreen(gdeObjectClass *objectClass, gdeOCBillboard *billboard);
 	
 protected:
 	/** \brief Clean up undo action. */

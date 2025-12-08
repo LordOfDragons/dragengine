@@ -228,7 +228,7 @@ void seTexture::UpdateResources(){
 // Properties
 ///////////////
 
-void seTexture::AddProperty(seProperty::Ref property){
+void seTexture::AddProperty(seProperty *property){
 	pPropertyList.Add(property);
 	property->SetTexture(this);
 	
@@ -242,7 +242,7 @@ void seTexture::AddProperty(seProperty::Ref property){
 	}
 }
 
-void seTexture::RemoveProperty(seProperty::Ref property){
+void seTexture::RemoveProperty(seProperty *property){
 	if(!property || property->GetTexture() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -292,7 +292,7 @@ bool seTexture::HasActiveProperty() const{
 	return pActiveProperty != NULL;
 }
 
-void seTexture::SetActiveProperty(seProperty::Ref property){
+void seTexture::SetActiveProperty(seProperty *property){
 	if(property == pActiveProperty){
 		return;
 	}

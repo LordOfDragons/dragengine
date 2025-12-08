@@ -78,7 +78,7 @@ public:
 	inline igdeLoggerHistory *GetLogger() const{ return pLogger; }
 	
 	/** \brief Set logger or NULL. */
-	void SetLogger(igdeLoggerHistory::Ref logger);
+	void SetLogger(igdeLoggerHistory *logger);
 	
 	
 	

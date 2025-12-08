@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCACommentSetComment(ceConversationTopic::Ref topic, ceCAComment::Ref action, const char *newComment);
+	ceUCACommentSetComment(ceConversationTopic *topic, ceCAComment *action, const char *newComment);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCACommentSetComment();
 	/*@}*/

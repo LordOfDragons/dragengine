@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVLinkCut::meUHTVLinkCut(meHTVegetationLayer::Ref vlayer){
+meUHTVLinkCut::meUHTVLinkCut(meHTVegetationLayer *vlayer){
 	if(!vlayer) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
@@ -72,7 +72,7 @@ meUHTVLinkCut::~meUHTVLinkCut(){
 // Management
 ///////////////
 
-void meUHTVLinkCut::AddLinkToCut(meHTVRLink::Ref link){
+void meUHTVLinkCut::AddLinkToCut(meHTVRLink *link){
 	if(!link) DETHROW(deeInvalidParam);
 	
 	meHTVRLink **newArray = new meHTVRLink*[pLinkCount + 1];

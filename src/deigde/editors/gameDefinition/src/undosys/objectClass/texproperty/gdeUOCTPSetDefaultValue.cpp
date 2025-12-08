@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPSetDefaultValue::gdeUOCTPSetDefaultValue(gdeObjectClass::Ref objectClass,
-	gdeProperty::Ref property, const char *newValue, const char *oldValue) :
+gdeUOCTPSetDefaultValue::gdeUOCTPSetDefaultValue(gdeObjectClass *objectClass,
+	gdeProperty *property, const char *newValue, const char *oldValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !property){

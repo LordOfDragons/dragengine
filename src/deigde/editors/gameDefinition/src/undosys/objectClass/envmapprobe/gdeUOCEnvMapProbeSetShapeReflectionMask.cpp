@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetShapeReflectionMask::gdeUOCEnvMapProbeSetShapeReflectionMask(gdeObjectClass::Ref objectClass,
-gdeOCEnvMapProbe::Ref envMapProbe, const decShapeList &newValue) :
+gdeUOCEnvMapProbeSetShapeReflectionMask::gdeUOCEnvMapProbeSetShapeReflectionMask(gdeObjectClass *objectClass,
+gdeOCEnvMapProbe *envMapProbe, const decShapeList &newValue) :
 
 pEnvMapProbe(NULL)
 {

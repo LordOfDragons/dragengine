@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalTCScaling::meUDecalTCScaling(meDecal::Ref decal, const decVector2 &newScaling){
+meUDecalTCScaling::meUDecalTCScaling(meDecal *decal, const decVector2 &newScaling){
 	if(!decal){
 		DETHROW(deeInvalidParam);
 	}

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetSkinPath::gdeUOCBillboardSetSkinPath(gdeObjectClass::Ref objectClass,
-gdeOCBillboard::Ref billboard, const char *newValue) :
+gdeUOCBillboardSetSkinPath::gdeUOCBillboardSetSkinPath(gdeObjectClass *objectClass,
+gdeOCBillboard *billboard, const char *newValue) :
 
 pBillboard(NULL)
 {

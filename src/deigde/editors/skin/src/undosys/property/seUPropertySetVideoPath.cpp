@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetVideoPath::seUPropertySetVideoPath(seProperty::Ref property, const char *newPath){
+seUPropertySetVideoPath::seUPropertySetVideoPath(seProperty *property, const char *newPath){
 	if(!property || !newPath){
 		DETHROW(deeInvalidParam);
 	}

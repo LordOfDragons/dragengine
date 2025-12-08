@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCParticleEmitter(gdeOCParticleEmitter::Ref particleEmitter);
+	gdeClipboardDataOCParticleEmitter(gdeOCParticleEmitter *particleEmitter);
 	
 protected:
 	/**

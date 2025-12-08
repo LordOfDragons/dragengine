@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCameraSetPropertyPosition(gdeObjectClass::Ref objectClass, gdeOCCamera::Ref camera, const char *newValue);
+	gdeUOCCameraSetPropertyPosition(gdeObjectClass *objectClass, gdeOCCamera *camera, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

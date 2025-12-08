@@ -247,7 +247,7 @@ public:
 		if(pPFs) delete [] pPFs;
 	}
 	
-	void SetWorld(deWorld::Ref world){
+	void SetWorld(deWorld *world){
 		if(world != pWorld){
 			int p;
 			
@@ -438,7 +438,7 @@ public:
 		if(pSectors) delete [] pSectors;
 	}
 	
-	void SetWorld(deWorld::Ref world){
+	void SetWorld(deWorld *world){
 		if(world != pWorld){
 			int s;
 			

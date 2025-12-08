@@ -265,7 +265,7 @@ deCanvasText *deClassCanvasText::GetCanvas(dsRealObject *myself) const {
 	return ((sCTextNatDat*)p_GetNativeData(myself->GetBuffer()))->canvas;
 }
 
-void deClassCanvasText::PushCanvas(dsRunTime *rt, deCanvasText::Ref canvas){
+void deClassCanvasText::PushCanvas(dsRunTime *rt, deCanvasText *canvas){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

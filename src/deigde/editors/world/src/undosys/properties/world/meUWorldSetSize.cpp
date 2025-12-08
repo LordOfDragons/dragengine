@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldSetSize::meUWorldSetSize(meWorld::Ref world, const decDVector &newValue) :
+meUWorldSetSize::meUWorldSetSize(meWorld *world, const decDVector &newValue) :
 
 pNewValue(newValue)
 {

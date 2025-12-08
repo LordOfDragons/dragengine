@@ -79,7 +79,7 @@ public:
 	deoglSharedVideoPlayer *GetSharedVideoPlayerAt(int index) const;
 	
 	/** Set video player at index or \em NULL if not existing. */
-	void SetVideoPlayerAt(int index, deVideoPlayer::Ref videoPlayer);
+	void SetVideoPlayerAt(int index, deVideoPlayer *videoPlayer);
 	
 	/** Set shared video player at index or \em NULL if not existing. */
 	void SetSharedVideoPlayerAt(int index, deoglSharedVideoPlayer *videoPlayer);

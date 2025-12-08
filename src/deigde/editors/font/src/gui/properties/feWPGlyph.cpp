@@ -93,7 +93,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font, feFontGlyph::Ref glyph) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) = 0;
 };
 
 
@@ -153,7 +153,7 @@ class cTextU : public cBaseTextFieldListener{
 public:
 	cTextU(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font, feFontGlyph::Ref glyph){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph){
 		const int u = textField->GetInteger();
 		if(u == glyph->GetU()){
 			return NULL;
@@ -166,7 +166,7 @@ class cTextV : public cBaseTextFieldListener{
 public:
 	cTextV(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font, feFontGlyph::Ref glyph){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph){
 		const int v = textField->GetInteger();
 		if(v == glyph->GetV()){
 			return NULL;
@@ -179,7 +179,7 @@ class cTextWidth : public cBaseTextFieldListener{
 public:
 	cTextWidth(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font, feFontGlyph::Ref glyph){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph){
 		const int width = textField->GetInteger();
 		if(width == glyph->GetWidth()){
 			return NULL;
@@ -192,7 +192,7 @@ class cTextHeight : public cBaseTextFieldListener{
 public:
 	cTextHeight(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
 	
-	igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font, feFontGlyph::Ref glyph) override{
+	igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) override{
 		const int height = textField->GetInteger();
 		return height != glyph->GetHeight() ? new feUGlyphSetHeight(glyph, height) : nullptr;
 	}
@@ -202,7 +202,7 @@ class cTextBearing : public cBaseTextFieldListener{
 public:
 	cTextBearing(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font, feFontGlyph::Ref glyph){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph){
 		const int width = textField->GetInteger();
 		if(width == glyph->GetBearing()){
 			return NULL;
@@ -215,7 +215,7 @@ class cTextBearingY : public cBaseTextFieldListener{
 public:
 	cTextBearingY(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
 	
-	igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font, feFontGlyph::Ref glyph) override{
+	igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph) override{
 		const int bearing = textField->GetInteger();
 		return bearing != glyph->GetBearingY() ? new feUGlyphSetBearingY(glyph, bearing) : nullptr;
 	}
@@ -225,7 +225,7 @@ class cTextAdvance : public cBaseTextFieldListener{
 public:
 	cTextAdvance(feWPGlyph &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font, feFontGlyph::Ref glyph){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font, feFontGlyph *glyph){
 		const int width = textField->GetInteger();
 		if(width == glyph->GetAdvance()){
 			return NULL;
@@ -248,7 +248,7 @@ igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener.TakeOver(new feWPGlyphListener(*this));
@@ -290,7 +290,7 @@ feWPGlyph::~feWPGlyph(){
 // Management
 ///////////////
 
-void feWPGlyph::SetFont(feFont::Ref font){
+void feWPGlyph::SetFont(feFont *font){
 	if(font == pFont){
 		return;
 	}
@@ -311,7 +311,7 @@ void feWPGlyph::SetFont(feFont::Ref font){
 	UpdateGlyphList();
 }
 
-void feWPGlyph::SetGlyph(feFontGlyph::Ref glyph){
+void feWPGlyph::SetGlyph(feFontGlyph *glyph){
 	if(glyph && !pFont){
 		DETHROW(deeInvalidParam);
 	}

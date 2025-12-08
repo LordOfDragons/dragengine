@@ -437,7 +437,7 @@ deSkin *deClassSkin::GetSkin(dsRealObject *myself) const{
 	return ((sSkinNatDat*)p_GetNativeData(myself->GetBuffer()))->skin;
 }
 
-void deClassSkin::PushSkin(dsRunTime *rt, deSkin::Ref skin){
+void deClassSkin::PushSkin(dsRunTime *rt, deSkin *skin){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

@@ -694,7 +694,7 @@ void igdeWPCamera::OnDestroyed(igdeAction *action){
 void igdeWPCamera::pCreateContent(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref form, frameLine, group;
+	igdeContainer *form, frameLine, group;
 	
 	
 	form.TakeOver(new igdeContainerForm(env));

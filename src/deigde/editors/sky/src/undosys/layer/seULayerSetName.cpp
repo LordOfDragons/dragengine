@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetName::seULayerSetName(seLayer::Ref layer, const char *newName) :
+seULayerSetName::seULayerSetName(seLayer *layer, const char *newName) :
 
 pNewName(newName)
 {

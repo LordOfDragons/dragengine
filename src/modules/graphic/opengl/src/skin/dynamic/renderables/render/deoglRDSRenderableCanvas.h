@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set canvas. */
-	void SetCanvas(deoglRCanvasView::Ref canvas);
+	void SetCanvas(deoglRCanvasView *canvas);
 	
 	/** Set component count. */
 	void SetComponentCount(int componentCount);

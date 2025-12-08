@@ -100,7 +100,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	decString name;
 	int mode = 0;
 	
-	igdeTriggerExpressionComponent::Ref child, component(
+	igdeTriggerExpressionComponent *child, component(
 		igdeTriggerExpressionComponent::Ref::NewWith());
 	
 	while(mode != 4 && mode != 5 && state.HasMoreCharacters()){

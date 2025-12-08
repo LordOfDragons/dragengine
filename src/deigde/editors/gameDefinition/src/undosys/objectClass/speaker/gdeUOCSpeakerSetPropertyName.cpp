@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetPropertyName::gdeUOCSpeakerSetPropertyName(gdeObjectClass::Ref objectClass,
-gdeOCSpeaker::Ref speaker, gdeOCSpeaker::eProperties property, const char *newValue) :
+gdeUOCSpeakerSetPropertyName::gdeUOCSpeakerSetPropertyName(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, gdeOCSpeaker::eProperties property, const char *newValue) :
 
 
 pProperty(property)

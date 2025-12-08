@@ -65,7 +65,7 @@ public:
 	/** Retrieves the parent topic or NULL if there is none. */
 	inline ceConversationTopic *GetParentTopic() const{ return pParentTopic; }
 	/** Sets the parent topic or NULL if there is none. */
-	void SetParentTopic(ceConversationTopic::Ref topic);
+	void SetParentTopic(ceConversationTopic *topic);
 	/** Retrieves the parent action or NULL if there is none. */
 	inline ceConversationAction *GetParentAction() const{ return pParentAction; }
 	/** Sets the parent action or NULL if there is none. */
@@ -78,7 +78,7 @@ public:
 	/** \brief Retrieves the loop condition or NULL if always true. */
 	inline ceConversationCondition *GetLoopCondition() const{ return pLoopCondition; }
 	/** \brief Sets the loop condition or NULL if always true. */
-	void SetLoopCondition(ceConversationCondition::Ref condition);
+	void SetLoopCondition(ceConversationCondition *condition);
 	/** \brief Determines if the list of actions is looped. */
 	inline bool GetLooping() const{ return pLooping; }
 	/** \brief Sets if the list of actions is looped. */

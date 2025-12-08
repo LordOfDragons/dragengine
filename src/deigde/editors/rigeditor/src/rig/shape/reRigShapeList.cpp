@@ -59,7 +59,7 @@ reRigShape *reRigShapeList::GetShapeAt(int index) const{
 	return pShapes[index];
 }
 
-int reRigShapeList::IndexOfShape(reRigShape::Ref shape) const{
+int reRigShapeList::IndexOfShape(reRigShape *shape) const{
 	if(!shape) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -70,7 +70,7 @@ int reRigShapeList::IndexOfShape(reRigShape::Ref shape) const{
 	return -1;
 }
 
-bool reRigShapeList::HasShape(reRigShape::Ref shape) const{
+bool reRigShapeList::HasShape(reRigShape *shape) const{
 	if(!shape) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -81,7 +81,7 @@ bool reRigShapeList::HasShape(reRigShape::Ref shape) const{
 	return false;
 }
 
-void reRigShapeList::AddShape(reRigShape::Ref shape){
+void reRigShapeList::AddShape(reRigShape *shape){
 	if(HasShape(shape)) DETHROW(deeInvalidParam);
 	
 	if(pShapeCount == pShapeSize){
@@ -99,7 +99,7 @@ void reRigShapeList::AddShape(reRigShape::Ref shape){
 	pShapeCount++;
 }
 
-void reRigShapeList::RemoveShape(reRigShape::Ref shape){
+void reRigShapeList::RemoveShape(reRigShape *shape){
 	int i, index = IndexOfShape(shape);
 	if(index == -1) DETHROW(deeInvalidParam);
 	

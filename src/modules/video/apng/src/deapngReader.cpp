@@ -62,7 +62,7 @@ static void deapngWarning(png_structp errorStruct, png_const_charp message){
 // Constructor, destructor
 ////////////////////////////
 
-deapngReader::deapngReader(deVideoApng &module, decBaseFileReader::Ref reader) :
+deapngReader::deapngReader(deVideoApng &module, decBaseFileReader *reader) :
 pModule(module),
 pReadStruct(nullptr),
 pInfoStruct(nullptr),

@@ -134,7 +134,7 @@ void seULinkRemove::pCleanUp(){
 	}
 }
 
-void seULinkRemove::pAddTargetsForSource(seLink *link, int targetCount, seSource::Ref source){
+void seULinkRemove::pAddTargetsForSource(seLink *link, int targetCount, seSource *source){
 	if(source->GetTargetBlendFactor().HasLink(link)){
 		pAddTarget(targetCount, source, &source->GetTargetBlendFactor());
 	}
@@ -186,7 +186,7 @@ void seULinkRemove::pAddTargetsForSource(seLink *link, int targetCount, seSource
 	}
 }
 
-void seULinkRemove::pAddTarget(int targetCount, seSource::Ref source, seControllerTarget *target){
+void seULinkRemove::pAddTarget(int targetCount, seSource *source, seControllerTarget *target){
 	if(pTargetCount >= targetCount){
 		DETHROW(deeInvalidParam);
 	}

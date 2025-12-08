@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeURemoveSky::gdeURemoveSky(
-gdeGameDefinition::Ref gameDefinition, gdeSky::Ref sky) :
+gdeGameDefinition *gameDefinition, gdeSky *sky) :
 pGameDefinition(NULL)
 {
 	if(!gameDefinition || !sky){

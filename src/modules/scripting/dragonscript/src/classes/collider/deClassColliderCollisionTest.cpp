@@ -906,7 +906,7 @@ deColliderCollisionTest *deClassColliderCollisionTest::GetCollisionTest(dsRealOb
 }
 
 void deClassColliderCollisionTest::PushCollisionTest(dsRunTime *rt,
-deColliderCollisionTest::Ref collisionTest, deCollider::Ref parentCollider){
+deColliderCollisionTest *collisionTest, deCollider *parentCollider){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -930,7 +930,7 @@ deCollider *deClassColliderCollisionTest::GetParentCollider(dsRealObject *myself
 	return ((sCCTNatDat*)p_GetNativeData(myself->GetBuffer()))->parentCollider;
 }
 
-void deClassColliderCollisionTest::SetParentCollider(dsRealObject *myself, deCollider::Ref collider) const{
+void deClassColliderCollisionTest::SetParentCollider(dsRealObject *myself, deCollider *collider) const{
 	if(!myself){
 		DSTHROW(dueNullPointer);
 	}

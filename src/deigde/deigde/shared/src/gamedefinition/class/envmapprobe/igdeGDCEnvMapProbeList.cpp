@@ -62,15 +62,15 @@ igdeGDCEnvMapProbe *igdeGDCEnvMapProbeList::GetAt(int index) const{
 	return (igdeGDCEnvMapProbe*)pProbes.GetAt(index);
 }
 
-int igdeGDCEnvMapProbeList::IndexOf(igdeGDCEnvMapProbe::Ref probe) const{
+int igdeGDCEnvMapProbeList::IndexOf(igdeGDCEnvMapProbe *probe) const{
 	return pProbes.IndexOf(probe);
 }
 
-bool igdeGDCEnvMapProbeList::Has(igdeGDCEnvMapProbe::Ref probe) const{
+bool igdeGDCEnvMapProbeList::Has(igdeGDCEnvMapProbe *probe) const{
 	return pProbes.Has(probe);
 }
 
-void igdeGDCEnvMapProbeList::Add(igdeGDCEnvMapProbe::Ref probe){
+void igdeGDCEnvMapProbeList::Add(igdeGDCEnvMapProbe *probe){
 	if(!probe){
 		DETHROW(deeInvalidParam);
 	}
@@ -78,7 +78,7 @@ void igdeGDCEnvMapProbeList::Add(igdeGDCEnvMapProbe::Ref probe){
 	pProbes.Add(probe);
 }
 
-void igdeGDCEnvMapProbeList::InsertAt(igdeGDCEnvMapProbe::Ref probe, int index){
+void igdeGDCEnvMapProbeList::InsertAt(igdeGDCEnvMapProbe *probe, int index){
 	if(!probe){
 		DETHROW(deeInvalidParam);
 	}
@@ -86,11 +86,11 @@ void igdeGDCEnvMapProbeList::InsertAt(igdeGDCEnvMapProbe::Ref probe, int index){
 	pProbes.Insert(probe, index);
 }
 
-void igdeGDCEnvMapProbeList::MoveTo(igdeGDCEnvMapProbe::Ref probe, int index){
+void igdeGDCEnvMapProbeList::MoveTo(igdeGDCEnvMapProbe *probe, int index){
 	pProbes.Move(probe, index);
 }
 
-void igdeGDCEnvMapProbeList::Remove(igdeGDCEnvMapProbe::Ref probe){
+void igdeGDCEnvMapProbeList::Remove(igdeGDCEnvMapProbe *probe){
 	pProbes.Remove(probe);
 }
 

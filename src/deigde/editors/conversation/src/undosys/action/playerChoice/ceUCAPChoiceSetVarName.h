@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAPChoiceSetVarName(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref playerChoice, const char *newName);
+	ceUCAPChoiceSetVarName(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, const char *newName);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAPChoiceSetVarName();

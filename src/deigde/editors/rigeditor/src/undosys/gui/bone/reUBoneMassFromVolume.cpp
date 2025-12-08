@@ -47,7 +47,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUBoneMassFromVolume::reUBoneMassFromVolume(reRig::Ref rig, const decObjectOrderedSet &bones, float density){
+reUBoneMassFromVolume::reUBoneMassFromVolume(reRig *rig, const decObjectOrderedSet &bones, float density){
 	if(!rig || bones.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}

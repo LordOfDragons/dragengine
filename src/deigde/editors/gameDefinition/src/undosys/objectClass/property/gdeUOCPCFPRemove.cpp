@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPCFPRemove::gdeUOCPCFPRemove(gdeObjectClass::Ref objectClass,
-gdeProperty::Ref property, gdeFilePattern::Ref filePattern) :
+gdeUOCPCFPRemove::gdeUOCPCFPRemove(gdeObjectClass *objectClass,
+gdeProperty *property, gdeFilePattern *filePattern) :
 
 pProperty(NULL)
 {

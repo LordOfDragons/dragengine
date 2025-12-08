@@ -61,7 +61,7 @@
 ////////////////////////////
 
 deoglDynamicOcclusionMesh::deoglDynamicOcclusionMesh(deoglRenderThread &renderThread,
-deoglROcclusionMesh::Ref occlusionmesh, deoglRComponent *component) :
+deoglROcclusionMesh *occlusionmesh, deoglRComponent *component) :
 pRenderThread(renderThread),
 pBVH(NULL)
 {

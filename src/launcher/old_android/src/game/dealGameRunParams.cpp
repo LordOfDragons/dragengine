@@ -55,7 +55,7 @@ dealGameRunParams::~dealGameRunParams(){
 // Management
 ///////////////
 
-void dealGameRunParams::SetGameProfile(dealGameProfile::Ref profile){
+void dealGameRunParams::SetGameProfile(dealGameProfile *profile){
 	if(profile != pGameProfile){
 		if(pGameProfile) pGameProfile->FreeReference();
 		pGameProfile = profile;

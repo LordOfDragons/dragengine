@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetLightSkinPath(gdeObjectClass::Ref objectClass,
-		gdeOCLight::Ref light, const char *newValue);
+	gdeUOCLightSetLightSkinPath(gdeObjectClass *objectClass,
+		gdeOCLight *light, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

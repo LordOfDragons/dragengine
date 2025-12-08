@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUAddObjectClass::gdeUAddObjectClass(gdeGameDefinition::Ref gameDefinition, gdeObjectClass::Ref objectClass) :
+gdeUAddObjectClass::gdeUAddObjectClass(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass) :
 pGameDefinition(NULL)
 {
 	if(!gameDefinition || !objectClass){

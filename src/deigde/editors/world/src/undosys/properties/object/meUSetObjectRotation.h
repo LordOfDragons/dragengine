@@ -52,7 +52,7 @@ private:
 	
 public:
 	// constructor, destructor
-	meUSetObjectRotation(meObject::Ref object, const decVector &newRotation);
+	meUSetObjectRotation(meObject *object, const decVector &newRotation);
 	
 protected:
 	~meUSetObjectRotation();

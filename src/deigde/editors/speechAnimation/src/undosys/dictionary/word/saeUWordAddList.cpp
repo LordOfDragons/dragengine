@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUWordAddList::saeUWordAddList(saeSAnimation::Ref sanimation, const saeWordList &words) :
+saeUWordAddList::saeUWordAddList(saeSAnimation *sanimation, const saeWordList &words) :
 
 pWords(words)
 {

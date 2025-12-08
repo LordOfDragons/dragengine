@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakFaceMove::ceUCAASpeakFaceMove(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak,
-ceStrip::Ref facePose, int newIndex){
+ceUCAASpeakFaceMove::ceUCAASpeakFaceMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *facePose, int newIndex){
 	if(!topic || !actorSpeak || !facePose){
 		DETHROW(deeInvalidParam);
 	}

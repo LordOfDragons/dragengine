@@ -42,7 +42,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMSkin(gdeWPSTreeModel &tree, gdeSkin::Ref skin);
+	gdeWPSTIMSkin(gdeWPSTreeModel &tree, gdeSkin *skin);
 	
 protected:
 	/** \brief Clean up tree item model. */

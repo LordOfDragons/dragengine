@@ -64,13 +64,13 @@ public:
 	deColliderCollisionTest *GetCollisionTest(dsRealObject *myself) const;
 	
 	/** \brief Push collider collision tester or \em NULL onto the stack. */
-	void PushCollisionTest(dsRunTime *rt, deColliderCollisionTest::Ref collisionTest, deCollider::Ref parentCollider);
+	void PushCollisionTest(dsRunTime *rt, deColliderCollisionTest *collisionTest, deCollider *parentCollider);
 	
 	/** \brief Collider collision test parent from real object. */
 	deCollider *GetParentCollider(dsRealObject *myself) const;
 	
 	/** \brief Set collider collision test parent or \em NULL. */
-	void SetParentCollider(dsRealObject *myself, deCollider::Ref collider) const;
+	void SetParentCollider(dsRealObject *myself, deCollider *collider) const;
 	/*@}*/
 	
 private:

@@ -384,7 +384,7 @@ deAnimation *deClassAnimation::GetAnimation(dsRealObject *object) const{
 	return object ? ((sAnimNatDat*)p_GetNativeData(object->GetBuffer()))->anim : nullptr;
 }
 
-void deClassAnimation::PushAnimation(dsRunTime *rt, deAnimation::Ref anim){
+void deClassAnimation::PushAnimation(dsRunTime *rt, deAnimation *anim){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

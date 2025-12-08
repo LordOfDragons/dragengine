@@ -110,7 +110,7 @@ public:
 	inline dealFont *GetWidgetTextFont() const{ return pWidgetTextFont; }
 	
 	/** \brief Set widget text font. */
-	void SetWidgetTextFont(dealFont::Ref font);
+	void SetWidgetTextFont(dealFont *font);
 	
 	/** \brief Widget text font size. */
 	inline int GetWidgetTextFontSize() const{ return pWidgetTextFontSize; }
@@ -136,7 +136,7 @@ public:
 	inline dealImage *GetButtonBackgroundImage() const{ return pButtonBackgroundImage; }
 	
 	/** \brief Set button background image or \em NULL if not used. */
-	void SetButtonBackgroundImage(dealImage::Ref image);
+	void SetButtonBackgroundImage(dealImage *image);
 	
 	/** \brief Button background image border. */
 	int GetButtonBackgroundImageBorder(int border) const;
@@ -174,7 +174,7 @@ public:
 	inline dealImage *GetButtonPressedBackgroundImage() const{ return pButtonPressedBackgroundImage; }
 	
 	/** \brief Set pressed button background image or \em NULL if not used. */
-	void SetButtonPressedBackgroundImage(dealImage::Ref image);
+	void SetButtonPressedBackgroundImage(dealImage *image);
 	
 	/** \brief Pressed button background image border. */
 	int GetButtonPressedBackgroundImageBorder(int border) const;
@@ -212,13 +212,13 @@ public:
 	inline dealImage *GetCheckBoxImageUnchecked() const{ return pCheckBoxImageUnchecked; }
 	
 	/** \brief Set check box image unchecked. */
-	void SetCheckBoxImageUnchecked(dealImage::Ref image);
+	void SetCheckBoxImageUnchecked(dealImage *image);
 	
 	/** \brief Check box image checked. */
 	inline dealImage *GetCheckBoxImageChecked() const{ return pCheckBoxImageChecked; }
 	
 	/** \brief Set check box image checked. */
-	void SetCheckBoxImageChecked(dealImage::Ref image);
+	void SetCheckBoxImageChecked(dealImage *image);
 	
 	/** \brief Check box image scale. */
 	inline float GetCheckBoxImageScale() const{ return pCheckBoxImageScale; }
@@ -256,13 +256,13 @@ public:
 	inline dealImage *GetOptionBoxImageDeselected() const{ return pOptionBoxImageDeselected; }
 	
 	/** \brief Set option box image deselected. */
-	void SetOptionBoxImageDeselected(dealImage::Ref image);
+	void SetOptionBoxImageDeselected(dealImage *image);
 	
 	/** \brief Option box image selected. */
 	inline dealImage *GetOptionBoxImageSelected() const{ return pOptionBoxImageSelected; }
 	
 	/** \brief Set option box image selected. */
-	void SetOptionBoxImageSelected(dealImage::Ref image);
+	void SetOptionBoxImageSelected(dealImage *image);
 	
 	/** \brief Option box image scale. */
 	inline float GetOptionBoxImageScale() const{ return pOptionBoxImageScale; }

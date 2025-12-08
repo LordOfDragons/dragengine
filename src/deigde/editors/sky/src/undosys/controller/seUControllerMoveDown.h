@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUControllerMoveDown(seController::Ref controller);
+	seUControllerMoveDown(seController *controller);
 	
 protected:
 	/** \brief Clean up undo action. */

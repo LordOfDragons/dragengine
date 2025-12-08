@@ -86,10 +86,10 @@ public:
 	deSynthesizerSourceGroup *GetSource(dsRealObject *myself) const;
 	
 	/** \brief Assigns synthesizer or \em NULL. */
-	void AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref synthesizer);
+	void AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer);
 	
 	/** \brief Pushes a source. */
-	void PushSource(dsRunTime *rt, deSynthesizer::Ref synthesizer, deSynthesizerSourceGroup::Ref source);
+	void PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceGroup *source);
 	
 	inline dsClass *GetClassSSGroupTarget() const{ return pClsSSGroupTarget; }
 	inline dsClass *GetClassSSGroupApplication() const{ return pClsSSGroupApplication; }

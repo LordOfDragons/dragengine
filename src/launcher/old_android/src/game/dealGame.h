@@ -236,13 +236,13 @@ public:
 	inline dealGameProfile *GetGlobalProfile() const{ return pGlobalProfile; }
 	
 	/** \brief Set global profile or \em NULL if not selected. */
-	void SetGlobalProfile(dealGameProfile::Ref profile);
+	void SetGlobalProfile(dealGameProfile *profile);
 	
 	/** \brief Game profile or \em NULL if not selected. */
 	inline dealGameProfile *GetGameProfile() const{ return pGameProfile; }
 	
 	/** \brief Set game profile or \em NULL if not selected. */
-	void SetGameProfile(dealGameProfile::Ref profile);
+	void SetGameProfile(dealGameProfile *profile);
 	
 	
 	

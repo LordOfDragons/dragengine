@@ -61,7 +61,7 @@ public:
 	// internal functions
 	void CreateClassMembers(dsEngine *engine);
 	deTouchSensor *GetTouchSensor(dsRealObject *myself) const;
-	void PushTouchSensor(dsRunTime *rt, deTouchSensor::Ref touchSensor);
+	void PushTouchSensor(dsRunTime *rt, deTouchSensor *touchSensor);
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	
 	inline deClassTouchSensorListener *GetClassTouchSensorListener() const{ return pClsTSL; }

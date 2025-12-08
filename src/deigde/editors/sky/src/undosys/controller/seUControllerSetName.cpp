@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerSetName::seUControllerSetName(seController::Ref controller, const char *newName) :
+seUControllerSetName::seUControllerSetName(seController *controller, const char *newName) :
 
 pNewName(newName)
 {

@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetInheritSubObjects::gdeUOCSetInheritSubObjects(gdeObjectClass::Ref objectClass, int newValue) :
+gdeUOCSetInheritSubObjects::gdeUOCSetInheritSubObjects(gdeObjectClass *objectClass, int newValue) :
 
 pNewValue(newValue)
 {

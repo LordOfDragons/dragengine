@@ -304,7 +304,7 @@ void deoglRLight::SetAmbientRatio(float ratio){
 
 
 
-void deoglRLight::SetLightSkin(deoglRSkin::Ref skin){
+void deoglRLight::SetLightSkin(deoglRSkin *skin){
 	if(skin == pLightSkin){
 		return;
 	}
@@ -324,7 +324,7 @@ void deoglRLight::SetLightSkin(deoglRSkin::Ref skin){
 	}
 }
 
-void deoglRLight::SetLightCanvas(deoglRCanvasView::Ref canvas){
+void deoglRLight::SetLightCanvas(deoglRCanvasView *canvas){
 	if(canvas == pLightCanvas){
 		return;
 	}
@@ -332,7 +332,7 @@ void deoglRLight::SetLightCanvas(deoglRCanvasView::Ref canvas){
 	   pRequiresPrepareForRender();
 }
 
-void deoglRLight::SetDynamicSkin(deoglRDynamicSkin::Ref dynamicSkin){
+void deoglRLight::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	if(dynamicSkin == pDynamicSkin){
 		return;
 	}

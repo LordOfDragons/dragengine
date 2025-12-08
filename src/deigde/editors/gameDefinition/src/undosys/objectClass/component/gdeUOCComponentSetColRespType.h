@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetColRespType(gdeObjectClass::Ref objectClass,
-		gdeOCComponent::Ref component, deCollider::eResponseType newValue);
+	gdeUOCComponentSetColRespType(gdeObjectClass *objectClass,
+		gdeOCComponent *component, deCollider::eResponseType newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

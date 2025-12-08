@@ -128,7 +128,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition::Ref gameDefinition) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition *gameDefinition) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -153,7 +153,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnActionGameDefinition(gdeGameDefinition::Ref gameDefinition) = 0;
+	virtual igdeUndo *OnActionGameDefinition(gdeGameDefinition *gameDefinition) = 0;
 	
 	virtual void Update(){
 		SetEnabled(pPanel.GetGameDefinition() != NULL);
@@ -165,7 +165,7 @@ class cEditId : public cBaseTextFieldListener {
 public:
 	cEditId(gdeWPGameDefinition &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition::Ref gameDefinition){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition *gameDefinition){
 		if(textField.GetText() == gameDefinition->GetID()){
 			return NULL;
 		}
@@ -194,7 +194,7 @@ class cEditBasePath : public cBaseTextFieldListener {
 public:
 	cEditBasePath(gdeWPGameDefinition &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition::Ref gameDefinition){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition *gameDefinition){
 		if(textField.GetText() == gameDefinition->GetBasePath()){
 			return NULL;
 		}
@@ -210,7 +210,7 @@ public:
 	cBaseAction(panel, "...", NULL, "Base path to project data files"),
 	pTextField(textField){}
 	
-	igdeUndo *OnActionGameDefinition(gdeGameDefinition::Ref gameDefinition) override{
+	igdeUndo *OnActionGameDefinition(gdeGameDefinition *gameDefinition) override{
 		decString basePath(gameDefinition->GetBasePath());
 		if(igdeCommonDialogs::GetDirectory(pPanel.GetParentWindow(), "Select Project Data Directory", basePath)){
 			pTextField.SetText(basePath);
@@ -224,7 +224,7 @@ class cEditVfsPath : public cBaseTextFieldListener {
 public:
 	cEditVfsPath(gdeWPGameDefinition &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition::Ref gameDefinition){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition *gameDefinition){
 		if(textField.GetText() == gameDefinition->GetVFSPath()){
 			return NULL;
 		}
@@ -236,7 +236,7 @@ class cEditScriptModule : public cBaseTextFieldListener {
 public:
 	cEditScriptModule(gdeWPGameDefinition &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition::Ref gameDefinition){
+	virtual igdeUndo *OnChanged(igdeTextField &textField, gdeGameDefinition *gameDefinition){
 		if(textField.GetText() == gameDefinition->GetScriptModule()){
 			return NULL;
 		}
@@ -476,7 +476,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
 	pListener.TakeOver(new gdeWPGameDefinitionListener(*this));
 	
@@ -544,7 +544,7 @@ gdeWPGameDefinition::~gdeWPGameDefinition(){
 // Management
 ///////////////
 
-void gdeWPGameDefinition::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPGameDefinition::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

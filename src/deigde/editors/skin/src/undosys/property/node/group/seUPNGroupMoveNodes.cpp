@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPNGroupMoveNodes::seUPNGroupMoveNodes(sePropertyNodeGroup::Ref node, const sePropertyNodeList &children) :
+seUPNGroupMoveNodes::seUPNGroupMoveNodes(sePropertyNodeGroup *node, const sePropertyNodeList &children) :
 
 pChildren(NULL),
 pCount(0)

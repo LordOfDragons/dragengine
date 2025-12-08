@@ -43,7 +43,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseRemoveAll::ceUCAIfElseRemoveAll(ceConversationTopic::Ref topic, ceCAIfElse::Ref ifElse, ceCAIfElseCase::Ref ifcase){
+ceUCAIfElseRemoveAll::ceUCAIfElseRemoveAll(ceConversationTopic *topic, ceCAIfElse *ifElse, ceCAIfElseCase *ifcase){
 	if(!topic || !ifElse){
 		DETHROW(deeInvalidParam);
 	}

@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	lpeULangPackSetIdentifier(lpeLangPack::Ref langpack, const char *newIdentifier);
+	lpeULangPackSetIdentifier(lpeLangPack *langpack, const char *newIdentifier);
 	
 protected:
 	/** Clean up undo. */

@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkSetCurve::seULinkSetCurve(seLink::Ref link, const decCurveBezier &newCurve) :
+seULinkSetCurve::seULinkSetCurve(seLink *link, const decCurveBezier &newCurve) :
 
 pNewCurve(newCurve)
 {

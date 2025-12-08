@@ -1317,7 +1317,7 @@ deHeightTerrain *deClassHeightTerrain::GetHeightTerrain(dsRealObject *myself) co
 	return ((sHTNatDat*)p_GetNativeData(myself->GetBuffer()))->hterrain;
 }
 
-void deClassHeightTerrain::PushHeightTerrain(dsRunTime *rt, deHeightTerrain::Ref hterrain){
+void deClassHeightTerrain::PushHeightTerrain(dsRunTime *rt, deHeightTerrain *hterrain){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

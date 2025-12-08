@@ -367,7 +367,7 @@ dePropField *deClassPropField::GetPropField(dsRealObject *myself) const{
 	return ((sPFNatDat*)p_GetNativeData(myself->GetBuffer()))->propfield;
 }
 
-void deClassPropField::PushPropField(dsRunTime *rt, dePropField::Ref propfield){
+void deClassPropField::PushPropField(dsRunTime *rt, dePropField *propfield){
 	if(!rt) DSTHROW(dueInvalidParam);
 	
 	if(!propfield){

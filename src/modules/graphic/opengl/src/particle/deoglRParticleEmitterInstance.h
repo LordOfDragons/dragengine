@@ -148,7 +148,7 @@ public:
 	inline deoglRParticleEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** Set emitter or \em NULL if not set. */
-	void SetEmitter(deoglRParticleEmitter::Ref emitter);
+	void SetEmitter(deoglRParticleEmitter *emitter);
 	
 	
 	
@@ -222,7 +222,7 @@ public:
 	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
 	/** Set render environment map or \em NULL if not assigned yet. */
-	void SetRenderEnvMap(deoglEnvironmentMap::Ref envmap);
+	void SetRenderEnvMap(deoglEnvironmentMap *envmap);
 	
 	
 	
@@ -236,7 +236,7 @@ public:
 	void InvalidateRenderEnvMap();
 	
 	/** Invalidates the render environment map. */
-	void InvalidateRenderEnvMapIf(deoglEnvironmentMap::Ref envmap);
+	void InvalidateRenderEnvMapIf(deoglEnvironmentMap *envmap);
 	
 	/** World reference point changed. */
 	void WorldReferencePointChanged();

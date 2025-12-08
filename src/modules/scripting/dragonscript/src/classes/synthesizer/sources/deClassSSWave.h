@@ -86,10 +86,10 @@ public:
 	deSynthesizerSourceWave *GetSource(dsRealObject *myself) const;
 	
 	/** \brief Assigns synthesizer or \em NULL. */
-	void AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref synthesizer);
+	void AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer);
 	
 	/** \brief Pushes a source. */
-	void PushSource(dsRunTime *rt, deSynthesizer::Ref synthesizer, deSynthesizerSourceWave::Ref source);
+	void PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceWave *source);
 	
 	inline dsClass *GetClassSSWaveTarget() const{ return pClsSSWaveTarget; }
 	inline dsClass *GetClassSSWaveType() const{ return pClsSSWaveType; }

@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyConstructedSetBitCount::seUPropertyConstructedSetBitCount(seProperty::Ref property, int newValue) :
+seUPropertyConstructedSetBitCount::seUPropertyConstructedSetBitCount(seProperty *property, int newValue) :
 
 pNewValue(newValue)
 {

@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddForceField::gdeUOCAddForceField(gdeObjectClass::Ref objectClass, gdeOCForceField::Ref forceField) :
+gdeUOCAddForceField::gdeUOCAddForceField(gdeObjectClass *objectClass, gdeOCForceField *forceField) :
 
 pForceField(NULL)
 {

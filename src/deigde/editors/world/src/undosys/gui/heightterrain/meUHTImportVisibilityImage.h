@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTImportVisibilityImage(meWorld::Ref world, meHeightTerrainSector *sector, deImage *image);
+	meUHTImportVisibilityImage(meWorld *world, meHeightTerrainSector *sector, deImage *image);
 	/** \brief Clean up object. */
 	virtual ~meUHTImportVisibilityImage();
 	/*@}*/

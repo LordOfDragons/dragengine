@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVVariationAdd::meUHTVVariationAdd(meHTVegetationLayer::Ref vlayer, meHTVVariation::Ref variation){
+meUHTVVariationAdd::meUHTVVariationAdd(meHTVegetationLayer *vlayer, meHTVVariation *variation){
 	if(!vlayer || !variation) DETHROW(deeInvalidParam);
 	
 	pVLayer = vlayer;

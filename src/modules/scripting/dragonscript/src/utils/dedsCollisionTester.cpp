@@ -117,14 +117,14 @@ dedsCollisionTester::~dedsCollisionTester(){
 // Management
 ///////////////
 
-void dedsCollisionTester::SetWorld(deWorld::Ref world){
+void dedsCollisionTester::SetWorld(deWorld *world){
 	if(world == pWorld){
 		return;
 	}
 	pWorld = world;
 }
 
-void dedsCollisionTester::SetTouchSensor(deTouchSensor::Ref touchSensor){
+void dedsCollisionTester::SetTouchSensor(deTouchSensor *touchSensor){
 	if(touchSensor == pTouchSensor){
 		return;
 	}

@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetOffLookAtFrom(ceCameraShot::Ref cameraShot, const decVector &newPos);
+	ceUCCShotSetOffLookAtFrom(ceCameraShot *cameraShot, const decVector &newPos);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetOffLookAtFrom();

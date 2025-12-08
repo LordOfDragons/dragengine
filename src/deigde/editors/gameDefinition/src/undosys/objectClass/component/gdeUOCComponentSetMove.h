@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetMove(gdeObjectClass::Ref objectClass,
-		gdeOCComponent::Ref component, const char *newValue);
+	gdeUOCComponentSetMove(gdeObjectClass *objectClass,
+		gdeOCComponent *component, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

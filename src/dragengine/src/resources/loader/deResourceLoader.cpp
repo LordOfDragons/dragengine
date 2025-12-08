@@ -331,7 +331,7 @@ void deResourceLoader::RemoveAllTasks(){
 // Internal use only
 //////////////////////
 
-void deResourceLoader::FinishTask(deResourceLoaderTask::Ref task){
+void deResourceLoader::FinishTask(deResourceLoaderTask *task){
 	if(!task){
 		DETHROW(deeInvalidParam);
 	}

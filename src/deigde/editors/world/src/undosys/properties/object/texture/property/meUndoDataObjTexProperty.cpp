@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataObjTexProperty::meUndoDataObjTexProperty(meObjectTexture::Ref texture) :
+meUndoDataObjTexProperty::meUndoDataObjTexProperty(meObjectTexture *texture) :
 pTexture(texture),
 pPropertyExists(false)
 {

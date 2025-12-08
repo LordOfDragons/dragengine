@@ -48,7 +48,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUBoneImportFromFile::reUBoneImportFromFile(reRig::Ref rig, reRig *importedRig){
+reUBoneImportFromFile::reUBoneImportFromFile(reRig *rig, reRig *importedRig){
 	if(!rig || !importedRig){
 		DETHROW(deeInvalidParam);
 	}

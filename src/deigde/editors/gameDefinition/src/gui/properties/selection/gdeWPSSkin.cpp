@@ -194,7 +194,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
 	pListener.TakeOver(new gdeWPSSkinListener(*this));
 	
@@ -226,7 +226,7 @@ gdeWPSSkin::~gdeWPSSkin(){
 // Management
 ///////////////
 
-void gdeWPSSkin::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPSSkin::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCParticleEmitterToggleCasting::gdeUOCParticleEmitterToggleCasting(
-	gdeObjectClass::Ref objectClass, gdeOCParticleEmitter::Ref particleEmitter) :
+	gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) :
 
 pParticleEmitter(NULL)
 {

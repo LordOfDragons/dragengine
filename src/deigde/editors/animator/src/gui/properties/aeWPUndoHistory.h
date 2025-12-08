@@ -62,7 +62,7 @@ public:
 	inline aeAnimator *GetAnimator() const{ return pWorld; }
 	
 	/** Set animator. */
-	void SetAnimator(aeAnimator::Ref animator);
+	void SetAnimator(aeAnimator *animator);
 	/*@}*/
 };
 

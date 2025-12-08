@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCComponentToggleLightShadowIgnore::gdeUOCComponentToggleLightShadowIgnore(
-gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component) :
+gdeObjectClass *objectClass, gdeOCComponent *component) :
 
 pComponent(NULL)
 {

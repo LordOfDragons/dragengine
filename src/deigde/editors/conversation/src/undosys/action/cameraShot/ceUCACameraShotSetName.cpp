@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACameraShotSetName::ceUCACameraShotSetName(ceConversationTopic::Ref topic, ceCACameraShot::Ref cameraShot, const char *newName){
+ceUCACameraShotSetName::ceUCACameraShotSetName(ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newName){
 	if(!topic || !newName) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

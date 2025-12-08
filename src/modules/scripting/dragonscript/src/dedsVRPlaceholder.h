@@ -46,7 +46,7 @@ private:
 	deScriptingDragonScript &pDS;
 	deWorld::Ref pWorld;
 	deComponent::Ref pComponent;
-	deCamera::Ref pCamera, pGameCamera;
+	deCamera *pCamera, pGameCamera;
 	int pDeviceIndexHmd;
 	bool pEnabled, pVRWorking;
 	

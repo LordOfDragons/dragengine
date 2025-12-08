@@ -591,7 +591,7 @@ dedsCollisionTester *deClassCollisionTester::GetCollisionTester(dsRealObject *my
 	return ((sCTNatDat*)p_GetNativeData(myself->GetBuffer()))->collisionTester;
 }
 
-void deClassCollisionTester::PushCollisionTester(dsRunTime *rt, dedsCollisionTester::Ref collisionTester){
+void deClassCollisionTester::PushCollisionTester(dsRunTime *rt, dedsCollisionTester *collisionTester){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

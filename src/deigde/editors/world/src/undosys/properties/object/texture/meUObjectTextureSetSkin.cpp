@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTexture::Ref texture, const char *newskin){
+meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTexture *texture, const char *newskin){
 	if(!texture || !newskin) DETHROW(deeInvalidParam);
 	
 	meObject *object = texture->GetObject();

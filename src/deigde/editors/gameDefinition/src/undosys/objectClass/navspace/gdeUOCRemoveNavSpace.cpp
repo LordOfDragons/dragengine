@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveNavSpace::gdeUOCRemoveNavSpace(gdeObjectClass::Ref objectClass, gdeOCNavigationSpace::Ref navspace) :
+gdeUOCRemoveNavSpace::gdeUOCRemoveNavSpace(gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !navspace){

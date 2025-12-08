@@ -623,7 +623,7 @@ deParticleEmitterInstance *&instance, int &index) const{
 	index = nd.index;
 }
 
-void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleEmitter::Ref emitter, int index){
+void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleEmitter *emitter, int index){
 	if(!rt || !emitter || index < 0 || index >= emitter->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -636,7 +636,7 @@ void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleE
 	nd.index = index;
 }
 
-void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleEmitterInstance::Ref instance, int index){
+void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleEmitterInstance *instance, int index){
 	if(!rt || !instance || index < 0 || index >= instance->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}

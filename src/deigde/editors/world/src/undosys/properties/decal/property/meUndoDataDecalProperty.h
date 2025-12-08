@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo data object. */
-	meUndoDataDecalProperty(meDecal::Ref decal);
+	meUndoDataDecalProperty(meDecal *decal);
 	
 protected:
 	/** \brief Clean up undo data object. */

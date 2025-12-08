@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourcePasteEffect::seUSourcePasteEffect(seSource::Ref source, const seEffectList &effectList, int index) :
+seUSourcePasteEffect::seUSourcePasteEffect(seSource *source, const seEffectList &effectList, int index) :
 
 pIndex(index)
 {

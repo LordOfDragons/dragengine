@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalSkin(meDecal::Ref decal, const char *newskin);
+	meUDecalSkin(meDecal *decal, const char *newskin);
 	meUDecalSkin(meDecalList &decals, const char *newskin);
 	
 protected:

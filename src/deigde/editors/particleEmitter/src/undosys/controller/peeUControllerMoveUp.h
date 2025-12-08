@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUControllerMoveUp(peeController::Ref controller);
+	peeUControllerMoveUp(peeController *controller);
 	
 protected:
 	/** \brief Clean up the undo action. */

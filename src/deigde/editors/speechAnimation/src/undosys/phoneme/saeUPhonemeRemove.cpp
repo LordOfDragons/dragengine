@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeRemove::saeUPhonemeRemove(saePhoneme::Ref phoneme){
+saeUPhonemeRemove::saeUPhonemeRemove(saePhoneme *phoneme){
 	if(!phoneme) DETHROW(deeInvalidParam);
 	
 	saeSAnimation::Ref sanimation = phoneme->GetSAnimation();

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetLightSkinPath::gdeUOCLightSetLightSkinPath(gdeObjectClass::Ref objectClass,
-gdeOCLight::Ref light, const char *newValue) :
+gdeUOCLightSetLightSkinPath::gdeUOCLightSetLightSkinPath(gdeObjectClass *objectClass,
+gdeOCLight *light, const char *newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

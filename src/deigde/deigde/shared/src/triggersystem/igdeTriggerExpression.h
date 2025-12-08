@@ -68,7 +68,7 @@ public:
 	inline igdeTriggerExpressionComponent *GetRootComponent() const{ return pRootComponent; }
 	
 	/** \brief Set root expression component or null if not set. */
-	void SetRootComponent(igdeTriggerExpressionComponent::Ref component);
+	void SetRootComponent(igdeTriggerExpressionComponent *component);
 	
 	/** \brief Determines if the expression is empty hence root component is null. */
 	bool IsEmpty() const;

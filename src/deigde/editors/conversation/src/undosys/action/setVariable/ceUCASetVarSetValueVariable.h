@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASetVarSetValueVariable(ceConversationTopic::Ref topic, ceCASetVariable::Ref action, const char *newName);
+	ceUCASetVarSetValueVariable(ceConversationTopic *topic, ceCASetVariable *action, const char *newName);
 	
 protected:
 	/** \brief Clean up undo. */

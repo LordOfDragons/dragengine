@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCParticleEmitterSetPosition(gdeObjectClass::Ref objectClass,
-		gdeOCParticleEmitter::Ref particleEmitter, const decVector &newValue);
+	gdeUOCParticleEmitterSetPosition(gdeObjectClass *objectClass,
+		gdeOCParticleEmitter *particleEmitter, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

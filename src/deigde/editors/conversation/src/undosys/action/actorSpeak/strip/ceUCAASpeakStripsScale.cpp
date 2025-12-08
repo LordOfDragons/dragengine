@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakStripsScale::ceUCAASpeakStripsScale(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak){
+ceUCAASpeakStripsScale::ceUCAASpeakStripsScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
 	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
 	}

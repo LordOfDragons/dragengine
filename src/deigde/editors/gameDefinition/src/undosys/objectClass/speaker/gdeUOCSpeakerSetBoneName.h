@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetBoneName(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker, const char *newValue);
+	gdeUOCSpeakerSetBoneName(gdeObjectClass *objectClass, gdeOCSpeaker *speaker, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

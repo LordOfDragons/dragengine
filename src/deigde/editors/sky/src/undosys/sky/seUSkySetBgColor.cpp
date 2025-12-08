@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSkySetBgColor::seUSkySetBgColor(seSky::Ref sky, const decColor &newColor) :
+seUSkySetBgColor::seUSkySetBgColor(seSky *sky, const decColor &newColor) :
 
 pNewColor(newColor)
 {

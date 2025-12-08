@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetSetBone(ceTarget::Ref target, const char *newBone);
+	ceUCTargetSetBone(ceTarget *target, const char *newBone);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCTargetSetBone();

@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakEyesLASet::ceUCAASpeakEyesLASet(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref eyesLookAt, ceStrip::Ref newStrip){
+ceUCAASpeakEyesLASet::ceUCAASpeakEyesLASet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, ceStrip *newStrip){
 	if(!topic || !actorSpeak || !eyesLookAt || !newStrip){
 		DETHROW(deeInvalidParam);
 	}

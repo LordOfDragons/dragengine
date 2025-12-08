@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveAllInherits::gdeUOCRemoveAllInherits(gdeObjectClass::Ref objectClass) :
+gdeUOCRemoveAllInherits::gdeUOCRemoveAllInherits(gdeObjectClass *objectClass) :
 pObjectClass(NULL)
 {
 	if(!objectClass || objectClass->GetInherits().GetCount() == 0){

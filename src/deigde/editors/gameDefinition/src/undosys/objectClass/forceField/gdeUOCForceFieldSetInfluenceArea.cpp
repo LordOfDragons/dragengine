@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetInfluenceArea::gdeUOCForceFieldSetInfluenceArea(gdeObjectClass::Ref objectClass,
-gdeOCForceField::Ref forceField, const decShapeList &newValue) :
+gdeUOCForceFieldSetInfluenceArea::gdeUOCForceFieldSetInfluenceArea(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, const decShapeList &newValue) :
 
 pForceField(NULL)
 {

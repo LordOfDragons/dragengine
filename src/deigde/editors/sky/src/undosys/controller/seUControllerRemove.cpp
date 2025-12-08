@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerRemove::seUControllerRemove(seController::Ref controller) :
+seUControllerRemove::seUControllerRemove(seController *controller) :
 
 pIndex(0),
 pLinks(nullptr),

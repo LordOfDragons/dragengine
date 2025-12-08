@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCTextureSetScale::gdeUOCCTextureSetScale(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, gdeOCComponentTexture::Ref texture, const decVector2 &newValue) :
+gdeUOCCTextureSetScale::gdeUOCCTextureSetScale(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture, const decVector2 &newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !component || !texture){

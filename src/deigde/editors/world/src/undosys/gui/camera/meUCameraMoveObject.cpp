@@ -36,7 +36,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUCameraMoveObject::meUCameraMoveObject(meObject::Ref object){
+meUCameraMoveObject::meUCameraMoveObject(meObject *object){
 	DEASSERT_NOTNULL(object)
 	
 	pNewPosition = pOldPosition = object->GetPosition();

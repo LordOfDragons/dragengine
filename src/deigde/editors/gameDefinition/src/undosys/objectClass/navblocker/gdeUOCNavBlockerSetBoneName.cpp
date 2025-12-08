@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetBoneName::gdeUOCNavBlockerSetBoneName(gdeObjectClass::Ref objectClass,
-gdeOCNavigationBlocker::Ref navBlocker, const char *newValue) :
+gdeUOCNavBlockerSetBoneName::gdeUOCNavBlockerSetBoneName(gdeObjectClass *objectClass,
+gdeOCNavigationBlocker *navBlocker, const char *newValue) :
 
 pNavBlocker(NULL)
 {

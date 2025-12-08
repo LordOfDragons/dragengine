@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUControllerSetName(seController::Ref controller, const char *newName);
+	seUControllerSetName(seController *controller, const char *newName);
 	
 protected:
 	/** \brief Clean up undo action. */

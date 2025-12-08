@@ -141,7 +141,7 @@ meWindowChangelog::~meWindowChangelog(){
 // Management
 ///////////////
 
-void meWindowChangelog::SetWorld(meWorld::Ref world){
+void meWindowChangelog::SetWorld(meWorld *world){
 	if(world == pWorld){
 		return;
 	}

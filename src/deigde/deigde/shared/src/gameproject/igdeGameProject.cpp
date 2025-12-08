@@ -120,7 +120,7 @@ void igdeGameProject::SetPathProjectGameDefinition(const char *path){
 	pPathProjectGameDefinition = path;
 }
 
-void igdeGameProject::SetProjectGameDefinition(igdeGameDefinition::Ref gameDefinition){
+void igdeGameProject::SetProjectGameDefinition(igdeGameDefinition *gameDefinition){
 	if(pProjectGameDefinition == gameDefinition){
 		return;
 	}

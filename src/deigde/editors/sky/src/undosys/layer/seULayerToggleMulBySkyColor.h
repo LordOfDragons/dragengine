@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerToggleMulBySkyColor(seLayer::Ref layer);
+	seULayerToggleMulBySkyColor(seLayer *layer);
 	
 protected:
 	/** \brief Clean up undo action. */

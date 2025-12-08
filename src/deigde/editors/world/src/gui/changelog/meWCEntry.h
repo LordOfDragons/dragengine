@@ -110,19 +110,19 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world or \em NULL. */
-	void SetWorld(meWorld::Ref world);
+	void SetWorld(meWorld *world);
 	
 	/** \brief Height terrain texture or \em NULL. */
 	inline meHeightTerrainTexture *GetHTTexture() const{ return pHTTexture; }
 	
 	/** \brief Set height terrain texture or \em NULL. */
-	void SetHTTexture(meHeightTerrainTexture::Ref texture);
+	void SetHTTexture(meHeightTerrainTexture *texture);
 	
 	/** \brief Height terrain navigation space or \em NULL. */
 	inline meHeightTerrainNavSpace *GetHTNavSpace() const{ return pHTNavSpace; }
 	
 	/** \brief Set height terrain navigation space or \em NULL. */
-	void SetHTNavSpace(meHeightTerrainNavSpace::Ref navspace);
+	void SetHTNavSpace(meHeightTerrainNavSpace *navspace);
 	
 	/** \brief Update item text. */
 	void UpdateText();

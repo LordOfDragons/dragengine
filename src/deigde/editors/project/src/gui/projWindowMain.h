@@ -172,7 +172,7 @@ public:
 	inline projProject *GetProject() const{ return pProject; }
 	
 	/** \brief Set project. */
-	void SetProject(projProject::Ref project);
+	void SetProject(projProject *project);
 	
 	
 	

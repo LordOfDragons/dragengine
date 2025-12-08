@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPNGroupRemoveNodes::seUPNGroupRemoveNodes(
-sePropertyNodeGroup::Ref node, const sePropertyNodeList &children) :
+sePropertyNodeGroup *node, const sePropertyNodeList &children) :
 
 pChildren(NULL),
 pCount(0)

@@ -46,7 +46,7 @@ public:
 	typedef deTObjectReference<meUCameraRotateObject> Ref;
 	
 	// constructor, destructor
-	meUCameraRotateObject(meObject::Ref object);
+	meUCameraRotateObject(meObject *object);
 	~meUCameraRotateObject() override;
 	
 	void SetNewRotation(const decVector &rotation);

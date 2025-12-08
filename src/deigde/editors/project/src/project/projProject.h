@@ -109,10 +109,10 @@ public:
 	const projProfileList &GetProfiles() const{ return pProfiles; }
 	
 	/** \brief Add profile. */
-	void AddProfile(projProfile::Ref profile);
+	void AddProfile(projProfile *profile);
 	
 	/** \brief Remove profile. */
-	void RemoveProfile(projProfile::Ref profile);
+	void RemoveProfile(projProfile *profile);
 	
 	/** \brief Remove all profiles. */
 	void RemoveAllProfiles();
@@ -123,7 +123,7 @@ public:
 	inline projProfile *GetActiveProfile() const{ return pActiveProfile; }
 	
 	/** \brief Set active profile. */
-	void SetActiveProfile(projProfile::Ref profile);
+	void SetActiveProfile(projProfile *profile);
 	
 	
 	
@@ -131,10 +131,10 @@ public:
 	void NotifyProfileStructureChanged();
 	
 	/** \brief Notify listeners profile changed. */
-	void NotifyProfileChanged(projProfile::Ref profile);
+	void NotifyProfileChanged(projProfile *profile);
 	
 	/** \brief Notify listeners profile name changed. */
-	void NotifyProfileNameChanged(projProfile::Ref profile);
+	void NotifyProfileNameChanged(projProfile *profile);
 	
 	/** \brief Notify listeners active profile changed. */
 	void NotifyActiveProfileChanged();

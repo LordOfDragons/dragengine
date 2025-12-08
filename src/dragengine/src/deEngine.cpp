@@ -340,7 +340,7 @@ void deEngine::ResetFailureFlags(){
 	pScriptFailed = false;
 }
 
-void deEngine::SetLogger(deLogger::Ref logger){
+void deEngine::SetLogger(deLogger *logger){
 	if(!logger){
 		DETHROW(deeInvalidParam);
 	}

@@ -117,7 +117,7 @@ public:
 	igdeGDSkyController *GetControllerAt(int index) const;
 	
 	/** \brief Add controller. */
-	void AddController(igdeGDSkyController::Ref controller);
+	void AddController(igdeGDSkyController *controller);
 	
 	/** \brief Remove controllers. */
 	void RemoveAllControllers();

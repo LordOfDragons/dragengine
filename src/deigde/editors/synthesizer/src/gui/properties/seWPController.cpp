@@ -380,7 +380,7 @@ pViewSynthesizer(viewSynthesizer)
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
 	pListener.TakeOver(new seWPControllerListener(*this));
 	
@@ -441,7 +441,7 @@ seWPController::~seWPController(){
 // Management
 ///////////////
 
-void seWPController::SetSynthesizer(seSynthesizer::Ref synthesizer){
+void seWPController::SetSynthesizer(seSynthesizer *synthesizer){
 	if(synthesizer == pSynthesizer){
 		return;
 	}

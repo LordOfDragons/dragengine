@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetTriggerName::gdeUOCSpeakerSetTriggerName(gdeObjectClass::Ref objectClass,
-gdeOCSpeaker::Ref speaker, gdeOCSpeaker::eTriggers trigger, const char *newValue) :
+gdeUOCSpeakerSetTriggerName::gdeUOCSpeakerSetTriggerName(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, gdeOCSpeaker::eTriggers trigger, const char *newValue) :
 
 
 pTrigger(trigger)

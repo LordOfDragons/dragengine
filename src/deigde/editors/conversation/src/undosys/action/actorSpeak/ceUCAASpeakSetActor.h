@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakSetActor(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, const char *newActorID);
+	ceUCAASpeakSetActor(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newActorID);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakSetActor();

@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjTexRemoveProperty::meUObjTexRemoveProperty(meObjectTexture::Ref texture, const char *key, const char *value) :
+meUObjTexRemoveProperty::meUObjTexRemoveProperty(meObjectTexture *texture, const char *key, const char *value) :
 
 pKey(key),
 pValue(value)

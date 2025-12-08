@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionMove::ceUCActionMove(ceConversationTopic::Ref topic, ceConversationAction::Ref action, int newIndex){
+ceUCActionMove::ceUCActionMove(ceConversationTopic *topic, ceConversationAction *action, int newIndex){
 	if(!topic || !action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

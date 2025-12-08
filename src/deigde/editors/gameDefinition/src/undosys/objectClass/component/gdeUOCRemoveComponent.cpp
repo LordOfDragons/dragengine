@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveComponent::gdeUOCRemoveComponent(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component) :
+gdeUOCRemoveComponent::gdeUOCRemoveComponent(gdeObjectClass *objectClass, gdeOCComponent *component) :
 
 pComponent(NULL)
 {

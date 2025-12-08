@@ -117,7 +117,7 @@ seSynthesizer *seLoadSaveSystem::LoadSynthesizer(const char *filename, const cha
 	return synthesizer;
 }
 
-void seLoadSaveSystem::SaveSynthesizer(seSynthesizer::Ref synthesizer, const char *filename){
+void seLoadSaveSystem::SaveSynthesizer(seSynthesizer *synthesizer, const char *filename){
 	if(!synthesizer || !filename){
 		DETHROW(deeInvalidParam);
 	}

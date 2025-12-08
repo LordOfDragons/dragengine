@@ -108,7 +108,7 @@ igdeGDSkyController *igdeGDSky::GetControllerAt(int index) const{
 	return (igdeGDSkyController*)pControllers.GetAt(index);
 }
 
-void igdeGDSky::AddController(igdeGDSkyController::Ref controller){
+void igdeGDSky::AddController(igdeGDSkyController *controller){
 	if(!controller){
 		DETHROW(deeInvalidParam);
 	}

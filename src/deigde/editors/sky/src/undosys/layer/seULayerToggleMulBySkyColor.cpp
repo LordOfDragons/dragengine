@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerToggleMulBySkyColor::seULayerToggleMulBySkyColor(seLayer::Ref layer) :
+seULayerToggleMulBySkyColor::seULayerToggleMulBySkyColor(seLayer *layer) :
 pLayer(NULL)
 {
 	if(!layer){

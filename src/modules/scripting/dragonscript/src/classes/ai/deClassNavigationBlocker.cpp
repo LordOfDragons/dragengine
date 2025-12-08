@@ -389,7 +389,7 @@ deNavigationBlocker *deClassNavigationBlocker::GetNavigationBlocker(dsRealObject
 	return ((const sNavBlockerNatDat *)p_GetNativeData(myself->GetBuffer()))->blocker;
 }
 
-void deClassNavigationBlocker::PushNavigationBlocker(dsRunTime *rt, deNavigationBlocker::Ref blocker){
+void deClassNavigationBlocker::PushNavigationBlocker(dsRunTime *rt, deNavigationBlocker *blocker){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

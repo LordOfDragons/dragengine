@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodySetOrientation::seUBodySetOrientation(seBody::Ref body, const decVector &newOrientation) :
+seUBodySetOrientation::seUBodySetOrientation(seBody *body, const decVector &newOrientation) :
 
 pNewOrientation(newOrientation)
 {

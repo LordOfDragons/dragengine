@@ -165,24 +165,24 @@ deService *deServiceManager::CreateService(const char *name, const deServiceObje
 	DETHROW_INFO(deeInvalidParam, "Named service not supported");
 }
 
-void deServiceManager::QueueRequestResponse(deService::Ref service, const decUniqueID &id,
+void deServiceManager::QueueRequestResponse(deService *service, const decUniqueID &id,
 const deServiceObject::Ref &response, bool finished){
 	const deMutexGuard lock(pMutex);
 	pEventQueue.Add(cEvent::Ref::NewWith(cEvent::eeRequestResponse, service, id, response, finished));
 }
 
-void deServiceManager::QueueRequestFailed(deService::Ref service, const decUniqueID &id,
+void deServiceManager::QueueRequestFailed(deService *service, const decUniqueID &id,
 const deServiceObject::Ref &error){
 	const deMutexGuard lock(pMutex);
 	pEventQueue.Add(cEvent::Ref::NewWith(cEvent::eeRequestFailed, service, id, error, true));
 }
 
-void deServiceManager::QueueEventReceived(deService::Ref service, const deServiceObject::Ref &event){
+void deServiceManager::QueueEventReceived(deService *service, const deServiceObject::Ref &event){
 	const deMutexGuard lock(pMutex);
 	pEventQueue.Add(cEvent::Ref::NewWith(cEvent::eeEventReceived, service, decUniqueID(), event, true));
 }
 
-void deServiceManager::RemoveAllMatchingEvents(deService::Ref service){
+void deServiceManager::RemoveAllMatchingEvents(deService *service){
 	const deMutexGuard lock(pMutex);
 	const decObjectList events(pEventQueue);
 	const int count = events.GetCount();

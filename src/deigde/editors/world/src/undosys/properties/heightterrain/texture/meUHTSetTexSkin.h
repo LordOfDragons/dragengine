@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetTexSkin(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture, const char *newPath);
+	meUHTSetTexSkin(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const char *newPath);
 	
 protected:
 	/** \brief Clean up object. */

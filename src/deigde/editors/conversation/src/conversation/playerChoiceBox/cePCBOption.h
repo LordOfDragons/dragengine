@@ -79,7 +79,7 @@ public:
 	inline ceCAPlayerChoiceOption *GetActionOption() const{ return pActionOption; }
 	
 	/** \brief Set action option. */
-	void SetActionOption(ceCAPlayerChoice::Ref action, ceCAPlayerChoiceOption *actionOption);
+	void SetActionOption(ceCAPlayerChoice *action, ceCAPlayerChoiceOption *actionOption);
 	
 	/** \brief Canvas view. */
 	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }

@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCToggleCanInstantiate::gdeUOCToggleCanInstantiate(gdeObjectClass::Ref objectClass) :
+gdeUOCToggleCanInstantiate::gdeUOCToggleCanInstantiate(gdeObjectClass *objectClass) :
 pObjectClass(NULL)
 {
 	if(!objectClass){

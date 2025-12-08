@@ -102,7 +102,7 @@ public:
 	seController *GetControllerAt(int position) const;
 	
 	/** \brief Set controller for child controller or \em NULL if not set. */
-	void SetControllerAt(int position, seController::Ref controller);
+	void SetControllerAt(int position, seController *controller);
 	
 	
 	

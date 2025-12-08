@@ -551,7 +551,7 @@ igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, groupBox2, frameLine, form;
+	igdeContainer *content, groupBox, groupBox2, frameLine, form;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeAction::Ref action;
 	
@@ -688,7 +688,7 @@ reWPView::~reWPView(){
 // Management
 ///////////////
 
-void reWPView::SetRig(reRig::Ref rig){
+void reWPView::SetRig(reRig *rig){
 	if(rig == pRig){
 		return;
 	}

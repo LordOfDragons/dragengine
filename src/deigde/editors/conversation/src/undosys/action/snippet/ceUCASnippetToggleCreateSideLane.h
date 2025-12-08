@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASnippetToggleCreateSideLane(ceConversationTopic::Ref topic, ceCASnippet::Ref snippet);
+	ceUCASnippetToggleCreateSideLane(ceConversationTopic *topic, ceCASnippet *snippet);
 	
 protected:
 	/** \brief Clean up undo. */

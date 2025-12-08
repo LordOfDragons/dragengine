@@ -122,7 +122,7 @@ void deAudioSystem::PreStop(){
 // Management
 ///////////////
 
-void deAudioSystem::SetActiveMicrophone(deMicrophone::Ref microphone){
+void deAudioSystem::SetActiveMicrophone(deMicrophone *microphone){
 	if(microphone == pActiveMic){
 		return;
 	}
@@ -193,7 +193,7 @@ void deAudioSystem::LoadSpeaker(deSpeaker *speaker){
 	speaker->SetPeerAudio(pActiveModule->CreateSpeaker(speaker));
 }
 
-void deAudioSystem::LoadMicrophone(deMicrophone::Ref microphone){
+void deAudioSystem::LoadMicrophone(deMicrophone *microphone){
 	if(!microphone){
 		DETHROW(deeNullPointer);
 	}

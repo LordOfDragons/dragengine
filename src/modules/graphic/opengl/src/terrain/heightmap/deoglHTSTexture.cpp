@@ -103,7 +103,7 @@ void deoglHTSTexture::SetMatrix(const decTexMatrix &matrix){
 	MarkParamBlocksDirty();
 }
 
-void deoglHTSTexture::SetSkin(deoglRSkin::Ref skin){
+void deoglHTSTexture::SetSkin(deoglRSkin *skin){
 	if(skin == pSkin){
 		return;
 	}

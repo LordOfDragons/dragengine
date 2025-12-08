@@ -504,7 +504,7 @@ void deClassCanvas::CreateClassMembers(dsEngine *engine){
 
 
 
-void deClassCanvas::AssignCanvas(dsRealObject *myself, deCanvas::Ref canvas){
+void deClassCanvas::AssignCanvas(dsRealObject *myself, deCanvas *canvas){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -532,7 +532,7 @@ deCanvas *deClassCanvas::GetCanvas(dsRealObject *myself) const {
 	return ((sCanvasNatDat*)p_GetNativeData(myself->GetBuffer()))->canvas;
 }
 
-void deClassCanvas::PushCanvas(dsRunTime *rt, deCanvas::Ref canvas){
+void deClassCanvas::PushCanvas(dsRunTime *rt, deCanvas *canvas){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

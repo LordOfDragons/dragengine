@@ -728,7 +728,7 @@ pClipboard(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref form, frameLine, group;
+	igdeContainer *form, frameLine, group;
 	
 	
 	pIconIdentifierUsage = env.GetStockIcon(igdeEnvironment::esiSmallPlus);

@@ -38,7 +38,7 @@ const char * const gdeClipboardDataObjectClass::TYPE_NAME = "ObjectClass";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataObjectClass::gdeClipboardDataObjectClass(gdeObjectClass::Ref objectClass) :
+gdeClipboardDataObjectClass::gdeClipboardDataObjectClass(gdeObjectClass *objectClass) :
 igdeClipboardData(TYPE_NAME)
 {
 	if(!objectClass){

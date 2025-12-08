@@ -36,7 +36,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meURaiseDecalOne::meURaiseDecalOne(meWorld *world, meDecal::Ref decal){
+meURaiseDecalOne::meURaiseDecalOne(meWorld *world, meDecal *decal){
 	if(!world || !decal) DETHROW(deeInvalidParam);
 	
 	if(!decal->GetParentObject()) DETHROW(deeInvalidParam);

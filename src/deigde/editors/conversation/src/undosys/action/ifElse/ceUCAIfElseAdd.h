@@ -52,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAIfElseAdd(ceConversationTopic::Ref topic, ceCAIfElse::Ref ifElse,
-	ceCAIfElseCase::Ref ifcase, ceConversationAction::Ref action, int index);
+	ceUCAIfElseAdd(ceConversationTopic *topic, ceCAIfElse *ifElse,
+	ceCAIfElseCase *ifcase, ceConversationAction *action, int index);
 	
 	/** \brief Clean up undo object. */
 	virtual ~ceUCAIfElseAdd();

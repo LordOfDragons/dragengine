@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceSetSnapAngle::meUHTNavSpaceSetSnapAngle(meHeightTerrainNavSpace::Ref navspace, float newSnapAngle) :
+meUHTNavSpaceSetSnapAngle::meUHTNavSpaceSetSnapAngle(meHeightTerrainNavSpace *navspace, float newSnapAngle) :
 
 pNewSnapAngle(newSnapAngle)
 {

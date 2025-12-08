@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceSetSnapDist::meUHTNavSpaceSetSnapDist(meHeightTerrainNavSpace::Ref navspace, float newSnapDist) :
+meUHTNavSpaceSetSnapDist::meUHTNavSpaceSetSnapDist(meHeightTerrainNavSpace *navspace, float newSnapDist) :
 
 pNewSnapDist(newSnapDist)
 {

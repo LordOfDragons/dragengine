@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new height modifier. */
-	deTerrainHeightModifier(deImage::Ref heightImage);
+	deTerrainHeightModifier(deImage *heightImage);
 	
 	/** \brief Clean up height modifier. */
 	~deTerrainHeightModifier();

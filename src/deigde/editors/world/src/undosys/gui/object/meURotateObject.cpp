@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meURotateObject::meURotateObject(meWorld::Ref world, const meObjectList &objects){
+meURotateObject::meURotateObject(meWorld *world, const meObjectList &objects){
 	if(!world){
 		DETHROW(deeInvalidParam);
 	}

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUGDSetBaseGameDefIDs::gdeUGDSetBaseGameDefIDs(gdeWindowMain &windowMain,
-gdeGameDefinition::Ref gameDefinition, const decStringList &newValue) :
+gdeGameDefinition *gameDefinition, const decStringList &newValue) :
 pWindowMain(windowMain),
 pNewValue(newValue)
 {

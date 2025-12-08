@@ -607,7 +607,7 @@ void deClassSkyLayer::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassSkyLayer::PushLayer(dsRunTime *rt, deSky::Ref sky, int index){
+void deClassSkyLayer::PushLayer(dsRunTime *rt, deSky *sky, int index){
 	if(!rt || !sky || index < 0 || index >= sky->GetLayerCount()){
 		DSTHROW(dueInvalidParam);
 	}

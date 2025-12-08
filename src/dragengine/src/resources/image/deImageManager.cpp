@@ -213,11 +213,11 @@ deImage *deImageManager::LoadDefault(){
 	return image;
 }
 
-void deImageManager::SaveImage(deImage::Ref image, const char *filename){
+void deImageManager::SaveImage(deImage *image, const char *filename){
 	SaveImage(GetEngine()->GetVirtualFileSystem(), image, filename);
 }
 
-void deImageManager::SaveImage(deVirtualFileSystem *vfs, deImage::Ref image, const char *filename){
+void deImageManager::SaveImage(deVirtualFileSystem *vfs, deImage *image, const char *filename){
 	DEASSERT_NOTNULL(image)
 	DEASSERT_NOTNULL(vfs)
 	DEASSERT_NOTNULL(filename)
@@ -236,7 +236,7 @@ void deImageManager::SaveImage(deVirtualFileSystem *vfs, deImage::Ref image, con
 	}
 }
 
-void deImageManager::AddLoadedImage(deImage::Ref image){
+void deImageManager::AddLoadedImage(deImage *image){
 	DEASSERT_NOTNULL(image)
 	
 	pImages.Add(image);

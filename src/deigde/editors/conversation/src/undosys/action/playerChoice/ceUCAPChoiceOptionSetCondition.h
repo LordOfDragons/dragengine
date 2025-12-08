@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAPChoiceOptionSetCondition(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref ifElse,
-		ceCAPlayerChoiceOption::Ref ifcase, ceConversationCondition::Ref newCondition);
+	ceUCAPChoiceOptionSetCondition(ceConversationTopic *topic, ceCAPlayerChoice *ifElse,
+		ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition);
 	
 	/** \brief Clean up undo object. */
 	virtual ~ceUCAPChoiceOptionSetCondition();

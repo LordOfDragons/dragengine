@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeSetMoveName(saePhoneme::Ref phoneme, const char *newName);
+	saeUPhonemeSetMoveName(saePhoneme *phoneme, const char *newName);
 	
 protected:
 	/** Clean up undo. */

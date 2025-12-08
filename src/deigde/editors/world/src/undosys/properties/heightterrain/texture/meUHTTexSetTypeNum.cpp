@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTTexSetTypeNum::meUHTTexSetTypeNum(meHeightTerrainTexture::Ref texture, int newTypeNumber){
+meUHTTexSetTypeNum::meUHTTexSetTypeNum(meHeightTerrainTexture *texture, int newTypeNumber){
 	if(!texture) DETHROW(deeInvalidParam);
 	
 	pTexture = texture;

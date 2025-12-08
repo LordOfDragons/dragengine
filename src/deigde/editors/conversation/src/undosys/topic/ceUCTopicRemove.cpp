@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTopicRemove::ceUCTopicRemove(ceConversationTopic::Ref topic){
+ceUCTopicRemove::ceUCTopicRemove(ceConversationTopic *topic){
 	if(!topic) DETHROW(deeInvalidParam);
 	
 	ceConversationFile::Ref file = topic->GetFile();

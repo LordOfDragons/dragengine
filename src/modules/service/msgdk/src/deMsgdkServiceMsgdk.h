@@ -64,7 +64,7 @@ private:
 	bool pAchievementsSynced;
 	decObjectList pFrameUpdateTasks;
 
-	deImage::Ref pAuthProviderIcon, pAuthProviderImage;
+	deImage *pAuthProviderIcon, pAuthProviderImage;
 
 	static deMsgdkServiceMsgdk *pGlobalService;
 

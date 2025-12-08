@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCTriggerSetTrigger::ceUCCTriggerSetTrigger(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
-ceCConditionTrigger::Ref condition, const char *newTrigger){
+ceUCCTriggerSetTrigger::ceUCCTriggerSetTrigger(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionTrigger *condition, const char *newTrigger){
 	if(!topic || !action || !condition){
 		DETHROW(deeInvalidParam);
 	}

@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetBrightness::seUPropertyNodeSetBrightness(sePropertyNode::Ref node, float newValue) :
+seUPropertyNodeSetBrightness::seUPropertyNodeSetBrightness(sePropertyNode *node, float newValue) :
 
 pNewValue(newValue)
 {

@@ -61,19 +61,19 @@ public:
 	/** Retrieves the rig bone or NULL. */
 	inline reRigBone *GetBone() const{ return pBone; }
 	/** Sets the rig bone or NULL. */
-	void SetBone(reRigBone::Ref bone);
+	void SetBone(reRigBone *bone);
 	/** Retrieves the rig shape or NULL. */
 	inline reRigShape *GetShape() const{ return pShape; }
 	/** Sets the rig shape. */
-	void SetShape(reRigShape::Ref shape);
+	void SetShape(reRigShape *shape);
 	/** Retrieves the rig constraint or NULL. */
 	inline reRigConstraint *GetConstraint() const{ return pConstraint; }
 	/** Sets the rig constraint. */
-	void SetConstraint(reRigConstraint::Ref constraint);
+	void SetConstraint(reRigConstraint *constraint);
 	/** Retrieves the rig push or NULL. */
 	inline reRigPush *GetPush() const{ return pPush; }
 	/** Sets the rig push. */
-	void SetPush(reRigPush::Ref push);
+	void SetPush(reRigPush *push);
 	
 	/** Retrieves the distance. */
 	inline float GetDistance() const{ return pDistance; }

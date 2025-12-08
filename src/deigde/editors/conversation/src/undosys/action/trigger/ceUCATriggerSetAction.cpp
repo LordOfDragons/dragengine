@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCATriggerSetAction::ceUCATriggerSetAction(ceConversationTopic::Ref topic, ceCATrigger::Ref action, ceCATrigger::eActions newOperator){
+ceUCATriggerSetAction::ceUCATriggerSetAction(ceConversationTopic *topic, ceCATrigger *action, ceCATrigger::eActions newOperator){
 	if(!topic || !action){
 		DETHROW(deeInvalidParam);
 	}

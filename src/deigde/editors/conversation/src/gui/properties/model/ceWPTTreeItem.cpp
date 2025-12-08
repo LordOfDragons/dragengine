@@ -57,7 +57,7 @@ ceWPTTreeItem::~ceWPTTreeItem(){
 // Management
 ///////////////
 
-void ceWPTTreeItem::SetModel(ceWPTTreeItemModel::Ref model){
+void ceWPTTreeItem::SetModel(ceWPTTreeItemModel *model){
 	if(pModel == model){
 		return;
 	}
@@ -75,7 +75,7 @@ void ceWPTTreeItem::SetModel(ceWPTTreeItemModel::Ref model){
 
 
 
-void ceWPTTreeItem::AddItem(ceWPTTreeItemModel::Ref model){
+void ceWPTTreeItem::AddItem(ceWPTTreeItemModel *model){
 	if(!pTreeList || !model){
 		DETHROW(deeInvalidParam);
 	}
@@ -85,7 +85,7 @@ void ceWPTTreeItem::AddItem(ceWPTTreeItemModel::Ref model){
 	((ceWPTTreeItem&)(igdeTreeItem&)item).SetModel(model);
 }
 
-void ceWPTTreeItem::InsertItem(ceWPTTreeItemModel::Ref model, int position){
+void ceWPTTreeItem::InsertItem(ceWPTTreeItemModel *model, int position){
 	if(!pTreeList || !model || position < 0 || position > GetChildrenCount()){
 		DETHROW(deeInvalidParam);
 	}
@@ -111,7 +111,7 @@ void ceWPTTreeItem::InsertItem(ceWPTTreeItemModel::Ref model, int position){
 	((ceWPTTreeItem&)(igdeTreeItem&)item).SetModel(model);
 }
 
-void ceWPTTreeItem::RemoveItem(ceWPTTreeItemModel::Ref model){
+void ceWPTTreeItem::RemoveItem(ceWPTTreeItemModel *model){
 	if(!pTreeList || !model){
 		DETHROW(deeInvalidParam);
 	}

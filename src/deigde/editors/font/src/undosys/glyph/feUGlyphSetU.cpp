@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUGlyphSetU::feUGlyphSetU(feFontGlyph::Ref glyph, int newU){
+feUGlyphSetU::feUGlyphSetU(feFontGlyph *glyph, int newU){
 	SetShortInfo("GLyph set u");
 	
 	pOldU = glyph->GetU();

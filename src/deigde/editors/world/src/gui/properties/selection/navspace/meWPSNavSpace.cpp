@@ -172,7 +172,7 @@ pWPSelection(wpselection)
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox;
+	igdeContainer *content, groupBox;
 	
 	pListener.TakeOver(new meWPSNavSpaceListener(*this));
 	
@@ -215,7 +215,7 @@ meWPSNavSpace::~meWPSNavSpace(){
 // Management
 ///////////////
 
-void meWPSNavSpace::SetWorld(meWorld::Ref world){
+void meWPSNavSpace::SetWorld(meWorld *world){
 	if(world == pWorld){
 		return;
 	}

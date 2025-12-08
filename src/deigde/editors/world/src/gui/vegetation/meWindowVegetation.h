@@ -77,7 +77,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld(meWorld::Ref world);
+	void SetWorld(meWorld *world);
 	
 	/** \brief Sector coordinates. */
 	inline const decPoint &GetSector() const{ return pSector; }
@@ -89,7 +89,7 @@ public:
 	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }
 	
 	/** \brief Set vegetation layer. */
-	void SetVLayer(meHTVegetationLayer::Ref vlayer);
+	void SetVLayer(meHTVegetationLayer *vlayer);
 	
 	/** \brief Active vegetation layer rule. */
 	meHTVRule *GetVRule() const;

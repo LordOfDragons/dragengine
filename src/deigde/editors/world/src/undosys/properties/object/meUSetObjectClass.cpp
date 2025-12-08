@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUSetObjectClass::meUSetObjectClass(meObject::Ref object, const char *newcname){
+meUSetObjectClass::meUSetObjectClass(meObject *object, const char *newcname){
 	if(!object || !newcname) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();

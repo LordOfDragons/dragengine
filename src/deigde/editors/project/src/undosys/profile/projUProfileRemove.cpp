@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileRemove::projUProfileRemove(projProject::Ref project, projProfile::Ref profile) :
+projUProfileRemove::projUProfileRemove(projProject *project, projProfile *profile) :
 
 pProfile(NULL)
 {

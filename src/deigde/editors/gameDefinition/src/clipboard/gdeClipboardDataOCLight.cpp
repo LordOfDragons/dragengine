@@ -38,7 +38,7 @@ const char * const gdeClipboardDataOCLight::TYPE_NAME = "OCLight";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCLight::gdeClipboardDataOCLight(gdeOCLight::Ref light) :
+gdeClipboardDataOCLight::gdeClipboardDataOCLight(gdeOCLight *light) :
 igdeClipboardData(TYPE_NAME)
 {
 	if(!light){

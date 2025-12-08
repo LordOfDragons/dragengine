@@ -40,7 +40,7 @@
 ////////////////////////////
 
 projUProfileSetGameObject::projUProfileSetGameObject(
-projProfile::Ref profile, const char *newValue) :
+projProfile *profile, const char *newValue) :
 
 pNewValue(newValue)
 {

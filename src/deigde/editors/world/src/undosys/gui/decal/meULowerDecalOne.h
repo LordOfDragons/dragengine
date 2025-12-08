@@ -49,7 +49,7 @@ public:
 	typedef deTObjectReference<meULowerDecalOne> Ref;
 	
 	// constructor, destructor
-	meULowerDecalOne(meWorld *world, meDecal::Ref decal);
+	meULowerDecalOne(meWorld *world, meDecal *decal);
 	virtual ~meULowerDecalOne();
 	
 	// undo and redo operations

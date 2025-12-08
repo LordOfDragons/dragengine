@@ -64,22 +64,22 @@ public:
 	igdeGDCBillboard *GetAt(int index) const;
 	
 	/** \brief Index of an billboard or -1 if not found. */
-	int IndexOf(igdeGDCBillboard::Ref billboard) const;
+	int IndexOf(igdeGDCBillboard *billboard) const;
 	
 	/** \brief Determines if an billboard exists. */
-	bool Has(igdeGDCBillboard::Ref billboard) const;
+	bool Has(igdeGDCBillboard *billboard) const;
 	
 	/** \brief Adds an billboard. */
-	void Add(igdeGDCBillboard::Ref billboard);
+	void Add(igdeGDCBillboard *billboard);
 	
 	/** \brief Inserts a new billboard. */
-	void InsertAt(igdeGDCBillboard::Ref billboard, int index);
+	void InsertAt(igdeGDCBillboard *billboard, int index);
 	
 	/** \brief Moves an billboard to a new position. */
-	void MoveTo(igdeGDCBillboard::Ref billboard, int index);
+	void MoveTo(igdeGDCBillboard *billboard, int index);
 	
 	/** \brief Removes an billboard. */
-	void Remove(igdeGDCBillboard::Ref billboard);
+	void Remove(igdeGDCBillboard *billboard);
 	
 	/** \brief Removes all billboards. */
 	void RemoveAll();

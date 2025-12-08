@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCSpeaker(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCSpeaker::Ref speaker, int index);
+		gdeOCSpeaker *speaker, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

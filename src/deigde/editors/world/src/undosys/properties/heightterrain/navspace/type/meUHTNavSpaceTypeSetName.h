@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceTypeSetName(meHeightTerrainNavSpaceType::Ref type, const char *newName);
+	meUHTNavSpaceTypeSetName(meHeightTerrainNavSpaceType *type, const char *newName);
 	
 protected:
 	/** \brief Clean up undo action. */

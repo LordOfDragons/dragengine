@@ -40,7 +40,7 @@
 ////////////////////////////
 
 projUProfileSetPathConfig::projUProfileSetPathConfig(
-projProfile::Ref profile, const char *newValue) :
+projProfile *profile, const char *newValue) :
 
 pNewValue(newValue)
 {

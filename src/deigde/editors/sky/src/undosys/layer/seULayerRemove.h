@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerRemove(seLayer::Ref layer);
+	seULayerRemove(seLayer *layer);
 	
 protected:
 	/** \brief Clean up undo action. */

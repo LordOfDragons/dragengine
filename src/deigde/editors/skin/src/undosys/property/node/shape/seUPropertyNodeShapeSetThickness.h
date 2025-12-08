@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeShapeSetThickness(sePropertyNodeShape::Ref node, float newValue);
+	seUPropertyNodeShapeSetThickness(sePropertyNodeShape *node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */

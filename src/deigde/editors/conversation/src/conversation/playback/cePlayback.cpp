@@ -95,7 +95,7 @@ cePlayback::~cePlayback(){
 // Management
 ///////////////
 
-void cePlayback::SetTopic(ceConversationTopic::Ref topic){
+void cePlayback::SetTopic(ceConversationTopic *topic){
 	if(topic != pTopic){
 		pTopic = topic;
 		Rewind();
@@ -215,7 +215,7 @@ void cePlayback::ResetCamera(){
 	pConversation.NotifyCameraChanged();
 }
 
-void cePlayback::PlaySingleAction(ceConversationAction::Ref action, float time){
+void cePlayback::PlaySingleAction(ceConversationAction *action, float time){
 	Rewind();
 	SetRunning(false);
 	SetPaused(false);
@@ -649,7 +649,7 @@ void cePlayback::pProcessActions(float elapsed){
 	}
 }
 
-void cePlayback::SetLastPlayedAction(ceConversationTopic::Ref topic, ceConversationAction::Ref action){
+void cePlayback::SetLastPlayedAction(ceConversationTopic *topic, ceConversationAction *action){
 	if(topic != pLastPlayedActionTopic){
 		pLastPlayedActionTopic = topic;
 	}

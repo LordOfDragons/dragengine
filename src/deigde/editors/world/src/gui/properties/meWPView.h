@@ -83,7 +83,7 @@ private:
 	
 	igdeCheckBox::Ref pChkEnableAuralization;
 	
-	igdeEditVector::Ref pEditLimitBoxMinExtend, pEditLimitBoxMaxExtend;
+	igdeEditVector *pEditLimitBoxMinExtend, pEditLimitBoxMaxExtend;
 	igdeButton::Ref pBtnLimitBoxMenu;
 	
 	bool pPreventUpdateCamera;
@@ -113,7 +113,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld(meWorld::Ref world);
+	void SetWorld(meWorld *world);
 	
 	/** \brief Selected camera object. */
 	meCamera *GetSelectedCameraObject() const;

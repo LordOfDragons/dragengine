@@ -90,6 +90,6 @@ deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::AddWith(deoglSharedSPB &shar
 	return group;
 }
 
-void deoglSharedSPBRTIGroupList::Remove(deoglSharedSPBRTIGroup::Ref group){
+void deoglSharedSPBRTIGroupList::Remove(deoglSharedSPBRTIGroup *group){
 	pGroups.RemoveFrom(pGroups.IndexOf(group));
 }

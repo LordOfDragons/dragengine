@@ -87,7 +87,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create asset unpacker. */
-	dealAssetUnpacker(deLogger::Ref logger);
+	dealAssetUnpacker(deLogger *logger);
 	
 	/** \brief Clean up asset unpacker. */
 	~dealAssetUnpacker();

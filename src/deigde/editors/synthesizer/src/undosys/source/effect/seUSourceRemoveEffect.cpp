@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceRemoveEffect::seUSourceRemoveEffect(seSource::Ref source, seEffect::Ref effect) :
+seUSourceRemoveEffect::seUSourceRemoveEffect(seSource *source, seEffect *effect) :
 
 pSource(NULL)
 {

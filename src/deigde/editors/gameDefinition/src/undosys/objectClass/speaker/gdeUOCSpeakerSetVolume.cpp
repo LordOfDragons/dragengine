@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetVolume::gdeUOCSpeakerSetVolume(gdeObjectClass::Ref objectClass,
-gdeOCSpeaker::Ref speaker, float newValue) :
+gdeUOCSpeakerSetVolume::gdeUOCSpeakerSetVolume(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, float newValue) :
 
 pSpeaker(NULL)
 {

@@ -37,7 +37,7 @@
 ////////////////////////////
 
 ceUCASnippetToggleCreateSideLane::ceUCASnippetToggleCreateSideLane(
-	ceConversationTopic::Ref topic, ceCASnippet::Ref snippet) :
+	ceConversationTopic *topic, ceCASnippet *snippet) :
 
 pSnippet(nullptr)
 {

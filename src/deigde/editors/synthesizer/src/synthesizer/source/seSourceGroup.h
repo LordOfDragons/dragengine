@@ -68,16 +68,16 @@ public:
 	inline const seSourceList &GetSources() const{ return pSources; }
 	
 	/** \brief Add source. */
-	void AddSource(seSource::Ref source);
+	void AddSource(seSource *source);
 	
 	/** \brief Insert source. */
-	void InsertSourceAt(seSource::Ref source, int index);
+	void InsertSourceAt(seSource *source, int index);
 	
 	/** \brief Move source. */
-	void MoveSourceTo(seSource::Ref source, int index);
+	void MoveSourceTo(seSource *source, int index);
 	
 	/** \brief Remove source. */
-	void RemoveSource(seSource::Ref source);
+	void RemoveSource(seSource *source);
 	
 	/** \brief Remove all sources. */
 	void RemoveAllSources();

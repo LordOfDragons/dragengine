@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACoordSysAddSetCoordSysID::ceUCACoordSysAddSetCoordSysID(ceConversationTopic::Ref topic,
-ceCACoordSystemAdd::Ref action, const char *newCoordSysID){
+ceUCACoordSysAddSetCoordSysID::ceUCACoordSysAddSetCoordSysID(ceConversationTopic *topic,
+ceCACoordSystemAdd *action, const char *newCoordSysID){
 	if(!topic || !newCoordSysID){
 		DETHROW(deeInvalidParam);
 	}

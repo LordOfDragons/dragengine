@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetPropertyName::gdeUOCParticleEmitterSetPropertyName(gdeObjectClass::Ref objectClass,
-gdeOCParticleEmitter::Ref particleEmitter, gdeOCParticleEmitter::eProperties property, const char *newValue) :
+gdeUOCParticleEmitterSetPropertyName::gdeUOCParticleEmitterSetPropertyName(gdeObjectClass *objectClass,
+gdeOCParticleEmitter *particleEmitter, gdeOCParticleEmitter::eProperties property, const char *newValue) :
 
 
 pProperty(property)

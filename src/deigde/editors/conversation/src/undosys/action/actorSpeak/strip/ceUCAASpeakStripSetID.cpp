@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakStripSetID::ceUCAASpeakStripSetID(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak,
-ceStrip::Ref strip, const char *newID){
+ceUCAASpeakStripSetID::ceUCAASpeakStripSetID(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
+ceStrip *strip, const char *newID){
 	if(!topic || !actorSpeak || !strip || !newID){
 		DETHROW(deeInvalidParam);
 	}

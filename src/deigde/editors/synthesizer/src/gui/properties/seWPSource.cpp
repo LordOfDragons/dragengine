@@ -323,7 +323,7 @@ pActivePanel(NULL)
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox;
+	igdeContainer *content, groupBox;
 	
 	pListener.TakeOver(new seWPSourceListener(*this));
 	
@@ -375,7 +375,7 @@ seWPSource::~seWPSource(){
 // Management
 ///////////////
 
-void seWPSource::SetSynthesizer(seSynthesizer::Ref synthesizer){
+void seWPSource::SetSynthesizer(seSynthesizer *synthesizer){
 	if(synthesizer == pSynthesizer){
 		return;
 	}

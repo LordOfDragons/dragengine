@@ -45,9 +45,9 @@ private:
 		
 		sDictEntry();
 		sDictEntry(const sDictEntry &entry);
-		sDictEntry(unsigned int nhash, const char *nkey, deObject::Ref nvalue);
+		sDictEntry(unsigned int nhash, const char *nkey, deObject *nvalue);
 		~sDictEntry();
-		void SetValue(deObject::Ref nvalue);
+		void SetValue(deObject *nvalue);
 	};
 	
 	sDictEntry **pBuckets;
@@ -106,7 +106,7 @@ public:
 	 * \throws deeInvalidParam \em value is \em NULL.
 	 * \throws deeInvalidParam \em value is an empty string.
 	 */
-	void SetAt(const char *key, deObject::Ref value);
+	void SetAt(const char *key, deObject *value);
 	
 	/**
 	 * \brief Remove a key.

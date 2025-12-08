@@ -138,7 +138,7 @@ deCanvas *spTypeCanvas::CanvasFromObject(PyObject *object){
 	return ((sObjectData*)GetObjectData(object))->canvas;
 }
 
-PyObject *spTypeCanvas::ObjectFromCanvas(deCanvas::Ref canvas){
+PyObject *spTypeCanvas::ObjectFromCanvas(deCanvas *canvas){
 	if(!canvas){
 		Py_INCREF(Py_None);
 		return Py_None;

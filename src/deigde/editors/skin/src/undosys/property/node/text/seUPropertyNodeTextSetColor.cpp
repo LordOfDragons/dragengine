@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeTextSetColor::seUPropertyNodeTextSetColor(
-sePropertyNodeText::Ref node, const decColor &newValue) :
+sePropertyNodeText *node, const decColor &newValue) :
 
 pNewValue(newValue)
 {

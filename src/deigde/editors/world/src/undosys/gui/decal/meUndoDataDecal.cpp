@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataDecal::meUndoDataDecal(meDecal::Ref decal){
+meUndoDataDecal::meUndoDataDecal(meDecal *decal){
 	if(!decal) DETHROW(deeInvalidParam);
 	
 	pOldPosition = decal->GetPosition();

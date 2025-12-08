@@ -64,22 +64,22 @@ public:
 	igdeGDCForceField *GetAt(int index) const;
 	
 	/** \brief Index of an field or -1 if not found. */
-	int IndexOf(igdeGDCForceField::Ref field) const;
+	int IndexOf(igdeGDCForceField *field) const;
 	
 	/** \brief Determines if an field exists. */
-	bool Has(igdeGDCForceField::Ref field) const;
+	bool Has(igdeGDCForceField *field) const;
 	
 	/** \brief Adds an field. */
-	void Add(igdeGDCForceField::Ref field);
+	void Add(igdeGDCForceField *field);
 	
 	/** \brief Inserts a new field. */
-	void InsertAt(igdeGDCForceField::Ref field, int index);
+	void InsertAt(igdeGDCForceField *field, int index);
 	
 	/** \brief Moves an field to a new position. */
-	void MoveTo(igdeGDCForceField::Ref field, int index);
+	void MoveTo(igdeGDCForceField *field, int index);
 	
 	/** \brief Removes an field. */
-	void Remove(igdeGDCForceField::Ref field);
+	void Remove(igdeGDCForceField *field);
 	
 	/** \brief Removes all fields. */
 	void RemoveAll();

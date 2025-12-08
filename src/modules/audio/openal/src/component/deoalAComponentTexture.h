@@ -88,7 +88,7 @@ public:
 	inline deoalASkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin(deoalASkin::Ref skin);
+	void SetSkin(deoalASkin *skin);
 	
 	
 	

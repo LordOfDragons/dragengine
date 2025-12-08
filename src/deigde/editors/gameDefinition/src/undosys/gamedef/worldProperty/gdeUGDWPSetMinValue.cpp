@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPSetMinValue::gdeUGDWPSetMinValue(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property, float newValue) :
+gdeUGDWPSetMinValue::gdeUGDWPSetMinValue(gdeGameDefinition *gamedef, gdeProperty *property, float newValue) :
 
 pProperty(NULL)
 {

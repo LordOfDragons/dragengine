@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPSetName::gdeUGDWPSetName(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property, const char *newValue) :
+gdeUGDWPSetName::gdeUGDWPSetName(gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue) :
 
 pProperty(NULL)
 {

@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCAInConvoToggleNegate::ceUCCAInConvoToggleNegate(ceConversationTopic::Ref topic,
-ceConversationAction::Ref action, ceCConditionActorInConversation::Ref condition) :
+ceUCCAInConvoToggleNegate::ceUCCAInConvoToggleNegate(ceConversationTopic *topic,
+ceConversationAction *action, ceCConditionActorInConversation *condition) :
 
 
 pCondition(NULL)

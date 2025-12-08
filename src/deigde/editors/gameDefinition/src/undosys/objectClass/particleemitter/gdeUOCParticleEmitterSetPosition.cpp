@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetPosition::gdeUOCParticleEmitterSetPosition(gdeObjectClass::Ref objectClass,
-gdeOCParticleEmitter::Ref particleEmitter, const decVector &newValue) :
+gdeUOCParticleEmitterSetPosition::gdeUOCParticleEmitterSetPosition(gdeObjectClass *objectClass,
+gdeOCParticleEmitter *particleEmitter, const decVector &newValue) :
 
 pParticleEmitter(NULL)
 {

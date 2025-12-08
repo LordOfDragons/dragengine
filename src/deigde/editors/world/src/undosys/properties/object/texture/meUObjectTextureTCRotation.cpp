@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureTCRotation::meUObjectTextureTCRotation(meObjectTexture::Ref texture, float newRotation){
+meUObjectTextureTCRotation::meUObjectTextureTCRotation(meObjectTexture *texture, float newRotation){
 	if(!texture){
 		DETHROW(deeInvalidParam);
 	}

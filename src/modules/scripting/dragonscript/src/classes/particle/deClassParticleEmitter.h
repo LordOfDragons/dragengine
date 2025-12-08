@@ -64,7 +64,7 @@ public:
 	/** Retrieves the prop field or NULL if myself is NULL. */
 	deParticleEmitter *GetParticleEmitter(dsRealObject *myself) const;
 	/** Pushes the prop field which can be NULL. */
-	void PushParticleEmitter(dsRunTime *rt, deParticleEmitter::Ref emitter);
+	void PushParticleEmitter(dsRunTime *rt, deParticleEmitter *emitter);
 	
 	inline dsClass *GetClassParticleEmitterParameter() const{ return pClsParticleEmitterParameter; }
 	inline dsClass *GetClassParticleEmitterEmitController() const{ return pClsParticleEmitterEmitController; }

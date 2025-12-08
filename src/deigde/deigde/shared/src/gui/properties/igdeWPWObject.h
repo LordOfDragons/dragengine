@@ -70,7 +70,7 @@ public:
 	private:
 		const igdeWObject::Ref pObject;
 		
-		igdeGDClass::Ref pGDClassOld, pGDClassNew;
+		igdeGDClass *pGDClassOld, pGDClassNew;
 		decDVector pPositionOld, pPositionNew;
 		decQuaternion pOrientationOld, pOrientationNew;
 		decVector pScalingOld, pScalingNew;

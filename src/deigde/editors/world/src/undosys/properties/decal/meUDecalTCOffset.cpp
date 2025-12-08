@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalTCOffset::meUDecalTCOffset(meDecal::Ref decal, const decVector2 &newOffset){
+meUDecalTCOffset::meUDecalTCOffset(meDecal *decal, const decVector2 &newOffset){
 	if(!decal){
 		DETHROW(deeInvalidParam);
 	}

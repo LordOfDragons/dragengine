@@ -64,7 +64,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUObjectSnapToGrid(meWorld::Ref world, const meObjectList &objects, float grid);
+	meUObjectSnapToGrid(meWorld *world, const meObjectList &objects, float grid);
 	
 	/** \brief Clean up undo object. */
 	virtual ~meUObjectSnapToGrid();

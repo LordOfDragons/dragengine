@@ -384,7 +384,7 @@ deAnimatorRuleSubAnimator *deClassARSubAnimator::GetRule(dsRealObject *myself) c
 	return ((sARSubANatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARSubAnimator::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
+void deClassARSubAnimator::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -404,7 +404,7 @@ void deClassARSubAnimator::AssignAnimator(dsRealObject *myself, deAnimator::Ref 
 	nd.animator = animator;
 }
 
-void deClassARSubAnimator::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleSubAnimator::Ref rule){
+void deClassARSubAnimator::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleSubAnimator *rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

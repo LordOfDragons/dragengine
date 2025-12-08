@@ -182,7 +182,7 @@ public:
 	/** \brief Retrieves the constraint rig bone or NULL. */
 	inline reRigBone *GetConstraintBone() const{ return pConstraintBone; }
 	/** \brief Sets the constraint rig bone or NULL. */
-	void SetConstraintBone(reRigBone::Ref bone);
+	void SetConstraintBone(reRigBone *bone);
 	
 	/** \brief Retrieves the first pose matrix. */
 	inline const decDMatrix &GetPoseMatrix1() const{ return pPoseMatrix1; }

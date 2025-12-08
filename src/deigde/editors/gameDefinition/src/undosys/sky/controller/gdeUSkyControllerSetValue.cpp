@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUSkyControllerSetValue::gdeUSkyControllerSetValue(gdeSky::Ref sky,
-gdeSkyController::Ref controller, float newValue) :
+gdeUSkyControllerSetValue::gdeUSkyControllerSetValue(gdeSky *sky,
+gdeSkyController *controller, float newValue) :
 
 
 pNewValue(newValue)

@@ -410,7 +410,7 @@ deVideoPlayer *deClassVideoPlayer::GetVideoPlayer(dsRealObject *myself) const{
 	return ((sVPNatDat*)p_GetNativeData(myself->GetBuffer()))->videoPlayer;
 }
 
-void deClassVideoPlayer::PushVideoPlayer(dsRunTime *rt, deVideoPlayer::Ref videoPlayer){
+void deClassVideoPlayer::PushVideoPlayer(dsRunTime *rt, deVideoPlayer *videoPlayer){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

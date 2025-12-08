@@ -93,7 +93,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUBoneImportFromFile(reRig::Ref rig, reRig *importedRig);
+	reUBoneImportFromFile(reRig *rig, reRig *importedRig);
 	
 protected:
 	/** \brief Clean up undo. */

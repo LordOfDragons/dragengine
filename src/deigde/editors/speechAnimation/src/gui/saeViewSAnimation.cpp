@@ -104,7 +104,7 @@ saeViewSAnimation::~saeViewSAnimation(){
 void saeViewSAnimation::ResetView(){
 }
 
-void saeViewSAnimation::SetSAnimation(saeSAnimation::Ref sanimation){
+void saeViewSAnimation::SetSAnimation(saeSAnimation *sanimation){
 	if(sanimation == pSAnimation){
 		return;
 	}

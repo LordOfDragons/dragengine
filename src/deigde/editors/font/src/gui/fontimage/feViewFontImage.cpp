@@ -146,7 +146,7 @@ feViewFontImage::~feViewFontImage(){
 // Management
 ///////////////
 
-void feViewFontImage::SetFont(feFont::Ref font){
+void feViewFontImage::SetFont(feFont *font){
 	if(font == pFont){
 		return;
 	}

@@ -877,7 +877,7 @@ dedsInputDevice *deClassInputDevice::GetInputDevice(dsRealObject *myself) const{
 	return ((sInputDeviceNatDat*)p_GetNativeData(myself->GetBuffer()))->device;
 }
 
-void deClassInputDevice::PushInputDevice(dsRunTime *rt, dedsInputDevice::Ref device){
+void deClassInputDevice::PushInputDevice(dsRunTime *rt, dedsInputDevice *device){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

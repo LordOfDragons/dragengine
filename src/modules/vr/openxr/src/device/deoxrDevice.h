@@ -72,8 +72,8 @@ private:
 	
 	deoxrPath pSubactionPath;
 	
-	deoxrAction::Ref pActionPose, pActionPoseOrientation;
-	deoxrSpace::Ref pSpacePose, pSpacePoseOrientation;
+	deoxrAction *pActionPose, pActionPoseOrientation;
+	deoxrSpace *pSpacePose, pSpacePoseOrientation;
 	decVector pPosePosition;
 	decQuaternion pPoseOrientation;
 	decVector pPoseLinearVelocity, pPoseAngularVelocity;

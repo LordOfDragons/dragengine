@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddInherit::gdeUOCAddInherit(gdeObjectClass::Ref objectClass, gdeOCInherit::Ref inherit) :
+gdeUOCAddInherit::gdeUOCAddInherit(gdeObjectClass *objectClass, gdeOCInherit *inherit) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !inherit){

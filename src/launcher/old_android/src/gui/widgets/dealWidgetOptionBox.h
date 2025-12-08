@@ -99,7 +99,7 @@ public:
 	inline dealWidgetOptionGroup *GetGroup() const{ return pGroup; }
 	
 	/** \brief Set group or \em NULL if not assigned to one. */
-	void SetGroup(dealWidgetOptionGroup::Ref group);
+	void SetGroup(dealWidgetOptionGroup *group);
 	
 	/** \brief Button is selected. */
 	inline bool GetSelected() const{ return pSelected; }

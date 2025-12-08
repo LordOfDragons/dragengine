@@ -60,7 +60,7 @@ cePlaybackActionStackEntry::~cePlaybackActionStackEntry(){
 // Management
 ///////////////
 
-void cePlaybackActionStackEntry::SetParentTopic(ceConversationTopic::Ref topic){
+void cePlaybackActionStackEntry::SetParentTopic(ceConversationTopic *topic){
 	if(topic == pParentTopic){
 		return;
 	}
@@ -77,7 +77,7 @@ void cePlaybackActionStackEntry::SetParentList(const ceConversationActionList *l
 
 
 
-void cePlaybackActionStackEntry::SetLoopCondition(ceConversationCondition::Ref condition){
+void cePlaybackActionStackEntry::SetLoopCondition(ceConversationCondition *condition){
 	if(condition == pLoopCondition){
 		return;
 	}

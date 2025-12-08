@@ -74,7 +74,7 @@ void debpGhostObject::SetDynamicsWorld(debpCollisionWorld *dynWorld){
 	}
 }
 
-void debpGhostObject::SetShape(debpBulletShape::Ref shape){
+void debpGhostObject::SetShape(debpBulletShape *shape){
 	if(shape == pShape){
 		return;
 	}

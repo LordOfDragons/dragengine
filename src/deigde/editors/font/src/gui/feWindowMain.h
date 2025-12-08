@@ -134,7 +134,7 @@ public:
 	/** Retrieves the rig. */
 	inline feFont *GetFont() const{ return pFont; }
 	/** Sets the font. */
-	void SetFont(feFont::Ref font);
+	void SetFont(feFont *font);
 	/** Creates a new font. */
 	void CreateNewFont();
 	/** Saves the font under the given file. */

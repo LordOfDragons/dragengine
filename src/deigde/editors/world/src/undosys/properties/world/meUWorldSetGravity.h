@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */
-	meUWorldSetGravity(meWorld::Ref world, const decVector &newValue);
+	meUWorldSetGravity(meWorld *world, const decVector &newValue);
 	
 protected:
 	/** Clean up undo object. */

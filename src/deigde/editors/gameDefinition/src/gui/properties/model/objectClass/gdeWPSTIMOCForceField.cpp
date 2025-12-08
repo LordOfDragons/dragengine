@@ -48,7 +48,7 @@
 ////////////////////////////
 
 gdeWPSTIMOCForceField::gdeWPSTIMOCForceField(gdeWPSTreeModel &tree,
-	gdeObjectClass *objectClass, gdeOCForceField::Ref forceField, int index) :
+	gdeObjectClass *objectClass, gdeOCForceField *forceField, int index) :
 gdeWPSTIMOCSubObject(tree, etObjectClassForceField, objectClass, index)
 {
 	if(!forceField){

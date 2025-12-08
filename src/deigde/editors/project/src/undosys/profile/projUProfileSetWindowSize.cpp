@@ -40,7 +40,7 @@
 ////////////////////////////
 
 projUProfileSetWindowSize::projUProfileSetWindowSize(
-projProfile::Ref profile, const decPoint &newValue) :
+projProfile *profile, const decPoint &newValue) :
 
 pNewValue(newValue)
 {

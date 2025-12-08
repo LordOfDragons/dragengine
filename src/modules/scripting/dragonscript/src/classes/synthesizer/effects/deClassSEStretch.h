@@ -84,10 +84,10 @@ public:
 	deSynthesizerEffectStretch *GetEffect(dsRealObject *myself) const;
 	
 	/** \brief Assigns synthesizer or \em NULL. */
-	void AssignSynthesizer(dsRealObject *myself, deSynthesizerSource::Ref source);
+	void AssignSynthesizer(dsRealObject *myself, deSynthesizerSource *source);
 	
 	/** \brief Pushes a effect. */
-	void PushEffect(dsRunTime *rt, deSynthesizerSource::Ref source, deSynthesizerEffectStretch::Ref effect);
+	void PushEffect(dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffectStretch *effect);
 	
 	inline dsClass *GetClassSEStretchTarget() const{ return pClsSEStretchTarget; }
 	/*@}*/

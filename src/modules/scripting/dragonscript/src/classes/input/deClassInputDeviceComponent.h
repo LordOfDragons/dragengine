@@ -64,7 +64,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push component. */
-	void PushComponent(dsRunTime *rt, dedsInputDevice::Ref device, int index);
+	void PushComponent(dsRunTime *rt, dedsInputDevice *device, int index);
 	
 	inline dsClass *GetClassInputDeviceComponentType() const{ return pClsInputDeviceComponentType; }
 	/*@}*/

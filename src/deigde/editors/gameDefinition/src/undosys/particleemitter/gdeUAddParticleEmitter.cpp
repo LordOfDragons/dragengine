@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUAddParticleEmitter::gdeUAddParticleEmitter(gdeGameDefinition::Ref gameDefinition, gdeParticleEmitter::Ref particleEmitter) :
+gdeUAddParticleEmitter::gdeUAddParticleEmitter(gdeGameDefinition *gameDefinition, gdeParticleEmitter *particleEmitter) :
 
 pParticleEmitter(NULL)
 {

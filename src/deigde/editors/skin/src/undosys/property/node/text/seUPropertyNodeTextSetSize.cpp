@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeTextSetSize::seUPropertyNodeTextSetSize(sePropertyNodeText::Ref node, float newValue) :
+seUPropertyNodeTextSetSize::seUPropertyNodeTextSetSize(sePropertyNodeText *node, float newValue) :
 
 pNewValue(newValue)
 {

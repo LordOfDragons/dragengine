@@ -47,7 +47,7 @@
 ////////////////////////////
 
 gdeWPSTIMOCEnvMapProbe::gdeWPSTIMOCEnvMapProbe(gdeWPSTreeModel &tree,
-	gdeObjectClass *objectClass, gdeOCEnvMapProbe::Ref envMapProbe, int index) :
+	gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe, int index) :
 gdeWPSTIMOCSubObject(tree, etObjectClassEnvMapProbe, objectClass, index)
 {
 	if(!envMapProbe){

@@ -56,7 +56,7 @@ ceWPUndoHistory::~ceWPUndoHistory(){
 // Management
 ///////////////
 
-void ceWPUndoHistory::SetConversation(ceConversation::Ref conversation){
+void ceWPUndoHistory::SetConversation(ceConversation *conversation){
 	if(conversation == pConversation){
 		return;
 	}

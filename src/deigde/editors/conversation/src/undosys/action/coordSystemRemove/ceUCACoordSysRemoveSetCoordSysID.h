@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCACoordSysRemoveSetCoordSysID(ceConversationTopic::Ref topic, ceCACoordSystemRemove::Ref action, const char *newCoordSystemID);
+	ceUCACoordSysRemoveSetCoordSysID(ceConversationTopic *topic, ceCACoordSystemRemove *action, const char *newCoordSystemID);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCACoordSysRemoveSetCoordSysID();
 	/*@}*/

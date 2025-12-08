@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUWordSetName::saeUWordSetName(saeWord::Ref word, const char *newName){
+saeUWordSetName::saeUWordSetName(saeWord *word, const char *newName){
 	if(!word || !newName) DETHROW(deeInvalidParam);
 	
 	pWord = NULL;

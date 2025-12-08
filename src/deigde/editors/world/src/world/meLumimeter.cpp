@@ -192,7 +192,7 @@ bool meLumimeter::HasHostObject() const{
 	return pHostObject != NULL;
 }
 
-void meLumimeter::SetHostObject(meObject::Ref object){
+void meLumimeter::SetHostObject(meObject *object){
 	if(object == pHostObject){
 		return;
 	}

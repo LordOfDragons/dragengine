@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCComponent(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCComponent::Ref component, int index);
+		gdeOCComponent *component, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

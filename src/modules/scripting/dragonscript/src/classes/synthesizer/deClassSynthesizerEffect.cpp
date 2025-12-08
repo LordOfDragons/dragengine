@@ -191,7 +191,7 @@ deSynthesizerEffect *deClassSynthesizerEffect::GetEffect(dsRealObject *myself) c
 	return ((sSynSNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
-void deClassSynthesizerEffect::AssignEffect(dsRealObject *myself, deSynthesizerEffect::Ref effect){
+void deClassSynthesizerEffect::AssignEffect(dsRealObject *myself, deSynthesizerEffect *effect){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -209,7 +209,7 @@ void deClassSynthesizerEffect::AssignEffect(dsRealObject *myself, deSynthesizerE
 	nd.effect = effect;
 }
 
-void deClassSynthesizerEffect::AssignSource(dsRealObject *myself, deSynthesizerSource::Ref source){
+void deClassSynthesizerEffect::AssignSource(dsRealObject *myself, deSynthesizerSource *source){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -227,7 +227,7 @@ void deClassSynthesizerEffect::AssignSource(dsRealObject *myself, deSynthesizerS
 	nd.source = source;
 }
 
-void deClassSynthesizerEffect::PushEffect(dsRunTime *rt, deSynthesizerSource::Ref source, deSynthesizerEffect::Ref effect){
+void deClassSynthesizerEffect::PushEffect(dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffect *effect){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

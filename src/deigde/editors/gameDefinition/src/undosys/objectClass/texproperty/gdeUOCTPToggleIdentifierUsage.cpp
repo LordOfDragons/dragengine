@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCTPToggleIdentifierUsage::gdeUOCTPToggleIdentifierUsage(
-gdeObjectClass::Ref objectClass, gdeProperty::Ref property) :
+gdeObjectClass *objectClass, gdeProperty *property) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !property){

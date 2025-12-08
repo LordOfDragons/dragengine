@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetHalfIntDist(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light, float newValue);
+	gdeUOCLightSetHalfIntDist(gdeObjectClass *objectClass, gdeOCLight *light, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

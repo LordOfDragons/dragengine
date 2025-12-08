@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetLookAtTarget::ceUCCShotSetLookAtTarget(ceCameraShot::Ref cameraShot, const char *newTarget){
+ceUCCShotSetLookAtTarget::ceUCCShotSetLookAtTarget(ceCameraShot *cameraShot, const char *newTarget){
 	if(!cameraShot || !newTarget){
 		DETHROW(deeInvalidParam);
 	}

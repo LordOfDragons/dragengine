@@ -176,7 +176,7 @@ deCanvas *stClassCanvas::OOPToCanvas(OOP object) const{
 	return ((csCanvas*)OOP_TO_OBJ(object))->canvas;
 }
 
-OOP stClassCanvas::CanvasToOOP(deCanvas::Ref canvas){
+OOP stClassCanvas::CanvasToOOP(deCanvas *canvas){
 	if(!canvas){
 		return pST.GetNil();
 	}

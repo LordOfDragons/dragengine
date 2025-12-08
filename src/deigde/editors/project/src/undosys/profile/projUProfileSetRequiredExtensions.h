@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetRequiredExtensions(projProfile::Ref profile, const decStringSet &newValue);
+	projUProfileSetRequiredExtensions(projProfile *profile, const decStringSet &newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileSetRequiredExtensions();

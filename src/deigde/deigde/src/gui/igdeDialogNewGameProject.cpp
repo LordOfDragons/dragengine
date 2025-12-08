@@ -286,7 +286,7 @@ pProjectGameDefPathChanged(false)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainer::Ref content, panel;
+	igdeContainer *content, panel;
 	
 	content.TakeOver(new igdeContainerForm(env));
 	

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeURemoveParticleEmitter::gdeURemoveParticleEmitter(
-gdeGameDefinition::Ref gameDefinition, gdeParticleEmitter::Ref particleEmitter) :
+gdeGameDefinition *gameDefinition, gdeParticleEmitter *particleEmitter) :
 
 pParticleEmitter(NULL)
 {

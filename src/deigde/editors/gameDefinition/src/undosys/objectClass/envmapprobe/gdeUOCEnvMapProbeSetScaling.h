@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetScaling(gdeObjectClass::Ref objectClass,
+	gdeUOCEnvMapProbeSetScaling(gdeObjectClass *objectClass,
 		gdeOCEnvMapProbe *component, const decVector &newValue);
 	
 protected:

@@ -64,7 +64,7 @@ public:
 	projTRPParameter *GetWith(const char *module, const char *name) const;
 	
 	/** \brief Parameter is present. */
-	bool Has(projTRPParameter::Ref parameter) const;
+	bool Has(projTRPParameter *parameter) const;
 	
 	/** \brief Named parameter with module is present. */
 	bool HasWith(const char *module, const char *name) const;
@@ -76,10 +76,10 @@ public:
 	int IndexOfWith(const char *module, const char *name) const;
 	
 	/** \brief Add parameter. */
-	void Add(projTRPParameter::Ref parameter);
+	void Add(projTRPParameter *parameter);
 	
 	/** \brief Remove parameter. */
-	void Remove(projTRPParameter::Ref parameter);
+	void Remove(projTRPParameter *parameter);
 	
 	/** \brief Remove named parameter with module if present. */
 	void RemoveWith(const char *module, const char *name);

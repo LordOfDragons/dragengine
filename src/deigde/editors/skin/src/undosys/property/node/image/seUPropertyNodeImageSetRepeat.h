@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeImageSetRepeat(sePropertyNodeImage::Ref node, const decPoint &newValue);
+	seUPropertyNodeImageSetRepeat(sePropertyNodeImage *node, const decPoint &newValue);
 	
 protected:
 	/** \brief Clean up undo. */

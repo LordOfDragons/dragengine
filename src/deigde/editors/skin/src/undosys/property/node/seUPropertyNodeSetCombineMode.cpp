@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeSetCombineMode::seUPropertyNodeSetCombineMode(
-	sePropertyNode::Ref node, deSkinPropertyNode::eCombineModes newValue) :
+	sePropertyNode *node, deSkinPropertyNode::eCombineModes newValue) :
 
 pNewValue(newValue)
 {

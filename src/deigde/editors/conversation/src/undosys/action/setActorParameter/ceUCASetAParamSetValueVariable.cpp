@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCASetAParamSetValueVariable::ceUCASetAParamSetValueVariable(
-ceConversationTopic::Ref topic, ceCASetActorParameter::Ref action, const char *newName) :
+ceConversationTopic *topic, ceCASetActorParameter *action, const char *newName) :
 
 pNewName(newName)
 {

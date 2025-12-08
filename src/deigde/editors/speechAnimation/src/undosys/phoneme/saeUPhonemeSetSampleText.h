@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeSetSampleText(saePhoneme::Ref phoneme, const char *newText);
+	saeUPhonemeSetSampleText(saePhoneme *phoneme, const char *newText);
 	
 protected:
 	/** Clean up undo. */

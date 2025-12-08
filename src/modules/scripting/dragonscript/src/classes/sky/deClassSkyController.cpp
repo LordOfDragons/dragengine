@@ -494,7 +494,7 @@ void deClassSkyController::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassSkyController::PushController(dsRunTime *rt, deSky::Ref sky, int index){
+void deClassSkyController::PushController(dsRunTime *rt, deSky *sky, int index){
 	if(!rt || !sky || index < 0 || index >= sky->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -506,7 +506,7 @@ void deClassSkyController::PushController(dsRunTime *rt, deSky::Ref sky, int ind
 	nd.index = index;
 }
 
-void deClassSkyController::PushController(dsRunTime *rt, deSkyInstance::Ref instance, int index){
+void deClassSkyController::PushController(dsRunTime *rt, deSkyInstance *instance, int index){
 	if(!rt || !instance || index < 0 || index >= instance->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}

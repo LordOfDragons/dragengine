@@ -180,7 +180,7 @@ void seWindowMain::ResetViews(){
 
 
 
-void seWindowMain::SetSkin(seSkin::Ref skin){
+void seWindowMain::SetSkin(seSkin *skin){
 	if(skin == pSkin){
 		return;
 	}
@@ -429,7 +429,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSkin::Ref skin) = 0;
+	virtual igdeUndo *OnAction(seSkin *skin) = 0;
 	
 	virtual void Update(){
 		if(pWindow.GetSkin()){
@@ -579,7 +579,7 @@ public:
 		"Save As...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
 		"Saves skin under a differen file", deInputEvent::ekcA){}
 	
-	virtual igdeUndo * OnAction(seSkin::Ref skin){
+	virtual igdeUndo * OnAction(seSkin *skin){
 		decString filename(skin->GetFilePath());
 		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Skin",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -600,7 +600,7 @@ public:
 		SetMnemonic(deInputEvent::ekcS);
 	}
 	
-	virtual igdeUndo *OnAction(seSkin::Ref skin){
+	virtual igdeUndo *OnAction(seSkin *skin){
 		if(skin->GetSaved()){
 			if(skin->GetChanged()){
 				pWindow.SaveSkin(skin->GetFilePath());
@@ -661,11 +661,11 @@ public:
 		const char *description, deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
 		cActionBase(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnAction(seSkin::Ref skin){
+	virtual igdeUndo *OnAction(seSkin *skin){
 		return skin->GetActiveMapped() ? OnActionMapped(skin, skin->GetActiveMapped()) : nullptr;
 	}
 	
-	virtual igdeUndo *OnActionMapped(seSkin::Ref skin, seMapped *mapped) = 0;
+	virtual igdeUndo *OnActionMapped(seSkin *skin, seMapped *mapped) = 0;
 	
 	void Update(const seSkin &skin) override{
 		if(skin.GetActiveMapped()){
@@ -687,7 +687,7 @@ public:
 		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add mapped", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(seSkin::Ref skin){
+	virtual igdeUndo *OnAction(seSkin *skin){
 		decString name("Mapped");
 		while(igdeCommonDialogs::GetString(&pWindow, "Add Mapped", "Name:", name)){
 			if(skin->GetMappedList().HasNamed(name)){
@@ -729,11 +729,11 @@ public:
 		const char *description, deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
 		cActionBase(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnAction(seSkin::Ref skin){
+	virtual igdeUndo *OnAction(seSkin *skin){
 		return skin->GetActiveTexture() ? OnActionTexture(skin, skin->GetActiveTexture()) : NULL;
 	}
 	
-	virtual igdeUndo *OnActionTexture(seSkin::Ref skin, seTexture *texture) = 0;
+	virtual igdeUndo *OnActionTexture(seSkin *skin, seTexture *texture) = 0;
 	
 	void Update(const seSkin &skin) override{
 		if(skin.GetActiveTexture()){
@@ -755,7 +755,7 @@ public:
 		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add texture", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(seSkin::Ref skin){
+	virtual igdeUndo *OnAction(seSkin *skin){
 		seDialogAddTexture::Ref dialog(seDialogAddTexture::Ref::NewWith(pWindow));
 		if(!dialog->Run(&pWindow)){
 			return NULL;
@@ -789,7 +789,7 @@ public:
 		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
 			cActionBaseTexture(window, text, icon, description, mnemonic){}
 	
-	igdeUndo *ImportTexture(seSkin::Ref skin, seTexture *texture, const char *skinPath){
+	igdeUndo *ImportTexture(seSkin *skin, seTexture *texture, const char *skinPath){
 		// load Skin
 		pWindow.GetEditorModule().LogInfoFormat("Import from Skin %s", skinPath);
 		
@@ -895,7 +895,7 @@ public:
 		"Import Texture from Game Definition", NULL,
 		"Import Texture from a game definition skin", deInputEvent::ekcI){}
 	
-	virtual igdeUndo *OnActionTexture(seSkin::Ref skin, seTexture *texture){
+	virtual igdeUndo *OnActionTexture(seSkin *skin, seTexture *texture){
 		decString importSkin(pWindow.importSkinLastGD);
 		if(importSkin.IsEmpty()){
 			importSkin = pWindow.GetGameDefinition()->GetSkinManager()->GetDefaultSkinPath();
@@ -915,7 +915,7 @@ public:
 		"Import Texture from File", NULL,
 		"Import Texture from a skin file into the active texture", deInputEvent::ekcM){}
 	
-	virtual igdeUndo *OnActionTexture(seSkin::Ref skin, seTexture *texture){
+	virtual igdeUndo *OnActionTexture(seSkin *skin, seTexture *texture){
 		igdeEnvironment &env = pWindow.GetEnvironment();
 		decString filename(pWindow.importSkinLastPath);
 		if(filename.IsEmpty()){
@@ -938,11 +938,11 @@ public:
 		const char *description, deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
 		cActionBaseTexture(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnActionTexture(seSkin::Ref skin, seTexture *texture){
+	virtual igdeUndo *OnActionTexture(seSkin *skin, seTexture *texture){
 		return texture->GetActiveProperty() ? OnActionProperty(skin, texture, texture->GetActiveProperty()) : NULL;
 	}
 	
-	virtual igdeUndo *OnActionProperty(seSkin::Ref skin, seTexture *texture, seProperty *property) = 0;
+	virtual igdeUndo *OnActionProperty(seSkin *skin, seTexture *texture, seProperty *property) = 0;
 	
 	void UpdateTexture(const seSkin &skin, const seTexture &texture) override{
 		if(texture.GetActiveProperty()){

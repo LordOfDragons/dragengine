@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCTPSetPathPatternType(gdeObjectClass::Ref objectClass, gdeProperty::Ref property, gdeProperty::ePathPatternTypes newValue);
+	gdeUOCTPSetPathPatternType(gdeObjectClass *objectClass, gdeProperty *property, gdeProperty::ePathPatternTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

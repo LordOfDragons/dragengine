@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPSetDefaultValue::gdeUGDDPSetDefaultValue(gdeGameDefinition::Ref gamedef,
-	gdeProperty::Ref property, const char *newValue, const char *oldValue) :
+gdeUGDDPSetDefaultValue::gdeUGDDPSetDefaultValue(gdeGameDefinition *gamedef,
+	gdeProperty *property, const char *newValue, const char *oldValue) :
 
 pProperty(NULL)
 {

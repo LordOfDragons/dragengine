@@ -64,7 +64,7 @@ public:
 	/** Retrieves the prop field or NULL if myself is NULL. */
 	dePropField *GetPropField(dsRealObject *myself) const;
 	/** Pushes the prop field which can be NULL. */
-	void PushPropField(dsRunTime *rt, dePropField::Ref propfield);
+	void PushPropField(dsRunTime *rt, dePropField *propfield);
 	/*@}*/
 	
 private:

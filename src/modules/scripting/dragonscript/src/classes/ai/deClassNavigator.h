@@ -60,7 +60,7 @@ public:
 	/** Retrieves the navigator or NULL if myself is NULL. */
 	deNavigator *GetNavigator(dsRealObject *myself) const;
 	/** Pushes the navigator which can be NULL. */
-	void PushNavigator(dsRunTime *rt, deNavigator::Ref navigator);
+	void PushNavigator(dsRunTime *rt, deNavigator *navigator);
 	
 	inline dsClass *GetClassNavigationSpaceType() const{ return pClsNavigationSpaceType; }
 	/*@}*/

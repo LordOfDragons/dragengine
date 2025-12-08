@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetAliasIdentifier(projProfile::Ref profile, const char *newValue);
+	projUProfileSetAliasIdentifier(projProfile *profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileSetAliasIdentifier();

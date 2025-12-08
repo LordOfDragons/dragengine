@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSetInheritSubObjects(gdeObjectClass::Ref objectClass, int newValue);
+	gdeUOCSetInheritSubObjects(gdeObjectClass *objectClass, int newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

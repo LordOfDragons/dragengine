@@ -54,7 +54,7 @@ public:
 	/*@{*/
 	/** \brief Create active object component. */
 	gdeVAOBillboard(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCBillboard::Ref ocbillboard);
+		const decString &propertyPrefix, gdeOCBillboard *ocbillboard);
 	
 protected:
 	/**

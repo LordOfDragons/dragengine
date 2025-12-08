@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPropertyAdd::gdeUGDWPropertyAdd(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property) :
+gdeUGDWPropertyAdd::gdeUGDWPropertyAdd(gdeGameDefinition *gamedef, gdeProperty *property) :
 
 pProperty(NULL)
 {

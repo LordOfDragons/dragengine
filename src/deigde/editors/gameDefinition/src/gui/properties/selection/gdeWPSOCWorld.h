@@ -78,7 +78,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or nullptr if not set. */
-	void SetGameDefinition(gdeGameDefinition::Ref gameDefinition);
+	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	
 	/** \brief Active object class or nullptr if absent. */

@@ -298,7 +298,7 @@ void dealGameManager::CreateDefaultProfile(){
 
 
 
-void dealGameManager::SetActiveProfile(dealGameProfile::Ref profile){
+void dealGameManager::SetActiveProfile(dealGameProfile *profile){
 	if(profile == pActiveProfile){
 		return;
 	}

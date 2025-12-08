@@ -43,7 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakHeadLAClear::ceUCAASpeakHeadLAClear(
-ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak) :
+ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
 pTopic(NULL)
 {
 	if(!topic || !actorSpeak){

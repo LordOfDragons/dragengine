@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectAddProperty(meObject::Ref object, const char *key, const char *value);
+	meUObjectAddProperty(meObject *object, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */

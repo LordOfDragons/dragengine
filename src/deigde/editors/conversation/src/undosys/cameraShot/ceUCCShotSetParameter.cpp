@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetParameter::ceUCCShotSetParameter(ceCameraShot::Ref cameraShot, int parameter){
+ceUCCShotSetParameter::ceUCCShotSetParameter(ceCameraShot *cameraShot, int parameter){
 	if(!cameraShot || parameter < 0 || parameter >= ceCameraShot::EP_COUNT){
 		DETHROW(deeInvalidParam);
 	}

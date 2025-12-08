@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeUGDSetScriptModule::gdeUGDSetScriptModule(
-gdeGameDefinition::Ref gameDefinition, const char *newValue) :
+gdeGameDefinition *gameDefinition, const char *newValue) :
 
 pNewValue(newValue)
 {

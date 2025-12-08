@@ -97,10 +97,10 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig(reRig::Ref rig);
+	void SetRig(reRig *rig);
 	
 	/** \brief Set constraint. */
-	void SetConstraint(reRigConstraint::Ref constraint);
+	void SetConstraint(reRigConstraint *constraint);
 	
 	/** \brief Update bone lists. */
 	void UpdateBoneLists();

@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCHasActorSetActor::ceUCCHasActorSetActor(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
-ceCConditionHasActor::Ref hasActor, const char *newID){
+ceUCCHasActorSetActor::ceUCCHasActorSetActor(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionHasActor *hasActor, const char *newID){
 	if(!topic || !action || !hasActor || !newID) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

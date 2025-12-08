@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetPosition(gdeObjectClass::Ref objectClass,
-		gdeOCLight::Ref light, const decVector &newValue);
+	gdeUOCLightSetPosition(gdeObjectClass *objectClass,
+		gdeOCLight *light, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

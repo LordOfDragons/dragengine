@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyConstructedToggleTileY::seUPropertyConstructedToggleTileY(seProperty::Ref property) :
+seUPropertyConstructedToggleTileY::seUPropertyConstructedToggleTileY(seProperty *property) :
 pProperty(NULL)
 {
 	if(!property){

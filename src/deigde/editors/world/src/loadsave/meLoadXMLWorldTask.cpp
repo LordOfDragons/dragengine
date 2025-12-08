@@ -72,7 +72,7 @@
 ////////////////////////////
 #include <dragengine/logger/deLogger.h>
 
-meLoadXMLWorldTask::meLoadXMLWorldTask(meLoadSaveSystem *lssys, meWorld *world, decBaseFileReader::Ref file) :
+meLoadXMLWorldTask::meLoadXMLWorldTask(meLoadSaveSystem *lssys, meWorld *world, decBaseFileReader *file) :
 igdeBaseXML(lssys->GetWindowMain()->GetEnvironment().GetLogger(), LOGSOURCE),
 pLSSys(lssys),
 pWorld(world),

@@ -112,7 +112,7 @@ deoglRCamera::~deoglRCamera(){
 // Management
 ///////////////
 
-void deoglRCamera::SetParentWorld(deoglRWorld::Ref parentWorld){
+void deoglRCamera::SetParentWorld(deoglRWorld *parentWorld){
 	if(parentWorld == pParentWorld){
 		return;
 	}

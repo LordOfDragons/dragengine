@@ -156,16 +156,16 @@ public:
 	const seControllerList &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
-	void AddController(seController::Ref controller);
+	void AddController(seController *controller);
 	
 	/** \brief Insert controller. */
-	void InsertControllerAt(seController::Ref controller, int index);
+	void InsertControllerAt(seController *controller, int index);
 	
 	/** \brief Move controller. */
-	void MoveControllerTo(seController::Ref controller, int index);
+	void MoveControllerTo(seController *controller, int index);
 	
 	/** \brief Remove controller. */
-	void RemoveController(seController::Ref controller);
+	void RemoveController(seController *controller);
 	
 	/** \brief Remove all controllers. */
 	void RemoveAllControllers();
@@ -174,10 +174,10 @@ public:
 	inline seController *GetActiveController() const{ return pActiveController; }
 	
 	/** \brief Set active controller or \em NULL. */
-	void SetActiveController(seController::Ref controller);
+	void SetActiveController(seController *controller);
 	
 	/** \brief Count controller usage. */
-	int CountControllerUsage(seController::Ref controller) const;
+	int CountControllerUsage(seController *controller) const;
 	/*@}*/
 	
 	
@@ -188,10 +188,10 @@ public:
 	const seLinkList &GetLinks() const{ return pLinks; }
 	
 	/** \brief Add link. */
-	void AddLink(seLink::Ref link);
+	void AddLink(seLink *link);
 	
 	/** \brief Remove link. */
-	void RemoveLink(seLink::Ref link);
+	void RemoveLink(seLink *link);
 	
 	/** \brief Remove all links. */
 	void RemoveAllLinks();
@@ -200,10 +200,10 @@ public:
 	inline seLink *GetActiveLink() const{ return pActiveLink; }
 	
 	/** \brief Set active link or \em NULL. */
-	void SetActiveLink(seLink::Ref link);
+	void SetActiveLink(seLink *link);
 	
 	/** \brief Count link usage. */
-	int CountLinkUsage(seLink::Ref link) const;
+	int CountLinkUsage(seLink *link) const;
 	/*@}*/
 	
 	
@@ -214,16 +214,16 @@ public:
 	const seLayerList &GetLayers() const{ return pLayers; }
 	
 	/** \brief Add layer. */
-	void AddLayer(seLayer::Ref layer);
+	void AddLayer(seLayer *layer);
 	
 	/** \brief Insert layer. */
-	void InsertLayerAt(seLayer::Ref layer, int index);
+	void InsertLayerAt(seLayer *layer, int index);
 	
 	/** \brief Move layer. */
-	void MoveLayerTo(seLayer::Ref layer, int index);
+	void MoveLayerTo(seLayer *layer, int index);
 	
 	/** \brief Remove layer. */
-	void RemoveLayer(seLayer::Ref layer);
+	void RemoveLayer(seLayer *layer);
 	
 	/** \brief Remove all layers. */
 	void RemoveAllLayers();
@@ -232,7 +232,7 @@ public:
 	inline seLayer *GetActiveLayer() const{ return pActiveLayer; }
 	
 	/** \brief Set active layer or \em NULL. */
-	void SetActiveLayer(seLayer::Ref layer);
+	void SetActiveLayer(seLayer *layer);
 	/*@}*/
 	
 	
@@ -269,13 +269,13 @@ public:
 	void NotifyControllerStructureChanged();
 	
 	/** \brief Notify controller changed. */
-	void NotifyControllerChanged(seController::Ref controller);
+	void NotifyControllerChanged(seController *controller);
 	
 	/** \brief Notify controller name changed. */
-	void NotifyControllerNameChanged(seController::Ref controller);
+	void NotifyControllerNameChanged(seController *controller);
 	
 	/** \brief Notify controller value changed. */
-	void NotifyControllerValueChanged(seController::Ref controller);
+	void NotifyControllerValueChanged(seController *controller);
 	
 	/** \brief Controller selection changed. */
 	void NotifyControllerSelectionChanged();
@@ -289,10 +289,10 @@ public:
 	void NotifyLinkStructureChanged();
 	
 	/** \brief Notify link changed. */
-	void NotifyLinkChanged(seLink::Ref link);
+	void NotifyLinkChanged(seLink *link);
 	
 	/** \brief Notify link name changed. */
-	void NotifyLinkNameChanged(seLink::Ref link);
+	void NotifyLinkNameChanged(seLink *link);
 	
 	/** \brief Link link changed. */
 	void NotifyLinkSelectionChanged();
@@ -306,10 +306,10 @@ public:
 	void NotifyLayerStructureChanged();
 	
 	/** \brief Notify layer changed. */
-	void NotifyLayerChanged(seLayer::Ref layer);
+	void NotifyLayerChanged(seLayer *layer);
 	
 	/** \brief Notify layer name changed. */
-	void NotifyLayerNameChanged(seLayer::Ref layer);
+	void NotifyLayerNameChanged(seLayer *layer);
 	
 	/** \brief Layer selection changed. */
 	void NotifyLayerSelectionChanged();
@@ -320,24 +320,24 @@ public:
 	
 	
 	/** \brief Notify body added or removed. */
-	void NotifyBodyStructureChanged(seLayer::Ref layer);
+	void NotifyBodyStructureChanged(seLayer *layer);
 	
 	/** \brief Notify body changed. */
-	void NotifyBodyChanged(seLayer::Ref layer, seBody *body);
+	void NotifyBodyChanged(seLayer *layer, seBody *body);
 	
 	/** \brief Body selection changed. */
-	void NotifyBodySelectionChanged(seLayer::Ref layer);
+	void NotifyBodySelectionChanged(seLayer *layer);
 	
 	/** \brief Active body changed. */
-	void NotifyActiveBodyChanged(seLayer::Ref layer);
+	void NotifyActiveBodyChanged(seLayer *layer);
 	
 	
 	
 	/** \brief Notify all target changed. */
-	void NotifyTargetChanged(seLayer::Ref layer, deSkyLayer::eTargets target);
+	void NotifyTargetChanged(seLayer *layer, deSkyLayer::eTargets target);
 	
 	/** \brief Notify all active target changed. */
-    void NotifyActiveTargetChanged(seLayer::Ref layer);
+    void NotifyActiveTargetChanged(seLayer *layer);
 	/*@}*/
 	
 	

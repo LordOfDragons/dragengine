@@ -62,7 +62,7 @@ public:
 	/*@{*/
 	/** \brief Create active object component. */
 	gdeVAOComponent(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCComponent::Ref occomponent);
+		const decString &propertyPrefix, gdeOCComponent *occomponent);
 	
 protected:
 	/**

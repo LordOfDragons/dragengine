@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkAdd::seULinkAdd(seSky::Ref sky, seLink::Ref link) :
+seULinkAdd::seULinkAdd(seSky *sky, seLink *link) :
 pSky(NULL)
 {
 	if(!sky || !link){

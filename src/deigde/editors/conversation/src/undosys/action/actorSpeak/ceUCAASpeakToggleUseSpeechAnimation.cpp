@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAASpeakToggleUseSpeechAnimation::ceUCAASpeakToggleUseSpeechAnimation(
-ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak){
+ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
 	if(!topic){
 		DETHROW(deeInvalidParam);
 	}

@@ -51,7 +51,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetSetName::ceUCTargetSetName(ceTarget::Ref target, const char *newName){
+ceUCTargetSetName::ceUCTargetSetName(ceTarget *target, const char *newName){
 	if(!target || !newName) DETHROW(deeInvalidParam);
 	
 	const ceCameraShotList &cameraShotList = target->GetConversation()->GetCameraShotList();

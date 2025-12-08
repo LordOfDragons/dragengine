@@ -139,7 +139,7 @@ const char *basePath){
 }
 
 deArchiveContainer *deArchiveManager::CreateContainer(const decPath &rootPath,
-deArchive::Ref archive, const decPath &archivePath){
+deArchive *archive, const decPath &archivePath){
 	if(!archive){
 		DETHROW(deeInvalidParam);
 	}

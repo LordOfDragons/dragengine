@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo action. */
-	seUTextureImport(seTexture::Ref texture, const seTexture *importTexture);
+	seUTextureImport(seTexture *texture, const seTexture *importTexture);
 	
 protected:
 	/** \brief Clean up undo. */

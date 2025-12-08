@@ -52,7 +52,7 @@ public:
 	 * \brief Create memory file writer.
 	 * \throws deeInvalidParam \em memoryFile is NULL.
 	 */
-	decMemoryFileWriter(decMemoryFile::Ref memoryFile, bool append);
+	decMemoryFileWriter(decMemoryFile *memoryFile, bool append);
 	
 private:
 	decMemoryFileWriter(const decMemoryFileWriter &writer);

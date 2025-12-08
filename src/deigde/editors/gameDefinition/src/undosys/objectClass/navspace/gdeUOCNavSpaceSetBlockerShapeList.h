@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetBlockerShapeList(gdeObjectClass::Ref objectClass,
-		gdeOCNavigationSpace::Ref navspace, const decShapeList &newValue);
+	gdeUOCNavSpaceSetBlockerShapeList(gdeObjectClass *objectClass,
+		gdeOCNavigationSpace *navspace, const decShapeList &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

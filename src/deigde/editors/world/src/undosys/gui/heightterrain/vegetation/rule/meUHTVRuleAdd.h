@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleAdd(meHTVegetationLayer::Ref vlayer, meHTVRule::Ref rule);
+	meUHTVRuleAdd(meHTVegetationLayer *vlayer, meHTVRule *rule);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleAdd();
 	/*@}*/

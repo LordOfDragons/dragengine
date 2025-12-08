@@ -174,9 +174,9 @@ public:
 	/** Retrieves the phoneme list read-only. */
 	inline const saePhonemeList &GetPhonemeList() const{ return pPhonemeList; }
 	/** Adds a new phoneme. */
-	void AddPhoneme(saePhoneme::Ref phoneme);
+	void AddPhoneme(saePhoneme *phoneme);
 	/** Removes a phoneme. */
-	void RemovePhoneme(saePhoneme::Ref phoneme);
+	void RemovePhoneme(saePhoneme *phoneme);
 	/** Removes all phonemes. */
 	void RemoveAllPhonemes();
 	/** Retrieves the active texture or NULL if none is active. */
@@ -184,7 +184,7 @@ public:
 	/** Determines if there is an active phoneme or not. */
 	bool HasActivePhoneme() const;
 	/** Sets the active phoneme or NULL if none is active. */
-	void SetActivePhoneme(saePhoneme::Ref phoneme);
+	void SetActivePhoneme(saePhoneme *phoneme);
 	/*@}*/
 	
 	/** \name Words */
@@ -192,9 +192,9 @@ public:
 	/** Retrieves the word list read-only. */
 	inline const saeWordList &GetWordList() const{ return pWordList; }
 	/** Adds a new word. */
-	void AddWord(saeWord::Ref word);
+	void AddWord(saeWord *word);
 	/** Removes a word. */
-	void RemoveWord(saeWord::Ref word);
+	void RemoveWord(saeWord *word);
 	/** Removes all words. */
 	void RemoveAllWords();
 	/** Retrieves the active texture or NULL if none is active. */
@@ -202,7 +202,7 @@ public:
 	/** Determines if there is an active word or not. */
 	bool HasActiveWord() const;
 	/** Sets the active word or NULL if none is active. */
-	void SetActiveWord(saeWord::Ref word);
+	void SetActiveWord(saeWord *word);
 	/*@}*/
 	
 	/** \name Notifiers */
@@ -229,16 +229,16 @@ public:
 	/** Notifies all that the phoneme count or order changed. */
 	void NotifyPhonemeStructureChanged();
 	/** Notifies all that a phoneme changed. */
-	void NotifyPhonemeChanged(saePhoneme::Ref phoneme);
+	void NotifyPhonemeChanged(saePhoneme *phoneme);
 	/** Notifies all that the active phoneme changed. */
 	void NotifyActivePhonemeChanged();
 	
 	/** Notifies all that the word count or order changed. */
 	void NotifyWordStructureChanged();
 	/** Notifies all that a word changed. */
-	void NotifyWordNameChanged(saeWord::Ref word);
+	void NotifyWordNameChanged(saeWord *word);
 	/** Notifies all that a word changed. */
-	void NotifyWordChanged(saeWord::Ref word);
+	void NotifyWordChanged(saeWord *word);
 	/** Notifies all that the active word changed. */
 	void NotifyActiveWordChanged();
 	/*@}*/

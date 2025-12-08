@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUCategoryAdd::gdeUCategoryAdd(gdeGameDefinition *gameDefinition, gdeCategory::Ref parent,
-gdeCategory::Ref category, eCategoryType type) :
+gdeUCategoryAdd::gdeUCategoryAdd(gdeGameDefinition *gameDefinition, gdeCategory *parent,
+gdeCategory *category, eCategoryType type) :
 gdeUCategoryBase(gameDefinition, type)
 {
 	if(!category){

@@ -372,7 +372,7 @@ deAnimatorRuleMirror *deClassARMirror::GetRule(dsRealObject *myself) const{
 	return ((sARMirrorNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARMirror::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
+void deClassARMirror::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -392,7 +392,7 @@ void deClassARMirror::AssignAnimator(dsRealObject *myself, deAnimator::Ref anima
 	nd.animator = animator;
 }
 
-void deClassARMirror::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleMirror::Ref rule){
+void deClassARMirror::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleMirror *rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

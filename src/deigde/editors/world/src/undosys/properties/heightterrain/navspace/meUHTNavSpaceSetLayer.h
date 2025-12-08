@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceSetLayer(meHeightTerrainNavSpace::Ref navspace, int newLayer);
+	meUHTNavSpaceSetLayer(meHeightTerrainNavSpace *navspace, int newLayer);
 	
 protected:
 	/** \brief Clean up undo action. */

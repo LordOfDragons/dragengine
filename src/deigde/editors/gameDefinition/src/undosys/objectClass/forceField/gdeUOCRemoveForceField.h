@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveForceField(gdeObjectClass::Ref objectClass, gdeOCForceField::Ref forceField);
+	gdeUOCRemoveForceField(gdeObjectClass *objectClass, gdeOCForceField *forceField);
 	
 protected:
 	/** \brief Clean up undo action. */

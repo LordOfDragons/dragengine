@@ -951,7 +951,7 @@ deNetworkState *deClassNetworkState::GetNetworkState(dsRealObject *myself) const
 	return ((sNSNatDat*)p_GetNativeData(myself->GetBuffer()))->state;
 }
 
-void deClassNetworkState::PushNetworkState(dsRunTime *rt, deNetworkState::Ref state){
+void deClassNetworkState::PushNetworkState(dsRunTime *rt, deNetworkState *state){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

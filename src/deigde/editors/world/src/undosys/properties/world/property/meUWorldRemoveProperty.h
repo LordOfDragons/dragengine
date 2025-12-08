@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUWorldRemoveProperty(meWorld::Ref world, const char *key, const char *value);
+	meUWorldRemoveProperty(meWorld *world, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */

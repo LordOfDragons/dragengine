@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotAdd(ceConversation::Ref conversation, ceCameraShot::Ref cameraShot);
+	ceUCCShotAdd(ceConversation *conversation, ceCameraShot *cameraShot);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotAdd();

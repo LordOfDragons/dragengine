@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUFontSetImagePath::feUFontSetImagePath(feFontImage::Ref image, const char *newPath){
+feUFontSetImagePath::feUFontSetImagePath(feFontImage *image, const char *newPath){
 	if(!newPath) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Font set image path");

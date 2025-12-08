@@ -48,7 +48,7 @@ private:
 	
 	igdeTextField::Ref pEditImagePath;
 	igdeButton::Ref pBtnImagePath;
-	igdeTextField::Ref pEditLineHeight, pEditBaseLine;
+	igdeTextField *pEditLineHeight, pEditBaseLine;
 	igdeCheckBox::Ref pChkColorFont;
 	
 	
@@ -74,7 +74,7 @@ public:
 	inline feFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont(feFont::Ref font);
+	void SetFont(feFont *font);
 	
 	/** \brief Update font. */
 	void UpdateFont();

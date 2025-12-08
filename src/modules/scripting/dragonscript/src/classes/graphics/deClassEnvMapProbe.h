@@ -59,7 +59,7 @@ public:
 	/** Retrieves the environment map probe or NULL if object is NULL. */
 	deEnvMapProbe *GetEnvMapProbe(dsRealObject *object) const;
 	/** Pushes an environment map probe on the stack (pushes null if instance is NULL). */
-	void PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe::Ref envMapProbe);
+	void PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe *envMapProbe);
 	/*@}*/
 	
 private:

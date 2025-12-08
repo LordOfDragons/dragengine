@@ -77,47 +77,47 @@ public:
 	deThreadSafeObject *GetAt(int index) const;
 	
 	/** \brief Index of the first occurance of an object or -1 if not found. */
-	int IndexOf(deThreadSafeObject::Ref object) const;
+	int IndexOf(deThreadSafeObject *object) const;
 	
 	/** \brief Determine if object exists in the list. */
-	bool Has(deThreadSafeObject::Ref object) const;
+	bool Has(deThreadSafeObject *object) const;
 	
 	/**
 	 * \brief Set object at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void SetAt(int index, deThreadSafeObject::Ref object);
+	void SetAt(int index, deThreadSafeObject *object);
 	
 	/**
 	 * \brief Add object.
 	 * \throws deeInvalidParam \em object is present in the set.
 	 */
-	void Add(deThreadSafeObject::Ref object);
+	void Add(deThreadSafeObject *object);
 	
 	/** \brief Add object if absent from the set. */
-	void AddIfAbsent(deThreadSafeObject::Ref object);
+	void AddIfAbsent(deThreadSafeObject *object);
 	
 	/**
 	 * \brief Insert object.
 	 * \throws deeInvalidParam \em object is present in the set.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void Insert(deThreadSafeObject::Ref object, int index);
+	void Insert(deThreadSafeObject *object, int index);
 	
 	/**
 	 * \brief Move object.
 	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount().
 	 */
-	void Move(deThreadSafeObject::Ref object, int to);
+	void Move(deThreadSafeObject *object, int to);
 	
 	/**
 	 * \brief Remove object.
 	 * \throws deeInvalidParam \em object is is absent from the set.
 	 */
-	void Remove(deThreadSafeObject::Ref object);
+	void Remove(deThreadSafeObject *object);
 	
 	/** \brief Remove object if present in the set. */
-	void RemoveIfPresent(deThreadSafeObject::Ref object);
+	void RemoveIfPresent(deThreadSafeObject *object);
 	
 	/**
 	 * \brief Remove object from index.

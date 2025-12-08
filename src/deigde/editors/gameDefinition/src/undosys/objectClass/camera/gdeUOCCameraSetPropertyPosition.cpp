@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetPropertyPosition::gdeUOCCameraSetPropertyPosition(gdeObjectClass::Ref objectClass,
-	gdeOCCamera::Ref camera, const char *newValue) :
+gdeUOCCameraSetPropertyPosition::gdeUOCCameraSetPropertyPosition(gdeObjectClass *objectClass,
+	gdeOCCamera *camera, const char *newValue) :
 
 pCamera(nullptr)
 {

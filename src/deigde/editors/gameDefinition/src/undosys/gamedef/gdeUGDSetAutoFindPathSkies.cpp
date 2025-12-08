@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeUGDSetAutoFindPathSkies::gdeUGDSetAutoFindPathSkies(
-	gdeGameDefinition::Ref gameDefinition, const decStringList &newValue) :
+	gdeGameDefinition *gameDefinition, const decStringList &newValue) :
 
 pNewValue(newValue)
 {

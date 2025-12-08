@@ -65,7 +65,7 @@ meAttachedDecal::~meAttachedDecal(){
 // Management
 ///////////////
 
-void meAttachedDecal::SetParentObject(meObject::Ref object){
+void meAttachedDecal::SetParentObject(meObject *object){
 	if(object == pParentObject){
 		return;
 	}

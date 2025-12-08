@@ -408,7 +408,7 @@ deSynthesizerInstance *deClassSynthesizerInstance::GetSynthesizerInstance(dsReal
 	return ((sSynINatDat*)p_GetNativeData(object->GetBuffer()))->instance;
 }
 
-void deClassSynthesizerInstance::PushSynthesizerInstance(dsRunTime *rt, deSynthesizerInstance::Ref instance){
+void deClassSynthesizerInstance::PushSynthesizerInstance(dsRunTime *rt, deSynthesizerInstance *instance){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

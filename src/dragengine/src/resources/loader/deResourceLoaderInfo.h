@@ -76,7 +76,7 @@ public:
 	inline deFileResource *GetResource() const{ return pResource; }
 	
 	/** \brief Set resource or NULL if not ready yet. */
-	void SetResource(deFileResource::Ref resource);
+	void SetResource(deFileResource *resource);
 	/*@}*/
 };
 

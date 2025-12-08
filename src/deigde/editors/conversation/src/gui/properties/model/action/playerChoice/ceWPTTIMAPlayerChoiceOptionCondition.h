@@ -48,7 +48,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	ceWPTTIMAPlayerChoiceOptionCondition(ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption::Ref option);
+		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option);
 	
 protected:
 	/** \brief Clean up tree item model. */

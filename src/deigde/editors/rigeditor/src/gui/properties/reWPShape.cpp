@@ -106,7 +106,7 @@ reWPShape::~reWPShape(){
 // Management
 ///////////////
 
-void reWPShape::SetRig(reRig::Ref rig){
+void reWPShape::SetRig(reRig *rig){
 	if(rig == pRig){
 		return;
 	}
@@ -126,7 +126,7 @@ void reWPShape::SetRig(reRig::Ref rig){
 	}
 }
 
-void reWPShape::SetShape(reRigShape::Ref shape){
+void reWPShape::SetShape(reRigShape *shape){
 	if(shape == pShape){
 		return;
 	}

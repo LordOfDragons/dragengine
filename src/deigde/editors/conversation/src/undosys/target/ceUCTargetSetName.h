@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetSetName(ceTarget::Ref target, const char *newName);
+	ceUCTargetSetName(ceTarget *target, const char *newName);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCTargetSetName();

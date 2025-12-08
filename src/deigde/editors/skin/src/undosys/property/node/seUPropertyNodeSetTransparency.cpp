@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetTransparency::seUPropertyNodeSetTransparency(sePropertyNode::Ref node, float newValue) :
+seUPropertyNodeSetTransparency::seUPropertyNodeSetTransparency(sePropertyNode *node, float newValue) :
 
 pNewValue(newValue)
 {

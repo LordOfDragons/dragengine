@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create reader. */
-	deapngReader(deVideoApng &module, decBaseFileReader::Ref reader);
+	deapngReader(deVideoApng &module, decBaseFileReader *reader);
 	
 	/** Clean up reader. */
 	~deapngReader();

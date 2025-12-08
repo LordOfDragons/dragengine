@@ -905,7 +905,7 @@ deParticleEmitterInstance *deClassParticleEmitterInstance::GetInstance(dsRealObj
 	return ((sPEINatDat*)p_GetNativeData(myself->GetBuffer()))->instance;
 }
 
-void deClassParticleEmitterInstance::PushInstance(dsRunTime *rt, deParticleEmitterInstance::Ref instance){
+void deClassParticleEmitterInstance::PushInstance(dsRunTime *rt, deParticleEmitterInstance *instance){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

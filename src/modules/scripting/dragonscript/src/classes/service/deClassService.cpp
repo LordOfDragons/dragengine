@@ -412,7 +412,7 @@ deService *deClassService::GetService(dsRealObject *myself) const{
 	return ((sServiceNatDat*)p_GetNativeData(myself->GetBuffer()))->service;
 }
 
-void deClassService::PushService(dsRunTime *rt, deService::Ref service){
+void deClassService::PushService(dsRunTime *rt, deService *service){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

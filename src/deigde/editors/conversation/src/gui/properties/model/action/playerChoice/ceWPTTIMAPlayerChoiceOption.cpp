@@ -52,7 +52,7 @@
 
 ceWPTTIMAPlayerChoiceOption::ceWPTTIMAPlayerChoiceOption(ceWindowMain &windowMain,
 ceConversation &conversation, ceCAPlayerChoice &playerChoice,
-ceCAPlayerChoiceOption::Ref option, int index) :
+ceCAPlayerChoiceOption *option, int index) :
 ceWPTTreeItemModel(windowMain, conversation, etActionPlayerChoiceOption),
 pIndex(index)
 {

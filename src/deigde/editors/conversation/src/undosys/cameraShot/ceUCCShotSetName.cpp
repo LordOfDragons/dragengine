@@ -49,7 +49,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetName::ceUCCShotSetName(ceCameraShot::Ref cameraShot, const char *newName){
+ceUCCShotSetName::ceUCCShotSetName(ceCameraShot *cameraShot, const char *newName){
 	if(!cameraShot || !newName) DETHROW(deeInvalidParam);
 	
 	const ceConversationFileList &fileList = cameraShot->GetConversation()->GetFileList();

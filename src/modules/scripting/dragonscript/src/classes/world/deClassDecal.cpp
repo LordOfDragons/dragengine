@@ -445,7 +445,7 @@ deDecal *deClassDecal::GetDecal(dsRealObject *myself) const{
 	return ((sDecalNatDat*)p_GetNativeData(myself->GetBuffer()))->decal;
 }
 
-void deClassDecal::PushDecal(dsRunTime *rt, deDecal::Ref decal){
+void deClassDecal::PushDecal(dsRunTime *rt, deDecal *decal){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

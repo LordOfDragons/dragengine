@@ -111,7 +111,7 @@ public:
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL if not set. */
-	void SetParentWorld(deoglRWorld::Ref parentWorld);
+	void SetParentWorld(deoglRWorld *parentWorld);
 	
 	
 	

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetDistanceOffset::gdeUOCSpeakerSetDistanceOffset(gdeObjectClass::Ref objectClass,
-gdeOCSpeaker::Ref speaker, float newValue) :
+gdeUOCSpeakerSetDistanceOffset::gdeUOCSpeakerSetDistanceOffset(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, float newValue) :
 
 pSpeaker(NULL)
 {

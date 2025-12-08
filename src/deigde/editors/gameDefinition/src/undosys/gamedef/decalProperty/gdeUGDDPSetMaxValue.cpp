@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPSetMaxValue::gdeUGDDPSetMaxValue(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property, float newValue) :
+gdeUGDDPSetMaxValue::gdeUGDDPSetMaxValue(gdeGameDefinition *gamedef, gdeProperty *property, float newValue) :
 
 pProperty(NULL)
 {

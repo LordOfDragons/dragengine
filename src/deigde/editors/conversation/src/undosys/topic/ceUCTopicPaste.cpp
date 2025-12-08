@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTopicPaste::ceUCTopicPaste(ceConversationFile::Ref file, const ceConversationTopicList &topics) :
+ceUCTopicPaste::ceUCTopicPaste(ceConversationFile *file, const ceConversationTopicList &topics) :
 pFile(NULL){
 	if(!file || topics.GetCount() == 0){
 		DETHROW(deeInvalidParam);

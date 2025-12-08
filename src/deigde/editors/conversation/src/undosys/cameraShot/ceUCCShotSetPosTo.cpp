@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetPosTo::ceUCCShotSetPosTo(ceCameraShot::Ref cameraShot, const decVector &newPos){
+ceUCCShotSetPosTo::ceUCCShotSetPosTo(ceCameraShot *cameraShot, const decVector &newPos){
 	if(!cameraShot){
 		DETHROW(deeInvalidParam);
 	}

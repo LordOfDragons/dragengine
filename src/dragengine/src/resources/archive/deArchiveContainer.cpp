@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deArchiveContainer::deArchiveContainer(const decPath &rootPath, deArchive::Ref archive,
+deArchiveContainer::deArchiveContainer(const decPath &rootPath, deArchive *archive,
 const decPath &archivePath) :
 deVFSContainer(rootPath),
 pArchivePath(archivePath),

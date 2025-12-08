@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUWordRemove(saeWord::Ref word);
+	saeUWordRemove(saeWord *word);
 	
 protected:
 	/** Clean up undo. */

@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUAddConstraint::reUAddConstraint(reRig::Ref rig, reRigBone::Ref bone, reRigConstraint::Ref constraint){
+reUAddConstraint::reUAddConstraint(reRig *rig, reRigBone *bone, reRigConstraint *constraint){
 	if(!constraint || (!rig && !bone)) DETHROW(deeInvalidParam);
 	
 	pRig = rig;

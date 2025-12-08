@@ -424,7 +424,7 @@ void deClassInputDeviceFeedback::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassInputDeviceFeedback::PushFeedback(dsRunTime *rt, dedsInputDevice::Ref device, int index){
+void deClassInputDeviceFeedback::PushFeedback(dsRunTime *rt, dedsInputDevice *device, int index){
 	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetFeedbackCount()){
 		DSTHROW(dueInvalidParam);
 	}

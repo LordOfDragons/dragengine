@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCFileDuplicate(ceConversation::Ref conversation, const ceConversationFile &file, const char *newID);
+	ceUCFileDuplicate(ceConversation *conversation, const ceConversationFile &file, const char *newID);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCFileDuplicate();

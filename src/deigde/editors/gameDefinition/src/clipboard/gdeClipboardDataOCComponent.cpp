@@ -38,7 +38,7 @@ const char * const gdeClipboardDataOCComponent::TYPE_NAME = "OCComponent";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCComponent::gdeClipboardDataOCComponent(gdeOCComponent::Ref component) :
+gdeClipboardDataOCComponent::gdeClipboardDataOCComponent(gdeOCComponent *component) :
 igdeClipboardData(TYPE_NAME)
 {
 	if(!component){

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCBillboardToggleSpherical::gdeUOCBillboardToggleSpherical(
-gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard) :
+gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
 
 pBillboard(NULL)
 {

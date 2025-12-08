@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo data. */
-	meUndoDataObjTexProperty(meObjectTexture::Ref texture);
+	meUndoDataObjTexProperty(meObjectTexture *texture);
 	
 protected:
 	/** \brief Clean up undo data. */

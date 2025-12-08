@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakWordFromText::ceUCAASpeakWordFromText(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak){
+ceUCAASpeakWordFromText::ceUCAASpeakWordFromText(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
 	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
 	}

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetOffset::gdeUOCBillboardSetOffset(gdeObjectClass::Ref objectClass,
-gdeOCBillboard::Ref billboard, const decVector2 &newValue) :
+gdeUOCBillboardSetOffset::gdeUOCBillboardSetOffset(gdeObjectClass *objectClass,
+gdeOCBillboard *billboard, const decVector2 &newValue) :
 
 pBillboard(NULL)
 {

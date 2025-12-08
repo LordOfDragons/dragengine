@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCameraSetImageDistance(gdeObjectClass::Ref objectClass, gdeOCCamera::Ref camera, float newValue);
+	gdeUOCCameraSetImageDistance(gdeObjectClass *objectClass, gdeOCCamera *camera, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

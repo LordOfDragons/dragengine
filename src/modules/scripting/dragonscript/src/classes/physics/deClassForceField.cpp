@@ -553,7 +553,7 @@ deForceField *deClassForceField::GetForceField(dsRealObject *myself) const{
 	return ((sFFNatDat*)p_GetNativeData(myself->GetBuffer()))->forcefield;
 }
 
-void deClassForceField::PushForceField(dsRunTime *rt, deForceField::Ref forcefield){
+void deClassForceField::PushForceField(dsRunTime *rt, deForceField *forcefield){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

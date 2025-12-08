@@ -202,7 +202,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
 	pListener.TakeOver(new gdeWPSOCSnapPointListener(*this));
 	
@@ -231,7 +231,7 @@ gdeWPSOCSnapPoint::~gdeWPSOCSnapPoint(){
 // Management
 ///////////////
 
-void gdeWPSOCSnapPoint::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPSOCSnapPoint::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

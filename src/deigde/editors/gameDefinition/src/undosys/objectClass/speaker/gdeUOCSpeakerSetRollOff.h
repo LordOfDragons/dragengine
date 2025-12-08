@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetRollOff(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker, float newValue);
+	gdeUOCSpeakerSetRollOff(gdeObjectClass *objectClass, gdeOCSpeaker *speaker, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

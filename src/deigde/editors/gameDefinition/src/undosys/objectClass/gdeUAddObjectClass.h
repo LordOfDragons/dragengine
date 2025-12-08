@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUAddObjectClass(gdeGameDefinition::Ref gameDefinition, gdeObjectClass::Ref objectClass);
+	gdeUAddObjectClass(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass);
 	
 protected:
 	/** \brief Clean up undo action. */

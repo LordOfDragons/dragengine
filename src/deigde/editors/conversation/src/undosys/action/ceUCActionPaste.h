@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionPaste(ceConversationTopic::Ref topic, const ceConversationActionList &actions, int index);
+	ceUCActionPaste(ceConversationTopic *topic, const ceConversationActionList &actions, int index);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCActionPaste();

@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalTCScaling(meDecal::Ref decal, const decVector2 &newScaling);
+	meUDecalTCScaling(meDecal *decal, const decVector2 &newScaling);
 	
 protected:
 	/** \brief Clean up undo object. */

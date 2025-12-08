@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file resource. */
-	deFileResource(deFileResourceManager *resourceManager, deVirtualFileSystem::Ref vfs,
+	deFileResource(deFileResourceManager *resourceManager, deVirtualFileSystem *vfs,
 		const char *filename, TIME_SYSTEM modificationTime);
 	
 protected:

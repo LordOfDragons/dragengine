@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetValue(seProperty::Ref property, float newValue);
+	seUPropertySetValue(seProperty *property, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */

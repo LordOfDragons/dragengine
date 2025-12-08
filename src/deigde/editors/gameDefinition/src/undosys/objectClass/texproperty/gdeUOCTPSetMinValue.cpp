@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPSetMinValue::gdeUOCTPSetMinValue(gdeObjectClass::Ref objectClass, gdeProperty::Ref property, float newValue) :
+gdeUOCTPSetMinValue::gdeUOCTPSetMinValue(gdeObjectClass *objectClass, gdeProperty *property, float newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !property){

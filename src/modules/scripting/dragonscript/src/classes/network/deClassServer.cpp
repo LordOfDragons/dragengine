@@ -267,7 +267,7 @@ deServer *deClassServer::GetServer(dsRealObject *myself) const{
 	return ((sSvrNatDat*)p_GetNativeData(myself->GetBuffer()))->server;
 }
 
-void deClassServer::PushServer(dsRunTime *rt, deServer::Ref server){
+void deClassServer::PushServer(dsRunTime *rt, deServer *server){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

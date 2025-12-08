@@ -159,7 +159,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
-	void SetConversation(ceConversation::Ref conversation);
+	void SetConversation(ceConversation *conversation);
 	
 	/** Update view. */
 	void UpdateView();

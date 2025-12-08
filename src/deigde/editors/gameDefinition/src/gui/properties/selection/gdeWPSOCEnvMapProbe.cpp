@@ -335,7 +335,7 @@ pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -395,7 +395,7 @@ gdeWPSOCEnvMapProbe::~gdeWPSOCEnvMapProbe(){
 // Management
 ///////////////
 
-void gdeWPSOCEnvMapProbe::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
+void gdeWPSOCEnvMapProbe::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}

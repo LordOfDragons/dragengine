@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeSetLength::saeUPhonemeSetLength(saePhoneme::Ref phoneme, float newLength){
+saeUPhonemeSetLength::saeUPhonemeSetLength(saePhoneme *phoneme, float newLength){
 	if(!phoneme) DETHROW(deeInvalidParam);
 	
 	pPhoneme = NULL;

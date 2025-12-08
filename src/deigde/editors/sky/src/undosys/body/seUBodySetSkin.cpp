@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodySetSkin::seUBodySetSkin(seBody::Ref body, const char *newSkin) :
+seUBodySetSkin::seUBodySetSkin(seBody *body, const char *newSkin) :
 
 pNewSkin(newSkin)
 {

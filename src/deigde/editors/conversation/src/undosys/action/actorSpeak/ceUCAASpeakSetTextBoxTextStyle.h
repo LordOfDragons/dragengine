@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakSetTextBoxTextStyle(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, const char *newText);
+	ceUCAASpeakSetTextBoxTextStyle(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newText);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakSetTextBoxTextStyle();

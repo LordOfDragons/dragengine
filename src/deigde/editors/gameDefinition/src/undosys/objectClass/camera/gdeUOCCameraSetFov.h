@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCameraSetFov(gdeObjectClass::Ref objectClass, gdeOCCamera::Ref camera, float newValue);
+	gdeUOCCameraSetFov(gdeObjectClass *objectClass, gdeOCCamera *camera, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUGlyphSetV::feUGlyphSetV(feFontGlyph::Ref glyph, int newV){
+feUGlyphSetV::feUGlyphSetV(feFontGlyph *glyph, int newV){
 	SetShortInfo("GLyph set v");
 	
 	pOldV = glyph->GetV();

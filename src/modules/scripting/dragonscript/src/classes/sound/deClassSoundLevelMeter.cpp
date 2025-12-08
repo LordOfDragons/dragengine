@@ -441,7 +441,7 @@ deSoundLevelMeter *deClassSoundLevelMeter::GetSoundLevelMeter(dsRealObject *myse
 	return ((sSLMNatDat*)p_GetNativeData(myself->GetBuffer()))->soundLevelMeter;
 }
 
-void deClassSoundLevelMeter::PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMeter::Ref soundLevelMeter){
+void deClassSoundLevelMeter::PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMeter *soundLevelMeter){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

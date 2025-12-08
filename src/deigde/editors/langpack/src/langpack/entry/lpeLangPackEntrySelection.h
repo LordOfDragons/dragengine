@@ -51,9 +51,9 @@ public:
 	/** \brief Retrieves the list of selected entries. */
 	inline const lpeLangPackEntryList &GetSelected() const{ return pSelection; }
 	/** \brief Adds a entries to the selection if not included already. */
-	void Add(lpeLangPackEntry::Ref entry);
+	void Add(lpeLangPackEntry *entry);
 	/** \brief Removes a entries from the selection if included. */
-	void Remove(lpeLangPackEntry::Ref entry);
+	void Remove(lpeLangPackEntry *entry);
 	/** \brief Removes all entries from the selection. */
 	void RemoveAll();
 	
@@ -62,7 +62,7 @@ public:
 	/** \brief Determines if there is an active entries. */
 	bool HasActive() const;
 	/** \brief Sets the active entries or NULL if there is none. */
-	void SetActive(lpeLangPackEntry::Ref entry);
+	void SetActive(lpeLangPackEntry *entry);
 	/** \brief Activate the first entries in the selection. */
 	void ActivateNext();
 	

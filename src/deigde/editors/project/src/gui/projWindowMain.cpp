@@ -164,7 +164,7 @@ bool projWindowMain::QuitRequest(){
 
 
 
-void projWindowMain::SetProject(projProject::Ref project){
+void projWindowMain::SetProject(projProject *project){
 	if(project == pProject){
 		return;
 	}

@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUWordSetPhonetics(saeWord::Ref word, const decUnicodeString &newPhonetics);
+	saeUWordSetPhonetics(saeWord *word, const decUnicodeString &newPhonetics);
 	
 protected:
 	/** Clean up undo. */

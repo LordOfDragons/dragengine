@@ -168,14 +168,14 @@ public:
 	 * \throws deeInvalidParam \em decal is NULL.
 	 * \throws deeInvalidParam \em decal has a parent world.
 	 */
-	void AddDecal(deDecal::Ref decal);
+	void AddDecal(deDecal *decal);
 	
 	/**
 	 * \brief Remove decal.
 	 * \throws deeInvalidParam \em decal is NULL.
 	 * \throws deeInvalidParam Parent world of \em decal is not this world.
 	 */
-	void RemoveDecal(deDecal::Ref decal);
+	void RemoveDecal(deDecal *decal);
 	
 	/** \brief Remove all decals. */
 	void RemoveAllDecals();

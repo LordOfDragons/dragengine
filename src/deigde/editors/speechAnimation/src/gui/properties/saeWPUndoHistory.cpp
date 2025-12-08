@@ -54,7 +54,7 @@ saeWPUndoHistory::~saeWPUndoHistory(){
 // Management
 ///////////////
 
-void saeWPUndoHistory::SetSAnimation(saeSAnimation::Ref sanimation){
+void saeWPUndoHistory::SetSAnimation(saeSAnimation *sanimation){
 	if(sanimation == pSAnimation){
 		return;
 	}

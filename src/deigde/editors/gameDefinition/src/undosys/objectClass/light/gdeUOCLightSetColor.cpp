@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetColor::gdeUOCLightSetColor(gdeObjectClass::Ref objectClass,
-gdeOCLight::Ref light, const decColor &newValue) :
+gdeUOCLightSetColor::gdeUOCLightSetColor(gdeObjectClass *objectClass,
+gdeOCLight *light, const decColor &newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

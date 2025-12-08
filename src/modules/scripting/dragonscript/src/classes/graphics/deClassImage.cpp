@@ -296,7 +296,7 @@ deImage *deClassImage::GetImage(dsRealObject *myself) const{
 	return ((sImgNatDat*)p_GetNativeData(myself->GetBuffer()))->image;
 }
 
-void deClassImage::PushImage(dsRunTime *rt, deImage::Ref image){
+void deClassImage::PushImage(dsRunTime *rt, deImage *image){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

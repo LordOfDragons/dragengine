@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetSetActor::ceUCTargetSetActor(ceTarget::Ref target, const char *newID){
+ceUCTargetSetActor::ceUCTargetSetActor(ceTarget *target, const char *newID){
 	if(!target || !newID) DETHROW(deeInvalidParam);
 	
 	pTarget = NULL;

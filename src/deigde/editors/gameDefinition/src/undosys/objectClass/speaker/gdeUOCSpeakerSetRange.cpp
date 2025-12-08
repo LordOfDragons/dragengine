@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetRange::gdeUOCSpeakerSetRange(gdeObjectClass::Ref objectClass,
-gdeOCSpeaker::Ref speaker, float newValue) :
+gdeUOCSpeakerSetRange::gdeUOCSpeakerSetRange(gdeObjectClass *objectClass,
+gdeOCSpeaker *speaker, float newValue) :
 
 pSpeaker(NULL)
 {

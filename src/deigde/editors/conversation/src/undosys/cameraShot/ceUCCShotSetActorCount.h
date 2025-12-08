@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetActorCount(ceCameraShot::Ref cameraShot, int newCount);
+	ceUCCShotSetActorCount(ceCameraShot *cameraShot, int newCount);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetActorCount();

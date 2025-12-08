@@ -42,7 +42,7 @@ const char * const seClipboardDataEffect::TYPE_NAME = "effect";
 // Constructor, destructor
 ////////////////////////////
 
-seClipboardDataEffect::seClipboardDataEffect(seEffect::Ref effect) :
+seClipboardDataEffect::seClipboardDataEffect(seEffect *effect) :
 igdeClipboardData(TYPE_NAME)
 {
 	seEffect::Ref copyEffect = NULL;

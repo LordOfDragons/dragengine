@@ -75,47 +75,47 @@ public:
 	deObject *GetAt(int index) const;
 	
 	/** \brief Index of the first occurance of an object or -1 if not found. */
-	int IndexOf(deObject::Ref object) const;
+	int IndexOf(deObject *object) const;
 	
 	/** \brief Determine if object exists in the list. */
-	bool Has(deObject::Ref object) const;
+	bool Has(deObject *object) const;
 	
 	/**
 	 * \brief Set object at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void SetAt(int index, deObject::Ref object);
+	void SetAt(int index, deObject *object);
 	
 	/**
 	 * \brief Add object.
 	 * \throws deeInvalidParam \em object is present in the set.
 	 */
-	void Add(deObject::Ref object);
+	void Add(deObject *object);
 	
 	/** \brief Add object if absent from the set. */
-	void AddIfAbsent(deObject::Ref object);
+	void AddIfAbsent(deObject *object);
 	
 	/**
 	 * \brief Insert object.
 	 * \throws deeInvalidParam \em object is present in the set.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void Insert(deObject::Ref object, int index);
+	void Insert(deObject *object, int index);
 	
 	/**
 	 * \brief Move object.
 	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount().
 	 */
-	void Move(deObject::Ref object, int to);
+	void Move(deObject *object, int to);
 	
 	/**
 	 * \brief Remove object.
 	 * \throws deeInvalidParam \em object is is absent from the set.
 	 */
-	void Remove(deObject::Ref object);
+	void Remove(deObject *object);
 	
 	/** \brief Remove object if present in the set. */
-	void RemoveIfPresent(deObject::Ref object);
+	void RemoveIfPresent(deObject *object);
 	
 	/**
 	 * \brief Remove object from index.

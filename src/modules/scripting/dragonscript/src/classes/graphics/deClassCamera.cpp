@@ -917,7 +917,7 @@ deCamera *deClassCamera::GetCamera(dsRealObject *myself) const{
 	return ((sCamNatDat*)p_GetNativeData(myself->GetBuffer()))->camera;
 }
 
-void deClassCamera::PushCamera(dsRunTime *rt, deCamera::Ref camera){
+void deClassCamera::PushCamera(dsRunTime *rt, deCamera *camera){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakWordSet::ceUCAASpeakWordSet(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref word, ceStrip::Ref newStrip){
+ceUCAASpeakWordSet::ceUCAASpeakWordSet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, ceStrip *newStrip){
 	if(!topic || !actorSpeak || !word || !newStrip){
 		DETHROW(deeInvalidParam);
 	}

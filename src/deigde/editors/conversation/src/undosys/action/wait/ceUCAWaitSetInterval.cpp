@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitSetInterval::ceUCAWaitSetInterval(ceConversationTopic::Ref topic, ceCAWait::Ref wait, float newInterval){
+ceUCAWaitSetInterval::ceUCAWaitSetInterval(ceConversationTopic *topic, ceCAWait *wait, float newInterval){
 	if(!topic || !wait) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create archive container peer. */
-	deBaseArchiveContainer(decBaseFileReader::Ref reader);
+	deBaseArchiveContainer(decBaseFileReader *reader);
 	
 	/** \brief Clean up archive container peer. */
 	virtual ~deBaseArchiveContainer();

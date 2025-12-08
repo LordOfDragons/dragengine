@@ -73,7 +73,7 @@ public:
 	 * \brief Push network message onto stack.
 	 * \details Pushes a \em null object to the stack if \em collider is NULL.
 	 */
-	void PushNetworkMessage(dsRunTime *rt, deNetworkMessage::Ref message);
+	void PushNetworkMessage(dsRunTime *rt, deNetworkMessage *message);
 	/*@}*/
 	
 	

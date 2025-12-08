@@ -289,14 +289,14 @@ public:
 	 * \throws deeInvalidParam \em sky is NULL.
 	 * \throws deeInvalidParam \em sky has a parent world.
 	 */
-	void AddSky(deSkyInstance::Ref sky);
+	void AddSky(deSkyInstance *sky);
 	
 	/**
 	 * \brief Remove sky.
 	 * \throws deeInvalidParam \em sky is NULL.
 	 * \throws deeInvalidParam Parent world of \em sky is not this world.
 	 */
-	void RemoveSky(deSkyInstance::Ref sky);
+	void RemoveSky(deSkyInstance *sky);
 	
 	/** \brief Remove all skies. */
 	void RemoveAllSkies();
@@ -317,14 +317,14 @@ public:
 	 * \throws deeInvalidParam \em billboard is NULL.
 	 * \throws deeInvalidParam \em billboard has a parent world.
 	 */
-	void AddBillboard(deBillboard::Ref billboard);
+	void AddBillboard(deBillboard *billboard);
 	
 	/**
 	 * \brief Remove billboard.
 	 * \throws deeInvalidParam \em billboard is NULL.
 	 * \throws deeInvalidParam Parent world of \em billboard is not this world.
 	 */
-	void RemoveBillboard(deBillboard::Ref billboard);
+	void RemoveBillboard(deBillboard *billboard);
 	
 	/** \brief Remove all billboards. */
 	void RemoveAllBillboards();
@@ -345,14 +345,14 @@ public:
 	 * \throws deeInvalidParam \em camera is NULL.
 	 * \throws deeInvalidParam \em camera has a parent world.
 	 */
-	void AddCamera(deCamera::Ref camera);
+	void AddCamera(deCamera *camera);
 	
 	/**
 	 * \brief Remove camera.
 	 * \throws deeInvalidParam \em camera is NULL.
 	 * \throws deeInvalidParam Parent world of \em camera is not this world.
 	 */
-	void RemoveCamera(deCamera::Ref camera);
+	void RemoveCamera(deCamera *camera);
 	
 	/** \brief Remove all cameras. */
 	void RemoveAllCameras();
@@ -373,14 +373,14 @@ public:
 	 * \throws deeInvalidParam \em collider is NULL.
 	 * \throws deeInvalidParam \em collider has a parent world.
 	 */
-	void AddCollider(deCollider::Ref collider);
+	void AddCollider(deCollider *collider);
 	
 	/**
 	 * \brief Remove collider.
 	 * \throws deeInvalidParam \em collider is NULL.
 	 * \throws deeInvalidParam Parent world of \em collider is not this world.
 	 */
-	void RemoveCollider(deCollider::Ref collider);
+	void RemoveCollider(deCollider *collider);
 	
 	/** \brief Remove all colliders. */
 	void RemoveAllColliders();
@@ -401,14 +401,14 @@ public:
 	 * \throws deeInvalidParam \em component is NULL.
 	 * \throws deeInvalidParam \em component has a parent world.
 	 */
-	void AddComponent(deComponent::Ref component);
+	void AddComponent(deComponent *component);
 	
 	/**
 	 * \brief Remove component.
 	 * \throws deeInvalidParam \em component is NULL.
 	 * \throws deeInvalidParam Parent world of \em component is not this world.
 	 */
-	void RemoveComponent(deComponent::Ref component);
+	void RemoveComponent(deComponent *component);
 	
 	/** \brief Remove all components. */
 	void RemoveAllComponents();
@@ -429,14 +429,14 @@ public:
 	 * \throws deeInvalidParam \em debugDrawer is NULL.
 	 * \throws deeInvalidParam \em debugDrawer has a parent world.
 	 */
-	void AddDebugDrawer(deDebugDrawer::Ref debugDrawer);
+	void AddDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/**
 	 * \brief Remove debugDrawer.
 	 * \throws deeInvalidParam \em debugDrawer is NULL.
 	 * \throws deeInvalidParam Parent world of \em debugDrawer is not this world.
 	 */
-	void RemoveDebugDrawer(deDebugDrawer::Ref debugDrawer);
+	void RemoveDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** \brief Remove all debug drawers. */
 	void RemoveAllDebugDrawers();
@@ -457,14 +457,14 @@ public:
 	 * \throws deeInvalidParam \em envMapProbe is NULL.
 	 * \throws deeInvalidParam \em envMapProbe has a parent world.
 	 */
-	void AddEnvMapProbe(deEnvMapProbe::Ref envMapProbe);
+	void AddEnvMapProbe(deEnvMapProbe *envMapProbe);
 	
 	/**
 	 * \brief Remove environment map probe.
 	 * \throws deeInvalidParam \em envMapProbe is NULL.
 	 * \throws deeInvalidParam Parent world of \em envMapProbe is not this world.
 	 */
-	void RemoveEnvMapProbe(deEnvMapProbe::Ref envMapProbe);
+	void RemoveEnvMapProbe(deEnvMapProbe *envMapProbe);
 	
 	/** \brief Remove all environment map probes. */
 	void RemoveAllEnvMapProbes();
@@ -485,14 +485,14 @@ public:
 	 * \throws deeInvalidParam \em forceField is NULL.
 	 * \throws deeInvalidParam \em forceField has a parent world.
 	 */
-	void AddForceField(deForceField::Ref forceField);
+	void AddForceField(deForceField *forceField);
 	
 	/**
 	 * \brief Remove force field.
 	 * \throws deeInvalidParam \em forceField is NULL.
 	 * \throws deeInvalidParam Parent world of \em forceField is not this world.
 	 */
-	void RemoveForceField(deForceField::Ref forceField);
+	void RemoveForceField(deForceField *forceField);
 	
 	/** \brief Remove all force fields. */
 	void RemoveAllForceFields();
@@ -513,14 +513,14 @@ public:
 	 * \throws deeInvalidParam \em light is NULL.
 	 * \throws deeInvalidParam \em light has a parent world.
 	 */
-	void AddLight(deLight::Ref light);
+	void AddLight(deLight *light);
 	
 	/**
 	 * \brief Remove light.
 	 * \throws deeInvalidParam \em light is NULL.
 	 * \throws deeInvalidParam Parent world of \em light is not this world.
 	 */
-	void RemoveLight(deLight::Ref light);
+	void RemoveLight(deLight *light);
 	
 	/** \brief Remove all lights. */
 	void RemoveAllLights();
@@ -541,14 +541,14 @@ public:
 	 * \throws deeInvalidParam \em lumimeter is NULL.
 	 * \throws deeInvalidParam \em lumimeter has a parent world.
 	 */
-	void AddLumimeter(deLumimeter::Ref lumimeter);
+	void AddLumimeter(deLumimeter *lumimeter);
 	
 	/**
 	 * \brief Remove lumimeter.
 	 * \throws deeInvalidParam \em lumimeter is NULL.
 	 * \throws deeInvalidParam Parent world of \em lumimeter is not this world.
 	 */
-	void RemoveLumimeter(deLumimeter::Ref lumimeter);
+	void RemoveLumimeter(deLumimeter *lumimeter);
 	
 	/** \brief Remove all lumimeters. */
 	void RemoveAllLumimeters();
@@ -569,14 +569,14 @@ public:
 	 * \throws deeInvalidParam \em microphone is NULL.
 	 * \throws deeInvalidParam \em microphone has a parent world.
 	 */
-	void AddMicrophone(deMicrophone::Ref microphone);
+	void AddMicrophone(deMicrophone *microphone);
 	
 	/**
 	 * \brief Remove microphone.
 	 * \throws deeInvalidParam \em microphone is NULL.
 	 * \throws deeInvalidParam Parent world of \em microphone is not this world.
 	 */
-	void RemoveMicrophone(deMicrophone::Ref microphone);
+	void RemoveMicrophone(deMicrophone *microphone);
 	
 	/** \brief Remove all microphones. */
 	void RemoveAllMicrophones();
@@ -653,14 +653,14 @@ public:
 	 * \throws deeInvalidParam \em navigator is NULL.
 	 * \throws deeInvalidParam \em navigator has a parent world.
 	 */
-	void AddNavigator(deNavigator::Ref navigator);
+	void AddNavigator(deNavigator *navigator);
 	
 	/**
 	 * \brief Remove navigator.
 	 * \throws deeInvalidParam \em navigator is NULL.
 	 * \throws deeInvalidParam Parent world of \em navigator is not this world.
 	 */
-	void RemoveNavigator(deNavigator::Ref navigator);
+	void RemoveNavigator(deNavigator *navigator);
 	
 	/** \brief Remove all navigators. */
 	void RemoveAllNavigators();
@@ -681,14 +681,14 @@ public:
 	 * \throws deeInvalidParam \em networkState is NULL.
 	 * \throws deeInvalidParam \em networkState has a parent world.
 	 */
-	void AddNetworkState(deNetworkState::Ref networkState);
+	void AddNetworkState(deNetworkState *networkState);
 	
 	/**
 	 * \brief Remove network state.
 	 * \throws deeInvalidParam \em networkState is NULL.
 	 * \throws deeInvalidParam Parent world of \em networkState is not this world.
 	 */
-	void RemoveNetworkState(deNetworkState::Ref networkState);
+	void RemoveNetworkState(deNetworkState *networkState);
 	
 	/** \brief Remove all network states. */
 	void RemoveAllNetworkStates();
@@ -737,14 +737,14 @@ public:
 	 * \throws deeInvalidParam \em propField is NULL.
 	 * \throws deeInvalidParam \em propField has a parent world.
 	 */
-	void AddPropField(dePropField::Ref propField);
+	void AddPropField(dePropField *propField);
 	
 	/**
 	 * \brief Remove prop field.
 	 * \throws deeInvalidParam \em propField is NULL.
 	 * \throws deeInvalidParam Parent world of \em propField is not this world.
 	 */
-	void RemovePropField(dePropField::Ref propField);
+	void RemovePropField(dePropField *propField);
 	
 	/** \brief Remove all prop fields. */
 	void RemoveAllPropFields();
@@ -765,14 +765,14 @@ public:
 	 * \throws deeInvalidParam \em speaker is NULL.
 	 * \throws deeInvalidParam \em speaker has a parent world.
 	 */
-	void AddSpeaker(deSpeaker::Ref speaker);
+	void AddSpeaker(deSpeaker *speaker);
 	
 	/**
 	 * \brief Remove speaker.
 	 * \throws deeInvalidParam \em speaker is NULL.
 	 * \throws deeInvalidParam Parent world of \em speaker is not this world.
 	 */
-	void RemoveSpeaker(deSpeaker::Ref speaker);
+	void RemoveSpeaker(deSpeaker *speaker);
 	
 	/** \brief Remove all speakers. */
 	void RemoveAllSpeakers();
@@ -793,14 +793,14 @@ public:
 	 * \throws deeInvalidParam \em soundLevelMeter is NULL.
 	 * \throws deeInvalidParam \em soundLevelMeter has a parent world.
 	 */
-	void AddSoundLevelMeter(deSoundLevelMeter::Ref soundLevelMeter);
+	void AddSoundLevelMeter(deSoundLevelMeter *soundLevelMeter);
 	
 	/**
 	 * \brief Remove sound level meter.
 	 * \throws deeInvalidParam \em soundLevelMeter is NULL.
 	 * \throws deeInvalidParam Parent world of \em soundLevelMeter is not this world.
 	 */
-	void RemoveSoundLevelMeter(deSoundLevelMeter::Ref soundLevelMeter);
+	void RemoveSoundLevelMeter(deSoundLevelMeter *soundLevelMeter);
 	
 	/** \brief Remove all sound level meters. */
 	void RemoveAllSoundLevelMeters();
@@ -821,14 +821,14 @@ public:
 	 * \throws deeInvalidParam \em touchSensor is NULL.
 	 * \throws deeInvalidParam \em touchSensor has a parent world.
 	 */
-	void AddTouchSensor(deTouchSensor::Ref touchSensor);
+	void AddTouchSensor(deTouchSensor *touchSensor);
 	
 	/**
 	 * \brief Remove touch sensor.
 	 * \throws deeInvalidParam \em touchSensor is NULL.
 	 * \throws deeInvalidParam Parent world of \em touchSensor is not this world.
 	 */
-	void RemoveTouchSensor(deTouchSensor::Ref touchSensor);
+	void RemoveTouchSensor(deTouchSensor *touchSensor);
 	
 	/** \brief Remove all touch sensors. */
 	void RemoveAllTouchSensors();
@@ -849,14 +849,14 @@ public:
 	 * \throws deeInvalidParam \em smokeEmitter is NULL.
 	 * \throws deeInvalidParam \em smokeEmitter has a parent world.
 	 */
-	void AddSmokeEmitter(deSmokeEmitter::Ref smokeEmitter);
+	void AddSmokeEmitter(deSmokeEmitter *smokeEmitter);
 	
 	/**
 	 * \brief Remove smoke emitter.
 	 * \throws deeInvalidParam \em smokeEmitter is NULL.
 	 * \throws deeInvalidParam Parent world of \em smokeEmitter is not this world.
 	 */
-	void RemoveSmokeEmitter(deSmokeEmitter::Ref smokeEmitter);
+	void RemoveSmokeEmitter(deSmokeEmitter *smokeEmitter);
 	
 	/** \brief Remove all smoke emitters. */
 	void RemoveAllSmokeEmitters();
@@ -890,7 +890,7 @@ public:
 	 * For each collision the collisionResponse function of the listener is called. To
 	 * stop testing set StopTesting in the provided collision information object to true.
 	 */
-	void ColliderHits(deCollider::Ref collider, deBaseScriptingCollider *listener);
+	void ColliderHits(deCollider *collider, deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Tests the moving collider for collision with world elements.
@@ -899,7 +899,7 @@ public:
 	 * of the listener is called. To stop testing set StopTesting in the provided
 	 * collision information object to true.
 	 */
-	void ColliderMoveHits(deCollider::Ref collider, const decVector &displacement, deBaseScriptingCollider *listener);
+	void ColliderMoveHits(deCollider *collider, const decVector &displacement, deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Tests the rotating collider for collision with world elements.
@@ -908,7 +908,7 @@ public:
 	 * of the listener is called. To stop testing set StopTesting in the provided
 	 * collision information object to true.
 	 */
-	void ColliderRotateHits(deCollider::Ref collider, const decVector &rotation, deBaseScriptingCollider *listener);
+	void ColliderRotateHits(deCollider *collider, const decVector &rotation, deBaseScriptingCollider *listener);
 	
 	/**
 	 * \brief Tests the moving and rotating collider for collision with world elements.
@@ -917,7 +917,7 @@ public:
 	 * of the listener is called. To stop testing set StopTesting in the provided
 	 * collision information object to true.
 	 */
-	void ColliderMoveRotateHits(deCollider::Ref collider, const decVector &displacement,
+	void ColliderMoveRotateHits(deCollider *collider, const decVector &displacement,
 	const decVector &rotation, deBaseScriptingCollider *listener);
 	/*@}*/
 	

@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	peeUControllerAdd(peeEmitter::Ref emitter, peeController::Ref controller);
+	peeUControllerAdd(peeEmitter *emitter, peeController *controller);
 	
 protected:
 	/** \brief Clean up the undo object. */

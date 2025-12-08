@@ -158,11 +158,11 @@ const char *basePath, bool asynchron){
 	return video;
 }
 
-void deVideoManager::SaveVideo(deVideo::Ref video, const char *filename){
+void deVideoManager::SaveVideo(deVideo *video, const char *filename){
 	SaveVideo(GetEngine()->GetVirtualFileSystem(), video, filename);
 }
 
-void deVideoManager::SaveVideo(deVirtualFileSystem *vfs, deVideo::Ref video, const char *filename){
+void deVideoManager::SaveVideo(deVirtualFileSystem *vfs, deVideo *video, const char *filename){
 	if(!video || !vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
@@ -181,7 +181,7 @@ void deVideoManager::SaveVideo(deVirtualFileSystem *vfs, deVideo::Ref video, con
 	}
 }
 
-void deVideoManager::AddLoadedVideo(deVideo::Ref video){
+void deVideoManager::AddLoadedVideo(deVideo *video){
 	if(!video){
 		DETHROW(deeInvalidParam);
 	}
@@ -191,7 +191,7 @@ void deVideoManager::AddLoadedVideo(deVideo::Ref video){
 
 
 
-deVideoDecoder *deVideoManager::CreateDecoder(deVideo::Ref video){
+deVideoDecoder *deVideoManager::CreateDecoder(deVideo *video){
 	if(!video || !video->GetVirtualFileSystem()){
 		DETHROW(deeInvalidParam);
 	}
@@ -252,7 +252,7 @@ deVideoDecoder *deVideoManager::CreateDecoder(deVideo::Ref video){
 	return videoDecoder;
 }
 
-deVideoAudioDecoder *deVideoManager::CreateAudioDecoder(deVideo::Ref video){
+deVideoAudioDecoder *deVideoManager::CreateAudioDecoder(deVideo *video){
 	if(!video || !video->GetVirtualFileSystem()){
 		DETHROW(deeInvalidParam);
 	}

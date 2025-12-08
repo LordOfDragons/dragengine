@@ -76,14 +76,14 @@ public:
 	 * \throws deeInvalidParam \em canvas is NULL.
 	 * \throws deeInvalidParam \em canvas has a parent view.
 	 */
-	void AddCanvas(deCanvas::Ref canvas);
+	void AddCanvas(deCanvas *canvas);
 	
 	/**
 	 * \brief Remove child canvas.
 	 * \throws deeInvalidParam \em canvas is NULL.
 	 * \throws deeInvalidParam \em canvas parent view is not this canvas.
 	 */
-	void RemoveCanvas(deCanvas::Ref canvas);
+	void RemoveCanvas(deCanvas *canvas);
 	
 	/** \brief Remove all child canvas. */
 	void RemoveAllCanvas();

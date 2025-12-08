@@ -724,7 +724,7 @@ deAnimator *deClassAnimator::GetAnimator(dsRealObject *myself) const{
 	return ((sArNatDat*)p_GetNativeData(myself->GetBuffer()))->animator;
 }
 
-void deClassAnimator::PushAnimator(dsRunTime *rt, deAnimator::Ref animator){
+void deClassAnimator::PushAnimator(dsRunTime *rt, deAnimator *animator){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkSetRepeat(seLink::Ref link, int newRepeat);
+	seULinkSetRepeat(seLink *link, int newRepeat);
 	
 protected:
 	/** \brief Clean up undo action. */

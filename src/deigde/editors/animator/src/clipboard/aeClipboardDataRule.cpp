@@ -42,7 +42,7 @@ const char * const aeClipboardDataRule::TYPE_NAME = "rule";
 // Constructor, destructor
 ////////////////////////////
 
-aeClipboardDataRule::aeClipboardDataRule(aeRule::Ref rule) :
+aeClipboardDataRule::aeClipboardDataRule(aeRule *rule) :
 igdeClipboardData(TYPE_NAME)
 {
 	aeRule::Ref copyRule = NULL;

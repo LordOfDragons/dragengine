@@ -186,7 +186,7 @@ deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, con
 	return rig;
 }
 
-void deRigManager::AddLoadedRig(deRig::Ref rig){
+void deRigManager::AddLoadedRig(deRig *rig){
 	if(!rig){
 		DETHROW(deeInvalidParam);
 	}

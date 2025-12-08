@@ -511,7 +511,7 @@ int deClassFileReader::GetStreamVersion(dsRealObject *myself) const{
 	return ((const sFReadNatDat *)p_GetNativeData(myself->GetBuffer()))->streamVersion;
 }
 
-void deClassFileReader::PushFileReader(dsRunTime *rt, decBaseFileReader::Ref fileReader){
+void deClassFileReader::PushFileReader(dsRunTime *rt, decBaseFileReader *fileReader){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

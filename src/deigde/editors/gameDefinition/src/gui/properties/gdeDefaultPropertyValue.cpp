@@ -60,7 +60,7 @@ gdeDefaultPropertyValue::~gdeDefaultPropertyValue(){
 
 void gdeDefaultPropertyValue::CreateAndAdd(igdeContainer &form, igdeUIHelper &helper,
 const char *label, const char *description, igdeEditPropertyValue::Ref &widget,
-igdeEditPropertyValueListener::Ref listener){
+igdeEditPropertyValueListener *listener){
 	helper.Label(form, label, description, igdeLabel::eaLeft | igdeLabel::eaMiddle);
 	widget.TakeOver(new gdeDefaultPropertyValue(helper));
 	if(listener){
@@ -70,7 +70,7 @@ igdeEditPropertyValueListener::Ref listener){
 }
 
 void gdeDefaultPropertyValue::CreateAndAdd(igdeContainer &parent, igdeUIHelper &helper,
-igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener::Ref listener){
+igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener){
 	widget.TakeOver(new gdeDefaultPropertyValue(helper));
 	if(listener){
 		widget->AddListener(listener);

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCTPSetIdentifierGroup::gdeUOCTPSetIdentifierGroup(
-gdeObjectClass::Ref objectClass, gdeProperty::Ref property, const char *newValue) :
+gdeObjectClass *objectClass, gdeProperty *property, const char *newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !property){

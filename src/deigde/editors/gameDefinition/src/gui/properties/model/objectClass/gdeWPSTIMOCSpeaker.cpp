@@ -48,7 +48,7 @@
 ////////////////////////////
 
 gdeWPSTIMOCSpeaker::gdeWPSTIMOCSpeaker(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCSpeaker::Ref speaker, int index) :
+	gdeOCSpeaker *speaker, int index) :
 gdeWPSTIMOCSubObject(tree, etObjectClassSpeaker, objectClass, index)
 {
 	if(!speaker){

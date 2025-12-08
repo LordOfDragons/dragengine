@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetShapeInfluence::gdeUOCEnvMapProbeSetShapeInfluence(gdeObjectClass::Ref objectClass,
-gdeOCEnvMapProbe::Ref envMapProbe, const decShapeList &newValue) :
+gdeUOCEnvMapProbeSetShapeInfluence::gdeUOCEnvMapProbeSetShapeInfluence(gdeObjectClass *objectClass,
+gdeOCEnvMapProbe *envMapProbe, const decShapeList &newValue) :
 
 pEnvMapProbe(NULL)
 {

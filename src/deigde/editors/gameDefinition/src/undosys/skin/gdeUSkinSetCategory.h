@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUSkinSetCategory(gdeSkin::Ref skin, const char *newValue);
+	gdeUSkinSetCategory(gdeSkin *skin, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetSetBone::ceUCTargetSetBone(ceTarget::Ref target, const char *newBone){
+ceUCTargetSetBone::ceUCTargetSetBone(ceTarget *target, const char *newBone){
 	if(!target || !newBone){
 		DETHROW(deeInvalidParam);
 	}

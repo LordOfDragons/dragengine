@@ -75,7 +75,7 @@ ceActorParameter *ceActorParameterList::GetNamed(const char *name) const{
 	return NULL;
 }
 
-int ceActorParameterList::IndexOf(ceActorParameter::Ref parameter) const{
+int ceActorParameterList::IndexOf(ceActorParameter *parameter) const{
 	return pParameters.IndexOf(parameter);
 }
 
@@ -92,7 +92,7 @@ int ceActorParameterList::IndexOfNamed(const char *name) const{
 	return -1;
 }
 
-bool ceActorParameterList::Has(ceActorParameter::Ref parameter) const{
+bool ceActorParameterList::Has(ceActorParameter *parameter) const{
 	return pParameters.Has(parameter);
 }
 
@@ -122,7 +122,7 @@ void ceActorParameterList::Set(const char *name, int value){
 	}
 }
 
-void ceActorParameterList::Remove(ceActorParameter::Ref parameter){
+void ceActorParameterList::Remove(ceActorParameter *parameter){
 	pParameters.Remove(parameter);
 }
 

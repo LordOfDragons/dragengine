@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file logger. */
-	deLoggerFile(decBaseFileWriter::Ref writer);
+	deLoggerFile(decBaseFileWriter *writer);
 	
 protected:
 	/**

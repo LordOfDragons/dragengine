@@ -340,7 +340,7 @@ deSynthesizerSourceGroup *deClassSSGroup::GetSource(dsRealObject *myself) const{
 	return ((sSSGroupNatDat*)p_GetNativeData(myself->GetBuffer()))->source;
 }
 
-void deClassSSGroup::AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref synthesizer){
+void deClassSSGroup::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -360,7 +360,7 @@ void deClassSSGroup::AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref 
 	nd.synthesizer = synthesizer;
 }
 
-void deClassSSGroup::PushSource(dsRunTime *rt, deSynthesizer::Ref synthesizer, deSynthesizerSourceGroup::Ref source){
+void deClassSSGroup::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceGroup *source){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

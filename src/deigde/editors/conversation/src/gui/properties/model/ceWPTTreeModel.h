@@ -79,7 +79,7 @@ public:
 	/** Constructors and Destructors */
 	/*@{*/
 	/** Create new tree model. */
-	ceWPTTreeModel(ceWindowMain &windowMain, ceConversation::Ref conversation,
+	ceWPTTreeModel(ceWindowMain &windowMain, ceConversation *conversation,
 		ceConversationListener &forwardListener);
 	
 	/** Clean up tree model. */

@@ -45,7 +45,7 @@ public:
 	typedef deTObjectReference<meUCameraMoveObject> Ref;
 	
 	// constructor, destructor
-	meUCameraMoveObject(meObject::Ref object);
+	meUCameraMoveObject(meObject *object);
 	~meUCameraMoveObject() override;
 	
 	void SetNewPosition(const decDVector &position);

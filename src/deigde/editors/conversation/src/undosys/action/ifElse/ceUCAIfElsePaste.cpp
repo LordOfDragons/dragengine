@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElsePaste::ceUCAIfElsePaste(ceConversationTopic *topic, ceCAIfElse::Ref ifElse,
-ceCAIfElseCase::Ref ifcase, const ceConversationActionList &actions, int index) :
+ceUCAIfElsePaste::ceUCAIfElsePaste(ceConversationTopic *topic, ceCAIfElse *ifElse,
+ceCAIfElseCase *ifcase, const ceConversationActionList &actions, int index) :
 ceUCActionPaste(topic, actions, index)
 {
 	if(!ifElse || actions.GetCount() == 0){

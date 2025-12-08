@@ -58,7 +58,7 @@ public:
 	inline deoglRCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** Set canvas view or \em NULL if not set. */
-	void SetCanvasView(deoglRCanvasView::Ref canvasView);
+	void SetCanvasView(deoglRCanvasView *canvasView);
 	
 	/** Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTCTransform() const{ return pTCTransform; }

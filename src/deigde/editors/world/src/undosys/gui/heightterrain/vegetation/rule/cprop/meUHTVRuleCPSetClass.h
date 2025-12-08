@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleCPSetClass(meHTVegetationLayer::Ref vlayer, meHTVRuleClosestProp::Ref rule, const char *nclass);
+	meUHTVRuleCPSetClass(meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, const char *nclass);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleCPSetClass();
 	/*@}*/

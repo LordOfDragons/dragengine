@@ -154,7 +154,7 @@ void deoalAWorld::SetSpeakerGain(float gain){
 // Components
 ///////////////
 
-void deoalAWorld::AddComponent(deoalAComponent::Ref component){
+void deoalAWorld::AddComponent(deoalAComponent *component){
 	if(!component){
 		DETHROW(deeInvalidParam);
 	}
@@ -185,7 +185,7 @@ void deoalAWorld::AddComponent(deoalAComponent::Ref component){
 	component->SetParentWorld(this);
 }
 
-void deoalAWorld::RemoveComponent(deoalAComponent::Ref component){
+void deoalAWorld::RemoveComponent(deoalAComponent *component){
 	if(component->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -242,7 +242,7 @@ void deoalAWorld::RemoveRemovalMarkedComponents(){
 // Speakers
 ///////////////
 
-void deoalAWorld::AddSpeaker(deoalASpeaker::Ref speaker){
+void deoalAWorld::AddSpeaker(deoalASpeaker *speaker){
 	// WARNING Called during synchronization time from main thread.
 	
 	if(!speaker){
@@ -277,7 +277,7 @@ void deoalAWorld::AddSpeaker(deoalASpeaker::Ref speaker){
 	speaker->SetEnabled(false); // ensure it is disabled. active microphone will enable
 }
 
-void deoalAWorld::RemoveSpeaker(deoalASpeaker::Ref speaker){
+void deoalAWorld::RemoveSpeaker(deoalASpeaker *speaker){
 	// WARNING Called during synchronization time from main thread.
 	
 	if(speaker->GetParentWorld() != this){
@@ -352,7 +352,7 @@ void deoalAWorld::RemoveRemovalMarkedSpeakers(){
 // Microphones
 ///////////////
 
-void deoalAWorld::AddMicrophone(deoalAMicrophone::Ref microphone){
+void deoalAWorld::AddMicrophone(deoalAMicrophone *microphone){
 	if(!microphone){
 		DETHROW(deeInvalidParam);
 	}
@@ -383,7 +383,7 @@ void deoalAWorld::AddMicrophone(deoalAMicrophone::Ref microphone){
 	microphone->SetParentWorld(this);
 }
 
-void deoalAWorld::RemoveMicrophone(deoalAMicrophone::Ref microphone){
+void deoalAWorld::RemoveMicrophone(deoalAMicrophone *microphone){
 	if(microphone->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -440,7 +440,7 @@ void deoalAWorld::RemoveRemovalMarkedMicrophones(){
 // SoundLevelMeters
 /////////////////////
 
-void deoalAWorld::AddSoundLevelMeter(deoalASoundLevelMeter::Ref soundLevelMeter){
+void deoalAWorld::AddSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter){
 	// WARNING Called during synchronization time from main thread.
 	
 	if(!soundLevelMeter){
@@ -473,7 +473,7 @@ void deoalAWorld::AddSoundLevelMeter(deoalASoundLevelMeter::Ref soundLevelMeter)
 	soundLevelMeter->SetParentWorld(this);
 }
 
-void deoalAWorld::RemoveSoundLevelMeter(deoalASoundLevelMeter::Ref soundLevelMeter){
+void deoalAWorld::RemoveSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter){
 	// WARNING Called during synchronization time from main thread.
 	
 	if(soundLevelMeter->GetParentWorld() != this){

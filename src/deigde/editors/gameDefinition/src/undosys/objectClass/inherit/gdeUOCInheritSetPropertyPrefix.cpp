@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCInheritSetPropertyPrefix::gdeUOCInheritSetPropertyPrefix(gdeObjectClass::Ref objectClass,
-gdeOCInherit::Ref inherit, const char *newValue) :
+gdeUOCInheritSetPropertyPrefix::gdeUOCInheritSetPropertyPrefix(gdeObjectClass *objectClass,
+gdeOCInherit *inherit, const char *newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !inherit){

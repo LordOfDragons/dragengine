@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveTexture::gdeUOCRemoveTexture(gdeObjectClass::Ref objectClass, gdeOCComponentTexture::Ref texture) :
+gdeUOCRemoveTexture::gdeUOCRemoveTexture(gdeObjectClass *objectClass, gdeOCComponentTexture *texture) :
 
 pTexture(NULL)
 {

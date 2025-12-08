@@ -292,7 +292,7 @@ dedsNavigationInfo *deClassNavigationInfo::GetNavigationInfo(dsRealObject *mysel
 	}
 }
 
-void deClassNavigationInfo::PushNavigationInfo(dsRunTime *rt, dedsNavigationInfo::Ref info){
+void deClassNavigationInfo::PushNavigationInfo(dsRunTime *rt, dedsNavigationInfo *info){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCParticleEmitterSetTriggerName(gdeObjectClass::Ref objectClass,
-		gdeOCParticleEmitter::Ref particleEmitter, gdeOCParticleEmitter::eTriggers trigger,
+	gdeUOCParticleEmitterSetTriggerName(gdeObjectClass *objectClass,
+		gdeOCParticleEmitter *particleEmitter, gdeOCParticleEmitter::eTriggers trigger,
 		const char *newValue);
 	
 protected:

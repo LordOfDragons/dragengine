@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkSetController::seULinkSetController(seLink::Ref link, seController *newController) :
+seULinkSetController::seULinkSetController(seLink *link, seController *newController) :
 
 
 pNewController(NULL)

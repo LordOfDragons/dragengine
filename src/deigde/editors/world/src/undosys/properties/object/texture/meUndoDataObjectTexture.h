@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo data object. */
-	meUndoDataObjectTexture(meObject::Ref object);
+	meUndoDataObjectTexture(meObject *object);
 	
 protected:
 	/** \brief Clean up undo data object. */
@@ -68,11 +68,11 @@ public:
 	/** Retrieves the old texture object or NULL if not existing. */
 	inline meObjectTexture *GetOldTexture() const{ return pOldTexture; }
 	/** Sets the old texture object or NULL if not existing. */
-	void SetOldTexture(meObjectTexture::Ref texture);
+	void SetOldTexture(meObjectTexture *texture);
 	/** Retrieves the new texture object or NULL if not existing. */
 	inline meObjectTexture *GetNewTexture() const{ return pNewTexture; }
 	/** Sets the new texture object or NULL if not existing. */
-	void SetNewTexture(meObjectTexture::Ref texture);
+	void SetNewTexture(meObjectTexture *texture);
 	/** Retrieves the old texture list if used. */
 	inline meObjectTextureList &GetOldTextureList(){ return pOldTextureList; }
 	inline const meObjectTextureList &GetOldTextureList() const{ return pOldTextureList; }

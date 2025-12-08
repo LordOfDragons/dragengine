@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDeleteNavSpace::meUDeleteNavSpace(meWorld::Ref world) :
+meUDeleteNavSpace::meUDeleteNavSpace(meWorld *world) :
 
 pNavSpaces(NULL),
 pNavSpaceCount(0)

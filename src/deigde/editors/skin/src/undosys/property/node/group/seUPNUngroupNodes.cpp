@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPNUngroupNodes::seUPNUngroupNodes(sePropertyNodeGroup::Ref nodeGroup) :
+seUPNUngroupNodes::seUPNUngroupNodes(sePropertyNodeGroup *nodeGroup) :
 
 pIndex(0),
 pNodeCount(0),

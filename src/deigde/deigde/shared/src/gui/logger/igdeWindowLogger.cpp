@@ -104,7 +104,7 @@ igdeWindowLogger::~igdeWindowLogger(){
 // Management
 ///////////////
 
-void igdeWindowLogger::SetLogger(igdeLoggerHistory::Ref logger){
+void igdeWindowLogger::SetLogger(igdeLoggerHistory *logger){
 	if(logger == pLogger){
 		return;
 	}

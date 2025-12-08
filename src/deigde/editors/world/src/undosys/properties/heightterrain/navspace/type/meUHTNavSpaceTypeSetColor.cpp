@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceTypeSetColor::meUHTNavSpaceTypeSetColor(meHeightTerrainNavSpaceType::Ref type, const decColor &newColor) :
+meUHTNavSpaceTypeSetColor::meUHTNavSpaceTypeSetColor(meHeightTerrainNavSpaceType *type, const decColor &newColor) :
 
 pNewColor(newColor)
 {

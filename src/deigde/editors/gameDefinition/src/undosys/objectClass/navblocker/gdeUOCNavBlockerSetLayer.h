@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavBlockerSetLayer(gdeObjectClass::Ref objectClass,
-		gdeOCNavigationBlocker::Ref navblocker, int newValue);
+	gdeUOCNavBlockerSetLayer(gdeObjectClass *objectClass,
+		gdeOCNavigationBlocker *navblocker, int newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

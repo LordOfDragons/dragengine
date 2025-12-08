@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCNavBlockerToggleEnabled::gdeUOCNavBlockerToggleEnabled(
-gdeObjectClass::Ref objectClass, gdeOCNavigationBlocker::Ref navblocker) :
+gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker) :
 
 pNavBlocker(NULL)
 {

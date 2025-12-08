@@ -65,7 +65,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push target. */
-	void PushTarget(dsRunTime *rt, deSky::Ref sky, int layer, deSkyLayer::eTargets target);
+	void PushTarget(dsRunTime *rt, deSky *sky, int layer, deSkyLayer::eTargets target);
 	/*@}*/
 	
 	

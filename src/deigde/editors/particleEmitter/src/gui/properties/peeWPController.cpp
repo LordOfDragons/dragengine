@@ -96,7 +96,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter::Ref emitter, peeController *controller) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter *emitter, peeController *controller) = 0;
 };
 
 class cBaseEditSliderTextListener : public igdeEditSliderTextListener{
@@ -120,7 +120,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(float value, peeEmitter::Ref emitter, peeController *controller) = 0;
+	virtual igdeUndo *OnChanged(float value, peeEmitter *emitter, peeController *controller) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -152,7 +152,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(peeEmitter::Ref emitter) = 0;
+	virtual igdeUndo *OnAction(peeEmitter *emitter) = 0;
 };
 
 class cBaseActionController : public cBaseAction{
@@ -166,7 +166,7 @@ public:
 	cBaseActionController(peeWPController &panel, const char *text, igdeIcon *icon, const char *description) :
 	cBaseAction(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnAction(peeEmitter::Ref emitter){
+	virtual igdeUndo *OnAction(peeEmitter *emitter){
 		peeController * const controller = pPanel.GetController();
 		if(controller){
 			return OnActionController(emitter, controller);
@@ -176,7 +176,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnActionController(peeEmitter::Ref emitter, peeController *controller) = 0;
+	virtual igdeUndo *OnActionController(peeEmitter *emitter, peeController *controller) = 0;
 };
 
 
@@ -218,7 +218,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add a controller to the end of the list."){}
 	
-	virtual igdeUndo *OnAction(peeEmitter::Ref emitter){
+	virtual igdeUndo *OnAction(peeEmitter *emitter){
 		return new peeUControllerAdd(emitter, peeController::Ref::NewWith());
 	}
 };
@@ -364,7 +364,7 @@ igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener.TakeOver(new peeWPControllerListener(*this));
@@ -411,7 +411,7 @@ peeWPController::~peeWPController(){
 // Management
 ///////////////
 
-void peeWPController::SetEmitter(peeEmitter::Ref emitter){
+void peeWPController::SetEmitter(peeEmitter *emitter){
 	if(emitter == pEmitter){
 		return;
 	}

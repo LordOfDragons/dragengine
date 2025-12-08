@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCToggleIsGhost::gdeUOCToggleIsGhost(gdeObjectClass::Ref objectClass) :
+gdeUOCToggleIsGhost::gdeUOCToggleIsGhost(gdeObjectClass *objectClass) :
 pObjectClass(NULL)
 {
 	if(!objectClass){

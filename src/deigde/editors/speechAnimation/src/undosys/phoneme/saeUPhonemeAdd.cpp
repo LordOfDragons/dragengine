@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeAdd::saeUPhonemeAdd(saeSAnimation::Ref sanimation, saePhoneme::Ref phoneme){
+saeUPhonemeAdd::saeUPhonemeAdd(saeSAnimation *sanimation, saePhoneme *phoneme){
 	if(!sanimation || !phoneme) DETHROW(deeInvalidParam);
 	
 	pSAnimation = NULL;

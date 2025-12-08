@@ -249,7 +249,7 @@ void igdeGDClass::Check(){
 
 
 
-void igdeGDClass::SetPreviewImage(deImage::Ref image){
+void igdeGDClass::SetPreviewImage(deImage *image){
 	if(image == pPreviewImage){
 		return;
 	}
@@ -931,11 +931,11 @@ const decIntList igdeGDClass::GetWorldIndicesWithLinkedProperty(const char *name
 // SnapPoints
 ////////////
 
-void igdeGDClass::AddSnapPoint(igdeGDCSnapPoint::Ref snappoint){
+void igdeGDClass::AddSnapPoint(igdeGDCSnapPoint *snappoint){
 	pSnapPoints.Add(snappoint);
 }
 
-void igdeGDClass::RemoveSnapPoint(igdeGDCSnapPoint::Ref snappoint){
+void igdeGDClass::RemoveSnapPoint(igdeGDCSnapPoint *snappoint){
 	pSnapPoints.Remove(snappoint);
 }
 

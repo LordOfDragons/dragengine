@@ -2301,7 +2301,7 @@ dedsLocomotion *deClassLocomotion::GetLocomotion(dsRealObject *myself) const{
 	return ((const sLocoNatDat *)p_GetNativeData(myself->GetBuffer()))->locomotion;
 }
 
-void deClassLocomotion::PushLocomotion(dsRunTime *rt, dedsLocomotion::Ref locomotion){
+void deClassLocomotion::PushLocomotion(dsRunTime *rt, dedsLocomotion *locomotion){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

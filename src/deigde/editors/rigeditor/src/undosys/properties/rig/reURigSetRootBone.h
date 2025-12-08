@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reURigSetRootBone(reRig *rig, reRigBone::Ref rootBone);
+	reURigSetRootBone(reRig *rig, reRigBone *rootBone);
 	
 protected:
 	/** \brief Clean up undo. */

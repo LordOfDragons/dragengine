@@ -117,7 +117,7 @@ ceConversation *ceLoadSaveSystem::LoadConversation(const char *filename){
 	return conversation;
 }
 
-void ceLoadSaveSystem::SaveConversation(ceConversation::Ref conversation, const char *filename){
+void ceLoadSaveSystem::SaveConversation(ceConversation *conversation, const char *filename){
 	pLSConversation->SaveConversation(*conversation, decBaseFileWriter::Ref::New(
 		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
 			decPath::CreatePathUnix(filename))));

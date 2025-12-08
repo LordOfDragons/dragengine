@@ -285,7 +285,7 @@ deColliderComponent *deClassColliderComponent::GetCollider(dsRealObject *myself)
 	}
 }
 
-void deClassColliderComponent::PushCollider(dsRunTime *rt, deColliderComponent::Ref collider){
+void deClassColliderComponent::PushCollider(dsRunTime *rt, deColliderComponent *collider){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

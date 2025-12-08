@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceOptionSetText::ceUCAPChoiceOptionSetText(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref playerChoice,
-	ceCAPlayerChoiceOption::Ref option, const decUnicodeString &newText){
+ceUCAPChoiceOptionSetText::ceUCAPChoiceOptionSetText(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
+	ceCAPlayerChoiceOption *option, const decUnicodeString &newText){
 	if(!topic || !playerChoice || !option){
 		DETHROW(deeInvalidParam);
 	}

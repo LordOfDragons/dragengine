@@ -76,7 +76,7 @@ public:
 	inline deHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** \brief Set height terrain or NULL if not set. */
-	void SetHeightTerrain(deHeightTerrain::Ref heightTerrain);
+	void SetHeightTerrain(deHeightTerrain *heightTerrain);
 	/*@}*/
 	
 	
@@ -90,16 +90,16 @@ public:
 	deComponent *GetComponentAt(int index) const;
 	
 	/** \brief Index of the given component or -1 if not found. */
-	int IndexOfComponent(deComponent::Ref component) const;
+	int IndexOfComponent(deComponent *component) const;
 	
 	/** \brief Given component exists. */
-	bool HasComponent(deComponent::Ref component) const;
+	bool HasComponent(deComponent *component) const;
 	
 	/** \brief Adds a component. */
-	void AddComponent(deComponent::Ref component);
+	void AddComponent(deComponent *component);
 	
 	/** \brief Removes a component. */
-	void RemoveComponent(deComponent::Ref component);
+	void RemoveComponent(deComponent *component);
 	
 	/** \brief Removes all components. */
 	void RemoveAllComponents();

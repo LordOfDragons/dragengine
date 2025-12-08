@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCHasActorToggleNegate::ceUCCHasActorToggleNegate(ceConversationTopic::Ref topic, ceConversationAction::Ref action, ceCConditionHasActor::Ref hasActor){
+ceUCCHasActorToggleNegate::ceUCCHasActorToggleNegate(ceConversationTopic *topic, ceConversationAction *action, ceCConditionHasActor *hasActor){
 	if(!topic || !action || !hasActor) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

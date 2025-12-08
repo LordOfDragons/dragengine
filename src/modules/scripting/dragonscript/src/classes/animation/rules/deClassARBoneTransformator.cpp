@@ -580,7 +580,7 @@ deAnimatorRuleBoneTransformator *deClassARBoneTransformator::GetRule(dsRealObjec
 	return ((sARBoneTransNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARBoneTransformator::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
+void deClassARBoneTransformator::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -600,7 +600,7 @@ void deClassARBoneTransformator::AssignAnimator(dsRealObject *myself, deAnimator
 	nd.animator = animator;
 }
 
-void deClassARBoneTransformator::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleBoneTransformator::Ref rule){
+void deClassARBoneTransformator::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleBoneTransformator *rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

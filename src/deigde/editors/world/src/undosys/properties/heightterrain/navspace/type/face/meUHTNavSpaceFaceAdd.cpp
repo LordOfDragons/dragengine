@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceFaceAdd::meUHTNavSpaceFaceAdd(meHeightTerrainNavSpaceType::Ref type, meHeightTerrainNavSpaceFace::Ref face) :
+meUHTNavSpaceFaceAdd::meUHTNavSpaceFaceAdd(meHeightTerrainNavSpaceType *type, meHeightTerrainNavSpaceFace *face) :
 pType(NULL)
 {
 	if(!type || !face){

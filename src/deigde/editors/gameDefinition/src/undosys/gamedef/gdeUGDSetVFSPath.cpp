@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDSetVFSPath::gdeUGDSetVFSPath(gdeGameDefinition::Ref gameDefinition, const char *newValue) :
+gdeUGDSetVFSPath::gdeUGDSetVFSPath(gdeGameDefinition *gameDefinition, const char *newValue) :
 
 pNewValue(newValue)
 {

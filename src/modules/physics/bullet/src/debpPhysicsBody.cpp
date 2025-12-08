@@ -95,7 +95,7 @@ void debpPhysicsBody::SetDynamicsWorld(debpCollisionWorld *dynWorld){
 	pCreateRigidBody();
 }
 
-void debpPhysicsBody::SetShape(debpBulletShape::Ref shape){
+void debpPhysicsBody::SetShape(debpBulletShape *shape){
 	if(shape == pShape){
 		return;
 	}

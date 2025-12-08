@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerToggleFrozen::peeUControllerToggleFrozen(peeController::Ref controller){
+peeUControllerToggleFrozen::peeUControllerToggleFrozen(peeController *controller){
 	if(!controller) DETHROW(deeInvalidParam);
 	
 	pController = NULL;

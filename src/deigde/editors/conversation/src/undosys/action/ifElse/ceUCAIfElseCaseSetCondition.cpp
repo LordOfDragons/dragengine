@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseCaseSetCondition::ceUCAIfElseCaseSetCondition(ceConversationTopic::Ref topic, ceCAIfElse::Ref ifElse,
-ceCAIfElseCase::Ref ifcase, ceConversationCondition::Ref newCondition){
+ceUCAIfElseCaseSetCondition::ceUCAIfElseCaseSetCondition(ceConversationTopic *topic, ceCAIfElse *ifElse,
+ceCAIfElseCase *ifcase, ceConversationCondition *newCondition){
 	if(!topic || !ifElse || !ifcase){
 		DETHROW(deeInvalidParam);
 	}

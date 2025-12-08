@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUPropertySetConstructedColor(seProperty::Ref property, const decColor &newValue);
+	seUPropertySetConstructedColor(seProperty *property, const decColor &newValue);
 	
 protected:
 	/** \brief Clean up undo. */

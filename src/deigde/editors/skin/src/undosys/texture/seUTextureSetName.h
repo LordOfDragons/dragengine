@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUTextureSetName(seTexture::Ref texture, const char *newName);
+	seUTextureSetName(seTexture *texture, const char *newName);
 	
 protected:
 	/** \brief Clean up undo. */

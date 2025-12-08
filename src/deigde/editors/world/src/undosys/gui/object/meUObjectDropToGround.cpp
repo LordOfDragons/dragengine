@@ -56,7 +56,7 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectDropToGround::meUObjectDropToGround(meWorld::Ref world, const meObjectList &objects) :
+meUObjectDropToGround::meUObjectDropToGround(meWorld *world, const meObjectList &objects) :
 
 pObjects(nullptr),
 pObjectCount(0),

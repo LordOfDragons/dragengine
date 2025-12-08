@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUTextureImport::seUTextureImport(seTexture::Ref texture, const seTexture *importTexture){
+seUTextureImport::seUTextureImport(seTexture *texture, const seTexture *importTexture){
 	if(!texture || !importTexture){
 		DETHROW(deeInvalidParam);
 	}

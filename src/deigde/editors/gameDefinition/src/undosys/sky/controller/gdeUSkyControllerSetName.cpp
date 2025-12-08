@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUSkyControllerSetName::gdeUSkyControllerSetName(gdeSky::Ref sky,
-gdeSkyController::Ref controller, const char *newValue) :
+gdeUSkyControllerSetName::gdeUSkyControllerSetName(gdeSky *sky,
+gdeSkyController *controller, const char *newValue) :
 
 
 pNewValue(newValue)

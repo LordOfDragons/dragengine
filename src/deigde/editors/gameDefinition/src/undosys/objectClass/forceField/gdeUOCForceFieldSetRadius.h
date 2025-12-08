@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetRadius(gdeObjectClass::Ref objectClass,
-		gdeOCForceField::Ref forceField, float newValue);
+	gdeUOCForceFieldSetRadius(gdeObjectClass *objectClass,
+		gdeOCForceField *forceField, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

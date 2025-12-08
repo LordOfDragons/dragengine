@@ -108,7 +108,7 @@ public:
 	 * 
 	 * Called during synchronization time.
 	 */
-	void SetRSky(deoglRSky::Ref rsky);
+	void SetRSky(deoglRSky *rsky);
 	
 	
 	

@@ -58,7 +58,7 @@ public:
 	/** \brief Retrieves the debug drawer or NULL if myself is NULL. */
 	deDebugDrawer *GetDebugDrawer(dsRealObject *myself) const;
 	/** \brief Pushes the debug drawer on the stack. debugDrawer can be NULL to push a null object. */
-	void PushDebugDrawer(dsRunTime *rt, deDebugDrawer::Ref debugDrawer);
+	void PushDebugDrawer(dsRunTime *rt, deDebugDrawer *debugDrawer);
 	/*@}*/
 	
 private:

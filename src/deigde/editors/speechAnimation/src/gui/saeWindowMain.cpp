@@ -155,7 +155,7 @@ void saeWindowMain::ResetViews(){
 
 
 
-void saeWindowMain::SetSAnimation(saeSAnimation::Ref sanimation){
+void saeWindowMain::SetSAnimation(saeSAnimation *sanimation){
 	if(sanimation == pSAnimation){
 		return;
 	}
@@ -324,7 +324,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation) = 0;
+	virtual igdeUndo *OnAction(saeSAnimation *sanimation) = 0;
 };
 
 
@@ -476,7 +476,7 @@ public:
 		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add phoneme", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
 		const saePhonemeList &phonemeList = sanimation->GetPhonemeList();
 		decString ipaStringUtf8;
 		
@@ -515,7 +515,7 @@ public:
 		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Remove phoneme", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
 		saePhoneme * const phoneme = sanimation->GetActivePhoneme();
 		if(!phoneme){
 			return NULL;
@@ -536,7 +536,7 @@ public:
 		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add word", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
 		const saeWordList &wordList = sanimation->GetWordList();
 		decString name;
 		
@@ -569,7 +569,7 @@ public:
 		"Add List...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add words from text list", deInputEvent::ekcL){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
 		const saeWordList &wordList = sanimation->GetWordList();
 		decString input;
 		
@@ -622,7 +622,7 @@ public:
 		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Remove word", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation){
+	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
 		saeWord * const word = sanimation->GetActiveWord();
 		if(!word){
 			return NULL;

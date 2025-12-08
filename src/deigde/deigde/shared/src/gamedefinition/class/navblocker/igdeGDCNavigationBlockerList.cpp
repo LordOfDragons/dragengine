@@ -62,33 +62,33 @@ igdeGDCNavigationBlocker *igdeGDCNavigationBlockerList::GetAt(int index) const{
 	return (igdeGDCNavigationBlocker*)pNavigationBlockers.GetAt(index);
 }
 
-int igdeGDCNavigationBlockerList::IndexOf(igdeGDCNavigationBlocker::Ref blocker) const{
+int igdeGDCNavigationBlockerList::IndexOf(igdeGDCNavigationBlocker *blocker) const{
 	return pNavigationBlockers.IndexOf(blocker);
 }
 
-bool igdeGDCNavigationBlockerList::Has(igdeGDCNavigationBlocker::Ref blocker) const{
+bool igdeGDCNavigationBlockerList::Has(igdeGDCNavigationBlocker *blocker) const{
 	return pNavigationBlockers.Has(blocker);
 }
 
-void igdeGDCNavigationBlockerList::Add(igdeGDCNavigationBlocker::Ref blocker){
+void igdeGDCNavigationBlockerList::Add(igdeGDCNavigationBlocker *blocker){
 	if(!blocker){
 		DETHROW(deeInvalidParam);
 	}
 	pNavigationBlockers.Add(blocker);
 }
 
-void igdeGDCNavigationBlockerList::InsertAt(igdeGDCNavigationBlocker::Ref blocker, int index){
+void igdeGDCNavigationBlockerList::InsertAt(igdeGDCNavigationBlocker *blocker, int index){
 	if(!blocker){
 		DETHROW(deeInvalidParam);
 	}
 	pNavigationBlockers.Insert(blocker, index);
 }
 
-void igdeGDCNavigationBlockerList::MoveTo(igdeGDCNavigationBlocker::Ref blocker, int index){
+void igdeGDCNavigationBlockerList::MoveTo(igdeGDCNavigationBlocker *blocker, int index){
 	pNavigationBlockers.Move(blocker, index);
 }
 
-void igdeGDCNavigationBlockerList::Remove(igdeGDCNavigationBlocker::Ref blocker){
+void igdeGDCNavigationBlockerList::Remove(igdeGDCNavigationBlocker *blocker){
 	pNavigationBlockers.Remove(blocker);
 }
 

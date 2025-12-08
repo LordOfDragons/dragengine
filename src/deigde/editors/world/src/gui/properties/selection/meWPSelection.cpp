@@ -82,7 +82,7 @@ meWPSelection::~meWPSelection(){
 // Management
 ///////////////
 
-void meWPSelection::SetWorld(meWorld::Ref world){
+void meWPSelection::SetWorld(meWorld *world){
 	if(world == pWorld){
 		return;
 	}

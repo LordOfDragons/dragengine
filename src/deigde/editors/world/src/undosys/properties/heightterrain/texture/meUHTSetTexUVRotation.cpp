@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetTexUVRotation::meUHTSetTexUVRotation(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture, float newRotation){
+meUHTSetTexUVRotation::meUHTSetTexUVRotation(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, float newRotation){
 	if(!world || !sector || !texture) DETHROW(deeInvalidParam);
 	
 	pWorld = world;

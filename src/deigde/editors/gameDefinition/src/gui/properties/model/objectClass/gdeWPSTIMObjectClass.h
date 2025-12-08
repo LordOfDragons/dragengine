@@ -66,7 +66,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMObjectClass(gdeWPSTreeModel &tree, gdeObjectClass::Ref objectClass);
+	gdeWPSTIMObjectClass(gdeWPSTreeModel &tree, gdeObjectClass *objectClass);
 	
 protected:
 	/** \brief Clean up tree item model. */

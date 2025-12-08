@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetRotation::gdeUOCLightSetRotation(gdeObjectClass::Ref objectClass,
-gdeOCLight::Ref light, const decVector &newValue) :
+gdeUOCLightSetRotation::gdeUOCLightSetRotation(gdeObjectClass *objectClass,
+gdeOCLight *light, const decVector &newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !light){

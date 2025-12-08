@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalDuplicate::meUDecalDuplicate(meWorld::Ref world, const decVector &offset) :
+meUDecalDuplicate::meUDecalDuplicate(meWorld *world, const decVector &offset) :
 
 pDecals(NULL),
 pDecalCount(0)

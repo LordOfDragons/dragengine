@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUDeleteObject(meWorld::Ref world);
+	meUDeleteObject(meWorld *world);
 	
 	/** \brief Clean up undo action. */
 	virtual ~meUDeleteObject();

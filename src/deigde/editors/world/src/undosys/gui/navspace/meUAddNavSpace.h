@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUAddNavSpace(meWorld::Ref world, const decPoint3 &sector, meNavigationSpace::Ref navspace);
+	meUAddNavSpace(meWorld *world, const decPoint3 &sector, meNavigationSpace *navspace);
 	
 	/** \brief Clean up undo object. */
 	virtual ~meUAddNavSpace();

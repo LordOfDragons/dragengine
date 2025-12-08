@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionSetWaitForActorID::ceUCActionSetWaitForActorID(ceConversationTopic::Ref topic,
-ceConversationAction::Ref action, const char *newID) :
+ceUCActionSetWaitForActorID::ceUCActionSetWaitForActorID(ceConversationTopic *topic,
+ceConversationAction *action, const char *newID) :
 pNewID(newID)
 {
 	if(!topic){

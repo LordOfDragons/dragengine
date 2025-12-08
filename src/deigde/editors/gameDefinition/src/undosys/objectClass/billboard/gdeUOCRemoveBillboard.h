@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveBillboard(gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard);
+	gdeUOCRemoveBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard);
 	
 protected:
 	/** \brief Clean up undo action. */

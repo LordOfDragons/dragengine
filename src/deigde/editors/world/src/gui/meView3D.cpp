@@ -217,7 +217,7 @@ void meView3D::ResetView(){
 	}
 }
 
-void meView3D::SetWorld(meWorld::Ref world){
+void meView3D::SetWorld(meWorld *world){
 	if(world == pWorld){
 		return;
 	}

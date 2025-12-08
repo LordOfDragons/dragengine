@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetBaseHeight::meUHTSetBaseHeight(meWorld::Ref world, meHeightTerrain *heightTerrain, float newBaseHeight){
+meUHTSetBaseHeight::meUHTSetBaseHeight(meWorld *world, meHeightTerrain *heightTerrain, float newBaseHeight){
 	if(!world || !heightTerrain){
 		DETHROW(deeInvalidParam);
 	}

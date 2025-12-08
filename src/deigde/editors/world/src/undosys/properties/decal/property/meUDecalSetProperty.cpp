@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalSetProperty::meUDecalSetProperty(meDecal::Ref decal, const char *key, const char *oldValue, const char *newValue) :
+meUDecalSetProperty::meUDecalSetProperty(meDecal *decal, const char *key, const char *oldValue, const char *newValue) :
 pDecal(NULL)
 {
 	if(!decal || !key || !oldValue || !newValue){

@@ -880,7 +880,7 @@ meWorldNotifier *meWorld::GetNotifierAt(int index) const{
 	return pNotifiers[index];
 }
 
-int meWorld::IndexOfNotifier(meWorldNotifier::Ref notifier) const{
+int meWorld::IndexOfNotifier(meWorldNotifier *notifier) const{
 	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -891,7 +891,7 @@ int meWorld::IndexOfNotifier(meWorldNotifier::Ref notifier) const{
 	return -1;
 }
 
-bool meWorld::HasNotifier(meWorldNotifier::Ref notifier) const{
+bool meWorld::HasNotifier(meWorldNotifier *notifier) const{
 	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -902,7 +902,7 @@ bool meWorld::HasNotifier(meWorldNotifier::Ref notifier) const{
 	return false;
 }
 
-void meWorld::AddNotifier(meWorldNotifier::Ref notifier){
+void meWorld::AddNotifier(meWorldNotifier *notifier){
 	if(HasNotifier(notifier)) DETHROW(deeInvalidParam);
 	
 	if(pNotifierCount == pNotifierSize){
@@ -920,7 +920,7 @@ void meWorld::AddNotifier(meWorldNotifier::Ref notifier){
 	pNotifierCount++;
 }
 
-void meWorld::RemoveNotifier(meWorldNotifier::Ref notifier){
+void meWorld::RemoveNotifier(meWorldNotifier *notifier){
 	int i, index = IndexOfNotifier(notifier);
 	if(index == -1) DETHROW(deeInvalidParam);
 	

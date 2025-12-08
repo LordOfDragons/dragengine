@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodySetColor::seUBodySetColor(seBody::Ref body, const decColor &newColor) :
+seUBodySetColor::seUBodySetColor(seBody *body, const decColor &newColor) :
 
 pNewColor(newColor)
 {

@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCParticleEmitterSetPropertyName(gdeObjectClass::Ref objectClass,
-		gdeOCParticleEmitter::Ref particleEmitter, gdeOCParticleEmitter::eProperties property,
+	gdeUOCParticleEmitterSetPropertyName(gdeObjectClass *objectClass,
+		gdeOCParticleEmitter *particleEmitter, gdeOCParticleEmitter::eProperties property,
 		const char *newValue);
 	
 protected:

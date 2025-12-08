@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotAdd::ceUCCShotAdd(ceConversation::Ref conversation, ceCameraShot::Ref cameraShot){
+ceUCCShotAdd::ceUCCShotAdd(ceConversation *conversation, ceCameraShot *cameraShot){
 	if(!conversation || !cameraShot) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;

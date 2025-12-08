@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileRemove(projProject::Ref project, projProfile::Ref profile);
+	projUProfileRemove(projProject *project, projProfile *profile);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileRemove();

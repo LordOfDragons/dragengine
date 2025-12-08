@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCTextureSetOffset::gdeUOCCTextureSetOffset(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, gdeOCComponentTexture::Ref texture, const decVector2 &newValue) :
+gdeUOCCTextureSetOffset::gdeUOCCTextureSetOffset(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture, const decVector2 &newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !component || !texture){

@@ -409,7 +409,7 @@ deAnimatorRuleGroup *deClassARGroup::GetRule(dsRealObject *myself) const{
 	return ((sARGroupNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARGroup::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
+void deClassARGroup::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -429,7 +429,7 @@ void deClassARGroup::AssignAnimator(dsRealObject *myself, deAnimator::Ref animat
 	nd.animator = animator;
 }
 
-void deClassARGroup::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleGroup::Ref rule){
+void deClassARGroup::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleGroup *rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

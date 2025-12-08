@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeSetTrailController(peeType::Ref type, deParticleEmitterType::eEmitControllers controller,
+	peeUTypeSetTrailController(peeType *type, deParticleEmitterType::eEmitControllers controller,
 		const char *newTarget);
 	
 protected:

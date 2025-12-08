@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetPropertyName::gdeUOCEnvMapProbeSetPropertyName(gdeObjectClass::Ref objectClass,
-gdeOCEnvMapProbe::Ref envMapProbe, gdeOCEnvMapProbe::eProperties property, const char *newValue) :
+gdeUOCEnvMapProbeSetPropertyName::gdeUOCEnvMapProbeSetPropertyName(gdeObjectClass *objectClass,
+gdeOCEnvMapProbe *envMapProbe, gdeOCEnvMapProbe::eProperties property, const char *newValue) :
 
 
 pProperty(property)

@@ -48,7 +48,7 @@
 ////////////////////////////
 
 gdeWPSTIMOCNavSpace::gdeWPSTIMOCNavSpace(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCNavigationSpace::Ref navSpace, int index) :
+	gdeOCNavigationSpace *navSpace, int index) :
 gdeWPSTIMOCSubObject(tree, etObjectClassNavigationSpace, objectClass, index)
 {
 	if(!navSpace){

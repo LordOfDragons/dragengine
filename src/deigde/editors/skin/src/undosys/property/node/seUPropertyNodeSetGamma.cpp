@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetGamma::seUPropertyNodeSetGamma(sePropertyNode::Ref node, float newValue) :
+seUPropertyNodeSetGamma::seUPropertyNodeSetGamma(sePropertyNode *node, float newValue) :
 
 pNewValue(newValue)
 {

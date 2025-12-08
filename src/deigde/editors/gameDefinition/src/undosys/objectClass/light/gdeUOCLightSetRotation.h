@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetRotation(gdeObjectClass::Ref objectClass,
-		gdeOCLight::Ref light, const decVector &newValue);
+	gdeUOCLightSetRotation(gdeObjectClass *objectClass,
+		gdeOCLight *light, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

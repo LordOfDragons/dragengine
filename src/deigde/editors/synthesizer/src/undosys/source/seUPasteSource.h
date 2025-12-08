@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo object. */
-	seUPasteSource(seSynthesizer::Ref synthesizer, const seSourceList &sourceList, int index);
+	seUPasteSource(seSynthesizer *synthesizer, const seSourceList &sourceList, int index);
 	
 protected:
 	/** \brief Clean up the undo object. */

@@ -354,7 +354,7 @@ deSkyInstance *deClassSkyInstance::GetInstance(dsRealObject *myself) const{
 	return ((sSkyInstNatDat*)p_GetNativeData(myself->GetBuffer()))->instance;
 }
 
-void deClassSkyInstance::PushInstance(dsRunTime *rt, deSkyInstance::Ref instance){
+void deClassSkyInstance::PushInstance(dsRunTime *rt, deSkyInstance *instance){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

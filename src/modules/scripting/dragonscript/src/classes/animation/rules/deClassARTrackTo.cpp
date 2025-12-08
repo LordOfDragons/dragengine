@@ -361,7 +361,7 @@ deAnimatorRuleTrackTo *deClassARTrackTo::GetRule(dsRealObject *myself) const{
 	return ((sARTrackNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARTrackTo::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
+void deClassARTrackTo::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -381,7 +381,7 @@ void deClassARTrackTo::AssignAnimator(dsRealObject *myself, deAnimator::Ref anim
 	nd.animator = animator;
 }
 
-void deClassARTrackTo::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleTrackTo::Ref rule){
+void deClassARTrackTo::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleTrackTo *rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

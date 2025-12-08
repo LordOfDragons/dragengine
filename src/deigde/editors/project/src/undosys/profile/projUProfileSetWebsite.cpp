@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetWebsite::projUProfileSetWebsite(projProfile::Ref profile, const char *newValue) :
+projUProfileSetWebsite::projUProfileSetWebsite(projProfile *profile, const char *newValue) :
 
 pNewValue(newValue)
 {

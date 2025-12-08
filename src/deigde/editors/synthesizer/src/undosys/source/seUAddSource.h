@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUAddSource(seSynthesizer::Ref synthesizer, seSource::Ref source, int index);
+	seUAddSource(seSynthesizer *synthesizer, seSource *source, int index);
 	
 protected:
 	/** \brief Clean up undo action. */

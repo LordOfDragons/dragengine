@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCComponent(gdeOCComponent::Ref component);
+	gdeClipboardDataOCComponent(gdeOCComponent *component);
 	
 protected:
 	/**

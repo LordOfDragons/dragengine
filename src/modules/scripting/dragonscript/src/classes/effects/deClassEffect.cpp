@@ -199,7 +199,7 @@ void deClassEffect::CreateClassMembers(dsEngine *engine){
 
 
 
-void deClassEffect::AssignEffect(dsRealObject *myself, deEffect::Ref effect){
+void deClassEffect::AssignEffect(dsRealObject *myself, deEffect *effect){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -227,7 +227,7 @@ deEffect *deClassEffect::GetEffect(dsRealObject *myself) const {
 	return ((sEffNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
-void deClassEffect::PushEffect(dsRunTime *rt, deEffect::Ref effect){
+void deClassEffect::PushEffect(dsRunTime *rt, deEffect *effect){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

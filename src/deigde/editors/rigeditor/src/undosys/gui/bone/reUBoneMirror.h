@@ -82,7 +82,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new undo. */
-	reUBoneMirror(reRig::Ref rig);
+	reUBoneMirror(reRig *rig);
 	
 protected:
 	/** Clean up the undo. */
@@ -106,7 +106,7 @@ public:
 private:
 	void pCleanUp();
 	
-	reRigBone *pGetBoneWithMirroredName(reRig::Ref rig, reRigBone *bone) const;
+	reRigBone *pGetBoneWithMirroredName(reRig *rig, reRigBone *bone) const;
 };
 
 #endif

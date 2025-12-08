@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkSetCurve(seLink::Ref link, const decCurveBezier &newCurve);
+	seULinkSetCurve(seLink *link, const decCurveBezier &newCurve);
 	
 protected:
 	/** \brief Clean up undo action. */

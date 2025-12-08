@@ -45,7 +45,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectShapeReplace::meUObjectShapeReplace(meObject::Ref object, const char *property, int shapeIndex, const decShape &shape){
+meUObjectShapeReplace::meUObjectShapeReplace(meObject *object, const char *property, int shapeIndex, const decShape &shape){
 	if(!object || !property){
 		DETHROW(deeInvalidParam);
 	}

@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetTriggerName::gdeUOCForceFieldSetTriggerName(gdeObjectClass::Ref objectClass,
-gdeOCForceField::Ref forceField, gdeOCForceField::eTriggers trigger, const char *newValue) :
+gdeUOCForceFieldSetTriggerName::gdeUOCForceFieldSetTriggerName(gdeObjectClass *objectClass,
+gdeOCForceField *forceField, gdeOCForceField::eTriggers trigger, const char *newValue) :
 
 
 pTrigger(trigger)

@@ -123,16 +123,16 @@ public:
 	const gdeSkyControllerList &GetControllers() const{ return pControllers; }
 	
 	/** \brief Add controller. */
-	void AddController(gdeSkyController::Ref controller);
+	void AddController(gdeSkyController *controller);
 	
 	/** \brief Remove controller. */
-	void RemoveController(gdeSkyController::Ref controller);
+	void RemoveController(gdeSkyController *controller);
 	
 	/** \brief Remove controllers. */
 	void RemoveAllControllers();
 	
 	/** \brief Notify controller changed. */
-	void NotifyControllerChanged(gdeSkyController::Ref controller);
+	void NotifyControllerChanged(gdeSkyController *controller);
 	/*@}*/
 };
 

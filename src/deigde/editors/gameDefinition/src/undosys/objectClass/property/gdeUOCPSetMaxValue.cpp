@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPSetMaxValue::gdeUOCPSetMaxValue(gdeObjectClass::Ref objectClass, gdeProperty::Ref property, float newValue) :
+gdeUOCPSetMaxValue::gdeUOCPSetMaxValue(gdeObjectClass *objectClass, gdeProperty *property, float newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !property){

@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUPropertyConstructedSetBitCount(seProperty::Ref property, int newValue);
+	seUPropertyConstructedSetBitCount(seProperty *property, int newValue);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPSetType::gdeUOCTPSetType(gdeObjectClass::Ref objectClass,
-gdeProperty::Ref property, gdeProperty::ePropertyTypes newValue) :
+gdeUOCTPSetType::gdeUOCTPSetType(gdeObjectClass *objectClass,
+gdeProperty *property, gdeProperty::ePropertyTypes newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !property){

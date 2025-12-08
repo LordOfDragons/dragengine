@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerToggleLooping::gdeUOCSpeakerToggleLooping(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker) :
+gdeUOCSpeakerToggleLooping::gdeUOCSpeakerToggleLooping(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) :
 
 pSpeaker(NULL)
 {

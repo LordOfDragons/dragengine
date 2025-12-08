@@ -57,7 +57,7 @@ deoglRDSRenderableVideoFrame::~deoglRDSRenderableVideoFrame(){
 // Management
 ///////////////
 
-void deoglRDSRenderableVideoFrame::SetVideoPlayer(deoglRVideoPlayer::Ref videoPlayer){
+void deoglRDSRenderableVideoFrame::SetVideoPlayer(deoglRVideoPlayer *videoPlayer){
 	if(videoPlayer == pVideoPlayer){
 		return;
 	}

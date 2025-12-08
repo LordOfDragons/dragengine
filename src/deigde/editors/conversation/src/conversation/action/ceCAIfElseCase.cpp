@@ -85,7 +85,7 @@ ceCAIfElseCase::~ceCAIfElseCase(){
 // Management
 ///////////////
 
-void ceCAIfElseCase::SetCondition(ceConversationCondition::Ref condition){
+void ceCAIfElseCase::SetCondition(ceConversationCondition *condition){
 	if(condition == pCondition){
 		return;
 	}

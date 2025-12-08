@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjTexSetProperties::meUObjTexSetProperties(meObjectTexture::Ref texture,
+meUObjTexSetProperties::meUObjTexSetProperties(meObjectTexture *texture,
 const decStringDictionary &newValues) :
 pTexture(texture),
 pNewValues(newValues)

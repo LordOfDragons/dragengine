@@ -177,7 +177,7 @@ public:
 	inline deoalAMicrophone *GetActiveMicrophone() const{ return pActiveMicrophone; }
 	
 	/** Set active microphone. */
-	void SetActiveMicrophone(deoalAMicrophone::Ref microphone);
+	void SetActiveMicrophone(deoalAMicrophone *microphone);
 	
 	/** Active world if a microphone is active and has a parent world. */
 	inline deoalAWorld *GetActiveWorld() const{ return pActiveWorld; }

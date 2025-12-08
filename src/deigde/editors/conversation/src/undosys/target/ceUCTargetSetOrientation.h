@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetSetOrientation(ceTarget::Ref target, const decVector &newOrientation);
+	ceUCTargetSetOrientation(ceTarget *target, const decVector &newOrientation);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCTargetSetOrientation();

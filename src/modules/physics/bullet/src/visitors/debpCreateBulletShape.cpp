@@ -600,7 +600,7 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 	pBulletCompoundShape = bulletShape;
 }
 
-void debpCreateBulletShape::pAddCollisionShape(debpBulletShape::Ref collisionShape){
+void debpCreateBulletShape::pAddCollisionShape(debpBulletShape *collisionShape){
 	#ifdef DEBUGGING
 	printf("debpCreateBulletShape.pAddCollisionShape\n");
 	#endif
@@ -627,7 +627,7 @@ void debpCreateBulletShape::pAddCollisionShape(debpBulletShape::Ref collisionSha
 	}
 }
 
-void debpCreateBulletShape::pAddTransformedCollisionShape(debpBulletShape::Ref collisionShape, const btTransform &transform){
+void debpCreateBulletShape::pAddTransformedCollisionShape(debpBulletShape *collisionShape, const btTransform &transform){
 	#ifdef DEBUGGING
 	printf("debpCreateBulletShape.pAddTransformedCollisionShape: t=(%g,%g,%g) r=(%g,%g,%g,%g)\n", transform.getOrigin().getX(),
 	transform.getOrigin().getY(), transform.getOrigin().getZ(), transform.getRotation().getX(), transform.getRotation().getY(),

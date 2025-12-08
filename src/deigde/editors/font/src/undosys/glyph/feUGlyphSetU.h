@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUGlyphSetU(feFontGlyph::Ref glyph, int newU);
+	feUGlyphSetU(feFontGlyph *glyph, int newU);
 	
 protected:
 	/** \brief Clean up undo. */

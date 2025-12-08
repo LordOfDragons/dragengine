@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCAParamSetParameter::ceUCCAParamSetParameter(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
-ceCConditionActorParameter::Ref condition, const char *newVariable){
+ceUCCAParamSetParameter::ceUCCAParamSetParameter(ceConversationTopic *topic, ceConversationAction *action,
+ceCConditionActorParameter *condition, const char *newVariable){
 	if(!topic || !action || !condition || !newVariable) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;

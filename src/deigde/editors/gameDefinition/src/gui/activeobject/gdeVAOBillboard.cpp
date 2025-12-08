@@ -62,7 +62,7 @@
 ////////////////////////////
 
 gdeVAOBillboard::gdeVAOBillboard(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCBillboard::Ref ocbillboard) :
+	const decString &propertyPrefix, gdeOCBillboard *ocbillboard) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCBillboard(ocbillboard)
 {

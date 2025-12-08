@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRulePCSetClass(meHTVegetationLayer::Ref vlayer, meHTVRulePropCount::Ref rule, const char *nclass);
+	meUHTVRulePCSetClass(meHTVegetationLayer *vlayer, meHTVRulePropCount *rule, const char *nclass);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRulePCSetClass();
 	/*@}*/

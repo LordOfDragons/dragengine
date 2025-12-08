@@ -1446,7 +1446,7 @@ pPreventUpdate(false)
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
 	pListener.TakeOver(new meWPSObjectListener(*this));
 	
@@ -1605,7 +1605,7 @@ meWPSObject::~meWPSObject(){
 // Management
 ///////////////
 
-void meWPSObject::SetWorld(meWorld::Ref world){
+void meWPSObject::SetWorld(meWorld *world){
 	if(world == pWorld){
 		return;
 	}

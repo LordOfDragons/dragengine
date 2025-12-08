@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUObjDuplicate(meWorld::Ref world, const decVector &offset);
+	meUObjDuplicate(meWorld *world, const decVector &offset);
 	/** \brief Clean up undo object. */
 	virtual ~meUObjDuplicate();
 	/*@}*/

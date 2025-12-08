@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUNavSpaceSetOrientation::meUNavSpaceSetOrientation(meNavigationSpace::Ref navspace, const decVector &newOrientation){
+meUNavSpaceSetOrientation::meUNavSpaceSetOrientation(meNavigationSpace *navspace, const decVector &newOrientation){
 	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}

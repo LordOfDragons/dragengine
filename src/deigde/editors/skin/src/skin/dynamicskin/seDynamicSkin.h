@@ -76,9 +76,9 @@ public:
 	/** Retrieves the renderable list read-only. */
 	inline const seDynamicSkinRenderableList &GetRenderableList() const{ return pRenderableList; }
 	/** Adds a new renderable. */
-	void AddRenderable(seDynamicSkinRenderable::Ref renderable);
+	void AddRenderable(seDynamicSkinRenderable *renderable);
 	/** Removes a renderable. */
-	void RemoveRenderable(seDynamicSkinRenderable::Ref renderable);
+	void RemoveRenderable(seDynamicSkinRenderable *renderable);
 	/** Removes all renderables. */
 	void RemoveAllRenderables();
 	/** Retrieves the active renderable or NULL if none is active. */
@@ -86,7 +86,7 @@ public:
 	/** Determines if there is an active renderable or not. */
 	bool HasActiveRenderable() const;
 	/** Sets the active renderable or NULL if none is active. */
-	void SetActiveRenderable(seDynamicSkinRenderable::Ref renderable);
+	void SetActiveRenderable(seDynamicSkinRenderable *renderable);
 	/*@}*/
 	
 private:

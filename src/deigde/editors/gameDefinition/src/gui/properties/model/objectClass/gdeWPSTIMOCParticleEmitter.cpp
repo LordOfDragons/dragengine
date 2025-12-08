@@ -48,7 +48,7 @@
 ////////////////////////////
 
 gdeWPSTIMOCParticleEmitter::gdeWPSTIMOCParticleEmitter(gdeWPSTreeModel &tree,
-	gdeObjectClass *objectClass, gdeOCParticleEmitter::Ref particleEmitter, int index) :
+	gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter, int index) :
 gdeWPSTIMOCSubObject(tree, etObjectClassParticleEmitter, objectClass, index)
 {
 	if(!particleEmitter){

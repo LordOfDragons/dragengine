@@ -442,7 +442,7 @@ void seSource::SynthesizerDirectoryChanged(){
 // Effects
 ////////////
 
-void seSource::SetActiveEffect(seEffect::Ref effect){
+void seSource::SetActiveEffect(seEffect *effect){
 	if(effect == pActiveEffect){
 		return;
 	}
@@ -453,7 +453,7 @@ void seSource::SetActiveEffect(seEffect::Ref effect){
 	}
 }
 
-void seSource::AddEffect(seEffect::Ref effect){
+void seSource::AddEffect(seEffect *effect){
 	pEffects.Add(effect);
 	
 	effect->SetParentSource(this);
@@ -469,7 +469,7 @@ void seSource::AddEffect(seEffect::Ref effect){
 	}
 }
 
-void seSource::InsertEffectAt(seEffect::Ref effect, int index){
+void seSource::InsertEffectAt(seEffect *effect, int index){
 	pEffects.Insert(effect, index);
 	
 	effect->SetParentSource(this);
@@ -485,7 +485,7 @@ void seSource::InsertEffectAt(seEffect::Ref effect, int index){
 	}
 }
 
-void seSource::MoveEffectTo(seEffect::Ref effect, int index){
+void seSource::MoveEffectTo(seEffect *effect, int index){
 	pEffects.Move(effect, index);
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
@@ -495,7 +495,7 @@ void seSource::MoveEffectTo(seEffect::Ref effect, int index){
 	}
 }
 
-void seSource::RemoveEffect(seEffect::Ref effect){
+void seSource::RemoveEffect(seEffect *effect){
 	const int index = pEffects.IndexOf(effect);
 	if(index == -1){
 		DETHROW(deeInvalidParam);

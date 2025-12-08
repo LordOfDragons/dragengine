@@ -40,7 +40,7 @@
 ////////////////////////////
 
 lpeULangPackSetMissingText::lpeULangPackSetMissingText(
-	lpeLangPack::Ref langpack, const decUnicodeString &newMissingText) :
+	lpeLangPack *langpack, const decUnicodeString &newMissingText) :
 
 pNewMissingText(newMissingText)
 {

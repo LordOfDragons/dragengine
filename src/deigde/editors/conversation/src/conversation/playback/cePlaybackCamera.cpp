@@ -83,13 +83,13 @@ void cePlaybackCamera::SetCoordinateSystem(const decMatrix &matrix){
 
 
 
-void cePlaybackCamera::SetCameraTarget(ceTarget::Ref target){
+void cePlaybackCamera::SetCameraTarget(ceTarget *target){
 	if(target != pCameraTarget){
 		pCameraTarget = target;
 	}
 }
 
-void cePlaybackCamera::SetLookAtTarget(ceTarget::Ref target){
+void cePlaybackCamera::SetLookAtTarget(ceTarget *target){
 	if(target != pLookAtTarget){
 		pLookAtTarget = target;
 	}

@@ -239,7 +239,7 @@ deEffectFilterKernel *deClassEffectFilterKernel::GetEffect(dsRealObject *myself)
 	return ((sEffFilKerMatrixNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
-void deClassEffectFilterKernel::PushEffect(dsRunTime *rt, deEffectFilterKernel::Ref effect){
+void deClassEffectFilterKernel::PushEffect(dsRunTime *rt, deEffectFilterKernel *effect){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

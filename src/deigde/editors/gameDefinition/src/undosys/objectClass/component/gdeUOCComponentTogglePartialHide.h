@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentTogglePartialHide(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component);
+	gdeUOCComponentTogglePartialHide(gdeObjectClass *objectClass, gdeOCComponent *component);
 	
 protected:
 	/** \brief Clean up undo action. */

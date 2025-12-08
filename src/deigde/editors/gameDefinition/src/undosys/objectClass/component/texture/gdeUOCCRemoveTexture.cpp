@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCRemoveTexture::gdeUOCCRemoveTexture(gdeObjectClass::Ref objectClass,
-gdeOCComponent::Ref component, gdeOCComponentTexture::Ref texture) :
+gdeUOCCRemoveTexture::gdeUOCCRemoveTexture(gdeObjectClass *objectClass,
+gdeOCComponent *component, gdeOCComponentTexture *texture) :
 pObjectClass(NULL)
 {
 	if(!objectClass || !component || !texture){

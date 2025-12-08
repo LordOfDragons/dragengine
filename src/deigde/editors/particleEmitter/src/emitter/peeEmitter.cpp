@@ -374,7 +374,7 @@ void peeEmitter::RebuildEmitter(){
 // Controllers
 ////////////////
 
-void peeEmitter::AddController(peeController::Ref controller){
+void peeEmitter::AddController(peeController *controller){
 	pControllerList.Add(controller);
 	controller->SetEmitter(this);
 	NotifyControllerStructureChanged();
@@ -384,7 +384,7 @@ void peeEmitter::AddController(peeController::Ref controller){
 	}
 }
 
-void peeEmitter::InsertControllerAt(peeController::Ref controller, int index){
+void peeEmitter::InsertControllerAt(peeController *controller, int index){
 	pControllerList.InsertAt(controller, index);
 	controller->SetEmitter(this);
 	NotifyControllerStructureChanged();
@@ -394,12 +394,12 @@ void peeEmitter::InsertControllerAt(peeController::Ref controller, int index){
 	}
 }
 
-void peeEmitter::MoveControllerTo(peeController::Ref controller, int index){
+void peeEmitter::MoveControllerTo(peeController *controller, int index){
 	pControllerList.MoveTo(controller, index);
 	NotifyControllerStructureChanged();
 }
 
-void peeEmitter::RemoveController(peeController::Ref controller){
+void peeEmitter::RemoveController(peeController *controller){
 	if(!controller || controller->GetEmitter() != this) DETHROW(deeInvalidParam);
 	
 	if(controller->GetActive()){
@@ -438,7 +438,7 @@ bool peeEmitter::HasActiveController() const{
 	return pActiveController != NULL;
 }
 
-void peeEmitter::SetActiveController(peeController::Ref controller){
+void peeEmitter::SetActiveController(peeController *controller){
 	if(controller != pActiveController){
 		if(pActiveController){
 			pActiveController->SetActive(false);
@@ -459,7 +459,7 @@ void peeEmitter::SetActiveController(peeController::Ref controller){
 // Types
 //////////
 
-void peeEmitter::AddType(peeType::Ref type){
+void peeEmitter::AddType(peeType *type){
 	FreeEmitter();
 	
 	pTypeList.Add(type);
@@ -471,7 +471,7 @@ void peeEmitter::AddType(peeType::Ref type){
 	}
 }
 
-void peeEmitter::InsertTypeAt(peeType::Ref type, int index){
+void peeEmitter::InsertTypeAt(peeType *type, int index){
 	FreeEmitter();
 	
 	pTypeList.InsertAt(type, index);
@@ -483,13 +483,13 @@ void peeEmitter::InsertTypeAt(peeType::Ref type, int index){
 	}
 }
 
-void peeEmitter::MoveTypeTo(peeType::Ref type, int index){
+void peeEmitter::MoveTypeTo(peeType *type, int index){
 	FreeEmitter();
 	pTypeList.MoveTo(type, index);
 	NotifyTypeStructureChanged();
 }
 
-void peeEmitter::RemoveType(peeType::Ref type){
+void peeEmitter::RemoveType(peeType *type){
 	if(!type || type->GetEmitter() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -533,7 +533,7 @@ bool peeEmitter::HasActiveType() const{
 	return pActiveType != NULL;
 }
 
-void peeEmitter::SetActiveType(peeType::Ref type){
+void peeEmitter::SetActiveType(peeType *type){
 	if(type != pActiveType){
 		if(pActiveType){
 			pActiveType->SetActive(false);
@@ -646,7 +646,7 @@ void peeEmitter::NotifyControllerStructureChanged(){
 	SetChanged(true);
 }
 
-void peeEmitter::NotifyControllerNameChanged(peeController::Ref controller){
+void peeEmitter::NotifyControllerNameChanged(peeController *controller){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -659,7 +659,7 @@ void peeEmitter::NotifyControllerNameChanged(peeController::Ref controller){
 	SetChanged(true);
 }
 
-void peeEmitter::NotifyControllerChanged(peeController::Ref controller){
+void peeEmitter::NotifyControllerChanged(peeController *controller){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -670,7 +670,7 @@ void peeEmitter::NotifyControllerChanged(peeController::Ref controller){
 	SetChanged(true);
 }
 
-void peeEmitter::NotifyControllerValueChanged(peeController::Ref controller){
+void peeEmitter::NotifyControllerValueChanged(peeController *controller){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -703,7 +703,7 @@ void peeEmitter::NotifyTypeStructureChanged(){
 	SetChanged(true);
 }
 
-void peeEmitter::NotifyTypeChanged(peeType::Ref type){
+void peeEmitter::NotifyTypeChanged(peeType *type){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -716,7 +716,7 @@ void peeEmitter::NotifyTypeChanged(peeType::Ref type){
 	SetChanged(true);
 }
 
-void peeEmitter::NotifyTypeActiveTrailControllerChanged(peeType::Ref type){
+void peeEmitter::NotifyTypeActiveTrailControllerChanged(peeType *type){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -725,7 +725,7 @@ void peeEmitter::NotifyTypeActiveTrailControllerChanged(peeType::Ref type){
 	}
 }
 
-void peeEmitter::NotifyTypeActiveEmitControllerChanged(peeType::Ref type){
+void peeEmitter::NotifyTypeActiveEmitControllerChanged(peeType *type){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -734,7 +734,7 @@ void peeEmitter::NotifyTypeActiveEmitControllerChanged(peeType::Ref type){
 	}
 }
 
-void peeEmitter::NotifyTypeParameterChanged(peeType::Ref type, peeParameter *parameter){
+void peeEmitter::NotifyTypeParameterChanged(peeType *type, peeParameter *parameter){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -745,7 +745,7 @@ void peeEmitter::NotifyTypeParameterChanged(peeType::Ref type, peeParameter *par
 	SetChanged(true);
 }
 
-void peeEmitter::NotifyActiveTypeParameterChanged(peeType::Ref type){
+void peeEmitter::NotifyActiveTypeParameterChanged(peeType *type){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	

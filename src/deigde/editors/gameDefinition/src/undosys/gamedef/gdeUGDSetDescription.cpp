@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDSetDescription::gdeUGDSetDescription(gdeGameDefinition::Ref gameDefinition,
+gdeUGDSetDescription::gdeUGDSetDescription(gdeGameDefinition *gameDefinition,
 const char *newValue) :
 pGameDefinition(NULL)
 {

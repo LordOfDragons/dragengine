@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCToggleIsGhost(gdeObjectClass::Ref objectClass);
+	gdeUOCToggleIsGhost(gdeObjectClass *objectClass);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -315,7 +315,7 @@ deSynthesizerSourceWave *deClassSSWave::GetSource(dsRealObject *myself) const{
 	return ((sSSWaveNatDat*)p_GetNativeData(myself->GetBuffer()))->source;
 }
 
-void deClassSSWave::AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref synthesizer){
+void deClassSSWave::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -335,7 +335,7 @@ void deClassSSWave::AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref s
 	nd.synthesizer = synthesizer;
 }
 
-void deClassSSWave::PushSource(dsRunTime *rt, deSynthesizer::Ref synthesizer, deSynthesizerSourceWave::Ref source){
+void deClassSSWave::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceWave *source){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

@@ -55,7 +55,7 @@ seWPUndoHistory::~seWPUndoHistory(){
 // Management
 ///////////////
 
-void seWPUndoHistory::SetSkin(seSkin::Ref skin){
+void seWPUndoHistory::SetSkin(seSkin *skin){
 	if(skin == pSkin){
 		return;
 	}

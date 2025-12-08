@@ -279,7 +279,7 @@ seWPEffect::~seWPEffect(){
 // Management
 ///////////////
 
-void seWPEffect::SetSynthesizer(seSynthesizer::Ref synthesizer){
+void seWPEffect::SetSynthesizer(seSynthesizer *synthesizer){
 	if(synthesizer == pSynthesizer){
 		return;
 	}

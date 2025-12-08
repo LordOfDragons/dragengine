@@ -62,7 +62,7 @@
 //////////////////////////////////////////////////
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
-deSkinPropertyImage *propertyImage, deResourceLoaderTask::Ref task) :
+deSkinPropertyImage *propertyImage, deResourceLoaderTask *task) :
 pPropertyImage(propertyImage),
 pNodeImage(NULL),
 pNodeText(NULL),
@@ -74,7 +74,7 @@ pTask(task)
 }
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
-deSkinPropertyNodeImage *nodeImage, deResourceLoaderTask::Ref task) :
+deSkinPropertyNodeImage *nodeImage, deResourceLoaderTask *task) :
 pPropertyImage(NULL),
 pNodeImage(nodeImage),
 pNodeText(NULL),
@@ -86,7 +86,7 @@ pTask(task)
 }
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
-deSkinPropertyNodeText *nodeText, deResourceLoaderTask::Ref task) :
+deSkinPropertyNodeText *nodeText, deResourceLoaderTask *task) :
 pPropertyImage(NULL),
 pNodeImage(NULL),
 pNodeText(nodeText),

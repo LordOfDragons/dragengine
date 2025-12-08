@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetPosition::gdeUOCEnvMapProbeSetPosition(gdeObjectClass::Ref objectClass,
-gdeOCEnvMapProbe::Ref envMapProbe, const decVector &newValue) :
+gdeUOCEnvMapProbeSetPosition::gdeUOCEnvMapProbeSetPosition(gdeObjectClass *objectClass,
+gdeOCEnvMapProbe *envMapProbe, const decVector &newValue) :
 
 pEnvMapProbe(NULL)
 {

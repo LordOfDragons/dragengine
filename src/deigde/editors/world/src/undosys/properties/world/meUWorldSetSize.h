@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */
-	meUWorldSetSize(meWorld::Ref world, const decDVector &newValue);
+	meUWorldSetSize(meWorld *world, const decDVector &newValue);
 	
 protected:
 	/** Clean up undo object. */

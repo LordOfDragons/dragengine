@@ -73,7 +73,7 @@ public:
 	/** Retrieves the bone or NULL. */
 	inline reRigBone *GetBone() const{ return pBone; }
 	/** Sets the bone or NULL. */
-	void SetBone(reRigBone::Ref bone);
+	void SetBone(reRigBone *bone);
 	/** Retrieves the free position. */
 	inline const decDVector &GetFreePosition() const{ return pFreePosition; }
 	/** Sets the free position. */

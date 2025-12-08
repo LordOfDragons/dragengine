@@ -65,15 +65,15 @@ feFontGlyph *feFontGlyphSelection::GetSelectedGlyphAt(int index) const{
 	return pSelected.GetGlyphAt(index);
 }
 
-bool feFontGlyphSelection::IsGlypthSelected(feFontGlyph::Ref glyph) const{
+bool feFontGlyphSelection::IsGlypthSelected(feFontGlyph *glyph) const{
 	return pSelected.HasGlyph(glyph);
 }
 
-int feFontGlyphSelection::IndexOfGlyph(feFontGlyph::Ref glyph) const{
+int feFontGlyphSelection::IndexOfGlyph(feFontGlyph *glyph) const{
 	return pSelected.IndexOfGlyph(glyph);
 }
 
-void feFontGlyphSelection::AddGlyphToSelection(feFontGlyph::Ref glyph){
+void feFontGlyphSelection::AddGlyphToSelection(feFontGlyph *glyph){
 	if(!glyph) DETHROW(deeInvalidParam);
 	
 	if(!IsGlypthSelected(glyph)){
@@ -88,7 +88,7 @@ void feFontGlyphSelection::AddGlyphToSelection(feFontGlyph::Ref glyph){
 	}
 }
 
-void feFontGlyphSelection::RemoveGlyphFromSelection(feFontGlyph::Ref glyph){
+void feFontGlyphSelection::RemoveGlyphFromSelection(feFontGlyph *glyph){
 	if(!glyph) DETHROW(deeInvalidParam);
 	
 	int index = pSelected.IndexOfGlyph(glyph);
@@ -122,7 +122,7 @@ bool feFontGlyphSelection::HasActiveGlyph() const{
 	return pActive != NULL;
 }
 
-void feFontGlyphSelection::SetActiveGlyph(feFontGlyph::Ref glyph){
+void feFontGlyphSelection::SetActiveGlyph(feFontGlyph *glyph){
 	if(glyph != pActive){
 		if(pActive){
 			pActive->SetActive(false);
