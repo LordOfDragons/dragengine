@@ -25,12 +25,12 @@
 #ifndef _IGDEGAMEPROJECT_H_
 #define _IGDEGAMEPROJECT_H_
 
+#include "../gamedefinition/igdeGameDefinition.h"
 #include "../gamedefinition/igdeGameDefinitionList.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decStringList.h>
 
-class igdeGameDefinition;
 class igdeEnvironment;
 
 
