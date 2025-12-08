@@ -2510,6 +2510,9 @@ void debpColliderComponent::pUpdateBones(){
 					pSimplePhyBody->SetShapeSurface(0.0f);
 					
 				}catch(const deException &){
+					if(bulletShape){
+						bulletShape->FreeReference();
+					}
 					throw;
 				}
 			}

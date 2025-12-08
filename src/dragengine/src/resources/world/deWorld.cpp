@@ -335,6 +335,7 @@ void deWorld::SetSpeakerGain(float gain){
 
 void deWorld::SetHeightTerrain(deHeightTerrain *heightTerrain){
 	if(pHeightTerrain != heightTerrain){
+		if(pHeightTerrain) pHeightTerrain->FreeReference();
 		
 		pHeightTerrain = heightTerrain;
 		

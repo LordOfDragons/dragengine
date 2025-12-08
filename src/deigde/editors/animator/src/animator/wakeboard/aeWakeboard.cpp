@@ -130,6 +130,12 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 		if(shapeBox){
 			delete shapeBox;
 		}
+		if(engSkin){
+			engSkin->FreeReference();
+		}
+		if(engModel){
+			engModel->FreeReference();
+		}
 		pCleanUp();
 		throw;
 	}

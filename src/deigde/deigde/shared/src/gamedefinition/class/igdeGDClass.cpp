@@ -141,6 +141,9 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 		pComponentTextures.SetToDeepCopyFrom(gdclass.pComponentTextures);
 		
 	}catch(const deException &){
+		if(snappoint){
+			snappoint->FreeReference();
+		}
 		
 		pCleanUp();
 		throw;

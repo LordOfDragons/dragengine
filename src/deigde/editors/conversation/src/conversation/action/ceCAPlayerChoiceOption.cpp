@@ -72,6 +72,9 @@ pTIMActionsExpanded(option.pTIMActionsExpanded)
 		}
 		
 	}catch(const deException &){
+		if(action){
+			action->FreeReference();
+		}
 		pActions.RemoveAll();
 		throw;
 	}

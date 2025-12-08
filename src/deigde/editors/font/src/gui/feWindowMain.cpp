@@ -209,6 +209,9 @@ void feWindowMain::CreateNewFont(){
 		font->FreeReference();
 		
 	}catch(const deException &){
+		if(font){
+			font->FreeReference();
+		}
 		throw;
 	}
 }

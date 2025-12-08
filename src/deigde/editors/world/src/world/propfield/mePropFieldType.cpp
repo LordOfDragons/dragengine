@@ -70,6 +70,8 @@ mePropFieldType::mePropFieldType(deEngine *engine){
 mePropFieldType::~mePropFieldType(){
 	if(pInstances) delete [] pInstances;
 	
+	if(pSkin) pSkin->FreeReference();
+	if(pModel) pModel->FreeReference();
 }
 
 

@@ -187,6 +187,9 @@ void lpeWindowMain::CreateNewLangPack(){
 		langpack->FreeReference();
 		
 	}catch(const deException &){
+		if(langpack){
+			langpack->FreeReference();
+		}
 		throw;
 	}
 }

@@ -86,6 +86,7 @@ pConnections(copy.pConnections)
 }
 
 aeRuleSubAnimator::~aeRuleSubAnimator(){
+	if(pSubAnimator) pSubAnimator->FreeReference();
 }
 
 
@@ -214,11 +215,17 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 		}catch(const deException &e){
 			parentAnimator->GetLogger()->LogException("Animator Editor", e);
 			
+			if(engRule){
+				engRule->FreeReference();
+			}
 			if(engLink){
 				delete engLink;
 			}
 			if(engController){
 				delete engController;
+			}
+			if(animator){
+				animator->FreeReference();
 			}
 		}
 	}
@@ -331,6 +338,9 @@ deAnimatorRule *aeRuleSubAnimator::CreateEngineRule(){
 		engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
 		
 	}catch(const deException &){
+		if(engRule){
+			engRule->FreeReference();
+		}
 		throw;
 	}
 	

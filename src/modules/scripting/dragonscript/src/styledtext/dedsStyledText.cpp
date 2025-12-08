@@ -74,4 +74,5 @@ void dedsStyledText::SetRootNode(dedsStyledTextNode* node){
 
 
 void dedsStyledText::pCleanUp(){
+	if(pRootNode) pRootNode->FreeReference();
 }

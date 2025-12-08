@@ -204,6 +204,9 @@ void seWindowMain::CreateNewSky(){
 		sky->FreeReference();
 		
 	}catch(const deException &){
+		if(sky){
+			sky->FreeReference();
+		}
 		throw;
 	}
 }

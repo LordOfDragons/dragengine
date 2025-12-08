@@ -94,6 +94,9 @@ void seLink::SetSynthesizer(seSynthesizer *synthesizer){
 			pEngLink = link;
 			
 		}catch(const deException &){
+			if(link){
+				link->FreeReference();
+			}
 			throw;
 		}
 		

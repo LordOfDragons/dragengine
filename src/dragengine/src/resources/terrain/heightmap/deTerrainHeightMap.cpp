@@ -67,6 +67,7 @@ deTerrainHeightMap::deTerrainHeightMap(){
 deTerrainHeightMap::~deTerrainHeightMap(){
 	if(pVisibleFaces) delete [] pVisibleFaces;
 	
+	if(pHeightImage) pHeightImage->FreeReference();
 }
 
 

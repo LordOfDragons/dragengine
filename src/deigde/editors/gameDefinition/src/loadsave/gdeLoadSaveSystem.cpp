@@ -89,6 +89,9 @@ gdeGameDefinition *gdeLoadSaveSystem::LoadGameDefinition(const char *filename){
 		pLSGameDef.LoadGameDefinition(*gameDefinition, fileReader);
 		
 	}catch(const deException &){
+		if(gameDefinition){
+			gameDefinition->FreeReference();
+		}
 		throw;
 	}
 	
@@ -109,6 +112,9 @@ void gdeLoadSaveSystem::SaveGameDefinition(const gdeGameDefinition &gameDefiniti
 		fileWriter->FreeReference();
 		
 	}catch(const deException &){
+		if(fileWriter){
+			fileWriter->FreeReference();
+		}
 		throw;
 	}
 }
@@ -130,6 +136,9 @@ gdeObjectClass *gdeLoadSaveSystem::LoadXmlEClass(const char *filename){
 		fileReader->FreeReference();
 		
 	}catch(const deException &){
+		if(fileReader){
+			fileReader->FreeReference();
+		}
 		throw;
 	}
 	

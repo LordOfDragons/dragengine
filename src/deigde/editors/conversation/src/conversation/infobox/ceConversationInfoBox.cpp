@@ -202,6 +202,9 @@ void ceConversationInfoBox::UpdateCanvas(){
 		canvasBackground->FreeReference();
 		
 	}catch(const deException &){
+		if(canvasBackground){
+			canvasBackground->FreeReference();
+		}
 		throw;
 	}
 	
@@ -233,6 +236,9 @@ void ceConversationInfoBox::UpdateCanvas(){
 			}
 			
 		}catch(const deException &){
+			if(canvasText){
+				canvasText->FreeReference();
+			}
 			throw;
 		}
 	}

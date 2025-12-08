@@ -234,6 +234,9 @@ void projWindowMain::LoadProject(){
 		project->FreeReference();
 		
 	}catch(const deException &e){
+		if(project){
+			project->FreeReference();
+		}
 		DisplayException(e);
 		
 		project = new projProject(&GetEnvironment());
@@ -593,6 +596,9 @@ public:
 			project->GetUndoSystem()->Add(undo);
 			
 		}catch(const deException &e){
+			if(profile){
+				profile->FreeReference();
+			}
 			pWindow.DisplayException(e);
 			return;
 		}
@@ -678,6 +684,9 @@ public:
 			project->GetUndoSystem()->Add(undo);
 			
 		}catch(const deException &e){
+			if(duplicatedProfile){
+				duplicatedProfile->FreeReference();
+			}
 			pWindow.DisplayException(e);
 			return;
 		}

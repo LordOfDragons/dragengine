@@ -51,6 +51,7 @@ dePropFieldGround::~dePropFieldGround(){
 	RemoveAllComponents();
 	if(pComponents) delete [] pComponents;
 	
+	if(pHeightTerrain) pHeightTerrain->FreeReference();
 }
 
 
@@ -67,6 +68,7 @@ void dePropFieldGround::Clear(){
 
 void dePropFieldGround::SetHeightTerrain(deHeightTerrain *heightTerrain){
 	if(pHeightTerrain != heightTerrain){
+		if(pHeightTerrain) pHeightTerrain->FreeReference();
 		pHeightTerrain = heightTerrain;
 		if(heightTerrain) heightTerrain->AddReference();
 	}

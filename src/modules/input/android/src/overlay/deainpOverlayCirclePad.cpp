@@ -103,6 +103,9 @@ pCImage(NULL)
 		*/
 		
 	}catch(const deException &){
+		if(image){
+			image->FreeReference();
+		}
 		pCleanUp();
 		throw;
 	}

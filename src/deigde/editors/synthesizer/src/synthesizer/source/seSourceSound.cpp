@@ -220,6 +220,9 @@ deSynthesizerSource *seSourceSound::CreateEngineSource(){
 		pTargetPlay.UpdateEngineTarget(GetSynthesizer(), engSource->GetTargetPlay());
 		
 	}catch(const deException &){
+		if(engSource){
+			engSource->FreeReference();
+		}
 		throw;
 	}
 	

@@ -76,6 +76,9 @@ void deoglDelayedFileWrite::SaveFile(deVirtualFileSystem &vfs){
 		fileWriter->FreeReference();
 		
 	}catch(const deException &){
+		if(fileWriter){
+			fileWriter->FreeReference();
+		}
 		throw;
 	}
 }

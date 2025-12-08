@@ -232,6 +232,9 @@ void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, i
 				property->FreeReference();
 				
 			}catch(const deException &e){
+				if(property){
+					property->FreeReference();
+				}
 				LogErrorExceptionTag(*tag, e);
 			}
 			
@@ -246,6 +249,9 @@ void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, i
 				property->FreeReference();
 				
 			}catch(const deException &e){
+				if(property){
+					property->FreeReference();
+				}
 				LogErrorExceptionTag(*tag, e);
 			}
 			
@@ -291,6 +297,9 @@ void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDe
 				property->FreeReference();
 				
 			}catch(const deException &){
+				if(property){
+					property->FreeReference();
+				}
 				throw;
 			}
 			
@@ -309,6 +318,9 @@ void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDe
 				property->FreeReference();
 				
 			}catch(const deException &e){
+				if(property){
+					property->FreeReference();
+				}
 				LogErrorExceptionTag(*tag, e);
 			}
 			
@@ -597,6 +609,9 @@ void igdeXMLGameDefinition::pParseClassComponent(const decXmlElementTag &root, i
 		component->FreeReference();
 		
 	}catch(const deException &){
+		if(component){
+			component->FreeReference();
+		}
 		
 		throw;
 	}
@@ -699,6 +714,9 @@ void igdeXMLGameDefinition::pParseClassBillboard(const decXmlElementTag &root, i
 		billboard->FreeReference();
 		
 	}catch(const deException &){
+		if(billboard){
+			billboard->FreeReference();
+		}
 		
 		throw;
 	}
@@ -787,6 +805,9 @@ igdeGDClass&, igdeGDCComponent &gdccomponent){
 		texture->FreeReference();
 		
 	}catch(const deException &){
+		if(texture){
+			texture->FreeReference();
+		}
 		
 		throw;
 	}
@@ -993,6 +1014,9 @@ void igdeXMLGameDefinition::pParseClassLight(const decXmlElementTag &root, igdeG
 		gdcLight->FreeReference();
 		
 	}catch(const deException &){
+		if(gdcLight){
+			gdcLight->FreeReference();
+		}
 		throw;
 	}
 }
@@ -1041,6 +1065,9 @@ igdeGDClass &gdclass){
 		snappoint->FreeReference();
 		
 	}catch(const deException &){
+		if(snappoint){
+			snappoint->FreeReference();
+		}
 		throw;
 	}
 }
@@ -1117,6 +1144,9 @@ void igdeXMLGameDefinition::pParseClassParticleEmitter(const decXmlElementTag &r
 		emitter->FreeReference();
 		
 	}catch(const deException &){
+		if(emitter){
+			emitter->FreeReference();
+		}
 		
 		throw;
 	}
@@ -1287,6 +1317,9 @@ void igdeXMLGameDefinition::pParseClassForceField(const decXmlElementTag &root, 
 		field->FreeReference();
 		
 	}catch(const deException &){
+		if(field){
+			field->FreeReference();
+		}
 		throw;
 	}
 }
@@ -1389,6 +1422,9 @@ void igdeXMLGameDefinition::pParseClassEnvMapProbe(const decXmlElementTag &root,
 		envMapProbe->FreeReference();
 		
 	}catch(const deException &){
+		if(envMapProbe){
+			envMapProbe->FreeReference();
+		}
 		
 		throw;
 	}
@@ -1504,6 +1540,9 @@ void igdeXMLGameDefinition::pParseClassSpeaker(const decXmlElementTag &root, igd
 		gdcSpeaker->FreeReference();
 		
 	}catch(const deException &){
+		if(gdcSpeaker){
+			gdcSpeaker->FreeReference();
+		}
 		throw;
 	}
 }
@@ -1613,6 +1652,9 @@ void igdeXMLGameDefinition::pParseClassNavigationSpace(const decXmlElementTag &r
 		gdcNavSpace->FreeReference();
 		
 	}catch(const deException &){
+		if(gdcNavSpace){
+			gdcNavSpace->FreeReference();
+		}
 		throw;
 	}
 }
@@ -1715,6 +1757,9 @@ void igdeXMLGameDefinition::pParseClassNavigationBlocker(const decXmlElementTag 
 		gdcNavBlocker->FreeReference();
 		
 	}catch(const deException &){
+		if(gdcNavBlocker){
+			gdcNavBlocker->FreeReference();
+		}
 		throw;
 	}
 }
@@ -1820,6 +1865,9 @@ void igdeXMLGameDefinition::pParseClassTexture(const decXmlElementTag &root, igd
 		texture->FreeReference();
 		
 	}catch(const deException &){
+		if(texture){
+			texture->FreeReference();
+		}
 		
 		throw;
 	}
@@ -2139,6 +2187,9 @@ void igdeXMLGameDefinition::pParseParticleEmitter(const decXmlElementTag &root, 
 		emitter->FreeReference();
 		
 	}catch(const deException &){
+		if(emitter){
+			emitter->FreeReference();
+		}
 		
 		throw;
 	}
@@ -2282,6 +2333,9 @@ void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefi
 				controller->FreeReference();
 				
 			}catch(const deException &){
+				if(controller){
+					controller->FreeReference();
+				}
 				throw;
 			}
 			

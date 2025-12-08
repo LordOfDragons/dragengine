@@ -201,6 +201,9 @@ void ceTextBox::UpdateCanvas(){
 		canvasBackground->FreeReference();
 		
 	}catch(const deException &){
+		if(canvasBackground){
+			canvasBackground->FreeReference();
+		}
 		throw;
 	}
 	

@@ -915,6 +915,9 @@ void deModuleSystem::pDetectModulesIn(const char *basePath, const char *director
 		}
 		
 	}catch(const deException &e){
+		if(module){
+			module->FreeReference();
+		}
 		logger.LogException(LOGSOURCE, e);
 	}
 }

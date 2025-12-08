@@ -197,6 +197,9 @@ void peeWindowMain::CreateNewEmitter(){
 		emitter->FreeReference();
 		
 	}catch(const deException &){
+		if(emitter){
+			emitter->FreeReference();
+		}
 		throw;
 	}
 }

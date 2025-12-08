@@ -135,6 +135,12 @@ void dealFont::pLoadXML(const char *filename){
 		memoryFileXML->FreeReference();
 		
 	}catch(const deException &){
+		if(reader){
+			reader->FreeReference();
+		}
+		if(memoryFileXML){
+			memoryFileXML->FreeReference();
+		}
 		throw;
 	}
 }

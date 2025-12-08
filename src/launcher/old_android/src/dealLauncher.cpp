@@ -230,6 +230,12 @@ void dealLauncher::RestoreState(){
 		
 	}catch(const deException &e){
 		GetLogger().LogException(LOGSOURCE, e);
+		if(reader){
+			reader->FreeReference();
+		}
+		if(data){
+			data->FreeReference();
+		}
 		
 		ANativeActivity_finish(pAndroidApp.activity);
 		pState = esWaitDestroy;
@@ -369,6 +375,9 @@ bool dealLauncher::CheckInitialInstall(){
 			reader->FreeReference();
 			
 		}catch(const deException &){
+			if(reader){
+				reader->FreeReference();
+			}
 			throw;
 		}
 	}
@@ -462,6 +471,9 @@ bool dealLauncher::InitialInstallProgress(){
 		AAsset_close(asset);
 		
 	}catch(const deException &e){
+		if(writer){
+			writer->FreeReference();
+		}
 		if(asset){
 			AAsset_close(asset);
 		}
@@ -1140,6 +1152,12 @@ void dealLauncher::SaveState(){
 		
 	}catch(const deException &e){
 		GetLogger().LogException(LOGSOURCE, e);
+		if(writer){
+			writer->FreeReference();
+		}
+		if(data){
+			data->FreeReference();
+		}
 		return;
 	}
 }
@@ -1249,6 +1267,18 @@ void dealLauncher::pInitLogger(){
 		pLogger = loggerChain;
 		
 	}catch(const deException &){
+		if(fileWriter){
+			fileWriter->FreeReference();
+		}
+		if(loggerChain){
+			loggerChain->FreeReference();
+		}
+		if(loggerFile){
+			loggerFile->FreeReference();
+		}
+		if(loggerConsole){
+			loggerConsole->FreeReference();
+		}
 		throw;
 	}
 }

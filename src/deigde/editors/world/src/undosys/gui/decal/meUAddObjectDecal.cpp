@@ -104,4 +104,6 @@ void meUAddObjectDecal::Redo(){
 //////////////////////
 
 void meUAddObjectDecal::pCleanUp(){
+	if(pDecal) pDecal->FreeReference();
+	if(pParentObject) pParentObject->FreeReference();
 }
