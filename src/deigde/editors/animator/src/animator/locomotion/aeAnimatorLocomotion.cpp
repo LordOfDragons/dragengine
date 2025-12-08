@@ -1059,7 +1059,7 @@ void aeAnimatorLocomotion::PostPhysics(){
 	pTouchSensor->ColliderMoveHits(pGroundPlaneCollider,
 		decVector(0.0f, -tiltMoveDist, 0.0f), &pGroundChecker);
 	if(pGroundChecker.HasCollision()){
-		pGroundPlaneOffsetFL -= pGroundChecker.GetCollisionInfo().GetDistance() * tiltMoveDist;
+		pGroundPlaneOffsetFL -= pGroundChecker.GetCollisionInfo()->GetDistance() * tiltMoveDist;
 	}
 	
 	pGroundChecker.Reset();
@@ -1068,7 +1068,7 @@ void aeAnimatorLocomotion::PostPhysics(){
 	pTouchSensor->ColliderMoveHits(pGroundPlaneCollider,
 		decVector(0.0f, -tiltMoveDist, 0.0f), &pGroundChecker);
 	if(pGroundChecker.HasCollision()){
-		pGroundPlaneOffsetFR -= pGroundChecker.GetCollisionInfo().GetDistance() * tiltMoveDist;
+		pGroundPlaneOffsetFR -= pGroundChecker.GetCollisionInfo()->GetDistance() * tiltMoveDist;
 	}
 	
 	pGroundChecker.Reset();
@@ -1077,7 +1077,7 @@ void aeAnimatorLocomotion::PostPhysics(){
 	pTouchSensor->ColliderMoveHits(pGroundPlaneCollider,
 		decVector(0.0f, -tiltMoveDist, 0.0f), &pGroundChecker);
 	if(pGroundChecker.HasCollision()){
-		pGroundPlaneOffsetBL -= pGroundChecker.GetCollisionInfo().GetDistance() * tiltMoveDist;
+		pGroundPlaneOffsetBL -= pGroundChecker.GetCollisionInfo()->GetDistance() * tiltMoveDist;
 	}
 	
 	pGroundChecker.Reset();
@@ -1086,7 +1086,7 @@ void aeAnimatorLocomotion::PostPhysics(){
 	pTouchSensor->ColliderMoveHits(pGroundPlaneCollider,
 		decVector(0.0f, -tiltMoveDist, 0.0f), &pGroundChecker);
 	if(pGroundChecker.HasCollision()){
-		pGroundPlaneOffsetBR -= pGroundChecker.GetCollisionInfo().GetDistance() * tiltMoveDist;
+		pGroundPlaneOffsetBR -= pGroundChecker.GetCollisionInfo()->GetDistance() * tiltMoveDist;
 	}
 	
 	// determine the offset relative to the collider. this determines how much the root bone has to be
@@ -1204,12 +1204,6 @@ void aeAnimatorLocomotion::pCleanUp(){
 	pDDSDragonColHands.SetParentDebugDrawer(NULL);
 	pDDSDragonColFeet.SetParentDebugDrawer(NULL);
 	pDDSCollider.SetParentDebugDrawer(NULL);
-	
-	if(pGroundPlaneCollider) pGroundPlaneCollider->FreeReference();
-	if(pFootCollider) pFootCollider->FreeReference();
-	if(pDragonColBody) pDragonColBody->FreeReference();
-	if(pGroundCheckCollider) pGroundCheckCollider->FreeReference();
-	if(pTGCollider) pTGCollider->FreeReference();
 	
 	if(pAnimator){
 		deWorld *world = pAnimator->GetEngineWorld();

@@ -65,7 +65,6 @@
 
 aeRuleSubAnimator::aeRuleSubAnimator() :
 aeRule(deAnimatorRuleVisitorIdentify::ertSubAnimator),
-pSubAnimator(NULL),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(true),
@@ -77,16 +76,13 @@ pEnableVertexPositionSet(true)
 aeRuleSubAnimator::aeRuleSubAnimator(const aeRuleSubAnimator &copy) :
 aeRule(copy),
 pPathSubAnimator(copy.pPathSubAnimator),
-pSubAnimator(NULL),
+pSubAnimator(copy.pSubAnimator),
 pEnablePosition(copy.pEnablePosition),
 pEnableOrientation(copy.pEnableOrientation),
 pEnableSize(copy.pEnableSize),
 pEnableVertexPositionSet(copy.pEnableVertexPositionSet),
 pConnections(copy.pConnections)
 {
-	pSubAnimator = copy.pSubAnimator;
-	if(pSubAnimator){
-	}
 }
 
 aeRuleSubAnimator::~aeRuleSubAnimator(){

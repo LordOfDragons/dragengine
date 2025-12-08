@@ -2284,11 +2284,9 @@ void igdeWindowMain::pLoadXMLElementClasses(igdeGameProject &gameProject){
 	
 	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
-	deVFSContainer::Ref container;
 	decPath pathData(decPath::CreatePathNative(gameProject.GetDirectoryPath()));
 	pathData.AddUnixPath(gameProject.GetPathData());
-	container.TakeOverWith(pathData);
-	vfs->AddContainer(container);
+	vfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathData));
 	
 	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetClassManager()->GetAutoFindPath();
 	const int pathCount = pathList.GetCount();
@@ -2326,11 +2324,9 @@ void igdeWindowMain::pFindAndAddSkins(igdeGameProject &gameProject){
 	
 	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
-	deVFSContainer::Ref container;
 	decPath pathData(decPath::CreatePathNative(gameProject.GetDirectoryPath()));
 	pathData.AddUnixPath(gameProject.GetPathData());
-	container.TakeOverWith(pathData);
-	vfs->AddContainer(container);
+	vfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathData));
 	
 	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetSkinManager()->GetAutoFindPath();
 	const int pathCount = pathList.GetCount();
