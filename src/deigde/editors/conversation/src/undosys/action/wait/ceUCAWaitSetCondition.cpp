@@ -62,9 +62,6 @@ ceUCAWaitSetCondition::ceUCAWaitSetCondition(ceConversationTopic *topic, ceCAWai
 	}
 	
 	pNewCondition = newCondition;
-	if(newCondition){
-		newCondition->AddReference();
-	}
 }
 
 ceUCAWaitSetCondition::~ceUCAWaitSetCondition(){

@@ -91,10 +91,6 @@ void debpGhostObject::SetShape(debpBulletShape *shape){
 	
 	pShape = shape;
 	
-	if(shape){
-		shape->AddReference();
-	}
-	
 	pCreateGhostObject();
 }
 

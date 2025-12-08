@@ -59,10 +59,6 @@ void deoglRenderPlanEnvMap::SetEnvMap(deoglEnvironmentMap *envmap){
 	
 	
 	pEnvMap = envmap;
-	
-	if(envmap){
-		envmap->AddReference();
-	}
 }
 
 void deoglRenderPlanEnvMap::SetDistance(float distance){

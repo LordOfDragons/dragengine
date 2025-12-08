@@ -340,10 +340,6 @@ void deoglRLight::SetLightCanvas(deoglRCanvasView *canvas){
 	
 	pLightCanvas = canvas;
 	
-	if(canvas){
-		canvas->AddReference();
-	}
-	
 	   pRequiresPrepareForRender();
 }
 
@@ -354,10 +350,6 @@ void deoglRLight::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	
 	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
 }
 
 void deoglRLight::SetTransform(const decTexMatrix2 &matrix){

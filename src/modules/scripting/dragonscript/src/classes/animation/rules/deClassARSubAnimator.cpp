@@ -402,10 +402,6 @@ void deClassARSubAnimator::AssignAnimator(dsRealObject *myself, deAnimator *anim
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
 void deClassARSubAnimator::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleSubAnimator *rule){
@@ -428,9 +424,6 @@ void deClassARSubAnimator::PushRule(dsRunTime *rt, deAnimator *animator, deAnima
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
 		
 		nd.rule = rule;
 		rule->AddReference();

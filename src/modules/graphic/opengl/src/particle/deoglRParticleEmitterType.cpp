@@ -270,10 +270,6 @@ void deoglRParticleEmitterType::SetSkin(deoglRSkin *skin){
 	
 	
 	pSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
 }
 
 void deoglRParticleEmitterType::CheckEmitLight(const deParticleEmitterType &type){

@@ -444,9 +444,6 @@ void deoglRComponent::SetSkin(deoglRSkin *skin){
 	}
 	
 	pSkin = skin;
-	if(skin){
-		skin->AddReference();
-	}
 	
 	pUpdateModelSkinMappings();
 	
@@ -476,10 +473,6 @@ void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSki
 	
 	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
 	
 	// texture can use the dynamic skin we had so far for their skin state.
 	// force an update to make sure everything matches up again
@@ -518,10 +511,6 @@ void deoglRComponent::SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh){
 	}
 	
 	pOcclusionMesh = occlusionMesh;
-	
-	if(occlusionMesh){
-		occlusionMesh->AddReference();
-	}
 	
 	if(occlusionMesh){
 		if(occlusionMesh->GetWeightsCount() > 0){
@@ -1941,9 +1930,6 @@ void deoglRComponent::pCheckRenderModifier(deoglRCamera *rcamera){
 	
 	if(pSkin != skin){
 		pSkin = skin;
-		if(skin){
-			skin->AddReference();
-		}
 		
 		pUpdateModelSkinMappings();
 	}

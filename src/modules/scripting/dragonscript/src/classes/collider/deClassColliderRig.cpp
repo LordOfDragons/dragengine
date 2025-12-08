@@ -725,9 +725,5 @@ void deClassColliderRig::AssignCollider(dsRealObject *myself, deColliderRig *col
 	
 	nd.collider = collider;
 	
-	if(collider){
-		collider->AddReference();
-	}
-	
 	((deClassCollider*)GetBaseClass())->AssignCollider(myself, collider);
 }

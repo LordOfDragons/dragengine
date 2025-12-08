@@ -145,10 +145,6 @@ void deoalAComponent::SetModel(deoalAModel *model, const decStringList *textureN
 	pModel = model;
 	pTextureNames = textureNames;
 	
-	if(model){
-		model->AddReference();
-	}
-	
 	pDirtyTextureUseSkin = true;
 	pDirtyExtends = true;
 // 	pDirtyRTSphere = true;
@@ -169,9 +165,6 @@ void deoalAComponent::SetSkin(deoalASkin *skin){
 	}
 	
 	pSkin = skin;
-	if(skin){
-		skin->AddReference();
-	}
 	
 	pUpdateTextureSkinMappings();
 }

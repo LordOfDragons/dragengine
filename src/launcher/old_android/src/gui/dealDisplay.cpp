@@ -278,10 +278,6 @@ void dealDisplay::SetCaptureWidget(dealWidget *widget){
 	
 	
 	pCaptureWidget = widget;
-	
-	if(widget){
-		widget->AddReference();
-	}
 }
 
 

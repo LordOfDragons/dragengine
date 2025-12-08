@@ -187,19 +187,10 @@ deoalAVideoPlayer *videoPlayer){
 	
 	// store new source
 	pSound = sound;
-	if(sound){
-		sound->AddReference();
-	}
 	
 	pSynthesizer = synthesizer;
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
 	
 	pVideoPlayer = videoPlayer;
-	if(videoPlayer){
-		videoPlayer->AddReference();
-	}
 	
 	// update play position since speaker updates it from new source if present
 	pUpdatePlayRange();

@@ -109,9 +109,6 @@ void deoglHTSTexture::SetSkin(deoglRSkin *skin){
 	}
 	
 	pSkin = skin;
-	if(skin){
-		skin->AddReference();
-	}
 	
 	pUseSkinTexture = NULL;
 	if(skin && skin->GetTextureCount() > 0){

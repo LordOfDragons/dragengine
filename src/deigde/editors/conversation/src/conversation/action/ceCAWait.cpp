@@ -97,10 +97,6 @@ void ceCAWait::SetCondition(ceConversationCondition *condition){
 	if(condition != pCondition){
 		
 		pCondition = condition;
-		
-		if(condition){
-			condition->AddReference();
-		}
 	}
 }
 

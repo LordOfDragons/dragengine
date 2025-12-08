@@ -392,10 +392,6 @@ void gdeGameDefinition::SetActiveCategory(gdeCategory *category){
 	
 	pActiveCategory = category;
 	
-	if(category){
-		category->AddReference();
-	}
-	
 	NotifyActiveCategoryChanged();
 }
 
@@ -761,10 +757,6 @@ void gdeGameDefinition::SetActiveObjectClass(gdeObjectClass *objectClass){
 	
 	pActiveObjectClass = objectClass;
 	
-	if(objectClass){
-		objectClass->AddReference();
-	}
-	
 	NotifyActiveObjectClassChanged();
 }
 
@@ -781,10 +773,6 @@ void gdeGameDefinition::SetActiveOCBillboard(gdeOCBillboard *billboard){
 	
 	
 	pActiveOCBillboard = billboard;
-	
-	if(billboard){
-		billboard->AddReference();
-	}
 	
 	NotifyActiveOCBillboardChanged();
 }
@@ -803,10 +791,6 @@ void gdeGameDefinition::SetActiveOCCamera(gdeOCCamera *camera){
 	
 	pActiveOCCamera = camera;
 	
-	if(camera){
-		camera->AddReference();
-	}
-	
 	NotifyActiveOCCameraChanged();
 }
 
@@ -823,10 +807,6 @@ void gdeGameDefinition::SetActiveOCComponent(gdeOCComponent *component){
 	
 	
 	pActiveOCComponent = component;
-	
-	if(component){
-		component->AddReference();
-	}
 	
 	NotifyActiveOCComponentChanged();
 }
@@ -845,10 +825,6 @@ void gdeGameDefinition::SetActiveOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe){
 	
 	pActiveOCEnvMapProbe = envMapProbe;
 	
-	if(envMapProbe){
-		envMapProbe->AddReference();
-	}
-	
 	NotifyActiveOCEnvMapProbeChanged();
 }
 
@@ -865,10 +841,6 @@ void gdeGameDefinition::SetActiveOCLight(gdeOCLight *light){
 	
 	
 	pActiveOCLight = light;
-	
-	if(light){
-		light->AddReference();
-	}
 	
 	NotifyActiveOCLightChanged();
 }
@@ -887,10 +859,6 @@ void gdeGameDefinition::SetActiveOCNavigationBlocker(gdeOCNavigationBlocker *nav
 	
 	pActiveOCNavigationBlocker = navblocker;
 	
-	if(navblocker){
-		navblocker->AddReference();
-	}
-	
 	NotifyActiveOCNavigationBlockerChanged();
 }
 
@@ -907,10 +875,6 @@ void gdeGameDefinition::SetActiveOCNavigationSpace(gdeOCNavigationSpace *navSpac
 	
 	
 	pActiveOCNavigationSpace = navSpace;
-	
-	if(navSpace){
-		navSpace->AddReference();
-	}
 	
 	NotifyActiveOCNavigationSpaceChanged();
 }
@@ -929,10 +893,6 @@ void gdeGameDefinition::SetActiveOCParticleEmitter(gdeOCParticleEmitter *emitter
 	
 	pActiveOCParticleEmitter = emitter;
 	
-	if(emitter){
-		emitter->AddReference();
-	}
-	
 	NotifyActiveOCParticleEmitterChanged();
 }
 
@@ -949,10 +909,6 @@ void gdeGameDefinition::SetActiveOCForceField(gdeOCForceField *field){
 	
 	
 	pActiveOCForceField = field;
-	
-	if(field){
-		field->AddReference();
-	}
 	
 	NotifyActiveOCForceFieldChanged();
 }
@@ -971,10 +927,6 @@ void gdeGameDefinition::SetActiveOCSnapPoint(gdeOCSnapPoint *snappoint){
 	
 	pActiveOCSnapPoint = snappoint;
 	
-	if(snappoint){
-		snappoint->AddReference();
-	}
-	
 	NotifyActiveOCSnapPointChanged();
 }
 
@@ -991,10 +943,6 @@ void gdeGameDefinition::SetActiveOCSpeaker(gdeOCSpeaker *speaker){
 	
 	
 	pActiveOCSpeaker = speaker;
-	
-	if(speaker){
-		speaker->AddReference();
-	}
 	
 	NotifyActiveOCSpeakerChanged();
 }
@@ -1078,10 +1026,6 @@ void gdeGameDefinition::SetActiveParticleEmitter(gdeParticleEmitter *particleEmi
 	
 	pActiveParticleEmitter = particleEmitter;
 	
-	if(particleEmitter){
-		particleEmitter->AddReference();
-	}
-	
 	NotifyActiveParticleEmitterChanged();
 }
 
@@ -1149,10 +1093,6 @@ void gdeGameDefinition::SetActiveSkin(gdeSkin *skin){
 	
 	pActiveSkin = skin;
 	
-	if(skin){
-		skin->AddReference();
-	}
-	
 	NotifyActiveSkinChanged();
 }
 
@@ -1219,10 +1159,6 @@ void gdeGameDefinition::SetActiveSky(gdeSky *sky){
 	
 	
 	pActiveSky = sky;
-	
-	if(sky){
-		sky->AddReference();
-	}
 	
 	NotifyActiveSkyChanged();
 }

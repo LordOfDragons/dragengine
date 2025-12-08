@@ -721,10 +721,6 @@ void igdeWindowMain::SetGameProject(igdeGameProject *project){
 	
 	pGameProject = project;
 	
-	if(project){
-		project->AddReference();
-	}
-	
 	GetEngineController().UpdateEngine(project, pConfiguration.GetPathIGDEData(),
 		pConfiguration.GetPathIGDEEditorData());
 	

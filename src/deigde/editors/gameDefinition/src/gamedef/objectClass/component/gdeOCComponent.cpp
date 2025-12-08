@@ -220,8 +220,4 @@ void gdeOCComponent::SetActiveTexture(gdeOCComponentTexture *texture){
 	
 	
 	pActiveTexture = texture;
-	
-	if(texture){
-		texture->AddReference();
-	}
 }

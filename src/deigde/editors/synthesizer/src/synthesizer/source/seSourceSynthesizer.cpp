@@ -335,10 +335,6 @@ void seSourceSynthesizer::SetControllerAt(int position, seController *controller
 	
 	pConnections[position] = controller;
 	
-	if(controller){
-		controller->AddReference();
-	}
-	
 	if(source){
 		pUpdateConnections(*source);
 	}

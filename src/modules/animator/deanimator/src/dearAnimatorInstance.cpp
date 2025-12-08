@@ -385,9 +385,6 @@ void dearAnimatorInstance::ComponentChanged(){
 			pComponent->GetComponent().FreeReference();
 		}
 		pComponent = arcomponent;
-		if(component){
-			component->AddReference();
-		}
 	}
 	
 	pDirtyMappings = true;

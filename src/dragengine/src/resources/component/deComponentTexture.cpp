@@ -58,10 +58,6 @@ void deComponentTexture::SetSkin(deSkin *skin){
 	if(skin != pSkin){
 		
 		pSkin = skin;
-		
-		if(skin){
-			skin->AddReference();
-		}
 	}
 }
 
@@ -80,8 +76,4 @@ void deComponentTexture::SetDynamicSkin(deDynamicSkin *dynamicSkin){
 	
 	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
 }

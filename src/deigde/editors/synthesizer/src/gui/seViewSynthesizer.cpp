@@ -105,10 +105,6 @@ void seViewSynthesizer::SetSynthesizer(seSynthesizer *synthesizer){
 	
 	pSynthesizer = synthesizer;
 	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
-	
 	pWPController->SetSynthesizer(synthesizer);
 	pWPLink->SetSynthesizer(synthesizer);
 	pWPSource->SetSynthesizer(synthesizer);

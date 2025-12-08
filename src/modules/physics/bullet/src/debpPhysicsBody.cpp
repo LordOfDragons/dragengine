@@ -116,10 +116,6 @@ void debpPhysicsBody::SetShape(debpBulletShape *shape){
 	pShape = shape;
 	pShapeSurface = 0.0f;
 	
-	if(shape){
-		shape->AddReference();
-	}
-	
 	pCreateRigidBody();
 }
 

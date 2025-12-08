@@ -67,9 +67,6 @@ void deoglRCanvasCanvasView::SetCanvasView(deoglRCanvasView *canvasView){
 	}
 	
 	pCanvasView = canvasView;
-	if(canvasView){
-		canvasView->AddReference();
-	}
 }
 
 void deoglRCanvasCanvasView::SetTCTransform(const decTexMatrix2 &transform){

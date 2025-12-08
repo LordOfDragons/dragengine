@@ -66,10 +66,6 @@ void deSynthesizerSourceSynthesizer::SetSynthesizer(deSynthesizer *synthesizer){
 	
 	pSynthesizer = synthesizer;
 	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
-	
 	UpdateConnectionCount();
 }
 

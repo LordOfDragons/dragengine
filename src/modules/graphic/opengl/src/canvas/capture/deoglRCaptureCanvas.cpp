@@ -68,10 +68,6 @@ void deoglRCaptureCanvas::SetCanvasView(deoglRCanvasView *canvasView){
 	
 	
 	pCanvasView = canvasView;
-	
-	if(canvasView){
-		canvasView->AddReference();
-	}
 }
 
 void deoglRCaptureCanvas::SetCapturePending(bool capturePending){

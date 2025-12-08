@@ -71,19 +71,11 @@ void cePCBOption::SetActionOption(ceCAPlayerChoice *action, ceCAPlayerChoiceOpti
 	if(action != pAction){
 		
 		pAction = action;
-		
-		if(action){
-			action->AddReference();
-		}
 	}
 	
 	if(option != pActionOption){
 		
 		pActionOption = option;
-		
-		if(option){
-			option->AddReference();
-		}
 	}
 }
 

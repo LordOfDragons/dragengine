@@ -400,10 +400,6 @@ void deClassSynthesizerSource::AssignSource(dsRealObject *myself, deSynthesizerS
 	}
 	
 	nd.source = source;
-	
-	if(source){
-		source->AddReference();
-	}
 }
 
 void deClassSynthesizerSource::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
@@ -422,10 +418,6 @@ void deClassSynthesizerSource::AssignSynthesizer(dsRealObject *myself, deSynthes
 	}
 	
 	nd.synthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
 }
 
 void deClassSynthesizerSource::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSource *source){

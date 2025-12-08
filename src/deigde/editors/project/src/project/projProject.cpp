@@ -186,10 +186,6 @@ void projProject::SetActiveProfile(projProfile *profile){
 	
 	pActiveProfile = profile;
 	
-	if(profile){
-		profile->AddReference();
-	}
-	
 	NotifyActiveProfileChanged();
 }
 

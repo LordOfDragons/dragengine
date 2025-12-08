@@ -107,10 +107,6 @@ void deoglRSkyInstance::SetRSky(deoglRSky *rsky){
 	
 	pRSky = rsky;
 	
-	if(rsky){
-		rsky->AddReference();
-	}
-	
 	RebuildLayers();
 }
 

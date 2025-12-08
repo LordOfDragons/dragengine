@@ -218,10 +218,6 @@ void dealGame::SetGlobalProfile(dealGameProfile *profile){
 	if(profile != pGlobalProfile){
 		
 		pGlobalProfile = profile;
-		
-		if(profile){
-			profile->AddReference();
-		}
 	}
 }
 
@@ -229,10 +225,6 @@ void dealGame::SetGameProfile(dealGameProfile *profile){
 	if(profile != pGameProfile){
 		
 		pGameProfile = profile;
-		
-		if(profile){
-			profile->AddReference();
-		}
 	}
 }
 

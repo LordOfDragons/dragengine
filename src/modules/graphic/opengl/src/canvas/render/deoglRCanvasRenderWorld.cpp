@@ -73,10 +73,6 @@ void deoglRCanvasRenderWorld::SetCamera(deoglRCamera *camera){
 	
 	pCamera = camera;
 	
-	if(camera){
-		camera->AddReference();
-	}
-	
 	pForceToneMapAdaption = true;
 }
 

@@ -525,10 +525,6 @@ void reWPConstraint::SetConstraint(reRigConstraint *constraint){
 	
 	pConstraint = constraint;
 	
-	if(constraint){
-		constraint->AddReference();
-	}
-	
 	UpdateBoneLists();
 	UpdateConstraint();
 }

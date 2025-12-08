@@ -323,10 +323,6 @@ void dealGameManager::SetActiveProfile(dealGameProfile *profile){
 	
 	
 	pActiveProfile = profile;
-	
-	if(profile){
-		profile->AddReference();
-	}
 }
 
 

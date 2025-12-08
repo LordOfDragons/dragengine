@@ -76,9 +76,6 @@ decObjectList::decObjectList(const decObjectList &list){
 		for(pObjectCount=0; pObjectCount<count; pObjectCount++){
 			object = list.pObjects[pObjectCount];
 			pObjects[pObjectCount] = object;
-			if(object){
-				object->AddReference();
-			}
 		}
 	}
 }
@@ -114,10 +111,6 @@ void decObjectList::SetAt(int index, deObject *object){
 		}
 		
 		pObjects[index] = object;
-		
-		if(object){
-			object->AddReference();
-		}
 	}
 }
 
@@ -186,9 +179,6 @@ void decObjectList::Add(deObject *object){
 	}
 	
 	pObjects[pObjectCount] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
@@ -214,9 +204,6 @@ void decObjectList::Insert(deObject *object, int index){
 		pObjects[i] = pObjects[i - 1];
 	}
 	pObjects[index] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
@@ -303,9 +290,6 @@ decObjectList decObjectList::GetHead(int count) const{
 	for(list.pObjectCount=0; list.pObjectCount<count; list.pObjectCount++){
 		object = pObjects[list.pObjectCount];
 		list.pObjects[list.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return list;
@@ -334,9 +318,6 @@ void decObjectList::GetHead(decObjectList &list, int count) const{
 	for(list.pObjectCount=0; list.pObjectCount<count; list.pObjectCount++){
 		object = pObjects[list.pObjectCount];
 		list.pObjects[list.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 }
 
@@ -359,9 +340,6 @@ decObjectList decObjectList::GetTail(int count) const{
 	for(list.pObjectCount=0; list.pObjectCount<count; list.pObjectCount++){
 		object = pObjects[from + list.pObjectCount];
 		list.pObjects[list.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return list;
@@ -391,9 +369,6 @@ void decObjectList::GetTail(decObjectList &list, int count) const{
 	for(list.pObjectCount=0; list.pObjectCount<count; list.pObjectCount++){
 		object = pObjects[from + list.pObjectCount];
 		list.pObjects[list.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 }
 
@@ -416,9 +391,6 @@ decObjectList decObjectList::GetMiddle(int from, int to) const{
 	for(list.pObjectCount=0; list.pObjectCount<count; list.pObjectCount++){
 		object = pObjects[from + list.pObjectCount];
 		list.pObjects[list.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return list;
@@ -448,9 +420,6 @@ void decObjectList::GetMiddle(decObjectList &list, int from, int to) const{
 	for(list.pObjectCount=0; list.pObjectCount<count; list.pObjectCount++){
 		object = pObjects[from + list.pObjectCount];
 		list.pObjects[list.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 }
 
@@ -650,17 +619,11 @@ decObjectList decObjectList::operator+(const decObjectList &list) const{
 	for(r=0; r<pObjectCount; r++){
 		object = pObjects[r];
 		nlist.pObjects[r] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	for(r=0; r<list.pObjectCount; r++){
 		object = list.pObjects[r];
 		nlist.pObjects[pObjectCount + r] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return nlist;
@@ -693,9 +656,6 @@ decObjectList &decObjectList::operator=(const decObjectList &list){
 	for(pObjectCount=0; pObjectCount<list.pObjectCount; pObjectCount++){
 		object = list.pObjects[pObjectCount];
 		pObjects[pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return *this;
@@ -719,9 +679,6 @@ decObjectList &decObjectList::operator+=(const decObjectList &list){
 		for(r=0; r<count; r++){
 			object = list.pObjects[r];
 			pObjects[pObjectCount++] = object;
-			if(object){
-				object->AddReference();
-			}
 		}
 	}
 	

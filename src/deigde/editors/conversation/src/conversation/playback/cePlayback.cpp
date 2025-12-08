@@ -106,10 +106,6 @@ void cePlayback::SetTopic(ceConversationTopic *topic){
 		
 		pTopic = topic;
 		
-		if(topic){
-			topic->AddReference();
-		}
-		
 		Rewind();
 		
 		pConversation.NotifyPlaybackChanged();
@@ -665,18 +661,10 @@ void cePlayback::SetLastPlayedAction(ceConversationTopic *topic, ceConversationA
 	if(topic != pLastPlayedActionTopic){
 		
 		pLastPlayedActionTopic = topic;
-		
-		if(topic){
-			topic->AddReference();
-		}
 	}
 	
 	if(action != pLastPlayedAction){
 		
 		pLastPlayedAction = action;
-		
-		if(action){
-			action->AddReference();
-		}
 	}
 }

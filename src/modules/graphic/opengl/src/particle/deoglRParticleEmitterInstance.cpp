@@ -156,10 +156,6 @@ void deoglRParticleEmitterInstance::SetEmitter(deoglRParticleEmitter *emitter){
 	
 	
 	pEmitter = emitter;
-	
-	if(emitter){
-		emitter->AddReference();
-	}
 }
 
 void deoglRParticleEmitterInstance::SetParentWorld(deoglRWorld *world){

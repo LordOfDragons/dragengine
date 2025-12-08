@@ -61,10 +61,6 @@ void igdeTriggerExpression::SetRootComponent(igdeTriggerExpressionComponent *com
 	if(component != pRootComponent){
 		
 		pRootComponent = component;
-		
-		if(component){
-			component->AddReference();
-		}
 	}
 	
 	pResult = false;

@@ -70,18 +70,12 @@ void deoglEnvMapFader::FadeTo(deoglEnvironmentMap *envmap){
 	
 	if(!pEnvMapActive){
 		pEnvMapActive = envmap;
-		if(envmap){
-			envmap->AddReference();
-		}
 		return;
 	}
 	
 	// has pEnvMapActive and it is not envmap
 	if(!pEnvMapFading){
 		pEnvMapFading = envmap;
-		if(envmap){
-			envmap->AddReference();
-		}
 		return;
 	}
 	
@@ -97,9 +91,6 @@ void deoglEnvMapFader::FadeTo(deoglEnvironmentMap *envmap){
 	}
 	
 	pEnvMapDelayed = envmap;
-	if(envmap){
-		envmap->AddReference();
-	}
 	//printf( "fadeto %p: active=%p fading=%p delayed=%p\n", envmap, pEnvMapActive, pEnvMapFading, pEnvMapDelayed );
 }
 

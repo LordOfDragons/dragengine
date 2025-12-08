@@ -330,10 +330,6 @@ void feWPGlyph::SetGlyph(feFontGlyph *glyph){
 	
 	pGlyph = glyph;
 	
-	if(glyph){
-		glyph->AddReference();
-	}
-	
 	pCBGlyph->SetSelection(pFont->IndexOfGlyph(glyph));
 	
 	UpdateGlyph();

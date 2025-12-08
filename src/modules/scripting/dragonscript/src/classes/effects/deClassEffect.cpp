@@ -215,10 +215,6 @@ void deClassEffect::AssignEffect(dsRealObject *myself, deEffect *effect){
 	}
 	
 	nd.effect = effect;
-	
-	if(effect){
-		effect->AddReference();
-	}
 }
 
 

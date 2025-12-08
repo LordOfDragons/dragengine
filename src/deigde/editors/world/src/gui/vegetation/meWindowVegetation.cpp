@@ -505,10 +505,6 @@ void meWindowVegetation::SetVLayer(meHTVegetationLayer *vlayer){
 	
 	pVLayer = vlayer;
 	
-	if(vlayer){
-		vlayer->AddReference();
-	}
-	
 	UpdateNodesFromVLayer();
 }
 

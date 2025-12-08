@@ -406,11 +406,7 @@ void meLoadXMLWorldTask::pLoadObject(const decXmlElementTag &root, meObject &obj
 		}else if(strcmp(tag->GetName(), "texture") == 0){
 			name = GetAttributeString(*tag, "name");
 			
-			meObjectTexture *texture = object.GetTextureNamed(name);
-			if(texture){
-				texture->AddReference();
-				
-			}else{
+			meObjectTexture *texture = object.GetTextureNamed(name);else{
 				try{
 					texture = new meObjectTexture(object.GetEnvironment(), name);
 					object.AddTexture(texture);

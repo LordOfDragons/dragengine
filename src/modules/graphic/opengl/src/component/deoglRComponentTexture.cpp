@@ -181,9 +181,6 @@ void deoglRComponentTexture::SetSkin(deoglRSkin *skin){
 	}
 	
 	pSkin = skin;
-	if(skin){
-		skin->AddReference();
-	}
 	
 	pIsRendered = false;
 	InvalidateParamBlocks();
@@ -198,9 +195,6 @@ void deoglRComponentTexture::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	}
 	
 	pDynamicSkin = dynamicSkin;
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
 	
 	pIsRendered = false;
 	InvalidateParamBlocks();

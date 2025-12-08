@@ -255,10 +255,6 @@ void deoglRBillboard::SetSkin(deoglRSkin *skin){
 	pSkin = skin;
 	pUseSkinTexture = skin && skin->GetTextureCount() > 0 ? &skin->GetTextureAt(0) : NULL;
 	
-	if(skin){
-		skin->AddReference();
-	}
-	
 	pDirtySharedSPBElement = true;
 	pRequiresPrepareForRender();
 	
@@ -275,10 +271,6 @@ void deoglRBillboard::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	
 	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
 	
 	pSkinRendered.SetDirty();
 }

@@ -98,9 +98,6 @@ void peeParameter::SetSpread(float spread){
 void peeParameter::SetControllerValue(peeController *controller){
 	if(controller != pControllerValue){
 		pControllerValue = controller;
-		if(controller){
-			controller->AddReference();
-		}
 		
 		if(pType.GetEmitter() && pType.GetEmitter()->GetEngineEmitter()){
 			deParticleEmitter &engEmitter = *pType.GetEmitter()->GetEngineEmitter();
@@ -132,9 +129,6 @@ void peeParameter::SetCurveValue(const decCurveBezier &curve){
 void peeParameter::SetControllerSpread(peeController *controller){
 	if(controller != pControllerSpread){
 		pControllerSpread = controller;
-		if(controller){
-			controller->AddReference();
-		}
 		
 		if(pType.GetEmitter() && pType.GetEmitter()->GetEngineEmitter()){
 			deParticleEmitter &engEmitter = *pType.GetEmitter()->GetEngineEmitter();

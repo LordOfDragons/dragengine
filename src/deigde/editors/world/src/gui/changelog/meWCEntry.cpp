@@ -74,10 +74,6 @@ void meWCEntry::SetWorld(meWorld *world){
 	
 	
 	pWorld = world;
-	
-	if(world){
-		world->AddReference();
-	}
 }
 
 void meWCEntry::SetHTTexture(meHeightTerrainTexture *texture){
@@ -87,10 +83,6 @@ void meWCEntry::SetHTTexture(meHeightTerrainTexture *texture){
 	
 	
 	pHTTexture = texture;
-	
-	if(texture){
-		texture->AddReference();
-	}
 }
 
 void meWCEntry::SetHTNavSpace(meHeightTerrainNavSpace *navspace){
@@ -100,10 +92,6 @@ void meWCEntry::SetHTNavSpace(meHeightTerrainNavSpace *navspace){
 	
 	
 	pHTNavSpace = navspace;
-	
-	if(navspace){
-		navspace->AddReference();
-	}
 }
 
 

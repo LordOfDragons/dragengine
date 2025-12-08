@@ -86,10 +86,6 @@ void dealWidgetLabel::SetFont(dealFont *font){
 	
 	pFont = font;
 	
-	if(font){
-		font->AddReference();
-	}
-	
 	pDirtyTextSize = true;
 	DirtyParentLayout();
 }

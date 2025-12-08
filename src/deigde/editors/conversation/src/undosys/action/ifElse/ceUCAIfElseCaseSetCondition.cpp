@@ -70,9 +70,6 @@ ceCAIfElseCase *ifcase, ceConversationCondition *newCondition){
 	}
 	
 	pNewCondition = newCondition;
-	if(newCondition){
-		newCondition->AddReference();
-	}
 }
 
 ceUCAIfElseCaseSetCondition::~ceUCAIfElseCaseSetCondition(){

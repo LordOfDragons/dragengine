@@ -69,10 +69,6 @@ void deoglRDSRenderableCanvas::SetCanvas(deoglRCanvasView *canvas){
 	
 	
 	pCanvas = canvas;
-	
-	if(canvas){
-		canvas->AddReference();
-	}
 }
 
 void deoglRDSRenderableCanvas::SetComponentCount(int componentCount){

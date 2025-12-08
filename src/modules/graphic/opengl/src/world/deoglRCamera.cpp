@@ -124,10 +124,6 @@ void deoglRCamera::SetParentWorld(deoglRWorld *parentWorld){
 	
 	pParentWorld = parentWorld;
 	
-	if(parentWorld){
-		parentWorld->AddReference();
-	}
-	
 	pPlan->SetWorld(parentWorld);
 }
 

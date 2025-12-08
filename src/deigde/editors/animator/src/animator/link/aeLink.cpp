@@ -153,10 +153,6 @@ void aeLink::SetController(aeController *controller, bool notify){
 	
 	pController = controller;
 	
-	if(controller){
-		controller->AddReference();
-	}
-	
 	UpdateController();
 	
 	if(pAnimator && notify){

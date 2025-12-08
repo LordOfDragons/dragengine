@@ -101,10 +101,6 @@ void ceCAPlayerChoiceOption::SetCondition(ceConversationCondition *condition){
 	
 	
 	pCondition = condition;
-	
-	if(condition){
-		condition->AddReference();
-	}
 }
 
 

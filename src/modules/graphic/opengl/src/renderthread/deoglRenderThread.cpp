@@ -252,10 +252,6 @@ void deoglRenderThread::SetCanvasInputOverlay(deoglRCanvasView *canvas){
 	
 	
 	pCanvasInputOverlay = canvas;
-	
-	if(canvas){
-		canvas->AddReference();
-	}
 }
 
 void deoglRenderThread::SetCanvasDebugOverlay(deoglRCanvasView *canvas){
@@ -265,10 +261,6 @@ void deoglRenderThread::SetCanvasDebugOverlay(deoglRCanvasView *canvas){
 	
 	
 	pCanvasDebugOverlay = canvas;
-	
-	if(canvas){
-		canvas->AddReference();
-	}
 }
 
 void deoglRenderThread::SetCanvasOverlay(deoglRCanvasView *canvas){
@@ -278,10 +270,6 @@ void deoglRenderThread::SetCanvasOverlay(deoglRCanvasView *canvas){
 	
 	
 	pCanvasOverlay = canvas;
-	
-	if(canvas){
-		canvas->AddReference();
-	}
 }
 
 

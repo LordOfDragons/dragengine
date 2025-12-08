@@ -93,9 +93,6 @@ meUObjectAttachTo::meUObjectAttachTo(meWorld *world, const meObjectList &objects
 	}
 	
 	pAttachTo = attachTo;
-	if(attachTo){
-		attachTo->AddReference();
-	}
 	
 	pWorld = world;
 	world->AddReference();

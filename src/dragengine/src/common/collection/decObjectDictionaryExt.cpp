@@ -73,10 +73,6 @@ void decObjectDictionaryExt::sDictEntry::SetValue(deObject *nvalue){
 	if(nvalue != value){
 		
 		value = nvalue;
-		
-		if(nvalue){
-			nvalue->AddReference();
-		}
 	}
 }
 

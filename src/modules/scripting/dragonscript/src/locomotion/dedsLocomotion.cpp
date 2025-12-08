@@ -324,10 +324,6 @@ void dedsLocomotion::SetCCTTiltSingle(deColliderCollisionTest *collisionTest){
 	
 	
 	pCCTTiltSingle = collisionTest;
-	
-	if(collisionTest){
-		collisionTest->AddReference();
-	}
 }
 
 void dedsLocomotion::SetCCTTiltFrontLeft(deColliderCollisionTest *collisionTest){
@@ -337,10 +333,6 @@ void dedsLocomotion::SetCCTTiltFrontLeft(deColliderCollisionTest *collisionTest)
 	
 	
 	pCCTTiltFrontLeft = collisionTest;
-	
-	if(collisionTest){
-		collisionTest->AddReference();
-	}
 }
 
 void dedsLocomotion::SetCCTTiltFrontRight(deColliderCollisionTest *collisionTest){
@@ -350,10 +342,6 @@ void dedsLocomotion::SetCCTTiltFrontRight(deColliderCollisionTest *collisionTest
 	
 	
 	pCCTTiltFrontRight = collisionTest;
-	
-	if(collisionTest){
-		collisionTest->AddReference();
-	}
 }
 
 void dedsLocomotion::SetCCTTiltBackLeft(deColliderCollisionTest *collisionTest){
@@ -363,10 +351,6 @@ void dedsLocomotion::SetCCTTiltBackLeft(deColliderCollisionTest *collisionTest){
 	
 	
 	pCCTTiltBackLeft = collisionTest;
-	
-	if(collisionTest){
-		collisionTest->AddReference();
-	}
 }
 
 void dedsLocomotion::SetCCTTiltBackRight(deColliderCollisionTest *collisionTest){
@@ -376,10 +360,6 @@ void dedsLocomotion::SetCCTTiltBackRight(deColliderCollisionTest *collisionTest)
 	
 	
 	pCCTTiltBackRight = collisionTest;
-	
-	if(collisionTest){
-		collisionTest->AddReference();
-	}
 }
 
 
@@ -519,10 +499,6 @@ void dedsLocomotion::SetAICollider(deCollider *collider){
 	
 	
 	pAICollider = collider;
-	
-	if(collider){
-		collider->AddReference();
-	}
 }
 
 void dedsLocomotion::SetUpdateAIColliderAngularVelocity(bool updateAngularVelocity){

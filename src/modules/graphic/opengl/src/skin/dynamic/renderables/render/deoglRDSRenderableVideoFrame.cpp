@@ -65,10 +65,6 @@ void deoglRDSRenderableVideoFrame::SetVideoPlayer(deoglRVideoPlayer *videoPlayer
 	
 	
 	pVideoPlayer = videoPlayer;
-	
-	if(videoPlayer){
-		videoPlayer->AddReference();
-	}
 }
 
 void deoglRDSRenderableVideoFrame::PrepareForRender(const deoglRenderPlanMasked *){

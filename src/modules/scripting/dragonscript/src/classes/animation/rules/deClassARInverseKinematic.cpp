@@ -508,10 +508,6 @@ void deClassARInverseKinematic::AssignAnimator(dsRealObject *myself, deAnimator 
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
 void deClassARInverseKinematic::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleInverseKinematic *rule){
@@ -534,9 +530,6 @@ void deClassARInverseKinematic::PushRule(dsRunTime *rt, deAnimator *animator, de
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
 		
 		nd.rule = rule;
 		rule->AddReference();

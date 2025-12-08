@@ -78,10 +78,6 @@ void meAttachedDecal::SetParentObject(meObject *object){
 	
 	pParentObject = object;
 	
-	if(object){
-		object->AddReference();
-	}
-	
 	AttachToParent();
 }
 

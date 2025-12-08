@@ -130,10 +130,6 @@ void deAudioSystem::SetActiveMicrophone(deMicrophone *microphone){
 	
 	pActiveMic = microphone;
 	
-	if(microphone){
-		microphone->AddReference();
-	}
-	
 	if(GetIsRunning()){
 		pActiveModule->SetActiveMicrophone(microphone);
 	}

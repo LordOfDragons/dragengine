@@ -511,10 +511,6 @@ void reRigConstraint::SetConstraintBone(reRigBone *bone){
 	
 	pConstraintBone = bone;
 	
-	if(bone){
-		bone->AddReference();
-	}
-	
 	if(pEngConstraint){
 		if(pConstraintBone && pRig){
 			pEngConstraint->SetBone(pRig->IndexOfBone(pConstraintBone));

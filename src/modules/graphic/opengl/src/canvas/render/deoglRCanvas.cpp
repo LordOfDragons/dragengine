@@ -99,10 +99,6 @@ void deoglRCanvas::SetMask(deoglRCanvas *mask){
 	
 	
 	pMask = mask;
-	
-	if(mask){
-		mask->AddReference();
-	}
 }
 
 void deoglRCanvas::SetVisible(bool visible){

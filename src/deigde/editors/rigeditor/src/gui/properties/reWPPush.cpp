@@ -263,10 +263,6 @@ void reWPPush::SetPush(reRigPush *push){
 	
 	pPush = push;
 	
-	if(push){
-		push->AddReference();
-	}
-	
 	UpdatePush();
 }
 

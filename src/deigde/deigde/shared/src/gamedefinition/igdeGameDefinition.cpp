@@ -161,10 +161,6 @@ void igdeGameDefinition::SetDefaultModel(deModel *model){
 	}
 	
 	pDefaultModel = model;
-	
-	if(model){
-		model->AddReference();
-	}
 }
 
 void igdeGameDefinition::SetDefaultSkin(deSkin *skin){
@@ -172,10 +168,6 @@ void igdeGameDefinition::SetDefaultSkin(deSkin *skin){
 	}
 	
 	pDefaultSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
 }
 
 void igdeGameDefinition::UpdateEngineObjects(){

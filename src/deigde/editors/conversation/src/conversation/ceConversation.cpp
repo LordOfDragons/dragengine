@@ -418,10 +418,6 @@ void ceConversation::SetActiveTarget(ceTarget *target){
 		
 		pActiveTarget = target;
 		
-		if(target){
-			target->AddReference();
-		}
-		
 		NotifyActiveTargetChanged();
 	}
 }
@@ -519,10 +515,6 @@ void ceConversation::SetActiveCameraShot(ceCameraShot *cameraShot){
 	if(cameraShot != pActiveCameraShot){
 		
 		pActiveCameraShot = cameraShot;
-		
-		if(cameraShot){
-			cameraShot->AddReference();
-		}
 		
 		NotifyActiveCameraShotChanged();
 	}
@@ -622,10 +614,6 @@ void ceConversation::SetActiveGesture(ceGesture *gesture){
 		
 		pActiveGesture = gesture;
 		
-		if(gesture){
-			gesture->AddReference();
-		}
-		
 		NotifyActiveGestureChanged();
 	}
 }
@@ -723,10 +711,6 @@ void ceConversation::SetActiveFacePose(ceFacePose *facePose){
 	if(facePose != pActiveFacePose){
 		
 		pActiveFacePose = facePose;
-		
-		if(facePose){
-			facePose->AddReference();
-		}
 		
 		NotifyActiveFacePoseChanged();
 	}
@@ -828,10 +812,6 @@ void ceConversation::SetActiveFile(ceConversationFile *file){
 	
 	
 	pActiveFile = file;
-	
-	if(file){
-		file->AddReference();
-	}
 	
 	NotifyActiveFileChanged();
 }
@@ -967,10 +947,6 @@ void ceConversation::SetActiveActor(ceConversationActor *actor){
 		
 		pActiveActor = actor;
 		
-		if(actor){
-			actor->AddReference();
-		}
-		
 		NotifyActiveActorChanged();
 	}
 }
@@ -1036,10 +1012,6 @@ void ceConversation::SetActiveCoordSystem(ceCoordSystem *coordSystem){
 		
 		pActiveCoordSystem = coordSystem;
 		
-		if(coordSystem){
-			coordSystem->AddReference();
-		}
-		
 		NotifyActiveCoordSystemChanged();
 	}
 }
@@ -1104,10 +1076,6 @@ void ceConversation::SetActiveProp(ceProp *prop){
 	if(prop != pActiveProp){
 		
 		pActiveProp = prop;
-		
-		if(prop){
-			prop->AddReference();
-		}
 		
 		NotifyActivePropChanged();
 	}

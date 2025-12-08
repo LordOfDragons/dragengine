@@ -1645,10 +1645,6 @@ void meWPHeightTerrain::SetTexture(meHeightTerrainTexture *texture){
 	
 	pTexture = texture;
 	
-	if(texture){
-		texture->AddReference();
-	}
-	
 	pCBTexture->SetSelectionWithData(texture);
 	
 	UpdateTexture();
@@ -1679,10 +1675,6 @@ void meWPHeightTerrain::SetVLayer(meHTVegetationLayer *vlayer){
 	
 	UpdateVVariationList();
 	
-	if(vlayer){
-		vlayer->AddReference();
-	}
-	
 	pCBVLayer->SetSelectionWithData(vlayer);
 	UpdateVLayer();
 }
@@ -1698,10 +1690,6 @@ void meWPHeightTerrain::SetVVariation(meHTVVariation *variation){
 	
 	
 	pVVariation = variation;
-	
-	if(variation){
-		variation->AddReference();
-	}
 	
 	pCBVVariation->SetSelectionWithData(variation);
 	UpdateVVariation();

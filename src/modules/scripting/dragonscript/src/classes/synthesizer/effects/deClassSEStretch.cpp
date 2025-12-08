@@ -338,10 +338,6 @@ void deClassSEStretch::AssignSynthesizer(dsRealObject *myself, deSynthesizerSour
 	}
 	
 	nd.source = source;
-	
-	if(source){
-		source->AddReference();
-	}
 }
 
 void deClassSEStretch::PushEffect(dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffectStretch *effect){
@@ -364,9 +360,6 @@ void deClassSEStretch::PushEffect(dsRunTime *rt, deSynthesizerSource *source, de
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.source = source;
-		if(source){
-			source->AddReference();
-		}
 		
 		nd.effect = effect;
 		effect->AddReference();

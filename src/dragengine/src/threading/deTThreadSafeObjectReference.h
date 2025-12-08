@@ -59,9 +59,6 @@ public:
 	 * Reference is added if object is not nullptr.
 	 */
 	deTThreadSafeObjectReference(T *object) : pObject(object){
-		if(pObject){
-			pObject->AddReference();
-		}
 	}
 	
 	/**
@@ -70,9 +67,6 @@ public:
 	 * Reference is added if object in holder is not nullptr.
 	 */
 	deTThreadSafeObjectReference(const deTThreadSafeObjectReference &reference) : pObject(reference.pObject){
-		if(pObject){
-			pObject->AddReference();
-		}
 	}
 	
 	/**
@@ -245,10 +239,6 @@ public:
 		}
 		
 		pObject = object;
-		
-		if(object){
-			object->AddReference();
-		}
 		
 		return *this;
 	}

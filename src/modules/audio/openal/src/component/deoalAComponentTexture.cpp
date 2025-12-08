@@ -72,10 +72,6 @@ void deoalAComponentTexture::SetSkin(deoalASkin *skin){
 	
 	
 	pSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
 }
 
 

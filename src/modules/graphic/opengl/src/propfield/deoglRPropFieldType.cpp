@@ -111,10 +111,6 @@ void deoglRPropFieldType::SetModel(deoglRModel *model){
 	
 	pModel = model;
 	
-	if(model){
-		model->AddReference();
-	}
-	
 	pDirtyModel = true;
 	pPropField.TypeRequiresPrepareForRender();
 	
@@ -132,10 +128,6 @@ void deoglRPropFieldType::SetSkin(deoglRSkin *skin){
 	
 	
 	pSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
 	
 	pUseSkinTexture = NULL;
 	if(skin && skin->GetTextureCount() > 0){

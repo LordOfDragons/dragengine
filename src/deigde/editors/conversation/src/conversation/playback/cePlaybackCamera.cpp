@@ -87,10 +87,6 @@ void cePlaybackCamera::SetCameraTarget(ceTarget *target){
 	if(target != pCameraTarget){
 		
 		pCameraTarget = target;
-		
-		if(target){
-			target->AddReference();
-		}
 	}
 }
 
@@ -98,10 +94,6 @@ void cePlaybackCamera::SetLookAtTarget(ceTarget *target){
 	if(target != pLookAtTarget){
 		
 		pLookAtTarget = target;
-		
-		if(target){
-			target->AddReference();
-		}
 	}
 }
 

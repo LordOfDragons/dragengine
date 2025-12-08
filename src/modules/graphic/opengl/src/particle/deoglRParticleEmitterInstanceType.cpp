@@ -155,10 +155,6 @@ void deoglRParticleEmitterInstanceType::SetDynamicSkin(deoglRDynamicSkin *dynami
 	
 	pDynamicSkin = dynamicSkin;
 	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
-	
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
 }
@@ -170,10 +166,6 @@ void deoglRParticleEmitterInstanceType::SetUseSkin(deoglRSkin *skin){
 	
 	
 	pUseSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
 	
 	// update texture
 	if(pUseSkin && pUseSkin->GetTextureCount() > 0){

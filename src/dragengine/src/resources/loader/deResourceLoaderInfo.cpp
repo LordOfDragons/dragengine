@@ -66,8 +66,4 @@ void deResourceLoaderInfo::SetResource(deFileResource *resource){
 	
 	
 	pResource = resource;
-	
-	if(resource){
-		resource->AddReference();
-	}
 }

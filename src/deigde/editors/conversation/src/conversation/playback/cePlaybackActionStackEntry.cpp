@@ -69,10 +69,6 @@ void cePlaybackActionStackEntry::SetParentTopic(ceConversationTopic *topic){
 	
 	
 	pParentTopic = topic;
-	
-	if(topic){
-		topic->AddReference();
-	}
 }
 
 void cePlaybackActionStackEntry::SetParentAction(ceConversationAction *action){
@@ -92,10 +88,6 @@ void cePlaybackActionStackEntry::SetLoopCondition(ceConversationCondition *condi
 	
 	
 	pLoopCondition = condition;
-	
-	if(condition){
-		condition->AddReference();
-	}
 }
 
 void cePlaybackActionStackEntry::SetLooping(bool looping){

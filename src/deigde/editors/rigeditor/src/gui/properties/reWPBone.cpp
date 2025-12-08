@@ -441,10 +441,6 @@ void reWPBone::SetBone(reRigBone *bone){
 	
 	pBone = bone;
 	
-	if(bone){
-		bone->AddReference();
-	}
-	
 	UpdateBone();
 }
 

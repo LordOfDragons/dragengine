@@ -70,9 +70,6 @@ pNewCondition(NULL)
 	}
 	
 	pNewCondition = newCondition;
-	if(newCondition){
-		newCondition->AddReference();
-	}
 }
 
 ceUCAPChoiceOptionSetCondition::~ceUCAPChoiceOptionSetCondition(){

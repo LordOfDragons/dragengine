@@ -66,10 +66,6 @@ void dealWidgetImage::SetImage(dealImage *image){
 	
 	pImage = image;
 	
-	if(image){
-		image->AddReference();
-	}
-	
 	DirtyParentLayout();
 }
 

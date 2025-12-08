@@ -231,10 +231,6 @@ void debpColliderBone::SetDebugDrawer(deDebugDrawer *debugDrawer){
 	
 	
 	pDebugDrawer = debugDrawer;
-	
-	if(debugDrawer){
-		debugDrawer->AddReference();
-	}
 }
 
 void debpColliderBone::SetDDSShape(deDebugDrawerShape *shape){

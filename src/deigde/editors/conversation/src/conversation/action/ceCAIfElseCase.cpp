@@ -96,10 +96,6 @@ void ceCAIfElseCase::SetCondition(ceConversationCondition *condition){
 	
 	
 	pCondition = condition;
-	
-	if(condition){
-		condition->AddReference();
-	}
 }
 
 

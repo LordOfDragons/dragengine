@@ -129,10 +129,6 @@ void seLink::SetController(seController *controller){
 	
 	pController = controller;
 	
-	if(controller){
-		controller->AddReference();
-	}
-	
 	UpdateController();
 	
 	if(pSynthesizer){

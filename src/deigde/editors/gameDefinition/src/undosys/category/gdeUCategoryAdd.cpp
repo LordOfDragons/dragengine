@@ -53,9 +53,6 @@ pCategory(NULL)
 	SetShortInfo("Category add");
 	
 	pParent = parent;
-	if(parent){
-		parent->AddReference();
-	}
 	
 	pCategory = category;
 	category->AddReference();

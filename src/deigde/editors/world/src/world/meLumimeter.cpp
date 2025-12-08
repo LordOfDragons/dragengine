@@ -200,10 +200,6 @@ void meLumimeter::SetHostObject(meObject *object){
 	
 	pHostObject = object;
 	
-	if(object){
-		object->AddReference();
-	}
-	
 	pWorld->NotifyLumimeterChanged();
 }
 

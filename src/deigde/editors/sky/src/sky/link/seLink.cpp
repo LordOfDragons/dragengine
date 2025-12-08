@@ -95,10 +95,6 @@ void seLink::SetController(seController *controller){
 	
 	pController = controller;
 	
-	if(controller){
-		controller->AddReference();
-	}
-	
 	if(pSky){
 		pSky->NotifyLinkChanged(this);
 	}

@@ -261,10 +261,6 @@ void igdeGDClass::SetPreviewImage(deImage *image){
 	
 	
 	pPreviewImage = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
 void igdeGDClass::SetDefaultInheritPropertyPrefix(const decString &prefix){

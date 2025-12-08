@@ -59,9 +59,6 @@ public:
 	 * Reference is added if object is not nullptr.
 	 */
 	deTObjectReference(T *object) : pObject(object){
-		if(pObject){
-			pObject->AddReference();
-		}
 	}
 	
 	/**
@@ -70,9 +67,6 @@ public:
 	 * Reference is added if object in holder is not nullptr.
 	 */
 	deTObjectReference(const deTObjectReference &reference) : pObject(reference.pObject){
-		if(pObject){
-			pObject->AddReference();
-		}
 	}
 	
 	/**
@@ -245,10 +239,6 @@ public:
 		}
 		
 		pObject = object;
-		
-		if(object){
-			object->AddReference();
-		}
 		
 		return *this;
 	}

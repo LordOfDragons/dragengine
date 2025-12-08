@@ -78,10 +78,6 @@ void feViewFIImage::SetFont(feFont *font){
 	
 	pFont = font;
 	
-	if(font){
-		font->AddReference();
-	}
-	
 	ResizeCanvas();
 }
 

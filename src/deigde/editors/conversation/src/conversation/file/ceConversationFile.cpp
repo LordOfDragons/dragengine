@@ -178,10 +178,6 @@ void ceConversationFile::SetActiveTopic(ceConversationTopic *topic){
 	
 	pActiveTopic = topic;
 	
-	if(topic){
-		topic->AddReference();
-	}
-	
 	if(pConversation){
 		pConversation->NotifyActiveTopicChanged(this);
 	}

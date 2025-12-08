@@ -600,10 +600,6 @@ void deClassARLimit::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
 void deClassARLimit::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleLimit *rule){
@@ -626,9 +622,6 @@ void deClassARLimit::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRul
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
 		
 		nd.rule = rule;
 		rule->AddReference();

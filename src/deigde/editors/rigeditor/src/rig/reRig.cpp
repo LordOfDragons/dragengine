@@ -1143,10 +1143,6 @@ void reRig::SetRootBone(reRigBone *rootBone){
 		
 		pRootBone = rootBone;
 		
-		if(rootBone){
-			rootBone->AddReference();
-		}
-		
 		NotifyRigChanged();
 	}
 }

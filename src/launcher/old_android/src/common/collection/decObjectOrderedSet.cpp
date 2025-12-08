@@ -76,9 +76,6 @@ decObjectOrderedSet::decObjectOrderedSet(const decObjectOrderedSet &set){
 		for(pObjectCount=0; pObjectCount<count; pObjectCount++){
 			object = set.pObjects[pObjectCount];
 			pObjects[pObjectCount] = object;
-			if(object){
-				object->AddReference();
-			}
 		}
 	}
 }
@@ -145,9 +142,6 @@ void decObjectOrderedSet::Add(deObject *object){
 	}
 	
 	pObjects[pObjectCount] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
@@ -168,9 +162,6 @@ void decObjectOrderedSet::AddIfAbsent(deObject *object){
 	}
 	
 	pObjects[pObjectCount] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
@@ -196,9 +187,6 @@ void decObjectOrderedSet::Insert(deObject *object, int index){
 		pObjects[i] = pObjects[i - 1];
 	}
 	pObjects[index] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
@@ -309,9 +297,6 @@ decObjectOrderedSet decObjectOrderedSet::GetHead(int count) const{
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return set;
@@ -340,9 +325,6 @@ void decObjectOrderedSet::GetHead(decObjectOrderedSet &set, int count) const{
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 }
 
@@ -365,9 +347,6 @@ decObjectOrderedSet decObjectOrderedSet::GetTail(int count) const{
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[from + set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return set;
@@ -397,9 +376,6 @@ void decObjectOrderedSet::GetTail(decObjectOrderedSet &set, int count) const{
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[from + set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 }
 
@@ -422,9 +398,6 @@ decObjectOrderedSet decObjectOrderedSet::GetMiddle(int from, int to) const{
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[from + set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return set;
@@ -454,9 +427,6 @@ void decObjectOrderedSet::GetMiddle(decObjectOrderedSet &set, int from, int to) 
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[from + set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 }
 
@@ -487,9 +457,6 @@ decObjectOrderedSet decObjectOrderedSet::operator+(const decObjectOrderedSet &se
 	for(i=0; i<pObjectCount; i++){
 		object = pObjects[i];
 		nset.pObjects[i] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	for(i=0; i<set.pObjectCount; i++){
@@ -522,9 +489,6 @@ decObjectOrderedSet &decObjectOrderedSet::operator=(const decObjectOrderedSet &s
 	for(pObjectCount=0; pObjectCount<set.pObjectCount; pObjectCount++){
 		object = set.pObjects[pObjectCount];
 		pObjects[pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return *this;

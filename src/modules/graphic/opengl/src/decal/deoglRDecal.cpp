@@ -309,10 +309,6 @@ void deoglRDecal::SetSkin(deoglRSkin *skin){
 	
 	pSkin = skin;
 	
-	if(skin){
-		skin->AddReference();
-	}
-	
 	pDirtyUseTexture = true;
 	
 	InvalidateParamBlocks();
@@ -333,10 +329,6 @@ void deoglRDecal::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	
 	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
 	
 	pDirtyUseTexture = true;
 	

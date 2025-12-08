@@ -194,10 +194,6 @@ void igdeWDebugDrawerShape::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
 	
 	pEngDebugDrawer = debugDrawer;
 	
-	if(debugDrawer){
-		debugDrawer->AddReference();
-	}
-	
 	pUpdateDDShape();
 }
 

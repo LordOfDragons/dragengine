@@ -460,10 +460,6 @@ void seSource::SetActiveEffect(seEffect *effect){
 	
 	pActiveEffect = effect;
 	
-	if(effect){
-		effect->AddReference();
-	}
-	
 	seSynthesizer * const synthesizer = GetSynthesizer();
 	if(synthesizer){
 		synthesizer->NotifyActiveEffectChanged(this);

@@ -86,10 +86,6 @@ void igdeTriggerExpressionComponent::SetTarget(igdeTriggerTarget *target){
 	
 	
 	pTarget = target;
-	
-	if(target){
-		target->AddReference();
-	}
 }
 
 void igdeTriggerExpressionComponent::SetTargetListener(igdeTriggerListener *listener){
@@ -99,10 +95,6 @@ void igdeTriggerExpressionComponent::SetTargetListener(igdeTriggerListener *list
 	
 	
 	pTargetListener = listener;
-	
-	if(listener){
-		listener->AddReference();
-	}
 }
 
 void igdeTriggerExpressionComponent::LinkTargets(igdeTriggerTargetList &triggerTable, igdeTriggerListener *listener){

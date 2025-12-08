@@ -80,10 +80,6 @@ void deoglRVideoPlayer::SetVideo(deoglRVideo *video){
 	
 	
 	pVideo = video;
-	
-	if(video){
-		video->AddReference();
-	}
 }
 
 void deoglRVideoPlayer::SetCachedFrameTexture(deoglTexture *texture){
