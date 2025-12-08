@@ -68,9 +68,7 @@ void deClassEasyXML::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sXMLNatDat &nd = *((sXMLNatDat*)p_GetNativeData(myself));
 	
 	// prepare
-	nd.document = NULL;
-	
-	// create document
+		// create document
 	decXmlElementTag::Ref root = NULL;
 	
 	try{
@@ -80,17 +78,9 @@ void deClassEasyXML::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 		nd.document->AddElement(root);
 	}catch(const deException &e){
 		((deClassEasyXML*)GetOwnerClass())->GetDS().LogException(e);
-		if(nd.document){
-			nd.document->FreeReference();
-			nd.document = NULL;
-		}
 		throw;
 		
 	}catch(...){
-		if(nd.document){
-			nd.document->FreeReference();
-			nd.document = NULL;
-		}
 		throw;
 	}
 }
@@ -106,9 +96,7 @@ void deClassEasyXML::nfNewFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	deScriptingDragonScript &ds = ((deClassEasyXML*)GetOwnerClass())->GetDS();
 	
 	// prepare
-	nd.document = NULL;
-	
-	// check arguments
+		// check arguments
 	const char * const filename = rt->GetValue(0)->GetString();
 	if(!filename){
 		DSTHROW(dueNullPointer);
@@ -135,17 +123,11 @@ void deClassEasyXML::nfNewFile::RunFunction(dsRunTime *rt, dsValue *myself){
 		
 	}catch(const deException &e){
 		((deClassEasyXML*)GetOwnerClass())->GetDS().LogException(e);
-		if(nd.document){
-			nd.document->FreeReference();
-			nd.document = NULL;
-		}
+		
 		throw;
 		
 	}catch(...){
-		if(nd.document){
-			nd.document->FreeReference();
-			nd.document = NULL;
-		}
+		
 		throw;
 	}
 }
@@ -199,17 +181,11 @@ void deClassEasyXML::nfNewFile2::RunFunction(dsRunTime *rt, dsValue *myself){
 		
 	}catch(const deException &e){
 		((deClassEasyXML*)GetOwnerClass())->GetDS().LogException(e);
-		if(nd.document){
-			nd.document->FreeReference();
-			nd.document = NULL;
-		}
+		
 		throw;
 		
 	}catch(...){
-		if(nd.document){
-			nd.document->FreeReference();
-			nd.document = NULL;
-		}
+		
 		throw;
 	}
 }
@@ -226,10 +202,7 @@ void deClassEasyXML::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	sXMLNatDat &nd = *((sXMLNatDat*)p_GetNativeData(myself));
 	
-	if(nd.document){
-		nd.document->FreeReference();
-		nd.document = NULL;
-	}
+	
 }
 
 
