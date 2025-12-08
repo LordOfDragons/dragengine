@@ -64,7 +64,7 @@ public:
 	deSmokeEmitter *GetRootSmokeEmitter() const;
 	
 	/** \brief Create new smoke emitter. */
-	deSmokeEmitter *CreateSmokeEmitter();
+	deSmokeEmitter::Ref CreateSmokeEmitter();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

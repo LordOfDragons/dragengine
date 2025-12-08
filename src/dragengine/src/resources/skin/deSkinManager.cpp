@@ -94,11 +94,11 @@ deSkin *deSkinManager::GetSkinWith(deVirtualFileSystem *vfs, const char *filenam
 	return skin && !skin->GetOutdated() ? skin : NULL;
 }
 
-deSkin *deSkinManager::CreateSkin(const char *filename, deSkinBuilder &builder){
+deSkin::Ref deSkinManager::CreateSkin(const char *filename, deSkinBuilder &builder){
 	return CreateSkin(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deSkin *deSkinManager::CreateSkin(deVirtualFileSystem *vfs, const char *filename, deSkinBuilder &builder){
+deSkin::Ref deSkinManager::CreateSkin(deVirtualFileSystem *vfs, const char *filename, deSkinBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
@@ -136,11 +136,11 @@ deSkin *deSkinManager::CreateSkin(deVirtualFileSystem *vfs, const char *filename
 	return skin;
 }
 
-deSkin *deSkinManager::LoadSkin(const char *filename, const char *basePath){
+deSkin::Ref deSkinManager::LoadSkin(const char *filename, const char *basePath){
 	return LoadSkin(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
+deSkin::Ref deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
@@ -209,7 +209,7 @@ deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, 
 	return skin;
 }
 
-deSkin *deSkinManager::LoadDefault(){
+deSkin::Ref deSkinManager::LoadDefault(){
 	deSkin::Ref skin = NULL;
 	deSkin::Ref findSkin = NULL;
 	deSkinTexture * skinTex = NULL;

@@ -53,7 +53,7 @@ deLight *deLightManager::GetRootLight() const{
 	return (deLight*)pLights.GetRoot();
 }
 
-deLight *deLightManager::CreateLight(){
+deLight::Ref deLightManager::CreateLight(){
 	deLight::Ref light = NULL;
 	// create and add light
 	try{

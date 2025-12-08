@@ -64,7 +64,7 @@ public:
 	deForceField *GetRootForceField() const;
 	
 	/** \brief Create new force field. */
-	deForceField *CreateForceField();
+	deForceField::Ref CreateForceField();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

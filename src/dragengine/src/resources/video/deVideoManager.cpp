@@ -96,11 +96,11 @@ deVideo *deVideoManager::GetVideoWith(deVirtualFileSystem *vfs, const char *file
 	return video && !video->GetOutdated() ? video : NULL;
 }
 
-deVideo *deVideoManager::LoadVideo(const char *filename, const char *basePath, bool asynchron){
+deVideo::Ref deVideoManager::LoadVideo(const char *filename, const char *basePath, bool asynchron){
 	return LoadVideo(GetEngine()->GetVirtualFileSystem(), filename, basePath, asynchron);
 }
 
-deVideo *deVideoManager::LoadVideo(deVirtualFileSystem *vfs, const char *filename,
+deVideo::Ref deVideoManager::LoadVideo(deVirtualFileSystem *vfs, const char *filename,
 const char *basePath, bool asynchron){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
@@ -191,7 +191,7 @@ void deVideoManager::AddLoadedVideo(deVideo *video){
 
 
 
-deVideoDecoder *deVideoManager::CreateDecoder(deVideo *video){
+deVideoDecoder::Ref deVideoManager::CreateDecoder(deVideo *video){
 	if(!video || !video->GetVirtualFileSystem()){
 		DETHROW(deeInvalidParam);
 	}
@@ -252,7 +252,7 @@ deVideoDecoder *deVideoManager::CreateDecoder(deVideo *video){
 	return videoDecoder;
 }
 
-deVideoAudioDecoder *deVideoManager::CreateAudioDecoder(deVideo *video){
+deVideoAudioDecoder::Ref deVideoManager::CreateAudioDecoder(deVideo *video){
 	if(!video || !video->GetVirtualFileSystem()){
 		DETHROW(deeInvalidParam);
 	}

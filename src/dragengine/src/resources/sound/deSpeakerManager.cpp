@@ -68,7 +68,7 @@ deSpeaker *deSpeakerManager::GetRootSpeaker() const{
 	return (deSpeaker*)pSpeakers.GetRoot();
 }
 
-deSpeaker *deSpeakerManager::CreateSpeaker(){
+deSpeaker::Ref deSpeakerManager::CreateSpeaker(){
 	deSpeaker::Ref speaker = NULL;
 	
 	try{

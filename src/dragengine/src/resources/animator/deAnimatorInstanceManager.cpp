@@ -64,7 +64,7 @@ deAnimatorInstance *deAnimatorInstanceManager::GetRootAnimatorInstance() const{
 	return (deAnimatorInstance*)pInstances.GetRoot();
 }
 
-deAnimatorInstance *deAnimatorInstanceManager::CreateAnimatorInstance(){
+deAnimatorInstance::Ref deAnimatorInstanceManager::CreateAnimatorInstance(){
 	deAnimatorInstance::Ref instance = NULL;
 	
 	try{

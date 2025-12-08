@@ -72,10 +72,10 @@ public:
 	deArchive *GetArchiveWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Open archive from file relative to base path. */
-	deArchive *OpenArchive(const char *filename, const char *basePath);
+	deArchive::Ref OpenArchive(const char *filename, const char *basePath);
 	
 	/** \brief Open archive from file relative to base path. */
-	deArchive *OpenArchive(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
+	deArchive::Ref OpenArchive(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/** \brief Create archive container. */
 	deArchiveContainer *CreateContainer(const decPath &rootPath,

@@ -63,7 +63,7 @@ public:
 	deLight *GetRootLight() const;
 	
 	/** \brief Create new scene light. */
-	deLight *CreateLight();
+	deLight::Ref CreateLight();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

@@ -62,7 +62,7 @@ public:
 	deLumimeter *GetRootLumimeter() const;
 	
 	/** \brief Create new and empty lumimeter. */
-	deLumimeter *CreateLumimeter();
+	deLumimeter::Ref CreateLumimeter();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

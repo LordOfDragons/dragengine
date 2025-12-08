@@ -59,7 +59,7 @@ deCaptureCanvas *deCaptureCanvasManager::GetRootCaptureCanvas() const{
 	return (deCaptureCanvas*)pCaptureCanvas.GetRoot();
 }
 
-deCaptureCanvas *deCaptureCanvasManager::CreateCaptureCanvas(){
+deCaptureCanvas::Ref deCaptureCanvasManager::CreateCaptureCanvas(){
 	deCaptureCanvas::Ref captureCanvas = NULL;
 	
 	try{

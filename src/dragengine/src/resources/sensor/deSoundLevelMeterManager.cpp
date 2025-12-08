@@ -64,7 +64,7 @@ deSoundLevelMeter *deSoundLevelMeterManager::GetRootSoundLevelMeter() const{
 	return (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
 }
 
-deSoundLevelMeter *deSoundLevelMeterManager::CreateSoundLevelMeter(){
+deSoundLevelMeter::Ref deSoundLevelMeterManager::CreateSoundLevelMeter(){
 	deSoundLevelMeter::Ref soundLevelMeter = NULL;
 	
 	try{

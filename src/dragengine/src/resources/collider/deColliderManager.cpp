@@ -64,7 +64,7 @@ deCollider *deColliderManager::GetRootCollider() const{
 	return (deCollider*)pColliders.GetRoot();
 }
 
-deColliderVolume *deColliderManager::CreateColliderVolume(){
+deColliderVolume::Ref deColliderManager::CreateColliderVolume(){
 	deColliderVolume::Ref collider = NULL;
 	// create and add collider
 	try{

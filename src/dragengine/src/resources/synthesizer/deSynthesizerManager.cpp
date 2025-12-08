@@ -68,7 +68,7 @@ deSynthesizer *deSynthesizerManager::GetRootSynthesizer() const{
 	return (deSynthesizer*)pSynthesizers.GetRoot();
 }
 
-deSynthesizer *deSynthesizerManager::CreateSynthesizer(){
+deSynthesizer::Ref deSynthesizerManager::CreateSynthesizer(){
 	deSynthesizer::Ref synthesizer = NULL;
 	
 	try{

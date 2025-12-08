@@ -87,11 +87,11 @@ deFont *deFontManager::GetFontWith(deVirtualFileSystem *vfs, const char *filenam
 	return font && !font->GetOutdated() ? font : NULL;
 }
 
-deFont *deFontManager::CreateFont(const char *filename, deFontBuilder &builder){
+deFont::Ref deFontManager::CreateFont(const char *filename, deFontBuilder &builder){
 	return CreateFont(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deFont *deFontManager::CreateFont(deVirtualFileSystem *vfs, const char *filename,
+deFont::Ref deFontManager::CreateFont(deVirtualFileSystem *vfs, const char *filename,
 deFontBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
@@ -132,11 +132,11 @@ deFontBuilder &builder){
 	return font;
 }
 
-deFont *deFontManager::LoadFont(const char *filename, const char *basePath){
+deFont::Ref deFontManager::LoadFont(const char *filename, const char *basePath){
 	return LoadFont(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deFont *deFontManager::LoadFont(deVirtualFileSystem *vfs, const char *filename,
+deFont::Ref deFontManager::LoadFont(deVirtualFileSystem *vfs, const char *filename,
 const char *basePath){
 	decBaseFileReader::Ref fileReader = NULL;
 	deFont::Ref font = NULL;
@@ -203,7 +203,7 @@ const char *basePath){
 #define FONT_DEBUG_IMAGE "<debug_font_image>"
 #include "../../debug/debugfont.c"
 
-deFont *deFontManager::LoadDebugFont(){
+deFont::Ref deFontManager::LoadDebugFont(){
 	deFont::Ref font = (deFont*)pFonts.GetWithFilename(GetEngine()->GetVirtualFileSystem(), FONT_DEBUG);
 	if(font){
 		if(!font->GetPeerGraphic()){

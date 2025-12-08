@@ -69,7 +69,7 @@ deParticleEmitterInstance *deParticleEmitterInstanceManager::GetRootInstance() c
 	return (deParticleEmitterInstance*)pInstances.GetRoot();
 }
 
-deParticleEmitterInstance *deParticleEmitterInstanceManager::CreateInstance(){
+deParticleEmitterInstance::Ref deParticleEmitterInstanceManager::CreateInstance(){
 	deParticleEmitterInstance::Ref instance = NULL;
 	
 	try{

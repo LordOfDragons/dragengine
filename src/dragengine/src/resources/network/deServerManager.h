@@ -63,7 +63,7 @@ public:
 	deServer *GetRootServer() const;
 	
 	/** \brief Create server. */
-	deServer *CreateServer();
+	deServer::Ref CreateServer();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

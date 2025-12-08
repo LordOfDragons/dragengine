@@ -68,7 +68,7 @@ deVideoPlayer *deVideoPlayerManager::GetRootVideoPlayer() const{
 	return (deVideoPlayer*)pVideoPlayers.GetRoot();
 }
 
-deVideoPlayer *deVideoPlayerManager::CreateVideoPlayer(){
+deVideoPlayer::Ref deVideoPlayerManager::CreateVideoPlayer(){
 	deVideoPlayer::Ref videoPlayer = NULL;
 	
 	try{

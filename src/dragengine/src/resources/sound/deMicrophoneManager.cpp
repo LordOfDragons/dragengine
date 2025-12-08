@@ -66,7 +66,7 @@ deMicrophone *deMicrophoneManager::GetRootMicrophone() const{
 	return (deMicrophone*)pMicrophones.GetRoot();
 }
 
-deMicrophone *deMicrophoneManager::CreateMicrophone(){
+deMicrophone::Ref deMicrophoneManager::CreateMicrophone(){
 	deMicrophone::Ref microphone = NULL;
 	
 	try{

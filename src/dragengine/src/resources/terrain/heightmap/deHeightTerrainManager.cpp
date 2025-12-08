@@ -71,7 +71,7 @@ deHeightTerrain *deHeightTerrainManager::GetRootHeightTerrain() const{
 	return (deHeightTerrain*)pTerrains.GetRoot();
 }
 
-deHeightTerrain *deHeightTerrainManager::CreateHeightTerrain(float sectorSize, int heightImageSize){
+deHeightTerrain::Ref deHeightTerrainManager::CreateHeightTerrain(float sectorSize, int heightImageSize){
 	if(sectorSize < 0.001f || heightImageSize < 2){
 		DETHROW(deeInvalidParam);
 	}

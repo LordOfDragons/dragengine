@@ -64,7 +64,7 @@ deForceField *deForceFieldManager::GetRootForceField() const{
 	return (deForceField*)pFields.GetRoot();
 }
 
-deForceField *deForceFieldManager::CreateForceField(){
+deForceField::Ref deForceFieldManager::CreateForceField(){
 	deForceField::Ref field = NULL;
 	
 	try{

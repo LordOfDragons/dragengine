@@ -62,7 +62,7 @@ public:
 	deNetworkState *GetRootNetworkState() const;
 	
 	/** \brief Create network state. */
-	deNetworkState *CreateState(bool readOnly);
+	deNetworkState::Ref CreateState(bool readOnly);
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

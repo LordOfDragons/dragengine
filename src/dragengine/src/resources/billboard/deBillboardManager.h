@@ -62,7 +62,7 @@ public:
 	deBillboard *GetRootBillboard() const;
 	
 	/** \brief Create new billboard. */
-	deBillboard *CreateBillboard();
+	deBillboard::Ref CreateBillboard();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

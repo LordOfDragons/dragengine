@@ -65,7 +65,7 @@ deDynamicSkin *deDynamicSkinManager::GetRootDynamicSkin() const{
 	return (deDynamicSkin*)pSkins.GetRoot();
 }
 
-deDynamicSkin *deDynamicSkinManager::CreateDynamicSkin(){
+deDynamicSkin::Ref deDynamicSkinManager::CreateDynamicSkin(){
 	deDynamicSkin::Ref dynamicSkin = NULL;
 	
 	try{

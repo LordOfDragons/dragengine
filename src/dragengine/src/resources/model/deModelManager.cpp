@@ -82,11 +82,11 @@ deModel *deModelManager::GetModelWith(deVirtualFileSystem *vfs, const char *file
 	return model && !model->GetOutdated() ? model : NULL;
 }
 
-deModel *deModelManager::CreateModel(const char *filename, deModelBuilder &builder){
+deModel::Ref deModelManager::CreateModel(const char *filename, deModelBuilder &builder){
 	return CreateModel(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deModel *deModelManager::CreateModel(deVirtualFileSystem *vfs, const char *filename,
+deModel::Ref deModelManager::CreateModel(deVirtualFileSystem *vfs, const char *filename,
 deModelBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
@@ -132,11 +132,11 @@ deModelBuilder &builder){
 	return model;
 }
 
-deModel *deModelManager::LoadModel(const char *filename, const char *basePath){
+deModel::Ref deModelManager::LoadModel(const char *filename, const char *basePath){
 	return LoadModel(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
+deModel::Ref deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}

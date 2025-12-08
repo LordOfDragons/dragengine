@@ -77,11 +77,11 @@ deArchive *deArchiveManager::GetRootArchive() const{
 	return (deArchive*)pArchives.GetRoot();
 }
 
-deArchive *deArchiveManager::OpenArchive(const char *filename, const char *basePath){
+deArchive::Ref deArchiveManager::OpenArchive(const char *filename, const char *basePath){
 	return OpenArchive(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deArchive *deArchiveManager::OpenArchive(deVirtualFileSystem *vfs, const char *filename,
+deArchive::Ref deArchiveManager::OpenArchive(deVirtualFileSystem *vfs, const char *filename,
 const char *basePath){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);

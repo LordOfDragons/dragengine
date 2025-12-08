@@ -67,7 +67,7 @@ deSmokeEmitter *deSmokeEmitterManager::GetRootSmokeEmitter() const{
 	return (deSmokeEmitter*)pSmokeEmitters.GetRoot();
 }
 
-deSmokeEmitter *deSmokeEmitterManager::CreateSmokeEmitter(){
+deSmokeEmitter::Ref deSmokeEmitterManager::CreateSmokeEmitter(){
 	deSmokeEmitter::Ref smokeEmitter = NULL;
 	
 	try{

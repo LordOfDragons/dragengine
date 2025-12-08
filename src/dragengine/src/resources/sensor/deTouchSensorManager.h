@@ -64,7 +64,7 @@ public:
 	deTouchSensor *GetRootTouchSensor() const;
 	
 	/** \brief Create new touch sensor. */
-	deTouchSensor *CreateTouchSensor();
+	deTouchSensor::Ref CreateTouchSensor();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

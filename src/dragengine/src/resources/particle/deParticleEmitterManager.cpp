@@ -67,7 +67,7 @@ deParticleEmitter *deParticleEmitterManager::GetRootParticleEmitter() const{
 	return (deParticleEmitter*)pParticleEmitters.GetRoot();
 }
 
-deParticleEmitter *deParticleEmitterManager::CreateParticleEmitter(){
+deParticleEmitter::Ref deParticleEmitterManager::CreateParticleEmitter(){
 	deParticleEmitter::Ref psys = NULL;
 	
 	try{

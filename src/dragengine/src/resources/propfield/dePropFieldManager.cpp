@@ -69,7 +69,7 @@ dePropField *dePropFieldManager::GetRootPropField() const{
 	return (dePropField*)pFields.GetRoot();
 }
 
-dePropField *dePropFieldManager::CreatePropField(){
+dePropField::Ref dePropFieldManager::CreatePropField(){
 	dePropField::Ref field = NULL;
 	
 	try{

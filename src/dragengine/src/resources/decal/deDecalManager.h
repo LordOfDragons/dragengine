@@ -63,7 +63,7 @@ public:
 	deDecal *GetRootDecal() const;
 	
 	/** \brief Create new and empty decal. */
-	deDecal *CreateDecal();
+	deDecal::Ref CreateDecal();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

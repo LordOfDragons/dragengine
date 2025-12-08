@@ -66,7 +66,7 @@ deAnimator *deAnimatorManager::GetRootAnimator() const{
 	return (deAnimator*)pAnimators.GetRoot();
 }
 
-deAnimator *deAnimatorManager::CreateAnimator(){
+deAnimator::Ref deAnimatorManager::CreateAnimator(){
 	deAnimator::Ref animator = NULL;
 	// load skin
 	try{

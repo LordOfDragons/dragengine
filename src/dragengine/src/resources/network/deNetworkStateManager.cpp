@@ -68,7 +68,7 @@ deNetworkState *deNetworkStateManager::GetRootNetworkState() const{
 	return (deNetworkState*)pStates.GetRoot();
 }
 
-deNetworkState *deNetworkStateManager::CreateState(bool readOnly){
+deNetworkState::Ref deNetworkStateManager::CreateState(bool readOnly){
 	deNetworkState::Ref state = NULL;
 	
 	try{

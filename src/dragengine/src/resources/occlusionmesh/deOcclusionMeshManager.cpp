@@ -81,12 +81,12 @@ deVirtualFileSystem *vfs, const char *filename) const{
 	return occmesh && !occmesh->GetOutdated() ? occmesh : NULL;
 }
 
-deOcclusionMesh *deOcclusionMeshManager::CreateOcclusionMesh(
+deOcclusionMesh::Ref deOcclusionMeshManager::CreateOcclusionMesh(
 const char *filename, deOcclusionMeshBuilder &builder){
 	return CreateOcclusionMesh(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deOcclusionMesh *deOcclusionMeshManager::CreateOcclusionMesh(deVirtualFileSystem *vfs,
+deOcclusionMesh::Ref deOcclusionMeshManager::CreateOcclusionMesh(deVirtualFileSystem *vfs,
 const char *filename, deOcclusionMeshBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
@@ -129,11 +129,11 @@ const char *filename, deOcclusionMeshBuilder &builder){
 	return occmesh;
 }
 
-deOcclusionMesh *deOcclusionMeshManager::LoadOcclusionMesh(const char *filename, const char *basePath){
+deOcclusionMesh::Ref deOcclusionMeshManager::LoadOcclusionMesh(const char *filename, const char *basePath){
 	return LoadOcclusionMesh(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deOcclusionMesh *deOcclusionMeshManager::LoadOcclusionMesh(deVirtualFileSystem *vfs,
+deOcclusionMesh::Ref deOcclusionMeshManager::LoadOcclusionMesh(deVirtualFileSystem *vfs,
 const char *filename, const char *basePath){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);

@@ -53,7 +53,7 @@ deSky *deSkyManager::GetRootSky() const{
 	return (deSky*)pSkies.GetRoot();
 }
 
-deSky *deSkyManager::CreateSky(){
+deSky::Ref deSkyManager::CreateSky(){
 	deSky::Ref sky = NULL;
 	// create and add sky
 	try{

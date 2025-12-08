@@ -61,7 +61,7 @@ deBillboard *deBillboardManager::GetRootBillboard() const{
 	return (deBillboard*)pBillboards.GetRoot();
 }
 
-deBillboard *deBillboardManager::CreateBillboard(){
+deBillboard::Ref deBillboardManager::CreateBillboard(){
 	deBillboard::Ref billboard = NULL;
 	
 	try{

@@ -65,7 +65,7 @@ deNavigationBlocker *deNavigationBlockerManager::GetRootNavigationBlocker() cons
 	return (deNavigationBlocker*)pBlockers.GetRoot();
 }
 
-deNavigationBlocker *deNavigationBlockerManager::CreateNavigationBlocker(){
+deNavigationBlocker::Ref deNavigationBlockerManager::CreateNavigationBlocker(){
 	deNavigationBlocker::Ref blocker = NULL;
 	
 	try{

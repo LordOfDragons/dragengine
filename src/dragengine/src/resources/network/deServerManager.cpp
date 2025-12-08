@@ -67,7 +67,7 @@ deServer *deServerManager::GetRootServer() const{
 	return (deServer*)pServers.GetRoot();
 }
 
-deServer *deServerManager::CreateServer(){
+deServer::Ref deServerManager::CreateServer(){
 	deServer::Ref server = NULL;
 	
 	try{

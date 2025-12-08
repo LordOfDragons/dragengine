@@ -92,11 +92,11 @@ deSound *deSoundManager::GetSoundWith(deVirtualFileSystem *vfs, const char *file
 	return sound && !sound->GetOutdated() ? sound : NULL;
 }
 
-deSound *deSoundManager::LoadSound(const char *filename, const char *basePath, bool asynchron){
+deSound::Ref deSoundManager::LoadSound(const char *filename, const char *basePath, bool asynchron){
 	return LoadSound(GetEngine()->GetVirtualFileSystem(), filename, basePath, asynchron);
 }
 
-deSound *deSoundManager::LoadSound(deVirtualFileSystem *vfs, const char *filename,
+deSound::Ref deSoundManager::LoadSound(deVirtualFileSystem *vfs, const char *filename,
 const char *basePath, bool asynchron){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
@@ -200,7 +200,7 @@ void deSoundManager::AddLoadedSound(deSound *sound){
 
 
 
-deSoundDecoder *deSoundManager::CreateDecoder(deSound *sound){
+deSoundDecoder::Ref deSoundManager::CreateDecoder(deSound *sound){
 	if(!sound || !sound->GetVirtualFileSystem()){
 		DETHROW(deeInvalidParam);
 	}

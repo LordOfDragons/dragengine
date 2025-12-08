@@ -73,11 +73,11 @@ deRig *deRigManager::GetRigWith(deVirtualFileSystem *vfs, const char *filename) 
 	return rig && !rig->GetOutdated() ? rig : NULL;
 }
 
-deRig *deRigManager::CreateRig(const char *filename, deRigBuilder &builder){
+deRig::Ref deRigManager::CreateRig(const char *filename, deRigBuilder &builder){
 	return CreateRig(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deRig *deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filename, deRigBuilder &builder){
+deRig::Ref deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filename, deRigBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}

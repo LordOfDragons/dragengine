@@ -64,7 +64,7 @@ deDecal *deDecalManager::GetRootDecal() const{
 	return (deDecal*)pDecals.GetRoot();
 }
 
-deDecal *deDecalManager::CreateDecal(){
+deDecal::Ref deDecalManager::CreateDecal(){
 	deDecal::Ref decal = NULL;
 	
 	try{

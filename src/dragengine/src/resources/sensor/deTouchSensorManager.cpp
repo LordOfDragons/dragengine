@@ -62,7 +62,7 @@ deTouchSensor *deTouchSensorManager::GetRootTouchSensor() const{
 	return (deTouchSensor*)pTouchSensors.GetRoot();
 }
 
-deTouchSensor *deTouchSensorManager::CreateTouchSensor(){
+deTouchSensor::Ref deTouchSensorManager::CreateTouchSensor(){
 	deTouchSensor::Ref touchSensor = NULL;
 	
 	try{

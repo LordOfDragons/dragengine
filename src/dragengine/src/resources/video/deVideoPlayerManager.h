@@ -62,7 +62,7 @@ public:
 	deVideoPlayer *GetRootVideoPlayer() const;
 	
 	/** \brief Create new video player. */
-	deVideoPlayer *CreateVideoPlayer();
+	deVideoPlayer::Ref CreateVideoPlayer();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

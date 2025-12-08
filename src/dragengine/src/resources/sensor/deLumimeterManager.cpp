@@ -61,7 +61,7 @@ deLumimeter *deLumimeterManager::GetRootLumimeter() const{
 	return (deLumimeter*)pLumimeters.GetRoot();
 }
 
-deLumimeter *deLumimeterManager::CreateLumimeter(){
+deLumimeter::Ref deLumimeterManager::CreateLumimeter(){
 	deLumimeter::Ref lumimeter = NULL;
 	
 	try{

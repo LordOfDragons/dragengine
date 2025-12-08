@@ -78,11 +78,11 @@ deAnimation *deAnimationManager::GetAnimationWith(deVirtualFileSystem *vfs, cons
 	return animation && !animation->GetOutdated() ? animation : NULL;
 }
 
-deAnimation *deAnimationManager::CreateAnimation(const char *filename, deAnimationBuilder &builder){
+deAnimation::Ref deAnimationManager::CreateAnimation(const char *filename, deAnimationBuilder &builder){
 	return CreateAnimation(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deAnimation *deAnimationManager::CreateAnimation(deVirtualFileSystem *vfs,
+deAnimation::Ref deAnimationManager::CreateAnimation(deVirtualFileSystem *vfs,
 const char *filename, deAnimationBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);

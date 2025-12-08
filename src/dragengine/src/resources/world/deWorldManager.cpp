@@ -64,7 +64,7 @@ deWorld *deWorldManager::GetRootWorld() const{
 	return (deWorld*)pWorlds.GetRoot();
 }
 
-deWorld *deWorldManager::CreateWorld(){
+deWorld::Ref deWorldManager::CreateWorld(){
 	deWorld::Ref world = NULL;
 	
 	try{

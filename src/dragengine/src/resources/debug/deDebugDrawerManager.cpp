@@ -60,7 +60,7 @@ deDebugDrawer *deDebugDrawerManager::GetRootDebugDrawer() const{
 	return (deDebugDrawer*)pDebugDrawers.GetRoot();
 }
 
-deDebugDrawer *deDebugDrawerManager::CreateDebugDrawer(){
+deDebugDrawer::Ref deDebugDrawerManager::CreateDebugDrawer(){
 	deDebugDrawer::Ref debugDrawer = NULL;
 	// create and add debug drawer
 	try{

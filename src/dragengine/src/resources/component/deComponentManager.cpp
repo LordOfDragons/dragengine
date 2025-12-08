@@ -67,7 +67,7 @@ deComponent *deComponentManager::GetRootComponent() const{
 	return (deComponent*)pComponents.GetRoot();
 }
 
-deComponent *deComponentManager::CreateComponent(deModel *model, deSkin *skin){
+deComponent::Ref deComponentManager::CreateComponent(deModel *model, deSkin *skin){
 	deComponent::Ref component = NULL;
 	
 	try{

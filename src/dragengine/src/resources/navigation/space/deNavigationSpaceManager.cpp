@@ -65,7 +65,7 @@ deNavigationSpace *deNavigationSpaceManager::GetRootNavigationSpace() const{
 	return (deNavigationSpace*)pNavSpaces.GetRoot();
 }
 
-deNavigationSpace *deNavigationSpaceManager::CreateNavigationSpace(){
+deNavigationSpace::Ref deNavigationSpaceManager::CreateNavigationSpace(){
 	deNavigationSpace::Ref navspace = NULL;
 	
 	try{

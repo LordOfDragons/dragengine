@@ -67,7 +67,7 @@ deConnection *deConnectionManager::GetRootConnection() const{
 	return (deConnection*)pConnections.GetRoot();
 }
 
-deConnection *deConnectionManager::CreateConnection(){
+deConnection::Ref deConnectionManager::CreateConnection(){
 	deConnection::Ref connection = NULL;
 	
 	try{

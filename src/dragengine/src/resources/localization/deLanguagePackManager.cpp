@@ -79,12 +79,12 @@ const char *filename) const{
 	return langpack && !langpack->GetOutdated() ? langpack : NULL;
 }
 
-deLanguagePack *deLanguagePackManager::CreateLanguagePack(
+deLanguagePack::Ref deLanguagePackManager::CreateLanguagePack(
 const char *filename, deLanguagePackBuilder &builder){
 	return CreateLanguagePack(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deLanguagePack *deLanguagePackManager::CreateLanguagePack(deVirtualFileSystem *vfs,
+deLanguagePack::Ref deLanguagePackManager::CreateLanguagePack(deVirtualFileSystem *vfs,
 const char *filename, deLanguagePackBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
@@ -116,12 +116,12 @@ const char *filename, deLanguagePackBuilder &builder){
 	return langPack;
 }
 
-deLanguagePack *deLanguagePackManager::LoadLanguagePack(
+deLanguagePack::Ref deLanguagePackManager::LoadLanguagePack(
 const char *filename, const char *basePath){
 	return LoadLanguagePack(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deLanguagePack *deLanguagePackManager::LoadLanguagePack(deVirtualFileSystem *vfs,
+deLanguagePack::Ref deLanguagePackManager::LoadLanguagePack(deVirtualFileSystem *vfs,
 const char *filename, const char *basePath){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);

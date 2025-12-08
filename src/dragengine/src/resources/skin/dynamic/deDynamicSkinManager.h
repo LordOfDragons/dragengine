@@ -63,7 +63,7 @@ public:
 	deDynamicSkin *GetRootDynamicSkin() const;
 	
 	/** \brief Create new dynamic skin. */
-	deDynamicSkin *CreateDynamicSkin();
+	deDynamicSkin::Ref CreateDynamicSkin();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

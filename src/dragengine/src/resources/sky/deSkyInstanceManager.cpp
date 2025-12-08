@@ -64,7 +64,7 @@ deSkyInstance *deSkyInstanceManager::GetRootSkyInstance() const{
 	return (deSkyInstance*)pInstances.GetRoot();
 }
 
-deSkyInstance *deSkyInstanceManager::CreateSkyInstance(){
+deSkyInstance::Ref deSkyInstanceManager::CreateSkyInstance(){
 	deSkyInstance::Ref instance = NULL;
 	
 	try{

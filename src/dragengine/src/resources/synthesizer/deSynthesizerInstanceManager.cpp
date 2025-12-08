@@ -66,7 +66,7 @@ deSynthesizerInstance *deSynthesizerInstanceManager::GetRootSynthesizerInstance(
 	return (deSynthesizerInstance*)pInstances.GetRoot();
 }
 
-deSynthesizerInstance *deSynthesizerInstanceManager::CreateSynthesizerInstance(){
+deSynthesizerInstance::Ref deSynthesizerInstanceManager::CreateSynthesizerInstance(){
 	deSynthesizerInstance::Ref instance = NULL;
 	
 	try{

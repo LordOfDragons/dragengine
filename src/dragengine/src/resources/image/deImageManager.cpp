@@ -85,7 +85,7 @@ deImage *deImageManager::GetImageWith(deVirtualFileSystem *vfs, const char *file
 	return image && !image->GetOutdated() ? image : NULL;
 }
 
-deImage *deImageManager::CreateImage(int width, int height, int depth, int componentCount, int bitCount){
+deImage::Ref deImageManager::CreateImage(int width, int height, int depth, int componentCount, int bitCount){
 	deImage::Ref image = NULL;
 	
 	try{
@@ -177,7 +177,7 @@ deImage::Ref deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *fil
 	return image;
 }
 
-deImage *deImageManager::LoadDefault(){
+deImage::Ref deImageManager::LoadDefault(){
 	deImage::Ref image = NULL, *findImage;
 	decXpmImage *xpmImage = NULL;
 	

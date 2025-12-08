@@ -63,7 +63,7 @@ public:
 	deParticleEmitter *GetRootParticleEmitter() const;
 	
 	/** \brief Create new particle emitter. */
-	deParticleEmitter *CreateParticleEmitter();
+	deParticleEmitter::Ref CreateParticleEmitter();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

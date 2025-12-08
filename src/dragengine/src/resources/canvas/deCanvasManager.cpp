@@ -66,7 +66,7 @@ deCanvas *deCanvasManager::GetRootCanvas() const{
 	return (deCanvas*)pCanvas.GetRoot();
 }
 
-deCanvasImage *deCanvasManager::CreateCanvasImage(){
+deCanvasImage::Ref deCanvasManager::CreateCanvasImage(){
 	deCanvasImage::Ref canvas = NULL;
 	
 	try{

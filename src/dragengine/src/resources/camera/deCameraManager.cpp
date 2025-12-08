@@ -60,7 +60,7 @@ deCamera *deCameraManager::GetRootCamera() const{
 	return (deCamera*)pCameras.GetRoot();
 }
 
-deCamera *deCameraManager::CreateCamera(){
+deCamera::Ref deCameraManager::CreateCamera(){
 	deCamera::Ref camera = NULL;
 	
 	// create and add camera

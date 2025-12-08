@@ -61,7 +61,7 @@ deEnvMapProbe *deEnvMapProbeManager::GetRootEnvMapProbe() const{
 	return (deEnvMapProbe*)pEnvMapProbes.GetRoot();
 }
 
-deEnvMapProbe *deEnvMapProbeManager::CreateEnvMapProbe(){
+deEnvMapProbe::Ref deEnvMapProbeManager::CreateEnvMapProbe(){
 	deEnvMapProbe::Ref envMapProbe = NULL;
 	
 	try{

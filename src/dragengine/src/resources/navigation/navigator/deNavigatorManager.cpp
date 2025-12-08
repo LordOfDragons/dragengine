@@ -65,7 +65,7 @@ deNavigator *deNavigatorManager::GetRootNavigator() const{
 	return (deNavigator*)pNavigators.GetRoot();
 }
 
-deNavigator *deNavigatorManager::CreateNavigator(){
+deNavigator::Ref deNavigatorManager::CreateNavigator(){
 	deNavigator::Ref navigator = NULL;
 	
 	try{

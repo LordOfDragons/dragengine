@@ -69,17 +69,17 @@ public:
 	deLanguagePack *GetLanguagePackWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create language pack using builder. */
-	deLanguagePack *CreateLanguagePack(const char *filename, deLanguagePackBuilder &builder);
+	deLanguagePack::Ref CreateLanguagePack(const char *filename, deLanguagePackBuilder &builder);
 	
 	/** \brief Create language pack using builder. */
-	deLanguagePack *CreateLanguagePack(deVirtualFileSystem *vfs,
+	deLanguagePack::Ref CreateLanguagePack(deVirtualFileSystem *vfs,
 		const char *filename, deLanguagePackBuilder &builder);
 	
 	/** \brief Load language pack relative to base path. */
-	deLanguagePack *LoadLanguagePack(const char *filename, const char *basePath = "/");
+	deLanguagePack::Ref LoadLanguagePack(const char *filename, const char *basePath = "/");
 	
 	/** \brief Load language pack relative to base path. */
-	deLanguagePack *LoadLanguagePack(deVirtualFileSystem *vfs,
+	deLanguagePack::Ref LoadLanguagePack(deVirtualFileSystem *vfs,
 		const char *filename, const char *basePath = "/");
 	
 	/**
