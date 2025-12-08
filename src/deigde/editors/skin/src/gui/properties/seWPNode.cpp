@@ -759,7 +759,7 @@ pPreventUpdate(false)
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPNodeListener(*this);
+	pListener.TakeOver(new seWPNodeListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));

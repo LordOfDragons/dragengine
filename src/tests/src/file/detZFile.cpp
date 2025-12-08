@@ -43,7 +43,7 @@ void detZFile::Prepare(){
 	pMemoryFileReader = NULL;
 	pZReader = NULL;
 	
-	pMemoryFileCompressed = new decMemoryFile("compressed");
+	pMemoryFileCompressed.TakeOver(new decMemoryFile("compressed"));
 	pTestBuffer = new char[16000];
 }
 
@@ -326,8 +326,8 @@ void detZFile::pOutputTestBufferToFile(int size){
 
 
 void detZFile::pCreateZWriter(){
-	pMemoryFileWriter = new decMemoryFileWriter(pMemoryFileCompressed, false);
-	pZWriter = new decZFileWriter(pMemoryFileWriter);
+	pMemoryFileWriter.TakeOver(new decMemoryFileWriter(pMemoryFileCompressed, false));
+	pZWriter.TakeOver(new decZFileWriter(pMemoryFileWriter));
 	pMemoryFileWriter = NULL;
 }
 
@@ -341,8 +341,8 @@ void detZFile::pDestroyZWriter(){
 
 
 void detZFile::pCreateZReader(){
-	pMemoryFileReader = new decMemoryFileReader(pMemoryFileCompressed);
-	pZReader = new decZFileReader(pMemoryFileReader);
+	pMemoryFileReader.TakeOver(new decMemoryFileReader(pMemoryFileCompressed));
+	pZReader.TakeOver(new decZFileReader(pMemoryFileReader));
 	pMemoryFileReader = NULL;
 }
 

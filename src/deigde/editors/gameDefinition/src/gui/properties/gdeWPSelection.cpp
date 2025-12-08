@@ -153,7 +153,7 @@ pModelTreeObjects(NULL)
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new gdeWPSelectionListener(*this);
+	pListener.TakeOver(new gdeWPSelectionListener(*this));
 	
 	pSwitcher.TakeOver(new igdeSwitcher(env));
 	AddChild(pSwitcher, igdeContainerSplitted::eaSide);

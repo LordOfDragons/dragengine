@@ -105,7 +105,7 @@ pSynthesizer(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new seWindowMainListener(*this);
+	pListener.TakeOver(new seWindowMainListener(*this));
 	
 	pConfiguration.LoadConfiguration();
 	

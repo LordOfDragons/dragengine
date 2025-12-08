@@ -55,18 +55,18 @@ pTBOMaterial(NULL),
 pTBOMaterial2(NULL)
 {
 	try{
-		pTBONodeBox = new deoglDynamicTBOFloat32(renderThread, 4);
-		pTBOIndex = new deoglDynamicTBOUInt16(renderThread, 2);
-		pTBOFace = new deoglDynamicTBOUInt16(renderThread, 4);
-		pTBOVertex = new deoglDynamicTBOFloat32(renderThread, 4);
-		pTBOTexCoord = new deoglDynamicTBOFloat16(renderThread, 2);
-		pTBOMaterial = new deoglDynamicTBOUInt32(renderThread, 4);
-		pTBOMaterial2 = new deoglDynamicTBOFloat16(renderThread, 4);
+		pTBONodeBox.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
+		pTBOIndex.TakeOver(new deoglDynamicTBOUInt16(renderThread, 2));
+		pTBOFace.TakeOver(new deoglDynamicTBOUInt16(renderThread, 4));
+		pTBOVertex.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
+		pTBOTexCoord.TakeOver(new deoglDynamicTBOFloat16(renderThread, 2));
+		pTBOMaterial.TakeOver(new deoglDynamicTBOUInt32(renderThread, 4));
+		pTBOMaterial2.TakeOver(new deoglDynamicTBOFloat16(renderThread, 4));
 		
-		pSharedTBONode = new deoglDynamicTBOShared(pTBOIndex, 1, pTBONodeBox, 2);
-		pSharedTBOFace = new deoglDynamicTBOShared(pTBOFace, 1, pTBOTexCoord, 3);
-		pSharedTBOVertex = new deoglDynamicTBOShared(pTBOVertex, 1);
-		pSharedTBOMaterial = new deoglDynamicTBOShared(pTBOMaterial, 1, pTBOMaterial2, 3);
+		pSharedTBONode.TakeOver(new deoglDynamicTBOShared(pTBOIndex, 1, pTBONodeBox, 2));
+		pSharedTBOFace.TakeOver(new deoglDynamicTBOShared(pTBOFace, 1, pTBOTexCoord, 3));
+		pSharedTBOVertex.TakeOver(new deoglDynamicTBOShared(pTBOVertex, 1));
+		pSharedTBOMaterial.TakeOver(new deoglDynamicTBOShared(pTBOMaterial, 1, pTBOMaterial2, 3));
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -585,7 +585,7 @@ pSAnimation(nullptr)
 	igdeContainer::Ref content, groupBox, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new saeWPSAnimListener(*this);
+	pListener.TakeOver(new saeWPSAnimListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);

@@ -806,7 +806,7 @@ void deoglRenderPlan::pStartFindContent(const deoglRenderPlanMasked *mask){
 	pOcclusionTest->RemoveAllInputData();
 	
 	if(!pRenderThread.GetChoices().GetUseComputeRenderTask()){
-		pTaskFindContent = new deoglRPTFindContent(*this);
+		pTaskFindContent.TakeOver(new deoglRPTFindContent(*this));
 		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskFindContent);
 	}
 	

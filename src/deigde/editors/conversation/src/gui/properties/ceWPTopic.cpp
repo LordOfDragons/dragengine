@@ -764,7 +764,7 @@ pPanelCTrigger(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox, formLine;
 	
-	pListener = new ceWPTopicListener(*this);
+	pListener.TakeOver(new ceWPTopicListener(*this));
 	
 	
 	// conversation

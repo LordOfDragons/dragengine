@@ -327,7 +327,7 @@ pActivePanel(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox;
 	
-	pListener = new seWPSourceListener(*this);
+	pListener.TakeOver(new seWPSourceListener(*this));
 	
 	
 	pActionSourceCopy.TakeOver(new cActionSourceCopy(*this));

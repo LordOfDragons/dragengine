@@ -99,7 +99,7 @@ igdeEditorWindow(module)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new feWindowMainListener(*this);
+	pListener.TakeOver(new feWindowMainListener(*this));
 	pLoadSaveSystem = new feLoadSaveSystem(this);
 	pConfiguration = new feConfiguration(*this);
 	pClipboard = new feClipboard;
@@ -114,10 +114,10 @@ igdeEditorWindow(module)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(260)));
 	AddChild(splitted);
 	
-	pWndProps = new feWindowProperties(*this);
+	pWndProps.TakeOver(new feWindowProperties(*this));
 	splitted->AddChild(pWndProps, igdeContainerSplitted::eaSide);
 	
-	pViewFontImage = new feViewFontImage(*this);
+	pViewFontImage.TakeOver(new feViewFontImage(*this));
 	splitted->AddChild(pViewFontImage, igdeContainerSplitted::eaCenter);
 	
 	CreateNewFont();

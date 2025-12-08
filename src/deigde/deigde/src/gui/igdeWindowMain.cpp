@@ -1892,7 +1892,7 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 	
 	decDiskFileReader::Ref reader(decDiskFileReader::Ref::NewWith(path.GetPathNative()));
 	
-	pIGDEGameDefinition = new igdeGameDefinition(pEnvironmentIGDE);
+	pIGDEGameDefinition.TakeOver(new igdeGameDefinition(pEnvironmentIGDE));
 	pIGDEGameDefinition->SetFilename(path.GetPathNative());
 	pIGDEGameDefinition->SetBasePath(pConfiguration.GetPathShares());
 	

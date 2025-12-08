@@ -480,7 +480,7 @@ pAnimator(nullptr)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPControllerListener(*this);
+	pListener.TakeOver(new aeWPControllerListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));

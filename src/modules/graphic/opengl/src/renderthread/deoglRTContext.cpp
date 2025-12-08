@@ -1109,9 +1109,9 @@ void deoglRTContext::pCreateContext(){
 	pQueueCompute = &pDevice->GetComputeQueue();
 	pQueueTransfer = &pDevice->GetTransferQueue();
 	
-	pCommandPoolGraphic = pQueueGraphic->CreateCommandPool();
-	pCommandPoolCompute = pQueueCompute->CreateCommandPool();
-	pCommandPoolTransfer = pQueueTransfer->CreateCommandPool();
+	pCommandPoolGraphic.TakeOver(pQueueGraphic->CreateCommandPool());
+	pCommandPoolCompute.TakeOver(pQueueCompute->CreateCommandPool());
+	pCommandPoolTransfer.TakeOver(pQueueTransfer->CreateCommandPool());
 #endif // BACKEND_OPENGL
 }
 

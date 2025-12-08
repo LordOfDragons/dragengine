@@ -75,7 +75,7 @@ pActivePanel(NULL)
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPShapeListener(*this);
+	pListener.TakeOver(new reWPShapeListener(*this));
 	
 	pSwitcher.TakeOver(new igdeSwitcher(env));
 	AddChild(pSwitcher);

@@ -260,7 +260,7 @@ pMaxLines(500)
 	
 	
 	// finish
-	pListener = new projPanelRemoteClientListener(*this);
+	pListener.TakeOver(new projPanelRemoteClientListener(*this));
 	client->AddListener(pListener);
 	
 	preventUpdate = false;

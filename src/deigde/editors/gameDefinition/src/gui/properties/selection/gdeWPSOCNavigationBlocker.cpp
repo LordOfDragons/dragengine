@@ -369,7 +369,7 @@ pGameDefinition(NULL)
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
-	pListener = new gdeWPSOCNavigationBlockerListener(*this);
+	pListener.TakeOver(new gdeWPSOCNavigationBlockerListener(*this));
 	
 	helper.GroupBox(content, groupBox, "Object Class Navigation Blocker:");
 	

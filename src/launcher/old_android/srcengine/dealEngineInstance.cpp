@@ -520,7 +520,7 @@ bool dealEngineInstance::OpenDelga(int fileDescriptor, long fileOffset, long fil
 	try{
 		fileReader = new dealFDFileReader("DELGA", fileDescriptor, fileOffset, fileLength);
 		
-		pDelga = new dealVFSZipArchive(*this, fileReader, pathRoot);
+		pDelga.TakeOver(new dealVFSZipArchive(*this, fileReader, pathRoot));
 		fileReader->FreeReference();
 		fileReader = NULL;
 		
@@ -959,7 +959,7 @@ void dealEngineInstance::pCreateLogger(const char *logfile){
 				fileWriter = diskDir->OpenFileForWriting(filePath);
 			}
 			
-			pLogger = new deLoggerFile(fileWriter);
+			pLogger.TakeOver(new deLoggerFile(fileWriter));
 			fileWriter->FreeReference();
 			
 			diskDir->FreeReference();

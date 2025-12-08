@@ -177,7 +177,7 @@ pActiveGameDefinition(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new gdeWindowMainListener(*this);
+	pListener.TakeOver(new gdeWindowMainListener(*this));
 	pLoadSaveSystem = new gdeLoadSaveSystem(*this);
 	pConfiguration = new gdeConfiguration(*this);
 	
@@ -191,10 +191,10 @@ pActiveGameDefinition(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(350)));
 	AddChild(splitted);
 	
-	pWindowProperties = new gdeWindowProperties(*this);
+	pWindowProperties.TakeOver(new gdeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewActiveObject = new gdeViewActiveObject(*this);
+	pViewActiveObject.TakeOver(new gdeViewActiveObject(*this));
 	splitted->AddChild(pViewActiveObject, igdeContainerSplitted::eaCenter);
 	
 	CreateNewGameDefinition();

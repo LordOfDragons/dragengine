@@ -46,7 +46,7 @@ igdeWPUndoHistory(environment),
 pListener(NULL),
 pConversation(NULL)
 {
-	pListener = new ceWPUndoHistoryListener(*this);
+	pListener.TakeOver(new ceWPUndoHistoryListener(*this));
 }
 
 ceWPUndoHistory::~ceWPUndoHistory(){

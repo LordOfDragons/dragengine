@@ -98,7 +98,7 @@ pSAnimation(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new saeWindowMainListener(*this);
+	pListener.TakeOver(new saeWindowMainListener(*this));
 	pLoadSaveSystem = new saeLoadSaveSystem(*this);
 	pConfiguration = new saeConfiguration(*this);
 	
@@ -112,10 +112,10 @@ pSAnimation(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	AddChild(splitted);
 	
-	pWindowProperties = new saeWindowProperties(*this);
+	pWindowProperties.TakeOver(new saeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewSAnimation = new saeViewSAnimation(*this);
+	pViewSAnimation.TakeOver(new saeViewSAnimation(*this));
 	splitted->AddChild(pViewSAnimation, igdeContainerSplitted::eaCenter);
 	
 	CreateNewSAnimation();

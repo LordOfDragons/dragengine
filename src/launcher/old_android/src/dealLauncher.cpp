@@ -666,7 +666,7 @@ void dealLauncher::LaunchGame(){
 		return;
 	}
 	
-	pGameData = new dealGameData(*this, pObjUriIntentData);
+	pGameData.TakeOver(new dealGameData(*this, pObjUriIntentData));
 	
 	pState = esGameStart;
 }
@@ -697,7 +697,7 @@ void dealLauncher::InitWindow(){
 	pDisplay.Init();
 	
 	if(!pDialogMain){
-		pDialogMain = new dealDialogMain(pDisplay);
+		pDialogMain.TakeOver(new dealDialogMain(pDisplay));
 		pDisplay.SetDialog(pDialogMain);
 	}
 }

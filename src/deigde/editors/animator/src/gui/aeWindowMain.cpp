@@ -124,7 +124,7 @@ pAnimator(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new aeWindowMainListener(*this);
+	pListener.TakeOver(new aeWindowMainListener(*this));
 	pLoadSaveSystem = new aeLoadSaveSystem(this);
 	pConfiguration = new aeConfiguration(*this);
 	
@@ -138,10 +138,10 @@ pAnimator(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties = new aeWindowProperties(*this);
+	pWindowProperties.TakeOver(new aeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pView3D = new aeView3D(*this);
+	pView3D.TakeOver(new aeView3D(*this));
 	splitted->AddChild(pView3D, igdeContainerSplitted::eaCenter);
 	
 	CreateNewAnimator();

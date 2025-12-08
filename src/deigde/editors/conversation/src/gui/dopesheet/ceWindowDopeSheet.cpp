@@ -345,7 +345,7 @@ pVAPreview(NULL)
 	igdeContainer::Ref panel, panel2, panel3, panel4, panel5;
 	int i;
 	
-	pListener = new ceWindowDopeSheetListener(*this);
+	pListener.TakeOver(new ceWindowDopeSheetListener(*this));
 	
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	

@@ -76,7 +76,7 @@ pLogger(NULL),
 pPendingAddedLogs(0),
 pPendingClearLogs(false)
 {
-	pListener = new igdeWindowLoggerListener(*this);
+	pListener.TakeOver(new igdeWindowLoggerListener(*this));
 	
 	SetPosition(decPoint(10, 50));
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));

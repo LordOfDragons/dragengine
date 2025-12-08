@@ -93,7 +93,7 @@ pEmitter(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new peeWindowMainListener(*this);
+	pListener.TakeOver(new peeWindowMainListener(*this));
 	pLoadSaveSystem = new peeLoadSaveSystem(*this);
 	pConfiguration = new peeConfiguration(*this);
 	
@@ -107,17 +107,17 @@ pEmitter(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(360)));
 	AddChild(splitted);
 	
-	pWindowProperties = new peeWindowProperties(*this);
+	pWindowProperties.TakeOver(new peeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	igdeContainerSplitted::Ref splitted2(igdeContainerSplitted::Ref::NewWith(
 		env, igdeContainerSplitted::espBottom, igdeApplication::app().DisplayScaled(260)));
 	splitted->AddChild(splitted2, igdeContainerSplitted::eaCenter);
 	
-	pWindowCurves = new peeWindowCurves(*this);
+	pWindowCurves.TakeOver(new peeWindowCurves(*this));
 	splitted2->AddChild(pWindowCurves, igdeContainerSplitted::eaSide);
 	
-	pViewEmitter = new peeViewEmitter(*this);
+	pViewEmitter.TakeOver(new peeViewEmitter(*this));
 	splitted2->AddChild(pViewEmitter, igdeContainerSplitted::eaCenter);
 	
 	CreateNewEmitter();

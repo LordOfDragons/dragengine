@@ -46,7 +46,7 @@ pSkin(skin),
 pRSkin(nullptr)
 {
 	try{
-		pRSkin = new deoglRSkin(ogl.GetRenderThread(), *this, skin);
+		pRSkin.TakeOver(new deoglRSkin(ogl.GetRenderThread(), *this, skin));
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -67,7 +67,7 @@ void deoglSkin::RecreateRSkin(){
 		pRSkin = nullptr;
 	}
 
-	pRSkin = new deoglRSkin(pOgl.GetRenderThread(), *this, pSkin);
+	pRSkin.TakeOver(new deoglRSkin(pOgl.GetRenderThread(), *this, pSkin));
 }
 
 

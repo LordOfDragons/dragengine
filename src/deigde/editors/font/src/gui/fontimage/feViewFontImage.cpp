@@ -103,7 +103,7 @@ pListener(NULL),
 pFont(NULL),
 pViewImage(NULL)
 {
-	pListener = new feViewFontImageListener(*this);
+	pListener.TakeOver(new feViewFontImageListener(*this));
 	
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	
@@ -136,7 +136,7 @@ pViewImage(NULL)
 	pSBVertical->AddListener(scrollView);
 	AddChild(pSBVertical, igdeContainerBorder::eaRight);
 	
-	pViewImage = new feViewFIImage(windowMain);
+	pViewImage.TakeOver(new feViewFIImage(windowMain));
 	AddChild(pViewImage, igdeContainerBorder::eaCenter);
 }
 

@@ -586,7 +586,7 @@ pViewMode(evmPreview)
 	igdeContainer::Ref groupBox, form, frameLine;
 	
 	
-	pListener = new meWPBrowserListener(*this);
+	pListener.TakeOver(new meWPBrowserListener(*this));
 	
 	
 	pActionSetClass.TakeOver(new cActionSetClass(*this));

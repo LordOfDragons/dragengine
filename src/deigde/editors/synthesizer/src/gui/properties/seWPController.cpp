@@ -384,7 +384,7 @@ pSynthesizer(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new seWPControllerListener(*this);
+	pListener.TakeOver(new seWPControllerListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));

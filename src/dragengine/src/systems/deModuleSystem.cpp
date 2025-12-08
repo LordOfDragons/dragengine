@@ -854,7 +854,7 @@ void deModuleSystem::pDetectModulesIn(const char *basePath, const char *director
 				
 				// try loading module. use an own try-catch to continue loading other modules in case this one fails badly
 				try{
-					module = new deLibraryModule(this, modulePath.GetPathNative());
+					module.TakeOver(new deLibraryModule(this, modulePath.GetPathNative()));
 					
 					// load module
 					module->LoadModule();

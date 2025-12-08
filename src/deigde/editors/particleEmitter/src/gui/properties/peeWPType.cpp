@@ -769,7 +769,7 @@ pPreventUpdate(false)
 	igdeContainer::Ref content, groupBox, form, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new peeWPTypeListener(*this);
+	pListener.TakeOver(new peeWPTypeListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);

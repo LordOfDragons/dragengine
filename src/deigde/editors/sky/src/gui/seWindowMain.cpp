@@ -94,7 +94,7 @@ pSky(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new seWindowMainListener(*this);
+	pListener.TakeOver(new seWindowMainListener(*this));
 	pLoadSaveSystem = new seLoadSaveSystem(*this);
 	pConfiguration = new seConfiguration(*this);
 	
@@ -108,17 +108,17 @@ pSky(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	AddChild(splitted);
 	
-	pWindowProperties = new seWindowProperties(*this);
+	pWindowProperties.TakeOver(new seWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	igdeContainerSplitted::Ref splitted2(igdeContainerSplitted::Ref::NewWith(
 		env, igdeContainerSplitted::espBottom, igdeApplication::app().DisplayScaled(260)));
 	splitted->AddChild(splitted2, igdeContainerSplitted::eaCenter);
 	
-	pWindowCurves = new seWindowCurves(*this);
+	pWindowCurves.TakeOver(new seWindowCurves(*this));
 	splitted2->AddChild(pWindowCurves, igdeContainerSplitted::eaSide);
 	
-	pViewSky = new seViewSky(*this);
+	pViewSky.TakeOver(new seViewSky(*this));
 	splitted2->AddChild(pViewSky, igdeContainerSplitted::eaCenter);
 	
 	CreateNewSky();

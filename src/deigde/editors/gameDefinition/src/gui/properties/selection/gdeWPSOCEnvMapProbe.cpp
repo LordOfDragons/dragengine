@@ -342,7 +342,7 @@ pGameDefinition(NULL)
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
-	pListener = new gdeWPSOCEnvMapProbeListener(*this);
+	pListener.TakeOver(new gdeWPSOCEnvMapProbeListener(*this));
 	
 	helper.GroupBox(content, groupBox, "Object Class Environment Map Probe:");
 	helper.EditVector(groupBox, "Position:", "Position relative to object class",

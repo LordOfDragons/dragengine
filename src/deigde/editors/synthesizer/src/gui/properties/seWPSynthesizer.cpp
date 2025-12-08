@@ -287,7 +287,7 @@ pPreventUpdate(false)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new seWPSynthesizerListener(*this);
+	pListener.TakeOver(new seWPSynthesizerListener(*this));
 	
 	
 	pActionPlay.TakeOver(new cActionPlay(*this));

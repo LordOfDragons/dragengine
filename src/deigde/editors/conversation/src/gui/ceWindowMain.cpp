@@ -180,7 +180,7 @@ pRecentFilesLangPack(*this)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new ceWindowMainListener(*this);
+	pListener.TakeOver(new ceWindowMainListener(*this));
 	pLoadSaveSystem = new ceLoadSaveSystem(*this);
 	pConfiguration = new ceConfiguration(*this);
 	
@@ -194,17 +194,17 @@ pRecentFilesLangPack(*this)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties = new ceWindowProperties(*this);
+	pWindowProperties.TakeOver(new ceWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(
 		env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5));
 	splitted->AddChild(panel, igdeContainerSplitted::eaCenter);
 	
-	pViewConversation = new ceViewConversation(*this);
+	pViewConversation.TakeOver(new ceViewConversation(*this));
 	panel->AddChild(pViewConversation);
 	
-	pWindowDopeSheet = new ceWindowDopeSheet(*this);
+	pWindowDopeSheet.TakeOver(new ceWindowDopeSheet(*this));
 	panel->AddChild(pWindowDopeSheet);
 	
 	CreateNewConversation();

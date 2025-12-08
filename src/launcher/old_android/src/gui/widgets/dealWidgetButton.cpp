@@ -297,8 +297,8 @@ void dealWidgetButton::pBuildContent(){
 	dealDisplay &display = GetDisplay();
 	
 	// background images
-	pBgImageNormal = new dealWidgetBorderImage(display);
-	pBgImagePressed = new dealWidgetBorderImage(display);
+	pBgImageNormal.TakeOver(new dealWidgetBorderImage(display));
+	pBgImagePressed.TakeOver(new dealWidgetBorderImage(display));
 	
 	// content
 	pImage = new dealWidgetImage(display);

@@ -110,7 +110,7 @@ pPanelUndoHistory(nullptr)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new projWindowMainListener(*this);
+	pListener.TakeOver(new projWindowMainListener(*this));
 	pConfiguration = new projConfiguration(*this);
 	
 	pConfiguration->LoadConfiguration();
@@ -122,13 +122,13 @@ pPanelUndoHistory(nullptr)
 	pTabPanels.TakeOver(new igdeTabBook(env));
 	AddChild(pTabPanels);
 	
-	pPanelProfiles = new projPanelProfiles(*this);
+	pPanelProfiles.TakeOver(new projPanelProfiles(*this));
 	pTabPanels->AddChild(pPanelProfiles, "Profiles");
 	
-	pPanelTestRun = new projPanelTestRun(*this);
+	pPanelTestRun.TakeOver(new projPanelTestRun(*this));
 	pTabPanels->AddChild(pPanelTestRun, "Test-Run");
 	
-	pPanelUndoHistory = new projPanelUndoHistory(env);
+	pPanelUndoHistory.TakeOver(new projPanelUndoHistory(env));
 	pTabPanels->AddChild(pPanelUndoHistory, "Undo History");
 	
 	// load game project

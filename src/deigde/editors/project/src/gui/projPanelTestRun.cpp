@@ -259,7 +259,7 @@ pMaxLines(500)
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new projPanelTestRunListener(*this);
+	pListener.TakeOver(new projPanelTestRunListener(*this));
 	
 	
 	// create actions

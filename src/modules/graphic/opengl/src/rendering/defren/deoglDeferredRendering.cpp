@@ -1497,7 +1497,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 	/*
 	const GLenum buffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
 	
-	pFBOLuminance = new deoglFramebuffer(pRenderThread, false);
+	pFBOLuminance.TakeOver(new deoglFramebuffer(pRenderThread, false));
 	pRenderThread.GetFramebuffer().Activate(pFBOLuminance);
 	pFBOLuminance->AttachDepthTexture(pTextureLuminanceDepth);
 	pFBOLuminance->AttachColorArrayTexture(0, pTextureLuminance);
@@ -1505,7 +1505,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 	OGL_CHECK(pRenderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 	pFBOLuminance->Verify();
 	
-	pFBOLuminanceNormal = new deoglFramebuffer(pRenderThread, false);
+	pFBOLuminanceNormal.TakeOver(new deoglFramebuffer(pRenderThread, false));
 	pRenderThread.GetFramebuffer().Activate(pFBOLuminanceNormal);
 	pFBOLuminanceNormal->AttachDepthTexture(pTextureLuminanceDepth);
 	pFBOLuminanceNormal->AttachColorArrayTexture(0, pTextureLuminance);

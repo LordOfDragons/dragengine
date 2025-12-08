@@ -420,7 +420,7 @@ pSkin(NULL)
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPDynamicSkinListener(*this);
+	pListener.TakeOver(new seWPDynamicSkinListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));

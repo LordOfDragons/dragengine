@@ -123,7 +123,7 @@ pRig(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new reWindowMainListener(*this);
+	pListener.TakeOver(new reWindowMainListener(*this));
 	pLoadSaveSystem = new reLoadSaveSystem(*this);
 	pConfiguration = new reConfiguration(*this);
 	pClipboard = new reClipboard;
@@ -138,10 +138,10 @@ pRig(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	AddChild(splitted);
 	
-	pWindowProperties = new reWindowProperties(*this);
+	pWindowProperties.TakeOver(new reWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pView3D = new reView3D(*this);
+	pView3D.TakeOver(new reView3D(*this));
 	splitted->AddChild(pView3D, igdeContainerSplitted::eaCenter);
 	
 	CreateNewRig();

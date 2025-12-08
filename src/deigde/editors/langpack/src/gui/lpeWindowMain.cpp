@@ -108,10 +108,10 @@ pLangPack(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(320)));
 	AddChild(splitted);
 	
-	pWindowProperties = new lpeWindowProperties(*this);
+	pWindowProperties.TakeOver(new lpeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewLangPack = new lpeViewLangPack(*this);
+	pViewLangPack.TakeOver(new lpeViewLangPack(*this));
 	splitted->AddChild(pViewLangPack, igdeContainerSplitted::eaCenter);
 	
 	CreateNewLangPack();

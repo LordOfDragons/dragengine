@@ -50,7 +50,7 @@ pRSky(NULL),
 pDirtyParameters(true),
 pUpdateTracker(0)
 {
-	pRSky = new deoglRSky(pOgl.GetRenderThread());
+	pRSky.TakeOver(new deoglRSky(pOgl.GetRenderThread()));
 }
 
 deoglSky::~deoglSky(){

@@ -122,7 +122,7 @@ pSkin(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new seWindowMainListener(*this);
+	pListener.TakeOver(new seWindowMainListener(*this));
 	pLoadSaveSystem = new seLoadSaveSystem(*this);
 	pConfiguration = new seConfiguration(*this);
 	
@@ -136,16 +136,16 @@ pSkin(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties = new seWindowProperties(*this);
+	pWindowProperties.TakeOver(new seWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	pSwitcherViews.TakeOver(new igdeTabBook(env));
 	splitted->AddChild(pSwitcherViews, igdeContainerSplitted::eaCenter);
 	
-	pViewSkin = new seViewSkin(*this);
+	pViewSkin.TakeOver(new seViewSkin(*this));
 	pSwitcherViews->AddChild(pViewSkin, "Skin Preview");
 	
-	pViewConstructed = new seViewConstructed(*this);
+	pViewConstructed.TakeOver(new seViewConstructed(*this));
 	pSwitcherViews->AddChild(pViewConstructed, "Constructed Channel");
 	
 	CreateNewSkin();

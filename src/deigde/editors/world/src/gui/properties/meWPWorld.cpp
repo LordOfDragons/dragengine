@@ -619,7 +619,7 @@ pWorld(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new meWPWorldListener(*this);
+	pListener.TakeOver(new meWPWorldListener(*this));
 	
 	
 	pActionPFTTypeAdd.TakeOver(new cActionPFTTypeAdd(*this));

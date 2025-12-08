@@ -73,7 +73,7 @@ igdeEditableEntity(environment)
 	try{
 		pGlyphSelection = new feFontGlyphSelection(this);
 		
-		pFontImage = new feFontImage(GetEngine());
+		pFontImage.TakeOver(new feFontImage(GetEngine()));
 		pFontImage->SetParentFont(this);
 		
 		SetChanged(false);

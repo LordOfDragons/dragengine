@@ -56,7 +56,7 @@ pActions(NULL)
 	SetText("Player Choice");
 	
 	try{
-		pActions = new ceWPTTIMAPlayerChoiceActions(windowMain, conversation, action->GetActions());
+		pActions.TakeOver(new ceWPTTIMAPlayerChoiceActions(windowMain, conversation, action->GetActions()));
 		AddChild(pActions);
 		
 	}catch(const deException &){

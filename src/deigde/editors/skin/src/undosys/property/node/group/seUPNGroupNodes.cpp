@@ -114,7 +114,7 @@ pNodes(NULL)
 		}
 		
 		// create node group
-		pNodeGroup = new sePropertyNodeGroup(parentGroup->GetEngine());
+		pNodeGroup.TakeOver(new sePropertyNodeGroup(parentGroup->GetEngine()));
 		decPoint rounded(minBounds.Round());
 		pNodeGroup->SetPosition(decPoint3(rounded.x, rounded.y, parentGroup->GetPosition().z));
 		

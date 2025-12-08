@@ -47,7 +47,7 @@ pLODIndex(lodIndex),
 pRLOD(NULL)
 {
 	try{
-		pRLOD = new deoglRComponentLOD(*component.GetRComponent(), lodIndex);
+		pRLOD.TakeOver(new deoglRComponentLOD(*component.GetRComponent(), lodIndex));
 		
 	}catch(const deException &){
 		pCleanUp();
