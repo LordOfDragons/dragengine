@@ -187,7 +187,7 @@ void deoglSkinStateConstructedNode::Render(deoglSkinState &state, const deoglRen
 		pMaskRenderTarget->SetSize(size);
 		
 	}else{
-		pMaskRenderTarget.TakeOver(new deoglRenderTarget(state.GetRenderThread(), size, 1, 8));
+		pMaskRenderTarget.TakeOverWithstate.GetRenderThread(), size, 1, 8);
 	}
 }
 

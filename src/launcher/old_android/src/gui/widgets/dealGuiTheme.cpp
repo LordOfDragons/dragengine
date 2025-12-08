@@ -74,23 +74,23 @@ pOptionBoxImageSelectedColorize(1.0f, 1.0f, 1.0f)
 {
 	SetWidgetTextFont(display.GetDefaultFont());
 	
-	pButtonBackgroundImage.TakeOver(new dealImage(display, "guitheme/button_normal.tga"));
+	pButtonBackgroundImage.TakeOverWithdisplay, "guitheme/button_normal.tga");
 	pButtonBackgroundImageBorder[0] = 4;
 	pButtonBackgroundImageBorder[1] = 4;
 	pButtonBackgroundImageBorder[2] = 4;
 	pButtonBackgroundImageBorder[3] = 4;
 	
-	pButtonPressedBackgroundImage.TakeOver(new dealImage(display, "guitheme/button_pressed.tga"));
+	pButtonPressedBackgroundImage.TakeOverWithdisplay, "guitheme/button_pressed.tga");
 	pButtonPressedBackgroundImageBorder[0] = 4;
 	pButtonPressedBackgroundImageBorder[1] = 4;
 	pButtonPressedBackgroundImageBorder[2] = 4;
 	pButtonPressedBackgroundImageBorder[3] = 4;
 	
-	pCheckBoxImageUnchecked.TakeOver(new dealImage(display, "guitheme/checkbox_unchecked.tga"));
-	pCheckBoxImageChecked.TakeOver(new dealImage(display, "guitheme/checkbox_checked.tga"));
+	pCheckBoxImageUnchecked.TakeOverWithdisplay, "guitheme/checkbox_unchecked.tga");
+	pCheckBoxImageChecked.TakeOverWithdisplay, "guitheme/checkbox_checked.tga");
 	
-	pOptionBoxImageDeselected.TakeOver(new dealImage(display, "guitheme/optionbox_deselected.tga"));
-	pOptionBoxImageSelected.TakeOver(new dealImage(display, "guitheme/optionbox_selected.tga"));
+	pOptionBoxImageDeselected.TakeOverWithdisplay, "guitheme/optionbox_deselected.tga");
+	pOptionBoxImageSelected.TakeOverWithdisplay, "guitheme/optionbox_selected.tga");
 }
 
 dealGuiTheme::dealGuiTheme(const dealGuiTheme &copy) :

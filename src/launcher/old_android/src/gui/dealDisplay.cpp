@@ -224,7 +224,7 @@ void dealDisplay::Init(){
 	
 	// create content widget
 	if(!pContent){
-		pContent.TakeOver(new dealWidgetLayout(*this));
+		pContent.TakeOverWith*this);
 		pContent->SetSize(decPoint(pWidth, pHeight));
 		pContent->SetBackgroundColor(decColor());
 	}
@@ -391,12 +391,12 @@ void dealDisplay::pCleanUp(){
 }
 
 void dealDisplay::pLoadDefaultAssets(){
-	pFontDefault.TakeOver(new dealFont(*this, "fonts/nimbus_sans_30.xml"));
+	pFontDefault.TakeOverWith*this, "fonts/nimbus_sans_30.xml");
 	//pFontDefault = new dealFont( *this, "fonts/nimbus_sans_30_bold.xml" );
 	//pFontDefault = new dealFont( *this, "fonts/nimbus_sans_30_border.xml" );
 	pFontSizeDefault = (int)((float)decMath::min(pWidth, pHeight) / 15.0f);
 	
-	pDefaultGuiTheme.TakeOver(new dealGuiTheme(*this));
+	pDefaultGuiTheme.TakeOverWith*this);
 }
 
 void dealDisplay::pCreateShapesVBO(){
@@ -444,7 +444,7 @@ void dealDisplay::pCreateShapesVBO(){
 }
 
 void dealDisplay::pCreateShapeShader(){
-	pShaderShape.TakeOver(new dealShader(*this));
+	pShaderShape.TakeOverWith*this);
 	pShaderShape->CompileVertexProgramAsset("shaders/shape/vertex.glsl");
 	pShaderShape->CompileFragmentProgramAsset("shaders/shape/fragment.glsl");
 	pShaderShape->BindAttributeLocation("inPosition", 0);
@@ -460,7 +460,7 @@ void dealDisplay::pCreateShapeShader(){
 }
 
 void dealDisplay::pCreateShapeTexShader(){
-	pShaderShapeTex.TakeOver(new dealShader(*this));
+	pShaderShapeTex.TakeOverWith*this);
 	pShaderShapeTex->CompileVertexProgramAsset("shaders/shapetex/vertex.glsl");
 	pShaderShapeTex->CompileFragmentProgramAsset("shaders/shapetex/fragment.glsl");
 	pShaderShapeTex->BindAttributeLocation("inPosition", 0);

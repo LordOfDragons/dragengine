@@ -177,7 +177,7 @@ pActiveGameDefinition(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOver(new gdeWindowMainListener(*this));
+	pListener.TakeOverWith*this);
 	pLoadSaveSystem = new gdeLoadSaveSystem(*this);
 	pConfiguration = new gdeConfiguration(*this);
 	
@@ -191,10 +191,10 @@ pActiveGameDefinition(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(350)));
 	AddChild(splitted);
 	
-	pWindowProperties.TakeOver(new gdeWindowProperties(*this));
+	pWindowProperties.TakeOverWith*this);
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewActiveObject.TakeOver(new gdeViewActiveObject(*this));
+	pViewActiveObject.TakeOverWith*this);
 	splitted->AddChild(pViewActiveObject, igdeContainerSplitted::eaCenter);
 	
 	CreateNewGameDefinition();
@@ -710,8 +710,8 @@ void gdeWindowMain::pCreateActions(){
 	pActionGDOpenProject.TakeOver(new cActionGameDefOpenProject(*this));
 	pActionGDSave.TakeOver(new cActionGameDefSave(*this));
 	pActionGDSaveAs.TakeOver(new cActionGameDefSaveAs(*this));
-	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
-	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
+	pActionEditUndo.TakeOverWithGetEnvironment());
+	pActionEditRedo.TakeOverWithGetEnvironment());
 	pActionEditCut.TakeOver(new cActionEditCut(*this));
 	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
 	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
@@ -932,7 +932,7 @@ void gdeWindowMain::pCreateActions(){
 void gdeWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile.TakeOverWithGetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionGDNew);
 	helper.ToolBarButton(pTBFile, pActionGDOpenProject);
@@ -944,7 +944,7 @@ void gdeWindowMain::pCreateToolBarFile(){
 void gdeWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit.TakeOverWithGetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -968,15 +968,15 @@ void gdeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Game-Definition", deInputEvent::ekcG));
+	cascade.TakeOverWithenv, "Game-Definition", deInputEvent::ekcG);
 	pCreateMenuGameDef(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade.TakeOverWithenv, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcV));
+	cascade.TakeOverWithenv, "View", deInputEvent::ekcV);
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

@@ -445,7 +445,7 @@ pVLayer(NULL),
 pUnitsToPixel(igdeApplication::app().DisplayScaled(100.0f)),
 pPixelToUnits(1.0f / pUnitsToPixel)
 {
-	pListener.TakeOver(new meWindowVegetationListener(*this));
+	pListener.TakeOverWith*this);
 	AddListener(new cBoardListener(*this));
 }
 

@@ -115,7 +115,7 @@ pRequiresUpdateEverySync(false),
 pLLSyncWorld(this)
 {
 	try{
-		pRComponent.TakeOver(new deoglRComponent(ogl.GetRenderThread()));
+		pRComponent.TakeOverWithogl.GetRenderThread());
 		pSkinStateController = new deoglSkinStateController;
 		
 		pCreateLODs();

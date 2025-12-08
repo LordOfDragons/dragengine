@@ -145,7 +145,7 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pEngColCollider = engine->GetColliderManager()->CreateColliderVolume();
 		
 		// create height terrain
-		pHeightTerrain.TakeOver(new meHeightTerrain(*this));
+		pHeightTerrain.TakeOverWith*this);
 		
 		meHeightTerrainSector * const htsector = new meHeightTerrainSector(engine, decPoint());
 		pHeightTerrain->AddSector(htsector);
@@ -161,7 +161,7 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pSky->SetWorld(pDEWorld);
 		
 		// background object
-		pBgObject.TakeOver(new igdeWObject(*environment));
+		pBgObject.TakeOverWith*environment);
 		pBgObject->SetWorld(pDEWorld);
 		
 		// create weather
@@ -181,7 +181,7 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pActiveCamera = pFreeRoamCamera;
 		
 		// create sensors
-		pLumimeter.TakeOver(new meLumimeter(engine));
+		pLumimeter.TakeOverWithengine);
 		pLumimeter->SetWorld(this);
 		
 		// create microphone
@@ -195,10 +195,10 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pDEWorld->AddMicrophone(pEngMicrophone);
 		
 		// create path find test
-		pPathFindTest.TakeOver(new mePathFindTest(engine));
+		pPathFindTest.TakeOverWithengine);
 		pPathFindTest->SetWorld(this);
 		
-		pMusic.TakeOver(new meMusic(*this));
+		pMusic.TakeOverWith*this);
 		
 		// debug drawer
 		pDDLimitBox.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());

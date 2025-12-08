@@ -153,7 +153,7 @@ pLoadTask(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOver(new meWindowMainListener(*this));
+	pListener.TakeOverWith*this);
 	pConfiguration = new meConfiguration(*this);
 	pLoadSaveSystem = new meLoadSaveSystem(this);
 	pSaveSupport = new meSaveSupport(this);
@@ -170,19 +170,19 @@ pLoadTask(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties.TakeOver(new meWindowProperties(*this));
+	pWindowProperties.TakeOverWith*this);
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pTabContent.TakeOver(new igdeTabBook(env));
+	pTabContent.TakeOverWithenv);
 	splitted->AddChild(pTabContent, igdeContainerSplitted::eaCenter);
 	
-	pView3D.TakeOver(new meView3D(*this));
+	pView3D.TakeOverWith*this);
 	pTabContent->AddChild(pView3D, "World");
 	
-	pViewVegetation.TakeOver(new meWindowVegetation(*this));
+	pViewVegetation.TakeOverWith*this);
 	pTabContent->AddChild(pViewVegetation, "Vegetation");
 	
-	pViewChangelog.TakeOver(new meWindowChangelog(*this));
+	pViewChangelog.TakeOverWith*this);
 	pTabContent->AddChild(pViewChangelog, "Change-Log");
 	
 	pTabContent->SetActivePanel(0); // world
@@ -1748,8 +1748,8 @@ void meWindowMain::pCreateActions(){
 	pActionFileSave.TakeOver(new cActionFileSave(*this));
 	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
 	
-	pActionEditUndo.TakeOver(new igdeActionUndo(environment));
-	pActionEditRedo.TakeOver(new igdeActionRedo(environment));
+	pActionEditUndo.TakeOverWithenvironment);
+	pActionEditRedo.TakeOverWithenvironment);
 	
 	pActionEditCut.TakeOver(new cActionEditCut(*this));
 	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
@@ -1988,7 +1988,7 @@ void meWindowMain::pCreateActions(){
 void meWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile.TakeOverWithGetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -2000,7 +2000,7 @@ void meWindowMain::pCreateToolBarFile(){
 void meWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit.TakeOverWithGetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -2052,7 +2052,7 @@ void meWindowMain::pCreateToolBarEdit(){
 void meWindowMain::pCreateToolBarObject(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBObject.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBObject.TakeOverWithGetEnvironment());
 	
 	helper.ToolBarSeparator(pTBObject);
 	helper.ToolBarButton(pTBObject, pActionObjectRotateL45);
@@ -2075,7 +2075,7 @@ void meWindowMain::pCreateToolBarObject(){
 void meWindowMain::pCreateToolBarDecal(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBDecal.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBDecal.TakeOverWithGetEnvironment());
 	
 	helper.ToolBarButton(pTBDecal, pActionDecalDelete);
 	
@@ -2092,23 +2092,23 @@ void meWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
+	cascade.TakeOverWithenv, "File", deInputEvent::ekcF);
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade.TakeOverWithenv, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Object", deInputEvent::ekcO));
+	cascade.TakeOverWithenv, "Object", deInputEvent::ekcO);
 	pCreateMenuObject(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Decal", deInputEvent::ekcD));
+	cascade.TakeOverWithenv, "Decal", deInputEvent::ekcD);
 	pCreateMenuDecal(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcV));
+	cascade.TakeOverWithenv, "View", deInputEvent::ekcV);
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

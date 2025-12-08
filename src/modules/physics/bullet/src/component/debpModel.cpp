@@ -277,7 +277,7 @@ void debpModel::PrepareShape(){
 	btBvhTriangleMeshShape * const meshShape = new btBvhTriangleMeshShape(ivarray, true, true);
 	meshShape->setUserPointer(0); // means -1 => no shape index set
 	
-	pBulletShape.TakeOver(new debpBulletShapeModel(meshShape, ivarray, vertices, faces, vertexCount, faceCount));
+	pBulletShape.TakeOverWithmeshShape, ivarray, vertices, faces, vertexCount, faceCount);
 }
 
 

@@ -586,7 +586,7 @@ pViewMode(evmPreview)
 	igdeContainer::Ref groupBox, form, frameLine;
 	
 	
-	pListener.TakeOver(new meWPBrowserListener(*this));
+	pListener.TakeOverWith*this);
 	
 	
 	pActionSetClass.TakeOver(new cActionSetClass(*this));
@@ -636,7 +636,7 @@ pViewMode(evmPreview)
 		"Filter", NULL, "Browse by filtering"), true);
 	
 	
-	pSwitcherSelBy.TakeOver(new igdeSwitcher(env));
+	pSwitcherSelBy.TakeOverWithenv);
 	groupBox->AddChild(pSwitcherSelBy);
 	
 	
@@ -840,7 +840,7 @@ void meWPBrowser::RebuildPISelectedItem(){
 	
 	igdeIcon::Ref icon;
 	const int iconSize = GetPreviewIconSize();
-	icon.TakeOver(new igdeIcon(*pvmgr.GetImageCreating(), iconSize, iconSize));
+	icon.TakeOverWith*pvmgr.GetImageCreating(), iconSize, iconSize);
 	
 	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pListItems, item, iconSize));
 	

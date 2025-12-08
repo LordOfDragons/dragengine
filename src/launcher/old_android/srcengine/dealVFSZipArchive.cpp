@@ -612,7 +612,7 @@ void dealVFSZipArchive::pBuildFileTable(){
 		DETHROW(deeReadFile);
 	}
 	
-	pArchiveDirectory.TakeOver(new cArchiveDirectory(""));
+	pArchiveDirectory.TakeOverWith"");
 	
 	while(true){
 		if(unzGetCurrentFileInfo(pZipFile, &info, NULL, 0, NULL, 0, NULL, 0) != UNZ_OK){

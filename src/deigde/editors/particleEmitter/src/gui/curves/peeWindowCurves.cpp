@@ -145,7 +145,7 @@ pEmitter(NULL)
 	pIconCurveEmpty = env.GetStockIcon(igdeEnvironment::esiSmallMinus);
 	pIconCurveUsed = env.GetStockIcon(igdeEnvironment::esiSmallPlus);
 	
-	pListener.TakeOver(new peeWindowCurvesListener(*this));
+	pListener.TakeOverWith*this);
 	
 	helper.ListBox(4, "Curve to edit", pListCurves, new cListCurves(*this));
 	pListCurves->AddItem("Value", pIconCurveEmpty, (void*)(intptr_t)ecValue);

@@ -110,7 +110,7 @@ pPanelUndoHistory(nullptr)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOver(new projWindowMainListener(*this));
+	pListener.TakeOverWith*this);
 	pConfiguration = new projConfiguration(*this);
 	
 	pConfiguration->LoadConfiguration();
@@ -119,16 +119,16 @@ pPanelUndoHistory(nullptr)
 	pCreateToolBarDistribute();
 	pCreateToolBarEdit();
 	
-	pTabPanels.TakeOver(new igdeTabBook(env));
+	pTabPanels.TakeOverWithenv);
 	AddChild(pTabPanels);
 	
-	pPanelProfiles.TakeOver(new projPanelProfiles(*this));
+	pPanelProfiles.TakeOverWith*this);
 	pTabPanels->AddChild(pPanelProfiles, "Profiles");
 	
-	pPanelTestRun.TakeOver(new projPanelTestRun(*this));
+	pPanelTestRun.TakeOverWith*this);
 	pTabPanels->AddChild(pPanelTestRun, "Test-Run");
 	
-	pPanelUndoHistory.TakeOver(new projPanelUndoHistory(env));
+	pPanelUndoHistory.TakeOverWithenv);
 	pTabPanels->AddChild(pPanelUndoHistory, "Undo History");
 	
 	// load game project
@@ -773,8 +773,8 @@ void projWindowMain::pCreateActions(){
 	igdeEnvironment &env = GetEnvironment();
 	
 	pActionDistSave.TakeOver(new cActionDistSave(*this));
-	pActionEditUndo.TakeOver(new igdeActionUndo(env));
-	pActionEditRedo.TakeOver(new igdeActionRedo(env));
+	pActionEditUndo.TakeOverWithenv);
+	pActionEditRedo.TakeOverWithenv);
 	pActionEditCut.TakeOver(new cActionEditCut(*this));
 	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
 	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
@@ -812,7 +812,7 @@ void projWindowMain::pCreateActions(){
 void projWindowMain::pCreateToolBarDistribute(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBDistribute.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBDistribute.TakeOverWithGetEnvironment());
 	
 	helper.ToolBarButton(pTBDistribute, pActionDistSave);
 	
@@ -822,7 +822,7 @@ void projWindowMain::pCreateToolBarDistribute(){
 void projWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit.TakeOverWithGetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -839,15 +839,15 @@ void projWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Project", deInputEvent::ekcD));
+	cascade.TakeOverWithenv, "Project", deInputEvent::ekcD);
 	pCreateMenuDistribute(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade.TakeOverWithenv, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Profile", deInputEvent::ekcP));
+	cascade.TakeOverWithenv, "Profile", deInputEvent::ekcP);
 	pCreateMenuProfile(cascade);
 	AddSharedMenu(cascade);
 }

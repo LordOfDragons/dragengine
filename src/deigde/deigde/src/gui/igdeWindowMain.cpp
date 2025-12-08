@@ -576,21 +576,21 @@ pTaskSyncGameDefinition(NULL)
 			pEnvironmentIGDE, igdeContainerFlow::eaY));
 		content->AddChild(panel, igdeContainerBorder::eaTop);
 		
-		pMenuBar.TakeOver(new igdeMenuBar(pEnvironmentIGDE));
+		pMenuBar.TakeOverWithpEnvironmentIGDE);
 		panel->AddChild(pMenuBar);
 		
-		pToolBarDockTop.TakeOver(new igdeToolBarDock(pEnvironmentIGDE, igdeToolBarDock::esTop));
+		pToolBarDockTop.TakeOverWithpEnvironmentIGDE, igdeToolBarDock::esTop);
 		panel->AddChild(pToolBarDockTop);
 		
 		
 		// bottom side
-		panel.TakeOver(new igdeContainerFlow(pEnvironmentIGDE, igdeContainerFlow::eaY));
+		panel.TakeOverWithpEnvironmentIGDE, igdeContainerFlow::eaY);
 		content->AddChild(panel, igdeContainerBorder::eaBottom);
 		
-		pToolBarDockBottom.TakeOver(new igdeToolBarDock(pEnvironmentIGDE, igdeToolBarDock::esBottom));
+		pToolBarDockBottom.TakeOverWithpEnvironmentIGDE, igdeToolBarDock::esBottom);
 		panel->AddChild(pToolBarDockBottom);
 		
-		pStatusBar.TakeOver(new igdeStatusBar(environment));
+		pStatusBar.TakeOverWithenvironment);
 		pStatusBar->SetText("Ready");
 		panel->AddChild(pStatusBar);
 		
@@ -599,26 +599,26 @@ pTaskSyncGameDefinition(NULL)
 		
 		
 		// left side
-		panel.TakeOver(new igdeContainerFlow(pEnvironmentIGDE, igdeContainerFlow::eaX));
+		panel.TakeOverWithpEnvironmentIGDE, igdeContainerFlow::eaX);
 		content->AddChild(panel, igdeContainerBorder::eaLeft);
 		
-		pToolBarDockLeft.TakeOver(new igdeToolBarDock(pEnvironmentIGDE, igdeToolBarDock::esLeft));
+		pToolBarDockLeft.TakeOverWithpEnvironmentIGDE, igdeToolBarDock::esLeft);
 		panel->AddChild(pToolBarDockLeft);
 		
 		
 		// right side
-		panel.TakeOver(new igdeContainerFlow(pEnvironmentIGDE, igdeContainerFlow::eaX));
+		panel.TakeOverWithpEnvironmentIGDE, igdeContainerFlow::eaX);
 		content->AddChild(panel, igdeContainerBorder::eaRight);
 		
 		pFraEditors.TakeOver(new igdeContainerFlow(pEnvironmentIGDE, igdeContainerFlow::eaY));
 		panel->AddChild(pFraEditors);
 		
-		pToolBarDockRight.TakeOver(new igdeToolBarDock(pEnvironmentIGDE, igdeToolBarDock::esRight));
+		pToolBarDockRight.TakeOverWithpEnvironmentIGDE, igdeToolBarDock::esRight);
 		panel->AddChild(pToolBarDockRight);
 		
 		
 		// center
-		pSwiContent.TakeOver(new igdeSwitcher(pEnvironmentIGDE));
+		pSwiContent.TakeOverWithpEnvironmentIGDE);
 		
 		igdeContainerBorder::Ref emptyContainer(igdeContainerBorder::Ref::NewWith(pEnvironmentIGDE));
 		pSwiContent->AddChild(emptyContainer);
@@ -652,7 +652,7 @@ igdeGuiTheme *igdeWindowMain::GetGuiThemeNamed(const char *name){
 
 void igdeWindowMain::ShowWindowLogger(){
 	if(!pWindowLogger){
-		pWindowLogger.TakeOver(new igdeWindowLogger(pEnvironmentIGDE));
+		pWindowLogger.TakeOverWithpEnvironmentIGDE);
 		pWindowLogger->SetLogger(GetLoggerHistory());
 	}
 	
@@ -1828,7 +1828,7 @@ void igdeWindowMain::pLoadStockModels(){
 
 void igdeWindowMain::pCreateGuiThemes(){
 	// default theme
-	pDefaultGuiTheme.TakeOver(new igdeGuiTheme(igdeGuiThemeNames::defaultTheme));
+	pDefaultGuiTheme.TakeOverWithigdeGuiThemeNames::defaultTheme);
 	
 	pDefaultGuiTheme->SetFloatProperty(igdeGuiThemePropertyNames::fontSize, 1.0f);
 	
@@ -1892,7 +1892,7 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 	
 	decDiskFileReader::Ref reader(decDiskFileReader::Ref::NewWith(path.GetPathNative()));
 	
-	pIGDEGameDefinition.TakeOver(new igdeGameDefinition(pEnvironmentIGDE));
+	pIGDEGameDefinition.TakeOverWithpEnvironmentIGDE);
 	pIGDEGameDefinition->SetFilename(path.GetPathNative());
 	pIGDEGameDefinition->SetBasePath(pConfiguration.GetPathShares());
 	
@@ -2140,7 +2140,7 @@ void igdeWindowMain::pCreateSharedModelCollisionRig(){
 
 
 void igdeWindowMain::pCreateToolBarGame(){
-	pTBGame.TakeOver(new igdeToolBar(pEnvironmentIGDE));
+	pTBGame.TakeOverWithpEnvironmentIGDE);
 	pUIHelper->ToolBarButton(pTBGame, pActionGameNew);
 	pUIHelper->ToolBarButton(pTBGame, pActionGameOpen);
 	pUIHelper->ToolBarButton(pTBGame, pActionGameSave);
@@ -2199,13 +2199,13 @@ void igdeWindowMain::pRebuildToolBarEditors(){
 
 
 void igdeWindowMain::pCreateMenu(){
-	pMenuGame.TakeOver(new igdeMenuCascade(pEnvironmentIGDE, "Game", deInputEvent::ekcG));
+	pMenuGame.TakeOverWithpEnvironmentIGDE, "Game", deInputEvent::ekcG);
 	pCreateMenuGame(pMenuGame);
 	
-	pMenuSettings.TakeOver(new igdeMenuCascade(pEnvironmentIGDE, "Settings", deInputEvent::ekcS));
+	pMenuSettings.TakeOverWithpEnvironmentIGDE, "Settings", deInputEvent::ekcS);
 	pCreateMenuSettings(pMenuSettings);
 	
-	pMenuWindow.TakeOver(new igdeMenuCascade(pEnvironmentIGDE, "Window", deInputEvent::ekcW));
+	pMenuWindow.TakeOverWithpEnvironmentIGDE, "Window", deInputEvent::ekcW);
 }
 
 void igdeWindowMain::pCreateMenuGame(igdeMenuCascade &menu){

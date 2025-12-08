@@ -342,10 +342,10 @@ void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
 	// we can not create these objects during construction time since they can create OpenGL
 	// objects and render plan objects are potentially created from inside main thread
 	if(!pCompute){
-		pCompute.TakeOver(new deoglRenderPlanCompute(*this));
+		pCompute.TakeOverWith*this);
 	}
 	if(!pTasks){
-		pTasks.TakeOver(new deoglRenderPlanTasks(*this));
+		pTasks.TakeOverWith*this);
 	}
 	
 	// the rest is safe
@@ -806,7 +806,7 @@ void deoglRenderPlan::pStartFindContent(const deoglRenderPlanMasked *mask){
 	pOcclusionTest->RemoveAllInputData();
 	
 	if(!pRenderThread.GetChoices().GetUseComputeRenderTask()){
-		pTaskFindContent.TakeOver(new deoglRPTFindContent(*this));
+		pTaskFindContent.TakeOverWith*this);
 		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskFindContent);
 	}
 	
@@ -2253,7 +2253,7 @@ void deoglRenderPlan::pUpdateHTView(){
 	pHTView = nullptr;
 	
 	if(pWorld && pWorld->GetHeightTerrain()){
-		pHTView.TakeOver(new deoglHTView(pWorld->GetHeightTerrain()));
+		pHTView.TakeOverWithpWorld->GetHeightTerrain());
 		pHTView->Prepare();
 	}
 }

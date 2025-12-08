@@ -59,7 +59,7 @@ pTypeCount(0),
 pDirtyTypes(true)
 {
 	try{
-		pREmitter.TakeOver(new deoglRParticleEmitter(ogl.GetRenderThread()));
+		pREmitter.TakeOverWithogl.GetRenderThread());
 		TypeCountChanged();
 		
 	}catch(const deException &){

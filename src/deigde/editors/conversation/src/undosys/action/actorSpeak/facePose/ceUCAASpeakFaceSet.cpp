@@ -55,7 +55,7 @@ ceUCAASpeakFaceSet::ceUCAASpeakFaceSet(ceConversationTopic *topic, ceCAActorSpea
 	
 	SetShortInfo("Set face pose");
 	
-	pOldStrip.TakeOver(new ceStrip(*facePose));
+	pOldStrip.TakeOverWith*facePose);
 	
 	pNewStrip = newStrip;
 	newStrip->AddReference();

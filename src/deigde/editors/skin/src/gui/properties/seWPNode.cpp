@@ -759,7 +759,7 @@ pPreventUpdate(false)
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener.TakeOver(new seWPNodeListener(*this));
+	pListener.TakeOverWith*this);
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -809,7 +809,7 @@ pPreventUpdate(false)
 	
 	
 	// type specific
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher.TakeOverWithenv);
 	content->AddChild(pSwitcher);
 	
 	

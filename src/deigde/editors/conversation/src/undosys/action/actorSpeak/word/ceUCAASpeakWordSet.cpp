@@ -55,7 +55,7 @@ ceUCAASpeakWordSet::ceUCAASpeakWordSet(ceConversationTopic *topic, ceCAActorSpea
 	
 	SetShortInfo("Set Word");
 	
-	pOldStrip.TakeOver(new ceStrip(*word));
+	pOldStrip.TakeOverWith*word);
 	
 	pNewStrip = newStrip;
 	newStrip->AddReference();

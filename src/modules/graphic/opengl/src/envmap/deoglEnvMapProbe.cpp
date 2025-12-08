@@ -55,7 +55,7 @@ pDirtyInfluenceShape(true),
 pDirtyReflectionShape(true)
 {
 	try{
-		pREnvMapProbe.TakeOver(new deoglREnvMapProbe(ogl.GetRenderThread()));
+		pREnvMapProbe.TakeOverWithogl.GetRenderThread());
 		
 	}catch(const deException &){
 		pCleanUp();

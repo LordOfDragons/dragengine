@@ -239,18 +239,18 @@ pMaxLines(500)
 	
 	
 	// content
-	pTabContent.TakeOver(new igdeTabBook(env));
+	pTabContent.TakeOverWithenv);
 	AddChild(pTabContent, eaCenter);
 	
 	// logs widget
-	pEditLogs.TakeOver(new igdeTextArea(env, 60, 10, false));
+	pEditLogs.TakeOverWithenv, 60, 10, false);
 	
 	igdeTextStyle::Ref style(igdeTextStyle::Ref::NewWith(styleWarning));
 	style->SetColor(decColor(0.0f, 0.0f, 0.0f));
 	style->SetBgColor(decColor(1.0f, 0.815f, 0.0f));
 	pEditLogs->AddStyle(style);
 	
-	style.TakeOver(new igdeTextStyle(styleError));
+	style.TakeOverWithstyleError);
 	style->SetColor(decColor(1.0f, 1.0f, 0.5f));
 	style->SetBgColor(decColor(0.75f, 0.0f, 0.0f));
 // 	style->SetBold(true);
@@ -260,7 +260,7 @@ pMaxLines(500)
 	
 	
 	// finish
-	pListener.TakeOver(new projPanelRemoteClientListener(*this));
+	pListener.TakeOverWith*this);
 	client->AddListener(pListener);
 	
 	preventUpdate = false;

@@ -153,9 +153,9 @@ pModelTreeObjects(NULL)
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener.TakeOver(new gdeWPSelectionListener(*this));
+	pListener.TakeOverWith*this);
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher.TakeOverWithenv);
 	AddChild(pSwitcher, igdeContainerSplitted::eaSide);
 	
 	helper.TreeList(10, "Game definition objects", pTreeObjects, new cTreeObjects(*this));

@@ -107,7 +107,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionEffectAddStretch());
 		menu.AddChild(submenu);
 		
-		submenu.TakeOver(new igdeMenuCascade(menu.GetEnvironment(), "Insert"));
+		submenu.TakeOverWithmenu.GetEnvironment(), "Insert");
 		helper.MenuCommand(submenu, windowMain.GetActionEffectInsertStretch());
 		menu.AddChild(submenu);
 		
@@ -247,7 +247,7 @@ pActivePanel(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox;
 	
-	pListener.TakeOver(new seWPEffectListener(*this));
+	pListener.TakeOverWith*this);
 	
 	
 	pActionEffectCopy.TakeOver(new cActionEffectCopy(*this));
@@ -260,7 +260,7 @@ pActivePanel(NULL)
 	helper.ListBox(groupBox, 3, "Effects", pListEffect, new cListEffects(*this));
 	
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher.TakeOverWithenv);
 	AddChild(pSwitcher);
 	
 	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));

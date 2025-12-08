@@ -76,19 +76,19 @@ pLogger(NULL),
 pPendingAddedLogs(0),
 pPendingClearLogs(false)
 {
-	pListener.TakeOver(new igdeWindowLoggerListener(*this));
+	pListener.TakeOverWith*this);
 	
 	SetPosition(decPoint(10, 50));
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));
 	
-	pEditLogs.TakeOver(new igdeTextArea(environment, 60, 10, false));
+	pEditLogs.TakeOverWithenvironment, 60, 10, false);
 	
 	igdeTextStyle::Ref style(igdeTextStyle::Ref::NewWith(styleWarning));
 	style->SetColor(decColor(0.0f, 0.0f, 0.0f));
 	style->SetBgColor(decColor(1.0f, 0.815f, 0.0f));
 	pEditLogs->AddStyle(style);
 	
-	style.TakeOver(new igdeTextStyle(styleError));
+	style.TakeOverWithstyleError);
 	style->SetColor(decColor(1.0f, 1.0f, 0.5f));
 	style->SetBgColor(decColor(0.75f, 0.0f, 0.0f));
 // 	style->SetBold( true );

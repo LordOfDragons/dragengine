@@ -73,7 +73,7 @@ pDirtyVR(true),
 pEnableVR(false)
 {
 	try{
-		pRCamera.TakeOver(new deoglRCamera(ogl.GetRenderThread()));
+		pRCamera.TakeOverWithogl.GetRenderThread());
 		
 	}catch(const deException &){
 		pCleanUp();

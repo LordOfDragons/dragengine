@@ -45,7 +45,7 @@ deoglDelayedFileWrite::deoglDelayedFileWrite(const decPath &path) :
 pMemoryFile(NULL),
 pPath(path){
 	try{
-		pMemoryFile.TakeOver(new decMemoryFile(path.GetPathUnix()));
+		pMemoryFile.TakeOverWithpath.GetPathUnix());
 		
 	}catch(const deException &){
 		pCleanUp();

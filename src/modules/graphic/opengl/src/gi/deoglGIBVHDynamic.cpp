@@ -50,10 +50,10 @@ pTBOVertex(NULL),
 pBlockUsageCount(0)
 {
 	try{
-		pTBONodeBox.TakeOver(new deoglDynamicTBOFloat32(bvhLocal.GetRenderThread(), 4));
+		pTBONodeBox.TakeOverWithbvhLocal.GetRenderThread(), 4);
 		pTBONodeBox->SetDataCount(bvhLocal.GetTBONodeBox()->GetDataCount());
 		
-		pTBOVertex.TakeOver(new deoglDynamicTBOFloat32(bvhLocal.GetRenderThread(), 4));
+		pTBOVertex.TakeOverWithbvhLocal.GetRenderThread(), 4);
 		pTBOVertex->SetDataCount(bvhLocal.GetTBOVertex()->GetDataCount());
 		
 	}catch(const deException &){

@@ -63,7 +63,7 @@ pDirtyInstances(true),
 pDirtyBendStates(true)
 {
 	try{
-		pRType.TakeOver(new deoglRPropFieldType(*propField.GetRPropField()));
+		pRType.TakeOverWith*propField.GetRPropField());
 		
 	}catch(const deException &){
 		pCleanUp();

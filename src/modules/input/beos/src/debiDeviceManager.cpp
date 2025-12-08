@@ -198,11 +198,11 @@ void debiDeviceManager::pCleanUp(){
 
 
 void debiDeviceManager::pCreateDevices(){
-	pMouse.TakeOver(new debiDeviceMouse(pModule));
+	pMouse.TakeOverWithpModule);
 	pMouse->SetIndex(pDevices.GetCount());
 	pDevices.Add(pMouse);
 	
-	pKeyboard.TakeOver(new debiDeviceKeyboard(pModule));
+	pKeyboard.TakeOverWithpModule);
 	pKeyboard->SetIndex(pDevices.GetCount());
 	pDevices.Add(pKeyboard);
 	

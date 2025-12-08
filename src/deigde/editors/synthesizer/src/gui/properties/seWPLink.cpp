@@ -276,7 +276,7 @@ pPreventUpdate(false)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOver(new seWPLinkListener(*this));
+	pListener.TakeOverWith*this);
 	
 	
 	pActionLinkAdd.TakeOver(new cActionLinkAdd(*this));

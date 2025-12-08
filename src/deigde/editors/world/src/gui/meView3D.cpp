@@ -198,7 +198,7 @@ pEditor(NULL)
 	pFontStats.TakeOver(fontmgr.LoadFont("/igde/fonts/sans_10.defont", "/"));
 	pFontSizeStats = pFontStats->PrepareSize(pFontStats->GetLineHeight());
 	
-	pListener.TakeOver(new meView3DListener(*this));
+	pListener.TakeOverWith*this);
 	
 	pListenerEditor.TakeOver(new cEditorInteraction(*this));
 	AddListener(pListenerEditor);
