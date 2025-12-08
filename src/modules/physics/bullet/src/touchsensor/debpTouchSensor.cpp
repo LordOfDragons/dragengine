@@ -998,7 +998,7 @@ void debpTouchSensor::UpdateDebugDrawer(){
 	&& devmode.GetShowCategory().Matches(pTouchSensor.GetCollisionFilter().GetCategory())){
 		// ensure the debug drawer exists
 		if(!pDebugDrawer){
-			pDebugDrawer.TakeOver(pBullet.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
+			pDebugDrawer = pBullet.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
 			pDebugDrawer->SetXRay(true);
 			pDebugDrawer->SetPosition(pTouchSensor.GetPosition());
 			pDebugDrawer->SetOrientation(pTouchSensor.GetOrientation());

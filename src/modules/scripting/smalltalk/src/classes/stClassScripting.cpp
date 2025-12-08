@@ -74,7 +74,7 @@ void stClassScripting::CreateSingleton(){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pSingleton.TakeOver(pST->CreateNewObject(oopClass, sizeof(csScripting) - sizeof(csObject));
+	pSingleton = pST->CreateNewObject(oopClass, sizeof(csScripting) - sizeof(csObject));
 	if(!pSingleton || pSingleton == pST->GetNil()){
 		DETHROW(deeOutOfMemory);
 	}

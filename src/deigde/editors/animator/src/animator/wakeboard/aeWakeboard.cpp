@@ -104,7 +104,7 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 		engSkin = engine->GetSkinManager()->LoadSkin(vfsData,
 			pathData + "models/wakeboard/wakeboard.deskin", "/");
 		
-		pEngComponent.TakeOver(engine->GetComponentManager()->CreateComponent(engModel, engSkin);
+		pEngComponent = engine->GetComponentManager()->CreateComponent(engModel, engSkin);
 		pEngComponent->SetVisible(pEnabled);
 		engModel->FreeReference();
 		engModel = NULL;
@@ -112,7 +112,7 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 		engSkin = NULL;
 		engWorld.AddComponent(pEngComponent);
 		
-		pEngCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume();
+		pEngCollider = engine->GetColliderManager()->CreateColliderVolume();
 		pEngCollider->SetResponseType(deCollider::ertKinematic);
 		pEngCollider->SetUseLocalGravity(true);
 		pEngCollider->SetEnabled(true);

@@ -73,9 +73,9 @@ ceSpeechAnimation::ceSpeechAnimation(deEngine *engine){
 	pSpeaking = false;
 	
 	try{
-		pEngAnimator.TakeOver(engine->GetAnimatorManager()->CreateAnimator();
+		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
 		
-		pEngAnimatorInstance.TakeOver(engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
+		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
 		pEngAnimatorInstance->SetAnimator(pEngAnimator);
 		
 	}catch(const deException &){

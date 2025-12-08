@@ -204,7 +204,7 @@ pDirtyRig(true)
 		SetFilePath("new.derig");
 		
 		// create animator
-		pEngAnimator.TakeOver(engine->GetAnimatorManager()->CreateAnimator();
+		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
 		
 		amController = new deAnimatorController;
 		amController->SetClamp(true);
@@ -240,7 +240,7 @@ pDirtyRig(true)
 		amRuleRestPose->FreeReference();
 		amRuleRestPose = NULL;
 		
-		pEngAnimatorInstance.TakeOver(engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
+		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
 		pEngAnimatorInstance->SetAnimator(pEngAnimator);
 		
 		// create the world and scene
@@ -267,7 +267,7 @@ pDirtyRig(true)
 		pEnvObject->SetGDClassName("IGDETestTerrain");
 		
 		// create simulation collider
-		pEngSimCollider.TakeOver(engine->GetColliderManager()->CreateColliderComponent();
+		pEngSimCollider = engine->GetColliderManager()->CreateColliderComponent();
 		pEngSimCollider->SetEnabled(false);
 		pEngSimCollider->SetResponseType(deCollider::ertDynamic);
 		pEngSimCollider->SetUseLocalGravity(false);//! pDynamic);
@@ -655,7 +655,7 @@ void reRig::Rebuild(){
 	// using loading but this is okay for what we use them here.
 	reRigBuilder builder(this);
 	
-	pEngRig.TakeOver(GetEngine()->GetRigManager()->CreateRig("", builder);
+	pEngRig = GetEngine()->GetRigManager()->CreateRig("", builder);
 	
 	// add to the component
 	pEngAnimator->SetRig(pEngRig);
@@ -969,7 +969,7 @@ void reRig::UpdateFromSimulation(){
 		pEngComponent->SetPosition(pEngSimCollider->GetPosition());
 		pEngComponent->SetOrientation(matrix.ToQuaternion());
 		
-		pPoseMatrix.TakeOver(matrix * decDMatrix::CreateTranslation(pEngSimCollider->GetPosition());
+		pPoseMatrix = matrix * decDMatrix::CreateTranslation(pEngSimCollider->GetPosition());
 		pPoseChanged = true;
 	}
 }
@@ -1950,7 +1950,7 @@ void reRig::pCleanUp(){
 
 void reRig::pCreateWorld(){
 	// create world
-	pEngWorld.TakeOver(GetEngine()->GetWorldManager()->CreateWorld();
+	pEngWorld = GetEngine()->GetWorldManager()->CreateWorld();
 	//pEngWorld->SetSectorSize( decVector( 500.0f, 500.0f, 500.0f ) );
 	pEngWorld->SetAmbientLight(decColor(0.0f, 0.0f, 0.0f)); //decColor(0.1f, 0.1f, 0.1f));
 	pEngWorld->SetGravity(pGravity);
@@ -2004,7 +2004,7 @@ void reRig::pUpdateComponent(){
 				
 			}else{
 				rebuildTextures = true;
-				pEngComponent.TakeOver(GetEngine()->GetComponentManager()->CreateComponent(model, skin);
+				pEngComponent = GetEngine()->GetComponentManager()->CreateComponent(model, skin);
 				pEngWorld->AddComponent(pEngComponent);
 			}
 			

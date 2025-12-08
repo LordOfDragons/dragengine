@@ -50,7 +50,7 @@ pLayoutHorizontal(decPoint(), decPoint(256, 256)),
 pLayoutVertical(decPoint(), decPoint(256, 256))
 {
 	deCanvasManager &canvasManager = *androidInput.GetGameEngine()->GetCanvasManager();
-	pCanvas.TakeOver(canvasManager.CreateCanvasView();
+	pCanvas = canvasManager.CreateCanvasView();
 	pCanvas->SetSize(decPoint(256, 256));
 	pCanvas->SetTransparency(0.35f); // 35% coverage
 }

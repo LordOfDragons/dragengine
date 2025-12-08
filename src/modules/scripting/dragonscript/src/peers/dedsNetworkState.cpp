@@ -52,7 +52,7 @@ pHasCB(false)
 		DSTHROW(dueInvalidParam);
 	}
 	
-	pValCB.TakeOver(ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassNetworkStateListener());
+	pValCB = ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassNetworkStateListener());
 }
 
 dedsNetworkState::~dedsNetworkState(){

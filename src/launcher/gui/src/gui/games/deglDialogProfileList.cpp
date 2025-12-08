@@ -238,13 +238,13 @@ FXDialogBox(powner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECO
 	pListProfiles->setSortFunc(deglGuiBuilder::SortListItemByName);
 	
 	block = guiBuilder.CreateMatrixPacker(frameTab, 2);
-	pBtnProfAdd.TakeOver(guiBuilder.CreateButton(block, "Add", nullptr, this, ID_BTN_PROF_ADD, "Add a profile");
+	pBtnProfAdd = guiBuilder.CreateButton(block, "Add", nullptr, this, ID_BTN_PROF_ADD, "Add a profile");
 	pBtnProfAdd->setLayoutHints(pBtnProfAdd->getLayoutHints() | LAYOUT_FILL_COLUMN | LAYOUT_FILL_X);
-	pBtnProfDel.TakeOver(guiBuilder.CreateButton(block, "Remove", nullptr, this, ID_BTN_PROF_DEL, "Remove profile");
+	pBtnProfDel = guiBuilder.CreateButton(block, "Remove", nullptr, this, ID_BTN_PROF_DEL, "Remove profile");
 	pBtnProfDel->setLayoutHints(pBtnProfDel->getLayoutHints() | LAYOUT_FILL_COLUMN | LAYOUT_FILL_X);
-	pBtnProfRename.TakeOver(guiBuilder.CreateButton(block, "Rename", nullptr, this, ID_BTN_PROF_RENAME, "Rename profile");
+	pBtnProfRename = guiBuilder.CreateButton(block, "Rename", nullptr, this, ID_BTN_PROF_RENAME, "Rename profile");
 	pBtnProfRename->setLayoutHints(pBtnProfRename->getLayoutHints() | LAYOUT_FILL_COLUMN | LAYOUT_FILL_X);
-	pBtnProfDup.TakeOver(guiBuilder.CreateButton(block, "Duplicate", nullptr, this, ID_BTN_PROF_DUP, "Duplicate a profile");
+	pBtnProfDup = guiBuilder.CreateButton(block, "Duplicate", nullptr, this, ID_BTN_PROF_DUP, "Duplicate a profile");
 	pBtnProfDup->setLayoutHints(pBtnProfDup->getLayoutHints() | LAYOUT_FILL_COLUMN | LAYOUT_FILL_X);
 	
 	
@@ -317,21 +317,21 @@ FXDialogBox(powner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECO
 	toolTip = "Sets the arguments to use";
 	guiBuilder.CreateLabel(block, "Run Arguments:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditRunArgs.TakeOver(guiBuilder.CreateTextField(frameLine, this, ID_EDIT_RUNARGS, toolTip, 20, false);
+	pEditRunArgs = guiBuilder.CreateTextField(frameLine, this, ID_EDIT_RUNARGS, toolTip, 20, false);
 	
 	toolTip = "Determines if the run arguments replace the\ngame run arguments or are added to them";
 	guiBuilder.CreateLabel(block, "", "");
 	frameLine = guiBuilder.CreateHFrame(block);
-	pChkReplaceRunArgs.TakeOver(guiBuilder.CreateCheckBox(frameLine, "Replace Game Run Arguments", this, ID_CHK_REPLACE_RUNARGS, toolTip);
+	pChkReplaceRunArgs = guiBuilder.CreateCheckBox(frameLine, "Replace Game Run Arguments", this, ID_CHK_REPLACE_RUNARGS, toolTip);
 	
 	toolTip = "Sets the initial size of game window";
 	guiBuilder.CreateLabel(block, "Window Size:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditWidth.TakeOver(guiBuilder.CreateNumberField(frameLine, this, ID_EDIT_WIDTH, toolTip, 6, true);
+	pEditWidth = guiBuilder.CreateNumberField(frameLine, this, ID_EDIT_WIDTH, toolTip, 6, true);
 	guiBuilder.CreateLabel(frameLine, " x ", toolTip, 0);
-	pEditHeight.TakeOver(guiBuilder.CreateNumberField(frameLine, this, ID_EDIT_HEIGHT, toolTip, 6, true);
+	pEditHeight = guiBuilder.CreateNumberField(frameLine, this, ID_EDIT_HEIGHT, toolTip, 6, true);
 	guiBuilder.CreateLabel(frameLine, " Full-Screen:", toolTip, 10);
-	pCBFullScreenResolutions.TakeOver(guiBuilder.CreateComboBox(frameLine, this, ID_CB_FULLSCREEN_RESOLUTIONS,
+	pCBFullScreenResolutions = guiBuilder.CreateComboBox(frameLine, this, ID_CB_FULLSCREEN_RESOLUTIONS,
 		"Full screen resolutions", false, 12, 8, true);
 	UpdateFullScreenResolutions();
 	
@@ -339,20 +339,20 @@ FXDialogBox(powner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DECO
 	splitter = new FXSplitter(groupBox, LAYOUT_FILL_X | SPLITTER_NORMAL | SPLITTER_HORIZONTAL);
 	
 	frameVertical = new FXVerticalFrame(splitter, FRAME_RAISED | LAYOUT_FILL_Y | LAYOUT_FILL_X);
-	pCBDisableModuleVersionModule.TakeOver(guiBuilder.CreateComboBox(frameVertical, this, ID_CB_DISABLE_MODULE_VERSION_MODULE,
+	pCBDisableModuleVersionModule = guiBuilder.CreateComboBox(frameVertical, this, ID_CB_DISABLE_MODULE_VERSION_MODULE,
 		"Name of module to disable", true, 10, 6, false);
 	//pCBDisableModuleVersionModule->setSortFunc( );
 	
-	pCBDisableModuleVersionVersion.TakeOver(guiBuilder.CreateComboBox(frameVertical, this, ID_CB_DISABLE_MODULE_VERSION_VERSION,
+	pCBDisableModuleVersionVersion = guiBuilder.CreateComboBox(frameVertical, this, ID_CB_DISABLE_MODULE_VERSION_VERSION,
 		"Version of module to disable", true, 10, 6, false);
 	//pCBDisableModuleVersionVersion->setSortFunc( );
 	
 	frameLine2 = guiBuilder.CreateHFrame(frameVertical);
-	pBtnDisableModuleVersionRemove.TakeOver(guiBuilder.CreateButton(frameLine2, "<< Remove", nullptr, this, ID_BTN_DISABLE_MODULE_VERSION_REMOVE,
+	pBtnDisableModuleVersionRemove = guiBuilder.CreateButton(frameLine2, "<< Remove", nullptr, this, ID_BTN_DISABLE_MODULE_VERSION_REMOVE,
 		"Remove module version from the list of module versions to disable");
 	pBtnDisableModuleVersionRemove->setFrameStyle(pBtnDisableModuleVersionRemove->getFrameStyle() | LAYOUT_FILL_X);
 	
-	pBtnDisableModuleVersionAdd.TakeOver(guiBuilder.CreateButton(frameLine2, "Add >>", nullptr, this, ID_BTN_DISABLE_MODULE_VERSION_ADD,
+	pBtnDisableModuleVersionAdd = guiBuilder.CreateButton(frameLine2, "Add >>", nullptr, this, ID_BTN_DISABLE_MODULE_VERSION_ADD,
 		"Add module version to the list of module versions to disable");
 	pBtnDisableModuleVersionAdd->setFrameStyle(pBtnDisableModuleVersionAdd->getFrameStyle() | LAYOUT_FILL_X);
 	

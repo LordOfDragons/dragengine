@@ -65,7 +65,7 @@ pTextOffset(200),
 pCanvasView(NULL)
 {
 	try{
-		pCanvasView.TakeOver(engine.GetCanvasManager()->CreateCanvasView();
+		pCanvasView = engine.GetCanvasManager()->CreateCanvasView();
 		pCanvasView->SetOrder(10.0f);
 		
 		SetPathFont("/igde/fonts/sans_9_border.defont");

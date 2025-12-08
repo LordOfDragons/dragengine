@@ -361,7 +361,7 @@ void deoglHTSTexture::pPrepareParamBlock(){
 					.GetRenderThread().GetBufferObject().GetLayoutSkinInstanceUBO()));
 				
 			}else{*/
-				pParamBlock.TakeOver(skinShader.CreateSPBInstParam();
+				pParamBlock = skinShader.CreateSPBInstParam();
 			//}
 		}
 		

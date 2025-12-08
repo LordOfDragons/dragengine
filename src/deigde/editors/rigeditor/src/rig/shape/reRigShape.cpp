@@ -76,7 +76,7 @@ reRigShape::reRigShape(deEngine *engine, reRigShape::eShapeTypes shapeType){
 	
 	try{
 		
-		pCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume();
+		pCollider = engine->GetColliderManager()->CreateColliderVolume();
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(deCollider::ertKinematic);
 		pCollider->SetUseLocalGravity(true);
@@ -87,7 +87,7 @@ reRigShape::reRigShape(deEngine *engine, reRigShape::eShapeTypes shapeType){
 		pCollider->SetCollisionFilter(decCollisionFilter(layerMask));
 		
 		// create debug drawer and shapes
-		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSShape = new igdeWDebugDrawerShape;

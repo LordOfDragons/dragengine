@@ -61,7 +61,7 @@ pNativeApplication(NULL)
 	DEASSERT_NULL(pApp)
 	
 	pApp = this;
-	pNativeApplication.TakeOver(igdeNativeApplication::CreateNativeApplication(*this);
+	pNativeApplication = igdeNativeApplication::CreateNativeApplication(*this);
 }
 
 igdeApplication::~igdeApplication(){

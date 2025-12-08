@@ -122,7 +122,7 @@ deoglRSkyInstanceLayer &skyLayer, float backtrack){
 	const decMatrix matCL = matCamInv.GetRotationMatrix().ToMatrix() * matLigInv;
 	const decQuaternion quatLig = matLig.ToQuaternion();
 	
-	pMatrixLightSpace.TakeOver(decDMatrix::CreateTranslation(-camPos) * decDMatrix(matLigInv);
+	pMatrixLightSpace = decDMatrix::CreateTranslation(-camPos) * decDMatrix(matLigInv);
 	
 	// calculate the corner points of the frustum in light space. only the far points and the origin
 	// are transformed. correctly the near points would have to be transformed and processed too but
@@ -263,7 +263,7 @@ const decVector &detectionBox, deoglRSkyInstanceLayer &skyLayer, float backtrack
 	// parameters required for the calculations later on
 	const decMatrix matLig(decMatrix::CreateRotation(0.0f, PI, 0.0f) * skyLayer.GetMatrix());
 	
-	pMatrixLightSpace.TakeOver(decDMatrix::CreateTranslation(-position) * decDMatrix(matLig.Invert());
+	pMatrixLightSpace = decDMatrix::CreateTranslation(-position) * decDMatrix(matLig.Invert());
 	
 	deoglCollisionBox giBox(decVector(), detectionBox, matLig.Invert().ToQuaternion());
 	

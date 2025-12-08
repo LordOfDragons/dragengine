@@ -78,7 +78,7 @@ pListener(NULL)
 	
 	try{
 		pListener = new meUpdateHeightTerrainPropField(this);
-		pEngPF.TakeOver(engine->GetPropFieldManager()->CreatePropField();
+		pEngPF = engine->GetPropFieldManager()->CreatePropField();
 		
 	}catch(const deException &){
 		pCleanUp();

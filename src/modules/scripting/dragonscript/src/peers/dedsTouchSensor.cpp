@@ -54,7 +54,7 @@ pHasCB(false)
 		DSTHROW(dueInvalidParam);
 	}
 	
-	pValCB.TakeOver(ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassTouchSensorListener());
+	pValCB = ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassTouchSensorListener());
 }
 
 dedsTouchSensor::~dedsTouchSensor(){

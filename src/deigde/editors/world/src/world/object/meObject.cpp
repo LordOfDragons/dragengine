@@ -263,7 +263,7 @@ pWOAsyncFinished(*this)
 		pWObject->SetRenderEnvMapMask(1 << meWorld::elmEnvMapProbes);
 		pWObject->SetAudioLayerMask(1 << meWorld::elmAudio);
 		
-		pColDetCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume();
+		pColDetCollider = engine->GetColliderManager()->CreateColliderVolume();
 		pColDetCollider->SetEnabled(true);
 		pColDetCollider->SetResponseType(deCollider::ertKinematic);
 		pColDetCollider->SetUseLocalGravity(true);
@@ -272,7 +272,7 @@ pWOAsyncFinished(*this)
 		pWObject->SetAsyncLoadFinished(&pWOAsyncFinished);
 		
 		// create debug drawer and shapes
-		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSObject = new igdeWDebugDrawerShape;

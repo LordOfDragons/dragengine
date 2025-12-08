@@ -64,7 +64,7 @@ pInHorizontalMode(false)
 	}
 	
 	try{
-		pCanvas.TakeOver(androidInput.GetGameEngine()->GetCanvasManager()->CreateCanvasView();
+		pCanvas = androidInput.GetGameEngine()->GetCanvasManager()->CreateCanvasView();
 		pCanvas->SetSize(screenSize);
 		
 #if 0

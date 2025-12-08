@@ -80,7 +80,7 @@ void reBaseUndoRotate::SetModifyOrientation(bool modifyOrientation){
 }
 
 void reBaseUndoRotate::Update(){
-	pMatrix.TakeOver(decMatrix::CreateTranslation(-pCenterPosition)
+	pMatrix = decMatrix::CreateTranslation(-pCenterPosition)
 		* decMatrix::CreateRotationAxis( pAxis, pAngle )
 		* decMatrix::CreateTranslation( pCenterPosition );
 	

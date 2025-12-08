@@ -421,7 +421,7 @@ void dedaiSpace::UpdateDDSSpace(){
 	if(devmode.GetEnabled() && devmode.GetShowSpaces()){
 		// ensure the debug drawer exists
 		if(!pDebugDrawer){
-			pDebugDrawer.TakeOver(pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
+			pDebugDrawer = pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
 			pDebugDrawer->SetXRay(true);
 			
 			if(pParentWorld){

@@ -95,7 +95,7 @@ pStrikeThrough(config.strikeThrough)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pNativeFont.TakeOver(igdeNativeFont::CreateNativeFont(*this);
+	pNativeFont = igdeNativeFont::CreateNativeFont(*this);
 }
 
 igdeFont::~igdeFont(){

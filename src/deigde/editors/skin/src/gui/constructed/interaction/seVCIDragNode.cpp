@@ -175,7 +175,7 @@ bool seVCIDragNode::OnDragBegin(){
 	}
 	
 	if(pView.GetActiveNode()){
-		pDragMatrix.TakeOver((pView.GetActiveNode()->GetParent()->CreateScreenTransformMatrix()
+		pDragMatrix = (pView.GetActiveNode()->GetParent()->CreateScreenTransformMatrix()
 			* pView.GetZoomScaleMatrix() ).Invert().ToTexMatrix2().GetRotationMatrix();
 		pDragAction = edaMoveNode;
 		return true;

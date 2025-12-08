@@ -167,15 +167,15 @@ pActivePose(nullptr)
 	try{
 		SetTextBoxName(decUnicodeString::NewFromUTF8("Actor"));
 		
-		pEngAnimatorInstance.TakeOver(animatorInstanceManager.CreateAnimatorInstance();
+		pEngAnimatorInstance = animatorInstanceManager.CreateAnimatorInstance();
 		
 		pSpeechAnimation = new ceSpeechAnimation(&engine);
 		
-		pEngGestureAnimatorInstance.TakeOver(animatorInstanceManager.CreateAnimatorInstance();
-		pEngFacePoseAnimatorInstance.TakeOver(animatorInstanceManager.CreateAnimatorInstance();
-		pEngEyesAnimatorInstance.TakeOver(animatorInstanceManager.CreateAnimatorInstance();
+		pEngGestureAnimatorInstance = animatorInstanceManager.CreateAnimatorInstance();
+		pEngFacePoseAnimatorInstance = animatorInstanceManager.CreateAnimatorInstance();
+		pEngEyesAnimatorInstance = animatorInstanceManager.CreateAnimatorInstance();
 		
-		pEngSpeaker.TakeOver(engine.GetSpeakerManager()->CreateSpeaker();
+		pEngSpeaker = engine.GetSpeakerManager()->CreateSpeaker();
 		pEngSpeaker->SetLooping(false);
 		pEngSpeaker->SetMuted(false);
 		pEngSpeaker->SetType(deSpeaker::estPoint); // correctly directed but that's for later
@@ -773,7 +773,7 @@ void ceConversationActor::pUpdateComponent(){
 				pEngComponent->SetModelAndSkin(model, skin);
 				
 			}else{
-				pEngComponent.TakeOver(engine.GetComponentManager()->CreateComponent(model, skin);
+				pEngComponent = engine.GetComponentManager()->CreateComponent(model, skin);
 				if(pConversation){
 					pConversation->GetEngineWorld()->AddComponent(pEngComponent);
 				}

@@ -161,10 +161,10 @@ pMask(nullptr)
 	const float biasOffsetV = -1.0f;
 	
 	if(upsideDown){
-		pTransform.TakeOver(decTexMatrix2::CreateST(biasScaleU, -biasScaleV, biasOffsetU, -biasOffsetV);
+		pTransform = decTexMatrix2::CreateST(biasScaleU, -biasScaleV, biasOffsetU, -biasOffsetV);
 		
 	}else{
-		pTransform.TakeOver(decTexMatrix2::CreateST(biasScaleU, biasScaleV, biasOffsetU, biasOffsetV);
+		pTransform = decTexMatrix2::CreateST(biasScaleU, biasScaleV, biasOffsetU, biasOffsetV);
 	}
 	
 	// mask

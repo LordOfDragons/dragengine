@@ -222,7 +222,7 @@ void meObjectTexture::UpdateDynamicSkin(){
 	
 	if(requiresDynamicSkin){
 		if(!pDynamicSkin){
-			pDynamicSkin.TakeOver(pEnvironment->GetEngineController()->GetEngine()->GetDynamicSkinManager()->CreateDynamicSkin();
+			pDynamicSkin = pEnvironment->GetEngineController()->GetEngine()->GetDynamicSkinManager()->CreateDynamicSkin();
 		}
 		
 		pDynamicSkin->RemoveAllRenderables();

@@ -135,7 +135,7 @@ pPreviewMode(epmModel)
 		SetFilePath("new.deskin");
 		
 		// create animator
-		pEngAnimator.TakeOver(engine->GetAnimatorManager()->CreateAnimator();
+		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
 		
 		amController = new deAnimatorController;
 		amController->SetClamp(false);
@@ -157,11 +157,11 @@ pPreviewMode(epmModel)
 		amRuleAnim->FreeReference();
 		amRuleAnim = NULL;
 		
-		pEngAnimatorInstance.TakeOver(engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
+		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
 		pEngAnimatorInstance->SetAnimator(pEngAnimator);
 		
 		// create world
-		pEngWorld.TakeOver(engine->GetWorldManager()->CreateWorld();
+		pEngWorld = engine->GetWorldManager()->CreateWorld();
 		pEngWorld->SetGravity(decVector(0.0f, -9.81f, 0.0f));
 		pEngWorld->SetDisableLights(false);
 		pEngWorld->SetAmbientLight(decColor(0.0f, 0.0f, 0.0f));
@@ -199,7 +199,7 @@ pPreviewMode(epmModel)
 		
 		// create empty skin
 		deSkinBuilder skinBuilder;
-		pEngSkin.TakeOver(engine->GetSkinManager()->CreateSkin("", skinBuilder);
+		pEngSkin = engine->GetSkinManager()->CreateSkin("", skinBuilder);
 		
 		// create dynamic skin
 		pDynamicSkin = new seDynamicSkin(this);
@@ -995,7 +995,7 @@ void seSkin::pCreateParticleEmitter(){
 #if 0
 	const float deviation = DEG2RAD * 20.0f;
 	
-	pEngParticleEmitter.TakeOver(GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter();
+	pEngParticleEmitter = GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter();
 	
 	pEngParticleEmitter->SetCastTimeToLive(1.5f, 2.5f);
 	pEngParticleEmitter->SetCastInterval(0.04f, 0.06f);
@@ -1056,7 +1056,7 @@ void seSkin::pUpdateComponent(){
 				pEngComponent->SetModelAndSkin(model, pEngSkin);
 				
 			}else{
-				pEngComponent.TakeOver(GetEngine()->GetComponentManager()->CreateComponent(model, pEngSkin);
+				pEngComponent = GetEngine()->GetComponentManager()->CreateComponent(model, pEngSkin);
 				pEngWorld->AddComponent(pEngComponent);
 			}
 			

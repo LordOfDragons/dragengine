@@ -95,43 +95,43 @@ pModule(module)
 	toolTip = "Name of the module.";
 	guiBuilder.CreateLabel(block, "Name:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditName.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditName = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditName->setEditable(false);
 	
 	toolTip = "Type of the module";
 	guiBuilder.CreateLabel(block, "Type:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditType.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditType = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditType->setEditable(false);
 	
 	toolTip = "Status of the module";
 	guiBuilder.CreateLabel(block, "Status:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditStatus.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditStatus = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditStatus->setEditable(false);
 	
 	toolTip = "Author of the module";
 	guiBuilder.CreateLabel(block, "Author:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditAuthor.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditAuthor = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditAuthor->setEditable(false);
 	
 	toolTip = "Module version";
 	guiBuilder.CreateLabel(block, "Version:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditVersion.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, 6, true);
+	pEditVersion = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, 6, true);
 	pEditVersion->setEditable(false);
 	
 	toolTip = "Pattern recognized by this module if this is a resource module";
 	guiBuilder.CreateLabel(block, "Pattern:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditPattern.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditPattern = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditPattern->setEditable(false);
 	
 	toolTip = "Determines if this module is a fallback module";
-	pChkIsFallback.TakeOver(guiBuilder.CreateCheckBox(frameTab, "Is Fallback", nullptr, 0, toolTip);
+	pChkIsFallback = guiBuilder.CreateCheckBox(frameTab, "Is Fallback", nullptr, 0, toolTip);
 	
-	pTextDescription.TakeOver(guiBuilder.CreateTextArea(frameTab, nullptr, 0, "", false, false);
+	pTextDescription = guiBuilder.CreateTextArea(frameTab, nullptr, 0, "", false, false);
 	pTextDescription->setVisibleColumns(50);
 	pTextDescription->setVisibleRows(5);
 	pTextDescription->setEditable(false);
@@ -149,44 +149,44 @@ pModule(module)
 	toolTip = "Error code from the loading operation.";
 	guiBuilder.CreateLabel(block, "Error Code:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditErrorCode.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditErrorCode = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditErrorCode->setEditable(false);
-	pBtnInfoErrorCode.TakeOver(guiBuilder.CreateButton(frameLine, "?", this, ID_BTN_INFO, "");
+	pBtnInfoErrorCode = guiBuilder.CreateButton(frameLine, "?", this, ID_BTN_INFO, "");
 	
 	toolTip = "Library file.";
 	guiBuilder.CreateLabel(block, "Library File:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditLibFileName.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditLibFileName = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditLibFileName->setEditable(false);
 	
 	toolTip = "Library file size.";
 	guiBuilder.CreateLabel(block, "File Size Should:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditLibFileSizeShould.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, 12, true);
+	pEditLibFileSizeShould = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, 12, true);
 	pEditLibFileSizeShould->setEditable(false);
 	
 	toolTip = "Library file size.";
 	guiBuilder.CreateLabel(block, "File Size Is:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditLibFileSizeIs.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, 12, true);
+	pEditLibFileSizeIs = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, 12, true);
 	pEditLibFileSizeIs->setEditable(false);
 	
 	toolTip = "SHA1 hash of the library file.";
 	guiBuilder.CreateLabel(block, "File Hash Should:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditLibFileHashShould.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, 50, false);
+	pEditLibFileHashShould = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, 50, false);
 	pEditLibFileHashShould->setEditable(false);
 	
 	toolTip = "SHA1 hash of the library file.";
 	guiBuilder.CreateLabel(block, "File Hash Is:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditLibFileHashIs.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, 50, false);
+	pEditLibFileHashIs = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, 50, false);
 	pEditLibFileHashIs->setEditable(false);
 	
 	toolTip = "Name of the entry point function.";
 	guiBuilder.CreateLabel(block, "Entry Point:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditLibFileEntryPoint.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditLibFileEntryPoint = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditLibFileEntryPoint->setEditable(false);
 	
 	// module properties

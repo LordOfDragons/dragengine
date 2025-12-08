@@ -62,7 +62,7 @@ pTIMActionsExpanded(action.pTIMActionsExpanded)
 	
 	try{
 		if(action.GetCondition()){
-			pCondition.TakeOver(action.GetCondition()->CreateCopy();
+			pCondition = action.GetCondition()->CreateCopy();
 		}
 		
 		count = actions.GetCount();

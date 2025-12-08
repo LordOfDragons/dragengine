@@ -65,7 +65,7 @@ seDynamicSkin::seDynamicSkin(seSkin *parentSkin){
 	pActiveRenderable = NULL;
 	
 	try{
-		pEngDynamicSkin.TakeOver(parentSkin->GetEngine()->GetDynamicSkinManager()->CreateDynamicSkin();
+		pEngDynamicSkin = parentSkin->GetEngine()->GetDynamicSkinManager()->CreateDynamicSkin();
 		
 	}catch(const deException &){
 		pCleanUp();

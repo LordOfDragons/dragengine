@@ -676,7 +676,7 @@ void meHeightTerrain::pUpdateHeightTerrain(){
 	}
 	
 	// create a new height terrain
-	pEngHT.TakeOver(pWorld.GetEngine()->GetHeightTerrainManager()->CreateHeightTerrain(pSectorSize, pSectorResolution);
+	pEngHT = pWorld.GetEngine()->GetHeightTerrainManager()->CreateHeightTerrain(pSectorSize, pSectorResolution);
 	pWorld.GetEngineWorld()->SetHeightTerrain(pEngHT);
 	
 	decLayerMask collisionCategory;

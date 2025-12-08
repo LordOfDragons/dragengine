@@ -87,7 +87,7 @@ void deoalAComponentBone::SetParent(deoalAComponentBone *bone){
 }
 
 void deoalAComponentBone::UpdateMatrix(){
-	pMatrix.TakeOver(decMatrix::CreateWorld(pPosition, pRotation, pScale).QuickMultiply(GetOriginalMatrix());
+	pMatrix = decMatrix::CreateWorld(pPosition, pRotation, pScale).QuickMultiply(GetOriginalMatrix());
 	if(pParent){
 		pMatrix = pMatrix.QuickMultiply(pParent->pMatrix);
 	}

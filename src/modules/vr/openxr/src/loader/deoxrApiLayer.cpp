@@ -219,7 +219,7 @@ void deoxrApiLayer::pReadConfig(){
 	decPath configDir(decPath::CreatePathNative(pConfigFile));
 	configDir.RemoveLastComponent();
 	
-	pLibraryPath.TakeOver(decPath::CreatePathNative(content.GetMiddle(index + 1, index2)).
+	pLibraryPath = decPath::CreatePathNative(content.GetMiddle(index + 1, index2)).
 		AbsolutePath(configDir).GetPathNative();
 }
 

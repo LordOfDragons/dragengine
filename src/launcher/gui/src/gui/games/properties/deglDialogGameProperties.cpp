@@ -141,31 +141,31 @@ pCalcSizePending(true)
 	toolTip = "Unique identifier of the game used as directory name and for running the game from the command line.";
 	guiBuilder.CreateLabel(block, "Identifier:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditIdentifier.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditIdentifier = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditIdentifier->setEditable(false);
 	
 	toolTip = "Alias identifier of the game used by launchers to use a human friendly name to run game.";
 	guiBuilder.CreateLabel(block, "Alias Identifier:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditAliasIdentifier.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditAliasIdentifier = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditAliasIdentifier->setEditable(false);
 	
 	toolTip = "Game title";
 	guiBuilder.CreateLabel(block, "Title:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditTitle.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditTitle = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditTitle->setEditable(false);
 	
 	toolTip = "Creator of the game";
 	guiBuilder.CreateLabel(block, "Creator:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditCreator.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditCreator = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditCreator->setEditable(false);
 	
 	toolTip = "Homepage";
 	guiBuilder.CreateLabel(block, "Homepage:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditHomepage.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditHomepage = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditHomepage->setEditable(false);
 	
 	toolTip = "DELGA File";
@@ -175,7 +175,7 @@ pCalcSizePending(true)
 	frameLine = new FXHorizontalFrame(frameRight, LAYOUT_SIDE_TOP | LAYOUT_FILL_X |
 		LAYOUT_FILL_Y | LAYOUT_FILL_ROW | LAYOUT_FILL_COLUMN, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
 	pLabStatusDelgaFile = new FXLabel(frameLine, "", windowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0);
-	pEditDelgaFile.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditDelgaFile = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditDelgaFile->setEditable(false);
 	pLabProblemDelgaFile = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN);
 	pLabProblemDelgaFile->setJustify(JUSTIFY_LEFT | JUSTIFY_TOP);
@@ -189,7 +189,7 @@ pCalcSizePending(true)
 	frameLine = new FXHorizontalFrame(frameRight, LAYOUT_SIDE_TOP | LAYOUT_FILL_X |
 		LAYOUT_FILL_Y | LAYOUT_FILL_ROW | LAYOUT_FILL_COLUMN, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
 	pLabStatusGameDir = new FXLabel(frameLine, "", windowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0);
-	pEditGameDir.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditGameDir = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditGameDir->setEditable(false);
 	pLabProblemGameDir = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN);
 	if(!pLabProblemGameDir) DETHROW(deeOutOfMemory);
@@ -204,7 +204,7 @@ pCalcSizePending(true)
 	frameLine = new FXHorizontalFrame(frameRight, LAYOUT_SIDE_TOP | LAYOUT_FILL_X |
 		LAYOUT_FILL_Y | LAYOUT_FILL_ROW | LAYOUT_FILL_COLUMN, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
 	pLabStatusDataDir = new FXLabel(frameLine, "", windowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0);
-	pEditDataDir.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditDataDir = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditDataDir->setEditable(false);
 	pLabProblemDataDir = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN);
 	if(!pLabProblemDataDir) DETHROW(deeOutOfMemory);
@@ -219,7 +219,7 @@ pCalcSizePending(true)
 	frameLine = new FXHorizontalFrame(frameRight, LAYOUT_SIDE_TOP | LAYOUT_FILL_X |
 		LAYOUT_FILL_Y | LAYOUT_FILL_ROW | LAYOUT_FILL_COLUMN, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
 	pLabStatusScriptDir = new FXLabel(frameLine, "", windowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0);
-	pEditScriptDir.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditScriptDir = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditScriptDir->setEditable(false);
 	pLabProblemScriptDir = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN);
 	if(!pLabProblemScriptDir) DETHROW(deeOutOfMemory);
@@ -234,12 +234,12 @@ pCalcSizePending(true)
 	frameLine = new FXHorizontalFrame(frameRight, LAYOUT_SIDE_TOP | LAYOUT_FILL_X |
 		LAYOUT_FILL_Y | LAYOUT_FILL_ROW | LAYOUT_FILL_COLUMN, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
 	pLabStatusScriptModule = new FXLabel(frameLine, "", windowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0);
-	pEditScriptModule.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditScriptModule = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditScriptModule->setEditable(false);
 	pEditScriptModuleVersion = guiBuilder.CreateTextField(
 		frameLine, nullptr, 0, "Minimum required module version", 6, true);
 	pEditScriptModuleVersion->setEditable(false);
-	pBtnScriptModuleInfo.TakeOver(guiBuilder.CreateButton(frameLine, "", windowMain->GetIconButtonInfo(), this, ID_BTN_SCRMODINFO, "Show module information");
+	pBtnScriptModuleInfo = guiBuilder.CreateButton(frameLine, "", windowMain->GetIconButtonInfo(), this, ID_BTN_SCRMODINFO, "Show module information");
 	pBtnScriptModuleInfo->setLayoutHints(pBtnScriptModuleInfo->getLayoutHints() | LAYOUT_FILL_Y);
 	pLabProblemScriptModule = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN);
 	if(!pLabProblemScriptModule) DETHROW(deeOutOfMemory);
@@ -248,13 +248,13 @@ pCalcSizePending(true)
 	pLabProblemScriptModule->setTextColor(configuration.GetTextColorProblem());
 	
 	const deglGameIcon * const iicon = (deglGameIcon*)game->GetIcons().GetLargest(128);
-	pLabIcon.TakeOver(guiBuilder.CreateLabel(block, "", "Game Icon", 0);
+	pLabIcon = guiBuilder.CreateLabel(block, "", "Game Icon", 0);
 	if(iicon && iicon->GetFoxIcon()){
 		pIconBig = iicon->GetFoxIcon();
 		pLabIcon->setIcon(pIconBig->GetIcon());
 	}
 	
-	pTextDescription.TakeOver(guiBuilder.CreateTextArea(block, nullptr, 0, "", false, false);
+	pTextDescription = guiBuilder.CreateTextArea(block, nullptr, 0, "", false, false);
 	pTextDescription->setVisibleColumns(50);
 	pTextDescription->setVisibleRows(5);
 	pTextDescription->setEditable(false);
@@ -276,9 +276,9 @@ pCalcSizePending(true)
 	frameComboBox = new FXHorizontalFrame(frameRight, LAYOUT_SIDE_TOP | LAYOUT_FILL_X |
 		LAYOUT_FILL_Y | LAYOUT_FILL_ROW | LAYOUT_FILL_COLUMN, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
 	pLabProfileIcon = new FXLabel(frameComboBox, "", pWindowMain->GetIconValidSmall(), LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0);
-	pCBProfile.TakeOver(guiBuilder.CreateComboBox(frameComboBox, this, ID_CB_PROFILE, "Select profile to use", false, 20, 8, false);
+	pCBProfile = guiBuilder.CreateComboBox(frameComboBox, this, ID_CB_PROFILE, "Select profile to use", false, 20, 8, false);
 	pCBProfile->setSortFunc(deglGuiBuilder::SortListItemByName);
-	pBtnEditProfiles.TakeOver(guiBuilder.CreateButton(frameComboBox, "Edit", nullptr, this, ID_BTN_EDIT_PROFILES, "Edit Profiles");
+	pBtnEditProfiles = guiBuilder.CreateButton(frameComboBox, "Edit", nullptr, this, ID_BTN_EDIT_PROFILES, "Edit Profiles");
 	
 	pLabProfileProblems = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X);
 	pLabProfileProblems->setJustify(JUSTIFY_LEFT | JUSTIFY_TOP);
@@ -286,7 +286,7 @@ pCalcSizePending(true)
 	pLabProfileProblems->setTextColor(configuration.GetTextColorProblem());
 	
 	guiBuilder.CreateLabel(block, "", "");
-	pBtnDropCustomProfile.TakeOver(guiBuilder.CreateButton(block, "Drop Custom Profile", nullptr,
+	pBtnDropCustomProfile = guiBuilder.CreateButton(block, "Drop Custom Profile", nullptr,
 		this, ID_BTN_DROP_CUSTOM_PROFILE, "Drop custom profile to use default profile");
 	pBtnDropCustomProfile->setLayoutHints(pBtnDropCustomProfile->getLayoutHints()
 		| LAYOUT_FILL_COLUMN | LAYOUT_FILL_X);
@@ -294,12 +294,12 @@ pCalcSizePending(true)
 	toolTip = "Arguments to run the game with";
 	guiBuilder.CreateLabel(block, "Run Arguments:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditRunArgs.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditRunArgs = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	
 	toolTip = "Patch to run game with";
 	guiBuilder.CreateLabel(block, "Patch:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pCBPatches.TakeOver(guiBuilder.CreateComboBox(frameLine, this, ID_CB_PATCHES, toolTip, false, 20, 8, false);
+	pCBPatches = guiBuilder.CreateComboBox(frameLine, this, ID_CB_PATCHES, toolTip, false, 20, 8, false);
 // 	pBtnPatches = guiBuilder.CreateButton( frameLine, "...", nullptr, this, ID_BTN_PATCHES, "Manage Patches" );
 	
 	
@@ -327,7 +327,7 @@ pCalcSizePending(true)
 	toolTip = "Size of DELGA directory";
 	guiBuilder.CreateLabel(block, "DELGA size:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditSizeDelgaFile.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditSizeDelgaFile = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditSizeDelgaFile->setEditable(false);
 	pEditSizeDelgaFile->setJustify(JUSTIFY_RIGHT);
 	pEditSizeDelgaFile->setFrameStyle(pEditSizeDelgaFile->getFrameStyle() & ~FRAME_SUNKEN);
@@ -336,7 +336,7 @@ pCalcSizePending(true)
 	toolTip = "Size of game data directory";
 	guiBuilder.CreateLabel(block, "Data dir size:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditSizeDataDir.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditSizeDataDir = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditSizeDataDir->setEditable(false);
 	pEditSizeDataDir->setJustify(JUSTIFY_RIGHT);
 	pEditSizeDataDir->setFrameStyle(pEditSizeDataDir->getFrameStyle() & ~FRAME_SUNKEN);
@@ -345,7 +345,7 @@ pCalcSizePending(true)
 	toolTip = "Size of game capture directory (screenshots, videos, ...)";
 	guiBuilder.CreateLabel(block, "Capture dir size (screenshots, videos, ...):", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditSizeCaptureDir.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditSizeCaptureDir = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditSizeCaptureDir->setEditable(false);
 	pEditSizeCaptureDir->setJustify(JUSTIFY_RIGHT);
 	pEditSizeCaptureDir->setFrameStyle(pEditSizeCaptureDir->getFrameStyle() & ~FRAME_SUNKEN);
@@ -354,7 +354,7 @@ pCalcSizePending(true)
 	toolTip = "Size of game config directory (config, profiles, saves, ...)";
 	guiBuilder.CreateLabel(block, "Config dir size (config, saves...):", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditSizeConfigDir.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditSizeConfigDir = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditSizeConfigDir->setEditable(false);
 	pEditSizeConfigDir->setJustify(JUSTIFY_RIGHT);
 	pEditSizeConfigDir->setFrameStyle(pEditSizeConfigDir->getFrameStyle() & ~FRAME_SUNKEN);
@@ -363,7 +363,7 @@ pCalcSizePending(true)
 	toolTip = "Size of all engine module caches";
 	guiBuilder.CreateLabel(block, "All caches size:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditSizeCaches.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditSizeCaches = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditSizeCaches->setEditable(false);
 	pEditSizeCaches->setJustify(JUSTIFY_RIGHT);
 	pEditSizeCaches->setFrameStyle(pEditSizeCaches->getFrameStyle() & ~FRAME_SUNKEN);

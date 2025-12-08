@@ -126,7 +126,7 @@ void deoglSkinStateCNImage::pUpdateTCTransform(){
 	const float repeatScaleU = (float)pRepeat.x;
 	const float repeatScaleV = (float)pRepeat.y;
 	
-	pTCTransform.TakeOver(decTexMatrix2::CreateScale(repeatScaleU, repeatScaleV);
+	pTCTransform = decTexMatrix2::CreateScale(repeatScaleU, repeatScaleV);
 	pTCClampMin = halfPixel;
 	pTCClampMax = decVector2(repeatScaleU, repeatScaleV) - halfPixel;
 }

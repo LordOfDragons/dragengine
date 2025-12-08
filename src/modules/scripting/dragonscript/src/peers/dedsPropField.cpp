@@ -51,7 +51,7 @@ dedsPropField::dedsPropField(deScriptingDragonScript *ds, dePropField *propField
 	pDS = ds;
 	pPropField = propField;
 	pHasCB = false;
-	pValCB.TakeOver(ds->GetScriptEngine()->GetMainRunTime()->CreateValue(ds->GetClassPropFieldListener());
+	pValCB = ds->GetScriptEngine()->GetMainRunTime()->CreateValue(ds->GetClassPropFieldListener());
 	pDelegee = NULL;
 }
 

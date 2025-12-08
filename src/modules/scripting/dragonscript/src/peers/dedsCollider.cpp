@@ -62,9 +62,9 @@ pHasCBBreaking(false)
 	
 	dsRunTime &rt = *ds.GetScriptEngine()->GetMainRunTime();
 	
-	pValOwner.TakeOver(rt.CreateValue();
-	pValCB.TakeOver(rt.CreateValue(pDS.GetClassColliderListener());
-	pValCBBreaking.TakeOver(rt.CreateValue(ds.GetClassColliderBreakingListener());
+	pValOwner = rt.CreateValue();
+	pValCB = rt.CreateValue(pDS.GetClassColliderListener());
+	pValCBBreaking = rt.CreateValue(ds.GetClassColliderBreakingListener());
 }
 
 dedsCollider::~dedsCollider(){

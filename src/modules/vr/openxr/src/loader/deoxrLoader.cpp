@@ -305,7 +305,7 @@ void deoxrLoader::pReadConfig(){
 	decPath configDir(decPath::CreatePathNative(pRuntimeConfigFile));
 	configDir.RemoveLastComponent();
 	
-	pRuntimeLibraryPath.TakeOver(decPath::CreatePathNative(content.GetMiddle(index + 1, index2)).
+	pRuntimeLibraryPath = decPath::CreatePathNative(content.GetMiddle(index + 1, index2)).
 		AbsolutePath(configDir).GetPathNative();
 }
 

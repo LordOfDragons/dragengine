@@ -219,7 +219,7 @@ const deoglSPBlockUBO::Ref &deoglRParticleEmitterInstanceType::GetParamBlock(){
 					.GetBufferObject().GetLayoutSkinInstanceUBO());
 				
 			}else{*/
-				pParamBlock.TakeOver(skinShader.CreateSPBInstParam();
+				pParamBlock = skinShader.CreateSPBInstParam();
 			//}
 		}
 		

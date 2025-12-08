@@ -669,7 +669,7 @@ void deoglRPropFieldType::pPrepareParamBlock(){
 					.GetBufferObject().GetLayoutSkinInstanceUBO());
 				
 			}else{*/
-				pParamBlock.TakeOver(skinShader.CreateSPBInstParam();
+				pParamBlock = skinShader.CreateSPBInstParam();
 			//}
 		}
 		

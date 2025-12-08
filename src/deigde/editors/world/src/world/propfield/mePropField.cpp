@@ -57,7 +57,7 @@ mePropField::mePropField(deEngine *engine){
 	pTypeSize = 0;
 	
 	try{
-		pEngPF.TakeOver(engine->GetPropFieldManager()->CreatePropField();
+		pEngPF = engine->GetPropFieldManager()->CreatePropField();
 		
 	}catch(const deException &){
 		pCleanUp();

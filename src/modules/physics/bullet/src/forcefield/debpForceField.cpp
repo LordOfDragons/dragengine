@@ -277,7 +277,7 @@ void debpForceField::pUpdateGeometry(){
 	const decMatrix matRot(decMatrix::CreateFromQuaternion(pForceField.GetOrientation()));
 	pDirection = matRot.TransformView();
 	
-	pVortexMatrix.TakeOver(decMatrix::CreateRotationY(pForceField.GetFluctuationDirection()
+	pVortexMatrix = decMatrix::CreateRotationY(pForceField.GetFluctuationDirection()
 		* DEG2RAD * pForceField.GetRadius() ) * matRot;
 	
 	pDirtyGeometry = false;

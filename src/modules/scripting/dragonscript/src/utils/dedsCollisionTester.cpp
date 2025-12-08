@@ -69,7 +69,7 @@ pDS(ds){
 	pHitCollider = NULL;
 	pHitBone = 0;
 	
-	pColliderListener.TakeOver(pDS.GetScriptEngine()->GetMainRunTime()->CreateValue(pDS.GetClassColliderListener());
+	pColliderListener = pDS.GetScriptEngine()->GetMainRunTime()->CreateValue(pDS.GetClassColliderListener());
 }
 
 dedsCollisionTester::dedsCollisionTester(const dedsCollisionTester &collisionTester) :
@@ -87,7 +87,7 @@ pDS(collisionTester.pDS){
 	pHitCollider = NULL;
 	pHitBone = 0;
 	
-	pColliderListener.TakeOver(pDS.GetScriptEngine()->GetMainRunTime()->CreateValue(pDS.GetClassColliderListener());
+	pColliderListener = pDS.GetScriptEngine()->GetMainRunTime()->CreateValue(pDS.GetClassColliderListener());
 	
 	// Set parameters
 	try{

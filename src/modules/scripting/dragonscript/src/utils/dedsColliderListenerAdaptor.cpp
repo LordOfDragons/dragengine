@@ -48,7 +48,7 @@ pDS(ds),
 pListener(NULL),
 pHasListener(false)
 {
-	pListener.TakeOver(ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassColliderListener());
+	pListener = ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassColliderListener());
 }
 
 dedsColliderListenerAdaptor::~dedsColliderListenerAdaptor(){

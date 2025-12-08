@@ -281,7 +281,7 @@ void cePlaybackCamera::Reset(){
 }
 
 void cePlaybackCamera::SetCoordSys1Actor(ceConversationActor &actor1){
-	pCoordSys.TakeOver(decMatrix::CreateRotationY(180.0f * DEG2RAD)
+	pCoordSys = decMatrix::CreateRotationY(180.0f * DEG2RAD)
 		* decMatrix::CreateRT( actor1.GetOrientation() * DEG2RAD, actor1.GetPosition() );
 	
 	const decVector position = pCoordSys.GetPosition();
@@ -307,10 +307,10 @@ void cePlaybackCamera::SetCoordSys2Actors(ceConversationActor &actor1, ceConvers
 		
 		if(view.y >= 0.999f){
 			// too close to the up vector. use a different up vector
-			pCoordSys.TakeOver(decMatrix::CreateWorld((position1 + position2) * 0.5f, view, decVector(0.0f, 0.0f, 1.0f));
+			pCoordSys = decMatrix::CreateWorld((position1 + position2) * 0.5f, view, decVector(0.0f, 0.0f, 1.0f));
 			
 		}else{
-			pCoordSys.TakeOver(decMatrix::CreateWorld((position1 + position2) * 0.5f, view, decVector(0.0f, 1.0f, 0.0f));
+			pCoordSys = decMatrix::CreateWorld((position1 + position2) * 0.5f, view, decVector(0.0f, 1.0f, 0.0f));
 		}
 	}
 	

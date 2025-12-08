@@ -234,7 +234,7 @@ void deoglSkinStateConstructedNode::pUpdateTransform(){
 	const decVector2 offset((float)sizeAbs.x * 0.5f, (float)sizeAbs.y * 0.5f);
 	const decVector2 position(decPoint(pPosition.x, pPosition.y));
 	
-	pTransform.TakeOver(decTexMatrix2::CreateScale(pSize.x < 0.0f ? -1.0f : 1.0f, pSize.y < 0.0f ? -1.0f : 1.0f)
+	pTransform = decTexMatrix2::CreateScale(pSize.x < 0.0f ? -1.0f : 1.0f, pSize.y < 0.0f ? -1.0f : 1.0f)
 		* decTexMatrix2::CreateTranslation( -offset )
 		* decTexMatrix2::CreateShear( tanf( pShear ), 0.0f )
 		* decTexMatrix2::CreateRotation( pRotation )
@@ -248,7 +248,7 @@ void deoglSkinStateConstructedNode::pUpdateColorTransform(){
 	
 	pDirtyColorTransform = false;
 	
-	pColorTransform.TakeOver(decColorMatrix::CreateContrast(pContrast)
+	pColorTransform = decColorMatrix::CreateContrast(pContrast)
 		* decColorMatrix::CreateBrightness( pBrightness )
 		* decColorMatrix::CreateScaling( pColorize );
 }

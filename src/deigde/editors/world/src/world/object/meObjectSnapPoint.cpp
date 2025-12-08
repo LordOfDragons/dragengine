@@ -81,7 +81,7 @@ pColliderOwner(this)
 		decLayerMask collisionFilter;
 		collisionFilter.SetBit(meWorld::eclmEditing);
 		
-		pCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume();
+		pCollider = engine->GetColliderManager()->CreateColliderVolume();
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(deCollider::ertStatic);
 		pCollider->SetUseLocalGravity(true);

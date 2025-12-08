@@ -68,7 +68,7 @@ void ceTextBoxText::Layout(const ceTextBox &textBox){
 	// create canvas if not existing
 	deCanvasManager &canvasManager = *textBox.GetEngine().GetCanvasManager();
 	if(!pCanvasView){
-		pCanvasView.TakeOver(canvasManager.CreateCanvasView();
+		pCanvasView = canvasManager.CreateCanvasView();
 	}
 	
 	// clear canvas

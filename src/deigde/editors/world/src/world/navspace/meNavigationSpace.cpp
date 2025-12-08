@@ -108,9 +108,9 @@ pColliderOwner(this)
 	
 	try{
 		meRigBuilderMeshCollision rigBuilder;
-		pEngRig.TakeOver(engine->GetRigManager()->CreateRig("", rigBuilder);
+		pEngRig = engine->GetRigManager()->CreateRig("", rigBuilder);
 		
-		pEngCollider.TakeOver(engine->GetColliderManager()->CreateColliderComponent();
+		pEngCollider = engine->GetColliderManager()->CreateColliderComponent();
 		pEngCollider->SetEnabled(true);
 		pEngCollider->SetResponseType(deCollider::ertStatic);
 		pEngCollider->SetUseLocalGravity(true);
@@ -125,10 +125,10 @@ pColliderOwner(this)
 		
 		environment->SetColliderUserPointer(pEngCollider, &pColliderOwner);
 		
-		pEngNavSpace.TakeOver(engine->GetNavigationSpaceManager()->CreateNavigationSpace();
+		pEngNavSpace = engine->GetNavigationSpaceManager()->CreateNavigationSpace();
 		
 		// create debug drawer and shapes
-		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSNavSpace = new igdeWDebugDrawerShape;
@@ -569,7 +569,7 @@ void meNavigationSpace::pUpdateShapes(){
 			}
 			
 			skin = engine.GetSkinManager()->LoadDefault();
-			pEngColComponent.TakeOver(engine.GetComponentManager()->CreateComponent(model, skin);
+			pEngColComponent = engine.GetComponentManager()->CreateComponent(model, skin);
 			pEngColComponent->SetRig(pEngRig);
 			
 		}catch(const deException &){

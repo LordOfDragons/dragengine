@@ -371,12 +371,12 @@ void dearRuleGroup::RuleChanged(){
 	}
 	
 	// create copies of the current bone state list if required
-	pStateList.TakeOver(instance.GetBoneStateList().CreateCopy();
-	pVPSStateList.TakeOver(instance.GetVPSStateList().CreateCopy();
+	pStateList = instance.GetBoneStateList().CreateCopy();
+	pVPSStateList = instance.GetVPSStateList().CreateCopy();
 	
 	if(pApplicationType == deAnimatorRuleGroup::eatSelect && pRuleCount > 1){
-		pStateList2.TakeOver(instance.GetBoneStateList().CreateCopy();
-		pVPSStateList2.TakeOver(instance.GetVPSStateList().CreateCopy();
+		pStateList2 = instance.GetBoneStateList().CreateCopy();
+		pVPSStateList2 = instance.GetVPSStateList().CreateCopy();
 	}
 }
 

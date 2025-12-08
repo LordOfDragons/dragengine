@@ -166,7 +166,7 @@ void dedaiNavBlocker::UpdateDDSBlocker(){
 	if(devmode.GetEnabled() && devmode.GetShowBlockers() && pNavBlocker.GetEnabled()){
 		// ensure the debug drawer exists
 		if(!pDebugDrawer){
-			pDebugDrawer.TakeOver(pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
+			pDebugDrawer = pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
 			pDebugDrawer->SetXRay(true);
 			
 			if(pParentWorld){

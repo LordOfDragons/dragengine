@@ -91,7 +91,7 @@ pIKLocked{false, false, false}
 	pName = "Bone";
 	
 	try{
-		pCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume();
+		pCollider = engine->GetColliderManager()->CreateColliderVolume();
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(deCollider::ertKinematic);
 		pCollider->SetUseLocalGravity(true);
@@ -102,7 +102,7 @@ pIKLocked{false, false, false}
 		pCollider->SetCollisionFilter(decCollisionFilter(layerMask));
 		
 		// create debug drawer and shapes
-		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSBone = new igdeWDebugDrawerShape;

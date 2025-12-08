@@ -94,7 +94,7 @@ pPlayTime(10.0f)
 		
 		pCreateWorld();
 		
-		pEngSynthesizerInstance.TakeOver(GetEngine()->GetSynthesizerInstanceManager()->CreateSynthesizerInstance();
+		pEngSynthesizerInstance = GetEngine()->GetSynthesizerInstanceManager()->CreateSynthesizerInstance();
 		pEngSynthesizerInstance->SetSynthesizer(pEngSynthesizer);
 		pEngSynthesizerInstance->SetSampleCount(pSampleCount);
 		
@@ -834,7 +834,7 @@ void seSynthesizer::pCreateWorld(){
 	deEngine * const engine = GetEngine();
 	
 	// create world
-	pEngWorld.TakeOver(engine->GetWorldManager()->CreateWorld();
+	pEngWorld = engine->GetWorldManager()->CreateWorld();
 	pEngWorld->SetGravity(decVector(0.0f, -9.81f, 0.0f));
 	pEngWorld->SetDisableLights(false);
 	
@@ -844,13 +844,13 @@ void seSynthesizer::pCreateWorld(){
 	decLayerMask layerMaskAudio;
 	layerMaskAudio.SetBit(0);
 	
-	pEngMicrophone.TakeOver(engine->GetMicrophoneManager()->CreateMicrophone();
+	pEngMicrophone = engine->GetMicrophoneManager()->CreateMicrophone();
 	pEngMicrophone->SetType(deMicrophone::emtPoint);
 	pEngMicrophone->SetLayerMask(layerMaskAudio);
 	pEngWorld->AddMicrophone(pEngMicrophone);
 	
 	// create speaker
-	pEngSpeaker.TakeOver(engine->GetSpeakerManager()->CreateSpeaker();
+	pEngSpeaker = engine->GetSpeakerManager()->CreateSpeaker();
 	pEngSpeaker->SetType(deSpeaker::estPoint);
 	pEngSpeaker->SetLooping(false);
 	pEngSpeaker->SetPlaySpeed(1.0f);
@@ -860,7 +860,7 @@ void seSynthesizer::pCreateWorld(){
 	pEngMicrophone->AddSpeaker(pEngSpeaker);
 	
 	// create synthesizer
-	pEngSynthesizer.TakeOver(engine->GetSynthesizerManager()->CreateSynthesizer();
+	pEngSynthesizer = engine->GetSynthesizerManager()->CreateSynthesizer();
 	pEngSynthesizer->SetChannelCount(pChannelCount);
 	pEngSynthesizer->SetSampleRate(pSampleRate);
 	pEngSynthesizer->SetBytesPerSample(pBytesPerSample);

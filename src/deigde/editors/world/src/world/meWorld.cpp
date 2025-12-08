@@ -135,14 +135,14 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pGuiParams = new meWorldGuiParameters(*this);
 		
 		// create world
-		pDEWorld.TakeOver(engine->GetWorldManager()->CreateWorld();
+		pDEWorld = engine->GetWorldManager()->CreateWorld();
 		pDEWorld->SetSize(pSize);
 		pDEWorld->SetGravity(pGravity);
 		pDEWorld->SetDisableLights(pFullBright);
 		pUpdateAmbientLight();
 		
 		// create collision detection collider
-		pEngColCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume();
+		pEngColCollider = engine->GetColliderManager()->CreateColliderVolume();
 		
 		// create height terrain
 		pHeightTerrain.TakeOverWith(*this);
@@ -185,7 +185,7 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pLumimeter->SetWorld(this);
 		
 		// create microphone
-		pEngMicrophone.TakeOver(engine->GetMicrophoneManager()->CreateMicrophone();
+		pEngMicrophone = engine->GetMicrophoneManager()->CreateMicrophone();
 		pEngMicrophone->SetMuted(false);
 		pEngMicrophone->SetType(deMicrophone::emtPoint); // directed in fact but that's for later
 		decLayerMask layerMaskMicrophone;

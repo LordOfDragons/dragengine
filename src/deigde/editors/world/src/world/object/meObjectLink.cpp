@@ -71,7 +71,7 @@ meObjectLink::meObjectLink(igdeEnvironment *environment, meObject *anchor, meObj
 		target->AddReference();
 		
 		// create debug drawer and shapes
-		pDebugDrawer.TakeOver(environment->GetEngineController()->GetEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer = environment->GetEngineController()->GetEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSConnection = new igdeWConnection;
