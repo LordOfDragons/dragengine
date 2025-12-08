@@ -35,6 +35,12 @@ class seWPLink;
  * \brief Link properties panel listener.
  */
 class seWPLinkListener : public seSynthesizerNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seWPLinkListener> Ref;
+	
+	
+
 private:
 	seWPLink &pPanel;
 	

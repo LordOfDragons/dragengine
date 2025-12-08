@@ -35,6 +35,12 @@ class projPanelProfiles;
  * \brief Panel profiles listener.
  */
 class projPanelProfilesListener : public projProjectListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<projPanelProfilesListener> Ref;
+	
+	
+
 private:
 	projPanelProfiles &pPanel;
 	

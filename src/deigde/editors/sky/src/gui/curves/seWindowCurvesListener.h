@@ -34,6 +34,12 @@ class seWindowCurves;
  * \brief Curves window listener.
  */
 class seWindowCurvesListener : public seSkyListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seWindowCurvesListener> Ref;
+	
+	
+
 private:
 	seWindowCurves &pWindow;
 	

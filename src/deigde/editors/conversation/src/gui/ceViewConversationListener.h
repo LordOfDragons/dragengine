@@ -35,6 +35,12 @@ class ceViewConversation;
  * \brief Window Main Listener.
  */
 class ceViewConversationListener : public ceConversationListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceViewConversationListener> Ref;
+	
+	
+
 private:
 	ceViewConversation &pView;
 	

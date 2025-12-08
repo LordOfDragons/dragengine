@@ -35,6 +35,12 @@ class seWPSource;
  * \brief Source properties panel listener
  */
 class seWPSourceListener : public seSynthesizerNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seWPSourceListener> Ref;
+	
+	
+
 private:
 	seWPSource &pPanel;
 	

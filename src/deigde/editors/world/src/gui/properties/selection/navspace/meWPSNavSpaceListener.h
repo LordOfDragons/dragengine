@@ -35,6 +35,12 @@ class meWPSNavSpace;
  * \brief Navigation Space Panel Listener.
  */
 class meWPSNavSpaceListener : public meWorldNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meWPSNavSpaceListener> Ref;
+	
+	
+
 private:
 	meWPSNavSpace &pPanel;
 	

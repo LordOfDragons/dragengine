@@ -35,6 +35,12 @@ class meView3D;
  * \brief View 3D Listener
  */
 class meView3DListener : public meWorldNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meView3DListener> Ref;
+	
+	
+
 private:
 	meView3D &pView3D;
 	

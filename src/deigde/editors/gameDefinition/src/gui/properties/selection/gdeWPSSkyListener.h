@@ -35,6 +35,12 @@ class gdeWPSSky;
  * \brief Sky panel listener.
  */
 class gdeWPSSkyListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSSkyListener> Ref;
+	
+	
+
 private:
 	gdeWPSSky &pPanel;
 	

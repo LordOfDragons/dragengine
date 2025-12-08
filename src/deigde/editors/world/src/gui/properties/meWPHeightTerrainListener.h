@@ -35,6 +35,12 @@ class meWPHeightTerrain;
  * \brief Height terrain properties listener.
  */
 class meWPHeightTerrainListener : public meWorldNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meWPHeightTerrainListener> Ref;
+	
+	
+
 private:
 	meWPHeightTerrain &pPanel;
 	

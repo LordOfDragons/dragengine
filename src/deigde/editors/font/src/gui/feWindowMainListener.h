@@ -35,6 +35,12 @@ class feWindowMain;
  * \brief Window editor listener.
  */
 class feWindowMainListener : public feFontNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<feWindowMainListener> Ref;
+	
+	
+
 private:
 	feWindowMain &pWindow;
 	

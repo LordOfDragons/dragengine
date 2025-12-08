@@ -35,6 +35,12 @@ class gdeWPSCategory;
  * \brief Category panel listener.
  */
 class gdeWPSCategoryListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSCategoryListener> Ref;
+	
+	
+
 private:
 	gdeWPSCategory &pPanel;
 	

@@ -35,6 +35,12 @@ class saeWPSAnim;
  * Speech Animation panel listener.
  */
 class saeWPSAnimListener : public saeSAnimationListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<saeWPSAnimListener> Ref;
+	
+	
+
 private:
 	saeWPSAnim &pPanel;
 	

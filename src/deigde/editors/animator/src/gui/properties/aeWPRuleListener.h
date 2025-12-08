@@ -35,6 +35,12 @@ class aeWPRule;
  * Rule panel listener.
  */
 class aeWPRuleListener : public aeAnimatorNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeWPRuleListener> Ref;
+	
+	
+
 private:
 	aeWPRule &pPanel;
 	

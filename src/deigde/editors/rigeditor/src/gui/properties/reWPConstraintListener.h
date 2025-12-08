@@ -35,6 +35,12 @@ class reWPConstraint;
  * \brief Constraint panel listener.
  */
 class reWPConstraintListener : public reRigNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reWPConstraintListener> Ref;
+	
+	
+
 private:
 	reWPConstraint &pPanel;
 	

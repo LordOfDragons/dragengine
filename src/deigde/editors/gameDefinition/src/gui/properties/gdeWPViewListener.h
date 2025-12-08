@@ -35,6 +35,12 @@ class gdeWPView;
  * \brief View panel listener.
  */
 class gdeWPViewListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPViewListener> Ref;
+	
+	
+
 private:
 	gdeWPView &pPanel;
 	

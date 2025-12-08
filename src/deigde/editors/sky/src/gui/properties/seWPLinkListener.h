@@ -34,6 +34,12 @@ class seWPLink;
  * \brief Link properties panel listener.
  */
 class seWPLinkListener : public seSkyListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seWPLinkListener> Ref;
+	
+	
+
 private:
 	seWPLink &pPanel;
 	

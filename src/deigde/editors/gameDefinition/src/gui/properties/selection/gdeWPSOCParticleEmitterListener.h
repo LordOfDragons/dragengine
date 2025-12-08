@@ -35,6 +35,12 @@ class gdeWPSOCParticleEmitter;
  * \brief Object class particle emitter panel listener.
  */
 class gdeWPSOCParticleEmitterListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSOCParticleEmitterListener> Ref;
+	
+	
+
 private:
 	gdeWPSOCParticleEmitter &pPanel;
 	

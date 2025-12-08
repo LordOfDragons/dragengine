@@ -35,6 +35,12 @@ class peeWPController;
  * \brief Controller Properties Panel Listener.
  */
 class peeWPControllerListener : public peeEmitterListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<peeWPControllerListener> Ref;
+	
+	
+
 private:
 	peeWPController &pPanel;
 	

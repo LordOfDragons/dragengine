@@ -35,6 +35,12 @@ class gdeWPSObjectClass;
  * \brief Object class panel listener.
  */
 class gdeWPSObjectClassListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSObjectClassListener> Ref;
+	
+	
+
 private:
 	gdeWPSObjectClass &pPanel;
 	

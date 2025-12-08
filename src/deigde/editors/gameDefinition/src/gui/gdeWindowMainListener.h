@@ -35,6 +35,12 @@ class gdeWindowMain;
  * \brief Main window game definition listener.
  */
 class gdeWindowMainListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWindowMainListener> Ref;
+	
+	
+
 private:
 	gdeWindowMain &pWindow;
 	

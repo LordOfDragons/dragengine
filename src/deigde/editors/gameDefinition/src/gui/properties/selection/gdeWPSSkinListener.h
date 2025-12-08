@@ -35,6 +35,12 @@ class gdeWPSSkin;
  * \brief Skin panel listener.
  */
 class gdeWPSSkinListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSSkinListener> Ref;
+	
+	
+
 private:
 	gdeWPSSkin &pPanel;
 	

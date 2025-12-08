@@ -35,6 +35,12 @@ class projWindowMain;
  * \brief Main window listener.
  */
 class projWindowMainListener : public projProjectListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<projWindowMainListener> Ref;
+	
+	
+
 private:
 	projWindowMain &pWindow;
 	

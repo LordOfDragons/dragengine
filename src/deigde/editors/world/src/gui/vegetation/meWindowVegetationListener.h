@@ -35,6 +35,12 @@ class meWindowVegetation;
  * \brief Vegetation Editing Window Listener.
  */
 class meWindowVegetationListener : public meWorldNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meWindowVegetationListener> Ref;
+	
+	
+
 private:
 	meWindowVegetation &pWindow;
 	

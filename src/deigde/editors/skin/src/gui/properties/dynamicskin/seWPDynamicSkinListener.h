@@ -35,6 +35,12 @@ class seWPDynamicSkin;
  * \brief Texture panel listener.
  */
 class seWPDynamicSkinListener : public seSkinListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seWPDynamicSkinListener> Ref;
+	
+	
+
 private:
 	seWPDynamicSkin &pPanel;
 	

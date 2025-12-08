@@ -35,6 +35,12 @@ class gdeWPUndoHistory;
  * \brief Undo history properties panel Listener.
  */
 class gdeWPUndoHistoryListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPUndoHistoryListener> Ref;
+	
+	
+
 private:
 	gdeWPUndoHistory &pPanel;
 	

@@ -35,6 +35,12 @@ class seViewConstructedView;
  * \brief Constructed view listener.
  */
 class seViewConstructedViewListener : public seSkinListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seViewConstructedViewListener> Ref;
+	
+	
+
 private:
 	seViewConstructedView &pView;
 	

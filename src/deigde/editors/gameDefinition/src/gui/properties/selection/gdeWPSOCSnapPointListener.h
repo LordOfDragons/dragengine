@@ -35,6 +35,12 @@ class gdeWPSOCSnapPoint;
  * \brief Object class snap point panel listener.
  */
 class gdeWPSOCSnapPointListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSOCSnapPointListener> Ref;
+	
+	
+
 private:
 	gdeWPSOCSnapPoint &pPanel;
 	

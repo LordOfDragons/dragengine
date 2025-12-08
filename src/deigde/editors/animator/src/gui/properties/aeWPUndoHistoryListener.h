@@ -35,6 +35,12 @@ class aeWPUndoHistory;
  * History Panel Listener
  */
 class aeWPUndoHistoryListener : public aeAnimatorNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeWPUndoHistoryListener> Ref;
+	
+	
+
 private:
 	aeWPUndoHistory &pPanel;
 	

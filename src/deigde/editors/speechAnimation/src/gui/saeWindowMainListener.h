@@ -35,6 +35,12 @@ class saeWindowMain;
  * Window Main Listener.
  */
 class saeWindowMainListener : public saeSAnimationListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<saeWindowMainListener> Ref;
+	
+	
+
 private:
 	saeWindowMain &pWindow;
 	

@@ -34,6 +34,12 @@ class meWPView;
  * \brief View Panel Listener
  */
 class meWPViewListener : public meWorldNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meWPViewListener> Ref;
+	
+	
+
 private:
 	meWPView &pPanel;
 	

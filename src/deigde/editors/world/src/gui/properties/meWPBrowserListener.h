@@ -35,6 +35,12 @@ class meWPBrowser;
  * \brief Browser panel listener.
  */
 class meWPBrowserListener : public meWorldNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meWPBrowserListener> Ref;
+	
+	
+
 private:
 	meWPBrowser &pPanel;
 	

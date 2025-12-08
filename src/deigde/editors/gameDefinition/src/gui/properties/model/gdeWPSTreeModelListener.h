@@ -35,6 +35,12 @@ class gdeWPSTreeModel;
  * \brief Tree model listener.
  */
 class gdeWPSTreeModelListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSTreeModelListener> Ref;
+	
+	
+
 private:
 	gdeWPSTreeModel &pModel;
 	

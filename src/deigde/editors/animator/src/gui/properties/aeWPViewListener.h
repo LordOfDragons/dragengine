@@ -35,6 +35,12 @@ class aeWPView;
  * View panel listener.
  */
 class aeWPViewListener : public aeAnimatorNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeWPViewListener> Ref;
+	
+	
+
 private:
 	aeWPView &pPanel;
 	

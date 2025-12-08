@@ -35,6 +35,12 @@ class reWPView;
  * \brief View panel rig listener.
  */
 class reWPViewListener : public reRigNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reWPViewListener> Ref;
+	
+	
+
 private:
 	reWPView &pPanel;
 	

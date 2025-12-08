@@ -40,6 +40,12 @@ class igdeGizmoManager;
  * and do further event handling if required.
  */
 class DE_DLL_EXPORT igdeGizmoMouseKeyListener : public igdeMouseKeyListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGizmoMouseKeyListener> Ref;
+	
+	
+
 private:
 	igdeGizmoManager &pGizmoManager;
 	igdeViewRenderWindow &pView;

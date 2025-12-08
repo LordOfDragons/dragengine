@@ -35,6 +35,12 @@ class ceWPTTreeModel;
  * \brief Tree model listener.
  */
 class ceWPTTreeModelListener : public ceConversationListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceWPTTreeModelListener> Ref;
+	
+	
+
 private:
 	ceWPTTreeModel &pModel;
 	

@@ -41,6 +41,12 @@ class aeAnimatorLocomotion;
  * typical Player AI type collision handling.
  */
 class aeALColliderListener : public deBaseScriptingCollider{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeALColliderListener> Ref;
+	
+	
+
 private:
 	aeAnimatorLocomotion *pLocomotion;
 	

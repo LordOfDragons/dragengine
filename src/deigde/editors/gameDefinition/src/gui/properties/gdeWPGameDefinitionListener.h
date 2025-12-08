@@ -35,6 +35,12 @@ class gdeWPGameDefinition;
  * \brief Properties window game definition panel listener.
  */
 class gdeWPGameDefinitionListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPGameDefinitionListener> Ref;
+	
+	
+
 private:
 	gdeWPGameDefinition &pPanel;
 	

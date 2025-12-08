@@ -35,6 +35,12 @@ class gdeWPSOCSpeaker;
  * \brief Object class speaker panel listener.
  */
 class gdeWPSOCSpeakerListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSOCSpeakerListener> Ref;
+	
+	
+
 private:
 	gdeWPSOCSpeaker &pPanel;
 	

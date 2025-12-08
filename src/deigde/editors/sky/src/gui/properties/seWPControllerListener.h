@@ -34,6 +34,12 @@ class seWPController;
  * \brief Controller properties panel listener.
  */
 class seWPControllerListener : public seSkyListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seWPControllerListener> Ref;
+	
+	
+
 private:
 	seWPController &pPanel;
 	

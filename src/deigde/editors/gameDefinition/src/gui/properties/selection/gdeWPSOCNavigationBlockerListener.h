@@ -35,6 +35,12 @@ class gdeWPSOCNavigationBlocker;
  * \brief Object class navigation blocker panel listener.
  */
 class gdeWPSOCNavigationBlockerListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSOCNavigationBlockerListener> Ref;
+	
+	
+
 private:
 	gdeWPSOCNavigationBlocker &pPanel;
 	

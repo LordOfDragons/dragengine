@@ -35,6 +35,12 @@ class ceWindowDopeSheet;
  * \brief Dope sheet window listener.
  */
 class ceWindowDopeSheetListener : public ceConversationListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceWindowDopeSheetListener> Ref;
+	
+	
+
 private:
 	ceWindowDopeSheet &pWindow;
 	

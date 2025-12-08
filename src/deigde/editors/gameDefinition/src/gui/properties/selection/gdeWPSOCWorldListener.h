@@ -34,6 +34,12 @@ class gdeWPSOCWorld;
  * \brief Object class world panel listener.
  */
 class gdeWPSOCWorldListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSOCWorldListener> Ref;
+	
+	
+
 private:
 	gdeWPSOCWorld &pPanel;
 	
