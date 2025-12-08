@@ -139,7 +139,7 @@ public:
 	igdeNVLink *ClosestLinkNear(const decPoint &position, float range) const;
 	
 	/** \brief Hover link or NULL. */
-	inline igdeNVLink *GetHoverLink() const{ return pHoverLink; }
+	inline const igdeNVLink::Ref &GetHoverLink() const{ return pHoverLink; }
 	
 	/** \brief Set hover link. */
 	void SetHoverLink(igdeNVLink *link);

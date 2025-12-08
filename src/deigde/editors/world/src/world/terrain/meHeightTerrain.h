@@ -96,7 +96,7 @@ public:
 	inline meWorld &GetWorld() const{ return pWorld; }
 	
 	/** \brief Engine height terrain. */
-	inline deHeightTerrain *GetEngineHeightTerrain() const{ return pEngHT; }
+	inline const deHeightTerrain::Ref &GetEngineHeightTerrain() const{ return pEngHT; }
 	
 	
 	

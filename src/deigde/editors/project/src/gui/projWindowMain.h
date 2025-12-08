@@ -116,19 +116,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Actions. */
-	inline igdeAction *GetActionDistSave() const{ return pActionDistSave; }
+	inline const igdeAction::Ref &GetActionDistSave() const{ return pActionDistSave; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
-	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
-	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
-	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
-	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
+	inline const igdeActionUndo::Ref &GetActionEditUndo() const{ return pActionEditUndo; }
+	inline const igdeActionRedo::Ref &GetActionEditRedo() const{ return pActionEditRedo; }
+	inline const igdeAction::Ref &GetActionEditCut() const{ return pActionEditCut; }
+	inline const igdeAction::Ref &GetActionEditCopy() const{ return pActionEditCopy; }
+	inline const igdeAction::Ref &GetActionEditPaste() const{ return pActionEditPaste; }
 	
-	inline igdeAction *GetActionProfileAdd() const{ return pActionProfileAdd; }
-	inline igdeAction *GetActionProfileRemove() const{ return pActionProfileRemove; }
-	inline igdeAction *GetActionProfileDuplicate() const{ return pActionProfileDuplicate; }
-	inline igdeAction *GetActionProfileDistribute() const{ return pActionProfileDistribute; }
-	inline igdeAction *GetActionProfileTestRun() const{ return pActionProfileTestRun; }
+	inline const igdeAction::Ref &GetActionProfileAdd() const{ return pActionProfileAdd; }
+	inline const igdeAction::Ref &GetActionProfileRemove() const{ return pActionProfileRemove; }
+	inline const igdeAction::Ref &GetActionProfileDuplicate() const{ return pActionProfileDuplicate; }
+	inline const igdeAction::Ref &GetActionProfileDistribute() const{ return pActionProfileDistribute; }
+	inline const igdeAction::Ref &GetActionProfileTestRun() const{ return pActionProfileTestRun; }
 	
 	inline const igdeActionExternOpen::Ref &GetActionShowDistribute() const{ return pActionShowDelga; }
 	inline const igdeActionExternOpen::Ref &GetActionShowContent() const{ return pActionShowContent; }
@@ -137,10 +137,10 @@ public:
 	inline const igdeActionExternOpen::Ref &GetActionShowCapture() const{ return pActionShowCapture; }
 	inline const igdeActionExternOpen::Ref &GetActionShowLogs() const{ return pActionShowLogs; }
 	
-	inline igdeIcon *GetIconStart() const{ return pIconStart; }
-	inline igdeIcon *GetIconStop() const{ return pIconStop; }
-	inline igdeIcon *GetIconKill() const{ return pIconKill; }
-	inline igdeIcon *GetIconDelga() const{ return pIconDelga; }
+	inline const igdeIcon::Ref &GetIconStart() const{ return pIconStart; }
+	inline const igdeIcon::Ref &GetIconStop() const{ return pIconStop; }
+	inline const igdeIcon::Ref &GetIconKill() const{ return pIconKill; }
+	inline const igdeIcon::Ref &GetIconDelga() const{ return pIconDelga; }
 	
 	
 	
@@ -169,7 +169,7 @@ public:
 	
 	
 	/** \brief Project. */
-	inline projProject *GetProject() const{ return pProject; }
+	inline const projProject::Ref &GetProject() const{ return pProject; }
 	
 	/** \brief Set project. */
 	void SetProject(projProject *project);

@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the decal pointer. */
-	inline meDecal *GetDecal() const{ return pDecal; }
+	inline const meDecal::Ref &GetDecal() const{ return pDecal; }
 	/** Retrieves the parent object or NULL. */
 	inline meObject *GetParentObject() const{ return pParentObject; }
 	/** Retrieves the index. */

@@ -86,7 +86,7 @@ public:
 	inline dealDisplay &GetDisplay() const{ return pDisplay; }
 	
 	/** \brief Image. */
-	inline dealImage *GetImage() const{ return pImage; }
+	inline const dealImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Line height. */
 	inline int GetLineHeight() const{ return pLineHeight; }

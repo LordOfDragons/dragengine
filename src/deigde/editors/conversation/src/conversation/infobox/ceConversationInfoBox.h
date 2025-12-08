@@ -125,7 +125,7 @@ public:
 	void Clear();
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/**
 	 * \brief Update canvas.

@@ -110,7 +110,7 @@ public:
 	void SetDescription(const char *description);
 	
 	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
 	void SetIcon(igdeIcon *icon);
@@ -128,7 +128,7 @@ public:
 	void SetDefault(bool isdefault);
 	
 	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
 	/** \brief Set action or NULL. */
 	void SetAction(igdeAction *action);

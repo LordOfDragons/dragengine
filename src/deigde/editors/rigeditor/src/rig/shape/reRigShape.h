@@ -110,7 +110,7 @@ public:
 	void SetRigBone(reRigBone *rigBone);
 	
 	/** \brief Collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Shape type. */
 	inline eShapeTypes GetShapeType() const{ return pShapeType; }

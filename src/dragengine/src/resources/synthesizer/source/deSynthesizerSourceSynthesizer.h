@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Synthesizer or NULL if silent. */
-	inline deSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline const deSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or NULL if silent. */
 	void SetSynthesizer(deSynthesizer *synthesizer);

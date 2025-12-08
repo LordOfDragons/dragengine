@@ -119,7 +119,7 @@ public:
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Engine skin. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	
 	
 	

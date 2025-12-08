@@ -55,7 +55,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline gdeSky *GetSky() const{ return pSky; }
+	inline const gdeSky::Ref &GetSky() const{ return pSky; }
 	
 	
 	

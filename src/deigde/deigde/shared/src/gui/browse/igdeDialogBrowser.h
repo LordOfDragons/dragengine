@@ -154,12 +154,12 @@ public:
 
 	
 	
-	inline igdeAction *GetActionPISizeSmall() const{ return pActionPISizeSmall; }
-	inline igdeAction *GetActionPISizeMedium() const{ return pActionPISizeMedium; }
-	inline igdeAction *GetActionPISizeLarge() const{ return pActionPISizeLarge; }
+	inline const igdeAction::Ref &GetActionPISizeSmall() const{ return pActionPISizeSmall; }
+	inline const igdeAction::Ref &GetActionPISizeMedium() const{ return pActionPISizeMedium; }
+	inline const igdeAction::Ref &GetActionPISizeLarge() const{ return pActionPISizeLarge; }
 	
-	inline igdeAction *GetActionPIViewList() const{ return pActionPIViewList; }
-	inline igdeAction *GetActionPIViewPreview() const{ return pActionPIViewPreview; }
+	inline const igdeAction::Ref &GetActionPIViewList() const{ return pActionPIViewList; }
+	inline const igdeAction::Ref &GetActionPIViewPreview() const{ return pActionPIViewPreview; }
 	/*@}*/
 	
 	

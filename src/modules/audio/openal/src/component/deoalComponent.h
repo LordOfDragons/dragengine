@@ -116,7 +116,7 @@ public:
 	inline deoalModel *GetAudioModel() const{ return pAudioModel; }
 	
 	/** \brief Audio component. */
-	inline deoalAComponent *GetAComponent() const{ return pAComponent; }
+	inline const deoalAComponent::Ref &GetAComponent() const{ return pAComponent; }
 	
 	
 	

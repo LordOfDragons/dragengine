@@ -135,8 +135,8 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionLinkAdd() const{ return pActionLinkAdd; }
-	inline igdeAction *GetActionLinkRemove() const{ return pActionLinkRemove; }
+	inline const igdeAction::Ref &GetActionLinkAdd() const{ return pActionLinkAdd; }
+	inline const igdeAction::Ref &GetActionLinkRemove() const{ return pActionLinkRemove; }
 	/*@}*/
 };
 

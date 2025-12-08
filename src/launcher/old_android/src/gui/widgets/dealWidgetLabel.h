@@ -87,7 +87,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font or \em NULL if not set. */
-	inline dealFont *GetFont() const{ return pFont; }
+	inline const dealFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font or \em NULL if not set. */
 	void SetFont(dealFont *font);

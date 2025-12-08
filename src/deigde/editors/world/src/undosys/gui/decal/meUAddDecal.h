@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the decal. */
-	inline meDecal *GetDecal() const{ return pDecal; }
+	inline const meDecal::Ref &GetDecal() const{ return pDecal; }
 	
 	/** \brief Undo. */
 	virtual void Undo();

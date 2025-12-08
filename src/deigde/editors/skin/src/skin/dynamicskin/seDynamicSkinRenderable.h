@@ -183,7 +183,7 @@ public:
 	/** Sets the image path. */
 	void SetImagePath(const char *imagePath);
 	/** Retrieves the engine image or NULL if not set. */
-	inline deImage *GetEngineImage() const{ return pEngImage; }
+	inline const deImage::Ref &GetEngineImage() const{ return pEngImage; }
 	/** Update image. */
 	void UpdateImage();
 	
@@ -198,9 +198,9 @@ public:
 	/** Sets the video path. */
 	void SetVideoPath(const char *videoPath);
 	/** Retrieves the engine video or NULL if not set. */
-	inline deVideo *GetEngineVideo() const{ return pEngVideo; }
+	inline const deVideo::Ref &GetEngineVideo() const{ return pEngVideo; }
 	/** Retrieves the engine video player or NULL if not set. */
-	inline deVideoPlayer *GetEngineVideoPlayer() const{ return pEngVideoPlayer; }
+	inline const deVideoPlayer::Ref &GetEngineVideoPlayer() const{ return pEngVideoPlayer; }
 	/** Update video. */
 	void UpdateVideo();
 	

@@ -58,7 +58,7 @@ public:
 	void RemoveAll();
 	
 	/** Retrieves the active objects or NULL if there is none. */
-	inline meObject *GetActive() const{ return pActive; }
+	inline const meObject::Ref &GetActive() const{ return pActive; }
 	/** Determines if there is an active objects. */
 	bool HasActive() const;
 	/** Sets the active objects or NULL if there is none. */

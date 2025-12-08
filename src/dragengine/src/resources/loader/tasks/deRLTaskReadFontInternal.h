@@ -70,13 +70,13 @@ public:
 	void Finished() override;
 	
 	/** \brief Font. */
-	inline deFont *GetFont() const{ return pFont; }
+	inline const deFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Font has been already loaded. */
 	inline bool GetAlreadyLoaded() const{ return pAlreadyLoaded; }
 	
 	/** \brief Second task or NULL. */
-	inline deRLTaskReadFontInternal2 *GetInternalTask() const{ return pInternalTask; }
+	inline const deRLTaskReadFontInternal2::Ref &GetInternalTask() const{ return pInternalTask; }
 	/*@}*/
 	
 	

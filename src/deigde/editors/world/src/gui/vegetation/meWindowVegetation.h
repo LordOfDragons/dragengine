@@ -74,7 +74,7 @@ public:
 	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);
@@ -86,7 +86,7 @@ public:
 	void SetSector(const decPoint &sector);
 	
 	/** \brief Vegetation layer. */
-	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }
+	inline const meHTVegetationLayer::Ref &GetVLayer() const{ return pVLayer; }
 	
 	/** \brief Set vegetation layer. */
 	void SetVLayer(meHTVegetationLayer *vlayer);

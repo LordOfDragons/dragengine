@@ -75,7 +75,7 @@ public:
 	void ResetView();
 	
 	/** \brief Monitored conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation to monitor. */
 	void SetConversation(ceConversation *conversation);

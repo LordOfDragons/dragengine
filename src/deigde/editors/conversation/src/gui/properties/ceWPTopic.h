@@ -145,7 +145,7 @@ public:
 	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
 	void SetConversation(ceConversation *conversation);

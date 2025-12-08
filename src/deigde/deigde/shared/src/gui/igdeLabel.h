@@ -125,7 +125,7 @@ public:
 	void SetDescription(const char *description);
 	
 	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
 	void SetIcon(igdeIcon *icon);

@@ -108,7 +108,7 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Parent world or \em NULL if not set. */
-	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
+	inline const deoglRWorld::Ref &GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL if not set. */
 	void SetParentWorld(deoglRWorld *parentWorld);

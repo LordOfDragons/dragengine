@@ -379,7 +379,7 @@ public:
 	inline const deoglSkinTexturePipelinesList &GetPipelines() const{ return pPipelines; }
 	
 	/** Shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
+	inline const deoglSharedSPBElement::Ref &GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
 	/** Prepare parameter block. */
 	void PrepareParamBlock();

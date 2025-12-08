@@ -227,7 +227,7 @@ public:
 	void SetTimeStep(float timeStep);
 	
 	/** Retrieves the engine debug drawer for bones. */
-	inline deDebugDrawer *GetDDBones() const{ return pDDBones; }
+	inline const deDebugDrawer::Ref &GetDDBones() const{ return pDDBones; }
 	
 	/** Retrieves the sky wrapper. */
 	inline igdeWSky *GetSky() const{ return pSky; }
@@ -265,24 +265,24 @@ public:
 	/** \name Engine Specific */
 	/*@{*/
 	/** Retrieves the engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	/** Retrieves the engine animator. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	/** Retrieves the engine animator instance. */
-	inline deAnimatorInstance *GetEngineAnimatorInstance() const{ return pEngAnimatorInstance; }
+	inline const deAnimatorInstance::Ref &GetEngineAnimatorInstance() const{ return pEngAnimatorInstance; }
 	/** Retrieves the engine component. */
-	inline deComponent *GetEngineComponent() const{ return pEngComponent; }
+	inline const deComponent::Ref &GetEngineComponent() const{ return pEngComponent; }
 	/** Retrieves the engine light. */
-	inline deLight *GetEngineLight() const{ return pEngLight; }
+	inline const deLight::Ref &GetEngineLight() const{ return pEngLight; }
 	/** Retrieves the engine collider. */
-	inline deColliderComponent *GetEngineCollider() const{ return pEngCollider; }
+	inline const deColliderComponent::Ref &GetEngineCollider() const{ return pEngCollider; }
 	/** Updates the world. */
 	void UpdateWorld(float elapsed);
 	/** Retrieves the camera. */
 	inline aeCamera *GetCamera() const{ return pCamera; }
 	
 	/** Engine rig if present. */
-	inline deRig *GetEngineRig() const{ return pEngRig; }
+	inline const deRig::Ref &GetEngineRig() const{ return pEngRig; }
 	/*@}*/
 	
 	

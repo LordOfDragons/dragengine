@@ -87,7 +87,7 @@ public:
 	inline const deFontSize::Ref &GetFontSize() const{ return pEngFontSize; }
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Font path. */
 	inline const decString &GetPathFont() const{ return pPathFont; }

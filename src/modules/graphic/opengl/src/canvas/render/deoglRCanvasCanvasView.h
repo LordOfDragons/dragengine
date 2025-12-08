@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Canvas view or \em NULL if not set. */
-	inline deoglRCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deoglRCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** Set canvas view or \em NULL if not set. */
 	void SetCanvasView(deoglRCanvasView *canvasView);

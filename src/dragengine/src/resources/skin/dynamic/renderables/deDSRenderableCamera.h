@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Camera or NULL if not set. */
-	inline deCamera *GetCamera() const{ return pCamera; }
+	inline const deCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** \brief Set camera or NULL if not set. */
 	void SetCamera(deCamera *camera);

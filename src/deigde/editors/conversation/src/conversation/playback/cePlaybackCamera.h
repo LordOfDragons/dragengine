@@ -123,7 +123,7 @@ public:
 	void SetCoordinateSystem(const decMatrix &matrix);
 	
 	/** Retrieves the camera target or NULL if not set. */
-	inline ceTarget *GetCameraTarget() const{ return pCameraTarget; }
+	inline const ceTarget::Ref &GetCameraTarget() const{ return pCameraTarget; }
 	/** Sets the camera target or NULL if not set. */
 	void SetCameraTarget(ceTarget *target);
 	/** Retrieves the start camera position. */
@@ -152,7 +152,7 @@ public:
 	void SetCameraDistanceTo(float distance);
 	
 	/** Retrieves the look-at target or NULL if not set. */
-	inline ceTarget *GetLookAtTarget() const{ return pLookAtTarget; }
+	inline const ceTarget::Ref &GetLookAtTarget() const{ return pLookAtTarget; }
 	/** Sets the look-at target or NULL if not set. */
 	void SetLookAtTarget(ceTarget *target);
 	/** Retrieves the start look-at position. */

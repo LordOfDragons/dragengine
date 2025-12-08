@@ -86,7 +86,7 @@ public:
 	/** \brief Retrieves the game engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	/** \brief Retrieves the engine navigator. */
-	inline deNavigator *GetEngineNavigator() const{ return pEngNavigator; }
+	inline const deNavigator::Ref &GetEngineNavigator() const{ return pEngNavigator; }
 	
 	/** \brief Retrieves the world or NULL. */
 	inline meWorld *GetWorld() const{ return pWorld; }

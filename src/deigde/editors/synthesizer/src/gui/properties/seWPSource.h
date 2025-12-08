@@ -93,7 +93,7 @@ public:
 	inline seViewSynthesizer &GetViewSynthesizer() const{ return pViewSynthesizer; }
 	
 	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline const seSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
@@ -133,10 +133,10 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionSourceCut() const{ return pActionSourceCut; }
-	inline igdeAction *GetActionSourceCopy() const{ return pActionSourceCopy; }
-	inline igdeAction *GetActionSourcePaste() const{ return pActionSourcePaste; }
-	inline igdeAction *GetActionSourcePasteIntoGroup() const{ return pActionSourcePasteIntoGroup; }
+	inline const igdeAction::Ref &GetActionSourceCut() const{ return pActionSourceCut; }
+	inline const igdeAction::Ref &GetActionSourceCopy() const{ return pActionSourceCopy; }
+	inline const igdeAction::Ref &GetActionSourcePaste() const{ return pActionSourcePaste; }
+	inline const igdeAction::Ref &GetActionSourcePasteIntoGroup() const{ return pActionSourcePasteIntoGroup; }
 	/*@}*/
 };
 

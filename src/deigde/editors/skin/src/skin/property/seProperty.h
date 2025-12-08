@@ -193,7 +193,7 @@ public:
 	void SetImagePath(const char *imagePath);
 	
 	/** \brief Image or \em NULL if not set. */
-	inline deImage *GetEngineImage() const{ return pEngImage; }
+	inline const deImage::Ref &GetEngineImage() const{ return pEngImage; }
 	
 	/** \brief Update image. */
 	void UpdateImage();
@@ -207,7 +207,7 @@ public:
 	void SetVideoPath(const char *videoPath);
 	
 	/** \brief Video or \em NULL if not set. */
-	inline deVideo *GetEngineVideo() const{ return pEngVideo; }
+	inline const deVideo::Ref &GetEngineVideo() const{ return pEngVideo; }
 	
 	/** \brief Update video. */
 	void UpdateVideo();
@@ -229,7 +229,7 @@ public:
 	
 	
 	/** \brief Node group. */
-	inline sePropertyNodeGroup *GetNodeGroup() const{ return pNodeGroup; }
+	inline const sePropertyNodeGroup::Ref &GetNodeGroup() const{ return pNodeGroup; }
 	
 	/** \brief Set node group. */
 	void SetNodeGroup(sePropertyNodeGroup *nodeGroup);
@@ -245,7 +245,7 @@ public:
 	const sePropertyNodeSelection &GetNodeSelection() const{ return pNodeSelection; }
 	
 	/** \brief Active node group or \em NULL. */
-	inline sePropertyNodeGroup *GetActiveNodeGroup() const{ return pActiveNodeGroup; }
+	inline const sePropertyNodeGroup::Ref &GetActiveNodeGroup() const{ return pActiveNodeGroup; }
 	
 	/** \brief Set active node group or \em NULL. */
 	void SetActiveNodeGroup(sePropertyNodeGroup *node);

@@ -68,7 +68,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief NavigationBlocker resource. */
-	inline deNavigationBlocker *GetNavigationBlocker() const{ return pNavigationBlocker; }
+	inline const deNavigationBlocker::Ref &GetNavigationBlocker() const{ return pNavigationBlocker; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();

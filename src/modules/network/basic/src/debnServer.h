@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Socket. */
-	inline debnSocket *GetSocket() const{ return pSocket; }
+	inline const debnSocket::Ref &GetSocket() const{ return pSocket; }
 	
 	/** \brief Process connection request. */
 	void ProcessConnectionRequest(debnAddress &address, decBaseFileReader &reader);

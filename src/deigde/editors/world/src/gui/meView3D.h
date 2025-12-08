@@ -87,7 +87,7 @@ public:
 	void ResetView();
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world render. */
 	void SetWorld(meWorld *world);

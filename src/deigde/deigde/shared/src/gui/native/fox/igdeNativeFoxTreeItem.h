@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Owner. */
-	inline igdeTreeItem *GetOwner() const{ return pOwner; }
+	inline const igdeTreeItem::Ref &GetOwner() const{ return pOwner; }
 	
 	/** \brief Tip text. */
 	FXString getTipText() const override;

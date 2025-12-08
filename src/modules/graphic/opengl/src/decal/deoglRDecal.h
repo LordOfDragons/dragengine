@@ -188,13 +188,13 @@ public:
 	
 	
 	/** Skin or \em NULL if not set. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin or \em NULL if not set. */
 	void SetSkin(deoglRSkin *skin);
 	
 	/** Dynamic skin or \em NULL if not set. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or \em NULL if not set. */
 	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
@@ -226,7 +226,7 @@ public:
 	void UpdateSkinState();
 	
 	/** Retrieves the vbo block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	inline const deoglSharedVBOBlock::Ref &GetVBOBlock() const{ return pVBOBlock; }
 	/** Retrieves the number of points. */
 	inline int GetPointCount() const{ return pPointCount; }
 	
@@ -274,7 +274,7 @@ public:
 	
 	
 	/** Shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
+	inline const deoglSharedSPBElement::Ref &GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
 	/** Render task shared instance or NULL. */
 	inline deoglRenderTaskSharedInstance *GetRTSInstance() const{ return pRTSInstance; }

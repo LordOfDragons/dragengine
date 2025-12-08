@@ -251,7 +251,7 @@ public:
 	/** \name Height Image */
 	/*@{*/
 	/** Retrieves the height image or null. */
-	inline deImage *GetHeightImage() const{ return pHeightImage; }
+	inline const deImage::Ref &GetHeightImage() const{ return pHeightImage; }
 	
 	/** Retrieves the data type. */
 	inline int GetDataType() const{ return pDataType; }

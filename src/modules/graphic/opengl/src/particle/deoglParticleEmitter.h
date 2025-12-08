@@ -74,7 +74,7 @@ public:
 	
 	
 	/** Render particle emitter. */
-	inline deoglRParticleEmitter *GetREmitter() const{ return pREmitter; }
+	inline const deoglRParticleEmitter::Ref &GetREmitter() const{ return pREmitter; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

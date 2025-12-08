@@ -94,7 +94,7 @@ public:
 	void SetEditorPathLib(const char *path);
 	
 	/** \brief Editor window used by module. */
-	inline igdeEditorWindow *GetEditorWindow() const{ return pEditorWindow; }
+	inline const igdeEditorWindow::Ref &GetEditorWindow() const{ return pEditorWindow; }
 	
 	/**
 	 * \brief Set editor window used by module.

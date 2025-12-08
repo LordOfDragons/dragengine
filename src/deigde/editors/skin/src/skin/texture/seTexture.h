@@ -82,7 +82,7 @@ public:
 	/** Retrieves the engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	/** \brief Retrieves the texture engine skin or NULL if not created. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	
 	/** Retrieves the parent skin or NULL if there is none. */
 	inline seSkin *GetSkin() const{ return pSkin; }
@@ -130,7 +130,7 @@ public:
 	/** Removes all properties. */
 	void RemoveAllProperties();
 	/** Retrieves the active property or NULL if none is active. */
-	inline seProperty *GetActiveProperty() const{ return pActiveProperty; }
+	inline const seProperty::Ref &GetActiveProperty() const{ return pActiveProperty; }
 	/** Determines if there is an active property or not. */
 	bool HasActiveProperty() const;
 	/** Sets the active property or NULL if none is active. */

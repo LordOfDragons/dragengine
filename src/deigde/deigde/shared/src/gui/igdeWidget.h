@@ -108,7 +108,7 @@ public:
 	
 	
 	/** \brief Widget specific GuiTheme or NULL to use parent GuiTheme. */
-	inline igdeGuiTheme *GetWidgetGuiTheme() const{ return pGuiTheme; }
+	inline const igdeGuiTheme::Ref &GetWidgetGuiTheme() const{ return pGuiTheme; }
 	
 	/** \brief Set widget specific GuiTheme or NULL to use parent GuiTheme. */
 	void SetWidgetGuiTheme(igdeGuiTheme *guitheme);

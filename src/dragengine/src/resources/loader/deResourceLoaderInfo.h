@@ -73,7 +73,7 @@ public:
 	void SetResourceType(deResourceLoader::eResourceType resourceType);
 	
 	/** \brief Resource or NULL if not ready yet. */
-	inline deFileResource *GetResource() const{ return pResource; }
+	inline const deFileResource::Ref &GetResource() const{ return pResource; }
 	
 	/** \brief Set resource or NULL if not ready yet. */
 	void SetResource(deFileResource *resource);

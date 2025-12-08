@@ -66,7 +66,7 @@ public:
 	inline meWindowVegetation &GetWindowVegetation() const{ return pWindowVegetation; }
 	
 	/** \brief Rule. */
-	inline meHTVRule *GetRule() const{ return pRule; }
+	inline const meHTVRule::Ref &GetRule() const{ return pRule; }
 	
 	/** \brief Update node. */
 	virtual void Update();

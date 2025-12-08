@@ -117,7 +117,7 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	/** \brief Retrieves the collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Retrieves the world or NULL. */
 	inline meWorld *GetWorld() const{ return pWorld; }
@@ -145,7 +145,7 @@ public:
 	/** \brief Sets the skin texture name. */
 	void SetTextureName(const char *textureName);
 	/** \brief Retrieves the engine skin or NULL if not found. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	/** \brief Retrieves the position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }
 	/** \brief Sets the position. */
@@ -177,7 +177,7 @@ public:
 	void SetColorTint(const decColor &color);
 	
 	/** \brief Retrieves the dynamic skin or NULL if there is none. */
-	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Updates the dynamic skin. */
 	void UpdateDynamicSkin();

@@ -91,10 +91,10 @@ public:
 	inline const ceConversationActionList &GetActionList() const{ return pActions; }
 	
 	/** \brief Active action or \em NULL if none is active. */
-	inline ceConversationAction *GetActiveAction() const{ return pActiveAction; }
+	inline const ceConversationAction::Ref &GetActiveAction() const{ return pActiveAction; }
 	
 	/** \brief Active condition or \em NULL if none is active. */
-	inline ceConversationCondition *GetActiveCondition() const{ return pActiveCondition; }
+	inline const ceConversationCondition::Ref &GetActiveCondition() const{ return pActiveCondition; }
 	
 	/** \brief Set active element. */
 	void SetActive(ceConversationAction *action, ceConversationCondition *condition);

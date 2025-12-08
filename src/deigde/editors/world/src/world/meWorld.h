@@ -239,13 +239,13 @@ public:
 	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Retrieves the engine side world resource. */
-	inline deWorld *GetEngineWorld() const{ return pDEWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pDEWorld; }
 	/** Retrieves the sky wrapper. */
 	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Background object wrapper. */
 	inline const igdeWObject::Ref &GetBgObject() const{ return pBgObject; }
 	/** Retrieves the microphone. */
-	inline deMicrophone *GetMicrophone() const{ return pEngMicrophone; }
+	inline const deMicrophone::Ref &GetMicrophone() const{ return pEngMicrophone; }
 	
 	/** Limit box extends. */
 	inline const decVector &GetLimitBoxMinExtend() const{ return pLimitBoxMinExtend; }
@@ -255,7 +255,7 @@ public:
 	void SetLimitBoxExtends(const decVector &minExtend, const decVector &maxExtend);
 	
 	/** Retrieves the height terrain. */
-	inline meHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
+	inline const meHeightTerrain::Ref &GetHeightTerrain() const{ return pHeightTerrain; }
 	/** Retrieves the weather. */
 	inline meWeather *GetWeather() const{ return pWeather; }
 	/** Retrieves the gui parameters. */
@@ -485,7 +485,7 @@ public:
 	/** \name Sensors */
 	/*@{*/
 	/** Retrieves the lumimeter sensor. */
-	inline meLumimeter *GetLumimeter() const{ return pLumimeter; }
+	inline const meLumimeter::Ref &GetLumimeter() const{ return pLumimeter; }
 	/** Updates sensors. */
 	void UpdateSensors();
 	/*@}*/
@@ -493,7 +493,7 @@ public:
 	/** \name Testing */
 	/*@{*/
 	/** Retrieves the path find test. */
-	inline mePathFindTest *GetPathFindTest() const{ return pPathFindTest; }
+	inline const mePathFindTest::Ref &GetPathFindTest() const{ return pPathFindTest; }
 	/** Retrieves the last path used for loading/saving navigation test files. */
 	inline const decString &GetPathNavTest() const{ return pPathNavTest; }
 	/** Sets the last path used for loading/saving navigation test files. */

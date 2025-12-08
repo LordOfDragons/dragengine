@@ -152,12 +152,12 @@ public:
 	void MarkSkyOrderDirty();
 	
 	/** Sky environment map or \em NULL if not existing. */
-	inline deoglEnvironmentMap *GetSkyEnvironmentMap() const{ return pSkyEnvMap; }
+	inline const deoglEnvironmentMap::Ref &GetSkyEnvironmentMap() const{ return pSkyEnvMap; }
 	
 	
 	
 	/** Height terrain or \em NULL if not set. */
-	inline deoglRHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
+	inline const deoglRHeightTerrain::Ref &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Set height terrain or \em NULL if not set. */
 	void SetHeightTerrain(deoglRHeightTerrain *heightTerrain);
@@ -311,7 +311,7 @@ public:
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** Root component. */
-	inline deoglRComponent *GetRootComponent() const{ return pRootComponent; }
+	inline const deoglRComponent::Ref &GetRootComponent() const{ return pRootComponent; }
 	
 	/** Add component. */
 	void AddComponent(deoglRComponent *component);
@@ -447,7 +447,7 @@ public:
 	inline int GetBillboardCount() const{ return pBillboardCount; }
 	
 	/** Root billboard. */
-	inline deoglRBillboard *GetRootBillboard() const{ return pRootBillboard; }
+	inline const deoglRBillboard::Ref &GetRootBillboard() const{ return pRootBillboard; }
 	
 	/** Add billboard. */
 	void AddBillboard(deoglRBillboard *billboard);

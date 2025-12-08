@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render video or \em NULL if not set. */
-	inline deoglRVideo *GetVideo() const{ return pVideo; }
+	inline const deoglRVideo::Ref &GetVideo() const{ return pVideo; }
 	
 	/** Set render video or \em NULL if not set. */
 	void SetVideo(deoglRVideo *video);

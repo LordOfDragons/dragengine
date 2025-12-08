@@ -71,7 +71,7 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Canvas view. */
-	inline deoglRCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deoglRCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** Set canvas view. */
 	void SetCanvasView(deoglRCanvasView *canvasView);

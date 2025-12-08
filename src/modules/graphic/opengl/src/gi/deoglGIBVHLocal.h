@@ -82,19 +82,19 @@ public:
 	inline const deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** TBO for BVH node boundaries. */
-	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{ return pTBONodeBox; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBONodeBox() const{ return pTBONodeBox; }
 	
 	/** TBO for BVH node indices. */
-	inline deoglDynamicTBOUInt16 *GetTBOIndex() const{ return pTBOIndex; }
+	inline const deoglDynamicTBOUInt16::Ref &GetTBOIndex() const{ return pTBOIndex; }
 	
 	/** TBO for mesh faces. */
-	inline deoglDynamicTBOUInt16 *GetTBOFace() const{ return pTBOFace; }
+	inline const deoglDynamicTBOUInt16::Ref &GetTBOFace() const{ return pTBOFace; }
 	
 	/** TBO for mesh vertices. */
-	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{ return pTBOVertex; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBOVertex() const{ return pTBOVertex; }
 	
 	/** TBO for mesh texture coordinates. */
-	inline deoglDynamicTBOFloat16 *GetTBOTexCoord() const{ return pTBOTexCoord; }
+	inline const deoglDynamicTBOFloat16::Ref &GetTBOTexCoord() const{ return pTBOTexCoord; }
 	
 	/** BVH. */
 	inline deoglBVH &GetBVH(){ return pBVH; }

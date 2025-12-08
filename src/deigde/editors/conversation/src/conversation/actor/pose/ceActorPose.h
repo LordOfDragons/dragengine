@@ -81,7 +81,7 @@ public:
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** Engine animator or \em NULL. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	
 	
 	

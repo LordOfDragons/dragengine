@@ -205,7 +205,7 @@ public:
 	void Clear();
 	
 	/** \brief Assigned height terrain or NULL. */
-	inline deHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
+	inline const deHeightTerrain::Ref &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** \brief Set assigned height terrain or NULL to remove it. */
 	void SetHeightTerrain(deHeightTerrain *heightTerrain);

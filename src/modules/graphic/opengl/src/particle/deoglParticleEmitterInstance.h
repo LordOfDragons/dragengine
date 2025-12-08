@@ -82,7 +82,7 @@ public:
 	
 	
 	/** Render particle emitter instance. */
-	inline deoglRParticleEmitterInstance *GetRInstance() const{ return pRInstance; }
+	inline const deoglRParticleEmitterInstance::Ref &GetRInstance() const{ return pRInstance; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

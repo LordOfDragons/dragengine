@@ -76,7 +76,7 @@ public:
 	void SetText(const decUnicodeString &text);
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Layout text. Create canvas if not existing. */
 	void Layout(const ceTextBox &textBox);

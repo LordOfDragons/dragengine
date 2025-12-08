@@ -275,7 +275,7 @@ public:
 	/** Remove all targets. */
 	void RemoveAllTargets();
 	/** Retrieves the active target or NULL if none is active. */
-	inline ceTarget *GetActiveTarget() const{ return pActiveTarget; }
+	inline const ceTarget::Ref &GetActiveTarget() const{ return pActiveTarget; }
 	/** Sets the active target or NULL if none is active. */
 	void SetActiveTarget(ceTarget *target);
 	
@@ -298,7 +298,7 @@ public:
 	/** Remove all camera shots. */
 	void RemoveAllCameraShots();
 	/** Retrieves the active camera shot or NULL if none is active. */
-	inline ceCameraShot *GetActiveCameraShot() const{ return pActiveCameraShot; }
+	inline const ceCameraShot::Ref &GetActiveCameraShot() const{ return pActiveCameraShot; }
 	/** Sets the active camera shot or NULL if none is active. */
 	void SetActiveCameraShot(ceCameraShot *cameraShot);
 	
@@ -323,7 +323,7 @@ public:
 	/** Remove all gestures. */
 	void RemoveAllGestures();
 	/** Retrieves the active gesture or NULL if none is active. */
-	inline ceGesture *GetActiveGesture() const{ return pActiveGesture; }
+	inline const ceGesture::Ref &GetActiveGesture() const{ return pActiveGesture; }
 	/** Sets the active gesture or NULL if none is active. */
 	void SetActiveGesture(ceGesture *gesture);
 	
@@ -351,7 +351,7 @@ public:
 	/** Remove all face poses. */
 	void RemoveAllFacePoses();
 	/** Retrieves the active face pose or NULL if none is active. */
-	inline ceFacePose *GetActiveFacePose() const{ return pActiveFacePose; }
+	inline const ceFacePose::Ref &GetActiveFacePose() const{ return pActiveFacePose; }
 	/** Sets the active face pose or NULL if none is active. */
 	void SetActiveFacePose(ceFacePose *facePose);
 	
@@ -376,7 +376,7 @@ public:
 	/** Remove all files. */
 	void RemoveAllFiles();
 	/** Retrieves the active texture or NULL if none is active. */
-	inline ceConversationFile *GetActiveFile() const{ return pActiveFile; }
+	inline const ceConversationFile::Ref &GetActiveFile() const{ return pActiveFile; }
 	/** Sets the active file or NULL if none is active. */
 	void SetActiveFile(ceConversationFile *file);
 	
@@ -408,7 +408,7 @@ public:
 	/** Removes all actors. */
 	void RemoveAllActors();
 	/** Retrieves the active texture or NULL if none is active. */
-	inline ceConversationActor *GetActiveActor() const{ return pActiveActor; }
+	inline const ceConversationActor::Ref &GetActiveActor() const{ return pActiveActor; }
 	/** Determines if there is an active actor or not. */
 	bool HasActiveActor() const;
 	/** Sets the active actor or NULL if none is active. */
@@ -428,7 +428,7 @@ public:
 	/** Removes all coordinate system. */
 	void RemoveAllCoordSystems();
 	/** Retrieves the active coordinate system or NULL if none is active. */
-	inline ceCoordSystem *GetActiveCoordSystem() const{ return pActiveCoordSystem; }
+	inline const ceCoordSystem::Ref &GetActiveCoordSystem() const{ return pActiveCoordSystem; }
 	/** Determines if there is an active coordinate system or not. */
 	bool HasActiveCoordSystem() const;
 	/** Sets the active coordinate system or NULL if none is active. */
@@ -448,7 +448,7 @@ public:
 	/** Removes all props. */
 	void RemoveAllProps();
 	/** Retrieves the active prop or NULL if none is active. */
-	inline ceProp *GetActiveProp() const{ return pActiveProp; }
+	inline const ceProp::Ref &GetActiveProp() const{ return pActiveProp; }
 	/** Determines if there is an active prop or not. */
 	bool HasActiveProp() const;
 	/** Sets the active prop or NULL if none is active. */

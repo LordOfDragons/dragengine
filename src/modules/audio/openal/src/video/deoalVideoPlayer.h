@@ -76,7 +76,7 @@ public:
 	inline deVideoPlayer &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** \brief Audio peer. */
-	inline deoalAVideoPlayer *GetAVideoPlayer() const{ return pAVideoPlayer; }
+	inline const deoalAVideoPlayer::Ref &GetAVideoPlayer() const{ return pAVideoPlayer; }
 	
 	
 	

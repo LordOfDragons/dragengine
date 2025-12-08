@@ -52,7 +52,7 @@ private:
 		cFont(const igdeFont::sConfiguration &config, igdeFont *font);
 		virtual ~cFont();
 		
-		inline igdeFont *GetFont() const{ return pFont; }
+		inline const igdeFont::Ref &GetFont() const{ return pFont; }
 		inline const igdeFont::sConfiguration &GetConfig() const{ return pConfig; }
 	};
 	

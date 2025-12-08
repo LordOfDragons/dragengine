@@ -142,7 +142,7 @@ public:
 	inline gdeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
@@ -173,16 +173,16 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionInheritAdd() const{ return pActionInheritAdd; }
-	inline igdeAction *GetActionInheritRemove() const{ return pActionInheritRemove; }
-	inline igdeAction *GetActionInheritRemoveAll() const{ return pActionInheritRemoveAll; }
-	inline igdeAction *GetActionPropertyValueSet() const{ return pActionPropertyValueSet; }
-	inline igdeAction *GetActionPropertyValueRemove() const{ return pActionPropertyValueRemove; }
-	inline igdeAction *GetActionPropertyValueClear() const{ return pActionPropertyValueClear; }
-	inline igdeAction *GetActionPropertyValuesFromSubObjects() const{ return pActionPropertyValuesFromSubObjects; }
-	inline igdeActionContextMenu *GetActionTexturesMenu() const{ return pActionTexturesMenu; }
-	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
-	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
+	inline const igdeAction::Ref &GetActionInheritAdd() const{ return pActionInheritAdd; }
+	inline const igdeAction::Ref &GetActionInheritRemove() const{ return pActionInheritRemove; }
+	inline const igdeAction::Ref &GetActionInheritRemoveAll() const{ return pActionInheritRemoveAll; }
+	inline const igdeAction::Ref &GetActionPropertyValueSet() const{ return pActionPropertyValueSet; }
+	inline const igdeAction::Ref &GetActionPropertyValueRemove() const{ return pActionPropertyValueRemove; }
+	inline const igdeAction::Ref &GetActionPropertyValueClear() const{ return pActionPropertyValueClear; }
+	inline const igdeAction::Ref &GetActionPropertyValuesFromSubObjects() const{ return pActionPropertyValuesFromSubObjects; }
+	inline const igdeActionContextMenu::Ref &GetActionTexturesMenu() const{ return pActionTexturesMenu; }
+	inline const igdeAction::Ref &GetActionTextureAdd() const{ return pActionTextureAdd; }
+	inline const igdeAction::Ref &GetActionTextureRemove() const{ return pActionTextureRemove; }
 	
 	
 	

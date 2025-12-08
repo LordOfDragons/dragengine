@@ -81,7 +81,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render camera. */
-	inline deoglRCamera *GetRCamera() const{ return pRCamera; }
+	inline const deoglRCamera::Ref &GetRCamera() const{ return pRCamera; }
 	
 	/** Camera. */
 	inline const deCamera &GetCamera() const{ return pCamera; }

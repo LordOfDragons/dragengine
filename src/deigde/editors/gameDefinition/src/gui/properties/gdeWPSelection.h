@@ -94,7 +94,7 @@ public:
 	inline gdeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Game definition or \em NULL if not present. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not present. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

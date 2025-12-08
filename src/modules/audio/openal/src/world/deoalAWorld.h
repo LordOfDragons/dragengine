@@ -152,7 +152,7 @@ public:
 	inline int GetComponentCount() const{ return pComponentCount; }
 	
 	/** Root component. */
-	inline deoalAComponent *GetRootComponent() const{ return pRootComponent; }
+	inline const deoalAComponent::Ref &GetRootComponent() const{ return pRootComponent; }
 	
 	/** Add component. */
 	void AddComponent(deoalAComponent *component);
@@ -175,7 +175,7 @@ public:
 	inline int GetSpeakerCount() const{ return pSpeakerCount; }
 	
 	/** Root speaker. */
-	inline deoalASpeaker *GetRootSpeaker() const{ return pRootSpeaker; }
+	inline const deoalASpeaker::Ref &GetRootSpeaker() const{ return pRootSpeaker; }
 	
 	/**
 	 * Add speaker.
@@ -210,7 +210,7 @@ public:
 	inline int GetMicrophoneCount() const{ return pMicrophoneCount; }
 	
 	/** Root microphone. */
-	inline deoalAMicrophone *GetRootMicrophone() const{ return pRootMicrophone; }
+	inline const deoalAMicrophone::Ref &GetRootMicrophone() const{ return pRootMicrophone; }
 	
 	/** Add microphone. */
 	void AddMicrophone(deoalAMicrophone *microphone);
@@ -233,7 +233,7 @@ public:
 	inline int GetSoundLevelMeterCount() const{ return pSoundLevelMeterCount; }
 	
 	/** Root sound level meter. */
-	inline deoalASoundLevelMeter *GetRootSoundLevelMeter() const{ return pRootSoundLevelMeter; }
+	inline const deoalASoundLevelMeter::Ref &GetRootSoundLevelMeter() const{ return pRootSoundLevelMeter; }
 	
 	/**
 	 * Add sound level meter.

@@ -108,7 +108,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Synthesizer or NULL if not set. */
-	inline deSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline const deSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or NULL to clear. */
 	void SetSynthesizer(deSynthesizer *synthesizer);

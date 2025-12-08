@@ -101,7 +101,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the shared collision info. */
-	inline deCollisionInfo *GetCollisionInfo() const{ return pColInfo; }
+	inline const deCollisionInfo::Ref &GetCollisionInfo() const{ return pColInfo; }
 	
 	/** \brief Collision detection. */
 	inline debpCollisionDetection &GetCollisionDetection() const{ return *pCollisionDetection; }

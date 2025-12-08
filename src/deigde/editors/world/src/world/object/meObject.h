@@ -176,10 +176,10 @@ public:
 	/** \brief Retrieves the object wrapper. */
 	inline const igdeWObject::Ref &GetObjectWrapper() const{ return pWObject; }
 	/** \brief Retrieves the collision detection collider. */
-	inline deColliderVolume *GetColDetCollider() const{ return pColDetCollider; }
+	inline const deColliderVolume::Ref &GetColDetCollider() const{ return pColDetCollider; }
 	
 	/** \brief Debug drawer. */
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	inline const deDebugDrawer::Ref &GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	/** \brief Dispose of the component. */
 	void Dispose();
@@ -289,7 +289,7 @@ public:
 	
 	
 	/** \brief Object this object is attached to or \em NULL. */
-	inline meObject *GetAttachedTo() const{ return pAttachedTo; }
+	inline const meObject::Ref &GetAttachedTo() const{ return pAttachedTo; }
 	
 	/** \brief Set object this object is attached to or \em NULL. */
 	void SetAttachedTo(meObject *object);

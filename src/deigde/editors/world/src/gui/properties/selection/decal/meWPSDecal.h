@@ -101,7 +101,7 @@ public:
 	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);
@@ -142,9 +142,9 @@ public:
 	/** \brief Game project game definition changed. */
 	void OnGameDefinitionChanged();
 	
-	inline igdeAction *GetActionPropCopyToSel() const{ return pActionPropCopyToSel; }
-	inline igdeAction *GetActionPropRemoveFromSel() const{ return pActionPropRemoveFromSel; }
-	inline igdeAction *GetActionPropCloneToSel() const{ return pActionPropCloneToSel; }
+	inline const igdeAction::Ref &GetActionPropCopyToSel() const{ return pActionPropCopyToSel; }
+	inline const igdeAction::Ref &GetActionPropRemoveFromSel() const{ return pActionPropRemoveFromSel; }
+	inline const igdeAction::Ref &GetActionPropCloneToSel() const{ return pActionPropCloneToSel; }
 	/*@}*/
 };
 

@@ -77,7 +77,7 @@ public:
 	inline deoglCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** Render render window. */
-	inline deoglRRenderWindow *GetRRenderWindow() const{ return pRRenderWindow; }
+	inline const deoglRRenderWindow::Ref &GetRRenderWindow() const{ return pRRenderWindow; }
 	
 	
 	

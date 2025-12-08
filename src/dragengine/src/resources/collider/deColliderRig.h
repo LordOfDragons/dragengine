@@ -83,7 +83,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig or NULL if not set. */
-	inline deRig *GetRig() const{ return pRig; }
+	inline const deRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig or NULL if not set. */
 	void SetRig(deRig *rig);

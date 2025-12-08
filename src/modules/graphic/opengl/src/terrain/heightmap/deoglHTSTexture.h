@@ -91,7 +91,7 @@ public:
 	void SetMatrix(const decTexMatrix &matrix);
 	
 	/** Skin or NULL. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL. */
 	void SetSkin(deoglRSkin *skin);

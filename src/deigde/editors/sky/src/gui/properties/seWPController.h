@@ -82,7 +82,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);
@@ -103,10 +103,10 @@ public:
 	void UpdateControllerValue();
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionControllerAdd() const{ return pActionControllerAdd; }
-	inline igdeAction *GetActionControllerRemove() const{ return pActionControllerRemove; }
-	inline igdeAction *GetActionControllerUp() const{ return pActionControllerUp; }
-	inline igdeAction *GetActionControllerDown() const{ return pActionControllerDown; }
+	inline const igdeAction::Ref &GetActionControllerAdd() const{ return pActionControllerAdd; }
+	inline const igdeAction::Ref &GetActionControllerRemove() const{ return pActionControllerRemove; }
+	inline const igdeAction::Ref &GetActionControllerUp() const{ return pActionControllerUp; }
+	inline const igdeAction::Ref &GetActionControllerDown() const{ return pActionControllerDown; }
 	/*@}*/
 };
 

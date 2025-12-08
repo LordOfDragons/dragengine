@@ -77,7 +77,7 @@ public:
 	inline const deCanvas &GetCanvas() const{ return pCanvas; }
 	
 	/** Render canvas or \em NULL if not set. */
-	inline deoglRCanvas *GetRCanvas() const{ return pRCanvas; }
+	inline const deoglRCanvas::Ref &GetRCanvas() const{ return pRCanvas; }
 	
 	/** Drop render canvas if not \em NULL. */
 	virtual void DropRCanvas();

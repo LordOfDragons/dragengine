@@ -93,7 +93,7 @@ public:
 	inline deVideoApng &GetModule() const{ return pModule; }
 	
 	/** File reader. */
-	inline decBaseFileReader *GetReader() const{ return pReader; }
+	inline const decBaseFileReader::Ref &GetReader() const{ return pReader; }
 	
 	/** Width in pixels. */
 	inline int GetWidth() const{ return pWidth; }

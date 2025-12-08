@@ -109,7 +109,7 @@ public:
 	void SetParentMicrophone(deoalMicrophone *microphone);
 	
 	/** \brief Audio speaker. */
-	inline deoalASpeaker *GetASpeaker() const{ return pASpeaker; }
+	inline const deoalASpeaker::Ref &GetASpeaker() const{ return pASpeaker; }
 	
 	
 	

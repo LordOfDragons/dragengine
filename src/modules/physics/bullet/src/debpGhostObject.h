@@ -71,7 +71,7 @@ public:
 	/** \brief Sets the dynamics world or NULL if not assigned to one yet. */
 	void SetDynamicsWorld(debpCollisionWorld *dynWorld);
 	/** \brief Retrieves the collision shape or NULL if not set. */
-	inline debpBulletShape *GetShape() const{ return pShape; }
+	inline const debpBulletShape::Ref &GetShape() const{ return pShape; }
 	/** \brief Sets the collision shape or NULL if not set. */
 	void SetShape(debpBulletShape *shape);
 	

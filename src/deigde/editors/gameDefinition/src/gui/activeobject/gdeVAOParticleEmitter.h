@@ -81,7 +81,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class particle emitter. */
-	inline gdeOCParticleEmitter *GetOCParticleEmitter() const{ return pOCParticleEmitter; }
+	inline const gdeOCParticleEmitter::Ref &GetOCParticleEmitter() const{ return pOCParticleEmitter; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;

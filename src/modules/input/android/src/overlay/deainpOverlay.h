@@ -75,7 +75,7 @@ public:
 	inline deAndroidInput &GetAndroidInput() const{ return pAndroidInput; }
 	
 	/** \brief Canvas for this overlay. */
-	inline deCanvasView *GetCanvas() const{ return pCanvas; }
+	inline const deCanvasView::Ref &GetCanvas() const{ return pCanvas; }
 	
 	
 	

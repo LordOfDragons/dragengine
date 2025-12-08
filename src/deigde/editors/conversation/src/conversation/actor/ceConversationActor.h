@@ -188,9 +188,9 @@ public:
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** Retrieves the gesture animator instance. */
-	inline deAnimatorInstance *GetEngineGestureAnimatorInstance() const{ return pEngGestureAnimatorInstance; }
+	inline const deAnimatorInstance::Ref &GetEngineGestureAnimatorInstance() const{ return pEngGestureAnimatorInstance; }
 	/** Retrieves the engine speaker. */
-	inline deSpeaker *GetEngineSpeaker() const{ return pEngSpeaker; }
+	inline const deSpeaker::Ref &GetEngineSpeaker() const{ return pEngSpeaker; }
 	
 	/** Retrieves the parent conversation or NULL if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
@@ -268,7 +268,7 @@ public:
 	inline const ceActorPoseList &GetPoses() const{ return pPoses; }
 	
 	/** \brief Active pose or \em NULL. */
-	inline ceActorPose *GetActivePose() const{ return pActivePose; }
+	inline const ceActorPose::Ref &GetActivePose() const{ return pActivePose; }
 	
 	/** \brief Set active pose or \em NULL. */
 	void SetActivePose(ceActorPose *pose);

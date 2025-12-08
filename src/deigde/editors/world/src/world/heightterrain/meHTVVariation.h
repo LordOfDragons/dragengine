@@ -91,13 +91,13 @@ public:
 	/** Sets the model path. */
 	void SetPathModel(const char *path);
 	/** Retrieves the engine model or NULL if not valid. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	/** Retrieves the skin path. */
 	inline const decString &GetPathSkin() const{ return pPathSkin; }
 	/** Sets the skin path. */
 	void SetPathSkin(const char *path);
 	/** Retrieves the engine skin or NULL if not valid. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	/** Retrieves the rotation per force. */
 	inline float GetRotationPerForce() const{ return pRotationPerForce; }
 	/** Sets the rotation per force. */

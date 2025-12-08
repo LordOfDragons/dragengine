@@ -155,13 +155,13 @@ public:
 	
 	
 	/** \brief Model. */
-	inline deoalAModel *GetModel() const{ return pModel; }
+	inline const deoalAModel::Ref &GetModel() const{ return pModel; }
 	
 	/** \brief Set model. */
 	void SetModel(deoalAModel *model, const decStringList *textureNames);
 	
 	/** \brief Skin. */
-	inline deoalASkin *GetSkin() const{ return pSkin; }
+	inline const deoalASkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(deoalASkin *skin);

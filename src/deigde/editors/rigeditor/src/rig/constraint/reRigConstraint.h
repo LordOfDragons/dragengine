@@ -126,7 +126,7 @@ public:
 	deColliderConstraint *BuildEngineColliderConstraint();
 	
 	/** \brief Retrieves the bone collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Retrieves the constraint position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
@@ -180,7 +180,7 @@ public:
 	void SetBreakingThreshold(float impulseThreshold);
 	
 	/** \brief Retrieves the constraint rig bone or NULL. */
-	inline reRigBone *GetConstraintBone() const{ return pConstraintBone; }
+	inline const reRigBone::Ref &GetConstraintBone() const{ return pConstraintBone; }
 	/** \brief Sets the constraint rig bone or NULL. */
 	void SetConstraintBone(reRigBone *bone);
 	

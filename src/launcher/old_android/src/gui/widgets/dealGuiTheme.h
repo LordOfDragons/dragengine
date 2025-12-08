@@ -107,7 +107,7 @@ public:
 	void SetWidgetTextColor(const decColor &color);
 	
 	/** \brief Widget text font. */
-	inline dealFont *GetWidgetTextFont() const{ return pWidgetTextFont; }
+	inline const dealFont::Ref &GetWidgetTextFont() const{ return pWidgetTextFont; }
 	
 	/** \brief Set widget text font. */
 	void SetWidgetTextFont(dealFont *font);
@@ -133,7 +133,7 @@ public:
 	void SetButtonTextColor(const decColor &color);
 	
 	/** \brief Button background image or \em NULL if not used. */
-	inline dealImage *GetButtonBackgroundImage() const{ return pButtonBackgroundImage; }
+	inline const dealImage::Ref &GetButtonBackgroundImage() const{ return pButtonBackgroundImage; }
 	
 	/** \brief Set button background image or \em NULL if not used. */
 	void SetButtonBackgroundImage(dealImage *image);
@@ -171,7 +171,7 @@ public:
 	void SetButtonPressedTextColor(const decColor &color);
 	
 	/** \brief Pressed button background image or \em NULL if not used. */
-	inline dealImage *GetButtonPressedBackgroundImage() const{ return pButtonPressedBackgroundImage; }
+	inline const dealImage::Ref &GetButtonPressedBackgroundImage() const{ return pButtonPressedBackgroundImage; }
 	
 	/** \brief Set pressed button background image or \em NULL if not used. */
 	void SetButtonPressedBackgroundImage(dealImage *image);
@@ -209,13 +209,13 @@ public:
 	void SetCheckBoxTextColor(const decColor &color);
 	
 	/** \brief Check box image unchecked. */
-	inline dealImage *GetCheckBoxImageUnchecked() const{ return pCheckBoxImageUnchecked; }
+	inline const dealImage::Ref &GetCheckBoxImageUnchecked() const{ return pCheckBoxImageUnchecked; }
 	
 	/** \brief Set check box image unchecked. */
 	void SetCheckBoxImageUnchecked(dealImage *image);
 	
 	/** \brief Check box image checked. */
-	inline dealImage *GetCheckBoxImageChecked() const{ return pCheckBoxImageChecked; }
+	inline const dealImage::Ref &GetCheckBoxImageChecked() const{ return pCheckBoxImageChecked; }
 	
 	/** \brief Set check box image checked. */
 	void SetCheckBoxImageChecked(dealImage *image);
@@ -253,13 +253,13 @@ public:
 	void SetOptionBoxTextColor(const decColor &color);
 	
 	/** \brief Option box image deselected. */
-	inline dealImage *GetOptionBoxImageDeselected() const{ return pOptionBoxImageDeselected; }
+	inline const dealImage::Ref &GetOptionBoxImageDeselected() const{ return pOptionBoxImageDeselected; }
 	
 	/** \brief Set option box image deselected. */
 	void SetOptionBoxImageDeselected(dealImage *image);
 	
 	/** \brief Option box image selected. */
-	inline dealImage *GetOptionBoxImageSelected() const{ return pOptionBoxImageSelected; }
+	inline const dealImage::Ref &GetOptionBoxImageSelected() const{ return pOptionBoxImageSelected; }
 	
 	/** \brief Set option box image selected. */
 	void SetOptionBoxImageSelected(dealImage *image);

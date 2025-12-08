@@ -60,7 +60,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief If-Case. */
-	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
+	inline const ceCAIfElseCase::Ref &GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Parent if-case model. */
 	ceWPTTIMAIfElseIfCase *GetModelIfCase() const;

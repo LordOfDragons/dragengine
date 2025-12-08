@@ -280,9 +280,9 @@ public:
 	deLogger *GetLogger() const;
 	
 	/** Retrieves the debug drawer. */
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	inline const deDebugDrawer::Ref &GetDebugDrawer() const{ return pDebugDrawer; }
 	/** Retrieves the collider to use for locomotion. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	/** Retrieves the position of the collider relative to the actor. */
 	inline const decVector &GetColliderPosition() const{ return pColliderPosition; }
 	/** Sets the position of the collider relative to the actor. */
@@ -304,9 +304,9 @@ public:
 	void SetShowShapes(bool showShapes);
 	
 	/** Retrieves the touch sensor. */
-	inline deTouchSensor *GetTouchSensor() const{ return pTouchSensor; }
+	inline const deTouchSensor::Ref &GetTouchSensor() const{ return pTouchSensor; }
 	/** Retrieves the collider used for touch ground rules. */
-	inline deColliderVolume *GetTGCollider() const{ return pTGCollider; }
+	inline const deColliderVolume::Ref &GetTGCollider() const{ return pTGCollider; }
 	
 	/** Locomotion type. */
 	inline eLocomotionTypes GetLocomotionType() const{ return pLocomotionType; }

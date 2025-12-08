@@ -109,7 +109,7 @@ public:
 	
 	
 	/** \brief Load task or nullptr if finished. */
-	inline deParallelTask *GetTaskLoad() const{ return pTaskLoad; }
+	inline const deParallelTask::Ref &GetTaskLoad() const{ return pTaskLoad; }
 	
 	/** \brief Set load task or nullptr if finished. */
 	void SetTaskLoad(deParallelTask *task);

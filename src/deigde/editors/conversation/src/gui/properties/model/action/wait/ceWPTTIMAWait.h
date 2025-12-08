@@ -62,10 +62,10 @@ public:
 	inline ceCAWait *GetActionWait() const{ return (ceCAWait*)GetAction(); }
 	
 	/** \brief Model with condition. */
-	inline ceWPTTIMAWaitCondition *GetChildCondition() const{ return pCondition; }
+	inline const ceWPTTIMAWaitCondition::Ref &GetChildCondition() const{ return pCondition; }
 	
 	/** \brief Model with actions. */
-	inline ceWPTTIMAWaitActions *GetChildActions() const{ return pActions; }
+	inline const ceWPTTIMAWaitActions::Ref &GetChildActions() const{ return pActions; }
 	
 	/** \brief Update action. */
 	void Update() override;

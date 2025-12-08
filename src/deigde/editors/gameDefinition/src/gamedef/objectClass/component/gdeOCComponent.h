@@ -282,7 +282,7 @@ public:
 	inline const gdeOCComponentTextureList &GetTextures() const{ return pTextures; }
 	
 	/** \brief Active texture or \em NULL if none. */
-	inline gdeOCComponentTexture *GetActiveTexture() const{ return pActiveTexture; }
+	inline const gdeOCComponentTexture::Ref &GetActiveTexture() const{ return pActiveTexture; }
 	
 	/** \brief Set active texture or \em NULL if none. */
 	void SetActiveTexture(gdeOCComponentTexture *texture);

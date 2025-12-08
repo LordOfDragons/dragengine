@@ -76,7 +76,7 @@ public:
 	inline const deDynamicSkin &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Render dynamic skin. */
-	inline deoglRDynamicSkin *GetRDynamicSkin() const{ return pRDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetRDynamicSkin() const{ return pRDynamicSkin; }
 	
 	
 	

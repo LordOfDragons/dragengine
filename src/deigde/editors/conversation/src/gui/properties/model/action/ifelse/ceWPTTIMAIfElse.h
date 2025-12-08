@@ -65,7 +65,7 @@ public:
 	ceWPTTIMAIfElseIfCase *GetIfCaseChild(ceCAIfElseCase *ifCase) const;
 	
 	/** \brief Model with else-case or \em NULL. */
-	inline ceWPTTIMAIfElseElse *GetElseChild() const{ return pElse; }
+	inline const ceWPTTIMAIfElseElse::Ref &GetElseChild() const{ return pElse; }
 	
 	/** \brief Update action. */
 	void Update() override;

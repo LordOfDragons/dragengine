@@ -69,7 +69,7 @@ public:
 	/** Sets the text box. Used to handle text box text. */
 	void SetTextBox(ceTextBox *textBox);
 	/** Text box text or NULL if not owning one. */
-	inline ceTextBoxText *GetTextBoxText() const{ return pTextBoxText; }
+	inline const ceTextBoxText::Ref &GetTextBoxText() const{ return pTextBoxText; }
 	/** Sets the text box text or NULL if not owning one. */
 	void SetTextBoxText(ceTextBoxText *text);
 	

@@ -77,7 +77,7 @@ public:
 	void IncrementPaintTracker();
 	
 	/** Render target or \em NULL if not ready. */
-	inline deoglRenderTarget *GetRenderTarget() const{ return pRenderTarget; }
+	inline const deoglRenderTarget::Ref &GetRenderTarget() const{ return pRenderTarget; }
 	
 	/** Render target has to be resized. */
 	void SetResizeRenderTarget();

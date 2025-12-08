@@ -74,7 +74,7 @@ public:
 	inline ceConversationActionList &GetActions(){ return pActions; }
 	inline const ceConversationActionList &GetActions() const{ return pActions; }
 	/** Retrieves the condition or NULL if there is none. */
-	inline ceConversationCondition *GetCondition() const{ return pCondition; }
+	inline const ceConversationCondition::Ref &GetCondition() const{ return pCondition; }
 	/** Sets the condition or NULL if there is none. */
 	void SetCondition(ceConversationCondition *condition);
 	/** Retrieves the interval to check the condition. */

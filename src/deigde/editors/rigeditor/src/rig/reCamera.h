@@ -71,7 +71,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the bone or NULL. */
-	inline reRigBone *GetBone() const{ return pBone; }
+	inline const reRigBone::Ref &GetBone() const{ return pBone; }
 	/** Sets the bone or NULL. */
 	void SetBone(reRigBone *bone);
 	/** Retrieves the free position. */

@@ -78,7 +78,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Virtual file system or NULL if build from memory. */
-	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVirtualFileSystem; }
+	inline const deVirtualFileSystem::Ref &GetVirtualFileSystem() const{ return pVirtualFileSystem; }
 	
 	/** \brief Filename or empty string if build from memory. */
 	inline const decString &GetFilename() const{ return pFilename; }

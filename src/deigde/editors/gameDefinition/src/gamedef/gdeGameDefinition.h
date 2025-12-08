@@ -237,7 +237,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** World. */
-	inline deWorld *GetWorld() const{ return pWorld; }
+	inline const deWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** Camera. */
 	inline igdeCamera *GetCamera() const{ return pCamera; }
@@ -354,7 +354,7 @@ public:
 	inline const gdeCategoryList &GetCategoriesParticleEmitter() const{ return pCategoriesParticleEmitter; }
 	
 	/** Active category or \em NULL if not set. */
-	inline gdeCategory *GetActiveCategory() const{ return pActiveCategory; }
+	inline const gdeCategory::Ref &GetActiveCategory() const{ return pActiveCategory; }
 	
 	/** Set active category or \em NULL if not set. */
 	void SetActiveCategory(gdeCategory *category);
@@ -489,7 +489,7 @@ public:
 	
 	
 	/** Active object class or \em NULL if none is active. */
-	inline gdeObjectClass *GetActiveObjectClass() const{ return pActiveObjectClass; }
+	inline const gdeObjectClass::Ref &GetActiveObjectClass() const{ return pActiveObjectClass; }
 	
 	/** Set active object class or \em NULL if none is active. */
 	void SetActiveObjectClass(gdeObjectClass *objectClass);
@@ -500,7 +500,7 @@ public:
 	
 	
 	/** Active object class billboard or \em NULL if none is active. */
-	inline gdeOCBillboard *GetActiveOCBillboard() const{ return pActiveOCBillboard; }
+	inline const gdeOCBillboard::Ref &GetActiveOCBillboard() const{ return pActiveOCBillboard; }
 	
 	/** Set active object class billboard or \em NULL if none is active. */
 	void SetActiveOCBillboard(gdeOCBillboard *billboard);
@@ -511,7 +511,7 @@ public:
 	
 	
 	/** Active object class camera or \em NULL if none is active. */
-	inline gdeOCCamera *GetActiveOCCamera() const{ return pActiveOCCamera; }
+	inline const gdeOCCamera::Ref &GetActiveOCCamera() const{ return pActiveOCCamera; }
 	
 	/** Set active object class camera or \em NULL if none is active. */
 	void SetActiveOCCamera(gdeOCCamera *camera);
@@ -522,7 +522,7 @@ public:
 	
 	
 	/** Active object class component or \em NULL if none is active. */
-	inline gdeOCComponent *GetActiveOCComponent() const{ return pActiveOCComponent; }
+	inline const gdeOCComponent::Ref &GetActiveOCComponent() const{ return pActiveOCComponent; }
 	
 	/** Set active object class component or \em NULL if none is active. */
 	void SetActiveOCComponent(gdeOCComponent *component);
@@ -533,7 +533,7 @@ public:
 	
 	
 	/** Active object class environment map probe or \em NULL if none is active. */
-	inline gdeOCEnvMapProbe *GetActiveOCEnvMapProbe() const{ return pActiveOCEnvMapProbe; }
+	inline const gdeOCEnvMapProbe::Ref &GetActiveOCEnvMapProbe() const{ return pActiveOCEnvMapProbe; }
 	
 	/** Set active object class environment map probe or \em NULL if none is active. */
 	void SetActiveOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe);
@@ -544,7 +544,7 @@ public:
 	
 	
 	/** Active object class light or \em NULL if none is active. */
-	inline gdeOCLight *GetActiveOCLight() const{ return pActiveOCLight; }
+	inline const gdeOCLight::Ref &GetActiveOCLight() const{ return pActiveOCLight; }
 	
 	/** Set active object class light or \em NULL if none is active. */
 	void SetActiveOCLight(gdeOCLight *light);
@@ -555,7 +555,7 @@ public:
 	
 	
 	/** Active object class navigation blocker or \em NULL if none is active. */
-	inline gdeOCNavigationBlocker *GetActiveOCNavigationBlocker() const{ return pActiveOCNavigationBlocker; }
+	inline const gdeOCNavigationBlocker::Ref &GetActiveOCNavigationBlocker() const{ return pActiveOCNavigationBlocker; }
 	
 	/** Set active object class navigation blocker or \em NULL if none is active. */
 	void SetActiveOCNavigationBlocker(gdeOCNavigationBlocker *navblocker);
@@ -566,7 +566,7 @@ public:
 	
 	
 	/** Active object class navigation space or \em NULL if none is active. */
-	inline gdeOCNavigationSpace *GetActiveOCNavigationSpace() const{ return pActiveOCNavigationSpace; }
+	inline const gdeOCNavigationSpace::Ref &GetActiveOCNavigationSpace() const{ return pActiveOCNavigationSpace; }
 	
 	/** Set active object class navigation space or \em NULL if none is active. */
 	void SetActiveOCNavigationSpace(gdeOCNavigationSpace *navspace);
@@ -577,7 +577,7 @@ public:
 	
 	
 	/** Active object class particle emitter or \em NULL if none is active. */
-	inline gdeOCParticleEmitter *GetActiveOCParticleEmitter() const{ return pActiveOCParticleEmitter; }
+	inline const gdeOCParticleEmitter::Ref &GetActiveOCParticleEmitter() const{ return pActiveOCParticleEmitter; }
 	
 	/** Set active object class particle emitter or \em NULL if none is active. */
 	void SetActiveOCParticleEmitter(gdeOCParticleEmitter *emitter);
@@ -588,7 +588,7 @@ public:
 	
 	
 	/** Active object class force field or \em NULL if none is active. */
-	inline gdeOCForceField *GetActiveOCForceField() const{ return pActiveOCForceField; }
+	inline const gdeOCForceField::Ref &GetActiveOCForceField() const{ return pActiveOCForceField; }
 	
 	/** Set active object class force field or \em NULL if none is active. */
 	void SetActiveOCForceField(gdeOCForceField *field);
@@ -599,7 +599,7 @@ public:
 	
 	
 	/** Active object class snap point or \em NULL if none is active. */
-	inline gdeOCSnapPoint *GetActiveOCSnapPoint() const{ return pActiveOCSnapPoint; }
+	inline const gdeOCSnapPoint::Ref &GetActiveOCSnapPoint() const{ return pActiveOCSnapPoint; }
 	
 	/** Set active object class snap point or \em NULL if none is active. */
 	void SetActiveOCSnapPoint(gdeOCSnapPoint *snappoint);
@@ -610,7 +610,7 @@ public:
 	
 	
 	/** Active object class speaker or \em NULL if none is active. */
-	inline gdeOCSpeaker *GetActiveOCSpeaker() const{ return pActiveOCSpeaker; }
+	inline const gdeOCSpeaker::Ref &GetActiveOCSpeaker() const{ return pActiveOCSpeaker; }
 	
 	/** Set active object class speaker or \em NULL if none is active. */
 	void SetActiveOCSpeaker(gdeOCSpeaker *speaker);
@@ -648,7 +648,7 @@ public:
 	void RemoveAllParticleEmitters();
 	
 	/** Active particle emitter or \em NULL if none is active. */
-	inline gdeParticleEmitter *GetActiveParticleEmitter() const{ return pActiveParticleEmitter; }
+	inline const gdeParticleEmitter::Ref &GetActiveParticleEmitter() const{ return pActiveParticleEmitter; }
 	
 	/** Set active particle emitter or \em NULL if none is active. */
 	void SetActiveParticleEmitter(gdeParticleEmitter *particleEmitter);
@@ -675,7 +675,7 @@ public:
 	void RemoveAllSkins();
 	
 	/** Active skin or \em NULL if none is active. */
-	inline gdeSkin *GetActiveSkin() const{ return pActiveSkin; }
+	inline const gdeSkin::Ref &GetActiveSkin() const{ return pActiveSkin; }
 	
 	/** Set active skin or \em NULL if none is active. */
 	void SetActiveSkin(gdeSkin *skin);
@@ -702,7 +702,7 @@ public:
 	void RemoveAllSkies();
 	
 	/** Active sky or \em NULL if none is active. */
-	inline gdeSky *GetActiveSky() const{ return pActiveSky; }
+	inline const gdeSky::Ref &GetActiveSky() const{ return pActiveSky; }
 	
 	/** Set active sky or \em NULL if none is active. */
 	void SetActiveSky(gdeSky *sky);

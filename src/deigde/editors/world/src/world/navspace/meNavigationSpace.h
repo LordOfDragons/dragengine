@@ -95,9 +95,9 @@ public:
 	/** \brief Retrieves the game engine. */
 	deEngine *GetEngine() const;
 	/** \brief Retrieves the engine collider. */
-	inline deColliderComponent *GetEngineCollider() const{ return pEngCollider; }
+	inline const deColliderComponent::Ref &GetEngineCollider() const{ return pEngCollider; }
 	/** \brief Retrieves the engine navigation space. */
-	inline deNavigationSpace *GetEngineNavSpace() const{ return pEngNavSpace; }
+	inline const deNavigationSpace::Ref &GetEngineNavSpace() const{ return pEngNavSpace; }
 	
 	/** \brief Retrieves the world or NULL. */
 	inline meWorld *GetWorld() const{ return pWorld; }

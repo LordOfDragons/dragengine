@@ -93,7 +93,7 @@ public:
 	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Retrieves the engine collider. */
-	inline deColliderVolume *GetEngineCollider() const{ return pEngCollider; }
+	inline const deColliderVolume::Ref &GetEngineCollider() const{ return pEngCollider; }
 	
 	/** \brief Retrieves the world or NULL. */
 	inline meWorld *GetWorld() const{ return pWorld; }

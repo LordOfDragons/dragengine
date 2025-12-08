@@ -120,7 +120,7 @@ public:
 	
 	
 	/** \brief Active profile. */
-	inline projProfile *GetActiveProfile() const{ return pActiveProfile; }
+	inline const projProfile::Ref &GetActiveProfile() const{ return pActiveProfile; }
 	
 	/** \brief Set active profile. */
 	void SetActiveProfile(projProfile *profile);

@@ -96,7 +96,7 @@ public:
 	
 	
 	/** \brief Group or \em NULL if not assigned to one. */
-	inline dealWidgetOptionGroup *GetGroup() const{ return pGroup; }
+	inline const dealWidgetOptionGroup::Ref &GetGroup() const{ return pGroup; }
 	
 	/** \brief Set group or \em NULL if not assigned to one. */
 	void SetGroup(dealWidgetOptionGroup *group);

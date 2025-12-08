@@ -59,7 +59,7 @@ public:
 	/** Resets the visitor. */
 	void Reset();
 	/** Retrieves the editor shape. */
-	inline reRigShape *GetRigShape() const{ return pRigShape; }
+	inline const reRigShape::Ref &GetRigShape() const{ return pRigShape; }
 	/*@}*/
 	
 	/** @name Visiting */

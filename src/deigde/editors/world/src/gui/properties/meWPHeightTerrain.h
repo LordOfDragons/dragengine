@@ -178,7 +178,7 @@ public:
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);
@@ -190,7 +190,7 @@ public:
 	meHeightTerrainSector *GetSector() const;
 	
 	/** \brief Texture. */
-	inline meHeightTerrainTexture *GetTexture() const{ return pTexture; }
+	inline const meHeightTerrainTexture::Ref &GetTexture() const{ return pTexture; }
 	
 	/** \brief Set texture. */
 	void SetTexture(meHeightTerrainTexture *texture);
@@ -202,13 +202,13 @@ public:
 	meHeightTerrainNavSpaceType *GetActiveNavSpaceType() const;
 	
 	/** \brief Vegetation layer. */
-	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }
+	inline const meHTVegetationLayer::Ref &GetVLayer() const{ return pVLayer; }
 	
 	/** \brief Set vegetation layer. */
 	void SetVLayer(meHTVegetationLayer *vlayer);
 	
 	/** \brief Vegetation layer variation. */
-	inline meHTVVariation *GetVVariation() const{ return pVVariation; }
+	inline const meHTVVariation::Ref &GetVVariation() const{ return pVVariation; }
 	
 	/** \brief Set vegetation layer variation. */
 	void SetVVariation(meHTVVariation *vvariation);
@@ -268,25 +268,25 @@ public:
 	void UpdateVVariation();
 	
 	
-	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
-	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
+	inline const igdeAction::Ref &GetActionTextureAdd() const{ return pActionTextureAdd; }
+	inline const igdeAction::Ref &GetActionTextureRemove() const{ return pActionTextureRemove; }
 	
-	inline igdeAction *GetActionNavSpaceAdd() const{ return pActionNavSpaceAdd; }
-	inline igdeAction *GetActionNavSpaceRemove() const{ return pActionNavSpaceRemove; }
+	inline const igdeAction::Ref &GetActionNavSpaceAdd() const{ return pActionNavSpaceAdd; }
+	inline const igdeAction::Ref &GetActionNavSpaceRemove() const{ return pActionNavSpaceRemove; }
 	
-	inline igdeAction *GetActionNavSpaceTypeAdd() const{ return pActionNavSpaceTypeAdd; }
-	inline igdeAction *GetActionNavSpaceTypeRemove() const{ return pActionNavSpaceTypeRemove; }
+	inline const igdeAction::Ref &GetActionNavSpaceTypeAdd() const{ return pActionNavSpaceTypeAdd; }
+	inline const igdeAction::Ref &GetActionNavSpaceTypeRemove() const{ return pActionNavSpaceTypeRemove; }
 	
-	inline igdeAction *GetActionNavSpaceFaceAdd() const{ return pActionNavSpaceFaceAdd; }
-	inline igdeAction *GetActionNavSpaceFaceRemove() const{ return pActionNavSpaceFaceRemove; }
+	inline const igdeAction::Ref &GetActionNavSpaceFaceAdd() const{ return pActionNavSpaceFaceAdd; }
+	inline const igdeAction::Ref &GetActionNavSpaceFaceRemove() const{ return pActionNavSpaceFaceRemove; }
 	
-	inline igdeAction *GetActionVLayerAdd() const{ return pActionVLayerAdd; }
-	inline igdeAction *GetActionVLayerRemove() const{ return pActionVLayerRemove; }
-	inline igdeAction *GetActionVLayerUp() const{ return pActionVLayerUp; }
-	inline igdeAction *GetActionVLayerDown() const{ return pActionVLayerDown; }
+	inline const igdeAction::Ref &GetActionVLayerAdd() const{ return pActionVLayerAdd; }
+	inline const igdeAction::Ref &GetActionVLayerRemove() const{ return pActionVLayerRemove; }
+	inline const igdeAction::Ref &GetActionVLayerUp() const{ return pActionVLayerUp; }
+	inline const igdeAction::Ref &GetActionVLayerDown() const{ return pActionVLayerDown; }
 	
-	inline igdeAction *GetActionVVariationAdd() const{ return pActionVVariationAdd; }
-	inline igdeAction *GetActionVVariationRemove() const{ return pActionVVariationRemove; }
+	inline const igdeAction::Ref &GetActionVVariationAdd() const{ return pActionVVariationAdd; }
+	inline const igdeAction::Ref &GetActionVVariationRemove() const{ return pActionVVariationRemove; }
 	/*@}*/
 };
 

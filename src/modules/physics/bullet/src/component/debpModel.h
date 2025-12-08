@@ -155,7 +155,7 @@ public:
 	
 	
 	/** \brief Shared bullet collision shape or \em NULL if not prepared. */
-	inline debpBulletShapeModel *GetShape() const{ return pBulletShape; }
+	inline const debpBulletShapeModel::Ref &GetShape() const{ return pBulletShape; }
 	
 	/** \brief Prepare shared bullet collision shape if not prepared. */
 	void PrepareShape();

@@ -94,10 +94,10 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionSoundUp() const{ return pActionSoundUp; }
-	inline igdeAction *GetActionSoundDown() const{ return pActionSoundDown; }
-	inline igdeAction *GetActionSoundAdd() const{ return pActionSoundAdd; }
-	inline igdeAction *GetActionSoundRemove() const{ return pActionSoundRemove; }
+	inline const igdeAction::Ref &GetActionSoundUp() const{ return pActionSoundUp; }
+	inline const igdeAction::Ref &GetActionSoundDown() const{ return pActionSoundDown; }
+	inline const igdeAction::Ref &GetActionSoundAdd() const{ return pActionSoundAdd; }
+	inline const igdeAction::Ref &GetActionSoundRemove() const{ return pActionSoundRemove; }
 	/*@}*/
 };
 

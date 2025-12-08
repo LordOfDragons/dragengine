@@ -64,7 +64,7 @@ public:
 	inline const deModel &GetModel() const{ return pModel; }
 	
 	/** Render model. */
-	inline deoglRModel *GetRModel() const{ return pRModel; }
+	inline const deoglRModel::Ref &GetRModel() const{ return pRModel; }
 	/*@}*/
 	
 private:

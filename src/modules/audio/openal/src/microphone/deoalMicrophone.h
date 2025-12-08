@@ -86,7 +86,7 @@ public:
 	inline const deMicrophone &GetMicrophone() const{ return pMicrophone; }
 	
 	/** \brief Audio microphone. */
-	inline deoalAMicrophone *GetAMicrophone() const{ return pAMicrophone; }
+	inline const deoalAMicrophone::Ref &GetAMicrophone() const{ return pAMicrophone; }
 	
 	
 	

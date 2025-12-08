@@ -186,7 +186,7 @@ public:
 	
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);
@@ -200,19 +200,19 @@ public:
 	
 	
 	/** \brief Icons. */
-	inline igdeIcon *GetIconEditBone() const{ return pIconEditBone; }
-	inline igdeIcon *GetIconEditShape() const{ return pIconEditShape; }
-	inline igdeIcon *GetIconEditConstraint() const{ return pIconEditConstraint; }
-	inline igdeIcon *GetIconEditPush() const{ return pIconEditPush; }
-	inline igdeIcon *GetIconEditSelect() const{ return pIconEditSelect; }
-	inline igdeIcon *GetIconEditMove() const{ return pIconEditMove; }
-	inline igdeIcon *GetIconEditScale() const{ return pIconEditScale; }
-	inline igdeIcon *GetIconEditRotate() const{ return pIconEditRotate; }
-// 	inline igdeIcon *GetIconEdit3DCursor() const{ return pIconEdit3DCursor; }
-	inline igdeIcon *GetIconEditLockAxisX() const{ return pIconEditLockAxisX; }
-	inline igdeIcon *GetIconEditLockAxisY() const{ return pIconEditLockAxisY; }
-	inline igdeIcon *GetIconEditLockAxisZ() const{ return pIconEditLockAxisZ; }
-	inline igdeIcon *GetIconEditLockLocal() const{ return pIconEditLockLocal; }
+	inline const igdeIcon::Ref &GetIconEditBone() const{ return pIconEditBone; }
+	inline const igdeIcon::Ref &GetIconEditShape() const{ return pIconEditShape; }
+	inline const igdeIcon::Ref &GetIconEditConstraint() const{ return pIconEditConstraint; }
+	inline const igdeIcon::Ref &GetIconEditPush() const{ return pIconEditPush; }
+	inline const igdeIcon::Ref &GetIconEditSelect() const{ return pIconEditSelect; }
+	inline const igdeIcon::Ref &GetIconEditMove() const{ return pIconEditMove; }
+	inline const igdeIcon::Ref &GetIconEditScale() const{ return pIconEditScale; }
+	inline const igdeIcon::Ref &GetIconEditRotate() const{ return pIconEditRotate; }
+// 	inline const igdeIcon::Ref &GetIconEdit3DCursor() const{ return pIconEdit3DCursor; }
+	inline const igdeIcon::Ref &GetIconEditLockAxisX() const{ return pIconEditLockAxisX; }
+	inline const igdeIcon::Ref &GetIconEditLockAxisY() const{ return pIconEditLockAxisY; }
+	inline const igdeIcon::Ref &GetIconEditLockAxisZ() const{ return pIconEditLockAxisZ; }
+	inline const igdeIcon::Ref &GetIconEditLockLocal() const{ return pIconEditLockLocal; }
 	
 	
 	

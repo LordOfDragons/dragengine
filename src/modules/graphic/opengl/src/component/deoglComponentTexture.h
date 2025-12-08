@@ -83,7 +83,7 @@ public:
 	inline deoglDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Render component texture. */
-	inline deoglRComponentTexture *GetRTexture() const{ return pRTexture; }
+	inline const deoglRComponentTexture::Ref &GetRTexture() const{ return pRTexture; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

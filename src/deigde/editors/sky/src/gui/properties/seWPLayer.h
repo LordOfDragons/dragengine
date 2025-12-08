@@ -120,7 +120,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Monitored sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky to monitor. */
 	void SetSky(seSky *sky);
@@ -164,18 +164,18 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionLayerAdd() const{ return pActionLayerAdd; }
-	inline igdeAction *GetActionLayerRemove() const{ return pActionLayerRemove; }
-	inline igdeAction *GetActionLayerUp() const{ return pActionLayerUp; }
-	inline igdeAction *GetActionLayerDown() const{ return pActionLayerDown; }
+	inline const igdeAction::Ref &GetActionLayerAdd() const{ return pActionLayerAdd; }
+	inline const igdeAction::Ref &GetActionLayerRemove() const{ return pActionLayerRemove; }
+	inline const igdeAction::Ref &GetActionLayerUp() const{ return pActionLayerUp; }
+	inline const igdeAction::Ref &GetActionLayerDown() const{ return pActionLayerDown; }
 	
-	inline igdeAction *GetActionBodyAdd() const{ return pActionBodyAdd; }
-	inline igdeAction *GetActionBodyRemove() const{ return pActionBodyRemove; }
-	inline igdeAction *GetActionBodyUp() const{ return pActionBodyUp; }
-	inline igdeAction *GetActionBodyDown() const{ return pActionBodyDown; }
+	inline const igdeAction::Ref &GetActionBodyAdd() const{ return pActionBodyAdd; }
+	inline const igdeAction::Ref &GetActionBodyRemove() const{ return pActionBodyRemove; }
+	inline const igdeAction::Ref &GetActionBodyUp() const{ return pActionBodyUp; }
+	inline const igdeAction::Ref &GetActionBodyDown() const{ return pActionBodyDown; }
 	
-	inline igdeAction *GetActionLinkAdd() const{ return pActionLinkAdd; }
-	inline igdeAction *GetActionLinkRemove() const{ return pActionLinkRemove; }
+	inline const igdeAction::Ref &GetActionLinkAdd() const{ return pActionLinkAdd; }
+	inline const igdeAction::Ref &GetActionLinkRemove() const{ return pActionLinkRemove; }
 	/*@}*/
 };
 

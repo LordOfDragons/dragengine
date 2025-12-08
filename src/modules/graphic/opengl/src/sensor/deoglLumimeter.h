@@ -71,7 +71,7 @@ public:
 	
 	
 	/** Render lumimter. */
-	inline deoglRLumimeter *GetRLumimeter() const{ return pRLumimeter; }
+	inline const deoglRLumimeter::Ref &GetRLumimeter() const{ return pRLumimeter; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

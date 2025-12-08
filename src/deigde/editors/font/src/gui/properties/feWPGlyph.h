@@ -72,13 +72,13 @@ public:
 	inline feWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Font. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
 	void SetFont(feFont *font);
 	
 	/** \brief Glyph. */
-	inline feFontGlyph *GetGlyph() const{ return pGlyph; }
+	inline const feFontGlyph::Ref &GetGlyph() const{ return pGlyph; }
 	
 	/** \brief Set glyph. */
 	void SetGlyph(feFontGlyph *glyph);

@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Get world. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);
@@ -92,9 +92,9 @@ public:
 	void OnGameDefinitionChanged();
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionClassAdd() const{ return pActionClassAdd; }
-	inline igdeAction *GetActionClassRemove() const{ return pActionClassRemove; }
-	inline igdeAction *GetActionClassClear() const{ return pActionClassClear; }
+	inline const igdeAction::Ref &GetActionClassAdd() const{ return pActionClassAdd; }
+	inline const igdeAction::Ref &GetActionClassRemove() const{ return pActionClassRemove; }
+	inline const igdeAction::Ref &GetActionClassClear() const{ return pActionClassClear; }
 	/*@}*/
 };
 

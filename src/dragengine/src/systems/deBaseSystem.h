@@ -91,7 +91,7 @@ public:
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Active loadable module. */
-	inline deLoadableModule *GetActiveLoadableModule() const{ return pActiveLoadableModule; }
+	inline const deLoadableModule::Ref &GetActiveLoadableModule() const{ return pActiveLoadableModule; }
 	
 	/** \brief System is running. */
 	inline bool GetIsRunning() const{ return pRunning; }

@@ -114,7 +114,7 @@ public:
 	void SetOrder(int order);
 	
 	/** \brief Retrieves the bone collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }

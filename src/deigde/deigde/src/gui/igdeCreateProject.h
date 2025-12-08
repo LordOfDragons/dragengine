@@ -115,7 +115,7 @@ public:
 	
 	
 	/** \brief Created project or \em NULL. */
-	inline igdeGameProject *GetProject() const{ return pProject; }
+	inline const igdeGameProject::Ref &GetProject() const{ return pProject; }
 	
 	
 	

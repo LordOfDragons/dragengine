@@ -107,19 +107,19 @@ public:
 	void SetSector(const decPoint3 &sector);
 	
 	/** \brief World or \em NULL. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world or \em NULL. */
 	void SetWorld(meWorld *world);
 	
 	/** \brief Height terrain texture or \em NULL. */
-	inline meHeightTerrainTexture *GetHTTexture() const{ return pHTTexture; }
+	inline const meHeightTerrainTexture::Ref &GetHTTexture() const{ return pHTTexture; }
 	
 	/** \brief Set height terrain texture or \em NULL. */
 	void SetHTTexture(meHeightTerrainTexture *texture);
 	
 	/** \brief Height terrain navigation space or \em NULL. */
-	inline meHeightTerrainNavSpace *GetHTNavSpace() const{ return pHTNavSpace; }
+	inline const meHeightTerrainNavSpace::Ref &GetHTNavSpace() const{ return pHTNavSpace; }
 	
 	/** \brief Set height terrain navigation space or \em NULL. */
 	void SetHTNavSpace(meHeightTerrainNavSpace *navspace);

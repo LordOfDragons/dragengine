@@ -134,7 +134,7 @@ public:
 	inline const int *GetTextures() const{ return &pTextures[0]; }
 	
 	/** Render skin. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	
 	

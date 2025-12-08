@@ -94,7 +94,7 @@ public:
 	inline const deWorld &GetWorld() const{ return pWorld; }
 	
 	/** Render world. */
-	inline deoglRWorld *GetRWorld() const{ return pRWorld; }
+	inline const deoglRWorld::Ref &GetRWorld() const{ return pRWorld; }
 	
 	/** \deprecated Height terrain or \em NULL if not set. */
 	inline deoglHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }

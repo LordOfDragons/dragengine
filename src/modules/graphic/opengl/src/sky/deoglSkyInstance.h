@@ -80,7 +80,7 @@ public:
 	
 	
 	/** Render instance. */
-	inline deoglRSkyInstance *GetRInstance() const{ return pRInstance; }
+	inline const deoglRSkyInstance::Ref &GetRInstance() const{ return pRInstance; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

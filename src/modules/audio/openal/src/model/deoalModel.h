@@ -67,7 +67,7 @@ public:
 	inline const deModel &GetModel() const{ return pModel; }
 	
 	/** \brief Audio model. */
-	inline deoalAModel *GetAModel() const{ return pAModel; }
+	inline const deoalAModel::Ref &GetAModel() const{ return pAModel; }
 	/*@}*/
 };
 

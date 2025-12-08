@@ -95,7 +95,7 @@ public:
 	inline ceWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Game definition. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	
 	

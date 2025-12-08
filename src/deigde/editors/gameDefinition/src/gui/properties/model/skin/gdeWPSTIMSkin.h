@@ -55,7 +55,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Skin. */
-	inline gdeSkin *GetSkin() const{ return pSkin; }
+	inline const gdeSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	
 	

@@ -247,7 +247,7 @@ public:
 	void SetTransparency(float transparency);
 	
 	/** Mask node or \em NULL if not masked. */
-	inline sePropertyNode *GetMask() const{ return pMask; }
+	inline const sePropertyNode::Ref &GetMask() const{ return pMask; }
 	
 	/** Set mask node or \em NULL if not masked. */
 	void SetMask(sePropertyNode *mask);

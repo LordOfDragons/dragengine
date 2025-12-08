@@ -74,9 +74,9 @@ public:
 	/** Retrieves the animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	/** Retrieves the component. */
-	inline deComponent *GetComponent() const{ return pEngComponent; }
+	inline const deComponent::Ref &GetComponent() const{ return pEngComponent; }
 	/** Retrieves the collider. */
-	inline deColliderVolume *GetCollider() const{ return pEngCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pEngCollider; }
 	
 	/** Determines if the wakeboard is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }

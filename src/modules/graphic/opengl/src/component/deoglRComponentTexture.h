@@ -131,13 +131,13 @@ public:
 	
 	
 	/** Skin or NULL if there is none. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL if there is none. */
 	void SetSkin(deoglRSkin *skin);
 	
 	/** Dynamic skin or NULL if there is none. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or NULL if there is none. */
 	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
@@ -196,7 +196,7 @@ public:
 	void PrepareParamBlocks();
 	
 	/** Shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
+	inline const deoglSharedSPBElement::Ref &GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
 	/** Shared SPB render task instance group. */
 	deoglSharedSPBRTIGroup &GetSharedSPBRTIGroup(int lodLevel) const;

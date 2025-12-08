@@ -126,7 +126,7 @@ public:
 	
 	
 	/** Render component. */
-	inline deoglRComponent *GetRComponent() const{ return pRComponent; }
+	inline const deoglRComponent::Ref &GetRComponent() const{ return pRComponent; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

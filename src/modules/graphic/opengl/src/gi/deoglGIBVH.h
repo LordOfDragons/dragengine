@@ -262,10 +262,10 @@ public:
 	
 	
 	/** TBO for instance data. */
-	inline deoglDynamicTBOUInt32 *GetTBOInstance() const{ return pTBOInstance; }
+	inline const deoglDynamicTBOUInt32::Ref &GetTBOInstance() const{ return pTBOInstance; }
 	
 	/** TBO for instance matrices. */
-	inline deoglDynamicTBOFloat32 *GetTBOMatrix() const{ return pTBOMatrix; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBOMatrix() const{ return pTBOMatrix; }
 	
 	/** Render materials render task. */
 	inline deoglRenderTask &GetRenderTaskMaterial(){ return pRenderTaskMaterial; }

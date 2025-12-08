@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Speaker. */
-	inline gdeOCSpeaker *GetOCSpeaker() const{ return pSpeaker; }
+	inline const gdeOCSpeaker::Ref &GetOCSpeaker() const{ return pSpeaker; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

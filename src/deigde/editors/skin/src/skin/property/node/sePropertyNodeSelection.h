@@ -74,7 +74,7 @@ public:
 	
 	
 	/** \brief Active node or \em NULL if absent. */
-	inline sePropertyNode *GetActive() const{ return pActive; }
+	inline const sePropertyNode::Ref &GetActive() const{ return pActive; }
 	
 	/** \brief Active node is present. */
 	bool HasActive() const;

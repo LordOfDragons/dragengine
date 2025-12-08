@@ -117,16 +117,16 @@ public:
 	
 	
 	/** \brief Content widget. */
-	inline dealWidgetLayout *GetContent() const{ return pContent; }
+	inline const dealWidgetLayout::Ref &GetContent() const{ return pContent; }
 	
 	/** \brief Dialog or \em NULL if there are none. */
-	inline dealDialog *GetDialog() const{ return pDialog; }
+	inline const dealDialog::Ref &GetDialog() const{ return pDialog; }
 	
 	/** \brief Set dialog or \em NULL to show none. */
 	void SetDialog(dealDialog *dialog);
 	
 	/** \brief Capture widget or \em NULL if not set. */
-	inline dealWidget *GetCaptureWidget() const{ return pCaptureWidget; }
+	inline const dealWidget::Ref &GetCaptureWidget() const{ return pCaptureWidget; }
 	
 	/** \brief Set capture widget or \em NULL if not set. */
 	void SetCaptureWidget(dealWidget *widget);
@@ -145,19 +145,19 @@ public:
 	
 	
 	/** \brief Default gui theme. */
-	inline dealGuiTheme *GetDefaultGuiTheme() const{ return pDefaultGuiTheme; }
+	inline const dealGuiTheme::Ref &GetDefaultGuiTheme() const{ return pDefaultGuiTheme; }
 	
 	/** \brief Default font. */
-	inline dealFont *GetDefaultFont() const{ return pFontDefault; }
+	inline const dealFont::Ref &GetDefaultFont() const{ return pFontDefault; }
 	
 	/** \brief Default font size. */
 	inline int GetDefaultFontSize() const{ return pFontSizeDefault; }
 	
 	/** \brief Shape shader. */
-	inline dealShader *GetShapeShader() const{ return pShaderShape; }
+	inline const dealShader::Ref &GetShapeShader() const{ return pShaderShape; }
 	
 	/** \brief Textured shape shader. */
-	inline dealShader *GetTexturedShapeShader() const{ return pShaderShapeTex; }
+	inline const dealShader::Ref &GetTexturedShapeShader() const{ return pShaderShapeTex; }
 	/*@}*/
 	
 private:

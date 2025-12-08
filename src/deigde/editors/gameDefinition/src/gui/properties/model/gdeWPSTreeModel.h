@@ -81,7 +81,7 @@ public:
 	inline gdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Game definition. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Categories model. */
 	inline gdeWPSTIMCategories &GetCategories() const{ return *pCategories; }

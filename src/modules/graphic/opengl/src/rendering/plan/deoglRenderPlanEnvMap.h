@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the environment map or NULL if not set. */
-	inline deoglEnvironmentMap *GetEnvMap() const{ return pEnvMap; }
+	inline const deoglEnvironmentMap::Ref &GetEnvMap() const{ return pEnvMap; }
 	/** Sets the environment map or NULL if not set. */
 	void SetEnvMap(deoglEnvironmentMap *envmap);
 	/** Retrieves the distance of the environment map to the camera. */

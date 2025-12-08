@@ -232,10 +232,10 @@ public:
 	inline const XrFovf &GetRightEyeFov() const{ return pRightEyeFov; }
 	
 	/** Left eye hidden mesh or null. */
-	inline deoxrHiddenMesh *GetLeftEyeHiddenMesh() const{ return pLeftEyeHiddenMesh; }
+	inline const deoxrHiddenMesh::Ref &GetLeftEyeHiddenMesh() const{ return pLeftEyeHiddenMesh; }
 	
 	/** Right eye hidden mesh or nullptr. */
-	inline deoxrHiddenMesh *GetRightEyeHiddenMesh() const{ return pRightEyeHiddenMesh; }
+	inline const deoxrHiddenMesh::Ref &GetRightEyeHiddenMesh() const{ return pRightEyeHiddenMesh; }
 	
 	/** Update left eye hidden mesh. */
 	void UpdateLeftEyeHiddenMesh();

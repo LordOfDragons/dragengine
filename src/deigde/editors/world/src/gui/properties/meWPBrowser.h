@@ -137,7 +137,7 @@ public:
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);
@@ -223,19 +223,19 @@ public:
 	void SelectSky(igdeGDSky *gdsky);
 	
 	
-	inline igdeAction *GetActionSetClass() const{ return pActionSetClass; }
-	inline igdeAction *GetActionSetSkin() const{ return pActionSetSkin; }
-	inline igdeAction *GetActionSetDecal() const{ return pActionSetDecal; }
-	inline igdeAction *GetActionSetSky() const{ return pActionSetSky; }
+	inline const igdeAction::Ref &GetActionSetClass() const{ return pActionSetClass; }
+	inline const igdeAction::Ref &GetActionSetSkin() const{ return pActionSetSkin; }
+	inline const igdeAction::Ref &GetActionSetDecal() const{ return pActionSetDecal; }
+	inline const igdeAction::Ref &GetActionSetSky() const{ return pActionSetSky; }
 	
-	inline igdeAction *GetActionPISizeSmall() const{ return pActionPISizeSmall; }
-	inline igdeAction *GetActionPISizeMedium() const{ return pActionPISizeMedium; }
-	inline igdeAction *GetActionPISizeLarge() const{ return pActionPISizeLarge; }
+	inline const igdeAction::Ref &GetActionPISizeSmall() const{ return pActionPISizeSmall; }
+	inline const igdeAction::Ref &GetActionPISizeMedium() const{ return pActionPISizeMedium; }
+	inline const igdeAction::Ref &GetActionPISizeLarge() const{ return pActionPISizeLarge; }
 	
-	inline igdeAction *GetActionPIViewList() const{ return pActionPIViewList; }
-	inline igdeAction *GetActionPIViewPreview() const{ return pActionPIViewPreview; }
+	inline const igdeAction::Ref &GetActionPIViewList() const{ return pActionPIViewList; }
+	inline const igdeAction::Ref &GetActionPIViewPreview() const{ return pActionPIViewPreview; }
 	
-	inline igdeAction *GetActionPIRebuild() const{ return pActionPIRebuild; }
+	inline const igdeAction::Ref &GetActionPIRebuild() const{ return pActionPIRebuild; }
 	/*@}*/
 	
 	

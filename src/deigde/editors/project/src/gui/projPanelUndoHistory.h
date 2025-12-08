@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Project. */
-	inline projProject *GetProject() const{ return pProject; }
+	inline const projProject::Ref &GetProject() const{ return pProject; }
 	
 	/** \brief Set synthesizer. */
 	void SetProject(projProject *project);

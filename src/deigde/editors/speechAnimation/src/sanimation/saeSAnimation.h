@@ -106,10 +106,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	
 	/** Retrieves the animator. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	
 	/** Component. */
 	inline const deComponent::Ref &GetEngineComponent() const{ return pEngComponent; }
@@ -180,7 +180,7 @@ public:
 	/** Removes all phonemes. */
 	void RemoveAllPhonemes();
 	/** Retrieves the active texture or NULL if none is active. */
-	inline saePhoneme *GetActivePhoneme() const{ return pActivePhoneme; }
+	inline const saePhoneme::Ref &GetActivePhoneme() const{ return pActivePhoneme; }
 	/** Determines if there is an active phoneme or not. */
 	bool HasActivePhoneme() const;
 	/** Sets the active phoneme or NULL if none is active. */
@@ -198,7 +198,7 @@ public:
 	/** Removes all words. */
 	void RemoveAllWords();
 	/** Retrieves the active texture or NULL if none is active. */
-	inline saeWord *GetActiveWord() const{ return pActiveWord; }
+	inline const saeWord::Ref &GetActiveWord() const{ return pActiveWord; }
 	/** Determines if there is an active word or not. */
 	bool HasActiveWord() const;
 	/** Sets the active word or NULL if none is active. */

@@ -104,7 +104,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Virtual file system. */
-	inline deVirtualFileSystem *GetVFS() const{ return pVFS; }
+	inline const deVirtualFileSystem::Ref &GetVFS() const{ return pVFS; }
 	
 	/** \brief Path. */
 	inline const decString &GetPath() const{ return pPath; }

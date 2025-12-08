@@ -85,7 +85,7 @@ public:
 	
 	
 	/** \brief Skin. */
-	inline deoalASkin *GetSkin() const{ return pSkin; }
+	inline const deoalASkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(deoalASkin *skin);

@@ -91,7 +91,7 @@ public:
 	void SetName(const char *name);
 	
 	/** \brief Controller or \em NULL. */
-	inline seController *GetController() const{ return pController; }
+	inline const seController::Ref &GetController() const{ return pController; }
 	
 	/** \brief Set controller or \em NULL. */
 	void SetController(seController *controller);

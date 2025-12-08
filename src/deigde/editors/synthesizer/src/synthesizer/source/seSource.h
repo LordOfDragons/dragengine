@@ -226,7 +226,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Active effect or \em NULL if none is active. */
-	inline seEffect *GetActiveEffect() const{ return pActiveEffect; }
+	inline const seEffect::Ref &GetActiveEffect() const{ return pActiveEffect; }
 	
 	/** \brief Set active effect or \em NULL if none is active. */
 	void SetActiveEffect(seEffect *effect);

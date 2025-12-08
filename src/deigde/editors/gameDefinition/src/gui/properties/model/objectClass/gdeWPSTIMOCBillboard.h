@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Billboard. */
-	inline gdeOCBillboard *GetOCBillboard() const{ return pBillboard; }
+	inline const gdeOCBillboard::Ref &GetOCBillboard() const{ return pBillboard; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

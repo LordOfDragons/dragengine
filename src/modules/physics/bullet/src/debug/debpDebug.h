@@ -80,16 +80,16 @@ public:
 	void SetEnabled(bool enabled);
 	
 	/** \brief Debug information. */
-	inline debpDebugInformation *GetDIColliderPrepareDetection() const{ return pDIColliderPrepareDetection; }
-	inline debpDebugInformation *GetDIColliderDetectCustomCollision() const{ return pDIColliderDetectCustomCollision; }
-	inline debpDebugInformation *GetDIColliderUpdateFromBody() const{ return pDIColliderUpdateFromBody; }
-	inline debpDebugInformation *GetDIColliderFinishDetection() const{ return pDIColliderFinishDetection; }
-	inline debpDebugInformation *GetDIColliderCollisionTests() const{ return pDIColliderCollisionTests; }
-	inline debpDebugInformation *GetDIColliderUpdateOctree() const{ return pDIColliderUpdateOctree; }
-	inline debpDebugInformation *GetDITouchSensorApplyChanges() const{ return pDITouchSensorApplyChanges; }
-	inline debpDebugInformation *GetDIWorldStepSimulation() const{ return pDIWorldStepSimulation; }
-	inline debpDebugInformation *GetDIWorldUpdateOctrees() const{ return pDIWorldUpdateOctrees; }
-	inline debpDebugInformation *GetDIWorldCheckDynamicCollisions() const{ return pDIWorldCheckDynamicCollisions; }
+	inline const debpDebugInformation::Ref &GetDIColliderPrepareDetection() const{ return pDIColliderPrepareDetection; }
+	inline const debpDebugInformation::Ref &GetDIColliderDetectCustomCollision() const{ return pDIColliderDetectCustomCollision; }
+	inline const debpDebugInformation::Ref &GetDIColliderUpdateFromBody() const{ return pDIColliderUpdateFromBody; }
+	inline const debpDebugInformation::Ref &GetDIColliderFinishDetection() const{ return pDIColliderFinishDetection; }
+	inline const debpDebugInformation::Ref &GetDIColliderCollisionTests() const{ return pDIColliderCollisionTests; }
+	inline const debpDebugInformation::Ref &GetDIColliderUpdateOctree() const{ return pDIColliderUpdateOctree; }
+	inline const debpDebugInformation::Ref &GetDITouchSensorApplyChanges() const{ return pDITouchSensorApplyChanges; }
+	inline const debpDebugInformation::Ref &GetDIWorldStepSimulation() const{ return pDIWorldStepSimulation; }
+	inline const debpDebugInformation::Ref &GetDIWorldUpdateOctrees() const{ return pDIWorldUpdateOctrees; }
+	inline const debpDebugInformation::Ref &GetDIWorldCheckDynamicCollisions() const{ return pDIWorldCheckDynamicCollisions; }
 	
 	
 	

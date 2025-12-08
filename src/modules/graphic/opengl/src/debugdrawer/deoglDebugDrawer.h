@@ -70,7 +70,7 @@ public:
 	
 	
 	/** Render debug drawer. */
-	inline deoglRDebugDrawer *GetRDebugDrawer() const{ return pRDebugDrawer; }
+	inline const deoglRDebugDrawer::Ref &GetRDebugDrawer() const{ return pRDebugDrawer; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

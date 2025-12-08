@@ -54,7 +54,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Reader. */
-	inline decBaseFileReader *GetReader() const{ return pReader; }
+	inline const decBaseFileReader::Ref &GetReader() const{ return pReader; }
 	
 	
 	

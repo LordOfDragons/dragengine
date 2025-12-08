@@ -111,13 +111,13 @@ public:
 	void SetTargetName(const char *name);
 	
 	/** \brief Trigger target or NULL. */
-	inline igdeTriggerTarget *GetTarget() const{ return pTarget; }
+	inline const igdeTriggerTarget::Ref &GetTarget() const{ return pTarget; }
 	
 	/** \brief Set trigger target or NULL. */
 	void SetTarget(igdeTriggerTarget *target);
 	
 	/** \brief Target listener or NULL. */
-	inline igdeTriggerListener *GetTargetListener() const{ return pTargetListener; }
+	inline const igdeTriggerListener::Ref &GetTargetListener() const{ return pTargetListener; }
 	
 	/** \brief Set target listener or NULL. */
 	void SetTargetListener(igdeTriggerListener *listener);

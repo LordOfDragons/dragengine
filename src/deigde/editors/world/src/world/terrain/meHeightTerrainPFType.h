@@ -95,7 +95,7 @@ public:
 	void SetPathModel(const char *path);
 	
 	/** \brief Engine model or \em NULL if not valid. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	
 	/** \brief Skin path. */
 	inline const decString &GetPathSkin() const{ return pPathSkin; }
@@ -104,7 +104,7 @@ public:
 	void SetPathSkin(const char *path);
 	
 	/** \brief Engine skin or \em NULL if not valid. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Rotation per force. */
 	inline float GetRotationPerForce() const{ return pRotationPerForce; }

@@ -88,7 +88,7 @@ public:
 	inline deSoundLevelMeter &GetSoundLevelMeter() const{ return pSoundLevelMeter; }
 	
 	/** \brief Audio sound level meter. */
-	inline deoalASoundLevelMeter *GetASoundLevelMeter() const{ return pASoundLevelMeter; }
+	inline const deoalASoundLevelMeter::Ref &GetASoundLevelMeter() const{ return pASoundLevelMeter; }
 	
 	
 	

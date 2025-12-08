@@ -207,7 +207,7 @@ public:
 	inline aeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);
@@ -233,80 +233,80 @@ public:
 	
 	
 	/** Icons. */
-	inline igdeIcon *GetIconRuleAnimation() const{ return pIconRuleAnimation; }
-	inline igdeIcon *GetIconRuleAnimationDifference() const{ return pIconRuleAnimationDifference; }
-	inline igdeIcon *GetIconRuleAnimationSelect() const{ return pIconRuleAnimationSelect; }
-	inline igdeIcon *GetIconRuleBoneTransformator() const{ return pIconRuleBoneTransformator; }
-	inline igdeIcon *GetIconRuleForeignState() const{ return pIconRuleForeignState; }
-	inline igdeIcon *GetIconRuleGroup() const{ return pIconRuleGroup; }
-	inline igdeIcon *GetIconRuleInverseKinematic() const{ return pIconRuleInverseKinematic; }
-	inline igdeIcon *GetIconRuleLimit() const{ return pIconRuleLimit; }
-	inline igdeIcon *GetIconRuleStateManipulator() const{ return pIconRuleStateManipulator; }
-	inline igdeIcon *GetIconRuleStateSnapshot() const{ return pIconRuleStateSnapshot; }
-	inline igdeIcon *GetIconRuleSubAnimator() const{ return pIconRuleSubAnimator; }
-	inline igdeIcon *GetIconRuleTrackTo() const{ return pIconRuleTrackTo; }
-	inline igdeIcon *GetIconRuleMirror() const{ return pIconRuleMirror; }
+	inline const igdeIcon::Ref &GetIconRuleAnimation() const{ return pIconRuleAnimation; }
+	inline const igdeIcon::Ref &GetIconRuleAnimationDifference() const{ return pIconRuleAnimationDifference; }
+	inline const igdeIcon::Ref &GetIconRuleAnimationSelect() const{ return pIconRuleAnimationSelect; }
+	inline const igdeIcon::Ref &GetIconRuleBoneTransformator() const{ return pIconRuleBoneTransformator; }
+	inline const igdeIcon::Ref &GetIconRuleForeignState() const{ return pIconRuleForeignState; }
+	inline const igdeIcon::Ref &GetIconRuleGroup() const{ return pIconRuleGroup; }
+	inline const igdeIcon::Ref &GetIconRuleInverseKinematic() const{ return pIconRuleInverseKinematic; }
+	inline const igdeIcon::Ref &GetIconRuleLimit() const{ return pIconRuleLimit; }
+	inline const igdeIcon::Ref &GetIconRuleStateManipulator() const{ return pIconRuleStateManipulator; }
+	inline const igdeIcon::Ref &GetIconRuleStateSnapshot() const{ return pIconRuleStateSnapshot; }
+	inline const igdeIcon::Ref &GetIconRuleSubAnimator() const{ return pIconRuleSubAnimator; }
+	inline const igdeIcon::Ref &GetIconRuleTrackTo() const{ return pIconRuleTrackTo; }
+	inline const igdeIcon::Ref &GetIconRuleMirror() const{ return pIconRuleMirror; }
 	igdeIcon *GetRuleIcon(deAnimatorRuleVisitorIdentify::eRuleTypes type) const;
 	
 	
 	
 	/** Actions. */
-	inline igdeAction *GetActionControllerAdd() const{ return pActionControllerAdd; }
-	inline igdeAction *GetActionControllerDuplicate() const{ return pActionControllerDuplicate; }
-	inline igdeAction *GetActionControllerRemove() const{ return pActionControllerRemove; }
-	inline igdeAction *GetActionControllerUp() const{ return pActionControllerUp; }
-	inline igdeAction *GetActionControllerDown() const{ return pActionControllerDown; }
+	inline const igdeAction::Ref &GetActionControllerAdd() const{ return pActionControllerAdd; }
+	inline const igdeAction::Ref &GetActionControllerDuplicate() const{ return pActionControllerDuplicate; }
+	inline const igdeAction::Ref &GetActionControllerRemove() const{ return pActionControllerRemove; }
+	inline const igdeAction::Ref &GetActionControllerUp() const{ return pActionControllerUp; }
+	inline const igdeAction::Ref &GetActionControllerDown() const{ return pActionControllerDown; }
 	
-	inline igdeAction *GetActionLinkAdd() const{ return pActionLinkAdd; }
-	inline igdeAction *GetActionLinkDuplicate() const{ return pActionLinkDuplicate; }
-	inline igdeAction *GetActionLinkRemove() const{ return pActionLinkRemove; }
-	inline igdeAction *GetActionLinkRemoveUnused() const{ return pActionLinkRemoveUnused; }
+	inline const igdeAction::Ref &GetActionLinkAdd() const{ return pActionLinkAdd; }
+	inline const igdeAction::Ref &GetActionLinkDuplicate() const{ return pActionLinkDuplicate; }
+	inline const igdeAction::Ref &GetActionLinkRemove() const{ return pActionLinkRemove; }
+	inline const igdeAction::Ref &GetActionLinkRemoveUnused() const{ return pActionLinkRemoveUnused; }
 	
-	inline igdeAction *GetActionRuleAddAnim() const{ return pActionRuleAddAnim; }
-	inline igdeAction *GetActionRuleAddAnimDiff() const{ return pActionRuleAddAnimDiff; }
-	inline igdeAction *GetActionRuleAddAnimSelect() const{ return pActionRuleAddAnimSelect; }
-	inline igdeAction *GetActionRuleAddBoneRot() const{ return pActionRuleAddBoneRot; }
-	inline igdeAction *GetActionRuleAddInvKin() const{ return pActionRuleAddInvKin; }
-	inline igdeAction *GetActionRuleAddStateManip() const{ return pActionRuleAddStateManip; }
-	inline igdeAction *GetActionRuleAddStateSnap() const{ return pActionRuleAddStateSnap; }
-	inline igdeAction *GetActionRuleAddForeignState() const{ return pActionRuleAddForeignState; }
-	inline igdeAction *GetActionRuleAddGroup() const{ return pActionRuleAddGroup; }
-	inline igdeAction *GetActionRuleAddSubAnimator() const{ return pActionRuleAddSubAnimator; }
-	inline igdeAction *GetActionRuleAddTrackTo() const{ return pActionRuleAddTrackTo; }
-	inline igdeAction *GetActionRuleAddLimit() const{ return pActionRuleAddLimit; }
-	inline igdeAction *GetActionRuleAddMirror() const{ return pActionRuleAddMirror; }
+	inline const igdeAction::Ref &GetActionRuleAddAnim() const{ return pActionRuleAddAnim; }
+	inline const igdeAction::Ref &GetActionRuleAddAnimDiff() const{ return pActionRuleAddAnimDiff; }
+	inline const igdeAction::Ref &GetActionRuleAddAnimSelect() const{ return pActionRuleAddAnimSelect; }
+	inline const igdeAction::Ref &GetActionRuleAddBoneRot() const{ return pActionRuleAddBoneRot; }
+	inline const igdeAction::Ref &GetActionRuleAddInvKin() const{ return pActionRuleAddInvKin; }
+	inline const igdeAction::Ref &GetActionRuleAddStateManip() const{ return pActionRuleAddStateManip; }
+	inline const igdeAction::Ref &GetActionRuleAddStateSnap() const{ return pActionRuleAddStateSnap; }
+	inline const igdeAction::Ref &GetActionRuleAddForeignState() const{ return pActionRuleAddForeignState; }
+	inline const igdeAction::Ref &GetActionRuleAddGroup() const{ return pActionRuleAddGroup; }
+	inline const igdeAction::Ref &GetActionRuleAddSubAnimator() const{ return pActionRuleAddSubAnimator; }
+	inline const igdeAction::Ref &GetActionRuleAddTrackTo() const{ return pActionRuleAddTrackTo; }
+	inline const igdeAction::Ref &GetActionRuleAddLimit() const{ return pActionRuleAddLimit; }
+	inline const igdeAction::Ref &GetActionRuleAddMirror() const{ return pActionRuleAddMirror; }
 	
-	inline igdeAction *GetActionRuleAddIntoGroupAnim() const{ return pActionRuleAddIntoGroupAnim; }
-	inline igdeAction *GetActionRuleAddIntoGroupAnimDiff() const{ return pActionRuleAddIntoGroupAnimDiff; }
-	inline igdeAction *GetActionRuleAddIntoGroupAnimSelect() const{ return pActionRuleAddIntoGroupAnimSelect; }
-	inline igdeAction *GetActionRuleAddIntoGroupBoneRot() const{ return pActionRuleAddIntoGroupBoneRot; }
-	inline igdeAction *GetActionRuleAddIntoGroupInvKin() const{ return pActionRuleAddIntoGroupInvKin; }
-	inline igdeAction *GetActionRuleAddIntoGroupStateManip() const{ return pActionRuleAddIntoGroupStateManip; }
-	inline igdeAction *GetActionRuleAddIntoGroupStateSnap() const{ return pActionRuleAddIntoGroupStateSnap; }
-	inline igdeAction *GetActionRuleAddIntoGroupForeignState() const{ return pActionRuleAddIntoGroupForeignState; }
-	inline igdeAction *GetActionRuleAddIntoGroupGroup() const{ return pActionRuleAddIntoGroupGroup; }
-	inline igdeAction *GetActionRuleAddIntoGroupSubAnimator() const{ return pActionRuleAddIntoGroupSubAnimator; }
-	inline igdeAction *GetActionRuleAddIntoGroupTrackTo() const{ return pActionRuleAddIntoGroupTrackTo; }
-	inline igdeAction *GetActionRuleAddIntoGroupLimit() const{ return pActionRuleAddIntoGroupLimit; }
-	inline igdeAction *GetActionRuleAddIntoGroupMirror() const{ return pActionRuleAddIntoGroupMirror; }
+	inline const igdeAction::Ref &GetActionRuleAddIntoGroupAnim() const{ return pActionRuleAddIntoGroupAnim; }
+	inline const igdeAction::Ref &GetActionRuleAddIntoGroupAnimDiff() const{ return pActionRuleAddIntoGroupAnimDiff; }
+	inline const igdeAction::Ref &GetActionRuleAddIntoGroupAnimSelect() const{ return pActionRuleAddIntoGroupAnimSelect; }
+	inline const igdeAction::Ref &GetActionRuleAddIntoGroupBoneRot() const{ return pActionRuleAddIntoGroupBoneRot; }
+	inline const igdeAction::Ref &GetActionRuleAddIntoGroupInvKin() const{ return pActionRuleAddIntoGroupInvKin; }
+	inline const igdeAction::Ref &GetActionRuleAddIntoGroupStateManip() const{ return pActionRuleAddIntoGroupStateManip; }
+	inline const igdeAction::Ref &GetActionRuleAddIntoGroupStateSnap() const{ return pActionRuleAddIntoGroupStateSnap; }
+	inline const igdeAction::Ref &GetActionRuleAddIntoGroupForeignState() const{ return pActionRuleAddIntoGroupForeignState; }
+	inline const igdeAction::Ref &GetActionRuleAddIntoGroupGroup() const{ return pActionRuleAddIntoGroupGroup; }
+	inline const igdeAction::Ref &GetActionRuleAddIntoGroupSubAnimator() const{ return pActionRuleAddIntoGroupSubAnimator; }
+	inline const igdeAction::Ref &GetActionRuleAddIntoGroupTrackTo() const{ return pActionRuleAddIntoGroupTrackTo; }
+	inline const igdeAction::Ref &GetActionRuleAddIntoGroupLimit() const{ return pActionRuleAddIntoGroupLimit; }
+	inline const igdeAction::Ref &GetActionRuleAddIntoGroupMirror() const{ return pActionRuleAddIntoGroupMirror; }
 	
-	inline igdeAction *GetActionRuleInsertAnim() const{ return pActionRuleInsertAnim; }
-	inline igdeAction *GetActionRuleInsertAnimDiff() const{ return pActionRuleInsertAnimDiff; }
-	inline igdeAction *GetActionRuleInsertAnimSelect() const{ return pActionRuleInsertAnimSelect; }
-	inline igdeAction *GetActionRuleInsertBoneRot() const{ return pActionRuleInsertBoneRot; }
-	inline igdeAction *GetActionRuleInsertInvKin() const{ return pActionRuleInsertInvKin; }
-	inline igdeAction *GetActionRuleInsertStateManip() const{ return pActionRuleInsertStateManip; }
-	inline igdeAction *GetActionRuleInsertStateSnap() const{ return pActionRuleInsertStateSnap; }
-	inline igdeAction *GetActionRuleInsertForeignState() const{ return pActionRuleInsertForeignState; }
-	inline igdeAction *GetActionRuleInsertGroup() const{ return pActionRuleInsertGroup; }
-	inline igdeAction *GetActionRuleInsertSubAnimator() const{ return pActionRuleInsertSubAnimator; }
-	inline igdeAction *GetActionRuleInsertTrackTo() const{ return pActionRuleInsertTrackTo; }
-	inline igdeAction *GetActionRuleInsertLimit() const{ return pActionRuleInsertLimit; }
-	inline igdeAction *GetActionRuleInsertMirror() const{ return pActionRuleInsertMirror; }
+	inline const igdeAction::Ref &GetActionRuleInsertAnim() const{ return pActionRuleInsertAnim; }
+	inline const igdeAction::Ref &GetActionRuleInsertAnimDiff() const{ return pActionRuleInsertAnimDiff; }
+	inline const igdeAction::Ref &GetActionRuleInsertAnimSelect() const{ return pActionRuleInsertAnimSelect; }
+	inline const igdeAction::Ref &GetActionRuleInsertBoneRot() const{ return pActionRuleInsertBoneRot; }
+	inline const igdeAction::Ref &GetActionRuleInsertInvKin() const{ return pActionRuleInsertInvKin; }
+	inline const igdeAction::Ref &GetActionRuleInsertStateManip() const{ return pActionRuleInsertStateManip; }
+	inline const igdeAction::Ref &GetActionRuleInsertStateSnap() const{ return pActionRuleInsertStateSnap; }
+	inline const igdeAction::Ref &GetActionRuleInsertForeignState() const{ return pActionRuleInsertForeignState; }
+	inline const igdeAction::Ref &GetActionRuleInsertGroup() const{ return pActionRuleInsertGroup; }
+	inline const igdeAction::Ref &GetActionRuleInsertSubAnimator() const{ return pActionRuleInsertSubAnimator; }
+	inline const igdeAction::Ref &GetActionRuleInsertTrackTo() const{ return pActionRuleInsertTrackTo; }
+	inline const igdeAction::Ref &GetActionRuleInsertLimit() const{ return pActionRuleInsertLimit; }
+	inline const igdeAction::Ref &GetActionRuleInsertMirror() const{ return pActionRuleInsertMirror; }
 	
-	inline igdeAction *GetActionRuleRemove() const{ return pActionRuleRemove; }
-	inline igdeAction *GetActionRuleUp() const{ return pActionRuleUp; }
-	inline igdeAction *GetActionRuleDown() const{ return pActionRuleDown; }
+	inline const igdeAction::Ref &GetActionRuleRemove() const{ return pActionRuleRemove; }
+	inline const igdeAction::Ref &GetActionRuleUp() const{ return pActionRuleUp; }
+	inline const igdeAction::Ref &GetActionRuleDown() const{ return pActionRuleDown; }
 	
 	
 	

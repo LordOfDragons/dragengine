@@ -59,19 +59,19 @@ public:
 	/** Clears the entry. */
 	void Clear();
 	/** Retrieves the rig bone or NULL. */
-	inline reRigBone *GetBone() const{ return pBone; }
+	inline const reRigBone::Ref &GetBone() const{ return pBone; }
 	/** Sets the rig bone or NULL. */
 	void SetBone(reRigBone *bone);
 	/** Retrieves the rig shape or NULL. */
-	inline reRigShape *GetShape() const{ return pShape; }
+	inline const reRigShape::Ref &GetShape() const{ return pShape; }
 	/** Sets the rig shape. */
 	void SetShape(reRigShape *shape);
 	/** Retrieves the rig constraint or NULL. */
-	inline reRigConstraint *GetConstraint() const{ return pConstraint; }
+	inline const reRigConstraint::Ref &GetConstraint() const{ return pConstraint; }
 	/** Sets the rig constraint. */
 	void SetConstraint(reRigConstraint *constraint);
 	/** Retrieves the rig push or NULL. */
-	inline reRigPush *GetPush() const{ return pPush; }
+	inline const reRigPush::Ref &GetPush() const{ return pPush; }
 	/** Sets the rig push. */
 	void SetPush(reRigPush *push);
 	

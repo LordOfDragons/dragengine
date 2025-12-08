@@ -106,7 +106,7 @@ public:
 	
 	
 	/** Controller or \em NULL. */
-	inline aeController *GetController() const{ return pController; }
+	inline const aeController::Ref &GetController() const{ return pController; }
 	
 	/** Set controller or \em NULL. */
 	void SetController(aeController *controller, bool notify = true);

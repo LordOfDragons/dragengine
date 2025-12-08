@@ -87,7 +87,7 @@ public:
 	void SetColor(const decColor &color);
 	
 	/** \brief Skin or NULL if not set. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not set. */
 	void SetSkin(deSkin *skin);

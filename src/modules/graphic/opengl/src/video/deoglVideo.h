@@ -74,7 +74,7 @@ public:
 	inline deVideo &GetVideo() const{ return pVideo; }
 	
 	/** Render video or \em NULL if not existing. */
-	inline deoglRVideo *GetRVideo() const{ return pRVideo; }
+	inline const deoglRVideo::Ref &GetRVideo() const{ return pRVideo; }
 	
 	
 	

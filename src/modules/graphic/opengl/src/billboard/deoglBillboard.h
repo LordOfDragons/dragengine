@@ -100,7 +100,7 @@ public:
 	
 	
 	/** Render billboard. */
-	inline deoglRBillboard *GetRBillboard() const{ return pRBillboard; }
+	inline const deoglRBillboard::Ref &GetRBillboard() const{ return pRBillboard; }
 	
 	
 	

@@ -174,13 +174,13 @@ public:
 	
 	
 	/** \brief Virtual file system. */
-	inline deVirtualFileSystem *GetVFS() const{ return pVFS; }
+	inline const deVirtualFileSystem::Ref &GetVFS() const{ return pVFS; }
 	
 	/** \brief Logger. */
-	inline deLoggerChain *GetLogger() const{ return pLogger; }
+	inline const deLoggerChain::Ref &GetLogger() const{ return pLogger; }
 	
 	/** \brief Logger history. */
-	inline delLoggerHistory *GetLoggerHistory() const{ return pLoggerHistory; }
+	inline const delLoggerHistory::Ref &GetLoggerHistory() const{ return pLoggerHistory; }
 	
 	/** \brief Log source. */
 	inline const decString &GetLogSource() const{ return pLogSource; }

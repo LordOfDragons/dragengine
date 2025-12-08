@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or nullptr if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

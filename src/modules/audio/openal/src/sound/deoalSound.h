@@ -66,7 +66,7 @@ public:
 	inline deSound &GetSound() const{ return pSound; }
 	
 	/** \brief Audio sound. */
-	inline deoalASound *GetASound() const{ return pASound; }
+	inline const deoalASound::Ref &GetASound() const{ return pASound; }
 	
 	
 	

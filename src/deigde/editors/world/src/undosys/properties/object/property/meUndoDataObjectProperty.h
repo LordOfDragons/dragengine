@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the object pointer. */
-	inline meObject *GetObject() const{ return pObject; }
+	inline const meObject::Ref &GetObject() const{ return pObject; }
 	/** Retrieves the old property value. */
 	inline const decString &GetOldValue() const{ return pOldValue; }
 	/** Sets the old property value. */

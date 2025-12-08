@@ -136,7 +136,7 @@ public:
 	/** Sets the mask path. */
 	void SetPathMask(const char *path, bool load);
 	/** Retrieves the mask image. */
-	inline deImage *GetMaskImage() const{ return pMaskImage; }
+	inline const deImage::Ref &GetMaskImage() const{ return pMaskImage; }
 	
 	/** \brief Get mask image creating it if NULL. */
 	deImage *GetOrAddMaskImage();

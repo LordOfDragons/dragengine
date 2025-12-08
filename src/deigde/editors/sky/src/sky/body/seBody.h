@@ -110,7 +110,7 @@ public:
 	void SetSkinPath(const char *skinPath);
 	
 	/** \brief Engine skin or \em NULL. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	
 	/** \brief Body is the active one. */
 	inline bool GetActive() const{ return pActive; }

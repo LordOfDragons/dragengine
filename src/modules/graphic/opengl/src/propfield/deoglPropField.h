@@ -82,7 +82,7 @@ public:
 	
 	
 	/** Render prop field. */
-	inline deoglRPropField *GetRPropField() const{ return pRPropField; }
+	inline const deoglRPropField::Ref &GetRPropField() const{ return pRPropField; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

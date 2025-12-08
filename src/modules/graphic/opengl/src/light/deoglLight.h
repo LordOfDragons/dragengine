@@ -129,7 +129,7 @@ public:
 	
 	
 	/** Render light. */
-	inline deoglRLight *GetRLight() const{ return pRLight; }
+	inline const deoglRLight::Ref &GetRLight() const{ return pRLight; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

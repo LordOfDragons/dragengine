@@ -325,7 +325,7 @@ public:
 	void SetModel(deoglRModel *model);
 	
 	/** Skin or NULL if not set. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL if not set. */
 	void SetSkin(deoglRSkin *skin);
@@ -334,7 +334,7 @@ public:
 	void RigChanged();
 	
 	/** Dynamic skin or NULL if not set. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/**
 	 * Set dynamic skin or NULL if not set.
@@ -343,7 +343,7 @@ public:
 	void SetDynamicSkin(deoglComponent &component, deoglRDynamicSkin *dynamicSkin);
 	
 	/** Occlusion mesh or NULL if not set. */
-	inline deoglROcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
+	inline const deoglROcclusionMesh::Ref &GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	/** Set occlusion mesh or NULL if not set. */
 	void SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh);
@@ -355,7 +355,7 @@ public:
 	void DynOccMeshRequiresPrepareForRender();
 	
 	/** Occlusion mesh shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetOccMeshSharedSPBElement() const{ return pOccMeshSharedSPBElement; }
+	inline const deoglSharedSPBElement::Ref &GetOccMeshSharedSPBElement() const{ return pOccMeshSharedSPBElement; }
 	
 	/** Shared SPB render task instance group. */
 	deoglSharedSPBRTIGroup &GetOccMeshSharedSPBRTIGroup(bool doubleSided) const;
@@ -496,13 +496,13 @@ public:
 	
 	
 	/** Render environment map or NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
+	inline const deoglEnvironmentMap::Ref &GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
 	/** Set render environment map or NULL if not assigned yet. */
 	void SetRenderEnvMap(deoglEnvironmentMap *envmap);
 	
 	/** Fading render environment map or NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMapFade() const{ return pRenderEnvMapFade; }
+	inline const deoglEnvironmentMap::Ref &GetRenderEnvMapFade() const{ return pRenderEnvMapFade; }
 	
 	/** Set fading render environment map or NULL if not used. */
 	void SetRenderEnvMapFade(deoglEnvironmentMap *envmap);

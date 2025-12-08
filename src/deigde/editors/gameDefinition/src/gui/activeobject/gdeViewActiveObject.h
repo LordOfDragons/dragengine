@@ -130,13 +130,13 @@ public:
 	inline gdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Monitored game definition. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition to monitor. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
 	
 	/** \brief Debug drawer. */
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	inline const deDebugDrawer::Ref &GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	
 	
@@ -152,7 +152,7 @@ public:
 	
 	
 	/** \brief Selected object class or \em NULL. */
-	inline gdeObjectClass *GetObjectClass() const{ return pObjectClass; }
+	inline const gdeObjectClass::Ref &GetObjectClass() const{ return pObjectClass; }
 	
 	/** \brief Set camera position to show active object properly. */
 	void ResetCameraPosition();

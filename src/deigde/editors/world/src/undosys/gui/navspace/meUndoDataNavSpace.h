@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Navigation space. */
-	inline meNavigationSpace *GetNavSpace() const{ return pNavSpace; }
+	inline const meNavigationSpace::Ref &GetNavSpace() const{ return pNavSpace; }
 	
 	/** \brief Position before action. */
 	inline const decDVector &GetOldPosition() const{ return pOldPosition; }

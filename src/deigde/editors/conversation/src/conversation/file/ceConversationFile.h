@@ -99,7 +99,7 @@ public:
 	void RemoveAllTopics();
 	
 	/** \brief Active topic or \em NULL if none is active. */
-	inline ceConversationTopic *GetActiveTopic() const{ return pActiveTopic; }
+	inline const ceConversationTopic::Ref &GetActiveTopic() const{ return pActiveTopic; }
 	
 	/** \brief Set active topic or \em NULL if none is active. */
 	void SetActiveTopic(ceConversationTopic *topic);

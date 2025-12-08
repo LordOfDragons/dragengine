@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Skin or NULL if not set. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not set. */
 	void SetSkin(deSkin *skin);
@@ -97,7 +97,7 @@ public:
 	void SetProjectionRotation(float rotation);
 	
 	/** \brief Mask image or NULL if not set. */
-	inline deImage *GetMaskImage() const{ return pMaskImage; }
+	inline const deImage::Ref &GetMaskImage() const{ return pMaskImage; }
 	
 	/** \brief Set mask image or NULL if not set. */
 	void SetMaskImage(deImage *image);

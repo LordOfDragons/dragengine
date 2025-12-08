@@ -72,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sound or NULL if silent. */
-	inline deSound *GetSound() const{ return pSound; }
+	inline const deSound::Ref &GetSound() const{ return pSound; }
 	
 	/** \brief Set sound or NULL if silent. */
 	void SetSound(deSound *sound);

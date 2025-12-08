@@ -116,7 +116,7 @@ public:
 	inline peeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
 	void SetEmitter(peeEmitter *emitter);
@@ -163,9 +163,9 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction* GetActionTypeAdd() const{ return pActionTypeAdd; }
-	inline igdeAction* GetActionTypeRemove() const{ return pActionTypeRemove; }
-	inline igdeAction* GetActionTypeRename() const{ return pActionTypeRename; }
+	inline const igdeAction::Ref &GetActionTypeAdd() const{ return pActionTypeAdd; }
+	inline const igdeAction::Ref &GetActionTypeRemove() const{ return pActionTypeRemove; }
+	inline const igdeAction::Ref &GetActionTypeRename() const{ return pActionTypeRename; }
 	/*@}*/
 };
 

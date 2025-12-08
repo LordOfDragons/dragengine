@@ -104,13 +104,13 @@ public:
 	inline seLoadSaveSystem &GetLoadSaveSystem() const{ return pLoadSaveSystem; }
 	
 	/** \brief Engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	
 	/** \brief Engine synthesizer. */
-	inline deSynthesizer *GetEngineSynthesizer() const{ return pEngSynthesizer; }
+	inline const deSynthesizer::Ref &GetEngineSynthesizer() const{ return pEngSynthesizer; }
 	
 	/** \brief Engine synthesizer instance. */
-	inline deSynthesizerInstance *GetEngineSynthesizerInstance() const{ return pEngSynthesizerInstance; }
+	inline const deSynthesizerInstance::Ref &GetEngineSynthesizerInstance() const{ return pEngSynthesizerInstance; }
 	
 	
 	

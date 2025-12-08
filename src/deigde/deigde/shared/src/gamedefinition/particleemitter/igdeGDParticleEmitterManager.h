@@ -72,7 +72,7 @@ public:
 	void RemoveAllEmitters();
 	
 	/** \brief Top level category object. */
-	inline igdeGDCategory *GetCategories() const{ return pCategories; }
+	inline const igdeGDCategory::Ref &GetCategories() const{ return pCategories; }
 	
 	/** \brief Path of default emitter. */
 	inline const decString &GetDefaultPath() const{ return pDefaultPath; }

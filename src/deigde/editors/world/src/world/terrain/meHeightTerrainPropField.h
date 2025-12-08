@@ -99,7 +99,7 @@ public:
 	
 	
 	/** \brief Engine prop field. */
-	inline dePropField *GetEnginePropField() const{ return pEngPF; }
+	inline const dePropField::Ref &GetEnginePropField() const{ return pEngPF; }
 	
 	
 	

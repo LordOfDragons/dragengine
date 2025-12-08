@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Component. */
-	inline gdeOCComponent *GetOCComponent() const{ return pComponent; }
+	inline const gdeOCComponent::Ref &GetOCComponent() const{ return pComponent; }
 	
 	/** \brief Validate component and update state accordingly. */
 	void Validate();

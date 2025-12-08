@@ -69,7 +69,7 @@ public:
 		inline deSkinPropertyImage *GetPropertyImage() const{ return pPropertyImage; }
 		inline deSkinPropertyNodeImage *GetNodeImage() const{ return pNodeImage; }
 		inline deSkinPropertyNodeText *GetNodeText() const{ return pNodeText; }
-		inline deResourceLoaderTask *GetTask() const{ return pTask; }
+		inline const deResourceLoaderTask::Ref &GetTask() const{ return pTask; }
 	};
 	
 	
@@ -102,7 +102,7 @@ public:
 	void Finished() override;
 	
 	/** \brief Skin. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	/*@}*/
 	
 	

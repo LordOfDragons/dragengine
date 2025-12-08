@@ -68,7 +68,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Top level category object. */
-	inline igdeGDCategory *GetCategories() const{ return pCategories; }
+	inline const igdeGDCategory::Ref &GetCategories() const{ return pCategories; }
 	
 	/** \brief Number of game skins. */
 	int GetSkinCount() const;

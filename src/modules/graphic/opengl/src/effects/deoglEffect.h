@@ -69,7 +69,7 @@ public:
 	
 	
 	/** Render effect. */
-	inline deoglREffect *GetREffect() const{ return pREffect; }
+	inline const deoglREffect::Ref &GetREffect() const{ return pREffect; }
 	
 	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();

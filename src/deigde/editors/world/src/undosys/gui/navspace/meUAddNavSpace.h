@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Navigation space to add. */
-	inline meNavigationSpace *GetNavSpace() const{ return pNavSpace; }
+	inline const meNavigationSpace::Ref &GetNavSpace() const{ return pNavSpace; }
 	
 	/** \brief Undo the action. */
 	virtual void Undo();

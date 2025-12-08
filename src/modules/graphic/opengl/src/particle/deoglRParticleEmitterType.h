@@ -151,7 +151,7 @@ public:
 	
 	
 	/** Skin. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin. */
 	void SetSkin(deoglRSkin *skin);

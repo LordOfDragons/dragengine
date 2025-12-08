@@ -54,7 +54,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Image or \em NULL if not set. */
-	inline dealImage *GetImage() const{ return pImage; }
+	inline const dealImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set image or \em NULL if not set. */
 	void SetImage(dealImage *image);

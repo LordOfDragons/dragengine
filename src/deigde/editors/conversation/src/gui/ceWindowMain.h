@@ -202,7 +202,7 @@ public:
 	inline ceLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** Conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
 	void SetConversation(ceConversation *conversation);
@@ -233,39 +233,39 @@ public:
 	
 	
 	/** Icons. */
-	inline igdeIcon *GetIconActionCameraShot() const{ return pIconActionCameraShot; }
-	inline igdeIcon *GetIconActionMusic() const{ return pIconActionMusic; }
-	inline igdeIcon *GetIconActionActorSpeak() const{ return pIconActionActorSpeak; }
-	inline igdeIcon *GetIconActionIfElse() const{ return pIconActionIfElse; }
-	inline igdeIcon *GetIconActionIfElseCaseIf() const{ return pIconActionIfElseCaseIf; }
-	inline igdeIcon *GetIconActionIfElseCaseElse() const{ return pIconActionIfElseCaseElse; }
-	inline igdeIcon *GetIconActionPlayerChoice() const{ return pIconActionPlayerChoice; }
-	inline igdeIcon *GetIconActionOption() const{ return pIconActionOption; }
-	inline igdeIcon *GetIconActionSnippet() const{ return pIconActionSnippet; }
-	inline igdeIcon *GetIconActionStop() const{ return pIconActionStop; }
-	inline igdeIcon *GetIconActionActorCommand() const{ return pIconActionActorCommand; }
-	inline igdeIcon *GetIconActionCommand() const{ return pIconActionCommand; }
-	inline igdeIcon *GetIconActionVariable() const{ return pIconActionVariable; }
-	inline igdeIcon *GetIconActionWait() const{ return pIconActionWait; }
-	inline igdeIcon *GetIconActionTrigger() const{ return pIconActionTrigger; }
-	inline igdeIcon *GetIconActionActorAdd() const{ return pIconActionActorAdd; }
-	inline igdeIcon *GetIconActionActorRemove() const{ return pIconActionActorRemove; }
-	inline igdeIcon *GetIconActionCoordSysAdd() const{ return pIconActionCoordSysAdd; }
-	inline igdeIcon *GetIconActionCoordSysRemove() const{ return pIconActionCoordSysRemove; }
-	inline igdeIcon *GetIconActionComment() const{ return pIconActionComment; }
+	inline const igdeIcon::Ref &GetIconActionCameraShot() const{ return pIconActionCameraShot; }
+	inline const igdeIcon::Ref &GetIconActionMusic() const{ return pIconActionMusic; }
+	inline const igdeIcon::Ref &GetIconActionActorSpeak() const{ return pIconActionActorSpeak; }
+	inline const igdeIcon::Ref &GetIconActionIfElse() const{ return pIconActionIfElse; }
+	inline const igdeIcon::Ref &GetIconActionIfElseCaseIf() const{ return pIconActionIfElseCaseIf; }
+	inline const igdeIcon::Ref &GetIconActionIfElseCaseElse() const{ return pIconActionIfElseCaseElse; }
+	inline const igdeIcon::Ref &GetIconActionPlayerChoice() const{ return pIconActionPlayerChoice; }
+	inline const igdeIcon::Ref &GetIconActionOption() const{ return pIconActionOption; }
+	inline const igdeIcon::Ref &GetIconActionSnippet() const{ return pIconActionSnippet; }
+	inline const igdeIcon::Ref &GetIconActionStop() const{ return pIconActionStop; }
+	inline const igdeIcon::Ref &GetIconActionActorCommand() const{ return pIconActionActorCommand; }
+	inline const igdeIcon::Ref &GetIconActionCommand() const{ return pIconActionCommand; }
+	inline const igdeIcon::Ref &GetIconActionVariable() const{ return pIconActionVariable; }
+	inline const igdeIcon::Ref &GetIconActionWait() const{ return pIconActionWait; }
+	inline const igdeIcon::Ref &GetIconActionTrigger() const{ return pIconActionTrigger; }
+	inline const igdeIcon::Ref &GetIconActionActorAdd() const{ return pIconActionActorAdd; }
+	inline const igdeIcon::Ref &GetIconActionActorRemove() const{ return pIconActionActorRemove; }
+	inline const igdeIcon::Ref &GetIconActionCoordSysAdd() const{ return pIconActionCoordSysAdd; }
+	inline const igdeIcon::Ref &GetIconActionCoordSysRemove() const{ return pIconActionCoordSysRemove; }
+	inline const igdeIcon::Ref &GetIconActionComment() const{ return pIconActionComment; }
 	
-	inline igdeIcon *GetIconConditionLogic() const{ return pIconConditionLogic; }
-	inline igdeIcon *GetIconConditionActorCommand() const{ return pIconConditionActorCommand; }
-	inline igdeIcon *GetIconConditionCommand() const{ return pIconConditionCommand; }
-	inline igdeIcon *GetIconConditionVariable() const{ return pIconConditionVariable; }
-	inline igdeIcon *GetIconConditionHasActor() const{ return pIconConditionHasActor; }
-	inline igdeIcon *GetIconConditionActorInConversation() const{ return pIconConditionActorInConversation; }
-	inline igdeIcon *GetIconConditionTrigger() const{ return pIconConditionTrigger; }
+	inline const igdeIcon::Ref &GetIconConditionLogic() const{ return pIconConditionLogic; }
+	inline const igdeIcon::Ref &GetIconConditionActorCommand() const{ return pIconConditionActorCommand; }
+	inline const igdeIcon::Ref &GetIconConditionCommand() const{ return pIconConditionCommand; }
+	inline const igdeIcon::Ref &GetIconConditionVariable() const{ return pIconConditionVariable; }
+	inline const igdeIcon::Ref &GetIconConditionHasActor() const{ return pIconConditionHasActor; }
+	inline const igdeIcon::Ref &GetIconConditionActorInConversation() const{ return pIconConditionActorInConversation; }
+	inline const igdeIcon::Ref &GetIconConditionTrigger() const{ return pIconConditionTrigger; }
 	
-	inline igdeIcon *GetIconPlayAction() const{ return pIconPlayAction; }
-	inline igdeIcon *GetIconPlayFromHere() const{ return pIconPlayFromHere; }
-	inline igdeIcon *GetIconPlayPause() const{ return pIconPlayPause; }
-	inline igdeIcon *GetIconPlaySelectCurAction() const{ return pIconPlaySelectCurAction; }
+	inline const igdeIcon::Ref &GetIconPlayAction() const{ return pIconPlayAction; }
+	inline const igdeIcon::Ref &GetIconPlayFromHere() const{ return pIconPlayFromHere; }
+	inline const igdeIcon::Ref &GetIconPlayPause() const{ return pIconPlayPause; }
+	inline const igdeIcon::Ref &GetIconPlaySelectCurAction() const{ return pIconPlaySelectCurAction; }
 	
 	
 	

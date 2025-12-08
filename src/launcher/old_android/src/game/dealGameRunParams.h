@@ -63,7 +63,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game profile. */
-	inline dealGameProfile *GetGameProfile() const{ return pGameProfile; }
+	inline const dealGameProfile::Ref &GetGameProfile() const{ return pGameProfile; }
 	
 	/** \brief Set game profile. */
 	void SetGameProfile(dealGameProfile *profile);

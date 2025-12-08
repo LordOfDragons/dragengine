@@ -253,7 +253,7 @@ public:
 	void ResetFailureFlags();
 	
 	/** \brief Logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
+	inline const deLogger::Ref &GetLogger() const{ return pLogger; }
 	
 	/** \brief Set logger. */
 	void SetLogger(deLogger *logger);

@@ -118,7 +118,7 @@ public:
 	inline reWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);

@@ -101,17 +101,17 @@ public:
 	//inline igdeIcon* GetIconFontNew() const{ return pIconFontNew; }
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionFontNew() const{ return pActionFontNew; }
-	inline igdeAction *GetActionFontOpen() const{ return pActionFontOpen; }
-	inline igdeAction *GetActionFontSave() const{ return pActionFontSave; }
-	inline igdeAction *GetActionFontSaveAs() const{ return pActionFontSaveAs; }
-	inline igdeAction *GetActionFontGenerate() const{ return pActionFontGenerate; }
+	inline const igdeAction::Ref &GetActionFontNew() const{ return pActionFontNew; }
+	inline const igdeAction::Ref &GetActionFontOpen() const{ return pActionFontOpen; }
+	inline const igdeAction::Ref &GetActionFontSave() const{ return pActionFontSave; }
+	inline const igdeAction::Ref &GetActionFontSaveAs() const{ return pActionFontSaveAs; }
+	inline const igdeAction::Ref &GetActionFontGenerate() const{ return pActionFontGenerate; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
-	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
-	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
-	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
-	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
+	inline const igdeActionUndo::Ref &GetActionEditUndo() const{ return pActionEditUndo; }
+	inline const igdeActionRedo::Ref &GetActionEditRedo() const{ return pActionEditRedo; }
+	inline const igdeAction::Ref &GetActionEditCut() const{ return pActionEditCut; }
+	inline const igdeAction::Ref &GetActionEditCopy() const{ return pActionEditCopy; }
+	inline const igdeAction::Ref &GetActionEditPaste() const{ return pActionEditPaste; }
 	
 	/** Asks the user if it is okay to quit the application. */
 	bool QuitRequest();
@@ -132,7 +132,7 @@ public:
 	void SetGenFontConfig(const igdeFont::sConfiguration &config);
 	
 	/** Retrieves the rig. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	/** Sets the font. */
 	void SetFont(feFont *font);
 	/** Creates a new font. */

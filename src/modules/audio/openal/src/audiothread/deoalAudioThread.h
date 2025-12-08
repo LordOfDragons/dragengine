@@ -180,7 +180,7 @@ public:
 	void SetActiveMicrophone(deoalAMicrophone *microphone);
 	
 	/** Active world if a microphone is active and has a parent world. */
-	inline deoalAWorld *GetActiveWorld() const{ return pActiveWorld; }
+	inline const deoalAWorld::Ref &GetActiveWorld() const{ return pActiveWorld; }
 	
 	
 	

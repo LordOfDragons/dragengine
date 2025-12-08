@@ -99,10 +99,10 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionAppend() const{ return pActionAppend; }
-	inline igdeAction *GetActionInsert() const{ return pActionInsert; }
-	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
-	inline igdeAction *GetActionClear() const{ return pActionClear; }
+	inline const igdeAction::Ref &GetActionAppend() const{ return pActionAppend; }
+	inline const igdeAction::Ref &GetActionInsert() const{ return pActionInsert; }
+	inline const igdeAction::Ref &GetActionRemove() const{ return pActionRemove; }
+	inline const igdeAction::Ref &GetActionClear() const{ return pActionClear; }
 	/*@}*/
 	
 	
@@ -116,10 +116,10 @@ public:
 	
 protected:
 	/** \brief Edit path. */
-	inline igdeEditPath *GetEditPath() const{ return pEditPath; }
+	inline const igdeEditPath::Ref &GetEditPath() const{ return pEditPath; }
 	
 	/** \brief List box. */
-	inline igdeListBox *GetListBox() const{ return pListBox; }
+	inline const igdeListBox::Ref &GetListBox() const{ return pListBox; }
 };
 
 #endif

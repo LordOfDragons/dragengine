@@ -79,7 +79,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class envMapProbe. */
-	inline gdeOCEnvMapProbe *GetOCEnvMapProbe() const{ return pOCEnvMapProbe; }
+	inline const gdeOCEnvMapProbe::Ref &GetOCEnvMapProbe() const{ return pOCEnvMapProbe; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;

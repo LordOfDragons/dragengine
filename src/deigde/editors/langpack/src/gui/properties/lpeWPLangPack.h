@@ -72,7 +72,7 @@ public:
 	inline lpeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Language pack or NULL. */
-	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
+	inline const lpeLangPack::Ref &GetLangPack() const{ return pLangPack; }
 	
 	/** \brief Set language pack or NULL. */
 	void SetLangPack(lpeLangPack *langpack);

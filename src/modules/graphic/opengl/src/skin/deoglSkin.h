@@ -66,7 +66,7 @@ public:
 	
 	
 	/** Render skin. */
-	inline deoglRSkin *GetRSkin() const{ return pRSkin; }
+	inline const deoglRSkin::Ref &GetRSkin() const{ return pRSkin; }
 
 
 	/** Recreate deoglRSkin. */
