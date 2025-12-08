@@ -64,10 +64,10 @@ public:
 	deAnimation *GetRootAnimation() const;
 	
 	/** \brief Animation with the given filename or NULL if not loaded yet. */
-	deAnimation *GetAnimationWith(const char *filename) const;
+	deAnimation::Ref GetAnimationWith(const char *filename) const;
 	
 	/** \brief Animation with the given filename or NULL if not loaded yet. */
-	deAnimation *GetAnimationWith(deVirtualFileSystem *vfs, const char *filename) const;
+	deAnimation::Ref GetAnimationWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create new animation object using a builder. */
 	deAnimation *CreateAnimation(const char *filename, deAnimationBuilder &builder);

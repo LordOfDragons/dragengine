@@ -178,7 +178,7 @@ void deEosSdk::InitSdk(const deServiceObject::Ref &data){
 	EOS_Logging_SetLogLevel(EOS_ELogCategory::EOS_LC_ALL_CATEGORIES, EOS_ELogLevel::EOS_LOG_VeryVerbose);
 }
 
-deBaseServiceService* deEosSdk::CreateService(deService *service,
+deBaseServiceService::Ref deEosSdk::CreateService(deService *service,
 const char *name, const deServiceObject::Ref &data){
 	DEASSERT_NOTNULL(service)
 	

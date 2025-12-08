@@ -76,7 +76,7 @@ deImage *deImageManager::GetRootImage() const{
 	return (deImage*)pImages.GetRoot();
 }
 
-deImage * deImageManager::GetImageWith(const char *filename) const{
+deImage::Ref deImageManager::GetImageWith(const char *filename) const{
 	return GetImageWith(GetEngine()->GetVirtualFileSystem(), filename);
 }
 

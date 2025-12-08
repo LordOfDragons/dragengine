@@ -69,7 +69,7 @@ deAnimation *deAnimationManager::GetRootAnimation() const{
 	return (deAnimation*)pAnimations.GetRoot();
 }
 
-deAnimation * deAnimationManager::GetAnimationWith(const char *filename) const{
+deAnimation::Ref deAnimationManager::GetAnimationWith(const char *filename) const{
 	return GetAnimationWith(GetEngine()->GetVirtualFileSystem(), filename);
 }
 

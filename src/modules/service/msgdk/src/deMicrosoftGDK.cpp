@@ -182,7 +182,7 @@ decStringSet deMicrosoftGdk::GetSupportedServices()
 	return names;
 }
 
-deBaseServiceService* deMicrosoftGdk::CreateService(deService *service,
+deBaseServiceService::Ref deMicrosoftGdk::CreateService(deService *service,
 	const char *name, const deServiceObject::Ref &data)
 {
 	DEASSERT_NOTNULL(service)

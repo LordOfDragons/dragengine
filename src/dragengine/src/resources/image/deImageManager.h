@@ -68,10 +68,10 @@ public:
 	deImage *GetRootImage() const;
 	
 	/** \brief Image with the given filename or NULL if not loaded yet. */
-	deImage *GetImageWith(const char *filename) const;
+	deImage::Ref GetImageWith(const char *filename) const;
 	
 	/** \brief Image with the given filename or NULL if not loaded yet. */
-	deImage *GetImageWith(deVirtualFileSystem *vfs, const char *filename) const;
+	deImage::Ref GetImageWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create new image with the given parameters. */
 	deImage *CreateImage(int width, int height, int depth, int componentCount, int bitCount);
