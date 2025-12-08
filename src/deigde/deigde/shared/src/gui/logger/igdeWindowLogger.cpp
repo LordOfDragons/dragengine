@@ -71,8 +71,6 @@ const char *igdeWindowLogger::styleError = "error";
 
 igdeWindowLogger::igdeWindowLogger(igdeEnvironment &environment) :
 igdeWindow(environment, "Logging History"),
-pListener(NULL),
-pLogger(NULL),
 pPendingAddedLogs(0),
 pPendingClearLogs(false)
 {
@@ -118,7 +116,6 @@ void igdeWindowLogger::SetLogger(igdeLoggerHistory *logger){
 	pLogger = logger;
 	
 	if(logger){
-		logger->AddReference();
 		logger->AddListener(pListener);
 	}
 	

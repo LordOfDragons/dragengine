@@ -44,9 +44,7 @@
 igdeTriggerExpressionComponent::igdeTriggerExpressionComponent() :
 pNegate(false),
 pCurState(false),
-pType(ectTarget),
-pTarget(NULL),
-pTargetListener(NULL){
+pType(ectTarget){
 }
 
 igdeTriggerExpressionComponent::~igdeTriggerExpressionComponent(){
@@ -80,20 +78,10 @@ void igdeTriggerExpressionComponent::SetTargetName(const char *name){
 }
 
 void igdeTriggerExpressionComponent::SetTarget(igdeTriggerTarget *target){
-	if(pTarget == target){
-		return;
-	}
-	
-	
 	pTarget = target;
 }
 
 void igdeTriggerExpressionComponent::SetTargetListener(igdeTriggerListener *listener){
-	if(pTargetListener == listener){
-		return;
-	}
-	
-	
 	pTargetListener = listener;
 }
 
@@ -142,12 +130,7 @@ bool igdeTriggerExpressionComponent::Evaluate(){
 	switch(pType){
 	case ectTarget:
 		if(pTarget){
-			if(pCurState){
-				result = pTarget->GetFired();
-				
-			}else{
-				result = pTarget->GetHasFired();
-			}
+			result = pCurState ? pTarget->GetFired() : pTarget->GetHasFired();
 			
 		}else{
 			return false; // in the case the trigger is not correctly configurated

@@ -281,7 +281,6 @@ public:
 igdeDialogNewGameProject::igdeDialogNewGameProject(igdeWindowMain &windowMain) :
 igdeDialog(windowMain.GetEnvironment(), "New Game Project", windowMain.GetIconApplication()),
 pWindowMain(windowMain),
-pNewProject(NULL),
 pProjectPathChanged(false),
 pProjectGameDefPathChanged(false)
 {

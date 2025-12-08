@@ -161,7 +161,6 @@ public:
 ////////////////////////////
 
 igdeWDebugDrawerShape::igdeWDebugDrawerShape(){
-	pEngDebugDrawer = NULL;
 	pEngDDShape = NULL;
 	
 	pScale.Set(1.0f, 1.0f, 1.0f);

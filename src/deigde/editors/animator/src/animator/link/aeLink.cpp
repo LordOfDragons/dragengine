@@ -47,7 +47,6 @@ aeLink::aeLink(const char *name) :
 pAnimator(NULL),
 pEngLink(NULL),
 pName(name),
-pController(NULL),
 pRepeat(1),
 pBoneParameter(deAnimatorLink::ebpPositionZ),
 pBoneMinimum(0.0f),
@@ -63,7 +62,7 @@ aeLink::aeLink(const aeLink &copy) :
 pAnimator(NULL),
 pEngLink(NULL),
 pName(copy.pName),
-pController(NULL),
+pController(copy.pController),
 pRepeat(copy.pRepeat),
 pCurve(copy.pCurve),
 pBone(copy.pBone),
@@ -75,14 +74,10 @@ pVertexPositionSetMinimum(copy.pVertexPositionSetMinimum),
 pVertexPositionSetMaximum(copy.pVertexPositionSetMaximum),
 pWrapY(copy.pWrapY)
 {
-	pController = copy.pController;
-	if(pController){
-	}
 }
 
 aeLink::~aeLink(){
 	SetAnimator(NULL);
-	
 }
 
 

@@ -65,7 +65,7 @@ public:
 	/** Determines if a collision has occurred. */
 	inline bool HasCollision() const{ return pHasCollision; }
 	/** Retrieves the collision info. */
-	inline const deCollisionInfo &GetCollisionInfo() const{ return *pColInfo; }
+	inline const deCollisionInfo::Ref &GetCollisionInfo() const{ return pColInfo; }
 	/*@}*/
 	
 	/** \name Notifications */

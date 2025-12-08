@@ -43,8 +43,7 @@
 ////////////////////////////
 
 igdeEditorModule::igdeEditorModule(igdeEnvironment &environment) :
-pEnvironment(environment),
-pEditorWindow(NULL){
+pEnvironment(environment){
 }
 
 igdeEditorModule::~igdeEditorModule(){
@@ -167,12 +166,7 @@ void igdeEditorModule::OnGameProjectChanged(){
 }
 
 igdeStepableTask *igdeEditorModule::OnGameDefinitionChanged(){
-	if(pEditorWindow){
-		return pEditorWindow->OnGameDefinitionChanged();
-		
-	}else{
-		return NULL;
-	}
+	return pEditorWindow ? pEditorWindow->OnGameDefinitionChanged() : nullptr;
 }
 
 bool igdeEditorModule::ProcessCommandLine(decUnicodeStringList&){

@@ -53,9 +53,7 @@ igdeBaseXML::igdeBaseXML(deLogger *logger, const char *loggerSource) :
 pLogger(logger),
 pLoggerSource(loggerSource)
 {
-	if(!logger){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(logger)
 }
 
 igdeBaseXML::~igdeBaseXML(){

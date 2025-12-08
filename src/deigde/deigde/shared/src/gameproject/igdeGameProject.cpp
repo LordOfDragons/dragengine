@@ -121,10 +121,6 @@ void igdeGameProject::SetPathProjectGameDefinition(const char *path){
 }
 
 void igdeGameProject::SetProjectGameDefinition(igdeGameDefinition *gameDefinition){
-	if(pProjectGameDefinition == gameDefinition){
-		return;
-	}
-	
 	pProjectGameDefinition = gameDefinition;
 }
 
@@ -138,36 +134,28 @@ void igdeGameProject::MergeGameDefinitions(){
 	decTimer timer;
 	
 	const int baseGameDefCount = pBaseGameDefinitionList.GetCount();
-	igdeGameDefinition::Ref merged;
 	int i;
 	
-	try{
-		// merge game definition
-		merged.TakeOverWith(pEnvironment);
-		
-		merged->UpdateWith(*pEnvironment.GetGameDefinition());
-		for(i=0; i<baseGameDefCount; i++){
-			merged->UpdateWith(*pBaseGameDefinitionList.GetAt(i));
-		}
-		merged->UpdateWith(*pProjectGameDefinition);
-		
-		merged->SetFilename(pProjectGameDefinition->GetFilename());
-		merged->SetID(pProjectGameDefinition->GetID());
-		merged->SetDescription(pProjectGameDefinition->GetDescription());
-		merged->SetBasePath(pProjectGameDefinition->GetBasePath());
-		
-		merged->ResolveInheritClasses();
-		merged->UpdateWithElementClasses(*pXMLEClassGameDefinition);
-		merged->UpdateWithFound(*pFoundGameDefinition);
-		
-		merged->UpdateTags();
-		
-		// replace game definition
-		pGameDefinition = merged;
-		
-	}catch(const deException &){
-		throw;
+	const igdeGameDefinition::Ref merged(igdeGameDefinition::Ref::NewWith(pEnvironment));
+	
+	merged->UpdateWith(*pEnvironment.GetGameDefinition());
+	for(i=0; i<baseGameDefCount; i++){
+		merged->UpdateWith(*pBaseGameDefinitionList.GetAt(i));
 	}
+	merged->UpdateWith(pProjectGameDefinition);
+	
+	merged->SetFilename(pProjectGameDefinition->GetFilename());
+	merged->SetID(pProjectGameDefinition->GetID());
+	merged->SetDescription(pProjectGameDefinition->GetDescription());
+	merged->SetBasePath(pProjectGameDefinition->GetBasePath());
+	
+	merged->ResolveInheritClasses();
+	merged->UpdateWithElementClasses(pXMLEClassGameDefinition);
+	merged->UpdateWithFound(pFoundGameDefinition);
+	
+	merged->UpdateTags();
+	
+	pGameDefinition = merged;
 	
 	pEnvironment.GetLogger()->LogInfoFormat(LOGSOURCE,
 		"Merged game definition in %.1fs", timer.GetElapsedTime());

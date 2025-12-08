@@ -51,8 +51,6 @@
 
 igdeTaskSyncGameDefinition::igdeTaskSyncGameDefinition(igdeWindowMain &windowMain) :
 pWindowMain(windowMain),
-pOldProjectGameDef(NULL),
-pOldGameDef(NULL),
 pState(esReloadProjectGameDef),
 pTaskIndex(0),
 pLastProgress(-1.0f),
@@ -177,7 +175,6 @@ void igdeTaskSyncGameDefinition::pCleanUp(){
 	while(pTaskIndex<taskCount){
 		delete (igdeStepableTask*)pEditorTasks.GetAt(pTaskIndex++);
 	}
-	
 }
 
 void igdeTaskSyncGameDefinition::pUpdateProgress(bool force){

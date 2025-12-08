@@ -79,9 +79,7 @@
 igdeCreateProject::igdeCreateProject(igdeWindowMain &windowMain) :
 pWindowMain(windowMain),
 pTemplate(NULL),
-pProject(NULL),
-pGameId(decUuid::Random().ToHexString(false)),
-pGameDef(NULL){
+pGameId(decUuid::Random().ToHexString(false)){
 }
 
 igdeCreateProject::~igdeCreateProject(){
@@ -325,7 +323,7 @@ void igdeCreateProject::pLoadSharedGameDefContent(){
 	reader->SetPosition(0);
 	
 	igdeXMLGameDefinition loadGameDefinition(pWindowMain.GetEnvironment(), pWindowMain.GetLogger());
-	loadGameDefinition.Load(reader, *pGameDef);
+	loadGameDefinition.Load(reader, pGameDef);
 }
 
 void igdeCreateProject::pSharedGameDefContentReplace(){

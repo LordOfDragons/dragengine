@@ -1082,8 +1082,7 @@ const igdeUIHelper::sColumnHeader *headers, int headerCount, igdeIconListBoxList
 	
 	int i;
 	for(i=0; i<headerCount; i++){
-		realHeader.TakeOverWith(headers[i].title,
-			headers[i].icon, headers[i].size);
+		realHeader.TakeOverWith(headers[i].title, headers[i].icon, headers[i].size);
 		listBox.AddHeader(realHeader);
 	}
 	

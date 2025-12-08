@@ -452,8 +452,6 @@ pGDPreviewManager(NULL),
 pTexturePropertyList(NULL),
 pTemplates(NULL),
 pSharedGameDefinitions(NULL),
-pIGDEGameDefinition(NULL),
-pGameProject(NULL),
 pSharedFontList(NULL),
 pResourceLoader(NULL),
 pUIHelper(NULL),
@@ -717,7 +715,8 @@ void igdeWindowMain::SetGameProject(igdeGameProject *project){
 		return;
 	}
 	
-	igdeGameProject * const oldProject = pGameProject;
+	// guard old project to keep reused resources loaded
+	const igdeGameProject::Ref oldProject(pGameProject);
 	
 	pGameProject = project;
 	
@@ -737,10 +736,6 @@ void igdeWindowMain::SetGameProject(igdeGameProject *project){
 		if(moduleDefinition.IsModuleRunning()){
 			moduleDefinition.GetModule()->OnGameProjectChanged();
 		}
-	}
-	
-	if(oldProject){
-		oldProject->FreeReference();
 	}
 	
 	// update window title
@@ -1012,7 +1007,7 @@ void igdeWindowMain::ReloadXMLElementClasses(){
 	}
 	
 	try{
-		pLoadXMLElementClasses(*pGameProject);
+		pLoadXMLElementClasses(pGameProject);
 		
 	}catch(const deException &e){
 		GetLogger()->LogException(LOGSOURCE, e);
@@ -1041,7 +1036,7 @@ void igdeWindowMain::ReFindAndAddSkins(){
 	}
 	
 	try{
-		pFindAndAddSkins(*pGameProject);
+		pFindAndAddSkins(pGameProject);
 		pGameProject->MergeGameDefinitions();
 		
 	}catch(const deException &e){
@@ -1056,7 +1051,7 @@ void igdeWindowMain::ReFindAndAddSkies(){
 	}
 	
 	try{
-		pFindAndAddSkies(*pGameProject);
+		pFindAndAddSkies(pGameProject);
 		pGameProject->MergeGameDefinitions();
 		
 	}catch(const deException &e){
@@ -1639,10 +1634,9 @@ void igdeWindowMain::pCleanUp(){
 		pModuleManager = NULL;
 	}
 	
-		pGameProject = NULL;
-	}
-		pIGDEGameDefinition = NULL;
-	}
+	pGameProject = nullptr;
+	pIGDEGameDefinition = nullptr;
+	
 	if(pSharedGameDefinitions){
 		delete pSharedGameDefinitions;
 		pSharedGameDefinitions = NULL;
@@ -1890,13 +1884,12 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 	path.SetFromNative(pConfiguration.GetPathShares());
 	path.AddComponent("igde.degd");
 	
-	decDiskFileReader::Ref reader(decDiskFileReader::Ref::NewWith(path.GetPathNative()));
-	
 	pIGDEGameDefinition.TakeOverWith(pEnvironmentIGDE);
 	pIGDEGameDefinition->SetFilename(path.GetPathNative());
 	pIGDEGameDefinition->SetBasePath(pConfiguration.GetPathShares());
 	
-	igdeXMLGameDefinition(pEnvironmentIGDE, GetLogger()).Load(reader, *pIGDEGameDefinition);
+	igdeXMLGameDefinition(pEnvironmentIGDE, GetLogger()).Load(
+		decDiskFileReader::Ref::NewWith(path.GetPathNative()), pIGDEGameDefinition);
 	
 	GetLogger()->LogInfoFormat("IGDE", "IGDE Game Definition find content in %s",
 		pConfiguration.GetPathIGDEData().GetString());
@@ -1938,7 +1931,6 @@ void igdeWindowMain::pLoadTexturePropertyList(){
 	}
 	
 	igdeXMLLoadTexturePropertyList readXML(&logger);
-	decBaseFileReader::Ref reader;
 	
 	if(pVFS->GetFileType(pathFile) != deVFSContainer::eftRegularFile){
 		logger.LogError(LOGSOURCE, "Texture property list file is not a regular file");
@@ -1946,8 +1938,8 @@ void igdeWindowMain::pLoadTexturePropertyList(){
 	}
 	
 	logger.LogInfo(LOGSOURCE, "Reading texture property list file");
-	reader.TakeOver(pVFS->OpenFileForReading(pathFile));
-	readXML.ReadFromFile(*pTexturePropertyList, reader);
+	readXML.ReadFromFile(*pTexturePropertyList, decBaseFileReader::Ref::New(
+		pVFS->OpenFileForReading(pathFile)));
 }
 
 void igdeWindowMain::pLoadTemplates(){
@@ -1980,11 +1972,8 @@ void igdeWindowMain::pLoadTemplates(){
 	// load found templates
 	igdeLoadTemplate loadTemplate(&logger);
 	const int count = pathList.GetCount();
-	decBaseFileReader::Ref reader;
 	
 	for(i=0; i<count; i++){
-		igdeTemplate *atemplate = NULL;
-		
 		decPath path(basePath);
 		path.Add(pathList.GetAt(i));
 		const decString pathXml(path.GetPathNative());
@@ -1994,29 +1983,22 @@ void igdeWindowMain::pLoadTemplates(){
 		logger.LogInfoFormat(LOGSOURCE, "Loading project template '%s'",
 			path.GetLastComponent().GetString());
 		
+		const igdeTemplate::Ref atemplate(igdeTemplate::Ref::NewWith());
 		try{
-			reader.TakeOver(new decDiskFileReader(pathXml));
-			
-			atemplate = new igdeTemplate;
 			atemplate->SetBasePath(pathTemplate);
-			loadTemplate.Load(reader, *atemplate);
+			loadTemplate.Load(decDiskFileReader::Ref::NewWith(pathXml), atemplate);
 			
 		}catch(const deException &e){
-			if(atemplate){
-				atemplate->FreeReference();
-			}
 			logger.LogException(LOGSOURCE, e);
 			continue;
 		}
 		
 		if(atemplate->GetName().IsEmpty()){
 			logger.LogWarn(LOGSOURCE, "Project template has empty name, skipped");
-			atemplate->FreeReference();
 			continue;
 		}
 		
 		pTemplates->Add(atemplate);
-		atemplate->FreeReference();
 	}
 }
 
@@ -2041,41 +2023,33 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 	const dePathList &pathList = collectFiles.GetFiles();
 	igdeXMLGameDefinition loadGameDef(pEnvironmentIGDE, &logger);
 	const int count = pathList.GetCount();
-	decBaseFileReader::Ref reader;
 	int i;
 	
 	for(i=0; i<count; i++){
-		igdeGameDefinition *gameDefinition = NULL;
 		
 		decPath path(gameDefPath);
 		path.Add(pathList.GetAt(i));
 		logger.LogInfoFormat(LOGSOURCE, "Loading shared game definition '%s'",
 			pathList.GetAt(i).GetLastComponent().GetString());
 			
+		const igdeGameDefinition::Ref gameDefinition(
+			igdeGameDefinition::Ref::NewWith(pEnvironmentIGDE));
 		try{
-			reader.TakeOver(new decDiskFileReader(path.GetPathNative()));
-			
-			gameDefinition = new igdeGameDefinition(pEnvironmentIGDE);
 			gameDefinition->SetFilename(path.GetPathNative());
-			loadGameDef.Load(reader, *gameDefinition);
+			loadGameDef.Load(decDiskFileReader::Ref::NewWith(path.GetPathNative()), gameDefinition);
 			
 		}catch(const deException &e){
-			if(gameDefinition){
-				gameDefinition->FreeReference();
-			}
 			logger.LogException(LOGSOURCE, e);
 			continue;
 		}
 		
 		if(gameDefinition->GetID().IsEmpty()){
 			logger.LogWarn(LOGSOURCE, "Shared game definition has empty identifier, skipped");
-			gameDefinition->FreeReference();
 			continue;
 		}
 		
 		if(pSharedGameDefinitions->HasWithID(gameDefinition->GetID())){
 			logger.LogWarn(LOGSOURCE, "Shared game definition has has duplicate identifier, skipped");
-			gameDefinition->FreeReference();
 			continue;
 		}
 		
@@ -2107,7 +2081,6 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 		gameDefinition->GetSkyManager()->UpdateWith(foundSkies);
 		
 		pSharedGameDefinitions->Add(gameDefinition);
-		gameDefinition->FreeReference();
 	}
 }
 
@@ -2389,11 +2362,9 @@ void igdeWindowMain::pFindAndAddSkies(igdeGameProject &gameProject){
 	
 	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
-	deVFSContainer::Ref container;
 	decPath pathData(decPath::CreatePathNative(gameProject.GetDirectoryPath()));
 	pathData.AddUnixPath(gameProject.GetPathData());
-	container.TakeOverWith(pathData);
-	vfs->AddContainer(container);
+	vfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathData));
 	
 	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetSkyManager()->GetAutoFindPath();
 	const int pathCount = pathList.GetCount();

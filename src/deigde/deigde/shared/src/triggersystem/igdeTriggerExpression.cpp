@@ -42,7 +42,6 @@
 ////////////////////////////
 
 igdeTriggerExpression::igdeTriggerExpression(){
-	pRootComponent = NULL;
 	pResult = false;
 	pEnabled = true;
 }
@@ -58,11 +57,11 @@ igdeTriggerExpression::~igdeTriggerExpression(){
 ///////////////
 
 void igdeTriggerExpression::SetRootComponent(igdeTriggerExpressionComponent *component){
-	if(pRootComponent != component){
-		
-		pRootComponent = component;
+	if(pRootComponent == component){
+		return;
 	}
 	
+	pRootComponent = component;
 	pResult = false;
 }
 
