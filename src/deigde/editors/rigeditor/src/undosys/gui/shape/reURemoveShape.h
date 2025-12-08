@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
-class reRigShape;
-class reRigBone;
+#include "../../../rig/reRig.h"
+#include "../../../rig/shape/reRigShape.h"
+#include "../../../rig/bone/reRigBone.h"
 class reRigShapeList;
 
 
@@ -40,12 +40,12 @@ class reRigShapeList;
 class reURemoveShape : public igdeUndo{
 private:
 	struct sEntry{
-		reRigShape *shape;
-		reRigBone *bone;
+		reRigShape::Ref shape;
+		reRigBone::Ref bone;
 	};
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	sEntry *pEntries;
 	int pEntryCount;

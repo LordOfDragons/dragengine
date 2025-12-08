@@ -44,10 +44,9 @@
 
 deoglModel::deoglModel(deGraphicOpenGl &ogl, const deModel &model) :
 pOgl(ogl),
-pModel(model),
-pRModel(NULL){
+pModel(model){
 	try{
-		pRModel = new deoglRModel(ogl.GetRenderThread(), model);
+		pRModel.TakeOver(new deoglRModel(ogl.GetRenderThread(), model));
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -65,7 +64,4 @@ deoglModel::~deoglModel(){
 //////////////////////
 
 void deoglModel::pCleanUp(){
-	if(pRModel){
-		pRModel->FreeReference();
-	}
 }

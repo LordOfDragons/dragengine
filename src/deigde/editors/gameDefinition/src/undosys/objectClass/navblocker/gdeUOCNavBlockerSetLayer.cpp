@@ -42,7 +42,7 @@
 
 gdeUOCNavBlockerSetLayer::gdeUOCNavBlockerSetLayer(gdeObjectClass *objectClass,
 gdeOCNavigationBlocker *navblocker, int newValue) :
-pObjectClass(NULL),
+
 pNavBlocker(NULL)
 {
 	if(!objectClass || !navblocker){
@@ -55,19 +55,10 @@ pNavBlocker(NULL)
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetLayer::~gdeUOCNavBlockerSetLayer(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -142,7 +142,7 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	pChkEnable->setCheck(pEffectOverlay->GetEnabled());
 	
 	// set values
-	deImage *image = pEffectOverlay->GetImage();
+	deImage::Ref image = pEffectOverlay->GetImage();
 	if(image){
 		pEditImage->setText(image->GetFilename().GetString());
 	}else{
@@ -192,7 +192,7 @@ long meWEFOverlayImage::onEditImageCommand(FXObject *sender, FXSelector selector
 	deImageManager *imageManager = pEngine->GetImageManager();
 	deVirtualFileSystem *vfs = pEngine->GetVirtualFileSystem();
 	const FXString &filename = pEditImage->getText();
-	deImage *image = NULL;
+	deImage::Ref image = NULL;
 	decPath path;
 	
 	path.SetFromUnix(filename.text());
@@ -200,8 +200,6 @@ long meWEFOverlayImage::onEditImageCommand(FXObject *sender, FXSelector selector
 		try{
 			image = imageManager->LoadImage(filename.text(), "/");
 			pEffectOverlay->SetImage(image);
-			image->FreeReference();
-			
 		}catch(const deException &e){
 			if(image) image->FreeReference();
 			pWndEffects->GetWindowMain()->GetLogger()->LogException("World Editor", e);

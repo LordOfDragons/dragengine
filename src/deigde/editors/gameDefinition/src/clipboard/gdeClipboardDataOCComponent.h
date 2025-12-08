@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCComponent;
+#include "../gamedef/objectClass/component/gdeOCComponent.h"
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCComponent *pComponent;
+	gdeOCComponent::Ref pComponent;
 	
 	
 	

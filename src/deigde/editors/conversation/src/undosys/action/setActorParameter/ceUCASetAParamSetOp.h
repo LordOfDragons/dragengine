@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -38,8 +38,8 @@ class ceConversationTopic;
  */
 class ceUCASetAParamSetOp : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASetActorParameter *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCASetActorParameter::Ref pAction;
 	ceCASetActorParameter::eOperators pOldOperator;
 	ceCASetActorParameter::eOperators pNewOperator;
 	

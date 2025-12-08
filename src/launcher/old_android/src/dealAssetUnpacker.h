@@ -34,7 +34,7 @@
 #include "common/string/decString.h"
 #include "common/string/decStringList.h"
 
-class deLogger;
+#include <dragengine/logger/deLogger.h>
 class decBaseFileWriter;
 
 
@@ -71,7 +71,7 @@ public:
 	};
 	
 private:
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	AAsset *pAsset;
 	decString pTargetDirectory;
 	bool pUnpacking;

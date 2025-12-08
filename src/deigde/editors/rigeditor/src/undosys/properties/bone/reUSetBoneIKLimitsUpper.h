@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class reRigBone;
+#include "../../../rig/bone/reRigBone.h"
 
 
 
@@ -38,7 +38,7 @@ class reRigBone;
  */
 class reUSetBoneIKLimitsUpper : public igdeUndo{
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	decVector pOldIKLimitsUpper;
 	decVector pNewIKLimitsUpper;

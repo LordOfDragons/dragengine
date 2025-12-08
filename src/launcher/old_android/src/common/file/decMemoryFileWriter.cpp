@@ -39,7 +39,7 @@
 ////////////////////////////
 
 decMemoryFileWriter::decMemoryFileWriter(decMemoryFile *memoryFile, bool append) :
-pFile(NULL),
+
 pPosition(0)
 {
 	if(!memoryFile){
@@ -53,13 +53,11 @@ pPosition(0)
 	}
 	
 	memoryFile->Touch();
-	memoryFile->AddReference();
 }
 
 decMemoryFileWriter::~decMemoryFileWriter(){
 	if(pFile){
 		pFile->Touch();
-		pFile->FreeReference();
 	}
 }
 

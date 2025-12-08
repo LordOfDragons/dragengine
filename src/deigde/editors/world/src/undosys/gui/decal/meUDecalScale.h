@@ -31,7 +31,7 @@
 
 // predefinitions
 class meUndoDataDecal;
-class meWorld;
+#include "../../../world/meWorld.h"
 
 
 
@@ -42,7 +42,7 @@ class meWorld;
  */
 class meUDecalScale : public meBaseUndoScale{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	meUndoDataDecal **pDecals;
 	int pDecalCount;

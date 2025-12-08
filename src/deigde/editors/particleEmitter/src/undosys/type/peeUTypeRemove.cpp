@@ -45,7 +45,7 @@ peeUTypeRemove::peeUTypeRemove(peeType *type){
 		DETHROW(deeInvalidParam);
 	}
 	
-	peeEmitter *emitter = type->GetEmitter();
+	peeEmitter::Ref emitter = type->GetEmitter();
 	if(!emitter){
 		DETHROW(deeInvalidParam);
 	}
@@ -61,19 +61,10 @@ peeUTypeRemove::peeUTypeRemove(peeType *type){
 	}
 	
 	pEmitter = emitter;
-	emitter->AddReference();
-	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeRemove::~peeUTypeRemove(){
-	if(pType){
-		pType->FreeReference();
-	}
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

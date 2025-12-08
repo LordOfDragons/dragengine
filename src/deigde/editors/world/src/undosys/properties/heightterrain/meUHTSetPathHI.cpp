@@ -51,8 +51,6 @@ meUHTSetPathHI::meUHTSetPathHI(meWorld *world, meHeightTerrainSector *sector, co
 	pNewPath = newPath;
 	
 	SetShortInfo("Set Height Terrain Height Image Path");
-	
-	world->AddReference();
 }
 
 meUHTSetPathHI::~meUHTSetPathHI(){

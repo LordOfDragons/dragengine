@@ -84,7 +84,6 @@ reUBoneMassFromVolume::reUBoneMassFromVolume(reRig *rig, const decObjectOrderedS
 	}
 	
 	pRig = rig;
-	rig->AddReference();
 }
 
 reUBoneMassFromVolume::~reUBoneMassFromVolume(){
@@ -131,10 +130,6 @@ void reUBoneMassFromVolume::pCleanUp(){
 		}
 		
 		delete [] pBones;
-	}
-	
-	if(pRig){
-		pRig->FreeReference();
 	}
 }
 

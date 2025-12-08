@@ -54,13 +54,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetPartialHideTags::~gdeUOCSetPartialHideTags(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

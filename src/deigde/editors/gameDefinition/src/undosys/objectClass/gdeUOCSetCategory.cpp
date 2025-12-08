@@ -52,13 +52,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetCategory::~gdeUOCSetCategory(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

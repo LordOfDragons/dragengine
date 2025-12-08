@@ -52,19 +52,10 @@ ceUCASnippetSetTopic::ceUCASnippetSetTopic(ceConversationTopic *topic, ceCASnipp
 	SetShortInfo("Snippet Set Topic");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pSnippet = snippet;
-	snippet->AddReference();
 }
 
 ceUCASnippetSetTopic::~ceUCASnippetSetTopic(){
-	if(pSnippet){
-		pSnippet->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

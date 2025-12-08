@@ -47,13 +47,9 @@ aeURuleLimitSetEnableVertexPositionSetMin::aeURuleLimitSetEnableVertexPositionSe
 	SetShortInfo("Limit toggle enable minimum vertex position set");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableVertexPositionSetMin::~aeURuleLimitSetEnableVertexPositionSetMin(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class feFontGlyph;
+#include "../../font/glyph/feFontGlyph.h"
 
 
 /**
@@ -35,7 +35,7 @@ class feFontGlyph;
  */
 class feUGlyphSetHeight : public igdeUndo{
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	int pOldValue, pNewValue;
 	
 	

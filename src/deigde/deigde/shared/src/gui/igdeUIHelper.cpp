@@ -598,7 +598,6 @@ igdeCheckBox::Ref &checkBox){
 void igdeUIHelper::CheckBox(igdeCheckBox::Ref &checkBox, igdeAction *action, bool takeOverAction){
 	checkBox.TakeOver(new igdeCheckBox(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
@@ -611,7 +610,6 @@ void igdeUIHelper::CheckBoxOnly(igdeContainer &parent, igdeCheckBox::Ref &checkB
 igdeAction *action, bool takeOverAction){
 	checkBox.TakeOver(new igdeCheckBox(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 	parent.AddChild(checkBox);
 }
@@ -1007,7 +1005,6 @@ igdeAction *action, bool takeOverAction){
 void igdeUIHelper::Button(igdeButton::Ref &button, igdeAction *action, bool takeOverAction){
 	button.TakeOver(new igdeButton(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
@@ -1033,7 +1030,6 @@ igdeAction *action, bool takeOverAction){
 void igdeUIHelper::ToggleButton(igdeToggleButton::Ref &button, igdeAction *action, bool takeOverAction){
 	button.TakeOver(new igdeToggleButton(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
@@ -1239,7 +1235,6 @@ igdeAction *action, const char *title, bool stretchLast, bool collapsed, bool ta
 void igdeUIHelper::WPSky(igdeWPSky::Ref &panel, igdeAction *action, bool takeOverAction){
 	panel.TakeOver(new igdeWPSky(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
@@ -1262,7 +1257,6 @@ igdeAction *action, const char *title, bool stretchLast, bool collapsed, bool ta
 void igdeUIHelper::WPCamera(igdeWPCamera::Ref &panel, igdeAction *action, bool takeOverAction){
 	panel.TakeOver(new igdeWPCamera(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
@@ -1285,7 +1279,6 @@ igdeAction *action, const char *title, bool stretchLast, bool collapsed, bool ta
 void igdeUIHelper::WPWObject(igdeWPWObject::Ref &panel, igdeAction *action, bool takeOverAction){
 	panel.TakeOver(new igdeWPWObject(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
@@ -1300,7 +1293,6 @@ igdeAction *action, bool takeOverAction){
 void igdeUIHelper::EditTags(igdeEditTags::Ref &editTags, igdeAction *action, bool takeOverAction){
 	editTags.TakeOver(new igdeEditTags(*this, 5, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
@@ -1316,7 +1308,6 @@ void igdeUIHelper::ToggleTags(igdeToggleTags::Ref &toggleTags, igdeAction *actio
 bool takeOverAction){
 	toggleTags.TakeOver(new igdeToggleTags(*this, 5, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
@@ -1357,7 +1348,6 @@ void igdeUIHelper::WPTriggerTable(igdeWPTriggerTable::Ref &panel, igdeAction *ac
 bool takeOverAction){
 	panel.TakeOver(new igdeWPTriggerTable(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
@@ -1366,7 +1356,6 @@ bool takeOverAction){
 void igdeUIHelper::MenuCommand(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction){
 	igdeMenuCommand::Ref entry(igdeMenuCommand::Ref::NewWith(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 	menu.AddChild(entry);
 }
@@ -1378,7 +1367,6 @@ void igdeUIHelper::MenuCommand(igdeMenuCascade &menu, const igdeAction::Ref &act
 void igdeUIHelper::MenuCheck(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction){
 	igdeMenuCheck::Ref entry(igdeMenuCheck::Ref::NewWith(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 	menu.AddChild(entry);
 }
@@ -1390,7 +1378,6 @@ void igdeUIHelper::MenuCheck(igdeMenuCascade &menu, const igdeAction::Ref &actio
 void igdeUIHelper::MenuOption(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction){
 	igdeMenuOption::Ref entry(igdeMenuOption::Ref::NewWith(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 	menu.AddChild(entry);
 }
@@ -1415,7 +1402,6 @@ void igdeUIHelper::MenuRecentFiles(igdeMenuCascade &menu, igdeRecentFiles &recen
 void igdeUIHelper::ToolBarButton(igdeToolBar &toolBar, igdeAction *action, bool takeOverAction){
 	igdeButton::Ref widget(igdeButton::Ref::NewWith(pEnvironment, action, igdeButton::ebsToolBar));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 	toolBar.AddChild(widget);
 }
@@ -1424,7 +1410,6 @@ void igdeUIHelper::ToolBarToggleButton(igdeToolBar &toolBar, igdeAction *action,
 	igdeToggleButton::Ref widget(igdeToggleButton::Ref::NewWith(
 		pEnvironment, action, igdeToggleButton::ebsToolBar));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 	toolBar.AddChild(widget);
 }

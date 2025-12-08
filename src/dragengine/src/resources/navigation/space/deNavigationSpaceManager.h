@@ -61,7 +61,7 @@ public:
 	deNavigationSpace *GetRootNavigationSpace() const;
 	
 	/** \brief Create new navigation space. */
-	deNavigationSpace *CreateNavigationSpace();
+	deNavigationSpace::Ref CreateNavigationSpace();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

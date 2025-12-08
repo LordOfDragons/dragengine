@@ -58,7 +58,6 @@ pDecal(NULL)
 	pValue = value;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalRemoveProperty::~meUDecalRemoveProperty(){
@@ -84,7 +83,4 @@ void meUDecalRemoveProperty::Redo(){
 //////////////////////
 
 void meUDecalRemoveProperty::pCleanUp(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }

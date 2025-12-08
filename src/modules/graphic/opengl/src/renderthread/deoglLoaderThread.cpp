@@ -108,7 +108,7 @@ void deoglLoaderThread::Run(){
 		pShutdown = true;
 	}
 	
-	deoglLoaderThreadTask *task = nullptr;
+	deoglLoaderThreadTask::Ref task = nullptr;
 	
 	while(!pShutdown){
 		{
@@ -134,8 +134,6 @@ void deoglLoaderThread::Run(){
 			#ifdef DO_DEBUG_LOG
 			pRenderThread.GetLogger().LogInfoFormat("LoaderThread: Run: Done task %p", task);
 			#endif
-			
-			task->FreeReference();
 			task = nullptr;
 			
 		}else{
@@ -215,7 +213,6 @@ bool deoglLoaderThread::AddTask(deoglLoaderThreadTask *task){
 	#endif
 	
 	pTasks.Add(task);
-	task->AddReference();
 	pSemaphore.Signal();
 	return true;
 }

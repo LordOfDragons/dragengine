@@ -579,15 +579,13 @@ public:
 
 aeWPView::aeWPView(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pAnimator(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
-	pListener = new aeWPViewListener(*this);
+	pListener.TakeOver(new aeWPViewListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -683,12 +681,7 @@ aeWPView::~aeWPView(){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 		pAnimator = NULL;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -708,15 +701,12 @@ void aeWPView::SetAnimator(aeAnimator *animator){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
-		
 		pWPSky->SetSky(animator->GetSky());
 		pWPEnvObject->SetObject(animator->GetEnvObject());
 		pWPCamera->SetCamera(animator->GetCamera());

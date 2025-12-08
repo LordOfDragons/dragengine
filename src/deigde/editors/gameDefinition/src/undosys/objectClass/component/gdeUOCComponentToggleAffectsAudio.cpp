@@ -42,7 +42,7 @@
 
 gdeUOCComponentToggleAffectsAudio::gdeUOCComponentToggleAffectsAudio(
 gdeObjectClass *objectClass, gdeOCComponent *component) :
-pObjectClass(NULL),
+
 pComponent(NULL)
 {
 	if(!objectClass || !component){
@@ -52,19 +52,10 @@ pComponent(NULL)
 	SetShortInfo("Component toggle affects audiomap");
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentToggleAffectsAudio::~gdeUOCComponentToggleAffectsAudio(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seULayerSetSkin::seULayerSetSkin(seLayer *layer, const char *newSkin) :
-pLayer(NULL),
+
 pNewSkin(newSkin)
 {
 	if(!layer){
@@ -52,13 +52,9 @@ pNewSkin(newSkin)
 	pOldSkin = layer->GetSkinPath();
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerSetSkin::~seULayerSetSkin(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

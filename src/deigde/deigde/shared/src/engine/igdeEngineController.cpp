@@ -89,7 +89,6 @@
 igdeEngineController::igdeEngineController(igdeMainWindow &mainWindow) :
 pMainWindow(mainWindow),
 pEngine(NULL),
-pMainRenderWindow(NULL),
 pReadyForUse(false),
 pRunning(false),
 pRenderCounter(0)
@@ -626,8 +625,6 @@ void igdeEngineController::pDestroyMainRenderWindow(){
 	if(!pMainRenderWindow){
 		return;
 	}
-	
-	pMainRenderWindow->FreeReference();
 	pMainRenderWindow = NULL;
 }
 

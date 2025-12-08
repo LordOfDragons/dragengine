@@ -590,16 +590,14 @@ public:
 seWPTexture::seWPTexture(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(nullptr),
-pSkin(nullptr),
 pRequiresUpdate(false),
 pPreventUpdateMappedTarget(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, panel, groupBox, form, formLine;
+	igdeContainer *content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPTextureListener(*this);
+	pListener.TakeOver(new seWPTextureListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -740,10 +738,6 @@ pPreventUpdateMappedTarget(false)
 
 seWPTexture::~seWPTexture(){
 	SetSkin(nullptr);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -758,14 +752,12 @@ void seWPTexture::SetSkin(seSkin *skin){
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
 	if(skin){
 		skin->AddListener(pListener);
-		skin->AddReference();
 	}
 	
 	UpdatePropertyMappedTargetList();

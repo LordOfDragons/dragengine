@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleClosestProp;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleClosestProp.h"
 
 
 
@@ -47,8 +47,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleClosestProp *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleClosestProp::Ref pRule;
 	
 	float pOldRadius;
 	float pNewRadius;

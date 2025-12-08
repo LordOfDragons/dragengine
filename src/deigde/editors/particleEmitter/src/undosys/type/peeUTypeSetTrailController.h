@@ -29,7 +29,7 @@
 
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 
 
 
@@ -38,7 +38,7 @@ class peeType;
  */
 class peeUTypeSetTrailController : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	deParticleEmitterType::eEmitControllers pController;
 	
 	decString pOldTarget;

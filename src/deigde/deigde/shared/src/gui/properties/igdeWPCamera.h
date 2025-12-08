@@ -135,7 +135,7 @@ public:
 	
 	
 	/** Action or nullptr. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
 	/** Set action or nullptr. */
 	void SetAction(igdeAction *action);

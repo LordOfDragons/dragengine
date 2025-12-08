@@ -65,22 +65,18 @@ pIfElse(&ifElse){
 
 void ceWPTMAIfElseCaseAdd::OnAction(){
 	ceCAIfElseCase *selectIfCase = NULL;
-	ceCAIfElseCase *ifCase = NULL;
+	ceCAIfElseCase::Ref ifCase = NULL;
 	igdeUndo::Ref undo;
 	
 	try{
-		ifCase = new ceCAIfElseCase;
+		ifCase.TakeOver(new ceCAIfElseCase);
 		undo.TakeOver(new ceUCAIfElseCaseAdd(pTopic, pIfElse, ifCase, pIfElse->GetCases().GetCount()));
 		selectIfCase = ifCase;
-		ifCase->FreeReference();
 		ifCase = NULL;
 		
 		pConversation->GetUndoSystem()->Add(undo);
 		
 	}catch(const deException &){
-		if(ifCase){
-			ifCase->FreeReference();
-		}
 		throw;
 	}
 	

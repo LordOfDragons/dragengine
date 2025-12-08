@@ -40,7 +40,7 @@
 
 seUPNGroupRemoveNodes::seUPNGroupRemoveNodes(
 sePropertyNodeGroup *node, const sePropertyNodeList &children) :
-pNode(NULL),
+
 pChildren(NULL),
 pCount(0)
 {
@@ -61,7 +61,6 @@ pCount(0)
 		for(pCount=0; pCount<count; pCount++){
 			pChildren[pCount].index = -1;
 			pChildren[pCount].node = children.GetAt(pCount);
-			pChildren[pCount].node->AddReference();
 		}
 		
 	}catch(const deException &){
@@ -70,7 +69,6 @@ pCount(0)
 	}
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPNGroupRemoveNodes::~seUPNGroupRemoveNodes(){
@@ -107,11 +105,7 @@ void seUPNGroupRemoveNodes::pCleanUp(){
 	if(pChildren){
 		int i;
 		for(i=0; i<pCount; i++){
-			pChildren[i].node->FreeReference();
 		}
 		delete [] pChildren;
-	}
-	if(pNode){
-		pNode->FreeReference();
 	}
 }

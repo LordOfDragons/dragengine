@@ -32,7 +32,7 @@
 class deHeightTerrain;
 class deHeightTerrainNavSpace;
 class deHeightTerrainTexture;
-class deDecal;
+#include "../../decal/deDecal.h"
 class deDecalList;
 
 
@@ -63,7 +63,7 @@ private:
 	decPointerOrderedSet pNavSpaces;
 	
 	deDecal *pDecalRoot;
-	deDecal *pDecalTail;
+	deDecal::Ref pDecalTail;
 	int pDecalCount;
 	
 	
@@ -100,7 +100,7 @@ public:
 	
 	
 	/** \brief Height image or NULL if not set. */
-	inline deImage *GetHeightImage() const{ return pHeightImage; }
+	inline const deImage::Ref &GetHeightImage() const{ return pHeightImage; }
 	
 	/** \brief Set height image or NULL if not set. */
 	void SetHeightImage(deImage *heightImage);

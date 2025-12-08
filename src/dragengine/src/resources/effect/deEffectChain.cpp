@@ -98,7 +98,6 @@ void deEffectChain::InsertEffect(deEffect *effect, int position){
 	}
 	pEffects[position] = effect;
 	pEffectCount++;
-	effect->AddReference();
 }
 
 void deEffectChain::RemoveEffect(deEffect *effect){
@@ -109,7 +108,6 @@ void deEffectChain::RemoveEffect(deEffect *effect){
 	}
 	pEffects[pEffectCount - 1] = NULL;
 	pEffectCount--;
-	effect->FreeReference();
 }
 
 void deEffectChain::RemoveAllEffects(){

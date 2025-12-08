@@ -536,7 +536,6 @@ pScriptEngine(nullptr),
 pClsGameObj(nullptr),
 pResourceLoader(nullptr),
 //pLockManager( nullptr ),
-pColInfo(nullptr),
 pColliderListenerClosest(nullptr),
 pColliderListenerAdaptor(nullptr),
 pGameObj(nullptr),
@@ -746,7 +745,6 @@ void deScriptingDragonScript::ShutDown(){
 	pRemoveVFSContainerHideScriptDirectory();
 	
 	if(pColInfo){
-		pColInfo->FreeReference();
 		pColInfo = nullptr;
 	}
 	
@@ -987,7 +985,7 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 			pAddVFSContainerHideScriptDirectory();
 			
 			pResourceLoader = new dedsResourceLoader(this);
-			pColInfo = new deCollisionInfo;
+			pColInfo.TakeOver(new deCollisionInfo);
 			pColliderListenerClosest = new dedsColliderListenerClosest(*this);
 			pColliderListenerAdaptor = new dedsColliderListenerAdaptor(*this);
 			

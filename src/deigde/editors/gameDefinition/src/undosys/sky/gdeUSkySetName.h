@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeSky;
+#include "../../gamedef/sky/gdeSky.h"
 
 
 
@@ -37,7 +37,7 @@ class gdeSky;
  */
 class gdeUSkySetName : public igdeUndo{
 private:
-	gdeSky *pSky;
+	gdeSky::Ref pSky;
 	
 	decString pOldValue;
 	decString pNewValue;

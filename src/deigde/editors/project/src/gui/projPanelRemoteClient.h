@@ -37,7 +37,7 @@
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
 class projPanelTestRun;
-class projPanelRemoteClientListener;
+#include "projPanelRemoteClientListener.h"
 
 
 /**
@@ -57,18 +57,18 @@ public:
 private:
 	projPanelTestRun &pPanelTestRun;
 	const projRemoteClient::Ref pClient;
-	projPanelRemoteClientListener *pListener;
+	projPanelRemoteClientListener::Ref pListener;
 	
 	int pMaxLines;
 	
-	igdeTextField::Ref pEditName, pEditAddress;
+	igdeTextField *pEditName, pEditAddress;
 	igdeButton::Ref pBtnDisconnect;
 	
 	igdeButton::Ref pBtnSynchronize;
 	igdeTextField::Ref pEditSyncState;
 	
 	igdeComboBox::Ref pCBLaunchProfile;
-	igdeButton::Ref pBtnStart, pBtnStop, pBtnKill;
+	igdeButton *pBtnStart, pBtnStop, pBtnKill;
 	
 	igdeTabBook::Ref pTabContent;
 	

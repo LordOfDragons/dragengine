@@ -64,7 +64,7 @@ deoglLSConfiguration::~deoglLSConfiguration(){
 
 void deoglLSConfiguration::LoadConfig(deoglConfiguration &configuration){
 	deVirtualFileSystem& vfs = pOgl.GetVFS();
-	decBaseFileReader *file = NULL;
+	decBaseFileReader::Ref file = NULL;
 	decPath path;
 	
 	try{
@@ -77,8 +77,6 @@ void deoglLSConfiguration::LoadConfig(deoglConfiguration &configuration){
 			}
 			
 			pLoadConfigOpenGL(configuration, *file);
-			
-			file->FreeReference();
 			file = NULL;
 			
 		}else{
@@ -86,9 +84,6 @@ void deoglLSConfiguration::LoadConfig(deoglConfiguration &configuration){
 		}
 		
 	}catch(const deException &e){
-		if(file){
-			file->FreeReference();
-		}
 		pOgl.LogException(e);
 		throw;
 	}

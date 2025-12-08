@@ -42,7 +42,7 @@
 
 gdeURemoveParticleEmitter::gdeURemoveParticleEmitter(
 gdeGameDefinition *gameDefinition, gdeParticleEmitter *particleEmitter) :
-pGameDefinition(NULL),
+
 pParticleEmitter(NULL)
 {
 	if(!gameDefinition || !particleEmitter){
@@ -56,19 +56,10 @@ pParticleEmitter(NULL)
 	SetShortInfo("Remove particle emitter");
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeURemoveParticleEmitter::~gdeURemoveParticleEmitter(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

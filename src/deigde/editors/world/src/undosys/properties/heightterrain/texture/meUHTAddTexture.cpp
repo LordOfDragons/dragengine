@@ -49,11 +49,7 @@ meUHTAddTexture::meUHTAddTexture(meWorld *world, meHeightTerrainSector *sector, 
 	pSector = sector;
 	
 	SetShortInfo("Height Terrain Add Texture");
-	
-	world->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUHTAddTexture::~meUHTAddTexture(){

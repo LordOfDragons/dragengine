@@ -53,9 +53,7 @@ meUHTVRuleMathSetValueA::meUHTVRuleMathSetValueA(meHTVegetationLayer *vlayer, me
 	pNewValueA = nvalue;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMathSetValueA::~meUHTVRuleMathSetValueA(){

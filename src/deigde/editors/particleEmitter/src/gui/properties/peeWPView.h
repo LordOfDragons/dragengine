@@ -33,9 +33,9 @@
 #include <deigde/gui/properties/igdeWPWObject.h>
 #include <deigde/gui/properties/igdeWPSky.h>
 
-class peeEmitter;
+#include "../../emitter/peeEmitter.h"
 class peeWindowProperties;
-class peeWPViewListener;
+#include "peeWPViewListener.h"
 
 
 
@@ -45,8 +45,8 @@ class peeWPViewListener;
 class peeWPView : public igdeContainerScroll{
 private:
 	peeWindowProperties &pWindowProperties;
-	peeEmitter *pEmitter;
-	peeWPViewListener *pListener;
+	peeEmitter::Ref pEmitter;
+	peeWPViewListener::Ref pListener;
 	
 	igdeWPSky::Ref pWPSky;
 	igdeWPWObject::Ref pWPEnvObject;
@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
 	void SetEmitter(peeEmitter *emitter);

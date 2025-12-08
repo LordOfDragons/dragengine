@@ -30,7 +30,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavSpaceSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationSpace *pNavSpace;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	gdeOCNavigationSpace::eProperties pProperty;
 	decString pOldValue;

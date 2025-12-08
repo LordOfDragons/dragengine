@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceFacePose;
+#include "../../conversation/facepose/ceFacePose.h"
 class ceConversationActionList;
 class ceConversationTopic;
 
@@ -40,7 +40,7 @@ class ceConversationTopic;
  */
 class ceUCFacePoseSetName : public igdeUndo{
 private:
-	ceFacePose *pFacePose;
+	ceFacePose::Ref pFacePose;
 	
 	decString pOldName;
 	decString pNewName;

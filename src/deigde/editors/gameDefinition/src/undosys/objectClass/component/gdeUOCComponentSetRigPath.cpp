@@ -42,7 +42,7 @@
 
 gdeUOCComponentSetRigPath::gdeUOCComponentSetRigPath(gdeObjectClass *objectClass,
 gdeOCComponent *component, const char *newValue) :
-pObjectClass(NULL),
+
 pComponent(NULL)
 {
 	if(!objectClass || !component){
@@ -55,19 +55,10 @@ pComponent(NULL)
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetRigPath::~gdeUOCComponentSetRigPath(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -39,15 +39,12 @@
 ////////////////////////////
 
 deoglRenderPlanEnvMap::deoglRenderPlanEnvMap() :
-pEnvMap(NULL),
+
 pDistance(0.0f),
 pFadeTime(0.0f){
 }
 
 deoglRenderPlanEnvMap::~deoglRenderPlanEnvMap(){
-	if(pEnvMap){
-		pEnvMap->FreeReference();
-	}
 }
 
 
@@ -59,16 +56,7 @@ void deoglRenderPlanEnvMap::SetEnvMap(deoglEnvironmentMap *envmap){
 	if(envmap == pEnvMap){
 		return;
 	}
-	
-	if(pEnvMap){
-		pEnvMap->FreeReference();
-	}
-	
 	pEnvMap = envmap;
-	
-	if(envmap){
-		envmap->AddReference();
-	}
 }
 
 void deoglRenderPlanEnvMap::SetDistance(float distance){

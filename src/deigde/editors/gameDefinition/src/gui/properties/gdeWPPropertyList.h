@@ -190,20 +190,20 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeActionContextMenu *GetActionPropertiesMenu() const{ return pActionPropertiesMenu; }
-	inline igdeAction *GetActionPropertyAdd() const{ return pActionPropertyAdd; }
-	inline igdeAction *GetActionPropertyRemove() const{ return pActionPropertyRemove; }
-	inline igdeAction *GetActionPropertyCopy() const{ return pActionPropertyCopy; }
-	inline igdeAction *GetActionPropertyCut() const{ return pActionPropertyCut; }
-	inline igdeAction *GetActionPropertyPaste() const{ return pActionPropertyPaste; }
+	inline const igdeActionContextMenu::Ref &GetActionPropertiesMenu() const{ return pActionPropertiesMenu; }
+	inline const igdeAction::Ref &GetActionPropertyAdd() const{ return pActionPropertyAdd; }
+	inline const igdeAction::Ref &GetActionPropertyRemove() const{ return pActionPropertyRemove; }
+	inline const igdeAction::Ref &GetActionPropertyCopy() const{ return pActionPropertyCopy; }
+	inline const igdeAction::Ref &GetActionPropertyCut() const{ return pActionPropertyCut; }
+	inline const igdeAction::Ref &GetActionPropertyPaste() const{ return pActionPropertyPaste; }
 	
-	inline igdeAction *GetActionOptionAdd() const{ return pActionOptionAdd; }
-	inline igdeAction *GetActionOptionRemove() const{ return pActionOptionRemove; }
+	inline const igdeAction::Ref &GetActionOptionAdd() const{ return pActionOptionAdd; }
+	inline const igdeAction::Ref &GetActionOptionRemove() const{ return pActionOptionRemove; }
 	
-	inline igdeAction *GetActionCustomPatternAdd() const{ return pActionCustomPatternAdd; }
-	inline igdeAction *GetActionCustomPatternRemove() const{ return pActionCustomPatternRemove; }
+	inline const igdeAction::Ref &GetActionCustomPatternAdd() const{ return pActionCustomPatternAdd; }
+	inline const igdeAction::Ref &GetActionCustomPatternRemove() const{ return pActionCustomPatternRemove; }
 	
-	inline igdeActionContextMenu *GetActionCustomPatternMenu() const{ return pActionCustomPatternMenu; }
+	inline const igdeActionContextMenu::Ref &GetActionCustomPatternMenu() const{ return pActionCustomPatternMenu; }
 	/*@}*/
 	
 	

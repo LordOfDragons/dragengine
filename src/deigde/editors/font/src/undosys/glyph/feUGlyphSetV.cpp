@@ -46,7 +46,6 @@ feUGlyphSetV::feUGlyphSetV(feFontGlyph *glyph, int newV){
 	pNewV = newV;
 	
 	pGlyph = glyph;
-	glyph->AddReference();
 }
 
 feUGlyphSetV::~feUGlyphSetV(){

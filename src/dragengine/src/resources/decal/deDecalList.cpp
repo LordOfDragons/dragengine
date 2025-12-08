@@ -101,8 +101,6 @@ void deDecalList::AddDecal(deDecal *decal){
 	
 	pDecals[pDecalCount] = decal;
 	pDecalCount++;
-	
-	decal->AddReference();
 }
 
 void deDecalList::RemoveAllDecals(){

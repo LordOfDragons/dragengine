@@ -57,8 +57,8 @@
 /////////////////////
 
 struct sARAnimDiffNatDat{
-	deAnimator *animator;
-	deAnimatorRuleAnimationSelect *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleAnimationSelect::Ref rule;
 };
 
 
@@ -82,7 +82,7 @@ void deClassARAnimationSelect::nfNew::RunFunction(dsRunTime *rt, dsValue *myself
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleAnimationSelect;
+	nd.rule.TakeOver(new deAnimatorRuleAnimationSelect);
 	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
@@ -396,10 +396,6 @@ void deClassARAnimationSelect::AssignAnimator(dsRealObject *myself, deAnimator *
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
 void deClassARAnimationSelect::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleAnimationSelect *rule){
@@ -422,13 +418,7 @@ void deClassARAnimationSelect::PushRule(dsRunTime *rt, deAnimator *animator, deA
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
 		nd.rule = rule;
-		rule->AddReference();
-		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);
 		

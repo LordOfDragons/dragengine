@@ -41,8 +41,8 @@
 ////////////////////////////
 
 seULayerRemove::seULayerRemove(seLayer *layer) :
-pSky(NULL),
-pLayer(NULL),
+
+
 pIndex(0)
 {
 	if(!layer){
@@ -65,16 +65,9 @@ pIndex(0)
 	sky->AddReference();
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerRemove::~seULayerRemove(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

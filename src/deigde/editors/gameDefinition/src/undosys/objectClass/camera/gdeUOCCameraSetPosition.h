@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeOCCamera;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/camera/gdeOCCamera.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCCameraSetPosition : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCCamera *pCamera;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCCamera::Ref pCamera;
 	
 	decVector pOldValue;
 	decVector pNewValue;

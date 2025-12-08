@@ -61,7 +61,7 @@ ceActorParameter *ceActorParameterList::GetAt(int index) const{
 
 ceActorParameter *ceActorParameterList::GetNamed(const char *name) const{
 	const int count = pParameters.GetCount();
-	ceActorParameter *parameter;
+	ceActorParameter::Ref parameter;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -110,16 +110,15 @@ bool ceActorParameterList::HasNamed(const char *name) const{
 }
 
 void ceActorParameterList::Set(const char *name, int value){
-	ceActorParameter *parameter = GetNamed(name);
+	ceActorParameter::Ref parameter = GetNamed(name);
 	
 	if(parameter){
 		parameter->SetValue(value);
 		
 	}else{
-		parameter = new ceActorParameter(name, value);
+		parameter.TakeOver(new ceActorParameter(name, value));
 		
 		pParameters.Add(parameter);
-		parameter->FreeReference();
 	}
 }
 

@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
-class reRigConstraint;
-class reRigBone;
+#include "../../../rig/reRig.h"
+#include "../../../rig/constraint/reRigConstraint.h"
+#include "../../../rig/bone/reRigBone.h"
 class reRigConstraintList;
 
 
@@ -40,12 +40,12 @@ class reRigConstraintList;
 class reURemoveConstraint : public igdeUndo{
 private:
 	struct sEntry{
-		reRigConstraint *constraint;
-		reRigBone *bone;
+		reRigConstraint::Ref constraint;
+		reRigBone::Ref bone;
 	};
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	sEntry *pEntries;
 	int pEntryCount;

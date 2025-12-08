@@ -29,7 +29,7 @@
 #include "../../animator/link/aeLinkList.h"
 
 class aeRule;
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 
 
 
@@ -38,7 +38,7 @@ class aeAnimator;
  */
 class aeULinkRemoveUnused : public igdeUndo{
 private:
-	aeAnimator *pAnimator;
+	aeAnimator::Ref pAnimator;
 	aeLinkList pLinks;
 	
 	

@@ -43,8 +43,6 @@ aeURuleLimitSetVertexPositionSetMin::aeURuleLimitSetVertexPositionSetMin(
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumVertexPositionSet();
 		pNewMin = newMin;
 		
@@ -79,7 +77,4 @@ void aeURuleLimitSetVertexPositionSetMin::Redo(){
 //////////////////////
 
 void aeURuleLimitSetVertexPositionSetMin::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

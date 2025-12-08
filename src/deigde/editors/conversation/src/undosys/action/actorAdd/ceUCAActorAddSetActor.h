@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorAdd;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAActorAdd.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAActorAddSetActor : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorAdd *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorAdd::Ref pAction;
 	decString pOldActorID;
 	decString pNewActorID;
 	

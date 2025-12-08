@@ -40,7 +40,7 @@
 ////////////////////////////
 
 peeUControllerSetLower::peeUControllerSetLower(peeController *controller, float newValue) :
-pController(NULL),
+
 pNewLower(newValue)
 {
 	if(!controller){
@@ -53,13 +53,9 @@ pNewLower(newValue)
 	pOldUpper = controller->GetUpper();
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerSetLower::~peeUControllerSetLower(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

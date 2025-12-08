@@ -210,15 +210,12 @@ void dealGameProfile::CopyFrom(const dealGameProfile &profile){
 	
 	try{
 		for(i=0; i<moduleCount; i++){
-			module = new dealGPModule(*moduleList.GetModuleAt(i));
+			module.TakeOver(new dealGPModule(*moduleList.GetModuleAt(i)));
 			pModuleList.AddModule(module);
 			module = NULL;
 		}
 		
 	}catch(const deException &){
-		if(module){
-			module->FreeReference();
-		}
 		throw;
 	}
 	
@@ -246,7 +243,7 @@ void dealGameProfile::Verify(dealLauncher &launcher){
 
 bool dealGameProfile::VerifyModule(dealLauncher &launcher, const char *moduleName, const char *moduleVersion, int requiredType) const{
 	const dealEngineModuleList &moduleList = launcher.GetEngine().GetModuleList();
-	dealEngineModule *module;
+	dealEngineModule::Ref module;
 	
 	if(strlen(moduleVersion) == 0){
 		module = moduleList.GetModuleNamed(moduleName);

@@ -61,13 +61,9 @@ aeUSetRuleRemoveVertexPositionSet::aeUSetRuleRemoveVertexPositionSet(aeRule* rul
 	}
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleRemoveVertexPositionSet::~aeUSetRuleRemoveVertexPositionSet(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

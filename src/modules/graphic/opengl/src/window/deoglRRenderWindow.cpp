@@ -229,8 +229,6 @@ pHeight(100),
 pFullScreen(false),
 pPaint(true),
 
-pRCanvasView(NULL),
-
 pSwapBuffers(false),
 pNotifyPositionChanged(false),
 pNotifySizeChanged(false),
@@ -373,21 +371,11 @@ void deoglRRenderWindow::SetRCanvasView(deoglRCanvasView *rcanvasView){
 	if(rcanvasView == pRCanvasView){
 		return;
 	}
-	
-	if(pRCanvasView){
-		pRCanvasView->FreeReference();
-	}
-	
 	pRCanvasView = rcanvasView;
-	
-	if(rcanvasView){
-		rcanvasView->AddReference();
-	}
 }
 
 void deoglRRenderWindow::DropRCanvasView(){
 	if(pRCanvasView){
-		pRCanvasView->FreeReference();
 		pRCanvasView = NULL;
 	}
 }

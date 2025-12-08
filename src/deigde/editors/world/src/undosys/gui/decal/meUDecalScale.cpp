@@ -73,7 +73,6 @@ meUDecalScale::meUDecalScale(meWorld *world){
 	}
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUDecalScale::~meUDecalScale(){

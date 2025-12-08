@@ -65,19 +65,16 @@ deNavigationBlocker *deNavigationBlockerManager::GetRootNavigationBlocker() cons
 	return (deNavigationBlocker*)pBlockers.GetRoot();
 }
 
-deNavigationBlocker *deNavigationBlockerManager::CreateNavigationBlocker(){
-	deNavigationBlocker *blocker = NULL;
+deNavigationBlocker::Ref deNavigationBlockerManager::CreateNavigationBlocker(){
+	deNavigationBlocker::Ref blocker = NULL;
 	
 	try{
-		blocker = new deNavigationBlocker(this);
+		blocker.TakeOver(new deNavigationBlocker(this));
 		GetAISystem()->LoadNavigationBlocker(blocker);
 		
 		pBlockers.Add(blocker);
 		
 	}catch(const deException &){
-		if(blocker){
-			blocker->FreeReference();
-		}
 		throw;
 	}
 	
@@ -101,7 +98,7 @@ void deNavigationBlockerManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deNavigationBlockerManager::SystemAILoad(){
-	deNavigationBlocker *blocker = (deNavigationBlocker*)pBlockers.GetRoot();
+	deNavigationBlocker::Ref blocker = (deNavigationBlocker*)pBlockers.GetRoot();
 	deAISystem &aisys = *GetAISystem();
 	
 	while(blocker){
@@ -113,7 +110,7 @@ void deNavigationBlockerManager::SystemAILoad(){
 }
 
 void deNavigationBlockerManager::SystemAIUnload(){
-	deNavigationBlocker *blocker = (deNavigationBlocker*)pBlockers.GetRoot();
+	deNavigationBlocker::Ref blocker = (deNavigationBlocker*)pBlockers.GetRoot();
 	
 	while(blocker){
 		blocker->SetPeerAI(NULL);

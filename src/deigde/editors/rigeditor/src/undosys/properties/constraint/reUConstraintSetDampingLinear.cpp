@@ -51,14 +51,9 @@ reUConstraintSetDampingLinear::reUConstraintSetDampingLinear(reRigConstraint *co
 	pNewDamping = newDamping;
 	
 	SetShortInfo("Constraint set linear damping");
-	
-	pConstraint->AddReference();
 }
 
 reUConstraintSetDampingLinear::~reUConstraintSetDampingLinear(){
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 }
 
 

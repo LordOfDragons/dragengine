@@ -49,22 +49,12 @@ ceUCAWaitSetInterval::ceUCAWaitSetInterval(ceConversationTopic *topic, ceCAWait 
 	SetShortInfo("Action Wait Set Interval");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pWait = wait;
-	wait->AddReference();
-	
 	pOldInterval = wait->GetInterval();
 	pNewInterval = newInterval;
 }
 
 ceUCAWaitSetInterval::~ceUCAWaitSetInterval(){
-	if(pWait){
-		pWait->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

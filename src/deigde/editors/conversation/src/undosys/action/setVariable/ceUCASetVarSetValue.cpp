@@ -52,19 +52,10 @@ ceUCASetVarSetValue::ceUCASetVarSetValue(ceConversationTopic *topic, ceCASetVari
 	SetShortInfo("SetVariable Value");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCASetVarSetValue::~ceUCASetVarSetValue(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

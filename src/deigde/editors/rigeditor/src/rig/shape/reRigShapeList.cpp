@@ -97,8 +97,6 @@ void reRigShapeList::AddShape(reRigShape *shape){
 	
 	pShapes[pShapeCount] = shape;
 	pShapeCount++;
-	
-	shape->AddReference();
 }
 
 void reRigShapeList::RemoveShape(reRigShape *shape){
@@ -109,8 +107,6 @@ void reRigShapeList::RemoveShape(reRigShape *shape){
 		pShapes[i - 1] = pShapes[i];
 	}
 	pShapeCount--;
-	
-	shape->FreeReference();
 }
 
 void reRigShapeList::RemoveAllShapes(){

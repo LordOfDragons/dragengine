@@ -55,25 +55,11 @@ ceCConditionHasActor *hasActor, const char *newID){
 	SetShortInfo("Has Actor Set Actor ID");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pHasActor = hasActor;
-	hasActor->AddReference();
 }
 
 ceUCCHasActorSetActor::~ceUCCHasActorSetActor(){
-	if(pHasActor){
-		pHasActor->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -31,7 +31,7 @@
 #include "../../../synthesizer/link/seLinkList.h"
 #include "../../../synthesizer/controller/seControllerList.h"
 
-class seSourceGroup;
+#include "../../../synthesizer/source/seSourceGroup.h"
 
 
 
@@ -40,7 +40,7 @@ class seSourceGroup;
  */
 class seUSourceGroupPasteSource : public igdeUndo{
 private:
-	seSourceGroup *pGroup;
+	seSourceGroup::Ref pGroup;
 	seSourceList pSourceList;
 	seLinkList pRemoveLinkList;
 	seControllerList pRemoveControllerList;

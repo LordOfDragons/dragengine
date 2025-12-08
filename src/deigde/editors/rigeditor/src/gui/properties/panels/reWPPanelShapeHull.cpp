@@ -160,7 +160,7 @@ reWPPanelShapeHull::reWPPanelShapeHull(reWPShape &wpShapes) :
 reWPPanelShape(wpShapes, reRigShape::estHull)
 {
 	igdeEnvironment &env = wpShapes.GetEnvironment();
-	igdeContainer::Ref groupHull, formline;
+	igdeContainer *groupHull, formline;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	

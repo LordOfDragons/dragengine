@@ -108,7 +108,6 @@ pWorld(nullptr)
 	}
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUObjDuplicate::~meUObjDuplicate(){

@@ -50,7 +50,7 @@ private:
 	const deFontSize::Ref pSize;
 	
 public:
-	cFontSize(deFont &font, int lineHeight, const deFontSize::Ref size) :
+	cFontSize(deFont &font, int lineHeight, const deFontSize *size) :
 	pFont(font), pLineHeight(lineHeight), pSize(size){
 	}
 	

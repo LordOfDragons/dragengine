@@ -43,7 +43,7 @@
 seUPropertyRemove::seUPropertyRemove(seProperty *property){
 	if(!property) DETHROW(deeInvalidParam);
 	
-	seTexture *texture = property->GetTexture();
+	seTexture::Ref texture = property->GetTexture();
 	if(!texture) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;
@@ -52,10 +52,7 @@ seUPropertyRemove::seUPropertyRemove(seProperty *property){
 	SetShortInfo("Remove Property");
 	
 	pProperty = property;
-	property->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 seUPropertyRemove::~seUPropertyRemove(){

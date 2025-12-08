@@ -50,13 +50,9 @@ saeUPhonemeSetMoveName::saeUPhonemeSetMoveName(saePhoneme *phoneme, const char *
 	pNewName = newName;
 	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeSetMoveName::~saeUPhonemeSetMoveName(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
 }
 
 

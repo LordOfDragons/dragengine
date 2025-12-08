@@ -76,8 +76,6 @@
 gdeGameDefinition::gdeGameDefinition(igdeEnvironment* environment) :
 igdeEditableEntity(environment),
 
-pWorld(NULL),
-
 pSky(NULL),
 
 pCamera(NULL),
@@ -87,26 +85,7 @@ pIsProjectGameDef(false),
 
 pVFSPath("/"),
 
-pActiveCategory(NULL),
-pActiveObjectClass(NULL),
-pActiveOCBillboard(NULL),
-pActiveOCCamera(NULL),
-pActiveOCComponent(NULL),
-pActiveOCEnvMapProbe(NULL),
-pActiveOCLight(NULL),
-pActiveOCNavigationBlocker(NULL),
-pActiveOCNavigationSpace(NULL),
-pActiveOCParticleEmitter(NULL),
-pActiveOCForceField(NULL),
-pActiveOCSnapPoint(NULL),
-pActiveOCSpeaker(NULL),
-pActiveParticleEmitter(NULL),
-pActiveSkin(NULL),
-pActiveSky(NULL),
-
 pSelectedObjectType(eotNoSelection),
-
-pVFS(NULL),
 pPreviewVFS(NULL)
 {
 	deEngine * const engine = GetEngine();
@@ -201,7 +180,6 @@ void gdeGameDefinition::SetBasePath(const char *path){
 	if(!pIsProjectGameDef){
 		pPreviewVFS = NULL;
 		if(pVFS){
-			pVFS->FreeReference();
 			pVFS = NULL;
 		}
 	}
@@ -219,7 +197,6 @@ void gdeGameDefinition::SetVFSPath(const char *path){
 	if(!pIsProjectGameDef){
 		pPreviewVFS = NULL;
 		if(pVFS){
-			pVFS->FreeReference();
 			pVFS = NULL;
 		}
 	}
@@ -350,7 +327,7 @@ void gdeGameDefinition::SetDefaultSky(const char *sky){
 
 
 const gdeCategory *gdeGameDefinition::FindCategoryObjectClass(const char *path) const{
-	const gdeCategory *category = pCategoriesObjectClass.GetWithPath(path);
+	const gdeCategory::Ref category = pCategoriesObjectClass.GetWithPath(path);
 	if(category){
 		return category;
 	}
@@ -392,17 +369,7 @@ void gdeGameDefinition::SetActiveCategory(gdeCategory *category){
 	if(category == pActiveCategory){
 		return;
 	}
-	
-	if(pActiveCategory){
-		pActiveCategory->FreeReference();
-	}
-	
 	pActiveCategory = category;
-	
-	if(category){
-		category->AddReference();
-	}
-	
 	NotifyActiveCategoryChanged();
 }
 
@@ -599,29 +566,22 @@ deVirtualFileSystem *gdeGameDefinition::GetPreviewVFS(){
 		pPreviewVFS = GetEngine()->GetVirtualFileSystem();
 		
 		if(pVFS){
-			pVFS->FreeReference();
 			pVFS = NULL;
 		}
 		
 	}else{
 		if(!pVFS){
-			deVFSDiskDirectory *container = NULL;
+			deVFSDiskDirectory::Ref container = NULL;
 			
 			try{
-				pVFS = new deVirtualFileSystem;
+				pVFS.TakeOver(new deVirtualFileSystem);
 				
-				container = new deVFSDiskDirectory(decPath::CreatePathUnix(pVFSPath),
-					decPath::CreatePathNative(pBasePath));
+				container.TakeOver(new deVFSDiskDirectory(decPath::CreatePathUnix(pVFSPath),
+					decPath::CreatePathNative(pBasePath)));
 				container->SetReadOnly(true);
 				pVFS->AddContainer(container);
-				container->FreeReference();
-				
 			}catch(const deException &){
-				if(container){
-					container->FreeReference();
-				}
 				if(pVFS){
-					pVFS->FreeReference();
 					pVFS = NULL;
 				}
 				
@@ -722,7 +682,7 @@ void gdeGameDefinition::RemoveAllObjectClasses(){
 }
 
 const gdeObjectClass * const gdeGameDefinition::FindObjectClass(const char *name) const{
-	const gdeObjectClass *objectClass = pObjectClasses.GetNamed(name);
+	const gdeObjectClass::Ref objectClass = pObjectClasses.GetNamed(name);
 	if(objectClass){
 		return objectClass;
 	}
@@ -768,17 +728,7 @@ void gdeGameDefinition::SetActiveObjectClass(gdeObjectClass *objectClass){
 	if(objectClass == pActiveObjectClass){
 		return;
 	}
-	
-	if(pActiveObjectClass){
-		pActiveObjectClass->FreeReference();
-	}
-	
 	pActiveObjectClass = objectClass;
-	
-	if(objectClass){
-		objectClass->AddReference();
-	}
-	
 	NotifyActiveObjectClassChanged();
 }
 
@@ -792,17 +742,7 @@ void gdeGameDefinition::SetActiveOCBillboard(gdeOCBillboard *billboard){
 	if(billboard == pActiveOCBillboard){
 		return;
 	}
-	
-	if(pActiveOCBillboard){
-		pActiveOCBillboard->FreeReference();
-	}
-	
 	pActiveOCBillboard = billboard;
-	
-	if(billboard){
-		billboard->AddReference();
-	}
-	
 	NotifyActiveOCBillboardChanged();
 }
 
@@ -816,17 +756,7 @@ void gdeGameDefinition::SetActiveOCCamera(gdeOCCamera *camera){
 	if(camera == pActiveOCCamera){
 		return;
 	}
-	
-	if(pActiveOCCamera){
-		pActiveOCCamera->FreeReference();
-	}
-	
 	pActiveOCCamera = camera;
-	
-	if(camera){
-		camera->AddReference();
-	}
-	
 	NotifyActiveOCCameraChanged();
 }
 
@@ -840,17 +770,7 @@ void gdeGameDefinition::SetActiveOCComponent(gdeOCComponent *component){
 	if(component == pActiveOCComponent){
 		return;
 	}
-	
-	if(pActiveOCComponent){
-		pActiveOCComponent->FreeReference();
-	}
-	
 	pActiveOCComponent = component;
-	
-	if(component){
-		component->AddReference();
-	}
-	
 	NotifyActiveOCComponentChanged();
 }
 
@@ -864,17 +784,7 @@ void gdeGameDefinition::SetActiveOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe){
 	if(envMapProbe == pActiveOCEnvMapProbe){
 		return;
 	}
-	
-	if(pActiveOCEnvMapProbe){
-		pActiveOCEnvMapProbe->FreeReference();
-	}
-	
 	pActiveOCEnvMapProbe = envMapProbe;
-	
-	if(envMapProbe){
-		envMapProbe->AddReference();
-	}
-	
 	NotifyActiveOCEnvMapProbeChanged();
 }
 
@@ -888,17 +798,7 @@ void gdeGameDefinition::SetActiveOCLight(gdeOCLight *light){
 	if(light == pActiveOCLight){
 		return;
 	}
-	
-	if(pActiveOCLight){
-		pActiveOCLight->FreeReference();
-	}
-	
 	pActiveOCLight = light;
-	
-	if(light){
-		light->AddReference();
-	}
-	
 	NotifyActiveOCLightChanged();
 }
 
@@ -912,17 +812,7 @@ void gdeGameDefinition::SetActiveOCNavigationBlocker(gdeOCNavigationBlocker *nav
 	if(navblocker == pActiveOCNavigationBlocker){
 		return;
 	}
-	
-	if(pActiveOCNavigationBlocker){
-		pActiveOCNavigationBlocker->FreeReference();
-	}
-	
 	pActiveOCNavigationBlocker = navblocker;
-	
-	if(navblocker){
-		navblocker->AddReference();
-	}
-	
 	NotifyActiveOCNavigationBlockerChanged();
 }
 
@@ -936,17 +826,7 @@ void gdeGameDefinition::SetActiveOCNavigationSpace(gdeOCNavigationSpace *navSpac
 	if(navSpace == pActiveOCNavigationSpace){
 		return;
 	}
-	
-	if(pActiveOCNavigationSpace){
-		pActiveOCNavigationSpace->FreeReference();
-	}
-	
 	pActiveOCNavigationSpace = navSpace;
-	
-	if(navSpace){
-		navSpace->AddReference();
-	}
-	
 	NotifyActiveOCNavigationSpaceChanged();
 }
 
@@ -960,17 +840,7 @@ void gdeGameDefinition::SetActiveOCParticleEmitter(gdeOCParticleEmitter *emitter
 	if(emitter == pActiveOCParticleEmitter){
 		return;
 	}
-	
-	if(pActiveOCParticleEmitter){
-		pActiveOCParticleEmitter->FreeReference();
-	}
-	
 	pActiveOCParticleEmitter = emitter;
-	
-	if(emitter){
-		emitter->AddReference();
-	}
-	
 	NotifyActiveOCParticleEmitterChanged();
 }
 
@@ -984,17 +854,7 @@ void gdeGameDefinition::SetActiveOCForceField(gdeOCForceField *field){
 	if(field == pActiveOCForceField){
 		return;
 	}
-	
-	if(pActiveOCForceField){
-		pActiveOCForceField->FreeReference();
-	}
-	
 	pActiveOCForceField = field;
-	
-	if(field){
-		field->AddReference();
-	}
-	
 	NotifyActiveOCForceFieldChanged();
 }
 
@@ -1008,17 +868,7 @@ void gdeGameDefinition::SetActiveOCSnapPoint(gdeOCSnapPoint *snappoint){
 	if(snappoint == pActiveOCSnapPoint){
 		return;
 	}
-	
-	if(pActiveOCSnapPoint){
-		pActiveOCSnapPoint->FreeReference();
-	}
-	
 	pActiveOCSnapPoint = snappoint;
-	
-	if(snappoint){
-		snappoint->AddReference();
-	}
-	
 	NotifyActiveOCSnapPointChanged();
 }
 
@@ -1032,17 +882,7 @@ void gdeGameDefinition::SetActiveOCSpeaker(gdeOCSpeaker *speaker){
 	if(speaker == pActiveOCSpeaker){
 		return;
 	}
-	
-	if(pActiveOCSpeaker){
-		pActiveOCSpeaker->FreeReference();
-	}
-	
 	pActiveOCSpeaker = speaker;
-	
-	if(speaker){
-		speaker->AddReference();
-	}
-	
 	NotifyActiveOCSpeakerChanged();
 }
 
@@ -1121,17 +961,7 @@ void gdeGameDefinition::SetActiveParticleEmitter(gdeParticleEmitter *particleEmi
 	if(particleEmitter == pActiveParticleEmitter){
 		return;
 	}
-	
-	if(pActiveParticleEmitter){
-		pActiveParticleEmitter->FreeReference();
-	}
-	
 	pActiveParticleEmitter = particleEmitter;
-	
-	if(particleEmitter){
-		particleEmitter->AddReference();
-	}
-	
 	NotifyActiveParticleEmitterChanged();
 }
 
@@ -1195,17 +1025,7 @@ void gdeGameDefinition::SetActiveSkin(gdeSkin *skin){
 	if(skin == pActiveSkin){
 		return;
 	}
-	
-	if(pActiveSkin){
-		pActiveSkin->FreeReference();
-	}
-	
 	pActiveSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
-	
 	NotifyActiveSkinChanged();
 }
 
@@ -1269,17 +1089,7 @@ void gdeGameDefinition::SetActiveSky(gdeSky *sky){
 	if(sky == pActiveSky){
 		return;
 	}
-	
-	if(pActiveSky){
-		pActiveSky->FreeReference();
-	}
-	
 	pActiveSky = sky;
-	
-	if(sky){
-		sky->AddReference();
-	}
-	
 	NotifyActiveSkyChanged();
 }
 
@@ -2279,13 +2089,5 @@ void gdeGameDefinition::pCleanUp(){
 	pEnvObject = nullptr;
 	if(pCamera){
 		delete pCamera;
-	}
-	
-	if(pWorld){
-		pWorld->FreeReference();
-	}
-	
-	if(pVFS){
-		pVFS->FreeReference();
 	}
 }

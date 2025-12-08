@@ -28,7 +28,7 @@
 #include <dragengine/systems/modules/graphic/deBaseGraphicLumimeter.h>
 #include <dragengine/common/math/decMath.h>
 
-class deoglRLumimeter;
+#include "deoglRLumimeter.h"
 
 class deGraphicOpenGl;
 class deLumimeter;
@@ -43,7 +43,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	const deLumimeter &pLumimeter;
 	
-	deoglRLumimeter *pRLumimeter;
+	deoglRLumimeter::Ref pRLumimeter;
 	
 	float pLuminance;
 	decColor pColor;
@@ -71,7 +71,7 @@ public:
 	
 	
 	/** Render lumimter. */
-	inline deoglRLumimeter *GetRLumimeter() const{ return pRLumimeter; }
+	inline const deoglRLumimeter::Ref &GetRLumimeter() const{ return pRLumimeter; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

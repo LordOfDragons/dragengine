@@ -30,7 +30,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class projProfile;
+#include "../../project/profile/projProfile.h"
 
 
 
@@ -39,7 +39,7 @@ class projProfile;
  */
 class projUProfileSetWindowSize : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decPoint pOldValue;
 	decPoint pNewValue;

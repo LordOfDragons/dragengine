@@ -228,7 +228,7 @@ void dealEngine::LoadModuleList(){
 
 void dealEngine::CheckModules(){
 	int i, count = pModuleList.GetModuleCount();
-	dealEMParameter *parameter = NULL;
+	dealEMParameter::Ref parameter = NULL;
 	int parameterCount;
 	decPath logfile;
 	int status;
@@ -269,19 +269,17 @@ void dealEngine::CheckModules(){
 					DETHROW(deeInvalidParam);
 				}
 				
-				parameter = new dealEMParameter;
+				parameter.TakeOver(new dealEMParameter);
 				parameter->SetIndex(j);
 				parameter->SetName(name);
 				parameter->SetDescription(desc);
 				parameter->SetValue(value);
 				
 				parameterList.AddParameter(parameter);
-				parameter->FreeReference();
 			}
 			
 		}catch(const deException &e){
 			if(parameter){
-				parameter->FreeReference();
 				parameter = NULL;
 			}
 			
@@ -298,8 +296,8 @@ void dealEngine::AddModulesFrom(const char *directory, int type){
 	dealEngineModuleXML moduleXML(&pLauncher.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
-	decBaseFileReader *reader;
-	dealEngineModule *module;
+	decBaseFileReader::Ref reader;
+	dealEngineModule::Ref module;
 	decPath pattern;
 	int i, j;
 	
@@ -331,24 +329,15 @@ void dealEngine::AddModulesFrom(const char *directory, int type){
 			try{
 				reader = vfs.OpenFileForReading(pattern);
 				
-				module = new dealEngineModule;
+				module.TakeOver(new dealEngineModule);
 				
 				moduleXML.ReadFromFile(*reader, *module);
-				reader->FreeReference();
 				reader = NULL;
 				
 				pModuleList.AddModule(module);
-				module->FreeReference();
-				
 			}catch(const deException &e){
 				logger.LogErrorFormat(LOGSOURCE, "Engine.AddModulesFrom failed reading module file with exception (dir=%s,type=%i)", directory, type);
 				logger.LogException(LOGSOURCE, e);
-				if(module){
-					module->FreeReference();
-				}
-				if(reader){
-					reader->FreeReference();
-				}
 			}
 		}
 	}
@@ -357,7 +346,7 @@ void dealEngine::AddModulesFrom(const char *directory, int type){
 dealEngineModule *dealEngine::GetBestModuleForType(int moduleType){
 	int i, count = pModuleList.GetModuleCount();
 	dealEngineModule *bestModule = NULL;
-	dealEngineModule *module;
+	dealEngineModule::Ref module;
 	
 	// for the time being we simply pick the first module which matches the type and is ready
 	// to be used. later on this has to be improved to use a matching metrics which tells
@@ -388,7 +377,7 @@ dealEngineModule *dealEngine::GetBestModuleForType(int moduleType){
 void dealEngine::PutEngineIntoVFS(){
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
-	deVFSDiskDirectory *diskDir = NULL;
+	deVFSDiskDirectory::Ref diskDir = NULL;
 	decPath pathRootDir, pathDiskDir;
 	const char *value;
 	decPath logfile;
@@ -425,49 +414,42 @@ void dealEngine::PutEngineIntoVFS(){
 		if(!pPathConfig.IsEmpty()){
 			pathRootDir.SetFromUnix("/engine/config");
 			pathDiskDir.SetFromNative(pPathConfig.GetString());
-			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
 			diskDir->SetReadOnly(false);
 			vfs.AddContainer(diskDir);
-			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
 		if(!pPathShare.IsEmpty()){
 			pathRootDir.SetFromUnix("/engine/share");
 			pathDiskDir.SetFromNative(pPathShare.GetString());
-			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
 			diskDir->SetReadOnly(false);
 			vfs.AddContainer(diskDir);
-			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
 		if(!pPathLib.IsEmpty()){
 			pathRootDir.SetFromUnix("/engine/lib");
 			pathDiskDir.SetFromNative(pPathLib.GetString());
-			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
 			diskDir->SetReadOnly(false);
 			vfs.AddContainer(diskDir);
-			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
 		if(!pPathCache.IsEmpty()){
 			pathRootDir.SetFromUnix("/engine/cache");
 			pathDiskDir.SetFromNative(pPathCache);
-			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
 			diskDir->SetReadOnly(false);
 			vfs.AddContainer(diskDir);
-			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
 	}catch(const deException &e){
 		logger.LogError(LOGSOURCE, "Engine.PutEngineIntoVFS failed with exception:");
 		logger.LogException(LOGSOURCE, e);
-		if(diskDir){
-			diskDir->FreeReference();
-		}
 		throw;
 	}
 }
@@ -547,7 +529,7 @@ void dealEngine::LoadConfig(){
 	dealEngineConfigXML configXML(&pLauncher.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
-	decBaseFileReader *reader = NULL;
+	decBaseFileReader::Ref reader = NULL;
 	decString filename;
 	decPath pathFile;
 	
@@ -561,12 +543,7 @@ void dealEngine::LoadConfig(){
 			try{
 				reader = vfs.OpenFileForReading(pathFile);
 				configXML.ReadFromFile(*reader, pLauncher);
-				reader->FreeReference();
-				
 			}catch(const deException &){
-				if(reader){
-					reader->FreeReference();
-				}
 				throw;
 			}
 			
@@ -584,7 +561,7 @@ void dealEngine::SaveConfig(){
 	dealEngineConfigXML configXML(&pLauncher.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
-	decBaseFileWriter *writer = NULL;
+	decBaseFileWriter::Ref writer = NULL;
 	decString filename;
 	decPath pathFile;
 	
@@ -596,12 +573,7 @@ void dealEngine::SaveConfig(){
 		try{
 			writer = vfs.OpenFileForWriting(pathFile);
 			configXML.WriteToFile(*writer, pLauncher);
-			writer->FreeReference();
-			
 		}catch(const deException &e){
-			if(writer){
-				writer->FreeReference();
-			}
 			logger.LogErrorFormat(LOGSOURCE, "Failed to write engine configuration file (file permission problem)");
 			logger.LogException(LOGSOURCE, e);
 			// DIALOG BOX

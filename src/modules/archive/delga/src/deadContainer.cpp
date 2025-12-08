@@ -140,7 +140,6 @@ decBaseFileReader *deadContainer::OpenFileForReading(const decPath &path){
 	
 	try{
 		const deadArchiveFileReader::Ref reader(context->OpenFileForReading(*file));
-		reader->AddReference(); // caller retains reference
 		return reader;
 		
 	}catch(const deException &){

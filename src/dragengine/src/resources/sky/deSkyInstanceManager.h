@@ -62,7 +62,7 @@ public:
 	deSkyInstance *GetRootSkyInstance() const;
 	
 	/** \brief Create sky instance. */
-	deSkyInstance *CreateSkyInstance();
+	deSkyInstance::Ref CreateSkyInstance();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

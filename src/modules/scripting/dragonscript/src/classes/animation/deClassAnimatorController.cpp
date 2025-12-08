@@ -47,8 +47,8 @@
 /////////////////////
 
 struct sAnimatorCtrlNatDat{
-	deAnimator *animator;
-	deAnimatorInstance *instance;
+	deAnimator::Ref animator;
+	deAnimatorInstance::Ref instance;
 	int index;
 };
 
@@ -777,7 +777,6 @@ void deClassAnimatorController::PushController(dsRunTime *rt, deAnimator *animat
 	sAnimatorCtrlNatDat &nd = *((sAnimatorCtrlNatDat*)p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.animator = animator;
-	animator->AddReference();
 	nd.instance = NULL;
 	nd.index = index;
 }
@@ -792,6 +791,5 @@ void deClassAnimatorController::PushController(dsRunTime *rt, deAnimatorInstance
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.animator = NULL;
 	nd.instance = instance;
-	instance->AddReference();
 	nd.index = index;
 }

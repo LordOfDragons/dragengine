@@ -241,7 +241,7 @@ public:
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
+	inline const deLogger::Ref &GetLogger() const{ return pLogger; }
 	
 	/** \brief Use console. */
 	inline bool GetUseConsole() const{ return pUseConsole; }

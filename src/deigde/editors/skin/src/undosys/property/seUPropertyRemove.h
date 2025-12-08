@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seTexture;
-class seProperty;
+#include "../../skin/texture/seTexture.h"
+#include "../../skin/property/seProperty.h"
 
 
 
@@ -37,8 +37,8 @@ class seProperty;
  */
 class seUPropertyRemove : public igdeUndo{
 private:
-	seProperty *pProperty;
-	seTexture *pTexture;
+	seProperty::Ref pProperty;
+	seTexture::Ref pTexture;
 	
 public:
 	/** \brief Type holding strong reference. */

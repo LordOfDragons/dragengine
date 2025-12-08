@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSourceSound;
+#include "../../../synthesizer/source/seSourceSound.h"
 
 
 
@@ -37,7 +37,7 @@ class seSourceSound;
  */
 class seUToggleSourceSoundLooping : public igdeUndo{
 private:
-	seSourceSound *pSource;
+	seSourceSound::Ref pSource;
 	
 	
 	

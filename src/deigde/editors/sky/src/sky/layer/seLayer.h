@@ -69,7 +69,7 @@ private:
 	bool pMulBySkyColor;
 	
 	seBodyList pBodies;
-	seBody *pActiveBody;
+	seBody::Ref pActiveBody;
 	
 	seControllerTarget pTargets[deSkyLayer::etAmbientIntensity + 1];
 	deSkyLayer::eTargets pActiveTarget;
@@ -149,7 +149,7 @@ public:
 	void SetSkinPath(const char *skinPath);
 	
 	/** \brief Engine skin or \em NULL. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	
 	/** \brief Light orientation. */
 	inline const decVector &GetLightOrientation() const{ return pLightOrientation; }
@@ -226,7 +226,7 @@ public:
 	void RemoveAllBodies();
 	
 	/** \brief Active body or \em NULL. */
-	inline seBody *GetActiveBody() const{ return pActiveBody; }
+	inline const seBody::Ref &GetActiveBody() const{ return pActiveBody; }
 	
 	/** \brief Set active body or \em NULL. */
 	void SetActiveBody(seBody *body);

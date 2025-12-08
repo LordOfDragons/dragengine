@@ -331,18 +331,16 @@ public:
 
 gdeWPSOCEnvMapProbe::gdeWPSOCEnvMapProbe(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
-	pListener = new gdeWPSOCEnvMapProbeListener(*this);
+	pListener.TakeOver(new gdeWPSOCEnvMapProbeListener(*this));
 	
 	helper.GroupBox(content, groupBox, "Object Class Environment Map Probe:");
 	helper.EditVector(groupBox, "Position:", "Position relative to object class",
@@ -390,10 +388,6 @@ pGameDefinition(NULL)
 
 gdeWPSOCEnvMapProbe::~gdeWPSOCEnvMapProbe(){
 	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -408,14 +402,12 @@ void gdeWPSOCEnvMapProbe::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdatePropertyList();

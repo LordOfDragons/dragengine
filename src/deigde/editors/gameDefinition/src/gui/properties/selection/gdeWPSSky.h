@@ -37,12 +37,12 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeSky;
 class gdeSkyController;
 class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSSkyListener;
+#include "gdeWPSSkyListener.h"
 
 
 
@@ -52,9 +52,9 @@ class gdeWPSSkyListener;
 class gdeWPSSky : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSSkyListener *pListener;
+	gdeWPSSkyListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeAction::Ref pActionControllerAdd;
 	igdeAction::Ref pActionControllerRemove;
@@ -91,7 +91,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
@@ -107,9 +107,9 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionControllerAdd() const{ return pActionControllerAdd; }
-	inline igdeAction *GetActionControllerRemove() const{ return pActionControllerRemove; }
-	inline igdeActionContextMenu *GetActionControllerMenu() const{ return pActionControllerMenu; }
+	inline const igdeAction::Ref &GetActionControllerAdd() const{ return pActionControllerAdd; }
+	inline const igdeAction::Ref &GetActionControllerRemove() const{ return pActionControllerRemove; }
+	inline const igdeActionContextMenu::Ref &GetActionControllerMenu() const{ return pActionControllerMenu; }
 	
 	
 	

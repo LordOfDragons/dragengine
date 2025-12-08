@@ -70,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ForceField resource. */
-	inline deForceField *GetForceField() const{ return pForceField; }
+	inline const deForceField::Ref &GetForceField() const{ return pForceField; }
 	
 	/** \brief Update parameters. */
 	virtual void UpdateParameters();

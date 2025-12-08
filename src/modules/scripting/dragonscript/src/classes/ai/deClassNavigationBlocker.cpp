@@ -45,7 +45,7 @@
 
 
 struct sNavBlockerNatDat{
-	deNavigationBlocker *blocker;
+	deNavigationBlocker::Ref blocker;
 };
 
 
@@ -401,5 +401,4 @@ void deClassNavigationBlocker::PushNavigationBlocker(dsRunTime *rt, deNavigation
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sNavBlockerNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->blocker = blocker;
-	blocker->AddReference();
 }

@@ -42,7 +42,7 @@
 
 peeUParameterSetCurve::peeUParameterSetCurve(peeType *type,
 	peeParameter *parameter, const decCurveBezier &newCurve) :
-pType(NULL),
+
 pParameter(NULL),
 pNewCurve(newCurve)
 {
@@ -54,13 +54,9 @@ pNewCurve(newCurve)
 	pParameter = parameter;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUParameterSetCurve::~peeUParameterSetCurve(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

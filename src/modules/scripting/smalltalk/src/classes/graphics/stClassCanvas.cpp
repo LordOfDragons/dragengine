@@ -56,7 +56,7 @@ struct csCanvasClass : public csClassObject{
 
 struct csCanvas : public csObject{
 	stClassCanvas *clsCanvas;
-	deCanvas *canvas;
+	deCanvas::Ref canvas;
 	deCanvasVisitorIdentify::eCanvasTypes type;
 };
 
@@ -212,7 +212,7 @@ OOP stClassCanvas::ccNew(OOP self, OOP type){
 	csCanvasClass &csclass = *((csCanvasClass*)OOP_TO_OBJ(self));
 	ScriptingSmalltalk &st = stClassScripting::GetSTFromOOP(csclass.scripting);
 	const stClassCanvas &clsCanvas = *st.GetClassCanvas();
-	deCanvas *canvas = NULL;
+	deCanvas::Ref canvas = NULL;
 	OOP result = NULL;
 	
 	try{
@@ -249,12 +249,7 @@ OOP stClassCanvas::ccNew(OOP self, OOP type){
 		gst_perform(result, st.GetSelectorInitialize());
 		
 		printf("new canvas %p\n", canvas);
-		canvas->FreeReference();
-		
 	}catch(const deException &e){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		result = st.GetNil();
 		e.PrintError();
 	}

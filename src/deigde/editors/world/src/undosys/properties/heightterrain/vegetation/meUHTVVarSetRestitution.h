@@ -30,7 +30,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVVariation;
+#include "../../../../world/heightterrain/meHTVVariation.h"
 
 
 
@@ -41,7 +41,7 @@ class meHTVVariation;
  */
 class meUHTVVarSetRestitution : public igdeUndo{
 private:
-	meHTVVariation *pVariation;
+	meHTVVariation::Ref pVariation;
 	float pOldRestitution;
 	float pNewRestitution;
 	

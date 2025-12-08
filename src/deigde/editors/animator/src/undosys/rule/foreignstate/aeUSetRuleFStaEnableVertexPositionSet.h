@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleForeignState;
+#include "../../../animator/rule/aeRuleForeignState.h"
 
 
 /**
@@ -36,7 +36,7 @@ class aeRuleForeignState;
  */
 class aeUSetRuleFStaEnableVertexPositionSet : public igdeUndo{
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

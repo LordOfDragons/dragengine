@@ -41,8 +41,7 @@
 
 ceWPTTreeItem::ceWPTTreeItem(igdeTreeList *treeList) :
 igdeTreeItem(""),
-pTreeList(treeList),
-pModel(NULL)
+pTreeList(treeList)
 {
 	if(!treeList){
 		DETHROW(deeInvalidParam);
@@ -65,13 +64,11 @@ void ceWPTTreeItem::SetModel(ceWPTTreeItemModel *model){
 	
 	if(pModel){
 		pModel->SetTreeItem(NULL);
-		pModel->FreeReference();
 	}
 	
 	pModel = model;
 	
 	if(model){
-		model->AddReference();
 		model->SetTreeItem(this);
 	}
 }

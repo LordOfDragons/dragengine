@@ -44,7 +44,7 @@ class ceWPAction : public igdeContainerForm{
 protected:
 	ceWPTopic &pParentPanel;
 	
-	igdeCheckBox::Ref pChkWaitForActor, pChkWaitSpeakOnly;
+	igdeCheckBox *pChkWaitForActor, pChkWaitSpeakOnly;
 	igdeComboBox::Ref pCBWaitForActorID;
 	igdeTextField::Ref pEditDelay;
 	

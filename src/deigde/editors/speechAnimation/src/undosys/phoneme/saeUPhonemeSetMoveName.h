@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saePhoneme;
+#include "../../sanimation/phoneme/saePhoneme.h"
 
 
 
@@ -36,7 +36,7 @@ class saePhoneme;
  */
 class saeUPhonemeSetMoveName : public igdeUndo{
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	decString pOldName;
 	decString pNewName;

@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeController;
-class peeEmitter;
+#include "../../emitter/peeController.h"
+#include "../../emitter/peeEmitter.h"
 
 
 
@@ -37,8 +37,8 @@ class peeEmitter;
  */
 class peeUControllerRemove : public igdeUndo{
 private:
-	peeEmitter *pEmitter;
-	peeController *pController;
+	peeEmitter::Ref pEmitter;
+	peeController::Ref pController;
 	int pIndex;
 	
 	

@@ -51,8 +51,6 @@ pSource(NULL)
 	
 	try{
 		pSource = source;
-		pSource->AddReference();
-		
 		SetShortInfo("Source set maximum volume");
 		
 	}catch(const deException &){
@@ -84,7 +82,4 @@ void seUSetSourceMaxVolume::Redo(){
 //////////////////////
 
 void seUSetSourceMaxVolume::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

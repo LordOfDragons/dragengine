@@ -44,8 +44,7 @@
 
 ceUCAASpeakEyesLAClear::ceUCAASpeakEyesLAClear(
 ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
-pTopic(NULL),
-pActorSpeak(NULL)
+pTopic(NULL)
 {
 	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
@@ -56,19 +55,10 @@ pActorSpeak(NULL)
 	pOldStrips = actorSpeak->GetEyesLookAtList();
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakEyesLAClear::~ceUCAASpeakEyesLAClear(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

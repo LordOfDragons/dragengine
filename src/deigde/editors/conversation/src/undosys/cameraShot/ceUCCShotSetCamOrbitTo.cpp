@@ -50,13 +50,9 @@ ceUCCShotSetCamOrbitTo::ceUCCShotSetCamOrbitTo(ceCameraShot *cameraShot, const d
 	pNewRot = newRot;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetCamOrbitTo::~ceUCCShotSetCamOrbitTo(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

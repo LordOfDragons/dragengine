@@ -63,7 +63,7 @@ public:
 	deSky *GetRootSky() const;
 	
 	/** \brief Create new scene sky. */
-	deSky *CreateSky();
+	deSky::Ref CreateSky();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

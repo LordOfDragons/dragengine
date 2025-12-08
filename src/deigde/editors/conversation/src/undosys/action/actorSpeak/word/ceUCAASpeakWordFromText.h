@@ -29,8 +29,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAActorSpeak;
-class ceConversationTopic;
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
 class decUnicodeString;
 
 
@@ -43,8 +43,8 @@ class decUnicodeString;
  */
 class ceUCAASpeakWordFromText : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	ceStripList pOldWords;
 	ceStripList pNewWords;
 	

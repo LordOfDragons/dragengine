@@ -51,7 +51,7 @@
 /////////////////////
 
 struct sEmpNatDat{
-	deEnvMapProbe *envMapProbe;
+	deEnvMapProbe::Ref envMapProbe;
 };
 
 
@@ -490,5 +490,4 @@ void deClassEnvMapProbe::PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe *envMapPro
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sEmpNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->envMapProbe = envMapProbe;
-	envMapProbe->AddReference();
 }

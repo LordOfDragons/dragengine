@@ -43,8 +43,7 @@
 ////////////////////////////
 
 sePropertyNodeSelection::sePropertyNodeSelection(seProperty &property) :
-pProperty(property),
-pActive(NULL){
+pProperty(property){
 }
 
 sePropertyNodeSelection::~sePropertyNodeSelection(){
@@ -169,13 +168,11 @@ void sePropertyNodeSelection::SetActive(sePropertyNode *node){
 	
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = node;
 	
 	if(node){
-		node->AddReference();
 		node->SetActive(true);
 	}
 	

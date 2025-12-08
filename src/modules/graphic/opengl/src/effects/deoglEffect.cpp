@@ -45,14 +45,10 @@
 deoglEffect::deoglEffect(deGraphicOpenGl &ogl, const deEffect &effect) :
 pOgl(ogl),
 pEffect(effect),
-pREffect(NULL),
 pDirtyEnabled(true){
 }
 
 deoglEffect::~deoglEffect(){
-	if(pREffect){
-		pREffect->FreeReference();
-	}
 }
 
 

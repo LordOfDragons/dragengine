@@ -55,19 +55,10 @@ ceUCActionMove::ceUCActionMove(ceConversationTopic *topic, ceConversationAction 
 	SetShortInfo("Move Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCActionMove::~ceUCActionMove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

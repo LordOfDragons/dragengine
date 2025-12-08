@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRule;
+#include "../../animator/rule/aeRule.h"
 class aeControllerTarget;
 
 
@@ -38,7 +38,7 @@ class aeControllerTarget;
  */
 class aeURuleTargetRemoveAllLinks : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	aeControllerTarget *pTarget;
 	
 	aeLinkList pLinks;

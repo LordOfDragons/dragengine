@@ -51,7 +51,7 @@
 
 // native structure
 struct sRigNatDat{
-	deRig *rig;
+	deRig::Ref rig;
 };
 
 // Native Functions
@@ -684,5 +684,4 @@ void deClassRig::PushRig(dsRunTime *rt, deRig *rig){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sRigNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->rig = rig;
-	rig->AddReference();
 }

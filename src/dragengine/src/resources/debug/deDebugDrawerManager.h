@@ -63,7 +63,7 @@ public:
 	deDebugDrawer *GetRootDebugDrawer() const;
 	
 	/** \brief Create new debug drawer. */
-	deDebugDrawer *CreateDebugDrawer();
+	deDebugDrawer::Ref CreateDebugDrawer();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

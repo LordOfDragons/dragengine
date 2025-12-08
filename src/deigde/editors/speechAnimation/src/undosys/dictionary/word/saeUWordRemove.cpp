@@ -43,7 +43,7 @@
 saeUWordRemove::saeUWordRemove(saeWord *word){
 	if(!word) DETHROW(deeInvalidParam);
 	
-	saeSAnimation *sanimation = word->GetSAnimation();
+	saeSAnimation::Ref sanimation = word->GetSAnimation();
 	if(!sanimation) DETHROW(deeInvalidParam);
 	
 	pSAnimation = NULL;
@@ -52,19 +52,10 @@ saeUWordRemove::saeUWordRemove(saeWord *word){
 	SetShortInfo("Remove Word");
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 saeUWordRemove::~saeUWordRemove(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

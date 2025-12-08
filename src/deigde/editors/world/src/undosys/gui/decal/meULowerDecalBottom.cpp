@@ -45,8 +45,6 @@ meULowerDecalBottom::meULowerDecalBottom(meWorld *world, meDecal *decal){
 	pWorld = world;
 	
 	pDecal = decal;
-	decal->AddReference();
-	
 	//if( decal->GetParentObject() ){
 		pOldIndex = decal->GetParentObject()->IndexOfDecal(decal);
 	//}

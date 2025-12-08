@@ -57,25 +57,11 @@ ceCConditionGameCommand *condition, const char *newCommand){
 	SetShortInfo("Condition game command set command");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCGameCmdSetCommand::~ceUCCGameCmdSetCommand(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

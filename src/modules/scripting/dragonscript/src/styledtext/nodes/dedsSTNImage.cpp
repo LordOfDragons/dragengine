@@ -46,11 +46,9 @@ dedsSTNImage::dedsSTNImage(){
 
 dedsSTNImage::dedsSTNImage(deImage *image){
 	pImage = image;
-	if(image) image->AddReference();
 }
 
 dedsSTNImage::~dedsSTNImage(){
-	if(pImage) pImage->FreeReference();
 }
 
 
@@ -58,10 +56,8 @@ dedsSTNImage::~dedsSTNImage(){
 // Management
 ///////////////
 
-void dedsSTNImage::SetImage(deImage* image){
+void dedsSTNImage::SetImage(deImage *image){
 	if(image != pImage){
-		if(pImage) pImage->FreeReference();
 		pImage = image;
-		if(image) image->AddReference();
 	}
 }

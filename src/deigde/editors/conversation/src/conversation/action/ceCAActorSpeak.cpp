@@ -87,16 +87,10 @@ ceCAActorSpeak::ceCAActorSpeak(const ceCAActorSpeak &action) : ceConversationAct
 	pUseSpeechAnimation = action.pUseSpeechAnimation;
 	
 	pEngSound = action.pEngSound;
-	if(pEngSound){
-		pEngSound->AddReference();
-	}
 	pLoaded = action.pLoaded;
 }
 
 ceCAActorSpeak::~ceCAActorSpeak(){
-	if(pEngSound){
-		pEngSound->FreeReference();
-	}
 }
 
 
@@ -148,7 +142,6 @@ void ceCAActorSpeak::SetPathSound(const char *path){
 		pPathSound = path;
 		
 		if(pEngSound){
-			pEngSound->FreeReference();
 			pEngSound = NULL;
 		}
 		pLoaded = false;
@@ -188,7 +181,7 @@ ceConversationAction *ceCAActorSpeak::CreateCopy() const{
 //////////////////////
 
 void ceCAActorSpeak::pLoadSound(){
-	deSound *sound = NULL;
+	deSound::Ref sound = NULL;
 	
 	try{
 		if(!pPathSound.IsEmpty()){
@@ -198,20 +191,14 @@ void ceCAActorSpeak::pLoadSound(){
 		if(sound && sound->GetChannelCount() != 1){
 			pEngine->GetLogger()->LogWarnFormat(LOGSOURCE,
 				"Channel count %i instead of 1. Sound file not used.", sound->GetChannelCount());
-			sound->FreeReference();
 			sound = NULL;
 		}
 		
 	}catch(const deException &e){
 		if(sound){
-			sound->FreeReference();
 			sound = NULL;
 		}
 		pEngine->GetLogger()->LogException(LOGSOURCE, e);
-	}
-	
-	if(pEngSound){
-		pEngSound->FreeReference();
 	}
 	pEngSound = sound;
 	

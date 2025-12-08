@@ -30,7 +30,7 @@
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
 // predefinitions
-class deCollisionInfo;
+#include <dragengine/resources/collider/deCollisionInfo.h>
 
 
 
@@ -46,7 +46,7 @@ class deCollisionInfo;
  */
 class aeALGroundChecker : public deBaseScriptingCollider{
 private:
-	deCollisionInfo *pColInfo;
+	deCollisionInfo::Ref pColInfo;
 	bool pHasCollision;
 	
 public:

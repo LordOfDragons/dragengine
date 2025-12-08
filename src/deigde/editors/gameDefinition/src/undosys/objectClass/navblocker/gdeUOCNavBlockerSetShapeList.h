@@ -30,8 +30,8 @@
 
 #include <dragengine/common/shape/decShapeList.h>
 
-class gdeOCNavigationBlocker;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavBlockerSetShapeList : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	decShapeList pOldValue;
 	decShapeList pNewValue;

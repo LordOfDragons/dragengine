@@ -86,13 +86,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component used for casting or NULL. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
 	
 	/** \brief Set component used for casting or NULL. */
 	void SetComponent(deComponent *component);
 	
 	/** \brief Dynamic skin or null if not used. */
-	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set dynamic skin or null if not used. */
 	void SetDynamicSkin(deDynamicSkin *dynamicSkin);

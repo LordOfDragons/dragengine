@@ -159,8 +159,6 @@ pParentComponent(NULL),
 pComponentMarkedRemove(false),
 pWorldComputeElement(deoglWorldComputeElement::Ref::New(new WorldComputeElement(*this))),
 
-pSharedSPBElement(NULL),
-
 pRTSInstance(NULL),
 pDirtySharedSPBElement(true),
 pDirtyTUCs(true),
@@ -204,23 +202,11 @@ deoglRDecal::~deoglRDecal(){
 	
 	NotifyDecalDestroyed();
 	pListeners.RemoveAll();
-	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	if(pRTSInstance){
 		pRTSInstance->ReturnToPool();
 	}
-	if(pSharedSPBElement){
-		pSharedSPBElement->FreeReference();
-	}
-	
 	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
-		pVBOBlock->FreeReference();
 	}
 	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
@@ -315,17 +301,7 @@ void deoglRDecal::SetSkin(deoglRSkin *skin){
 	if(skin == pSkin){
 		return;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	pSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
-	
 	pDirtyUseTexture = true;
 	
 	InvalidateParamBlocks();
@@ -343,17 +319,7 @@ void deoglRDecal::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
-	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
-	
 	pDirtyUseTexture = true;
 	
 	InvalidateParamBlocks();
@@ -917,7 +883,6 @@ void deoglRDecal::pPrepareVBO(){
 	
 	if(pVBOBlock){
 		pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
-		pVBOBlock->FreeReference();
 		pVBOBlock = NULL;
 	}
 	

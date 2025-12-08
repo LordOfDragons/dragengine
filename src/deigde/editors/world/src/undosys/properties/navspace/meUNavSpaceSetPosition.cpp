@@ -59,13 +59,9 @@ meUNavSpaceSetPosition::meUNavSpaceSetPosition(meNavigationSpace *navspace, cons
 	pNewPosition = newPosition;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUNavSpaceSetPosition::~meUNavSpaceSetPosition(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

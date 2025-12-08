@@ -50,13 +50,9 @@ saeUPhonemeSetIPA::saeUPhonemeSetIPA(saePhoneme *phoneme, int newIPA){
 	pNewIPA = newIPA;
 	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeSetIPA::~saeUPhonemeSetIPA(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
 }
 
 

@@ -55,37 +55,15 @@ ceUCAASpeakGestureSet::ceUCAASpeakGestureSet(ceConversationTopic *topic, ceCAAct
 	
 	SetShortInfo("Set gesture");
 	
-	pOldStrip = new ceStrip(*gesture);
+	pOldStrip.TakeOver(new ceStrip(*gesture));
 	
 	pNewStrip = newStrip;
-	newStrip->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pGesture = gesture;
-	gesture->AddReference();
 }
 
 ceUCAASpeakGestureSet::~ceUCAASpeakGestureSet(){
-	if(pNewStrip){
-		pNewStrip->FreeReference();
-	}
-	if(pOldStrip){
-		pOldStrip->FreeReference();
-	}
-	if(pGesture){
-		pGesture->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
-class reRigBone;
+#include "../../../rig/reRig.h"
+#include "../../../rig/bone/reRigBone.h"
 
 
 
@@ -37,10 +37,10 @@ class reRigBone;
  */
 class reURigSetRootBone : public igdeUndo{
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
-	reRigBone *pOldBone;
-	reRigBone *pNewBone;
+	reRigBone::Ref pOldBone;
+	reRigBone::Ref pNewBone;
 	
 	
 	

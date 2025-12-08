@@ -51,11 +51,7 @@ meUHTVLayerUp::meUHTVLayerUp(meWorld *world, meHeightTerrain *heightTerrain, meH
 	if(pIndex < 1) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Move Height Terrain Vegetation Layer Up");
-	
-	world->AddReference();
-	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 }
 
 meUHTVLayerUp::~meUHTVLayerUp(){

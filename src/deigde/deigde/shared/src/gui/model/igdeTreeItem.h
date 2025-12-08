@@ -114,7 +114,7 @@ public:
 	void SetDescription(const char *description);
 	
 	/** \brief Icon or NULL. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
 	void SetIcon(igdeIcon *icon);
@@ -152,13 +152,13 @@ public:
 	void SetPrevious(igdeTreeItem *item);
 	
 	/** \brief Next item. */
-	inline igdeTreeItem *GetNext() const{ return pNext; }
+	inline const igdeTreeItem::Ref &GetNext() const{ return pNext; }
 	
 	/** \brief Set next item. */
 	void SetNext(igdeTreeItem *item);
 	
 	/** \brief First child item. */
-	inline igdeTreeItem *GetFirstChild() const{ return pFirstChild; }
+	inline const igdeTreeItem::Ref &GetFirstChild() const{ return pFirstChild; }
 	
 	/** \brief Set first child item. */
 	void SetFirstChild(igdeTreeItem *item);

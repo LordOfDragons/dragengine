@@ -68,33 +68,15 @@ ceCAPlayerChoiceOption *option, ceConversationAction *action){
 	SetShortInfo("Player Choice Remove Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
-	
 	if(option){
 		pOption = option;
-		option->AddReference();
 	}
 	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAPChoiceActionRemove::~ceUCAPChoiceActionRemove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -69,7 +69,7 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Content or nullptr if not loaded. */
-	inline decMemoryFile *GetContent() const{ return pContent; }
+	inline const decMemoryFile::Ref &GetContent() const{ return pContent; }
 	
 	/** \brief Set content or nullptr if not loaded. */
 	void SetContent(decMemoryFile *content);

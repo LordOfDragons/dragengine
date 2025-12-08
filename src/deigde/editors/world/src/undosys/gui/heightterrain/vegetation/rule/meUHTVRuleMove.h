@@ -32,8 +32,8 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRule;
+#include "../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../world/heightterrain/rules/meHTVRule.h"
 
 
 
@@ -44,8 +44,8 @@ class meHTVRule;
  */
 class meUHTVRuleMove : public igdeUndo{
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRule *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRule::Ref pRule;
 	
 	decVector2 pOldPosition;
 	decVector2 pNewPosition;

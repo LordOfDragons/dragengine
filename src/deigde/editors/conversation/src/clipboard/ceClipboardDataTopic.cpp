@@ -46,21 +46,17 @@ ceClipboardDataTopic::ceClipboardDataTopic(const ceConversationTopicList &topics
 igdeClipboardData(TYPE_NAME)
 {
 	const int count = topics.GetCount();
-	ceConversationTopic *topic = NULL;
+	ceConversationTopic::Ref topic = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			topic = new ceConversationTopic(*topics.GetAt(i));
+			topic.TakeOver(new ceConversationTopic(*topics.GetAt(i)));
 			pTopics.Add(topic);
-			topic->FreeReference();
 			topic = NULL;
 		}
 		
 	}catch(const deException &){
-		if(topic){
-			topic->FreeReference();
-		}
 		throw;
 	}
 }

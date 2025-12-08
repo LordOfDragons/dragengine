@@ -39,8 +39,8 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class meWindowProperties;
-class meWPWorldListener;
-class meWorld;
+#include "meWPWorldListener.h"
+#include "../../world/meWorld.h"
 class mePathFindTestType;
 
 
@@ -51,8 +51,8 @@ class mePathFindTestType;
 class meWPWorld : public igdeContainerScroll{
 private:
 	meWindowProperties &pWindowProperties;
-	meWPWorldListener *pListener;
-	meWorld *pWorld;
+	meWPWorldListener::Ref pListener;
+	meWorld::Ref pWorld;
 	
 	igdeActionContextMenu::Ref pActionPFTTypes;
 	igdeAction::Ref pActionPFTTypeAdd;
@@ -110,7 +110,7 @@ public:
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
 	void SetWorld(meWorld *world);
@@ -165,9 +165,9 @@ public:
 	
 	
 	
-	inline igdeAction* GetActionPFTTypeAdd() const{ return pActionPFTTypeAdd; }
-	inline igdeAction* GetActionPFTTypeRemove() const{ return pActionPFTTypeRemove; }
-	inline igdeAction* GetActionPFTTypeClear() const{ return pActionPFTTypeClear; }
+	inline const igdeAction::Ref &GetActionPFTTypeAdd() const{ return pActionPFTTypeAdd; }
+	inline const igdeAction::Ref &GetActionPFTTypeRemove() const{ return pActionPFTTypeRemove; }
+	inline const igdeAction::Ref &GetActionPFTTypeClear() const{ return pActionPFTTypeClear; }
 };
 
 #endif

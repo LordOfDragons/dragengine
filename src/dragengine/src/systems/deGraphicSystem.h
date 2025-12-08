@@ -136,7 +136,7 @@ public:
 	inline deBaseGraphicModule *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Render window. */
-	inline deRenderWindow *GetRenderWindow() const{ return pRenderWindow; }
+	inline const deRenderWindow::Ref &GetRenderWindow() const{ return pRenderWindow; }
 	
 	/** \brief Set render window. */
 	void SetRenderWindow(deRenderWindow *renderWindow);
@@ -164,7 +164,7 @@ public:
 	#endif
 	
 	/** \brief Input system overlay canvas or NULL if not used. */
-	inline deCanvasView *GetInputOverlayCanvas() const{ return pInputOverlayCanvas; }
+	inline const deCanvasView::Ref &GetInputOverlayCanvas() const{ return pInputOverlayCanvas; }
 	
 	/** \brief Set input system overlay canvas or NULL if not used. */
 	void SetInputOverlayCanvas(deCanvasView *view);
@@ -179,7 +179,7 @@ public:
 	 * individual debug data block. Helper classes can be found in the debug directory. They
 	 * provide ready made debug data blocks that can be filled with information easily.
 	 */
-	inline deCanvasView *GetDebugOverlayCanvas() const{ return pDebugOverlayCanvas; }
+	inline const deCanvasView::Ref &GetDebugOverlayCanvas() const{ return pDebugOverlayCanvas; }
 	
 	#ifdef OS_ANDROID
 	/** \brief Application window has been created. */

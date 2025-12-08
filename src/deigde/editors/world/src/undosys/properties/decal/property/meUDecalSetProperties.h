@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringDictionary.h>
 
-class meDecal;
+#include "../../../../world/decal/meDecal.h"
 
 
 
@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalSetProperties : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;

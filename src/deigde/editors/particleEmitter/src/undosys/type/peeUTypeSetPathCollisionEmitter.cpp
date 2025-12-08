@@ -52,13 +52,9 @@ peeUTypeSetPathCollisionEmitter::peeUTypeSetPathCollisionEmitter(peeType *type, 
 	pNewPath = newPath;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetPathCollisionEmitter::~peeUTypeSetPathCollisionEmitter(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

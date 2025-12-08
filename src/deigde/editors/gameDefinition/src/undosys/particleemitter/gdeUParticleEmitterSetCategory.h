@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class gdeOCSpeaker;
-class gdeParticleEmitter;
+#include "../../gamedef/particleemitter/gdeParticleEmitter.h"
 
 
 
@@ -38,7 +38,7 @@ class gdeParticleEmitter;
  */
 class gdeUParticleEmitterSetCategory : public igdeUndo{
 private:
-	gdeParticleEmitter *pParticleEmitter;
+	gdeParticleEmitter::Ref pParticleEmitter;
 	
 	decString pOldValue;
 	decString pNewValue;

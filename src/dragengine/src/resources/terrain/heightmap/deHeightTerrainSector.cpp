@@ -68,7 +68,6 @@ pIndex(-1),
 pVisibleFaces(NULL),
 pVFByteCount(0),
 pDecalRoot(NULL),
-pDecalTail(NULL),
 pDecalCount(0){
 }
 
@@ -325,8 +324,6 @@ void deHeightTerrainSector::AddDecal(deDecal *decal){
 	pDecalTail = decal;
 	pDecalCount++;
 	decal->SetParentHeightTerrainSector(this);
-	decal->AddReference();
-	
 	if(pParentHeightTerrain){
 		if(pParentHeightTerrain->GetPeerGraphic()){
 			pParentHeightTerrain->GetPeerGraphic()->DecalAdded(pIndex, decal);
@@ -368,8 +365,6 @@ void deHeightTerrainSector::RemoveDecal(deDecal *decal){
 			pParentHeightTerrain->GetPeerPhysics()->DecalRemoved(pIndex, decal);
 		}
 	}
-	
-	decal->FreeReference();
 }
 
 void deHeightTerrainSector::RemoveAllDecals(){
@@ -378,7 +373,6 @@ void deHeightTerrainSector::RemoveAllDecals(){
 		pDecalTail->SetParentHeightTerrainSector(NULL);
 		pDecalTail->SetLLHeightTerrainSectorPrev(NULL);
 		pDecalTail->SetLLHeightTerrainSectorNext(NULL);
-		pDecalTail->FreeReference();
 		pDecalTail = next;
 		pDecalCount--;
 	}

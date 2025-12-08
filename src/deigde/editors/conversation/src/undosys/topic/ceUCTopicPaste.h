@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationFile;
+#include "../../conversation/file/ceConversationFile.h"
 class ceConversationTopic;
 
 
@@ -39,7 +39,7 @@ class ceConversationTopic;
  */
 class ceUCTopicPaste : public igdeUndo{
 private:
-	ceConversationFile *pFile;
+	ceConversationFile::Ref pFile;
 	ceConversationTopicList pTopics;
 	
 	

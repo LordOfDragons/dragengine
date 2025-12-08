@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUGDDPropertyAdd::gdeUGDDPropertyAdd(gdeGameDefinition *gamedef, gdeProperty *property) :
-pGameDefinition(NULL),
+
 pProperty(NULL)
 {
 	if(!gamedef || !property){
@@ -51,19 +51,10 @@ pProperty(NULL)
 	SetShortInfo("Game definition add property");
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDDPropertyAdd::~gdeUGDDPropertyAdd(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

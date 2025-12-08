@@ -41,7 +41,7 @@
 
 projUProjectSetGameObject::projUProjectSetGameObject(
 projProject *project, const char *newValue) :
-pProject(NULL),
+
 pNewValue(newValue)
 {
 	if(!project){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = project->GetGameObject();
 	
 	pProject = project;
-	project->AddReference();
 }
 
 projUProjectSetGameObject::~projUProjectSetGameObject(){
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 

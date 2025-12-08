@@ -50,10 +50,7 @@ aeUMoveRuleDown::aeUMoveRuleDown(aeAnimator *animator, aeRule *rule){
 	if(pIndex == -1 || pIndex == animator->GetRules().GetCount() - 1) DETHROW(deeInvalidParam);
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeUMoveRuleDown::~aeUMoveRuleDown(){

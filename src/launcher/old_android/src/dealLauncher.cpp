@@ -80,31 +80,22 @@ pAndroidApp(androidApp),
 pJniEnv(NULL),
 
 pState(esRestoreState),
-pLogger(NULL),
 pAssetUnpacker(NULL),
 
 pDisplay(*this),
-pFileSystem(NULL),
 pConfiguration(*this),
 pGameManager(*this),
 pEngine(*this),
-
-pDialogMain(NULL),
-
-pGame(NULL),
-pProfile(NULL),
 pModuleParameters(NULL),
 pRunWidth(0),
 pRunHeight(0),
 pRunFullScreen(true),
-
-pGameData(NULL),
 pFocused(false),
 pFrozen(false)
 {
 	try{
 		// create file system
-		pFileSystem = new deVirtualFileSystem;
+		pFileSystem.TakeOver(new deVirtualFileSystem);
 		
 		// sanity checks
 		if(!pAndroidApp.activity){
@@ -164,7 +155,7 @@ bool dealLauncher::HasAppWindow() const{
 
 deLogger &dealLauncher::GetLogger() const{
 	if(pLogger){
-		return *pLogger;
+		return::Ref pLogger;
 		
 	}else{
 		// during destructor unwinding it is possible an object accesses the logger causing a
@@ -204,39 +195,28 @@ void dealLauncher::LoadAsset(const char *filename, decMemoryFile &memoryFile){
 
 
 void dealLauncher::RestoreState(){
-	decMemoryFileReader *reader = NULL;
-	decMemoryFile *data = NULL;
+	decMemoryFileReader::Ref reader = NULL;
+	decMemoryFile::Ref data = NULL;
 	
 	try{
-		data = new decMemoryFile("launcher-state.dat");
+		data.TakeOver(new decMemoryFile("launcher-state.dat"));
 		
 		// copy data from android to the memory file
 		data->Resize(pAndroidApp.savedStateSize);
 		memcpy(data->GetPointer(), pAndroidApp.savedState, data->GetLength());
 		
 		// read state from memory file
-		reader = new decMemoryFileReader(data);
+		reader.TakeOver(new decMemoryFileReader(data));
 		pReadState(*reader);
 		
 		GetLogger().LogInfoFormat(LOGSOURCE, "Restored launcher state (%i bytes)", data->GetLength());
-		
-		reader->FreeReference();
 		reader = NULL;
-		
-		data->FreeReference();
 		data = NULL;
 		
 		pState = esProcessActivityIntent;
 		
 	}catch(const deException &e){
 		GetLogger().LogException(LOGSOURCE, e);
-		if(reader){
-			reader->FreeReference();
-		}
-		if(data){
-			data->FreeReference();
-		}
-		
 		ANativeActivity_finish(pAndroidApp.activity);
 		pState = esWaitDestroy;
 	}
@@ -370,14 +350,9 @@ bool dealLauncher::CheckInitialInstall(){
 		decDiskFileReader *reader = NULL;
 		
 		try{
-			reader = new decDiskFileReader(pathSha1sumInstalled);
+			reader.TakeOver(new decDiskFileReader(pathSha1sumInstalled));
 			reader->Read(sha1sumInstalled, reader->GetLength());
-			reader->FreeReference();
-			
 		}catch(const deException &){
-			if(reader){
-				reader->FreeReference();
-			}
 			throw;
 		}
 	}
@@ -447,7 +422,7 @@ bool dealLauncher::InitialInstallProgress(){
 	}
 	
 	const decString pathSha1sumInstalled(decString(pAndroidApp.activity->internalDataPath) + "/installed.sha1sum");
-	decDiskFileWriter *writer = NULL;
+	decDiskFileWriter::Ref writer = NULL;
 	char sha1sumInstall[256];
 	AAsset *asset = NULL;
 	decString filename;
@@ -457,7 +432,7 @@ bool dealLauncher::InitialInstallProgress(){
 	filename.Format("install_%s.sha1sum", ANDROID_JNIDIR);
 	
 	try{
-		writer = new decDiskFileWriter(pathSha1sumInstalled, false);
+		writer.TakeOver(new decDiskFileWriter(pathSha1sumInstalled, false));
 		
 		asset = AAssetManager_open(pAndroidApp.activity->assetManager, filename.GetString(), AASSET_MODE_STREAMING);
 		if(!asset){
@@ -466,14 +441,9 @@ bool dealLauncher::InitialInstallProgress(){
 		
 		AAsset_read(asset, sha1sumInstall, 256);
 		writer->Write(sha1sumInstall, strlen(sha1sumInstall));
-		
-		writer->FreeReference();
 		AAsset_close(asset);
 		
 	}catch(const deException &e){
-		if(writer){
-			writer->FreeReference();
-		}
 		if(asset){
 			AAsset_close(asset);
 		}
@@ -666,7 +636,7 @@ void dealLauncher::LaunchGame(){
 		return;
 	}
 	
-	pGameData = new dealGameData(*this, pObjUriIntentData);
+	pGameData.TakeOver(new dealGameData(*this, pObjUriIntentData));
 	
 	pState = esGameStart;
 }
@@ -697,7 +667,7 @@ void dealLauncher::InitWindow(){
 	pDisplay.Init();
 	
 	if(!pDialogMain){
-		pDialogMain = new dealDialogMain(pDisplay);
+		pDialogMain.TakeOver(new dealDialogMain(pDisplay));
 		pDisplay.SetDialog(pDialogMain);
 	}
 }
@@ -1130,12 +1100,12 @@ void dealLauncher::SaveState(){
 	GetLogger().LogInfo(LOGSOURCE, "dealLauncher.SaveState()");
 	
 	decMemoryFileWriter *writer = NULL;
-	decMemoryFile *data = NULL;
+	decMemoryFile::Ref data = NULL;
 	
 	// write state to memory file
 	try{
-		data = new decMemoryFile("launcher-state.dat");
-		writer = new decMemoryFileWriter(data, false);
+		data.TakeOver(new decMemoryFile("launcher-state.dat"));
+		writer.TakeOver(new decMemoryFileWriter(data, false));
 		pWriteState(*writer);
 		
 		// create copy of data for android to tuck away
@@ -1144,20 +1114,9 @@ void dealLauncher::SaveState(){
 		pAndroidApp.savedStateSize = data->GetLength();
 		
 		GetLogger().LogInfoFormat(LOGSOURCE, "Saved launcher state (%i bytes)", data->GetLength());
-		
-		writer->FreeReference();
 		writer = NULL;
-		
-		data->FreeReference();
-		
 	}catch(const deException &e){
 		GetLogger().LogException(LOGSOURCE, e);
-		if(writer){
-			writer->FreeReference();
-		}
-		if(data){
-			data->FreeReference();
-		}
 		return;
 	}
 }
@@ -1199,19 +1158,11 @@ void dealLauncher::pCleanUp(){
 		StopEngine();
 		
 		StopAssetUnpacking();
-		
-		if(pGame){
-			pGame->FreeReference();
-		}
-		if(pProfile){
-			pProfile->FreeReference();
-		}
 		if(pModuleParameters){
 			delete pModuleParameters;
 		}
 		
 		if(pDialogMain){
-			pDialogMain->FreeReference();
 			pDialogMain = NULL;
 		}
 		
@@ -1222,7 +1173,6 @@ void dealLauncher::pCleanUp(){
 	}
 	
 	if(pGameData){
-		pGameData->FreeReference();
 		pGameData = NULL;
 	}
 	pObjUriIntentData.Clear();
@@ -1231,20 +1181,14 @@ void dealLauncher::pCleanUp(){
 		pAndroidApp.activity->vm->DetachCurrentThread();
 		pJniEnv = NULL;
 	}
-	
-	pLogger->FreeReference();
 	pLogger = NULL; // this is vital or GetLogger() does not fall back to the null logger causing segfaults
-	
-	if(pFileSystem){
-		pFileSystem->FreeReference();
-	}
 }
 
 void dealLauncher::pInitLogger(){
-	deLoggerConsole *loggerConsole = NULL;
-	decBaseFileWriter *fileWriter = NULL;
-	deLoggerChain *loggerChain = NULL;
-	deLoggerFile *loggerFile = NULL;
+	deLoggerConsole::Ref loggerConsole = NULL;
+	decBaseFileWriter::Ref fileWriter = NULL;
+	deLoggerChain::Ref loggerChain = NULL;
+	deLoggerFile::Ref loggerFile = NULL;
 	
 	bool useConsole = true;
 	bool useFile = true;
@@ -1252,13 +1196,12 @@ void dealLauncher::pInitLogger(){
 	
 	try{
 		// chain logger
-		loggerChain = new deLoggerChain;
+		loggerChain.TakeOver(new deLoggerChain);
 		
 		// console logger
 		if(useConsole){
-			loggerConsole = new deLoggerConsole;
+			loggerConsole.TakeOver(new deLoggerConsole);
 			loggerChain->AddLogger(loggerConsole);
-			loggerConsole->FreeReference();
 			loggerConsole = NULL;
 		}
 		
@@ -1267,35 +1210,17 @@ void dealLauncher::pInitLogger(){
 			pathLogFile.SetFromUnix("/logs/delauncherandroid.log");
 			fileWriter = pFileSystem->OpenFileForWriting(pathLogFile);
 			
-			loggerFile = new deLoggerFile(fileWriter);
-			fileWriter->FreeReference();
+			loggerFile.TakeOver(new deLoggerFile(fileWriter));
 			fileWriter = NULL;
 			
 			loggerChain->AddLogger(loggerFile);
-			
-			loggerFile->FreeReference();
 			loggerFile = NULL;
 		}
 		
 		// set the logger
-		if(pLogger){
-			pLogger->FreeReference();
-		}
 		pLogger = loggerChain;
 		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
-		if(loggerChain){
-			loggerChain->FreeReference();
-		}
-		if(loggerFile){
-			loggerFile->FreeReference();
-		}
-		if(loggerConsole){
-			loggerConsole->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1313,13 +1238,10 @@ void dealLauncher::pLocateGame(){
 	
 	// for the time being use the first game. usually there is one but it is allowed to
 	// have multiple games in one game data. for this case a selection screen is needed
-	dealGame *game = pGameData->GetGames().GetAt(0);
+	dealGame::Ref game = pGameData->GetGames().GetAt(0);
 	
 	/* by game identifier
 	pGame = pGameManager.GetGameList().GetWithID(gameIdentifier);
-	if(pGame){
-		pGame->AddReference();
-	}
 	*/
 	
 	dealGame * const gameCheck = pGameManager.GetGameList().GetWithID(game->GetIdentifier());
@@ -1330,7 +1252,6 @@ void dealLauncher::pLocateGame(){
 		
 	}else{
 		// game->VerifyRequirements(); // not possible here. has to be done after engine started
-		game->AddReference();
 		pGame = game;
 	}
 	
@@ -1358,9 +1279,6 @@ void dealLauncher::pLocateProfile(){
 			DETHROW(deeInvalidParam);
 		}
 	}
-	
-	pProfile->AddReference();
-	
 	if(!pProfile->GetValid()){
 //		PrintProfileProblems();
 		DETHROW(deeInvalidAction);

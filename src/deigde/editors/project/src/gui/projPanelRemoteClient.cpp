@@ -183,7 +183,6 @@ igdeContainerSplitted(panelTestRun.GetEnvironment(), igdeContainerSplitted::espL
 preventUpdate(true),
 pPanelTestRun(panelTestRun),
 pClient(client),
-pListener(nullptr),
 pMaxLines(500)
 {
 	igdeEnvironment &env = panelTestRun.GetEnvironment();
@@ -260,7 +259,7 @@ pMaxLines(500)
 	
 	
 	// finish
-	pListener = new projPanelRemoteClientListener(*this);
+	pListener.TakeOver(new projPanelRemoteClientListener(*this));
 	client->AddListener(pListener);
 	
 	preventUpdate = false;
@@ -272,7 +271,6 @@ pMaxLines(500)
 projPanelRemoteClient::~projPanelRemoteClient(){
 	if(pListener){
 		pClient->RemoveListener(pListener);
-		pListener->FreeReference();
 	}
 }
 

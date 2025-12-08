@@ -332,8 +332,6 @@ public:
 aeWPRule::aeWPRule(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pAnimator(NULL),
 pPanelAnim(NULL),
 pPanelAnimDiff(NULL),
 pPanelAnimSelect(NULL),
@@ -351,9 +349,9 @@ pActivePanel(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
-	pListener = new aeWPRuleListener(*this);
+	pListener.TakeOver(new aeWPRuleListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -414,10 +412,6 @@ pActivePanel(NULL)
 
 aeWPRule::~aeWPRule(){
 	SetAnimator(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -432,14 +426,12 @@ void aeWPRule::SetAnimator(aeAnimator *animator){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
 	}
 	
 	if(pActivePanel){

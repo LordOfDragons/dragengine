@@ -93,7 +93,7 @@ public:
 	inline int GetDeviceIndex() const{ return pDeviceIndex; }
 	
 	/** Device. */
-	inline deInputDevice *GetDevice() const{ return pDevice; }
+	inline const deInputDevice::Ref &GetDevice() const{ return pDevice; }
 	
 	/** Device pose. */
 	inline const deInputDevicePose &GetDevicePose() const{ return pDevicePose; }

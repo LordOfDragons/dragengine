@@ -42,7 +42,7 @@
 
 meUObjectClonePropertiesToSelected::meUObjectClonePropertiesToSelected(
 const meObjectList &list, const decStringDictionary &properties){
-	meUndoDataObjectProperty *undoData = NULL;
+	meUndoDataObjectProperty::Ref undoData = NULL;
 	const int count = list.GetCount();
 	meObject *object;
 	int i;
@@ -61,18 +61,14 @@ const meObjectList &list, const decStringDictionary &properties){
 				DETHROW(deeInvalidParam);
 			}
 			
-			undoData = new meUndoDataObjectProperty(object);
+			undoData.TakeOver(new meUndoDataObjectProperty(object));
 			undoData->GetOldProperties() = object->GetProperties();
 			
 			pList.Add(undoData);
-			undoData->FreeReference();
 			undoData = NULL;
 		}
 		
 	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}

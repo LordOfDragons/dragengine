@@ -79,33 +79,15 @@ ceCAIfElseCase *ifcase, ceConversationAction *action, int newIndex){
 	SetShortInfo("IfElse Move Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pIfElse = ifElse;
-	ifElse->AddReference();
-	
 	if(ifcase){
 		pCase = ifcase;
-		ifcase->AddReference();
 	}
 	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAIfElseMove::~ceUCAIfElseMove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

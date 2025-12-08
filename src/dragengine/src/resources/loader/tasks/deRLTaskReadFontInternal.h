@@ -29,7 +29,7 @@
 #include "../../font/deFont.h"
 
 class deRLTaskReadFont;
-class deRLTaskReadFontInternal2;
+#include "deRLTaskReadFontInternal2.h"
 
 
 /**
@@ -44,7 +44,7 @@ private:
 	bool pAlreadyLoaded;
 	
 	deRLTaskReadFont *pParentTask;
-	deRLTaskReadFontInternal2 *pInternalTask;
+	deRLTaskReadFontInternal2::Ref pInternalTask;
 	
 	
 	
@@ -70,13 +70,13 @@ public:
 	void Finished() override;
 	
 	/** \brief Font. */
-	inline deFont *GetFont() const{ return pFont; }
+	inline const deFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Font has been already loaded. */
 	inline bool GetAlreadyLoaded() const{ return pAlreadyLoaded; }
 	
 	/** \brief Second task or NULL. */
-	inline deRLTaskReadFontInternal2 *GetInternalTask() const{ return pInternalTask; }
+	inline const deRLTaskReadFontInternal2::Ref &GetInternalTask() const{ return pInternalTask; }
 	/*@}*/
 	
 	

@@ -42,7 +42,7 @@
 ////////////////////////////
 
 seUPasteSource::seUPasteSource(seSynthesizer *synthesizer, const seSourceList &sourceList, int index) :
-pSynthesizer(NULL),
+
 pIndex(index)
 {
 	const int sourceCount = sourceList.GetCount();
@@ -51,26 +51,21 @@ pIndex(index)
 		DETHROW(deeInvalidParam);
 	}
 	
-	seSource *source = NULL;
+	seSource::Ref source = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<sourceCount; i++){
 			source = sourceList.GetAt(i)->CreateCopy();
 			pSourceList.Add(source);
-			source->FreeReference();
 			source = NULL;
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
 	pSynthesizer = synthesizer;
-	synthesizer->AddReference();
 }
 
 seUPasteSource::~seUPasteSource(){
@@ -147,7 +142,4 @@ void seUPasteSource::Redo(){
 //////////////////////
 
 void seUPasteSource::pCleanUp(){
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

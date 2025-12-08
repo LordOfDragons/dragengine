@@ -44,9 +44,9 @@
 
 ceUCCAParamSetTestVariable::ceUCCAParamSetTestVariable(ceConversationTopic *topic,
 ceConversationAction *action, ceCConditionActorParameter *condition, const char *newVariable) :
-pTopic(NULL),
-pAction(NULL),
-pCondition(NULL),
+
+
+
 pNewVariable(newVariable)
 {
 	if(!topic || !action || !condition){
@@ -58,25 +58,11 @@ pNewVariable(newVariable)
 	SetShortInfo("ActorParameter: Set Test Variable");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCAParamSetTestVariable::~ceUCCAParamSetTestVariable(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

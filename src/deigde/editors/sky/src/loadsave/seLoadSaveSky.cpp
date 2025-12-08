@@ -413,11 +413,11 @@ void seLoadSaveSky::pReadSky(const decXmlElementTag &root, seSky &sky){
 
 void seLoadSaveSky::pReadController(const decXmlElementTag &root, seSky &sky){
 	const int elementCount = root.GetElementCount();
-	seController *controller = NULL;
+	seController::Ref controller = NULL;
 	int i;
 	
 	try{
-		controller = new seController;
+		controller.TakeOver(new seController);
 		
 		for(i=0; i<elementCount; i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -446,12 +446,7 @@ void seLoadSaveSky::pReadController(const decXmlElementTag &root, seSky &sky){
 		}
 		
 		sky.AddController(controller);
-		controller->FreeReference();
-		
 	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
 		throw;
 	}
 }

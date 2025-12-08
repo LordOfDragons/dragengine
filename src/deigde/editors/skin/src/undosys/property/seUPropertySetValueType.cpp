@@ -48,13 +48,9 @@ seUPropertySetValueType::seUPropertySetValueType(seProperty *property, sePropert
 	pNewType = newType;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetValueType::~seUPropertySetValueType(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

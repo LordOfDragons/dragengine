@@ -30,10 +30,10 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class feFont;
-class feFontGlyph;
+#include "../../font/feFont.h"
+#include "../../font/glyph/feFontGlyph.h"
 class feWindowProperties;
-class feWPGlyphListener;
+#include "feWPGlyphListener.h"
 
 
 
@@ -43,13 +43,13 @@ class feWPGlyphListener;
 class feWPGlyph : public igdeContainerScroll{
 private:
 	feWindowProperties &pWindowProperties;
-	feFont *pFont;
-	feFontGlyph *pGlyph;
-	feWPGlyphListener *pListener;
+	feFont::Ref pFont;
+	feFontGlyph::Ref pGlyph;
+	feWPGlyphListener::Ref pListener;
 	
 	igdeComboBox::Ref pCBGlyph;
-	igdeButton::Ref pBtnGlyphAdd, pBtnGlyphDel;
-	igdeTextField::Ref pEditU, pEditV, pEditWidth, pEditHeight, pEditBearing,
+	igdeButton *pBtnGlyphAdd, pBtnGlyphDel;
+	igdeTextField *pEditU, pEditV, pEditWidth, pEditHeight, pEditBearing,
 		pEditBearingY, pEditAdvance;
 	
 	
@@ -72,13 +72,13 @@ public:
 	inline feWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Font. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
 	void SetFont(feFont *font);
 	
 	/** \brief Glyph. */
-	inline feFontGlyph *GetGlyph() const{ return pGlyph; }
+	inline const feFontGlyph::Ref &GetGlyph() const{ return pGlyph; }
 	
 	/** \brief Set glyph. */
 	void SetGlyph(feFontGlyph *glyph);

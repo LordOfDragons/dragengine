@@ -49,7 +49,6 @@ aeUSetRuleName::aeUSetRuleName(aeRule *rule, const char *newName){
 	SetShortInfo("Set Rule Name");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleName::~aeUSetRuleName(){

@@ -148,7 +148,7 @@ public:
 	void SetType(deInputDeviceButton::eButtonTypes type);
 	
 	/** Input device component. */
-	inline deoxrDeviceComponent *GetInputDeviceComponent() const{ return pInputDeviceComponent; }
+	inline const deoxrDeviceComponent::Ref &GetInputDeviceComponent() const{ return pInputDeviceComponent; }
 	
 	/** Set input device component. */
 	void SetInputDeviceComponent(deoxrDeviceComponent *component);
@@ -189,7 +189,7 @@ public:
 	
 	
 	/** Display image. */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
 	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }

@@ -58,25 +58,11 @@ ceUCAASpeakHeadLAAdd::ceUCAASpeakHeadLAAdd(ceConversationTopic *topic, ceCAActor
 	SetShortInfo("Actor Speak Add HeadLookAt");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pHeadLA = headLookAt;
-	headLookAt->AddReference();
 }
 
 ceUCAASpeakHeadLAAdd::~ceUCAASpeakHeadLAAdd(){
-	if(pHeadLA){
-		pHeadLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

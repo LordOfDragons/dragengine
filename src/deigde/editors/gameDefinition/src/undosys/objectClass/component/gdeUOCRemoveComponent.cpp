@@ -42,7 +42,7 @@
 ////////////////////////////
 
 gdeUOCRemoveComponent::gdeUOCRemoveComponent(gdeObjectClass *objectClass, gdeOCComponent *component) :
-pObjectClass(NULL),
+
 pComponent(NULL)
 {
 	if(!objectClass || !component){
@@ -56,19 +56,10 @@ pComponent(NULL)
 	SetShortInfo("Remove component");
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveComponent::~gdeUOCRemoveComponent(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

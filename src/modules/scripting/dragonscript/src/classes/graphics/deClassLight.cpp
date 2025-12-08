@@ -57,7 +57,7 @@
 
 
 struct sLigNatDat{
-	deLight *light;
+	deLight::Ref light;
 };
 
 
@@ -993,5 +993,4 @@ void deClassLight::PushLight(dsRunTime *rt, deLight *light){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sLigNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->light = light;
-	light->AddReference();
 }

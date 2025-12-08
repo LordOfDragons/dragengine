@@ -50,13 +50,9 @@ saeUSAnimSetRigPath::saeUSAnimSetRigPath(saeSAnimation *sanimation, const char *
 	pNewPath = newName;
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
 }
 
 saeUSAnimSetRigPath::~saeUSAnimSetRigPath(){
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

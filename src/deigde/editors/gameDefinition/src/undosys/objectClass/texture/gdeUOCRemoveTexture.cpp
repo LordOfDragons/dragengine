@@ -43,7 +43,7 @@
 ////////////////////////////
 
 gdeUOCRemoveTexture::gdeUOCRemoveTexture(gdeObjectClass *objectClass, gdeOCComponentTexture *texture) :
-pObjectClass(NULL),
+
 pTexture(NULL)
 {
 	if(!objectClass || !texture){
@@ -57,19 +57,10 @@ pTexture(NULL)
 	SetShortInfo("Remove texture");
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveTexture::~gdeUOCRemoveTexture(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

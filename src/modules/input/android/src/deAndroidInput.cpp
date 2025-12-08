@@ -98,8 +98,6 @@ pPointerMouse(-1),
 
 pOverlaySystem(NULL),
 
-pFontDefault(NULL),
-
 pElapsedTime(0.0f),
 
 pDevices(NULL){
@@ -157,7 +155,6 @@ void deAndroidInput::CleanUp(){
 	}
 	
 	if(pFontDefault){
-		pFontDefault->FreeReference();
 		pFontDefault = NULL;
 	}
 	
@@ -199,16 +196,13 @@ int deAndroidInput::GetDeviceCount(){
 }
 
 deInputDevice *deAndroidInput::GetDeviceAt(int index){
-	deInputDevice *device = NULL;
+	deInputDevice::Ref device = NULL;
 	
 	try{
-		device = new deInputDevice;
+		device.TakeOver(new deInputDevice);
 		pDevices->GetAt(index)->GetInfo(*device);
 		
 	}catch(const deException &){
-		if(device){
-			device->FreeReference();
-		}
 		throw;
 	}
 	

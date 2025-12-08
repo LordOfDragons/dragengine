@@ -33,10 +33,10 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/event/igdeAction.h>
 
-class seSky;
+#include "../../sky/seSky.h"
 class seLink;
 class seWindowProperties;
-class seWPLinkListener;
+#include "seWPLinkListener.h"
 
 class igdeViewCurveBezier;
 
@@ -47,9 +47,9 @@ class igdeViewCurveBezier;
 class seWPLink : public igdeContainerScroll{
 private:
 	seWindowProperties &pWindowProperties;
-	seWPLinkListener *pListener;
+	seWPLinkListener::Ref pListener;
 	
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	igdeAction::Ref pActionLinkAdd;
 	igdeAction::Ref pActionLinkRemove;
@@ -80,7 +80,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);
@@ -101,8 +101,8 @@ public:
 	void UpdateControllerList();
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionLinkAdd() const{ return pActionLinkAdd; }
-	inline igdeAction *GetActionLinkRemove() const{ return pActionLinkRemove; }
+	inline const igdeAction::Ref &GetActionLinkAdd() const{ return pActionLinkAdd; }
+	inline const igdeAction::Ref &GetActionLinkRemove() const{ return pActionLinkRemove; }
 	/*@}*/
 };
 

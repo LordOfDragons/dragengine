@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meHeightTerrainNavSpaceType;
-class meHeightTerrainNavSpaceFace;
+#include "../../../../../../world/terrain/meHeightTerrainNavSpaceType.h"
+#include "../../../../../../world/terrain/meHeightTerrainNavSpaceFace.h"
 
 
 
@@ -37,8 +37,8 @@ class meHeightTerrainNavSpaceFace;
  */
 class meUHTNavSpaceFaceAdd : public igdeUndo{
 private:
-	meHeightTerrainNavSpaceType *pType;
-	meHeightTerrainNavSpaceFace *pFace;
+	meHeightTerrainNavSpaceType::Ref pType;
+	meHeightTerrainNavSpaceFace::Ref pFace;
 	
 	
 	

@@ -61,7 +61,7 @@ public:
 	void SetPath(const char *path);
 	
 	/** \brief Image. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set image. */
 	void SetImage(deImage *image);

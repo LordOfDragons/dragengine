@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleStateSnapshot;
+#include "../../../animator/rule/aeRuleStateSnapshot.h"
 
 
 /**
@@ -36,7 +36,7 @@ class aeRuleStateSnapshot;
  */
 class aeURuleSnapToggleEnableVertexPositionSet : public igdeUndo{
 private:
-	aeRuleStateSnapshot *pRule;
+	aeRuleStateSnapshot::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

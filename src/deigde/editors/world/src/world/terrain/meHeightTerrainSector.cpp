@@ -88,8 +88,7 @@
 ////////////////////////////
 
 meHeightTerrainSector::meHeightTerrainSector(deEngine *engine, const decPoint &coordinates) :
-pActiveNavSpace(NULL),
-pDDSelNavPoints(NULL)
+pActiveNavSpace(NULL)
 {
 	if(!engine) DETHROW(deeInvalidParam);
 	
@@ -174,7 +173,6 @@ void meHeightTerrainSector::SetHeightTerrain(meHeightTerrain *heightTerrain){
 			if(world){
 				world->RemoveDebugDrawer(pDDSelNavPoints);
 			}
-			pDDSelNavPoints->FreeReference();
 		}
 		
 		if(world){
@@ -903,8 +901,6 @@ void meHeightTerrainSector::AddTexture(meHeightTerrainTexture *texture){
 	
 	pTextures[pTextureCount] = texture;
 	pTextureCount++;
-	
-	texture->AddReference();
 	texture->SetSector(this);
 	
 	if(pEngSector){
@@ -949,8 +945,6 @@ void meHeightTerrainSector::RemoveTexture(meHeightTerrainTexture *texture){
 	
 	texture->SetSector(NULL);
 	texture->SetEngineTexture(NULL);
-	texture->FreeReference();
-	
 	NotifySectorChanged();
 	
 	if(pHeightTerrain){
@@ -1112,8 +1106,6 @@ void meHeightTerrainSector::AddPFLayer(meHeightTerrainPFLayer *pflayer){
 	
 	pPFLayers[pPFLayerCount] = pflayer;
 	pPFLayerCount++;
-	
-	pflayer->AddReference();
 	pflayer->SetHTSector(this);
 	
 	if(pHeightTerrain){
@@ -1136,8 +1128,6 @@ void meHeightTerrainSector::RemovePFLayer(meHeightTerrainPFLayer *pflayer){
 	pPFLayerCount--;
 	
 	pflayer->SetHTSector(NULL);
-	pflayer->FreeReference();
-	
 	if(pHeightTerrain){
 		pHeightTerrain->SetChanged(true);
 //		pHeightTerrain->GetWorld().NotifyHTSPFLayerCountChanged( this );
@@ -1755,7 +1745,7 @@ void meHeightTerrainSector::pCreateDDEdges(){
 	const decVector normal(0.0f, 1.0f, 0.0f);
 	deDebugDrawerShapeFace *face = NULL;
 	deDebugDrawerShape *ddshape = NULL;
-	deDebugDrawer *debugDrawer = NULL;
+	deDebugDrawer::Ref debugDrawer = NULL;
 	int pcx, pcz, curx, curz;
 	decVector corners[4];
 	int cx, cz, x, z;
@@ -1829,7 +1819,6 @@ void meHeightTerrainSector::pCreateDDEdges(){
 				debugDrawer->NotifyShapeLayoutChanged();
 				
 				pDDEdges.Add(debugDrawer);
-				debugDrawer->FreeReference();
 			}
 			
 			curz += pDDPointsPerCluster - 1;
@@ -1841,9 +1830,6 @@ void meHeightTerrainSector::pCreateDDEdges(){
 		}
 		if(ddshape){
 			delete ddshape;
-		}
-		if(debugDrawer){
-			debugDrawer->FreeReference();
 		}
 		throw;
 	}

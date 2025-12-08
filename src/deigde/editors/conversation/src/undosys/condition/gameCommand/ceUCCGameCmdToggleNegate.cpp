@@ -55,25 +55,11 @@ ceConversationAction *action, ceCConditionGameCommand *gameCommand){
 	SetShortInfo("Condition game command negate");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pGameCommand = gameCommand;
-	gameCommand->AddReference();
 }
 
 ceUCCGameCmdToggleNegate::~ceUCCGameCmdToggleNegate(){
-	if(pGameCommand){
-		pGameCommand->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

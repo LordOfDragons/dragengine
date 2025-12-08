@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleForeignState.h>
 
-class aeRuleForeignState;
+#include "../../../animator/rule/aeRuleForeignState.h"
 
 
 
@@ -38,7 +38,7 @@ class aeRuleForeignState;
  */
 class aeUSetRuleFStaSrcCFrame : public igdeUndo{
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 	deAnimatorRuleForeignState::eCoordinateFrames pOldCFrame;
 	deAnimatorRuleForeignState::eCoordinateFrames pNewCFrame;

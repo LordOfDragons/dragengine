@@ -32,8 +32,8 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleComponents;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleComponents.h"
 
 
 
@@ -49,8 +49,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleComponents *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleComponents::Ref pRule;
 	
 	decVector pOldVector;
 	decVector pNewVector;

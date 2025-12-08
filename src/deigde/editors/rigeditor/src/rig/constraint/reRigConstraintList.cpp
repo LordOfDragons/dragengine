@@ -97,8 +97,6 @@ void reRigConstraintList::AddConstraint(reRigConstraint *constraint){
 	
 	pConstraints[pConstraintCount] = constraint;
 	pConstraintCount++;
-	
-	constraint->AddReference();
 }
 
 void reRigConstraintList::RemoveConstraint(reRigConstraint *constraint){
@@ -109,8 +107,6 @@ void reRigConstraintList::RemoveConstraint(reRigConstraint *constraint){
 		pConstraints[i - 1] = pConstraints[i];
 	}
 	pConstraintCount--;
-	
-	constraint->FreeReference();
 }
 
 void reRigConstraintList::RemoveAllConstraints(){

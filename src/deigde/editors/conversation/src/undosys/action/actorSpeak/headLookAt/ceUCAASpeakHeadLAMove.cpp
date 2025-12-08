@@ -61,25 +61,11 @@ ceStrip *headLookAt, int newIndex){
 	SetShortInfo("Move HeadLookAt");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pHeadLA = headLookAt;
-	headLookAt->AddReference();
 }
 
 ceUCAASpeakHeadLAMove::~ceUCAASpeakHeadLAMove(){
-	if(pHeadLA){
-		pHeadLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

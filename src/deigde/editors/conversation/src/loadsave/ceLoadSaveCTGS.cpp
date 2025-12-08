@@ -164,18 +164,13 @@ void ceLoadSaveCTGS::ReadGameState(const decXmlElementTag &root, cePlayback &pla
 		const decString &tagName = tag->GetName();
 		
 		if(tagName == "command"){
-			cePlaybackCommand *command = NULL;
+			cePlaybackCommand::Ref command = NULL;
 			
 			try{
-				command = new cePlaybackCommand(GetCDataString(*tag),
-					GetAttributeBool(*tag, "value"));
+				command.TakeOver(new cePlaybackCommand(GetCDataString(*tag),
+					GetAttributeBool(*tag, "value")));
 				commandList.Add(command);
-				command->FreeReference();
-				
 			}catch(const deException &){
-				if(command){
-					command->FreeReference();
-				}
 				throw;
 			}
 			
@@ -183,19 +178,14 @@ void ceLoadSaveCTGS::ReadGameState(const decXmlElementTag &root, cePlayback &pla
 			variableList.Set(GetAttributeString(*tag, "name"), GetCDataInt(*tag));
 			
 		}else if(tagName == "trigger"){
-			igdeTriggerTarget *trigger = NULL;
+			igdeTriggerTarget::Ref trigger = NULL;
 			
 			try{
-				trigger = new igdeTriggerTarget(GetCDataString(*tag));
+				trigger.TakeOver(new igdeTriggerTarget(GetCDataString(*tag)));
 				trigger->SetFired(GetAttributeBool(*tag, "fired"));
 				trigger->SetHasFired(GetAttributeBool(*tag, "hasFired"));
 				triggerTable.Add(trigger);
-				trigger->FreeReference();
-				
 			}catch(const deException &){
-				if(trigger){
-					trigger->FreeReference();
-				}
 				throw;
 			}
 			

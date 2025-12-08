@@ -30,7 +30,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCSpeakerSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	gdeOCSpeaker::eProperties pProperty;
 	decString pOldValue;

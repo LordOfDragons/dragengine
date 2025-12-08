@@ -41,10 +41,10 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSkin;
+#include "../../skin/seSkin.h"
 class seTexture;
 class seWindowProperties;
-class seWPTextureListener;
+#include "seWPTextureListener.h"
 
 
 
@@ -54,9 +54,9 @@ class seWPTextureListener;
 class seWPTexture : public igdeContainerScroll{
 private:
 	seWindowProperties &pWindowProperties;
-	seWPTextureListener *pListener;
+	seWPTextureListener::Ref pListener;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	bool pRequiresUpdate;
 	bool pPreventUpdateMappedTarget;
 	
@@ -117,7 +117,7 @@ public:
 	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin. */
 	void SetSkin(seSkin *skin);

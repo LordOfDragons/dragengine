@@ -45,7 +45,6 @@ feUGlyphSetU::feUGlyphSetU(feFontGlyph *glyph, int newU){
 	pNewU = newU;
 	
 	pGlyph = glyph;
-	glyph->AddReference();
 }
 
 feUGlyphSetU::~feUGlyphSetU(){

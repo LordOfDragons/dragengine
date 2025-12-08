@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class aeRuleStateManipulator;
+#include "../../../animator/rule/aeRuleStateManipulator.h"
 
 
 /**
@@ -36,7 +36,7 @@ class aeRuleStateManipulator;
  */
 class aeUSetRuleSModMaxVertexPositionSet : public igdeUndo{
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 	float pOldMax;
 	float pNewMax;

@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCATrigger;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCATrigger.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCATriggerSetName : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCATrigger *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCATrigger::Ref pAction;
 	decString pOldName;
 	decString pNewName;
 	

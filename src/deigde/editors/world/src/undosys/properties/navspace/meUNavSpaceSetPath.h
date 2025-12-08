@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meNavigationSpace;
+#include "../../../world/navspace/meNavigationSpace.h"
 
 
 
@@ -36,7 +36,7 @@ class meNavigationSpace;
  */
 class meUNavSpaceSetPath : public igdeUndo{
 private:
-	meNavigationSpace *pNavSpace;
+	meNavigationSpace::Ref pNavSpace;
 	
 	decString pOldPath;
 	decString pNewPath;

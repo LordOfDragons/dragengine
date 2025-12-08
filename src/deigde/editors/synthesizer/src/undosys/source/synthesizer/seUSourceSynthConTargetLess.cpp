@@ -41,7 +41,7 @@
 ////////////////////////////
 
 seUSourceSynthConTargetLess::seUSourceSynthConTargetLess(seSourceSynthesizer *source) :
-pSource(NULL),
+
 pOldController(NULL)
 {
 	if(!source){
@@ -51,21 +51,10 @@ pOldController(NULL)
 	SetShortInfo("Synthesizer source less connection targets");
 	
 	pOldController = source->GetControllerAt(source->GetConnectionCount() - 1);
-	if(pOldController){
-		pOldController->AddReference();
-	}
-	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceSynthConTargetLess::~seUSourceSynthConTargetLess(){
-	if(pOldController){
-		pOldController->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

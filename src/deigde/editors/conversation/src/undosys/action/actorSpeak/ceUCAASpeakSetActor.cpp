@@ -52,19 +52,10 @@ ceUCAASpeakSetActor::ceUCAASpeakSetActor(ceConversationTopic *topic, ceCAActorSp
 	SetShortInfo("Actor Speak Set Actor ID");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetActor::~ceUCAASpeakSetActor(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

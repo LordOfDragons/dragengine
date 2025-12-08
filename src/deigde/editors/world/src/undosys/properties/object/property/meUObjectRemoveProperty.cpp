@@ -56,7 +56,6 @@ meUObjectRemoveProperty::meUObjectRemoveProperty(meObject *object, const char *k
 	pValue = value;
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectRemoveProperty::~meUObjectRemoveProperty(){
@@ -82,7 +81,4 @@ void meUObjectRemoveProperty::Redo(){
 //////////////////////
 
 void meUObjectRemoveProperty::pCleanUp(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }

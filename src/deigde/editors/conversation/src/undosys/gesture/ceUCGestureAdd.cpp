@@ -49,19 +49,10 @@ ceUCGestureAdd::ceUCGestureAdd(ceConversation *conversation, ceGesture *gesture)
 	SetShortInfo("Add Gesture");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pGesture = gesture;
-	gesture->AddReference();
 }
 
 ceUCGestureAdd::~ceUCGestureAdd(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

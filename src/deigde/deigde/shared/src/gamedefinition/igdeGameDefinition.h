@@ -37,8 +37,8 @@ class igdeGDClassManager;
 class igdeGDSkyManager;
 class igdeEnvironment;
 
-class deModel;
-class deSkin;
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/skin/deSkin.h>
 class deVirtualFileSystem;
 
 
@@ -74,8 +74,8 @@ private:
 	igdeGDPropertyList pListWorldProperties;
 	igdeGDPropertyList pListDecalProperties;
 	
-	deModel *pDefaultModel;
-	deSkin *pDefaultSkin;
+	deModel::Ref pDefaultModel;
+	deSkin::Ref pDefaultSkin;
 	
 	
 	
@@ -229,13 +229,13 @@ public:
 	 */
 	/*@{*/
 	/** \brief Default model. */
-	inline deModel *GetDefaultModel() const{ return pDefaultModel; }
+	inline const deModel::Ref &GetDefaultModel() const{ return pDefaultModel; }
 	
 	/** \brief Set default model. */
 	void SetDefaultModel(deModel *model);
 	
 	/** \brief Default skin. */
-	inline deSkin *GetDefaultSkin() const{ return pDefaultSkin; }
+	inline const deSkin::Ref &GetDefaultSkin() const{ return pDefaultSkin; }
 	
 	/** \brief Set default skin. */
 	void SetDefaultSkin(deSkin *skin);

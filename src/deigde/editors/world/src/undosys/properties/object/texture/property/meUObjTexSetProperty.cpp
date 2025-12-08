@@ -64,7 +64,6 @@ pNewValue(newValue)
 	SetShortInfo("Object texture set property");
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjTexSetProperty::~meUObjTexSetProperty(){
@@ -100,7 +99,4 @@ void meUObjTexSetProperty::ProgressiveRedo(){
 //////////////////////
 
 void meUObjTexSetProperty::pCleanUp(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }

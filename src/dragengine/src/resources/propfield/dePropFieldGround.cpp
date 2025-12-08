@@ -63,7 +63,6 @@ void dePropFieldGround::Clear(){
 	RemoveAllComponents();
 	
 	if(pHeightTerrain){
-		pHeightTerrain->FreeReference();
 		pHeightTerrain = NULL;
 	}
 }
@@ -131,7 +130,6 @@ void dePropFieldGround::AddComponent(deComponent *component){
 	}
 	
 	pComponents[pComponentCount] = component;
-	component->AddReference();
 	pComponentCount++;
 }
 
@@ -144,8 +142,6 @@ void dePropFieldGround::RemoveComponent(deComponent *component){
 		pComponents[i - 1] = pComponents[i];
 	}
 	pComponentCount--;
-	
-	component->FreeReference();
 }
 
 void dePropFieldGround::RemoveAllComponents(){

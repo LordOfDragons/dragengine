@@ -53,13 +53,9 @@ pObjectClass(NULL)
 	pNewValues = newValues;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetPropertyValues::~gdeUOCSetPropertyValues(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meObjectTexture;
+#include "../../../../world/object/texture/meObjectTexture.h"
 
 
 
@@ -36,7 +36,7 @@ class meObjectTexture;
  */
 class meUObjectTextureTCRotation : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	float pOldRotation;
 	float pNewRotation;
 	

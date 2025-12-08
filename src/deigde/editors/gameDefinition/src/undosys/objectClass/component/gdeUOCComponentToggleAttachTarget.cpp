@@ -42,7 +42,7 @@
 
 gdeUOCComponentToggleAttachTarget::gdeUOCComponentToggleAttachTarget(
 gdeObjectClass *objectClass, gdeOCComponent *component) :
-pObjectClass(NULL),
+
 pComponent(NULL)
 {
 	if(!objectClass || !component){
@@ -52,19 +52,10 @@ pComponent(NULL)
 	SetShortInfo("Component toggle attach target");
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentToggleAttachTarget::~gdeUOCComponentToggleAttachTarget(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -722,11 +722,6 @@ void reRigBone::RemoveAllConstraints(){
 
 void reRigBone::pCleanUp(){
 	SetRig(NULL);
-	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
-	
 	RemoveAllConstraints();
 	RemoveAllShapes();
 	
@@ -738,9 +733,6 @@ void reRigBone::pCleanUp(){
 	}
 	if(pDDSBone){
 		delete pDDSBone;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

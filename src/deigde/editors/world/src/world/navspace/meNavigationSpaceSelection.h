@@ -35,7 +35,7 @@
 class meNavigationSpaceSelection{
 private:
 	meNavigationSpaceList pSelection;
-	meNavigationSpace *pActive;
+	meNavigationSpace::Ref pActive;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -58,7 +58,7 @@ public:
 	void RemoveAll();
 	
 	/** Retrieves the active navigation spaces or NULL if there is none. */
-	inline meNavigationSpace *GetActive() const{ return pActive; }
+	inline const meNavigationSpace::Ref &GetActive() const{ return pActive; }
 	/** Determines if there is an active navigation spaces. */
 	bool HasActive() const;
 	/** Sets the active navigation spaces or NULL if there is none. */

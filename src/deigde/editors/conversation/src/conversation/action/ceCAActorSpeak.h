@@ -35,7 +35,7 @@
 class ceConversation;
 
 class deEngine;
-class deSound;
+#include <dragengine/resources/sound/deSound.h>
 
 
 
@@ -51,7 +51,7 @@ public:
 	
 private:
 	deEngine *pEngine;
-	deSound *pEngSound;
+	deSound::Ref pEngSound;
 	bool pLoaded;
 	
 	decString pActor;

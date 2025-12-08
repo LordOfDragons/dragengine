@@ -52,7 +52,6 @@ meUObjectSetScaling::meUObjectSetScaling(meObject *object, const decVector &nsca
 	SetShortInfo("Object Set Scaling");
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectSetScaling::~meUObjectSetScaling(){

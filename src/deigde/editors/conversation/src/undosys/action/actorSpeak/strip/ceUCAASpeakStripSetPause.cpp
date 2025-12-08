@@ -57,25 +57,11 @@ ceStrip *word, float newPause){
 	SetShortInfo("Strip Set Pause");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pStrip = word;
-	word->AddReference();
 }
 
 ceUCAASpeakStripSetPause::~ceUCAASpeakStripSetPause(){
-	if(pStrip){
-		pStrip->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -30,7 +30,7 @@
 class deServer;
 class debnAddress;
 class deNetworkBasic;
-class debnSocket;
+#include "debnSocket.h"
 class decBaseFileReader;
 
 
@@ -43,7 +43,7 @@ private:
 	deNetworkBasic *pNetBasic;
 	deServer *pServer;
 	
-	debnSocket *pSocket;
+	debnSocket::Ref pSocket;
 	bool pListening;
 	
 	debnServer *pPreviousServer;
@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Socket. */
-	inline debnSocket *GetSocket() const{ return pSocket; }
+	inline const debnSocket::Ref &GetSocket() const{ return pSocket; }
 	
 	/** \brief Process connection request. */
 	void ProcessConnectionRequest(debnAddress &address, decBaseFileReader &reader);

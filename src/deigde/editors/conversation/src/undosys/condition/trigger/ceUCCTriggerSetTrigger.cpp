@@ -57,25 +57,11 @@ ceCConditionTrigger *condition, const char *newTrigger){
 	SetShortInfo("Condition trigger set trigger");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCTriggerSetTrigger::~ceUCCTriggerSetTrigger(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

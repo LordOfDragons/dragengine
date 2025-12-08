@@ -55,25 +55,11 @@ ceCConditionVariable *condition, int newValue){
 	SetShortInfo("Condition Variable: Set Test Value");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCVarSetTestValue::~ceUCCVarSetTestValue(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

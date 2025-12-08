@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeGameDefinition;
-class gdeSkin;
+#include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/skin/gdeSkin.h"
 
 
 
@@ -38,8 +38,8 @@ class gdeSkin;
  */
 class gdeURemoveSkin : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeSkin *pSkin;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeSkin::Ref pSkin;
 	
 	
 	

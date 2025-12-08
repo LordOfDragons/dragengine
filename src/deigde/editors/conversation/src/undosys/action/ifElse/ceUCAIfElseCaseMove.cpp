@@ -67,25 +67,11 @@ ceUCAIfElseCaseMove::ceUCAIfElseCaseMove(ceConversationTopic *topic, ceCAIfElse 
 	SetShortInfo("If-else move case");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pIfElse = ifelse;
-	ifelse->AddReference();
-	
 	pCase = ifcase;
-	ifcase->AddReference();
 }
 
 ceUCAIfElseCaseMove::~ceUCAIfElseCaseMove(){
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

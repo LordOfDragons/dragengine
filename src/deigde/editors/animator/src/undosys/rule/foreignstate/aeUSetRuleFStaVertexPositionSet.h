@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleForeignState;
+#include "../../../animator/rule/aeRuleForeignState.h"
 
 
 /**
@@ -35,7 +35,7 @@ class aeRuleForeignState;
  */
 class aeUSetRuleFStaVertexPositionSet : public igdeUndo{
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 	decString pOldName;
 	decString pNewName;

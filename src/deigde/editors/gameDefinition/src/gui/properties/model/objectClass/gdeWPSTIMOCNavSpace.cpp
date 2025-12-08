@@ -49,8 +49,7 @@
 
 gdeWPSTIMOCNavSpace::gdeWPSTIMOCNavSpace(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
 	gdeOCNavigationSpace *navSpace, int index) :
-gdeWPSTIMOCSubObject(tree, etObjectClassNavigationSpace, objectClass, index),
-pNavSpace(NULL)
+gdeWPSTIMOCSubObject(tree, etObjectClassNavigationSpace, objectClass, index)
 {
 	if(!navSpace){
 		DETHROW(deeInvalidParam);
@@ -63,13 +62,9 @@ pNavSpace(NULL)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pNavSpace = navSpace;
-	navSpace->AddReference();
 }
 
 gdeWPSTIMOCNavSpace::~gdeWPSTIMOCNavSpace(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

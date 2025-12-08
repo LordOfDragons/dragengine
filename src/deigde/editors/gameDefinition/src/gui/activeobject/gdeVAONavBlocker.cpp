@@ -61,8 +61,6 @@ pDDSBlocker(NULL)
 	if(!ocnavblocker){
 		DETHROW(deeInvalidParam);
 	}
-	ocnavblocker->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pBuildDDSBlocker();
@@ -116,10 +114,6 @@ void gdeVAONavBlocker::pCleanUp(){
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = NULL;
-	}
-	
-	if(pOCNavBlocker){
-		pOCNavBlocker->FreeReference();
 	}
 }
 

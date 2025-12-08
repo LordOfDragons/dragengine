@@ -30,7 +30,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class aeRuleLimit;
+#include "../../../animator/rule/aeRuleLimit.h"
 
 
 /**
@@ -38,7 +38,7 @@ class aeRuleLimit;
  */
 class aeURuleLimitSetVertexPositionSetMin : public igdeUndo{
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	float pOldMin;
 	float pNewMin;

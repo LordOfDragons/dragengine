@@ -1882,21 +1882,16 @@ const decXmlElementTag &root, gdeFilePatternList &list){
 		const decString tagName(tag->GetName());
 		
 		if(tagName == "add"){
-			gdeFilePattern *pattern = NULL;
+			gdeFilePattern::Ref pattern = NULL;
 			
 			try{
-				pattern = new gdeFilePattern;
+				pattern.TakeOver(new gdeFilePattern);
 				pattern->SetName(GetAttributeString(*tag, "name"));
 				pattern->SetPattern(GetAttributeString(*tag, "pattern"));
 				pattern->SetDefaultExtension(GetAttributeString(*tag, "default"));
 				
 				list.Add(pattern);
-				pattern->FreeReference();
-				
 			}catch(const deException &){
-				if(pattern){
-					pattern->FreeReference();
-				}
 				throw;
 			}
 			
@@ -2064,17 +2059,12 @@ void gdeLoadSaveGameDefinition::pReadSky(const decXmlElementTag &root, gdeGameDe
 			sky->SetCategory(GetCDataString(*tag));
 			
 		}else if(tagName == "controller"){
-			gdeSkyController *controller = NULL;
+			gdeSkyController::Ref controller = NULL;
 			try{
-				controller = new gdeSkyController(
-					GetAttributeString(*tag, "name"), GetCDataFloat(*tag));
+				controller.TakeOver(new gdeSkyController(
+					GetAttributeString(*tag, "name"), GetCDataFloat(*tag)));
 				sky->AddController(controller);
-				controller->FreeReference();
-				
 			}catch(const deException &){
-				if(controller){
-					controller->FreeReference();
-				}
 				throw;
 			}
 			

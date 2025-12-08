@@ -71,12 +71,10 @@ const char *igdeWindowLogger::styleError = "error";
 
 igdeWindowLogger::igdeWindowLogger(igdeEnvironment &environment) :
 igdeWindow(environment, "Logging History"),
-pListener(NULL),
-pLogger(NULL),
 pPendingAddedLogs(0),
 pPendingClearLogs(false)
 {
-	pListener = new igdeWindowLoggerListener(*this);
+	pListener.TakeOver(new igdeWindowLoggerListener(*this));
 	
 	SetPosition(decPoint(10, 50));
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));
@@ -99,9 +97,6 @@ pPendingClearLogs(false)
 
 igdeWindowLogger::~igdeWindowLogger(){
 	SetLogger(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -116,13 +111,11 @@ void igdeWindowLogger::SetLogger(igdeLoggerHistory *logger){
 	
 	if(pLogger){
 		pLogger->RemoveListener(pListener);
-		pLogger->FreeReference();
 	}
 	
 	pLogger = logger;
 	
 	if(logger){
-		logger->AddReference();
 		logger->AddListener(pListener);
 	}
 	

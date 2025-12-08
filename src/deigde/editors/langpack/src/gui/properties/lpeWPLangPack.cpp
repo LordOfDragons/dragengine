@@ -170,11 +170,10 @@ public:
 lpeWPLangPack::lpeWPLangPack(lpeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(new lpeWPLangPackListener(*this)),
-pLangPack(NULL)
+pListener(new lpeWPLangPackListener(*this))
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -195,10 +194,6 @@ pLangPack(NULL)
 
 lpeWPLangPack::~lpeWPLangPack(){
 	SetLangPack(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -213,14 +208,12 @@ void lpeWPLangPack::SetLangPack(lpeLangPack *langpack){
 	
 	if(pLangPack){
 		pLangPack->RemoveListener(pListener);
-		pLangPack->FreeReference();
 	}
 	
 	pLangPack = langpack;
 	
 	if(langpack){
 		langpack->AddListener(pListener);
-		langpack->AddReference();
 	}
 	
 	UpdateLangPack();

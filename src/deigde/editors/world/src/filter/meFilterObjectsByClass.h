@@ -33,7 +33,7 @@
 #include <dragengine/common/string/decStringSet.h>
 
 // predefinitions
-class meObject;
+#include "../world/object/meObject.h"
 
 
 
@@ -56,7 +56,7 @@ private:
 	decStringSet pClassNames;
 	bool pMatchInclusive;
 	
-	meObject *pRejectObject;
+	meObject::Ref pRejectObject;
 	bool pRejectGhosts;
 	
 public:
@@ -79,7 +79,7 @@ public:
 	/** Sets if ghost objects are rejected. */
 	void SetRejectGhosts(bool rejectGhosts);
 	/** Retrieves the object to reject or NULL. */
-	inline meObject *GetRejectObject() const{ return pRejectObject; }
+	inline const meObject::Ref &GetRejectObject() const{ return pRejectObject; }
 	/** Sets the object to reject or NULL. */
 	void SetRejectObject(meObject *object);
 	

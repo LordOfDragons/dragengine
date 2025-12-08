@@ -57,8 +57,7 @@
 //////////////////////////////
 
 deBaseModule::deBaseModule(deLoadableModule &loadableModule) :
-pLoadableModule(loadableModule),
-pVFS(NULL)
+pLoadableModule(loadableModule)
 {
 	try{
 		pCreateVFS();
@@ -283,9 +282,6 @@ deErrorTracePoint *deBaseModule::AddErrorTracePoint(const char *sourceFunc, int 
 //////////////////////
 
 void deBaseModule::pCleanUp(){
-	if(pVFS){
-		pVFS->FreeReference();
-	}
 }
 
 void deBaseModule::pCreateVFS(){
@@ -301,7 +297,7 @@ void deBaseModule::pCreateVFS(){
 	decPath pathDisk;
 	decPath pathRoot;
 	
-	pVFS = new deVirtualFileSystem;
+	pVFS.TakeOver(new deVirtualFileSystem);
 	
 	if(osFileSystem){
 		// config directory (read-write, per module version)

@@ -45,28 +45,21 @@
 ////////////////////////////
 
 deoglGIBVHShared::deoglGIBVHShared(deoglRenderThread &renderThread) :
-pRenderThread(renderThread),
-pTBONodeBox(NULL),
-pTBOIndex(NULL),
-pTBOFace(NULL),
-pTBOVertex(NULL),
-pTBOTexCoord(NULL),
-pTBOMaterial(NULL),
-pTBOMaterial2(NULL)
+pRenderThread(renderThread)
 {
 	try{
-		pTBONodeBox = new deoglDynamicTBOFloat32(renderThread, 4);
-		pTBOIndex = new deoglDynamicTBOUInt16(renderThread, 2);
-		pTBOFace = new deoglDynamicTBOUInt16(renderThread, 4);
-		pTBOVertex = new deoglDynamicTBOFloat32(renderThread, 4);
-		pTBOTexCoord = new deoglDynamicTBOFloat16(renderThread, 2);
-		pTBOMaterial = new deoglDynamicTBOUInt32(renderThread, 4);
-		pTBOMaterial2 = new deoglDynamicTBOFloat16(renderThread, 4);
+		pTBONodeBox.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
+		pTBOIndex.TakeOver(new deoglDynamicTBOUInt16(renderThread, 2));
+		pTBOFace.TakeOver(new deoglDynamicTBOUInt16(renderThread, 4));
+		pTBOVertex.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
+		pTBOTexCoord.TakeOver(new deoglDynamicTBOFloat16(renderThread, 2));
+		pTBOMaterial.TakeOver(new deoglDynamicTBOUInt32(renderThread, 4));
+		pTBOMaterial2.TakeOver(new deoglDynamicTBOFloat16(renderThread, 4));
 		
-		pSharedTBONode = new deoglDynamicTBOShared(pTBOIndex, 1, pTBONodeBox, 2);
-		pSharedTBOFace = new deoglDynamicTBOShared(pTBOFace, 1, pTBOTexCoord, 3);
-		pSharedTBOVertex = new deoglDynamicTBOShared(pTBOVertex, 1);
-		pSharedTBOMaterial = new deoglDynamicTBOShared(pTBOMaterial, 1, pTBOMaterial2, 3);
+		pSharedTBONode.TakeOver(new deoglDynamicTBOShared(pTBOIndex, 1, pTBONodeBox, 2));
+		pSharedTBOFace.TakeOver(new deoglDynamicTBOShared(pTBOFace, 1, pTBOTexCoord, 3));
+		pSharedTBOVertex.TakeOver(new deoglDynamicTBOShared(pTBOVertex, 1));
+		pSharedTBOMaterial.TakeOver(new deoglDynamicTBOShared(pTBOMaterial, 1, pTBOMaterial2, 3));
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -89,38 +82,4 @@ deoglGIBVHShared::~deoglGIBVHShared(){
 //////////////////////
 
 void deoglGIBVHShared::pCleanUp(){
-	if(pSharedTBONode){
-		pSharedTBONode->FreeReference();
-	}
-	if(pSharedTBOFace){
-		pSharedTBOFace->FreeReference();
-	}
-	if(pSharedTBOVertex){
-		pSharedTBOVertex->FreeReference();
-	}
-	if(pSharedTBOMaterial){
-		pSharedTBOMaterial->FreeReference();
-	}
-	
-	if(pTBONodeBox){
-		pTBONodeBox->FreeReference();
-	}
-	if(pTBOIndex){
-		pTBOIndex->FreeReference();
-	}
-	if(pTBOFace){
-		pTBOFace->FreeReference();
-	}
-	if(pTBOVertex){
-		pTBOVertex->FreeReference();
-	}
-	if(pTBOTexCoord){
-		pTBOTexCoord->FreeReference();
-	}
-	if(pTBOMaterial){
-		pTBOMaterial->FreeReference();
-	}
-	if(pTBOMaterial2){
-		pTBOMaterial2->FreeReference();
-	}
 }

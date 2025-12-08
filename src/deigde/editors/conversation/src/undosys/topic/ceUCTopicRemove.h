@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationFile;
-class ceConversationTopic;
+#include "../../conversation/file/ceConversationFile.h"
+#include "../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCTopicRemove : public igdeUndo{
 private:
-	ceConversationFile *pFile;
-	ceConversationTopic *pTopic;
+	ceConversationFile::Ref pFile;
+	ceConversationTopic::Ref pTopic;
 	
 public:
 	/** \brief Type holding strong reference. */

@@ -49,8 +49,7 @@
 
 gdeWPSTIMOCSpeaker::gdeWPSTIMOCSpeaker(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
 	gdeOCSpeaker *speaker, int index) :
-gdeWPSTIMOCSubObject(tree, etObjectClassSpeaker, objectClass, index),
-pSpeaker(NULL)
+gdeWPSTIMOCSubObject(tree, etObjectClassSpeaker, objectClass, index)
 {
 	if(!speaker){
 		DETHROW(deeInvalidParam);
@@ -63,13 +62,9 @@ pSpeaker(NULL)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
 }
 
 gdeWPSTIMOCSpeaker::~gdeWPSTIMOCSpeaker(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
 }
 
 

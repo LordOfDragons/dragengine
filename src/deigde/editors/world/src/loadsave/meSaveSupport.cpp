@@ -229,7 +229,7 @@ void meSaveSupport::SaveHTHeightImage(meWorld *world, meHeightTerrainSector *sec
 	int imageDim = sector->GetHeightTerrain()->GetSectorResolution();
 	sGrayscale32 *srcData = sector->GetHeightImage()->GetDataGrayscale32();
 	int p, pixelCount = imageDim * imageDim;
-	deImage *saveImage = NULL;
+	deImage::Ref saveImage = NULL;
 	int bitCount;
 	
 	if(sector->GetDataType() == meHeightTerrainSector::edtInt8){
@@ -274,8 +274,6 @@ void meSaveSupport::SaveHTHeightImage(meWorld *world, meHeightTerrainSector *sec
 		}
 		
 		imgmgr->SaveImage(saveImage, filename);
-		saveImage->FreeReference();
-		
 	}catch(const deException &e){
 		if(saveImage) saveImage->FreeReference();
 		pWindowMain->GetLogger()->LogException(LOGSOURCE, e);
@@ -303,7 +301,7 @@ void meSaveSupport::SaveHTVisibilityImage(meWorld *world, meHeightTerrainSector 
 	deImageManager *imgmgr = world->GetEngine()->GetImageManager();
 	meBitArray *visbits = sector->GetVisibilityFaces();
 	int x, y, cols, rows, p;
-	deImage *saveImage = NULL;
+	deImage::Ref saveImage = NULL;
 	sGrayscale8 *pixels;
 	
 	if(!sector->GetVisibilitySaved() || forceAskForFilename){
@@ -334,8 +332,6 @@ void meSaveSupport::SaveHTVisibilityImage(meWorld *world, meHeightTerrainSector 
 		}
 		
 		imgmgr->SaveImage(saveImage, filename);
-		saveImage->FreeReference();
-		
 	}catch(const deException &e){
 		if(saveImage) saveImage->FreeReference();
 		pWindowMain->GetLogger()->LogException(LOGSOURCE, e);

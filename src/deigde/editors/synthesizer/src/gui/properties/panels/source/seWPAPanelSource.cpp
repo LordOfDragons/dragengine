@@ -319,7 +319,7 @@ pWPEffect(NULL)
 {
 	igdeEnvironment &env = wpSource.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref groupBox, form, formLine;
+	igdeContainer *groupBox, form, formLine;
 	
 	
 	pActionLinkAdd.TakeOver(new cActionLinkAdd(*this));

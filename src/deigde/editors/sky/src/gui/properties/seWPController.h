@@ -33,10 +33,10 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSky;
+#include "../../sky/seSky.h"
 class seController;
 class seWindowProperties;
-class seWPControllerListener;
+#include "seWPControllerListener.h"
 
 
 /**
@@ -45,9 +45,9 @@ class seWPControllerListener;
 class seWPController : public igdeContainerScroll{
 private:
 	seWindowProperties &pWindowProperties;
-	seWPControllerListener *pListener;
+	seWPControllerListener::Ref pListener;
 	
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	igdeAction::Ref pActionControllerAdd;
 	igdeAction::Ref pActionControllerRemove;
@@ -82,7 +82,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);
@@ -103,10 +103,10 @@ public:
 	void UpdateControllerValue();
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionControllerAdd() const{ return pActionControllerAdd; }
-	inline igdeAction *GetActionControllerRemove() const{ return pActionControllerRemove; }
-	inline igdeAction *GetActionControllerUp() const{ return pActionControllerUp; }
-	inline igdeAction *GetActionControllerDown() const{ return pActionControllerDown; }
+	inline const igdeAction::Ref &GetActionControllerAdd() const{ return pActionControllerAdd; }
+	inline const igdeAction::Ref &GetActionControllerRemove() const{ return pActionControllerRemove; }
+	inline const igdeAction::Ref &GetActionControllerUp() const{ return pActionControllerUp; }
+	inline const igdeAction::Ref &GetActionControllerDown() const{ return pActionControllerDown; }
 	/*@}*/
 };
 

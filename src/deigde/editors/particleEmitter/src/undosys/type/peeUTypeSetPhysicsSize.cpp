@@ -52,13 +52,9 @@ peeUTypeSetPhysicsSize::peeUTypeSetPhysicsSize(peeType *type, float newSize){
 	pNewSize = newSize;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetPhysicsSize::~peeUTypeSetPhysicsSize(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

@@ -472,15 +472,13 @@ public:
 
 aeWPController::aeWPController(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(nullptr),
-pAnimator(nullptr)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
-	pListener = new aeWPControllerListener(*this);
+	pListener.TakeOver(new aeWPControllerListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -555,10 +553,6 @@ pAnimator(nullptr)
 
 aeWPController::~aeWPController(){
 	SetAnimator(nullptr);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -573,14 +567,12 @@ void aeWPController::SetAnimator(aeAnimator *animator){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
 	}
 	
 	UpdateControllerList();

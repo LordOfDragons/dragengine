@@ -55,19 +55,10 @@ ceCACoordSystemAdd *action, const char *newCoordSysID){
 	SetShortInfo("Coord system add set coord system id");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCACoordSysAddSetCoordSysID::~ceUCACoordSysAddSetCoordSysID(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

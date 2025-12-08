@@ -48,13 +48,9 @@ seUPropertyToggleVideoSharedTime::seUPropertyToggleVideoSharedTime(seProperty *p
 	SetShortInfo("Property toggle video shared time");
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertyToggleVideoSharedTime::~seUPropertyToggleVideoSharedTime(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

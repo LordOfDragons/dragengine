@@ -63,7 +63,7 @@ public:
 	deWorld *GetRootWorld() const;
 	
 	/** \brief Create new scene. */
-	deWorld *CreateWorld();
+	deWorld::Ref CreateWorld();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

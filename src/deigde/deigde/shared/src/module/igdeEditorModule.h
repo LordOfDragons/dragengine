@@ -29,7 +29,7 @@
 
 class decStringList;
 class igdeEnvironment;
-class igdeEditorWindow;
+#include "../gui/igdeEditorWindow.h"
 class igdeStepableTask;
 class deEngine;
 class deLogger;
@@ -49,7 +49,7 @@ private:
 	decString pLoggingName;
 	decString pEditorDirectory;
 	decString pEditorPathLib;
-	igdeEditorWindow *pEditorWindow;
+	igdeEditorWindow::Ref pEditorWindow;
 	
 	
 	
@@ -94,7 +94,7 @@ public:
 	void SetEditorPathLib(const char *path);
 	
 	/** \brief Editor window used by module. */
-	inline igdeEditorWindow *GetEditorWindow() const{ return pEditorWindow; }
+	inline const igdeEditorWindow::Ref &GetEditorWindow() const{ return pEditorWindow; }
 	
 	/**
 	 * \brief Set editor window used by module.

@@ -52,13 +52,9 @@ pSource(NULL)
 	pNewSpeed = newSpeed;
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSetSourceSoundMinSpeed::~seUSetSourceSoundMinSpeed(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

@@ -216,7 +216,7 @@ struct sImgPixNatDat{
 	};
 	
 	
-	deImage *image;
+	deImage::Ref image;
 	Getter *getter;
 	int strideZ;
 	int strideY;
@@ -336,8 +336,6 @@ void deClassImagePixels::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// store
 	nd.image = image;
-	image->AddReference();
-	
 	nd.strideZ = image->GetWidth() * image->GetHeight();
 	nd.strideY = image->GetWidth();
 }

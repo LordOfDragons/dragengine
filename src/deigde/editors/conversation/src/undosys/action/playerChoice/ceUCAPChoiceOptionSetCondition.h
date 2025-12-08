@@ -27,10 +27,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
-class ceConversationCondition;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAPlayerChoice.h"
+#include "../../../conversation/action/ceCAPlayerChoiceOption.h"
+#include "../../../conversation/condition/ceConversationCondition.h"
 
 
 
@@ -38,11 +38,11 @@ class ceConversationCondition;
  * \brief Undo action player choice option conversation action set case condition.*/
 class ceUCAPChoiceOptionSetCondition : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
-	ceConversationCondition *pOldCondition;
-	ceConversationCondition *pNewCondition;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
+	ceConversationCondition::Ref pOldCondition;
+	ceConversationCondition::Ref pNewCondition;
 	
 	
 	

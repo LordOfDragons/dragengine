@@ -29,8 +29,8 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/forcefield/deForceField.h>
 
-class gdeOCForceField;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCForceFieldSetFieldType : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	deForceField::eFieldTypes pOldValue;
 	deForceField::eFieldTypes pNewValue;

@@ -32,7 +32,7 @@
 #include <dragengine/common/string/decString.h>
 
 // predefinitions
-class meWorld;
+#include "../../../world/meWorld.h"
 class meHeightTerrainSector;
 class meBitArray;
 
@@ -47,7 +47,7 @@ class deImage;
  */
 class meUHTImportVisibilityImage : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
 	
 	meBitArray *pOldVis;

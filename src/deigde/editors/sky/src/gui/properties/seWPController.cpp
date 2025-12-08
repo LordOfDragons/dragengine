@@ -371,16 +371,13 @@ public:
 
 seWPController::seWPController(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-
-pSky(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPControllerListener(*this);
+	pListener.TakeOver(new seWPControllerListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -415,12 +412,7 @@ pSky(NULL)
 seWPController::~seWPController(){
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 		pSky = NULL;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -436,14 +428,12 @@ void seWPController::SetSky(seSky *sky){
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;
 	
 	if(sky){
 		sky->AddListener(pListener);
-		sky->AddReference();
 	}
 	
 	UpdateControllerList();

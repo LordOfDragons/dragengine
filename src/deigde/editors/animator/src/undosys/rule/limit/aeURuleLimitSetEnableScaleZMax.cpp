@@ -49,13 +49,9 @@ aeURuleLimitSetEnableScaleZMax::aeURuleLimitSetEnableScaleZMax(aeRuleLimit *rule
 	SetShortInfo("Limit toggle enable maximum z scaling");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableScaleZMax::~aeURuleLimitSetEnableScaleZMax(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

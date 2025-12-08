@@ -43,7 +43,7 @@
 /////////////////////
 
 struct sSkyTargetNatDat{
-	deSky *sky;
+	deSky::Ref sky;
 	int layer;
 	deSkyLayer::eTargets target;
 };
@@ -274,7 +274,6 @@ deSkyLayer::eTargets target){
 	rt->CreateObjectNakedOnStack(this);
 	sSkyTargetNatDat &nd = *((sSkyTargetNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.sky = sky;
-	sky->AddReference();
 	nd.layer = layer;
 	nd.target = target;
 }

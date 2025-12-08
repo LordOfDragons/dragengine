@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringSet.h>
 
-class saeSAnimation;
+#include "../../sanimation/saeSAnimation.h"
 
 
 /**
@@ -37,7 +37,7 @@ class saeSAnimation;
  */
 class saeUSAnimSetNeutralVertexPositionSets : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	decStringSet pOldSets;
 	decStringSet pNewSets;

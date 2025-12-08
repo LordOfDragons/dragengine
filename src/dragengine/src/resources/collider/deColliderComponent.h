@@ -81,7 +81,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component or NULL if not set. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
 	
 	/**
 	 * \brief Set component or NULL if not set.

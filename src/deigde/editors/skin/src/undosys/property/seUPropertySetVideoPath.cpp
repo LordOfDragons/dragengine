@@ -51,13 +51,9 @@ seUPropertySetVideoPath::seUPropertySetVideoPath(seProperty *property, const cha
 	pNewPath = newPath;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetVideoPath::~seUPropertySetVideoPath(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

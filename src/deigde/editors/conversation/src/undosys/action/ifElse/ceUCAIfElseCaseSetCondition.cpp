@@ -57,41 +57,13 @@ ceCAIfElseCase *ifcase, ceConversationCondition *newCondition){
 	SetShortInfo("If-else set case condition");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pIfElse = ifElse;
-	ifElse->AddReference();
-	
 	pCase = ifcase;
-	ifcase->AddReference();
-	
 	pOldCondition = ifcase->GetCondition();
-	if(pOldCondition){
-		pOldCondition->AddReference();
-	}
-	
 	pNewCondition = newCondition;
-	if(newCondition){
-		newCondition->AddReference();
-	}
 }
 
 ceUCAIfElseCaseSetCondition::~ceUCAIfElseCaseSetCondition(){
-	if(pNewCondition){
-		pNewCondition->FreeReference();
-	}
-	if(pOldCondition){
-		pOldCondition->FreeReference();
-	}
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

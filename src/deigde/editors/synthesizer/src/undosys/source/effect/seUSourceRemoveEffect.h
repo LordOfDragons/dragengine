@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSource;
-class seEffect;
+#include "../../../synthesizer/source/seSource.h"
+#include "../../../synthesizer/effect/seEffect.h"
 
 
 
@@ -38,8 +38,8 @@ class seEffect;
  */
 class seUSourceRemoveEffect : public igdeUndo{
 private:
-	seEffect *pEffect;
-	seSource *pSource;
+	seEffect::Ref pEffect;
+	seSource::Ref pSource;
 	int pIndex;
 	
 	

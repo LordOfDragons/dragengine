@@ -69,7 +69,7 @@ public:
 	deCanvas *GetRootCanvas() const;
 	
 	/** \brief Create image canvas. */
-	deCanvasImage *CreateCanvasImage();
+	deCanvasImage::Ref CreateCanvasImage();
 	
 	/** \brief Create paint canvas. */
 	deCanvasPaint *CreateCanvasPaint();

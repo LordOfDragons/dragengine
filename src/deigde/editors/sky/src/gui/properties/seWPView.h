@@ -29,9 +29,9 @@
 #include <deigde/gui/properties/igdeWPCamera.h>
 #include <deigde/gui/properties/igdeWPWObject.h>
 
-class seSky;
+#include "../../sky/seSky.h"
 class seWindowProperties;
-class seWPViewListener;
+#include "seWPViewListener.h"
 
 
 
@@ -41,8 +41,8 @@ class seWPViewListener;
 class seWPView : public igdeContainerScroll{
 private:
 	seWindowProperties &pWindowProperties;
-	seSky *pSky;
-	seWPViewListener *pListener;
+	seSky::Ref pSky;
+	seWPViewListener::Ref pListener;
 	
 	igdeWPWObject::Ref pWPEnvObject;
 	igdeWPCamera::Ref pWPCamera;
@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);

@@ -49,7 +49,7 @@
 /////////////////////
 
 struct sSkyNatDat{
-	deSky *sky;
+	deSky::Ref sky;
 };
 
 
@@ -412,5 +412,4 @@ void deClassSky::PushSky(dsRunTime *rt, deSky *sky){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sSkyNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->sky = sky;
-	sky->AddReference();
 }

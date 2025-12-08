@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeGameDefinition;
-class gdeSky;
+#include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/sky/gdeSky.h"
 
 
 
@@ -38,8 +38,8 @@ class gdeSky;
  */
 class gdeUAddSky : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeSky *pSky;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeSky::Ref pSky;
 	
 	
 	

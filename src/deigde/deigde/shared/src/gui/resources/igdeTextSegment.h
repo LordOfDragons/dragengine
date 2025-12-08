@@ -93,7 +93,7 @@ public:
 	inline const decString &GetStyle() const{ return pStyle; }
 	
 	/** \brief Action or NULL if not used. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	/*@}*/
 };
 

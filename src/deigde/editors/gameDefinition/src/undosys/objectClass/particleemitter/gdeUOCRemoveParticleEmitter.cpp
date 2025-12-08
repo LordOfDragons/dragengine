@@ -42,7 +42,7 @@
 ////////////////////////////
 
 gdeUOCRemoveParticleEmitter::gdeUOCRemoveParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) :
-pObjectClass(NULL),
+
 pParticleEmitter(NULL)
 {
 	if(!objectClass || !particleEmitter){
@@ -56,19 +56,10 @@ pParticleEmitter(NULL)
 	SetShortInfo("Remove particle emitter");
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveParticleEmitter::~gdeUOCRemoveParticleEmitter(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

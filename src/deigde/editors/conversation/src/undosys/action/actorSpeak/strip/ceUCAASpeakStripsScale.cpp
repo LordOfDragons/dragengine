@@ -54,21 +54,12 @@ ceUCAASpeakStripsScale::ceUCAASpeakStripsScale(ceConversationTopic *topic, ceCAA
 	SetShortInfo("Scale strips");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakStripsScale::~ceUCAASpeakStripsScale(){
 	if(pOldStates){
 		delete [] pOldStates;
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
 	}
 }
 

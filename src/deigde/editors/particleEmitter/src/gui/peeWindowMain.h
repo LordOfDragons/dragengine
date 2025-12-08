@@ -34,13 +34,13 @@
 #include <deigde/gui/resources/igdeIcon.h>
 
 
-class peeWindowMainListener;
+#include "peeWindowMainListener.h"
 class peeConfiguration;
 class peeLoadSaveSystem;
-class peeViewEmitter;
-class peeWindowProperties;
-class peeWindowCurves;
-class peeEmitter;
+#include "peeViewEmitter.h"
+#include "properties/peeWindowProperties.h"
+#include "curves/peeWindowCurves.h"
+#include "../emitter/peeEmitter.h"
 
 
 /**
@@ -48,7 +48,7 @@ class peeEmitter;
  */
 class peeWindowMain : public igdeEditorWindow{
 private:
-	peeWindowMainListener *pListener;
+	peeWindowMainListener::Ref pListener;
 	
 	//igdeIcon::Ref pIconEmitterNew;
 	
@@ -70,11 +70,11 @@ private:
 	igdeClipboard pClipboard;
 	peeLoadSaveSystem *pLoadSaveSystem;
 	
-	peeViewEmitter *pViewEmitter;
-	peeWindowProperties *pWindowProperties;
-	peeWindowCurves *pWindowCurves;
+	peeViewEmitter::Ref pViewEmitter;
+	peeWindowProperties::Ref pWindowProperties;
+	peeWindowCurves::Ref pWindowCurves;
 	
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	
 	
@@ -95,19 +95,19 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Icons. */
-	//inline igdeIcon* GetIconEmitterNew() const{ return pIconEmitterNew; }
+	//inline const igdeIcon::Ref &GetIconEmitterNew() const{ return pIconEmitterNew; }
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionEmitterNew() const{ return pActionEmitterNew; }
-	inline igdeAction *GetActionEmitterOpen() const{ return pActionEmitterOpen; }
-	inline igdeAction *GetActionEmitterSave() const{ return pActionEmitterSave; }
-	inline igdeAction *GetActionEmitterSaveAs() const{ return pActionEmitterSaveAs; }
+	inline const igdeAction::Ref &GetActionEmitterNew() const{ return pActionEmitterNew; }
+	inline const igdeAction::Ref &GetActionEmitterOpen() const{ return pActionEmitterOpen; }
+	inline const igdeAction::Ref &GetActionEmitterSave() const{ return pActionEmitterSave; }
+	inline const igdeAction::Ref &GetActionEmitterSaveAs() const{ return pActionEmitterSaveAs; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
-	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
-	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
-	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
-	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
+	inline const igdeActionUndo::Ref &GetActionEditUndo() const{ return pActionEditUndo; }
+	inline const igdeActionRedo::Ref &GetActionEditRedo() const{ return pActionEditRedo; }
+	inline const igdeAction::Ref &GetActionEditCut() const{ return pActionEditCut; }
+	inline const igdeAction::Ref &GetActionEditCopy() const{ return pActionEditCopy; }
+	inline const igdeAction::Ref &GetActionEditPaste() const{ return pActionEditPaste; }
 	
 	/** \brief Ask user if it is okay to quit the application. */
 	bool QuitRequest();
@@ -127,7 +127,7 @@ public:
 	
 	
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set Emitter. */
 	void SetEmitter(peeEmitter *Emitter);

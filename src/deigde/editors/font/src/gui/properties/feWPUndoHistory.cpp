@@ -42,16 +42,11 @@
 
 feWPUndoHistory::feWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pFont(NULL),
 pListener(new feWPUndoHistoryListener(*this)){
 }
 
 feWPUndoHistory::~feWPUndoHistory(){
 	SetFont(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -68,15 +63,12 @@ void feWPUndoHistory::SetFont(feFont *font){
 	
 	if(pFont){
 		pFont->RemoveNotifier(pListener);
-		pFont->FreeReference();
 	}
 	
 	pFont = font;
 	
 	if(font){
 		font->AddNotifier(pListener);
-		font->AddReference();
-		
 		SetUndoSystem(font->GetUndoSystem());
 	}
 }

@@ -42,7 +42,7 @@
 
 gdeUOCEnvMapProbeSetShapeInfluence::gdeUOCEnvMapProbeSetShapeInfluence(gdeObjectClass *objectClass,
 gdeOCEnvMapProbe *envMapProbe, const decShapeList &newValue) :
-pObjectClass(NULL),
+
 pEnvMapProbe(NULL)
 {
 	if(!objectClass || !envMapProbe){
@@ -55,19 +55,10 @@ pEnvMapProbe(NULL)
 	pNewValue = newValue;
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCEnvMapProbeSetShapeInfluence::~gdeUOCEnvMapProbeSetShapeInfluence(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

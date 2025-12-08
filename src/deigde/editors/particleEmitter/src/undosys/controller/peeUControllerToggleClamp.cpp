@@ -47,13 +47,9 @@ peeUControllerToggleClamp::peeUControllerToggleClamp(peeController *controller){
 	SetShortInfo("Toggle Controller Clamp");
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerToggleClamp::~peeUControllerToggleClamp(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

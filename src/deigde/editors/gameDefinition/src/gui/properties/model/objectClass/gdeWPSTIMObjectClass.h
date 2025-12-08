@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeObjectClass;
+#include "../../../../gamedef/objectClass/gdeObjectClass.h"
 class gdeOCBillboard;
 class gdeOCCamera;
 class gdeOCComponent;
@@ -59,7 +59,7 @@ class gdeWPSTIMOCWorld;
  */
 class gdeWPSTIMObjectClass : public gdeWPSTreeItemModel{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 public:
@@ -79,7 +79,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Object class. */
-	inline gdeObjectClass *GetObjectClass() const{ return pObjectClass; }
+	inline const gdeObjectClass::Ref &GetObjectClass() const{ return pObjectClass; }
 	
 	
 	

@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seBody;
+#include "../../sky/body/seBody.h"
 
 
 
@@ -38,7 +38,7 @@ class seBody;
  */
 class seUBodySetColor : public igdeUndo{
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decColor pOldColor;
 	decColor pNewColor;

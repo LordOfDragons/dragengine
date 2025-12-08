@@ -75,7 +75,7 @@ void ceWPTTIMConditionContainer::SetCondition(ceConversationCondition *condition
 		return;
 	}
 	
-	ceWPTTIMCondition *child = NULL;
+	ceWPTTIMCondition::Ref child = NULL;
 	try{
 		child = ceWPTTIMConditions::CreateConditionModel(GetWindowMain(),
 			GetConversation(), GetAction(), condition);
@@ -84,9 +84,6 @@ void ceWPTTIMConditionContainer::SetCondition(ceConversationCondition *condition
 		child->FreeReference(); // held by superclass child list
 		
 	}catch(const deException &){
-		if(child){
-			child->FreeReference();
-		}
 		throw;
 	}
 }

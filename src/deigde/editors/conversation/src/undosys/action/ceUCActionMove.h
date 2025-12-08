@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceConversationAction;
+#include "../../conversation/topic/ceConversationTopic.h"
+#include "../../conversation/action/ceConversationAction.h"
 
 
 
@@ -37,8 +37,8 @@ class ceConversationAction;
  */
 class ceUCActionMove : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
 	int pOldIndex;
 	int pNewIndex;
 	

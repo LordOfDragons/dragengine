@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleForeignState;
+#include "../../../animator/rule/aeRuleForeignState.h"
 
 
 
@@ -42,7 +42,7 @@ class aeRuleForeignState;
  */
 class aeUSetRuleFStaEnableRot : public igdeUndo{
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

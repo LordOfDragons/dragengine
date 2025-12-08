@@ -43,8 +43,7 @@
 
 ceUCASetAParamSetValueVariable::ceUCASetAParamSetValueVariable(
 ceConversationTopic *topic, ceCASetActorParameter *action, const char *newName) :
-pTopic(NULL),
-pAction(NULL),
+
 pNewName(newName)
 {
 	if(!topic || !action){
@@ -56,19 +55,10 @@ pNewName(newName)
 	SetShortInfo("SetActorParameter Value Variable");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCASetAParamSetValueVariable::~ceUCASetAParamSetValueVariable(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -52,7 +52,7 @@
 #include <libdscript/packages/default/dsClassEnumeration.h>
 
 struct sSkinNatDat{
-	deSkin *skin;
+	deSkin::Ref skin;
 };
 
 
@@ -449,5 +449,4 @@ void deClassSkin::PushSkin(dsRunTime *rt, deSkin *skin){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sSkinNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->skin = skin;
-	skin->AddReference();
 }

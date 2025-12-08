@@ -31,7 +31,7 @@
 #include <dragengine/common/string/decStringSet.h>
 
 class gdeOCSpeaker;
-class gdeObjectClass;
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -40,7 +40,7 @@ class gdeObjectClass;
  */
 class gdeUOCSetPartialHideTags : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;

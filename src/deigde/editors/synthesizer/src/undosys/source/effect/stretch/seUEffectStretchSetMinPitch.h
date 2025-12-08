@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seEffectStretch;
+#include "../../../../synthesizer/effect/seEffectStretch.h"
 
 
 /**
@@ -36,7 +36,7 @@ class seEffectStretch;
  */
 class seUEffectStretchSetMinPitch : public igdeUndo{
 private:
-	seEffectStretch *pSource;
+	seEffectStretch::Ref pSource;
 	
 	float pOldPitch;
 	float pNewPitch;

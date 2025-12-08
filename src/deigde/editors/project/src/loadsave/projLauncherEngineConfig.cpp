@@ -136,11 +136,11 @@ const decXmlElementTag &root, projTestRunner &testRunner){
 void projLauncherEngineConfig::pReadProfile(
 const decXmlElementTag &root, projTestRunner &testRunner){
 	const int elementCount = root.GetElementCount();
-	projTRProfile *profile = NULL;
+	projTRProfile::Ref profile = NULL;
 	int i;
 	
 	try{
-		profile = new projTRProfile;
+		profile.TakeOver(new projTRProfile);
 		profile->SetName(GetAttributeString(root, "name"));
 		
 		for(i=0; i<elementCount; i++){
@@ -177,12 +177,7 @@ const decXmlElementTag &root, projTestRunner &testRunner){
 		}
 		
 		testRunner.GetLauncherProfiles().Add(profile);
-		profile->FreeReference();
-		
 	}catch(const deException &){
-		if(profile){
-			profile->FreeReference();
-		}
 		throw;
 	}
 }
@@ -291,21 +286,16 @@ const decXmlElementTag &root, projTRProfile &profile, const char *module){
 		}
 		
 		if(tag->GetName() == "parameter"){
-			projTRPParameter *parameter = NULL;
+			projTRPParameter::Ref parameter = NULL;
 			
 			try{
-				parameter = new projTRPParameter;
+				parameter.TakeOver(new projTRPParameter);
 				parameter->SetModule(module);
 				parameter->SetName(GetAttributeString(*tag, "name"));
 				parameter->SetValue(GetCDataString(*tag));
 				
 				profile.GetParameters().Add(parameter);
-				parameter->FreeReference();
-				
 			}catch(const deException &){
-				if(parameter){
-					parameter->FreeReference();
-				}
 				throw;
 			}
 			

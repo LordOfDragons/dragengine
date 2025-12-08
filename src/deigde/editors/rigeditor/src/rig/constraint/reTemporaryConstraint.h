@@ -32,7 +32,7 @@
 // predefinitions
 class reRig;
 class reRigBone;
-class deColliderComponent;
+#include <dragengine/resources/collider/deColliderComponent.h>
 class deColliderConstraint;
 class deEngine;
 
@@ -45,7 +45,7 @@ class deEngine;
  */
 class reTemporaryConstraint{
 private:
-	deColliderComponent *pEngSimCollider;
+	deColliderComponent::Ref pEngSimCollider;
 	deColliderConstraint *pEngConstraint;
 	
 	decDVector pPosition;

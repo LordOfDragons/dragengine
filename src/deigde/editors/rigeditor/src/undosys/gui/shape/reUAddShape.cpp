@@ -51,8 +51,6 @@ reUAddShape::reUAddShape(reRig *rig, reRigBone *bone, reRigShape *shape){
 	if(bone) bone->AddReference();
 	
 	pShape = shape;
-	shape->AddReference();
-	
 	try{
 		if(bone){
 			SetShortInfo("Add Bone Shape");
@@ -77,7 +75,7 @@ reUAddShape::~reUAddShape(){
 ///////////////
 
 void reUAddShape::Undo(){
-	reRig *rig = pGetRig();
+	reRig::Ref rig = pGetRig();
 	
 	reSelectionShapes *selection = rig->GetSelectionShapes();
 	
@@ -94,7 +92,7 @@ void reUAddShape::Undo(){
 }
 
 void reUAddShape::Redo(){
-	reRig *rig = pGetRig();
+	reRig::Ref rig = pGetRig();
 	
 	reSelectionShapes *selection = rig->GetSelectionShapes();
 	
@@ -123,7 +121,7 @@ void reUAddShape::pCleanUp(){
 reRig *reUAddShape::pGetRig(){
 	if(pRig) return pRig;
 	
-	reRig *rig = pBone->GetRig();
+	reRig::Ref rig = pBone->GetRig();
 	if(!rig) DETHROW(deeInvalidParam);
 	
 	return rig;

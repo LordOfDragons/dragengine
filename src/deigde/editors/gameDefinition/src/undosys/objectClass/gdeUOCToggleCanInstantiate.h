@@ -30,7 +30,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeObjectClass;
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,7 +39,7 @@ class gdeObjectClass;
  */
 class gdeUOCToggleCanInstantiate : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 	

@@ -42,7 +42,7 @@
 
 meUDecalPropertyCopyToSelected::meUDecalPropertyCopyToSelected(
 const meDecalList &list, const char *key, const char *value){
-	meUndoDataDecalProperty *undoData = NULL;
+	meUndoDataDecalProperty::Ref undoData = NULL;
 	const int count = list.GetCount();
 	meDecal *decal;
 	int i;
@@ -64,21 +64,17 @@ const meDecalList &list, const char *key, const char *value){
 			
 			const decStringDictionary &properties = decal->GetProperties();
 			
-			undoData = new meUndoDataDecalProperty(decal);
+			undoData.TakeOver(new meUndoDataDecalProperty(decal));
 			undoData->SetPropertyExists(properties.Has(key));
 			if(undoData->GetPropertyExists()){
 				undoData->SetOldValue(properties.GetAt(key));
 			}
 			
 			pList.Add(undoData);
-			undoData->FreeReference();
 			undoData = NULL;
 		}
 		
 	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}

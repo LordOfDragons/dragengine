@@ -66,8 +66,6 @@ pAmbientIntensity(0.0f),
 pMulBySkyLight(false),
 pMulBySkyColor(false),
 
-pActiveBody(NULL),
-
 pActiveTarget(deSkyLayer::etRotationX),
 
 pSelected(false),
@@ -360,13 +358,11 @@ void seLayer::SetActiveBody(seBody *body){
 	
 	if(pActiveBody){
 		pActiveBody->SetActive(false);
-		pActiveBody->FreeReference();
 	}
 	
 	pActiveBody = body;
 	
 	if(body){
-		body->AddReference();
 		body->SetActive(true);
 	}
 	

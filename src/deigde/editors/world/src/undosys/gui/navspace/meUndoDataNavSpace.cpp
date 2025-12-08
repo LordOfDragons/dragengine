@@ -52,11 +52,7 @@ pNavSpace(NULL)
 	pOldOrientation = navspace->GetOrientation();
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUndoDataNavSpace::~meUndoDataNavSpace(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 aeURuleSnapSetID::aeURuleSnapSetID(aeRuleStateSnapshot *rule, int newID) :
-pRule(NULL),
+
 pNewID(newID)
 {
 	if(!rule){
@@ -52,13 +52,9 @@ pNewID(newID)
 	SetShortInfo("State snapshot rule set ID");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleSnapSetID::~aeURuleSnapSetID(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

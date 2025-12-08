@@ -81,7 +81,6 @@ feUFontImportImage::feUFontImportImage(feFontImage *fontImage, deImage *newImage
 	}
 	
 	pImage = fontImage;
-	fontImage->AddReference();
 }
 
 feUFontImportImage::~feUFontImportImage(){

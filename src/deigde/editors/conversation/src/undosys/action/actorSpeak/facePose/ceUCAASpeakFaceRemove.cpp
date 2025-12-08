@@ -59,25 +59,11 @@ ceUCAASpeakFaceRemove::ceUCAASpeakFaceRemove(ceConversationTopic *topic, ceCAAct
 	SetShortInfo("Remove Face Pose");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pFacePose = facePose;
-	facePose->AddReference();
 }
 
 ceUCAASpeakFaceRemove::~ceUCAASpeakFaceRemove(){
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

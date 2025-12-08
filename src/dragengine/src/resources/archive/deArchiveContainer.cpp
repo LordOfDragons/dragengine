@@ -45,7 +45,6 @@ deArchiveContainer::deArchiveContainer(const decPath &rootPath, deArchive *archi
 const decPath &archivePath) :
 deVFSContainer(rootPath),
 pArchivePath(archivePath),
-pArchive(NULL),
 pLLManagerPrev(NULL),
 pLLManagerNext(NULL)
 {
@@ -54,7 +53,6 @@ pLLManagerNext(NULL)
 	}
 	
 	pArchive = archive;
-	archive->AddReference();
 }
 
 deArchiveContainer::~deArchiveContainer(){
@@ -62,7 +60,6 @@ deArchiveContainer::~deArchiveContainer(){
 		if(pArchive->GetResourceManager()){
 			((deArchiveManager*)pArchive->GetResourceManager())->RemoveContainer(this);
 		}
-		pArchive->FreeReference();
 	}
 }
 

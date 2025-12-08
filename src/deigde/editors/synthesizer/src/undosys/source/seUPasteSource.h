@@ -31,7 +31,7 @@
 #include "../../synthesizer/link/seLinkList.h"
 #include "../../synthesizer/controller/seControllerList.h"
 
-class seSynthesizer;
+#include "../../synthesizer/seSynthesizer.h"
 
 
 
@@ -40,7 +40,7 @@ class seSynthesizer;
  */
 class seUPasteSource : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	seSourceList pSourceList;
 	seLinkList pRemoveLinkList;
 	seControllerList pRemoveControllerList;

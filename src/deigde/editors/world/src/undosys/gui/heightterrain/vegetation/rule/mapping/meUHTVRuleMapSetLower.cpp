@@ -53,9 +53,7 @@ meUHTVRuleMapSetLower::meUHTVRuleMapSetLower(meHTVegetationLayer *vlayer, meHTVR
 	pNewLower = nlower;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMapSetLower::~meUHTVRuleMapSetLower(){

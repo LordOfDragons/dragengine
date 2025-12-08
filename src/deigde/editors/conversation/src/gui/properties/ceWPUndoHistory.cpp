@@ -42,19 +42,13 @@
 ////////////////////////////
 
 ceWPUndoHistory::ceWPUndoHistory(igdeEnvironment &environment) :
-igdeWPUndoHistory(environment),
-pListener(NULL),
-pConversation(NULL)
+igdeWPUndoHistory(environment)
 {
-	pListener = new ceWPUndoHistoryListener(*this);
+	pListener.TakeOver(new ceWPUndoHistoryListener(*this));
 }
 
 ceWPUndoHistory::~ceWPUndoHistory(){
 	SetConversation(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -71,15 +65,12 @@ void ceWPUndoHistory::SetConversation(ceConversation *conversation){
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;
 	
 	if(conversation){
 		conversation->AddListener(pListener);
-		conversation->AddReference();
-		
 		SetUndoSystem(conversation->GetUndoSystem());
 	}
 }

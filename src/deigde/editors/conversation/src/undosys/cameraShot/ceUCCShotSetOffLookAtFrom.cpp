@@ -50,13 +50,9 @@ ceUCCShotSetOffLookAtFrom::ceUCCShotSetOffLookAtFrom(ceCameraShot *cameraShot, c
 	pNewPos = newPos;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetOffLookAtFrom::~ceUCCShotSetOffLookAtFrom(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

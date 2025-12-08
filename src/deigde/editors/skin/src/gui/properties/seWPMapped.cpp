@@ -484,7 +484,7 @@ pListener(seWPMappedListener::Ref::NewWith(*this)),
 pSkin(nullptr)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, panel, groupBox, form, formLine;
+	igdeContainer *content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));

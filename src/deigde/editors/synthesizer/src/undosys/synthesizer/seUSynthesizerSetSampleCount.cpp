@@ -52,8 +52,6 @@ pSynthesizer(NULL)
 	
 	try{
 		pSynthesizer = synthesizer;
-		pSynthesizer->AddReference();
-		
 		SetShortInfo("Synthesizer set sample count");
 		
 	}catch(const deException &){
@@ -85,7 +83,4 @@ void seUSynthesizerSetSampleCount::Redo(){
 //////////////////////
 
 void seUSynthesizerSetSampleCount::pCleanUp(){
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

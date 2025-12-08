@@ -30,7 +30,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceTarget;
+#include "../../conversation/target/ceTarget.h"
 class ceConversationActionList;
 class ceConversationTopic;
 
@@ -41,7 +41,7 @@ class ceConversationTopic;
  */
 class ceUCTargetSetName : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decString pOldName;
 	decString pNewName;

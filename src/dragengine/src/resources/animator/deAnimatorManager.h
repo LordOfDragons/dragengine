@@ -63,7 +63,7 @@ public:
 	deAnimator *GetRootAnimator() const;
 	
 	/** \brief Create new animator object. */
-	deAnimator *CreateAnimator();
+	deAnimator::Ref CreateAnimator();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

@@ -64,7 +64,7 @@ igdeGDCCTexture *igdeGDCCTextureList::GetAt(int index) const{
 
 igdeGDCCTexture *igdeGDCCTextureList::GetNamed(const char *name) const{
 	const int count = pTextures.GetCount();
-	igdeGDCCTexture *texture;
+	igdeGDCCTexture::Ref texture;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -135,22 +135,18 @@ void igdeGDCCTextureList::RemoveAll(){
 
 void igdeGDCCTextureList::SetToDeepCopyFrom(const igdeGDCCTextureList &list){
 	const int count = list.GetCount();
-	igdeGDCCTexture *texture = NULL;
+	igdeGDCCTexture::Ref texture = NULL;
 	
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			texture = new igdeGDCCTexture(*list.GetAt(i));
+			texture.TakeOver(new igdeGDCCTexture(*list.GetAt(i)));
 			Add(texture);
-			texture->FreeReference();
 			texture = NULL;
 		}
 		
 	}catch(const deException &){
-		if(texture){
-			texture->FreeReference();
-		}
 		throw;
 	}
 }

@@ -92,13 +92,11 @@ bool meObjectSelection::HasActive() const{
 void meObjectSelection::SetActive(meObject *object){
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = object;
 	
 	if(object){
-		object->AddReference();
 		object->SetActive(true);
 	}
 }

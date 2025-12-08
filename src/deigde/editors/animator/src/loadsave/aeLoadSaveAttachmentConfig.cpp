@@ -195,11 +195,11 @@ void aeLoadSaveAttachmentConfig::pReadConfiguration(const decXmlElementTag &root
 
 void aeLoadSaveAttachmentConfig::pReadAttachment(const decXmlElementTag &root, aeAnimator &animator){
 	const int elementCount = root.GetElementCount();
-	aeAttachment *attachment = NULL;
+	aeAttachment::Ref attachment = NULL;
 	int i;
 	
 	try{
-		attachment = new aeAttachment(animator.GetEnvironment());
+		attachment.TakeOver(new aeAttachment(animator.GetEnvironment()));
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -256,12 +256,7 @@ void aeLoadSaveAttachmentConfig::pReadAttachment(const decXmlElementTag &root, a
 		}
 		
 		animator.AddAttachment(attachment);
-		attachment->FreeReference();
-		
 	}catch(const deException &){
-		if(attachment){
-			attachment->FreeReference();
-		}
 		throw;
 	}
 }

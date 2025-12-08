@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeEmitter;
+#include "../../emitter/peeEmitter.h"
 
 
 
@@ -36,7 +36,7 @@ class peeEmitter;
  */
 class peeUEmitterSetBurstLifetime : public igdeUndo{
 private:
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	float pOldLifetime;
 	float pNewLifetime;

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 projUProfileSetWebsite::projUProfileSetWebsite(projProfile *profile, const char *newValue) :
-pProfile(NULL),
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetWebsite();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetWebsite::~projUProfileSetWebsite(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

@@ -112,11 +112,7 @@
 
 aeWindowMain::aeWindowMain(aeIGDEModule &module) :
 igdeEditorWindow(module),
-pListener(NULL),
-pLoadSaveSystem(NULL),
-pView3D(NULL),
-pWindowProperties(NULL),
-pAnimator(NULL)
+pLoadSaveSystem(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -124,7 +120,7 @@ pAnimator(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new aeWindowMainListener(*this);
+	pListener.TakeOver(new aeWindowMainListener(*this));
 	pLoadSaveSystem = new aeLoadSaveSystem(this);
 	pConfiguration = new aeConfiguration(*this);
 	
@@ -138,10 +134,10 @@ pAnimator(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties = new aeWindowProperties(*this);
+	pWindowProperties.TakeOver(new aeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pView3D = new aeView3D(*this);
+	pView3D.TakeOver(new aeView3D(*this));
 	splitted->AddChild(pView3D, igdeContainerSplitted::eaCenter);
 	
 	CreateNewAnimator();
@@ -154,14 +150,6 @@ aeWindowMain::~aeWindowMain(){
 	}
 	
 	SetAnimator(NULL);
-	
-	if(pView3D){
-		pView3D->FreeReference();
-	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
-	
 	pClipboard.ClearAll();
 	
 	if(pConfiguration){
@@ -169,10 +157,6 @@ aeWindowMain::~aeWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -205,13 +189,11 @@ void aeWindowMain::SetAnimator(aeAnimator *animator){
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
 		pAnimator->Dispose();
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
-		animator->AddReference();
 		animator->AddNotifier(pListener);
 		
 		pActionEditUndo->SetUndoSystem(animator->GetUndoSystem());

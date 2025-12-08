@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class sePropertyNodeGroup;
+#include "../../../../skin/property/node/sePropertyNodeGroup.h"
 
 
 
@@ -39,11 +39,11 @@ class sePropertyNodeGroup;
 class seUPNGroupMoveNodes : public igdeUndo{
 protected:
 	struct sNode{
-		sePropertyNode *node;
+		sePropertyNode::Ref node;
 		int index;
 	};
 	
-	sePropertyNodeGroup *pNode;
+	sePropertyNodeGroup::Ref pNode;
 	sNode *pChildren;
 	int pCount;
 	

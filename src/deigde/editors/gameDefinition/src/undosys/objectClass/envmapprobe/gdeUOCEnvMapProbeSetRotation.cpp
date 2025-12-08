@@ -42,7 +42,7 @@
 
 gdeUOCEnvMapProbeSetRotation::gdeUOCEnvMapProbeSetRotation(gdeObjectClass *objectClass,
 gdeOCEnvMapProbe *envMapProbe, const decVector &newValue) :
-pObjectClass(NULL),
+
 pEnvMapProbe(NULL)
 {
 	if(!objectClass || !envMapProbe){
@@ -55,19 +55,10 @@ pEnvMapProbe(NULL)
 	pNewValue = newValue;
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCEnvMapProbeSetRotation::~gdeUOCEnvMapProbeSetRotation(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

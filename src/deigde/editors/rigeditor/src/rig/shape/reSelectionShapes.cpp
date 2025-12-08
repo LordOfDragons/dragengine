@@ -122,9 +122,6 @@ void reSelectionShapes::AddShape(reRigShape *shape){
 	
 	pShapes[pShapeCount] = shape;
 	pShapeCount++;
-	
-	shape->AddReference();
-	
 	shape->SetSelected(true);
 	
 	pRig->NotifyShapeSelectedChanged(shape);
@@ -156,8 +153,6 @@ void reSelectionShapes::RemoveShape(reRigShape *shape){
 	}
 	
 	pRig->NotifyShapeSelectedChanged(shape);
-	
-	shape->FreeReference();
 }
 
 void reSelectionShapes::RemoveAllShapes(){

@@ -35,9 +35,9 @@
 
 class meObject;
 class meWindowProperties;
-class meWorld;
+#include "../../../../world/meWorld.h"
 class meWPSelection;
-class meWPSObjectShapeListener;
+#include "meWPSObjectShapeListener.h"
 
 class igdeGDProperty;
 
@@ -54,9 +54,9 @@ class decShapeCapsule;
 class meWPSObjectShape : public igdeContainerScroll{
 private:
 	meWPSelection &pWPSelection;
-	meWPSObjectShapeListener *pListener;
+	meWPSObjectShapeListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	bool pPreventUpdate;
 	
 	igdeTextField::Ref pEditObjectClass;
@@ -110,7 +110,7 @@ public:
 	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

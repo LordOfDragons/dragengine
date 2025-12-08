@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include "dragengine/common/math/decMath.h"
 
-class reRigShapeSphere;
+#include "../../../rig/shape/reRigShapeSphere.h"
 
 
 
@@ -37,7 +37,7 @@ class reRigShapeSphere;
  */
 class reUSetShapeSphereRadius : public igdeUndo{
 private:
-	reRigShapeSphere *pShape;
+	reRigShapeSphere::Ref pShape;
 	
 	float pOldRadius;
 	float pNewRadius;

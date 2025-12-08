@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyConstructedSetBitCount::seUPropertyConstructedSetBitCount(seProperty *property, int newValue) :
-pProperty(NULL),
+
 pNewValue(newValue)
 {
 	if(!property){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = property->GetNodeBitCount();
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertyConstructedSetBitCount::~seUPropertyConstructedSetBitCount(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

@@ -61,25 +61,11 @@ ceStrip *eyesLookAt, int newIndex){
 	SetShortInfo("Move EyesLookAt");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pEyesLA = eyesLookAt;
-	eyesLookAt->AddReference();
 }
 
 ceUCAASpeakEyesLAMove::~ceUCAASpeakEyesLAMove(){
-	if(pEyesLA){
-		pEyesLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

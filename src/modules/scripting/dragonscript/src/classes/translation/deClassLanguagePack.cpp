@@ -45,7 +45,7 @@
 /////////////////////
 
 struct sLPNatDat{
-	deLanguagePack *langPack;
+	deLanguagePack::Ref langPack;
 };
 
 
@@ -311,5 +311,4 @@ void deClassLanguagePack::PushLanguagePack(dsRunTime *rt, deLanguagePack *langPa
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sLPNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->langPack = langPack;
-	langPack->AddReference();
 }

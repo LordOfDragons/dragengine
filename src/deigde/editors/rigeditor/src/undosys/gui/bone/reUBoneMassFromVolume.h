@@ -30,7 +30,7 @@
 #include <dragengine/common/math/decMath.h>
 
 class decObjectOrderedSet;
-class reRig;
+#include "../../../rig/reRig.h"
 class reRigBone;
 
 
@@ -54,7 +54,7 @@ private:
 	
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	float pDensity;
 	

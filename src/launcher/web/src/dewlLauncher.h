@@ -75,7 +75,7 @@ private:
 	
 	decString pCanvasId;
 	decPoint pCanvasSize;
-	deLogger::Ref pEngineLogger, pEngineLoggerDebug;
+	deLogger *pEngineLogger, pEngineLoggerDebug;
 	
 	dewlLoggerJS::Ref pLoggerJS;
 	

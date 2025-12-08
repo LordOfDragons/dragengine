@@ -56,9 +56,7 @@ meUHTVRuleMove::meUHTVRuleMove(meHTVegetationLayer *vlayer, meHTVRule *rule){
 	SetMemoryConsumption(sizeof(meUHTVRuleMove));
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMove::~meUHTVRuleMove(){

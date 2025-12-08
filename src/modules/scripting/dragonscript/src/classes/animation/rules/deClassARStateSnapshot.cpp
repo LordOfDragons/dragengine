@@ -57,8 +57,8 @@
 /////////////////////
 
 struct sARSnapNatDat{
-	deAnimator *animator;
-	deAnimatorRuleStateSnapshot *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleStateSnapshot::Ref rule;
 };
 
 
@@ -82,7 +82,7 @@ void deClassARStateSnapshot::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleStateSnapshot;
+	nd.rule.TakeOver(new deAnimatorRuleStateSnapshot);
 	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
@@ -353,10 +353,6 @@ void deClassARStateSnapshot::AssignAnimator(dsRealObject *myself, deAnimator *an
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
 void deClassARStateSnapshot::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleStateSnapshot *rule){
@@ -379,13 +375,7 @@ void deClassARStateSnapshot::PushRule(dsRunTime *rt, deAnimator *animator, deAni
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
 		nd.rule = rule;
-		rule->AddReference();
-		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);
 		

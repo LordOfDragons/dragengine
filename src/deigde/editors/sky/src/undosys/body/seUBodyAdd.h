@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seBody;
-class seLayer;
+#include "../../sky/body/seBody.h"
+#include "../../sky/layer/seLayer.h"
 
 
 /**
@@ -36,8 +36,8 @@ class seLayer;
  */
 class seUBodyAdd : public igdeUndo{
 private:
-	seLayer *pLayer;
-	seBody *pBody;
+	seLayer::Ref pLayer;
+	seBody::Ref pBody;
 	
 	
 	

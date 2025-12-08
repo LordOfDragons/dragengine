@@ -337,15 +337,13 @@ public:
 
 gdeWPSOCParticleEmitter::gdeWPSOCParticleEmitter(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCParticleEmitterListener(*this);
+	pListener.TakeOver(new gdeWPSOCParticleEmitterListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -392,10 +390,6 @@ pGameDefinition(NULL)
 
 gdeWPSOCParticleEmitter::~gdeWPSOCParticleEmitter(){
 	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -410,14 +404,12 @@ void gdeWPSOCParticleEmitter::SetGameDefinition(gdeGameDefinition *gameDefinitio
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdatePropertyList();

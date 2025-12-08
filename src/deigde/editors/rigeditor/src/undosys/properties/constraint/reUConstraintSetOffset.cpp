@@ -51,14 +51,9 @@ reUConstraintSetOffset::reUConstraintSetOffset(reRigConstraint *constraint, cons
 	pNewOffset = newOffset;
 	
 	SetShortInfo("Constraint set offset");
-	
-	pConstraint->AddReference();
 }
 
 reUConstraintSetOffset::~reUConstraintSetOffset(){
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 }
 
 

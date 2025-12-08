@@ -44,23 +44,15 @@
 dealDialog::dealDialog(dealDisplay &display, const char *title) :
 pDisplay(display),
 
-pTitle(title),
-pContent(NULL),
-pPopupDialog(NULL)
+pTitle(title)
 {
-	pContent = new dealWidgetLayoutFlow(display, false, 0,
-		dealWidgetLayoutFlow::eltFill, dealWidgetLayoutFlow::eltFill);
+	pContent.TakeOver(new dealWidgetLayoutFlow(display, false, 0,
+		dealWidgetLayoutFlow::eltFill, dealWidgetLayoutFlow::eltFill));
 	pContent->SetSize(decPoint(display.GetWidth(), display.GetHeight()));
 	pContent->SetBackgroundColor(decColor(0.9f, 0.9f, 0.9f));
 }
 
 dealDialog::~dealDialog(){
-	if(pPopupDialog){
-		pPopupDialog->FreeReference();
-	}
-	if(pContent){
-		pContent->FreeReference();
-	}
 }
 
 
@@ -83,14 +75,11 @@ void dealDialog::SetPopupDialog(dealDialog *dialog){
 	
 	if(pPopupDialog){
 		pPopupDialog->OnDeactivate();
-		pPopupDialog->FreeReference();
 	}
 	
 	pPopupDialog = dialog;
 	
 	if(dialog){
-		dialog->AddReference();
-		
 		const decPoint screenSize(pDisplay.GetWidth(), pDisplay.GetHeight());
 		const decPoint popupSize(dialog->pContent->GetMinimumSize());
 		

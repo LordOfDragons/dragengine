@@ -50,13 +50,9 @@ saeUWordSetName::saeUWordSetName(saeWord *word, const char *newName){
 	pNewName = newName;
 	
 	pWord = word;
-	word->AddReference();
 }
 
 saeUWordSetName::~saeUWordSetName(){
-	if(pWord){
-		pWord->FreeReference();
-	}
 }
 
 

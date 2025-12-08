@@ -101,9 +101,9 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionAdd() const{ return pActionAdd; }
-	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
-	inline igdeAction *GetActionClear() const{ return pActionClear; }
+	inline const igdeAction::Ref &GetActionAdd() const{ return pActionAdd; }
+	inline const igdeAction::Ref &GetActionRemove() const{ return pActionRemove; }
+	inline const igdeAction::Ref &GetActionClear() const{ return pActionClear; }
 	/*@}*/
 	
 	
@@ -117,10 +117,10 @@ public:
 	
 protected:
 	/** \brief Combo box. */
-	inline igdeComboBoxFilter *GetComboBox() const{ return pComboBox; }
+	inline const igdeComboBoxFilter::Ref &GetComboBox() const{ return pComboBox; }
 	
 	/** \brief List box. */
-	inline igdeListBox *GetListBox() const{ return pListBox; }
+	inline const igdeListBox::Ref &GetListBox() const{ return pListBox; }
 };
 
 #endif

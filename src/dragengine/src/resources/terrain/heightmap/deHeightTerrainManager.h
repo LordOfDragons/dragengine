@@ -62,7 +62,7 @@ public:
 	deHeightTerrain *GetRootHeightTerrain() const;
 	
 	/** \brief Create height terrain. */
-	deHeightTerrain *CreateHeightTerrain(float sectorSize, int heightImageSize);
+	deHeightTerrain::Ref CreateHeightTerrain(float sectorSize, int heightImageSize);
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

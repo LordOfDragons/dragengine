@@ -99,13 +99,13 @@ public:
 	inline deglWindowMain *GetWindowMain() const{ return pWindowMain; }
 	
 	/** Game. */
-	inline delGame *GetGame() const{ return pGame; }
+	inline const delGame::Ref &GetGame() const{ return pGame; }
 	
 	/** Original game profile. */
-	inline delGameProfile *GetOriginalProfile() const{ return pProfileOrg; }
+	inline const delGameProfile::Ref &GetOriginalProfile() const{ return pProfileOrg; }
 	
 	/** Working game profile. */
-	inline delGameProfile *GetWorkingProfile() const{ return pProfileWork; }
+	inline const delGameProfile::Ref &GetWorkingProfile() const{ return pProfileWork; }
 	
 	/** Game is working. */
 	inline bool GetStatusWorking() const{ return pStatusWorking; }

@@ -45,20 +45,17 @@ deVFSContainer *container) :
 deVFSContainer(rootPath),
 pRedirectPath(redirectPath),
 pContainer(container),
-pVFS(NULL),
 pHoldVFSReference(false)
 {
 	if(!container){
 		DETHROW(deeInvalidParam);
 	}
-	container->AddReference();
 }
 
 deVFSRedirect::deVFSRedirect(const decPath &rootPath, const decPath &redirectPath,
 deVirtualFileSystem *vfs, bool holdVFSReference) :
 deVFSContainer(rootPath),
 pRedirectPath(redirectPath),
-pContainer(NULL),
 pVFS(vfs),
 pHoldVFSReference(false)
 {
@@ -68,16 +65,11 @@ pHoldVFSReference(false)
 	
 	if(holdVFSReference){
 		pHoldVFSReference = true;
-		vfs->AddReference();
 	}
 }
 
 deVFSRedirect::~deVFSRedirect(){
 	if(pVFS && pHoldVFSReference){
-		pVFS->FreeReference();
-	}
-	if(pContainer){
-		pContainer->FreeReference();
 	}
 }
 

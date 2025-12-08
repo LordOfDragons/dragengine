@@ -61,25 +61,11 @@ ceStrip *word, int newIndex){
 	SetShortInfo("Move Word");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 ceUCAASpeakWordMove::~ceUCAASpeakWordMove(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

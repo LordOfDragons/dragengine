@@ -42,7 +42,7 @@
 
 gdeUGDDPSetIdentifierGroup::gdeUGDDPSetIdentifierGroup(
 gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue) :
-pGameDefinition(NULL),
+
 pProperty(NULL)
 {
 	if(!gamedef || !property){
@@ -55,19 +55,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDDPSetIdentifierGroup::~gdeUGDDPSetIdentifierGroup(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

@@ -49,19 +49,10 @@ saeUWordAdd::saeUWordAdd(saeSAnimation *sanimation, saeWord *word){
 	SetShortInfo("Add Word");
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 saeUWordAdd::~saeUWordAdd(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

@@ -44,7 +44,7 @@
 
 
 struct sSynINatDat{
-	deSynthesizerInstance *instance;
+	deSynthesizerInstance::Ref instance;
 };
 
 
@@ -420,5 +420,4 @@ void deClassSynthesizerInstance::PushSynthesizerInstance(dsRunTime *rt, deSynthe
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sSynINatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->instance = instance;
-	instance->AddReference();
 }

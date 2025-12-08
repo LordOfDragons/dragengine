@@ -49,13 +49,9 @@ pSource(NULL)
 	SetShortInfo("Synthesizer source more connection targets");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceSynthConTargetMore::~seUSourceSynthConTargetMore(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

@@ -68,22 +68,22 @@ public:
 	deImage *GetRootImage() const;
 	
 	/** \brief Image with the given filename or NULL if not loaded yet. */
-	deImage *GetImageWith(const char *filename) const;
+	deImage::Ref GetImageWith(const char *filename) const;
 	
 	/** \brief Image with the given filename or NULL if not loaded yet. */
-	deImage *GetImageWith(deVirtualFileSystem *vfs, const char *filename) const;
+	deImage::Ref GetImageWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create new image with the given parameters. */
-	deImage *CreateImage(int width, int height, int depth, int componentCount, int bitCount);
+	deImage::Ref CreateImage(int width, int height, int depth, int componentCount, int bitCount);
 	
 	/** \brief Load image from file relative to the base path. */
-	deImage *LoadImage(const char *filename, const char *basePath);
+	deImage::Ref LoadImage(const char *filename, const char *basePath);
 	
 	/** \brief Load image from file relative to the base path. */
-	deImage *LoadImage(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
+	deImage::Ref LoadImage(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/** \brief Loads default image. */
-	deImage *LoadDefault();
+	deImage::Ref LoadDefault();
 	
 	/** \brief Saves image to the given file. */
 	void SaveImage(deImage *image, const char *filename);

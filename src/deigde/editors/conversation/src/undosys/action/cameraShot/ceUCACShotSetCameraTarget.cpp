@@ -52,19 +52,10 @@ ceUCACShotSetCameraTarget::ceUCACShotSetCameraTarget(ceConversationTopic *topic,
 	SetShortInfo("Set Camera Target");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCACShotSetCameraTarget::~ceUCACShotSetCameraTarget(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

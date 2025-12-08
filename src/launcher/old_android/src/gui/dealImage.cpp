@@ -81,32 +81,23 @@ void dealImage::pCleanUp(){
 }
 
 void dealImage::pLoadImage(const char *filename){
-	decMemoryFile *memoryFileImage = NULL;
-	decMemoryFileReader *tgaImageRader = NULL;
+	decMemoryFile::Ref memoryFileImage = NULL;
+	decMemoryFileReader::Ref tgaImageRader = NULL;
 	decTgaImage *tgaImage = NULL;
 	
 	try{
-		memoryFileImage = new decMemoryFile(filename);
+		memoryFileImage.TakeOver(new decMemoryFile(filename));
 		pDisplay.GetLauncher().LoadAsset(filename, *memoryFileImage);
 		
-		tgaImageRader = new decMemoryFileReader(memoryFileImage);
+		tgaImageRader.TakeOver(new decMemoryFileReader(memoryFileImage));
 		
 		tgaImage = new decTgaImage(*tgaImageRader);
 		pCreateTexture(*tgaImage);
 		
 		delete tgaImage;
-		tgaImageRader->FreeReference();
-		memoryFileImage->FreeReference();
-		
 	}catch(const deException &){
 		if(tgaImage){
 			delete tgaImage;
-		}
-		if(tgaImageRader){
-			tgaImageRader->FreeReference();
-		}
-		if(memoryFileImage){
-			memoryFileImage->FreeReference();
 		}
 		throw;
 	}

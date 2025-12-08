@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seProperty;
+#include "../../skin/property/seProperty.h"
 
 
 
@@ -38,7 +38,7 @@ class seProperty;
  */
 class seUPropertySetConstructedSize : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	decPoint3 pOldValue;
 	decPoint3 pNewValue;

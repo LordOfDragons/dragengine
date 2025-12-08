@@ -101,18 +101,13 @@ void igdeLoadTemplate::pReadTemplate(const decXmlElementTag &root, igdeTemplate 
 			atemplate.GetBaseGameDefinitions().Add(GetCDataString(*tag));
 			
 		}else if(tag->GetName() == "file"){
-			igdeTemplateFile *file = NULL;
+			igdeTemplateFile::Ref file = NULL;
 			
 			try{
-				file = new igdeTemplateFile;
+				file.TakeOver(new igdeTemplateFile);
 				pReadFile(*tag, *file);
 				atemplate.GetFiles().Add(file);
-				file->FreeReference();
-				
 			}catch(const deException &){
-				if(file){
-					file->FreeReference();
-				}
 				throw;
 			}
 			
@@ -155,18 +150,13 @@ void igdeLoadTemplate::pReadFile(const decXmlElementTag &root, igdeTemplateFile 
 			}
 			
 		}else if(tag->GetName() == "replace"){
-			igdeTemplateReplace *replace = NULL;
+			igdeTemplateReplace::Ref replace = NULL;
 			
 			try{
-				replace = new igdeTemplateReplace;
+				replace.TakeOver(new igdeTemplateReplace);
 				pReadReplace(*tag, *replace);
 				file.GetReplacements().Add(replace);
-				replace->FreeReference();
-				
 			}catch(const deException &){
-				if(replace){
-					replace->FreeReference();
-				}
 				throw;
 			}
 			

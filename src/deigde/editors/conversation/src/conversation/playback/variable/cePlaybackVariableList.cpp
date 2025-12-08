@@ -61,7 +61,7 @@ cePlaybackVariable *cePlaybackVariableList::GetAt(int index) const{
 
 cePlaybackVariable *cePlaybackVariableList::GetNamed(const char *name) const{
 	const int count = pVariables.GetCount();
-	cePlaybackVariable *variable;
+	cePlaybackVariable::Ref variable;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -110,16 +110,15 @@ bool cePlaybackVariableList::HasNamed(const char *name) const{
 }
 
 void cePlaybackVariableList::Set(const char *name, int value){
-	cePlaybackVariable *variable = GetNamed(name);
+	cePlaybackVariable::Ref variable = GetNamed(name);
 	
 	if(variable){
 		variable->SetValue(value);
 		
 	}else{
-		variable = new cePlaybackVariable(name, value);
+		variable.TakeOver(new cePlaybackVariable(name, value));
 		
 		pVariables.Add(variable);
-		variable->FreeReference();
 	}
 }
 

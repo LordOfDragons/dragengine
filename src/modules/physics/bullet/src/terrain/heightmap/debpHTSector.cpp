@@ -223,11 +223,6 @@ void debpHTSector::SectorChanged(){
 
 void debpHTSector::pCleanUp(){
 	if(pPhyBody) delete pPhyBody;
-	
-	if(pBulletShape){
-		pBulletShape->FreeReference();
-	}
-	
 	if(pPoints) delete [] pPoints;
 	if(pClusters) delete [] pClusters;
 }
@@ -265,7 +260,7 @@ void debpHTSector::pCreatePoints(){
 	pShape = new debpHeightTerrainShape(this);
 	pShape->setUserPointer(0); // means no shape index
 	
-	pBulletShape = new debpBulletShape(pShape);
+	pBulletShape.TakeOver(new debpBulletShape(pShape));
 	
 	// create body
 	pPhyBody = new debpPhysicsBody;

@@ -115,22 +115,14 @@ ceConversationAction *ceWPTMACreateAction::CreateAction(){
 		return new ceCATrigger;
 		
 	case ceConversationAction::eatIfElse:{
-		ceCAIfElse *ifElse = NULL;
-		ceCAIfElseCase *ifCase = NULL;
+		ceCAIfElse::Ref ifElse = NULL;
+		ceCAIfElseCase::Ref ifCase = NULL;
 		
 		try{
-			ifElse = new ceCAIfElse;
-			ifCase = new ceCAIfElseCase;
+			ifElse.TakeOver(new ceCAIfElse);
+			ifCase.TakeOver(new ceCAIfElseCase);
 			ifElse->GetCases().Add(ifCase);
-			ifCase->FreeReference();
-			
 		}catch(const deException &){
-			if(ifCase){
-				ifCase->FreeReference();
-			}
-			if(ifElse){
-				ifElse->FreeReference();
-			}
 			throw;
 		}
 		
@@ -138,22 +130,14 @@ ceConversationAction *ceWPTMACreateAction::CreateAction(){
 		}
 		
 	case ceConversationAction::eatPlayerChoice:{
-		ceCAPlayerChoice *playerChoice = NULL;
-		ceCAPlayerChoiceOption *option = NULL;
+		ceCAPlayerChoice::Ref playerChoice = NULL;
+		ceCAPlayerChoiceOption::Ref option = NULL;
 		
 		try{
-			playerChoice = new ceCAPlayerChoice;
-			option = new ceCAPlayerChoiceOption;
+			playerChoice.TakeOver(new ceCAPlayerChoice);
+			option.TakeOver(new ceCAPlayerChoiceOption);
 			playerChoice->GetOptions().Add(option);
-			option->FreeReference();
-			
 		}catch(const deException &){
-			if(option){
-				option->FreeReference();
-			}
-			if(playerChoice){
-				playerChoice->FreeReference();
-			}
 			throw;
 		}
 		

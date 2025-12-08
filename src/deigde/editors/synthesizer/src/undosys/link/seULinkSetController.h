@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLink;
-class seController;
+#include "../../synthesizer/link/seLink.h"
+#include "../../synthesizer/controller/seController.h"
 
 
 
@@ -37,10 +37,10 @@ class seController;
  */
 class seULinkSetController : public igdeUndo{
 private:
-	seLink *pLink;
+	seLink::Ref pLink;
 	
-	seController *pOldController;
-	seController *pNewController;
+	seController::Ref pOldController;
+	seController::Ref pNewController;
 	
 	
 	

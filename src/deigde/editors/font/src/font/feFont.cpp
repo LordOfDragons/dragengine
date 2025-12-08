@@ -73,7 +73,7 @@ igdeEditableEntity(environment)
 	try{
 		pGlyphSelection = new feFontGlyphSelection(this);
 		
-		pFontImage = new feFontImage(GetEngine());
+		pFontImage.TakeOver(new feFontImage(GetEngine()));
 		pFontImage->SetParentFont(this);
 		
 		SetChanged(false);
@@ -162,7 +162,6 @@ void feFont::Rebuild(){
 	if(pDirtyFont){
 		// free the old font
 		if(pEngFont){
-			pEngFont->FreeReference();
 			pEngFont = NULL;
 		}
 		
@@ -367,7 +366,6 @@ void feFont::pCleanUp(){
 	
 	if(pFontImage){
 		pFontImage->SetParentFont(NULL);
-		pFontImage->FreeReference();
 	}
 	
 	if(pGlyphSelection) delete pGlyphSelection;

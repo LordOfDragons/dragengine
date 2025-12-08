@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class sePropertyNode;
-class sePropertyNodeGroup;
+#include "../../../../skin/property/node/sePropertyNodeGroup.h"
 
 
 
@@ -37,8 +37,8 @@ class sePropertyNodeGroup;
  */
 class seUPNGroupAddNode : public igdeUndo{
 private:
-	sePropertyNodeGroup *pNode;
-	sePropertyNode *pChild;
+	sePropertyNodeGroup::Ref pNode;
+	sePropertyNode::Ref pChild;
 	
 	
 	

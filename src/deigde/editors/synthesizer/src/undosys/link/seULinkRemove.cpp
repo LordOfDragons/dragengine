@@ -48,8 +48,7 @@
 ////////////////////////////
 
 seULinkRemove::seULinkRemove(seLink *link) :
-pSynthesizer(NULL),
-pLink(NULL),
+
 
 pTargets(NULL),
 pTargetCount(0)
@@ -88,10 +87,7 @@ pTargetCount(0)
 	}
 	
 	pSynthesizer = synthesizer;
-	pSynthesizer->AddReference();
-	
 	pLink = link;
-	pLink->AddReference();
 }
 
 seULinkRemove::~seULinkRemove(){
@@ -135,13 +131,6 @@ void seULinkRemove::pCleanUp(){
 	
 	for(i=0; i<pTargetCount; i++){
 		pTargets[i].source->FreeReference();
-	}
-	
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
 	}
 }
 
@@ -204,8 +193,5 @@ void seULinkRemove::pAddTarget(int targetCount, seSource *source, seControllerTa
 	
 	pTargets[pTargetCount].source = source;
 	pTargets[pTargetCount].target = target;
-	
-	source->AddReference();
-	
 	pTargetCount++;
 }

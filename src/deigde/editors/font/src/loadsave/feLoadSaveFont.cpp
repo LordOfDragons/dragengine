@@ -121,7 +121,7 @@ public:
 	
 	virtual void BuildFont(deFont *font){
 		deImageManager &imageMgr = *pEngine->GetImageManager();
-		deImage *image = NULL;
+		deImage::Ref image = NULL;
 		decPath basePath;
 		
 		pModule->LoadFont(*pFile, *font);
@@ -133,7 +133,6 @@ public:
 			if(strlen(font->GetImagePath()) > 0){
 				image = imageMgr.LoadImage(font->GetImagePath(), basePath.GetPathUnix());
 				font->SetImage(image);
-				image->FreeReference();
 				image = NULL;
 			}
 			
@@ -149,8 +148,8 @@ void feLoadSaveFont::LoadFont(const char *virtualPath, feFont *font, decBaseFile
 	
 	feFontImage &fontImage = *font->GetFontImage();
 	deEngine *engine = pModule->GetGameEngine();
-	feFontGlyph *glyph = NULL;
-	deFont *engFont = NULL;
+	feFontGlyph::Ref glyph = NULL;
+	deFont::Ref engFont = NULL;
 	
 	cDirectFontLoader directFontLoader(engine, virtualPath, file, pModule);
 	
@@ -177,7 +176,7 @@ void feLoadSaveFont::LoadFont(const char *virtualPath, feFont *font, decBaseFile
 		for(i=0; i<glyphCount; i++){
 			const deFontGlyph &engGlyph = engFont->GetGlyphAt(i);
 			
-			glyph = new feFontGlyph;
+			glyph.TakeOver(new feFontGlyph);
 			glyph->SetCode(engGlyph.GetUnicode());
 			glyph->SetU(engGlyph.GetX());
 			glyph->SetV(engGlyph.GetY());
@@ -193,16 +192,8 @@ void feLoadSaveFont::LoadFont(const char *virtualPath, feFont *font, decBaseFile
 		}
 		
 		// time to release the font resource
-		engFont->FreeReference();
-		
 	}catch(const deException &e){
 		e.PrintError();
-		if(glyph){
-			glyph->FreeReference();
-		}
-		if(engFont){
-			engFont->FreeReference();
-		}
 		throw;
 	}
 }

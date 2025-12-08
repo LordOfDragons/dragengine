@@ -52,9 +52,7 @@ meUHTVLinkAdd::meUHTVLinkAdd(meHTVegetationLayer *vlayer, meHTVRLink *link){
 	SetMemoryConsumption(sizeof(meUHTVLinkAdd));
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pLink = link;
-	link->AddReference();
 }
 
 meUHTVLinkAdd::~meUHTVLinkAdd(){

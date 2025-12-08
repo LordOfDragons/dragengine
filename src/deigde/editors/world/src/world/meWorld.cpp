@@ -145,7 +145,7 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pEngColCollider = engine->GetColliderManager()->CreateColliderVolume();
 		
 		// create height terrain
-		pHeightTerrain = new meHeightTerrain(*this);
+		pHeightTerrain.TakeOver(new meHeightTerrain(*this));
 		
 		meHeightTerrainSector * const htsector = new meHeightTerrainSector(engine, decPoint());
 		pHeightTerrain->AddSector(htsector);
@@ -181,7 +181,7 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pActiveCamera = pFreeRoamCamera;
 		
 		// create sensors
-		pLumimeter = new meLumimeter(engine);
+		pLumimeter.TakeOver(new meLumimeter(engine));
 		pLumimeter->SetWorld(this);
 		
 		// create microphone
@@ -195,7 +195,7 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pDEWorld->AddMicrophone(pEngMicrophone);
 		
 		// create path find test
-		pPathFindTest = new mePathFindTest(engine);
+		pPathFindTest.TakeOver(new mePathFindTest(engine));
 		pPathFindTest->SetWorld(this);
 		
 		pMusic.TakeOver(new meMusic(*this));
@@ -918,8 +918,6 @@ void meWorld::AddNotifier(meWorldNotifier *notifier){
 	
 	pNotifiers[pNotifierCount] = notifier;
 	pNotifierCount++;
-	
-	notifier->AddReference();
 }
 
 void meWorld::RemoveNotifier(meWorldNotifier *notifier){
@@ -930,8 +928,6 @@ void meWorld::RemoveNotifier(meWorldNotifier *notifier){
 		pNotifiers[i - 1] = pNotifiers[i];
 	}
 	pNotifierCount--;
-	
-	notifier->FreeReference();
 }
 
 void meWorld::RemoveAllNotifiers(){
@@ -1795,11 +1791,6 @@ void meWorld::pCleanUp(){
 	if(pFreeRoamCamera){
 		delete pFreeRoamCamera;
 	}
-	
-	if(pHeightTerrain){
-		pHeightTerrain->FreeReference();
-	}
-	
 	if(pWeather){
 		delete pWeather;
 	}
@@ -1807,29 +1798,18 @@ void meWorld::pCleanUp(){
 	pMusic = nullptr;
 	if(pPathFindTest){
 		pPathFindTest->SetWorld(nullptr);
-		pPathFindTest->FreeReference();
 	}
 	if(pLumimeter){
 		pLumimeter->SetWorld(nullptr);
-		pLumimeter->FreeReference();
 	}
 	
 	if(pGuiParams){
 		delete pGuiParams;
 	}
-	
-	if(pEngColCollider){
-		pEngColCollider->FreeReference();
-	}
-	
 	pBgObject = nullptr;
 	if(pSky){
 		delete pSky;
 	}
-	if(pEngForceField){
-		pEngForceField->FreeReference();
-	}
-	
 	if(pDEWorld){
 		if(pEngMicrophone){
 			if(GetEngine()->GetAudioSystem()->GetActiveMicrophone() == pEngMicrophone){
@@ -1837,10 +1817,7 @@ void meWorld::pCleanUp(){
 			}
 			
 			pDEWorld->RemoveMicrophone(pEngMicrophone);
-			pEngMicrophone->FreeReference();
 		}
-		
-		pDEWorld->FreeReference();
 	}
 }
 

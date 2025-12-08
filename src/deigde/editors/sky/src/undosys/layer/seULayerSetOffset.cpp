@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seULayerSetOffset::seULayerSetOffset(seLayer *layer, const decVector &newOffset) :
-pLayer(NULL),
+
 pNewOffset(newOffset)
 {
 	if(!layer){
@@ -52,13 +52,9 @@ pNewOffset(newOffset)
 	pOldOffset = layer->GetOffset();
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerSetOffset::~seULayerSetOffset(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

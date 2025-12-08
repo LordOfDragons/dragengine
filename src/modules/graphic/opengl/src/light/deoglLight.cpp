@@ -87,7 +87,6 @@
 deoglLight::deoglLight(deGraphicOpenGl &ogl, const deLight &light) :
 pOgl(ogl),
 pLight(light),
-pRLight(NULL),
 pSkinStateController(NULL),
 pParentWorld(NULL),
 pDynamicSkin(NULL),
@@ -127,7 +126,7 @@ pRequiresUpdateEverySync(false),
 pLLSyncWorld(this)
 {
 	try{
-		pRLight = new deoglRLight(ogl.GetRenderThread());
+		pRLight.TakeOver(new deoglRLight(ogl.GetRenderThread()));
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -596,11 +595,6 @@ void deoglLight::pCleanUp(){
 	if(pSkinStateController){
 		delete pSkinStateController;
 	}
-	
-	if(pRLight){
-		pRLight->FreeReference();
-	}
-	
 	if(pLightCanvas){
 		pLightCanvas->RemoveListener(this);
 	}

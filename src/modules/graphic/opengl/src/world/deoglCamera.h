@@ -28,7 +28,7 @@
 #include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicCamera.h>
 
-class deoglRCamera;
+#include "deoglRCamera.h"
 class deoglWorld;
 
 class deGraphicOpenGl;
@@ -43,7 +43,7 @@ class deoglCamera : public deBaseGraphicCamera{
 private:
 	deGraphicOpenGl &pOgl;
 	const deCamera &pCamera;
-	deoglRCamera *pRCamera;
+	deoglRCamera::Ref pRCamera;
 	
 	deoglWorld *pParentWorld;
 	
@@ -81,7 +81,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render camera. */
-	inline deoglRCamera *GetRCamera() const{ return pRCamera; }
+	inline const deoglRCamera::Ref &GetRCamera() const{ return pRCamera; }
 	
 	/** Camera. */
 	inline const deCamera &GetCamera() const{ return pCamera; }

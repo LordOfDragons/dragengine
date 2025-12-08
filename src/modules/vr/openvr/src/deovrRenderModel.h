@@ -74,7 +74,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** Model. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	
 	/** Texture ID. */
 	inline vr::TextureID_t GetTextureID() const{ return pTextureID; }

@@ -114,10 +114,10 @@ void reLSRig::LoadRig(reRig *rig, decBaseFileReader *file){
 	if(!rig || !file) DETHROW(deeInvalidParam);
 	deEngine *engine = pModule->GetGameEngine();
 	reCreateRigShape createRigShape(engine);
-	reRigConstraint *constraint = NULL;
-	reRigBone *rigBone = NULL;
+	reRigConstraint::Ref constraint = NULL;
+	reRigBone::Ref rigBone = NULL;
 	int c, constraintCount;
-	deRig *engRig = NULL;
+	deRig::Ref engRig = NULL;
 	int s, shapeCount;
 	int b, boneCount;
 	int index;
@@ -138,7 +138,7 @@ void reLSRig::LoadRig(reRig *rig, decBaseFileReader *file){
 			deRigBone &engRigBone = engRig->GetBoneAt(b);
 			
 			// create a new rig bone to take over the values
-			rigBone = new reRigBone(engine);
+			rigBone.TakeOver(new reRigBone(engine));
 			
 			// copy over the values
 			rigBone->SetName(engRigBone.GetName());
@@ -180,7 +180,7 @@ void reLSRig::LoadRig(reRig *rig, decBaseFileReader *file){
 			for(c=0; c<constraintCount; c++){
 				deRigConstraint &engConstraint = engRigBone.GetConstraintAt(c);
 				
-				constraint = new reRigConstraint(engine);
+				constraint.TakeOver(new reRigConstraint(engine));
 				
 				constraint->SetPosition(engConstraint.GetReferencePosition());
 				constraint->SetOrientation(decMatrix::CreateFromQuaternion(engConstraint.GetReferenceOrientation()).GetEulerAngles() * RAD2DEG);
@@ -243,8 +243,6 @@ void reLSRig::LoadRig(reRig *rig, decBaseFileReader *file){
 		}
 		
 		// time to release the rig resource
-		engRig->FreeReference();
-		
 	}catch(const deException &){
 		//e.PrintError();
 		if(constraint) constraint->FreeReference();

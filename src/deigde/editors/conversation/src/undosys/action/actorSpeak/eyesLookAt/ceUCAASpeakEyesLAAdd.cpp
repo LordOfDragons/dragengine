@@ -58,25 +58,11 @@ ceUCAASpeakEyesLAAdd::ceUCAASpeakEyesLAAdd(ceConversationTopic *topic, ceCAActor
 	SetShortInfo("Actor Speak Add EyesLookAt");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pEyesLA = eyesLookAt;
-	eyesLookAt->AddReference();
 }
 
 ceUCAASpeakEyesLAAdd::~ceUCAASpeakEyesLAAdd(){
-	if(pEyesLA){
-		pEyesLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

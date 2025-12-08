@@ -55,7 +55,7 @@ pTargetSelect(copy.pTargetSelect),
 pTreeListExpanded(copy.pTreeListExpanded)
 {
 	const int sourceCount = copy.pSources.GetCount();
-	seSource *source = NULL;
+	seSource::Ref source = NULL;
 	int i;
 	
 	try{
@@ -63,14 +63,10 @@ pTreeListExpanded(copy.pTreeListExpanded)
 			source = copy.pSources.GetAt(i)->CreateCopy();
 			pSources.Add(source);
 			source->SetParentGroup(this);
-			source->FreeReference();
 			source = NULL;
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 }
@@ -262,8 +258,8 @@ void seSourceGroup::RemoveLinksFromAllTargets(){
 
 
 deSynthesizerSource *seSourceGroup::CreateEngineSource(){
-	deSynthesizerSourceGroup *engSource = NULL;
-	deSynthesizerSource *subEngSource = NULL;
+	deSynthesizerSourceGroup::Ref engSource = NULL;
+	deSynthesizerSource::Ref subEngSource = NULL;
 	const int count = pSources.GetCount();
 	int i;
 	
@@ -272,7 +268,7 @@ deSynthesizerSource *seSourceGroup::CreateEngineSource(){
 	}
 	
 	try{
-		engSource = new deSynthesizerSourceGroup;
+		engSource.TakeOver(new deSynthesizerSourceGroup);
 		
 		InitEngineSource(engSource);
 		
@@ -282,7 +278,6 @@ deSynthesizerSource *seSourceGroup::CreateEngineSource(){
 			subEngSource = source->CreateEngineSource();
 			engSource->AddSource(subEngSource);
 			source->SetEngineSource(subEngSource);
-			subEngSource->FreeReference();
 			subEngSource = NULL;
 		}
 		
@@ -291,12 +286,6 @@ deSynthesizerSource *seSourceGroup::CreateEngineSource(){
 		pTargetSelect.UpdateEngineTarget(GetSynthesizer(), engSource->GetTargetSelect());
 		
 	}catch(const deException &){
-		if(subEngSource){
-			subEngSource->FreeReference();
-		}
-		if(engSource){
-			engSource->FreeReference();
-		}
 		throw;
 	}
 	
@@ -361,7 +350,7 @@ seSourceGroup &seSourceGroup::operator=(const seSourceGroup &copy){
 	pTargetSelect = copy.pTargetSelect;
 	
 	const int sourceCount = copy.pSources.GetCount();
-	seSource *source = NULL;
+	seSource::Ref source = NULL;
 	int i;
 	
 	RemoveAllSources();
@@ -370,14 +359,10 @@ seSourceGroup &seSourceGroup::operator=(const seSourceGroup &copy){
 			source = copy.pSources.GetAt(i)->CreateCopy();
 			AddSource(source);
 			source->SetParentGroup(this);
-			source->FreeReference();
 			source = NULL;
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	

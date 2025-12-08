@@ -32,9 +32,9 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSynthesizer;
+#include "../../synthesizer/seSynthesizer.h"
 class seViewSynthesizer;
-class seWPSynthesizerListener;
+#include "seWPSynthesizerListener.h"
 
 
 
@@ -44,9 +44,9 @@ class seWPSynthesizerListener;
 class seWPSynthesizer : public igdeContainerScroll{
 private:
 	seViewSynthesizer &pViewSynthesizer;
-	seWPSynthesizerListener *pListener;
+	seWPSynthesizerListener::Ref pListener;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	igdeAction::Ref pActionPlay;
 	igdeAction::Ref pActionPause;
@@ -86,7 +86,7 @@ public:
 	inline seViewSynthesizer &GetViewSynthesizer() const{ return pViewSynthesizer; }
 	
 	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline const seSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
@@ -102,9 +102,9 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionPlay() const{ return pActionPlay; }
-	inline igdeAction *GetActionPause() const{ return pActionPause; }
-	inline igdeAction *GetActionStop() const{ return pActionStop; }
+	inline const igdeAction::Ref &GetActionPlay() const{ return pActionPlay; }
+	inline const igdeAction::Ref &GetActionPause() const{ return pActionPause; }
+	inline const igdeAction::Ref &GetActionStop() const{ return pActionStop; }
 	/*@}*/
 };
 

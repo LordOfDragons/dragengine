@@ -82,8 +82,7 @@ public:
 
 saeViewSAnimation::saeViewSAnimation(saeWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pSAnimation(NULL)
+pWindowMain(windowMain)
 {
 	pFontStats.TakeOver(windowMain.GetEngine()->GetFontManager()->
 		LoadFont("/igde/fonts/sans_10.defont", "/"));
@@ -113,15 +112,9 @@ void saeViewSAnimation::SetSAnimation(saeSAnimation *sanimation){
 	pCameraInteraction->SetCamera(NULL);
 	
 	SetRenderWorld(NULL);
-	
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
-	
 	pSAnimation = sanimation;
 	
 	if(sanimation){
-		sanimation->AddReference();
 		SetRenderWorld(sanimation->GetCamera()->GetEngineCamera());
 		pCameraInteraction->SetCamera(sanimation->GetCamera());
 	}

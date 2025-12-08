@@ -49,13 +49,9 @@ aeURuleBTransSetEnablePos::aeURuleBTransSetEnablePos(aeRuleBoneTransformator *ru
 	SetShortInfo("Bone transformator toggle enable position");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleBTransSetEnablePos::~aeURuleBTransSetEnablePos(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

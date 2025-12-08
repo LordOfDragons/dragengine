@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class sePropertyNodeImage;
+#include "../../../../skin/property/node/sePropertyNodeImage.h"
 
 
 
@@ -38,7 +38,7 @@ class sePropertyNodeImage;
  */
 class seUPropertyNodeImageSetRepeat : public igdeUndo{
 private:
-	sePropertyNodeImage *pNode;
+	sePropertyNodeImage::Ref pNode;
 	
 	decPoint pOldValue;
 	decPoint pNewValue;

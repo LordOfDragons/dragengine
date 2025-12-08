@@ -118,8 +118,7 @@ pTailConnection(nullptr),
 pHeadServer(nullptr),
 pTailServer(nullptr),
 pHeadSocket(nullptr),
-pTailSocket(nullptr),
-pDatagram(nullptr)
+pTailSocket(nullptr)
 #ifdef OS_W32
 ,pWSAStartupCalled(false)
 #endif
@@ -166,7 +165,7 @@ bool deNetworkBasic::Init(){
 		#endif
 		
 		// create shared datagram
-		pDatagram = new deNetworkMessage;
+		pDatagram.TakeOver(new deNetworkMessage);
 		pDatagram->SetDataLength(1024);
 		
 		// create receive address
@@ -208,7 +207,6 @@ void deNetworkBasic::CleanUp(){
 	}*/
 	
 	if(pDatagram){
-		pDatagram->FreeReference();
 		pDatagram = NULL;
 	}
 	

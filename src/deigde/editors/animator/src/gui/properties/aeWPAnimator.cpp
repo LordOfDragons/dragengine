@@ -525,15 +525,13 @@ public:
 
 aeWPAnimator::aeWPAnimator(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(nullptr),
-pAnimator(nullptr)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
-	pListener = new aeWPAnimatorListener(*this);
+	pListener.TakeOver(new aeWPAnimatorListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -576,10 +574,6 @@ pAnimator(nullptr)
 
 aeWPAnimator::~aeWPAnimator(){
 	SetAnimator(nullptr);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -594,14 +588,12 @@ void aeWPAnimator::SetAnimator(aeAnimator *animator){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
 	}
 	
 	UpdateRigBoneList();

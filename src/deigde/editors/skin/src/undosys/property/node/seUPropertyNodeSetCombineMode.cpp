@@ -40,7 +40,7 @@
 
 seUPropertyNodeSetCombineMode::seUPropertyNodeSetCombineMode(
 	sePropertyNode *node, deSkinPropertyNode::eCombineModes newValue) :
-pNode(NULL),
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = node->GetCombineMode();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetCombineMode::~seUPropertyNodeSetCombineMode(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

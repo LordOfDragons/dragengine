@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seBody;
+#include "../../sky/body/seBody.h"
 
 
 /**
@@ -37,7 +37,7 @@ class seBody;
  */
 class seUBodySetSize : public igdeUndo{
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decVector2 pOldSize;
 	decVector2 pNewSize;

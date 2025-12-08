@@ -53,9 +53,7 @@ meUHTVRuleResultSetVar::meUHTVRuleResultSetVar(meHTVegetationLayer *vlayer, meHT
 	pNewVar = nvar;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleResultSetVar::~meUHTVRuleResultSetVar(){

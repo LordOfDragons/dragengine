@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class projProject;
-class projProfile;
+#include "../../project/projProject.h"
+#include "../../project/profile/projProfile.h"
 
 
 
@@ -38,8 +38,8 @@ class projProfile;
  */
 class projUProfileRemove : public igdeUndo{
 private:
-	projProject *pProject;
-	projProfile *pProfile;
+	projProject::Ref pProject;
+	projProfile::Ref pProfile;
 	
 	
 	

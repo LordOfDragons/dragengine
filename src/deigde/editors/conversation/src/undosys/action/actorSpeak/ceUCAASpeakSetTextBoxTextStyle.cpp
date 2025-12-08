@@ -55,19 +55,10 @@ ceCAActorSpeak *actorSpeak, const char *newText){
 	SetShortInfo("Actor speak text box text style");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetTextBoxTextStyle::~ceUCAASpeakSetTextBoxTextStyle(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

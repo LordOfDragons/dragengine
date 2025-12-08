@@ -76,8 +76,7 @@ public:
 
 seViewSky::seViewSky(seWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pSky(NULL)
+pWindowMain(windowMain)
 {
 	pCameraInteraction.TakeOver(new cCameraInteraction(*this));
 	
@@ -103,15 +102,9 @@ void seViewSky::SetSky(seSky *sky){
 	
 	pCameraInteraction->SetCamera(NULL);
 	SetRenderWorld(NULL);
-	
-	if(pSky){
-		pSky->FreeReference();
-	}
-	
 	pSky = sky;
 	
 	if(sky){
-		sky->AddReference();
 		SetRenderWorld(sky->GetCamera()->GetEngineCamera());
 		pCameraInteraction->SetCamera(sky->GetCamera());
 	}

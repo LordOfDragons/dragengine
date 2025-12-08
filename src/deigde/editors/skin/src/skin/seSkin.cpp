@@ -104,7 +104,7 @@ pPreviewMode(epmModel)
 	deEngine * const engine = GetEngine();
 	
 	deAnimatorController *amController = NULL;
-	deAnimatorRuleAnimation *amRuleAnim = NULL;
+	deAnimatorRuleAnimation::Ref amRuleAnim = NULL;
 	deAnimatorLink *engLink = NULL;
 	
 	pEngWorld = NULL;
@@ -147,14 +147,13 @@ pPreviewMode(epmModel)
 		pEngAnimator->AddLink(engLink);
 		engLink = NULL;
 		
-		amRuleAnim = new deAnimatorRuleAnimation;
+		amRuleAnim.TakeOver(new deAnimatorRuleAnimation);
 		amRuleAnim->SetEnabled(true);
 		
 		amRuleAnim->GetTargetMoveTime().AddLink(0);
 		
 		pEngAnimator->AddRule(amRuleAnim);
 		pEngAnimatorAnim = amRuleAnim;
-		amRuleAnim->FreeReference();
 		amRuleAnim = NULL;
 		
 		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
@@ -205,9 +204,6 @@ pPreviewMode(epmModel)
 		pDynamicSkin = new seDynamicSkin(this);
 		
 	}catch(const deException &){
-		if(amRuleAnim){
-			amRuleAnim->FreeReference();
-		}
 		if(engLink){
 			delete engLink;
 		}
@@ -529,13 +525,11 @@ void seSkin::SetActiveMapped(seMapped *mapped){
 	
 	if(pActiveMapped){
 		pActiveMapped->SetActive(false);
-		pActiveMapped->FreeReference();
 	}
 	
 	pActiveMapped = mapped;
 	
 	if(mapped){
-		mapped->AddReference();
 		mapped->SetActive(true);
 	}
 	
@@ -601,13 +595,11 @@ void seSkin::SetActiveTexture(seTexture *texture){
 	if(texture != pActiveTexture){
 		if(pActiveTexture){
 			pActiveTexture->SetActive(false);
-			pActiveTexture->FreeReference();
 		}
 		
 		pActiveTexture = texture;
 		
 		if(texture){
-			texture->AddReference();
 			texture->SetActive(true);
 		}
 		
@@ -954,19 +946,10 @@ void seSkin::pCleanUp(){
 	
 	SetActiveMapped(nullptr);
 	RemoveAllMapped();
-	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetComponent(NULL);
-		pEngAnimatorInstance->FreeReference();
 	}
 	pEngAnimatorAnim = nullptr;
-	if(pEngAnimator){
-		pEngAnimator->FreeReference();
-	}
-	
 	if(pDynamicSkin){
 		delete pDynamicSkin;
 	}
@@ -977,9 +960,7 @@ void seSkin::pCleanUp(){
 		}
 		if(pEngComponent && pEngComponent->GetParentWorld()){
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 		}
-		pEngWorld->FreeReference();
 	}
 }
 
@@ -1038,8 +1019,8 @@ void seSkin::pCreateParticleEmitter(){
 
 
 void seSkin::pUpdateComponent(){
-	deModel *model = NULL;
-	deRig *rig = NULL;
+	deModel::Ref model = NULL;
+	deRig::Ref rig = NULL;
 	
 	// load model and rig
 	try{
@@ -1073,7 +1054,6 @@ void seSkin::pUpdateComponent(){
 			
 		}else if(pEngComponent){
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 			pEngComponent = NULL;
 		}
 		
@@ -1122,7 +1102,7 @@ void seSkin::pUpdateComponent(){
 }
 
 void seSkin::pUpdateAnimator(){
-	deAnimation *animation = NULL;
+	deAnimation::Ref animation = NULL;
 	
 	try{
 		if(strlen(pAnimationPath) > 0){
@@ -1137,22 +1117,14 @@ void seSkin::pUpdateAnimator(){
 		pEngAnimator->SetAnimation(animation);
 		
 	}catch(const deException &){
-		if(animation){
-			animation->FreeReference();
-		}
 		throw;
 	}
-	
-	if(animation){
-		animation->FreeReference();
-	}
-	
 	pUpdateAnimatorMove();
 }
 
 void seSkin::pUpdateAnimatorMove(){
 	deAnimationMove *move = NULL;
-	deAnimation *animation;
+	deAnimation::Ref animation;
 	int index;
 	
 	pEngAnimatorAnim->SetMoveName(pMoveName);

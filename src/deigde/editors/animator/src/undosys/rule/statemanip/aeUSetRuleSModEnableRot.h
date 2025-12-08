@@ -32,7 +32,7 @@
 #include "dragengine/common/math/decMath.h"
 
 // predefinitions
-class aeRuleStateManipulator;
+#include "../../../animator/rule/aeRuleStateManipulator.h"
 
 
 
@@ -43,7 +43,7 @@ class aeRuleStateManipulator;
  */
 class aeUSetRuleSModEnableRot : public igdeUndo{
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

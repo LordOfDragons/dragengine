@@ -52,19 +52,10 @@ ceUCActionSetDelay::ceUCActionSetDelay(ceConversationTopic *topic, ceConversatio
 	SetShortInfo("Action Set Delay");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCActionSetDelay::~ceUCActionSetDelay(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -54,29 +54,11 @@ peeUParameterSetControllerValue::peeUParameterSetControllerValue(peeType *type, 
 	SetShortInfo("Set Parameter Value Curve Controller");
 	
 	pOldController = parameter->GetControllerValue();
-	if(pOldController){
-		pOldController->AddReference();
-	}
-	
 	pNewController = newController;
-	if(pNewController){
-		pNewController->AddReference();
-	}
-	
 	pType = type;
-	type->AddReference();
 }
 
 peeUParameterSetControllerValue::~peeUParameterSetControllerValue(){
-	if(pNewController){
-		pNewController->FreeReference();
-	}
-	if(pOldController){
-		pOldController->FreeReference();
-	}
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

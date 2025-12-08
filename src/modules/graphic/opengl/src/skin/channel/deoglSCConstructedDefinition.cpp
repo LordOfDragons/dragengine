@@ -66,16 +66,14 @@ enum eNodeTypes{
 deoglSCConstructedDefinition::deoglSCConstructedDefinition(const deEngine &engine,
 decMemoryFile *definition, decMemoryFile *verify, const deSkinPropertyConstructed &property) :
 pEngine(engine),
-pDefinition(NULL),
-pVerify(NULL),
 pCacheValid(true)
 {
 	if(!definition || !verify){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pDefinition = new decMemoryFileWriter(definition, false);
-	pVerify = new decMemoryFileWriter(verify, false);
+	pDefinition.TakeOver(new decMemoryFileWriter(definition, false));
+	pVerify.TakeOver(new decMemoryFileWriter(verify, false));
 	
 	// property contains properties not covered in the content but required for constructing.
 	// these properties are stored first
@@ -106,12 +104,6 @@ pCacheValid(true)
 }
 
 deoglSCConstructedDefinition::~deoglSCConstructedDefinition(){
-	if(pVerify){
-		pVerify->FreeReference();
-	}
-	if(pDefinition){
-		pDefinition->FreeReference();
-	}
 }
 
 

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 projUProfileSetAliasIdentifier::projUProfileSetAliasIdentifier(projProfile *profile, const char *newValue) :
-pProfile(NULL),
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetAliasIdentifier();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetAliasIdentifier::~projUProfileSetAliasIdentifier(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

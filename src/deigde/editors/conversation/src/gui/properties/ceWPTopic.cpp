@@ -727,8 +727,6 @@ public:
 ceWPTopic::ceWPTopic(ceWindowProperties &windowProperties) :
 igdeContainerFlow(windowProperties.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esLast),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pConversation(NULL),
 
 pModelTreeActions(NULL),
 pPanelACameraShot(NULL),
@@ -736,7 +734,7 @@ pPanelAMusic(NULL),
 pPanelAActorSpeak(NULL),
 pPanelAIfElse(NULL),
 pPanelAPlayerChoice(NULL),
-pPanelAStopConversation(NULL),
+pPanelASto
 pPanelAStopTopic(NULL),
 pPanelASnippet(NULL),
 pPanelASetVariable(NULL),
@@ -762,9 +760,9 @@ pPanelCTrigger(NULL)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref groupBox, formLine;
+	igdeContainer *groupBox, formLine;
 	
-	pListener = new ceWPTopicListener(*this);
+	pListener.TakeOver(new ceWPTopicListener(*this));
 	
 	
 	// conversation
@@ -808,7 +806,7 @@ pPanelCTrigger(NULL)
 	pSwitcher->AddChild(panel);
 	panel.TakeOver(pPanelAPlayerChoice = new ceWPAPlayerChoice(*this));
 	pSwitcher->AddChild(panel);
-	panel.TakeOver(pPanelAStopConversation = new ceWPAStopConversation(*this));
+	panel.TakeOver(pPanelAStopConversation.TakeOver(new ceWPAStopConversation(*this)));
 	pSwitcher->AddChild(panel);
 	panel.TakeOver(pPanelAStopTopic = new ceWPAStopTopic(*this));
 	pSwitcher->AddChild(panel);
@@ -859,10 +857,6 @@ pPanelCTrigger(NULL)
 
 ceWPTopic::~ceWPTopic(){
 	SetConversation(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -883,15 +877,12 @@ void ceWPTopic::SetConversation(ceConversation *conversation){
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;
 	
 	if(conversation){
 		conversation->AddListener(pListener);
-		conversation->AddReference();
-		
 		pModelTreeActions = new ceWPTTreeModel(pWindowProperties.GetWindowMain(), conversation, *pListener);
 		pModelTreeActions->SetTreeList(pTreeActions);
 		

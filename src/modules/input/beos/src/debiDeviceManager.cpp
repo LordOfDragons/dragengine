@@ -55,9 +55,7 @@
 ////////////////////////////
 
 debiDeviceManager::debiDeviceManager(deBeOSInput &module) :
-pModule(module),
-pMouse(NULL),
-pKeyboard(NULL)
+pModule(module)
 {
 	try{
 		pCreateDevices();
@@ -193,22 +191,16 @@ decString debiDeviceManager::NormalizeID(const char *id){
 
 void debiDeviceManager::pCleanUp(){
 	pDevices.RemoveAll();
-	if(pKeyboard){
-		pKeyboard->FreeReference();
-	}
-	if(pMouse){
-		pMouse->FreeReference();
-	}
 }
 
 
 
 void debiDeviceManager::pCreateDevices(){
-	pMouse = new debiDeviceMouse(pModule);
+	pMouse.TakeOver(new debiDeviceMouse(pModule));
 	pMouse->SetIndex(pDevices.GetCount());
 	pDevices.Add(pMouse);
 	
-	pKeyboard = new debiDeviceKeyboard(pModule);
+	pKeyboard.TakeOver(new debiDeviceKeyboard(pModule));
 	pKeyboard->SetIndex(pDevices.GetCount());
 	pDevices.Add(pKeyboard);
 	
@@ -227,17 +219,12 @@ void debiDeviceManager::pCreateJoystickDevices(){
 			DETHROW(deeInvalidParam);
 		}
 		
-		debiDeviceJoystick *joystick = NULL;
+		debiDeviceJoystick::Ref joystick = NULL;
 		try{
-			joystick = new debiDeviceJoystick(pModule, name);
+			joystick.TakeOver(new debiDeviceJoystick(pModule, name));
 			joystick->SetIndex(pDevices.GetCount());
 			pDevices.Add(joystick);
-			joystick->FreeReference();
-			
 		}catch(const deException &){
-			if(joystick){
-				joystick->FreeReference();
-			}
 			throw;
 		}
 	}

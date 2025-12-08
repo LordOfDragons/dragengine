@@ -72,21 +72,12 @@ ceUCActionPaste(topic, actions, index)
 	}
 	
 	pIfElse = ifElse;
-	ifElse->AddReference();
-	
 	if(ifcase){
 		pCase = ifcase;
-		ifcase->AddReference();
 	}
 }
 
 ceUCAIfElsePaste::~ceUCAIfElsePaste(){
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
 }
 
 

@@ -64,7 +64,7 @@ igdeTriggerTarget *igdeTriggerTargetList::GetNamed(const char *name) const{
 	}
 	
 	const int count = pTargets.GetCount();
-	igdeTriggerTarget *target;
+	igdeTriggerTarget::Ref target;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -78,12 +78,11 @@ igdeTriggerTarget *igdeTriggerTargetList::GetNamed(const char *name) const{
 }
 
 igdeTriggerTarget *igdeTriggerTargetList::GetNamedAddIfMissing(const char *name){
-	igdeTriggerTarget *target = GetNamed(name);
+	igdeTriggerTarget::Ref target = GetNamed(name);
 	
 	if(!target){
-		target = new igdeTriggerTarget(name);
+		target.TakeOver(new igdeTriggerTarget(name));
 		pTargets.Add(target);
-		target->FreeReference();
 	}
 	
 	return target;

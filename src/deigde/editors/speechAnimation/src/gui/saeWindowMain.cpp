@@ -85,12 +85,8 @@
 
 saeWindowMain::saeWindowMain(saeIGDEModule &module) :
 igdeEditorWindow(module),
-pListener(NULL),
 pConfiguration(NULL),
-pLoadSaveSystem(NULL),
-pViewSAnimation(NULL),
-pWindowProperties(NULL),
-pSAnimation(NULL)
+pLoadSaveSystem(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -98,7 +94,7 @@ pSAnimation(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new saeWindowMainListener(*this);
+	pListener.TakeOver(new saeWindowMainListener(*this));
 	pLoadSaveSystem = new saeLoadSaveSystem(*this);
 	pConfiguration = new saeConfiguration(*this);
 	
@@ -112,10 +108,10 @@ pSAnimation(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	AddChild(splitted);
 	
-	pWindowProperties = new saeWindowProperties(*this);
+	pWindowProperties.TakeOver(new saeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewSAnimation = new saeViewSAnimation(*this);
+	pViewSAnimation.TakeOver(new saeViewSAnimation(*this));
 	splitted->AddChild(pViewSAnimation, igdeContainerSplitted::eaCenter);
 	
 	CreateNewSAnimation();
@@ -130,11 +126,9 @@ saeWindowMain::~saeWindowMain(){
 	SetSAnimation(NULL);
 	
 	if(pWindowProperties){
-		pWindowProperties->FreeReference();
 		pWindowProperties = NULL;
 	}
 	if(pViewSAnimation){
-		pViewSAnimation->FreeReference();
 		pViewSAnimation = NULL;
 	}
 	
@@ -143,9 +137,6 @@ saeWindowMain::~saeWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -177,13 +168,11 @@ void saeWindowMain::SetSAnimation(saeSAnimation *sanimation){
 	if(pSAnimation){
 		pSAnimation->RemoveListener(pListener);
 		pSAnimation->Dispose();
-		pSAnimation->FreeReference();
 	}
 	
 	pSAnimation = sanimation;
 	
 	if(sanimation){
-		sanimation->AddReference();
 		sanimation->AddListener(pListener);
 		
 		pActionEditUndo->SetUndoSystem(sanimation->GetUndoSystem());

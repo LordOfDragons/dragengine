@@ -334,19 +334,19 @@ public:
 	
 	
 	/** \brief Light skin or NULL if not used. */
-	inline deSkin *GetLightSkin() const{ return pLightSkin; }
+	inline const deSkin::Ref &GetLightSkin() const{ return pLightSkin; }
 	
 	/** \brief Set light skin or NULL if not used. */
 	void SetLightSkin(deSkin *skin);
 	
 	/** \brief Light canvas view or NULL if not used. */
-	inline deCanvasView *GetLightCanvas() const{ return pLightCanvas; }
+	inline const deCanvasView::Ref &GetLightCanvas() const{ return pLightCanvas; }
 	
 	/** \brief Set light canvas view or NULL if not used. */
 	void SetLightCanvas(deCanvasView *canvas);
 	
 	/** \brief Light dynamic skin or NULL if not used. */
-	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set light dynamic skin or NULL if not used. */
 	void SetDynamicSkin(deDynamicSkin *dynamicSkin);

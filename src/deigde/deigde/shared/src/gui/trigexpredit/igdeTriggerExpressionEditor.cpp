@@ -412,26 +412,21 @@ void igdeTriggerExpressionEditor::RebuildTree(){
 	}
 	
 	if(!pWorkExpression || !pWorkExpression->GetRootComponent()){
-		igdeTriggerExpressionComponent *component = NULL;
+		igdeTriggerExpressionComponent::Ref component = NULL;
 		
 		if(!pWorkExpression){
 			pWorkExpression.TakeOverWith();
 		}
 		
 		try{
-			component = new igdeTriggerExpressionComponent;
+			component.TakeOver(new igdeTriggerExpressionComponent);
 			component->SetNegate(false);
 			component->SetCurState(false);
 			component->SetType(igdeTriggerExpressionComponent::ectTarget);
 			component->SetTargetName("");
 			
 			pWorkExpression->SetRootComponent(component);
-			component->FreeReference();
-			
 		}catch(const deException &){
-			if(component){
-				component->FreeReference();
-			}
 			pWorkExpression = nullptr;
 			throw;
 		}
@@ -674,7 +669,7 @@ void igdeTriggerExpressionEditor::OnParameterChanged(igdeAction*){
 void igdeTriggerExpressionEditor::pCreateContent(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainer::Ref form, panel, panel2, groupBox;
+	igdeContainer *form, panel, panel2, groupBox;
 	igdeContainerBorder::Ref groupBorder;
 	
 	// expression string

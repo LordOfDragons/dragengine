@@ -27,10 +27,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceCAIfElse;
-class ceCAIfElseCase;
-class ceConversationCondition;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAIfElse.h"
+#include "../../../conversation/action/ceCAIfElseCase.h"
+#include "../../../conversation/condition/ceConversationCondition.h"
 
 
 
@@ -39,11 +39,11 @@ class ceConversationCondition;
  */
 class ceUCAIfElseCaseSetCondition : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
-	ceConversationCondition *pOldCondition;
-	ceConversationCondition *pNewCondition;
+	ceConversationTopic::Ref pTopic;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
+	ceConversationCondition::Ref pOldCondition;
+	ceConversationCondition::Ref pNewCondition;
 	
 public:
 	/** \brief Type holding strong reference. */

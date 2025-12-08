@@ -304,7 +304,7 @@ struct sImgPixNatDat{
 	};
 	
 	
-	deImage *image;
+	deImage::Ref image;
 	Mutator *mutator;
 	int strideZ;
 	int strideY;

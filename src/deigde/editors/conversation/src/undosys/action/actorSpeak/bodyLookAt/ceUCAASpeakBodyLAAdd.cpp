@@ -58,25 +58,11 @@ ceUCAASpeakBodyLAAdd::ceUCAASpeakBodyLAAdd(ceConversationTopic *topic, ceCAActor
 	SetShortInfo("Actor Speak Add BodyLookAt");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pBodyLA = bodyLookAt;
-	bodyLookAt->AddReference();
 }
 
 ceUCAASpeakBodyLAAdd::~ceUCAASpeakBodyLAAdd(){
-	if(pBodyLA){
-		pBodyLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

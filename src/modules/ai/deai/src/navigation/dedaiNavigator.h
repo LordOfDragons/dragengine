@@ -34,7 +34,7 @@ class dedaiLayer;
 class dedaiPathFinderNavMesh;
 class dedaiWorld;
 
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deDebugDrawerShape;
 class deNavigator;
 class deNavigatorType;
@@ -57,7 +57,7 @@ private:
 	
 	dedaiLayer *pLayer;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSPath;
 	deDebugDrawerShape *pDDSPathFaces;
 	deDebugDrawerShape *pDDSPathFacesOpen;

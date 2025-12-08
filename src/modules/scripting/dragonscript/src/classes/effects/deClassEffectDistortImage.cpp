@@ -44,7 +44,7 @@
 
 // Native Structure
 struct sEffDistImgMatrixNatDat{
-	deEffectDistortImage *effect;
+	deEffectDistortImage::Ref effect;
 };
 
 
@@ -236,8 +236,6 @@ void deClassEffectDistortImage::PushEffect(dsRunTime *rt, deEffectDistortImage *
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.effect = effect;
-		effect->AddReference();
-		
 		baseClass->AssignEffect(rt->GetValue(0)->GetRealObject(), effect);
 		
 	}catch(...){

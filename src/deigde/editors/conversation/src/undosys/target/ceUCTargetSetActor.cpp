@@ -50,13 +50,9 @@ ceUCTargetSetActor::ceUCTargetSetActor(ceTarget *target, const char *newID){
 	pNewID = newID;
 	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetSetActor::~ceUCTargetSetActor(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 

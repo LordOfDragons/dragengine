@@ -50,16 +50,11 @@ aeULinkSetRepeat::aeULinkSetRepeat(aeLink *link, int newRepeat){
 	SetShortInfo("Link set repeat");
 	
 	pLink = link;
-	pLink->AddReference();
-	
 	pOldRepeat = link->GetRepeat();
 	pNewRepeat = newRepeat;
 }
 
 aeULinkSetRepeat::~aeULinkSetRepeat(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

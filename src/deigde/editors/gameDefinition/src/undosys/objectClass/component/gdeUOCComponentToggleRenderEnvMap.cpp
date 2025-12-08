@@ -42,7 +42,7 @@
 
 gdeUOCComponentToggleRenderEnvMap::gdeUOCComponentToggleRenderEnvMap(
 gdeObjectClass *objectClass, gdeOCComponent *component) :
-pObjectClass(NULL),
+
 pComponent(NULL)
 {
 	if(!objectClass || !component){
@@ -52,19 +52,10 @@ pComponent(NULL)
 	SetShortInfo("Component toggle render env-map");
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentToggleRenderEnvMap::~gdeUOCComponentToggleRenderEnvMap(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

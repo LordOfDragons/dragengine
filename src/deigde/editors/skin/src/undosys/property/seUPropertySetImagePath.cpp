@@ -49,13 +49,9 @@ seUPropertySetImagePath::seUPropertySetImagePath(seProperty *property, const cha
 	pNewPath = newPath;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetImagePath::~seUPropertySetImagePath(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

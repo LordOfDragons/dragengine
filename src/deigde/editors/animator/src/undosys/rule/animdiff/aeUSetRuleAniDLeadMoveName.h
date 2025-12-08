@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleAnimationDifference;
+#include "../../../animator/rule/aeRuleAnimationDifference.h"
 
 
 
@@ -42,7 +42,7 @@ class aeRuleAnimationDifference;
  */
 class aeUSetRuleAniDLeadMoveName : public igdeUndo{
 private:
-	aeRuleAnimationDifference *pRule;
+	aeRuleAnimationDifference::Ref pRule;
 	
 	decString pOldName;
 	decString pNewName;

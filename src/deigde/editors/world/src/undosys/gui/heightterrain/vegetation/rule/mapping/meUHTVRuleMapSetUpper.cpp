@@ -53,9 +53,7 @@ meUHTVRuleMapSetUpper::meUHTVRuleMapSetUpper(meHTVegetationLayer *vlayer, meHTVR
 	pNewUpper = nupper;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMapSetUpper::~meUHTVRuleMapSetUpper(){

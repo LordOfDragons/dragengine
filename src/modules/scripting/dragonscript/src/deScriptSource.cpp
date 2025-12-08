@@ -40,7 +40,6 @@
 
 deScriptSource::deScriptSource(const deVirtualFileSystem &vfs, const decPath &path) :
 pVFS(vfs),
-pFileReader(NULL),
 pPath(path),
 pPathString(path.GetPathUnix()),
 pPosition(0),
@@ -48,9 +47,6 @@ pLength(0){
 }
 
 deScriptSource::~deScriptSource(){
-	if(pFileReader){
-		pFileReader->FreeReference();
-	}
 }
 
 
@@ -91,7 +87,6 @@ int deScriptSource::ReadData(char *buffer, int size){
 
 void deScriptSource::Close(){
 	if(pFileReader){
-		pFileReader->FreeReference();
 		pFileReader = NULL;
 	}
 }

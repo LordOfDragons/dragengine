@@ -170,7 +170,7 @@ public:
 	void SetAttachType(eAttachType attachType);
 	
 	/** \brief Attached resource. */
-	inline deResource *GetResource() const{ return pResource; }
+	inline const deResource::Ref &GetResource() const{ return pResource; }
 	
 	
 	

@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCLight;
+#include "../../../../gamedef/objectClass/light/gdeOCLight.h"
 
 
 /**
@@ -35,7 +35,7 @@ class gdeOCLight;
  */
 class gdeWPSTIMOCLight : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCLight *pLight;
+	gdeOCLight::Ref pLight;
 	
 	
 public:
@@ -55,7 +55,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Light. */
-	inline gdeOCLight *GetOCLight() const{ return pLight; }
+	inline const gdeOCLight::Ref &GetOCLight() const{ return pLight; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

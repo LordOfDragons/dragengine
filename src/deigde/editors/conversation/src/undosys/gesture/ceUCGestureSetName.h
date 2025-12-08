@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceGesture;
+#include "../../conversation/gesture/ceGesture.h"
 class ceConversationActionList;
 class ceConversationTopic;
 
@@ -40,7 +40,7 @@ class ceConversationTopic;
  */
 class ceUCGestureSetName : public igdeUndo{
 private:
-	ceGesture *pGesture;
+	ceGesture::Ref pGesture;
 	
 	decString pOldName;
 	decString pNewName;

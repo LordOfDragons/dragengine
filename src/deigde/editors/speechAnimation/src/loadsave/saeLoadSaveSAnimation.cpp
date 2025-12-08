@@ -243,12 +243,12 @@ void saeLoadSaveSAnimation::pReadDisplay(const decXmlElementTag &root, saeSAnima
 void saeLoadSaveSAnimation::pReadPhoneme(const decXmlElementTag &root, saeSAnimation &sanimation){
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
-	saePhoneme *phoneme = NULL;
+	saePhoneme::Ref phoneme = NULL;
 	decString text;
 	int e;
 	
 	try{
-		phoneme = new saePhoneme;
+		phoneme.TakeOver(new saePhoneme);
 		if(!phoneme) DETHROW(deeOutOfMemory);
 		
 		/*if( ! HasAttribute( root, "name" ) ){
@@ -286,10 +286,6 @@ void saeLoadSaveSAnimation::pReadPhoneme(const decXmlElementTag &root, saeSAnima
 		sanimation.AddPhoneme(phoneme);
 		
 	}catch(const deException &){
-		if(phoneme){
-			phoneme->FreeReference();
-		}
-		
 		throw;
 	}
 }
@@ -297,11 +293,11 @@ void saeLoadSaveSAnimation::pReadPhoneme(const decXmlElementTag &root, saeSAnima
 void saeLoadSaveSAnimation::pReadWord(const decXmlElementTag &root, saeSAnimation &sanimation){
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
-	saeWord *word = NULL;
+	saeWord::Ref word = NULL;
 	int e;
 	
 	try{
-		word = new saeWord;
+		word.TakeOver(new saeWord);
 		if(!word) DETHROW(deeOutOfMemory);
 		
 		/*if( ! HasAttribute( root, "name" ) ){
@@ -329,10 +325,6 @@ void saeLoadSaveSAnimation::pReadWord(const decXmlElementTag &root, saeSAnimatio
 		sanimation.AddWord(word);
 		
 	}catch(const deException &){
-		if(word){
-			word->FreeReference();
-		}
-		
 		throw;
 	}
 }

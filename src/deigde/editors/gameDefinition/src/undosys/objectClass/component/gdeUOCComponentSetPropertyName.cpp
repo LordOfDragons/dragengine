@@ -41,8 +41,8 @@
 
 gdeUOCComponentSetPropertyName::gdeUOCComponentSetPropertyName(gdeObjectClass *objectClass,
 gdeOCComponent *component, gdeOCComponent::eProperties property, const char *newValue) :
-pObjectClass(NULL),
-pComponent(NULL),
+
+
 pProperty(property)
 {
 	if(!objectClass || !component){
@@ -55,19 +55,10 @@ pProperty(property)
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetPropertyName::~gdeUOCComponentSetPropertyName(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -28,8 +28,8 @@
 #include "../action/ceConversationAction.h"
 
 class ceConversationActionList;
-class ceConversationTopic;
-class ceConversationCondition;
+#include "../topic/ceConversationTopic.h"
+#include "../condition/ceConversationCondition.h"
 
 
 
@@ -41,11 +41,11 @@ class ceConversationCondition;
  */
 class cePlaybackActionStackEntry{
 private:
-	ceConversationTopic *pParentTopic;
+	ceConversationTopic::Ref pParentTopic;
 	ceConversationAction::Ref pParentAction;
 	const ceConversationActionList *pParentList;
 	
-	ceConversationCondition *pLoopCondition;
+	ceConversationCondition::Ref pLoopCondition;
 	bool pLooping;
 	
 	ceConversationAction::Ref pNextAction;
@@ -63,11 +63,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the parent topic or NULL if there is none. */
-	inline ceConversationTopic *GetParentTopic() const{ return pParentTopic; }
+	inline const ceConversationTopic::Ref &GetParentTopic() const{ return pParentTopic; }
 	/** Sets the parent topic or NULL if there is none. */
 	void SetParentTopic(ceConversationTopic *topic);
 	/** Retrieves the parent action or NULL if there is none. */
-	inline ceConversationAction *GetParentAction() const{ return pParentAction; }
+	inline const ceConversationAction::Ref &GetParentAction() const{ return pParentAction; }
 	/** Sets the parent action or NULL if there is none. */
 	void SetParentAction(ceConversationAction *action);
 	/** Retrieves the parent action list or NULL if there is none. */
@@ -76,7 +76,7 @@ public:
 	void SetParentList(const ceConversationActionList *list);
 	
 	/** \brief Retrieves the loop condition or NULL if always true. */
-	inline ceConversationCondition *GetLoopCondition() const{ return pLoopCondition; }
+	inline const ceConversationCondition::Ref &GetLoopCondition() const{ return pLoopCondition; }
 	/** \brief Sets the loop condition or NULL if always true. */
 	void SetLoopCondition(ceConversationCondition *condition);
 	/** \brief Determines if the list of actions is looped. */
@@ -91,7 +91,7 @@ public:
 	/** Advances the next index if not at the end of the list and sets the next action itself if possible. */
 	void AdvanceIndex();
 	/** Retrieves the next action or NULL if at the end of the current list. */
-	inline ceConversationAction *GetNextAction() const{ return pNextAction; }
+	inline const ceConversationAction::Ref &GetNextAction() const{ return pNextAction; }
 	/** Determines if there is a next action or false if at the end of the list. */
 	bool HasNextAction() const;
 	

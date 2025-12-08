@@ -43,8 +43,7 @@
 ////////////////////////////
 
 ceUCAASpeakGestureClear::ceUCAASpeakGestureClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
-pTopic(NULL),
-pActorSpeak(NULL)
+pTopic(NULL)
 {
 	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pActorSpeak(NULL)
 	pOldGestures = actorSpeak->GetGestureList();
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakGestureClear::~ceUCAASpeakGestureClear(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

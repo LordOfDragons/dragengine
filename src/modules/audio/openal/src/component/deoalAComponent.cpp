@@ -58,8 +58,6 @@ pAudioThread(audioThread),
 pParentWorld(NULL),
 pOctreeNode(NULL),
 pTextureNames(NULL),
-pModel(NULL),
-pSkin(NULL),
 pAffectsSound(false),
 pHasScaling(false),
 pDirtyMatrices(true),
@@ -140,18 +138,8 @@ void deoalAComponent::SetModel(deoalAModel *model, const decStringList *textureN
 	
 	pDropWeightMatrices();
 	pDropFaces();
-	
-	if(pModel){
-		pModel->FreeReference();
-	}
-	
 	pModel = model;
 	pTextureNames = textureNames;
-	
-	if(model){
-		model->AddReference();
-	}
-	
 	pDirtyTextureUseSkin = true;
 	pDirtyExtends = true;
 // 	pDirtyRTSphere = true;
@@ -170,15 +158,7 @@ void deoalAComponent::SetSkin(deoalASkin *skin){
 	if(skin == pSkin){
 		return;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	pSkin = skin;
-	if(skin){
-		skin->AddReference();
-	}
-	
 	pUpdateTextureSkinMappings();
 }
 
@@ -438,13 +418,6 @@ void deoalAComponent::pCleanUp(){
 	}
 	
 	pTextures.RemoveAll();
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pModel){
-		pModel->FreeReference();
-	}
 }
 
 

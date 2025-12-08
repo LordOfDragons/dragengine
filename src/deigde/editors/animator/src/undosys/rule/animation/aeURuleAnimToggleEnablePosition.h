@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleAnimation;
+#include "../../../animator/rule/aeRuleAnimation.h"
 
 
 
@@ -37,7 +37,7 @@ class aeRuleAnimation;
  */
 class aeURuleAnimToggleEnablePosition : public igdeUndo{
 private:
-	aeRuleAnimation *pRule;
+	aeRuleAnimation::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

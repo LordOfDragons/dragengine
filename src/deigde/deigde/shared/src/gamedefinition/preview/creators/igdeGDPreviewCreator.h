@@ -94,12 +94,12 @@ public:
 	inline const igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Canvas to create image from. */
-	inline deCanvasView *GetCanvas() const{ return pCanvas; }
+	inline const deCanvasView::Ref &GetCanvas() const{ return pCanvas; }
 	
 	
 	
 	/** \brief Image or NULL if not created. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set image or NULL if not created. */
 	void SetImage(deImage *image);

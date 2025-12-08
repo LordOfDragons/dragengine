@@ -43,13 +43,9 @@ meUCameraMoveObject::meUCameraMoveObject(meObject *object){
 	SetShortInfo("Move Camera Object");
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUCameraMoveObject::~meUCameraMoveObject(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

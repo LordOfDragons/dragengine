@@ -46,8 +46,6 @@ aeURuleIKSetLocalRotation::aeURuleIKSetLocalRotation(aeRuleInverseKinematic *rul
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldRot = rule->GetLocalOrientation();
 		pNewRot = newRot;
 		

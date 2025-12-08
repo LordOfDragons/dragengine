@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meDecal;
+#include "../../../world/decal/meDecal.h"
 
 
 
@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalPosition : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decDVector pOldPosition;
 	decDVector pNewPosition;

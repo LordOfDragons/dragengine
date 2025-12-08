@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeSetContrast::seUPropertyNodeSetContrast(sePropertyNode *node, float newValue) :
-pNode(NULL),
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = node->GetContrast();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetContrast::~seUPropertyNodeSetContrast(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

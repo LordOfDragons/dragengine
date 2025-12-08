@@ -44,8 +44,7 @@
 
 ceUCAASpeakHeadLAClear::ceUCAASpeakHeadLAClear(
 ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
-pTopic(NULL),
-pActorSpeak(NULL)
+pTopic(NULL)
 {
 	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
@@ -56,19 +55,10 @@ pActorSpeak(NULL)
 	pOldStrips = actorSpeak->GetHeadLookAtList();
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakHeadLAClear::~ceUCAASpeakHeadLAClear(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

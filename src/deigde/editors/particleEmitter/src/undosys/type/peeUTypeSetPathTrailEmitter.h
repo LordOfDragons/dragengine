@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 
 
 
@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeSetPathTrailEmitter : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	decString pOldPath;
 	decString pNewPath;

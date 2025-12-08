@@ -28,7 +28,7 @@
 #include <dragengine/resources/decal/deDecal.h>
 
 class meDecal;
-class meObject;
+#include "../object/meObject.h"
 
 class deEngine;
 class deSkin;
@@ -44,7 +44,7 @@ private:
 	deDecal::Ref pEngDecal;
 	
 	meDecal *pDecal;
-	meObject *pParentObject;
+	meObject::Ref pParentObject;
 	
 	
 	
@@ -66,10 +66,10 @@ public:
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Engine decal or NULL. */
-	inline deDecal *GetEngineDecal() const{ return pEngDecal; }
+	inline const deDecal::Ref &GetEngineDecal() const{ return pEngDecal; }
 	
 	/** \brief Parent object or NULL. */
-	inline meObject *GetParentObject() const{ return pParentObject; }
+	inline const meObject::Ref &GetParentObject() const{ return pParentObject; }
 	
 	/** \brief Set parent object. */
 	void SetParentObject(meObject *object);

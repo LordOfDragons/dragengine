@@ -34,12 +34,12 @@
 #include <deigde/gui/resources/igdeIcon.h>
 
 class decStringList;
-class seWindowMainListener;
-class seViewSky;
+#include "seWindowMainListener.h"
+#include "seViewSky.h"
 class seConfiguration;
-class seSky;
-class seWindowProperties;
-class seWindowCurves;
+#include "../sky/seSky.h"
+#include "properties/seWindowProperties.h"
+#include "curves/seWindowCurves.h"
 class seEngineController;
 class seLoadSaveSystem;
 class seIGDEModule;
@@ -52,7 +52,7 @@ class igdeStepableTask;
  */
 class seWindowMain : public igdeEditorWindow{
 private:
-	seWindowMainListener *pListener;
+	seWindowMainListener::Ref pListener;
 	
 	//igdeIcon::Ref pIconSkyNew;
 	
@@ -76,11 +76,11 @@ private:
 	igdeClipboard pClipboard;
 	seLoadSaveSystem *pLoadSaveSystem;
 	
-	seViewSky *pViewSky;
-	seWindowProperties *pWindowProperties;
-	seWindowCurves *pWindowCurves;
+	seViewSky::Ref pViewSky;
+	seWindowProperties::Ref pWindowProperties;
+	seWindowCurves::Ref pWindowCurves;
 	
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	
 	
@@ -101,21 +101,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Icons. */
-	//inline igdeIcon* GetIconSkyNew() const{ return pIconSkyNew; }
+	//inline const igdeIcon::Ref &GetIconSkyNew() const{ return pIconSkyNew; }
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionSkyNew() const{ return pActionSkyNew; }
-	inline igdeAction *GetActionSkyOpen() const{ return pActionSkyOpen; }
-	inline igdeAction *GetActionSkySave() const{ return pActionSkySave; }
-	inline igdeAction *GetActionSkySaveAs() const{ return pActionSkySaveAs; }
+	inline const igdeAction::Ref &GetActionSkyNew() const{ return pActionSkyNew; }
+	inline const igdeAction::Ref &GetActionSkyOpen() const{ return pActionSkyOpen; }
+	inline const igdeAction::Ref &GetActionSkySave() const{ return pActionSkySave; }
+	inline const igdeAction::Ref &GetActionSkySaveAs() const{ return pActionSkySaveAs; }
 	
-	inline igdeActionUndo *GetActionEditUndo() const{ return pActionEditUndo; }
-	inline igdeActionRedo *GetActionEditRedo() const{ return pActionEditRedo; }
-	inline igdeAction *GetActionEditCut() const{ return pActionEditCut; }
-	inline igdeAction *GetActionEditCopy() const{ return pActionEditCopy; }
-	inline igdeAction *GetActionEditPaste() const{ return pActionEditPaste; }
+	inline const igdeActionUndo::Ref &GetActionEditUndo() const{ return pActionEditUndo; }
+	inline const igdeActionRedo::Ref &GetActionEditRedo() const{ return pActionEditRedo; }
+	inline const igdeAction::Ref &GetActionEditCut() const{ return pActionEditCut; }
+	inline const igdeAction::Ref &GetActionEditCopy() const{ return pActionEditCopy; }
+	inline const igdeAction::Ref &GetActionEditPaste() const{ return pActionEditPaste; }
 	
-	inline igdeAction *GetActionViewShowCompass() const{ return pActionViewShowCompass; }
+	inline const igdeAction::Ref &GetActionViewShowCompass() const{ return pActionViewShowCompass; }
 	
 	/** \brief Ask user if it is okay to quit the application. */
 	bool QuitRequest();
@@ -138,7 +138,7 @@ public:
 	
 	
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *Sky);

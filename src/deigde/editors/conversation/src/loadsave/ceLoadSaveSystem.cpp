@@ -101,19 +101,16 @@ ceLoadSaveSystem::~ceLoadSaveSystem(){
 // Management
 ///////////////
 
-ceConversation *ceLoadSaveSystem::LoadConversation(const char *filename){
-	ceConversation *conversation = nullptr;
+ceConversation::Ref ceLoadSaveSystem::LoadConversation(const char *filename){
+	ceConversation::Ref conversation = nullptr;
 	
 	try{
-		conversation = new ceConversation(&pWindowMain.GetEnvironment());
+		conversation.TakeOver(new ceConversation(&pWindowMain.GetEnvironment()));
 		pLSConversation->LoadConversation(*conversation, decBaseFileReader::Ref::New(
 			pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(
 				decPath::CreatePathUnix(filename))), filename);
 		
 	}catch(const deException &){
-		if(conversation){
-			conversation->FreeReference();
-		}
 		throw;
 	}
 	

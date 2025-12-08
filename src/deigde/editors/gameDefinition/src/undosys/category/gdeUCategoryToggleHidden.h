@@ -40,7 +40,7 @@ public:
 	
 	
 private:
-	gdeCategory *pCategory;
+	gdeCategory::Ref pCategory;
 	
 	
 	

@@ -29,7 +29,7 @@
 #include "../dearMapAnimationBones.h"
 #include "../dearMapAnimationVPS.h"
 
-class dearAnimationMove;
+#include "../animation/dearAnimationMove.h"
 class dearAnimationState;
 class deAnimatorRuleAnimationDifference;
 
@@ -44,8 +44,8 @@ private:
 	dearMapAnimationBones pMapAnimationBones;
 	dearMapAnimationVPS pMapAnimationVPS;
 	
-	dearAnimationMove *pMove1;
-	dearAnimationMove *pMove2;
+	dearAnimationMove::Ref pMove1;
+	dearAnimationMove::Ref pMove2;
 	
 	dearControllerTarget pTargetLeadingMoveTime;
 	dearControllerTarget pTargetReferenceMoveTime;

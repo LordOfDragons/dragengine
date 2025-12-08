@@ -102,22 +102,18 @@ void igdeGDCEnvMapProbeList::RemoveAll(){
 
 void igdeGDCEnvMapProbeList::SetToDeepCopyFrom(const igdeGDCEnvMapProbeList &list){
 	const int count = list.GetCount();
-	igdeGDCEnvMapProbe *probe = NULL;
+	igdeGDCEnvMapProbe::Ref probe = NULL;
 	
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			probe = new igdeGDCEnvMapProbe(*list.GetAt(i));
+			probe.TakeOver(new igdeGDCEnvMapProbe(*list.GetAt(i)));
 			Add(probe);
-			probe->FreeReference();
 			probe = NULL;
 		}
 		
 	}catch(const deException &){
-		if(probe){
-			probe->FreeReference();
-		}
 		throw;
 	}
 }

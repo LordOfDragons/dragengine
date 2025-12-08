@@ -76,8 +76,7 @@ public:
 
 peeViewEmitter::peeViewEmitter(peeWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pEmitter(NULL)
+pWindowMain(windowMain)
 {
 	pCameraInteraction.TakeOver(new cCameraInteraction(*this));
 	
@@ -103,15 +102,9 @@ void peeViewEmitter::SetEmitter(peeEmitter *emitter){
 	
 	pCameraInteraction->SetCamera(NULL);
 	SetRenderWorld(NULL);
-	
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
-	
 	pEmitter = emitter;
 	
 	if(emitter){
-		emitter->AddReference();
 		SetRenderWorld(emitter->GetCamera()->GetEngineCamera());
 		pCameraInteraction->SetCamera(emitter->GetCamera());
 	}

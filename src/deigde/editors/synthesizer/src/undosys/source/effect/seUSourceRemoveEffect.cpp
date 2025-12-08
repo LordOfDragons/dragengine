@@ -41,7 +41,7 @@
 ////////////////////////////
 
 seUSourceRemoveEffect::seUSourceRemoveEffect(seSource *source, seEffect *effect) :
-pEffect(NULL),
+
 pSource(NULL)
 {
 	if(!effect || !source){
@@ -54,10 +54,7 @@ pSource(NULL)
 	}
 	
 	pSource = source;
-	source->AddReference();
-	
 	pEffect = effect;
-	effect->AddReference();
 }
 
 seUSourceRemoveEffect::~seUSourceRemoveEffect(){
@@ -83,10 +80,4 @@ void seUSourceRemoveEffect::Redo(){
 //////////////////////
 
 void seUSourceRemoveEffect::pCleanUp(){
-	if(pEffect){
-		pEffect->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

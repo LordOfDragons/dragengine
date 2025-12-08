@@ -44,7 +44,7 @@
 ////////////////////////////
 
 aeUSetRuleBones::aeUSetRuleBones(aeRule *rule, const decStringSet &newValue) :
-pRule(NULL),
+
 pNewValue(newValue)
 {
 	if(!rule){
@@ -55,13 +55,9 @@ pNewValue(newValue)
 	SetShortInfo("Set rule bones");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleBones::~aeUSetRuleBones(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

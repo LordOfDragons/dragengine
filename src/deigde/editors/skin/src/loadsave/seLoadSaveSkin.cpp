@@ -124,10 +124,10 @@ const igdeTexturePropertyList &knownPropertyList){
 	
 	deEngine *engine = pModule->GetGameEngine();
 	deSkinPropertyVisitorIdentify identifyProperty;
-	sePropertyNodeGroup *nodeGroup = NULL;
-	seProperty *property = NULL;
-	seTexture *texture = NULL;
-	deSkin *engSkin = NULL;
+	sePropertyNodeGroup::Ref nodeGroup = NULL;
+	seProperty::Ref property = NULL;
+	seTexture::Ref texture = NULL;
+	deSkin::Ref engSkin = NULL;
 	int p, propertyCount;
 	int t, textureCount;
 	int i;
@@ -167,7 +167,7 @@ const igdeTexturePropertyList &knownPropertyList){
 		for(t=0; t<textureCount; t++){
 			const deSkinTexture &engTexture = *engSkin->GetTextureAt(t);
 			
-			texture = new seTexture(engine);
+			texture.TakeOver(new seTexture(engine));
 			texture->SetName(engTexture.GetName());
 			
 			propertyCount = engTexture.GetPropertyCount();
@@ -175,7 +175,7 @@ const igdeTexturePropertyList &knownPropertyList){
 			for(p=0; p<propertyCount; p++){
 				deSkinProperty &engProperty = *engTexture.GetPropertyAt(p);
 				
-				property = new seProperty(engine);
+				property.TakeOver(new seProperty(engine));
 				property->SetName(engProperty.GetType());
 				property->InitDefaults(knownPropertyList);
 				
@@ -232,42 +232,23 @@ const igdeTexturePropertyList &knownPropertyList){
 					property->SetNodeBitCount(constructed.GetBitCount());
 					nodeGroup = LoadPropertyNodeGroup(*skin, constructed.GetContent());
 					property->SetNodeGroup(nodeGroup);
-					nodeGroup->FreeReference();
 					nodeGroup = NULL;
 					}break;
 					
 				default:
-					property->FreeReference();
 					property = NULL;
 				}
 				
 				if(property){
 					texture->AddProperty(property);
-					property->FreeReference();
 					property = NULL;
 				}
 			}
 			
 			skin->AddTexture(texture);
-			texture->FreeReference();
 			texture = NULL;
 		}
-		
-		engSkin->FreeReference();
-		
 	}catch(const deException &){
-		if(nodeGroup){
-			nodeGroup->FreeReference();
-		}
-		if(property){
-			property->FreeReference();
-		}
-		if(texture){
-			texture->FreeReference();
-		}
-		if(engSkin){
-			engSkin->FreeReference();
-		}
 		throw;
 	}
 }
@@ -276,29 +257,22 @@ sePropertyNodeGroup *seLoadSaveSkin::LoadPropertyNodeGroup(seSkin &skin,
 const deSkinPropertyNodeGroup &engNodeGroup){
 	deEngine &engine = *pModule->GetGameEngine();
 	deSkinPropertyNodeVisitorIdentify identifyNode;
-	sePropertyNodeGroup *nodeGroup = NULL;
-	sePropertyNode *childNode = NULL;
+	sePropertyNodeGroup::Ref nodeGroup = NULL;
+	sePropertyNode::Ref childNode = NULL;
 	const int count = engNodeGroup.GetNodeCount();
 	int i;
 	
 	try{
-		nodeGroup = new sePropertyNodeGroup(engine);
+		nodeGroup.TakeOver(new sePropertyNodeGroup(engine));
 		LoadPropertyNodeCommon(skin, *nodeGroup, engNodeGroup);
 		
 		for(i=0; i<count; i++){
 			childNode = LoadPropertyNode(skin, *engNodeGroup.GetNodeAt(i));
 			nodeGroup->AddNode(childNode);
-			childNode->FreeReference();
 			childNode = NULL;
 		}
 		
 	}catch(const deException &){
-		if(childNode){
-			childNode->FreeReference();
-		}
-		if(nodeGroup){
-			nodeGroup->FreeReference();
-		}
 		throw;
 	}
 	
@@ -308,7 +282,7 @@ const deSkinPropertyNodeGroup &engNodeGroup){
 sePropertyNode *seLoadSaveSkin::LoadPropertyNode(seSkin &skin, deSkinPropertyNode &engNode){
 	deEngine &engine = *pModule->GetGameEngine();
 	deSkinPropertyNodeVisitorIdentify identifyNode;
-	sePropertyNode *childNode = NULL;
+	sePropertyNode::Ref childNode = NULL;
 	int i;
 	
 	try{
@@ -395,9 +369,6 @@ sePropertyNode *seLoadSaveSkin::LoadPropertyNode(seSkin &skin, deSkinPropertyNod
 		}
 		
 	}catch(const deException &){
-		if(childNode){
-			childNode->FreeReference();
-		}
 		throw;
 	}
 	
@@ -420,17 +391,12 @@ const deSkinPropertyNode &engNode){
 	node.SetCombineMode(engNode.GetCombineMode());
 	
 	if(engNode.GetMask()){
-		sePropertyNode *mask = NULL;
+		sePropertyNode::Ref mask = NULL;
 		
 		try{
 			mask = LoadPropertyNode(skin, *engNode.GetMask());
 			node.SetMask(mask);
-			mask->FreeReference();
-			
 		}catch(const deException &){
-			if(mask){
-				mask->FreeReference();
-			}
 			throw;
 		}
 	}
@@ -476,17 +442,12 @@ void seLoadSaveSkin::SaveSkin(seSkin *skin, decBaseFileWriter *file){
 	// containing all textures. since the textures hold the data in their skins
 	// already no loading is done and this process should be quick.
 	seSkinBuilder builder(*skin);
-	deSkin *temporarySkin = NULL;
+	deSkin::Ref temporarySkin = NULL;
 	
 	try{
 		temporarySkin = skin->GetEngine()->GetSkinManager()->CreateSkin("", builder);
 		pModule->SaveSkin(*file, *temporarySkin);
-		temporarySkin->FreeReference();
-		
 	}catch(const deException &){
-		if(temporarySkin){
-			temporarySkin->FreeReference();
-		}
 		throw;
 	}
 }

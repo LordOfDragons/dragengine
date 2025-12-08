@@ -45,7 +45,7 @@
 /////////////////////
 
 struct sOccMNatDat{
-	deOcclusionMesh *occlusionMesh;
+	deOcclusionMesh::Ref occlusionMesh;
 };
 
 
@@ -251,5 +251,4 @@ void deClassOcclusionMesh::PushOcclusionMesh(dsRunTime *rt, deOcclusionMesh *occ
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sOccMNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->occlusionMesh = occlusionMesh;
-	occlusionMesh->AddReference();
 }

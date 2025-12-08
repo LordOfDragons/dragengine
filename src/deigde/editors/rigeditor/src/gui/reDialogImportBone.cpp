@@ -73,7 +73,7 @@ pWindowMain(windowMain)
 	
 	
 	// content
-	igdeContainer::Ref content, frameLine;
+	igdeContainer *content, frameLine;
 	content.TakeOver(new igdeContainerForm(env));
 	
 	const char *description = "File to import selected bones from.";

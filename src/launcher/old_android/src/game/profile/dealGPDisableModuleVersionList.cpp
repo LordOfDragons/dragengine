@@ -139,7 +139,7 @@ void dealGPDisableModuleVersionList::RemoveAll(){
 
 dealGPDisableModuleVersionList &dealGPDisableModuleVersionList::operator=(const dealGPDisableModuleVersionList &other){
 	const decObjectList &otherList = other.pList;
-	dealGPDisableModuleVersion *entry = NULL;
+	dealGPDisableModuleVersion::Ref entry = NULL;
 	const int count = otherList.GetCount();
 	int i;
 	
@@ -147,16 +147,12 @@ dealGPDisableModuleVersionList &dealGPDisableModuleVersionList::operator=(const 
 	
 	try{
 		for(i=0; i<count; i++){
-			entry = new dealGPDisableModuleVersion(*((dealGPDisableModuleVersion*)otherList.GetAt(i)));
+			entry.TakeOver(new dealGPDisableModuleVersion(*((dealGPDisableModuleVersion*)otherList.GetAt(i))));
 			pList.Add(entry);
-			entry->FreeReference();
 			entry = NULL;
 		}
 		
 	}catch(const deException &){
-		if(entry){
-			entry->FreeReference();
-		}
 		throw;
 	}
 	

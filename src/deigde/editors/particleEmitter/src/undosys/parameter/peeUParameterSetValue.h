@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 class peeParameter;
 
 
@@ -37,7 +37,7 @@ class peeParameter;
  */
 class peeUParameterSetValue : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	peeParameter *pParameter;
 	
 	float pOldValue;

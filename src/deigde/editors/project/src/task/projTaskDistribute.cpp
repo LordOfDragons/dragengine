@@ -330,11 +330,11 @@ void projTaskDistribute::pCloseDelgaWriter(){
 }
 
 void projTaskDistribute::pScanDirectory(const decPath &path){
-	cProcessDirectory *directory = NULL;
+	cProcessDirectory::Ref directory = NULL;
 	bool ignore = false;
 	
 	try{
-		directory = new cProcessDirectory;
+		directory.TakeOver(new cProcessDirectory);
 		directory->path = path.GetPathUnix();
 		directory->nextDirectory = 0;
 		directory->nextFile = 0;
@@ -366,12 +366,7 @@ void projTaskDistribute::pScanDirectory(const decPath &path){
 		}
 		
 		pStackDirectories.Add(directory);
-		directory->FreeReference();
-		
 	}catch(const deException &){
-		if(directory){
-			directory->FreeReference();
-		}
 		throw;
 	}
 }

@@ -68,7 +68,7 @@ public:
 	inline deglPanelGames *GetPanelGames() const{ return pPanelGames; }
 	
 	/** Game object. */
-	inline delGame *GetGame() const{ return pGame; }
+	inline const delGame::Ref &GetGame() const{ return pGame; }
 	/*@}*/
 };
 

@@ -53,11 +53,7 @@ meUHTSetTexUVOffset::meUHTSetTexUVOffset(meWorld *world, meHeightTerrainSector *
 	pNewOffset = newOffset;
 	
 	SetShortInfo("Set Height Terrain Texture UV Offset");
-	
-	world->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUHTSetTexUVOffset::~meUHTSetTexUVOffset(){

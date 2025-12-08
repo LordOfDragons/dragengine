@@ -54,19 +54,10 @@ ceUCAGameCmdSetCommand::ceUCAGameCmdSetCommand(ceConversationTopic *topic, ceCAG
 	SetShortInfo("Action game command set command");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAGameCmdSetCommand::~ceUCAGameCmdSetCommand(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

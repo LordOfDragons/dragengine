@@ -42,7 +42,7 @@
 
 gdeUOCBillboardSetAxis::gdeUOCBillboardSetAxis(gdeObjectClass *objectClass,
 gdeOCBillboard *billboard, const decVector &newValue) :
-pObjectClass(NULL),
+
 pBillboard(NULL)
 {
 	if(!objectClass || !billboard){
@@ -55,19 +55,10 @@ pBillboard(NULL)
 	pNewValue = newValue;
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardSetAxis::~gdeUOCBillboardSetAxis(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

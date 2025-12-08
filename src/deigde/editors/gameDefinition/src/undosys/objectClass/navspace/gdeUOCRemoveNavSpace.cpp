@@ -42,8 +42,7 @@
 ////////////////////////////
 
 gdeUOCRemoveNavSpace::gdeUOCRemoveNavSpace(gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace) :
-pObjectClass(NULL),
-pNavSpace(NULL)
+pObjectClass(NULL)
 {
 	if(!objectClass || !navspace){
 		DETHROW(deeInvalidParam);
@@ -56,19 +55,10 @@ pNavSpace(NULL)
 	SetShortInfo("Remove navigation space");
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveNavSpace::~gdeUOCRemoveNavSpace(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

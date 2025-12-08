@@ -54,19 +54,10 @@ ceUCAASpeakSetMinSpeechTime::ceUCAASpeakSetMinSpeechTime(ceConversationTopic *to
 	SetShortInfo("Actor speak set minimum speech time");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetMinSpeechTime::~ceUCAASpeakSetMinSpeechTime(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

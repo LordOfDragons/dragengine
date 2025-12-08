@@ -59,25 +59,11 @@ ceUCAASpeakWordRemove::ceUCAASpeakWordRemove(ceConversationTopic *topic, ceCAAct
 	SetShortInfo("Remove Word");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 ceUCAASpeakWordRemove::~ceUCAASpeakWordRemove(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -64,13 +64,9 @@ meUObjectTextureColorTint::meUObjectTextureColorTint(meObjectTexture *texture, c
 	pNewColor = newColor;
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjectTextureColorTint::~meUObjectTextureColorTint(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

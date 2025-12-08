@@ -129,7 +129,6 @@ pStaticTextures(true),
 pDirtyModelVBOs(true),
 
 pDirtyOccMeshVBO(true),
-pOccMeshSharedSPBElement(NULL),
 pDirtyOccMeshSharedSPBElement(true),
 
 pDirtyLODVBOs(true),
@@ -442,15 +441,7 @@ void deoglRComponent::SetSkin(deoglRSkin *skin){
 	if(skin == pSkin){
 		return;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	pSkin = skin;
-	if(skin){
-		skin->AddReference();
-	}
-	
 	pUpdateModelSkinMappings();
 	
 	pSkinRendered.SetDirty();
@@ -476,17 +467,7 @@ void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSki
 	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
-	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
-	
 	// texture can use the dynamic skin we had so far for their skin state.
 	// force an update to make sure everything matches up again
 	const int textureCount = pTextures.GetCount();
@@ -521,19 +502,9 @@ void deoglRComponent::SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh){
 	pOccMeshSharedSPBDoubleSided = nullptr;
 	pOccMeshSharedSPBSingleSided = nullptr;
 	if(pOccMeshSharedSPBElement){
-		pOccMeshSharedSPBElement->FreeReference();
 		pOccMeshSharedSPBElement = NULL;
 	}
-	if(pOcclusionMesh){
-		pOcclusionMesh->FreeReference();
-	}
-	
 	pOcclusionMesh = occlusionMesh;
-	
-	if(occlusionMesh){
-		occlusionMesh->AddReference();
-	}
-	
 	if(occlusionMesh){
 		if(occlusionMesh->GetWeightsCount() > 0){
 			pDynamicOcclusionMesh = new deoglDynamicOcclusionMesh(pRenderThread, pOcclusionMesh, this);
@@ -1112,13 +1083,11 @@ void deoglRComponent::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	
 	if(pRenderEnvMap){
 		pRenderEnvMap->GetComponentList().RemoveIfExisting(this);
-		pRenderEnvMap->FreeReference();
 	}
 	
 	pRenderEnvMap = envmap;
 	
 	if(envmap){
-		envmap->AddReference();
 		envmap->GetComponentList().Add(this);
 	}
 	
@@ -1138,13 +1107,11 @@ void deoglRComponent::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
 	
 	if(pRenderEnvMapFade){
 		pRenderEnvMapFade->GetComponentList().RemoveIfExisting(this);
-		pRenderEnvMapFade->FreeReference();
 	}
 	
 	pRenderEnvMapFade = envmap;
 	
 	if(envmap){
-		envmap->AddReference();
 		envmap->GetComponentList().Add(this);
 	}
 	
@@ -1789,29 +1756,8 @@ void deoglRComponent::pCleanUp(){
 	}
 	
 	if(pOccMeshSharedSPBElement){
-		pOccMeshSharedSPBElement->FreeReference();
 			// has to be done before pOcclusionMesh mesh is released
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pOcclusionMesh){
-		pOcclusionMesh->FreeReference();
-	}
-	if(pEnvMap){
-		pEnvMap->FreeReference();
-	}
-	if(pRenderEnvMap){
-		pRenderEnvMap->FreeReference();
-	}
-	if(pRenderEnvMapFade){
-		pRenderEnvMapFade->FreeReference();
-	}
-	
 	if(pSkinState){
 		delete pSkinState;
 	}
@@ -1950,7 +1896,7 @@ void deoglRComponent::pCheckRenderModifier(deoglRCamera *rcamera){
 	int i, count = pComponent->GetModifierCount();
 	int renModIndex, renderModifierCount = 0;
 	deComponentModifier *modifier;
-	deoglRSkin *skin;
+	deoglRSkin::Ref skin;
 	deSkin *finalSkin = pComponent->GetSkin();
 	
 	// determine the skin to use
@@ -1973,14 +1919,7 @@ void deoglRComponent::pCheckRenderModifier(deoglRCamera *rcamera){
 	skin = ((deoglSkin*)finalSkin->GetPeerGraphic())->GetRSkin();
 	
 	if(pSkin != skin){
-		if(pSkin){
-			pSkin->FreeReference();
-		}
 		pSkin = skin;
-		if(skin){
-			skin->AddReference();
-		}
-		
 		pUpdateModelSkinMappings();
 	}
 #endif
@@ -2044,7 +1983,7 @@ void deoglRComponent::pPrepareSolidity(){
 		// if a skin is assigned check each texture using the components for transparency
 		for(i=0; i<textureCount; i++){
 			deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
-			deoglRSkin *skin = texture.GetSkin();
+			deoglRSkin::Ref skin = texture.GetSkin();
 			int textureNumber = 0;
 			
 			if(skin && skin->GetTextureCount() == 0){
@@ -2074,7 +2013,7 @@ void deoglRComponent::pPrepareSolidity(){
 		// if one or more assigned texture skins are transparent
 		for(i =0; i <textureCount; i++){
 			deoglRComponentTexture &texture = *((deoglRComponentTexture*)pTextures.GetAt(i));
-			deoglRSkin *skin = texture.GetSkin();
+			deoglRSkin::Ref skin = texture.GetSkin();
 			if(!skin || skin->GetTextureCount() == 0){
 				continue;
 			}
@@ -2269,7 +2208,6 @@ void deoglRComponent::pPrepareParamBlocks(){
 	if(!pValidOccMeshSharedSPBElement){
 		// shared spb
 		if(pOccMeshSharedSPBElement){
-			pOccMeshSharedSPBElement->FreeReference();
 			pOccMeshSharedSPBElement = NULL;
 		}
 		

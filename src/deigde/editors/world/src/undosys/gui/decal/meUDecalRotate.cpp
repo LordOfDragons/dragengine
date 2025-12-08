@@ -73,7 +73,6 @@ meUDecalRotate::meUDecalRotate(meWorld *world){
 	}
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUDecalRotate::~meUDecalRotate(){

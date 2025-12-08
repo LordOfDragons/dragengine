@@ -574,15 +574,13 @@ public:
 aeWPLink::aeWPLink(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pAnimator(NULL),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
-	pListener = new aeWPLinkListener(*this);
+	pListener.TakeOver(new aeWPLinkListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -653,10 +651,6 @@ pPreventUpdate(false)
 
 aeWPLink::~aeWPLink(){
 	SetAnimator(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -671,14 +665,12 @@ void aeWPLink::SetAnimator(aeAnimator *animator){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
 	}
 	
 	UpdateRigBoneList();

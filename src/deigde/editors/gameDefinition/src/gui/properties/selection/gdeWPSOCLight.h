@@ -36,11 +36,11 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeOCLight;
 class gdeWindowProperties;
-class gdeWPSOCLightListener;
+#include "gdeWPSOCLightListener.h"
 
 
 
@@ -50,9 +50,9 @@ class gdeWPSOCLightListener;
 class gdeWPSOCLight : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCLightListener *pListener;
+	gdeWPSOCLightListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeComboBox::Ref pCBType;
 	igdeColorBox::Ref pClrColor;
@@ -101,7 +101,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

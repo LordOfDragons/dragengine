@@ -334,16 +334,13 @@ public:
 
 reWPBone::reWPBone(reWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pRig(NULL),
-pBone(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPBoneListener(*this);
+	pListener.TakeOver(new reWPBoneListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -402,14 +399,6 @@ pListener(NULL)
 
 reWPBone::~reWPBone(){
 	SetRig(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
-	
-	if(pBone){
-		pBone->FreeReference();
-	}
 }
 
 
@@ -426,7 +415,6 @@ void reWPBone::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -434,8 +422,6 @@ void reWPBone::SetRig(reRig *rig){
 	
 	if(rig){
 		rig->AddNotifier(pListener);
-		rig->AddReference();
-		
 		SetBone(rig->GetSelectionBones()->GetActiveBone());
 	}
 }
@@ -444,17 +430,7 @@ void reWPBone::SetBone(reRigBone *bone){
 	if(bone == pBone){
 		return;
 	}
-	
-	if(pBone){
-		pBone->FreeReference();
-	}
-	
 	pBone = bone;
-	
-	if(bone){
-		bone->AddReference();
-	}
-	
 	UpdateBone();
 }
 

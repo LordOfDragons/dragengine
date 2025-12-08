@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class aeRule;
-class aeRuleGroup;
+#include "../../../animator/rule/aeRuleGroup.h"
 
 
 
@@ -38,8 +38,8 @@ class aeRuleGroup;
  */
 class aeURuleGroupRemoveRule : public igdeUndo{
 private:
-	aeRuleGroup *pGroup;
-	aeRule *pRule;
+	aeRuleGroup::Ref pGroup;
+	aeRule::Ref pRule;
 	int pIndex;
 	
 public:

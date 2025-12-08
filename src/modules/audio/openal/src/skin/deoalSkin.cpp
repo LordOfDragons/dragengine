@@ -47,7 +47,4 @@ pASkin(new deoalASkin(oal.GetAudioThread(), skin)){
 }
 
 deoalSkin::~deoalSkin(){
-	if(pASkin){
-		pASkin->FreeReference();
-	}
 }

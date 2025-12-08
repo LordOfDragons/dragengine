@@ -41,7 +41,7 @@
 
 gdeUGDWPSetType::gdeUGDWPSetType(gdeGameDefinition *gamedef,
 gdeProperty *property, gdeProperty::ePropertyTypes newValue) :
-pGameDefinition(NULL),
+
 pProperty(NULL)
 {
 	if(!gamedef || !property){
@@ -54,19 +54,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDWPSetType::~gdeUGDWPSetType(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

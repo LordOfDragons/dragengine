@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSourceGroupRemoveSource::seUSourceGroupRemoveSource(seSourceGroup *group, seSource *source) :
-pGroup(NULL),
+
 pSource(NULL)
 {
 	if(!group || !source){
@@ -53,19 +53,10 @@ pSource(NULL)
 	}
 	
 	pGroup = group;
-	group->AddReference();
-	
 	pSource = source;
-	source->AddReference();
 }
 
 seUSourceGroupRemoveSource::~seUSourceGroupRemoveSource(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }
 
 

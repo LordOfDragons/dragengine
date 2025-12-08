@@ -64,9 +64,6 @@ pDDSCoordSystem(NULL)
 	if(!occamera){
 		DETHROW(deeInvalidParam);
 	}
-	
-	pOCCamera->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pUpdateDDShapes();
@@ -115,10 +112,6 @@ void gdeVAOCamera::pCleanUp(){
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = NULL;
-	}
-	
-	if(pOCCamera){
-		pOCCamera->FreeReference();
 	}
 }
 

@@ -36,11 +36,11 @@ class reRig;
 class reRigShape;
 class reRigConstraint;
 class deCollider;
-class deColliderVolume;
+#include <dragengine/resources/collider/deColliderVolume.h>
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 class deEngine;
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 
 
@@ -54,11 +54,11 @@ private:
 	reRig *pRig;
 	int pOrder;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSBone;
 	igdeWDebugDrawerShape *pDDSCmp;
 	igdeWCoordSysArrows *pDDSCoordSys;
-	deColliderVolume *pCollider;
+	deColliderVolume::Ref pCollider;
 	
 	decString pName;
 	reRigBone *pParentBone;
@@ -114,7 +114,7 @@ public:
 	void SetOrder(int order);
 	
 	/** \brief Retrieves the bone collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Retrieves the name. */
 	inline const decString &GetName() const{ return pName; }

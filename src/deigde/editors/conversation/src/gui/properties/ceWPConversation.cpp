@@ -1277,16 +1277,14 @@ public:
 
 ceWPConversation::ceWPConversation(ceWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pConversation(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, groupBox2, form, formLine;
+	igdeContainer *content, groupBox, groupBox2, form, formLine;
 	igdeActionContextMenu *actionContextMenu;
 	
-	pListener = new ceWPConversationListener(*this);
+	pListener.TakeOver(new ceWPConversationListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -1454,9 +1452,6 @@ pConversation(NULL)
 
 ceWPConversation::~ceWPConversation(){
 	SetConversation(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1471,14 +1466,12 @@ void ceWPConversation::SetConversation(ceConversation *conversation){
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;
 	
 	if(conversation){
 		conversation->AddListener(pListener);
-		conversation->AddReference();
 	}
 	
 	const bool enabled = conversation;

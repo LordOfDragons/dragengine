@@ -358,18 +358,16 @@ public:
 
 gdeWPSOCNavigationBlocker::gdeWPSOCNavigationBlocker(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
-	pListener = new gdeWPSOCNavigationBlockerListener(*this);
+	pListener.TakeOver(new gdeWPSOCNavigationBlockerListener(*this));
 	
 	helper.GroupBox(content, groupBox, "Object Class Navigation Blocker:");
 	
@@ -423,10 +421,6 @@ pGameDefinition(NULL)
 
 gdeWPSOCNavigationBlocker::~gdeWPSOCNavigationBlocker(){
 	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -441,14 +435,12 @@ void gdeWPSOCNavigationBlocker::SetGameDefinition(gdeGameDefinition *gameDefinit
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdatePropertyList();

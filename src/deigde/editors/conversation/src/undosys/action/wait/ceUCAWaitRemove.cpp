@@ -57,25 +57,11 @@ ceUCAWaitRemove::ceUCAWaitRemove(ceConversationTopic *topic, ceCAWait *wait, ceC
 	SetShortInfo("Action Wait Remove Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pWait = wait;
-	wait->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAWaitRemove::~ceUCAWaitRemove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pWait){
-		pWait->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

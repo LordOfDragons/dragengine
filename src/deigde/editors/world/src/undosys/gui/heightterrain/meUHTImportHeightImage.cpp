@@ -96,7 +96,6 @@ meUHTImportHeightImage::meUHTImportHeightImage(meWorld *world, meHeightTerrainSe
 	}
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUHTImportHeightImage::~meUHTImportHeightImage(){

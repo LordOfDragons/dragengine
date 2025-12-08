@@ -118,8 +118,8 @@ void lpeLoadSaveLangPack::LoadLangPack(lpeLangPack *langpack, decBaseFileReader 
 	}
 	
 	deEngine *engine = pModule->GetGameEngine();
-	lpeLangPackEntry *entry = NULL;
-	deLanguagePack *engLangPack = NULL;
+	lpeLangPackEntry::Ref entry = NULL;
+	deLanguagePack::Ref engLangPack = NULL;
 	int i, entryCount;
 	
 	cDirectLangPackLoader builder;
@@ -138,24 +138,14 @@ void lpeLoadSaveLangPack::LoadLangPack(lpeLangPack *langpack, decBaseFileReader 
 		for(i=0; i<entryCount; i++){
 			const deLanguagePackEntry &engEntry = engLangPack->GetEntryAt(i);
 			
-			entry = new lpeLangPackEntry;
+			entry.TakeOver(new lpeLangPackEntry);
 			entry->SetName(engEntry.GetName());
 			entry->SetText(engEntry.GetText());
 			
 			langpack->AddEntry(entry);
-			entry->FreeReference();
 			entry = NULL;
 		}
-		
-		engLangPack->FreeReference();
-		
 	}catch(const deException &){
-		if(entry){
-			entry->FreeReference();
-		}
-		if(engLangPack){
-			engLangPack->FreeReference();
-		}
 		throw;
 	}
 }
@@ -166,17 +156,12 @@ void lpeLoadSaveLangPack::SaveLangPack(lpeLangPack *langpack, decBaseFileWriter 
 	}
 	
 	lpeLangPackBuilder builder(langpack);
-	deLanguagePack *temporaryLangPack = NULL;
+	deLanguagePack::Ref temporaryLangPack = NULL;
 	
 	try{
 		temporaryLangPack = langpack->GetEngine()->GetLanguagePackManager()->CreateLanguagePack("", builder);
 		pModule->SaveLanguagePack(*file, *temporaryLangPack);
-		temporaryLangPack->FreeReference();
-		
 	}catch(const deException &){
-		if(temporaryLangPack){
-			temporaryLangPack->FreeReference();
-		}
 		throw;
 	}
 }

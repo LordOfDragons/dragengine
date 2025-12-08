@@ -49,13 +49,9 @@ ceUCCShotToggleLockLookAtTarget::ceUCCShotToggleLockLookAtTarget(ceCameraShot *c
 	SetShortInfo("Camera shot lock look-at target");
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotToggleLockLookAtTarget::~ceUCCShotToggleLockLookAtTarget(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

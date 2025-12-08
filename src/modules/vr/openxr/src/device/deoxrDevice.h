@@ -181,7 +181,7 @@ public:
 	void SetName(const char *name);
 	
 	/** Display image. */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
 	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }

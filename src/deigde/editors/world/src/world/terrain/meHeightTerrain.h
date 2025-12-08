@@ -38,7 +38,7 @@ class meObject;
 class meWorld;
 
 class deDebugDrawer;
-class deHeightTerrain;
+#include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 
 class igdeEnvironment;
 
@@ -50,7 +50,7 @@ class igdeEnvironment;
 class meHeightTerrain : public deObject{
 private:
 	meWorld &pWorld;
-	deHeightTerrain *pEngHT;
+	deHeightTerrain::Ref pEngHT;
 	
 	decString pPathHT;
 	bool pChanged;
@@ -96,7 +96,7 @@ public:
 	inline meWorld &GetWorld() const{ return pWorld; }
 	
 	/** \brief Engine height terrain. */
-	inline deHeightTerrain *GetEngineHeightTerrain() const{ return pEngHT; }
+	inline const deHeightTerrain::Ref &GetEngineHeightTerrain() const{ return pEngHT; }
 	
 	
 	

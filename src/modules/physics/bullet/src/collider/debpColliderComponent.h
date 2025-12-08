@@ -32,7 +32,7 @@
 
 class btGhostObject;
 class btCollisionObject;
-class debpBulletShape;
+#include "../debpBulletShape.h"
 class debpColliderBone;
 class debpColliderBones;
 class debpComponent;
@@ -104,7 +104,7 @@ private:
 	debpSweepCollisionTest *pSweepCollisionTest;
 	
 	btGhostObject *pStaticCollisionTest;
-	debpBulletShape *pStaticCollisionTestShape;
+	debpBulletShape::Ref pStaticCollisionTestShape;
 	debpCollisionObject pStaticCollisionTestObject;
 	
 	debpForceFieldFluctuation pForceFieldFluctuation;
@@ -499,7 +499,7 @@ private:
 	/** \brief Check debug checks for performance problems. */
 	void pCheckDebugChecks();
 	
-	debpBulletShape *pCreateBPShape();
+	debpBulletShape::Ref pCreateBPShape();
 	
 	bool pPrepreStaticCollisionTestPos();
 };

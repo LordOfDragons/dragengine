@@ -89,7 +89,7 @@ public:
 	void SetFiles(const decStringList &files);
 	
 	/** \brief Menu to synchronize or NULL if not used. */
-	inline igdeMenuCascade *GetMenu() const{ return pMenu; }
+	inline const igdeMenuCascade::Ref &GetMenu() const{ return pMenu; }
 	
 	/** \brief Set menu to synchronize or NULL if not used. */
 	void SetMenu(igdeMenuCascade *menu);

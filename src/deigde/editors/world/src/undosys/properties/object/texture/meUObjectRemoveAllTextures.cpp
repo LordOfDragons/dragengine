@@ -67,14 +67,10 @@ meUObjectRemoveAllTextures::meUObjectRemoveAllTextures(meObject *object){
 	}
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectRemoveAllTextures::~meUObjectRemoveAllTextures(){
 	pTextureList.RemoveAllTextures();
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

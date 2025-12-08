@@ -44,16 +44,11 @@ aeULinkSetVertexPositionSetMinimum::aeULinkSetVertexPositionSetMinimum(aeLink *l
 	SetShortInfo("Link set vertex position set minimum");
 	
 	pLink = link;
-	pLink->AddReference();
-	
 	pOldValue = link->GetVertexPositionSetMinimum();
 	pNewValue = newValue;
 }
 
 aeULinkSetVertexPositionSetMinimum::~aeULinkSetVertexPositionSetMinimum(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

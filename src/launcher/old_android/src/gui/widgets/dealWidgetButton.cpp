@@ -58,8 +58,6 @@ pTextColorPressed(0.0f, 0.0f, 0.0f),
 
 pLabel(NULL),
 pImage(NULL),
-pBgImageNormal(NULL),
-pBgImagePressed(NULL),
 pPressed(false)
 {
 	SetGap(display.GetDefaultFontSize() / 4);
@@ -70,12 +68,6 @@ pPressed(false)
 }
 
 dealWidgetButton::~dealWidgetButton(){
-	if(pBgImageNormal){
-		pBgImageNormal->FreeReference();
-	}
-	if(pBgImagePressed){
-		pBgImagePressed->FreeReference();
-	}
 }
 
 
@@ -303,8 +295,8 @@ void dealWidgetButton::pBuildContent(){
 	dealDisplay &display = GetDisplay();
 	
 	// background images
-	pBgImageNormal = new dealWidgetBorderImage(display);
-	pBgImagePressed = new dealWidgetBorderImage(display);
+	pBgImageNormal.TakeOver(new dealWidgetBorderImage(display));
+	pBgImagePressed.TakeOver(new dealWidgetBorderImage(display));
 	
 	// content
 	pImage = new dealWidgetImage(display);

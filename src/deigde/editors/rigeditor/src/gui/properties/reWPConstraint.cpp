@@ -382,16 +382,13 @@ public:
 reWPConstraint::reWPConstraint(reWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pRig(NULL),
-pConstraint(NULL),
-pListener(NULL),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPConstraintListener(*this);
+	pListener.TakeOver(new reWPConstraintListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -487,10 +484,6 @@ pPreventUpdate(false)
 
 reWPConstraint::~reWPConstraint(){
 	SetRig(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -507,7 +500,6 @@ void reWPConstraint::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -515,8 +507,6 @@ void reWPConstraint::SetRig(reRig *rig){
 	
 	if(rig){
 		rig->AddNotifier(pListener);
-		rig->AddReference();
-		
 		SetConstraint(rig->GetSelectionConstraints()->GetActiveConstraint());
 	}
 }
@@ -525,17 +515,7 @@ void reWPConstraint::SetConstraint(reRigConstraint *constraint){
 	if(constraint == pConstraint){
 		return;
 	}
-	
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
-	
 	pConstraint = constraint;
-	
-	if(constraint){
-		constraint->AddReference();
-	}
-	
 	UpdateBoneLists();
 	UpdateConstraint();
 }

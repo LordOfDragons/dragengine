@@ -42,7 +42,7 @@
 
 gdeUOCParticleEmitterSetBoneName::gdeUOCParticleEmitterSetBoneName(gdeObjectClass *objectClass,
 gdeOCParticleEmitter *particleEmitter, const char *newValue) :
-pObjectClass(NULL),
+
 pParticleEmitter(NULL)
 {
 	if(!objectClass || !particleEmitter){
@@ -55,19 +55,10 @@ pParticleEmitter(NULL)
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCParticleEmitterSetBoneName::~gdeUOCParticleEmitterSetBoneName(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -64,13 +64,9 @@ meUObjectTextureTCOffset::meUObjectTextureTCOffset(meObjectTexture *texture, con
 	pNewOffset = newOffset;
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjectTextureTCOffset::~meUObjectTextureTCOffset(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

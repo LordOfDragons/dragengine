@@ -72,7 +72,7 @@ public:
 	inline gdeLoadSaveGameDefinition &GetLSGameDefinition(){ return pLSGameDef; }
 	
 	/** \brief Load game definition from file. */
-	gdeGameDefinition *LoadGameDefinition(const char *filename);
+	gdeGameDefinition::Ref LoadGameDefinition(const char *filename);
 	
 	/** \brief Save game definition to file. */
 	void SaveGameDefinition(const gdeGameDefinition &gameDefinition, const char *filename);

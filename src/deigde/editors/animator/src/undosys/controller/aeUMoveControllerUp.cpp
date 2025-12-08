@@ -50,10 +50,7 @@ aeUMoveControllerUp::aeUMoveControllerUp(aeAnimator *animator, aeController *con
 	if(pIndex < 1) DETHROW(deeInvalidParam);
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 aeUMoveControllerUp::~aeUMoveControllerUp(){

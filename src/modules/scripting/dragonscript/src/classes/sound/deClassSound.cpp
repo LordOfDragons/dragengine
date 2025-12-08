@@ -46,7 +46,7 @@
 /////////////////////
 
 struct sSndNatDat{
-	deSound *sound;
+	deSound::Ref sound;
 };
 
 
@@ -297,5 +297,4 @@ void deClassSound::PushSound(dsRunTime *rt, deSound *sound){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sSndNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->sound = sound;
-	sound->AddReference();
 }

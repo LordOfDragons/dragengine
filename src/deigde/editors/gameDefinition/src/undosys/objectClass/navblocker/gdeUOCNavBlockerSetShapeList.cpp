@@ -42,7 +42,7 @@
 
 gdeUOCNavBlockerSetShapeList::gdeUOCNavBlockerSetShapeList(gdeObjectClass *objectClass,
 gdeOCNavigationBlocker *navblocker, const decShapeList &newValue) :
-pObjectClass(NULL),
+
 pNavBlocker(NULL)
 {
 	if(!objectClass || !navblocker){
@@ -55,19 +55,10 @@ pNavBlocker(NULL)
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetShapeList::~gdeUOCNavBlockerSetShapeList(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

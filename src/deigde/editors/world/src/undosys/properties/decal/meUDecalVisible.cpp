@@ -54,13 +54,9 @@ meUDecalVisible::meUDecalVisible(meDecal *decal){
 	SetShortInfo("Set decal visible");
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalVisible::~meUDecalVisible(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

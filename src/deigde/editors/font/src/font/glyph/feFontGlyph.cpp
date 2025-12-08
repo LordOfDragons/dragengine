@@ -142,7 +142,7 @@ void feFontGlyph::SetActive(bool active){
 	pActive = active;
 }
 
-feFontGlyph* feFontGlyph::Copy() const{
+feFontGlyph::Ref feFontGlyph::Copy() const{
 	feFontGlyph *glyph = NULL;
 	
 	try{

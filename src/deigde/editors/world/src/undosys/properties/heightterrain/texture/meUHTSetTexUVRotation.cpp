@@ -52,11 +52,7 @@ meUHTSetTexUVRotation::meUHTSetTexUVRotation(meWorld *world, meHeightTerrainSect
 	pNewRotation = newRotation;
 	
 	SetShortInfo("Set Height Terrain Texture UV Rotation");
-	
-	world->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUHTSetTexUVRotation::~meUHTSetTexUVRotation(){

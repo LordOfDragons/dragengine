@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleTrackTo;
+#include "../../../animator/rule/aeRuleTrackTo.h"
 
 
 
@@ -36,7 +36,7 @@ class aeRuleTrackTo;
  */
 class aeURuleTrackToSetTrackBone : public igdeUndo{
 private:
-	aeRuleTrackTo *pRule;
+	aeRuleTrackTo::Ref pRule;
 	
 	decString pOldName;
 	decString pNewName;

@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceTarget;
+#include "../../conversation/target/ceTarget.h"
 
 
 
@@ -36,7 +36,7 @@ class ceTarget;
  */
 class ceUCTargetSetActor : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decString pOldID;
 	decString pNewID;

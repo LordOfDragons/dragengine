@@ -40,7 +40,7 @@
 ////////////////////////////
 
 projUProfileSetCreator::projUProfileSetCreator(projProfile *profile, const char *newValue) :
-pProfile(NULL),
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetCreator();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetCreator::~projUProfileSetCreator(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

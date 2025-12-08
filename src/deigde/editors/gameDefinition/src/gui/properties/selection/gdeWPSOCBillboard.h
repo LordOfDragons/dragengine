@@ -36,11 +36,11 @@
 #include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeOCBillboard;
 class gdeWindowProperties;
-class gdeWPSOCBillboardListener;
+#include "gdeWPSOCBillboardListener.h"
 
 
 
@@ -50,9 +50,9 @@ class gdeWPSOCBillboardListener;
 class gdeWPSOCBillboard : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCBillboardListener *pListener;
+	gdeWPSOCBillboardListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditPath::Ref pEditPathSkin;
 	igdeEditVector::Ref pEditAxis;
@@ -88,7 +88,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

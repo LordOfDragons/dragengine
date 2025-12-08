@@ -60,7 +60,6 @@ pDecal(NULL)
 	pValue = value;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalAddProperty::~meUDecalAddProperty(){
@@ -96,7 +95,4 @@ void meUDecalAddProperty::ProgressiveRedo(){
 //////////////////////
 
 void meUDecalAddProperty::pCleanUp(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }

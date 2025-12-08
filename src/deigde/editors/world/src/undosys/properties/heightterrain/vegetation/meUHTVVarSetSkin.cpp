@@ -48,8 +48,6 @@ meUHTVVarSetSkin::meUHTVVarSetSkin(meHTVVariation *variation, const char *newPat
 	pNewPath = newPath;
 	
 	SetShortInfo("Vegetation Layer Variation Set Skin");
-	
-	variation->AddReference();
 }
 
 meUHTVVarSetSkin::~meUHTVVarSetSkin(){

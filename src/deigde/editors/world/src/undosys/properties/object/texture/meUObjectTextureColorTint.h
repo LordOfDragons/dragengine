@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meObjectTexture;
+#include "../../../../world/object/texture/meObjectTexture.h"
 
 
 
@@ -38,7 +38,7 @@ class meObjectTexture;
  */
 class meUObjectTextureColorTint : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decColor pOldColor;
 	decColor pNewColor;
 	

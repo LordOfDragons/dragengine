@@ -29,8 +29,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -39,9 +39,9 @@ class ceConversationTopic;
  */
 class ceUCCTriggerSetTestMode : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionTrigger *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionTrigger::Ref pCondition;
 	ceCConditionTrigger::eTestModes pOldTestMode;
 	ceCConditionTrigger::eTestModes pNewTestMode;
 	

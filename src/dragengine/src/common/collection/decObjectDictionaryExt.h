@@ -27,7 +27,7 @@
 
 #include "../../dragengine_export.h"
 
-class deObject;
+#include <dragengine/deObject.h>
 class decObjectList;
 class decPointerList;
 
@@ -42,7 +42,7 @@ private:
 	struct sDictEntry{
 		unsigned int hash;
 		const void *key;
-		deObject *value;
+		deObject::Ref value;
 		sDictEntry *next;
 		
 		sDictEntry();

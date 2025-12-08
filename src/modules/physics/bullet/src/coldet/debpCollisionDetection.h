@@ -49,7 +49,7 @@ class debpSharedCollisionFiltering;
 class debpContactResultCallback;
 
 class deBaseScriptingCollider;
-class deCollisionInfo;
+#include <dragengine/resources/collider/deCollisionInfo.h>
 class debpDCollisionBox;
 
 class btSphereShape;
@@ -101,7 +101,7 @@ struct debpCollisionResult{
 class debpCollisionDetection{
 private:
 	dePhysicsBullet &pBullet;
-	deCollisionInfo *pColInfo;
+	deCollisionInfo::Ref pColInfo;
 	debpShapeTransform pShape1;
 	debpShapeTransform pShape2;
 	debpSweepCollisionTest pRayHackShape;

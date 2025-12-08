@@ -53,19 +53,10 @@ ceUCATriggerSetAction::ceUCATriggerSetAction(ceConversationTopic *topic, ceCATri
 	SetShortInfo("Action trigger set action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCATriggerSetAction::~ceUCATriggerSetAction(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -42,16 +42,11 @@
 
 reWPUndoHistory::reWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pRig(NULL),
 pListener(new reWPUndoHistoryListener(*this)){
 }
 
 reWPUndoHistory::~reWPUndoHistory(){
 	SetRig(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -68,15 +63,12 @@ void reWPUndoHistory::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 	}
 	
 	pRig = rig;
 	
 	if(rig){
 		rig->AddNotifier(pListener);
-		rig->AddReference();
-		
 		SetUndoSystem(rig->GetUndoSystem());
 	}
 }

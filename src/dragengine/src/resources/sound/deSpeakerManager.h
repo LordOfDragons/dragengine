@@ -63,7 +63,7 @@ public:
 	deSpeaker *GetRootSpeaker() const;
 	
 	/** \brief Create new speaker. */
-	deSpeaker *CreateSpeaker();
+	deSpeaker::Ref CreateSpeaker();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

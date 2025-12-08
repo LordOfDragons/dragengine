@@ -30,8 +30,8 @@
 #include <dragengine/common/math/decMath.h>
 
 class dePhysicsBullet;
-class debpBulletCompoundShape;
-class debpBulletShape;
+#include "../debpBulletCompoundShape.h"
+#include "../debpBulletShape.h"
 class btTransform;
 class btVector3;
 class btCollisionShape;
@@ -47,8 +47,8 @@ class btCollisionShape;
  */
 class debpCreateBulletShape : public decShapeVisitor{
 private:
-	debpBulletShape *pBulletShape;
-	debpBulletCompoundShape *pBulletCompoundShape;
+	debpBulletShape::Ref pBulletShape;
+	debpBulletCompoundShape::Ref pBulletCompoundShape;
 	float pCcdThreshold;
 	float pCcdRadius;
 	decVector pOffset;

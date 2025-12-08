@@ -162,13 +162,8 @@ void ceWindowMain::cRecentFilesLangPack::FilesChanged(){
 
 ceWindowMain::ceWindowMain(ceIGDEModule &module) :
 igdeEditorWindow(module),
-pListener(NULL),
 pConfiguration(NULL),
 pLoadSaveSystem(NULL),
-pViewConversation(NULL),
-pWindowProperties(NULL),
-pWindowDopeSheet(NULL),
-pConversation(NULL),
 pRecentFilesCTS(*this),
 pRecentFilesCTA(*this),
 pRecentFilesCTGS(*this),
@@ -180,7 +175,7 @@ pRecentFilesLangPack(*this)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new ceWindowMainListener(*this);
+	pListener.TakeOver(new ceWindowMainListener(*this));
 	pLoadSaveSystem = new ceLoadSaveSystem(*this);
 	pConfiguration = new ceConfiguration(*this);
 	
@@ -194,17 +189,17 @@ pRecentFilesLangPack(*this)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties = new ceWindowProperties(*this);
+	pWindowProperties.TakeOver(new ceWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(
 		env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5));
 	splitted->AddChild(panel, igdeContainerSplitted::eaCenter);
 	
-	pViewConversation = new ceViewConversation(*this);
+	pViewConversation.TakeOver(new ceViewConversation(*this));
 	panel->AddChild(pViewConversation);
 	
-	pWindowDopeSheet = new ceWindowDopeSheet(*this);
+	pWindowDopeSheet.TakeOver(new ceWindowDopeSheet(*this));
 	panel->AddChild(pWindowDopeSheet);
 	
 	CreateNewConversation();
@@ -217,28 +212,12 @@ ceWindowMain::~ceWindowMain(){
 	}
 	
 	SetConversation(NULL);
-	
-	if(pWindowDopeSheet){
-		pWindowDopeSheet->FreeReference();
-	}
-	if(pViewConversation){
-		pViewConversation->FreeReference();
-	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
-	
 	if(pConfiguration){
 		delete pConfiguration;
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
 	}
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
-	
 }
 
 
@@ -271,13 +250,11 @@ void ceWindowMain::SetConversation(ceConversation *conversation){
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
 		pConversation->Dispose();
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;
 	
 	if(conversation){
-		conversation->AddReference();
 		conversation->AddListener(pListener);
 		
 		pActionEditUndo->SetUndoSystem(conversation->GetUndoSystem());

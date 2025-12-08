@@ -61,7 +61,7 @@ public:
 	deNavigator *GetRootNavigator() const;
 	
 	/** \brief Create new navigator. */
-	deNavigator *CreateNavigator();
+	deNavigator::Ref CreateNavigator();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

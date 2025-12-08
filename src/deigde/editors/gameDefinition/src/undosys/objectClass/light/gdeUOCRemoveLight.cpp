@@ -42,8 +42,7 @@
 ////////////////////////////
 
 gdeUOCRemoveLight::gdeUOCRemoveLight(gdeObjectClass *objectClass, gdeOCLight *light) :
-pObjectClass(NULL),
-pLight(NULL)
+pObjectClass(NULL)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -56,19 +55,10 @@ pLight(NULL)
 	SetShortInfo("Remove light");
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveLight::~gdeUOCRemoveLight(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

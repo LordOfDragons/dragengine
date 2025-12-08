@@ -42,7 +42,7 @@
 
 gdeUOCSpeakerSetRollOff::gdeUOCSpeakerSetRollOff(gdeObjectClass *objectClass,
 gdeOCSpeaker *speaker, float newValue) :
-pObjectClass(NULL),
+
 pSpeaker(NULL)
 {
 	if(!objectClass || !speaker){
@@ -55,19 +55,10 @@ pSpeaker(NULL)
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetRollOff::~gdeUOCSpeakerSetRollOff(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

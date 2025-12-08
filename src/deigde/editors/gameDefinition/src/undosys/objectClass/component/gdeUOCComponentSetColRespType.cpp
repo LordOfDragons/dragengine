@@ -42,7 +42,7 @@
 
 gdeUOCComponentSetColRespType::gdeUOCComponentSetColRespType(gdeObjectClass *objectClass,
 gdeOCComponent *component, deCollider::eResponseType newValue) :
-pObjectClass(NULL),
+
 pComponent(NULL)
 {
 	if(!objectClass || !component){
@@ -55,19 +55,10 @@ pComponent(NULL)
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetColRespType::~gdeUOCComponentSetColRespType(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

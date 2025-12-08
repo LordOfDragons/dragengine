@@ -50,10 +50,7 @@ aeUMoveControllerDown::aeUMoveControllerDown(aeAnimator *animator, aeController 
 	if(pIndex == -1 || pIndex == animator->GetControllers().GetCount() - 1) DETHROW(deeInvalidParam);
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 aeUMoveControllerDown::~aeUMoveControllerDown(){

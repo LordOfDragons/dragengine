@@ -42,7 +42,7 @@
 
 gdeUOCBillboardToggleLocked::gdeUOCBillboardToggleLocked(
 gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
-pObjectClass(NULL),
+
 pBillboard(NULL)
 {
 	if(!objectClass || !billboard){
@@ -52,19 +52,10 @@ pBillboard(NULL)
 	SetShortInfo("Billboard toggle locked");
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardToggleLocked::~gdeUOCBillboardToggleLocked(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

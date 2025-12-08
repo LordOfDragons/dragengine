@@ -130,13 +130,11 @@ void deTerrainHeightMap::SetHeightImage(deImage *heightImage){
 	//       deprecated anyways and should be done by physics module
 	if(pHeightImage){
 		pHeightImage->ReleaseImageData();
-		pHeightImage->FreeReference();
 	}
 	
 	pHeightImage = heightImage;
 	
 	if(heightImage){
-		heightImage->AddReference();
 		heightImage->RetainImageData();
 	}
 }

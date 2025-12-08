@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include "dragengine/common/math/decMath.h"
 
-class reRigShapeBox;
+#include "../../../rig/shape/reRigShapeBox.h"
 
 
 
@@ -37,7 +37,7 @@ class reRigShapeBox;
  */
 class reUSetShapeBoxHalfExtends : public igdeUndo{
 private:
-	reRigShapeBox *pShape;
+	reRigShapeBox::Ref pShape;
 	
 	decVector pOldHalfExtends;
 	decVector pNewHalfExtends;

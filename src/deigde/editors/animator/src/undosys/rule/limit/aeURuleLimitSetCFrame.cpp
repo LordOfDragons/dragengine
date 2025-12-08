@@ -53,13 +53,9 @@ deAnimatorRuleLimit::eCoordinateFrames newCoordFrame){
 	SetShortInfo("Limit set coordinate frame");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetCFrame::~aeURuleLimitSetCFrame(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

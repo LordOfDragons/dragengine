@@ -30,8 +30,8 @@
 
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
-class deoglRPTBuildRTsDepth;
-class deoglRPTBuildRTsGeometry;
+#include "parallel/deoglRPTBuildRTsDepth.h"
+#include "parallel/deoglRPTBuildRTsGeometry.h"
 
 
 /**
@@ -61,8 +61,8 @@ private:
 	deoglRenderTask *pSolidGeometryOutlineXRayTask;
 	deoglRenderTask *pSolidDecalsXRayTask;
 	
-	deoglRPTBuildRTsDepth *pTaskDepth;
-	deoglRPTBuildRTsGeometry *pTaskGeometry;
+	deoglRPTBuildRTsDepth::Ref pTaskDepth;
+	deoglRPTBuildRTsGeometry::Ref pTaskGeometry;
 	
 	deoglComputeRenderTask::Ref pCRTSolidDepth;
 	deoglComputeRenderTask::Ref pCRTSolidGeometry;

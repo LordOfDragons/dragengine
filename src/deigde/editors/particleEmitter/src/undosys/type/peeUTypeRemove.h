@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
-class peeEmitter;
+#include "../../emitter/peeType.h"
+#include "../../emitter/peeEmitter.h"
 
 
 
@@ -37,8 +37,8 @@ class peeEmitter;
  */
 class peeUTypeRemove : public igdeUndo{
 private:
-	peeEmitter *pEmitter;
-	peeType *pType;
+	peeEmitter::Ref pEmitter;
+	peeType::Ref pType;
 	int pIndex;
 	
 	

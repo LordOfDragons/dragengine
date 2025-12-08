@@ -57,13 +57,9 @@ meUDecalPosition::meUDecalPosition(meDecal *decal, const decDVector &newPosition
 	pNewPosition = newPosition;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalPosition::~meUDecalPosition(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

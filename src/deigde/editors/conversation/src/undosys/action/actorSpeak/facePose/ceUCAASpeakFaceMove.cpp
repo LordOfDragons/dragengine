@@ -61,25 +61,11 @@ ceStrip *facePose, int newIndex){
 	SetShortInfo("Move Face Pose");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pFacePose = facePose;
-	facePose->AddReference();
 }
 
 ceUCAASpeakFaceMove::~ceUCAASpeakFaceMove(){
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

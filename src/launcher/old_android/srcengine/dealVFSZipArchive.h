@@ -170,9 +170,9 @@ private:
 	
 private:
 	dealEngineInstance &pEngineInstance;
-	decBaseFileReader *pFileReader;
+	decBaseFileReader::Ref pFileReader;
 	unzFile pZipFile;
-	cArchiveDirectory *pArchiveDirectory;
+	cArchiveDirectory::Ref pArchiveDirectory;
 	deMutex pMutex;
 	
 	

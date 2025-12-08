@@ -97,8 +97,6 @@ void reRigPushList::AddPush(reRigPush *push){
 	
 	pPushes[pPushCount] = push;
 	pPushCount++;
-	
-	push->AddReference();
 }
 
 void reRigPushList::RemovePush(reRigPush *push){
@@ -109,8 +107,6 @@ void reRigPushList::RemovePush(reRigPush *push){
 		pPushes[i - 1] = pPushes[i];
 	}
 	pPushCount--;
-	
-	push->FreeReference();
 }
 
 void reRigPushList::RemoveAllPushes(){

@@ -42,7 +42,7 @@
 
 gdeUOCCameraSetPropertyName::gdeUOCCameraSetPropertyName(gdeObjectClass *objectClass,
 gdeOCCamera *camera, const char *newValue) :
-pObjectClass(NULL),
+
 pCamera(NULL)
 {
 	if(!objectClass || !camera){
@@ -55,19 +55,10 @@ pCamera(NULL)
 	pNewValue = newValue;
 	
 	pCamera = camera;
-	camera->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCameraSetPropertyName::~gdeUOCCameraSetPropertyName(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

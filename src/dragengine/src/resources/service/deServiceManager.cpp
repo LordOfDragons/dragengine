@@ -48,7 +48,7 @@ public:
 	};
 	
 	const eEvents type;
-	deService *service;
+	deService::Ref service;
 	const decUniqueID id;
 	const deServiceObject::Ref data;
 	const bool finished;
@@ -126,7 +126,7 @@ decStringSet deServiceManager::GetAllSupportedSerices() const{
 	return names;
 }
 
-deService *deServiceManager::CreateService(const char *name, const deServiceObject::Ref &data){
+deService::Ref deServiceManager::CreateService(const char *name, const deServiceObject::Ref &data){
 	DEASSERT_NOTNULL(name)
 	
 	deEngine * const engine = GetEngine();
@@ -158,7 +158,6 @@ deService *deServiceManager::CreateService(const char *name, const deServiceObje
 		engine->GetScriptingSystem()->CreateService(service);
 		pServices.Add(service);
 		pDirtyModules = true;
-		service->AddReference(); // caller takes over reference
 		return service;
 	}
 	
@@ -207,7 +206,7 @@ void deServiceManager::FrameUpdate(){
 
 
 void deServiceManager::SystemScriptingLoad(){
-	deService *service = (deService*)pServices.GetRoot();
+	deService::Ref service = (deService*)pServices.GetRoot();
 	
 	while(service){
 		if(!service->GetPeerScripting()){
@@ -219,7 +218,7 @@ void deServiceManager::SystemScriptingLoad(){
 }
 
 void deServiceManager::SystemScriptingUnload(){
-	deService *service = (deService*)pServices.GetRoot();
+	deService::Ref service = (deService*)pServices.GetRoot();
 	
 	while(service){
 		service->SetPeerScripting(nullptr);
@@ -244,7 +243,7 @@ void deServiceManager::pUpdateModuleList(){
 	pDirtyModules = false;
 	pModules.RemoveAll();
 	
-	const deService *service = (const deService*)pServices.GetRoot();
+	const deService::Ref service = (const deService*)pServices.GetRoot();
 	while(service){
 		pModules.AddIfAbsent(service->GetServiceModule());
 		service = (const deService*)service->GetLLManagerNext();

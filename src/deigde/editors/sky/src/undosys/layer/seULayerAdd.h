@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLayer;
-class seSky;
+#include "../../sky/layer/seLayer.h"
+#include "../../sky/seSky.h"
 
 
 /**
@@ -36,8 +36,8 @@ class seSky;
  */
 class seULayerAdd : public igdeUndo{
 private:
-	seSky *pSky;
-	seLayer *pLayer;
+	seSky::Ref pSky;
+	seLayer::Ref pLayer;
 	
 	
 	

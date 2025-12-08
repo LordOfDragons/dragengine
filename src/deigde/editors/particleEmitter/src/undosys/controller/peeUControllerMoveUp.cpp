@@ -54,13 +54,9 @@ peeUControllerMoveUp::peeUControllerMoveUp(peeController *controller){
 	if(pIndex < 1) DETHROW(deeInvalidParam);
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerMoveUp::~peeUControllerMoveUp(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

@@ -52,13 +52,9 @@ pObjectClass(NULL)
 	pInherits = objectClass->GetInherits();
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveAllInherits::~gdeUOCRemoveAllInherits(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

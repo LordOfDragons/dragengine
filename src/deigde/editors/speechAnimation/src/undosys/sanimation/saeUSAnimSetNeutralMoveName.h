@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saeSAnimation;
+#include "../../sanimation/saeSAnimation.h"
 
 
 
@@ -36,7 +36,7 @@ class saeSAnimation;
  */
 class saeUSAnimSetNeutralMoveName : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	decString pOldName;
 	decString pNewName;

@@ -51,13 +51,9 @@ pSource(NULL)
 	SetShortInfo("Chain source move path sound up");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceChainPathSoundMoveUp::~seUSourceChainPathSoundMoveUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

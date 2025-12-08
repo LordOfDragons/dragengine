@@ -306,7 +306,7 @@ public:
 	void SetTitle(const char *title);
 	
 	/** \brief Icon. */
-	inline deImage *GetIcon() const{ return pIcon; }
+	inline const deImage::Ref &GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon. */
 	void SetIcon(deImage *icon);
@@ -316,7 +316,7 @@ public:
 	 * 
 	 * The canvas view is automatically resized to fill the entire window.
 	 */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	/*@}*/
 	
 	

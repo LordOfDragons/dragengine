@@ -64,7 +64,7 @@ public:
 	dePropField *GetRootPropField() const;
 	
 	/** \brief Create new prop field. */
-	dePropField *CreatePropField();
+	dePropField::Ref CreatePropField();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

@@ -133,7 +133,7 @@ public:
 	void SetTransform(const decTexMatrix2 &matrix);
 	
 	/** \brief Skin. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(deSkin *skin);
@@ -145,7 +145,7 @@ public:
 	void SetTexture(int texture);
 	
 	/** \brief Dynamic skin or NULL if not used. */
-	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set dynamic skin or NULL if not used. */
 	void SetDynamicSkin(deDynamicSkin *dynamicSkin);

@@ -34,9 +34,9 @@
 
 class deEngine;
 class deOSAndroid;
-class deLogger;
-class dealVFSZipArchive;
-class deVirtualFileSystem;
+#include <dragengine/logger/deLogger.h>
+#include "dealVFSZipArchive.h"
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 struct android_app;
 
 
@@ -49,18 +49,18 @@ class dealEngineInstance : public dealIEngineInstance{
 private:
 	android_app &pAndroidApp;
 	
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	
 	AAsset *pEngineAsset;
 	int pEngineAssetFileDescriptor;
-	deVirtualFileSystem *pOSFileSystem;
+	deVirtualFileSystem::Ref pOSFileSystem;
 	
 	deOSAndroid *pOSAndroid;
 	deEngine *pEngine;
 	
 	deModuleParameter pModuleParameter;
 	
-	dealVFSZipArchive *pDelga;
+	dealVFSZipArchive::Ref pDelga;
 	
 	
 	
@@ -79,7 +79,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Logger or \em null if not existing. */
-	inline deLogger *GetLogger() const{ return pLogger; }
+	inline const deLogger::Ref &GetLogger() const{ return pLogger; }
 	
 	
 	

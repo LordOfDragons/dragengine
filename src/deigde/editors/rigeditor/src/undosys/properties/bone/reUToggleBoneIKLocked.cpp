@@ -41,8 +41,6 @@ pAxis(axis)
 	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	try{
 		decString text;
 		text.Format("Toggle Bone IK Locked %c", 'X' + axis);

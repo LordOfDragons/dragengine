@@ -31,9 +31,9 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/composed/igdeEditPoint.h>
 
-class feFont;
+#include "../../font/feFont.h"
 class feWindowProperties;
-class feWPFontListener;
+#include "feWPFontListener.h"
 
 
 
@@ -43,12 +43,12 @@ class feWPFontListener;
 class feWPFont : public igdeContainerScroll{
 private:
 	feWindowProperties &pWindowProperties;
-	feFont *pFont;
-	feWPFontListener *pListener;
+	feFont::Ref pFont;
+	feWPFontListener::Ref pListener;
 	
 	igdeTextField::Ref pEditImagePath;
 	igdeButton::Ref pBtnImagePath;
-	igdeTextField::Ref pEditLineHeight, pEditBaseLine;
+	igdeTextField *pEditLineHeight, pEditBaseLine;
 	igdeCheckBox::Ref pChkColorFont;
 	
 	
@@ -71,7 +71,7 @@ public:
 	inline feWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Font. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
 	void SetFont(feFont *font);

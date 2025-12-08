@@ -53,9 +53,7 @@ meUHTVRuleCompSetVector::meUHTVRuleCompSetVector(meHTVegetationLayer *vlayer, me
 	pNewVector = nvector;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleCompSetVector::~meUHTVRuleCompSetVector(){

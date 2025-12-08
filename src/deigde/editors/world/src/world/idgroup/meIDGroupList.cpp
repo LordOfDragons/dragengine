@@ -65,7 +65,7 @@ meIDGroup *meIDGroupList::GetNamed(const char *name) const{
 		DETHROW(deeInvalidParam);
 	}
 	
-	deObject *group = NULL;
+	deObject::Ref group = NULL;
 	
 	if(pGroups.GetAt(name, &group)){
 		return (meIDGroup*)group;
@@ -80,18 +80,13 @@ meIDGroup *meIDGroupList::GetOrAddNamed(const char *name){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deObject *group = NULL;
+	deObject::Ref group = NULL;
 	
 	if(!pGroups.GetAt(name, &group)){
 		try{
-			group = new meIDGroup(name);
+			group.TakeOver(new meIDGroup(name));
 			pGroups.SetAt(name, group);
-			group->FreeReference();
-			
 		}catch(const deException &){
-			if(group){
-				group->FreeReference();
-			}
 			throw;
 		}
 	}

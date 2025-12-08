@@ -32,7 +32,7 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meObject;
+#include "../../../world/object/meObject.h"
 class meObjectList;
 
 
@@ -43,7 +43,7 @@ class meObjectList;
 class meUSetObjectClass : public igdeUndo{
 private:
 	struct sObject{
-		meObject *object;
+		meObject::Ref object;
 		decString oldcname;
 		decString newcname;
 		decVector oldsize;

@@ -203,7 +203,7 @@ public:
 	void SetTransparency(float transparency);
 	
 	/** \brief Skin or NULL to use background color only. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL to use background color only. */
 	void SetSkin(deSkin *skin);

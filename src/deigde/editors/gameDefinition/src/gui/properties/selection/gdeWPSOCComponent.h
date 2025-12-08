@@ -46,12 +46,12 @@
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeOCComponent;
 class gdeOCComponentTexture;
 class gdeWindowProperties;
-class gdeWPSOCComponentListener;
+#include "gdeWPSOCComponentListener.h"
 
 
 
@@ -61,9 +61,9 @@ class gdeWPSOCComponentListener;
 class gdeWPSOCComponent : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCComponentListener *pListener;
+	gdeWPSOCComponentListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decStringList pEngModelTexNames;
 	decString pEngModelPath;
@@ -133,7 +133,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
@@ -210,13 +210,13 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeActionContextMenu *GetActionTexturesMenu() const{ return pActionTexturesMenu; }
-	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
-	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
+	inline const igdeActionContextMenu::Ref &GetActionTexturesMenu() const{ return pActionTexturesMenu; }
+	inline const igdeAction::Ref &GetActionTextureAdd() const{ return pActionTextureAdd; }
+	inline const igdeAction::Ref &GetActionTextureRemove() const{ return pActionTextureRemove; }
 	inline const decObjectList &GetActionsTextureAddFromModel() const{ return pActionsTextureAddFromModel; }
-	inline igdeAction *GetActionTexturePropertyValueSet() const{ return pActionTexturePropertyValueSet; }
-	inline igdeAction *GetActionTexturePropertyValueRemove() const{ return pActionTexturePropertyValueRemove; }
-	inline igdeAction *GetActionTexturePropertyValueClear() const{ return pActionTexturePropertyValueClear; }
+	inline const igdeAction::Ref &GetActionTexturePropertyValueSet() const{ return pActionTexturePropertyValueSet; }
+	inline const igdeAction::Ref &GetActionTexturePropertyValueRemove() const{ return pActionTexturePropertyValueRemove; }
+	inline const igdeAction::Ref &GetActionTexturePropertyValueClear() const{ return pActionTexturePropertyValueClear; }
 	/*@}*/
 };
 

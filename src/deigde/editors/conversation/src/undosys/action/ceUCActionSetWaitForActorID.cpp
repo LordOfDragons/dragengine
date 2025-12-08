@@ -56,19 +56,10 @@ pNewID(newID)
 	SetShortInfo("Action Set Wait For Actor ID ");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCActionSetWaitForActorID::~ceUCActionSetWaitForActorID(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

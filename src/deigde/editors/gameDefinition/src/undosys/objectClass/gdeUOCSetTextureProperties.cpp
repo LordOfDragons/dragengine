@@ -53,13 +53,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetTextureProperties::~gdeUOCSetTextureProperties(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

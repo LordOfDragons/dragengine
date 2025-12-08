@@ -1816,7 +1816,7 @@ void deModelModule::pLoadQuads(decBaseFileReader &reader, sModelInfos &infos, de
 
 void deModelModule::pUpdateFaceTexCoordIndices(deModel &model, sModelInfos &infos, deModelLOD &lodMesh){
 	// check if there exists a cached copy of the data
-	decBaseFileReader *cacheReader = NULL;
+	decBaseFileReader::Ref cacheReader = NULL;
 	deVirtualFileSystem &vfs = *model.GetVirtualFileSystem();
 	bool hasCached = false;
 	decPath cachePath;
@@ -1847,7 +1847,6 @@ void deModelModule::pUpdateFaceTexCoordIndices(deModel &model, sModelInfos &info
 			// check the cache version in case we upgraded
 			if(cacheReader->ReadByte() != 0x1){
 				// cache file outdated
-				cacheReader->FreeReference();
 				cacheReader = NULL;
 				pCacheTCSorter->Delete(cacheID);
 				//LogInfoFormat( "TCSorter: '%s' cache ignored due to different version", cacheID.GetString() );
@@ -1863,7 +1862,6 @@ void deModelModule::pUpdateFaceTexCoordIndices(deModel &model, sModelInfos &info
 			
 			if(vfs.GetFileModificationTime(cachePath) != checkTime){
 				// cache file outdated
-				cacheReader->FreeReference();
 				cacheReader = NULL;
 				pCacheTCSorter->Delete(cacheID);
 				//LogInfoFormat( "TCSorter: '%s' cache ignored due to different mod-time", cacheID.GetString() );
@@ -1899,7 +1897,6 @@ void deModelModule::pUpdateFaceTexCoordIndices(deModel &model, sModelInfos &info
 			}
 			
 			// done
-			cacheReader->FreeReference();
 			hasCached = true;
 			#ifdef OS_ANDROID
 			LogInfoFormat("TCSorting.LoadCache '%s' (tcs=%d) in %dms", infos.filename,
@@ -1910,9 +1907,6 @@ void deModelModule::pUpdateFaceTexCoordIndices(deModel &model, sModelInfos &info
 		pCacheMutex.Unlock();
 		
 	}catch(const deException &){
-		if(cacheReader){
-			cacheReader->FreeReference();
-		}
 		pCacheTCSorter->Delete(cacheID);
 		pCacheMutex.Unlock();
 		LogInfoFormat("Cache file '%s' damaged, discarding", cacheID.GetString());
@@ -1962,7 +1956,7 @@ void deModelModule::pUpdateFaceTexCoordIndices(deModel &model, sModelInfos &info
 #endif
 	
 	// cache the result
-	decBaseFileWriter *cacheWriter = NULL;
+	decBaseFileWriter::Ref cacheWriter = NULL;
 	pCacheMutex.Lock();
 	
 	try{
@@ -1992,7 +1986,6 @@ void deModelModule::pUpdateFaceTexCoordIndices(deModel &model, sModelInfos &info
 		}
 		
 		// done
-		cacheWriter->FreeReference();
 		cacheWriter = NULL;
 		
 		//LogInfoFormat( "TCSorter: '%s' written to cache", cacheID.GetString() );
@@ -2000,9 +1993,6 @@ void deModelModule::pUpdateFaceTexCoordIndices(deModel &model, sModelInfos &info
 		pCacheMutex.Unlock();
 		
 	}catch(const deException &e){
-		if(cacheWriter){
-			cacheWriter->FreeReference();
-		}
 		pCacheTCSorter->Delete(cacheID);
 		pCacheMutex.Unlock();
 		LogInfoFormat("Writing cache file '%s' failed, deleted", cacheID.GetString());

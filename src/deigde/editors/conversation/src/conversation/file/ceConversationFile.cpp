@@ -42,31 +42,25 @@
 
 ceConversationFile::ceConversationFile(const char *id) :
 pConversation(NULL),
-pID(id),
-pActiveTopic(NULL){
+pID(id){
 }
 
 ceConversationFile::ceConversationFile(const ceConversationFile &file) :
 pConversation(NULL),
-pID(file.pID),
-pActiveTopic(NULL)
+pID(file.pID)
 {
 	const int count = file.pTopics.GetCount();
-	ceConversationTopic *topic = NULL;
+	ceConversationTopic::Ref topic = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			topic = new ceConversationTopic(*file.pTopics.GetAt(i));
+			topic.TakeOver(new ceConversationTopic(*file.pTopics.GetAt(i)));
 			AddTopic(topic);
-			topic->FreeReference();
 			topic = NULL;
 		}
 		
 	}catch(const deException &){
-		if(topic){
-			topic->FreeReference();
-		}
 		RemoveAllTopics();
 		throw;
 	}
@@ -174,17 +168,7 @@ void ceConversationFile::SetActiveTopic(ceConversationTopic *topic){
 	if(topic == pActiveTopic){
 		return;
 	}
-	
-	if(pActiveTopic){
-		pActiveTopic->FreeReference();
-	}
-	
 	pActiveTopic = topic;
-	
-	if(topic){
-		topic->AddReference();
-	}
-	
 	if(pConversation){
 		pConversation->NotifyActiveTopicChanged(this);
 	}

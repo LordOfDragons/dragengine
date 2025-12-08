@@ -40,8 +40,7 @@
 ////////////////////////////
 
 seUPNUngroupNodes::seUPNUngroupNodes(sePropertyNodeGroup *nodeGroup) :
-pParentGroup(NULL),
-pNodeGroup(NULL),
+
 pIndex(0),
 pNodeCount(0),
 pNodes(0)
@@ -68,23 +67,15 @@ pNodes(0)
 		pNodes[pNodeCount].rotation = node->GetRotation();
 		pNodes[pNodeCount].shearing = node->GetShearing();
 		pNodes[pNodeCount].node = node;
-		node->AddReference();
 	}
 	
 	pParentGroup = parentGroup;
 	parentGroup->AddReference();
 	
 	pNodeGroup = nodeGroup;
-	nodeGroup->AddReference();
 }
 
 seUPNUngroupNodes::~seUPNUngroupNodes(){
-	if(pNodeGroup){
-		pNodeGroup->FreeReference();
-	}
-	if(pParentGroup){
-		pParentGroup->FreeReference();
-	}
 	if(pNodes){
 		int i;
 		for(i=0; i<pNodeCount; i++){

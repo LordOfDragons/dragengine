@@ -133,18 +133,11 @@
 
 meWindowMain::meWindowMain(meIGDEModule &module) :
 igdeEditorWindow(module),
-pListener(NULL),
 pActiveModule(false),
 pConfiguration(NULL),
 pLoadSaveSystem(NULL),
 pSaveSupport(NULL),
-pWindowProperties(NULL),
-pView3D(NULL),
-pViewVegetation(NULL),
-pViewChangelog(NULL),
-pWorld(NULL),
 pUse3DCursor(false),
-pLoadWorld(NULL),
 pLoadTask(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
@@ -153,7 +146,7 @@ pLoadTask(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new meWindowMainListener(*this);
+	pListener.TakeOver(new meWindowMainListener(*this));
 	pConfiguration = new meConfiguration(*this);
 	pLoadSaveSystem = new meLoadSaveSystem(this);
 	pSaveSupport = new meSaveSupport(this);
@@ -170,19 +163,19 @@ pLoadTask(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties = new meWindowProperties(*this);
+	pWindowProperties.TakeOver(new meWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	pTabContent.TakeOver(new igdeTabBook(env));
 	splitted->AddChild(pTabContent, igdeContainerSplitted::eaCenter);
 	
-	pView3D = new meView3D(*this);
+	pView3D.TakeOver(new meView3D(*this));
 	pTabContent->AddChild(pView3D, "World");
 	
-	pViewVegetation = new meWindowVegetation(*this);
+	pViewVegetation.TakeOver(new meWindowVegetation(*this));
 	pTabContent->AddChild(pViewVegetation, "Vegetation");
 	
-	pViewChangelog = new meWindowChangelog(*this);
+	pViewChangelog.TakeOver(new meWindowChangelog(*this));
 	pTabContent->AddChild(pViewChangelog, "Change-Log");
 	
 	pTabContent->SetActivePanel(0); // world
@@ -197,7 +190,6 @@ meWindowMain::~meWindowMain(){
 		pLoadTask = NULL;
 	}
 	if(pLoadWorld){
-		pLoadWorld->FreeReference();
 		pLoadWorld = NULL;
 	}
 	
@@ -206,20 +198,6 @@ meWindowMain::~meWindowMain(){
 	}
 	
 	SetWorld(NULL);
-	
-	if(pView3D){
-		pView3D->FreeReference();
-	}
-	if(pViewVegetation){
-		pViewVegetation->FreeReference();
-	}
-	if(pViewChangelog){
-		pViewChangelog->FreeReference();
-	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
-	
 	pClipboard.ClearAll();
 	
 	if(pConfiguration){
@@ -230,10 +208,6 @@ meWindowMain::~meWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -268,13 +242,11 @@ void meWindowMain::SetWorld(meWorld *world){
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
 		pWorld->Dispose();
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
-		world->AddReference();
 		world->AddNotifier(pListener);
 		
 		pActionEditUndo->SetUndoSystem(world->GetUndoSystem());
@@ -2332,7 +2304,6 @@ void meWindowMain::pUpdateLoading(){
 			pLoadWorld->ClearScalingOfNonScaledElements();
 			
 			SetWorld(pLoadWorld);
-			pLoadWorld->FreeReference();
 			pLoadWorld = NULL;
 			
 			SetProgressVisible(false);
@@ -2356,7 +2327,6 @@ void meWindowMain::pUpdateLoading(){
 			pLoadTask = NULL;
 		}
 		if(pLoadWorld){
-			pLoadWorld->FreeReference();
 			pLoadWorld = NULL;
 		}
 		pLoadFilename = "";

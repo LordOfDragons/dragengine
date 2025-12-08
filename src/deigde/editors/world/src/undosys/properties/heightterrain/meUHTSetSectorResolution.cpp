@@ -53,8 +53,6 @@ meHeightTerrain *heightTerrain, int newSectorResolution){
 	pNewSectorResolution = newSectorResolution;
 	
 	SetShortInfo("Set Height Terrain Sector Resolution");
-	
-	world->AddReference();
 }
 
 meUHTSetSectorResolution::~meUHTSetSectorResolution(){

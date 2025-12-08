@@ -30,7 +30,7 @@
 #include "dragengine/common/math/decMath.h"
 
 // predefinitions
-class debpBulletShape;
+#include "../../debpBulletShape.h"
 class debpHeightTerrain;
 class debpHeightTerrainShape;
 class debpPhysicsBody;
@@ -77,7 +77,7 @@ private:
 	
 	debpPhysicsBody *pPhyBody;
 	debpHeightTerrainShape *pShape;
-	debpBulletShape *pBulletShape;
+	debpBulletShape::Ref pBulletShape;
 	
 public:
 	/** @name Constructors and Destructors */

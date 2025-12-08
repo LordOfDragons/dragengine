@@ -85,7 +85,7 @@ public:
 	
 	
 	/** \brief Create copy of shape. */
-	reRigShape *Duplicate() const override;
+	reRigShape::Ref Duplicate() const override;
 	
 	/** \brief Uniformly scale shape. */
 	void Scale(float scale) override;

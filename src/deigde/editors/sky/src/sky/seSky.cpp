@@ -72,21 +72,9 @@
 
 seSky::seSky(igdeEnvironment *environment) :
 igdeEditableEntity(environment),
-
-pEngWorld(NULL),
-pEngSky(NULL),
-pEngSkyInstance(NULL),
 pNeedsRebuildSky(true),
 
-pCamera(NULL),
-
-pDDHorizon(NULL),
-
-pActiveController(NULL),
-
-pActiveLink(NULL),
-
-pActiveLayer(NULL)
+pCamera(NULL)
 {
 	deEngine * const engine = GetEngine();
 	
@@ -182,7 +170,6 @@ void seSky::RebuildEngineSky(){
 	pEngSkyInstance->SetSky(NULL);
 	
 	if(pEngSky){
-		pEngSky->FreeReference();
 		pEngSky = NULL;
 	}
 	
@@ -277,7 +264,6 @@ void seSky::RebuildEngineSky(){
 		
 	}catch(const deException &){
 		if(pEngSky){
-			pEngSky->FreeReference();
 			pEngSky = NULL;
 		}
 		throw;
@@ -414,13 +400,11 @@ void seSky::SetActiveController(seController *controller){
 	
 	if(pActiveController){
 		pActiveController->SetActive(false);
-		pActiveController->FreeReference();
 	}
 	
 	pActiveController = controller;
 	
 	if(controller){
-		controller->AddReference();
 		controller->SetActive(true);
 	}
 	
@@ -522,13 +506,11 @@ void seSky::SetActiveLink(seLink *link){
 	
 	if(pActiveLink){
 		pActiveLink->SetActive(false);
-		pActiveLink->FreeReference();
 	}
 	
 	pActiveLink = link;
 	
 	if(link){
-		link->AddReference();
 		link->SetActive(true);
 	}
 	
@@ -639,13 +621,11 @@ void seSky::SetActiveLayer(seLayer *layer){
 	
 	if(pActiveLayer){
 		pActiveLayer->SetActive(false);
-		pActiveLayer->FreeReference();
 	}
 	
 	pActiveLayer = layer;
 	
 	if(layer){
-		layer->AddReference();
 		layer->SetActive(true);
 	}
 	
@@ -755,7 +735,7 @@ void seSky::NotifyControllerChanged(seController *controller){
 	pNeedsRebuildSky = true;
 }
 
-void seSky::NotifyControllerNameChanged(seController* controller){
+void seSky::NotifyControllerNameChanged(seController *controller){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -817,7 +797,7 @@ void seSky::NotifyLinkChanged(seLink *controller){
 	pNeedsRebuildSky = true;
 }
 
-void seSky::NotifyLinkNameChanged(seLink* link){
+void seSky::NotifyLinkNameChanged(seLink *link){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -872,7 +852,7 @@ void seSky::NotifyLayerChanged(seLayer *layer){
 	pNeedsRebuildSky = true;
 }
 
-void seSky::NotifyLayerNameChanged(seLayer* layer){
+void seSky::NotifyLayerNameChanged(seLayer *layer){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -996,19 +976,11 @@ void seSky::pCleanUp(){
 		
 		if(pDDHorizon){
 			pEngWorld->RemoveDebugDrawer(pDDHorizon);
-			pDDHorizon->FreeReference();
 		}
 		
 		if(pEngSkyInstance){
 			pEngWorld->RemoveSky(pEngSkyInstance);
-			pEngSkyInstance->FreeReference();
 		}
-		
-		if(pEngSky){
-			pEngSky->FreeReference();
-		}
-		
-		pEngWorld->FreeReference();
 	}
 }
 

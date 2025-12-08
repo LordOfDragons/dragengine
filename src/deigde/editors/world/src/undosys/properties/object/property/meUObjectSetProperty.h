@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meObject;
+#include "../../../../world/object/meObject.h"
 
 
 
@@ -36,7 +36,7 @@ class meObject;
  */
 class meUObjectSetProperty : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decString pKey;
 	decString pOldValue;

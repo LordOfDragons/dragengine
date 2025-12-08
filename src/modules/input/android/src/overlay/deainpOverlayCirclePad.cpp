@@ -68,13 +68,11 @@ pInnerRadius(0.05f),
 pCenter(192, 192),
 
 pLeftRightPerSecond(1000.0f),
-pUpDownPerSecond(1000.0f),
-
-pCImage(NULL)
+pUpDownPerSecond(1000.0f)
 {
 	deCanvasManager &canvasManager = *androidInput.GetGameEngine()->GetCanvasManager();
 	deImageManager &imageManager = *androidInput.GetGameEngine()->GetImageManager();
-	deImage *image = NULL;
+	deImage::Ref image = NULL;
 	
 	const decPoint size(pPadRadius * 2, pPadRadius * 2);
 	
@@ -88,24 +86,19 @@ pCImage(NULL)
 		pCImage->SetSize(size);
 		image = imageManager.LoadImage(&GetAndroidInput().GetVFS(), "/share/images/circlepad.png", "/");
 		pCImage->SetImage(image);
-		image->FreeReference();
 		image = NULL;
 		GetCanvas()->AddCanvas(pCImage);
 		
 		/*
-		deCanvasPaint *temp = canvasManager.CreateCanvasPaint();
+		deCanvasPaint::Ref temp = canvasManager.CreateCanvasPaint();
 		temp->SetSize(decPoint(256, 256));
 		temp->SetShapeType(deCanvasPaint::estRectangle);
 		temp->SetLineColor(decColor(1.0f, 0.0f, 0.0f, 0.25f));
 		temp->SetFillColor(decColor(1.0f, 1.0f, 1.0f, 0.25f));
 		GetCanvas()->AddCanvas(temp);
-		temp->FreeReference();
 		*/
 		
 	}catch(const deException &){
-		if(image){
-			image->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}
@@ -469,7 +462,4 @@ void deainpOverlayCirclePad::OnRelease(){
 //////////////////////
 
 void deainpOverlayCirclePad::pCleanUp(){
-	if(pCImage){
-		pCImage->FreeReference();
-	}
 }

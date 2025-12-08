@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
-class reRigPush;
+#include "../../../rig/reRig.h"
+#include "../../../rig/push/reRigPush.h"
 
 
 
@@ -37,8 +37,8 @@ class reRigPush;
  */
 class reUAddPush : public igdeUndo{
 private:
-	reRig *pRig;
-	reRigPush *pPush;
+	reRig::Ref pRig;
+	reRigPush::Ref pPush;
 	
 	
 	

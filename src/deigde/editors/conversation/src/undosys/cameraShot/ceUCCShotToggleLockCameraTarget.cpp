@@ -49,13 +49,9 @@ ceUCCShotToggleLockCameraTarget::ceUCCShotToggleLockCameraTarget(ceCameraShot *c
 	SetShortInfo("Camera shot lock camera target");
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotToggleLockCameraTarget::~ceUCCShotToggleLockCameraTarget(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

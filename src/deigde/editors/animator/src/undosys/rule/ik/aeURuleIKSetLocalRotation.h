@@ -32,7 +32,7 @@
 #include "dragengine/common/math/decMath.h"
 
 // predefinitions
-class aeRuleInverseKinematic;
+#include "../../../animator/rule/aeRuleInverseKinematic.h"
 
 
 
@@ -43,7 +43,7 @@ class aeRuleInverseKinematic;
  */
 class aeURuleIKSetLocalRotation : public igdeUndo{
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 	decVector pOldRot;
 	decVector pNewRot;

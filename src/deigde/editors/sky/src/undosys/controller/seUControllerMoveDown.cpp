@@ -41,7 +41,7 @@
 ////////////////////////////
 
 seUControllerMoveDown::seUControllerMoveDown(seController *controller) :
-pController(NULL),
+
 pIndex(0)
 {
 	if(!controller){
@@ -61,13 +61,9 @@ pIndex(0)
 	}
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 seUControllerMoveDown::~seUControllerMoveDown(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

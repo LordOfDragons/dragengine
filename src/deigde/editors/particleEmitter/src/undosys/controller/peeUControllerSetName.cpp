@@ -50,13 +50,9 @@ peeUControllerSetName::peeUControllerSetName(peeController *controller, const ch
 	pNewName = newName;
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerSetName::~peeUControllerSetName(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

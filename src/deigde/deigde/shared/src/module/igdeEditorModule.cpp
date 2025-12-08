@@ -43,14 +43,10 @@
 ////////////////////////////
 
 igdeEditorModule::igdeEditorModule(igdeEnvironment &environment) :
-pEnvironment(environment),
-pEditorWindow(NULL){
+pEnvironment(environment){
 }
 
 igdeEditorModule::~igdeEditorModule(){
-	if(pEditorWindow){
-		pEditorWindow->FreeReference();
-	}
 }
 
 
@@ -81,7 +77,6 @@ void igdeEditorModule::SetEditorWindow(igdeEditorWindow *editorWindow){
 		if(pEditorWindow->GetParent() == uiContainer){
 			uiContainer->RemoveChild(pEditorWindow);
 		}
-		pEditorWindow->FreeReference();
 	}
 	
 	pEditorWindow = editorWindow;

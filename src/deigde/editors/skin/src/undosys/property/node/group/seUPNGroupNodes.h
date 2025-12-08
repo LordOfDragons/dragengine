@@ -31,7 +31,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class sePropertyNodeGroup;
+#include "../../../../skin/property/node/sePropertyNodeGroup.h"
 
 
 
@@ -41,13 +41,13 @@ class sePropertyNodeGroup;
 class seUPNGroupNodes : public igdeUndo{
 private:
 	struct sNode{
-		sePropertyNode *node;
+		sePropertyNode::Ref node;
 		decPoint3 position;
 		int index;
 	};
 	
-	sePropertyNodeGroup *pParentGroup;
-	sePropertyNodeGroup *pNodeGroup;
+	sePropertyNodeGroup::Ref pParentGroup;
+	sePropertyNodeGroup::Ref pNodeGroup;
 	int pNodeCount;
 	sNode *pNodes;
 	decVector pOffset;

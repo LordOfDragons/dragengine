@@ -60,7 +60,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceConversationAction *GetAction() const{ return pAction; }
+	inline const ceConversationAction::Ref &GetAction() const{ return pAction; }
 	
 	/** \brief Deep find action. */
 	ceWPTTIMAction *DeepFindAction(ceConversationAction *action) override;

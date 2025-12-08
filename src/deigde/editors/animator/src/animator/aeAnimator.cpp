@@ -929,8 +929,6 @@ void aeAnimator::AddAttachment(aeAttachment *attachment){
 	
 	pAttachments[pAttachmentCount] = attachment;
 	pAttachmentCount++;
-	
-	attachment->AddReference();
 	attachment->SetAnimator(this);
 	
 	NotifyAttachmentStructureChanged();
@@ -948,8 +946,6 @@ void aeAnimator::RemoveAttachment(aeAttachment *attachment){
 	pAttachmentCount--;
 	
 	attachment->SetAnimator(NULL);
-	attachment->FreeReference();
-	
 	NotifyAttachmentStructureChanged();
 }
 
@@ -1046,8 +1042,6 @@ void aeAnimator::AddNotifier(aeAnimatorNotifier *notifier){
 	
 	pNotifiers[pNotifierCount] = notifier;
 	pNotifierCount++;
-	
-	notifier->AddReference();
 }
 
 void aeAnimator::RemoveNotifier(aeAnimatorNotifier *notifier){
@@ -1058,8 +1052,6 @@ void aeAnimator::RemoveNotifier(aeAnimatorNotifier *notifier){
 		pNotifiers[i - 1] = pNotifiers[i];
 	}
 	pNotifierCount--;
-	
-	notifier->FreeReference();
 }
 
 void aeAnimator::RemoveAllNotifiers(){
@@ -1397,36 +1389,28 @@ void aeAnimator::pCleanUp(){
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetAnimator(NULL);
 		pEngAnimatorInstance->SetComponent(NULL);
-		pEngAnimatorInstance->FreeReference();
 	}
 	if(pEngAnimator){
 		pEngAnimator->SetRig(NULL);
-		pEngAnimator->FreeReference();
 	}
 	
 	if(pEngWorld){
 		if(pDDBones){
 			pEngWorld->RemoveDebugDrawer(pDDBones);
-			pDDBones->FreeReference();
 		}
 		
 		if(pEngComponent){
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 		}
 		
 		if(pEngCollider){
 			pEngCollider->SetComponent(NULL);
 			pEngWorld->RemoveCollider(pEngCollider);
-			pEngCollider->FreeReference();
 		}
 		
 		if(pEngLight){
 			pEngWorld->RemoveLight(pEngLight);
-			pEngLight->FreeReference();
 		}
-		
-		pEngWorld->FreeReference();
 	}
 }
 
@@ -1478,9 +1462,9 @@ void aeAnimator::pCreateCollider(){
 
 void aeAnimator::pUpdateComponent(){
 	deEngine * const engine = GetEngine();
-	deModel *displayModel = NULL;
-	deSkin *displaySkin = NULL;
-	deRig *displayRig = NULL;
+	deModel::Ref displayModel = NULL;
+	deSkin::Ref displaySkin = NULL;
+	deRig::Ref displayRig = NULL;
 	
 	// detach all colliders
 	DetachAttachments();
@@ -1519,7 +1503,6 @@ void aeAnimator::pUpdateComponent(){
 		// if the skin is missing use the default one
 		if(!displaySkin){
 			displaySkin = GetGameDefinition()->GetDefaultSkin();
-			displaySkin->AddReference();
 		}
 		
 		// reset the animator
@@ -1544,7 +1527,6 @@ void aeAnimator::pUpdateComponent(){
 			}
 			
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 			pEngComponent = NULL;
 		}
 		
@@ -1561,28 +1543,16 @@ void aeAnimator::pUpdateComponent(){
 		
 		// free the reference we hold
 		if(displayRig){
-			displayRig->FreeReference();
 			displayRig = NULL;
 		}
 		if(displayModel){
-			displayModel->FreeReference();
 			displayModel = NULL;
 		}
 		if(displaySkin){
-			displaySkin->FreeReference();
 			displaySkin = NULL;
 		}
 		
 	}catch(const deException &){
-		if(displayModel){
-			displayModel->FreeReference();
-		}
-		if(displaySkin){
-			displaySkin->FreeReference();
-		}
-		if(displayRig){
-			displayRig->FreeReference();
-		}
 		throw;
 	}
 	

@@ -57,25 +57,11 @@ ceStrip *strip, const char *newID){
 	SetShortInfo("Strip set ID");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pStrip = strip;
-	strip->AddReference();
 }
 
 ceUCAASpeakStripSetID::~ceUCAASpeakStripSetID(){
-	if(pStrip){
-		pStrip->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

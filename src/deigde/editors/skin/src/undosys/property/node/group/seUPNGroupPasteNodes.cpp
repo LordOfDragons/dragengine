@@ -42,7 +42,7 @@
 
 seUPNGroupPasteNodes::seUPNGroupPasteNodes(sePropertyNodeGroup *group,
 int layer, const seClipboardDataPropertyNode &clipboardData) :
-pGroup(NULL),
+
 pLayer(layer)
 {
 	if(!group || !group->GetProperty()){
@@ -56,7 +56,7 @@ pLayer(layer)
 	
 	SetShortInfo("Node group paste nodes");
 	
-	sePropertyNode *pasteNode = NULL;
+	sePropertyNode::Ref pasteNode = NULL;
 	int i;
 	
 	try{
@@ -68,26 +68,17 @@ pLayer(layer)
 			pasteNode->SetPosition(position);
 			
 			pNodes.Add(pasteNode);
-			pasteNode->FreeReference();
 			pasteNode = NULL;
 		}
 		
 		pGroup = group;
-		group->AddReference();
-		
 	}catch(const deException &){
-		if(pasteNode){
-			pasteNode->FreeReference();
-		}
 		pNodes.RemoveAll();
 		throw;
 	}
 }
 
 seUPNGroupPasteNodes::~seUPNGroupPasteNodes(){
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }
 
 

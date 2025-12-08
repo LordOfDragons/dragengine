@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seEffect;
+#include "../../../synthesizer/effect/seEffect.h"
 
 
 
@@ -37,7 +37,7 @@ class seEffect;
  */
 class seUEffectToggleEnabled : public igdeUndo{
 private:
-	seEffect *pEffect;
+	seEffect::Ref pEffect;
 	
 	
 	

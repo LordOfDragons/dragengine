@@ -56,25 +56,11 @@ ceUCAPChoiceOptionRemove::ceUCAPChoiceOptionRemove(ceConversationTopic *topic, c
 	SetShortInfo("Player Choice Remove Option");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
-	
 	pOption = option;
-	option->AddReference();
 }
 
 ceUCAPChoiceOptionRemove::~ceUCAPChoiceOptionRemove(){
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

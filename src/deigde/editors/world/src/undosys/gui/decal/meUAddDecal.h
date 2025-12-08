@@ -32,8 +32,8 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meWorld;
-class meDecal;
+#include "../../../world/meWorld.h"
+#include "../../../world/decal/meDecal.h"
 
 
 
@@ -44,8 +44,8 @@ class meDecal;
  */
 class meUAddDecal : public igdeUndo{
 private:
-	meWorld *pWorld;
-	meDecal *pDecal;
+	meWorld::Ref pWorld;
+	meDecal::Ref pDecal;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -62,7 +62,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the decal. */
-	inline meDecal *GetDecal() const{ return pDecal; }
+	inline const meDecal::Ref &GetDecal() const{ return pDecal; }
 	
 	/** \brief Undo. */
 	virtual void Undo();

@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
+#include "../../conversation/topic/ceConversationTopic.h"
 class ceConversation;
 class ceConversationActionList;
 
@@ -40,7 +40,7 @@ class ceConversationActionList;
  */
 class ceUCTopicSetID : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
+	ceConversationTopic::Ref pTopic;
 	
 	decString pOldID;
 	decString pNewID;

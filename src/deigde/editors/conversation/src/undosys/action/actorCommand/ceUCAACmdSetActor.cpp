@@ -52,19 +52,10 @@ ceUCAACmdSetActor::ceUCAACmdSetActor(ceConversationTopic *topic, ceCAActorComman
 	SetShortInfo("Action ActorCommand Set ActorID");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAACmdSetActor::~ceUCAACmdSetActor(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

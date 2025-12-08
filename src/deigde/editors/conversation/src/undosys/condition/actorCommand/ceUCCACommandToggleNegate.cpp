@@ -55,25 +55,11 @@ ceConversationAction *action, ceCConditionActorCommand *actorCommand){
 	SetShortInfo("Condition actor command negate");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pActorCommand = actorCommand;
-	actorCommand->AddReference();
 }
 
 ceUCCACommandToggleNegate::~ceUCCACommandToggleNegate(){
-	if(pActorCommand){
-		pActorCommand->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

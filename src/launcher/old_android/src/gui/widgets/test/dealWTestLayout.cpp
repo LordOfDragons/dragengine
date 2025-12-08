@@ -91,7 +91,6 @@ void dealWTestLayout::AddLayoutLinesX(int top, dealWidgetLayoutFlow::eLayoutType
 		layout->SetLayoutX(layoutTypes[i]);
 		layout->SetLayoutY(layoutY);
 		AddWidget(layout);
-		layout->FreeReference();
 	}
 }
 
@@ -118,12 +117,11 @@ void dealWTestLayout::AddLayoutLinesY(int left, int top, dealWidgetLayoutFlow::e
 		layout->SetLayoutY(layoutTypes[i]);
 		layout->SetLayoutX(layoutX);
 		AddWidget(layout);
-		layout->FreeReference();
 	}
 }
 
 dealWidgetLayoutFlow *dealWTestLayout::CreateLayoutLineX(){
-	dealWidgetLayoutFlow *layout = new dealWidgetLayoutFlow(GetDisplay());
+	dealWidgetLayoutFlow::Ref layout.TakeOver(new dealWidgetLayoutFlow(GetDisplay()));
 	layout->SetBackgroundColor(decColor(0.75f, 0.75f, 0.75f));
 	layout->SetPadding(5, 5);
 	
@@ -140,7 +138,7 @@ dealWidgetLayoutFlow *dealWTestLayout::CreateLayoutLineX(){
 }
 
 dealWidgetLayoutFlow *dealWTestLayout::CreateLayoutLineY(){
-	dealWidgetLayoutFlow *layout = new dealWidgetLayoutFlow(GetDisplay());
+	dealWidgetLayoutFlow::Ref layout.TakeOver(new dealWidgetLayoutFlow(GetDisplay()));
 	layout->SetBackgroundColor(decColor(0.75f, 0.75f, 0.75f));
 	layout->SetPadding(5, 5);
 	

@@ -55,19 +55,10 @@ ceUCFPControllerRemove::ceUCFPControllerRemove(ceFacePose *facePose, ceControlle
 	SetShortInfo("Remove Face Pose Controller");
 	
 	pFacePose = facePose;
-	facePose->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 ceUCFPControllerRemove::~ceUCFPControllerRemove(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
 }
 
 

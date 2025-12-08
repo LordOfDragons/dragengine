@@ -41,8 +41,8 @@
 ////////////////////////////
 
 gdeUOCTextureSetScale::gdeUOCTextureSetScale(gdeObjectClass *objectClass,
-gdeOCComponentTexture* texture, const decVector2 &newValue) :
-pObjectClass(NULL),
+gdeOCComponentTexture *texture, const decVector2 &newValue) :
+
 pTexture(NULL)
 {
 	if(!objectClass || !texture){
@@ -55,19 +55,10 @@ pTexture(NULL)
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCTextureSetScale::~gdeUOCTextureSetScale(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

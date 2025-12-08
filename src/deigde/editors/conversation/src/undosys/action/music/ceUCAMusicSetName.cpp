@@ -52,19 +52,10 @@ ceUCAMusicSetName::ceUCAMusicSetName(ceConversationTopic *topic, ceCAMusic *musi
 	SetShortInfo("Music Set Name");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pMusic = music;
-	music->AddReference();
 }
 
 ceUCAMusicSetName::~ceUCAMusicSetName(){
-	if(pMusic){
-		pMusic->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -41,8 +41,6 @@ aeURuleSnapToggleEnableVertexPositionSet::aeURuleSnapToggleEnableVertexPositionS
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule state snapshot toggle enable vertex position set");
 		
 	}catch(const deException &){
@@ -74,7 +72,4 @@ void aeURuleSnapToggleEnableVertexPositionSet::Redo(){
 //////////////////////
 
 void aeURuleSnapToggleEnableVertexPositionSet::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

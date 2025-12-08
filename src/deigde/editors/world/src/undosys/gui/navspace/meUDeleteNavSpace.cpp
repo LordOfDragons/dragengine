@@ -39,7 +39,7 @@
 ////////////////////////////
 
 meUDeleteNavSpace::meUDeleteNavSpace(meWorld *world) :
-pWorld(NULL),
+
 pNavSpaces(NULL),
 pNavSpaceCount(0)
 {
@@ -62,8 +62,6 @@ pNavSpaceCount(0)
 	
 	try{
 		pWorld = world;
-		world->AddReference();
-		
 		if(count > 0){
 			pNavSpaces = new meUndoDataNavSpace*[count];
 			
@@ -141,9 +139,5 @@ void meUDeleteNavSpace::pCleanUp(){
 		}
 		
 		delete [] pNavSpaces;
-	}
-	
-	if(pWorld){
-		pWorld->FreeReference();
 	}
 }

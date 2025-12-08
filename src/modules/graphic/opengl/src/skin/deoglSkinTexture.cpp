@@ -118,8 +118,7 @@ pRenderThread(renderThread),
 pRTSIndex(-1),
 pSkin(skin),
 pName(texture.GetName()),
-pPipelines(*this),
-pSharedSPBElement(nullptr)
+pPipelines(*this)
 {
 	// NOTE this is called during asynchronous resource loading. careful accessing other objects
 	
@@ -878,11 +877,6 @@ void deoglSkinTexture::pCleanUp(){
 		pRTSIndex = -1;
 		pRenderThread.GetShader().InvalidateSSBOSkinTextures();
 	}
-	
-	if(pSharedSPBElement){
-		pSharedSPBElement->FreeReference();
-	}
-	
 	int i;
 	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){
 		if(pChannels[i]){

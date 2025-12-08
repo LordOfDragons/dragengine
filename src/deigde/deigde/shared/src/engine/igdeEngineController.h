@@ -30,7 +30,7 @@
 class deEngine;
 class deLoadableModule;
 class igdeMainWindow;
-class deRenderWindow;
+#include <dragengine/resources/rendering/deRenderWindow.h>
 class igdeGameProject;
 class deInternalModule;
 class igdeWidget;
@@ -62,7 +62,7 @@ public:
 private:
 	igdeMainWindow &pMainWindow;
 	deEngine *pEngine;
-	deRenderWindow *pMainRenderWindow;
+	deRenderWindow::Ref pMainRenderWindow;
 	bool pReadyForUse;
 	bool pRunning;
 	int pRenderCounter;

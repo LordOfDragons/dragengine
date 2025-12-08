@@ -556,7 +556,7 @@ void igdeConfiguration::LoadConfiguration(){
 	igdeConfigurationXML configXML(pWindowMain.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pWindowMain.GetVirtualFileSystem();
 	deLogger &logger = *pWindowMain.GetLogger();
-	decBaseFileReader *reader = NULL;
+	decBaseFileReader::Ref reader = NULL;
 	decPath pathFile;
 	
 	// read the system wide config file if existing
@@ -568,13 +568,7 @@ void igdeConfiguration::LoadConfiguration(){
 			try{
 				reader = vfs.OpenFileForReading(pathFile);
 				configXML.ReadFromFile(*reader, *this);
-				
-				reader->FreeReference();
-				
 			}catch(const deException &){
-				if(reader){
-					reader->FreeReference();
-				}
 				throw;
 			}
 			
@@ -598,13 +592,7 @@ void igdeConfiguration::LoadConfiguration(){
 			try{
 				reader = vfs.OpenFileForReading(pathFile);
 				configXML.ReadFromFile(*reader, *this);
-				
-				reader->FreeReference();
-				
 			}catch(const deException &){
-				if(reader){
-					reader->FreeReference();
-				}
 				throw;
 			}
 			
@@ -622,7 +610,7 @@ void igdeConfiguration::SaveConfiguration(){
 	igdeConfigurationXML configXML(pWindowMain.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pWindowMain.GetVirtualFileSystem();
 	deLogger &logger = *pWindowMain.GetLogger();
-	decBaseFileWriter *writer = NULL;
+	decBaseFileWriter::Ref writer = NULL;
 	decPath pathFile;
 	
 	pathFile.SetFromUnix(FILE_IGDE_CONFIG_USER);
@@ -632,13 +620,7 @@ void igdeConfiguration::SaveConfiguration(){
 		try{
 			writer = vfs.OpenFileForWriting(pathFile);
 			configXML.WriteToFile(*writer, *this);
-			
-			writer->FreeReference();
-			
 		}catch(const deException &){
-			if(writer){
-				writer->FreeReference();
-			}
 			logger.LogError(LOGSOURCE, "Failed to write user configuration file (file permission problem)");
 			// DIALOG BOX
 			// "User configuration can not be written!\n"

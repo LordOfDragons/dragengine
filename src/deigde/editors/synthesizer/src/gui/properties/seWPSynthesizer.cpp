@@ -279,15 +279,13 @@ public:
 seWPSynthesizer::seWPSynthesizer(seViewSynthesizer &viewSynthesizer) :
 igdeContainerScroll(viewSynthesizer.GetEnvironment(), false, true),
 pViewSynthesizer(viewSynthesizer),
-pListener(NULL),
-pSynthesizer(NULL),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
-	pListener = new seWPSynthesizerListener(*this);
+	pListener.TakeOver(new seWPSynthesizerListener(*this));
 	
 	
 	pActionPlay.TakeOver(new cActionPlay(*this));
@@ -334,10 +332,6 @@ pPreventUpdate(false)
 seWPSynthesizer::~seWPSynthesizer(){
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -353,14 +347,12 @@ void seWPSynthesizer::SetSynthesizer(seSynthesizer *synthesizer){
 	
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
 	if(synthesizer){
 		synthesizer->AddNotifier(pListener);
-		synthesizer->AddReference();
 	}
 	
 	UpdateSynthesizer();

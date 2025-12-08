@@ -59,13 +59,9 @@ meUDecalColorTint::meUDecalColorTint(meDecal *decal, const decColor &newColor){
 	pNewColor = newColor;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalColorTint::~meUDecalColorTint(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

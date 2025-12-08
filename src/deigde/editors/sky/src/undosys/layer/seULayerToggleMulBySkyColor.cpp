@@ -49,13 +49,9 @@ pLayer(NULL)
 	SetShortInfo("Toggle Layer Multiply By Sky Color");
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerToggleMulBySkyColor::~seULayerToggleMulBySkyColor(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

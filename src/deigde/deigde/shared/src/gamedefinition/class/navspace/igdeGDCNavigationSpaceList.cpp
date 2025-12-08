@@ -102,22 +102,18 @@ void igdeGDCNavigationSpaceList::RemoveAll(){
 
 void igdeGDCNavigationSpaceList::SetToDeepCopyFrom(const igdeGDCNavigationSpaceList &list){
 	const int count = list.GetCount();
-	igdeGDCNavigationSpace *navSpace = NULL;
+	igdeGDCNavigationSpace::Ref navSpace = NULL;
 	
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			navSpace = new igdeGDCNavigationSpace(*list.GetAt(i));
+			navSpace.TakeOver(new igdeGDCNavigationSpace(*list.GetAt(i)));
 			Add(navSpace);
-			navSpace->FreeReference();
 			navSpace = NULL;
 		}
 		
 	}catch(const deException &){
-		if(navSpace){
-			navSpace->FreeReference();
-		}
 		throw;
 	}
 }

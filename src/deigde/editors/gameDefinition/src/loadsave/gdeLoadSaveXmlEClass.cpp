@@ -112,9 +112,9 @@ gdeObjectClass *gdeLoadSaveXmlEClass::pReadElementClass(const decXmlElementTag &
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	gdeObjectClass *objectClass = NULL;
+	gdeObjectClass::Ref objectClass = NULL;
 	try{
-		objectClass = new gdeObjectClass;
+		objectClass.TakeOver(new gdeObjectClass);
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -166,9 +166,6 @@ gdeObjectClass *gdeLoadSaveXmlEClass::pReadElementClass(const decXmlElementTag &
 		}
 		
 	}catch(const deException &){
-		if(objectClass){
-			objectClass->FreeReference();
-		}
 		throw;
 	}
 	

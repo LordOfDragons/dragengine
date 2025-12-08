@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeUGDSetBasePath::gdeUGDSetBasePath(gdeGameDefinition *gameDefinition, const char *newValue) :
-pGameDefinition(NULL),
+
 pNewValue(newValue)
 {
 	if(!gameDefinition){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = gameDefinition->GetBasePath();
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetBasePath::~gdeUGDSetBasePath(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

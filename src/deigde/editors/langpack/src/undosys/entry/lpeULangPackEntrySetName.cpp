@@ -40,7 +40,7 @@
 ////////////////////////////
 
 lpeULangPackEntrySetName::lpeULangPackEntrySetName(lpeLangPackEntry *entry, const char *newName) :
-pEntry(NULL),
+
 pNewName(newName)
 {
 	if(!entry){
@@ -52,13 +52,9 @@ pNewName(newName)
 	pOldName = entry->GetName();
 	
 	pEntry = entry;
-	entry->AddReference();
 }
 
 lpeULangPackEntrySetName::~lpeULangPackEntrySetName(){
-	if(pEntry){
-		pEntry->FreeReference();
-	}
 }
 
 

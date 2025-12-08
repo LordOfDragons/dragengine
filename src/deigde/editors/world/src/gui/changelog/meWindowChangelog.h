@@ -29,9 +29,9 @@
 #include <deigde/gui/igdeIconListBox.h>
 
 class meWindowMain;
-class meWindowChangelogListener;
+#include "meWindowChangelogListener.h"
 class meWCEntry;
-class meWorld;
+#include "../../world/meWorld.h"
 
 
 
@@ -41,9 +41,9 @@ class meWorld;
 class meWindowChangelog : public igdeContainerBorder{
 private:
 	meWindowMain &pWindowMain;
-	meWindowChangelogListener *pListener;
+	meWindowChangelogListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeIconListBox::Ref pListChanges;
 	

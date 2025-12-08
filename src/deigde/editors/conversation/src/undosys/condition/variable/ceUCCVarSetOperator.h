@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 class ceCConditionVariable;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -40,9 +40,9 @@ class ceConversationTopic;
  */
 class ceUCCVarSetOperator : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionVariable *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionVariable::Ref pCondition;
 	ceCConditionVariable::eOperators pOldOperator;
 	ceCConditionVariable::eOperators pNewOperator;
 	

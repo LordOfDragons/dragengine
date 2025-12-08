@@ -40,7 +40,7 @@
 
 
 struct sSLMSNatDat{
-	deSpeaker *speaker;
+	deSpeaker::Ref speaker;
 	float volume;
 };
 

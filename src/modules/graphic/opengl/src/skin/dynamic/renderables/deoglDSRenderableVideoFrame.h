@@ -27,7 +27,7 @@
 
 #include "deoglDSRenderable.h"
 
-class deoglRDSRenderableVideoFrame;
+#include "render/deoglRDSRenderableVideoFrame.h"
 class deoglVideoPlayer;
 
 class deDSRenderableVideoFrame;
@@ -40,7 +40,7 @@ class deDSRenderableVideoFrame;
 class deoglDSRenderableVideoFrame : public deoglDSRenderable{
 public:
 	const deDSRenderableVideoFrame &pRenderableVideoFrame;
-	deoglRDSRenderableVideoFrame *pRRenderableVideoFrame;
+	deoglRDSRenderableVideoFrame::Ref pRRenderableVideoFrame;
 	deoglVideoPlayer *pVideoPlayer;
 	bool pDirty;
 	

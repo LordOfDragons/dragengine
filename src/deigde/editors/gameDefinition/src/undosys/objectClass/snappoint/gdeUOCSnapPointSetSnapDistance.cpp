@@ -42,8 +42,8 @@
 
 gdeUOCSnapPointSetSnapDistance::gdeUOCSnapPointSetSnapDistance(
 gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint, float newValue) :
-pObjectClass(NULL),
-pSnapPoint(NULL),
+
+
 pNewValue(newValue)
 {
 	if(!objectClass || !snapPoint){
@@ -55,19 +55,10 @@ pNewValue(newValue)
 	pOldValue = snapPoint->GetSnapDistance();
 	
 	pSnapPoint = snapPoint;
-	snapPoint->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSnapPointSetSnapDistance::~gdeUOCSnapPointSetSnapDistance(){
-	if(pSnapPoint){
-		pSnapPoint->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

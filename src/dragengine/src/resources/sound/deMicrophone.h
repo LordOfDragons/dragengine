@@ -30,7 +30,7 @@
 #include "../../common/utils/decLayerMask.h"
 
 class deWorld;
-class deSpeaker;
+#include "deSpeaker.h"
 class deMicrophone;
 class deMicrophoneManager;
 class deBaseAudioMicrophone;
@@ -78,7 +78,7 @@ private:
 	bool pEnableAuralization;
 	
 	deSpeaker *pSpeakerRoot;
-	deSpeaker *pSpeakerTail;
+	deSpeaker::Ref pSpeakerTail;
 	int pSpeakerCount;
 	
 	deBaseAudioMicrophone *pPeerAudio;

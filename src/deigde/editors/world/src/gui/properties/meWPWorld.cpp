@@ -611,15 +611,13 @@ public:
 
 meWPWorld::meWPWorld(meWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pWorld(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
-	pListener = new meWPWorldListener(*this);
+	pListener.TakeOver(new meWPWorldListener(*this));
 	
 	
 	pActionPFTTypeAdd.TakeOver(new cActionPFTTypeAdd(*this));
@@ -713,9 +711,6 @@ pWorld(NULL)
 
 meWPWorld::~meWPWorld(){
 	SetWorld(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -737,15 +732,12 @@ void meWPWorld::SetWorld(meWorld *world){
 		editProperties.SetIdentifiers(decStringSet());
 		
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
-		
 		editProperties.SetClipboard(&pWindowProperties.GetWindowMain().GetClipboard());
 		editProperties.SetUndoSystem(world->GetUndoSystem());
 		editProperties.SetTriggerTargetList(&world->GetTriggerTable());

@@ -47,7 +47,7 @@
 /////////////////////
 
 struct sServiceNatDat{
-	deService *service;
+	deService::Ref service;
 };
 
 
@@ -425,7 +425,6 @@ void deClassService::PushService(dsRunTime *rt, deService *service){
 	rt->CreateObjectNakedOnStack(this);
 	((sServiceNatDat*)p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()))->service = service;
-	service->AddReference();
 }
 
 decUniqueID deClassService::NextId(){

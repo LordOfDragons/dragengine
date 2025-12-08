@@ -41,7 +41,7 @@
 
 projUProfileSetDelgaPath::projUProfileSetDelgaPath(
 projProfile *profile, const char *newValue) :
-pProfile(NULL),
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetDelgaPath();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetDelgaPath::~projUProfileSetDelgaPath(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

@@ -29,8 +29,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class reRig;
-class reRigBone;
+#include "../../../rig/reRig.h"
+#include "../../../rig/bone/reRigBone.h"
 class reRigShapeList;
 class reRigConstraintList;
 
@@ -56,7 +56,7 @@ private:
 	struct sBone{
 		reRigBone *boneSource;
 		
-		reRigBone *boneTarget;
+		reRigBone::Ref boneTarget;
 		decVector oldCMP;
 		float oldMass;
 		bool oldDynamic;
@@ -71,7 +71,7 @@ private:
 	
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	sBone *pBones;
 	int pBoneCount;

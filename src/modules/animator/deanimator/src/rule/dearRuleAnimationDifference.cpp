@@ -84,9 +84,6 @@ dearRule(instance, animator, firstLink, rule),
 
 pAnimationDifference(rule),
 
-pMove1(NULL),
-pMove2(NULL),
-
 pTargetLeadingMoveTime(rule.GetTargetLeadingMoveTime(), firstLink),
 pTargetReferenceMoveTime(rule.GetTargetReferenceMoveTime(), firstLink),
 
@@ -99,12 +96,6 @@ pEnableVPS(rule.GetEnableVertexPositionSet())
 }
 
 dearRuleAnimationDifference::~dearRuleAnimationDifference(){
-	if(pMove1){
-		pMove1->FreeReference();
-	}
-	if(pMove2){
-		pMove2->FreeReference();
-	}
 }
 	
 
@@ -288,24 +279,15 @@ void dearRuleAnimationDifference::RuleChanged(){
 
 void dearRuleAnimationDifference::pUpdateMove(){
 	if(pMove1){
-		pMove1->FreeReference();
 		pMove1 = NULL;
 	}
 	if(pMove2){
-		pMove2->FreeReference();
 		pMove2 = NULL;
 	}
 	
 	const dearAnimation * const animation = GetUseAnimation();
 	if(animation){
 		pMove1 = animation->GetMoveNamed(pAnimationDifference.GetLeadingMoveName());
-		if(pMove1){
-			pMove1->AddReference();
-		}
-		
 		pMove2 = animation->GetMoveNamed(pAnimationDifference.GetReferenceMoveName());
-		if(pMove2){
-			pMove2->AddReference();
-		}
 	}
 }

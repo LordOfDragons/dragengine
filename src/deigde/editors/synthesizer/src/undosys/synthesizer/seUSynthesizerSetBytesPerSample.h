@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSynthesizer;
+#include "../../synthesizer/seSynthesizer.h"
 
 
 
@@ -37,7 +37,7 @@ class seSynthesizer;
  */
 class seUSynthesizerSetBytesPerSample : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	int pOldBytesPerSample;
 	int pNewBytesPerSample;

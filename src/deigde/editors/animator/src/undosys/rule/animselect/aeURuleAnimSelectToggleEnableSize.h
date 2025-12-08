@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleAnimationSelect;
+#include "../../../animator/rule/aeRuleAnimationSelect.h"
 
 
 
@@ -37,7 +37,7 @@ class aeRuleAnimationSelect;
  */
 class aeURuleAnimSelectToggleEnableSize : public igdeUndo{
 private:
-	aeRuleAnimationSelect *pRule;
+	aeRuleAnimationSelect::Ref pRule;
 	
 	
 	

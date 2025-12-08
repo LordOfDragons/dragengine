@@ -28,9 +28,9 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
-class ceConversationTopic;
-class ceCAPlayerChoiceOption;
-class ceCAPlayerChoice;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAPlayerChoiceOption.h"
+#include "../../../conversation/action/ceCAPlayerChoice.h"
 
 
 
@@ -39,9 +39,9 @@ class ceCAPlayerChoice;
  */
 class ceUCAPChoiceOptionSetText : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
 	decUnicodeString pOldText;
 	decUnicodeString pNewText;
 	

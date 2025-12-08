@@ -29,7 +29,7 @@
 
 #include <dragengine/resources/collider/deColliderConstraint.h>
 
-class reRigConstraint;
+#include "../../../rig/constraint/reRigConstraint.h"
 
 
 
@@ -38,7 +38,7 @@ class reRigConstraint;
  */
 class reUConstraintDofSetStaticFriction : public igdeUndo{
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	deColliderConstraint::eDegreesOfFreedom pDof;
 	
 	float pOldValue;

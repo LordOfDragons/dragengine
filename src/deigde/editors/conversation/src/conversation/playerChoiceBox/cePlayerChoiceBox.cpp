@@ -67,9 +67,7 @@ pTextSize(18),
 pPadding(10),
 pPlaybackStackDepth(-1),
 
-pSelectedOption(-1),
-
-pCanvasView(NULL)
+pSelectedOption(-1)
 {
 	try{
 		pCanvasView = conversation.GetEngine()->GetCanvasManager()->CreateCanvasView();
@@ -279,10 +277,6 @@ void cePlayerChoiceBox::UpdateCanvas(){
 
 void cePlayerChoiceBox::pCleanUp(){
 	pOptions.RemoveAll();
-	
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 }
 
 

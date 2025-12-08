@@ -42,7 +42,7 @@
 
 gdeUOCEnvMapProbeSetInfluenceBorderSize::gdeUOCEnvMapProbeSetInfluenceBorderSize(
 gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe, float newValue) :
-pObjectClass(NULL),
+
 pEnvMapProbe(NULL)
 {
 	if(!objectClass || !envMapProbe){
@@ -55,19 +55,10 @@ pEnvMapProbe(NULL)
 	pNewValue = newValue;
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCEnvMapProbeSetInfluenceBorderSize::~gdeUOCEnvMapProbeSetInfluenceBorderSize(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

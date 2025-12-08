@@ -64,19 +64,16 @@ deCollider *deColliderManager::GetRootCollider() const{
 	return (deCollider*)pColliders.GetRoot();
 }
 
-deColliderVolume *deColliderManager::CreateColliderVolume(){
-	deColliderVolume *collider = NULL;
+deColliderVolume::Ref deColliderManager::CreateColliderVolume(){
+	deColliderVolume::Ref collider = NULL;
 	// create and add collider
 	try{
-		collider = new deColliderVolume(this);
+		collider.TakeOver(new deColliderVolume(this));
 		if(!collider) DETHROW(deeOutOfMemory);
 		GetPhysicsSystem()->LoadCollider(collider);
 		GetScriptingSystem()->LoadCollider(collider);
 		pColliders.Add(collider);
 	}catch(const deException &){
-		if(collider){
-			collider->FreeReference();
-		}
 		throw;
 	}
 	// finished
@@ -87,15 +84,12 @@ deColliderRig *deColliderManager::CreateColliderRig(){
 	deColliderRig *collider = NULL;
 	// create and add collider
 	try{
-		collider = new deColliderRig(this);
+		collider.TakeOver(new deColliderRig(this));
 		if(!collider) DETHROW(deeOutOfMemory);
 		GetPhysicsSystem()->LoadCollider(collider);
 		GetScriptingSystem()->LoadCollider(collider);
 		pColliders.Add(collider);
 	}catch(const deException &){
-		if(collider){
-			collider->FreeReference();
-		}
 		throw;
 	}
 	// finished
@@ -106,15 +100,12 @@ deColliderComponent *deColliderManager::CreateColliderComponent(){
 	deColliderComponent *collider = NULL;
 	// create and add collider
 	try{
-		collider = new deColliderComponent(this);
+		collider.TakeOver(new deColliderComponent(this));
 		if(!collider) DETHROW(deeOutOfMemory);
 		GetPhysicsSystem()->LoadCollider(collider);
 		GetScriptingSystem()->LoadCollider(collider);
 		pColliders.Add(collider);
 	}catch(const deException &){
-		if(collider){
-			collider->FreeReference();
-		}
 		throw;
 	}
 	// finished

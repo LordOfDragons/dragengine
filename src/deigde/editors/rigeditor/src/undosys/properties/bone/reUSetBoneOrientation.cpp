@@ -39,8 +39,6 @@ reUSetBoneOrientation::reUSetBoneOrientation(reRigBone *bone, const decVector &o
 	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	pOldOrientation = bone->GetOrientation();
 	pNewOrientation = orientation;
 	

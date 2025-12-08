@@ -84,10 +84,10 @@ void reRigShapeCylinder::SetBottomRadius(float bottomRadius){
 }
 
 reRigShape *reRigShapeCylinder::Duplicate() const{
-	reRigShapeCylinder *shape = NULL;
+	reRigShapeCylinder::Ref shape = NULL;
 	
 	try{
-		shape = new reRigShapeCylinder(GetEngine());
+		shape.TakeOver(new reRigShapeCylinder(GetEngine()));
 		if(!shape) DETHROW(deeOutOfMemory);
 		
 		shape->SetPosition(GetPosition());

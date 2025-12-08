@@ -158,7 +158,7 @@ void meHeightTerrainPFLayer::LoadMaskFromImage(){
 	}
 	
 	const int resolution = pHTSector->GetHeightTerrain()->GetSectorResolution();
-	deImage *image = NULL;
+	deImage::Ref image = NULL;
 	decPath path;
 	int x, y, i;
 	
@@ -215,13 +215,10 @@ void meHeightTerrainPFLayer::LoadMaskFromImage(){
 							}
 						}
 					}
-					
-					image->FreeReference();
 				}
 				
 			}catch(const deException &e){
 				if(image){
-					image->FreeReference();
 					image = NULL;
 				}
 				if(pHTSector && pHTSector->GetHeightTerrain()){
@@ -311,8 +308,6 @@ void meHeightTerrainPFLayer::AddType(meHeightTerrainPFType *type){
 	
 	pTypes[pTypeCount] = type;
 	pTypeCount++;
-	
-	type->AddReference();
 	type->SetPFLayer(this);
 	
 	if(pHTSector && pHTSector->GetHeightTerrain()){
@@ -335,8 +330,6 @@ void meHeightTerrainPFLayer::RemoveType(meHeightTerrainPFType *type){
 	pTypeCount--;
 	
 	type->SetPFLayer(NULL);
-	type->FreeReference();
-	
 	if(pHTSector && pHTSector->GetHeightTerrain()){
 		pHTSector->GetHeightTerrain()->SetChanged(true);
 		pHTSector->GetHeightTerrain()->RebuildVegetationPropFieldTypes();

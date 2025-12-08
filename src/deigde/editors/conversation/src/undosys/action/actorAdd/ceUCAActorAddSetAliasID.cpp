@@ -54,19 +54,10 @@ ceUCAActorAddSetAliasID::ceUCAActorAddSetAliasID(ceConversationTopic *topic, ceC
 	SetShortInfo("Actor add set alias id");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAActorAddSetAliasID::~ceUCAActorAddSetAliasID(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

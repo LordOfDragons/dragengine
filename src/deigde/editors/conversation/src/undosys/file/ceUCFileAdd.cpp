@@ -49,19 +49,10 @@ ceUCFileAdd::ceUCFileAdd(ceConversation *conversation, ceConversationFile *file)
 	SetShortInfo("Add File");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pFile = file;
-	file->AddReference();
 }
 
 ceUCFileAdd::~ceUCFileAdd(){
-	if(pFile){
-		pFile->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

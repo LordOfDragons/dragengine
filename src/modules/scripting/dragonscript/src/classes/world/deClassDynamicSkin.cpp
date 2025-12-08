@@ -61,7 +61,7 @@
 
 // native structure
 struct sDSkinNatDat{
-	deDynamicSkin *dynamicSkin;
+	deDynamicSkin::Ref dynamicSkin;
 };
 
 
@@ -565,7 +565,7 @@ deClassDynamicSkin::nfHashCode::nfHashCode(const sInitData &init) : dsFunction(i
 }
 
 void deClassDynamicSkin::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin *dynamicSkin = ((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin;
+	deDynamicSkin::Ref dynamicSkin = ((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin;
 	
 	rt->PushInt((int)(intptr_t)dynamicSkin);
 }
@@ -576,7 +576,7 @@ deClassDynamicSkin::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassDynamicSkin::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin *dynamicSkin = ((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin;
+	deDynamicSkin::Ref dynamicSkin = ((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin;
 	deClassDynamicSkin *clsDSkin = (deClassDynamicSkin*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
@@ -693,5 +693,4 @@ void deClassDynamicSkin::PushDynamicSkin(dsRunTime *rt, deDynamicSkin *dynamicSk
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sDSkinNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->dynamicSkin = dynamicSkin;
-	dynamicSkin->AddReference();
 }

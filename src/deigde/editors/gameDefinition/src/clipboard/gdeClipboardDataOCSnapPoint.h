@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCSnapPoint;
+#include "../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCSnapPoint *pSnapPoint;
+	gdeOCSnapPoint::Ref pSnapPoint;
 	
 	
 	

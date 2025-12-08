@@ -30,7 +30,7 @@
 
 #include <dragengine/common/string/decStringList.h>
 
-class seSourceChain;
+#include "../../../synthesizer/source/seSourceChain.h"
 
 
 
@@ -39,7 +39,7 @@ class seSourceChain;
  */
 class seUSourceChainPathSoundRemoveAll : public igdeUndo{
 private:
-	seSourceChain *pSource;
+	seSourceChain::Ref pSource;
 	
 	decStringList pPathSounds;
 	

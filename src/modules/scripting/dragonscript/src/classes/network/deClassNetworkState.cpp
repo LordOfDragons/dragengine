@@ -63,7 +63,7 @@
 
 // native structure
 struct sNSNatDat{
-	deNetworkState *state;
+	deNetworkState::Ref state;
 };
 
 
@@ -963,5 +963,4 @@ void deClassNetworkState::PushNetworkState(dsRunTime *rt, deNetworkState *state)
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sNSNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->state = state;
-	state->AddReference();
 }

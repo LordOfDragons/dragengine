@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCNavigationSpace;
+#include "../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCNavigationSpace *pNavSpace;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	
 	

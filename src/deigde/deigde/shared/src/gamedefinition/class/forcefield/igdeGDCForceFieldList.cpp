@@ -100,22 +100,18 @@ void igdeGDCForceFieldList::RemoveAll(){
 
 void igdeGDCForceFieldList::SetToDeepCopyFrom(const igdeGDCForceFieldList &list){
 	const int count = list.GetCount();
-	igdeGDCForceField *field = NULL;
+	igdeGDCForceField::Ref field = NULL;
 	
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			field = new igdeGDCForceField(*list.GetAt(i));
+			field.TakeOver(new igdeGDCForceField(*list.GetAt(i)));
 			Add(field);
-			field->FreeReference();
 			field = NULL;
 		}
 		
 	}catch(const deException &){
-		if(field){
-			field->FreeReference();
-		}
 		throw;
 	}
 }

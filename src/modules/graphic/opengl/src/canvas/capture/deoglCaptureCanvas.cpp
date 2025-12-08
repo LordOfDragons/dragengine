@@ -51,8 +51,6 @@ deoglCaptureCanvas::deoglCaptureCanvas(deGraphicOpenGl &ogl, deCaptureCanvas &ca
 pOgl(ogl),
 pCaptureCanvas(captureCanvas),
 
-pRCaptureCanvas(NULL),
-
 pDirtyCanvasView(true),
 pCapturePending(false)
 {
@@ -61,9 +59,6 @@ pCapturePending(false)
 
 deoglCaptureCanvas::~deoglCaptureCanvas(){
 	pOgl.GetCaptureCanvasList().Remove(this);
-	if(pRCaptureCanvas){
-		pRCaptureCanvas->FreeReference();
-	}
 }
 
 
@@ -73,7 +68,7 @@ deoglCaptureCanvas::~deoglCaptureCanvas(){
 
 void deoglCaptureCanvas::SyncToRender(){
 	if(!pRCaptureCanvas){
-		pRCaptureCanvas = new deoglRCaptureCanvas(GetOgl().GetRenderThread());
+		pRCaptureCanvas.TakeOver(new deoglRCaptureCanvas(GetOgl().GetRenderThread()));
 	}
 	
 	if(pDirtyCanvasView){

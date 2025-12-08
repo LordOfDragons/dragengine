@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 
 
 
@@ -37,7 +37,7 @@ class peeType;
  */
 class peeUTypeSetCollisionResponse : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	deParticleEmitterType::eCollisionResponses pOldResponse;
 	deParticleEmitterType::eCollisionResponses pNewResponse;

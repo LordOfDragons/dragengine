@@ -53,13 +53,9 @@ pSky(NULL)
 	pNewValue = newValue;
 	
 	pSky = sky;
-	sky->AddReference();
 }
 
 gdeUSkySetDescription::~gdeUSkySetDescription(){
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

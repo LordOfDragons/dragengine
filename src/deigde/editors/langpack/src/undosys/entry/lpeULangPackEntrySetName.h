@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class lpeLangPackEntry;
+#include "../../langpack/entry/lpeLangPackEntry.h"
 
 
 
@@ -36,7 +36,7 @@ class lpeLangPackEntry;
  */
 class lpeULangPackEntrySetName : public igdeUndo{
 private:
-	lpeLangPackEntry *pEntry;
+	lpeLangPackEntry::Ref pEntry;
 	
 	decString pOldName;
 	decString pNewName;

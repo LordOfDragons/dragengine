@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the network package. */
-	inline deNetworkMessage *GetMessage() const{ return pMessage; }
+	inline const deNetworkMessage::Ref &GetMessage() const{ return pMessage; }
 	
 	/** Retrieves the number. */
 	inline int GetNumber() const{ return pNumber; }

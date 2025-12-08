@@ -61,8 +61,6 @@ pScriptDirectory("/scripts"),
 pGameObject("MyGameApp"),
 pPathConfig("/config"),
 pPathCapture("/capture"),
-
-pActiveProfile(nullptr),
 pRemoteServer(std::make_shared<projRemoteServer>(*this, *environment))
 {
 	try{
@@ -182,17 +180,7 @@ void projProject::SetActiveProfile(projProfile *profile){
 	if(profile == pActiveProfile){
 		return;
 	}
-	
-	if(pActiveProfile){
-		pActiveProfile->FreeReference();
-	}
-	
 	pActiveProfile = profile;
-	
-	if(profile){
-		profile->AddReference();
-	}
-	
 	NotifyActiveProfileChanged();
 }
 

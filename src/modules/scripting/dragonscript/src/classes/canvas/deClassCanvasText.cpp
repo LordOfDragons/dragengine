@@ -45,7 +45,7 @@
 
 // Native Structure
 struct sCTextNatDat{
-	deCanvasText *canvas;
+	deCanvasText::Ref canvas;
 };
 
 
@@ -282,8 +282,6 @@ void deClassCanvasText::PushCanvas(dsRunTime *rt, deCanvasText *canvas){
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		canvas->AddReference();
 		nd.canvas = canvas;
 		
 		baseClass->AssignCanvas(rt->GetValue(0)->GetRealObject(), canvas);

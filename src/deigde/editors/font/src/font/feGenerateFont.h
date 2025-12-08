@@ -32,7 +32,7 @@
 
 class feFontImage;
 class feFontGlyph;
-class feFont;
+#include "feFont.h"
 
 class igdeEnvironment;
 
@@ -89,7 +89,7 @@ public:
 	void SetEnlargeGlpyh(int enlarge);
 	
 	/** \brief Generate font with properties. */
-	feFont *GenerateFont();
+	feFont::Ref GenerateFont();
 	/*@}*/
 	
 	

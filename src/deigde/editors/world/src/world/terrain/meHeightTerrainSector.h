@@ -41,7 +41,7 @@ class meHeightTerrainPropField;
 class meHeightTerrainTexture;
 class meHTVegetationLayer;
 
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deDebugDrawerShape;
 class deEngine;
 class deHeightTerrainSector;
@@ -145,7 +145,7 @@ private:
 	meHeightTerrainNavSpace *pActiveNavSpace;
 	decIntList pSelectedNavPoints;
 	
-	deDebugDrawer *pDDSelNavPoints;
+	deDebugDrawer::Ref pDDSelNavPoints;
 	
 	
 	
@@ -251,7 +251,7 @@ public:
 	/** \name Height Image */
 	/*@{*/
 	/** Retrieves the height image or null. */
-	inline deImage *GetHeightImage() const{ return pHeightImage; }
+	inline const deImage::Ref &GetHeightImage() const{ return pHeightImage; }
 	
 	/** Retrieves the data type. */
 	inline int GetDataType() const{ return pDataType; }

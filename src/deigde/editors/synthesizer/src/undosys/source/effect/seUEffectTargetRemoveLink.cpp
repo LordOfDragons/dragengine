@@ -43,9 +43,8 @@
 
 seUEffectTargetRemoveLink::seUEffectTargetRemoveLink(
 seEffect *effect, seControllerTarget *target, seLink *link) :
-pEffect(NULL),
-pTarget(NULL),
-pLink(NULL)
+
+pTarget(NULL)
 {
 	if(!effect || !target || !link){
 		DETHROW(deeInvalidParam);
@@ -54,21 +53,12 @@ pLink(NULL)
 	SetShortInfo("Effect target remove link");
 	
 	pEffect = effect;
-	pEffect->AddReference();
-	
 	pTarget = target;
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 seUEffectTargetRemoveLink::~seUEffectTargetRemoveLink(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pEffect){
-		pEffect->FreeReference();
-	}
 }
 
 

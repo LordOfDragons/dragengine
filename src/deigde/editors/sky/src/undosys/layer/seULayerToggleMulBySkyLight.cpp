@@ -49,13 +49,9 @@ pLayer(NULL)
 	SetShortInfo("Toggle Layer Multiply By Sky Light");
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerToggleMulBySkyLight::~seULayerToggleMulBySkyLight(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

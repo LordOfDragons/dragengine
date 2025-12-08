@@ -32,7 +32,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -41,8 +41,8 @@ class gdeObjectClass;
  */
 class gdeUOCPSetType : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
 	
 	gdeProperty::ePropertyTypes pOldValue;
 	gdeProperty::ePropertyTypes pNewValue;

@@ -39,10 +39,10 @@
 class deoglRenderThread;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
-class deoglRPTSkyLightFindContent;
-class deoglRPTSkyLightBuildRT;
-class deoglRPTSkyLightGIFindContent;
-class deoglRPTSkyLightGIUpdateRT;
+#include "parallel/deoglRPTSkyLightFindContent.h"
+#include "parallel/deoglRPTSkyLightBuildRT.h"
+#include "parallel/deoglRPTSkyLightGIFindContent.h"
+#include "parallel/deoglRPTSkyLightGIUpdateRT.h"
 class deoglRenderPlan;
 class deoglOcclusionTest;
 
@@ -100,11 +100,11 @@ private:
 	deoglAddToRenderTask pGIRenderTaskAddStatic;
 	deoglAddToRenderTask pGIRenderTaskAddDynamic;
 	
-	deoglRPTSkyLightFindContent *pTaskFindContent;
-	deoglRPTSkyLightBuildRT *pTaskBuildRT1;
-	deoglRPTSkyLightBuildRT *pTaskBuildRT2;
-	deoglRPTSkyLightGIFindContent *pTaskGIFindContent;
-	deoglRPTSkyLightGIUpdateRT *pTaskGIUpdateRT;
+	deoglRPTSkyLightFindContent::Ref pTaskFindContent;
+	deoglRPTSkyLightBuildRT::Ref pTaskBuildRT1;
+	deoglRPTSkyLightBuildRT::Ref pTaskBuildRT2;
+	deoglRPTSkyLightGIFindContent::Ref pTaskGIFindContent;
+	deoglRPTSkyLightGIUpdateRT::Ref pTaskGIUpdateRT;
 	
 	deoglSPBlockUBO::Ref pUBOFindConfig;
 	deoglSPBlockSSBO::Ref pSSBOCounters;

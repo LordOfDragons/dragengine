@@ -30,9 +30,9 @@
 #include <deigde/gui/layout/igdeContainerBorder.h>
 
 class feWindowMain;
-class feViewFIImage;
-class feViewFontImageListener;
-class feFont;
+#include "feViewFIImage.h"
+#include "feViewFontImageListener.h"
+#include "../../font/feFont.h"
 
 
 
@@ -45,8 +45,8 @@ class feFont;
 class feViewFontImage : public igdeContainerBorder{
 private:
 	feWindowMain &pWindowMain;
-	feViewFontImageListener *pListener;
-	feFont *pFont;
+	feViewFontImageListener::Ref pListener;
+	feFont::Ref pFont;
 	
 	decPoint pContentSize;
 	decPoint pScrollOffset;
@@ -54,7 +54,7 @@ private:
 	igdeScrollBar::Ref pSBHorizontal;
 	igdeScrollBar::Ref pSBVertical;
 	igdeComboBox::Ref pCBZoom;
-	feViewFIImage *pViewImage;
+	feViewFIImage::Ref pViewImage;
 	
 	
 	
@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
 	void SetFont(feFont *font);

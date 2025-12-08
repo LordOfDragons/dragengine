@@ -64,7 +64,7 @@
 /////////////////////
 
 struct sServiceObjectNatDat{
-	deServiceObject *object;
+	deServiceObject::Ref object;
 };
 
 
@@ -85,7 +85,7 @@ void deClassServiceObject::nfNew::RunFunction(dsRunTime*, dsValue *myself){
 	nd.object = nullptr;
 	
 	// create object
-	nd.object = new deServiceObject;
+	nd.object.TakeOver(new deServiceObject);
 }
 
 
@@ -244,7 +244,7 @@ void deClassServiceObject::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	
-	nd.object = new deServiceObject(*copy, deep);
+	nd.object.TakeOver(new deServiceObject(*copy, deep));
 }
 
 
@@ -1111,7 +1111,6 @@ void deClassServiceObject::PushServiceObject(dsRunTime *rt, const deServiceObjec
 	rt->CreateObjectNakedOnStack(this);
 	((sServiceObjectNatDat*)p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()))->object = object;
-	object->AddReference();
 }
 
 deResource *deClassServiceObject::GetResource(dsValue &myself) const{

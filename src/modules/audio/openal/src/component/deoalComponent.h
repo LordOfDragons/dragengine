@@ -29,7 +29,7 @@
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/audio/deBaseAudioComponent.h>
 
-class deoalAComponent;
+#include "deoalAComponent.h"
 class deoalComponentDebug;
 class deoalComponentTexture;
 class deoalModel;
@@ -48,7 +48,7 @@ class deoalComponent : public deBaseAudioComponent{
 private:
 	deAudioOpenAL &pOal;
 	deComponent &pComponent;
-	deoalAComponent *pAComponent;
+	deoalAComponent::Ref pAComponent;
 	
 	deoalComponentTexture **pTextures;
 	int pTextureCount;
@@ -116,7 +116,7 @@ public:
 	inline deoalModel *GetAudioModel() const{ return pAudioModel; }
 	
 	/** \brief Audio component. */
-	inline deoalAComponent *GetAComponent() const{ return pAComponent; }
+	inline const deoalAComponent::Ref &GetAComponent() const{ return pAComponent; }
 	
 	
 	

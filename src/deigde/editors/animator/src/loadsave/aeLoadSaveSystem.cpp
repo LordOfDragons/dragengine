@@ -94,7 +94,7 @@ aeLoadSaveSystem::~aeLoadSaveSystem(){
 // Management
 ///////////////
 
-aeAnimator *aeLoadSaveSystem::LoadAnimator(const char* filename){
+aeAnimator::Ref aeLoadSaveSystem::LoadAnimator(const char* filename){
 	const decBaseFileReader::Ref fileReader(decBaseFileReader::Ref::New(
 		pWndMain->GetEnvironment().GetFileSystemGame()
 			->OpenFileForReading(decPath::CreatePathUnix(filename))));
@@ -107,7 +107,6 @@ aeAnimator *aeLoadSaveSystem::LoadAnimator(const char* filename){
 	animator->SetChanged(false);
 	animator->SetSaved(true);
 	
-	animator->AddReference(); // required to hand over reference to caller
 	return animator;
 }
 

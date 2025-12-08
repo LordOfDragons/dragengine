@@ -50,7 +50,6 @@ seUTextureSetName::seUTextureSetName(seTexture *texture, const char *newName){
 	pNewName = newName;
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 seUTextureSetName::~seUTextureSetName(){

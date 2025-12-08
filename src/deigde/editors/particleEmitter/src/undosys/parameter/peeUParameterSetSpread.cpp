@@ -54,13 +54,9 @@ peeUParameterSetSpread::peeUParameterSetSpread(peeType *type, peeParameter *para
 	pNewSpread = newSpread;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUParameterSetSpread::~peeUParameterSetSpread(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

@@ -42,7 +42,7 @@
 
 gdeUOCNavBlockerToggleEnabled::gdeUOCNavBlockerToggleEnabled(
 gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker) :
-pObjectClass(NULL),
+
 pNavBlocker(NULL)
 {
 	if(!objectClass || !navblocker){
@@ -52,19 +52,10 @@ pNavBlocker(NULL)
 	SetShortInfo("Nav-blocker toggle enabled");
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerToggleEnabled::~gdeUOCNavBlockerToggleEnabled(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -49,9 +49,6 @@ pCanvasView(NULL){
 }
 
 ceTextBoxText::~ceTextBoxText(){
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 }
 
 
@@ -87,7 +84,7 @@ void ceTextBoxText::Layout(const ceTextBox &textBox){
 	// determine required height
 	deCanvasView &parentVide = *textBox.GetCanvasView();
 	const decPoint &parentSize = parentVide.GetSize();
-	deCanvasText *canvasText = NULL;
+	deCanvasText::Ref canvasText = NULL;
 	
 	const decString name(pName.ToUTF8());
 	const decString text(pText.ToUTF8());
@@ -112,7 +109,6 @@ void ceTextBoxText::Layout(const ceTextBox &textBox){
 		canvasText->SetPosition(decPoint(left, top));
 		canvasText->SetSize(decPoint(offset, textHeight));
 		pCanvasView->AddCanvas(canvasText);
-		canvasText->FreeReference();
 		canvasText = NULL;
 		
 		// create text canvas
@@ -125,13 +121,9 @@ void ceTextBoxText::Layout(const ceTextBox &textBox){
 		canvasText->SetPosition(decPoint(left + offset, top));
 		canvasText->SetSize(decPoint(right - offset - left, textHeight));
 		pCanvasView->AddCanvas(canvasText);
-		canvasText->FreeReference();
 		canvasText = NULL;
 		
 	}catch(const deException &){
-		if(canvasText){
-			canvasText->FreeReference();
-		}
 		throw;
 	}
 }

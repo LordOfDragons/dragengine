@@ -129,8 +129,7 @@ pLodMaxPixelError(0),
 pLodLevelOffset(0),
 pOcclusionMap(NULL),
 pOcclusionTest(NULL),
-pGIState(NULL),
-pTaskFindContent(NULL)
+pGIState(NULL)
 {
 	pCamera = NULL;
 	pCameraFov = DEG2RAD * 90.0f;
@@ -806,7 +805,7 @@ void deoglRenderPlan::pStartFindContent(const deoglRenderPlanMasked *mask){
 	pOcclusionTest->RemoveAllInputData();
 	
 	if(!pRenderThread.GetChoices().GetUseComputeRenderTask()){
-		pTaskFindContent = new deoglRPTFindContent(*this);
+		pTaskFindContent.TakeOver(new deoglRPTFindContent(*this));
 		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskFindContent);
 	}
 	
@@ -832,8 +831,6 @@ void deoglRenderPlan::pWaitFinishedFindContent(const deoglRenderPlanMasked *mask
 	
 	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent(
 		*this, pTaskFindContent->GetElapsedTime() );
-	
-	pTaskFindContent->FreeReference();
 	pTaskFindContent = NULL;
 }
 

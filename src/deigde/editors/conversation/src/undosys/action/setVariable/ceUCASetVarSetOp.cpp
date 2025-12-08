@@ -52,19 +52,10 @@ ceCASetVariable *action, ceCASetVariable::eOperators newOperator){
 	SetShortInfo("Action SetVariable Set Operator");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCASetVarSetOp::~ceUCASetVarSetOp(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

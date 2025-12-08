@@ -288,11 +288,11 @@ void dealGameData::pReadGameDefinitions(){
 	
 	deLogger &logger = pLauncher.GetLogger();
 	dealGameXML gameXML(&logger, LOGSOURCE);
-	decMemoryFileReader *memoryFileReader = NULL;
-	decMemoryFile *memoryFile = NULL;
-	dealFDFileReader *reader = NULL;
+	decMemoryFileReader::Ref memoryFileReader = NULL;
+	decMemoryFile::Ref memoryFile = NULL;
+	dealFDFileReader::Ref reader = NULL;
 	unzFile zipFile = NULL;
-	dealGame *game = NULL;
+	dealGame::Ref game = NULL;
 	unz_file_info info;
 	decString filename;
 	unz_global_info gi;
@@ -309,7 +309,7 @@ void dealGameData::pReadGameDefinitions(){
 	
 	try{
 		// open zip file
-		reader = new dealFDFileReader("", pFileDescriptor, pFileOffset, pFileLength);
+		reader.TakeOver(new dealFDFileReader("", pFileDescriptor, pFileOffset, pFileLength));
 		ffunc.opaque = reader;
 		zipFile = unzOpen2(reader->GetFilename(), &ffunc);
 		if(!zipFile){
@@ -342,7 +342,7 @@ void dealGameData::pReadGameDefinitions(){
 				if(unzOpenCurrentFile(zipFile) != UNZ_OK){
 					DETHROW(deeReadFile);
 				}
-				memoryFile = new decMemoryFile(filename);
+				memoryFile.TakeOver(new decMemoryFile(filename));
 				memoryFile->Resize(info.uncompressed_size);
 				const int readBytes = unzReadCurrentFile(zipFile, memoryFile->GetPointer(), info.uncompressed_size);
 				if(readBytes != (int)info.uncompressed_size){
@@ -353,14 +353,11 @@ void dealGameData::pReadGameDefinitions(){
 				}
 				
 				// process using game xml parser to get game file
-				memoryFileReader = new decMemoryFileReader(memoryFile);
+				memoryFileReader.TakeOver(new decMemoryFileReader(memoryFile));
 				
-				game = new dealGame(pLauncher);
+				game.TakeOver(new dealGame(pLauncher));
 				gameXML.ReadFromFile(*memoryFileReader, *game);
-				
-				memoryFileReader->FreeReference();
 				memoryFileReader = NULL;
-				memoryFile->FreeReference();
 				memoryFile = NULL;
 				
 				// add game if valid
@@ -376,7 +373,6 @@ void dealGameData::pReadGameDefinitions(){
 				}else{
 					pGames.Add(game);
 				}
-				game->FreeReference();
 				game = NULL;
 			}
 			
@@ -389,23 +385,9 @@ void dealGameData::pReadGameDefinitions(){
 			unzClose(zipFile);
 			zipFile = NULL;
 		}
-		reader->FreeReference();
-		
 	}catch(const deException &){
-		if(game){
-			game->FreeReference();
-		}
-		if(memoryFileReader){
-			memoryFileReader->FreeReference();
-		}
-		if(memoryFile){
-			memoryFile->FreeReference();
-		}
 		if(zipFile){
 			unzClose(zipFile);
-		}
-		if(reader){
-			reader->FreeReference();
 		}
 		throw;
 	}

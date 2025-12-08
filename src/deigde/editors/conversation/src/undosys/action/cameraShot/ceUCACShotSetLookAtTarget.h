@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCACameraShot;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCACameraShot.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCACShotSetLookAtTarget : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCACameraShot *pCameraShot;
+	ceConversationTopic::Ref pTopic;
+	ceCACameraShot::Ref pCameraShot;
 	decString pOldTarget;
 	decString pNewTarget;
 	

@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meDecal;
+#include "../../../world/decal/meDecal.h"
 
 
 
@@ -36,7 +36,7 @@ class meDecal;
  */
 class meUDecalTCRotation : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	float pOldRotation;
 	float pNewRotation;
 	

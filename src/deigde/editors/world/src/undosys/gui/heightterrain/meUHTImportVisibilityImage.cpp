@@ -110,7 +110,6 @@ meUHTImportVisibilityImage::meUHTImportVisibilityImage(meWorld *world, meHeightT
 	}
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUHTImportVisibilityImage::~meUHTImportVisibilityImage(){

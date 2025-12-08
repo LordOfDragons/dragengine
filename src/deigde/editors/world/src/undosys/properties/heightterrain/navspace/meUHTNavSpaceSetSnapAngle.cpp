@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUHTNavSpaceSetSnapAngle::meUHTNavSpaceSetSnapAngle(meHeightTerrainNavSpace *navspace, float newSnapAngle) :
-pNavSpace(NULL),
+
 pNewSnapAngle(newSnapAngle)
 {
 	if(!navspace){
@@ -52,13 +52,9 @@ pNewSnapAngle(newSnapAngle)
 	SetShortInfo("Height terrain nav-space set snap angle");
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUHTNavSpaceSetSnapAngle::~meUHTNavSpaceSetSnapAngle(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

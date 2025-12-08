@@ -103,21 +103,17 @@ void ceStripList::RemoveAll(){
 
 void ceStripList::AddCopyFrom(const ceStripList &list){
 	const int count = list.GetCount();
-	ceStrip *entry = NULL;
+	ceStrip::Ref entry = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			entry = new ceStrip(*list.GetAt(i));
+			entry.TakeOver(new ceStrip(*list.GetAt(i)));
 			pList.Add(entry);
-			entry->FreeReference();
 			entry = NULL;
 		}
 		
 	}catch(const deException &){
-		if(entry){
-			entry->FreeReference();
-		}
 		throw;
 	}
 }

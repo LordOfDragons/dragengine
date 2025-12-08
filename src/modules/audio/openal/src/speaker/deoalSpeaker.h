@@ -30,7 +30,7 @@
 #include <dragengine/systems/modules/audio/deBaseAudioSpeaker.h>
 
 class deAudioOpenAL;
-class deoalASpeaker;
+#include "deoalASpeaker.h"
 class deoalSound;
 class deoalSynthesizerInstance;
 class deoalVideoPlayer;
@@ -48,7 +48,7 @@ class deoalSpeaker : public deBaseAudioSpeaker{
 private:
 	deAudioOpenAL &pOal;
 	deSpeaker &pSpeaker;
-	deoalASpeaker *pASpeaker;
+	deoalASpeaker::Ref pASpeaker;
 	
 	deoalWorld *pParentWorld;
 	deoalMicrophone *pParentMicrophone;
@@ -109,7 +109,7 @@ public:
 	void SetParentMicrophone(deoalMicrophone *microphone);
 	
 	/** \brief Audio speaker. */
-	inline deoalASpeaker *GetASpeaker() const{ return pASpeaker; }
+	inline const deoalASpeaker::Ref &GetASpeaker() const{ return pASpeaker; }
 	
 	
 	

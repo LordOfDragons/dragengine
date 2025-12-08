@@ -62,11 +62,9 @@ pDirtySource(true),
 pVideo(NULL),
 
 pBrokenVideoDecoder(false),
-pDecodeThread(NULL),
-
-pRVideoPlayer(NULL)
+pDecodeThread(NULL)
 {
-	pRVideoPlayer = new deoglRVideoPlayer(ogl.GetRenderThread());
+	pRVideoPlayer.TakeOver(new deoglRVideoPlayer(ogl.GetRenderThread()));
 	
 	SourceChanged();
 }
@@ -76,11 +74,6 @@ deoglVideoPlayer::~deoglVideoPlayer(){
 		pDecodeThread->StopDecode();
 		delete pDecodeThread;
 	}
-	
-	if(pRVideoPlayer){
-		pRVideoPlayer->FreeReference();
-	}
-	
 	// notify owners we are about to be deleted. required since owners hold only a weak pointer
 	// to the dynamic skin and are notified only after switching to a new dynamic skin. in this
 	// case they can not use the old pointer to remove themselves from the dynamic skin

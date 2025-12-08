@@ -53,13 +53,9 @@ pParticleEmitter(NULL)
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
 }
 
 gdeUParticleEmitterSetDescription::~gdeUParticleEmitterSetDescription(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
 }
 
 

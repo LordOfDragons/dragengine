@@ -173,7 +173,7 @@ public:
 	void SetBlendMode(eBlendModes blendMode);
 	
 	/** \brief Mask canvas or NULL if not set. */
-	inline deCanvas *GetMask() const{ return pMask; }
+	inline const deCanvas::Ref &GetMask() const{ return pMask; }
 	
 	/** \brief Set mask canvas or NULL if not set. */
 	void SetMask(deCanvas *mask);

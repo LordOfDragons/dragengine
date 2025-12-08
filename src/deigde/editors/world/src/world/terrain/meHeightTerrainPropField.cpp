@@ -63,7 +63,6 @@
 meHeightTerrainPropField::meHeightTerrainPropField(deEngine *engine) :
 pHTSector(NULL),
 pEngine(engine),
-pEngPF(NULL),
 pVInstances(NULL),
 pVInstanceCount(0),
 pVInstanceSize(0),
@@ -274,11 +273,6 @@ void meHeightTerrainPropField::pCleanUp(){
 	if(pVInstances){
 		delete [] pVInstances;
 	}
-	
-	if(pEngPF){
-		pEngPF->FreeReference();
-	}
-	
 	if(pListener){
 		delete pListener;
 	}

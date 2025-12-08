@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 #include "../../../../conversation/strip/ceStripList.h"
 
-class ceCAActorSpeak;
-class ceConversationTopic;
+#include "../../../../conversation/action/ceCAActorSpeak.h"
+#include "../../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -47,8 +47,8 @@ public:
 	};
 	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	ceStripList pStrips;
 	sStrip *pOldStates;
 	float pScaling;

@@ -69,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Image. */
-	inline devkImage *GetImage() const{ return pImage; }
+	inline const devkImage::Ref &GetImage() const{ return pImage; }
 	
 	/** Image view. */
 	inline VkImageView GetImageView() const{ return pImageView; }

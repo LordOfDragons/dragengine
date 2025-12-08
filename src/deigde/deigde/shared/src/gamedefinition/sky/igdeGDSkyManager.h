@@ -75,7 +75,7 @@ public:
 	void RemoveAllSkies();
 	
 	/** \brief Top level category object. */
-	inline igdeGDCategory *GetCategories() const{ return pCategories; }
+	inline const igdeGDCategory::Ref &GetCategories() const{ return pCategories; }
 	
 	/** \brief Path of default sky. */
 	inline const decString &GetDefaultPath() const{ return pDefaultPath; }

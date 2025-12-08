@@ -58,7 +58,6 @@ meUObjectSetProperty::meUObjectSetProperty(meObject *object, const char *key, co
 	pNewValue = newValue;
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectSetProperty::~meUObjectSetProperty(){
@@ -94,7 +93,4 @@ void meUObjectSetProperty::ProgressiveRedo(){
 //////////////////////
 
 void meUObjectSetProperty::pCleanUp(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }

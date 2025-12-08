@@ -52,19 +52,10 @@ ceConversationTopic *topic, ceConversationAction *action)
 	SetShortInfo("Action Toggle Wait For Actor");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCActionToggleWaitForActor::~ceUCActionToggleWaitForActor(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

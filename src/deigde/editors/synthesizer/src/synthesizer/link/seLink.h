@@ -30,7 +30,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 
-class seController;
+#include "../controller/seController.h"
 class seLinkMapping;
 class seSynthesizer;
 class deSynthesizerLink;
@@ -48,7 +48,7 @@ private:
 	
 	decString pName;
 	
-	seController *pController;
+	seController::Ref pController;
 	int pRepeat;
 	decCurveBezier pCurve;
 	
@@ -97,7 +97,7 @@ public:
 	
 	
 	/** \brief Controller or \em NULL. */
-	inline seController *GetController() const{ return pController; }
+	inline const seController::Ref &GetController() const{ return pController; }
 	
 	/** \brief Set controller or \em NULL. */
 	void SetController(seController *controller);

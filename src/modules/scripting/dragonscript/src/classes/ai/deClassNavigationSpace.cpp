@@ -51,7 +51,7 @@
 
 
 struct sNavSpaceNatDat{
-	deNavigationSpace *navspace;
+	deNavigationSpace::Ref navspace;
 };
 
 
@@ -969,5 +969,4 @@ void deClassNavigationSpace::PushNavigationSpace(dsRunTime *rt, deNavigationSpac
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sNavSpaceNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->navspace = navspace;
-	navspace->AddReference();
 }

@@ -29,7 +29,7 @@
 #include <dragengine/resources/billboard/deBillboard.h>
 #include <dragengine/resources/collider/deCollider.h>
 
-class gdeOCBillboard;
+#include "../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 
 
 
@@ -43,7 +43,7 @@ public:
 	
 	
 private:
-	gdeOCBillboard *pOCBillboard;
+	gdeOCBillboard::Ref pOCBillboard;
 	
 	deBillboard::Ref pBillboard;
 	deCollider::Ref pCollider;
@@ -72,10 +72,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class billboard. */
-	inline gdeOCBillboard *GetOCBillboard() const{ return pOCBillboard; }
+	inline const gdeOCBillboard::Ref &GetOCBillboard() const{ return pOCBillboard; }
 	
 	/** \brief Collider or \em NULL if not present. */
-	inline deCollider *GetCollider() const{ return pCollider; }
+	inline const deCollider::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;

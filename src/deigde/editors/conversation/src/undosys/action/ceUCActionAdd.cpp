@@ -56,19 +56,10 @@ ceUCActionAdd::ceUCActionAdd(ceConversationTopic *topic, ceConversationAction *a
 	SetShortInfo("Add Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCActionAdd::~ceUCActionAdd(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

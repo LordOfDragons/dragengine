@@ -46,7 +46,7 @@
 
 
 struct sFileWriterNatDat{
-	decBaseFileWriter *fileWriter;
+	decBaseFileWriter::Ref fileWriter;
 	int streamVersion;
 };
 
@@ -587,5 +587,4 @@ void deClassFileWriter::PushFileWriter(dsRunTime *rt, decBaseFileWriter *fileWri
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sFileWriterNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->fileWriter = fileWriter;
-	fileWriter->AddReference();
 }

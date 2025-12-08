@@ -164,7 +164,7 @@ public:
 	void SetDescription(const char *description);
 	
 	/** \brief Tree item icon. */
-	inline igdeIcon *GetIcon() const{ return pIcon; }
+	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
 	/**
 	 * \brief Set tree item icon.

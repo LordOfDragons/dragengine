@@ -838,15 +838,13 @@ public:
 
 seWPLayer::seWPLayer(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pSky(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine, frameLine2;
+	igdeContainer *content, groupBox, frameLine, frameLine2;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPLayerListener(*this);
+	pListener.TakeOver(new seWPLayerListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -958,12 +956,7 @@ pSky(NULL)
 seWPLayer::~seWPLayer(){
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 		pSky = NULL;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -979,14 +972,12 @@ void seWPLayer::SetSky(seSky *sky){
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;
 	
 	if(sky){
 		sky->AddListener(pListener);
-		sky->AddReference();
 	}
 	
 	UpdateLayerList();

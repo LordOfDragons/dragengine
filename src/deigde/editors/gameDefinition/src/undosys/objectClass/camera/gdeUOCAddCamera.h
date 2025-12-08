@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCCamera;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/camera/gdeOCCamera.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCAddCamera : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCCamera *pCamera;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCCamera::Ref pCamera;
 	
 	
 	

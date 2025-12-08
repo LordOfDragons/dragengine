@@ -97,7 +97,7 @@ void debpConfiguration::SetSimulatePropFields(bool simulatePropFields){
 
 void debpConfiguration::LoadConfig(){
 	deVirtualFileSystem &vfs = pBullet->GetVFS();
-	decBaseFileReader *reader = NULL;
+	decBaseFileReader::Ref reader = NULL;
 	
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
@@ -116,13 +116,7 @@ void debpConfiguration::LoadConfig(){
 		}
 		
 		decXmlParser(pBullet->GetGameEngine()->GetLogger()).ParseXml(reader, xmlDoc);
-		
-		reader->FreeReference();
-		
 	}catch(const deException &){
-		if(reader){
-			reader->FreeReference();
-		}
 		throw;
 	}
 	

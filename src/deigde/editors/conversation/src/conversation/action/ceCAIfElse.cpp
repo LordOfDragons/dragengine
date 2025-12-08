@@ -53,16 +53,15 @@ pTIMElseExpanded(action.pTIMElseExpanded)
 {
 	const ceCAIfElseCaseList &cases = action.GetCases();
 	const ceConversationActionList &elseActions = action.GetElseActions();
-	ceConversationAction *newAction = NULL;
-	ceCAIfElseCase *newCase = NULL;
+	ceConversationAction::Ref newAction = NULL;
+	ceCAIfElseCase::Ref newCase = NULL;
 	int i, count;
 	
 	try{
 		count = cases.GetCount();
 		for(i=0; i<count; i++){
-			newCase = new ceCAIfElseCase(*cases.GetAt(i));
+			newCase.TakeOver(new ceCAIfElseCase(*cases.GetAt(i)));
 			pCases.Add(newCase);
-			newCase->FreeReference();
 			newCase = NULL;
 		}
 		
@@ -70,17 +69,10 @@ pTIMElseExpanded(action.pTIMElseExpanded)
 		for(i=0; i<count; i++){
 			newAction = elseActions.GetAt(i)->CreateCopy();
 			pElseActions.Add(newAction);
-			newAction->FreeReference();
 			newAction = NULL;
 		}
 		
 	}catch(const deException &){
-		if(newAction){
-			newAction->FreeReference();
-		}
-		if(newCase){
-			newCase->FreeReference();
-		}
 		pCases.RemoveAll();
 		pElseActions.RemoveAll();
 		throw;

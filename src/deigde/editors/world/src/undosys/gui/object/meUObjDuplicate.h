@@ -29,7 +29,7 @@
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 
-class meWorld;
+#include "../../../world/meWorld.h"
 class meObject;
 
 
@@ -41,7 +41,7 @@ class meObject;
  */
 class meUObjDuplicate : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decObjectOrderedSet pObjects;
 	
 public:

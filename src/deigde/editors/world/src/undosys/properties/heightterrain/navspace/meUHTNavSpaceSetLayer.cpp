@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUHTNavSpaceSetLayer::meUHTNavSpaceSetLayer(meHeightTerrainNavSpace *navspace, int newLayer) :
-pNavSpace(NULL),
+
 pNewLayer(newLayer)
 {
 	if(!navspace){
@@ -52,13 +52,9 @@ pNewLayer(newLayer)
 	SetShortInfo("Height terrain nav-space set layer");
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUHTNavSpaceSetLayer::~meUHTNavSpaceSetLayer(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

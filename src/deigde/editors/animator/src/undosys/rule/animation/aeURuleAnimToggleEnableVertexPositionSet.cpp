@@ -46,8 +46,6 @@ aeURuleAnimToggleEnableVertexPositionSet::aeURuleAnimToggleEnableVertexPositionS
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule animation toggle enable vertex position set");
 		
 	}catch(const deException &){
@@ -79,7 +77,4 @@ void aeURuleAnimToggleEnableVertexPositionSet::Redo(){
 //////////////////////
 
 void aeURuleAnimToggleEnableVertexPositionSet::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class projProfile;
+#include "../../project/profile/projProfile.h"
 
 
 
@@ -37,7 +37,7 @@ class projProfile;
  */
 class projUProfileSetDescription : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decString pOldValue;
 	decString pNewValue;

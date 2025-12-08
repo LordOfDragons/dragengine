@@ -40,7 +40,7 @@ class ceCASnippet;
  */
 class ceWPASnippet : public ceWPAction{
 private:
-	igdeComboBoxFilter::Ref pCBFile, pCBTopic;
+	igdeComboBoxFilter *pCBFile, pCBTopic;
 	igdeCheckBox::Ref pChkCreateSideLane;
 	igdeButton::Ref pBtnJumpToTopic;
 	

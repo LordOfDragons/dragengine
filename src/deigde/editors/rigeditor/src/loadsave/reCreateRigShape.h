@@ -43,7 +43,7 @@ class deEngine;
 class reCreateRigShape : public decShapeVisitor{
 private:
 	deEngine *pEngine;
-	reRigShape *pRigShape;
+	reRigShape::Ref pRigShape;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -59,7 +59,7 @@ public:
 	/** Resets the visitor. */
 	void Reset();
 	/** Retrieves the editor shape. */
-	inline reRigShape *GetRigShape() const{ return pRigShape; }
+	inline const reRigShape::Ref &GetRigShape() const{ return pRigShape; }
 	/*@}*/
 	
 	/** @name Visiting */

@@ -50,20 +50,12 @@
 
 deoalAWorld::deoalAWorld(deoalAudioThread &audioThread, const decDVector &size) :
 pAudioThread(audioThread),
-
-pRootComponent(nullptr),
 pTailComponent(nullptr),
 pComponentCount(0),
-
-pRootSpeaker(nullptr),
 pTailSpeaker(nullptr),
 pSpeakerCount(0),
-
-pRootMicrophone(nullptr),
 pTailMicrophone(nullptr),
 pMicrophoneCount(0),
-
-pRootSoundLevelMeter(nullptr),
 pTailSoundLevelMeter(nullptr),
 pSoundLevelMeterCount(0),
 
@@ -112,7 +104,7 @@ bool deoalAWorld::IsAudible() const{
 void deoalAWorld::SetAllSpeakersEnabled(bool enabled){
 	// WARNING Called during synchronization time from main thread.
 	
-	deoalASpeaker *speaker = pRootSpeaker;
+	deoalASpeaker::Ref speaker = pRootSpeaker;
 	while(speaker){
 		speaker->SetEnabled(enabled);
 		speaker = speaker->GetLLWorldNext();
@@ -120,7 +112,7 @@ void deoalAWorld::SetAllSpeakersEnabled(bool enabled){
 }
 
 void deoalAWorld::UpdateAllSpeakers(){
-	deoalASpeaker *speaker = pRootSpeaker;
+	deoalASpeaker::Ref speaker = pRootSpeaker;
 	while(speaker){
 		speaker->PrepareProcessAudio();
 		speaker = speaker->GetLLWorldNext();
@@ -128,7 +120,7 @@ void deoalAWorld::UpdateAllSpeakers(){
 }
 
 void deoalAWorld::UpdateSoundLevelMetering(){
-	deoalASoundLevelMeter *soundLevelMeter = pRootSoundLevelMeter;
+	deoalASoundLevelMeter::Ref soundLevelMeter = pRootSoundLevelMeter;
 	while(soundLevelMeter){
 		soundLevelMeter->FindSpeakers();
 		soundLevelMeter->MeterSpeakers();
@@ -142,7 +134,7 @@ void deoalAWorld::PrepareProcessAudio(){
 }
 
 void deoalAWorld::ProcessDeactivate(){
-	deoalASpeaker *speaker = pRootSpeaker;
+	deoalASpeaker::Ref speaker = pRootSpeaker;
 	while(speaker){
 		speaker->ProcessDeactivate();
 		speaker = speaker->GetLLWorldNext();
@@ -188,8 +180,6 @@ void deoalAWorld::AddComponent(deoalAComponent *component){
 		component->SetLLWorldPrev(nullptr);
 		component->SetLLWorldNext(nullptr);
 	}
-	
-	component->AddReference();
 	pComponentCount++;
 	
 	component->SetParentWorld(this);
@@ -218,7 +208,6 @@ void deoalAWorld::RemoveComponent(deoalAComponent *component){
 	}
 	
 	pComponentCount--;
-	component->FreeReference();
 }
 
 void deoalAWorld::RemoveAllComponents(){
@@ -229,8 +218,6 @@ void deoalAWorld::RemoveAllComponents(){
 		pRootComponent->SetParentWorld(nullptr);
 		pRootComponent->SetWorldMarkedRemove(false);
 		pComponentCount--;
-		pRootComponent->FreeReference();
-		
 		pRootComponent = next;
 	}
 	
@@ -238,7 +225,7 @@ void deoalAWorld::RemoveAllComponents(){
 }
 
 void deoalAWorld::RemoveRemovalMarkedComponents(){
-	deoalAComponent *component = pRootComponent;
+	deoalAComponent::Ref component = pRootComponent;
 	while(component){
 		deoalAComponent * const next = component->GetLLWorldNext();
 		
@@ -283,8 +270,6 @@ void deoalAWorld::AddSpeaker(deoalASpeaker *speaker){
 		speaker->SetLLWorldPrev(nullptr);
 		speaker->SetLLWorldNext(nullptr);
 	}
-	
-	speaker->AddReference();
 	pSpeakerCount++;
 	
 	speaker->SetParentWorld(this);
@@ -323,7 +308,6 @@ void deoalAWorld::RemoveSpeaker(deoalASpeaker *speaker){
 	}
 	
 	pSpeakerCount--;
-	speaker->FreeReference();
 }
 
 void deoalAWorld::RemoveAllSpeakers(){
@@ -342,8 +326,6 @@ void deoalAWorld::RemoveAllSpeakers(){
 		pRootSpeaker->SetEnabled(false);
 		
 		pSpeakerCount--;
-		pRootSpeaker->FreeReference();
-		
 		pRootSpeaker = next;
 	}
 	
@@ -353,7 +335,7 @@ void deoalAWorld::RemoveAllSpeakers(){
 void deoalAWorld::RemoveRemovalMarkedSpeakers(){
 	// WARNING Called during synchronization time from main thread.
 	
-	deoalASpeaker *speaker = pRootSpeaker;
+	deoalASpeaker::Ref speaker = pRootSpeaker;
 	while(speaker){
 		deoalASpeaker * const next = speaker->GetLLWorldNext();
 		
@@ -396,8 +378,6 @@ void deoalAWorld::AddMicrophone(deoalAMicrophone *microphone){
 		microphone->SetLLWorldPrev(nullptr);
 		microphone->SetLLWorldNext(nullptr);
 	}
-	
-	microphone->AddReference();
 	pMicrophoneCount++;
 	
 	microphone->SetParentWorld(this);
@@ -426,7 +406,6 @@ void deoalAWorld::RemoveMicrophone(deoalAMicrophone *microphone){
 	}
 	
 	pMicrophoneCount--;
-	microphone->FreeReference();
 }
 
 void deoalAWorld::RemoveAllMicrophones(){
@@ -437,8 +416,6 @@ void deoalAWorld::RemoveAllMicrophones(){
 		pRootMicrophone->SetParentWorld(nullptr);
 		pRootMicrophone->SetWorldMarkedRemove(false);
 		pMicrophoneCount--;
-		pRootMicrophone->FreeReference();
-		
 		pRootMicrophone = next;
 	}
 	
@@ -446,7 +423,7 @@ void deoalAWorld::RemoveAllMicrophones(){
 }
 
 void deoalAWorld::RemoveRemovalMarkedMicrophones(){
-	deoalAMicrophone *microphone = pRootMicrophone;
+	deoalAMicrophone::Ref microphone = pRootMicrophone;
 	while(microphone){
 		deoalAMicrophone * const next = microphone->GetLLWorldNext();
 		
@@ -491,8 +468,6 @@ void deoalAWorld::AddSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter){
 		soundLevelMeter->SetLLWorldPrev(nullptr);
 		soundLevelMeter->SetLLWorldNext(nullptr);
 	}
-	
-	soundLevelMeter->AddReference();
 	pSoundLevelMeterCount++;
 	
 	soundLevelMeter->SetParentWorld(this);
@@ -523,7 +498,6 @@ void deoalAWorld::RemoveSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter){
 	}
 	
 	pSoundLevelMeterCount--;
-	soundLevelMeter->FreeReference();
 }
 
 void deoalAWorld::RemoveAllSoundLevelMeters(){
@@ -537,8 +511,6 @@ void deoalAWorld::RemoveAllSoundLevelMeters(){
 		pRootSoundLevelMeter->SetWorldMarkedRemove(false);
 		
 		pSoundLevelMeterCount--;
-		pRootSoundLevelMeter->FreeReference();
-		
 		pRootSoundLevelMeter = next;
 	}
 	
@@ -548,7 +520,7 @@ void deoalAWorld::RemoveAllSoundLevelMeters(){
 void deoalAWorld::RemoveRemovalMarkedSoundLevelMeters(){
 	// WARNING Called during synchronization time from main thread.
 	
-	deoalASoundLevelMeter *soundLevelMeter = pRootSoundLevelMeter;
+	deoalASoundLevelMeter::Ref soundLevelMeter = pRootSoundLevelMeter;
 	while(soundLevelMeter){
 		deoalASoundLevelMeter * const next = soundLevelMeter->GetLLWorldNext();
 		
@@ -575,21 +547,18 @@ void deoalAWorld::pCleanUp(){
 	while(pRootComponent){
 		deoalAComponent * const next = pRootComponent->GetLLWorldNext();
 		pRootComponent->PrepareQuickDispose();
-		pRootComponent->FreeReference();
 		pRootComponent = next;
 	}
 	
 	while(pRootSpeaker){
 		deoalASpeaker * const next = pRootSpeaker->GetLLWorldNext();
 		pRootSpeaker->PrepareQuickDispose();
-		pRootSpeaker->FreeReference();
 		pRootSpeaker = next;
 	}
 	
 	while(pRootMicrophone){
 		deoalAMicrophone * const next = pRootMicrophone->GetLLWorldNext();
 		pRootMicrophone->PrepareQuickDispose();
-		pRootMicrophone->FreeReference();
 		pRootMicrophone = next;
 	}
 	

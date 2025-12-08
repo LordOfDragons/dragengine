@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUGDWPSetName::gdeUGDWPSetName(gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue) :
-pGameDefinition(NULL),
+
 pProperty(NULL)
 {
 	if(!gamedef || !property){
@@ -54,19 +54,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDWPSetName::~gdeUGDWPSetName(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

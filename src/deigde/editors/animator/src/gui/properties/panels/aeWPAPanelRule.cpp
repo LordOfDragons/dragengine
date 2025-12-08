@@ -794,7 +794,7 @@ pTarget(NULL)
 {
 	igdeEnvironment &env = wpRule.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref groupBox, formLine;
+	igdeContainer *groupBox, formLine;
 	
 	
 	// animation

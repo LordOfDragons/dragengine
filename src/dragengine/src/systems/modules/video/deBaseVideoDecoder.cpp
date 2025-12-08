@@ -42,11 +42,7 @@ pFile(NULL)
 		DETHROW(deeInvalidParam);
 	}
 	pFile = file;
-	file->AddReference();
 }
 
 deBaseVideoDecoder::~deBaseVideoDecoder(){
-	if(pFile){
-		pFile->FreeReference();
-	}
 }

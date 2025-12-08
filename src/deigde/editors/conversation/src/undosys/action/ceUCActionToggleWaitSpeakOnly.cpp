@@ -52,19 +52,10 @@ ceConversationTopic *topic, ceConversationAction *action)
 	SetShortInfo("Action Toggle Wait Speak Only");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCActionToggleWaitSpeakOnly::~ceUCActionToggleWaitSpeakOnly(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

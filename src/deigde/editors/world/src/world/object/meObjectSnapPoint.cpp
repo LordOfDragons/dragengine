@@ -64,7 +64,6 @@ pWorld(NULL),
 pObject(object),
 pSnapPoint(snapPoint),
 pDDShape(NULL),
-pCollider(NULL),
 pColliderOwner(this)
 {
 	if(!object || !snapPoint){
@@ -164,11 +163,6 @@ void meObjectSnapPoint::pCleanUp(){
 		
 		pObject->GetEnvironment()->SetColliderUserPointer(pCollider, NULL);
 	}
-	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
-	
 	if(pDDShape){
 		delete pDDShape;
 	}

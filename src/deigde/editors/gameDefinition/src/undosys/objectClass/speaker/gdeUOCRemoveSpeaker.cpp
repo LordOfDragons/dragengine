@@ -42,7 +42,7 @@
 ////////////////////////////
 
 gdeUOCRemoveSpeaker::gdeUOCRemoveSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) :
-pObjectClass(NULL),
+
 pSpeaker(NULL)
 {
 	if(!objectClass || !speaker){
@@ -56,19 +56,10 @@ pSpeaker(NULL)
 	SetShortInfo("Remove speaker");
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveSpeaker::~gdeUOCRemoveSpeaker(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

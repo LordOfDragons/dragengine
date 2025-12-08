@@ -107,18 +107,18 @@ public:
 	void UpdateTable();
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionToggle() const{ return pActionToggle; }
-	inline igdeAction *GetActionClear() const{ return pActionClear; }
-	inline igdeAction *GetActionAdd() const{ return pActionAdd; }
-	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
-	inline igdeAction *GetActionFire() const{ return pActionFire; }
-	inline igdeAction *GetActionReset() const{ return pActionReset; }
-	inline igdeAction *GetActionFullReset() const{ return pActionFullReset; }
+	inline const igdeAction::Ref &GetActionToggle() const{ return pActionToggle; }
+	inline const igdeAction::Ref &GetActionClear() const{ return pActionClear; }
+	inline const igdeAction::Ref &GetActionAdd() const{ return pActionAdd; }
+	inline const igdeAction::Ref &GetActionRemove() const{ return pActionRemove; }
+	inline const igdeAction::Ref &GetActionFire() const{ return pActionFire; }
+	inline const igdeAction::Ref &GetActionReset() const{ return pActionReset; }
+	inline const igdeAction::Ref &GetActionFullReset() const{ return pActionFullReset; }
 	
 	
 	
 	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
 	/** \brief Set action or NULL. */
 	void SetAction(igdeAction *action);

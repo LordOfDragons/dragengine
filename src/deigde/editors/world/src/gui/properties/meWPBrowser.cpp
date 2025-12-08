@@ -574,8 +574,6 @@ public:
 meWPBrowser::meWPBrowser(meWindowProperties &windowProperties) :
 igdeContainerBox(windowProperties.GetEnvironment(), igdeContainerBox::eaY),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pWorld(NULL),
 pPreviewSize(epsLarge),
 pSelectionMode(esmCategory),
 pViewMode(evmPreview)
@@ -583,10 +581,10 @@ pViewMode(evmPreview)
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainerSplitted::Ref content;
-	igdeContainer::Ref groupBox, form, frameLine;
+	igdeContainer *groupBox, form, frameLine;
 	
 	
-	pListener = new meWPBrowserListener(*this);
+	pListener.TakeOver(new meWPBrowserListener(*this));
 	
 	
 	pActionSetClass.TakeOver(new cActionSetClass(*this));
@@ -678,10 +676,6 @@ pViewMode(evmPreview)
 
 meWPBrowser::~meWPBrowser(){
 	SetWorld(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -696,14 +690,12 @@ void meWPBrowser::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
 	}
 	
 	CurrentItemChanged();

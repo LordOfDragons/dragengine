@@ -81,7 +81,6 @@ ceWPTTreeModel::PreventUpdateGuard::~PreventUpdateGuard(){
 ceWPTTreeModel::ceWPTTreeModel(ceWindowMain &windowMain, ceConversation *conversation,
 	ceConversationListener &forwardListener) :
 pWindowMain(windowMain),
-pConversation(NULL),
 pListener(NULL),
 pForwardListener(forwardListener),
 pTreeList(NULL),
@@ -101,7 +100,6 @@ pPreventUpdate(false)
 	}
 	
 	pConversation = conversation;
-	conversation->AddReference();
 }
 
 ceWPTTreeModel::~ceWPTTreeModel(){
@@ -309,7 +307,7 @@ void ceWPTTreeModel::UpdateActions(){
 		ceConversationAction * const action = actions.GetAt(i);
 		
 		// find item matching action if present
-		ceWPTTIMAction *model = NULL;
+		ceWPTTIMAction::Ref model = NULL;
 		const int childCount = GetChildCount();
 		for(j=i; j<childCount; j++){
 			ceWPTTIMAction * const child = (ceWPTTIMAction*)GetChildAt(j);
@@ -335,11 +333,8 @@ void ceWPTTreeModel::UpdateActions(){
 				model->Update();
 				
 			}catch(const deException &){
-				model->FreeReference();
 				throw;
 			}
-			
-			model->FreeReference();
 		}
 	}
 	
@@ -537,9 +532,5 @@ void ceWPTTreeModel::pCleanUp(){
 			pConversation->RemoveListener(pListener);
 		}
 		delete pListener;
-	}
-	
-	if(pConversation){
-		pConversation->FreeReference();
 	}
 }

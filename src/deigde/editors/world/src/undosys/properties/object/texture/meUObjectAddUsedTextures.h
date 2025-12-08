@@ -30,7 +30,7 @@
 
 #include <dragengine/common/string/decStringList.h>
 
-class meObject;
+#include "../../../../world/object/meObject.h"
 
 
 
@@ -39,7 +39,7 @@ class meObject;
  */
 class meUObjectAddUsedTextures : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decStringList pTextureNameList;
 	meObjectTextureList pTextureList;
 	

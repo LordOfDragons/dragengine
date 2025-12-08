@@ -75,7 +75,7 @@ public:
 	 * 
 	 * If service name is not supported nullptr is returned.
 	 */
-	deBaseServiceService *CreateService(deService *service,
+	deBaseServiceService::Ref CreateService(deService *service,
 		const char *name, const deServiceObject::Ref &data) override;
 	
 	/** Frame update. */

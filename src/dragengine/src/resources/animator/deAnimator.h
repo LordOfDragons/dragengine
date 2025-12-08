@@ -99,13 +99,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig or NULL. */
-	inline deRig *GetRig() const{ return pRig; }
+	inline const deRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig or NULL. */
 	void SetRig(deRig *rig);
 	
 	/** \brief Animation or NULL. */
-	inline deAnimation *GetAnimation() const{ return pAnimation; }
+	inline const deAnimation::Ref &GetAnimation() const{ return pAnimation; }
 	
 	/** \brief Set animation or NULL. */
 	void SetAnimation(deAnimation *animation);

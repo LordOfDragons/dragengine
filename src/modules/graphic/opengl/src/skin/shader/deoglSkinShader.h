@@ -376,7 +376,7 @@ public:
 	void PrepareShader(cShaderPreparedListener *listener);
 	
 	/** Shader. */
-	inline deoglShaderProgram *GetShader() const{ return pShader; }
+	inline const deoglShaderProgram::Ref &GetShader() const{ return pShader; }
 	
 	/** Create render skin shader shader parameter block. */
 	static deoglSPBlockUBO::Ref CreateSPBRender(deoglRenderThread &renderThread);

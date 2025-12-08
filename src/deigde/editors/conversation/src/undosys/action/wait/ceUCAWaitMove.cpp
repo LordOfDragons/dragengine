@@ -62,25 +62,11 @@ ceUCAWaitMove::ceUCAWaitMove(ceConversationTopic *topic, ceCAWait *wait, ceConve
 	SetShortInfo("Action Wait Move Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pWait = wait;
-	wait->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAWaitMove::~ceUCAWaitMove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pWait){
-		pWait->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

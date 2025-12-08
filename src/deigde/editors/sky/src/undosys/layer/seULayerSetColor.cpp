@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seULayerSetColor::seULayerSetColor(seLayer *layer, const decColor &newColor) :
-pLayer(NULL),
+
 pNewColor(newColor)
 {
 	if(!layer){
@@ -52,13 +52,9 @@ pNewColor(newColor)
 	pOldColor = layer->GetColor();
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerSetColor::~seULayerSetColor(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

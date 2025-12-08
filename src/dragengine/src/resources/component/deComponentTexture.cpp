@@ -47,12 +47,6 @@ deComponentTexture::deComponentTexture(){
 }
 
 deComponentTexture::~deComponentTexture(){
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 }
 
 
@@ -62,15 +56,7 @@ deComponentTexture::~deComponentTexture(){
 
 void deComponentTexture::SetSkin(deSkin *skin){
 	if(skin != pSkin){
-		if(pSkin){
-			pSkin->FreeReference();
-		}
-		
 		pSkin = skin;
-		
-		if(skin){
-			skin->AddReference();
-		}
 	}
 }
 
@@ -86,14 +72,5 @@ void deComponentTexture::SetDynamicSkin(deDynamicSkin *dynamicSkin){
 	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
-	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
 }

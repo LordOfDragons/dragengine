@@ -53,9 +53,7 @@ meUHTVRuleCombineSetZ::meUHTVRuleCombineSetZ(meHTVegetationLayer *vlayer, meHTVR
 	pNewZ = nz;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleCombineSetZ::~meUHTVRuleCombineSetZ(){

@@ -60,7 +60,7 @@ class deImageManager;
 class deInputSystem;
 class deLanguagePackManager;
 class deLightManager;
-class deLogger;
+#include <dragengine/logger/deLogger.h>
 class deLumimeterManager;
 class deMicrophoneManager;
 class deModelManager;
@@ -133,7 +133,7 @@ private:
 	deErrorTrace *pErrorTrace;
 	bool pScriptFailed;
 	bool pSystemFailed;
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	
 	// systems
 	deModuleSystem *pModSys;
@@ -253,7 +253,7 @@ public:
 	void ResetFailureFlags();
 	
 	/** \brief Logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
+	inline const deLogger::Ref &GetLogger() const{ return pLogger; }
 	
 	/** \brief Set logger. */
 	void SetLogger(deLogger *logger);

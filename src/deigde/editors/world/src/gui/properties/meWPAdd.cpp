@@ -196,15 +196,13 @@ public:
 
 meWPAdd::meWPAdd(meWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pWorld(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
-	pListener = new meWPAddListener(*this);
+	pListener.TakeOver(new meWPAddListener(*this));
 	
 	pActionClassAdd.TakeOver(new cActionClassAdd(*this, pComboObjClass));
 	pActionClassRemove.TakeOver(new cActionClassRemove(*this, pListObjClasses));
@@ -240,10 +238,6 @@ pWorld(NULL)
 
 meWPAdd::~meWPAdd(){
 	SetWorld(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -258,14 +252,12 @@ void meWPAdd::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
 	}
 	
 	UpdateParameters();

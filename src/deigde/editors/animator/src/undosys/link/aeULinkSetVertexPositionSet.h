@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeLink;
+#include "../../animator/link/aeLink.h"
 
 
 
@@ -36,7 +36,7 @@ class aeLink;
  */
 class aeULinkSetVertexPositionSet : public igdeUndo{
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	decString pOldValue;
 	decString pNewValue;

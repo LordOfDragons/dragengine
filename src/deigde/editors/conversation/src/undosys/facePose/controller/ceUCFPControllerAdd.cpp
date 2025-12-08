@@ -52,19 +52,10 @@ ceUCFPControllerAdd::ceUCFPControllerAdd(ceFacePose *facePose, ceControllerValue
 	SetShortInfo("Add Face Pose Controller");
 	
 	pFacePose = facePose;
-	facePose->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 ceUCFPControllerAdd::~ceUCFPControllerAdd(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
 }
 
 

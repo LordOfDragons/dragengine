@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversation;
+#include "../../conversation/ceConversation.h"
 class ceConversationFile;
 
 
@@ -39,7 +39,7 @@ class ceConversationFile;
  */
 class ceUCFilePaste : public igdeUndo{
 private:
-	ceConversation *pConversation;
+	ceConversation::Ref pConversation;
 	ceConversationFileList pFiles;
 	
 	

@@ -61,21 +61,17 @@ pCategory(sky.pCategory),
 pTags(sky.pTags)
 {
 	const int controllerCount = sky.pControllers.GetCount();
-	gdeSkyController *controller = NULL;
+	gdeSkyController::Ref controller = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<controllerCount; i++){
-			controller = new gdeSkyController(*sky.pControllers.GetAt(i));
+			controller.TakeOver(new gdeSkyController(*sky.pControllers.GetAt(i)));
 			pControllers.Add(controller);
-			controller->FreeReference();
 			controller = NULL;
 		}
 		
 	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
 		throw;
 	}
 }

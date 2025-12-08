@@ -55,19 +55,10 @@ ceCACoordSystemAdd *action, const char *newAliasID){
 	SetShortInfo("Coord system add set alias id");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCACoordSysAddSetAliasID::~ceUCACoordSysAddSetAliasID(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

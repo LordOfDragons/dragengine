@@ -133,9 +133,6 @@ pHintShadowImportance(100),
 pIntensity(0.0f),
 pAmbientRatio(0.0f),
 pColor(1.0f, 1.0f, 1.0f),
-pLightSkin(NULL),
-pLightCanvas(NULL),
-pDynamicSkin(NULL),
 pSkinState(NULL),
 pUseSkinTexture(NULL),
 pDirtyPrepareSkinStateRenderables(true),
@@ -313,19 +310,11 @@ void deoglRLight::SetLightSkin(deoglRSkin *skin){
 	}
 	
 	pUseSkinTexture = NULL;
-	
-	if(pLightSkin){
-		pLightSkin->FreeReference();
-	}
-	
 	pLightSkin = skin;
 	
 	if(!skin){
 		return;
 	}
-	
-	skin->AddReference();
-	
 	if(skin->GetTextureCount() > 0){
 		pUseSkinTexture = &skin->GetTextureAt(0);
 	}
@@ -339,17 +328,7 @@ void deoglRLight::SetLightCanvas(deoglRCanvasView *canvas){
 	if(canvas == pLightCanvas){
 		return;
 	}
-	
-	if(pLightCanvas){
-		pLightCanvas->FreeReference();
-	}
-	
 	pLightCanvas = canvas;
-	
-	if(canvas){
-		canvas->AddReference();
-	}
-	
 	   pRequiresPrepareForRender();
 }
 
@@ -357,16 +336,7 @@ void deoglRLight::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
-	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
 }
 
 void deoglRLight::SetTransform(const decTexMatrix2 &matrix){
@@ -1101,17 +1071,6 @@ void deoglRLight::pCleanUp(){
 	if(pColVol){
 		delete pColVol;
 	}
-	
-	if(pLightCanvas){
-		pLightCanvas->FreeReference();
-	}
-	if(pLightSkin){
-		pLightSkin->FreeReference();
-	}
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	
 	if(pLightVolume){
 		delete pLightVolume;
 	}

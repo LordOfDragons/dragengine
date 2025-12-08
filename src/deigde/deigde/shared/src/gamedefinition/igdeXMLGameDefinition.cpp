@@ -143,7 +143,7 @@ void igdeXMLGameDefinition::Load(decBaseFileReader &file, igdeGameDefinition &ga
 //////////////////////
 
 void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, igdeGameDefinition &gamedef){
-	igdeGDProperty *property = NULL;
+	igdeGDProperty::Ref property = NULL;
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -225,16 +225,11 @@ void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, i
 			property = NULL;
 			
 			try{
-				property = new igdeGDProperty(GetAttributeString(*tag, "name"));
+				property.TakeOver(new igdeGDProperty(GetAttributeString(*tag, "name")));
 				pParseProperty(*tag, *property);
 				
 				gamedef.GetListDecalProperties().Add(property);
-				property->FreeReference();
-				
 			}catch(const deException &e){
-				if(property){
-					property->FreeReference();
-				}
 				LogErrorExceptionTag(*tag, e);
 			}
 			
@@ -242,16 +237,11 @@ void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, i
 			property = NULL;
 			
 			try{
-				property = new igdeGDProperty(GetAttributeString(*tag, "name"));
+				property.TakeOver(new igdeGDProperty(GetAttributeString(*tag, "name")));
 				pParseProperty(*tag, *property);
 				
 				gamedef.GetListWorldProperties().Add(property);
-				property->FreeReference();
-				
 			}catch(const deException &e){
-				if(property){
-					property->FreeReference();
-				}
 				LogErrorExceptionTag(*tag, e);
 			}
 			
@@ -263,7 +253,7 @@ void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, i
 
 void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDefinition &gamedef){
 	decStringDictionary propertyValues;
-	igdeGDProperty *property = NULL;
+	igdeGDProperty::Ref property = NULL;
 	igdeGDClass::Ref gdClass;
 	const char *scaleMode;
 	int i;
@@ -290,16 +280,11 @@ void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDe
 			property = NULL;
 			
 			try{
-				property = new igdeGDProperty(GetAttributeString(*tag, "name"));
+				property.TakeOver(new igdeGDProperty(GetAttributeString(*tag, "name")));
 				pParseProperty(*tag, *property);
 				
 				gdClass->AddProperty(property);
-				property->FreeReference();
-				
 			}catch(const deException &){
-				if(property){
-					property->FreeReference();
-				}
 				throw;
 			}
 			
@@ -311,16 +296,11 @@ void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDe
 			property = NULL;
 			
 			try{
-				property = new igdeGDProperty(GetAttributeString(*tag, "name"));
+				property.TakeOver(new igdeGDProperty(GetAttributeString(*tag, "name")));
 				pParseProperty(*tag, *property);
 				
 				gdClass->AddTextureProperty(property);
-				property->FreeReference();
-				
 			}catch(const deException &e){
-				if(property){
-					property->FreeReference();
-				}
 				LogErrorExceptionTag(*tag, e);
 			}
 			
@@ -463,12 +443,12 @@ void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDe
 
 void igdeXMLGameDefinition::pParseClassComponent(const decXmlElementTag &root, igdeGDClass &gdclass){
 	const int elementCount = root.GetElementCount();
-	igdeGDCComponent *component = NULL;
+	igdeGDCComponent::Ref component = NULL;
 	const char *value;
 	int e;
 	
 	try{
-		component = new igdeGDCComponent;
+		component.TakeOver(new igdeGDCComponent);
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const  tag = root.GetElementIfTag(e);
@@ -606,25 +586,19 @@ void igdeXMLGameDefinition::pParseClassComponent(const decXmlElementTag &root, i
 		}
 		
 		gdclass.AddComponent(component);
-		component->FreeReference();
-		
 	}catch(const deException &){
-		if(component){
-			component->FreeReference();
-		}
-		
 		throw;
 	}
 }
 
 void igdeXMLGameDefinition::pParseClassBillboard(const decXmlElementTag &root, igdeGDClass &gdclass){
 	const int elementCount = root.GetElementCount();
-	igdeGDCBillboard *billboard = NULL;
+	igdeGDCBillboard::Ref billboard = NULL;
 	const char *value;
 	int i;
 	
 	try{
-		billboard = new igdeGDCBillboard;
+		billboard.TakeOver(new igdeGDCBillboard);
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -711,13 +685,7 @@ void igdeXMLGameDefinition::pParseClassBillboard(const decXmlElementTag &root, i
 		}
 		
 		gdclass.AddBillboard(billboard);
-		billboard->FreeReference();
-		
 	}catch(const deException &){
-		if(billboard){
-			billboard->FreeReference();
-		}
-		
 		throw;
 	}
 }
@@ -751,11 +719,11 @@ void igdeXMLGameDefinition::pParseClassComponentTexture(const decXmlElementTag &
 igdeGDClass&, igdeGDCComponent &gdccomponent){
 	const int elementCount = root.GetElementCount();
 	decStringDictionary properties;
-	igdeGDCCTexture *texture = NULL;
+	igdeGDCCTexture::Ref texture = NULL;
 	int e;
 	
 	try{
-		texture = new igdeGDCCTexture;
+		texture.TakeOver(new igdeGDCCTexture);
 		
 		texture->SetName(GetAttributeString(root, "name"));
 		if(gdccomponent.GetTextureList().HasNamed(texture->GetName().GetString())){
@@ -802,24 +770,18 @@ igdeGDClass&, igdeGDCComponent &gdccomponent){
 		texture->SetProperties(properties);
 		
 		gdccomponent.GetTextureList().Add(texture);
-		texture->FreeReference();
-		
 	}catch(const deException &){
-		if(texture){
-			texture->FreeReference();
-		}
-		
 		throw;
 	}
 }
 
 void igdeXMLGameDefinition::pParseClassLight(const decXmlElementTag &root, igdeGDClass &gdclass){
-	igdeGDCLight *gdcLight = NULL;
+	igdeGDCLight::Ref gdcLight = NULL;
 	const char *value;
 	int i;
 	
 	try{
-		gdcLight = new igdeGDCLight;
+		gdcLight.TakeOver(new igdeGDCLight);
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -1011,12 +973,7 @@ void igdeXMLGameDefinition::pParseClassLight(const decXmlElementTag &root, igdeG
 		}
 		
 		gdclass.AddLight(gdcLight);
-		gdcLight->FreeReference();
-		
 	}catch(const deException &){
-		if(gdcLight){
-			gdcLight->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1024,11 +981,11 @@ void igdeXMLGameDefinition::pParseClassLight(const decXmlElementTag &root, igdeG
 void igdeXMLGameDefinition::pParseClassSnapPoint(const decXmlElementTag &root,
 igdeGDClass &gdclass){
 	const int count = root.GetElementCount();
-	igdeGDCSnapPoint *snappoint = NULL;
+	igdeGDCSnapPoint::Ref snappoint = NULL;
 	int i;
 	
 	try{
-		snappoint = new igdeGDCSnapPoint;
+		snappoint.TakeOver(new igdeGDCSnapPoint);
 		
 		for(i=0; i<count; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -1062,23 +1019,18 @@ igdeGDClass &gdclass){
 		}
 		
 		gdclass.AddSnapPoint(snappoint);
-		snappoint->FreeReference();
-		
 	}catch(const deException &){
-		if(snappoint){
-			snappoint->FreeReference();
-		}
 		throw;
 	}
 }
 
 void igdeXMLGameDefinition::pParseClassParticleEmitter(const decXmlElementTag &root, igdeGDClass &gdclass){
 	const int elementCount = root.GetElementCount();
-	igdeGDCParticleEmitter *emitter = NULL;
+	igdeGDCParticleEmitter::Ref emitter = NULL;
 	int e;
 	
 	try{
-		emitter = new igdeGDCParticleEmitter;
+		emitter.TakeOver(new igdeGDCParticleEmitter);
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -1141,25 +1093,19 @@ void igdeXMLGameDefinition::pParseClassParticleEmitter(const decXmlElementTag &r
 		}
 		
 		gdclass.AddParticleEmitter(emitter);
-		emitter->FreeReference();
-		
 	}catch(const deException &){
-		if(emitter){
-			emitter->FreeReference();
-		}
-		
 		throw;
 	}
 }
 
 void igdeXMLGameDefinition::pParseClassForceField(const decXmlElementTag &root, igdeGDClass &gdclass){
 	const int elementCount = root.GetElementCount();
-	igdeGDCForceField *field = NULL;
+	igdeGDCForceField::Ref field = NULL;
 	igdeCodecPropertyString codec;
 	int e;
 	
 	try{
-		field = new igdeGDCForceField;
+		field.TakeOver(new igdeGDCForceField);
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -1314,26 +1260,21 @@ void igdeXMLGameDefinition::pParseClassForceField(const decXmlElementTag &root, 
 		}
 		
 		gdclass.AddForceField(field);
-		field->FreeReference();
-		
 	}catch(const deException &){
-		if(field){
-			field->FreeReference();
-		}
 		throw;
 	}
 }
 
 void igdeXMLGameDefinition::pParseClassEnvMapProbe(const decXmlElementTag &root, igdeGDClass &gdclass){
 	const int elementCount = root.GetElementCount();
-	igdeGDCEnvMapProbe *envMapProbe = NULL;
+	igdeGDCEnvMapProbe::Ref envMapProbe = NULL;
 	igdeCodecPropertyString codec;
 	decShapeList shapeList;
 	const char *value;
 	int e;
 	
 	try{
-		envMapProbe = new igdeGDCEnvMapProbe;
+		envMapProbe.TakeOver(new igdeGDCEnvMapProbe);
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -1419,23 +1360,17 @@ void igdeXMLGameDefinition::pParseClassEnvMapProbe(const decXmlElementTag &root,
 		}
 		
 		gdclass.AddEnvironmentMapProbe(envMapProbe);
-		envMapProbe->FreeReference();
-		
 	}catch(const deException &){
-		if(envMapProbe){
-			envMapProbe->FreeReference();
-		}
-		
 		throw;
 	}
 }
 
 void igdeXMLGameDefinition::pParseClassSpeaker(const decXmlElementTag &root, igdeGDClass &gdclass){
-	igdeGDCSpeaker *gdcSpeaker = NULL;
+	igdeGDCSpeaker::Ref gdcSpeaker = NULL;
 	int i;
 	
 	try{
-		gdcSpeaker = new igdeGDCSpeaker;
+		gdcSpeaker.TakeOver(new igdeGDCSpeaker);
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -1537,24 +1472,19 @@ void igdeXMLGameDefinition::pParseClassSpeaker(const decXmlElementTag &root, igd
 		}
 		
 		gdclass.AddSpeaker(gdcSpeaker);
-		gdcSpeaker->FreeReference();
-		
 	}catch(const deException &){
-		if(gdcSpeaker){
-			gdcSpeaker->FreeReference();
-		}
 		throw;
 	}
 }
 
 void igdeXMLGameDefinition::pParseClassNavigationSpace(const decXmlElementTag &root, igdeGDClass &gdclass){
-	igdeGDCNavigationSpace *gdcNavSpace = NULL;
+	igdeGDCNavigationSpace::Ref gdcNavSpace = NULL;
 	igdeCodecPropertyString codec;
 	decShapeList shapeList;
 	int i;
 	
 	try{
-		gdcNavSpace = new igdeGDCNavigationSpace;
+		gdcNavSpace.TakeOver(new igdeGDCNavigationSpace);
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -1649,24 +1579,19 @@ void igdeXMLGameDefinition::pParseClassNavigationSpace(const decXmlElementTag &r
 		}
 		
 		gdclass.AddNavigationSpace(gdcNavSpace);
-		gdcNavSpace->FreeReference();
-		
 	}catch(const deException &){
-		if(gdcNavSpace){
-			gdcNavSpace->FreeReference();
-		}
 		throw;
 	}
 }
 
 void igdeXMLGameDefinition::pParseClassNavigationBlocker(const decXmlElementTag &root, igdeGDClass &gdclass){
-	igdeGDCNavigationBlocker *gdcNavBlocker = NULL;
+	igdeGDCNavigationBlocker::Ref gdcNavBlocker = NULL;
 	igdeCodecPropertyString codec;
 	decShapeList shapeList;
 	int i;
 	
 	try{
-		gdcNavBlocker = new igdeGDCNavigationBlocker;
+		gdcNavBlocker.TakeOver(new igdeGDCNavigationBlocker);
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -1754,12 +1679,7 @@ void igdeXMLGameDefinition::pParseClassNavigationBlocker(const decXmlElementTag 
 		}
 		
 		gdclass.AddNavigationBlocker(gdcNavBlocker);
-		gdcNavBlocker->FreeReference();
-		
 	}catch(const deException &){
-		if(gdcNavBlocker){
-			gdcNavBlocker->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1815,11 +1735,11 @@ void igdeXMLGameDefinition::pParseClassWorld(const decXmlElementTag &root, igdeG
 void igdeXMLGameDefinition::pParseClassTexture(const decXmlElementTag &root, igdeGDClass &gdclass){
 	const int elementCount = root.GetElementCount();
 	decStringDictionary properties;
-	igdeGDCCTexture *texture = NULL;
+	igdeGDCCTexture::Ref texture = NULL;
 	int i;
 	
 	try{
-		texture = new igdeGDCCTexture;
+		texture.TakeOver(new igdeGDCCTexture);
 		
 		texture->SetName(GetAttributeString(root, "name"));
 		if(gdclass.GetComponentTextures().HasNamed(texture->GetName())){
@@ -1862,13 +1782,7 @@ void igdeXMLGameDefinition::pParseClassTexture(const decXmlElementTag &root, igd
 		texture->SetProperties(properties);
 		
 		gdclass.GetComponentTextures().Add(texture);
-		texture->FreeReference();
-		
 	}catch(const deException &){
-		if(texture){
-			texture->FreeReference();
-		}
-		
 		throw;
 	}
 }
@@ -2157,7 +2071,7 @@ void igdeXMLGameDefinition::pParseParticleEmitter(const decXmlElementTag &root, 
 	}
 	
 	try{
-		emitter = new igdeGDParticleEmitter(path, name);
+		emitter.TakeOver(new igdeGDParticleEmitter(path, name));
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -2184,13 +2098,7 @@ void igdeXMLGameDefinition::pParseParticleEmitter(const decXmlElementTag &root, 
 		}
 		
 		manager.AddEmitter(emitter);
-		emitter->FreeReference();
-		
 	}catch(const deException &){
-		if(emitter){
-			emitter->FreeReference();
-		}
-		
 		throw;
 	}
 }
@@ -2267,7 +2175,7 @@ void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefi
 	igdeGDSkyManager &skyManager = *gamedef.GetSkyManager();
 	const char *strPath = NULL;
 	const char *strName = NULL;
-	igdeGDSky *sky = NULL;
+	igdeGDSky::Ref sky = NULL;
 	int e;
 	
 	// first we have to look for the important tags which are required to construct a new sky.
@@ -2300,7 +2208,7 @@ void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefi
 		LogErrorGenericProblemValue(root, strName, "A sky with this name exists already.");
 	}
 	
-	sky = new igdeGDSky(strPath, strName);
+	sky.TakeOver(new igdeGDSky(strPath, strName));
 	skyManager.AddSky(sky);
 	sky->FreeReference(); // held by sky manager
 	
@@ -2325,17 +2233,12 @@ void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefi
 			sky->SetCategory(GetCDataString(*tag));
 			
 		}else if(tagName == "controller"){
-			igdeGDSkyController *controller = NULL;
+			igdeGDSkyController::Ref controller = NULL;
 			try{
-				controller = new igdeGDSkyController(
-					GetAttributeString(*tag, "name"), GetCDataFloat(*tag));
+				controller.TakeOver(new igdeGDSkyController(
+					GetAttributeString(*tag, "name"), GetCDataFloat(*tag)));
 				sky->AddController(controller);
-				controller->FreeReference();
-				
 			}catch(const deException &){
-				if(controller){
-					controller->FreeReference();
-				}
 				throw;
 			}
 			

@@ -88,7 +88,7 @@ pWindowMain(windowMain)
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainer::Ref content, formLine;
+	igdeContainer *content, formLine;
 	
 	
 	igdeLabel::Ref header(igdeLabel::Ref::NewWith(

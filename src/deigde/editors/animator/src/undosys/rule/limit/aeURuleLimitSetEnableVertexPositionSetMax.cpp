@@ -47,13 +47,9 @@ aeURuleLimitSetEnableVertexPositionSetMax::aeURuleLimitSetEnableVertexPositionSe
 	SetShortInfo("Limit toggle enable maximum vertex position set");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableVertexPositionSetMax::~aeURuleLimitSetEnableVertexPositionSetMax(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

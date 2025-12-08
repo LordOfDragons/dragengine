@@ -45,16 +45,16 @@ class seSkinListener;
 class igdeWSky;
 class igdeCamera;
 
-class deAnimator;
-class deAnimatorInstance;
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 class deAnimatorRuleAnimation;
 class deAnimatorRuleStateManipulator;
-class deComponent;
+#include <dragengine/resources/component/deComponent.h>
 class deDebugDrawer;
 class deLogger;
 class deParticleEmitter;
-class deSkin;
-class deWorld;
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/world/deWorld.h>
 
 
 
@@ -74,15 +74,15 @@ public:
 	
 	
 private:
-	deWorld *pEngWorld;
+	deWorld::Ref pEngWorld;
 	
 	igdeWSky *pSky;
 	igdeWObject::Ref pEnvObject;
 	
-	deSkin *pEngSkin;
-	deComponent *pEngComponent;
-	deAnimator *pEngAnimator;
-	deAnimatorInstance *pEngAnimatorInstance;
+	deSkin::Ref pEngSkin;
+	deComponent::Ref pEngComponent;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
 	deAnimatorRuleAnimation *pEngAnimatorAnim;
 	deParticleEmitter *pEngParticleEmitter;
 	deLight::Ref pEngLight;
@@ -99,10 +99,10 @@ private:
 	igdeCamera *pCamera;
 	
 	seMappedList pMappedList;
-	seMapped *pActiveMapped;
+	seMapped::Ref pActiveMapped;
 	
 	seTextureList pTextureList;
-	seTexture *pActiveTexture;
+	seTexture::Ref pActiveTexture;
 	
 	seDynamicSkin *pDynamicSkin;
 	
@@ -127,7 +127,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	/** Retrieves the camera. */
 	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
@@ -137,16 +137,16 @@ public:
 	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Retrieves the engine component. */
-	inline deComponent *GetEngineComponent() const{ return pEngComponent; }
+	inline const deComponent::Ref &GetEngineComponent() const{ return pEngComponent; }
 	/** Retrieves the engine animator. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	/** Retrieves the engine skin. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	/** Retrieves the particle emitter. */
 	inline deParticleEmitter *GetEngineParticleEmitter() const{ return pEngParticleEmitter; }
 	
 	/** \brief Engine light or NULL. */
-	inline deLight *GetEngineLight() const{ return pEngLight; }
+	inline const deLight::Ref &GetEngineLight() const{ return pEngLight; }
 	
 	/** \brief Preview mode. */
 	inline ePreviewMode GetPreviewMode() const{ return pPreviewMode; }
@@ -231,7 +231,7 @@ public:
 	void RemoveAllMapped();
 	
 	/** Active mapped or nullptr. */
-	inline seMapped *GetActiveMapped() const{ return pActiveMapped; }
+	inline const seMapped::Ref &GetActiveMapped() const{ return pActiveMapped; }
 	
 	/** Active mapped is present. */
 	bool HasActiveMapped() const;
@@ -253,7 +253,7 @@ public:
 	/** Removes all textures. */
 	void RemoveAllTextures();
 	/** Retrieves the active texture or NULL if none is active. */
-	inline seTexture *GetActiveTexture() const{ return pActiveTexture; }
+	inline const seTexture::Ref &GetActiveTexture() const{ return pActiveTexture; }
 	/** Determines if there is an active texture or not. */
 	bool HasActiveTexture() const;
 	/** Sets the active texture or NULL if none is active. */

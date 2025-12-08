@@ -46,8 +46,7 @@
 ////////////////////////////
 
 gdeWPSTIMSkin::gdeWPSTIMSkin(gdeWPSTreeModel &tree, gdeSkin *skin) :
-gdeWPSTreeItemModel(tree, etSkin),
-pSkin(NULL)
+gdeWPSTreeItemModel(tree, etSkin)
 {
 	if(!skin){
 		DETHROW(deeInvalidParam);
@@ -57,13 +56,9 @@ pSkin(NULL)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pSkin = skin;
-	skin->AddReference();
 }
 
 gdeWPSTIMSkin::~gdeWPSTIMSkin(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 }
 
 

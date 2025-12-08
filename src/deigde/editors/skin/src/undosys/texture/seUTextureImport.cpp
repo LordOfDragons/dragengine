@@ -54,13 +54,9 @@ seUTextureImport::seUTextureImport(seTexture *texture, const seTexture *importTe
 	pNewProperties = importTexture->GetPropertyList();
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 seUTextureImport::~seUTextureImport(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

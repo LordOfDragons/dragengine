@@ -51,10 +51,7 @@ meUAddDecal::meUAddDecal(meWorld *world, meDecal *decal){
 	SetLongInfo("");
 	
 	pDecal = decal;
-	decal->AddReference();
-	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUAddDecal::~meUAddDecal(){

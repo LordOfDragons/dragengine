@@ -51,7 +51,7 @@
 /////////////////////
 
 struct sBillboardNatDat{
-	deBillboard *billboard;
+	deBillboard::Ref billboard;
 };
 
 
@@ -523,5 +523,4 @@ void deClassBillboard::PushBillboard(dsRunTime *rt, deBillboard *billboard){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sBillboardNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->billboard = billboard;
-	billboard->AddReference();
 }

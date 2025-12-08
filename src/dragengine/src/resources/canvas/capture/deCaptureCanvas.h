@@ -89,13 +89,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Canvas view to capture. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Set canvas view to capture. */
 	void SetCanvasView(deCanvasView *canvasView);
 	
 	/** \brief Image to capture canvas view into. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set image to capture canvas view into. */
 	void SetImage(deImage *image);

@@ -53,7 +53,6 @@ meUHTVLinkCut::meUHTVLinkCut(meHTVegetationLayer *vlayer){
 	SetMemoryConsumption(sizeof(meUHTVLinkCut));
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 }
 
 meUHTVLinkCut::~meUHTVLinkCut(){
@@ -84,8 +83,6 @@ void meUHTVLinkCut::AddLinkToCut(meHTVRLink *link){
 	}
 	pLinks = newArray;
 	pLinks[pLinkCount++] = link;
-	
-	link->AddReference();
 }
 
 

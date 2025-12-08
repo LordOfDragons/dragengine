@@ -50,10 +50,7 @@ aeURemoveRule::aeURemoveRule(aeAnimator *animator, aeRule *rule){
 	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeURemoveRule::~aeURemoveRule(){

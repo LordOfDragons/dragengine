@@ -45,8 +45,6 @@ meULowerDecalOne::meULowerDecalOne(meWorld *world, meDecal *decal){
 	pWorld = world;
 	
 	pDecal = decal;
-	decal->AddReference();
-	
 	SetShortInfo("Lower decal one level.");
 	SetLongInfo("");
 }

@@ -49,13 +49,9 @@ seUPropertySetRenderableName::seUPropertySetRenderableName(seProperty *property,
 	pNewName = newName;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetRenderableName::~seUPropertySetRenderableName(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

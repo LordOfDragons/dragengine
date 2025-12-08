@@ -50,13 +50,9 @@ pRule(NULL)
 	SetShortInfo("Rule animation select toggle enable position");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleAnimSelectToggleEnablePosition::~aeURuleAnimSelectToggleEnablePosition(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

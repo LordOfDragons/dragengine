@@ -29,9 +29,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionLogic;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/condition/ceCConditionLogic.h"
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -40,9 +40,9 @@ class ceConversationTopic;
  */
 class ceUCCLogicPaste : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionLogic *pLogic;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionLogic::Ref pLogic;
 	ceConversationConditionList pConditions;
 	
 public:

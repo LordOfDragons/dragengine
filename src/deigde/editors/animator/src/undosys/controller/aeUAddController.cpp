@@ -47,10 +47,7 @@ aeUAddController::aeUAddController(aeAnimator *animator, aeController *controlle
 	pController = NULL;
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 aeUAddController::~aeUAddController(){

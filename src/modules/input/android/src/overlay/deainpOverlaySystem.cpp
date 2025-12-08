@@ -51,8 +51,6 @@
 
 deainpOverlaySystem::deainpOverlaySystem(deAndroidInput &androidInput) :
 pAndroidInput(androidInput),
-
-pCanvas(NULL),
 pInHorizontalMode(false)
 {
 	decPoint screenSize(androidInput.GetScreenSize());
@@ -301,6 +299,5 @@ void deainpOverlaySystem::pCleanUp(){
 	
 	if(pCanvas){
 		pCanvas->RemoveAllCanvas();
-		pCanvas->FreeReference();
 	}
 }

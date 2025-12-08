@@ -69,7 +69,7 @@ void dealGPModule::SetName(const char *name){
 void dealGPModule::CopyFrom(const dealGPModule &module){
 	const dealGPMParameterList &parameterList = module.GetParameterList();
 	int i, parameterCount = parameterList.GetParameterCount();
-	dealGPMParameter *parameter = NULL;
+	dealGPMParameter::Ref parameter = NULL;
 	
 	pName = module.pName;
 	
@@ -77,15 +77,12 @@ void dealGPModule::CopyFrom(const dealGPModule &module){
 	
 	try{
 		for(i=0; i<parameterCount; i++){
-			parameter = new dealGPMParameter(*parameterList.GetParameterAt(i));
+			parameter.TakeOver(new dealGPMParameter(*parameterList.GetParameterAt(i)));
 			pParameterList.AddParameter(parameter);
 			parameter = NULL;
 		}
 		
 	}catch(const deException &){
-		if(parameter){
-			parameter->FreeReference();
-		}
 		throw;
 	}
 }

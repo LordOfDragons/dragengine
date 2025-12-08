@@ -188,16 +188,13 @@ public:
 
 reWPPush::reWPPush(reWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pRig(NULL),
-pPush(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPPushListener(*this);
+	pListener.TakeOver(new reWPPushListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -225,10 +222,6 @@ pListener(NULL)
 
 reWPPush::~reWPPush(){
 	SetRig(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -245,7 +238,6 @@ void reWPPush::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -253,8 +245,6 @@ void reWPPush::SetRig(reRig *rig){
 	
 	if(rig){
 		rig->AddNotifier(pListener);
-		rig->AddReference();
-		
 		SetPush(rig->GetSelectionPushes()->GetActivePush());
 	}
 }
@@ -263,17 +253,7 @@ void reWPPush::SetPush(reRigPush *push){
 	if(push == pPush){
 		return;
 	}
-	
-	if(pPush){
-		pPush->FreeReference();
-	}
-	
 	pPush = push;
-	
-	if(push){
-		push->AddReference();
-	}
-	
 	UpdatePush();
 }
 

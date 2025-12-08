@@ -49,19 +49,10 @@ ceUCTargetAdd::ceUCTargetAdd(ceConversation *conversation, ceTarget *target){
 	SetShortInfo("Add Target");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetAdd::~ceUCTargetAdd(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

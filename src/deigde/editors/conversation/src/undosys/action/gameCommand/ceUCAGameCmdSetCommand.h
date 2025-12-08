@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAGameCommand;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAGameCommand.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAGameCmdSetCommand : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAGameCommand *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAGameCommand::Ref pAction;
 	decString pOldCommand;
 	decString pNewCommand;
 	

@@ -32,7 +32,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 
 
 
@@ -41,8 +41,8 @@ class gdeGameDefinition;
  */
 class gdeUGDDPSetPathPatternType : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeProperty::Ref pProperty;
 	
 	gdeProperty::ePathPatternTypes pOldValue;
 	gdeProperty::ePathPatternTypes pNewValue;

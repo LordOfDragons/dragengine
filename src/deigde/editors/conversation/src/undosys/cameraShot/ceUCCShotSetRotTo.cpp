@@ -52,13 +52,9 @@ ceUCCShotSetRotTo::ceUCCShotSetRotTo(ceCameraShot *cameraShot, const decVector &
 	pNewRot = newRot;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetRotTo::~ceUCCShotSetRotTo(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

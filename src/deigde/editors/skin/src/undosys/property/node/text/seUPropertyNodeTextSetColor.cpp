@@ -40,7 +40,7 @@
 
 seUPropertyNodeTextSetColor::seUPropertyNodeTextSetColor(
 sePropertyNodeText *node, const decColor &newValue) :
-pNode(NULL),
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = node->GetColor();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeTextSetColor::~seUPropertyNodeTextSetColor(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

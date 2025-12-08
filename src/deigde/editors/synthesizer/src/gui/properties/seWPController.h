@@ -32,10 +32,10 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSynthesizer;
+#include "../../synthesizer/seSynthesizer.h"
 class seController;
 class seViewSynthesizer;
-class seWPControllerListener;
+#include "seWPControllerListener.h"
 
 
 
@@ -45,9 +45,9 @@ class seWPControllerListener;
 class seWPController : public igdeContainerScroll{
 private:
 	seViewSynthesizer &pViewSynthesizer;
-	seWPControllerListener *pListener;
+	seWPControllerListener::Ref pListener;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	igdeListBox::Ref pListController;
 	igdeTextField::Ref pEditName;
@@ -85,7 +85,7 @@ public:
 	inline seViewSynthesizer &GetViewSynthesizer() const{ return pViewSynthesizer; }
 	
 	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline const seSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);

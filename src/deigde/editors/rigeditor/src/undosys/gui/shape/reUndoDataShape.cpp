@@ -41,15 +41,12 @@ reUndoDataShape::reUndoDataShape(reRigShape *shape){
 	if(!shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
-	shape->AddReference();
-	
 	pOldPosition = shape->GetPosition();
 	pOldOrientation = shape->GetOrientation();
 	//pOldSize = object->GetSize();
 }
 
 reUndoDataShape::~reUndoDataShape(){
-	pShape->FreeReference();
 }
 
 

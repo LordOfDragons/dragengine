@@ -85,29 +85,13 @@ void cePlaybackCamera::SetCoordinateSystem(const decMatrix &matrix){
 
 void cePlaybackCamera::SetCameraTarget(ceTarget *target){
 	if(target != pCameraTarget){
-		if(pCameraTarget){
-			pCameraTarget->FreeReference();
-		}
-		
 		pCameraTarget = target;
-		
-		if(target){
-			target->AddReference();
-		}
 	}
 }
 
 void cePlaybackCamera::SetLookAtTarget(ceTarget *target){
 	if(target != pLookAtTarget){
-		if(pLookAtTarget){
-			pLookAtTarget->FreeReference();
-		}
-		
 		pLookAtTarget = target;
-		
-		if(target){
-			target->AddReference();
-		}
 	}
 }
 

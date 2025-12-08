@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meWorld;
+#include "../../../world/meWorld.h"
 class meObject;
 class meObjectList;
 
@@ -48,7 +48,7 @@ private:
 	
 	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	sObject *pObjects;
 	int pObjectCount;

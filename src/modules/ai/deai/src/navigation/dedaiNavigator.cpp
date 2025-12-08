@@ -76,8 +76,6 @@ pTypeMappingCount(0),
 pDirtyTypeMappings(true),
 
 pLayer(NULL),
-
-pDebugDrawer(NULL),
 pDDSPath(NULL),
 pDDSPathFaces(NULL),
 pDDSPathFacesOpen(NULL),
@@ -240,8 +238,6 @@ void dedaiNavigator::UpdateDDSPath(){
 			pDDSPathFaces = NULL;
 			pDDSPathFacesOpen = NULL;
 			pDDSPathFacesClosed = NULL;
-			
-			pDebugDrawer->FreeReference();
 			pDebugDrawer = NULL;
 		}
 	}
@@ -625,9 +621,6 @@ void dedaiNavigator::pCleanUp(){
 	
 	if(pTypeMappings){
 		delete [] pTypeMappings;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

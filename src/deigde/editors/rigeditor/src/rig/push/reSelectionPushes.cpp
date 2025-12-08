@@ -122,9 +122,6 @@ void reSelectionPushes::AddPush(reRigPush *push){
 	
 	pPushes[pPushCount] = push;
 	pPushCount++;
-	
-	push->AddReference();
-	
 	push->SetSelected(true);
 	
 	pRig->NotifyPushSelectedChanged(push);
@@ -156,8 +153,6 @@ void reSelectionPushes::RemovePush(reRigPush *push){
 	}
 	
 	pRig->NotifyPushSelectedChanged(push);
-	
-	push->FreeReference();
 }
 
 void reSelectionPushes::RemoveAllPushes(){

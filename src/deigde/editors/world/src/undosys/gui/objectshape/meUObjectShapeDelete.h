@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meObject;
+#include "../../../world/object/meObject.h"
 class meObjectShapeList;
 
 
@@ -39,7 +39,7 @@ class meObjectShapeList;
  */
 class meUObjectShapesDelete : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;

@@ -77,19 +77,19 @@ deArchive *deArchiveManager::GetRootArchive() const{
 	return (deArchive*)pArchives.GetRoot();
 }
 
-deArchive *deArchiveManager::OpenArchive(const char *filename, const char *basePath){
+deArchive::Ref deArchiveManager::OpenArchive(const char *filename, const char *basePath){
 	return OpenArchive(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deArchive *deArchiveManager::OpenArchive(deVirtualFileSystem *vfs, const char *filename,
+deArchive::Ref deArchiveManager::OpenArchive(deVirtualFileSystem *vfs, const char *filename,
 const char *basePath){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	decBaseFileReader *fileReader = NULL;
+	decBaseFileReader::Ref fileReader = NULL;
 	deBaseArchiveContainer *peer = NULL;
-	deArchive *findArchive;
-	deArchive *archive = NULL;
+	deArchive::Ref findArchive;
+	deArchive::Ref archive = NULL;
 	decPath path;
 	
 	try{
@@ -108,7 +108,6 @@ const char *basePath){
 		}
 		
 		if(findArchive){
-			findArchive->AddReference();
 			archive = findArchive;
 			
 		}else{
@@ -118,10 +117,9 @@ const char *basePath){
 			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
 			
 			peer = module->CreateContainer(fileReader);
-			fileReader->FreeReference();
 			fileReader = NULL;
 			
-			archive = new deArchive(this, vfs, path.GetPathUnix(), modificationTime);
+			archive.TakeOver(new deArchive(this, vfs, path.GetPathUnix(), modificationTime));
 			archive->SetPeerContainer(peer);
 			peer = NULL;
 			
@@ -131,14 +129,8 @@ const char *basePath){
 	}catch(const deException &){
 		LogErrorFormat("Open archive '%s' (base path '%s') failed", filename,
 			basePath ? basePath : "");
-		if(archive){
-			archive->FreeReference();
-		}
 		if(peer){
 			delete peer;
-		}
-		if(fileReader){
-			fileReader->FreeReference();
 		}
 		throw;
 	}
@@ -191,7 +183,7 @@ void deArchiveManager::ReleaseLeakingResources(){
 	const int count = GetArchiveCount();
 	
 	if(count > 0){
-		deArchive *archive = (deArchive*)pArchives.GetRoot();
+		deArchive::Ref archive = (deArchive*)pArchives.GetRoot();
 		
 		LogWarnFormat("%i leaking archives", count);
 		

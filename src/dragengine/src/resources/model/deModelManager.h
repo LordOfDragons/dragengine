@@ -69,16 +69,16 @@ public:
 	deModel *GetModelWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create new and empty model. */
-	deModel *CreateModel(const char *filename, deModelBuilder &builder);
+	deModel::Ref CreateModel(const char *filename, deModelBuilder &builder);
 	
 	/** \brief Create new and empty model. */
-	deModel *CreateModel(deVirtualFileSystem *vfs, const char *filename, deModelBuilder &builder);
+	deModel::Ref CreateModel(deVirtualFileSystem *vfs, const char *filename, deModelBuilder &builder);
 	
 	/** \brief Loads a model from the given file relative to the given base path. */
-	deModel *LoadModel(const char *filename, const char *basePath);
+	deModel::Ref LoadModel(const char *filename, const char *basePath);
 	
 	/** \brief Loads a model from the given file relative to the given base path. */
-	deModel *LoadModel(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
+	deModel::Ref LoadModel(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/**
 	 * \brief Add loaded and fully prepared model.

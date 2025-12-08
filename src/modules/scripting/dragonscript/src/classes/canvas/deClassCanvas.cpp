@@ -60,7 +60,7 @@
 
 // Native Structure
 struct sCanvasNatDat{
-	deCanvas *canvas;
+	deCanvas::Ref canvas;
 };
 
 
@@ -520,10 +520,6 @@ void deClassCanvas::AssignCanvas(dsRealObject *myself, deCanvas *canvas){
 	}
 	
 	nd.canvas = canvas;
-	
-	if(canvas){
-		canvas->AddReference();
-	}
 }
 
 

@@ -31,7 +31,7 @@
 #include "dragengine/common/math/decMath.h"
 
 // predefinitions
-class meObject;
+#include "../../../world/object/meObject.h"
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decVector pOldRotation;
 	decVector pNewRotation;

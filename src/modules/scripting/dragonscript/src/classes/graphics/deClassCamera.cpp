@@ -54,7 +54,7 @@
 /////////////////////
 
 struct sCamNatDat{
-	deCamera *camera;
+	deCamera::Ref camera;
 };
 
 
@@ -929,5 +929,4 @@ void deClassCamera::PushCamera(dsRunTime *rt, deCamera *camera){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sCamNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->camera = camera;
-	camera->AddReference();
 }

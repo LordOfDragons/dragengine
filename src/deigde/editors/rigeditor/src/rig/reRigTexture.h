@@ -33,7 +33,7 @@
 
 // predefinitions
 class deEngine;
-class deSkin;
+#include <dragengine/resources/skin/deSkin.h>
 class reRig;
 
 
@@ -48,7 +48,7 @@ private:
 	
 	decString pName;
 	decString pSkinPath;
-	deSkin *pEngSkin;
+	deSkin::Ref pEngSkin;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -73,7 +73,7 @@ public:
 	/** Loads the skin. */
 	void LoadSkin();
 	/** Retrieves the engine skin or NULL if not found. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	/*@}*/
 	
 private:

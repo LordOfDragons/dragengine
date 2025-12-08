@@ -41,8 +41,7 @@
 ////////////////////////////
 
 seUAddSource::seUAddSource(seSynthesizer *synthesizer, seSource *source, int index) :
-pSynthesizer(NULL),
-pSource(NULL),
+
 pIndex(index)
 {
 	if(!synthesizer || !source){
@@ -50,10 +49,7 @@ pIndex(index)
 	}
 	
 	pSynthesizer = synthesizer;
-	synthesizer->AddReference();
-	
 	pSource = source;
-	source->AddReference();
 }
 
 seUAddSource::~seUAddSource(){
@@ -79,10 +75,4 @@ void seUAddSource::Redo(){
 //////////////////////
 
 void seUAddSource::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

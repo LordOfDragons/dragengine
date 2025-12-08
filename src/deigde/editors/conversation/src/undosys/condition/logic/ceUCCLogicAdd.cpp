@@ -55,31 +55,12 @@ ceCConditionLogic *logic, ceConversationCondition *condition){
 	SetShortInfo("Logic Add Condition");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pLogic = logic;
-	logic->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCLogicAdd::~ceUCCLogicAdd(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pLogic){
-		pLogic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

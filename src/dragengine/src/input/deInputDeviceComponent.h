@@ -141,7 +141,7 @@ public:
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/**
 	 * \brief Set image to represent the component in 2D user interfaces or NULL if not set.

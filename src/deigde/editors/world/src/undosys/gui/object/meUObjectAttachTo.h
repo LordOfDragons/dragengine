@@ -29,8 +29,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meWorld;
-class meObject;
+#include "../../../world/meWorld.h"
+#include "../../../world/object/meObject.h"
 class meObjectList;
 
 
@@ -41,14 +41,14 @@ class meObjectList;
 class meUObjectAttachTo : public igdeUndo{
 private:
 	struct sObject{
-		meObject *object;
+		meObject::Ref object;
 		meObject *oldAttachTo;
 	};
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	sObject *pObjects;
 	int pObjectCount;
-	meObject *pAttachTo;
+	meObject::Ref pAttachTo;
 	
 	
 	

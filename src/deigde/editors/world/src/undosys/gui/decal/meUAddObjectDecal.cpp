@@ -48,10 +48,8 @@ meUAddObjectDecal::meUAddObjectDecal(meWorld *world, meObject *parentObject){
 	pDecal = NULL;
 	
 	pParentObject = parentObject;
-	parentObject->AddReference();
-	
 	try{
-		pDecal = new meDecal(world->GetEnvironment());
+		pDecal.TakeOver(new meDecal(world->GetEnvironment()));
 		SetShortInfo("Add Object Decal");
 		UpdateInfos();
 		

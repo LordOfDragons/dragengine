@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUSkySetBgColor::seUSkySetBgColor(seSky *sky, const decColor &newColor) :
-pSky(NULL),
+
 pNewColor(newColor)
 {
 	if(!sky){
@@ -52,13 +52,9 @@ pNewColor(newColor)
 	pOldColor = sky->GetBgColor();
 	
 	pSky = sky;
-	sky->AddReference();
 }
 
 seUSkySetBgColor::~seUSkySetBgColor(){
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

@@ -761,15 +761,13 @@ static void AddParametersToListBox(igdeListBox &listBox, igdeIcon *icon){
 peeWPType::peeWPType(peeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pEmitter(NULL),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, form, frameLine;
+	igdeContainer *content, groupBox, form, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new peeWPTypeListener(*this);
+	pListener.TakeOver(new peeWPTypeListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -887,12 +885,7 @@ pPreventUpdate(false)
 peeWPType::~peeWPType(){
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 		pEmitter = NULL;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -908,14 +901,12 @@ void peeWPType::SetEmitter(peeEmitter *emitter){
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;
 	
 	if(emitter){
 		emitter->AddListener(pListener);
-		emitter->AddReference();
 	}
 	
 	UpdateEmitter();

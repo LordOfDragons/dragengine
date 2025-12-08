@@ -47,12 +47,11 @@ deoglDSRenderableCamera::deoglDSRenderableCamera(
 deoglDynamicSkin &dynamicSkin, const deDSRenderableCamera &renderable) :
 deoglDSRenderable(dynamicSkin, renderable),
 pRenderableCamera(renderable),
-pRRenderableCamera(NULL),
 pCamera(NULL),
 pDirty(true)
 {
 	try{
-		pRRenderableCamera = new deoglRDSRenderableCamera(*dynamicSkin.GetRDynamicSkin());
+		pRRenderableCamera.TakeOver(new deoglRDSRenderableCamera(*dynamicSkin.GetRDynamicSkin()));
 		
 		if(renderable.GetCamera()){
 			pCamera = (deoglCamera*)renderable.GetCamera()->GetPeerGraphic();
@@ -136,10 +135,6 @@ void deoglDSRenderableCamera::DropCamera(){
 //////////////////////
 
 void deoglDSRenderableCamera::pCleanUp(){
-	if(pRRenderableCamera){
-		pRRenderableCamera->FreeReference();
-	}
-	
 	if(pCamera){
 		pCamera->GetNotifyRenderables().Remove(this);
 	}

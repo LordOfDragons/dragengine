@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class aeAnimator;
-class aeWPUndoHistoryListener;
+#include "../../animator/aeAnimator.h"
+#include "aeWPUndoHistoryListener.h"
 
 
 
@@ -37,8 +37,8 @@ class aeWPUndoHistoryListener;
  */
 class aeWPUndoHistory : public igdeWPUndoHistory{
 private:
-	aeAnimator *pWorld;
-	aeWPUndoHistoryListener *pListener;
+	aeAnimator::Ref pWorld;
+	aeWPUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pWorld; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pWorld; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

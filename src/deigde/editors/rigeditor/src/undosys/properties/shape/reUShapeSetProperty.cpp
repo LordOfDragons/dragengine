@@ -45,12 +45,9 @@ pShape(NULL){
 	pNewProperty = newProperty;
 	
 	SetShortInfo("Shape set property");
-	
-	pShape->AddReference();
 }
 
 reUShapeSetProperty::~reUShapeSetProperty(){
-	pShape->FreeReference();
 }
 
 

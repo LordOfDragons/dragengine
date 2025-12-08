@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCAddTexture::gdeUOCAddTexture(gdeObjectClass *objectClass, gdeOCComponentTexture *texture) :
-pObjectClass(NULL),
+
 pTexture(NULL)
 {
 	if(!objectClass || !texture){
@@ -51,19 +51,10 @@ pTexture(NULL)
 	SetShortInfo("Add texture");
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddTexture::~gdeUOCAddTexture(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

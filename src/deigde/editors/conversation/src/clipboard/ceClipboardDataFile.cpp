@@ -46,21 +46,17 @@ ceClipboardDataFile::ceClipboardDataFile(const ceConversationFileList &files) :
 igdeClipboardData(TYPE_NAME)
 {
 	const int count = files.GetCount();
-	ceConversationFile *file = NULL;
+	ceConversationFile::Ref file = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			file = new ceConversationFile(*files.GetAt(i));
+			file.TakeOver(new ceConversationFile(*files.GetAt(i)));
 			pFiles.Add(file);
-			file->FreeReference();
 			file = NULL;
 		}
 		
 	}catch(const deException &){
-		if(file){
-			file->FreeReference();
-		}
 		throw;
 	}
 }

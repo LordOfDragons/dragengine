@@ -84,8 +84,6 @@ saeSAnimation::saeSAnimation(igdeEnvironment* environment) :
 igdeEditableEntity(environment),
 pSky(NULL),
 pCamera(NULL),
-pActivePhoneme(NULL),
-pActiveWord(NULL),
 pDisplayMode(edmWord),
 pDispWordPos(-1),
 pDispWordElapsed(0.0f),
@@ -540,13 +538,11 @@ void saeSAnimation::SetActivePhoneme(saePhoneme *phoneme){
 	
 	if(pActivePhoneme){
 		pActivePhoneme->SetActive(false);
-		pActivePhoneme->FreeReference();
 	}
 	
 	pActivePhoneme = phoneme;
 	
 	if(phoneme){
-		phoneme->AddReference();
 		phoneme->SetActive(true);
 	}
 	
@@ -614,13 +610,11 @@ void saeSAnimation::SetActiveWord(saeWord *word){
 	
 	if(pActiveWord){
 		pActiveWord->SetActive(false);
-		pActiveWord->FreeReference();
 	}
 	
 	pActiveWord = word;
 	
 	if(word){
-		word->AddReference();
 		word->SetActive(true);
 	}
 	

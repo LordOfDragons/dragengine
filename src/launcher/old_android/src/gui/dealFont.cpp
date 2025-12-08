@@ -55,8 +55,6 @@
 dealFont::dealFont(dealDisplay &display, const char *filename) :
 pDisplay(display),
 
-pImage(NULL),
-
 pLineHeight(1),
 pGlyphs(NULL),
 pGlyphCount(0)
@@ -97,29 +95,25 @@ const dealFont::sGlyph &dealFont::GetGlyphFor(int code) const{
 //////////////////////
 
 void dealFont::pCleanUp(){
-	if(pImage){
-		pImage->FreeReference();
-	}
-	
 	if(pGlyphs){
 		delete [] pGlyphs;
 	}
 }
 
 void dealFont::pLoadXML(const char *filename){
-	decMemoryFile *memoryFileXML = NULL;
-	decMemoryFileReader *reader = NULL;
+	decMemoryFile::Ref memoryFileXML = NULL;
+	decMemoryFileReader::Ref reader = NULL;
 	decXmlDocument::Ref xmldoc;
 	
 	try{
-		memoryFileXML = new decMemoryFile("xml");
+		memoryFileXML.TakeOver(new decMemoryFile("xml"));
 		pDisplay.GetLauncher().LoadAsset(filename, *memoryFileXML);
 		
 		decXmlParser parser(&pDisplay.GetLauncher().GetLogger());
 		
 		xmldoc.TakeOver(new decXmlDocument);
 		
-		reader = new decMemoryFileReader(memoryFileXML);
+		reader.TakeOver(new decMemoryFileReader(memoryFileXML));
 		parser.ParseXml(reader, xmldoc);
 		
 		xmldoc->StripComments();
@@ -131,19 +125,8 @@ void dealFont::pLoadXML(const char *filename){
 		}
 		
 		pReadFont(*root);
-		
-		reader->FreeReference();
 		reader = NULL;
-		
-		memoryFileXML->FreeReference();
-		
 	}catch(const deException &){
-		if(reader){
-			reader->FreeReference();
-		}
-		if(memoryFileXML){
-			memoryFileXML->FreeReference();
-		}
 		throw;
 	}
 }
@@ -166,7 +149,7 @@ void dealFont::pReadFont(const decXmlElementTag &root){
 			if(pImage){
 				DETHROW(deeInvalidParam);
 			}
-			pImage = new dealImage(pDisplay, decString("fonts/") + cdata->GetData());
+			pImage.TakeOver(new dealImage(pDisplay, decString("fonts/") + cdata->GetData()));
 			
 		}else if(strcmp(tag->GetName(), "lineHeight") == 0){
 			decXmlCharacterData * const cdata = tag->GetFirstData();

@@ -104,7 +104,6 @@ reUBoneScaleMass::reUBoneScaleMass(reRig *rig, const decObjectOrderedSet &bones,
 	}
 	
 	pRig = rig;
-	rig->AddReference();
 }
 
 reUBoneScaleMass::~reUBoneScaleMass(){
@@ -151,9 +150,5 @@ void reUBoneScaleMass::pCleanUp(){
 		}
 		
 		delete [] pBones;
-	}
-	
-	if(pRig){
-		pRig->FreeReference();
 	}
 }

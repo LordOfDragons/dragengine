@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSourceChain;
+#include "../../../synthesizer/source/seSourceChain.h"
 
 
 
@@ -37,7 +37,7 @@ class seSourceChain;
  */
 class seUSetSourceChainMaxSpeed : public igdeUndo{
 private:
-	seSourceChain *pSource;
+	seSourceChain::Ref pSource;
 	
 	float pOldSpeed;
 	float pNewSpeed;

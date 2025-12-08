@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Video player or NULL if not set. */
-	inline deVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline const deVideoPlayer::Ref &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** \brief Set video player or NULL if not set. */
 	void SetVideoPlayer(deVideoPlayer *videoPlayer);

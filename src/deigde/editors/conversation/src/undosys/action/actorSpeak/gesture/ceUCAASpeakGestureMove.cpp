@@ -61,25 +61,11 @@ ceStrip *gesture, int newIndex){
 	SetShortInfo("Move Gesture");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pGesture = gesture;
-	gesture->AddReference();
 }
 
 ceUCAASpeakGestureMove::~ceUCAASpeakGestureMove(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

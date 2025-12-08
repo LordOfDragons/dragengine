@@ -37,7 +37,7 @@ class debpSweepCollisionTest;
 class deColliderVolume;
 class debpMotionState;
 class debpPhysicsBody;
-class debpBulletShape;
+#include "../debpBulletShape.h"
 class deCollisionInfo;
 
 
@@ -76,7 +76,7 @@ private:
 	debpSweepCollisionTest *pSweepCollisionTest;
 	
 	btGhostObject *pStaticCollisionTest;
-	debpBulletShape *pStaticCollisionTestShape;
+	debpBulletShape::Ref pStaticCollisionTestShape;
 	debpCollisionObject pStaticCollisionTestObject;
 	
 	debpGhostObject *pGhostKinematicMovement;
@@ -361,7 +361,7 @@ private:
 	void pUpdateUseFakeDynamics();
 	
 	void pUpdateBPShape();
-	debpBulletShape *pCreateBPShape();
+	debpBulletShape::Ref pCreateBPShape();
 	void pUpdateAttachments(bool force);
 	void pUpdateIsMoving();
 };

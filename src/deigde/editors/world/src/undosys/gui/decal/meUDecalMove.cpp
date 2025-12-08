@@ -73,7 +73,6 @@ meUDecalMove::meUDecalMove(meWorld *world){
 	}
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUDecalMove::~meUDecalMove(){

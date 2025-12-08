@@ -52,10 +52,7 @@ aeUAddRule::aeUAddRule(aeAnimator *animator, aeRule *rule, int index){
 	SetShortInfo("Add rule");
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeUAddRule::~aeUAddRule(){
@@ -82,10 +79,4 @@ void aeUAddRule::Redo(){
 //////////////////////
 
 void aeUAddRule::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
-	if(pAnimator){
-		pAnimator->FreeReference();
-	}
 }

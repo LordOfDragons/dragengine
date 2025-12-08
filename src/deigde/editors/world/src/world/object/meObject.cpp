@@ -717,14 +717,12 @@ void meObject::SetAttachedTo(meObject *object){
 		}
 		
 		pAttachedTo->GetAttachedObjectsList().Remove(this);
-		pAttachedTo->FreeReference();
 	}
 	
 	meObject * const oldObject = pAttachedTo;
 	pAttachedTo = object;
 	
 	if(object){
-		object->AddReference();
 		object->GetAttachedObjectsList().Add(this);
 	}
 	
@@ -1095,7 +1093,7 @@ void meObject::CheckLinks(){
 	if(!pActive || !pClassDef){
 		for(i=0; i<pLinks.GetCount(); i++){
 			meObjectLink * const link = (meObjectLink*)pLinks.GetAt(i);
-			meObject *object = nullptr;
+			meObject::Ref object = nullptr;
 			
 			if(link->GetAnchor() == this){
 				object = link->GetTarget();
@@ -1130,7 +1128,7 @@ void meObject::CheckLinks(){
 		const bool isAnchor = CanLinkTo(object);
 		
 		if(isAnchor || object->CanLinkTo(this)){
-			meObjectLink *link = GetLinkTo(object);
+			meObjectLink::Ref link = GetLinkTo(object);
 			
 			if(link){
 				if(!object->HasLink(link)){
@@ -1150,10 +1148,10 @@ void meObject::CheckLinks(){
 					try{
 						// create the link in the proper direction
 						if(isAnchor){
-							link = new meObjectLink(pEnvironment, this, object);
+							link.TakeOver(new meObjectLink(pEnvironment, this, object));
 							
 						}else{
-							link = new meObjectLink(pEnvironment, object, this);
+							link.TakeOver(new meObjectLink(pEnvironment, object, this));
 						}
 						if(!link){
 							DETHROW(deeOutOfMemory);
@@ -1162,12 +1160,7 @@ void meObject::CheckLinks(){
 						// add the link and give up the reference we hold
 						AddLink(link);
 						object->AddLink(link);
-						link->FreeReference();
-						
 					}catch(const deException &){
-						if(link){
-							link->FreeReference();
-						}
 						throw;
 					}
 				}
@@ -1282,8 +1275,6 @@ void meObject::AddTexture(meObjectTexture *texture){
 	
 	pTextures[pTextureCount] = texture;
 	pTextureCount++;
-	
-	texture->AddReference();
 	texture->SetObject(this);
 	
 	pUpdateComponent();
@@ -1311,8 +1302,6 @@ void meObject::RemoveTexture(meObjectTexture *texture){
 	pTextureCount--;
 	
 	texture->SetObject(NULL);
-	texture->FreeReference();
-	
 	pWObject->ResetComponentTextures();
 	pUpdateComponent();
 	
@@ -1784,8 +1773,6 @@ void meObject::AddDecal(meDecal *decal){
 	
 	pDecals[pDecalCount] = decal;
 	pDecalCount++;
-	
-	decal->AddReference();
 	decal->SetParentObject(this);
 	decal->SetWorld(pWorld);
 	
@@ -1804,8 +1791,6 @@ void meObject::InsertDecalAt(meDecal *decal, int index){
 	
 	pDecals[index] = decal;
 	pDecalCount++;
-	
-	decal->AddReference();
 	decal->SetParentObject(this);
 	decal->SetWorld(pWorld);
 	
@@ -1823,8 +1808,6 @@ void meObject::RemoveDecal(meDecal *decal){
 	
 	decal->SetWorld(NULL);
 	decal->SetParentObject(NULL);
-	decal->FreeReference();
-	
 	if(pWorld) pWorld->SetChanged(true);
 }
 
@@ -1905,13 +1888,6 @@ void meObject::pCleanUp(){
 	if(pTextures){
 		delete [] pTextures;
 	}
-	
-	if(pColDetCollider){
-		pColDetCollider->FreeReference();
-	}
-	if(pEngComponentBroken){
-		pEngComponentBroken->FreeReference();
-	}
 	pWObject = nullptr;
 	
 	if(pCamera){
@@ -1932,9 +1908,6 @@ void meObject::pCleanUp(){
 	}
 	if(pDDSObject){
 		delete pDDSObject;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 
@@ -2317,7 +2290,6 @@ void meObject::pUpdateBrokenComponent(){
 		if(pWorld){
 			pWorld->GetEngineWorld()->RemoveComponent(pEngComponentBroken);
 		}
-		pEngComponentBroken->FreeReference();
 		pEngComponentBroken = nullptr;
 	}
 }
@@ -2491,22 +2463,18 @@ void meObject::pCreateSnapPoints(){
 		return;
 	}
 	
-	meObjectSnapPoint *snapPoint = nullptr;
+	meObjectSnapPoint::Ref snapPoint = nullptr;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			snapPoint = new meObjectSnapPoint(this, list.GetAt(i));
+			snapPoint.TakeOver(new meObjectSnapPoint(this, list.GetAt(i)));
 			snapPoint->SetWorld(pWorld);
 			pSnapPoints.Add(snapPoint);
-			snapPoint->FreeReference();
 			snapPoint = nullptr;
 		}
 		
 	}catch(const deException &){
-		if(snapPoint){
-			snapPoint->FreeReference();
-		}
 		throw;
 	}
 	

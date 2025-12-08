@@ -139,8 +139,8 @@ void igdeLoadAnimator::Load(const decString &pathAnimator, deAnimator &animator,
 
 void igdeLoadAnimator::pReadAnimator(const decXmlElementTag &root, const char *basePath, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
-	deAnimation *animation = NULL;
-	deRig *rig = NULL;
+	deAnimation::Ref animation = NULL;
+	deRig::Ref rig = NULL;
 	int e;
 	
 	for(e=0; e<elementCount; e++){
@@ -156,12 +156,7 @@ void igdeLoadAnimator::pReadAnimator(const decXmlElementTag &root, const char *b
 				try{
 					rig = animator.GetEngine()->GetRigManager()->LoadRig(GetCDataString(*tag), basePath);
 					animator.SetRig(rig);
-					rig->FreeReference();
-					
 				}catch(const deException &){
-					if(rig){
-						rig->FreeReference();
-					}
 					LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 				}
 			}
@@ -173,12 +168,7 @@ void igdeLoadAnimator::pReadAnimator(const decXmlElementTag &root, const char *b
 				try{
 					animation = animator.GetEngine()->GetAnimationManager()->LoadAnimation(GetCDataString(*tag), basePath);
 					animator.SetAnimation(animation);
-					animation->FreeReference();
-					
 				}catch(const deException &){
-					if(animation){
-						animation->FreeReference();
-					}
 					LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 				}
 			}
@@ -201,7 +191,6 @@ void igdeLoadAnimator::pReadAnimator(const decXmlElementTag &root, const char *b
 			deAnimatorRule * const rule = pReadRule(*tag, basePath, animator);
 			if(rule){
 				animator.AddRule(rule);
-				rule->FreeReference();
 			}
 		}
 	}
@@ -383,14 +372,14 @@ const char *basePath, deAnimator &animator){
 	}
 }
 
-deAnimatorRule * igdeLoadAnimator::pReadRuleAnimation(const decXmlElementTag &root, deAnimator &animator){
+deAnimatorRule::Ref igdeLoadAnimator::pReadRuleAnimation(const decXmlElementTag &root, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
-	deAnimatorRuleAnimation *rule = NULL;
+	deAnimatorRuleAnimation::Ref rule = NULL;
 	const char *name;
 	int e;
 	
 	try{
-		rule = new deAnimatorRuleAnimation;
+		rule.TakeOver(new deAnimatorRuleAnimation);
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -435,23 +424,20 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleAnimation(const decXmlElementTag &ro
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
 	return rule;
 }
 
-deAnimatorRule * igdeLoadAnimator::pReadRuleAnimationDifference(const decXmlElementTag &root, deAnimator &animator){
+deAnimatorRule::Ref igdeLoadAnimator::pReadRuleAnimationDifference(const decXmlElementTag &root, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
 	deAnimatorRuleAnimationDifference *rule = NULL;
 	const char *name;
 	int e;
 	
 	try{
-		rule = new deAnimatorRuleAnimationDifference;
+		rule.TakeOver(new deAnimatorRuleAnimationDifference);
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -505,16 +491,13 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleAnimationDifference(const decXmlElem
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
 	return rule;
 }
 
-deAnimatorRule * igdeLoadAnimator::pReadRuleAnimationSelect(const decXmlElementTag &root,
+deAnimatorRule::Ref igdeLoadAnimator::pReadRuleAnimationSelect(const decXmlElementTag &root,
 deAnimator &animator){
 	const int elementCount = root.GetElementCount();
 	deAnimatorRuleAnimationSelect *rule = NULL;
@@ -522,7 +505,7 @@ deAnimator &animator){
 	int e;
 	
 	try{
-		rule = new deAnimatorRuleAnimationSelect;
+		rule.TakeOver(new deAnimatorRuleAnimationSelect);
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -567,16 +550,13 @@ deAnimator &animator){
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
 	return rule;
 }
 
-deAnimatorRule * igdeLoadAnimator::pReadRuleBoneTransformator(const decXmlElementTag &root, deAnimator &animator){
+deAnimatorRule::Ref igdeLoadAnimator::pReadRuleBoneTransformator(const decXmlElementTag &root, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
 	deAnimatorRuleBoneTransformator *rule = NULL;
 	decVector vector;
@@ -584,7 +564,7 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleBoneTransformator(const decXmlElemen
 	int e;
 	
 	try{
-		rule = new deAnimatorRuleBoneTransformator;
+		rule.TakeOver(new deAnimatorRuleBoneTransformator);
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -711,16 +691,13 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleBoneTransformator(const decXmlElemen
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
 	return rule;
 }
 
-deAnimatorRule * igdeLoadAnimator::pReadRuleStateManipulator(const decXmlElementTag &root, deAnimator &animator){
+deAnimatorRule::Ref igdeLoadAnimator::pReadRuleStateManipulator(const decXmlElementTag &root, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
 	deAnimatorRuleStateManipulator *rule = NULL;
 	decVector vector;
@@ -728,7 +705,7 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleStateManipulator(const decXmlElement
 	int e;
 	
 	try{
-		rule = new deAnimatorRuleStateManipulator;
+		rule.TakeOver(new deAnimatorRuleStateManipulator);
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -812,23 +789,20 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleStateManipulator(const decXmlElement
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
 	return rule;
 }
 
-deAnimatorRule * igdeLoadAnimator::pReadRuleStateSnapshot(const decXmlElementTag &root, deAnimator &animator){
+deAnimatorRule::Ref igdeLoadAnimator::pReadRuleStateSnapshot(const decXmlElementTag &root, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
 	deAnimatorRuleStateSnapshot *rule = NULL;
 	const char *name;
 	int e;
 	
 	try{
-		rule = new deAnimatorRuleStateSnapshot;
+		rule.TakeOver(new deAnimatorRuleStateSnapshot);
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -870,23 +844,20 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleStateSnapshot(const decXmlElementTag
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
 	return rule;
 }
 
-deAnimatorRule * igdeLoadAnimator::pReadRuleInverseKinematic(const decXmlElementTag &root, deAnimator &animator){
+deAnimatorRule::Ref igdeLoadAnimator::pReadRuleInverseKinematic(const decXmlElementTag &root, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
 	deAnimatorRuleInverseKinematic *rule = NULL;
 	decVector vector;
 	int e;
 	
 	try{
-		rule = new deAnimatorRuleInverseKinematic;
+		rule.TakeOver(new deAnimatorRuleInverseKinematic);
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -969,16 +940,13 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleInverseKinematic(const decXmlElement
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
 	return rule;
 }
 
-deAnimatorRule * igdeLoadAnimator::pReadRuleForeignState(const decXmlElementTag &root, deAnimator &animator){
+deAnimatorRule::Ref igdeLoadAnimator::pReadRuleForeignState(const decXmlElementTag &root, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
 	deAnimatorRuleForeignState *rule = NULL;
 	decVector vector;
@@ -986,7 +954,7 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleForeignState(const decXmlElementTag 
 	int e;
 	
 	try{
-		rule = new deAnimatorRuleForeignState;
+		rule.TakeOver(new deAnimatorRuleForeignState);
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -1078,9 +1046,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleForeignState(const decXmlElementTag 
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -1177,7 +1142,7 @@ const char *basePath, deAnimator &animator){
 	int i;
 	
 	try{
-		rule = new deAnimatorRuleGroup;
+		rule.TakeOver(new deAnimatorRuleGroup);
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -1240,16 +1205,13 @@ const char *basePath, deAnimator &animator){
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
 	return rule;
 }
 
-deAnimatorRule * igdeLoadAnimator::pReadRuleSubAnimator(const decXmlElementTag &root,
+deAnimatorRule::Ref igdeLoadAnimator::pReadRuleSubAnimator(const decXmlElementTag &root,
 const char *basePath, deAnimator &animator){
 	deEngine &engine = *animator.GetEngine();
 	deVirtualFileSystem &vfs = *engine.GetVirtualFileSystem();
@@ -1262,7 +1224,7 @@ const char *basePath, deAnimator &animator){
 	int e, target;
 	
 	try{
-		rule = new deAnimatorRuleSubAnimator;
+		rule.TakeOver(new deAnimatorRuleSubAnimator);
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -1329,22 +1291,19 @@ const char *basePath, deAnimator &animator){
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
 	return rule;
 }
 
-deAnimatorRule * igdeLoadAnimator::pReadRuleLimit(const decXmlElementTag &root, deAnimator &animator){
+deAnimatorRule::Ref igdeLoadAnimator::pReadRuleLimit(const decXmlElementTag &root, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
 	deAnimatorRuleLimit *rule = NULL;
 	int i;
 	
 	try{
-		rule = new deAnimatorRuleLimit;
+		rule.TakeOver(new deAnimatorRuleLimit);
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -1459,9 +1418,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleLimit(const decXmlElementTag &root, 
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -1474,7 +1430,7 @@ deAnimatorRule *igdeLoadAnimator::pReadRuleTrackTo(const decXmlElementTag &root,
 	int i;
 	
 	try{
-		rule = new deAnimatorRuleTrackTo;
+		rule.TakeOver(new deAnimatorRuleTrackTo);
 		
 		for(i=0; i<elementCount; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -1596,9 +1552,6 @@ deAnimatorRule *igdeLoadAnimator::pReadRuleTrackTo(const decXmlElementTag &root,
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	

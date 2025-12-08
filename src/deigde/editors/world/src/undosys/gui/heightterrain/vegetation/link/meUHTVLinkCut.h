@@ -30,7 +30,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVegetationLayer;
+#include "../../../../../world/heightterrain/meHTVegetationLayer.h"
 class meHTVRLink;
 
 
@@ -47,7 +47,7 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
+	meHTVegetationLayer::Ref pVLayer;
 	
 	meHTVRLink **pLinks;
 	int pLinkCount;

@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringSet.h>
 
-class aeRule;
+#include "../../animator/rule/aeRule.h"
 
 
 /**
@@ -37,7 +37,7 @@ class aeRule;
  */
 class aeUSetRuleBones : public igdeUndo{
 protected:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;

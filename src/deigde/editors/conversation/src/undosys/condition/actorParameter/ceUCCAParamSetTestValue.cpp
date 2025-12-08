@@ -55,25 +55,11 @@ ceCConditionActorParameter *condition, int newValue){
 	SetShortInfo("Condition ActorParameter: Set Test Value");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCAParamSetTestValue::~ceUCCAParamSetTestValue(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

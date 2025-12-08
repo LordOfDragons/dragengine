@@ -33,8 +33,8 @@ class reRig;
 class reRigBone;
 class igdeWDebugDrawerShape;
 class decShape;
-class deDebugDrawer;
-class deColliderVolume;
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 class deEngine;
 
 
@@ -63,9 +63,9 @@ private:
 	reRig *pRig;
 	reRigBone *pRigBone;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSShape;
-	deColliderVolume *pCollider;
+	deColliderVolume::Ref pCollider;
 	
 	eShapeTypes pShapeType;
 	
@@ -110,7 +110,7 @@ public:
 	void SetRigBone(reRigBone *rigBone);
 	
 	/** \brief Collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Shape type. */
 	inline eShapeTypes GetShapeType() const{ return pShapeType; }

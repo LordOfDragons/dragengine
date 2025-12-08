@@ -116,7 +116,7 @@ public:
 	
 	
 	/** \brief Image for creating preview in progress. */
-	inline deImage *GetImageCreating() const{ return pImageCreating; }
+	inline const deImage::Ref &GetImageCreating() const{ return pImageCreating; }
 	
 	
 	

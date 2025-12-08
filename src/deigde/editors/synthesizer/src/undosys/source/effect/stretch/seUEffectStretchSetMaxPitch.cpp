@@ -52,13 +52,9 @@ pSource(NULL)
 	pNewPitch = newPitch;
 	
 	pSource = effect;
-	pSource->AddReference();
 }
 
 seUEffectStretchSetMaxPitch::~seUEffectStretchSetMaxPitch(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

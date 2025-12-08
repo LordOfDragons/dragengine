@@ -66,7 +66,7 @@ public:
 	deCollider *GetRootCollider() const;
 	
 	/** \brief Create new world collider volume. */
-	deColliderVolume *CreateColliderVolume();
+	deColliderVolume::Ref CreateColliderVolume();
 	
 	/** \brief Create new world collider rigged. */
 	deColliderRig *CreateColliderRig();

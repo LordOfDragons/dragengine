@@ -68,10 +68,10 @@ void reRigShapeBox::SetHalfExtends(const decVector &halfExtends){
 }
 
 reRigShape *reRigShapeBox::Duplicate() const{
-	reRigShapeBox *shape = NULL;
+	reRigShapeBox::Ref shape = NULL;
 	
 	try{
-		shape = new reRigShapeBox(GetEngine());
+		shape.TakeOver(new reRigShapeBox(GetEngine()));
 		if(!shape) DETHROW(deeOutOfMemory);
 		
 		shape->SetPosition(GetPosition());

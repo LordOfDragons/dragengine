@@ -49,13 +49,9 @@ ceUCCShotToggleLockUpAxis::ceUCCShotToggleLockUpAxis(ceCameraShot *cameraShot){
 	SetShortInfo("Camera shot lock up axis");
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotToggleLockUpAxis::~ceUCCShotToggleLockUpAxis(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

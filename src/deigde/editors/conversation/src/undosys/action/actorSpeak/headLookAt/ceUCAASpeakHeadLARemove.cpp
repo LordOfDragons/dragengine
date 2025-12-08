@@ -59,25 +59,11 @@ ceUCAASpeakHeadLARemove::ceUCAASpeakHeadLARemove(ceConversationTopic *topic, ceC
 	SetShortInfo("Remove HeadLookAt");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pHeadLA = headLookAt;
-	headLookAt->AddReference();
 }
 
 ceUCAASpeakHeadLARemove::~ceUCAASpeakHeadLARemove(){
-	if(pHeadLA){
-		pHeadLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

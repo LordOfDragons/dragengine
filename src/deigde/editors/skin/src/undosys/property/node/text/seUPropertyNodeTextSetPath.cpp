@@ -40,7 +40,7 @@
 
 seUPropertyNodeTextSetPath::seUPropertyNodeTextSetPath(
 sePropertyNodeText *node, const char *newValue) :
-pNode(NULL),
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = node->GetPath();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeTextSetPath::~seUPropertyNodeTextSetPath(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

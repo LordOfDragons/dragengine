@@ -108,13 +108,8 @@
 
 seWindowMain::seWindowMain(seIGDEModule &module) :
 igdeEditorWindow(module),
-pListener(NULL),
 pConfiguration(NULL),
-pLoadSaveSystem(NULL),
-pWindowProperties(NULL),
-pViewSkin(NULL),
-pViewConstructed(NULL),
-pSkin(NULL)
+pLoadSaveSystem(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -122,7 +117,7 @@ pSkin(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new seWindowMainListener(*this);
+	pListener.TakeOver(new seWindowMainListener(*this));
 	pLoadSaveSystem = new seLoadSaveSystem(*this);
 	pConfiguration = new seConfiguration(*this);
 	
@@ -136,16 +131,16 @@ pSkin(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties = new seWindowProperties(*this);
+	pWindowProperties.TakeOver(new seWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	pSwitcherViews.TakeOver(new igdeTabBook(env));
 	splitted->AddChild(pSwitcherViews, igdeContainerSplitted::eaCenter);
 	
-	pViewSkin = new seViewSkin(*this);
+	pViewSkin.TakeOver(new seViewSkin(*this));
 	pSwitcherViews->AddChild(pViewSkin, "Skin Preview");
 	
-	pViewConstructed = new seViewConstructed(*this);
+	pViewConstructed.TakeOver(new seViewConstructed(*this));
 	pSwitcherViews->AddChild(pViewConstructed, "Constructed Channel");
 	
 	CreateNewSkin();
@@ -159,17 +154,6 @@ seWindowMain::~seWindowMain(){
 	}
 	
 	SetSkin(NULL);
-	
-	if(pViewConstructed){
-		pViewConstructed->FreeReference();
-	}
-	if(pViewSkin){
-		pViewSkin->FreeReference();
-	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
-	
 	pClipboard.ClearAll();
 	
 	if(pConfiguration){
@@ -177,10 +161,6 @@ seWindowMain::~seWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -215,13 +195,11 @@ void seWindowMain::SetSkin(seSkin *skin){
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
 		pSkin->Dispose();
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
 	if(skin){
-		skin->AddReference();
 		skin->AddListener(pListener);
 		
 		pActionEditUndo->SetUndoSystem(skin->GetUndoSystem());
@@ -731,13 +709,12 @@ public:
 		"Remove mapped", deInputEvent::ekcR){}
 	
 	virtual igdeUndo *OnActionMapped(seSkin*, seMapped *mapped){
-		seUMappedRemove *undo = new seUMappedRemove(mapped);
+		seUMappedRemove::Ref undo.TakeOver(new seUMappedRemove(mapped));
 		
 		if(undo->GetDependencyCount() > 0 && igdeCommonDialogs::QuestionFormat(&pWindow,
 		igdeCommonDialogs::ebsYesNo, "Remove Mapped", "Mapped is used by %d dependencies. "
 		"Removing the mapped will also unset it from all dependencies.", undo->GetDependencyCount())
 		== igdeCommonDialogs::ebNo){
-			undo->FreeReference();
 			return nullptr;
 		}
 		

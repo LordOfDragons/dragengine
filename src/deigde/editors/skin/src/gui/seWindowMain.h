@@ -38,13 +38,13 @@ class seConfiguration;
 class seEngineController;
 class seIGDEModule;
 class seLoadSaveSystem;
-class seSkin;
+#include "../skin/seSkin.h"
 class seTexture;
 class seMapped;
-class seViewConstructed;
-class seViewSkin;
-class seWindowMainListener;
-class seWindowProperties;
+#include "constructed/seViewConstructed.h"
+#include "seViewSkin.h"
+#include "seWindowMainListener.h"
+#include "properties/seWindowProperties.h"
 class igdeStepableTask;
 
 class decStringList;
@@ -56,7 +56,7 @@ class decStringList;
  */
 class seWindowMain : public igdeEditorWindow{
 private:
-	seWindowMainListener *pListener;
+	seWindowMainListener::Ref pListener;
 	
 	igdeAction::Ref pActionFileNew;
 	igdeAction::Ref pActionFileNewModel;
@@ -89,13 +89,13 @@ private:
 	igdeClipboard pClipboard;
 	seLoadSaveSystem *pLoadSaveSystem;
 	
-	seWindowProperties *pWindowProperties;
+	seWindowProperties::Ref pWindowProperties;
 	
 	igdeTabBook::Ref pSwitcherViews;
-	seViewSkin *pViewSkin;
-	seViewConstructed *pViewConstructed;
+	seViewSkin::Ref pViewSkin;
+	seViewConstructed::Ref pViewConstructed;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	
 	
 	
@@ -137,7 +137,7 @@ public:
 	inline seLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set Skin. */
 	void SetSkin(seSkin *Skin);
@@ -154,16 +154,16 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionMappedAdd() const{ return pActionMappedAdd; }
-	inline igdeAction *GetActionMappedRemove() const{ return pActionMappedRemove; }
+	inline const igdeAction::Ref &GetActionMappedAdd() const{ return pActionMappedAdd; }
+	inline const igdeAction::Ref &GetActionMappedRemove() const{ return pActionMappedRemove; }
 	
-	inline igdeAction *GetActionTextureAdd() const{ return pActionTextureAdd; }
-	inline igdeAction *GetActionTextureRemove() const{ return pActionTextureRemove; }
-	inline igdeAction *GetActionTextureImportFromGDef() const{ return pActionTextureImportFromGDef; }
-	inline igdeAction *GetActionTextureImportFromFile() const{ return pActionTextureImportFromFile; }
+	inline const igdeAction::Ref &GetActionTextureAdd() const{ return pActionTextureAdd; }
+	inline const igdeAction::Ref &GetActionTextureRemove() const{ return pActionTextureRemove; }
+	inline const igdeAction::Ref &GetActionTextureImportFromGDef() const{ return pActionTextureImportFromGDef; }
+	inline const igdeAction::Ref &GetActionTextureImportFromFile() const{ return pActionTextureImportFromFile; }
 	
-	inline igdeAction *GetActionTexturePropertyAdd() const{ return pActionPropertyAdd; }
-	inline igdeAction *GetActionTexturePropertyRemove() const{ return pActionPropertyRemove; }
+	inline const igdeAction::Ref &GetActionTexturePropertyAdd() const{ return pActionPropertyAdd; }
+	inline const igdeAction::Ref &GetActionTexturePropertyRemove() const{ return pActionPropertyRemove; }
 	
 	
 	

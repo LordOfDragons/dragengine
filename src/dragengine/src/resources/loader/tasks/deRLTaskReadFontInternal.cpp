@@ -64,8 +64,7 @@ deRLTaskReadFont *parentTask) :
 deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertFont),
 pSucceeded(false),
 pAlreadyLoaded(false),
-pParentTask(parentTask),
-pInternalTask(NULL)
+pParentTask(parentTask)
 {
 	if(!parentTask){
 		DETHROW(deeInvalidParam);
@@ -77,9 +76,6 @@ pInternalTask(NULL)
 }
 
 deRLTaskReadFontInternal::~deRLTaskReadFontInternal(){
-	if(pInternalTask){
-		pInternalTask->FreeReference();
-	}
 }
 
 
@@ -132,8 +128,8 @@ void deRLTaskReadFontInternal::Finished(){
 		SetState(esSucceeded);
 		
 		try{
-			pInternalTask = new deRLTaskReadFontInternal2(engine,
-				GetResourceLoader(), GetVFS(), GetPath(), pFont);
+			pInternalTask.TakeOver(new deRLTaskReadFontInternal2(engine,
+				GetResourceLoader(), GetVFS(), GetPath(), pFont));
 			
 			switch(pInternalTask->GetState()){
 			case esPending:

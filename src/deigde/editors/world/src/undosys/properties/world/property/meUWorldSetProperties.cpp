@@ -39,7 +39,7 @@
 ////////////////////////////
 
 meUWorldSetProperties::meUWorldSetProperties(meWorld *world, const decStringDictionary &newValues) :
-pWorld(NULL),
+
 pNewValues(newValues)
 {
 	if(!world){
@@ -51,13 +51,9 @@ pNewValues(newValues)
 	pOldValues = world->GetProperties();
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUWorldSetProperties::~meUWorldSetProperties(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }
 
 

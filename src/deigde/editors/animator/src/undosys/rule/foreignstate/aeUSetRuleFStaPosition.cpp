@@ -46,8 +46,6 @@ aeUSetRuleFStaPosition::aeUSetRuleFStaPosition(aeRuleForeignState *rule, float n
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldScale = rule->GetScalePosition();
 		pNewScale = newScale;
 		

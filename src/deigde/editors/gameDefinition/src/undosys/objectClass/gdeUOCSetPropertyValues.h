@@ -30,7 +30,7 @@
 
 #include <dragengine/common/string/decStringDictionary.h>
 
-class gdeObjectClass;
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 
 
@@ -39,7 +39,7 @@ class gdeObjectClass;
  */
 class gdeUOCSetPropertyValues : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;

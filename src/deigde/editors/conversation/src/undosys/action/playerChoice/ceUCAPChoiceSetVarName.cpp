@@ -53,19 +53,10 @@ ceUCAPChoiceSetVarName::ceUCAPChoiceSetVarName(ceConversationTopic *topic, ceCAP
 	SetShortInfo("Player Choice Set Variable Name");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
 }
 
 ceUCAPChoiceSetVarName::~ceUCAPChoiceSetVarName(){
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -42,7 +42,7 @@
 
 gdeUOCCameraSetRotation::gdeUOCCameraSetRotation(gdeObjectClass *objectClass,
 gdeOCCamera *camera, const decVector &newValue) :
-pObjectClass(NULL),
+
 pCamera(NULL)
 {
 	if(!objectClass || !camera){
@@ -55,19 +55,10 @@ pCamera(NULL)
 	pNewValue = newValue;
 	
 	pCamera = camera;
-	camera->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCameraSetRotation::~gdeUOCCameraSetRotation(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

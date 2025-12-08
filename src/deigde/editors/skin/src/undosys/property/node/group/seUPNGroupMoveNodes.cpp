@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPNGroupMoveNodes::seUPNGroupMoveNodes(sePropertyNodeGroup *node, const sePropertyNodeList &children) :
-pNode(NULL),
+
 pChildren(NULL),
 pCount(0)
 {
@@ -57,7 +57,6 @@ pCount(0)
 		
 		for(pCount=0; pCount<count; pCount++){
 			pChildren[pCount].node = children.GetAt(pCount);
-			pChildren[pCount].node->AddReference();
 			pChildren[pCount].index = node->IndexOfNode(pChildren[pCount].node);
 		}
 		
@@ -81,7 +80,6 @@ pCount(0)
 	}
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPNGroupMoveNodes::~seUPNGroupMoveNodes(){
@@ -104,9 +102,6 @@ bool seUPNGroupMoveNodes::HasAnyEffect() const{
 
 void seUPNGroupMoveNodes::pCleanUp(){
 	pClearChildNodes();
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 void seUPNGroupMoveNodes::pClearChildNodes(){
@@ -116,7 +111,6 @@ void seUPNGroupMoveNodes::pClearChildNodes(){
 	
 	int i;
 	for(i=0; i<pCount; i++){
-		pChildren[i].node->FreeReference();
 	}
 	delete [] pChildren;
 	pChildren = NULL;

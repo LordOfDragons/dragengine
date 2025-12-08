@@ -69,9 +69,6 @@ pDDSMask(NULL)
 	if(!ocenvMapProbe){
 		DETHROW(deeInvalidParam);
 	}
-	
-	pOCEnvMapProbe->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pCreateEnvMapProbe();
@@ -139,10 +136,6 @@ void gdeVAOEnvMapProbe::pCleanUp(){
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = NULL;
-	}
-	
-	if(pOCEnvMapProbe){
-		pOCEnvMapProbe->FreeReference();
 	}
 }
 

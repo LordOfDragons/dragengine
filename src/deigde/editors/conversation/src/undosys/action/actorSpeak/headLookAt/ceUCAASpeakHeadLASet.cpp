@@ -55,37 +55,15 @@ ceUCAASpeakHeadLASet::ceUCAASpeakHeadLASet(ceConversationTopic *topic, ceCAActor
 	
 	SetShortInfo("Set head look-at");
 	
-	pOldStrip = new ceStrip(*headLookAt);
+	pOldStrip.TakeOver(new ceStrip(*headLookAt));
 	
 	pNewStrip = newStrip;
-	newStrip->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pHeadLA = headLookAt;
-	headLookAt->AddReference();
 }
 
 ceUCAASpeakHeadLASet::~ceUCAASpeakHeadLASet(){
-	if(pNewStrip){
-		pNewStrip->FreeReference();
-	}
-	if(pOldStrip){
-		pOldStrip->FreeReference();
-	}
-	if(pHeadLA){
-		pHeadLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

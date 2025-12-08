@@ -55,8 +55,7 @@
 
 ceWPTTIMAIfElseIfCaseCondition::ceWPTTIMAIfElseIfCaseCondition(ceWindowMain &windowMain,
 ceConversation &conversation, ceCAIfElse &ifElse, ceCAIfElseCase *ifCase) :
-ceWPTTIMConditionContainer(windowMain, conversation, ifElse, etActionIfElseCaseCondition),
-pIfCase(NULL)
+ceWPTTIMConditionContainer(windowMain, conversation, ifElse, etActionIfElseCaseCondition)
 {
 	if(!ifCase){
 		DETHROW(deeInvalidParam);
@@ -65,13 +64,9 @@ pIfCase(NULL)
 	SetText("Condition");
 	
 	pIfCase = ifCase;
-	ifCase->AddReference();
 }
 
 ceWPTTIMAIfElseIfCaseCondition::~ceWPTTIMAIfElseIfCaseCondition(){
-	if(pIfCase){
-		pIfCase->FreeReference();
-	}
 }
 
 

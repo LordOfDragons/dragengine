@@ -46,8 +46,6 @@ aeUSetRuleSModMinRotation::aeUSetRuleSModMinRotation(aeRuleStateManipulator *rul
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumRotation();
 		pNewMin = newMin;
 		

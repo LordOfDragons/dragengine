@@ -52,19 +52,10 @@ ceUCAASpeakSetPathSound::ceUCAASpeakSetPathSound(ceConversationTopic *topic, ceC
 	SetShortInfo("Actor Speak Set Path Sound");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetPathSound::~ceUCAASpeakSetPathSound(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

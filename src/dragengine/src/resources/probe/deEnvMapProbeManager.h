@@ -62,7 +62,7 @@ public:
 	deEnvMapProbe *GetRootEnvMapProbe() const;
 	
 	/** \brief Create new environment map probe. */
-	deEnvMapProbe *CreateEnvMapProbe();
+	deEnvMapProbe::Ref CreateEnvMapProbe();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

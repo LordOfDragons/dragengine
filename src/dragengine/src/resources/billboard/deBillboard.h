@@ -129,13 +129,13 @@ public:
 	void SetOffset(const decVector2 &offset);
 	
 	/** \brief Skin or NULL if not assigned. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(deSkin *skin);
 	
 	/** \brief Dynamic skin or NULL if not assigned. */
-	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set dynamic skin. */
 	void SetDynamicSkin(deDynamicSkin *dynamicSkin);

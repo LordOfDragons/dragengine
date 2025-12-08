@@ -54,13 +54,9 @@ pNewValues(newValues)
 	pOldValues = texture->GetProperties();
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjTexSetProperties::~meUObjTexSetProperties(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

@@ -80,7 +80,7 @@ public:
 	inline devkDevice &GetDevice() const{ return pDevice; }
 	
 	/** Layout. */
-	inline devkDescriptorSetLayout *GetLayout() const{ return pLayout; }
+	inline const devkDescriptorSetLayout::Ref &GetLayout() const{ return pLayout; }
 	
 	/** Get next free slot. */
 	devkDescriptorPoolSlot *Get();

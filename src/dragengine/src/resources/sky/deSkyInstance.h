@@ -85,7 +85,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky or NULL if not set. */
-	inline deSky *GetSky() const{ return pSky; }
+	inline const deSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky or NULL to clear. */
 	void SetSky(deSky *sky);

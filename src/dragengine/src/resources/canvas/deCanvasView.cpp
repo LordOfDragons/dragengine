@@ -42,7 +42,6 @@ deCanvasView::deCanvasView(deCanvasManager *manager) :
 deCanvas(manager),
 
 pCanvasRoot(NULL),
-pCanvasTail(NULL),
 pCanvasCount(0){
 }
 
@@ -74,8 +73,6 @@ void deCanvasView::AddCanvas(deCanvas *canvas){
 	pCanvasTail = canvas;
 	pCanvasCount++;
 	canvas->SetParentView(this);
-	canvas->AddReference();
-	
 	NotifyContentChanged();
 }
 
@@ -101,8 +98,6 @@ void deCanvasView::RemoveCanvas(deCanvas *canvas){
 	canvas->SetParentView(NULL);
 	canvas->SetLLViewPrev(NULL);
 	canvas->SetLLViewNext(NULL);
-	canvas->FreeReference();
-	
 	NotifyContentChanged();
 }
 
@@ -110,7 +105,6 @@ void deCanvasView::RemoveAllCanvas(){
 	while(pCanvasTail){
 		deCanvas * const next = pCanvasTail->GetLLViewPrev();
 		pCanvasTail->SetParentView(NULL);
-		pCanvasTail->FreeReference();
 		pCanvasTail = next;
 		pCanvasCount--;
 	}

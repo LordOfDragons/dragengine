@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringDictionary.h>
 
-class meWorld;
+#include "../../../../world/meWorld.h"
 
 
 
@@ -38,7 +38,7 @@ class meWorld;
  */
 class meUWorldSetProperties : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;

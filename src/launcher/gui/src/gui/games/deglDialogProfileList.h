@@ -127,9 +127,9 @@ private:
 		typedef deTObjectReference<cEditProfile> Ref;
 		cEditProfile(deglDialogProfileList &dialog, const char *name);
 		cEditProfile(deglDialogProfileList &dialog, delGameProfile *profile, delGame *gameCustom);
-		inline delGameProfile *GetOriginal() const{ return pOriginal; }
-		inline delGameProfile *GetEdit() const{ return pEdit; }
-		inline delGame *GetGameCustom() const{ return pGameCustom; }
+		inline const delGameProfile::Ref &GetOriginal() const{ return pOriginal; }
+		inline const delGameProfile::Ref &GetEdit() const{ return pEdit; }
+		inline const delGame::Ref &GetGameCustom() const{ return pGameCustom; }
 		FXString GetText() const;
 		FXIcon *GetIcon() const;
 	};

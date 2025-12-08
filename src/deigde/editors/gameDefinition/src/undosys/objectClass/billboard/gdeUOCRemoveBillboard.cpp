@@ -42,7 +42,7 @@
 ////////////////////////////
 
 gdeUOCRemoveBillboard::gdeUOCRemoveBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
-pObjectClass(NULL),
+
 pBillboard(NULL)
 {
 	if(!objectClass || !billboard){
@@ -56,19 +56,10 @@ pBillboard(NULL)
 	SetShortInfo("Remove billboard");
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveBillboard::~gdeUOCRemoveBillboard(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

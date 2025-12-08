@@ -82,7 +82,7 @@ saeLoadSaveSystem::~saeLoadSaveSystem(){
 // Management
 ///////////////
 
-saeSAnimation *saeLoadSaveSystem::LoadSAnimation(const char *filename){
+saeSAnimation::Ref saeLoadSaveSystem::LoadSAnimation(const char *filename){
 	const decBaseFileReader::Ref fileReader(decBaseFileReader::Ref::New(
 		pWindowMain.GetEnvironment().GetFileSystemGame()->
 			OpenFileForReading(decPath::CreatePathUnix(filename))));
@@ -96,7 +96,6 @@ saeSAnimation *saeLoadSaveSystem::LoadSAnimation(const char *filename){
 	sanim->SetChanged(false);
 	sanim->SetSaved(true);
 	
-	sanim->AddReference(); // required to hand over reference to caller
 	return sanim;
 }
 

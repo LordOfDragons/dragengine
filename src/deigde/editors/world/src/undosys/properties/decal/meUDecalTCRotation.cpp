@@ -59,13 +59,9 @@ meUDecalTCRotation::meUDecalTCRotation(meDecal *decal, float newRotation){
 	pNewRotation = newRotation;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalTCRotation::~meUDecalTCRotation(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

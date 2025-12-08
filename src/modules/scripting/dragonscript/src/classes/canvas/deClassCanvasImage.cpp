@@ -44,7 +44,7 @@
 
 // Native Structure
 struct sCImageNatDat{
-	deCanvasImage *canvas;
+	deCanvasImage::Ref canvas;
 };
 
 
@@ -270,8 +270,6 @@ void deClassCanvasImage::PushCanvas(dsRunTime *rt, deCanvasImage *canvas){
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		canvas->AddReference();
 		nd.canvas = canvas;
 		
 		baseClass->AssignCanvas(rt->GetValue(0)->GetRealObject(), canvas);

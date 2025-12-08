@@ -52,19 +52,10 @@ ceUCACameraShotSetName::ceUCACameraShotSetName(ceConversationTopic *topic, ceCAC
 	SetShortInfo("Camera Shot Set Name");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCACameraShotSetName::~ceUCACameraShotSetName(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

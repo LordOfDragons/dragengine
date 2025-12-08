@@ -361,16 +361,13 @@ public:
 
 peeWPController::peeWPController(peeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-
-pEmitter(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new peeWPControllerListener(*this);
+	pListener.TakeOver(new peeWPControllerListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -405,12 +402,7 @@ pEmitter(NULL)
 peeWPController::~peeWPController(){
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 		pEmitter = NULL;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -426,14 +418,12 @@ void peeWPController::SetEmitter(peeEmitter *emitter){
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;
 	
 	if(emitter){
 		emitter->AddListener(pListener);
-		emitter->AddReference();
 	}
 	
 	UpdateControllerList();

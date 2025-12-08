@@ -27,7 +27,7 @@
 
 #include "deoglRenderBase.h"
 
-class deoglDebugInformation;
+#include "../debug/deoglDebugInformation.h"
 
 
 

@@ -62,7 +62,7 @@ public:
 	deCamera *GetRootCamera() const;
 	
 	/** \brief Create new scene camera. */
-	deCamera *CreateCamera();
+	deCamera::Ref CreateCamera();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

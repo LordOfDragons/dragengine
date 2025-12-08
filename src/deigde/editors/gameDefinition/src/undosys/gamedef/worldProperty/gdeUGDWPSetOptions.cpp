@@ -42,7 +42,7 @@
 
 gdeUGDWPSetOptions::gdeUGDWPSetOptions(gdeGameDefinition *gamedef,
 gdeProperty *property, const decStringList &newValue) :
-pGameDefinition(NULL),
+
 pProperty(NULL)
 {
 	if(!gamedef || !property){
@@ -55,19 +55,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDWPSetOptions::~gdeUGDWPSetOptions(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

@@ -50,13 +50,9 @@ pWriter(NULL)
 	}
 	
 	pWriter = writer;
-	writer->AddReference();
 }
 
 deLoggerFile::~deLoggerFile(){
-	if(pWriter){
-		pWriter->FreeReference();
-	}
 }
 
 

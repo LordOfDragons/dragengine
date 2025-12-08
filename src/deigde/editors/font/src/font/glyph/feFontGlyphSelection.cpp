@@ -126,13 +126,11 @@ void feFontGlyphSelection::SetActiveGlyph(feFontGlyph *glyph){
 	if(glyph != pActive){
 		if(pActive){
 			pActive->SetActive(false);
-			pActive->FreeReference();
 		}
 		
 		pActive = glyph;
 		
 		if(glyph){
-			glyph->AddReference();
 			glyph->SetActive(true);
 		}
 		
@@ -143,7 +141,7 @@ void feFontGlyphSelection::SetActiveGlyph(feFontGlyph *glyph){
 void feFontGlyphSelection::ActivateNextGlyph(){
 	int g, count = pSelected.GetGlyphCount();
 	feFontGlyph *nextGlyph = NULL;
-	feFontGlyph *glyph;
+	feFontGlyph::Ref glyph;
 	
 	for(g=0; g<count; g++){
 		glyph = pSelected.GetGlyphAt(g);

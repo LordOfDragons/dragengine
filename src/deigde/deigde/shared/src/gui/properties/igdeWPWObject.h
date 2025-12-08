@@ -70,7 +70,7 @@ public:
 	private:
 		const igdeWObject::Ref pObject;
 		
-		igdeGDClass::Ref pGDClassOld, pGDClassNew;
+		igdeGDClass *pGDClassOld, pGDClassNew;
 		decDVector pPositionOld, pPositionNew;
 		decQuaternion pOrientationOld, pOrientationNew;
 		decVector pScalingOld, pScalingNew;
@@ -152,7 +152,7 @@ public:
 	
 	
 	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
 	/** \brief Set action or NULL. */
 	void SetAction(igdeAction *action);

@@ -74,13 +74,9 @@ const meObjectShapeList &list){
 	
 	pProperty = property;
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectShapeRotate::~meUObjectShapeRotate(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

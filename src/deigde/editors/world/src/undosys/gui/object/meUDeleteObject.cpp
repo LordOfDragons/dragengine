@@ -61,8 +61,6 @@ pWorld(NULL)
 	
 	try{
 		pWorld = world;
-		world->AddReference();
-		
 		for(i=0; i<count; i++){
 			pObjects.Add(meUndoDataObject::Ref::NewWith(list.GetAt(i)));
 		}
@@ -159,7 +157,4 @@ void meUDeleteObject::Redo(){
 //////////////////////
 
 void meUDeleteObject::pCleanUp(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

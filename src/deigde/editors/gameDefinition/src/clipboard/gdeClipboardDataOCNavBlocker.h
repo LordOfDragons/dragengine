@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCNavigationBlocker;
+#include "../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	
 	

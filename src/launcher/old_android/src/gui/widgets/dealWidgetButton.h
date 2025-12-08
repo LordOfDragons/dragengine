@@ -30,7 +30,7 @@
 
 class dealWidgetLabel;
 class dealWidgetImage;
-class dealWidgetBorderImage;
+#include "dealWidgetBorderImage.h"
 class dealImage;
 
 
@@ -46,8 +46,8 @@ private:
 	
 	dealWidgetLabel *pLabel;
 	dealWidgetImage *pImage;
-	dealWidgetBorderImage *pBgImageNormal;
-	dealWidgetBorderImage *pBgImagePressed;
+	dealWidgetBorderImage::Ref pBgImageNormal;
+	dealWidgetBorderImage::Ref pBgImagePressed;
 	
 	bool pPressed;
 	

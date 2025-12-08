@@ -60,13 +60,9 @@ peeUTypeMoveUp::peeUTypeMoveUp(peeType *type){
 	}
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeMoveUp::~peeUTypeMoveUp(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

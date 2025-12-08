@@ -577,15 +577,13 @@ public:
 
 saeWPSAnim::saeWPSAnim(saeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(nullptr),
-pSAnimation(nullptr)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new saeWPSAnimListener(*this);
+	pListener.TakeOver(new saeWPSAnimListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -659,10 +657,6 @@ pSAnimation(nullptr)
 
 saeWPSAnim::~saeWPSAnim(){
 	SetSAnimation(nullptr);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -677,14 +671,12 @@ void saeWPSAnim::SetSAnimation(saeSAnimation *sanimation){
 	
 	if(pSAnimation){
 		pSAnimation->RemoveListener(pListener);
-		pSAnimation->FreeReference();
 	}
 	
 	pSAnimation = sanimation;
 	
 	if(sanimation){
 		sanimation->AddListener(pListener);
-		sanimation->AddReference();
 	}
 	
 	UpdateNeutralMoveList();

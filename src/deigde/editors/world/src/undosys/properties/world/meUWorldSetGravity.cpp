@@ -39,7 +39,7 @@
 ////////////////////////////
 
 meUWorldSetGravity::meUWorldSetGravity(meWorld *world, const decVector &newValue) :
-pWorld(NULL),
+
 pNewValue(newValue)
 {
 	if(!world){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = world->GetGravity();
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUWorldSetGravity::~meUWorldSetGravity(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }
 
 

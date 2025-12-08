@@ -33,8 +33,8 @@ class decXmlContainer;
 class decXmlElement;
 class decXmlVisitor;
 class decXmlAttValue;
-class decBaseFileReader;
-class deLogger;
+#include "../file/decBaseFileReader.h"
+#include <dragengine/logger/deLogger.h>
 
 
 
@@ -57,7 +57,7 @@ class deLogger;
  */
 class decXmlParser{
 private:
-	decBaseFileReader *pFile;
+	decBaseFileReader::Ref pFile;
 	int pLine;
 	int pPos;
 	int pCurChar;
@@ -71,7 +71,7 @@ private:
 	int pFilePos;
 	int pFileLen;
 	
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	bool pHasFatalError;
 	
 	

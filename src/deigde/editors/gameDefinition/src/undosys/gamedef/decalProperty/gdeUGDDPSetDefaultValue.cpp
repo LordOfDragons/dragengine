@@ -42,7 +42,7 @@
 
 gdeUGDDPSetDefaultValue::gdeUGDDPSetDefaultValue(gdeGameDefinition *gamedef,
 	gdeProperty *property, const char *newValue, const char *oldValue) :
-pGameDefinition(NULL),
+
 pProperty(NULL)
 {
 	if(!gamedef || !property){
@@ -55,19 +55,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDDPSetDefaultValue::~gdeUGDDPSetDefaultValue(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

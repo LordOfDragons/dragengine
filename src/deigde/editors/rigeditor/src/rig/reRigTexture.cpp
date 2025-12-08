@@ -85,11 +85,6 @@ void reRigTexture::LoadSkin(){
 			// TODO needs access to igdeEnvironment to call GetErrorSkin()
 		}
 	}
-	
-	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 	pEngSkin = engSkin;
 }
 
@@ -99,7 +94,4 @@ void reRigTexture::LoadSkin(){
 //////////////////////
 
 void reRigTexture::pCleanUp(){
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 }

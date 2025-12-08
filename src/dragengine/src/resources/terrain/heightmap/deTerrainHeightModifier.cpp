@@ -44,7 +44,6 @@ deTerrainHeightModifier::deTerrainHeightModifier(deImage *heightImage){
 	pScaling = 1.0f;
 	
 	pHeightImage = heightImage;
-	heightImage->AddReference();
 }
 
 deTerrainHeightModifier::~deTerrainHeightModifier(){

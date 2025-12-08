@@ -102,22 +102,18 @@ void igdeGDCSpeakerList::RemoveAll(){
 
 void igdeGDCSpeakerList::SetToDeepCopyFrom(const igdeGDCSpeakerList &list){
 	const int count = list.GetCount();
-	igdeGDCSpeaker *speaker = NULL;
+	igdeGDCSpeaker::Ref speaker = NULL;
 	
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			speaker = new igdeGDCSpeaker(*list.GetAt(i));
+			speaker.TakeOver(new igdeGDCSpeaker(*list.GetAt(i)));
 			Add(speaker);
-			speaker->FreeReference();
 			speaker = NULL;
 		}
 		
 	}catch(const deException &){
-		if(speaker){
-			speaker->FreeReference();
-		}
 		throw;
 	}
 }

@@ -50,10 +50,7 @@ aeULinkAdd::aeULinkAdd(aeAnimator *animator, aeLink *link){
 	SetShortInfo("Add Link");
 	
 	pAnimator = animator;
-	pAnimator->AddReference();
-	
 	pLink = link;
-	pLink->AddReference();
 }
 
 aeULinkAdd::~aeULinkAdd(){

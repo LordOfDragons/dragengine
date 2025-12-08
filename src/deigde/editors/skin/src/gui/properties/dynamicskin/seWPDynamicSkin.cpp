@@ -412,15 +412,13 @@ public:
 
 seWPDynamicSkin::seWPDynamicSkin(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pSkin(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, panel, groupBox, form, formLine;
+	igdeContainer *content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPDynamicSkinListener(*this);
+	pListener.TakeOver(new seWPDynamicSkinListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -505,10 +503,6 @@ pSkin(NULL)
 
 seWPDynamicSkin::~seWPDynamicSkin(){
 	SetSkin(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -523,14 +517,12 @@ void seWPDynamicSkin::SetSkin(seSkin *skin){
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
 	if(skin){
 		skin->AddListener(pListener);
-		skin->AddReference();
 	}
 	
 	UpdateRenderableList();

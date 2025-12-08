@@ -40,8 +40,8 @@
 ////////////////////////////
 
 seUPNGroupNodes::seUPNGroupNodes(const sePropertyNodeList &nodes) :
-pParentGroup(NULL),
-pNodeGroup(NULL),
+
+
 pNodeCount(0),
 pNodes(NULL)
 {
@@ -97,7 +97,6 @@ pNodes(NULL)
 			pNodes[pNodeCount].position = node->GetPosition();
 			pNodes[pNodeCount].index = parentGroup->IndexOfNode(node);
 			pNodes[pNodeCount].node = node;
-			node->AddReference();
 		}
 		
 		for(i=1; i<pNodeCount; i++){
@@ -115,7 +114,7 @@ pNodes(NULL)
 		}
 		
 		// create node group
-		pNodeGroup = new sePropertyNodeGroup(parentGroup->GetEngine());
+		pNodeGroup.TakeOver(new sePropertyNodeGroup(parentGroup->GetEngine()));
 		decPoint rounded(minBounds.Round());
 		pNodeGroup->SetPosition(decPoint3(rounded.x, rounded.y, parentGroup->GetPosition().z));
 		
@@ -177,12 +176,6 @@ void seUPNGroupNodes::Redo(){
 //////////////////////
 
 void seUPNGroupNodes::pCleanUp(){
-	if(pNodeGroup){
-		pNodeGroup->FreeReference();
-	}
-	if(pParentGroup){
-		pParentGroup->FreeReference();
-	}
 	if(pNodes){
 		int i;
 		for(i=0; i<pNodeCount; i++){

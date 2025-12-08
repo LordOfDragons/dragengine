@@ -30,7 +30,7 @@
 #include <dragengine/systems/modules/graphic/deBaseGraphicDecal.h>
 
 class deoglDynamicSkin;
-class deoglRDecal;
+#include "deoglRDecal.h"
 class deoglComponent;
 
 class deGraphicOpenGl;
@@ -46,7 +46,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	const deDecal &pDecal;
 	
-	deoglRDecal *pRDecal;
+	deoglRDecal::Ref pRDecal;
 	
 	deoglDynamicSkin *pDynamicSkin;
 	
@@ -92,7 +92,7 @@ public:
 	
 	
 	/** Render decal. */
-	inline deoglRDecal *GetRDecal() const{ return pRDecal; }
+	inline const deoglRDecal::Ref &GetRDecal() const{ return pRDecal; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

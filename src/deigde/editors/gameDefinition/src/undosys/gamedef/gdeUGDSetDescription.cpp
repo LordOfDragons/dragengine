@@ -53,13 +53,9 @@ pGameDefinition(NULL)
 	pNewValue = newValue;
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetDescription::~gdeUGDSetDescription(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversation;
-class ceTarget;
+#include "../../conversation/ceConversation.h"
+#include "../../conversation/target/ceTarget.h"
 
 
 
@@ -37,8 +37,8 @@ class ceTarget;
  */
 class ceUCTargetAdd : public igdeUndo{
 private:
-	ceConversation *pConversation;
-	ceTarget *pTarget;
+	ceConversation::Ref pConversation;
+	ceTarget::Ref pTarget;
 	
 public:
 	/** \brief Type holding strong reference. */

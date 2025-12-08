@@ -52,25 +52,11 @@ ceUCCHasActorToggleNegate::ceUCCHasActorToggleNegate(ceConversationTopic *topic,
 	SetShortInfo("Has Actor Negate");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pHasActor = hasActor;
-	hasActor->AddReference();
 }
 
 ceUCCHasActorToggleNegate::~ceUCCHasActorToggleNegate(){
-	if(pHasActor){
-		pHasActor->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

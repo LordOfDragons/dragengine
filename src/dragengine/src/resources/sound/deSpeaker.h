@@ -157,19 +157,19 @@ public:
 	void SetType(eSpeakerType type);
 	
 	/** \brief Sound or NULL if not set. */
-	inline deSound *GetSound() const{ return pSound; }
+	inline const deSound::Ref &GetSound() const{ return pSound; }
 	
 	/** \brief Set sound or NULL if not set. */
 	void SetSound(deSound *sound);
 	
 	/** \brief Synthesizer or NULL if not set. */
-	inline deSynthesizerInstance *GetSynthesizer() const{ return pSynthesizer; }
+	inline const deSynthesizerInstance::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or NULL if not set. */
 	void SetSynthesizer(deSynthesizerInstance *synthesizer);
 	
 	/** \brief Video player or NULL if not set. */
-	inline deVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline const deVideoPlayer::Ref &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** \brief Set video player or NULL if not set. */
 	void SetVideoPlayer(deVideoPlayer *videoPlayer);

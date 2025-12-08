@@ -55,25 +55,11 @@ ceCConditionVariable *condition, const char *newVariable){
 	SetShortInfo("Condition Variable: Set Variable");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCVarSetVariable::~ceUCCVarSetVariable(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

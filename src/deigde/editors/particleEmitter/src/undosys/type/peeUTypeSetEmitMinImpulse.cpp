@@ -52,13 +52,9 @@ peeUTypeSetEmitMinImpulse::peeUTypeSetEmitMinImpulse(peeType *type, float newImp
 	pNewImpulse = newImpulse;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetEmitMinImpulse::~peeUTypeSetEmitMinImpulse(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

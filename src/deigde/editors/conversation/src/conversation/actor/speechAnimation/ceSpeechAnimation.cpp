@@ -367,10 +367,8 @@ void ceSpeechAnimation::pCleanUp(){
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetAnimator(nullptr);
 		pEngAnimatorInstance->SetComponent(nullptr);
-		pEngAnimatorInstance->FreeReference();
 	}
 	if(pEngAnimator){
 		pEngAnimator->SetRig(nullptr);
-		pEngAnimator->FreeReference();
 	}
 }

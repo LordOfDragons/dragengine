@@ -106,18 +106,13 @@ void feFontImage::SetParentFont(feFont* font){
 void feFontImage::SetSize(int width, int height){
 	if(width < 1 || height < 1) DETHROW(deeInvalidParam);
 	
-	deImage *engImage = NULL;
+	deImage::Ref engImage = NULL;
 	
 	pWidth = width;
 	pHeight = height;
 	
 	try{
 		engImage = pEngine->GetImageManager()->CreateImage(pWidth, pHeight, 1, 4, 8);
-		
-		if(pEngImage){
-			pEngImage->FreeReference();
-		}
-		
 		pEngImage = engImage;
 		engImage->RetainImageData();
 		
@@ -156,7 +151,6 @@ void feFontImage::SetSaved(bool saved){
 
 void feFontImage::LoadImage(){
 	if(pEngImage){
-		pEngImage->FreeReference();
 		pEngImage = NULL;
 	}
 	
@@ -210,7 +204,4 @@ void feFontImage::NotifyImageChanged(){
 //////////////////////
 
 void feFontImage::pCleanUp(){
-	if(pEngImage){
-		pEngImage->FreeReference();
-	}
 }

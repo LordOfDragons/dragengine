@@ -62,11 +62,11 @@ deTouchSensor *deTouchSensorManager::GetRootTouchSensor() const{
 	return (deTouchSensor*)pTouchSensors.GetRoot();
 }
 
-deTouchSensor *deTouchSensorManager::CreateTouchSensor(){
-	deTouchSensor *touchSensor = NULL;
+deTouchSensor::Ref deTouchSensorManager::CreateTouchSensor(){
+	deTouchSensor::Ref touchSensor = NULL;
 	
 	try{
-		touchSensor = new deTouchSensor(this);
+		touchSensor.TakeOver(new deTouchSensor(this));
 		if(!touchSensor) DETHROW(deeOutOfMemory);
 		
 		GetPhysicsSystem()->LoadTouchSensor(touchSensor);
@@ -75,9 +75,6 @@ deTouchSensor *deTouchSensorManager::CreateTouchSensor(){
 		pTouchSensors.Add(touchSensor);
 		
 	}catch(const deException &){
-		if(touchSensor){
-			touchSensor->FreeReference();
-		}
 		throw;
 	}
 	
@@ -101,7 +98,7 @@ void deTouchSensorManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deTouchSensorManager::SystemPhysicsLoad(){
-	deTouchSensor *touchSensor = (deTouchSensor*)pTouchSensors.GetRoot();
+	deTouchSensor::Ref touchSensor = (deTouchSensor*)pTouchSensors.GetRoot();
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
 	
 	while(touchSensor){
@@ -114,7 +111,7 @@ void deTouchSensorManager::SystemPhysicsLoad(){
 }
 
 void deTouchSensorManager::SystemPhysicsUnload(){
-	deTouchSensor *touchSensor = (deTouchSensor*)pTouchSensors.GetRoot();
+	deTouchSensor::Ref touchSensor = (deTouchSensor*)pTouchSensors.GetRoot();
 	
 	while(touchSensor){
 		touchSensor->SetPeerPhysics(NULL);
@@ -123,7 +120,7 @@ void deTouchSensorManager::SystemPhysicsUnload(){
 }
 
 void deTouchSensorManager::SystemScriptingLoad(){
-	deTouchSensor *touchSensor = (deTouchSensor*)pTouchSensors.GetRoot();
+	deTouchSensor::Ref touchSensor = (deTouchSensor*)pTouchSensors.GetRoot();
 	deScriptingSystem &scrSys = *GetScriptingSystem();
 	
 	while(touchSensor){
@@ -136,7 +133,7 @@ void deTouchSensorManager::SystemScriptingLoad(){
 }
 
 void deTouchSensorManager::SystemScriptingUnload(){
-	deTouchSensor *touchSensor = (deTouchSensor*)pTouchSensors.GetRoot();
+	deTouchSensor::Ref touchSensor = (deTouchSensor*)pTouchSensors.GetRoot();
 	
 	while(touchSensor){
 		touchSensor->SetPeerScripting(NULL);

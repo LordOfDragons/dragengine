@@ -214,7 +214,7 @@ public:
 	void PrepareShader(cShaderPreparedListener *listener);
 	
 	/** Shader or nullptr if not generated yet. */
-	inline deoglShaderProgram *GetShader() const{ return pShader; }
+	inline const deoglShaderProgram::Ref &GetShader() const{ return pShader; }
 	
 	/** Set index for light parameter uniform target or -1 if not used. */
 	void SetLightUniformTarget(eLightUniformTargets target, int index);

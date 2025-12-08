@@ -28,7 +28,7 @@
 #include "../string/decString.h"
 
 class decObjectList;
-class deObject;
+#include <dragengine/deObject.h>
 
 
 /**
@@ -39,7 +39,7 @@ private:
 	struct sDictEntry{
 		unsigned int hash;
 		decString key;
-		deObject *value;
+		deObject::Ref value;
 		sDictEntry *next;
 		
 		sDictEntry();

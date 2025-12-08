@@ -50,7 +50,7 @@
 
 ceUCTopicSetID::ceUCTopicSetID(const ceConversation &conversation,
 ceConversationTopic *topic, const char *newID) :
-pTopic(NULL),
+
 pNewID(newID)
 {
 	if(!topic || !topic->GetFile()){
@@ -82,13 +82,9 @@ pNewID(newID)
 	}
 	
 	pTopic = topic;
-	topic->AddReference();
 }
 
 ceUCTopicSetID::~ceUCTopicSetID(){
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -161,17 +157,13 @@ const char *matchTopicID, const ceConversationActionList &actions){
 		case ceConversationAction::eatSnippet:{
 			ceCASnippet * const snippet = (ceCASnippet*)action;
 			if(snippet->GetFile() == matchGroupID && snippet->GetTopic() == matchTopicID){
-				ceUndoCAction *undoCAction = NULL;
+				ceUndoCAction::Ref undoCAction = NULL;
 				try{
-					undoCAction = new ceUndoCAction(action, topic);
+					undoCAction.TakeOver(new ceUndoCAction(action, topic));
 					pSnippets.Add(undoCAction);
-					undoCAction->FreeReference();
 					undoCAction = NULL;
 					
 				}catch(const deException &){
-					if(undoCAction){
-						undoCAction->FreeReference();
-					}
 					throw;
 				}
 			}

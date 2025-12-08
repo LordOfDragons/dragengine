@@ -189,7 +189,7 @@ public:
 	
 	
 	/** \brief Sorter or NULL. */
-	inline igdeListItemSorter *GetSorter() const{ return pSorter; }
+	inline const igdeListItemSorter::Ref &GetSorter() const{ return pSorter; }
 	
 	/** \brief Set sorter or NULL. */
 	void SetSorter(igdeListItemSorter *sorter);

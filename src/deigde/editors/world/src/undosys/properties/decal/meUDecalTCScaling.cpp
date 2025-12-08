@@ -59,13 +59,9 @@ meUDecalTCScaling::meUDecalTCScaling(meDecal *decal, const decVector2 &newScalin
 	pNewScaling = newScaling;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalTCScaling::~meUDecalTCScaling(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

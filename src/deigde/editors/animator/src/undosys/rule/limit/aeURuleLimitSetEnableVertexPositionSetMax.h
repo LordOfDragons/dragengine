@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleLimit;
+#include "../../../animator/rule/aeRuleLimit.h"
 
 
 /**
@@ -35,7 +35,7 @@ class aeRuleLimit;
  */
 class aeURuleLimitSetEnableVertexPositionSetMax : public igdeUndo{
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

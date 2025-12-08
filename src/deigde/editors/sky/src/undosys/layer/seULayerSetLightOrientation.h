@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seLayer;
+#include "../../sky/layer/seLayer.h"
 
 
 /**
@@ -37,7 +37,7 @@ class seLayer;
  */
 class seULayerSetLightOrientation : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;

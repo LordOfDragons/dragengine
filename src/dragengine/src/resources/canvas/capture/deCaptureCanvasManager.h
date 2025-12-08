@@ -62,7 +62,7 @@ public:
 	deCaptureCanvas *GetRootCaptureCanvas() const;
 	
 	/** \brief Create capture canvas. */
-	deCaptureCanvas *CreateCaptureCanvas();
+	deCaptureCanvas::Ref CreateCaptureCanvas();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

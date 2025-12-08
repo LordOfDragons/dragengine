@@ -31,7 +31,7 @@
 #include <dragengine/common/string/decStringList.h>
 
 class gdeOCSpeaker;
-class gdeGameDefinition;
+#include "../../gamedef/gdeGameDefinition.h"
 class gdeWindowMain;
 
 
@@ -42,7 +42,7 @@ class gdeWindowMain;
 class gdeUGDSetBaseGameDefIDs : public igdeUndo{
 private:
 	gdeWindowMain &pWindowMain;
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decStringList pOldValue;
 	decStringList pNewValue;

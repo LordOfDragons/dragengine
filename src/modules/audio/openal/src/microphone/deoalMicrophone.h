@@ -32,7 +32,7 @@
 #include <dragengine/systems/modules/audio/deBaseAudioMicrophone.h>
 
 class deAudioOpenAL;
-class deoalAMicrophone;
+#include "deoalAMicrophone.h"
 class deoalSpeaker;
 class deoalWorld;
 
@@ -47,7 +47,7 @@ class deoalMicrophone : public deBaseAudioMicrophone{
 private:
 	deAudioOpenAL &pOal;
 	const deMicrophone &pMicrophone;
-	deoalAMicrophone *pAMicrophone;
+	deoalAMicrophone::Ref pAMicrophone;
 	
 	deoalWorld *pParentWorld;
 	bool pActive;
@@ -86,7 +86,7 @@ public:
 	inline const deMicrophone &GetMicrophone() const{ return pMicrophone; }
 	
 	/** \brief Audio microphone. */
-	inline deoalAMicrophone *GetAMicrophone() const{ return pAMicrophone; }
+	inline const deoalAMicrophone::Ref &GetAMicrophone() const{ return pAMicrophone; }
 	
 	
 	

@@ -42,8 +42,6 @@ aeURuleGroupToggleEnableVertexPositionSet::aeURuleGroupToggleEnableVertexPositio
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule group toggle enable vertex position set");
 		
 	}catch(const deException &){
@@ -75,7 +73,4 @@ void aeURuleGroupToggleEnableVertexPositionSet::Redo(){
 //////////////////////
 
 void aeURuleGroupToggleEnableVertexPositionSet::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

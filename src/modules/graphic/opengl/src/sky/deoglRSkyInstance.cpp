@@ -49,7 +49,6 @@
 deoglRSkyInstance::deoglRSkyInstance(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 pParentWorld(NULL),
-pRSky(NULL),
 pOrder(0),
 pPassthroughTransparency(0.0f),
 pControllerStates(NULL),
@@ -75,10 +74,6 @@ deoglRSkyInstance::~deoglRSkyInstance(){
 	
 	if(pControllerStates){
 		delete [] pControllerStates;
-	}
-	
-	if(pRSky){
-		pRSky->FreeReference();
 	}
 }
 
@@ -106,17 +101,7 @@ void deoglRSkyInstance::SetRSky(deoglRSky *rsky){
 	if(rsky == pRSky){
 		return;
 	}
-	
-	if(pRSky){
-		pRSky->FreeReference();
-	}
-	
 	pRSky = rsky;
-	
-	if(rsky){
-		rsky->AddReference();
-	}
-	
 	RebuildLayers();
 }
 

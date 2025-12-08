@@ -31,7 +31,7 @@
 class deBaseAudioModule;
 class deComponent;
 class deDecal;
-class deMicrophone;
+#include "../resources/sound/deMicrophone.h"
 class deModel;
 class deSkin;
 class deSound;
@@ -52,7 +52,7 @@ class deHeightTerrain;
 class DE_DLL_EXPORT deAudioSystem : public deBaseSystem{
 private:
 	deBaseAudioModule *pActiveModule;
-	deMicrophone *pActiveMic;
+	deMicrophone::Ref pActiveMic;
 	
 	
 	
@@ -74,7 +74,7 @@ public:
 	inline deBaseAudioModule *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Active microphone. */
-	inline deMicrophone *GetActiveMicrophone() const{ return pActiveMic; }
+	inline const deMicrophone::Ref &GetActiveMicrophone() const{ return pActiveMic; }
 	
 	/** \brief Set active microphone or NULL to unset it. */
 	void SetActiveMicrophone(deMicrophone *microphone);

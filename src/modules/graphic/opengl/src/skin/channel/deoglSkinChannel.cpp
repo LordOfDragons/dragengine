@@ -95,11 +95,6 @@ pTextureType(ett2d),
 
 pIsCached(false),
 pCanBeCached(false),
-pCacheVerify(NULL),
-pCacheConstrDefSource1(NULL),
-pCacheConstrDefSource2(NULL),
-pCacheConstrVerifySource1(NULL),
-pCacheConstrVerifySource2(NULL),
 
 pDelayedCombineImage1(NULL),
 pDelayedCombineImage2(NULL),
@@ -131,23 +126,6 @@ deoglSkinChannel::~deoglSkinChannel(){
 	}
 	if(pTexture){
 		delete pTexture;
-	}
-	
-	if(pCacheConstrDefSource1){
-		pCacheConstrDefSource1->FreeReference();
-	}
-	if(pCacheConstrDefSource2){
-		pCacheConstrDefSource2->FreeReference();
-	}
-	if(pCacheConstrVerifySource1){
-		pCacheConstrVerifySource1->FreeReference();
-	}
-	if(pCacheConstrVerifySource2){
-		pCacheConstrVerifySource2->FreeReference();
-	}
-	
-	if(pCacheVerify){
-		pCacheVerify->FreeReference();
 	}
 }
 
@@ -363,24 +341,19 @@ void deoglSkinChannel::BuildChannel(const deSkinTexture &engTexture){
 
 void deoglSkinChannel::ClearCacheData(){
 	if(pCacheVerify){
-		pCacheVerify->FreeReference();
 		pCacheVerify = NULL;
 	}
 	
 	if(pCacheConstrDefSource1){
-		pCacheConstrDefSource1->FreeReference();
 		pCacheConstrDefSource1 = NULL;
 	}
 	if(pCacheConstrDefSource2){
-		pCacheConstrDefSource2->FreeReference();
 		pCacheConstrDefSource2 = NULL;
 	}
 	if(pCacheConstrVerifySource1){
-		pCacheConstrVerifySource1->FreeReference();
 		pCacheConstrVerifySource1 = NULL;
 	}
 	if(pCacheConstrVerifySource2){
-		pCacheConstrVerifySource2->FreeReference();
 		pCacheConstrVerifySource2 = NULL;
 	}
 	
@@ -1356,10 +1329,10 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 			return;
 		}
 		
-		pCacheConstrDefSource2 = new decMemoryFile("");
+		pCacheConstrDefSource2.TakeOver(new decMemoryFile(""));
 		memoryFileDef = pCacheConstrDefSource2;
 		
-		pCacheConstrVerifySource2 = new decMemoryFile("");
+		pCacheConstrVerifySource2.TakeOver(new decMemoryFile(""));
 		memoryFileVerify = pCacheConstrVerifySource2;
 		
 	}else{
@@ -1368,10 +1341,10 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 			return;
 		}
 		
-		pCacheConstrDefSource1 = new decMemoryFile("");
+		pCacheConstrDefSource1.TakeOver(new decMemoryFile(""));
 		memoryFileDef = pCacheConstrDefSource1;
 		
-		pCacheConstrVerifySource1 = new decMemoryFile("");
+		pCacheConstrVerifySource1.TakeOver(new decMemoryFile(""));
 		memoryFileVerify = pCacheConstrVerifySource1;
 	}
 	
@@ -1810,13 +1783,13 @@ void deoglSkinChannel::pBuildCacheVerify(){
 	}
 	
 	if(!pCacheVerify){
-		pCacheVerify = new decMemoryFile("");
+		pCacheVerify.TakeOver(new decMemoryFile(""));
 	}
 	
-	decMemoryFileWriter *writer = NULL;
+	decMemoryFileWriter::Ref writer = NULL;
 	
 	try{
-		writer = new decMemoryFileWriter(pCacheVerify, false);
+		writer.TakeOver(new decMemoryFileWriter(pCacheVerify, false));
 		
 		// source 1 verify
 		if(pDelayedCombineImage1){
@@ -1857,13 +1830,7 @@ void deoglSkinChannel::pBuildCacheVerify(){
 				writer->Write(pCacheConstrVerifySource2->GetPointer(), pCacheConstrVerifySource2->GetLength());
 			}
 		}
-		
-		writer->FreeReference();
-		
 	}catch(const deException &){
-		if(writer){
-			writer->FreeReference();
-		}
 		throw;
 	}
 	

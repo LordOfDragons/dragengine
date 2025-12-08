@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCSnapPoint;
+#include "../../../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 
 
 /**
@@ -35,7 +35,7 @@ class gdeOCSnapPoint;
  */
 class gdeWPSTIMOCSnapPoint : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCSnapPoint *pSnapPoint;
+	gdeOCSnapPoint::Ref pSnapPoint;
 	int pIndex;
 	
 	
@@ -58,7 +58,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Snap point. */
-	inline gdeOCSnapPoint *GetOCSnapPoint() const{ return pSnapPoint; }
+	inline const gdeOCSnapPoint::Ref &GetOCSnapPoint() const{ return pSnapPoint; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

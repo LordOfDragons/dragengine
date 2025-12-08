@@ -610,8 +610,7 @@ public:
 
 reView3D::reView3D(reWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pRig(NULL)
+pWindowMain(windowMain)
 {
 	pCameraInteraction.TakeOver(new cCameraInteraction(*this));
 	pSimulationInteraction.TakeOver(new cSimulationInteraction(*this));
@@ -653,16 +652,9 @@ void reView3D::SetRig(reRig *rig){
 	pRotateInteraction->Cancel();
 	
 	SetRenderWorld(NULL);
-	
-	if(pRig){
-		pRig->FreeReference();
-	}
-	
 	pRig = rig;
 	
 	if(rig){
-		rig->AddReference();
-		
 		if(rig->GetCamera()){
 			SetRenderWorld(rig->GetCamera()->GetEngineCamera());
 			pCameraInteraction->SetCamera(rig->GetCamera());

@@ -106,16 +106,9 @@
 reWindowMain::reWindowMain(reIGDEModule &module) :
 igdeEditorWindow(module),
 
-pListener(NULL),
-
 pConfiguration(NULL),
 pClipboard(NULL),
-pLoadSaveSystem(NULL),
-
-pView3D(NULL),
-pWindowProperties(NULL),
-
-pRig(NULL)
+pLoadSaveSystem(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -123,7 +116,7 @@ pRig(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new reWindowMainListener(*this);
+	pListener.TakeOver(new reWindowMainListener(*this));
 	pLoadSaveSystem = new reLoadSaveSystem(*this);
 	pConfiguration = new reConfiguration(*this);
 	pClipboard = new reClipboard;
@@ -138,10 +131,10 @@ pRig(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	AddChild(splitted);
 	
-	pWindowProperties = new reWindowProperties(*this);
+	pWindowProperties.TakeOver(new reWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pView3D = new reView3D(*this);
+	pView3D.TakeOver(new reView3D(*this));
 	splitted->AddChild(pView3D, igdeContainerSplitted::eaCenter);
 	
 	CreateNewRig();
@@ -159,11 +152,9 @@ reWindowMain::~reWindowMain(){
 	SetRig(NULL);
 	
 	if(pWindowProperties){
-		pWindowProperties->FreeReference();
 		pWindowProperties = NULL;
 	}
 	if(pView3D){
-		pView3D->FreeReference();
 		pView3D = NULL;
 	}
 	
@@ -172,9 +163,6 @@ reWindowMain::~reWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -206,13 +194,11 @@ void reWindowMain::SetRig(reRig *rig){
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
 		pRig->Dispose();
-		pRig->FreeReference();
 	}
 	
 	pRig = rig;
 	
 	if(rig){
-		rig->AddReference();
 		rig->AddNotifier(pListener);
 		
 		pActionEditUndo->SetUndoSystem(rig->GetUndoSystem());

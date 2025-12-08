@@ -39,7 +39,7 @@
 ////////////////////////////
 
 seUPropertyNodeSetShear::seUPropertyNodeSetShear(sePropertyNode *node, float newValue) :
-pNode(NULL),
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = node->GetShearing();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetShear::~seUPropertyNodeSetShear(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

@@ -48,13 +48,9 @@ pProperty(NULL)
 	SetShortInfo("Property constructed tile Y");
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertyConstructedToggleTileY::~seUPropertyConstructedToggleTileY(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

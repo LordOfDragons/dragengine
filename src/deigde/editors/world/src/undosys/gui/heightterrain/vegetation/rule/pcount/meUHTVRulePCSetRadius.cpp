@@ -53,9 +53,7 @@ meUHTVRulePCSetRadius::meUHTVRulePCSetRadius(meHTVegetationLayer *vlayer, meHTVR
 	pNewRadius = nradius;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRulePCSetRadius::~meUHTVRulePCSetRadius(){

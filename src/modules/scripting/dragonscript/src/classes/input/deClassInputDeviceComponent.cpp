@@ -52,7 +52,7 @@
 /////////////////////
 
 struct sIDComponentNatDat{
-	dedsInputDevice *device;
+	dedsInputDevice::Ref device;
 	int componentIndex;
 };
 
@@ -343,6 +343,5 @@ void deClassInputDeviceComponent::PushComponent(dsRunTime *rt, dedsInputDevice *
 	sIDComponentNatDat &nd = *((sIDComponentNatDat*)p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.device = device;
-	device->AddReference();
 	nd.componentIndex = index;
 }

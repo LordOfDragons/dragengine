@@ -30,14 +30,14 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
 
-class meObject;
+#include "meObject.h"
 class meWorld;
 
 class igdeEnvironment;
 class igdeWConnection;
 
 class deEngine;
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deDebugDrawerShape;
 
 
@@ -55,11 +55,11 @@ private:
 	igdeEnvironment *pEnvironment;
 	meWorld *pWorld;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWConnection *pDDSConnection;
 	
-	meObject *pAnchor;
-	meObject *pTarget;
+	meObject::Ref pAnchor;
+	meObject::Ref pTarget;
 	decString pAnchorProperty;
 	decString pTargetProperty;
 	
@@ -77,9 +77,9 @@ public:
 	/** \brief Retrieves the environment. */
 	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	/** \brief Retrieves the anchor object. */
-	inline meObject *GetAnchor() const{ return pAnchor; }
+	inline const meObject::Ref &GetAnchor() const{ return pAnchor; }
 	/** \brief Retrieves the target object. */
-	inline meObject *GetTarget() const{ return pTarget; }
+	inline const meObject::Ref &GetTarget() const{ return pTarget; }
 	
 	/** \brief Retrieves the anchor property name. */
 	inline const decString &GetAnchorProperty() const{ return pAnchorProperty; }

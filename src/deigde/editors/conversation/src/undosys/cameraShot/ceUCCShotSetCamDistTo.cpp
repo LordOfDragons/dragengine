@@ -50,13 +50,9 @@ ceUCCShotSetCamDistTo::ceUCCShotSetCamDistTo(ceCameraShot *cameraShot, float new
 	pNewDist = newDist;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetCamDistTo::~ceUCCShotSetCamDistTo(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

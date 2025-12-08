@@ -151,7 +151,7 @@ public:
 	bool IsRuntimeRunning();
 	
 	/** \brief Camera to render on head mounted display or nullptr. */
-	inline deCamera *GetCamera() const{ return pCamera; }
+	inline const deCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/**
 	 * \brief Set camera to render on head mounted display.

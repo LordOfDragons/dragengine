@@ -50,13 +50,9 @@ ceUCTargetSetEntityID::ceUCTargetSetEntityID(ceTarget *target, const char *newID
 	pNewID = newID;
 	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetSetEntityID::~ceUCTargetSetEntityID(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 

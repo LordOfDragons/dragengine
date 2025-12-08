@@ -31,7 +31,7 @@
 class deLogger;
 class decBaseFileWriter;
 class decBaseFileReader;
-class deVirtualFileSystem;
+#include "deVirtualFileSystem.h"
 
 
 /**
@@ -67,7 +67,7 @@ public:
 	
 	
 private:
-	deVirtualFileSystem *pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	decPath pCachePath;
 	
 	decStringList pMapping;

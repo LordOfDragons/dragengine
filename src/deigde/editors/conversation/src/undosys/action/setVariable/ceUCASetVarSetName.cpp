@@ -52,19 +52,10 @@ ceUCASetVarSetName::ceUCASetVarSetName(ceConversationTopic *topic, ceCASetVariab
 	SetShortInfo("SetVariable Name");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCASetVarSetName::~ceUCASetVarSetName(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

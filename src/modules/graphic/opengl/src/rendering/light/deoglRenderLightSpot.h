@@ -178,10 +178,10 @@ public:
 	
 	
 	/** Debug information solid lighting. */
-	inline deoglDebugInformation *GetDebugInfoSolid() const{ return pDebugInfoSolid; }
+	inline const deoglDebugInformation::Ref &GetDebugInfoSolid() const{ return pDebugInfoSolid; }
 	
 	/** Debug information transparent lighting. */
-	inline deoglDebugInformation *GetDebugInfoTransparent() const{ return pDebugInfoTransparent; }
+	inline const deoglDebugInformation::Ref &GetDebugInfoTransparent() const{ return pDebugInfoTransparent; }
 	
 	
 	

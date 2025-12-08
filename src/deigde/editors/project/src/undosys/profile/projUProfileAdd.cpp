@@ -41,7 +41,7 @@
 ////////////////////////////
 
 projUProfileAdd::projUProfileAdd(projProject *project, projProfile *profile) :
-pProject(NULL),
+
 pProfile(NULL)
 {
 	if(!project || !profile){
@@ -51,19 +51,10 @@ pProfile(NULL)
 	SetShortInfo("Add profile");
 	
 	pProfile = profile;
-	profile->AddReference();
-	
 	pProject = project;
-	project->AddReference();
 }
 
 projUProfileAdd::~projUProfileAdd(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 

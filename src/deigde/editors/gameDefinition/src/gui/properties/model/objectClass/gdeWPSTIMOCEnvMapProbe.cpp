@@ -48,8 +48,7 @@
 
 gdeWPSTIMOCEnvMapProbe::gdeWPSTIMOCEnvMapProbe(gdeWPSTreeModel &tree,
 	gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe, int index) :
-gdeWPSTIMOCSubObject(tree, etObjectClassEnvMapProbe, objectClass, index),
-pEnvMapProbe(NULL)
+gdeWPSTIMOCSubObject(tree, etObjectClassEnvMapProbe, objectClass, index)
 {
 	if(!envMapProbe){
 		DETHROW(deeInvalidParam);
@@ -62,13 +61,9 @@ pEnvMapProbe(NULL)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
 }
 
 gdeWPSTIMOCEnvMapProbe::~gdeWPSTIMOCEnvMapProbe(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
 }
 
 

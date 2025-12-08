@@ -78,10 +78,10 @@ public:
 	inline ceWindowDopeSheet &GetWindow() const{ return pWindow; }
 	
 	/** \brief Canvas. */
-	inline deCanvasView *GetCanvas() const{ return pCanvas; }
+	inline const deCanvasView::Ref &GetCanvas() const{ return pCanvas; }
 	
 	/** \brief Mouse listener. */
-	inline igdeMouseKeyListener *GetMouseKeyListener() const{ return pMouseKeyListener; }
+	inline const igdeMouseKeyListener::Ref &GetMouseKeyListener() const{ return pMouseKeyListener; }
 	
 	
 	

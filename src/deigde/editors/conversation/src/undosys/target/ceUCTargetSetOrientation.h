@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceTarget;
+#include "../../conversation/target/ceTarget.h"
 
 
 
@@ -38,7 +38,7 @@ class ceTarget;
  */
 class ceUCTargetSetOrientation : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;

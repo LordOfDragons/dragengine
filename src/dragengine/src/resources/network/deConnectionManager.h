@@ -62,7 +62,7 @@ public:
 	deConnection *GetRootConnection() const;
 	
 	/** \brief Create connection. */
-	deConnection *CreateConnection();
+	deConnection::Ref CreateConnection();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

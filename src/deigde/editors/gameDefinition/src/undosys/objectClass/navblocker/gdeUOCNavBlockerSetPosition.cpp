@@ -42,7 +42,7 @@
 
 gdeUOCNavBlockerSetPosition::gdeUOCNavBlockerSetPosition(gdeObjectClass *objectClass,
 gdeOCNavigationBlocker *navblocker, const decVector &newValue) :
-pObjectClass(NULL),
+
 pNavBlocker(NULL)
 {
 	if(!objectClass || !navblocker){
@@ -55,19 +55,10 @@ pNavBlocker(NULL)
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetPosition::~gdeUOCNavBlockerSetPosition(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

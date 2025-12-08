@@ -41,7 +41,7 @@
 
 lpeULangPackEntrySetText::lpeULangPackEntrySetText(
 	lpeLangPackEntry *entry, const decUnicodeString &newName) :
-pEntry(NULL),
+
 pNewText(newName)
 {
 	if(!entry){
@@ -53,13 +53,9 @@ pNewText(newName)
 	pOldText = entry->GetText();
 	
 	pEntry = entry;
-	entry->AddReference();
 }
 
 lpeULangPackEntrySetText::~lpeULangPackEntrySetText(){
-	if(pEntry){
-		pEntry->FreeReference();
-	}
 }
 
 

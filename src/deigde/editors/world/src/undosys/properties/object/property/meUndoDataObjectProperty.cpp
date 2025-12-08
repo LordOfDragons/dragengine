@@ -40,7 +40,7 @@
 ////////////////////////////
 
 meUndoDataObjectProperty::meUndoDataObjectProperty(meObject *object) :
-pObject(NULL),
+
 pPropertyExists(false)
 {
 	if(!object){
@@ -48,14 +48,10 @@ pPropertyExists(false)
 	}
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUndoDataObjectProperty::~meUndoDataObjectProperty(){
 	pOldProperties.RemoveAll();
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

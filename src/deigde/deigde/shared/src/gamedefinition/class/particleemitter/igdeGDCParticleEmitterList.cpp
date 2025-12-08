@@ -102,22 +102,18 @@ void igdeGDCParticleEmitterList::RemoveAll(){
 
 void igdeGDCParticleEmitterList::SetToDeepCopyFrom(const igdeGDCParticleEmitterList &list){
 	const int count = list.GetCount();
-	igdeGDCParticleEmitter *emitter = NULL;
+	igdeGDCParticleEmitter::Ref emitter = NULL;
 	
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			emitter = new igdeGDCParticleEmitter(*list.GetAt(i));
+			emitter.TakeOver(new igdeGDCParticleEmitter(*list.GetAt(i)));
 			Add(emitter);
-			emitter->FreeReference();
 			emitter = NULL;
 		}
 		
 	}catch(const deException &){
-		if(emitter){
-			emitter->FreeReference();
-		}
 		throw;
 	}
 }

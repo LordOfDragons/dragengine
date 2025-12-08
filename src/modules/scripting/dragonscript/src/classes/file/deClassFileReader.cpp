@@ -43,7 +43,7 @@
 
 
 struct sFReadNatDat{
-	decBaseFileReader *fileReader;
+	decBaseFileReader::Ref fileReader;
 	int streamVersion;
 };
 
@@ -523,5 +523,4 @@ void deClassFileReader::PushFileReader(dsRunTime *rt, decBaseFileReader *fileRea
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sFReadNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->fileReader = fileReader;
-	fileReader->AddReference();
 }

@@ -56,8 +56,6 @@ pLabel(NULL),
 pImage(NULL),
 pBoxImageDeselected(NULL),
 pBoxImageSelected(NULL),
-
-pGroup(NULL),
 pSelected(false)
 {
 	SetGap(display.GetDefaultFontSize() / 4);
@@ -138,12 +136,10 @@ void dealWidgetOptionBox::SetGroup(dealWidgetOptionGroup *group){
 	
 	if(pGroup){
 		pGroup->Remove(this);
-		pGroup->FreeReference();
 	}
 	
 	if(group){
 		group->Add(this);
-		group->AddReference();
 	}
 	
 	pGroup = group;

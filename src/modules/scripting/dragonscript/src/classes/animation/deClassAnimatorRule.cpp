@@ -69,8 +69,8 @@
 
 // native structure
 struct sArRNatDat{
-	deAnimator *animator;
-	deAnimatorRule *rule;
+	deAnimator::Ref animator;
+	deAnimatorRule::Ref rule;
 };
 
 
@@ -247,7 +247,7 @@ void deClassAnimatorRule::nfCopyBonesFrom::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deAnimatorRule *rule = clsArR.GetRule(rt->GetValue(0)->GetRealObject());
+	const deAnimatorRule::Ref rule = clsArR.GetRule(rt->GetValue(0)->GetRealObject());
 	if(!rule){
 		DSTHROW(dueNullPointer);
 	}
@@ -311,7 +311,7 @@ void deClassAnimatorRule::nfCopyVertexPositionSetsFrom::RunFunction(dsRunTime *r
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deAnimatorRule *rule = clsArR.GetRule(rt->GetValue(0)->GetRealObject());
+	const deAnimatorRule::Ref rule = clsArR.GetRule(rt->GetValue(0)->GetRealObject());
 	if(!rule){
 		DSTHROW(dueNullPointer);
 	}
@@ -406,10 +406,6 @@ void deClassAnimatorRule::AssignRule(dsRealObject *myself, deAnimatorRule *rule)
 	}
 	
 	nd.rule = rule;
-	
-	if(rule){
-		rule->AddReference();
-	}
 }
 
 void deClassAnimatorRule::AssignAnimator(dsRealObject *myself, deAnimator *animator){
@@ -428,10 +424,6 @@ void deClassAnimatorRule::AssignAnimator(dsRealObject *myself, deAnimator *anima
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
 void deClassAnimatorRule::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRule *rule){

@@ -265,7 +265,7 @@ deoglSharedVBOBlock *deoglSharedVBO::AddBlock(int size, int indexCount){
 	}
 	
 	const int index = IndexOfEmptyBlockWithMinSize(size, indexCount);
-	deoglSharedVBOBlock *block = NULL;
+	deoglSharedVBOBlock::Ref block = NULL;
 	
 	if(index != -1){
 		block = (deoglSharedVBOBlock*)pBlocks.GetAt(index);
@@ -287,11 +287,6 @@ deoglSharedVBOBlock *deoglSharedVBO::AddBlock(int size, int indexCount){
 		UpdateUsedSizes();
 		pDirty = true;
 	}
-	
-	if(block){
-		block->AddReference();
-	}
-	
 	return block;
 }
 

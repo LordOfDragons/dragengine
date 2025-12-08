@@ -91,8 +91,6 @@ pNavSpaceChanged(false),
 pNavSpaceSaved(false),
 
 pActive(false),
-
-pDDTypeFaces(NULL),
 pBulkUpdate(false)
 {
 	try{
@@ -746,10 +744,6 @@ void meHeightTerrainNavSpace::pCleanUp(){
 	SetHTSector(NULL);
 	
 	RemoveAllTypes();
-	
-	if(pDDTypeFaces){
-		pDDTypeFaces->FreeReference();
-	}
 }
 
 

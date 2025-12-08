@@ -41,7 +41,7 @@
 
 peeUTypeSetEmitController::peeUTypeSetEmitController(peeType *type,
 deParticleEmitterType::eEmitControllers controller, const char *newTarget) :
-pType(NULL),
+
 pController(controller),
 pNewTarget(newTarget)
 {
@@ -54,13 +54,9 @@ pNewTarget(newTarget)
 	pOldTarget = type->GetEmitController(controller);
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetEmitController::~peeUTypeSetEmitController(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

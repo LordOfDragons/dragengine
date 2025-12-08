@@ -32,10 +32,10 @@
 #include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
-class gdeWPSelectionListener;
+#include "gdeWPSelectionListener.h"
 class gdeWPSObjectClass;
 class gdeWindowProperties;
-class gdeGameDefinition;
+#include "../../gamedef/gdeGameDefinition.h"
 
 class gdeWPSTreeModel;
 
@@ -46,9 +46,9 @@ class gdeWPSTreeModel;
 class gdeWPSelection : public igdeContainerSplitted{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSelectionListener *pListener;
+	gdeWPSelectionListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeSwitcher::Ref pSwitcher;
 	igdeTreeList::Ref pTreeObjects;
@@ -94,7 +94,7 @@ public:
 	inline gdeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Game definition or \em NULL if not present. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not present. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

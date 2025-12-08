@@ -53,9 +53,7 @@ meUHTVRuleResultSetProb::meUHTVRuleResultSetProb(meHTVegetationLayer *vlayer, me
 	pNewProb = nprob;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleResultSetProb::~meUHTVRuleResultSetProb(){

@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUObjectPropertyCopyToSelected::meUObjectPropertyCopyToSelected(const meObjectList &list, const char *key, const char *value){
-	meUndoDataObjectProperty *undoData = NULL;
+	meUndoDataObjectProperty::Ref undoData = NULL;
 	const int count = list.GetCount();
 	meObject *object;
 	int i;
@@ -63,21 +63,17 @@ meUObjectPropertyCopyToSelected::meUObjectPropertyCopyToSelected(const meObjectL
 			
 			const decStringDictionary &properties= object->GetProperties();
 			
-			undoData = new meUndoDataObjectProperty(object);
+			undoData.TakeOver(new meUndoDataObjectProperty(object));
 			undoData->SetPropertyExists(properties.Has(key));
 			if(undoData->GetPropertyExists()){
 				undoData->SetOldValue(properties.GetAt(key));
 			}
 			
 			pList.Add(undoData);
-			undoData->FreeReference();
 			undoData = NULL;
 		}
 		
 	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}

@@ -52,13 +52,9 @@ peeUEmitterSetBurstLifetime::peeUEmitterSetBurstLifetime(peeEmitter *emitter, fl
 	pNewLifetime = newLifetime;
 	
 	pEmitter = emitter;
-	emitter->AddReference();
 }
 
 peeUEmitterSetBurstLifetime::~peeUEmitterSetBurstLifetime(){
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

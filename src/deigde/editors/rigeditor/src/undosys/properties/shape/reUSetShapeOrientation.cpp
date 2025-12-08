@@ -43,12 +43,9 @@ reUSetShapeOrientation::reUSetShapeOrientation(reRigShape *shape, const decVecto
 	pNewOrientation = newOrientation;
 	
 	SetShortInfo("Set Shape Rotation");
-	
-	pShape->AddReference();
 }
 
 reUSetShapeOrientation::~reUSetShapeOrientation(){
-	pShape->FreeReference();
 }
 
 

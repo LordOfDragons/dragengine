@@ -300,17 +300,12 @@ bool deLibraryModule::pLoadLibrary(const char *filename){
 }
 
 void deLibraryModule::pLoadXML(const char* filename){
-	decDiskFileReader *reader = NULL;
+	decDiskFileReader::Ref reader = NULL;
 	
 	try{
-		reader = new decDiskFileReader(filename);
+		reader.TakeOver(new decDiskFileReader(filename));
 		pParseXML(filename, *reader);
-		reader->FreeReference();
-		
 	}catch(const deException &){
-		if(reader){
-			reader->FreeReference();
-		}
 		throw;
 	}
 	

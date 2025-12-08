@@ -42,8 +42,7 @@
 ////////////////////////////
 
 deoglRDSRenderableVideoFrame::deoglRDSRenderableVideoFrame(deoglRDynamicSkin &dynamicSkin) :
-deoglRDSRenderable(etVideoFrame, dynamicSkin),
-pVideoPlayer(NULL)
+deoglRDSRenderable(etVideoFrame, dynamicSkin)
 {
 	LEAK_CHECK_CREATE(dynamicSkin.GetRenderThread(), DSRenderableVideoFrame);
 }
@@ -62,16 +61,7 @@ void deoglRDSRenderableVideoFrame::SetVideoPlayer(deoglRVideoPlayer *videoPlayer
 	if(videoPlayer == pVideoPlayer){
 		return;
 	}
-	
-	if(pVideoPlayer){
-		pVideoPlayer->FreeReference();
-	}
-	
 	pVideoPlayer = videoPlayer;
-	
-	if(videoPlayer){
-		videoPlayer->AddReference();
-	}
 }
 
 void deoglRDSRenderableVideoFrame::PrepareForRender(const deoglRenderPlanMasked *){

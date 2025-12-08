@@ -126,7 +126,6 @@ pParentWorld(nullptr),
 pDirtyMatrix(true),
 pDirtyExtends(true),
 pGhostObject(nullptr),
-pDebugDrawer(nullptr),
 pDDSShape(nullptr)
 {
 	try{
@@ -1025,8 +1024,6 @@ void debpTouchSensor::UpdateDebugDrawer(){
 			}
 			
 			pDDSShape = NULL;
-			
-			pDebugDrawer->FreeReference();
 			pDebugDrawer = NULL;
 		}
 	}
@@ -1048,10 +1045,6 @@ void debpTouchSensor::UpdateDDSShape(){
 
 void debpTouchSensor::pCleanUp(){
 	pClearTracking();
-	
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
 	if(pGhostObject){
 		delete pGhostObject;
 	}

@@ -267,7 +267,7 @@ seWPAPanelSource(wpSource, deSynthesizerSourceVisitorIdentify::estChain)
 {
 	igdeEnvironment &env = wpSource.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref groupBox, form;
+	igdeContainer *groupBox, form;
 	
 	
 	pActionSoundAdd.TakeOver(new cActionSoundAdd(*this));

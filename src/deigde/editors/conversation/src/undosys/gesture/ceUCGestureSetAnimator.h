@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceGesture;
+#include "../../conversation/gesture/ceGesture.h"
 
 
 
@@ -36,7 +36,7 @@ class ceGesture;
  */
 class ceUCGestureSetAnimator : public igdeUndo{
 private:
-	ceGesture *pGesture;
+	ceGesture::Ref pGesture;
 	
 	decString pOldAnimator;
 	decString pNewAnimator;

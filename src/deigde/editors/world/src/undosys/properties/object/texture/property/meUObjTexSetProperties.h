@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringDictionary.h>
 
-class meObjectTexture;
+#include "../../../../../world/object/texture/meObjectTexture.h"
 
 
 
@@ -38,7 +38,7 @@ class meObjectTexture;
  */
 class meUObjTexSetProperties : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;
 	

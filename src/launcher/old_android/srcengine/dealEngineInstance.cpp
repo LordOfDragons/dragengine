@@ -110,16 +110,11 @@ dealIEngineInstance *CreateEngine(android_app *androidApp){
 dealEngineInstance::dealEngineInstance(android_app &androidApp) :
 pAndroidApp(androidApp),
 
-pLogger(NULL),
-
 pEngineAsset(NULL),
 pEngineAssetFileDescriptor(-1),
-pOSFileSystem(NULL),
 
 pOSAndroid(NULL),
-pEngine(NULL),
-
-pDelga(NULL){
+pEngine(NULL){
 }
 
 dealEngineInstance::~dealEngineInstance(){
@@ -513,24 +508,17 @@ bool dealEngineInstance::OpenDelga(int fileDescriptor, long fileOffset, long fil
 	pLogger->LogInfoFormat(LOGSOURCE, "Open DELGA: fd=%d offset=%ld len=%ld",
 		fileDescriptor, fileOffset, fileLength);
 	
-	dealFDFileReader *fileReader = NULL;
+	dealFDFileReader::Ref fileReader = NULL;
 	decPath pathRoot;
 	pathRoot.SetFromUnix("/");
 	
 	try{
-		fileReader = new dealFDFileReader("DELGA", fileDescriptor, fileOffset, fileLength);
+		fileReader.TakeOver(new dealFDFileReader("DELGA", fileDescriptor, fileOffset, fileLength));
 		
-		pDelga = new dealVFSZipArchive(*this, fileReader, pathRoot);
-		fileReader->FreeReference();
+		pDelga.TakeOver(new dealVFSZipArchive(*this, fileReader, pathRoot));
 		fileReader = NULL;
 		
 	}catch(const deException &e){
-		if(pDelga){
-			pDelga->FreeReference();
-		}
-		if(fileReader){
-			fileReader->FreeReference();
-		}
 		pLogger->LogErrorFormat(LOGSOURCE, "OpenDelga: fd=%d offset=%ld len=%ld",
 			fileDescriptor, fileOffset, fileLength);
 		pLogger->LogException(LOGSOURCE, e);
@@ -551,22 +539,17 @@ bool dealEngineInstance::VFSAddDiskDir(const char *vfsRoot, const char *nativeDi
 		vfsRoot, nativeDirectory, readOnly ? 't' : 'n');
 	
 	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
-	deVFSDiskDirectory *container = NULL;
+	deVFSDiskDirectory::Ref container = NULL;
 	decPath pathRoot, pathDisk;
 	
 	try{
 		pathRoot.SetFromUnix(vfsRoot);
 		pathDisk.SetFromNative(nativeDirectory);
 		
-		container = new deVFSDiskDirectory(pathRoot, pathDisk);
+		container.TakeOver(new deVFSDiskDirectory(pathRoot, pathDisk));
 		container->SetReadOnly(readOnly);
 		vfs.AddContainer(container);
-		container->FreeReference();
-		
 	}catch(const deException &e){
-		if(container){
-			container->FreeReference();
-		}
 		pLogger->LogErrorFormat(LOGSOURCE, "VFSAddDiskDir(root=%s,disk=%s,ro=%c):",
 			vfsRoot, nativeDirectory, readOnly ? 't' : 'n');
 		pLogger->LogException(LOGSOURCE, e);
@@ -611,14 +594,9 @@ bool dealEngineInstance::VFSAddDelga(const char *vfsRoot, const char *vfsBase){
 		pathRoot.SetFromUnix(vfsRoot);
 		pathBase.SetFromUnix(vfsBase);
 		
-		container = new deVFSRedirect(pathRoot, pathBase, pDelga);
+		container.TakeOver(new deVFSRedirect(pathRoot, pathBase, pDelga));
 		pEngine->GetVirtualFileSystem()->AddContainer(container);
-		container->FreeReference();
-		
 	}catch(const deException &e){
-		if(container){
-			container->FreeReference();
-		}
 		pLogger->LogErrorFormat(LOGSOURCE, "VFSAddDelga: root=%s base=%s", vfsRoot, vfsBase);
 		pLogger->LogException(LOGSOURCE, e);
 		return false;
@@ -642,14 +620,9 @@ bool dealEngineInstance::VFSAddRedirect(const char *root, const char *redirect){
 		pathRoot.SetFromUnix(root);
 		pathRedirect.SetFromNative(redirect);
 		
-		container = new deVFSRedirect(pathRoot, pathRedirect, vfs, false);
+		container.TakeOver(new deVFSRedirect(pathRoot, pathRedirect, vfs, false));
 		vfs->AddContainer(container);
-		container->FreeReference();
-		
 	}catch(const deException &e){
-		if(container){
-			container->FreeReference();
-		}
 		pLogger->LogErrorFormat(LOGSOURCE, "VFSAddRedirect(root=%s,redirect=%s):", root, redirect);
 		pLogger->LogException(LOGSOURCE, e);
 		return false;
@@ -931,24 +904,16 @@ bool dealEngineInstance::TerminateAppWindow(){
 
 void dealEngineInstance::pCleanUp(){
 	Stop();
-	
-	if(pDelga){
-		pDelga->FreeReference();
-	}
-	
-	if(pLogger){
-		pLogger->FreeReference();
-	}
 }
 
 
 
 void dealEngineInstance::pCreateLogger(const char *logfile){
 	if(strlen(logfile) == 0){
-		pLogger = new deLoggerConsole;
+		pLogger.TakeOver(new deLoggerConsole);
 		
 	}else{
-		decBaseFileWriter *fileWriter = NULL;
+		decBaseFileWriter::Ref fileWriter = NULL;
 		decPath diskPath;
 		decPath filePath;
 		
@@ -956,30 +921,20 @@ void dealEngineInstance::pCreateLogger(const char *logfile){
 		filePath.SetFromUnix(diskPath.GetLastComponent());
 		diskPath.RemoveLastComponent();
 		
-		deVFSDiskDirectory *diskDir = NULL;
+		deVFSDiskDirectory::Ref diskDir = NULL;
 		
 		try{
-			diskDir = new deVFSDiskDirectory(diskPath);
+			diskDir.TakeOver(new deVFSDiskDirectory(diskPath));
 			
 			if(diskDir->ExistsFile(filePath)){
-				fileWriter = new decDiskFileWriter(logfile, false);
+				fileWriter.TakeOver(new decDiskFileWriter(logfile, false));
 				
 			}else{
 				fileWriter = diskDir->OpenFileForWriting(filePath);
 			}
 			
-			pLogger = new deLoggerFile(fileWriter);
-			fileWriter->FreeReference();
-			
-			diskDir->FreeReference();
-			
+			pLogger.TakeOver(new deLoggerFile(fileWriter));
 		}catch(const deException &){
-			if(fileWriter){
-				fileWriter->FreeReference();
-			}
-			if(diskDir){
-				diskDir->FreeReference();
-			}
 			throw;
 		}
 	}
@@ -993,9 +948,9 @@ void dealEngineInstance::pCreateOSFileSystem(){
 	decString filename;
 	off_t fileOffset, fileLength;
 	filename.Format("install_%s.zip", ANDROID_JNIDIR);
-	deVFSRedirect *containerRedirect = NULL;
-	dealVFSZipArchive *zipArchive = NULL;
-	dealFDFileReader *fileReader = NULL;
+	deVFSRedirect::Ref containerRedirect = NULL;
+	dealVFSZipArchive::Ref zipArchive = NULL;
+	dealFDFileReader::Ref fileReader = NULL;
 	decPath pathRoot, pathRedirect;
 	
 	try{
@@ -1013,13 +968,12 @@ void dealEngineInstance::pCreateOSFileSystem(){
 		
 		// create zip archive container using the asset file descriptor
 		pathRoot.SetFromUnix("/");
-		fileReader = new dealFDFileReader("Dragengine", pEngineAssetFileDescriptor, fileOffset, fileLength);
-		zipArchive = new dealVFSZipArchive(*this, fileReader, pathRoot);
-		fileReader->FreeReference();
+		fileReader.TakeOver(new dealFDFileReader("Dragengine", pEngineAssetFileDescriptor, fileOffset, fileLength));
+		zipArchive.TakeOver(new dealVFSZipArchive(*this, fileReader, pathRoot));
 		fileReader = NULL;
 		
 		// create virtual file system and add containers redirecting to zip archive.
-		pOSFileSystem = new deVirtualFileSystem;
+		pOSFileSystem.TakeOver(new deVirtualFileSystem);
 		
 		// /engine : read-only container with engine module libraries and definitions
 		pathRoot.SetFromUnix("/engine");
@@ -1028,9 +982,8 @@ void dealEngineInstance::pCreateOSFileSystem(){
 		pathRedirect.AddComponent("lib");
 		pathRedirect.AddComponent("dragengine");
 		
-		containerRedirect = new deVFSRedirect(pathRoot, pathRedirect, zipArchive);
+		containerRedirect.TakeOver(new deVFSRedirect(pathRoot, pathRedirect, zipArchive));
 		pOSFileSystem->AddContainer(containerRedirect);
-		containerRedirect->FreeReference();
 		containerRedirect = NULL;
 		
 		// /share : read-only container with shared engine and module files
@@ -1040,9 +993,8 @@ void dealEngineInstance::pCreateOSFileSystem(){
 		pathRedirect.AddComponent("share");
 		pathRedirect.AddComponent("dragengine");
 		
-		containerRedirect = new deVFSRedirect(pathRoot, pathRedirect, zipArchive);
+		containerRedirect.TakeOver(new deVFSRedirect(pathRoot, pathRedirect, zipArchive));
 		pOSFileSystem->AddContainer(containerRedirect);
-		containerRedirect->FreeReference();
 		containerRedirect = NULL;
 		
 		// /config : read-write container with engine and module config files.
@@ -1053,21 +1005,11 @@ void dealEngineInstance::pCreateOSFileSystem(){
 		pathRedirect.AddComponent("config");
 		pathRedirect.AddComponent("dragengine");
 		
-		containerRedirect = new deVFSRedirect(pathRoot, pathRedirect, zipArchive);
+		containerRedirect.TakeOver(new deVFSRedirect(pathRoot, pathRedirect, zipArchive));
 		pOSFileSystem->AddContainer(containerRedirect);
-		containerRedirect->FreeReference();
 		containerRedirect = NULL;
 		
 	}catch(const deException &){
-		if(containerRedirect){
-			containerRedirect->FreeReference();
-		}
-		if(zipArchive){
-			zipArchive->FreeReference();
-		}
-		if(fileReader){
-			fileReader->FreeReference();
-		}
 		pCloseOSFileSystem();
 		throw;
 	}
@@ -1075,7 +1017,6 @@ void dealEngineInstance::pCreateOSFileSystem(){
 
 void dealEngineInstance::pCloseOSFileSystem(){
 	if(pOSFileSystem){
-		pOSFileSystem->FreeReference();
 		pOSFileSystem = NULL;
 	}
 	

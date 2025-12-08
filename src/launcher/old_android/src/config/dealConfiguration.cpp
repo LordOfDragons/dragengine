@@ -112,7 +112,7 @@ void dealConfiguration::LocatePath(){
 
 void dealConfiguration::InitVirtualFileSystem(){
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
-	deVFSDiskDirectory *diskDir = NULL;
+	deVFSDiskDirectory::Ref diskDir = NULL;
 	decPath pathRootDir, pathDiskDir;
 	
 	// add the found path to the virtual file system. this makes it easier
@@ -126,20 +126,18 @@ void dealConfiguration::InitVirtualFileSystem(){
 		if(!pPathConfigSystem.IsEmpty()){
 			pathRootDir.SetFromUnix("/config/system");
 			pathDiskDir.SetFromNative(pPathConfigSystem.GetString());
-			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
 			diskDir->SetReadOnly(true);
 			vfs.AddContainer(diskDir);
-			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
 		if(!pPathConfigUser.IsEmpty()){
 			pathRootDir.SetFromUnix("/config/user");
 			pathDiskDir.SetFromNative(pPathConfigUser.GetString());
-			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
 			diskDir->SetReadOnly(false);
 			vfs.AddContainer(diskDir);
-			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
@@ -151,10 +149,9 @@ void dealConfiguration::InitVirtualFileSystem(){
 		if(!pPathShares.IsEmpty()){
 			pathRootDir.SetFromUnix("/data");
 			pathDiskDir.SetFromNative(pPathShares.GetString());
-			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
 			diskDir->SetReadOnly(false);
 			vfs.AddContainer(diskDir);
-			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
@@ -162,17 +159,13 @@ void dealConfiguration::InitVirtualFileSystem(){
 		if(!pPathLogs.IsEmpty()){
 			pathRootDir.SetFromUnix("/logs");
 			pathDiskDir.SetFromNative(pPathLogs.GetString());
-			diskDir = new deVFSDiskDirectory(pathRootDir, pathDiskDir);
+			diskDir.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
 			diskDir->SetReadOnly(false);
 			vfs.AddContainer(diskDir);
-			diskDir->FreeReference();
 			diskDir = NULL;
 		}
 		
 	}catch(const deException &){
-		if(diskDir){
-			diskDir->FreeReference();
-		}
 		throw;
 	}
 }
@@ -195,7 +188,7 @@ void dealConfiguration::LoadConfiguration(){
 	dealConfigXML configXML(&pLauncher.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
-	decBaseFileReader *reader = NULL;
+	decBaseFileReader::Ref reader = NULL;
 	decPath pathFile;
 	
 	// read the system wide config file if existing
@@ -207,12 +200,7 @@ void dealConfiguration::LoadConfiguration(){
 			try{
 				reader = vfs.OpenFileForReading(pathFile);
 				configXML.ReadFromFile(*reader, *this);
-				reader->FreeReference();
-				
 			}catch(const deException &){
-				if(reader){
-					reader->FreeReference();
-				}
 				throw;
 			}
 			
@@ -236,12 +224,7 @@ void dealConfiguration::LoadConfiguration(){
 			try{
 				reader = vfs.OpenFileForReading(pathFile);
 				configXML.ReadFromFile(*reader, *this);
-				reader->FreeReference();
-				
 			}catch(const deException &){
-				if(reader){
-					reader->FreeReference();
-				}
 				throw;
 			}
 			
@@ -259,7 +242,7 @@ void dealConfiguration::SaveConfiguration(){
 	dealConfigXML configXML(&pLauncher.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
-	decBaseFileWriter *writer = NULL;
+	decBaseFileWriter::Ref writer = NULL;
 	decPath pathFile;
 	
 	pathFile.SetFromUnix(FILE_LAUNCHER_CONFIG_USER);
@@ -269,12 +252,7 @@ void dealConfiguration::SaveConfiguration(){
 		try{
 			writer = vfs.OpenFileForWriting(pathFile);
 			configXML.WriteToFile(*writer, *this);
-			writer->FreeReference();
-			
 		}catch(const deException &){
-			if(writer){
-				writer->FreeReference();
-			}
 			logger.LogError(LOGSOURCE, "Failed to write user configuration file (file permission problem)");
 			// DIALOG BOX
 			// "User configuration can not be written!\n"

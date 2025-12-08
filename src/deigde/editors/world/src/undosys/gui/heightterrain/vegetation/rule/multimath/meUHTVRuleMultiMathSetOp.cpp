@@ -54,9 +54,7 @@ meUHTVRuleMultiMathSetOp::meUHTVRuleMultiMathSetOp(meHTVegetationLayer *vlayer,
 	pNewOp = nop;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMultiMathSetOp::~meUHTVRuleMultiMathSetOp(){

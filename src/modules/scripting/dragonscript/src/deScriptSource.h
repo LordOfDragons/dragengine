@@ -32,7 +32,7 @@
 
 // predefinitions
 class deVirtualFileSystem;
-class decBaseFileReader;
+#include "dragengine/common/file/decBaseFileReader.h"
 class decPath;
 
 
@@ -41,7 +41,7 @@ class decPath;
 class deScriptSource : public dsScriptSource{
 private:
 	const deVirtualFileSystem &pVFS;
-	decBaseFileReader *pFileReader;
+	decBaseFileReader::Ref pFileReader;
 	const decPath pPath;
 	decString pPathString;
 	int pPosition;

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seULayerSetTransparency::seULayerSetTransparency(seLayer *layer, float newTransparency) :
-pLayer(NULL),
+
 pNewTransparency(newTransparency)
 {
 	if(!layer){
@@ -52,13 +52,9 @@ pNewTransparency(newTransparency)
 	pOldTransparency = layer->GetTransparency();
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerSetTransparency::~seULayerSetTransparency(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

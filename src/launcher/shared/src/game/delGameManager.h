@@ -91,13 +91,13 @@ public:
 	inline const delGameProfileList &GetProfiles() const{ return pProfiles; }
 	
 	/** \brief Active profile or NULL if none is active. */
-	inline delGameProfile *GetActiveProfile() const{ return pActiveProfile; }
+	inline const delGameProfile::Ref &GetActiveProfile() const{ return pActiveProfile; }
 	
 	/** \brief Set active profile or NULL if none is active. */
 	void SetActiveProfile(delGameProfile *profile);
 	
 	/** \brief Default profile. */
-	inline delGameProfile *GetDefaultProfile() const{ return pDefaultProfile; }
+	inline const delGameProfile::Ref &GetDefaultProfile() const{ return pDefaultProfile; }
 	
 	/** \brief Pulse checking. */
 	void PulseChecking();

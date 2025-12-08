@@ -102,13 +102,11 @@ void lpeLangPackEntrySelection::SetActive(lpeLangPackEntry *entry){
 	
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = entry;
 	
 	if(entry){
-		entry->AddReference();
 		entry->SetActive(true);
 	}
 }

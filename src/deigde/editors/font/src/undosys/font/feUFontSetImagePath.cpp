@@ -48,7 +48,6 @@ feUFontSetImagePath::feUFontSetImagePath(feFontImage *image, const char *newPath
 	pNewPath = newPath;
 	
 	pImage = image;
-	image->AddReference();
 }
 
 feUFontSetImagePath::~feUFontSetImagePath(){

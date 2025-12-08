@@ -49,13 +49,9 @@ aeURuleLimitSetEnableRotZMin::aeURuleLimitSetEnableRotZMin(aeRuleLimit *rule){
 	SetShortInfo("Limit toggle enable minimum y rotation");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableRotZMin::~aeURuleLimitSetEnableRotZMin(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class saeSAnimation;
-class saeWPUndoHistoryListener;
+#include "../../sanimation/saeSAnimation.h"
+#include "saeWPUndoHistoryListener.h"
 
 
 
@@ -37,8 +37,8 @@ class saeWPUndoHistoryListener;
  */
 class saeWPUndoHistory : public igdeWPUndoHistory{
 private:
-	saeSAnimation *pSAnimation;
-	saeWPUndoHistoryListener *pListener;
+	saeSAnimation::Ref pSAnimation;
+	saeWPUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline const saeSAnimation::Ref &GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
 	void SetSAnimation(saeSAnimation *sanimation);

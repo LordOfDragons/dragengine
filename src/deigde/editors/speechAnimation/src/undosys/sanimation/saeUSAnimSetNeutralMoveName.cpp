@@ -50,13 +50,9 @@ saeUSAnimSetNeutralMoveName::saeUSAnimSetNeutralMoveName(saeSAnimation *sanimati
 	pNewName = newName;
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
 }
 
 saeUSAnimSetNeutralMoveName::~saeUSAnimSetNeutralMoveName(){
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

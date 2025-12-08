@@ -61,8 +61,7 @@ pBackgroundColor(0.0f, 0.0f, 0.0f, 0.5f),
 pTextColor(1.0f, 1.0f, 1.0f, 1.0f),
 pTextSize(18),
 pPadding(10),
-pTextOffset(200),
-pCanvasView(NULL)
+pTextOffset(200)
 {
 	try{
 		pCanvasView = engine.GetCanvasManager()->CreateCanvasView();
@@ -188,7 +187,7 @@ void ceTextBox::UpdateCanvas(){
 	pCanvasView->SetPosition(decPoint(0, parentSize.y - boxHeight));
 	
 	// add background color canvas
-	deCanvasPaint *canvasBackground = NULL;
+	deCanvasPaint::Ref canvasBackground = NULL;
 	try{
 		canvasBackground = pEngine.GetCanvasManager()->CreateCanvasPaint();
 		canvasBackground->SetShapeType(deCanvasPaint::estRectangle);
@@ -198,12 +197,7 @@ void ceTextBox::UpdateCanvas(){
 		canvasBackground->SetOrder(0.0f);
 		canvasBackground->SetSize(pCanvasView->GetSize());
 		pCanvasView->AddCanvas(canvasBackground);
-		canvasBackground->FreeReference();
-		
 	}catch(const deException &){
-		if(canvasBackground){
-			canvasBackground->FreeReference();
-		}
 		throw;
 	}
 	
@@ -229,10 +223,6 @@ void ceTextBox::UpdateCanvas(){
 
 void ceTextBox::pCleanUp(){
 	pTexts.RemoveAll();
-	
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 }
 
 

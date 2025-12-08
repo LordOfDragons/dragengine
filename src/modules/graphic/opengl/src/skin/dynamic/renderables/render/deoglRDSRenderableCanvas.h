@@ -29,7 +29,7 @@
 
 #include "deoglRDSRenderable.h"
 
-class deoglRCanvasView;
+#include "../../../../canvas/render/deoglRCanvasView.h"
 class deDSRenderableCanvas;
 
 
@@ -39,7 +39,7 @@ class deDSRenderableCanvas;
  */
 class deoglRDSRenderableCanvas : public deoglRDSRenderable{
 private:
-	deoglRCanvasView *pCanvas;
+	deoglRCanvasView::Ref pCanvas;
 	int pComponentCount;
 	int pBitCount;
 	

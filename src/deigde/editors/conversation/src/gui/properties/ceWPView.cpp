@@ -1737,16 +1737,14 @@ public:
 
 ceWPView::ceWPView(ceWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pConversation(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, groupBox2, form, formLine;
+	igdeContainer *content, groupBox, groupBox2, form, formLine;
 	igdeActionContextMenu *actionContextMenu;
 	
-	pListener = new ceWPViewListener(*this);
+	pListener.TakeOver(new ceWPViewListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -1948,10 +1946,6 @@ pConversation(NULL)
 
 ceWPView::~ceWPView(){
 	SetConversation(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1972,15 +1966,12 @@ void ceWPView::SetConversation(ceConversation *conversation){
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;
 	
 	if(conversation){
 		conversation->AddListener(pListener);
-		conversation->AddReference();
-		
 		pWPSky->SetSky(conversation->GetSky());
 		pWPEnvObject->SetObject(conversation->GetEnvObject());
 		pWPCamera->SetCamera(conversation->GetCamera());

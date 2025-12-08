@@ -35,10 +35,10 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeWindowProperties;
-class gdeWPSOCForceFieldListener;
+#include "gdeWPSOCForceFieldListener.h"
 
 
 
@@ -48,9 +48,9 @@ class gdeWPSOCForceFieldListener;
 class gdeWPSOCForceField : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCForceFieldListener *pListener;
+	gdeWPSOCForceFieldListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditVector::Ref pEditPosition;
 	igdeEditVector::Ref pEditRotation;
@@ -92,7 +92,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

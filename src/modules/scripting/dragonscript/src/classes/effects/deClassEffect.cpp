@@ -49,7 +49,7 @@
 
 // Native Structure
 struct sEffNatDat{
-	deEffect *effect;
+	deEffect::Ref effect;
 };
 
 
@@ -215,10 +215,6 @@ void deClassEffect::AssignEffect(dsRealObject *myself, deEffect *effect){
 	}
 	
 	nd.effect = effect;
-	
-	if(effect){
-		effect->AddReference();
-	}
 }
 
 

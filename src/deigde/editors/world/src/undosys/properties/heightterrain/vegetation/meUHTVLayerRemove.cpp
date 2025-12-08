@@ -51,11 +51,7 @@ meUHTVLayerRemove::meUHTVLayerRemove(meWorld *world, meHeightTerrain *heightTerr
 	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Remove Height Terrain Vegetation Layer");
-	
-	world->AddReference();
-	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 }
 
 meUHTVLayerRemove::~meUHTVLayerRemove(){

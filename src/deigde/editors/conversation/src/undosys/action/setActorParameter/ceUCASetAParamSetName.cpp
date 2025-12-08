@@ -52,19 +52,10 @@ ceUCASetAParamSetName::ceUCASetAParamSetName(ceConversationTopic *topic, ceCASet
 	SetShortInfo("SetActorParameter Name");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCASetAParamSetName::~ceUCASetAParamSetName(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

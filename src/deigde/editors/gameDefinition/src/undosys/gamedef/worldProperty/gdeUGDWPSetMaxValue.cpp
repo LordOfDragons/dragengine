@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUGDWPSetMaxValue::gdeUGDWPSetMaxValue(gdeGameDefinition *gamedef, gdeProperty *property, float newValue) :
-pGameDefinition(NULL),
+
 pProperty(NULL)
 {
 	if(!gamedef || !property){
@@ -54,19 +54,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDWPSetMaxValue::~gdeUGDWPSetMaxValue(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

@@ -59,25 +59,11 @@ ceUCAASpeakEyesLARemove::ceUCAASpeakEyesLARemove(ceConversationTopic *topic, ceC
 	SetShortInfo("Remove EyesLookAt");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pEyesLA = eyesLookAt;
-	eyesLookAt->AddReference();
 }
 
 ceUCAASpeakEyesLARemove::~ceUCAASpeakEyesLARemove(){
-	if(pEyesLA){
-		pEyesLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

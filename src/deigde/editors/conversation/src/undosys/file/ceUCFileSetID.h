@@ -30,7 +30,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class ceConversation;
-class ceConversationFile;
+#include "../../conversation/file/ceConversationFile.h"
 class ceConversationTopic;
 class ceConversationActionList;
 
@@ -41,7 +41,7 @@ class ceConversationActionList;
  */
 class ceUCFileSetID : public igdeUndo{
 private:
-	ceConversationFile *pFile;
+	ceConversationFile::Ref pFile;
 	
 	decString pOldID;
 	decString pNewID;

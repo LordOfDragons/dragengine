@@ -27,7 +27,7 @@
 
 #include "deResourceLoaderTask.h"
 
-class deRLTaskReadSkinInternal;
+#include "deRLTaskReadSkinInternal.h"
 class deSkin;
 
 
@@ -36,7 +36,7 @@ class deSkin;
  */
 class DE_DLL_EXPORT deRLTaskReadSkin : public deResourceLoaderTask {
 private:
-	deRLTaskReadSkinInternal *pInternalTask;
+	deRLTaskReadSkinInternal::Ref pInternalTask;
 	bool pSucceeded;
 	
 	

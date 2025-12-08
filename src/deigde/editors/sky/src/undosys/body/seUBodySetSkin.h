@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seBody;
+#include "../../sky/body/seBody.h"
 
 
 /**
@@ -35,7 +35,7 @@ class seBody;
  */
 class seUBodySetSkin : public igdeUndo{
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decString pOldSkin;
 	decString pNewSkin;

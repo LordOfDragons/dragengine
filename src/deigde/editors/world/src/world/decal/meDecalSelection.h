@@ -35,7 +35,7 @@
 class meDecalSelection{
 private:
 	meDecalList pSelection;
-	meDecal *pActive;
+	meDecal::Ref pActive;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -58,7 +58,7 @@ public:
 	void RemoveAll();
 	
 	/** Retrieves the active decals or NULL if there is none. */
-	inline meDecal *GetActive() const{ return pActive; }
+	inline const meDecal::Ref &GetActive() const{ return pActive; }
 	/** Determines if there is an active decals. */
 	bool HasActive() const;
 	/** Sets the active decals or NULL if there is none. */

@@ -58,25 +58,11 @@ ceUCAWaitAdd::ceUCAWaitAdd(ceConversationTopic *topic, ceCAWait *wait, ceConvers
 	SetShortInfo("Action Wait Add Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pWait = wait;
-	wait->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAWaitAdd::~ceUCAWaitAdd(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pWait){
-		pWait->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

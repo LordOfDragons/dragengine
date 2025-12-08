@@ -42,7 +42,7 @@
 
 gdeUOCSpeakerSetRotation::gdeUOCSpeakerSetRotation(gdeObjectClass *objectClass,
 gdeOCSpeaker *speaker, const decVector &newValue) :
-pObjectClass(NULL),
+
 pSpeaker(NULL)
 {
 	if(!objectClass || !speaker){
@@ -55,19 +55,10 @@ pSpeaker(NULL)
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetRotation::~gdeUOCSpeakerSetRotation(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

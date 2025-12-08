@@ -54,13 +54,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetHideTags::~gdeUOCSetHideTags(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

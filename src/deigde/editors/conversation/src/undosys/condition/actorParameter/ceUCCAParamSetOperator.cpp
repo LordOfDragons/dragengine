@@ -55,25 +55,11 @@ ceCConditionActorParameter::eOperators newOperator){
 	SetShortInfo("Condition ActorParameter: Set Operator");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCAParamSetOperator::~ceUCCAParamSetOperator(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

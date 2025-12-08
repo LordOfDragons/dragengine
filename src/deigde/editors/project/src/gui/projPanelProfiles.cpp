@@ -662,15 +662,12 @@ projPanelProfiles::projPanelProfiles(projWindowMain &windowMain) :
 igdeContainerSplitted(windowMain.GetEnvironment(), igdeContainerSplitted::espLeft,
 	igdeApplication::app().DisplayScaled(250)),
 
-pWindowMain(windowMain),
-
-pProject(NULL),
-pListener(NULL)
+pWindowMain(windowMain)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new projPanelProfilesListener(*this);
+	pListener.TakeOver(new projPanelProfilesListener(*this));
 	
 	
 	
@@ -686,7 +683,7 @@ pListener(NULL)
 	helper.Button(sidePanel, windowMain.GetActionProfileRemove());
 	helper.Button(sidePanel, windowMain.GetActionProfileDuplicate());
 	
-	igdeContainer::Ref groupBox, formLine;
+	igdeContainer *groupBox, formLine;
 	helper.GroupBoxStaticFlow(sidePanel, groupBox, "Content:");
 	helper.Button(groupBox, windowMain.GetActionShowContent());
 	
@@ -772,7 +769,7 @@ pListener(NULL)
 	groupBox.TakeOver(new igdeGroupBox(env, "Processing Parameters:", false));
 	sidePanel->AddChild(groupBox);
 	
-	igdeContainer::Ref subGroup, subGroup2;
+	igdeContainer *subGroup, subGroup2;
 	subGroup.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaX));
 	groupBox->AddChild(subGroup);
 	
@@ -845,10 +842,6 @@ pListener(NULL)
 
 projPanelProfiles::~projPanelProfiles(){
 	SetProject(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -867,13 +860,11 @@ void projPanelProfiles::SetProject(projProject *project){
 	
 	if(pProject){
 		pProject->RemoveListener(pListener);
-		pProject->FreeReference();
 	}
 	
 	pProject = project;
 	
 	if(project){
-		project->AddReference();
 		project->AddListener(pListener);
 	}
 	

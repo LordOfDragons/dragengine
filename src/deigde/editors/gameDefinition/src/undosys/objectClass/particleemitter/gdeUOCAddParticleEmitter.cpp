@@ -42,7 +42,7 @@
 ////////////////////////////
 
 gdeUOCAddParticleEmitter::gdeUOCAddParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) :
-pObjectClass(NULL),
+
 pParticleEmitter(NULL)
 {
 	if(!objectClass || !particleEmitter){
@@ -52,19 +52,10 @@ pParticleEmitter(NULL)
 	SetShortInfo("Add particleEmitter");
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddParticleEmitter::~gdeUOCAddParticleEmitter(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

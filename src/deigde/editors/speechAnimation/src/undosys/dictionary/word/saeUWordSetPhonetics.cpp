@@ -50,13 +50,9 @@ saeUWordSetPhonetics::saeUWordSetPhonetics(saeWord *word, const decUnicodeString
 	pNewPhonetics = newPhonetics;
 	
 	pWord = word;
-	word->AddReference();
 }
 
 saeUWordSetPhonetics::~saeUWordSetPhonetics(){
-	if(pWord){
-		pWord->FreeReference();
-	}
 }
 
 

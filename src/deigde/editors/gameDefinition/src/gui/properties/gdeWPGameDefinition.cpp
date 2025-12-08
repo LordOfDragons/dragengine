@@ -472,15 +472,13 @@ public:
 
 gdeWPGameDefinition::gdeWPGameDefinition(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pGameDefinition(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	
-	pListener = new gdeWPGameDefinitionListener(*this);
+	pListener.TakeOver(new gdeWPGameDefinitionListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -539,10 +537,6 @@ pListener(NULL)
 
 gdeWPGameDefinition::~gdeWPGameDefinition(){
 	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -577,15 +571,12 @@ void gdeWPGameDefinition::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
-		
 		worldProperties.SetPropertyList(&gameDefinition->GetWorldProperties());
 		worldProperties.SetGameDefinition(gameDefinition);
 		

@@ -53,13 +53,9 @@ pNode(NULL)
 	pMatrix = node->CreateScreenTransformMatrix();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeData::~seUPropertyNodeData(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

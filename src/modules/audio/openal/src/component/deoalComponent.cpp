@@ -55,7 +55,6 @@
 deoalComponent::deoalComponent(deAudioOpenAL &oal, deComponent &component) :
 pOal(oal),
 pComponent(component),
-pAComponent(NULL),
 pTextures(NULL),
 pTextureCount(0),
 pParentWorld(NULL),
@@ -87,7 +86,7 @@ pLLSyncWorld(this)
 	(void)pDirtyDynamicSkin; // not used yet
 	
 	try{
-		pAComponent = new deoalAComponent(oal.GetAudioThread());
+		pAComponent.TakeOver(new deoalAComponent(oal.GetAudioThread()));
 		
 		ModelAndSkinChanged();
 		AudioModelChanged();
@@ -364,10 +363,6 @@ void deoalComponent::pCleanUp(){
 	}
 	
 	pDropTextures();
-	
-	if(pAComponent){
-		pAComponent->FreeReference();
-	}
 }
 
 

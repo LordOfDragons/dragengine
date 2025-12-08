@@ -55,16 +55,11 @@ feViewFIImage::feViewFIImage(feWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain),
 
-pFont(NULL),
-
 pBorderSize(2),
 pZoom(100){
 }
 
 feViewFIImage::~feViewFIImage(){
-	if(pFont){
-		pFont->FreeReference();
-	}
 }
 
 
@@ -77,17 +72,7 @@ void feViewFIImage::SetFont(feFont *font){
 	if(font == pFont){
 		return;
 	}
-	
-	if(pFont){
-		pFont->FreeReference();
-	}
-	
 	pFont = font;
-	
-	if(font){
-		font->AddReference();
-	}
-	
 	ResizeCanvas();
 }
 

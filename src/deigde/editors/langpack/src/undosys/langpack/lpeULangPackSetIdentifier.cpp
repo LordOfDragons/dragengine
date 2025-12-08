@@ -40,7 +40,7 @@
 ////////////////////////////
 
 lpeULangPackSetIdentifier::lpeULangPackSetIdentifier(lpeLangPack *langpack, const char *newIdentifier) :
-pLangPack(NULL),
+
 pNewIdentifier(newIdentifier)
 {
 	DEASSERT_NOTNULL(langpack)
@@ -50,13 +50,9 @@ pNewIdentifier(newIdentifier)
 	pOldIdentifier = langpack->GetIdentifier();
 	
 	pLangPack = langpack;
-	langpack->AddReference();
 }
 
 lpeULangPackSetIdentifier::~lpeULangPackSetIdentifier(){
-	if(pLangPack){
-		pLangPack->FreeReference();
-	}
 }
 
 

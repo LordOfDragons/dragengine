@@ -53,9 +53,7 @@ meUHTVRuleCPSetClass::meUHTVRuleCPSetClass(meHTVegetationLayer *vlayer, meHTVRul
 	pNewPropClass = nclass;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleCPSetClass::~meUHTVRuleCPSetClass(){

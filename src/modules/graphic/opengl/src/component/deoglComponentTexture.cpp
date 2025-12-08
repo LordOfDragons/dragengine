@@ -52,7 +52,6 @@
 deoglComponentTexture::deoglComponentTexture(deoglComponent &component, int index) :
 pComponent(component),
 pIndex(index),
-pRTexture(NULL),
 
 pSkinStateController(NULL),
 
@@ -64,7 +63,7 @@ pDynamicSkinRenderablesChanged(true),
 pDirtyRenderableMapping(true)
 {
 	try{
-		pRTexture = new deoglRComponentTexture(*component.GetRComponent(), index);
+		pRTexture.TakeOver(new deoglRComponentTexture(*component.GetRComponent(), index));
 		pSkinStateController = new deoglSkinStateController;
 		
 		TextureChanged(component.GetComponent().GetTextureAt(index));
@@ -231,11 +230,6 @@ void deoglComponentTexture::pCleanUp(){
 	if(pSkinStateController){
 		delete pSkinStateController;
 	}
-	
-	if(pRTexture){
-		pRTexture->FreeReference();
-	}
-	
 	if(pDynamicSkin){
 		pDynamicSkin->RemoveListener(this);
 	}

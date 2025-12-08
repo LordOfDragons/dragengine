@@ -72,12 +72,6 @@ seSynthesizer::seSynthesizer(igdeEnvironment *environment, seLoadSaveSystem &lss
 igdeEditableEntity(environment),
 
 pLoadSaveSystem(lssys),
-pEngWorld(NULL),
-
-pEngSynthesizer(NULL),
-pEngSynthesizerInstance(NULL),
-pEngSpeaker(NULL),
-pEngMicrophone(NULL),
 
 pActiveController(NULL),
 pActiveLink(NULL),
@@ -511,7 +505,7 @@ void seSynthesizer::SetActiveSource(seSource *source){
 }
 
 void seSynthesizer::RebuildSources(){
-	deSynthesizerSource *engSource = NULL;
+	deSynthesizerSource::Ref engSource = NULL;
 	const int count = pSources.GetCount();
 	int i;
 	
@@ -528,14 +522,10 @@ void seSynthesizer::RebuildSources(){
 			engSource = source.CreateEngineSource();
 			pEngSynthesizer->AddSource(engSource);
 			source.SetEngineSource(engSource);
-			engSource->FreeReference();
 			engSource = NULL;
 		}
 		
 	}catch(const deException &){
-		if(engSource){
-			engSource->FreeReference();
-		}
 		throw;
 	}
 }
@@ -807,18 +797,11 @@ void seSynthesizer::pCleanUp(){
 		}
 		
 		pEngSynthesizerInstance->SetSynthesizer(NULL);
-		pEngSynthesizerInstance->FreeReference();
 	}
-	
-	if(pEngSynthesizer){
-		pEngSynthesizer->FreeReference();
-	}
-	
 	if(pEngSpeaker){
 		if(pEngMicrophone){
 			pEngMicrophone->RemoveSpeaker(pEngSpeaker);
 		}
-		pEngSpeaker->FreeReference();
 	}
 	
 	if(pEngWorld){
@@ -828,10 +811,7 @@ void seSynthesizer::pCleanUp(){
 			}
 			
 			pEngWorld->RemoveMicrophone(pEngMicrophone);
-			pEngMicrophone->FreeReference();
 		}
-		
-		pEngWorld->FreeReference();
 	}
 }
 
@@ -901,22 +881,18 @@ void seSynthesizer::pUpdateEngineControllers(){
 	pEngSynthesizer->RemoveAllControllers();
 	
 	// add an engine controller for each controller we have
-	deSynthesizerController *engController = NULL;
+	deSynthesizerController::Ref engController = NULL;
 	
 	try{
 		const int controllerCount = pControllers.GetCount();
 		
 		for(i=0; i<controllerCount; i++){
-			engController = new deSynthesizerController;
+			engController.TakeOver(new deSynthesizerController);
 			pEngSynthesizer->AddController(engController);
 			engController = NULL;
 		}
 		
 	}catch(const deException &){
-		if(engController){
-			engController->FreeReference();
-		}
-		
 		throw;
 	}
 	

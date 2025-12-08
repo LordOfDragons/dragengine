@@ -205,15 +205,13 @@ public:
 
 feWPFont::feWPFont(feWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pFont(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, groupBox, frameLine;
+	igdeContainer *content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new feWPFontListener(*this);
+	pListener.TakeOver(new feWPFontListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -236,10 +234,6 @@ pListener(NULL)
 
 feWPFont::~feWPFont(){
 	SetFont(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -254,7 +248,6 @@ void feWPFont::SetFont(feFont *font){
 	
 	if(pFont){
 		pFont->RemoveNotifier(pListener);
-		pFont->FreeReference();
 		pFont = NULL;
 	}
 	
@@ -262,7 +255,6 @@ void feWPFont::SetFont(feFont *font){
 	
 	if(font){
 		font->AddNotifier(pListener);
-		font->AddReference();
 	}
 	
 	UpdateFont();

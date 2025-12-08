@@ -63,7 +63,7 @@ public:
 	deMicrophone *GetRootMicrophone() const;
 	
 	/** \brief Create new microphone. */
-	deMicrophone *CreateMicrophone();
+	deMicrophone::Ref CreateMicrophone();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

@@ -241,11 +241,11 @@ deSynthesizerSource *seSourceChain::CreateEngineSource(){
 	const int count = pSounds.GetCount();
 	int i;
 	
-	deSynthesizerSourceChain *engSource = NULL;
+	deSynthesizerSourceChain::Ref engSource = NULL;
 	
 	try{
 		// create source
-		engSource = new deSynthesizerSourceChain;
+		engSource.TakeOver(new deSynthesizerSourceChain);
 		
 		// init source
 		InitEngineSource(engSource);
@@ -262,9 +262,6 @@ deSynthesizerSource *seSourceChain::CreateEngineSource(){
 		pTargetPlay.UpdateEngineTarget(GetSynthesizer(), engSource->GetTargetPlay());
 		
 	}catch(const deException &){
-		if(engSource){
-			engSource->FreeReference();
-		}
 		throw;
 	}
 	

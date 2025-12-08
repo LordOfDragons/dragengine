@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seTexture;
+#include "../../skin/texture/seTexture.h"
 
 
 
@@ -36,7 +36,7 @@ class seTexture;
  */
 class seUTextureSetName : public igdeUndo{
 private:
-	seTexture *pTexture;
+	seTexture::Ref pTexture;
 	
 	decString pOldName;
 	decString pNewName;

@@ -42,8 +42,6 @@ aeUSetRuleFStaEnableVertexPositionSet::aeUSetRuleFStaEnableVertexPositionSet(aeR
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Set bone rotator rule enable vertex position set");
 		
 	}catch(const deException &){

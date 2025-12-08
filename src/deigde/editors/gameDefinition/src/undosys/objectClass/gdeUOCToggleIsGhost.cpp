@@ -49,13 +49,9 @@ pObjectClass(NULL)
 	SetShortInfo("Object class toggle is ghost");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCToggleIsGhost::~gdeUOCToggleIsGhost(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

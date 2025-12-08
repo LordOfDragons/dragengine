@@ -35,7 +35,7 @@
 class lpeLangPackEntrySelection{
 private:
 	lpeLangPackEntryList pSelection;
-	lpeLangPackEntry *pActive;
+	lpeLangPackEntry::Ref pActive;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -58,7 +58,7 @@ public:
 	void RemoveAll();
 	
 	/** \brief Retrieves the active entries or NULL if there is none. */
-	inline lpeLangPackEntry *GetActive() const{ return pActive; }
+	inline const lpeLangPackEntry::Ref &GetActive() const{ return pActive; }
 	/** \brief Determines if there is an active entries. */
 	bool HasActive() const;
 	/** \brief Sets the active entries or NULL if there is none. */

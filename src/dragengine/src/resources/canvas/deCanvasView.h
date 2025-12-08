@@ -39,7 +39,7 @@ public:
 	
 private:
 	deCanvas *pCanvasRoot;
-	deCanvas *pCanvasTail;
+	deCanvas::Ref pCanvasTail;
 	int pCanvasCount;
 	
 	

@@ -82,13 +82,13 @@ seLoadSaveSystem::~seLoadSaveSystem(){
 // Management
 ///////////////
 
-seSynthesizer *seLoadSaveSystem::LoadSynthesizer(const char *filename, const char *basePath){
+seSynthesizer::Ref seLoadSaveSystem::LoadSynthesizer(const char *filename, const char *basePath){
 	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
 	decBaseFileReader::Ref fileReader;
-	seSynthesizer *synthesizer = NULL;
+	seSynthesizer::Ref synthesizer = NULL;
 	decPath path;
 	
 	if(decPath::IsUnixPathAbsolute(filename)){
@@ -102,7 +102,7 @@ seSynthesizer *seLoadSaveSystem::LoadSynthesizer(const char *filename, const cha
 	fileReader.TakeOver(pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(path));
 	
 	try{
-		synthesizer = new seSynthesizer(&pWindowMain.GetEnvironment(), *this);
+		synthesizer.TakeOver(new seSynthesizer(&pWindowMain.GetEnvironment(), *this));
 		synthesizer->SetFilePath(filename); // required for sources to use the right base directory
 		
 		pLSSynthesizer->LoadSynthesizer(*synthesizer, fileReader);
@@ -111,9 +111,6 @@ seSynthesizer *seLoadSaveSystem::LoadSynthesizer(const char *filename, const cha
 		synthesizer->SetSaved(true);
 		
 	}catch(const deException &){
-		if(synthesizer){
-			synthesizer->FreeReference();
-		}
 		throw;
 	}
 	
@@ -125,7 +122,7 @@ void seLoadSaveSystem::SaveSynthesizer(seSynthesizer *synthesizer, const char *f
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileWriter *fileWriter = NULL;
+	decBaseFileWriter::Ref fileWriter = NULL;
 	decPath path;
 	
 	path.SetFromUnix(filename);
@@ -133,13 +130,7 @@ void seLoadSaveSystem::SaveSynthesizer(seSynthesizer *synthesizer, const char *f
 	try{
 		fileWriter = pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(path);
 		pLSSynthesizer->SaveSynthesizer(*synthesizer, *fileWriter);
-		
-		fileWriter->FreeReference();
-		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		throw;
 	}
 }

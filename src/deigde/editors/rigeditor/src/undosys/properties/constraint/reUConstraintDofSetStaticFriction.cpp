@@ -55,14 +55,9 @@ deColliderConstraint::eDegreesOfFreedom dof, float newValue){
 	pNewValue = newValue;
 	
 	SetShortInfo("Constraint DOF set static friction");
-	
-	pConstraint->AddReference();
 }
 
 reUConstraintDofSetStaticFriction::~reUConstraintDofSetStaticFriction(){
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 }
 
 

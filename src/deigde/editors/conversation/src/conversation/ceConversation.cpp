@@ -415,22 +415,13 @@ void ceConversation::RemoveAllTargets(){
 
 void ceConversation::SetActiveTarget(ceTarget *target){
 	if(target != pActiveTarget){
-		if(pActiveTarget){
-			pActiveTarget->FreeReference();
-		}
-		
 		pActiveTarget = target;
-		
-		if(target){
-			target->AddReference();
-		}
-		
 		NotifyActiveTargetChanged();
 	}
 }
 
 ceTarget *ceConversation::GetTargetNamed(const char *name) const{
-	ceTarget *target = pTargetList.GetNamed(name);
+	ceTarget::Ref target = pTargetList.GetNamed(name);
 	if(target){
 		return target;
 	}
@@ -520,22 +511,13 @@ void ceConversation::RemoveAllCameraShots(){
 
 void ceConversation::SetActiveCameraShot(ceCameraShot *cameraShot){
 	if(cameraShot != pActiveCameraShot){
-		if(pActiveCameraShot){
-			pActiveCameraShot->FreeReference();
-		}
-		
 		pActiveCameraShot = cameraShot;
-		
-		if(cameraShot){
-			cameraShot->AddReference();
-		}
-		
 		NotifyActiveCameraShotChanged();
 	}
 }
 
 ceCameraShot *ceConversation::GetCameraShotNamed(const char *name) const{
-	ceCameraShot *cameraShot = pCameraShotList.GetNamed(name);
+	ceCameraShot::Ref cameraShot = pCameraShotList.GetNamed(name);
 	if(cameraShot){
 		return cameraShot;
 	}
@@ -625,22 +607,13 @@ void ceConversation::RemoveAllGestures(){
 
 void ceConversation::SetActiveGesture(ceGesture *gesture){
 	if(gesture != pActiveGesture){
-		if(pActiveGesture){
-			pActiveGesture->FreeReference();
-		}
-		
 		pActiveGesture = gesture;
-		
-		if(gesture){
-			gesture->AddReference();
-		}
-		
 		NotifyActiveGestureChanged();
 	}
 }
 
 ceGesture *ceConversation::GetGestureNamed(const char *name) const{
-	ceGesture *gesture = pGestureList.GetNamed(name);
+	ceGesture::Ref gesture = pGestureList.GetNamed(name);
 	if(gesture){
 		return gesture;
 	}
@@ -730,22 +703,13 @@ void ceConversation::RemoveAllFacePoses(){
 
 void ceConversation::SetActiveFacePose(ceFacePose *facePose){
 	if(facePose != pActiveFacePose){
-		if(pActiveFacePose){
-			pActiveFacePose->FreeReference();
-		}
-		
 		pActiveFacePose = facePose;
-		
-		if(facePose){
-			facePose->AddReference();
-		}
-		
 		NotifyActiveFacePoseChanged();
 	}
 }
 
 ceFacePose *ceConversation::GetFacePoseNamed(const char *name) const{
-	ceFacePose *facePose = pFacePoseList.GetNamed(name);
+	ceFacePose::Ref facePose = pFacePoseList.GetNamed(name);
 	if(facePose){
 		return facePose;
 	}
@@ -837,22 +801,12 @@ void ceConversation::SetActiveFile(ceConversationFile *file){
 	if(file == pActiveFile){
 		return;
 	}
-	
-	if(pActiveFile){
-		pActiveFile->FreeReference();
-	}
-	
 	pActiveFile = file;
-	
-	if(file){
-		file->AddReference();
-	}
-	
 	NotifyActiveFileChanged();
 }
 
 ceConversationFile *ceConversation::GetFileWithID(const char *name) const{
-	ceConversationFile *file = pFileList.GetWithID(name);
+	ceConversationFile::Ref file = pFileList.GetWithID(name);
 	if(file){
 		return file;
 	}
@@ -885,7 +839,7 @@ void ceConversation::AllFiles(ceConversationFileList &list) const{
 }
 
 ceConversationTopic *ceConversation::GetTopicWithID(const char * fileName, const char *topicName) const{
-	ceConversationFile *file = pFileList.GetWithID(fileName);
+	ceConversationFile::Ref file = pFileList.GetWithID(fileName);
 	if(file){
 		ceConversationTopic * const topic = file->GetTopicList().GetWithID(topicName);
 		if(topic){
@@ -912,7 +866,7 @@ ceConversationTopicList ceConversation::AllTopics(const char *fileName) const{
 }
 
 void ceConversation::AllTopics(const char *fileName, ceConversationTopicList &list) const{
-	ceConversationFile *file = pFileList.GetWithID(fileName);
+	ceConversationFile::Ref file = pFileList.GetWithID(fileName);
 	if(file){
 		list += file->GetTopicList();
 	}
@@ -979,16 +933,7 @@ bool ceConversation::HasActiveActor() const{
 
 void ceConversation::SetActiveActor(ceConversationActor *actor){
 	if(actor != pActiveActor){
-		if(pActiveActor){
-			pActiveActor->FreeReference();
-		}
-		
 		pActiveActor = actor;
-		
-		if(actor){
-			actor->AddReference();
-		}
-		
 		NotifyActiveActorChanged();
 	}
 }
@@ -1051,16 +996,7 @@ bool ceConversation::HasActiveCoordSystem() const{
 
 void ceConversation::SetActiveCoordSystem(ceCoordSystem *coordSystem){
 	if(coordSystem != pActiveCoordSystem){
-		if(pActiveCoordSystem){
-			pActiveCoordSystem->FreeReference();
-		}
-		
 		pActiveCoordSystem = coordSystem;
-		
-		if(coordSystem){
-			coordSystem->AddReference();
-		}
-		
 		NotifyActiveCoordSystemChanged();
 	}
 }
@@ -1123,16 +1059,7 @@ bool ceConversation::HasActiveProp() const{
 
 void ceConversation::SetActiveProp(ceProp *prop){
 	if(prop != pActiveProp){
-		if(pActiveProp){
-			pActiveProp->FreeReference();
-		}
-		
 		pActiveProp = prop;
-		
-		if(prop){
-			prop->AddReference();
-		}
-		
 		NotifyActivePropChanged();
 	}
 }

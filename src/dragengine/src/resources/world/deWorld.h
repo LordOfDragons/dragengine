@@ -32,28 +32,28 @@ class decCollisionFilter;
 class deBaseScriptingCollider;
 class deWorldManager;
 
-class deBillboard;
-class deCamera;
-class deCollider;
-class deComponent;
-class deDebugDrawer;
-class deEnvMapProbe;
-class deForceField;
-class deHeightTerrain;
-class deLight;
-class deLumimeter;
-class deMicrophone;
-class deNavigationBlocker;
-class deNavigationSpace;
-class deNavigator;
-class deNetworkState;
-class deParticleEmitterInstance;
-class dePropField;
-class deSmokeEmitter;
-class deSpeaker;
-class deSoundLevelMeter;
-class deTouchSensor;
-class deSkyInstance;
+#include "../billboard/deBillboard.h"
+#include <dragengine/resources/camera/deCamera.h>
+#include <dragengine/resources/collider/deCollider.h>
+#include "../component/deComponent.h"
+#include "../debug/deDebugDrawer.h"
+#include "../probe/deEnvMapProbe.h"
+#include "../forcefield/deForceField.h"
+#include "../terrain/heightmap/deHeightTerrain.h"
+#include "../light/deLight.h"
+#include "../sensor/deLumimeter.h"
+#include "../sound/deMicrophone.h"
+#include "../navigation/blocker/deNavigationBlocker.h"
+#include "../navigation/space/deNavigationSpace.h"
+#include "../navigation/navigator/deNavigator.h"
+#include "../network/deNetworkState.h"
+#include "../particle/deParticleEmitterInstance.h"
+#include "../propfield/dePropField.h"
+#include "../smoke/deSmokeEmitter.h"
+#include "../sound/deSpeaker.h"
+#include "../sensor/deSoundLevelMeter.h"
+#include "../sensor/deTouchSensor.h"
+#include "../sky/deSkyInstance.h"
 
 class deBaseGraphicWorld;
 class deBasePhysicsWorld;
@@ -76,7 +76,7 @@ public:
 	
 	
 private:
-	deHeightTerrain *pHeightTerrain;
+	deHeightTerrain::Ref pHeightTerrain;
 	decDVector pSize;
 	
 	decVector pGravity;
@@ -88,87 +88,87 @@ private:
 	float pSpeakerGain;
 	
 	deSkyInstance *pSkyRoot;
-	deSkyInstance *pSkyTail;
+	deSkyInstance::Ref pSkyTail;
 	int pSkyCount;
 	
 	deBillboard *pBillboardRoot;
-	deBillboard *pBillboardTail;
+	deBillboard::Ref pBillboardTail;
 	int pBillboardCount;
 	
 	deCamera *pCameraRoot;
-	deCamera *pCameraTail;
+	deCamera::Ref pCameraTail;
 	int pCameraCount;
 	
 	deCollider *pColliderRoot;
-	deCollider *pColliderTail;
+	deCollider::Ref pColliderTail;
 	int pColliderCount;
 	
 	deComponent *pComponentRoot;
-	deComponent *pComponentTail;
+	deComponent::Ref pComponentTail;
 	int pComponentCount;
 	
 	deDebugDrawer *pDebugDrawerRoot;
-	deDebugDrawer *pDebugDrawerTail;
+	deDebugDrawer::Ref pDebugDrawerTail;
 	int pDebugDrawerCount;
 	
 	deEnvMapProbe *pEnvMapProbeRoot;
-	deEnvMapProbe *pEnvMapProbeTail;
+	deEnvMapProbe::Ref pEnvMapProbeTail;
 	int pEnvMapProbeCount;
 	
 	deForceField *pForceFieldRoot;
-	deForceField *pForceFieldTail;
+	deForceField::Ref pForceFieldTail;
 	int pForceFieldCount;
 	
 	deLight *pLightRoot;
-	deLight *pLightTail;
+	deLight::Ref pLightTail;
 	int pLightCount;
 	
 	deLumimeter *pLumimeterRoot;
-	deLumimeter *pLumimeterTail;
+	deLumimeter::Ref pLumimeterTail;
 	int pLumimeterCount;
 	
 	deMicrophone *pMicrophoneRoot;
-	deMicrophone *pMicrophoneTail;
+	deMicrophone::Ref pMicrophoneTail;
 	int pMicrophoneCount;
 	
 	deNavigationSpace *pNavSpaceRoot;
-	deNavigationSpace *pNavSpaceTail;
+	deNavigationSpace::Ref pNavSpaceTail;
 	int pNavSpaceCount;
 	
 	deNavigationBlocker *pNavBlockerRoot;
-	deNavigationBlocker *pNavBlockerTail;
+	deNavigationBlocker::Ref pNavBlockerTail;
 	int pNavBlockerCount;
 	
 	deNavigator *pNavigatorRoot;
-	deNavigator *pNavigatorTail;
+	deNavigator::Ref pNavigatorTail;
 	int pNavigatorCount;
 	
 	deNetworkState *pNetworkStateRoot;
-	deNetworkState *pNetworkStateTail;
+	deNetworkState::Ref pNetworkStateTail;
 	int pNetworkStateCount;
 	
 	deParticleEmitterInstance *pParticleEmitterRoot;
-	deParticleEmitterInstance *pParticleEmitterTail;
+	deParticleEmitterInstance::Ref pParticleEmitterTail;
 	int pParticleEmitterCount;
 	
 	dePropField *pPropFieldRoot;
-	dePropField *pPropFieldTail;
+	dePropField::Ref pPropFieldTail;
 	int pPropFieldCount;
 	
 	deSmokeEmitter *pSmokeEmitterRoot;
-	deSmokeEmitter *pSmokeEmitterTail;
+	deSmokeEmitter::Ref pSmokeEmitterTail;
 	int pSmokeEmitterCount;
 	
 	deSpeaker *pSpeakerRoot;
-	deSpeaker *pSpeakerTail;
+	deSpeaker::Ref pSpeakerTail;
 	int pSpeakerCount;
 	
 	deTouchSensor *pTouchSensorRoot;
-	deTouchSensor *pTouchSensorTail;
+	deTouchSensor::Ref pTouchSensorTail;
 	int pTouchSensorCount;
 	
 	deSoundLevelMeter *pSoundLevelMeterRoot;
-	deSoundLevelMeter *pSoundLevelMeterTail;
+	deSoundLevelMeter::Ref pSoundLevelMeterTail;
 	int pSoundLevelMeterCount;
 	
 	// peers
@@ -205,7 +205,7 @@ public:
 	void Clear();
 	
 	/** \brief Assigned height terrain or NULL. */
-	inline deHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
+	inline const deHeightTerrain::Ref &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** \brief Set assigned height terrain or NULL to remove it. */
 	void SetHeightTerrain(deHeightTerrain *heightTerrain);

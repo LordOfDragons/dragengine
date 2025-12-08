@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class gdeOCSpeaker;
-class gdeSkin;
+#include "../../gamedef/skin/gdeSkin.h"
 
 
 
@@ -38,7 +38,7 @@ class gdeSkin;
  */
 class gdeUSkinSetPath : public igdeUndo{
 private:
-	gdeSkin *pSkin;
+	gdeSkin::Ref pSkin;
 	
 	decString pOldValue;
 	decString pNewValue;

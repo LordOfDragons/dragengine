@@ -29,7 +29,7 @@
 
 #include "deoglRDSRenderable.h"
 
-class deoglRCamera;
+#include "../../../../world/deoglRCamera.h"
 
 
 
@@ -38,7 +38,7 @@ class deoglRCamera;
  */
 class deoglRDSRenderableCamera : public deoglRDSRenderable{
 private:
-	deoglRCamera *pCamera;
+	deoglRCamera::Ref pCamera;
 	
 public:
 	/** \name Constructors and Destructors */

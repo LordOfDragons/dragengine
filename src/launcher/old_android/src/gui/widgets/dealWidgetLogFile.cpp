@@ -115,7 +115,7 @@ void dealWidgetLogFile::CheckFile(){
 	}
 	
 	if(size - pLastFileSize < 10000){
-		decBaseFileReader *reader = NULL;
+		decBaseFileReader::Ref reader = NULL;
 		decString data;
 		
 		data.Set(' ', size - pLastFileSize);
@@ -124,12 +124,7 @@ void dealWidgetLogFile::CheckFile(){
 			reader = vfs.OpenFileForReading(pPath);
 			reader->MovePosition(pLastFileSize);
 			reader->Read((char*)data.GetString(), size - pLastFileSize);
-			reader->FreeReference();
-			
 		}catch(const deException &){
-			if(reader){
-				reader->FreeReference();
-			}
 		}
 		
 		const decStringList lines = data.Split('\n');
@@ -149,7 +144,7 @@ void dealWidgetLogFile::CheckFile(){
 
 void dealWidgetLogFile::AddLogLine(const decString &line){
 	LogEntry::eLogTypes logType = LogEntry::eltInfo;
-	LogEntry *logEntry = NULL;
+	LogEntry::Ref logEntry = NULL;
 	decString sline(line.GetTrimmed());
 	decString source;
 	
@@ -176,14 +171,9 @@ void dealWidgetLogFile::AddLogLine(const decString &line){
 	}
 	
 	try{
-		logEntry = new LogEntry(logType, source, sline);
+		logEntry.TakeOver(new LogEntry(logType, source, sline));
 		pLogs.Add(logEntry);
-		logEntry->FreeReference();
-		
 	}catch(const deException &){
-		if(logEntry){
-			logEntry->FreeReference();
-		}
 	}
 }
 
@@ -191,7 +181,7 @@ void dealWidgetLogFile::UpdateContent(){
 	const int padding = GetDisplay().GetDefaultFontSize() / 2;
 	const int maxLineWidth = decMath::max(GetContentArea().x - padding * 2, 0);
 	const int count = pLogs.GetCount();
-	dealWidgetLabel *label = NULL;
+	dealWidgetLabel::Ref label = NULL;
 	decString text;
 	int i;
 	
@@ -204,19 +194,19 @@ void dealWidgetLogFile::UpdateContent(){
 			switch(logEntry.GetType()){
 			case LogEntry::eltInfo:
 				text.Format("I [%s] %s", logEntry.GetSource().GetString(), logEntry.GetMessage().GetString());
-				label = new dealWidgetLabel(GetDisplay(), text);
+				label.TakeOver(new dealWidgetLabel(GetDisplay(), text));
 				label->SetColor(pColorInfo);
 				break;
 				
 			case LogEntry::eltWarn:
 				text.Format("W [%s] %s", logEntry.GetSource().GetString(), logEntry.GetMessage().GetString());
-				label = new dealWidgetLabel(GetDisplay(), text);
+				label.TakeOver(new dealWidgetLabel(GetDisplay(), text));
 				label->SetColor(pColorWarn);
 				break;
 				
 			case LogEntry::eltError:
 				text.Format("E [%s] %s", logEntry.GetSource().GetString(), logEntry.GetMessage().GetString());
-				label = new dealWidgetLabel(GetDisplay(), text);
+				label.TakeOver(new dealWidgetLabel(GetDisplay(), text));
 				label->SetColor(pColorError);
 				break;
 			}
@@ -230,14 +220,10 @@ void dealWidgetLogFile::UpdateContent(){
 			}
 			
 			AddWidget(label);
-			label->FreeReference();
 			label = NULL;
 		}
 		
 	}catch(const deException &){
-		if(label){
-			label->FreeReference();
-		}
 	}
 }
 

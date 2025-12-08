@@ -37,7 +37,7 @@
 
 saeUSAnimSetNeutralVertexPositionSets::saeUSAnimSetNeutralVertexPositionSets(
 	saeSAnimation *sanimation, const decStringSet &sets) :
-pSAnimation(nullptr),
+
 pNewSets(sets)
 {
 	DEASSERT_NOTNULL(sanimation)
@@ -47,13 +47,9 @@ pNewSets(sets)
 	pOldSets = sanimation->GetNeutralVertexPositionSets();
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
 }
 
 saeUSAnimSetNeutralVertexPositionSets::~saeUSAnimSetNeutralVertexPositionSets(){
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

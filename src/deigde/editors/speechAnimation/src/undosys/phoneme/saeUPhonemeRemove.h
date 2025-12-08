@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saePhoneme;
-class saeSAnimation;
+#include "../../sanimation/phoneme/saePhoneme.h"
+#include "../../sanimation/saeSAnimation.h"
 
 
 
@@ -37,8 +37,8 @@ class saeSAnimation;
  */
 class saeUPhonemeRemove : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
-	saePhoneme *pPhoneme;
+	saeSAnimation::Ref pSAnimation;
+	saePhoneme::Ref pPhoneme;
 	
 	
 	

@@ -49,19 +49,10 @@ ceUCTopicAdd::ceUCTopicAdd(ceConversationFile *file, ceConversationTopic *topic)
 	SetShortInfo("Add Topic");
 	
 	pFile = file;
-	file->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
 }
 
 ceUCTopicAdd::~ceUCTopicAdd(){
-	if(pTopic){
-		pTopic->FreeReference();
-	}
-	if(pFile){
-		pFile->FreeReference();
-	}
 }
 
 

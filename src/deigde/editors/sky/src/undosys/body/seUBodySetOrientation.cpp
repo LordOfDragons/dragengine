@@ -40,7 +40,7 @@
 ////////////////////////////
 
 seUBodySetOrientation::seUBodySetOrientation(seBody *body, const decVector &newOrientation) :
-pBody(NULL),
+
 pNewOrientation(newOrientation)
 {
 	if(!body){
@@ -52,13 +52,9 @@ pNewOrientation(newOrientation)
 	pOldOrientation = body->GetOrientation();
 	
 	pBody = body;
-	body->AddReference();
 }
 
 seUBodySetOrientation::~seUBodySetOrientation(){
-	if(pBody){
-		pBody->FreeReference();
-	}
 }
 
 

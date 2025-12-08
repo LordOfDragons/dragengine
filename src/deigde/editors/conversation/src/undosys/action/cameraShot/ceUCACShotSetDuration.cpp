@@ -52,19 +52,10 @@ ceUCACShotSetDuration::ceUCACShotSetDuration(ceConversationTopic *topic, ceCACam
 	SetShortInfo("Camera Shot Set Duration");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCACShotSetDuration::~ceUCACShotSetDuration(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

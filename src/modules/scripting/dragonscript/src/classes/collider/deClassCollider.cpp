@@ -116,7 +116,7 @@
 
 // native structure
 struct sColNatDat{
-	deCollider *collider;
+	deCollider::Ref collider;
 };
 
 
@@ -1884,7 +1884,7 @@ dsFunction(init.clsCol, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassCollider::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCollider *collider = ((sColNatDat*)p_GetNativeData(myself))->collider;
+	deCollider::Ref collider = ((sColNatDat*)p_GetNativeData(myself))->collider;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)collider);
 }
@@ -2113,10 +2113,6 @@ void deClassCollider::AssignCollider(dsRealObject *myself, deCollider *collider)
 	}
 	
 	nd.collider = collider;
-	
-	if(collider){
-		collider->AddReference();
-	}
 }
 
 void deClassCollider::PushCollider(dsRunTime *rt, deCollider *collider){

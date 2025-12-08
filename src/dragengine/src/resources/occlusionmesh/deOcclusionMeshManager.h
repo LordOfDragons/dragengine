@@ -68,17 +68,17 @@ public:
 	deOcclusionMesh *GetOcclusionMeshWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Creates an occlusion mesh using a builder. */
-	deOcclusionMesh *CreateOcclusionMesh(const char *filename, deOcclusionMeshBuilder &builder);
+	deOcclusionMesh::Ref CreateOcclusionMesh(const char *filename, deOcclusionMeshBuilder &builder);
 	
 	/** \brief Creates an occlusion mesh using a builder. */
-	deOcclusionMesh *CreateOcclusionMesh(deVirtualFileSystem *vfs, const char *filename,
+	deOcclusionMesh::Ref CreateOcclusionMesh(deVirtualFileSystem *vfs, const char *filename,
 		deOcclusionMeshBuilder &builder);
 	
 	/** \brief Loads an occlusion mesh from the given file relative to the given base path. */
-	deOcclusionMesh *LoadOcclusionMesh(const char *filename, const char *basePath);
+	deOcclusionMesh::Ref LoadOcclusionMesh(const char *filename, const char *basePath);
 	
 	/** \brief Loads an occlusion mesh from the given file relative to the given base path. */
-	deOcclusionMesh *LoadOcclusionMesh(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
+	deOcclusionMesh::Ref LoadOcclusionMesh(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/**
 	 * Adds a loaded and fully prepared occlusion mesh. This method is to be used only by

@@ -50,9 +50,7 @@ meUHTVRuleMapToggleInversed::meUHTVRuleMapToggleInversed(meHTVegetationLayer *vl
 	SetMemoryConsumption(sizeof(meUHTVRuleMapToggleInversed));
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMapToggleInversed::~meUHTVRuleMapToggleInversed(){

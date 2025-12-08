@@ -42,7 +42,7 @@
 ////////////////////////////
 
 gdeUOCRemoveSnapPoint::gdeUOCRemoveSnapPoint(gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint) :
-pObjectClass(NULL),
+
 pSnapPoint(NULL)
 {
 	if(!objectClass || !snapPoint){
@@ -56,19 +56,10 @@ pSnapPoint(NULL)
 	SetShortInfo("Remove snap point");
 	
 	pSnapPoint = snapPoint;
-	snapPoint->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveSnapPoint::~gdeUOCRemoveSnapPoint(){
-	if(pSnapPoint){
-		pSnapPoint->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

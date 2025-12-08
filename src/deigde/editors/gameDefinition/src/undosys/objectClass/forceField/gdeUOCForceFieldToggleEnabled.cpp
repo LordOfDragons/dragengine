@@ -42,7 +42,7 @@
 
 gdeUOCForceFieldToggleEnabled::gdeUOCForceFieldToggleEnabled(
 	gdeObjectClass *objectClass, gdeOCForceField *forceField) :
-pObjectClass(NULL),
+
 pForceField(NULL)
 {
 	if(!objectClass || !forceField){
@@ -52,19 +52,10 @@ pForceField(NULL)
 	SetShortInfo("Force field toggle enabled");
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCForceFieldToggleEnabled::~gdeUOCForceFieldToggleEnabled(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

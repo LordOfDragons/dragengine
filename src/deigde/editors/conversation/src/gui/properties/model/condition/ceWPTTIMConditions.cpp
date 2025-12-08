@@ -99,7 +99,7 @@ void ceWPTTIMConditions::UpdateConditions(){
 		ceConversationCondition * const condition = pConditions.GetAt(i);
 		
 		// find item matching condition if present
-		ceWPTTIMCondition *model = NULL;
+		ceWPTTIMCondition::Ref model = NULL;
 		const int childCount = GetChildCount();
 		for(j=i; j<childCount; j++){
 			ceWPTTIMCondition * const child = (ceWPTTIMCondition*)GetChildAt(j);
@@ -126,11 +126,8 @@ void ceWPTTIMConditions::UpdateConditions(){
 				model->Update();
 				
 			}catch(const deException &){
-				model->FreeReference();
 				throw;
 			}
-			
-			model->FreeReference();
 		}
 	}
 	

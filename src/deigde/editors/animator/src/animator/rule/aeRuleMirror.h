@@ -83,7 +83,7 @@ public:
 	aeRuleMirror(const aeRuleMirror &copy);
 	
 	/** Create rule with default settings. */
-	static aeRuleMirror *CreateDefault();
+	static aeRuleMirror::Ref CreateDefault();
 	
 protected:
 	/** Clean up rule. */
@@ -161,7 +161,7 @@ public:
 	
 	
 	/** Create engine animator rule. */
-	deAnimatorRule *CreateEngineRule() override;
+	deAnimatorRule::Ref CreateEngineRule() override;
 	
 	/** Create copy of rule. */
 	aeRule *CreateCopy() const override;

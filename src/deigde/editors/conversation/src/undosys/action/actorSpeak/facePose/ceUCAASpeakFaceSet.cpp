@@ -55,37 +55,15 @@ ceUCAASpeakFaceSet::ceUCAASpeakFaceSet(ceConversationTopic *topic, ceCAActorSpea
 	
 	SetShortInfo("Set face pose");
 	
-	pOldStrip = new ceStrip(*facePose);
+	pOldStrip.TakeOver(new ceStrip(*facePose));
 	
 	pNewStrip = newStrip;
-	newStrip->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pFacePose = facePose;
-	facePose->AddReference();
 }
 
 ceUCAASpeakFaceSet::~ceUCAASpeakFaceSet(){
-	if(pNewStrip){
-		pNewStrip->FreeReference();
-	}
-	if(pOldStrip){
-		pOldStrip->FreeReference();
-	}
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

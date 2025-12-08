@@ -45,16 +45,12 @@
 ////////////////////////////
 
 gdeDefaultPropertyValue::gdeDefaultPropertyValue(igdeUIHelper &helper) :
-igdeEditPropertyValue(helper),
-pGDProperty(NULL)
+igdeEditPropertyValue(helper)
 {
-	pGDProperty = new igdeGDProperty("Property");
+	pGDProperty.TakeOver(new igdeGDProperty("Property"));
 }
 
 gdeDefaultPropertyValue::~gdeDefaultPropertyValue(){
-	if(pGDProperty){
-		pGDProperty->FreeReference();
-	}
 }
 
 
@@ -69,7 +65,6 @@ igdeEditPropertyValueListener *listener){
 	widget.TakeOver(new gdeDefaultPropertyValue(helper));
 	if(listener){
 		widget->AddListener(listener);
-		listener->FreeReference();
 	}
 	form.AddChild(widget);
 }
@@ -79,7 +74,6 @@ igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener){
 	widget.TakeOver(new gdeDefaultPropertyValue(helper));
 	if(listener){
 		widget->AddListener(listener);
-		listener->FreeReference();
 	}
 	parent.AddChild(widget);
 }

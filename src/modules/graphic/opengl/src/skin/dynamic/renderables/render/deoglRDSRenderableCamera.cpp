@@ -43,8 +43,7 @@
 ////////////////////////////
 
 deoglRDSRenderableCamera::deoglRDSRenderableCamera(deoglRDynamicSkin &dynamicSkin) :
-deoglRDSRenderable(etCamera, dynamicSkin),
-pCamera(NULL)
+deoglRDSRenderable(etCamera, dynamicSkin)
 {
 	LEAK_CHECK_CREATE(dynamicSkin.GetRenderThread(), DSRenderableCamera);
 }
@@ -63,16 +62,7 @@ void deoglRDSRenderableCamera::SetCamera(deoglRCamera *camera){
 	if(camera == pCamera){
 		return;
 	}
-	
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	
 	pCamera = camera;
-	
-	if(camera){
-		camera->AddReference();
-	}
 }
 
 void deoglRDSRenderableCamera::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){

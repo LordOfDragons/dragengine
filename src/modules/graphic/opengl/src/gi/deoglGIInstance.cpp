@@ -231,8 +231,6 @@ pIndexFaces(0),
 pIndexVertices(0),
 pHasBVHNodes(false),
 pDirtyTUCs(true),
-pTBOMaterial(NULL),
-pTBOMaterial2(NULL),
 pDynamic(false),
 pChanged(false),
 pHardChanged(false),
@@ -242,8 +240,8 @@ pRecheckDynamic(false)
 	deoglRenderThread &renderThread = instances.GetGIState().GetRenderThread();
 	
 	try{
-		pTBOMaterial = new deoglDynamicTBOUInt32(renderThread, 4);
-		pTBOMaterial2 = new deoglDynamicTBOFloat16(renderThread, 4);
+		pTBOMaterial.TakeOver(new deoglDynamicTBOUInt32(renderThread, 4));
+		pTBOMaterial2.TakeOver(new deoglDynamicTBOFloat16(renderThread, 4));
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -556,13 +554,6 @@ void deoglGIInstance::DropBlockMaterial(){
 
 void deoglGIInstance::pCleanUp(){
 	Clear();
-	
-	if(pTBOMaterial){
-		pTBOMaterial->FreeReference();
-	}
-	if(pTBOMaterial2){
-		pTBOMaterial2->FreeReference();
-	}
 }
 
 void deoglGIInstance::pInitParameters(){

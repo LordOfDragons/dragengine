@@ -56,8 +56,7 @@
 ceWPTTIMAPlayerChoiceOptionCondition::ceWPTTIMAPlayerChoiceOptionCondition(
 ceWindowMain &windowMain, ceConversation &conversation, ceCAPlayerChoice &playerChoice,
 ceCAPlayerChoiceOption *option) :
-ceWPTTIMConditionContainer(windowMain, conversation, playerChoice, etActionPlayerChoiceOptionCondition),
-pOption(NULL)
+ceWPTTIMConditionContainer(windowMain, conversation, playerChoice, etActionPlayerChoiceOptionCondition)
 {
 	if(!option){
 		DETHROW(deeInvalidParam);
@@ -66,13 +65,9 @@ pOption(NULL)
 	SetText("Condition");
 	
 	pOption = option;
-	option->AddReference();
 }
 
 ceWPTTIMAPlayerChoiceOptionCondition::~ceWPTTIMAPlayerChoiceOptionCondition(){
-	if(pOption){
-		pOption->FreeReference();
-	}
 }
 
 

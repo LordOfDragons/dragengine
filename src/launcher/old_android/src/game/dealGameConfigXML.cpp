@@ -354,14 +354,14 @@ void dealGameConfigXML::pReadProfiles(const decXmlElementTag &root, dealGame &ga
 
 void dealGameConfigXML::pReadProfile(const decXmlElementTag &root, dealGame &game){
 	int e, elementCount = root.GetElementCount();
-	dealGameProfile *profile = NULL;
+	dealGameProfile::Ref profile = NULL;
 	const decXmlElementTag *tag;
 	decString profileName;
 	
 	profileName = pGetAttributeString(root, "name");
 	
 	try{
-		profile = new dealGameProfile;
+		profile.TakeOver(new dealGameProfile);
 		if(!profile) DETHROW(deeOutOfMemory);
 		
 		profile->SetName(profileName);
@@ -477,19 +477,14 @@ void dealGameConfigXML::pReadProfileDisableModuleVersions(const decXmlElementTag
 		
 		if(tag){
 			if(strcmp(tag->GetName(), "disableModuleVersion") == 0){
-				dealGPDisableModuleVersion *entry = NULL;
+				dealGPDisableModuleVersion::Ref entry = NULL;
 				const char * const name = pGetAttributeString(*tag, "name");
 				const char * const version = pGetAttributeString(*tag, "version");
 				
 				try{
-					entry = new dealGPDisableModuleVersion(name, version);
+					entry.TakeOver(new dealGPDisableModuleVersion(name, version));
 					profile.GetDisableModuleVersionList().Add(entry);
-					entry->FreeReference();
-					
 				}catch(const deException &){
-					if(entry){
-						entry->FreeReference();
-					}
 					throw;
 				}
 				
@@ -520,14 +515,14 @@ void dealGameConfigXML::pReadProfileModules(const decXmlElementTag &root, dealGa
 
 void dealGameConfigXML::pReadProfileModule(const decXmlElementTag &root, dealGameProfile &profile){
 	int e, elementCount = root.GetElementCount();
-	dealGPModule *module = NULL;
+	dealGPModule::Ref module = NULL;
 	const decXmlElementTag *tag;
 	decString moduleName;
 	
 	moduleName = pGetAttributeString(root, "name");
 	
 	try{
-		module = new dealGPModule;
+		module.TakeOver(new dealGPModule);
 		if(!module) DETHROW(deeOutOfMemory);
 		
 		module->SetName(moduleName);
@@ -557,7 +552,7 @@ void dealGameConfigXML::pReadProfileModuleParameters(const decXmlElementTag &roo
 	dealGPMParameterList &parametersList = module.GetParameterList();
 	int e, elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
-	dealGPMParameter *parameters;
+	dealGPMParameter::Ref parameters;
 	
 	for(e=0; e<elementCount; e++){
 		tag = root.GetElementIfTag(e);
@@ -567,7 +562,7 @@ void dealGameConfigXML::pReadProfileModuleParameters(const decXmlElementTag &roo
 				parameters = NULL;
 				
 				try{
-					parameters = new dealGPMParameter;
+					parameters.TakeOver(new dealGPMParameter);
 					if(!parameters) DETHROW(deeOutOfMemory);
 					
 					parameters->SetName(pGetAttributeString(*tag, "name"));

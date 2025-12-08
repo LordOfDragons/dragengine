@@ -39,19 +39,14 @@ const char * const gdeClipboardDataOCNavSpace::TYPE_NAME = "OCNavSpace";
 ////////////////////////////
 
 gdeClipboardDataOCNavSpace::gdeClipboardDataOCNavSpace(gdeOCNavigationSpace *navSpace) :
-igdeClipboardData(TYPE_NAME),
-pNavSpace(NULL)
+igdeClipboardData(TYPE_NAME)
 {
 	if(!navSpace){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pNavSpace = navSpace;
-	navSpace->AddReference();
 }
 
 gdeClipboardDataOCNavSpace::~gdeClipboardDataOCNavSpace(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }

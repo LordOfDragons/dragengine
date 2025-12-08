@@ -52,13 +52,9 @@ ceUCCShotSetCameraTarget::ceUCCShotSetCameraTarget(ceCameraShot *cameraShot, con
 	pNewTarget = newTarget;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetCameraTarget::~ceUCCShotSetCameraTarget(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

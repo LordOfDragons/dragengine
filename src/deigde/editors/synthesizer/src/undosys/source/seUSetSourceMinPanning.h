@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSource;
+#include "../../synthesizer/source/seSource.h"
 
 
 
@@ -37,7 +37,7 @@ class seSource;
  */
 class seUSetSourceMinPanning : public igdeUndo{
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	
 	float pOldValue;
 	float pNewValue;

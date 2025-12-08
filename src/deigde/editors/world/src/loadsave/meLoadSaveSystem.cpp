@@ -152,7 +152,7 @@ igdeGameDefinition *gameDefinition, igdeStepableTask **task){
 		DETHROW(deeInvalidParam);
 	}
 	
-	meWorld * const world = new meWorld(*pWndMain, &pWndMain->GetEnvironment());
+	meWorld * const world.TakeOver(new meWorld(*pWndMain, &pWndMain->GetEnvironment()));
 	world->SetFilePath(filename);
 	try{
 		*task = lsWorld->CreateLoadTask(world, decBaseFileReader::Ref::New(
@@ -161,7 +161,6 @@ igdeGameDefinition *gameDefinition, igdeStepableTask **task){
 		return world;
 		
 	}catch(const deException &){
-		world->FreeReference();
 		throw;
 	}
 }

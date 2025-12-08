@@ -46,7 +46,6 @@ feUGlyphSetBearing::feUGlyphSetBearing(feFontGlyph *glyph, int newBearing){
 	pNewBearing = newBearing;
 	
 	pGlyph = glyph;
-	glyph->AddReference();
 }
 
 feUGlyphSetBearing::~feUGlyphSetBearing(){

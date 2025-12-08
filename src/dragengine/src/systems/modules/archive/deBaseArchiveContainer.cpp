@@ -43,11 +43,7 @@ pReader(NULL)
 	}
 	
 	pReader = reader;
-	reader->AddReference();
 }
 
 deBaseArchiveContainer::~deBaseArchiveContainer(){
-	if(pReader){
-		pReader->FreeReference();
-	}
 }

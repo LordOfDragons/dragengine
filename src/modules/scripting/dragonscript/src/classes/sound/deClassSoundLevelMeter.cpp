@@ -47,7 +47,7 @@
 
 
 struct sSLMNatDat{
-	deSoundLevelMeter *soundLevelMeter;
+	deSoundLevelMeter::Ref soundLevelMeter;
 };
 
 
@@ -455,5 +455,4 @@ void deClassSoundLevelMeter::PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMete
 	rt->CreateObjectNakedOnStack(this);
 	((sSLMNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))
 		->soundLevelMeter = soundLevelMeter;
-	soundLevelMeter->AddReference();
 }

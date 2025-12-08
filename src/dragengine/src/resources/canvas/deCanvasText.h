@@ -69,7 +69,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font or NULL if not set. */
-	inline deFont *GetFont() const{ return pFont; }
+	inline const deFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font or NULL to unset. */
 	void SetFont(deFont *font);

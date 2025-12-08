@@ -63,7 +63,7 @@
 /////////////////////
 
 struct sInputDeviceNatDat{
-	dedsInputDevice *device;
+	dedsInputDevice::Ref device;
 };
 
 
@@ -891,5 +891,4 @@ void deClassInputDevice::PushInputDevice(dsRunTime *rt, dedsInputDevice *device)
 	sInputDeviceNatDat &nd = *((sInputDeviceNatDat*)p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.device = device;
-	device->AddReference();
 }

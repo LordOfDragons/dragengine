@@ -50,13 +50,9 @@ saeUPhonemeSetSampleText::saeUPhonemeSetSampleText(saePhoneme *phoneme, const ch
 	pNewText = newText;
 	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeSetSampleText::~saeUPhonemeSetSampleText(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
 }
 
 

@@ -49,13 +49,9 @@ pObjectClass(NULL)
 	SetShortInfo("Object class toggle can instantiate");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCToggleCanInstantiate::~gdeUOCToggleCanInstantiate(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

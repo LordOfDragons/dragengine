@@ -28,7 +28,7 @@
 #include "../meBaseUndoRotate.h"
 #include <dragengine/common/collection/decIntList.h>
 
-class meObject;
+#include "../../../world/object/meObject.h"
 class meObjectShapeList;
 
 
@@ -38,7 +38,7 @@ class meObjectShapeList;
  */
 class meUObjectShapeRotate : public meBaseUndoRotate{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;

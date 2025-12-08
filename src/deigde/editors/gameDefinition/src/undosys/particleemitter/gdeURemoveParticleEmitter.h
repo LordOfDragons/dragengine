@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeGameDefinition;
-class gdeParticleEmitter;
+#include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/particleemitter/gdeParticleEmitter.h"
 
 
 
@@ -38,8 +38,8 @@ class gdeParticleEmitter;
  */
 class gdeURemoveParticleEmitter : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeParticleEmitter *pParticleEmitter;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeParticleEmitter::Ref pParticleEmitter;
 	
 	
 	

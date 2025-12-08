@@ -99,23 +99,19 @@ void igdeGDCNavigationBlockerList::RemoveAll(){
 
 
 void igdeGDCNavigationBlockerList::SetToDeepCopyFrom(const igdeGDCNavigationBlockerList &list){
-	igdeGDCNavigationBlocker *blocker = NULL;
+	igdeGDCNavigationBlocker::Ref blocker = NULL;
 	const int count = list.GetCount();
 	
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			blocker = new igdeGDCNavigationBlocker(*list.GetAt(i));
+			blocker.TakeOver(new igdeGDCNavigationBlocker(*list.GetAt(i)));
 			Add(blocker);
-			blocker->FreeReference();
 			blocker = NULL;
 		}
 		
 	}catch(const deException &){
-		if(blocker){
-			blocker->FreeReference();
-		}
 		throw;
 	}
 }

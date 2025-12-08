@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saeWord;
+#include "../../../sanimation/dictionary/saeWord.h"
 
 
 
@@ -36,7 +36,7 @@ class saeWord;
  */
 class saeUWordSetName : public igdeUndo{
 private:
-	saeWord *pWord;
+	saeWord::Ref pWord;
 	
 	decString pOldName;
 	decString pNewName;

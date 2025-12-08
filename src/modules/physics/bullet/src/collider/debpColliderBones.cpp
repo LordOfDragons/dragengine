@@ -739,13 +739,11 @@ void debpColliderBones::CreateDebugDrawers(){
 		}
 		
 		const deColliderBone &colbone = pEngColliderRig->GetBoneAt(pBonesPhysics[i]->GetIndex());
-		deDebugDrawer *boneDebugDrawer = ddmanager.CreateDebugDrawer();
+		deDebugDrawer::Ref boneDebugDrawer = ddmanager.CreateDebugDrawer();
 		boneDebugDrawer->SetXRay(true);
 		boneDebugDrawer->SetPosition(colbone.GetPosition());
 		boneDebugDrawer->SetOrientation(colbone.GetOrientation());
 		pBonesPhysics[i]->SetDebugDrawer(boneDebugDrawer);
-		boneDebugDrawer->FreeReference();
-		
 		if(world){
 			world->GetWorld().AddDebugDrawer(boneDebugDrawer);
 		}

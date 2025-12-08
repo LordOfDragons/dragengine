@@ -77,7 +77,7 @@ public:
 	inline const decString &GetName() const{ return pName; }
 	
 	/** \brief Class if resolved. */
-	inline igdeGDClass *GetClass() const{ return pClass; }
+	inline const igdeGDClass::Ref &GetClass() const{ return pClass; }
 	
 	/** \brief Resolv class if possible. */
 	void ResolveClass(const igdeGDClassManager &classManager);

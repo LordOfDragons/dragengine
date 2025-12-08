@@ -36,7 +36,7 @@
  */
 class seUPropertySetValueType : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	seProperty::eValueTypes pOldType;
 	seProperty::eValueTypes pNewType;

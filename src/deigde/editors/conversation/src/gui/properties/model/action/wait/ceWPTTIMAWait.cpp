@@ -45,27 +45,19 @@
 
 ceWPTTIMAWait::ceWPTTIMAWait(ceWindowMain &windowMain,
 ceConversation &conversation, ceCAWait *action) :
-ceWPTTIMAction(windowMain, etActionWait, conversation, action),
-pCondition(NULL),
-pActions(NULL)
+ceWPTTIMAction(windowMain, etActionWait, conversation, action)
 {
 	SetIcon(windowMain.GetIconActionWait());
 	SetText("Wait");
 	
 	try{
-		pCondition = new ceWPTTIMAWaitCondition(windowMain, conversation, action);
+		pCondition.TakeOver(new ceWPTTIMAWaitCondition(windowMain, conversation, action));
 		AddChild(pCondition);
 		
-		pActions = new ceWPTTIMAWaitActions(windowMain, conversation, action->GetActions());
+		pActions.TakeOver(new ceWPTTIMAWaitActions(windowMain, conversation, action->GetActions()));
 		AddChild(pActions);
 		
 	}catch(const deException &){
-		if(pActions){
-			pActions->FreeReference();
-		}
-		if(pCondition){
-			pCondition->FreeReference();
-		}
 		throw;
 	}
 	

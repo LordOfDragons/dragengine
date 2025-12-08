@@ -123,9 +123,6 @@ void reSelectionBones::AddBone(reRigBone *bone){
 	
 	pBones[pBoneCount] = bone;
 	pBoneCount++;
-	
-	bone->AddReference();
-	
 	bone->SetSelected(true);
 	
 	pRig->NotifyBoneSelectedChanged(bone);
@@ -157,8 +154,6 @@ void reSelectionBones::RemoveBone(reRigBone *bone){
 	}
 	
 	pRig->NotifyBoneSelectedChanged(bone);
-	
-	bone->FreeReference();
 }
 
 void reSelectionBones::RemoveAllBones(){

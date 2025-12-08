@@ -50,13 +50,9 @@ ceUCTargetSetOrientation::ceUCTargetSetOrientation(ceTarget *target, const decVe
 	pNewOrientation = newOrientation;
 	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetSetOrientation::~ceUCTargetSetOrientation(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 

@@ -27,7 +27,7 @@
 
 #include <dragengine/common/file/decPath.h>
 
-class decMemoryFile;
+#include <dragengine/common/file/decMemoryFile.h>
 class deVirtualFileSystem;
 class decBaseFileWriter;
 
@@ -38,7 +38,7 @@ class decBaseFileWriter;
  */
 class deoglDelayedFileWrite{
 private:
-	decMemoryFile *pMemoryFile;
+	decMemoryFile::Ref pMemoryFile;
 	const decPath pPath;
 	
 public:

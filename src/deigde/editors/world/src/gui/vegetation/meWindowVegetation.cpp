@@ -314,7 +314,7 @@ public:
 		}
 		
 		igdeEnvironment &env = menu.GetEnvironment();
-		igdeMenuCascade::Ref subMenu, subMenu2;
+		igdeMenuCascade *subMenu, subMenu2;
 		igdeUIHelper &helper = env.GetUIHelper();
 		
 		
@@ -439,21 +439,15 @@ public:
 meWindowVegetation::meWindowVegetation(meWindowMain &windowMain) :
 igdeNVBoard(windowMain.GetEnvironment()),
 pWindowMain(windowMain),
-pListener(NULL),
-pWorld(NULL),
-pVLayer(NULL),
 pUnitsToPixel(igdeApplication::app().DisplayScaled(100.0f)),
 pPixelToUnits(1.0f / pUnitsToPixel)
 {
-	pListener = new meWindowVegetationListener(*this);
+	pListener.TakeOver(new meWindowVegetationListener(*this));
 	AddListener(new cBoardListener(*this));
 }
 
 meWindowVegetation::~meWindowVegetation(){
 	SetWorld(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -470,15 +464,12 @@ void meWindowVegetation::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
-		
 		const decPoint3 sector; // = pWorld->GetActiveSector();
 		SetSector(decPoint(sector.x, sector.z));
 	}
@@ -487,7 +478,7 @@ void meWindowVegetation::SetWorld(meWorld *world){
 void meWindowVegetation::SetSector(const decPoint &sector){
 	pSector = sector;
 	
-	meHTVegetationLayer *vlayer = NULL;
+	meHTVegetationLayer::Ref vlayer = NULL;
 	if(pWorld){
 		vlayer = pWorld->GetHeightTerrain()->GetActiveVLayer();
 	}
@@ -505,17 +496,7 @@ void meWindowVegetation::SetVLayer(meHTVegetationLayer *vlayer){
 	}
 	
 	Clear();
-	
-	if(pVLayer){
-		pVLayer->FreeReference();
-	}
-	
 	pVLayer = vlayer;
-	
-	if(vlayer){
-		vlayer->AddReference();
-	}
-	
 	UpdateNodesFromVLayer();
 }
 

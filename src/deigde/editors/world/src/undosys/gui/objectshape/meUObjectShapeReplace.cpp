@@ -84,13 +84,9 @@ meUObjectShapeReplace::meUObjectShapeReplace(meObject *object, const char *prope
 	
 	pProperty = property;
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectShapeReplace::~meUObjectShapeReplace(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

@@ -47,17 +47,8 @@ ceUndoCAction::ceUndoCAction(ceConversationAction *action, ceConversationTopic *
 	pTopic = NULL;
 	
 	pAction = action;
-	action->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
 }
 
 ceUndoCAction::~ceUndoCAction(){
-	if(pTopic){
-		pTopic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
 }

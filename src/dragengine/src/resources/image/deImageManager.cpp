@@ -76,7 +76,7 @@ deImage *deImageManager::GetRootImage() const{
 	return (deImage*)pImages.GetRoot();
 }
 
-deImage * deImageManager::GetImageWith(const char *filename) const{
+deImage::Ref deImageManager::GetImageWith(const char *filename) const{
 	return GetImageWith(GetEngine()->GetVirtualFileSystem(), filename);
 }
 
@@ -85,34 +85,31 @@ deImage *deImageManager::GetImageWith(deVirtualFileSystem *vfs, const char *file
 	return image && !image->GetOutdated() ? image : NULL;
 }
 
-deImage *deImageManager::CreateImage(int width, int height, int depth, int componentCount, int bitCount){
-	deImage *image = NULL;
+deImage::Ref deImageManager::CreateImage(int width, int height, int depth, int componentCount, int bitCount){
+	deImage::Ref image = NULL;
 	
 	try{
-		image = new deImage(this, GetEngine()->GetVirtualFileSystem(), "",
-			decDateTime::GetSystemTime(), width, height, depth, componentCount, bitCount);
+		image.TakeOver(new deImage(this, GetEngine()->GetVirtualFileSystem(), "",
+			decDateTime::GetSystemTime(), width, height, depth, componentCount, bitCount));
 		GetGraphicSystem()->LoadImage(image);
 		
 		pImages.Add(image);
 		
 	}catch(const deException &){
-		if(image){
-			image->FreeReference();
-		}
 		throw;
 	}
 	return image;
 }
 
-deImage *deImageManager::LoadImage(const char *filename, const char *basePath){
+deImage::Ref deImageManager::LoadImage(const char *filename, const char *basePath){
 	return LoadImage(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deImage *deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
-	decBaseFileReader *fileReader = NULL;
+deImage::Ref deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
+	decBaseFileReader::Ref fileReader = NULL;
 	deBaseImageModule *module;
 	deBaseImageInfo *imageInfos = NULL;
-	deImage *image = NULL, *findImage;
+	deImage::Ref image = NULL, *findImage;
 	decPath path;
 	
 //	LogInfoFormat( "Loading '%s'", filename );
@@ -148,9 +145,9 @@ deImage *deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *filenam
 			imageInfos = module->InitLoadImage(*fileReader);
 			if(!imageInfos) DETHROW(deeInvalidParam);
 			
-			image = new deImage(this, vfs, path.GetPathUnix(), modificationTime,
+			image.TakeOver(new deImage(this, vfs, path.GetPathUnix(), modificationTime,
 				imageInfos->GetWidth(), imageInfos->GetHeight(), imageInfos->GetDepth(),
-				imageInfos->GetComponentCount(), imageInfos->GetBitCount());
+				imageInfos->GetComponentCount(), imageInfos->GetBitCount()));
 			image->SetAsynchron(false);
 			
 			module->LoadImage(*fileReader, *image, *imageInfos);
@@ -168,12 +165,6 @@ deImage *deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *filenam
 	}catch(const deException &){
 		LogErrorFormat("Loading image '%s' (base path '%s') failed", filename, basePath ? basePath : "");
 		//LogException( e );
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(image){
-			image->FreeReference();
-		}
 		if(imageInfos) delete imageInfos;
 		throw;
 	}
@@ -186,8 +177,8 @@ deImage *deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *filenam
 	return image;
 }
 
-deImage *deImageManager::LoadDefault(){
-	deImage *image = NULL, *findImage;
+deImage::Ref deImageManager::LoadDefault(){
+	deImage::Ref image = NULL, *findImage;
 	decXpmImage *xpmImage = NULL;
 	
 	try{
@@ -203,8 +194,8 @@ deImage *deImageManager::LoadDefault(){
 		}else{
 			// load image
 			xpmImage = new decXpmImage(no_tex_xpm, true);
-			image = new deImage(this, GetEngine()->GetVirtualFileSystem(),
-				IMAGE_NO_TEXTURE, decDateTime::GetSystemTime(), xpmImage);
+			image.TakeOver(new deImage(this, GetEngine()->GetVirtualFileSystem(),
+				IMAGE_NO_TEXTURE, decDateTime::GetSystemTime(), xpmImage));
 			delete xpmImage; xpmImage = NULL;
 			
 			// load into graphic system
@@ -215,9 +206,6 @@ deImage *deImageManager::LoadDefault(){
 		}
 		
 	}catch(const deException &){
-		if(image){
-			image->FreeReference();
-		}
 		if(xpmImage) delete xpmImage;
 		throw;
 	}
@@ -260,7 +248,7 @@ void deImageManager::ReleaseLeakingResources(){
 	const int count = GetImageCount();
 	
 	if(count > 0){
-		deImage *image = (deImage*)pImages.GetRoot();
+		deImage::Ref image = (deImage*)pImages.GetRoot();
 		
 		LogWarnFormat("%i leaking images", count);
 		
@@ -279,7 +267,7 @@ void deImageManager::ReleaseLeakingResources(){
 ///////////////////////////
 
 void deImageManager::SystemGraphicLoad(){
-	deImage *image = (deImage*)pImages.GetRoot();
+	deImage::Ref image = (deImage*)pImages.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
 	while(image){
@@ -299,7 +287,7 @@ void deImageManager::SystemGraphicLoad(){
 }
 
 void deImageManager::SystemGraphicUnload(){
-	deImage *image = (deImage*)pImages.GetRoot();
+	deImage::Ref image = (deImage*)pImages.GetRoot();
 	
 	while(image){
 		image->SetPeerGraphic(NULL);

@@ -91,13 +91,11 @@ bool meNavigationSpaceSelection::HasActive() const{
 void meNavigationSpaceSelection::SetActive(meNavigationSpace *navspaces){
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = navspaces;
 	
 	if(navspaces){
-		navspaces->AddReference();
 		navspaces->SetActive(true);
 	}
 }

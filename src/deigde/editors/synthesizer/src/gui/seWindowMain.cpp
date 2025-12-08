@@ -92,20 +92,16 @@
 seWindowMain::seWindowMain(seIGDEModule &module) : 
 igdeEditorWindow(module),
 
-pListener(NULL),
-
 pConfiguration(*this),
 pLoadSaveSystem(*this),
 
-pViewSynthesizer(NULL),
-
-pSynthesizer(NULL)
+pViewSynthesizer(NULL)
 {
 	pLoadIcons();
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new seWindowMainListener(*this);
+	pListener.TakeOver(new seWindowMainListener(*this));
 	
 	pConfiguration.LoadConfiguration();
 	
@@ -124,10 +120,6 @@ seWindowMain::~seWindowMain(){
 	pConfiguration.SaveConfiguration();
 	
 	SetSynthesizer(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -158,13 +150,11 @@ void seWindowMain::SetSynthesizer(seSynthesizer *synthesizer){
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
 		pSynthesizer->Dispose();
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
 	if(synthesizer){
-		synthesizer->AddReference();
 		synthesizer->AddNotifier(pListener);
 		
 		pActionEditUndo->SetUndoSystem(synthesizer->GetUndoSystem());
@@ -210,7 +200,7 @@ deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group){
 	seSource * const activeSource = pSynthesizer->GetActiveSource();
 	int index = pSynthesizer->GetSources().GetCount();
 	seSourceGroup *parentGroup = NULL;
-	igdeUndo::Ref undoGroup, undo;
+	igdeUndo *undoGroup, undo;
 	
 	if(activeSource){
 		parentGroup = activeSource->GetParentGroup();

@@ -40,8 +40,8 @@
 ////////////////////////////
 
 seUSourceGroupAddSource::seUSourceGroupAddSource(seSourceGroup *group, seSource *source, int index) :
-pGroup(NULL),
-pSource(NULL),
+
+
 pIndex(index)
 {
 	if(!group || !source){
@@ -49,19 +49,10 @@ pIndex(index)
 	}
 	
 	pGroup = group;
-	group->AddReference();
-	
 	pSource = source;
-	source->AddReference();
 }
 
 seUSourceGroupAddSource::~seUSourceGroupAddSource(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }
 
 

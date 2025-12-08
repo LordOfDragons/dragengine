@@ -92,13 +92,11 @@ bool meDecalSelection::HasActive() const{
 void meDecalSelection::SetActive(meDecal *object){
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = object;
 	
 	if(object){
-		object->AddReference();
 		object->SetActive(true);
 	}
 }

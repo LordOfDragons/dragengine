@@ -42,7 +42,7 @@
 ////////////////////////////
 
 gdeUOCAddEnvMapProbe::gdeUOCAddEnvMapProbe(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe) :
-pObjectClass(NULL),
+
 pEnvMapProbe(NULL)
 {
 	if(!objectClass || !envMapProbe){
@@ -52,19 +52,10 @@ pEnvMapProbe(NULL)
 	SetShortInfo("Add environment map probe");
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddEnvMapProbe::~gdeUOCAddEnvMapProbe(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

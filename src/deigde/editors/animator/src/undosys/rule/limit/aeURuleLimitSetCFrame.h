@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleLimit.h>
 
-class aeRuleLimit;
+#include "../../../animator/rule/aeRuleLimit.h"
 
 
 
@@ -37,7 +37,7 @@ class aeRuleLimit;
  */
 class aeURuleLimitSetCFrame : public igdeUndo{
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	deAnimatorRuleLimit::eCoordinateFrames pOldCoordFrame;
 	deAnimatorRuleLimit::eCoordinateFrames pNewCoordFrame;

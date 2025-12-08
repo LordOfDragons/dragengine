@@ -79,33 +79,15 @@ ceCAPlayerChoiceOption *option, ceConversationAction *action, int newIndex){
 	SetShortInfo("Player Choice Move Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
-	
 	if(option){
 		pOption = option;
-		option->AddReference();
 	}
 	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAPChoiceActionMove::~ceUCAPChoiceActionMove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

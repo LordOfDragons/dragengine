@@ -67,42 +67,24 @@
 
 cePlayback::cePlayback(ceConversation &conversation) :
 pConversation(conversation),
-
-pTopic(NULL),
 pActors(NULL),
 pActorCount(0),
 pRunning(false),
 pPaused(false),
 pAutoAdvanceCommands(true),
 pCameraHandling(echFree),
-pTextBoxText(NULL),
 pCamera(NULL),
 pMainActionStack(cePlaybackActionStack::Ref::NewWith()),
-pActiveActionStack(pMainActionStack),
-
-pLastPlayedAction(NULL),
-pLastPlayedActionTopic(NULL)
+pActiveActionStack(pMainActionStack)
 {
 	pCamera = new cePlaybackCamera(*this);
 }
 
 cePlayback::~cePlayback(){
-	if(pLastPlayedAction){
-		pLastPlayedAction->FreeReference();
-	}
-	if(pLastPlayedActionTopic){
-		pLastPlayedActionTopic->FreeReference();
-	}
 	if(pActors){
 		delete [] pActors;
 	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 	ClearTextBoxText();
-	if(pTextBoxText){
-		pTextBoxText->FreeReference();
-	}
 	if(pCamera){
 		delete pCamera;
 	}
@@ -115,16 +97,7 @@ cePlayback::~cePlayback(){
 
 void cePlayback::SetTopic(ceConversationTopic *topic){
 	if(topic != pTopic){
-		if(pTopic){
-			pTopic->FreeReference();
-		}
-		
 		pTopic = topic;
-		
-		if(topic){
-			topic->AddReference();
-		}
-		
 		Rewind();
 		
 		pConversation.NotifyPlaybackChanged();
@@ -533,7 +506,7 @@ void cePlayback::SetTextBoxText(const decUnicodeString &text){
 	ClearTextBoxText();
 	
 	if(!pTextBoxText){
-		pTextBoxText = new ceTextBoxText;
+		pTextBoxText.TakeOver(new ceTextBoxText);
 		pTextBoxText->SetName(decUnicodeString::NewFromUTF8("Playback:"));
 	}
 	
@@ -564,7 +537,7 @@ void cePlayback::ClearTextBoxText(){
 
 void cePlayback::pProcessActions(float elapsed){
 	ceConversationTopic *actionTopic = pLastPlayedActionTopic;
-	ceConversationAction *action = NULL;
+	ceConversationAction::Ref action = NULL;
 	int i;
 	
 	// check if any stack entry upwards contains a condition evaluating to false. in
@@ -678,26 +651,10 @@ void cePlayback::pProcessActions(float elapsed){
 
 void cePlayback::SetLastPlayedAction(ceConversationTopic *topic, ceConversationAction *action){
 	if(topic != pLastPlayedActionTopic){
-		if(pLastPlayedActionTopic){
-			pLastPlayedActionTopic->FreeReference();
-		}
-		
 		pLastPlayedActionTopic = topic;
-		
-		if(topic){
-			topic->AddReference();
-		}
 	}
 	
 	if(action != pLastPlayedAction){
-		if(pLastPlayedAction){
-			pLastPlayedAction->FreeReference();
-		}
-		
 		pLastPlayedAction = action;
-		
-		if(action){
-			action->AddReference();
-		}
 	}
 }

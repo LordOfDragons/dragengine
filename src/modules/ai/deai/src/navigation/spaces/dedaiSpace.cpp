@@ -86,8 +86,6 @@ pDirtyLayout(true),
 pDirtyLinks(true),
 
 pDirtyBlocking(true),
-
-pDebugDrawer(NULL),
 pDDSSpace(NULL),
 pDDSCorners(NULL),
 pDDSNormals(NULL),
@@ -499,8 +497,6 @@ void dedaiSpace::UpdateDDSSpace(){
 			pDDSNormals = NULL;
 			pDDSMismatching = NULL;
 			pDDSHighlightCostType = NULL;
-			
-			pDebugDrawer->FreeReference();
 			pDebugDrawer = NULL;
 		}
 	}
@@ -744,10 +740,6 @@ void dedaiSpace::pCleanUp(){
 	}
 	if(pGrid){
 		delete pGrid;
-	}
-	
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

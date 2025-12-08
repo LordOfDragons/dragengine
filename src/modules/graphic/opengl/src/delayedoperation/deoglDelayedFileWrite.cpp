@@ -42,10 +42,10 @@
 ////////////////////////////
 
 deoglDelayedFileWrite::deoglDelayedFileWrite(const decPath &path) :
-pMemoryFile(NULL),
+
 pPath(path){
 	try{
-		pMemoryFile = new decMemoryFile(path.GetPathUnix());
+		pMemoryFile.TakeOver(new decMemoryFile(path.GetPathUnix()));
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -67,18 +67,13 @@ decBaseFileWriter *deoglDelayedFileWrite::GetFileWriter() const{
 }
 
 void deoglDelayedFileWrite::SaveFile(deVirtualFileSystem &vfs){
-	decBaseFileWriter *fileWriter = NULL;
+	decBaseFileWriter::Ref fileWriter = NULL;
 	decPath noConstPath(pPath);
 	
 	try{
 		fileWriter = vfs.OpenFileForWriting(noConstPath);
 		fileWriter->Write(pMemoryFile->GetPointer(), pMemoryFile->GetLength());
-		fileWriter->FreeReference();
-		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		throw;
 	}
 }
@@ -89,7 +84,4 @@ void deoglDelayedFileWrite::SaveFile(deVirtualFileSystem &vfs){
 //////////////////////
 
 void deoglDelayedFileWrite::pCleanUp(){
-	if(pMemoryFile){
-		pMemoryFile->FreeReference();
-	}
 }

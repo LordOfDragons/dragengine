@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class meUndoDataNavSpace;
-class meWorld;
+#include "../../../world/meWorld.h"
 
 
 
@@ -37,7 +37,7 @@ class meWorld;
  */
 class meUDeleteNavSpace : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meUndoDataNavSpace **pNavSpaces;
 	int pNavSpaceCount;
 	

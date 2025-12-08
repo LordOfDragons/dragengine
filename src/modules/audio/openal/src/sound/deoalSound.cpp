@@ -47,9 +47,6 @@ pASound(new deoalASound(oal.GetAudioThread(), sound)){
 }
 
 deoalSound::~deoalSound(){
-	if(pASound){
-		pASound->FreeReference();
-	}
 }
 
 

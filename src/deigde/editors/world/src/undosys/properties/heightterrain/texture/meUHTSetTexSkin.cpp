@@ -52,11 +52,7 @@ meUHTSetTexSkin::meUHTSetTexSkin(meWorld *world, meHeightTerrainSector *sector, 
 	pNewPath = newPath;
 	
 	SetShortInfo("Set Height Terrain Texture Skin");
-	
-	world->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUHTSetTexSkin::~meUHTSetTexSkin(){

@@ -44,9 +44,7 @@
 
 gdeUOCCRemoveTexture::gdeUOCCRemoveTexture(gdeObjectClass *objectClass,
 gdeOCComponent *component, gdeOCComponentTexture *texture) :
-pObjectClass(NULL),
-pComponent(NULL),
-pTexture(NULL)
+pObjectClass(NULL)
 {
 	if(!objectClass || !component || !texture){
 		DETHROW(deeInvalidParam);
@@ -62,25 +60,11 @@ pTexture(NULL)
 	SetShortInfo("Component remove texture");
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCRemoveTexture::~gdeUOCCRemoveTexture(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

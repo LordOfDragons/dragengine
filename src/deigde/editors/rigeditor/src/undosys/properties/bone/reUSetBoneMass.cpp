@@ -39,8 +39,6 @@ reUSetBoneMass::reUSetBoneMass(reRigBone *bone, float mass){
 	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	pOldMass = bone->GetMass();
 	pNewMass = mass;
 	

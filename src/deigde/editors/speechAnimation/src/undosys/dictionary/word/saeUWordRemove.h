@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saeWord;
-class saeSAnimation;
+#include "../../../sanimation/dictionary/saeWord.h"
+#include "../../../sanimation/saeSAnimation.h"
 
 
 
@@ -37,8 +37,8 @@ class saeSAnimation;
  */
 class saeUWordRemove : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
-	saeWord *pWord;
+	saeSAnimation::Ref pSAnimation;
+	saeWord::Ref pWord;
 	
 	
 	

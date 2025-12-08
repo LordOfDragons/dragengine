@@ -46,7 +46,6 @@
 
 deoglRCaptureCanvas::deoglRCaptureCanvas(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-pCanvasView(NULL),
 pCapturePending(false){
 	LEAK_CHECK_CREATE(renderThread, CaptureCanvas);
 }
@@ -65,16 +64,7 @@ void deoglRCaptureCanvas::SetCanvasView(deoglRCanvasView *canvasView){
 	if(canvasView == pCanvasView){
 		return;
 	}
-	
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
-	
 	pCanvasView = canvasView;
-	
-	if(canvasView){
-		canvasView->AddReference();
-	}
 }
 
 void deoglRCaptureCanvas::SetCapturePending(bool capturePending){

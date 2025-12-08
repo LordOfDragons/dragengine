@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLink;
-class seSynthesizer;
+#include "../../synthesizer/link/seLink.h"
+#include "../../synthesizer/seSynthesizer.h"
 
 
 
@@ -42,8 +42,8 @@ public:
 	
 	
 private:
-	seSynthesizer *pSynthesizer;
-	seLink *pLink;
+	seSynthesizer::Ref pSynthesizer;
+	seLink::Ref pLink;
 	
 	
 	

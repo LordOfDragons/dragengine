@@ -49,10 +49,7 @@ seUTextureAdd::seUTextureAdd(seSkin *skin, seTexture *texture){
 	SetShortInfo("Add Texture");
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pSkin = skin;
-	skin->AddReference();
 }
 
 seUTextureAdd::~seUTextureAdd(){

@@ -82,10 +82,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Canvas view to be added to debug overlay. */
-	inline deCanvasView *GetView() const{ return pView; }
+	inline const deCanvasView::Ref &GetView() const{ return pView; }
 	
 	/** \brief Font. */
-	inline deFont *GetFont() const{ return pFont; }
+	inline const deFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
 	void SetFont(deFont *font);

@@ -1345,18 +1345,13 @@ public:
 
 meWPHeightTerrain::meWPHeightTerrain(meWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pWorld(NULL),
-pTexture(NULL),
-pVLayer(NULL),
-pVVariation(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox, formLine;
+	igdeContainer *content, groupBox, formLine;
 	
-	pListener = new meWPHeightTerrainListener(*this);
+	pListener.TakeOver(new meWPHeightTerrainListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -1554,9 +1549,6 @@ pVVariation(NULL)
 
 meWPHeightTerrain::~meWPHeightTerrain(){
 	SetWorld(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1574,14 +1566,12 @@ void meWPHeightTerrain::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
 	}
 	
 	UpdateHeightTerrain();
@@ -1645,17 +1635,7 @@ void meWPHeightTerrain::SetTexture(meHeightTerrainTexture *texture){
 	if(texture == pTexture){
 		return;
 	}
-	
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	
 	pTexture = texture;
-	
-	if(texture){
-		texture->AddReference();
-	}
-	
 	pCBTexture->SetSelectionWithData(texture);
 	
 	UpdateTexture();
@@ -1680,19 +1660,9 @@ void meWPHeightTerrain::SetVLayer(meHTVegetationLayer *vlayer){
 	}
 	
 	SetVVariation(NULL);
-	
-	if(pVLayer){
-		pVLayer->FreeReference();
-	}
-	
 	pVLayer = vlayer;
 	
 	UpdateVVariationList();
-	
-	if(vlayer){
-		vlayer->AddReference();
-	}
-	
 	pCBVLayer->SetSelectionWithData(vlayer);
 	UpdateVLayer();
 }
@@ -1705,17 +1675,7 @@ void meWPHeightTerrain::SetVVariation(meHTVVariation *variation){
 	if(variation == pVVariation){
 		return;
 	}
-	
-	if(pVVariation){
-		pVVariation->FreeReference();
-	}
-	
 	pVVariation = variation;
-	
-	if(variation){
-		variation->AddReference();
-	}
-	
 	pCBVVariation->SetSelectionWithData(variation);
 	UpdateVVariation();
 }

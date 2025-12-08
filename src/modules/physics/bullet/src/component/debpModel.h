@@ -33,7 +33,7 @@ class deModel;
 class deModelWeight;
 class debpModelOctree;
 class dePhysicsBullet;
-class debpBulletShapeModel;
+#include "debpBulletShapeModel.h"
 
 
 /**
@@ -78,7 +78,7 @@ private:
 	decVector *pNormals;
 	float *pFaceProbabilities;
 	
-	debpBulletShapeModel *pBulletShape;
+	debpBulletShapeModel::Ref pBulletShape;
 	
 	
 	
@@ -155,7 +155,7 @@ public:
 	
 	
 	/** \brief Shared bullet collision shape or \em NULL if not prepared. */
-	inline debpBulletShapeModel *GetShape() const{ return pBulletShape; }
+	inline const debpBulletShapeModel::Ref &GetShape() const{ return pBulletShape; }
 	
 	/** \brief Prepare shared bullet collision shape if not prepared. */
 	void PrepareShape();

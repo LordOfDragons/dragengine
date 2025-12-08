@@ -27,7 +27,7 @@
 
 #include "dealWidget.h"
 
-class dealImage;
+#include "../dealImage.h"
 
 
 /**
@@ -35,7 +35,7 @@ class dealImage;
  */
 class dealWidgetImage : public dealWidget{
 private:
-	dealImage *pImage;
+	dealImage::Ref pImage;
 	decColor pColorize;
 	float pScaling;
 	
@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWidgetImage(dealDisplay &display, dealImage *image = NULL);
+	dealWidgetImage(dealDisplay &display, dealImage::Ref image = NULL);
 	
 	/** \brief Clean up widget. */
 	~dealWidgetImage() override;
@@ -54,7 +54,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Image or \em NULL if not set. */
-	inline dealImage *GetImage() const{ return pImage; }
+	inline const dealImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set image or \em NULL if not set. */
 	void SetImage(dealImage *image);

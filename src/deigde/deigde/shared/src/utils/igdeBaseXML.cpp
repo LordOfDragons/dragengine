@@ -56,13 +56,9 @@ pLoggerSource(loggerSource)
 	if(!logger){
 		DETHROW(deeInvalidParam);
 	}
-	logger->AddReference();
 }
 
 igdeBaseXML::~igdeBaseXML(){
-	if(pLogger){
-		pLogger->FreeReference();
-	}
 }
 
 

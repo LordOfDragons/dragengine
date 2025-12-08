@@ -120,7 +120,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Animator instance to update or NULL if not used. */
-	inline deAnimatorInstance *GetAnimatorInstance() const{ return pAnimatorInstance; }
+	inline const deAnimatorInstance::Ref &GetAnimatorInstance() const{ return pAnimatorInstance; }
 	
 	/** \brief Set animator instance to update or NULL if not used. */
 	void SetAnimatorInstance(deAnimatorInstance *instance);

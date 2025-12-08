@@ -110,10 +110,10 @@ public:
 	inline const decMatrix &GetMatrixViewToEye() const{ return pMatrixViewToEye; }
 	
 	/** Hidden area mesh or nullptr. */
-	inline deoglRModel *GetHiddenMesh() const{ return pHiddenRMesh; }
+	inline const deoglRModel::Ref &GetHiddenMesh() const{ return pHiddenRMesh; }
 	
 	/** Render target. */
-	inline deoglRenderTarget *GetRenderTarget() const{ return pRenderTarget; }
+	inline const deoglRenderTarget::Ref &GetRenderTarget() const{ return pRenderTarget; }
 	
 	/** Texture coordinates to use to render from render target to canvas. */
 	inline const decVector2 &GetCanvasTCFrom() const{ return pCanvasTCFrom; }

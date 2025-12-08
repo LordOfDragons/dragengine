@@ -27,8 +27,8 @@
 
 #include "../ceUCActionPaste.h"
 
-class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
+#include "../../../conversation/action/ceCAPlayerChoice.h"
+#include "../../../conversation/action/ceCAPlayerChoiceOption.h"
 
 
 
@@ -37,8 +37,8 @@ class ceCAPlayerChoiceOption;
  */
 class ceUCAPChoiceActionPaste : public ceUCActionPaste{
 private:
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
 	
 public:
 	/** \name Constructors and Destructors */

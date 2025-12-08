@@ -52,13 +52,9 @@ peeUTypeSetModelPath::peeUTypeSetModelPath(peeType *type, const char *newPath){
 	pNewPath = newPath;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetModelPath::~peeUTypeSetModelPath(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

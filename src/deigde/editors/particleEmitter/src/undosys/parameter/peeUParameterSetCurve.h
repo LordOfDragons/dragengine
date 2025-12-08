@@ -29,7 +29,7 @@
 
 #include <dragengine/common/curve/decCurveBezier.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 class peeParameter;
 
 
@@ -39,7 +39,7 @@ class peeParameter;
  */
 class peeUParameterSetCurve : public igdeUndo{
 protected:
-	peeType *pType;
+	peeType::Ref pType;
 	peeParameter *pParameter;
 	
 	decCurveBezier pOldCurve;

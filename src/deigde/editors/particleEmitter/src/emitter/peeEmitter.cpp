@@ -317,7 +317,6 @@ void peeEmitter::FreeEmitter(){
 	pEngEmitterInstance->SetEmitter(NULL);
 	
 	if(pEngEmitter){
-		pEngEmitter->FreeReference();
 		pEngEmitter = NULL;
 	}
 }
@@ -443,13 +442,11 @@ void peeEmitter::SetActiveController(peeController *controller){
 	if(controller != pActiveController){
 		if(pActiveController){
 			pActiveController->SetActive(false);
-			pActiveController->FreeReference();
 		}
 		
 		pActiveController = controller;
 		
 		if(controller){
-			controller->AddReference();
 			controller->SetActive(true);
 		}
 		
@@ -540,13 +537,11 @@ void peeEmitter::SetActiveType(peeType *type){
 	if(type != pActiveType){
 		if(pActiveType){
 			pActiveType->SetActive(false);
-			pActiveType->FreeReference();
 		}
 		
 		pActiveType = type;
 		
 		if(type){
-			type->AddReference();
 			type->SetActive(true);
 		}
 		
@@ -793,19 +788,13 @@ void peeEmitter::pCleanUp(){
 	if(pEngEmitterInstance){
 		pEngEmitterInstance->SetEmitter(NULL);
 	}
-	if(pEngEmitter){
-		pEngEmitter->FreeReference();
-	}
 	if(pEngWorld){
 		if(pDDEmitter){
 			pEngWorld->RemoveDebugDrawer(pDDEmitter);
-			pDDEmitter->FreeReference();
 		}
 		
 		if(pEngEmitterInstance){
 			pEngWorld->RemoveParticleEmitter(pEngEmitterInstance);
-			pEngEmitterInstance->FreeReference();
 		}
-		pEngWorld->FreeReference();
 	}
 }

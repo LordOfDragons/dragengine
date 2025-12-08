@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCASnippet;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCASnippet.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 /**
@@ -36,8 +36,8 @@ class ceConversationTopic;
  */
 class ceUCASnippetToggleCreateSideLane : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASnippet *pSnippet;
+	ceConversationTopic::Ref pTopic;
+	ceCASnippet::Ref pSnippet;
 	
 public:
 	/** \brief Type holding strong reference. */

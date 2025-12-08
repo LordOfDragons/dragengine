@@ -45,7 +45,6 @@
 
 deoglRCanvasCanvasView::deoglRCanvasCanvasView(deoglRenderThread &renderThread) :
 deoglRCanvas(renderThread),
-pCanvasView(NULL),
 pTCClampMin(0.0f, 0.0f),
 pTCClampMax(1.0f, 1.0f){
 	LEAK_CHECK_CREATE(renderThread, CanvasCanvasView);
@@ -65,14 +64,7 @@ void deoglRCanvasCanvasView::SetCanvasView(deoglRCanvasView *canvasView){
 	if(canvasView == pCanvasView){
 		return;
 	}
-	
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 	pCanvasView = canvasView;
-	if(canvasView){
-		canvasView->AddReference();
-	}
 }
 
 void deoglRCanvasCanvasView::SetTCTransform(const decTexMatrix2 &transform){

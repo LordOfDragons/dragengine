@@ -39,19 +39,14 @@ const char * const gdeClipboardDataOCComponent::TYPE_NAME = "OCComponent";
 ////////////////////////////
 
 gdeClipboardDataOCComponent::gdeClipboardDataOCComponent(gdeOCComponent *component) :
-igdeClipboardData(TYPE_NAME),
-pComponent(NULL)
+igdeClipboardData(TYPE_NAME)
 {
 	if(!component){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pComponent = component;
-	component->AddReference();
 }
 
 gdeClipboardDataOCComponent::~gdeClipboardDataOCComponent(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
 }

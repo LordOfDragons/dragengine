@@ -91,7 +91,7 @@ public:
 	/** Set the engine animator rule or NULL. */
 	void SetEngineRule(deAnimatorRule *rule);
 	/** Create an engine animator rule. */
-	virtual deAnimatorRule *CreateEngineRule() = 0;
+	virtual deAnimatorRule::Ref CreateEngineRule() = 0;
 	/** Init the given engine rule with the default rule properties. */
 	void InitEngineRule(deAnimatorRule *engRule) const;
 	

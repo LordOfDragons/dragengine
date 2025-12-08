@@ -41,7 +41,7 @@
 
 peeUTypeSetSimulationType::peeUTypeSetSimulationType(peeType *type,
 deParticleEmitterType::eSimulationTypes newSimType) :
-pType(NULL),
+
 pNewSimType(newSimType)
 {
 	if(!type){
@@ -53,13 +53,9 @@ pNewSimType(newSimType)
 	pOldSimType = type->GetSimulationType();
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetSimulationType::~peeUTypeSetSimulationType(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

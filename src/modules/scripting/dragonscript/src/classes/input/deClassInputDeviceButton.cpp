@@ -52,7 +52,7 @@
 /////////////////////
 
 struct sIDButtonNatDat{
-	dedsInputDevice *device;
+	dedsInputDevice::Ref device;
 	int buttonIndex;
 };
 
@@ -467,6 +467,5 @@ void deClassInputDeviceButton::PushButton(dsRunTime *rt, dedsInputDevice *device
 	sIDButtonNatDat &nd = *((sIDButtonNatDat*)p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.device = device;
-	device->AddReference();
 	nd.buttonIndex = index;
 }

@@ -52,7 +52,6 @@ seUPropertySetCurve::seUPropertySetCurve(seSkyLayer *layer, seProperty *property
 	pNewCurve = pOldCurve;
 	
 	pLayer = layer;
-	layer->AddReference();
 	pProperty = property;
 }
 

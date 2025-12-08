@@ -68,7 +68,7 @@ public:
 	inline ceConversationAction &GetAction() const{ return *pAction; }
 	
 	/** \brief Condition in container or \em NULL. */
-	inline ceConversationCondition *GetCondition() const{ return pCondition; }
+	inline const ceConversationCondition::Ref &GetCondition() const{ return pCondition; }
 	
 	/**
 	 * \brief Set condition in container or \em NULL.

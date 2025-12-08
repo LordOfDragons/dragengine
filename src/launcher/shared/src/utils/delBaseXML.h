@@ -59,7 +59,7 @@ protected:
 	/** \name Management */
 	/*@{*/
 	/** \brief Logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
+	inline const deLogger::Ref &GetLogger() const{ return pLogger; }
 	
 	/** \brief Logger source. */
 	inline const decString &GetLoggerSource() const{ return pLoggerSource; }

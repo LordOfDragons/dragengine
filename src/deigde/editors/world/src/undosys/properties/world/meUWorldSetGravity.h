@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class meWorld;
+#include "../../../world/meWorld.h"
 
 
 
@@ -37,7 +37,7 @@ class meWorld;
  */
 class meUWorldSetGravity : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	decVector pOldValue;
 	decVector pNewValue;

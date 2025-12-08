@@ -41,7 +41,7 @@
 ////////////////////////////
 
 saeUWordAddList::saeUWordAddList(saeSAnimation *sanimation, const saeWordList &words) :
-pSAnimation(NULL),
+
 pWords(words)
 {
 	if(!sanimation || words.GetCount() == 0){
@@ -59,13 +59,9 @@ pWords(words)
 	SetShortInfo("Add Word");
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
 }
 
 saeUWordAddList::~saeUWordAddList(){
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

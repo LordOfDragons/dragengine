@@ -51,19 +51,10 @@ peeUControllerAdd::peeUControllerAdd(peeEmitter *emitter, peeController *control
 	SetShortInfo("Add Controller");
 	
 	pEmitter = emitter;
-	emitter->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerAdd::~peeUControllerAdd(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

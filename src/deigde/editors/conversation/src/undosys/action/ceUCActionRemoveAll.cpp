@@ -52,13 +52,9 @@ ceUCActionRemoveAll::ceUCActionRemoveAll(ceConversationTopic *topic){
 	SetShortInfo("Remove All Actions");
 	
 	pTopic = topic;
-	topic->AddReference();
 }
 
 ceUCActionRemoveAll::~ceUCActionRemoveAll(){
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

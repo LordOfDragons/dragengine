@@ -96,7 +96,7 @@ public:
 	void SetCategory(const char *category);
 	
 	/** \brief Preview image or NULL if not created. */
-	inline deImage *GetPreviewImage() const{ return pPreviewImage; }
+	inline const deImage::Ref &GetPreviewImage() const{ return pPreviewImage; }
 	
 	/** \brief Set preview image or NULL if not created. */
 	void SetPreviewImage(deImage *image);

@@ -47,7 +47,7 @@
 ////////////////////////////
 
 decZFileWriter::decZFileWriter(decBaseFileWriter *writer) :
-pWriter(NULL),
+
 
 pZStream(NULL),
 
@@ -94,7 +94,6 @@ pBufferOutSize(0)
 	pZStream = zstream;
 	
 	pWriter = writer;
-	pWriter->AddReference();
 }
 
 decZFileWriter::~decZFileWriter(){
@@ -102,10 +101,6 @@ decZFileWriter::~decZFileWriter(){
 	
 	if(pZStream){
 		delete (z_stream*)pZStream;
-	}
-	
-	if(pWriter){
-		pWriter->FreeReference();
 	}
 	if(pBufferOut){
 		delete [] (Bytef*)pBufferOut;

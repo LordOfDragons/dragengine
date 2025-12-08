@@ -52,19 +52,10 @@ ceCASetActorParameter *action, ceCASetActorParameter::eOperators newOperator){
 	SetShortInfo("Action SetActorParameter Operator");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCASetAParamSetOp::~ceUCASetAParamSetOp(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

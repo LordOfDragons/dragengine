@@ -384,8 +384,6 @@ void deCamera::RemoveEffect(deEffect *effect){
 	if(index == -1){
 		DETHROW(deeInvalidParam);
 	}
-	
-	effect->AddReference();
 	try{
 		pEffects->RemoveEffect(effect);
 		
@@ -394,10 +392,8 @@ void deCamera::RemoveEffect(deEffect *effect){
 		}
 		
 	}catch(const deException &){
-		effect->FreeReference();
 		throw;
 	}
-	effect->FreeReference();
 }
 
 void deCamera::RemoveAllEffects(){

@@ -32,11 +32,11 @@
 
 class seEffect;
 class seSource;
-class seSynthesizer;
+#include "../../synthesizer/seSynthesizer.h"
 class seWPAPanelEffect;
 class seWPAPanelEffectStretch;
 class seViewSynthesizer;
-class seWPEffectListener;
+#include "seWPEffectListener.h"
 
 
 
@@ -46,9 +46,9 @@ class seWPEffectListener;
 class seWPEffect : public igdeContainerFlow{
 private:
 	seViewSynthesizer &pViewSynthesizer;
-	seWPEffectListener *pListener;
+	seWPEffectListener::Ref pListener;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	igdeListBox::Ref pListEffect;
 	
@@ -83,7 +83,7 @@ public:
 	inline seViewSynthesizer &GetViewSynthesizer() const{ return pViewSynthesizer; }
 	
 	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline const seSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);
@@ -117,10 +117,10 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionEffectCut() const{ return pActionEffectCut; }
-	inline igdeAction *GetActionEffectCopy() const{ return pActionEffectCopy; }
-	inline igdeAction *GetActionEffectPasteAdd() const{ return pActionEffectPasteAdd; }
-	inline igdeAction *GetActionEffectPasteInsert() const{ return pActionEffectPasteInsert; }
+	inline const igdeAction::Ref &GetActionEffectCut() const{ return pActionEffectCut; }
+	inline const igdeAction::Ref &GetActionEffectCopy() const{ return pActionEffectCopy; }
+	inline const igdeAction::Ref &GetActionEffectPasteAdd() const{ return pActionEffectPasteAdd; }
+	inline const igdeAction::Ref &GetActionEffectPasteInsert() const{ return pActionEffectPasteInsert; }
 	/*@}*/
 };
 

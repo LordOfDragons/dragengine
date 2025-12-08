@@ -57,25 +57,11 @@ ceUCAPChoiceOptionAdd::ceUCAPChoiceOptionAdd(ceConversationTopic *topic, ceCAPla
 	SetShortInfo("Player Choice Add Option");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
-	
 	pOption = option;
-	option->AddReference();
 }
 
 ceUCAPChoiceOptionAdd::~ceUCAPChoiceOptionAdd(){
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

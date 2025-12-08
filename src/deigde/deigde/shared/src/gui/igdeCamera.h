@@ -99,10 +99,10 @@ public:
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** \brief Eengine camera. */
-	inline deCamera *GetEngineCamera() const{ return pEngCamera; }
+	inline const deCamera::Ref &GetEngineCamera() const{ return pEngCamera; }
 	
 	/** \brief World the camera is attached to. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	
 	/** \brief Attach camera to world. */
 	void SetEngineWorld(deWorld *world);

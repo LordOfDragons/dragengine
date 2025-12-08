@@ -70,7 +70,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game profile. */
-	inline delGameProfile *GetGameProfile() const{ return pGameProfile; }
+	inline const delGameProfile::Ref &GetGameProfile() const{ return pGameProfile; }
 	
 	/** \brief Set game profile. */
 	void SetGameProfile(delGameProfile *profile);

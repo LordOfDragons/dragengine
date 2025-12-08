@@ -30,8 +30,8 @@
 #include <dragengine/resources/sky/deSkyLayer.h>
 
 class seLayer;
-class seLink;
-class seSky;
+#include "../../sky/link/seLink.h"
+#include "../../sky/seSky.h"
 
 
 /**
@@ -44,8 +44,8 @@ private:
 		deSkyLayer::eTargets target;
 	};
 	
-	seSky *pSky;
-	seLink *pLink;
+	seSky::Ref pSky;
+	seLink::Ref pLink;
 	
 	sTarget *pTargets;
 	int pTargetCount;

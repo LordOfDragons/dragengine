@@ -43,7 +43,7 @@
 seUTextureRemove::seUTextureRemove(seTexture *texture){
 	if(!texture) DETHROW(deeInvalidParam);
 	
-	seSkin *skin = texture->GetSkin();
+	seSkin::Ref skin = texture->GetSkin();
 	if(!skin) DETHROW(deeInvalidParam);
 	
 	pTexture = NULL;
@@ -52,10 +52,7 @@ seUTextureRemove::seUTextureRemove(seTexture *texture){
 	SetShortInfo("Remove Texture");
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pSkin = skin;
-	skin->AddReference();
 }
 
 seUTextureRemove::~seUTextureRemove(){

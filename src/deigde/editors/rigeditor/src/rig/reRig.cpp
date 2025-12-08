@@ -113,14 +113,6 @@
 
 reRig::reRig(igdeEnvironment *environment) :
 igdeEditableEntity(environment),
-
-pEngWorld(NULL),
-pEngLight(NULL),
-
-pEngComponent(NULL),
-pEngAnimator(NULL),
-pEngAnimatorInstance(NULL),
-pEngSimCollider(NULL),
 pEngAnimatorAnim(NULL),
 pEngAnimatorRestPose(NULL),
 
@@ -128,8 +120,6 @@ pComponentTextures(NULL),
 pComponentTextureCount(0),
 
 pSky(NULL),
-
-pEngRig(NULL),
 pPoseChanged(true),
 
 pModelCollision(false),
@@ -145,7 +135,6 @@ pCamera(NULL),
 pBones(NULL),
 pBoneCount(0),
 pBoneSize(0),
-pRootBone(NULL),
 
 pShapes(NULL),
 pShapeCount(0),
@@ -195,9 +184,9 @@ pDirtyRig(true)
 	deEngine * const engine = GetEngine();
 	
 	deAnimatorController *amController = NULL;
-	deAnimatorRuleAnimation *amRuleAnim = NULL;
-	deAnimatorRuleStateManipulator *amRuleRestPose = NULL;
-	deAnimatorRuleStateSnapshot *amRuleStateSnapshot = NULL;
+	deAnimatorRuleAnimation::Ref amRuleAnim = NULL;
+	deAnimatorRuleStateManipulator::Ref amRuleRestPose = NULL;
+	deAnimatorRuleStateSnapshot::Ref amRuleStateSnapshot = NULL;
 	deAnimatorLink *engLink = NULL;
 	
 	try{
@@ -216,28 +205,25 @@ pDirtyRig(true)
 		pEngAnimator->AddLink(engLink);
 		engLink = NULL;
 		
-		amRuleStateSnapshot = new deAnimatorRuleStateSnapshot;
+		amRuleStateSnapshot.TakeOver(new deAnimatorRuleStateSnapshot);
 		amRuleStateSnapshot->SetUseLastState(true);
 		pEngAnimator->AddRule(amRuleStateSnapshot);
-		amRuleStateSnapshot->FreeReference();
 		amRuleStateSnapshot = NULL;
 		
-		amRuleAnim = new deAnimatorRuleAnimation;
+		amRuleAnim.TakeOver(new deAnimatorRuleAnimation);
 		amRuleAnim->GetTargetMoveTime().AddLink(0);
 		amRuleAnim->SetEnabled(!pUseRestPose);
 		pEngAnimator->AddRule(amRuleAnim);
 		pEngAnimatorAnim = amRuleAnim;
-		amRuleAnim->FreeReference();
 		amRuleAnim = NULL;
 		
-		amRuleRestPose = new deAnimatorRuleStateManipulator;
+		amRuleRestPose.TakeOver(new deAnimatorRuleStateManipulator);
 		amRuleRestPose->SetEnabled(true);
 		amRuleRestPose->SetEnablePosition(true);
 		amRuleRestPose->SetEnableRotation(true);
 		amRuleRestPose->SetEnabled(pUseRestPose);
 		pEngAnimator->AddRule(amRuleRestPose);
 		pEngAnimatorRestPose = amRuleRestPose;
-		amRuleRestPose->FreeReference();
 		amRuleRestPose = NULL;
 		
 		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
@@ -289,15 +275,6 @@ pDirtyRig(true)
 	}catch(const deException &){
 		if(engLink){
 			delete engLink;
-		}
-		if(amRuleRestPose){
-			amRuleRestPose->FreeReference();
-		}
-		if(amRuleAnim){
-			amRuleAnim->FreeReference();
-		}
-		if(amRuleStateSnapshot){
-			amRuleStateSnapshot->FreeReference();
 		}
 		if(amController){
 			delete amController;
@@ -636,8 +613,6 @@ void reRig::Rebuild(){
 		}
 		
 		pEngAnimator->SetRig(NULL);
-		
-		pEngRig->FreeReference();
 		pEngRig = NULL;
 		
 	// if the rig does not exist we have to init the pose matrices from the
@@ -1062,8 +1037,6 @@ void reRig::AddBone(reRigBone *bone){
 	
 	pBones[pBoneCount] = bone;
 	pBoneCount++;
-	
-	bone->AddReference();
 	bone->SetRig(this);
 	
 	ReorderBones();
@@ -1082,8 +1055,6 @@ void reRig::RemoveBone(reRigBone *bone){
 	pBoneCount--;
 	
 	bone->SetRig(NULL);
-	bone->FreeReference();
-	
 	ReorderBones();
 	
 	UpdateBoneMatrices();
@@ -1141,16 +1112,7 @@ void reRig::SetAllBonesVisited(bool visited){
 
 void reRig::SetRootBone(reRigBone *rootBone){
 	if(rootBone != pRootBone){
-		if(pRootBone){
-			pRootBone->FreeReference();
-		}
-		
 		pRootBone = rootBone;
-		
-		if(rootBone){
-			rootBone->AddReference();
-		}
-		
 		NotifyRigChanged();
 	}
 }
@@ -1217,8 +1179,6 @@ void reRig::AddShape(reRigShape *shape){
 	
 	pShapes[pShapeCount] = shape;
 	pShapeCount++;
-	
-	shape->AddReference();
 	shape->SetRig(this);
 	
 	NotifyShapeCountChanged();
@@ -1234,8 +1194,6 @@ void reRig::RemoveShape(reRigShape *shape){
 	pShapeCount--;
 	
 	shape->SetRig(NULL);
-	shape->FreeReference();
-	
 	NotifyShapeCountChanged();
 }
 
@@ -1311,8 +1269,6 @@ void reRig::AddConstraint(reRigConstraint *constraint){
 	
 	pConstraints[pConstraintCount] = constraint;
 	pConstraintCount++;
-	
-	constraint->AddReference();
 	constraint->SetRig(this);
 	
 	NotifyConstraintCountChanged();
@@ -1348,8 +1304,6 @@ void reRig::RemoveConstraint(reRigConstraint *constraint){
 	pConstraintCount--;
 	
 	constraint->SetRig(NULL);
-	constraint->FreeReference();
-	
 	NotifyConstraintCountChanged();
 }
 
@@ -1434,8 +1388,6 @@ void reRig::AddPush(reRigPush *push){
 	
 	pPushes[pPushCount] = push;
 	pPushCount++;
-	
-	push->AddReference();
 	push->SetRig(this);
 	
 	NotifyPushCountChanged();
@@ -1451,8 +1403,6 @@ void reRig::RemovePush(reRigPush *push){
 	pPushCount--;
 	
 	push->SetRig(NULL);
-	push->FreeReference();
-	
 	NotifyPushCountChanged();
 }
 
@@ -1515,8 +1465,6 @@ void reRig::AddNotifier(reRigNotifier *notifier){
 	
 	pNotifiers[pNotifierCount] = notifier;
 	pNotifierCount++;
-	
-	notifier->AddReference();
 }
 
 void reRig::RemoveNotifier(reRigNotifier *notifier){
@@ -1527,8 +1475,6 @@ void reRig::RemoveNotifier(reRigNotifier *notifier){
 		pNotifiers[i - 1] = pNotifiers[i];
 	}
 	pNotifierCount--;
-	
-	notifier->FreeReference();
 }
 
 void reRig::RemoveAllNotifiers(){
@@ -1902,11 +1848,6 @@ void reRig::pCleanUp(){
 	if(pSelectionBones){
 		delete pSelectionBones;
 	}
-	
-	if(pRootBone){
-		pRootBone->FreeReference();
-	}
-	
 	RemoveAllNotifiers();
 	if(pNotifiers){
 		delete [] pNotifiers;
@@ -1942,31 +1883,16 @@ void reRig::pCleanUp(){
 	
 	if(pEngSimCollider){
 		pEngSimCollider->SetComponent(NULL);
-		pEngSimCollider->FreeReference();
 	}
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetComponent(NULL);
 		pEngAnimatorInstance->SetAnimator(NULL);
-		pEngAnimatorInstance->FreeReference();
 	}
 	if(pEngAnimator){
 		pEngAnimator->SetRig(NULL);
-		pEngAnimator->FreeReference();
 	}
 	if(pEngComponent){
 		pEngComponent->SetRig(NULL);
-		pEngComponent->FreeReference();
-	}
-	if(pEngRig){
-		pEngRig->FreeReference();
-	}
-	
-	if(pEngLight){
-		pEngLight->FreeReference();
-	}
-	
-	if(pEngWorld){
-		pEngWorld->FreeReference();
 	}
 }
 
@@ -1992,8 +1918,8 @@ void reRig::pCreateCamera(){
 
 void reRig::pUpdateComponent(){
 	bool rebuildTextures = false;
-	deModel *model = NULL;
-	deSkin *skin = NULL;
+	deModel::Ref model = NULL;
+	deSkin::Ref skin = NULL;
 	
 	// try to load the model and skin if possible
 	try{
@@ -2014,7 +1940,6 @@ void reRig::pUpdateComponent(){
 		// if the skin is missing use the default one
 		if(!skin){
 			skin = GetGameDefinition()->GetDefaultSkin();
-			skin->AddReference();
 		}
 		
 		// reset the animator
@@ -2035,7 +1960,6 @@ void reRig::pUpdateComponent(){
 		}else if(pEngComponent){
 			pEngSimCollider->SetComponent(NULL);
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 			pEngComponent = NULL;
 		}
 		
@@ -2103,7 +2027,7 @@ void reRig::pUpdateComponent(){
 }
 
 void reRig::pUpdateAnimator(){
-	deAnimation *animation = NULL;
+	deAnimation::Ref animation = NULL;
 	
 	// try to load the animation if possible
 	try{
@@ -2133,7 +2057,7 @@ void reRig::pUpdateAnimator(){
 
 void reRig::pUpdateAnimatorMove(){
 	deAnimationMove *move = NULL;
-	deAnimation *animation;
+	deAnimation::Ref animation;
 	int index;
 	
 	pEngAnimatorAnim->SetMoveName(pMoveName);

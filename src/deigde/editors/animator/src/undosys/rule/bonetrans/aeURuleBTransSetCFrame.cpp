@@ -53,13 +53,9 @@ deAnimatorRuleBoneTransformator::eCoordinateFrames newCoordFrame){
 	SetShortInfo("Bone transformator set coordinate frame");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleBTransSetCFrame::~aeURuleBTransSetCFrame(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

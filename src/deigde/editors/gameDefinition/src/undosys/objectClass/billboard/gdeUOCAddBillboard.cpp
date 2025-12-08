@@ -42,7 +42,7 @@
 ////////////////////////////
 
 gdeUOCAddBillboard::gdeUOCAddBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
-pObjectClass(NULL),
+
 pBillboard(NULL)
 {
 	if(!objectClass || !billboard){
@@ -52,19 +52,10 @@ pBillboard(NULL)
 	SetShortInfo("Add billboard");
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddBillboard::~gdeUOCAddBillboard(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -47,13 +47,11 @@ deoglDebugDrawer::deoglDebugDrawer(deGraphicOpenGl &ogl, const deDebugDrawer &de
 pOgl(ogl),
 pDebugDrawer(debugDrawer),
 
-pRDebugDrawer(NULL),
-
 pDirtyDebugDrawer(true),
 pDirtyShapes(true)
 {
 	try{
-		pRDebugDrawer = new deoglRDebugDrawer(ogl.GetRenderThread());
+		pRDebugDrawer.TakeOver(new deoglRDebugDrawer(ogl.GetRenderThread()));
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -134,7 +132,4 @@ void deoglDebugDrawer::ShapeLayoutChanged(){
 //////////////////////
 
 void deoglDebugDrawer::pCleanUp(){
-	if(pRDebugDrawer){
-		pRDebugDrawer->FreeReference();
-	}
 }

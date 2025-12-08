@@ -62,7 +62,7 @@ public:
 	deSoundLevelMeter *GetRootSoundLevelMeter() const;
 	
 	/** \brief Create sound level meter. */
-	deSoundLevelMeter *CreateSoundLevelMeter();
+	deSoundLevelMeter::Ref CreateSoundLevelMeter();
 	
 	/** \brief Report and release leaking resources. */
 	void ReleaseLeakingResources() override;

@@ -381,11 +381,10 @@ public:
 		const char *description) : cBaseActionNode(view, text, icon, description){}
 	
 	virtual igdeUndo *OnActionNode(seSkin *skin, seProperty *property, sePropertyNode *node){
-		seUPNGroupMoveNodes *undo = NULL;
+		seUPNGroupMoveNodes::Ref undo = NULL;
 		if(node){
 			undo = CreateUndo(skin, property, node);
 			if(!undo->HasAnyEffect()){
-				undo->FreeReference();
 				undo = NULL;
 			}
 		}
@@ -503,8 +502,6 @@ igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain),
 pListener(NULL),
 
-pSkin(NULL),
-
 pZoom(100),
 pZoomScale(1.0f),
 pBorderSize(5, 5)
@@ -563,13 +560,11 @@ void seViewConstructedView::SetSkin(seSkin *skin){
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
 	if(skin){
-		skin->AddReference();
 		skin->AddListener(pListener);
 		OnResize();
 	}

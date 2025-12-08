@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
+#include "../../../rig/reRig.h"
 
 
 
@@ -36,7 +36,7 @@ class reRig;
  */
 class reURigToggleDynamic : public igdeUndo{
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	
 	

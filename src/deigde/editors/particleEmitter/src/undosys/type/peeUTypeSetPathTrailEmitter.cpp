@@ -52,13 +52,9 @@ peeUTypeSetPathTrailEmitter::peeUTypeSetPathTrailEmitter(peeType *type, const ch
 	pNewPath = newPath;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetPathTrailEmitter::~peeUTypeSetPathTrailEmitter(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

@@ -41,8 +41,8 @@
 
 gdeUOCBillboardSetPropertyName::gdeUOCBillboardSetPropertyName(gdeObjectClass *objectClass,
 gdeOCBillboard *billboard, gdeOCBillboard::eProperties property, const char *newValue) :
-pObjectClass(NULL),
-pBillboard(NULL),
+
+
 pProperty(property)
 {
 	if(!objectClass || !billboard){
@@ -55,19 +55,10 @@ pProperty(property)
 	pNewValue = newValue;
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardSetPropertyName::~gdeUOCBillboardSetPropertyName(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

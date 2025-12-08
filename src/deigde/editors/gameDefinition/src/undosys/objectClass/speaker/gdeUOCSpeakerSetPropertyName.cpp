@@ -41,8 +41,8 @@
 
 gdeUOCSpeakerSetPropertyName::gdeUOCSpeakerSetPropertyName(gdeObjectClass *objectClass,
 gdeOCSpeaker *speaker, gdeOCSpeaker::eProperties property, const char *newValue) :
-pObjectClass(NULL),
-pSpeaker(NULL),
+
+
 pProperty(property)
 {
 	if(!objectClass || !speaker){
@@ -55,19 +55,10 @@ pProperty(property)
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetPropertyName::~gdeUOCSpeakerSetPropertyName(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

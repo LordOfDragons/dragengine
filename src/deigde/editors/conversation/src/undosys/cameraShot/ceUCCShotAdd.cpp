@@ -49,19 +49,10 @@ ceUCCShotAdd::ceUCCShotAdd(ceConversation *conversation, ceCameraShot *cameraSho
 	SetShortInfo("Add Camera Shot");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotAdd::~ceUCCShotAdd(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

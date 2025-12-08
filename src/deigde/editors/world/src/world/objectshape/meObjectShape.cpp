@@ -280,13 +280,9 @@ void meObjectShape::pCleanUp(){
 	
 	if(pEngCollider){
 		pEnvironment->SetColliderUserPointer(pEngCollider, NULL);
-		pEngCollider->FreeReference();
 	}
 	
 	if(pDDSShape){
 		delete pDDSShape;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }

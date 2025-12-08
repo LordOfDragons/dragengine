@@ -53,13 +53,9 @@ pSkin(NULL)
 	pNewValue = newValue;
 	
 	pSkin = skin;
-	skin->AddReference();
 }
 
 gdeUSkinSetPath::~gdeUSkinSetPath(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 }
 
 

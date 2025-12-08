@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class projProject;
+#include "../../project/projProject.h"
 
 
 
@@ -37,7 +37,7 @@ class projProject;
  */
 class projUProjectSetPathConfig : public igdeUndo{
 private:
-	projProject *pProject;
+	projProject::Ref pProject;
 	
 	decString pOldValue;
 	decString pNewValue;

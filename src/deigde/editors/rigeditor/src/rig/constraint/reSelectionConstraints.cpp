@@ -122,9 +122,6 @@ void reSelectionConstraints::AddConstraint(reRigConstraint *constraint){
 	
 	pConstraints[pConstraintCount] = constraint;
 	pConstraintCount++;
-	
-	constraint->AddReference();
-	
 	constraint->SetSelected(true);
 	
 	pRig->NotifyConstraintSelectedChanged(constraint);
@@ -156,8 +153,6 @@ void reSelectionConstraints::RemoveConstraint(reRigConstraint *constraint){
 	}
 	
 	pRig->NotifyConstraintSelectedChanged(constraint);
-	
-	constraint->FreeReference();
 }
 
 void reSelectionConstraints::RemoveAllConstraints(){

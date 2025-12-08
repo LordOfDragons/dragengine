@@ -58,25 +58,11 @@ ceUCAASpeakWordAdd::ceUCAASpeakWordAdd(ceConversationTopic *topic, ceCAActorSpea
 	SetShortInfo("Actor Speak Add Word");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 ceUCAASpeakWordAdd::~ceUCAASpeakWordAdd(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

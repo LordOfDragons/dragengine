@@ -34,7 +34,7 @@
 #include <dragengine/systems/modules/audio/deBaseAudioSoundLevelMeter.h>
 
 class deAudioOpenAL;
-class deoalASoundLevelMeter;
+#include "deoalASoundLevelMeter.h"
 class deoalWorld;
 
 class deSoundLevelMeter;
@@ -48,7 +48,7 @@ class deoalSoundLevelMeter : public deBaseAudioSoundLevelMeter{
 private:
 	deAudioOpenAL &pOal;
 	deSoundLevelMeter &pSoundLevelMeter;
-	deoalASoundLevelMeter *pASoundLevelMeter;
+	deoalASoundLevelMeter::Ref pASoundLevelMeter;
 	
 	deoalWorld *pParentWorld;
 	
@@ -88,7 +88,7 @@ public:
 	inline deSoundLevelMeter &GetSoundLevelMeter() const{ return pSoundLevelMeter; }
 	
 	/** \brief Audio sound level meter. */
-	inline deoalASoundLevelMeter *GetASoundLevelMeter() const{ return pASoundLevelMeter; }
+	inline const deoalASoundLevelMeter::Ref &GetASoundLevelMeter() const{ return pASoundLevelMeter; }
 	
 	
 	

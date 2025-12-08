@@ -50,13 +50,9 @@ ceUCTargetSetPosition::ceUCTargetSetPosition(ceTarget *target, const decVector &
 	pNewPosition = newPosition;
 	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetSetPosition::~ceUCTargetSetPosition(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 

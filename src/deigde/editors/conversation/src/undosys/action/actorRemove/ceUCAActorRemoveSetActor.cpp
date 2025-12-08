@@ -54,19 +54,10 @@ ceUCAActorRemoveSetActor::ceUCAActorRemoveSetActor(ceConversationTopic *topic, c
 	SetShortInfo("Actor remove set actor id");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAActorRemoveSetActor::~ceUCAActorRemoveSetActor(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

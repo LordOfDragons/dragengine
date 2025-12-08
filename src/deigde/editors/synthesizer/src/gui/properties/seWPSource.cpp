@@ -314,8 +314,6 @@ public:
 seWPSource::seWPSource(seViewSynthesizer &viewSynthesizer) :
 igdeContainerScroll(viewSynthesizer.GetEnvironment(), false, true),
 pViewSynthesizer(viewSynthesizer),
-pListener(NULL),
-pSynthesizer(NULL),
 pPanelSound(NULL),
 pPanelWave(NULL),
 pPanelChain(NULL),
@@ -325,9 +323,9 @@ pActivePanel(NULL)
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainer::Ref content, groupBox;
+	igdeContainer *content, groupBox;
 	
-	pListener = new seWPSourceListener(*this);
+	pListener.TakeOver(new seWPSourceListener(*this));
 	
 	
 	pActionSourceCopy.TakeOver(new cActionSourceCopy(*this));
@@ -370,10 +368,6 @@ pActivePanel(NULL)
 
 seWPSource::~seWPSource(){
 	SetSynthesizer(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -393,15 +387,12 @@ void seWPSource::SetSynthesizer(seSynthesizer *synthesizer){
 	pPanelWave->SetSynthesizer(NULL);
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
 	if(synthesizer){
 		synthesizer->AddNotifier(pListener);
-		synthesizer->AddReference();
-		
 		pPanelChain->SetSynthesizer(synthesizer);
 		pPanelGroup->SetSynthesizer(synthesizer);
 		pPanelSound->SetSynthesizer(synthesizer);

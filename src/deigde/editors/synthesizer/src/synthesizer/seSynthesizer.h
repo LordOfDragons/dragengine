@@ -40,11 +40,11 @@ class seSynthesizerNotifier;
 
 class igdeEnvironment;
 
-class deWorld;
-class deSynthesizer;
-class deSynthesizerInstance;
-class deSpeaker;
-class deMicrophone;
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/synthesizer/deSynthesizer.h>
+#include <dragengine/resources/synthesizer/deSynthesizerInstance.h>
+#include <dragengine/resources/sound/deSpeaker.h>
+#include <dragengine/resources/sound/deMicrophone.h>
 
 
 
@@ -60,12 +60,12 @@ public:
 private:
 	seLoadSaveSystem &pLoadSaveSystem;
 	
-	deWorld *pEngWorld;
+	deWorld::Ref pEngWorld;
 	
-	deSynthesizer *pEngSynthesizer;
-	deSynthesizerInstance *pEngSynthesizerInstance;
-	deSpeaker *pEngSpeaker;
-	deMicrophone *pEngMicrophone;
+	deSynthesizer::Ref pEngSynthesizer;
+	deSynthesizerInstance::Ref pEngSynthesizerInstance;
+	deSpeaker::Ref pEngSpeaker;
+	deMicrophone::Ref pEngMicrophone;
 	
 	seControllerList pControllers;
 	seController *pActiveController;
@@ -104,13 +104,13 @@ public:
 	inline seLoadSaveSystem &GetLoadSaveSystem() const{ return pLoadSaveSystem; }
 	
 	/** \brief Engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	
 	/** \brief Engine synthesizer. */
-	inline deSynthesizer *GetEngineSynthesizer() const{ return pEngSynthesizer; }
+	inline const deSynthesizer::Ref &GetEngineSynthesizer() const{ return pEngSynthesizer; }
 	
 	/** \brief Engine synthesizer instance. */
-	inline deSynthesizerInstance *GetEngineSynthesizerInstance() const{ return pEngSynthesizerInstance; }
+	inline const deSynthesizerInstance::Ref &GetEngineSynthesizerInstance() const{ return pEngSynthesizerInstance; }
 	
 	
 	

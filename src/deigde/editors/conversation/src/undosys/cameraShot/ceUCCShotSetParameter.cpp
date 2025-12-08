@@ -53,13 +53,9 @@ ceUCCShotSetParameter::ceUCCShotSetParameter(ceCameraShot *cameraShot, int param
 	pNewCurve = pOldCurve;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetParameter::~ceUCCShotSetParameter(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

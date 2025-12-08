@@ -751,15 +751,13 @@ public:
 seWPNode::seWPNode(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pSkin(NULL),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainer::Ref content, panel, groupBox, form, formLine;
+	igdeContainer *content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPNodeListener(*this);
+	pListener.TakeOver(new seWPNodeListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -870,10 +868,6 @@ pPreventUpdate(false)
 
 seWPNode::~seWPNode(){
 	SetSkin(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -888,14 +882,12 @@ void seWPNode::SetSkin(seSkin *skin){
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
 	if(skin){
 		skin->AddListener(pListener);
-		skin->AddReference();
 	}
 	
 	UpdateMappedTypeList();

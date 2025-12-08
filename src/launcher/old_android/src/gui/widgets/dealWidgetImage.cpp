@@ -44,16 +44,12 @@
 
 dealWidgetImage::dealWidgetImage(dealDisplay &display, dealImage *image) :
 dealWidget(display),
-pImage(NULL),
 pColorize(1.0f, 1.0f, 1.0f),
 pScaling(1.0f){
 	SetImage(image);
 }
 
 dealWidgetImage::~dealWidgetImage(){
-	if(pImage){
-		pImage->FreeReference();
-	}
 }
 
 
@@ -65,17 +61,7 @@ void dealWidgetImage::SetImage(dealImage *image){
 	if(image == pImage){
 		return;
 	}
-	
-	if(pImage){
-		pImage->FreeReference();
-	}
-	
 	pImage = image;
-	
-	if(image){
-		image->AddReference();
-	}
-	
 	DirtyParentLayout();
 }
 

@@ -57,8 +57,6 @@ meUScaleObject::meUScaleObject(meWorld *world, const meObjectList &objects){
 	
 	try{
 		pWorld = world;
-		world->AddReference();
-		
 		int i;
 		for(i=0; i<count; i++){
 			pObjects.Add(meUndoDataObject::Ref::NewWith(objects.GetAt(i)));

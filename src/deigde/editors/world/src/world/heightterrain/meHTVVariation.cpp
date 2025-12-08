@@ -89,7 +89,6 @@ void meHTVVariation::SetPathModel(const char *path){
 		pPathModel = path;
 		
 		if(pModel){
-			pModel->FreeReference();
 			pModel = NULL;
 		}
 		
@@ -112,7 +111,6 @@ void meHTVVariation::SetPathSkin(const char *path){
 		pPathSkin = path;
 		
 		if(pSkin){
-			pSkin->FreeReference();
 			pSkin = NULL;
 		}
 		
@@ -124,7 +122,6 @@ void meHTVVariation::SetPathSkin(const char *path){
 				if(pVLayer && pVLayer->GetHeightTerrain()){
 					pSkin = pVLayer->GetHeightTerrain()->GetWorld().GetEnvironment()->
 						GetStockSkin(igdeEnvironment::essError);
-					pSkin->AddReference();
 				}
 			}
 		}

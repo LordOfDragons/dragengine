@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seController;
+#include "../../sky/controller/seController.h"
 
 
 /**
@@ -35,7 +35,7 @@ class seController;
  */
 class seUControllerSetName : public igdeUndo{
 private:
-	seController *pController;
+	seController::Ref pController;
 	
 	decString pOldName;
 	decString pNewName;

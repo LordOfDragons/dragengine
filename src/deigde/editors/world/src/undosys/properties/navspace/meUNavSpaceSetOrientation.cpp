@@ -59,13 +59,9 @@ meUNavSpaceSetOrientation::meUNavSpaceSetOrientation(meNavigationSpace *navspace
 	pNewOrientation = newOrientation;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUNavSpaceSetOrientation::~meUNavSpaceSetOrientation(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

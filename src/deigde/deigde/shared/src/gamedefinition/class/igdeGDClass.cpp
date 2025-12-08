@@ -85,7 +85,7 @@ igdeGDClass::igdeGDClass(const char *name){
 }
 
 igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
-	igdeGDCSnapPoint *snappoint = NULL;
+	igdeGDCSnapPoint::Ref snappoint = NULL;
 	int i, count;
 	
 	pCamera = NULL;
@@ -117,9 +117,8 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 		
 		count = gdclass.pSnapPoints.GetCount();
 		for(i=0; i<count; i++){
-			snappoint = new igdeGDCSnapPoint(*gdclass.pSnapPoints.GetAt(i));
+			snappoint.TakeOver(new igdeGDCSnapPoint(*gdclass.pSnapPoints.GetAt(i)));
 			pSnapPoints.Add(snappoint);
-			snappoint->FreeReference();
 			snappoint = NULL;
 		}
 		
@@ -145,10 +144,6 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 		pComponentTextures.SetToDeepCopyFrom(gdclass.pComponentTextures);
 		
 	}catch(const deException &){
-		if(snappoint){
-			snappoint->FreeReference();
-		}
-		
 		pCleanUp();
 		throw;
 	}
@@ -258,16 +253,7 @@ void igdeGDClass::SetPreviewImage(deImage *image){
 	if(image == pPreviewImage){
 		return;
 	}
-	
-	if(pPreviewImage){
-		pPreviewImage->FreeReference();
-	}
-	
 	pPreviewImage = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
 void igdeGDClass::SetDefaultInheritPropertyPrefix(const decString &prefix){
@@ -1061,10 +1047,6 @@ const decIntList igdeGDClass::GetEnvMapProbesIndicesWithLinkedProperty(const cha
 //////////////////////
 
 void igdeGDClass::pCleanUp(){
-	if(pPreviewImage){
-		pPreviewImage->FreeReference();
-	}
-	
 	RemoveAllSpeakers();
 	RemoveAllNavigationBlockers();
 	RemoveAllNavigationSpaces();

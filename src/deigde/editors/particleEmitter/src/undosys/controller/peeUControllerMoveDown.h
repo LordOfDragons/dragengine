@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeController;
+#include "../../emitter/peeController.h"
 
 
 
@@ -36,7 +36,7 @@ class peeController;
  */
 class peeUControllerMoveDown : public igdeUndo{
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	int pIndex;
 	
 	

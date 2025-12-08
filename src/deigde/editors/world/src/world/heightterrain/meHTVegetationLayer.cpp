@@ -156,8 +156,6 @@ void meHTVegetationLayer::AddVariation(meHTVVariation *variation){
 	
 	pVariations[pVariationCount] = variation;
 	pVariationCount++;
-	
-	variation->AddReference();
 	variation->SetVLayer(this);
 	
 	if(!pActiveVariation) SetActiveVariation(variation);
@@ -191,8 +189,6 @@ void meHTVegetationLayer::InsertVariation(int before, meHTVVariation *variation)
 	}
 	pVariations[before] = variation;
 	pVariationCount++;
-	
-	variation->AddReference();
 	variation->SetVLayer(this);
 	
 	if(!pActiveVariation) SetActiveVariation(variation);
@@ -243,8 +239,6 @@ void meHTVegetationLayer::RemoveVariation(meHTVVariation *variation){
 	pVariationCount--;
 	
 	variation->SetVLayer(NULL);
-	variation->FreeReference();
-	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLVariationCountChanged(this);
 		pHeightTerrain->SetChanged(true);
@@ -328,9 +322,6 @@ void meHTVegetationLayer::AddRule(meHTVRule *rule){
 	
 	pRules[pRuleCount] = rule;
 	pRuleCount++;
-	
-	rule->AddReference();
-	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLRuleCountChanged(this);
 		pHeightTerrain->SetChanged(true);
@@ -350,9 +341,6 @@ void meHTVegetationLayer::RemoveRule(meHTVRule *rule){
 		pRules[i - 1] = pRules[i];
 	}
 	pRuleCount--;
-	
-	rule->FreeReference();
-	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLRuleCountChanged(this);
 		pHeightTerrain->SetChanged(true);
@@ -466,9 +454,6 @@ void meHTVegetationLayer::AddLink(meHTVRLink *link){
 	
 	pLinks[pLinkCount] = link;
 	pLinkCount++;
-	
-	link->AddReference();
-	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLLinkCountChanged(this);
 		pHeightTerrain->SetChanged(true);
@@ -484,9 +469,6 @@ void meHTVegetationLayer::RemoveLink(meHTVRLink *link){
 		pLinks[i - 1] = pLinks[i];
 	}
 	pLinkCount--;
-	
-	link->FreeReference();
-	
 	if(pHeightTerrain){
 		pHeightTerrain->GetWorld().NotifyHTVLLinkCountChanged(this);
 		pHeightTerrain->SetChanged(true);

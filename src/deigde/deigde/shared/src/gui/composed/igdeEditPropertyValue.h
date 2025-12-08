@@ -171,12 +171,12 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionEditRawValue() const{ return pActionEditRawValue; }
-	inline igdeAction *GetActionBooleanValue() const{ return pActionBooleanValue; }
-	inline igdeAction *GetActionEditList() const{ return pActionEditList; }
-	inline igdeAction *GetActionEditTriggerExpression() const{ return pActionEditTriggerExpression; }
-	inline igdeAction *GetActionEditShape() const{ return pActionEditShape; }
-	inline igdeAction *GetActionEditShapeList() const{ return pActionEditShapeList; }
+	inline const igdeAction::Ref &GetActionEditRawValue() const{ return pActionEditRawValue; }
+	inline const igdeAction::Ref &GetActionBooleanValue() const{ return pActionBooleanValue; }
+	inline const igdeAction::Ref &GetActionEditList() const{ return pActionEditList; }
+	inline const igdeAction::Ref &GetActionEditTriggerExpression() const{ return pActionEditTriggerExpression; }
+	inline const igdeAction::Ref &GetActionEditShape() const{ return pActionEditShape; }
+	inline const igdeAction::Ref &GetActionEditShapeList() const{ return pActionEditShapeList; }
 	
 	
 	
