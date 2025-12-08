@@ -66,7 +66,7 @@ private:
 	EOS_HConnect pHandleConnect;
 	EOS_HUI pHandleUI;
 	
-	deImage *pAuthProviderIcon, pAuthProviderImage;
+	deImage::Ref pAuthProviderIcon, pAuthProviderImage;
 	
 	EOS_NotificationId pNotifyIdUi;
 	bool pUiExclusiveModeEnabled;

@@ -60,7 +60,7 @@ private:
 	
 	int pIndex;
 	
-	deoxrAction *pActionPress, pActionTouch, pActionApproach;
+	deoxrAction::Ref pActionPress, pActionTouch, pActionApproach;
 	deoxrDeviceAxis::Ref pFakeFromAxis;
 	
 	decString pID;

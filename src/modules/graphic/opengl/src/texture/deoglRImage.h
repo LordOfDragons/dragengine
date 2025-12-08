@@ -53,7 +53,7 @@ private:
 	const decString pFilename;
 	const int pWidth, pHeight, pDepth, pComponentCount, pBitCount;
 	
-	deoglPixelBuffer *pPixelBufferTexture, pPixelBufferCubeMap, pPixelBufferArrayTexture;
+	deoglPixelBuffer::Ref pPixelBufferTexture, pPixelBufferCubeMap, pPixelBufferArrayTexture;
 	deoglTexture *pTexture;
 	deoglCubeMap *pCubeMap;
 	deoglArrayTexture *pArrayTexture;

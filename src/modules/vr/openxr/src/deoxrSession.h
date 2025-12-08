@@ -96,7 +96,7 @@ private:
 	bool pShouldRender, pFrameRunning, pRequestCenterSpaceOrigin;
 	deoxrActionSet::Ref pAttachedActionSet;
 	
-	deoxrSpace *pSpaceStage, pSpaceStageOrigin, pSpaceView, pSpaceLocal, pSpaceLocalOrigin,
+	deoxrSpace::Ref pSpaceStage, pSpaceStageOrigin, pSpaceView, pSpaceLocal, pSpaceLocalOrigin,
 		pMainSpace, pMainSpaceOrigin;
 	
 	int64_t *pSwapchainFormats;
