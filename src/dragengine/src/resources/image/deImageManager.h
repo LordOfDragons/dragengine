@@ -77,10 +77,10 @@ public:
 	deImage *CreateImage(int width, int height, int depth, int componentCount, int bitCount);
 	
 	/** \brief Load image from file relative to the base path. */
-	deImage *LoadImage(const char *filename, const char *basePath);
+	deImage::Ref LoadImage(const char *filename, const char *basePath);
 	
 	/** \brief Load image from file relative to the base path. */
-	deImage *LoadImage(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
+	deImage::Ref LoadImage(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/** \brief Loads default image. */
 	deImage *LoadDefault();

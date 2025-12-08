@@ -193,7 +193,7 @@ void reLoadSaveSystem::UpdateLSRigs(){
 
 
 
-reRig *reLoadSaveSystem::LoadRig(const char *filename){
+reRig::Ref reLoadSaveSystem::LoadRig(const char *filename){
 	const int lsIndex = IndexOfLSRigMatching(filename);
 	if(lsIndex == -1){
 		DETHROW(deeInvalidParam);
@@ -209,7 +209,6 @@ reRig *reLoadSaveSystem::LoadRig(const char *filename){
 	rig->SetChanged(false);
 	rig->SetSaved(true);
 	
-	rig->AddReference(); // required to hand over reference to caller
 	return rig;
 }
 

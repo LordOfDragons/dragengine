@@ -361,7 +361,7 @@ private:
 	void pUpdateUseFakeDynamics();
 	
 	void pUpdateBPShape();
-	debpBulletShape *pCreateBPShape();
+	debpBulletShape::Ref pCreateBPShape();
 	void pUpdateAttachments(bool force);
 	void pUpdateIsMoving();
 };

@@ -499,7 +499,7 @@ private:
 	/** \brief Check debug checks for performance problems. */
 	void pCheckDebugChecks();
 	
-	debpBulletShape *pCreateBPShape();
+	debpBulletShape::Ref pCreateBPShape();
 	
 	bool pPrepreStaticCollisionTestPos();
 };

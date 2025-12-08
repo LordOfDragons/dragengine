@@ -2994,7 +2994,7 @@ void debpColliderComponent::pCheckDebugChecks(){
 	pDirtyDebugChecks = false;
 }
 
-debpBulletShape *debpColliderComponent::pCreateBPShape(){
+debpBulletShape::Ref debpColliderComponent::pCreateBPShape(){
 	deRig *rig = NULL;
 	int count = 0;
 	
@@ -3022,7 +3022,6 @@ debpBulletShape *debpColliderComponent::pCreateBPShape(){
 	
 	debpBulletShape * const bulletShape = createBulletShape.GetBulletShape();
 	if(bulletShape){
-		bulletShape->AddReference(); // otherwise visitor destructor frees created shape
 	}
 	return bulletShape;
 }

@@ -285,7 +285,7 @@ void debpColliderBone::pUpdateStaticCollisionTest(){
 	pDirtyStaticTest = false;
 }
 
-debpBulletShape *debpColliderBone::pCreateBPShape(){
+debpBulletShape::Ref debpColliderBone::pCreateBPShape(){
 	const int count = pShapes.GetShapeCount();
 	if(count == 0){
 		return NULL;
@@ -304,7 +304,6 @@ debpBulletShape *debpColliderBone::pCreateBPShape(){
 	
 	debpBulletShape * const bulletShape = createBulletShape.GetBulletShape();
 	if(bulletShape){
-		bulletShape->AddReference(); // otherwise visitor destructor frees created shape
 	}
 	return bulletShape;
 }

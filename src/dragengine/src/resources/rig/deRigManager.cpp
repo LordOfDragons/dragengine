@@ -121,11 +121,11 @@ deRig *deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filename, d
 	return rig;
 }
 
-deRig *deRigManager::LoadRig(const char *filename, const char *basePath){
+deRig::Ref deRigManager::LoadRig(const char *filename, const char *basePath){
 	return LoadRig(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
+deRig::Ref deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
 	if(!vfs || !filename || filename[0] == '\0' || !basePath){
 		DETHROW(deeInvalidParam);
 	}

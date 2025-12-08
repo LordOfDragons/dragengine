@@ -64,7 +64,7 @@ public:
 	inline saeLoadSaveSAnimation *GetLSSAnim(){ return pLSSAnim; }
 	
 	/** Loads the speech animation from file. */
-	saeSAnimation *LoadSAnimation(const char *filename);
+	saeSAnimation::Ref LoadSAnimation(const char *filename);
 	/** Saves the speech animation to file. */
 	void SaveSAnimation(saeSAnimation *sanimation, const char *filename);
 	/** Retrieves the file pattern list. */

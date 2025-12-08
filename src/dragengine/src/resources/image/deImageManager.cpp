@@ -101,11 +101,11 @@ deImage *deImageManager::CreateImage(int width, int height, int depth, int compo
 	return image;
 }
 
-deImage *deImageManager::LoadImage(const char *filename, const char *basePath){
+deImage::Ref deImageManager::LoadImage(const char *filename, const char *basePath){
 	return LoadImage(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deImage *deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
+deImage::Ref deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *filename, const char *basePath){
 	decBaseFileReader::Ref fileReader = NULL;
 	deBaseImageModule *module;
 	deBaseImageInfo *imageInfos = NULL;

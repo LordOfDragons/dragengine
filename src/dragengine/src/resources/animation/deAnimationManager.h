@@ -76,10 +76,10 @@ public:
 	deAnimation *CreateAnimation(deVirtualFileSystem *vfs, const char *filename, deAnimationBuilder &builder);
 	
 	/** \brief Loads an animation from the given file relative to the given base path. */
-	deAnimation *LoadAnimation(const char *filename, const char *basePath);
+	deAnimation::Ref LoadAnimation(const char *filename, const char *basePath);
 	
 	/** \brief Loads an animation from the given file relative to the given base path. */
-	deAnimation *LoadAnimation(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
+	deAnimation::Ref LoadAnimation(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/**
 	 * \brief Save animation to file.

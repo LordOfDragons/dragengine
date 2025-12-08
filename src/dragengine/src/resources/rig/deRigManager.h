@@ -76,10 +76,10 @@ public:
 	deRig *CreateRig(deVirtualFileSystem *vfs, const char *filename, deRigBuilder &builder);
 	
 	/** \brief Loads a rig from the given file relative to the given base path. */
-	deRig *LoadRig(const char *filename, const char *basePath);
+	deRig::Ref LoadRig(const char *filename, const char *basePath);
 	
 	/** \brief Loads a rig from the given file relative to the given base path. */
-	deRig *LoadRig(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
+	deRig::Ref LoadRig(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/**
 	 * \brief Add loaded and fully prepared rig.

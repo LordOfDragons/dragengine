@@ -220,7 +220,7 @@ public:
 private:
 	void pCleanUp();
 	void pUpdateStaticCollisionTest();
-	debpBulletShape *pCreateBPShape();
+	debpBulletShape::Ref pCreateBPShape();
 };
 
 #endif

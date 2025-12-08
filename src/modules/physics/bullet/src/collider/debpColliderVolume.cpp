@@ -1540,7 +1540,7 @@ void debpColliderVolume::pUpdateBPShape(){
 	pDirtyBPShape = false;
 }
 
-debpBulletShape *debpColliderVolume::pCreateBPShape(){
+debpBulletShape::Ref debpColliderVolume::pCreateBPShape(){
 	const decShapeList &shapes = pColliderVolume.GetShapes();
 	const int count = shapes.GetCount();
 
@@ -1565,7 +1565,6 @@ debpBulletShape *debpColliderVolume::pCreateBPShape(){
 	
 	debpBulletShape * const bulletShape = createBulletShape.GetBulletShape();
 	if(bulletShape){
-		bulletShape->AddReference(); // otherwise visitor destructor frees created shape
 	}
 	return bulletShape;
 }

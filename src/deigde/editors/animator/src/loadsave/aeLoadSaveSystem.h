@@ -55,7 +55,7 @@ public:
 	// actor animators management
 	inline aeWindowMain *GetWindowMain() const{ return pWndMain; }
 	inline aeLSAnimator *GetLSAnimator() const{ return pLSAnimator; }
-	aeAnimator *LoadAnimator(const char *filename);
+	aeAnimator::Ref LoadAnimator(const char *filename);
 	void SaveAnimator(aeAnimator *animator, const char *filename);
 	
 	

@@ -117,11 +117,11 @@ const char *filename, deAnimationBuilder &builder){
 	return anim;
 }
 
-deAnimation *deAnimationManager::LoadAnimation(const char *filename, const char *basePath){
+deAnimation::Ref deAnimationManager::LoadAnimation(const char *filename, const char *basePath){
 	return LoadAnimation(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deAnimation *deAnimationManager::LoadAnimation(deVirtualFileSystem *vfs,
+deAnimation::Ref deAnimationManager::LoadAnimation(deVirtualFileSystem *vfs,
 const char *filename, const char *basePath){
 	decBaseFileReader::Ref fileReader=NULL;
 	deBaseAnimationModule *module;
