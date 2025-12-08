@@ -86,7 +86,7 @@ void deoglImage::SyncToRender(){
 			
 		}else{
 			// if there is no pixel buffer held create a new one which can cause retaining
-			pPixelBufferRImageTexture = pCreatePixelBuffer();
+			pPixelBufferRImageTexture.TakeOver(pCreatePixelBuffer());
 		}
 	}
 	
@@ -115,7 +115,7 @@ void deoglImage::CreatePixelBuffer(){
 	
 	// first use of pixel buffer. create pixel buffer retaining image data if required
 	if(!pPixelBuffer){
-		pPixelBuffer = pCreatePixelBuffer();
+		pPixelBuffer.TakeOver(pCreatePixelBuffer());
 	}
 }
 

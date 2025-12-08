@@ -93,7 +93,7 @@ pActiveLayer(NULL)
 	try{
 		SetFilePath("new.desky");
 		
-		pEngWorld = engine->GetWorldManager()->CreateWorld();
+		pEngWorld.TakeOver(engine->GetWorldManager()->CreateWorld());
 		pEngWorld->SetGravity(decVector());
 		pEngWorld->SetDisableLights(false);
 		pEngWorld->SetAmbientLight(decColor());
@@ -105,7 +105,7 @@ pActiveLayer(NULL)
 		pCamera->SetLowestIntensity(1.0f);
 		pCamera->SetAdaptionTime(1.0f);
 		
-		pEngSkyInstance = engine->GetSkyInstanceManager()->CreateSkyInstance();
+		pEngSkyInstance.TakeOver(engine->GetSkyInstanceManager()->CreateSkyInstance());
 		pEngWorld->AddSky(pEngSkyInstance);
 		
 		pEnvObject.TakeOverWith(*environment);
@@ -113,7 +113,7 @@ pActiveLayer(NULL)
 		pEnvObject->SetPosition(decDVector(0.0, -1.8, 0.0));
 		pEnvObject->SetGDClassName("IGDETestTerrain");
 		
-		pDDHorizon = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDDHorizon.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDDHorizon->SetXRay(true);
 		pEngWorld->AddDebugDrawer(pDDHorizon);
 		
@@ -188,7 +188,7 @@ void seSky::RebuildEngineSky(){
 	int i, j, k;
 	
 	try{
-		pEngSky = GetEngine()->GetSkyManager()->CreateSky();
+		pEngSky.TakeOver(GetEngine()->GetSkyManager()->CreateSky());
 		
 		pEngSky->SetBgColor(pBgColor);
 		

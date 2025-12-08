@@ -167,7 +167,7 @@ void dedaiNavigator::UpdateDDSPath(){
 	if(devmode.GetEnabled() && (devmode.GetShowPath() || devmode.GetShowPathFaces())){
 		// ensure the debug drawer exists
 		if(!pDebugDrawer){
-			pDebugDrawer = pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
+			pDebugDrawer.TakeOver(pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer());
 			pDebugDrawer->SetXRay(true);
 			
 			if(pParentWorld){

@@ -83,7 +83,7 @@ pColliderOwner(this)
 	deEngine &engine = *environment->GetEngineController()->GetEngine();
 	
 	try{
-		pEngCollider = engine.GetColliderManager()->CreateColliderVolume();
+		pEngCollider.TakeOver(engine.GetColliderManager()->CreateColliderVolume());
 		pEngCollider->SetEnabled(true);
 		pEngCollider->SetResponseType(deCollider::ertStatic);
 		pEngCollider->SetUseLocalGravity(true);
@@ -99,7 +99,7 @@ pColliderOwner(this)
 		pEnvironment->SetColliderUserPointer(pEngCollider, &pColliderOwner);
 		
 		// create debug drawer and shapes
-		pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSShape = new igdeWDebugDrawerShape;

@@ -210,7 +210,7 @@ void deoglRTBufferObject::pCreateLayoutSkinInstance(){
 	const int maxUBOIndexCount = config.GetMaxSPBIndexCount();
 	const int maxSSBOIndexCount = config.GetMaxSPBIndexCount();
 	
-	pLayoutSkinInstanceUBO = deoglSkinShader::CreateLayoutSkinInstanceUBO(pRenderThread);
+	pLayoutSkinInstanceUBO.TakeOver(deoglSkinShader::CreateLayoutSkinInstanceUBO(pRenderThread));
 	pLayoutSkinInstanceUBO->SetElementCount(decMath::min(maxUBOIndexCount,
 		uboMaxSize / pLayoutSkinInstanceUBO->GetElementStride()));
 	pLayoutSkinInstanceUBO->SetBindingPoint(deoglSkinShader::eubInstanceParameters);
@@ -225,7 +225,7 @@ void deoglRTBufferObject::pCreateLayoutSkinInstance(){
 	if(choices.GetUseSSBORender()){
 		const int ssboMaxSize = caps.GetSSBOMaxSize();
 		
-		pLayoutSkinInstanceSSBO = deoglSkinShader::CreateLayoutSkinInstanceSSBO(pRenderThread);
+		pLayoutSkinInstanceSSBO.TakeOver(deoglSkinShader::CreateLayoutSkinInstanceSSBO(pRenderThread));
 		pLayoutSkinInstanceSSBO->SetElementCount(decMath::min(maxSSBOIndexCount,
 			ssboMaxSize / pLayoutSkinInstanceSSBO->GetElementStride()));
 		pLayoutSkinInstanceSSBO->SetBindingPoint(deoglSkinShader::essboInstanceParameters);
@@ -296,7 +296,7 @@ void deoglRTBufferObject::pCreateLayoutTextureInstance(){
 	const int maxUBOIndexCount = config.GetMaxSPBIndexCount();
 	const int maxSSBOIndexCount = config.GetMaxSPBIndexCount();
 	
-	pLayoutSkinTextureUBO = deoglSkinShader::CreateLayoutSkinTextureUBO(pRenderThread);
+	pLayoutSkinTextureUBO.TakeOver(deoglSkinShader::CreateLayoutSkinTextureUBO(pRenderThread));
 	pLayoutSkinTextureUBO->SetElementCount(decMath::min(maxUBOIndexCount,
 		uboMaxSize / pLayoutSkinTextureUBO->GetElementStride()));
 	pLayoutSkinTextureUBO->SetBindingPoint(deoglSkinShader::eubTextureParameters);
@@ -311,7 +311,7 @@ void deoglRTBufferObject::pCreateLayoutTextureInstance(){
 	if(choices.GetUseSSBORender()){
 		const int ssboMaxSize = caps.GetSSBOMaxSize();
 		
-		pLayoutSkinTextureSSBO = deoglSkinShader::CreateLayoutSkinTextureSSBO(pRenderThread);
+		pLayoutSkinTextureSSBO.TakeOver(deoglSkinShader::CreateLayoutSkinTextureSSBO(pRenderThread));
 		pLayoutSkinTextureSSBO->SetElementCount(decMath::min(maxSSBOIndexCount,
 			ssboMaxSize / pLayoutSkinTextureSSBO->GetElementStride()));
 		pLayoutSkinTextureSSBO->SetBindingPoint(deoglSkinShader::essboTextureParameters);

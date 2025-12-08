@@ -1450,7 +1450,7 @@ void debpColliderVolume::pUpdateStaticCollisionTest(){
 	
 	try{
 		if(pColliderVolume.GetShapes().GetCount() > 0){
-			pStaticCollisionTestShape = pCreateBPShape(); // take over reference
+			pStaticCollisionTestShape.TakeOver(pCreateBPShape()); // take over reference
 		}
 		
 		if(pStaticCollisionTestShape && pStaticCollisionTestShape->GetShape()){

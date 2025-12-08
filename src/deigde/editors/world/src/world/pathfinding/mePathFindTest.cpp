@@ -78,13 +78,13 @@ mePathFindTest::mePathFindTest(deEngine *engine){
 	pDirtyPath = true;
 	
 	try{
-		pEngNavigator = engine->GetNavigatorManager()->CreateNavigator();
+		pEngNavigator.TakeOver(engine->GetNavigatorManager()->CreateNavigator());
 		pEngNavigator->SetSpaceType(pSpaceType);
 		pEngNavigator->SetMaxOutsideDistance(0.5f);
 		pEngNavigator->SetBlockingCost(pBlockingCost);
 		
 		// create debug drawer and shapes
-		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		pDebugDrawer->SetVisible(pShowPath);
 		

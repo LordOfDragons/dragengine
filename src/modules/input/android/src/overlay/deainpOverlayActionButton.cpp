@@ -78,7 +78,7 @@ pDirtyLabelSize(true)
 	try{
 		GetCanvas()->SetSize(size);
 		
-		pCImage = canvasManager.CreateCanvasImage();
+		pCImage.TakeOver(canvasManager.CreateCanvasImage());
 		pCImage->SetSize(size);
 		image = imageManager.LoadImage(&androidInput.GetVFS(),
 			"/share/images/actionbutton.png", "/");
@@ -87,7 +87,7 @@ pDirtyLabelSize(true)
 		image = NULL;
 		GetCanvas()->AddCanvas(pCImage);
 		
-		pCLabel = canvasManager.CreateCanvasText();
+		pCLabel.TakeOver(canvasManager.CreateCanvasText());
 		pCLabel->SetSize(size);
 		pCLabel->SetColor(decColor(1.0f, 1.0f, 1.0f));
 		pCLabel->SetFont(androidInput.GetDefaultFont());

@@ -263,7 +263,7 @@ pWOAsyncFinished(*this)
 		pWObject->SetRenderEnvMapMask(1 << meWorld::elmEnvMapProbes);
 		pWObject->SetAudioLayerMask(1 << meWorld::elmAudio);
 		
-		pColDetCollider = engine->GetColliderManager()->CreateColliderVolume();
+		pColDetCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume());
 		pColDetCollider->SetEnabled(true);
 		pColDetCollider->SetResponseType(deCollider::ertKinematic);
 		pColDetCollider->SetUseLocalGravity(true);
@@ -272,7 +272,7 @@ pWOAsyncFinished(*this)
 		pWObject->SetAsyncLoadFinished(&pWOAsyncFinished);
 		
 		// create debug drawer and shapes
-		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSObject = new igdeWDebugDrawerShape;
@@ -2282,8 +2282,8 @@ void meObject::pUpdateBrokenComponent(){
 	if(IsComponentBroken()){
 		if(!pEngComponentBroken){
 			const igdeGameDefinition &gamedef = *pEnvironment->GetGameProject()->GetGameDefinition();
-			pEngComponentBroken = pEnvironment->GetEngineController()->GetEngine()->
-				GetComponentManager()->CreateComponent(gamedef.GetDefaultModel(), gamedef.GetDefaultSkin());
+			pEngComponentBroken.TakeOver(pEnvironment->GetEngineController()->GetEngine()->
+				GetComponentManager()->CreateComponent(gamedef.GetDefaultModel(), gamedef.GetDefaultSkin()));
 			pEngComponentBroken->SetPosition(pWObject->GetPosition());
 			pEngComponentBroken->SetOrientation(pWObject->GetOrientation());
 			

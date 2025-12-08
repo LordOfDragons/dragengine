@@ -270,7 +270,7 @@ void debpColliderBone::pUpdateStaticCollisionTest(){
 	}
 	
 	try{
-		pStaticCollisionTestShape = pCreateBPShape();
+		pStaticCollisionTestShape.TakeOver(pCreateBPShape());
 		
 		if(pStaticCollisionTestShape){
 			pStaticCollisionTest->setCollisionShape(pStaticCollisionTestShape->GetShape());

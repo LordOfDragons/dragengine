@@ -115,7 +115,7 @@ pPreviewVFS(NULL)
 		SetFilePath("new.gamedef.xml");
 		
 		// create world
-		pWorld = engine->GetWorldManager()->CreateWorld();
+		pWorld.TakeOver(engine->GetWorldManager()->CreateWorld());
 		pWorld->SetGravity(decVector(0.0f, -9.81f, 0.0f));
 		pWorld->SetDisableLights(false);
 		

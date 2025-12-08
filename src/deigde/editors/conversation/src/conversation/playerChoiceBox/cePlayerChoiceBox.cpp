@@ -72,7 +72,7 @@ pSelectedOption(-1),
 pCanvasView(NULL)
 {
 	try{
-		pCanvasView = conversation.GetEngine()->GetCanvasManager()->CreateCanvasView();
+		pCanvasView.TakeOver(conversation.GetEngine()->GetCanvasManager()->CreateCanvasView());
 		pCanvasView->SetOrder(11.0f);
 		
 		SetPathFont("/igde/fonts/sans_9_border.defont");

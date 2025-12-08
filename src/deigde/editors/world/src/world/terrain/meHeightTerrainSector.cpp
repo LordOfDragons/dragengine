@@ -1975,7 +1975,7 @@ void meHeightTerrainSector::pUpdateDDEdgesHeights(const decPoint &fromGrid, cons
 
 
 void meHeightTerrainSector::pCreateDDSelNavPoints(){
-	pDDSelNavPoints = pEngine->GetDebugDrawerManager()->CreateDebugDrawer();
+	pDDSelNavPoints.TakeOver(pEngine->GetDebugDrawerManager()->CreateDebugDrawer());
 	pDDSelNavPoints->SetXRay(false);
 	
 	deDebugDrawerShape *ddshape = NULL;

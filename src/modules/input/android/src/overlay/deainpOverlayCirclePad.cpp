@@ -84,7 +84,7 @@ pCImage(NULL)
 	try{
 		GetCanvas()->SetSize(size);
 		
-		pCImage = canvasManager.CreateCanvasImage();
+		pCImage.TakeOver(canvasManager.CreateCanvasImage());
 		pCImage->SetSize(size);
 		image = imageManager.LoadImage(&GetAndroidInput().GetVFS(), "/share/images/circlepad.png", "/");
 		pCImage->SetImage(image);

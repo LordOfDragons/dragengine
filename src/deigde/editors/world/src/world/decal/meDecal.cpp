@@ -428,7 +428,7 @@ void meDecal::UpdateDynamicSkin(){
 	if(requiresDynamicSkin){
 		if(!pDynamicSkin){
 			deEngine &engine = *pEnvironment->GetEngineController()->GetEngine();
-			pDynamicSkin = engine.GetDynamicSkinManager()->CreateDynamicSkin();
+			pDynamicSkin.TakeOver(engine.GetDynamicSkinManager()->CreateDynamicSkin());
 		}
 		
 		pDynamicSkin->RemoveAllRenderables();
@@ -654,7 +654,7 @@ void meDecal::pInitShared(){
 	try{
 		pTimerReattachDecals.TakeOver(new meDecalTimerReattachDecals(*this));
 		
-		pCollider = engine.GetColliderManager()->CreateColliderVolume();
+		pCollider.TakeOver(engine.GetColliderManager()->CreateColliderVolume());
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(deCollider::ertKinematic);
 		pCollider->SetUseLocalGravity(true);
@@ -670,7 +670,7 @@ void meDecal::pInitShared(){
 		pEnvironment->SetColliderUserPointer(pCollider, &pColliderOwner);
 		
 		// create debug drawer and shapes
-		pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSDecal = new igdeWDebugDrawerShape;

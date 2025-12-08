@@ -147,7 +147,7 @@ pWindowMain(windowMain)
 		pCreateCamera();
 		pCreateCollider();
 		
-		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
+		pEngAnimatorInstance.TakeOver(engine->GetAnimatorInstanceManager()->CreateAnimatorInstance());
 		pEngAnimatorInstance->SetAnimator(pEngAnimator);
 		
 		pLocomotion = new aeAnimatorLocomotion(this);
@@ -174,7 +174,7 @@ pWindowMain(windowMain)
 		pEnvObject->SetGDClassName("IGDETestTerrain");
 		
 		// create debug drawers
-		pDDBones = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDDBones.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDDBones->SetXRay(true);
 		pDDBones->SetVisible(false);
 		pEngWorld->AddDebugDrawer(pDDBones);
@@ -1429,14 +1429,14 @@ void aeAnimator::pCreateWorld(){
 	deEngine * const engine = GetEngine();
 	
 	// create world
-	pEngWorld = engine->GetWorldManager()->CreateWorld();
+	pEngWorld.TakeOver(engine->GetWorldManager()->CreateWorld());
 	pEngWorld->SetGravity(decVector(0.0f, -9.81f, 0.0f));
 	pEngWorld->SetDisableLights(false);
 	
 	pEngWorld->SetAmbientLight(decColor(0.0f, 0.0f, 0.0f));
 	
 	// create animator
-	pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
+	pEngAnimator.TakeOver(engine->GetAnimatorManager()->CreateAnimator());
 	
 	// create sub animator
 	pSubAnimator = new aeSubAnimator(engine);
@@ -1454,7 +1454,7 @@ void aeAnimator::pCreateCamera(){
 }
 
 void aeAnimator::pCreateCollider(){
-	pEngCollider = GetEngine()->GetColliderManager()->CreateColliderComponent();
+	pEngCollider.TakeOver(GetEngine()->GetColliderManager()->CreateColliderComponent());
 	
 	pEngCollider->SetResponseType(deCollider::ertKinematic);
 	pEngCollider->SetUseLocalGravity(true);
@@ -1524,7 +1524,7 @@ void aeAnimator::pUpdateComponent(){
 				pEngComponent->SetModelAndSkin(displayModel, displaySkin);
 				
 			}else{
-				pEngComponent = engine->GetComponentManager()->CreateComponent(displayModel, displaySkin);
+				pEngComponent.TakeOver(engine->GetComponentManager()->CreateComponent(displayModel, displaySkin));
 				pEngWorld->AddComponent(pEngComponent);
 				
 				pEngCollider->AddAttachment(new deColliderAttachment(pEngComponent));

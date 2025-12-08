@@ -189,7 +189,7 @@ pTurnIP(0.0f)
 		pTouchSensorListener.SetAnimatorLocomotion(this);
 		
 		// create debug drawers
-		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		pDebugDrawer->SetVisible(false);
 		animator->GetEngineWorld()->AddDebugDrawer(pDebugDrawer);
@@ -1244,7 +1244,7 @@ void aeAnimatorLocomotion::pCreateCollider(){
 	layermask2.SetBit(aeAnimator::eclGround);
 	
 	// collider for movement
-	pCollider = colmgr.CreateColliderVolume();
+	pCollider.TakeOver(colmgr.CreateColliderVolume());
 	
 	pCollider->SetResponseType(deCollider::ertKinematic);
 	pCollider->SetUseLocalGravity(true);
@@ -1255,7 +1255,7 @@ void aeAnimatorLocomotion::pCreateCollider(){
 	engWorld.AddCollider(pCollider);
 	
 	// touch ground collider
-	pTGCollider = colmgr.CreateColliderVolume();
+	pTGCollider.TakeOver(colmgr.CreateColliderVolume());
 	pTGCollider->SetResponseType(deCollider::ertKinematic);
 	pTGCollider->SetUseLocalGravity(true);
 	pTGCollider->SetEnabled(false);
@@ -1263,21 +1263,21 @@ void aeAnimatorLocomotion::pCreateCollider(){
 	
 	// ground check collider
 	/*
-	pGroundCheckCollider = colmgr.CreateColliderVolume();
+	pGroundCheckCollider.TakeOver(colmgr.CreateColliderVolume());
 	pGroundCheckCollider->SetResponseType(deCollider::ertKinematic);
 	pGroundCheckCollider->SetUseLocalGravity(true);
 	pGroundCheckCollider->SetEnabled(false);
 	pGroundCheckCollider->GetLayerMask() = layermask2;
 	pGroundCheckCollider->NotifyLayerMaskChanged();
 	*/
-	pDragonColBody = colmgr.CreateColliderVolume();
+	pDragonColBody.TakeOver(colmgr.CreateColliderVolume());
 	pDragonColBody->SetResponseType(deCollider::ertKinematic);
 	pDragonColBody->SetUseLocalGravity(true);
 	pDragonColBody->SetEnabled(false);
 	pDragonColBody->SetCollisionFilter(decCollisionFilter(layermask2));
 	
 	// ground plane collider
-	pGroundPlaneCollider = colmgr.CreateColliderVolume();
+	pGroundPlaneCollider.TakeOver(colmgr.CreateColliderVolume());
 	pGroundPlaneCollider->SetResponseType(deCollider::ertKinematic);
 	pGroundPlaneCollider->SetUseLocalGravity(true);
 	pGroundPlaneCollider->SetEnabled(false);
@@ -1285,7 +1285,7 @@ void aeAnimatorLocomotion::pCreateCollider(){
 	
 	// foot collider
 	/*
-	pFootCollider = colmgr.CreateColliderVolume();
+	pFootCollider.TakeOver(colmgr.CreateColliderVolume());
 	pFootCollider->SetResponseType(deCollider::ertKinematic);
 	pFootCollider->SetUseLocalGravity(true);
 	pFootCollider->SetEnabled(false);
@@ -1298,7 +1298,7 @@ void aeAnimatorLocomotion::pCreateCollider(){
 
 void aeAnimatorLocomotion::pCreateTouchSensor(){
 	// create the touch sensor
-	pTouchSensor = pAnimator->GetEngine()->GetTouchSensorManager()->CreateTouchSensor();
+	pTouchSensor.TakeOver(pAnimator->GetEngine()->GetTouchSensorManager()->CreateTouchSensor());
 	
 	// setup some important parameters
 	
