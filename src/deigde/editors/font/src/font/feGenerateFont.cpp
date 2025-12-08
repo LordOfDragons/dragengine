@@ -105,7 +105,7 @@ void feGenerateFont::SetEnlargeGlpyh(int enlarge){
 
 
 
-feFont* feGenerateFont::GenerateFont(){
+feFont::Ref feGenerateFont::GenerateFont(){
 	pSystemFont = pEnvironment.GetSharedFont(pFontConfig)->GetEngineFont();
 	
 	const feFont::Ref font(feFont::Ref::NewWith(&pEnvironment));

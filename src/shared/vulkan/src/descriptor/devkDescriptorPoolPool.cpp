@@ -65,12 +65,11 @@ devkDescriptorPoolPool::~devkDescriptorPoolPool(){
 // Management
 ///////////////
 
-devkDescriptorPoolSlot * devkDescriptorPoolPool::Get(){
+devkDescriptorPoolSlot::Ref devkDescriptorPoolPool::Get(){
 	// return next free slot if present
 	if(pFreeSlots.GetCount() > 0){
 		const int index = pFreeSlots.GetCount() - 1;
 		devkDescriptorPoolSlot * const slot = (devkDescriptorPoolSlot*)pFreeSlots.GetAt(index);
-		slot->AddReference(); // caller holds reference
 		pFreeSlots.RemoveFrom(index);
 		return slot;
 	}

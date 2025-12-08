@@ -183,7 +183,7 @@ void delLauncher::Prepare(){
 
 
 
-delGame * delLauncher::CreateGame(){
+delGame::Ref delLauncher::CreateGame(){
 	return new delGame(*this);
 }
 
