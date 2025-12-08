@@ -35,6 +35,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUHTVRuleMove
 /////////////////////////
 
@@ -60,8 +62,11 @@ meUHTVRuleMove::meUHTVRuleMove(meHTVegetationLayer *vlayer, meHTVRule *rule){
 }
 
 meUHTVRuleMove::~meUHTVRuleMove(){
-
+	if(pRule) pRule->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
+
+
 
 // Management
 ///////////////
@@ -69,6 +74,8 @@ meUHTVRuleMove::~meUHTVRuleMove(){
 void meUHTVRuleMove::SetNewPosition(const decVector2 &position){
 	pNewPosition = position;
 }
+
+
 
 void meUHTVRuleMove::Undo(){
 	pRule->SetPosition(pOldPosition);

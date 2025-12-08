@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeUSetRuleAnimMoveName
 /////////////////////////////////
 
@@ -50,8 +52,10 @@ aeUSetRuleAnimMoveName::aeUSetRuleAnimMoveName(aeRuleAnimation *rule, const char
 }
 
 aeUSetRuleAnimMoveName::~aeUSetRuleAnimMoveName(){
-
+	if(pRule) pRule->FreeReference();
 }
+
+
 
 // Management
 ///////////////

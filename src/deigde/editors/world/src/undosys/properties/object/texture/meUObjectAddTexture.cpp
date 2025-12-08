@@ -33,6 +33,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUObjectAddTexture
 ///////////////////////////////
 
@@ -58,8 +60,11 @@ pTexture(NULL)
 }
 
 meUObjectAddTexture::~meUObjectAddTexture(){
-
+	if(pTexture) pTexture->FreeReference();
+	if(pObject) pObject->FreeReference();
 }
+
+
 
 // Management
 ///////////////

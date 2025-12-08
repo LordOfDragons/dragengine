@@ -32,6 +32,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeUMoveRuleUp
 ////////////////////////
 
@@ -58,6 +60,8 @@ aeUMoveRuleUp::~aeUMoveRuleUp(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -69,9 +73,12 @@ void aeUMoveRuleUp::Redo(){
 	pAnimator->MoveRuleTo(pRule, pIndex - 1);
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void aeUMoveRuleUp::pCleanUp(){
-
+	if(pRule) pRule->FreeReference();
+	if(pAnimator) pAnimator->FreeReference();
 }

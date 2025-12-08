@@ -27,6 +27,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class reUSetBoneCentralMassPoint
 /////////////////////////////////////
 
@@ -54,6 +56,8 @@ reUSetBoneCentralMassPoint::~reUSetBoneCentralMassPoint(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -65,9 +69,11 @@ void reUSetBoneCentralMassPoint::Redo(){
 	pBone->SetCentralMassPoint(pNewCentralMassPoint);
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void reUSetBoneCentralMassPoint::pCleanUp(){
-
+	if(pBone) pBone->FreeReference();
 }

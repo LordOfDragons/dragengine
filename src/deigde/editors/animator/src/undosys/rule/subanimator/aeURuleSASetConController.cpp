@@ -32,6 +32,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeURuleSASetConController
 ////////////////////////////////////
 
@@ -64,6 +66,8 @@ aeURuleSASetConController::~aeURuleSASetConController(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -75,9 +79,13 @@ void aeURuleSASetConController::Redo(){
 	pRule->SetControllerAt(pTarget, pNewController);
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void aeURuleSASetConController::pCleanUp(){
-
+	if(pNewController) pNewController->FreeReference();
+	if(pOldController) pOldController->FreeReference();
+	if(pRule) pRule->FreeReference();
 }

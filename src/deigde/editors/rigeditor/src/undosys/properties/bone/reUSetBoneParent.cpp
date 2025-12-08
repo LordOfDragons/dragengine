@@ -27,6 +27,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class reUSetBoneParent
 ///////////////////////////
 
@@ -57,6 +59,8 @@ reUSetBoneParent::~reUSetBoneParent(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -68,11 +72,14 @@ void reUSetBoneParent::Redo(){
 	pBone->SetParentBone(pNewParent);
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void reUSetBoneParent::pCleanUp(){
-
+	if(pNewParent) pNewParent->FreeReference();
+	if(pOldParent) pOldParent->FreeReference();
 	
-
+	if(pBone) pBone->FreeReference();
 }

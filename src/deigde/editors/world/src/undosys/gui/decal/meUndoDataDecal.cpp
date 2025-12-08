@@ -30,6 +30,8 @@
 #include "../../../world/object/meObject.h"
 #include "dragengine/common/exceptions.h"
 
+
+
 // Class meUndoDataDecal
 //////////////////////////
 
@@ -56,8 +58,10 @@ meUndoDataDecal::meUndoDataDecal(meDecal *decal){
 }
 
 meUndoDataDecal::~meUndoDataDecal(){
-
+	if(pDecal) pDecal->FreeReference();
 }
+
+
 
 // Management
 ///////////////

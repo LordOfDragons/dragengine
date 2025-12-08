@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeUSetRuleName
 //////////////////////////////////
 
@@ -50,8 +52,10 @@ aeUSetRuleName::aeUSetRuleName(aeRule *rule, const char *newName){
 }
 
 aeUSetRuleName::~aeUSetRuleName(){
-
+	if(pRule) pRule->FreeReference();
 }
+
+
 
 // Management
 ///////////////

@@ -37,6 +37,8 @@
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class mePropField
 //////////////////////
 
@@ -84,6 +86,8 @@ mePropField::~mePropField(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -101,6 +105,8 @@ void mePropField::SetWorld(meWorld *world){
 	}
 }
 
+
+
 void mePropField::SetPosition(const decDVector &position){
 	if(!position.IsEqualTo(pPosition)){
 		pPosition = position;
@@ -115,6 +121,8 @@ void mePropField::SetPosition(const decDVector &position){
 void mePropField::SetWorldChanged(){
 	if(pWorld) pWorld->SetChanged(true);
 }
+
+
 
 // Types
 //////////
@@ -207,6 +215,8 @@ void mePropField::RemoveAllTypes(){
 	SetWorldChanged();
 }
 
+
+
 // Private Functions
 //////////////////////
 
@@ -216,6 +226,6 @@ void mePropField::pCleanUp(){
 	RemoveAllTypes();
 	if(pTypes) delete [] pTypes;
 	
-
+	if(pEngPF) pEngPF->FreeReference();
 }
 

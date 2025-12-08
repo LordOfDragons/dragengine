@@ -34,6 +34,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class reURemoveShape
 /////////////////////////
 
@@ -83,6 +85,8 @@ reURemoveShape::~reURemoveShape(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -123,6 +127,8 @@ void reURemoveShape::Redo(){
 	}
 }
 
+
+
 // Private Functions
 //////////////////////
 
@@ -135,7 +141,7 @@ void reURemoveShape::pCleanUp(){
 			
 			bone = pEntries[pEntryCount].bone;
 			
-
+			if(bone) bone->FreeReference();
 			pEntries[pEntryCount].shape->FreeReference();
 		}
 		

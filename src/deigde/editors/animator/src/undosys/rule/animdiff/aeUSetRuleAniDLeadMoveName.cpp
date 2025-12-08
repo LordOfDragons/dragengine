@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeUSetRuleAniDLeadMoveName
 /////////////////////////////////////
 
@@ -50,8 +52,10 @@ aeUSetRuleAniDLeadMoveName::aeUSetRuleAniDLeadMoveName(aeRuleAnimationDifference
 }
 
 aeUSetRuleAniDLeadMoveName::~aeUSetRuleAniDLeadMoveName(){
-
+	if(pRule) pRule->FreeReference();
 }
+
+
 
 // Management
 ///////////////

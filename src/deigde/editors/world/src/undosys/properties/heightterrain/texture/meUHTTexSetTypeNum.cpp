@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUHTTexSetTypeNum
 /////////////////////////////
 
@@ -51,8 +53,10 @@ meUHTTexSetTypeNum::meUHTTexSetTypeNum(meHeightTerrainTexture *texture, int newT
 }
 
 meUHTTexSetTypeNum::~meUHTTexSetTypeNum(){
-
+	if(pTexture) pTexture->FreeReference();
 }
+
+
 
 // Management
 ///////////////

@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeUSetRuleFStaBone
 /////////////////////////////
 
@@ -50,8 +52,10 @@ aeUSetRuleFStaBone::aeUSetRuleFStaBone(aeRuleForeignState *rule, const char *new
 }
 
 aeUSetRuleFStaBone::~aeUSetRuleFStaBone(){
-
+	if(pRule) pRule->FreeReference();
 }
+
+
 
 // Management
 ///////////////

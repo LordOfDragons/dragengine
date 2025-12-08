@@ -33,6 +33,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class reUAddShape
 //////////////////////
 
@@ -68,6 +70,8 @@ reUAddShape::reUAddShape(reRig *rig, reRigBone *bone, reRigShape *shape){
 reUAddShape::~reUAddShape(){
 	pCleanUp();
 }
+
+
 
 // Management
 ///////////////
@@ -105,11 +109,15 @@ void reUAddShape::Redo(){
 	selection->AddShape(pShape);
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void reUAddShape::pCleanUp(){
-
+	if(pShape) pShape->FreeReference();
+	if(pBone) pBone->FreeReference();
+	if(pRig) pRig->FreeReference();
 }
 
 reRig *reUAddShape::pGetRig(){

@@ -41,6 +41,8 @@
 #include <dragengine/resources/skin/deSkinManager.h>
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meHTVegetationLayer
 ////////////////////////////////////
 
@@ -65,8 +67,11 @@ meHTVVariation::meHTVVariation(deEngine *engine){
 }
 
 meHTVVariation::~meHTVVariation(){
-
+	if(pSkin) pSkin->FreeReference();
+	if(pModel) pModel->FreeReference();
 }
+
+
 
 // Management
 ///////////////
@@ -74,6 +79,8 @@ meHTVVariation::~meHTVVariation(){
 void meHTVVariation::SetVLayer(meHTVegetationLayer *vlayer){
 	pVLayer = vlayer;
 }
+
+
 
 void meHTVVariation::SetPathModel(const char *path){
 	if(!path) DETHROW(deeInvalidParam);
@@ -141,6 +148,8 @@ void meHTVVariation::SetRestitution(float restitution){
 	}
 }
 
+
+
 void meHTVVariation::SetMinimumRandomScaling(float scaling){
 	if(fabsf(scaling - pRandomScaleMin) > 1e-5f){
 		pRandomScaleMin = scaling;
@@ -172,6 +181,8 @@ void meHTVVariation::SetMaximumRandomRotation(float rotation){
 		NotifyChanged();
 	}
 }
+
+
 
 void meHTVVariation::NotifyChanged(){
 	if(pVLayer){

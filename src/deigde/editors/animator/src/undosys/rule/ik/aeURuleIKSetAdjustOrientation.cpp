@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeURuleIKSetAdjustOrientation
 ////////////////////////////////////////
 
@@ -57,6 +59,8 @@ aeURuleIKSetAdjustOrientation::~aeURuleIKSetAdjustOrientation(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -68,9 +72,11 @@ void aeURuleIKSetAdjustOrientation::Redo(){
 	pRule->SetAdjustOrientation(!pRule->GetAdjustOrientation());
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void aeURuleIKSetAdjustOrientation::pCleanUp(){
-
+	if(pRule) pRule->FreeReference();
 }

@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeUSetRuleFStaEnableSize
 ///////////////////////////////////
 
@@ -57,6 +59,8 @@ aeUSetRuleFStaEnableSize::~aeUSetRuleFStaEnableSize(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -68,9 +72,11 @@ void aeUSetRuleFStaEnableSize::Redo(){
 	pRule->SetEnableSize(!pRule->GetEnableSize());
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void aeUSetRuleFStaEnableSize::pCleanUp(){
-
+	if(pRule) pRule->FreeReference();
 }

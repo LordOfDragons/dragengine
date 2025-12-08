@@ -33,6 +33,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeULinkAdd
 /////////////////////
 
@@ -53,8 +55,11 @@ aeULinkAdd::aeULinkAdd(aeAnimator *animator, aeLink *link){
 }
 
 aeULinkAdd::~aeULinkAdd(){
-
+	if(pLink) pLink->FreeReference();
+	if(pAnimator) pAnimator->FreeReference();
 }
+
+
 
 // Management
 ///////////////

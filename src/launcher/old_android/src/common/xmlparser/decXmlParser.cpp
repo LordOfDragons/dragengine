@@ -45,6 +45,8 @@
 #include "../file/decBaseFileReader.h"
 #include "../../logger/deLogger.h"
 
+
+
 // Class decXmlParser
 ///////////////////////
 
@@ -84,8 +86,10 @@ decXmlParser::~decXmlParser(){
 	if(pCleanString) delete [] pCleanString;
 	if(pToken) delete [] pToken;
 	
-
+	if(pLogger) pLogger->FreeReference();
 }
+
+
 
 // Management
 ///////////////
@@ -101,6 +105,8 @@ bool decXmlParser::ParseXml(decBaseFileReader *file, decXmlDocument *doc){
 	return !pHasFatalError;
 }
 
+
+
 // Error handling
 ///////////////////
 
@@ -111,6 +117,8 @@ void decXmlParser::UnexpectedEOF(int line, int pos){
 void decXmlParser::UnexpectedToken(int line, int pos, const char *token){
 	pLogger->LogErrorFormat("XmlParser", "Unexpected token '%s' found at %i:%i.", token, line, pos);
 }
+
+
 
 // Parsing tokens
 ///////////////////
@@ -797,6 +805,8 @@ int decXmlParser::ParseName(int offset, bool autoRemove){
 	return count;
 }
 
+
+
 // Testing chars
 //////////////////
 
@@ -922,6 +932,8 @@ bool decXmlParser::IsSpace(int aChar){
 	return aChar == 0x20 || aChar == 0x9 || aChar == 0xD || aChar == 0xA;
 }
 
+
+
 // Reading tokens
 ///////////////////
 
@@ -997,6 +1009,8 @@ void decXmlParser::SetCleanString(int length){
 	strncpy(pCleanString, pToken, length);
 	pCleanString[length] = '\0';
 }
+
+
 
 // Private Functions
 //////////////////////

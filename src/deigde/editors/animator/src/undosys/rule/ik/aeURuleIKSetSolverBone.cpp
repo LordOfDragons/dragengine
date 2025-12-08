@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeURuleIKSetSolverBone
 /////////////////////////////////
 
@@ -60,6 +62,8 @@ aeURuleIKSetSolverBone::~aeURuleIKSetSolverBone(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -71,9 +75,11 @@ void aeURuleIKSetSolverBone::Redo(){
 	pRule->SetSolverBone(pNewName.GetString());
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void aeURuleIKSetSolverBone::pCleanUp(){
-
+	if(pRule) pRule->FreeReference();
 }

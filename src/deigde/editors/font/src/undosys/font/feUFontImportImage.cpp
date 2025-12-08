@@ -32,6 +32,8 @@
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class feUFontImportImage
 /////////////////////////////
 
@@ -86,6 +88,8 @@ feUFontImportImage::~feUFontImportImage(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -101,6 +105,8 @@ void feUFontImportImage::Redo(){
 	pRestoreColors(*pImage->GetEngineImage(), pNewColor);
 }
 
+
+
 // Private
 ////////////
 
@@ -108,7 +114,7 @@ void feUFontImportImage::pCleanUp(){
 	if(pNewColor) delete [] pNewColor;
 	if(pOldColor) delete [] pOldColor;
 	
-
+	if(pImage) pImage->FreeReference();
 }
 
 void feUFontImportImage::pStoreColors(deImage &image, decColor *colors){

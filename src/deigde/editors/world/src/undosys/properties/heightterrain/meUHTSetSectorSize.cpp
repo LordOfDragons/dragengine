@@ -32,6 +32,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUHTSetSectorSize
 /////////////////////////////
 
@@ -55,11 +57,14 @@ meUHTSetSectorSize::meUHTSetSectorSize(meWorld *world, meHeightTerrain *heightTe
 }
 
 meUHTSetSectorSize::~meUHTSetSectorSize(){
-
+	if(pWorld) pWorld->FreeReference();
 }
+
+
 
 // Management
 ///////////////
+
 
 void meUHTSetSectorSize::Undo(){
 	pHeightTerrain->SetSectorSize(pOldSectorSize);

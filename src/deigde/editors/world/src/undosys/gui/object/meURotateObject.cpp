@@ -32,6 +32,8 @@
 #include "../../../world/object/meObjectSelection.h"
 #include "dragengine/common/exceptions.h"
 
+
+
 // Class meURotateObject
 //////////////////////////
 
@@ -67,6 +69,8 @@ meURotateObject::meURotateObject(meWorld *world, const meObjectList &objects){
 meURotateObject::~meURotateObject(){
 	pCleanUp();
 }
+
+
 
 // Undo and Redo operations
 /////////////////////////////
@@ -113,9 +117,11 @@ void meURotateObject::ProgressiveRedo(){
 	Redo(); // redo is enough in this situation
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void meURotateObject::pCleanUp(){
-
+	if(pWorld) pWorld->FreeReference();
 }

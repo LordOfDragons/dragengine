@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class reURigToggleDynamic
 //////////////////////////////
 
@@ -46,8 +48,10 @@ reURigToggleDynamic::reURigToggleDynamic(reRig *rig){
 }
 
 reURigToggleDynamic::~reURigToggleDynamic(){
-
+	if(pRig) pRig->FreeReference();
 }
+
+
 
 // Management
 ///////////////

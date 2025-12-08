@@ -33,6 +33,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUHTSetPathVI
 /////////////////////////
 
@@ -54,11 +56,14 @@ meUHTSetPathVI::meUHTSetPathVI(meWorld *world, meHeightTerrainSector *sector, co
 }
 
 meUHTSetPathVI::~meUHTSetPathVI(){
-
+	if(pWorld) pWorld->FreeReference();
 }
+
+
 
 // Management
 ///////////////
+
 
 void meUHTSetPathVI::Undo(){
 	pSector->SetPathVisibilityImage(pOldPath.GetString());

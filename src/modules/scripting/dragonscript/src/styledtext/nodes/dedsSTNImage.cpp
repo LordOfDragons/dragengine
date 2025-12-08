@@ -31,11 +31,14 @@
 #include <dragengine/resources/image/deImage.h>
 #include <libdscript/exceptions.h>
 
+
+
 // Class dedsSTNImage
 ///////////////////////
 
 // Constructor, destructor
 ////////////////////////////
+
 
 dedsSTNImage::dedsSTNImage(){
 	pImage = NULL;
@@ -47,15 +50,17 @@ dedsSTNImage::dedsSTNImage(deImage *image){
 }
 
 dedsSTNImage::~dedsSTNImage(){
-
+	if(pImage) pImage->FreeReference();
 }
+
+
 
 // Management
 ///////////////
 
 void dedsSTNImage::SetImage(deImage* image){
 	if(image != pImage){
-
+		if(pImage) pImage->FreeReference();
 		pImage = image;
 		if(image) image->AddReference();
 	}

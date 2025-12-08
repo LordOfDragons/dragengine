@@ -36,6 +36,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUScaleObject
 /////////////////////////
 
@@ -71,6 +73,8 @@ meUScaleObject::meUScaleObject(meWorld *world, const meObjectList &objects){
 meUScaleObject::~meUScaleObject(){
 	pCleanUp();
 }
+
+
 
 // Undo and Redo operations
 /////////////////////////////
@@ -132,9 +136,11 @@ void meUScaleObject::ProgressiveRedo(){
 	Redo(); // redo is enough in this situation
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void meUScaleObject::pCleanUp(){
-
+	if(pWorld) pWorld->FreeReference();
 }

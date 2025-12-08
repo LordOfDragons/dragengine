@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeUSetRuleSModMinPosition
 ////////////////////////////
 
@@ -60,6 +62,8 @@ aeUSetRuleSModMinPosition::~aeUSetRuleSModMinPosition(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -71,9 +75,11 @@ void aeUSetRuleSModMinPosition::Redo(){
 	pRule->SetMinimumPosition(pNewMin);
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void aeUSetRuleSModMinPosition::pCleanUp(){
-
+	if(pRule) pRule->FreeReference();
 }

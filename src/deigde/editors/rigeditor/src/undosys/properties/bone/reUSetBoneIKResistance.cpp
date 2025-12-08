@@ -27,6 +27,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class reUSetBoneIKResistance
 /////////////////////////////////
 
@@ -54,6 +56,8 @@ reUSetBoneIKResistance::~reUSetBoneIKResistance(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -65,9 +69,11 @@ void reUSetBoneIKResistance::Redo(){
 	pBone->SetIKResistance(pNewIKResistance);
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void reUSetBoneIKResistance::pCleanUp(){
-
+	if(pBone) pBone->FreeReference();
 }

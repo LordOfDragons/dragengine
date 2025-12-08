@@ -33,6 +33,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUHTVLayerRemove
 //////////////////////////////
 
@@ -57,8 +59,11 @@ meUHTVLayerRemove::meUHTVLayerRemove(meWorld *world, meHeightTerrain *heightTerr
 }
 
 meUHTVLayerRemove::~meUHTVLayerRemove(){
-
+	if(pVLayer) pVLayer->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
+
+
 
 // Management
 ///////////////

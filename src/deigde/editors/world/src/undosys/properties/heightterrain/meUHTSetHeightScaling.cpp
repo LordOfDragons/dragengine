@@ -32,6 +32,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUHTSetHeightScaling
 ////////////////////////////////
 
@@ -55,11 +57,14 @@ meUHTSetHeightScaling::meUHTSetHeightScaling(meWorld *world, meHeightTerrain *he
 }
 
 meUHTSetHeightScaling::~meUHTSetHeightScaling(){
-
+	if(pWorld) pWorld->FreeReference();
 }
+
+
 
 // Management
 ///////////////
+
 
 void meUHTSetHeightScaling::Undo(){
 	pHeightTerrain->SetHeightScaling(pOldHeightScaling);

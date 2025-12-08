@@ -42,6 +42,8 @@
 #include <dragengine/resources/propfield/dePropFieldType.h>
 #include <dragengine/resources/propfield/dePropFieldInstance.h>
 
+
+
 // Class mePropFieldType
 //////////////////////////
 
@@ -68,8 +70,11 @@ mePropFieldType::mePropFieldType(deEngine *engine){
 mePropFieldType::~mePropFieldType(){
 	if(pInstances) delete [] pInstances;
 	
-
+	if(pSkin) pSkin->FreeReference();
+	if(pModel) pModel->FreeReference();
 }
+
+
 
 // Management
 ///////////////
@@ -84,6 +89,8 @@ void mePropFieldType::SetEnginePFType(dePropFieldType *engPFType){
 	
 	pEngPFType = engPFType;
 }
+
+
 
 dePropFieldType *mePropFieldType::CreateEnginePFType(){
 	if(!pPropField) DETHROW(deeInvalidParam);
@@ -185,6 +192,8 @@ void mePropFieldType::NotifyTypeChanged(){
 	}
 }
 
+
+
 void mePropFieldType::SetPathModel(const char *path){
 	if(pPathModel.Equals(path)){
 		return;
@@ -259,6 +268,8 @@ void mePropFieldType::SetRotationPerForceZ(float rotPerForce){
 		pPropField->GetWorld()->NotifyPFTypeChanged(pPropField, this);
 	}
 }
+
+
 
 void mePropFieldType::RebuildInstances(){
 	// TODO build some default instances for testing

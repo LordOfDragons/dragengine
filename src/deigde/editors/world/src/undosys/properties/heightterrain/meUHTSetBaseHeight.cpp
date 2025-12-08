@@ -32,6 +32,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUHTSetBaseHeight
 /////////////////////////////
 
@@ -55,11 +57,14 @@ meUHTSetBaseHeight::meUHTSetBaseHeight(meWorld *world, meHeightTerrain *heightTe
 }
 
 meUHTSetBaseHeight::~meUHTSetBaseHeight(){
-
+	if(pWorld) pWorld->FreeReference();
 }
+
+
 
 // Management
 ///////////////
+
 
 void meUHTSetBaseHeight::Undo(){
 	pHeightTerrain->SetBaseHeight(pOldBaseHeight);

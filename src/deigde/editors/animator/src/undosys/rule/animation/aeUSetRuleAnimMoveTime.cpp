@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeUSetRuleAnimMoveTime
 /////////////////////////////////
 
@@ -60,6 +62,8 @@ aeUSetRuleAnimMoveTime::~aeUSetRuleAnimMoveTime(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -71,9 +75,11 @@ void aeUSetRuleAnimMoveTime::Redo(){
 	pRule->SetMoveTime(pNewTime);
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void aeUSetRuleAnimMoveTime::pCleanUp(){
-
+	if(pRule) pRule->FreeReference();
 }

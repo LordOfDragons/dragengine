@@ -34,6 +34,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUDecalMove
 ///////////////////////
 
@@ -78,6 +80,8 @@ meUDecalMove::~meUDecalMove(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -106,6 +110,8 @@ void meUDecalMove::ProgressiveRedo(){
 	Redo(); // redo is enough in this situation
 }
 
+
+
 // Private Functions
 //////////////////////
 
@@ -119,5 +125,5 @@ void meUDecalMove::pCleanUp(){
 		delete [] pDecals;
 	}
 	
-
+	if(pWorld) pWorld->FreeReference();
 }

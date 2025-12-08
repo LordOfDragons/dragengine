@@ -33,6 +33,8 @@
 #include "../../../worldedit.h"
 #include "dragengine/common/exceptions.h"
 
+
+
 // Class meUAddObjectDecal
 ////////////////////////////
 
@@ -63,12 +65,16 @@ meUAddObjectDecal::~meUAddObjectDecal(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
 void meUAddObjectDecal::UpdateInfos(){
 	SetLongInfo("");
 }
+
+
 
 // Undo and Redo operations
 /////////////////////////////
@@ -92,9 +98,12 @@ void meUAddObjectDecal::Redo(){
 	selection.SetActive(pDecal);
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void meUAddObjectDecal::pCleanUp(){
-
+	if(pDecal) pDecal->FreeReference();
+	if(pParentObject) pParentObject->FreeReference();
 }

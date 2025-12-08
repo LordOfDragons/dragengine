@@ -58,6 +58,8 @@
 #include "../../systems/modules/physics/deBasePhysicsWorld.h"
 #include "../../systems/modules/network/deBaseNetworkWorld.h"
 
+
+
 // Class deWorld
 //////////////////
 
@@ -168,6 +170,8 @@ deWorld::~deWorld(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -256,6 +260,8 @@ void deWorld::ProcessPhysics(float elapsed){
 	}
 }
 
+
+
 void deWorld::SetSize(const decDVector &size){
 	if(size.x < 1.0 || size.y < 1.0 || size.z < 1.0){
 		DETHROW(deeInvalidParam);
@@ -284,6 +290,8 @@ void deWorld::SetGravity(const decVector &gravity){
 	}
 }
 
+
+
 void deWorld::SetDisableLights(bool disable){
 	if(pDisableLights == disable){
 		return;
@@ -311,6 +319,8 @@ void deWorld::SetLightColorMatrix(const decMatrix &matrix){
 	pNotifyLightingChanged();
 }
 
+
+
 void deWorld::SetSpeakerGain(float gain){
 	gain = decMath::max(gain, 0.0f);
 	if(fabsf(gain - pSpeakerGain) < FLOAT_SAFE_EPSILON){
@@ -321,9 +331,11 @@ void deWorld::SetSpeakerGain(float gain){
 	pNotifyAudioChanged();
 }
 
+
+
 void deWorld::SetHeightTerrain(deHeightTerrain *heightTerrain){
 	if(pHeightTerrain != heightTerrain){
-
+		if(pHeightTerrain) pHeightTerrain->FreeReference();
 		
 		pHeightTerrain = heightTerrain;
 		
@@ -340,6 +352,8 @@ void deWorld::SetHeightTerrain(deHeightTerrain *heightTerrain){
 		}
 	}
 }
+
+
 
 // Skies
 //////////
@@ -412,6 +426,8 @@ void deWorld::RemoveAllSkies(){
 	pSkyRoot = NULL;
 }
 
+
+
 // Billboards
 ///////////////
 
@@ -478,6 +494,8 @@ void deWorld::RemoveAllBillboards(){
 	}
 	pBillboardRoot = NULL;
 }
+
+
 
 // Cameras
 ////////////
@@ -550,6 +568,8 @@ void deWorld::RemoveAllCameras(){
 	pCameraRoot = NULL;
 }
 
+
+
 // Colliders
 //////////////
 
@@ -620,6 +640,8 @@ void deWorld::RemoveAllColliders(){
 	}
 	pColliderRoot = NULL;
 }
+
+
 
 // Components
 ///////////////
@@ -710,6 +732,8 @@ void deWorld::RemoveAllComponents(){
 	pComponentRoot = NULL;
 }
 
+
+
 // DebugDrawers
 /////////////////
 
@@ -780,6 +804,8 @@ void deWorld::RemoveAllDebugDrawers(){
 	}
 	pDebugDrawerRoot = NULL;
 }
+
+
 
 // Environment Map Probes
 ///////////////////////////
@@ -852,6 +878,8 @@ void deWorld::RemoveAllEnvMapProbes(){
 	pEnvMapProbeRoot = NULL;
 }
 
+
+
 // Force fields
 /////////////////
 
@@ -922,6 +950,8 @@ void deWorld::RemoveAllForceFields(){
 	}
 	pForceFieldRoot = NULL;
 }
+
+
 
 // Lights
 ////////////
@@ -994,6 +1024,8 @@ void deWorld::RemoveAllLights(){
 	pLightRoot = NULL;
 }
 
+
+
 // Lumimeters
 ////////////
 
@@ -1064,6 +1096,8 @@ void deWorld::RemoveAllLumimeters(){
 	}
 	pLumimeterRoot = NULL;
 }
+
+
 
 // Microphones
 ////////////
@@ -1136,6 +1170,8 @@ void deWorld::RemoveAllMicrophones(){
 	pMicrophoneRoot = NULL;
 }
 
+
+
 // Navigation Spaces
 //////////////////////
 
@@ -1206,6 +1242,8 @@ void deWorld::RemoveAllNavigationSpaces(){
 	}
 	pNavSpaceRoot = NULL;
 }
+
+
 
 // Navigation Blockers
 ////////////////////////
@@ -1278,6 +1316,8 @@ void deWorld::RemoveAllNavigationBlockers(){
 	pNavBlockerRoot = NULL;
 }
 
+
+
 // Navigators
 ///////////////
 
@@ -1349,6 +1389,8 @@ void deWorld::RemoveAllNavigators(){
 	pNavigatorRoot = NULL;
 }
 
+
+
 // Network states
 ///////////////////
 
@@ -1419,6 +1461,8 @@ void deWorld::RemoveAllNetworkStates(){
 	}
 	pNetworkStateRoot = NULL;
 }
+
+
 
 // Particle Emitters
 //////////////////////
@@ -1500,6 +1544,8 @@ void deWorld::RemoveAllParticleEmitters(){
 	pParticleEmitterRoot = NULL;
 }
 
+
+
 // PropFields
 ////////////
 
@@ -1579,6 +1625,8 @@ void deWorld::RemoveAllPropFields(){
 	}
 	pPropFieldRoot = NULL;
 }
+
+
 
 // Smoke emitters
 ///////////////////
@@ -1660,6 +1708,8 @@ void deWorld::RemoveAllSmokeEmitters(){
 	pSmokeEmitterRoot = NULL;
 }
 
+
+
 // Collision Detection
 ////////////////////////
 
@@ -1701,6 +1751,8 @@ const decVector &rotation, deBaseScriptingCollider *listener){
 		pPeerPhysics->ColliderMoveRotateHits(collider, displacement, rotation, listener);
 	}
 }
+
+
 
 // Speakers
 ////////////
@@ -1773,6 +1825,8 @@ void deWorld::RemoveAllSpeakers(){
 	pSpeakerRoot = NULL;
 }
 
+
+
 // Sound level meters
 ///////////////////////
 
@@ -1843,6 +1897,8 @@ void deWorld::RemoveAllSoundLevelMeters(){
 	}
 	pSoundLevelMeterRoot = NULL;
 }
+
+
 
 // Touch sensors
 //////////////////
@@ -1915,6 +1971,8 @@ void deWorld::RemoveAllTouchSensors(){
 	pTouchSensorRoot = NULL;
 }
 
+
+
 // Peers
 //////////
 
@@ -1953,6 +2011,8 @@ void deWorld::SetPeerAI(deBaseAIWorld *peer){
 	pPeerAI = peer;
 }
 
+
+
 // private function
 /////////////////////
 
@@ -1981,6 +2041,8 @@ void deWorld::pCleanUp(){
 	Clear();
 	
 }
+
+
 
 void deWorld::pNotifyPhysicsChanged(){
 	if(pPeerPhysics){

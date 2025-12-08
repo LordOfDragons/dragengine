@@ -34,6 +34,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUHTSetTexUVRotation
 /////////////////////////
 
@@ -58,11 +60,15 @@ meUHTSetTexUVRotation::meUHTSetTexUVRotation(meWorld *world, meHeightTerrainSect
 }
 
 meUHTSetTexUVRotation::~meUHTSetTexUVRotation(){
-
+	if(pTexture) pTexture->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
+
+
 
 // Management
 ///////////////
+
 
 void meUHTSetTexUVRotation::Undo(){
 	pTexture->SetProjectionRotation(pOldRotation);

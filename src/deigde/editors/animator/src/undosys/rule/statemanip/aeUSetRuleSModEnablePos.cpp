@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeUSetRuleSModEnablePos
 //////////////////////////////////
 
@@ -57,6 +59,8 @@ aeUSetRuleSModEnablePos::~aeUSetRuleSModEnablePos(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -68,9 +72,11 @@ void aeUSetRuleSModEnablePos::Redo(){
 	pRule->SetEnablePosition(!pRule->GetEnablePosition());
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void aeUSetRuleSModEnablePos::pCleanUp(){
-
+	if(pRule) pRule->FreeReference();
 }

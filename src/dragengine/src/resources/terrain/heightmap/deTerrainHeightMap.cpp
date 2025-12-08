@@ -30,6 +30,8 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 
+
+
 // Class deTerrainHeightMap
 /////////////////////////////
 
@@ -65,8 +67,10 @@ deTerrainHeightMap::deTerrainHeightMap(){
 deTerrainHeightMap::~deTerrainHeightMap(){
 	if(pVisibleFaces) delete [] pVisibleFaces;
 	
-
+	if(pHeightImage) pHeightImage->FreeReference();
 }
+
+
 
 // Management
 ///////////////
@@ -98,6 +102,8 @@ void deTerrainHeightMap::SetScaling(float scaling){
 	
 	pScaling = scaling;
 }
+
+
 
 void deTerrainHeightMap::SetPathHeightImage(const char *path){
 	pPathHeightImage = path;
@@ -200,6 +206,8 @@ void deTerrainHeightMap::CalculateExtends(decVector &minExtend, decVector &maxEx
 	if(compare > maxExtend.z) maxExtend.z = compare;
 }
 
+
+
 // Face Visibility
 ////////////////////
 
@@ -248,6 +256,8 @@ void deTerrainHeightMap::SetAllFacesVisible(bool visible){
 		memset(pVisibleFaces, 0, pVFByteCount);
 	}
 }
+
+
 
 // Private Functions
 //////////////////////

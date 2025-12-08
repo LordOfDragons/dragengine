@@ -33,6 +33,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUHTSetPathPFCache
 //////////////////////////////
 
@@ -54,11 +56,14 @@ meUHTSetPathPFCache::meUHTSetPathPFCache(meWorld *world, meHeightTerrainSector *
 }
 
 meUHTSetPathPFCache::~meUHTSetPathPFCache(){
-
+	if(pWorld) pWorld->FreeReference();
 }
+
+
 
 // Management
 ///////////////
+
 
 void meUHTSetPathPFCache::Undo(){
 	pSector->SetPathPFCache(pOldPath.GetString());

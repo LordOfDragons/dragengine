@@ -31,6 +31,8 @@
 
 #include "../common/exceptions.h"
 
+
+
 // Class dealGameRunParams
 ////////////////////////////
 
@@ -48,12 +50,14 @@ dealGameRunParams::~dealGameRunParams(){
 	SetGameProfile(NULL);
 }
 
+
+
 // Management
 ///////////////
 
 void dealGameRunParams::SetGameProfile(dealGameProfile *profile){
 	if(profile != pGameProfile){
-
+		if(pGameProfile) pGameProfile->FreeReference();
 		pGameProfile = profile;
 		if(profile) profile->AddReference();
 	}

@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeURuleIKSetLocalRotation
 ////////////////////////////////////
 
@@ -60,6 +62,8 @@ aeURuleIKSetLocalRotation::~aeURuleIKSetLocalRotation(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -71,9 +75,11 @@ void aeURuleIKSetLocalRotation::Redo(){
 	pRule->SetLocalOrientation(pNewRot);
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void aeURuleIKSetLocalRotation::pCleanUp(){
-
+	if(pRule) pRule->FreeReference();
 }

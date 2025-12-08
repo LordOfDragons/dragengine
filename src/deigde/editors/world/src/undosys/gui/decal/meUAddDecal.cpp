@@ -33,6 +33,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUAddDecal
 //////////////////////
 
@@ -56,8 +58,11 @@ meUAddDecal::meUAddDecal(meWorld *world, meDecal *decal){
 }
 
 meUAddDecal::~meUAddDecal(){
-
+	if(pDecal) pDecal->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
+
+
 
 // Management
 ///////////////

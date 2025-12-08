@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class seUTextureSetName
 ////////////////////////////
 
@@ -52,8 +54,10 @@ seUTextureSetName::seUTextureSetName(seTexture *texture, const char *newName){
 }
 
 seUTextureSetName::~seUTextureSetName(){
-
+	if(pTexture) pTexture->FreeReference();
 }
+
+
 
 // Management
 ///////////////

@@ -32,6 +32,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class seUPropertySetCurve
 //////////////////////////////
 
@@ -55,8 +57,10 @@ seUPropertySetCurve::seUPropertySetCurve(seSkyLayer *layer, seProperty *property
 }
 
 seUPropertySetCurve::~seUPropertySetCurve(){
-
+	if(pLayer) pLayer->FreeReference();
 }
+
+
 
 // Management
 ///////////////
@@ -64,6 +68,8 @@ seUPropertySetCurve::~seUPropertySetCurve(){
 void seUPropertySetCurve::SetNewCurve(const decCurveBezier &curve){
 	pNewCurve = curve;
 }
+
+
 
 void seUPropertySetCurve::Undo(){
 	pProperty->GetCurve() = pOldCurve;

@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeURuleIKSetGoalPosition
 ///////////////////////////////////
 
@@ -60,6 +62,8 @@ aeURuleIKSetGoalPosition::~aeURuleIKSetGoalPosition(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -71,9 +75,11 @@ void aeURuleIKSetGoalPosition::Redo(){
 	pRule->SetGoalPosition(pNewPos);
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void aeURuleIKSetGoalPosition::pCleanUp(){
-
+	if(pRule) pRule->FreeReference();
 }

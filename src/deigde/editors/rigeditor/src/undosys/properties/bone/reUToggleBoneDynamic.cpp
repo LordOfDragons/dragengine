@@ -27,6 +27,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class reUToggleBoneDynamic
 ////////////////////////
 
@@ -51,6 +53,8 @@ reUToggleBoneDynamic::~reUToggleBoneDynamic(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -62,9 +66,11 @@ void reUToggleBoneDynamic::Redo(){
 	pBone->SetDynamic(!pBone->GetDynamic());
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void reUToggleBoneDynamic::pCleanUp(){
-
+	if(pBone) pBone->FreeReference();
 }

@@ -32,6 +32,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUHTVVariationAdd
 //////////////////////////////
 
@@ -51,8 +53,11 @@ meUHTVVariationAdd::meUHTVVariationAdd(meHTVegetationLayer *vlayer, meHTVVariati
 }
 
 meUHTVVariationAdd::~meUHTVVariationAdd(){
-
+	if(pVariation) pVariation->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
+
+
 
 // Management
 ///////////////

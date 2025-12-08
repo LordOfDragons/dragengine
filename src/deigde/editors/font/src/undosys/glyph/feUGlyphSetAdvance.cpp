@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class feUGlyphSetAdvance
 /////////////////////////////
 
@@ -48,8 +50,10 @@ feUGlyphSetAdvance::feUGlyphSetAdvance(feFontGlyph *glyph, int newAdvance){
 }
 
 feUGlyphSetAdvance::~feUGlyphSetAdvance(){
-
+	if(pGlyph) pGlyph->FreeReference();
 }
+
+
 
 // Management
 ///////////////

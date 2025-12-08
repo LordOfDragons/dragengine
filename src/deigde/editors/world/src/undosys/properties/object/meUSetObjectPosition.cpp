@@ -28,6 +28,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUSetObjectPosition
 ///////////////////////////////
 
@@ -50,8 +52,10 @@ meUSetObjectPosition::meUSetObjectPosition(meObject *object, const decDVector &n
 }
 
 meUSetObjectPosition::~meUSetObjectPosition(){
-
+	if(pObject) pObject->FreeReference();
 }
+
+
 
 // Management
 ///////////////

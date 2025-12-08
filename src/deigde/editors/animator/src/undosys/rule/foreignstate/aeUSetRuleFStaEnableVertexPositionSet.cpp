@@ -27,6 +27,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeUSetRuleFStaEnableVertexPositionSet
 ////////////////////////////////////////////////
 
@@ -53,6 +55,8 @@ aeUSetRuleFStaEnableVertexPositionSet::~aeUSetRuleFStaEnableVertexPositionSet(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -64,9 +68,11 @@ void aeUSetRuleFStaEnableVertexPositionSet::Redo(){
 	pRule->SetEnableVertexPositionSet(!pRule->GetEnableVertexPositionSet());
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void aeUSetRuleFStaEnableVertexPositionSet::pCleanUp(){
-
+	if(pRule) pRule->FreeReference();
 }

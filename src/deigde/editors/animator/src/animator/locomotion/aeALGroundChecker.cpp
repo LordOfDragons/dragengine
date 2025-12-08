@@ -36,6 +36,7 @@
 #include <dragengine/resources/world/deWorldManager.h>
 #include <dragengine/common/exceptions.h>
 
+
 // Class aeALGroundChecker
 ////////////////////////////
 
@@ -50,8 +51,10 @@ aeALGroundChecker::aeALGroundChecker(){
 }
 
 aeALGroundChecker::~aeALGroundChecker(){
-
+	if(pColInfo) pColInfo->FreeReference();
 }
+
+
 
 // Management
 ///////////////
@@ -60,6 +63,8 @@ void aeALGroundChecker::Reset(){
 	pColInfo->Clear();
 	pHasCollision = false;
 }
+
+
 
 // Notifications
 //////////////////

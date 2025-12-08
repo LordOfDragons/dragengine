@@ -34,6 +34,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUHTSetTexUVOffset
 /////////////////////////
 
@@ -59,8 +61,11 @@ meUHTSetTexUVOffset::meUHTSetTexUVOffset(meWorld *world, meHeightTerrainSector *
 }
 
 meUHTSetTexUVOffset::~meUHTSetTexUVOffset(){
-
+	if(pTexture) pTexture->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
+
+
 
 // Management
 ///////////////

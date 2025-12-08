@@ -32,6 +32,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUHTVRuleResultSetProb
 //////////////////////////////////
 
@@ -57,8 +59,11 @@ meUHTVRuleResultSetProb::meUHTVRuleResultSetProb(meHTVegetationLayer *vlayer, me
 }
 
 meUHTVRuleResultSetProb::~meUHTVRuleResultSetProb(){
-
+	if(pRule) pRule->FreeReference();
+	if(pVLayer) pVLayer->FreeReference();
 }
+
+
 
 // Management
 ///////////////

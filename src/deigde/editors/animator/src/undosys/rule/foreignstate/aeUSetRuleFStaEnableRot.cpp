@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class aeUSetRuleFStaEnableRot
 //////////////////////////////////
 
@@ -57,6 +59,8 @@ aeUSetRuleFStaEnableRot::~aeUSetRuleFStaEnableRot(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -68,9 +72,11 @@ void aeUSetRuleFStaEnableRot::Redo(){
 	pRule->SetEnableOrientation(!pRule->GetEnableOrientation());
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void aeUSetRuleFStaEnableRot::pCleanUp(){
-
+	if(pRule) pRule->FreeReference();
 }

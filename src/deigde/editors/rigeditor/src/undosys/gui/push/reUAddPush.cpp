@@ -32,6 +32,8 @@
 
 #include "dragengine/common/exceptions.h"
 
+
+
 // Class reUAddPush
 /////////////////////
 
@@ -60,6 +62,8 @@ reUAddPush::~reUAddPush(){
 	pCleanUp();
 }
 
+
+
 // Management
 ///////////////
 
@@ -82,9 +86,12 @@ void reUAddPush::Redo(){
 	selection->AddPush(pPush);
 }
 
+
+
 // Private Functions
 //////////////////////
 
 void reUAddPush::pCleanUp(){
-
+	if(pPush) pPush->FreeReference();
+	if(pRig) pRig->FreeReference();
 }

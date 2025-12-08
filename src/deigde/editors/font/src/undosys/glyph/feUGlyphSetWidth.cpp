@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class feUGlyphSetWidth
 ///////////////////////////
 
@@ -48,8 +50,10 @@ feUGlyphSetWidth::feUGlyphSetWidth(feFontGlyph *glyph, int newWidth){
 }
 
 feUGlyphSetWidth::~feUGlyphSetWidth(){
-
+	if(pGlyph) pGlyph->FreeReference();
 }
+
+
 
 // Management
 ///////////////

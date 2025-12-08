@@ -31,6 +31,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUHTVVarSetRotPerForce
 //////////////////////////////////
 
@@ -51,8 +53,10 @@ meUHTVVarSetRotPerForce::meUHTVVarSetRotPerForce(meHTVVariation *variation, floa
 }
 
 meUHTVVarSetRotPerForce::~meUHTVVarSetRotPerForce(){
-
+	if(pVariation) pVariation->FreeReference();
 }
+
+
 
 // Management
 ///////////////

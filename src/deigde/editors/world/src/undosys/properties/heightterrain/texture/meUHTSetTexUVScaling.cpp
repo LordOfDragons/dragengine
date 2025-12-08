@@ -34,6 +34,8 @@
 
 #include <dragengine/common/exceptions.h>
 
+
+
 // Class meUHTSetTexUVScaling
 ///////////////////////////////
 
@@ -59,11 +61,15 @@ meUHTSetTexUVScaling::meUHTSetTexUVScaling(meWorld *world, meHeightTerrainSector
 }
 
 meUHTSetTexUVScaling::~meUHTSetTexUVScaling(){
-
+	if(pTexture) pTexture->FreeReference();
+	if(pWorld) pWorld->FreeReference();
 }
+
+
 
 // Management
 ///////////////
+
 
 void meUHTSetTexUVScaling::Undo(){
 	pTexture->SetProjectionScalingU(pOldScaling.x);
