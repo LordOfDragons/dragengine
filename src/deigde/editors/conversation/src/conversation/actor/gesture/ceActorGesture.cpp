@@ -69,8 +69,6 @@ pName(gesture.pName),
 pPathAnimator(gesture.pPathAnimator)
 {
 	pEngAnimator = gesture.pEngAnimator;
-	if(pEngAnimator){
-	}
 }
 
 ceActorGesture::~ceActorGesture(){
@@ -109,22 +107,19 @@ void ceActorGesture::pLoadAnimator(){
 	
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 	decBaseFileReader::Ref reader;
-	deAnimator *animator = NULL;
+	deAnimator::Ref animator;
 	
 	try{
 		reader.TakeOver(engine.GetVirtualFileSystem()->OpenFileForReading(
 			decPath::CreatePathUnix(pPathAnimator)));
-		animator = engine.GetAnimatorManager()->CreateAnimator();
+		animator.TakeOver(engine.GetAnimatorManager()->CreateAnimator());
 		
 		igdeLoadAnimator(pEnvironment, pEnvironment.GetLogger(), LOGSOURCE).
-			Load(pPathAnimator, *animator, reader);
+			Load(pPathAnimator, animator, reader);
 		
 		pEngAnimator = animator;
 		
 	}catch(const deException &e){
-		if(animator){
-			animator->FreeReference();
-		}
 		pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 		
 		// ignore missing or broken animators. this can easily happen during development

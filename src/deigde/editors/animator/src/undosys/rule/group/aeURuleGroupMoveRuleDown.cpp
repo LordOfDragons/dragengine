@@ -53,10 +53,7 @@ aeURuleGroupMoveRuleDown::aeURuleGroupMoveRuleDown(aeRuleGroup *group, aeRule *r
 	}
 	
 	pGroup = group;
-	group->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeURuleGroupMoveRuleDown::~aeURuleGroupMoveRuleDown(){

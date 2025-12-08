@@ -53,10 +53,7 @@ aeURuleGroupRemoveRule::aeURuleGroupRemoveRule(aeRuleGroup *group, aeRule *rule)
 	}
 	
 	pGroup = group;
-	group->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeURuleGroupRemoveRule::~aeURuleGroupRemoveRule(){

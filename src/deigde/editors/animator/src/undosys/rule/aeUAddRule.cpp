@@ -52,10 +52,7 @@ aeUAddRule::aeUAddRule(aeAnimator *animator, aeRule *rule, int index){
 	SetShortInfo("Add rule");
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeUAddRule::~aeUAddRule(){

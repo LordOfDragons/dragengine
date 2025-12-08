@@ -51,15 +51,11 @@ aeURuleTargetAddLink::aeURuleTargetAddLink(aeRule *rule, aeControllerTarget *tar
 	SetShortInfo("Rule Target Add Link");
 	
 	pRule = rule;
-	
 	pTarget = target;
-	
 	pLink = link;
 }
 
 aeURuleTargetAddLink::~aeURuleTargetAddLink(){
-	if(pLink) pLink->FreeReference();
-	if(pRule) pRule->FreeReference();
 }
 
 

@@ -51,26 +51,13 @@ pIndex(index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	aeRule *rule = NULL;
 	int i;
 	
-	try{
-		for(i=0; i<ruleCount; i++){
-			rule = ruleList.GetAt(i)->CreateCopy();
-			pRuleList.Add(rule);
-			rule->FreeReference();
-			rule = NULL;
-		}
-		
-	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
-		throw;
+	for(i=0; i<ruleCount; i++){
+		pRuleList.Add(aeRule::Ref::New(ruleList.GetAt(i)->CreateCopy()));
 	}
 	
 	pAnimator = animator;
-	animator->AddReference();
 }
 
 aeUPasteRule::~aeUPasteRule(){

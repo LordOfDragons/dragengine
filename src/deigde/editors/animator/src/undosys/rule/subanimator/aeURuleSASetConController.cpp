@@ -52,13 +52,7 @@ aeURuleSASetConController::aeURuleSASetConController(aeRuleSubAnimator *rule, in
 	SetShortInfo("Sub-Animator: Set connection controller");
 	
 	pOldController = rule->GetControllerAt(target);
-	if(pOldController){
-	}
-	
 	pNewController = newController;
-	if(pNewController){
-	}
-	
 	pRule = rule;
 }
 
@@ -85,7 +79,4 @@ void aeURuleSASetConController::Redo(){
 //////////////////////
 
 void aeURuleSASetConController::pCleanUp(){
-	if(pNewController) pNewController->FreeReference();
-	if(pOldController) pOldController->FreeReference();
-	if(pRule) pRule->FreeReference();
 }

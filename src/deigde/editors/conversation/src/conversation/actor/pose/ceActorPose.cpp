@@ -77,42 +77,16 @@ pControllerNames(pose.pControllerNames)
 	int i;
 	
 	for(i=0; i<gestureCount; i++){
-		ceActorGesture *gesture = NULL;
-		
-		try{
-			gesture = new ceActorGesture(*pose.pGestures.GetAt(i));
-			pGestures.Add(gesture);
-			gesture->FreeReference();
-			
-		}catch(const deException &){
-			if(gesture){
-				gesture->FreeReference();
-			}
-			throw;
-		}
+		pGestures.Add(ceActorGesture::Ref::NewWith(*pose.pGestures.GetAt(i)));
 	}
 	
 	// take over animator
 	pEngAnimator = pose.pEngAnimator;
-	if(pEngAnimator){
-	}
 	
 	// clone controllers
 	const int controllerCount = pose.pControllers.GetCount();
 	for(i=0; i<controllerCount; i++){
-		ceActorController *controller = NULL;
-		
-		try{
-			controller = new ceActorController(*pose.pControllers.GetAt(i));
-			pControllers.Add(controller);
-			controller->FreeReference();
-			
-		}catch(const deException &){
-			if(controller){
-				controller->FreeReference();
-			}
-			throw;
-		}
+		pControllers.Add(ceActorController::Ref::NewWith(*pose.pControllers.GetAt(i)));
 	}
 }
 
@@ -155,22 +129,19 @@ void ceActorPose::pLoadAnimator(){
 	// load animator
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 	decBaseFileReader::Ref reader;
-	deAnimator *animator = NULL;
+	deAnimator::Ref animator;
 	
 	try{
 		reader.TakeOver(engine.GetVirtualFileSystem()->OpenFileForReading(
 			decPath::CreatePathUnix(pPathAnimator)));
-		animator = engine.GetAnimatorManager()->CreateAnimator();
+		animator.TakeOver(engine.GetAnimatorManager()->CreateAnimator());
 		
 		igdeLoadAnimator(pEnvironment, pEnvironment.GetLogger(), LOGSOURCE).
-			Load(pPathAnimator, *animator, reader);
+			Load(pPathAnimator, animator, reader);
 		
 		pEngAnimator = animator;
 		
 	}catch(const deException &e){
-		if(animator){
-			animator->FreeReference();
-		}
 		pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 		
 		// ignore missing or broken animators. this can easily happen during development

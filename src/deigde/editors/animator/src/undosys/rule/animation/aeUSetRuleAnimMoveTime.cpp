@@ -81,5 +81,4 @@ void aeUSetRuleAnimMoveTime::Redo(){
 //////////////////////
 
 void aeUSetRuleAnimMoveTime::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

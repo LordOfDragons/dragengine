@@ -118,8 +118,7 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	}
 	
 	// release the sub animator
-		pSubAnimator = NULL;
-	}
+	pSubAnimator = nullptr;
 	
 	// if there is no parent animator no loading can be done
 	aeAnimator * const parentAnimator = GetAnimator();
@@ -371,11 +370,7 @@ aeRuleSubAnimator &aeRuleSubAnimator::operator=(const aeRuleSubAnimator &copy){
 	SetEnableSize(copy.pEnableSize);
 	SetEnableVertexPositionSet(copy.pEnableVertexPositionSet);
 	
-		pSubAnimator = NULL;
-	}
 	pSubAnimator = copy.pSubAnimator;
-	if(pSubAnimator){
-	}
 	
 	pConnections = copy.pConnections;
 	

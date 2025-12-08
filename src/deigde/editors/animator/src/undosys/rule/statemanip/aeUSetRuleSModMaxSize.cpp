@@ -81,5 +81,4 @@ void aeUSetRuleSModMaxSize::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMaxSize::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

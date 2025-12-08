@@ -61,9 +61,6 @@ ceSpeechAnimation::ceSpeechAnimation(deEngine *engine){
 	
 	pEngine = engine;
 	
-	pEngAnimator = nullptr;
-	pEngAnimatorInstance = nullptr;
-	
 	pSpeakPhonemes = nullptr;
 	pSpeakPhonemeCount = 0;
 	pSpeakPhonemeSize = 0;
@@ -73,9 +70,9 @@ ceSpeechAnimation::ceSpeechAnimation(deEngine *engine){
 	pSpeaking = false;
 	
 	try{
-		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
+		pEngAnimator.TakeOver(engine->GetAnimatorManager()->CreateAnimator());
 		
-		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
+		pEngAnimatorInstance.TakeOver(engine->GetAnimatorInstanceManager()->CreateAnimatorInstance());
 		pEngAnimatorInstance->SetAnimator(pEngAnimator);
 		
 	}catch(const deException &){

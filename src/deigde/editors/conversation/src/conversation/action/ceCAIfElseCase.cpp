@@ -54,7 +54,6 @@ pTIMConditionExpanded(ifcase.pTIMConditionExpanded),
 pTIMActionsExpanded(ifcase.pTIMActionsExpanded)
 {
 	const ceConversationActionList &actions = ifcase.GetActions();
-	ceConversationAction *newAction = NULL;
 	int i, count;
 	
 	try{
@@ -64,16 +63,10 @@ pTIMActionsExpanded(ifcase.pTIMActionsExpanded)
 		
 		count = actions.GetCount();
 		for(i=0; i<count; i++){
-			newAction = actions.GetAt(i)->CreateCopy();
-			pActions.Add(newAction);
-			newAction->FreeReference();
-			newAction = NULL;
+			pActions.Add(ceConversationAction::Ref::New(actions.GetAt(i)->CreateCopy()));
 		}
 		
 	}catch(const deException &){
-		if(newAction){
-			newAction->FreeReference();
-		}
 		pActions.RemoveAll();
 		throw;
 	}
@@ -90,10 +83,6 @@ ceCAIfElseCase::~ceCAIfElseCase(){
 ///////////////
 
 void ceCAIfElseCase::SetCondition(ceConversationCondition *condition){
-	if(pCondition == condition){
-		return;
-	}
-	
 	
 	pCondition = condition;
 }

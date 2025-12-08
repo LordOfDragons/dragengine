@@ -102,12 +102,6 @@ pWindowMain(windowMain)
 	
 	pEngWorld = NULL;
 	
-	pEngLight = NULL;
-	pEngComponent = NULL;
-	pEngAnimator = NULL;
-	pEngAnimatorInstance = NULL;
-	pEngCollider = NULL;
-	
 	pLocomotion = NULL;
 	pWakeboard = NULL;
 	pSubAnimator = NULL;
@@ -129,7 +123,6 @@ pWindowMain(windowMain)
 	pPlaySpeed = 1.0f;
 	pTimeStep = 0.05f;
 	
-	pDDBones = NULL;
 	pDDSBones = NULL;
 	pDDSBoneCount = 0;
 	pDDSBoneSize = 1.0f;
@@ -940,7 +933,9 @@ void aeAnimator::RemoveAttachment(aeAttachment *attachment){
 	int i, index = IndexOfAttachment(attachment);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
-	if(pActiveAttachment == attachment) SetActiveAttachment(NULL);
+	if(pActiveAttachment == attachment){
+		SetActiveAttachment(NULL);
+	}
 	
 	for(i=index+1; i<pAttachmentCount; i++){
 		pAttachments[i - 1] = pAttachments[i];
@@ -1471,9 +1466,9 @@ void aeAnimator::pCreateCollider(){
 
 void aeAnimator::pUpdateComponent(){
 	deEngine * const engine = GetEngine();
-	deModel *displayModel = NULL;
-	deSkin *displaySkin = NULL;
-	deRig *displayRig = NULL;
+	deModel::Ref displayModel;
+	deSkin::Ref displaySkin;
+	deRig::Ref displayRig;
 	
 	// detach all colliders
 	DetachAttachments();
@@ -1485,19 +1480,22 @@ void aeAnimator::pUpdateComponent(){
 	// try to load the model, skin and rig if possible
 	try{
 		if(!pDisplayModelPath.IsEmpty()){
-			displayModel = engine->GetModelManager()->LoadModel(pDisplayModelPath, GetDirectoryPath());
+			displayModel.TakeOver(engine->GetModelManager()->LoadModel(
+				pDisplayModelPath, GetDirectoryPath()));
 		}
 		
 		if(!pDisplaySkinPath.IsEmpty()){
-			displaySkin = engine->GetSkinManager()->LoadSkin(pDisplaySkinPath, GetDirectoryPath());
+			displaySkin.TakeOver(engine->GetSkinManager()->LoadSkin(
+				pDisplaySkinPath, GetDirectoryPath()));
 		}
 		
 		if(!pDisplayRigPath.IsEmpty()){
-			displayRig = engine->GetRigManager()->LoadRig(pDisplayRigPath, GetDirectoryPath());
+			displayRig.TakeOver(engine->GetRigManager()->LoadRig(
+				pDisplayRigPath, GetDirectoryPath()));
 		}
 		
 		if(pRigPath.IsEmpty()){
-			pEngRig = NULL;
+			pEngRig = nullptr;
 			
 		}else{
 			pEngRig.TakeOver(engine->GetRigManager()->LoadRig(pRigPath, GetDirectoryPath()));
@@ -1507,76 +1505,47 @@ void aeAnimator::pUpdateComponent(){
 		GetLogger()->LogException(LOGSOURCE, e);
 	}
 	
-	// protect the loaded parts
-	try{
-		// if the skin is missing use the default one
-		if(!displaySkin){
-			displaySkin = GetGameDefinition()->GetDefaultSkin();
-			displaySkin->AddReference();
-		}
-		
-		// reset the animator
-		pEngAnimatorInstance->SetComponent(NULL); // otherwise the animator is not reset
-		
-		// update the component with the model and skin
-		if(displayModel && displaySkin){
-			if(pEngComponent){
-				pEngComponent->SetModelAndSkin(displayModel, displaySkin);
-				
-			}else{
-				pEngComponent.TakeOver(engine->GetComponentManager()->CreateComponent(displayModel, displaySkin));
-				pEngWorld->AddComponent(pEngComponent);
-				
-				pEngCollider->AddAttachment(new deColliderAttachment(pEngComponent));
-			}
-			
-		}else if(pEngComponent){
-			deColliderAttachment * const attachment = pEngCollider->GetAttachmentWith(pEngComponent);
-			if(attachment){
-				pEngCollider->RemoveAttachment(attachment);
-			}
-			
-			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent = NULL;
-		}
-		
-		// set the rig if the component exists
-		if(pEngComponent){
-			pEngComponent->SetRig(displayRig);
-			pEngComponent->SetVisible(true);
-			pEngComponent->SetPosition(decDVector());
-			pEngComponent->SetOrientation(decQuaternion());
-		}
-		
-		// set animator rig
-		pEngAnimator->SetRig(pEngRig);
-		
-		// free the reference we hold
-		if(displayRig){
-			displayRig->FreeReference();
-			displayRig = NULL;
-		}
-		if(displayModel){
-			displayModel->FreeReference();
-			displayModel = NULL;
-		}
-		if(displaySkin){
-			displaySkin->FreeReference();
-			displaySkin = NULL;
-		}
-		
-	}catch(const deException &){
-		if(displayModel){
-			displayModel->FreeReference();
-		}
-		if(displaySkin){
-			displaySkin->FreeReference();
-		}
-		if(displayRig){
-			displayRig->FreeReference();
-		}
-		throw;
+	// if the skin is missing use the default one
+	if(!displaySkin){
+		displaySkin = GetGameDefinition()->GetDefaultSkin();
 	}
+	
+	// reset the animator
+	pEngAnimatorInstance->SetComponent(NULL); // otherwise the animator is not reset
+	
+	// update the component with the model and skin
+	if(displayModel && displaySkin){
+		if(pEngComponent){
+			pEngComponent->SetModelAndSkin(displayModel, displaySkin);
+			
+		}else{
+			pEngComponent.TakeOver(engine->GetComponentManager()->CreateComponent(
+				displayModel, displaySkin));
+			pEngWorld->AddComponent(pEngComponent);
+			
+			pEngCollider->AddAttachment(new deColliderAttachment(pEngComponent));
+		}
+		
+	}else if(pEngComponent){
+		deColliderAttachment * const attachment = pEngCollider->GetAttachmentWith(pEngComponent);
+		if(attachment){
+			pEngCollider->RemoveAttachment(attachment);
+		}
+		
+		pEngWorld->RemoveComponent(pEngComponent);
+		pEngComponent = nullptr;
+	}
+	
+	// set the rig if the component exists
+	if(pEngComponent){
+		pEngComponent->SetRig(displayRig);
+		pEngComponent->SetVisible(true);
+		pEngComponent->SetPosition(decDVector());
+		pEngComponent->SetOrientation(decQuaternion());
+	}
+	
+	// set animator rig
+	pEngAnimator->SetRig(pEngRig);
 	
 	// update the collider
 	pEngCollider->SetComponent(pEngComponent);

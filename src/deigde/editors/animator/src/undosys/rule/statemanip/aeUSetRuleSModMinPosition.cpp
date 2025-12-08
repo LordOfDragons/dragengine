@@ -81,5 +81,4 @@ void aeUSetRuleSModMinPosition::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMinPosition::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

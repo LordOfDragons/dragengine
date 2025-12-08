@@ -81,5 +81,4 @@ void aeUSetRuleSModMaxPosition::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMaxPosition::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

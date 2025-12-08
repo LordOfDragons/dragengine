@@ -50,10 +50,7 @@ aeURuleGroupAddRule::aeURuleGroupAddRule(aeRuleGroup *group, aeRule *rule, int i
 	pIndex = index;
 	
 	pGroup = group;
-	group->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeURuleGroupAddRule::~aeURuleGroupAddRule(){

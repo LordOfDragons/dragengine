@@ -37,6 +37,11 @@ class igdeEnvironment;
  * \brief Conversation actor gesture.
  */
 class ceActorGesture : public deObject{
+public:
+	
+	typedef deTObjectReference<ceActorGesture> Ref;
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	deAnimator::Ref pEngAnimator;

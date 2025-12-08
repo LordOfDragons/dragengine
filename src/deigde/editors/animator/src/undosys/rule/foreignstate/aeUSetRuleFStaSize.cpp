@@ -81,5 +81,4 @@ void aeUSetRuleFStaSize::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaSize::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

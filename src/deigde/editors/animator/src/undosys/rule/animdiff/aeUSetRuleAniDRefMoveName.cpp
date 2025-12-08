@@ -52,7 +52,6 @@ aeUSetRuleAniDRefMoveName::aeUSetRuleAniDRefMoveName(aeRuleAnimationDifference *
 }
 
 aeUSetRuleAniDRefMoveName::~aeUSetRuleAniDRefMoveName(){
-	if(pRule) pRule->FreeReference();
 }
 
 

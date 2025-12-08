@@ -68,10 +68,7 @@ pIndex(-1)
 	}
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 aeURemoveController::~aeURemoveController(){
