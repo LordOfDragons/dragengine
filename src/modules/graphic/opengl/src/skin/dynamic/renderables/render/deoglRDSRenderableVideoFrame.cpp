@@ -59,7 +59,7 @@ deoglRDSRenderableVideoFrame::~deoglRDSRenderableVideoFrame(){
 ///////////////
 
 void deoglRDSRenderableVideoFrame::SetVideoPlayer(deoglRVideoPlayer *videoPlayer){
-	if(videoPlayer == pVideoPlayer){
+	if(pVideoPlayer == videoPlayer){
 		return;
 	}
 	

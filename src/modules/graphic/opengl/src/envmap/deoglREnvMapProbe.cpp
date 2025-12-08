@@ -164,7 +164,7 @@ deoglREnvMapProbe::~deoglREnvMapProbe(){
 ///////////////
 
 void deoglREnvMapProbe::SetParentWorld(deoglRWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	

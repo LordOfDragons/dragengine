@@ -321,7 +321,7 @@ seWPLink::~seWPLink(){
 ///////////////
 
 void seWPLink::SetSynthesizer(seSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	

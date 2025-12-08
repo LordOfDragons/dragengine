@@ -234,7 +234,7 @@ reWPPush::~reWPPush(){
 ///////////////
 
 void reWPPush::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -284,7 +284,7 @@ void reWPPush::UpdatePush(){
 		pEditConeAngle->ClearText();
 	}
 	
-	const bool enabled = pPush != NULL;
+	const bool enabled = pPush != nullptr;
 	pCBType->SetEnabled(enabled);
 	pEditPosition->SetEnabled(enabled);
 	pEditRotation->SetEnabled(enabled);

@@ -262,7 +262,7 @@ void ceConversation::SetScreenRatio(float ratio){
 }
 
 void ceConversation::SetShowRuleOfThirdsAid(bool showRuleOfThirdsAid){
-	if(showRuleOfThirdsAid != pShowRuleOfThirdsAid){
+	if(pShowRuleOfThirdsAid != showRuleOfThirdsAid){
 		pShowRuleOfThirdsAid = showRuleOfThirdsAid;
 		NotifyViewChanged();
 	}
@@ -315,7 +315,7 @@ void ceConversation::SetLangPackEntryName(const char *name){
 }
 
 void ceConversation::SetLanguagePack(ceLangPack *langpack){
-	if(langpack == pLangPack){
+	if(pLangPack == langpack){
 		return;
 	}
 	
@@ -381,7 +381,7 @@ void ceConversation::RemoveTarget(ceTarget *target){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(target == pActiveTarget){
+	if(pActiveTarget == target){
 		if(pTargetList.GetCount() == 1){
 			SetActiveTarget(nullptr);
 			
@@ -414,7 +414,7 @@ void ceConversation::RemoveAllTargets(){
 }
 
 void ceConversation::SetActiveTarget(ceTarget *target){
-	if(target != pActiveTarget){
+	if(pActiveTarget != target){
 		
 		pActiveTarget = target;
 		
@@ -479,7 +479,7 @@ void ceConversation::RemoveCameraShot(ceCameraShot *cameraShot){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(cameraShot == pActiveCameraShot){
+	if(pActiveCameraShot == cameraShot){
 		if(pCameraShotList.GetCount() == 1){
 			SetActiveCameraShot(nullptr);
 			
@@ -512,7 +512,7 @@ void ceConversation::RemoveAllCameraShots(){
 }
 
 void ceConversation::SetActiveCameraShot(ceCameraShot *cameraShot){
-	if(cameraShot != pActiveCameraShot){
+	if(pActiveCameraShot != cameraShot){
 		
 		pActiveCameraShot = cameraShot;
 		
@@ -577,7 +577,7 @@ void ceConversation::RemoveGesture(ceGesture *gesture){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(gesture == pActiveGesture){
+	if(pActiveGesture == gesture){
 		if(pGestureList.GetCount() == 1){
 			SetActiveGesture(nullptr);
 			
@@ -610,7 +610,7 @@ void ceConversation::RemoveAllGestures(){
 }
 
 void ceConversation::SetActiveGesture(ceGesture *gesture){
-	if(gesture != pActiveGesture){
+	if(pActiveGesture != gesture){
 		
 		pActiveGesture = gesture;
 		
@@ -675,7 +675,7 @@ void ceConversation::RemoveFacePose(ceFacePose *facePose){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(facePose == pActiveFacePose){
+	if(pActiveFacePose == facePose){
 		if(pFacePoseList.GetCount() == 1){
 			SetActiveFacePose(nullptr);
 			
@@ -708,7 +708,7 @@ void ceConversation::RemoveAllFacePoses(){
 }
 
 void ceConversation::SetActiveFacePose(ceFacePose *facePose){
-	if(facePose != pActiveFacePose){
+	if(pActiveFacePose != facePose){
 		
 		pActiveFacePose = facePose;
 		
@@ -773,7 +773,7 @@ void ceConversation::RemoveFile(ceConversationFile *file){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(file == pActiveFile){
+	if(pActiveFile == file){
 		if(pFileList.GetCount() == 1){
 			SetActiveFile(nullptr);
 			
@@ -806,7 +806,7 @@ void ceConversation::RemoveAllFiles(){
 }
 
 void ceConversation::SetActiveFile(ceConversationFile *file){
-	if(file == pActiveFile){
+	if(pActiveFile == file){
 		return;
 	}
 	
@@ -906,7 +906,7 @@ void ceConversation::AddActor(ceConversationActor *actor){
 void ceConversation::RemoveActor(ceConversationActor *actor){
 	if(!actor || actor->GetConversation() != this) DETHROW(deeInvalidParam);
 	
-	if(actor == pActiveActor){
+	if(pActiveActor == actor){
 		if(pActorList.GetCount() == 1){
 			SetActiveActor(nullptr);
 			
@@ -943,7 +943,7 @@ bool ceConversation::HasActiveActor() const{
 }
 
 void ceConversation::SetActiveActor(ceConversationActor *actor){
-	if(actor != pActiveActor){
+	if(pActiveActor != actor){
 		
 		pActiveActor = actor;
 		
@@ -971,7 +971,7 @@ void ceConversation::RemoveCoordSystem(ceCoordSystem *coordSystem){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(coordSystem == pActiveCoordSystem){
+	if(pActiveCoordSystem == coordSystem){
 		if(pCoordSystemList.GetCount() == 1){
 			SetActiveCoordSystem(nullptr);
 			
@@ -1008,7 +1008,7 @@ bool ceConversation::HasActiveCoordSystem() const{
 }
 
 void ceConversation::SetActiveCoordSystem(ceCoordSystem *coordSystem){
-	if(coordSystem != pActiveCoordSystem){
+	if(pActiveCoordSystem != coordSystem){
 		
 		pActiveCoordSystem = coordSystem;
 		

@@ -86,7 +86,7 @@ meLumimeter::~meLumimeter(){
 ///////////////
 
 void meLumimeter::SetWorld(meWorld *world){
-	if(world == pWorld) return;
+	if(pWorld == world) return;
 	
 	if(pWorld){
 		if(pDDVolume){
@@ -177,7 +177,7 @@ void meLumimeter::SetConeExponent(float exponent){
 
 
 void meLumimeter::SetTrackCamera(bool trackCamera){
-	if(trackCamera == pTrackCamera){
+	if(pTrackCamera == trackCamera){
 		return;
 	}
 	
@@ -189,11 +189,11 @@ void meLumimeter::SetTrackCamera(bool trackCamera){
 
 
 bool meLumimeter::HasHostObject() const{
-	return pHostObject != NULL;
+	return pHostObject != nullptr;
 }
 
 void meLumimeter::SetHostObject(meObject *object){
-	if(object == pHostObject){
+	if(pHostObject == object){
 		return;
 	}
 	

@@ -1504,7 +1504,7 @@ void debpColliderVolume::pUpdateUseFakeDynamics(){
 			
 		} // cylinders and capsules are anyways not supported yet
 		
-		if(useFakeDynamics != pUseFakeDynamics){
+		if(pUseFakeDynamics != useFakeDynamics){
 			pUseFakeDynamics = useFakeDynamics;
 			ResponseTypeChanged();
 		}

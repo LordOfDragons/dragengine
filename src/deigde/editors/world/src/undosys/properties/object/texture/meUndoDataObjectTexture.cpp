@@ -63,13 +63,13 @@ meUndoDataObjectTexture::~meUndoDataObjectTexture(){
 ///////////////
 
 void meUndoDataObjectTexture::SetOldTexture(meObjectTexture *texture){
-	if(texture != pOldTexture){
+	if(pOldTexture != texture){
 		pOldTexture = texture;
 	}
 }
 
 void meUndoDataObjectTexture::SetNewTexture(meObjectTexture *texture){
-	if(texture != pNewTexture){
+	if(pNewTexture != texture){
 		pNewTexture = texture;
 	}
 }

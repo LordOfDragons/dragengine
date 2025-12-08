@@ -159,11 +159,11 @@ void sePropertyNodeSelection::SetSelected(const sePropertyNodeList &list){
 
 
 bool sePropertyNodeSelection::HasActive() const{
-	return pActive != NULL;
+	return pActive != nullptr;
 }
 
 void sePropertyNodeSelection::SetActive(sePropertyNode *node){
-	if(node == pActive){
+	if(pActive == node){
 		return;
 	}
 	

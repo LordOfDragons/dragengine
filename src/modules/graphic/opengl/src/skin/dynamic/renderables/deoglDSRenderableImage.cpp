@@ -76,7 +76,7 @@ void deoglDSRenderableImage::RenderableChanged(){
 	deoglImage * const image = pRenderableImage.GetImage()
 		? (deoglImage*)pRenderableImage.GetImage()->GetPeerGraphic() : NULL;
 	
-	if(image != pImage){
+	if(pImage != image){
 		pImage = image;
 		pDirty = true;
 		

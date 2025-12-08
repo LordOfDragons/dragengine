@@ -211,7 +211,7 @@ void decObjectOrderedSet::Move(deObject *object, int to){
 			pObjects[i] = pObjects[i + 1];
 		}
 		
-		if(to == pObjectCount){
+		if(pObjectCount == to){
 			pObjects[pObjectCount - 1] = tempObject;
 			
 		}else{

@@ -148,7 +148,7 @@ void mePropFieldType::UpdateEnginePFType(){
 		engPFTInstanceCount = pEngPFType->GetInstanceCount();
 	}
 	
-	if(engPFTInstanceCount == pInstanceCount){
+	if(pInstanceCount == engPFTInstanceCount){
 		if(pEngPFType){
 			dePropFieldInstance *engPFTInstances = pEngPFType->GetInstances();
 			int i;

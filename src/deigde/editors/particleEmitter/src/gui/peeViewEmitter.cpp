@@ -97,7 +97,7 @@ void peeViewEmitter::ResetView(){
 }
 
 void peeViewEmitter::SetEmitter(peeEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	

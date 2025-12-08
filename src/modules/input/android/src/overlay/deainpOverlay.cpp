@@ -85,14 +85,14 @@ decPoint deainpOverlay::PointerMove(const decPoint &position){
 
 
 void deainpOverlay::SetLayoutHorizontal(const deainpLayout &layout){
-	if(layout == pLayoutHorizontal){
+	if(pLayoutHorizontal == layout){
 		return;
 	}
 	pLayoutHorizontal = layout;
 }
 
 void deainpOverlay::SetLayoutVertical(const deainpLayout &layout){
-	if(layout == pLayoutVertical){
+	if(pLayoutVertical == layout){
 		return;
 	}
 	pLayoutVertical = layout;

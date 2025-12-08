@@ -426,7 +426,7 @@ seWPController::~seWPController(){
 ///////////////
 
 void seWPController::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	

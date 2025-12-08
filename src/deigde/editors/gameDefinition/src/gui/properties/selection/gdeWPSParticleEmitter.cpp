@@ -229,7 +229,7 @@ gdeWPSParticleEmitter::~gdeWPSParticleEmitter(){
 ///////////////
 
 void gdeWPSParticleEmitter::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

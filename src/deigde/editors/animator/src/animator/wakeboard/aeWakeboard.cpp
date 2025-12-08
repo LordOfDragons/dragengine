@@ -151,7 +151,7 @@ aeWakeboard::~aeWakeboard(){
 ///////////////
 
 void aeWakeboard::SetEnabled(bool enabled){
-	if(enabled == pEnabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	

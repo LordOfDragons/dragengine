@@ -66,7 +66,7 @@ deoglRCanvasRenderWorld::~deoglRCanvasRenderWorld(){
 ///////////////
 
 void deoglRCanvasRenderWorld::SetCamera(deoglRCamera *camera){
-	if(camera == pCamera){
+	if(pCamera == camera){
 		return;
 	}
 	

@@ -108,7 +108,7 @@ seTexture::~seTexture(){
 ///////////////
 
 void seTexture::SetSkin(seSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
@@ -293,7 +293,7 @@ void seTexture::RemoveAllProperties(){
 }
 
 bool seTexture::HasActiveProperty() const{
-	return pActiveProperty != NULL;
+	return pActiveProperty != nullptr;
 }
 
 void seTexture::SetActiveProperty(seProperty *property){

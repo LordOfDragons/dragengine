@@ -132,7 +132,7 @@ dealEngineInstance::~dealEngineInstance(){
 ///////////////
 
 bool dealEngineInstance::IsRunning() const{
-	return pEngine != NULL;
+	return pEngine != nullptr;
 }
 
 bool dealEngineInstance::Start(const char *logfile, const char *cacheAppID){

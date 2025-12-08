@@ -80,7 +80,7 @@ void igdeTriggerExpressionComponent::SetTargetName(const char *name){
 }
 
 void igdeTriggerExpressionComponent::SetTarget(igdeTriggerTarget *target){
-	if(target == pTarget){
+	if(pTarget == target){
 		return;
 	}
 	
@@ -89,7 +89,7 @@ void igdeTriggerExpressionComponent::SetTarget(igdeTriggerTarget *target){
 }
 
 void igdeTriggerExpressionComponent::SetTargetListener(igdeTriggerListener *listener){
-	if(listener == pTargetListener){
+	if(pTargetListener == listener){
 		return;
 	}
 	

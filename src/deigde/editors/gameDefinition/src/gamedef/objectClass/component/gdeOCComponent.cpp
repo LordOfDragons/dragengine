@@ -214,7 +214,7 @@ bool gdeOCComponent::HasPropertyWithName(const char *name) const{
 
 
 void gdeOCComponent::SetActiveTexture(gdeOCComponentTexture *texture){
-	if(texture == pActiveTexture){
+	if(pActiveTexture == texture){
 		return;
 	}
 	

@@ -80,7 +80,7 @@ void deMicrophone::SetType(eMicrophoneType type){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(type == pType){
+	if(pType == type){
 		return;
 	}
 	
@@ -132,7 +132,7 @@ void deMicrophone::SetVelocity(const decVector &velocity){
 
 
 void deMicrophone::SetMuted(bool muted){
-	if(muted == pMuted){
+	if(pMuted == muted){
 		return;
 	}
 	
@@ -162,7 +162,7 @@ void deMicrophone::SetVolume(float volume){
 
 
 void deMicrophone::SetLayerMask(const decLayerMask &layerMask){
-	if(layerMask == pLayerMask){
+	if(pLayerMask == layerMask){
 		return;
 	}
 	
@@ -189,7 +189,7 @@ void deMicrophone::SetSpeakerGain(float gain){
 
 
 void deMicrophone::SetEnableAuralization(bool enable){
-	if(enable == pEnableAuralization){
+	if(pEnableAuralization == enable){
 		return;
 	}
 	
@@ -242,10 +242,10 @@ void deMicrophone::RemoveSpeaker(deSpeaker *speaker){
 	if(speaker->GetLLMicrophoneNext()){
 		speaker->GetLLMicrophoneNext()->SetLLMicrophonePrev(speaker->GetLLMicrophonePrev());
 	}
-	if(speaker == pSpeakerRoot){
+	if(pSpeakerRoot == speaker){
 		pSpeakerRoot = speaker->GetLLMicrophoneNext();
 	}
-	if(speaker == pSpeakerTail){
+	if(pSpeakerTail == speaker){
 		pSpeakerTail = speaker->GetLLMicrophonePrev();
 	}
 	pSpeakerCount--;
@@ -278,7 +278,7 @@ void deMicrophone::RemoveAllSpeakers(){
 /////////////////
 
 void deMicrophone::SetPeerAudio(deBaseAudioMicrophone *audMicrophone){
-	if(audMicrophone == pPeerAudio){
+	if(pPeerAudio == audMicrophone){
 		return;
 	}
 	

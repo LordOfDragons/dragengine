@@ -57,7 +57,7 @@ aeWPUndoHistory::~aeWPUndoHistory(){
 ///////////////
 
 void aeWPUndoHistory::SetAnimator(aeAnimator *animator){
-	if(animator == pWorld){
+	if(pWorld == animator){
 		return;
 	}
 	

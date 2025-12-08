@@ -212,7 +212,7 @@ void deainpOverlaySystem::ScreenSizeChanged(){
 }
 
 void deainpOverlaySystem::SetInHorizontalMode(bool inHorizontalMode){
-	if(inHorizontalMode == pInHorizontalMode){
+	if(pInHorizontalMode == inHorizontalMode){
 		return;
 	}
 	

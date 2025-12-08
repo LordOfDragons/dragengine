@@ -617,7 +617,7 @@ void deoalAudioThread::SetActiveMicrophone(deoalAMicrophone *microphone){
 		pDeactiveMicrophone = NULL;
 	}
 	
-	if(microphone != pActiveMicrophone){
+	if(pActiveMicrophone != microphone){
 		if(pActiveMicrophone){
 			pDeactiveMicrophone = pActiveMicrophone;
 			pActiveMicrophone->SetActive(false);
@@ -632,7 +632,7 @@ void deoalAudioThread::SetActiveMicrophone(deoalAMicrophone *microphone){
 	}
 	
 	deoalAWorld * const world = microphone ? microphone->GetParentWorld() : nullptr;
-	if(world != pActiveWorld){
+	if(pActiveWorld != world){
 		if(pActiveWorld){
 			pProcessOnceWorld.AddIfAbsent(pActiveWorld);
 		}

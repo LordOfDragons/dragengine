@@ -687,7 +687,7 @@ meWPBrowser::~meWPBrowser(){
 ///////////////
 
 void meWPBrowser::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -938,7 +938,7 @@ void meWPBrowser::SelectCategory(igdeGDCategory *category){
 }
 
 void meWPBrowser::SetSelectionMode(eSelectionMode mode){
-	if(mode == pSelectionMode){
+	if(pSelectionMode == mode){
 		return;
 	}
 	
@@ -977,7 +977,7 @@ igdeGDSky *meWPBrowser::GetSelectedSky() const{
 }
 
 void meWPBrowser::SetPreviewSize(ePreviewSize size){
-	if(size == pPreviewSize){
+	if(pPreviewSize == size){
 		return;
 	}
 	
@@ -986,7 +986,7 @@ void meWPBrowser::SetPreviewSize(ePreviewSize size){
 }
 
 void meWPBrowser::SetViewMode(eViewModes viewMode){
-	if(viewMode == pViewMode){
+	if(pViewMode == viewMode){
 		return;
 	}
 	

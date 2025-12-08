@@ -219,7 +219,7 @@ meWPSObjectShape::~meWPSObjectShape(){
 ///////////////
 
 void meWPSObjectShape::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	

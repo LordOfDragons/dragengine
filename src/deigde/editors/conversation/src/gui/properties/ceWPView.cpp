@@ -1957,7 +1957,7 @@ ceWPView::~ceWPView(){
 ///////////////
 
 void ceWPView::SetConversation(ceConversation *conversation){
-	if(conversation == pConversation){
+	if(pConversation == conversation){
 		return;
 	}
 	

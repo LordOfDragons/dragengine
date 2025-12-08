@@ -128,15 +128,15 @@ void deCollisionInfo::SetOwnerFace(int face){
 
 
 bool deCollisionInfo::IsHTSector() const{
-	return pHTSector != NULL;
+	return pHTSector != nullptr;
 }
 
 bool deCollisionInfo::IsCollider() const{
-	return pCollider != NULL;
+	return pCollider != nullptr;
 }
 
 bool deCollisionInfo::HasCollision() const{
-	return pHTSector != NULL || pCollider != NULL;
+	return pHTSector != nullptr || pCollider != nullptr;
 }
 
 void deCollisionInfo::SetHTSector(deHeightTerrain *heightTerrain, deHeightTerrainSector *sector){

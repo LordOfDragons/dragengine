@@ -119,7 +119,7 @@ void deainpOverlayActionButton::SetBinding(const deainpInputBinding &binding){
 
 void deainpOverlayActionButton::SetRadius(int radius){
 	radius = decMath::max(radius, 0);
-	if(radius == pRadius){
+	if(pRadius == radius){
 		return;
 	}
 	
@@ -132,7 +132,7 @@ void deainpOverlayActionButton::SetRadius(int radius){
 }
 
 void deainpOverlayActionButton::SetCenter(const decPoint &center){
-	if(center == pCenter){
+	if(pCenter == center){
 		return;
 	}
 	

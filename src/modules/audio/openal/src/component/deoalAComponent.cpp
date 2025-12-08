@@ -95,7 +95,7 @@ deoalAComponent::~deoalAComponent(){
 ///////////////
 
 void deoalAComponent::SetParentWorld(deoalAWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -160,7 +160,7 @@ void deoalAComponent::SetModel(deoalAModel *model, const decStringList *textureN
 }
 
 void deoalAComponent::SetSkin(deoalASkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
@@ -270,7 +270,7 @@ void deoalAComponent::InitBones(const deComponent &component){
 	
 	pDropFaces();
 	
-	if(boneCount != pBoneCount){
+	if(pBoneCount != boneCount){
 		if(pBones){
 			delete [] pBones;
 			pBones = NULL;
@@ -776,7 +776,7 @@ void deoalAComponent::pUpdateFaces(){
 	}
 	
 	const int count = pModel->GetFaceCount();
-	if(count != pFaceCount){
+	if(pFaceCount != count){
 		pDropFaces();
 	}
 	

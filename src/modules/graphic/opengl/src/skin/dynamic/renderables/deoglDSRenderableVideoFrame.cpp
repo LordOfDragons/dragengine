@@ -82,7 +82,7 @@ void deoglDSRenderableVideoFrame::RenderableChanged(){
 	deoglVideoPlayer * const videoPlayer = pRenderableVideoFrame.GetVideoPlayer()
 		? (deoglVideoPlayer*)pRenderableVideoFrame.GetVideoPlayer()->GetPeerGraphic() : NULL;
 	
-	if(videoPlayer != pVideoPlayer){
+	if(pVideoPlayer != videoPlayer){
 		if(pVideoPlayer){
 			pVideoPlayer->GetNotifyRenderables().Remove(this);
 		}

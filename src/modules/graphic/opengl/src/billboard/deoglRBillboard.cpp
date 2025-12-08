@@ -247,7 +247,7 @@ void deoglRBillboard::UpdateOctreeNode(){
 
 
 void deoglRBillboard::SetSkin(deoglRSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
@@ -265,7 +265,7 @@ void deoglRBillboard::SetSkin(deoglRSkin *skin){
 
 void deoglRBillboard::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	// NOTE this is called from the main thread during synchronization
-	if(dynamicSkin == pDynamicSkin){
+	if(pDynamicSkin == dynamicSkin){
 		return;
 	}
 	
@@ -298,7 +298,7 @@ void deoglRBillboard::SetLayerMask(const decLayerMask &layerMask){
 }
 
 void deoglRBillboard::SetVisible(bool visible){
-	if(visible == pVisible){
+	if(pVisible == visible){
 		return;
 	}
 	
@@ -732,7 +732,7 @@ void deoglRBillboard::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	// switch may still occur. a possible solution would be to delay the switch until the fading
 	// is finished. for this we would have to keep the dirty flag set, which is currently set
 	// outside somewhere
-	if(envmap == pRenderEnvMap){
+	if(pRenderEnvMap == envmap){
 		return;
 	}
 	
@@ -759,7 +759,7 @@ void deoglRBillboard::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 }
 
 void deoglRBillboard::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
-	if(envmap == pRenderEnvMapFade){
+	if(pRenderEnvMapFade == envmap){
 		return;
 	}
 	

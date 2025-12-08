@@ -1462,7 +1462,7 @@ ceWPConversation::~ceWPConversation(){
 ///////////////
 
 void ceWPConversation::SetConversation(ceConversation *conversation){
-	if(conversation == pConversation){
+	if(pConversation == conversation){
 		return;
 	}
 	

@@ -63,7 +63,7 @@ deoglRDSRenderableCanvas::~deoglRDSRenderableCanvas(){
 ///////////////
 
 void deoglRDSRenderableCanvas::SetCanvas(deoglRCanvasView *canvas){
-	if(canvas == pCanvas){
+	if(pCanvas == canvas){
 		return;
 	}
 	

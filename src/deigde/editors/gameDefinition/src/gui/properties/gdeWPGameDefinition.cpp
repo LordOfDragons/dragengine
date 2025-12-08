@@ -548,7 +548,7 @@ gdeWPGameDefinition::~gdeWPGameDefinition(){
 ///////////////
 
 void gdeWPGameDefinition::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	
@@ -644,7 +644,7 @@ void gdeWPGameDefinition::UpdateWorld(){
 		pChkIsProjectGameDef->SetChecked(false);
 	}
 	
-	const bool enabled = pGameDefinition != NULL;
+	const bool enabled = pGameDefinition != nullptr;
 	pEditID->SetEnabled(enabled);
 	pEditDescription->SetEnabled(enabled);
 	pEditBasePath->SetEnabled(enabled);

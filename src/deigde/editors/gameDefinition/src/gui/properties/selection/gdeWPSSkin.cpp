@@ -230,7 +230,7 @@ gdeWPSSkin::~gdeWPSSkin(){
 ///////////////
 
 void gdeWPSSkin::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

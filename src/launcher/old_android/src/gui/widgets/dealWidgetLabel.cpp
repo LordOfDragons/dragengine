@@ -79,7 +79,7 @@ dealWidgetLabel::~dealWidgetLabel(){
 ///////////////
 
 void dealWidgetLabel::SetFont(dealFont *font){
-	if(font == pFont){
+	if(pFont == font){
 		return;
 	}
 	
@@ -91,7 +91,7 @@ void dealWidgetLabel::SetFont(dealFont *font){
 }
 
 void dealWidgetLabel::SetFontSize(int fontSize){
-	if(fontSize == pFontSize){
+	if(pFontSize == fontSize){
 		return;
 	}
 	

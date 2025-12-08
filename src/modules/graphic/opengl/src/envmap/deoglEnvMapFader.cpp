@@ -64,7 +64,7 @@ void deoglEnvMapFader::SetFadePerTime(float fadePerTime){
 }
 
 void deoglEnvMapFader::FadeTo(deoglEnvironmentMap *envmap){
-	if(envmap == pEnvMapActive){
+	if(pEnvMapActive == envmap){
 		return;
 	}
 	
@@ -86,7 +86,7 @@ void deoglEnvMapFader::FadeTo(deoglEnvironmentMap *envmap){
 	
 	// here pEnvMapActive is not NULL, pEnvMapFading is not NULL and pEnvMapDelayed is NULL.
 	// add envmap as delayed env map in case it is not the fading one
-	if(envmap == pEnvMapFading){
+	if(pEnvMapFading == envmap){
 		return;
 	}
 	
@@ -132,7 +132,7 @@ void deoglEnvMapFader::DropAll(){
 }
 
 bool deoglEnvMapFader::IsFading() const{
-	return pEnvMapFading != NULL;
+	return pEnvMapFading != nullptr;
 }
 
 void deoglEnvMapFader::Update(float elapsed){

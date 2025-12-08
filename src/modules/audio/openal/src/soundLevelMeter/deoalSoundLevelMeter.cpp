@@ -81,7 +81,7 @@ deoalSoundLevelMeter::~deoalSoundLevelMeter(){
 ///////////////
 
 void deoalSoundLevelMeter::SetParentWorld(deoalWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	

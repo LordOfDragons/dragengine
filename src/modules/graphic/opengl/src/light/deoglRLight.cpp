@@ -254,7 +254,7 @@ void deoglRLight::UpdateSkin(float elapsed){
 
 
 void deoglRLight::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	
@@ -308,7 +308,7 @@ void deoglRLight::SetAmbientRatio(float ratio){
 
 
 void deoglRLight::SetLightSkin(deoglRSkin *skin){
-	if(skin == pLightSkin){
+	if(pLightSkin == skin){
 		return;
 	}
 	
@@ -333,7 +333,7 @@ void deoglRLight::SetLightSkin(deoglRSkin *skin){
 }
 
 void deoglRLight::SetLightCanvas(deoglRCanvasView *canvas){
-	if(canvas == pLightCanvas){
+	if(pLightCanvas == canvas){
 		return;
 	}
 	
@@ -344,7 +344,7 @@ void deoglRLight::SetLightCanvas(deoglRCanvasView *canvas){
 }
 
 void deoglRLight::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
-	if(dynamicSkin == pDynamicSkin){
+	if(pDynamicSkin == dynamicSkin){
 		return;
 	}
 	
@@ -556,7 +556,7 @@ void deoglRLight::SetLightVolumeDirty(){
 
 
 void deoglRLight::SetLightVolumeCropBox(decShapeBox *box){
-	if(box == pLightVolumeCropBox){
+	if(pLightVolumeCropBox == box){
 		return;
 	}
 	

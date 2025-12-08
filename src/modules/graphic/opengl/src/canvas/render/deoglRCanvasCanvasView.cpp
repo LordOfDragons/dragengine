@@ -62,7 +62,7 @@ deoglRCanvasCanvasView::~deoglRCanvasCanvasView(){
 ///////////////
 
 void deoglRCanvasCanvasView::SetCanvasView(deoglRCanvasView *canvasView){
-	if(canvasView == pCanvasView){
+	if(pCanvasView == canvasView){
 		return;
 	}
 	

@@ -192,7 +192,7 @@ void deoglRWorld::MarkSkyOrderDirty(){
 
 
 void deoglRWorld::SetHeightTerrain(deoglRHeightTerrain *heightTerrain){
-	if(heightTerrain == pHeightTerrain){
+	if(pHeightTerrain == heightTerrain){
 		return;
 	}
 	

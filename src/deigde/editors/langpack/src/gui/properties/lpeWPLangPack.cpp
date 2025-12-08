@@ -204,7 +204,7 @@ lpeWPLangPack::~lpeWPLangPack(){
 ///////////////
 
 void lpeWPLangPack::SetLangPack(lpeLangPack *langpack){
-	if(langpack == pLangPack){
+	if(pLangPack == langpack){
 		return;
 	}
 	

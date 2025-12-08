@@ -57,7 +57,7 @@ reWPUndoHistory::~reWPUndoHistory(){
 ///////////////
 
 void reWPUndoHistory::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	

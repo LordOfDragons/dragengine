@@ -196,7 +196,7 @@ reRigConstraint::~reRigConstraint(){
 ///////////////
 
 void reRigConstraint::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -216,7 +216,7 @@ void reRigConstraint::SetRig(reRig *rig){
 }
 
 void reRigConstraint::SetRigBone(reRigBone *rigBone){
-	if(rigBone == pRigBone){
+	if(pRigBone == rigBone){
 		return;
 	}
 	
@@ -225,7 +225,7 @@ void reRigConstraint::SetRigBone(reRigBone *rigBone){
 }
 
 void reRigConstraint::SetEngineConstraint(deColliderConstraint *constraint){
-	if(constraint == pEngConstraint){
+	if(pEngConstraint == constraint){
 		return;
 	}
 	
@@ -466,7 +466,7 @@ void reRigConstraint::SetSpringDamping(float damping){
 
 
 void reRigConstraint::SetIsRope(bool isRope){
-	if(isRope == pIsRope){
+	if(pIsRope == isRope){
 		return;
 	}
 	
@@ -504,7 +504,7 @@ void reRigConstraint::SetBreakingThreshold(float impulseThreshold){
 
 
 void reRigConstraint::SetConstraintBone(reRigBone *bone){
-	if(bone == pConstraintBone){
+	if(pConstraintBone == bone){
 		return;
 	}
 	
@@ -533,7 +533,7 @@ void reRigConstraint::SetConstraintBone(reRigBone *bone){
 
 
 void reRigConstraint::SetShowJointError(bool showJointError){
-	if(showJointError == pShowJointError){
+	if(pShowJointError == showJointError){
 		return;
 	}
 	
@@ -545,7 +545,7 @@ void reRigConstraint::SetShowJointError(bool showJointError){
 
 
 void reRigConstraint::SetSelected(bool selected){
-	if(selected == pSelected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -555,7 +555,7 @@ void reRigConstraint::SetSelected(bool selected){
 }
 
 void reRigConstraint::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	

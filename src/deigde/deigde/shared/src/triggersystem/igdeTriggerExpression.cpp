@@ -58,7 +58,7 @@ igdeTriggerExpression::~igdeTriggerExpression(){
 ///////////////
 
 void igdeTriggerExpression::SetRootComponent(igdeTriggerExpressionComponent *component){
-	if(component != pRootComponent){
+	if(pRootComponent != component){
 		
 		pRootComponent = component;
 	}
@@ -67,11 +67,11 @@ void igdeTriggerExpression::SetRootComponent(igdeTriggerExpressionComponent *com
 }
 
 bool igdeTriggerExpression::IsEmpty() const{
-	return pRootComponent == NULL;
+	return pRootComponent == nullptr;
 }
 
 bool igdeTriggerExpression::IsNotEmpty() const{
-	return pRootComponent != NULL;
+	return pRootComponent != nullptr;
 }
 
 void igdeTriggerExpression::SetResult(bool result){
@@ -101,7 +101,7 @@ bool igdeTriggerExpression::Evaluate(){
 	if(pEnabled && pRootComponent){
 		const bool result = pRootComponent->Evaluate();
 		
-		if(result != pResult){
+		if(pResult != result){
 			pResult = result;
 			return true;
 		}

@@ -102,7 +102,7 @@ cePlayback::~cePlayback(){
 ///////////////
 
 void cePlayback::SetTopic(ceConversationTopic *topic){
-	if(topic != pTopic){
+	if(pTopic != topic){
 		
 		pTopic = topic;
 		
@@ -113,7 +113,7 @@ void cePlayback::SetTopic(ceConversationTopic *topic){
 }
 
 void cePlayback::SetRunning(bool running){
-	if(running == pRunning){
+	if(pRunning == running){
 		return;
 	}
 	
@@ -149,7 +149,7 @@ void cePlayback::SetCameraHandling(eCameraHandling handling){
 }
 
 void cePlayback::SetAutoAdvanceCommands(bool autoAdvance){
-	if(autoAdvance == pAutoAdvanceCommands){
+	if(pAutoAdvanceCommands == autoAdvance){
 		return;
 	}
 	
@@ -268,7 +268,7 @@ void cePlayback::PlaySingleAction(ceConversationAction *action, float time){
 
 
 void cePlayback::SetActorCount(int count){
-	if(count != pActorCount){
+	if(pActorCount != count){
 		int i;
 		
 		if(pActors){
@@ -658,12 +658,12 @@ void cePlayback::pProcessActions(float elapsed){
 }
 
 void cePlayback::SetLastPlayedAction(ceConversationTopic *topic, ceConversationAction *action){
-	if(topic != pLastPlayedActionTopic){
+	if(pLastPlayedActionTopic != topic){
 		
 		pLastPlayedActionTopic = topic;
 	}
 	
-	if(action != pLastPlayedAction){
+	if(pLastPlayedAction != action){
 		
 		pLastPlayedAction = action;
 	}

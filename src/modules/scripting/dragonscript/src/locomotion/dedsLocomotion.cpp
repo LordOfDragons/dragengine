@@ -318,7 +318,7 @@ void dedsLocomotion::SetTiltMode(eTiltModes mode){
 }
 
 void dedsLocomotion::SetCCTTiltSingle(deColliderCollisionTest *collisionTest){
-	if(collisionTest == pCCTTiltSingle){
+	if(pCCTTiltSingle == collisionTest){
 		return;
 	}
 	
@@ -327,7 +327,7 @@ void dedsLocomotion::SetCCTTiltSingle(deColliderCollisionTest *collisionTest){
 }
 
 void dedsLocomotion::SetCCTTiltFrontLeft(deColliderCollisionTest *collisionTest){
-	if(collisionTest == pCCTTiltFrontLeft){
+	if(pCCTTiltFrontLeft == collisionTest){
 		return;
 	}
 	
@@ -336,7 +336,7 @@ void dedsLocomotion::SetCCTTiltFrontLeft(deColliderCollisionTest *collisionTest)
 }
 
 void dedsLocomotion::SetCCTTiltFrontRight(deColliderCollisionTest *collisionTest){
-	if(collisionTest == pCCTTiltFrontRight){
+	if(pCCTTiltFrontRight == collisionTest){
 		return;
 	}
 	
@@ -345,7 +345,7 @@ void dedsLocomotion::SetCCTTiltFrontRight(deColliderCollisionTest *collisionTest
 }
 
 void dedsLocomotion::SetCCTTiltBackLeft(deColliderCollisionTest *collisionTest){
-	if(collisionTest == pCCTTiltBackLeft){
+	if(pCCTTiltBackLeft == collisionTest){
 		return;
 	}
 	
@@ -354,7 +354,7 @@ void dedsLocomotion::SetCCTTiltBackLeft(deColliderCollisionTest *collisionTest){
 }
 
 void dedsLocomotion::SetCCTTiltBackRight(deColliderCollisionTest *collisionTest){
-	if(collisionTest == pCCTTiltBackRight){
+	if(pCCTTiltBackRight == collisionTest){
 		return;
 	}
 	
@@ -493,7 +493,7 @@ void dedsLocomotion::RemoveAllControllerMappings(){
 
 
 void dedsLocomotion::SetAICollider(deCollider *collider){
-	if(collider == pAICollider){
+	if(pAICollider == collider){
 		return;
 	}
 	
@@ -606,7 +606,7 @@ void dedsLocomotion::UpdateLocomotion(float elapsed){
 
 void dedsLocomotion::UpdateIsMoving(){
 	const bool isMoving = fabsf(pAnalogMovingSpeed) > 0.001f;
-	if(isMoving == pIsMoving){
+	if(pIsMoving == isMoving){
 		return;
 	}
 	

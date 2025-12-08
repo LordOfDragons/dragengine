@@ -189,7 +189,7 @@ void seWindowMain::ResetViews(){
 
 
 void seWindowMain::SetSkin(seSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	

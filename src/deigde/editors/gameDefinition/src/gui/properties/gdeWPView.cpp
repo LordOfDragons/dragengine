@@ -130,7 +130,7 @@ gdeWPView::~gdeWPView(){
 ///////////////
 
 void gdeWPView::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

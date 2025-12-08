@@ -171,7 +171,7 @@ void reRigPush::SetRig(reRig *rig){
 
 
 void reRigPush::SetType(reRigPush::ePushTypes type){
-	if(type == pType){
+	if(pType == type){
 		return;
 	}
 	
@@ -229,7 +229,7 @@ void reRigPush::SetRayCount(int rayCount){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(rayCount != pRayCount){
+	if(pRayCount != rayCount){
 		pRayCount = rayCount;
 		
 		if(pRig){
@@ -253,7 +253,7 @@ void reRigPush::SetConeAngle(float angle){
 
 
 void reRigPush::SetSelected(bool selected){
-	if(selected == pSelected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -263,7 +263,7 @@ void reRigPush::SetSelected(bool selected){
 }
 
 void reRigPush::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	

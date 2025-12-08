@@ -444,7 +444,7 @@ ceWindowDopeSheet::~ceWindowDopeSheet(){
 ///////////////
 
 void ceWindowDopeSheet::SetConversation(ceConversation *conversation){
-	if(conversation == pConversation){
+	if(pConversation == conversation){
 		return;
 	}
 	

@@ -224,7 +224,7 @@ void saeSAnimation::SetNeutralVertexPositionSets(const decStringSet &sets){
 void saeSAnimation::SetDisplayMode(eDisplayModes displayMode){
 	if(displayMode < 0 || displayMode > edmWord) DETHROW(deeInvalidParam);
 	
-	if(displayMode != pDisplayMode){
+	if(pDisplayMode != displayMode){
 		pDisplayMode = displayMode;
 		pDispWordPos = -1;
 		pDispWordElapsed = 0.0f;
@@ -530,7 +530,7 @@ void saeSAnimation::RemoveAllPhonemes(){
 }
 
 bool saeSAnimation::HasActivePhoneme() const{
-	return pActivePhoneme != NULL;
+	return pActivePhoneme != nullptr;
 }
 
 void saeSAnimation::SetActivePhoneme(saePhoneme *phoneme){
@@ -603,11 +603,11 @@ void saeSAnimation::RemoveAllWords(){
 }
 
 bool saeSAnimation::HasActiveWord() const{
-	return pActiveWord != NULL;
+	return pActiveWord != nullptr;
 }
 
 void saeSAnimation::SetActiveWord(saeWord *word){
-	if(word == pActiveWord){
+	if(pActiveWord == word){
 		return;
 	}
 	

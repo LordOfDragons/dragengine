@@ -246,7 +246,7 @@ void deoglRenderThread::SetVRDebugPanelMatrix(const decDMatrix &matrix){
 }
 
 void deoglRenderThread::SetCanvasInputOverlay(deoglRCanvasView *canvas){
-	if(canvas == pCanvasInputOverlay){
+	if(pCanvasInputOverlay == canvas){
 		return;
 	}
 	
@@ -255,7 +255,7 @@ void deoglRenderThread::SetCanvasInputOverlay(deoglRCanvasView *canvas){
 }
 
 void deoglRenderThread::SetCanvasDebugOverlay(deoglRCanvasView *canvas){
-	if(canvas == pCanvasDebugOverlay){
+	if(pCanvasDebugOverlay == canvas){
 		return;
 	}
 	
@@ -264,7 +264,7 @@ void deoglRenderThread::SetCanvasDebugOverlay(deoglRCanvasView *canvas){
 }
 
 void deoglRenderThread::SetCanvasOverlay(deoglRCanvasView *canvas){
-	if(canvas == pCanvasOverlay){
+	if(pCanvasOverlay == canvas){
 		return;
 	}
 	

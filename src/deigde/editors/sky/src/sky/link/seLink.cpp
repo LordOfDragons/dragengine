@@ -88,7 +88,7 @@ void seLink::NotifyCurveChanged(){
 }
 
 void seLink::SetController(seController *controller){
-	if(controller == pController){
+	if(pController == controller){
 		return;
 	}
 	
@@ -101,7 +101,7 @@ void seLink::SetController(seController *controller){
 }
 
 void seLink::SetRepeat(int repeat){
-	if(repeat == pRepeat){
+	if(pRepeat == repeat){
 		return;
 	}
 	

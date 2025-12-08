@@ -59,7 +59,7 @@ deSynthesizerSourceSynthesizer::~deSynthesizerSourceSynthesizer(){
 ///////////////
 
 void deSynthesizerSourceSynthesizer::SetSynthesizer(deSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	

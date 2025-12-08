@@ -225,7 +225,7 @@ btCollisionObject *debpColliderBone::GetStaticCollisionTestPrepare(){
 //////////////
 
 void debpColliderBone::SetDebugDrawer(deDebugDrawer *debugDrawer){
-	if(debugDrawer == pDebugDrawer){
+	if(pDebugDrawer == debugDrawer){
 		return;
 	}
 	

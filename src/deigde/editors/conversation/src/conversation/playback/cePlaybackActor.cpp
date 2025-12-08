@@ -70,7 +70,7 @@ void cePlaybackActor::SetTextBox(ceTextBox *textBox){
 }
 
 void cePlaybackActor::SetTextBoxText(ceTextBoxText *text){
-	if(text != pTextBoxText){
+	if(pTextBoxText != text){
 		if(pTextBoxText){
 			if(pTextBox){
 				pTextBox->GetTextList().Remove(pTextBoxText);

@@ -58,7 +58,7 @@ seWPUndoHistory::~seWPUndoHistory(){
 ///////////////
 
 void seWPUndoHistory::SetSkin(seSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	

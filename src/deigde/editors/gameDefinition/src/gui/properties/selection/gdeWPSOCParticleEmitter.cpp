@@ -401,7 +401,7 @@ gdeWPSOCParticleEmitter::~gdeWPSOCParticleEmitter(){
 ///////////////
 
 void gdeWPSOCParticleEmitter::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

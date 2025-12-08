@@ -564,7 +564,7 @@ aeWPController::~aeWPController(){
 ///////////////
 
 void aeWPController::SetAnimator(aeAnimator *animator){
-	if(animator == pAnimator){
+	if(pAnimator == animator){
 		return;
 	}
 	

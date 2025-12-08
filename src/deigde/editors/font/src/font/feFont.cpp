@@ -97,14 +97,14 @@ feFont::~feFont(){
 void feFont::SetLineHeight(int lineHeight){
 	DEASSERT_TRUE(lineHeight > 0)
 	
-	if(lineHeight != pLineHeight){
+	if(pLineHeight != lineHeight){
 		pLineHeight = lineHeight;
 		NotifyFontChanged();
 	}
 }
 
 void feFont::SetColorFont(bool colorFont){
-	if(colorFont != pColorFont){
+	if(pColorFont != colorFont){
 		pColorFont = colorFont;
 		NotifyFontChanged();
 	}
@@ -113,7 +113,7 @@ void feFont::SetColorFont(bool colorFont){
 void feFont::SetBaseLine(int baseLine){
 	DEASSERT_TRUE(baseLine >= 0)
 	
-	if(baseLine != pBaseLine){
+	if(pBaseLine != baseLine){
 		pBaseLine = baseLine;
 		NotifyFontChanged();
 	}
@@ -122,7 +122,7 @@ void feFont::SetBaseLine(int baseLine){
 void feFont::SetElementMode(int mode){
 	if(mode < eemBone || mode > eemPush) DETHROW(deeInvalidParam);
 	
-	if(mode != pElementMode){
+	if(pElementMode != mode){
 		pElementMode = mode;
 		NotifyModeChanged();
 	}
@@ -131,7 +131,7 @@ void feFont::SetElementMode(int mode){
 void feFont::SetWorkMode(int mode){
 	if(mode < ewmSelect || mode > ewm3DCursor) DETHROW(deeInvalidParam);
 	
-	if(mode != pWorkMode){
+	if(pWorkMode != mode){
 		pWorkMode = mode;
 		NotifyModeChanged();
 	}

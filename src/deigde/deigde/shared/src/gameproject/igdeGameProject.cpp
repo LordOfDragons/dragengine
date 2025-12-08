@@ -186,7 +186,7 @@ void igdeGameProject::SetScriptModuleVersion(const char *version){
 
 
 void igdeGameProject::SetChanged(bool changed){
-	if(changed == pChanged){
+	if(pChanged == changed){
 		return;
 	}
 	

@@ -111,7 +111,7 @@ reWPShape::~reWPShape(){
 ///////////////
 
 void reWPShape::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -133,7 +133,7 @@ void reWPShape::SetRig(reRig *rig){
 }
 
 void reWPShape::SetShape(reRigShape *shape){
-	if(shape == pShape){
+	if(pShape == shape){
 		return;
 	}
 	

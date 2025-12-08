@@ -192,7 +192,7 @@ void meHeightTerrainPFType::SetRestitution(float restitution){
 
 
 void meHeightTerrainPFType::SetCoverageDensity(int density){
-	if(density == pCoverageDensity){
+	if(pCoverageDensity == density){
 		return;
 	}
 	

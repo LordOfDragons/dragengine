@@ -476,7 +476,7 @@ gdeWPSOCBillboard::~gdeWPSOCBillboard(){
 ///////////////
 
 void gdeWPSOCBillboard::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

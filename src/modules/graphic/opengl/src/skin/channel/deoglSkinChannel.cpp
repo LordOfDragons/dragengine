@@ -184,7 +184,7 @@ void deoglSkinChannel::SetFactorV(float factor){
 }
 
 void deoglSkinChannel::SetCombinedTexture(deoglCombinedTexture *combinedTexture){
-	if(combinedTexture != pCombinedTexture){
+	if(pCombinedTexture != combinedTexture){
 		if(pCombinedTexture){
 			pCombinedTexture->RemoveUsage();
 		}

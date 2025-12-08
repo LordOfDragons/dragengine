@@ -95,7 +95,7 @@ public:
 	 * It is allowed for object to be a nullptr object.
 	 */
 	void TakeOver(T *object){
-		if(object == pObject){
+		if(pObject == object){
 			if(object){
 				// this is required since we are asked to take over the reference. since we
 				// have the same reference already we refuse to take over the reference and
@@ -230,7 +230,7 @@ public:
 	 * stored. If the new object is not nullptr a reference is added.
 	 */
 	deTObjectReference &operator=(T *object){
-		if(object == pObject){
+		if(pObject == object){
 			return *this;
 		}
 		

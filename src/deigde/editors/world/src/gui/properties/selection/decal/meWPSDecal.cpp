@@ -541,7 +541,7 @@ meWPSDecal::~meWPSDecal(){
 ///////////////
 
 void meWPSDecal::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	

@@ -459,7 +459,7 @@ meWindowVegetation::~meWindowVegetation(){
 ///////////////
 
 void meWindowVegetation::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -496,7 +496,7 @@ void meWindowVegetation::SetVLayer(meHTVegetationLayer *vlayer){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(vlayer == pVLayer){
+	if(pVLayer == vlayer){
 		return;
 	}
 	

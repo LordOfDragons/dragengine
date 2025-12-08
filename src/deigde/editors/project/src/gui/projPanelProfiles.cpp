@@ -878,7 +878,7 @@ void projPanelProfiles::SetProject(projProject *project){
 }
 
 void projPanelProfiles::UpdateProject(){
-	pListProfiles->SetEnabled(pProject != NULL);
+	pListProfiles->SetEnabled(pProject != nullptr);
 }
 
 projProfile *projPanelProfiles::GetActiveProfile() const{

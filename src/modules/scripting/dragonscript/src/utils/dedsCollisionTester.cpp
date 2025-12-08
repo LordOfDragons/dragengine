@@ -118,7 +118,7 @@ dedsCollisionTester::~dedsCollisionTester(){
 ///////////////
 
 void dedsCollisionTester::SetWorld(deWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -126,7 +126,7 @@ void dedsCollisionTester::SetWorld(deWorld *world){
 }
 
 void dedsCollisionTester::SetTouchSensor(deTouchSensor *touchSensor){
-	if(touchSensor == pTouchSensor){
+	if(pTouchSensor == touchSensor){
 		return;
 	}
 	
@@ -170,7 +170,7 @@ void dedsCollisionTester::SetCollisionShape(const decShapeList &shapeList){
 }
 
 void dedsCollisionTester::SetCollisionFilter(const decCollisionFilter &filter){
-	if(filter == pCollisionFilter){
+	if(pCollisionFilter == filter){
 		return;
 	}
 	

@@ -218,7 +218,7 @@ peeWPView::~peeWPView(){
 ///////////////
 
 void peeWPView::SetEmitter(peeEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	
@@ -266,7 +266,7 @@ void peeWPView::UpdateView(){
 		pChkEmitterEnableCasting->SetChecked(false);
 	}
 	
-	const bool enabled = pEmitter != NULL;
+	const bool enabled = pEmitter != nullptr;
 	pEditEmitterPosition->SetEnabled(enabled);
 	pEditEmitterRotation->SetEnabled(enabled);
 	pEditEmitterBurstInterval->SetEnabled(enabled);

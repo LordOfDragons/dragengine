@@ -333,7 +333,7 @@ void meObject::Dispose(){
 }
 
 void meObject::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -389,7 +389,7 @@ void meObject::SetWorld(meWorld *world){
 }
 
 void meObject::SetSelected(bool selected){
-	if(selected == pSelected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -400,7 +400,7 @@ void meObject::SetSelected(bool selected){
 }
 
 void meObject::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	
@@ -413,7 +413,7 @@ void meObject::SetActive(bool active){
 }
 
 void meObject::SetVisible(bool visible){
-	if(visible == pVisible){
+	if(pVisible == visible){
 		return;
 	}
 	
@@ -426,7 +426,7 @@ void meObject::SetVisible(bool visible){
 }
 
 void meObject::SetShowMissingTextures(bool showMissingTextures){
-	if(showMissingTextures == pShowMissingTextures){
+	if(pShowMissingTextures == showMissingTextures){
 		return;
 	}
 	
@@ -465,7 +465,7 @@ void meObject::OnGameDefinitionChanged(){
 		UpdateIDGroupList();
 	}
 	
-	if(classDef == pClassDef){
+	if(pClassDef == classDef){
 		return;
 	}
 	
@@ -646,7 +646,7 @@ void meObject::SetRotation(const decVector &rotation){
 }
 
 void meObject::SetID(const decUniqueID &id){
-	if(id == pID){
+	if(pID == id){
 		return;
 	}
 	
@@ -706,7 +706,7 @@ void meObject::UpdateDDSObjectShapes(){
 
 
 void meObject::SetAttachedTo(meObject *object){
-	if(object == pAttachedTo){
+	if(pAttachedTo == object){
 		return;
 	}
 	
@@ -1299,7 +1299,7 @@ void meObject::RemoveTexture(meObjectTexture *texture){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(texture == pActiveTexture){
+	if(pActiveTexture == texture){
 		SetActiveTexture(NULL);
 	}
 	
@@ -1343,7 +1343,7 @@ void meObject::RemoveAllTextures(){
 }
 
 void meObject::SetActiveTexture(meObjectTexture *texture){
-	if(texture != pActiveTexture){
+	if(pActiveTexture != texture){
 		pActiveTexture = texture;
 		
 		if(pWorld){

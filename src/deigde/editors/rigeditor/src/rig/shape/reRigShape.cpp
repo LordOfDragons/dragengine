@@ -114,7 +114,7 @@ void reRigShape::SetRig(reRig *rig){
 }
 
 void reRigShape::SetRigBone(reRigBone *rigBone){
-	if(rigBone == pRigBone){
+	if(pRigBone == rigBone){
 		return;
 	}
 	
@@ -153,7 +153,7 @@ void reRigShape::SetProperty(const char *property){
 }
 
 void reRigShape::SetSelected(bool selected){
-	if(selected == pSelected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -163,7 +163,7 @@ void reRigShape::SetSelected(bool selected){
 }
 
 void reRigShape::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	
@@ -315,7 +315,7 @@ void reRigShape::pUpdateShapes(){
 }
 
 void reRigShape::pSetRig(reRig *rig, bool update){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	

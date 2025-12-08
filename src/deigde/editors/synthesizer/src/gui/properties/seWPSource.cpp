@@ -379,7 +379,7 @@ seWPSource::~seWPSource(){
 ///////////////
 
 void seWPSource::SetSynthesizer(seSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	

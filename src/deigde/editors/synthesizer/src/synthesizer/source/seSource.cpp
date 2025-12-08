@@ -135,7 +135,7 @@ seSynthesizer *seSource::GetSynthesizer() const{
 }
 
 void seSource::SetSynthesizer(seSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	
@@ -219,7 +219,7 @@ void seSource::SetName(const char *name){
 }
 
 void seSource::SetEnabled(bool enabled){
-	if(enabled == pEnabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -237,7 +237,7 @@ void seSource::SetMixMode(deSynthesizerSource::eMixModes mode){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(mode == pMixMode){
+	if(pMixMode == mode){
 		return;
 	}
 	
@@ -453,7 +453,7 @@ void seSource::SynthesizerDirectoryChanged(){
 ////////////
 
 void seSource::SetActiveEffect(seEffect *effect){
-	if(effect == pActiveEffect){
+	if(pActiveEffect == effect){
 		return;
 	}
 	
@@ -514,7 +514,7 @@ void seSource::RemoveEffect(seEffect *effect){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(effect == pActiveEffect){
+	if(pActiveEffect == effect){
 		if(pEffects.GetCount() == 1){
 			SetActiveEffect(NULL);
 			

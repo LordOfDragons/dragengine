@@ -104,7 +104,7 @@ void deoglHTSTexture::SetMatrix(const decTexMatrix &matrix){
 }
 
 void deoglHTSTexture::SetSkin(deoglRSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	

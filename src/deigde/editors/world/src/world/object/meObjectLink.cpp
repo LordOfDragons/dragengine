@@ -100,7 +100,7 @@ meObjectLink::~meObjectLink(){
 ///////////////
 
 void meObjectLink::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	

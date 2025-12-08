@@ -158,7 +158,7 @@ void saeWindowMain::ResetViews(){
 
 
 void saeWindowMain::SetSAnimation(saeSAnimation *sanimation){
-	if(sanimation == pSAnimation){
+	if(pSAnimation == sanimation){
 		return;
 	}
 	

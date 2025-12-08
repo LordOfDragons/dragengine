@@ -145,7 +145,7 @@ deoglLight::~deoglLight(){
 ///////////////
 
 void deoglLight::SetParentWorld(deoglWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -515,7 +515,7 @@ void deoglLight::SourceChanged(){
 	deoglDynamicSkin * const dynamicSkin = pLight.GetDynamicSkin()
 		? (deoglDynamicSkin*)pLight.GetDynamicSkin()->GetPeerGraphic() : NULL;
 	
-	if(dynamicSkin != pDynamicSkin){
+	if(pDynamicSkin != dynamicSkin){
 		if(pDynamicSkin){
 			pDynamicSkin->RemoveListener(this);
 		}
@@ -538,7 +538,7 @@ void deoglLight::SourceChanged(){
 	deoglSkin * const lightSkin = pLight.GetLightSkin()
 		? (deoglSkin*)pLight.GetLightSkin()->GetPeerGraphic() : NULL;
 	
-	if(lightSkin != pLightSkin){
+	if(pLightSkin != lightSkin){
 		pLightSkin = lightSkin;
 		pDirtySkinStateStates = true;
 	}
@@ -547,7 +547,7 @@ void deoglLight::SourceChanged(){
 	deoglCanvasView * const lightCanvas = pLight.GetLightCanvas()
 		? (deoglCanvasView*)pLight.GetLightCanvas()->GetPeerGraphic() : NULL;
 	
-	if(lightCanvas != pLightCanvas){
+	if(pLightCanvas != lightCanvas){
 		if(pLightCanvas){
 			pLightCanvas->RemoveListener(this);
 		}

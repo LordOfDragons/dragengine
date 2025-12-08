@@ -1610,7 +1610,7 @@ void deScriptingDragonScript::pLoadGamePackage(const char *directory, const char
 		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::pLoadGamePackage", __LINE__);
 		tracePoint->AddValue("directory", directory);
 		tracePoint->AddValue("gameClass", gameClass);
-		tracePoint->AddValueBool("gameClassPresent", pClsGame != NULL);
+		tracePoint->AddValueBool("gameClassPresent", pClsGame != nullptr);
 		if(package){
 			tracePoint->AddValueInt("packageClassCount", package->GetClassCount());
 			tracePoint->AddValueInt("packageHostClassCount", package->GetHostClassCount());

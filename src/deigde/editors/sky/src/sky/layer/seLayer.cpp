@@ -84,7 +84,7 @@ seLayer::~seLayer(){
 ///////////////
 
 void seLayer::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	
@@ -223,7 +223,7 @@ void seLayer::SetAmbientIntensity(float intensity){
 }
 
 void seLayer::SetMultiplyBySkyLight(bool multiply){
-	if(multiply == pMulBySkyLight){
+	if(pMulBySkyLight == multiply){
 		return;
 	}
 	
@@ -234,7 +234,7 @@ void seLayer::SetMultiplyBySkyLight(bool multiply){
 }
 
 void seLayer::SetMultiplyBySkyColor(bool multiply){
-	if(multiply == pMulBySkyColor){
+	if(pMulBySkyColor == multiply){
 		return;
 	}
 	
@@ -354,7 +354,7 @@ void seLayer::RemoveAllBodies(){
 }
 
 void seLayer::SetActiveBody(seBody *body){
-	if(body == pActiveBody){
+	if(pActiveBody == body){
 		return;
 	}
 	
@@ -394,7 +394,7 @@ seControllerTarget &seLayer::GetTarget(deSkyLayer::eTargets target){
 }
 
 void seLayer::SetActiveTarget(deSkyLayer::eTargets target){
-	if(target == pActiveTarget){
+	if(pActiveTarget == target){
 		return;
 	}
 	

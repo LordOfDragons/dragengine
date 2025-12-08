@@ -97,7 +97,7 @@ void debpPhysicsBody::SetDynamicsWorld(debpCollisionWorld *dynWorld){
 }
 
 void debpPhysicsBody::SetShape(debpBulletShape *shape){
-	if(shape == pShape){
+	if(pShape == shape){
 		return;
 	}
 	
@@ -315,7 +315,7 @@ void debpPhysicsBody::SetResponseType(eResponseTypes responseType){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(responseType == pResponseType){
+	if(pResponseType == responseType){
 		return;
 	}
 	

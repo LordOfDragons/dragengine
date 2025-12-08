@@ -95,7 +95,7 @@ void ceCAPlayerChoiceOption::SetText(const decUnicodeString &text){
 }
 
 void ceCAPlayerChoiceOption::SetCondition(ceConversationCondition *condition){
-	if(condition == pCondition){
+	if(pCondition == condition){
 		return;
 	}
 	

@@ -228,7 +228,7 @@ gdeWPSelection::~gdeWPSelection(){
 ///////////////
 
 void gdeWPSelection::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

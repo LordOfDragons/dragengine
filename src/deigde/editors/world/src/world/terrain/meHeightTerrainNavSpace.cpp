@@ -116,7 +116,7 @@ meHeightTerrainNavSpace::~meHeightTerrainNavSpace(){
 ///////////////
 
 void meHeightTerrainNavSpace::SetHTSector(meHeightTerrainSector *sector){
-	if(sector == pHTSector){
+	if(pHTSector == sector){
 		return;
 	}
 	
@@ -381,7 +381,7 @@ void meHeightTerrainNavSpace::UpdateDDColors(){
 
 
 void meHeightTerrainNavSpace::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	
@@ -486,7 +486,7 @@ void meHeightTerrainNavSpace::RemoveType(meHeightTerrainNavSpaceType *type){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(type == pActiveType){
+	if(pActiveType == type){
 		if(pTypes.GetCount() == 1){
 			SetActiveType(NULL);
 			
@@ -526,7 +526,7 @@ void meHeightTerrainNavSpace::RemoveAllTypes(){
 }
 
 void meHeightTerrainNavSpace::SetActiveType(meHeightTerrainNavSpaceType *type){
-	if(type == pActiveType){
+	if(pActiveType == type){
 		return;
 	}
 	
@@ -574,7 +574,7 @@ void meHeightTerrainNavSpace::SetPathNavSpace(const char *path, bool load){
 }
 
 void meHeightTerrainNavSpace::SetNavSpaceChanged(bool changed){
-	if(changed == pNavSpaceChanged){
+	if(pNavSpaceChanged == changed){
 		return;
 	}
 	

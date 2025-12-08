@@ -56,7 +56,7 @@ saeWPUndoHistory::~saeWPUndoHistory(){
 ///////////////
 
 void saeWPUndoHistory::SetSAnimation(saeSAnimation *sanimation){
-	if(sanimation == pSAnimation){
+	if(pSAnimation == sanimation){
 		return;
 	}
 	

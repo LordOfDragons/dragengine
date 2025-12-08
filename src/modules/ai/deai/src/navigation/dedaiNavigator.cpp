@@ -94,7 +94,7 @@ dedaiNavigator::~dedaiNavigator(){
 ///////////////
 
 void dedaiNavigator::SetParentWorld(dedaiWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -629,7 +629,7 @@ void dedaiNavigator::pCleanUp(){
 
 void dedaiNavigator::pUpdateTypeMappings(){
 	const int typeCount = pLayer->GetCostTable().GetTypeCount();
-	if(typeCount != pTypeMappingCount){
+	if(pTypeMappingCount != typeCount){
 		if(pTypeMappings){
 			delete [] pTypeMappings;
 			pTypeMappings = NULL;

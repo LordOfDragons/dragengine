@@ -879,7 +879,7 @@ seWPNode::~seWPNode(){
 ///////////////
 
 void seWPNode::SetSkin(seSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	

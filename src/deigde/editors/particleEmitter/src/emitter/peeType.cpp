@@ -151,7 +151,7 @@ peeType::~peeType(){
 ///////////////
 
 void peeType::SetEmitter(peeEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	
@@ -216,7 +216,7 @@ void peeType::SetCastFrom(deParticleEmitterType::eCastFrom castFrom){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(castFrom == pCastFrom){
+	if(pCastFrom == castFrom){
 		return;
 	}
 	
@@ -229,7 +229,7 @@ void peeType::SetSimulationType(deParticleEmitterType::eSimulationTypes simulati
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(simulationType == pSimulationType){
+	if(pSimulationType == simulationType){
 		return;
 	}
 	
@@ -238,7 +238,7 @@ void peeType::SetSimulationType(deParticleEmitterType::eSimulationTypes simulati
 }
 
 void peeType::SetIntervalAsDistance(bool intervalAsDistance){
-	if(intervalAsDistance == pIntervalAsDistance){
+	if(pIntervalAsDistance == intervalAsDistance){
 		return;
 	}
 	
@@ -270,7 +270,7 @@ void peeType::SetTrailController(deParticleEmitterType::eEmitControllers control
 }
 
 void peeType::SetActiveTrailController(deParticleEmitterType::eEmitControllers index){
-	if(index == pActiveTrailController){
+	if(pActiveTrailController == index){
 		return;
 	}
 	
@@ -294,7 +294,7 @@ void peeType::SetPhysicsSize(float size){
 }
 
 void peeType::SetCollisionResponse(deParticleEmitterType::eCollisionResponses response){
-	if(response == pCollisionResponse){
+	if(pCollisionResponse == response){
 		return;
 	}
 	
@@ -337,7 +337,7 @@ void peeType::SetEmitController(deParticleEmitterType::eEmitControllers controll
 }
 
 void peeType::SetActiveEmitController(deParticleEmitterType::eEmitControllers index){
-	if(index == pActiveEmitController){
+	if(pActiveEmitController == index){
 		return;
 	}
 	

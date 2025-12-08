@@ -107,7 +107,7 @@ void deoglVideoPlayer::SetCurrentFrame(int frame){
 	}
 	
 	frame = decMath::clamp(frame, 0, pVideo->GetVideo().GetFrameCount() - 1);
-	if(frame == pCurFrame){
+	if(pCurFrame == frame){
 		return;
 	}
 	

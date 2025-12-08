@@ -749,7 +749,7 @@ seWPTexture::~seWPTexture(){
 ///////////////
 
 void seWPTexture::SetSkin(seSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	

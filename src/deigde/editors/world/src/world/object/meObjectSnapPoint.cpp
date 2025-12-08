@@ -132,7 +132,7 @@ meObjectSnapPoint::~meObjectSnapPoint(){
 ///////////////
 
 void meObjectSnapPoint::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	

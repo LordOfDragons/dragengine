@@ -255,7 +255,7 @@ void igdeGDClass::Check(){
 
 
 void igdeGDClass::SetPreviewImage(deImage *image){
-	if(image == pPreviewImage){
+	if(pPreviewImage == image){
 		return;
 	}
 	

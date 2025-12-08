@@ -138,7 +138,7 @@ void deoglPropField::SyncToRender(){
 
 
 void deoglPropField::SetLODLevel(int level){
-	if(level != pLODLevel){
+	if(pLODLevel != level){
 		pLODLevel = level;
 		pDirtyInstances = true;
 	}

@@ -219,7 +219,7 @@ meWPSNavSpace::~meWPSNavSpace(){
 ///////////////
 
 void meWPSNavSpace::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	

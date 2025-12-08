@@ -659,7 +659,7 @@ meWPView::~meWPView(){
 ///////////////
 
 void meWPView::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	

@@ -60,7 +60,7 @@ deoglRDSRenderableCamera::~deoglRDSRenderableCamera(){
 ///////////////
 
 void deoglRDSRenderableCamera::SetCamera(deoglRCamera *camera){
-	if(camera == pCamera){
+	if(pCamera == camera){
 		return;
 	}
 	

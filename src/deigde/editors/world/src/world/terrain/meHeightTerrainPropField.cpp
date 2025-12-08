@@ -96,7 +96,7 @@ meHeightTerrainPropField::~meHeightTerrainPropField(){
 ///////////////
 
 void meHeightTerrainPropField::SetHTSector(meHeightTerrainSector *htsector){
-	if(htsector == pHTSector){
+	if(pHTSector == htsector){
 		return;
 	}
 	

@@ -159,11 +159,11 @@ void seDynamicSkin::RemoveAllRenderables(){
 }
 
 bool seDynamicSkin::HasActiveRenderable() const{
-	return pActiveRenderable != NULL;
+	return pActiveRenderable != nullptr;
 }
 
 void seDynamicSkin::SetActiveRenderable(seDynamicSkinRenderable *renderable){
-	if(renderable != pActiveRenderable){
+	if(pActiveRenderable != renderable){
 		if(pActiveRenderable){
 			pActiveRenderable->SetActive(false);
 		}

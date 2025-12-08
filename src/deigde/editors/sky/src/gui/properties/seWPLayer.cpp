@@ -969,7 +969,7 @@ seWPLayer::~seWPLayer(){
 ///////////////
 
 void seWPLayer::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	

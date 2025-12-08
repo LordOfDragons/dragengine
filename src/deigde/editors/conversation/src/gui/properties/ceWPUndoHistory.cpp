@@ -60,7 +60,7 @@ ceWPUndoHistory::~ceWPUndoHistory(){
 ///////////////
 
 void ceWPUndoHistory::SetConversation(ceConversation *conversation){
-	if(conversation == pConversation){
+	if(pConversation == conversation){
 		return;
 	}
 	

@@ -163,7 +163,7 @@ void seWindowMain::ResetViews(){
 
 
 void seWindowMain::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	

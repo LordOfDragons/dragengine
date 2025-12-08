@@ -236,7 +236,7 @@ void meWindowMain::ResetViews(){
 
 
 void meWindowMain::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	

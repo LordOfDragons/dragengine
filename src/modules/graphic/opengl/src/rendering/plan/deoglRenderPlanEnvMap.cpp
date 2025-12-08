@@ -53,7 +53,7 @@ deoglRenderPlanEnvMap::~deoglRenderPlanEnvMap(){
 ///////////////
 
 void deoglRenderPlanEnvMap::SetEnvMap(deoglEnvironmentMap *envmap){
-	if(envmap == pEnvMap){
+	if(pEnvMap == envmap){
 		return;
 	}
 	

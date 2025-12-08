@@ -2316,7 +2316,7 @@ void debpColliderComponent::ComponentMeshDirty(){
 
 
 bool debpColliderComponent::IsSimpleShape() const{
-	return pSimplePhyBody != NULL;
+	return pSimplePhyBody != nullptr;
 }
 
 

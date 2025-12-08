@@ -157,7 +157,7 @@ deoglRenderPlanSkyLight::~deoglRenderPlanSkyLight(){
 ///////////////
 
 void deoglRenderPlanSkyLight::SetOcclusionTest(deoglOcclusionTest *occlusionTest){
-	if(occlusionTest == pOcclusionTest){
+	if(pOcclusionTest == occlusionTest){
 		return;
 	}
 	

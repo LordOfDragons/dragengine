@@ -143,7 +143,7 @@ void seWindowMain::ResetViews(){
 
 
 void seWindowMain::SetSynthesizer(seSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	

@@ -350,7 +350,7 @@ void deComponent::SetModelAndSkin(deModel *model, deSkin *skin){
 }
 
 void deComponent::SetOcclusionMesh(deOcclusionMesh *occmesh){
-	if(occmesh == pOcclusionMesh){
+	if(pOcclusionMesh == occmesh){
 		return;
 	}
 	
@@ -386,7 +386,7 @@ const decDMatrix &deComponent::GetInverseMatrix(){
 }
 
 void deComponent::SetVisible(bool visible){
-	if(visible == pVisible){
+	if(pVisible == visible){
 		return;
 	}
 	
@@ -404,7 +404,7 @@ void deComponent::SetVisible(bool visible){
 }
 
 void deComponent::SetHintMovement(eMovementHints hint){
-	if(hint == pHintMovement){
+	if(pHintMovement == hint){
 		return;
 	}
 	
@@ -422,7 +422,7 @@ void deComponent::SetHintMovement(eMovementHints hint){
 }
 
 void deComponent::SetEnableGI(bool enable){
-	if(enable == pEnableGI){
+	if(pEnableGI == enable){
 		return;
 	}
 	
@@ -443,7 +443,7 @@ void deComponent::SetHintGIImportance(int importance){
 	DEASSERT_TRUE(importance >= 0)
 	DEASSERT_TRUE(importance <= 4)
 	
-	if(importance == pHintGIImportance){
+	if(pHintGIImportance == importance){
 		return;
 	}
 	
@@ -461,7 +461,7 @@ void deComponent::SetHintGIImportance(int importance){
 }
 
 void deComponent::SetAnimator(deAnimator *animator){
-	if(animator == pAnimator){
+	if(pAnimator == animator){
 		return;
 	}
 	
@@ -475,7 +475,7 @@ void deComponent::SetAnimator(deAnimator *animator){
 
 
 void deComponent::SetLayerMask(const decLayerMask &layerMask){
-	if(layerMask == pLayerMask){
+	if(pLayerMask == layerMask){
 		return;
 	}
 	
@@ -620,7 +620,7 @@ void deComponent::CopyBonesToComponent(deComponent &component){
 
 
 void deComponent::SetDynamicSkin(deDynamicSkin *dynamicSkin){
-	if(dynamicSkin == pDynamicSkin){
+	if(pDynamicSkin == dynamicSkin){
 		return;
 	}
 	
@@ -682,10 +682,10 @@ void deComponent::RemoveDecal(deDecal *decal){
 	if(decal->GetLLComponentNext()){
 		decal->GetLLComponentNext()->SetLLComponentPrev(decal->GetLLComponentPrev());
 	}
-	if(decal == pDecalRoot){
+	if(pDecalRoot == decal){
 		pDecalRoot = decal->GetLLComponentNext();
 	}
-	if(decal == pDecalTail){
+	if(pDecalTail == decal){
 		pDecalTail = decal->GetLLComponentPrev();
 	}
 	pDecalCount--;
@@ -762,7 +762,7 @@ void deComponent::PrepareBones(){
 
 
 void deComponent::SetAnimatorTask(deParallelTask *task){
-	if(task == pAnimatorTask){
+	if(pAnimatorTask == task){
 		return;
 	}
 	

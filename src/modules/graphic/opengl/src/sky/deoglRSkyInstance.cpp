@@ -85,7 +85,7 @@ deoglRSkyInstance::~deoglRSkyInstance(){
 ///////////////
 
 void deoglRSkyInstance::SetParentWorld(deoglRWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -100,7 +100,7 @@ void deoglRSkyInstance::SetParentWorld(deoglRWorld *world){
 
 void deoglRSkyInstance::SetRSky(deoglRSky *rsky){
 	// called during synchronization time
-	if(rsky == pRSky){
+	if(pRSky == rsky){
 		return;
 	}
 	
@@ -113,7 +113,7 @@ void deoglRSkyInstance::SetRSky(deoglRSky *rsky){
 
 
 void deoglRSkyInstance::SetOrder(int order){
-	if(order == pOrder){
+	if(pOrder == order){
 		return;
 	}
 	
@@ -143,7 +143,7 @@ float deoglRSkyInstance::GetControllerStateAt(int index) const{
 void deoglRSkyInstance::UpdateControllerStates(const deSkyInstance &instance){
 	const int count = instance.GetControllerCount();
 	
-	if(count != pControllerStateCount){
+	if(pControllerStateCount != count){
 		if(pControllerStates){
 			delete [] pControllerStates;
 			pControllerStates = NULL;

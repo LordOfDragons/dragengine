@@ -668,7 +668,7 @@ saeWPSAnim::~saeWPSAnim(){
 ///////////////
 
 void saeWPSAnim::SetSAnimation(saeSAnimation *sanimation){
-	if(sanimation == pSAnimation){
+	if(pSAnimation == sanimation){
 		return;
 	}
 	

@@ -496,7 +496,7 @@ reWPConstraint::~reWPConstraint(){
 ///////////////
 
 void reWPConstraint::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -518,7 +518,7 @@ void reWPConstraint::SetRig(reRig *rig){
 }
 
 void reWPConstraint::SetConstraint(reRigConstraint *constraint){
-	if(constraint == pConstraint){
+	if(pConstraint == constraint){
 		return;
 	}
 	
@@ -632,7 +632,7 @@ void reWPConstraint::UpdateConstraint(){
 	}
 	
 	// enable UI
-	const bool enabled = pConstraint != NULL;
+	const bool enabled = pConstraint != nullptr;
 	pEditBoneParent->SetEnabled(enabled);
 	pCBBoneTarget->SetEnabled(enabled);
 	pEditPosition->SetEnabled(enabled);

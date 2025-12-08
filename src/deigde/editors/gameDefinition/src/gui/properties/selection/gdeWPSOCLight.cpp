@@ -666,7 +666,7 @@ gdeWPSOCLight::~gdeWPSOCLight(){
 ///////////////
 
 void gdeWPSOCLight::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

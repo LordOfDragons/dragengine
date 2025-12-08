@@ -125,7 +125,7 @@ meObjectShape::~meObjectShape(){
 ///////////////
 
 void meObjectShape::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -180,7 +180,7 @@ void meObjectShape::SetShape(const decShape &shape){
 
 
 void meObjectShape::SetSelected(bool selected){
-	if(selected == pSelected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -189,7 +189,7 @@ void meObjectShape::SetSelected(bool selected){
 }
 
 void meObjectShape::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	

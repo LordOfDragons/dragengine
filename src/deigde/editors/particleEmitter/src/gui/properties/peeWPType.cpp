@@ -898,7 +898,7 @@ peeWPType::~peeWPType(){
 ///////////////
 
 void peeWPType::SetEmitter(peeEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	
@@ -958,7 +958,7 @@ void peeWPType::UpdateEmitter(){
 		pChkEmitBurst->SetChecked(false);
 	}
 	
-	const bool enabled = pEmitter != NULL;
+	const bool enabled = pEmitter != nullptr;
 	pEditBurstLifetime->SetEnabled(enabled);
 	pChkEmitBurst->SetEnabled(enabled);
 }
@@ -1082,8 +1082,8 @@ void peeWPType::UpdateControllerList(){
 		pCBParamCtrlValue->AddItem("< None >", NULL, NULL);
 		pCBParamCtrlSpread->AddItem("< None >", NULL, NULL);
 		
-		pCBParamCtrlValue->SetEnabled(pEmitter != NULL);
-		pCBParamCtrlSpread->SetEnabled(pEmitter != NULL);
+		pCBParamCtrlValue->SetEnabled(pEmitter != nullptr);
+		pCBParamCtrlSpread->SetEnabled(pEmitter != nullptr);
 		
 		if(!pEmitter){
 			return;

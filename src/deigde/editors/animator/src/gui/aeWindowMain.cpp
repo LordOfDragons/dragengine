@@ -183,7 +183,7 @@ void aeWindowMain::ResetViews(){
 
 
 void aeWindowMain::SetAnimator(aeAnimator *animator){
-	if(animator == pAnimator){
+	if(pAnimator == animator){
 		return;
 	}
 	

@@ -98,7 +98,7 @@ seViewSynthesizer::~seViewSynthesizer(){
 ///////////////
 
 void seViewSynthesizer::SetSynthesizer(seSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	

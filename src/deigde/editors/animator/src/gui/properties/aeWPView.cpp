@@ -694,7 +694,7 @@ aeWPView::~aeWPView(){
 ///////////////
 
 void aeWPView::SetAnimator(aeAnimator *animator){
-	if(animator == pAnimator){
+	if(pAnimator == animator){
 		return;
 	}
 	

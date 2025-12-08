@@ -119,7 +119,7 @@ seWPSky::~seWPSky(){
 ///////////////
 
 void seWPSky::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	
@@ -148,7 +148,7 @@ void seWPSky::UpdateSky(){
 		pClrBg->SetColor(decColor(1.0f, 1.0f, 1.0f));
 	}
 	
-	const bool enabled = pSky != NULL;
+	const bool enabled = pSky != nullptr;
 	
 	pClrBg->SetEnabled(enabled);
 }

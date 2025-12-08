@@ -603,7 +603,7 @@ void aeAnimatorLocomotion::SetShowShapes(bool showShapes){
 
 
 void aeAnimatorLocomotion::SetLocomotionType(eLocomotionTypes type){
-	if(type == pLocomotionType){
+	if(pLocomotionType == type){
 		return;
 	}
 	
@@ -770,7 +770,7 @@ void aeAnimatorLocomotion::SetUseLegPairCount(int pairCount){
 
 
 void aeAnimatorLocomotion::SetEnabled(bool enabled){
-	if(enabled != pEnabled){
+	if(pEnabled != enabled){
 		pEnabled = enabled;
 		
 		if(pCollider){
@@ -1354,7 +1354,7 @@ void aeAnimatorLocomotion::pUpdateIsMoving(){
 	}
 	
 	// apply to locomotion
-	if(isMoving != pIsMoving){
+	if(pIsMoving != isMoving){
 		if(isMoving){
 			pIsTurningIP = false;
 			pTurnIP = 0.0f;

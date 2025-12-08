@@ -62,7 +62,7 @@ deoglRCanvasVideoPlayer::~deoglRCanvasVideoPlayer(){
 ///////////////
 
 void deoglRCanvasVideoPlayer::SetVideoPlayer(deoglRVideoPlayer *videoPlayer){
-	if(videoPlayer == pVideoPlayer){
+	if(pVideoPlayer == videoPlayer){
 		return;
 	}
 	

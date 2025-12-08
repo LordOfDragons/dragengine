@@ -74,7 +74,7 @@ deoglRVideoPlayer::~deoglRVideoPlayer(){
 ///////////////
 
 void deoglRVideoPlayer::SetVideo(deoglRVideo *video){
-	if(video == pVideo){
+	if(pVideo == video){
 		return;
 	}
 	

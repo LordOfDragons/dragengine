@@ -324,7 +324,7 @@ gdeWPSOCCamera::~gdeWPSOCCamera(){
 ///////////////
 
 void gdeWPSOCCamera::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

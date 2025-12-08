@@ -122,7 +122,7 @@ void ceConversationInfoBox::SetTextColor(const decColor &color){
 void ceConversationInfoBox::SetTextSize(int size){
 	size = decMath::max(size, 1);
 	
-	if(size == pTextSize){
+	if(pTextSize == size){
 		return;
 	}
 	

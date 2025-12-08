@@ -386,7 +386,7 @@ seWPLink::~seWPLink(){
 ///////////////
 
 void seWPLink::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	

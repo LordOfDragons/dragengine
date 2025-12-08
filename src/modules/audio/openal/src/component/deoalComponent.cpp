@@ -108,7 +108,7 @@ deoalComponent::~deoalComponent(){
 ///////////////
 
 void deoalComponent::SetParentWorld(deoalWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	

@@ -136,7 +136,7 @@ void sePropertyNode::SetParent(sePropertyNodeGroup *parent){
 }
 
 void sePropertyNode::SetMaskParent(sePropertyNode *maskParent){
-	if(maskParent == pMaskParent){
+	if(pMaskParent == maskParent){
 		return;
 	}
 	
@@ -168,7 +168,7 @@ void sePropertyNode::SetPosition(const decPoint3 &position){
 }
 
 void sePropertyNode::SetSize(const decPoint3 &size){
-	if(size == pSize){
+	if(pSize == size){
 		return;
 	}
 	
@@ -327,7 +327,7 @@ void sePropertyNode::SetTransparency(float transparency){
 }
 
 void sePropertyNode::SetMask(sePropertyNode *mask){
-	if(mask == pMask){
+	if(pMask == mask){
 		return;
 	}
 	
@@ -346,7 +346,7 @@ void sePropertyNode::SetMask(sePropertyNode *mask){
 }
 
 void sePropertyNode::SetCombineMode(deSkinPropertyNode::eCombineModes mode){
-	if(mode == pCombineMode){
+	if(pCombineMode == mode){
 		return;
 	}
 	

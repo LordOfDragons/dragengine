@@ -74,7 +74,7 @@ seLink::~seLink(){
 ///////////////
 
 void seLink::SetSynthesizer(seSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	
@@ -122,7 +122,7 @@ void seLink::SetName(const char *name){
 }
 
 void seLink::SetController(seController *controller){
-	if(controller == pController){
+	if(pController == controller){
 		return;
 	}
 	
@@ -141,7 +141,7 @@ void seLink::SetRepeat(int repeat){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(repeat == pRepeat){
+	if(pRepeat == repeat){
 		return;
 	}
 	

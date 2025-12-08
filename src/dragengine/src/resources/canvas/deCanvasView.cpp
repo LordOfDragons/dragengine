@@ -90,10 +90,10 @@ void deCanvasView::RemoveCanvas(deCanvas *canvas){
 	if(canvas->GetLLViewNext()){
 		canvas->GetLLViewNext()->SetLLViewPrev(canvas->GetLLViewPrev());
 	}
-	if(canvas == pCanvasRoot){
+	if(pCanvasRoot == canvas){
 		pCanvasRoot = canvas->GetLLViewNext();
 	}
-	if(canvas == pCanvasTail){
+	if(pCanvasTail == canvas){
 		pCanvasTail = canvas->GetLLViewPrev();
 	}
 	pCanvasCount--;

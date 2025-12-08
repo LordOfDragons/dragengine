@@ -75,7 +75,7 @@ void debpGhostObject::SetDynamicsWorld(debpCollisionWorld *dynWorld){
 }
 
 void debpGhostObject::SetShape(debpBulletShape *shape){
-	if(shape == pShape){
+	if(pShape == shape){
 		return;
 	}
 	

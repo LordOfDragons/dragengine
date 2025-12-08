@@ -692,7 +692,7 @@ reWPView::~reWPView(){
 ///////////////
 
 void reWPView::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -747,7 +747,7 @@ void reWPView::UpdateResources(){
 		pEditAnimPath->ClearPath();
 	}
 	
-	const bool enabled = pRig != NULL;
+	const bool enabled = pRig != nullptr;
 	pEditModelPath->SetEnabled(enabled);
 	pEditSkinPath->SetEnabled(enabled);
 	pEditAnimPath->SetEnabled(enabled);
@@ -864,7 +864,7 @@ void reWPView::UpdateView(){
 		pEditLocalGravity->SetVector(decVector());
 	}
 	
-	const bool enabled = pRig != NULL;
+	const bool enabled = pRig != nullptr;
 	
 	pCBAnimMoves->SetEnabled(enabled);
 	pSldMoveTime->SetEnabled(enabled);

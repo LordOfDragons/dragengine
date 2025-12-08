@@ -192,7 +192,7 @@ void deoglComponentTexture::TextureChanged(const deComponentTexture &texture){
 		skin = (deoglSkin*)texture.GetSkin()->GetPeerGraphic();
 	}
 	
-	if(skin != pSkin){
+	if(pSkin != skin){
 		pSkin = skin;
 		pDirtyRenderableMapping = true;
 		pComponent.DirtyTextureUseSkin();
@@ -204,7 +204,7 @@ void deoglComponentTexture::TextureChanged(const deComponentTexture &texture){
 		dynamicSkin = (deoglDynamicSkin*)texture.GetDynamicSkin()->GetPeerGraphic();
 	}
 	
-	if(dynamicSkin != pDynamicSkin){
+	if(pDynamicSkin != dynamicSkin){
 		if(pDynamicSkin){
 			pDynamicSkin->RemoveListener(this);
 		}

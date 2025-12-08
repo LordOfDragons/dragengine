@@ -404,7 +404,7 @@ void seSky::RemoveAllControllers(){
 }
 
 void seSky::SetActiveController(seController *controller){
-	if(controller == pActiveController){
+	if(pActiveController == controller){
 		return;
 	}
 	
@@ -511,7 +511,7 @@ void seSky::RemoveAllLinks(){
 }
 
 void seSky::SetActiveLink(seLink *link){
-	if(link == pActiveLink){
+	if(pActiveLink == link){
 		return;
 	}
 	
@@ -627,7 +627,7 @@ void seSky::RemoveAllLayers(){
 }
 
 void seSky::SetActiveLayer(seLayer *layer){
-	if(layer == pActiveLayer){
+	if(pActiveLayer == layer){
 		return;
 	}
 	

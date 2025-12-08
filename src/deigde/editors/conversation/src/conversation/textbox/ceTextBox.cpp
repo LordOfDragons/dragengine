@@ -117,7 +117,7 @@ void ceTextBox::SetTextColor(const decColor &color){
 void ceTextBox::SetTextSize(int size){
 	size = decMath::max(size, 1);
 	
-	if(size == pTextSize){
+	if(pTextSize == size){
 		return;
 	}
 	
@@ -144,7 +144,7 @@ void ceTextBox::SetTextOffset(int offset){
 		offset = 0;
 	}
 	
-	if(offset == pTextOffset){
+	if(pTextOffset == offset){
 		return;
 	}
 	

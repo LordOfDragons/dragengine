@@ -112,7 +112,7 @@ deoalSpeaker::~deoalSpeaker(){
 ///////////////
 
 void deoalSpeaker::SetParentWorld(deoalWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	

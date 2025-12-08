@@ -61,7 +61,7 @@ dedsStyledText::~dedsStyledText(){
 void dedsStyledText::SetRootNode(dedsStyledTextNode* node){
 	if(!node) DSTHROW(dueInvalidParam);
 	
-	if(node != pRootNode){
+	if(pRootNode != node){
 		pRootNode = node;
 		node->AddReference();
 	}

@@ -145,7 +145,7 @@ meWindowChangelog::~meWindowChangelog(){
 ///////////////
 
 void meWindowChangelog::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	

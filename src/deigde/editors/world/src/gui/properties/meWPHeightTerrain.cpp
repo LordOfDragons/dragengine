@@ -1562,7 +1562,7 @@ meWPHeightTerrain::~meWPHeightTerrain(){
 ///////////////
 
 void meWPHeightTerrain::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -1638,7 +1638,7 @@ void meWPHeightTerrain::SetTexture(meHeightTerrainTexture *texture){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(texture == pTexture){
+	if(pTexture == texture){
 		return;
 	}
 	
@@ -1664,7 +1664,7 @@ void meWPHeightTerrain::SetVLayer(meHTVegetationLayer *vlayer){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(vlayer == pVLayer){
+	if(pVLayer == vlayer){
 		return;
 	}
 	
@@ -1684,7 +1684,7 @@ void meWPHeightTerrain::SetVVariation(meHTVVariation *variation){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(variation == pVVariation){
+	if(pVVariation == variation){
 		return;
 	}
 	

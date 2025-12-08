@@ -514,7 +514,7 @@ seWPDynamicSkin::~seWPDynamicSkin(){
 ///////////////
 
 void seWPDynamicSkin::SetSkin(seSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	

@@ -485,7 +485,7 @@ gdeWPSOCSpeaker::~gdeWPSOCSpeaker(){
 ///////////////
 
 void gdeWPSOCSpeaker::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

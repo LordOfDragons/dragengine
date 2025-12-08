@@ -150,7 +150,7 @@ deoglRParticleEmitterInstance::~deoglRParticleEmitterInstance(){
 ///////////////
 
 void deoglRParticleEmitterInstance::SetEmitter(deoglRParticleEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	
@@ -159,7 +159,7 @@ void deoglRParticleEmitterInstance::SetEmitter(deoglRParticleEmitter *emitter){
 }
 
 void deoglRParticleEmitterInstance::SetParentWorld(deoglRWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -265,7 +265,7 @@ void deoglRParticleEmitterInstance::UpdateExtends(const deParticleEmitterInstanc
 
 
 void deoglRParticleEmitterInstance::SetRenderEnvMap(deoglEnvironmentMap *envmap){
-	if(envmap == pRenderEnvMap){
+	if(pRenderEnvMap == envmap){
 		return;
 	}
 	

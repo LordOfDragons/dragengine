@@ -95,7 +95,7 @@ debpDebug::~debpDebug(){
 ///////////////
 
 void debpDebug::SetEnabled(bool enabled){
-	if(enabled == pEnabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	

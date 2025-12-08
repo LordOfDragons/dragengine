@@ -60,7 +60,7 @@ void deResourceLoaderInfo::SetResourceType(deResourceLoader::eResourceType resou
 }
 
 void deResourceLoaderInfo::SetResource(deFileResource *resource){
-	if(resource == pResource){
+	if(pResource == resource){
 		return;
 	}
 	

@@ -386,7 +386,7 @@ void reRig::SetCentralMassPoint(const decVector &cmp){
 }
 
 void reRig::SetModelCollision(bool modelCollision){
-	if(modelCollision == pModelCollision){
+	if(pModelCollision == modelCollision){
 		return;
 	}
 	
@@ -417,7 +417,7 @@ void reRig::SetMoveTime(float moveTime){
 }
 
 void reRig::SetShowBones(bool showBones){
-	if(showBones == pShowBones){
+	if(pShowBones == showBones){
 		return;
 	}
 	
@@ -428,7 +428,7 @@ void reRig::SetShowBones(bool showBones){
 }
 
 void reRig::SetShowRigShapes(bool showShapes){
-	if(showShapes != pShowRigShapes){
+	if(pShowRigShapes != showShapes){
 		pShowRigShapes = showShapes;
 		
 		pShapeShowStateChanged();
@@ -437,7 +437,7 @@ void reRig::SetShowRigShapes(bool showShapes){
 }
 
 void reRig::SetShowAllBoneShapes(bool showShapes){
-	if(showShapes != pShowAllBoneShapes){
+	if(pShowAllBoneShapes != showShapes){
 		pShowAllBoneShapes = showShapes;
 		
 		pBoneShowStateChanged();
@@ -446,7 +446,7 @@ void reRig::SetShowAllBoneShapes(bool showShapes){
 }
 
 void reRig::SetShapeXRay(bool xray){
-	if(xray == pShowShapeXRay){
+	if(pShowShapeXRay == xray){
 		return;
 	}
 	
@@ -459,7 +459,7 @@ void reRig::SetShapeXRay(bool xray){
 }
 
 void reRig::SetShowRigConstraints(bool showConstraints){
-	if(showConstraints != pShowRigConstraints){
+	if(pShowRigConstraints != showConstraints){
 		pShowRigConstraints = showConstraints;
 		
 		pConstraintShowStateChanged();
@@ -468,7 +468,7 @@ void reRig::SetShowRigConstraints(bool showConstraints){
 }
 
 void reRig::SetShowAllBoneConstraints(bool showConstraints){
-	if(showConstraints != pShowAllBoneConstraints){
+	if(pShowAllBoneConstraints != showConstraints){
 		pShowAllBoneConstraints = showConstraints;
 		
 		pBoneShowStateChanged();
@@ -477,7 +477,7 @@ void reRig::SetShowAllBoneConstraints(bool showConstraints){
 }
 
 void reRig::SetShowRigPushes(bool showPushes){
-	if(showPushes != pShowRigPushes){
+	if(pShowRigPushes != showPushes){
 		pShowRigPushes = showPushes;
 		
 		pPushShowStateChanged();
@@ -486,7 +486,7 @@ void reRig::SetShowRigPushes(bool showPushes){
 }
 
 void reRig::SetUseRestPose(bool useRestPose){
-	if(useRestPose == pUseRestPose){
+	if(pUseRestPose == useRestPose){
 		return;
 	}
 	
@@ -755,7 +755,7 @@ void reRig::SetElementMode(eElementModes mode){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(mode != pElementMode){
+	if(pElementMode != mode){
 		pElementMode = mode;
 		NotifyModeChanged();
 	}
@@ -766,7 +766,7 @@ void reRig::SetWorkMode(eWorkModes mode){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(mode != pWorkMode){
+	if(pWorkMode != mode){
 		pWorkMode = mode;
 		NotifyModeChanged();
 	}
@@ -789,7 +789,7 @@ void reRig::SetUseLocal(bool useLocal){
 }
 
 void reRig::SetSimulationRunning(bool simulationRunning){
-	if(simulationRunning == pSimulationRunning){
+	if(pSimulationRunning == simulationRunning){
 		return;
 	}
 	
@@ -934,7 +934,7 @@ void reRig::SetSlowmotion(float slowmotion){
 }
 
 void reRig::SetDynamic(bool dynamic){
-	if(dynamic != pDynamic){
+	if(pDynamic != dynamic){
 		pDynamic = dynamic;
 		
 		if(dynamic){
@@ -1139,7 +1139,7 @@ void reRig::SetAllBonesVisited(bool visited){
 }
 
 void reRig::SetRootBone(reRigBone *rootBone){
-	if(rootBone != pRootBone){
+	if(pRootBone != rootBone){
 		
 		pRootBone = rootBone;
 		

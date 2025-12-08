@@ -432,7 +432,7 @@ gdeWPSOCNavigationBlocker::~gdeWPSOCNavigationBlocker(){
 ///////////////
 
 void gdeWPSOCNavigationBlocker::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

@@ -155,7 +155,7 @@ seWindowCurves::~seWindowCurves(){
 ///////////////
 
 void seWindowCurves::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	

@@ -249,7 +249,7 @@ meWPAdd::~meWPAdd(){
 ///////////////
 
 void meWPAdd::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	

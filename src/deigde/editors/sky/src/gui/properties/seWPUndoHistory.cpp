@@ -57,7 +57,7 @@ seWPUndoHistory::~seWPUndoHistory(){
 ///////////////
 
 void seWPUndoHistory::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	

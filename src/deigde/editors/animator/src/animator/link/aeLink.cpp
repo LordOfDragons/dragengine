@@ -91,7 +91,7 @@ aeLink::~aeLink(){
 ///////////////
 
 void aeLink::SetAnimator(aeAnimator *animator){
-	if(animator == pAnimator){
+	if(pAnimator == animator){
 		return;
 	}
 	
@@ -146,7 +146,7 @@ void aeLink::SetName(const char *name){
 }
 
 void aeLink::SetController(aeController *controller, bool notify){
-	if(controller == pController){
+	if(pController == controller){
 		return;
 	}
 	
@@ -165,7 +165,7 @@ void aeLink::SetRepeat(int repeat){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(repeat == pRepeat){
+	if(pRepeat == repeat){
 		return;
 	}
 	
@@ -182,7 +182,7 @@ void aeLink::SetRepeat(int repeat){
 }
 
 void aeLink::SetCurve(const decCurveBezier &curve){
-	if(curve == pCurve){
+	if(pCurve == curve){
 		return;
 	}
 	
@@ -316,7 +316,7 @@ void aeLink::SetVertexPositionSetMaximum(float value){
 }
 
 void aeLink::SetWrapY(bool wrap){
-	if(wrap == pWrapY){
+	if(pWrapY == wrap){
 		return;
 	}
 	

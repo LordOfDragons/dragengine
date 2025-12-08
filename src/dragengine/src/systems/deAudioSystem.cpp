@@ -123,7 +123,7 @@ void deAudioSystem::PreStop(){
 ///////////////
 
 void deAudioSystem::SetActiveMicrophone(deMicrophone *microphone){
-	if(microphone == pActiveMic){
+	if(pActiveMic == microphone){
 		return;
 	}
 	

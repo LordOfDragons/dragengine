@@ -203,7 +203,7 @@ ceConversationActor::~ceConversationActor(){
 ///////////////
 
 void ceConversationActor::SetConversation(ceConversation *conversation){
-	if(conversation != pConversation){
+	if(pConversation != conversation){
 		if(pConversation){
 			if(pEngComponent){
 				pConversation->GetEngineWorld()->RemoveComponent(pEngComponent);
@@ -595,7 +595,7 @@ void ceConversationActor::AddPlayEyesLookAt(ceTarget *lookAt, float pause, float
 
 
 void ceConversationActor::SetWaiting(bool waiting){
-	if(waiting != pWaiting){
+	if(pWaiting != waiting){
 		pWaiting = waiting;
 		NotifyActorChanged();
 	}

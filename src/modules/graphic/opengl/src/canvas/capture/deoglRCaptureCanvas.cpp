@@ -62,7 +62,7 @@ deoglRCaptureCanvas::~deoglRCaptureCanvas(){
 ///////////////
 
 void deoglRCaptureCanvas::SetCanvasView(deoglRCanvasView *canvasView){
-	if(canvasView == pCanvasView){
+	if(pCanvasView == canvasView){
 		return;
 	}
 	
@@ -128,7 +128,7 @@ void deoglRCaptureCanvas::CaptureRenderWindow(deoglRRenderWindow &renderWindow){
 	}
 	
 	deoglRCanvasView * const rcanvasView = renderWindow.GetRCanvasView();
-	if(rcanvasView != pCanvasView){
+	if(pCanvasView != rcanvasView){
 		return;
 	}
 	

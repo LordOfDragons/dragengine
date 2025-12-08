@@ -168,7 +168,7 @@ void dealGuiTheme::SetWidgetTextColor(const decColor &color){
 }
 
 void dealGuiTheme::SetWidgetTextFont(dealFont *font){
-	if(font == pWidgetTextFont){
+	if(pWidgetTextFont == font){
 		return;
 	}
 	
@@ -191,7 +191,7 @@ void dealGuiTheme::SetButtonTextColor(const decColor &color){
 }
 
 void dealGuiTheme::SetButtonBackgroundImage(dealImage *image){
-	if(image == pButtonBackgroundImage){
+	if(pButtonBackgroundImage == image){
 		return;
 	}
 	
@@ -234,7 +234,7 @@ void dealGuiTheme::SetButtonPressedTextColor(const decColor &color){
 }
 
 void dealGuiTheme::SetButtonPressedBackgroundImage(dealImage *image){
-	if(image == pButtonPressedBackgroundImage){
+	if(pButtonPressedBackgroundImage == image){
 		return;
 	}
 	
@@ -277,7 +277,7 @@ void dealGuiTheme::SetCheckBoxTextColor(const decColor &color){
 }
 
 void dealGuiTheme::SetCheckBoxImageUnchecked(dealImage *image){
-	if(image == pCheckBoxImageUnchecked){
+	if(pCheckBoxImageUnchecked == image){
 		return;
 	}
 	
@@ -286,7 +286,7 @@ void dealGuiTheme::SetCheckBoxImageUnchecked(dealImage *image){
 }
 
 void dealGuiTheme::SetCheckBoxImageChecked(dealImage *image){
-	if(image == pCheckBoxImageChecked){
+	if(pCheckBoxImageChecked == image){
 		return;
 	}
 	
@@ -317,7 +317,7 @@ void dealGuiTheme::SetOptionBoxTextColor(const decColor &color){
 }
 
 void dealGuiTheme::SetOptionBoxImageDeselected(dealImage *image){
-	if(image == pOptionBoxImageDeselected){
+	if(pOptionBoxImageDeselected == image){
 		return;
 	}
 	
@@ -326,7 +326,7 @@ void dealGuiTheme::SetOptionBoxImageDeselected(dealImage *image){
 }
 
 void dealGuiTheme::SetOptionBoxImageSelected(dealImage *image){
-	if(image == pOptionBoxImageSelected){
+	if(pOptionBoxImageSelected == image){
 		return;
 	}
 	

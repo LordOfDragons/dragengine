@@ -82,7 +82,7 @@ void deoglDSRenderableCamera::RenderableChanged(){
 	deoglCamera * const camera = pRenderableCamera.GetCamera()
 		? (deoglCamera*)pRenderableCamera.GetCamera()->GetPeerGraphic() : NULL;
 	
-	if(camera != pCamera){
+	if(pCamera != camera){
 		if(pCamera){
 			pCamera->GetNotifyRenderables().Remove(this);
 		}

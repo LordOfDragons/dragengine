@@ -68,12 +68,12 @@ void cePCBOption::SetText(const decUnicodeString &text){
 }
 
 void cePCBOption::SetActionOption(ceCAPlayerChoice *action, ceCAPlayerChoiceOption *option){
-	if(action != pAction){
+	if(pAction != action){
 		
 		pAction = action;
 	}
 	
-	if(option != pActionOption){
+	if(pActionOption != option){
 		
 		pActionOption = option;
 	}

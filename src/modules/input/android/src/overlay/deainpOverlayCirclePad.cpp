@@ -250,7 +250,7 @@ bool upLeft, bool upRight, bool downLeft, bool downRight){
 
 void deainpOverlayCirclePad::SetPadRadius(int radius){
 	radius = decMath::max(radius, 0);
-	if(radius == pPadRadius){
+	if(pPadRadius == radius){
 		return;
 	}
 	
@@ -286,7 +286,7 @@ void deainpOverlayCirclePad::SetInnerRadius(float radius){
 }
 
 void deainpOverlayCirclePad::SetCenter(const decPoint &center){
-	if(center == pCenter){
+	if(pCenter == center){
 		return;
 	}
 	

@@ -178,7 +178,7 @@ void gdeViewActiveObject::ResetView(){
 }
 
 void gdeViewActiveObject::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	
@@ -759,7 +759,7 @@ void gdeViewActiveObject::RebuildOCWorld(gdeOCWorld *ocworld){
 
 
 void gdeViewActiveObject::SetShowEnvMapProbes(bool show){
-	if(show == pShowEnvMapProbes){
+	if(pShowEnvMapProbes == show){
 		return;
 	}
 	
@@ -774,7 +774,7 @@ void gdeViewActiveObject::SetShowEnvMapProbes(bool show){
 }
 
 void gdeViewActiveObject::SetShowNavBlockers(bool show){
-	if(show == pShowNavBlockers){
+	if(pShowNavBlockers == show){
 		return;
 	}
 	

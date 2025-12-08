@@ -275,7 +275,7 @@ reWPRig::~reWPRig(){
 ///////////////
 
 void reWPRig::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -334,7 +334,7 @@ void reWPRig::UpdateRig(){
 		pEditMass->ClearText();
 	}
 	
-	const bool enabled = pRig != NULL;
+	const bool enabled = pRig != nullptr;
 	pCBRootBone->SetEnabled(enabled);
 	pEditCentralMassPoint->SetEnabled(enabled);
 	pChkModelCollision->SetEnabled(enabled);

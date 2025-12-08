@@ -55,7 +55,7 @@ deComponentTexture::~deComponentTexture(){
 ///////////////
 
 void deComponentTexture::SetSkin(deSkin *skin){
-	if(skin != pSkin){
+	if(pSkin != skin){
 		
 		pSkin = skin;
 	}
@@ -70,7 +70,7 @@ void deComponentTexture::SetTransform(const decTexMatrix2 &matrix){
 }
 
 void deComponentTexture::SetDynamicSkin(deDynamicSkin *dynamicSkin){
-	if(dynamicSkin == pDynamicSkin){
+	if(pDynamicSkin == dynamicSkin){
 		return;
 	}
 	

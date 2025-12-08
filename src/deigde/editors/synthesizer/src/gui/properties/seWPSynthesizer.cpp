@@ -343,7 +343,7 @@ seWPSynthesizer::~seWPSynthesizer(){
 ///////////////
 
 void seWPSynthesizer::SetSynthesizer(seSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	

@@ -260,7 +260,7 @@ void meWorld::SetLimitBoxExtends(const decVector &minExtend, const decVector &ma
 }
 
 void meWorld::SetNextObjectID(const decUniqueID& id){
-	if(id == pNextObjectID){
+	if(pNextObjectID == id){
 		return;
 	}
 	
@@ -350,7 +350,7 @@ const decQuaternion &orientation, deBaseScriptingCollider *listener, const decCo
 ////////////
 
 void meWorld::SetDepChanged(bool changed){
-	if(changed == pDepChanged){
+	if(pDepChanged == changed){
 		return;
 	}
 	
@@ -718,7 +718,7 @@ void meWorld::SetActiveProperty(const char *property){
 ///////////
 
 void meWorld::SetActiveCamera(meCamera *camera){
-	if(camera == pActiveCamera){
+	if(pActiveCamera == camera){
 		return;
 	}
 	

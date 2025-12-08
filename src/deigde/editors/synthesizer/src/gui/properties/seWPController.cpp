@@ -444,7 +444,7 @@ seWPController::~seWPController(){
 ///////////////
 
 void seWPController::SetSynthesizer(seSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	

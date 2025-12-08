@@ -187,7 +187,7 @@ void reWindowMain::ResetViews(){
 
 
 void reWindowMain::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	

@@ -295,7 +295,7 @@ feWPGlyph::~feWPGlyph(){
 ///////////////
 
 void feWPGlyph::SetFont(feFont *font){
-	if(font == pFont){
+	if(pFont == font){
 		return;
 	}
 	
@@ -321,7 +321,7 @@ void feWPGlyph::SetGlyph(feFontGlyph *glyph){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(glyph == pGlyph){
+	if(pGlyph == glyph){
 		return;
 	}
 	
@@ -365,7 +365,7 @@ void feWPGlyph::UpdateGlyphList(){
 	}
 	pCBGlyph->SetSelection(g);
 	
-	if(glyph != pGlyph){
+	if(pGlyph != glyph){
 		SetGlyph(glyph);
 		
 	}else{

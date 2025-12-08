@@ -142,7 +142,7 @@ seProperty::~seProperty(){
 ///////////////
 
 void seProperty::SetTexture(seTexture *texture){
-	if(texture == pTexture){
+	if(pTexture == texture){
 		return;
 	}
 	
@@ -173,7 +173,7 @@ void seProperty::SetBoneName(const char *name){
 }
 
 void seProperty::SetValueType(eValueTypes type){
-	if(type == pValueType){
+	if(pValueType == type){
 		return;
 	}
 	
@@ -252,7 +252,7 @@ void seProperty::UpdateVideo(){
 }
 
 void seProperty::SetVideoSharedTime(bool shareTime){
-	if(shareTime == pVideoSharedTime){
+	if(pVideoSharedTime == shareTime){
 		return;
 	}
 	
@@ -305,7 +305,7 @@ void seProperty::UpdateEngineNodeGroup(){
 }
 
 void seProperty::SetActiveNodeGroup(sePropertyNodeGroup *node){
-	if(node == pActiveNodeGroup){
+	if(pActiveNodeGroup == node){
 		return;
 	}
 	
@@ -338,7 +338,7 @@ void seProperty::SetActiveNodeGroup(sePropertyNodeGroup *node){
 }
 
 void seProperty::SetActiveNodeLayer(int layer){
-	if(layer == pActiveNodeLayer){
+	if(pActiveNodeLayer == layer){
 		return;
 	}
 	
@@ -359,7 +359,7 @@ void seProperty::SetNodeColor(const decColor &color){
 }
 
 void seProperty::SetNodeTileX(bool tileX){
-	if(tileX == pNodeTileX){
+	if(pNodeTileX == tileX){
 		return;
 	}
 	
@@ -368,7 +368,7 @@ void seProperty::SetNodeTileX(bool tileX){
 }
 
 void seProperty::SetNodeTileY(bool tileY){
-	if(tileY == pNodeTileY){
+	if(pNodeTileY == tileY){
 		return;
 	}
 	
@@ -377,7 +377,7 @@ void seProperty::SetNodeTileY(bool tileY){
 }
 
 void seProperty::SetNodeBitCount(int bitCount){
-	if(bitCount == pNodeBitCount){
+	if(pNodeBitCount == bitCount){
 		return;
 	}
 	

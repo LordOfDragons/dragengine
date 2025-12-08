@@ -641,7 +641,7 @@ void reView3D::ResetView(){
 }
 
 void reView3D::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	

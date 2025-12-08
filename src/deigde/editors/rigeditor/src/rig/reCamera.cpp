@@ -62,7 +62,7 @@ reCamera::~reCamera(){
 ///////////////
 
 void reCamera::SetBone(reRigBone *bone){
-	if(bone != pBone){
+	if(pBone != bone){
 		if(pBone) pBone->FreeReference();
 		
 		pBone = bone;

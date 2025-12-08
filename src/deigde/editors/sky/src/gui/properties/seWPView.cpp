@@ -128,7 +128,7 @@ seWPView::~seWPView(){
 ///////////////
 
 void seWPView::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	

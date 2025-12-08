@@ -128,7 +128,7 @@ void meUObjectAttachTo::Redo(){
 	for(o=0; o<pObjectCount; o++){
 		object = pObjects[o].object;
 		
-		if(object != pAttachTo){
+		if(pAttachTo != object){
 			object->SetAttachedTo(pAttachTo);
 			pWorld->NotifyObjectGeometryChanged(object);
 		}

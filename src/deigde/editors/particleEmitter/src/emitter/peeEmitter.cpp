@@ -240,7 +240,7 @@ void peeEmitter::SetBurstLifetime(float lifetime){
 }
 
 void peeEmitter::SetEmitBurst(bool emitBurst){
-	if(emitBurst != pEmitBurst){
+	if(pEmitBurst != emitBurst){
 		pEmitBurst = emitBurst;
 		
 		FreeEmitter();
@@ -251,7 +251,7 @@ void peeEmitter::SetEmitBurst(bool emitBurst){
 }
 
 void peeEmitter::SetEnableCasting(bool enableCasting){
-	if(enableCasting != pEnableCasting){
+	if(pEnableCasting != enableCasting){
 		pEnableCasting = enableCasting;
 		
 		NotifyEmitterChanged();
@@ -434,11 +434,11 @@ void peeEmitter::RemoveAllControllers(){
 }
 
 bool peeEmitter::HasActiveController() const{
-	return pActiveController != NULL;
+	return pActiveController != nullptr;
 }
 
 void peeEmitter::SetActiveController(peeController *controller){
-	if(controller != pActiveController){
+	if(pActiveController != controller){
 		if(pActiveController){
 			pActiveController->SetActive(false);
 		}
@@ -530,11 +530,11 @@ void peeEmitter::RemoveAllTypes(){
 }
 
 bool peeEmitter::HasActiveType() const{
-	return pActiveType != NULL;
+	return pActiveType != nullptr;
 }
 
 void peeEmitter::SetActiveType(peeType *type){
-	if(type != pActiveType){
+	if(pActiveType != type){
 		if(pActiveType){
 			pActiveType->SetActive(false);
 		}

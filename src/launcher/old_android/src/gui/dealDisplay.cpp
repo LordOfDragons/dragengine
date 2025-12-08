@@ -272,7 +272,7 @@ void dealDisplay::SetDialog(dealDialog *dialog){
 }
 
 void dealDisplay::SetCaptureWidget(dealWidget *widget){
-	if(widget == pCaptureWidget){
+	if(pCaptureWidget == widget){
 		return;
 	}
 	

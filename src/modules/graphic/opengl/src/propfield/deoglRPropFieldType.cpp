@@ -104,7 +104,7 @@ deoglRPropFieldType::~deoglRPropFieldType(){
 ///////////////
 
 void deoglRPropFieldType::SetModel(deoglRModel *model){
-	if(model == pModel){
+	if(pModel == model){
 		return;
 	}
 	
@@ -122,7 +122,7 @@ void deoglRPropFieldType::SetModel(deoglRModel *model){
 }
 
 void deoglRPropFieldType::SetSkin(deoglRSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	

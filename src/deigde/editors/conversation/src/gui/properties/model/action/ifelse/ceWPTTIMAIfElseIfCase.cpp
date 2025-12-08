@@ -108,7 +108,7 @@ ceWPTTIMAIfElse *ceWPTTIMAIfElseIfCase::GetModelIfElse() const{
 }
 
 void ceWPTTIMAIfElseIfCase::SetIndex(int index){
-	if(index == pIndex){
+	if(pIndex == index){
 		return;
 	}
 	

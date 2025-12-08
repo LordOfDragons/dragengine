@@ -430,7 +430,7 @@ gdeWPSOCNavigationSpace::~gdeWPSOCNavigationSpace(){
 ///////////////
 
 void gdeWPSOCNavigationSpace::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

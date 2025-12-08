@@ -66,7 +66,7 @@ deoalAComponentTexture::~deoalAComponentTexture(){
 ///////////////
 
 void deoalAComponentTexture::SetSkin(deoalASkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	

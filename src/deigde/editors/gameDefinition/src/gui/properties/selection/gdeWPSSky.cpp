@@ -382,7 +382,7 @@ gdeWPSSky::~gdeWPSSky(){
 ///////////////
 
 void gdeWPSSky::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

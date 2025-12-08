@@ -182,7 +182,7 @@ igdeWDebugDrawerShape::~igdeWDebugDrawerShape(){
 ///////////////
 
 void igdeWDebugDrawerShape::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
-	if(debugDrawer == pEngDebugDrawer){
+	if(pEngDebugDrawer == debugDrawer){
 		return;
 	}
 	
@@ -282,7 +282,7 @@ void igdeWDebugDrawerShape::SetFillColor(const decColor &color){
 }
 
 void igdeWDebugDrawerShape::SetVisible(bool visible){
-	if(visible == pVisible){
+	if(pVisible == visible){
 		return;
 	}
 	

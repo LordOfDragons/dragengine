@@ -275,7 +275,7 @@ void ceViewConversation::ResetView(){
 }
 
 void ceViewConversation::SetConversation(ceConversation *conversation){
-	if(conversation == pConversation){
+	if(pConversation == conversation){
 		return;
 	}
 	

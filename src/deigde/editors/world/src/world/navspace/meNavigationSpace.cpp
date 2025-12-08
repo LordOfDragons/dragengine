@@ -239,7 +239,7 @@ void meNavigationSpace::SetFilename(const char *filename){
 
 
 void meNavigationSpace::SetSelected(bool selected){
-	if(selected == pSelected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -248,7 +248,7 @@ void meNavigationSpace::SetSelected(bool selected){
 }
 
 void meNavigationSpace::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	

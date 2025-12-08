@@ -116,7 +116,7 @@ decString meHeightTerrain::GetBaseDirectory() const{
 }
 
 void meHeightTerrain::SetDepChanged(bool changed){
-	if(changed == pDepChanged){
+	if(pDepChanged == changed){
 		return;
 	}
 	
@@ -129,7 +129,7 @@ void meHeightTerrain::SetDepChanged(bool changed){
 }
 
 void meHeightTerrain::SetChanged(bool changed){
-	if(changed == pChanged){
+	if(pChanged == changed){
 		return;
 	}
 	
@@ -182,7 +182,7 @@ void meHeightTerrain::SetSectorResolution(int dimension){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(dimension == pSectorResolution){
+	if(pSectorResolution == dimension){
 		return;
 	}
 	
@@ -518,7 +518,7 @@ void meHeightTerrain::RemoveAllSectors(){
 
 
 void meHeightTerrain::SetActiveSector(meHeightTerrainSector *sector){
-	if(sector == pActiveSector){
+	if(pActiveSector == sector){
 		return;
 	}
 	
@@ -603,7 +603,7 @@ void meHeightTerrain::RemoveVLayer(meHTVegetationLayer *vlayer){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(vlayer == pActiveVLayer){
+	if(pActiveVLayer == vlayer){
 		SetActiveVLayer(NULL);
 	}
 	
@@ -631,7 +631,7 @@ void meHeightTerrain::RemoveAllVLayers(){
 }
 
 void meHeightTerrain::SetActiveVLayer(meHTVegetationLayer *vlayer){
-	if(vlayer != pActiveVLayer){
+	if(pActiveVLayer != vlayer){
 		pActiveVLayer = vlayer;
 		pWorld.NotifyHTActiveVLayerChanged();
 	}

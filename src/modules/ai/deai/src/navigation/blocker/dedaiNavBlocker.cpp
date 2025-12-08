@@ -85,7 +85,7 @@ dedaiNavBlocker::~dedaiNavBlocker(){
 ///////////////
 
 void dedaiNavBlocker::SetParentWorld(dedaiWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	

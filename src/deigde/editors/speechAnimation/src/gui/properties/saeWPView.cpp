@@ -197,7 +197,7 @@ saeWPView::~saeWPView(){
 ///////////////
 
 void saeWPView::SetSAnimation(saeSAnimation *sanimation){
-	if(sanimation == pSAnimation){
+	if(pSAnimation == sanimation){
 		return;
 	}
 	
@@ -243,7 +243,7 @@ void saeWPView::UpdateView(){
 		pEditDisplayRigPath->ClearPath();
 	}
 	
-	const bool enabled = pSAnimation != NULL;
+	const bool enabled = pSAnimation != nullptr;
 	pEditDisplayModelPath->SetEnabled(enabled);
 	pEditDisplaySkinPath->SetEnabled(enabled);
 	pEditDisplayRigPath->SetEnabled(enabled);

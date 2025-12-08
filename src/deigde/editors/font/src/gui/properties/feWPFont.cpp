@@ -245,7 +245,7 @@ feWPFont::~feWPFont(){
 ///////////////
 
 void feWPFont::SetFont(feFont *font){
-	if(font == pFont){
+	if(pFont == font){
 		return;
 	}
 	

@@ -348,10 +348,10 @@ void deHeightTerrainSector::RemoveDecal(deDecal *decal){
 	if(decal->GetLLHeightTerrainSectorNext()){
 		decal->GetLLHeightTerrainSectorNext()->SetLLHeightTerrainSectorPrev(decal->GetLLHeightTerrainSectorPrev());
 	}
-	if(decal == pDecalRoot){
+	if(pDecalRoot == decal){
 		pDecalRoot = decal->GetLLHeightTerrainSectorNext();
 	}
-	if(decal == pDecalTail){
+	if(pDecalTail == decal){
 		pDecalTail = decal->GetLLHeightTerrainSectorPrev();
 	}
 	pDecalCount--;

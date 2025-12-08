@@ -94,7 +94,7 @@ void sePropertyNodeImage::UpdateImage(){
 		}
 	}
 	
-	if(image == pImage){
+	if(pImage == image){
 		if(image){
 			image->FreeReference();
 		}
@@ -109,7 +109,7 @@ void sePropertyNodeImage::SetRepeat(const decPoint &count){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(count == pRepeat){
+	if(pRepeat == count){
 		return;
 	}
 	

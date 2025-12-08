@@ -57,7 +57,7 @@ peeWPUndoHistory::~peeWPUndoHistory(){
 ///////////////
 
 void peeWPUndoHistory::SetEmitter(peeEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	

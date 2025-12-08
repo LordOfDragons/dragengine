@@ -232,7 +232,7 @@ void deapngReader::CopyAccumImage(void *buffer, int size) const{
 	if(!buffer){
 		DETHROW(deeInvalidParam);
 	}
-	if(size != pImageSize){
+	if(pImageSize != size){
 		DETHROW(deeInvalidParam);
 	}
 	

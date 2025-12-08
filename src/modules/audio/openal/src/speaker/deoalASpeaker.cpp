@@ -268,7 +268,7 @@ void deoalASpeaker::SetPlayState(deSpeaker::ePlayStates playState){
 }
 
 void deoalASpeaker::SetLooping(bool looping){
-	if(looping == pLooping){
+	if(pLooping == looping){
 		return;
 	}
 	
@@ -277,7 +277,7 @@ void deoalASpeaker::SetLooping(bool looping){
 }
 
 void deoalASpeaker::SetMuted(bool muted){
-	if(muted == pMuted){
+	if(pMuted == muted){
 		return;
 	}
 	
@@ -544,7 +544,7 @@ void deoalASpeaker::PrepareQuickDispose(){
 void deoalASpeaker::SetEnabled(bool enabled){
 	// WARNING Called during synchronization time from main thread.
 	
-	if(enabled == pEnabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -580,7 +580,7 @@ void deoalASpeaker::SetFlag(bool flag){
 void deoalASpeaker::SetParentWorld(deoalAWorld *world){
 	// WARNING Called during synchronization time from main thread.
 	
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -605,7 +605,7 @@ void deoalASpeaker::SetParentWorld(deoalAWorld *world){
 void deoalASpeaker::SetParentMicrophone(deoalAMicrophone *microphone){
 	// WARNING Called during synchronization time from main thread.
 	
-	if(microphone == pParentMicrophone){
+	if(pParentMicrophone == microphone){
 		return;
 	}
 	
@@ -745,7 +745,7 @@ bool deoalASpeaker::AffectsActiveMicrophone() const{
 	if(!microphone){
 		return false;
 	}
-	if(microphone == pParentMicrophone){
+	if(pParentMicrophone == microphone){
 		return true;
 	}
 	return pParentWorld && microphone->GetParentWorld() == pParentWorld

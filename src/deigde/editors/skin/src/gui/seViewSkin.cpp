@@ -89,7 +89,7 @@ void seViewSkin::ResetView(){
 }
 
 void seViewSkin::SetSkin(seSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	

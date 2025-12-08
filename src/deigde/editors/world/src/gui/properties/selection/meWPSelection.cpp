@@ -86,7 +86,7 @@ meWPSelection::~meWPSelection(){
 ///////////////
 
 void meWPSelection::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	

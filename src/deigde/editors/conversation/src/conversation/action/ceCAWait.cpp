@@ -94,7 +94,7 @@ ceCAWait::~ceCAWait(){
 ///////////////
 
 void ceCAWait::SetCondition(ceConversationCondition *condition){
-	if(condition != pCondition){
+	if(pCondition != condition){
 		
 		pCondition = condition;
 	}

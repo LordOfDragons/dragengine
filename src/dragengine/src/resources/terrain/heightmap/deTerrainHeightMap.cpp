@@ -122,7 +122,7 @@ void deTerrainHeightMap::SetHeightImage(deImage *heightImage){
 		}
 	}
 	
-	if(heightImage == pHeightImage){
+	if(pHeightImage == heightImage){
 		return;
 	}
 	

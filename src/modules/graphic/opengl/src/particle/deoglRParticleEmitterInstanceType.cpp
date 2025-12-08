@@ -148,7 +148,7 @@ void deoglRParticleEmitterInstanceType::SetIndexCount(int count){
 
 
 void deoglRParticleEmitterInstanceType::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
-	if(dynamicSkin == pDynamicSkin){
+	if(pDynamicSkin == dynamicSkin){
 		return;
 	}
 	
@@ -160,7 +160,7 @@ void deoglRParticleEmitterInstanceType::SetDynamicSkin(deoglRDynamicSkin *dynami
 }
 
 void deoglRParticleEmitterInstanceType::SetUseSkin(deoglRSkin *skin){
-	if(skin == pUseSkin){
+	if(pUseSkin == skin){
 		return;
 	}
 	

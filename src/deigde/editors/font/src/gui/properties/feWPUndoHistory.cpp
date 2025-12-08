@@ -57,7 +57,7 @@ feWPUndoHistory::~feWPUndoHistory(){
 ///////////////
 
 void feWPUndoHistory::SetFont(feFont *font){
-	if(font == pFont){
+	if(pFont == font){
 		return;
 	}
 	

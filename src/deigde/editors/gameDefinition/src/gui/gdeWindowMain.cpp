@@ -233,7 +233,7 @@ void gdeWindowMain::ResetViews(){
 
 
 void gdeWindowMain::SetActiveGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pActiveGameDefinition){
+	if(pActiveGameDefinition == gameDefinition){
 		return;
 	}
 	

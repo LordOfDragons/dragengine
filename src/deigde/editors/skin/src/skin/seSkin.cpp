@@ -229,7 +229,7 @@ seSkin::~seSkin(){
 ///////////////
 
 void seSkin::SetPreviewMode(ePreviewMode mode){
-	if(mode == pPreviewMode){
+	if(pPreviewMode == mode){
 		return;
 	}
 	
@@ -523,7 +523,7 @@ bool seSkin::HasActiveMapped() const{
 }
 
 void seSkin::SetActiveMapped(seMapped *mapped){
-	if(mapped == pActiveMapped){
+	if(pActiveMapped == mapped){
 		return;
 	}
 	
@@ -593,11 +593,11 @@ void seSkin::RemoveAllTextures(){
 }
 
 bool seSkin::HasActiveTexture() const{
-	return pActiveTexture != NULL;
+	return pActiveTexture != nullptr;
 }
 
 void seSkin::SetActiveTexture(seTexture *texture){
-	if(texture != pActiveTexture){
+	if(pActiveTexture != texture){
 		if(pActiveTexture){
 			pActiveTexture->SetActive(false);
 		}

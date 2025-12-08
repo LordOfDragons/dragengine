@@ -279,7 +279,7 @@ void aeRuleSubAnimator::SetControllerAt(int position, aeController *controller){
 
 
 void aeRuleSubAnimator::SetEnablePosition(bool enabled){
-	if(enabled != pEnablePosition){
+	if(pEnablePosition != enabled){
 		pEnablePosition = enabled;
 		
 		if(GetEngineRule()){
@@ -290,7 +290,7 @@ void aeRuleSubAnimator::SetEnablePosition(bool enabled){
 }
 
 void aeRuleSubAnimator::SetEnableOrientation(bool enabled){
-	if(enabled != pEnableOrientation){
+	if(pEnableOrientation != enabled){
 		pEnableOrientation = enabled;
 		
 		if(GetEngineRule()){
@@ -301,7 +301,7 @@ void aeRuleSubAnimator::SetEnableOrientation(bool enabled){
 }
 
 void aeRuleSubAnimator::SetEnableSize(bool enabled){
-	if(enabled != pEnableSize){
+	if(pEnableSize != enabled){
 		pEnableSize = enabled;
 		
 		if(GetEngineRule()){
@@ -312,7 +312,7 @@ void aeRuleSubAnimator::SetEnableSize(bool enabled){
 }
 
 void aeRuleSubAnimator::SetEnableVertexPositionSet(bool enabled){
-	if(enabled != pEnableVertexPositionSet){
+	if(pEnableVertexPositionSet != enabled){
 		pEnableVertexPositionSet = enabled;
 		
 		if(GetEngineRule()){

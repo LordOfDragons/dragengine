@@ -406,7 +406,7 @@ void aeAnimator::SetTimeStep(float timeStep){
 
 
 void aeAnimator::SetResetState(bool resetState){
-	if(resetState != pResetState){
+	if(pResetState != resetState){
 		pResetState = resetState;
 		RebuildRules();
 		NotifyViewChanged();
@@ -512,7 +512,7 @@ void aeAnimator::RemoveAllControllers(){
 }
 
 void aeAnimator::SetActiveController(aeController *controller){
-	if(controller == pActiveController){
+	if(pActiveController == controller){
 		return;
 	}
 	
@@ -615,7 +615,7 @@ void aeAnimator::RemoveAllLinks(){
 }
 
 void aeAnimator::SetActiveLink(aeLink *link){
-	if(link == pActiveLink){
+	if(pActiveLink == link){
 		return;
 	}
 	
@@ -700,7 +700,7 @@ void aeAnimator::RemoveAllRules(){
 }
 
 void aeAnimator::SetActiveRule(aeRule *rule){
-	if(rule == pActiveRule){
+	if(pActiveRule == rule){
 		return;
 	}
 	
@@ -741,7 +741,7 @@ void aeAnimator::RebuildRules(){
 ////////////////////
 
 void aeAnimator::SetListBones(const decStringSet &bones){
-	if(bones == pListBones){
+	if(pListBones == bones){
 		return;
 	}
 	
@@ -802,7 +802,7 @@ void aeAnimator::RemoveAllBones(){
 ///////////////////////////////////
 
 void aeAnimator::SetListVertexPositionSets(const decStringSet &sets){
-	if(sets == pListVertexPositionSets){
+	if(pListVertexPositionSets == sets){
 		return;
 	}
 	
@@ -940,7 +940,7 @@ void aeAnimator::RemoveAttachment(aeAttachment *attachment){
 	int i, index = IndexOfAttachment(attachment);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
-	if(attachment == pActiveAttachment) SetActiveAttachment(NULL);
+	if(pActiveAttachment == attachment) SetActiveAttachment(NULL);
 	
 	for(i=index+1; i<pAttachmentCount; i++){
 		pAttachments[i - 1] = pAttachments[i];
@@ -966,7 +966,7 @@ void aeAnimator::RemoveAllAttachments(){
 }
 
 void aeAnimator::SetActiveAttachment(aeAttachment *attachment){
-	if(attachment != pActiveAttachment){
+	if(pActiveAttachment != attachment){
 		pActiveAttachment = attachment;
 		
 		NotifyActiveAttachmentChanged();
@@ -1580,7 +1580,7 @@ void aeAnimator::pUpdateComponent(){
 	
 	// update the collider
 	pEngCollider->SetComponent(pEngComponent);
-	pEngCollider->SetEnabled(pEngComponent != NULL);
+	pEngCollider->SetEnabled(pEngComponent != nullptr);
 	
 	// update the animator
 	pEngAnimatorInstance->SetComponent(pEngComponent);
@@ -1688,7 +1688,7 @@ void aeAnimator::pUpdateDDSBones(){
 		matrix = decDMatrix(pEngComponent->GetMatrix()).Normalized();
 	}
 	
-	if(boneCount != pDDSBoneCount){
+	if(pDDSBoneCount != boneCount){
 		if(pDDSBones){
 			delete [] pDDSBones;
 			pDDSBones = NULL;

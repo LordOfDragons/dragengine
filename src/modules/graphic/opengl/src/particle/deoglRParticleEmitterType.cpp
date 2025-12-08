@@ -264,7 +264,7 @@ void deoglRParticleEmitterType::PrepareForRender(){
 
 
 void deoglRParticleEmitterType::SetSkin(deoglRSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	

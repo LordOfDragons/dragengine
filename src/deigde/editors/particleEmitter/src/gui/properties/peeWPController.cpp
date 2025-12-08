@@ -416,7 +416,7 @@ peeWPController::~peeWPController(){
 ///////////////
 
 void peeWPController::SetEmitter(peeEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	

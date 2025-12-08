@@ -150,7 +150,7 @@ bool lpeWindowMain::QuitRequest(){
 
 
 void lpeWindowMain::SetLangPack(lpeLangPack *langpack){
-	if(langpack == pLangPack){
+	if(pLangPack == langpack){
 		return;
 	}
 	

@@ -266,7 +266,7 @@ void seSourceSynthesizer::SetConnectionCount(int count){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(count == pConnectionCount){
+	if(pConnectionCount == count){
 		return;
 	}
 	

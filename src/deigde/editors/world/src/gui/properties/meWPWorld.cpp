@@ -721,7 +721,7 @@ meWPWorld::~meWPWorld(){
 ///////////////
 
 void meWPWorld::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	

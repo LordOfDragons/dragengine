@@ -235,7 +235,7 @@ gdeWPSOCSnapPoint::~gdeWPSOCSnapPoint(){
 ///////////////
 
 void gdeWPSOCSnapPoint::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

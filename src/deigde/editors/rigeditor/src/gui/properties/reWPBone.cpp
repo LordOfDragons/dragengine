@@ -412,7 +412,7 @@ reWPBone::~reWPBone(){
 ///////////////
 
 void reWPBone::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -434,7 +434,7 @@ void reWPBone::SetRig(reRig *rig){
 }
 
 void reWPBone::SetBone(reRigBone *bone){
-	if(bone == pBone){
+	if(pBone == bone){
 		return;
 	}
 	
@@ -499,7 +499,7 @@ void reWPBone::UpdateBone(){
 		pChkIKLockedZ->SetChecked(false);
 	}
 	
-	const bool enabled = pBone != NULL;
+	const bool enabled = pBone != nullptr;
 	pEditName->SetEnabled(enabled);
 	pCBParent->SetEnabled(enabled);
 	pEditPosition->SetEnabled(enabled);

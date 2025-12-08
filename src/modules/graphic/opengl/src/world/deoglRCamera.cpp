@@ -222,7 +222,7 @@ void deoglRCamera::SetBloomSize(float size){
 }
 
 void deoglRCamera::SetToneMapCurve(const decCurveBezier &curve){
-	if(curve == pToneMapCurve){
+	if(pToneMapCurve == curve){
 		return;
 	}
 	

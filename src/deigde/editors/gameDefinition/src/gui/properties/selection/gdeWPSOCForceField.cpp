@@ -588,7 +588,7 @@ gdeWPSOCForceField::~gdeWPSOCForceField(){
 ///////////////
 
 void gdeWPSOCForceField::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

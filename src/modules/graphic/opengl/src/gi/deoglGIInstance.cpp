@@ -261,7 +261,7 @@ deoglGIInstance::~deoglGIInstance(){
 ///////////////
 
 void deoglGIInstance::SetComponent(deoglRComponent *component, bool dynamic){
-	if(component == pComponent){
+	if(pComponent == component){
 		return;
 	}
 	
@@ -313,7 +313,7 @@ void deoglGIInstance::SetComponent(deoglRComponent *component, bool dynamic){
 }
 
 void deoglGIInstance::SetDecal(deoglRDecal *decal, bool dynamic){
-	if(decal == pDecal){
+	if(pDecal == decal){
 		return;
 	}
 	
@@ -419,7 +419,7 @@ void deoglGIInstance::UpdateBVHExtends(){
 }
 
 void deoglGIInstance::SetDynamic(bool dynamic){
-	if(dynamic == pDynamic){
+	if(pDynamic == dynamic){
 		return;
 	}
 	
@@ -449,7 +449,7 @@ void deoglGIInstance::SetRecheckDynamic(bool recheckDynamic){
 }
 
 bool deoglGIInstance::Empty() const{
-	return pComponent == NULL && pDecal == NULL;
+	return pComponent == nullptr && pDecal == nullptr;
 }
 
 void deoglGIInstance::Clear(){

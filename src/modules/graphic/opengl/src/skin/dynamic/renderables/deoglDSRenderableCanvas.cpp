@@ -83,7 +83,7 @@ void deoglDSRenderableCanvas::RenderableChanged(){
 	deoglCanvasView * const canvasView = pRenderableCanvas.GetCanvas()
 		? (deoglCanvasView*)pRenderableCanvas.GetCanvas()->GetPeerGraphic() : NULL;
 	
-	if(canvasView != pCanvasView){
+	if(pCanvasView != canvasView){
 		if(pCanvasView){
 			pCanvasView->RemoveListener(this);
 		}

@@ -1001,7 +1001,7 @@ void igdeWindowMain::UpdateRecentProjectMenu(){
 }
 
 bool igdeWindowMain::IsSyncGameDefTaskRunning() const{
-	return pTaskSyncGameDefinition != NULL;
+	return pTaskSyncGameDefinition != nullptr;
 }
 
 

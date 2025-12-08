@@ -57,7 +57,7 @@ meWPUndoHistory::~meWPUndoHistory(){
 ///////////////
 
 void meWPUndoHistory::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	

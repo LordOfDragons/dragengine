@@ -257,7 +257,7 @@ gdeWPSCategory::~gdeWPSCategory(){
 ///////////////
 
 void gdeWPSCategory::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

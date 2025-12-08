@@ -1401,7 +1401,7 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 				texture.SetFaceCount(texFaceCount);
 			}
 			
-			if(f != pFaceCount){
+			if(pFaceCount != f){
 				DETHROW(deeInvalidParam);
 			}
 			

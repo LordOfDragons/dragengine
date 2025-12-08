@@ -63,7 +63,7 @@ cePlaybackActionStackEntry::~cePlaybackActionStackEntry(){
 ///////////////
 
 void cePlaybackActionStackEntry::SetParentTopic(ceConversationTopic *topic){
-	if(topic == pParentTopic){
+	if(pParentTopic == topic){
 		return;
 	}
 	
@@ -82,7 +82,7 @@ void cePlaybackActionStackEntry::SetParentList(const ceConversationActionList *l
 
 
 void cePlaybackActionStackEntry::SetLoopCondition(ceConversationCondition *condition){
-	if(condition == pLoopCondition){
+	if(pLoopCondition == condition){
 		return;
 	}
 	

@@ -868,7 +868,7 @@ ceWPTopic::~ceWPTopic(){
 ///////////////
 
 void ceWPTopic::SetConversation(ceConversation *conversation){
-	if(conversation == pConversation){
+	if(pConversation == conversation){
 		return;
 	}
 	

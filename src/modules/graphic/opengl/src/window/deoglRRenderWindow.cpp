@@ -346,7 +346,7 @@ void deoglRRenderWindow::SetTitle(const char *title){
 }
 
 void deoglRRenderWindow::SetFullScreen(bool fullScreen){
-	if(fullScreen == pFullScreen){
+	if(pFullScreen == fullScreen){
 		return;
 	}
 	
@@ -359,7 +359,7 @@ void deoglRRenderWindow::SetPaint(bool paint){
 }
 
 void deoglRRenderWindow::SetIcon(deoglPixelBuffer *icon){
-	if(icon == pIcon){
+	if(pIcon == icon){
 		return;
 	}
 	
@@ -370,7 +370,7 @@ void deoglRRenderWindow::SetIcon(deoglPixelBuffer *icon){
 
 
 void deoglRRenderWindow::SetRCanvasView(deoglRCanvasView *rcanvasView){
-	if(rcanvasView == pRCanvasView){
+	if(pRCanvasView == rcanvasView){
 		return;
 	}
 	
@@ -1406,7 +1406,7 @@ void deoglRRenderWindow::pUpdateVSync(){
 	// check if VSync has to be enabled or disabled
 	const deoglConfiguration::eVSyncMode vsyncMode = pRenderThread.GetConfiguration().GetVSyncMode();
 	
-	if(vsyncMode != pVSyncMode){
+	if(pVSyncMode != vsyncMode){
 		pVSyncMode = vsyncMode;
 		pInitSwapInterval = true;
 	}

@@ -119,7 +119,7 @@ void cePlayerChoiceBox::SetTextColor(const decColor &color){
 void cePlayerChoiceBox::SetTextSize(int size){
 	size = decMath::max(size, 1);
 	
-	if(size == pTextSize){
+	if(pTextSize == size){
 		return;
 	}
 	
@@ -168,7 +168,7 @@ void cePlayerChoiceBox::SetSelectedOption(int index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(index == pSelectedOption){
+	if(pSelectedOption == index){
 		return;
 	}
 	

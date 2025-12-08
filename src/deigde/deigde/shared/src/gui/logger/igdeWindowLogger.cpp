@@ -107,7 +107,7 @@ igdeWindowLogger::~igdeWindowLogger(){
 ///////////////
 
 void igdeWindowLogger::SetLogger(igdeLoggerHistory *logger){
-	if(logger == pLogger){
+	if(pLogger == logger){
 		return;
 	}
 	

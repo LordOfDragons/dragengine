@@ -68,7 +68,7 @@ void igdeEditorModule::SetEditorWindow(igdeEditorWindow *editorWindow){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(editorWindow == pEditorWindow){
+	if(pEditorWindow == editorWindow){
 		return;
 	}
 	

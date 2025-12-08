@@ -338,7 +338,7 @@ void deoglRComponent::UpdateOctreeNode(){
 
 
 void deoglRComponent::SetVisible(bool visible){
-	if(visible == pVisible){
+	if(pVisible == visible){
 		return;
 	}
 	
@@ -355,7 +355,7 @@ void deoglRComponent::SetVisible(bool visible){
 }
 
 void deoglRComponent::SetMovementHint(deComponent::eMovementHints hint){
-	if(hint == pMovementHint){
+	if(pMovementHint == hint){
 		return;
 	}
 	
@@ -368,7 +368,7 @@ void deoglRComponent::SetMovementHint(deComponent::eMovementHints hint){
 }
 
 void deoglRComponent::SetGIImportance(int importance){
-	if(importance == pGIImportance){
+	if(pGIImportance == importance){
 		return;
 	}
 	
@@ -382,7 +382,7 @@ void deoglRComponent::SetGIImportance(int importance){
 }
 
 void deoglRComponent::SetLayerMask(const decLayerMask &layerMask){
-	if(layerMask == pLayerMask){
+	if(pLayerMask == layerMask){
 		return;
 	}
 	
@@ -439,7 +439,7 @@ void deoglRComponent::SetModel(deoglRModel *model){
 }
 
 void deoglRComponent::SetSkin(deoglRSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
@@ -467,7 +467,7 @@ void deoglRComponent::RigChanged(){
 
 void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSkin *dynamicSkin){
 	// NOTE this is called from the main thread during synchronization
-	if(dynamicSkin == pDynamicSkin){
+	if(pDynamicSkin == dynamicSkin){
 		return;
 	}
 	
@@ -497,7 +497,7 @@ void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSki
 }
 
 void deoglRComponent::SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh){
-	if(occlusionMesh == pOcclusionMesh){
+	if(pOcclusionMesh == occlusionMesh){
 		return;
 	}
 	
@@ -692,7 +692,7 @@ void deoglRComponent::UpdateVertexPositionSets(const deComponent &component){
 	const int count = component.GetVertexPositionSetCount();
 	int i;
 	
-	if(count != pVertexPositionSetCount){
+	if(pVertexPositionSetCount != count){
 		if(pVertexPositionSetWeights){
 			delete [] pVertexPositionSetWeights;
 			pVertexPositionSetWeights = nullptr;
@@ -1014,7 +1014,7 @@ void deoglRComponent::SetOccluded(bool occluded){
 // }
 
 void deoglRComponent::SetRenderMode(eRenderModes renderMode){
-	if(renderMode == pRenderMode){
+	if(pRenderMode == renderMode){
 		return;
 	}
 	
@@ -1035,7 +1035,7 @@ void deoglRComponent::DirtySolid(){
 }
 
 void deoglRComponent::SetRenderStatic(bool isStatic){
-	if(isStatic == pRenderStatic){
+	if(pRenderStatic == isStatic){
 		return;
 	}
 	
@@ -1082,7 +1082,7 @@ void deoglRComponent::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	// switch may still occur. a possible solution would be to delay the switch until the fading
 	// is finished. for this we would have to keep the dirty flag set, which is currently set
 	// outside somewhere
-	if(envmap == pRenderEnvMap){
+	if(pRenderEnvMap == envmap){
 		return;
 	}
 	
@@ -1109,7 +1109,7 @@ void deoglRComponent::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 }
 
 void deoglRComponent::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
-	if(envmap == pRenderEnvMapFade){
+	if(pRenderEnvMapFade == envmap){
 		return;
 	}
 	

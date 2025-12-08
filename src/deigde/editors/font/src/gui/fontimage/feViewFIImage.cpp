@@ -71,7 +71,7 @@ void feViewFIImage::ResetView(){
 
 
 void feViewFIImage::SetFont(feFont *font){
-	if(font == pFont){
+	if(pFont == font){
 		return;
 	}
 	
@@ -83,7 +83,7 @@ void feViewFIImage::SetFont(feFont *font){
 
 void feViewFIImage::SetZoom(int zoom){
 	zoom = decMath::clamp(zoom, 100, 8000);
-	if(zoom == pZoom){
+	if(pZoom == zoom){
 		return;
 	}
 	
@@ -92,7 +92,7 @@ void feViewFIImage::SetZoom(int zoom){
 }
 
 void feViewFIImage::SetOffset(const decPoint &offset){
-	if(offset == pOffset){
+	if(pOffset == offset){
 		return;
 	}
 	

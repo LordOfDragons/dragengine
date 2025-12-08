@@ -156,7 +156,7 @@ void peeWindowMain::ResetViews(){
 
 
 void peeWindowMain::SetEmitter(peeEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	

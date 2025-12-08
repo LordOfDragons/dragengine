@@ -245,7 +245,7 @@ void ceWindowMain::ResetViews(){
 
 
 void ceWindowMain::SetConversation(ceConversation *conversation){
-	if(conversation == pConversation){
+	if(pConversation == conversation){
 		return;
 	}
 	

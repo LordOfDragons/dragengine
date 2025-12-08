@@ -68,7 +68,7 @@ void meWCEntry::SetSector(const decPoint3 &sector){
 }
 
 void meWCEntry::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -77,7 +77,7 @@ void meWCEntry::SetWorld(meWorld *world){
 }
 
 void meWCEntry::SetHTTexture(meHeightTerrainTexture *texture){
-	if(texture == pHTTexture){
+	if(pHTTexture == texture){
 		return;
 	}
 	
@@ -86,7 +86,7 @@ void meWCEntry::SetHTTexture(meHeightTerrainTexture *texture){
 }
 
 void meWCEntry::SetHTNavSpace(meHeightTerrainNavSpace *navspace){
-	if(navspace == pHTNavSpace){
+	if(pHTNavSpace == navspace){
 		return;
 	}
 	

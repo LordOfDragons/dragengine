@@ -90,7 +90,7 @@ ceCAIfElseCase::~ceCAIfElseCase(){
 ///////////////
 
 void ceCAIfElseCase::SetCondition(ceConversationCondition *condition){
-	if(condition == pCondition){
+	if(pCondition == condition){
 		return;
 	}
 	

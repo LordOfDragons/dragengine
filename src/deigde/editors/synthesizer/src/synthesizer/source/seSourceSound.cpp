@@ -139,7 +139,7 @@ void seSourceSound::SetMaxSpeed(float speed){
 }
 
 void seSourceSound::SetLooping(bool looping){
-	if(looping == pLooping){
+	if(pLooping == looping){
 		return;
 	}
 	

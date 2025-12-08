@@ -346,7 +346,7 @@ void deEngine::SetLogger(deLogger *logger){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(logger != pLogger){
+	if(pLogger != logger){
 		pLogger = logger;
 		logger->AddReference();
 	}

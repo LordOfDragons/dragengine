@@ -59,7 +59,7 @@ dealWidgetImage::~dealWidgetImage(){
 ///////////////
 
 void dealWidgetImage::SetImage(dealImage *image){
-	if(image == pImage){
+	if(pImage == image){
 		return;
 	}
 	

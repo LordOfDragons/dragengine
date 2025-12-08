@@ -67,7 +67,7 @@ meAttachedDecal::~meAttachedDecal(){
 ///////////////
 
 void meAttachedDecal::SetParentObject(meObject *object){
-	if(object == pParentObject){
+	if(pParentObject == object){
 		return;
 	}
 	

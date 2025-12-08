@@ -385,7 +385,7 @@ const decStringSet &gdeGameDefinition::GetObjectClassCategoryNameList(){
 
 
 void gdeGameDefinition::SetActiveCategory(gdeCategory *category){
-	if(category == pActiveCategory){
+	if(pActiveCategory == category){
 		return;
 	}
 	
@@ -482,7 +482,7 @@ void gdeGameDefinition::NotifyDecalPropertyNameChanged(gdeProperty *property){
 
 
 void gdeGameDefinition::SetAutoFindPathObjectClasses(const decStringList &list){
-	if(list == pAutoFindPathObjectClasses){
+	if(pAutoFindPathObjectClasses == list){
 		return;
 	}
 	pAutoFindPathObjectClasses = list;
@@ -501,7 +501,7 @@ void gdeGameDefinition::NotifyAutoFindPathObjectClassesChanged(){
 }
 
 void gdeGameDefinition::SetAutoFindPathSkins(const decStringList &list){
-	if(list == pAutoFindPathSkins){
+	if(pAutoFindPathSkins == list){
 		return;
 	}
 	pAutoFindPathSkins = list;
@@ -520,7 +520,7 @@ void gdeGameDefinition::NotifyAutoFindPathSkinsChanged(){
 }
 
 void gdeGameDefinition::SetAutoFindPathSkies(const decStringList &list){
-	if(list == pAutoFindPathSkies){
+	if(pAutoFindPathSkies == list){
 		return;
 	}
 	pAutoFindPathSkies = list;
@@ -541,7 +541,7 @@ void gdeGameDefinition::NotifyAutoFindPathSkiesChanged(){
 
 
 void gdeGameDefinition::SetSelectedObjectType(eObjectTypes objectType){
-	if(objectType == pSelectedObjectType){
+	if(pSelectedObjectType == objectType){
 		return;
 	}
 	
@@ -643,7 +643,7 @@ void gdeGameDefinition::RemoveObjectClass(gdeObjectClass *objectClass){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(objectClass == pActiveObjectClass){
+	if(pActiveObjectClass == objectClass){
 		SetActiveOCBillboard(NULL);
 		SetActiveOCCamera(NULL);
 		SetActiveOCComponent(NULL);
@@ -746,11 +746,11 @@ const decStringSet &gdeGameDefinition::GetClassNameList(){
 
 
 bool gdeGameDefinition::HasActiveObjectClass() const{
-	return pActiveObjectClass != NULL;
+	return pActiveObjectClass != nullptr;
 }
 
 void gdeGameDefinition::SetActiveObjectClass(gdeObjectClass *objectClass){
-	if(objectClass == pActiveObjectClass){
+	if(pActiveObjectClass == objectClass){
 		return;
 	}
 	
@@ -763,11 +763,11 @@ void gdeGameDefinition::SetActiveObjectClass(gdeObjectClass *objectClass){
 
 
 bool gdeGameDefinition::HasActiveOCBillboard() const{
-	return pActiveOCBillboard != NULL;
+	return pActiveOCBillboard != nullptr;
 }
 
 void gdeGameDefinition::SetActiveOCBillboard(gdeOCBillboard *billboard){
-	if(billboard == pActiveOCBillboard){
+	if(pActiveOCBillboard == billboard){
 		return;
 	}
 	
@@ -780,11 +780,11 @@ void gdeGameDefinition::SetActiveOCBillboard(gdeOCBillboard *billboard){
 
 
 bool gdeGameDefinition::HasActiveOCCamera() const{
-	return pActiveOCCamera != NULL;
+	return pActiveOCCamera != nullptr;
 }
 
 void gdeGameDefinition::SetActiveOCCamera(gdeOCCamera *camera){
-	if(camera == pActiveOCCamera){
+	if(pActiveOCCamera == camera){
 		return;
 	}
 	
@@ -797,11 +797,11 @@ void gdeGameDefinition::SetActiveOCCamera(gdeOCCamera *camera){
 
 
 bool gdeGameDefinition::HasActiveOCComponent() const{
-	return pActiveOCComponent != NULL;
+	return pActiveOCComponent != nullptr;
 }
 
 void gdeGameDefinition::SetActiveOCComponent(gdeOCComponent *component){
-	if(component == pActiveOCComponent){
+	if(pActiveOCComponent == component){
 		return;
 	}
 	
@@ -814,11 +814,11 @@ void gdeGameDefinition::SetActiveOCComponent(gdeOCComponent *component){
 
 
 bool gdeGameDefinition::HasActiveOCEnvMapProbe() const{
-	return pActiveOCEnvMapProbe != NULL;
+	return pActiveOCEnvMapProbe != nullptr;
 }
 
 void gdeGameDefinition::SetActiveOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe){
-	if(envMapProbe == pActiveOCEnvMapProbe){
+	if(pActiveOCEnvMapProbe == envMapProbe){
 		return;
 	}
 	
@@ -831,11 +831,11 @@ void gdeGameDefinition::SetActiveOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe){
 
 
 bool gdeGameDefinition::HasActiveOCLight() const{
-	return pActiveOCLight != NULL;
+	return pActiveOCLight != nullptr;
 }
 
 void gdeGameDefinition::SetActiveOCLight(gdeOCLight *light){
-	if(light == pActiveOCLight){
+	if(pActiveOCLight == light){
 		return;
 	}
 	
@@ -848,11 +848,11 @@ void gdeGameDefinition::SetActiveOCLight(gdeOCLight *light){
 
 
 bool gdeGameDefinition::HasActiveOCNavigationBlocker() const{
-	return pActiveOCNavigationBlocker != NULL;
+	return pActiveOCNavigationBlocker != nullptr;
 }
 
 void gdeGameDefinition::SetActiveOCNavigationBlocker(gdeOCNavigationBlocker *navblocker){
-	if(navblocker == pActiveOCNavigationBlocker){
+	if(pActiveOCNavigationBlocker == navblocker){
 		return;
 	}
 	
@@ -865,11 +865,11 @@ void gdeGameDefinition::SetActiveOCNavigationBlocker(gdeOCNavigationBlocker *nav
 
 
 bool gdeGameDefinition::HasActiveOCNavigationSpace() const{
-	return pActiveOCNavigationSpace != NULL;
+	return pActiveOCNavigationSpace != nullptr;
 }
 
 void gdeGameDefinition::SetActiveOCNavigationSpace(gdeOCNavigationSpace *navSpace){
-	if(navSpace == pActiveOCNavigationSpace){
+	if(pActiveOCNavigationSpace == navSpace){
 		return;
 	}
 	
@@ -882,11 +882,11 @@ void gdeGameDefinition::SetActiveOCNavigationSpace(gdeOCNavigationSpace *navSpac
 
 
 bool gdeGameDefinition::HasActiveOCParticleEmitter() const{
-	return pActiveOCParticleEmitter != NULL;
+	return pActiveOCParticleEmitter != nullptr;
 }
 
 void gdeGameDefinition::SetActiveOCParticleEmitter(gdeOCParticleEmitter *emitter){
-	if(emitter == pActiveOCParticleEmitter){
+	if(pActiveOCParticleEmitter == emitter){
 		return;
 	}
 	
@@ -899,11 +899,11 @@ void gdeGameDefinition::SetActiveOCParticleEmitter(gdeOCParticleEmitter *emitter
 
 
 bool gdeGameDefinition::HasActiveOCForceField() const{
-	return pActiveOCForceField != NULL;
+	return pActiveOCForceField != nullptr;
 }
 
 void gdeGameDefinition::SetActiveOCForceField(gdeOCForceField *field){
-	if(field == pActiveOCForceField){
+	if(pActiveOCForceField == field){
 		return;
 	}
 	
@@ -916,11 +916,11 @@ void gdeGameDefinition::SetActiveOCForceField(gdeOCForceField *field){
 
 
 bool gdeGameDefinition::HasActiveOCSnapPoint() const{
-	return pActiveOCSnapPoint != NULL;
+	return pActiveOCSnapPoint != nullptr;
 }
 
 void gdeGameDefinition::SetActiveOCSnapPoint(gdeOCSnapPoint *snappoint){
-	if(snappoint == pActiveOCSnapPoint){
+	if(pActiveOCSnapPoint == snappoint){
 		return;
 	}
 	
@@ -933,11 +933,11 @@ void gdeGameDefinition::SetActiveOCSnapPoint(gdeOCSnapPoint *snappoint){
 
 
 bool gdeGameDefinition::HasActiveOCSpeaker() const{
-	return pActiveOCSpeaker != NULL;
+	return pActiveOCSpeaker != nullptr;
 }
 
 void gdeGameDefinition::SetActiveOCSpeaker(gdeOCSpeaker *speaker){
-	if(speaker == pActiveOCSpeaker){
+	if(pActiveOCSpeaker == speaker){
 		return;
 	}
 	
@@ -1015,7 +1015,7 @@ void gdeGameDefinition::RemoveAllParticleEmitters(){
 }
 
 bool gdeGameDefinition::HasActiveParticleEmitter() const{
-	return pActiveParticleEmitter != NULL;
+	return pActiveParticleEmitter != nullptr;
 }
 
 void gdeGameDefinition::SetActiveParticleEmitter(gdeParticleEmitter *particleEmitter){
@@ -1049,7 +1049,7 @@ void gdeGameDefinition::RemoveSkin(gdeSkin *skin){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(skin == pActiveSkin){
+	if(pActiveSkin == skin){
 		if(pSkins.GetCount() == 1){
 			SetActiveSkin(NULL);
 			
@@ -1082,11 +1082,11 @@ void gdeGameDefinition::RemoveAllSkins(){
 }
 
 bool gdeGameDefinition::HasActiveSkin() const{
-	return pActiveSkin != NULL;
+	return pActiveSkin != nullptr;
 }
 
 void gdeGameDefinition::SetActiveSkin(gdeSkin *skin){
-	if(skin == pActiveSkin){
+	if(pActiveSkin == skin){
 		return;
 	}
 	
@@ -1116,7 +1116,7 @@ void gdeGameDefinition::RemoveSky(gdeSky *sky){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(sky == pActiveSky){
+	if(pActiveSky == sky){
 		if(pSkies.GetCount() == 1){
 			SetActiveSky(NULL);
 			
@@ -1149,11 +1149,11 @@ void gdeGameDefinition::RemoveAllSkies(){
 }
 
 bool gdeGameDefinition::HasActiveSky() const{
-	return pActiveSky != NULL;
+	return pActiveSky != nullptr;
 }
 
 void gdeGameDefinition::SetActiveSky(gdeSky *sky){
-	if(sky == pActiveSky){
+	if(pActiveSky == sky){
 		return;
 	}
 	

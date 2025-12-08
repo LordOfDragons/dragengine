@@ -302,7 +302,7 @@ void deoglRDecal::SetDirtyVBO(){
 
 
 void deoglRDecal::SetSkin(deoglRSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
@@ -323,7 +323,7 @@ void deoglRDecal::SetSkin(deoglRSkin *skin){
 }
 
 void deoglRDecal::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
-	if(dynamicSkin == pDynamicSkin){
+	if(pDynamicSkin == dynamicSkin){
 		return;
 	}
 	
@@ -341,7 +341,7 @@ void deoglRDecal::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 }
 
 void deoglRDecal::SetSkinState(deoglSkinState *skinState){
-	if(skinState == pSkinState){
+	if(pSkinState == skinState){
 		return;
 	}
 	
@@ -410,7 +410,7 @@ deoglRComponent &deoglRDecal::GetParentComponentRef() const{
 
 void deoglRDecal::SetParentComponent(deoglRComponent *component){
 	// NOTE this is called from the main thread during synchronization
-	if(component == pParentComponent){
+	if(pParentComponent == component){
 		return;
 	}
 	

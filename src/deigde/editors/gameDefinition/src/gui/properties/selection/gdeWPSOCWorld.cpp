@@ -275,7 +275,7 @@ gdeWPSOCWorld::~gdeWPSOCWorld(){
 ///////////////
 
 void gdeWPSOCWorld::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	

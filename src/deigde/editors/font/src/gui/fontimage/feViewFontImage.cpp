@@ -151,7 +151,7 @@ feViewFontImage::~feViewFontImage(){
 ///////////////
 
 void feViewFontImage::SetFont(feFont *font){
-	if(font == pFont){
+	if(pFont == font){
 		return;
 	}
 	

@@ -380,7 +380,7 @@ void dearAnimatorInstance::ComponentChanged(){
 	dearComponent * const arcomponent = component
 		? (dearComponent*)component->GetPeerAnimator() : nullptr;
 	
-	if(arcomponent != pComponent){
+	if(pComponent != arcomponent){
 		if(pComponent){
 			pComponent->GetComponent().FreeReference();
 		}

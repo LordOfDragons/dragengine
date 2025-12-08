@@ -262,7 +262,7 @@ deoglRenderPlan::~deoglRenderPlan(){
 ///////////////
 
 void deoglRenderPlan::SetWorld(deoglRWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -1832,7 +1832,7 @@ void deoglRenderPlan::SetLodLevelOffset(int offset){
 }
 
 void deoglRenderPlan::SetOcclusionMap(deoglOcclusionMap *occlusionMap){
-	if(occlusionMap == pOcclusionMap){
+	if(pOcclusionMap == occlusionMap){
 		return;
 	}
 	
@@ -1844,7 +1844,7 @@ void deoglRenderPlan::SetOcclusionMap(deoglOcclusionMap *occlusionMap){
 }
 
 void deoglRenderPlan::SetOcclusionTest(deoglOcclusionTest *occlusionTest){
-	if(occlusionTest == pOcclusionTest){
+	if(pOcclusionTest == occlusionTest){
 		return;
 	}
 	
