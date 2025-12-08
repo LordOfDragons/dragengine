@@ -159,9 +159,6 @@ void dedsCollisionTester::SetCollisionShape(const decShapeList &shapeList){
 			if(shape){
 				delete shape;
 			}
-			if(colliderVolume){
-				colliderVolume->FreeReference();
-			}
 			throw;
 		}
 		
@@ -389,9 +386,6 @@ void dedsCollisionTester::pCopyCollider(deCollider *collider){
 			colliderVolume->SetShapes(copyColliderVolume.GetShapes());
 			
 		}catch(const duException &){
-			if(colliderVolume){
-				colliderVolume->FreeReference();
-			}
 			throw;
 		}
 		

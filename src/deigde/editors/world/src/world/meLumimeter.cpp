@@ -225,7 +225,6 @@ void meLumimeter::pCleanUp(){
 	SetHostObject(NULL);
 	SetWorld(NULL);
 	
-	if(pLumimeter) pLumimeter->FreeReference();
 }
 
 void meLumimeter::pUpdateDDVolume(){

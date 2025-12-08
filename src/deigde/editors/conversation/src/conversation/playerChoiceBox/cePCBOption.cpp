@@ -142,12 +142,6 @@ void cePCBOption::Layout(const cePlayerChoiceBox &pcbox, bool selected){
 		canvasText = NULL;
 		
 	}catch(const deException &){
-		if(canvasText){
-			canvasText->FreeReference();
-		}
-		if(canvasBackground){
-			canvasBackground->FreeReference();
-		}
 		throw;
 	}
 }

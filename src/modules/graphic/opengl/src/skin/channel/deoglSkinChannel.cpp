@@ -1836,9 +1836,6 @@ void deoglSkinChannel::pBuildCacheVerify(){
 		writer->FreeReference();
 		
 	}catch(const deException &){
-		if(writer){
-			writer->FreeReference();
-		}
 		throw;
 	}
 	

@@ -138,9 +138,6 @@ void igdeGDSkyManager::UpdateWith(const igdeGDSkyManager &manager){
 		}
 		
 	}catch(const deException &){
-		if(sky){
-			sky->FreeReference();
-		}
 		throw;
 	}
 	

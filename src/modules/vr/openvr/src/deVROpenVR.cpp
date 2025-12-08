@@ -429,9 +429,6 @@ deInputDevice *deVROpenVR::GetDeviceAt(int index){
 		pDevices.GetAt(index)->GetInfo(*device);
 		
 	}catch(const deException &){
-		if(device){
-			device->FreeReference();
-		}
 		throw;
 	}
 	

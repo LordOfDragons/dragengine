@@ -1566,15 +1566,6 @@ void aeAnimator::pUpdateComponent(){
 		}
 		
 	}catch(const deException &){
-		if(displayModel){
-			displayModel->FreeReference();
-		}
-		if(displaySkin){
-			displaySkin->FreeReference();
-		}
-		if(displayRig){
-			displayRig->FreeReference();
-		}
 		throw;
 	}
 	

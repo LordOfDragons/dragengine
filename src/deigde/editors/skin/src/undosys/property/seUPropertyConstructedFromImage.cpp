@@ -75,9 +75,6 @@ pNewContent(NULL)
 		nodeImage = NULL;
 		
 	}catch(const deException &){
-		if(nodeImage){
-			nodeImage->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}

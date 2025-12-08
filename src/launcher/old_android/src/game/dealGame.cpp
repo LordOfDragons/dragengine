@@ -260,9 +260,6 @@ void dealGame::LoadConfig(){
 				reader->FreeReference();
 				
 			}catch(const deException &){
-				if(reader){
-					reader->FreeReference();
-				}
 				throw;
 			}
 			
@@ -296,9 +293,6 @@ void dealGame::SaveConfig(){
 			writer->FreeReference();
 			
 		}catch(const deException &){
-			if(writer){
-				writer->FreeReference();
-			}
 			logger.LogError(LOGSOURCE, "Failed to write game configuration file (file permission problem)");
 			// DIALOG BOX
 			// "Game configuration can not be written!\n"

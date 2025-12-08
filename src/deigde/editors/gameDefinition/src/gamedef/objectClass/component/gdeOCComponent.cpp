@@ -91,9 +91,6 @@ pActiveTexture(NULL)
 		}
 		
 	}catch(const deException &){
-		if(texture){
-			texture->FreeReference();
-		}
 		throw;
 	}
 }

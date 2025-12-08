@@ -94,9 +94,6 @@ pDirtyLabelSize(true)
 		GetCanvas()->AddCanvas(pCLabel);
 		
 	}catch(const deException &){
-		if(image){
-			image->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}

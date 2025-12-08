@@ -525,9 +525,6 @@ bool dealEngineInstance::OpenDelga(int fileDescriptor, long fileOffset, long fil
 		fileReader = NULL;
 		
 	}catch(const deException &e){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
 		pLogger->LogErrorFormat(LOGSOURCE, "OpenDelga: fd=%d offset=%ld len=%ld",
 			fileDescriptor, fileOffset, fileLength);
 		pLogger->LogException(LOGSOURCE, e);
@@ -561,9 +558,6 @@ bool dealEngineInstance::VFSAddDiskDir(const char *vfsRoot, const char *nativeDi
 		container->FreeReference();
 		
 	}catch(const deException &e){
-		if(container){
-			container->FreeReference();
-		}
 		pLogger->LogErrorFormat(LOGSOURCE, "VFSAddDiskDir(root=%s,disk=%s,ro=%c):",
 			vfsRoot, nativeDirectory, readOnly ? 't' : 'n');
 		pLogger->LogException(LOGSOURCE, e);
@@ -613,9 +607,6 @@ bool dealEngineInstance::VFSAddDelga(const char *vfsRoot, const char *vfsBase){
 		container->FreeReference();
 		
 	}catch(const deException &e){
-		if(container){
-			container->FreeReference();
-		}
 		pLogger->LogErrorFormat(LOGSOURCE, "VFSAddDelga: root=%s base=%s", vfsRoot, vfsBase);
 		pLogger->LogException(LOGSOURCE, e);
 		return false;
@@ -644,9 +635,6 @@ bool dealEngineInstance::VFSAddRedirect(const char *root, const char *redirect){
 		container->FreeReference();
 		
 	}catch(const deException &e){
-		if(container){
-			container->FreeReference();
-		}
 		pLogger->LogErrorFormat(LOGSOURCE, "VFSAddRedirect(root=%s,redirect=%s):", root, redirect);
 		pLogger->LogException(LOGSOURCE, e);
 		return false;
@@ -965,12 +953,6 @@ void dealEngineInstance::pCreateLogger(const char *logfile){
 			diskDir->FreeReference();
 			
 		}catch(const deException &){
-			if(fileWriter){
-				fileWriter->FreeReference();
-			}
-			if(diskDir){
-				diskDir->FreeReference();
-			}
 			throw;
 		}
 	}
@@ -1050,15 +1032,6 @@ void dealEngineInstance::pCreateOSFileSystem(){
 		containerRedirect = NULL;
 		
 	}catch(const deException &){
-		if(containerRedirect){
-			containerRedirect->FreeReference();
-		}
-		if(zipArchive){
-			zipArchive->FreeReference();
-		}
-		if(fileReader){
-			fileReader->FreeReference();
-		}
 		pCloseOSFileSystem();
 		throw;
 	}

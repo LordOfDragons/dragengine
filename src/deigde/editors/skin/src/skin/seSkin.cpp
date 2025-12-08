@@ -205,9 +205,6 @@ pPreviewMode(epmModel)
 		pDynamicSkin = new seDynamicSkin(this);
 		
 	}catch(const deException &){
-		if(amRuleAnim){
-			amRuleAnim->FreeReference();
-		}
 		if(engLink){
 			delete engLink;
 		}
@@ -1079,12 +1076,8 @@ void seSkin::pUpdateComponent(){
 			pEngComponent->SetLayerMask(layerMask);
 		}
 		
-		if(model) model->FreeReference();
-		if(rig) rig->FreeReference();
 		
 	}catch(const deException &){
-		if(model) model->FreeReference();
-		if(rig) rig->FreeReference();
 		throw;
 	}
 	
@@ -1125,15 +1118,9 @@ void seSkin::pUpdateAnimator(){
 		pEngAnimator->SetAnimation(animation);
 		
 	}catch(const deException &){
-		if(animation){
-			animation->FreeReference();
-		}
 		throw;
 	}
 	
-	if(animation){
-		animation->FreeReference();
-	}
 	
 	pUpdateAnimatorMove();
 }

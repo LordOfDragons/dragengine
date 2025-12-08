@@ -94,9 +94,6 @@ void igdeGDParticleEmitterManager::UpdateWith(const igdeGDParticleEmitterManager
 		}
 		
 	}catch(const deException &){
-		if(emitter){
-			emitter->FreeReference();
-		}
 		throw;
 	}
 	
