@@ -1076,7 +1076,7 @@ void seWPLayer::UpdateLayer(){
 		pEditLightOrientation->SetVector(decVector());
 	}
 	
-	const bool enabled = layer != NULL;
+	const bool enabled = layer != nullptr;
 	pEditName->SetEnabled(enabled);
 	pEditSkin->SetEnabled(enabled);
 	pEditOffset->SetEnabled(enabled);
@@ -1106,7 +1106,7 @@ void seWPLayer::UpdateBodyList(){
 		pSpinBody->SetRange(0, 0);
 	}
 	
-	const bool enabled = layer != NULL;
+	const bool enabled = layer != nullptr;
 	pSpinBody->SetEnabled(enabled);
 	
 	pActionBodyAdd->Update();
@@ -1207,7 +1207,7 @@ void seWPLayer::UpdateTarget(){
 		pListLinks->RemoveAllItems();
 	}
 	
-	const bool enabled = layer != NULL;
+	const bool enabled = layer != nullptr;
 	pListLinks->SetEnabled(enabled);
 	pBtnLinkAdd->SetEnabled(enabled);
 }

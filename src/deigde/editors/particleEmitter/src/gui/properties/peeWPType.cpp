@@ -1048,7 +1048,7 @@ void peeWPType::UpdateType(){
 		}
 	}
 	
-	const bool enabled = type != NULL;
+	const bool enabled = type != nullptr;
 	
 	pEditSkin->SetEnabled(enabled);
 	pEditModel->SetEnabled(enabled);
