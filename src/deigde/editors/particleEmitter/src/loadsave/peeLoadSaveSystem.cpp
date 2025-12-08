@@ -78,7 +78,7 @@ peeLoadSaveSystem::~peeLoadSaveSystem(){
 // Management
 ///////////////
 
-peeEmitter *peeLoadSaveSystem::LoadEmitter(const char *filename){
+peeEmitter::Ref peeLoadSaveSystem::LoadEmitter(const char *filename){
 	if(!filename) DETHROW(deeInvalidParam);
 	
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();

@@ -82,7 +82,7 @@ seLoadSaveSystem::~seLoadSaveSystem(){
 // Management
 ///////////////
 
-seSynthesizer *seLoadSaveSystem::LoadSynthesizer(const char *filename, const char *basePath){
+seSynthesizer::Ref seLoadSaveSystem::LoadSynthesizer(const char *filename, const char *basePath){
 	if(!filename){
 		DETHROW(deeInvalidParam);
 	}

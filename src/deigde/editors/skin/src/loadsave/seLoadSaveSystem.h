@@ -77,7 +77,7 @@ public:
 	void UpdateLSSkins();
 	
 	/** Loads the skin from file if possible. */
-	seSkin *LoadSkin(const char *filename, igdeGameDefinition *gameDefinition);
+	seSkin::Ref LoadSkin(const char *filename, igdeGameDefinition *gameDefinition);
 	/** Saves the skin to file if possible. */
 	void SaveSkin(seSkin *skin, const char *filename);
 	/*@}*/

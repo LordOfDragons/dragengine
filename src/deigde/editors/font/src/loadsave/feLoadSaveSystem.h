@@ -84,7 +84,7 @@ public:
 	void UpdateLSFonts();
 	
 	/** Loads the font from file if possible. */
-	feFont *LoadFont(const char *filename, igdeGameDefinition *gameDefinition);
+	feFont::Ref LoadFont(const char *filename, igdeGameDefinition *gameDefinition);
 	/** Saves the font to file if possible. */
 	void SaveFont(feFont *font, const char *filename);
 	/*@}*/

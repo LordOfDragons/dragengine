@@ -191,7 +191,7 @@ void feLoadSaveSystem::UpdateLSFonts(){
 
 
 
-feFont *feLoadSaveSystem::LoadFont(const char *filename, igdeGameDefinition *gameDefinition){
+feFont::Ref feLoadSaveSystem::LoadFont(const char *filename, igdeGameDefinition *gameDefinition){
 	if(!filename || !gameDefinition) DETHROW(deeInvalidParam);
 	//decDiskFileReader file( filename );
 	deEngine *engine = pWndMain->GetEngine();

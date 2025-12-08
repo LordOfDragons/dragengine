@@ -69,7 +69,7 @@ public:
 	inline seLoadSaveSky &GetLSSky(){ return *pLSSky; }
 	
 	/** \brief Load sky from file. */
-	seSky *LoadSky(const char *filename);
+	seSky::Ref LoadSky(const char *filename);
 	
 	/** \brief Save sky to file. */
 	void SaveSky(seSky *sky, const char *filename);

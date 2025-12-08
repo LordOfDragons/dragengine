@@ -80,7 +80,7 @@ public:
 	void UpdateLSLangPacks();
 	
 	/** Loads the langpack from file if possible. */
-	lpeLangPack *LoadLangPack(const char *filename);
+	lpeLangPack::Ref LoadLangPack(const char *filename);
 	/** Saves the langpack to file if possible. */
 	void SaveLangPack(lpeLangPack *langpack, const char *filename);
 	

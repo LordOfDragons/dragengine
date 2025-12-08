@@ -75,7 +75,7 @@ gdeLoadSaveSystem::~gdeLoadSaveSystem(){
 // Management
 ///////////////
 
-gdeGameDefinition *gdeLoadSaveSystem::LoadGameDefinition(const char *filename){
+gdeGameDefinition::Ref gdeLoadSaveSystem::LoadGameDefinition(const char *filename){
 	if(!filename){
 		DETHROW(deeInvalidParam);
 	}

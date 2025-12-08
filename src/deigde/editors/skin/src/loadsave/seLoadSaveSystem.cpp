@@ -191,7 +191,7 @@ void seLoadSaveSystem::UpdateLSSkins(){
 
 
 
-seSkin *seLoadSaveSystem::LoadSkin(const char *filename, igdeGameDefinition *gameDefinition){
+seSkin::Ref seLoadSaveSystem::LoadSkin(const char *filename, igdeGameDefinition *gameDefinition){
 	if(!filename || !gameDefinition) DETHROW(deeInvalidParam);
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
 	decBaseFileReader::Ref fileReader = NULL;

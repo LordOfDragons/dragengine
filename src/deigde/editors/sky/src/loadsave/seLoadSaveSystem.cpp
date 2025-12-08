@@ -82,7 +82,7 @@ seLoadSaveSystem::~seLoadSaveSystem(){
 // Management
 ///////////////
 
-seSky *seLoadSaveSystem::LoadSky(const char *filename){
+seSky::Ref seLoadSaveSystem::LoadSky(const char *filename){
 	if(!filename){
 		DETHROW(deeInvalidParam);
 	}

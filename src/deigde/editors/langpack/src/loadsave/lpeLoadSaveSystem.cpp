@@ -209,7 +209,7 @@ void lpeLoadSaveSystem::UpdateLSLangPacks(){
 
 
 
-lpeLangPack *lpeLoadSaveSystem::LoadLangPack(const char *filename){
+lpeLangPack::Ref lpeLoadSaveSystem::LoadLangPack(const char *filename){
 	if(!filename) DETHROW(deeInvalidParam);
 	decBaseFileReader::Ref fileReader = NULL;
 	lpeLangPack::Ref langpack = NULL;

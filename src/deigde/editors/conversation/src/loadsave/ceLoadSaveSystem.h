@@ -86,7 +86,7 @@ public:
 	inline ceLoadSaveConversation *GetLSConversation(){ return pLSConversation; }
 	
 	/** \brief Load conversation from file. */
-	ceConversation *LoadConversation(const char *filename);
+	ceConversation::Ref LoadConversation(const char *filename);
 	
 	/** \brief Save conversation to file. */
 	void SaveConversation(ceConversation *conversation, const char *filename);

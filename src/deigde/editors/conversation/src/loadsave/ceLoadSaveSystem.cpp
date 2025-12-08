@@ -101,7 +101,7 @@ ceLoadSaveSystem::~ceLoadSaveSystem(){
 // Management
 ///////////////
 
-ceConversation *ceLoadSaveSystem::LoadConversation(const char *filename){
+ceConversation::Ref ceLoadSaveSystem::LoadConversation(const char *filename){
 	ceConversation::Ref conversation = nullptr;
 	
 	try{
