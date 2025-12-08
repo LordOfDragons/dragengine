@@ -39,7 +39,7 @@ class sePropertyNodeGroup;
 class seUPNGroupRemoveNodes : public igdeUndo{
 private:
 	struct sNode{
-		sePropertyNode *node;
+		sePropertyNode::Ref node;
 		int index;
 	};
 	

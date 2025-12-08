@@ -61,7 +61,6 @@ pCount(0)
 		for(pCount=0; pCount<count; pCount++){
 			pChildren[pCount].index = -1;
 			pChildren[pCount].node = children.GetAt(pCount);
-			pChildren[pCount].node->AddReference();
 		}
 		
 	}catch(const deException &){
@@ -106,7 +105,6 @@ void seUPNGroupRemoveNodes::pCleanUp(){
 	if(pChildren){
 		int i;
 		for(i=0; i<pCount; i++){
-			pChildren[i].node->FreeReference();
 		}
 		delete [] pChildren;
 	}

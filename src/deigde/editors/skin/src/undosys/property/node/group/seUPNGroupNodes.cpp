@@ -97,7 +97,6 @@ pNodes(NULL)
 			pNodes[pNodeCount].position = node->GetPosition();
 			pNodes[pNodeCount].index = parentGroup->IndexOfNode(node);
 			pNodes[pNodeCount].node = node;
-			node->AddReference();
 		}
 		
 		for(i=1; i<pNodeCount; i++){

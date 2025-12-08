@@ -67,7 +67,6 @@ pNodes(0)
 		pNodes[pNodeCount].rotation = node->GetRotation();
 		pNodes[pNodeCount].shearing = node->GetShearing();
 		pNodes[pNodeCount].node = node;
-		node->AddReference();
 	}
 	
 	pParentGroup = parentGroup;
