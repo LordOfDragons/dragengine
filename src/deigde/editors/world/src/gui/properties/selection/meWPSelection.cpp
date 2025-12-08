@@ -56,20 +56,20 @@ pWindowProperties(windowProperties),
 pListener(NULL),
 pWorld(NULL)
 {
-	pListener.TakeOver(new meWPSelectionListener(*this));
+	pListener.TakeOverWith(*this);
 	
 	GetEnvironment().GetUIHelper().Label(*this, "No Selection");
 	
-	pPanelObject.TakeOver(new meWPSObject(*this));
+	pPanelObject.TakeOverWith(*this);
 	AddChild(pPanelObject);
 	
-	pPanelObjectShape.TakeOver(new meWPSObjectShape(*this));
+	pPanelObjectShape.TakeOverWith(*this);
 	AddChild(pPanelObjectShape);
 	
-	pPanelDecal.TakeOver(new meWPSDecal(*this));
+	pPanelDecal.TakeOverWith(*this);
 	AddChild(pPanelDecal);
 	
-	pPanelNavSpace.TakeOver(new meWPSNavSpace(*this));
+	pPanelNavSpace.TakeOverWith(*this);
 	AddChild(pPanelNavSpace);
 	
 	SetCurrent(0);  // empty

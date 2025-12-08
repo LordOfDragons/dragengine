@@ -105,7 +105,7 @@ pSynthesizer(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOver(new seWindowMainListener(*this));
+	pListener.TakeOverWith(*this);
 	
 	pConfiguration.LoadConfiguration();
 	
@@ -229,23 +229,23 @@ deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group){
 	
 	if(insert){
 		if(parentGroup){
-			undoGroup.TakeOver(new seUSourceGroupAddSource(parentGroup, source, index));
+			undoGroup.TakeOverWith(parentGroup, source, index);
 			
 		}else{
-			undo.TakeOver(new seUAddSource(pSynthesizer, source, index));
+			undo.TakeOverWith(pSynthesizer, source, index);
 		}
 		
 	}else{
 		if(group && activeSource && activeSource->GetType() == deSynthesizerSourceVisitorIdentify::estGroup){
 			seSourceGroup *sourceGroup = (seSourceGroup*)activeSource;
-			undoGroup.TakeOver(new seUSourceGroupAddSource(sourceGroup, source, sourceGroup->GetSources().GetCount()));
+			undoGroup.TakeOverWith(sourceGroup, source, sourceGroup->GetSources().GetCount());
 			
 		}else{
 			if(parentGroup){
-				undoGroup.TakeOver(new seUSourceGroupAddSource(parentGroup, source, index));
+				undoGroup.TakeOverWith(parentGroup, source, index);
 				
 			}else{
-				undo.TakeOver(new seUAddSource(pSynthesizer, source, index));
+				undo.TakeOverWith(pSynthesizer, source, index);
 			}
 		}
 	}
@@ -877,22 +877,22 @@ void seWindowMain::pLoadIcons(){
 void seWindowMain::pCreateActions(){
 	igdeEnvironment &environment = GetEnvironment();
 	
-	pActionFileNew.TakeOver(new cActionFileNew(*this));
-	pActionFileOpen.TakeOver(new cActionFileOpen(*this));
-	pActionFileSave.TakeOver(new cActionFileSave(*this));
-	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
+	pActionFileNew.TakeOverWith(*this);
+	pActionFileOpen.TakeOverWith(*this);
+	pActionFileSave.TakeOverWith(*this);
+	pActionFileSaveAs.TakeOverWith(*this);
 	
-	pActionEditUndo.TakeOver(new igdeActionUndo(environment));
-	pActionEditRedo.TakeOver(new igdeActionRedo(environment));
+	pActionEditUndo.TakeOverWith(environment);
+	pActionEditRedo.TakeOverWith(environment);
 	
-	pActionEditCut.TakeOver(new cActionEditCut(*this));
-	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
-	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
+	pActionEditCut.TakeOverWith(*this);
+	pActionEditCopy.TakeOverWith(*this);
+	pActionEditPaste.TakeOverWith(*this);
 	
-	pActionControllerAdd.TakeOver(new cActionControllerAdd(*this));
-	pActionControllerRemove.TakeOver(new cActionControllerRemove(*this));
-	pActionControllerUp.TakeOver(new cActionControllerUp(*this));
-	pActionControllerDown.TakeOver(new cActionControllerDown(*this));
+	pActionControllerAdd.TakeOverWith(*this);
+	pActionControllerRemove.TakeOverWith(*this);
+	pActionControllerUp.TakeOverWith(*this);
+	pActionControllerDown.TakeOverWith(*this);
 	
 	pActionSourceAddSound.TakeOver(new cActionSourceAdd(*this,
 		deSynthesizerSourceVisitorIdentify::estSound, false, "Sound",
@@ -942,9 +942,9 @@ void seWindowMain::pCreateActions(){
 		deSynthesizerSourceVisitorIdentify::estSynthesizer, true, "Synthesizer",
 		pIconSourceSynthesizer, "Insert synthesizer source", deInputEvent::ekcY));
 	
-	pActionSourceRemove.TakeOver(new cActionSourceRemove(*this));
-	pActionSourceUp.TakeOver(new cActionSourceUp(*this));
-	pActionSourceDown.TakeOver(new cActionSourceDown(*this));
+	pActionSourceRemove.TakeOverWith(*this);
+	pActionSourceUp.TakeOverWith(*this);
+	pActionSourceDown.TakeOverWith(*this);
 	
 	pActionEffectAddStretch.TakeOver(new cActionEffectAdd(*this,
 		deSynthesizerEffectVisitorIdentify::eetStretch, false, "Stretch Time/Pitch",
@@ -954,9 +954,9 @@ void seWindowMain::pCreateActions(){
 		deSynthesizerEffectVisitorIdentify::eetStretch, true, "Insert Time/Pitch",
 		pIconEffectStretch, "Insert stretch pitch and time effect", deInputEvent::ekcS));
 	
-	pActionEffectRemove.TakeOver(new cActionEffectRemove(*this));
-	pActionEffectUp.TakeOver(new cActionEffectUp(*this));
-	pActionEffectDown.TakeOver(new cActionEffectDown(*this));
+	pActionEffectRemove.TakeOverWith(*this);
+	pActionEffectUp.TakeOverWith(*this);
+	pActionEffectDown.TakeOverWith(*this);
 	
 	
 	// register for updating
@@ -1011,7 +1011,7 @@ void seWindowMain::pCreateActions(){
 void seWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -1023,7 +1023,7 @@ void seWindowMain::pCreateToolBarFile(){
 void seWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -1040,23 +1040,23 @@ void seWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
+	cascade.TakeOverWith(env, "File", deInputEvent::ekcF);
 	pCreateMenuSynthesizer(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade.TakeOverWith(env, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Controller", deInputEvent::ekcC));
+	cascade.TakeOverWith(env, "Controller", deInputEvent::ekcC);
 	pCreateMenuController(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Source", deInputEvent::ekcS));
+	cascade.TakeOverWith(env, "Source", deInputEvent::ekcS);
 	pCreateMenuSource(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Effect", deInputEvent::ekcE));
+	cascade.TakeOverWith(env, "Effect", deInputEvent::ekcE);
 	pCreateMenuEffect(cascade);
 	AddSharedMenu(cascade);
 }
@@ -1104,7 +1104,7 @@ void seWindowMain::pCreateMenuSource(igdeMenuCascade &menu){
 	helper.MenuCommand(submenu, pActionSourceAddSynthesizer);
 	menu.AddChild(submenu);
 	
-	submenu.TakeOver(new igdeMenuCascade(GetEnvironment(), "Insert", deInputEvent::ekcI));
+	submenu.TakeOverWith(GetEnvironment(), "Insert", deInputEvent::ekcI);
 	helper.MenuCommand(submenu, pActionSourceInsertWave);
 	helper.MenuCommand(submenu, pActionSourceInsertSound);
 	helper.MenuCommand(submenu, pActionSourceInsertChain);
@@ -1112,7 +1112,7 @@ void seWindowMain::pCreateMenuSource(igdeMenuCascade &menu){
 	helper.MenuCommand(submenu, pActionSourceInsertSynthesizer);
 	menu.AddChild(submenu);
 	
-	submenu.TakeOver(new igdeMenuCascade(GetEnvironment(), "Add Into Group"));
+	submenu.TakeOverWith(GetEnvironment(), "Add Into Group");
 	helper.MenuCommand(submenu, pActionSourceGroupAddWave);
 	helper.MenuCommand(submenu, pActionSourceGroupAddSound);
 	helper.MenuCommand(submenu, pActionSourceGroupAddChain);
@@ -1133,7 +1133,7 @@ void seWindowMain::pCreateMenuEffect(igdeMenuCascade &menu){
 	helper.MenuCommand(submenu, pActionEffectAddStretch);
 	menu.AddChild(submenu);
 	
-	submenu.TakeOver(new igdeMenuCascade(GetEnvironment(), "Insert", deInputEvent::ekcI));
+	submenu.TakeOverWith(GetEnvironment(), "Insert", deInputEvent::ekcI);
 	helper.MenuCommand(submenu, pActionEffectInsertStretch);
 	menu.AddChild(submenu);
 	

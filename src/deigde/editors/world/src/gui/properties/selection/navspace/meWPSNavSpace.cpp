@@ -176,14 +176,14 @@ pWorld(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox;
 	
-	pListener.TakeOver(new meWPSNavSpaceListener(*this));
+	pListener.TakeOverWith(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content.TakeOverWith(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
 	// selection
-	groupBox.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10));
+	groupBox.TakeOverWith(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10);
 	content->AddChild(groupBox);
 	helper.Label(groupBox, "Selection:");
 	helper.EditInteger(groupBox, "Count of selected navigation spaces", 3, pEditSelCount, NULL);

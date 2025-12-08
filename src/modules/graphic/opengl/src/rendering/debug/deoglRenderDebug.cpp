@@ -149,11 +149,11 @@ pTBORenderRectangle2(nullptr)
 		
 		
 		// TBOs
-		pTBORenderText1.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
-		pTBORenderText2.TakeOver(new deoglDynamicTBOFloat8(renderThread, 4));
+		pTBORenderText1.TakeOverWith(renderThread, 4);
+		pTBORenderText2.TakeOverWith(renderThread, 4);
 		
-		pTBORenderRectangle1.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
-		pTBORenderRectangle2.TakeOver(new deoglDynamicTBOFloat8(renderThread, 4));
+		pTBORenderRectangle1.TakeOverWith(renderThread, 4);
+		pTBORenderRectangle2.TakeOverWith(renderThread, 4);
 		
 	}catch(const deException &){
 		pCleanUp();

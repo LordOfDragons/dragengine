@@ -259,13 +259,13 @@ pMaxLines(500)
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener.TakeOver(new projPanelTestRunListener(*this));
+	pListener.TakeOverWith(*this);
 	
 	
 	// create actions
-	pActionStart.TakeOver(new cActionStart(*this));
-	pActionQuit.TakeOver(new cActionStop(*this));
-	pActionKill.TakeOver(new cActionKill(*this));
+	pActionStart.TakeOverWith(*this);
+	pActionQuit.TakeOverWith(*this);
+	pActionKill.TakeOverWith(*this);
 	
 	
 	
@@ -284,7 +284,7 @@ pMaxLines(500)
 	pCBProfile->SetDefaultSorter();
 	sidePanel->AddChild(groupBox);
 	
-	groupBox.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	groupBox.TakeOverWith(env, igdeContainerFlow::eaY);
 	helper.Label(groupBox, "Launch Profile:");
 	helper.ComboBox(groupBox, "Launcher profile to use for testing.",
 		pCBLaunchProfile, new cComboLaunchProfile(*this));
@@ -318,18 +318,18 @@ pMaxLines(500)
 	
 	
 	// content
-	pTabContent.TakeOver(new igdeTabBook(env));
+	pTabContent.TakeOverWith(env);
 	AddChild(pTabContent, eaCenter);
 	
 	// logs widget
-	pEditLogs.TakeOver(new igdeTextArea(env, 60, 10, false));
+	pEditLogs.TakeOverWith(env, 60, 10, false);
 	
 	igdeTextStyle::Ref style(igdeTextStyle::Ref::NewWith(styleWarning));
 	style->SetColor(decColor(0.0f, 0.0f, 0.0f));
 	style->SetBgColor(decColor(1.0f, 0.815f, 0.0f));
 	pEditLogs->AddStyle(style);
 	
-	style.TakeOver(new igdeTextStyle(styleError));
+	style.TakeOverWith(styleError);
 	style->SetColor(decColor(1.0f, 1.0f, 0.5f));
 	style->SetBgColor(decColor(0.75f, 0.0f, 0.0f));
 // 	style->SetBold( true );

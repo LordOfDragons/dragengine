@@ -480,10 +480,10 @@ pControllerCount(0)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOver(new aeWPPlaygroundListener(*this));
+	pListener.TakeOverWith(*this);
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content.TakeOverWith(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	

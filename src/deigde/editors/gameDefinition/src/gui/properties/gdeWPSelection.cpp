@@ -153,9 +153,9 @@ pModelTreeObjects(NULL)
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener.TakeOver(new gdeWPSelectionListener(*this));
+	pListener.TakeOverWith(*this);
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher.TakeOverWith(env);
 	AddChild(pSwitcher, igdeContainerSplitted::eaSide);
 	
 	helper.TreeList(10, "Game definition objects", pTreeObjects, new cTreeObjects(*this));
@@ -163,55 +163,55 @@ pModelTreeObjects(NULL)
 	
 	helper.Label(pSwitcher, "No Selection");
 	
-	pPanelCategory.TakeOver(new gdeWPSCategory(windowProperties));
+	pPanelCategory.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelCategory);
 	
-	pPanelObjectClass.TakeOver(new gdeWPSObjectClass(windowProperties));
+	pPanelObjectClass.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelObjectClass);
 	
-	pPanelOCBillboard.TakeOver(new gdeWPSOCBillboard(windowProperties));
+	pPanelOCBillboard.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelOCBillboard);
 	
-	pPanelOCCamera.TakeOver(new gdeWPSOCCamera(windowProperties));
+	pPanelOCCamera.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelOCCamera);
 	
-	pPanelOCComponent.TakeOver(new gdeWPSOCComponent(windowProperties));
+	pPanelOCComponent.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelOCComponent);
 	
-	pPanelOCEnvMapProbe.TakeOver(new gdeWPSOCEnvMapProbe(windowProperties));
+	pPanelOCEnvMapProbe.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelOCEnvMapProbe);
 	
-	pPanelOCLight.TakeOver(new gdeWPSOCLight(windowProperties));
+	pPanelOCLight.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelOCLight);
 	
-	pPanelOCNavigationBlocker.TakeOver(new gdeWPSOCNavigationBlocker(windowProperties));
+	pPanelOCNavigationBlocker.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelOCNavigationBlocker);
 	
-	pPanelOCNavigationSpace.TakeOver(new gdeWPSOCNavigationSpace(windowProperties));
+	pPanelOCNavigationSpace.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelOCNavigationSpace);
 	
-	pPanelOCParticleEmitter.TakeOver(new gdeWPSOCParticleEmitter(windowProperties));
+	pPanelOCParticleEmitter.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelOCParticleEmitter);
 	
-	pPanelOCForceField.TakeOver(new gdeWPSOCForceField(windowProperties));
+	pPanelOCForceField.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelOCForceField);
 	
-	pPanelOCSnapPoint.TakeOver(new gdeWPSOCSnapPoint(windowProperties));
+	pPanelOCSnapPoint.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelOCSnapPoint);
 	
-	pPanelOCSpeaker.TakeOver(new gdeWPSOCSpeaker(windowProperties));
+	pPanelOCSpeaker.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelOCSpeaker);
 	
-	pPanelOCWorld.TakeOver(new gdeWPSOCWorld(windowProperties));
+	pPanelOCWorld.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelOCWorld);
 	
-	pPanelParticleEmitter.TakeOver(new gdeWPSParticleEmitter(windowProperties));
+	pPanelParticleEmitter.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelParticleEmitter);
 	
-	pPanelSkin.TakeOver(new gdeWPSSkin(windowProperties));
+	pPanelSkin.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelSkin);
 	
-	pPanelSky.TakeOver(new gdeWPSSky(windowProperties));
+	pPanelSky.TakeOverWith(windowProperties);
 	pSwitcher->AddChild(pPanelSky);
 	
 	pSwitcher->SetCurrent(epNone);

@@ -670,7 +670,7 @@ pListener(NULL)
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener.TakeOver(new projPanelProfilesListener(*this));
+	pListener.TakeOverWith(*this);
 	
 	
 	
@@ -707,7 +707,7 @@ pListener(NULL)
 	igdeContainer::Ref frameLine;
 	const char *description;
 	
-	groupBox.TakeOver(new igdeContainerForm(env));
+	groupBox.TakeOverWith(env);
 	sidePanel->AddChild(groupBox);
 	helper.EditString(groupBox, "Name:", "Profile name.", pEditName, new cTextName(*this));
 	helper.EditString(groupBox, "Description:", "Profile description.",
@@ -720,7 +720,7 @@ pListener(NULL)
 	description = "VFS directory where the game scripts are located.";
 	helper.FormLineStretchFirst(groupBox, "Script Directory:", description, frameLine);
 	helper.EditString(frameLine, description, pEditScriptDirectory, new cTextScriptDirectory(*this));
-	pActionScriptDirectory.TakeOver(new cActionScriptDirectory(*this));
+	pActionScriptDirectory.TakeOverWith(*this);
 	helper.Button(frameLine, pActionScriptDirectory);
 	
 	helper.EditString(groupBox, "Game Object:",
@@ -731,17 +731,17 @@ pListener(NULL)
 	helper.FormLineStretchFirst(groupBox, "Config Path:", description, frameLine);
 	helper.EditString(frameLine, description, pEditPathConfig,
 		new cTextPathConfig(*this));
-	pActionPathConfig.TakeOver(new cActionPathConfig(*this));
+	pActionPathConfig.TakeOverWith(*this);
 	helper.Button(frameLine, pActionPathConfig);
 	
 	description = "VFS directory where the game stores captured files.";
 	helper.FormLineStretchFirst(groupBox, "Capture Path:", description, frameLine);
 	helper.EditString(frameLine, description, pEditPathCapture,
 		new cTextPathCapture(*this));
-	pActionPathCapture.TakeOver(new cActionPathCapture(*this));
+	pActionPathCapture.TakeOverWith(*this);
 	helper.Button(frameLine, pActionPathCapture);
 	
-	pActionMenuIdentifier.TakeOver(new cActionMenuIdentifier(*this));
+	pActionMenuIdentifier.TakeOverWith(*this);
 	helper.FormLineStretchFirst(groupBox, "Identifier:",
 		"Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!", formLine);
 	helper.EditString(formLine, "Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!",
@@ -769,11 +769,11 @@ pListener(NULL)
 	
 	
 	// processing parameters
-	groupBox.TakeOver(new igdeGroupBox(env, "Processing Parameters:", false));
+	groupBox.TakeOverWith(env, "Processing Parameters:", false);
 	sidePanel->AddChild(groupBox);
 	
 	igdeContainer::Ref subGroup, subGroup2;
-	subGroup.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaX));
+	subGroup.TakeOverWith(env, igdeContainerBox::eaX);
 	groupBox->AddChild(subGroup);
 	
 	// icons
@@ -782,13 +782,13 @@ pListener(NULL)
 	description = "Set of icons of different size representing the project.";
 	helper.FormLineStretchFirst(subGroup2, "Path:", description, frameLine);
 	helper.EditPath(frameLine, description, igdeEnvironment::efpltImage, pEditIconPath, NULL);
-	pActionAddIcon.TakeOver(new cActionAddIcon(*this, pEditIconPath));
+	pActionAddIcon.TakeOverWith(*this, pEditIconPath);
 	helper.Button(frameLine, pActionAddIcon);
 	
 	helper.ListBox(subGroup2, 4, description, pListIcons, NULL);
 	pListIcons->SetDefaultSorter();
 	
-	pActionRemoveIcon.TakeOver(new cActionRemoveIcon(*this, pListIcons));
+	pActionRemoveIcon.TakeOverWith(*this, pListIcons);
 	helper.Button(frameLine, pActionRemoveIcon);
 	
 	// exclude patterns
@@ -797,13 +797,13 @@ pListener(NULL)
 	description = "Set of file patterns to exclude from projribution process.";
 	helper.FormLineStretchFirst(subGroup2, "Pattern:", description, frameLine);
 	helper.EditString(frameLine, description, pEditExcludePattern, NULL);
-	pActionAddExcludePattern.TakeOver(new cActionAddExcludePattern(*this, pEditExcludePattern));
+	pActionAddExcludePattern.TakeOverWith(*this, pEditExcludePattern);
 	helper.Button(frameLine, pActionAddExcludePattern);
 	
 	helper.ListBox(subGroup2, 4, description, pListExcludePatterns, NULL);
 	pListExcludePatterns->SetDefaultSorter();
 	
-	pActionRemoveExcludePattern.TakeOver(new cActionRemoveExcludePattern(*this, pListExcludePatterns));
+	pActionRemoveExcludePattern.TakeOverWith(*this, pListExcludePatterns);
 	helper.Button(frameLine, pActionRemoveExcludePattern);
 	
 	// required extensions
@@ -812,18 +812,18 @@ pListener(NULL)
 	description = "Set of resource file extensions (.extension) required by the project";
 	helper.FormLineStretchFirst(subGroup2, "Extension:", description, frameLine);
 	helper.EditString(frameLine, description, pEditRequiredExtension, NULL);
-	pActionAddRequiredExtension.TakeOver(new cActionAddRequiredExtension(*this, pEditRequiredExtension));
+	pActionAddRequiredExtension.TakeOverWith(*this, pEditRequiredExtension);
 	helper.Button(frameLine, pActionAddRequiredExtension);
 	
 	helper.ListBox(subGroup2, 4, description, pListRequiredExtensions, NULL);
 	pListRequiredExtensions->SetDefaultSorter();
 	
-	pActionRemoveRequiredExtension.TakeOver(new cActionRemoveRequiredExtension(*this, pListRequiredExtensions));
+	pActionRemoveRequiredExtension.TakeOverWith(*this, pListRequiredExtensions);
 	helper.Button(frameLine, pActionRemoveRequiredExtension);
 	
 	
 	// row
-	subGroup.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaX));
+	subGroup.TakeOverWith(env, igdeContainerBox::eaX);
 	sidePanel->AddChild(subGroup);
 	
 	// delga parameters
@@ -832,7 +832,7 @@ pListener(NULL)
 	description = "VFS directory where to place the build DELGA file.";
 	helper.FormLineStretchFirst(groupBox, "DELGA File:", description, frameLine);
 	helper.EditString(frameLine, description, pEditDelgaPath, new cTextDelgaPath(*this));
-	pActionDelgaPath.TakeOver(new cActionDelgaPath(*this));
+	pActionDelgaPath.TakeOverWith(*this);
 	helper.Button(frameLine, pActionDelgaPath);
 	
 	

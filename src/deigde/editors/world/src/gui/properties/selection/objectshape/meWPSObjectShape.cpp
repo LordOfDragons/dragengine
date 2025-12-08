@@ -174,13 +174,13 @@ pPreventUpdate(false)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, form, formLine;
 	
-	pListener.TakeOver(new meWPSObjectShapeListener(*this));
+	pListener.TakeOverWith(*this);
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content.TakeOverWith(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form.TakeOverWith(env);
 	content->AddChild(form);
 	
 	helper.EditString(form, "Class:", "Name of the active object class.", pEditObjectClass, NULL);
@@ -190,7 +190,7 @@ pPreventUpdate(false)
 		pCBProperties, new cComboProperties(*this, pPreventUpdate));
 	pCBProperties->SetDefaultSorter();
 	
-	formLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10));
+	formLine.TakeOverWith(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10);
 	content->AddChild(formLine);
 	helper.Label(formLine, "Count:");
 	helper.EditInteger(formLine, "Count of shapes", 3, pEditShapeCount, NULL);
@@ -551,7 +551,7 @@ void meWPSObjectShape::OnShapeChanged(){
 			return;
 		}
 		
-		undo.TakeOver(new meUObjectShapeReplace(object, activeProperty, shapeIndex, *shape));
+		undo.TakeOverWith(object, activeProperty, shapeIndex, *shape);
 		
 	}catch(const deException &){
 		if(shape){
@@ -574,7 +574,7 @@ void meWPSObjectShape::pCreateShapePanels(){
 	igdeContainer::Ref groupBox;
 	
 	
-	pSwitcherShapeType.TakeOver(new igdeSwitcher(env));
+	pSwitcherShapeType.TakeOverWith(env);
 	
 	
 	// none

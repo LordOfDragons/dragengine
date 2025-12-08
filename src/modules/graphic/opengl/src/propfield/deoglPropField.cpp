@@ -71,7 +71,7 @@ pDirtyInstances(true)
 	int t;
 	
 	try{
-		pRPropField.TakeOver(new deoglRPropField(ogl.GetRenderThread()));
+		pRPropField.TakeOverWith(ogl.GetRenderThread());
 		
 		for(t=0; t<typeCount; t++){
 			TypeAdded(t, propField.GetTypeAt(t));

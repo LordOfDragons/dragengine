@@ -180,7 +180,7 @@ pRecentFilesLangPack(*this)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOver(new ceWindowMainListener(*this));
+	pListener.TakeOverWith(*this);
 	pLoadSaveSystem = new ceLoadSaveSystem(*this);
 	pConfiguration = new ceConfiguration(*this);
 	
@@ -194,17 +194,17 @@ pRecentFilesLangPack(*this)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties.TakeOver(new ceWindowProperties(*this));
+	pWindowProperties.TakeOverWith(*this);
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(
 		env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5));
 	splitted->AddChild(panel, igdeContainerSplitted::eaCenter);
 	
-	pViewConversation.TakeOver(new ceViewConversation(*this));
+	pViewConversation.TakeOverWith(*this);
 	panel->AddChild(pViewConversation);
 	
-	pWindowDopeSheet.TakeOver(new ceWindowDopeSheet(*this));
+	pWindowDopeSheet.TakeOverWith(*this);
 	panel->AddChild(pWindowDopeSheet);
 	
 	CreateNewConversation();
@@ -918,28 +918,28 @@ void ceWindowMain::pLoadIcons(){
 void ceWindowMain::pCreateActions(){
 	igdeEnvironment &environment = GetEnvironment();
 	
-	pActionFileNew.TakeOver(new cActionFileNew(*this));
-	pActionFileOpen.TakeOver(new cActionFileOpen(*this));
-	pActionFileSave.TakeOver(new cActionFileSave(*this));
-	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
+	pActionFileNew.TakeOverWith(*this);
+	pActionFileOpen.TakeOverWith(*this);
+	pActionFileSave.TakeOverWith(*this);
+	pActionFileSaveAs.TakeOverWith(*this);
 	
-	pActionEditUndo.TakeOver(new igdeActionUndo(environment));
-	pActionEditRedo.TakeOver(new igdeActionRedo(environment));
+	pActionEditUndo.TakeOverWith(environment);
+	pActionEditRedo.TakeOverWith(environment);
 	
-	pActionEditCut.TakeOver(new cActionEditCut(*this));
-	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
-	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
+	pActionEditCut.TakeOverWith(*this);
+	pActionEditCopy.TakeOverWith(*this);
+	pActionEditPaste.TakeOverWith(*this);
 	
-	pActionViewCTSLoad.TakeOver(new cActionViewCTSLoad(*this));
-	pActionViewCTSSave.TakeOver(new cActionViewCTSSave(*this));
-	pActionViewCTALoad.TakeOver(new cActionViewCTALoad(*this));
-	pActionViewCTASave.TakeOver(new cActionViewCTASave(*this));
-	pActionViewCTGSLoad.TakeOver(new cActionViewCTGSLoad(*this));
-	pActionViewCTGSSave.TakeOver(new cActionViewCTGSSave(*this));
-	pActionViewShowRuleOfThirdsAid.TakeOver(new cActionViewShowRuleOfThirdsAid(*this));
-	pActionViewAttachLangPack.TakeOver(new cActionViewAttachLangPack(*this));
-	pActionViewDetachLangPack.TakeOver(new cActionViewDetachLangPack(*this));
-	pActionViewMissingWords.TakeOver(new cActionViewMissingWords(*this));
+	pActionViewCTSLoad.TakeOverWith(*this);
+	pActionViewCTSSave.TakeOverWith(*this);
+	pActionViewCTALoad.TakeOverWith(*this);
+	pActionViewCTASave.TakeOverWith(*this);
+	pActionViewCTGSLoad.TakeOverWith(*this);
+	pActionViewCTGSSave.TakeOverWith(*this);
+	pActionViewShowRuleOfThirdsAid.TakeOverWith(*this);
+	pActionViewAttachLangPack.TakeOverWith(*this);
+	pActionViewDetachLangPack.TakeOverWith(*this);
+	pActionViewMissingWords.TakeOverWith(*this);
 	
 	
 	// register for updating
@@ -970,7 +970,7 @@ void ceWindowMain::pCreateActions(){
 void ceWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -982,7 +982,7 @@ void ceWindowMain::pCreateToolBarFile(){
 void ceWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -999,15 +999,15 @@ void ceWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
+	cascade.TakeOverWith(env, "File", deInputEvent::ekcF);
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade.TakeOverWith(env, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcV));
+	cascade.TakeOverWith(env, "View", deInputEvent::ekcV);
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

@@ -192,14 +192,14 @@ public:
 				return;
 			}
 			
-			undo.TakeOver(new meUObjectTextureSetSkin(texture, newskin));
+			undo.TakeOverWith(texture, newskin);
 			
 		}else{
 			const meObjectTexture::Ref refTexture(meObjectTexture::Ref::NewWith(object->GetEnvironment(), pName));
 			texture = refTexture;
 			texture->SetSkinPath(newskin);
 			
-			undo.TakeOver(new meUObjectAddTexture(object, texture));
+			undo.TakeOverWith(object, texture);
 		}
 		pPanel.GetWorld()->GetUndoSystem()->Add(undo);
 	}
@@ -234,10 +234,10 @@ public:
 				return;
 			}
 			
-			undo.TakeOver(new meUObjectSetProperty(object, pName, oldValue, newValue));
+			undo.TakeOverWith(object, pName, oldValue, newValue);
 			
 		}else{
-			undo.TakeOver(new meUObjectAddProperty(object, pName, newValue));
+			undo.TakeOverWith(object, pName, newValue);
 		}
 		pPanel.GetWorld()->GetUndoSystem()->Add(undo);
 	}
@@ -586,13 +586,13 @@ pViewMode(evmPreview)
 	igdeContainer::Ref groupBox, form, frameLine;
 	
 	
-	pListener.TakeOver(new meWPBrowserListener(*this));
+	pListener.TakeOverWith(*this);
 	
 	
-	pActionSetClass.TakeOver(new cActionSetClass(*this));
-	pActionSetSkin.TakeOver(new cActionSetSkin(*this));
-	pActionSetDecal.TakeOver(new cActionSetDecal(*this));
-	pActionSetSky.TakeOver(new cActionSetSky(*this));
+	pActionSetClass.TakeOverWith(*this);
+	pActionSetSkin.TakeOverWith(*this);
+	pActionSetDecal.TakeOverWith(*this);
+	pActionSetSky.TakeOverWith(*this);
 	
 	pActionPISizeSmall.TakeOver(new cActionPreviewSize(*this, epsSmall,
 		"Small Preview Image", NULL, "Small Preview Image"));
@@ -606,7 +606,7 @@ pViewMode(evmPreview)
 	pActionPIViewPreview.TakeOver(new cActionViewMode(*this, evmPreview,
 		"Preview Mode", NULL, "Preview Mode"));
 	
-	pActionPIRebuild.TakeOver(new cActionPIRebuild(*this));
+	pActionPIRebuild.TakeOverWith(*this);
 	
 	
 	content.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espTop,
@@ -615,14 +615,14 @@ pViewMode(evmPreview)
 	
 	
 	// browser
-	frameLine.TakeOver(new igdeGroupBox(env, "Browser:"));
+	frameLine.TakeOverWith(env, "Browser:");
 	((igdeGroupBox&)(igdeWidget&)frameLine).SetCanCollapse(false);
 	((igdeGroupBox&)(igdeWidget&)frameLine).SetStretchLast(true);
 	content->AddChild(frameLine, igdeContainerSplitted::eaSide);
-	groupBox.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast));
+	groupBox.TakeOverWith(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast);
 	frameLine->AddChild(groupBox);
 	
-	frameLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
+	frameLine.TakeOverWith(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(frameLine);
 	
 	helper.ComboBox(frameLine, "Type of items to browse", pCBTypes, new cComboType(*this));
@@ -636,7 +636,7 @@ pViewMode(evmPreview)
 		"Filter", NULL, "Browse by filtering"), true);
 	
 	
-	pSwitcherSelBy.TakeOver(new igdeSwitcher(env));
+	pSwitcherSelBy.TakeOverWith(env);
 	groupBox->AddChild(pSwitcherSelBy);
 	
 	
@@ -646,7 +646,7 @@ pViewMode(evmPreview)
 	
 	
 	// filter
-	form.TakeOver(new igdeContainerForm(env));
+	form.TakeOverWith(env);
 	pSwitcherSelBy->AddChild(form);
 	
 	helper.EditString(form, "Filter:", "Show items containing filter case insensitive",
@@ -654,11 +654,11 @@ pViewMode(evmPreview)
 	
 	
 	// items
-	frameLine.TakeOver(new igdeGroupBox(env, "Items:"));
+	frameLine.TakeOverWith(env, "Items:");
 	((igdeGroupBox&)(igdeWidget&)frameLine).SetCanCollapse(false);
 	((igdeGroupBox&)(igdeWidget&)frameLine).SetStretchLast(true);
 	content->AddChild(frameLine, igdeContainerSplitted::eaCenter);
-	groupBox.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst));
+	groupBox.TakeOverWith(env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst);
 	frameLine->AddChild(groupBox);
 	
 	const igdeUIHelper::sColumnHeader headers[] = {
@@ -840,7 +840,7 @@ void meWPBrowser::RebuildPISelectedItem(){
 	
 	igdeIcon::Ref icon;
 	const int iconSize = GetPreviewIconSize();
-	icon.TakeOver(new igdeIcon(*pvmgr.GetImageCreating(), iconSize, iconSize));
+	icon.TakeOverWith(*pvmgr.GetImageCreating(), iconSize, iconSize);
 	
 	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pListItems, item, iconSize));
 	

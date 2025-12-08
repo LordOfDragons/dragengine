@@ -149,7 +149,7 @@ void dealDialogMain::pBuildContent(){
 	buttons->AddWidget(button2);
 	button2->FreeReference();
 	
-	pButtonRun.TakeOver(new ButtonLaunchGame(*this));
+	pButtonRun.TakeOverWith(*this);
 	pButtonRun->SetEnabled(false);
 	buttons->AddWidget(pButtonRun);
 	

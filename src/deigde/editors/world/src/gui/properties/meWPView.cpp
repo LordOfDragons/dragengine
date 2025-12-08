@@ -550,9 +550,9 @@ pPreventUpdateCamera(false)
 	igdeContainer::Ref content, groupBox, form, formLine;
 	igdeActionContextMenu::Ref actionMenu;
 	
-	pListener.TakeOver(new meWPViewListener(*this));
+	pListener.TakeOverWith(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content.TakeOverWith(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
@@ -570,7 +570,7 @@ pPreventUpdateCamera(false)
 	
 	helper.FormLineStretchFirst(groupBox, "Sensitivity:", "Sensitivity of mouse input", formLine);
 	helper.EditFloat(formLine, "Sensitivity of mouse input", pEditSensitivity, new cTextSensitivity(*this));
-	actionMenu.TakeOver(new cActionMenuSensitivity(*this));
+	actionMenu.TakeOverWith(*this);
 	helper.Button(formLine, pBtnSensitivity, actionMenu.Pointer());
 	actionMenu->SetWidget(pBtnSensitivity);
 	
@@ -603,18 +603,18 @@ pPreventUpdateCamera(false)
 	// camera
 	helper.GroupBoxFlow(content, groupBox, "Camera:");
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form.TakeOverWith(env);
 	groupBox->AddChild(form);
 	
 	helper.EditString(form, "Active:", "Active camera", pEditActiveCamera, nullptr);
 	pEditActiveCamera->SetEditable(false);
 	
 	helper.FormLine(form, "", "", formLine);
-	pActionCameraFreeRoaming.TakeOver(new cActionCameraFreeRoaming(*this));
+	pActionCameraFreeRoaming.TakeOverWith(*this);
 	helper.Button(formLine, pActionCameraFreeRoaming);
-	pActionCameraPlayer.TakeOver(new cActionCameraPlayer(*this));
+	pActionCameraPlayer.TakeOverWith(*this);
 	helper.Button(formLine, pActionCameraPlayer);
-	pActionCameraObject.TakeOver(new cActionCameraObject(*this));
+	pActionCameraObject.TakeOverWith(*this);
 	helper.Button(formLine, pActionCameraObject);
 	
 	helper.ComboBox(form, "Object Camera:", "Object camera", pCBCameraObjects, nullptr);
@@ -641,7 +641,7 @@ pPreventUpdateCamera(false)
 	helper.FormLineStretchFirst(groupBox, "Minimum Extend:", "Minimum extend of limit box", formLine);
 	helper.EditVector(formLine, "Minimum extend of limit box", pEditLimitBoxMinExtend,
 		new cEditLimitBoxMinExtend(*this));
-	actionMenu.TakeOver(new cActionMenuLimitBox(*this));
+	actionMenu.TakeOverWith(*this);
 	helper.Button(formLine, pBtnLimitBoxMenu, actionMenu.Pointer());
 	actionMenu->SetWidget(pBtnLimitBoxMenu);
 	

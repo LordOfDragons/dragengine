@@ -163,9 +163,9 @@ pSAnimation(NULL)
 	igdeContainer::Ref content, groupBox;
 	igdeAction::Ref action;
 	
-	pListener.TakeOver(new saeWPViewListener(*this));
+	pListener.TakeOverWith(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content.TakeOverWith(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// display
@@ -179,10 +179,10 @@ pSAnimation(NULL)
 		igdeEnvironment::efpltRig, pEditDisplayRigPath, new cEditDisplayRigPath(*this));
 	
 	// property panels
-	action.TakeOver(new cActionCameraChanged(*this));
+	action.TakeOverWith(*this);
 	helper.WPCamera(content, pWPCamera, action, "Camera:");
 	
-	action.TakeOver(new cActionSkyChanged(*this));
+	action.TakeOverWith(*this);
 	helper.WPSky(content, pWPSky, action, "Sky:");
 }
 

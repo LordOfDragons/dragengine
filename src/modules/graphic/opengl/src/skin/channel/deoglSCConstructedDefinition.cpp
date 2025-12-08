@@ -74,8 +74,8 @@ pCacheValid(true)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pDefinition.TakeOver(new decMemoryFileWriter(definition, false));
-	pVerify.TakeOver(new decMemoryFileWriter(verify, false));
+	pDefinition.TakeOverWith(definition, false);
+	pVerify.TakeOverWith(verify, false);
 	
 	// property contains properties not covered in the content but required for constructing.
 	// these properties are stored first

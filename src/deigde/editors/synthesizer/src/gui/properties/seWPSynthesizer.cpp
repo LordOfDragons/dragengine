@@ -287,15 +287,15 @@ pPreventUpdate(false)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOver(new seWPSynthesizerListener(*this));
+	pListener.TakeOverWith(*this);
 	
 	
-	pActionPlay.TakeOver(new cActionPlay(*this));
-	pActionPause.TakeOver(new cActionPause(*this));
-	pActionStop.TakeOver(new cActionStop(*this));
+	pActionPlay.TakeOverWith(*this);
+	pActionPause.TakeOverWith(*this);
+	pActionStop.TakeOverWith(*this);
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content.TakeOverWith(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	

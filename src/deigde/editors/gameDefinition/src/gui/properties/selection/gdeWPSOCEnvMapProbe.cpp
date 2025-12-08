@@ -339,10 +339,10 @@ pGameDefinition(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content.TakeOverWith(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
-	pListener.TakeOver(new gdeWPSOCEnvMapProbeListener(*this));
+	pListener.TakeOverWith(*this);
 	
 	helper.GroupBox(content, groupBox, "Object Class Environment Map Probe:");
 	helper.EditVector(groupBox, "Position:", "Position relative to object class",

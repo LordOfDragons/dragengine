@@ -533,10 +533,10 @@ pAnimator(nullptr)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOver(new aeWPAnimatorListener(*this));
+	pListener.TakeOverWith(*this);
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content.TakeOverWith(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
@@ -551,7 +551,7 @@ pAnimator(nullptr)
 	// affected bones
 	helper.GroupBoxFlow(content, groupBox, "Affected bones:");
 	
-	formLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
+	formLine.TakeOverWith(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(formLine);
 	helper.ComboBoxFilter(formLine, true, "Bone name", pCBBones, nullptr);
 	helper.Button(formLine, pBtnBoneAdd, new cActionRigBoneAdd(*this), true);
@@ -564,7 +564,7 @@ pAnimator(nullptr)
 	// affected vertex position sets
 	helper.GroupBoxFlow(content, groupBox, "Affected vertex position sets:");
 	
-	formLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
+	formLine.TakeOverWith(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	groupBox->AddChild(formLine);
 	helper.ComboBoxFilter(formLine, true, "Set name", pCBVertexPositionSets, nullptr);
 	helper.Button(formLine, pBtnVertexPositionSetAdd, new cActionRigVertexPositionSetAdd(*this), true);

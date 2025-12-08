@@ -486,7 +486,7 @@ public:
 			pUndo->Redo();
 			
 		}else{
-			pUndo.TakeOver(new seULayerSetTransparency(layer, sliderText->GetValue()));
+			pUndo.TakeOverWith(layer, sliderText->GetValue());
 			sky->GetUndoSystem()->Add(pUndo);
 		}
 	}
@@ -846,19 +846,19 @@ pSky(NULL)
 	igdeContainer::Ref content, groupBox, frameLine, frameLine2;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener.TakeOver(new seWPLayerListener(*this));
+	pListener.TakeOverWith(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content.TakeOverWith(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// layer list
 	helper.GroupBoxFlow(content, groupBox, "Layers:");
 	helper.ListBox(groupBox, 8, "Layers", pListLayer, new cListLayers(*this));
 	
-	pActionLayerAdd.TakeOver(new cActionLayerAdd(*this));
-	pActionLayerRemove.TakeOver(new cActionLayerRemove(*this));
-	pActionLayerUp.TakeOver(new cActionLayerUp(*this, pListLayer));
-	pActionLayerDown.TakeOver(new cActionLayerDown(*this, pListLayer));
+	pActionLayerAdd.TakeOverWith(*this);
+	pActionLayerRemove.TakeOverWith(*this);
+	pActionLayerUp.TakeOverWith(*this, pListLayer);
+	pActionLayerDown.TakeOverWith(*this, pListLayer);
 	
 	// layer settings
 	helper.GroupBox(content, groupBox, "Layer Settings:");
@@ -901,10 +901,10 @@ pSky(NULL)
 	helper.FormLine(groupBox, "Body:", "Body to edit", frameLine);
 	helper.EditSpinInteger(frameLine, "Body to edit", 0, 0, pSpinBody, new cSpinBody(*this));
 	
-	pActionBodyAdd.TakeOver(new cActionBodyAdd(*this));
-	pActionBodyRemove.TakeOver(new cActionBodyRemove(*this));
-	pActionBodyUp.TakeOver(new cActionBodyUp(*this, pSpinBody));
-	pActionBodyDown.TakeOver(new cActionBodyDown(*this, pSpinBody));
+	pActionBodyAdd.TakeOverWith(*this);
+	pActionBodyRemove.TakeOverWith(*this);
+	pActionBodyUp.TakeOverWith(*this, pSpinBody);
+	pActionBodyDown.TakeOverWith(*this, pSpinBody);
 	
 	helper.Button(frameLine, pBtnBody, new cActionBody(*this, pBtnBody), true);
 	
@@ -920,7 +920,7 @@ pSky(NULL)
 	// targets
 	helper.GroupBoxFlow(content, groupBox, "Targets:");
 	
-	frameLine.TakeOver(new igdeContainerForm(env));
+	frameLine.TakeOverWith(env);
 	groupBox->AddChild(frameLine);
 	
 	helper.ComboBox(frameLine, "Target:", "Select target to edit", pCBTarget, new cComboTarget(*this));
@@ -946,13 +946,13 @@ pSky(NULL)
 	
 	helper.FormLineStretchFirst(frameLine, "Link:", "Links", frameLine2);
 	helper.ComboBox(frameLine2, "Links", pCBLinks, NULL);
-	pActionLinkAdd.TakeOver(new cActionLinkAdd(*this, pCBLinks));
+	pActionLinkAdd.TakeOverWith(*this, pCBLinks);
 	helper.Button(frameLine2, pBtnLinkAdd, pActionLinkAdd);
 	
 	helper.ListBox(groupBox, 8, "Links", pListLinks, new cListLinks(*this));
 	pListLinks->SetDefaultSorter();
 	
-	pActionLinkRemove.TakeOver(new cActionLinkRemove(*this, pListLinks));
+	pActionLinkRemove.TakeOverWith(*this, pListLinks);
 }
 
 seWPLayer::~seWPLayer(){

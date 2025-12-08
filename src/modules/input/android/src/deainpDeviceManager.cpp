@@ -162,11 +162,11 @@ void deainpDeviceManager::pCleanUp(){
 }
 
 void deainpDeviceManager::pCreateDevices(){
-	pMouse.TakeOver(new deainpDeviceMouse(pModule));
+	pMouse.TakeOverWith(pModule);
 	pMouse->SetIndex(pDevices.GetCount());
 	pDevices.Add(pMouse);
 	
-	pKeyboard.TakeOver(new deainpDeviceKeyboard(pModule));
+	pKeyboard.TakeOverWith(pModule);
 	pKeyboard->SetIndex(pDevices.GetCount());
 	pDevices.Add(pKeyboard);
 }

@@ -228,7 +228,7 @@ public:
 		
 		igdeUndo::Ref undo;
 		const ceConversationFile::Ref group(ceConversationFile::Ref::NewWith(name));
-		undo.TakeOver(new ceUCFileAdd(conversation, group));
+		undo.TakeOverWith(conversation, group);
 		conversation->GetUndoSystem()->Add(undo);
 	}
 	
@@ -307,7 +307,7 @@ public:
 		igdeClipboardData::Ref clip;
 		ceConversationFileList list;
 		list.Add(file);
-		clip.TakeOver(new ceClipboardDataFile(list));
+		clip.TakeOverWith(list);
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(clip);
 	}
 	
@@ -475,7 +475,7 @@ public:
 		
 		igdeUndo::Ref undo;
 		const ceConversationTopic::Ref topic(ceConversationTopic::Ref::NewWith(name));
-		undo.TakeOver(new ceUCTopicAdd(file, topic));
+		undo.TakeOverWith(file, topic);
 		pPanel.GetConversation()->GetUndoSystem()->Add(undo);
 	}
 	
@@ -578,7 +578,7 @@ public:
 		igdeClipboardData::Ref clip;
 		ceConversationTopicList list;
 		list.Add(topic);
-		clip.TakeOver(new ceClipboardDataTopic(list));
+		clip.TakeOverWith(list);
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(clip);
 	}
 	
@@ -764,7 +764,7 @@ pPanelCTrigger(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox, formLine;
 	
-	pListener.TakeOver(new ceWPTopicListener(*this));
+	pListener.TakeOverWith(*this);
 	
 	
 	// conversation
@@ -793,7 +793,7 @@ pPanelCTrigger(NULL)
 	helper.TreeList(10, "Topic Actions", pTreeActions, new cTreeActionsListener(*this));
 	groupActions->AddChild(pTreeActions, igdeContainerBorder::eaCenter);
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher.TakeOverWith(env);
 	groupActions->AddChild(pSwitcher, igdeContainerBorder::eaBottom);
 	
 	helper.Label(pSwitcher, ""); // empty panel

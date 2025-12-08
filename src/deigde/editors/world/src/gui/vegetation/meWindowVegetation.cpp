@@ -326,26 +326,26 @@ public:
 			env.GetStockIcon(igdeEnvironment::esiPlus), "Add Node"));
 		menu.AddChild(subMenu);
 		
-		subMenu2.TakeOver(new igdeMenuCascade(env, "Input", NULL, "Input"));
+		subMenu2.TakeOverWith(env, "Input", NULL, "Input");
 		subMenu->AddChild(subMenu2);
 		helper.MenuCommand(subMenu2, new cActionAddConstant(pView, addNodePosition), true);
 		helper.MenuCommand(subMenu2, new cActionAddGeometry(pView, addNodePosition), true);
 		helper.MenuCommand(subMenu2, new cActionAddRandom(pView, addNodePosition), true);
 		
-		subMenu2.TakeOver(new igdeMenuCascade(env, "Proximity", NULL, "Proximity"));
+		subMenu2.TakeOverWith(env, "Proximity", NULL, "Proximity");
 		subMenu->AddChild(subMenu2);
 		helper.MenuCommand(subMenu2, new cActionAddClosestProp(pView, addNodePosition), true);
 		helper.MenuCommand(subMenu2, new cActionAddClosestVegetation(pView, addNodePosition), true);
 		helper.MenuCommand(subMenu2, new cActionAddPropCount(pView, addNodePosition), true);
 		
-		subMenu2.TakeOver(new igdeMenuCascade(env, "Conversion", NULL, "Conversion"));
+		subMenu2.TakeOverWith(env, "Conversion", NULL, "Conversion");
 		subMenu->AddChild(subMenu2);
 		helper.MenuCommand(subMenu2, new cActionAddCurve(pView, addNodePosition), true);
 		helper.MenuCommand(subMenu2, new cActionAddMapping(pView, addNodePosition), true);
 		helper.MenuCommand(subMenu2, new cActionAddMath(pView, addNodePosition), true);
 		helper.MenuCommand(subMenu2, new cActionAddMultiMath(pView, addNodePosition), true);
 		
-		subMenu2.TakeOver(new igdeMenuCascade(env, "Vector", NULL, "Vector"));
+		subMenu2.TakeOverWith(env, "Vector", NULL, "Vector");
 		subMenu->AddChild(subMenu2);
 		helper.MenuCommand(subMenu2, new cActionAddCombine(pView, addNodePosition), true);
 		helper.MenuCommand(subMenu2, new cActionAddComponents(pView, addNodePosition), true);
@@ -445,7 +445,7 @@ pVLayer(NULL),
 pUnitsToPixel(igdeApplication::app().DisplayScaled(100.0f)),
 pPixelToUnits(1.0f / pUnitsToPixel)
 {
-	pListener.TakeOver(new meWindowVegetationListener(*this));
+	pListener.TakeOverWith(*this);
 	AddListener(new cBoardListener(*this));
 }
 
@@ -530,59 +530,59 @@ void meWindowVegetation::UpdateNodesFromVLayer(){
 		
 		switch(rule->GetType()){
 		case meHTVRule::ertClosestProp:
-			node.TakeOver(new meWVNodeClosestProp(*this, (meHTVRuleClosestProp*)rule));
+			node.TakeOverWith(*this, (meHTVRuleClosestProp*)rule);
 			break;
 			
 		case meHTVRule::ertClosestVegetation:
-			node.TakeOver(new meWVNodeClosestVegetation(*this, (meHTVRuleClosestVegetation*)rule));
+			node.TakeOverWith(*this, (meHTVRuleClosestVegetation*)rule);
 			break;
 			
 		case meHTVRule::ertCombine:
-			node.TakeOver(new meWVNodeCombine(*this, (meHTVRuleCombine*)rule));
+			node.TakeOverWith(*this, (meHTVRuleCombine*)rule);
 			break;
 			
 		case meHTVRule::ertComponents:
-			node.TakeOver(new meWVNodeComponents(*this, (meHTVRuleComponents*)rule));
+			node.TakeOverWith(*this, (meHTVRuleComponents*)rule);
 			break;
 			
 		case meHTVRule::ertCurve:
-			node.TakeOver(new meWVNodeCurve(*this, (meHTVRuleCurve*)rule));
+			node.TakeOverWith(*this, (meHTVRuleCurve*)rule);
 			break;
 			
 		case meHTVRule::ertGeometry:
-			node.TakeOver(new meWVNodeGeometry(*this, (meHTVRuleGeometry*)rule));
+			node.TakeOverWith(*this, (meHTVRuleGeometry*)rule);
 			break;
 			
 		case meHTVRule::ertMapping:
-			node.TakeOver(new meWVNodeMapping(*this, (meHTVRuleMapping*)rule));
+			node.TakeOverWith(*this, (meHTVRuleMapping*)rule);
 			break;
 			
 		case meHTVRule::ertMath:
-			node.TakeOver(new meWVNodeMath(*this, (meHTVRuleMath*)rule));
+			node.TakeOverWith(*this, (meHTVRuleMath*)rule);
 			break;
 			
 		case meHTVRule::ertMultiMath:
-			node.TakeOver(new meWVNodeMultiMath(*this, (meHTVRuleMultiMath*)rule));
+			node.TakeOverWith(*this, (meHTVRuleMultiMath*)rule);
 			break;
 			
 		case meHTVRule::ertVectorMath:
-			node.TakeOver(new meWVNodeVectorMath(*this, (meHTVRuleVectorMath*)rule));
+			node.TakeOverWith(*this, (meHTVRuleVectorMath*)rule);
 			break;
 			
 		case meHTVRule::ertRandom:
-			node.TakeOver(new meWVNodeRandom(*this, (meHTVRuleRandom*)rule));
+			node.TakeOverWith(*this, (meHTVRuleRandom*)rule);
 			break;
 			
 		case meHTVRule::ertResult:
-			node.TakeOver(new meWVNodeResult(*this, (meHTVRuleResult*)rule));
+			node.TakeOverWith(*this, (meHTVRuleResult*)rule);
 			break;
 			
 		case meHTVRule::ertConstant:
-			node.TakeOver(new meWVNodeConstant(*this, (meHTVRuleConstant*)rule));
+			node.TakeOverWith(*this, (meHTVRuleConstant*)rule);
 			break;
 			
 		case meHTVRule::ertPropCount:
-			node.TakeOver(new meWVNodePropCount(*this, (meHTVRulePropCount*)rule));
+			node.TakeOverWith(*this, (meHTVRulePropCount*)rule);
 			break;
 			
 		default:

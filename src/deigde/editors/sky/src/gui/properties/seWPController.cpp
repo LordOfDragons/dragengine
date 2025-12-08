@@ -380,9 +380,9 @@ pSky(NULL)
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener.TakeOver(new seWPControllerListener(*this));
+	pListener.TakeOverWith(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content.TakeOverWith(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// controller list
@@ -390,10 +390,10 @@ pSky(NULL)
 	
 	helper.ListBox(groupBox, 8, "Controllers", pListController, new cListControllers(*this));
 	
-	pActionControllerAdd.TakeOver(new cActionControllerAdd(*this));
-	pActionControllerRemove.TakeOver(new cActionControllerRemove(*this));
-	pActionControllerUp.TakeOver(new cActionControllerUp(*this, pListController));
-	pActionControllerDown.TakeOver(new cActionControllerDown(*this, pListController));
+	pActionControllerAdd.TakeOverWith(*this);
+	pActionControllerRemove.TakeOverWith(*this);
+	pActionControllerUp.TakeOverWith(*this, pListController);
+	pActionControllerDown.TakeOverWith(*this, pListController);
 	
 	// controller settings
 	helper.GroupBox(content, groupBox, "Controller Settings:");

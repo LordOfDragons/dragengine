@@ -599,9 +599,9 @@ pPreventUpdateMappedTarget(false)
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener.TakeOver(new seWPTextureListener(*this));
+	pListener.TakeOverWith(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content.TakeOverWith(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
@@ -610,7 +610,7 @@ pPreventUpdateMappedTarget(false)
 	helper.ListBox(groupBox, 8, "Textures", pListTexture, new cListTextures(*this));
 	pListTexture->SetDefaultSorter();
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form.TakeOverWith(env);
 	groupBox->AddChild(form);
 	helper.EditString(form, "Name:", "Name of texture", pEditTexName, new cTextTextureName(*this));
 	
@@ -630,7 +630,7 @@ pPreventUpdateMappedTarget(false)
 	helper.ListBox(groupBox, 8, "Property", pListProperty, new cListProperties(*this));
 	pListProperty->SetDefaultSorter();
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form.TakeOverWith(env);
 	groupBox->AddChild(form);
 	
 	helper.EditString(form, "Name:", "Name of property", pEditPropName, nullptr);
@@ -654,7 +654,7 @@ pPreventUpdateMappedTarget(false)
 	
 	
 	// property panel switcher
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher.TakeOverWith(env);
 	content->AddChild(pSwitcher);
 	
 	
@@ -663,21 +663,21 @@ pPreventUpdateMappedTarget(false)
 	
 	
 	// static value
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	panel.TakeOverWith(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Value:");
 	helper.EditFloat(groupBox, "Value:", "Value to use", pEditPvtValue, new cTextPropertyValue(*this));
 	
 	
 	// color value
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	panel.TakeOverWith(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Color:");
 	helper.ColorBox(groupBox, "Color:", "Color to use", pClrPvtColor, new cColorPropertyColor(*this));
 	
 	
 	// image
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	panel.TakeOverWith(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Image:");
 	helper.EditPath(groupBox, "Path:", "Path to the image to use", igdeEnvironment::efpltImage,
@@ -688,7 +688,7 @@ pPreventUpdateMappedTarget(false)
 	
 	
 	// video
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	panel.TakeOverWith(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Video:");
 	helper.EditPath(groupBox, "Path:", "Path to the video to use", igdeEnvironment::efpltVideo,
@@ -701,7 +701,7 @@ pPreventUpdateMappedTarget(false)
 	
 	
 	// constructed
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	panel.TakeOverWith(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Constructed:");
 	helper.ColorBox(groupBox, "Color:", "Color to use",
@@ -721,11 +721,11 @@ pPreventUpdateMappedTarget(false)
 	
 	
 	// mapped
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	panel.TakeOverWith(env, igdeContainerFlow::eaY);
 	pSwitcher->AddChild(panel);
 	helper.GroupBoxFlow(panel, groupBox, "Mapped:");
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form.TakeOverWith(env);
 	groupBox->AddChild(form);
 	
 	helper.EditSpinInteger(form, "Component:", "Component to edit (0=red, 1=green, 2=blue, 3=alpha)",

@@ -51,7 +51,7 @@ pTopic(NULL)
 	SetShortInfo("Duplicate topic");
 	
 	try{
-		pTopic.TakeOver(new ceConversationTopic(topic));
+		pTopic.TakeOverWith(topic);
 		pTopic->SetID(newID);
 		
 	}catch(const deException &){

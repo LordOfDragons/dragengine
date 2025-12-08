@@ -153,7 +153,7 @@ pLoadTask(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOver(new meWindowMainListener(*this));
+	pListener.TakeOverWith(*this);
 	pConfiguration = new meConfiguration(*this);
 	pLoadSaveSystem = new meLoadSaveSystem(this);
 	pSaveSupport = new meSaveSupport(this);
@@ -170,19 +170,19 @@ pLoadTask(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties.TakeOver(new meWindowProperties(*this));
+	pWindowProperties.TakeOverWith(*this);
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pTabContent.TakeOver(new igdeTabBook(env));
+	pTabContent.TakeOverWith(env);
 	splitted->AddChild(pTabContent, igdeContainerSplitted::eaCenter);
 	
-	pView3D.TakeOver(new meView3D(*this));
+	pView3D.TakeOverWith(*this);
 	pTabContent->AddChild(pView3D, "World");
 	
-	pViewVegetation.TakeOver(new meWindowVegetation(*this));
+	pViewVegetation.TakeOverWith(*this);
 	pTabContent->AddChild(pViewVegetation, "Vegetation");
 	
-	pViewChangelog.TakeOver(new meWindowChangelog(*this));
+	pViewChangelog.TakeOverWith(*this);
 	pTabContent->AddChild(pViewChangelog, "Change-Log");
 	
 	pTabContent->SetActivePanel(0); // world
@@ -580,7 +580,7 @@ public:
 				return NULL;
 			}
 			
-			clip.TakeOver(new meClipboardDataObject(*world));
+			clip.TakeOverWith(*world);
 			pWindow.GetClipboard().Set(clip);
 			
 			return new meUDeleteObject(world);
@@ -607,7 +607,7 @@ public:
 				break;
 			}
 			
-			clip.TakeOver(new meClipboardDataObject(*world));
+			clip.TakeOverWith(*world);
 			pWindow.GetClipboard().Set(clip);
 			break;
 			
@@ -1356,7 +1356,7 @@ public:
 		igdeUndo::Ref undo;
 		
 		decShape * const shape = CreateShape();
-		undo.TakeOver(new meUObjectShapeAdd(object, property, *shape));
+		undo.TakeOverWith(object, property, *shape);
 		delete shape;
 		
 		world->GetUndoSystem()->Add(undo);
@@ -1743,19 +1743,19 @@ void meWindowMain::pLoadIcons(){
 void meWindowMain::pCreateActions(){
 	igdeEnvironment &environment = GetEnvironment();
 	
-	pActionFileNew.TakeOver(new cActionFileNew(*this));
-	pActionFileOpen.TakeOver(new cActionFileOpen(*this));
-	pActionFileSave.TakeOver(new cActionFileSave(*this));
-	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
+	pActionFileNew.TakeOverWith(*this);
+	pActionFileOpen.TakeOverWith(*this);
+	pActionFileSave.TakeOverWith(*this);
+	pActionFileSaveAs.TakeOverWith(*this);
 	
-	pActionEditUndo.TakeOver(new igdeActionUndo(environment));
-	pActionEditRedo.TakeOver(new igdeActionRedo(environment));
+	pActionEditUndo.TakeOverWith(environment);
+	pActionEditRedo.TakeOverWith(environment);
 	
-	pActionEditCut.TakeOver(new cActionEditCut(*this));
-	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
-	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
-	pActionEditDuplicate.TakeOver(new cActionEditDuplicate(*this));
-	pActionEditDelete.TakeOver(new cActionEditDelete(*this));
+	pActionEditCut.TakeOverWith(*this);
+	pActionEditCopy.TakeOverWith(*this);
+	pActionEditPaste.TakeOverWith(*this);
+	pActionEditDuplicate.TakeOverWith(*this);
+	pActionEditDelete.TakeOverWith(*this);
 	
 	pActionEditEModeObject.TakeOver(new cActionEditElementMode(*this,
 		meWorldGuiParameters::eemObject, "Object Mode", pIconEditObject, "Object mode",
@@ -1802,12 +1802,12 @@ void meWindowMain::pCreateActions(){
 // 		meWorldGuiParameters::ewm3DCursor, "3D-Cursor Mode", pIconEdit3DCursor, "3D-Cursor mode",
 // 		deInputEvent::ekc0, deInputEvent::ekcUndefined ) );
 	
-	pActionEditLockAxisX.TakeOver(new cActionEditLockAxisX(*this));
-	pActionEditLockAxisY.TakeOver(new cActionEditLockAxisY(*this));
-	pActionEditLockAxisZ.TakeOver(new cActionEditLockAxisZ(*this));
-	pActionEditUseLocal.TakeOver(new cActionEditUseLocal(*this));
-	pActionEditLockAxisFlip.TakeOver(new cActionEditLockAxisFlip(*this));
-	pActionEditSnapSnapPoints.TakeOver(new cActionEditSnapSnapPoints(*this));
+	pActionEditLockAxisX.TakeOverWith(*this);
+	pActionEditLockAxisY.TakeOverWith(*this);
+	pActionEditLockAxisZ.TakeOverWith(*this);
+	pActionEditUseLocal.TakeOverWith(*this);
+	pActionEditLockAxisFlip.TakeOverWith(*this);
+	pActionEditSnapSnapPoints.TakeOverWith(*this);
 	
 	pActionEditRPCenterActive.TakeOver(new cActionEditRotationPivot(*this,
 		meWorldGuiParameters::erpcActive, "Rotation Pivot Center Active",
@@ -1819,10 +1819,10 @@ void meWindowMain::pCreateActions(){
 		meWorldGuiParameters::erpcIndividual, "Rotation Pivot Center Individual",
 		NULL, "Rotate around individual element positions"));
 	
-	pActionEditUse3DCursor.TakeOver(new cActionEditUse3DCursor(*this));
-	pActionEditSelectNone.TakeOver(new cActionEditSelectNone(*this));
+	pActionEditUse3DCursor.TakeOverWith(*this);
+	pActionEditSelectNone.TakeOverWith(*this);
 	
-	pActionObjectLightToggle.TakeOver(new cActionObjectLightToggle(*this));
+	pActionObjectLightToggle.TakeOverWith(*this);
 	
 	pActionObjectRotateL45.TakeOver(new cActionObjectRotate(*this,
 		decVector(0.0f, 1.0f, 0.0f), 45.0f,
@@ -1848,49 +1848,49 @@ void meWindowMain::pCreateActions(){
 		"Random rotate Y axis", pIconEditRotateRandom,
 		"Random rotate object around Y axis", deInputEvent::ekcUndefined));
 	
-	pActionObjectDropToGround.TakeOver(new cActionObjectDropToGround(*this));
-	pActionObjectSnapToGrid.TakeOver(new cActionObjectSnapToGrid(*this));
-	pActionObjectCopyPositionX.TakeOver(new cActionObjectCopyPosition(*this, true, false, false));
-	pActionObjectCopyPositionY.TakeOver(new cActionObjectCopyPosition(*this, false, true, false));
-	pActionObjectCopyPositionZ.TakeOver(new cActionObjectCopyPosition(*this, false, false, true));
-	pActionObjectCopyPositionXZ.TakeOver(new cActionObjectCopyPosition(*this, true, false, true));
-	pActionObjectCopyPositionXYZ.TakeOver(new cActionObjectCopyPosition(*this, true, true, true));
-	pActionObjectCopyRotationX.TakeOver(new cActionObjectCopyRotation(*this, true, false, false));
-	pActionObjectCopyRotationY.TakeOver(new cActionObjectCopyRotation(*this, false, true, false));
-	pActionObjectCopyRotationZ.TakeOver(new cActionObjectCopyRotation(*this, false, false, true));
-	pActionObjectCopyRotationXYZ.TakeOver(new cActionObjectCopyRotation(*this, true, true, true));
-	pActionObjectCopyScaleX.TakeOver(new cActionObjectCopyScale(*this, true, false, false));
-	pActionObjectCopyScaleY.TakeOver(new cActionObjectCopyScale(*this, false, true, false));
-	pActionObjectCopyScaleZ.TakeOver(new cActionObjectCopyScale(*this, false, false, true));
-	pActionObjectCopyScaleXYZ.TakeOver(new cActionObjectCopyScale(*this, true, true, true));
-	pActionObjectAttachTo.TakeOver(new cActionObjectAttachTo(*this));
-	pActionObjectDetach.TakeOver(new cActionObjectDetach(*this));
-	pActionObjectSelectAttached.TakeOver(new cActionObjectSelectAttached(*this));
-	pActionObjectReassignIDs.TakeOver(new cActionObjectReassignIDs(*this));
-	pActionObjectSubclassAsEclass.TakeOver(new meASubclassAsEClass(*this));
+	pActionObjectDropToGround.TakeOverWith(*this);
+	pActionObjectSnapToGrid.TakeOverWith(*this);
+	pActionObjectCopyPositionX.TakeOverWith(*this, true, false, false);
+	pActionObjectCopyPositionY.TakeOverWith(*this, false, true, false);
+	pActionObjectCopyPositionZ.TakeOverWith(*this, false, false, true);
+	pActionObjectCopyPositionXZ.TakeOverWith(*this, true, false, true);
+	pActionObjectCopyPositionXYZ.TakeOverWith(*this, true, true, true);
+	pActionObjectCopyRotationX.TakeOverWith(*this, true, false, false);
+	pActionObjectCopyRotationY.TakeOverWith(*this, false, true, false);
+	pActionObjectCopyRotationZ.TakeOverWith(*this, false, false, true);
+	pActionObjectCopyRotationXYZ.TakeOverWith(*this, true, true, true);
+	pActionObjectCopyScaleX.TakeOverWith(*this, true, false, false);
+	pActionObjectCopyScaleY.TakeOverWith(*this, false, true, false);
+	pActionObjectCopyScaleZ.TakeOverWith(*this, false, false, true);
+	pActionObjectCopyScaleXYZ.TakeOverWith(*this, true, true, true);
+	pActionObjectAttachTo.TakeOverWith(*this);
+	pActionObjectDetach.TakeOverWith(*this);
+	pActionObjectSelectAttached.TakeOverWith(*this);
+	pActionObjectReassignIDs.TakeOverWith(*this);
+	pActionObjectSubclassAsEclass.TakeOverWith(*this);
 	
-	pActionObjectShapeAddSphere.TakeOver(new cActionObjectShapeAddSphere(*this));
-	pActionObjectShapeAddBox.TakeOver(new cActionObjectShapeAddBox(*this));
-	pActionObjectShapeAddCylinder.TakeOver(new cActionObjectShapeAddCylinder(*this));
-	pActionObjectShapeAddCapsule.TakeOver(new cActionObjectShapeAddCapsule(*this));
-	pActionObjectShapeDelete.TakeOver(new cActionObjectShapeDelete(*this));
+	pActionObjectShapeAddSphere.TakeOverWith(*this);
+	pActionObjectShapeAddBox.TakeOverWith(*this);
+	pActionObjectShapeAddCylinder.TakeOverWith(*this);
+	pActionObjectShapeAddCapsule.TakeOverWith(*this);
+	pActionObjectShapeDelete.TakeOverWith(*this);
 	
-	pActionDecalDelete.TakeOver(new cActionDecalDelete(*this));
-	pActionDecalRaiseTop.TakeOver(new cActionDecalRaiseTop(*this));
-	pActionDecalRaiseOne.TakeOver(new cActionDecalRaiseOne(*this));
-	pActionDecalLowerOne.TakeOver(new cActionDecalLowerOne(*this));
-	pActionDecalLowerBottom.TakeOver(new cActionDecalLowerBottom(*this));
+	pActionDecalDelete.TakeOverWith(*this);
+	pActionDecalRaiseTop.TakeOverWith(*this);
+	pActionDecalRaiseOne.TakeOverWith(*this);
+	pActionDecalLowerOne.TakeOverWith(*this);
+	pActionDecalLowerBottom.TakeOverWith(*this);
 	
-	pActionFullBright.TakeOver(new cActionFullBright(*this));
-	pActionMuteSound.TakeOver(new cActionMuteSound(*this));
-	pActionShowOcclusionMeshes.TakeOver(new cActionShowOcclusionMeshes(*this));
-	pActionShowOcclusionMeshesSelected.TakeOver(new cActionShowOcclusionMeshesSelected(*this));
-	pActionShowNavigationSpaces.TakeOver(new cActionShowNavigationSpaces(*this));
-	pActionShowNavigationSpacesSelected.TakeOver(new cActionShowNavigationSpacesSelected(*this));
-	pActionShowShapes.TakeOver(new cActionShowShapes(*this));
-	pActionShowShapesSelected.TakeOver(new cActionShowShapesSelected(*this));
-	pActionNavTestLoad.TakeOver(new cActionNavTestLoad(*this));
-	pActionNavTestSave.TakeOver(new cActionNavTestSave(*this));
+	pActionFullBright.TakeOverWith(*this);
+	pActionMuteSound.TakeOverWith(*this);
+	pActionShowOcclusionMeshes.TakeOverWith(*this);
+	pActionShowOcclusionMeshesSelected.TakeOverWith(*this);
+	pActionShowNavigationSpaces.TakeOverWith(*this);
+	pActionShowNavigationSpacesSelected.TakeOverWith(*this);
+	pActionShowShapes.TakeOverWith(*this);
+	pActionShowShapesSelected.TakeOverWith(*this);
+	pActionNavTestLoad.TakeOverWith(*this);
+	pActionNavTestSave.TakeOverWith(*this);
 	
 	
 	// register for updating
@@ -1988,7 +1988,7 @@ void meWindowMain::pCreateActions(){
 void meWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -2000,7 +2000,7 @@ void meWindowMain::pCreateToolBarFile(){
 void meWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -2052,7 +2052,7 @@ void meWindowMain::pCreateToolBarEdit(){
 void meWindowMain::pCreateToolBarObject(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBObject.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBObject.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarSeparator(pTBObject);
 	helper.ToolBarButton(pTBObject, pActionObjectRotateL45);
@@ -2075,7 +2075,7 @@ void meWindowMain::pCreateToolBarObject(){
 void meWindowMain::pCreateToolBarDecal(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBDecal.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBDecal.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBDecal, pActionDecalDelete);
 	
@@ -2092,23 +2092,23 @@ void meWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
+	cascade.TakeOverWith(env, "File", deInputEvent::ekcF);
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade.TakeOverWith(env, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Object", deInputEvent::ekcO));
+	cascade.TakeOverWith(env, "Object", deInputEvent::ekcO);
 	pCreateMenuObject(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Decal", deInputEvent::ekcD));
+	cascade.TakeOverWith(env, "Decal", deInputEvent::ekcD);
 	pCreateMenuDecal(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcV));
+	cascade.TakeOverWith(env, "View", deInputEvent::ekcV);
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

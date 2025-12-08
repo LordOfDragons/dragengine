@@ -249,12 +249,12 @@ pListener(NULL),
 pConversation(NULL),
 pRuleOfThirdsAid(NULL)
 {
-	pListener.TakeOver(new ceViewConversationListener(*this));
+	pListener.TakeOverWith(*this);
 	
-	pCameraMouseListener.TakeOver(new cCameraMouseListener(*this));
+	pCameraMouseListener.TakeOverWith(*this);
 	AddListener(pCameraMouseListener);
 	
-	pPlaybackListener.TakeOver(new cPlaybackListener(*this));
+	pPlaybackListener.TakeOverWith(*this);
 	AddListener(pPlaybackListener);
 }
 

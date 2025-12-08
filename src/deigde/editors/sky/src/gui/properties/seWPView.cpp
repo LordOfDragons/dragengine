@@ -106,9 +106,9 @@ pListener(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content;
 	
-	pListener.TakeOver(new seWPViewListener(*this));
+	pListener.TakeOverWith(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content.TakeOverWith(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	helper.WPCamera(content, pWPCamera, new cActionCameraChanged(*this),

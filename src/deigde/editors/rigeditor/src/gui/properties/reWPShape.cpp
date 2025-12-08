@@ -75,9 +75,9 @@ pActivePanel(NULL)
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener.TakeOver(new reWPShapeListener(*this));
+	pListener.TakeOverWith(*this);
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher.TakeOverWith(env);
 	AddChild(pSwitcher);
 	
 	helper.Label(pSwitcher, "No Active Shape");

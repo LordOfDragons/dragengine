@@ -55,7 +55,7 @@ ceUCAASpeakGestureSet::ceUCAASpeakGestureSet(ceConversationTopic *topic, ceCAAct
 	
 	SetShortInfo("Set gesture");
 	
-	pOldStrip.TakeOver(new ceStrip(*gesture));
+	pOldStrip.TakeOverWith(*gesture);
 	
 	pNewStrip = newStrip;
 	newStrip->AddReference();

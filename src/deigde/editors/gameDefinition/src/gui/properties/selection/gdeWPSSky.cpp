@@ -336,9 +336,9 @@ pGameDefinition(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener.TakeOver(new gdeWPSSkyListener(*this));
+	pListener.TakeOverWith(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content.TakeOverWith(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	// sky
@@ -360,9 +360,9 @@ pGameDefinition(NULL)
 	
 	helper.FormLineStretchFirst(groupBox, "Controller:", "Controller to edit", frameLine);
 	helper.ComboBox(frameLine, "Controller to edit", pCBController, new cComboController(*this));
-	pActionControllerAdd.TakeOver(new cActionControllerAdd(*this, pCBController));
-	pActionControllerRemove.TakeOver(new cActionControllerRemove(*this, pCBController));
-	pActionControllerMenu.TakeOver(new cActionControllerMenu(*this));
+	pActionControllerAdd.TakeOverWith(*this, pCBController);
+	pActionControllerRemove.TakeOverWith(*this, pCBController);
+	pActionControllerMenu.TakeOverWith(*this);
 	helper.Button(frameLine, pActionControllerMenu);
 	
 	helper.EditString(groupBox, "Name:", "Controller name", pEditControllerName,

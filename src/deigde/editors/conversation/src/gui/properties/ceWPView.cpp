@@ -1746,9 +1746,9 @@ pConversation(NULL)
 	igdeContainer::Ref content, groupBox, groupBox2, form, formLine;
 	igdeActionContextMenu *actionContextMenu;
 	
-	pListener.TakeOver(new ceWPViewListener(*this));
+	pListener.TakeOverWith(*this);
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content.TakeOverWith(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
@@ -1783,7 +1783,7 @@ pConversation(NULL)
 	// props
 	helper.GroupBoxFlow(content, groupBox, "Actors:", false);
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form.TakeOverWith(env);
 	groupBox->AddChild(form);
 	
 	helper.FormLineStretchFirst(form, "Actor:", "Actor to edit", formLine);
@@ -1896,7 +1896,7 @@ pConversation(NULL)
 	// playback
 	helper.GroupBoxFlow(content, groupBox, "Playback:", false);
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form.TakeOverWith(env);
 	groupBox->AddChild(form);
 	
 	helper.ComboBoxFilter(form, "File:", "File to show topics for",

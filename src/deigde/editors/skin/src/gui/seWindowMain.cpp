@@ -122,7 +122,7 @@ pSkin(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOver(new seWindowMainListener(*this));
+	pListener.TakeOverWith(*this);
 	pLoadSaveSystem = new seLoadSaveSystem(*this);
 	pConfiguration = new seConfiguration(*this);
 	
@@ -136,16 +136,16 @@ pSkin(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties.TakeOver(new seWindowProperties(*this));
+	pWindowProperties.TakeOverWith(*this);
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pSwitcherViews.TakeOver(new igdeTabBook(env));
+	pSwitcherViews.TakeOverWith(env);
 	splitted->AddChild(pSwitcherViews, igdeContainerSplitted::eaCenter);
 	
-	pViewSkin.TakeOver(new seViewSkin(*this));
+	pViewSkin.TakeOverWith(*this);
 	pSwitcherViews->AddChild(pViewSkin, "Skin Preview");
 	
-	pViewConstructed.TakeOver(new seViewConstructed(*this));
+	pViewConstructed.TakeOverWith(*this);
 	pSwitcherViews->AddChild(pViewConstructed, "Constructed Channel");
 	
 	CreateNewSkin();
@@ -1036,29 +1036,29 @@ void seWindowMain::pLoadIcons(){
 void seWindowMain::pCreateActions(){
 	igdeEnvironment &environment = GetEnvironment();
 	
-	pActionFileNew.TakeOver(new cActionFileNew(*this));
-	pActionFileNewModel.TakeOver(new cActionFileNewFromModel(*this));
-	pActionFileOpen.TakeOver(new cActionFileOpen(*this));
-	pActionFileSave.TakeOver(new cActionFileSave(*this));
-	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
+	pActionFileNew.TakeOverWith(*this);
+	pActionFileNewModel.TakeOverWith(*this);
+	pActionFileOpen.TakeOverWith(*this);
+	pActionFileSave.TakeOverWith(*this);
+	pActionFileSaveAs.TakeOverWith(*this);
 	
-	pActionEditUndo.TakeOver(new igdeActionUndo(environment));
-	pActionEditRedo.TakeOver(new igdeActionRedo(environment));
+	pActionEditUndo.TakeOverWith(environment);
+	pActionEditRedo.TakeOverWith(environment);
 	
-	pActionEditCut.TakeOver(new cActionEditCut(*this));
-	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
-	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
+	pActionEditCut.TakeOverWith(*this);
+	pActionEditCopy.TakeOverWith(*this);
+	pActionEditPaste.TakeOverWith(*this);
 	
-	pActionMappedAdd.TakeOver(new cActionMappedAdd(*this));
-	pActionMappedRemove.TakeOver(new cActionMappedRemove(*this));
+	pActionMappedAdd.TakeOverWith(*this);
+	pActionMappedRemove.TakeOverWith(*this);
 	
-	pActionTextureAdd.TakeOver(new cActionTextureAdd(*this));
-	pActionTextureRemove.TakeOver(new cActionTextureRemove(*this));
-	pActionTextureImportFromGDef.TakeOver(new cActionTextureImportFromGDef(*this));
-	pActionTextureImportFromFile.TakeOver(new cActionTextureImportFromFile(*this));
+	pActionTextureAdd.TakeOverWith(*this);
+	pActionTextureRemove.TakeOverWith(*this);
+	pActionTextureImportFromGDef.TakeOverWith(*this);
+	pActionTextureImportFromFile.TakeOverWith(*this);
 	
-	pActionPropertyAdd.TakeOver(new cActionPropertyAdd(*this));
-	pActionPropertyRemove.TakeOver(new cActionPropertyRemove(*this));
+	pActionPropertyAdd.TakeOverWith(*this);
+	pActionPropertyRemove.TakeOverWith(*this);
 	
 	
 	// register for updating
@@ -1090,7 +1090,7 @@ void seWindowMain::pCreateActions(){
 void seWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -1102,7 +1102,7 @@ void seWindowMain::pCreateToolBarFile(){
 void seWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -1131,19 +1131,19 @@ void seWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Skin", deInputEvent::ekcS));
+	cascade.TakeOverWith(env, "Skin", deInputEvent::ekcS);
 	pCreateMenuSkin(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade.TakeOverWith(env, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Mapped", deInputEvent::ekcM));
+	cascade.TakeOverWith(env, "Mapped", deInputEvent::ekcM);
 	pCreateMenuMapped(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Texture", deInputEvent::ekcT));
+	cascade.TakeOverWith(env, "Texture", deInputEvent::ekcT);
 	pCreateMenuTexture(cascade);
 	AddSharedMenu(cascade);
 }
