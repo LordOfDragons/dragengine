@@ -56,8 +56,8 @@ pHasCB(false)
 	
 	dsRunTime &rt = *ds.GetScriptEngine()->GetMainRunTime();
 	
-	pValOwner = rt.CreateValue();
-	pValCB = rt.CreateValue(pDS.GetClassServiceListener());
+	pValOwner.TakeOver(rt.CreateValue();
+	pValCB.TakeOver(rt.CreateValue(pDS.GetClassServiceListener());
 }
 
 dedsService::~dedsService(){

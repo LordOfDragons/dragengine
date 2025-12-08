@@ -53,7 +53,7 @@ pValueOwner(NULL)
 	
 	dsRunTime &rt = *ds.GetScriptEngine()->GetMainRunTime();
 	
-	pValueOwner = rt.CreateValue();
+	pValueOwner.TakeOver(rt.CreateValue();
 }
 
 dedsSpeaker::~dedsSpeaker(){

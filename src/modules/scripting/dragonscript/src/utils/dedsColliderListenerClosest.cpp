@@ -54,7 +54,7 @@ pHasListener(false),
 pOwner(NULL),
 pHasCollision(false)
 {
-	pListener = ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassColliderListener());
+	pListener.TakeOver(ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassColliderListener());
 }
 
 dedsColliderListenerClosest::~dedsColliderListenerClosest(){

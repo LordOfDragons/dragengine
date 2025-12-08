@@ -58,7 +58,7 @@ pHasCB(false)
 		DSTHROW(dueInvalidParam);
 	}
 	
-	pValCB = ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassConnectionListener());
+	pValCB.TakeOver(ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassConnectionListener());
 }
 
 dedsConnection::~dedsConnection(){

@@ -51,14 +51,14 @@ igdeIcon::igdeIcon(deImage &image) :
 pNativeIcon(NULL),
 pSize(image.GetWidth(), image.GetHeight())
 {
-	pNativeIcon = igdeNativeIcon::CreateNativeIcon(image);
+	pNativeIcon.TakeOver(igdeNativeIcon::CreateNativeIcon(image);
 }
 
 igdeIcon::igdeIcon(deImage &image, int width, int height) :
 pNativeIcon(NULL),
 pSize(width, height)
 {
-	pNativeIcon = igdeNativeIcon::CreateNativeIcon(image);
+	pNativeIcon.TakeOver(igdeNativeIcon::CreateNativeIcon(image);
 	igdeNativeIcon::Scale(pSize, pNativeIcon);
 }
 

@@ -114,7 +114,7 @@ pLoadSaveSystem(loadSaveSystem)
 		SetFilePath("new.depemit");
 		
 		// create world
-		pEngWorld = engine->GetWorldManager()->CreateWorld();
+		pEngWorld.TakeOver(engine->GetWorldManager()->CreateWorld();
 		pEngWorld->SetGravity(decVector(0.0f, -9.81f, 0.0f));
 		pEngWorld->SetDisableLights(false);
 		pEngWorld->SetAmbientLight(decColor(0.0f, 0.0f, 0.0f));
@@ -148,7 +148,7 @@ pLoadSaveSystem(loadSaveSystem)
 		pEnvObject->SetGDClassName("IGDETestTerrain");
 		
 		// create particle emitter instance
-		pEngEmitterInstance = engine->GetParticleEmitterInstanceManager()->CreateInstance();
+		pEngEmitterInstance.TakeOver(engine->GetParticleEmitterInstanceManager()->CreateInstance();
 		pEngWorld->AddParticleEmitter(pEngEmitterInstance);
 		
 		pEngEmitterInstance->SetPosition(decDVector(pPosition));
@@ -163,7 +163,7 @@ pLoadSaveSystem(loadSaveSystem)
 		pEngEmitterInstance->SetCollisionFilter(decCollisionFilter(layerMask, layerMask));
 		
 		// create debug drawers
-		pDDEmitter = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDDEmitter.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDDEmitter->SetXRay(true);
 		pEngWorld->AddDebugDrawer(pDDEmitter);
 		
@@ -338,7 +338,7 @@ void peeEmitter::RebuildEmitter(){
 	pBurstTimer = 0.0f;
 	
 	try{
-		pEngEmitter = GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter();
+		pEngEmitter.TakeOver(GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter();
 		
 		for(i=0; i<controllerCount; i++){
 			engController = new deParticleEmitterController;

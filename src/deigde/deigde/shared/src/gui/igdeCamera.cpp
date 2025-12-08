@@ -436,6 +436,6 @@ void igdeCamera::pUpdateCameraPosition(){
 }
 
 void igdeCamera::pUpdateViewMatrix(){
-	pViewMatrix = decDMatrix::CreateTranslation(0.0, 0.0, -pDistance)
+	pViewMatrix.TakeOver(decDMatrix::CreateTranslation(0.0, 0.0, -pDistance)
 		* decDMatrix::CreateRT( pOrientation * DEG2RAD, pPosition );
 }

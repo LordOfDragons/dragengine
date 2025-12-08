@@ -66,9 +66,9 @@ aeSubAnimator::aeSubAnimator(deEngine *engine){
 	pEngAnimatorInstance = NULL;
 	
 	try{
-		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
+		pEngAnimator.TakeOver(engine->GetAnimatorManager()->CreateAnimator();
 		
-		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
+		pEngAnimatorInstance.TakeOver(engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
 		pEngAnimatorInstance->SetAnimator(pEngAnimator);
 		
 	}catch(const deException &){
@@ -121,7 +121,7 @@ void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 		const int ruleCount = animator->GetRules().GetCount();
 		
 		// create animator
-		pEngAnimator = pEngine->GetAnimatorManager()->CreateAnimator();
+		pEngAnimator.TakeOver(pEngine->GetAnimatorManager()->CreateAnimator();
 		pEngAnimator->SetRig(animator->GetEngineAnimator()->GetRig());
 		pEngAnimator->SetAnimation(animator->GetEngineAnimator()->GetAnimation());
 		

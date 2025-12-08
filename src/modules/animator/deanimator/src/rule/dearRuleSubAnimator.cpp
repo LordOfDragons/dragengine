@@ -112,8 +112,8 @@ pDirectUseStates(
 pHasSubAnimator(rule.GetSubAnimator())
 {
 	try{
-		pStateList = instance.GetBoneStateList().CreateCopy();
-		pVPSStateList = instance.GetVPSStateList().CreateCopy();
+		pStateList.TakeOver(instance.GetBoneStateList().CreateCopy();
+		pVPSStateList.TakeOver(instance.GetVPSStateList().CreateCopy();
 		
 		if(pHasSubAnimator){
 			pArSubAnimator = (dearAnimator*)rule.GetSubAnimator()->GetPeerAnimator();

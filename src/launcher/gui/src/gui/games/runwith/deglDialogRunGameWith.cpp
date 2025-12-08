@@ -91,10 +91,10 @@ pProfile(game->GetActiveProfile())
 		LAYOUT_FILL_Y | LAYOUT_FILL_ROW | LAYOUT_FILL_COLUMN, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
 	pLabIcon = new FXLabel(frameComboBox, "", pWindowMain->GetIconValidSmall(),
 		LABEL_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0);
-	pCBProfile = guiBuilder.CreateComboBox(frameComboBox, this,
+	pCBProfile.TakeOver(guiBuilder.CreateComboBox(frameComboBox, this,
 		ID_CB_PROFILE, "Select profile to use", false, 20, 8, false);
 	pCBProfile->setSortFunc(deglGuiBuilder::SortListItemByName);
-	pBtnEdit = guiBuilder.CreateButton(frameComboBox, "Edit Profiles",
+	pBtnEdit.TakeOver(guiBuilder.CreateButton(frameComboBox, "Edit Profiles",
 		nullptr, this, ID_BTN_EDIT_PROFILES, "Edit Profiles");
 	
 	pLabProblem = new FXLabel(frameRight, "", nullptr, LABEL_NORMAL | LAYOUT_FILL_X);

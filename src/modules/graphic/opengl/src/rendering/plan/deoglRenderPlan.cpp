@@ -535,9 +535,9 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 	if(pDirtyProjMat){
 		const deoglDeferredRendering &defren = pRenderThread.GetDeferredRendering();
 		
-		pProjectionMatrix = defren.CreateProjectionDMatrix(pViewportWidth, pViewportHeight,
+		pProjectionMatrix.TakeOver(defren.CreateProjectionDMatrix(pViewportWidth, pViewportHeight,
 			pCameraFov, pCameraFovRatio, pCameraImageDistance, pCameraViewDistance);
-		pFrustumMatrix = defren.CreateFrustumDMatrix(pViewportWidth, pViewportHeight,
+		pFrustumMatrix.TakeOver(defren.CreateFrustumDMatrix(pViewportWidth, pViewportHeight,
 			pCameraFov, pCameraFovRatio, pCameraImageDistance, pCameraViewDistance);
 		
 		if(pRenderThread.GetChoices().GetUseInverseDepth()){
@@ -581,16 +581,16 @@ void deoglRenderPlan::pPlanCameraProjectionMatrix(){
 		pCameraFovRatio = vr.GetCameraFovRatio();
 		
 		// left eye
-		pProjectionMatrix = vreye.CreateProjectionDMatrix(pCameraImageDistance, pCameraViewDistance);
-		pFrustumMatrix = vreye.CreateFrustumDMatrix(pCameraImageDistance, pCameraViewDistance);
+		pProjectionMatrix.TakeOver(vreye.CreateProjectionDMatrix(pCameraImageDistance, pCameraViewDistance);
+		pFrustumMatrix.TakeOver(vreye.CreateFrustumDMatrix(pCameraImageDistance, pCameraViewDistance);
 		
 		pDepthToPosition.z = 1.0f / (float)pProjectionMatrix.a11;
 		pDepthToPosition.w = 1.0f / (float)pProjectionMatrix.a22;
 		pDepthToPosition2.Set((float)-pProjectionMatrix.a13, (float)-pProjectionMatrix.a23);
 		
 		// right eye
-		pProjectionMatrixStereo = vr.GetRightEye().CreateProjectionDMatrix(pCameraImageDistance, pCameraViewDistance);
-		pFrustumMatrixStereo = vr.GetRightEye().CreateFrustumDMatrix(pCameraImageDistance, pCameraViewDistance);
+		pProjectionMatrixStereo.TakeOver(vr.GetRightEye().CreateProjectionDMatrix(pCameraImageDistance, pCameraViewDistance);
+		pFrustumMatrixStereo.TakeOver(vr.GetRightEye().CreateFrustumDMatrix(pCameraImageDistance, pCameraViewDistance);
 		
 		pDepthToPositionStereo.z = 1.0f / (float)pProjectionMatrixStereo.a11;
 		pDepthToPositionStereo.w = 1.0f / (float)pProjectionMatrixStereo.a22;

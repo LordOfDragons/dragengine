@@ -67,7 +67,7 @@ feFontImage::feFontImage(deEngine *engine){
 	pSaved = false;
 	
 	try{
-		pEngImage = pEngine->GetImageManager()->CreateImage(pWidth, pHeight, 1, 4, 8);
+		pEngImage.TakeOver(pEngine->GetImageManager()->CreateImage(pWidth, pHeight, 1, 4, 8);
 		
 		sRGBA8 * const pixels = pEngImage->GetDataRGBA8();
 		const int pixelCount = pWidth * pHeight;

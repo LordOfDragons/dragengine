@@ -73,7 +73,7 @@ reRigPush::reRigPush(deEngine *engine){
 	pActive = false;
 	
 	try{
-		pCollider = engine->GetColliderManager()->CreateColliderVolume();
+		pCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume();
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(deCollider::ertKinematic);
 		pCollider->SetUseLocalGravity(true);
@@ -84,7 +84,7 @@ reRigPush::reRigPush(deEngine *engine){
 		pCollider->SetCollisionFilter(decCollisionFilter(layerMask));
 		
 		// create debug drawer and shapes
-		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSPush = new igdeWDebugDrawerShape;
@@ -117,7 +117,7 @@ reRigPush::reRigPush(const reRigPush &push){
 	pActive = false;
 	
 	try{
-		pCollider = pEngine->GetColliderManager()->CreateColliderVolume();
+		pCollider.TakeOver(pEngine->GetColliderManager()->CreateColliderVolume();
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(deCollider::ertKinematic);
 		pCollider->SetUseLocalGravity(true);
@@ -128,7 +128,7 @@ reRigPush::reRigPush(const reRigPush &push){
 		pCollider->SetCollisionFilter(decCollisionFilter(layerMask));
 		
 		// create debug drawer and shapes
-		pDebugDrawer = pEngine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(pEngine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSPush = new igdeWDebugDrawerShape;

@@ -172,7 +172,7 @@ void feFont::Rebuild(){
 			// using loading but this is okay for what we use them here.
 			feFontBuilder builder(this);
 			
-			pEngFont = GetEngine()->GetFontManager()->CreateFont("", builder);
+			pEngFont.TakeOver(GetEngine()->GetFontManager()->CreateFont("", builder);
 		}
 		
 		// no more dirty

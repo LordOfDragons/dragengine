@@ -1103,7 +1103,7 @@ void deoglRTContext::pCreateContext(){
 #elif defined BACKEND_VULKAN
 	logger.LogInfo("Creating Vulkan device");
 	pVulkan.TakeOverWith(pRenderThread.GetOgl());
-	pDevice = pVulkan->GetInstance().CreateDeviceHeadlessGraphic(0);
+	pDevice.TakeOver(pVulkan->GetInstance().CreateDeviceHeadlessGraphic(0);
 	
 	pQueueGraphic = &pDevice->GetGraphicQueue();
 	pQueueCompute = &pDevice->GetComputeQueue();

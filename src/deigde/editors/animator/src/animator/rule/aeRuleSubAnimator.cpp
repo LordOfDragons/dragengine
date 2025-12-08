@@ -157,7 +157,7 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 			ruleCount = animator->GetRules().GetCount();
 			
 			// create animator
-			pSubAnimator = engine->GetAnimatorManager()->CreateAnimator();
+			pSubAnimator.TakeOver(engine->GetAnimatorManager()->CreateAnimator();
 			pSubAnimator->SetRig(animator->GetEngineAnimator()->GetRig());
 			pSubAnimator->SetAnimation(animator->GetEngineAnimator()->GetAnimation());
 			

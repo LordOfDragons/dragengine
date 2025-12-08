@@ -50,7 +50,7 @@ pNode(NULL)
 	pSize = node->GetSize();
 	pRotation = node->GetRotation();
 	pShearing = node->GetShearing();
-	pMatrix = node->CreateScreenTransformMatrix();
+	pMatrix.TakeOver(node->CreateScreenTransformMatrix();
 	
 	pNode = node;
 	node->AddReference();

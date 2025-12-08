@@ -85,7 +85,7 @@ void cePCBOption::Layout(const cePlayerChoiceBox &pcbox, bool selected){
 	// create canvas if not existing
 	deCanvasManager &canvasManager = *pcbox.GetConversation().GetEngine()->GetCanvasManager();
 	if(!pCanvasView){
-		pCanvasView = canvasManager.CreateCanvasView();
+		pCanvasView.TakeOver(canvasManager.CreateCanvasView();
 	}
 	
 	// clear canvas

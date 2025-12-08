@@ -2840,7 +2840,7 @@ void debpColliderComponent::pUpdateAttachments(bool force){
 				
 			case deColliderAttachment::eatRelativeMovement:{
 				if(pDirtyRelMoveMatrix){
-					pRelMoveMatrix = decDMatrix::CreateTranslation(decDVector(pRelMoveDisplacement) - pPosition)
+					pRelMoveMatrix.TakeOver(decDMatrix::CreateTranslation(decDVector(pRelMoveDisplacement) - pPosition)
 						.QuickMultiply(decDMatrix::CreateWorld(pPosition, pRelMoveRotation));
 					pRelMoveMatrixRot = pRelMoveMatrix.ToQuaternion();
 					pDirtyRelMoveMatrix = false;

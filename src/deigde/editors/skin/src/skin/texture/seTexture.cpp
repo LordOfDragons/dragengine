@@ -170,7 +170,7 @@ void seTexture::UpdateEngineSkin(){
 	// named skins can only exist once but unnamed skins can exist multiple times.
 	seTextureSkinBuilder builder(*pSkin, *this);
 	
-	pEngSkin = GetEngine()->GetSkinManager()->CreateSkin("", builder);
+	pEngSkin.TakeOver(GetEngine()->GetSkinManager()->CreateSkin("", builder);
 	
 	// update component and light with the new skin
 	AssignSkinToComponentTexture();

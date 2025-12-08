@@ -51,7 +51,7 @@ dedsServer::dedsServer(deScriptingDragonScript *ds, deServer *server){
 	pDS = ds;
 	pServer = server;
 	pHasCB = false;
-	pValCB = ds->GetScriptEngine()->GetMainRunTime()->CreateValue(pDS->GetClassServerListener());
+	pValCB.TakeOver(ds->GetScriptEngine()->GetMainRunTime()->CreateValue(pDS->GetClassServerListener());
 }
 
 dedsServer::~dedsServer(){

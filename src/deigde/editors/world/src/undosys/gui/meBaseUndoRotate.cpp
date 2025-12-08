@@ -78,7 +78,7 @@ void meBaseUndoRotate::SetModifyOrientation(bool modifyOrientation){
 }
 
 void meBaseUndoRotate::UpdateRotationMatrix(){
-	pMatrix = decDMatrix::CreateTranslation(-pPivot)
+	pMatrix.TakeOver(decDMatrix::CreateTranslation(-pPivot)
 		* decDMatrix::CreateRotationAxis( pAxis, pAngle * DEG2RAD )
 		* decDMatrix::CreateTranslation( pPivot );
 	

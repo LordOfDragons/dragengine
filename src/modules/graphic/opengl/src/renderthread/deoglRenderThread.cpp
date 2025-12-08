@@ -1137,7 +1137,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 	// load vulkan and create device if supported
 	try{
 		pVulkan.TakeOverWith(pOgl);
-		pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessGraphic(0);
+		pVulkanDevice.TakeOver(pVulkan->GetInstance().CreateDeviceHeadlessGraphic(0);
 		// pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessComputeOnly( 0 );
 		
 	}catch(const deException &e){

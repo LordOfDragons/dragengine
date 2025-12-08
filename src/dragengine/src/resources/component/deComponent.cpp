@@ -736,7 +736,7 @@ void deComponent::PrepareMatrix(){
 		return;
 	}
 	
-	pMatrix = decDMatrix::CreateScale(decDVector(pScale))
+	pMatrix.TakeOver(decDMatrix::CreateScale(decDVector(pScale))
 		* decDMatrix::CreateFromQuaternion( pOrientation )
 		* decDMatrix::CreateTranslation( pPosition );
 	

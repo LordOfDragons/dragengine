@@ -56,7 +56,7 @@ dedsParticleEmitter::dedsParticleEmitter(deScriptingDragonScript *ds, deParticle
 	pDS = ds;
 	pEmitter = emitter;
 	pHasCB = false;
-	pValCB = rt->CreateValue(ds->GetClassParticleEmitterInstanceListener());
+	pValCB.TakeOver(rt->CreateValue(ds->GetClassParticleEmitterInstanceListener());
 }
 
 dedsParticleEmitter::~dedsParticleEmitter(){

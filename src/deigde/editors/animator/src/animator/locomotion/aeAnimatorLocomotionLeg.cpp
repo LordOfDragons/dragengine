@@ -216,7 +216,7 @@ void aeAnimatorLocomotionLeg::Reset(){
 	// determine ik position, rotation and influence ( for controllers )
 	pIKInfluence = pPositionLocked ? 1.0f : 0.0f; // maybe blending?
 	pIKPosition = (locoInvMatrix * pLockedPosition).ToVector();
-	pIKOrientation = (decDMatrix::CreateRotation(pLockedRotation) * locoInvMatrix).GetEulerAngles().ToVector();
+	pIKOrientation.TakeOver((decDMatrix::CreateRotation(pLockedRotation) * locoInvMatrix).GetEulerAngles().ToVector();
 	
 	// update the debug drawer shapes
 	RepositionShapes();
@@ -349,7 +349,7 @@ void aeAnimatorLocomotionLeg::Update(float elapsed){
 	// determine ik position, rotation and influence ( for controllers )
 	pIKInfluence = pPositionLocked ? 1.0f : 0.0f; // maybe blending?
 	pIKPosition = (locoInvMatrix * pLockedPosition).ToVector();
-	pIKOrientation = (decDMatrix::CreateRotation(pLockedRotation) * locoInvMatrix).GetEulerAngles().ToVector();
+	pIKOrientation.TakeOver((decDMatrix::CreateRotation(pLockedRotation) * locoInvMatrix).GetEulerAngles().ToVector();
 	
 	// update the debug drawer shapes
 	RepositionShapes();
@@ -424,7 +424,7 @@ void aeAnimatorLocomotionLeg::PostUpdate(){
 	
 	pIKInfluence = 1.0f;
 	pIKPosition = (locoInvMatrix * ikBonePosition).ToVector();
-	pIKOrientation = (decDMatrix::CreateRotation(ikBoneRotation) * locoInvMatrix).GetEulerAngles().ToVector();
+	pIKOrientation.TakeOver((decDMatrix::CreateRotation(ikBoneRotation) * locoInvMatrix).GetEulerAngles().ToVector();
 	
 	// update the debug drawe shapes with the ik parameters
 	pDDSLocked.SetPosition(ikBonePosition);

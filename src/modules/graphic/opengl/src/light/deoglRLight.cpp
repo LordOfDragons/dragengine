@@ -754,7 +754,7 @@ const deoglSPBlockUBO::Ref &deoglRLight::GetInstanceParameterBlock(){
 
 const deoglSPBlockUBO::Ref &deoglRLight::GetOccQueryParameterBlock(){
 	if(!pParamBlockOccQuery){
-		pParamBlockOccQuery = deoglLightShader::CreateSPBOccQueryParam(pRenderThread);
+		pParamBlockOccQuery.TakeOver(deoglLightShader::CreateSPBOccQueryParam(pRenderThread);
 	}
 	return pParamBlockOccQuery;
 }

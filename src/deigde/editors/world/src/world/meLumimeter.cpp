@@ -60,7 +60,7 @@ meLumimeter::meLumimeter(deEngine *engine){
 	pHostObject = NULL;
 	
 	try{
-		pLumimeter = engine->GetLumimeterManager()->CreateLumimeter();
+		pLumimeter.TakeOver(engine->GetLumimeterManager()->CreateLumimeter();
 		
 		pLumimeter->SetPosition(pPosition);
 		pLumimeter->SetDirection(pDirection);

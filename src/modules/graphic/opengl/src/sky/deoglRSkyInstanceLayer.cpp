@@ -285,7 +285,7 @@ void deoglRSkyInstanceLayer::pUpdateParameters(){
 	
 	// set matrices
 	if(hasRotation){
-		pMatrix = decMatrix::CreateRotation(pRotation)
+		pMatrix.TakeOver(decMatrix::CreateRotation(pRotation)
 			* decMatrix::CreateRT( pOrientation, pOffset );
 		
 	}else{

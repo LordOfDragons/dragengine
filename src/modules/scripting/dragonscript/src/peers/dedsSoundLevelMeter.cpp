@@ -56,7 +56,7 @@ pHasCB(false)
 		DSTHROW(dueInvalidParam);
 	}
 	
-	pValCB = ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassSoundLevelMeterListener());
+	pValCB.TakeOver(ds.GetScriptEngine()->GetMainRunTime()->CreateValue(ds.GetClassSoundLevelMeterListener());
 }
 
 dedsSoundLevelMeter::~dedsSoundLevelMeter(){

@@ -98,7 +98,7 @@ public:
 	
 	void CreatePF(deEngine *engine){
 		if(!pEngPF){
-			pEngPF = engine->GetPropFieldManager()->CreatePropField();
+			pEngPF.TakeOver(engine->GetPropFieldManager()->CreatePropField();
 			if(!pEngPF) DSTHROW(dueOutOfMemory);
 			
 			dedsPropField *peer = (dedsPropField*)pEngPF->GetPeerScripting();

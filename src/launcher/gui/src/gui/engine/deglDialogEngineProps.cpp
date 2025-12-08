@@ -95,19 +95,19 @@ FXDialogBox(powner, "Engine Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESI
 	toolTip = "Configuration path.";
 	guiBuilder.CreateLabel(block, "Path Config:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditPathConfig = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditPathConfig.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditPathConfig->setEditable(false);
 	
 	toolTip = "Share path";
 	guiBuilder.CreateLabel(block, "Path Share:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditPathShare = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditPathShare.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditPathShare->setEditable(false);
 	
 	toolTip = "Lib path";
 	guiBuilder.CreateLabel(block, "Path Libraries:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pEditPathLib = guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
+	pEditPathLib.TakeOver(guiBuilder.CreateTextField(frameLine, nullptr, 0, toolTip, false);
 	pEditPathLib->setEditable(false);
 	
 	
@@ -124,10 +124,10 @@ FXDialogBox(powner, "Engine Properties", DECOR_TITLE | DECOR_BORDER | DECOR_RESI
 	toolTip = "Select the profile to use or leave empty to use the default profile.";
 	guiBuilder.CreateLabel(block, "Active Profile:", toolTip);
 	frameLine = guiBuilder.CreateHFrame(block);
-	pCBActiveProfile = guiBuilder.CreateComboBox(frameLine, this,
+	pCBActiveProfile.TakeOver(guiBuilder.CreateComboBox(frameLine, this,
 		ID_CB_ACTIVE_PROFILE, toolTip, true, 20, 8, false);
 	pCBActiveProfile->setSortFunc(deglGuiBuilder::SortListItemByName);
-	pBtnEditProfiles = guiBuilder.CreateButton(frameLine, "Edit Profiles", nullptr,
+	pBtnEditProfiles.TakeOver(guiBuilder.CreateButton(frameLine, "Edit Profiles", nullptr,
 		this, ID_BTN_EDIT_PROFILES, "Edit game profiles");
 	
 	

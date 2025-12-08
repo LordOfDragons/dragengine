@@ -428,7 +428,7 @@ void fbxScene::Prepare(deBaseModule &module){
 	}
 	
 	const float scale = pUnitScaleFactor * FBX_UNIT_SCALE;
-	pTransformation = pTransformation * decMatrix::CreateScale(scale, scale, scale);
+	pTransformation.TakeOver(pTransformation * decMatrix::CreateScale(scale, scale, scale);
 	
 	pAxisTransformation.a11 = -1.0f; pAxisTransformation.a21 = 0.0f; pAxisTransformation.a31 = 0.0f;
 	pAxisTransformation.a12 =  0.0f; pAxisTransformation.a22 = 1.0f; pAxisTransformation.a32 = 0.0f;

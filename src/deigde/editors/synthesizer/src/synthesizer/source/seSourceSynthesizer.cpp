@@ -166,7 +166,7 @@ void seSourceSynthesizer::UpdateChildSynthesizer(){
 			synthesizer = GetSynthesizer()->GetLoadSaveSystem().LoadSynthesizer(pPathSynthesizer, basePath);
 			
 			// create synthesizer
-			pChildSynthesizer = pEngine->GetSynthesizerManager()->CreateSynthesizer();
+			pChildSynthesizer.TakeOver(pEngine->GetSynthesizerManager()->CreateSynthesizer();
 			
 			// add controllers
 			const int controllerCount = synthesizer->GetControllers().GetCount();

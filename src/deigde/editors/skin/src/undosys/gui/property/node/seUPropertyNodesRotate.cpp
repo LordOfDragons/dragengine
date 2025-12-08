@@ -112,7 +112,7 @@ void seUPropertyNodesRotate::SetTarget(const decVector2 &target){
 			* decTexMatrix2::CreateTranslation( pPivot ) );
 		
 	}else{*/
-		pTransform = decTexMatrix2::CreateTranslation(-pPivot)
+		pTransform.TakeOver(decTexMatrix2::CreateTranslation(-pPivot)
 			* decTexMatrix2::CreateRotation( angleTarget - angleOrigin )
 			* decTexMatrix2::CreateTranslation( pPivot );
 	//}

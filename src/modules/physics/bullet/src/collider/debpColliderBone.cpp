@@ -175,7 +175,7 @@ void debpColliderBone::SetFromRigBone(const deRigBone &bone){
 	pInvBoneMatrix = pBoneMatrix.QuickInvert();
 	
 	// rig collider matrix
-	pColMatrix = decDMatrix::CreateTranslation(bone.GetCentralMassPoint()) * pBoneMatrix;
+	pColMatrix.TakeOver(decDMatrix::CreateTranslation(bone.GetCentralMassPoint()) * pBoneMatrix;
 	pInvColMatrix = pColMatrix.QuickInvert();
 	
 	// local matrix

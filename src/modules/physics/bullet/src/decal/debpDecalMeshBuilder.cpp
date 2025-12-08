@@ -91,7 +91,7 @@ void debpDecalMeshBuilder::Init(deDecal *decal, float distance){
 	}
 	
 	// tuck away the infos
-	pDecalMatrix = decMatrix::CreateFromQuaternion(decal->GetOrientation())
+	pDecalMatrix.TakeOver(decMatrix::CreateFromQuaternion(decal->GetOrientation())
 		* decMatrix::CreateTranslation( decal->GetPosition() );
 	pDecalView = pDecalMatrix.TransformView();
 	pOrigin = decal->GetPosition();

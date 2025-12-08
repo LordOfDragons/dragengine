@@ -309,7 +309,7 @@ void debpCollider::UpdateExtends(){
 
 void debpCollider::UpdateMatrix(){
 	pMatrixNormal.SetFromQuaternion(pCollider.GetOrientation());
-	pMatrix = decDMatrix::CreateScale(pCollider.GetScale()).QuickMultiply(pMatrixNormal)
+	pMatrix.TakeOver(decDMatrix::CreateScale(pCollider.GetScale()).QuickMultiply(pMatrixNormal)
 		.QuickMultiply(decDMatrix::CreateTranslation(pCollider.GetPosition()));
 	pInvMatrix = pMatrix.QuickInvert();
 }
@@ -608,7 +608,7 @@ void debpCollider::UpdateDebugDrawer(){
 	&& devmode.GetShowCategory().Matches(pCollider.GetCollisionFilter().GetCategory())){
 		// ensure the debug drawer exists
 		if(!pDebugDrawer){
-			pDebugDrawer = pBullet->GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
+			pDebugDrawer.TakeOver(pBullet->GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
 			pDebugDrawer->SetXRay(true);
 			pDebugDrawer->SetPosition(pCollider.GetPosition());
 			pDebugDrawer->SetOrientation(pCollider.GetOrientation());

@@ -96,7 +96,7 @@ pDDTypeFaces(NULL),
 pBulkUpdate(false)
 {
 	try{
-		pDDTypeFaces = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+		pDDTypeFaces.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer();
 		pDDTypeFaces->SetXRay(true);
 		pDDTypeFaces->SetVisible(false);
 		

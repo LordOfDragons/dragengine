@@ -1024,7 +1024,7 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 			
 			LogInfo("Create game object");
 			dsRunTime &rt = *pScriptEngine->GetMainRunTime();
-			pGameObj = rt.CreateValue(pClsGameObj);
+			pGameObj.TakeOver(rt.CreateValue(pClsGameObj);
 			rt.CreateObject(pGameObj, pClsGameObj, 0);
 			
 			pState = esInitGameObject;

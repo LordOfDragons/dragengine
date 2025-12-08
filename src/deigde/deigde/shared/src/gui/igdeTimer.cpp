@@ -48,7 +48,7 @@ pTimeout(0),
 pRepeating(false),
 pRunning(false)
 {
-	pNativeTimer = igdeNativeTimer::CreateNativeTimer(*this);
+	pNativeTimer.TakeOver(igdeNativeTimer::CreateNativeTimer(*this);
 }
 
 igdeTimer::~igdeTimer(){

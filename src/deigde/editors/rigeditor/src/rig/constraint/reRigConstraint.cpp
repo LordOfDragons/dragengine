@@ -118,7 +118,7 @@ reRigConstraint::reRigConstraint(deEngine *engine){
 		pDof[deColliderConstraint::edofAngularY] = new reRigConstraintDof(*this, deColliderConstraint::edofAngularY);
 		pDof[deColliderConstraint::edofAngularZ] = new reRigConstraintDof(*this, deColliderConstraint::edofAngularZ);
 		
-		pCollider = engine->GetColliderManager()->CreateColliderVolume();
+		pCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume();
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(deCollider::ertKinematic);
 		pCollider->SetUseLocalGravity(true);
@@ -129,7 +129,7 @@ reRigConstraint::reRigConstraint(deEngine *engine){
 		pCollider->SetCollisionFilter(decCollisionFilter(layerMask));
 		
 		// create debug drawer and shapes
-		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer();
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSConstraint = new igdeWDebugDrawerShape;
