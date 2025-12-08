@@ -675,7 +675,7 @@ void igdeEditPropertyValue::pCreateContent(igdeUIHelper &helper){
 	pActionEditShape.TakeOver(new igdeEditPropertyValue_ActionEditShape(*this));
 	pActionEditShapeList.TakeOver(new igdeEditPropertyValue_ActionEditShapeList(*this));
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher.TakeOverWith(env);
 	AddChild(pSwitcher);
 	helper.Button(*this, pActionEditRawValue);
 	

@@ -80,7 +80,7 @@ pFontSize(nullptr)
 	pCanvasSelect->SetVisible(false);
 	view.AddCanvas(pCanvasSelect);
 	
-	pInfoBubble.TakeOver(new meInfoBubble(view));
+	pInfoBubble.TakeOverWith(view);
 	
 	deFontManager &fontmgr = *view.GetEngine()->GetFontManager();
 	const deFont::Ref font(deFont::Ref::New(fontmgr.LoadFont("/igde/fonts/sans_10.defont", "/")));

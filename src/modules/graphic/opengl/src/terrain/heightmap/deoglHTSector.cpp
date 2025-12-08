@@ -58,7 +58,7 @@ deoglHTSector::~deoglHTSector(){
 
 void deoglHTSector::SyncToRender(){
 	if(!pRSector){
-		pRSector.TakeOver(new deoglRHTSector(pHeightTerrain.GetRHeightTerrain(), pSector));
+		pRSector.TakeOverWith(pHeightTerrain.GetRHeightTerrain(), pSector);
 		pSectorChanged = true;
 	}
 	

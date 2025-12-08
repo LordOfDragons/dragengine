@@ -72,7 +72,7 @@ pInternalTask(NULL)
 	}
 	
 	LogCreateEnter();
-	pFont.TakeOver(new deFont(engine.GetFontManager(), vfs, path, 0));
+	pFont.TakeOverWith(engine.GetFontManager(), vfs, path, 0);
 	LogCreateExit();
 }
 

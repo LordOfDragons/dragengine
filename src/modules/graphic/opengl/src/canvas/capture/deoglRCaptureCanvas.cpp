@@ -108,7 +108,7 @@ void deoglRCaptureCanvas::StartCapture(int width, int height, int componentCount
 		}
 	}
 	
-	pPixelBuffer.TakeOver(new deoglPixelBuffer(pbformat, width, height, 1));
+	pPixelBuffer.TakeOverWith(pbformat, width, height, 1);
 	
 	pCapturePending = true;
 	pComponentCount = componentCount;

@@ -184,8 +184,8 @@ pDebugInfo(renderThread)
 	try{
 		renderThread.GetShader().SetCommonDefines(commonDefines);
 		
-		pRenderPBSingleUse.TakeOver(new deoglSPBSingleUse(renderThread,
-			deoglSkinShader::CreateSPBRender(renderThread)));
+		pRenderPBSingleUse.TakeOverWith(renderThread,
+			deoglSkinShader::CreateSPBRender(renderThread));
 		
 		pRenderTask = new deoglRenderTask(renderThread);
 		pAddToRenderTask = new deoglAddToRenderTask(renderThread, *pRenderTask);

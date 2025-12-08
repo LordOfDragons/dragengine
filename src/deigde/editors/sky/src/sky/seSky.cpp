@@ -108,7 +108,7 @@ pActiveLayer(NULL)
 		pEngSkyInstance = engine->GetSkyInstanceManager()->CreateSkyInstance();
 		pEngWorld->AddSky(pEngSkyInstance);
 		
-		pEnvObject.TakeOver(new igdeWObject(*environment));
+		pEnvObject.TakeOverWith(*environment);
 		pEnvObject->SetWorld(pEngWorld);
 		pEnvObject->SetPosition(decDVector(0.0, -1.8, 0.0));
 		pEnvObject->SetGDClassName("IGDETestTerrain");

@@ -189,8 +189,8 @@ igdeMenuCascade &contextMenu, ceConversationAction *action){
 			playerChoice, ceWPTTIMAction::ListAddMenuActions[i], indexAction), true);
 	}
 	
-	subMenu.TakeOver(new igdeMenuCascade(environment, "Insert Action After",
-		environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	subMenu.TakeOverWith(environment, "Insert Action After",
+		environment.GetStockIcon(igdeEnvironment::esiPlus));
 	contextMenu.AddChild(subMenu);
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
 		helper.MenuCommand(subMenu, new ceWPTMAPChoiceActionsAddAction(windowMain, conversation, *topic,

@@ -138,7 +138,7 @@ pColliderOwner(this)
 		pUpdateDDSColors();
 		pUpdateShapes();
 		
-		pObjectPlaceholder.TakeOver(new igdeWObject(*environment));
+		pObjectPlaceholder.TakeOverWith(*environment);
 		
 	}catch(const deException &){
 		pCleanUp();

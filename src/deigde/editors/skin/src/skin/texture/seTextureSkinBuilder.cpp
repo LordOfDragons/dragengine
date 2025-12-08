@@ -267,7 +267,7 @@ void seTextureSkinBuilder::pAddMapped(deSkin &engSkin){
 	for(i=0; i<count; i++){
 		const seMapped &mapped = *list.GetAt(i);
 		
-		engMapped.TakeOver(new deSkinMapped(mapped.GetName()));
+		engMapped.TakeOverWith(mapped.GetName());
 		
 		engMapped->GetCurve() = mapped.GetCurve();
 		engMapped->SetInputType(mapped.GetInputType());

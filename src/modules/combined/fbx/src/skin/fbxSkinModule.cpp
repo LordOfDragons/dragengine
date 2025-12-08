@@ -236,7 +236,7 @@ void fbxSkinModule::pLoadMaterial(deSkin &skin, fbxScene &scene, const fbxMateri
 // 			LogInfoFormat( "texture map '%s'", mpname.GetString() );
 			
 			if(mpname == "DiffuseColor"){
-				fbxTexDiffuseColor.TakeOver(new fbxTexture(scene, node));
+				fbxTexDiffuseColor.TakeOverWith(scene, node);
 				
 			}else if(mpname == "SpecularColor"){
 				fbxTexSpecularColor.TakeOver(new fbxTexture(scene, node));
@@ -245,13 +245,13 @@ void fbxSkinModule::pLoadMaterial(deSkin &skin, fbxScene &scene, const fbxMateri
 				fbxTexShininess.TakeOver(new fbxTexture(scene, node));
 				
 			}else if(mpname == "EmissiveColor"){
-				fbxTexEmissiveColor.TakeOver(new fbxTexture(scene, node));
+				fbxTexEmissiveColor.TakeOverWith(scene, node);
 				
 			}else if(mpname == "TransparencyFactor"){
 				fbxTexTransparencyFactor.TakeOver(new fbxTexture(scene, node));
 				
 			}else if(mpname == "Bump" || mpname == "NormalMap"){
-				fbxTexBump.TakeOver(new fbxTexture(scene, node));
+				fbxTexBump.TakeOverWith(scene, node);
 			}
 		}
 		

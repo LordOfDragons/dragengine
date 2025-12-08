@@ -47,7 +47,7 @@ pOcclusionMesh(occlusionMesh),
 pROcclusionMesh(NULL)
 {
 	try{
-		pROcclusionMesh.TakeOver(new deoglROcclusionMesh(ogl.GetRenderThread(), occlusionMesh));
+		pROcclusionMesh.TakeOverWith(ogl.GetRenderThread(), occlusionMesh);
 		
 	}catch(const deException &){
 		pCleanUp();

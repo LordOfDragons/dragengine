@@ -98,7 +98,7 @@ void deoxrDPEyeGazeInteraction::pAddDevice() {
 	}
 	
 	deVROpenXR &oxr = GetInstance().GetOxr();
-	pDevice.TakeOver(new deoxrDevice(oxr, *this));
+	pDevice.TakeOverWith(oxr, *this);
 	
 	decString id;
 	

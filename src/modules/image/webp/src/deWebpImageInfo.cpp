@@ -50,7 +50,7 @@ pHasAlpha(false),
 	pIsGrayscale (false)
 {
 	const int size = reader.GetLength();
-	pData.TakeOver(new decMemoryFile("data"));
+	pData.TakeOverWith("data");
 	pData->Resize(size);
 	reader.Read(pData->GetPointer(), size);
 	

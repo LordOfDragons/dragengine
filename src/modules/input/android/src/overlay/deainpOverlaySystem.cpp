@@ -74,7 +74,7 @@ pInHorizontalMode(false)
 		deainpOverlayActionButton::Ref actionButton;
 		deainpOverlayCirclePad::Ref circlePad;
 		
-		circlePad.TakeOver(new deainpOverlayCirclePad(androidInput));
+		circlePad.TakeOverWith(androidInput);
 		circlePad->SetKeyCodeLeft(deainpInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
 			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcY)).GetID()));
 		circlePad->SetKeyCodeUp(deainpInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
@@ -92,7 +92,7 @@ pInHorizontalMode(false)
 		pCanvas->AddCanvas(circlePad->GetCanvas());
 		pOverlays.Add(circlePad);
 		
-		circlePad.TakeOver(new deainpOverlayCirclePad(androidInput));
+		circlePad.TakeOverWith(androidInput);
 		circlePad->SetAxisLeftRight(deainpInputBinding(mouse.GetID(),
 			mouse.GetAxisAt(0).GetID(), false)); // mouse left-right
 		circlePad->SetAxisUpDown(deainpInputBinding(mouse.GetID(),
@@ -108,7 +108,7 @@ pInHorizontalMode(false)
 		pCanvas->AddCanvas(circlePad->GetCanvas());
 		pOverlays.Add(circlePad);
 		
-		actionButton.TakeOver(new deainpOverlayActionButton(androidInput));
+		actionButton.TakeOverWith(androidInput);
 		actionButton->SetBinding(deainpInputBinding(mouse.GetID(),
 			mouse.GetButtonAt(0).GetID())); // left mouse button
 		actionButton->SetText("LMB");
@@ -122,7 +122,7 @@ pInHorizontalMode(false)
 		pCanvas->AddCanvas(actionButton->GetCanvas());
 		pOverlays.Add(actionButton);
 		
-		actionButton.TakeOver(new deainpOverlayActionButton(androidInput));
+		actionButton.TakeOverWith(androidInput);
 		actionButton->SetBinding(deainpInputBinding(mouse.GetID(),
 			mouse.GetButtonAt(1).GetID())); // right mouse button
 		actionButton->SetText("RMB");
@@ -136,7 +136,7 @@ pInHorizontalMode(false)
 		pCanvas->AddCanvas(actionButton->GetCanvas());
 		pOverlays.Add(actionButton);
 		
-		actionButton.TakeOver(new deainpOverlayActionButton(androidInput));
+		actionButton.TakeOverWith(androidInput);
 		actionButton->SetBinding(deainpInputBinding(mouse.GetID(),
 			mouse.GetButtonAt(2).GetID())); // middle mouse button
 		actionButton->SetText("MMB");
@@ -150,7 +150,7 @@ pInHorizontalMode(false)
 		pCanvas->AddCanvas(actionButton->GetCanvas());
 		pOverlays.Add(actionButton);
 		
-		actionButton.TakeOver(new deainpOverlayActionButton(androidInput));
+		actionButton.TakeOverWith(androidInput);
 		actionButton->SetBinding(deainpInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
 			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcQ)).GetID()));
 		actionButton->SetText("Quit");
@@ -164,7 +164,7 @@ pInHorizontalMode(false)
 		pCanvas->AddCanvas(actionButton->GetCanvas());
 		pOverlays.Add(actionButton);
 		
-		actionButton.TakeOver(new deainpOverlayActionButton(androidInput));
+		actionButton.TakeOverWith(androidInput);
 		actionButton->SetBinding(deainpInputBinding(keyboard.GetID(), keyboard.GetButtonAt(
 			keyboard.IndexOfButtonWithKeyCode(deInputEvent::ekcR)).GetID()));
 		actionButton->SetText("Debug");

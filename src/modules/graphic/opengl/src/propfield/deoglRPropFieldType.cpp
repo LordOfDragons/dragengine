@@ -665,8 +665,8 @@ void deoglRPropFieldType::pPrepareParamBlock(){
 				GetWithRef(deoglSkinTexturePipelines::etGeometry).GetShader();
 			
 			/*if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlock.TakeOver(new deoglSPBlockUBO(*pPropField.GetRenderThread()
-					.GetBufferObject().GetLayoutSkinInstanceUBO()));
+				pParamBlock.TakeOverWith(*pPropField.GetRenderThread()
+					.GetBufferObject().GetLayoutSkinInstanceUBO());
 				
 			}else{*/
 				pParamBlock = skinShader.CreateSPBInstParam();

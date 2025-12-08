@@ -131,7 +131,7 @@ void igdeGDPropertyList::SetToDeepCopyFrom(const igdeGDPropertyList &list){
 	int i;
 	
 	for(i=0; i<count; i++){
-		property.TakeOver(new igdeGDProperty(*list.GetAt(i)));
+		property.TakeOverWith(*list.GetAt(i));
 		Add(property);
 	}
 }

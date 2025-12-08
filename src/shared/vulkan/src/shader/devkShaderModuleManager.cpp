@@ -131,7 +131,7 @@ void devkShaderModuleManager::Load(const char *directory){
 		
 		try{
 			reader.TakeOver(vfs.OpenFileForReading(path));
-			module.TakeOver(new devkShaderModule(pDevice, filename, reader));
+			module.TakeOverWith(pDevice, filename, reader);
 			Add(module);
 			
 		}catch(const deException &){

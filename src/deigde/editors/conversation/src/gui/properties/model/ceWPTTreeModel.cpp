@@ -400,16 +400,16 @@ void ceWPTTreeModel::ContextMenuAction(igdeMenuCascade &contextMenu, ceConversat
 		pWindowMain, *pConversation, *topic, action), true);
 	helper.MenuSeparator(contextMenu);
 	
-	subMenu.TakeOver(new igdeMenuCascade(environment, "Insert Action Before",
-		environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	subMenu.TakeOverWith(environment, "Insert Action Before",
+		environment.GetStockIcon(igdeEnvironment::esiPlus));
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
 		helper.MenuCommand(subMenu, new ceWPTMATopicAddAction(pWindowMain, *pConversation, *topic,
 			ceWPTTIMAction::ListAddMenuActions[i], indexAction), true);
 	}
 	contextMenu.AddChild(subMenu);
 	
-	subMenu.TakeOver(new igdeMenuCascade(environment, "Insert Action After",
-		environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	subMenu.TakeOverWith(environment, "Insert Action After",
+		environment.GetStockIcon(igdeEnvironment::esiPlus));
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
 		helper.MenuCommand(subMenu, new ceWPTMATopicAddAction(pWindowMain, *pConversation, *topic,
 			ceWPTTIMAction::ListAddMenuActions[i], indexAction + 1), true);
@@ -418,7 +418,7 @@ void ceWPTTreeModel::ContextMenuAction(igdeMenuCascade &contextMenu, ceConversat
 	helper.MenuSeparator(contextMenu);
 	
 	// topic specific
-	subMenu.TakeOver(new igdeMenuCascade(environment, "Topic", NULL));
+	subMenu.TakeOverWith(environment, "Topic", NULL);
 	ContextMenuTopic(subMenu);
 	contextMenu.AddChild(subMenu);
 }
@@ -440,8 +440,8 @@ void ceWPTTreeModel::ContextMenuTopic(igdeMenuCascade &contextMenu){
 	igdeMenuCascade::Ref subMenu;
 	int i;
 	
-	subMenu.TakeOver(new igdeMenuCascade(environment, "Add Action",
-		environment.GetStockIcon(igdeEnvironment::esiPlus)));
+	subMenu.TakeOverWith(environment, "Add Action",
+		environment.GetStockIcon(igdeEnvironment::esiPlus));
 	for(i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++){
 		helper.MenuCommand(subMenu, new ceWPTMATopicAddAction(pWindowMain, *pConversation, *topic,
 			ceWPTTIMAction::ListAddMenuActions[i], indexAppend), true);

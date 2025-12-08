@@ -136,7 +136,7 @@ pPreviewVFS(NULL)
 		pSky->SetWorld(pWorld);
 		
 		// create the environment wrapper object
-		pEnvObject.TakeOver(new igdeWObject(*environment));
+		pEnvObject.TakeOverWith(*environment);
 		pEnvObject->SetWorld(pWorld);
 		pEnvObject->SetPosition(decDVector(0.0, 0.0, 0.0));
 		pEnvObject->SetVisible(false); // otherwise a stupid placeholder box shows

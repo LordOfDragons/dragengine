@@ -561,7 +561,7 @@ bool debnConnection::ConnectTo(const char *address){
 	remoteAddress.SetFromString(address);
 	
 	// create connect socket
-	pSocket.TakeOver(new debnSocket(*pNetBasic));
+	pSocket.TakeOverWith(*pNetBasic);
 	
 	if(remoteAddress.GetType() == debnAddress::eatIPv6){
 		pSocket->GetAddress().SetIPv6Any();

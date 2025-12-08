@@ -105,7 +105,7 @@ pBarrierTask(nullptr)
 		deoalRTPTTraceSoundRays::Ref task;
 		int i;
 		for(i=0; i<rayCount; i++){
-			task.TakeOver(new deoalRTPTTraceSoundRays(*this));
+			task.TakeOverWith(*this);
 			pTasksTraceSoundRays.Add(task);
 			pTasksReadyTraceSoundRays.Add(task);
 		}

@@ -65,7 +65,7 @@ pAttachType(eatNone)
 		decLayerMask layerMask;
 		layerMask.SetBit(aeAnimator::eclElements);
 		
-		pObjectWrapper.TakeOver(new igdeWObject(*environment));
+		pObjectWrapper.TakeOverWith(*environment);
 		pObjectWrapper->SetVisible(true);
 		pObjectWrapper->SetDynamicCollider(false);
 		pObjectWrapper->SetCollisionFilter(decCollisionFilter(layerMask));

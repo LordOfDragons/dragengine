@@ -406,7 +406,7 @@ void deBaseModule::pCreateVFS(){
 		pathDisk.AddUnixPath(typeDirectory);
 		pathDisk.AddUnixPath(directoryName);
 		
-		cachedContainer.TakeOver(new deVFSCacheDiskDirectory(pathRoot, pathDisk));
+		cachedContainer.TakeOverWith(pathRoot, pathDisk);
 		cachedContainer->SetMaxCacheSize(1000000); // 1000MB
 		pVFS->AddContainer(cachedContainer);
 	}

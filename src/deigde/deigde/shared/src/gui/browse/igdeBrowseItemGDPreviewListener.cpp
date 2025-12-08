@@ -64,10 +64,10 @@ void igdeBrowseItemGDPreviewListener::ImageCreated(deImage *image){
 	
 	igdeIcon::Ref icon;
 	if(image->GetWidth() > image->GetHeight()){
-		icon.TakeOver(new igdeIcon(*image, pIconSize, pIconSize * image->GetHeight() / image->GetWidth()));
+		icon.TakeOverWith(*image, pIconSize, pIconSize * image->GetHeight() / image->GetWidth());
 		
 	}else{
-		icon.TakeOver(new igdeIcon(*image, pIconSize * image->GetWidth() / image->GetHeight(), pIconSize));
+		icon.TakeOverWith(*image, pIconSize * image->GetWidth() / image->GetHeight(), pIconSize);
 	}
 	pListItem->SetIcon(icon);
 	pIconListBox->ItemChangedAt(index);

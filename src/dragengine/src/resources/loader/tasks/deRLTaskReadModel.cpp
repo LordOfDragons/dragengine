@@ -66,7 +66,7 @@ pSucceeded(false)
 		return;
 	}
 	
-	pModel.TakeOver(new deModel(engine.GetModelManager(), vfs, path, 0));
+	pModel.TakeOverWith(engine.GetModelManager(), vfs, path, 0);
 	LogCreateExit();
 }
 

@@ -260,23 +260,23 @@ void igdeTextArea::DeleteText(int begin, int end){
 			pSegments.RemoveFrom(i);
 			
 		}else if(segment.GetBegin() < begin && segment.GetEnd() >= end){
-			newSegment.TakeOver(new igdeTextSegment(segment.GetBegin(),
-				segment.GetEnd() - length, segment.GetStyle(), segment.GetAction()));
+			newSegment.TakeOverWith(segment.GetBegin(),
+				segment.GetEnd() - length, segment.GetStyle(), segment.GetAction());
 			pSegments.SetAt(i, newSegment.operator->());
 			
 		}else if(segment.GetBegin() < begin && segment.GetEnd() >= begin){
-			newSegment.TakeOver(new igdeTextSegment(segment.GetBegin(), begin - 1,
-				segment.GetStyle(), segment.GetAction()));
+			newSegment.TakeOverWith(segment.GetBegin(), begin - 1,
+				segment.GetStyle(), segment.GetAction());
 			pSegments.SetAt(i, newSegment.operator->());
 			
 		}else if(segment.GetEnd() >= end && segment.GetBegin() < end){
-			newSegment.TakeOver(new igdeTextSegment(end, segment.GetEnd(),
-				segment.GetStyle(), segment.GetAction()));
+			newSegment.TakeOverWith(end, segment.GetEnd(),
+				segment.GetStyle(), segment.GetAction());
 			pSegments.SetAt(i, newSegment.operator->());
 			
 		}else if(segment.GetBegin() >= end){
-			newSegment.TakeOver(new igdeTextSegment(segment.GetBegin() - length,
-				segment.GetEnd() - length, segment.GetStyle(), segment.GetAction()));
+			newSegment.TakeOverWith(segment.GetBegin() - length,
+				segment.GetEnd() - length, segment.GetStyle(), segment.GetAction());
 			pSegments.SetAt(i, newSegment.operator->());
 		}
 	}
@@ -541,25 +541,25 @@ bool igdeTextArea::pClearSegment(int begin, int end){
 			changed = true;
 			
 		}else if(segment.GetBegin() < begin && segment.GetEnd() > end){
-			newSegment.TakeOver(new igdeTextSegment(end + 1, segment.GetEnd(),
-				segment.GetStyle(), segment.GetAction()));
+			newSegment.TakeOverWith(end + 1, segment.GetEnd(),
+				segment.GetStyle(), segment.GetAction());
 			pSegments.Add(newSegment.operator->());
 			
-			newSegment.TakeOver(new igdeTextSegment(segment.GetBegin(), begin - 1,
-				segment.GetStyle(), segment.GetAction()));
+			newSegment.TakeOverWith(segment.GetBegin(), begin - 1,
+				segment.GetStyle(), segment.GetAction());
 			pSegments.SetAt(i, newSegment.operator->());
 			
 			changed = true;
 			
 		}else if(segment.GetBegin() < begin && segment.GetEnd() >= begin){
-			newSegment.TakeOver(new igdeTextSegment(segment.GetBegin(), begin - 1,
-				segment.GetStyle(), segment.GetAction()));
+			newSegment.TakeOverWith(segment.GetBegin(), begin - 1,
+				segment.GetStyle(), segment.GetAction());
 			pSegments.SetAt(i, newSegment.operator->());
 			changed = true;
 			
 		}else if(segment.GetBegin() <= end && segment.GetEnd() > end){
-			newSegment.TakeOver(new igdeTextSegment(end + 1, segment.GetEnd(),
-				segment.GetStyle(), segment.GetAction()));
+			newSegment.TakeOverWith(end + 1, segment.GetEnd(),
+				segment.GetStyle(), segment.GetAction());
 			pSegments.SetAt(i, newSegment.operator->());
 			changed = true;
 		}

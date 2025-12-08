@@ -248,7 +248,7 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 	const int maxUBOIndexCount = config.GetMaxSPBIndexCount();
 	const int maxSSBOIndexCount = config.GetMaxSPBIndexCount();
 	
-	pLayoutOccMeshInstanceUBO.TakeOver(new deoglSPBlockUBO(pRenderThread));
+	pLayoutOccMeshInstanceUBO.TakeOverWith(pRenderThread);
 	pLayoutOccMeshInstanceUBO->SetRowMajor(rowMajor);
 	pLayoutOccMeshInstanceUBO->SetCompact(false);
 	pLayoutOccMeshInstanceUBO->SetParameterCount(1);
@@ -268,7 +268,7 @@ void deoglRTBufferObject::pCreateLayoutOccMeshInstance(){
 	if(choices.GetUseSSBORender()){
 		const int ssboMaxSize = caps.GetSSBOMaxSize();
 		
-		pLayoutOccMeshInstanceSSBO.TakeOver(new deoglSPBlockSSBO(pRenderThread, deoglSPBlockSSBO::etStream));
+		pLayoutOccMeshInstanceSSBO.TakeOverWith(pRenderThread, deoglSPBlockSSBO::etStream);
 		pLayoutOccMeshInstanceSSBO->SetRowMajor(rowMajor);
 		pLayoutOccMeshInstanceSSBO->SetCompact(false);
 		pLayoutOccMeshInstanceSSBO->SetParameterCount(1);

@@ -79,7 +79,7 @@ pElementLinkSize(0)
 	(void)pRenderThread;
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
-	pSSBONodes.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etStream));
+	pSSBONodes.TakeOverWith(renderThread, deoglSPBlockSSBO::etStream);
 	pSSBONodes->SetRowMajor(rowMajor);
 	pSSBONodes->SetParameterCount(5);
 	pSSBONodes->GetParameterAt(ecsnpMinExtend).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1);
@@ -90,7 +90,7 @@ pElementLinkSize(0)
 	pSSBONodes->MapToStd140();
 	pSSBONodes->SetBindingPoint(1);
 	
-	pSSBOElements.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etStream));
+	pSSBOElements.TakeOverWith(renderThread, deoglSPBlockSSBO::etStream);
 	pSSBOElements->SetRowMajor(rowMajor);
 	pSSBOElements->SetParameterCount(5);
 	pSSBOElements->GetParameterAt(ecsepMinExtend).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1);

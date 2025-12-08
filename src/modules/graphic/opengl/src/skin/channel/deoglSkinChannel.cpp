@@ -873,12 +873,12 @@ const deoglVSDetermineChannelFormat &channelFormat){
 	// create pixel buffer if required and fill it
 	//if( ! pUniform ){
 		if(mipMapped){
-			pPixelBufferMipMap.TakeOver(new deoglPixelBufferMipMap(pixelBufferFormat,
-				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 100));
+			pPixelBufferMipMap.TakeOverWith(pixelBufferFormat,
+				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 100);
 			
 		}else{
-			pPixelBufferMipMap.TakeOver(new deoglPixelBufferMipMap(pixelBufferFormat,
-				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 0));
+			pPixelBufferMipMap.TakeOverWith(pixelBufferFormat,
+				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 0);
 		}
 	//}
 }
@@ -1331,10 +1331,10 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 			return;
 		}
 		
-		pCacheConstrDefSource2.TakeOver(new decMemoryFile(""));
+		pCacheConstrDefSource2.TakeOverWith("");
 		memoryFileDef = pCacheConstrDefSource2;
 		
-		pCacheConstrVerifySource2.TakeOver(new decMemoryFile(""));
+		pCacheConstrVerifySource2.TakeOverWith("");
 		memoryFileVerify = pCacheConstrVerifySource2;
 		
 	}else{
@@ -1343,10 +1343,10 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 			return;
 		}
 		
-		pCacheConstrDefSource1.TakeOver(new decMemoryFile(""));
+		pCacheConstrDefSource1.TakeOverWith("");
 		memoryFileDef = pCacheConstrDefSource1;
 		
-		pCacheConstrVerifySource1.TakeOver(new decMemoryFile(""));
+		pCacheConstrVerifySource1.TakeOverWith("");
 		memoryFileVerify = pCacheConstrVerifySource1;
 	}
 	
@@ -1785,7 +1785,7 @@ void deoglSkinChannel::pBuildCacheVerify(){
 	}
 	
 	if(!pCacheVerify){
-		pCacheVerify.TakeOver(new decMemoryFile(""));
+		pCacheVerify.TakeOverWith("");
 	}
 	
 	decMemoryFileWriter *writer = NULL;

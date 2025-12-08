@@ -82,7 +82,7 @@ void deoxrDPHMD::pAddDevice(){
 	}
 	
 	deVROpenXR &oxr = GetInstance().GetOxr();
-	pDevice.TakeOver(new deoxrDevice(oxr, *this));
+	pDevice.TakeOverWith(oxr, *this);
 	pDevice->SetType(deInputDevice::edtVRHMD);
 	pDevice->SetName("HMD");
 	

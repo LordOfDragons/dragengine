@@ -520,7 +520,7 @@ bool dealEngineInstance::OpenDelga(int fileDescriptor, long fileOffset, long fil
 	try{
 		fileReader = new dealFDFileReader("DELGA", fileDescriptor, fileOffset, fileLength);
 		
-		pDelga.TakeOver(new dealVFSZipArchive(*this, fileReader, pathRoot));
+		pDelga.TakeOverWith(*this, fileReader, pathRoot);
 		fileReader->FreeReference();
 		fileReader = NULL;
 		

@@ -641,10 +641,10 @@ bool deScriptingDragonScript::Init(const char *scriptDirectory, const char *game
 		pScriptEngine->SetEngineManager(dsmanager);
 		dsmanager = nullptr;
 		
-		pLoadingScreen.TakeOver(new dedsLoadingScreen(*this));
+		pLoadingScreen.TakeOverWith(*this);
 		
 #ifdef OS_ANDROID_QUEST
-		pVRPlaceholder.TakeOver(new dedsVRPlaceholder(*this));
+		pVRPlaceholder.TakeOverWith(*this);
 #endif
 		
 		pState = esSkipOneFrame;

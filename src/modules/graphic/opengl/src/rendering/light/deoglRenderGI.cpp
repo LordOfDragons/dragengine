@@ -373,27 +373,27 @@ pDebugRayLightIndex(-1)
 		const decColor colorBg(0.0f, 0.0f, 0.25f, 0.75f);
 		const decColor colorBgSub(0.05f, 0.05f, 0.05f, 0.75f);
 		
-		pDebugInfoGI.TakeOver(new deoglDebugInformation("GI", colorText, colorBg));
+		pDebugInfoGI.TakeOverWith("GI", colorText, colorBg);
 		
-		pDebugInfoGITraceRays.TakeOver(new deoglDebugInformation("Trace Rays", colorText, colorBgSub));
+		pDebugInfoGITraceRays.TakeOverWith("Trace Rays", colorText, colorBgSub);
 		pDebugInfoGI->GetChildren().Add(pDebugInfoGITraceRays);
 		
-		pDebugInfoGIRenderMaterials.TakeOver(new deoglDebugInformation("Render Materials", colorText, colorBgSub));
+		pDebugInfoGIRenderMaterials.TakeOverWith("Render Materials", colorText, colorBgSub);
 		pDebugInfoGI->GetChildren().Add(pDebugInfoGIRenderMaterials);
 		
-		pDebugInfoGIClearProbes.TakeOver(new deoglDebugInformation("Clear Probes", colorText, colorBgSub));
+		pDebugInfoGIClearProbes.TakeOverWith("Clear Probes", colorText, colorBgSub);
 		pDebugInfoGI->GetChildren().Add(pDebugInfoGIClearProbes);
 		
-		pDebugInfoGIUpdateProbes.TakeOver(new deoglDebugInformation("Update Probes", colorText, colorBgSub));
+		pDebugInfoGIUpdateProbes.TakeOverWith("Update Probes", colorText, colorBgSub);
 		pDebugInfoGI->GetChildren().Add(pDebugInfoGIUpdateProbes);
 		
-		pDebugInfoGIMoveProbes.TakeOver(new deoglDebugInformation("Move Probes", colorText, colorBgSub));
+		pDebugInfoGIMoveProbes.TakeOverWith("Move Probes", colorText, colorBgSub);
 		pDebugInfoGI->GetChildren().Add(pDebugInfoGIMoveProbes);
 		
-		pDebugInfoGIRenderLightGIRay.TakeOver(new deoglDebugInformation("Light Rays", colorText, colorBgSub));
+		pDebugInfoGIRenderLightGIRay.TakeOverWith("Light Rays", colorText, colorBgSub);
 		pDebugInfoGI->GetChildren().Add(pDebugInfoGIRenderLightGIRay);
 		
-		pDebugInfoGIRenderLight.TakeOver(new deoglDebugInformation("Light Geometry", colorText, colorBgSub));
+		pDebugInfoGIRenderLight.TakeOverWith("Light Geometry", colorText, colorBgSub);
 		pDebugInfoGI->GetChildren().Add(pDebugInfoGIRenderLight);
 		
 		
@@ -1153,7 +1153,7 @@ void deoglRenderGI::RenderDebugOverlay(deoglRenderPlan &plan){
 		deoglGIRayCache &rayCache = giState->GetRayCache();
 		
 		if(!pSSBODebugRayLight){
-			pSSBODebugRayLight.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etGpu));
+			pSSBODebugRayLight.TakeOverWith(renderThread, deoglSPBlockSSBO::etGpu);
 			pSSBODebugRayLight->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 			pSSBODebugRayLight->SetParameterCount(1);
 			pSSBODebugRayLight->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 4, 1, GI_MAX_RAYS_PER_PROBE);
@@ -1370,7 +1370,7 @@ void deoglRenderGI::pCreateUBORenderLight(){
 	ubo->MapToStd140();
 	ubo->SetBindingPoint(1);
 	
-	pUBORenderLightSingleUse.TakeOver(new deoglSPBSingleUse(renderThread, ubo));
+	pUBORenderLightSingleUse.TakeOverWith(renderThread, ubo);
 }
 
 void deoglRenderGI::pClearTraceRays(const decPoint &size){

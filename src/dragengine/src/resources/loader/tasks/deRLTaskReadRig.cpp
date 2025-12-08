@@ -63,7 +63,7 @@ pSucceeded(false)
 		return;
 	}
 	
-	pRig.TakeOver(new deRig(engine.GetRigManager(), vfs, path, 0));
+	pRig.TakeOverWith(engine.GetRigManager(), vfs, path, 0);
 	LogCreateExit();
 }
 

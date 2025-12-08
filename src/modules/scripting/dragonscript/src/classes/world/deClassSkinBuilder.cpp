@@ -545,7 +545,7 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 		if(redCurve.GetPointCount() > 0){
 			index = builder->GetSkin()->GetMappedCount();
 			name.Format("#generated%d", index);
-			mapped.TakeOver(new deSkinMapped(name));
+			mapped.TakeOverWith(name);
 			mapped->GetCurve() = redCurve;
 			mapped->SetInputType(redInputType);
 			mapped->SetInputLower(redInputRange.x);
@@ -558,7 +558,7 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 		if(greenCurve.GetPointCount() > 0){
 			index = builder->GetSkin()->GetMappedCount();
 			name.Format("#generated%d", index);
-			mapped.TakeOver(new deSkinMapped(name));
+			mapped.TakeOverWith(name);
 			mapped->GetCurve() = greenCurve;
 			mapped->SetInputType(greenInputType);
 			mapped->SetInputLower(greenInputRange.x);
@@ -571,7 +571,7 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 		if(blueCurve.GetPointCount() > 0){
 			index = builder->GetSkin()->GetMappedCount();
 			name.Format("#generated%d", index);
-			mapped.TakeOver(new deSkinMapped(name));
+			mapped.TakeOverWith(name);
 			mapped->GetCurve() = blueCurve;
 			mapped->SetInputType(blueInputType);
 			mapped->SetInputLower(blueInputRange.x);
@@ -584,7 +584,7 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 		if(alphaCurve.GetPointCount() > 0){
 			index = builder->GetSkin()->GetMappedCount();
 			name.Format("#generated%d", index);
-			mapped.TakeOver(new deSkinMapped(name));
+			mapped.TakeOverWith(name);
 			mapped->GetCurve() = alphaCurve;
 			mapped->SetInputType(alphaInputType);
 			mapped->SetInputLower(alphaInputRange.x);

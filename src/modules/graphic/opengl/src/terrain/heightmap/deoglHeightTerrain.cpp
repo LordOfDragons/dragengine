@@ -58,7 +58,7 @@ pDirtySectors(true)
 	int i;
 	
 	try{
-		pRHeightTerrain.TakeOver(new deoglRHeightTerrain(ogl.GetRenderThread(), heightTerrain));
+		pRHeightTerrain.TakeOverWith(ogl.GetRenderThread(), heightTerrain);
 		
 		for(i=0; i<sectorCount; i++){
 			SectorAdded(heightTerrain.GetSectorAt(i));

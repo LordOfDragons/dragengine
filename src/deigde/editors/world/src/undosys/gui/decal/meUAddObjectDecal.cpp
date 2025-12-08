@@ -51,7 +51,7 @@ meUAddObjectDecal::meUAddObjectDecal(meWorld *world, meObject *parentObject){
 	parentObject->AddReference();
 	
 	try{
-		pDecal.TakeOver(new meDecal(world->GetEnvironment()));
+		pDecal.TakeOverWith(world->GetEnvironment());
 		SetShortInfo("Add Object Decal");
 		UpdateInfos();
 		

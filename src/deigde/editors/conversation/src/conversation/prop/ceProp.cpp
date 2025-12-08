@@ -83,7 +83,7 @@ void ceProp::SetConversation(ceConversation *conversation){
 		if(conversation){
 			const decQuaternion &orientation = decMatrix::CreateRotation(pOrientation * DEG2RAD).ToQuaternion();
 			
-			pObjectWrapper.TakeOver(new igdeWObject(*conversation->GetEnvironment()));
+			pObjectWrapper.TakeOverWith(*conversation->GetEnvironment());
 			pObjectWrapper->SetGDClassName(pObjectClass.GetString());
 			pObjectWrapper->SetPosition(pPosition);
 			pObjectWrapper->SetOrientation(orientation);

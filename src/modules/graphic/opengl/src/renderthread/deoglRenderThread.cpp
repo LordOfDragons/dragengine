@@ -1026,7 +1026,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 		// ^== has to come before RTShader creation since shader compile threads failing
 	    //     can call into delayed operations. if null this can segfault.
 	pShader = new deoglRTShader(*this);
-	pPipelineManager.TakeOver(new deoglPipelineManager(*this));
+	pPipelineManager.TakeOverWith(*this);
 	
 	pInitCapabilities();
 	
@@ -1045,63 +1045,63 @@ void deoglRenderThread::pInitThreadPhase4(){
 	const decColor colorBgSub2(0.1f, 0.1f, 0.1f, 0.75f);
 	const decColor colorBgSub3(0.15f, 0.15f, 0.15f, 0.75f);
 	
-	pDebugInfoModule.TakeOver(new deoglDebugInformation("Module", colorText, colorBg));
+	pDebugInfoModule.TakeOverWith("Module", colorText, colorBg);
 	pDebugInfoModule->SetVisible(false);
 	pDebug->GetDebugInformationList().Add(pDebugInfoModule);
  	
-	pDebugInfoThreadMain.TakeOver(new deoglDebugInformation("Main Thread", colorText, colorBgSub));
+	pDebugInfoThreadMain.TakeOverWith("Main Thread", colorText, colorBgSub);
 	pDebugInfoModule->GetChildren().Add(pDebugInfoThreadMain);
 		
-		pDebugInfoThreadMainWaitFinish.TakeOver(new deoglDebugInformation("Wait Finish", colorText, colorBgSub2));
+		pDebugInfoThreadMainWaitFinish.TakeOverWith("Wait Finish", colorText, colorBgSub2);
 		pDebugInfoThreadMain->GetChildren().Add(pDebugInfoThreadMainWaitFinish);
 		
-		pDebugInfoThreadMainSynchronize.TakeOver(new deoglDebugInformation("Synchronize", colorText, colorBgSub2));
+		pDebugInfoThreadMainSynchronize.TakeOverWith("Synchronize", colorText, colorBgSub2);
 		pDebugInfoThreadMain->GetChildren().Add(pDebugInfoThreadMainSynchronize);
 	
-	pDebugInfoThreadRender.TakeOver(new deoglDebugInformation("Render Thread", colorText, colorBgSub));
+	pDebugInfoThreadRender.TakeOverWith("Render Thread", colorText, colorBgSub);
 	pDebugInfoModule->GetChildren().Add(pDebugInfoThreadRender);
 		
-		pDebugInfoThreadRenderSyncGpu.TakeOver(new deoglDebugInformation("Sync GPU", colorText, colorBgSub2));
+		pDebugInfoThreadRenderSyncGpu.TakeOverWith("Sync GPU", colorText, colorBgSub2);
 		pDebugInfoThreadRender->GetChildren().Add(pDebugInfoThreadRenderSyncGpu);
 		
-		pDebugInfoThreadRenderBegin.TakeOver(new deoglDebugInformation("Begin", colorText, colorBgSub2));
+		pDebugInfoThreadRenderBegin.TakeOverWith("Begin", colorText, colorBgSub2);
 		pDebugInfoThreadRender->GetChildren().Add(pDebugInfoThreadRenderBegin);
 		
-		pDebugInfoThreadRenderWindows.TakeOver(new deoglDebugInformation("Windows", colorText, colorBgSub2));
+		pDebugInfoThreadRenderWindows.TakeOverWith("Windows", colorText, colorBgSub2);
 		pDebugInfoThreadRender->GetChildren().Add(pDebugInfoThreadRenderWindows);
 			
-			pDebugInfoVRRender.TakeOver(new deoglDebugInformation("VR Render", colorText, colorBgSub3));
+			pDebugInfoVRRender.TakeOverWith("VR Render", colorText, colorBgSub3);
 			pDebugInfoThreadRenderWindows->GetChildren().Add(pDebugInfoVRRender);
 			
-			pDebugInfoThreadRenderWindowsPrepare.TakeOver(new deoglDebugInformation("Prepare", colorText, colorBgSub3));
+			pDebugInfoThreadRenderWindowsPrepare.TakeOverWith("Prepare", colorText, colorBgSub3);
 			pDebugInfoThreadRenderWindows->GetChildren().Add(pDebugInfoThreadRenderWindowsPrepare);
 			
-			pDebugInfoThreadRenderWindowsRender.TakeOver(new deoglDebugInformation("Render", colorText, colorBgSub3));
+			pDebugInfoThreadRenderWindowsRender.TakeOverWith("Render", colorText, colorBgSub3);
 			pDebugInfoThreadRenderWindows->GetChildren().Add(pDebugInfoThreadRenderWindowsRender);
 		
-		pDebugInfoThreadRenderCapture.TakeOver(new deoglDebugInformation("Capture", colorText, colorBgSub2));
+		pDebugInfoThreadRenderCapture.TakeOverWith("Capture", colorText, colorBgSub2);
 		pDebugInfoThreadRender->GetChildren().Add(pDebugInfoThreadRenderCapture);
 		
-		pDebugInfoThreadRenderEnd.TakeOver(new deoglDebugInformation("End", colorText, colorBgSub2));
+		pDebugInfoThreadRenderEnd.TakeOverWith("End", colorText, colorBgSub2);
 		pDebugInfoThreadRender->GetChildren().Add(pDebugInfoThreadRenderEnd);
 		
-		pDebugInfoThreadRenderSwap.TakeOver(new deoglDebugInformation("Swap Buffers", colorText, colorBgSub2));
+		pDebugInfoThreadRenderSwap.TakeOverWith("Swap Buffers", colorText, colorBgSub2);
 		pDebugInfoThreadRender->GetChildren().Add(pDebugInfoThreadRenderSwap);
 	
-	pDebugInfoFrameLimiter.TakeOver(new deoglDebugInformation("Frame Limiter", colorText, colorBg));
+	pDebugInfoFrameLimiter.TakeOverWith("Frame Limiter", colorText, colorBg);
 	pDebugInfoFrameLimiter->SetVisible(false);
 	pDebug->GetDebugInformationList().Add(pDebugInfoFrameLimiter);
 		
-		pDebugInfoFLEstimMain.TakeOver(new deoglDebugInformation("Estimate main", colorText, colorBgSub));
+		pDebugInfoFLEstimMain.TakeOverWith("Estimate main", colorText, colorBgSub);
 		pDebugInfoFrameLimiter->GetChildren().Add(pDebugInfoFLEstimMain);
 		
-		pDebugInfoFLEstimRender.TakeOver(new deoglDebugInformation("Estimate Render", colorText, colorBgSub));
+		pDebugInfoFLEstimRender.TakeOverWith("Estimate Render", colorText, colorBgSub);
 		pDebugInfoFrameLimiter->GetChildren().Add(pDebugInfoFLEstimRender);
 		
-		pDebugInfoFLFrameRateMain.TakeOver(new deoglDebugInformation("FPS Main", colorText, colorBgSub));
+		pDebugInfoFLFrameRateMain.TakeOverWith("FPS Main", colorText, colorBgSub);
 		pDebugInfoFrameLimiter->GetChildren().Add(pDebugInfoFLFrameRateMain);
 		
-		pDebugInfoFLFrameRateRender.TakeOver(new deoglDebugInformation("FPS Render", colorText, colorBgSub));
+		pDebugInfoFLFrameRateRender.TakeOverWith("FPS Render", colorText, colorBgSub);
 		pDebugInfoFrameLimiter->GetChildren().Add(pDebugInfoFLFrameRateRender);
 	
 	// below depends on capabilities being known
@@ -1136,7 +1136,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 #ifdef BACKEND_OPENGL
 	// load vulkan and create device if supported
 	try{
-		pVulkan.TakeOver(new deSharedVulkan(pOgl));
+		pVulkan.TakeOverWith(pOgl);
 		pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessGraphic(0);
 		// pVulkanDevice = pVulkan->GetInstance().CreateDeviceHeadlessComputeOnly( 0 );
 		
@@ -1180,7 +1180,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 			pVulkanDevice, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, dslSSBO));
 		
 		devkDescriptorSet::Ref dsSSBO;
-		VKTLOG(dsSSBO.TakeOver(new devkDescriptorSet(dpSSBO)), "DescriptorSet SSBO")
+		VKTLOG(dsSSBO.TakeOverWith(dpSSBO), "DescriptorSet SSBO")
 		
 		dsSSBO->SetBinding(0, bufferInput);
 		VKTLOG(dsSSBO->Update(), "DescriptorSet SSBO Update");
@@ -1242,8 +1242,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 		decBaseFileWriter::Ref::New(new decMemoryFileWriter(mfshader, false))->Write(test1_spv_data, sizeof(test1_spv_data));
 		
 		devkShaderModule::Ref shader;
-		VKTLOG(shader.TakeOver(new devkShaderModule(pVulkanDevice, "/shaders/vulkantest.spv",
-			decBaseFileReader::Ref::New(new decMemoryFileReader(mfshader)))), "LoadShader");
+		VKTLOG(shader.TakeOverWith(pVulkanDevice, "/shaders/vulkantest.spv",
+			decBaseFileReader::Ref::New(new decMemoryFileReader(mfshader))), "LoadShader");
 		
 		devkPipelineConfiguration pipelineConfig;
 		pipelineConfig.SetDescriptorSetLayout(dslSSBO);
@@ -1296,17 +1296,17 @@ void deoglRenderThread::pInitThreadPhase4(){
 		renPassConfig.SetSubPassAt(0, -1, 0);
 		
 		devkRenderPass::Ref renderPass;
-		VKTLOG(renderPass.TakeOver(new devkRenderPass(pVulkanDevice, renPassConfig)), "Create Render Pass")
+		VKTLOG(renderPass.TakeOverWith(pVulkanDevice, renPassConfig), "Create Render Pass")
 		
 		devkImageConfiguration imageConfig;
 		imageConfig.Set2D(decPoint(64, 32), VK_FORMAT_R8G8B8A8_UNORM);
 		imageConfig.EnableColorAttachment(true);
 		imageConfig.EnableTransferSource(true);
 		devkImage::Ref image;
-		VKTLOG(image.TakeOver(new devkImage(pVulkanDevice, imageConfig)), "Create Image")
+		VKTLOG(image.TakeOverWith(pVulkanDevice, imageConfig), "Create Image")
 		
 		devkImageView::Ref imageView;
-		VKTLOG(imageView.TakeOver(new devkImageView(image)), "Create Image View")
+		VKTLOG(imageView.TakeOverWith(image), "Create Image View")
 		
 		devkFramebufferConfiguration framebufferConfig;
 		framebufferConfig.SetAttachmentCount(1);
@@ -1314,7 +1314,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 		framebufferConfig.SetSize(decPoint(64, 32));
 		
 		devkFramebuffer::Ref framebuffer;
-		VKTLOG(framebuffer.TakeOver(new devkFramebuffer(renderPass, framebufferConfig)), "Create Framebuffer")
+		VKTLOG(framebuffer.TakeOverWith(renderPass, framebufferConfig), "Create Framebuffer")
 		
 		const uint32_t test2_vert_spv_data[] = {
 			0x07230203,0x00010000,0x0008000a,0x00000022,0x00000000,0x00020011,0x00000001,0x0006000b,
@@ -1378,8 +1378,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 		decBaseFileWriter::Ref::New(new decMemoryFileWriter(mfshader, false))->Write(test2_vert_spv_data, sizeof(test2_vert_spv_data));
 		
 		devkShaderModule::Ref shaderVert;
-		VKTLOG(shaderVert.TakeOver(new devkShaderModule(pVulkanDevice, "/shaders/vulkantest2_vert.spv",
-			decBaseFileReader::Ref::New(new decMemoryFileReader(mfshader)))), "LoadShader");
+		VKTLOG(shaderVert.TakeOverWith(pVulkanDevice, "/shaders/vulkantest2_vert.spv",
+			decBaseFileReader::Ref::New(new decMemoryFileReader(mfshader))), "LoadShader");
 		
 		const uint32_t test2_frag_spv_data[] = {
 			0x07230203,0x00010000,0x0008000a,0x00000014,0x00000000,0x00020011,0x00000001,0x0006000b,
@@ -1421,8 +1421,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 		decBaseFileWriter::Ref::New(new decMemoryFileWriter(mfshader, false))->Write(test2_frag_spv_data, sizeof(test2_frag_spv_data));
 		
 		devkShaderModule::Ref shaderFrag;
-		VKTLOG(shaderFrag.TakeOver(new devkShaderModule(pVulkanDevice, "/shaders/vulkantest2_frag.spv",
-			decBaseFileReader::Ref::New(new decMemoryFileReader(mfshader)))), "LoadShader");
+		VKTLOG(shaderFrag.TakeOverWith(pVulkanDevice, "/shaders/vulkantest2_frag.spv",
+			decBaseFileReader::Ref::New(new decMemoryFileReader(mfshader))), "LoadShader");
 		
 		struct sVertex{
 			struct{

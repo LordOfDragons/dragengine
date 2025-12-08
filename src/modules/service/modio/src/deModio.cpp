@@ -324,7 +324,7 @@ void deModio::pLoadConfigV0(decBaseFileReader &reader){
 	deModioUserConfig::Ref userConfig;
 	count = reader.ReadInt();
 	for(i=0; i<count; i++){
-		userConfig.TakeOver(new deModioUserConfig(*this, reader));
+		userConfig.TakeOverWith(*this, reader);
 		pUserConfigs.SetAt(userConfig->GetId(), userConfig);
 	}
 	
@@ -453,8 +453,8 @@ void deModio::pUpdateVFS(){
 		try{
 			LogInfoFormat("- %s: Add mod using path '%s' version '%s'", config.id.GetString(),
 				config.path.GetString(), config.releaseVersion.GetString());
-			vfsContainer.TakeOver(new deVFSDiskDirectory(rootPath,
-				decPath::CreatePathNative(config.path), true));
+			vfsContainer.TakeOverWith(rootPath,
+				decPath::CreatePathNative(config.path), true);
 			pVFSMods->AddContainer(vfsContainer);
 			
 			pActivateConfigs.Add(pModConfigs.GetAt(i));

@@ -66,7 +66,7 @@ pDecodeThread(NULL),
 
 pRVideoPlayer(NULL)
 {
-	pRVideoPlayer.TakeOver(new deoglRVideoPlayer(ogl.GetRenderThread()));
+	pRVideoPlayer.TakeOverWith(ogl.GetRenderThread());
 	
 	SourceChanged();
 }

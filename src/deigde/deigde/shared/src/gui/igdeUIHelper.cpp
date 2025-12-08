@@ -136,7 +136,7 @@ pEnvironment(helper.pEnvironment){
 
 void igdeUIHelper::SidePanel(igdeContainerScroll::Ref &scroll, igdeContainer::Ref &panel,
 bool stretchLast, int spacing){
-	scroll.TakeOver(new igdeContainerScroll(pEnvironment, false, true));
+	scroll.TakeOverWith(pEnvironment, false, true);
 	
 	panel.TakeOver(new igdeContainerFlow(pEnvironment, igdeContainerFlow::eaY,
 		stretchLast ? igdeContainerFlow::esLast : igdeContainerFlow::esNone, spacing));
@@ -1005,7 +1005,7 @@ igdeAction *action, bool takeOverAction){
 }
 
 void igdeUIHelper::Button(igdeButton::Ref &button, igdeAction *action, bool takeOverAction){
-	button.TakeOver(new igdeButton(pEnvironment, action));
+	button.TakeOverWith(pEnvironment, action);
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
@@ -1082,8 +1082,8 @@ const igdeUIHelper::sColumnHeader *headers, int headerCount, igdeIconListBoxList
 	
 	int i;
 	for(i=0; i<headerCount; i++){
-		realHeader.TakeOver(new igdeListHeader(headers[i].title,
-			headers[i].icon, headers[i].size));
+		realHeader.TakeOverWith(headers[i].title,
+			headers[i].icon, headers[i].size);
 		listBox.AddHeader(realHeader);
 	}
 	
@@ -1216,7 +1216,7 @@ void igdeUIHelper::Spacer(igdeContainer &parent, const decPoint &size){
 }
 
 void igdeUIHelper::Spacer(igdeContainer &parent, const decPoint &size, igdeSpacer::Ref &spacer){
-	spacer.TakeOver(new igdeSpacer(pEnvironment, size));
+	spacer.TakeOverWith(pEnvironment, size);
 	parent.AddChild(spacer);
 }
 
@@ -1237,7 +1237,7 @@ igdeAction *action, const char *title, bool stretchLast, bool collapsed, bool ta
 }
 
 void igdeUIHelper::WPSky(igdeWPSky::Ref &panel, igdeAction *action, bool takeOverAction){
-	panel.TakeOver(new igdeWPSky(pEnvironment, action));
+	panel.TakeOverWith(pEnvironment, action);
 	if(takeOverAction && action){
 		action->FreeReference();
 	}

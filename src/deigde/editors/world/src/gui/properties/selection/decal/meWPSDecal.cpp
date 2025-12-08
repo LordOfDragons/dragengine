@@ -473,7 +473,7 @@ pWorld(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOver(new meWPSDecalListener(*this));
+	pListener.TakeOverWith(*this);
 	
 	pActionPropCopyToSel.TakeOver(new cActionPropCopyToSel(*this));
 	pActionPropRemoveFromSel.TakeOver(new cActionPropRemoveFromSel(*this));

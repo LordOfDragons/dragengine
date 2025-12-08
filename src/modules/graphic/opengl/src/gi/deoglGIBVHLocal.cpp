@@ -55,11 +55,11 @@ pTBOTexCoord(NULL),
 pBlockUsageCount(0)
 {
 	try{
-		pTBONodeBox.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
-		pTBOIndex.TakeOver(new deoglDynamicTBOUInt16(renderThread, 2));
-		pTBOFace.TakeOver(new deoglDynamicTBOUInt16(renderThread, 4));
-		pTBOVertex.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
-		pTBOTexCoord.TakeOver(new deoglDynamicTBOFloat16(renderThread, 2));
+		pTBONodeBox.TakeOverWith(renderThread, 4);
+		pTBOIndex.TakeOverWith(renderThread, 2);
+		pTBOFace.TakeOverWith(renderThread, 4);
+		pTBOVertex.TakeOverWith(renderThread, 4);
+		pTBOTexCoord.TakeOverWith(renderThread, 2);
 		
 	}catch(const deException &){
 		pCleanUp();

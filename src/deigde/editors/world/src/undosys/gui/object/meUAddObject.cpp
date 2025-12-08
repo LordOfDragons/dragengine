@@ -71,7 +71,7 @@ meUAddObject::meUAddObject(meWorld *world, const decDVector &position, const cha
 		pWorld = world;
 		world->AddReference();
 		
-		pObject.TakeOver(new meObject(world->GetEnvironment()));
+		pObject.TakeOverWith(world->GetEnvironment());
 		pObject->SetPosition(position);
 		pObject->SetSize(decVector(0.5f, 0.5f, 0.5f));
 		pObject->SetClassName(classname);

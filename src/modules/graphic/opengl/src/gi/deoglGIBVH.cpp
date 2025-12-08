@@ -93,11 +93,11 @@ pRenderTaskMaterial(renderThread),
 pDirty(true)
 {
 	try{
-		pTBOInstance.TakeOver(new deoglDynamicTBOUInt32(renderThread, 4));
-		pTBOMatrix.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
+		pTBOInstance.TakeOverWith(renderThread, 4);
+		pTBOMatrix.TakeOverWith(renderThread, 4);
 		
-		pBVHTBONodeBox.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
-		pBVHTBOIndex.TakeOver(new deoglDynamicTBOUInt16(renderThread, 2));
+		pBVHTBONodeBox.TakeOverWith(renderThread, 4);
+		pBVHTBOIndex.TakeOverWith(renderThread, 2);
 		
 	}catch(const deException &){
 		pCleanUp();

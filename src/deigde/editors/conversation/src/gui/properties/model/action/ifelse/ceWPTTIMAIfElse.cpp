@@ -56,7 +56,7 @@ pElse(NULL)
 	SetText("If-Else");
 	
 	try{
-		pElse.TakeOver(new ceWPTTIMAIfElseElse(windowMain, conversation, action->GetElseActions()));
+		pElse.TakeOverWith(windowMain, conversation, action->GetElseActions());
 		AddChild(pElse);
 		
 	}catch(const deException &){

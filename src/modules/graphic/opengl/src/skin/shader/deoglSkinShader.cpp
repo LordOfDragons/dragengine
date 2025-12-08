@@ -1461,7 +1461,7 @@ void deoglSkinShader::GenerateShader(cShaderPreparedListener *listener){
 		InitShaderParameters();
 		
 		// create shader
-		pShader.TakeOver(new deoglShaderProgram(pRenderThread, pSources, defines));
+		pShader.TakeOverWith(pRenderThread, pSources, defines);
 		smgr.ResolveProgramUnits(pShader);
 		
 		// cache id

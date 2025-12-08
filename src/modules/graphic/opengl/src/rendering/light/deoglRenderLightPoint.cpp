@@ -397,81 +397,81 @@ pVAOCopyShadow(nullptr)
 		const decColor colorBgSub2(0.1f, 0.1f, 0.1f, 0.75f);
 		const decColor colorBgSub3(0.15f, 0.15f, 0.15f, 0.75f);
 		
-		pDebugInfoSolid.TakeOver(new deoglDebugInformation("Point", colorText, colorBgUp));
-		pDebugInfoTransparent.TakeOver(new deoglDebugInformation("Point", colorText, colorBgUp));
+		pDebugInfoSolid.TakeOverWith("Point", colorText, colorBgUp);
+		pDebugInfoTransparent.TakeOverWith("Point", colorText, colorBgUp);
 		
 		
 		
-		pDebugInfoSolidDetail.TakeOver(new deoglDebugInformation("Light Point Solid", colorText, colorBg));
+		pDebugInfoSolidDetail.TakeOverWith("Light Point Solid", colorText, colorBg);
 		
-		pDebugInfoSolidShadow.TakeOver(new deoglDebugInformation("Shadow", colorText, colorBgSub));
+		pDebugInfoSolidShadow.TakeOverWith("Shadow", colorText, colorBgSub);
 		pDebugInfoSolidDetail->GetChildren().Add(pDebugInfoSolidShadow);
 		
-		pDebugInfoSolidShadowClear.TakeOver(new deoglDebugInformation("Clear", colorText, colorBgSub2));
+		pDebugInfoSolidShadowClear.TakeOverWith("Clear", colorText, colorBgSub2);
 		pDebugInfoSolidShadow->GetChildren().Add(pDebugInfoSolidShadowClear);
 		
-		pDebugInfoSolidShadowClearTransp.TakeOver(new deoglDebugInformation("Clear Transp", colorText, colorBgSub2));
+		pDebugInfoSolidShadowClearTransp.TakeOverWith("Clear Transp", colorText, colorBgSub2);
 		pDebugInfoSolidShadow->GetChildren().Add(pDebugInfoSolidShadowClearTransp);
 		
-		pDebugInfoSolidShadowFace.TakeOver(new deoglDebugInformation("Face", colorText, colorBgSub2));
+		pDebugInfoSolidShadowFace.TakeOverWith("Face", colorText, colorBgSub2);
 		pDebugInfoSolidShadow->GetChildren().Add(pDebugInfoSolidShadowFace);
 		
-		pDebugInfoSolidShadowFaceClear.TakeOver(new deoglDebugInformation("Clear", colorText, colorBgSub3));
+		pDebugInfoSolidShadowFaceClear.TakeOverWith("Clear", colorText, colorBgSub3);
 		pDebugInfoSolidShadowFace->GetChildren().Add(pDebugInfoSolidShadowFaceClear);
 		
-		pDebugInfoSolidShadowFaceTask.TakeOver(new deoglDebugInformation("Task", colorText, colorBgSub3));
+		pDebugInfoSolidShadowFaceTask.TakeOverWith("Task", colorText, colorBgSub3);
 		pDebugInfoSolidShadowFace->GetChildren().Add(pDebugInfoSolidShadowFaceTask);
 		
-		pDebugInfoSolidShadowFaceRender.TakeOver(new deoglDebugInformation("Render", colorText, colorBgSub3));
+		pDebugInfoSolidShadowFaceRender.TakeOverWith("Render", colorText, colorBgSub3);
 		pDebugInfoSolidShadowFace->GetChildren().Add(pDebugInfoSolidShadowFaceRender);
 		
-		pDebugInfoSolidShadowFaceTranspClear.TakeOver(new deoglDebugInformation("Transp Clear", colorText, colorBgSub3));
+		pDebugInfoSolidShadowFaceTranspClear.TakeOverWith("Transp Clear", colorText, colorBgSub3);
 		pDebugInfoSolidShadowFace->GetChildren().Add(pDebugInfoSolidShadowFaceTranspClear);
 		
-		pDebugInfoSolidShadowFaceTranspTask.TakeOver(new deoglDebugInformation("Transp Task", colorText, colorBgSub3));
+		pDebugInfoSolidShadowFaceTranspTask.TakeOverWith("Transp Task", colorText, colorBgSub3);
 		pDebugInfoSolidShadowFace->GetChildren().Add(pDebugInfoSolidShadowFaceTranspTask);
 		
-		pDebugInfoSolidShadowFaceTranspRender.TakeOver(new deoglDebugInformation("Transp Render", colorText, colorBgSub3));
+		pDebugInfoSolidShadowFaceTranspRender.TakeOverWith("Transp Render", colorText, colorBgSub3);
 		pDebugInfoSolidShadowFace->GetChildren().Add(pDebugInfoSolidShadowFaceTranspRender);
 		
-		pDebugInfoSolidLight.TakeOver(new deoglDebugInformation("Light", colorText, colorBgSub));
+		pDebugInfoSolidLight.TakeOverWith("Light", colorText, colorBgSub);
 		pDebugInfoSolidDetail->GetChildren().Add(pDebugInfoSolidLight);
 		
 		
 		
-		pDebugInfoTransparentDetail.TakeOver(new deoglDebugInformation("Light Point Transp", colorText, colorBg));
+		pDebugInfoTransparentDetail.TakeOverWith("Light Point Transp", colorText, colorBg);
 		
-		pDebugInfoTransparentShadow.TakeOver(new deoglDebugInformation("Shadow", colorText, colorBgSub));
+		pDebugInfoTransparentShadow.TakeOverWith("Shadow", colorText, colorBgSub);
 		pDebugInfoTransparentDetail->GetChildren().Add(pDebugInfoTransparentShadow);
 		
-		pDebugInfoTransparentShadowClear.TakeOver(new deoglDebugInformation("Clear", colorText, colorBgSub2));
+		pDebugInfoTransparentShadowClear.TakeOverWith("Clear", colorText, colorBgSub2);
 		pDebugInfoTransparentShadow->GetChildren().Add(pDebugInfoTransparentShadowClear);
 		
-		pDebugInfoTransparentShadowClearTransp.TakeOver(new deoglDebugInformation("Clear Transp", colorText, colorBgSub2));
+		pDebugInfoTransparentShadowClearTransp.TakeOverWith("Clear Transp", colorText, colorBgSub2);
 		pDebugInfoTransparentShadow->GetChildren().Add(pDebugInfoTransparentShadowClearTransp);
 		
-		pDebugInfoTransparentShadowFace.TakeOver(new deoglDebugInformation("Face", colorText, colorBgSub2));
+		pDebugInfoTransparentShadowFace.TakeOverWith("Face", colorText, colorBgSub2);
 		pDebugInfoTransparentShadow->GetChildren().Add(pDebugInfoTransparentShadowFace);
 		
-		pDebugInfoTransparentShadowFaceClear.TakeOver(new deoglDebugInformation("Clear", colorText, colorBgSub3));
+		pDebugInfoTransparentShadowFaceClear.TakeOverWith("Clear", colorText, colorBgSub3);
 		pDebugInfoTransparentShadowFace->GetChildren().Add(pDebugInfoTransparentShadowFaceClear);
 		
-		pDebugInfoTransparentShadowFaceTask.TakeOver(new deoglDebugInformation("Task", colorText, colorBgSub3));
+		pDebugInfoTransparentShadowFaceTask.TakeOverWith("Task", colorText, colorBgSub3);
 		pDebugInfoTransparentShadowFace->GetChildren().Add(pDebugInfoTransparentShadowFaceTask);
 		
-		pDebugInfoTransparentShadowFaceRender.TakeOver(new deoglDebugInformation("Render", colorText, colorBgSub3));
+		pDebugInfoTransparentShadowFaceRender.TakeOverWith("Render", colorText, colorBgSub3);
 		pDebugInfoTransparentShadowFace->GetChildren().Add(pDebugInfoTransparentShadowFaceRender);
 		
-		pDebugInfoTransparentShadowFaceTranspClear.TakeOver(new deoglDebugInformation("Transp Clear", colorText, colorBgSub3));
+		pDebugInfoTransparentShadowFaceTranspClear.TakeOverWith("Transp Clear", colorText, colorBgSub3);
 		pDebugInfoTransparentShadowFace->GetChildren().Add(pDebugInfoTransparentShadowFaceTranspClear);
 		
-		pDebugInfoTransparentShadowFaceTranspTask.TakeOver(new deoglDebugInformation("Transp Task", colorText, colorBgSub3));
+		pDebugInfoTransparentShadowFaceTranspTask.TakeOverWith("Transp Task", colorText, colorBgSub3);
 		pDebugInfoTransparentShadowFace->GetChildren().Add(pDebugInfoTransparentShadowFaceTranspTask);
 		
-		pDebugInfoTransparentShadowFaceTranspRender.TakeOver(new deoglDebugInformation("Transp Render", colorText, colorBgSub3));
+		pDebugInfoTransparentShadowFaceTranspRender.TakeOverWith("Transp Render", colorText, colorBgSub3);
 		pDebugInfoTransparentShadowFace->GetChildren().Add(pDebugInfoTransparentShadowFaceTranspRender);
 		
-		pDebugInfoTransparentLight.TakeOver(new deoglDebugInformation("Light", colorText, colorBgSub));
+		pDebugInfoTransparentLight.TakeOverWith("Light", colorText, colorBgSub);
 		pDebugInfoTransparentDetail->GetChildren().Add(pDebugInfoTransparentLight);
 		
 	}catch(const deException &){

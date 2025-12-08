@@ -62,7 +62,7 @@ void deoglSkinStateConstructed::SetProperty(deoglSkinConstructedProperty *proper
 	}
 	
 	pProperty = property;
-	pContent.TakeOver(new deoglSkinStateCNGroup(property->GetContent()));
+	pContent.TakeOverWith(property->GetContent());
 }
 
 void deoglSkinStateConstructed::Update(deoglSkinState &skinState){
@@ -125,8 +125,8 @@ void deoglSkinStateConstructed::pPrepareRenderTarget(deoglSkinState &skinState){
 		return;
 	}
 	
-	pRenderTarget.TakeOver(new deoglRenderTarget(
-		skinState.GetRenderThread(), size, 3, pProperty->GetBitCount()));
+	pRenderTarget.TakeOverWith(
+		skinState.GetRenderThread(), size, 3, pProperty->GetBitCount());
 	
 	pRenderTarget->PrepareTexture();
 	pRenderTarget->PrepareFramebuffer();

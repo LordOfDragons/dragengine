@@ -322,8 +322,8 @@ public:
 		const decVector2 addNodePosition(decVector2(position - pView.GetSize() / 2)
 			* pView.GetPixelToUnits() - pView.GetVLayer()->GetViewCenter() );
 		
-		subMenu.TakeOver(new igdeMenuCascade(env, "Add Node",
-			env.GetStockIcon(igdeEnvironment::esiPlus), "Add Node"));
+		subMenu.TakeOverWith(env, "Add Node",
+			env.GetStockIcon(igdeEnvironment::esiPlus), "Add Node");
 		menu.AddChild(subMenu);
 		
 		subMenu2.TakeOver(new igdeMenuCascade(env, "Input", NULL, "Input"));
@@ -445,7 +445,7 @@ pVLayer(NULL),
 pUnitsToPixel(igdeApplication::app().DisplayScaled(100.0f)),
 pPixelToUnits(1.0f / pUnitsToPixel)
 {
-	pListener.TakeOver(new meWindowVegetationListener(*this));
+	pListener.TakeOverWith(*this);
 	AddListener(new cBoardListener(*this));
 }
 

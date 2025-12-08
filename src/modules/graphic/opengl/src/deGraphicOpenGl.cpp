@@ -263,7 +263,7 @@ bool deGraphicOpenGl::Init(deRenderWindow *renderWindow){
 		pRenderThread->Init(renderWindow);
 		
 		pOverlay.TakeOver(GetGameEngine()->GetCanvasManager()->CreateCanvasView());
-		pShaderCompilingInfo.TakeOver(new deoglShaderCompilingInfo(*this));
+		pShaderCompilingInfo.TakeOverWith(*this);
 		
 	}catch(const deException &e){
 		e.PrintError();

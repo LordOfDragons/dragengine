@@ -46,7 +46,7 @@
 ////////////////////////////
 
 igdeGDSkinManager::igdeGDSkinManager(){
-	pCategories.TakeOver(new igdeGDCategory("Skins"));
+	pCategories.TakeOverWith("Skins");
 }
 
 igdeGDSkinManager::~igdeGDSkinManager(){

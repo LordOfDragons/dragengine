@@ -159,7 +159,7 @@ pWindowMain(windowMain)
 		pSky->SetWorld(pEngWorld);
 		
 		// create the environment wrapper object
-		pEnvObject.TakeOver(new igdeWObject(windowMain.GetEnvironment()));
+		pEnvObject.TakeOverWith(windowMain.GetEnvironment());
 		pEnvObject->SetWorld(pEngWorld);
 		pEnvObject->SetPosition(decDVector(0.0, 0.0, 0.0));
 		

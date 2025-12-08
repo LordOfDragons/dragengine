@@ -268,7 +268,7 @@ void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDe
 	const char *scaleMode;
 	int i;
 	
-	gdClass.TakeOver(new igdeGDClass(GetAttributeString(root, "name")));
+	gdClass.TakeOverWith(GetAttributeString(root, "name"));
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);

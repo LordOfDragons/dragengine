@@ -251,8 +251,8 @@ void deRLTaskReadSkinInternal::pPrepare(){
 	const decPath path(decPath::CreatePathUnix(GetPath()));
 	
 	try{
-		pSkin.TakeOver(new deSkin(GetEngine().GetSkinManager(), GetVFS(), GetPath(),
-			GetVFS()->GetFileModificationTime(path)));
+		pSkin.TakeOverWith(GetEngine().GetSkinManager(), GetVFS(), GetPath(),
+			GetVFS()->GetFileModificationTime(path));
 		pSkin->SetAsynchron(true);
 		
 		module->LoadSkin(decBaseFileReader::Ref::New(GetVFS()->OpenFileForReading(path)), pSkin);

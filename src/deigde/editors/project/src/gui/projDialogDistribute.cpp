@@ -70,8 +70,8 @@ pSuccess(true)
 	igdeUIHelper &helper = env.GetUIHelper();
 	
 	
-	pActionShowInFSManager.TakeOver(new igdeActionExternOpen(env, "Show in File Manager",
-		env.GetStockIcon(igdeEnvironment::esiOpen), "Show DELGA file in File Manager"));
+	pActionShowInFSManager.TakeOverWith(env, "Show in File Manager",
+		env.GetStockIcon(igdeEnvironment::esiOpen), "Show DELGA file in File Manager");
 	
 	
 	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::NewWith(

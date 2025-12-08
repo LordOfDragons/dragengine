@@ -242,8 +242,8 @@ pRecheckDynamic(false)
 	deoglRenderThread &renderThread = instances.GetGIState().GetRenderThread();
 	
 	try{
-		pTBOMaterial.TakeOver(new deoglDynamicTBOUInt32(renderThread, 4));
-		pTBOMaterial2.TakeOver(new deoglDynamicTBOFloat16(renderThread, 4));
+		pTBOMaterial.TakeOverWith(renderThread, 4);
+		pTBOMaterial2.TakeOverWith(renderThread, 4);
 		
 	}catch(const deException &){
 		pCleanUp();

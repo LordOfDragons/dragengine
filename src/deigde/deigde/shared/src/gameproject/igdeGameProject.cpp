@@ -60,9 +60,9 @@ pPathData("data"),
 pPathCache("cache"),
 pPathLocal("local")
 {
-	pGameDefinition.TakeOver(new igdeGameDefinition(environment));
-	pXMLEClassGameDefinition.TakeOver(new igdeGameDefinition(environment));
-	pFoundGameDefinition.TakeOver(new igdeGameDefinition(environment));
+	pGameDefinition.TakeOverWith(environment);
+	pXMLEClassGameDefinition.TakeOverWith(environment);
+	pFoundGameDefinition.TakeOverWith(environment);
 }
 
 igdeGameProject::~igdeGameProject(){
@@ -143,7 +143,7 @@ void igdeGameProject::MergeGameDefinitions(){
 	
 	try{
 		// merge game definition
-		merged.TakeOver(new igdeGameDefinition(pEnvironment));
+		merged.TakeOverWith(pEnvironment);
 		
 		merged->UpdateWith(*pEnvironment.GetGameDefinition());
 		for(i=0; i<baseGameDefCount; i++){

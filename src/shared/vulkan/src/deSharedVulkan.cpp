@@ -45,7 +45,7 @@ pCachePath(decPath::CreatePathUnix("/cache/local/vulkan"))
 {
 	try{
 		pLoader = new devkLoader(*this);
-		pInstance.TakeOver(new devkInstance(*this, enableDebug));
+		pInstance.TakeOverWith(*this, enableDebug);
 		
 	}catch(const deException &){
 		pCleanUp();

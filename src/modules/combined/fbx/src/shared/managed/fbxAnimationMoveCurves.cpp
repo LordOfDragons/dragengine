@@ -67,13 +67,13 @@ pRigBone(NULL)
 			fbxNode &node = *move.GetAnimation().GetScene().NodeWithID(connection.GetSource());
 			if(node.GetName() == "AnimationCurve"){
 				if(connection.GetProperty() == "d|X"){
-					pCurveX.TakeOver(new fbxAnimationCurve(node));
+					pCurveX.TakeOverWith(node);
 					
 				}else if(connection.GetProperty() == "d|Y"){
-					pCurveY.TakeOver(new fbxAnimationCurve(node));
+					pCurveY.TakeOverWith(node);
 					
 				}else if(connection.GetProperty() == "d|Z"){
-					pCurveZ.TakeOver(new fbxAnimationCurve(node));
+					pCurveZ.TakeOverWith(node);
 				}
 			}
 			

@@ -172,7 +172,7 @@ igdeTreeItem *igdeTreeList::AppendItem(igdeTreeItem *parent, const char *text, i
 
 void igdeTreeList::AppendItem(igdeTreeItem *parent, igdeTreeItem::Ref &item,
 const char *text, igdeIcon *icon, void *data){
-	item.TakeOver(new igdeTreeItem(text, icon, data));
+	item.TakeOverWith(text, icon, data);
 	AppendItem(parent, item);
 }
 
@@ -198,7 +198,7 @@ igdeIcon *icon, void *data){
 
 void igdeTreeList::InsertItemBefore(igdeTreeItem *beforeItem, igdeTreeItem::Ref &item,
 const char *text, igdeIcon *icon, void *data){
-	item.TakeOver(new igdeTreeItem(text, icon, data));
+	item.TakeOverWith(text, icon, data);
 	InsertItemBefore(beforeItem, item);
 }
 
@@ -224,7 +224,7 @@ igdeIcon *icon, void *data){
 
 void igdeTreeList::InsertItemAfter(igdeTreeItem *afterItem, igdeTreeItem::Ref &item,
 const char *text, igdeIcon *icon, void *data){
-	item.TakeOver(new igdeTreeItem(text, icon, data));
+	item.TakeOverWith(text, icon, data);
 	InsertItemAfter(afterItem, item);
 }
 

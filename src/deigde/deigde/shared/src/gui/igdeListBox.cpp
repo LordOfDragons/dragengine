@@ -198,7 +198,7 @@ void igdeListBox::AddItem(const char *text, igdeIcon *icon, void *data){
 }
 
 void igdeListBox::AddItem(igdeListItem::Ref &item, const char *text, igdeIcon *icon, void *data){
-	item.TakeOver(new igdeListItem(text, icon, data));
+	item.TakeOverWith(text, icon, data);
 	AddItem(item);
 }
 
@@ -226,7 +226,7 @@ void igdeListBox::InsertItem(int index, const char *text, igdeIcon *icon, void *
 
 void igdeListBox::InsertItem(igdeListItem::Ref &item, int index, const char *text,
 igdeIcon *icon, void *data){
-	item.TakeOver(new igdeListItem(text, icon, data));
+	item.TakeOverWith(text, icon, data);
 	InsertItem(index, item);
 }
 

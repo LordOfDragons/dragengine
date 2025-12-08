@@ -127,13 +127,13 @@ const char *caption, deImage &image, void *userPointer){
 	
 	igdeIcon::Ref icon;
 	if(image.GetWidth() > image.GetHeight()){
-		icon.TakeOver(new igdeIcon(image, pSize, pSize * image.GetHeight() / image.GetWidth()));
+		icon.TakeOverWith(image, pSize, pSize * image.GetHeight() / image.GetWidth());
 		
 	}else{
-		icon.TakeOver(new igdeIcon(image, pSize * image.GetWidth() / image.GetHeight(), pSize));
+		icon.TakeOverWith(image, pSize * image.GetWidth() / image.GetHeight(), pSize);
 	}
 	
-	item.TakeOver(new igdeListItem(text, icon, userPointer));
+	item.TakeOverWith(text, icon, userPointer);
 	pIconListBox->AddItem(item);
 }
 

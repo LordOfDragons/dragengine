@@ -215,7 +215,7 @@ pWOAsyncFinished(*this)
 	pAttachedTo = nullptr;
 	
 	try{
-		pWObject.TakeOver(new igdeWObject(*environment));
+		pWObject.TakeOverWith(*environment);
 		
 		// collision filter
 		decLayerMask collisionCategory;
