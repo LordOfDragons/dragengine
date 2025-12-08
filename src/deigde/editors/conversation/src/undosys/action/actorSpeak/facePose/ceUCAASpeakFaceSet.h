@@ -38,12 +38,12 @@ class ceStrip;
  */
 class ceUCAASpeakFaceSet : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pFacePose;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pFacePose;
 	
-	ceStrip *pOldStrip;
-	ceStrip *pNewStrip;
+	ceStrip::Ref pOldStrip;
+	ceStrip::Ref pNewStrip;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakFaceSet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *facePose, ceStrip *newStrip);
+	ceUCAASpeakFaceSet(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref facePose, ceStrip::Ref newStrip);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakFaceSet();

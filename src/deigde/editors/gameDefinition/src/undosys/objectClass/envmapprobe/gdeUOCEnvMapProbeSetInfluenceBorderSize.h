@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCEnvMapProbeSetInfluenceBorderSize : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	float pOldValue;
 	float pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetInfluenceBorderSize(gdeObjectClass *objectClass,
+	gdeUOCEnvMapProbeSetInfluenceBorderSize(gdeObjectClass::Ref objectClass,
 		gdeOCEnvMapProbe *component, float newValue);
 	
 protected:

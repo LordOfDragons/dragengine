@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetPath::gdeUOCParticleEmitterSetPath(gdeObjectClass *objectClass,
-gdeOCParticleEmitter *particleEmitter, const char *newValue) :
-pObjectClass(NULL),
+gdeUOCParticleEmitterSetPath::gdeUOCParticleEmitterSetPath(gdeObjectClass::Ref objectClass,
+gdeOCParticleEmitter::Ref particleEmitter, const char *newValue) :
+
 pParticleEmitter(NULL)
 {
 	if(!objectClass || !particleEmitter){
@@ -55,19 +55,10 @@ pParticleEmitter(NULL)
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCParticleEmitterSetPath::~gdeUOCParticleEmitterSetPath(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

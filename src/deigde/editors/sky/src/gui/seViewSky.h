@@ -40,7 +40,7 @@ class seViewSky : public igdeViewRenderWindow{
 private:
 	seWindowMain &pWindowMain;
 	
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	igdeMouseCameraListener::Ref pCameraInteraction;
 	
@@ -72,7 +72,7 @@ public:
 	inline seSky *GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
-	void SetSky(seSky *sky);
+	void SetSky(seSky::Ref sky);
 	
 	/** \brief Game like frame update. */
 	virtual void OnFrameUpdate(float elapsed);

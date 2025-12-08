@@ -37,8 +37,8 @@ class meWPUndoHistoryListener;
  */
 class meWPUndoHistory : public igdeWPUndoHistory{
 private:
-	meWorld *pWorld;
-	meWPUndoHistoryListener *pListener;
+	meWorld::Ref pWorld;
+	meWPUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -62,7 +62,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld(meWorld *world);
+	void SetWorld(meWorld::Ref world);
 	/*@}*/
 };
 

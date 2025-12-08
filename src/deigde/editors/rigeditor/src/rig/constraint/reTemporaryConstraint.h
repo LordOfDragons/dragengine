@@ -45,7 +45,7 @@ class deEngine;
  */
 class reTemporaryConstraint{
 private:
-	deColliderComponent *pEngSimCollider;
+	deColliderComponent::Ref pEngSimCollider;
 	deColliderConstraint *pEngConstraint;
 	
 	decDVector pPosition;

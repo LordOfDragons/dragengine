@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetPathPFCache::meUHTSetPathPFCache(meWorld *world, meHeightTerrainSector *sector, const char *newPath){
+meUHTSetPathPFCache::meUHTSetPathPFCache(meWorld::Ref world, meHeightTerrainSector *sector, const char *newPath){
 	if(!world || !sector || !newPath) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
@@ -51,8 +51,6 @@ meUHTSetPathPFCache::meUHTSetPathPFCache(meWorld *world, meHeightTerrainSector *
 	pNewPath = newPath;
 	
 	SetShortInfo("Set Height Terrain Prop Field Cache Path");
-	
-	world->AddReference();
 }
 
 meUHTSetPathPFCache::~meUHTSetPathPFCache(){

@@ -96,7 +96,6 @@ void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 	pEngAnimatorInstance->SetAnimation(NULL);
 	
 	if(pEngAnimator){
-		pEngAnimator->FreeReference();
 		pEngAnimator = NULL;
 	}
 	
@@ -107,8 +106,8 @@ void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 	
 	deAnimatorController *engController = NULL;
 	deAnimatorLink *engLink = NULL;
-	deAnimatorRule *engRule = NULL;
-	aeAnimator *animator = NULL;
+	deAnimatorRule::Ref engRule = NULL;
+	aeAnimator::Ref animator = NULL;
 	int i;
 	
 	pEngine->GetLogger()->LogInfoFormat("Animator Editor",
@@ -163,29 +162,19 @@ void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 		for(i=0; i<ruleCount; i++){
 			engRule = animator->GetRules().GetAt(i)->CreateEngineRule();
 			pEngAnimator->AddRule(engRule);
-			engRule->FreeReference();
 			engRule = NULL;
 		}
 		
 		// free the loaded animator as it is no more needed
-		animator->FreeReference();
-		
 	}catch(const deException &e){
 		pEngine->GetLogger()->LogException("Animator Editor", e);
-		if(engRule){
-			engRule->FreeReference();
-		}
 		if(engLink){
 			delete engLink;
 		}
 		if(engController){
 			delete engController;
 		}
-		if(animator){
-			animator->FreeReference();
-		}
 		if(pEngAnimator){
-			pEngAnimator->FreeReference();
 			pEngAnimator = NULL;
 		}
 	}
@@ -250,15 +239,10 @@ void aeSubAnimator::AddRuleSS(){
 	deAnimatorRuleStateSnapshot *engRule = NULL;
 	
 	try{
-		engRule = new deAnimatorRuleStateSnapshot;
+		engRule.TakeOver(new deAnimatorRuleStateSnapshot);
 		engRule->SetUseLastState(true);
 		pEngAnimator->AddRule(engRule);
-		engRule->FreeReference();
-		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 }
@@ -268,7 +252,7 @@ const char *solverBone, int linkBlendFactor){
 	deAnimatorRuleInverseKinematic *engRule = NULL;
 	
 	try{
-		engRule = new deAnimatorRuleInverseKinematic;
+		engRule.TakeOver(new deAnimatorRuleInverseKinematic);
 		if(!engRule) DETHROW(deeOutOfMemory);
 		
 		engRule->SetLocalPosition(localPosition);
@@ -283,12 +267,7 @@ const char *solverBone, int linkBlendFactor){
 		}
 		
 		pEngAnimator->AddRule(engRule);
-		engRule->FreeReference();
-		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 }
@@ -365,12 +344,10 @@ void aeSubAnimator::pCleanUp(){
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetAnimator(NULL);
 		pEngAnimatorInstance->SetComponent(NULL);
-		pEngAnimatorInstance->FreeReference();
 	}
 	
 	if(pEngAnimator){
 		pEngAnimator->SetRig(NULL);
 		pEngAnimator->SetAnimation(NULL);
-		pEngAnimator->FreeReference();
 	}
 }

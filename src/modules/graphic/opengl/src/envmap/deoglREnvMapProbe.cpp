@@ -136,12 +136,10 @@ pDirtyOctreeNode(true),
 
 pInfluenceBorderSize(0.0f),
 
-pEnvMap(NULL),
-
 pWorldMarkedRemove(false)
 {
 	try{
-		pEnvMap = new deoglEnvironmentMap(renderThread);
+		pEnvMap.TakeOver(new deoglEnvironmentMap(renderThread));
 		pEnvMap->SetSize(renderThread.GetConfiguration().GetEnvMapSize());
 		pEnvMap->SetIsFloat(true);
 		pEnvMap->SetSkyOnly(false);
@@ -259,8 +257,4 @@ void deoglREnvMapProbe::SetWorldMarkedRemove(bool marked){
 
 void deoglREnvMapProbe::pCleanUp(){
 	SetParentWorld(NULL);
-	
-	if(pEnvMap){
-		pEnvMap->FreeReference();
-	}
 }

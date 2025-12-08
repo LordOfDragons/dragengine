@@ -37,7 +37,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeData : public deObject{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	decPoint3 pPosition;
 	decPoint3 pSize;
 	float pRotation;
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeData(sePropertyNode *node);
+	seUPropertyNodeData(sePropertyNode::Ref node);
 	
 protected:
 	/** \brief Clean up undo. */

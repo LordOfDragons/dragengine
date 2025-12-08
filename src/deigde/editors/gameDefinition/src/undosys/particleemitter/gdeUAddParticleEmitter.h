@@ -38,8 +38,8 @@ class gdeParticleEmitter;
  */
 class gdeUAddParticleEmitter : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeParticleEmitter *pParticleEmitter;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeParticleEmitter::Ref pParticleEmitter;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUAddParticleEmitter(gdeGameDefinition *gameDefinition, gdeParticleEmitter *particleEmitter);
+	gdeUAddParticleEmitter(gdeGameDefinition::Ref gameDefinition, gdeParticleEmitter::Ref particleEmitter);
 	
 protected:
 	/** \brief Clean up undo action. */

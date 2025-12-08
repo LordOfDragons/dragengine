@@ -41,9 +41,8 @@
 ////////////////////////////
 
 gdeUCategorySetDescription::gdeUCategorySetDescription(gdeGameDefinition *gameDefinition,
-gdeCategory *category, eCategoryType type, const char *newValue) :
-gdeUCategoryBase(gameDefinition, type),
-pCategory(NULL)
+gdeCategory::Ref category, eCategoryType type, const char *newValue) :
+gdeUCategoryBase(gameDefinition, type)
 {
 	if(!category){
 		DETHROW(deeInvalidParam);
@@ -55,13 +54,9 @@ pCategory(NULL)
 	pNewValue = newValue;
 	
 	pCategory = category;
-	category->AddReference();
 }
 
 gdeUCategorySetDescription::~gdeUCategorySetDescription(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
 }
 
 

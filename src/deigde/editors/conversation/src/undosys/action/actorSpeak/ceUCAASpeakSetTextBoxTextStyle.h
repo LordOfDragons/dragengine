@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakSetTextBoxTextStyle : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	decString pOldStyle;
 	decString pNewStyle;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakSetTextBoxTextStyle(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newText);
+	ceUCAASpeakSetTextBoxTextStyle(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, const char *newText);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakSetTextBoxTextStyle();

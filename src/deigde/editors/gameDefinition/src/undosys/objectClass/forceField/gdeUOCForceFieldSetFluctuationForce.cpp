@@ -41,8 +41,8 @@
 ////////////////////////////
 
 gdeUOCForceFieldSetFluctuationForce::gdeUOCForceFieldSetFluctuationForce(
-gdeObjectClass *objectClass, gdeOCForceField *forceField, float newValue) :
-pObjectClass(NULL),
+gdeObjectClass::Ref objectClass, gdeOCForceField::Ref forceField, float newValue) :
+
 pForceField(NULL)
 {
 	if(!objectClass || !forceField){
@@ -55,19 +55,10 @@ pForceField(NULL)
 	pNewValue = newValue;
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCForceFieldSetFluctuationForce::~gdeUOCForceFieldSetFluctuationForce(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

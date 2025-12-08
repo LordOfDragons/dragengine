@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetPosition::gdeUOCLightSetPosition(gdeObjectClass *objectClass,
-gdeOCLight *light, const decVector &newValue) :
-pObjectClass(NULL),
-pLight(NULL)
+gdeUOCLightSetPosition::gdeUOCLightSetPosition(gdeObjectClass::Ref objectClass,
+gdeOCLight::Ref light, const decVector &newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pLight(NULL)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetPosition::~gdeUOCLightSetPosition(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

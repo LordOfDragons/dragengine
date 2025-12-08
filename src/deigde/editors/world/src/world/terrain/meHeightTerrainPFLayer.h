@@ -139,16 +139,16 @@ public:
 	meHeightTerrainPFType *GetTypeAt(int index) const;
 	
 	/** \brief Index of type or -1 if absent. */
-	int IndexOfType(meHeightTerrainPFType *type) const;
+	int IndexOfType(meHeightTerrainPFType::Ref type) const;
 	
 	/** \brief Type exists. */
-	bool HasType(meHeightTerrainPFType *type) const;
+	bool HasType(meHeightTerrainPFType::Ref type) const;
 	
 	/** \brief Add type. */
-	void AddType(meHeightTerrainPFType *type);
+	void AddType(meHeightTerrainPFType::Ref type);
 	
 	/** \brief Remove type. */
-	void RemoveType(meHeightTerrainPFType *type);
+	void RemoveType(meHeightTerrainPFType::Ref type);
 	
 	/** \brief Remove all types. */
 	void RemoveAllTypes();

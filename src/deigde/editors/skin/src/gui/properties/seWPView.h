@@ -48,10 +48,10 @@ class seWPViewListener;
 class seWPView : public igdeContainerScroll{
 private:
 	seWindowProperties &pWindowProperties;
-	seWPViewListener *pListener;
+	seWPViewListener::Ref pListener;
 	bool pPreventUpdate;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	
 	igdeComboBox::Ref pCBPreviewMode;
 	

@@ -88,7 +88,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig *rig) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig::Ref rig) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -110,7 +110,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig *rig) = 0;
+	virtual igdeUndo *OnChanged(const decVector &vector, reRig::Ref rig) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -134,7 +134,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(reRig *rig) = 0;
+	virtual igdeUndo *OnAction(reRig::Ref rig) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -156,7 +156,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig *rig) = 0;
+	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig::Ref rig) = 0;
 };
 
 
@@ -165,7 +165,7 @@ class cComboRootBone : public cBaseComboBoxListener{
 public:
 	cComboRootBone(reWPRig &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig *rig){
+	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig::Ref rig){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		reRigBone *bone = NULL;
 		if(selection){
@@ -183,7 +183,7 @@ public:
 	cCheckDynamic(reWPRig &panel) :
 	cBaseAction(panel, "Dynamic", "Determines if the rig is afflicted by dynamic physics."){ }
 	
-	virtual igdeUndo *OnAction(reRig *rig){
+	virtual igdeUndo *OnAction(reRig::Ref rig){
 		return new reURigToggleDynamic(rig);
 	}
 };
@@ -193,7 +193,7 @@ public:
 	cCheckModelCollision(reWPRig &panel) :
 	cBaseAction(panel, "Model Collision", "Use model collision instead of shapes."){}
 	
-	virtual igdeUndo *OnAction(reRig *rig){
+	virtual igdeUndo *OnAction(reRig::Ref rig){
 		return new reURigToggleModelCollision(rig);
 	}
 };
@@ -202,7 +202,7 @@ class cEditCentralMassPoint : public cBaseEditVectorListener{
 public:
 	cEditCentralMassPoint(reWPRig &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig *rig){
+	virtual igdeUndo *OnChanged(const decVector &vector, reRig::Ref rig){
 		if(vector.IsEqualTo(rig->GetCentralMassPoint())){
 			return NULL;
 		}
@@ -214,7 +214,7 @@ class cEditMass : public cBaseTextFieldListener{
 public:
 	cEditMass(reWPRig &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig *rig){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig::Ref rig){
 		rig->SetMass(textField->GetFloat());
 		return nullptr;
 	}
@@ -232,15 +232,13 @@ public:
 
 reWPRig::reWPRig(reWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pRig(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPRigListener(*this);
+	pListener.TakeOver(new reWPRigListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -266,10 +264,6 @@ pListener(NULL)
 
 reWPRig::~reWPRig(){
 	SetRig(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -277,14 +271,13 @@ reWPRig::~reWPRig(){
 // Management
 ///////////////
 
-void reWPRig::SetRig(reRig *rig){
+void reWPRig::SetRig(reRig::Ref rig){
 	if(rig == pRig){
 		return;
 	}
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -292,7 +285,6 @@ void reWPRig::SetRig(reRig *rig){
 	
 	if(rig){
 		rig->AddNotifier(pListener);
-		rig->AddReference();
 	}
 	
 	UpdateRig();

@@ -46,7 +46,6 @@
 
 dealWidgetLabel::dealWidgetLabel(dealDisplay &display, const char *text) :
 dealWidget(display),
-pFont(NULL),
 pFontSize(0),
 pText(text),
 pColor(0.0f, 0.0f, 0.0f),
@@ -56,9 +55,8 @@ pDirtyTextSize(true)
 {
 }
 
-dealWidgetLabel::dealWidgetLabel(dealDisplay &display, dealFont *font, int fontSize, const char *text) :
+dealWidgetLabel::dealWidgetLabel(dealDisplay &display, dealFont::Ref font, int fontSize, const char *text) :
 dealWidget(display),
-pFont(NULL),
 pFontSize(0),
 pText(text),
 pColor(0.0f, 0.0f, 0.0f),
@@ -71,9 +69,6 @@ pDirtyTextSize(true)
 }
 
 dealWidgetLabel::~dealWidgetLabel(){
-	if(pFont){
-		pFont->FreeReference();
-	}
 }
 
 
@@ -81,21 +76,11 @@ dealWidgetLabel::~dealWidgetLabel(){
 // Management
 ///////////////
 
-void dealWidgetLabel::SetFont(dealFont *font){
+void dealWidgetLabel::SetFont(dealFont::Ref font){
 	if(font == pFont){
 		return;
 	}
-	
-	if(pFont){
-		pFont->FreeReference();
-	}
-	
 	pFont = font;
-	
-	if(font){
-		font->AddReference();
-	}
-	
 	pDirtyTextSize = true;
 	DirtyParentLayout();
 }

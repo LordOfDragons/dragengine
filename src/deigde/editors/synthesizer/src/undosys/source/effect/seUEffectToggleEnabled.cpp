@@ -48,8 +48,6 @@ pEffect(NULL)
 	
 	try{
 		pEffect = effect;
-		pEffect->AddReference();
-		
 		SetShortInfo("Effect toggle enabled");
 		
 	}catch(const deException &){
@@ -81,7 +79,4 @@ void seUEffectToggleEnabled::Redo(){
 //////////////////////
 
 void seUEffectToggleEnabled::pCleanUp(){
-	if(pEffect){
-		pEffect->FreeReference();
-	}
 }

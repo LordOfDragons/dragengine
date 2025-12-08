@@ -45,9 +45,9 @@ class meHeightTerrainTexture;
  */
 class meUHTSetTexMask : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	decString pOldPath;
 	decString pNewPath;
@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetTexMask(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const char *newPath);
+	meUHTSetTexMask(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture, const char *newPath);
 	
 protected:
 	/** \brief Clean up object. */

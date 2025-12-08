@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetBoneName::gdeUOCForceFieldSetBoneName(gdeObjectClass *objectClass,
-gdeOCForceField *forceField, const char *newValue) :
-pObjectClass(NULL),
+gdeUOCForceFieldSetBoneName::gdeUOCForceFieldSetBoneName(gdeObjectClass::Ref objectClass,
+gdeOCForceField::Ref forceField, const char *newValue) :
+
 pForceField(NULL)
 {
 	if(!objectClass || !forceField){
@@ -55,19 +55,10 @@ pForceField(NULL)
 	pNewValue = newValue;
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCForceFieldSetBoneName::~gdeUOCForceFieldSetBoneName(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

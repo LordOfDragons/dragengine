@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerToggleLooping::gdeUOCSpeakerToggleLooping(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) :
-pObjectClass(NULL),
+gdeUOCSpeakerToggleLooping::gdeUOCSpeakerToggleLooping(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker) :
+
 pSpeaker(NULL)
 {
 	if(!objectClass || !speaker){
@@ -51,19 +51,10 @@ pSpeaker(NULL)
 	SetShortInfo("Speaker toggle looping");
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerToggleLooping::~gdeUOCSpeakerToggleLooping(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

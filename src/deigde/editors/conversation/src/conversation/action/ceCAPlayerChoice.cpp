@@ -52,8 +52,8 @@ pTIMActionsExpanded(action.pTIMActionsExpanded)
 {
 	const ceCAPlayerChoiceOptionList &options = action.GetOptions();
 	const ceConversationActionList &actions = action.GetActions();
-	ceCAPlayerChoiceOption *newOption = NULL;
-	ceConversationAction *newAction = NULL;
+	ceCAPlayerChoiceOption::Ref newOption = NULL;
+	ceConversationAction::Ref newAction = NULL;
 	int i, count;
 	
 	pVariableName = action.GetVariableName();
@@ -61,9 +61,8 @@ pTIMActionsExpanded(action.pTIMActionsExpanded)
 	try{
 		count = options.GetCount();
 		for(i=0; i<count; i++){
-			newOption = new ceCAPlayerChoiceOption(*options.GetAt(i));
+			newOption.TakeOver(new ceCAPlayerChoiceOption(*options.GetAt(i)));
 			pOptions.Add(newOption);
-			newOption->FreeReference();
 			newOption = NULL;
 		}
 		
@@ -71,17 +70,10 @@ pTIMActionsExpanded(action.pTIMActionsExpanded)
 		for(i=0; i<count; i++){
 			newAction = actions.GetAt(i)->CreateCopy();
 			pActions.Add(newAction);
-			newAction->FreeReference();
 			newAction = NULL;
 		}
 		
 	}catch(const deException &){
-		if(newAction){
-			newAction->FreeReference();
-		}
-		if(newOption){
-			newOption->FreeReference();
-		}
 		pActions.RemoveAll();
 		pOptions.RemoveAll();
 		throw;

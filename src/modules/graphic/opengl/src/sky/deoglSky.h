@@ -43,7 +43,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deSky &pSky;
 	
-	deoglRSky *pRSky;
+	deoglRSky::Ref pRSky;
 	
 	bool pDirtyParameters;
 	unsigned int pUpdateTracker;

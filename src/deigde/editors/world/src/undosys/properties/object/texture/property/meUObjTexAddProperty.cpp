@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjTexAddProperty::meUObjTexAddProperty(meObjectTexture *texture, const char *key, const char *value) :
+meUObjTexAddProperty::meUObjTexAddProperty(meObjectTexture::Ref texture, const char *key, const char *value) :
 pTexture(texture),
 pKey(key),
 pValue(value)
@@ -63,7 +63,6 @@ pValue(value)
 	SetShortInfo("Object texture add property");
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjTexAddProperty::~meUObjTexAddProperty(){
@@ -99,7 +98,4 @@ void meUObjTexAddProperty::ProgressiveRedo(){
 //////////////////////
 
 void meUObjTexAddProperty::pCleanUp(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }

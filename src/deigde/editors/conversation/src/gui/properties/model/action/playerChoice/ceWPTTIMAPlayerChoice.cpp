@@ -49,20 +49,16 @@
 
 ceWPTTIMAPlayerChoice::ceWPTTIMAPlayerChoice(ceWindowMain &windowMain,
 ceConversation &conversation, ceCAPlayerChoice *action) :
-ceWPTTIMAction(windowMain, etActionPlayerChoice, conversation, action),
-pActions(NULL)
+ceWPTTIMAction(windowMain, etActionPlayerChoice, conversation, action)
 {
 	SetIcon(windowMain.GetIconActionPlayerChoice());
 	SetText("Player Choice");
 	
 	try{
-		pActions = new ceWPTTIMAPlayerChoiceActions(windowMain, conversation, action->GetActions());
+		pActions.TakeOver(new ceWPTTIMAPlayerChoiceActions(windowMain, conversation, action->GetActions()));
 		AddChild(pActions);
 		
 	}catch(const deException &){
-		if(pActions){
-			pActions->FreeReference();
-		}
 		throw;
 	}
 	
@@ -182,7 +178,7 @@ void ceWPTTIMAPlayerChoice::pUpdateOptions(){
 		ceCAPlayerChoiceOption * const option = options.GetAt(i);
 		
 		// find item matching option if present
-		ceWPTTIMAPlayerChoiceOption *model = NULL;
+		ceWPTTIMAPlayerChoiceOption::Ref model = NULL;
 		const int childCount = GetChildCount();
 		for(j=i; j<childCount; j++){
 			ceWPTTreeItemModel * const child = GetChildAt(j);
@@ -208,18 +204,15 @@ void ceWPTTIMAPlayerChoice::pUpdateOptions(){
 			model->Update();
 			
 		}else{
-			model = new ceWPTTIMAPlayerChoiceOption(windowMain, conversation, playerChoice, option, i);
+			model.TakeOver(new ceWPTTIMAPlayerChoiceOption(windowMain, conversation, playerChoice, option, i));
 			
 			try{
 				InsertChild(model, i);
 				model->Update();
 				
 			}catch(const deException &){
-				model->FreeReference();
 				throw;
 			}
-			
-			model->FreeReference();
 		}
 	}
 }

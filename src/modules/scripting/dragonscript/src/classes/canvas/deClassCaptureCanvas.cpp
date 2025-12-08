@@ -47,7 +47,7 @@
 
 // Native Structure
 struct sCapCanNatDat{
-	deCaptureCanvas *captureCanvas;
+	deCaptureCanvas::Ref captureCanvas;
 };
 
 
@@ -147,17 +147,12 @@ void deClassCaptureCanvas::nfSetImage::RunFunction(dsRunTime *rt, dsValue *mysel
 	const int componentCount = rt->GetValue(2)->GetInt();
 	const int bitCount = rt->GetValue(3)->GetInt();
 	
-	deImage *image = NULL;
+	deImage::Ref image = NULL;
 	
 	try{
 		image = imageManager.CreateImage(width, height, 1, componentCount, bitCount);
 		captureCanvas.SetImage(image);
-		image->FreeReference();
-		
 	}catch(...){
-		if(image){
-			image->FreeReference();
-		}
 		throw;
 	}
 }
@@ -293,7 +288,7 @@ deCaptureCanvas *deClassCaptureCanvas::GetCaptureCanvas(dsRealObject *myself) co
 	return ((sCapCanNatDat*)p_GetNativeData(myself->GetBuffer()))->captureCanvas;
 }
 
-void deClassCaptureCanvas::PushCaptureCanvas(dsRunTime *rt, deCaptureCanvas *captureCanvas){
+void deClassCaptureCanvas::PushCaptureCanvas(dsRunTime *rt, deCaptureCanvas::Ref captureCanvas){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -305,5 +300,4 @@ void deClassCaptureCanvas::PushCaptureCanvas(dsRunTime *rt, deCaptureCanvas *cap
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sCapCanNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->captureCanvas = captureCanvas;
-	captureCanvas->AddReference();
 }

@@ -37,7 +37,7 @@ class projProject;
  */
 class projUProjectSetScriptDirectory : public igdeUndo{
 private:
-	projProject *pProject;
+	projProject::Ref pProject;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProjectSetScriptDirectory(projProject *project, const char *newValue);
+	projUProjectSetScriptDirectory(projProject::Ref project, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProjectSetScriptDirectory();

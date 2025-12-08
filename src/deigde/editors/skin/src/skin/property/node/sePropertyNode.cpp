@@ -62,7 +62,6 @@ pGamma(1.0f),
 pColorize(1.0f, 1.0f, 1.0f),
 
 pTransparency(1.0f),
-pMask(nullptr),
 pCombineMode(deSkinPropertyNode::ecmBlend),
 
 pMapped(new seMapped::Ref[mappedCount]),
@@ -91,7 +90,6 @@ pGamma(node.pGamma),
 pColorize(node.pColorize),
 
 pTransparency(node.pTransparency),
-pMask(nullptr),
 pCombineMode(node.pCombineMode),
 
 pMapped(new seMapped::Ref[node.pMappedCount]),
@@ -114,7 +112,6 @@ pActive(false)
 sePropertyNode::~sePropertyNode(){
 	if(pMask){
 		pMask->SetMaskParent(nullptr);
-		pMask->FreeReference();
 	}
 	
 	if(pMapped){
@@ -327,20 +324,18 @@ void sePropertyNode::SetTransparency(float transparency){
 	NotifyChanged();
 }
 
-void sePropertyNode::SetMask(sePropertyNode *mask){
+void sePropertyNode::SetMask(sePropertyNode::Ref mask){
 	if(mask == pMask){
 		return;
 	}
 	
 	if(pMask){
 		pMask->SetMaskParent(NULL);
-		pMask->FreeReference();
 	}
 	
 	pMask = mask;
 	
 	if(mask){
-		mask->AddReference();
 		mask->SetMaskParent(this);
 	}
 	

@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCBillboardToggleDoNotScale : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCBillboardToggleDoNotScale(gdeObjectClass *objectClass, gdeOCBillboard *billboard);
+	gdeUOCBillboardToggleDoNotScale(gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard);
 	
 protected:
 	/** \brief Clean up undo action. */

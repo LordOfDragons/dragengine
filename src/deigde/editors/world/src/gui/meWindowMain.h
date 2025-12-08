@@ -64,7 +64,7 @@ class deLogger;
  */
 class meWindowMain : public igdeEditorWindow{
 private:
-	meWindowMainListener *pListener;
+	meWindowMainListener::Ref pListener;
 	bool pActiveModule;
 	
 	igdeIcon::Ref pIconEditObject;
@@ -189,18 +189,18 @@ private:
 	meLoadSaveSystem *pLoadSaveSystem;
 	meSaveSupport *pSaveSupport;
 	
-	meWindowProperties *pWindowProperties;
+	meWindowProperties::Ref pWindowProperties;
 	igdeTabBook::Ref pTabContent;
-	meView3D *pView3D;
-	meWindowVegetation *pViewVegetation;
-	meWindowChangelog *pViewChangelog;
+	meView3D::Ref pView3D;
+	meWindowVegetation::Ref pViewVegetation;
+	meWindowChangelog::Ref pViewChangelog;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	bool pUse3DCursor;
 	decVector p3DCursor;
 	
 	decString pLoadFilename;
-	meWorld *pLoadWorld;
+	meWorld::Ref pLoadWorld;
 	igdeStepableTask *pLoadTask;
 	
 	
@@ -254,7 +254,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
-	void SetWorld(meWorld *world);
+	void SetWorld(meWorld::Ref world);
 	
 	/** Create world. */
 	void CreateNewWorld();

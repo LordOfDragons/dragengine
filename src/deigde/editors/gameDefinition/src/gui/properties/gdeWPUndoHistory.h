@@ -37,8 +37,8 @@ class gdeWPUndoHistoryListener;
  */
 class gdeWPUndoHistory : public igdeWPUndoHistory{
 private:
-	gdeWPUndoHistoryListener *pListener;
-	gdeGameDefinition *pGameDefinition;
+	gdeWPUndoHistoryListener::Ref pListener;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	
 	
@@ -60,7 +60,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition to monitor or \em NULL if not set. */
-	void SetGameDefinition(gdeGameDefinition *gameDefinition);
+	void SetGameDefinition(gdeGameDefinition::Ref gameDefinition);
 	/*@}*/
 };
 

@@ -38,8 +38,8 @@ class seEffect;
  */
 class seUSourceRemoveEffect : public igdeUndo{
 private:
-	seEffect *pEffect;
-	seSource *pSource;
+	seEffect::Ref pEffect;
+	seSource::Ref pSource;
 	int pIndex;
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceRemoveEffect(seSource *source, seEffect *effect);
+	seUSourceRemoveEffect(seSource::Ref source, seEffect::Ref effect);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -38,7 +38,7 @@ class decBaseFileWriter;
  */
 class deoglDelayedFileWrite{
 private:
-	decMemoryFile *pMemoryFile;
+	decMemoryFile::Ref pMemoryFile;
 	const decPath pPath;
 	
 public:

@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetTexSkin::meUHTSetTexSkin(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const char *newPath){
+meUHTSetTexSkin::meUHTSetTexSkin(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture, const char *newPath){
 	if(!world || !sector || !texture || !newPath) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
@@ -52,11 +52,7 @@ meUHTSetTexSkin::meUHTSetTexSkin(meWorld *world, meHeightTerrainSector *sector, 
 	pNewPath = newPath;
 	
 	SetShortInfo("Set Height Terrain Texture Skin");
-	
-	world->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUHTSetTexSkin::~meUHTSetTexSkin(){

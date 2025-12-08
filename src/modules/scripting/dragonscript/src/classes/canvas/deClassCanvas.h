@@ -74,10 +74,10 @@ public:
 	 * \brief Push canvas onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushCanvas(dsRunTime *rt, deCanvas *canvas);
+	void PushCanvas(dsRunTime *rt, deCanvas::Ref canvas);
 	
 	/** \brief Assigns canvas or \em NULL. */
-	void AssignCanvas(dsRealObject *myself, deCanvas *canvas);
+	void AssignCanvas(dsRealObject *myself, deCanvas::Ref canvas);
 	/*@}*/
 	
 private:

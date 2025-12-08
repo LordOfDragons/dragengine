@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeULangPackSetIdentifier::lpeULangPackSetIdentifier(lpeLangPack *langpack, const char *newIdentifier) :
-pLangPack(NULL),
+lpeULangPackSetIdentifier::lpeULangPackSetIdentifier(lpeLangPack::Ref langpack, const char *newIdentifier) :
+
 pNewIdentifier(newIdentifier)
 {
 	DEASSERT_NOTNULL(langpack)
@@ -50,13 +50,9 @@ pNewIdentifier(newIdentifier)
 	pOldIdentifier = langpack->GetIdentifier();
 	
 	pLangPack = langpack;
-	langpack->AddReference();
 }
 
 lpeULangPackSetIdentifier::~lpeULangPackSetIdentifier(){
-	if(pLangPack){
-		pLangPack->FreeReference();
-	}
 }
 
 

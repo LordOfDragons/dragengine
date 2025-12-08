@@ -46,9 +46,9 @@ class meNavigationSpace;
 class meWPSNavSpace : public igdeContainerScroll{
 private:
 	meWPSelection &pWPSelection;
-	meWPSNavSpaceListener *pListener;
+	meWPSNavSpaceListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeSpinTextField::Ref pSpinActive;
 	igdeTextField::Ref pEditSelCount;
@@ -82,7 +82,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld(meWorld *world);
+	void SetWorld(meWorld::Ref world);
 	
 	/** \brief Active navigation space. */
 	meNavigationSpace *GetNavigationSpace() const;

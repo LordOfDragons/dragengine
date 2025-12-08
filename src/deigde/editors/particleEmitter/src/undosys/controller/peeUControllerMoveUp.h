@@ -36,7 +36,7 @@ class peeController;
  */
 class peeUControllerMoveUp : public igdeUndo{
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	int pIndex;
 	
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUControllerMoveUp(peeController *controller);
+	peeUControllerMoveUp(peeController::Ref controller);
 	
 protected:
 	/** \brief Clean up the undo action. */

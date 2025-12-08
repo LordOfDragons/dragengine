@@ -37,7 +37,7 @@
  */
 class seUSourceWaveSetType : public igdeUndo{
 private:
-	seSourceWave *pSource;
+	seSourceWave::Ref pSource;
 	
 	deSynthesizerSourceWave::eWaveType pOldType;
 	deSynthesizerSourceWave::eWaveType pNewType;

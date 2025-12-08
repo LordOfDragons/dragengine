@@ -37,7 +37,7 @@ class reRigShapeCapsule;
  */
 class reUSetShapeCapsuleHalfHeight : public igdeUndo{
 private:
-	reRigShapeCapsule *pShape;
+	reRigShapeCapsule::Ref pShape;
 	
 	float pOldHalfHeight;
 	float pNewHalfHeight;

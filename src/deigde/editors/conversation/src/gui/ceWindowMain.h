@@ -90,7 +90,7 @@ private:
 		void FilesChanged() override;
 	};
 	
-	ceWindowMainListener *pListener;
+	ceWindowMainListener::Ref pListener;
 	
 	igdeIcon::Ref pIconActionCameraShot;
 	igdeIcon::Ref pIconActionMusic;
@@ -156,11 +156,11 @@ private:
 	igdeClipboard pClipboard;
 	ceLoadSaveSystem *pLoadSaveSystem;
 	
-	ceViewConversation *pViewConversation;
-	ceWindowProperties *pWindowProperties;
-	ceWindowDopeSheet *pWindowDopeSheet;
+	ceViewConversation::Ref pViewConversation;
+	ceWindowProperties::Ref pWindowProperties;
+	ceWindowDopeSheet::Ref pWindowDopeSheet;
 	
-	ceConversation *pConversation;
+	ceConversation::Ref pConversation;
 	
 	cRecentFilesCTS pRecentFilesCTS;
 	cRecentFilesCTA pRecentFilesCTA;
@@ -205,7 +205,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
-	void SetConversation(ceConversation *conversation);
+	void SetConversation(ceConversation::Ref conversation);
 	
 	/** Create new conversation. */
 	void CreateNewConversation();

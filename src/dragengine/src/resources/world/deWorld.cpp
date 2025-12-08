@@ -68,95 +68,72 @@
 
 deWorld::deWorld(deWorldManager *manager) :
 deResource(manager),
-
-pHeightTerrain(nullptr),
 pSize(1000.0, 1000.0, 1000.0),
 
 pDisableLights(false),
 pSpeakerGain(1.0f),
 
 pSkyRoot(nullptr),
-pSkyTail(nullptr),
 pSkyCount(0),
 
 pBillboardRoot(nullptr),
-pBillboardTail(nullptr),
 pBillboardCount(0),
 
 pCameraRoot(nullptr),
-pCameraTail(nullptr),
 pCameraCount(0),
 
 pColliderRoot(nullptr),
-pColliderTail(nullptr),
 pColliderCount(0),
 
 pComponentRoot(nullptr),
-pComponentTail(nullptr),
 pComponentCount(0),
 
 pDebugDrawerRoot(nullptr),
-pDebugDrawerTail(nullptr),
 pDebugDrawerCount(0),
 
 pEnvMapProbeRoot(nullptr),
-pEnvMapProbeTail(nullptr),
 pEnvMapProbeCount(0),
 
 pForceFieldRoot(nullptr),
-pForceFieldTail(nullptr),
 pForceFieldCount(0),
 
 pLightRoot(nullptr),
-pLightTail(nullptr),
 pLightCount(0),
 
 pLumimeterRoot(nullptr),
-pLumimeterTail(nullptr),
 pLumimeterCount(0),
 
 pMicrophoneRoot(nullptr),
-pMicrophoneTail(nullptr),
 pMicrophoneCount(0),
 
 pNavSpaceRoot(nullptr),
-pNavSpaceTail(nullptr),
 pNavSpaceCount(0),
 
 pNavBlockerRoot(nullptr),
-pNavBlockerTail(nullptr),
 pNavBlockerCount(0),
 
 pNavigatorRoot(nullptr),
-pNavigatorTail(nullptr),
 pNavigatorCount(0),
 
 pNetworkStateRoot(nullptr),
-pNetworkStateTail(nullptr),
 pNetworkStateCount(0),
 
 pParticleEmitterRoot(nullptr),
-pParticleEmitterTail(nullptr),
 pParticleEmitterCount(0),
 
 pPropFieldRoot(nullptr),
-pPropFieldTail(nullptr),
 pPropFieldCount(0),
 
 pSmokeEmitterRoot(nullptr),
-pSmokeEmitterTail(nullptr),
 pSmokeEmitterCount(0),
 
 pSpeakerRoot(nullptr),
-pSpeakerTail(nullptr),
 pSpeakerCount(0),
 
 pTouchSensorRoot(nullptr),
-pTouchSensorTail(nullptr),
 pTouchSensorCount(0),
 
 pSoundLevelMeterRoot(nullptr),
-pSoundLevelMeterTail(nullptr),
 pSoundLevelMeterCount(0),
 
 pPeerGraphic (nullptr),
@@ -358,7 +335,7 @@ void deWorld::SetHeightTerrain(deHeightTerrain *heightTerrain){
 // Skies
 //////////
 
-void deWorld::AddSky(deSkyInstance *sky){
+void deWorld::AddSky(deSkyInstance::Ref sky){
 	if(!sky || sky->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -377,14 +354,12 @@ void deWorld::AddSky(deSkyInstance *sky){
 	pSkyTail = sky;
 	pSkyCount++;
 	sky->SetParentWorld(this);
-	sky->AddReference();
-	
 	if(pPeerGraphic){
 		pPeerGraphic->SkyAdded(sky);
 	}
 }
 
-void deWorld::RemoveSky(deSkyInstance *sky){
+void deWorld::RemoveSky(deSkyInstance::Ref sky){
 	if(!sky || sky->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -409,7 +384,6 @@ void deWorld::RemoveSky(deSkyInstance *sky){
 	if(pPeerGraphic){
 		pPeerGraphic->SkyRemoved(sky);
 	}
-	sky->FreeReference();
 }
 
 void deWorld::RemoveAllSkies(){
@@ -420,7 +394,6 @@ void deWorld::RemoveAllSkies(){
 	while(pSkyTail){
 		deSkyInstance * const next = pSkyTail->GetLLWorldPrev();
 		pSkyTail->SetParentWorld(nullptr);
-		pSkyTail->FreeReference();
 		pSkyTail = next;
 		pSkyCount--;
 	}
@@ -432,7 +405,7 @@ void deWorld::RemoveAllSkies(){
 // Billboards
 ///////////////
 
-void deWorld::AddBillboard(deBillboard *billboard){
+void deWorld::AddBillboard(deBillboard::Ref billboard){
 	if(!billboard || billboard->GetParentWorld()) DETHROW(deeInvalidParam);
 	
 	if(pBillboardTail){
@@ -449,14 +422,12 @@ void deWorld::AddBillboard(deBillboard *billboard){
 	pBillboardTail = billboard;
 	pBillboardCount++;
 	billboard->SetParentWorld(this);
-	billboard->AddReference();
-	
 	if(pPeerGraphic){
 		pPeerGraphic->BillboardAdded(billboard);
 	}
 }
 
-void deWorld::RemoveBillboard(deBillboard *billboard){
+void deWorld::RemoveBillboard(deBillboard::Ref billboard){
 	if(!billboard || billboard->GetParentWorld() != this) DETHROW(deeInvalidParam);
 	
 	if(billboard->GetLLWorldPrev()){
@@ -479,7 +450,6 @@ void deWorld::RemoveBillboard(deBillboard *billboard){
 	if(pPeerGraphic){
 		pPeerGraphic->BillboardRemoved(billboard);
 	}
-	billboard->FreeReference();
 }
 
 void deWorld::RemoveAllBillboards(){
@@ -490,7 +460,6 @@ void deWorld::RemoveAllBillboards(){
 	while(pBillboardTail){
 		deBillboard * const next = pBillboardTail->GetLLWorldPrev();
 		pBillboardTail->SetParentWorld(nullptr);
-		pBillboardTail->FreeReference();
 		pBillboardTail = next;
 		pBillboardCount--;
 	}
@@ -502,7 +471,7 @@ void deWorld::RemoveAllBillboards(){
 // Cameras
 ////////////
 
-void deWorld::AddCamera(deCamera *camera){
+void deWorld::AddCamera(deCamera::Ref camera){
 	if(!camera || camera->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -521,14 +490,12 @@ void deWorld::AddCamera(deCamera *camera){
 	pCameraTail = camera;
 	pCameraCount++;
 	camera->SetParentWorld(this);
-	camera->AddReference();
-	
 	if(pPeerGraphic){
 		pPeerGraphic->CameraAdded(camera);
 	}
 }
 
-void deWorld::RemoveCamera(deCamera *camera){
+void deWorld::RemoveCamera(deCamera::Ref camera){
 	if(!camera || camera->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -553,7 +520,6 @@ void deWorld::RemoveCamera(deCamera *camera){
 	if(pPeerGraphic){
 		pPeerGraphic->CameraRemoved(camera);
 	}
-	camera->FreeReference();
 }
 
 void deWorld::RemoveAllCameras(){
@@ -564,7 +530,6 @@ void deWorld::RemoveAllCameras(){
 	while(pCameraTail){
 		deCamera * const next = pCameraTail->GetLLWorldPrev();
 		pCameraTail->SetParentWorld(nullptr);
-		pCameraTail->FreeReference();
 		pCameraTail = next;
 		pCameraCount--;
 	}
@@ -576,7 +541,7 @@ void deWorld::RemoveAllCameras(){
 // Colliders
 //////////////
 
-void deWorld::AddCollider(deCollider *collider){
+void deWorld::AddCollider(deCollider::Ref collider){
 	if(!collider || collider->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -595,14 +560,12 @@ void deWorld::AddCollider(deCollider *collider){
 	pColliderTail = collider;
 	pColliderCount++;
 	collider->SetParentWorld(this);
-	collider->AddReference();
-	
 	if(pPeerPhysics){
 		pPeerPhysics->ColliderAdded(collider);
 	}
 }
 
-void deWorld::RemoveCollider(deCollider *collider){
+void deWorld::RemoveCollider(deCollider::Ref collider){
 	if(!collider || collider->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -627,7 +590,6 @@ void deWorld::RemoveCollider(deCollider *collider){
 	if(pPeerPhysics){
 		pPeerPhysics->ColliderRemoved(collider);
 	}
-	collider->FreeReference();
 }
 
 void deWorld::RemoveAllColliders(){
@@ -638,7 +600,6 @@ void deWorld::RemoveAllColliders(){
 	while(pColliderTail){
 		deCollider * const next = pColliderTail->GetLLWorldPrev();
 		pColliderTail->SetParentWorld(nullptr);
-		pColliderTail->FreeReference();
 		pColliderTail = next;
 		pColliderCount--;
 	}
@@ -650,7 +611,7 @@ void deWorld::RemoveAllColliders(){
 // Components
 ///////////////
 
-void deWorld::AddComponent(deComponent *component){
+void deWorld::AddComponent(deComponent::Ref component){
 	if(!component || component->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -669,8 +630,6 @@ void deWorld::AddComponent(deComponent *component){
 	pComponentTail = component;
 	pComponentCount++;
 	component->SetParentWorld(this);
-	component->AddReference();
-	
 	if(pPeerGraphic){
 		pPeerGraphic->ComponentAdded(component);
 	}
@@ -682,7 +641,7 @@ void deWorld::AddComponent(deComponent *component){
 	}
 }
 
-void deWorld::RemoveComponent(deComponent *component){
+void deWorld::RemoveComponent(deComponent::Ref component){
 	if(!component || component->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -713,7 +672,6 @@ void deWorld::RemoveComponent(deComponent *component){
 	if(pPeerAudio){
 		pPeerAudio->ComponentRemoved(component);
 	}
-	component->FreeReference();
 }
 
 void deWorld::RemoveAllComponents(){
@@ -730,7 +688,6 @@ void deWorld::RemoveAllComponents(){
 	while(pComponentTail){
 		deComponent * const next = pComponentTail->GetLLWorldPrev();
 		pComponentTail->SetParentWorld(nullptr);
-		pComponentTail->FreeReference();
 		pComponentTail = next;
 		pComponentCount--;
 	}
@@ -742,7 +699,7 @@ void deWorld::RemoveAllComponents(){
 // DebugDrawers
 /////////////////
 
-void deWorld::AddDebugDrawer(deDebugDrawer *debugDrawer){
+void deWorld::AddDebugDrawer(deDebugDrawer::Ref debugDrawer){
 	if(!debugDrawer || debugDrawer->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -761,14 +718,12 @@ void deWorld::AddDebugDrawer(deDebugDrawer *debugDrawer){
 	pDebugDrawerTail = debugDrawer;
 	pDebugDrawerCount++;
 	debugDrawer->SetParentWorld(this);
-	debugDrawer->AddReference();
-	
 	if(pPeerGraphic){
 		pPeerGraphic->DebugDrawerAdded(debugDrawer);
 	}
 }
 
-void deWorld::RemoveDebugDrawer(deDebugDrawer *debugDrawer){
+void deWorld::RemoveDebugDrawer(deDebugDrawer::Ref debugDrawer){
 	if(!debugDrawer || debugDrawer->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -793,7 +748,6 @@ void deWorld::RemoveDebugDrawer(deDebugDrawer *debugDrawer){
 	if(pPeerGraphic){
 		pPeerGraphic->DebugDrawerRemoved(debugDrawer);
 	}
-	debugDrawer->FreeReference();
 }
 
 void deWorld::RemoveAllDebugDrawers(){
@@ -804,7 +758,6 @@ void deWorld::RemoveAllDebugDrawers(){
 	while(pDebugDrawerTail){
 		deDebugDrawer * const next = pDebugDrawerTail->GetLLWorldPrev();
 		pDebugDrawerTail->SetParentWorld(nullptr);
-		pDebugDrawerTail->FreeReference();
 		pDebugDrawerTail = next;
 		pDebugDrawerCount--;
 	}
@@ -816,7 +769,7 @@ void deWorld::RemoveAllDebugDrawers(){
 // Environment Map Probes
 ///////////////////////////
 
-void deWorld::AddEnvMapProbe(deEnvMapProbe *envMapProbe){
+void deWorld::AddEnvMapProbe(deEnvMapProbe::Ref envMapProbe){
 	if(!envMapProbe || envMapProbe->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -835,14 +788,12 @@ void deWorld::AddEnvMapProbe(deEnvMapProbe *envMapProbe){
 	pEnvMapProbeTail = envMapProbe;
 	pEnvMapProbeCount++;
 	envMapProbe->SetParentWorld(this);
-	envMapProbe->AddReference();
-	
 	if(pPeerGraphic){
 		pPeerGraphic->EnvMapProbeAdded(envMapProbe);
 	}
 }
 
-void deWorld::RemoveEnvMapProbe(deEnvMapProbe *envMapProbe){
+void deWorld::RemoveEnvMapProbe(deEnvMapProbe::Ref envMapProbe){
 	if(!envMapProbe || envMapProbe->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -867,7 +818,6 @@ void deWorld::RemoveEnvMapProbe(deEnvMapProbe *envMapProbe){
 	if(pPeerGraphic){
 		pPeerGraphic->EnvMapProbeRemoved(envMapProbe);
 	}
-	envMapProbe->FreeReference();
 }
 
 void deWorld::RemoveAllEnvMapProbes(){
@@ -878,7 +828,6 @@ void deWorld::RemoveAllEnvMapProbes(){
 	while(pEnvMapProbeTail){
 		deEnvMapProbe * const next = pEnvMapProbeTail->GetLLWorldPrev();
 		pEnvMapProbeTail->SetParentWorld(nullptr);
-		pEnvMapProbeTail->FreeReference();
 		pEnvMapProbeTail = next;
 		pEnvMapProbeCount--;
 	}
@@ -890,7 +839,7 @@ void deWorld::RemoveAllEnvMapProbes(){
 // Force fields
 /////////////////
 
-void deWorld::AddForceField(deForceField *forceField){
+void deWorld::AddForceField(deForceField::Ref forceField){
 	if(!forceField || forceField->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -909,14 +858,12 @@ void deWorld::AddForceField(deForceField *forceField){
 	pForceFieldTail = forceField;
 	pForceFieldCount++;
 	forceField->SetParentWorld(this);
-	forceField->AddReference();
-	
 	if(pPeerPhysics){
 		pPeerPhysics->ForceFieldAdded(forceField);
 	}
 }
 
-void deWorld::RemoveForceField(deForceField *forceField){
+void deWorld::RemoveForceField(deForceField::Ref forceField){
 	if(!forceField || forceField->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -941,7 +888,6 @@ void deWorld::RemoveForceField(deForceField *forceField){
 	if(pPeerPhysics){
 		pPeerPhysics->ForceFieldRemoved(forceField);
 	}
-	forceField->FreeReference();
 }
 
 void deWorld::RemoveAllForceFields(){
@@ -952,7 +898,6 @@ void deWorld::RemoveAllForceFields(){
 	while(pForceFieldTail){
 		deForceField * const next = pForceFieldTail->GetLLWorldPrev();
 		pForceFieldTail->SetParentWorld(nullptr);
-		pForceFieldTail->FreeReference();
 		pForceFieldTail = next;
 		pForceFieldCount--;
 	}
@@ -964,7 +909,7 @@ void deWorld::RemoveAllForceFields(){
 // Lights
 ////////////
 
-void deWorld::AddLight(deLight *light){
+void deWorld::AddLight(deLight::Ref light){
 	if(!light || light->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -983,14 +928,12 @@ void deWorld::AddLight(deLight *light){
 	pLightTail = light;
 	pLightCount++;
 	light->SetParentWorld(this);
-	light->AddReference();
-	
 	if(pPeerGraphic){
 		pPeerGraphic->LightAdded(light);
 	}
 }
 
-void deWorld::RemoveLight(deLight *light){
+void deWorld::RemoveLight(deLight::Ref light){
 	if(!light || light->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1015,7 +958,6 @@ void deWorld::RemoveLight(deLight *light){
 	if(pPeerGraphic){
 		pPeerGraphic->LightRemoved(light);
 	}
-	light->FreeReference();
 }
 
 void deWorld::RemoveAllLights(){
@@ -1026,7 +968,6 @@ void deWorld::RemoveAllLights(){
 	while(pLightTail){
 		deLight * const next = pLightTail->GetLLWorldPrev();
 		pLightTail->SetParentWorld(nullptr);
-		pLightTail->FreeReference();
 		pLightTail = next;
 		pLightCount--;
 	}
@@ -1038,7 +979,7 @@ void deWorld::RemoveAllLights(){
 // Lumimeters
 ////////////
 
-void deWorld::AddLumimeter(deLumimeter *lumimeter){
+void deWorld::AddLumimeter(deLumimeter::Ref lumimeter){
 	if(!lumimeter || lumimeter->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -1057,14 +998,12 @@ void deWorld::AddLumimeter(deLumimeter *lumimeter){
 	pLumimeterTail = lumimeter;
 	pLumimeterCount++;
 	lumimeter->SetParentWorld(this);
-	lumimeter->AddReference();
-	
 	if(pPeerGraphic){
 		pPeerGraphic->LumimeterAdded(lumimeter);
 	}
 }
 
-void deWorld::RemoveLumimeter(deLumimeter *lumimeter){
+void deWorld::RemoveLumimeter(deLumimeter::Ref lumimeter){
 	if(!lumimeter || lumimeter->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1089,7 +1028,6 @@ void deWorld::RemoveLumimeter(deLumimeter *lumimeter){
 	if(pPeerGraphic){
 		pPeerGraphic->LumimeterRemoved(lumimeter);
 	}
-	lumimeter->FreeReference();
 }
 
 void deWorld::RemoveAllLumimeters(){
@@ -1100,7 +1038,6 @@ void deWorld::RemoveAllLumimeters(){
 	while(pLumimeterTail){
 		deLumimeter * const next = pLumimeterTail->GetLLWorldPrev();
 		pLumimeterTail->SetParentWorld(nullptr);
-		pLumimeterTail->FreeReference();
 		pLumimeterTail = next;
 		pLumimeterCount--;
 	}
@@ -1112,7 +1049,7 @@ void deWorld::RemoveAllLumimeters(){
 // Microphones
 ////////////
 
-void deWorld::AddMicrophone(deMicrophone *microphone){
+void deWorld::AddMicrophone(deMicrophone::Ref microphone){
 	if(!microphone || microphone->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -1131,14 +1068,12 @@ void deWorld::AddMicrophone(deMicrophone *microphone){
 	pMicrophoneTail = microphone;
 	pMicrophoneCount++;
 	microphone->SetParentWorld(this);
-	microphone->AddReference();
-	
 	if(pPeerAudio){
 		pPeerAudio->MicrophoneAdded(microphone);
 	}
 }
 
-void deWorld::RemoveMicrophone(deMicrophone *microphone){
+void deWorld::RemoveMicrophone(deMicrophone::Ref microphone){
 	if(!microphone || microphone->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1163,7 +1098,6 @@ void deWorld::RemoveMicrophone(deMicrophone *microphone){
 	if(pPeerAudio){
 		pPeerAudio->MicrophoneRemoved(microphone);
 	}
-	microphone->FreeReference();
 }
 
 void deWorld::RemoveAllMicrophones(){
@@ -1174,7 +1108,6 @@ void deWorld::RemoveAllMicrophones(){
 	while(pMicrophoneTail){
 		deMicrophone * const next = pMicrophoneTail->GetLLWorldPrev();
 		pMicrophoneTail->SetParentWorld(nullptr);
-		pMicrophoneTail->FreeReference();
 		pMicrophoneTail = next;
 		pMicrophoneCount--;
 	}
@@ -1186,7 +1119,7 @@ void deWorld::RemoveAllMicrophones(){
 // Navigation Spaces
 //////////////////////
 
-void deWorld::AddNavigationSpace(deNavigationSpace *navspace){
+void deWorld::AddNavigationSpace(deNavigationSpace::Ref navspace){
 	if(!navspace || navspace->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -1205,14 +1138,12 @@ void deWorld::AddNavigationSpace(deNavigationSpace *navspace){
 	pNavSpaceTail = navspace;
 	pNavSpaceCount++;
 	navspace->SetParentWorld(this);
-	navspace->AddReference();
-	
 	if(pPeerAI){
 		pPeerAI->NavigationSpaceAdded(navspace);
 	}
 }
 
-void deWorld::RemoveNavigationSpace(deNavigationSpace *navspace){
+void deWorld::RemoveNavigationSpace(deNavigationSpace::Ref navspace){
 	if(!navspace || navspace->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1237,7 +1168,6 @@ void deWorld::RemoveNavigationSpace(deNavigationSpace *navspace){
 	if(pPeerAI){
 		pPeerAI->NavigationSpaceRemoved(navspace);
 	}
-	navspace->FreeReference();
 }
 
 void deWorld::RemoveAllNavigationSpaces(){
@@ -1248,7 +1178,6 @@ void deWorld::RemoveAllNavigationSpaces(){
 	while(pNavSpaceTail){
 		deNavigationSpace * const next = pNavSpaceTail->GetLLWorldPrev();
 		pNavSpaceTail->SetParentWorld(nullptr);
-		pNavSpaceTail->FreeReference();
 		pNavSpaceTail = next;
 		pNavSpaceCount--;
 	}
@@ -1260,7 +1189,7 @@ void deWorld::RemoveAllNavigationSpaces(){
 // Navigation Blockers
 ////////////////////////
 
-void deWorld::AddNavigationBlocker(deNavigationBlocker *blocker){
+void deWorld::AddNavigationBlocker(deNavigationBlocker::Ref blocker){
 	if(!blocker || blocker->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -1279,14 +1208,12 @@ void deWorld::AddNavigationBlocker(deNavigationBlocker *blocker){
 	pNavBlockerTail = blocker;
 	pNavBlockerCount++;
 	blocker->SetParentWorld(this);
-	blocker->AddReference();
-	
 	if(pPeerAI){
 		pPeerAI->NavigationBlockerAdded(blocker);
 	}
 }
 
-void deWorld::RemoveNavigationBlocker(deNavigationBlocker *blocker){
+void deWorld::RemoveNavigationBlocker(deNavigationBlocker::Ref blocker){
 	if(!blocker || blocker->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1311,7 +1238,6 @@ void deWorld::RemoveNavigationBlocker(deNavigationBlocker *blocker){
 	if(pPeerAI){
 		pPeerAI->NavigationBlockerRemoved(blocker);
 	}
-    blocker->FreeReference();
 }
 
 void deWorld::RemoveAllNavigationBlockers(){
@@ -1322,7 +1248,6 @@ void deWorld::RemoveAllNavigationBlockers(){
 	while(pNavBlockerTail){
 		deNavigationBlocker * const next = pNavBlockerTail->GetLLWorldPrev();
 		pNavBlockerTail->SetParentWorld(nullptr);
-		pNavBlockerTail->FreeReference();
 		pNavBlockerTail = next;
 		pNavBlockerCount--;
 	}
@@ -1334,7 +1259,7 @@ void deWorld::RemoveAllNavigationBlockers(){
 // Navigators
 ///////////////
 
-void deWorld::AddNavigator(deNavigator *navigator){
+void deWorld::AddNavigator(deNavigator::Ref navigator){
 	if(!navigator || navigator->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -1353,14 +1278,12 @@ void deWorld::AddNavigator(deNavigator *navigator){
 	pNavigatorTail = navigator;
 	pNavigatorCount++;
 	navigator->SetParentWorld(this);
-	navigator->AddReference();
-	
 	if(pPeerAI){
 		pPeerAI->NavigatorAdded(navigator);
 	}
 }
 
-void deWorld::RemoveNavigator(deNavigator *navigator){
+void deWorld::RemoveNavigator(deNavigator::Ref navigator){
 	if(!navigator || navigator->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1385,7 +1308,6 @@ void deWorld::RemoveNavigator(deNavigator *navigator){
 	if(pPeerAI){
 		pPeerAI->NavigatorRemoved(navigator);
 	}
-	navigator->FreeReference();
 }
 
 void deWorld::RemoveAllNavigators(){
@@ -1396,7 +1318,6 @@ void deWorld::RemoveAllNavigators(){
 	while(pNavigatorTail){
 		deNavigator * const next = pNavigatorTail->GetLLWorldPrev();
 		pNavigatorTail->SetParentWorld(nullptr);
-		pNavigatorTail->FreeReference();
 		pNavigatorTail = next;
 		pNavigatorCount--;
 	}
@@ -1408,7 +1329,7 @@ void deWorld::RemoveAllNavigators(){
 // Network states
 ///////////////////
 
-void deWorld::AddNetworkState(deNetworkState *networkState){
+void deWorld::AddNetworkState(deNetworkState::Ref networkState){
 	if(!networkState || networkState->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -1427,14 +1348,12 @@ void deWorld::AddNetworkState(deNetworkState *networkState){
 	pNetworkStateTail = networkState;
 	pNetworkStateCount++;
 	networkState->SetParentWorld(this);
-	networkState->AddReference();
-	
 	if(pPeerNetwork){
 		pPeerNetwork->NetworkStateAdded(networkState);
 	}
 }
 
-void deWorld::RemoveNetworkState(deNetworkState *networkState){
+void deWorld::RemoveNetworkState(deNetworkState::Ref networkState){
 	if(!networkState || networkState->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1459,7 +1378,6 @@ void deWorld::RemoveNetworkState(deNetworkState *networkState){
 	if(pPeerNetwork){
 		pPeerNetwork->NetworkStateRemoved(networkState);
 	}
-	networkState->FreeReference();
 }
 
 void deWorld::RemoveAllNetworkStates(){
@@ -1470,7 +1388,6 @@ void deWorld::RemoveAllNetworkStates(){
 	while(pNetworkStateTail){
 		deNetworkState * const next = pNetworkStateTail->GetLLWorldPrev();
 		pNetworkStateTail->SetParentWorld(nullptr);
-		pNetworkStateTail->FreeReference();
 		pNetworkStateTail = next;
 		pNetworkStateCount--;
 	}
@@ -1482,7 +1399,7 @@ void deWorld::RemoveAllNetworkStates(){
 // Particle Emitters
 //////////////////////
 
-void deWorld::AddParticleEmitter(deParticleEmitterInstance *emitter){
+void deWorld::AddParticleEmitter(deParticleEmitterInstance::Ref emitter){
 	if(!emitter || emitter->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -1501,8 +1418,6 @@ void deWorld::AddParticleEmitter(deParticleEmitterInstance *emitter){
 	pParticleEmitterTail = emitter;
 	pParticleEmitterCount++;
 	emitter->SetParentWorld(this);
-	emitter->AddReference();
-	
 	if(pPeerGraphic){
 		pPeerGraphic->ParticleEmitterAdded(emitter);
 	}
@@ -1511,7 +1426,7 @@ void deWorld::AddParticleEmitter(deParticleEmitterInstance *emitter){
 	}
 }
 
-void deWorld::RemoveParticleEmitter(deParticleEmitterInstance *emitter){
+void deWorld::RemoveParticleEmitter(deParticleEmitterInstance::Ref emitter){
 	if(!emitter || emitter->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1539,7 +1454,6 @@ void deWorld::RemoveParticleEmitter(deParticleEmitterInstance *emitter){
 	if(pPeerPhysics){
 		pPeerPhysics->ParticleEmitterRemoved(emitter);
 	}
-	emitter->FreeReference();
 }
 
 void deWorld::RemoveAllParticleEmitters(){
@@ -1553,7 +1467,6 @@ void deWorld::RemoveAllParticleEmitters(){
 	while(pParticleEmitterTail){
 		deParticleEmitterInstance * const next = pParticleEmitterTail->GetLLWorldPrev();
 		pParticleEmitterTail->SetParentWorld(nullptr);
-		pParticleEmitterTail->FreeReference();
 		pParticleEmitterTail = next;
 		pParticleEmitterCount--;
 	}
@@ -1565,7 +1478,7 @@ void deWorld::RemoveAllParticleEmitters(){
 // PropFields
 ////////////
 
-void deWorld::AddPropField(dePropField *propField){
+void deWorld::AddPropField(dePropField::Ref propField){
 	if(!propField || propField->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -1584,8 +1497,6 @@ void deWorld::AddPropField(dePropField *propField){
 	pPropFieldTail = propField;
 	pPropFieldCount++;
 	propField->SetParentWorld(this);
-	propField->AddReference();
-	
 	if(pPeerGraphic){
 		pPeerGraphic->PropFieldAdded(propField);
 	}
@@ -1594,7 +1505,7 @@ void deWorld::AddPropField(dePropField *propField){
 	}
 }
 
-void deWorld::RemovePropField(dePropField *propField){
+void deWorld::RemovePropField(dePropField::Ref propField){
 	if(!propField || propField->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1622,7 +1533,6 @@ void deWorld::RemovePropField(dePropField *propField){
 	if(pPeerPhysics){
 		pPeerPhysics->PropFieldRemoved(propField);
 	}
-	propField->FreeReference();
 }
 
 void deWorld::RemoveAllPropFields(){
@@ -1636,7 +1546,6 @@ void deWorld::RemoveAllPropFields(){
 	while(pPropFieldTail){
 		dePropField * const next = pPropFieldTail->GetLLWorldPrev();
 		pPropFieldTail->SetParentWorld(nullptr);
-		pPropFieldTail->FreeReference();
 		pPropFieldTail = next;
 		pPropFieldCount--;
 	}
@@ -1648,7 +1557,7 @@ void deWorld::RemoveAllPropFields(){
 // Smoke emitters
 ///////////////////
 
-void deWorld::AddSmokeEmitter(deSmokeEmitter *smokeEmitter){
+void deWorld::AddSmokeEmitter(deSmokeEmitter::Ref smokeEmitter){
 	if(!smokeEmitter || smokeEmitter->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -1667,8 +1576,6 @@ void deWorld::AddSmokeEmitter(deSmokeEmitter *smokeEmitter){
 	pSmokeEmitterTail = smokeEmitter;
 	pSmokeEmitterCount++;
 	smokeEmitter->SetParentWorld(this);
-	smokeEmitter->AddReference();
-	
 	if(pPeerGraphic){
 		pPeerGraphic->SmokeEmitterAdded(smokeEmitter);
 	}
@@ -1677,7 +1584,7 @@ void deWorld::AddSmokeEmitter(deSmokeEmitter *smokeEmitter){
 	}
 }
 
-void deWorld::RemoveSmokeEmitter(deSmokeEmitter *smokeEmitter){
+void deWorld::RemoveSmokeEmitter(deSmokeEmitter::Ref smokeEmitter){
 	if(!smokeEmitter || smokeEmitter->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1705,7 +1612,6 @@ void deWorld::RemoveSmokeEmitter(deSmokeEmitter *smokeEmitter){
 	if(pPeerPhysics){
 		pPeerPhysics->SmokeEmitterRemoved(smokeEmitter);
 	}
-	smokeEmitter->FreeReference();
 }
 
 void deWorld::RemoveAllSmokeEmitters(){
@@ -1719,7 +1625,6 @@ void deWorld::RemoveAllSmokeEmitters(){
 	while(pSmokeEmitterTail){
 		deSmokeEmitter * const next = pSmokeEmitterTail->GetLLWorldPrev();
 		pSmokeEmitterTail->SetParentWorld(nullptr);
-		pSmokeEmitterTail->FreeReference();
 		pSmokeEmitterTail = next;
 		pSmokeEmitterCount--;
 	}
@@ -1745,25 +1650,25 @@ deBaseScriptingCollider *listener, const decCollisionFilter &collisionFilter){
 	}
 }
 
-void deWorld::ColliderHits(deCollider *collider, deBaseScriptingCollider *listener){
+void deWorld::ColliderHits(deCollider::Ref collider, deBaseScriptingCollider *listener){
 	if(pPeerPhysics){
 		pPeerPhysics->ColliderHits(collider, listener);
 	}
 }
 
-void deWorld::ColliderMoveHits(deCollider *collider, const decVector &displacement, deBaseScriptingCollider *listener){
+void deWorld::ColliderMoveHits(deCollider::Ref collider, const decVector &displacement, deBaseScriptingCollider *listener){
 	if(pPeerPhysics){
 		pPeerPhysics->ColliderMoveHits(collider, displacement, listener);
 	}
 }
 
-void deWorld::ColliderRotateHits(deCollider *collider, const decVector &rotation, deBaseScriptingCollider *listener){
+void deWorld::ColliderRotateHits(deCollider::Ref collider, const decVector &rotation, deBaseScriptingCollider *listener){
 	if(pPeerPhysics){
 		pPeerPhysics->ColliderRotateHits(collider, rotation, listener);
 	}
 }
 
-void deWorld::ColliderMoveRotateHits(deCollider *collider, const decVector &displacement,
+void deWorld::ColliderMoveRotateHits(deCollider::Ref collider, const decVector &displacement,
 const decVector &rotation, deBaseScriptingCollider *listener){
 	if(pPeerPhysics){
 		pPeerPhysics->ColliderMoveRotateHits(collider, displacement, rotation, listener);
@@ -1775,7 +1680,7 @@ const decVector &rotation, deBaseScriptingCollider *listener){
 // Speakers
 ////////////
 
-void deWorld::AddSpeaker(deSpeaker *speaker){
+void deWorld::AddSpeaker(deSpeaker::Ref speaker){
 	if(!speaker || speaker->GetParentWorld() || speaker->GetParentMicrophone()){
 		DETHROW(deeInvalidParam);
 	}
@@ -1794,14 +1699,12 @@ void deWorld::AddSpeaker(deSpeaker *speaker){
 	pSpeakerTail = speaker;
 	pSpeakerCount++;
 	speaker->SetParentWorld(this);
-	speaker->AddReference();
-	
 	if(pPeerAudio){
 		pPeerAudio->SpeakerAdded(speaker);
 	}
 }
 
-void deWorld::RemoveSpeaker(deSpeaker *speaker){
+void deWorld::RemoveSpeaker(deSpeaker::Ref speaker){
 	if(!speaker || speaker->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1826,7 +1729,6 @@ void deWorld::RemoveSpeaker(deSpeaker *speaker){
 	if(pPeerAudio){
 		pPeerAudio->SpeakerRemoved(speaker);
 	}
-	speaker->FreeReference();
 }
 
 void deWorld::RemoveAllSpeakers(){
@@ -1837,7 +1739,6 @@ void deWorld::RemoveAllSpeakers(){
 	while(pSpeakerTail){
 		deSpeaker * const next = pSpeakerTail->GetLLWorldPrev();
 		pSpeakerTail->SetParentWorld(nullptr);
-		pSpeakerTail->FreeReference();
 		pSpeakerTail = next;
 		pSpeakerCount--;
 	}
@@ -1849,7 +1750,7 @@ void deWorld::RemoveAllSpeakers(){
 // Sound level meters
 ///////////////////////
 
-void deWorld::AddSoundLevelMeter(deSoundLevelMeter *soundLevelMeter){
+void deWorld::AddSoundLevelMeter(deSoundLevelMeter::Ref soundLevelMeter){
 	if(!soundLevelMeter || soundLevelMeter->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -1868,14 +1769,12 @@ void deWorld::AddSoundLevelMeter(deSoundLevelMeter *soundLevelMeter){
 	pSoundLevelMeterTail = soundLevelMeter;
 	pSoundLevelMeterCount++;
 	soundLevelMeter->SetParentWorld(this);
-	soundLevelMeter->AddReference();
-	
 	if(pPeerAudio){
 		pPeerAudio->SoundLevelMeterAdded(soundLevelMeter);
 	}
 }
 
-void deWorld::RemoveSoundLevelMeter(deSoundLevelMeter *soundLevelMeter){
+void deWorld::RemoveSoundLevelMeter(deSoundLevelMeter::Ref soundLevelMeter){
 	if(!soundLevelMeter || soundLevelMeter->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1900,7 +1799,6 @@ void deWorld::RemoveSoundLevelMeter(deSoundLevelMeter *soundLevelMeter){
 	if(pPeerAudio){
 		pPeerAudio->SoundLevelMeterRemoved(soundLevelMeter);
 	}
-	soundLevelMeter->FreeReference();
 }
 
 void deWorld::RemoveAllSoundLevelMeters(){
@@ -1911,7 +1809,6 @@ void deWorld::RemoveAllSoundLevelMeters(){
 	while(pSoundLevelMeterTail){
 		deSoundLevelMeter * const next = pSoundLevelMeterTail->GetLLWorldPrev();
 		pSoundLevelMeterTail->SetParentWorld(nullptr);
-		pSoundLevelMeterTail->FreeReference();
 		pSoundLevelMeterTail = next;
 		pSoundLevelMeterCount--;
 	}
@@ -1923,7 +1820,7 @@ void deWorld::RemoveAllSoundLevelMeters(){
 // Touch sensors
 //////////////////
 
-void deWorld::AddTouchSensor(deTouchSensor *touchSensor){
+void deWorld::AddTouchSensor(deTouchSensor::Ref touchSensor){
 	if(!touchSensor || touchSensor->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -1942,14 +1839,12 @@ void deWorld::AddTouchSensor(deTouchSensor *touchSensor){
 	pTouchSensorTail = touchSensor;
 	pTouchSensorCount++;
 	touchSensor->SetParentWorld(this);
-	touchSensor->AddReference();
-	
 	if(pPeerPhysics){
 		pPeerPhysics->TouchSensorAdded(touchSensor);
 	}
 }
 
-void deWorld::RemoveTouchSensor(deTouchSensor *touchSensor){
+void deWorld::RemoveTouchSensor(deTouchSensor::Ref touchSensor){
 	if(!touchSensor || touchSensor->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1974,7 +1869,6 @@ void deWorld::RemoveTouchSensor(deTouchSensor *touchSensor){
 	if(pPeerPhysics){
 		pPeerPhysics->TouchSensorRemoved(touchSensor);
 	}
-	touchSensor->FreeReference();
 }
 
 void deWorld::RemoveAllTouchSensors(){
@@ -1985,7 +1879,6 @@ void deWorld::RemoveAllTouchSensors(){
 	while(pTouchSensorTail){
 		deTouchSensor * const next = pTouchSensorTail->GetLLWorldPrev();
 		pTouchSensorTail->SetParentWorld(nullptr);
-		pTouchSensorTail->FreeReference();
 		pTouchSensorTail = next;
 		pTouchSensorCount--;
 	}
@@ -2060,10 +1953,6 @@ void deWorld::pCleanUp(){
 	}
 	
 	Clear();
-	
-	if(pHeightTerrain){
-		pHeightTerrain->FreeReference();
-	}
 }
 
 

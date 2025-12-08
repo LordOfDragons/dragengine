@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUSAnimSetRigPath::saeUSAnimSetRigPath(saeSAnimation *sanimation, const char *newName){
+saeUSAnimSetRigPath::saeUSAnimSetRigPath(saeSAnimation::Ref sanimation, const char *newName){
 	if(!sanimation || !newName) DETHROW(deeInvalidParam);
 	
 	pSAnimation = NULL;
@@ -50,13 +50,9 @@ saeUSAnimSetRigPath::saeUSAnimSetRigPath(saeSAnimation *sanimation, const char *
 	pNewPath = newName;
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
 }
 
 saeUSAnimSetRigPath::~saeUSAnimSetRigPath(){
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

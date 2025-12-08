@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakFaceRemove::ceUCAASpeakFaceRemove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *facePose){
+ceUCAASpeakFaceRemove::ceUCAASpeakFaceRemove(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref facePose){
 	if(!topic || !actorSpeak || !facePose){
 		DETHROW(deeInvalidParam);
 	}
@@ -59,25 +59,11 @@ ceUCAASpeakFaceRemove::ceUCAASpeakFaceRemove(ceConversationTopic *topic, ceCAAct
 	SetShortInfo("Remove Face Pose");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pFacePose = facePose;
-	facePose->AddReference();
 }
 
 ceUCAASpeakFaceRemove::~ceUCAASpeakFaceRemove(){
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

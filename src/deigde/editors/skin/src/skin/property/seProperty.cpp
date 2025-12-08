@@ -65,10 +65,7 @@ pValue(0.0f),
 pColor(1.0f, 1.0f, 1.0f),
 
 pVideoSharedTime(true),
-
-pNodeGroup(NULL),
 pEngNodeGroup(NULL),
-pActiveNodeGroup(NULL),
 pNodeSelection(*this),
 pActiveNodeLayer(0),
 pNodeTileX(false),
@@ -82,7 +79,7 @@ pActive(false)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pNodeGroup = new sePropertyNodeGroup(*engine);
+	pNodeGroup.TakeOver(new sePropertyNodeGroup(*engine));
 	pNodeGroup->SetProperty(this);
 }
 
@@ -106,10 +103,7 @@ pEngImage(property.pEngImage),
 pPathVideo(property.pPathVideo),
 pEngVideo(property.pEngVideo),
 pVideoSharedTime(property.pVideoSharedTime),
-
-pNodeGroup(NULL),
 pEngNodeGroup(NULL),
-pActiveNodeGroup(NULL),
 pNodeSelection(*this),
 pActiveNodeLayer(0),
 pNodeColor(property.pNodeColor),
@@ -125,18 +119,14 @@ pActive(false)
 	pMappedComponents[2] = property.pMappedComponents[2];
 	pMappedComponents[3] = property.pMappedComponents[3];
 	
-	pNodeGroup = new sePropertyNodeGroup(*property.pNodeGroup);
+	pNodeGroup.TakeOver(new sePropertyNodeGroup(*property.pNodeGroup));
 	pNodeGroup->SetProperty(this);
 }
 
 seProperty::~seProperty(){
-	if(pActiveNodeGroup){
-		pActiveNodeGroup->FreeReference();
-	}
 	pNodeSelection.RemoveAll();
 	if(pNodeGroup){
 		pNodeGroup->SetProperty(NULL);
-		pNodeGroup->FreeReference();
 	}
 }
 
@@ -283,7 +273,7 @@ void seProperty::SetMappedComponent(int index, seMapped *mapped){
 
 
 
-void seProperty::SetNodeGroup(sePropertyNodeGroup *nodeGroup){
+void seProperty::SetNodeGroup(sePropertyNodeGroup::Ref nodeGroup){
 	if(!nodeGroup || nodeGroup->GetProperty()){
 		DETHROW(deeInvalidParam);
 	}
@@ -291,11 +281,7 @@ void seProperty::SetNodeGroup(sePropertyNodeGroup *nodeGroup){
 	pNodeSelection.RemoveAll();
 	
 	pNodeGroup->SetProperty(NULL);
-	pNodeGroup->FreeReference();
-	
 	pNodeGroup = nodeGroup;
-	
-	nodeGroup->AddReference();
 	nodeGroup->SetProperty(this);
 	
 	nodeGroup->NotifyChanged();
@@ -309,7 +295,7 @@ void seProperty::UpdateEngineNodeGroup(){
 	// TODO
 }
 
-void seProperty::SetActiveNodeGroup(sePropertyNodeGroup *node){
+void seProperty::SetActiveNodeGroup(sePropertyNodeGroup::Ref node){
 	if(node == pActiveNodeGroup){
 		return;
 	}
@@ -321,13 +307,11 @@ void seProperty::SetActiveNodeGroup(sePropertyNodeGroup *node){
 	
 	if(pActiveNodeGroup){
 		pActiveNodeGroup->SetActiveGroup(false);
-		pActiveNodeGroup->FreeReference();
 	}
 	
 	pActiveNodeGroup = node;
 	
 	if(node){
-		node->AddReference();
 		node->SetActiveGroup(true);
 	}
 	

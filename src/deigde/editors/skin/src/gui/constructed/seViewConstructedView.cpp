@@ -110,7 +110,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSkin *skin, seProperty *property) = 0;
+	virtual igdeUndo *OnAction(seSkin::Ref skin, seProperty *property) = 0;
 	
 	virtual void Update(){
 		seSkin * const skin = pView.GetSkin();
@@ -135,12 +135,12 @@ public:
 	cBaseActionNode(seViewConstructedView &view, const char *text, igdeIcon *icon,
 		const char *description) : cBaseAction(view, text, icon, description){}
 	
-	virtual igdeUndo *OnAction(seSkin *skin, seProperty *property){
+	virtual igdeUndo *OnAction(seSkin::Ref skin, seProperty *property){
 		sePropertyNode * const node = pView.GetActiveNode();
 		return node ? OnActionNode(skin, property, node) : NULL;
 	}
 	
-	virtual igdeUndo *OnActionNode(seSkin *skin, seProperty *property, sePropertyNode *node) = 0;
+	virtual igdeUndo *OnActionNode(seSkin::Ref skin, seProperty *property, sePropertyNode::Ref node) = 0;
 	
 	void Update(const seSkin &skin, const seProperty &property) override{
 		sePropertyNode * const node = pView.GetActiveNode();
@@ -176,7 +176,7 @@ public:
 	cBaseActionAddNode(seViewConstructedView &view, const char *text, igdeIcon *icon,
 		const char *description) : cBaseAction(view, text, icon, description){}
 	
-	virtual igdeUndo *OnAction(seSkin *skin, seProperty *property){
+	virtual igdeUndo *OnAction(seSkin::Ref skin, seProperty *property){
 		const sePropertyNode::Ref node(sePropertyNode::Ref::New(CreateNode(*skin, *property)));
 		if(!node){
 			return nullptr;
@@ -252,7 +252,7 @@ public:
 	cActionRemoveNode(seViewConstructedView &view) : cBaseActionNode(view, "Remove Nodes",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove nodes"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
+	virtual igdeUndo *OnActionNode(seSkin*, seProperty *property, sePropertyNode::Ref node){
 		return new seUPNGroupRemoveNodes(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
@@ -274,7 +274,7 @@ public:
 	cActionCutNode(seViewConstructedView &view) : cBaseActionNode(view, "Cut Nodes",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut), "Cut nodes"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
+	virtual igdeUndo *OnActionNode(seSkin*, seProperty *property, sePropertyNode::Ref node){
 		pView.GetWindowMain().GetClipboard().Set(seClipboardDataPropertyNode::Ref::NewWith(
 			property->GetNodeSelection().GetSelected()));
 		
@@ -305,7 +305,7 @@ public:
 	cActionEnterGroup(seViewConstructedView &view) : cBaseActionNode(view, "Enter Group",
 		NULL, "Enter group"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
+	virtual igdeUndo *OnActionNode(seSkin*, seProperty *property, sePropertyNode::Ref node){
 		if(node->GetNodeType() == sePropertyNode::entGroup){
 			property->GetNodeSelection().RemoveAll();
 			property->SetActiveNodeGroup((sePropertyNodeGroup*)node);
@@ -365,7 +365,7 @@ public:
 	cActionUngroupNodes(seViewConstructedView &view) : cBaseActionNode(view, "Ungroup Nodes",
 		NULL, "Ungroup Nodes"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty*, sePropertyNode *node){
+	virtual igdeUndo *OnActionNode(seSkin*, seProperty*, sePropertyNode::Ref node){
 		return node->GetNodeType() == sePropertyNode::entGroup
 			? new seUPNUngroupNodes((sePropertyNodeGroup*)node) : NULL;
 	}
@@ -380,19 +380,18 @@ public:
 	cBaseMoveNodes(seViewConstructedView &view, const char *text, igdeIcon *icon,
 		const char *description) : cBaseActionNode(view, text, icon, description){}
 	
-	virtual igdeUndo *OnActionNode(seSkin *skin, seProperty *property, sePropertyNode *node){
-		seUPNGroupMoveNodes *undo = NULL;
+	virtual igdeUndo *OnActionNode(seSkin::Ref skin, seProperty *property, sePropertyNode::Ref node){
+		seUPNGroupMoveNodes::Ref undo = NULL;
 		if(node){
 			undo = CreateUndo(skin, property, node);
 			if(!undo->HasAnyEffect()){
-				undo->FreeReference();
 				undo = NULL;
 			}
 		}
 		return undo;
 	}
 	
-	virtual seUPNGroupMoveNodes *CreateUndo(seSkin *skin, seProperty *property, sePropertyNode *node) = 0;
+	virtual seUPNGroupMoveNodes *CreateUndo(seSkin::Ref skin, seProperty *property, sePropertyNode::Ref node) = 0;
 };
 
 class cActionMoveNodesTop : public cBaseMoveNodes{
@@ -400,7 +399,7 @@ public:
 	cActionMoveNodesTop(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Top",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongUp), "Move node to top"){}
 	
-	seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
+	seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode::Ref node) override{
 		return new seUPNGroupNodesTop(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
@@ -410,7 +409,7 @@ public:
 	cActionMoveNodesUp(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Up",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp), "Move node up"){}
 	
-	seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
+	seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode::Ref node) override{
 		return new seUPNGroupNodesUp(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
@@ -420,7 +419,7 @@ public:
 	cActionMoveNodesDown(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Down",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown), "Move node down"){}
 	
-	seUPNGroupNodesDown *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
+	seUPNGroupNodesDown *CreateUndo(seSkin*, seProperty *property, sePropertyNode::Ref node) override{
 		return new seUPNGroupNodesDown(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
@@ -430,7 +429,7 @@ public:
 	cActionMoveNodesBottom(seViewConstructedView &view) : cBaseMoveNodes(view, "Move Node Bottom",
 		view.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongDown), "Move node to bottom"){}
 	
-	seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode *node) override{
+	seUPNGroupMoveNodes *CreateUndo(seSkin*, seProperty *property, sePropertyNode::Ref node) override{
 		return new seUPNGroupNodesBottom(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
@@ -440,7 +439,7 @@ public:
 	cActionSetMask(seViewConstructedView &view) : cBaseActionNode(view, "Set Mask",
 		NULL, "Set Mask"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty *property, sePropertyNode *node){
+	virtual igdeUndo *OnActionNode(seSkin*, seProperty *property, sePropertyNode::Ref node){
 		const sePropertyNodeList &selection = property->GetNodeSelection().GetSelected();
 		if(node->GetMask() || selection.GetCount() != 2){
 			return NULL;
@@ -463,7 +462,7 @@ public:
 	cActionRemoveMask(seViewConstructedView &view) : cBaseActionNode(view, "Remove Mask",
 		NULL, "Remove Mask"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty*, sePropertyNode *node){
+	virtual igdeUndo *OnActionNode(seSkin*, seProperty*, sePropertyNode::Ref node){
 		return node->GetMask() ? new seUPropertyNodeRemoveMask(node) : NULL;
 	}
 	
@@ -477,7 +476,7 @@ public:
 	cActionSizeFromImage(seViewConstructedView &view) : cBaseActionNode(view,
 		"Size from image size", NULL, "Set image size to constructed size"){}
 	
-	virtual igdeUndo *OnActionNode(seSkin*, seProperty*, sePropertyNode *node){
+	virtual igdeUndo *OnActionNode(seSkin*, seProperty*, sePropertyNode::Ref node){
 		return node->GetNodeType() == sePropertyNode::entImage
 			&& ((sePropertyNodeImage*)node)->GetImage()
 			? new seUPropertyNodeImageSizeFromImage((sePropertyNodeImage*)node) : NULL;
@@ -502,8 +501,6 @@ seViewConstructedView::seViewConstructedView(seWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain),
 pListener(NULL),
-
-pSkin(NULL),
 
 pZoom(100),
 pZoomScale(1.0f),
@@ -554,7 +551,7 @@ seViewConstructedView::~seViewConstructedView(){
 void seViewConstructedView::ResetView(){
 }
 
-void seViewConstructedView::SetSkin(seSkin *skin){
+void seViewConstructedView::SetSkin(seSkin::Ref skin){
 	if(skin == pSkin){
 		return;
 	}
@@ -563,13 +560,11 @@ void seViewConstructedView::SetSkin(seSkin *skin){
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
 	if(skin){
-		skin->AddReference();
 		skin->AddListener(pListener);
 		OnResize();
 	}

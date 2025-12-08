@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUAddObject::meUAddObject(meWorld *world, meObject *object){
+meUAddObject::meUAddObject(meWorld::Ref world, meObject::Ref object){
 	if(!world || !object){
 		DETHROW(deeInvalidParam);
 	}
@@ -47,13 +47,10 @@ meUAddObject::meUAddObject(meWorld *world, meObject *object){
 	SetShortInfo("Add Object");
 	
 	pWorld = world;
-	world->AddReference();
-	
 	pObject = object;
-	object->AddReference();
 }
 
-meUAddObject::meUAddObject(meWorld *world, const decDVector &position, const char *classname){
+meUAddObject::meUAddObject(meWorld::Ref world, const decDVector &position, const char *classname){
 	if(!world || !classname){
 		DETHROW(deeInvalidParam);
 	}
@@ -69,9 +66,7 @@ meUAddObject::meUAddObject(meWorld *world, const decDVector &position, const cha
 	
 	try{
 		pWorld = world;
-		world->AddReference();
-		
-		pObject = new meObject(world->GetEnvironment());
+		pObject.TakeOver(new meObject(world->GetEnvironment()));
 		pObject->SetPosition(position);
 		pObject->SetSize(decVector(0.5f, 0.5f, 0.5f));
 		pObject->SetClassName(classname);
@@ -125,10 +120,4 @@ void meUAddObject::Redo(){
 //////////////////////
 
 void meUAddObject::pCleanUp(){
-	if(pObject){
-		pObject->FreeReference();
-	}
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

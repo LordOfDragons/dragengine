@@ -35,7 +35,7 @@
 class meDecalSelection{
 private:
 	meDecalList pSelection;
-	meDecal *pActive;
+	meDecal::Ref pActive;
 	
 public:
 	/** \name Constructors and Destructors */

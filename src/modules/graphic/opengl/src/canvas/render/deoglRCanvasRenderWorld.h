@@ -36,7 +36,7 @@ class deoglRCamera;
  */
 class deoglRCanvasRenderWorld : public deoglRCanvas{
 private:
-	deoglRCamera *pCamera;
+	deoglRCamera::Ref pCamera;
 	bool pForceToneMapAdaption;
 	
 	
@@ -59,7 +59,7 @@ public:
 	inline deoglRCamera *GetCamera() const{ return pCamera; }
 	
 	/** Set camera or \em NULL if not set. */
-	void SetCamera(deoglRCamera *camera);
+	void SetCamera(deoglRCamera::Ref camera);
 	
 	
 	

@@ -65,14 +65,13 @@ mePropField::mePropField(deEngine *engine){
 	}
 	
 	// TEMPORARY
-	mePropFieldType *pftype = NULL;
+	mePropFieldType::Ref pftype = NULL;
 	try{
-		pftype = new mePropFieldType(engine);
+		pftype.TakeOver(new mePropFieldType(engine));
 		pftype->SetPathModel("/epsylon/models/vegetation/bush1/bush1.demodel");
 		pftype->SetPathSkin("/epsylon/models/vegetation/bush1/512/bush1.deskin");
 		pftype->RebuildInstances();
 		AddType(pftype);
-		pftype->FreeReference();
 		pftype = NULL;
 		
 	}catch(const deException &){
@@ -133,7 +132,7 @@ mePropFieldType *mePropField::GetTypeAt(int index) const{
 	return pTypes[index];
 }
 
-int mePropField::IndexOfType(mePropFieldType *type) const{
+int mePropField::IndexOfType(mePropFieldType::Ref type) const{
 	if(!type) DETHROW(deeInvalidParam);
 	int t;
 	
@@ -146,7 +145,7 @@ int mePropField::IndexOfType(mePropFieldType *type) const{
 	return -1;
 }
 
-void mePropField::AddType(mePropFieldType *type){
+void mePropField::AddType(mePropFieldType::Ref type){
 	if(!type) DETHROW(deeInvalidParam);
 	
 	if(pTypeCount == pTypeSize){
@@ -165,8 +164,6 @@ void mePropField::AddType(mePropFieldType *type){
 	pTypeCount++;
 	
 	type->SetPropField(this);
-	type->AddReference();
-	
 	SetWorldChanged();
 	
 	// engine object
@@ -183,7 +180,7 @@ void mePropField::AddType(mePropFieldType *type){
 	}
 }
 
-void mePropField::RemoveType(mePropFieldType *type){
+void mePropField::RemoveType(mePropFieldType::Ref type){
 	int t, index = IndexOfType(type);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -197,8 +194,6 @@ void mePropField::RemoveType(mePropFieldType *type){
 		type->SetEnginePFType(NULL);
 	}
 	type->SetPropField(NULL);
-	type->FreeReference();
-	
 	SetWorldChanged();
 }
 

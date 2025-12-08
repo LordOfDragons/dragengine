@@ -81,7 +81,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, lpeLangPack *langpack) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, lpeLangPack::Ref langpack) = 0;
 };
 
 class cBaseTextAreaListener : public igdeTextAreaListener{
@@ -103,7 +103,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextArea *textArea, lpeLangPack *langpack) = 0;
+	virtual igdeUndo *OnChanged(igdeTextArea *textArea, lpeLangPack::Ref langpack) = 0;
 };
 
 
@@ -112,7 +112,7 @@ class cTextIdentifier : public cBaseTextFieldListener{
 public:
 	cTextIdentifier(lpeWPLangPack &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, lpeLangPack *langpack){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, lpeLangPack::Ref langpack){
 		return textField->GetText() != langpack->GetIdentifier()
 			? new lpeULangPackSetIdentifier(langpack, textField->GetText()) : nullptr;
 	}
@@ -122,7 +122,7 @@ class cTextName : public cBaseTextFieldListener{
 public:
 	cTextName(lpeWPLangPack &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, lpeLangPack *langpack){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, lpeLangPack::Ref langpack){
 		decUnicodeString value(decUnicodeString::NewFromUTF8(textField->GetText()));
 		if(value == langpack->GetName()){
 			return NULL;
@@ -135,7 +135,7 @@ class cTextDescription : public cBaseTextAreaListener{
 public:
 	cTextDescription(lpeWPLangPack &panel) : cBaseTextAreaListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextArea *textArea, lpeLangPack *langpack){
+	virtual igdeUndo *OnChanged(igdeTextArea *textArea, lpeLangPack::Ref langpack){
 		decUnicodeString value(decUnicodeString::NewFromUTF8(textArea->GetText()));
 		if(value == langpack->GetDescription()){
 			return NULL;
@@ -148,7 +148,7 @@ class cTextMissingText : public cBaseTextFieldListener{
 public:
 	cTextMissingText(lpeWPLangPack &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, lpeLangPack *langpack){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, lpeLangPack::Ref langpack){
 		decUnicodeString value(decUnicodeString::NewFromUTF8(textField->GetText()));
 		if(value == langpack->GetMissingText()){
 			return NULL;
@@ -170,8 +170,7 @@ public:
 lpeWPLangPack::lpeWPLangPack(lpeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(new lpeWPLangPackListener(*this)),
-pLangPack(NULL)
+pListener(new lpeWPLangPackListener(*this))
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
@@ -195,10 +194,6 @@ pLangPack(NULL)
 
 lpeWPLangPack::~lpeWPLangPack(){
 	SetLangPack(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -206,21 +201,19 @@ lpeWPLangPack::~lpeWPLangPack(){
 // Management
 ///////////////
 
-void lpeWPLangPack::SetLangPack(lpeLangPack *langpack){
+void lpeWPLangPack::SetLangPack(lpeLangPack::Ref langpack){
 	if(langpack == pLangPack){
 		return;
 	}
 	
 	if(pLangPack){
 		pLangPack->RemoveListener(pListener);
-		pLangPack->FreeReference();
 	}
 	
 	pLangPack = langpack;
 	
 	if(langpack){
 		langpack->AddListener(pListener);
-		langpack->AddReference();
 	}
 	
 	UpdateLangPack();

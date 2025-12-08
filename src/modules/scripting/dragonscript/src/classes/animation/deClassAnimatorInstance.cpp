@@ -54,7 +54,7 @@
 
 
 struct sArINatDat{
-	deAnimatorInstance *instance;
+	deAnimatorInstance::Ref instance;
 };
 
 
@@ -539,7 +539,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 
 void deClassAnimatorInstance::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimatorInstance *instance = ((sArINatDat*)p_GetNativeData(myself))->instance;
+	deAnimatorInstance::Ref instance = ((sArINatDat*)p_GetNativeData(myself))->instance;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)instance);
 }
@@ -551,7 +551,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassAnimatorInstance::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimatorInstance *instance = ((sArINatDat*)p_GetNativeData(myself))->instance;
+	deAnimatorInstance::Ref instance = ((sArINatDat*)p_GetNativeData(myself))->instance;
 	deClassAnimatorInstance *clsAr = (deClassAnimatorInstance*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
@@ -656,7 +656,7 @@ deAnimatorInstance *deClassAnimatorInstance::GetAnimatorInstance(dsRealObject *o
 	return ((sArINatDat*)p_GetNativeData(object->GetBuffer()))->instance;
 }
 
-void deClassAnimatorInstance::PushAnimatorInstance(dsRunTime *rt, deAnimatorInstance *instance){
+void deClassAnimatorInstance::PushAnimatorInstance(dsRunTime *rt, deAnimatorInstance::Ref instance){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -668,5 +668,4 @@ void deClassAnimatorInstance::PushAnimatorInstance(dsRunTime *rt, deAnimatorInst
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sArINatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->instance = instance;
-	instance->AddReference();
 }

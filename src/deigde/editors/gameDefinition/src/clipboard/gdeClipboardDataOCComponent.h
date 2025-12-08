@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCComponent *pComponent;
+	gdeOCComponent::Ref pComponent;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCComponent(gdeOCComponent *component);
+	gdeClipboardDataOCComponent(gdeOCComponent::Ref component);
 	
 protected:
 	/**

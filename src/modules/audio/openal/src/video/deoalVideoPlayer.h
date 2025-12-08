@@ -44,7 +44,7 @@ class deoalVideoPlayer : public deBaseAudioVideoPlayer{
 private:
 	deAudioOpenAL &pOal;
 	deVideoPlayer &pVideoPlayer;
-	deoalAVideoPlayer *pAVideoPlayer;
+	deoalAVideoPlayer::Ref pAVideoPlayer;
 	
 	bool pDirtyVideo;
 	bool pDirtyParameters;

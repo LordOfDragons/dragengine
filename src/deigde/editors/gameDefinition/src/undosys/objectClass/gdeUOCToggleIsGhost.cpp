@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCToggleIsGhost::gdeUOCToggleIsGhost(gdeObjectClass *objectClass) :
+gdeUOCToggleIsGhost::gdeUOCToggleIsGhost(gdeObjectClass::Ref objectClass) :
 pObjectClass(NULL)
 {
 	if(!objectClass){
@@ -49,13 +49,9 @@ pObjectClass(NULL)
 	SetShortInfo("Object class toggle is ghost");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCToggleIsGhost::~gdeUOCToggleIsGhost(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPSetType::gdeUGDDPSetType(gdeGameDefinition *gamedef,
-gdeProperty *property, gdeProperty::ePropertyTypes newValue) :
-pGameDefinition(NULL),
+gdeUGDDPSetType::gdeUGDDPSetType(gdeGameDefinition::Ref gamedef,
+gdeProperty::Ref property, gdeProperty::ePropertyTypes newValue) :
+
 pProperty(NULL)
 {
 	if(!gamedef || !property){
@@ -54,19 +54,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDDPSetType::~gdeUGDDPSetType(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

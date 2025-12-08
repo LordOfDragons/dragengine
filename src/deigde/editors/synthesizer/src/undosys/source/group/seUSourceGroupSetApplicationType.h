@@ -38,7 +38,7 @@ class seSourceGroup;
  */
 class seUSourceGroupSetApplicationType : public igdeUndo{
 private:
-	seSourceGroup *pSource;
+	seSourceGroup::Ref pSource;
 	
 	deSynthesizerSourceGroup::eApplicationTypes pOldType;
 	deSynthesizerSourceGroup::eApplicationTypes pNewType;

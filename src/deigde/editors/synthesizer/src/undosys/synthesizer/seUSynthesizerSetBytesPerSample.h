@@ -37,7 +37,7 @@ class seSynthesizer;
  */
 class seUSynthesizerSetBytesPerSample : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	int pOldBytesPerSample;
 	int pNewBytesPerSample;

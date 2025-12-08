@@ -38,10 +38,10 @@ class seControllerTarget;
  */
 class seUEffectTargetRemoveLink : public igdeUndo{
 private:
-	seEffect *pEffect;
+	seEffect::Ref pEffect;
 	seControllerTarget *pTarget;
 	
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	
 	

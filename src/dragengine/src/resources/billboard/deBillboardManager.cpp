@@ -62,10 +62,10 @@ deBillboard *deBillboardManager::GetRootBillboard() const{
 }
 
 deBillboard *deBillboardManager::CreateBillboard(){
-	deBillboard *billboard = NULL;
+	deBillboard::Ref billboard = NULL;
 	
 	try{
-		billboard = new deBillboard(this);
+		billboard.TakeOver(new deBillboard(this));
 		if(!billboard) DETHROW(deeOutOfMemory);
 		
 		GetGraphicSystem()->LoadBillboard(billboard);
@@ -73,9 +73,6 @@ deBillboard *deBillboardManager::CreateBillboard(){
 		pBillboards.Add(billboard);
 		
 	}catch(const deException &){
-		if(billboard){
-			billboard->FreeReference();
-		}
 		throw;
 	}
 	
@@ -97,7 +94,7 @@ void deBillboardManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deBillboardManager::SystemGraphicLoad(){
-	deBillboard *billboard = (deBillboard*)pBillboards.GetRoot();
+	deBillboard::Ref billboard = (deBillboard*)pBillboards.GetRoot();
 	
 	while(billboard){
 		if(!billboard->GetPeerGraphic()){
@@ -109,7 +106,7 @@ void deBillboardManager::SystemGraphicLoad(){
 }
 
 void deBillboardManager::SystemGraphicUnload(){
-	deBillboard *billboard = (deBillboard*)pBillboards.GetRoot();
+	deBillboard::Ref billboard = (deBillboard*)pBillboards.GetRoot();
 	
 	while(billboard){
 		billboard->SetPeerGraphic(NULL);

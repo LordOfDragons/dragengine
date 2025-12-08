@@ -94,7 +94,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font) = 0;
 };
 
 
@@ -103,7 +103,7 @@ class cTextImagePath : public cBaseTextFieldListener{
 public:
 	cTextImagePath(feWPFont &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font){
 		feFontImage * const image = font->GetFontImage();
 		if(image->GetFilename() == textField->GetText()){
 			return NULL;
@@ -157,7 +157,7 @@ class cTextLineHeight : public cBaseTextFieldListener{
 public:
 	cTextLineHeight(feWPFont &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont *font){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font){
 		const int lineHeight = textField->GetInteger();
 		if(lineHeight == font->GetLineHeight()){
 			return NULL;
@@ -187,7 +187,7 @@ class cTextBaseLine : public cBaseTextFieldListener{
 public:
 	cTextBaseLine(feWPFont &panel) : cBaseTextFieldListener(panel){}
 	
-	igdeUndo *OnChanged(igdeTextField *textField, feFont *font) override{
+	igdeUndo *OnChanged(igdeTextField *textField, feFont::Ref font) override{
 		const int baseLine = textField->GetInteger();
 		return baseLine != font->GetBaseLine() ? new feUFontSetBaseLine(font, baseLine) : nullptr;
 	}
@@ -205,15 +205,13 @@ public:
 
 feWPFont::feWPFont(feWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pFont(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new feWPFontListener(*this);
+	pListener.TakeOver(new feWPFontListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -236,10 +234,6 @@ pListener(NULL)
 
 feWPFont::~feWPFont(){
 	SetFont(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -247,14 +241,13 @@ feWPFont::~feWPFont(){
 // Management
 ///////////////
 
-void feWPFont::SetFont(feFont *font){
+void feWPFont::SetFont(feFont::Ref font){
 	if(font == pFont){
 		return;
 	}
 	
 	if(pFont){
 		pFont->RemoveNotifier(pListener);
-		pFont->FreeReference();
 		pFont = NULL;
 	}
 	
@@ -262,7 +255,6 @@ void feWPFont::SetFont(feFont *font){
 	
 	if(font){
 		font->AddNotifier(pListener);
-		font->AddReference();
 	}
 	
 	UpdateFont();

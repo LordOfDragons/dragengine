@@ -38,7 +38,7 @@ class meObjectTexture;
  */
 class meUObjTexSetProperties : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUObjTexSetProperties(meObjectTexture *texture, const decStringDictionary &newValues);
+	meUObjTexSetProperties(meObjectTexture::Ref texture, const decStringDictionary &newValues);
 	
 protected:
 	/** \brief Clean up undo object. */

@@ -45,7 +45,7 @@ public:
 	
 private:
 	igdeTreeList *pTreeList;
-	ceWPTTreeItemModel *pModel;
+	ceWPTTreeItemModel::Ref pModel;
 	
 	
 	
@@ -72,22 +72,22 @@ public:
 	inline ceWPTTreeItemModel *GetModel() const{ return pModel; }
 	
 	/** \brief Set model or \em NULL. */
-	void SetModel(ceWPTTreeItemModel *model);
+	void SetModel(ceWPTTreeItemModel::Ref model);
 	
 	
 	
 	/** \brief Add item with model. */
-	void AddItem(ceWPTTreeItemModel *model);
+	void AddItem(ceWPTTreeItemModel::Ref model);
 	
 	/** \brief Insert item with model at position. */
-	void InsertItem(ceWPTTreeItemModel *model, int position);
+	void InsertItem(ceWPTTreeItemModel::Ref model, int position);
 	
 	/**
 	 * \brief Remove item for model.
 	 * 
 	 * Clears model from removed item if present.
 	 */
-	void RemoveItem(ceWPTTreeItemModel *model);
+	void RemoveItem(ceWPTTreeItemModel::Ref model);
 	
 	/**
 	 * \brief Remove all child items.

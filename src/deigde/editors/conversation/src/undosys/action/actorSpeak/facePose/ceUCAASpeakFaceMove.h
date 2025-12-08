@@ -38,9 +38,9 @@ class ceStrip;
  */
 class ceUCAASpeakFaceMove : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pFacePose;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pFacePose;
 	int pOldIndex;
 	int pNewIndex;
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakFaceMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *facePose, int newIndex);
+	ceUCAASpeakFaceMove(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref facePose, int newIndex);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakFaceMove();

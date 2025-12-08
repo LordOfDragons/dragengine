@@ -108,7 +108,7 @@ public:
 	/** Retrieves the world or NULL if myself is NULL. */
 	deWorld *GetWorld(dsRealObject *myself) const;
 	/** Pushes the world which can be NULL. */
-	void PushWorld(dsRunTime *rt, deWorld *world);
+	void PushWorld(dsRunTime *rt, deWorld::Ref world);
 
 private:
 	struct sInitData{

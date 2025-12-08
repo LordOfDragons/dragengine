@@ -43,7 +43,7 @@ public:
 	
 	
 private:
-	gdeOCBillboard *pOCBillboard;
+	gdeOCBillboard::Ref pOCBillboard;
 	
 	deBillboard::Ref pBillboard;
 	deCollider::Ref pCollider;
@@ -54,7 +54,7 @@ public:
 	/*@{*/
 	/** \brief Create active object component. */
 	gdeVAOBillboard(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCBillboard *ocbillboard);
+		const decString &propertyPrefix, gdeOCBillboard::Ref ocbillboard);
 	
 protected:
 	/**

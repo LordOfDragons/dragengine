@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetType::gdeUOCNavBlockerSetType(gdeObjectClass *objectClass,
-gdeOCNavigationBlocker *navblocker, deNavigationSpace::eSpaceTypes newValue) :
-pObjectClass(NULL),
+gdeUOCNavBlockerSetType::gdeUOCNavBlockerSetType(gdeObjectClass::Ref objectClass,
+gdeOCNavigationBlocker::Ref navblocker, deNavigationSpace::eSpaceTypes newValue) :
+
 pNavBlocker(NULL)
 {
 	if(!objectClass || !navblocker){
@@ -55,19 +55,10 @@ pNavBlocker(NULL)
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetType::~gdeUOCNavBlockerSetType(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

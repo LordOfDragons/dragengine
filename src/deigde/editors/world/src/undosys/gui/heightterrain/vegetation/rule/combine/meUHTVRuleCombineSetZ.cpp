@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleCombineSetZ::meUHTVRuleCombineSetZ(meHTVegetationLayer *vlayer, meHTVRuleCombine *rule, float nz){
+meUHTVRuleCombineSetZ::meUHTVRuleCombineSetZ(meHTVegetationLayer::Ref vlayer, meHTVRuleCombine::Ref rule, float nz){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
@@ -53,9 +53,7 @@ meUHTVRuleCombineSetZ::meUHTVRuleCombineSetZ(meHTVegetationLayer *vlayer, meHTVR
 	pNewZ = nz;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleCombineSetZ::~meUHTVRuleCombineSetZ(){

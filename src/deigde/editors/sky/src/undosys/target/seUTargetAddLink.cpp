@@ -41,10 +41,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUTargetAddLink::seUTargetAddLink(seLayer *layer, deSkyLayer::eTargets target, seLink *link) :
-pLayer(NULL),
-pTarget(target),
-pLink(NULL)
+seUTargetAddLink::seUTargetAddLink(seLayer::Ref layer, deSkyLayer::eTargets target, seLink::Ref link) :
+
+pTarget(target)
 {
 	if(!layer || !link){
 		DETHROW(deeInvalidParam);
@@ -56,19 +55,10 @@ pLink(NULL)
 	SetShortInfo("Target Add Link");
 	
 	pLayer = layer;
-	layer->AddReference();
-	
 	pLink = link;
-	link->AddReference();
 }
 
 seUTargetAddLink::~seUTargetAddLink(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

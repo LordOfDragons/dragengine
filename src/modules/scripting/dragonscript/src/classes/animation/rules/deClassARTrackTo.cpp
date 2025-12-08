@@ -57,8 +57,8 @@
 /////////////////////
 
 struct sARTrackNatDat{
-	deAnimator *animator;
-	deAnimatorRuleTrackTo *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleTrackTo::Ref rule;
 };
 
 
@@ -82,7 +82,7 @@ void deClassARTrackTo::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleTrackTo;
+	nd.rule.TakeOver(new deAnimatorRuleTrackTo);
 	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
@@ -361,7 +361,7 @@ deAnimatorRuleTrackTo *deClassARTrackTo::GetRule(dsRealObject *myself) const{
 	return ((sARTrackNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARTrackTo::AssignAnimator(dsRealObject *myself, deAnimator *animator){
+void deClassARTrackTo::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -379,13 +379,9 @@ void deClassARTrackTo::AssignAnimator(dsRealObject *myself, deAnimator *animator
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
-void deClassARTrackTo::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleTrackTo *rule){
+void deClassARTrackTo::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleTrackTo::Ref rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -405,13 +401,7 @@ void deClassARTrackTo::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorR
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
 		nd.rule = rule;
-		rule->AddReference();
-		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);
 		

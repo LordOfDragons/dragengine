@@ -67,7 +67,7 @@ private:
 	
 	bool pActive;
 	
-	deDebugDrawer *pDDTypeFaces;
+	deDebugDrawer::Ref pDDTypeFaces;
 	bool pBulkUpdate;
 	
 	

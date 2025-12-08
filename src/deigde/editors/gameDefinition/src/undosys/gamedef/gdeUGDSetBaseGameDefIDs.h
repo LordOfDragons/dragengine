@@ -42,7 +42,7 @@ class gdeWindowMain;
 class gdeUGDSetBaseGameDefIDs : public igdeUndo{
 private:
 	gdeWindowMain &pWindowMain;
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decStringList pOldValue;
 	decStringList pNewValue;
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDSetBaseGameDefIDs(gdeWindowMain &windowMain, gdeGameDefinition *gameDefinition,
+	gdeUGDSetBaseGameDefIDs(gdeWindowMain &windowMain, gdeGameDefinition::Ref gameDefinition,
 		const decStringList &newValue);
 	
 protected:

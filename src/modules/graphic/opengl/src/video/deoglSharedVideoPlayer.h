@@ -42,7 +42,7 @@ class deoglSharedVideoPlayer{
 public:
 	deGraphicOpenGl &pOgl;
 	deoglSharedVideoPlayerList &pList;
-	deVideoPlayer *pVideoPlayer;
+	deVideoPlayer::Ref pVideoPlayer;
 	int pUsageCount;
 	
 	

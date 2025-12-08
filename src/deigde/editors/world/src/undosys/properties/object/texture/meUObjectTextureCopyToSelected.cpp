@@ -41,9 +41,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureCopyToSelected::meUObjectTextureCopyToSelected(const meObjectList &list, meObjectTexture *texture){
+meUObjectTextureCopyToSelected::meUObjectTextureCopyToSelected(const meObjectList &list, meObjectTexture::Ref texture){
 	const char *textureName = texture->GetName().GetString();
-	meUndoDataObjectTexture *undoData = NULL;
+	meUndoDataObjectTexture::Ref undoData = NULL;
 	const int count = list.GetCount();
 	meObject *object;
 	int i;
@@ -63,26 +63,21 @@ meUObjectTextureCopyToSelected::meUObjectTextureCopyToSelected(const meObjectLis
 				DETHROW(deeInvalidParam);
 			}
 			
-			undoData = new meUndoDataObjectTexture(object);
+			undoData.TakeOver(new meUndoDataObjectTexture(object));
 			undoData->SetOldTexture(object->GetTextureNamed(textureName));
 			
 			if(undoData->GetOldTexture() != texture){
 				pList.Add(undoData);
 			}
-			undoData->FreeReference();
 			undoData = NULL;
 		}
 		
 	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjectTextureCopyToSelected::~meUObjectTextureCopyToSelected(){
@@ -96,7 +91,7 @@ meUObjectTextureCopyToSelected::~meUObjectTextureCopyToSelected(){
 
 void meUObjectTextureCopyToSelected::Undo(){
 	const int count = pList.GetCount();
-	meUndoDataObjectTexture *undoData;
+	meUndoDataObjectTexture::Ref undoData;
 	meObject *object;
 	int i;
 	
@@ -115,8 +110,8 @@ void meUObjectTextureCopyToSelected::Undo(){
 
 void meUObjectTextureCopyToSelected::Redo(){
 	const int count = pList.GetCount();
-	meUndoDataObjectTexture *undoData;
-	meObjectTexture *texture = NULL;
+	meUndoDataObjectTexture::Ref undoData;
+	meObjectTexture::Ref texture = NULL;
 	meObject *object;
 	int i;
 	
@@ -126,15 +121,11 @@ void meUObjectTextureCopyToSelected::Redo(){
 		
 		if(!undoData->GetNewTexture()){
 			try{
-				texture = new meObjectTexture(*pTexture);
+				texture.TakeOver(new meObjectTexture(*pTexture));
 				undoData->SetNewTexture(texture);
-				texture->FreeReference();
 				texture = NULL;
 				
 			}catch(const deException &){
-				if(texture){
-					texture->FreeReference();
-				}
 				throw;
 			}
 		}

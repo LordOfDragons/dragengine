@@ -47,8 +47,7 @@ pAffectsAudio(true),
 pPartialHide(false),
 pAttachTarget(true),
 pLightShadowIgnore(false),
-pColliderResponseType(deCollider::ertStatic),
-pActiveTexture(NULL){
+pColliderResponseType(deCollider::ertStatic){
 }
 
 gdeOCComponent::gdeOCComponent(const gdeOCComponent &component) :
@@ -71,18 +70,16 @@ pLightShadowIgnore(component.pLightShadowIgnore),
 pColliderResponseType(component.pColliderResponseType),
 pPosition(component.pPosition),
 pRotation(component.pRotation),
-pBoneName(component.pBoneName),
-pActiveTexture(NULL)
+pBoneName(component.pBoneName)
 {
 	const int textureCount = component.pTextures.GetCount();
-	gdeOCComponentTexture *texture = NULL;
+	gdeOCComponentTexture::Ref texture = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<textureCount; i++){
-			texture = new gdeOCComponentTexture(*component.pTextures.GetAt(i));
+			texture.TakeOver(new gdeOCComponentTexture(*component.pTextures.GetAt(i)));
 			pTextures.Add(texture);
-			texture->FreeReference();
 			texture = NULL;
 		}
 		
@@ -91,17 +88,11 @@ pActiveTexture(NULL)
 		}
 		
 	}catch(const deException &){
-		if(texture){
-			texture->FreeReference();
-		}
 		throw;
 	}
 }
 
 gdeOCComponent::~gdeOCComponent(){
-	if(pActiveTexture){
-		pActiveTexture->FreeReference();
-	}
 }
 
 
@@ -216,18 +207,9 @@ bool gdeOCComponent::HasPropertyWithName(const char *name) const{
 
 
 
-void gdeOCComponent::SetActiveTexture(gdeOCComponentTexture *texture){
+void gdeOCComponent::SetActiveTexture(gdeOCComponentTexture::Ref texture){
 	if(texture == pActiveTexture){
 		return;
 	}
-	
-	if(pActiveTexture){
-		pActiveTexture->FreeReference();
-	}
-	
 	pActiveTexture = texture;
-	
-	if(texture){
-		texture->AddReference();
-	}
 }

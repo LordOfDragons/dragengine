@@ -61,9 +61,9 @@ private:
 	
 	reRig *pRig;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSPush;
-	deColliderVolume *pCollider;
+	deColliderVolume::Ref pCollider;
 	
 	ePushTypes pType;
 	decVector pPosition;

@@ -95,16 +95,11 @@ public:
 meDecal::meDecal(igdeEnvironment *environment) :
 pEnvironment(environment),
 
-pEngSkin(NULL),
-
 pAttachedDecals(NULL),
 pAttachedDecalCount(0),
 
 pWorld(NULL),
-
-pDebugDrawer(NULL),
 pDDSDecal(NULL),
-pCollider(NULL),
 
 pParentObject(NULL),
 
@@ -113,8 +108,6 @@ pTexCoordScaling(1.0f, 1.0f),
 pTexCoordRotation(0.0f),
 
 pColorTint(1.0f, 1.0f, 1.0f),
-
-pDynamicSkin(NULL),
 
 pID(0),
 pVisible(true),
@@ -134,16 +127,11 @@ pColliderOwner(this)
 meDecal::meDecal(const meDecal &decal) :
 pEnvironment(decal.pEnvironment),
 
-pEngSkin(NULL),
-
 pAttachedDecals(NULL),
 pAttachedDecalCount(0),
 
 pWorld(NULL),
-
-pDebugDrawer(NULL),
 pDDSDecal(NULL),
-pCollider(NULL),
 
 pParentObject(NULL),
 
@@ -161,8 +149,6 @@ pActiveProperty(decal.pActiveProperty),
 
 pColorTint(decal.pColorTint),
 
-pDynamicSkin(NULL),
-
 pID(0),
 pVisible(decal.pVisible),
 
@@ -175,9 +161,6 @@ pColliderOwner(this)
 	
 	try{
 		pEngSkin = decal.pEngSkin;
-		if(pEngSkin){
-			pEngSkin->AddReference();
-		}
 		// pUpdateSkin(); // not needed as there are no decals yet
 		
 		pRepositionShapes();
@@ -442,7 +425,6 @@ void meDecal::UpdateDynamicSkin(){
 		
 	}else{
 		if(pDynamicSkin){
-			pDynamicSkin->FreeReference();
 			pDynamicSkin = NULL;
 		}
 	}
@@ -695,23 +677,11 @@ void meDecal::pCleanUp(){
 	
 	if(pCollider){
 		pEnvironment->SetColliderUserPointer(pCollider, NULL);
-		pCollider->FreeReference();
 	}
 	
 	DetachDecals();
-	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
-	
 	if(pDDSDecal){
 		delete pDDSDecal;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 
@@ -918,7 +888,7 @@ void meDecal::pUpdateShapes(){
 void meDecal::pLoadSkin(){
 	deEngine &engine = *pEnvironment->GetEngineController()->GetEngine();
 	deSkinManager *skinMgr = engine.GetSkinManager();
-	deSkin *skin = NULL;
+	deSkin::Ref skin = NULL;
 	
 	if(!pSkinPath.IsEmpty()){
 		try{
@@ -926,12 +896,10 @@ void meDecal::pLoadSkin(){
 			
 		}catch(const deException &){
 			skin = pEnvironment->GetStockSkin(igdeEnvironment::essError);
-			skin->AddReference();
 		}
 	}
 	
 	if(pEngSkin){
-		pEngSkin->FreeReference();
 		pEngSkin = NULL;
 	}
 	

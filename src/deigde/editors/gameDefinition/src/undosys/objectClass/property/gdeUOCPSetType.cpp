@@ -39,10 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPSetType::gdeUOCPSetType(gdeObjectClass *objectClass,
-gdeProperty *property, gdeProperty::ePropertyTypes newValue) :
-pObjectClass(NULL),
-pProperty(NULL)
+gdeUOCPSetType::gdeUOCPSetType(gdeObjectClass::Ref objectClass,
+gdeProperty::Ref property, gdeProperty::ePropertyTypes newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
@@ -54,19 +53,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCPSetType::~gdeUOCPSetType(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

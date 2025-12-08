@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCSpeakerSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	gdeOCSpeaker::eProperties pProperty;
 	decString pOldValue;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetPropertyName(gdeObjectClass *objectClass, gdeOCSpeaker *speaker,
+	gdeUOCSpeakerSetPropertyName(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker,
 		gdeOCSpeaker::eProperties property, const char *newValue);
 	
 protected:

@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUWordSetName::saeUWordSetName(saeWord *word, const char *newName){
+saeUWordSetName::saeUWordSetName(saeWord::Ref word, const char *newName){
 	if(!word || !newName) DETHROW(deeInvalidParam);
 	
 	pWord = NULL;
@@ -50,13 +50,9 @@ saeUWordSetName::saeUWordSetName(saeWord *word, const char *newName){
 	pNewName = newName;
 	
 	pWord = word;
-	word->AddReference();
 }
 
 saeUWordSetName::~saeUWordSetName(){
-	if(pWord){
-		pWord->FreeReference();
-	}
 }
 
 

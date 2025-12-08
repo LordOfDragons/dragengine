@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCTopicAdd : public igdeUndo{
 private:
-	ceConversationFile *pFile;
-	ceConversationTopic *pTopic;
+	ceConversationFile::Ref pFile;
+	ceConversationTopic::Ref pTopic;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTopicAdd(ceConversationFile *file, ceConversationTopic *topic);
+	ceUCTopicAdd(ceConversationFile::Ref file, ceConversationTopic::Ref topic);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCTopicAdd();

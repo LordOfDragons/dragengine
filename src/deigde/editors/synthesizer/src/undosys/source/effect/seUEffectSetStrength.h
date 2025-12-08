@@ -37,7 +37,7 @@ class seEffect;
  */
 class seUEffectSetStrength : public igdeUndo{
 private:
-	seEffect *pEffect;
+	seEffect::Ref pEffect;
 	
 	float pOldStrength;
 	float pNewStrength;

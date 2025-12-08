@@ -39,20 +39,15 @@ const char * const gdeClipboardDataOCForceField::TYPE_NAME = "OCForceField";
 ////////////////////////////
 
 gdeClipboardDataOCForceField::gdeClipboardDataOCForceField(
-gdeOCForceField *particleEmitter) :
-igdeClipboardData(TYPE_NAME),
-pForceField(NULL)
+gdeOCForceField::Ref particleEmitter) :
+igdeClipboardData(TYPE_NAME)
 {
 	if(!particleEmitter){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pForceField = particleEmitter;
-	particleEmitter->AddReference();
 }
 
 gdeClipboardDataOCForceField::~gdeClipboardDataOCForceField(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
 }

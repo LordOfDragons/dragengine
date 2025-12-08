@@ -40,9 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUAddObjectClass::gdeUAddObjectClass(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass) :
-pGameDefinition(NULL),
-pObjectClass(NULL)
+gdeUAddObjectClass::gdeUAddObjectClass(gdeGameDefinition::Ref gameDefinition, gdeObjectClass::Ref objectClass) :
+pGameDefinition(NULL)
 {
 	if(!gameDefinition || !objectClass){
 		DETHROW(deeInvalidParam);
@@ -51,19 +50,10 @@ pObjectClass(NULL)
 	SetShortInfo("Add object class");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUAddObjectClass::~gdeUAddObjectClass(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

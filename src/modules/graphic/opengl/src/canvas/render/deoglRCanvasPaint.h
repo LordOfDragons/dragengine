@@ -50,7 +50,7 @@ private:
 	decVector2 *pPoints;
 	int pPointCount;
 	
-	deoglSharedVBOBlock *pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlock;
 	bool pDirtyVBOBlock;
 	int pVBOBlockPointCount;
 	

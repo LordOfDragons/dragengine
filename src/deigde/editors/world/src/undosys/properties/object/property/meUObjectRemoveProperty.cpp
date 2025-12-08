@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectRemoveProperty::meUObjectRemoveProperty(meObject *object, const char *key, const char *value){
+meUObjectRemoveProperty::meUObjectRemoveProperty(meObject::Ref object, const char *key, const char *value){
 	if(!object || !key || !value){
 		DETHROW(deeInvalidParam);
 	}
@@ -56,7 +56,6 @@ meUObjectRemoveProperty::meUObjectRemoveProperty(meObject *object, const char *k
 	pValue = value;
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectRemoveProperty::~meUObjectRemoveProperty(){
@@ -82,7 +81,4 @@ void meUObjectRemoveProperty::Redo(){
 //////////////////////
 
 void meUObjectRemoveProperty::pCleanUp(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }

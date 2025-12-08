@@ -44,7 +44,7 @@
 
 // native structure
 struct sNMNatDat{
-	deNetworkMessage *message;
+	deNetworkMessage::Ref message;
 };
 
 
@@ -67,7 +67,7 @@ void deClassNetworkMessage::nfNew::RunFunction(dsRunTime*, dsValue *myself){
 	nd.message = NULL;
 	
 	// create message
-	nd.message = new deNetworkMessage;
+	nd.message.TakeOver(new deNetworkMessage);
 }
 
 // public func destructor()
@@ -239,7 +239,7 @@ deNetworkMessage *deClassNetworkMessage::GetNetworkMessage(dsRealObject *myself)
 	return ((sNMNatDat*)p_GetNativeData(myself->GetBuffer()))->message;
 }
 
-void deClassNetworkMessage::PushNetworkMessage(dsRunTime *rt, deNetworkMessage *message){
+void deClassNetworkMessage::PushNetworkMessage(dsRunTime *rt, deNetworkMessage::Ref message){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -251,5 +251,4 @@ void deClassNetworkMessage::PushNetworkMessage(dsRunTime *rt, deNetworkMessage *
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sNMNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->message = message;
-	message->AddReference();
 }

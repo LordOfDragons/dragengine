@@ -78,31 +78,31 @@ public:
 	 * \brief Set object at index.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void SetAt(int index, deObject *object);
+	void SetAt(int index, deObject::Ref object);
 	
 	/** \brief Index of the first occurance of an object or -1 if not found. */
-	int IndexOf(deObject *object) const;
+	int IndexOf(deObject::Ref object) const;
 	
 	/**
 	 * \brief Index of the first occurance of an object or -1 if not found.
 	 * \throws deeInvalidParam \em start is less than 0 or larger than GetCount()-1.
 	 */
-	int IndexOf(deObject *object, int start) const;
+	int IndexOf(deObject::Ref object, int start) const;
 	
 	/** \brief Determine if object exists in the list. */
-	bool Has(deObject *object) const;
+	bool Has(deObject::Ref object) const;
 	
 	/** \brief Number of times object exists in the list. */
-	int CountOccurance(deObject *object) const;
+	int CountOccurance(deObject::Ref object) const;
 	
 	/** \brief Add object. */
-	void Add(deObject *object);
+	void Add(deObject::Ref object);
 	
 	/**
 	 * \brief Insert object.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
-	void Insert(deObject *object, int index);
+	void Insert(deObject::Ref object, int index);
 	
 	/**
 	 * \brief Move object.

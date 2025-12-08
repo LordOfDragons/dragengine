@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCParticleEmitterSetPath : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCParticleEmitterSetPath(gdeObjectClass *objectClass,
-		gdeOCParticleEmitter *particleEmitter, const char *newValue);
+	gdeUOCParticleEmitterSetPath(gdeObjectClass::Ref objectClass,
+		gdeOCParticleEmitter::Ref particleEmitter, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

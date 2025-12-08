@@ -79,10 +79,10 @@ public:
 	deAnimatorRuleLimit *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
+	void AssignAnimator(dsRealObject *myself, deAnimator::Ref animator);
 	
 	/** \brief Pushes a rule. */
-	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleLimit *rule);
+	void PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleLimit::Ref rule);
 	
 	inline dsClass *GetClassARLimitTarget() const{ return pClsARLimitTarget; }
 	inline dsClass *GetClassARLimitCFrame() const{ return pClsARLimitCFrame; }

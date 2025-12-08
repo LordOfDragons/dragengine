@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUndoDataDecalProperty : public deObject{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	decString pOldValue;
 	bool pPropertyExists;
 	decStringDictionary pOldProperties;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo data object. */
-	meUndoDataDecalProperty(meDecal *decal);
+	meUndoDataDecalProperty(meDecal::Ref decal);
 	
 protected:
 	/** \brief Clean up undo data object. */

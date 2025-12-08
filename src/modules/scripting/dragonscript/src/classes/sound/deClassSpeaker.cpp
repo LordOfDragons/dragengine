@@ -57,7 +57,7 @@
 
 // native structure
 struct sSpkNatDat{
-	deSpeaker *speaker;
+	deSpeaker::Ref speaker;
 };
 
 
@@ -106,7 +106,7 @@ deClassSpeaker::nfGetType::nfGetType(const sInitData &init) : dsFunction(init.cl
 "getType", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsSpeakerType){
 }
 void deClassSpeaker::nfGetType::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	rt->PushValue(((deClassSpeaker*)GetOwnerClass())->GetClassSpeakerType()
 		->GetVariable(speaker->GetType())->GetStaticValue());
@@ -122,7 +122,7 @@ void deClassSpeaker::nfSetType::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	speaker->SetType((deSpeaker::eSpeakerType)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
@@ -134,7 +134,7 @@ deClassSpeaker::nfGetSound::nfGetSound(const sInitData &init) : dsFunction(init.
 "getSound", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsSnd){
 }
 void deClassSpeaker::nfGetSound::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	deClassSpeaker *clsSpk = (deClassSpeaker*)GetOwnerClass();
 	deClassSound *clsSnd = clsSpk->GetScriptModule()->GetClassSound();
 	
@@ -152,7 +152,7 @@ deClassSpeaker::nfSetSound::nfSetSound(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsSnd); // sound
 }
 void deClassSpeaker::nfSetSound::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	deClassSpeaker *clsSpk = (deClassSpeaker*)GetOwnerClass();
 	deClassSound *clsSnd = clsSpk->GetScriptModule()->GetClassSound();
 	dsRealObject *object = rt->GetValue(0)->GetRealObject();
@@ -221,7 +221,7 @@ deClassSpeaker::nfGetPosition::nfGetPosition(const sInitData &init) : dsFunction
 "getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
 void deClassSpeaker::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	deClassSpeaker *clsSpk = (deClassSpeaker*)GetOwnerClass();
 	
 	clsSpk->GetClassDVector()->PushDVector(rt, speaker->GetPosition());
@@ -233,7 +233,7 @@ deClassSpeaker::nfSetPosition::nfSetPosition(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsDVec); // position
 }
 void deClassSpeaker::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	deClassSpeaker *clsSpk = (deClassSpeaker*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
@@ -247,7 +247,7 @@ deClassSpeaker::nfGetOrientation::nfGetOrientation(const sInitData &init) : dsFu
 "getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
 void deClassSpeaker::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	deClassSpeaker *clsSpk = (deClassSpeaker*)GetOwnerClass();
 	deClassQuaternion *clsQuat = clsSpk->GetScriptModule()->GetClassQuaternion();
 	
@@ -260,7 +260,7 @@ deClassSpeaker::nfSetOrientation::nfSetOrientation(const sInitData &init) : dsFu
 	p_AddParameter(init.clsQuat); // orientation
 }
 void deClassSpeaker::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	deClassSpeaker *clsSpk = (deClassSpeaker*)GetOwnerClass();
 	deClassQuaternion *clsQuat = clsSpk->GetScriptModule()->GetClassQuaternion();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
@@ -275,7 +275,7 @@ deClassSpeaker::nfGetVelocity::nfGetVelocity(const sInitData &init) : dsFunction
 "getVelocity", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassSpeaker::nfGetVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	deClassSpeaker *clsSpk = (deClassSpeaker*)GetOwnerClass();
 	deClassVector *clsVec = clsSpk->GetScriptModule()->GetClassVector();
 	
@@ -288,7 +288,7 @@ deClassSpeaker::nfSetVelocity::nfSetVelocity(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsVec); // velocity
 }
 void deClassSpeaker::nfSetVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	deClassSpeaker *clsSpk = (deClassSpeaker*)GetOwnerClass();
 	deClassVector *clsVec = clsSpk->GetScriptModule()->GetClassVector();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
@@ -328,7 +328,7 @@ deClassSpeaker::nfGetMuted::nfGetMuted(const sInitData &init) : dsFunction(init.
 "getMuted", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassSpeaker::nfGetMuted::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	rt->PushBool(speaker->GetMuted());
 }
@@ -339,7 +339,7 @@ deClassSpeaker::nfSetMuted::nfSetMuted(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsBool); // muted
 }
 void deClassSpeaker::nfSetMuted::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	speaker->SetMuted(rt->GetValue(0)->GetBool());
 }
@@ -349,7 +349,7 @@ deClassSpeaker::nfGetLooping::nfGetLooping(const sInitData &init) : dsFunction(i
 "getLooping", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassSpeaker::nfGetLooping::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	rt->PushBool(speaker->GetLooping());
 }
@@ -360,7 +360,7 @@ deClassSpeaker::nfSetLooping::nfSetLooping(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsBool); // looping
 }
 void deClassSpeaker::nfSetLooping::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	speaker->SetLooping(rt->GetValue(0)->GetBool());
 }
@@ -370,7 +370,7 @@ deClassSpeaker::nfGetPlayFrom::nfGetPlayFrom(const sInitData &init) : dsFunction
 "getPlayFrom", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSpeaker::nfGetPlayFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	rt->PushInt(speaker->GetPlayFrom());
 }
@@ -380,7 +380,7 @@ deClassSpeaker::nfGetPlayTo::nfGetPlayTo(const sInitData &init) : dsFunction(ini
 "getPlayTo", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSpeaker::nfGetPlayTo::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	rt->PushInt(speaker->GetPlayTo());
 }
@@ -392,7 +392,7 @@ deClassSpeaker::nfSetPlayPosition::nfSetPlayPosition(const sInitData &init) : ds
 	p_AddParameter(init.clsInt); // playTo
 }
 void deClassSpeaker::nfSetPlayPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	const int playFrom = rt->GetValue(0)->GetInt();
 	const int playTo = rt->GetValue(1)->GetInt();
@@ -404,7 +404,7 @@ deClassSpeaker::nfGetPlaySpeed::nfGetPlaySpeed(const sInitData &init) : dsFuncti
 "getPlaySpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassSpeaker::nfGetPlaySpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	rt->PushFloat(speaker->GetPlaySpeed());
 }
@@ -415,7 +415,7 @@ deClassSpeaker::nfSetPlaySpeed::nfSetPlaySpeed(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFlt); // playSpeed
 }
 void deClassSpeaker::nfSetPlaySpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	speaker->SetPlaySpeed(rt->GetValue(0)->GetFloat());
 }
@@ -425,7 +425,7 @@ deClassSpeaker::nfGetVolume::nfGetVolume(const sInitData &init) : dsFunction(ini
 "getVolume", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassSpeaker::nfGetVolume::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	rt->PushFloat(speaker->GetVolume());
 }
@@ -436,7 +436,7 @@ deClassSpeaker::nfSetVolume::nfSetVolume(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsFlt); // volume
 }
 void deClassSpeaker::nfSetVolume::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	speaker->SetVolume(rt->GetValue(0)->GetFloat());
 }
@@ -590,7 +590,7 @@ deClassSpeaker::nfGetPlaying::nfGetPlaying(const sInitData &init) : dsFunction(i
 "getPlaying", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassSpeaker::nfGetPlaying::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	rt->PushBool(speaker->GetPlaying());
 }
@@ -600,7 +600,7 @@ deClassSpeaker::nfGetPaused::nfGetPaused(const sInitData &init) : dsFunction(ini
 "getPaused", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassSpeaker::nfGetPaused::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	rt->PushBool(speaker->GetPaused());
 }
@@ -610,7 +610,7 @@ deClassSpeaker::nfGetStopped::nfGetStopped(const sInitData &init) : dsFunction(i
 "getStopped", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassSpeaker::nfGetStopped::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	rt->PushBool(speaker->GetStopped());
 }
@@ -620,7 +620,7 @@ deClassSpeaker::nfPlay::nfPlay(const sInitData &init) : dsFunction(init.clsSpk,
 "play", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSpeaker::nfPlay::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	speaker->Play();
 }
@@ -630,7 +630,7 @@ deClassSpeaker::nfStop::nfStop(const sInitData &init) : dsFunction(init.clsSpk,
 "stop", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSpeaker::nfStop::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	speaker->Stop();
 }
@@ -640,7 +640,7 @@ deClassSpeaker::nfPause::nfPause(const sInitData &init) : dsFunction(init.clsSpk
 "pause", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSpeaker::nfPause::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	speaker->Pause();
 }
@@ -653,7 +653,7 @@ dsFunction(init.clsSpk, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassSpeaker::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	
 	rt->PushInt((int)(intptr_t)speaker);
 }
@@ -664,7 +664,7 @@ dsFunction(init.clsSpk, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // object
 }
 void deClassSpeaker::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSpeaker *speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
+	deSpeaker::Ref speaker = ((sSpkNatDat*)p_GetNativeData(myself))->speaker;
 	deClassSpeaker *clsSpk = (deClassSpeaker*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
@@ -801,7 +801,7 @@ deSpeaker *deClassSpeaker::GetSpeaker(dsRealObject *myself) const{
 	return ((sSpkNatDat*)p_GetNativeData(myself->GetBuffer()))->speaker;
 }
 
-void deClassSpeaker::PushSpeaker(dsRunTime *rt, deSpeaker *speaker){
+void deClassSpeaker::PushSpeaker(dsRunTime *rt, deSpeaker::Ref speaker){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -813,5 +813,4 @@ void deClassSpeaker::PushSpeaker(dsRunTime *rt, deSpeaker *speaker){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sSpkNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->speaker = speaker;
-	speaker->AddReference();
 }

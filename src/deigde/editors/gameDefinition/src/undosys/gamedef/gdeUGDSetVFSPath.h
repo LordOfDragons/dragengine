@@ -37,7 +37,7 @@ class gdeGameDefinition;
  */
 class gdeUGDSetVFSPath : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDSetVFSPath(gdeGameDefinition *gameDefinition, const char *newValue);
+	gdeUGDSetVFSPath(gdeGameDefinition::Ref gameDefinition, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

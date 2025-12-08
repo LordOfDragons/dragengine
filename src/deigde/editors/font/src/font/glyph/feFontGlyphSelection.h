@@ -44,7 +44,7 @@ private:
 	feFont *pParentFont;
 	
 	feFontGlyphList pSelected;
-	feFontGlyph *pActive;
+	feFontGlyph::Ref pActive;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -62,13 +62,13 @@ public:
 	/** Retrieves the n-thed selected glyph. */
 	feFontGlyph *GetSelectedGlyphAt(int index) const;
 	/** Determines if a glyph is in the list of selected glyphs. */
-	bool IsGlypthSelected(feFontGlyph *glyph) const;
+	bool IsGlypthSelected(feFontGlyph::Ref glyph) const;
 	/** Retrieves the index of the glyph if in the list of selected glyphs. */
-	int IndexOfGlyph(feFontGlyph *glyph) const;
+	int IndexOfGlyph(feFontGlyph::Ref glyph) const;
 	/** Adds a glyph to the selection if not there already. */
-	void AddGlyphToSelection(feFontGlyph *glyph);
+	void AddGlyphToSelection(feFontGlyph::Ref glyph);
 	/** Removes a glyph from the selection if selected. */
-	void RemoveGlyphFromSelection(feFontGlyph *glyph);
+	void RemoveGlyphFromSelection(feFontGlyph::Ref glyph);
 	/** Removes all glyph from the selection. */
 	void RemoveAllGlyphsFromSelection();
 	
@@ -80,7 +80,7 @@ public:
 	/** Determines if there is an active glyph or not. */
 	bool HasActiveGlyph() const;
 	/** Sets the active glyph or NULL if none is active. */
-	void SetActiveGlyph(feFontGlyph *glyph);
+	void SetActiveGlyph(feFontGlyph::Ref glyph);
 	/**
 	 * Sets the next possible glyph from the selection as the active one or
 	 * NULL if the selection is empty.

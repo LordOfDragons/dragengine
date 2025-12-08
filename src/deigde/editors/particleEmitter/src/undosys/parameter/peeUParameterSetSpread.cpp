@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetSpread::peeUParameterSetSpread(peeType *type, peeParameter *parameter, float newSpread){
+peeUParameterSetSpread::peeUParameterSetSpread(peeType::Ref type, peeParameter *parameter, float newSpread){
 	if(!type || !parameter){
 		DETHROW(deeInvalidParam);
 	}
@@ -54,13 +54,9 @@ peeUParameterSetSpread::peeUParameterSetSpread(peeType *type, peeParameter *para
 	pNewSpread = newSpread;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUParameterSetSpread::~peeUParameterSetSpread(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

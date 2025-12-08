@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetPosition : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetPosition(gdeObjectClass *objectClass,
-		gdeOCLight *light, const decVector &newValue);
+	gdeUOCLightSetPosition(gdeObjectClass::Ref objectClass,
+		gdeOCLight::Ref light, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

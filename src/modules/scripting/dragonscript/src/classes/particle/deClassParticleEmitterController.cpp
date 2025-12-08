@@ -45,8 +45,8 @@
 /////////////////////
 
 struct sParticleEmitterCtrlNatDat{
-	deParticleEmitter *emitter;
-	deParticleEmitterInstance *instance;
+	deParticleEmitter::Ref emitter;
+	deParticleEmitterInstance::Ref instance;
 	int index;
 };
 
@@ -623,7 +623,7 @@ deParticleEmitterInstance *&instance, int &index) const{
 	index = nd.index;
 }
 
-void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleEmitter *emitter, int index){
+void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleEmitter::Ref emitter, int index){
 	if(!rt || !emitter || index < 0 || index >= emitter->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -632,12 +632,11 @@ void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleE
 	sParticleEmitterCtrlNatDat &nd = *((sParticleEmitterCtrlNatDat*)p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.emitter = emitter;
-	emitter->AddReference();
 	nd.instance = NULL;
 	nd.index = index;
 }
 
-void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleEmitterInstance *instance, int index){
+void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleEmitterInstance::Ref instance, int index){
 	if(!rt || !instance || index < 0 || index >= instance->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -647,6 +646,5 @@ void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleE
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.emitter = NULL;
 	nd.instance = instance;
-	instance->AddReference();
 	nd.index = index;
 }

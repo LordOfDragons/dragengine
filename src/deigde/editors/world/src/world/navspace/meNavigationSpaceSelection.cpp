@@ -53,7 +53,7 @@ meNavigationSpaceSelection::~meNavigationSpaceSelection(){
 // Management
 ///////////////
 
-void meNavigationSpaceSelection::Add(meNavigationSpace *navspaces){
+void meNavigationSpaceSelection::Add(meNavigationSpace::Ref navspaces){
 	if(!navspaces){
 		DETHROW(deeInvalidParam);
 	}
@@ -62,7 +62,7 @@ void meNavigationSpaceSelection::Add(meNavigationSpace *navspaces){
 	pSelection.AddIfAbsent(navspaces);
 }
 
-void meNavigationSpaceSelection::Remove(meNavigationSpace *navspaces){
+void meNavigationSpaceSelection::Remove(meNavigationSpace::Ref navspaces){
 	if(!navspaces){
 		DETHROW(deeInvalidParam);
 	}
@@ -88,16 +88,14 @@ bool meNavigationSpaceSelection::HasActive() const{
 	return pActive != NULL;
 }
 
-void meNavigationSpaceSelection::SetActive(meNavigationSpace *navspaces){
+void meNavigationSpaceSelection::SetActive(meNavigationSpace::Ref navspaces){
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = navspaces;
 	
 	if(navspaces){
-		navspaces->AddReference();
 		navspaces->SetActive(true);
 	}
 }

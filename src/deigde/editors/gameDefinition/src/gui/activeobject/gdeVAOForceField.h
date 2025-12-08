@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCForceField *pOCForceField;
+	gdeOCForceField::Ref pOCForceField;
 	
 	deForceField::Ref pForceField;
 	

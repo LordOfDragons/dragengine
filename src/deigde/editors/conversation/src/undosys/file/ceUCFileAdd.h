@@ -37,8 +37,8 @@ class ceConversationFile;
  */
 class ceUCFileAdd : public igdeUndo{
 private:
-	ceConversation *pConversation;
-	ceConversationFile *pFile;
+	ceConversation::Ref pConversation;
+	ceConversationFile::Ref pFile;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCFileAdd(ceConversation *conversation, ceConversationFile *file);
+	ceUCFileAdd(ceConversation::Ref conversation, ceConversationFile::Ref file);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCFileAdd();

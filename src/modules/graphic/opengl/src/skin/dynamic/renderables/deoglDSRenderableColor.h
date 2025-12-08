@@ -40,7 +40,7 @@ class deoglRDSRenderableColor;
 class deoglDSRenderableColor : public deoglDSRenderable{
 public:
 	const deDSRenderableColor &pRenderableColor;
-	deoglRDSRenderableColor *pRRenderableColor;
+	deoglRDSRenderableColor::Ref pRRenderableColor;
 	decColor pColor;
 	bool pDirty;
 	

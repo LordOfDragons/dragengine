@@ -147,10 +147,6 @@ igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain),
 pListener(NULL),
 
-pGameDefinition(NULL),
-
-pObjectClass(NULL),
-
 pShowEnvMapProbes(false),
 pShowNavBlockers(false)
 {
@@ -177,7 +173,7 @@ gdeViewActiveObject::~gdeViewActiveObject(){
 void gdeViewActiveObject::ResetView(){
 }
 
-void gdeViewActiveObject::SetGameDefinition(gdeGameDefinition *gameDefinition){
+void gdeViewActiveObject::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}
@@ -195,14 +191,11 @@ void gdeViewActiveObject::SetGameDefinition(gdeGameDefinition *gameDefinition){
 		if(pDebugDrawer){
 			pGameDefinition->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		}
-		
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
-		gameDefinition->AddReference();
 		SetRenderWorld(gameDefinition->GetCamera()->GetEngineCamera());
 		pCameraInteraction->SetCamera(gameDefinition->GetCamera());
 		
@@ -339,7 +332,6 @@ void gdeViewActiveObject::ClearResources(){
 	}
 	
 	if(pObjectClass){
-		pObjectClass->FreeReference();
 		pObjectClass = NULL;
 	}
 }
@@ -822,7 +814,6 @@ void gdeViewActiveObject::pInitObjectClass(){
 	if(!pObjectClass){
 		return;
 	}
-	pObjectClass->AddReference();
 	pInitObjectClassOCs(*pObjectClass, "", igdeGDClass::FilterSubObjectsAll);
 	pAddComponentShadowIgnore();
 }

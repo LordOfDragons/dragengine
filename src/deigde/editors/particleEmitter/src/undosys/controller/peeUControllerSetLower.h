@@ -35,7 +35,7 @@ class peeController;
  */
 class peeUControllerSetLower : public igdeUndo{
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	
 	float pOldLower;
 	float pOldUpper;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	peeUControllerSetLower(peeController *controller, float newValue);
+	peeUControllerSetLower(peeController::Ref controller, float newValue);
 	
 	/** \brief Clean up undo action. */
     virtual ~peeUControllerSetLower();

@@ -58,7 +58,7 @@ public:
 	/** Retrieves the video player or NULL if myself is NULL. */
 	deVideoPlayer *GetVideoPlayer(dsRealObject *myself) const;
 	/** Pushes the video player on the stack. Video can be NULL to push a null object. */
-	void PushVideoPlayer(dsRunTime *rt, deVideoPlayer *videoPlayer);
+	void PushVideoPlayer(dsRunTime *rt, deVideoPlayer::Ref videoPlayer);
 	/** Retrieves the dragon script module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/*@}*/

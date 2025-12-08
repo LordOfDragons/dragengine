@@ -46,8 +46,6 @@ aeUSetRuleFStaEnablePos::aeUSetRuleFStaEnablePos(aeRuleForeignState *rule){
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Set bone rotator rule enable position");
 		
 	}catch(const deException &){

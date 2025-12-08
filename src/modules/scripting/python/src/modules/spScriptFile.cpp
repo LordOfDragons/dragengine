@@ -180,7 +180,7 @@ void spScriptFile::pCreateModule(){
 void spScriptFile::pLoadFile(){
 	deVirtualFileSystem &vfsGame = *pSP.GetGameEngine()->GetVirtualFileSystem();
 	deVirtualFileSystem &vfsShared = pSP.GetVFS();
-	decBaseFileReader *reader = NULL;
+	decBaseFileReader::Ref reader = NULL;
 	decPath lookupPath;
 	decPath vfsPath;
 	decString content;
@@ -210,13 +210,7 @@ void spScriptFile::pLoadFile(){
 		
 		content.Set(' ', size);
 		reader->Read((char*)content.GetString(), size);
-		
-		reader->FreeReference();
-		
 	}catch(const deException &e){
-		if(reader){
-			reader->FreeReference();
-		}
 		throw;
 	}
 	

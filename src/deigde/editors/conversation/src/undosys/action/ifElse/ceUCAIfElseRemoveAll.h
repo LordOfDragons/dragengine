@@ -40,9 +40,9 @@ class ceCAIfElse;
  */
 class ceUCAIfElseRemoveAll : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
+	ceConversationTopic::Ref pTopic;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
 	ceConversationActionList pActionList;
 	
 public:
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAIfElseRemoveAll(ceConversationTopic *topic, ceCAIfElse *ifElse, ceCAIfElseCase *ifcase);
+	ceUCAIfElseRemoveAll(ceConversationTopic::Ref topic, ceCAIfElse::Ref ifElse, ceCAIfElseCase::Ref ifcase);
 	
 	/** \brief Clean up undo object. */
 	virtual ~ceUCAIfElseRemoveAll();

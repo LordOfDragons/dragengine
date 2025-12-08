@@ -39,7 +39,7 @@ class projProfile;
  */
 class projUProfileSetExcludePatterns : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetExcludePatterns(projProfile *profile, const decStringSet &newValue);
+	projUProfileSetExcludePatterns(projProfile::Ref profile, const decStringSet &newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileSetExcludePatterns();

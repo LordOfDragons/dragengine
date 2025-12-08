@@ -57,8 +57,8 @@
 /////////////////////
 
 struct sARLimitNatDat{
-	deAnimator *animator;
-	deAnimatorRuleLimit *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleLimit::Ref rule;
 };
 
 
@@ -82,7 +82,7 @@ void deClassARLimit::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleLimit;
+	nd.rule.TakeOver(new deAnimatorRuleLimit);
 	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
@@ -582,7 +582,7 @@ deAnimatorRuleLimit *deClassARLimit::GetRule(dsRealObject *myself) const{
 	return ((sARLimitNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARLimit::AssignAnimator(dsRealObject *myself, deAnimator *animator){
+void deClassARLimit::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -600,13 +600,9 @@ void deClassARLimit::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
-void deClassARLimit::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleLimit *rule){
+void deClassARLimit::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleLimit::Ref rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -626,13 +622,7 @@ void deClassARLimit::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRul
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
 		nd.rule = rule;
-		rule->AddReference();
-		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);
 		

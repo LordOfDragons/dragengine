@@ -43,7 +43,7 @@ class deFileResourceManager;
  */
 class DE_DLL_EXPORT deFileResource : public deResource{
 private:
-	deVirtualFileSystem *pVirtualFileSystem;
+	deVirtualFileSystem::Ref pVirtualFileSystem;
 	decString pFilename;
 	TIME_SYSTEM pModificationTime;
 	bool pAsynchron;
@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file resource. */
-	deFileResource(deFileResourceManager *resourceManager, deVirtualFileSystem *vfs,
+	deFileResource(deFileResourceManager *resourceManager, deVirtualFileSystem::Ref vfs,
 		const char *filename, TIME_SYSTEM modificationTime);
 	
 protected:

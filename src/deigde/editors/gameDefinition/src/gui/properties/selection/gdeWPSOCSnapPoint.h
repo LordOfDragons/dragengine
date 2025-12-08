@@ -46,9 +46,9 @@ class gdeWPSOCSnapPointListener;
 class gdeWPSOCSnapPoint : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCSnapPointListener *pListener;
+	gdeWPSOCSnapPointListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeTextField::Ref pEditName;
 	igdeEditVector::Ref pEditPosition;
@@ -78,7 +78,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition(gdeGameDefinition *gameDefinition);
+	void SetGameDefinition(gdeGameDefinition::Ref gameDefinition);
 	
 	
 	

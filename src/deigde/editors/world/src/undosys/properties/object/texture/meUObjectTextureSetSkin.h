@@ -41,7 +41,7 @@ class meObjectTextureList;
 class meUObjectTextureSetSkin : public igdeUndo{
 private:
 	struct sTexture{
-		meObjectTexture *texture;
+		meObjectTexture::Ref texture;
 		decString oldskin;
 		decString newskin;
 	};
@@ -55,7 +55,7 @@ public:
 	typedef deTObjectReference<meUObjectTextureSetSkin> Ref;
 	
 	// constructor, destructor
-	meUObjectTextureSetSkin(meObjectTexture *texture, const char *newskin);
+	meUObjectTextureSetSkin(meObjectTexture::Ref texture, const char *newskin);
 	meUObjectTextureSetSkin(meObjectTextureList &textures, const char *newskin);
 	
 protected:

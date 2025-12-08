@@ -41,7 +41,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deSkin &pSkin;
 	
-	deoglRSkin *pRSkin;
+	deoglRSkin::Ref pRSkin;
 	
 public:
 	/** \name Constructors and Destructors */

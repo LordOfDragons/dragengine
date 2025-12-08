@@ -62,12 +62,12 @@ class meWPHeightTerrainListener;
 class meWPHeightTerrain : public igdeContainerScroll{
 private:
 	meWindowProperties &pWindowProperties;
-	meWPHeightTerrainListener *pListener;
+	meWPHeightTerrainListener::Ref pListener;
 	
-	meWorld *pWorld;
-	meHeightTerrainTexture *pTexture;
-	meHTVegetationLayer *pVLayer;
-	meHTVVariation *pVVariation;
+	meWorld::Ref pWorld;
+	meHeightTerrainTexture::Ref pTexture;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVVariation::Ref pVVariation;
 	
 	
 	igdeActionContextMenu::Ref pActionMenuTexture;
@@ -181,7 +181,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld(meWorld *world);
+	void SetWorld(meWorld::Ref world);
 	
 	/** \brief World path changed. */
 	void OnWorldPathChanged();
@@ -193,7 +193,7 @@ public:
 	inline meHeightTerrainTexture *GetTexture() const{ return pTexture; }
 	
 	/** \brief Set texture. */
-	void SetTexture(meHeightTerrainTexture *texture);
+	void SetTexture(meHeightTerrainTexture::Ref texture);
 	
 	/** \brief Active navigation space or \em NULL. */
 	meHeightTerrainNavSpace *GetActiveNavSpace() const;
@@ -205,7 +205,7 @@ public:
 	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }
 	
 	/** \brief Set vegetation layer. */
-	void SetVLayer(meHTVegetationLayer *vlayer);
+	void SetVLayer(meHTVegetationLayer::Ref vlayer);
 	
 	/** \brief Vegetation layer variation. */
 	inline meHTVVariation *GetVVariation() const{ return pVVariation; }

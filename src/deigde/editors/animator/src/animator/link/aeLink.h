@@ -52,7 +52,7 @@ private:
 	
 	decString pName;
 	
-	aeController *pController;
+	aeController::Ref pController;
 	int pRepeat;
 	decCurveBezier pCurve;
 	
@@ -109,7 +109,7 @@ public:
 	inline aeController *GetController() const{ return pController; }
 	
 	/** Set controller or \em NULL. */
-	void SetController(aeController *controller, bool notify = true);
+	void SetController(aeController::Ref controller, bool notify = true);
 	
 	/** Repeat count of input value. */
 	inline int GetRepeat() const{ return pRepeat; }

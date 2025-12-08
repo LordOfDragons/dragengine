@@ -65,15 +65,15 @@ public:
 	/** Retrieves the push at the given index. */
 	reRigPush *GetPushAt(int index) const;
 	/** Determines if the given push exists. */
-	bool HasPush(reRigPush *push) const;
+	bool HasPush(reRigPush::Ref push) const;
 	/** Retrieves the index of the given push or -1 if not found. */
-	int IndexOfPush(reRigPush *push) const;
+	int IndexOfPush(reRigPush::Ref push) const;
 	/** Retrieves the index of the push with the given collider or -1 if not found. */
 	int IndexOfPushWith(deColliderVolume *collider) const;
 	/** Adds a push if not existing already. */
-	void AddPush(reRigPush *push);
+	void AddPush(reRigPush::Ref push);
 	/** Removes a push if existing. */
-	void RemovePush(reRigPush *push);
+	void RemovePush(reRigPush::Ref push);
 	/** Removes all pushs. */
 	void RemoveAllPushes();
 	
@@ -82,7 +82,7 @@ public:
 	/** Determines if an active push exists. */
 	bool HasActivePush() const;
 	/** Sets the acitve push or NULL. */
-	void SetActivePush(reRigPush *push);
+	void SetActivePush(reRigPush::Ref push);
 	/** Activates the next push in the list. */
 	//void ActivateNextPush();
 	

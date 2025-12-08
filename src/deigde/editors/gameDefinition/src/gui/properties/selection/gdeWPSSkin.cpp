@@ -190,15 +190,13 @@ public:
 
 gdeWPSSkin::gdeWPSSkin(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSSkinListener(*this);
+	pListener.TakeOver(new gdeWPSSkinListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -221,10 +219,6 @@ pGameDefinition(NULL)
 
 gdeWPSSkin::~gdeWPSSkin(){
 	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -232,21 +226,19 @@ gdeWPSSkin::~gdeWPSSkin(){
 // Management
 ///////////////
 
-void gdeWPSSkin::SetGameDefinition(gdeGameDefinition *gameDefinition){
+void gdeWPSSkin::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdateSkin();

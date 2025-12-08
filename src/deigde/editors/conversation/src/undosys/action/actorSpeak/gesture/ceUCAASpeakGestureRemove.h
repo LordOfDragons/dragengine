@@ -38,9 +38,9 @@ class ceStrip;
  */
 class ceUCAASpeakGestureRemove : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pGesture;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pGesture;
 	int pIndex;
 	
 public:
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakGestureRemove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *gesture);
+	ceUCAASpeakGestureRemove(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref gesture);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakGestureRemove();

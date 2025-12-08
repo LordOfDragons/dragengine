@@ -161,25 +161,19 @@ const char *basePath, deSynthesizer &synthesizer){
 			deSynthesizerSource * const source = pReadSource(*tag, basePath, synthesizer);
 			if(source){
 				synthesizer.AddSource(source);
-				source->FreeReference();
 			}
 		}
 	}
 }
 
 void igdeLoadSynthesizer::pReadController(const decXmlElementTag &root, deSynthesizer &synthesizer){
-	deSynthesizerController *controller = NULL;
+	deSynthesizerController::Ref controller = NULL;
 	int i;
 	
 	try{
-		controller = new deSynthesizerController;
+		controller.TakeOver(new deSynthesizerController);
 		synthesizer.AddController(controller);
-		controller->FreeReference();
-		
 	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
 		throw;
 	}
 	
@@ -204,11 +198,11 @@ void igdeLoadSynthesizer::pReadController(const decXmlElementTag &root, deSynthe
 }
 
 void igdeLoadSynthesizer::pReadLink(const decXmlElementTag &root, deSynthesizer &synthesizer){
-	deSynthesizerLink *link = NULL;
+	deSynthesizerLink::Ref link = NULL;
 	int i;
 	
 	try{
-		link = new deSynthesizerLink;
+		link.TakeOver(new deSynthesizerLink);
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -230,12 +224,7 @@ void igdeLoadSynthesizer::pReadLink(const decXmlElementTag &root, deSynthesizer 
 		}
 		
 		synthesizer.AddLink(link);
-		link->FreeReference();
-		
 	}catch(const deException &){
-		if(link){
-			link->FreeReference();
-		}
 		throw;
 	}
 }
@@ -265,11 +254,11 @@ const char *basePath, deSynthesizer &synthesizer){
 
 deSynthesizerSource *igdeLoadSynthesizer::pReadSourceSound(const decXmlElementTag &root,
 const char *basePath, deSynthesizer &synthesizer){
-	deSynthesizerSourceSound *source = NULL;
+	deSynthesizerSourceSound::Ref source = NULL;
 	int i;
 	
 	try{
-		source = new deSynthesizerSourceSound;
+		source.TakeOver(new deSynthesizerSourceSound);
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -287,18 +276,13 @@ const char *basePath, deSynthesizer &synthesizer){
 				const decString path(GetCDataString(*tag));
 				
 				if(!path.IsEmpty()){
-					deSound *sound = NULL;
+					deSound::Ref sound = NULL;
 					
 					try{
 						sound = synthesizer.GetEngine()->GetSoundManager()->LoadSound(
 							path, basePath, false);
 						source->SetSound(sound);
-						sound->FreeReference();
-						
 					}catch(const deException &){
-						if(sound){
-							sound->FreeReference();
-						}
 						LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 					}
 				}
@@ -337,9 +321,6 @@ const char *basePath, deSynthesizer &synthesizer){
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -351,7 +332,7 @@ deSynthesizerSource *igdeLoadSynthesizer::pReadSourceWave(const decXmlElementTag
 	int i;
 	
 	try{
-		source = new deSynthesizerSourceWave;
+		source.TakeOver(new deSynthesizerSourceWave);
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -412,9 +393,6 @@ deSynthesizerSource *igdeLoadSynthesizer::pReadSourceWave(const decXmlElementTag
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -427,7 +405,7 @@ const char *basePath, deSynthesizer &synthesizer){
 	int i;
 	
 	try{
-		source = new deSynthesizerSourceChain;
+		source.TakeOver(new deSynthesizerSourceChain);
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -445,17 +423,12 @@ const char *basePath, deSynthesizer &synthesizer){
 				const decString path(GetCDataString(*tag));
 				
 				if(!path.IsEmpty()){
-					deSound *sound = NULL;
+					deSound::Ref sound = NULL;
 					
 					try{
 						sound = synthesizer.GetEngine()->GetSoundManager()->LoadSound(path, basePath, false);
 						source->AddSound(sound);
-						sound->FreeReference();
-						
 					}catch(const deException &){
-						if(sound){
-							sound->FreeReference();
-						}
 						LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 					}
 				}
@@ -494,9 +467,6 @@ const char *basePath, deSynthesizer &synthesizer){
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -510,7 +480,7 @@ const char *basePath, deSynthesizer &synthesizer){
 	int i;
 	
 	try{
-		source = new deSynthesizerSourceGroup;
+		source.TakeOver(new deSynthesizerSourceGroup);
 		
 		for(i=0; i<elementCount; i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -569,9 +539,6 @@ const char *basePath, deSynthesizer &synthesizer){
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -586,7 +553,7 @@ const char *basePath, deSynthesizer &synthesizer){
 	int i;
 	
 	try{
-		source = new deSynthesizerSourceSynthesizer;
+		source.TakeOver(new deSynthesizerSourceSynthesizer);
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -606,8 +573,8 @@ const char *basePath, deSynthesizer &synthesizer){
 					continue;
 				}
 				
-				deSynthesizer *childSynthesizer = NULL;
-				decBaseFileReader *reader = NULL;
+				deSynthesizer::Ref childSynthesizer = NULL;
+				decBaseFileReader::Ref reader = NULL;
 				decPath pathFile;
 				
 				try{
@@ -617,16 +584,7 @@ const char *basePath, deSynthesizer &synthesizer){
 					childSynthesizer = engine.GetSynthesizerManager()->CreateSynthesizer();
 					Load(path, *childSynthesizer, *reader);
 					source->SetSynthesizer(childSynthesizer);
-					childSynthesizer->FreeReference();
-					reader->FreeReference();
-					
 				}catch(const deException &){
-					if(childSynthesizer){
-						childSynthesizer->FreeReference();
-					}
-					if(reader){
-						reader->FreeReference();
-					}
 					LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading synthesizer");
 				}
 				
@@ -654,9 +612,6 @@ const char *basePath, deSynthesizer &synthesizer){
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -713,7 +668,6 @@ deSynthesizer &synthesizer, deSynthesizerSource &source){
 		deSynthesizerEffect * const effect = pReadEffect(root, synthesizer);
 		if(effect){
 			source.AddEffect(effect);
-			effect->FreeReference();
 			return true;
 		}
 	}
@@ -752,11 +706,11 @@ deSynthesizer &synthesizer){
 
 deSynthesizerEffect *igdeLoadSynthesizer::pReadEffectStretch(const decXmlElementTag &root,
 deSynthesizer &synthesizer){
-	deSynthesizerEffectStretch *effect = NULL;
+	deSynthesizerEffectStretch::Ref effect = NULL;
 	int i;
 	
 	try{
-		effect = new deSynthesizerEffectStretch;
+		effect.TakeOver(new deSynthesizerEffectStretch);
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -801,9 +755,6 @@ deSynthesizer &synthesizer){
 		}
 		
 	}catch(const deException &){
-		if(effect){
-			effect->FreeReference();
-		}
 		throw;
 	}
 	

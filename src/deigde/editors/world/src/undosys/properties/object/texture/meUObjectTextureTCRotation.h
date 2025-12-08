@@ -36,7 +36,7 @@ class meObjectTexture;
  */
 class meUObjectTextureTCRotation : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	float pOldRotation;
 	float pNewRotation;
 	
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectTextureTCRotation(meObjectTexture *texture, float newRotation);
+	meUObjectTextureTCRotation(meObjectTexture::Ref texture, float newRotation);
 	
 protected:
 	/** \brief Clean up undo object. */

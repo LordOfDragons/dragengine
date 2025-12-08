@@ -47,9 +47,9 @@ class reWindowProperties;
 class reWPShape : public igdeContainerScroll{
 private:
 	reWindowProperties &pWindowProperties;
-	reRigShape *pShape;
-	reRig *pRig;
-	reWPShapeListener *pListener;
+	reRigShape::Ref pShape;
+	reRig::Ref pRig;
+	reWPShapeListener::Ref pListener;
 	
 	igdeSwitcher::Ref pSwitcher;
 	reWPPanelShapeSphere *pPanelSphere;
@@ -84,13 +84,13 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig(reRig *rig);
+	void SetRig(reRig::Ref rig);
 	
 	/** \brief Shape. */
 	inline reRigShape *GetShape() const{ return pShape; }
 	
 	/** \brief Set shape. */
-	void SetShape(reRigShape *shape);
+	void SetShape(reRigShape::Ref shape);
 	
 	/** \brief Update shape. */
 	void UpdateShape();

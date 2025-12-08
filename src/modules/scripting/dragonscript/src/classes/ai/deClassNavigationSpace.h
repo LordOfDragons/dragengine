@@ -60,7 +60,7 @@ public:
 	/** Retrieves the navigation space or NULL if myself is NULL. */
 	deNavigationSpace *GetNavigationSpace(dsRealObject *myself) const;
 	/** Pushes the navigation space which can be NULL. */
-	void PushNavigationSpace(dsRunTime *rt, deNavigationSpace *navspace);
+	void PushNavigationSpace(dsRunTime *rt, deNavigationSpace::Ref navspace);
 	
 	inline dsClass *GetClassNavigationSpaceType() const{ return pClsNavigationSpaceType; }
 	/*@}*/

@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCBillboardSetSkinPath : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCBillboardSetSkinPath(gdeObjectClass *objectClass,
-		gdeOCBillboard *billboard, const char *newValue);
+	gdeUOCBillboardSetSkinPath(gdeObjectClass::Ref objectClass,
+		gdeOCBillboard::Ref billboard, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

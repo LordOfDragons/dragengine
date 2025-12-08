@@ -42,14 +42,14 @@ class meDecal;
 class meURaiseDecalOne : public igdeUndo{
 private:
 	meWorld *pWorld;
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meURaiseDecalOne> Ref;
 	
 	// constructor, destructor
-	meURaiseDecalOne(meWorld *world, meDecal *decal);
+	meURaiseDecalOne(meWorld *world, meDecal::Ref decal);
 	virtual ~meURaiseDecalOne();
 	
 	// undo and redo operations

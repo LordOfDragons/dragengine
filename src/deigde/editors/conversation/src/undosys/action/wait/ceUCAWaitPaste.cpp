@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitPaste::ceUCAWaitPaste(ceConversationTopic *topic, ceCAWait *wait,
+ceUCAWaitPaste::ceUCAWaitPaste(ceConversationTopic *topic, ceCAWait::Ref wait,
 const ceConversationActionList &actions, int index) :
 ceUCActionPaste(topic, actions, index)
 {
@@ -63,13 +63,9 @@ ceUCActionPaste(topic, actions, index)
 	}
 	
 	pWait = wait;
-	wait->AddReference();
 }
 
 ceUCAWaitPaste::~ceUCAWaitPaste(){
-	if(pWait){
-		pWait->FreeReference();
-	}
 }
 
 

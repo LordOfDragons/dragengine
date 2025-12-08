@@ -193,7 +193,7 @@ public:
 	 * \warning Do not call directly.
 	 */
 	/*@{*/
-	void FinishTask(deResourceLoaderTask *task);
+	void FinishTask(deResourceLoaderTask::Ref task);
 	/*@}*/
 	
 	

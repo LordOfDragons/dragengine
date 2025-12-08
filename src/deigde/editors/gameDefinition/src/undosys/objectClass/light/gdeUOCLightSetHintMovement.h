@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetHintMovement : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	deLight::eMovementHints pOldValue;
 	deLight::eMovementHints pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetHintMovement(gdeObjectClass *objectClass,
-		gdeOCLight *light, deLight::eMovementHints newValue);
+	gdeUOCLightSetHintMovement(gdeObjectClass::Ref objectClass,
+		gdeOCLight::Ref light, deLight::eMovementHints newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

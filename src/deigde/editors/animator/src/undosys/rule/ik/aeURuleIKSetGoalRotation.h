@@ -43,7 +43,7 @@ class aeRuleInverseKinematic;
  */
 class aeURuleIKSetGoalRotation : public igdeUndo{
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 	decVector pOldRot;
 	decVector pNewRot;

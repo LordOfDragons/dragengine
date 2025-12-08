@@ -40,8 +40,8 @@
 ////////////////////////////
 
 projUProfileSetPathCapture::projUProfileSetPathCapture(
-projProfile *profile, const char *newValue) :
-pProfile(NULL),
+projProfile::Ref profile, const char *newValue) :
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetPathCapture();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetPathCapture::~projUProfileSetPathCapture(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

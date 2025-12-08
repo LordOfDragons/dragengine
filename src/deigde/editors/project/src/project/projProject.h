@@ -50,7 +50,7 @@ private:
 	decString pPathCapture;
 	
 	projProfileList pProfiles;
-	projProfile *pActiveProfile;
+	projProfile::Ref pActiveProfile;
 	
 	decString pActiveLaunchProfile;
 	
@@ -109,10 +109,10 @@ public:
 	const projProfileList &GetProfiles() const{ return pProfiles; }
 	
 	/** \brief Add profile. */
-	void AddProfile(projProfile *profile);
+	void AddProfile(projProfile::Ref profile);
 	
 	/** \brief Remove profile. */
-	void RemoveProfile(projProfile *profile);
+	void RemoveProfile(projProfile::Ref profile);
 	
 	/** \brief Remove all profiles. */
 	void RemoveAllProfiles();
@@ -123,7 +123,7 @@ public:
 	inline projProfile *GetActiveProfile() const{ return pActiveProfile; }
 	
 	/** \brief Set active profile. */
-	void SetActiveProfile(projProfile *profile);
+	void SetActiveProfile(projProfile::Ref profile);
 	
 	
 	
@@ -131,10 +131,10 @@ public:
 	void NotifyProfileStructureChanged();
 	
 	/** \brief Notify listeners profile changed. */
-	void NotifyProfileChanged(projProfile *profile);
+	void NotifyProfileChanged(projProfile::Ref profile);
 	
 	/** \brief Notify listeners profile name changed. */
-	void NotifyProfileNameChanged(projProfile *profile);
+	void NotifyProfileNameChanged(projProfile::Ref profile);
 	
 	/** \brief Notify listeners active profile changed. */
 	void NotifyActiveProfileChanged();

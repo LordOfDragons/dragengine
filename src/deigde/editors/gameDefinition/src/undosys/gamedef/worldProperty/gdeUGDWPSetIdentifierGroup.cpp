@@ -41,8 +41,8 @@
 ////////////////////////////
 
 gdeUGDWPSetIdentifierGroup::gdeUGDWPSetIdentifierGroup(
-gdeGameDefinition *gamedef, gdeProperty *property, const char *newValue) :
-pGameDefinition(NULL),
+gdeGameDefinition::Ref gamedef, gdeProperty::Ref property, const char *newValue) :
+
 pProperty(NULL)
 {
 	if(!gamedef || !property){
@@ -55,19 +55,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDWPSetIdentifierGroup::~gdeUGDWPSetIdentifierGroup(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

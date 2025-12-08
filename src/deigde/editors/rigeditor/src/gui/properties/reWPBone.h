@@ -45,9 +45,9 @@ class reWPBoneListener;
 class reWPBone : public igdeContainerScroll{
 private:
 	reWindowProperties &pWindowProperties;
-	reRig *pRig;
-	reRigBone *pBone;
-	reWPBoneListener *pListener;
+	reRig::Ref pRig;
+	reRigBone::Ref pBone;
+	reWPBoneListener::Ref pListener;
 	
 	igdeTextField::Ref pEditName;
 	igdeComboBox::Ref pCBParent;
@@ -85,13 +85,13 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig(reRig *rig);
+	void SetRig(reRig::Ref rig);
 	
 	/** \brief Bone. */
 	inline reRigBone *GetBone() const{ return pBone; }
 	
 	/** \brief Set bone. */
-	void SetBone(reRigBone *bone);
+	void SetBone(reRigBone::Ref bone);
 	
 	/** \brief Update list of possible parent bone names. */
 	void UpdateParentBoneList();

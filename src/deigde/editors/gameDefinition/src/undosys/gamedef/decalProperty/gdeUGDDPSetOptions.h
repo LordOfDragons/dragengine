@@ -41,8 +41,8 @@ class gdeProperty;
  */
 class gdeUGDDPSetOptions : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeProperty::Ref pProperty;
 	
 	decStringList pOldValue;
 	decStringList pNewValue;
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDDPSetOptions(gdeGameDefinition *gamedef, gdeProperty *property, const decStringList &newValue);
+	gdeUGDDPSetOptions(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property, const decStringList &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

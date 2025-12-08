@@ -185,11 +185,11 @@ void projProjectXml::pReadProject(const decXmlElementTag &root, projProject &pro
 void projProjectXml::pReadProfile(const decXmlElementTag &root, projProject &project){
 	decStringSet requiredExtensions, excludePatterns, icons;
 	const int count = root.GetElementCount();
-	projProfile *profile = NULL;
+	projProfile::Ref profile = NULL;
 	int i;
 	
 	try{
-		profile = new projProfile;
+		profile.TakeOver(new projProfile);
 		
 		for(i=0; i<count; i++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -275,12 +275,7 @@ void projProjectXml::pReadProfile(const decXmlElementTag &root, projProject &pro
 		profile->SetRequiredExtensions(requiredExtensions);
 		
 		project.AddProfile(profile);
-		profile->FreeReference();
-		
 	}catch(const deException &){
-		if(profile){
-			profile->FreeReference();
-		}
 		throw;
 	}
 }

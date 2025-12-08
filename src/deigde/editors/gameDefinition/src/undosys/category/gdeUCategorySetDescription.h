@@ -40,7 +40,7 @@ public:
 	
 	
 private:
-	gdeCategory *pCategory;
+	gdeCategory::Ref pCategory;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -52,7 +52,7 @@ public:
 	/*@{*/
 	/** \brief Create undo action. */
 	gdeUCategorySetDescription(gdeGameDefinition *gameDefintiion,
-		gdeCategory *category, eCategoryType type, const char *newValue);
+		gdeCategory::Ref category, eCategoryType type, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

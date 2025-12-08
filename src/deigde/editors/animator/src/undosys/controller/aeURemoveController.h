@@ -40,8 +40,8 @@ class aeAnimator;
  */
 class aeURemoveController : public igdeUndo{
 private:
-	aeAnimator *pAnimator;
-	aeController *pController;
+	aeAnimator::Ref pAnimator;
+	aeController::Ref pController;
 	int pIndex;
 	
 	aeLinkList pLinksUsingController;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeURemoveController(aeAnimator *animator, aeController *controller);
+	aeURemoveController(aeAnimator::Ref animator, aeController::Ref controller);
 	
 protected:
 	/** Clean up undo. */

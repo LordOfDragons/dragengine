@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalSize::meUDecalSize(meDecal *decal, const decVector &newSize){
+meUDecalSize::meUDecalSize(meDecal::Ref decal, const decVector &newSize){
 	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
@@ -57,13 +57,9 @@ meUDecalSize::meUDecalSize(meDecal *decal, const decVector &newSize){
 	pNewSize = newSize;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalSize::~meUDecalSize(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

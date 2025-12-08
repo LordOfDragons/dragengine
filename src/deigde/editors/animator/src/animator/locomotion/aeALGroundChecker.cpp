@@ -44,7 +44,7 @@
 ////////////////////////////
 
 aeALGroundChecker::aeALGroundChecker(){
-	pColInfo = new deCollisionInfo;
+	pColInfo.TakeOver(new deCollisionInfo);
 	if(!pColInfo) DETHROW(deeOutOfMemory);
 	
 	pHasCollision = false;

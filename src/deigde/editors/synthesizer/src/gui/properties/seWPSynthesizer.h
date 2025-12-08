@@ -44,9 +44,9 @@ class seWPSynthesizerListener;
 class seWPSynthesizer : public igdeContainerScroll{
 private:
 	seViewSynthesizer &pViewSynthesizer;
-	seWPSynthesizerListener *pListener;
+	seWPSynthesizerListener::Ref pListener;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	igdeAction::Ref pActionPlay;
 	igdeAction::Ref pActionPause;
@@ -89,7 +89,7 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
-	void SetSynthesizer(seSynthesizer *synthesizer);
+	void SetSynthesizer(seSynthesizer::Ref synthesizer);
 	
 	
 	

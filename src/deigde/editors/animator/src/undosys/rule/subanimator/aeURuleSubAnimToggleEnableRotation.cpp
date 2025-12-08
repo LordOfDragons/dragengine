@@ -48,8 +48,6 @@ aeURuleSubAnimToggleEnableRotation::aeURuleSubAnimToggleEnableRotation(aeRuleSub
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule sub animator toggle enable rotation");
 		
 	}catch(const deException &){
@@ -81,7 +79,4 @@ void aeURuleSubAnimToggleEnableRotation::Redo(){
 //////////////////////
 
 void aeURuleSubAnimToggleEnableRotation::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

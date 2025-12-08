@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDSetID::gdeUGDSetID(gdeGameDefinition *gameDefinition, const char *newValue) :
+gdeUGDSetID::gdeUGDSetID(gdeGameDefinition::Ref gameDefinition, const char *newValue) :
 pGameDefinition(NULL)
 {
 	if(!gameDefinition){
@@ -52,13 +52,9 @@ pGameDefinition(NULL)
 	pNewValue = newValue;
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetID::~gdeUGDSetID(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

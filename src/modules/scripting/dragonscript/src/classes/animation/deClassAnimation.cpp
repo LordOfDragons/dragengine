@@ -40,7 +40,7 @@
 
 
 struct sAnimNatDat{
-	deAnimation *anim;
+	deAnimation::Ref anim;
 };
 
 
@@ -119,7 +119,7 @@ deClassAnimation::nfGetFilename::nfGetFilename(const sInitData &init) : dsFuncti
 "getFilename", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassAnimation::nfGetFilename::RunFunction(dsRunTime *RT, dsValue *This){
-	deAnimation *anim = ((sAnimNatDat*)p_GetNativeData(This))->anim;
+	deAnimation::Ref anim = ((sAnimNatDat*)p_GetNativeData(This))->anim;
 	RT->PushString(anim->GetFilename());
 }
 
@@ -129,7 +129,7 @@ deClassAnimation::nfGetMovePlaytime::nfGetMovePlaytime(const sInitData &init) : 
 	p_AddParameter(init.clsStr); // moveName
 }
 void deClassAnimation::nfGetMovePlaytime::RunFunction(dsRunTime *RT, dsValue *This){
-	deAnimation *anim = ((sAnimNatDat*)p_GetNativeData(This))->anim;
+	deAnimation::Ref anim = ((sAnimNatDat*)p_GetNativeData(This))->anim;
 	const char *moveName = RT->GetValue(0)->GetString();
 	int moveIndex = anim->FindMove(moveName);
 	if(moveIndex == -1){
@@ -384,7 +384,7 @@ deAnimation *deClassAnimation::GetAnimation(dsRealObject *object) const{
 	return object ? ((sAnimNatDat*)p_GetNativeData(object->GetBuffer()))->anim : nullptr;
 }
 
-void deClassAnimation::PushAnimation(dsRunTime *rt, deAnimation *anim){
+void deClassAnimation::PushAnimation(dsRunTime *rt, deAnimation::Ref anim){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -396,5 +396,4 @@ void deClassAnimation::PushAnimation(dsRunTime *rt, deAnimation *anim){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sAnimNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->anim = anim;
-	anim->AddReference();
 }

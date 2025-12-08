@@ -72,10 +72,10 @@ public:
 	 * \brief Push effect onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushEffect(dsRunTime *rt, deEffect *effect);
+	void PushEffect(dsRunTime *rt, deEffect::Ref effect);
 	
 	/** \brief Assigns effect or \em NULL. */
-	void AssignEffect(dsRealObject *myself, deEffect *effect);
+	void AssignEffect(dsRealObject *myself, deEffect::Ref effect);
 	/*@}*/
 	
 private:

@@ -38,9 +38,9 @@ class ceStrip;
  */
 class ceUCAASpeakStripSetID : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pStrip;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pStrip;
 	decString pOldID;
 	decString pNewID;
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakStripSetID(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, const char *newID);
+	ceUCAASpeakStripSetID(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref strip, const char *newID);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCAASpeakStripSetID();
 	/*@}*/

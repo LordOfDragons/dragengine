@@ -38,7 +38,7 @@ class ceTarget;
  */
 class ceUCTargetSetOrientation : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetSetOrientation(ceTarget *target, const decVector &newOrientation);
+	ceUCTargetSetOrientation(ceTarget::Ref target, const decVector &newOrientation);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCTargetSetOrientation();

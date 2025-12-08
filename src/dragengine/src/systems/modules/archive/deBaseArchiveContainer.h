@@ -35,7 +35,7 @@
  */
 class DE_DLL_EXPORT deBaseArchiveContainer{
 private:
-	decBaseFileReader *pReader;
+	decBaseFileReader::Ref pReader;
 	
 	
 	
@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create archive container peer. */
-	deBaseArchiveContainer(decBaseFileReader *reader);
+	deBaseArchiveContainer(decBaseFileReader::Ref reader);
 	
 	/** \brief Clean up archive container peer. */
 	virtual ~deBaseArchiveContainer();

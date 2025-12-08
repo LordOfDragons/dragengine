@@ -35,7 +35,7 @@
 class lpeLangPackEntrySelection{
 private:
 	lpeLangPackEntryList pSelection;
-	lpeLangPackEntry *pActive;
+	lpeLangPackEntry::Ref pActive;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -51,9 +51,9 @@ public:
 	/** \brief Retrieves the list of selected entries. */
 	inline const lpeLangPackEntryList &GetSelected() const{ return pSelection; }
 	/** \brief Adds a entries to the selection if not included already. */
-	void Add(lpeLangPackEntry *entry);
+	void Add(lpeLangPackEntry::Ref entry);
 	/** \brief Removes a entries from the selection if included. */
-	void Remove(lpeLangPackEntry *entry);
+	void Remove(lpeLangPackEntry::Ref entry);
 	/** \brief Removes all entries from the selection. */
 	void RemoveAll();
 	
@@ -62,7 +62,7 @@ public:
 	/** \brief Determines if there is an active entries. */
 	bool HasActive() const;
 	/** \brief Sets the active entries or NULL if there is none. */
-	void SetActive(lpeLangPackEntry *entry);
+	void SetActive(lpeLangPackEntry::Ref entry);
 	/** \brief Activate the first entries in the selection. */
 	void ActivateNext();
 	

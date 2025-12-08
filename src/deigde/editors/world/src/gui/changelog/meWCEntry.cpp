@@ -42,10 +42,7 @@
 meWCEntry::meWCEntry(meWindowChangelog &windowChangelog, eElementTypes type) :
 igdeListItem(""),
 pWindowChangelog(windowChangelog),
-pType(type),
-pWorld(NULL),
-pHTTexture(NULL),
-pHTNavSpace(NULL)
+pType(type)
 {
 	if(type < eetWorld || type > eetHTPFCache){
 		DETHROW(deeInvalidParam);
@@ -67,52 +64,25 @@ void meWCEntry::SetSector(const decPoint3 &sector){
 	pSector = sector;
 }
 
-void meWCEntry::SetWorld(meWorld *world){
+void meWCEntry::SetWorld(meWorld::Ref world){
 	if(world == pWorld){
 		return;
 	}
-	
-	if(pWorld){
-		pWorld->FreeReference();
-	}
-	
 	pWorld = world;
-	
-	if(world){
-		world->AddReference();
-	}
 }
 
-void meWCEntry::SetHTTexture(meHeightTerrainTexture *texture){
+void meWCEntry::SetHTTexture(meHeightTerrainTexture::Ref texture){
 	if(texture == pHTTexture){
 		return;
 	}
-	
-	if(pHTTexture){
-		pHTTexture->FreeReference();
-	}
-	
 	pHTTexture = texture;
-	
-	if(texture){
-		texture->AddReference();
-	}
 }
 
-void meWCEntry::SetHTNavSpace(meHeightTerrainNavSpace *navspace){
+void meWCEntry::SetHTNavSpace(meHeightTerrainNavSpace::Ref navspace){
 	if(navspace == pHTNavSpace){
 		return;
 	}
-	
-	if(pHTNavSpace){
-		pHTNavSpace->FreeReference();
-	}
-	
 	pHTNavSpace = navspace;
-	
-	if(navspace){
-		navspace->AddReference();
-	}
 }
 
 

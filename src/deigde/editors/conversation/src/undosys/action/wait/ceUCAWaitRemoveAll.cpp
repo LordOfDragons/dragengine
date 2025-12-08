@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitRemoveAll::ceUCAWaitRemoveAll(ceConversationTopic *topic, ceCAWait *wait){
+ceUCAWaitRemoveAll::ceUCAWaitRemoveAll(ceConversationTopic::Ref topic, ceCAWait::Ref wait){
 	if(!topic || !wait){
 		DETHROW(deeInvalidParam);
 	}
@@ -54,19 +54,10 @@ ceUCAWaitRemoveAll::ceUCAWaitRemoveAll(ceConversationTopic *topic, ceCAWait *wai
 	SetShortInfo("Action Wait Remove All Actions");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pWait = wait;
-	wait->AddReference();
 }
 
 ceUCAWaitRemoveAll::~ceUCAWaitRemoveAll(){
-	if(pWait){
-		pWait->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

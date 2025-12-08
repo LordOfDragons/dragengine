@@ -40,8 +40,8 @@ class gdeProperty;
  */
 class gdeUOCTPToggleIdentifierUsage : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
 	
 	
 	
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCTPToggleIdentifierUsage(gdeObjectClass *objectClass, gdeProperty *property);
+	gdeUOCTPToggleIdentifierUsage(gdeObjectClass::Ref objectClass, gdeProperty::Ref property);
 	
 protected:
 	/** \brief Clean up undo action. */

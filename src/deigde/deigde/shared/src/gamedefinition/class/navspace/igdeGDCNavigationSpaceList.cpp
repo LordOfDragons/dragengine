@@ -62,15 +62,15 @@ igdeGDCNavigationSpace *igdeGDCNavigationSpaceList::GetAt(int index) const{
 	return (igdeGDCNavigationSpace*)pNavigationSpaces.GetAt(index);
 }
 
-int igdeGDCNavigationSpaceList::IndexOf(igdeGDCNavigationSpace *navSpace) const{
+int igdeGDCNavigationSpaceList::IndexOf(igdeGDCNavigationSpace::Ref navSpace) const{
 	return pNavigationSpaces.IndexOf(navSpace);
 }
 
-bool igdeGDCNavigationSpaceList::Has(igdeGDCNavigationSpace *navSpace) const{
+bool igdeGDCNavigationSpaceList::Has(igdeGDCNavigationSpace::Ref navSpace) const{
 	return pNavigationSpaces.Has(navSpace);
 }
 
-void igdeGDCNavigationSpaceList::Add(igdeGDCNavigationSpace *navSpace){
+void igdeGDCNavigationSpaceList::Add(igdeGDCNavigationSpace::Ref navSpace){
 	if(!navSpace){
 		DETHROW(deeInvalidParam);
 	}
@@ -78,7 +78,7 @@ void igdeGDCNavigationSpaceList::Add(igdeGDCNavigationSpace *navSpace){
 	pNavigationSpaces.Add(navSpace);
 }
 
-void igdeGDCNavigationSpaceList::InsertAt(igdeGDCNavigationSpace *navSpace, int index){
+void igdeGDCNavigationSpaceList::InsertAt(igdeGDCNavigationSpace::Ref navSpace, int index){
 	if(!navSpace){
 		DETHROW(deeInvalidParam);
 	}
@@ -86,11 +86,11 @@ void igdeGDCNavigationSpaceList::InsertAt(igdeGDCNavigationSpace *navSpace, int 
 	pNavigationSpaces.Insert(navSpace, index);
 }
 
-void igdeGDCNavigationSpaceList::MoveTo(igdeGDCNavigationSpace *navSpace, int index){
+void igdeGDCNavigationSpaceList::MoveTo(igdeGDCNavigationSpace::Ref navSpace, int index){
 	pNavigationSpaces.Move(navSpace, index);
 }
 
-void igdeGDCNavigationSpaceList::Remove(igdeGDCNavigationSpace *navSpace){
+void igdeGDCNavigationSpaceList::Remove(igdeGDCNavigationSpace::Ref navSpace){
 	pNavigationSpaces.Remove(navSpace);
 }
 
@@ -102,22 +102,18 @@ void igdeGDCNavigationSpaceList::RemoveAll(){
 
 void igdeGDCNavigationSpaceList::SetToDeepCopyFrom(const igdeGDCNavigationSpaceList &list){
 	const int count = list.GetCount();
-	igdeGDCNavigationSpace *navSpace = NULL;
+	igdeGDCNavigationSpace::Ref navSpace = NULL;
 	
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			navSpace = new igdeGDCNavigationSpace(*list.GetAt(i));
+			navSpace.TakeOver(new igdeGDCNavigationSpace(*list.GetAt(i)));
 			Add(navSpace);
-			navSpace->FreeReference();
 			navSpace = NULL;
 		}
 		
 	}catch(const deException &){
-		if(navSpace){
-			navSpace->FreeReference();
-		}
 		throw;
 	}
 }

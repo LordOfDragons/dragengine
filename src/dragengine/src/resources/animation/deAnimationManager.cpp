@@ -87,7 +87,7 @@ const char *filename, deAnimationBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	deAnimation *anim=NULL, *findAnim;
+	deAnimation::Ref anim=NULL, *findAnim;
 	
 	try{
 		// check if animation with filename already exists. check is only done if
@@ -100,7 +100,7 @@ const char *filename, deAnimationBuilder &builder){
 		}
 		
 		// create animation using the builder
-		anim = new deAnimation(this, vfs, filename, decDateTime::GetSystemTime());
+		anim.TakeOver(new deAnimation(this, vfs, filename, decDateTime::GetSystemTime()));
 		builder.BuildAnimation(anim);
 		
 		// load system peers
@@ -111,9 +111,6 @@ const char *filename, deAnimationBuilder &builder){
 		
 	}catch(const deException &){
 		LogErrorFormat("Creating of animation '%s' failed", filename);
-		if(anim){
-			anim->FreeReference();
-		}
 		throw;
 	}
 	
@@ -126,9 +123,9 @@ deAnimation *deAnimationManager::LoadAnimation(const char *filename, const char 
 
 deAnimation *deAnimationManager::LoadAnimation(deVirtualFileSystem *vfs,
 const char *filename, const char *basePath){
-	decBaseFileReader *fileReader=NULL;
+	decBaseFileReader::Ref fileReader=NULL;
 	deBaseAnimationModule *module;
-	deAnimation *anim=NULL, *findAnim;
+	deAnimation::Ref anim=NULL, *findAnim;
 	decPath path;
 	try{
 		// locate file
@@ -157,7 +154,7 @@ const char *filename, const char *basePath){
 				deModuleSystem::emtAnimation, path.GetPathUnix());
 			// load the file with it
 			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
-			anim = new deAnimation(this, vfs, path.GetPathUnix(), modificationTime);
+			anim.TakeOver(new deAnimation(this, vfs, path.GetPathUnix(), modificationTime));
 			anim->SetAsynchron(false);
 			module->LoadAnimation(*fileReader, *anim);
 			fileReader->FreeReference(); fileReader = NULL;
@@ -172,12 +169,6 @@ const char *filename, const char *basePath){
 		
 	}catch(const deException &){
 		LogErrorFormat("Loading animation '%s' (base path '%s') failed", filename, basePath ? basePath : "");
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(anim){
-			anim->FreeReference();
-		}
 		throw;
 	}
 	
@@ -233,7 +224,7 @@ void deAnimationManager::ReleaseLeakingResources(){
 void deAnimationManager::SystemGraphicLoad(){
 	/*
 	deGraphicSystem *graSys = GetGraphicSystem();
-	deAnimation *anim;
+	deAnimation::Ref anim;
 	for(int i=0; i<pAnims.GetResourceCount(); i++){
 		anim = (deAnimation*)pAnims.GetResourceAt(i);
 		if(anim->GetGraphicAnimation()) continue;

@@ -41,8 +41,8 @@
 ////////////////////////////
 
 gdeURemoveSkin::gdeURemoveSkin(
-gdeGameDefinition *gameDefinition, gdeSkin *skin) :
-pGameDefinition(NULL),
+gdeGameDefinition::Ref gameDefinition, gdeSkin::Ref skin) :
+
 pSkin(NULL)
 {
 	if(!gameDefinition || !skin){
@@ -56,19 +56,10 @@ pSkin(NULL)
 	SetShortInfo("Remove skin");
 	
 	pSkin = skin;
-	skin->AddReference();
-	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeURemoveSkin::~gdeURemoveSkin(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

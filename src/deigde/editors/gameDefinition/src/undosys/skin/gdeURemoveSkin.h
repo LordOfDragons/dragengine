@@ -38,8 +38,8 @@ class gdeSkin;
  */
 class gdeURemoveSkin : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeSkin *pSkin;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeSkin::Ref pSkin;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeURemoveSkin(gdeGameDefinition *gameDefinition, gdeSkin *skin);
+	gdeURemoveSkin(gdeGameDefinition::Ref gameDefinition, gdeSkin::Ref skin);
 	
 protected:
 	/** \brief Clean up undo action. */

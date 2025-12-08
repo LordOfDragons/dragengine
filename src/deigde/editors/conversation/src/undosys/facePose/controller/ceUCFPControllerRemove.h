@@ -37,8 +37,8 @@ class ceControllerValue;
  */
 class ceUCFPControllerRemove : public igdeUndo{
 private:
-	ceFacePose *pFacePose;
-	ceControllerValue *pController;
+	ceFacePose::Ref pFacePose;
+	ceControllerValue::Ref pController;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCFPControllerRemove(ceFacePose *facePose, ceControllerValue *controller);
+	ceUCFPControllerRemove(ceFacePose::Ref facePose, ceControllerValue::Ref controller);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCFPControllerRemove();

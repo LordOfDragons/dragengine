@@ -42,7 +42,7 @@ class deoglRVideoPlayer : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglRVideo *pVideo;
+	deoglRVideo::Ref pVideo;
 	deoglTexture *pCachedFrameTexture;
 	int pUpdateCachedFrameTexture;
 	
@@ -76,7 +76,7 @@ public:
 	inline deoglRVideo *GetVideo() const{ return pVideo; }
 	
 	/** Set render video or \em NULL if not set. */
-	void SetVideo(deoglRVideo *video);
+	void SetVideo(deoglRVideo::Ref video);
 	
 	/** Cached frame or -1 if not set. */
 	inline deoglTexture *GetCachedFrameTexture() const{ return pCachedFrameTexture; }

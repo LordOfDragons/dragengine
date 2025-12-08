@@ -47,14 +47,14 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleMapping *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleMapping::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleMapToggleInversed(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule);
+	meUHTVRuleMapToggleInversed(meHTVegetationLayer::Ref vlayer, meHTVRuleMapping::Ref rule);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleMapToggleInversed();
 	/*@}*/

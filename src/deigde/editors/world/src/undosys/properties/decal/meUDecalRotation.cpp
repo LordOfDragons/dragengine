@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalRotation::meUDecalRotation(meDecal *decal, const decVector &newRotation){
+meUDecalRotation::meUDecalRotation(meDecal::Ref decal, const decVector &newRotation){
 	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
@@ -57,13 +57,9 @@ meUDecalRotation::meUDecalRotation(meDecal *decal, const decVector &newRotation)
 	pNewRotation = newRotation;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalRotation::~meUDecalRotation(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

@@ -39,8 +39,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakBodyLAClear : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	ceStripList pOldStrips;
 	
 	
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCAASpeakBodyLAClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
+	ceUCAASpeakBodyLAClear(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCAASpeakBodyLAClear();

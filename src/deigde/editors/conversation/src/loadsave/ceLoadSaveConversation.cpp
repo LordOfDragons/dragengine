@@ -434,7 +434,7 @@ void ceLoadSaveConversation::pWriteTopic(decXmlWriter &writer, const ceConversat
 
 void ceLoadSaveConversation::pWriteActionList(decXmlWriter &writer, const ceConversationActionList &list){
 	const int count = list.GetCount();
-	ceConversationAction *action;
+	ceConversationAction::Ref action;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -891,7 +891,7 @@ void ceLoadSaveConversation::pWriteActionComment(decXmlWriter &writer, const ceC
 }
 
 void ceLoadSaveConversation::pWriteCondition(decXmlWriter &writer,
-ceConversationCondition *condition){
+ceConversationCondition::Ref condition){
 	switch(condition->GetType()){
 	case ceConversationCondition::ectLogic:
 		pWriteConditionLogic(writer, *((ceCConditionLogic*)condition));
@@ -1235,11 +1235,11 @@ void ceLoadSaveConversation::pReadConversation(const decXmlElementTag &root, ceC
 void ceLoadSaveConversation::pReadTarget(const decXmlElementTag &root, ceConversation &conversation){
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
-	ceTarget *target = NULL;
+	ceTarget::Ref target = NULL;
 	int e;
 	
 	try{
-		target = new ceTarget;
+		target.TakeOver(new ceTarget);
 		target->SetName(GetAttributeString(root, "name"));
 		if(conversation.GetTargetList().HasNamed(target->GetName())){
 			LogErrorGenericProblemValue(root, target->GetName(), "A target with this name exists already");
@@ -1273,24 +1273,19 @@ void ceLoadSaveConversation::pReadTarget(const decXmlElementTag &root, ceConvers
 		}
 		
 		conversation.AddTarget(target);
-		target->FreeReference();
-		
 	}catch(const deException &){
-		if(target){
-			target->FreeReference();
-		}
 		throw;
 	}
 }
 
 void ceLoadSaveConversation::pReadCameraShot(const decXmlElementTag &root, ceConversation &conversation){
 	const int elementCount = root.GetElementCount();
-	ceCameraShot *cameraShot = NULL;
+	ceCameraShot::Ref cameraShot = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
 	try{
-		cameraShot = new ceCameraShot;
+		cameraShot.TakeOver(new ceCameraShot);
 		cameraShot->SetName(GetAttributeString(root, "name"));
 		if(conversation.GetCameraShotList().HasNamed(cameraShot->GetName())){
 			LogErrorGenericProblemValue(root, cameraShot->GetName(), "A camera shot with this name exists already");
@@ -1406,24 +1401,19 @@ void ceLoadSaveConversation::pReadCameraShot(const decXmlElementTag &root, ceCon
 		}
 		
 		conversation.AddCameraShot(cameraShot);
-		cameraShot->FreeReference();
-		
 	}catch(const deException &){
-		if(cameraShot){
-			cameraShot->FreeReference();
-		}
 		throw;
 	}
 }
 
 void ceLoadSaveConversation::pReadGesture(const decXmlElementTag &root, ceConversation &conversation){
 	const int elementCount = root.GetElementCount();
-	ceGesture *gesture = NULL;
+	ceGesture::Ref gesture = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
 	try{
-		gesture = new ceGesture;
+		gesture.TakeOver(new ceGesture);
 		gesture->SetName(GetAttributeString(root, "name"));
 		if(conversation.GetGestureList().HasNamed(gesture->GetName())){
 			LogErrorGenericProblemValue(root, gesture->GetName(), "A gesture with this name exists already");
@@ -1449,12 +1439,7 @@ void ceLoadSaveConversation::pReadGesture(const decXmlElementTag &root, ceConver
 		}
 		
 		conversation.AddGesture(gesture);
-		gesture->FreeReference();
-		
 	}catch(const deException &){
-		if(gesture){
-			gesture->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1462,12 +1447,12 @@ void ceLoadSaveConversation::pReadGesture(const decXmlElementTag &root, ceConver
 void ceLoadSaveConversation::pReadFacePose(const decXmlElementTag &root, ceConversation &conversation){
 	const int elementCount = root.GetElementCount();
 	ceControllerValue *entry = NULL;
-	ceFacePose *facePose = NULL;
+	ceFacePose::Ref facePose = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
 	try{
-		facePose = new ceFacePose;
+		facePose.TakeOver(new ceFacePose);
 		facePose->SetName(GetAttributeString(root, "name"));
 		if(conversation.GetFacePoseList().HasNamed(facePose->GetName())){
 			LogErrorGenericProblemValue(root, facePose->GetName(), "A face pose with this name exists already");
@@ -1479,14 +1464,12 @@ void ceLoadSaveConversation::pReadFacePose(const decXmlElementTag &root, ceConve
 			if(tag){
 				if(strcmp(tag->GetName(), "controller") == 0){
 					if(HasAttribute(*tag, "index")){ // deprecated
-						entry = new ceControllerValue(GetAttributeInt(*tag, "index"), GetAttributeFloat(*tag, "value"));
+						entry.TakeOver(new ceControllerValue(GetAttributeInt(*tag, "index"), GetAttributeFloat(*tag, "value")));
 						
 					}else{
-						entry = new ceControllerValue(GetAttributeString(*tag, "name"), GetAttributeFloat(*tag, "value"));
+						entry.TakeOver(new ceControllerValue(GetAttributeString(*tag, "name"), GetAttributeFloat(*tag, "value")));
 					}
 					facePose->GetControllerList().Add(entry);
-					entry->FreeReference();
-					
 				}else{
 					LogWarnUnknownTag(root, *tag);
 				}
@@ -1494,27 +1477,19 @@ void ceLoadSaveConversation::pReadFacePose(const decXmlElementTag &root, ceConve
 		}
 		
 		conversation.AddFacePose(facePose);
-		facePose->FreeReference();
-		
 	}catch(const deException &){
-		if(entry){
-			entry->FreeReference();
-		}
-		if(facePose){
-			facePose->FreeReference();
-		}
 		throw;
 	}
 }
 
 void ceLoadSaveConversation::pReadFile(const decXmlElementTag &root, ceConversation &conversation){
 	const int elementCount = root.GetElementCount();
-	ceConversationFile *file = NULL;
+	ceConversationFile::Ref file = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
 	try{
-		file = new ceConversationFile;
+		file.TakeOver(new ceConversationFile);
 		file->SetID(GetAttributeString(root, "id"));
 		if(conversation.GetFileList().HasWithID(file->GetID())){
 			LogErrorGenericProblemValue(root, file->GetID(), "An file with this ID exists already");
@@ -1534,24 +1509,19 @@ void ceLoadSaveConversation::pReadFile(const decXmlElementTag &root, ceConversat
 		}
 		
 		conversation.AddFile(file);
-		file->FreeReference();
-		
 	}catch(const deException &){
-		if(file){
-			file->FreeReference();
-		}
 		throw;
 	}
 }
 
 void ceLoadSaveConversation::pReadTopic(const decXmlElementTag &root, ceConversation &conversation, ceConversationFile &file){
 	const int elementCount = root.GetElementCount();
-	ceConversationTopic *topic = NULL;
+	ceConversationTopic::Ref topic = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
 	try{
-		topic = new ceConversationTopic;
+		topic.TakeOver(new ceConversationTopic);
 		topic->SetID(GetAttributeString(root, "id"));
 		if(file.GetTopicList().HasWithID(topic->GetID())){
 			LogErrorGenericProblemValue(root, topic->GetID(), "A topic with this ID exists already");
@@ -1574,19 +1544,14 @@ void ceLoadSaveConversation::pReadTopic(const decXmlElementTag &root, ceConversa
 		}
 		
 		file.AddTopic(topic);
-		topic->FreeReference();
-		
 	}catch(const deException &){
-		if(topic){
-			topic->FreeReference();
-		}
 		throw;
 	}
 }
 
 void ceLoadSaveConversation::pReadActionList(const decXmlElementTag &root, ceConversation &conversation, ceConversationActionList &list){
 	const int elementCount = root.GetElementCount();
-	ceConversationAction *action = NULL;
+	ceConversationAction::Ref action = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
@@ -1604,12 +1569,7 @@ void ceLoadSaveConversation::pReadActionList(const decXmlElementTag &root, ceCon
 				}
 				
 				list.Add(action);
-				action->FreeReference();
-				
 			}catch(const deException &){
-				if(action){
-					action->FreeReference();
-				}
 				throw;
 			}
 		}
@@ -1621,13 +1581,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCACameraShot *action = NULL;
 		
 		try{
-			action = new ceCACameraShot;
+			action.TakeOver(new ceCACameraShot);
 			pReadActionCameraShot(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1637,13 +1594,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCAMusic *action = NULL;
 		
 		try{
-			action = new ceCAMusic;
+			action.TakeOver(new ceCAMusic);
 			pReadActionMusic(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1653,13 +1607,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCAActorSpeak *action = NULL;
 		
 		try{
-			action = new ceCAActorSpeak(conversation.GetEngine());
+			action.TakeOver(new ceCAActorSpeak(conversation.GetEngine()));
 			pReadActionActorSpeak(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1669,13 +1620,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCAIfElse *action = NULL;
 		
 		try{
-			action = new ceCAIfElse;
+			action.TakeOver(new ceCAIfElse);
 			pReadActionIfElse(root, conversation, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1685,13 +1633,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCAPlayerChoice *action = NULL;
 		
 		try{
-			action = new ceCAPlayerChoice;
+			action.TakeOver(new ceCAPlayerChoice);
 			pReadActionPlayerChoice(root, conversation, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1701,13 +1646,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCAStopConversation *action = NULL;
 		
 		try{
-			action = new ceCAStopConversation;
+			action.TakeOver(new ceCAStopConversation);
 			pReadActionStopConversation(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1717,13 +1659,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCAStopTopic *action = NULL;
 		
 		try{
-			action = new ceCAStopTopic;
+			action.TakeOver(new ceCAStopTopic);
 			pReadActionStopTopic(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1733,13 +1672,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCASnippet *action = NULL;
 		
 		try{
-			action = new ceCASnippet;
+			action.TakeOver(new ceCASnippet);
 			pReadActionSnippet(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1749,13 +1685,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCASetVariable *action = NULL;
 		
 		try{
-			action = new ceCASetVariable;
+			action.TakeOver(new ceCASetVariable);
 			pReadActionSetVariable(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1765,13 +1698,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCASetActorParameter *action = NULL;
 		
 		try{
-			action = new ceCASetActorParameter;
+			action.TakeOver(new ceCASetActorParameter);
 			pReadActionSetActorParameter(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1781,13 +1711,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCAActorCommand *action = NULL;
 		
 		try{
-			action = new ceCAActorCommand;
+			action.TakeOver(new ceCAActorCommand);
 			pReadActionActorCommand(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1797,13 +1724,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCAGameCommand *action = NULL;
 		
 		try{
-			action = new ceCAGameCommand;
+			action.TakeOver(new ceCAGameCommand);
 			pReadActionGameCommand(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1813,13 +1737,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCAWait *action = NULL;
 		
 		try{
-			action = new ceCAWait;
+			action.TakeOver(new ceCAWait);
 			pReadActionWait(root, conversation, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1829,13 +1750,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCATrigger *action = NULL;
 		
 		try{
-			action = new ceCATrigger;
+			action.TakeOver(new ceCATrigger);
 			pReadActionTrigger(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1845,13 +1763,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCAActorAdd *action = NULL;
 		
 		try{
-			action = new ceCAActorAdd;
+			action.TakeOver(new ceCAActorAdd);
 			pReadActionActorAdd(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1861,13 +1776,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCAActorRemove *action = NULL;
 		
 		try{
-			action = new ceCAActorRemove;
+			action.TakeOver(new ceCAActorRemove);
 			pReadActionActorRemove(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1877,13 +1789,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCACoordSystemAdd *action = NULL;
 		
 		try{
-			action = new ceCACoordSystemAdd;
+			action.TakeOver(new ceCACoordSystemAdd);
 			pReadActionCoordSystemAdd(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1893,13 +1802,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCACoordSystemRemove *action = NULL;
 		
 		try{
-			action = new ceCACoordSystemRemove;
+			action.TakeOver(new ceCACoordSystemRemove);
 			pReadActionCoordSystemRemove(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1909,13 +1815,10 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 		ceCAComment *action = NULL;
 		
 		try{
-			action = new ceCAComment;
+			action.TakeOver(new ceCAComment);
 			pReadActionComment(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2065,9 +1968,9 @@ void ceLoadSaveConversation::pReadActionIfElse(const decXmlElementTag &root, ceC
 		if(tag){
 			if(strcmp(tag->GetName(), "condition") == 0){ // DEPRECATED
 				LogWarnGenericProblemTag(root, tag->GetName(), "DEPRECATED");
-				ceCAIfElseCase *ifcase;
+				ceCAIfElseCase::Ref ifcase;
 				if(action.GetCases().GetCount() == 0){
-					ifcase = new ceCAIfElseCase;
+					ifcase.TakeOver(new ceCAIfElseCase);
 					action.GetCases().Add(ifcase);
 				}else{
 					ifcase = action.GetCases().GetAt(0);
@@ -2084,9 +1987,9 @@ void ceLoadSaveConversation::pReadActionIfElse(const decXmlElementTag &root, ceC
 				
 			}else if(strcmp(tag->GetName(), "if") == 0){ // DEPRECATED
 				LogWarnGenericProblemTag(root, tag->GetName(), "DEPRECATED");
-				ceCAIfElseCase *ifcase;
+				ceCAIfElseCase::Ref ifcase;
 				if(action.GetCases().GetCount() == 0){
-					ifcase = new ceCAIfElseCase;
+					ifcase.TakeOver(new ceCAIfElseCase);
 					action.GetCases().Add(ifcase);
 				}else{
 					ifcase = action.GetCases().GetAt(0);
@@ -2110,12 +2013,12 @@ void ceLoadSaveConversation::pReadActionIfElse(const decXmlElementTag &root, ceC
 void ceLoadSaveConversation::pReadActionIfElseCase(const decXmlElementTag &root, ceConversation &conversation, ceCAIfElse &action){
 	const int elementCount = root.GetElementCount();
 	ceConversationConditionList conditionList;
-	ceCAIfElseCase *ifcase = NULL;
+	ceCAIfElseCase::Ref ifcase = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
 	try{
-		ifcase = new ceCAIfElseCase;
+		ifcase.TakeOver(new ceCAIfElseCase);
 		
 		for(e=0; e<elementCount; e++){
 			tag = root.GetElementIfTag(e);
@@ -2141,12 +2044,7 @@ void ceLoadSaveConversation::pReadActionIfElseCase(const decXmlElementTag &root,
 		}
 		
 		action.GetCases().Add(ifcase);
-		ifcase->FreeReference();
-		
 	}catch(const deException &){
-		if(ifcase){
-			ifcase->FreeReference();
-		}
 		throw;
 	}
 }
@@ -2178,12 +2076,12 @@ void ceLoadSaveConversation::pReadActionPlayerChoice(const decXmlElementTag &roo
 
 void ceLoadSaveConversation::pReadActionPlayerChoiceOption(const decXmlElementTag &root, ceConversation &conversation, ceCAPlayerChoice &action){
 	const int elementCount = root.GetElementCount();
-	ceCAPlayerChoiceOption *option = NULL;
+	ceCAPlayerChoiceOption::Ref option = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
 	try{
-		option = new ceCAPlayerChoiceOption;
+		option.TakeOver(new ceCAPlayerChoiceOption);
 		
 		for(e=0; e<elementCount; e++){
 			tag = root.GetElementIfTag(e);
@@ -2214,12 +2112,7 @@ void ceLoadSaveConversation::pReadActionPlayerChoiceOption(const decXmlElementTa
 		}
 		
 		action.GetOptions().Add(option);
-		option->FreeReference();
-		
 	}catch(const deException &){
-		if(option){
-			option->FreeReference();
-		}
 		throw;
 	}
 }
@@ -2587,7 +2480,7 @@ void ceLoadSaveConversation::pReadActionComment(const decXmlElementTag &root, ce
 void ceLoadSaveConversation::pReadConditionList(const decXmlElementTag &root,
 ceConversation &conversation, ceConversationConditionList &list){
 	const int elementCount = root.GetElementCount();
-	ceConversationCondition *condition = NULL;
+	ceConversationCondition::Ref condition = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
@@ -2605,12 +2498,7 @@ ceConversation &conversation, ceConversationConditionList &list){
 				}
 				
 				list.Add(condition);
-				condition->FreeReference();
-				
 			}catch(const deException &){
-				if(condition){
-					condition->FreeReference();
-				}
 				throw;
 			}
 		}
@@ -2622,13 +2510,10 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 		ceCConditionLogic *condition = NULL;
 		
 		try{
-			condition = new ceCConditionLogic;
+			condition.TakeOver(new ceCConditionLogic);
 			pReadConditionLogic(root, conversation, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2638,13 +2523,10 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 		ceCConditionHasActor *condition = NULL;
 		
 		try{
-			condition = new ceCConditionHasActor;
+			condition.TakeOver(new ceCConditionHasActor);
 			pReadConditionHasActor(root, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2654,13 +2536,10 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 		ceCConditionActorInConversation *condition = NULL;
 		
 		try{
-			condition = new ceCConditionActorInConversation;
+			condition.TakeOver(new ceCConditionActorInConversation);
 			pReadConditionActorInConversation(root, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2670,13 +2549,10 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 		ceCConditionVariable *condition = NULL;
 		
 		try{
-			condition = new ceCConditionVariable;
+			condition.TakeOver(new ceCConditionVariable);
 			pReadConditionVariable(root, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2686,13 +2562,10 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 		ceCConditionActorParameter *condition = NULL;
 		
 		try{
-			condition = new ceCConditionActorParameter;
+			condition.TakeOver(new ceCConditionActorParameter);
 			pReadConditionActorParameter(root, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2702,13 +2575,10 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 		ceCConditionActorCommand *condition = NULL;
 		
 		try{
-			condition = new ceCConditionActorCommand;
+			condition.TakeOver(new ceCConditionActorCommand);
 			pReadConditionActorCommand(root, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2718,13 +2588,10 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 		ceCConditionGameCommand *condition = NULL;
 		
 		try{
-			condition = new ceCConditionGameCommand;
+			condition.TakeOver(new ceCConditionGameCommand);
 			pReadConditionGameCommand(root, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2734,13 +2601,10 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 		ceCConditionTrigger *condition = NULL;
 		
 		try{
-			condition = new ceCConditionTrigger;
+			condition.TakeOver(new ceCConditionTrigger);
 			pReadConditionTrigger(root, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -3028,7 +2892,7 @@ void ceLoadSaveConversation::pReadConditionTrigger(const decXmlElementTag &root,
 void ceLoadSaveConversation::pReadStripList(const decXmlElementTag &root, ceStripList &list){
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
-	ceStrip *entry;
+	ceStrip::Ref entry;
 	int e;
 	
 	for(e=0; e<elementCount; e++){
@@ -3045,14 +2909,9 @@ void ceLoadSaveConversation::pReadStripList(const decXmlElementTag &root, ceStri
 				entry = NULL;
 				
 				try{
-					entry = new ceStrip(GetCDataString(*tag), GetAttributeFloat(*tag, "duration"), pause);
+					entry.TakeOver(new ceStrip(GetCDataString(*tag), GetAttributeFloat(*tag, "duration"), pause));
 					list.Add(entry);
-					entry->FreeReference();
-					
 				}catch(const deException &){
-					if(entry){
-						entry->FreeReference();
-					}
 					throw;
 				}
 				

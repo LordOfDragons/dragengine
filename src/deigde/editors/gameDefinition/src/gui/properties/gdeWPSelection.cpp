@@ -144,8 +144,6 @@ gdeWPSelection::gdeWPSelection(gdeWindowProperties &windowProperties) :
 igdeContainerSplitted(windowProperties.GetEnvironment(), igdeContainerSplitted::espBottom,
 	igdeApplication::app().DisplayScaled(600)),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL),
 pSwitcher(NULL),
 pTreeObjects(NULL),
 pModelTreeObjects(NULL)
@@ -153,7 +151,7 @@ pModelTreeObjects(NULL)
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new gdeWPSelectionListener(*this);
+	pListener.TakeOver(new gdeWPSelectionListener(*this));
 	
 	pSwitcher.TakeOver(new igdeSwitcher(env));
 	AddChild(pSwitcher, igdeContainerSplitted::eaSide);
@@ -219,10 +217,6 @@ pModelTreeObjects(NULL)
 
 gdeWPSelection::~gdeWPSelection(){
 	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -230,7 +224,7 @@ gdeWPSelection::~gdeWPSelection(){
 // Management
 ///////////////
 
-void gdeWPSelection::SetGameDefinition(gdeGameDefinition *gameDefinition){
+void gdeWPSelection::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}
@@ -260,15 +254,12 @@ void gdeWPSelection::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
-		
 		pModelTreeObjects = new gdeWPSTreeModel(pTreeObjects, pWindowProperties.GetWindowMain(), gameDefinition);
 	}
 	

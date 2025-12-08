@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetEmitMinImpulse::peeUTypeSetEmitMinImpulse(peeType *type, float newImpulse){
+peeUTypeSetEmitMinImpulse::peeUTypeSetEmitMinImpulse(peeType::Ref type, float newImpulse){
 	if(!type){
 		DETHROW(deeInvalidParam);
 	}
@@ -52,13 +52,9 @@ peeUTypeSetEmitMinImpulse::peeUTypeSetEmitMinImpulse(peeType *type, float newImp
 	pNewImpulse = newImpulse;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetEmitMinImpulse::~peeUTypeSetEmitMinImpulse(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

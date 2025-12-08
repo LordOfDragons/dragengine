@@ -66,10 +66,10 @@ deNavigator *deNavigatorManager::GetRootNavigator() const{
 }
 
 deNavigator *deNavigatorManager::CreateNavigator(){
-	deNavigator *navigator = NULL;
+	deNavigator::Ref navigator = NULL;
 	
 	try{
-		navigator = new deNavigator(this);
+		navigator.TakeOver(new deNavigator(this));
 		if(!navigator){
 			DETHROW(deeOutOfMemory);
 		}
@@ -79,9 +79,6 @@ deNavigator *deNavigatorManager::CreateNavigator(){
 		pNavigators.Add(navigator);
 		
 	}catch(const deException &){
-		if(navigator){
-			navigator->FreeReference();
-		}
 		throw;
 	}
 	
@@ -105,7 +102,7 @@ void deNavigatorManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deNavigatorManager::SystemAILoad(){
-	deNavigator *navigator = (deNavigator*)pNavigators.GetRoot();
+	deNavigator::Ref navigator = (deNavigator*)pNavigators.GetRoot();
 	deAISystem &aisys = *GetAISystem();
 	
 	while(navigator){
@@ -118,7 +115,7 @@ void deNavigatorManager::SystemAILoad(){
 }
 
 void deNavigatorManager::SystemAIUnload(){
-	deNavigator *navigator = (deNavigator*)pNavigators.GetRoot();
+	deNavigator::Ref navigator = (deNavigator*)pNavigators.GetRoot();
 	
 	while(navigator){
 		navigator->SetPeerAI(NULL);

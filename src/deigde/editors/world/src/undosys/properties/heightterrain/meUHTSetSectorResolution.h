@@ -36,7 +36,7 @@ class meHeightTerrain;
  */
 class meUHTSetSectorResolution : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
 	
 	int pOldSectorResolution;
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetSectorResolution(meWorld *world, meHeightTerrain *heightTerrain, int newSectorResolution);
+	meUHTSetSectorResolution(meWorld::Ref world, meHeightTerrain *heightTerrain, int newSectorResolution);
 	
 protected:
 	/** \brief Clean up object. */

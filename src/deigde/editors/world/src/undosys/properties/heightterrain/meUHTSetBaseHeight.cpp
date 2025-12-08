@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetBaseHeight::meUHTSetBaseHeight(meWorld *world, meHeightTerrain *heightTerrain, float newBaseHeight){
+meUHTSetBaseHeight::meUHTSetBaseHeight(meWorld::Ref world, meHeightTerrain *heightTerrain, float newBaseHeight){
 	if(!world || !heightTerrain){
 		DETHROW(deeInvalidParam);
 	}
@@ -52,8 +52,6 @@ meUHTSetBaseHeight::meUHTSetBaseHeight(meWorld *world, meHeightTerrain *heightTe
 	pNewBaseHeight = newBaseHeight;
 	
 	SetShortInfo("Set Height Terrain Base Height");
-	
-	world->AddReference();
 }
 
 meUHTSetBaseHeight::~meUHTSetBaseHeight(){

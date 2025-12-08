@@ -72,7 +72,7 @@ public:
 	 * \brief Push canvas video player onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushCanvas(dsRunTime *rt, deCanvasVideoPlayer *canvas);
+	void PushCanvas(dsRunTime *rt, deCanvasVideoPlayer::Ref canvas);
 	/*@}*/
 	
 private:

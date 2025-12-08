@@ -42,8 +42,8 @@
 ////////////////////////////
 
 seUSourceGroupPasteSource::seUSourceGroupPasteSource(
-seSourceGroup *group, const seSourceList &sourceList, int index) :
-pGroup(NULL),
+seSourceGroup::Ref group, const seSourceList &sourceList, int index) :
+
 pIndex(index)
 {
 	const int sourceCount = sourceList.GetCount();
@@ -52,32 +52,24 @@ pIndex(index)
 		DETHROW(deeInvalidParam);
 	}
 	
-	seSource *source = NULL;
+	seSource::Ref source = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<sourceCount; i++){
 			source = sourceList.GetAt(i)->CreateCopy();
 			pSourceList.Add(source);
-			source->FreeReference();
 			source = NULL;
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
 	pGroup = group;
-	group->AddReference();
 }
 
 seUSourceGroupPasteSource::~seUSourceGroupPasteSource(){
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }
 
 

@@ -54,7 +54,7 @@ meDecalSelection::~meDecalSelection(){
 // Management
 ///////////////
 
-void meDecalSelection::Add(meDecal *object){
+void meDecalSelection::Add(meDecal::Ref object){
 	if(!object){
 		DETHROW(deeInvalidParam);
 	}
@@ -63,7 +63,7 @@ void meDecalSelection::Add(meDecal *object){
 	pSelection.AddIfAbsent(object);
 }
 
-void meDecalSelection::Remove(meDecal *object){
+void meDecalSelection::Remove(meDecal::Ref object){
 	if(!object){
 		DETHROW(deeInvalidParam);
 	}
@@ -89,16 +89,14 @@ bool meDecalSelection::HasActive() const{
 	return pActive != NULL;
 }
 
-void meDecalSelection::SetActive(meDecal *object){
+void meDecalSelection::SetActive(meDecal::Ref object){
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = object;
 	
 	if(object){
-		object->AddReference();
 		object->SetActive(true);
 	}
 }

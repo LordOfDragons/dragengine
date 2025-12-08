@@ -41,18 +41,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVLayerAdd::meUHTVLayerAdd(meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer){
+meUHTVLayerAdd::meUHTVLayerAdd(meWorld::Ref world, meHeightTerrain *heightTerrain, meHTVegetationLayer::Ref vlayer){
 	if(!world || !heightTerrain || !vlayer) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pHeightTerrain = heightTerrain;
 	
 	SetShortInfo("Add Height Terrain Vegetation Layer");
-	
-	world->AddReference();
-	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 }
 
 meUHTVLayerAdd::~meUHTVLayerAdd(){

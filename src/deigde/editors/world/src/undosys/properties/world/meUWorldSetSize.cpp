@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldSetSize::meUWorldSetSize(meWorld *world, const decDVector &newValue) :
-pWorld(NULL),
+meUWorldSetSize::meUWorldSetSize(meWorld::Ref world, const decDVector &newValue) :
+
 pNewValue(newValue)
 {
 	if(!world){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = world->GetSize();
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUWorldSetSize::~meUWorldSetSize(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }
 
 

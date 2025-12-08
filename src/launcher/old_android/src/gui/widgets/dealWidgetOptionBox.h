@@ -45,7 +45,7 @@ private:
 	dealWidgetImage *pBoxImageDeselected;
 	dealWidgetImage *pBoxImageSelected;
 	
-	dealWidgetOptionGroup *pGroup;
+	dealWidgetOptionGroup::Ref pGroup;
 	bool pSelected;
 	
 public:
@@ -99,7 +99,7 @@ public:
 	inline dealWidgetOptionGroup *GetGroup() const{ return pGroup; }
 	
 	/** \brief Set group or \em NULL if not assigned to one. */
-	void SetGroup(dealWidgetOptionGroup *group);
+	void SetGroup(dealWidgetOptionGroup::Ref group);
 	
 	/** \brief Button is selected. */
 	inline bool GetSelected() const{ return pSelected; }

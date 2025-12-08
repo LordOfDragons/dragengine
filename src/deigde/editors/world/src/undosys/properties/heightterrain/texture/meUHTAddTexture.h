@@ -43,9 +43,9 @@ class meHeightTerrainTexture;
  */
 class meUHTAddTexture : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTAddTexture(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture);
+	meUHTAddTexture(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture);
 	
 protected:
 	/** \brief Clean up object. */

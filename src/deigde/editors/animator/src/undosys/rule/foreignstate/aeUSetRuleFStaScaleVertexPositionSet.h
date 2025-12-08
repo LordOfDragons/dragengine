@@ -35,7 +35,7 @@ class aeRuleForeignState;
  */
 class aeUSetRuleFStaScaleVertexPositionSet : public igdeUndo{
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 	float pOldScale;
 	float pNewScale;

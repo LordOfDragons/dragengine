@@ -39,20 +39,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataObjTexProperty::meUndoDataObjTexProperty(meObjectTexture *texture) :
+meUndoDataObjTexProperty::meUndoDataObjTexProperty(meObjectTexture::Ref texture) :
 pTexture(texture),
 pPropertyExists(false)
 {
 	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
-	texture->AddReference();
 }
 
 meUndoDataObjTexProperty::~meUndoDataObjTexProperty(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

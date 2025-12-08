@@ -48,9 +48,8 @@
 ////////////////////////////
 
 gdeWPSTIMOCParticleEmitter::gdeWPSTIMOCParticleEmitter(gdeWPSTreeModel &tree,
-	gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter, int index) :
-gdeWPSTIMOCSubObject(tree, etObjectClassParticleEmitter, objectClass, index),
-pParticleEmitter(NULL)
+	gdeObjectClass *objectClass, gdeOCParticleEmitter::Ref particleEmitter, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassParticleEmitter, objectClass, index)
 {
 	if(!particleEmitter){
 		DETHROW(deeInvalidParam);
@@ -63,13 +62,9 @@ pParticleEmitter(NULL)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
 }
 
 gdeWPSTIMOCParticleEmitter::~gdeWPSTIMOCParticleEmitter(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
 }
 
 

@@ -40,7 +40,7 @@ class aeAnimator;
  */
 class aeUPasteRule : public igdeUndo{
 private:
-	aeAnimator *pAnimator;
+	aeAnimator::Ref pAnimator;
 	aeRuleList pRuleList;
 	aeLinkList pRemoveLinkList;
 	aeControllerList pRemoveControllerList;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new undo object. */
-	aeUPasteRule(aeAnimator *animator, const aeRuleList &ruleList, int index);
+	aeUPasteRule(aeAnimator::Ref animator, const aeRuleList &ruleList, int index);
 	
 protected:
 	/** Clean up undo. */

@@ -57,7 +57,7 @@ public:
 	/** Retrieves the stream version. */
 	int GetStreamVersion(dsRealObject *myself) const;
 	/** Pushes the file writer on the stack. File writer can be NULL to push a null object. */
-	void PushFileWriter(dsRunTime *rt, decBaseFileWriter *fileWriter);
+	void PushFileWriter(dsRunTime *rt, decBaseFileWriter::Ref fileWriter);
 	/** Retrieves the dragon script module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/*@}*/

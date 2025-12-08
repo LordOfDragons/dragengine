@@ -37,7 +37,7 @@ class ceWPTTIMAPlayerChoiceActions;
  */
 class ceWPTTIMAPlayerChoice : public ceWPTTIMAction{
 private:
-	ceWPTTIMAPlayerChoiceActions *pActions;
+	ceWPTTIMAPlayerChoiceActions::Ref pActions;
 	
 	
 	

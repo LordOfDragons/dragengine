@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPropertyAdd::gdeUGDWPropertyAdd(gdeGameDefinition *gamedef, gdeProperty *property) :
-pGameDefinition(NULL),
+gdeUGDWPropertyAdd::gdeUGDWPropertyAdd(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property) :
+
 pProperty(NULL)
 {
 	if(!gamedef || !property){
@@ -51,19 +51,10 @@ pProperty(NULL)
 	SetShortInfo("Game definition add property");
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDWPropertyAdd::~gdeUGDWPropertyAdd(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

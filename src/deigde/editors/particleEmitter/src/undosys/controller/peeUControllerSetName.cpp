@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerSetName::peeUControllerSetName(peeController *controller, const char *newName){
+peeUControllerSetName::peeUControllerSetName(peeController::Ref controller, const char *newName){
 	if(!controller || !newName) DETHROW(deeInvalidParam);
 	
 	pController = NULL;
@@ -50,13 +50,9 @@ peeUControllerSetName::peeUControllerSetName(peeController *controller, const ch
 	pNewName = newName;
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerSetName::~peeUControllerSetName(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

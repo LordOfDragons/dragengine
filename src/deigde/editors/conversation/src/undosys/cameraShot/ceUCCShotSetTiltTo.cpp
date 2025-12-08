@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetTiltTo::ceUCCShotSetTiltTo(ceCameraShot *cameraShot, float newTilt){
+ceUCCShotSetTiltTo::ceUCCShotSetTiltTo(ceCameraShot::Ref cameraShot, float newTilt){
 	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
@@ -50,13 +50,9 @@ ceUCCShotSetTiltTo::ceUCCShotSetTiltTo(ceCameraShot *cameraShot, float newTilt){
 	pNewTilt = newTilt;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetTiltTo::~ceUCCShotSetTiltTo(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

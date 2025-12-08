@@ -49,7 +49,7 @@ class reView3D : public igdeViewRenderWindow{
 private:
 	reWindowMain &pWindowMain;
 	
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	igdeMouseCameraListener::Ref pCameraInteraction;
 	igdeMouseDragListener::Ref pSimulationInteraction;
@@ -86,7 +86,7 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig(reRig *rig);
+	void SetRig(reRig::Ref rig);
 	
 	/** \brief Game like frame update. */
 	virtual void OnFrameUpdate(float elapsed);

@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCNavigationSpace *pNavSpace;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCNavSpace(gdeOCNavigationSpace *navSpace);
+	gdeClipboardDataOCNavSpace(gdeOCNavigationSpace::Ref navSpace);
 	
 protected:
 	/**

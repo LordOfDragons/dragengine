@@ -41,11 +41,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPCFPAdd::gdeUGDDPCFPAdd(gdeGameDefinition *gamedef,
-gdeProperty *property, gdeFilePattern *filePattern) :
-pGameDefinition(NULL),
-pProperty(NULL),
-pFilePattern(NULL)
+gdeUGDDPCFPAdd::gdeUGDDPCFPAdd(gdeGameDefinition::Ref gamedef,
+gdeProperty::Ref property, gdeFilePattern::Ref filePattern) :
+
+pProperty(NULL)
 {
 	if(!gamedef || !property || !filePattern){
 		DETHROW(deeInvalidParam);
@@ -54,25 +53,11 @@ pFilePattern(NULL)
 	SetShortInfo("Game definition property add custom file pattern");
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
-	
 	pFilePattern = filePattern;
-	filePattern->AddReference();
 }
 
 gdeUGDDPCFPAdd::~gdeUGDDPCFPAdd(){
-	if(pFilePattern){
-		pFilePattern->FreeReference();
-	}
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

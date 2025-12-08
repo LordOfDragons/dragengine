@@ -45,9 +45,9 @@ class meHeightTerrainTexture;
  */
 class meUHTSetTexUVOffset : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	decVector2 pOldOffset;
 	decVector2 pNewOffset;
@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetTexUVOffset(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const decVector2 &newOffset);
+	meUHTSetTexUVOffset(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture, const decVector2 &newOffset);
 	
 protected:
 	/** \brief Clean up object. */

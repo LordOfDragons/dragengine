@@ -113,14 +113,6 @@
 
 reRig::reRig(igdeEnvironment *environment) :
 igdeEditableEntity(environment),
-
-pEngWorld(NULL),
-pEngLight(NULL),
-
-pEngComponent(NULL),
-pEngAnimator(NULL),
-pEngAnimatorInstance(NULL),
-pEngSimCollider(NULL),
 pEngAnimatorAnim(NULL),
 pEngAnimatorRestPose(NULL),
 
@@ -128,8 +120,6 @@ pComponentTextures(NULL),
 pComponentTextureCount(0),
 
 pSky(NULL),
-
-pEngRig(NULL),
 pPoseChanged(true),
 
 pModelCollision(false),
@@ -145,7 +135,6 @@ pCamera(NULL),
 pBones(NULL),
 pBoneCount(0),
 pBoneSize(0),
-pRootBone(NULL),
 
 pShapes(NULL),
 pShapeCount(0),
@@ -195,9 +184,9 @@ pDirtyRig(true)
 	deEngine * const engine = GetEngine();
 	
 	deAnimatorController *amController = NULL;
-	deAnimatorRuleAnimation *amRuleAnim = NULL;
-	deAnimatorRuleStateManipulator *amRuleRestPose = NULL;
-	deAnimatorRuleStateSnapshot *amRuleStateSnapshot = NULL;
+	deAnimatorRuleAnimation::Ref amRuleAnim = NULL;
+	deAnimatorRuleStateManipulator::Ref amRuleRestPose = NULL;
+	deAnimatorRuleStateSnapshot::Ref amRuleStateSnapshot = NULL;
 	deAnimatorLink *engLink = NULL;
 	
 	try{
@@ -216,28 +205,25 @@ pDirtyRig(true)
 		pEngAnimator->AddLink(engLink);
 		engLink = NULL;
 		
-		amRuleStateSnapshot = new deAnimatorRuleStateSnapshot;
+		amRuleStateSnapshot.TakeOver(new deAnimatorRuleStateSnapshot);
 		amRuleStateSnapshot->SetUseLastState(true);
 		pEngAnimator->AddRule(amRuleStateSnapshot);
-		amRuleStateSnapshot->FreeReference();
 		amRuleStateSnapshot = NULL;
 		
-		amRuleAnim = new deAnimatorRuleAnimation;
+		amRuleAnim.TakeOver(new deAnimatorRuleAnimation);
 		amRuleAnim->GetTargetMoveTime().AddLink(0);
 		amRuleAnim->SetEnabled(!pUseRestPose);
 		pEngAnimator->AddRule(amRuleAnim);
 		pEngAnimatorAnim = amRuleAnim;
-		amRuleAnim->FreeReference();
 		amRuleAnim = NULL;
 		
-		amRuleRestPose = new deAnimatorRuleStateManipulator;
+		amRuleRestPose.TakeOver(new deAnimatorRuleStateManipulator);
 		amRuleRestPose->SetEnabled(true);
 		amRuleRestPose->SetEnablePosition(true);
 		amRuleRestPose->SetEnableRotation(true);
 		amRuleRestPose->SetEnabled(pUseRestPose);
 		pEngAnimator->AddRule(amRuleRestPose);
 		pEngAnimatorRestPose = amRuleRestPose;
-		amRuleRestPose->FreeReference();
 		amRuleRestPose = NULL;
 		
 		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
@@ -289,15 +275,6 @@ pDirtyRig(true)
 	}catch(const deException &){
 		if(engLink){
 			delete engLink;
-		}
-		if(amRuleRestPose){
-			amRuleRestPose->FreeReference();
-		}
-		if(amRuleAnim){
-			amRuleAnim->FreeReference();
-		}
-		if(amRuleStateSnapshot){
-			amRuleStateSnapshot->FreeReference();
 		}
 		if(amController){
 			delete amController;
@@ -636,8 +613,6 @@ void reRig::Rebuild(){
 		}
 		
 		pEngAnimator->SetRig(NULL);
-		
-		pEngRig->FreeReference();
 		pEngRig = NULL;
 		
 	// if the rig does not exist we have to init the pose matrices from the
@@ -1024,7 +999,7 @@ reRigBone *reRig::GetBoneWithOrder(int order) const{
 	return NULL;
 }
 
-int reRig::IndexOfBone(reRigBone *bone) const{
+int reRig::IndexOfBone(reRigBone::Ref bone) const{
 	if(!bone) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1035,7 +1010,7 @@ int reRig::IndexOfBone(reRigBone *bone) const{
 	return -1;
 }
 
-bool reRig::HasBone(reRigBone *bone) const{
+bool reRig::HasBone(reRigBone::Ref bone) const{
 	if(!bone) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1046,7 +1021,7 @@ bool reRig::HasBone(reRigBone *bone) const{
 	return false;
 }
 
-void reRig::AddBone(reRigBone *bone){
+void reRig::AddBone(reRigBone::Ref bone){
 	if(HasBone(bone)) DETHROW(deeInvalidParam);
 	
 	if(pBoneCount == pBoneSize){
@@ -1062,8 +1037,6 @@ void reRig::AddBone(reRigBone *bone){
 	
 	pBones[pBoneCount] = bone;
 	pBoneCount++;
-	
-	bone->AddReference();
 	bone->SetRig(this);
 	
 	ReorderBones();
@@ -1072,7 +1045,7 @@ void reRig::AddBone(reRigBone *bone){
 	NotifyBoneCountChanged();
 }
 
-void reRig::RemoveBone(reRigBone *bone){
+void reRig::RemoveBone(reRigBone::Ref bone){
 	int i, index = IndexOfBone(bone);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -1082,8 +1055,6 @@ void reRig::RemoveBone(reRigBone *bone){
 	pBoneCount--;
 	
 	bone->SetRig(NULL);
-	bone->FreeReference();
-	
 	ReorderBones();
 	
 	UpdateBoneMatrices();
@@ -1139,18 +1110,9 @@ void reRig::SetAllBonesVisited(bool visited){
 	}
 }
 
-void reRig::SetRootBone(reRigBone *rootBone){
+void reRig::SetRootBone(reRigBone::Ref rootBone){
 	if(rootBone != pRootBone){
-		if(pRootBone){
-			pRootBone->FreeReference();
-		}
-		
 		pRootBone = rootBone;
-		
-		if(rootBone){
-			rootBone->AddReference();
-		}
-		
 		NotifyRigChanged();
 	}
 }
@@ -1179,7 +1141,7 @@ reRigShape *reRig::GetShapeWith(deColliderVolume *collider) const{
 	return NULL;
 }
 
-int reRig::IndexOfShape(reRigShape *shape) const{
+int reRig::IndexOfShape(reRigShape::Ref shape) const{
 	if(!shape) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1190,7 +1152,7 @@ int reRig::IndexOfShape(reRigShape *shape) const{
 	return -1;
 }
 
-bool reRig::HasShape(reRigShape *shape) const{
+bool reRig::HasShape(reRigShape::Ref shape) const{
 	if(!shape) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1201,7 +1163,7 @@ bool reRig::HasShape(reRigShape *shape) const{
 	return false;
 }
 
-void reRig::AddShape(reRigShape *shape){
+void reRig::AddShape(reRigShape::Ref shape){
 	if(HasShape(shape)) DETHROW(deeInvalidParam);
 	
 	if(pShapeCount == pShapeSize){
@@ -1217,14 +1179,12 @@ void reRig::AddShape(reRigShape *shape){
 	
 	pShapes[pShapeCount] = shape;
 	pShapeCount++;
-	
-	shape->AddReference();
 	shape->SetRig(this);
 	
 	NotifyShapeCountChanged();
 }
 
-void reRig::RemoveShape(reRigShape *shape){
+void reRig::RemoveShape(reRigShape::Ref shape){
 	int i, index = IndexOfShape(shape);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -1234,8 +1194,6 @@ void reRig::RemoveShape(reRigShape *shape){
 	pShapeCount--;
 	
 	shape->SetRig(NULL);
-	shape->FreeReference();
-	
 	NotifyShapeCountChanged();
 }
 
@@ -1273,7 +1231,7 @@ reRigConstraint *reRig::GetConstraintWith(deColliderVolume *collider) const{
 	return NULL;
 }
 
-int reRig::IndexOfConstraint(reRigConstraint *constraint) const{
+int reRig::IndexOfConstraint(reRigConstraint::Ref constraint) const{
 	if(!constraint) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1284,7 +1242,7 @@ int reRig::IndexOfConstraint(reRigConstraint *constraint) const{
 	return -1;
 }
 
-bool reRig::HasConstraint(reRigConstraint *constraint) const{
+bool reRig::HasConstraint(reRigConstraint::Ref constraint) const{
 	if(!constraint) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1295,7 +1253,7 @@ bool reRig::HasConstraint(reRigConstraint *constraint) const{
 	return false;
 }
 
-void reRig::AddConstraint(reRigConstraint *constraint){
+void reRig::AddConstraint(reRigConstraint::Ref constraint){
 	if(HasConstraint(constraint)) DETHROW(deeInvalidParam);
 	
 	if(pConstraintCount == pConstraintSize){
@@ -1311,8 +1269,6 @@ void reRig::AddConstraint(reRigConstraint *constraint){
 	
 	pConstraints[pConstraintCount] = constraint;
 	pConstraintCount++;
-	
-	constraint->AddReference();
 	constraint->SetRig(this);
 	
 	NotifyConstraintCountChanged();
@@ -1332,7 +1288,7 @@ void reRig::AddConstraint(reRigConstraint *constraint){
 	constraint->SetEngineConstraint(engConstraint);
 }
 
-void reRig::RemoveConstraint(reRigConstraint *constraint){
+void reRig::RemoveConstraint(reRigConstraint::Ref constraint){
 	int i, index = IndexOfConstraint(constraint);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -1348,8 +1304,6 @@ void reRig::RemoveConstraint(reRigConstraint *constraint){
 	pConstraintCount--;
 	
 	constraint->SetRig(NULL);
-	constraint->FreeReference();
-	
 	NotifyConstraintCountChanged();
 }
 
@@ -1396,7 +1350,7 @@ reRigPush *reRig::GetPushWith(deColliderVolume *collider) const{
 	return NULL;
 }
 
-int reRig::IndexOfPush(reRigPush *push) const{
+int reRig::IndexOfPush(reRigPush::Ref push) const{
 	if(!push) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1407,7 +1361,7 @@ int reRig::IndexOfPush(reRigPush *push) const{
 	return -1;
 }
 
-bool reRig::HasPush(reRigPush *push) const{
+bool reRig::HasPush(reRigPush::Ref push) const{
 	if(!push) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1418,7 +1372,7 @@ bool reRig::HasPush(reRigPush *push) const{
 	return false;
 }
 
-void reRig::AddPush(reRigPush *push){
+void reRig::AddPush(reRigPush::Ref push){
 	if(HasPush(push)) DETHROW(deeInvalidParam);
 	
 	if(pPushCount == pPushSize){
@@ -1434,14 +1388,12 @@ void reRig::AddPush(reRigPush *push){
 	
 	pPushes[pPushCount] = push;
 	pPushCount++;
-	
-	push->AddReference();
 	push->SetRig(this);
 	
 	NotifyPushCountChanged();
 }
 
-void reRig::RemovePush(reRigPush *push){
+void reRig::RemovePush(reRigPush::Ref push){
 	int i, index = IndexOfPush(push);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -1451,8 +1403,6 @@ void reRig::RemovePush(reRigPush *push){
 	pPushCount--;
 	
 	push->SetRig(NULL);
-	push->FreeReference();
-	
 	NotifyPushCountChanged();
 }
 
@@ -1477,7 +1427,7 @@ reRigNotifier *reRig::GetNotifierAt(int index) const{
 	return pNotifiers[index];
 }
 
-int reRig::IndexOfNotifier(reRigNotifier *notifier) const{
+int reRig::IndexOfNotifier(reRigNotifier::Ref notifier) const{
 	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1488,7 +1438,7 @@ int reRig::IndexOfNotifier(reRigNotifier *notifier) const{
 	return -1;
 }
 
-bool reRig::HasNotifier(reRigNotifier *notifier) const{
+bool reRig::HasNotifier(reRigNotifier::Ref notifier) const{
 	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1499,7 +1449,7 @@ bool reRig::HasNotifier(reRigNotifier *notifier) const{
 	return false;
 }
 
-void reRig::AddNotifier(reRigNotifier *notifier){
+void reRig::AddNotifier(reRigNotifier::Ref notifier){
 	if(HasNotifier(notifier)) DETHROW(deeInvalidParam);
 	
 	if(pNotifierCount == pNotifierSize){
@@ -1515,11 +1465,9 @@ void reRig::AddNotifier(reRigNotifier *notifier){
 	
 	pNotifiers[pNotifierCount] = notifier;
 	pNotifierCount++;
-	
-	notifier->AddReference();
 }
 
-void reRig::RemoveNotifier(reRigNotifier *notifier){
+void reRig::RemoveNotifier(reRigNotifier::Ref notifier){
 	int i, index = IndexOfNotifier(notifier);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -1527,8 +1475,6 @@ void reRig::RemoveNotifier(reRigNotifier *notifier){
 		pNotifiers[i - 1] = pNotifiers[i];
 	}
 	pNotifierCount--;
-	
-	notifier->FreeReference();
 }
 
 void reRig::RemoveAllNotifiers(){
@@ -1655,7 +1601,7 @@ void reRig::NotifyBoneCountChanged(){
 	SetChanged(true);
 }
 
-void reRig::NotifyBoneChanged(reRigBone *bone){
+void reRig::NotifyBoneChanged(reRigBone::Ref bone){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1666,7 +1612,7 @@ void reRig::NotifyBoneChanged(reRigBone *bone){
 	SetChanged(true);
 }
 
-void reRig::NotifyBoneSelectedChanged(reRigBone *bone){
+void reRig::NotifyBoneSelectedChanged(reRigBone::Ref bone){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1690,7 +1636,7 @@ void reRig::NotifyActiveBoneChanged(){
 	}
 }
 
-void reRig::NotifyAllBoneChanged(reRigBone *bone){
+void reRig::NotifyAllBoneChanged(reRigBone::Ref bone){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1714,7 +1660,7 @@ void reRig::NotifyShapeCountChanged(){
 	SetChanged(true);
 }
 
-void reRig::NotifyShapeChanged(reRigShape *shape){
+void reRig::NotifyShapeChanged(reRigShape::Ref shape){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1725,7 +1671,7 @@ void reRig::NotifyShapeChanged(reRigShape *shape){
 	SetChanged(true);
 }
 
-void reRig::NotifyShapeSelectedChanged(reRigShape *shape){
+void reRig::NotifyShapeSelectedChanged(reRigShape::Ref shape){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1749,7 +1695,7 @@ void reRig::NotifyActiveShapeChanged(){
 	}
 }
 
-void reRig::NotifyAllShapeChanged(reRigShape *shape){
+void reRig::NotifyAllShapeChanged(reRigShape::Ref shape){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1774,7 +1720,7 @@ void reRig::NotifyConstraintCountChanged(){
 	SetChanged(true);
 }
 
-void reRig::NotifyConstraintChanged(reRigConstraint *constraint){
+void reRig::NotifyConstraintChanged(reRigConstraint::Ref constraint){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1785,7 +1731,7 @@ void reRig::NotifyConstraintChanged(reRigConstraint *constraint){
 	SetChanged(true);
 }
 
-void reRig::NotifyConstraintSelectedChanged(reRigConstraint *constraint){
+void reRig::NotifyConstraintSelectedChanged(reRigConstraint::Ref constraint){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1809,7 +1755,7 @@ void reRig::NotifyActiveConstraintChanged(){
 	}
 }
 
-void reRig::NotifyAllConstraintChanged(reRigConstraint *constraint){
+void reRig::NotifyAllConstraintChanged(reRigConstraint::Ref constraint){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1820,7 +1766,7 @@ void reRig::NotifyAllConstraintChanged(reRigConstraint *constraint){
 	SetChanged(true);
 }
 
-void reRig::NotifyAllConstraintDofChanged(reRigConstraint *constraint, deColliderConstraint::eDegreesOfFreedom dof){
+void reRig::NotifyAllConstraintDofChanged(reRigConstraint::Ref constraint, deColliderConstraint::eDegreesOfFreedom dof){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1841,7 +1787,7 @@ void reRig::NotifyPushCountChanged(){
 	}
 }
 
-void reRig::NotifyPushChanged(reRigPush *push){
+void reRig::NotifyPushChanged(reRigPush::Ref push){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1849,7 +1795,7 @@ void reRig::NotifyPushChanged(reRigPush *push){
 	}
 }
 
-void reRig::NotifyPushSelectedChanged(reRigPush *push){
+void reRig::NotifyPushSelectedChanged(reRigPush::Ref push){
 	int n;
 	
 	for(n=0; n<pNotifierCount; n++){
@@ -1902,11 +1848,6 @@ void reRig::pCleanUp(){
 	if(pSelectionBones){
 		delete pSelectionBones;
 	}
-	
-	if(pRootBone){
-		pRootBone->FreeReference();
-	}
-	
 	RemoveAllNotifiers();
 	if(pNotifiers){
 		delete [] pNotifiers;
@@ -1942,31 +1883,16 @@ void reRig::pCleanUp(){
 	
 	if(pEngSimCollider){
 		pEngSimCollider->SetComponent(NULL);
-		pEngSimCollider->FreeReference();
 	}
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetComponent(NULL);
 		pEngAnimatorInstance->SetAnimator(NULL);
-		pEngAnimatorInstance->FreeReference();
 	}
 	if(pEngAnimator){
 		pEngAnimator->SetRig(NULL);
-		pEngAnimator->FreeReference();
 	}
 	if(pEngComponent){
 		pEngComponent->SetRig(NULL);
-		pEngComponent->FreeReference();
-	}
-	if(pEngRig){
-		pEngRig->FreeReference();
-	}
-	
-	if(pEngLight){
-		pEngLight->FreeReference();
-	}
-	
-	if(pEngWorld){
-		pEngWorld->FreeReference();
 	}
 }
 
@@ -1992,8 +1918,8 @@ void reRig::pCreateCamera(){
 
 void reRig::pUpdateComponent(){
 	bool rebuildTextures = false;
-	deModel *model = NULL;
-	deSkin *skin = NULL;
+	deModel::Ref model = NULL;
+	deSkin::Ref skin = NULL;
 	
 	// try to load the model and skin if possible
 	try{
@@ -2014,7 +1940,6 @@ void reRig::pUpdateComponent(){
 		// if the skin is missing use the default one
 		if(!skin){
 			skin = GetGameDefinition()->GetDefaultSkin();
-			skin->AddReference();
 		}
 		
 		// reset the animator
@@ -2035,7 +1960,6 @@ void reRig::pUpdateComponent(){
 		}else if(pEngComponent){
 			pEngSimCollider->SetComponent(NULL);
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 			pEngComponent = NULL;
 		}
 		
@@ -2103,7 +2027,7 @@ void reRig::pUpdateComponent(){
 }
 
 void reRig::pUpdateAnimator(){
-	deAnimation *animation = NULL;
+	deAnimation::Ref animation = NULL;
 	
 	// try to load the animation if possible
 	try{
@@ -2133,7 +2057,7 @@ void reRig::pUpdateAnimator(){
 
 void reRig::pUpdateAnimatorMove(){
 	deAnimationMove *move = NULL;
-	deAnimation *animation;
+	deAnimation::Ref animation;
 	int index;
 	
 	pEngAnimatorAnim->SetMoveName(pMoveName);

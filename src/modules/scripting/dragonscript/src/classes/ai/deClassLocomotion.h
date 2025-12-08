@@ -65,7 +65,7 @@ public:
 	dedsLocomotion *GetLocomotion(dsRealObject *myself) const;
 	
 	/** \brief Push locomotion which can be NULL. */
-	void PushLocomotion(dsRunTime *rt, dedsLocomotion *locomotion);
+	void PushLocomotion(dsRunTime *rt, dedsLocomotion::Ref locomotion);
 	
 	inline dsClass *GetClassLocomotionAttribute() const{ return pClsLocomotionAttribute; }
 	inline dsClass *GetClassLocomotionTilt() const{ return pClsLocomotionTilt; }

@@ -39,8 +39,8 @@
 ////////////////////////////
 
 seUPropertyNodeShapeSetType::seUPropertyNodeShapeSetType(
-sePropertyNodeShape *node, deSkinPropertyNodeShape::eShapeTypes newValue) :
-pNode(NULL),
+sePropertyNodeShape::Ref node, deSkinPropertyNodeShape::eShapeTypes newValue) :
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = node->GetShapeType();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeShapeSetType::~seUPropertyNodeShapeSetType(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

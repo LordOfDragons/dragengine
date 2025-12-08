@@ -45,7 +45,7 @@ private:
 	
 	decTexMatrix pMatrix;
 	
-	deoglRSkin *pSkin;
+	deoglRSkin::Ref pSkin;
 	
 	deoglSkinTexture *pUseSkinTexture;
 	
@@ -94,7 +94,7 @@ public:
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL. */
-	void SetSkin(deoglRSkin *skin);
+	void SetSkin(deoglRSkin::Ref skin);
 	
 	/** Skin texture to use or NULL. */
 	inline deoglSkinTexture *GetUseSkinTexture() const{ return pUseSkinTexture; }

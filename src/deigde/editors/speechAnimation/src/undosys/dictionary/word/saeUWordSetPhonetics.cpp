@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUWordSetPhonetics::saeUWordSetPhonetics(saeWord *word, const decUnicodeString &newPhonetics){
+saeUWordSetPhonetics::saeUWordSetPhonetics(saeWord::Ref word, const decUnicodeString &newPhonetics){
 	if(!word) DETHROW(deeInvalidParam);
 	
 	pWord = NULL;
@@ -50,13 +50,9 @@ saeUWordSetPhonetics::saeUWordSetPhonetics(saeWord *word, const decUnicodeString
 	pNewPhonetics = newPhonetics;
 	
 	pWord = word;
-	word->AddReference();
 }
 
 saeUWordSetPhonetics::~saeUWordSetPhonetics(){
-	if(pWord){
-		pWord->FreeReference();
-	}
 }
 
 

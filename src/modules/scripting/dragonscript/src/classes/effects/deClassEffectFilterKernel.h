@@ -72,7 +72,7 @@ public:
 	 * \brief Push effect filter kernel onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushEffect(dsRunTime *rt, deEffectFilterKernel *effect);
+	void PushEffect(dsRunTime *rt, deEffectFilterKernel::Ref effect);
 	/*@}*/
 	
 private:

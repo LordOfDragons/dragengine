@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetPosition::gdeUOCBillboardSetPosition(gdeObjectClass *objectClass,
-gdeOCBillboard *billboard, const decVector &newValue) :
-pObjectClass(NULL),
+gdeUOCBillboardSetPosition::gdeUOCBillboardSetPosition(gdeObjectClass::Ref objectClass,
+gdeOCBillboard::Ref billboard, const decVector &newValue) :
+
 pBillboard(NULL)
 {
 	if(!objectClass || !billboard){
@@ -55,19 +55,10 @@ pBillboard(NULL)
 	pNewValue = newValue;
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardSetPosition::~gdeUOCBillboardSetPosition(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

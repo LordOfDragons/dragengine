@@ -65,15 +65,15 @@ public:
 	/** Retrieves the constraint at the given index. */
 	reRigConstraint *GetConstraintAt(int index) const;
 	/** Determines if the given constraint exists. */
-	bool HasConstraint(reRigConstraint *constraint) const;
+	bool HasConstraint(reRigConstraint::Ref constraint) const;
 	/** Retrieves the index of the given constraint or -1 if not found. */
-	int IndexOfConstraint(reRigConstraint *constraint) const;
+	int IndexOfConstraint(reRigConstraint::Ref constraint) const;
 	/** Retrieves the index of the constraint with the given collider or -1 if not found. */
 	int IndexOfConstraintWith(deColliderVolume *collider) const;
 	/** Adds a constraint if not existing already. */
-	void AddConstraint(reRigConstraint *constraint);
+	void AddConstraint(reRigConstraint::Ref constraint);
 	/** Removes a constraint if existing. */
-	void RemoveConstraint(reRigConstraint *constraint);
+	void RemoveConstraint(reRigConstraint::Ref constraint);
 	/** Removes all constraints. */
 	void RemoveAllConstraints();
 	
@@ -82,7 +82,7 @@ public:
 	/** Determines if an active constraint exists. */
 	bool HasActiveConstraint() const;
 	/** Sets the acitve constraint or NULL. */
-	void SetActiveConstraint(reRigConstraint *constraint);
+	void SetActiveConstraint(reRigConstraint::Ref constraint);
 	/** Activates the next constraint in the list. */
 	//void ActivateNextConstraint();
 	

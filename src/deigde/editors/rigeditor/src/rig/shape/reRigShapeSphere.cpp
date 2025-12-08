@@ -68,10 +68,10 @@ void reRigShapeSphere::SetRadius(float radius){
 }
 
 reRigShape *reRigShapeSphere::Duplicate() const{
-	reRigShapeSphere *shape = NULL;
+	reRigShapeSphere::Ref shape = NULL;
 	
 	try{
-		shape = new reRigShapeSphere(GetEngine());
+		shape.TakeOver(new reRigShapeSphere(GetEngine()));
 		if(!shape) DETHROW(deeOutOfMemory);
 		
 		shape->SetPosition(GetPosition());

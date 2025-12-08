@@ -69,19 +69,17 @@ void cePlaybackActor::SetTextBox(ceTextBox *textBox){
 	pTextBox = textBox;
 }
 
-void cePlaybackActor::SetTextBoxText(ceTextBoxText *text){
+void cePlaybackActor::SetTextBoxText(ceTextBoxText::Ref text){
 	if(text != pTextBoxText){
 		if(pTextBoxText){
 			if(pTextBox){
 				pTextBox->GetTextList().Remove(pTextBoxText);
 			}
-			pTextBoxText->FreeReference();
 		}
 		
 		pTextBoxText = text;
 		
 		if(text){
-			text->AddReference();
 			if(pTextBox){
 				pTextBox->GetTextList().Add(text);
 			}

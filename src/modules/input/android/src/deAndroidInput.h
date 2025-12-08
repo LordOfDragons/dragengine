@@ -64,7 +64,7 @@ private:
 	
 	deainpOverlaySystem *pOverlaySystem;
 	
-	deFont *pFontDefault;
+	deFont::Ref pFontDefault;
 	
 	decTimer pInputTimer;
 	float pElapsedTime;

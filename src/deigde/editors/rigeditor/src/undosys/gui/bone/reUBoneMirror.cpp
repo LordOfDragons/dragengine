@@ -49,11 +49,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUBoneMirror::reUBoneMirror(reRig *rig){
+reUBoneMirror::reUBoneMirror(reRig::Ref rig){
 	const reSelectionBones &selection = *rig->GetSelectionBones();
 	int b, boneCount = selection.GetBoneCount();
 	int c, constraintCount;
-	reRigBone *boneTarget;
+	reRigBone::Ref boneTarget;
 	int s, shapeCount;
 	
 	pRig = NULL;
@@ -92,7 +92,6 @@ reUBoneMirror::reUBoneMirror(reRig *rig){
 				boneTarget = pGetBoneWithMirroredName(rig, ubone.boneSource);
 				
 				if(boneTarget){
-					boneTarget->AddReference();
 					ubone.boneTarget = boneTarget;
 					
 					ubone.oldCMP = boneTarget->GetCentralMassPoint();
@@ -131,7 +130,6 @@ reUBoneMirror::reUBoneMirror(reRig *rig){
 	}
 	
 	pRig = rig;
-	rig->AddReference();
 }
 
 reUBoneMirror::~reUBoneMirror(){
@@ -145,7 +143,7 @@ reUBoneMirror::~reUBoneMirror(){
 
 void reUBoneMirror::Undo(){
 	int c, constraintCount;
-	reRigBone *boneTarget;
+	reRigBone::Ref boneTarget;
 	int s, shapeCount;
 	int b;
 	
@@ -183,8 +181,8 @@ void reUBoneMirror::Undo(){
 }
 
 void reUBoneMirror::Redo(){
-	reRigConstraint *constraint = NULL;
-	reRigShape *shape = NULL;
+	reRigConstraint::Ref constraint = NULL;
+	reRigShape::Ref shape = NULL;
 	int c, constraintCount;
 	int s, shapeCount;
 	float exchange;
@@ -230,7 +228,6 @@ void reUBoneMirror::Redo(){
 					matrixResult.TransformUp()).GetEulerAngles() * RAD2DEG);
 				
 				boneTarget.AddShape(shape);
-				shape->FreeReference();
 				shape = NULL;
 			}
 			
@@ -393,7 +390,6 @@ void reUBoneMirror::Redo(){
 				
 				// add the mirrored constraint
 				boneTarget.AddConstraint(constraint);
-				constraint->FreeReference();
 				constraint = NULL;
 			}
 			
@@ -438,7 +434,7 @@ void reUBoneMirror::pCleanUp(){
 
 
 
-reRigBone *reUBoneMirror::pGetBoneWithMirroredName(reRig *rig, reRigBone *bone) const{
+reRigBone *reUBoneMirror::pGetBoneWithMirroredName(reRig::Ref rig, reRigBone *bone) const{
 	const decString nameBone(bone->GetName().GetLower());
 	decString findName;
 	

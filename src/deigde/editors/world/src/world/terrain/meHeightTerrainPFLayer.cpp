@@ -158,7 +158,7 @@ void meHeightTerrainPFLayer::LoadMaskFromImage(){
 	}
 	
 	const int resolution = pHTSector->GetHeightTerrain()->GetSectorResolution();
-	deImage *image = NULL;
+	deImage::Ref image = NULL;
 	decPath path;
 	int x, y, i;
 	
@@ -215,13 +215,10 @@ void meHeightTerrainPFLayer::LoadMaskFromImage(){
 							}
 						}
 					}
-					
-					image->FreeReference();
 				}
 				
 			}catch(const deException &e){
 				if(image){
-					image->FreeReference();
 					image = NULL;
 				}
 				if(pHTSector && pHTSector->GetHeightTerrain()){
@@ -263,7 +260,7 @@ meHeightTerrainPFType *meHeightTerrainPFLayer::GetTypeAt(int index) const{
 	return pTypes[index];
 }
 
-int meHeightTerrainPFLayer::IndexOfType(meHeightTerrainPFType *type) const{
+int meHeightTerrainPFLayer::IndexOfType(meHeightTerrainPFType::Ref type) const{
 	if(!type){
 		DETHROW(deeInvalidParam);
 	}
@@ -278,7 +275,7 @@ int meHeightTerrainPFLayer::IndexOfType(meHeightTerrainPFType *type) const{
 	return -1;
 }
 
-bool meHeightTerrainPFLayer::HasType(meHeightTerrainPFType *type) const{
+bool meHeightTerrainPFLayer::HasType(meHeightTerrainPFType::Ref type) const{
 	if(!type){
 		DETHROW(deeInvalidParam);
 	}
@@ -293,7 +290,7 @@ bool meHeightTerrainPFLayer::HasType(meHeightTerrainPFType *type) const{
 	return false;
 }
 
-void meHeightTerrainPFLayer::AddType(meHeightTerrainPFType *type){
+void meHeightTerrainPFLayer::AddType(meHeightTerrainPFType::Ref type){
 	if(!type){
 		DETHROW(deeInvalidParam);
 	}
@@ -311,8 +308,6 @@ void meHeightTerrainPFLayer::AddType(meHeightTerrainPFType *type){
 	
 	pTypes[pTypeCount] = type;
 	pTypeCount++;
-	
-	type->AddReference();
 	type->SetPFLayer(this);
 	
 	if(pHTSector && pHTSector->GetHeightTerrain()){
@@ -322,7 +317,7 @@ void meHeightTerrainPFLayer::AddType(meHeightTerrainPFType *type){
 	}
 }
 
-void meHeightTerrainPFLayer::RemoveType(meHeightTerrainPFType *type){
+void meHeightTerrainPFLayer::RemoveType(meHeightTerrainPFType::Ref type){
 	const int index = IndexOfType(type);
 	if(index == -1){
 		DETHROW(deeInvalidParam);
@@ -335,8 +330,6 @@ void meHeightTerrainPFLayer::RemoveType(meHeightTerrainPFType *type){
 	pTypeCount--;
 	
 	type->SetPFLayer(NULL);
-	type->FreeReference();
-	
 	if(pHTSector && pHTSector->GetHeightTerrain()){
 		pHTSector->GetHeightTerrain()->SetChanged(true);
 		pHTSector->GetHeightTerrain()->RebuildVegetationPropFieldTypes();

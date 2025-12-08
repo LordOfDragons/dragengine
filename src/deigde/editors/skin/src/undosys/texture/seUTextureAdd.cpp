@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUTextureAdd::seUTextureAdd(seSkin *skin, seTexture *texture){
+seUTextureAdd::seUTextureAdd(seSkin::Ref skin, seTexture::Ref texture){
 	if(!skin || !texture) DETHROW(deeInvalidParam);
 	
 	pSkin = NULL;
@@ -49,10 +49,7 @@ seUTextureAdd::seUTextureAdd(seSkin *skin, seTexture *texture){
 	SetShortInfo("Add Texture");
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pSkin = skin;
-	skin->AddReference();
 }
 
 seUTextureAdd::~seUTextureAdd(){

@@ -486,7 +486,7 @@ private:
 	dedsResourceLoader *pResourceLoader;
 //	dedsLockManager *pLockManager;
 	
-	deCollisionInfo *pColInfo;
+	deCollisionInfo::Ref pColInfo;
 	dedsColliderListenerClosest *pColliderListenerClosest;
 	dedsColliderListenerAdaptor *pColliderListenerAdaptor;
 	

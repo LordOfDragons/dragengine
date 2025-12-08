@@ -48,14 +48,14 @@ public:
 	
 private:
 	deEngine *pEngine;
-	deSkin *pEngSkin;
+	deSkin::Ref pEngSkin;
 	
 	seSkin *pSkin;
 	
 	decString pName;
 	
 	sePropertyList pPropertyList;
-	seProperty *pActiveProperty;
+	seProperty::Ref pActiveProperty;
 	
 	decVector2 pTexCoordOffset;
 	decVector2 pTexCoordScaling;
@@ -124,9 +124,9 @@ public:
 	/** Retrieves the property list read-only. */
 	inline const sePropertyList &GetPropertyList() const{ return pPropertyList; }
 	/** Adds a new property. */
-	void AddProperty(seProperty *property);
+	void AddProperty(seProperty::Ref property);
 	/** Removes a property. */
-	void RemoveProperty(seProperty *property);
+	void RemoveProperty(seProperty::Ref property);
 	/** Removes all properties. */
 	void RemoveAllProperties();
 	/** Retrieves the active property or NULL if none is active. */
@@ -134,7 +134,7 @@ public:
 	/** Determines if there is an active property or not. */
 	bool HasActiveProperty() const;
 	/** Sets the active property or NULL if none is active. */
-	void SetActiveProperty(seProperty *property);
+	void SetActiveProperty(seProperty::Ref property);
 	
 	/**
 	 * \brief Update all resources.

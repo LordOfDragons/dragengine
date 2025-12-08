@@ -65,18 +65,14 @@ deSkyInstance *deSkyInstanceManager::GetRootSkyInstance() const{
 }
 
 deSkyInstance *deSkyInstanceManager::CreateSkyInstance(){
-	deSkyInstance *instance = NULL;
+	deSkyInstance::Ref instance = NULL;
 	
 	try{
-		instance = new deSkyInstance(this);
+		instance.TakeOver(new deSkyInstance(this));
 		GetGraphicSystem()->LoadSkyInstance(instance);
 		pInstances.Add(instance);
 		
 	}catch(const deException &){
-		if(instance){
-			instance->FreeReference();
-		}
-		
 		throw;
 	}
 	
@@ -99,7 +95,7 @@ void deSkyInstanceManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSkyInstanceManager::SystemGraphicLoad(){
-	deSkyInstance *instance = (deSkyInstance*)pInstances.GetRoot();
+	deSkyInstance::Ref instance = (deSkyInstance*)pInstances.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
 	while(instance){
@@ -111,7 +107,7 @@ void deSkyInstanceManager::SystemGraphicLoad(){
 }
 
 void deSkyInstanceManager::SystemGraphicUnload(){
-	deSkyInstance *instance = (deSkyInstance*)pInstances.GetRoot();
+	deSkyInstance::Ref instance = (deSkyInstance*)pInstances.GetRoot();
 	
 	while(instance){
 		instance->SetPeerGraphic(NULL);

@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetPathHI::meUHTSetPathHI(meWorld *world, meHeightTerrainSector *sector, const char *newPath){
+meUHTSetPathHI::meUHTSetPathHI(meWorld::Ref world, meHeightTerrainSector *sector, const char *newPath){
 	if(!world || !sector || !newPath) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
@@ -51,8 +51,6 @@ meUHTSetPathHI::meUHTSetPathHI(meWorld *world, meHeightTerrainSector *sector, co
 	pNewPath = newPath;
 	
 	SetShortInfo("Set Height Terrain Height Image Path");
-	
-	world->AddReference();
 }
 
 meUHTSetPathHI::~meUHTSetPathHI(){

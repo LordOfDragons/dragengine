@@ -55,8 +55,8 @@
 /////////////////////
 
 struct sFntNatDat{
-	deFont *font;
-	deFontSize *fontSize;
+	deFont::Ref font;
+	deFontSize::Ref fontSize;
 	int size;
 	float scale;
 };
@@ -122,7 +122,7 @@ void deClassFont::nfNewSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.scale = 1.0f;
 	
 	// store font
-	deFont * font = clsFont.GetFont(rt->GetValue(0)->GetRealObject());
+	deFont::Ref font = clsFont.GetFont(rt->GetValue(0)->GetRealObject());
 	if(!font){
 		DSTHROW(dueNullPointer);
 	}
@@ -133,7 +133,6 @@ void deClassFont::nfNewSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 	
 	nd.font = font;
-	font->AddReference();
 	nd.fontSize = font->PrepareSize(size);
 	nd.size = size;
 	
@@ -434,7 +433,7 @@ void deClassFont::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassFont::PushFont(dsRunTime *rt, deFont *font, int size){
+void deClassFont::PushFont(dsRunTime *rt, deFont::Ref font, int size){
 	if(!rt || size < 1){
 		DSTHROW(dueInvalidParam);
 	}
@@ -447,7 +446,6 @@ void deClassFont::PushFont(dsRunTime *rt, deFont *font, int size){
 	rt->CreateObjectNakedOnStack(this);
 	sFntNatDat &nd = *((sFntNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.font = font;
-	font->AddReference();
 	nd.fontSize = font->PrepareSize(size);
 	nd.size = size;
 	

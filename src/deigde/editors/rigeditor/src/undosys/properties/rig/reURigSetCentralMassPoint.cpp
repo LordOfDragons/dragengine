@@ -51,13 +51,9 @@ pRig(NULL)
 	pNewCmp = newCMP;
 	
 	pRig = rig;
-	pRig->AddReference();
 }
 
 reURigSetCentralMassPoint::~reURigSetCentralMassPoint(){
-	if(pRig){
-		pRig->FreeReference();
-	}
 }
 
 

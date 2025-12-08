@@ -36,7 +36,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetFovFrom : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	float pOldFov;
 	float pNewFov;
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetFovFrom(ceCameraShot *cameraShot, float newFov);
+	ceUCCShotSetFovFrom(ceCameraShot::Ref cameraShot, float newFov);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetFovFrom();

@@ -50,7 +50,6 @@
 
 deoglRCanvasRenderWorld::deoglRCanvasRenderWorld(deoglRenderThread &renderThread) :
 deoglRCanvas(renderThread),
-pCamera(NULL),
 pForceToneMapAdaption(false){
 	LEAK_CHECK_CREATE(renderThread, CanvasRenderWorld);
 }
@@ -65,21 +64,11 @@ deoglRCanvasRenderWorld::~deoglRCanvasRenderWorld(){
 // Management
 ///////////////
 
-void deoglRCanvasRenderWorld::SetCamera(deoglRCamera *camera){
+void deoglRCanvasRenderWorld::SetCamera(deoglRCamera::Ref camera){
 	if(camera == pCamera){
 		return;
 	}
-	
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	
 	pCamera = camera;
-	
-	if(camera){
-		camera->AddReference();
-	}
-	
 	pForceToneMapAdaption = true;
 }
 

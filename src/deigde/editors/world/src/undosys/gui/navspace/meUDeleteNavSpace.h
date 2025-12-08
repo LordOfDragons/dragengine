@@ -37,7 +37,7 @@ class meWorld;
  */
 class meUDeleteNavSpace : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meUndoDataNavSpace **pNavSpaces;
 	int pNavSpaceCount;
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUDeleteNavSpace(meWorld *world);
+	meUDeleteNavSpace(meWorld::Ref world);
 	
 	/** \brief Clean up undo object. */
 	virtual ~meUDeleteNavSpace();

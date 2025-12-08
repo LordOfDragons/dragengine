@@ -37,7 +37,7 @@ class projProject;
  */
 class projUProjectSetGameObject : public igdeUndo{
 private:
-	projProject *pProject;
+	projProject::Ref pProject;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProjectSetGameObject(projProject *project, const char *newValue);
+	projUProjectSetGameObject(projProject::Ref project, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProjectSetGameObject();

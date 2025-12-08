@@ -42,7 +42,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	deCaptureCanvas &pCaptureCanvas;
 	
-	deoglRCaptureCanvas *pRCaptureCanvas;
+	deoglRCaptureCanvas::Ref pRCaptureCanvas;
 	
 	bool pDirtyCanvasView;
 	bool pCapturePending;

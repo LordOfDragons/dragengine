@@ -40,7 +40,7 @@ class decBaseFileReader;
  */
 class DE_DLL_EXPORT deBaseSoundDecoder{
 private:
-	decBaseFileReader *pFile;
+	decBaseFileReader::Ref pFile;
 	
 	
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sound decoder peer. */
-	deBaseSoundDecoder(decBaseFileReader *file);
+	deBaseSoundDecoder(decBaseFileReader::Ref file);
 	
 	/** \brief Clean up sound decoder object. */
 	virtual ~deBaseSoundDecoder();

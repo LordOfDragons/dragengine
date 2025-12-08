@@ -38,7 +38,7 @@ class ceTarget;
  */
 class ceUCTargetSetPosition : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decVector pOldPosition;
 	decVector pNewPosition;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetSetPosition(ceTarget *target, const decVector &newPosition);
+	ceUCTargetSetPosition(ceTarget::Ref target, const decVector &newPosition);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCTargetSetPosition();

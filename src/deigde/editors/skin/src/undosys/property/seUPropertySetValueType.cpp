@@ -37,7 +37,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetValueType::seUPropertySetValueType(seProperty *property, seProperty::eValueTypes newType){
+seUPropertySetValueType::seUPropertySetValueType(seProperty::Ref property, seProperty::eValueTypes newType){
 	if(!property) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;
@@ -48,13 +48,9 @@ seUPropertySetValueType::seUPropertySetValueType(seProperty *property, sePropert
 	pNewType = newType;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetValueType::~seUPropertySetValueType(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

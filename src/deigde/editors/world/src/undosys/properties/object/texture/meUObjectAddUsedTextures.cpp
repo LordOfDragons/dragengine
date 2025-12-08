@@ -47,7 +47,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectAddUsedTextures::meUObjectAddUsedTextures(meObject *object){
+meUObjectAddUsedTextures::meUObjectAddUsedTextures(meObject::Ref object){
 	if(!object){
 		DETHROW(deeInvalidParam);
 	}
@@ -73,14 +73,10 @@ meUObjectAddUsedTextures::meUObjectAddUsedTextures(meObject *object){
 	}
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectAddUsedTextures::~meUObjectAddUsedTextures(){
 	pTextureList.RemoveAllTextures();
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

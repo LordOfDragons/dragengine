@@ -47,8 +47,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleClosestProp *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleClosestProp::Ref pRule;
 	
 	float pOldRadius;
 	float pNewRadius;
@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleCPSetRadius(meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, float nradius);
+	meUHTVRuleCPSetRadius(meHTVegetationLayer::Ref vlayer, meHTVRuleClosestProp::Ref rule, float nradius);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleCPSetRadius();
 	/*@}*/

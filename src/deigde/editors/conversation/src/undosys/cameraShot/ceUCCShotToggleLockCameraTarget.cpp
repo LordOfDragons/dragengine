@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotToggleLockCameraTarget::ceUCCShotToggleLockCameraTarget(ceCameraShot *cameraShot){
+ceUCCShotToggleLockCameraTarget::ceUCCShotToggleLockCameraTarget(ceCameraShot::Ref cameraShot){
 	if(!cameraShot){
 		DETHROW(deeInvalidParam);
 	}
@@ -49,13 +49,9 @@ ceUCCShotToggleLockCameraTarget::ceUCCShotToggleLockCameraTarget(ceCameraShot *c
 	SetShortInfo("Camera shot lock camera target");
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotToggleLockCameraTarget::~ceUCCShotToggleLockCameraTarget(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

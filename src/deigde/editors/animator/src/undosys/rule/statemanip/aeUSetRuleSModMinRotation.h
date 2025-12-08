@@ -43,7 +43,7 @@ class aeRuleStateManipulator;
  */
 class aeUSetRuleSModMinRotation : public igdeUndo{
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 	decVector pOldMin;
 	decVector pNewMin;

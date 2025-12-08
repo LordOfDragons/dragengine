@@ -47,7 +47,7 @@ class deoalMicrophone : public deBaseAudioMicrophone{
 private:
 	deAudioOpenAL &pOal;
 	const deMicrophone &pMicrophone;
-	deoalAMicrophone *pAMicrophone;
+	deoalAMicrophone::Ref pAMicrophone;
 	
 	deoalWorld *pParentWorld;
 	bool pActive;

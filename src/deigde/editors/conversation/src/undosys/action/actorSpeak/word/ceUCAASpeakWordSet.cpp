@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakWordSet::ceUCAASpeakWordSet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, ceStrip *newStrip){
+ceUCAASpeakWordSet::ceUCAASpeakWordSet(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref word, ceStrip::Ref newStrip){
 	if(!topic || !actorSpeak || !word || !newStrip){
 		DETHROW(deeInvalidParam);
 	}
@@ -55,37 +55,15 @@ ceUCAASpeakWordSet::ceUCAASpeakWordSet(ceConversationTopic *topic, ceCAActorSpea
 	
 	SetShortInfo("Set Word");
 	
-	pOldStrip = new ceStrip(*word);
+	pOldStrip.TakeOver(new ceStrip(*word));
 	
 	pNewStrip = newStrip;
-	newStrip->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 ceUCAASpeakWordSet::~ceUCAASpeakWordSet(){
-	if(pNewStrip){
-		pNewStrip->FreeReference();
-	}
-	if(pOldStrip){
-		pOldStrip->FreeReference();
-	}
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

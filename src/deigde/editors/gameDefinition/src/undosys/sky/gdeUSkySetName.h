@@ -37,7 +37,7 @@ class gdeSky;
  */
 class gdeUSkySetName : public igdeUndo{
 private:
-	gdeSky *pSky;
+	gdeSky::Ref pSky;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUSkySetName(gdeSky *sky, const char *newValue);
+	gdeUSkySetName(gdeSky::Ref sky, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

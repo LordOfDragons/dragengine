@@ -61,8 +61,8 @@ private:
 	deoglRenderTask *pSolidGeometryOutlineXRayTask;
 	deoglRenderTask *pSolidDecalsXRayTask;
 	
-	deoglRPTBuildRTsDepth *pTaskDepth;
-	deoglRPTBuildRTsGeometry *pTaskGeometry;
+	deoglRPTBuildRTsDepth::Ref pTaskDepth;
+	deoglRPTBuildRTsGeometry::Ref pTaskGeometry;
 	
 	deoglComputeRenderTask::Ref pCRTSolidDepth;
 	deoglComputeRenderTask::Ref pCRTSolidGeometry;

@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakStripSetDuration::ceUCAASpeakStripSetDuration(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *strip, float newDuration){
+ceUCAASpeakStripSetDuration::ceUCAASpeakStripSetDuration(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak,
+ceStrip::Ref strip, float newDuration){
 	if(!topic || !actorSpeak || !strip){
 		DETHROW(deeInvalidParam);
 	}
@@ -57,25 +57,11 @@ ceStrip *strip, float newDuration){
 	SetShortInfo("Strip Set Duration");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pStrip = strip;
-	strip->AddReference();
 }
 
 ceUCAASpeakStripSetDuration::~ceUCAASpeakStripSetDuration(){
-	if(pStrip){
-		pStrip->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

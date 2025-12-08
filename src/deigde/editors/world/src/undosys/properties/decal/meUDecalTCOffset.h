@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalTCOffset : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	decVector2 pOldOffset;
 	decVector2 pNewOffset;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalTCOffset(meDecal *decal, const decVector2 &newOffset);
+	meUDecalTCOffset(meDecal::Ref decal, const decVector2 &newOffset);
 	
 protected:
 	/** \brief Clean up undo object. */

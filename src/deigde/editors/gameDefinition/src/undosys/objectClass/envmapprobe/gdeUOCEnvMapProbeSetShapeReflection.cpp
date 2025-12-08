@@ -41,10 +41,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetShapeReflection::gdeUOCEnvMapProbeSetShapeReflection(gdeObjectClass *objectClass,
-gdeOCEnvMapProbe *envMapProbe, const decShape *newValue) :
-pObjectClass(NULL),
-pEnvMapProbe(NULL),
+gdeUOCEnvMapProbeSetShapeReflection::gdeUOCEnvMapProbeSetShapeReflection(gdeObjectClass::Ref objectClass,
+gdeOCEnvMapProbe::Ref envMapProbe, const decShape *newValue) :
+
+
 pOldValue(NULL),
 pNewValue(NULL)
 {
@@ -62,19 +62,10 @@ pNewValue(NULL)
 	}
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCEnvMapProbeSetShapeReflection::~gdeUOCEnvMapProbeSetShapeReflection(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 	if(pNewValue){
 		delete pNewValue;
 	}

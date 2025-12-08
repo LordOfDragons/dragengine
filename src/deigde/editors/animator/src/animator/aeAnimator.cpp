@@ -881,7 +881,7 @@ aeAttachment *aeAnimator::GetAttachmentNamed(const char *name) const{
 	return NULL;
 }
 
-int aeAnimator::IndexOfAttachment(aeAttachment *attachment) const{
+int aeAnimator::IndexOfAttachment(aeAttachment::Ref attachment) const{
 	if(!attachment) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -894,7 +894,7 @@ int aeAnimator::IndexOfAttachment(aeAttachment *attachment) const{
 	return -1;
 }
 
-bool aeAnimator::HasAttachment(aeAttachment *attachment) const{
+bool aeAnimator::HasAttachment(aeAttachment::Ref attachment) const{
 	return IndexOfAttachment(attachment) != -1;
 }
 
@@ -913,7 +913,7 @@ bool aeAnimator::HasAttachmentNamed(const char *name) const{
 	return false;
 }
 
-void aeAnimator::AddAttachment(aeAttachment *attachment){
+void aeAnimator::AddAttachment(aeAttachment::Ref attachment){
 	if(HasAttachment(attachment)) DETHROW(deeInvalidParam);
 	
 	if(pAttachmentCount == pAttachmentSize){
@@ -929,14 +929,12 @@ void aeAnimator::AddAttachment(aeAttachment *attachment){
 	
 	pAttachments[pAttachmentCount] = attachment;
 	pAttachmentCount++;
-	
-	attachment->AddReference();
 	attachment->SetAnimator(this);
 	
 	NotifyAttachmentStructureChanged();
 }
 
-void aeAnimator::RemoveAttachment(aeAttachment *attachment){
+void aeAnimator::RemoveAttachment(aeAttachment::Ref attachment){
 	int i, index = IndexOfAttachment(attachment);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -948,8 +946,6 @@ void aeAnimator::RemoveAttachment(aeAttachment *attachment){
 	pAttachmentCount--;
 	
 	attachment->SetAnimator(NULL);
-	attachment->FreeReference();
-	
 	NotifyAttachmentStructureChanged();
 }
 
@@ -965,7 +961,7 @@ void aeAnimator::RemoveAllAttachments(){
 	NotifyAttachmentStructureChanged();
 }
 
-void aeAnimator::SetActiveAttachment(aeAttachment *attachment){
+void aeAnimator::SetActiveAttachment(aeAttachment::Ref attachment){
 	if(attachment != pActiveAttachment){
 		pActiveAttachment = attachment;
 		
@@ -1008,7 +1004,7 @@ aeAnimatorNotifier *aeAnimator::GetNotifierAt(int index) const{
 	return pNotifiers[index];
 }
 
-int aeAnimator::IndexOfNotifier(aeAnimatorNotifier *notifier) const{
+int aeAnimator::IndexOfNotifier(aeAnimatorNotifier::Ref notifier) const{
 	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1019,7 +1015,7 @@ int aeAnimator::IndexOfNotifier(aeAnimatorNotifier *notifier) const{
 	return -1;
 }
 
-bool aeAnimator::HasNotifier(aeAnimatorNotifier *notifier) const{
+bool aeAnimator::HasNotifier(aeAnimatorNotifier::Ref notifier) const{
 	if(!notifier) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1030,7 +1026,7 @@ bool aeAnimator::HasNotifier(aeAnimatorNotifier *notifier) const{
 	return false;
 }
 
-void aeAnimator::AddNotifier(aeAnimatorNotifier *notifier){
+void aeAnimator::AddNotifier(aeAnimatorNotifier::Ref notifier){
 	if(HasNotifier(notifier)) DETHROW(deeInvalidParam);
 	
 	if(pNotifierCount == pNotifierSize){
@@ -1046,11 +1042,9 @@ void aeAnimator::AddNotifier(aeAnimatorNotifier *notifier){
 	
 	pNotifiers[pNotifierCount] = notifier;
 	pNotifierCount++;
-	
-	notifier->AddReference();
 }
 
-void aeAnimator::RemoveNotifier(aeAnimatorNotifier *notifier){
+void aeAnimator::RemoveNotifier(aeAnimatorNotifier::Ref notifier){
 	int i, index = IndexOfNotifier(notifier);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -1058,8 +1052,6 @@ void aeAnimator::RemoveNotifier(aeAnimatorNotifier *notifier){
 		pNotifiers[i - 1] = pNotifiers[i];
 	}
 	pNotifierCount--;
-	
-	notifier->FreeReference();
 }
 
 void aeAnimator::RemoveAllNotifiers(){
@@ -1313,7 +1305,7 @@ void aeAnimator::NotifyActiveAttachmentChanged(){
 	}
 }
 
-void aeAnimator::NotifyAttachmentChanged(aeAttachment *attachment){
+void aeAnimator::NotifyAttachmentChanged(aeAttachment::Ref attachment){
 	if(!attachment) DETHROW(deeInvalidParam);
 	int n;
 	
@@ -1397,36 +1389,28 @@ void aeAnimator::pCleanUp(){
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetAnimator(NULL);
 		pEngAnimatorInstance->SetComponent(NULL);
-		pEngAnimatorInstance->FreeReference();
 	}
 	if(pEngAnimator){
 		pEngAnimator->SetRig(NULL);
-		pEngAnimator->FreeReference();
 	}
 	
 	if(pEngWorld){
 		if(pDDBones){
 			pEngWorld->RemoveDebugDrawer(pDDBones);
-			pDDBones->FreeReference();
 		}
 		
 		if(pEngComponent){
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 		}
 		
 		if(pEngCollider){
 			pEngCollider->SetComponent(NULL);
 			pEngWorld->RemoveCollider(pEngCollider);
-			pEngCollider->FreeReference();
 		}
 		
 		if(pEngLight){
 			pEngWorld->RemoveLight(pEngLight);
-			pEngLight->FreeReference();
 		}
-		
-		pEngWorld->FreeReference();
 	}
 }
 
@@ -1478,9 +1462,9 @@ void aeAnimator::pCreateCollider(){
 
 void aeAnimator::pUpdateComponent(){
 	deEngine * const engine = GetEngine();
-	deModel *displayModel = NULL;
-	deSkin *displaySkin = NULL;
-	deRig *displayRig = NULL;
+	deModel::Ref displayModel = NULL;
+	deSkin::Ref displaySkin = NULL;
+	deRig::Ref displayRig = NULL;
 	
 	// detach all colliders
 	DetachAttachments();
@@ -1519,7 +1503,6 @@ void aeAnimator::pUpdateComponent(){
 		// if the skin is missing use the default one
 		if(!displaySkin){
 			displaySkin = GetGameDefinition()->GetDefaultSkin();
-			displaySkin->AddReference();
 		}
 		
 		// reset the animator
@@ -1544,7 +1527,6 @@ void aeAnimator::pUpdateComponent(){
 			}
 			
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 			pEngComponent = NULL;
 		}
 		
@@ -1561,28 +1543,16 @@ void aeAnimator::pUpdateComponent(){
 		
 		// free the reference we hold
 		if(displayRig){
-			displayRig->FreeReference();
 			displayRig = NULL;
 		}
 		if(displayModel){
-			displayModel->FreeReference();
 			displayModel = NULL;
 		}
 		if(displaySkin){
-			displaySkin->FreeReference();
 			displaySkin = NULL;
 		}
 		
 	}catch(const deException &){
-		if(displayModel){
-			displayModel->FreeReference();
-		}
-		if(displaySkin){
-			displaySkin->FreeReference();
-		}
-		if(displayRig){
-			displayRig->FreeReference();
-		}
 		throw;
 	}
 	

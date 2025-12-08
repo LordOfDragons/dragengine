@@ -35,7 +35,7 @@ class gdeOCEnvMapProbe;
  */
 class gdeWPSTIMOCEnvMapProbe : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	
 public:
@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCEnvMapProbe(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCEnvMapProbe *envMapProbe, int index);
+		gdeOCEnvMapProbe::Ref envMapProbe, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

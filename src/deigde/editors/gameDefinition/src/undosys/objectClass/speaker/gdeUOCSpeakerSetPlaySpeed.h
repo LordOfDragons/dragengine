@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCSpeakerSetPlaySpeed : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	float pOldValue;
 	float pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetPlaySpeed(gdeObjectClass *objectClass, gdeOCSpeaker *speaker, float newValue);
+	gdeUOCSpeakerSetPlaySpeed(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

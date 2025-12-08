@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVLayerDown::meUHTVLayerDown(meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer){
+meUHTVLayerDown::meUHTVLayerDown(meWorld::Ref world, meHeightTerrain *heightTerrain, meHTVegetationLayer::Ref vlayer){
 	if(!world || !heightTerrain || !vlayer) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
@@ -51,11 +51,7 @@ meUHTVLayerDown::meUHTVLayerDown(meWorld *world, meHeightTerrain *heightTerrain,
 	if(pIndex == -1 || pIndex >= heightTerrain->GetVLayerCount() - 1) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Move Height Terrain Vegetation Layer Down");
-	
-	world->AddReference();
-	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 }
 
 meUHTVLayerDown::~meUHTVLayerDown(){

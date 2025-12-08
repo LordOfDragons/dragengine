@@ -47,8 +47,8 @@
 
 
 struct sCCTNatDat{
-	deColliderCollisionTest *collisionTest;
-	deCollider *parentCollider;
+	deColliderCollisionTest::Ref collisionTest;
+	deCollider::Ref parentCollider;
 };
 
 
@@ -68,7 +68,7 @@ void deClassColliderCollisionTest::nfNew::RunFunction(dsRunTime *rt, dsValue *my
 	nd.parentCollider = NULL;
 	
 	// create collision test
-	nd.collisionTest = new deColliderCollisionTest;
+	nd.collisionTest.TakeOver(new deColliderCollisionTest);
 }
 
 // public func new( ColliderCollisionTest collisionTest )
@@ -88,7 +88,7 @@ void deClassColliderCollisionTest::nfNewCopy::RunFunction(dsRunTime *rt, dsValue
 		DSTHROW(dueNullPointer);
 	}
 	const deColliderCollisionTest &other = *(((sCCTNatDat*)p_GetNativeData(rt->GetValue(0)))->collisionTest);
-	nd.collisionTest = new deColliderCollisionTest(other);
+	nd.collisionTest.TakeOver(new deColliderCollisionTest(other));
 }
 
 // public func new( CollisionFilter collisionFilter, Vector origin, Vector direction )
@@ -112,7 +112,7 @@ void deClassColliderCollisionTest::nfNewWorld::RunFunction(dsRunTime *rt, dsValu
 	const decVector &direction = ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject());
 	
 	// create collision test
-	nd.collisionTest = new deColliderCollisionTest;
+	nd.collisionTest.TakeOver(new deColliderCollisionTest);
 	nd.collisionTest->SetCollisionFilter(collisionFilter);
 	nd.collisionTest->SetOrigin(origin);
 	nd.collisionTest->SetDirection(direction);
@@ -143,7 +143,7 @@ void deClassColliderCollisionTest::nfNewWorldBone::RunFunction(dsRunTime *rt, ds
 	const decVector &direction = ds.GetClassVector()->GetVector(rt->GetValue(4)->GetRealObject());
 	
 	// create collision test
-	nd.collisionTest = new deColliderCollisionTest;
+	nd.collisionTest.TakeOver(new deColliderCollisionTest);
 	nd.collisionTest->SetCollisionFilter(collisionFilter);
 	nd.collisionTest->SetComponent(component);
 	nd.collisionTest->SetBone(bone);
@@ -180,7 +180,7 @@ void deClassColliderCollisionTest::nfNewTouchSensor::RunFunction(dsRunTime *rt, 
 	}
 	
 	// create collision test
-	nd.collisionTest = new deColliderCollisionTest;
+	nd.collisionTest.TakeOver(new deColliderCollisionTest);
 	nd.collisionTest->SetTouchSensor(touchSensor);
 	nd.collisionTest->SetCollisionFilter(collisionFilter);
 	nd.collisionTest->SetOrigin(origin);
@@ -224,7 +224,7 @@ void deClassColliderCollisionTest::nfNewTouchSensorBone::RunFunction(dsRunTime *
 	}
 	
 	// create collision test
-	nd.collisionTest = new deColliderCollisionTest;
+	nd.collisionTest.TakeOver(new deColliderCollisionTest);
 	nd.collisionTest->SetTouchSensor(touchSensor);
 	nd.collisionTest->SetCollisionFilter(collisionFilter);
 	nd.collisionTest->SetComponent(component);
@@ -906,7 +906,7 @@ deColliderCollisionTest *deClassColliderCollisionTest::GetCollisionTest(dsRealOb
 }
 
 void deClassColliderCollisionTest::PushCollisionTest(dsRunTime *rt,
-deColliderCollisionTest *collisionTest, deCollider *parentCollider){
+deColliderCollisionTest::Ref collisionTest, deCollider::Ref parentCollider){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -920,12 +920,7 @@ deColliderCollisionTest *collisionTest, deCollider *parentCollider){
 	sCCTNatDat &nd = *((sCCTNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	
 	nd.collisionTest = collisionTest;
-	collisionTest->AddReference();
-	
 	nd.parentCollider = parentCollider;
-	if(parentCollider){
-		parentCollider->AddReference();
-	}
 }
 
 deCollider *deClassColliderCollisionTest::GetParentCollider(dsRealObject *myself) const{
@@ -935,7 +930,7 @@ deCollider *deClassColliderCollisionTest::GetParentCollider(dsRealObject *myself
 	return ((sCCTNatDat*)p_GetNativeData(myself->GetBuffer()))->parentCollider;
 }
 
-void deClassColliderCollisionTest::SetParentCollider(dsRealObject *myself, deCollider *collider) const{
+void deClassColliderCollisionTest::SetParentCollider(dsRealObject *myself, deCollider::Ref collider) const{
 	if(!myself){
 		DSTHROW(dueNullPointer);
 	}
@@ -949,7 +944,4 @@ void deClassColliderCollisionTest::SetParentCollider(dsRealObject *myself, deCol
 		nd.parentCollider->FreeReference();
 	}
 	nd.parentCollider = collider;
-	if(collider){
-		collider->AddReference();
-	}
 }

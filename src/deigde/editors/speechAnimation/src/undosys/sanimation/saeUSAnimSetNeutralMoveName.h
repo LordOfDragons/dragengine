@@ -36,7 +36,7 @@ class saeSAnimation;
  */
 class saeUSAnimSetNeutralMoveName : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	decString pOldName;
 	decString pNewName;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUSAnimSetNeutralMoveName(saeSAnimation *sanimation, const char *newName);
+	saeUSAnimSetNeutralMoveName(saeSAnimation::Ref sanimation, const char *newName);
 	
 protected:
 	/** Clean up undo. */

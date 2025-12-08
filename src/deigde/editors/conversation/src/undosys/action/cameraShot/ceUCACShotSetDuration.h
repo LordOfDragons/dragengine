@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCACShotSetDuration : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCACameraShot *pCameraShot;
+	ceConversationTopic::Ref pTopic;
+	ceCACameraShot::Ref pCameraShot;
 	float pOldDuration;
 	float pNewDuration;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCACShotSetDuration(ceConversationTopic *topic, ceCACameraShot *cameraShot, float newDuration);
+	ceUCACShotSetDuration(ceConversationTopic::Ref topic, ceCACameraShot::Ref cameraShot, float newDuration);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCACShotSetDuration();

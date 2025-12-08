@@ -35,7 +35,7 @@ class seController;
  */
 class seUControllerSetName : public igdeUndo{
 private:
-	seController *pController;
+	seController::Ref pController;
 	
 	decString pOldName;
 	decString pNewName;
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUControllerSetName(seController *controller, const char *newName);
+	seUControllerSetName(seController::Ref controller, const char *newName);
 	
 protected:
 	/** \brief Clean up undo action. */

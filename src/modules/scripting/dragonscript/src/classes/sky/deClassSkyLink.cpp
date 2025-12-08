@@ -44,7 +44,7 @@
 /////////////////////
 
 struct sSkyLinkNatDat{
-	deSky *sky;
+	deSky::Ref sky;
 	int index;
 };
 
@@ -274,7 +274,7 @@ void deClassSkyLink::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassSkyLink::PushLink(dsRunTime *rt, deSky *sky, int index){
+void deClassSkyLink::PushLink(dsRunTime *rt, deSky::Ref sky, int index){
 	if(!rt || !sky || index < 0 || index >= sky->GetLinkCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -282,6 +282,5 @@ void deClassSkyLink::PushLink(dsRunTime *rt, deSky *sky, int index){
 	rt->CreateObjectNakedOnStack(this);
 	sSkyLinkNatDat &nd = *((sSkyLinkNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.sky = sky;
-	sky->AddReference();
 	nd.index = index;
 }

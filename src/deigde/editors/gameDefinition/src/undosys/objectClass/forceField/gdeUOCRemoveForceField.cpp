@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveForceField::gdeUOCRemoveForceField(gdeObjectClass *objectClass, gdeOCForceField *forceField) :
-pObjectClass(NULL),
+gdeUOCRemoveForceField::gdeUOCRemoveForceField(gdeObjectClass::Ref objectClass, gdeOCForceField::Ref forceField) :
+
 pForceField(NULL)
 {
 	if(!objectClass || !forceField){
@@ -56,19 +56,10 @@ pForceField(NULL)
 	SetShortInfo("Remove force field");
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveForceField::~gdeUOCRemoveForceField(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

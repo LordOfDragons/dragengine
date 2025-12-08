@@ -38,20 +38,15 @@ const char * const gdeClipboardDataOCLight::TYPE_NAME = "OCLight";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCLight::gdeClipboardDataOCLight(gdeOCLight *light) :
-igdeClipboardData(TYPE_NAME),
-pLight(NULL)
+gdeClipboardDataOCLight::gdeClipboardDataOCLight(gdeOCLight::Ref light) :
+igdeClipboardData(TYPE_NAME)
 {
 	if(!light){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pLight = light;
-	light->AddReference();
 }
 
 gdeClipboardDataOCLight::~gdeClipboardDataOCLight(){
-	if(pLight){
-		pLight->FreeReference();
-	}
 }

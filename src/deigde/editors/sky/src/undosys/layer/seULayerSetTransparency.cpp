@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetTransparency::seULayerSetTransparency(seLayer *layer, float newTransparency) :
-pLayer(NULL),
+seULayerSetTransparency::seULayerSetTransparency(seLayer::Ref layer, float newTransparency) :
+
 pNewTransparency(newTransparency)
 {
 	if(!layer){
@@ -52,13 +52,9 @@ pNewTransparency(newTransparency)
 	pOldTransparency = layer->GetTransparency();
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerSetTransparency::~seULayerSetTransparency(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

@@ -48,9 +48,8 @@
 ////////////////////////////
 
 gdeWPSTIMOCBillboard::gdeWPSTIMOCBillboard(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCBillboard *billboard, int index) :
-gdeWPSTIMOCSubObject(tree, etObjectClassBillboard, objectClass, index),
-pBillboard(NULL)
+	gdeOCBillboard::Ref billboard, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassBillboard, objectClass, index)
 {
 	if(!billboard){
 		DETHROW(deeInvalidParam);
@@ -63,13 +62,9 @@ pBillboard(NULL)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pBillboard = billboard;
-	billboard->AddReference();
 }
 
 gdeWPSTIMOCBillboard::~gdeWPSTIMOCBillboard(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
 }
 
 

@@ -36,7 +36,7 @@ class saePhoneme;
  */
 class saeUPhonemeSetMoveName : public igdeUndo{
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	decString pOldName;
 	decString pNewName;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeSetMoveName(saePhoneme *phoneme, const char *newName);
+	saeUPhonemeSetMoveName(saePhoneme::Ref phoneme, const char *newName);
 	
 protected:
 	/** Clean up undo. */

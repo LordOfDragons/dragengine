@@ -55,7 +55,7 @@ class seWindowMainListener;
  */
 class seWindowMain : public igdeEditorWindow{
 private:
-	seWindowMainListener *pListener;
+	seWindowMainListener::Ref pListener;
 	
 	igdeIcon::Ref pIconSourceSound;
 	igdeIcon::Ref pIconSourceWave;
@@ -125,7 +125,7 @@ private:
 	
 	seViewSynthesizer *pViewSynthesizer;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	
 	
@@ -171,7 +171,7 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer. */
-	void SetSynthesizer(seSynthesizer *synthesizer);
+	void SetSynthesizer(seSynthesizer::Ref synthesizer);
 	
 	
 	

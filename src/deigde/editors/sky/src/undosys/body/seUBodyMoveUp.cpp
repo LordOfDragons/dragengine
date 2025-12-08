@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodyMoveUp::seUBodyMoveUp(seBody *body) :
-pBody(NULL),
+seUBodyMoveUp::seUBodyMoveUp(seBody::Ref body) :
+
 pIndex(0)
 {
 	if(!body){
@@ -61,13 +61,9 @@ pIndex(0)
 	}
 	
 	pBody = body;
-	body->AddReference();
 }
 
 seUBodyMoveUp::~seUBodyMoveUp(){
-	if(pBody){
-		pBody->FreeReference();
-	}
 }
 
 

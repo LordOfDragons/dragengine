@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetCurve::peeUParameterSetCurve(peeType *type,
+peeUParameterSetCurve::peeUParameterSetCurve(peeType::Ref type,
 	peeParameter *parameter, const decCurveBezier &newCurve) :
-pType(NULL),
+
 pParameter(NULL),
 pNewCurve(newCurve)
 {
@@ -54,13 +54,9 @@ pNewCurve(newCurve)
 	pParameter = parameter;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUParameterSetCurve::~peeUParameterSetCurve(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

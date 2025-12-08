@@ -52,7 +52,7 @@ public:
 	inline deEngine *GetGameEngine() const{ return p_gameEngine; }
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	deImage *GetImage(dsRealObject *This) const;
-	void PushImage(dsRunTime *rt, deImage *image);
+	void PushImage(dsRunTime *rt, deImage::Ref image);
 	
 	inline deClassResourceListener *GetClassResourceListener() const{ return pClsRN; }
 

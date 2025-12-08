@@ -37,8 +37,8 @@ class peeEmitter;
  */
 class peeUTypeAdd : public igdeUndo{
 private:
-	peeEmitter *pEmitter;
-	peeType *pType;
+	peeEmitter::Ref pEmitter;
+	peeType::Ref pType;
 	
 	
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo object. */
-	peeUTypeAdd(peeEmitter *emitter, peeType *type);
+	peeUTypeAdd(peeEmitter::Ref emitter, peeType::Ref type);
 	
 protected:
 	/** \brief Clean up the undo object. */

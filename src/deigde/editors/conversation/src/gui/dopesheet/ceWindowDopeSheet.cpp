@@ -332,8 +332,6 @@ void ceWindowDopeSheet::cDopeSheet::OnResize(){
 ceWindowDopeSheet::ceWindowDopeSheet(ceWindowMain &windowMain) :
 igdeContainerFlow(windowMain.GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esLast, 2),
 pWindowMain(windowMain),
-pListener(NULL),
-pConversation(NULL),
 pZoomTime(1.0f),
 pPixelPerSecond(300.0f),
 pSecondPerPixel(1.0f / pPixelPerSecond),
@@ -345,7 +343,7 @@ pVAPreview(NULL)
 	igdeContainer::Ref panel, panel2, panel3, panel4, panel5;
 	int i;
 	
-	pListener = new ceWindowDopeSheetListener(*this);
+	pListener.TakeOver(new ceWindowDopeSheetListener(*this));
 	
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
@@ -432,10 +430,6 @@ pVAPreview(NULL)
 
 ceWindowDopeSheet::~ceWindowDopeSheet(){
 	SetConversation(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 	if(pVAPreview){
 		delete pVAPreview;
 	}
@@ -446,7 +440,7 @@ ceWindowDopeSheet::~ceWindowDopeSheet(){
 // Management
 ///////////////
 
-void ceWindowDopeSheet::SetConversation(ceConversation *conversation){
+void ceWindowDopeSheet::SetConversation(ceConversation::Ref conversation){
 	if(conversation == pConversation){
 		return;
 	}
@@ -455,15 +449,12 @@ void ceWindowDopeSheet::SetConversation(ceConversation *conversation){
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;
 	
 	if(conversation){
 		conversation->AddListener(pListener);
-		conversation->AddReference();
-		
 		pVAPreview->SetSpeaker(conversation->GetEngineSpeakerVAPreview());
 	}
 	

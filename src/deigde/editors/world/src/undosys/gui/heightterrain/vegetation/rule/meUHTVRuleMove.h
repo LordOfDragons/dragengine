@@ -44,8 +44,8 @@ class meHTVRule;
  */
 class meUHTVRuleMove : public igdeUndo{
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRule *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRule::Ref pRule;
 	
 	decVector2 pOldPosition;
 	decVector2 pNewPosition;
@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleMove(meHTVegetationLayer *vlayer, meHTVRule *rule);
+	meUHTVRuleMove(meHTVegetationLayer::Ref vlayer, meHTVRule::Ref rule);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleMove();
 	/*@}*/

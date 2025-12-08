@@ -36,7 +36,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetCamDistFrom : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	float pOldDist;
 	float pNewDist;
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetCamDistFrom(ceCameraShot *cameraShot, float newDist);
+	ceUCCShotSetCamDistFrom(ceCameraShot::Ref cameraShot, float newDist);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetCamDistFrom();

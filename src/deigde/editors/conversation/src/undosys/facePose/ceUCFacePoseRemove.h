@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCFacePoseRemove(ceFacePose *facePose);
+	ceUCFacePoseRemove(ceFacePose::Ref facePose);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCFacePoseRemove();

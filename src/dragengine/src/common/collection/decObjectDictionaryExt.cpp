@@ -40,7 +40,6 @@
 decObjectDictionaryExt::sDictEntry::sDictEntry() :
 hash(0),
 key(nullptr),
-value(nullptr),
 next(nullptr){
 }
 
@@ -50,20 +49,14 @@ key(entry.key),
 value(entry.value),
 next(nullptr)
 {
-	if(value){
-		value->AddReference();
-	}
 }
 
-decObjectDictionaryExt::sDictEntry::sDictEntry(unsigned int nhash, const void *nkey, deObject *nvalue) :
+decObjectDictionaryExt::sDictEntry::sDictEntry(unsigned int nhash, const void *nkey, deObject::Ref nvalue) :
 hash(nhash),
 key(nkey),
 value(nvalue),
 next(nullptr)
 {
-	if(value){
-		value->AddReference();
-	}
 }
 
 decObjectDictionaryExt::sDictEntry::~sDictEntry(){
@@ -71,17 +64,9 @@ decObjectDictionaryExt::sDictEntry::~sDictEntry(){
 	next = nullptr;
 }
 
-void decObjectDictionaryExt::sDictEntry::SetValue(deObject *nvalue){
+void decObjectDictionaryExt::sDictEntry::SetValue(deObject::Ref nvalue){
 	if(nvalue != value){
-		if(value){
-			value->FreeReference();
-		}
-		
 		value = nvalue;
-		
-		if(nvalue){
-			nvalue->AddReference();
-		}
 	}
 }
 
@@ -216,7 +201,7 @@ bool decObjectDictionaryExt::GetAt(const void *key, unsigned int hash, deObject 
 	return false;
 }
 
-void decObjectDictionaryExt::SetAt(const void *key, unsigned int hash, deObject *value){
+void decObjectDictionaryExt::SetAt(const void *key, unsigned int hash, deObject::Ref value){
 	if(!key){
 		DETHROW(deeNullPointer);
 	}

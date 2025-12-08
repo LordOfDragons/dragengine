@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCComponentSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	gdeOCComponent::eProperties pProperty;
 	decString pOldValue;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetPropertyName(gdeObjectClass *objectClass, gdeOCComponent *component,
+	gdeUOCComponentSetPropertyName(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component,
 		gdeOCComponent::eProperties property, const char *newValue);
 	
 protected:

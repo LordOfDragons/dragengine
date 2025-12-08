@@ -102,9 +102,9 @@ private:
 	decLayerMask pLayerMaskShadow;
 	decObjectSet pShadowIgnoreComponents;
 	
-	deoglRSkin *pLightSkin;
-	deoglRCanvasView *pLightCanvas;
-	deoglRDynamicSkin *pDynamicSkin;
+	deoglRSkin::Ref pLightSkin;
+	deoglRCanvasView::Ref pLightCanvas;
+	deoglRDynamicSkin::Ref pDynamicSkin;
 	decTexMatrix2 pTransform;
 	
 	deoglSkinState *pSkinState;
@@ -285,7 +285,7 @@ public:
 	inline deoglRCanvasView *GetLightCanvas() const{ return pLightCanvas; }
 	
 	/** Set light canvas or \em NULL if not used. */
-	void SetLightCanvas(deoglRCanvasView *canvas);
+	void SetLightCanvas(deoglRCanvasView::Ref canvas);
 	
 	/** Light color. */
 	inline const decColor &GetColor() const{ return pColor; }
@@ -327,13 +327,13 @@ public:
 	inline deoglRSkin *GetLightSkin() const{ return pLightSkin; }
 	
 	/** Set light skin or \em NULL if not used. */
-	void SetLightSkin(deoglRSkin *skin);
+	void SetLightSkin(deoglRSkin::Ref skin);
 	
 	/** Dynamic skin or \em NULL if not used. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or \em NULL if not used. */
-	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
+	void SetDynamicSkin(deoglRDynamicSkin::Ref dynamicSkin);
 	
 	/** Light texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTransform() const{ return pTransform; }

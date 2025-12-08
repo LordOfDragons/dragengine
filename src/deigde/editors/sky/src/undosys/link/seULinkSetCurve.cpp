@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkSetCurve::seULinkSetCurve(seLink *link, const decCurveBezier &newCurve) :
-pLink(NULL),
+seULinkSetCurve::seULinkSetCurve(seLink::Ref link, const decCurveBezier &newCurve) :
+
 pNewCurve(newCurve)
 {
 	if(!link){
@@ -52,13 +52,9 @@ pNewCurve(newCurve)
 	pOldCurve = link->GetCurve();
 	
 	pLink = link;
-	link->AddReference();
 }
 
 seULinkSetCurve::~seULinkSetCurve(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

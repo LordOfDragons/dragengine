@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCActionSetWaitForActorID : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
 	decString pOldID;
 	decString pNewID;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionSetWaitForActorID(ceConversationTopic *topic, ceConversationAction *action, const char *newID);
+	ceUCActionSetWaitForActorID(ceConversationTopic::Ref topic, ceConversationAction::Ref action, const char *newID);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCActionSetWaitForActorID();

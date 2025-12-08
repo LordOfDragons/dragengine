@@ -43,7 +43,7 @@ class deoglComponentTexture : public deoglDynamicSkinListener{
 private:
 	deoglComponent &pComponent;
 	const int pIndex;
-	deoglRComponentTexture *pRTexture;
+	deoglRComponentTexture::Ref pRTexture;
 	
 	deoglSkinStateController *pSkinStateController;
 	

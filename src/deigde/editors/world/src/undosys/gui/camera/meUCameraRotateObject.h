@@ -38,7 +38,7 @@ class meObject;
  */
 class meUCameraRotateObject : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decVector pOldRotation, pNewRotation;
 	
 public:
@@ -46,7 +46,7 @@ public:
 	typedef deTObjectReference<meUCameraRotateObject> Ref;
 	
 	// constructor, destructor
-	meUCameraRotateObject(meObject *object);
+	meUCameraRotateObject(meObject::Ref object);
 	~meUCameraRotateObject() override;
 	
 	void SetNewRotation(const decVector &rotation);

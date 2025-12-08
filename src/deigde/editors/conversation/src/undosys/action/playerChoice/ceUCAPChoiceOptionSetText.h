@@ -39,9 +39,9 @@ class ceCAPlayerChoice;
  */
 class ceUCAPChoiceOptionSetText : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
 	decUnicodeString pOldText;
 	decUnicodeString pNewText;
 	
@@ -52,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAPChoiceOptionSetText(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
-		ceCAPlayerChoiceOption *option, const decUnicodeString &newText);
+	ceUCAPChoiceOptionSetText(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref playerChoice,
+		ceCAPlayerChoiceOption::Ref option, const decUnicodeString &newText);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAPChoiceOptionSetText();

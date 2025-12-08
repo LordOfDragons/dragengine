@@ -43,7 +43,7 @@ private:
 	bool pSuccess;
 	
 public:
-	cWaitableTask(deoglRenderThread &renderThread, deoglLoaderThreadTask *task) :
+	cWaitableTask(deoglRenderThread &renderThread, deoglLoaderThreadTask::Ref task) :
 	pRenderThread(renderThread),
 	pTask(task),
 	pSuccess(true){
@@ -108,7 +108,7 @@ void deoglLoaderThread::Run(){
 		pShutdown = true;
 	}
 	
-	deoglLoaderThreadTask *task = nullptr;
+	deoglLoaderThreadTask::Ref task = nullptr;
 	
 	while(!pShutdown){
 		{
@@ -134,8 +134,6 @@ void deoglLoaderThread::Run(){
 			#ifdef DO_DEBUG_LOG
 			pRenderThread.GetLogger().LogInfoFormat("LoaderThread: Run: Done task %p", task);
 			#endif
-			
-			task->FreeReference();
 			task = nullptr;
 			
 		}else{
@@ -202,7 +200,7 @@ void deoglLoaderThread::EnableContext(bool enable){
 	}
 }
 
-bool deoglLoaderThread::AddTask(deoglLoaderThreadTask *task){
+bool deoglLoaderThread::AddTask(deoglLoaderThreadTask::Ref task){
 	DEASSERT_NOTNULL(task);
 	
 	const deMutexGuard guard(pMutex);
@@ -215,12 +213,11 @@ bool deoglLoaderThread::AddTask(deoglLoaderThreadTask *task){
 	#endif
 	
 	pTasks.Add(task);
-	task->AddReference();
 	pSemaphore.Signal();
 	return true;
 }
 
-bool deoglLoaderThread::AwaitTask(deoglLoaderThreadTask *task){
+bool deoglLoaderThread::AwaitTask(deoglLoaderThreadTask::Ref task){
 	DEASSERT_NOTNULL(task)
 	
 	const deTObjectReference<cWaitableTask> waitableTask(deTObjectReference<cWaitableTask>::New(

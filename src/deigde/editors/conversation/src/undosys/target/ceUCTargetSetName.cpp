@@ -51,7 +51,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetSetName::ceUCTargetSetName(ceTarget *target, const char *newName){
+ceUCTargetSetName::ceUCTargetSetName(ceTarget::Ref target, const char *newName){
 	if(!target || !newName) DETHROW(deeInvalidParam);
 	
 	const ceCameraShotList &cameraShotList = target->GetConversation()->GetCameraShotList();
@@ -70,8 +70,6 @@ ceUCTargetSetName::ceUCTargetSetName(ceTarget *target, const char *newName){
 	
 	try{
 		pTarget = target;
-		target->AddReference();
-		
 		for(i=0; i<fileCount; i++){
 			const ceConversationFile &file = *fileList.GetAt(i);
 			const ceConversationTopicList &topicList = file.GetTopicList();
@@ -94,11 +92,6 @@ ceUCTargetSetName::ceUCTargetSetName(ceTarget *target, const char *newName){
 		
 	}catch(const deException &){
 		pActionList.RemoveAll();
-		
-		if(pTarget){
-			pTarget->FreeReference();
-		}
-		
 		throw;
 	}
 }
@@ -106,10 +99,6 @@ ceUCTargetSetName::ceUCTargetSetName(ceTarget *target, const char *newName){
 ceUCTargetSetName::~ceUCTargetSetName(){
 	pCameraShotList.RemoveAll();
 	pActionList.RemoveAll();
-	
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 
@@ -171,7 +160,7 @@ void ceUCTargetSetName::pSetName(const char *oldName, const char *newName){
 
 void ceUCTargetSetName::pAddActions(ceConversationTopic *topic, const ceConversationActionList &list){
 	const int count = list.GetCount();
-	ceUndoCAction *undoCAction = NULL;
+	ceUndoCAction::Ref undoCAction = NULL;
 	ceConversationAction *action;
 	int i;
 	
@@ -183,9 +172,8 @@ void ceUCTargetSetName::pAddActions(ceConversationTopic *topic, const ceConversa
 				const ceCACameraShot &target = *((ceCACameraShot*)action);
 				
 				if(target.GetCameraTarget() == pOldName || target.GetLookAtTarget() == pOldName){
-					undoCAction = new ceUndoCAction(action, topic);
+					undoCAction.TakeOver(new ceUndoCAction(action, topic));
 					pActionList.Add(undoCAction);
-					undoCAction->FreeReference();
 					undoCAction = NULL;
 				}
 				
@@ -220,9 +208,6 @@ void ceUCTargetSetName::pAddActions(ceConversationTopic *topic, const ceConversa
 		}
 		
 	}catch(const deException &){
-		if(undoCAction){
-			undoCAction->FreeReference();
-		}
 		throw;
 	}
 }

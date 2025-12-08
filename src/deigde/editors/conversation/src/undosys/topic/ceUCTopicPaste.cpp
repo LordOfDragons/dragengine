@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTopicPaste::ceUCTopicPaste(ceConversationFile *file, const ceConversationTopicList &topics) :
+ceUCTopicPaste::ceUCTopicPaste(ceConversationFile::Ref file, const ceConversationTopicList &topics) :
 pFile(NULL){
 	if(!file || topics.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = topics.GetCount();
-	ceConversationTopic *newTopic = NULL;
+	ceConversationTopic::Ref newTopic = NULL;
 	int i;
 	
 	if(count == 1){
@@ -59,7 +59,7 @@ pFile(NULL){
 	
 	try{
 		for(i=0; i<count; i++){
-			newTopic = new ceConversationTopic(*topics.GetAt(i));
+			newTopic.TakeOver(new ceConversationTopic(*topics.GetAt(i)));
 			decString topicID(newTopic->GetID());
 			int newNameIndex = 1;
 			
@@ -71,26 +71,18 @@ pFile(NULL){
 			newTopic->SetID(topicID);
 			
 			pTopics.Add(newTopic);
-			newTopic->FreeReference();
 			newTopic = NULL;
 		}
 		
 	}catch(const deException &){
-		if(newTopic){
-			newTopic->FreeReference();
-		}
 		throw;
 	}
 	
 	pFile = file;
-	file->AddReference();
 }
 
 ceUCTopicPaste::~ceUCTopicPaste(){
 	pTopics.RemoveAll();
-	if(pFile){
-		pFile->FreeReference();
-	}
 }
 
 

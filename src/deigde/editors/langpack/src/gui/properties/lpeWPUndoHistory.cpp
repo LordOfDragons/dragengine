@@ -42,16 +42,11 @@
 
 lpeWPUndoHistory::lpeWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pListener(new lpeWPUndoHistoryListener(*this)),
-pLangPack(NULL){
+pListener(new lpeWPUndoHistoryListener(*this)){
 }
 
 lpeWPUndoHistory::~lpeWPUndoHistory(){
 	SetLangPack(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -59,7 +54,7 @@ lpeWPUndoHistory::~lpeWPUndoHistory(){
 // Management
 ///////////////
 
-void lpeWPUndoHistory::SetLangPack(lpeLangPack *langpack){
+void lpeWPUndoHistory::SetLangPack(lpeLangPack::Ref langpack){
 	if(langpack == pLangPack){
 		return;
 	}
@@ -68,7 +63,6 @@ void lpeWPUndoHistory::SetLangPack(lpeLangPack *langpack){
 	
 	if(pLangPack){
 		pLangPack->RemoveListener(pListener);
-		pLangPack->FreeReference();
 		pLangPack = NULL;
 	}
 	
@@ -76,8 +70,6 @@ void lpeWPUndoHistory::SetLangPack(lpeLangPack *langpack){
 	
 	if(langpack){
 		langpack->AddListener(pListener);
-		langpack->AddReference();
-		
 		SetUndoSystem(langpack->GetUndoSystem());
 	}
 }

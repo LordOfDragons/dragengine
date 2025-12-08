@@ -58,16 +58,11 @@ pChanged(false),
 pName("New Project"),
 pPathData("data"),
 pPathCache("cache"),
-pPathLocal("local"),
-
-pProjectGameDefinition(NULL),
-pXMLEClassGameDefinition(NULL),
-pFoundGameDefinition(NULL),
-pGameDefinition(NULL)
+pPathLocal("local")
 {
-	pGameDefinition = new igdeGameDefinition(environment);
-	pXMLEClassGameDefinition = new igdeGameDefinition(environment);
-	pFoundGameDefinition = new igdeGameDefinition(environment);
+	pGameDefinition.TakeOver(new igdeGameDefinition(environment));
+	pXMLEClassGameDefinition.TakeOver(new igdeGameDefinition(environment));
+	pFoundGameDefinition.TakeOver(new igdeGameDefinition(environment));
 }
 
 igdeGameProject::~igdeGameProject(){
@@ -125,20 +120,11 @@ void igdeGameProject::SetPathProjectGameDefinition(const char *path){
 	pPathProjectGameDefinition = path;
 }
 
-void igdeGameProject::SetProjectGameDefinition(igdeGameDefinition *gameDefinition){
+void igdeGameProject::SetProjectGameDefinition(igdeGameDefinition::Ref gameDefinition){
 	if(pProjectGameDefinition == gameDefinition){
 		return;
 	}
-	
-	if(pProjectGameDefinition){
-		pProjectGameDefinition->FreeReference();
-	}
-	
 	pProjectGameDefinition = gameDefinition;
-	
-	if(gameDefinition){
-		gameDefinition->AddReference();
-	}
 }
 
 
@@ -151,12 +137,12 @@ void igdeGameProject::MergeGameDefinitions(){
 	decTimer timer;
 	
 	const int baseGameDefCount = pBaseGameDefinitionList.GetCount();
-	igdeGameDefinition *merged = NULL;
+	igdeGameDefinition::Ref merged = NULL;
 	int i;
 	
 	try{
 		// merge game definition
-		merged = new igdeGameDefinition(pEnvironment);
+		merged.TakeOver(new igdeGameDefinition(pEnvironment));
 		
 		merged->UpdateWith(*pEnvironment.GetGameDefinition());
 		for(i=0; i<baseGameDefCount; i++){
@@ -176,15 +162,9 @@ void igdeGameProject::MergeGameDefinitions(){
 		merged->UpdateTags();
 		
 		// replace game definition
-		if(pGameDefinition){
-			pGameDefinition->FreeReference();
-		}
 		pGameDefinition = merged;
 		
 	}catch(const deException &){
-		if(merged){
-			merged->FreeReference();
-		}
 		throw;
 	}
 	
@@ -227,17 +207,5 @@ void igdeGameProject::NotifyUndoChanged(){
 //////////////////////
 
 void igdeGameProject::pCleanUp(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
-	if(pFoundGameDefinition){
-		pFoundGameDefinition->FreeReference();
-	}
-	if(pXMLEClassGameDefinition){
-		pXMLEClassGameDefinition->FreeReference();
-	}
-	if(pProjectGameDefinition){
-		pProjectGameDefinition->FreeReference();
-	}
 	pBaseGameDefinitionList.RemoveAll();
 }

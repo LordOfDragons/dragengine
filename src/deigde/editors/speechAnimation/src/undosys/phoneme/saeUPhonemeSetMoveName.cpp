@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeSetMoveName::saeUPhonemeSetMoveName(saePhoneme *phoneme, const char *newName){
+saeUPhonemeSetMoveName::saeUPhonemeSetMoveName(saePhoneme::Ref phoneme, const char *newName){
 	if(!phoneme || !newName) DETHROW(deeInvalidParam);
 	
 	pPhoneme = NULL;
@@ -50,13 +50,9 @@ saeUPhonemeSetMoveName::saeUPhonemeSetMoveName(saePhoneme *phoneme, const char *
 	pNewName = newName;
 	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeSetMoveName::~saeUPhonemeSetMoveName(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
 }
 
 

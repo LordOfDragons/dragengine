@@ -55,14 +55,14 @@ igdeGDParticleEmitterManager::~igdeGDParticleEmitterManager(){
 // Management
 ///////////////
 
-void igdeGDParticleEmitterManager::AddEmitter(igdeGDParticleEmitter *emitter){
+void igdeGDParticleEmitterManager::AddEmitter(igdeGDParticleEmitter::Ref emitter){
 	if(!emitter){
 		DETHROW(deeInvalidParam);
 	}
 	pEmitterList.Add(emitter);
 }
 
-void igdeGDParticleEmitterManager::RemoveEmitter(igdeGDParticleEmitter *emitter){
+void igdeGDParticleEmitterManager::RemoveEmitter(igdeGDParticleEmitter::Ref emitter){
 	pEmitterList.Remove(emitter);
 }
 
@@ -78,13 +78,13 @@ void igdeGDParticleEmitterManager::SetDefaultPath(const char *path){
 
 void igdeGDParticleEmitterManager::UpdateWith(const igdeGDParticleEmitterManager &particleEmitterManager){
 	const int count = particleEmitterManager.GetEmitterList().GetCount();
-	igdeGDParticleEmitter *emitter = NULL;
+	igdeGDParticleEmitter::Ref emitter = NULL;
 	igdeGDParticleEmitter *emitterCheck;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			emitter = new igdeGDParticleEmitter(*particleEmitterManager.GetEmitterList().GetAt(i));
+			emitter.TakeOver(new igdeGDParticleEmitter(*particleEmitterManager.GetEmitterList().GetAt(i)));
 			emitterCheck = pEmitterList.GetWithPath(emitter->GetPath().GetString());
 			if(emitterCheck){
 				RemoveEmitter(emitterCheck);
@@ -94,9 +94,6 @@ void igdeGDParticleEmitterManager::UpdateWith(const igdeGDParticleEmitterManager
 		}
 		
 	}catch(const deException &){
-		if(emitter){
-			emitter->FreeReference();
-		}
 		throw;
 	}
 	

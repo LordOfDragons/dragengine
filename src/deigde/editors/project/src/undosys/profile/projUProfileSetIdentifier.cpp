@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetIdentifier::projUProfileSetIdentifier(projProfile *profile, const decUuid &newValue) :
-pProfile(NULL),
+projUProfileSetIdentifier::projUProfileSetIdentifier(projProfile::Ref profile, const decUuid &newValue) :
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetIdentifier();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetIdentifier::~projUProfileSetIdentifier(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

@@ -49,20 +49,16 @@
 
 ceWPTTIMAIfElse::ceWPTTIMAIfElse(ceWindowMain &windowMain,
 ceConversation &conversation, ceCAIfElse *action) :
-ceWPTTIMAction(windowMain, etActionIfElse, conversation, action),
-pElse(NULL)
+ceWPTTIMAction(windowMain, etActionIfElse, conversation, action)
 {
 	SetIcon(windowMain.GetIconActionIfElse());
 	SetText("If-Else");
 	
 	try{
-		pElse = new ceWPTTIMAIfElseElse(windowMain, conversation, action->GetElseActions());
+		pElse.TakeOver(new ceWPTTIMAIfElseElse(windowMain, conversation, action->GetElseActions()));
 		AddChild(pElse);
 		
 	}catch(const deException &){
-		if(pElse){
-			pElse->FreeReference();
-		}
 		throw;
 	}
 	
@@ -182,7 +178,7 @@ void ceWPTTIMAIfElse::pUpdateIfCases(){
 		ceCAIfElseCase * const ifCase = ifCases.GetAt(i);
 		
 		// find item matching ifCase if present
-		ceWPTTIMAIfElseIfCase *model = NULL;
+		ceWPTTIMAIfElseIfCase::Ref model = NULL;
 		const int childCount = GetChildCount();
 		for(j=i; j<childCount; j++){
 			ceWPTTreeItemModel * const child = GetChildAt(j);
@@ -208,18 +204,15 @@ void ceWPTTIMAIfElse::pUpdateIfCases(){
 			model->Update();
 			
 		}else{
-			model = new ceWPTTIMAIfElseIfCase(windowMain, conversation, ifElse, ifCase, i);
+			model.TakeOver(new ceWPTTIMAIfElseIfCase(windowMain, conversation, ifElse, ifCase, i));
 			
 			try{
 				InsertChild(model, i);
 				model->Update();
 				
 			}catch(const deException &){
-				model->FreeReference();
 				throw;
 			}
-			
-			model->FreeReference();
 		}
 	}
 }

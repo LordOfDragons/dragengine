@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodySetOrientation::seUBodySetOrientation(seBody *body, const decVector &newOrientation) :
-pBody(NULL),
+seUBodySetOrientation::seUBodySetOrientation(seBody::Ref body, const decVector &newOrientation) :
+
 pNewOrientation(newOrientation)
 {
 	if(!body){
@@ -52,13 +52,9 @@ pNewOrientation(newOrientation)
 	pOldOrientation = body->GetOrientation();
 	
 	pBody = body;
-	body->AddReference();
 }
 
 seUBodySetOrientation::~seUBodySetOrientation(){
-	if(pBody){
-		pBody->FreeReference();
-	}
 }
 
 

@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUPasteRule::aeUPasteRule(aeAnimator *animator, const aeRuleList &ruleList, int index) :
-pAnimator(NULL),
+aeUPasteRule::aeUPasteRule(aeAnimator::Ref animator, const aeRuleList &ruleList, int index) :
+
 pIndex(index){
 	const int ruleCount = ruleList.GetCount();
 	
@@ -51,26 +51,21 @@ pIndex(index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	aeRule *rule = NULL;
+	aeRule::Ref rule = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<ruleCount; i++){
 			rule = ruleList.GetAt(i)->CreateCopy();
 			pRuleList.Add(rule);
-			rule->FreeReference();
 			rule = NULL;
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
 	pAnimator = animator;
-	animator->AddReference();
 }
 
 aeUPasteRule::~aeUPasteRule(){
@@ -162,7 +157,4 @@ void aeUPasteRule::Redo(){
 //////////////////////
 
 void aeUPasteRule::pCleanUp(){
-	if(pAnimator){
-		pAnimator->FreeReference();
-	}
 }

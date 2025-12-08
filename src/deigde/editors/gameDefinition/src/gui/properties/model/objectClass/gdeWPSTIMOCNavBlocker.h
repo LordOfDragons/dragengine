@@ -35,7 +35,7 @@ class gdeOCNavigationBlocker;
  */
 class gdeWPSTIMOCNavBlocker : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	
 public:
@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCNavBlocker(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCNavigationBlocker *navBlocker, int index);
+		gdeOCNavigationBlocker::Ref navBlocker, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

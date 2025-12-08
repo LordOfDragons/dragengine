@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceOptionSetText::ceUCAPChoiceOptionSetText(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
-	ceCAPlayerChoiceOption *option, const decUnicodeString &newText){
+ceUCAPChoiceOptionSetText::ceUCAPChoiceOptionSetText(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref playerChoice,
+	ceCAPlayerChoiceOption::Ref option, const decUnicodeString &newText){
 	if(!topic || !playerChoice || !option){
 		DETHROW(deeInvalidParam);
 	}
@@ -56,25 +56,11 @@ ceUCAPChoiceOptionSetText::ceUCAPChoiceOptionSetText(ceConversationTopic *topic,
 	SetShortInfo("Player Choice Option Text");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
-	
 	pOption = option;
-	option->AddReference();
 }
 
 ceUCAPChoiceOptionSetText::~ceUCAPChoiceOptionSetText(){
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

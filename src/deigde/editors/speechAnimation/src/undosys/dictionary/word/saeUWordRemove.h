@@ -37,8 +37,8 @@ class saeSAnimation;
  */
 class saeUWordRemove : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
-	saeWord *pWord;
+	saeSAnimation::Ref pSAnimation;
+	saeWord::Ref pWord;
 	
 	
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUWordRemove(saeWord *word);
+	saeUWordRemove(saeWord::Ref word);
 	
 protected:
 	/** Clean up undo. */

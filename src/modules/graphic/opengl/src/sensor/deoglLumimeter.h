@@ -43,7 +43,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	const deLumimeter &pLumimeter;
 	
-	deoglRLumimeter *pRLumimeter;
+	deoglRLumimeter::Ref pRLumimeter;
 	
 	float pLuminance;
 	decColor pColor;

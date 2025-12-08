@@ -41,9 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddNavSpace::gdeUOCAddNavSpace(gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace) :
-pObjectClass(NULL),
-pNavSpace(NULL)
+gdeUOCAddNavSpace::gdeUOCAddNavSpace(gdeObjectClass::Ref objectClass, gdeOCNavigationSpace::Ref navspace) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !navspace){
 		DETHROW(deeInvalidParam);
@@ -52,19 +51,10 @@ pNavSpace(NULL)
 	SetShortInfo("Add navspace");
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddNavSpace::~gdeUOCAddNavSpace(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUAddNavSpace::meUAddNavSpace(meWorld *world, const decPoint3 &sector, meNavigationSpace *navspace) :
-pWorld(NULL),
+meUAddNavSpace::meUAddNavSpace(meWorld::Ref world, const decPoint3 &sector, meNavigationSpace::Ref navspace) :
+
 pNavSpace(NULL)
 {
 	if(!world || !navspace){
@@ -50,10 +50,7 @@ pNavSpace(NULL)
 	SetShortInfo("Add Navigation Space");
 	
 	pWorld = world;
-	world->AddReference();
-	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUAddNavSpace::~meUAddNavSpace(){
@@ -98,10 +95,4 @@ void meUAddNavSpace::Redo(){
 //////////////////////
 
 void meUAddNavSpace::pCleanUp(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

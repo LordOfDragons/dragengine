@@ -41,10 +41,8 @@
 ////////////////////////////
 
 gdeUCategoryRemove::gdeUCategoryRemove(gdeGameDefinition *gameDefinition,
-gdeCategory *category, eCategoryType type) :
-gdeUCategoryBase(gameDefinition, type),
-pParent(NULL),
-pCategory(NULL)
+gdeCategory::Ref category, eCategoryType type) :
+gdeUCategoryBase(gameDefinition, type)
 {
 	if(!category){
 		DETHROW(deeInvalidParam);
@@ -94,16 +92,9 @@ pCategory(NULL)
 	}
 	
 	pCategory = category;
-	category->AddReference();
 }
 
 gdeUCategoryRemove::~gdeUCategoryRemove(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
-	if(pParent){
-		pParent->FreeReference();
-	}
 }
 
 

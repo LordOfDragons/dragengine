@@ -52,9 +52,9 @@ private:
 	int pOwnerShape;
 	int pOwnerFace;
 	
-	deHeightTerrain *pHeightTerrain;
+	deHeightTerrain::Ref pHeightTerrain;
 	deHeightTerrainSector *pHTSector;
-	deCollider *pCollider;
+	deCollider::Ref pCollider;
 	int pBone;
 	int pShape;
 	int pFace;

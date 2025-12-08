@@ -42,8 +42,8 @@ class meHTVVariation;
  */
 class meUHTVVariationRemove : public igdeUndo{
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVVariation *pVariation;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVVariation::Ref pVariation;
 	int pIndex;
 	
 public:
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUHTVVariationRemove(meHTVegetationLayer *vlayer, meHTVVariation *variation);
+	meUHTVVariationRemove(meHTVegetationLayer::Ref vlayer, meHTVVariation::Ref variation);
 	
 protected:
 	/** \brief Clean up undo object. */

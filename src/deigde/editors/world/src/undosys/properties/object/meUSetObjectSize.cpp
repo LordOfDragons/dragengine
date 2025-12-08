@@ -36,7 +36,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUSetObjectSize::meUSetObjectSize(meObject *object, const decVector &newSize){
+meUSetObjectSize::meUSetObjectSize(meObject::Ref object, const decVector &newSize){
 	if(!object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
@@ -48,7 +48,6 @@ meUSetObjectSize::meUSetObjectSize(meObject *object, const decVector &newSize){
 	SetShortInfo("Set Object size");
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUSetObjectSize::~meUSetObjectSize(){

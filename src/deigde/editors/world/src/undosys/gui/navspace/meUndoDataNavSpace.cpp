@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataNavSpace::meUndoDataNavSpace(meNavigationSpace *navspace) :
+meUndoDataNavSpace::meUndoDataNavSpace(meNavigationSpace::Ref navspace) :
 pNavSpace(NULL)
 {
 	if(!navspace){
@@ -52,11 +52,7 @@ pNavSpace(NULL)
 	pOldOrientation = navspace->GetOrientation();
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUndoDataNavSpace::~meUndoDataNavSpace(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }

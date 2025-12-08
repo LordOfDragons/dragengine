@@ -279,15 +279,13 @@ public:
 seWPView::seWPView(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pPreventUpdate(false),
-pSkin(NULL)
+pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPViewListener(*this);
+	pListener.TakeOver(new seWPViewListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -324,10 +322,6 @@ pSkin(NULL)
 
 seWPView::~seWPView(){
 	SetSkin(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -335,7 +329,7 @@ seWPView::~seWPView(){
 // Management
 ///////////////
 
-void seWPView::SetSkin(seSkin *skin){
+void seWPView::SetSkin(seSkin::Ref skin){
 	if(skin == pSkin){
 		return;
 	}
@@ -346,7 +340,6 @@ void seWPView::SetSkin(seSkin *skin){
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 		pSkin = NULL;
 	}
 	
@@ -356,8 +349,6 @@ void seWPView::SetSkin(seSkin *skin){
 	
 	if(skin){
 		skin->AddListener(pListener);
-		skin->AddReference();
-		
 		pWPSky->SetSky(skin->GetSky());
 		pWPEnvObject->SetObject(skin->GetEnvObject());
 		pWPCamera->SetCamera(skin->GetCamera());

@@ -38,7 +38,7 @@
 
 
 struct sNavInfoNatDat{
-	dedsNavigationInfo *navinfo;
+	dedsNavigationInfo::Ref navinfo;
 };
 
 
@@ -58,7 +58,7 @@ void deClassNavigationInfo::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.navinfo = NULL;
 	
 	// create navigation information
-	nd.navinfo = new dedsNavigationInfo(clsNavInfo.GetDS());
+	nd.navinfo.TakeOver(new dedsNavigationInfo(clsNavInfo.GetDS()));
 }
 
 // public func new( NavigationInfo copy )
@@ -79,7 +79,7 @@ void deClassNavigationInfo::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *mysel
 		DSTHROW(dueNullPointer);
 	}
 	
-	nd.navinfo = new dedsNavigationInfo(*copy);
+	nd.navinfo.TakeOver(new dedsNavigationInfo(*copy));
 }
 
 // public func destructor()
@@ -292,7 +292,7 @@ dedsNavigationInfo *deClassNavigationInfo::GetNavigationInfo(dsRealObject *mysel
 	}
 }
 
-void deClassNavigationInfo::PushNavigationInfo(dsRunTime *rt, dedsNavigationInfo *info){
+void deClassNavigationInfo::PushNavigationInfo(dsRunTime *rt, dedsNavigationInfo::Ref info){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -304,5 +304,4 @@ void deClassNavigationInfo::PushNavigationInfo(dsRunTime *rt, dedsNavigationInfo
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sNavInfoNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->navinfo = info;
-	info->AddReference();
 }

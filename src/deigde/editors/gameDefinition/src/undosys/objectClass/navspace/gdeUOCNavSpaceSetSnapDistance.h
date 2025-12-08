@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavSpaceSetSnapDistance : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationSpace *pNavSpace;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	float pOldValue;
 	float pNewValue;
@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetSnapDistance(gdeObjectClass *objectClass,
-		gdeOCNavigationSpace *navspace, float newValue);
+	gdeUOCNavSpaceSetSnapDistance(gdeObjectClass::Ref objectClass,
+		gdeOCNavigationSpace::Ref navspace, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

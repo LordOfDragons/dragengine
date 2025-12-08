@@ -40,8 +40,8 @@ class gdeProperty;
  */
 class gdeUGDWPToggleIdentifierUsage : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeProperty::Ref pProperty;
 	
 	
 	
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDWPToggleIdentifierUsage(gdeGameDefinition *gamedef, gdeProperty *property);
+	gdeUGDWPToggleIdentifierUsage(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property);
 	
 protected:
 	/** \brief Clean up undo action. */

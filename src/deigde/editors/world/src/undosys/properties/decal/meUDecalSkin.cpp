@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalSkin::meUDecalSkin(meDecal *decal, const char *newskin){
+meUDecalSkin::meUDecalSkin(meDecal::Ref decal, const char *newskin){
 	if(!decal || !newskin){
 		DETHROW(deeInvalidParam);
 	}
@@ -63,8 +63,6 @@ meUDecalSkin::meUDecalSkin(meDecal *decal, const char *newskin){
 		pDecals[0].oldskin = decal->GetSkinPath();
 		pDecals[0].newskin = newskin;
 		pDecals[0].decal = decal;
-		decal->AddReference();
-		
 		pDecalCount = 1;
 		
 	}catch(const deException &){
@@ -75,7 +73,7 @@ meUDecalSkin::meUDecalSkin(meDecal *decal, const char *newskin){
 
 meUDecalSkin::meUDecalSkin(meDecalList &decals, const char *newskin){
 	const int count = decals.GetCount();
-	meDecal *decal;
+	meDecal::Ref decal;
 	
 	if(count == 0 || !newskin){
 		DETHROW(deeInvalidParam);
@@ -95,7 +93,6 @@ meUDecalSkin::meUDecalSkin(meDecalList &decals, const char *newskin){
 			pDecals[pDecalCount].oldskin = decal->GetSkinPath();
 			pDecals[pDecalCount].newskin = newskin;
 			pDecals[pDecalCount].decal = decal;
-			decal->AddReference();
 		}
 		
 	}catch(const deException &){
@@ -114,7 +111,7 @@ meUDecalSkin::~meUDecalSkin(){
 ///////////////
 
 void meUDecalSkin::Undo(){
-	meDecal *decal;
+	meDecal::Ref decal;
 	int d;
 	
 	for(d=0; d<pDecalCount; d++){
@@ -126,7 +123,7 @@ void meUDecalSkin::Undo(){
 }
 
 void meUDecalSkin::Redo(){
-	meDecal *decal;
+	meDecal::Ref decal;
 	int d;
 	
 	for(d=0; d<pDecalCount; d++){

@@ -36,7 +36,7 @@ class saeSAnimation;
  */
 class saeUSAnimSetRigPath : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	decString pOldPath;
 	decString pNewPath;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUSAnimSetRigPath(saeSAnimation *sanimation, const char *newName);
+	saeUSAnimSetRigPath(saeSAnimation::Ref sanimation, const char *newName);
 	
 protected:
 	/** Clean up undo. */

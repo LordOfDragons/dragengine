@@ -36,8 +36,8 @@ class seSky;
  */
 class seULinkAdd : public igdeUndo{
 private:
-	seSky *pSky;
-	seLink *pLink;
+	seSky::Ref pSky;
+	seLink::Ref pLink;
 	
 	
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkAdd(seSky *sky, seLink *link);
+	seULinkAdd(seSky::Ref sky, seLink::Ref link);
 	
 protected:
 	/** \brief Clean up undo action. */

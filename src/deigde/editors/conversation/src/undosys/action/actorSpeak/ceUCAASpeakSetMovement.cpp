@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakSetMovement::ceUCAASpeakSetMovement(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newMovement){
+ceUCAASpeakSetMovement::ceUCAASpeakSetMovement(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, const char *newMovement){
 	if(!topic || !newMovement) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
@@ -52,19 +52,10 @@ ceUCAASpeakSetMovement::ceUCAASpeakSetMovement(ceConversationTopic *topic, ceCAA
 	SetShortInfo("Actor Speak Set Movement");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetMovement::~ceUCAASpeakSetMovement(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

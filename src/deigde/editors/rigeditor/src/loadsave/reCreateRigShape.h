@@ -43,7 +43,7 @@ class deEngine;
 class reCreateRigShape : public decShapeVisitor{
 private:
 	deEngine *pEngine;
-	reRigShape *pRigShape;
+	reRigShape::Ref pRigShape;
 	
 public:
 	/** @name Constructors and Destructors */

@@ -39,8 +39,8 @@
 ////////////////////////////
 
 seUPropertyNodeSetSize::seUPropertyNodeSetSize(
-sePropertyNode *node, const decPoint3 &newValue) :
-pNode(NULL),
+sePropertyNode::Ref node, const decPoint3 &newValue) :
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = node->GetSize();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetSize::~seUPropertyNodeSetSize(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

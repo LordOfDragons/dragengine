@@ -103,7 +103,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld *world) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld::Ref world) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -127,7 +127,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(meWorld *world) = 0;
+	virtual igdeUndo *OnAction(meWorld::Ref world) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -149,7 +149,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, meWorld *world) = 0;
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, meWorld::Ref world) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -171,7 +171,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, meWorld *world) = 0;
+	virtual igdeUndo *OnChanged(const decVector &vector, meWorld::Ref world) = 0;
 };
 
 class cBaseEditDVectorListener : public igdeEditDVectorListener{
@@ -193,7 +193,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decDVector &vector, meWorld *world) = 0;
+	virtual igdeUndo *OnChanged(const decDVector &vector, meWorld::Ref world) = 0;
 };
 
 
@@ -260,7 +260,7 @@ class cEditSize : public cBaseEditDVectorListener{
 public:
 	cEditSize(meWPWorld &panel) : cBaseEditDVectorListener(panel){}
 	
-	virtual igdeUndo * OnChanged(const decDVector &vector, meWorld *world){
+	virtual igdeUndo * OnChanged(const decDVector &vector, meWorld::Ref world){
 		return !world->GetSize().IsEqualTo(vector) ? new meUWorldSetSize(world, vector) : NULL;
 	}
 };
@@ -270,7 +270,7 @@ class cEditGravity : public cBaseEditVectorListener{
 public:
 	cEditGravity(meWPWorld &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo * OnChanged(const decVector &vector, meWorld *world){
+	virtual igdeUndo * OnChanged(const decVector &vector, meWorld::Ref world){
 		return !world->GetGravity().IsEqualTo(vector) ? new meUWorldSetGravity(world, vector) : NULL;
 	}
 };
@@ -279,7 +279,7 @@ class cEditPFTStartPosition : public cBaseEditDVectorListener{
 public:
 	cEditPFTStartPosition(meWPWorld &panel) : cBaseEditDVectorListener(panel){}
 	
-	virtual igdeUndo * OnChanged(const decDVector &vector, meWorld *world){
+	virtual igdeUndo * OnChanged(const decDVector &vector, meWorld::Ref world){
 		world->GetPathFindTest()->SetStartPosition(vector);
 		return NULL;
 	}
@@ -290,7 +290,7 @@ public:
 	cActionPFTStartPosFromCamera(meWPWorld &panel) : cBaseAction(panel,
 		"Set", NULL, "Set start position from camera position"){}
 	
-	igdeUndo *OnAction(meWorld *world) override{
+	igdeUndo *OnAction(meWorld::Ref world) override{
 		world->GetPathFindTest()->SetStartPosition(world->GetActiveCamera()->GetPosition());
 		return NULL;
 	}
@@ -300,7 +300,7 @@ class cEditPFTGoalPosition : public cBaseEditDVectorListener{
 public:
 	cEditPFTGoalPosition(meWPWorld &panel) : cBaseEditDVectorListener(panel){}
 	
-	virtual igdeUndo * OnChanged(const decDVector &vector, meWorld *world){
+	virtual igdeUndo * OnChanged(const decDVector &vector, meWorld::Ref world){
 		world->GetPathFindTest()->SetGoalPosition(vector);
 		return NULL;
 	}
@@ -311,7 +311,7 @@ public:
 	cActionPFTGoalPosFromCamera(meWPWorld &panel) : cBaseAction(panel,
 		"Set", NULL, "Set goal position from camera position"){}
 	
-	igdeUndo *OnAction(meWorld *world) override{
+	igdeUndo *OnAction(meWorld::Ref world) override{
 		world->GetPathFindTest()->SetGoalPosition(world->GetActiveCamera()->GetPosition());
 		return NULL;
 	}
@@ -321,7 +321,7 @@ class cEditPFTLayer : public cBaseTextFieldListener{
 public:
 	cEditPFTLayer(meWPWorld &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld *world){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld::Ref world){
 		world->GetPathFindTest()->SetLayer(textField->GetInteger());
 		return NULL;
 	}
@@ -331,7 +331,7 @@ class cComboPFTSpaceType : public cBaseComboBoxListener{
 public:
 	cComboPFTSpaceType(meWPWorld &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, meWorld *world){
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, meWorld::Ref world){
 		if(comboBox->GetSelectedItem()){
 			world->GetPathFindTest()->SetSpaceType((deNavigationSpace::eSpaceTypes)
 				(intptr_t)comboBox->GetSelectedItem()->GetData());
@@ -344,7 +344,7 @@ class cEditPFTBlockingCost : public cBaseTextFieldListener{
 public:
 	cEditPFTBlockingCost(meWPWorld &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld *world){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld::Ref world){
 		world->GetPathFindTest()->SetBlockingCost(textField->GetFloat());
 		return NULL;
 	}
@@ -355,7 +355,7 @@ public:
 	cActionPFTShowPath(meWPWorld &panel) : cBaseAction(panel,
 		"Show Path", NULL, "Show path"){}
 	
-	igdeUndo *OnAction(meWorld *world) override{
+	igdeUndo *OnAction(meWorld::Ref world) override{
 		world->GetPathFindTest()->SetShowPath(!world->GetPathFindTest()->GetShowPath());
 		return NULL;
 	}
@@ -377,7 +377,7 @@ public:
 	cActionPFTTypeAdd(meWPWorld &panel) : cBaseAction(panel, "Add...",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add type"){}
 	
-	igdeUndo *OnAction(meWorld *world) override{
+	igdeUndo *OnAction(meWorld::Ref world) override{
 		mePathFindTestTypeList &list = world->GetPathFindTest()->GetTypeList();
 		const int count = list.GetCount();
 		int i, newValue = 0;
@@ -411,7 +411,7 @@ public:
 	cActionPFTTypeRemove(meWPWorld &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove type"){}
 	
-	igdeUndo *OnAction(meWorld *world) override{
+	igdeUndo *OnAction(meWorld::Ref world) override{
 		mePathFindTestType * const type = pPanel.GetActivePathFindTestType();
 		if(type){
 			world->GetPathFindTest()->GetTypeList().Remove(type);
@@ -430,7 +430,7 @@ public:
 	cActionPFTTypeClear(meWPWorld &panel) : cBaseAction(panel, "Clear",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove all types"){}
 	
-	igdeUndo *OnAction(meWorld *world) override{
+	igdeUndo *OnAction(meWorld::Ref world) override{
 		if(world->GetPathFindTest()->GetTypeList().GetCount() > 0){
 			world->GetPathFindTest()->GetTypeList().RemoveAll();
 			world->GetPathFindTest()->NotifyTypesChanged();
@@ -467,7 +467,7 @@ class cEditPFTTypeNumber : public cBaseTextFieldListener{
 public:
 	cEditPFTTypeNumber(meWPWorld &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld *world){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld::Ref world){
 		mePathFindTestType * const type = pPanel.GetActivePathFindTestType();
 		const int value = textField->GetInteger();
 		if(!type || value == type->GetTypeNumber()){
@@ -490,7 +490,7 @@ class cEditPFTTypeName : public cBaseTextFieldListener{
 public:
 	cEditPFTTypeName(meWPWorld &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld *world){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld::Ref world){
 		mePathFindTestType * const type = pPanel.GetActivePathFindTestType();
 		if(type && textField->GetText() != type->GetName()){
 			type->SetName(textField->GetText());
@@ -504,7 +504,7 @@ class cEditPFTTypeFixCost : public cBaseTextFieldListener{
 public:
 	cEditPFTTypeFixCost(meWPWorld &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld *world){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld::Ref world){
 		mePathFindTestType * const type = pPanel.GetActivePathFindTestType();
 		const float value = textField->GetFloat();
 		if(type && fabsf(value - type->GetFixCost()) > FLOAT_SAFE_EPSILON){
@@ -519,7 +519,7 @@ class cEditPFTTypeCostPerMeter : public cBaseTextFieldListener{
 public:
 	cEditPFTTypeCostPerMeter(meWPWorld &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld *world){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, meWorld::Ref world){
 		mePathFindTestType * const type = pPanel.GetActivePathFindTestType();
 		const float value = textField->GetFloat();
 		if(type && fabsf(value - type->GetCostPerMeter()) > FLOAT_SAFE_EPSILON){
@@ -559,7 +559,7 @@ class cActionMusicPlay : public cBaseAction{
 public:
 	cActionMusicPlay(meWPWorld &panel) : cBaseAction(panel, "Play", nullptr, "Play"){}
 	
-	igdeUndo *OnAction(meWorld *world) override{
+	igdeUndo *OnAction(meWorld::Ref world) override{
 		world->GetMusic().Play();
 		return nullptr;
 	}
@@ -573,7 +573,7 @@ class cActionMusicPause : public cBaseAction{
 public:
 	cActionMusicPause(meWPWorld &panel) : cBaseAction(panel, "Pause", nullptr, "Pause"){}
 	
-	igdeUndo *OnAction(meWorld *world) override{
+	igdeUndo *OnAction(meWorld::Ref world) override{
 		world->GetMusic().Pause();
 		return nullptr;
 	}
@@ -587,7 +587,7 @@ class cActionMusicStop : public cBaseAction{
 public:
 	cActionMusicStop(meWPWorld &panel) : cBaseAction(panel, "Stop", nullptr, "Stop"){}
 	
-	igdeUndo *OnAction(meWorld *world) override{
+	igdeUndo *OnAction(meWorld::Ref world) override{
 		world->GetMusic().Stop();
 		return nullptr;
 	}
@@ -611,15 +611,13 @@ public:
 
 meWPWorld::meWPWorld(meWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pWorld(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new meWPWorldListener(*this);
+	pListener.TakeOver(new meWPWorldListener(*this));
 	
 	
 	pActionPFTTypeAdd.TakeOver(new cActionPFTTypeAdd(*this));
@@ -713,9 +711,6 @@ pWorld(NULL)
 
 meWPWorld::~meWPWorld(){
 	SetWorld(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -723,7 +718,7 @@ meWPWorld::~meWPWorld(){
 // Management
 ///////////////
 
-void meWPWorld::SetWorld(meWorld *world){
+void meWPWorld::SetWorld(meWorld::Ref world){
 	if(world == pWorld){
 		return;
 	}
@@ -737,15 +732,12 @@ void meWPWorld::SetWorld(meWorld *world){
 		editProperties.SetIdentifiers(decStringSet());
 		
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
-		
 		editProperties.SetClipboard(&pWindowProperties.GetWindowMain().GetClipboard());
 		editProperties.SetUndoSystem(world->GetUndoSystem());
 		editProperties.SetTriggerTargetList(&world->GetTriggerTable());

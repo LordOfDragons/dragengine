@@ -40,7 +40,7 @@ class deoglParticleEmitterType{
 private:
 	const deParticleEmitterType &pType;
 	
-	deoglRParticleEmitterType *pRType;
+	deoglRParticleEmitterType::Ref pRType;
 	
 	bool pDirtyType;
 	

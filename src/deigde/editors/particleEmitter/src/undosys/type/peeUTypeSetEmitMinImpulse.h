@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeSetEmitMinImpulse : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	float pOldImpulse;
 	float pNewImpulse;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeSetEmitMinImpulse(peeType *type, float newImpulse);
+	peeUTypeSetEmitMinImpulse(peeType::Ref type, float newImpulse);
 	
 protected:
 	/** \brief Clean up the undo action. */

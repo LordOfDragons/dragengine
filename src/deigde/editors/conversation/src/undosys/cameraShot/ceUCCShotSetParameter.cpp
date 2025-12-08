@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetParameter::ceUCCShotSetParameter(ceCameraShot *cameraShot, int parameter){
+ceUCCShotSetParameter::ceUCCShotSetParameter(ceCameraShot::Ref cameraShot, int parameter){
 	if(!cameraShot || parameter < 0 || parameter >= ceCameraShot::EP_COUNT){
 		DETHROW(deeInvalidParam);
 	}
@@ -53,13 +53,9 @@ ceUCCShotSetParameter::ceUCCShotSetParameter(ceCameraShot *cameraShot, int param
 	pNewCurve = pOldCurve;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetParameter::~ceUCCShotSetParameter(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

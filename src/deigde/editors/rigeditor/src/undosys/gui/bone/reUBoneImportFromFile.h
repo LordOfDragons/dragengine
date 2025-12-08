@@ -60,8 +60,8 @@ private:
 	};
 	
 	struct sBone{
-		reRigBone *bone;
-		reRigBone *importBone;
+		reRigBone::Ref bone;
+		reRigBone::Ref importBone;
 		
 		decVector oldCMP;
 		float oldMass;
@@ -77,7 +77,7 @@ private:
 	
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	float pScale;
 	bool pImportBoneProperties;
@@ -93,7 +93,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUBoneImportFromFile(reRig *rig, reRig *importedRig);
+	reUBoneImportFromFile(reRig::Ref rig, reRig *importedRig);
 	
 protected:
 	/** \brief Clean up undo. */

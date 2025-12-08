@@ -89,7 +89,7 @@ const char *filename, deLanguagePackBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	deLanguagePack *langPack = NULL;
+	deLanguagePack::Ref langPack = NULL;
 	
 	try{
 		deLanguagePack * const findLangPack = (deLanguagePack*)
@@ -98,7 +98,7 @@ const char *filename, deLanguagePackBuilder &builder){
 			DETHROW(deeInvalidParam);
 		}
 		
-		langPack = new deLanguagePack(this, vfs, filename, decDateTime::GetSystemTime());
+		langPack.TakeOver(new deLanguagePack(this, vfs, filename, decDateTime::GetSystemTime()));
 		builder.BuildLanguagePack(*langPack);
 		
 		if(!langPack->Verify()){
@@ -110,9 +110,6 @@ const char *filename, deLanguagePackBuilder &builder){
 		
 	}catch(const deException &){
 		LogErrorFormat("Creating language pack '%s' failed", filename);
-		if(langPack){
-			langPack->FreeReference();
-		}
 		throw;
 	}
 	
@@ -130,9 +127,9 @@ const char *filename, const char *basePath){
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileReader *fileReader = NULL;
-	deLanguagePack *langPack = NULL;
-	deLanguagePack *findLangPack;
+	decBaseFileReader::Ref fileReader = NULL;
+	deLanguagePack::Ref langPack = NULL;
+	deLanguagePack::Ref findLangPack;
 	decPath path;
 	
 	try{
@@ -151,7 +148,6 @@ const char *filename, const char *basePath){
 		}
 		
 		if(findLangPack){
-			findLangPack->AddReference();
 			langPack = findLangPack;
 			
 		}else{
@@ -161,10 +157,8 @@ const char *filename, const char *basePath){
 			
 			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
 			
-			langPack = new deLanguagePack(this, vfs, path.GetPathUnix(), modificationTime);
+			langPack.TakeOver(new deLanguagePack(this, vfs, path.GetPathUnix(), modificationTime));
 			module->LoadLanguagePack(*fileReader, *langPack);
-			
-			fileReader->FreeReference();
 			fileReader = NULL;
 			
 			if(!langPack->Verify()){
@@ -178,12 +172,6 @@ const char *filename, const char *basePath){
 	}catch(const deException &){
 		LogErrorFormat("Loading language pack '%s' (base path '%s') failed",
 			filename, basePath ? basePath : "");
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(langPack){
-			langPack->FreeReference();
-		}
 		throw;
 	}
 	
@@ -203,7 +191,7 @@ void deLanguagePackManager::ReleaseLeakingResources(){
 	const int count = GetLanguagePackCount();
 	
 	if(count > 0){
-		deLanguagePack *langPack = (deLanguagePack*)pLangPacks.GetRoot();
+		deLanguagePack::Ref langPack = (deLanguagePack*)pLangPacks.GetRoot();
 		
 		LogWarnFormat("%i leaking language packs", count);
 		

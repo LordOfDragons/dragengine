@@ -42,7 +42,7 @@ private:
 	
 	deainpOverlayList pOverlays;
 	
-	deCanvasView *pCanvas;
+	deCanvasView::Ref pCanvas;
 	bool pInHorizontalMode;
 	
 public:

@@ -422,16 +422,13 @@ int deVROpenVR::GetDeviceCount(){
 }
 
 deInputDevice *deVROpenVR::GetDeviceAt(int index){
-	deInputDevice *device = nullptr;
+	deInputDevice::Ref device = nullptr;
 	
 	try{
-		device = new deInputDevice;
+		device.TakeOver(new deInputDevice);
 		pDevices.GetAt(index)->GetInfo(*device);
 		
 	}catch(const deException &){
-		if(device){
-			device->FreeReference();
-		}
 		throw;
 	}
 	

@@ -44,7 +44,7 @@ public:
 	
 	
 private:
-	gdeOCCamera *pOCCamera;
+	gdeOCCamera::Ref pOCCamera;
 	
 	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;

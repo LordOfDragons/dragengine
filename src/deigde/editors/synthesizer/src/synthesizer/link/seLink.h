@@ -48,7 +48,7 @@ private:
 	
 	decString pName;
 	
-	seController *pController;
+	seController::Ref pController;
 	int pRepeat;
 	decCurveBezier pCurve;
 	
@@ -100,7 +100,7 @@ public:
 	inline seController *GetController() const{ return pController; }
 	
 	/** \brief Set controller or \em NULL. */
-	void SetController(seController *controller);
+	void SetController(seController::Ref controller);
 	
 	/** \brief Repeat count of input value. */
 	inline int GetRepeat() const{ return pRepeat; }

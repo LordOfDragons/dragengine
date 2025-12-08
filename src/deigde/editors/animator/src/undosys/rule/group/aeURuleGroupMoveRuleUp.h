@@ -38,8 +38,8 @@ class aeRuleGroup;
  */
 class aeURuleGroupMoveRuleUp : public igdeUndo{
 private:
-	aeRuleGroup *pGroup;
-	aeRule *pRule;
+	aeRuleGroup::Ref pGroup;
+	aeRule::Ref pRule;
 	int pIndex;
 	
 public:
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleGroupMoveRuleUp(aeRuleGroup *group, aeRule *rule);
+	aeURuleGroupMoveRuleUp(aeRuleGroup::Ref group, aeRule::Ref rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleGroupMoveRuleUp();

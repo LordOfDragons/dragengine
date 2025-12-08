@@ -48,8 +48,8 @@ class gdeProperty;
 class gdeWPGameDefinition : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeGameDefinition *pGameDefinition;
-	gdeWPGameDefinitionListener *pListener;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeWPGameDefinitionListener::Ref pListener;
 	
 	igdeAction::Ref pActionBasePath;
 	
@@ -95,7 +95,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL. */
-	void SetGameDefinition(gdeGameDefinition *gameDefinition);
+	void SetGameDefinition(gdeGameDefinition::Ref gameDefinition);
 	
 	/** \brief Active world property. */
 	gdeProperty *GetActiveWorldProperty() const;

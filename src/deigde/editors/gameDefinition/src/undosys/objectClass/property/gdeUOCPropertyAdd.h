@@ -40,9 +40,9 @@ class gdeProperty;
  */
 class gdeUOCPropertyAdd : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
-	gdeProperty *pProperty;
+	gdeProperty::Ref pProperty;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCPropertyAdd(gdeObjectClass *objectClass, gdeProperty *property);
+	gdeUOCPropertyAdd(gdeObjectClass::Ref objectClass, gdeProperty::Ref property);
 	
 protected:
 	/** \brief Clean up undo action. */

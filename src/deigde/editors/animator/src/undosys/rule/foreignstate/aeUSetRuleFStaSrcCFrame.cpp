@@ -48,8 +48,6 @@ aeUSetRuleFStaSrcCFrame::aeUSetRuleFStaSrcCFrame(aeRuleForeignState *rule, deAni
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldCFrame = rule->GetSourceCoordinateFrame();
 		pNewCFrame = newCFrame;
 		
@@ -84,7 +82,4 @@ void aeUSetRuleFStaSrcCFrame::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaSrcCFrame::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

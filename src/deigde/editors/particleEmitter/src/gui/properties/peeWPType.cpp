@@ -115,7 +115,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter *emitter, peeType *type) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, peeEmitter::Ref emitter, peeType *type) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -140,7 +140,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(peeEmitter *emitter, peeType *type) = 0;
+	virtual igdeUndo *OnAction(peeEmitter::Ref emitter, peeType *type) = 0;
 };
 
 class cBasePathListener : public igdeEditPathListener{
@@ -163,7 +163,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decString &path, peeEmitter *emitter, peeType *type) = 0;
+	virtual igdeUndo *OnChanged(const decString &path, peeEmitter::Ref emitter, peeType *type) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -186,7 +186,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter *emitter, peeType *type) = 0;
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, peeEmitter::Ref emitter, peeType *type) = 0;
 };
 
 
@@ -324,7 +324,7 @@ public:
 	cActionTypeRename(peeWPType &panel) :
 	cBaseAction(panel, "Rename...", NULL, "Rename selected type"){}
 	
-	virtual igdeUndo *OnAction(peeEmitter *emitter, peeType *type){
+	virtual igdeUndo *OnAction(peeEmitter::Ref emitter, peeType *type){
 		decString name(type->GetName());
 		
 		while(igdeCommonDialogs::GetString(&pPanel, "Rename Type", "Name:", name)){
@@ -761,15 +761,13 @@ static void AddParametersToListBox(igdeListBox &listBox, igdeIcon *icon){
 peeWPType::peeWPType(peeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pEmitter(NULL),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, form, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new peeWPTypeListener(*this);
+	pListener.TakeOver(new peeWPTypeListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -887,12 +885,7 @@ pPreventUpdate(false)
 peeWPType::~peeWPType(){
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 		pEmitter = NULL;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -901,21 +894,19 @@ peeWPType::~peeWPType(){
 // Management
 ///////////////
 
-void peeWPType::SetEmitter(peeEmitter *emitter){
+void peeWPType::SetEmitter(peeEmitter::Ref emitter){
 	if(emitter == pEmitter){
 		return;
 	}
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;
 	
 	if(emitter){
 		emitter->AddListener(pListener);
-		emitter->AddReference();
 	}
 	
 	UpdateEmitter();

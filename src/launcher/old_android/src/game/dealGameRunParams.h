@@ -42,7 +42,7 @@ class dealGameProfile;
  */
 class dealGameRunParams{
 private:
-	dealGameProfile *pGameProfile;
+	dealGameProfile::Ref pGameProfile;
 	decString pRunArguments;
 	int pWidth;
 	int pHeight;
@@ -66,7 +66,7 @@ public:
 	inline dealGameProfile *GetGameProfile() const{ return pGameProfile; }
 	
 	/** \brief Set game profile. */
-	void SetGameProfile(dealGameProfile *profile);
+	void SetGameProfile(dealGameProfile::Ref profile);
 	
 	/** \brief Run arguments. */
 	inline const decString &GetRunArguments() const{ return pRunArguments; }

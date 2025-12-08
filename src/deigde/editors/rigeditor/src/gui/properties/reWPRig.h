@@ -43,8 +43,8 @@ class reWPRigListener;
 class reWPRig : public igdeContainerScroll{
 private:
 	reWindowProperties &pWindowProperties;
-	reRig *pRig;
-	reWPRigListener *pListener;
+	reRig::Ref pRig;
+	reWPRigListener::Ref pListener;
 	
 	igdeComboBox::Ref pCBRootBone;
 	igdeCheckBox::Ref pChkDynamic;
@@ -74,7 +74,7 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig(reRig *rig);
+	void SetRig(reRig::Ref rig);
 	
 	/** \brief Update root bone list. */
 	void UpdateRootBoneList();

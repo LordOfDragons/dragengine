@@ -41,7 +41,7 @@ private:
 	deoalAComponent &pComponent;
 	const int pIndex;
 	
-	deoalASkin *pSkin;
+	deoalASkin::Ref pSkin;
 	
 	const deoalASkin *pUseSkin;
 	const deoalSkinTexture *pUseTexture;
@@ -88,7 +88,7 @@ public:
 	inline deoalASkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin(deoalASkin *skin);
+	void SetSkin(deoalASkin::Ref skin);
 	
 	
 	

@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetShapeList::gdeUOCNavBlockerSetShapeList(gdeObjectClass *objectClass,
-gdeOCNavigationBlocker *navblocker, const decShapeList &newValue) :
-pObjectClass(NULL),
+gdeUOCNavBlockerSetShapeList::gdeUOCNavBlockerSetShapeList(gdeObjectClass::Ref objectClass,
+gdeOCNavigationBlocker::Ref navblocker, const decShapeList &newValue) :
+
 pNavBlocker(NULL)
 {
 	if(!objectClass || !navblocker){
@@ -55,19 +55,10 @@ pNavBlocker(NULL)
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetShapeList::~gdeUOCNavBlockerSetShapeList(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

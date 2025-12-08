@@ -43,7 +43,7 @@ class meObject;
  */
 class meUObjectSetScaling : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decVector pOldScaling;
 	decVector pNewScaling;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUObjectSetScaling(meObject *object, const decVector &nscaling);
+	meUObjectSetScaling(meObject::Ref object, const decVector &nscaling);
 	
 protected:
 	/** \brief Clean up undo action. */

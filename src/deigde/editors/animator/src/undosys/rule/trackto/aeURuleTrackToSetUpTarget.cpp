@@ -51,13 +51,9 @@ aeURuleTrackToSetUpTarget::aeURuleTrackToSetUpTarget(aeRuleTrackTo *rule, deAnim
 	SetShortInfo("TrackTo Set Up Target");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleTrackToSetUpTarget::~aeURuleTrackToSetUpTarget(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

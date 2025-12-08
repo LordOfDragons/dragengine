@@ -39,7 +39,7 @@ class seProperty;
  */
 class seUPropertySetMappedComponent : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	int pIndex;
 	const seMapped::Ref pOldValue;
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	seUPropertySetMappedComponent(seProperty *property, int index, seMapped *newValue);
+	seUPropertySetMappedComponent(seProperty::Ref property, int index, seMapped *newValue);
 	
 protected:
 	/** Clean up undo. */

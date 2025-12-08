@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCEnvMapProbeSetPosition : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetPosition(gdeObjectClass *objectClass,
+	gdeUOCEnvMapProbeSetPosition(gdeObjectClass::Ref objectClass,
 		gdeOCEnvMapProbe *component, const decVector &newValue);
 	
 protected:

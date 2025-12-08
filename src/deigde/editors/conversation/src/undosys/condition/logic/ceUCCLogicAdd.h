@@ -39,10 +39,10 @@ class ceConversationTopic;
  */
 class ceUCCLogicAdd : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionLogic *pLogic;
-	ceConversationCondition *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionLogic::Ref pLogic;
+	ceConversationCondition::Ref pCondition;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCLogicAdd(ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic, ceConversationCondition *condition);
+	ceUCCLogicAdd(ceConversationTopic::Ref topic, ceConversationAction::Ref action, ceCConditionLogic::Ref logic, ceConversationCondition::Ref condition);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCLogicAdd();

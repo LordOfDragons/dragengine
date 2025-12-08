@@ -37,8 +37,8 @@ class ceTarget;
  */
 class ceUCTargetAdd : public igdeUndo{
 private:
-	ceConversation *pConversation;
-	ceTarget *pTarget;
+	ceConversation::Ref pConversation;
+	ceTarget::Ref pTarget;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetAdd(ceConversation *conversation, ceTarget *target);
+	ceUCTargetAdd(ceConversation::Ref conversation, ceTarget::Ref target);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCTargetAdd();

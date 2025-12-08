@@ -68,7 +68,7 @@ class decStringList;
  */
 class gdeWindowMain : public igdeEditorWindow{
 private:
-	gdeWindowMainListener *pListener;
+	gdeWindowMainListener::Ref pListener;
 	
 	igdeIcon::Ref pIconShowEnvMapProbes;
 	igdeIcon::Ref pIconShowNavBlockers;
@@ -193,10 +193,10 @@ private:
 	igdeClipboard pClipboard;
 	gdeLoadSaveSystem *pLoadSaveSystem;
 	
-	gdeViewActiveObject *pViewActiveObject;
-	gdeWindowProperties *pWindowProperties;
+	gdeViewActiveObject::Ref pViewActiveObject;
+	gdeWindowProperties::Ref pWindowProperties;
 	
-	gdeGameDefinition *pActiveGameDefinition;
+	gdeGameDefinition::Ref pActiveGameDefinition;
 	
 	decString pLastPathGameDef;
 	
@@ -365,7 +365,7 @@ public:
 	inline gdeGameDefinition *GetActiveGameDefinition() const{ return pActiveGameDefinition; }
 	
 	/** \brief Set active game definition. */
-	void SetActiveGameDefinition(gdeGameDefinition *gameDefinition);
+	void SetActiveGameDefinition(gdeGameDefinition::Ref gameDefinition);
 	
 	/** \brief Create new game definition. */
 	void CreateNewGameDefinition();

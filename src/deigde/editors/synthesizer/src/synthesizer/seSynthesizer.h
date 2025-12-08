@@ -60,12 +60,12 @@ public:
 private:
 	seLoadSaveSystem &pLoadSaveSystem;
 	
-	deWorld *pEngWorld;
+	deWorld::Ref pEngWorld;
 	
-	deSynthesizer *pEngSynthesizer;
-	deSynthesizerInstance *pEngSynthesizerInstance;
-	deSpeaker *pEngSpeaker;
-	deMicrophone *pEngMicrophone;
+	deSynthesizer::Ref pEngSynthesizer;
+	deSynthesizerInstance::Ref pEngSynthesizerInstance;
+	deSpeaker::Ref pEngSpeaker;
+	deMicrophone::Ref pEngMicrophone;
 	
 	seControllerList pControllers;
 	seController *pActiveController;

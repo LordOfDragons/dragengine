@@ -66,10 +66,10 @@ private:
 	decStringList pBaseGameDefinitionIDList;
 	decString pPathProjectGameDefinition;
 	igdeGameDefinitionList pBaseGameDefinitionList;
-	igdeGameDefinition *pProjectGameDefinition;
-	igdeGameDefinition *pXMLEClassGameDefinition;
-	igdeGameDefinition *pFoundGameDefinition;
-	igdeGameDefinition *pGameDefinition;
+	igdeGameDefinition::Ref pProjectGameDefinition;
+	igdeGameDefinition::Ref pXMLEClassGameDefinition;
+	igdeGameDefinition::Ref pFoundGameDefinition;
+	igdeGameDefinition::Ref pGameDefinition;
 	
 	decString pScriptModule;
 	decString pScriptModuleVersion;
@@ -162,7 +162,7 @@ public:
 	 * \note Make sure a valid game definition is set before using this object in the editors.
 	 *       If the game definition name is not found set it to a default game definition instead.
 	 */
-	void SetProjectGameDefinition(igdeGameDefinition *gameDefinition);
+	void SetProjectGameDefinition(igdeGameDefinition::Ref gameDefinition);
 	
 	/**
 	 * \brief XML Element Class game definition.

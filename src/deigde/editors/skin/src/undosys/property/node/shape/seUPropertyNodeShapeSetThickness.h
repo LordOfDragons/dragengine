@@ -36,7 +36,7 @@ class sePropertyNodeShape;
  */
 class seUPropertyNodeShapeSetThickness : public igdeUndo{
 private:
-	sePropertyNodeShape *pNode;
+	sePropertyNodeShape::Ref pNode;
 	
 	float pOldValue;
 	float pNewValue;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeShapeSetThickness(sePropertyNodeShape *node, float newValue);
+	seUPropertyNodeShapeSetThickness(sePropertyNodeShape::Ref node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */

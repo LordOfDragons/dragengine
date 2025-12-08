@@ -77,7 +77,7 @@ projTRPParameter *projTRPParameterList::GetWith(const char *module, const char *
 	return NULL;
 }
 
-bool projTRPParameterList::Has(projTRPParameter *parameter) const{
+bool projTRPParameterList::Has(projTRPParameter::Ref parameter) const{
 	return pParameters.Has(parameter);
 }
 
@@ -85,7 +85,7 @@ bool projTRPParameterList::HasWith(const char *module, const char *name) const{
 	return GetWith(module, name) != NULL;
 }
 
-int projTRPParameterList::IndexOf(projTRPParameter *parameter) const{
+int projTRPParameterList::IndexOf(projTRPParameter::Ref parameter) const{
 	return pParameters.IndexOf(parameter);
 }
 
@@ -107,14 +107,14 @@ int projTRPParameterList::IndexOfWith(const char *module, const char *name) cons
 	return -1;
 }
 
-void projTRPParameterList::Add(projTRPParameter *parameter){
+void projTRPParameterList::Add(projTRPParameter::Ref parameter){
 	if(!parameter || HasWith(parameter->GetModule(), parameter->GetName())){
 		DETHROW(deeInvalidParam);
 	}
 	pParameters.Add(parameter);
 }
 
-void projTRPParameterList::Remove(projTRPParameter *parameter){
+void projTRPParameterList::Remove(projTRPParameter::Ref parameter){
 	pParameters.Remove(parameter);
 }
 
@@ -132,25 +132,20 @@ void projTRPParameterList::RemoveAll(){
 
 
 void projTRPParameterList::Set(const char *module, const char *name, const char *value){
-	projTRPParameter *parameter = GetWith(module, name);
+	projTRPParameter::Ref parameter = GetWith(module, name);
 	if(parameter){
 		parameter->SetValue(value);
 		return;
 	}
 	
-	parameter = new projTRPParameter;
+	parameter.TakeOver(new projTRPParameter);
 	
 	try{
 		parameter->SetModule(module);
 		parameter->SetName(name);
 		parameter->SetValue(value);
 		pParameters.Add(parameter);
-		parameter->FreeReference();
-		
 	}catch(const deException &){
-		if(parameter){
-			parameter->FreeReference();
-		}
 		throw;
 	}
 }

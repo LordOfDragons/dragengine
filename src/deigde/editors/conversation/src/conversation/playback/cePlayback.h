@@ -67,14 +67,14 @@ public:
 private:
 	ceConversation &pConversation;
 	
-	ceConversationTopic *pTopic;
+	ceConversationTopic::Ref pTopic;
 	cePlaybackActor *pActors;
 	int pActorCount;
 	bool pRunning;
 	bool pPaused;
 	bool pAutoAdvanceCommands;
 	eCameraHandling pCameraHandling;
-	ceTextBoxText *pTextBoxText;
+	ceTextBoxText::Ref pTextBoxText;
 	cePlaybackCamera *pCamera;
 	cePlaybackActionStack::Ref pMainActionStack, pActiveActionStack;
 	decObjectOrderedSet pSideActionStacks;
@@ -84,8 +84,8 @@ private:
 	igdeTriggerTargetList pTriggerTable;
 	decStringSet pMissingWords;
 	
-	ceConversationAction *pLastPlayedAction;
-	ceConversationTopic *pLastPlayedActionTopic;
+	ceConversationAction::Ref pLastPlayedAction;
+	ceConversationTopic::Ref pLastPlayedActionTopic;
 	
 	
 	
@@ -116,7 +116,7 @@ public:
 	inline ceConversationTopic *GetTopic() const{ return pTopic; }
 	
 	/** Set topic to play back. */
-	void SetTopic(ceConversationTopic *topic);
+	void SetTopic(ceConversationTopic::Ref topic);
 	
 	
 	
@@ -183,7 +183,7 @@ public:
 	
 	
 	/** Play single action. */
-	void PlaySingleAction(ceConversationAction *action, float time);
+	void PlaySingleAction(ceConversationAction::Ref action, float time);
 	
 	
 	
@@ -235,7 +235,7 @@ public:
 	
 private:
 	void pProcessActions(float elapsed);
-	void SetLastPlayedAction(ceConversationTopic *topic, ceConversationAction *action);
+	void SetLastPlayedAction(ceConversationTopic::Ref topic, ceConversationAction::Ref action);
 };
 
 #endif

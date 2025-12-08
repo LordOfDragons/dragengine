@@ -35,18 +35,14 @@
 // Class deBaseVideoDecoder
 /////////////////////////////
 
-deBaseVideoDecoder::deBaseVideoDecoder(decBaseFileReader *file) :
+deBaseVideoDecoder::deBaseVideoDecoder(decBaseFileReader::Ref file) :
 pFile(NULL)
 {
 	if(!file){
 		DETHROW(deeInvalidParam);
 	}
 	pFile = file;
-	file->AddReference();
 }
 
 deBaseVideoDecoder::~deBaseVideoDecoder(){
-	if(pFile){
-		pFile->FreeReference();
-	}
 }

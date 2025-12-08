@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveNavBlocker::gdeUOCRemoveNavBlocker(gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker) :
-pObjectClass(NULL),
+gdeUOCRemoveNavBlocker::gdeUOCRemoveNavBlocker(gdeObjectClass::Ref objectClass, gdeOCNavigationBlocker::Ref navblocker) :
+
 pNavBlocker(NULL)
 {
 	if(!objectClass || !navblocker){
@@ -56,19 +56,10 @@ pNavBlocker(NULL)
 	SetShortInfo("Remove navigation blocker");
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveNavBlocker::~gdeUOCRemoveNavBlocker(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

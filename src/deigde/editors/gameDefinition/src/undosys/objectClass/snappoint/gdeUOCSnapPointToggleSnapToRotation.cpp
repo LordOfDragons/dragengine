@@ -41,8 +41,8 @@
 ////////////////////////////
 
 gdeUOCSnapPointToggleSnapToRotation::gdeUOCSnapPointToggleSnapToRotation(
-gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint) :
-pObjectClass(NULL),
+gdeObjectClass::Ref objectClass, gdeOCSnapPoint::Ref snapPoint) :
+
 pSnapPoint(NULL)
 {
 	if(!objectClass || !snapPoint){
@@ -52,19 +52,10 @@ pSnapPoint(NULL)
 	SetShortInfo("Snap point toggle snap to rotation");
 	
 	pSnapPoint = snapPoint;
-	snapPoint->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSnapPointToggleSnapToRotation::~gdeUOCSnapPointToggleSnapToRotation(){
-	if(pSnapPoint){
-		pSnapPoint->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

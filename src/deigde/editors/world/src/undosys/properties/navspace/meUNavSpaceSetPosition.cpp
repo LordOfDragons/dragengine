@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUNavSpaceSetPosition::meUNavSpaceSetPosition(meNavigationSpace *navspace, const decDVector &newPosition){
+meUNavSpaceSetPosition::meUNavSpaceSetPosition(meNavigationSpace::Ref navspace, const decDVector &newPosition){
 	if(!navspace){
 		DETHROW(deeInvalidParam);
 	}
@@ -59,13 +59,9 @@ meUNavSpaceSetPosition::meUNavSpaceSetPosition(meNavigationSpace *navspace, cons
 	pNewPosition = newPosition;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUNavSpaceSetPosition::~meUNavSpaceSetPosition(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

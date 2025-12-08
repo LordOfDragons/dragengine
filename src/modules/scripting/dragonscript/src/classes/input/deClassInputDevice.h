@@ -70,7 +70,7 @@ public:
 	dedsInputDevice *GetInputDevice(dsRealObject *myself) const;
 	
 	/** \brief Push input device which can be \em NULL. */
-	void PushInputDevice(dsRunTime *rt, dedsInputDevice *device);
+	void PushInputDevice(dsRunTime *rt, dedsInputDevice::Ref device);
 	
 	inline dsClass *GetClassInputDeviceType() const{ return pClsInputDeviceType; }
 	inline dsClass *GetClassInputDeviceBoneConfiguration() const{ return pClsInputDeviceBoneConfiguration; }

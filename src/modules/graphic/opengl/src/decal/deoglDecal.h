@@ -46,7 +46,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	const deDecal &pDecal;
 	
-	deoglRDecal *pRDecal;
+	deoglRDecal::Ref pRDecal;
 	
 	deoglDynamicSkin *pDynamicSkin;
 	

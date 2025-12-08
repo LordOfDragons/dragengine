@@ -42,7 +42,7 @@ class aeRuleStateManipulator;
  */
 class aeUSetRuleSModEnablePos : public igdeUndo{
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

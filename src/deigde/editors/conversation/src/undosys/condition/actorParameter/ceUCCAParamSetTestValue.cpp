@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCAParamSetTestValue::ceUCCAParamSetTestValue(ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionActorParameter *condition, int newValue){
+ceUCCAParamSetTestValue::ceUCCAParamSetTestValue(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
+ceCConditionActorParameter::Ref condition, int newValue){
 	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
@@ -55,25 +55,11 @@ ceCConditionActorParameter *condition, int newValue){
 	SetShortInfo("Condition ActorParameter: Set Test Value");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCAParamSetTestValue::~ceUCCAParamSetTestValue(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

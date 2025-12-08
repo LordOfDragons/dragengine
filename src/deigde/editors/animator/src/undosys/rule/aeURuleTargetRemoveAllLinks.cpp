@@ -43,7 +43,7 @@
 
 aeURuleTargetRemoveAllLinks::aeURuleTargetRemoveAllLinks(aeRule *rule,
 aeControllerTarget *target, const aeLinkList &links) :
-pRule(NULL),
+
 pTarget(NULL),
 pLinks(links)
 {
@@ -54,15 +54,10 @@ pLinks(links)
 	SetShortInfo("Rule Target Remove All Links");
 	
 	pRule = rule;
-	pRule->AddReference();
-	
 	pTarget = target;
 }
 
 aeURuleTargetRemoveAllLinks::~aeURuleTargetRemoveAllLinks(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

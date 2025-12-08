@@ -40,8 +40,8 @@
 ////////////////////////////
 
 projUProfileSetExcludePatterns::projUProfileSetExcludePatterns(
-projProfile *profile, const decStringSet &newValue) :
-pProfile(NULL),
+projProfile::Ref profile, const decStringSet &newValue) :
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetExcludePatterns();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetExcludePatterns::~projUProfileSetExcludePatterns(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

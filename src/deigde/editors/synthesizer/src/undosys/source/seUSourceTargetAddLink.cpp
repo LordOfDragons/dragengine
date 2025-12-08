@@ -42,9 +42,8 @@
 ////////////////////////////
 
 seUSourceTargetAddLink::seUSourceTargetAddLink(seSource *source, seControllerTarget *target, seLink *link) :
-pSource(NULL),
-pTarget(NULL),
-pLink(NULL)
+
+pTarget(NULL)
 {
 	if(!source || !target || !link){
 		DETHROW(deeInvalidParam);
@@ -53,21 +52,12 @@ pLink(NULL)
 	SetShortInfo("Source Target Add Link");
 	
 	pSource = source;
-	pSource->AddReference();
-	
 	pTarget = target;
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 seUSourceTargetAddLink::~seUSourceTargetAddLink(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

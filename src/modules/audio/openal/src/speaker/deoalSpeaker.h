@@ -48,7 +48,7 @@ class deoalSpeaker : public deBaseAudioSpeaker{
 private:
 	deAudioOpenAL &pOal;
 	deSpeaker &pSpeaker;
-	deoalASpeaker *pASpeaker;
+	deoalASpeaker::Ref pASpeaker;
 	
 	deoalWorld *pParentWorld;
 	deoalMicrophone *pParentMicrophone;

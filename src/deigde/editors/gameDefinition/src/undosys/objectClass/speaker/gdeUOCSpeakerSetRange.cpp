@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetRange::gdeUOCSpeakerSetRange(gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, float newValue) :
-pObjectClass(NULL),
+gdeUOCSpeakerSetRange::gdeUOCSpeakerSetRange(gdeObjectClass::Ref objectClass,
+gdeOCSpeaker::Ref speaker, float newValue) :
+
 pSpeaker(NULL)
 {
 	if(!objectClass || !speaker){
@@ -55,19 +55,10 @@ pSpeaker(NULL)
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetRange::~gdeUOCSpeakerSetRange(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

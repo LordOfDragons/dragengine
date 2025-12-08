@@ -47,7 +47,7 @@
 
 
 struct sLocoNatDat{
-	dedsLocomotion *locomotion;
+	dedsLocomotion::Ref locomotion;
 };
 
 
@@ -66,7 +66,7 @@ void deClassLocomotion::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.locomotion = NULL;
 	
 	// create locomotion
-	nd.locomotion = new dedsLocomotion;
+	nd.locomotion.TakeOver(new dedsLocomotion);
 }
 
 // public func destructor()
@@ -2301,7 +2301,7 @@ dedsLocomotion *deClassLocomotion::GetLocomotion(dsRealObject *myself) const{
 	return ((const sLocoNatDat *)p_GetNativeData(myself->GetBuffer()))->locomotion;
 }
 
-void deClassLocomotion::PushLocomotion(dsRunTime *rt, dedsLocomotion *locomotion){
+void deClassLocomotion::PushLocomotion(dsRunTime *rt, dedsLocomotion::Ref locomotion){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -2313,5 +2313,4 @@ void deClassLocomotion::PushLocomotion(dsRunTime *rt, dedsLocomotion *locomotion
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sLocoNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->locomotion = locomotion;
-	locomotion->AddReference();
 }

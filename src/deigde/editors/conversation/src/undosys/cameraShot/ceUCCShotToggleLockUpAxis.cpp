@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotToggleLockUpAxis::ceUCCShotToggleLockUpAxis(ceCameraShot *cameraShot){
+ceUCCShotToggleLockUpAxis::ceUCCShotToggleLockUpAxis(ceCameraShot::Ref cameraShot){
 	if(!cameraShot){
 		DETHROW(deeInvalidParam);
 	}
@@ -49,13 +49,9 @@ ceUCCShotToggleLockUpAxis::ceUCCShotToggleLockUpAxis(ceCameraShot *cameraShot){
 	SetShortInfo("Camera shot lock up axis");
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotToggleLockUpAxis::~ceUCCShotToggleLockUpAxis(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

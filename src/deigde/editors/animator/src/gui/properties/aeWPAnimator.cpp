@@ -104,7 +104,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator) = 0;
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator) = 0;
 	
 	virtual void Update(){
 		aeAnimator * const animator = pPanel.GetAnimator();
@@ -168,7 +168,7 @@ public:
 	cActionRigBoneAdd(aeWPAnimator &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add rig bone"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		const decString &name = pPanel.GetCBRigBoneText();
 		return !name.IsEmpty() && !animator->GetListBones().Has(name)
 			? new aeUAnimatorAddBone(animator, name) : nullptr;
@@ -185,7 +185,7 @@ public:
 	cActionRigBoneRemove(aeWPAnimator &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove rig bone"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		const decString &name = pPanel.GetCBRigBoneText();
 		return !name.IsEmpty() && animator->GetListBones().Has(name)
 			? new aeUAnimatorRemoveBone(animator, name) : nullptr;
@@ -202,7 +202,7 @@ public:
 	cActionMirrorRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Mirror Bones",
 		nullptr, "Mirror rig bones"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
 		return new aeUAnimatorMirrorBones(animator);
 	}
@@ -217,7 +217,7 @@ public:
 	cActionCopyRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Copy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy bones"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
 			aeClipboardDataBones::Ref::NewWith(animator->GetListBones()));
 		return nullptr;
@@ -229,7 +229,7 @@ public:
 	cActionPasteRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Paste",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy bones"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		aeClipboardDataBones * const clip = (aeClipboardDataBones*)pPanel.GetWindowProperties()
 			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataBones::TYPE_NAME);
 		if(!clip){
@@ -253,7 +253,7 @@ public:
 	cActionExportRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Export To Text",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave), "Export bones"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		const decStringSet bones = animator->GetListBones();
 		const int count = bones.GetCount();
 		decString text;
@@ -278,7 +278,7 @@ public:
 	cActionImportRigBones(aeWPAnimator &panel) : cBaseAction(panel, "Import From Text",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Import bones"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		decString text;
 		while(true){
 			if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
@@ -343,7 +343,7 @@ public:
 	cActionRigVertexPositionSetAdd(aeWPAnimator &panel) : cBaseAction(panel, "Add",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add vertex position set"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		const decString &name = pPanel.GetCBModelVertexPositionSetText();
 		return !name.IsEmpty() && !animator->GetListVertexPositionSets().Has(name)
 			? new aeUAnimatorAddVertexPositionSet(animator, name) : nullptr;
@@ -360,7 +360,7 @@ public:
 	cActionRigVertexPositionSetRemove(aeWPAnimator &panel) : cBaseAction(panel, "Remove",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove vertex position set"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		const decString &name = pPanel.GetCBModelVertexPositionSetText();
 		return !name.IsEmpty() && animator->GetListVertexPositionSets().Has(name)
 			? new aeUAnimatorRemoveVertexPositionSet(animator, name) : nullptr;
@@ -377,7 +377,7 @@ public:
 	cActionMirrorRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel,
 		"Mirror", nullptr, "Mirror vertex position sets"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		// TODO add a dialog to allow changing the mirror parameter (or add a new menu command)
 		return new aeUAnimatorMirrorVertexPositionSets(animator);
 	}
@@ -392,7 +392,7 @@ public:
 	cActionCopyRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "Copy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy vertex position sets"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
 			aeClipboardDataVertexPositionSets::Ref::NewWith(animator->GetListVertexPositionSets()));
 		return nullptr;
@@ -404,7 +404,7 @@ public:
 	cActionPasteRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "Paste",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy), "Copy vertex position sets"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		aeClipboardDataVertexPositionSets * const clip = (aeClipboardDataVertexPositionSets*)pPanel.GetWindowProperties()
 			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataVertexPositionSets::TYPE_NAME);
 		if(!clip){
@@ -428,7 +428,7 @@ public:
 	cActionExportRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "Export To Text",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave), "Export vertex position sets"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		const decStringSet bones = animator->GetListVertexPositionSets();
 		const int count = bones.GetCount();
 		decString text;
@@ -453,7 +453,7 @@ public:
 	cActionImportRigVertexPositionSets(aeWPAnimator &panel) : cBaseAction(panel, "Import From Text",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen), "Import vertex position sets"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		decString text;
 		while(true){
 			if(!igdeCommonDialogs::GetMultilineString(pPanel.GetParentWindow(),
@@ -525,15 +525,13 @@ public:
 
 aeWPAnimator::aeWPAnimator(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(nullptr),
-pAnimator(nullptr)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPAnimatorListener(*this);
+	pListener.TakeOver(new aeWPAnimatorListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -576,10 +574,6 @@ pAnimator(nullptr)
 
 aeWPAnimator::~aeWPAnimator(){
 	SetAnimator(nullptr);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -587,21 +581,19 @@ aeWPAnimator::~aeWPAnimator(){
 // Management
 ///////////////
 
-void aeWPAnimator::SetAnimator(aeAnimator *animator){
+void aeWPAnimator::SetAnimator(aeAnimator::Ref animator){
 	if(animator == pAnimator){
 		return;
 	}
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
 	}
 	
 	UpdateRigBoneList();

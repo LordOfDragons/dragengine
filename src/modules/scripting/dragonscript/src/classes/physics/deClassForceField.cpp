@@ -51,7 +51,7 @@
 /////////////////////
 
 struct sFFNatDat{
-	deForceField *forcefield;
+	deForceField::Ref forcefield;
 };
 
 
@@ -553,7 +553,7 @@ deForceField *deClassForceField::GetForceField(dsRealObject *myself) const{
 	return ((sFFNatDat*)p_GetNativeData(myself->GetBuffer()))->forcefield;
 }
 
-void deClassForceField::PushForceField(dsRunTime *rt, deForceField *forcefield){
+void deClassForceField::PushForceField(dsRunTime *rt, deForceField::Ref forcefield){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -565,5 +565,4 @@ void deClassForceField::PushForceField(dsRunTime *rt, deForceField *forcefield){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sFFNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->forcefield = forcefield;
-	forcefield->AddReference();
 }

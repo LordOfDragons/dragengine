@@ -67,15 +67,15 @@ private:
 	
 	GLuint pVBOShapes;
 	
-	dealGuiTheme *pDefaultGuiTheme;
-	dealFont *pFontDefault;
+	dealGuiTheme::Ref pDefaultGuiTheme;
+	dealFont::Ref pFontDefault;
 	int pFontSizeDefault;
-	dealShader *pShaderShape;
-	dealShader *pShaderShapeTex;
+	dealShader::Ref pShaderShape;
+	dealShader::Ref pShaderShapeTex;
 	
-	dealWidgetLayout *pContent;
-	dealDialog *pDialog;
-	dealWidget *pCaptureWidget;
+	dealWidgetLayout::Ref pContent;
+	dealDialog::Ref pDialog;
+	dealWidget::Ref pCaptureWidget;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -123,13 +123,13 @@ public:
 	inline dealDialog *GetDialog() const{ return pDialog; }
 	
 	/** \brief Set dialog or \em NULL to show none. */
-	void SetDialog(dealDialog *dialog);
+	void SetDialog(dealDialog::Ref dialog);
 	
 	/** \brief Capture widget or \em NULL if not set. */
 	inline dealWidget *GetCaptureWidget() const{ return pCaptureWidget; }
 	
 	/** \brief Set capture widget or \em NULL if not set. */
-	void SetCaptureWidget(dealWidget *widget);
+	void SetCaptureWidget(dealWidget::Ref widget);
 	
 	
 	

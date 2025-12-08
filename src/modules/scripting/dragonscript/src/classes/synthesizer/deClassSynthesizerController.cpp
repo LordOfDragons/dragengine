@@ -47,8 +47,8 @@
 /////////////////////
 
 struct sSynthesizerCtrlNatDat{
-	deSynthesizer *synthesizer;
-	deSynthesizerInstance *instance;
+	deSynthesizer::Ref synthesizer;
+	deSynthesizerInstance::Ref instance;
 	int index;
 };
 
@@ -500,7 +500,7 @@ deSynthesizerInstance *&instance, int &index) const{
 	index = nd.index;
 }
 
-void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizer *synthesizer, int index){
+void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizer::Ref synthesizer, int index){
 	if(!rt || !synthesizer || index < 0 || index >= synthesizer->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -509,12 +509,11 @@ void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizer *
 	sSynthesizerCtrlNatDat &nd = *((sSynthesizerCtrlNatDat*)p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.synthesizer = synthesizer;
-	synthesizer->AddReference();
 	nd.instance = NULL;
 	nd.index = index;
 }
 
-void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizerInstance *instance, int index){
+void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizerInstance::Ref instance, int index){
 	if(!rt || !instance || index < 0 || index >= instance->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -524,6 +523,5 @@ void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizerIn
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.synthesizer = NULL;
 	nd.instance = instance;
-	instance->AddReference();
 	nd.index = index;
 }

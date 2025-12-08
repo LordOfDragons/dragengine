@@ -39,7 +39,7 @@ class deAnimator;
 class ceActorGesture : public deObject{
 private:
 	igdeEnvironment &pEnvironment;
-	deAnimator *pEngAnimator;
+	deAnimator::Ref pEngAnimator;
 	
 	decString pName;
 	decString pPathAnimator;

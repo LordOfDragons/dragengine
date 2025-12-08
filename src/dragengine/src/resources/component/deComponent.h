@@ -116,7 +116,7 @@ private:
 	deDynamicSkin::Ref pDynamicSkin;
 	
 	deDecal *pDecalRoot;
-	deDecal *pDecalTail;
+	deDecal::Ref pDecalTail;
 	int pDecalCount;
 	
 	deParallelTask::Ref pAnimatorTask;
@@ -401,14 +401,14 @@ public:
 	 * \throws deeInvalidParam \em decal is NULL.
 	 * \throws deeInvalidParam \em decal has a parent world.
 	 */
-	void AddDecal(deDecal *decal);
+	void AddDecal(deDecal::Ref decal);
 	
 	/**
 	 * \brief Remove decal.
 	 * \throws deeInvalidParam \em decal is NULL.
 	 * \throws deeInvalidParam Parent world of \em decal is not this world.
 	 */
-	void RemoveDecal(deDecal *decal);
+	void RemoveDecal(deDecal::Ref decal);
 	
 	/** \brief Remove all decals. */
 	void RemoveAllDecals();

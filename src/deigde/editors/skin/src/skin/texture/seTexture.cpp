@@ -52,10 +52,8 @@
 
 seTexture::seTexture(deEngine *engine, const char *name) :
 pEngine(engine),
-pEngSkin(NULL),
 pSkin(NULL),
 pName(name),
-pActiveProperty(NULL),
 pTexCoordScaling(1.0f, 1.0f),
 pTexCoordRotation(0.0f),
 pSelected(false),
@@ -69,10 +67,8 @@ pDirtySkin(true)
 
 seTexture::seTexture(const seTexture &texture) :
 pEngine(texture.pEngine),
-pEngSkin(NULL),
 pSkin(NULL),
 pName(texture.pName),
-pActiveProperty(NULL),
 pTexCoordOffset(texture.pTexCoordOffset),
 pTexCoordScaling(texture.pTexCoordScaling),
 pTexCoordRotation(texture.pTexCoordRotation),
@@ -81,14 +77,13 @@ pActive(false),
 pDirtySkin(true)
 {
 	const int propertyCount = texture.pPropertyList.GetCount();
-	seProperty *property = NULL;
+	seProperty::Ref property = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<propertyCount; i++){
-			property = new seProperty(*texture.pPropertyList.GetAt(i));
+			property.TakeOver(new seProperty(*texture.pPropertyList.GetAt(i)));
 			AddProperty(property);
-			property->FreeReference();
 			property = NULL;
 		}
 		
@@ -164,7 +159,6 @@ void seTexture::UpdateEngineSkin(){
 	
 	// free the old skin
 	if(pEngSkin){
-		pEngSkin->FreeReference();
 		pEngSkin = NULL;
 	}
 	
@@ -234,7 +228,7 @@ void seTexture::UpdateResources(){
 // Properties
 ///////////////
 
-void seTexture::AddProperty(seProperty *property){
+void seTexture::AddProperty(seProperty::Ref property){
 	pPropertyList.Add(property);
 	property->SetTexture(this);
 	
@@ -248,7 +242,7 @@ void seTexture::AddProperty(seProperty *property){
 	}
 }
 
-void seTexture::RemoveProperty(seProperty *property){
+void seTexture::RemoveProperty(seProperty::Ref property){
 	if(!property || property->GetTexture() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -298,20 +292,18 @@ bool seTexture::HasActiveProperty() const{
 	return pActiveProperty != NULL;
 }
 
-void seTexture::SetActiveProperty(seProperty *property){
+void seTexture::SetActiveProperty(seProperty::Ref property){
 	if(property == pActiveProperty){
 		return;
 	}
 	
 	if(pActiveProperty){
 		pActiveProperty->SetActive(false);
-		pActiveProperty->FreeReference();
 	}
 	
 	pActiveProperty = property;
 	
 	if(property){
-		property->AddReference();
 		property->SetActive(true);
 	}
 	
@@ -359,10 +351,6 @@ void seTexture::SetTexCoordRotation(float rotation){
 
 void seTexture::pCleanUp(){
 	RemoveAllProperties();
-	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 }
 
 void seTexture::pUpdateTexCoordTransform(){

@@ -47,7 +47,7 @@ class deImage;
  */
 class meUHTImportVisibilityImage : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
 	
 	meBitArray *pOldVis;
@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTImportVisibilityImage(meWorld *world, meHeightTerrainSector *sector, deImage *image);
+	meUHTImportVisibilityImage(meWorld::Ref world, meHeightTerrainSector *sector, deImage *image);
 	/** \brief Clean up object. */
 	virtual ~meUHTImportVisibilityImage();
 	/*@}*/

@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeULangPackSetName::lpeULangPackSetName(lpeLangPack *langpack, const decUnicodeString &newName) :
-pLangPack(NULL),
+lpeULangPackSetName::lpeULangPackSetName(lpeLangPack::Ref langpack, const decUnicodeString &newName) :
+
 pNewName(newName)
 {
 	if(!langpack){
@@ -52,13 +52,9 @@ pNewName(newName)
 	pOldName = langpack->GetName();
 	
 	pLangPack = langpack;
-	langpack->AddReference();
 }
 
 lpeULangPackSetName::~lpeULangPackSetName(){
-	if(pLangPack){
-		pLangPack->FreeReference();
-	}
 }
 
 

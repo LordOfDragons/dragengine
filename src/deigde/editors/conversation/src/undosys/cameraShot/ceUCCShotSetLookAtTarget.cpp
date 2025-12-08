@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetLookAtTarget::ceUCCShotSetLookAtTarget(ceCameraShot *cameraShot, const char *newTarget){
+ceUCCShotSetLookAtTarget::ceUCCShotSetLookAtTarget(ceCameraShot::Ref cameraShot, const char *newTarget){
 	if(!cameraShot || !newTarget){
 		DETHROW(deeInvalidParam);
 	}
@@ -52,13 +52,9 @@ ceUCCShotSetLookAtTarget::ceUCCShotSetLookAtTarget(ceCameraShot *cameraShot, con
 	pNewTarget = newTarget;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetLookAtTarget::~ceUCCShotSetLookAtTarget(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

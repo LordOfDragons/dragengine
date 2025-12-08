@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetHintLightImportance::gdeUOCLightSetHintLightImportance(gdeObjectClass *objectClass,
-gdeOCLight *light, int newValue) :
-pObjectClass(NULL),
-pLight(NULL)
+gdeUOCLightSetHintLightImportance::gdeUOCLightSetHintLightImportance(gdeObjectClass::Ref objectClass,
+gdeOCLight::Ref light, int newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pLight(NULL)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetHintLightImportance::~gdeUOCLightSetHintLightImportance(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

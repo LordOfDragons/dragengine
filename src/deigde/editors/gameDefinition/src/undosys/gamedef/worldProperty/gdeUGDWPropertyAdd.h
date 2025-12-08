@@ -40,9 +40,9 @@ class gdeProperty;
  */
 class gdeUGDWPropertyAdd : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	gdeProperty *pProperty;
+	gdeProperty::Ref pProperty;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDWPropertyAdd(gdeGameDefinition *gamedef, gdeProperty *property);
+	gdeUGDWPropertyAdd(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property);
 	
 protected:
 	/** \brief Clean up undo action. */

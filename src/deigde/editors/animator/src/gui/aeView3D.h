@@ -45,7 +45,7 @@ class aeView3D : public igdeViewRenderWindow{
 private:
 	aeWindowMain &pWindowMain;
 	
-	aeAnimator *pAnimator;
+	aeAnimator::Ref pAnimator;
 	
 	igdeMouseCameraListener::Ref pCameraInteraction;
 	igdeMouseKeyListener::Ref pLocomotionInteraction;
@@ -82,7 +82,7 @@ public:
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator(aeAnimator *animator);
+	void SetAnimator(aeAnimator::Ref animator);
 	
 	/** Start locomotion testing. */
 	void StartLocomotionTesting();

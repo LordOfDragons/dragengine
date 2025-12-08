@@ -53,8 +53,6 @@ pLineColor(node.GetLineColor()),
 pThickness(node.GetThickness()),
 
 pIsThick(pThickness >= 1.5f),
-
-pVBOBlock(nullptr),
 pDirtyVBOBlock(true),
 pVBOBlockPointCount(0)
 {
@@ -72,8 +70,6 @@ pLineColor(node.pLineColor),
 pThickness(node.pThickness),
 
 pIsThick(node.pIsThick),
-
-pVBOBlock(nullptr),
 pDirtyVBOBlock(true),
 pVBOBlockPointCount(0)
 {
@@ -86,7 +82,6 @@ pVBOBlockPointCount(0)
 deoglSkinStateCNShape::~deoglSkinStateCNShape(){
 	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
-		pVBOBlock->FreeReference();
 	}
 }
 

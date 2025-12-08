@@ -36,20 +36,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUCameraMoveObject::meUCameraMoveObject(meObject *object){
+meUCameraMoveObject::meUCameraMoveObject(meObject::Ref object){
 	DEASSERT_NOTNULL(object)
 	
 	pNewPosition = pOldPosition = object->GetPosition();
 	SetShortInfo("Move Camera Object");
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUCameraMoveObject::~meUCameraMoveObject(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

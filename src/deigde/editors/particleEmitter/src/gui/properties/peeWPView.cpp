@@ -173,15 +173,13 @@ public:
 
 peeWPView::peeWPView(peeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pEmitter(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox;
 	
-	pListener = new peeWPViewListener(*this);
+	pListener.TakeOver(new peeWPViewListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -209,10 +207,6 @@ pListener(NULL)
 
 peeWPView::~peeWPView(){
 	SetEmitter(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -220,7 +214,7 @@ peeWPView::~peeWPView(){
 // Management
 ///////////////
 
-void peeWPView::SetEmitter(peeEmitter *emitter){
+void peeWPView::SetEmitter(peeEmitter::Ref emitter){
 	if(emitter == pEmitter){
 		return;
 	}
@@ -231,7 +225,6 @@ void peeWPView::SetEmitter(peeEmitter *emitter){
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 		pEmitter = NULL;
 	}
 	
@@ -239,8 +232,6 @@ void peeWPView::SetEmitter(peeEmitter *emitter){
 	
 	if(emitter){
 		emitter->AddListener(pListener);
-		emitter->AddReference();
-		
 		pWPSky->SetSky(emitter->GetSky());
 		pWPEnvObject->SetObject(emitter->GetEnvObject());
 		pWPCamera->SetCamera(emitter->GetCamera());

@@ -41,9 +41,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkSetController::seULinkSetController(seLink *link, seController *newController) :
-pLink(NULL),
-pOldController(NULL),
+seULinkSetController::seULinkSetController(seLink::Ref link, seController *newController) :
+
+
 pNewController(NULL)
 {
 	if(!link){
@@ -53,29 +53,11 @@ pNewController(NULL)
 	SetShortInfo("Set Link Controller");
 	
 	pOldController = link->GetController();
-	if(pOldController){
-		pOldController->AddReference();
-	}
-	
 	pNewController = newController;
-	if(pNewController){
-		pNewController->AddReference();
-	}
-	
 	pLink = link;
-	link->AddReference();
 }
 
 seULinkSetController::~seULinkSetController(){
-	if(pOldController){
-		pOldController->FreeReference();
-	}
-	if(pNewController){
-		pNewController->FreeReference();
-	}
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

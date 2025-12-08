@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCNavigationSpace *pOCNavSpace;
+	gdeOCNavigationSpace::Ref pOCNavSpace;
 	
 	deDebugDrawer::Ref pDDSpace;
 	deDebugDrawer::Ref pDDBlocker;

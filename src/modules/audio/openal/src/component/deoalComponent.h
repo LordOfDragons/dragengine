@@ -48,7 +48,7 @@ class deoalComponent : public deBaseAudioComponent{
 private:
 	deAudioOpenAL &pOal;
 	deComponent &pComponent;
-	deoalAComponent *pAComponent;
+	deoalAComponent::Ref pAComponent;
 	
 	deoalComponentTexture **pTextures;
 	int pTextureCount;

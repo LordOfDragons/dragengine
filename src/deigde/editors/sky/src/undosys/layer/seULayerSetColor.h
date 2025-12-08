@@ -37,7 +37,7 @@ class seLayer;
  */
 class seULayerSetColor : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	decColor pOldColor;
 	decColor pNewColor;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerSetColor(seLayer *layer, const decColor &newColor);
+	seULayerSetColor(seLayer::Ref layer, const decColor &newColor);
 	
 protected:
 	/** \brief Clean up undo action. */

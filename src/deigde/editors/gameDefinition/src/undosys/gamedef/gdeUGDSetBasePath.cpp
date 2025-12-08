@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDSetBasePath::gdeUGDSetBasePath(gdeGameDefinition *gameDefinition, const char *newValue) :
-pGameDefinition(NULL),
+gdeUGDSetBasePath::gdeUGDSetBasePath(gdeGameDefinition::Ref gameDefinition, const char *newValue) :
+
 pNewValue(newValue)
 {
 	if(!gameDefinition){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = gameDefinition->GetBasePath();
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetBasePath::~gdeUGDSetBasePath(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

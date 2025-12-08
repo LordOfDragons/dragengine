@@ -108,7 +108,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeController *controller) = 0;
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator, aeController *controller) = 0;
 	
 	virtual void Update(){
 		aeAnimator * const animator = pPanel.GetAnimator();
@@ -148,7 +148,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator *animator, aeController *controller) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator::Ref animator, aeController *controller) = 0;
 };
 
 
@@ -172,7 +172,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut controller into clipboard"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeController *controller){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator, aeController *controller){
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
 			aeClipboardDataController::Ref::NewWith(controller));
 		return new aeURemoveController(animator, controller);
@@ -245,7 +245,7 @@ class cTextName : public cBaseTextField{
 public:
 	cTextName(aeWPController &panel) : cBaseTextField(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator *animator, aeController *controller){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator::Ref animator, aeController *controller){
 		const decString value = textField->GetText();
 		if(controller->GetName() == value){
 			return nullptr;
@@ -286,7 +286,7 @@ public:
 	cActionSetFromMove(aeWPController &panel) : cBaseAction(panel, "Set From Move",
 		nullptr, "Sets the ranges from the playtime of a move"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeController *controller){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator, aeController *controller){
 		const deAnimation * const animation = animator->GetEngineAnimator()
 			? animator->GetEngineAnimator()->GetAnimation() : nullptr;
 		decStringList names;
@@ -404,7 +404,7 @@ class cTextLocoLeg : public cBaseTextField{
 public:
 	cTextLocoLeg(aeWPController &panel) : cBaseTextField(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator *animator, aeController *controller){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator::Ref animator, aeController *controller){
 		const int value = textField->GetInteger();
 		if(value >= 0 && value < animator->GetLocomotion().GetLegCount()){
 			controller->SetLocomotionLeg(value);
@@ -472,15 +472,13 @@ public:
 
 aeWPController::aeWPController(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(nullptr),
-pAnimator(nullptr)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPControllerListener(*this);
+	pListener.TakeOver(new aeWPControllerListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -555,10 +553,6 @@ pAnimator(nullptr)
 
 aeWPController::~aeWPController(){
 	SetAnimator(nullptr);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -566,21 +560,19 @@ aeWPController::~aeWPController(){
 // Management
 ///////////////
 
-void aeWPController::SetAnimator(aeAnimator *animator){
+void aeWPController::SetAnimator(aeAnimator::Ref animator){
 	if(animator == pAnimator){
 		return;
 	}
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
 	}
 	
 	UpdateControllerList();

@@ -42,7 +42,7 @@ class meWorld;
  */
 class meUDecalRotate : public meBaseUndoRotate{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	meUndoDataDecal **pDecals;
 	int pDecalCount;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo. */
-	meUDecalRotate(meWorld *world);
+	meUDecalRotate(meWorld::Ref world);
 	/** \brief Clean up undo. */
 	virtual ~meUDecalRotate();
 	/*@}*/

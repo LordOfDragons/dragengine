@@ -95,10 +95,9 @@ public:
 ////////////////////////////
 
 gdeWPSTreeModel::gdeWPSTreeModel(igdeTreeList &treeList, gdeWindowMain &windowMain,
-	gdeGameDefinition *gameDefinition) :
+	gdeGameDefinition::Ref gameDefinition) :
 pTreeList(treeList),
 pWindowMain(windowMain),
-pGameDefinition(NULL),
 pListener(NULL),
 
 pCategories(NULL),
@@ -118,8 +117,6 @@ pIgnoreSelectionChange(false)
 	try{
 		// game definition
 		pGameDefinition = gameDefinition;
-		gameDefinition->AddReference();
-		
 		// set sorter
 		treeList.SetSorter(cSorter::Ref::NewWith());
 		
@@ -385,8 +382,4 @@ void gdeWPSTreeModel::pCleanUp(){
 	}
 	
 	pTreeList.RemoveAllItems();
-	
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }

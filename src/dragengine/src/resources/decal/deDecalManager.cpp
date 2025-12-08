@@ -65,10 +65,10 @@ deDecal *deDecalManager::GetRootDecal() const{
 }
 
 deDecal *deDecalManager::CreateDecal(){
-	deDecal *decal = NULL;
+	deDecal::Ref decal = NULL;
 	
 	try{
-		decal = new deDecal(this);
+		decal.TakeOver(new deDecal(this));
 		
 		GetGraphicSystem()->LoadDecal(decal);
 		GetPhysicsSystem()->LoadDecal(decal);
@@ -77,9 +77,6 @@ deDecal *deDecalManager::CreateDecal(){
 		pDecals.Add(decal);
 		
 	}catch(const deException &){
-		if(decal){
-			decal->FreeReference();
-		}
 		throw;
 	}
 	
@@ -103,7 +100,7 @@ void deDecalManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deDecalManager::SystemGraphicLoad(){
-	deDecal *decal = (deDecal*)pDecals.GetRoot();
+	deDecal::Ref decal = (deDecal*)pDecals.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
 	while(decal){
@@ -116,7 +113,7 @@ void deDecalManager::SystemGraphicLoad(){
 }
 
 void deDecalManager::SystemGraphicUnload(){
-	deDecal *decal = (deDecal*)pDecals.GetRoot();
+	deDecal::Ref decal = (deDecal*)pDecals.GetRoot();
 	
 	while(decal){
 		decal->SetPeerGraphic(NULL);
@@ -125,7 +122,7 @@ void deDecalManager::SystemGraphicUnload(){
 }
 
 void deDecalManager::SystemPhysicsLoad(){
-	deDecal *decal = (deDecal*)pDecals.GetRoot();
+	deDecal::Ref decal = (deDecal*)pDecals.GetRoot();
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
 	
 	while(decal){
@@ -138,7 +135,7 @@ void deDecalManager::SystemPhysicsLoad(){
 }
 
 void deDecalManager::SystemPhysicsUnload(){
-	deDecal *decal = (deDecal*)pDecals.GetRoot();
+	deDecal::Ref decal = (deDecal*)pDecals.GetRoot();
 	
 	while(decal){
 		decal->SetPeerPhysics(NULL);
@@ -147,7 +144,7 @@ void deDecalManager::SystemPhysicsUnload(){
 }
 
 void deDecalManager::SystemAudioLoad(){
-	deDecal *decal = (deDecal*)pDecals.GetRoot();
+	deDecal::Ref decal = (deDecal*)pDecals.GetRoot();
 	deAudioSystem &audSys = *GetAudioSystem();
 	
 	while(decal){
@@ -160,7 +157,7 @@ void deDecalManager::SystemAudioLoad(){
 }
 
 void deDecalManager::SystemAudioUnload(){
-	deDecal *decal = (deDecal*)pDecals.GetRoot();
+	deDecal::Ref decal = (deDecal*)pDecals.GetRoot();
 	
 	while(decal){
 		decal->SetPeerAudio(NULL);

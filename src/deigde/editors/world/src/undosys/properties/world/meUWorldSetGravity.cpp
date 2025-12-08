@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldSetGravity::meUWorldSetGravity(meWorld *world, const decVector &newValue) :
-pWorld(NULL),
+meUWorldSetGravity::meUWorldSetGravity(meWorld::Ref world, const decVector &newValue) :
+
 pNewValue(newValue)
 {
 	if(!world){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = world->GetGravity();
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUWorldSetGravity::~meUWorldSetGravity(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }
 
 

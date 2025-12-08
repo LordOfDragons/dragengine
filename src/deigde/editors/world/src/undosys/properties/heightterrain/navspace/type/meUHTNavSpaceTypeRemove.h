@@ -37,8 +37,8 @@ class meHeightTerrainNavSpaceType;
  */
 class meUHTNavSpaceTypeRemove : public igdeUndo{
 private:
-	meHeightTerrainNavSpace *pNavSpace;
-	meHeightTerrainNavSpaceType *pType;
+	meHeightTerrainNavSpace::Ref pNavSpace;
+	meHeightTerrainNavSpaceType::Ref pType;
 	
 	
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceTypeRemove(meHeightTerrainNavSpaceType *type);
+	meUHTNavSpaceTypeRemove(meHeightTerrainNavSpaceType::Ref type);
 	
 protected:
 	/** \brief Clean up undo action. */

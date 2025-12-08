@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakStripsScale::ceUCAASpeakStripsScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
+ceUCAASpeakStripsScale::ceUCAASpeakStripsScale(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak){
 	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
 	}
@@ -54,21 +54,12 @@ ceUCAASpeakStripsScale::ceUCAASpeakStripsScale(ceConversationTopic *topic, ceCAA
 	SetShortInfo("Scale strips");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakStripsScale::~ceUCAASpeakStripsScale(){
 	if(pOldStates){
 		delete [] pOldStates;
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
 	}
 }
 

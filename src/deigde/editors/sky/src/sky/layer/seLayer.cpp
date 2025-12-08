@@ -66,8 +66,6 @@ pAmbientIntensity(0.0f),
 pMulBySkyLight(false),
 pMulBySkyColor(false),
 
-pActiveBody(NULL),
-
 pActiveTarget(deSkyLayer::etRotationX),
 
 pSelected(false),
@@ -267,7 +265,7 @@ void seLayer::UpdateRelativeResources(){
 // Bodies
 ///////////
 
-void seLayer::AddBody(seBody *body){
+void seLayer::AddBody(seBody::Ref body){
 	if(!body){
 		DETHROW(deeInvalidParam);
 	}
@@ -284,7 +282,7 @@ void seLayer::AddBody(seBody *body){
 	}
 }
 
-void seLayer::InsertBodyAt(seBody *body, int index){
+void seLayer::InsertBodyAt(seBody::Ref body, int index){
 	if(!body){
 		DETHROW(deeInvalidParam);
 	}
@@ -301,7 +299,7 @@ void seLayer::InsertBodyAt(seBody *body, int index){
 	}
 }
 
-void seLayer::MoveBodyTo(seBody *body, int index){
+void seLayer::MoveBodyTo(seBody::Ref body, int index){
 	pBodies.MoveTo(body, index);
 	
 	if(pSky){
@@ -309,7 +307,7 @@ void seLayer::MoveBodyTo(seBody *body, int index){
 	}
 }
 
-void seLayer::RemoveBody(seBody *body){
+void seLayer::RemoveBody(seBody::Ref body){
 	if(!pBodies.Has(body)){
 		DETHROW(deeInvalidParam);
 	}
@@ -353,20 +351,18 @@ void seLayer::RemoveAllBodies(){
 	}
 }
 
-void seLayer::SetActiveBody(seBody *body){
+void seLayer::SetActiveBody(seBody::Ref body){
 	if(body == pActiveBody){
 		return;
 	}
 	
 	if(pActiveBody){
 		pActiveBody->SetActive(false);
-		pActiveBody->FreeReference();
 	}
 	
 	pActiveBody = body;
 	
 	if(body){
-		body->AddReference();
 		body->SetActive(true);
 	}
 	

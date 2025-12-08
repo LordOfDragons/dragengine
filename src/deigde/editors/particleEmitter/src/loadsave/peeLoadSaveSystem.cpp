@@ -82,8 +82,8 @@ peeEmitter *peeLoadSaveSystem::LoadEmitter(const char *filename){
 	if(!filename) DETHROW(deeInvalidParam);
 	
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
-	decBaseFileReader *fileReader = NULL;
-	peeEmitter *emitter = NULL;
+	decBaseFileReader::Ref fileReader = NULL;
+	peeEmitter::Ref emitter = NULL;
 	decPath path;
 	
 	path.SetFromUnix(filename);
@@ -91,30 +91,22 @@ peeEmitter *peeLoadSaveSystem::LoadEmitter(const char *filename){
 	try{
 		fileReader = engine->GetVirtualFileSystem()->OpenFileForReading(path);
 		
-		emitter = new peeEmitter(&pWindowMain.GetEnvironment(), *this);
+		emitter.TakeOver(new peeEmitter(&pWindowMain.GetEnvironment(), *this));
 		emitter->SetFilePath(filename);
 		
 		pLSEmitter->LoadEmitter(*this, *emitter, *fileReader);
-		fileReader->FreeReference();
-		
 	}catch(const deException &){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(emitter){
-			emitter->FreeReference();
-		}
 		throw;
 	}
 	
 	return emitter;
 }
 
-void peeLoadSaveSystem::SaveEmitter(peeEmitter *emitter, const char *filename){
+void peeLoadSaveSystem::SaveEmitter(peeEmitter::Ref emitter, const char *filename){
 	if(!emitter || !filename) DETHROW(deeInvalidParam);
 	
 	deEngine *engine = pWindowMain.GetEngineController().GetEngine();
-	decBaseFileWriter *fileWriter = NULL;
+	decBaseFileWriter::Ref fileWriter = NULL;
 	decPath path;
 	
 	path.SetFromUnix(filename);
@@ -122,13 +114,7 @@ void peeLoadSaveSystem::SaveEmitter(peeEmitter *emitter, const char *filename){
 	try{
 		fileWriter = engine->GetVirtualFileSystem()->OpenFileForWriting(path);
 		pLSEmitter->SaveEmitter(*this, *emitter, *fileWriter);
-		
-		fileWriter->FreeReference();
-		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		throw;
 	}
 }

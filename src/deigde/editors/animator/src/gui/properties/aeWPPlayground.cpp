@@ -471,8 +471,6 @@ public:
 aeWPPlayground::aeWPPlayground(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pAnimator(NULL),
 pControllers(NULL),
 pControllerCount(0)
 {
@@ -480,7 +478,7 @@ pControllerCount(0)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPPlaygroundListener(*this);
+	pListener.TakeOver(new aeWPPlaygroundListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -572,12 +570,7 @@ aeWPPlayground::~aeWPPlayground(){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 		pAnimator = NULL;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -586,22 +579,19 @@ aeWPPlayground::~aeWPPlayground(){
 // Management
 ///////////////
 
-void aeWPPlayground::SetAnimator(aeAnimator *animator){
+void aeWPPlayground::SetAnimator(aeAnimator::Ref animator){
 	if(animator == pAnimator){
 		return;
 	}
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
-		
 		pSpinLocoUseLegPairs->SetRange(1, animator->GetLocomotion().GetLegCount() / 2);
 		pSpinLocoLeg->SetRange(0, animator->GetLocomotion().GetLegCount() - 1);
 		

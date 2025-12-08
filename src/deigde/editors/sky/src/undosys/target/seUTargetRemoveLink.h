@@ -38,9 +38,9 @@ class seLink;
  */
 class seUTargetRemoveLink : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	deSkyLayer::eTargets pTarget;
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUTargetRemoveLink(seLayer *layer, deSkyLayer::eTargets target, seLink *link);
+	seUTargetRemoveLink(seLayer::Ref layer, deSkyLayer::eTargets target, seLink::Ref link);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -48,8 +48,8 @@ private:
 		float shearing;
 	};
 	
-	sePropertyNodeGroup *pParentGroup;
-	sePropertyNodeGroup *pNodeGroup;
+	sePropertyNodeGroup::Ref pParentGroup;
+	sePropertyNodeGroup::Ref pNodeGroup;
 	int pIndex;
 	int pNodeCount;
 	sNode *pNodes;
@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPNUngroupNodes(sePropertyNodeGroup *nodeGroup);
+	seUPNUngroupNodes(sePropertyNodeGroup::Ref nodeGroup);
 	
 protected:
 	/** \brief Clean up undo. */

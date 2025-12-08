@@ -47,14 +47,14 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRLink *pLink;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRLink::Ref pLink;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVLinkAdd(meHTVegetationLayer *vlayer, meHTVRLink *link);
+	meUHTVLinkAdd(meHTVegetationLayer::Ref vlayer, meHTVRLink::Ref link);
 	/** \brief Clean up object. */
 	virtual ~meUHTVLinkAdd();
 	/*@}*/

@@ -37,7 +37,7 @@ class saeSAnimation;
  */
 class saeUSAnimSetNeutralVertexPositionSets : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	decStringSet pOldSets;
 	decStringSet pNewSets;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUSAnimSetNeutralVertexPositionSets(saeSAnimation *sanimation, const decStringSet &sets);
+	saeUSAnimSetNeutralVertexPositionSets(saeSAnimation::Ref sanimation, const decStringSet &sets);
 	
 protected:
 	/** Clean up undo. */

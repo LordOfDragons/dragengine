@@ -59,7 +59,7 @@ public:
 	};
 	
 private:
-	dealFont *pFont;
+	dealFont::Ref pFont;
 	int pFontSize;
 	decString pText;
 	decColor pColor;
@@ -76,7 +76,7 @@ public:
 	dealWidgetLabel(dealDisplay &display, const char *text);
 	
 	/** \brief Create widget. */
-	dealWidgetLabel(dealDisplay &display, dealFont *font, int fontSize, const char *text);
+	dealWidgetLabel(dealDisplay &display, dealFont::Ref font, int fontSize, const char *text);
 	
 	/** \brief Clean up widget. */
 	~dealWidgetLabel() override;
@@ -90,7 +90,7 @@ public:
 	inline dealFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font or \em NULL if not set. */
-	void SetFont(dealFont *font);
+	void SetFont(dealFont::Ref font);
 	
 	/** \brief Font size in pixels. */
 	inline int GetFontSize() const{

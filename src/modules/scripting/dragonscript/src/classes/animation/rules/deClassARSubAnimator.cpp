@@ -57,8 +57,8 @@
 /////////////////////
 
 struct sARSubANatDat{
-	deAnimator *animator;
-	deAnimatorRuleSubAnimator *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleSubAnimator::Ref rule;
 };
 
 
@@ -82,7 +82,7 @@ void deClassARSubAnimator::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleSubAnimator;
+	nd.rule.TakeOver(new deAnimatorRuleSubAnimator);
 	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
@@ -384,7 +384,7 @@ deAnimatorRuleSubAnimator *deClassARSubAnimator::GetRule(dsRealObject *myself) c
 	return ((sARSubANatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARSubAnimator::AssignAnimator(dsRealObject *myself, deAnimator *animator){
+void deClassARSubAnimator::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -402,13 +402,9 @@ void deClassARSubAnimator::AssignAnimator(dsRealObject *myself, deAnimator *anim
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
-void deClassARSubAnimator::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleSubAnimator *rule){
+void deClassARSubAnimator::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleSubAnimator::Ref rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -428,13 +424,7 @@ void deClassARSubAnimator::PushRule(dsRunTime *rt, deAnimator *animator, deAnima
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
 		nd.rule = rule;
-		rule->AddReference();
-		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);
 		

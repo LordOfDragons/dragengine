@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceOptionMove::ceUCAPChoiceOptionMove(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option, int newIndex){
+ceUCAPChoiceOptionMove::ceUCAPChoiceOptionMove(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref playerChoice, ceCAPlayerChoiceOption::Ref option, int newIndex){
 	if(!topic || !playerChoice || !option) DETHROW(deeInvalidParam);
 	
 	int count = playerChoice->GetOptions().GetCount();
@@ -65,25 +65,11 @@ ceUCAPChoiceOptionMove::ceUCAPChoiceOptionMove(ceConversationTopic *topic, ceCAP
 	SetShortInfo("Player Choice Move Option");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
-	
 	pOption = option;
-	option->AddReference();
 }
 
 ceUCAPChoiceOptionMove::~ceUCAPChoiceOptionMove(){
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

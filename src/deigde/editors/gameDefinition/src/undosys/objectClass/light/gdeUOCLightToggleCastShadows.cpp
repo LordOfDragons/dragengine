@@ -40,9 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightToggleCastShadows::gdeUOCLightToggleCastShadows(gdeObjectClass *objectClass, gdeOCLight *light) :
-pObjectClass(NULL),
-pLight(NULL)
+gdeUOCLightToggleCastShadows::gdeUOCLightToggleCastShadows(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -51,19 +50,10 @@ pLight(NULL)
 	SetShortInfo("Light toggle cast shadows");
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightToggleCastShadows::~gdeUOCLightToggleCastShadows(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

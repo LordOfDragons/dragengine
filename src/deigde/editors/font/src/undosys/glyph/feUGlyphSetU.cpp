@@ -38,14 +38,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUGlyphSetU::feUGlyphSetU(feFontGlyph *glyph, int newU){
+feUGlyphSetU::feUGlyphSetU(feFontGlyph::Ref glyph, int newU){
 	SetShortInfo("GLyph set u");
 	
 	pOldU = glyph->GetU();
 	pNewU = newU;
 	
 	pGlyph = glyph;
-	glyph->AddReference();
 }
 
 feUGlyphSetU::~feUGlyphSetU(){

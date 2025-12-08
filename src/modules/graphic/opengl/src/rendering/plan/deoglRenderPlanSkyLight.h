@@ -100,11 +100,11 @@ private:
 	deoglAddToRenderTask pGIRenderTaskAddStatic;
 	deoglAddToRenderTask pGIRenderTaskAddDynamic;
 	
-	deoglRPTSkyLightFindContent *pTaskFindContent;
-	deoglRPTSkyLightBuildRT *pTaskBuildRT1;
-	deoglRPTSkyLightBuildRT *pTaskBuildRT2;
-	deoglRPTSkyLightGIFindContent *pTaskGIFindContent;
-	deoglRPTSkyLightGIUpdateRT *pTaskGIUpdateRT;
+	deoglRPTSkyLightFindContent::Ref pTaskFindContent;
+	deoglRPTSkyLightBuildRT::Ref pTaskBuildRT1;
+	deoglRPTSkyLightBuildRT::Ref pTaskBuildRT2;
+	deoglRPTSkyLightGIFindContent::Ref pTaskGIFindContent;
+	deoglRPTSkyLightGIUpdateRT::Ref pTaskGIUpdateRT;
 	
 	deoglSPBlockUBO::Ref pUBOFindConfig;
 	deoglSPBlockSSBO::Ref pSSBOCounters;

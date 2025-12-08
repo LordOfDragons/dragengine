@@ -38,7 +38,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetOffCamTo : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	decVector pOldPos;
 	decVector pNewPos;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetOffCamTo(ceCameraShot *cameraShot, const decVector &newPos);
+	ceUCCShotSetOffCamTo(ceCameraShot::Ref cameraShot, const decVector &newPos);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetOffCamTo();

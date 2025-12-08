@@ -46,9 +46,9 @@ class gdeWPSTreeModel;
 class gdeWPSelection : public igdeContainerSplitted{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSelectionListener *pListener;
+	gdeWPSelectionListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeSwitcher::Ref pSwitcher;
 	igdeTreeList::Ref pTreeObjects;
@@ -97,7 +97,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not present. */
-	void SetGameDefinition(gdeGameDefinition *gameDefinition);
+	void SetGameDefinition(gdeGameDefinition::Ref gameDefinition);
 	
 	/** \brief Tree model or NULL. */
 	inline gdeWPSTreeModel *GetModelTreeObjects() const{ return pModelTreeObjects; }

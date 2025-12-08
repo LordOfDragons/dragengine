@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUSkyControllerSetName::gdeUSkyControllerSetName(gdeSky *sky,
-gdeSkyController *controller, const char *newValue) :
-pSky(NULL),
-pController(NULL),
+gdeUSkyControllerSetName::gdeUSkyControllerSetName(gdeSky::Ref sky,
+gdeSkyController::Ref controller, const char *newValue) :
+
+
 pNewValue(newValue)
 {
 	if(!sky || !controller){
@@ -58,19 +58,10 @@ pNewValue(newValue)
 	pOldValue = controller->GetName();
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 gdeUSkyControllerSetName::~gdeUSkyControllerSetName(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

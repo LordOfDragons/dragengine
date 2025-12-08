@@ -65,7 +65,7 @@ public:
 	deSkyInstance *GetInstance(dsRealObject *myself) const;
 	
 	/** \brief Push instance which can be \em NULL. */
-	void PushInstance(dsRunTime *rt, deSkyInstance *instance);
+	void PushInstance(dsRunTime *rt, deSkyInstance::Ref instance);
 	/*@}*/
 	
 	

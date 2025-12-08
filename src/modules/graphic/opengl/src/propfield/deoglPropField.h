@@ -46,7 +46,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	dePropField &pPropField;
 	
-	deoglRPropField *pRPropField;
+	deoglRPropField::Ref pRPropField;
 	
 	decPointerList pTypes;
 	

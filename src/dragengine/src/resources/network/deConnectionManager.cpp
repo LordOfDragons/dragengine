@@ -68,10 +68,10 @@ deConnection *deConnectionManager::GetRootConnection() const{
 }
 
 deConnection *deConnectionManager::CreateConnection(){
-	deConnection *connection = NULL;
+	deConnection::Ref connection = NULL;
 	
 	try{
-		connection = new deConnection(this);
+		connection.TakeOver(new deConnection(this));
 		
 		GetNetworkSystem()->LoadConnection(connection);
 		GetScriptingSystem()->LoadConnection(connection);
@@ -79,9 +79,6 @@ deConnection *deConnectionManager::CreateConnection(){
 		pConnections.Add(connection);
 		
 	}catch(const deException &){
-		if(connection){
-			connection->FreeReference();
-		}
 		throw;
 	}
 	
@@ -104,7 +101,7 @@ void deConnectionManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deConnectionManager::SystemNetworkLoad(){
-	deConnection *connection = (deConnection*)pConnections.GetRoot();
+	deConnection::Ref connection = (deConnection*)pConnections.GetRoot();
 	deNetworkSystem &netSys = *GetNetworkSystem();
 	
 	while(connection){
@@ -117,7 +114,7 @@ void deConnectionManager::SystemNetworkLoad(){
 }
 
 void deConnectionManager::SystemNetworkUnload(){
-	deConnection *connection = (deConnection*)pConnections.GetRoot();
+	deConnection::Ref connection = (deConnection*)pConnections.GetRoot();
 	
 	while(connection){
 		connection->SetPeerNetwork(NULL);
@@ -126,7 +123,7 @@ void deConnectionManager::SystemNetworkUnload(){
 }
 
 void deConnectionManager::SystemScriptingLoad(){
-	deConnection *connection = (deConnection*)pConnections.GetRoot();
+	deConnection::Ref connection = (deConnection*)pConnections.GetRoot();
 	deScriptingSystem &scrSys = *GetScriptingSystem();
 	
 	while(connection){
@@ -139,7 +136,7 @@ void deConnectionManager::SystemScriptingLoad(){
 }
 
 void deConnectionManager::SystemScriptingUnload(){
-	deConnection *connection = (deConnection*)pConnections.GetRoot();
+	deConnection::Ref connection = (deConnection*)pConnections.GetRoot();
 	
 	while(connection){
 		connection->SetPeerScripting(NULL);

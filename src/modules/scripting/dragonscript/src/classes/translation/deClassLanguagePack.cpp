@@ -45,7 +45,7 @@
 /////////////////////
 
 struct sLPNatDat{
-	deLanguagePack *langPack;
+	deLanguagePack::Ref langPack;
 };
 
 
@@ -299,7 +299,7 @@ deLanguagePack *deClassLanguagePack::GetLanguagePack(dsRealObject *myself) const
 	return ((sLPNatDat*)p_GetNativeData(myself->GetBuffer()))->langPack;
 }
 
-void deClassLanguagePack::PushLanguagePack(dsRunTime *rt, deLanguagePack *langPack){
+void deClassLanguagePack::PushLanguagePack(dsRunTime *rt, deLanguagePack::Ref langPack){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -311,5 +311,4 @@ void deClassLanguagePack::PushLanguagePack(dsRunTime *rt, deLanguagePack *langPa
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sLPNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->langPack = langPack;
-	langPack->AddReference();
 }

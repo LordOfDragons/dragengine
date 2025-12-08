@@ -39,10 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleVecMathSetOp::meUHTVRuleVecMathSetOp(meHTVegetationLayer *vlayer,
-	meHTVRuleVectorMath *rule, meHTVRuleVectorMath::eOperators nop) :
-pVLayer(NULL),
-pRule(NULL),
+meUHTVRuleVecMathSetOp::meUHTVRuleVecMathSetOp(meHTVegetationLayer::Ref vlayer,
+	meHTVRuleVectorMath::Ref rule, meHTVRuleVectorMath::eOperators nop) :
+
 pNewOp(nop)
 {
 	if(!vlayer || !rule){
@@ -55,18 +54,10 @@ pNewOp(nop)
 	pOldOp = rule->GetOperator();
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleVecMathSetOp::~meUHTVRuleVecMathSetOp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
-	if(pVLayer){
-		pVLayer->FreeReference();
-	}
 }
 
 

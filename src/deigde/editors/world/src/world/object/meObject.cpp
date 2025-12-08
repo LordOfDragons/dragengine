@@ -705,7 +705,7 @@ void meObject::UpdateDDSObjectShapes(){
 
 
 
-void meObject::SetAttachedTo(meObject *object){
+void meObject::SetAttachedTo(meObject::Ref object){
 	if(object == pAttachedTo){
 		return;
 	}
@@ -717,14 +717,12 @@ void meObject::SetAttachedTo(meObject *object){
 		}
 		
 		pAttachedTo->GetAttachedObjectsList().Remove(this);
-		pAttachedTo->FreeReference();
 	}
 	
 	meObject * const oldObject = pAttachedTo;
 	pAttachedTo = object;
 	
 	if(object){
-		object->AddReference();
 		object->GetAttachedObjectsList().Add(this);
 	}
 	
@@ -1023,15 +1021,15 @@ bool meObject::HasLinkTo(meObject *target) const{
 	return GetLinkTo(target) != NULL;
 }
 
-bool meObject::HasLink(meObjectLink *link) const{
+bool meObject::HasLink(meObjectLink::Ref link) const{
 	return pLinks.Has(link);
 }
 
-int meObject::IndexOfLink(meObjectLink *link) const{
+int meObject::IndexOfLink(meObjectLink::Ref link) const{
 	return pLinks.IndexOf(link);
 }
 
-void meObject::AddLink(meObjectLink *link){
+void meObject::AddLink(meObjectLink::Ref link){
 	pLinks.Add(link);
 	
 	if(pWorld){
@@ -1042,7 +1040,7 @@ void meObject::AddLink(meObjectLink *link){
 	}
 }
 
-void meObject::RemoveLink(meObjectLink *link){
+void meObject::RemoveLink(meObjectLink::Ref link){
 	const int index = pLinks.IndexOf(link);
 	if(index == -1){
 		DETHROW(deeInvalidParam);
@@ -1062,7 +1060,7 @@ void meObject::RemoveAllLinks(){
 	pLinks.RemoveAll();
 }
 
-bool meObject::CanLinkTo(meObject *object) const{
+bool meObject::CanLinkTo(meObject::Ref object) const{
 	if(!object){
 		DETHROW(deeInvalidParam);
 	}
@@ -1095,7 +1093,7 @@ void meObject::CheckLinks(){
 	if(!pActive || !pClassDef){
 		for(i=0; i<pLinks.GetCount(); i++){
 			meObjectLink * const link = (meObjectLink*)pLinks.GetAt(i);
-			meObject *object = nullptr;
+			meObject::Ref object = nullptr;
 			
 			if(link->GetAnchor() == this){
 				object = link->GetTarget();
@@ -1130,7 +1128,7 @@ void meObject::CheckLinks(){
 		const bool isAnchor = CanLinkTo(object);
 		
 		if(isAnchor || object->CanLinkTo(this)){
-			meObjectLink *link = GetLinkTo(object);
+			meObjectLink::Ref link = GetLinkTo(object);
 			
 			if(link){
 				if(!object->HasLink(link)){
@@ -1150,10 +1148,10 @@ void meObject::CheckLinks(){
 					try{
 						// create the link in the proper direction
 						if(isAnchor){
-							link = new meObjectLink(pEnvironment, this, object);
+							link.TakeOver(new meObjectLink(pEnvironment, this, object));
 							
 						}else{
-							link = new meObjectLink(pEnvironment, object, this);
+							link.TakeOver(new meObjectLink(pEnvironment, object, this));
 						}
 						if(!link){
 							DETHROW(deeOutOfMemory);
@@ -1162,12 +1160,7 @@ void meObject::CheckLinks(){
 						// add the link and give up the reference we hold
 						AddLink(link);
 						object->AddLink(link);
-						link->FreeReference();
-						
 					}catch(const deException &){
-						if(link){
-							link->FreeReference();
-						}
 						throw;
 					}
 				}
@@ -1230,7 +1223,7 @@ bool meObject::HasTextureNamed(const char *name) const{
 	return false;
 }
 
-int meObject::IndexOfTexture(meObjectTexture *texture) const{
+int meObject::IndexOfTexture(meObjectTexture::Ref texture) const{
 	if(!texture) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1254,7 +1247,7 @@ int meObject::IndexOfTextureNamed(const char *name) const{
 	return -1;
 }
 
-bool meObject::HasTexture(meObjectTexture *texture) const{
+bool meObject::HasTexture(meObjectTexture::Ref texture) const{
 	if(!texture) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -1265,7 +1258,7 @@ bool meObject::HasTexture(meObjectTexture *texture) const{
 	return false;
 }
 
-void meObject::AddTexture(meObjectTexture *texture){
+void meObject::AddTexture(meObjectTexture::Ref texture){
 	if(!texture || HasTextureNamed(texture->GetName())) DETHROW(deeInvalidParam);
 	
 	if(pTextureCount == pTextureSize){
@@ -1282,8 +1275,6 @@ void meObject::AddTexture(meObjectTexture *texture){
 	
 	pTextures[pTextureCount] = texture;
 	pTextureCount++;
-	
-	texture->AddReference();
 	texture->SetObject(this);
 	
 	pUpdateComponent();
@@ -1294,7 +1285,7 @@ void meObject::AddTexture(meObjectTexture *texture){
 	}
 }
 
-void meObject::RemoveTexture(meObjectTexture *texture){
+void meObject::RemoveTexture(meObjectTexture::Ref texture){
 	const int index = IndexOfTexture(texture);
 	if(index == -1){
 		DETHROW(deeInvalidParam);
@@ -1311,8 +1302,6 @@ void meObject::RemoveTexture(meObjectTexture *texture){
 	pTextureCount--;
 	
 	texture->SetObject(NULL);
-	texture->FreeReference();
-	
 	pWObject->ResetComponentTextures();
 	pUpdateComponent();
 	
@@ -1343,7 +1332,7 @@ void meObject::RemoveAllTextures(){
 	}
 }
 
-void meObject::SetActiveTexture(meObjectTexture *texture){
+void meObject::SetActiveTexture(meObjectTexture::Ref texture){
 	if(texture != pActiveTexture){
 		pActiveTexture = texture;
 		
@@ -1739,7 +1728,7 @@ meDecal *meObject::GetDecalAt(int index) const{
 	return pDecals[index];
 }
 
-int meObject::IndexOfDecal(meDecal *decal) const{
+int meObject::IndexOfDecal(meDecal::Ref decal) const{
 	if(!decal){
 		return -1;
 	}
@@ -1753,7 +1742,7 @@ int meObject::IndexOfDecal(meDecal *decal) const{
 	return -1;
 }
 
-bool meObject::HasDecal(meDecal *decal) const{
+bool meObject::HasDecal(meDecal::Ref decal) const{
 	if(!decal){
 		return false;
 	}
@@ -1767,7 +1756,7 @@ bool meObject::HasDecal(meDecal *decal) const{
 	return false;
 }
 
-void meObject::AddDecal(meDecal *decal){
+void meObject::AddDecal(meDecal::Ref decal){
 	DEASSERT_FALSE(HasDecal(decal))
 	
 	if(pDecalCount == pDecalSize){
@@ -1784,15 +1773,13 @@ void meObject::AddDecal(meDecal *decal){
 	
 	pDecals[pDecalCount] = decal;
 	pDecalCount++;
-	
-	decal->AddReference();
 	decal->SetParentObject(this);
 	decal->SetWorld(pWorld);
 	
 	if(pWorld) pWorld->SetChanged(true);
 }
 
-void meObject::InsertDecalAt(meDecal *decal, int index){
+void meObject::InsertDecalAt(meDecal::Ref decal, int index){
 	DEASSERT_FALSE(HasDecal(decal))
 	DEASSERT_TRUE(index >= 0)
 	DEASSERT_TRUE(index <= pDecalCount)
@@ -1804,15 +1791,13 @@ void meObject::InsertDecalAt(meDecal *decal, int index){
 	
 	pDecals[index] = decal;
 	pDecalCount++;
-	
-	decal->AddReference();
 	decal->SetParentObject(this);
 	decal->SetWorld(pWorld);
 	
 	if(pWorld) pWorld->SetChanged(true);
 }
 
-void meObject::RemoveDecal(meDecal *decal){
+void meObject::RemoveDecal(meDecal::Ref decal){
 	int i, index = IndexOfDecal(decal);
 	DEASSERT_TRUE(index != -1)
 	
@@ -1823,8 +1808,6 @@ void meObject::RemoveDecal(meDecal *decal){
 	
 	decal->SetWorld(NULL);
 	decal->SetParentObject(NULL);
-	decal->FreeReference();
-	
 	if(pWorld) pWorld->SetChanged(true);
 }
 
@@ -1840,7 +1823,7 @@ void meObject::RemoveAllDecals(){
 	if(pWorld) pWorld->SetChanged(true);
 }
 
-void meObject::MoveDecalTo(meDecal *decal, int index){
+void meObject::MoveDecalTo(meDecal::Ref decal, int index){
 	if(index < 0 || index > pDecalCount) DETHROW(deeInvalidParam);
 	int i, oldIndex = IndexOfDecal(decal);
 	if(oldIndex == -1) DETHROW(deeInvalidParam);
@@ -1905,13 +1888,6 @@ void meObject::pCleanUp(){
 	if(pTextures){
 		delete [] pTextures;
 	}
-	
-	if(pColDetCollider){
-		pColDetCollider->FreeReference();
-	}
-	if(pEngComponentBroken){
-		pEngComponentBroken->FreeReference();
-	}
 	pWObject = nullptr;
 	
 	if(pCamera){
@@ -1932,9 +1908,6 @@ void meObject::pCleanUp(){
 	}
 	if(pDDSObject){
 		delete pDDSObject;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 
@@ -2317,7 +2290,6 @@ void meObject::pUpdateBrokenComponent(){
 		if(pWorld){
 			pWorld->GetEngineWorld()->RemoveComponent(pEngComponentBroken);
 		}
-		pEngComponentBroken->FreeReference();
 		pEngComponentBroken = nullptr;
 	}
 }
@@ -2491,22 +2463,18 @@ void meObject::pCreateSnapPoints(){
 		return;
 	}
 	
-	meObjectSnapPoint *snapPoint = nullptr;
+	meObjectSnapPoint::Ref snapPoint = nullptr;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			snapPoint = new meObjectSnapPoint(this, list.GetAt(i));
+			snapPoint.TakeOver(new meObjectSnapPoint(this, list.GetAt(i)));
 			snapPoint->SetWorld(pWorld);
 			pSnapPoints.Add(snapPoint);
-			snapPoint->FreeReference();
 			snapPoint = nullptr;
 		}
 		
 	}catch(const deException &){
-		if(snapPoint){
-			snapPoint->FreeReference();
-		}
 		throw;
 	}
 	

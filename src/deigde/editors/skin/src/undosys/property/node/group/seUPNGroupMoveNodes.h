@@ -43,7 +43,7 @@ protected:
 		int index;
 	};
 	
-	sePropertyNodeGroup *pNode;
+	sePropertyNodeGroup::Ref pNode;
 	sNode *pChildren;
 	int pCount;
 	
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPNGroupMoveNodes(sePropertyNodeGroup *node, const sePropertyNodeList &children);
+	seUPNGroupMoveNodes(sePropertyNodeGroup::Ref node, const sePropertyNodeList &children);
 	
 protected:
 	/** \brief Clean up undo. */

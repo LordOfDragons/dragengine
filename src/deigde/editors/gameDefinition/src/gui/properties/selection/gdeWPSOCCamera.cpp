@@ -273,15 +273,13 @@ public:
 
 gdeWPSOCCamera::gdeWPSOCCamera(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCCameraListener(*this);
+	pListener.TakeOver(new gdeWPSOCCameraListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -315,10 +313,6 @@ pGameDefinition(NULL)
 
 gdeWPSOCCamera::~gdeWPSOCCamera(){
 	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -326,21 +320,19 @@ gdeWPSOCCamera::~gdeWPSOCCamera(){
 // Management
 ///////////////
 
-void gdeWPSOCCamera::SetGameDefinition(gdeGameDefinition *gameDefinition){
+void gdeWPSOCCamera::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdatePropertyList();

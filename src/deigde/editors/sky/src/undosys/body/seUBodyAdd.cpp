@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodyAdd::seUBodyAdd(seLayer *layer, seBody *body) :
-pLayer(NULL),
+seUBodyAdd::seUBodyAdd(seLayer::Ref layer, seBody::Ref body) :
+
 pBody(NULL)
 {
 	if(!layer || !body){
@@ -51,19 +51,10 @@ pBody(NULL)
 	SetShortInfo("Add Body");
 	
 	pLayer = layer;
-	layer->AddReference();
-	
 	pBody = body;
-	body->AddReference();
 }
 
 seUBodyAdd::~seUBodyAdd(){
-	if(pBody){
-		pBody->FreeReference();
-	}
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

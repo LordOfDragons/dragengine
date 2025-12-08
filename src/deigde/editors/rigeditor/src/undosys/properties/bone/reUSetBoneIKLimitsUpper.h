@@ -38,7 +38,7 @@ class reRigBone;
  */
 class reUSetBoneIKLimitsUpper : public igdeUndo{
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	decVector pOldIKLimitsUpper;
 	decVector pNewIKLimitsUpper;

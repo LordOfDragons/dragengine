@@ -63,7 +63,7 @@
 /////////////////////
 
 struct sInputDeviceNatDat{
-	dedsInputDevice *device;
+	dedsInputDevice::Ref device;
 };
 
 
@@ -877,7 +877,7 @@ dedsInputDevice *deClassInputDevice::GetInputDevice(dsRealObject *myself) const{
 	return ((sInputDeviceNatDat*)p_GetNativeData(myself->GetBuffer()))->device;
 }
 
-void deClassInputDevice::PushInputDevice(dsRunTime *rt, dedsInputDevice *device){
+void deClassInputDevice::PushInputDevice(dsRunTime *rt, dedsInputDevice::Ref device){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -891,5 +891,4 @@ void deClassInputDevice::PushInputDevice(dsRunTime *rt, dedsInputDevice *device)
 	sInputDeviceNatDat &nd = *((sInputDeviceNatDat*)p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.device = device;
-	device->AddReference();
 }

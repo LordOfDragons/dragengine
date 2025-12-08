@@ -47,7 +47,6 @@ aeLink::aeLink(const char *name) :
 pAnimator(NULL),
 pEngLink(NULL),
 pName(name),
-pController(NULL),
 pRepeat(1),
 pBoneParameter(deAnimatorLink::ebpPositionZ),
 pBoneMinimum(0.0f),
@@ -63,7 +62,6 @@ aeLink::aeLink(const aeLink &copy) :
 pAnimator(NULL),
 pEngLink(NULL),
 pName(copy.pName),
-pController(NULL),
 pRepeat(copy.pRepeat),
 pCurve(copy.pCurve),
 pBone(copy.pBone),
@@ -76,17 +74,10 @@ pVertexPositionSetMaximum(copy.pVertexPositionSetMaximum),
 pWrapY(copy.pWrapY)
 {
 	pController = copy.pController;
-	if(pController){
-		pController->AddReference();
-	}
 }
 
 aeLink::~aeLink(){
 	SetAnimator(NULL);
-	
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 
@@ -149,21 +140,11 @@ void aeLink::SetName(const char *name){
 	}
 }
 
-void aeLink::SetController(aeController *controller, bool notify){
+void aeLink::SetController(aeController::Ref controller, bool notify){
 	if(controller == pController){
 		return;
 	}
-	
-	if(pController){
-		pController->FreeReference();
-	}
-	
 	pController = controller;
-	
-	if(controller){
-		controller->AddReference();
-	}
-	
 	UpdateController();
 	
 	if(pAnimator && notify){

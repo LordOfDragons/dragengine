@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUMoveControllerUp::aeUMoveControllerUp(aeAnimator *animator, aeController *controller){
+aeUMoveControllerUp::aeUMoveControllerUp(aeAnimator::Ref animator, aeController::Ref controller){
 	if(!animator || !controller) DETHROW(deeInvalidParam);
 	
 	pAnimator = NULL;
@@ -50,10 +50,7 @@ aeUMoveControllerUp::aeUMoveControllerUp(aeAnimator *animator, aeController *con
 	if(pIndex < 1) DETHROW(deeInvalidParam);
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 aeUMoveControllerUp::~aeUMoveControllerUp(){

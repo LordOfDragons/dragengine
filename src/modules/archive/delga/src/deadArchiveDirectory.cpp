@@ -88,20 +88,15 @@ deadArchiveDirectory *deadArchiveDirectory::GetDirectoryNamed(const char *filena
 }
 
 deadArchiveDirectory *deadArchiveDirectory::GetOrAddDirectoryNamed(const char *filename){
-	deadArchiveDirectory * directory = GetDirectoryNamed(filename);
+	deadArchiveDirectory::Ref directory = GetDirectoryNamed(filename);
 	if(directory){
 		return directory;
 	}
 	
 	try{
-		directory = new deadArchiveDirectory(pModule, filename);
+		directory.TakeOver(new deadArchiveDirectory(pModule, filename));
 		pDirectories.Add(directory);
-		directory->FreeReference();
-		
 	}catch(const deException &){
-		if(directory){
-			directory->FreeReference();
-		}
 		throw;
 	}
 	return directory;
@@ -116,7 +111,7 @@ deadArchiveDirectory *deadArchiveDirectory::GetDirectoryByPath(const decPath &pa
 		return GetDirectoryNamed(path.GetComponentAt(0));
 	}
 	
-	deadArchiveDirectory *directory = this;
+	deadArchiveDirectory::Ref directory = this;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -129,7 +124,7 @@ deadArchiveDirectory *deadArchiveDirectory::GetDirectoryByPath(const decPath &pa
 	return directory;
 }
 
-void deadArchiveDirectory::AddDirectory(deadArchiveDirectory *directory){
+void deadArchiveDirectory::AddDirectory(deadArchiveDirectory::Ref directory){
 	if(!directory){
 		DETHROW(deeInvalidParam);
 	}
@@ -193,7 +188,7 @@ deadArchiveFile *deadArchiveDirectory::GetFileByPath(const decPath &path) const{
 		return GetFileNamed(path.GetComponentAt(0));
 	}
 	
-	const deadArchiveDirectory *directory = this;
+	const deadArchiveDirectory::Ref directory = this;
 	int i;
 	
 	for(i=0; i<count-1; i++){

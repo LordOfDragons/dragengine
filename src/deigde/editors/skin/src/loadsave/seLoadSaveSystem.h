@@ -79,7 +79,7 @@ public:
 	/** Loads the skin from file if possible. */
 	seSkin *LoadSkin(const char *filename, igdeGameDefinition *gameDefinition);
 	/** Saves the skin to file if possible. */
-	void SaveSkin(seSkin *skin, const char *filename);
+	void SaveSkin(seSkin::Ref skin, const char *filename);
 	/*@}*/
 };
 

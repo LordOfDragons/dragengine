@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetSpotExponent::gdeUOCLightSetSpotExponent(gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue) :
-pObjectClass(NULL),
-pLight(NULL)
+gdeUOCLightSetSpotExponent::gdeUOCLightSetSpotExponent(gdeObjectClass::Ref objectClass,
+gdeOCLight::Ref light, float newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pLight(NULL)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetSpotExponent::~gdeUOCLightSetSpotExponent(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

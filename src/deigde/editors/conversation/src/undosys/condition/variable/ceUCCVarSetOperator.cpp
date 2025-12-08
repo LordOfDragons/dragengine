@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCVarSetOperator::ceUCCVarSetOperator(ceConversationTopic *topic,
-ceConversationAction *action, ceCConditionVariable *condition,
+ceUCCVarSetOperator::ceUCCVarSetOperator(ceConversationTopic::Ref topic,
+ceConversationAction::Ref action, ceCConditionVariable::Ref condition,
 ceCConditionVariable::eOperators newOperator){
 	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	
@@ -55,25 +55,11 @@ ceCConditionVariable::eOperators newOperator){
 	SetShortInfo("Condition Variable: Set Operator");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCVarSetOperator::~ceUCCVarSetOperator(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

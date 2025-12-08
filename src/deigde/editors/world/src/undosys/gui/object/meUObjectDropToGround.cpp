@@ -56,8 +56,8 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectDropToGround::meUObjectDropToGround(meWorld *world, const meObjectList &objects) :
-pWorld(nullptr),
+meUObjectDropToGround::meUObjectDropToGround(meWorld::Ref world, const meObjectList &objects) :
+
 pObjects(nullptr),
 pObjectCount(0),
 pDropOnObjects(true),
@@ -91,7 +91,6 @@ pAlign(false)
 			pObjects[pObjectCount].oldpos = object->GetPosition();
 			pObjects[pObjectCount].oldrot = object->GetRotation();
 			pObjects[pObjectCount].object = object;
-			object->AddReference();
 		}
 		
 	}catch(const deException &){
@@ -100,7 +99,6 @@ pAlign(false)
 	}
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUObjectDropToGround::~meUObjectDropToGround(){
@@ -123,7 +121,7 @@ void meUObjectDropToGround::SetAlign(bool align){
 
 
 void meUObjectDropToGround::Undo(){
-	meObject *object;
+	meObject::Ref object;
 	int o;
 	
 	for(o=0; o<pObjectCount; o++){
@@ -143,7 +141,7 @@ void meUObjectDropToGround::Redo(){
 	meFilterObjectsByClass filter;
 	deColliderVolume *collider;
 	int testCounter = 0;
-	meObject *object;
+	meObject::Ref object;
 	float distance;
 	int o;
 	

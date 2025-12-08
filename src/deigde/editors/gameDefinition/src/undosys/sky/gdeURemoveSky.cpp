@@ -41,9 +41,8 @@
 ////////////////////////////
 
 gdeURemoveSky::gdeURemoveSky(
-gdeGameDefinition *gameDefinition, gdeSky *sky) :
-pGameDefinition(NULL),
-pSky(NULL)
+gdeGameDefinition::Ref gameDefinition, gdeSky::Ref sky) :
+pGameDefinition(NULL)
 {
 	if(!gameDefinition || !sky){
 		DETHROW(deeInvalidParam);
@@ -56,19 +55,10 @@ pSky(NULL)
 	SetShortInfo("Remove sky");
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeURemoveSky::~gdeURemoveSky(){
-	if(pSky){
-		pSky->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

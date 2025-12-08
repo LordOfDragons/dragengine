@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeAdd::peeUTypeAdd(peeEmitter *emitter, peeType *type){
+peeUTypeAdd::peeUTypeAdd(peeEmitter::Ref emitter, peeType::Ref type){
 	if(!emitter || !type){
 		DETHROW(deeInvalidParam);
 	}
@@ -51,19 +51,10 @@ peeUTypeAdd::peeUTypeAdd(peeEmitter *emitter, peeType *type){
 	SetShortInfo("Add Type");
 	
 	pEmitter = emitter;
-	emitter->AddReference();
-	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeAdd::~peeUTypeAdd(){
-	if(pType){
-		pType->FreeReference();
-	}
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

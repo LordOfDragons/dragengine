@@ -40,8 +40,8 @@
 ////////////////////////////
 
 gdeUGDSetAutoFindPathSkies::gdeUGDSetAutoFindPathSkies(
-	gdeGameDefinition *gameDefinition, const decStringList &newValue) :
-pGameDefinition(NULL),
+	gdeGameDefinition::Ref gameDefinition, const decStringList &newValue) :
+
 pNewValue(newValue)
 {
 	if(!gameDefinition){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = gameDefinition->GetAutoFindPathSkies();
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetAutoFindPathSkies::~gdeUGDSetAutoFindPathSkies(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

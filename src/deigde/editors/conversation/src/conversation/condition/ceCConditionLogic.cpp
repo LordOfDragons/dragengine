@@ -50,7 +50,7 @@ pOperator(condition.GetOperator()),
 pTIMExpanded(condition.pTIMExpanded)
 {
 	const ceConversationConditionList &conditions = condition.GetConditions();
-	ceConversationCondition *newCondition = NULL;
+	ceConversationCondition::Ref newCondition = NULL;
 	int i, count;
 	
 	try{
@@ -58,14 +58,10 @@ pTIMExpanded(condition.pTIMExpanded)
 		for(i=0; i<count; i++){
 			newCondition = conditions.GetAt(i)->CreateCopy();
 			pConditions.Add(newCondition);
-			newCondition->FreeReference();
 			newCondition = NULL;
 		}
 		
 	}catch(const deException &){
-		if(newCondition){
-			newCondition->FreeReference();
-		}
 		pConditions.RemoveAll();
 		throw;
 	}

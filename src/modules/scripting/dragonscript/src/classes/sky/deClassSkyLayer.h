@@ -64,7 +64,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push layer. */
-	void PushLayer(dsRunTime *rt, deSky *sky, int index);
+	void PushLayer(dsRunTime *rt, deSky::Ref sky, int index);
 	
 	inline dsClass *GetClassSkyLayerTargetType() const{ return pClsSkyLayerTargetType; }
 	/*@}*/

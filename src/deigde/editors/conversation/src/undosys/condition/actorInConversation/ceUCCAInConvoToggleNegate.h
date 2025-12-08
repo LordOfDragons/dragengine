@@ -38,9 +38,9 @@ class ceConversationTopic;
  */
 class ceUCCAInConvoToggleNegate : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionActorInConversation *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionActorInConversation::Ref pCondition;
 	
 	
 	
@@ -51,8 +51,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCCAInConvoToggleNegate(ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionActorInConversation *condition);
+	ceUCCAInConvoToggleNegate(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
+		ceCConditionActorInConversation::Ref condition);
 	
 	/** \brief Clean up undo object. */
 	virtual ~ceUCCAInConvoToggleNegate();

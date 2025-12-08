@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVLinkCut::meUHTVLinkCut(meHTVegetationLayer *vlayer){
+meUHTVLinkCut::meUHTVLinkCut(meHTVegetationLayer::Ref vlayer){
 	if(!vlayer) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
@@ -53,7 +53,6 @@ meUHTVLinkCut::meUHTVLinkCut(meHTVegetationLayer *vlayer){
 	SetMemoryConsumption(sizeof(meUHTVLinkCut));
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 }
 
 meUHTVLinkCut::~meUHTVLinkCut(){
@@ -73,7 +72,7 @@ meUHTVLinkCut::~meUHTVLinkCut(){
 // Management
 ///////////////
 
-void meUHTVLinkCut::AddLinkToCut(meHTVRLink *link){
+void meUHTVLinkCut::AddLinkToCut(meHTVRLink::Ref link){
 	if(!link) DETHROW(deeInvalidParam);
 	
 	meHTVRLink **newArray = new meHTVRLink*[pLinkCount + 1];
@@ -84,8 +83,6 @@ void meUHTVLinkCut::AddLinkToCut(meHTVRLink *link){
 	}
 	pLinks = newArray;
 	pLinks[pLinkCount++] = link;
-	
-	link->AddReference();
 }
 
 

@@ -55,14 +55,14 @@ private:
 	decStringList pBaseGameDefs;
 	const igdeTemplate *pTemplate;
 	
-	igdeGameProject *pProject;
+	igdeGameProject::Ref pProject;
 	
 	decPath pNativePathProject;
 	decString pNativePathData;
 	decString pGameId;
 	decString pGameAliasId;
 	
-	igdeGameDefinition *pGameDef;
+	igdeGameDefinition::Ref pGameDef;
 	decString pSharedGameDefContent;
 	deVirtualFileSystem::Ref pVFS;
 	

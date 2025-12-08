@@ -36,7 +36,7 @@ class saePhoneme;
  */
 class saeUPhonemeSetIPA : public igdeUndo{
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	int pOldIPA;
 	int pNewIPA;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeSetIPA(saePhoneme *phoneme, int newIPA);
+	saeUPhonemeSetIPA(saePhoneme::Ref phoneme, int newIPA);
 	
 protected:
 	/** Clean up undo. */

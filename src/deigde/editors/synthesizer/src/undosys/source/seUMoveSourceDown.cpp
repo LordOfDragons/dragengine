@@ -40,9 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMoveSourceDown::seUMoveSourceDown(seSynthesizer *synthesizer, seSource *source) :
-pSynthesizer(NULL),
-pSource(NULL)
+seUMoveSourceDown::seUMoveSourceDown(seSynthesizer::Ref synthesizer, seSource::Ref source) :
+pSynthesizer(NULL)
 {
 	if(!synthesizer || !source){
 		DETHROW(deeInvalidParam);
@@ -54,10 +53,7 @@ pSource(NULL)
 	}
 	
 	pSynthesizer = synthesizer;
-	synthesizer->AddReference();
-	
 	pSource = source;
-	source->AddReference();
 }
 
 seUMoveSourceDown::~seUMoveSourceDown(){
@@ -83,10 +79,4 @@ void seUMoveSourceDown::Redo(){
 //////////////////////
 
 void seUMoveSourceDown::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

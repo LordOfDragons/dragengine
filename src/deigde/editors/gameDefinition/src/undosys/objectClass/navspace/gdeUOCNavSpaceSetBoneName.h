@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavSpaceSetBoneName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationSpace *pNavSpace;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetBoneName(gdeObjectClass *objectClass, gdeOCNavigationSpace *navSpace, const char *newValue);
+	gdeUOCNavSpaceSetBoneName(gdeObjectClass::Ref objectClass, gdeOCNavigationSpace::Ref navSpace, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

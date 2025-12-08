@@ -98,12 +98,9 @@ public:
 
 feViewFontImage::feViewFontImage(feWindowMain &windowMain) :
 igdeContainerBorder(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pListener(NULL),
-pFont(NULL),
-pViewImage(NULL)
+pWindowMain(windowMain)
 {
-	pListener = new feViewFontImageListener(*this);
+	pListener.TakeOver(new feViewFontImageListener(*this));
 	
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	
@@ -136,17 +133,12 @@ pViewImage(NULL)
 	pSBVertical->AddListener(scrollView);
 	AddChild(pSBVertical, igdeContainerBorder::eaRight);
 	
-	pViewImage = new feViewFIImage(windowMain);
+	pViewImage.TakeOver(new feViewFIImage(windowMain));
 	AddChild(pViewImage, igdeContainerBorder::eaCenter);
-	pViewImage->FreeReference();
 }
 
 feViewFontImage::~feViewFontImage(){
 	SetFont(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -154,20 +146,18 @@ feViewFontImage::~feViewFontImage(){
 // Management
 ///////////////
 
-void feViewFontImage::SetFont(feFont *font){
+void feViewFontImage::SetFont(feFont::Ref font){
 	if(font == pFont){
 		return;
 	}
 	
 	if(pFont){
 		pFont->RemoveNotifier(pListener);
-		pFont->FreeReference();
 	}
 	
 	pFont = font;
 	
 	if(font){
-		font->AddReference();
 		font->AddNotifier(pListener);
 	}
 	

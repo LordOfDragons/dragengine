@@ -45,7 +45,7 @@
 /////////////////////
 
 struct sOccMNatDat{
-	deOcclusionMesh *occlusionMesh;
+	deOcclusionMesh::Ref occlusionMesh;
 };
 
 
@@ -239,7 +239,7 @@ deOcclusionMesh *deClassOcclusionMesh::GetOcclusionMesh(dsRealObject *object) co
 	return ((sOccMNatDat*)p_GetNativeData(object->GetBuffer()))->occlusionMesh;
 }
 
-void deClassOcclusionMesh::PushOcclusionMesh(dsRunTime *rt, deOcclusionMesh *occlusionMesh){
+void deClassOcclusionMesh::PushOcclusionMesh(dsRunTime *rt, deOcclusionMesh::Ref occlusionMesh){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -251,5 +251,4 @@ void deClassOcclusionMesh::PushOcclusionMesh(dsRunTime *rt, deOcclusionMesh *occ
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sOccMNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->occlusionMesh = occlusionMesh;
-	occlusionMesh->AddReference();
 }

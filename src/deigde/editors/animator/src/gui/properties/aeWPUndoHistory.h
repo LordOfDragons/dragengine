@@ -37,8 +37,8 @@ class aeWPUndoHistoryListener;
  */
 class aeWPUndoHistory : public igdeWPUndoHistory{
 private:
-	aeAnimator *pWorld;
-	aeWPUndoHistoryListener *pListener;
+	aeAnimator::Ref pWorld;
+	aeWPUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -62,7 +62,7 @@ public:
 	inline aeAnimator *GetAnimator() const{ return pWorld; }
 	
 	/** Set animator. */
-	void SetAnimator(aeAnimator *animator);
+	void SetAnimator(aeAnimator::Ref animator);
 	/*@}*/
 };
 

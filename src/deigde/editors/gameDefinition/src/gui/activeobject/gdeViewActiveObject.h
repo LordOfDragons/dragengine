@@ -73,9 +73,9 @@ private:
 	gdeWindowMain &pWindowMain;
 	gdeViewActiveObjectListener *pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	deComponent::Ref pPreviewComponent;
 	deModel::Ref pPreviewModelBox;
@@ -133,7 +133,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition to monitor. */
-	void SetGameDefinition(gdeGameDefinition *gameDefinition);
+	void SetGameDefinition(gdeGameDefinition::Ref gameDefinition);
 	
 	/** \brief Debug drawer. */
 	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }

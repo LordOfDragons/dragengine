@@ -54,8 +54,6 @@
 deoglRCamera::deoglRCamera(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
 
-pParentWorld(NULL),
-
 pTextureToneMapParams(nullptr),
 pElapsedToneMapAdaption(0.0f),
 pForceToneMapAdaption(true),
@@ -114,23 +112,13 @@ deoglRCamera::~deoglRCamera(){
 // Management
 ///////////////
 
-void deoglRCamera::SetParentWorld(deoglRWorld *parentWorld){
+void deoglRCamera::SetParentWorld(deoglRWorld::Ref parentWorld){
 	if(parentWorld == pParentWorld){
 		return;
 	}
 	
 	pPlan->SetWorld(NULL); // has to come first since SetWorld accesses previous world
-	
-	if(pParentWorld){
-		pParentWorld->FreeReference();
-	}
-	
 	pParentWorld = parentWorld;
-	
-	if(parentWorld){
-		parentWorld->AddReference();
-	}
-	
 	pPlan->SetWorld(parentWorld);
 }
 

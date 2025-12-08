@@ -80,12 +80,7 @@
 
 seWindowMain::seWindowMain(igdeEditorModule &module) :
 igdeEditorWindow(module),
-pListener(NULL),
-pLoadSaveSystem(NULL),
-pViewSky(NULL),
-pWindowProperties(NULL),
-pWindowCurves(NULL),
-pSky(NULL)
+pLoadSaveSystem(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -94,7 +89,7 @@ pSky(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new seWindowMainListener(*this);
+	pListener.TakeOver(new seWindowMainListener(*this));
 	pLoadSaveSystem = new seLoadSaveSystem(*this);
 	pConfiguration = new seConfiguration(*this);
 	
@@ -108,17 +103,17 @@ pSky(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	AddChild(splitted);
 	
-	pWindowProperties = new seWindowProperties(*this);
+	pWindowProperties.TakeOver(new seWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	igdeContainerSplitted::Ref splitted2(igdeContainerSplitted::Ref::NewWith(
 		env, igdeContainerSplitted::espBottom, igdeApplication::app().DisplayScaled(260)));
 	splitted->AddChild(splitted2, igdeContainerSplitted::eaCenter);
 	
-	pWindowCurves = new seWindowCurves(*this);
+	pWindowCurves.TakeOver(new seWindowCurves(*this));
 	splitted2->AddChild(pWindowCurves, igdeContainerSplitted::eaSide);
 	
-	pViewSky = new seViewSky(*this);
+	pViewSky.TakeOver(new seViewSky(*this));
 	splitted2->AddChild(pViewSky, igdeContainerSplitted::eaCenter);
 	
 	CreateNewSky();
@@ -133,15 +128,12 @@ seWindowMain::~seWindowMain(){
 	SetSky(NULL);
 	
 	if(pWindowCurves){
-		pWindowCurves->FreeReference();
 		pWindowCurves = NULL;
 	}
 	if(pViewSky){
-		pViewSky->FreeReference();
 		pViewSky = NULL;
 	}
 	if(pWindowProperties){
-		pWindowProperties->FreeReference();
 		pWindowProperties = NULL;
 	}
 	
@@ -150,9 +142,6 @@ seWindowMain::~seWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -171,7 +160,7 @@ void seWindowMain::ResetViews(){
 
 
 
-void seWindowMain::SetSky(seSky *sky){
+void seWindowMain::SetSky(seSky::Ref sky){
 	if(sky == pSky){
 		return;
 	}
@@ -186,13 +175,11 @@ void seWindowMain::SetSky(seSky *sky){
 		pSky->RemoveListener(pListener);
 		
 		pSky->Dispose();
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;
 	
 	if(sky){
-		sky->AddReference();
 		sky->AddListener(pListener);
 		
 		pActionEditUndo->SetUndoSystem(sky->GetUndoSystem());
@@ -205,18 +192,13 @@ void seWindowMain::SetSky(seSky *sky){
 }
 
 void seWindowMain::CreateNewSky(){
-	seSky *sky = NULL;
+	seSky::Ref sky = NULL;
 	
 	try{
-		sky = new seSky(&GetEnvironment());
+		sky.TakeOver(new seSky(&GetEnvironment()));
 		
 		SetSky(sky);
-		sky->FreeReference();
-		
 	}catch(const deException &){
-		if(sky){
-			sky->FreeReference();
-		}
 		throw;
 	}
 }
@@ -288,8 +270,6 @@ void seWindowMain::GetChangedDocuments(decStringList &list){
 void seWindowMain::LoadDocument(const char *filename){
 	seSky * const sky = pLoadSaveSystem->LoadSky(filename);
 	SetSky(sky);
-	sky->FreeReference();
-	
 	GetRecentFiles().AddFile(filename);
 }
 
@@ -371,12 +351,10 @@ public:
 		
 		// load sky
 		pWindow.GetEditorModule().LogInfoFormat("Loading sky %s", filename.GetString());
-		seSky *sky = pWindow.GetLoadSaveSystem().LoadSky(filename);
+		seSky::Ref sky = pWindow.GetLoadSaveSystem().LoadSky(filename);
 		
 		// replace sky
 		pWindow.SetSky(sky);
-		sky->FreeReference();
-		
 		// store information
 		sky->SetFilePath(filename);
 		sky->SetChanged(false);

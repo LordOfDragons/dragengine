@@ -56,7 +56,7 @@ pProperty(NULL),
 pActiveGroup(false)
 {
 	const int count = node.pNodes.GetCount();
-	sePropertyNode *childNode = NULL;
+	sePropertyNode::Ref childNode = NULL;
 	int i;
 	
 	try{
@@ -68,9 +68,6 @@ pActiveGroup(false)
 		}
 		
 	}catch(const deException &){
-		if(childNode){
-			childNode->FreeReference();
-		}
 		pNodes.RemoveAll();
 		throw;
 	}

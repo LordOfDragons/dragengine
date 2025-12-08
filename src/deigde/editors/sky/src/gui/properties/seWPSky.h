@@ -39,8 +39,8 @@ class seWPSkyListener;
 class seWPSky : public igdeContainerScroll{
 private:
 	seWindowProperties &pWindowProperties;
-	seSky *pSky;
-	seWPSkyListener *pListener;
+	seSky::Ref pSky;
+	seWPSkyListener::Ref pListener;
 	
 	igdeColorBox::Ref pClrBg;
 	
@@ -64,7 +64,7 @@ public:
 	inline seSky *GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
-	void SetSky(seSky *sky);
+	void SetSky(seSky::Ref sky);
 	
 	/** \brief Update sky. */
 	void UpdateSky();

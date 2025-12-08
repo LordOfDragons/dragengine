@@ -45,7 +45,6 @@
 
 deoglRCanvasVideoPlayer::deoglRCanvasVideoPlayer(deoglRenderThread &renderThread) :
 deoglRCanvas(renderThread),
-pVideoPlayer(NULL),
 pTCClampMin(0.0f, 0.0f),
 pTCClampMax(1.0f, 1.0f){
 	LEAK_CHECK_CREATE(renderThread, CanvasVideoPlayer);
@@ -61,18 +60,11 @@ deoglRCanvasVideoPlayer::~deoglRCanvasVideoPlayer(){
 // Management
 ///////////////
 
-void deoglRCanvasVideoPlayer::SetVideoPlayer(deoglRVideoPlayer *videoPlayer){
+void deoglRCanvasVideoPlayer::SetVideoPlayer(deoglRVideoPlayer::Ref videoPlayer){
 	if(videoPlayer == pVideoPlayer){
 		return;
 	}
-	
-	if(pVideoPlayer){
-		pVideoPlayer->FreeReference();
-	}
 	pVideoPlayer = videoPlayer;
-	if(videoPlayer){
-		videoPlayer->AddReference();
-	}
 }
 
 void deoglRCanvasVideoPlayer::SetTCTransform(const decTexMatrix2 &transform){

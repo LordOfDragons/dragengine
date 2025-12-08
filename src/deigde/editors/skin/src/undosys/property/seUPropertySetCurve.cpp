@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetCurve::seUPropertySetCurve(seSkyLayer *layer, seProperty *property){
+seUPropertySetCurve::seUPropertySetCurve(seSkyLayer::Ref layer, seProperty *property){
 	if(!layer || !property) DETHROW(deeInvalidParam);
 	
 	pLayer = NULL;
@@ -52,7 +52,6 @@ seUPropertySetCurve::seUPropertySetCurve(seSkyLayer *layer, seProperty *property
 	pNewCurve = pOldCurve;
 	
 	pLayer = layer;
-	layer->AddReference();
 	pProperty = property;
 }
 

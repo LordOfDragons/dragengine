@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetPropertyName::gdeUOCParticleEmitterSetPropertyName(gdeObjectClass *objectClass,
-gdeOCParticleEmitter *particleEmitter, gdeOCParticleEmitter::eProperties property, const char *newValue) :
-pObjectClass(NULL),
-pParticleEmitter(NULL),
+gdeUOCParticleEmitterSetPropertyName::gdeUOCParticleEmitterSetPropertyName(gdeObjectClass::Ref objectClass,
+gdeOCParticleEmitter::Ref particleEmitter, gdeOCParticleEmitter::eProperties property, const char *newValue) :
+
+
 pProperty(property)
 {
 	if(!objectClass || !particleEmitter){
@@ -55,19 +55,10 @@ pProperty(property)
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCParticleEmitterSetPropertyName::~gdeUOCParticleEmitterSetPropertyName(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -36,8 +36,8 @@ class seLayer;
  */
 class seUBodyAdd : public igdeUndo{
 private:
-	seLayer *pLayer;
-	seBody *pBody;
+	seLayer::Ref pLayer;
+	seBody::Ref pBody;
 	
 	
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUBodyAdd(seLayer *layer, seBody *body);
+	seUBodyAdd(seLayer::Ref layer, seBody::Ref body);
 	
 protected:
 	/** \brief Clean up undo action. */

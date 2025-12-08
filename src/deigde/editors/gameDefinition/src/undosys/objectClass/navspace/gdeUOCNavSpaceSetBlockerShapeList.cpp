@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetBlockerShapeList::gdeUOCNavSpaceSetBlockerShapeList(gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, const decShapeList &newValue) :
-pObjectClass(NULL),
-pNavSpace(NULL)
+gdeUOCNavSpaceSetBlockerShapeList::gdeUOCNavSpaceSetBlockerShapeList(gdeObjectClass::Ref objectClass,
+gdeOCNavigationSpace::Ref navspace, const decShapeList &newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !navspace){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pNavSpace(NULL)
 	pNewValue = newValue;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavSpaceSetBlockerShapeList::~gdeUOCNavSpaceSetBlockerShapeList(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

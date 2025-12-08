@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetIntervalAsDistance::peeUTypeSetIntervalAsDistance(peeType *type){
+peeUTypeSetIntervalAsDistance::peeUTypeSetIntervalAsDistance(peeType::Ref type){
 	if(!type){
 		DETHROW(deeInvalidParam);
 	}
@@ -49,13 +49,9 @@ peeUTypeSetIntervalAsDistance::peeUTypeSetIntervalAsDistance(peeType *type){
 	SetShortInfo("Set Type Interval As Distance");
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetIntervalAsDistance::~peeUTypeSetIntervalAsDistance(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

@@ -37,7 +37,7 @@ class seEffect;
  */
 class seUEffectToggleEnabled : public igdeUndo{
 private:
-	seEffect *pEffect;
+	seEffect::Ref pEffect;
 	
 	
 	

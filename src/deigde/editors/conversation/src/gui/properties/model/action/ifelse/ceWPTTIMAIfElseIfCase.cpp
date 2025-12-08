@@ -50,12 +50,9 @@
 ////////////////////////////
 
 ceWPTTIMAIfElseIfCase::ceWPTTIMAIfElseIfCase(ceWindowMain &windowMain,
-ceConversation &conversation, ceCAIfElse &ifElse, ceCAIfElseCase *ifCase, int index) :
+ceConversation &conversation, ceCAIfElse &ifElse, ceCAIfElseCase::Ref ifCase, int index) :
 ceWPTTreeItemModel(windowMain, conversation, etActionIfElseCase),
-pIfCase(NULL),
-pIndex(index),
-pCondition(NULL),
-pActions(NULL)
+pIndex(index)
 {
 	if(!ifCase){
 		DETHROW(deeInvalidParam);
@@ -64,21 +61,15 @@ pActions(NULL)
 	SetIcon(windowMain.GetIconActionIfElseCaseIf());
 	
 	try{
-		pCondition = new ceWPTTIMAIfElseIfCaseCondition(
-			windowMain, conversation, ifElse, ifCase);
+		pCondition.TakeOver(new ceWPTTIMAIfElseIfCaseCondition(
+			windowMain, conversation, ifElse, ifCase));
 		AddChild(pCondition);
 		
-		pActions = new ceWPTTIMAIfElseIfCaseActions(
-			windowMain, conversation, ifCase->GetActions());
+		pActions.TakeOver(new ceWPTTIMAIfElseIfCaseActions(
+			windowMain, conversation, ifCase->GetActions()));
 		AddChild(pActions);
 		
 	}catch(const deException &){
-		if(pCondition){
-			pCondition->FreeReference();
-		}
-		if(pActions){
-			pActions->FreeReference();
-		}
 		throw;
 	}
 	
@@ -86,15 +77,10 @@ pActions(NULL)
 	pActions->FreeReference(); // held by super-class child list
 	
 	pIfCase = ifCase;
-	ifCase->AddReference();
-	
 	pUpdateText();
 }
 
 ceWPTTIMAIfElseIfCase::~ceWPTTIMAIfElseIfCase(){
-	if(pIfCase){
-		pIfCase->FreeReference();
-	}
 }
 
 

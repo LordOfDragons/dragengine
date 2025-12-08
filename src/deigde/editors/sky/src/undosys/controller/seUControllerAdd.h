@@ -37,8 +37,8 @@ class seSky;
  */
 class seUControllerAdd : public igdeUndo{
 private:
-	seSky *pSky;
-	seController *pController;
+	seSky::Ref pSky;
+	seController::Ref pController;
 	
 	
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUControllerAdd(seSky *sky, seController *controller);
+	seUControllerAdd(seSky::Ref sky, seController::Ref controller);
 	
 protected:
 	/** \brief Clean up undo action. */

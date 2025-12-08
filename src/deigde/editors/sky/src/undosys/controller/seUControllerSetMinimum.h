@@ -35,7 +35,7 @@ class seController;
  */
 class seUControllerSetMinimum : public igdeUndo{
 private:
-	seController *pController;
+	seController::Ref pController;
 	
 	float pOldMinimum;
 	float pOldMaximum;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUControllerSetMinimum(seController *controller, float newMinimum);
+	seUControllerSetMinimum(seController::Ref controller, float newMinimum);
 	
 	/** \brief Clean up undo action. */
     virtual ~seUControllerSetMinimum();

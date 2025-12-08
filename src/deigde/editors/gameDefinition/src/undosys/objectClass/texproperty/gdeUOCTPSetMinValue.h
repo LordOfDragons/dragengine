@@ -40,8 +40,8 @@ class gdeProperty;
  */
 class gdeUOCTPSetMinValue : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
 	
 	float pOldValue;
 	float pNewValue;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCTPSetMinValue(gdeObjectClass *objectClass, gdeProperty *property, float newValue);
+	gdeUOCTPSetMinValue(gdeObjectClass::Ref objectClass, gdeProperty::Ref property, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

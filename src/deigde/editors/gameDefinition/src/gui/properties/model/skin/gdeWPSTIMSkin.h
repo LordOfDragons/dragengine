@@ -35,14 +35,14 @@ class gdeSkin;
  */
 class gdeWPSTIMSkin : public gdeWPSTreeItemModel{
 private:
-	gdeSkin *pSkin;
+	gdeSkin::Ref pSkin;
 	
 	
 public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMSkin(gdeWPSTreeModel &tree, gdeSkin *skin);
+	gdeWPSTIMSkin(gdeWPSTreeModel &tree, gdeSkin::Ref skin);
 	
 protected:
 	/** \brief Clean up tree item model. */

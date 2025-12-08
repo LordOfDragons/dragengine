@@ -45,7 +45,7 @@ class debpGhostObject : public debpCollisionObject{
 private:
 	debpCollisionWorld *pDynWorld;
 	btGhostObject *pGhostObject;
-	debpBulletShape *pShape;
+	debpBulletShape::Ref pShape;
 	
 	decDVector pPosition;
 	decQuaternion pOrientation;
@@ -73,7 +73,7 @@ public:
 	/** \brief Retrieves the collision shape or NULL if not set. */
 	inline debpBulletShape *GetShape() const{ return pShape; }
 	/** \brief Sets the collision shape or NULL if not set. */
-	void SetShape(debpBulletShape *shape);
+	void SetShape(debpBulletShape::Ref shape);
 	
 	/** \brief Retrieves the position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }

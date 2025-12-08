@@ -51,7 +51,7 @@
 
 
 struct sNavSpaceNatDat{
-	deNavigationSpace *navspace;
+	deNavigationSpace::Ref navspace;
 };
 
 
@@ -957,7 +957,7 @@ deNavigationSpace *deClassNavigationSpace::GetNavigationSpace(dsRealObject *myse
 	return ((const sNavSpaceNatDat *)p_GetNativeData(myself->GetBuffer()))->navspace;
 }
 
-void deClassNavigationSpace::PushNavigationSpace(dsRunTime *rt, deNavigationSpace *navspace){
+void deClassNavigationSpace::PushNavigationSpace(dsRunTime *rt, deNavigationSpace::Ref navspace){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -969,5 +969,4 @@ void deClassNavigationSpace::PushNavigationSpace(dsRunTime *rt, deNavigationSpac
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sNavSpaceNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->navspace = navspace;
-	navspace->AddReference();
 }

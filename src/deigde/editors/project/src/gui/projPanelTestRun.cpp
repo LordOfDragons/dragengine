@@ -249,9 +249,6 @@ preventUpdateLaunchProfile(false),
 
 pWindowMain(windowMain),
 
-pProject(NULL),
-pListener(NULL),
-
 pTestRunner(NULL),
 pIsRunning(false),
 pMaxLines(500)
@@ -259,7 +256,7 @@ pMaxLines(500)
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new projPanelTestRunListener(*this);
+	pListener.TakeOver(new projPanelTestRunListener(*this));
 	
 	
 	// create actions
@@ -346,10 +343,6 @@ pMaxLines(500)
 
 projPanelTestRun::~projPanelTestRun(){
 	SetProject(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -357,7 +350,7 @@ projPanelTestRun::~projPanelTestRun(){
 // Management
 ///////////////
 
-void projPanelTestRun::SetProject(projProject *project){
+void projPanelTestRun::SetProject(projProject::Ref project){
 	if(project == pProject){
 		return;
 	}
@@ -369,7 +362,6 @@ void projPanelTestRun::SetProject(projProject *project){
 	
 	if(pProject){
 		pProject->RemoveListener(pListener);
-		pProject->FreeReference();
 	}
 	
 	pEditLogs->ClearText();
@@ -377,7 +369,6 @@ void projPanelTestRun::SetProject(projProject *project){
 	pProject = project;
 	
 	if(project){
-		project->AddReference();
 		project->AddListener(pListener);
 	}
 	

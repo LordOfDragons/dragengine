@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCParticleEmitterSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCParticleEmitterSetRotation(gdeObjectClass *objectClass,
-		gdeOCParticleEmitter *particleEmitter, const decVector &newValue);
+	gdeUOCParticleEmitterSetRotation(gdeObjectClass::Ref objectClass,
+		gdeOCParticleEmitter::Ref particleEmitter, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

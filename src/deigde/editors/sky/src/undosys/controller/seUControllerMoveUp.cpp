@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerMoveUp::seUControllerMoveUp(seController *controller) :
-pController(NULL),
+seUControllerMoveUp::seUControllerMoveUp(seController::Ref controller) :
+
 pIndex(0)
 {
 	if(!controller){
@@ -61,13 +61,9 @@ pIndex(0)
 	}
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 seUControllerMoveUp::~seUControllerMoveUp(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

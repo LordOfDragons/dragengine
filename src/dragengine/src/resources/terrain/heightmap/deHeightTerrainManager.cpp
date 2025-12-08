@@ -76,10 +76,10 @@ deHeightTerrain *deHeightTerrainManager::CreateHeightTerrain(float sectorSize, i
 		DETHROW(deeInvalidParam);
 	}
 	
-	deHeightTerrain *heightTerrain = NULL;
+	deHeightTerrain::Ref heightTerrain = NULL;
 	
 	try{
-		heightTerrain = new deHeightTerrain(this, sectorSize, heightImageSize);
+		heightTerrain.TakeOver(new deHeightTerrain(this, sectorSize, heightImageSize));
 		
 		GetGraphicSystem()->LoadHeightTerrain(heightTerrain);
 		GetPhysicsSystem()->LoadHeightTerrain(heightTerrain);
@@ -88,9 +88,6 @@ deHeightTerrain *deHeightTerrainManager::CreateHeightTerrain(float sectorSize, i
 		pTerrains.Add(heightTerrain);
 		
 	}catch(const deException &){
-		if(heightTerrain){
-			heightTerrain->FreeReference();
-		}
 		throw;
 	}
 	
@@ -114,7 +111,7 @@ void deHeightTerrainManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deHeightTerrainManager::SystemGraphicLoad(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
+	deHeightTerrain::Ref heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(heightTerrain){
@@ -127,7 +124,7 @@ void deHeightTerrainManager::SystemGraphicLoad(){
 }
 
 void deHeightTerrainManager::SystemGraphicUnload(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
+	deHeightTerrain::Ref heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
 	
 	while(heightTerrain){
 		heightTerrain->SetPeerGraphic(NULL);
@@ -136,7 +133,7 @@ void deHeightTerrainManager::SystemGraphicUnload(){
 }
 
 void deHeightTerrainManager::SystemPhysicsLoad(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
+	deHeightTerrain::Ref heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
 	dePhysicsSystem &physys = *GetPhysicsSystem();
 	
 	while(heightTerrain){
@@ -148,7 +145,7 @@ void deHeightTerrainManager::SystemPhysicsLoad(){
 }
 
 void deHeightTerrainManager::SystemPhysicsUnload(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
+	deHeightTerrain::Ref heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
 	
 	while(heightTerrain){
 		heightTerrain->SetPeerPhysics(NULL);
@@ -157,7 +154,7 @@ void deHeightTerrainManager::SystemPhysicsUnload(){
 }
 
 void deHeightTerrainManager::SystemAILoad(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
+	deHeightTerrain::Ref heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
 	deAISystem &aisys = *GetAISystem();
 	
 	while(heightTerrain){
@@ -169,7 +166,7 @@ void deHeightTerrainManager::SystemAILoad(){
 }
 
 void deHeightTerrainManager::SystemAIUnload(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
+	deHeightTerrain::Ref heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
 	
 	while(heightTerrain){
 		heightTerrain->SetPeerAI(NULL);
@@ -178,7 +175,7 @@ void deHeightTerrainManager::SystemAIUnload(){
 }
 
 void deHeightTerrainManager::SystemAudioLoad(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
+	deHeightTerrain::Ref heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
 	deAudioSystem &audioSystem = *GetAudioSystem();
 	
 	while(heightTerrain){
@@ -190,7 +187,7 @@ void deHeightTerrainManager::SystemAudioLoad(){
 }
 
 void deHeightTerrainManager::SystemAudioUnload(){
-	deHeightTerrain *heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
+	deHeightTerrain::Ref heightTerrain = (deHeightTerrain*)pTerrains.GetRoot();
 	
 	while(heightTerrain){
 		heightTerrain->SetPeerAudio(NULL);

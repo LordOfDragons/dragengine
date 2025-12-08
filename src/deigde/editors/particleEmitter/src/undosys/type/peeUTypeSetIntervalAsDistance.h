@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeSetIntervalAsDistance : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	
 	
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeSetIntervalAsDistance(peeType *type);
+	peeUTypeSetIntervalAsDistance(peeType::Ref type);
 	
 protected:
 	/** \brief Clean up the undo action. */

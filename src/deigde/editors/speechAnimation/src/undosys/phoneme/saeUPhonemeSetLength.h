@@ -36,7 +36,7 @@ class saePhoneme;
  */
 class saeUPhonemeSetLength : public igdeUndo{
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	float pOldLength;
 	float pNewLength;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeSetLength(saePhoneme *phoneme, float newLength);
+	saeUPhonemeSetLength(saePhoneme::Ref phoneme, float newLength);
 	
 protected:
 	/** Clean up undo. */

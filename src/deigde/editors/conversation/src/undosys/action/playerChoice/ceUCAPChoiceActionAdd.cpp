@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceActionAdd::ceUCAPChoiceActionAdd(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
-ceCAPlayerChoiceOption *option, ceConversationAction *action, int index){
+ceUCAPChoiceActionAdd::ceUCAPChoiceActionAdd(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref playerChoice,
+ceCAPlayerChoiceOption::Ref option, ceConversationAction::Ref action, int index){
 	if(!topic || !playerChoice || !action){
 		DETHROW(deeInvalidParam);
 	}
@@ -69,33 +69,15 @@ ceCAPlayerChoiceOption *option, ceConversationAction *action, int index){
 	SetShortInfo("Player Choice Add Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
-	
 	if(option){
 		pOption = option;
-		option->AddReference();
 	}
 	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAPChoiceActionAdd::~ceUCAPChoiceActionAdd(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

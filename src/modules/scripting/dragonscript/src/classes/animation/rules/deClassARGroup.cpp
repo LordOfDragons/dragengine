@@ -57,8 +57,8 @@
 /////////////////////
 
 struct sARGroupNatDat{
-	deAnimator *animator;
-	deAnimatorRuleGroup *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleGroup::Ref rule;
 };
 
 
@@ -82,7 +82,7 @@ void deClassARGroup::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleGroup;
+	nd.rule.TakeOver(new deAnimatorRuleGroup);
 	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
@@ -409,7 +409,7 @@ deAnimatorRuleGroup *deClassARGroup::GetRule(dsRealObject *myself) const{
 	return ((sARGroupNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARGroup::AssignAnimator(dsRealObject *myself, deAnimator *animator){
+void deClassARGroup::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -427,13 +427,9 @@ void deClassARGroup::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
-void deClassARGroup::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleGroup *rule){
+void deClassARGroup::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleGroup::Ref rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -453,13 +449,7 @@ void deClassARGroup::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRul
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
 		nd.rule = rule;
-		rule->AddReference();
-		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);
 		

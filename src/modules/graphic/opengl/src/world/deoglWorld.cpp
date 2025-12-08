@@ -78,7 +78,6 @@
 deoglWorld::deoglWorld(deGraphicOpenGl &ogl, const deWorld &world) :
 pOgl(ogl),
 pWorld(world),
-pRWorld(NULL),
 
 pHeightTerrain(NULL),
 
@@ -101,7 +100,7 @@ pDirtyPropFields(true),
 pSyncing(false)
 {
 	try{
-		pRWorld = new deoglRWorld(ogl.GetRenderThread(), world.GetSize());
+		pRWorld.TakeOver(new deoglRWorld(ogl.GetRenderThread(), world.GetSize()));
 		
 		pSharedVideoPlayerList = new deoglSharedVideoPlayerList(ogl);
 		
@@ -645,7 +644,6 @@ void deoglWorld::AllDebugDrawersRemoved(){
 
 void deoglWorld::pCleanUp(){
 	if(pRWorld){
-		pRWorld->FreeReference();
 		pRWorld = NULL;
 	}
 	

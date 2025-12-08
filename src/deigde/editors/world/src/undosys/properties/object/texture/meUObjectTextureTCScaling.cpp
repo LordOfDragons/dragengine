@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureTCScaling::meUObjectTextureTCScaling(meObjectTexture *texture, const decVector2 &newScaling){
+meUObjectTextureTCScaling::meUObjectTextureTCScaling(meObjectTexture::Ref texture, const decVector2 &newScaling){
 	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
@@ -64,13 +64,9 @@ meUObjectTextureTCScaling::meUObjectTextureTCScaling(meObjectTexture *texture, c
 	pNewScaling = newScaling;
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjectTextureTCScaling::~meUObjectTextureTCScaling(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

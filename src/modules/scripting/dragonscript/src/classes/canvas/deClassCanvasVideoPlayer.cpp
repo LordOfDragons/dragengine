@@ -44,7 +44,7 @@
 
 // Native Structure
 struct sCVidPNatDat{
-	deCanvasVideoPlayer *canvas;
+	deCanvasVideoPlayer::Ref canvas;
 };
 
 
@@ -253,7 +253,7 @@ deCanvasVideoPlayer *deClassCanvasVideoPlayer::GetCanvas(dsRealObject *myself) c
 	return ((sCVidPNatDat*)p_GetNativeData(myself->GetBuffer()))->canvas;
 }
 
-void deClassCanvasVideoPlayer::PushCanvas(dsRunTime *rt, deCanvasVideoPlayer *canvas){
+void deClassCanvasVideoPlayer::PushCanvas(dsRunTime *rt, deCanvasVideoPlayer::Ref canvas){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -272,8 +272,6 @@ void deClassCanvasVideoPlayer::PushCanvas(dsRunTime *rt, deCanvasVideoPlayer *ca
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.canvas = canvas;
-		canvas->AddReference();
-		
 		baseClass->AssignCanvas(rt->GetValue(0)->GetRealObject(), canvas);
 		
 	}catch(...){

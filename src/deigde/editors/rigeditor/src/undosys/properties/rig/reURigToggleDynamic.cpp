@@ -45,7 +45,6 @@ reURigToggleDynamic::reURigToggleDynamic(reRig *rig){
 	SetShortInfo("Toggle Rig Dynamic");
 	
 	pRig = rig;
-	pRig->AddReference();
 }
 
 reURigToggleDynamic::~reURigToggleDynamic(){

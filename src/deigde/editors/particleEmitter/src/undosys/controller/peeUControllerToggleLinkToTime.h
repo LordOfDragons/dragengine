@@ -36,7 +36,7 @@ class peeController;
  */
 class peeUControllerToggleLinkToTime : public igdeUndo{
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	
 	
 	
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUControllerToggleLinkToTime(peeController *controller);
+	peeUControllerToggleLinkToTime(peeController::Ref controller);
 	
 protected:
 	/** \brief Clean up the undo action. */

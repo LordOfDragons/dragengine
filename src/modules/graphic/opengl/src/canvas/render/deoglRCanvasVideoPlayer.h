@@ -35,7 +35,7 @@ class deoglRVideoPlayer;
  */
 class deoglRCanvasVideoPlayer : public deoglRCanvas{
 private:
-	deoglRVideoPlayer *pVideoPlayer;
+	deoglRVideoPlayer::Ref pVideoPlayer;
 	decTexMatrix2 pTCTransform;
 	decVector2 pTCClampMin;
 	decVector2 pTCClampMax;
@@ -58,7 +58,7 @@ public:
 	inline deoglRVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Set video player or \em NULL if not set. */
-	void SetVideoPlayer(deoglRVideoPlayer *videoPlayer);
+	void SetVideoPlayer(deoglRVideoPlayer::Ref videoPlayer);
 	
 	/** Texture coordinate transformation matrix. */
 	inline const decTexMatrix2 &GetTCTransform() const{ return pTCTransform; }

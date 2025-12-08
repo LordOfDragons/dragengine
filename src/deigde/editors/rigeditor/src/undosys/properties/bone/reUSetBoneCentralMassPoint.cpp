@@ -39,8 +39,6 @@ reUSetBoneCentralMassPoint::reUSetBoneCentralMassPoint(reRigBone *bone, const de
 	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	pOldCentralMassPoint = bone->GetCentralMassPoint();
 	pNewCentralMassPoint = centralMassPoint;
 	

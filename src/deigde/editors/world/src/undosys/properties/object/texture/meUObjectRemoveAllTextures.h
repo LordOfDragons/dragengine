@@ -37,7 +37,7 @@ class meObject;
  */
 class meUObjectRemoveAllTextures : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	meObjectTextureList pTextureList;
 	
 public:
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectRemoveAllTextures(meObject *object);
+	meUObjectRemoveAllTextures(meObject::Ref object);
 	
 protected:
 	/** \brief Clean up undo object. */

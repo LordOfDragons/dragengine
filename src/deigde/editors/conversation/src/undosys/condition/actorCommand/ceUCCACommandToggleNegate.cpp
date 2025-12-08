@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCACommandToggleNegate::ceUCCACommandToggleNegate(ceConversationTopic *topic,
-ceConversationAction *action, ceCConditionActorCommand *actorCommand){
+ceUCCACommandToggleNegate::ceUCCACommandToggleNegate(ceConversationTopic::Ref topic,
+ceConversationAction::Ref action, ceCConditionActorCommand::Ref actorCommand){
 	if(!topic || !action || !actorCommand){
 		DETHROW(deeInvalidParam);
 	}
@@ -55,25 +55,11 @@ ceConversationAction *action, ceCConditionActorCommand *actorCommand){
 	SetShortInfo("Condition actor command negate");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pActorCommand = actorCommand;
-	actorCommand->AddReference();
 }
 
 ceUCCACommandToggleNegate::~ceUCCACommandToggleNegate(){
-	if(pActorCommand){
-		pActorCommand->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

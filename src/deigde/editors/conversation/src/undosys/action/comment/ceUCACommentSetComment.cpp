@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACommentSetComment::ceUCACommentSetComment(ceConversationTopic *topic, ceCAComment *action, const char *newComment){
+ceUCACommentSetComment::ceUCACommentSetComment(ceConversationTopic::Ref topic, ceCAComment::Ref action, const char *newComment){
 	if(!topic || !newComment){
 		DETHROW(deeInvalidParam);
 	}
@@ -54,19 +54,10 @@ ceUCACommentSetComment::ceUCACommentSetComment(ceConversationTopic *topic, ceCAC
 	SetShortInfo("Comment set comment");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pComment = action;
-	action->AddReference();
 }
 
 ceUCACommentSetComment::~ceUCACommentSetComment(){
-	if(pComment){
-		pComment->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -49,7 +49,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetName::ceUCCShotSetName(ceCameraShot *cameraShot, const char *newName){
+ceUCCShotSetName::ceUCCShotSetName(ceCameraShot::Ref cameraShot, const char *newName){
 	if(!cameraShot || !newName) DETHROW(deeInvalidParam);
 	
 	const ceConversationFileList &fileList = cameraShot->GetConversation()->GetFileList();
@@ -66,8 +66,6 @@ ceUCCShotSetName::ceUCCShotSetName(ceCameraShot *cameraShot, const char *newName
 	
 	try{
 		pCameraShot = cameraShot;
-		cameraShot->AddReference();
-		
 		for(e=0; e<fileCount; e++){
 			const ceConversationFile &file = *fileList.GetAt(e);
 			const ceConversationTopicList &topicList = file.GetTopicList();
@@ -82,21 +80,12 @@ ceUCCShotSetName::ceUCCShotSetName(ceCameraShot *cameraShot, const char *newName
 		
 	}catch(const deException &){
 		pActionList.RemoveAll();
-		
-		if(pCameraShot){
-			pCameraShot->FreeReference();
-		}
-		
 		throw;
 	}
 }
 
 ceUCCShotSetName::~ceUCCShotSetName(){
 	pActionList.RemoveAll();
-	
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 
@@ -136,7 +125,7 @@ void ceUCCShotSetName::pSetName(const char *name){
 
 void ceUCCShotSetName::pAddActions(ceConversationTopic *topic, const ceConversationActionList &list){
 	const int count = list.GetCount();
-	ceUndoCAction *undoCAction = NULL;
+	ceUndoCAction::Ref undoCAction = NULL;
 	ceConversationAction *action;
 	int i;
 	
@@ -147,9 +136,8 @@ void ceUCCShotSetName::pAddActions(ceConversationTopic *topic, const ceConversat
 				const ceCACameraShot &cameraShot = *((ceCACameraShot*)action);
 				
 				if(cameraShot.GetName() == pOldName){
-					undoCAction = new ceUndoCAction(action, topic);
+					undoCAction.TakeOver(new ceUndoCAction(action, topic));
 					pActionList.Add(undoCAction);
-					undoCAction->FreeReference();
 					undoCAction = NULL;
 				}
 				
@@ -184,9 +172,6 @@ void ceUCCShotSetName::pAddActions(ceConversationTopic *topic, const ceConversat
 		}
 		
 	}catch(const deException &){
-		if(undoCAction){
-			undoCAction->FreeReference();
-		}
 		throw;
 	}
 }

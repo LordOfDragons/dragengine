@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleCPSetClass::meUHTVRuleCPSetClass(meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, const char *nclass){
+meUHTVRuleCPSetClass::meUHTVRuleCPSetClass(meHTVegetationLayer::Ref vlayer, meHTVRuleClosestProp::Ref rule, const char *nclass){
 	if(!vlayer || !rule || !nclass) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
@@ -53,9 +53,7 @@ meUHTVRuleCPSetClass::meUHTVRuleCPSetClass(meHTVegetationLayer *vlayer, meHTVRul
 	pNewPropClass = nclass;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleCPSetClass::~meUHTVRuleCPSetClass(){

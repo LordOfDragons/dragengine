@@ -49,9 +49,9 @@ class gdeWPSOCSpeakerListener;
 class gdeWPSOCSpeaker : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCSpeakerListener *pListener;
+	gdeWPSOCSpeakerListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditPath::Ref pEditPathSound;
 	igdeEditVector::Ref pEditPosition;
@@ -91,7 +91,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition(gdeGameDefinition *gameDefinition);
+	void SetGameDefinition(gdeGameDefinition::Ref gameDefinition);
 	
 	
 	

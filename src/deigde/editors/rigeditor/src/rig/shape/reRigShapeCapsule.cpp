@@ -84,10 +84,10 @@ void reRigShapeCapsule::SetBottomRadius(float bottomRadius){
 }
 
 reRigShape *reRigShapeCapsule::Duplicate() const{
-	reRigShapeCapsule *shape = NULL;
+	reRigShapeCapsule::Ref shape = NULL;
 	
 	try{
-		shape = new reRigShapeCapsule(GetEngine());
+		shape.TakeOver(new reRigShapeCapsule(GetEngine()));
 		if(!shape) DETHROW(deeOutOfMemory);
 		
 		shape->SetPosition(GetPosition());

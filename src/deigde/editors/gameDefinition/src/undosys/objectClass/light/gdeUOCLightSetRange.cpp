@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetRange::gdeUOCLightSetRange(gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue) :
-pObjectClass(NULL),
-pLight(NULL)
+gdeUOCLightSetRange::gdeUOCLightSetRange(gdeObjectClass::Ref objectClass,
+gdeOCLight::Ref light, float newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pLight(NULL)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetRange::~gdeUOCLightSetRange(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

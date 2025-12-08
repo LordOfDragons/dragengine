@@ -35,7 +35,7 @@ class seBody;
  */
 class seUBodyMoveUp : public igdeUndo{
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	int pIndex;
 	
 	
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUBodyMoveUp(seBody *body);
+	seUBodyMoveUp(seBody::Ref body);
 	
 protected:
 	/** \brief Clean up undo action. */

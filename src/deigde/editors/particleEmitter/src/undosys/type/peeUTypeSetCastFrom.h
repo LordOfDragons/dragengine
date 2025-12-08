@@ -37,7 +37,7 @@ class peeType;
  */
 class peeUTypeSetCastFrom : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	deParticleEmitterType::eCastFrom pOldCastFrom;
 	deParticleEmitterType::eCastFrom pNewCastFrom;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	peeUTypeSetCastFrom(peeType *type, deParticleEmitterType::eCastFrom newCastFrom);
+	peeUTypeSetCastFrom(peeType::Ref type, deParticleEmitterType::eCastFrom newCastFrom);
 	
 protected:
 	/** \brief Clean up undo action. */

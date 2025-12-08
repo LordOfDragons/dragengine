@@ -48,7 +48,7 @@ private:
 	
 	decString pName;
 	decString pSkinPath;
-	deSkin *pEngSkin;
+	deSkin::Ref pEngSkin;
 	
 public:
 	/** @name Constructors and Destructors */

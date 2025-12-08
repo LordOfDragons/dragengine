@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFileAdd::ceUCFileAdd(ceConversation *conversation, ceConversationFile *file){
+ceUCFileAdd::ceUCFileAdd(ceConversation::Ref conversation, ceConversationFile::Ref file){
 	if(!conversation || !file) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
@@ -49,19 +49,10 @@ ceUCFileAdd::ceUCFileAdd(ceConversation *conversation, ceConversationFile *file)
 	SetShortInfo("Add File");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pFile = file;
-	file->AddReference();
 }
 
 ceUCFileAdd::~ceUCFileAdd(){
-	if(pFile){
-		pFile->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

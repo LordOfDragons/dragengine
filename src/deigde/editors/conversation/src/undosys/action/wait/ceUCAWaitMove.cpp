@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitMove::ceUCAWaitMove(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action, int newIndex){
+ceUCAWaitMove::ceUCAWaitMove(ceConversationTopic::Ref topic, ceCAWait::Ref wait, ceConversationAction::Ref action, int newIndex){
 	if(!topic || !wait || !action) DETHROW(deeInvalidParam);
 	
 	int count = 0;
@@ -62,25 +62,11 @@ ceUCAWaitMove::ceUCAWaitMove(ceConversationTopic *topic, ceCAWait *wait, ceConve
 	SetShortInfo("Action Wait Move Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pWait = wait;
-	wait->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAWaitMove::~ceUCAWaitMove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pWait){
-		pWait->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -61,7 +61,7 @@ ceActorParameter *ceActorParameterList::GetAt(int index) const{
 
 ceActorParameter *ceActorParameterList::GetNamed(const char *name) const{
 	const int count = pParameters.GetCount();
-	ceActorParameter *parameter;
+	ceActorParameter::Ref parameter;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -75,7 +75,7 @@ ceActorParameter *ceActorParameterList::GetNamed(const char *name) const{
 	return NULL;
 }
 
-int ceActorParameterList::IndexOf(ceActorParameter *parameter) const{
+int ceActorParameterList::IndexOf(ceActorParameter::Ref parameter) const{
 	return pParameters.IndexOf(parameter);
 }
 
@@ -92,7 +92,7 @@ int ceActorParameterList::IndexOfNamed(const char *name) const{
 	return -1;
 }
 
-bool ceActorParameterList::Has(ceActorParameter *parameter) const{
+bool ceActorParameterList::Has(ceActorParameter::Ref parameter) const{
 	return pParameters.Has(parameter);
 }
 
@@ -110,20 +110,19 @@ bool ceActorParameterList::HasNamed(const char *name) const{
 }
 
 void ceActorParameterList::Set(const char *name, int value){
-	ceActorParameter *parameter = GetNamed(name);
+	ceActorParameter::Ref parameter = GetNamed(name);
 	
 	if(parameter){
 		parameter->SetValue(value);
 		
 	}else{
-		parameter = new ceActorParameter(name, value);
+		parameter.TakeOver(new ceActorParameter(name, value));
 		
 		pParameters.Add(parameter);
-		parameter->FreeReference();
 	}
 }
 
-void ceActorParameterList::Remove(ceActorParameter *parameter){
+void ceActorParameterList::Remove(ceActorParameter::Ref parameter){
 	pParameters.Remove(parameter);
 }
 

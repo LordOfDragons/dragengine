@@ -43,7 +43,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseRemoveAll::ceUCAIfElseRemoveAll(ceConversationTopic *topic, ceCAIfElse *ifElse, ceCAIfElseCase *ifcase){
+ceUCAIfElseRemoveAll::ceUCAIfElseRemoveAll(ceConversationTopic::Ref topic, ceCAIfElse::Ref ifElse, ceCAIfElseCase::Ref ifcase){
 	if(!topic || !ifElse){
 		DETHROW(deeInvalidParam);
 	}
@@ -62,27 +62,13 @@ ceUCAIfElseRemoveAll::ceUCAIfElseRemoveAll(ceConversationTopic *topic, ceCAIfEls
 	SetShortInfo("IfElse Remove All Actions");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pIfElse = ifElse;
-	ifElse->AddReference();
-	
 	if(ifcase){
 		pCase = ifcase;
-		ifcase->AddReference();
 	}
 }
 
 ceUCAIfElseRemoveAll::~ceUCAIfElseRemoveAll(){
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

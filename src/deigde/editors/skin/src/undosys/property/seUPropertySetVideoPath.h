@@ -36,7 +36,7 @@ class seProperty;
  */
 class seUPropertySetVideoPath : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	decString pOldPath;
 	decString pNewPath;
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetVideoPath(seProperty *property, const char *newPath);
+	seUPropertySetVideoPath(seProperty::Ref property, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo. */

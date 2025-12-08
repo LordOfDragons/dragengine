@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeAdd::saeUPhonemeAdd(saeSAnimation *sanimation, saePhoneme *phoneme){
+saeUPhonemeAdd::saeUPhonemeAdd(saeSAnimation::Ref sanimation, saePhoneme::Ref phoneme){
 	if(!sanimation || !phoneme) DETHROW(deeInvalidParam);
 	
 	pSAnimation = NULL;
@@ -49,19 +49,10 @@ saeUPhonemeAdd::saeUPhonemeAdd(saeSAnimation *sanimation, saePhoneme *phoneme){
 	SetShortInfo("Add Phoneme");
 	
 	pSAnimation = sanimation;
-	sanimation->AddReference();
-	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeAdd::~saeUPhonemeAdd(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

@@ -38,9 +38,9 @@ class ceStrip;
  */
 class ceUCAASpeakStripSetPause : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pStrip;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pStrip;
 	float pOldPause;
 	float pNewPause;
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakStripSetPause(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, float newPause);
+	ceUCAASpeakStripSetPause(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip *strip, float newPause);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCAASpeakStripSetPause();
 	/*@}*/

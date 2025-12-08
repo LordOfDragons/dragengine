@@ -39,7 +39,7 @@ class meObject;
  */
 class meUObjectAddUsedTextures : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decStringList pTextureNameList;
 	meObjectTextureList pTextureList;
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectAddUsedTextures(meObject *object);
+	meUObjectAddUsedTextures(meObject::Ref object);
 	
 protected:
 	/** \brief Clean up undo object. */

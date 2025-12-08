@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetPropertyRotation::gdeUOCCameraSetPropertyRotation(gdeObjectClass *objectClass,
-	gdeOCCamera *camera, const char *newValue) :
-pObjectClass(nullptr),
+gdeUOCCameraSetPropertyRotation::gdeUOCCameraSetPropertyRotation(gdeObjectClass::Ref objectClass,
+	gdeOCCamera::Ref camera, const char *newValue) :
+
 pCamera(nullptr)
 {
 	DEASSERT_NOTNULL(objectClass)
@@ -53,19 +53,10 @@ pCamera(nullptr)
 	pNewValue = newValue;
 	
 	pCamera = camera;
-	camera->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCameraSetPropertyRotation::~gdeUOCCameraSetPropertyRotation(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

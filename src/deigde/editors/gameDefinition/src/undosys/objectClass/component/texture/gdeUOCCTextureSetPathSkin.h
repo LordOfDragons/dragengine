@@ -39,9 +39,9 @@ class gdeObjectClass;
  */
 class gdeUOCCTextureSetPathSkin : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCTextureSetPathSkin(gdeObjectClass *objectClass, gdeOCComponent *component,
-		gdeOCComponentTexture *texture, const char *newValue);
+	gdeUOCCTextureSetPathSkin(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component,
+		gdeOCComponentTexture::Ref texture, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

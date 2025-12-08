@@ -55,7 +55,7 @@ meObjectShapeSelection::~meObjectShapeSelection(){
 // Management
 ///////////////
 
-void meObjectShapeSelection::Add(meObjectShape *objectShape){
+void meObjectShapeSelection::Add(meObjectShape::Ref objectShape){
 	if(!objectShape){
 		DETHROW(deeInvalidParam);
 	}
@@ -64,7 +64,7 @@ void meObjectShapeSelection::Add(meObjectShape *objectShape){
 	pSelection.AddIfAbsent(objectShape);
 }
 
-void meObjectShapeSelection::Remove(meObjectShape *objectShape){
+void meObjectShapeSelection::Remove(meObjectShape::Ref objectShape){
 	if(!objectShape){
 		DETHROW(deeInvalidParam);
 	}
@@ -90,16 +90,14 @@ bool meObjectShapeSelection::HasActive() const{
 	return pActive != NULL;
 }
 
-void meObjectShapeSelection::SetActive(meObjectShape *objectShape){
+void meObjectShapeSelection::SetActive(meObjectShape::Ref objectShape){
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = objectShape;
 	
 	if(objectShape){
-		objectShape->AddReference();
 		objectShape->SetActive(true);
 	}
 }

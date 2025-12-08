@@ -40,7 +40,7 @@ public:
 	
 	
 private:
-	gdeCategory *pCategory;
+	gdeCategory::Ref pCategory;
 	
 	
 	
@@ -49,7 +49,7 @@ public:
 	/*@{*/
 	/** \brief Create undo action. */
 	gdeUCategoryToggleHidden(gdeGameDefinition *gameDefintiion,
-		gdeCategory *category, eCategoryType type);
+		gdeCategory::Ref category, eCategoryType type);
 	
 protected:
 	/** \brief Clean up undo action. */

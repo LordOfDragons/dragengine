@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetRotation::gdeUOCNavBlockerSetRotation(gdeObjectClass *objectClass,
-gdeOCNavigationBlocker *navblocker, const decVector &newValue) :
-pObjectClass(NULL),
+gdeUOCNavBlockerSetRotation::gdeUOCNavBlockerSetRotation(gdeObjectClass::Ref objectClass,
+gdeOCNavigationBlocker::Ref navblocker, const decVector &newValue) :
+
 pNavBlocker(NULL)
 {
 	if(!objectClass || !navblocker){
@@ -55,19 +55,10 @@ pNavBlocker(NULL)
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetRotation::~gdeUOCNavBlockerSetRotation(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

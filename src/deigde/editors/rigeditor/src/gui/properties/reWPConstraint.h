@@ -44,9 +44,9 @@ class reWPConstraintListener;
 class reWPConstraint : public igdeContainerScroll{
 private:
 	reWindowProperties &pWindowProperties;
-	reRig *pRig;
-	reRigConstraint *pConstraint;
-	reWPConstraintListener *pListener;
+	reRig::Ref pRig;
+	reRigConstraint::Ref pConstraint;
+	reWPConstraintListener::Ref pListener;
 	
 	igdeTextField::Ref pEditBoneParent;
 	igdeComboBox::Ref pCBBoneTarget;
@@ -97,10 +97,10 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig(reRig *rig);
+	void SetRig(reRig::Ref rig);
 	
 	/** \brief Set constraint. */
-	void SetConstraint(reRigConstraint *constraint);
+	void SetConstraint(reRigConstraint::Ref constraint);
 	
 	/** \brief Update bone lists. */
 	void UpdateBoneLists();

@@ -40,14 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFilePaste::ceUCFilePaste(ceConversation *conversation, const ceConversationFileList &files) :
+ceUCFilePaste::ceUCFilePaste(ceConversation::Ref conversation, const ceConversationFileList &files) :
 pConversation(NULL){
 	if(!conversation || files.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = files.GetCount();
-	ceConversationFile *newFile = NULL;
+	ceConversationFile::Ref newFile = NULL;
 	int i;
 	
 	if(count == 1){
@@ -59,7 +59,7 @@ pConversation(NULL){
 	
 	try{
 		for(i=0; i<count; i++){
-			newFile = new ceConversationFile(*files.GetAt(i));
+			newFile.TakeOver(new ceConversationFile(*files.GetAt(i)));
 			decString fileID(newFile->GetID());
 			int newNameIndex = 1;
 			
@@ -71,26 +71,18 @@ pConversation(NULL){
 			newFile->SetID(fileID);
 			
 			pFiles.Add(newFile);
-			newFile->FreeReference();
 			newFile = NULL;
 		}
 		
 	}catch(const deException &){
-		if(newFile){
-			newFile->FreeReference();
-		}
 		throw;
 	}
 	
 	pConversation = conversation;
-	conversation->AddReference();
 }
 
 ceUCFilePaste::~ceUCFilePaste(){
 	pFiles.RemoveAll();
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

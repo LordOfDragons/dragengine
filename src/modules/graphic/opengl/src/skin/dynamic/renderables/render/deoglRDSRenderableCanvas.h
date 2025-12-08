@@ -39,7 +39,7 @@ class deDSRenderableCanvas;
  */
 class deoglRDSRenderableCanvas : public deoglRDSRenderable{
 private:
-	deoglRCanvasView *pCanvas;
+	deoglRCanvasView::Ref pCanvas;
 	int pComponentCount;
 	int pBitCount;
 	
@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set canvas. */
-	void SetCanvas(deoglRCanvasView *canvas);
+	void SetCanvas(deoglRCanvasView::Ref canvas);
 	
 	/** Set component count. */
 	void SetComponentCount(int componentCount);

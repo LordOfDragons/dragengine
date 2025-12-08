@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetModelSkinPath::peeUTypeSetModelSkinPath(peeType *type, const char *newPath){
+peeUTypeSetModelSkinPath::peeUTypeSetModelSkinPath(peeType::Ref type, const char *newPath){
 	if(!type || !newPath){
 		DETHROW(deeInvalidParam);
 	}
@@ -52,13 +52,9 @@ peeUTypeSetModelSkinPath::peeUTypeSetModelSkinPath(peeType *type, const char *ne
 	pNewPath = newPath;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetModelSkinPath::~peeUTypeSetModelSkinPath(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

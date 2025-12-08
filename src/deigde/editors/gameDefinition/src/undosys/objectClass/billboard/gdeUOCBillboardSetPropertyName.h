@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCBillboardSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	gdeOCBillboard::eProperties pProperty;
 	decString pOldValue;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCBillboardSetPropertyName(gdeObjectClass *objectClass, gdeOCBillboard *billboard,
+	gdeUOCBillboardSetPropertyName(gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard,
 		gdeOCBillboard::eProperties property, const char *newValue);
 	
 protected:

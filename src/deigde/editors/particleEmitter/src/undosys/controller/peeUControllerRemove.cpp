@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerRemove::peeUControllerRemove(peeController *controller){
+peeUControllerRemove::peeUControllerRemove(peeController::Ref controller){
 	if(!controller) DETHROW(deeInvalidParam);
 	
-	peeEmitter *emitter = controller->GetEmitter();
+	peeEmitter::Ref emitter = controller->GetEmitter();
 	if(!emitter) DETHROW(deeInvalidParam);
 	
 	pEmitter = NULL;
@@ -55,19 +55,10 @@ peeUControllerRemove::peeUControllerRemove(peeController *controller){
 	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
 	pEmitter = emitter;
-	emitter->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerRemove::~peeUControllerRemove(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

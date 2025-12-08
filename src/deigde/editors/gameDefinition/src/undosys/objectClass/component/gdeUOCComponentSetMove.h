@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCComponentSetMove : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetMove(gdeObjectClass *objectClass,
-		gdeOCComponent *component, const char *newValue);
+	gdeUOCComponentSetMove(gdeObjectClass::Ref objectClass,
+		gdeOCComponent::Ref component, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

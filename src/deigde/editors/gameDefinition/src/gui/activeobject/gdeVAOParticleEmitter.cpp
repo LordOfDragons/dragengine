@@ -75,9 +75,6 @@ pDDSCoordSystem(NULL)
 	if(!ocemitter){
 		DETHROW(deeInvalidParam);
 	}
-	
-	pOCParticleEmitter->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pCreateParticleEmitter();
@@ -199,10 +196,6 @@ void gdeVAOParticleEmitter::pCleanUp(){
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = NULL;
-	}
-	
-	if(pOCParticleEmitter){
-		pOCParticleEmitter->FreeReference();
 	}
 }
 

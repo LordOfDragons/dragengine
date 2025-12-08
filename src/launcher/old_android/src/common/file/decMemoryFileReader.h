@@ -35,7 +35,7 @@ class decMemoryFile;
  */
 class decMemoryFileReader : public decBaseFileReader{
 private:
-	decMemoryFile *pFile;
+	decMemoryFile::Ref pFile;
 	int pPosition;
 	
 	
@@ -47,7 +47,7 @@ public:
 	 * \brief Create memory file reader for the given memory file.
 	 * \throws deeInvalidParam \em memoryFile is NULL.
 	 */
-	decMemoryFileReader(decMemoryFile *memoryFile);
+	decMemoryFileReader(decMemoryFile::Ref memoryFile);
 	
 protected:
 	/**

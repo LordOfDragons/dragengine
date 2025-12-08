@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeData::seUPropertyNodeData(sePropertyNode *node) :
+seUPropertyNodeData::seUPropertyNodeData(sePropertyNode::Ref node) :
 pNode(NULL)
 {
 	if(!node){
@@ -53,13 +53,9 @@ pNode(NULL)
 	pMatrix = node->CreateScreenTransformMatrix();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeData::~seUPropertyNodeData(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

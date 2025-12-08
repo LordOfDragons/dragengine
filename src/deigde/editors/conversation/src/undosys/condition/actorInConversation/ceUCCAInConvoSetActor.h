@@ -38,9 +38,9 @@ class ceConversationTopic;
  */
 class ceUCCAInConvoSetActor : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionActorInConversation *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionActorInConversation::Ref pCondition;
 	decString pOldID;
 	decString pNewID;
 	
@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCCAInConvoSetActor(ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionActorInConversation *condition, const char *newID);
+	ceUCCAInConvoSetActor(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
+		ceCConditionActorInConversation::Ref condition, const char *newID);
 	
 	/** \brief Clean up undo object. */
 	virtual ~ceUCCAInConvoSetActor();

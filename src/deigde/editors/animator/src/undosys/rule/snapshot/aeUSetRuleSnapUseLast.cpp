@@ -46,8 +46,6 @@ aeUSetRuleSnapUseLast::aeUSetRuleSnapUseLast(aeRuleStateSnapshot *rule){
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Set state snapshot rule use last");
 		
 	}catch(const deException &){

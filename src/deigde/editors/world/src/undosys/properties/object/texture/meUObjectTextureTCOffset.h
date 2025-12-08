@@ -38,7 +38,7 @@ class meObjectTexture;
  */
 class meUObjectTextureTCOffset : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decVector2 pOldOffset;
 	decVector2 pNewOffset;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectTextureTCOffset(meObjectTexture *texture, const decVector2 &newOffset);
+	meUObjectTextureTCOffset(meObjectTexture::Ref texture, const decVector2 &newOffset);
 	
 protected:
 	/** \brief Clean up undo object. */

@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetType::gdeUOCLightSetType(gdeObjectClass *objectClass,
-gdeOCLight *light, deLight::eLightTypes newValue) :
-pObjectClass(NULL),
-pLight(NULL)
+gdeUOCLightSetType::gdeUOCLightSetType(gdeObjectClass::Ref objectClass,
+gdeOCLight::Ref light, deLight::eLightTypes newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pLight(NULL)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetType::~gdeUOCLightSetType(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

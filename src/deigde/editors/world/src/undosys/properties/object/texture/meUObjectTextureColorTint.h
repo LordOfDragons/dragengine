@@ -38,7 +38,7 @@ class meObjectTexture;
  */
 class meUObjectTextureColorTint : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decColor pOldColor;
 	decColor pNewColor;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectTextureColorTint(meObjectTexture *texture, const decColor &newColor);
+	meUObjectTextureColorTint(meObjectTexture::Ref texture, const decColor &newColor);
 	
 protected:
 	/** \brief Clean up undo object. */

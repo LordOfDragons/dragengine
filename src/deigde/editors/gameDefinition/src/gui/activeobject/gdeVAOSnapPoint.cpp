@@ -65,9 +65,6 @@ pDDSSnapDistance(NULL)
 	if(!ocsnapPoint){
 		DETHROW(deeInvalidParam);
 	}
-	
-	pOCSnapPoint->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pUpdateDDShapes();
@@ -119,10 +116,6 @@ void gdeVAOSnapPoint::pCleanUp(){
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = NULL;
-	}
-	
-	if(pOCSnapPoint){
-		pOCSnapPoint->FreeReference();
 	}
 }
 

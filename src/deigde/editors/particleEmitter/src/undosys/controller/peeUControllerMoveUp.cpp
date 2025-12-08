@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerMoveUp::peeUControllerMoveUp(peeController *controller){
+peeUControllerMoveUp::peeUControllerMoveUp(peeController::Ref controller){
 	if(!controller) DETHROW(deeInvalidParam);
 	
 	peeEmitter *emitter = controller->GetEmitter();
@@ -54,13 +54,9 @@ peeUControllerMoveUp::peeUControllerMoveUp(peeController *controller){
 	if(pIndex < 1) DETHROW(deeInvalidParam);
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerMoveUp::~peeUControllerMoveUp(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

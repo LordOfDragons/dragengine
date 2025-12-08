@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCForceFieldSetTriggerName::gdeUOCForceFieldSetTriggerName(gdeObjectClass *objectClass,
-gdeOCForceField *forceField, gdeOCForceField::eTriggers trigger, const char *newValue) :
-pObjectClass(NULL),
-pForceField(NULL),
+gdeUOCForceFieldSetTriggerName::gdeUOCForceFieldSetTriggerName(gdeObjectClass::Ref objectClass,
+gdeOCForceField::Ref forceField, gdeOCForceField::eTriggers trigger, const char *newValue) :
+
+
 pTrigger(trigger)
 {
 	if(!objectClass || !forceField){
@@ -55,19 +55,10 @@ pTrigger(trigger)
 	pNewValue = newValue;
 	
 	pForceField = forceField;
-	forceField->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCForceFieldSetTriggerName::~gdeUOCForceFieldSetTriggerName(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

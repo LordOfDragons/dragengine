@@ -36,7 +36,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeSetRotation : public igdeUndo{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	float pOldValue;
 	float pNewValue;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetRotation(sePropertyNode *node, float newValue);
+	seUPropertyNodeSetRotation(sePropertyNode::Ref node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */

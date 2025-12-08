@@ -62,15 +62,13 @@
 ////////////////////////////
 
 gdeVAOBillboard::gdeVAOBillboard(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCBillboard *ocbillboard) :
+	const decString &propertyPrefix, gdeOCBillboard::Ref ocbillboard) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCBillboard(ocbillboard)
 {
 	if(!ocbillboard){
 		DETHROW(deeInvalidParam);
 	}
-	ocbillboard->AddReference();
-	
 	pCreateBillboard();
 	pCreateCollider();
 	pAttachBillboard();
@@ -135,10 +133,6 @@ void gdeVAOBillboard::GetExtends(decVector &minExtend, decVector &maxExtend) con
 
 void gdeVAOBillboard::pCleanUp(){
 	pReleaseResources();
-	
-	if(pOCBillboard){
-		pOCBillboard->FreeReference();
-	}
 }
 
 void gdeVAOBillboard::pCreateBillboard(){

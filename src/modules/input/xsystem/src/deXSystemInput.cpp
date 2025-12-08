@@ -198,16 +198,13 @@ int deXSystemInput::GetDeviceCount(){
 }
 
 deInputDevice *deXSystemInput::GetDeviceAt(int index){
-	deInputDevice *device = NULL;
+	deInputDevice::Ref device = NULL;
 	
 	try{
-		device = new deInputDevice;
+		device.TakeOver(new deInputDevice);
 		pDevices->GetAt(index)->GetInfo(*device);
 		
 	}catch(const deException &){
-		if(device){
-			device->FreeReference();
-		}
 		throw;
 	}
 	

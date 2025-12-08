@@ -51,7 +51,7 @@
 
 // Native structure
 struct sXMLNatDat{
-	dedsXmlDocument *document;
+	dedsXmlDocument::Ref document;
 };
 
 
@@ -71,20 +71,15 @@ void deClassEasyXML::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.document = NULL;
 	
 	// create document
-	decXmlElementTag *root = NULL;
+	decXmlElementTag::Ref root = NULL;
 	
 	try{
-		nd.document = new dedsXmlDocument("");
+		nd.document.TakeOver(new dedsXmlDocument(""));
 		
-		root = new decXmlElementTag("root");
+		root.TakeOver(new decXmlElementTag("root"));
 		nd.document->AddElement(root);
-		root->FreeReference();
-		
 	}catch(const deException &e){
 		((deClassEasyXML*)GetOwnerClass())->GetDS().LogException(e);
-		if(root){
-			root->FreeReference();
-		}
 		if(nd.document){
 			nd.document->FreeReference();
 			nd.document = NULL;
@@ -92,9 +87,6 @@ void deClassEasyXML::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 		throw;
 		
 	}catch(...){
-		if(root){
-			root->FreeReference();
-		}
 		if(nd.document){
 			nd.document->FreeReference();
 			nd.document = NULL;
@@ -130,7 +122,7 @@ void deClassEasyXML::nfNewFile::RunFunction(dsRunTime *rt, dsValue *myself){
 		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
 			 vfs.OpenFileForReading(decPath::CreatePathUnix(filename))));
 		
-		nd.document = new dedsXmlDocument(filename);
+		nd.document.TakeOver(new dedsXmlDocument(filename));
 		
 		if(parser.ParseXml(reader, nd.document)){
 			nd.document->StripComments();
@@ -190,7 +182,7 @@ void deClassEasyXML::nfNewFile2::RunFunction(dsRunTime *rt, dsValue *myself){
 		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
 			 vfs.OpenFileForReading(decPath::CreatePathUnix(filename))));
 		
-		nd.document = new dedsXmlDocument(filename);
+		nd.document.TakeOver(new dedsXmlDocument(filename));
 		
 		if(parser.ParseXml(reader, nd.document)){
 			if(stripComments){
@@ -426,7 +418,7 @@ dedsXmlDocument *deClassEasyXML::GetDocument(dsRealObject *myself) const{
 	return ((sXMLNatDat*)p_GetNativeData(myself->GetBuffer()))->document;
 }
 
-void deClassEasyXML::PushDocument(dsRunTime *rt, dedsXmlDocument *document){
+void deClassEasyXML::PushDocument(dsRunTime *rt, dedsXmlDocument::Ref document){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -438,5 +430,4 @@ void deClassEasyXML::PushDocument(dsRunTime *rt, dedsXmlDocument *document){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sXMLNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->document = document;
-	document->AddReference();
 }

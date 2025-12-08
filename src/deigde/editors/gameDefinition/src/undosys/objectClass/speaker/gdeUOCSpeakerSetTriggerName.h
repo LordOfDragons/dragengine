@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCSpeakerSetTriggerName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	gdeOCSpeaker::eTriggers pTrigger;
 	decString pOldValue;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetTriggerName(gdeObjectClass *objectClass, gdeOCSpeaker *speaker,
+	gdeUOCSpeakerSetTriggerName(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker,
 		gdeOCSpeaker::eTriggers trigger, const char *newValue);
 	
 protected:

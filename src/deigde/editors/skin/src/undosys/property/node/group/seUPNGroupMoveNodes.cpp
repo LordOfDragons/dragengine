@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPNGroupMoveNodes::seUPNGroupMoveNodes(sePropertyNodeGroup *node, const sePropertyNodeList &children) :
-pNode(NULL),
+seUPNGroupMoveNodes::seUPNGroupMoveNodes(sePropertyNodeGroup::Ref node, const sePropertyNodeList &children) :
+
 pChildren(NULL),
 pCount(0)
 {
@@ -81,7 +81,6 @@ pCount(0)
 	}
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPNGroupMoveNodes::~seUPNGroupMoveNodes(){
@@ -104,9 +103,6 @@ bool seUPNGroupMoveNodes::HasAnyEffect() const{
 
 void seUPNGroupMoveNodes::pCleanUp(){
 	pClearChildNodes();
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 void seUPNGroupMoveNodes::pClearChildNodes(){

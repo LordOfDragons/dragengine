@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceGroupRemoveSource::seUSourceGroupRemoveSource(seSourceGroup *group, seSource *source) :
-pGroup(NULL),
+seUSourceGroupRemoveSource::seUSourceGroupRemoveSource(seSourceGroup::Ref group, seSource::Ref source) :
+
 pSource(NULL)
 {
 	if(!group || !source){
@@ -53,19 +53,10 @@ pSource(NULL)
 	}
 	
 	pGroup = group;
-	group->AddReference();
-	
 	pSource = source;
-	source->AddReference();
 }
 
 seUSourceGroupRemoveSource::~seUSourceGroupRemoveSource(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }
 
 

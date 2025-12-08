@@ -49,11 +49,11 @@ protected:
 	deoglRenderThread &pRenderThread;
 	deoglBVH pBVH;
 	
-	deoglDynamicTBOFloat32 *pTBONodeBox;
-	deoglDynamicTBOUInt16 *pTBOIndex;
-	deoglDynamicTBOUInt16 *pTBOFace;
-	deoglDynamicTBOFloat32 *pTBOVertex;
-	deoglDynamicTBOFloat16 *pTBOTexCoord;
+	deoglDynamicTBOFloat32::Ref pTBONodeBox;
+	deoglDynamicTBOUInt16::Ref pTBOIndex;
+	deoglDynamicTBOUInt16::Ref pTBOFace;
+	deoglDynamicTBOFloat32::Ref pTBOVertex;
+	deoglDynamicTBOFloat16::Ref pTBOTexCoord;
 	
 	deoglDynamicTBOBlock::Ref pBlockNode;
 	deoglDynamicTBOBlock::Ref pBlockFace;

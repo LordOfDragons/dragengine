@@ -69,18 +69,12 @@
 
 aeAnimatorLocomotion::aeAnimatorLocomotion(aeAnimator *animator) :
 pAnimator(animator),
-pDebugDrawer(NULL),
-pCollider(NULL),
 pColliderPosition(0.0f, 0.4f, 0.0f),
 pColliderRadius(0.4f),
-
-pTouchSensor(NULL),
 pTSGroundPosition(0.0f, 0.0f, 0.0f),
 pTSGroundExtents(0.4f, 0.1f, 0.4f),
 pTSDragonBodyPosition(0.0f, 0.8f, 0.0f),
 pTSDragonBodySize(2.5f, 0.81f, 2.5f),
-pGroundCheckCollider(NULL),
-pTGCollider(NULL),
 
 pGroundPlaneFront(0.2f),
 pGroundPlaneBack(-0.2f),
@@ -91,12 +85,10 @@ pGroundPlaneOffsetFL(0.0f),
 pGroundPlaneOffsetFR(0.0f),
 pGroundPlaneOffsetBL(0.0f),
 pGroundPlaneOffsetBR(0.0f),
-pGroundPlaneCollider (NULL),
 
 pDragonColBodyPos(0.0f, 0.8f, 0.0f),
 pDragonColBodyRot(0.0f, 0.0f, 0.0f),
 pDragonColBodySize(0.8f, 0.8f, 2.0f),
-pDragonColBody(NULL),
 pDragonColHeadPos(),
 pDragonColHeadRot(),
 pDragonColHeadSize(),
@@ -104,7 +96,6 @@ pDragonColHandsPos(0.0f, 0.45f, 0.5f),
 pDragonColHandsRadius(0.0f),
 pDragonColFeetPos(0.0f, 0.45f, -0.6f),
 pDragonColFeetRadius(0.45f),
-pFootCollider(NULL),
 pDragonFootGround(0.2f),
 pDragonFootFront(0.5f),
 pDragonFootBack(-0.6f),
@@ -1216,17 +1207,14 @@ void aeAnimatorLocomotion::pCleanUp(){
 		
 		if(pTouchSensor){
 			world->RemoveTouchSensor(pTouchSensor);
-			pTouchSensor->FreeReference();
 		}
 		
 		if(pCollider){
 			world->RemoveCollider(pCollider);
-			pCollider->FreeReference();
 		}
 		
 		if(pDebugDrawer){
 			world->RemoveDebugDrawer(pDebugDrawer);
-			pDebugDrawer->FreeReference();
 		}
 	}
 }

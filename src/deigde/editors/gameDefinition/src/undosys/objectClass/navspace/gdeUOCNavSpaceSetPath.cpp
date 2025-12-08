@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetPath::gdeUOCNavSpaceSetPath(gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, const char *newValue) :
-pObjectClass(NULL),
-pNavSpace(NULL)
+gdeUOCNavSpaceSetPath::gdeUOCNavSpaceSetPath(gdeObjectClass::Ref objectClass,
+gdeOCNavigationSpace::Ref navspace, const char *newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !navspace){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pNavSpace(NULL)
 	pNewValue = newValue;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavSpaceSetPath::~gdeUOCNavSpaceSetPath(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

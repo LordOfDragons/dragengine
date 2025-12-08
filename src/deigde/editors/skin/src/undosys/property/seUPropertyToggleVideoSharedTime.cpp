@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyToggleVideoSharedTime::seUPropertyToggleVideoSharedTime(seProperty *property){
+seUPropertyToggleVideoSharedTime::seUPropertyToggleVideoSharedTime(seProperty::Ref property){
 	if(!property){
 		DETHROW(deeInvalidParam);
 	}
@@ -48,13 +48,9 @@ seUPropertyToggleVideoSharedTime::seUPropertyToggleVideoSharedTime(seProperty *p
 	SetShortInfo("Property toggle video shared time");
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertyToggleVideoSharedTime::~seUPropertyToggleVideoSharedTime(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

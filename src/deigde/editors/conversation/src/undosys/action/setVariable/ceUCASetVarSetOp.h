@@ -38,8 +38,8 @@ class ceConversationTopic;
  */
 class ceUCASetVarSetOp : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASetVariable *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCASetVariable::Ref pAction;
 	ceCASetVariable::eOperators pOldOperator;
 	ceCASetVariable::eOperators pNewOperator;
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASetVarSetOp(ceConversationTopic *topic, ceCASetVariable *action,
+	ceUCASetVarSetOp(ceConversationTopic::Ref topic, ceCASetVariable::Ref action,
 		ceCASetVariable::eOperators newOperator);
 protected:
 	/** \brief Clean up undo. */

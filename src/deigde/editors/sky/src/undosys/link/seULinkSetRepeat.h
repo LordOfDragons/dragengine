@@ -35,7 +35,7 @@ class seLink;
  */
 class seULinkSetRepeat : public igdeUndo{
 private:
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	int pOldRepeat;
 	int pNewRepeat;
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkSetRepeat(seLink *link, int newRepeat);
+	seULinkSetRepeat(seLink::Ref link, int newRepeat);
 	
 protected:
 	/** \brief Clean up undo action. */

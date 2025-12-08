@@ -41,7 +41,7 @@
 ////////////////////////////
 
 gdeUOCSetHideTags::gdeUOCSetHideTags(
-gdeObjectClass *objectClass, const decStringSet &newValue) :
+gdeObjectClass::Ref objectClass, const decStringSet &newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass){
@@ -54,13 +54,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetHideTags::~gdeUOCSetHideTags(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

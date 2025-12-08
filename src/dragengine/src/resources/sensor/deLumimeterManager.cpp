@@ -62,10 +62,10 @@ deLumimeter *deLumimeterManager::GetRootLumimeter() const{
 }
 
 deLumimeter *deLumimeterManager::CreateLumimeter(){
-	deLumimeter *lumimeter = NULL;
+	deLumimeter::Ref lumimeter = NULL;
 	
 	try{
-		lumimeter = new deLumimeter(this);
+		lumimeter.TakeOver(new deLumimeter(this));
 		if(!lumimeter) DETHROW(deeOutOfMemory);
 		
 		GetGraphicSystem()->LoadLumimeter(lumimeter);
@@ -73,9 +73,6 @@ deLumimeter *deLumimeterManager::CreateLumimeter(){
 		pLumimeters.Add(lumimeter);
 		
 	}catch(const deException &){
-		if(lumimeter){
-			lumimeter->FreeReference();
-		}
 		throw;
 	}
 	
@@ -99,7 +96,7 @@ void deLumimeterManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deLumimeterManager::SystemGraphicLoad(){
-	deLumimeter *lumimeter = (deLumimeter*)pLumimeters.GetRoot();
+	deLumimeter::Ref lumimeter = (deLumimeter*)pLumimeters.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
 	while(lumimeter){
@@ -112,7 +109,7 @@ void deLumimeterManager::SystemGraphicLoad(){
 }
 
 void deLumimeterManager::SystemGraphicUnload(){
-	deLumimeter *lumimeter = (deLumimeter*)pLumimeters.GetRoot();
+	deLumimeter::Ref lumimeter = (deLumimeter*)pLumimeters.GetRoot();
 	
 	while(lumimeter){
 		lumimeter->SetPeerGraphic(NULL);

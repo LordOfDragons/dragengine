@@ -54,11 +54,11 @@ private:
 	reRig *pRig;
 	int pOrder;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSBone;
 	igdeWDebugDrawerShape *pDDSCmp;
 	igdeWCoordSysArrows *pDDSCoordSys;
-	deColliderVolume *pCollider;
+	deColliderVolume::Ref pCollider;
 	
 	decString pName;
 	reRigBone *pParentBone;

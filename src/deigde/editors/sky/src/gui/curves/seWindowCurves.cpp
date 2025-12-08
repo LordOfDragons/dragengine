@@ -125,14 +125,12 @@ public:
 seWindowCurves::seWindowCurves(seWindowMain &windowMain) :
 igdeContainerSplitted(windowMain.GetEnvironment(), igdeContainerSplitted::espRight,
 	igdeApplication::app().DisplayScaled(200)),
-pWindowMain(windowMain),
-pListener(NULL),
-pSky(NULL)
+pWindowMain(windowMain)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWindowCurvesListener(*this);
+	pListener.TakeOver(new seWindowCurvesListener(*this));
 	
 	helper.ListBox(5, "Link to edit", pListLinks, new cListLinks(*this));
 	pListLinks->SetDefaultSorter();
@@ -147,9 +145,6 @@ pSky(NULL)
 
 seWindowCurves::~seWindowCurves(){
 	SetSky(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -157,7 +152,7 @@ seWindowCurves::~seWindowCurves(){
 // Management
 ///////////////
 
-void seWindowCurves::SetSky(seSky *sky){
+void seWindowCurves::SetSky(seSky::Ref sky){
 	if(sky == pSky){
 		return;
 	}
@@ -166,14 +161,12 @@ void seWindowCurves::SetSky(seSky *sky){
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;
 	
 	if(sky){
 		sky->AddListener(pListener);
-		sky->AddReference();
 	}
 	
 	UpdateLinkList();

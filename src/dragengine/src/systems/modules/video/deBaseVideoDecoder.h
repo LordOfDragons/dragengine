@@ -40,7 +40,7 @@ class decBaseFileReader;
  */
 class DE_DLL_EXPORT deBaseVideoDecoder{
 private:
-	decBaseFileReader *pFile;
+	decBaseFileReader::Ref pFile;
 	
 	
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create video image decoder. */
-	deBaseVideoDecoder(decBaseFileReader *file);
+	deBaseVideoDecoder(decBaseFileReader::Ref file);
 	
 	/** \brief Clean up video image decoder. */
 	virtual ~deBaseVideoDecoder();

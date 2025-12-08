@@ -181,7 +181,7 @@ igdeWDebugDrawerShape::~igdeWDebugDrawerShape(){
 // Management
 ///////////////
 
-void igdeWDebugDrawerShape::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
+void igdeWDebugDrawerShape::SetParentDebugDrawer(deDebugDrawer::Ref debugDrawer){
 	if(debugDrawer == pEngDebugDrawer){
 		return;
 	}
@@ -190,17 +190,7 @@ void igdeWDebugDrawerShape::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
 		pEngDebugDrawer->RemoveShape(pEngDDShape);
 		pEngDDShape = NULL;
 	}
-	
-	if(pEngDebugDrawer){
-		pEngDebugDrawer->FreeReference();
-	}
-	
 	pEngDebugDrawer = debugDrawer;
-	
-	if(debugDrawer){
-		debugDrawer->AddReference();
-	}
-	
 	pUpdateDDShape();
 }
 

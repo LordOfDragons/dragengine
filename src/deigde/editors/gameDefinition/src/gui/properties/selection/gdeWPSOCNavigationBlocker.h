@@ -48,9 +48,9 @@ class gdeWPSOCNavigationBlockerListener;
 class gdeWPSOCNavigationBlocker : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCNavigationBlockerListener *pListener;
+	gdeWPSOCNavigationBlockerListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditVector::Ref pEditPosition;
 	igdeEditVector::Ref pEditRotation;
@@ -87,7 +87,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition(gdeGameDefinition *gameDefinition);
+	void SetGameDefinition(gdeGameDefinition::Ref gameDefinition);
 	
 	
 	

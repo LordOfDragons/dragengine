@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAGameCmdSetCommand::ceUCAGameCmdSetCommand(ceConversationTopic *topic, ceCAGameCommand *action, const char *newCommand){
+ceUCAGameCmdSetCommand::ceUCAGameCmdSetCommand(ceConversationTopic::Ref topic, ceCAGameCommand::Ref action, const char *newCommand){
 	if(!topic || !newCommand){
 		DETHROW(deeInvalidParam);
 	}
@@ -54,19 +54,10 @@ ceUCAGameCmdSetCommand::ceUCAGameCmdSetCommand(ceConversationTopic *topic, ceCAG
 	SetShortInfo("Action game command set command");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAGameCmdSetCommand::~ceUCAGameCmdSetCommand(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

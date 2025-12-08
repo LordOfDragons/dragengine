@@ -41,9 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkRemove::seULinkRemove(seLink *link) :
-pSky(NULL),
-pLink(NULL),
+seULinkRemove::seULinkRemove(seLink::Ref link) :
+
 pTargets(NULL),
 pTargetCount(0)
 {
@@ -98,7 +97,6 @@ pTargetCount(0)
 	sky->AddReference();
 	
 	pLink = link;
-	link->AddReference();
 }
 
 seULinkRemove::~seULinkRemove(){
@@ -139,12 +137,5 @@ void seULinkRemove::pCleanUp(){
 	int i;
 	for(i=0; i<pTargetCount; i++){
 		pTargets[i].layer->FreeReference();
-	}
-	
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
 	}
 }

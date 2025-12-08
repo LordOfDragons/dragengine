@@ -38,11 +38,11 @@ class peeParameter;
  */
 class peeUParameterSetControllerSpread : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	peeParameter *pParameter;
 	
-	peeController *pOldController;
-	peeController *pNewController;
+	peeController::Ref pOldController;
+	peeController::Ref pNewController;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUParameterSetControllerSpread(peeType *type, peeParameter *parameter, peeController *newController);
+	peeUParameterSetControllerSpread(peeType::Ref type, peeParameter *parameter, peeController *newController);
 	
 protected:
 	/** \brief Clean up the undo action. */

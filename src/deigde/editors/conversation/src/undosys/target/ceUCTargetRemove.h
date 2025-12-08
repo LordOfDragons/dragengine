@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetRemove(ceTarget *target);
+	ceUCTargetRemove(ceTarget::Ref target);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCTargetRemove();

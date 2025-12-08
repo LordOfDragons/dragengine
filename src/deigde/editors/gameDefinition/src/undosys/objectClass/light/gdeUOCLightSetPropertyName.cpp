@@ -39,10 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetPropertyName::gdeUOCLightSetPropertyName(gdeObjectClass *objectClass,
-gdeOCLight *light, gdeOCLight::eProperties property, const char *newValue) :
-pObjectClass(NULL),
-pLight(NULL),
+gdeUOCLightSetPropertyName::gdeUOCLightSetPropertyName(gdeObjectClass::Ref objectClass,
+gdeOCLight::Ref light, gdeOCLight::eProperties property, const char *newValue) :
+
 pProperty(property)
 {
 	if(!objectClass || !light){
@@ -55,19 +54,10 @@ pProperty(property)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetPropertyName::~gdeUOCLightSetPropertyName(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

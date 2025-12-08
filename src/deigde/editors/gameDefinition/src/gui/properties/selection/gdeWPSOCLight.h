@@ -50,9 +50,9 @@ class gdeWPSOCLightListener;
 class gdeWPSOCLight : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCLightListener *pListener;
+	gdeWPSOCLightListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeComboBox::Ref pCBType;
 	igdeColorBox::Ref pClrColor;
@@ -104,7 +104,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition(gdeGameDefinition *gameDefinition);
+	void SetGameDefinition(gdeGameDefinition::Ref gameDefinition);
 	
 	
 	

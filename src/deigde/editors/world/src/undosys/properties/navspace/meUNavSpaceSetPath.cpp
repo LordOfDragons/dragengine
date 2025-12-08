@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUNavSpaceSetPath::meUNavSpaceSetPath(meNavigationSpace *navspace, const char *newPath){
+meUNavSpaceSetPath::meUNavSpaceSetPath(meNavigationSpace::Ref navspace, const char *newPath){
 	if(!navspace || !newPath){
 		DETHROW(deeInvalidParam);
 	}
@@ -59,13 +59,9 @@ meUNavSpaceSetPath::meUNavSpaceSetPath(meNavigationSpace *navspace, const char *
 	pNewPath = newPath;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
 }
 
 meUNavSpaceSetPath::~meUNavSpaceSetPath(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

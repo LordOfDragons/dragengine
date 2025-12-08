@@ -41,7 +41,7 @@ class meObject;
  */
 class meUObjDuplicate : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decObjectOrderedSet pObjects;
 	
 public:
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUObjDuplicate(meWorld *world, const decVector &offset);
+	meUObjDuplicate(meWorld::Ref world, const decVector &offset);
 	/** \brief Clean up undo object. */
 	virtual ~meUObjDuplicate();
 	/*@}*/

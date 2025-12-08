@@ -41,9 +41,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTextureSetOffset::gdeUOCTextureSetOffset(gdeObjectClass *objectClass,
-gdeOCComponentTexture* texture, const decVector2 &newValue) :
-pObjectClass(NULL),
+gdeUOCTextureSetOffset::gdeUOCTextureSetOffset(gdeObjectClass::Ref objectClass,
+gdeOCComponentTexture::Ref texture, const decVector2 &newValue) :
+
 pTexture(NULL)
 {
 	if(!objectClass || !texture){
@@ -56,19 +56,10 @@ pTexture(NULL)
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCTextureSetOffset::~gdeUOCTextureSetOffset(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

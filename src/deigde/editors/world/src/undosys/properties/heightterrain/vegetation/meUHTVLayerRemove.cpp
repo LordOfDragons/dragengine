@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVLayerRemove::meUHTVLayerRemove(meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer){
+meUHTVLayerRemove::meUHTVLayerRemove(meWorld::Ref world, meHeightTerrain *heightTerrain, meHTVegetationLayer::Ref vlayer){
 	if(!world || !heightTerrain || !vlayer) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
@@ -51,11 +51,7 @@ meUHTVLayerRemove::meUHTVLayerRemove(meWorld *world, meHeightTerrain *heightTerr
 	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Remove Height Terrain Vegetation Layer");
-	
-	world->AddReference();
-	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 }
 
 meUHTVLayerRemove::~meUHTVLayerRemove(){

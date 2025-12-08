@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourcePasteEffect::seUSourcePasteEffect(seSource *source, const seEffectList &effectList, int index) :
-pSource(NULL),
+seUSourcePasteEffect::seUSourcePasteEffect(seSource::Ref source, const seEffectList &effectList, int index) :
+
 pIndex(index)
 {
 	const int effectCount = effectList.GetCount();
@@ -52,26 +52,21 @@ pIndex(index)
 		DETHROW(deeInvalidParam);
 	}
 	
-	seEffect *effect = NULL;
+	seEffect::Ref effect = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<effectCount; i++){
 			effect = effectList.GetAt(i)->CreateCopy();
 			pEffectList.Add(effect);
-			effect->FreeReference();
 			effect = NULL;
 		}
 		
 	}catch(const deException &){
-		if(effect){
-			effect->FreeReference();
-		}
 		throw;
 	}
 	
 	pSource = source;
-	source->AddReference();
 }
 
 seUSourcePasteEffect::~seUSourcePasteEffect(){
@@ -150,7 +145,4 @@ void seUSourcePasteEffect::Redo(){
 //////////////////////
 
 void seUSourcePasteEffect::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

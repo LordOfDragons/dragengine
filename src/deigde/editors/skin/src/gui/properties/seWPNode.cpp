@@ -134,7 +134,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSkin *skin, seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
+	virtual igdeUndo *OnAction(seSkin::Ref skin, seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
 	
 	virtual void Update(){
 		seSkin * const skin = pPanel.GetSkin();
@@ -178,7 +178,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin *skin,
+	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin::Ref skin,
 		seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
 };
 
@@ -204,7 +204,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, seSkin *skin,
+	virtual igdeUndo *OnChanged(igdeEditPath &editPath, seSkin::Ref skin,
 		seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
 };
 
@@ -230,7 +230,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin *skin,
+	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin::Ref skin,
 		seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
 };
 
@@ -256,7 +256,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditPoint3 &editPoint3, seSkin *skin,
+	virtual igdeUndo *OnChanged(igdeEditPoint3 &editPoint3, seSkin::Ref skin,
 		seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
 };
 
@@ -282,7 +282,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditPoint &editPoint, seSkin *skin,
+	virtual igdeUndo *OnChanged(igdeEditPoint &editPoint, seSkin::Ref skin,
 		seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
 };
 
@@ -308,7 +308,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, seSkin *skin,
+	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, seSkin::Ref skin,
 		seTexture *texture, seProperty *property, sePropertyNode *node) = 0;
 };
 
@@ -751,15 +751,13 @@ public:
 seWPNode::seWPNode(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pSkin(NULL),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPNodeListener(*this);
+	pListener.TakeOver(new seWPNodeListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -870,10 +868,6 @@ pPreventUpdate(false)
 
 seWPNode::~seWPNode(){
 	SetSkin(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -881,21 +875,19 @@ seWPNode::~seWPNode(){
 // Management
 ///////////////
 
-void seWPNode::SetSkin(seSkin *skin){
+void seWPNode::SetSkin(seSkin::Ref skin){
 	if(skin == pSkin){
 		return;
 	}
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
 	if(skin){
 		skin->AddListener(pListener);
-		skin->AddReference();
 	}
 	
 	UpdateMappedTypeList();

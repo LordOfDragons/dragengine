@@ -76,8 +76,6 @@
 gdeGameDefinition::gdeGameDefinition(igdeEnvironment* environment) :
 igdeEditableEntity(environment),
 
-pWorld(NULL),
-
 pSky(NULL),
 
 pCamera(NULL),
@@ -87,26 +85,7 @@ pIsProjectGameDef(false),
 
 pVFSPath("/"),
 
-pActiveCategory(NULL),
-pActiveObjectClass(NULL),
-pActiveOCBillboard(NULL),
-pActiveOCCamera(NULL),
-pActiveOCComponent(NULL),
-pActiveOCEnvMapProbe(NULL),
-pActiveOCLight(NULL),
-pActiveOCNavigationBlocker(NULL),
-pActiveOCNavigationSpace(NULL),
-pActiveOCParticleEmitter(NULL),
-pActiveOCForceField(NULL),
-pActiveOCSnapPoint(NULL),
-pActiveOCSpeaker(NULL),
-pActiveParticleEmitter(NULL),
-pActiveSkin(NULL),
-pActiveSky(NULL),
-
 pSelectedObjectType(eotNoSelection),
-
-pVFS(NULL),
 pPreviewVFS(NULL)
 {
 	deEngine * const engine = GetEngine();
@@ -201,7 +180,6 @@ void gdeGameDefinition::SetBasePath(const char *path){
 	if(!pIsProjectGameDef){
 		pPreviewVFS = NULL;
 		if(pVFS){
-			pVFS->FreeReference();
 			pVFS = NULL;
 		}
 	}
@@ -219,7 +197,6 @@ void gdeGameDefinition::SetVFSPath(const char *path){
 	if(!pIsProjectGameDef){
 		pPreviewVFS = NULL;
 		if(pVFS){
-			pVFS->FreeReference();
 			pVFS = NULL;
 		}
 	}
@@ -327,7 +304,7 @@ void gdeGameDefinition::SetDefaultObjectClass(const char *objectClass){
 	NotifyGameDefinitionChanged();
 }
 
-void gdeGameDefinition::SetDefaultSkin(const char *skin){
+void gdeGameDefinition::SetDefaultSkin(const char::Ref skin){
 	if(pDefaultSkin == skin){
 		return;
 	}
@@ -337,7 +314,7 @@ void gdeGameDefinition::SetDefaultSkin(const char *skin){
 	NotifyGameDefinitionChanged();
 }
 
-void gdeGameDefinition::SetDefaultSky(const char *sky){
+void gdeGameDefinition::SetDefaultSky(const char::Ref sky){
 	if(pDefaultSky == sky){
 		return;
 	}
@@ -350,7 +327,7 @@ void gdeGameDefinition::SetDefaultSky(const char *sky){
 
 
 const gdeCategory *gdeGameDefinition::FindCategoryObjectClass(const char *path) const{
-	const gdeCategory *category = pCategoriesObjectClass.GetWithPath(path);
+	const gdeCategory::Ref category = pCategoriesObjectClass.GetWithPath(path);
 	if(category){
 		return category;
 	}
@@ -388,21 +365,11 @@ const decStringSet &gdeGameDefinition::GetObjectClassCategoryNameList(){
 
 
 
-void gdeGameDefinition::SetActiveCategory(gdeCategory *category){
+void gdeGameDefinition::SetActiveCategory(gdeCategory::Ref category){
 	if(category == pActiveCategory){
 		return;
 	}
-	
-	if(pActiveCategory){
-		pActiveCategory->FreeReference();
-	}
-	
 	pActiveCategory = category;
-	
-	if(category){
-		category->AddReference();
-	}
-	
 	NotifyActiveCategoryChanged();
 }
 
@@ -599,29 +566,22 @@ deVirtualFileSystem *gdeGameDefinition::GetPreviewVFS(){
 		pPreviewVFS = GetEngine()->GetVirtualFileSystem();
 		
 		if(pVFS){
-			pVFS->FreeReference();
 			pVFS = NULL;
 		}
 		
 	}else{
 		if(!pVFS){
-			deVFSDiskDirectory *container = NULL;
+			deVFSDiskDirectory::Ref container = NULL;
 			
 			try{
-				pVFS = new deVirtualFileSystem;
+				pVFS.TakeOver(new deVirtualFileSystem);
 				
-				container = new deVFSDiskDirectory(decPath::CreatePathUnix(pVFSPath),
-					decPath::CreatePathNative(pBasePath));
+				container.TakeOver(new deVFSDiskDirectory(decPath::CreatePathUnix(pVFSPath),
+					decPath::CreatePathNative(pBasePath)));
 				container->SetReadOnly(true);
 				pVFS->AddContainer(container);
-				container->FreeReference();
-				
 			}catch(const deException &){
-				if(container){
-					container->FreeReference();
-				}
 				if(pVFS){
-					pVFS->FreeReference();
 					pVFS = NULL;
 				}
 				
@@ -640,7 +600,7 @@ deVirtualFileSystem *gdeGameDefinition::GetPreviewVFS(){
 // Object classes
 ///////////////////
 
-void gdeGameDefinition::AddObjectClass(gdeObjectClass *objectClass){
+void gdeGameDefinition::AddObjectClass(gdeObjectClass::Ref objectClass){
 	pObjectClasses.Add(objectClass);
 	objectClass->SetGameDefinition(this);
 	
@@ -653,7 +613,7 @@ void gdeGameDefinition::AddObjectClass(gdeObjectClass *objectClass){
 	}
 }
 
-void gdeGameDefinition::RemoveObjectClass(gdeObjectClass *objectClass){
+void gdeGameDefinition::RemoveObjectClass(gdeObjectClass::Ref objectClass){
 	if(!objectClass || objectClass->GetGameDefinition() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -722,7 +682,7 @@ void gdeGameDefinition::RemoveAllObjectClasses(){
 }
 
 const gdeObjectClass * const gdeGameDefinition::FindObjectClass(const char *name) const{
-	const gdeObjectClass *objectClass = pObjectClasses.GetNamed(name);
+	const gdeObjectClass::Ref objectClass = pObjectClasses.GetNamed(name);
 	if(objectClass){
 		return objectClass;
 	}
@@ -764,21 +724,11 @@ bool gdeGameDefinition::HasActiveObjectClass() const{
 	return pActiveObjectClass != NULL;
 }
 
-void gdeGameDefinition::SetActiveObjectClass(gdeObjectClass *objectClass){
+void gdeGameDefinition::SetActiveObjectClass(gdeObjectClass::Ref objectClass){
 	if(objectClass == pActiveObjectClass){
 		return;
 	}
-	
-	if(pActiveObjectClass){
-		pActiveObjectClass->FreeReference();
-	}
-	
 	pActiveObjectClass = objectClass;
-	
-	if(objectClass){
-		objectClass->AddReference();
-	}
-	
 	NotifyActiveObjectClassChanged();
 }
 
@@ -788,21 +738,11 @@ bool gdeGameDefinition::HasActiveOCBillboard() const{
 	return pActiveOCBillboard != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCBillboard(gdeOCBillboard *billboard){
+void gdeGameDefinition::SetActiveOCBillboard(gdeOCBillboard::Ref billboard){
 	if(billboard == pActiveOCBillboard){
 		return;
 	}
-	
-	if(pActiveOCBillboard){
-		pActiveOCBillboard->FreeReference();
-	}
-	
 	pActiveOCBillboard = billboard;
-	
-	if(billboard){
-		billboard->AddReference();
-	}
-	
 	NotifyActiveOCBillboardChanged();
 }
 
@@ -812,21 +752,11 @@ bool gdeGameDefinition::HasActiveOCCamera() const{
 	return pActiveOCCamera != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCCamera(gdeOCCamera *camera){
+void gdeGameDefinition::SetActiveOCCamera(gdeOCCamera::Ref camera){
 	if(camera == pActiveOCCamera){
 		return;
 	}
-	
-	if(pActiveOCCamera){
-		pActiveOCCamera->FreeReference();
-	}
-	
 	pActiveOCCamera = camera;
-	
-	if(camera){
-		camera->AddReference();
-	}
-	
 	NotifyActiveOCCameraChanged();
 }
 
@@ -836,21 +766,11 @@ bool gdeGameDefinition::HasActiveOCComponent() const{
 	return pActiveOCComponent != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCComponent(gdeOCComponent *component){
+void gdeGameDefinition::SetActiveOCComponent(gdeOCComponent::Ref component){
 	if(component == pActiveOCComponent){
 		return;
 	}
-	
-	if(pActiveOCComponent){
-		pActiveOCComponent->FreeReference();
-	}
-	
 	pActiveOCComponent = component;
-	
-	if(component){
-		component->AddReference();
-	}
-	
 	NotifyActiveOCComponentChanged();
 }
 
@@ -860,21 +780,11 @@ bool gdeGameDefinition::HasActiveOCEnvMapProbe() const{
 	return pActiveOCEnvMapProbe != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe){
+void gdeGameDefinition::SetActiveOCEnvMapProbe(gdeOCEnvMapProbe::Ref envMapProbe){
 	if(envMapProbe == pActiveOCEnvMapProbe){
 		return;
 	}
-	
-	if(pActiveOCEnvMapProbe){
-		pActiveOCEnvMapProbe->FreeReference();
-	}
-	
 	pActiveOCEnvMapProbe = envMapProbe;
-	
-	if(envMapProbe){
-		envMapProbe->AddReference();
-	}
-	
 	NotifyActiveOCEnvMapProbeChanged();
 }
 
@@ -884,21 +794,11 @@ bool gdeGameDefinition::HasActiveOCLight() const{
 	return pActiveOCLight != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCLight(gdeOCLight *light){
+void gdeGameDefinition::SetActiveOCLight(gdeOCLight::Ref light){
 	if(light == pActiveOCLight){
 		return;
 	}
-	
-	if(pActiveOCLight){
-		pActiveOCLight->FreeReference();
-	}
-	
 	pActiveOCLight = light;
-	
-	if(light){
-		light->AddReference();
-	}
-	
 	NotifyActiveOCLightChanged();
 }
 
@@ -908,21 +808,11 @@ bool gdeGameDefinition::HasActiveOCNavigationBlocker() const{
 	return pActiveOCNavigationBlocker != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCNavigationBlocker(gdeOCNavigationBlocker *navblocker){
+void gdeGameDefinition::SetActiveOCNavigationBlocker(gdeOCNavigationBlocker::Ref navblocker){
 	if(navblocker == pActiveOCNavigationBlocker){
 		return;
 	}
-	
-	if(pActiveOCNavigationBlocker){
-		pActiveOCNavigationBlocker->FreeReference();
-	}
-	
 	pActiveOCNavigationBlocker = navblocker;
-	
-	if(navblocker){
-		navblocker->AddReference();
-	}
-	
 	NotifyActiveOCNavigationBlockerChanged();
 }
 
@@ -932,21 +822,11 @@ bool gdeGameDefinition::HasActiveOCNavigationSpace() const{
 	return pActiveOCNavigationSpace != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCNavigationSpace(gdeOCNavigationSpace *navSpace){
+void gdeGameDefinition::SetActiveOCNavigationSpace(gdeOCNavigationSpace::Ref navSpace){
 	if(navSpace == pActiveOCNavigationSpace){
 		return;
 	}
-	
-	if(pActiveOCNavigationSpace){
-		pActiveOCNavigationSpace->FreeReference();
-	}
-	
 	pActiveOCNavigationSpace = navSpace;
-	
-	if(navSpace){
-		navSpace->AddReference();
-	}
-	
 	NotifyActiveOCNavigationSpaceChanged();
 }
 
@@ -956,21 +836,11 @@ bool gdeGameDefinition::HasActiveOCParticleEmitter() const{
 	return pActiveOCParticleEmitter != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCParticleEmitter(gdeOCParticleEmitter *emitter){
+void gdeGameDefinition::SetActiveOCParticleEmitter(gdeOCParticleEmitter::Ref emitter){
 	if(emitter == pActiveOCParticleEmitter){
 		return;
 	}
-	
-	if(pActiveOCParticleEmitter){
-		pActiveOCParticleEmitter->FreeReference();
-	}
-	
 	pActiveOCParticleEmitter = emitter;
-	
-	if(emitter){
-		emitter->AddReference();
-	}
-	
 	NotifyActiveOCParticleEmitterChanged();
 }
 
@@ -980,21 +850,11 @@ bool gdeGameDefinition::HasActiveOCForceField() const{
 	return pActiveOCForceField != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCForceField(gdeOCForceField *field){
+void gdeGameDefinition::SetActiveOCForceField(gdeOCForceField::Ref field){
 	if(field == pActiveOCForceField){
 		return;
 	}
-	
-	if(pActiveOCForceField){
-		pActiveOCForceField->FreeReference();
-	}
-	
 	pActiveOCForceField = field;
-	
-	if(field){
-		field->AddReference();
-	}
-	
 	NotifyActiveOCForceFieldChanged();
 }
 
@@ -1004,21 +864,11 @@ bool gdeGameDefinition::HasActiveOCSnapPoint() const{
 	return pActiveOCSnapPoint != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCSnapPoint(gdeOCSnapPoint *snappoint){
+void gdeGameDefinition::SetActiveOCSnapPoint(gdeOCSnapPoint::Ref snappoint){
 	if(snappoint == pActiveOCSnapPoint){
 		return;
 	}
-	
-	if(pActiveOCSnapPoint){
-		pActiveOCSnapPoint->FreeReference();
-	}
-	
 	pActiveOCSnapPoint = snappoint;
-	
-	if(snappoint){
-		snappoint->AddReference();
-	}
-	
 	NotifyActiveOCSnapPointChanged();
 }
 
@@ -1028,21 +878,11 @@ bool gdeGameDefinition::HasActiveOCSpeaker() const{
 	return pActiveOCSpeaker != NULL;
 }
 
-void gdeGameDefinition::SetActiveOCSpeaker(gdeOCSpeaker *speaker){
+void gdeGameDefinition::SetActiveOCSpeaker(gdeOCSpeaker::Ref speaker){
 	if(speaker == pActiveOCSpeaker){
 		return;
 	}
-	
-	if(pActiveOCSpeaker){
-		pActiveOCSpeaker->FreeReference();
-	}
-	
 	pActiveOCSpeaker = speaker;
-	
-	if(speaker){
-		speaker->AddReference();
-	}
-	
 	NotifyActiveOCSpeakerChanged();
 }
 
@@ -1066,7 +906,7 @@ void gdeGameDefinition::SetActiveOCWorld(gdeOCWorld *world){
 // ParticleEmitters
 /////////////////////
 
-void gdeGameDefinition::AddParticleEmitter(gdeParticleEmitter *particleEmitter){
+void gdeGameDefinition::AddParticleEmitter(gdeParticleEmitter::Ref particleEmitter){
 	pParticleEmitters.Add(particleEmitter);
 	particleEmitter->SetGameDefinition(this);
 	NotifyParticleEmitterStructureChanged();
@@ -1076,7 +916,7 @@ void gdeGameDefinition::AddParticleEmitter(gdeParticleEmitter *particleEmitter){
 	}
 }
 
-void gdeGameDefinition::RemoveParticleEmitter(gdeParticleEmitter *particleEmitter){
+void gdeGameDefinition::RemoveParticleEmitter(gdeParticleEmitter::Ref particleEmitter){
 	if(!particleEmitter || particleEmitter->GetGameDefinition() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1117,21 +957,11 @@ bool gdeGameDefinition::HasActiveParticleEmitter() const{
 	return pActiveParticleEmitter != NULL;
 }
 
-void gdeGameDefinition::SetActiveParticleEmitter(gdeParticleEmitter *particleEmitter){
+void gdeGameDefinition::SetActiveParticleEmitter(gdeParticleEmitter::Ref particleEmitter){
 	if(particleEmitter == pActiveParticleEmitter){
 		return;
 	}
-	
-	if(pActiveParticleEmitter){
-		pActiveParticleEmitter->FreeReference();
-	}
-	
 	pActiveParticleEmitter = particleEmitter;
-	
-	if(particleEmitter){
-		particleEmitter->AddReference();
-	}
-	
 	NotifyActiveParticleEmitterChanged();
 }
 
@@ -1195,17 +1025,7 @@ void gdeGameDefinition::SetActiveSkin(gdeSkin *skin){
 	if(skin == pActiveSkin){
 		return;
 	}
-	
-	if(pActiveSkin){
-		pActiveSkin->FreeReference();
-	}
-	
 	pActiveSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
-	
 	NotifyActiveSkinChanged();
 }
 
@@ -1269,17 +1089,7 @@ void gdeGameDefinition::SetActiveSky(gdeSky *sky){
 	if(sky == pActiveSky){
 		return;
 	}
-	
-	if(pActiveSky){
-		pActiveSky->FreeReference();
-	}
-	
 	pActiveSky = sky;
-	
-	if(sky){
-		sky->AddReference();
-	}
-	
 	NotifyActiveSkyChanged();
 }
 
@@ -1485,7 +1295,7 @@ void gdeGameDefinition::NotifyObjectClassStructureChanged(){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyObjectClassChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyObjectClassChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1496,7 +1306,7 @@ void gdeGameDefinition::NotifyObjectClassChanged(gdeObjectClass *objectClass){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyObjectClassNameChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyObjectClassNameChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1508,7 +1318,7 @@ void gdeGameDefinition::NotifyObjectClassNameChanged(gdeObjectClass *objectClass
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCPropertyChanged(gdeObjectClass *objectClass, gdeProperty *property){
+void gdeGameDefinition::NotifyOCPropertyChanged(gdeObjectClass::Ref objectClass, gdeProperty *property){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1519,7 +1329,7 @@ void gdeGameDefinition::NotifyOCPropertyChanged(gdeObjectClass *objectClass, gde
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCPropertyNameChanged(gdeObjectClass *objectClass, gdeProperty *property){
+void gdeGameDefinition::NotifyOCPropertyNameChanged(gdeObjectClass::Ref objectClass, gdeProperty *property){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1530,7 +1340,7 @@ void gdeGameDefinition::NotifyOCPropertyNameChanged(gdeObjectClass *objectClass,
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCPropertiesChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCPropertiesChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1541,7 +1351,7 @@ void gdeGameDefinition::NotifyOCPropertiesChanged(gdeObjectClass *objectClass){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCPropertyValuesChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCPropertyValuesChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1552,7 +1362,7 @@ void gdeGameDefinition::NotifyOCPropertyValuesChanged(gdeObjectClass *objectClas
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCTexturePropertyChanged(gdeObjectClass *objectClass, gdeProperty *property){
+void gdeGameDefinition::NotifyOCTexturePropertyChanged(gdeObjectClass::Ref objectClass, gdeProperty *property){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1563,7 +1373,7 @@ void gdeGameDefinition::NotifyOCTexturePropertyChanged(gdeObjectClass *objectCla
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCTexturePropertyNameChanged(gdeObjectClass *objectClass, gdeProperty *property){
+void gdeGameDefinition::NotifyOCTexturePropertyNameChanged(gdeObjectClass::Ref objectClass, gdeProperty *property){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1574,7 +1384,7 @@ void gdeGameDefinition::NotifyOCTexturePropertyNameChanged(gdeObjectClass *objec
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCTexturePropertiesChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCTexturePropertiesChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1585,7 +1395,7 @@ void gdeGameDefinition::NotifyOCTexturePropertiesChanged(gdeObjectClass *objectC
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCInheritChanged(gdeObjectClass *objectClass, gdeOCInherit *inherit){
+void gdeGameDefinition::NotifyOCInheritChanged(gdeObjectClass::Ref objectClass, gdeOCInherit *inherit){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1596,7 +1406,7 @@ void gdeGameDefinition::NotifyOCInheritChanged(gdeObjectClass *objectClass, gdeO
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCInheritsChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCInheritsChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1607,7 +1417,7 @@ void gdeGameDefinition::NotifyOCInheritsChanged(gdeObjectClass *objectClass){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCBillboardsChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCBillboardsChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1618,7 +1428,7 @@ void gdeGameDefinition::NotifyOCBillboardsChanged(gdeObjectClass *objectClass){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCBillboardChanged(gdeObjectClass *objectClass, gdeOCBillboard *billboard){
+void gdeGameDefinition::NotifyOCBillboardChanged(gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1629,7 +1439,7 @@ void gdeGameDefinition::NotifyOCBillboardChanged(gdeObjectClass *objectClass, gd
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCCamerasChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCCamerasChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1640,7 +1450,7 @@ void gdeGameDefinition::NotifyOCCamerasChanged(gdeObjectClass *objectClass){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCCameraChanged(gdeObjectClass *objectClass, gdeOCCamera *camera){
+void gdeGameDefinition::NotifyOCCameraChanged(gdeObjectClass::Ref objectClass, gdeOCCamera::Ref camera){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1651,7 +1461,7 @@ void gdeGameDefinition::NotifyOCCameraChanged(gdeObjectClass *objectClass, gdeOC
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCComponentsChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCComponentsChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1662,7 +1472,7 @@ void gdeGameDefinition::NotifyOCComponentsChanged(gdeObjectClass *objectClass){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCComponentChanged(gdeObjectClass *objectClass, gdeOCComponent *component){
+void gdeGameDefinition::NotifyOCComponentChanged(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1674,7 +1484,7 @@ void gdeGameDefinition::NotifyOCComponentChanged(gdeObjectClass *objectClass, gd
 }
 
 void gdeGameDefinition::NotifyOCComponentActiveTextureChanged(
-gdeObjectClass *objectClass, gdeOCComponent *component){
+gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1684,8 +1494,8 @@ gdeObjectClass *objectClass, gdeOCComponent *component){
 	}
 }
 
-void gdeGameDefinition::NotifyOCComponentTextureChanged(gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture *texture){
+void gdeGameDefinition::NotifyOCComponentTextureChanged(gdeObjectClass::Ref objectClass,
+gdeOCComponent::Ref component, gdeOCComponentTexture *texture){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1697,8 +1507,8 @@ gdeOCComponent *component, gdeOCComponentTexture *texture){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCComponentTextureNameChanged(gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture *texture){
+void gdeGameDefinition::NotifyOCComponentTextureNameChanged(gdeObjectClass::Ref objectClass,
+gdeOCComponent::Ref component, gdeOCComponentTexture *texture){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1710,8 +1520,8 @@ gdeOCComponent *component, gdeOCComponentTexture *texture){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCComponentTexturePropertiesChanged(gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture *texture){
+void gdeGameDefinition::NotifyOCComponentTexturePropertiesChanged(gdeObjectClass::Ref objectClass,
+gdeOCComponent::Ref component, gdeOCComponentTexture *texture){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1723,7 +1533,7 @@ gdeOCComponent *component, gdeOCComponentTexture *texture){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCEnvMapProbesChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCEnvMapProbesChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1734,7 +1544,7 @@ void gdeGameDefinition::NotifyOCEnvMapProbesChanged(gdeObjectClass *objectClass)
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCEnvMapProbeChanged(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe){
+void gdeGameDefinition::NotifyOCEnvMapProbeChanged(gdeObjectClass::Ref objectClass, gdeOCEnvMapProbe::Ref envMapProbe){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1746,7 +1556,7 @@ void gdeGameDefinition::NotifyOCEnvMapProbeChanged(gdeObjectClass *objectClass, 
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCLightsChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCLightsChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1757,7 +1567,7 @@ void gdeGameDefinition::NotifyOCLightsChanged(gdeObjectClass *objectClass){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCLightChanged(gdeObjectClass *objectClass, gdeOCLight *light){
+void gdeGameDefinition::NotifyOCLightChanged(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1768,7 +1578,7 @@ void gdeGameDefinition::NotifyOCLightChanged(gdeObjectClass *objectClass, gdeOCL
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCNavigationBlockersChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCNavigationBlockersChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1780,7 +1590,7 @@ void gdeGameDefinition::NotifyOCNavigationBlockersChanged(gdeObjectClass *object
 }
 
 void gdeGameDefinition::NotifyOCNavigationBlockerChanged(
-gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker){
+gdeObjectClass::Ref objectClass, gdeOCNavigationBlocker::Ref navblocker){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1792,7 +1602,7 @@ gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCNavigationSpacesChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCNavigationSpacesChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1804,7 +1614,7 @@ void gdeGameDefinition::NotifyOCNavigationSpacesChanged(gdeObjectClass *objectCl
 }
 
 void gdeGameDefinition::NotifyOCNavigationSpaceChanged(
-gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace){
+gdeObjectClass::Ref objectClass, gdeOCNavigationSpace *navspace){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1816,7 +1626,7 @@ gdeObjectClass *objectClass, gdeOCNavigationSpace *navspace){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCParticleEmittersChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCParticleEmittersChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1828,7 +1638,7 @@ void gdeGameDefinition::NotifyOCParticleEmittersChanged(gdeObjectClass *objectCl
 }
 
 void gdeGameDefinition::NotifyOCParticleEmitterChanged(
-gdeObjectClass *objectClass, gdeOCParticleEmitter *emitter){
+gdeObjectClass::Ref objectClass, gdeOCParticleEmitter::Ref emitter){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1840,7 +1650,7 @@ gdeObjectClass *objectClass, gdeOCParticleEmitter *emitter){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCForceFieldsChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCForceFieldsChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1852,7 +1662,7 @@ void gdeGameDefinition::NotifyOCForceFieldsChanged(gdeObjectClass *objectClass){
 }
 
 void gdeGameDefinition::NotifyOCForceFieldChanged(
-gdeObjectClass *objectClass, gdeOCForceField *field){
+gdeObjectClass::Ref objectClass, gdeOCForceField::Ref field){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1864,7 +1674,7 @@ gdeObjectClass *objectClass, gdeOCForceField *field){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCSnapPointsChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCSnapPointsChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1875,8 +1685,8 @@ void gdeGameDefinition::NotifyOCSnapPointsChanged(gdeObjectClass *objectClass){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCSnapPointChanged(gdeObjectClass *objectClass,
-gdeOCSnapPoint *snappoint){
+void gdeGameDefinition::NotifyOCSnapPointChanged(gdeObjectClass::Ref objectClass,
+gdeOCSnapPoint::Ref snappoint){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1888,8 +1698,8 @@ gdeOCSnapPoint *snappoint){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCSnapPointNameChanged(gdeObjectClass *objectClass,
-gdeOCSnapPoint *snappoint){
+void gdeGameDefinition::NotifyOCSnapPointNameChanged(gdeObjectClass::Ref objectClass,
+gdeOCSnapPoint::Ref snappoint){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1901,7 +1711,7 @@ gdeOCSnapPoint *snappoint){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCSpeakersChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCSpeakersChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1912,7 +1722,7 @@ void gdeGameDefinition::NotifyOCSpeakersChanged(gdeObjectClass *objectClass){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCSpeakerChanged(gdeObjectClass *objectClass, gdeOCSpeaker *speaker){
+void gdeGameDefinition::NotifyOCSpeakerChanged(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1924,7 +1734,7 @@ void gdeGameDefinition::NotifyOCSpeakerChanged(gdeObjectClass *objectClass, gdeO
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCWorldsChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCWorldsChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1935,7 +1745,7 @@ void gdeGameDefinition::NotifyOCWorldsChanged(gdeObjectClass *objectClass){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCWorldChanged(gdeObjectClass *objectClass, gdeOCWorld *world){
+void gdeGameDefinition::NotifyOCWorldChanged(gdeObjectClass::Ref objectClass, gdeOCWorld *world){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1946,7 +1756,7 @@ void gdeGameDefinition::NotifyOCWorldChanged(gdeObjectClass *objectClass, gdeOCW
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCTexturesChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCTexturesChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1957,7 +1767,7 @@ void gdeGameDefinition::NotifyOCTexturesChanged(gdeObjectClass *objectClass){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCTextureChanged(gdeObjectClass *objectClass, gdeOCComponentTexture *texture){
+void gdeGameDefinition::NotifyOCTextureChanged(gdeObjectClass::Ref objectClass, gdeOCComponentTexture *texture){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1968,7 +1778,7 @@ void gdeGameDefinition::NotifyOCTextureChanged(gdeObjectClass *objectClass, gdeO
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyOCActiveTextureChanged(gdeObjectClass *objectClass){
+void gdeGameDefinition::NotifyOCActiveTextureChanged(gdeObjectClass::Ref objectClass){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -2107,7 +1917,7 @@ void gdeGameDefinition::NotifyParticleEmitterStructureChanged(){
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyParticleEmitterChanged(gdeParticleEmitter *particleEmitter){
+void gdeGameDefinition::NotifyParticleEmitterChanged(gdeParticleEmitter::Ref particleEmitter){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -2118,7 +1928,7 @@ void gdeGameDefinition::NotifyParticleEmitterChanged(gdeParticleEmitter *particl
 	SetChanged(true);
 }
 
-void gdeGameDefinition::NotifyParticleEmitterNameChanged(gdeParticleEmitter *particleEmitter){
+void gdeGameDefinition::NotifyParticleEmitterNameChanged(gdeParticleEmitter::Ref particleEmitter){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -2279,13 +2089,5 @@ void gdeGameDefinition::pCleanUp(){
 	pEnvObject = nullptr;
 	if(pCamera){
 		delete pCamera;
-	}
-	
-	if(pWorld){
-		pWorld->FreeReference();
-	}
-	
-	if(pVFS){
-		pVFS->FreeReference();
 	}
 }

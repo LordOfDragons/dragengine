@@ -51,14 +51,9 @@ reUConstraintSetOrientation::reUConstraintSetOrientation(reRigConstraint *constr
 	pNewOrientation = newOrientation;
 	
 	SetShortInfo("Constraint set orientation");
-	
-	pConstraint->AddReference();
 }
 
 reUConstraintSetOrientation::~reUConstraintSetOrientation(){
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 }
 
 

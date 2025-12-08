@@ -43,7 +43,7 @@ class meObjectList;
 class meUSetObjectClass : public igdeUndo{
 private:
 	struct sObject{
-		meObject *object;
+		meObject::Ref object;
 		decString oldcname;
 		decString newcname;
 		decVector oldsize;
@@ -59,7 +59,7 @@ public:
 	typedef deTObjectReference<meUSetObjectClass> Ref;
 	
 	// constructor, destructor
-	meUSetObjectClass(meObject *object, const char *newcname);
+	meUSetObjectClass(meObject::Ref object, const char *newcname);
 	meUSetObjectClass(meObjectList &objects, const char *newcname);
 	
 protected:

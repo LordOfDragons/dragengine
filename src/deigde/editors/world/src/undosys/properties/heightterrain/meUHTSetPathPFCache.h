@@ -44,7 +44,7 @@ class meHeightTerrainSector;
  */
 class meUHTSetPathPFCache : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
 	
 	decString pOldPath;
@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetPathPFCache(meWorld *world, meHeightTerrainSector *sector, const char *newPath);
+	meUHTSetPathPFCache(meWorld::Ref world, meHeightTerrainSector *sector, const char *newPath);
 	
 protected:
 	/** \brief Clean up object. */

@@ -82,9 +82,9 @@ public:
 	
 	
 private:
-	deFont *pEngFont;
+	deFont::Ref pEngFont;
 	
-	feFontImage *pFontImage;
+	feFontImage::Ref pFontImage;
 	int pLineHeight, pBaseLine;
 	bool pColorFont;
 	feFontGlyphList pGlyphs;

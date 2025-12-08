@@ -41,8 +41,8 @@
 ////////////////////////////
 
 gdeUOCBillboardToggleDoNotScale::gdeUOCBillboardToggleDoNotScale(
-gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
-pObjectClass(NULL),
+gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard) :
+
 pBillboard(NULL)
 {
 	if(!objectClass || !billboard){
@@ -52,19 +52,10 @@ pBillboard(NULL)
 	SetShortInfo("Billboard toggle do not scale");
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardToggleDoNotScale::~gdeUOCBillboardToggleDoNotScale(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

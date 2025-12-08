@@ -64,7 +64,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push link. */
-	void PushLink(dsRunTime *rt, deSky *sky, int index);
+	void PushLink(dsRunTime *rt, deSky::Ref sky, int index);
 	/*@}*/
 	
 	

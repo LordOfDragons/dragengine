@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetTexMask::meUHTSetTexMask(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const char *newPath){
+meUHTSetTexMask::meUHTSetTexMask(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture, const char *newPath){
 	if(!world || !sector || !texture || !newPath) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
@@ -52,11 +52,7 @@ meUHTSetTexMask::meUHTSetTexMask(meWorld *world, meHeightTerrainSector *sector, 
 	pNewPath = newPath;
 	
 	SetShortInfo("Set Height Terrain Texture Mask");
-	
-	world->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUHTSetTexMask::~meUHTSetTexMask(){

@@ -40,8 +40,8 @@
 ////////////////////////////
 
 projUProfileSetWindowSize::projUProfileSetWindowSize(
-projProfile *profile, const decPoint &newValue) :
-pProfile(NULL),
+projProfile::Ref profile, const decPoint &newValue) :
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetWindowSize();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetWindowSize::~projUProfileSetWindowSize(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

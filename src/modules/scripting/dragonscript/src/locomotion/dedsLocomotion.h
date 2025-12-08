@@ -121,11 +121,11 @@ private:
 	
 	bool pCanTilt;
 	eTiltModes pTiltMode;
-	deColliderCollisionTest *pCCTTiltSingle;
-	deColliderCollisionTest *pCCTTiltFrontLeft;
-	deColliderCollisionTest *pCCTTiltFrontRight;
-	deColliderCollisionTest *pCCTTiltBackLeft;
-	deColliderCollisionTest *pCCTTiltBackRight;
+	deColliderCollisionTest::Ref pCCTTiltSingle;
+	deColliderCollisionTest::Ref pCCTTiltFrontLeft;
+	deColliderCollisionTest::Ref pCCTTiltFrontRight;
+	deColliderCollisionTest::Ref pCCTTiltBackLeft;
+	deColliderCollisionTest::Ref pCCTTiltBackRight;
 	
 	float pLimitTiltUp;
 	float pLimitTiltDown;
@@ -141,7 +141,7 @@ private:
 	int pControllerMappingCount;
 	int pControllerMappingSize;
 	
-	deCollider *pAICollider;
+	deCollider::Ref pAICollider;
 	bool pUpdateAIColliderAngularVelocity;
 	
 public:
@@ -396,31 +396,31 @@ public:
 	inline deColliderCollisionTest *GetCCTTiltSingle() const{ return pCCTTiltSingle; }
 	
 	/** \brief Set single collider collision test for tilt calculation or NULL if not set. */
-	void SetCCTTiltSingle(deColliderCollisionTest *collisionTest);
+	void SetCCTTiltSingle(deColliderCollisionTest::Ref collisionTest);
 	
 	/** \brief Front left collider collision test for tilt calculation or NULL if not set. */
 	inline deColliderCollisionTest *GetCCTTiltFrontLeft() const{ return pCCTTiltFrontLeft; }
 	
 	/** \brief Set front left collider collision test for tilt calculation or NULL if not set. */
-	void SetCCTTiltFrontLeft(deColliderCollisionTest *collisionTest);
+	void SetCCTTiltFrontLeft(deColliderCollisionTest::Ref collisionTest);
 	
 	/** \brief Front right collider collision test for tilt calculation or NULL if not set. */
 	inline deColliderCollisionTest *GetCCTTiltFrontRight() const{ return pCCTTiltFrontRight; }
 	
 	/** \brief Set front right collider collision test for tilt calculation or NULL if not set. */
-	void SetCCTTiltFrontRight(deColliderCollisionTest *collisionTest);
+	void SetCCTTiltFrontRight(deColliderCollisionTest::Ref collisionTest);
 	
 	/** \brief Back left collider collision test for tilt calculation or NULL if not set. */
 	inline deColliderCollisionTest *GetCCTTiltBackLeft() const{ return pCCTTiltBackLeft; }
 	
 	/** \brief Set back left collider collision test for tilt calculation or NULL if not set. */
-	void SetCCTTiltBackLeft(deColliderCollisionTest *collisionTest);
+	void SetCCTTiltBackLeft(deColliderCollisionTest::Ref collisionTest);
 	
 	/** \brief Back right collider collision test for tilt calculation or NULL if not set. */
 	inline deColliderCollisionTest *GetCCTTiltBackRight() const{ return pCCTTiltBackRight; }
 	
 	/** \brief Set back right collider collision test for tilt calculation or NULL if not set. */
-	void SetCCTTiltBackRight(deColliderCollisionTest *collisionTest);
+	void SetCCTTiltBackRight(deColliderCollisionTest::Ref collisionTest);
 	
 	
 	
@@ -504,7 +504,7 @@ public:
 	inline deCollider *GetAICollider() const{ return pAICollider; }
 	
 	/** \brief Set AI Collider to update or NULL if not used. */
-	void SetAICollider(deCollider *collider);
+	void SetAICollider(deCollider::Ref collider);
 	
 	/** \brief Determine if the angular velocity of the AI collider is updated. */
 	inline bool GetUpdateAIColliderAngularVelocity() const{ return pUpdateAIColliderAngularVelocity; }

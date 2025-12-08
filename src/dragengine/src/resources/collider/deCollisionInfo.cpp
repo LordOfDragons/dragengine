@@ -48,10 +48,7 @@ deCollisionInfo::deCollisionInfo() :
 pOwnerBone(-1),
 pOwnerShape(-1),
 pOwnerFace(-1),
-
-pHeightTerrain(NULL),
 pHTSector(NULL),
-pCollider(NULL),
 pBone(-1),
 pShape(-1),
 pFace(-1),
@@ -70,10 +67,7 @@ deCollisionInfo::deCollisionInfo(const deCollisionInfo &info) :
 pOwnerBone(info.pOwnerBone),
 pOwnerShape(info.pOwnerShape),
 pOwnerFace(info.pOwnerFace),
-
-pHeightTerrain(NULL),
 pHTSector(info.pHTSector),
-pCollider(NULL),
 pBone(info.pBone),
 pShape(info.pShape),
 pFace(info.pFace),
@@ -89,11 +83,9 @@ pStopTesting(info.pStopTesting)
 {
 	if(info.pHeightTerrain){
 		pHeightTerrain = info.pHeightTerrain;
-		pHeightTerrain->AddReference();
 	}
 	if(info.pCollider){
 		pCollider = info.pCollider;
-		pCollider->AddReference();
 	}
 }
 
@@ -149,7 +141,6 @@ void deCollisionInfo::SetHTSector(deHeightTerrain *heightTerrain, deHeightTerrai
 	Clear();
 	
 	pHeightTerrain = heightTerrain;
-	pHeightTerrain->AddReference();
 	pHTSector = sector;
 }
 
@@ -161,7 +152,6 @@ void deCollisionInfo::SetCollider(deCollider *collider, int bone, int shape, int
 	Clear();
 	
 	pCollider = collider;
-	pCollider->AddReference();
 	pBone = bone;
 	pShape = shape;
 	pFace = face;
@@ -169,13 +159,11 @@ void deCollisionInfo::SetCollider(deCollider *collider, int bone, int shape, int
 
 void deCollisionInfo::Clear(){
 	if(pHeightTerrain){
-		pHeightTerrain->FreeReference();
 		pHeightTerrain = NULL;
 	}
 	pHTSector = NULL;
 	
 	if(pCollider){
-		pCollider->FreeReference();
 		pCollider = NULL;
 	}
 	pBone = -1;
@@ -252,14 +240,8 @@ deCollisionInfo &deCollisionInfo::operator=(const deCollisionInfo &info){
 	pOwnerFace = info.pOwnerFace;
 	
 	pHeightTerrain = info.pHeightTerrain;
-	if(pHeightTerrain){
-		pHeightTerrain->AddReference();
-	}
 	pHTSector = info.pHTSector;
 	pCollider = info.pCollider;
-	if(pCollider){
-		pCollider->AddReference();
-	}
 	pBone = info.pBone;
 	pShape = info.pShape;
 	pFace = info.pFace;

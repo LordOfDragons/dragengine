@@ -39,7 +39,7 @@ class ceWPTTIMAPlayerChoiceOption;
  */
 class ceWPTTIMAPlayerChoiceOptionCondition : public ceWPTTIMConditionContainer{
 private:
-	ceCAPlayerChoiceOption *pOption;
+	ceCAPlayerChoiceOption::Ref pOption;
 	
 	
 	
@@ -48,7 +48,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	ceWPTTIMAPlayerChoiceOptionCondition(ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option);
+		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption::Ref option);
 	
 protected:
 	/** \brief Clean up tree item model. */

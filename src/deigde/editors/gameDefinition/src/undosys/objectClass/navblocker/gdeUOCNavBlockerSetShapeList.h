@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavBlockerSetShapeList : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	decShapeList pOldValue;
 	decShapeList pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavBlockerSetShapeList(gdeObjectClass *objectClass,
-		gdeOCNavigationBlocker *navblocker, const decShapeList &newValue);
+	gdeUOCNavBlockerSetShapeList(gdeObjectClass::Ref objectClass,
+		gdeOCNavigationBlocker::Ref navblocker, const decShapeList &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

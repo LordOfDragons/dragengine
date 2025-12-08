@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCLogicSetOperator::ceUCCLogicSetOperator(ceConversationTopic *topic,
-ceConversationAction *action, ceCConditionLogic *logic,
+ceUCCLogicSetOperator::ceUCCLogicSetOperator(ceConversationTopic::Ref topic,
+ceConversationAction::Ref action, ceCConditionLogic::Ref logic,
 ceCConditionLogic::eOperators newOperator){
 	if(!topic || !action || !logic) DETHROW(deeInvalidParam);
 	
@@ -55,25 +55,11 @@ ceCConditionLogic::eOperators newOperator){
 	SetShortInfo("Logic Set Operator");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pLogic = logic;
-	logic->AddReference();
 }
 
 ceUCCLogicSetOperator::~ceUCCLogicSetOperator(){
-	if(pLogic){
-		pLogic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

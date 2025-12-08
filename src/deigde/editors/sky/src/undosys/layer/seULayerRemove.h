@@ -36,8 +36,8 @@ class seSky;
  */
 class seULayerRemove : public igdeUndo{
 private:
-	seSky *pSky;
-	seLayer *pLayer;
+	seSky::Ref pSky;
+	seLayer::Ref pLayer;
 	int pIndex;
 	
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerRemove(seLayer *layer);
+	seULayerRemove(seLayer::Ref layer);
 	
 protected:
 	/** \brief Clean up undo action. */

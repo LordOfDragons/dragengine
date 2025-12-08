@@ -42,10 +42,10 @@ class reRigPush;
  */
 class reCLHitListEntry{
 private:
-	reRigBone *pBone;
-	reRigShape *pShape;
-	reRigConstraint *pConstraint;
-	reRigPush *pPush;
+	reRigBone::Ref pBone;
+	reRigShape::Ref pShape;
+	reRigConstraint::Ref pConstraint;
+	reRigPush::Ref pPush;
 	float pDistance;
 	decVector pNormal;
 	
@@ -61,19 +61,19 @@ public:
 	/** Retrieves the rig bone or NULL. */
 	inline reRigBone *GetBone() const{ return pBone; }
 	/** Sets the rig bone or NULL. */
-	void SetBone(reRigBone *bone);
+	void SetBone(reRigBone::Ref bone);
 	/** Retrieves the rig shape or NULL. */
 	inline reRigShape *GetShape() const{ return pShape; }
 	/** Sets the rig shape. */
-	void SetShape(reRigShape *shape);
+	void SetShape(reRigShape::Ref shape);
 	/** Retrieves the rig constraint or NULL. */
 	inline reRigConstraint *GetConstraint() const{ return pConstraint; }
 	/** Sets the rig constraint. */
-	void SetConstraint(reRigConstraint *constraint);
+	void SetConstraint(reRigConstraint::Ref constraint);
 	/** Retrieves the rig push or NULL. */
 	inline reRigPush *GetPush() const{ return pPush; }
 	/** Sets the rig push. */
-	void SetPush(reRigPush *push);
+	void SetPush(reRigPush::Ref push);
 	
 	/** Retrieves the distance. */
 	inline float GetDistance() const{ return pDistance; }

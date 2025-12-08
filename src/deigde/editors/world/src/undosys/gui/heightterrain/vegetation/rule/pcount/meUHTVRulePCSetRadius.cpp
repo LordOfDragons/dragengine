@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRulePCSetRadius::meUHTVRulePCSetRadius(meHTVegetationLayer *vlayer, meHTVRulePropCount *rule, float nradius){
+meUHTVRulePCSetRadius::meUHTVRulePCSetRadius(meHTVegetationLayer::Ref vlayer, meHTVRulePropCount::Ref rule, float nradius){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
@@ -53,9 +53,7 @@ meUHTVRulePCSetRadius::meUHTVRulePCSetRadius(meHTVegetationLayer *vlayer, meHTVR
 	pNewRadius = nradius;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRulePCSetRadius::~meUHTVRulePCSetRadius(){

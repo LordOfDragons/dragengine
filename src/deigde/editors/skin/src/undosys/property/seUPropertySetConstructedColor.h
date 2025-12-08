@@ -38,7 +38,7 @@ class seProperty;
  */
 class seUPropertySetConstructedColor : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	decColor pOldValue;
 	decColor pNewValue;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUPropertySetConstructedColor(seProperty *property, const decColor &newValue);
+	seUPropertySetConstructedColor(seProperty::Ref property, const decColor &newValue);
 	
 protected:
 	/** \brief Clean up undo. */

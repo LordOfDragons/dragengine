@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACoordSysRemoveSetCoordSysID::ceUCACoordSysRemoveSetCoordSysID(ceConversationTopic *topic,
-ceCACoordSystemRemove *action, const char *newCoordSystemID){
+ceUCACoordSysRemoveSetCoordSysID::ceUCACoordSysRemoveSetCoordSysID(ceConversationTopic::Ref topic,
+ceCACoordSystemRemove::Ref action, const char *newCoordSystemID){
 	if(!topic || !newCoordSystemID){
 		DETHROW(deeInvalidParam);
 	}
@@ -55,19 +55,10 @@ ceCACoordSystemRemove *action, const char *newCoordSystemID){
 	SetShortInfo("Coord system remove set coord system id");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCACoordSysRemoveSetCoordSysID::~ceUCACoordSysRemoveSetCoordSysID(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

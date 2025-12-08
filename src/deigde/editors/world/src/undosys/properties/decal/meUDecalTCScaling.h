@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalTCScaling : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	decVector2 pOldScaling;
 	decVector2 pNewScaling;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalTCScaling(meDecal *decal, const decVector2 &newScaling);
+	meUDecalTCScaling(meDecal::Ref decal, const decVector2 &newScaling);
 	
 protected:
 	/** \brief Clean up undo object. */

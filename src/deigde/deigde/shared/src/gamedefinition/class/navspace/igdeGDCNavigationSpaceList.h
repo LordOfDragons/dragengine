@@ -64,22 +64,22 @@ public:
 	igdeGDCNavigationSpace *GetAt(int index) const;
 	
 	/** \brief Index of an navigation space or -1 if not found. */
-	int IndexOf(igdeGDCNavigationSpace *navSpace) const;
+	int IndexOf(igdeGDCNavigationSpace::Ref navSpace) const;
 	
 	/** \brief Determines if an navigation space exists. */
-	bool Has(igdeGDCNavigationSpace *navSpace) const;
+	bool Has(igdeGDCNavigationSpace::Ref navSpace) const;
 	
 	/** \brief Adds an navigation space. */
-	void Add(igdeGDCNavigationSpace *navSpace);
+	void Add(igdeGDCNavigationSpace::Ref navSpace);
 	
 	/** \brief Inserts a new navigation space. */
-	void InsertAt(igdeGDCNavigationSpace *navSpace, int index);
+	void InsertAt(igdeGDCNavigationSpace::Ref navSpace, int index);
 	
 	/** \brief Moves an navigation space to a new position. */
-	void MoveTo(igdeGDCNavigationSpace *navSpace, int index);
+	void MoveTo(igdeGDCNavigationSpace::Ref navSpace, int index);
 	
 	/** \brief Removes an navigation space. */
-	void Remove(igdeGDCNavigationSpace *navSpace);
+	void Remove(igdeGDCNavigationSpace::Ref navSpace);
 	
 	/** \brief Removes all navigation spaces. */
 	void RemoveAll();

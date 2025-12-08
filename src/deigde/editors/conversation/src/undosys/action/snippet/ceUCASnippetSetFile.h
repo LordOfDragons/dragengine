@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCASnippetSetFile : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASnippet *pSnippet;
+	ceConversationTopic::Ref pTopic;
+	ceCASnippet::Ref pSnippet;
 	decString pOldFile;
 	decString pNewFile;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASnippetSetFile(ceConversationTopic *topic, ceCASnippet *snippet, const char *newFile);
+	ceUCASnippetSetFile(ceConversationTopic::Ref topic, ceCASnippet::Ref snippet, const char *newFile);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCASnippetSetFile();

@@ -36,7 +36,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUSetObjectRotation::meUSetObjectRotation(meObject *object, const decVector &newRotation){
+meUSetObjectRotation::meUSetObjectRotation(meObject::Ref object, const decVector &newRotation){
 	if(!object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
@@ -48,7 +48,6 @@ meUSetObjectRotation::meUSetObjectRotation(meObject *object, const decVector &ne
 	SetShortInfo("Set Object rotation");
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUSetObjectRotation::~meUSetObjectRotation(){

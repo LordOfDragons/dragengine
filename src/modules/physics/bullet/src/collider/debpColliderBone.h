@@ -85,11 +85,11 @@ private:
 	debpShapeList pShapes;
 	
 	btGhostObject *pStaticCollisionTest;
-	debpBulletShape *pStaticCollisionTestShape;
+	debpBulletShape::Ref pStaticCollisionTestShape;
 	debpCollisionObject pStaticCollisionTestObject;
 	bool pDirtyStaticTest;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSShape;
 	
 	
@@ -206,7 +206,7 @@ public:
 	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	/** Set debug drawer or \em NULL if not activated. */
-	void SetDebugDrawer(deDebugDrawer *debugDrawer);
+	void SetDebugDrawer(deDebugDrawer::Ref debugDrawer);
 	
 	/** Debug drawer shape or \em NULL if not ativated. */
 	inline deDebugDrawerShape *GetDDSShape() const{ return pDDSShape; }

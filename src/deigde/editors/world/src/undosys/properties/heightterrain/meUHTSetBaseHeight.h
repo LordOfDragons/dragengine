@@ -42,7 +42,7 @@ class meHeightTerrain;
  */
 class meUHTSetBaseHeight : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
 	
 	float pOldBaseHeight;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetBaseHeight(meWorld *world, meHeightTerrain *heightTerrain, float newBaseHeight);
+	meUHTSetBaseHeight(meWorld::Ref world, meHeightTerrain *heightTerrain, float newBaseHeight);
 	
 protected:
 	/** \brief Clean up object. */

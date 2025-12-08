@@ -67,10 +67,10 @@ deSynthesizerInstance *deSynthesizerInstanceManager::GetRootSynthesizerInstance(
 }
 
 deSynthesizerInstance *deSynthesizerInstanceManager::CreateSynthesizerInstance(){
-	deSynthesizerInstance *instance = NULL;
+	deSynthesizerInstance::Ref instance = NULL;
 	
 	try{
-		instance = new deSynthesizerInstance(this);
+		instance.TakeOver(new deSynthesizerInstance(this));
 		
 		GetSynthesizerSystem()->LoadSynthesizerInstance(instance);
 		GetAudioSystem()->LoadSynthesizerInstance(instance);
@@ -78,10 +78,6 @@ deSynthesizerInstance *deSynthesizerInstanceManager::CreateSynthesizerInstance()
 		pInstances.Add(instance);
 		
 	}catch(const deException &){
-		if(instance){
-			instance->FreeReference();
-		}
-		
 		throw;
 	}
 	
@@ -105,7 +101,7 @@ void deSynthesizerInstanceManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSynthesizerInstanceManager::SystemSynthesizerLoad(){
-	deSynthesizerInstance *instance = (deSynthesizerInstance*)pInstances.GetRoot();
+	deSynthesizerInstance::Ref instance = (deSynthesizerInstance*)pInstances.GetRoot();
 	deSynthesizerSystem &synthSys = *GetSynthesizerSystem();
 	
 	while(instance){
@@ -118,7 +114,7 @@ void deSynthesizerInstanceManager::SystemSynthesizerLoad(){
 }
 
 void deSynthesizerInstanceManager::SystemSynthesizerUnload(){
-	deSynthesizerInstance *instance = (deSynthesizerInstance*)pInstances.GetRoot();
+	deSynthesizerInstance::Ref instance = (deSynthesizerInstance*)pInstances.GetRoot();
 	
 	while(instance){
 		instance->SetPeerSynthesizer(NULL);
@@ -127,7 +123,7 @@ void deSynthesizerInstanceManager::SystemSynthesizerUnload(){
 }
 
 void deSynthesizerInstanceManager::SystemAudioLoad(){
-	deSynthesizerInstance *instance = (deSynthesizerInstance*)pInstances.GetRoot();
+	deSynthesizerInstance::Ref instance = (deSynthesizerInstance*)pInstances.GetRoot();
 	deAudioSystem &system = *GetAudioSystem();
 	
 	while(instance){
@@ -139,7 +135,7 @@ void deSynthesizerInstanceManager::SystemAudioLoad(){
 }
 
 void deSynthesizerInstanceManager::SystemAudioUnload(){
-	deSynthesizerInstance *instance = (deSynthesizerInstance*)pInstances.GetRoot();
+	deSynthesizerInstance::Ref instance = (deSynthesizerInstance*)pInstances.GetRoot();
 	
 	while(instance){
 		instance->SetPeerAudio(NULL);

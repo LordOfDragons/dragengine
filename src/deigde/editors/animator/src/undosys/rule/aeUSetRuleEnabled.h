@@ -42,7 +42,7 @@ class aeRule;
  */
 class aeUSetRuleEnabled : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

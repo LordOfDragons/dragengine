@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseAdd::ceUCAIfElseAdd(ceConversationTopic *topic, ceCAIfElse *ifElse,
-ceCAIfElseCase *ifcase, ceConversationAction *action, int index){
+ceUCAIfElseAdd::ceUCAIfElseAdd(ceConversationTopic::Ref topic, ceCAIfElse::Ref ifElse,
+ceCAIfElseCase::Ref ifcase, ceConversationAction::Ref action, int index){
 	if(!topic || !ifElse || !action){
 		DETHROW(deeInvalidParam);
 	}
@@ -69,33 +69,14 @@ ceCAIfElseCase *ifcase, ceConversationAction *action, int index){
 	SetShortInfo("IfElse Add Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pIfElse = ifElse;
-	ifElse->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	if(ifcase){
 		pCase = ifcase;
-		ifcase->AddReference();
 	}
 }
 
 ceUCAIfElseAdd::~ceUCAIfElseAdd(){
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

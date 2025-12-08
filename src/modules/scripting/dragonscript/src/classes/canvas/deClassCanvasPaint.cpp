@@ -46,7 +46,7 @@
 
 // Native Structure
 struct sCPaintNatDat{
-	deCanvasPaint *canvas;
+	deCanvasPaint::Ref canvas;
 };
 
 
@@ -426,7 +426,7 @@ deCanvasPaint *deClassCanvasPaint::GetCanvas(dsRealObject *myself) const {
 	return ((sCPaintNatDat*)p_GetNativeData(myself->GetBuffer()))->canvas;
 }
 
-void deClassCanvasPaint::PushCanvas(dsRunTime *rt, deCanvasPaint *canvas){
+void deClassCanvasPaint::PushCanvas(dsRunTime *rt, deCanvasPaint::Ref canvas){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -445,8 +445,6 @@ void deClassCanvasPaint::PushCanvas(dsRunTime *rt, deCanvasPaint *canvas){
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.canvas = canvas;
-		canvas->AddReference();
-		
 		baseClass->AssignCanvas(rt->GetValue(0)->GetRealObject(), canvas);
 		
 	}catch(...){

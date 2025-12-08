@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACoordSysAddSetAliasID::ceUCACoordSysAddSetAliasID(ceConversationTopic *topic,
-ceCACoordSystemAdd *action, const char *newAliasID){
+ceUCACoordSysAddSetAliasID::ceUCACoordSysAddSetAliasID(ceConversationTopic::Ref topic,
+ceCACoordSystemAdd::Ref action, const char *newAliasID){
 	if(!topic || !newAliasID){
 		DETHROW(deeInvalidParam);
 	}
@@ -55,19 +55,10 @@ ceCACoordSystemAdd *action, const char *newAliasID){
 	SetShortInfo("Coord system add set alias id");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCACoordSysAddSetAliasID::~ceUCACoordSysAddSetAliasID(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

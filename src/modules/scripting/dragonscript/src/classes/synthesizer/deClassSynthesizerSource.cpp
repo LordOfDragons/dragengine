@@ -52,8 +52,8 @@
 
 
 struct sSynSNatDat{
-	deSynthesizer *synthesizer;
-	deSynthesizerSource *source;
+	deSynthesizer::Ref synthesizer;
+	deSynthesizerSource::Ref source;
 };
 
 
@@ -384,7 +384,7 @@ deSynthesizerSource *deClassSynthesizerSource::GetSource(dsRealObject *myself) c
 	return ((sSynSNatDat*)p_GetNativeData(myself->GetBuffer()))->source;
 }
 
-void deClassSynthesizerSource::AssignSource(dsRealObject *myself, deSynthesizerSource *source){
+void deClassSynthesizerSource::AssignSource(dsRealObject *myself, deSynthesizerSource::Ref source){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -400,13 +400,9 @@ void deClassSynthesizerSource::AssignSource(dsRealObject *myself, deSynthesizerS
 	}
 	
 	nd.source = source;
-	
-	if(source){
-		source->AddReference();
-	}
 }
 
-void deClassSynthesizerSource::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
+void deClassSynthesizerSource::AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref synthesizer){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -422,13 +418,9 @@ void deClassSynthesizerSource::AssignSynthesizer(dsRealObject *myself, deSynthes
 	}
 	
 	nd.synthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
 }
 
-void deClassSynthesizerSource::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSource *source){
+void deClassSynthesizerSource::PushSource(dsRunTime *rt, deSynthesizer::Ref synthesizer, deSynthesizerSource::Ref source){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

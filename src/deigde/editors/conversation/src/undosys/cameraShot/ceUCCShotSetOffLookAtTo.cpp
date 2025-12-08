@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetOffLookAtTo::ceUCCShotSetOffLookAtTo(ceCameraShot *cameraShot, const decVector &newPos){
+ceUCCShotSetOffLookAtTo::ceUCCShotSetOffLookAtTo(ceCameraShot::Ref cameraShot, const decVector &newPos){
 	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
@@ -50,13 +50,9 @@ ceUCCShotSetOffLookAtTo::ceUCCShotSetOffLookAtTo(ceCameraShot *cameraShot, const
 	pNewPos = newPos;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetOffLookAtTo::~ceUCCShotSetOffLookAtTo(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

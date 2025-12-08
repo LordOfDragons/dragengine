@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveParticleEmitter::gdeUOCRemoveParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter) :
-pObjectClass(NULL),
+gdeUOCRemoveParticleEmitter::gdeUOCRemoveParticleEmitter(gdeObjectClass::Ref objectClass, gdeOCParticleEmitter::Ref particleEmitter) :
+
 pParticleEmitter(NULL)
 {
 	if(!objectClass || !particleEmitter){
@@ -56,19 +56,10 @@ pParticleEmitter(NULL)
 	SetShortInfo("Remove particle emitter");
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveParticleEmitter::~gdeUOCRemoveParticleEmitter(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

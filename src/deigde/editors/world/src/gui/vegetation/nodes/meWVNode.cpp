@@ -173,10 +173,9 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-meWVNode::meWVNode(meWindowVegetation &windowVegetation, meHTVRule *rule) :
+meWVNode::meWVNode(meWindowVegetation &windowVegetation, meHTVRule::Ref rule) :
 igdeNVNode(windowVegetation.GetEnvironment(), "Rule"),
-pWindowVegetation(windowVegetation),
-pRule(NULL)
+pWindowVegetation(windowVegetation)
 {
 	if(!rule){
 		DETHROW(deeInvalidParam);
@@ -186,13 +185,9 @@ pRule(NULL)
 	AddListener(cDragNodeListener::Ref::NewWith(*this, pUndoMove));
 	
 	pRule = rule;
-	rule->AddReference();
 }
 
 meWVNode::~meWVNode(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

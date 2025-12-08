@@ -38,9 +38,9 @@ class ceStrip;
  */
 class ceUCAASpeakStripSetDuration : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pStrip;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pStrip;
 	float pOldDuration;
 	float pNewDuration;
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakStripSetDuration(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *strip, float newDuration);
+	ceUCAASpeakStripSetDuration(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref strip, float newDuration);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCAASpeakStripSetDuration();
 	/*@}*/

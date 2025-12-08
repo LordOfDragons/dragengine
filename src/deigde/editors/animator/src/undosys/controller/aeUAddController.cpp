@@ -40,17 +40,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUAddController::aeUAddController(aeAnimator *animator, aeController *controller){
+aeUAddController::aeUAddController(aeAnimator::Ref animator, aeController::Ref controller){
 	if(!animator || !controller) DETHROW(deeInvalidParam);
 	
 	pAnimator = NULL;
 	pController = NULL;
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 aeUAddController::~aeUAddController(){

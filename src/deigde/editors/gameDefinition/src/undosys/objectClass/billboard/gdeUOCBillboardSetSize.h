@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCBillboardSetSize : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	decVector2 pOldValue;
 	decVector2 pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCBillboardSetSize(gdeObjectClass *objectClass,
-		gdeOCBillboard *billboard, const decVector2 &newValue);
+	gdeUOCBillboardSetSize(gdeObjectClass::Ref objectClass,
+		gdeOCBillboard::Ref billboard, const decVector2 &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

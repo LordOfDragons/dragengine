@@ -85,12 +85,8 @@
 
 saeWindowMain::saeWindowMain(saeIGDEModule &module) :
 igdeEditorWindow(module),
-pListener(NULL),
 pConfiguration(NULL),
-pLoadSaveSystem(NULL),
-pViewSAnimation(NULL),
-pWindowProperties(NULL),
-pSAnimation(NULL)
+pLoadSaveSystem(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -98,7 +94,7 @@ pSAnimation(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new saeWindowMainListener(*this);
+	pListener.TakeOver(new saeWindowMainListener(*this));
 	pLoadSaveSystem = new saeLoadSaveSystem(*this);
 	pConfiguration = new saeConfiguration(*this);
 	
@@ -112,10 +108,10 @@ pSAnimation(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	AddChild(splitted);
 	
-	pWindowProperties = new saeWindowProperties(*this);
+	pWindowProperties.TakeOver(new saeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewSAnimation = new saeViewSAnimation(*this);
+	pViewSAnimation.TakeOver(new saeViewSAnimation(*this));
 	splitted->AddChild(pViewSAnimation, igdeContainerSplitted::eaCenter);
 	
 	CreateNewSAnimation();
@@ -130,11 +126,9 @@ saeWindowMain::~saeWindowMain(){
 	SetSAnimation(NULL);
 	
 	if(pWindowProperties){
-		pWindowProperties->FreeReference();
 		pWindowProperties = NULL;
 	}
 	if(pViewSAnimation){
-		pViewSAnimation->FreeReference();
 		pViewSAnimation = NULL;
 	}
 	
@@ -143,9 +137,6 @@ saeWindowMain::~saeWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -164,7 +155,7 @@ void saeWindowMain::ResetViews(){
 
 
 
-void saeWindowMain::SetSAnimation(saeSAnimation *sanimation){
+void saeWindowMain::SetSAnimation(saeSAnimation::Ref sanimation){
 	if(sanimation == pSAnimation){
 		return;
 	}
@@ -177,13 +168,11 @@ void saeWindowMain::SetSAnimation(saeSAnimation *sanimation){
 	if(pSAnimation){
 		pSAnimation->RemoveListener(pListener);
 		pSAnimation->Dispose();
-		pSAnimation->FreeReference();
 	}
 	
 	pSAnimation = sanimation;
 	
 	if(sanimation){
-		sanimation->AddReference();
 		sanimation->AddListener(pListener);
 		
 		pActionEditUndo->SetUndoSystem(sanimation->GetUndoSystem());
@@ -335,7 +324,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(saeSAnimation *sanimation) = 0;
+	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation) = 0;
 };
 
 
@@ -487,7 +476,7 @@ public:
 		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add phoneme", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
+	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation){
 		const saePhonemeList &phonemeList = sanimation->GetPhonemeList();
 		decString ipaStringUtf8;
 		
@@ -526,7 +515,7 @@ public:
 		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Remove phoneme", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
+	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation){
 		saePhoneme * const phoneme = sanimation->GetActivePhoneme();
 		if(!phoneme){
 			return NULL;
@@ -547,7 +536,7 @@ public:
 		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add word", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
+	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation){
 		const saeWordList &wordList = sanimation->GetWordList();
 		decString name;
 		
@@ -580,7 +569,7 @@ public:
 		"Add List...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add words from text list", deInputEvent::ekcL){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
+	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation){
 		const saeWordList &wordList = sanimation->GetWordList();
 		decString input;
 		
@@ -633,7 +622,7 @@ public:
 		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Remove word", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnAction(saeSAnimation *sanimation){
+	virtual igdeUndo *OnAction(saeSAnimation::Ref sanimation){
 		saeWord * const word = sanimation->GetActiveWord();
 		if(!word){
 			return NULL;

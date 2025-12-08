@@ -95,7 +95,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky *sky, seLink *link) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSky::Ref sky, seLink *link) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -118,7 +118,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSky *sky, seLink *link) = 0;
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSky::Ref sky, seLink *link) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -150,7 +150,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSky *sky) = 0;
+	virtual igdeUndo *OnAction(seSky::Ref sky) = 0;
 };
 
 class cBaseActionLink : public cBaseAction{
@@ -164,7 +164,7 @@ public:
 	cBaseActionLink(seWPLink &panel, const char *text, igdeIcon *icon, const char *description) :
 	cBaseAction(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnAction(seSky *sky){
+	virtual igdeUndo *OnAction(seSky::Ref sky){
 		seLink * const link = pPanel.GetLink();
 		if(link){
 			return OnActionLink(sky, link);
@@ -174,7 +174,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnActionLink(seSky *sky, seLink *link) = 0;
+	virtual igdeUndo *OnActionLink(seSky::Ref sky, seLink *link) = 0;
 };
 
 
@@ -213,7 +213,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add a link to the end of the list."){}
 	
-	virtual igdeUndo *OnAction(seSky *sky){
+	virtual igdeUndo *OnAction(seSky::Ref sky){
 		return new seULinkAdd(sky, seLink::Ref::NewWith());
 	}
 };
@@ -224,7 +224,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove the selected link."){}
 	
-	virtual igdeUndo *OnActionLink(seSky *sky, seLink *link){
+	virtual igdeUndo *OnActionLink(seSky::Ref sky, seLink *link){
 		const int usageCount = sky->CountLinkUsage(link);
 		
 		if(usageCount > 0 && igdeCommonDialogs::QuestionFormat(
@@ -337,15 +337,13 @@ public:
 
 seWPLink::seWPLink(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pSky(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPLinkListener(*this);
+	pListener.TakeOver(new seWPLinkListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -377,10 +375,6 @@ pSky(NULL)
 
 seWPLink::~seWPLink(){
 	SetSky(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -388,21 +382,19 @@ seWPLink::~seWPLink(){
 // Management
 ///////////////
 
-void seWPLink::SetSky(seSky *sky){
+void seWPLink::SetSky(seSky::Ref sky){
 	if(sky == pSky){
 		return;
 	}
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;
 	
 	if(sky){
 		sky->AddListener(pListener);
-		sky->AddReference();
 	}
 	
 	UpdateControllerList();

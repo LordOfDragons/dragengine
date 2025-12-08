@@ -70,7 +70,7 @@ struct dedsCachedVegetationInstance{
 class dedsCachedVegetationPropField : public deBaseScriptingPropField{
 private:
 	float pHeight;
-	dePropField *pEngPF;
+	dePropField::Ref pEngPF;
 	dedsCachedVegetationInstance *pInstances;
 	int pInstanceCount;
 	decVector pScalePosition;
@@ -90,7 +90,6 @@ public:
 			if(peer){
 				peer->SetDelegee(NULL);
 			}
-			pEngPF->FreeReference();
 		}
 	}
 	
@@ -215,7 +214,7 @@ private:
 	int pPFCount;
 	int pPFCellCount;
 	float pSectorDim;
-	deWorld *pWorld;
+	deWorld::Ref pWorld;
 	decPoint pCoordinates;
 	decCollisionFilter pCollisionFilter;
 	
@@ -248,13 +247,11 @@ public:
 		if(pPFs) delete [] pPFs;
 	}
 	
-	void SetWorld(deWorld *world){
+	void SetWorld(deWorld::Ref world){
 		if(world != pWorld){
 			int p;
 			
 			if(pWorld){
-				pWorld->FreeReference();
-				
 				for(p=0; p<pPFCount; p++){
 					pWorld->RemovePropField(pPFs[p].GetEnginePF());
 				}
@@ -263,8 +260,6 @@ public:
 			pWorld = world;
 			
 			if(world){
-				world->AddReference();
-				
 				for(p=0; p<pPFCount; p++){
 					world->AddPropField(pPFs[p].GetEnginePF());
 				}
@@ -422,7 +417,7 @@ private:
 	int pSectorSize;
 	float pSectorDim;
 	int pPFCellCount;
-	deWorld *pWorld;
+	deWorld::Ref pWorld;
 	decCollisionFilter pCollisionFilter;
 	
 public:
@@ -443,13 +438,11 @@ public:
 		if(pSectors) delete [] pSectors;
 	}
 	
-	void SetWorld(deWorld *world){
+	void SetWorld(deWorld::Ref world){
 		if(world != pWorld){
 			int s;
 			
 			if(pWorld){
-				pWorld->FreeReference();
-				
 				for(s=0; s<pSectorCount; s++){
 					pSectors[s]->SetWorld(NULL);
 				}
@@ -458,8 +451,6 @@ public:
 			pWorld = world;
 			
 			if(world){
-				world->AddReference();
-				
 				for(s=0; s<pSectorCount; s++){
 					pSectors[s]->SetWorld(world);
 				}

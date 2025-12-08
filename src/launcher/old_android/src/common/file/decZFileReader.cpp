@@ -49,7 +49,7 @@
 ////////////////////////////
 
 decZFileReader::decZFileReader(decBaseFileReader *reader) :
-pReader(NULL),
+
 pFilePosition(0),
 pFileLength(0),
 
@@ -100,7 +100,6 @@ pContentPosition(0)
 	pZStream = zstream;
 	
 	pReader = reader;
-	pReader->AddReference();
 	pFileLength = reader->GetLength();
 	pFilePosition = 1; // one option byte read
 }
@@ -109,10 +108,6 @@ decZFileReader::~decZFileReader(){
 	if(pZStream){
 		inflateEnd((z_stream*)pZStream);
 		delete (z_stream*)pZStream;
-	}
-	
-	if(pReader){
-		pReader->FreeReference();
 	}
 	if(pContent){
 		free(pContent);

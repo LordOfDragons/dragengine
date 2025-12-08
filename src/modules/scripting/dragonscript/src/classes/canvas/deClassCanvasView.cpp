@@ -43,7 +43,7 @@
 
 // Native Structure
 struct sCViewNatDat{
-	deCanvasView *canvas;
+	deCanvasView::Ref canvas;
 };
 
 
@@ -273,7 +273,7 @@ deCanvasView *deClassCanvasView::GetCanvas(dsRealObject *myself) const {
 	return ((sCViewNatDat*)p_GetNativeData(myself->GetBuffer()))->canvas;
 }
 
-void deClassCanvasView::PushCanvas(dsRunTime *rt, deCanvasView *canvas){
+void deClassCanvasView::PushCanvas(dsRunTime *rt, deCanvasView::Ref canvas){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -292,8 +292,6 @@ void deClassCanvasView::PushCanvas(dsRunTime *rt, deCanvasView *canvas){
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.canvas = canvas;
-		canvas->AddReference();
-		
 		baseClass->AssignCanvas(rt->GetValue(0)->GetRealObject(), canvas);
 		
 	}catch(...){

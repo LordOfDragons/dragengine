@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCATriggerSetName::ceUCATriggerSetName(ceConversationTopic *topic, ceCATrigger *action, const char *newName){
+ceUCATriggerSetName::ceUCATriggerSetName(ceConversationTopic::Ref topic, ceCATrigger::Ref action, const char *newName){
 	if(!topic || !action || !newName){
 		DETHROW(deeInvalidParam);
 	}
@@ -54,19 +54,10 @@ ceUCATriggerSetName::ceUCATriggerSetName(ceConversationTopic *topic, ceCATrigger
 	SetShortInfo("Action trigger set name");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCATriggerSetName::~ceUCATriggerSetName(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

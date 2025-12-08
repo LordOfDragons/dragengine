@@ -54,12 +54,7 @@
 
 seViewSynthesizer::seViewSynthesizer(seWindowMain &windowMain) :
 igdeContainerBorder(windowMain.GetEnvironment(), 10),
-pWindowMain(windowMain),
-pSynthesizer(NULL),
-pWPController(NULL),
-pWPLink(NULL),
-pWPSource(NULL),
-pWPSynthesizer(NULL)
+pWindowMain(windowMain)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -70,38 +65,25 @@ pWPSynthesizer(NULL)
 	igdeContainerBox::Ref panels(igdeContainerBox::Ref::NewWith(env, igdeContainerBox::eaX, 10));
 	AddChild(panels, eaCenter);
 	
-	pWPController = new seWPController(*this);
+	pWPController.TakeOver(new seWPController(*this));
 	panels->AddChild(pWPController);
 	helper.Separator(panels, false);
 	
-	pWPLink = new seWPLink(*this);
+	pWPLink.TakeOver(new seWPLink(*this));
 	panels->AddChild(pWPLink);
 	helper.Separator(panels, false);
 	
-	pWPSource = new seWPSource(*this);
+	pWPSource.TakeOver(new seWPSource(*this));
 	panels->AddChild(pWPSource);
 	helper.Separator(panels, false);
 	
 	// right
-	pWPSynthesizer = new seWPSynthesizer(*this);
+	pWPSynthesizer.TakeOver(new seWPSynthesizer(*this));
 	AddChild(pWPSynthesizer, eaRight);
 }
 
 seViewSynthesizer::~seViewSynthesizer(){
 	SetSynthesizer(NULL);
-	
-	if(pWPController){
-		pWPController->FreeReference();
-	}
-	if(pWPLink){
-		pWPLink->FreeReference();
-	}
-	if(pWPSource){
-		pWPSource->FreeReference();
-	}
-	if(pWPSynthesizer){
-		pWPSynthesizer->FreeReference();
-	}
 }
 
 
@@ -109,21 +91,11 @@ seViewSynthesizer::~seViewSynthesizer(){
 // Management
 ///////////////
 
-void seViewSynthesizer::SetSynthesizer(seSynthesizer *synthesizer){
+void seViewSynthesizer::SetSynthesizer(seSynthesizer::Ref synthesizer){
 	if(synthesizer == pSynthesizer){
 		return;
 	}
-	
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
-	
 	pSynthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
-	
 	pWPController->SetSynthesizer(synthesizer);
 	pWPLink->SetSynthesizer(synthesizer);
 	pWPSource->SetSynthesizer(synthesizer);

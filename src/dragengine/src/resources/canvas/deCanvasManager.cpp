@@ -67,17 +67,14 @@ deCanvas *deCanvasManager::GetRootCanvas() const{
 }
 
 deCanvasImage *deCanvasManager::CreateCanvasImage(){
-	deCanvasImage *canvas = NULL;
+	deCanvasImage::Ref canvas = NULL;
 	
 	try{
-		canvas = new deCanvasImage(this);
+		canvas.TakeOver(new deCanvasImage(this));
 		GetGraphicSystem()->LoadCanvas(canvas);
 		pCanvas.Add(canvas);
 		
 	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		throw;
 	}
 	
@@ -88,14 +85,11 @@ deCanvasPaint *deCanvasManager::CreateCanvasPaint(){
 	deCanvasPaint *canvas = NULL;
 	
 	try{
-		canvas = new deCanvasPaint(this);
+		canvas.TakeOver(new deCanvasPaint(this));
 		GetGraphicSystem()->LoadCanvas(canvas);
 		pCanvas.Add(canvas);
 		
 	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		throw;
 	}
 	
@@ -106,14 +100,11 @@ deCanvasCanvasView *deCanvasManager::CreateCanvasCanvasView(){
 	deCanvasCanvasView *canvas = NULL;
 	
 	try{
-		canvas = new deCanvasCanvasView(this);
+		canvas.TakeOver(new deCanvasCanvasView(this));
 		GetGraphicSystem()->LoadCanvas(canvas);
 		pCanvas.Add(canvas);
 		
 	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		throw;
 	}
 	
@@ -124,14 +115,11 @@ deCanvasRenderWorld *deCanvasManager::CreateCanvasRenderWorld(){
 	deCanvasRenderWorld *canvas = NULL;
 	
 	try{
-		canvas = new deCanvasRenderWorld(this);
+		canvas.TakeOver(new deCanvasRenderWorld(this));
 		GetGraphicSystem()->LoadCanvas(canvas);
 		pCanvas.Add(canvas);
 		
 	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		throw;
 	}
 	
@@ -142,14 +130,11 @@ deCanvasText *deCanvasManager::CreateCanvasText(){
 	deCanvasText *canvas = NULL;
 	
 	try{
-		canvas = new deCanvasText(this);
+		canvas.TakeOver(new deCanvasText(this));
 		GetGraphicSystem()->LoadCanvas(canvas);
 		pCanvas.Add(canvas);
 		
 	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		throw;
 	}
 	
@@ -160,14 +145,11 @@ deCanvasVideoPlayer *deCanvasManager::CreateCanvasVideoPlayer(){
 	deCanvasVideoPlayer *canvas = NULL;
 	
 	try{
-		canvas = new deCanvasVideoPlayer(this);
+		canvas.TakeOver(new deCanvasVideoPlayer(this));
 		GetGraphicSystem()->LoadCanvas(canvas);
 		pCanvas.Add(canvas);
 		
 	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		throw;
 	}
 	
@@ -178,14 +160,11 @@ deCanvasView *deCanvasManager::CreateCanvasView(){
 	deCanvasView *canvas = NULL;
 	
 	try{
-		canvas = new deCanvasView(this);
+		canvas.TakeOver(new deCanvasView(this));
 		GetGraphicSystem()->LoadCanvas(canvas);
 		pCanvas.Add(canvas);
 		
 	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		throw;
 	}
 	

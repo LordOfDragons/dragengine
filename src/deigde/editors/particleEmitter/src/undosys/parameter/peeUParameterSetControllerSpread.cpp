@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUParameterSetControllerSpread::peeUParameterSetControllerSpread(peeType *type, peeParameter *parameter, peeController *newController){
+peeUParameterSetControllerSpread::peeUParameterSetControllerSpread(peeType::Ref type, peeParameter *parameter, peeController *newController){
 	if(!type || !parameter){
 		DETHROW(deeInvalidParam);
 	}
@@ -54,29 +54,11 @@ peeUParameterSetControllerSpread::peeUParameterSetControllerSpread(peeType *type
 	SetShortInfo("Set Parameter Spread Curve Controller");
 	
 	pOldController = parameter->GetControllerSpread();
-	if(pOldController){
-		pOldController->AddReference();
-	}
-	
 	pNewController = newController;
-	if(pNewController){
-		pNewController->AddReference();
-	}
-	
 	pType = type;
-	type->AddReference();
 }
 
 peeUParameterSetControllerSpread::~peeUParameterSetControllerSpread(){
-	if(pNewController){
-		pNewController->FreeReference();
-	}
-	if(pOldController){
-		pOldController->FreeReference();
-	}
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

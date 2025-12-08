@@ -44,13 +44,9 @@ pRule(nullptr)
 	SetShortInfo("Rule animation toggle enable vertex position set");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleAnimSelectToggleEnableVertexPositionSet::~aeURuleAnimSelectToggleEnableVertexPositionSet(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

@@ -48,7 +48,7 @@
 
 // Native Sstructure
 struct sSynNatDat{
-	deSynthesizer *synthesizer;
+	deSynthesizer::Ref synthesizer;
 };
 
 
@@ -174,7 +174,7 @@ deClassSynthesizer::nfGetControllerCount::nfGetControllerCount(const sInitData &
 "getControllerCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSynthesizer::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizer *synthesizer = ((sSynNatDat*)p_GetNativeData(myself))->synthesizer;
+	deSynthesizer::Ref synthesizer = ((sSynNatDat*)p_GetNativeData(myself))->synthesizer;
 	rt->PushInt(synthesizer->GetControllerCount());
 }
 
@@ -184,7 +184,7 @@ deClassSynthesizer::nfSetControllerCount::nfSetControllerCount(const sInitData &
 	p_AddParameter(init.clsInt); // count
 }
 void deClassSynthesizer::nfSetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizer *synthesizer = ((sSynNatDat*)p_GetNativeData(myself))->synthesizer;
+	deSynthesizer::Ref synthesizer = ((sSynNatDat*)p_GetNativeData(myself))->synthesizer;
 	int count = rt->GetValue(0)->GetInt();
 	
 	if(count < 0) DSTHROW(dueInvalidParam);
@@ -266,18 +266,13 @@ deClassSynthesizer::nfAddLink::nfAddLink(const sInitData &init) : dsFunction(ini
 void deClassSynthesizer::nfAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
 	deSynthesizer &synthesizer = *(((sSynNatDat*)p_GetNativeData(myself))->synthesizer);
 	
-	deSynthesizerLink *link = NULL;
+	deSynthesizerLink::Ref link = NULL;
 	
 	try{
-		link = new deSynthesizerLink;
+		link.TakeOver(new deSynthesizerLink);
 		link->SetController(rt->GetValue(0)->GetInt());
 		synthesizer.AddLink(link);
-		link->FreeReference();
-		
 	}catch(...){
-		if(link){
-			link->FreeReference();
-		}
 		throw;
 	}
 	
@@ -539,7 +534,7 @@ deSynthesizer *deClassSynthesizer::GetSynthesizer(dsRealObject *myself) const{
 	return ((sSynNatDat*)p_GetNativeData(myself->GetBuffer()))->synthesizer;
 }
 
-void deClassSynthesizer::PushSynthesizer(dsRunTime *rt, deSynthesizer *synthesizer){
+void deClassSynthesizer::PushSynthesizer(dsRunTime *rt, deSynthesizer::Ref synthesizer){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -551,5 +546,4 @@ void deClassSynthesizer::PushSynthesizer(dsRunTime *rt, deSynthesizer *synthesiz
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sSynNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->synthesizer = synthesizer;
-	synthesizer->AddReference();
 }

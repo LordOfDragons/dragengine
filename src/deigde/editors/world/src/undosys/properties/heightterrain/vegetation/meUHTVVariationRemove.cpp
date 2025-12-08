@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVVariationRemove::meUHTVVariationRemove(meHTVegetationLayer *vlayer, meHTVVariation *variation){
+meUHTVVariationRemove::meUHTVVariationRemove(meHTVegetationLayer::Ref vlayer, meHTVVariation::Ref variation){
 	if(!vlayer || !variation) DETHROW(deeInvalidParam);
 	
 	pVLayer = vlayer;
@@ -50,9 +50,6 @@ meUHTVVariationRemove::meUHTVVariationRemove(meHTVegetationLayer *vlayer, meHTVV
 	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
 	SetShortInfo("Remove Vegetation Layer Variation");
-	
-	vlayer->AddReference();
-	variation->AddReference();
 }
 
 meUHTVVariationRemove::~meUHTVVariationRemove(){

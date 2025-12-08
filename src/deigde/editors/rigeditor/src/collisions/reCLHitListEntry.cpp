@@ -61,29 +61,25 @@ reCLHitListEntry::~reCLHitListEntry(){
 
 void reCLHitListEntry::Clear(){
 	if(pBone){
-		pBone->FreeReference();
 		pBone = NULL;
 	}
 	
 	if(pShape){
-		pShape->FreeReference();
 		pShape = NULL;
 	}
 	
 	if(pConstraint){
-		pConstraint->FreeReference();
 		pConstraint = NULL;
 	}
 	
 	if(pPush){
-		pPush->FreeReference();
 		pPush = NULL;
 	}
 	
 	pDistance = 0.0f;
 }
 
-void reCLHitListEntry::SetBone(reRigBone *bone){
+void reCLHitListEntry::SetBone(reRigBone::Ref bone){
 	if(bone != pBone){
 		if(pBone) pBone->FreeReference();
 		
@@ -93,7 +89,7 @@ void reCLHitListEntry::SetBone(reRigBone *bone){
 	}
 }
 
-void reCLHitListEntry::SetShape(reRigShape *shape){
+void reCLHitListEntry::SetShape(reRigShape::Ref shape){
 	if(shape != pShape){
 		if(pShape) pShape->FreeReference();
 		
@@ -103,7 +99,7 @@ void reCLHitListEntry::SetShape(reRigShape *shape){
 	}
 }
 
-void reCLHitListEntry::SetConstraint(reRigConstraint *constraint){
+void reCLHitListEntry::SetConstraint(reRigConstraint::Ref constraint){
 	if(constraint != pConstraint){
 		if(pConstraint) pConstraint->FreeReference();
 		
@@ -113,7 +109,7 @@ void reCLHitListEntry::SetConstraint(reRigConstraint *constraint){
 	}
 }
 
-void reCLHitListEntry::SetPush(reRigPush *push){
+void reCLHitListEntry::SetPush(reRigPush::Ref push){
 	if(push != pPush){
 		if(pPush) pPush->FreeReference();
 		

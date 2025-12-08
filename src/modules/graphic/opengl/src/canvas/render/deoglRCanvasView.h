@@ -40,7 +40,7 @@ class deoglRCanvasView : public deoglRCanvas{
 private:
 	decObjectList pChildren;
 	unsigned int pPaintTracker;
-	deoglRenderTarget *pRenderTarget;
+	deoglRenderTarget::Ref pRenderTarget;
 	bool pResizeRenderTarget;
 	
 	

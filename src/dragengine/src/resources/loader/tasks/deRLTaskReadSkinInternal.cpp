@@ -62,7 +62,7 @@
 //////////////////////////////////////////////////
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
-deSkinPropertyImage *propertyImage, deResourceLoaderTask *task) :
+deSkinPropertyImage *propertyImage, deResourceLoaderTask::Ref task) :
 pPropertyImage(propertyImage),
 pNodeImage(NULL),
 pNodeText(NULL),
@@ -71,11 +71,10 @@ pTask(task)
 	if(!task || !propertyImage){
 		DETHROW(deeInvalidParam);
 	}
-	task->AddReference();
 }
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
-deSkinPropertyNodeImage *nodeImage, deResourceLoaderTask *task) :
+deSkinPropertyNodeImage *nodeImage, deResourceLoaderTask::Ref task) :
 pPropertyImage(NULL),
 pNodeImage(nodeImage),
 pNodeText(NULL),
@@ -84,11 +83,10 @@ pTask(task)
 	if(!task || !nodeImage){
 		DETHROW(deeInvalidParam);
 	}
-	task->AddReference();
 }
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
-deSkinPropertyNodeText *nodeText, deResourceLoaderTask *task) :
+deSkinPropertyNodeText *nodeText, deResourceLoaderTask::Ref task) :
 pPropertyImage(NULL),
 pNodeImage(NULL),
 pNodeText(nodeText),
@@ -97,13 +95,9 @@ pTask(task)
 	if(!task || !nodeText){
 		DETHROW(deeInvalidParam);
 	}
-	task->AddReference();
 }
 
 deRLTaskReadSkinInternal::cInternalTask::~cInternalTask(){
-	if(pTask){
-		pTask->FreeReference();
-	}
 }
 
 
@@ -311,17 +305,12 @@ bool deRLTaskReadSkinInternal::pApplyInternal(){
 				property.SetImage((deImage*)task.GetResource());
 				
 			}else{
-				deImage *fallbackImage = NULL;
+				deImage::Ref fallbackImage = NULL;
 				
 				try{
 					fallbackImage = GetEngine().GetImageManager()->LoadDefault();
 					property.SetImage(fallbackImage);
-					fallbackImage->FreeReference();
-					
 				}catch(const deException &){
-					if(fallbackImage){
-						fallbackImage->FreeReference();
-					}
 					return false;
 				}
 			}
@@ -333,17 +322,12 @@ bool deRLTaskReadSkinInternal::pApplyInternal(){
 				node.SetImage((deImage*)task.GetResource());
 				
 			}else{
-				deImage *fallbackImage = NULL;
+				deImage::Ref fallbackImage = NULL;
 				
 				try{
 					fallbackImage = GetEngine().GetImageManager()->LoadDefault();
 					node.SetImage(fallbackImage);
-					fallbackImage->FreeReference();
-					
 				}catch(const deException &){
-					if(fallbackImage){
-						fallbackImage->FreeReference();
-					}
 					return false;
 				}
 			}

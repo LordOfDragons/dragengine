@@ -38,7 +38,7 @@ class aeController;
  */
 class aeURuleSASetPathAnimator : public igdeUndo{
 private:
-	aeRuleSubAnimator *pRule;
+	aeRuleSubAnimator::Ref pRule;
 	
 	decString pOldPath;
 	decString pNewPath;

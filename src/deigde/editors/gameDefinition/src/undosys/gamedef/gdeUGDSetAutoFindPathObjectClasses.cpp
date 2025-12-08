@@ -40,8 +40,8 @@
 ////////////////////////////
 
 gdeUGDSetAutoFindPathObjectClasses::gdeUGDSetAutoFindPathObjectClasses(
-	gdeGameDefinition *gameDefinition, const decStringList &newValue) :
-pGameDefinition(NULL),
+	gdeGameDefinition::Ref gameDefinition, const decStringList &newValue) :
+
 pNewValue(newValue)
 {
 	if(!gameDefinition){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = gameDefinition->GetAutoFindPathObjectClasses();
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetAutoFindPathObjectClasses::~gdeUGDSetAutoFindPathObjectClasses(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

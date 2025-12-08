@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetVolume::gdeUOCSpeakerSetVolume(gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, float newValue) :
-pObjectClass(NULL),
+gdeUOCSpeakerSetVolume::gdeUOCSpeakerSetVolume(gdeObjectClass::Ref objectClass,
+gdeOCSpeaker::Ref speaker, float newValue) :
+
 pSpeaker(NULL)
 {
 	if(!objectClass || !speaker){
@@ -55,19 +55,10 @@ pSpeaker(NULL)
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetVolume::~gdeUOCSpeakerSetVolume(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

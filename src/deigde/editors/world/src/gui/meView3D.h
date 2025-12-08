@@ -47,9 +47,9 @@ class meWindowMain;
 class meView3D : public igdeViewRenderWindow{
 private:
 	meWindowMain &pWindowMain;
-	meView3DListener *pListener;
+	meView3DListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeMouseKeyListener::Ref pListenerEditor;
 	meViewEditor *pEditor;
@@ -90,7 +90,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world render. */
-	void SetWorld(meWorld *world);
+	void SetWorld(meWorld::Ref world);
 	
 	/** \brief Create canvas. */
 	virtual void CreateCanvas();

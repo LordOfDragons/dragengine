@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTextureSetName::gdeUOCTextureSetName(gdeObjectClass *objectClass,
-gdeOCComponentTexture* texture, const char *newValue) :
-pObjectClass(NULL),
+gdeUOCTextureSetName::gdeUOCTextureSetName(gdeObjectClass::Ref objectClass,
+gdeOCComponentTexture::Ref texture, const char *newValue) :
+
 pTexture(NULL)
 {
 	if(!objectClass || !texture){
@@ -55,19 +55,10 @@ pTexture(NULL)
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCTextureSetName::~gdeUOCTextureSetName(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

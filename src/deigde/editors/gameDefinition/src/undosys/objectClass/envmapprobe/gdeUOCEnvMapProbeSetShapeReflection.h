@@ -39,8 +39,8 @@ class decShape;
  */
 class gdeUOCEnvMapProbeSetShapeReflection : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	const decShape *pOldValue;
 	const decShape *pNewValue;
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetShapeReflection(gdeObjectClass *objectClass,
+	gdeUOCEnvMapProbeSetShapeReflection(gdeObjectClass::Ref objectClass,
 		gdeOCEnvMapProbe *component, const decShape *newValue);
 	
 protected:

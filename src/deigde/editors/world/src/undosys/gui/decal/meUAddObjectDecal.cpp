@@ -41,17 +41,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUAddObjectDecal::meUAddObjectDecal(meWorld *world, meObject *parentObject){
+meUAddObjectDecal::meUAddObjectDecal(meWorld *world, meObject::Ref parentObject){
 	if(!world || !parentObject) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pDecal = NULL;
 	
 	pParentObject = parentObject;
-	parentObject->AddReference();
-	
 	try{
-		pDecal = new meDecal(world->GetEnvironment());
+		pDecal.TakeOver(new meDecal(world->GetEnvironment()));
 		SetShortInfo("Add Object Decal");
 		UpdateInfos();
 		

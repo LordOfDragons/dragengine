@@ -36,7 +36,7 @@ class seSourceWave;
  */
 class seUSourceWaveSetMaxFrequency : public igdeUndo{
 private:
-	seSourceWave *pSource;
+	seSourceWave::Ref pSource;
 	
 	float pOldFrequency;
 	float pNewFrequency;

@@ -60,12 +60,12 @@ private:
 	
 	meWorld *pWorld;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSNavSpace;
-	deNavigationSpace *pEngNavSpace;
-	deColliderComponent *pEngCollider;
-	deComponent *pEngColComponent;
-	deRig *pEngRig;
+	deNavigationSpace::Ref pEngNavSpace;
+	deColliderComponent::Ref pEngCollider;
+	deComponent::Ref pEngColComponent;
+	deRig::Ref pEngRig;
 	igdeWObject::Ref pObjectPlaceholder;
 	
 	decDVector pPosition;

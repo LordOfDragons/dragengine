@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe);
+	gdeClipboardDataOCEnvMapProbe(gdeOCEnvMapProbe::Ref envMapProbe);
 	
 protected:
 	/**

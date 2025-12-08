@@ -38,7 +38,7 @@ class gdeObjectClass;
  */
 class gdeUOCRemoveAllInherits : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	gdeOCInheritList pInherits;
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveAllInherits(gdeObjectClass *objectClass);
+	gdeUOCRemoveAllInherits(gdeObjectClass::Ref objectClass);
 	
 protected:
 	/** \brief Clean up undo action. */

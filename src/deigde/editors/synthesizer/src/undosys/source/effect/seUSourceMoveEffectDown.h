@@ -38,8 +38,8 @@ class seSource;
  */
 class seUSourceMoveEffectDown : public igdeUndo{
 private:
-	seSource *pSource;
-	seEffect *pEffect;
+	seSource::Ref pSource;
+	seEffect::Ref pEffect;
 	int pIndex;
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceMoveEffectDown(seSource *source, seEffect *effect);
+	seUSourceMoveEffectDown(seSource::Ref source, seEffect::Ref effect);
 	
 protected:
 	/** \brief Clean up undo action. */

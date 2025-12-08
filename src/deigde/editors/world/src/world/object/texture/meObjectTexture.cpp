@@ -59,13 +59,10 @@ pEnvironment(environment),
 pObject(NULL),
 
 pName(name),
-pEngSkin(NULL),
 pTexCoordScaling(1.0f, 1.0f),
 pTexCoordRotation(0.0f),
 
-pColorTint(1.0f, 1.0f, 1.0f),
-
-pDynamicSkin(NULL)
+pColorTint(1.0f, 1.0f, 1.0f)
 {
 	if(!environment){
 		DETHROW(deeInvalidParam);
@@ -79,7 +76,6 @@ pObject(NULL),
 
 pName(texture.pName),
 pSkinPath(texture.pSkinPath),
-pEngSkin(NULL),
 pTexCoordOffset(texture.pTexCoordOffset),
 pTexCoordScaling(texture.pTexCoordScaling),
 pTexCoordRotation(texture.pTexCoordRotation),
@@ -87,16 +83,10 @@ pTexCoordRotation(texture.pTexCoordRotation),
 pColorTint(texture.pColorTint),
 
 pProperties(texture.pProperties),
-pActiveProperty(texture.pActiveProperty),
-
-pDynamicSkin(NULL)
+pActiveProperty(texture.pActiveProperty)
 {
 	try{
 		pEngSkin = texture.GetEngineSkin();
-		if(pEngSkin){
-			pEngSkin->AddReference();
-		}
-		
 		UpdateDynamicSkin();
 		
 	}catch(const deException &){
@@ -131,7 +121,7 @@ void meObjectTexture::SetSkinPath(const char *skinPath){
 }
 
 void meObjectTexture::LoadSkin(){
-	deSkin *engSkin = NULL;
+	deSkin::Ref engSkin = NULL;
 	
 	if(!pSkinPath.IsEmpty()){
 		try{
@@ -140,12 +130,7 @@ void meObjectTexture::LoadSkin(){
 			
 		}catch(const deException &){
 			engSkin = pEnvironment->GetStockSkin(igdeEnvironment::essError);
-			engSkin->AddReference();
 		}
-	}
-	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
 	}
 	pEngSkin = engSkin;
 	
@@ -241,7 +226,6 @@ void meObjectTexture::UpdateDynamicSkin(){
 		
 	}else{
 		if(pDynamicSkin){
-			pDynamicSkin->FreeReference();
 			pDynamicSkin = NULL;
 		}
 	}
@@ -387,10 +371,4 @@ void meObjectTexture::SetActiveProperty(const char *property){
 //////////////////////
 
 void meObjectTexture::pCleanUp(){
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 }

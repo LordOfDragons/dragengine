@@ -49,7 +49,7 @@ class gdeWPSTreeModel{
 private:
 	igdeTreeList &pTreeList;
 	gdeWindowMain &pWindowMain;
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	gdeWPSTreeModelListener *pListener;
 	
 	gdeWPSTIMCategories *pCategories;
@@ -66,7 +66,7 @@ public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree model. */
-	gdeWPSTreeModel(igdeTreeList &treeList, gdeWindowMain &windowMain, gdeGameDefinition *gameDefinition);
+	gdeWPSTreeModel(igdeTreeList &treeList, gdeWindowMain &windowMain, gdeGameDefinition::Ref gameDefinition);
 	
 	/** \brief Clean up tree model. */
 	~gdeWPSTreeModel();

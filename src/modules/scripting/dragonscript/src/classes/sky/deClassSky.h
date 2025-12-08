@@ -66,7 +66,7 @@ public:
 	deSky *GetSky(dsRealObject *myself) const;
 	
 	/** \brief Push sky which can be \em NULL. */
-	void PushSky(dsRunTime *rt, deSky *sky);
+	void PushSky(dsRunTime *rt, deSky::Ref sky);
 	/*@}*/
 	
 	

@@ -50,7 +50,7 @@ class igdeEnvironment;
 class meHeightTerrain : public deObject{
 private:
 	meWorld &pWorld;
-	deHeightTerrain *pEngHT;
+	deHeightTerrain::Ref pEngHT;
 	
 	decString pPathHT;
 	bool pChanged;

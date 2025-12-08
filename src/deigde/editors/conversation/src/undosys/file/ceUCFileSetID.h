@@ -41,7 +41,7 @@ class ceConversationActionList;
  */
 class ceUCFileSetID : public igdeUndo{
 private:
-	ceConversationFile *pFile;
+	ceConversationFile::Ref pFile;
 	
 	decString pOldID;
 	decString pNewID;
@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCFileSetID(const ceConversation &conversation, ceConversationFile *file, const char *newID);
+	ceUCFileSetID(const ceConversation &conversation, ceConversationFile::Ref file, const char *newID);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCFileSetID();

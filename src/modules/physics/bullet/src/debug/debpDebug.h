@@ -43,16 +43,16 @@ private:
 	
 	debpDebugInformationList pDebugInfoList;
 	
-	debpDebugInformation *pDIColliderPrepareDetection;
-	debpDebugInformation *pDIColliderDetectCustomCollision;
-	debpDebugInformation *pDIColliderUpdateFromBody;
-	debpDebugInformation *pDIColliderFinishDetection;
-	debpDebugInformation *pDIColliderCollisionTests;
-	debpDebugInformation *pDIColliderUpdateOctree;
-	debpDebugInformation *pDITouchSensorApplyChanges;
-	debpDebugInformation *pDIWorldStepSimulation;
-	debpDebugInformation *pDIWorldUpdateOctrees;
-	debpDebugInformation *pDIWorldCheckDynamicCollisions;
+	debpDebugInformation::Ref pDIColliderPrepareDetection;
+	debpDebugInformation::Ref pDIColliderDetectCustomCollision;
+	debpDebugInformation::Ref pDIColliderUpdateFromBody;
+	debpDebugInformation::Ref pDIColliderFinishDetection;
+	debpDebugInformation::Ref pDIColliderCollisionTests;
+	debpDebugInformation::Ref pDIColliderUpdateOctree;
+	debpDebugInformation::Ref pDITouchSensorApplyChanges;
+	debpDebugInformation::Ref pDIWorldStepSimulation;
+	debpDebugInformation::Ref pDIWorldUpdateOctrees;
+	debpDebugInformation::Ref pDIWorldCheckDynamicCollisions;
 	
 	
 	

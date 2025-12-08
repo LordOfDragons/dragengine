@@ -71,7 +71,7 @@ public:
 	};
 	
 private:
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	AAsset *pAsset;
 	decString pTargetDirectory;
 	bool pUnpacking;
@@ -87,7 +87,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create asset unpacker. */
-	dealAssetUnpacker(deLogger *logger);
+	dealAssetUnpacker(deLogger::Ref logger);
 	
 	/** \brief Clean up asset unpacker. */
 	~dealAssetUnpacker();

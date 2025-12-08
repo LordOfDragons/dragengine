@@ -541,8 +541,6 @@ public:
 meWPView::meWPView(meWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(nullptr),
-pWorld(nullptr),
 pPreventUpdateCamera(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
@@ -550,7 +548,7 @@ pPreventUpdateCamera(false)
 	igdeContainer::Ref content, groupBox, form, formLine;
 	igdeActionContextMenu::Ref actionMenu;
 	
-	pListener = new meWPViewListener(*this);
+	pListener.TakeOver(new meWPViewListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -651,9 +649,6 @@ pPreventUpdateCamera(false)
 
 meWPView::~meWPView(){
 	SetWorld(nullptr);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -661,7 +656,7 @@ meWPView::~meWPView(){
 // Management
 ///////////////
 
-void meWPView::SetWorld(meWorld *world){
+void meWPView::SetWorld(meWorld::Ref world){
 	if(world == pWorld){
 		return;
 	}
@@ -676,15 +671,12 @@ void meWPView::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
-		
 		pWPSky->SetSky(world->GetSky());
 		pWPBgObject->SetObject(world->GetBgObject());
 		pWPBgObject->SetUndoSystem(world->GetUndoSystem());

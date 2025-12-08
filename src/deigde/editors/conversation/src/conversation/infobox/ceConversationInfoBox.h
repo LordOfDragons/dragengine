@@ -60,7 +60,7 @@ private:
 	decStringList pLayoutTexts;
 	decIntList pLayoutWidths;
 	
-	deCanvasView *pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 public:
 	/** \name Constructors and Destructors */

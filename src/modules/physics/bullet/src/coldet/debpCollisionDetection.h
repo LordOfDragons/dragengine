@@ -101,7 +101,7 @@ struct debpCollisionResult{
 class debpCollisionDetection{
 private:
 	dePhysicsBullet &pBullet;
-	deCollisionInfo *pColInfo;
+	deCollisionInfo::Ref pColInfo;
 	debpShapeTransform pShape1;
 	debpShapeTransform pShape2;
 	debpSweepCollisionTest pRayHackShape;

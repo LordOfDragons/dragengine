@@ -45,19 +45,19 @@ class deoalAWorld : public deObject{
 private:
 	deoalAudioThread &pAudioThread;
 	
-	deoalAComponent *pRootComponent;
+	deoalAComponent::Ref pRootComponent;
 	deoalAComponent *pTailComponent;
 	int pComponentCount;
 	
-	deoalASpeaker *pRootSpeaker;
+	deoalASpeaker::Ref pRootSpeaker;
 	deoalASpeaker *pTailSpeaker;
 	int pSpeakerCount;
 	
-	deoalAMicrophone *pRootMicrophone;
+	deoalAMicrophone::Ref pRootMicrophone;
 	deoalAMicrophone *pTailMicrophone;
 	int pMicrophoneCount;
 	
-	deoalASoundLevelMeter *pRootSoundLevelMeter;
+	deoalASoundLevelMeter::Ref pRootSoundLevelMeter;
 	deoalASoundLevelMeter *pTailSoundLevelMeter;
 	int pSoundLevelMeterCount;
 	
@@ -155,10 +155,10 @@ public:
 	inline deoalAComponent *GetRootComponent() const{ return pRootComponent; }
 	
 	/** Add component. */
-	void AddComponent(deoalAComponent *component);
+	void AddComponent(deoalAComponent::Ref component);
 	
 	/** Remove component. */
-	void RemoveComponent(deoalAComponent *component);
+	void RemoveComponent(deoalAComponent::Ref component);
 	
 	/** Remove all component. */
 	void RemoveAllComponents();
@@ -181,13 +181,13 @@ public:
 	 * Add speaker.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void AddSpeaker(deoalASpeaker *speaker);
+	void AddSpeaker(deoalASpeaker::Ref speaker);
 	
 	/**
 	 * Remove speaker.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void RemoveSpeaker(deoalASpeaker *speaker);
+	void RemoveSpeaker(deoalASpeaker::Ref speaker);
 	
 	/**
 	 * Remove all speaker.
@@ -213,10 +213,10 @@ public:
 	inline deoalAMicrophone *GetRootMicrophone() const{ return pRootMicrophone; }
 	
 	/** Add microphone. */
-	void AddMicrophone(deoalAMicrophone *microphone);
+	void AddMicrophone(deoalAMicrophone::Ref microphone);
 	
 	/** Remove microphone. */
-	void RemoveMicrophone(deoalAMicrophone *microphone);
+	void RemoveMicrophone(deoalAMicrophone::Ref microphone);
 	
 	/** Remove all microphone. */
 	void RemoveAllMicrophones();
@@ -239,13 +239,13 @@ public:
 	 * Add sound level meter.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void AddSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter);
+	void AddSoundLevelMeter(deoalASoundLevelMeter::Ref soundLevelMeter);
 	
 	/**
 	 * Remove sound level meter.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void RemoveSoundLevelMeter(deoalASoundLevelMeter *soundLevelMeter);
+	void RemoveSoundLevelMeter(deoalASoundLevelMeter::Ref soundLevelMeter);
 	
 	/**
 	 * Remove all sound level meter.

@@ -37,7 +37,7 @@ class seBody;
  */
 class seUBodySetOrientation : public igdeUndo{
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUBodySetOrientation(seBody *body, const decVector &newOrientation);
+	seUBodySetOrientation(seBody::Ref body, const decVector &newOrientation);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -36,7 +36,7 @@ class peeEmitter;
  */
 class peeUEmitterToggleEmitBurst : public igdeUndo{
 private:
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	
 	
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUEmitterToggleEmitBurst(peeEmitter *emitter);
+	peeUEmitterToggleEmitBurst(peeEmitter::Ref emitter);
 	
 protected:
 	/** \brief Clean up the undo action. */

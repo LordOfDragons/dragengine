@@ -38,7 +38,7 @@ class meWorld;
  */
 class meUMoveObject : public meBaseUndoMove{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decObjectOrderedSet pObjects;
 	
 	
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUMoveObject(meWorld *world, const meObjectList &objects);
+	meUMoveObject(meWorld::Ref world, const meObjectList &objects);
 	
 	/** \brief Clean up undo action. */
 	~meUMoveObject() override;

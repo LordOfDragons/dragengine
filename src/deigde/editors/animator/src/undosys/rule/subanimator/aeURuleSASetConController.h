@@ -42,11 +42,11 @@ class aeController;
  */
 class aeURuleSASetConController : public igdeUndo{
 private:
-	aeRuleSubAnimator *pRule;
+	aeRuleSubAnimator::Ref pRule;
 	
 	int pTarget;
-	aeController *pOldController;
-	aeController *pNewController;
+	aeController::Ref pOldController;
+	aeController::Ref pNewController;
 	
 public:
 	/** \brief Type holding strong reference. */

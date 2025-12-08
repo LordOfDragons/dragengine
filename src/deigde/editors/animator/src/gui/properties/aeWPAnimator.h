@@ -44,8 +44,8 @@ class aeWPAnimatorListener;
 class aeWPAnimator : public igdeContainerScroll{
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPAnimatorListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPAnimatorListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
 	igdeEditPath::Ref pEditRigPath;
 	igdeEditPath::Ref pEditAnimPath;
@@ -85,7 +85,7 @@ public:
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator(aeAnimator *animator);
+	void SetAnimator(aeAnimator::Ref animator);
 	
 	/** Update animator. */
 	void UpdateAnimator();

@@ -37,8 +37,8 @@ class reRigPush;
  */
 class reUAddPush : public igdeUndo{
 private:
-	reRig *pRig;
-	reRigPush *pPush;
+	reRig::Ref pRig;
+	reRigPush::Ref pPush;
 	
 	
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUAddPush(reRig *rig, reRigPush *push);
+	reUAddPush(reRig::Ref rig, reRigPush::Ref push);
 	
 protected:
 	/** \brief Clean up undo. */

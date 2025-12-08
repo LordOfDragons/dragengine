@@ -37,7 +37,7 @@ class projProfile;
  */
 class projUProfileSetDelgaPath : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetDelgaPath(projProfile *profile, const char *newValue);
+	projUProfileSetDelgaPath(projProfile::Ref profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileSetDelgaPath();

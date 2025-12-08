@@ -78,17 +78,17 @@ public:
 private:
 	peeLoadSaveSystem &pLoadSaveSystem;
 	
-	deWorld *pEngWorld;
+	deWorld::Ref pEngWorld;
 	
-	deDebugDrawer *pDDEmitter;
+	deDebugDrawer::Ref pDDEmitter;
 	
 	igdeWSky *pSky;
 	igdeWObject::Ref pEnvObject;
 	
 	igdeWCoordSysArrows pDDSEmitter;
 	
-	deParticleEmitter *pEngEmitter;
-	deParticleEmitterInstance *pEngEmitterInstance;
+	deParticleEmitter::Ref pEngEmitter;
+	deParticleEmitterInstance::Ref pEngEmitterInstance;
 	
 	decVector pPosition;
 	decVector pOrientation;
@@ -104,10 +104,10 @@ private:
 	igdeCamera *pCamera;
 	
 	peeControllerList pControllerList;
-	peeController *pActiveController;
+	peeController::Ref pActiveController;
 	
 	peeTypeList pTypeList;
-	peeType *pActiveType;
+	peeType::Ref pActiveType;
 	
 	decObjectSet pListeners;
 	
@@ -189,13 +189,13 @@ public:
 	/** Retrieves the controller list read-only. */
 	inline const peeControllerList &GetControllers() const{ return pControllerList; }
 	/** Adds a new controller. */
-	void AddController(peeController *controller);
+	void AddController(peeController::Ref controller);
 	/** Inserts a new controller. */
-	void InsertControllerAt(peeController *controller, int index);
+	void InsertControllerAt(peeController::Ref controller, int index);
 	/** Moves a controller to a new position. */
-	void MoveControllerTo(peeController *controller, int index);
+	void MoveControllerTo(peeController::Ref controller, int index);
 	/** Removes a controller. */
-	void RemoveController(peeController *controller);
+	void RemoveController(peeController::Ref controller);
 	/** Removes all controllers. */
 	void RemoveAllControllers();
 	/** Retrieves the active texture or NULL if none is active. */
@@ -203,7 +203,7 @@ public:
 	/** Determines if there is an active controller or not. */
 	bool HasActiveController() const;
 	/** Sets the active controller or NULL if none is active. */
-	void SetActiveController(peeController *controller);
+	void SetActiveController(peeController::Ref controller);
 	/*@}*/
 	
 	/** \name Types */
@@ -211,13 +211,13 @@ public:
 	/** Retrieves the type list read-only. */
 	inline const peeTypeList &GetTypeList() const{ return pTypeList; }
 	/** Adds a new type. */
-	void AddType(peeType *type);
+	void AddType(peeType::Ref type);
 	/** Inserts a new type. */
-	void InsertTypeAt(peeType *type, int index);
+	void InsertTypeAt(peeType::Ref type, int index);
 	/** Moves a type to a new position. */
-	void MoveTypeTo(peeType *type, int index);
+	void MoveTypeTo(peeType::Ref type, int index);
 	/** Removes a type. */
-	void RemoveType(peeType *type);
+	void RemoveType(peeType::Ref type);
 	/** Removes all types. */
 	void RemoveAllTypes();
 	/** Retrieves the active type or NULL if none is active. */
@@ -225,7 +225,7 @@ public:
 	/** Determines if there is an active type or not. */
 	bool HasActiveType() const;
 	/** Sets the active type or NULL if none is active. */
-	void SetActiveType(peeType *type);
+	void SetActiveType(peeType::Ref type);
 	/*@}*/
 	
 	/** \name Notifiers */
@@ -255,13 +255,13 @@ public:
 	void NotifyControllerStructureChanged();
 	
 	/** \brief Notify controller changed. */
-	void NotifyControllerChanged(peeController *controller);
+	void NotifyControllerChanged(peeController::Ref controller);
 	
 	/** \brief Notify controller name changed. */
-	void NotifyControllerNameChanged(peeController *controller);
+	void NotifyControllerNameChanged(peeController::Ref controller);
 	
 	/** \brief Notify controller value changed. */
-	void NotifyControllerValueChanged(peeController *controller);
+	void NotifyControllerValueChanged(peeController::Ref controller);
 	
 	/** \brief Active controller changed. */
 	void NotifyActiveControllerChanged();
@@ -269,15 +269,15 @@ public:
 	/** Notifies all that the type count or order changed. */
 	void NotifyTypeStructureChanged();
 	/** Notifies all that a type changed. */
-	void NotifyTypeChanged(peeType *type);
+	void NotifyTypeChanged(peeType::Ref type);
 	/** Notifies all that the active type trail controller changed. */
-	void NotifyTypeActiveTrailControllerChanged(peeType *type);
+	void NotifyTypeActiveTrailControllerChanged(peeType::Ref type);
 	/** Notifies all that the active type emit controller changed. */
-	void NotifyTypeActiveEmitControllerChanged(peeType *type);
+	void NotifyTypeActiveEmitControllerChanged(peeType::Ref type);
 	/** Notifies all that a type parameter changed. */
-	void NotifyTypeParameterChanged(peeType *type, peeParameter *parameter);
+	void NotifyTypeParameterChanged(peeType::Ref type, peeParameter *parameter);
 	/** Notifies all that the active type parameter changed. */
-	void NotifyActiveTypeParameterChanged(peeType *type);
+	void NotifyActiveTypeParameterChanged(peeType::Ref type);
 	/** Notifies all that the active type changed. */
 	void NotifyActiveTypeChanged();
 	/*@}*/

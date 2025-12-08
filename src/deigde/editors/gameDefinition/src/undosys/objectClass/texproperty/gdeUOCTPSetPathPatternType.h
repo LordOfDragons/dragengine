@@ -41,8 +41,8 @@ class gdeObjectClass;
  */
 class gdeUOCTPSetPathPatternType : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
 	
 	gdeProperty::ePathPatternTypes pOldValue;
 	gdeProperty::ePathPatternTypes pNewValue;
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCTPSetPathPatternType(gdeObjectClass *objectClass, gdeProperty *property, gdeProperty::ePathPatternTypes newValue);
+	gdeUOCTPSetPathPatternType(gdeObjectClass::Ref objectClass, gdeProperty::Ref property, gdeProperty::ePathPatternTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

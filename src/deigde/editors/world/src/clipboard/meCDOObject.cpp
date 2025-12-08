@@ -50,20 +50,18 @@ pAttachBehaviors(object.GetAttachBehaviors()),
 pAttachToIndex(-1)
 {
 	const int count = object.GetTextureCount();
-	meObjectTexture *texture = NULL;
+	meObjectTexture::Ref texture = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			texture = new meObjectTexture(*object.GetTextureAt(i));
+			texture.TakeOver(new meObjectTexture(*object.GetTextureAt(i)));
 			pTextures.AddTexture(texture);
-			texture->FreeReference();
 			texture = NULL;
 		}
 		
 	}catch(const deException &){
 		if(texture){
-			texture->FreeReference();
 			throw;
 		}
 	}
@@ -94,20 +92,18 @@ void meCDOObject::UpdateObject(meObject &object) const{
 	object.SetAttachBehaviors(pAttachBehaviors);
 	
 	const int count = pTextures.GetTextureCount();
-	meObjectTexture *texture = NULL;
+	meObjectTexture::Ref texture = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			texture = new meObjectTexture(*pTextures.GetTextureAt(i));
+			texture.TakeOver(new meObjectTexture(*pTextures.GetTextureAt(i)));
 			object.AddTexture(texture);
-			texture->FreeReference();
 			texture = NULL;
 		}
 		
 	}catch(const deException &){
 		if(texture){
-			texture->FreeReference();
 			throw;
 		}
 	}

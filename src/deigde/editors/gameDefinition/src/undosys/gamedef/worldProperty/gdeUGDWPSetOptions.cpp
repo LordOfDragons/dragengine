@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDWPSetOptions::gdeUGDWPSetOptions(gdeGameDefinition *gamedef,
-gdeProperty *property, const decStringList &newValue) :
-pGameDefinition(NULL),
+gdeUGDWPSetOptions::gdeUGDWPSetOptions(gdeGameDefinition::Ref gamedef,
+gdeProperty::Ref property, const decStringList &newValue) :
+
 pProperty(NULL)
 {
 	if(!gamedef || !property){
@@ -55,19 +55,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDWPSetOptions::~gdeUGDWPSetOptions(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

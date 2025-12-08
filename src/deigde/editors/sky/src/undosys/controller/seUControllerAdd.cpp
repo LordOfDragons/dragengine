@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerAdd::seUControllerAdd(seSky *sky, seController *controller) :
-pSky(NULL),
+seUControllerAdd::seUControllerAdd(seSky::Ref sky, seController::Ref controller) :
+
 pController(NULL)
 {
 	if(!sky || !controller){
@@ -51,19 +51,10 @@ pController(NULL)
 	SetShortInfo("Add Controller");
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 seUControllerAdd::~seUControllerAdd(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

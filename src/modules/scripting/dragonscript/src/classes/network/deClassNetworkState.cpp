@@ -63,7 +63,7 @@
 
 // native structure
 struct sNSNatDat{
-	deNetworkState *state;
+	deNetworkState::Ref state;
 };
 
 
@@ -951,7 +951,7 @@ deNetworkState *deClassNetworkState::GetNetworkState(dsRealObject *myself) const
 	return ((sNSNatDat*)p_GetNativeData(myself->GetBuffer()))->state;
 }
 
-void deClassNetworkState::PushNetworkState(dsRunTime *rt, deNetworkState *state){
+void deClassNetworkState::PushNetworkState(dsRunTime *rt, deNetworkState::Ref state){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -963,5 +963,4 @@ void deClassNetworkState::PushNetworkState(dsRunTime *rt, deNetworkState *state)
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sNSNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->state = state;
-	state->AddReference();
 }

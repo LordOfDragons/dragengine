@@ -40,15 +40,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUAddPush::reUAddPush(reRig *rig, reRigPush *push){
+reUAddPush::reUAddPush(reRig::Ref rig, reRigPush::Ref push){
 	if(!rig || !push) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
-	rig->AddReference();
-	
 	pPush = push;
-	push->AddReference();
-	
 	try{
 		SetShortInfo("Add Push");
 		

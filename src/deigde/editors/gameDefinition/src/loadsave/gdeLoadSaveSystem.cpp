@@ -81,17 +81,14 @@ gdeGameDefinition *gdeLoadSaveSystem::LoadGameDefinition(const char *filename){
 	}
 	
 	decBaseFileReader::Ref fileReader;
-	gdeGameDefinition *gameDefinition = NULL;
+	gdeGameDefinition::Ref gameDefinition = NULL;
 	
 	try{
 		fileReader.TakeOver(new decDiskFileReader(filename));
-		gameDefinition = new gdeGameDefinition(&pWindowMain.GetEnvironment());
+		gameDefinition.TakeOver(new gdeGameDefinition(&pWindowMain.GetEnvironment()));
 		pLSGameDef.LoadGameDefinition(*gameDefinition, fileReader);
 		
 	}catch(const deException &){
-		if(gameDefinition){
-			gameDefinition->FreeReference();
-		}
 		throw;
 	}
 	
@@ -103,18 +100,12 @@ void gdeLoadSaveSystem::SaveGameDefinition(const gdeGameDefinition &gameDefiniti
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileWriter *fileWriter = NULL;
+	decBaseFileWriter::Ref fileWriter = NULL;
 	
 	try{
-		fileWriter = new decDiskFileWriter(filename, false);
+		fileWriter.TakeOver(new decDiskFileWriter(filename, false));
 		pLSGameDef.SaveGameDefinition(gameDefinition, *fileWriter);
-		
-		fileWriter->FreeReference();
-		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		throw;
 	}
 }
@@ -126,19 +117,14 @@ gdeObjectClass *gdeLoadSaveSystem::LoadXmlEClass(const char *filename){
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileReader *fileReader = NULL;
+	decBaseFileReader::Ref fileReader = NULL;
 	gdeObjectClass *objectClass = NULL;
 	
 	try{
-		fileReader = new decDiskFileReader(filename);
+		fileReader.TakeOver(new decDiskFileReader(filename));
 		
 		objectClass = pLSXmlEClass.LoadXmlEClass(*fileReader);
-		fileReader->FreeReference();
-		
 	}catch(const deException &){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
 		throw;
 	}
 	

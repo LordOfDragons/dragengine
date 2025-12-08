@@ -43,9 +43,9 @@ class meHeightTerrainTexture;
  */
 class meUHTSetTexUVRotation : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	float pOldRotation;
 	float pNewRotation;
@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetTexUVRotation(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, float newRotation);
+	meUHTSetTexUVRotation(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture, float newRotation);
 	
 protected:
 	/** \brief Clean up object. */

@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetSkin::seULayerSetSkin(seLayer *layer, const char *newSkin) :
-pLayer(NULL),
+seULayerSetSkin::seULayerSetSkin(seLayer::Ref layer, const char *newSkin) :
+
 pNewSkin(newSkin)
 {
 	if(!layer){
@@ -52,13 +52,9 @@ pNewSkin(newSkin)
 	pOldSkin = layer->GetSkinPath();
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerSetSkin::~seULayerSetSkin(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

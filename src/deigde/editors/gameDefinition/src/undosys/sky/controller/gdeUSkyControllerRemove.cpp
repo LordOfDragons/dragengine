@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUSkyControllerRemove::gdeUSkyControllerRemove(gdeSky *sky, gdeSkyController *controller) :
-pSky(NULL),
+gdeUSkyControllerRemove::gdeUSkyControllerRemove(gdeSky::Ref sky, gdeSkyController::Ref controller) :
+
 pController(NULL)
 {
 	if(!sky || !controller){
@@ -55,19 +55,10 @@ pController(NULL)
 	SetShortInfo("Remove sky controller");
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 gdeUSkyControllerRemove::~gdeUSkyControllerRemove(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

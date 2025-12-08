@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceActionRemoveAll::ceUCAPChoiceActionRemoveAll(ceConversationTopic *topic,
-ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option){
+ceUCAPChoiceActionRemoveAll::ceUCAPChoiceActionRemoveAll(ceConversationTopic::Ref topic,
+ceCAPlayerChoice::Ref playerChoice, ceCAPlayerChoiceOption::Ref option){
 	if(!topic || !playerChoice){
 		DETHROW(deeInvalidParam);
 	}
@@ -63,27 +63,13 @@ ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option){
 	SetShortInfo("Player Choice Remove All Actions");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
-	
 	if(option){
 		pOption = option;
-		option->AddReference();
 	}
 }
 
 ceUCAPChoiceActionRemoveAll::~ceUCAPChoiceActionRemoveAll(){
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

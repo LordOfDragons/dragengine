@@ -41,11 +41,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCAddTexture::gdeUOCCAddTexture(gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture *texture) :
-pObjectClass(NULL),
-pComponent(NULL),
-pTexture(NULL)
+gdeUOCCAddTexture::gdeUOCCAddTexture(gdeObjectClass::Ref objectClass,
+gdeOCComponent::Ref component, gdeOCComponentTexture::Ref texture) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !component || !texture){
 		DETHROW(deeInvalidParam);
@@ -54,25 +52,11 @@ pTexture(NULL)
 	SetShortInfo("Component add texture");
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCAddTexture::~gdeUOCCAddTexture(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

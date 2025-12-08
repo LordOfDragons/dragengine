@@ -42,16 +42,11 @@
 
 aeWPUndoHistory::aeWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pWorld(NULL),
 pListener(new aeWPUndoHistoryListener(*this)){
 }
 
 aeWPUndoHistory::~aeWPUndoHistory(){
 	SetAnimator(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -59,7 +54,7 @@ aeWPUndoHistory::~aeWPUndoHistory(){
 // Management
 ///////////////
 
-void aeWPUndoHistory::SetAnimator(aeAnimator *animator){
+void aeWPUndoHistory::SetAnimator(aeAnimator::Ref animator){
 	if(animator == pWorld){
 		return;
 	}
@@ -68,15 +63,12 @@ void aeWPUndoHistory::SetAnimator(aeAnimator *animator){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
-		
 		SetUndoSystem(animator->GetUndoSystem());
 	}
 }

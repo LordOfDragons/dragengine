@@ -412,26 +412,21 @@ void igdeTriggerExpressionEditor::RebuildTree(){
 	}
 	
 	if(!pWorkExpression || !pWorkExpression->GetRootComponent()){
-		igdeTriggerExpressionComponent *component = NULL;
+		igdeTriggerExpressionComponent::Ref component = NULL;
 		
 		if(!pWorkExpression){
 			pWorkExpression.TakeOverWith();
 		}
 		
 		try{
-			component = new igdeTriggerExpressionComponent;
+			component.TakeOver(new igdeTriggerExpressionComponent);
 			component->SetNegate(false);
 			component->SetCurState(false);
 			component->SetType(igdeTriggerExpressionComponent::ectTarget);
 			component->SetTargetName("");
 			
 			pWorkExpression->SetRootComponent(component);
-			component->FreeReference();
-			
 		}catch(const deException &){
-			if(component){
-				component->FreeReference();
-			}
 			pWorkExpression = nullptr;
 			throw;
 		}
@@ -457,7 +452,7 @@ void igdeTriggerExpressionEditor::UpdateTree(){
 	UpdateExpressionComponent();
 }
 
-void igdeTriggerExpressionEditor::AddComponentToTree(igdeTreeItem *parent, igdeTriggerExpressionComponent *component){
+void igdeTriggerExpressionEditor::AddComponentToTree(igdeTreeItem *parent, igdeTriggerExpressionComponent::Ref component){
 	decString text;
 	
 	if(component){
@@ -509,7 +504,7 @@ void igdeTriggerExpressionEditor::AddComponentToTree(igdeTreeItem *parent, igdeT
 	}
 }
 
-void igdeTriggerExpressionEditor::UpdateComponentInTree(igdeTreeItem *item, igdeTriggerExpressionComponent *component){
+void igdeTriggerExpressionEditor::UpdateComponentInTree(igdeTreeItem *item, igdeTriggerExpressionComponent::Ref component){
 	decString text;
 	
 	if(component){

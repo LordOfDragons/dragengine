@@ -46,7 +46,7 @@
 
 
 struct sFileWriterNatDat{
-	decBaseFileWriter *fileWriter;
+	decBaseFileWriter::Ref fileWriter;
 	int streamVersion;
 };
 
@@ -575,7 +575,7 @@ int deClassFileWriter::GetStreamVersion(dsRealObject *myself) const{
 	return ((const sFileWriterNatDat *)p_GetNativeData(myself->GetBuffer()))->streamVersion;
 }
 
-void deClassFileWriter::PushFileWriter(dsRunTime *rt, decBaseFileWriter *fileWriter){
+void deClassFileWriter::PushFileWriter(dsRunTime *rt, decBaseFileWriter::Ref fileWriter){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -587,5 +587,4 @@ void deClassFileWriter::PushFileWriter(dsRunTime *rt, decBaseFileWriter *fileWri
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sFileWriterNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->fileWriter = fileWriter;
-	fileWriter->AddReference();
 }

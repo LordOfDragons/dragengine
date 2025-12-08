@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakBodyLASet::ceUCAASpeakBodyLASet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *bodyLookAt, ceStrip *newStrip){
+ceUCAASpeakBodyLASet::ceUCAASpeakBodyLASet(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref bodyLookAt, ceStrip::Ref newStrip){
 	if(!topic || !actorSpeak || !bodyLookAt || !newStrip){
 		DETHROW(deeInvalidParam);
 	}
@@ -55,37 +55,15 @@ ceUCAASpeakBodyLASet::ceUCAASpeakBodyLASet(ceConversationTopic *topic, ceCAActor
 	
 	SetShortInfo("Set body look-at");
 	
-	pOldStrip = new ceStrip(*bodyLookAt);
+	pOldStrip.TakeOver(new ceStrip(*bodyLookAt));
 	
 	pNewStrip = newStrip;
-	newStrip->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pBodyLA = bodyLookAt;
-	bodyLookAt->AddReference();
 }
 
 ceUCAASpeakBodyLASet::~ceUCAASpeakBodyLASet(){
-	if(pNewStrip){
-		pNewStrip->FreeReference();
-	}
-	if(pOldStrip){
-		pOldStrip->FreeReference();
-	}
-	if(pBodyLA){
-		pBodyLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

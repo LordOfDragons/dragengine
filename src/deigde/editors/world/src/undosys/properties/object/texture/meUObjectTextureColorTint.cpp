@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureColorTint::meUObjectTextureColorTint(meObjectTexture *texture, const decColor &newColor){
+meUObjectTextureColorTint::meUObjectTextureColorTint(meObjectTexture::Ref texture, const decColor &newColor){
 	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
@@ -64,13 +64,9 @@ meUObjectTextureColorTint::meUObjectTextureColorTint(meObjectTexture *texture, c
 	pNewColor = newColor;
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjectTextureColorTint::~meUObjectTextureColorTint(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

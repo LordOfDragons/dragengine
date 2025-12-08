@@ -36,7 +36,7 @@ class meDecal;
  */
 class meUDecalTCRotation : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	float pOldRotation;
 	float pNewRotation;
 	
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalTCRotation(meDecal *decal, float newRotation);
+	meUDecalTCRotation(meDecal::Ref decal, float newRotation);
 	
 protected:
 	/** \brief Clean up undo object. */

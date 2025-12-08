@@ -44,8 +44,8 @@ class meDecal;
  */
 class meUAddDecal : public igdeUndo{
 private:
-	meWorld *pWorld;
-	meDecal *pDecal;
+	meWorld::Ref pWorld;
+	meDecal::Ref pDecal;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	meUAddDecal(meWorld *world, meDecal *decal);
+	meUAddDecal(meWorld::Ref world, meDecal::Ref decal);
 	/** \brief Clean up undo. */
 	virtual ~meUAddDecal();
 	/*@}*/

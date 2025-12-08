@@ -64,7 +64,7 @@ public:
 	/** Loads the emitter from file if possible. */
 	peeEmitter *LoadEmitter(const char *filename);
 	/** Saves the emitter to file if possible. */
-	void SaveEmitter(peeEmitter *emitter, const char *filename);
+	void SaveEmitter(peeEmitter::Ref emitter, const char *filename);
 	/** Retrieves the file pattern list. */
 	inline const igdeFilePatternList *GetEmitterFilePatterns() const{ return &pFPEmitter; }
 	/*@}*/

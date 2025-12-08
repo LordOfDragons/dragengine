@@ -45,7 +45,7 @@ class deoglParticleEmitterInstance : public deBaseGraphicParticleEmitterInstance
 private:
 	deGraphicOpenGl &pOgl;
 	const deParticleEmitterInstance &pInstance;
-	deoglRParticleEmitterInstance *pRInstance;
+	deoglRParticleEmitterInstance::Ref pRInstance;
 	
 	deoglParticleEmitter *pEmitter;
 	

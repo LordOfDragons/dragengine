@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCEnvMapProbeSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	gdeOCEnvMapProbe::eProperties pProperty;
 	decString pOldValue;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetPropertyName(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe,
+	gdeUOCEnvMapProbeSetPropertyName(gdeObjectClass::Ref objectClass, gdeOCEnvMapProbe::Ref envMapProbe,
 		gdeOCEnvMapProbe::eProperties property, const char *newValue);
 	
 protected:

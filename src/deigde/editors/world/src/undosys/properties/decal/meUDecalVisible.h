@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalVisible : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalVisible(meDecal *decal);
+	meUDecalVisible(meDecal::Ref decal);
 	
 protected:
 	/** \brief Clean up undo object. */

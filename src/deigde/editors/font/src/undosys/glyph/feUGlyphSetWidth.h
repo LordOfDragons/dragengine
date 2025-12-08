@@ -36,7 +36,7 @@ class feFontGlyph;
  */
 class feUGlyphSetWidth : public igdeUndo{
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	
 	int pOldWidth;
 	int pNewWidth;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUGlyphSetWidth(feFontGlyph *glyph, int newWidth);
+	feUGlyphSetWidth(feFontGlyph::Ref glyph, int newWidth);
 	
 protected:
 	/** \brief Clean up undo. */

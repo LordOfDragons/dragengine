@@ -65,7 +65,6 @@
 
 aeRuleSubAnimator::aeRuleSubAnimator() :
 aeRule(deAnimatorRuleVisitorIdentify::ertSubAnimator),
-pSubAnimator(NULL),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(true),
@@ -77,7 +76,6 @@ pEnableVertexPositionSet(true)
 aeRuleSubAnimator::aeRuleSubAnimator(const aeRuleSubAnimator &copy) :
 aeRule(copy),
 pPathSubAnimator(copy.pPathSubAnimator),
-pSubAnimator(NULL),
 pEnablePosition(copy.pEnablePosition),
 pEnableOrientation(copy.pEnableOrientation),
 pEnableSize(copy.pEnableSize),
@@ -85,9 +83,6 @@ pEnableVertexPositionSet(copy.pEnableVertexPositionSet),
 pConnections(copy.pConnections)
 {
 	pSubAnimator = copy.pSubAnimator;
-	if(pSubAnimator){
-		pSubAnimator->AddReference();
-	}
 }
 
 aeRuleSubAnimator::~aeRuleSubAnimator(){
@@ -124,7 +119,6 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	
 	// release the sub animator
 	if(pSubAnimator){
-		pSubAnimator->FreeReference();
 		pSubAnimator = NULL;
 	}
 	
@@ -139,8 +133,8 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	deEngine *engine = parentAnimator->GetEngine();
 	deAnimatorController *engController = NULL;
 	deAnimatorLink *engLink = NULL;
-	deAnimatorRule *engRule = NULL;
-	aeAnimator *animator = NULL;
+	deAnimatorRule::Ref engRule = NULL;
+	aeAnimator::Ref animator = NULL;
 	int c, controllerCount;
 	int l, linkCount;
 	int r, ruleCount;
@@ -212,27 +206,17 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 				if(!engRule) DETHROW(deeOutOfMemory);
 				
 				pSubAnimator->AddRule(engRule);
-				engRule->FreeReference();
 				engRule = NULL;
 			}
 			
 			// free the loaded animator as it is no more needed
-			animator->FreeReference();
-			
 		}catch(const deException &e){
 			parentAnimator->GetLogger()->LogException("Animator Editor", e);
-			
-			if(engRule){
-				engRule->FreeReference();
-			}
 			if(engLink){
 				delete engLink;
 			}
 			if(engController){
 				delete engController;
-			}
-			if(animator){
-				animator->FreeReference();
 			}
 		}
 	}
@@ -331,7 +315,7 @@ deAnimatorRule *aeRuleSubAnimator::CreateEngineRule(){
 	deAnimatorRuleSubAnimator *engRule = NULL;
 	
 	try{
-		engRule = new deAnimatorRuleSubAnimator;
+		engRule.TakeOver(new deAnimatorRuleSubAnimator);
 		
 		InitEngineRule(engRule);
 		
@@ -345,9 +329,6 @@ deAnimatorRule *aeRuleSubAnimator::CreateEngineRule(){
 		engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
 		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -379,14 +360,9 @@ aeRuleSubAnimator &aeRuleSubAnimator::operator=(const aeRuleSubAnimator &copy){
 	SetEnableVertexPositionSet(copy.pEnableVertexPositionSet);
 	
 	if(pSubAnimator){
-		pSubAnimator->FreeReference();
 		pSubAnimator = NULL;
 	}
 	pSubAnimator = copy.pSubAnimator;
-	if(pSubAnimator){
-		pSubAnimator->AddReference();
-	}
-	
 	pConnections = copy.pConnections;
 	
 	deAnimatorRuleSubAnimator * const rule = (deAnimatorRuleSubAnimator*)GetEngineRule();

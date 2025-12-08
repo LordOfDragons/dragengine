@@ -41,8 +41,8 @@ class gdeProperty;
  */
 class gdeUOCTPSetOptions : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
 	
 	decStringList pOldValue;
 	decStringList pNewValue;
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCTPSetOptions(gdeObjectClass *objectClass, gdeProperty *property, const decStringList &newValue);
+	gdeUOCTPSetOptions(gdeObjectClass::Ref objectClass, gdeProperty::Ref property, const decStringList &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

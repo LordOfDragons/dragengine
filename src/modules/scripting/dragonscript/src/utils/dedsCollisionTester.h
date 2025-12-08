@@ -51,10 +51,10 @@ class dedsCollisionTester : public deBaseScriptingCollider, public deObject{
 private:
 	deScriptingDragonScript &pDS;
 	
-	deWorld *pWorld;
-	deTouchSensor *pTouchSensor;
+	deWorld::Ref pWorld;
+	deTouchSensor::Ref pTouchSensor;
 	
-	deCollider *pCollider;
+	deCollider::Ref pCollider;
 	
 	decCollisionFilter pCollisionFilter;
 	
@@ -66,7 +66,7 @@ private:
 	bool pHasCollision;
 	float pHitDistance;
 	decVector pHitNormal;
-	deCollider *pHitCollider;
+	deCollider::Ref pHitCollider;
 	int pHitBone;
 	
 public:
@@ -88,13 +88,13 @@ public:
 	inline deWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world to use for collision testing or null if not set. */
-	void SetWorld(deWorld *world);
+	void SetWorld(deWorld::Ref world);
 	
 	/** \brief Touch sensor to use for testing collisions or null if not set. */
 	inline deTouchSensor *GetTouchSensor() const{ return pTouchSensor; }
 	
 	/** \brief Set touch sensor to use for testing collisions or null if not set. */
-	void SetTouchSensor(deTouchSensor *touchSensor);
+	void SetTouchSensor(deTouchSensor::Ref touchSensor);
 	
 	
 	

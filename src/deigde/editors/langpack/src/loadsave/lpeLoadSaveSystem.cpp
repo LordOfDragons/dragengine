@@ -211,8 +211,8 @@ void lpeLoadSaveSystem::UpdateLSLangPacks(){
 
 lpeLangPack *lpeLoadSaveSystem::LoadLangPack(const char *filename){
 	if(!filename) DETHROW(deeInvalidParam);
-	decBaseFileReader *fileReader = NULL;
-	lpeLangPack *langpack = NULL;
+	decBaseFileReader::Ref fileReader = NULL;
+	lpeLangPack::Ref langpack = NULL;
 	decPath path;
 	int lsIndex;
 	
@@ -224,16 +224,11 @@ lpeLangPack *lpeLoadSaveSystem::LoadLangPack(const char *filename){
 	try{
 		fileReader = pWindowMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(path);
 		
-		langpack = new lpeLangPack(&pWindowMain->GetEnvironment());
+		langpack.TakeOver(new lpeLangPack(&pWindowMain->GetEnvironment()));
 		langpack->SetFilePath(filename); // required here so the relative path can be resolved properly
 		
 		pLSLangPacks[lsIndex]->LoadLangPack(langpack, fileReader);
-		fileReader->FreeReference();
-	
 	}catch(const deException &){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
 		if(langpack) langpack->FreeReference();
 		throw;
 	}
@@ -244,9 +239,9 @@ lpeLangPack *lpeLoadSaveSystem::LoadLangPack(const char *filename){
 	return langpack;
 }
 
-void lpeLoadSaveSystem::SaveLangPack(lpeLangPack *langpack, const char *filename){
+void lpeLoadSaveSystem::SaveLangPack(lpeLangPack::Ref langpack, const char *filename){
 	if(!langpack || !filename) DETHROW(deeInvalidParam);
-	decBaseFileWriter *fileWriter = NULL;
+	decBaseFileWriter::Ref fileWriter = NULL;
 	decPath path;
 	int lsIndex;
 	
@@ -261,13 +256,7 @@ void lpeLoadSaveSystem::SaveLangPack(lpeLangPack *langpack, const char *filename
 		langpack->SetFilePath(filename); // required here so the relative path can be resolved properly
 		
 		pLSLangPacks[lsIndex]->SaveLangPack(langpack, fileWriter);
-		
-		fileWriter->FreeReference();
-		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		throw;
 	}
 	

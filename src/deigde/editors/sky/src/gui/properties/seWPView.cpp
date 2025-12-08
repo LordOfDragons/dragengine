@@ -98,15 +98,13 @@ public:
 
 seWPView::seWPView(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pSky(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content;
 	
-	pListener = new seWPViewListener(*this);
+	pListener.TakeOver(new seWPViewListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -119,10 +117,6 @@ pListener(NULL)
 
 seWPView::~seWPView(){
 	SetSky(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -130,7 +124,7 @@ seWPView::~seWPView(){
 // Management
 ///////////////
 
-void seWPView::SetSky(seSky *sky){
+void seWPView::SetSky(seSky::Ref sky){
 	if(sky == pSky){
 		return;
 	}
@@ -140,7 +134,6 @@ void seWPView::SetSky(seSky *sky){
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 		pSky = NULL;
 	}
 	
@@ -148,8 +141,6 @@ void seWPView::SetSky(seSky *sky){
 	
 	if(sky){
 		sky->AddListener(pListener);
-		sky->AddReference();
-		
 		pWPCamera->SetCamera(sky->GetCamera());
 		pWPEnvObject->SetObject(sky->GetEnvObject());
 	}

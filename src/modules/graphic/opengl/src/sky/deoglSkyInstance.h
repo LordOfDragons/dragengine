@@ -44,7 +44,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deSkyInstance &pInstance;
 	
-	deoglRSkyInstance *pRInstance;
+	deoglRSkyInstance::Ref pRInstance;
 	deoglWorld *pParentWorld;
 	
 	deoglSky *pOglSky;

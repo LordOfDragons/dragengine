@@ -51,7 +51,7 @@
 /////////////////////
 
 struct sEmpNatDat{
-	deEnvMapProbe *envMapProbe;
+	deEnvMapProbe::Ref envMapProbe;
 };
 
 
@@ -478,7 +478,7 @@ deEnvMapProbe *deClassEnvMapProbe::GetEnvMapProbe(dsRealObject *object) const{
 	return ((sEmpNatDat*)p_GetNativeData(object->GetBuffer()))->envMapProbe;
 }
 
-void deClassEnvMapProbe::PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe *envMapProbe){
+void deClassEnvMapProbe::PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe::Ref envMapProbe){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -490,5 +490,4 @@ void deClassEnvMapProbe::PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe *envMapPro
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sEmpNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->envMapProbe = envMapProbe;
-	envMapProbe->AddReference();
 }

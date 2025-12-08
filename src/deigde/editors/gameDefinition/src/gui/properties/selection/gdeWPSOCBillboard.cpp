@@ -411,15 +411,13 @@ public:
 
 gdeWPSOCBillboard::gdeWPSOCBillboard(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCBillboardListener(*this);
+	pListener.TakeOver(new gdeWPSOCBillboardListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -467,10 +465,6 @@ pGameDefinition(NULL)
 
 gdeWPSOCBillboard::~gdeWPSOCBillboard(){
 	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -478,21 +472,19 @@ gdeWPSOCBillboard::~gdeWPSOCBillboard(){
 // Management
 ///////////////
 
-void gdeWPSOCBillboard::SetGameDefinition(gdeGameDefinition *gameDefinition){
+void gdeWPSOCBillboard::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdateBillboard();

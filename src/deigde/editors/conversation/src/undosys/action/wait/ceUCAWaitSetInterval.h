@@ -37,8 +37,8 @@ class ceCAWait;
  */
 class ceUCAWaitSetInterval : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAWait *pWait;
+	ceConversationTopic::Ref pTopic;
+	ceCAWait::Ref pWait;
 	float pOldInterval;
 	float pNewInterval;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitSetInterval(ceConversationTopic *topic, ceCAWait *wait, float newInterval);
+	ceUCAWaitSetInterval(ceConversationTopic::Ref topic, ceCAWait::Ref wait, float newInterval);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAWaitSetInterval();

@@ -114,7 +114,7 @@ deoglSharedVideoPlayer *deoglSkinStateController::GetSharedVideoPlayerAt(int ind
 	return pSharedVideoPlayers[index];
 }
 
-void deoglSkinStateController::SetVideoPlayerAt(int index, deVideoPlayer *videoPlayer){
+void deoglSkinStateController::SetVideoPlayerAt(int index, deVideoPlayer::Ref videoPlayer){
 	pVideoPlayers.SetAt(index, videoPlayer);
 }
 
@@ -271,7 +271,7 @@ deoglSkinTexture &texture, deoglWorld &world){
 		const deoglSkinChannel &channel = *texture.GetChannelAt((deoglSkinChannel::eChannelTypes)i);
 		deoglSharedVideoPlayer *sharedVideoPlayer = NULL;
 		const int vpindex = channel.GetVideoPlayer();
-		deVideoPlayer *videoPlayer = NULL;
+		deVideoPlayer::Ref videoPlayer = NULL;
 		
 		deVideo *oldVideo = NULL;
 		if(vpindex != -1){
@@ -324,12 +324,7 @@ deoglSkinTexture &texture, deoglWorld &world){
 						videoPlayer->SetPlaySpeed(1.0f);
 						videoPlayer->Play();
 						pVideoPlayers.SetAt(vpindex, videoPlayer);
-						videoPlayer->FreeReference();
-						
 					}catch(const deException &){
-						if(videoPlayer){
-							videoPlayer->FreeReference();
-						}
 						throw;
 					}
 					

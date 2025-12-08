@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetRange : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	float pOldValue;
 	float pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetRange(gdeObjectClass *objectClass, gdeOCLight *light, float newValue);
+	gdeUOCLightSetRange(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

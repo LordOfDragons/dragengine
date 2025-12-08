@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetPosition::gdeUOCParticleEmitterSetPosition(gdeObjectClass *objectClass,
-gdeOCParticleEmitter *particleEmitter, const decVector &newValue) :
-pObjectClass(NULL),
+gdeUOCParticleEmitterSetPosition::gdeUOCParticleEmitterSetPosition(gdeObjectClass::Ref objectClass,
+gdeOCParticleEmitter::Ref particleEmitter, const decVector &newValue) :
+
 pParticleEmitter(NULL)
 {
 	if(!objectClass || !particleEmitter){
@@ -55,19 +55,10 @@ pParticleEmitter(NULL)
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCParticleEmitterSetPosition::~gdeUOCParticleEmitterSetPosition(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

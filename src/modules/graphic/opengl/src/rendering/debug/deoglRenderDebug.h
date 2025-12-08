@@ -59,11 +59,11 @@ private:
 	
 	deoglDebugFont *pDebugFont;
 	
-	deoglDynamicTBOFloat32 *pTBORenderText1;
-	deoglDynamicTBOFloat8 *pTBORenderText2;
+	deoglDynamicTBOFloat32::Ref pTBORenderText1;
+	deoglDynamicTBOFloat8::Ref pTBORenderText2;
 	
-	deoglDynamicTBOFloat32 *pTBORenderRectangle1;
-	deoglDynamicTBOFloat8 *pTBORenderRectangle2;
+	deoglDynamicTBOFloat32::Ref pTBORenderRectangle1;
+	deoglDynamicTBOFloat8::Ref pTBORenderRectangle2;
 	
 	
 	

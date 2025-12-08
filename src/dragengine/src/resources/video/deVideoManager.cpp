@@ -107,7 +107,7 @@ const char *basePath, bool asynchron){
 	}
 	
 	decBaseFileReader::Ref fileReader;
-	deVideo *video = NULL;
+	deVideo::Ref video = NULL;
 	decPath path;
 	
 	try{
@@ -116,7 +116,7 @@ const char *basePath, bool asynchron){
 		}
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
-		deVideo *findVideo = (deVideo*)pVideos.GetWithFilename(vfs, path.GetPathUnix());
+		deVideo::Ref findVideo = (deVideo*)pVideos.GetWithFilename(vfs, path.GetPathUnix());
 		
 		if(findVideo && findVideo->GetModificationTime() != modificationTime){
 			LogInfoFormat("Video '%s' (base path '%s') changed on VFS: Outdating and Reloading",
@@ -126,7 +126,6 @@ const char *basePath, bool asynchron){
 		}
 		
 		if(findVideo){
-			findVideo->AddReference();
 			video = findVideo;
 			
 		}else{
@@ -137,11 +136,11 @@ const char *basePath, bool asynchron){
 			deBaseVideoInfo videoInfo;
 			module->InitLoadVideo(fileReader, videoInfo);
 			
-			video = new deVideo(this, vfs, path.GetPathUnix(), modificationTime,
+			video.TakeOver(new deVideo(this, vfs, path.GetPathUnix(), modificationTime,
 				videoInfo.GetWidth(), videoInfo.GetHeight(), videoInfo.GetComponentCount(),
 				videoInfo.GetBitCount(), videoInfo.GetFrameRate(), videoInfo.GetFrameCount(),
 				videoInfo.GetColorConversionMatrix(), videoInfo.GetBytesPerSample(),
-				videoInfo.GetSampleCount(), videoInfo.GetSampleRate(), videoInfo.GetChannelCount());
+				videoInfo.GetSampleCount(), videoInfo.GetSampleRate(), videoInfo.GetChannelCount()));
 			video->SetAsynchron(asynchron);
 			
 			GetGraphicSystem()->LoadVideo(video);
@@ -152,9 +151,6 @@ const char *basePath, bool asynchron){
 	}catch(const deException &){
 		LogErrorFormat("Loading video '%s' (base path '%s') failed",
 			filename, basePath ? basePath : "");
-		if(video){
-			video->FreeReference();
-		}
 		throw;
 	}
 	
@@ -162,16 +158,16 @@ const char *basePath, bool asynchron){
 	return video;
 }
 
-void deVideoManager::SaveVideo(deVideo *video, const char *filename){
+void deVideoManager::SaveVideo(deVideo::Ref video, const char *filename){
 	SaveVideo(GetEngine()->GetVirtualFileSystem(), video, filename);
 }
 
-void deVideoManager::SaveVideo(deVirtualFileSystem *vfs, deVideo *video, const char *filename){
+void deVideoManager::SaveVideo(deVirtualFileSystem *vfs, deVideo::Ref video, const char *filename){
 	if(!video || !vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileWriter *fileWriter = NULL;
+	decBaseFileWriter::Ref fileWriter = NULL;
 	
 	try{
 		deBaseVideoModule * const module = (deBaseVideoModule*)GetModuleSystem()
@@ -179,18 +175,13 @@ void deVideoManager::SaveVideo(deVirtualFileSystem *vfs, deVideo *video, const c
 		
 		fileWriter = OpenFileForWriting(*vfs, filename);
 		module->SaveVideo(*fileWriter, *video);
-		fileWriter->FreeReference();
-		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		LogErrorFormat("Saving video '%s' failed", filename);
 		throw;
 	}
 }
 
-void deVideoManager::AddLoadedVideo(deVideo *video){
+void deVideoManager::AddLoadedVideo(deVideo::Ref video){
 	if(!video){
 		DETHROW(deeInvalidParam);
 	}
@@ -200,18 +191,18 @@ void deVideoManager::AddLoadedVideo(deVideo *video){
 
 
 
-deVideoDecoder *deVideoManager::CreateDecoder(deVideo *video){
+deVideoDecoder *deVideoManager::CreateDecoder(deVideo::Ref video){
 	if(!video || !video->GetVirtualFileSystem()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deVideoDecoder *videoDecoder = NULL;
+	deVideoDecoder::Ref videoDecoder = NULL;
 	deBaseVideoDecoder *peer = NULL;
 	decBaseFileReader::Ref reader;
 	deBaseVideoModule *module = NULL;
 	
 	try{
-		videoDecoder = new deVideoDecoder(*this, video);
+		videoDecoder.TakeOver(new deVideoDecoder(*this, video));
 		
 		module = (deBaseVideoModule*)GetModuleSystem()->GetModuleAbleToLoad(
 			deModuleSystem::emtVideo, video->GetFilename());
@@ -225,10 +216,6 @@ deVideoDecoder *deVideoManager::CreateDecoder(deVideo *video){
 		if(peer){
 			delete peer;
 		}
-		if(videoDecoder){
-			videoDecoder->FreeReference();
-		}
-		
 		LogErrorFormat("Creating decoder for video '%s' failed",
 			video->GetFilename().GetString());
 		
@@ -265,12 +252,12 @@ deVideoDecoder *deVideoManager::CreateDecoder(deVideo *video){
 	return videoDecoder;
 }
 
-deVideoAudioDecoder *deVideoManager::CreateAudioDecoder(deVideo *video){
+deVideoAudioDecoder *deVideoManager::CreateAudioDecoder(deVideo::Ref video){
 	if(!video || !video->GetVirtualFileSystem()){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deVideoAudioDecoder *audioDecoder = NULL;
+	deVideoAudioDecoder::Ref audioDecoder = NULL;
 	deBaseVideoAudioDecoder *peer = NULL;
 	decBaseFileReader::Ref reader;
 	deBaseVideoModule *module = NULL;
@@ -285,17 +272,13 @@ deVideoAudioDecoder *deVideoManager::CreateAudioDecoder(deVideo *video){
 			return NULL;  // no audio or not supported
 		}
 		
-		audioDecoder = new deVideoAudioDecoder(*this, video);
+		audioDecoder.TakeOver(new deVideoAudioDecoder(*this, video));
 		audioDecoder->SetPeerVideo(peer);
 		
 	}catch(const deException &e){
 		if(peer){
 			delete peer;
 		}
-		if(audioDecoder){
-			audioDecoder->FreeReference();
-		}
-		
 		LogErrorFormat("Creating decoder for video '%s' failed",
 			video->GetFilename().GetString());
 		
@@ -372,7 +355,7 @@ void deVideoManager::ReleaseLeakingResources(){
 	const int count = GetVideoCount();
 	
 	if(count > 0){
-		const deVideo *video = (const deVideo *)pVideos.GetRoot();
+		const deVideo::Ref video = (const deVideo *)pVideos.GetRoot();
 		
 		LogWarnFormat("%i leaking videos", count);
 		
@@ -392,7 +375,7 @@ void deVideoManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deVideoManager::SystemGraphicLoad(){
-	deVideo *video = (deVideo*)pVideos.GetRoot();
+	deVideo::Ref video = (deVideo*)pVideos.GetRoot();
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(video){
@@ -405,7 +388,7 @@ void deVideoManager::SystemGraphicLoad(){
 }
 
 void deVideoManager::SystemGraphicUnload(){
-	deVideo *video = (deVideo*)pVideos.GetRoot();
+	deVideo::Ref video = (deVideo*)pVideos.GetRoot();
 	
 	while(video){
 		video->SetPeerGraphic(NULL);

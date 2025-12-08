@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFileRemove::ceUCFileRemove(ceConversationFile *file){
+ceUCFileRemove::ceUCFileRemove(ceConversationFile::Ref file){
 	if(!file) DETHROW(deeInvalidParam);
 	
-	ceConversation *conversation = file->GetConversation();
+	ceConversation::Ref conversation = file->GetConversation();
 	if(!conversation) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
@@ -52,19 +52,10 @@ ceUCFileRemove::ceUCFileRemove(ceConversationFile *file){
 	SetShortInfo("Remove File");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pFile = file;
-	file->AddReference();
 }
 
 ceUCFileRemove::~ceUCFileRemove(){
-	if(pFile){
-		pFile->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

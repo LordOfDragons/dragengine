@@ -52,9 +52,9 @@ private:
 	int pFirstIndex;
 	int pIndexCount;
 	
-	deoglRDynamicSkin *pDynamicSkin;
+	deoglRDynamicSkin::Ref pDynamicSkin;
 	
-	deoglRSkin *pUseSkin;
+	deoglRSkin::Ref pUseSkin;
 	int pUseTextureNumber;
 	deoglSkinTexture *pUseSkinTexture;
 	
@@ -133,13 +133,13 @@ public:
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or NULL if there is none. */
-	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
+	void SetDynamicSkin(deoglRDynamicSkin::Ref dynamicSkin);
 	
 	/** Skin to use. */
 	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }
 	
 	/** Set skin to use. */
-	void SetUseSkin(deoglRSkin *skin);
+	void SetUseSkin(deoglRSkin::Ref skin);
 	
 	/** Skin texture number to use. */
 	inline int GetUseTextureNumber() const{ return pUseTextureNumber; }

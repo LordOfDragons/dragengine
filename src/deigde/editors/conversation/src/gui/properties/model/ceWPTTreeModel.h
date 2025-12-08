@@ -64,7 +64,7 @@ public:
 	
 private:
 	ceWindowMain &pWindowMain;
-	ceConversation *pConversation;
+	ceConversation::Ref pConversation;
 	ceWPTTreeModelListener *pListener;
 	ceConversationListener &pForwardListener;
 	
@@ -79,7 +79,7 @@ public:
 	/** Constructors and Destructors */
 	/*@{*/
 	/** Create new tree model. */
-	ceWPTTreeModel(ceWindowMain &windowMain, ceConversation *conversation,
+	ceWPTTreeModel(ceWindowMain &windowMain, ceConversation::Ref conversation,
 		ceConversationListener &forwardListener);
 	
 	/** Clean up tree model. */

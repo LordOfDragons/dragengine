@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCToggleCanInstantiate::gdeUOCToggleCanInstantiate(gdeObjectClass *objectClass) :
+gdeUOCToggleCanInstantiate::gdeUOCToggleCanInstantiate(gdeObjectClass::Ref objectClass) :
 pObjectClass(NULL)
 {
 	if(!objectClass){
@@ -49,13 +49,9 @@ pObjectClass(NULL)
 	SetShortInfo("Object class toggle can instantiate");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCToggleCanInstantiate::~gdeUOCToggleCanInstantiate(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

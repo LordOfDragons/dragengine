@@ -37,8 +37,8 @@ class ceWPUndoHistoryListener;
  */
 class ceWPUndoHistory : public igdeWPUndoHistory{
 private:
-	ceWPUndoHistoryListener *pListener;
-	ceConversation *pConversation;
+	ceWPUndoHistoryListener::Ref pListener;
+	ceConversation::Ref pConversation;
 	
 	
 	
@@ -62,7 +62,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation. */
-	void SetConversation(ceConversation *conversation);
+	void SetConversation(ceConversation::Ref conversation);
 	/*@}*/
 };
 

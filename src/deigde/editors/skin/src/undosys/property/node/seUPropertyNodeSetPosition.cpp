@@ -39,8 +39,8 @@
 ////////////////////////////
 
 seUPropertyNodeSetPosition::seUPropertyNodeSetPosition(
-sePropertyNode *node, const decPoint3 &newValue) :
-pNode(NULL),
+sePropertyNode::Ref node, const decPoint3 &newValue) :
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = node->GetPosition();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetPosition::~seUPropertyNodeSetPosition(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

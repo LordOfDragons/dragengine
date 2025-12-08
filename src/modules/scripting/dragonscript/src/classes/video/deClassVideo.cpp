@@ -44,7 +44,7 @@
 
 // native structure
 struct sVidNatDat{
-	deVideo *video;
+	deVideo::Ref video;
 };
 
 
@@ -195,7 +195,7 @@ dsFunction(init.clsVid, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassVideo::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deVideo *video = ((sVidNatDat*)p_GetNativeData(myself))->video;
+	deVideo::Ref video = ((sVidNatDat*)p_GetNativeData(myself))->video;
 	
 	rt->PushInt((int)(intptr_t)video);
 }
@@ -206,7 +206,7 @@ dsFunction(init.clsVid, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // object
 }
 void deClassVideo::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deVideo *video = ((sVidNatDat*)p_GetNativeData(myself))->video;
+	deVideo::Ref video = ((sVidNatDat*)p_GetNativeData(myself))->video;
 	deClassVideo *clsVideo = (deClassVideo*)GetOwnerClass();
 	dsValue *object = rt->GetValue(0);
 	
@@ -307,7 +307,7 @@ deVideo *deClassVideo::GetVideo(dsRealObject *myself) const{
 	return ((sVidNatDat*)p_GetNativeData(myself->GetBuffer()))->video;
 }
 
-void deClassVideo::PushVideo(dsRunTime *rt, deVideo *video){
+void deClassVideo::PushVideo(dsRunTime *rt, deVideo::Ref video){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -319,5 +319,4 @@ void deClassVideo::PushVideo(dsRunTime *rt, deVideo *video){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sVidNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->video = video;
-	video->AddReference();
 }

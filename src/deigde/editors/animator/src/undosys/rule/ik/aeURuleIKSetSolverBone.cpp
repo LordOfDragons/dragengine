@@ -46,8 +46,6 @@ aeURuleIKSetSolverBone::aeURuleIKSetSolverBone(aeRuleInverseKinematic *rule, con
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldName = rule->GetSolverBone();
 		pNewName = newName;
 		

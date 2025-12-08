@@ -51,7 +51,7 @@ private:
 	bool pDirtyFullScreen;
 	bool pDirtyIcon;
 	
-	deoglRRenderWindow *pRRenderWindow;
+	deoglRRenderWindow::Ref pRRenderWindow;
 	
 public:
 	/** \name Constructors and Destructors */

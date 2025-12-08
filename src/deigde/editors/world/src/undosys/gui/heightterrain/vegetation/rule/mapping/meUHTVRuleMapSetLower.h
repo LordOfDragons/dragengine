@@ -47,8 +47,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleMapping *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleMapping::Ref pRule;
 	
 	float pOldLower;
 	float pNewLower;
@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleMapSetLower(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule, float nlower);
+	meUHTVRuleMapSetLower(meHTVegetationLayer::Ref vlayer, meHTVRuleMapping::Ref rule, float nlower);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleMapSetLower();
 	/*@}*/

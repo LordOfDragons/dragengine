@@ -59,14 +59,14 @@ class gdeWPSTIMOCWorld;
  */
 class gdeWPSTIMObjectClass : public gdeWPSTreeItemModel{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMObjectClass(gdeWPSTreeModel &tree, gdeObjectClass *objectClass);
+	gdeWPSTIMObjectClass(gdeWPSTreeModel &tree, gdeObjectClass::Ref objectClass);
 	
 protected:
 	/** \brief Clean up tree item model. */

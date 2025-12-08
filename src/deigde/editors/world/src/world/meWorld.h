@@ -161,18 +161,18 @@ public:
 private:
 	meWindowMain &pWindowMain;
 	
-	deWorld *pDEWorld;
-	deColliderVolume *pEngColCollider;
+	deWorld::Ref pDEWorld;
+	deColliderVolume::Ref pEngColCollider;
 	igdeWSky *pSky;
 	igdeWObject::Ref pBgObject;
-	deMicrophone *pEngMicrophone;
+	deMicrophone::Ref pEngMicrophone;
 	decVector pLimitBoxMinExtend, pLimitBoxMaxExtend;
 	
-	deForceField *pEngForceField;
+	deForceField::Ref pEngForceField;
 	
 	decDVector pSize;
 	decVector pGravity;
-	meHeightTerrain *pHeightTerrain;
+	meHeightTerrain::Ref pHeightTerrain;
 	
 	meObjectList pObjects;
 	meDecalList pDecals;
@@ -195,8 +195,8 @@ private:
 	meCamera *pPlayerCamera;
 	meCamera *pActiveCamera;
 	
-	meLumimeter *pLumimeter;
-	mePathFindTest *pPathFindTest;
+	meLumimeter::Ref pLumimeter;
+	mePathFindTest::Ref pPathFindTest;
 	meMusic::Ref pMusic;
 	
 	bool pDepChanged;
@@ -518,13 +518,13 @@ public:
 	/** Retrieves the notifier at the given index. */
 	meWorldNotifier *GetNotifierAt(int index) const;
 	/** Retrieves the index of the notifier or -1 if not found. */
-	int IndexOfNotifier(meWorldNotifier *notifier) const;
+	int IndexOfNotifier(meWorldNotifier::Ref notifier) const;
 	/** Determines if the notifier exists. */
-	bool HasNotifier(meWorldNotifier *notifier) const;
+	bool HasNotifier(meWorldNotifier::Ref notifier) const;
 	/** Adds a new notifier. */
-	void AddNotifier(meWorldNotifier *notifier);
+	void AddNotifier(meWorldNotifier::Ref notifier);
 	/** Removes the given notifier. */
-	void RemoveNotifier(meWorldNotifier *notifier);
+	void RemoveNotifier(meWorldNotifier::Ref notifier);
 	/** Removes all notifiers. */
 	void RemoveAllNotifiers();
 	

@@ -40,8 +40,8 @@ class gdeProperty;
  */
 class gdeUGDDPSetMinValue : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeProperty::Ref pProperty;
 	
 	float pOldValue;
 	float pNewValue;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDDPSetMinValue(gdeGameDefinition *gamedef, gdeProperty *property, float newValue);
+	gdeUGDDPSetMinValue(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

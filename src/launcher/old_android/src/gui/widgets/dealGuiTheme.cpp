@@ -41,88 +41,74 @@
 dealGuiTheme::dealGuiTheme(dealDisplay &display) :
 pWidgetBackgroundColor(1.0f, 1.0f, 1.0f),
 pWidgetTextColor(0.0f, 0.0f, 0.0f),
-pWidgetTextFont(NULL),
 pWidgetTextFontSize(display.GetDefaultFontSize()),
 
 pButtonBackgroundColor(1.0f, 1.0f, 1.0f, 0.0f),
 pButtonTextColor(0.0f, 0.0f, 0.0f),
-pButtonBackgroundImage(NULL),
 pButtonBackgroundImageScale(2.0f),
 pButtonBackgroundImageColorize(1.0f, 1.0f, 1.0f),
 
 pButtonPressedBackgroundColor(1.0f, 1.0f, 1.0f, 0.0f),
 pButtonPressedTextColor(0.0f, 0.0f, 0.0f),
-pButtonPressedBackgroundImage(NULL),
 pButtonPressedBackgroundImageScale(2.0f),
 pButtonPressedBackgroundImageColorize(0.95f, 1.25f, 1.25f),
 
 pCheckBoxBackgroundColor(1.0f, 1.0f, 1.0f, 0.0f),
 pCheckBoxTextColor(0.0f, 0.0f, 0.0f),
-pCheckBoxImageUnchecked(NULL),
-pCheckBoxImageChecked(NULL),
 pCheckBoxImageScale(3.0f),
 pCheckBoxImageUncheckedColorize(1.0f, 1.0f, 1.0f),
 pCheckBoxImageCheckedColorize(1.0f, 1.0f, 1.0f),
 
 pOptionBoxBackgroundColor(1.0f, 1.0f, 1.0f, 0.0f),
 pOptionBoxTextColor(0.0f, 0.0f, 0.0f),
-pOptionBoxImageDeselected(NULL),
-pOptionBoxImageSelected(NULL),
 pOptionBoxImageScale(3.0f),
 pOptionBoxImageDeselectedColorize(1.0f, 1.0f, 1.0f),
 pOptionBoxImageSelectedColorize(1.0f, 1.0f, 1.0f)
 {
 	SetWidgetTextFont(display.GetDefaultFont());
 	
-	pButtonBackgroundImage = new dealImage(display, "guitheme/button_normal.tga");
+	pButtonBackgroundImage.TakeOver(new dealImage(display, "guitheme/button_normal.tga"));
 	pButtonBackgroundImageBorder[0] = 4;
 	pButtonBackgroundImageBorder[1] = 4;
 	pButtonBackgroundImageBorder[2] = 4;
 	pButtonBackgroundImageBorder[3] = 4;
 	
-	pButtonPressedBackgroundImage = new dealImage(display, "guitheme/button_pressed.tga");
+	pButtonPressedBackgroundImage.TakeOver(new dealImage(display, "guitheme/button_pressed.tga"));
 	pButtonPressedBackgroundImageBorder[0] = 4;
 	pButtonPressedBackgroundImageBorder[1] = 4;
 	pButtonPressedBackgroundImageBorder[2] = 4;
 	pButtonPressedBackgroundImageBorder[3] = 4;
 	
-	pCheckBoxImageUnchecked = new dealImage(display, "guitheme/checkbox_unchecked.tga");
-	pCheckBoxImageChecked = new dealImage(display, "guitheme/checkbox_checked.tga");
+	pCheckBoxImageUnchecked.TakeOver(new dealImage(display, "guitheme/checkbox_unchecked.tga"));
+	pCheckBoxImageChecked.TakeOver(new dealImage(display, "guitheme/checkbox_checked.tga"));
 	
-	pOptionBoxImageDeselected = new dealImage(display, "guitheme/optionbox_deselected.tga");
-	pOptionBoxImageSelected = new dealImage(display, "guitheme/optionbox_selected.tga");
+	pOptionBoxImageDeselected.TakeOver(new dealImage(display, "guitheme/optionbox_deselected.tga"));
+	pOptionBoxImageSelected.TakeOver(new dealImage(display, "guitheme/optionbox_selected.tga"));
 }
 
 dealGuiTheme::dealGuiTheme(const dealGuiTheme &copy) :
 pWidgetBackgroundColor(copy.pWidgetBackgroundColor),
 pWidgetTextColor(copy.pWidgetTextColor),
-pWidgetTextFont(NULL),
 pWidgetTextFontSize(copy.pWidgetTextFontSize),
 
 pButtonBackgroundColor(copy.pButtonBackgroundColor),
 pButtonTextColor(copy.pButtonTextColor),
-pButtonBackgroundImage(NULL),
 pButtonBackgroundImageScale(copy.pButtonBackgroundImageScale),
 pButtonBackgroundImageColorize(copy.pButtonBackgroundImageColorize),
 
 pButtonPressedBackgroundColor(copy.pButtonPressedBackgroundColor),
 pButtonPressedTextColor(copy.pButtonPressedTextColor),
-pButtonPressedBackgroundImage(NULL),
 pButtonPressedBackgroundImageScale(copy.pButtonPressedBackgroundImageScale),
 pButtonPressedBackgroundImageColorize(copy.pButtonPressedBackgroundImageColorize),
 
 pCheckBoxBackgroundColor(copy.pCheckBoxBackgroundColor),
 pCheckBoxTextColor(copy.pCheckBoxTextColor),
-pCheckBoxImageUnchecked(NULL),
-pCheckBoxImageChecked(NULL),
 pCheckBoxImageScale(copy.pCheckBoxImageScale),
 pCheckBoxImageUncheckedColorize(copy.pCheckBoxImageUncheckedColorize),
 pCheckBoxImageCheckedColorize(copy.pCheckBoxImageCheckedColorize),
 
 pOptionBoxBackgroundColor(copy.pOptionBoxBackgroundColor),
 pOptionBoxTextColor(copy.pOptionBoxTextColor),
-pOptionBoxImageDeselected(NULL),
-pOptionBoxImageSelected(NULL),
 pOptionBoxImageScale(copy.pOptionBoxImageScale),
 pOptionBoxImageDeselectedColorize(copy.pOptionBoxImageDeselectedColorize),
 pOptionBoxImageSelectedColorize(copy.pOptionBoxImageSelectedColorize)
@@ -149,30 +135,6 @@ pOptionBoxImageSelectedColorize(copy.pOptionBoxImageSelectedColorize)
 }
 
 dealGuiTheme::~dealGuiTheme(){
-	if(pWidgetTextFont){
-		pWidgetTextFont->FreeReference();
-	}
-	
-	if(pButtonBackgroundImage){
-		pButtonBackgroundImage->FreeReference();
-	}
-	if(pButtonPressedBackgroundImage){
-		pButtonPressedBackgroundImage->FreeReference();
-	}
-	
-	if(pCheckBoxImageUnchecked){
-		pCheckBoxImageUnchecked->FreeReference();
-	}
-	if(pCheckBoxImageChecked){
-		pCheckBoxImageChecked->FreeReference();
-	}
-	
-	if(pOptionBoxImageDeselected){
-		pOptionBoxImageDeselected->FreeReference();
-	}
-	if(pOptionBoxImageSelected){
-		pOptionBoxImageSelected->FreeReference();
-	}
 }
 
 
@@ -188,20 +150,11 @@ void dealGuiTheme::SetWidgetTextColor(const decColor &color){
 	pWidgetTextColor = color;
 }
 
-void dealGuiTheme::SetWidgetTextFont(dealFont *font){
+void dealGuiTheme::SetWidgetTextFont(dealFont::Ref font){
 	if(font == pWidgetTextFont){
 		return;
 	}
-	
-	if(pWidgetTextFont){
-		pWidgetTextFont->FreeReference();
-	}
-	
 	pWidgetTextFont = font;
-	
-	if(font){
-		font->AddReference();
-	}
 }
 
 void dealGuiTheme::SetWidgetTextFontSize(int size){
@@ -218,20 +171,11 @@ void dealGuiTheme::SetButtonTextColor(const decColor &color){
 	pButtonTextColor = color;
 }
 
-void dealGuiTheme::SetButtonBackgroundImage(dealImage *image){
+void dealGuiTheme::SetButtonBackgroundImage(dealImage::Ref image){
 	if(image == pButtonBackgroundImage){
 		return;
 	}
-	
-	if(pButtonBackgroundImage){
-		pButtonBackgroundImage->FreeReference();
-	}
-	
 	pButtonBackgroundImage = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
 int dealGuiTheme::GetButtonBackgroundImageBorder(int border) const{
@@ -268,20 +212,11 @@ void dealGuiTheme::SetButtonPressedTextColor(const decColor &color){
 	pButtonPressedTextColor = color;
 }
 
-void dealGuiTheme::SetButtonPressedBackgroundImage(dealImage *image){
+void dealGuiTheme::SetButtonPressedBackgroundImage(dealImage::Ref image){
 	if(image == pButtonPressedBackgroundImage){
 		return;
 	}
-	
-	if(pButtonPressedBackgroundImage){
-		pButtonPressedBackgroundImage->FreeReference();
-	}
-	
 	pButtonPressedBackgroundImage = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
 int dealGuiTheme::GetButtonPressedBackgroundImageBorder(int border) const{
@@ -318,36 +253,18 @@ void dealGuiTheme::SetCheckBoxTextColor(const decColor &color){
 	pCheckBoxTextColor = color;
 }
 
-void dealGuiTheme::SetCheckBoxImageUnchecked(dealImage *image){
+void dealGuiTheme::SetCheckBoxImageUnchecked(dealImage::Ref image){
 	if(image == pCheckBoxImageUnchecked){
 		return;
 	}
-	
-	if(pCheckBoxImageUnchecked){
-		pCheckBoxImageUnchecked->FreeReference();
-	}
-	
 	pCheckBoxImageUnchecked = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
-void dealGuiTheme::SetCheckBoxImageChecked(dealImage *image){
+void dealGuiTheme::SetCheckBoxImageChecked(dealImage::Ref image){
 	if(image == pCheckBoxImageChecked){
 		return;
 	}
-	
-	if(pCheckBoxImageChecked){
-		pCheckBoxImageChecked->FreeReference();
-	}
-	
 	pCheckBoxImageChecked = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
 void dealGuiTheme::SetCheckBoxImageScale(float scale){
@@ -372,36 +289,18 @@ void dealGuiTheme::SetOptionBoxTextColor(const decColor &color){
 	pOptionBoxTextColor = color;
 }
 
-void dealGuiTheme::SetOptionBoxImageDeselected(dealImage *image){
+void dealGuiTheme::SetOptionBoxImageDeselected(dealImage::Ref image){
 	if(image == pOptionBoxImageDeselected){
 		return;
 	}
-	
-	if(pOptionBoxImageDeselected){
-		pOptionBoxImageDeselected->FreeReference();
-	}
-	
 	pOptionBoxImageDeselected = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
-void dealGuiTheme::SetOptionBoxImageSelected(dealImage *image){
+void dealGuiTheme::SetOptionBoxImageSelected(dealImage::Ref image){
 	if(image == pOptionBoxImageSelected){
 		return;
 	}
-	
-	if(pOptionBoxImageSelected){
-		pOptionBoxImageSelected->FreeReference();
-	}
-	
 	pOptionBoxImageSelected = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
 void dealGuiTheme::SetOptionBoxImageScale(float scale){

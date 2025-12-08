@@ -43,7 +43,7 @@ public:
 	
 	
 private:
-	meHeightTerrainNavSpaceType *pType;
+	meHeightTerrainNavSpaceType::Ref pType;
 	decColor pOldColor;
 	decColor pNewColor;
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceTypeSetColor(meHeightTerrainNavSpaceType *type, const decColor &newColor);
+	meUHTNavSpaceTypeSetColor(meHeightTerrainNavSpaceType::Ref type, const decColor &newColor);
 	
 protected:
 	/** \brief Clean up undo action. */

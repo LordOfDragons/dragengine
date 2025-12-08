@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUEmitterToggleEmitBurst::peeUEmitterToggleEmitBurst(peeEmitter *emitter){
+peeUEmitterToggleEmitBurst::peeUEmitterToggleEmitBurst(peeEmitter::Ref emitter){
 	if(!emitter){
 		DETHROW(deeInvalidParam);
 	}
@@ -49,13 +49,9 @@ peeUEmitterToggleEmitBurst::peeUEmitterToggleEmitBurst(peeEmitter *emitter){
 	SetShortInfo("Set Emitter Emit Burst");
 	
 	pEmitter = emitter;
-	emitter->AddReference();
 }
 
 peeUEmitterToggleEmitBurst::~peeUEmitterToggleEmitBurst(){
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

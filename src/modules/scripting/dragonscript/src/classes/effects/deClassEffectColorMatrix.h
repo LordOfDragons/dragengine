@@ -72,7 +72,7 @@ public:
 	 * \brief Push effect color matrix onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushEffect(dsRunTime *rt, deEffectColorMatrix *effect);
+	void PushEffect(dsRunTime *rt, deEffectColorMatrix::Ref effect);
 	/*@}*/
 	
 private:

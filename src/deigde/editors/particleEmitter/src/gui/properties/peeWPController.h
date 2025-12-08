@@ -45,9 +45,9 @@ class peeWPControllerListener;
 class peeWPController : public igdeContainerScroll{
 private:
 	peeWindowProperties &pWindowProperties;
-	peeWPControllerListener *pListener;
+	peeWPControllerListener::Ref pListener;
 	
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	igdeAction::Ref pActionControllerAdd;
 	igdeAction::Ref pActionControllerRemove;
@@ -85,7 +85,7 @@ public:
 	inline peeEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
-	void SetEmitter(peeEmitter *emitter);
+	void SetEmitter(peeEmitter::Ref emitter);
 	
 	/** \brief Active controller or \em NULL. */
 	peeController *GetController() const;

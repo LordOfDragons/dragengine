@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCBillboardToggleSpherical : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCBillboardToggleSpherical(gdeObjectClass *objectClass, gdeOCBillboard *billboard);
+	gdeUOCBillboardToggleSpherical(gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard);
 	
 protected:
 	/** \brief Clean up undo action. */

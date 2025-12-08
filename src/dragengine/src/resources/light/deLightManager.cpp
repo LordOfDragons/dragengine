@@ -54,17 +54,14 @@ deLight *deLightManager::GetRootLight() const{
 }
 
 deLight *deLightManager::CreateLight(){
-	deLight *light = NULL;
+	deLight::Ref light = NULL;
 	// create and add light
 	try{
-		light = new deLight(this);
+		light.TakeOver(new deLight(this));
 		if(!light) DETHROW(deeOutOfMemory);
 		GetGraphicSystem()->LoadLight(light);
 		pLights.Add(light);
 	}catch(const deException &){
-		if(light){
-			light->FreeReference();
-		}
 		throw;
 	}
 	// finished
@@ -86,7 +83,7 @@ void deLightManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deLightManager::SystemGraphicLoad(){
-	deLight *light = (deLight*)pLights.GetRoot();
+	deLight::Ref light = (deLight*)pLights.GetRoot();
 	
 	while(light){
 		if(!light->GetPeerGraphic()){
@@ -98,7 +95,7 @@ void deLightManager::SystemGraphicLoad(){
 }
 
 void deLightManager::SystemGraphicUnload(){
-	deLight *light = (deLight*)pLights.GetRoot();
+	deLight::Ref light = (deLight*)pLights.GetRoot();
 	
 	while(light){
 		light->SetPeerGraphic(NULL);

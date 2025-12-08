@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetCategory::gdeUOCSetCategory(gdeObjectClass *objectClass, const char *newValue) :
+gdeUOCSetCategory::gdeUOCSetCategory(gdeObjectClass::Ref objectClass, const char *newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass){
@@ -52,13 +52,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetCategory::~gdeUOCSetCategory(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

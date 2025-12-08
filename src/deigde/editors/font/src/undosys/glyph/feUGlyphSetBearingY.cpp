@@ -35,14 +35,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUGlyphSetBearingY::feUGlyphSetBearingY(feFontGlyph *glyph, int newValue){
+feUGlyphSetBearingY::feUGlyphSetBearingY(feFontGlyph::Ref glyph, int newValue){
 	SetShortInfo("GLyph set bearing Y");
 	
 	pOldValue = glyph->GetBearingY();
 	pNewValue = newValue;
 	
 	pGlyph = glyph;
-	glyph->AddReference();
 }
 
 feUGlyphSetBearingY::~feUGlyphSetBearingY(){

@@ -52,8 +52,8 @@ public:
 	
 	
 private:
-	igdeWindowLoggerListener *pListener;
-	igdeLoggerHistory *pLogger;
+	igdeWindowLoggerListener::Ref pListener;
+	igdeLoggerHistory::Ref pLogger;
 	igdeTextArea::Ref pEditLogs;
 	int pPendingAddedLogs;
 	bool pPendingClearLogs;
@@ -78,7 +78,7 @@ public:
 	inline igdeLoggerHistory *GetLogger() const{ return pLogger; }
 	
 	/** \brief Set logger or NULL. */
-	void SetLogger(igdeLoggerHistory *logger);
+	void SetLogger(igdeLoggerHistory::Ref logger);
 	
 	
 	

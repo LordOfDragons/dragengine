@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCActionSetDelay : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
 	float pOldDelay;
 	float pNewDelay;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionSetDelay(ceConversationTopic *topic, ceConversationAction *action, float newDelay);
+	ceUCActionSetDelay(ceConversationTopic::Ref topic, ceConversationAction::Ref action, float newDelay);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCActionSetDelay();

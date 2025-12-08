@@ -41,10 +41,9 @@
 ////////////////////////////
 
 gdeUCategorySetAutoCategorizePattern::gdeUCategorySetAutoCategorizePattern(
-	gdeGameDefinition *gameDefinition, gdeCategory *category, eCategoryType type,
+	gdeGameDefinition *gameDefinition, gdeCategory::Ref category, eCategoryType type,
 	const decStringSet &newValue) :
 gdeUCategoryBase(gameDefinition, type),
-pCategory(NULL),
 pNewValue(newValue)
 {
 	if(!category){
@@ -56,13 +55,9 @@ pNewValue(newValue)
 	pOldValue = category->GetAutoCategorizePattern();
 	
 	pCategory = category;
-	category->AddReference();
 }
 
 gdeUCategorySetAutoCategorizePattern::~gdeUCategorySetAutoCategorizePattern(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
 }
 
 

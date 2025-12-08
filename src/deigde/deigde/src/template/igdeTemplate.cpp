@@ -51,21 +51,17 @@ pScriptModule(atemplate.pScriptModule),
 pBaseGameDefinitions(atemplate.pBaseGameDefinitions)
 {
 	const int fileCount = atemplate.pFiles.GetCount();
-	igdeTemplateFile *file = NULL;
+	igdeTemplateFile::Ref file = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<fileCount; i++){
-			file = new igdeTemplateFile(*atemplate.pFiles.GetAt(i));
+			file.TakeOver(new igdeTemplateFile(*atemplate.pFiles.GetAt(i)));
 			pFiles.Add(file);
-			file->FreeReference();
 			file = NULL;
 		}
 		
 	}catch(const deException &){
-		if(file){
-			file->FreeReference();
-		}
 		throw;
 	}
 }

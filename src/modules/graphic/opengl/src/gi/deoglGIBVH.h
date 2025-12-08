@@ -195,11 +195,11 @@ private:
 	
 	int pIndexRootNode;
 	
-	deoglDynamicTBOUInt32 *pTBOInstance;
-	deoglDynamicTBOFloat32 *pTBOMatrix;
+	deoglDynamicTBOUInt32::Ref pTBOInstance;
+	deoglDynamicTBOFloat32::Ref pTBOMatrix;
 	
-	deoglDynamicTBOFloat32 *pBVHTBONodeBox;
-	deoglDynamicTBOUInt16 *pBVHTBOIndex;
+	deoglDynamicTBOFloat32::Ref pBVHTBONodeBox;
+	deoglDynamicTBOUInt16::Ref pBVHTBOIndex;
 	deoglDynamicTBOBlock::Ref pBlockBVH;
 	
 	deoglRenderTask pRenderTaskMaterial;

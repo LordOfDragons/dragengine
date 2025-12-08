@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDSetVFSPath::gdeUGDSetVFSPath(gdeGameDefinition *gameDefinition, const char *newValue) :
-pGameDefinition(NULL),
+gdeUGDSetVFSPath::gdeUGDSetVFSPath(gdeGameDefinition::Ref gameDefinition, const char *newValue) :
+
 pNewValue(newValue)
 {
 	if(!gameDefinition){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = gameDefinition->GetVFSPath();
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetVFSPath::~gdeUGDSetVFSPath(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

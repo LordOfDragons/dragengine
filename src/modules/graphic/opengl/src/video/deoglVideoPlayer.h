@@ -57,7 +57,7 @@ public:
 	deVideoDecoder::Ref pVideoDecoder;
 	deoglVideoDecodeThread *pDecodeThread;
 	
-	deoglRVideoPlayer *pRVideoPlayer;
+	deoglRVideoPlayer::Ref pRVideoPlayer;
 	
 	decPointerSet pNotifyRenderables;
 	decPointerSet pNotifyCanvas;

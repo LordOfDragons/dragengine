@@ -66,7 +66,7 @@ private:
 	decPointerOrderedSet pLeavingColliders;
 	debpGhostObject *pGhostObject;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSShape;
 	
 	

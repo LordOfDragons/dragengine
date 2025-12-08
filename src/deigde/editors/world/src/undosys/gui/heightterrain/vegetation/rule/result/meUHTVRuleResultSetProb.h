@@ -47,8 +47,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleResult *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleResult::Ref pRule;
 	
 	float pOldProb;
 	float pNewProb;
@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleResultSetProb(meHTVegetationLayer *vlayer, meHTVRuleResult *rule, float nprob);
+	meUHTVRuleResultSetProb(meHTVegetationLayer::Ref vlayer, meHTVRuleResult::Ref rule, float nprob);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleResultSetProb();
 	/*@}*/

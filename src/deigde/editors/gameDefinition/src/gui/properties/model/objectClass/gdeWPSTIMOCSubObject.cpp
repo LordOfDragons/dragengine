@@ -41,9 +41,8 @@
 ////////////////////////////
 
 gdeWPSTIMOCSubObject::gdeWPSTIMOCSubObject(gdeWPSTreeModel &tree, eTypes type,
-	gdeObjectClass *objectClass, int index) :
+	gdeObjectClass::Ref objectClass, int index) :
 gdeWPSTreeItemModel(tree, type),
-pObjectClass(NULL),
 pIndex(index)
 {
 	if(!objectClass){
@@ -53,13 +52,9 @@ pIndex(index)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeWPSTIMOCSubObject::~gdeWPSTIMOCSubObject(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

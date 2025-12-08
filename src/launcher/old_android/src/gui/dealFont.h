@@ -61,7 +61,7 @@ public:
 private:
 	dealDisplay &pDisplay;
 	
-	dealImage *pImage;
+	dealImage::Ref pImage;
 	
 	int pLineHeight;
 	sGlyph *pGlyphs;

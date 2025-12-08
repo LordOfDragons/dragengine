@@ -41,7 +41,7 @@ class seSource;
  */
 class seUSourcePasteEffect : public igdeUndo{
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	seEffectList pEffectList;
 	seLinkList pRemoveLinkList;
 	seControllerList pRemoveControllerList;
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo object. */
-	seUSourcePasteEffect(seSource *source, const seEffectList &effectList, int index);
+	seUSourcePasteEffect(seSource::Ref source, const seEffectList &effectList, int index);
 	
 protected:
 	/** \brief Clean up the undo object. */

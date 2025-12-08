@@ -37,8 +37,8 @@ class sePropertyNodeGroup;
  */
 class seUPNGroupAddNode : public igdeUndo{
 private:
-	sePropertyNodeGroup *pNode;
-	sePropertyNode *pChild;
+	sePropertyNodeGroup::Ref pNode;
+	sePropertyNode::Ref pChild;
 	
 	
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPNGroupAddNode(sePropertyNodeGroup *node, sePropertyNode *child);
+	seUPNGroupAddNode(sePropertyNodeGroup::Ref node, sePropertyNode::Ref child);
 	
 protected:
 	/** \brief Clean up undo. */

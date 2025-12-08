@@ -44,10 +44,8 @@
 ////////////////////////////
 
 cePlaybackActionStackEntry::cePlaybackActionStackEntry() :
-pParentTopic(NULL),
-pParentList(NULL),
 
-pLoopCondition(NULL),
+pParentList(NULL),
 pLooping(false),
 
 pNextIndex(0){
@@ -62,20 +60,11 @@ cePlaybackActionStackEntry::~cePlaybackActionStackEntry(){
 // Management
 ///////////////
 
-void cePlaybackActionStackEntry::SetParentTopic(ceConversationTopic *topic){
+void cePlaybackActionStackEntry::SetParentTopic(ceConversationTopic::Ref topic){
 	if(topic == pParentTopic){
 		return;
 	}
-	
-	if(pParentTopic){
-		pParentTopic->FreeReference();
-	}
-	
 	pParentTopic = topic;
-	
-	if(topic){
-		topic->AddReference();
-	}
 }
 
 void cePlaybackActionStackEntry::SetParentAction(ceConversationAction *action){
@@ -88,20 +77,11 @@ void cePlaybackActionStackEntry::SetParentList(const ceConversationActionList *l
 
 
 
-void cePlaybackActionStackEntry::SetLoopCondition(ceConversationCondition *condition){
+void cePlaybackActionStackEntry::SetLoopCondition(ceConversationCondition::Ref condition){
 	if(condition == pLoopCondition){
 		return;
 	}
-	
-	if(pLoopCondition){
-		pLoopCondition->FreeReference();
-	}
-	
 	pLoopCondition = condition;
-	
-	if(condition){
-		condition->AddReference();
-	}
 }
 
 void cePlaybackActionStackEntry::SetLooping(bool looping){

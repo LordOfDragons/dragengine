@@ -70,9 +70,6 @@ pDDSCoordSystem(NULL)
 	if(!oclight){
 		DETHROW(deeInvalidParam);
 	}
-	
-	pOCLight->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pCreateLight();
@@ -216,10 +213,6 @@ void gdeVAOLight::pCleanUp(){
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = NULL;
-	}
-	
-	if(pOCLight){
-		pOCLight->FreeReference();
 	}
 }
 

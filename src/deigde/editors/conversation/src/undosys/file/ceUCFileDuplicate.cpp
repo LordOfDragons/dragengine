@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFileDuplicate::ceUCFileDuplicate(ceConversation *conversation, const ceConversationFile &file, const char *newID) :
-pConversation(NULL),
+ceUCFileDuplicate::ceUCFileDuplicate(ceConversation::Ref conversation, const ceConversationFile &file, const char *newID) :
+
 pFile(NULL)
 {
 	if(!conversation){
@@ -51,27 +51,17 @@ pFile(NULL)
 	SetShortInfo("Duplicate file");
 	
 	try{
-		pFile = new ceConversationFile(file);
+		pFile.TakeOver(new ceConversationFile(file));
 		pFile->SetID(newID);
 		
 	}catch(const deException &){
-		if(pFile){
-			pFile->FreeReference();
-		}
 		throw;
 	}
 	
 	pConversation = conversation;
-	conversation->AddReference();
 }
 
 ceUCFileDuplicate::~ceUCFileDuplicate(){
-	if(pFile){
-		pFile->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

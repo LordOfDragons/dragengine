@@ -82,10 +82,10 @@ public:
 	deAnimatorRuleStateManipulator *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
+	void AssignAnimator(dsRealObject *myself, deAnimator::Ref animator);
 	
 	/** \brief Pushes a rule. */
-	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleStateManipulator *rule);
+	void PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleStateManipulator::Ref rule);
 	
 	inline dsClass *GetClassARStateManipulatorTarget() const{ return pClsARStateManipulatorTarget; }
 	/*@}*/

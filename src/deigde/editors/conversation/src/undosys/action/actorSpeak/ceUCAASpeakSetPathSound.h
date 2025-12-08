@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakSetPathSound : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	decString pOldPath;
 	decString pNewPath;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakSetPathSound(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newPath);
+	ceUCAASpeakSetPathSound(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, const char *newPath);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakSetPathSound();

@@ -41,7 +41,7 @@
 
 seUSourceChainSetPathSound::seUSourceChainSetPathSound(
 seSourceChain *source, int index, const char *newPath) :
-pSource(NULL),
+
 pNewPath(newPath)
 {
 	if(!source || index < 0 || index >= source->GetPathSounds().GetCount()){
@@ -54,13 +54,9 @@ pNewPath(newPath)
 	SetShortInfo("Chain source set path sound");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceChainSetPathSound::~seUSourceChainSetPathSound(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

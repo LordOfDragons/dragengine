@@ -56,7 +56,7 @@ public:
 	inline aeWindowMain *GetWindowMain() const{ return pWndMain; }
 	inline aeLSAnimator *GetLSAnimator() const{ return pLSAnimator; }
 	aeAnimator *LoadAnimator(const char *filename);
-	void SaveAnimator(aeAnimator *animator, const char *filename);
+	void SaveAnimator(aeAnimator::Ref animator, const char *filename);
 	
 	
 	

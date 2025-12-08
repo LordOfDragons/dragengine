@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavBlockerSetScaling::gdeUOCNavBlockerSetScaling(gdeObjectClass *objectClass,
-gdeOCNavigationBlocker *navblocker, const decVector &newValue) :
-pObjectClass(NULL),
+gdeUOCNavBlockerSetScaling::gdeUOCNavBlockerSetScaling(gdeObjectClass::Ref objectClass,
+gdeOCNavigationBlocker::Ref navblocker, const decVector &newValue) :
+
 pNavBlocker(NULL)
 {
 	if(!objectClass || !navblocker){
@@ -55,19 +55,10 @@ pNavBlocker(NULL)
 	pNewValue = newValue;
 	
 	pNavBlocker = navblocker;
-	navblocker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavBlockerSetScaling::~gdeUOCNavBlockerSetScaling(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

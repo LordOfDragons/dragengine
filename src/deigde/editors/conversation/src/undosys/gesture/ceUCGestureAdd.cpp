@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCGestureAdd::ceUCGestureAdd(ceConversation *conversation, ceGesture *gesture){
+ceUCGestureAdd::ceUCGestureAdd(ceConversation::Ref conversation, ceGesture::Ref gesture){
 	if(!conversation || !gesture) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
@@ -49,19 +49,10 @@ ceUCGestureAdd::ceUCGestureAdd(ceConversation *conversation, ceGesture *gesture)
 	SetShortInfo("Add Gesture");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pGesture = gesture;
-	gesture->AddReference();
 }
 
 ceUCGestureAdd::~ceUCGestureAdd(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

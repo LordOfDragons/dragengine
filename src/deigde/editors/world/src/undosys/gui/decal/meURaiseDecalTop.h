@@ -42,7 +42,7 @@ class meDecal;
 class meURaiseDecalTop : public igdeUndo{
 private:
 	meWorld *pWorld;
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	int pOldIndex;
 	
@@ -51,7 +51,7 @@ public:
 	typedef deTObjectReference<meURaiseDecalTop> Ref;
 	
 	// constructor, destructor
-	meURaiseDecalTop(meWorld *world, meDecal *decal);
+	meURaiseDecalTop(meWorld *world, meDecal::Ref decal);
 	virtual ~meURaiseDecalTop();
 	
 	// undo and redo operations

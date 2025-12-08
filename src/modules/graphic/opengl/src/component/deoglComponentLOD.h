@@ -37,7 +37,7 @@ public:
 	deoglComponent &pComponent;
 	const int pLODIndex;
 	
-	deoglRComponentLOD *pRLOD;
+	deoglRComponentLOD::Ref pRLOD;
 	
 public:
 	/** \name Constructors and Destructors */

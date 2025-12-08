@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakSetActor::ceUCAASpeakSetActor(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newActorID){
+ceUCAASpeakSetActor::ceUCAASpeakSetActor(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, const char *newActorID){
 	if(!topic || !newActorID) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
@@ -52,19 +52,10 @@ ceUCAASpeakSetActor::ceUCAASpeakSetActor(ceConversationTopic *topic, ceCAActorSp
 	SetShortInfo("Actor Speak Set Actor ID");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetActor::~ceUCAASpeakSetActor(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

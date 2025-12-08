@@ -55,7 +55,7 @@ class decUnicodeArgumentList;
 class DE_DLL_EXPORT deBaseModule{
 private:
 	deLoadableModule &pLoadableModule; // loadable module hosting us
-	deVirtualFileSystem *pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	
 	
 	

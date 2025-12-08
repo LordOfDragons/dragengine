@@ -48,9 +48,8 @@
 ////////////////////////////
 
 gdeWPSTIMOCLight::gdeWPSTIMOCLight(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCLight *light, int index) :
-gdeWPSTIMOCSubObject(tree, etObjectClassLight, objectClass, index),
-pLight(NULL)
+	gdeOCLight::Ref light, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassLight, objectClass, index)
 {
 	if(!light){
 		DETHROW(deeInvalidParam);
@@ -63,13 +62,9 @@ pLight(NULL)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pLight = light;
-	light->AddReference();
 }
 
 gdeWPSTIMOCLight::~gdeWPSTIMOCLight(){
-	if(pLight){
-		pLight->FreeReference();
-	}
 }
 
 

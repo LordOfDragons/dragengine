@@ -39,8 +39,8 @@
 ////////////////////////////
 
 seUPropertyNodeImageSetRepeat::seUPropertyNodeImageSetRepeat(
-sePropertyNodeImage *node, const decPoint &newValue) :
-pNode(NULL),
+sePropertyNodeImage::Ref node, const decPoint &newValue) :
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = node->GetRepeat();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeImageSetRepeat::~seUPropertyNodeImageSetRepeat(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

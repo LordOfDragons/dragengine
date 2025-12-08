@@ -47,14 +47,14 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRule *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRule::Ref pRule;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleAdd(meHTVegetationLayer *vlayer, meHTVRule *rule);
+	meUHTVRuleAdd(meHTVegetationLayer::Ref vlayer, meHTVRule::Ref rule);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleAdd();
 	/*@}*/

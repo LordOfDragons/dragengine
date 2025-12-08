@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyConstructedToggleTileX::seUPropertyConstructedToggleTileX(seProperty *property) :
+seUPropertyConstructedToggleTileX::seUPropertyConstructedToggleTileX(seProperty::Ref property) :
 pProperty(NULL)
 {
 	if(!property){
@@ -48,13 +48,9 @@ pProperty(NULL)
 	SetShortInfo("Property constructed tile X");
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertyConstructedToggleTileX::~seUPropertyConstructedToggleTileX(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

@@ -42,7 +42,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deDebugDrawer &pDebugDrawer;
 	
-	deoglRDebugDrawer *pRDebugDrawer;
+	deoglRDebugDrawer::Ref pRDebugDrawer;
 	
 	bool pDirtyDebugDrawer;
 	bool pDirtyShapes;

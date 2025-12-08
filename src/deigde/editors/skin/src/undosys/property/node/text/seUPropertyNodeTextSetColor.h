@@ -38,7 +38,7 @@ class sePropertyNodeText;
  */
 class seUPropertyNodeTextSetColor : public igdeUndo{
 private:
-	sePropertyNodeText *pNode;
+	sePropertyNodeText::Ref pNode;
 	
 	decColor pOldValue;
 	decColor pNewValue;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeTextSetColor(sePropertyNodeText *node, const decColor &newValue);
+	seUPropertyNodeTextSetColor(sePropertyNodeText::Ref node, const decColor &newValue);
 	
 protected:
 	/** \brief Clean up undo. */

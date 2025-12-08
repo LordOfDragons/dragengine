@@ -69,10 +69,6 @@ pLLSyncWorld(this){
 }
 
 deoalSoundLevelMeter::~deoalSoundLevelMeter(){
-	if(pASoundLevelMeter){
-		pASoundLevelMeter->FreeReference();
-	}
-	
 	if(pSpeakers){
 		delete [] pSpeakers;
 	}

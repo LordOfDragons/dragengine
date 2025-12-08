@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCEnvMapProbeSetPosition::gdeUOCEnvMapProbeSetPosition(gdeObjectClass *objectClass,
-gdeOCEnvMapProbe *envMapProbe, const decVector &newValue) :
-pObjectClass(NULL),
+gdeUOCEnvMapProbeSetPosition::gdeUOCEnvMapProbeSetPosition(gdeObjectClass::Ref objectClass,
+gdeOCEnvMapProbe::Ref envMapProbe, const decVector &newValue) :
+
 pEnvMapProbe(NULL)
 {
 	if(!objectClass || !envMapProbe){
@@ -55,19 +55,10 @@ pEnvMapProbe(NULL)
 	pNewValue = newValue;
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCEnvMapProbeSetPosition::~gdeUOCEnvMapProbeSetPosition(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

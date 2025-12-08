@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCActionToggleWaitForActor : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionToggleWaitForActor(ceConversationTopic *topic, ceConversationAction *action);
+	ceUCActionToggleWaitForActor(ceConversationTopic::Ref topic, ceConversationAction::Ref action);
 	
 protected:
 	/** \brief Clean up undo. */

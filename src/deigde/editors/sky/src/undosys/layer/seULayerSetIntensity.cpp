@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetIntensity::seULayerSetIntensity(seLayer *layer, float newIntensity) :
-pLayer(NULL),
+seULayerSetIntensity::seULayerSetIntensity(seLayer::Ref layer, float newIntensity) :
+
 pNewIntensity(newIntensity)
 {
 	if(!layer){
@@ -52,13 +52,9 @@ pNewIntensity(newIntensity)
 	pOldIntensity = layer->GetIntensity();
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerSetIntensity::~seULayerSetIntensity(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

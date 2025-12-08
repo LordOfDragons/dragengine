@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakStripSetPause::ceUCAASpeakStripSetPause(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *word, float newPause){
+ceUCAASpeakStripSetPause::ceUCAASpeakStripSetPause(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak,
+ceStrip::Ref word, float newPause){
 	if(!topic || !actorSpeak || !word){
 		DETHROW(deeInvalidParam);
 	}
@@ -57,25 +57,11 @@ ceStrip *word, float newPause){
 	SetShortInfo("Strip Set Pause");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pStrip = word;
-	word->AddReference();
 }
 
 ceUCAASpeakStripSetPause::~ceUCAASpeakStripSetPause(){
-	if(pStrip){
-		pStrip->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

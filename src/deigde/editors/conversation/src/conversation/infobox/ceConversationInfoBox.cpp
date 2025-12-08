@@ -65,9 +65,7 @@ pTextColor(1.0f, 1.0f, 1.0f, 1.0f),
 pTextSize(18),
 pPadding(10),
 pWidth(0),
-pHeight(0),
-
-pCanvasView(NULL)
+pHeight(0)
 {
 	try{
 		pCanvasView = conversation.GetEngine()->GetCanvasManager()->CreateCanvasView();
@@ -189,7 +187,7 @@ void ceConversationInfoBox::UpdateCanvas(){
 	
 	// add background color canvas
 	deCanvasManager &canvasManager = *pConversation.GetEngine()->GetCanvasManager();
-	deCanvasPaint *canvasBackground = NULL;
+	deCanvasPaint::Ref canvasBackground = NULL;
 	try{
 		canvasBackground = canvasManager.CreateCanvasPaint();
 		canvasBackground->SetShapeType(deCanvasPaint::estRectangle);
@@ -199,19 +197,14 @@ void ceConversationInfoBox::UpdateCanvas(){
 		canvasBackground->SetOrder(0.0f);
 		canvasBackground->SetSize(pCanvasView->GetSize());
 		pCanvasView->AddCanvas(canvasBackground);
-		canvasBackground->FreeReference();
-		
 	}catch(const deException &){
-		if(canvasBackground){
-			canvasBackground->FreeReference();
-		}
 		throw;
 	}
 	
 	// add text canvas
 	if(pEngFont){
 		const int textCount = pLayoutTexts.GetCount();
-		deCanvasText *canvasText = NULL;
+		deCanvasText::Ref canvasText = NULL;
 		int y = pPadding;
 		int i;
 		
@@ -229,16 +222,12 @@ void ceConversationInfoBox::UpdateCanvas(){
 				canvasText->SetPosition(decPoint((pWidth - lineWidth) / 2, y));
 				canvasText->SetSize(decPoint(lineWidth, pTextSize));
 				pCanvasView->AddCanvas(canvasText);
-				canvasText->FreeReference();
 				canvasText = NULL;
 				
 				y += pTextSize;
 			}
 			
 		}catch(const deException &){
-			if(canvasText){
-				canvasText->FreeReference();
-			}
 			throw;
 		}
 	}
@@ -250,9 +239,6 @@ void ceConversationInfoBox::UpdateCanvas(){
 //////////////////////
 
 void ceConversationInfoBox::pCleanUp(){
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 }
 
 

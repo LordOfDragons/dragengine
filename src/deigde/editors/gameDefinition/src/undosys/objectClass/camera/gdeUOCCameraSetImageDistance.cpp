@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetImageDistance::gdeUOCCameraSetImageDistance(gdeObjectClass *objectClass,
-gdeOCCamera *camera, float newValue) :
-pObjectClass(NULL),
+gdeUOCCameraSetImageDistance::gdeUOCCameraSetImageDistance(gdeObjectClass::Ref objectClass,
+gdeOCCamera::Ref camera, float newValue) :
+
 pCamera(NULL)
 {
 	if(!objectClass || !camera){
@@ -55,19 +55,10 @@ pCamera(NULL)
 	pNewValue = newValue;
 	
 	pCamera = camera;
-	camera->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCameraSetImageDistance::~gdeUOCCameraSetImageDistance(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

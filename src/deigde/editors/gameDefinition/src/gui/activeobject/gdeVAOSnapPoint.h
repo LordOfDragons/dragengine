@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCSnapPoint *pOCSnapPoint;
+	gdeOCSnapPoint::Ref pOCSnapPoint;
 	
 	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;

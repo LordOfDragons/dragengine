@@ -44,7 +44,7 @@ class deoglVR;
 class deoglRCamera : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
-	deoglRWorld *pParentWorld;
+	deoglRWorld::Ref pParentWorld;
 	
 	decDVector pPosition;
 	decDMatrix pInverseCameraMatrix;
@@ -111,7 +111,7 @@ public:
 	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL if not set. */
-	void SetParentWorld(deoglRWorld *parentWorld);
+	void SetParentWorld(deoglRWorld::Ref parentWorld);
 	
 	
 	

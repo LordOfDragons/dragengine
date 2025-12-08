@@ -192,21 +192,11 @@ bool meLumimeter::HasHostObject() const{
 	return pHostObject != NULL;
 }
 
-void meLumimeter::SetHostObject(meObject *object){
+void meLumimeter::SetHostObject(meObject::Ref object){
 	if(object == pHostObject){
 		return;
 	}
-	
-	if(pHostObject){
-		pHostObject->FreeReference();
-	}
-	
 	pHostObject = object;
-	
-	if(object){
-		object->AddReference();
-	}
-	
 	pWorld->NotifyLumimeterChanged();
 }
 

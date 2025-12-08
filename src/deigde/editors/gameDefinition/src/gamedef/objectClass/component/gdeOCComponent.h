@@ -114,7 +114,7 @@ private:
 	decString pPropertyNames[epMove + 1];
 	
 	gdeOCComponentTextureList pTextures;
-	gdeOCComponentTexture *pActiveTexture;
+	gdeOCComponentTexture::Ref pActiveTexture;
 	
 	
 	
@@ -285,7 +285,7 @@ public:
 	inline gdeOCComponentTexture *GetActiveTexture() const{ return pActiveTexture; }
 	
 	/** \brief Set active texture or \em NULL if none. */
-	void SetActiveTexture(gdeOCComponentTexture *texture);
+	void SetActiveTexture(gdeOCComponentTexture::Ref texture);
 	/*@}*/
 };
 

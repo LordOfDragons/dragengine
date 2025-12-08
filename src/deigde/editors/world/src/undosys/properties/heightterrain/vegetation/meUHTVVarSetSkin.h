@@ -43,7 +43,7 @@ class meHTVVariation;
  */
 class meUHTVVarSetSkin : public igdeUndo{
 private:
-	meHTVVariation *pVariation;
+	meHTVVariation::Ref pVariation;
 	decString pOldPath;
 	decString pNewPath;
 	
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUHTVVarSetSkin(meHTVVariation *variation, const char *newPath);
+	meUHTVVarSetSkin(meHTVVariation::Ref variation, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo object. */

@@ -80,10 +80,10 @@ public:
 	deAnimatorRuleGroup *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
+	void AssignAnimator(dsRealObject *myself, deAnimator::Ref animator);
 	
 	/** \brief Pushes a rule. */
-	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleGroup *rule);
+	void PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleGroup::Ref rule);
 	
 	inline dsClass *GetClassARGroupTarget() const{ return pClsARGroupTarget; }
 	inline dsClass *GetClassARGroupApplication() const{ return pClsARGroupApplication; }

@@ -68,15 +68,8 @@ pDirtyPrepareForRender(true),
 
 pDirtyNotifySkyChanged(false),
 pDirtySkyOrder(false),
-pSkyEnvMap(NULL),
-
-pHeightTerrain(NULL),
-
-pRootComponent(NULL),
 pTailComponent(NULL),
 pComponentCount(0),
-
-pRootBillboard(NULL),
 pTailBillboard(NULL),
 pBillboardCount(0),
 
@@ -143,13 +136,13 @@ void deoglRWorld::SetSize(const decDVector &size){
 	
 	pOctree = new deoglWorldOctree(decDVector(), octreeSize * 0.5, insertDepth);
 	
-	deoglRBillboard *billboard = pRootBillboard;
+	deoglRBillboard::Ref billboard = pRootBillboard;
 	while(billboard){
 		billboard->UpdateOctreeNode();
 		billboard = billboard->GetLLWorldNext();
 	}
 	
-	deoglRComponent *component = pRootComponent;
+	deoglRComponent::Ref component = pRootComponent;
 	while(component){
 		component->UpdateOctreeNode();
 		component = component->GetLLWorldNext();
@@ -191,20 +184,18 @@ void deoglRWorld::MarkSkyOrderDirty(){
 
 
 
-void deoglRWorld::SetHeightTerrain(deoglRHeightTerrain *heightTerrain){
+void deoglRWorld::SetHeightTerrain(deoglRHeightTerrain::Ref heightTerrain){
 	if(heightTerrain == pHeightTerrain){
 		return;
 	}
 	
 	if(pHeightTerrain){
 		pHeightTerrain->SetParentWorld(NULL);
-		pHeightTerrain->FreeReference();
 	}
 	
 	pHeightTerrain = heightTerrain;
 	
 	if(heightTerrain){
-		heightTerrain->AddReference();
 		heightTerrain->SetParentWorld(this);
 	}
 }
@@ -411,7 +402,7 @@ void deoglRWorld::PrepareForRenderRender(deoglRenderPlan &plan, const deoglRende
 	if(pDirtyEnvMapLayout){
 		pDirtyEnvMapLayout = false;
 		
-		deoglRBillboard *billboard = pRootBillboard;
+		deoglRBillboard::Ref billboard = pRootBillboard;
 		while(billboard){
 			billboard->UpdateRenderEnvMap();
 			billboard = billboard->GetLLWorldNext();
@@ -481,7 +472,7 @@ void deoglRWorld::PrepareForRenderRender(deoglRenderPlan &plan, const deoglRende
 		SPECIAL_TIMER_PRINT("PropFields")
 }
 
-void deoglRWorld::AddPrepareForRenderComponent(deoglRComponent *component){
+void deoglRWorld::AddPrepareForRenderComponent(deoglRComponent::Ref component){
 	if(!component){
 		DETHROW(deeInvalidParam);
 	}
@@ -490,7 +481,7 @@ void deoglRWorld::AddPrepareForRenderComponent(deoglRComponent *component){
 	}
 }
 
-void deoglRWorld::RemovePrepareForRenderComponent(deoglRComponent *component){
+void deoglRWorld::RemovePrepareForRenderComponent(deoglRComponent::Ref component){
 	if(!component){
 		DETHROW(deeInvalidParam);
 	}
@@ -499,7 +490,7 @@ void deoglRWorld::RemovePrepareForRenderComponent(deoglRComponent *component){
 	}
 }
 
-void deoglRWorld::AddPrepareForRenderBillboard(deoglRBillboard *billboard){
+void deoglRWorld::AddPrepareForRenderBillboard(deoglRBillboard::Ref billboard){
 	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
@@ -508,7 +499,7 @@ void deoglRWorld::AddPrepareForRenderBillboard(deoglRBillboard *billboard){
 	}
 }
 
-void deoglRWorld::RemovePrepareForRenderBillboard(deoglRBillboard *billboard){
+void deoglRWorld::RemovePrepareForRenderBillboard(deoglRBillboard::Ref billboard){
 	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
@@ -561,13 +552,13 @@ void deoglRWorld::RemovePrepareForRenderPropField(deoglRPropField *propField){
 void deoglRWorld::NotifyAllReferencePositionChanged(){
 	int i, count;
 	
-	deoglRComponent *component = pRootComponent;
+	deoglRComponent::Ref component = pRootComponent;
 	while(component){
 		component->WorldReferencePointChanged();
 		component = component->GetLLWorldNext();
 	}
 	
-	deoglRBillboard *billboard = pRootBillboard;
+	deoglRBillboard::Ref billboard = pRootBillboard;
 	while(billboard){
 		billboard->WorldReferencePointChanged();
 		billboard = billboard->GetLLWorldNext();
@@ -731,7 +722,7 @@ void deoglRWorld::RemoveRemovalMarkedParticleEmitterInstances(){
 // Components
 ///////////////
 
-void deoglRWorld::AddComponent(deoglRComponent *component){
+void deoglRWorld::AddComponent(deoglRComponent::Ref component){
 	DEASSERT_NOTNULL(component)
 	
 	if(component->GetParentWorld()){
@@ -753,15 +744,13 @@ void deoglRWorld::AddComponent(deoglRComponent *component){
 		component->SetLLWorldPrev(NULL);
 		component->SetLLWorldNext(NULL);
 	}
-	
-	component->AddReference();
 	pComponentCount++;
 	
 	component->SetParentWorld(this);
 	AddPrepareForRenderComponent(component);
 }
 
-void deoglRWorld::RemoveComponent(deoglRComponent *component){
+void deoglRWorld::RemoveComponent(deoglRComponent::Ref component){
 	DEASSERT_TRUE(component->GetParentWorld() == this)
 	
 	RemovePrepareForRenderComponent(component);
@@ -783,7 +772,6 @@ void deoglRWorld::RemoveComponent(deoglRComponent *component){
 	}
 	
 	pComponentCount--;
-	component->FreeReference();
 }
 
 void deoglRWorld::RemoveAllComponents(){
@@ -795,8 +783,6 @@ void deoglRWorld::RemoveAllComponents(){
 		pRootComponent->SetParentWorld(nullptr);
 		pRootComponent->SetWorldMarkedRemove(false);
 		pComponentCount--;
-		pRootComponent->FreeReference();
-		
 		pRootComponent = next;
 	}
 	
@@ -804,7 +790,7 @@ void deoglRWorld::RemoveAllComponents(){
 }
 
 void deoglRWorld::RemoveRemovalMarkedComponents(){
-	deoglRComponent *component = pRootComponent;
+	deoglRComponent::Ref component = pRootComponent;
 	while(component){
 		deoglRComponent * const next = component->GetLLWorldNext();
 		
@@ -973,7 +959,7 @@ void deoglRWorld::RemoveEnvMap(deoglEnvironmentMap *envmap){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deoglRComponent *component = pRootComponent;
+	deoglRComponent::Ref component = pRootComponent;
 	while(component){
 		component->InvalidateRenderEnvMapIf(envmap);
 		component = component->GetLLWorldNext();
@@ -992,7 +978,7 @@ void deoglRWorld::RemoveEnvMap(deoglEnvironmentMap *envmap){
 }
 
 void deoglRWorld::RemoveAllEnvMaps(){
-	deoglRComponent *component = pRootComponent;
+	deoglRComponent::Ref component = pRootComponent;
 	while(component){
 		component->InvalidateRenderEnvMap();
 		component = component->GetLLWorldNext();
@@ -1105,7 +1091,7 @@ void deoglRWorld::RemoveRemovalMarkedLumimeters(){
 // Billboards
 ///////////////
 
-void deoglRWorld::AddBillboard(deoglRBillboard *billboard){
+void deoglRWorld::AddBillboard(deoglRBillboard::Ref billboard){
 	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
@@ -1131,15 +1117,13 @@ void deoglRWorld::AddBillboard(deoglRBillboard *billboard){
 		billboard->SetLLWorldPrev(NULL);
 		billboard->SetLLWorldNext(NULL);
 	}
-	
-	billboard->AddReference();
 	pBillboardCount++;
 	
 	billboard->SetParentWorld(this);
 	AddPrepareForRenderBillboard(billboard);
 }
 
-void deoglRWorld::RemoveBillboard(deoglRBillboard *billboard){
+void deoglRWorld::RemoveBillboard(deoglRBillboard::Ref billboard){
 	if(billboard->GetParentWorld() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1163,7 +1147,6 @@ void deoglRWorld::RemoveBillboard(deoglRBillboard *billboard){
 	}
 	
 	pBillboardCount--;
-	billboard->FreeReference();
 }
 
 void deoglRWorld::RemoveAllBillboards(){
@@ -1175,8 +1158,6 @@ void deoglRWorld::RemoveAllBillboards(){
 		pRootBillboard->SetParentWorld(NULL);
 		pRootBillboard->SetWorldMarkedRemove(false);
 		pBillboardCount--;
-		pRootBillboard->FreeReference();
-		
 		pRootBillboard = next;
 	}
 	
@@ -1184,7 +1165,7 @@ void deoglRWorld::RemoveAllBillboards(){
 }
 
 void deoglRWorld::RemoveRemovalMarkedBillboards(){
-	deoglRBillboard *billboard = pRootBillboard;
+	deoglRBillboard::Ref billboard = pRootBillboard;
 	while(billboard){
 		deoglRBillboard * const next = billboard->GetLLWorldNext();
 		
@@ -1265,7 +1246,7 @@ void deoglRWorld::RemoveRemovalMarkedSkies(){
 	}
 }
 
-void deoglRWorld::SkiesNotifyUpdateStaticComponent(deoglRComponent *component){
+void deoglRWorld::SkiesNotifyUpdateStaticComponent(deoglRComponent::Ref component){
 	int count = pSkies.GetCount();
 	int i;
 	for(i=0; i<count; i++){
@@ -1406,7 +1387,7 @@ void deoglRWorld::RemoveAllGICascades(){
 	pGIStates.RemoveAll();
 }
 
-void deoglRWorld::GIStatesNotifyComponentEnteredWorld(deoglRComponent *component){
+void deoglRWorld::GIStatesNotifyComponentEnteredWorld(deoglRComponent::Ref component){
 	const int count = pGIStates.GetCount();
 	int i;
 	for(i=0; i<count; i++){
@@ -1414,7 +1395,7 @@ void deoglRWorld::GIStatesNotifyComponentEnteredWorld(deoglRComponent *component
 	}
 }
 
-void deoglRWorld::GIStatesNotifyComponentChangedLayerMask(deoglRComponent *component){
+void deoglRWorld::GIStatesNotifyComponentChangedLayerMask(deoglRComponent::Ref component){
 	const int count = pGIStates.GetCount();
 	int i;
 	for(i=0; i<count; i++){
@@ -1422,7 +1403,7 @@ void deoglRWorld::GIStatesNotifyComponentChangedLayerMask(deoglRComponent *compo
 	}
 }
 
-void deoglRWorld::GIStatesNotifyComponentBecameVisible(deoglRComponent *component){
+void deoglRWorld::GIStatesNotifyComponentBecameVisible(deoglRComponent::Ref component){
 	const int count = pGIStates.GetCount();
 	int i;
 	for(i=0; i<count; i++){
@@ -1430,7 +1411,7 @@ void deoglRWorld::GIStatesNotifyComponentBecameVisible(deoglRComponent *componen
 	}
 }
 
-void deoglRWorld::GIStatesNotifyComponentChangedGIImportance(deoglRComponent *component){
+void deoglRWorld::GIStatesNotifyComponentChangedGIImportance(deoglRComponent::Ref component){
 	const int count = pGIStates.GetCount();
 	int i;
 	for(i=0; i<count; i++){
@@ -1479,7 +1460,6 @@ void deoglRWorld::pCleanUp(){
 	while(pRootBillboard){
 		deoglRBillboard * const next = pRootBillboard->GetLLWorldNext();
 		pRootBillboard->PrepareQuickDispose();
-		pRootBillboard->FreeReference();
 		pRootBillboard = next;
 	}
 	
@@ -1487,7 +1467,6 @@ void deoglRWorld::pCleanUp(){
 	while(pRootComponent){
 		deoglRComponent * const next = pRootComponent->GetLLWorldNext();
 		pRootComponent->PrepareQuickDispose();
-		pRootComponent->FreeReference();
 		pRootComponent = next;
 	}
 	
@@ -1574,7 +1553,7 @@ void deoglRWorld::pCreateSkyEnvMap(){
 	// 256-float: size=6*256*256*3*2 = 4718592 = 2.4MB
 	// 128-int: size=6*128*128*3*1 = 294912 = 0.3MB
 	// 256-int: size=6*256*256*3*1 = 1179648 = 1.2MB
-	pSkyEnvMap = new deoglEnvironmentMap(pRenderThread);
+	pSkyEnvMap.TakeOver(new deoglEnvironmentMap(pRenderThread));
 	pSkyEnvMap->SetSize(pRenderThread.GetConfiguration().GetEnvMapSize());
 	pSkyEnvMap->SetIsFloat(true);
 	pSkyEnvMap->SetSkyOnly(true);
@@ -1587,8 +1566,6 @@ void deoglRWorld::pCreateSkyEnvMap(){
 void deoglRWorld::pFreeSkyEnvMap(){
 	if(pSkyEnvMap){
 		RemoveEnvMap(pSkyEnvMap);
-		
-		pSkyEnvMap->FreeReference();
 		pSkyEnvMap = NULL;
 	}
 }

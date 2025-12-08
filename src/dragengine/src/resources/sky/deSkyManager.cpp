@@ -54,17 +54,14 @@ deSky *deSkyManager::GetRootSky() const{
 }
 
 deSky *deSkyManager::CreateSky(){
-	deSky *sky = NULL;
+	deSky::Ref sky = NULL;
 	// create and add sky
 	try{
-		sky = new deSky(this);
+		sky.TakeOver(new deSky(this));
 		if(!sky) DETHROW(deeOutOfMemory);
 		GetGraphicSystem()->LoadSky(sky);
 		pSkies.Add(sky);
 	}catch(const deException &){
-		if(sky){
-			sky->FreeReference();
-		}
 		throw;
 	}
 	// finished
@@ -86,7 +83,7 @@ void deSkyManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSkyManager::SystemGraphicLoad(){
-	deSky *sky = (deSky*)pSkies.GetRoot();
+	deSky::Ref sky = (deSky*)pSkies.GetRoot();
 	
 	while(sky){
 		if(!sky->GetPeerGraphic()){
@@ -97,7 +94,7 @@ void deSkyManager::SystemGraphicLoad(){
 }
 
 void deSkyManager::SystemGraphicUnload(){
-	deSky *sky = (deSky*)pSkies.GetRoot();
+	deSky::Ref sky = (deSky*)pSkies.GetRoot();
 	
 	while(sky){
 		sky->SetPeerGraphic(NULL);

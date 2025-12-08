@@ -69,10 +69,10 @@ deNetworkState *deNetworkStateManager::GetRootNetworkState() const{
 }
 
 deNetworkState *deNetworkStateManager::CreateState(bool readOnly){
-	deNetworkState *state = NULL;
+	deNetworkState::Ref state = NULL;
 	
 	try{
-		state = new deNetworkState(this, readOnly);
+		state.TakeOver(new deNetworkState(this, readOnly));
 		
 		GetNetworkSystem()->LoadState(state);
 		GetScriptingSystem()->LoadNetworkState(state);
@@ -80,9 +80,6 @@ deNetworkState *deNetworkStateManager::CreateState(bool readOnly){
 		pStates.Add(state);
 		
 	}catch(const deException &){
-		if(state){
-			state->FreeReference();
-		}
 		throw;
 	}
 	
@@ -105,7 +102,7 @@ void deNetworkStateManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deNetworkStateManager::SystemNetworkLoad(){
-	deNetworkState *state = (deNetworkState*)pStates.GetRoot();
+	deNetworkState::Ref state = (deNetworkState*)pStates.GetRoot();
 	deNetworkSystem &netSys = *GetNetworkSystem();
 	
 	while(state){
@@ -118,7 +115,7 @@ void deNetworkStateManager::SystemNetworkLoad(){
 }
 
 void deNetworkStateManager::SystemNetworkUnload(){
-	deNetworkState *state = (deNetworkState*)pStates.GetRoot();
+	deNetworkState::Ref state = (deNetworkState*)pStates.GetRoot();
 	
 	while(state){
 		state->SetPeerNetwork (NULL);
@@ -127,7 +124,7 @@ void deNetworkStateManager::SystemNetworkUnload(){
 }
 
 void deNetworkStateManager::SystemScriptingLoad(){
-	deNetworkState *state = (deNetworkState*)pStates.GetRoot();
+	deNetworkState::Ref state = (deNetworkState*)pStates.GetRoot();
 	deScriptingSystem &scrSys = *GetScriptingSystem();
 	
 	while(state){
@@ -140,7 +137,7 @@ void deNetworkStateManager::SystemScriptingLoad(){
 }
 
 void deNetworkStateManager::SystemScriptingUnload(){
-	deNetworkState *state = (deNetworkState*)pStates.GetRoot();
+	deNetworkState::Ref state = (deNetworkState*)pStates.GetRoot();
 	
 	while(state){
 		state->SetPeerScripting(NULL);

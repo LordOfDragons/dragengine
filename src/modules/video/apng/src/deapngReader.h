@@ -42,7 +42,7 @@ class deapngReader{
 private:
 	deVideoApng &pModule;
 	
-	decBaseFileReader *pReader;
+	decBaseFileReader::Ref pReader;
 	
 	png_structp pReadStruct;
 	png_infop pInfoStruct;
@@ -79,7 +79,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create reader. */
-	deapngReader(deVideoApng &module, decBaseFileReader *reader);
+	deapngReader(deVideoApng &module, decBaseFileReader::Ref reader);
 	
 	/** Clean up reader. */
 	~deapngReader();

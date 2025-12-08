@@ -38,8 +38,8 @@ class seSynthesizer;
  */
 class seUMoveSourceDown : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
-	seSource *pSource;
+	seSynthesizer::Ref pSynthesizer;
+	seSource::Ref pSource;
 	int pIndex;
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUMoveSourceDown(seSynthesizer *synthesizer, seSource *source);
+	seUMoveSourceDown(seSynthesizer::Ref synthesizer, seSource::Ref source);
 	
 protected:
 	/** \brief Clean up undo action. */

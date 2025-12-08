@@ -45,8 +45,8 @@ private:
 	dealGameList pGameList;
 	
 	dealGameProfileList pProfileList;
-	dealGameProfile *pActiveProfile;
-	dealGameProfile *pDefaultProfile;
+	dealGameProfile::Ref pActiveProfile;
+	dealGameProfile::Ref pDefaultProfile;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -89,7 +89,7 @@ public:
 	inline dealGameProfile *GetActiveProfile() const{ return pActiveProfile; }
 	
 	/** \brief Set active profile or \em NULL if none is active. */
-	void SetActiveProfile(dealGameProfile *profile);
+	void SetActiveProfile(dealGameProfile::Ref profile);
 	
 	/** \brief Default profile. */
 	inline dealGameProfile *GetDefaultProfile() const{ return pDefaultProfile; }

@@ -52,7 +52,7 @@ class deHeightTerrain;
 class DE_DLL_EXPORT deAudioSystem : public deBaseSystem{
 private:
 	deBaseAudioModule *pActiveModule;
-	deMicrophone *pActiveMic;
+	deMicrophone::Ref pActiveMic;
 	
 	
 	
@@ -77,7 +77,7 @@ public:
 	inline deMicrophone *GetActiveMicrophone() const{ return pActiveMic; }
 	
 	/** \brief Set active microphone or NULL to unset it. */
-	void SetActiveMicrophone(deMicrophone *microphone);
+	void SetActiveMicrophone(deMicrophone::Ref microphone);
 	/*@}*/
 	
 	
@@ -101,7 +101,7 @@ public:
 	void LoadSpeaker(deSpeaker *speaker);
 	
 	/** \brief Create peer object for the given microphone using the active module and assigns it. */
-	void LoadMicrophone(deMicrophone *microphone);
+	void LoadMicrophone(deMicrophone::Ref microphone);
 	
 	/** \brief Create peer object for the given component using the active module and assigns it. */
 	void LoadComponent(deComponent *component);

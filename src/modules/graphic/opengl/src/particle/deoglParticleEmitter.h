@@ -44,7 +44,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deParticleEmitter &pParticleEmitter;
 	
-	deoglRParticleEmitter *pREmitter;
+	deoglRParticleEmitter::Ref pREmitter;
 	
 	deoglParticleEmitterType **pTypes;
 	int pTypeCount;

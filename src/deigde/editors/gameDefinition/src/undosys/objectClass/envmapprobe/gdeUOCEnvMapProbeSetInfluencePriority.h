@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCEnvMapProbeSetInfluencePriority : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	int pOldValue;
 	int pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCEnvMapProbeSetInfluencePriority(gdeObjectClass *objectClass,
+	gdeUOCEnvMapProbeSetInfluencePriority(gdeObjectClass::Ref objectClass,
 		gdeOCEnvMapProbe *component, int newValue);
 	
 protected:

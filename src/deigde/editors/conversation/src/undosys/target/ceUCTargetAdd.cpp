@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetAdd::ceUCTargetAdd(ceConversation *conversation, ceTarget *target){
+ceUCTargetAdd::ceUCTargetAdd(ceConversation::Ref conversation, ceTarget::Ref target){
 	if(!conversation || !target) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
@@ -49,19 +49,10 @@ ceUCTargetAdd::ceUCTargetAdd(ceConversation *conversation, ceTarget *target){
 	SetShortInfo("Add Target");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetAdd::~ceUCTargetAdd(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

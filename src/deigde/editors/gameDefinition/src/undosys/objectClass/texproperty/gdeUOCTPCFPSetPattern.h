@@ -41,9 +41,9 @@ class gdeFilePattern;
  */
 class gdeUOCTPCFPSetPattern : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
-	gdeFilePattern *pFilePattern;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
+	gdeFilePattern::Ref pFilePattern;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -57,8 +57,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCTPCFPSetPattern(gdeObjectClass *objectClass, gdeProperty *property,
-		gdeFilePattern *filePattern, const char *newValue);
+	gdeUOCTPCFPSetPattern(gdeObjectClass::Ref objectClass, gdeProperty::Ref property,
+		gdeFilePattern::Ref filePattern, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

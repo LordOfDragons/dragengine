@@ -44,7 +44,7 @@ class deoalWorld : public deBaseAudioWorld{
 private:
 	deAudioOpenAL &pOal;
 	deWorld &pWorld;
-	deoalAWorld *pAWorld;
+	deoalAWorld::Ref pAWorld;
 	
 	bool pDirtyComponents;
 	bool pDirtySpeakers;

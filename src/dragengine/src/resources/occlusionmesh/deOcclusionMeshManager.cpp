@@ -91,8 +91,8 @@ const char *filename, deOcclusionMeshBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	deOcclusionMesh *occmesh = NULL;
-	deOcclusionMesh *findOccMesh;
+	deOcclusionMesh::Ref occmesh = NULL;
+	deOcclusionMesh::Ref findOccMesh;
 	
 	try{
 		// check if an occlusion mesh with this filename already exists. this check is only done if
@@ -105,7 +105,7 @@ const char *filename, deOcclusionMeshBuilder &builder){
 		}
 		
 		// create occlusion mesh using the builder
-		occmesh = new deOcclusionMesh(this, vfs, filename, decDateTime::GetSystemTime());
+		occmesh.TakeOver(new deOcclusionMesh(this, vfs, filename, decDateTime::GetSystemTime()));
 		builder.BuildOcclusionMesh(occmesh);
 		
 		// prepare and check occlusion mesh
@@ -121,9 +121,6 @@ const char *filename, deOcclusionMeshBuilder &builder){
 		pMeshes.Add(occmesh);
 		
 	}catch(const deException &e){
-		if(occmesh){
-			occmesh->FreeReference();
-		}
 		LogErrorFormat("Creating occlusion mesh '%s' failed", filename);
 		LogException(e);
 		throw;
@@ -141,9 +138,9 @@ const char *filename, const char *basePath){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	decBaseFileReader *fileReader = NULL;
-	deOcclusionMesh *occmesh = NULL;
-	deOcclusionMesh *findOccMesh;
+	decBaseFileReader::Ref fileReader = NULL;
+	deOcclusionMesh::Ref occmesh = NULL;
+	deOcclusionMesh::Ref findOccMesh;
 	deBaseOcclusionMeshModule *module;
 	decPath path;
 	
@@ -165,7 +162,6 @@ const char *filename, const char *basePath){
 		}
 		
 		if(findOccMesh){
-			findOccMesh->AddReference();
 			occmesh = findOccMesh;
 			
 		}else{
@@ -175,15 +171,13 @@ const char *filename, const char *basePath){
 			
 			// load the file with it
 			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
-			occmesh = new deOcclusionMesh(this, vfs, path.GetPathUnix(), modificationTime);
+			occmesh.TakeOver(new deOcclusionMesh(this, vfs, path.GetPathUnix(), modificationTime));
 			if(!occmesh){
 				DETHROW(deeOutOfMemory);
 			}
 			
 			occmesh->SetAsynchron(false);
 			module->LoadOcclusionMesh(*fileReader, *occmesh);
-			
-			fileReader->FreeReference();
 			fileReader = NULL;
 			
 			// prepare and check model
@@ -200,12 +194,6 @@ const char *filename, const char *basePath){
 		}
 		
 	}catch(const deException &e){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(occmesh){
-			occmesh->FreeReference();
-		}
 		LogErrorFormat("Loading occlusion mesh '%s' (base path '%s') failed", filename, basePath ? basePath : "");
 		LogException(e);
 		throw;
@@ -220,7 +208,7 @@ const char *filename, const char *basePath){
 
 
 
-void deOcclusionMeshManager::AddLoadedOcclusionMesh(deOcclusionMesh *occmesh){
+void deOcclusionMeshManager::AddLoadedOcclusionMesh(deOcclusionMesh::Ref occmesh){
 	if(!occmesh){
 		DETHROW(deeInvalidParam);
 	}
@@ -264,7 +252,7 @@ void deOcclusionMeshManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deOcclusionMeshManager::SystemGraphicLoad(){
-	deOcclusionMesh *occmesh = (deOcclusionMesh*)pMeshes.GetRoot();
+	deOcclusionMesh::Ref occmesh = (deOcclusionMesh*)pMeshes.GetRoot();
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(occmesh){
@@ -277,7 +265,7 @@ void deOcclusionMeshManager::SystemGraphicLoad(){
 }
 
 void deOcclusionMeshManager::SystemGraphicUnload(){
-	deOcclusionMesh *occmesh = (deOcclusionMesh*)pMeshes.GetRoot();
+	deOcclusionMesh::Ref occmesh = (deOcclusionMesh*)pMeshes.GetRoot();
 	
 	while(occmesh){
 		occmesh->SetPeerGraphic(NULL);

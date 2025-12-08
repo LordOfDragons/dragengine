@@ -46,9 +46,9 @@ class seWPLinkListener;
 class seWPLink : public igdeContainerScroll{
 private:
 	seViewSynthesizer &pViewSynthesizer;
-	seWPLinkListener *pListener;
+	seWPLinkListener::Ref pListener;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	igdeAction::Ref pActionLinkAdd;
 	igdeAction::Ref pActionLinkRemove;
@@ -87,7 +87,7 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
-	void SetSynthesizer(seSynthesizer *synthesizer);
+	void SetSynthesizer(seSynthesizer::Ref synthesizer);
 	
 	/** \brief Link or \em NULL if not set. */
 	seLink *GetLink() const;

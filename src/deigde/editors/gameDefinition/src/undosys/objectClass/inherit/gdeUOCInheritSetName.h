@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCInheritSetName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCInherit *pInherit;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCInherit::Ref pInherit;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCInheritSetName(gdeObjectClass *objectClass, gdeOCInherit *inherit, const char *newValue);
+	gdeUOCInheritSetName(gdeObjectClass::Ref objectClass, gdeOCInherit::Ref inherit, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

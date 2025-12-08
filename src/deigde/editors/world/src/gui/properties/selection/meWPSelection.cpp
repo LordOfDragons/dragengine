@@ -52,11 +52,9 @@
 
 meWPSelection::meWPSelection(meWindowProperties &windowProperties) :
 igdeSwitcher(windowProperties.GetEnvironment()),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pWorld(NULL)
+pWindowProperties(windowProperties)
 {
-	pListener = new meWPSelectionListener(*this);
+	pListener.TakeOver(new meWPSelectionListener(*this));
 	
 	GetEnvironment().GetUIHelper().Label(*this, "No Selection");
 	
@@ -77,10 +75,6 @@ pWorld(NULL)
 
 meWPSelection::~meWPSelection(){
 	SetWorld(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -88,7 +82,7 @@ meWPSelection::~meWPSelection(){
 // Management
 ///////////////
 
-void meWPSelection::SetWorld(meWorld *world){
+void meWPSelection::SetWorld(meWorld::Ref world){
 	if(world == pWorld){
 		return;
 	}
@@ -100,14 +94,12 @@ void meWPSelection::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
 	}
 	
 	((meWPSObject&)(igdeWidget&)pPanelObject).SetWorld(world);

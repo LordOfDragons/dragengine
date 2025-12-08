@@ -35,7 +35,7 @@ class gdeOCBillboard;
  */
 class gdeWPSTIMOCBillboard : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCBillboard *pBillboard;
+	gdeOCBillboard::Ref pBillboard;
 	
 	
 public:
@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCBillboard(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCBillboard *billboard, int index);
+		gdeOCBillboard::Ref billboard, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

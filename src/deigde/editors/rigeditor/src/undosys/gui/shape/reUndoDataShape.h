@@ -36,7 +36,7 @@ class reRigShape;
  */
 class reUndoDataShape{
 private:
-	reRigShape *pShape;
+	reRigShape::Ref pShape;
 	decVector pOldPosition;
 	decVector pOldOrientation;
 	decVector pOldSize;
@@ -49,7 +49,7 @@ public:
 	/**
 	 * \brief Create a new undo data object which holding a not owned pointer to the given object.
 	 */
-	reUndoDataShape(reRigShape *shape);
+	reUndoDataShape(reRigShape::Ref shape);
 	
 	/** \brief Clean up the data object. */
 	~reUndoDataShape();

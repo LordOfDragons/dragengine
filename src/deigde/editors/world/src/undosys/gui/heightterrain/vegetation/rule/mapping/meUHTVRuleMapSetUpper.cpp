@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleMapSetUpper::meUHTVRuleMapSetUpper(meHTVegetationLayer *vlayer, meHTVRuleMapping *rule, float nupper){
+meUHTVRuleMapSetUpper::meUHTVRuleMapSetUpper(meHTVegetationLayer::Ref vlayer, meHTVRuleMapping::Ref rule, float nupper){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
@@ -53,9 +53,7 @@ meUHTVRuleMapSetUpper::meUHTVRuleMapSetUpper(meHTVegetationLayer *vlayer, meHTVR
 	pNewUpper = nupper;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMapSetUpper::~meUHTVRuleMapSetUpper(){

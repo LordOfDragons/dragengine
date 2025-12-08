@@ -548,16 +548,14 @@ public:
 
 reWPView::reWPView(reWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pRig(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, groupBox2, frameLine, form;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeAction::Ref action;
 	
-	pListener = new reWPViewListener(*this);
+	pListener.TakeOver(new reWPViewListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -683,10 +681,6 @@ pRig(NULL)
 
 reWPView::~reWPView(){
 	SetRig(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -694,7 +688,7 @@ reWPView::~reWPView(){
 // Management
 ///////////////
 
-void reWPView::SetRig(reRig *rig){
+void reWPView::SetRig(reRig::Ref rig){
 	if(rig == pRig){
 		return;
 	}
@@ -704,7 +698,6 @@ void reWPView::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -714,8 +707,6 @@ void reWPView::SetRig(reRig *rig){
 	
 	if(rig){
 		rig->AddNotifier(pListener);
-		rig->AddReference();
-		
 		pWPSky->SetSky(rig->GetSky());
 		pWPEnvObject->SetObject(rig->GetEnvObject());
 		

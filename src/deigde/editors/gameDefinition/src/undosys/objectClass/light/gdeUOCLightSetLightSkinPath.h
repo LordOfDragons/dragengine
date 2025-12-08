@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetLightSkinPath : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetLightSkinPath(gdeObjectClass *objectClass,
-		gdeOCLight *light, const char *newValue);
+	gdeUOCLightSetLightSkinPath(gdeObjectClass::Ref objectClass,
+		gdeOCLight::Ref light, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

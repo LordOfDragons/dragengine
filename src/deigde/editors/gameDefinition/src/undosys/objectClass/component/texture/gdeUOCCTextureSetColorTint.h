@@ -41,9 +41,9 @@ class gdeObjectClass;
  */
 class gdeUOCCTextureSetColorTint : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	decColor pOldValue;
 	decColor pNewValue;
@@ -57,8 +57,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCTextureSetColorTint(gdeObjectClass *objectClass, gdeOCComponent *component,
-		gdeOCComponentTexture *texture, const decColor &newValue);
+	gdeUOCCTextureSetColorTint(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component,
+		gdeOCComponentTexture::Ref texture, const decColor &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

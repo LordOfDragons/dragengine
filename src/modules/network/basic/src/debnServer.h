@@ -43,7 +43,7 @@ private:
 	deNetworkBasic *pNetBasic;
 	deServer *pServer;
 	
-	debnSocket *pSocket;
+	debnSocket::Ref pSocket;
 	bool pListening;
 	
 	debnServer *pPreviousServer;

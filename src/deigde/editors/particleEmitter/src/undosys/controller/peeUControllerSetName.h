@@ -36,7 +36,7 @@ class peeController;
  */
 class peeUControllerSetName : public igdeUndo{
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	
 	decString pOldName;
 	decString pNewName;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUControllerSetName(peeController *controller, const char *newName);
+	peeUControllerSetName(peeController::Ref controller, const char *newName);
 	
 protected:
 	/** \brief Clean up the undo action. */

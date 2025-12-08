@@ -135,9 +135,7 @@ public:
 peeWindowCurves::peeWindowCurves(peeWindowMain &windowMain) :
 igdeContainerSplitted(windowMain.GetEnvironment(), igdeContainerSplitted::espRight,
 	igdeApplication::app().DisplayScaled(200)),
-pWindowMain(windowMain),
-pListener(NULL),
-pEmitter(NULL)
+pWindowMain(windowMain)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -145,7 +143,7 @@ pEmitter(NULL)
 	pIconCurveEmpty = env.GetStockIcon(igdeEnvironment::esiSmallMinus);
 	pIconCurveUsed = env.GetStockIcon(igdeEnvironment::esiSmallPlus);
 	
-	pListener = new peeWindowCurvesListener(*this);
+	pListener.TakeOver(new peeWindowCurvesListener(*this));
 	
 	helper.ListBox(4, "Curve to edit", pListCurves, new cListCurves(*this));
 	pListCurves->AddItem("Value", pIconCurveEmpty, (void*)(intptr_t)ecValue);
@@ -163,9 +161,6 @@ pEmitter(NULL)
 
 peeWindowCurves::~peeWindowCurves(){
 	SetEmitter(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -173,7 +168,7 @@ peeWindowCurves::~peeWindowCurves(){
 // Management
 ///////////////
 
-void peeWindowCurves::SetEmitter(peeEmitter *emitter){
+void peeWindowCurves::SetEmitter(peeEmitter::Ref emitter){
 	if(emitter == pEmitter){
 		return;
 	}
@@ -182,14 +177,12 @@ void peeWindowCurves::SetEmitter(peeEmitter *emitter){
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;
 	
 	if(emitter){
 		emitter->AddListener(pListener);
-		emitter->AddReference();
 	}
 	
 	UpdateCurve();

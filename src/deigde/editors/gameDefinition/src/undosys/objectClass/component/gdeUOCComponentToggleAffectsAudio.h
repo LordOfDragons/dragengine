@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCComponentToggleAffectsAudio : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentToggleAffectsAudio(gdeObjectClass *objectClass, gdeOCComponent *component);
+	gdeUOCComponentToggleAffectsAudio(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component);
 	
 protected:
 	/** \brief Clean up undo action. */

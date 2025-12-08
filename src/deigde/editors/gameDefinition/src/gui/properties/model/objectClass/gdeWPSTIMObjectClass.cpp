@@ -72,9 +72,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMObjectClass::gdeWPSTIMObjectClass(gdeWPSTreeModel &tree, gdeObjectClass *objectClass) :
-gdeWPSTreeItemModel(tree, etObjectClass),
-pObjectClass(NULL)
+gdeWPSTIMObjectClass::gdeWPSTIMObjectClass(gdeWPSTreeModel &tree, gdeObjectClass::Ref objectClass) :
+gdeWPSTreeItemModel(tree, etObjectClass)
 {
 	if(!objectClass){
 		DETHROW(deeInvalidParam);
@@ -83,13 +82,9 @@ pObjectClass(NULL)
 	SetText(objectClass->GetName());
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeWPSTIMObjectClass::~gdeWPSTIMObjectClass(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

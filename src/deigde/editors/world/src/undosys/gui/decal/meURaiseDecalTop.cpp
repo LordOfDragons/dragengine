@@ -36,7 +36,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meURaiseDecalTop::meURaiseDecalTop(meWorld *world, meDecal *decal){
+meURaiseDecalTop::meURaiseDecalTop(meWorld *world, meDecal::Ref decal){
 	if(!world || !decal) DETHROW(deeInvalidParam);
 	
 	if(!decal->GetParentObject()) DETHROW(deeInvalidParam);
@@ -44,8 +44,6 @@ meURaiseDecalTop::meURaiseDecalTop(meWorld *world, meDecal *decal){
 	pWorld = world;
 	
 	pDecal = decal;
-	decal->AddReference();
-	
 	//if( decal->GetParentObject() ){
 		pOldIndex = decal->GetParentObject()->IndexOfDecal(decal);
 	//}

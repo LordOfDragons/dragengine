@@ -45,7 +45,7 @@ class meWorld;
  */
 class meUPasteObject : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meObjectList pObjects;
 	decIntList pAttachedToIndexList;
 	
@@ -58,7 +58,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUPasteObject(meWorld *world, meClipboardDataObject *clip);
+	meUPasteObject(meWorld::Ref world, meClipboardDataObject *clip);
 	
 	/** \brief Clean up undo object. */
 	virtual ~meUPasteObject();

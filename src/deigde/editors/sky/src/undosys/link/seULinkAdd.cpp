@@ -40,9 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkAdd::seULinkAdd(seSky *sky, seLink *link) :
-pSky(NULL),
-pLink(NULL)
+seULinkAdd::seULinkAdd(seSky::Ref sky, seLink::Ref link) :
+pSky(NULL)
 {
 	if(!sky || !link){
 		DETHROW(deeInvalidParam);
@@ -51,19 +50,10 @@ pLink(NULL)
 	SetShortInfo("Add Link");
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pLink = link;
-	link->AddReference();
 }
 
 seULinkAdd::~seULinkAdd(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

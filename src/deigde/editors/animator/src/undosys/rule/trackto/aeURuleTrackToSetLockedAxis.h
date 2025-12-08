@@ -37,7 +37,7 @@ class aeRuleTrackTo;
  */
 class aeURuleTrackToSetLockedAxis : public igdeUndo{
 private:
-	aeRuleTrackTo *pRule;
+	aeRuleTrackTo::Ref pRule;
 	
 	deAnimatorRuleTrackTo::eLockedAxis pOldAxis;
 	deAnimatorRuleTrackTo::eLockedAxis pNewAxis;

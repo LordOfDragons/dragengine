@@ -43,11 +43,11 @@ class meWorld;
 class meWindowVegetation : public igdeNVBoard{
 private:
 	meWindowMain &pWindowMain;
-	meWindowVegetationListener *pListener;
+	meWindowVegetationListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decPoint pSector;
-	meHTVegetationLayer *pVLayer;
+	meHTVegetationLayer::Ref pVLayer;
 	
 	float pUnitsToPixel;
 	float pPixelToUnits;
@@ -77,7 +77,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld(meWorld *world);
+	void SetWorld(meWorld::Ref world);
 	
 	/** \brief Sector coordinates. */
 	inline const decPoint &GetSector() const{ return pSector; }
@@ -89,7 +89,7 @@ public:
 	inline meHTVegetationLayer *GetVLayer() const{ return pVLayer; }
 	
 	/** \brief Set vegetation layer. */
-	void SetVLayer(meHTVegetationLayer *vlayer);
+	void SetVLayer(meHTVegetationLayer::Ref vlayer);
 	
 	/** \brief Active vegetation layer rule. */
 	meHTVRule *GetVRule() const;

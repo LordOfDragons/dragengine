@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerToggleClamp::peeUControllerToggleClamp(peeController *controller){
+peeUControllerToggleClamp::peeUControllerToggleClamp(peeController::Ref controller){
 	if(!controller) DETHROW(deeInvalidParam);
 	
 	pController = NULL;
@@ -47,13 +47,9 @@ peeUControllerToggleClamp::peeUControllerToggleClamp(peeController *controller){
 	SetShortInfo("Toggle Controller Clamp");
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerToggleClamp::~peeUControllerToggleClamp(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

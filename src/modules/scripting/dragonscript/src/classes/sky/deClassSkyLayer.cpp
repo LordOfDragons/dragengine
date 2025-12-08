@@ -52,7 +52,7 @@
 /////////////////////
 
 struct sSkyLayerNatDat{
-	deSky *sky;
+	deSky::Ref sky;
 	int index;
 };
 
@@ -607,7 +607,7 @@ void deClassSkyLayer::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassSkyLayer::PushLayer(dsRunTime *rt, deSky *sky, int index){
+void deClassSkyLayer::PushLayer(dsRunTime *rt, deSky::Ref sky, int index){
 	if(!rt || !sky || index < 0 || index >= sky->GetLayerCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -615,6 +615,5 @@ void deClassSkyLayer::PushLayer(dsRunTime *rt, deSky *sky, int index){
 	rt->CreateObjectNakedOnStack(this);
 	sSkyLayerNatDat &nd = *((sSkyLayerNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.sky = sky;
-	sky->AddReference();
 	nd.index = index;
 }

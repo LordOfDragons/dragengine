@@ -140,20 +140,15 @@ void meViewEditorAddNew::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 		
 		pCreateClosestElementVisitor();
 		
-		meObject *object = nullptr;
+		meObject::Ref object = nullptr;
 		
 		try{
-			object = new meObject(world.GetEnvironment());
+			object.TakeOver(new meObject(world.GetEnvironment()));
 			object->SetClassName(guiparams.GetBrowseClass().GetString());
 			object->SetID(world.NextObjectID());
 			
 			pUndoAddObject.TakeOver(new meUAddObject(&world, object));
-			object->FreeReference();
-			
 		}catch(const deException &e){
-			if(object){
-				object->FreeReference();
-			}
 			pUndoAddObject = nullptr;
 			
 			delete pClosestElement;

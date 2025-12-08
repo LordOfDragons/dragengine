@@ -36,7 +36,7 @@ class ceWPTTIMAWait;
  */
 class ceWPTTIMAWaitCondition : public ceWPTTIMConditionContainer{
 private:
-	ceCAWait *pAction;
+	ceCAWait::Ref pAction;
 	
 	
 	
@@ -45,7 +45,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	ceWPTTIMAWaitCondition(ceWindowMain &windowMain,
-		ceConversation &conversation, ceCAWait *action);
+		ceConversation &conversation, ceCAWait::Ref action);
 	
 protected:
 	/** \brief Clean up tree item model. */

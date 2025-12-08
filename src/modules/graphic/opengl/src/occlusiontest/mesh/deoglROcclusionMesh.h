@@ -66,7 +66,7 @@ public:
 	deoglRenderThread &pRenderThread;
 	decString pFilename;
 	
-	deoglSharedVBOBlock *pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlock;
 	
 	sWeight *pWeightsEntries;
 	int pWeightsEntryCount;

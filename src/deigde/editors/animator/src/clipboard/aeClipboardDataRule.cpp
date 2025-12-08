@@ -42,20 +42,15 @@ const char * const aeClipboardDataRule::TYPE_NAME = "rule";
 // Constructor, destructor
 ////////////////////////////
 
-aeClipboardDataRule::aeClipboardDataRule(aeRule *rule) :
+aeClipboardDataRule::aeClipboardDataRule(aeRule::Ref rule) :
 igdeClipboardData(TYPE_NAME)
 {
-	aeRule *copyRule = NULL;
+	aeRule::Ref copyRule = NULL;
 	
 	try{
 		copyRule = rule->CreateCopy();
 		pRules.Add(copyRule);
-		copyRule->FreeReference();
-		
 	}catch(const deException &){
-		if(copyRule){
-			copyRule->FreeReference();
-		}
 		throw;
 	}
 }
@@ -64,21 +59,17 @@ aeClipboardDataRule::aeClipboardDataRule(const aeRuleList &rules) :
 igdeClipboardData(TYPE_NAME)
 {
 	const int count = rules.GetCount();
-	aeRule *rule = NULL;
+	aeRule::Ref rule = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
 			rule = rules.GetAt(i)->CreateCopy();
 			pRules.Add(rule);
-			rule->FreeReference();
 			rule = NULL;
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 }

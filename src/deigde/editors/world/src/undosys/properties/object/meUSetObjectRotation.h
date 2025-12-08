@@ -45,14 +45,14 @@ public:
 	
 	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decVector pOldRotation;
 	decVector pNewRotation;
 	
 public:
 	// constructor, destructor
-	meUSetObjectRotation(meObject *object, const decVector &newRotation);
+	meUSetObjectRotation(meObject::Ref object, const decVector &newRotation);
 	
 protected:
 	~meUSetObjectRotation();

@@ -52,13 +52,9 @@ pSource(NULL)
 	pNewTime = newTime;
 	
 	pSource = effect;
-	pSource->AddReference();
 }
 
 seUEffectStretchSetMaxTime::~seUEffectStretchSetMaxTime(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

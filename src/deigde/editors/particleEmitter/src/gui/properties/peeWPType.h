@@ -50,9 +50,9 @@ class peeWPTypeListener;
 class peeWPType : public igdeContainerScroll{
 private:
 	peeWindowProperties &pWindowProperties;
-	peeWPTypeListener *pListener;
+	peeWPTypeListener::Ref pListener;
 	
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	igdeIcon::Ref pIconUnused;
 	igdeIcon::Ref pIconUsed;
@@ -119,7 +119,7 @@ public:
 	inline peeEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
-	void SetEmitter(peeEmitter *emitter);
+	void SetEmitter(peeEmitter::Ref emitter);
 	
 	/** \brief Emitter path changed. */
 	void OnEmitterPathChanged();

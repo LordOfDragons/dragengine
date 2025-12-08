@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCASetVarSetOp::ceUCASetVarSetOp(ceConversationTopic *topic,
-ceCASetVariable *action, ceCASetVariable::eOperators newOperator){
+ceUCASetVarSetOp::ceUCASetVarSetOp(ceConversationTopic::Ref topic,
+ceCASetVariable::Ref action, ceCASetVariable::eOperators newOperator){
 	if(!topic || !action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
@@ -52,19 +52,10 @@ ceCASetVariable *action, ceCASetVariable::eOperators newOperator){
 	SetShortInfo("Action SetVariable Set Operator");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCASetVarSetOp::~ceUCASetVarSetOp(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

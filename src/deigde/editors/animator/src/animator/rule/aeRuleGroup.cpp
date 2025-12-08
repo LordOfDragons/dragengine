@@ -67,7 +67,7 @@ pTargetSelect(copy.pTargetSelect),
 pTreeListExpanded(copy.pTreeListExpanded)
 {
 	const int ruleCount = copy.pRules.GetCount();
-	aeRule *rule = NULL;
+	aeRule::Ref rule = NULL;
 	int i;
 	
 	try{
@@ -75,14 +75,10 @@ pTreeListExpanded(copy.pTreeListExpanded)
 			rule = copy.pRules.GetAt(i)->CreateCopy();
 			pRules.Add(rule);
 			rule->SetParentGroup(this);
-			rule->FreeReference();
 			rule = NULL;
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 }
@@ -96,7 +92,7 @@ aeRuleGroup::~aeRuleGroup(){
 // Management
 ///////////////
 
-void aeRuleGroup::AddRule(aeRule *rule){
+void aeRuleGroup::AddRule(aeRule::Ref rule){
 	pRules.Add(rule);
 	
 	aeAnimator * const animator = GetAnimator();
@@ -110,7 +106,7 @@ void aeRuleGroup::AddRule(aeRule *rule){
 	}
 }
 
-void aeRuleGroup::InsertRuleAt(aeRule *rule, int index){
+void aeRuleGroup::InsertRuleAt(aeRule::Ref rule, int index){
 	pRules.Insert(rule, index);
 	
 	aeAnimator * const animator = GetAnimator();
@@ -124,7 +120,7 @@ void aeRuleGroup::InsertRuleAt(aeRule *rule, int index){
 	}
 }
 
-void aeRuleGroup::MoveRuleTo(aeRule *rule, int index){
+void aeRuleGroup::MoveRuleTo(aeRule::Ref rule, int index){
 	pRules.Move(rule, index);
 	
 	aeAnimator * const animator = GetAnimator();
@@ -134,7 +130,7 @@ void aeRuleGroup::MoveRuleTo(aeRule *rule, int index){
 	}
 }
 
-void aeRuleGroup::RemoveRule(aeRule *rule){
+void aeRuleGroup::RemoveRule(aeRule::Ref rule){
 	if(!pRules.Has(rule)){
 		DETHROW(deeInvalidParam);
 	}
@@ -331,8 +327,8 @@ void aeRuleGroup::RemoveLinksFromAllTargets(){
 
 
 deAnimatorRule *aeRuleGroup::CreateEngineRule(){
-	deAnimatorRuleGroup *engRule = NULL;
-	deAnimatorRule *subEngRule = NULL;
+	deAnimatorRuleGroup::Ref engRule = NULL;
+	deAnimatorRule::Ref subEngRule = NULL;
 	const int count = pRules.GetCount();
 	int i;
 	
@@ -341,7 +337,7 @@ deAnimatorRule *aeRuleGroup::CreateEngineRule(){
 	}
 	
 	try{
-		engRule = new deAnimatorRuleGroup;
+		engRule.TakeOver(new deAnimatorRuleGroup);
 		
 		InitEngineRule(engRule);
 		
@@ -351,7 +347,6 @@ deAnimatorRule *aeRuleGroup::CreateEngineRule(){
 			subEngRule = rule->CreateEngineRule();
 			engRule->AddRule(subEngRule);
 			rule->SetEngineRule(subEngRule);
-			subEngRule->FreeReference();
 			subEngRule = NULL;
 		}
 		
@@ -366,12 +361,6 @@ deAnimatorRule *aeRuleGroup::CreateEngineRule(){
 		pTargetSelect.UpdateEngineTarget(GetAnimator(), engRule->GetTargetSelect());
 		
 	}catch(const deException &){
-		if(subEngRule){
-			subEngRule->FreeReference();
-		}
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -430,7 +419,7 @@ aeRuleGroup &aeRuleGroup::operator=(const aeRuleGroup &copy){
 	pTargetSelect = copy.pTargetSelect;
 	
 	const int ruleCount = copy.pRules.GetCount();
-	aeRule *rule = NULL;
+	aeRule::Ref rule = NULL;
 	int i;
 	
 	RemoveAllRules();
@@ -439,14 +428,10 @@ aeRuleGroup &aeRuleGroup::operator=(const aeRuleGroup &copy){
 			rule = copy.pRules.GetAt(i)->CreateCopy();
 			AddRule(rule);
 			rule->SetParentGroup(this);
-			rule->FreeReference();
 			rule = NULL;
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	

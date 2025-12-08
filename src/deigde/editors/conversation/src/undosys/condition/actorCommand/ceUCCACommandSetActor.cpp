@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCACommandSetActor::ceUCCACommandSetActor(ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionActorCommand *condition, const char *newActor){
+ceUCCACommandSetActor::ceUCCACommandSetActor(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
+ceCConditionActorCommand::Ref condition, const char *newActor){
 	if(!topic || !action || !condition){
 		DETHROW(deeInvalidParam);
 	}
@@ -57,25 +57,11 @@ ceCConditionActorCommand *condition, const char *newActor){
 	SetShortInfo("Condition actor command set actor");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCACommandSetActor::~ceUCCACommandSetActor(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

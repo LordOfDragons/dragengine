@@ -37,8 +37,8 @@ class meHeightTerrainNavSpace;
  */
 class meUHTNavSpaceAdd : public igdeUndo{
 private:
-	meHeightTerrainSector *pSector;
-	meHeightTerrainNavSpace *pNavSpace;
+	meHeightTerrainSector::Ref pSector;
+	meHeightTerrainNavSpace::Ref pNavSpace;
 	
 	
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceAdd(meHeightTerrainSector *sector, meHeightTerrainNavSpace *navspace);
+	meUHTNavSpaceAdd(meHeightTerrainSector::Ref sector, meHeightTerrainNavSpace::Ref navspace);
 	
 protected:
 	/** \brief Clean up undo action. */

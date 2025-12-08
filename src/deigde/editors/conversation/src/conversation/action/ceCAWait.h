@@ -49,7 +49,7 @@ class ceConversationCondition;
 class ceCAWait : public ceConversationAction{
 private:
 	ceConversationActionList pActions;
-	ceConversationCondition *pCondition;
+	ceConversationCondition::Ref pCondition;
 	float pInterval;
 	bool pTIMExpanded;
 	bool pTIMConditionExpanded;
@@ -76,7 +76,7 @@ public:
 	/** Retrieves the condition or NULL if there is none. */
 	inline ceConversationCondition *GetCondition() const{ return pCondition; }
 	/** Sets the condition or NULL if there is none. */
-	void SetCondition(ceConversationCondition *condition);
+	void SetCondition(ceConversationCondition::Ref condition);
 	/** Retrieves the interval to check the condition. */
 	inline float GetInterval() const{ return pInterval; }
 	/** Sets the interval to check the condition. */

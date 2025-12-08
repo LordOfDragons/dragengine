@@ -54,9 +54,9 @@ class seWPTextureListener;
 class seWPTexture : public igdeContainerScroll{
 private:
 	seWindowProperties &pWindowProperties;
-	seWPTextureListener *pListener;
+	seWPTextureListener::Ref pListener;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	bool pRequiresUpdate;
 	bool pPreventUpdateMappedTarget;
 	
@@ -120,7 +120,7 @@ public:
 	inline seSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin. */
-	void SetSkin(seSkin *skin);
+	void SetSkin(seSkin::Ref skin);
 	
 	/** Skin path changed. */
 	void OnSkinPathChanged();

@@ -38,8 +38,8 @@ class sePropertyNode;
  */
 class seUPropertyNodeSetMask : public igdeUndo{
 private:
-	sePropertyNode *pNode;
-	sePropertyNode *pMask;
+	sePropertyNode::Ref pNode;
+	sePropertyNode::Ref pMask;
 	
 	decPoint3 pOldPosition;
 	decPoint3 pOldSize;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetMask(sePropertyNode *node, sePropertyNode *mask);
+	seUPropertyNodeSetMask(sePropertyNode::Ref node, sePropertyNode::Ref mask);
 	
 protected:
 	/** \brief Clean up undo. */

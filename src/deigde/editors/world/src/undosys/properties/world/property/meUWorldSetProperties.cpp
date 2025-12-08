@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldSetProperties::meUWorldSetProperties(meWorld *world, const decStringDictionary &newValues) :
-pWorld(NULL),
+meUWorldSetProperties::meUWorldSetProperties(meWorld::Ref world, const decStringDictionary &newValues) :
+
 pNewValues(newValues)
 {
 	if(!world){
@@ -51,13 +51,9 @@ pNewValues(newValues)
 	pOldValues = world->GetProperties();
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUWorldSetProperties::~meUWorldSetProperties(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }
 
 

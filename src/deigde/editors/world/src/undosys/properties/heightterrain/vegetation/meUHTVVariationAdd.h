@@ -42,8 +42,8 @@ class meHTVVariation;
  */
 class meUHTVVariationAdd : public igdeUndo{
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVVariation *pVariation;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVVariation::Ref pVariation;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUHTVVariationAdd(meHTVegetationLayer *vlayer, meHTVVariation *variation);
+	meUHTVVariationAdd(meHTVegetationLayer::Ref vlayer, meHTVVariation::Ref variation);
 	
 protected:
 	/** \brief Clean up undo object. */

@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerToggleLinkToTime::peeUControllerToggleLinkToTime(peeController *controller){
+peeUControllerToggleLinkToTime::peeUControllerToggleLinkToTime(peeController::Ref controller){
 	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
@@ -49,13 +49,9 @@ peeUControllerToggleLinkToTime::peeUControllerToggleLinkToTime(peeController *co
 	SetShortInfo("Toggle Controller Link To Time");
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerToggleLinkToTime::~peeUControllerToggleLinkToTime(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

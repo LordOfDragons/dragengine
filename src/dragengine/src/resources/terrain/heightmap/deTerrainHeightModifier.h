@@ -43,7 +43,7 @@ class deImage;
  */
 class DE_DLL_EXPORT deTerrainHeightModifier{
 private:
-	deImage *pHeightImage;
+	deImage::Ref pHeightImage;
 	decPoint pPosition;
 	float pScaling;
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new height modifier. */
-	deTerrainHeightModifier(deImage *heightImage);
+	deTerrainHeightModifier(deImage::Ref heightImage);
 	
 	/** \brief Clean up height modifier. */
 	~deTerrainHeightModifier();

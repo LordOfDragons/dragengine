@@ -35,7 +35,7 @@ class dealImage;
  */
 class dealWidgetImage : public dealWidget{
 private:
-	dealImage *pImage;
+	dealImage::Ref pImage;
 	decColor pColorize;
 	float pScaling;
 	
@@ -43,7 +43,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */
-	dealWidgetImage(dealDisplay &display, dealImage *image = NULL);
+	dealWidgetImage(dealDisplay &display, dealImage::Ref image = NULL);
 	
 	/** \brief Clean up widget. */
 	~dealWidgetImage() override;
@@ -57,7 +57,7 @@ public:
 	inline dealImage *GetImage() const{ return pImage; }
 	
 	/** \brief Set image or \em NULL if not set. */
-	void SetImage(dealImage *image);
+	void SetImage(dealImage::Ref image);
 	
 	/** \brief Colorize color. */
 	inline const decColor &GetColorize() const{ return pColorize; }

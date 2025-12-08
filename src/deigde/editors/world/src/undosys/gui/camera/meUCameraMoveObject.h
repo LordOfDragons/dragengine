@@ -37,7 +37,7 @@ class meObject;
  */
 class meUCameraMoveObject : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decDVector pOldPosition, pNewPosition;
 	
 public:
@@ -45,7 +45,7 @@ public:
 	typedef deTObjectReference<meUCameraMoveObject> Ref;
 	
 	// constructor, destructor
-	meUCameraMoveObject(meObject *object);
+	meUCameraMoveObject(meObject::Ref object);
 	~meUCameraMoveObject() override;
 	
 	void SetNewPosition(const decDVector &position);

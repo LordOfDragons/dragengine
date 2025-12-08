@@ -396,12 +396,12 @@ void peeLoadSaveEmitter::pReadEmitter(const decXmlElementTag &root, peeEmitter &
 
 void peeLoadSaveEmitter::pReadController(const decXmlElementTag &root, peeEmitter &emitter){
 	const int elementCount = root.GetElementCount();
-	peeController *controller = NULL;
+	peeController::Ref controller = NULL;
 	const decXmlElementTag *tag;
 	int e;
 	
 	try{
-		controller = new peeController;
+		controller.TakeOver(new peeController);
 		
 		for(e=0; e<elementCount; e++){
 			tag = root.GetElementIfTag(e);
@@ -436,12 +436,7 @@ void peeLoadSaveEmitter::pReadController(const decXmlElementTag &root, peeEmitte
 		}
 		
 		emitter.AddController(controller);
-		controller->FreeReference();
-		
 	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
 		throw;
 	}
 }
@@ -450,11 +445,11 @@ void peeLoadSaveEmitter::pReadType(const decXmlElementTag &root, peeEmitter &emi
 	const int elementCount = root.GetElementCount();
 	const decXmlElementTag *tag;
 	const char *identifier;
-	peeType *type = NULL;
+	peeType::Ref type = NULL;
 	int i;
 	
 	try{
-		type = new peeType(emitter.GetEngine());
+		type.TakeOver(new peeType(emitter.GetEngine()));
 		
 		for(i=0; i<elementCount; i++){
 			tag = root.GetElementIfTag(i);
@@ -564,12 +559,7 @@ void peeLoadSaveEmitter::pReadType(const decXmlElementTag &root, peeEmitter &emi
 		}
 		
 		emitter.AddType(type);
-		type->FreeReference();
-		
 	}catch(const deException &){
-		if(type){
-			type->FreeReference();
-		}
 		throw;
 	}
 }

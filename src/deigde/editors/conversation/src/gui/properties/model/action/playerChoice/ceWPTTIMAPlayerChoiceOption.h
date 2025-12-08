@@ -40,10 +40,10 @@ class ceWPTTIMAPlayerChoiceOptionActions;
  */
 class ceWPTTIMAPlayerChoiceOption : public ceWPTTreeItemModel{
 private:
-	ceCAPlayerChoiceOption *pOption;
+	ceCAPlayerChoiceOption::Ref pOption;
 	int pIndex;
-	ceWPTTIMAPlayerChoiceOptionCondition *pCondition;
-	ceWPTTIMAPlayerChoiceOptionActions *pActions;
+	ceWPTTIMAPlayerChoiceOptionCondition::Ref pCondition;
+	ceWPTTIMAPlayerChoiceOptionActions::Ref pActions;
 	
 	
 	
@@ -52,7 +52,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	ceWPTTIMAPlayerChoiceOption(ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption *option, int index);
+		ceCAPlayerChoice &playerChoice, ceCAPlayerChoiceOption::Ref option, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

@@ -37,7 +37,7 @@ class seSource;
  */
 class seUSourceToggleEnabled : public igdeUndo{
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	
 	
 	

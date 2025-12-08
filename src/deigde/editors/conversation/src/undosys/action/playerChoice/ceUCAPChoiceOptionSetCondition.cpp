@@ -42,12 +42,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceOptionSetCondition::ceUCAPChoiceOptionSetCondition(ceConversationTopic *topic,
-ceCAPlayerChoice *ifElse, ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition) :
-pTopic(NULL),
-pPlayerChoice(NULL),
-pOption(NULL),
-pOldCondition(NULL),
+ceUCAPChoiceOptionSetCondition::ceUCAPChoiceOptionSetCondition(ceConversationTopic::Ref topic,
+ceCAPlayerChoice::Ref ifElse, ceCAPlayerChoiceOption::Ref ifcase, ceConversationCondition::Ref newCondition) :
+
+
+
 pNewCondition(NULL)
 {
 	if(!topic || !ifElse || !ifcase){
@@ -57,41 +56,13 @@ pNewCondition(NULL)
 	SetShortInfo("Player Choice Option set case condition");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pPlayerChoice = ifElse;
-	ifElse->AddReference();
-	
 	pOption = ifcase;
-	ifcase->AddReference();
-	
 	pOldCondition = ifcase->GetCondition();
-	if(pOldCondition){
-		pOldCondition->AddReference();
-	}
-	
 	pNewCondition = newCondition;
-	if(newCondition){
-		newCondition->AddReference();
-	}
 }
 
 ceUCAPChoiceOptionSetCondition::~ceUCAPChoiceOptionSetCondition(){
-	if(pNewCondition){
-		pNewCondition->FreeReference();
-	}
-	if(pOldCondition){
-		pOldCondition->FreeReference();
-	}
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

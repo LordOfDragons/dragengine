@@ -48,7 +48,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUBoneImportFromFile::reUBoneImportFromFile(reRig *rig, reRig *importedRig){
+reUBoneImportFromFile::reUBoneImportFromFile(reRig::Ref rig, reRig *importedRig){
 	if(!rig || !importedRig){
 		DETHROW(deeInvalidParam);
 	}
@@ -56,9 +56,9 @@ reUBoneImportFromFile::reUBoneImportFromFile(reRig *rig, reRig *importedRig){
 	const reSelectionBones &selection = *rig->GetSelectionBones();
 	int b, boneCount = selection.GetBoneCount();
 	int c, constraintCount;
-	reRigBone *importBone;
+	reRigBone::Ref importBone;
 	int s, shapeCount;
-	reRigBone *bone;
+	reRigBone::Ref bone;
 	
 	pRig = NULL;
 	
@@ -135,7 +135,6 @@ reUBoneImportFromFile::reUBoneImportFromFile(reRig *rig, reRig *importedRig){
 	}
 	
 	pRig = rig;
-	rig->AddReference();
 }
 
 reUBoneImportFromFile::~reUBoneImportFromFile(){
@@ -168,7 +167,7 @@ void reUBoneImportFromFile::SetImportConstraints(bool import){
 void reUBoneImportFromFile::Undo(){
 	int c, constraintCount;
 	int s, shapeCount;
-	reRigBone *bone;
+	reRigBone::Ref bone;
 	int b;
 	
 	for(b=0; b<pBoneCount; b++){
@@ -208,11 +207,11 @@ void reUBoneImportFromFile::Undo(){
 }
 
 void reUBoneImportFromFile::Redo(){
-	reRigConstraint *constraint = NULL;
-	reRigShape *shape = NULL;
+	reRigConstraint::Ref constraint = NULL;
+	reRigShape::Ref shape = NULL;
 	int c, constraintCount;
-	reRigBone *importBone;
-	reRigBone *bone;
+	reRigBone::Ref importBone;
+	reRigBone::Ref bone;
 	int s, shapeCount;
 	int b;
 	
@@ -241,7 +240,6 @@ void reUBoneImportFromFile::Redo(){
 					shape = importBone->GetShapeAt(s)->Duplicate();
 					shape->Scale(pScale);
 					bone->AddShape(shape);
-					shape->FreeReference();
 					shape = NULL;
 				}
 			}
@@ -258,19 +256,12 @@ void reUBoneImportFromFile::Redo(){
 					}
 					
 					bone->AddConstraint(constraint);
-					constraint->FreeReference();
 					constraint = NULL;
 				}
 			}
 		}
 		
 	}catch(const deException &){
-		if(shape){
-			shape->FreeReference();
-		}
-		if(constraint){
-			constraint->FreeReference();
-		}
 		throw;
 	}
 }
@@ -301,9 +292,5 @@ void reUBoneImportFromFile::pCleanUp(){
 		}
 		
 		delete [] pBones;
-	}
-	
-	if(pRig){
-		pRig->FreeReference();
 	}
 }

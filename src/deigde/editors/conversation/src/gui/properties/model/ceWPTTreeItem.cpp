@@ -41,8 +41,7 @@
 
 ceWPTTreeItem::ceWPTTreeItem(igdeTreeList *treeList) :
 igdeTreeItem(""),
-pTreeList(treeList),
-pModel(NULL)
+pTreeList(treeList)
 {
 	if(!treeList){
 		DETHROW(deeInvalidParam);
@@ -58,27 +57,25 @@ ceWPTTreeItem::~ceWPTTreeItem(){
 // Management
 ///////////////
 
-void ceWPTTreeItem::SetModel(ceWPTTreeItemModel *model){
+void ceWPTTreeItem::SetModel(ceWPTTreeItemModel::Ref model){
 	if(pModel == model){
 		return;
 	}
 	
 	if(pModel){
 		pModel->SetTreeItem(NULL);
-		pModel->FreeReference();
 	}
 	
 	pModel = model;
 	
 	if(model){
-		model->AddReference();
 		model->SetTreeItem(this);
 	}
 }
 
 
 
-void ceWPTTreeItem::AddItem(ceWPTTreeItemModel *model){
+void ceWPTTreeItem::AddItem(ceWPTTreeItemModel::Ref model){
 	if(!pTreeList || !model){
 		DETHROW(deeInvalidParam);
 	}
@@ -88,7 +85,7 @@ void ceWPTTreeItem::AddItem(ceWPTTreeItemModel *model){
 	((ceWPTTreeItem&)(igdeTreeItem&)item).SetModel(model);
 }
 
-void ceWPTTreeItem::InsertItem(ceWPTTreeItemModel *model, int position){
+void ceWPTTreeItem::InsertItem(ceWPTTreeItemModel::Ref model, int position){
 	if(!pTreeList || !model || position < 0 || position > GetChildrenCount()){
 		DETHROW(deeInvalidParam);
 	}
@@ -114,7 +111,7 @@ void ceWPTTreeItem::InsertItem(ceWPTTreeItemModel *model, int position){
 	((ceWPTTreeItem&)(igdeTreeItem&)item).SetModel(model);
 }
 
-void ceWPTTreeItem::RemoveItem(ceWPTTreeItemModel *model){
+void ceWPTTreeItem::RemoveItem(ceWPTTreeItemModel::Ref model){
 	if(!pTreeList || !model){
 		DETHROW(deeInvalidParam);
 	}

@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavBlockerSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	gdeOCNavigationBlocker::eProperties pProperty;
 	decString pOldValue;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavBlockerSetPropertyName(gdeObjectClass *objectClass, gdeOCNavigationBlocker *navblocker,
+	gdeUOCNavBlockerSetPropertyName(gdeObjectClass::Ref objectClass, gdeOCNavigationBlocker::Ref navblocker,
 		gdeOCNavigationBlocker::eProperties property, const char *newValue);
 	
 protected:

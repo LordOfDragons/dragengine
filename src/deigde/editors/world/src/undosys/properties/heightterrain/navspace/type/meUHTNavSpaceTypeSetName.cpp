@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceTypeSetName::meUHTNavSpaceTypeSetName(meHeightTerrainNavSpaceType *type, const char *newName) :
-pType(NULL),
+meUHTNavSpaceTypeSetName::meUHTNavSpaceTypeSetName(meHeightTerrainNavSpaceType::Ref type, const char *newName) :
+
 pNewName(newName)
 {
 	if(!type){
@@ -52,13 +52,9 @@ pNewName(newName)
 	SetShortInfo("Height terrain nav-space type set name");
 	
 	pType = type;
-	type->AddReference();
 }
 
 meUHTNavSpaceTypeSetName::~meUHTNavSpaceTypeSetName(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

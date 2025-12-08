@@ -362,7 +362,7 @@ void ceConversation::UpdateImportedConversations(ceLoadSaveSystem &lssystem){
 // Targets
 ////////////
 
-void ceConversation::AddTarget(ceTarget *target){
+void ceConversation::AddTarget(ceTarget::Ref target){
 	if(!target || pTargetList.HasNamed(target->GetName().GetString()) || target->GetConversation()){
 		DETHROW(deeInvalidParam);
 	}
@@ -376,7 +376,7 @@ void ceConversation::AddTarget(ceTarget *target){
 	}
 }
 
-void ceConversation::RemoveTarget(ceTarget *target){
+void ceConversation::RemoveTarget(ceTarget::Ref target){
 	if(!target || !pTargetList.Has(target)){
 		DETHROW(deeInvalidParam);
 	}
@@ -413,24 +413,15 @@ void ceConversation::RemoveAllTargets(){
 	NotifyTargetStructureChanged();
 }
 
-void ceConversation::SetActiveTarget(ceTarget *target){
+void ceConversation::SetActiveTarget(ceTarget::Ref target){
 	if(target != pActiveTarget){
-		if(pActiveTarget){
-			pActiveTarget->FreeReference();
-		}
-		
 		pActiveTarget = target;
-		
-		if(target){
-			target->AddReference();
-		}
-		
 		NotifyActiveTargetChanged();
 	}
 }
 
 ceTarget *ceConversation::GetTargetNamed(const char *name) const{
-	ceTarget *target = pTargetList.GetNamed(name);
+	ceTarget::Ref target = pTargetList.GetNamed(name);
 	if(target){
 		return target;
 	}
@@ -467,7 +458,7 @@ void ceConversation::AllTargets(ceTargetList &list) const{
 // Camera Shots
 /////////////////
 
-void ceConversation::AddCameraShot(ceCameraShot *cameraShot){
+void ceConversation::AddCameraShot(ceCameraShot::Ref cameraShot){
 	if(!cameraShot || pCameraShotList.HasNamed(cameraShot->GetName().GetString()) || cameraShot->GetConversation()){
 		DETHROW(deeInvalidParam);
 	}
@@ -481,7 +472,7 @@ void ceConversation::AddCameraShot(ceCameraShot *cameraShot){
 	}
 }
 
-void ceConversation::RemoveCameraShot(ceCameraShot *cameraShot){
+void ceConversation::RemoveCameraShot(ceCameraShot::Ref cameraShot){
 	if(!cameraShot || !pCameraShotList.Has(cameraShot)){
 		DETHROW(deeInvalidParam);
 	}
@@ -518,24 +509,15 @@ void ceConversation::RemoveAllCameraShots(){
 	NotifyCameraShotStructureChanged();
 }
 
-void ceConversation::SetActiveCameraShot(ceCameraShot *cameraShot){
+void ceConversation::SetActiveCameraShot(ceCameraShot::Ref cameraShot){
 	if(cameraShot != pActiveCameraShot){
-		if(pActiveCameraShot){
-			pActiveCameraShot->FreeReference();
-		}
-		
 		pActiveCameraShot = cameraShot;
-		
-		if(cameraShot){
-			cameraShot->AddReference();
-		}
-		
 		NotifyActiveCameraShotChanged();
 	}
 }
 
 ceCameraShot *ceConversation::GetCameraShotNamed(const char *name) const{
-	ceCameraShot *cameraShot = pCameraShotList.GetNamed(name);
+	ceCameraShot::Ref cameraShot = pCameraShotList.GetNamed(name);
 	if(cameraShot){
 		return cameraShot;
 	}
@@ -572,7 +554,7 @@ void ceConversation::AllCameraShots(ceCameraShotList &list) const{
 // Gestures
 /////////////
 
-void ceConversation::AddGesture(ceGesture *gesture){
+void ceConversation::AddGesture(ceGesture::Ref gesture){
 	if(!gesture || pGestureList.HasNamed(gesture->GetName().GetString()) || gesture->GetConversation()){
 		DETHROW(deeInvalidParam);
 	}
@@ -586,7 +568,7 @@ void ceConversation::AddGesture(ceGesture *gesture){
 	}
 }
 
-void ceConversation::RemoveGesture(ceGesture *gesture){
+void ceConversation::RemoveGesture(ceGesture::Ref gesture){
 	if(!gesture || !pGestureList.Has(gesture)){
 		DETHROW(deeInvalidParam);
 	}
@@ -623,24 +605,15 @@ void ceConversation::RemoveAllGestures(){
 	NotifyGestureStructureChanged();
 }
 
-void ceConversation::SetActiveGesture(ceGesture *gesture){
+void ceConversation::SetActiveGesture(ceGesture::Ref gesture){
 	if(gesture != pActiveGesture){
-		if(pActiveGesture){
-			pActiveGesture->FreeReference();
-		}
-		
 		pActiveGesture = gesture;
-		
-		if(gesture){
-			gesture->AddReference();
-		}
-		
 		NotifyActiveGestureChanged();
 	}
 }
 
 ceGesture *ceConversation::GetGestureNamed(const char *name) const{
-	ceGesture *gesture = pGestureList.GetNamed(name);
+	ceGesture::Ref gesture = pGestureList.GetNamed(name);
 	if(gesture){
 		return gesture;
 	}
@@ -677,7 +650,7 @@ void ceConversation::AllGestures(ceGestureList &list) const{
 // Face Poses
 //////////////
 
-void ceConversation::AddFacePose(ceFacePose *facePose){
+void ceConversation::AddFacePose(ceFacePose::Ref facePose){
 	if(!facePose || pFacePoseList.HasNamed(facePose->GetName().GetString()) || facePose->GetConversation()){
 		DETHROW(deeInvalidParam);
 	}
@@ -691,7 +664,7 @@ void ceConversation::AddFacePose(ceFacePose *facePose){
 	}
 }
 
-void ceConversation::RemoveFacePose(ceFacePose *facePose){
+void ceConversation::RemoveFacePose(ceFacePose::Ref facePose){
 	if(!facePose || !pFacePoseList.Has(facePose)){
 		DETHROW(deeInvalidParam);
 	}
@@ -728,24 +701,15 @@ void ceConversation::RemoveAllFacePoses(){
 	NotifyFacePoseStructureChanged();
 }
 
-void ceConversation::SetActiveFacePose(ceFacePose *facePose){
+void ceConversation::SetActiveFacePose(ceFacePose::Ref facePose){
 	if(facePose != pActiveFacePose){
-		if(pActiveFacePose){
-			pActiveFacePose->FreeReference();
-		}
-		
 		pActiveFacePose = facePose;
-		
-		if(facePose){
-			facePose->AddReference();
-		}
-		
 		NotifyActiveFacePoseChanged();
 	}
 }
 
 ceFacePose *ceConversation::GetFacePoseNamed(const char *name) const{
-	ceFacePose *facePose = pFacePoseList.GetNamed(name);
+	ceFacePose::Ref facePose = pFacePoseList.GetNamed(name);
 	if(facePose){
 		return facePose;
 	}
@@ -782,7 +746,7 @@ void ceConversation::AllFacePoses(ceFacePoseList &list) const{
 // Files
 //////////
 
-void ceConversation::AddFile(ceConversationFile *file){
+void ceConversation::AddFile(ceConversationFile::Ref file){
 	if(!file || pFileList.HasWithID(file->GetID().GetString()) || file->GetConversation()){
 		DETHROW(deeInvalidParam);
 	}
@@ -796,7 +760,7 @@ void ceConversation::AddFile(ceConversationFile *file){
 	}
 }
 
-void ceConversation::RemoveFile(ceConversationFile *file){
+void ceConversation::RemoveFile(ceConversationFile::Ref file){
 	if(!file || !pFileList.Has(file)){
 		DETHROW(deeInvalidParam);
 	}
@@ -833,26 +797,16 @@ void ceConversation::RemoveAllFiles(){
 	NotifyFileStructureChanged();
 }
 
-void ceConversation::SetActiveFile(ceConversationFile *file){
+void ceConversation::SetActiveFile(ceConversationFile::Ref file){
 	if(file == pActiveFile){
 		return;
 	}
-	
-	if(pActiveFile){
-		pActiveFile->FreeReference();
-	}
-	
 	pActiveFile = file;
-	
-	if(file){
-		file->AddReference();
-	}
-	
 	NotifyActiveFileChanged();
 }
 
 ceConversationFile *ceConversation::GetFileWithID(const char *name) const{
-	ceConversationFile *file = pFileList.GetWithID(name);
+	ceConversationFile::Ref file = pFileList.GetWithID(name);
 	if(file){
 		return file;
 	}
@@ -885,7 +839,7 @@ void ceConversation::AllFiles(ceConversationFileList &list) const{
 }
 
 ceConversationTopic *ceConversation::GetTopicWithID(const char * fileName, const char *topicName) const{
-	ceConversationFile *file = pFileList.GetWithID(fileName);
+	ceConversationFile::Ref file = pFileList.GetWithID(fileName);
 	if(file){
 		ceConversationTopic * const topic = file->GetTopicList().GetWithID(topicName);
 		if(topic){
@@ -912,7 +866,7 @@ ceConversationTopicList ceConversation::AllTopics(const char *fileName) const{
 }
 
 void ceConversation::AllTopics(const char *fileName, ceConversationTopicList &list) const{
-	ceConversationFile *file = pFileList.GetWithID(fileName);
+	ceConversationFile::Ref file = pFileList.GetWithID(fileName);
 	if(file){
 		list += file->GetTopicList();
 	}
@@ -928,7 +882,7 @@ void ceConversation::AllTopics(const char *fileName, ceConversationTopicList &li
 // Actors
 ///////////
 
-void ceConversation::AddActor(ceConversationActor *actor){
+void ceConversation::AddActor(ceConversationActor::Ref actor){
 	pActorList.Add(actor);
 	actor->SetConversation(this);
 	NotifyActorStructureChanged();
@@ -938,7 +892,7 @@ void ceConversation::AddActor(ceConversationActor *actor){
 	}
 }
 
-void ceConversation::RemoveActor(ceConversationActor *actor){
+void ceConversation::RemoveActor(ceConversationActor::Ref actor){
 	if(!actor || actor->GetConversation() != this) DETHROW(deeInvalidParam);
 	
 	if(actor == pActiveActor){
@@ -977,18 +931,9 @@ bool ceConversation::HasActiveActor() const{
 	return pActiveActor != nullptr;
 }
 
-void ceConversation::SetActiveActor(ceConversationActor *actor){
+void ceConversation::SetActiveActor(ceConversationActor::Ref actor){
 	if(actor != pActiveActor){
-		if(pActiveActor){
-			pActiveActor->FreeReference();
-		}
-		
 		pActiveActor = actor;
-		
-		if(actor){
-			actor->AddReference();
-		}
-		
 		NotifyActiveActorChanged();
 	}
 }
@@ -998,7 +943,7 @@ void ceConversation::SetActiveActor(ceConversationActor *actor){
 // Coordinate systems
 ///////////////////////
 
-void ceConversation::AddCoordSystem(ceCoordSystem *coordSystem){
+void ceConversation::AddCoordSystem(ceCoordSystem::Ref coordSystem){
 	pCoordSystemList.Add(coordSystem);
 	coordSystem->SetConversation(this);
 	NotifyCoordSystemStructureChanged();
@@ -1008,7 +953,7 @@ void ceConversation::AddCoordSystem(ceCoordSystem *coordSystem){
 	}
 }
 
-void ceConversation::RemoveCoordSystem(ceCoordSystem *coordSystem){
+void ceConversation::RemoveCoordSystem(ceCoordSystem::Ref coordSystem){
 	if(!coordSystem || coordSystem->GetConversation() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1049,18 +994,9 @@ bool ceConversation::HasActiveCoordSystem() const{
 	return pActiveCoordSystem != nullptr;
 }
 
-void ceConversation::SetActiveCoordSystem(ceCoordSystem *coordSystem){
+void ceConversation::SetActiveCoordSystem(ceCoordSystem::Ref coordSystem){
 	if(coordSystem != pActiveCoordSystem){
-		if(pActiveCoordSystem){
-			pActiveCoordSystem->FreeReference();
-		}
-		
 		pActiveCoordSystem = coordSystem;
-		
-		if(coordSystem){
-			coordSystem->AddReference();
-		}
-		
 		NotifyActiveCoordSystemChanged();
 	}
 }
@@ -1070,7 +1006,7 @@ void ceConversation::SetActiveCoordSystem(ceCoordSystem *coordSystem){
 // Props
 //////////
 
-void ceConversation::AddProp(ceProp *prop){
+void ceConversation::AddProp(ceProp::Ref prop){
 	pPropList.Add(prop);
 	prop->SetConversation(this);
 	NotifyPropStructureChanged();
@@ -1080,7 +1016,7 @@ void ceConversation::AddProp(ceProp *prop){
 	}
 }
 
-void ceConversation::RemoveProp(ceProp *prop){
+void ceConversation::RemoveProp(ceProp::Ref prop){
 	if(!prop || prop->GetConversation() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -1121,18 +1057,9 @@ bool ceConversation::HasActiveProp() const{
 	return pActiveProp != nullptr;
 }
 
-void ceConversation::SetActiveProp(ceProp *prop){
+void ceConversation::SetActiveProp(ceProp::Ref prop){
 	if(prop != pActiveProp){
-		if(pActiveProp){
-			pActiveProp->FreeReference();
-		}
-		
 		pActiveProp = prop;
-		
-		if(prop){
-			prop->AddReference();
-		}
-		
 		NotifyActivePropChanged();
 	}
 }
@@ -1235,7 +1162,7 @@ void ceConversation::NotifyTargetStructureChanged(){
 	SetChanged(true);
 }
 
-void ceConversation::NotifyTargetChanged(ceTarget *target){
+void ceConversation::NotifyTargetChanged(ceTarget::Ref target){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -1268,7 +1195,7 @@ void ceConversation::NotifyCameraShotStructureChanged(){
 	SetChanged(true);
 }
 
-void ceConversation::NotifyCameraShotChanged(ceCameraShot *cameraShot){
+void ceConversation::NotifyCameraShotChanged(ceCameraShot::Ref cameraShot){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -1301,7 +1228,7 @@ void ceConversation::NotifyGestureStructureChanged(){
 	SetChanged(true);
 }
 
-void ceConversation::NotifyGestureChanged(ceGesture *gesture){
+void ceConversation::NotifyGestureChanged(ceGesture::Ref gesture){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -1345,7 +1272,7 @@ void ceConversation::NotifyFacePoseStructureChanged(){
 	SetChanged(true);
 }
 
-void ceConversation::NotifyFacePoseChanged(ceFacePose *facePose){
+void ceConversation::NotifyFacePoseChanged(ceFacePose::Ref facePose){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -1378,7 +1305,7 @@ void ceConversation::NotifyFileStructureChanged(){
 	SetChanged(true);
 }
 
-void ceConversation::NotifyFileChanged(ceConversationFile *file){
+void ceConversation::NotifyFileChanged(ceConversationFile::Ref file){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -1400,7 +1327,7 @@ void ceConversation::NotifyActiveFileChanged(){
 
 
 
-void ceConversation::NotifyTopicStructureChanged(ceConversationFile *file){
+void ceConversation::NotifyTopicStructureChanged(ceConversationFile::Ref file){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -1411,7 +1338,7 @@ void ceConversation::NotifyTopicStructureChanged(ceConversationFile *file){
 	SetChanged(true);
 }
 
-void ceConversation::NotifyTopicChanged(ceConversationFile *file, ceConversationTopic *topic){
+void ceConversation::NotifyTopicChanged(ceConversationFile::Ref file, ceConversationTopic *topic){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -1422,7 +1349,7 @@ void ceConversation::NotifyTopicChanged(ceConversationFile *file, ceConversation
 	SetChanged(true);
 }
 
-void ceConversation::NotifyActiveTopicChanged(ceConversationFile *file){
+void ceConversation::NotifyActiveTopicChanged(ceConversationFile::Ref file){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -1433,7 +1360,7 @@ void ceConversation::NotifyActiveTopicChanged(ceConversationFile *file){
 
 
 
-void ceConversation::NotifyActionStructureChanged(ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action){
+void ceConversation::NotifyActionStructureChanged(ceConversationFile::Ref file, ceConversationTopic *topic, ceConversationAction *action){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -1444,7 +1371,7 @@ void ceConversation::NotifyActionStructureChanged(ceConversationFile *file, ceCo
 	SetChanged(true);
 }
 
-void ceConversation::NotifyActionChanged(ceConversationFile *file, ceConversationTopic *topic, ceConversationAction *action){
+void ceConversation::NotifyActionChanged(ceConversationFile::Ref file, ceConversationTopic *topic, ceConversationAction *action){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -1455,7 +1382,7 @@ void ceConversation::NotifyActionChanged(ceConversationFile *file, ceConversatio
 	SetChanged(true);
 }
 
-void ceConversation::NotifyConditionStructureChanged(ceConversationFile *file,
+void ceConversation::NotifyConditionStructureChanged(ceConversationFile::Ref file,
 ceConversationTopic *topic, ceConversationAction *action){
 	const int listenerCount = pListeners.GetCount();
 	int l;
@@ -1468,7 +1395,7 @@ ceConversationTopic *topic, ceConversationAction *action){
 	SetChanged(true);
 }
 
-void ceConversation::NotifyConditionChanged(ceConversationFile *file, ceConversationTopic *topic,
+void ceConversation::NotifyConditionChanged(ceConversationFile::Ref file, ceConversationTopic *topic,
 ceConversationAction *action, ceConversationCondition *condition){
 	const int listenerCount = pListeners.GetCount();
 	int l;
@@ -1481,7 +1408,7 @@ ceConversationAction *action, ceConversationCondition *condition){
 	SetChanged(true);
 }
 
-void ceConversation::NotifyActiveChanged(ceConversationFile *file, ceConversationTopic *topic){
+void ceConversation::NotifyActiveChanged(ceConversationFile::Ref file, ceConversationTopic *topic){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -1503,7 +1430,7 @@ void ceConversation::NotifyActorStructureChanged(){
 	}
 }
 
-void ceConversation::NotifyActorChanged(ceConversationActor *actor){
+void ceConversation::NotifyActorChanged(ceConversationActor::Ref actor){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -1512,7 +1439,7 @@ void ceConversation::NotifyActorChanged(ceConversationActor *actor){
 	}
 }
 
-void ceConversation::NotifyActorActivePoseChanged(ceConversationActor *actor){
+void ceConversation::NotifyActorActivePoseChanged(ceConversationActor::Ref actor){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -1521,7 +1448,7 @@ void ceConversation::NotifyActorActivePoseChanged(ceConversationActor *actor){
 	}
 }
 
-void ceConversation::NotifyActorCommandsChanged(ceConversationActor *actor){
+void ceConversation::NotifyActorCommandsChanged(ceConversationActor::Ref actor){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1530,7 +1457,7 @@ void ceConversation::NotifyActorCommandsChanged(ceConversationActor *actor){
 	}
 }
 
-void ceConversation::NotifyActorPosesChanged(ceConversationActor *actor){
+void ceConversation::NotifyActorPosesChanged(ceConversationActor::Ref actor){
 	const int listenerCount = pListeners.GetCount();
 	int i;
 	
@@ -1539,7 +1466,7 @@ void ceConversation::NotifyActorPosesChanged(ceConversationActor *actor){
 	}
 }
 
-void ceConversation::NotifyActorPoseGesturesChanged(ceConversationActor *actor, ceActorPose *pose){
+void ceConversation::NotifyActorPoseGesturesChanged(ceConversationActor::Ref actor, ceActorPose *pose){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -1549,7 +1476,7 @@ void ceConversation::NotifyActorPoseGesturesChanged(ceConversationActor *actor, 
 	}
 }
 
-void ceConversation::NotifyActorParametersChanged(ceConversationActor *actor){
+void ceConversation::NotifyActorParametersChanged(ceConversationActor::Ref actor){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -1578,7 +1505,7 @@ void ceConversation::NotifyCoordSystemStructureChanged(){
 	}
 }
 
-void ceConversation::NotifyCoordSystemChanged(ceCoordSystem *coordSystem){
+void ceConversation::NotifyCoordSystemChanged(ceCoordSystem::Ref coordSystem){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -1607,7 +1534,7 @@ void ceConversation::NotifyPropStructureChanged(){
 	}
 }
 
-void ceConversation::NotifyPropChanged(ceProp *prop){
+void ceConversation::NotifyPropChanged(ceProp::Ref prop){
 	const int count = pListeners.GetCount();
 	int i;
 	

@@ -54,7 +54,7 @@
 /////////////////////
 
 struct sPENatDat{
-	deParticleEmitter *emitter;
+	deParticleEmitter::Ref emitter;
 };
 
 
@@ -118,7 +118,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // count
 }
 void deClassParticleEmitter::nfSetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitter *emitter = ((sPENatDat*)p_GetNativeData(myself))->emitter;
+	deParticleEmitter::Ref emitter = ((sPENatDat*)p_GetNativeData(myself))->emitter;
 	int count = rt->GetValue(0)->GetInt();
 	deParticleEmitterController *controller = NULL;
 	
@@ -892,7 +892,7 @@ dsFunction(init.clsPE, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, ini
 }
 
 void deClassParticleEmitter::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitter *emitter = ((sPENatDat*)p_GetNativeData(myself))->emitter;
+	deParticleEmitter::Ref emitter = ((sPENatDat*)p_GetNativeData(myself))->emitter;
 	
 	rt->PushInt((int)(intptr_t)emitter);
 }
@@ -903,7 +903,7 @@ dsFunction(init.clsPE, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassParticleEmitter::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitter *emitter = ((sPENatDat*)p_GetNativeData(myself))->emitter;
+	deParticleEmitter::Ref emitter = ((sPENatDat*)p_GetNativeData(myself))->emitter;
 	deClassParticleEmitter *clsPE = (deClassParticleEmitter*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
@@ -1039,7 +1039,7 @@ deParticleEmitter *deClassParticleEmitter::GetParticleEmitter(dsRealObject *myse
 	return ((sPENatDat*)p_GetNativeData(myself->GetBuffer()))->emitter;
 }
 
-void deClassParticleEmitter::PushParticleEmitter(dsRunTime *rt, deParticleEmitter *emitter){
+void deClassParticleEmitter::PushParticleEmitter(dsRunTime *rt, deParticleEmitter::Ref emitter){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -1051,5 +1051,4 @@ void deClassParticleEmitter::PushParticleEmitter(dsRunTime *rt, deParticleEmitte
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sPENatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->emitter = emitter;
-	emitter->AddReference();
 }

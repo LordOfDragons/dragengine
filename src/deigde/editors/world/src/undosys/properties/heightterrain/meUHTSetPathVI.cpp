@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetPathVI::meUHTSetPathVI(meWorld *world, meHeightTerrainSector *sector, const char *newPath){
+meUHTSetPathVI::meUHTSetPathVI(meWorld::Ref world, meHeightTerrainSector *sector, const char *newPath){
 	if(!world || !sector || !newPath) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
@@ -51,8 +51,6 @@ meUHTSetPathVI::meUHTSetPathVI(meWorld *world, meHeightTerrainSector *sector, co
 	pNewPath = newPath;
 	
 	SetShortInfo("Set Height Terrain Visibility Image Path");
-	
-	world->AddReference();
 }
 
 meUHTSetPathVI::~meUHTSetPathVI(){

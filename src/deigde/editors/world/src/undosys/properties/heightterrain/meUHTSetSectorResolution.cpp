@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetSectorResolution::meUHTSetSectorResolution(meWorld *world,
+meUHTSetSectorResolution::meUHTSetSectorResolution(meWorld::Ref world,
 meHeightTerrain *heightTerrain, int newSectorResolution){
 	if(!world || !heightTerrain){
 		DETHROW(deeInvalidParam);
@@ -53,8 +53,6 @@ meHeightTerrain *heightTerrain, int newSectorResolution){
 	pNewSectorResolution = newSectorResolution;
 	
 	SetShortInfo("Set Height Terrain Sector Resolution");
-	
-	world->AddReference();
 }
 
 meUHTSetSectorResolution::~meUHTSetSectorResolution(){

@@ -465,15 +465,13 @@ public:
 
 meWPSDecal::meWPSDecal(meWPSelection &wpselection) :
 igdeContainerScroll(wpselection.GetEnvironment(), false, true),
-pWPSelection(wpselection),
-pListener(NULL),
-pWorld(NULL)
+pWPSelection(wpselection)
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new meWPSDecalListener(*this);
+	pListener.TakeOver(new meWPSDecalListener(*this));
 	
 	pActionPropCopyToSel.TakeOver(new cActionPropCopyToSel(*this));
 	pActionPropRemoveFromSel.TakeOver(new cActionPropRemoveFromSel(*this));
@@ -533,9 +531,6 @@ pWorld(NULL)
 
 meWPSDecal::~meWPSDecal(){
 	SetWorld(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -543,7 +538,7 @@ meWPSDecal::~meWPSDecal(){
 // Management
 ///////////////
 
-void meWPSDecal::SetWorld(meWorld *world){
+void meWPSDecal::SetWorld(meWorld::Ref world){
 	if(world == pWorld){
 		return;
 	}
@@ -557,15 +552,12 @@ void meWPSDecal::SetWorld(meWorld *world){
 		editProperties.SetIdentifiers(decStringSet());
 		
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
-		
 		editProperties.SetClipboard(&pWPSelection.GetWindowProperties().GetWindowMain().GetClipboard());
 		editProperties.SetUndoSystem(world->GetUndoSystem());
 		editProperties.SetTriggerTargetList(&world->GetTriggerTable());

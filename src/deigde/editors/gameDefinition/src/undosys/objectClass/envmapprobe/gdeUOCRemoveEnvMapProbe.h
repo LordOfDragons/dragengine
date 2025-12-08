@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCRemoveEnvMapProbe : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveEnvMapProbe(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe);
+	gdeUOCRemoveEnvMapProbe(gdeObjectClass::Ref objectClass, gdeOCEnvMapProbe::Ref envMapProbe);
 	
 protected:
 	/** \brief Clean up undo action. */

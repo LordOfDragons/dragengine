@@ -57,8 +57,8 @@
 /////////////////////
 
 struct sARMirrorNatDat{
-	deAnimator *animator;
-	deAnimatorRuleMirror *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleMirror::Ref rule;
 };
 
 
@@ -82,7 +82,7 @@ void deClassARMirror::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleMirror;
+	nd.rule.TakeOver(new deAnimatorRuleMirror);
 	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
@@ -372,7 +372,7 @@ deAnimatorRuleMirror *deClassARMirror::GetRule(dsRealObject *myself) const{
 	return ((sARMirrorNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARMirror::AssignAnimator(dsRealObject *myself, deAnimator *animator){
+void deClassARMirror::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -390,13 +390,9 @@ void deClassARMirror::AssignAnimator(dsRealObject *myself, deAnimator *animator)
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
-void deClassARMirror::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleMirror *rule){
+void deClassARMirror::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleMirror::Ref rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -416,13 +412,7 @@ void deClassARMirror::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRu
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
 		nd.rule = rule;
-		rule->AddReference();
-		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);
 		

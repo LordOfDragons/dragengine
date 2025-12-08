@@ -52,7 +52,7 @@
 /////////////////////
 
 struct sIDComponentNatDat{
-	dedsInputDevice *device;
+	dedsInputDevice::Ref device;
 	int componentIndex;
 };
 
@@ -334,7 +334,7 @@ void deClassInputDeviceComponent::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassInputDeviceComponent::PushComponent(dsRunTime *rt, dedsInputDevice *device, int index){
+void deClassInputDeviceComponent::PushComponent(dsRunTime *rt, dedsInputDevice::Ref device, int index){
 	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetComponentCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -343,6 +343,5 @@ void deClassInputDeviceComponent::PushComponent(dsRunTime *rt, dedsInputDevice *
 	sIDComponentNatDat &nd = *((sIDComponentNatDat*)p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.device = device;
-	device->AddReference();
 	nd.componentIndex = index;
 }

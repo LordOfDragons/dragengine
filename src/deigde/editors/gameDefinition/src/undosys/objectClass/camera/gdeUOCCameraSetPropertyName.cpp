@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetPropertyName::gdeUOCCameraSetPropertyName(gdeObjectClass *objectClass,
-gdeOCCamera *camera, const char *newValue) :
-pObjectClass(NULL),
+gdeUOCCameraSetPropertyName::gdeUOCCameraSetPropertyName(gdeObjectClass::Ref objectClass,
+gdeOCCamera::Ref camera, const char *newValue) :
+
 pCamera(NULL)
 {
 	if(!objectClass || !camera){
@@ -55,19 +55,10 @@ pCamera(NULL)
 	pNewValue = newValue;
 	
 	pCamera = camera;
-	camera->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCameraSetPropertyName::~gdeUOCCameraSetPropertyName(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

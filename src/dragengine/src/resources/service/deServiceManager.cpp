@@ -48,7 +48,7 @@ public:
 	};
 	
 	const eEvents type;
-	deService *service;
+	deService::Ref service;
 	const decUniqueID id;
 	const deServiceObject::Ref data;
 	const bool finished;
@@ -165,24 +165,24 @@ deService *deServiceManager::CreateService(const char *name, const deServiceObje
 	DETHROW_INFO(deeInvalidParam, "Named service not supported");
 }
 
-void deServiceManager::QueueRequestResponse(deService *service, const decUniqueID &id,
+void deServiceManager::QueueRequestResponse(deService::Ref service, const decUniqueID &id,
 const deServiceObject::Ref &response, bool finished){
 	const deMutexGuard lock(pMutex);
 	pEventQueue.Add(cEvent::Ref::NewWith(cEvent::eeRequestResponse, service, id, response, finished));
 }
 
-void deServiceManager::QueueRequestFailed(deService *service, const decUniqueID &id,
+void deServiceManager::QueueRequestFailed(deService::Ref service, const decUniqueID &id,
 const deServiceObject::Ref &error){
 	const deMutexGuard lock(pMutex);
 	pEventQueue.Add(cEvent::Ref::NewWith(cEvent::eeRequestFailed, service, id, error, true));
 }
 
-void deServiceManager::QueueEventReceived(deService *service, const deServiceObject::Ref &event){
+void deServiceManager::QueueEventReceived(deService::Ref service, const deServiceObject::Ref &event){
 	const deMutexGuard lock(pMutex);
 	pEventQueue.Add(cEvent::Ref::NewWith(cEvent::eeEventReceived, service, decUniqueID(), event, true));
 }
 
-void deServiceManager::RemoveAllMatchingEvents(deService *service){
+void deServiceManager::RemoveAllMatchingEvents(deService::Ref service){
 	const deMutexGuard lock(pMutex);
 	const decObjectList events(pEventQueue);
 	const int count = events.GetCount();
@@ -207,7 +207,7 @@ void deServiceManager::FrameUpdate(){
 
 
 void deServiceManager::SystemScriptingLoad(){
-	deService *service = (deService*)pServices.GetRoot();
+	deService::Ref service = (deService*)pServices.GetRoot();
 	
 	while(service){
 		if(!service->GetPeerScripting()){
@@ -219,7 +219,7 @@ void deServiceManager::SystemScriptingLoad(){
 }
 
 void deServiceManager::SystemScriptingUnload(){
-	deService *service = (deService*)pServices.GetRoot();
+	deService::Ref service = (deService*)pServices.GetRoot();
 	
 	while(service){
 		service->SetPeerScripting(nullptr);
@@ -244,7 +244,7 @@ void deServiceManager::pUpdateModuleList(){
 	pDirtyModules = false;
 	pModules.RemoveAll();
 	
-	const deService *service = (const deService*)pServices.GetRoot();
+	const deService::Ref service = (const deService*)pServices.GetRoot();
 	while(service){
 		pModules.AddIfAbsent(service->GetServiceModule());
 		service = (const deService*)service->GetLLManagerNext();

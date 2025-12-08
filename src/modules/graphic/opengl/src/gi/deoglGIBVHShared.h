@@ -58,18 +58,18 @@ class deoglGIBVHShared{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglDynamicTBOFloat32 *pTBONodeBox;
-	deoglDynamicTBOUInt16 *pTBOIndex;
-	deoglDynamicTBOUInt16 *pTBOFace;
-	deoglDynamicTBOFloat32 *pTBOVertex;
-	deoglDynamicTBOFloat16 *pTBOTexCoord;
-	deoglDynamicTBOUInt32 *pTBOMaterial;
-	deoglDynamicTBOFloat16 *pTBOMaterial2;
+	deoglDynamicTBOFloat32::Ref pTBONodeBox;
+	deoglDynamicTBOUInt16::Ref pTBOIndex;
+	deoglDynamicTBOUInt16::Ref pTBOFace;
+	deoglDynamicTBOFloat32::Ref pTBOVertex;
+	deoglDynamicTBOFloat16::Ref pTBOTexCoord;
+	deoglDynamicTBOUInt32::Ref pTBOMaterial;
+	deoglDynamicTBOFloat16::Ref pTBOMaterial2;
 	
-	deoglDynamicTBOShared *pSharedTBONode;
-	deoglDynamicTBOShared *pSharedTBOFace;
-	deoglDynamicTBOShared *pSharedTBOVertex;
-	deoglDynamicTBOShared *pSharedTBOMaterial;
+	deoglDynamicTBOShared::Ref pSharedTBONode;
+	deoglDynamicTBOShared::Ref pSharedTBOFace;
+	deoglDynamicTBOShared::Ref pSharedTBOVertex;
+	deoglDynamicTBOShared::Ref pSharedTBOMaterial;
 	
 	
 	

@@ -37,7 +37,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meULowerDecalOne::meULowerDecalOne(meWorld *world, meDecal *decal){
+meULowerDecalOne::meULowerDecalOne(meWorld *world, meDecal::Ref decal){
 	if(!world || !decal) DETHROW(deeInvalidParam);
 	
 	if(!decal->GetParentObject()) DETHROW(deeInvalidParam);
@@ -45,8 +45,6 @@ meULowerDecalOne::meULowerDecalOne(meWorld *world, meDecal *decal){
 	pWorld = world;
 	
 	pDecal = decal;
-	decal->AddReference();
-	
 	SetShortInfo("Lower decal one level.");
 	SetLongInfo("");
 }

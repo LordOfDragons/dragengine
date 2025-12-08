@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPSetMaxValue::gdeUGDDPSetMaxValue(gdeGameDefinition *gamedef, gdeProperty *property, float newValue) :
-pGameDefinition(NULL),
+gdeUGDDPSetMaxValue::gdeUGDDPSetMaxValue(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property, float newValue) :
+
 pProperty(NULL)
 {
 	if(!gamedef || !property){
@@ -54,19 +54,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDDPSetMaxValue::~gdeUGDDPSetMaxValue(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

@@ -46,9 +46,9 @@ class decBoundary;
 class ceViewConversation : public igdeViewRenderWindow{
 private:
 	ceWindowMain &pWindowMain;
-	ceViewConversationListener *pListener;
+	ceViewConversationListener::Ref pListener;
 	
-	ceConversation *pConversation;
+	ceConversation::Ref pConversation;
 	
 	ceCanvasRuleOfThirdsAid *pRuleOfThirdsAid;
 	deCanvasPaint::Ref pCanvasBackground;
@@ -78,7 +78,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation to monitor. */
-	void SetConversation(ceConversation *conversation);
+	void SetConversation(ceConversation::Ref conversation);
 	
 	/** \brief Viewport boundary using the ratio stored in the conversation object if existing. */
 	void GetViewportWithRatio(decBoundary &viewport) const;

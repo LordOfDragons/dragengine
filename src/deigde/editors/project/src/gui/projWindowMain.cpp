@@ -92,17 +92,9 @@ enum ePanels{
 
 projWindowMain::projWindowMain(igdeEditorModule &module) :
 igdeEditorWindow(module),
-
-pListener(nullptr),
 pConfiguration(nullptr),
 
-pLoadSaveSystem(*this),
-
-pProject(nullptr),
-
-pPanelProfiles(nullptr),
-pPanelTestRun(nullptr),
-pPanelUndoHistory(nullptr)
+pLoadSaveSystem(*this)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -110,7 +102,7 @@ pPanelUndoHistory(nullptr)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new projWindowMainListener(*this);
+	pListener.TakeOver(new projWindowMainListener(*this));
 	pConfiguration = new projConfiguration(*this);
 	
 	pConfiguration->LoadConfiguration();
@@ -122,13 +114,13 @@ pPanelUndoHistory(nullptr)
 	pTabPanels.TakeOver(new igdeTabBook(env));
 	AddChild(pTabPanels);
 	
-	pPanelProfiles = new projPanelProfiles(*this);
+	pPanelProfiles.TakeOver(new projPanelProfiles(*this));
 	pTabPanels->AddChild(pPanelProfiles, "Profiles");
 	
-	pPanelTestRun = new projPanelTestRun(*this);
+	pPanelTestRun.TakeOver(new projPanelTestRun(*this));
 	pTabPanels->AddChild(pPanelTestRun, "Test-Run");
 	
-	pPanelUndoHistory = new projPanelUndoHistory(env);
+	pPanelUndoHistory.TakeOver(new projPanelUndoHistory(env));
 	pTabPanels->AddChild(pPanelUndoHistory, "Undo History");
 	
 	// load game project
@@ -143,23 +135,17 @@ projWindowMain::~projWindowMain(){
 	SetProject(nullptr);
 	
 	if(pPanelProfiles){
-		pPanelProfiles->FreeReference();
 		pPanelProfiles = nullptr;
 	}
 	if(pPanelTestRun){
-		pPanelTestRun->FreeReference();
 		pPanelTestRun = nullptr;
 	}
 	if(pPanelUndoHistory){
-		pPanelUndoHistory->FreeReference();
 		pPanelUndoHistory = nullptr;
 	}
 	
 	if(pConfiguration){
 		delete pConfiguration;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -178,7 +164,7 @@ bool projWindowMain::QuitRequest(){
 
 
 
-void projWindowMain::SetProject(projProject *project){
+void projWindowMain::SetProject(projProject::Ref project){
 	if(project == pProject){
 		return;
 	}
@@ -191,13 +177,11 @@ void projWindowMain::SetProject(projProject *project){
 	
 	if(pProject){
 		pProject->RemoveListener(pListener);
-		pProject->FreeReference();
 	}
 	
 	pProject = project;
 	
 	if(project){
-		project->AddReference();
 		project->AddListener(pListener);
 		
 		pActionEditUndo->SetUndoSystem(project->GetUndoSystem());
@@ -212,10 +196,10 @@ void projWindowMain::SetProject(projProject *project){
 }
 
 void projWindowMain::LoadProject(){
-	projProject *project = NULL;
+	projProject::Ref project = NULL;
 	
 	try{
-		project = new projProject(&GetEnvironment());
+		project.TakeOver(new projProject(&GetEnvironment()));
 		
 		// load project
 		decBaseFileReader::Ref reader;
@@ -240,18 +224,11 @@ void projWindowMain::LoadProject(){
 		SetProject(project);
 		
 		project->SetChanged(false); // SetProject can trigger changes
-		
-		project->FreeReference();
-		
 	}catch(const deException &e){
-		if(project){
-			project->FreeReference();
-		}
 		DisplayException(e);
 		
-		project = new projProject(&GetEnvironment());
+		project.TakeOver(new projProject(&GetEnvironment()));
 		SetProject(project);
-		project->FreeReference();
 	}
 }
 
@@ -578,11 +555,11 @@ public:
 		
 		const projProfile * const selectedProfile = project->GetActiveProfile();
 		projProfile *safeProfile = NULL;
-		projProfile *profile = NULL;
+		projProfile::Ref profile = NULL;
 		igdeUndo::Ref undo;
 		
 		try{
-			profile = new projProfile;
+			profile.TakeOver(new projProfile);
 			profile->SetName(name);
 			if(selectedProfile){
 				profile->SetIdentifier(selectedProfile->GetIdentifier());
@@ -600,15 +577,11 @@ public:
 			}
 			undo.TakeOver(new projUProfileAdd(project, profile));
 			safeProfile = profile;
-			profile->FreeReference();
 			profile = NULL;
 			
 			project->GetUndoSystem()->Add(undo);
 			
 		}catch(const deException &e){
-			if(profile){
-				profile->FreeReference();
-			}
 			pWindow.DisplayException(e);
 			return;
 		}
@@ -680,23 +653,19 @@ public:
 		}
 		
 		projProfile *safeProfile = NULL;
-		projProfile *duplicatedProfile = NULL;
+		projProfile::Ref duplicatedProfile = NULL;
 		igdeUndo::Ref undo;
 		
 		try{
-			duplicatedProfile = new projProfile(*profile);
+			duplicatedProfile.TakeOver(new projProfile(*profile));
 			duplicatedProfile->SetName(name);
 			undo.TakeOver(new projUProfileAdd(project, duplicatedProfile));
 			safeProfile = duplicatedProfile;
-			duplicatedProfile->FreeReference();
 			duplicatedProfile = NULL;
 			
 			project->GetUndoSystem()->Add(undo);
 			
 		}catch(const deException &e){
-			if(duplicatedProfile){
-				duplicatedProfile->FreeReference();
-			}
 			pWindow.DisplayException(e);
 			return;
 		}
@@ -906,7 +875,7 @@ bool projWindowMain::pCmdLineProfileDistribute(decUnicodeStringList &arguments){
 	
 	DEASSERT_NOTNULL(pProject);
 	
-	projProfile *profile = nullptr;
+	projProfile::Ref profile = nullptr;
 	
 	while(arguments.GetCount() > 0){
 		const decString arg(arguments.GetAt(0).ToUTF8());
@@ -956,7 +925,7 @@ bool projWindowMain::pCmdLineProfileDistributeFile(decUnicodeStringList &argumen
 	
 	DEASSERT_NOTNULL(pProject);
 	
-	projProfile *profile = nullptr;
+	projProfile::Ref profile = nullptr;
 	
 	while(arguments.GetCount() > 0){
 		const decString arg(arguments.GetAt(0).ToUTF8());

@@ -64,22 +64,22 @@ public:
 	igdeGDCEnvMapProbe *GetAt(int index) const;
 	
 	/** \brief Index of an environment map probe or -1 if not found. */
-	int IndexOf(igdeGDCEnvMapProbe *probe) const;
+	int IndexOf(igdeGDCEnvMapProbe::Ref probe) const;
 	
 	/** \brief Determines if an environment map probe exists. */
-	bool Has(igdeGDCEnvMapProbe *probe) const;
+	bool Has(igdeGDCEnvMapProbe::Ref probe) const;
 	
 	/** \brief Adds an environment map probe. */
-	void Add(igdeGDCEnvMapProbe *probe);
+	void Add(igdeGDCEnvMapProbe::Ref probe);
 	
 	/** \brief Inserts a new environment map probe. */
-	void InsertAt(igdeGDCEnvMapProbe *probe, int index);
+	void InsertAt(igdeGDCEnvMapProbe::Ref probe, int index);
 	
 	/** \brief Moves an environment map probe to a new position. */
-	void MoveTo(igdeGDCEnvMapProbe *probe, int index);
+	void MoveTo(igdeGDCEnvMapProbe::Ref probe, int index);
 	
 	/** \brief Removes an environment map probe. */
-	void Remove(igdeGDCEnvMapProbe *probe);
+	void Remove(igdeGDCEnvMapProbe::Ref probe);
 	
 	/** \brief Removes all environment map probes. */
 	void RemoveAll();

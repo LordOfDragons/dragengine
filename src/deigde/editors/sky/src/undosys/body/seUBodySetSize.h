@@ -37,7 +37,7 @@ class seBody;
  */
 class seUBodySetSize : public igdeUndo{
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decVector2 pOldSize;
 	decVector2 pNewSize;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUBodySetSize(seBody *body, const decVector2 &newSize);
+	seUBodySetSize(seBody::Ref body, const decVector2 &newSize);
 	
 protected:
 	/** \brief Clean up undo action. */

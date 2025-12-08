@@ -37,7 +37,7 @@ class meWorld;
  */
 class meUWorldSetGravity : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */
-	meUWorldSetGravity(meWorld *world, const decVector &newValue);
+	meUWorldSetGravity(meWorld::Ref world, const decVector &newValue);
 	
 protected:
 	/** Clean up undo object. */

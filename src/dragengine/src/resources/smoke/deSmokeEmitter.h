@@ -84,9 +84,9 @@ private:
 	float pCastDensityMax;
 	bool pEnableCasting;
 	
-	deComponent *pComponent;
+	deComponent::Ref pComponent;
 	int pCastTexture;
-	deSkin *pSkin;
+	deSkin::Ref pSkin;
 	
 	decCollisionFilter pCollisionFilter;
 	
@@ -190,7 +190,7 @@ public:
 	inline deComponent *GetComponent() const{ return pComponent; }
 	
 	/** \brief Set component used for casting or NULL. */
-	void SetComponent(deComponent *component);
+	void SetComponent(deComponent::Ref component);
 	
 	/** \brief Texture to use from the component skin to cast particles from. */
 	inline int GetCastTexture() const{ return pCastTexture; }
@@ -202,7 +202,7 @@ public:
 	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set mode of the particle instances or NULL. */
-	void SetSkin(deSkin *skin);
+	void SetSkin(deSkin::Ref skin);
 	
 	/** \brief Collision filter. */
 	inline const decCollisionFilter &GetCollisionFilter() const{ return pCollisionFilter; }

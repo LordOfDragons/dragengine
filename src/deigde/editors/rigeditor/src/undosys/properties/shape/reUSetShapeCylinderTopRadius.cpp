@@ -43,12 +43,9 @@ reUSetShapeCylinderTopRadius::reUSetShapeCylinderTopRadius(reRigShapeCylinder *s
 	pNewTopRadius = topRadius;
 	
 	SetShortInfo("Set Cylinder Shape Half Height");
-	
-	pShape->AddReference();
 }
 
 reUSetShapeCylinderTopRadius::~reUSetShapeCylinderTopRadius(){
-	pShape->FreeReference();
 }
 
 

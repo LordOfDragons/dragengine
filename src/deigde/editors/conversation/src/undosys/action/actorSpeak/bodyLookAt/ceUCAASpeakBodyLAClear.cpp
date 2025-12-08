@@ -43,9 +43,8 @@
 ////////////////////////////
 
 ceUCAASpeakBodyLAClear::ceUCAASpeakBodyLAClear(
-ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
-pTopic(NULL),
-pActorSpeak(NULL)
+ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak) :
+pTopic(NULL)
 {
 	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
@@ -56,19 +55,10 @@ pActorSpeak(NULL)
 	pOldStrips = actorSpeak->GetBodyLookAtList();
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakBodyLAClear::~ceUCAASpeakBodyLAClear(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

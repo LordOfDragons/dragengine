@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCForceField *pForceField;
+	gdeOCForceField::Ref pForceField;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCForceField(gdeOCForceField *particleEmitter);
+	gdeClipboardDataOCForceField(gdeOCForceField::Ref particleEmitter);
 	
 protected:
 	/**

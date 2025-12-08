@@ -84,7 +84,7 @@ aeRuleInverseKinematic::~aeRuleInverseKinematic(){
 
 void aeRuleInverseKinematic::SetGoalPosition(const decVector &position){
 	if(!position.IsEqualTo(pGoalPosition)){
-		deAnimatorRuleInverseKinematic *engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
+		deAnimatorRuleInverseKinematic::Ref engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
 		
 		pGoalPosition = position;
 		
@@ -98,7 +98,7 @@ void aeRuleInverseKinematic::SetGoalPosition(const decVector &position){
 
 void aeRuleInverseKinematic::SetGoalOrientation(const decVector &orientation){
 	if(!orientation.IsEqualTo(pGoalOrientation)){
-		deAnimatorRuleInverseKinematic *engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
+		deAnimatorRuleInverseKinematic::Ref engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
 		
 		pGoalOrientation = orientation;
 		
@@ -112,7 +112,7 @@ void aeRuleInverseKinematic::SetGoalOrientation(const decVector &orientation){
 
 void aeRuleInverseKinematic::SetLocalPosition(const decVector &position){
 	if(!position.IsEqualTo(pLocalPosition)){
-		deAnimatorRuleInverseKinematic *engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
+		deAnimatorRuleInverseKinematic::Ref engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
 		
 		pLocalPosition = position;
 		
@@ -126,7 +126,7 @@ void aeRuleInverseKinematic::SetLocalPosition(const decVector &position){
 
 void aeRuleInverseKinematic::SetLocalOrientation(const decVector &orientation){
 	if(!orientation.IsEqualTo(pLocalOrientation)){
-		deAnimatorRuleInverseKinematic *engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
+		deAnimatorRuleInverseKinematic::Ref engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
 		
 		pLocalOrientation = orientation;
 		
@@ -140,7 +140,7 @@ void aeRuleInverseKinematic::SetLocalOrientation(const decVector &orientation){
 
 void aeRuleInverseKinematic::SetAdjustOrientation(bool adjust){
 	if(adjust != pAdjustOrientation){
-		deAnimatorRuleInverseKinematic *engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
+		deAnimatorRuleInverseKinematic::Ref engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
 		
 		pAdjustOrientation = adjust;
 		
@@ -156,7 +156,7 @@ void aeRuleInverseKinematic::SetAdjustOrientation(bool adjust){
 
 void aeRuleInverseKinematic::SetUseSolverBone(bool useSolverBone){
 	if(useSolverBone != pUseSolverBone){
-		deAnimatorRuleInverseKinematic *engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
+		deAnimatorRuleInverseKinematic::Ref engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
 		
 		pUseSolverBone = useSolverBone;
 		
@@ -172,7 +172,7 @@ void aeRuleInverseKinematic::SetSolverBone(const char *solverBone){
 	if(!solverBone) DETHROW(deeInvalidParam);
 	
 	if(!pSolverBone.Equals(solverBone)){
-		deAnimatorRuleInverseKinematic *engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
+		deAnimatorRuleInverseKinematic::Ref engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
 		
 		pSolverBone = solverBone;
 		
@@ -230,7 +230,7 @@ void aeRuleInverseKinematic::SetReachCenter(const decVector &center){
 
 
 void aeRuleInverseKinematic::UpdateTargets(){
-	deAnimatorRuleInverseKinematic *engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
+	deAnimatorRuleInverseKinematic::Ref engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
 	
 	aeRule::UpdateTargets();
 	
@@ -312,12 +312,12 @@ void aeRuleInverseKinematic::RemoveLinksFromAllTargets(){
 
 
 deAnimatorRule *aeRuleInverseKinematic::CreateEngineRule(){
-	deAnimatorRuleInverseKinematic *engRule = NULL;
+	deAnimatorRuleInverseKinematic::Ref engRule = NULL;
 	aeAnimator *animator = GetAnimator();
 	
 	try{
 		// create rule
-		engRule = new deAnimatorRuleInverseKinematic;
+		engRule.TakeOver(new deAnimatorRuleInverseKinematic);
 		if(!engRule) DETHROW(deeOutOfMemory);
 		
 		// init rule
@@ -344,9 +344,6 @@ deAnimatorRule *aeRuleInverseKinematic::CreateEngineRule(){
 		pTargetReachCenter.UpdateEngineTarget(animator, engRule->GetTargetReachCenter());
 		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 	

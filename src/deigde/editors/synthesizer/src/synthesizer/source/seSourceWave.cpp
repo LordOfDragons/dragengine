@@ -152,11 +152,11 @@ void seSourceWave::RemoveLinksFromAllTargets(){
 
 
 deSynthesizerSource *seSourceWave::CreateEngineSource(){
-	deSynthesizerSourceWave *engSource = NULL;
+	deSynthesizerSourceWave::Ref engSource = NULL;
 	
 	try{
 		// create source
-		engSource = new deSynthesizerSourceWave;
+		engSource.TakeOver(new deSynthesizerSourceWave);
 		
 		// init source
 		InitEngineSource(engSource);
@@ -168,9 +168,6 @@ deSynthesizerSource *seSourceWave::CreateEngineSource(){
 		pTargetFrequency.UpdateEngineTarget(GetSynthesizer(), engSource->GetTargetFrequency());
 		
 	}catch(const deException &){
-		if(engSource){
-			engSource->FreeReference();
-		}
 		throw;
 	}
 	

@@ -56,7 +56,7 @@ public:
 	
 private:
 	deoglRenderThread &pRenderThread;
-	deoglSharedVBOBlock *pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlock;
 	int pPointOffsetFaces;
 	int pPointCountFaces;
 	int pPointOffsetLines;

@@ -83,10 +83,7 @@
 lpeWindowMain::lpeWindowMain(igdeEditorModule &module) :
 igdeEditorWindow(module),
 pListener(new lpeWindowMainListener(*this)),
-pLoadSaveSystem(NULL),
-pWindowProperties(NULL),
-pViewLangPack(NULL),
-pLangPack(NULL)
+pLoadSaveSystem(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -108,10 +105,10 @@ pLangPack(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(320)));
 	AddChild(splitted);
 	
-	pWindowProperties = new lpeWindowProperties(*this);
+	pWindowProperties.TakeOver(new lpeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewLangPack = new lpeViewLangPack(*this);
+	pViewLangPack.TakeOver(new lpeViewLangPack(*this));
 	splitted->AddChild(pViewLangPack, igdeContainerSplitted::eaCenter);
 	
 	CreateNewLangPack();
@@ -125,11 +122,9 @@ lpeWindowMain::~lpeWindowMain(){
 	SetLangPack(NULL);
 	
 	if(pViewLangPack){
-		pViewLangPack->FreeReference();
 		pViewLangPack = NULL;
 	}
 	if(pWindowProperties){
-		pWindowProperties->FreeReference();
 		pWindowProperties = NULL;
 	}
 	
@@ -138,10 +133,6 @@ lpeWindowMain::~lpeWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -156,7 +147,7 @@ bool lpeWindowMain::QuitRequest(){
 
 
 
-void lpeWindowMain::SetLangPack(lpeLangPack *langpack){
+void lpeWindowMain::SetLangPack(lpeLangPack::Ref langpack){
 	if(langpack == pLangPack){
 		return;
 	}
@@ -168,13 +159,11 @@ void lpeWindowMain::SetLangPack(lpeLangPack *langpack){
 	
 	if(pLangPack){
 		pLangPack->RemoveListener(pListener);
-		pLangPack->FreeReference();
 	}
 	
 	pLangPack = langpack;
 	
 	if(langpack){
-		langpack->AddReference();
 		langpack->AddListener(pListener);
 		
 		pActionEditUndo->SetUndoSystem(langpack->GetUndoSystem());
@@ -186,18 +175,13 @@ void lpeWindowMain::SetLangPack(lpeLangPack *langpack){
 }
 
 void lpeWindowMain::CreateNewLangPack(){
-	lpeLangPack *langpack = NULL;
+	lpeLangPack::Ref langpack = NULL;
 	
 	try{
-		langpack = new lpeLangPack(&GetEnvironment());
+		langpack.TakeOver(new lpeLangPack(&GetEnvironment()));
 		
 		SetLangPack(langpack);
-		langpack->FreeReference();
-		
 	}catch(const deException &){
-		if(langpack){
-			langpack->FreeReference();
-		}
 		throw;
 	}
 }
@@ -220,7 +204,7 @@ lpeLangPack *lpeWindowMain::GetReferenceLangPack() const{
 	return pViewLangPack->GetReferenceLangPack();
 }
 
-void lpeWindowMain::SetReferenceLangPack(lpeLangPack *langpack){
+void lpeWindowMain::SetReferenceLangPack(lpeLangPack::Ref langpack){
 	pViewLangPack->SetReferenceLangPack(langpack);
 }
 
@@ -240,8 +224,6 @@ void lpeWindowMain::LoadDocument(const char *filename){
 	lpeLangPack * const langpack = pLoadSaveSystem->LoadLangPack(filename);
 	
 	SetLangPack(langpack);
-	langpack->FreeReference();
-	
 	langpack->SetFilePath(filename);
 	langpack->SetChanged(false);
 	langpack->SetSaved(true);
@@ -326,8 +308,6 @@ public:
 		
 		// replace language pack
 		pWindow.SetLangPack(langpack);
-		langpack->FreeReference();
-		
 		// store information
 		langpack->SetFilePath(filename);
 		langpack->SetChanged(false);

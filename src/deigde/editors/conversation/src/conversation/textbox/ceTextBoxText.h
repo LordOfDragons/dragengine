@@ -43,7 +43,7 @@ private:
 	decUnicodeString pName;
 	decUnicodeString pText;
 	
-	deCanvasView *pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 public:
 	/** \brief Type holding strong reference. */

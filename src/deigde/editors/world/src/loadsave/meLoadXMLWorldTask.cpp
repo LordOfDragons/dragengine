@@ -72,11 +72,10 @@
 ////////////////////////////
 #include <dragengine/logger/deLogger.h>
 
-meLoadXMLWorldTask::meLoadXMLWorldTask(meLoadSaveSystem *lssys, meWorld *world, decBaseFileReader *file) :
+meLoadXMLWorldTask::meLoadXMLWorldTask(meLoadSaveSystem *lssys, meWorld *world, decBaseFileReader::Ref file) :
 igdeBaseXML(lssys->GetWindowMain()->GetEnvironment().GetLogger(), LOGSOURCE),
 pLSSys(lssys),
 pWorld(world),
-pReader(NULL),
 pXMLDocument(NULL),
 pXMLRoot(NULL),
 pNextTag(0)
@@ -91,7 +90,6 @@ pNextTag(0)
 	SetProgress(0.0f);
 	
 	pReader = file;
-	file->AddReference();
 }
 
 meLoadXMLWorldTask::~meLoadXMLWorldTask(){
@@ -190,50 +188,35 @@ bool meLoadXMLWorldTask::Step(){
 			pWorld->SetNextObjectID(decUniqueID(GetCDataString(*tag)));
 			
 		}else if(strcmp(tag->GetName(), "object") == 0){
-			meObject *object = NULL;
+			meObject::Ref object = NULL;
 			try{
-				object = new meObject(pWorld->GetEnvironment());
+				object.TakeOver(new meObject(pWorld->GetEnvironment()));
 				pLoadObject(*tag, *object);
 				if(object->GetID() == decUniqueID()){
 					object->SetID(pWorld->NextObjectID());
 				}
 				pWorld->AddObject(object);
-				object->FreeReference();
-				
 			}catch(const deException &){
-				if(object){
-					object->FreeReference();
-				}
 				throw;
 			}
 			
 		}else if(strcmp(tag->GetName(), "decal") == 0){
-			meDecal *decal = NULL;
+			meDecal::Ref decal = NULL;
 			try{
-				decal = new meDecal(pWorld->GetEnvironment());
+				decal.TakeOver(new meDecal(pWorld->GetEnvironment()));
 				pLoadDecal(*tag, *decal);
 				pWorld->AddDecal(decal);
-				decal->FreeReference();
-				
 			}catch(const deException &){
-				if(decal){
-					decal->FreeReference();
-				}
 				throw;
 			}
 			
 		}else if(strcmp(tag->GetName(), "navigationSpace") == 0){
-			meNavigationSpace *navspace = NULL;
+			meNavigationSpace::Ref navspace = NULL;
 			try{
-				navspace = new meNavigationSpace(pWorld->GetEnvironment());
+				navspace.TakeOver(new meNavigationSpace(pWorld->GetEnvironment()));
 				pLoadNavigationSpace(*tag, *navspace);
 				pWorld->AddNavSpace(navspace);
-				navspace->FreeReference();
-				
 			}catch(const deException &){
-				if(navspace){
-					navspace->FreeReference();
-				}
 				throw;
 			}
 			
@@ -261,9 +244,6 @@ bool meLoadXMLWorldTask::Step(){
 //////////////////////
 
 void meLoadXMLWorldTask::pCleanUp(){
-	if(pReader){
-		pReader->FreeReference();
-	}
 }
 
 
@@ -409,26 +389,19 @@ void meLoadXMLWorldTask::pLoadObject(const decXmlElementTag &root, meObject &obj
 		}else if(strcmp(tag->GetName(), "texture") == 0){
 			name = GetAttributeString(*tag, "name");
 			
-			meObjectTexture *texture = object.GetTextureNamed(name);
+			meObjectTexture::Ref texture = object.GetTextureNamed(name);
 			if(texture){
-				texture->AddReference();
-				
 			}else{
 				try{
-					texture = new meObjectTexture(object.GetEnvironment(), name);
+					texture.TakeOver(new meObjectTexture(object.GetEnvironment(), name));
 					object.AddTexture(texture);
 					
 				}catch(const deException &){
-					if(texture){
-						texture->FreeReference();
-					}
 					throw;
 				}
 			}
 			
 			pLoadObjectTexture(*tag, *texture);
-			texture->FreeReference();
-			
 		}else if(strcmp(tag->GetName(), "attachTo") == 0){
 			object.SetAttachedToID(GetCDataString(*tag));
 			

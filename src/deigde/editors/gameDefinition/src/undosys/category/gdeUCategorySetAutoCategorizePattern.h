@@ -36,7 +36,7 @@
  */
 class gdeUCategorySetAutoCategorizePattern : public gdeUCategoryBase{
 private:
-	gdeCategory *pCategory;
+	gdeCategory::Ref pCategory;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;
@@ -48,7 +48,7 @@ public:
 	/*@{*/
 	/** \brief Create undo action. */
 	gdeUCategorySetAutoCategorizePattern(gdeGameDefinition *gameDefintiion,
-		gdeCategory *category, eCategoryType type, const decStringSet &newValue);
+		gdeCategory::Ref category, eCategoryType type, const decStringSet &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

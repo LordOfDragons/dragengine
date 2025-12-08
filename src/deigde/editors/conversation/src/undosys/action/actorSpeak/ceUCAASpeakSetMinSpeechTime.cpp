@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakSetMinSpeechTime::ceUCAASpeakSetMinSpeechTime(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, float newTime){
+ceUCAASpeakSetMinSpeechTime::ceUCAASpeakSetMinSpeechTime(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, float newTime){
 	if(!topic){
 		DETHROW(deeInvalidParam);
 	}
@@ -54,19 +54,10 @@ ceUCAASpeakSetMinSpeechTime::ceUCAASpeakSetMinSpeechTime(ceConversationTopic *to
 	SetShortInfo("Actor speak set minimum speech time");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetMinSpeechTime::~ceUCAASpeakSetMinSpeechTime(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

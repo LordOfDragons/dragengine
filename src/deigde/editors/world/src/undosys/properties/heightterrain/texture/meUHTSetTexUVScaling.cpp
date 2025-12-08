@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetTexUVScaling::meUHTSetTexUVScaling(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const decVector2 &newScaling){
+meUHTSetTexUVScaling::meUHTSetTexUVScaling(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture, const decVector2 &newScaling){
 	if(!world || !sector || !texture) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
@@ -53,11 +53,7 @@ meUHTSetTexUVScaling::meUHTSetTexUVScaling(meWorld *world, meHeightTerrainSector
 	pNewScaling = newScaling;
 	
 	SetShortInfo("Set Height Terrain Texture UV Scaling");
-	
-	world->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUHTSetTexUVScaling::~meUHTSetTexUVScaling(){

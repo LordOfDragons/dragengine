@@ -63,8 +63,8 @@ class ceConversation;
 class ceWPView : public igdeContainerScroll{
 private:
 	ceWindowProperties &pWindowProperties;
-	ceWPViewListener *pListener;
-	ceConversation *pConversation;
+	ceWPViewListener::Ref pListener;
+	ceConversation::Ref pConversation;
 	
 	igdeWPSky::Ref pWPSky;
 	igdeWPWObject::Ref pWPEnvObject;
@@ -159,7 +159,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
-	void SetConversation(ceConversation *conversation);
+	void SetConversation(ceConversation::Ref conversation);
 	
 	/** Update view. */
 	void UpdateView();

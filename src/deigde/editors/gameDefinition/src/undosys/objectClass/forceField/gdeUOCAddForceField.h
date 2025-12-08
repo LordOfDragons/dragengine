@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCAddForceField : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCAddForceField(gdeObjectClass *objectClass, gdeOCForceField *forceField);
+	gdeUOCAddForceField(gdeObjectClass::Ref objectClass, gdeOCForceField::Ref forceField);
 	
 protected:
 	/** \brief Clean up undo action. */

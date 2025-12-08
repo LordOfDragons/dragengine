@@ -59,8 +59,8 @@ private:
 	
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPPlaygroundListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPPlaygroundListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
 	igdeContainer::Ref pFraContent;
 	sController *pControllers;
@@ -115,7 +115,7 @@ public:
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator(aeAnimator *animator);
+	void SetAnimator(aeAnimator::Ref animator);
 	
 	/** Leg. */
 	aeAnimatorLocomotionLeg *GetLeg() const;

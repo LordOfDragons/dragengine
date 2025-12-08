@@ -48,7 +48,7 @@ private:
 	deEngine *pEngine;
 	feFont *pParentFont;
 	
-	deImage *pEngImage;
+	deImage::Ref pEngImage;
 	
 	decString pFilename;
 	int pWidth;

@@ -297,7 +297,6 @@ void deoalMicrophone::pCleanUp(){
 	}
 	
 	if(pAMicrophone){
-		pAMicrophone->FreeReference();
 		pAMicrophone = NULL;
 	}
 	

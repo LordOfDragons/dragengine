@@ -36,7 +36,7 @@ class meNavigationSpace;
  */
 class meUNavSpaceSetPath : public igdeUndo{
 private:
-	meNavigationSpace *pNavSpace;
+	meNavigationSpace::Ref pNavSpace;
 	
 	decString pOldPath;
 	decString pNewPath;
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUNavSpaceSetPath(meNavigationSpace *navspace, const char *newPath);
+	meUNavSpaceSetPath(meNavigationSpace::Ref navspace, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo object. */

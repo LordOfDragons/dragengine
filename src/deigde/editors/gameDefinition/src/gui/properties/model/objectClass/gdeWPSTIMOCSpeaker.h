@@ -35,7 +35,7 @@ class gdeOCSpeaker;
  */
 class gdeWPSTIMOCSpeaker : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCSpeaker *pSpeaker;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	
 public:
@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCSpeaker(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCSpeaker *speaker, int index);
+		gdeOCSpeaker::Ref speaker, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

@@ -55,9 +55,9 @@ private:
 	dePropFieldType *pEngPFType;
 	
 	decString pPathModel;
-	deModel *pModel;
+	deModel::Ref pModel;
 	decString pPathSkin;
-	deSkin *pSkin;
+	deSkin::Ref pSkin;
 	float pRotPerForceX;
 	float pRotPerForceZ;
 	

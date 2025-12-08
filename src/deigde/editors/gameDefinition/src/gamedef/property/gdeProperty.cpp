@@ -69,21 +69,17 @@ pIdentifierGroup(property.pIdentifierGroup),
 pIdentifierUsage(property.pIdentifierUsage)
 {
 	const int count = property.pCustomPathPattern.GetCount();
-	gdeFilePattern *filePattern = NULL;
+	gdeFilePattern::Ref filePattern = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			filePattern = new gdeFilePattern(*property.pCustomPathPattern.GetAt(i));
+			filePattern.TakeOver(new gdeFilePattern(*property.pCustomPathPattern.GetAt(i)));
 			pCustomPathPattern.Add(filePattern);
-			filePattern->FreeReference();
 			filePattern = NULL;
 		}
 		
 	}catch(const deException &){
-		if(filePattern){
-			filePattern->FreeReference();
-		}
 		throw;
 	}
 }
@@ -153,23 +149,19 @@ gdeProperty &gdeProperty::operator=(const gdeProperty &property){
 	pIdentifierUsage = property.pIdentifierUsage;
 	
 	const int count = property.pCustomPathPattern.GetCount();
-	gdeFilePattern *filePattern = NULL;
+	gdeFilePattern::Ref filePattern = NULL;
 	int i;
 	
 	pCustomPathPattern.RemoveAll();
 	
 	try{
 		for(i=0; i<count; i++){
-			filePattern = new gdeFilePattern(*property.pCustomPathPattern.GetAt(i));
+			filePattern.TakeOver(new gdeFilePattern(*property.pCustomPathPattern.GetAt(i)));
 			pCustomPathPattern.Add(filePattern);
-			filePattern->FreeReference();
 			filePattern = NULL;
 		}
 		
 	}catch(const deException &){
-		if(filePattern){
-			filePattern->FreeReference();
-		}
 		throw;
 	}
 	

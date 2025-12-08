@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAActorRemoveSetActor::ceUCAActorRemoveSetActor(ceConversationTopic *topic, ceCAActorRemove *action, const char *newActorID){
+ceUCAActorRemoveSetActor::ceUCAActorRemoveSetActor(ceConversationTopic::Ref topic, ceCAActorRemove::Ref action, const char *newActorID){
 	if(!topic || !newActorID){
 		DETHROW(deeInvalidParam);
 	}
@@ -54,19 +54,10 @@ ceUCAActorRemoveSetActor::ceUCAActorRemoveSetActor(ceConversationTopic *topic, c
 	SetShortInfo("Actor remove set actor id");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAActorRemoveSetActor::~ceUCAActorRemoveSetActor(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

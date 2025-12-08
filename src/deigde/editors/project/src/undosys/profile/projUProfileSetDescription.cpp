@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetDescription::projUProfileSetDescription(projProfile *profile, const char *newValue) :
-pProfile(NULL),
+projUProfileSetDescription::projUProfileSetDescription(projProfile::Ref profile, const char *newValue) :
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetDescription();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetDescription::~projUProfileSetDescription(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

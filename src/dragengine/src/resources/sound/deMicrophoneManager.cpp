@@ -67,10 +67,10 @@ deMicrophone *deMicrophoneManager::GetRootMicrophone() const{
 }
 
 deMicrophone *deMicrophoneManager::CreateMicrophone(){
-	deMicrophone *microphone = NULL;
+	deMicrophone::Ref microphone = NULL;
 	
 	try{
-		microphone = new deMicrophone(this);
+		microphone.TakeOver(new deMicrophone(this));
 		if(!microphone) DETHROW(deeOutOfMemory);
 		
 		GetAudioSystem()->LoadMicrophone(microphone);
@@ -78,9 +78,6 @@ deMicrophone *deMicrophoneManager::CreateMicrophone(){
 		pMicrophones.Add(microphone);
 		
 	}catch(const deException &){
-		if(microphone){
-			microphone->FreeReference();
-		}
 		throw;
 	}
 	
@@ -104,7 +101,7 @@ void deMicrophoneManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deMicrophoneManager::SystemAudioLoad(){
-	deMicrophone *microphone = (deMicrophone*)pMicrophones.GetRoot();
+	deMicrophone::Ref microphone = (deMicrophone*)pMicrophones.GetRoot();
 	deAudioSystem &audSys = *GetAudioSystem();
 	
 	while(microphone){
@@ -117,7 +114,7 @@ void deMicrophoneManager::SystemAudioLoad(){
 }
 
 void deMicrophoneManager::SystemAudioUnload(){
-	deMicrophone *microphone = (deMicrophone*)pMicrophones.GetRoot();
+	deMicrophone::Ref microphone = (deMicrophone*)pMicrophones.GetRoot();
 	
 	while(microphone){
 		microphone->SetPeerAudio(NULL);

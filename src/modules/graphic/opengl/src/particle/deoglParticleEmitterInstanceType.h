@@ -39,7 +39,7 @@ private:
 	deoglParticleEmitterInstance &pEmitterInstance;
 	const int pIndex;
 	
-	deoglRParticleEmitterInstanceType *pRType;
+	deoglRParticleEmitterInstanceType::Ref pRType;
 	
 	bool pDirtyType;
 	bool pDirtyParamBlocks;

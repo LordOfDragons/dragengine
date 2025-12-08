@@ -50,8 +50,8 @@ private:
 	
 	deEngine *pEngine;
 	
-	deAnimator *pEngAnimator;
-	deAnimatorInstance *pEngAnimatorInstance;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
 	
 	decString pNeutralMoveName;
 	decStringSet pNeutralVertexPositionSets;

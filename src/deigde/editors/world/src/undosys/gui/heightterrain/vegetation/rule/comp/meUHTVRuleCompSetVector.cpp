@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleCompSetVector::meUHTVRuleCompSetVector(meHTVegetationLayer *vlayer, meHTVRuleComponents *rule, const decVector &nvector){
+meUHTVRuleCompSetVector::meUHTVRuleCompSetVector(meHTVegetationLayer::Ref vlayer, meHTVRuleComponents::Ref rule, const decVector &nvector){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
@@ -53,9 +53,7 @@ meUHTVRuleCompSetVector::meUHTVRuleCompSetVector(meHTVegetationLayer *vlayer, me
 	pNewVector = nvector;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleCompSetVector::~meUHTVRuleCompSetVector(){

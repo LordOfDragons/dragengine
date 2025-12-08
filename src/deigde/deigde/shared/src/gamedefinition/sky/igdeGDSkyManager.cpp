@@ -58,14 +58,14 @@ igdeGDSkyManager::~igdeGDSkyManager(){
 // Management
 ///////////////
 
-void igdeGDSkyManager::AddSky(igdeGDSky *sky){
+void igdeGDSkyManager::AddSky(igdeGDSky::Ref sky){
 	if(!sky){
 		DETHROW(deeInvalidParam);
 	}
 	pSkyList.Add(sky);
 }
 
-void igdeGDSkyManager::RemoveSky(igdeGDSky *sky){
+void igdeGDSkyManager::RemoveSky(igdeGDSky::Ref sky){
 	pSkyList.Remove(sky);
 }
 
@@ -121,26 +121,22 @@ void igdeGDSkyManager::VisitMatchingFilter(igdeGDVisitor &visitor, const decStri
 
 void igdeGDSkyManager::UpdateWith(const igdeGDSkyManager &manager){
 	const int count = manager.GetSkyList().GetCount();
-	igdeGDSky *sky = NULL;
+	igdeGDSky::Ref sky = NULL;
 	igdeGDSky *skyCheck;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			sky = new igdeGDSky(*manager.GetSkyList().GetAt(i));
+			sky.TakeOver(new igdeGDSky(*manager.GetSkyList().GetAt(i)));
 			skyCheck = pSkyList.GetWithPath(sky->GetPath());
 			if(skyCheck){
 				RemoveSky(skyCheck);
 			}
 			AddSky(sky);
-			sky->FreeReference();
 			sky = NULL;
 		}
 		
 	}catch(const deException &){
-		if(sky){
-			sky->FreeReference();
-		}
 		throw;
 	}
 	

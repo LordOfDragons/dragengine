@@ -66,7 +66,6 @@ deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetWith(deoglSharedSPB &shar
 	for(i=0; i<count; i++){
 		deoglSharedSPBRTIGroup * const group = (deoglSharedSPBRTIGroup*)pGroups.GetAt(i);
 		if(&group->GetSharedSPB() == &sharedSPB && group->GetTextureCount() == textureCount){
-			group->AddReference();
 			return group;
 		}
 	}
@@ -80,20 +79,17 @@ deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::GetOrAddWith(deoglSharedSPB 
 }
 
 deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::AddWith(deoglSharedSPB &sharedSPB, int textureCount){
-	deoglSharedSPBRTIGroup *group = nullptr;
+	deoglSharedSPBRTIGroup::Ref group = nullptr;
 	try{
-		group = new deoglSharedSPBRTIGroup(this, sharedSPB, textureCount);
+		group.TakeOver(new deoglSharedSPBRTIGroup(this, sharedSPB, textureCount));
 		pGroups.Add(group);
 		
 	}catch(const deException &){
-		if(group){
-			group->FreeReference();
-		}
 		throw;
 	}
 	return group;
 }
 
-void deoglSharedSPBRTIGroupList::Remove(deoglSharedSPBRTIGroup *group){
+void deoglSharedSPBRTIGroupList::Remove(deoglSharedSPBRTIGroup::Ref group){
 	pGroups.RemoveFrom(pGroups.IndexOf(group));
 }

@@ -36,7 +36,7 @@ class ceTarget;
  */
 class ceUCTargetSetActor : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decString pOldID;
 	decString pNewID;
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetSetActor(ceTarget *target, const char *newID);
+	ceUCTargetSetActor(ceTarget::Ref target, const char *newID);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCTargetSetActor();

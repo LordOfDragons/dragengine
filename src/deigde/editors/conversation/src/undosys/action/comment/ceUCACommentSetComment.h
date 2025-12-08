@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCACommentSetComment : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAComment *pComment;
+	ceConversationTopic::Ref pTopic;
+	ceCAComment::Ref pComment;
 	decString pOldComment;
 	decString pNewComment;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCACommentSetComment(ceConversationTopic *topic, ceCAComment *action, const char *newComment);
+	ceUCACommentSetComment(ceConversationTopic::Ref topic, ceCAComment::Ref action, const char *newComment);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCACommentSetComment();
 	/*@}*/

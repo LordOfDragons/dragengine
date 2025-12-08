@@ -57,13 +57,13 @@ public:
 	/** Retrieves the push at the given index. */
 	reRigPush *GetPushAt(int index) const;
 	/** Retrieves the index of the push or -1 if not found. */
-	int IndexOfPush(reRigPush *push) const;
+	int IndexOfPush(reRigPush::Ref push) const;
 	/** Determines if the push exists. */
-	bool HasPush(reRigPush *push) const;
+	bool HasPush(reRigPush::Ref push) const;
 	/** Adds a new push. */
-	void AddPush(reRigPush *push);
+	void AddPush(reRigPush::Ref push);
 	/** Removes the given push. */
-	void RemovePush(reRigPush *push);
+	void RemovePush(reRigPush::Ref push);
 	/** Removes all pushs. */
 	void RemoveAllPushes();
 	/*@}*/

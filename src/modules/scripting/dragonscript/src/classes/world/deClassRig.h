@@ -59,7 +59,7 @@ public:
 	/** \brief Retrieves the rig from an object. Returns NULL if myself is NULL. */
 	deRig *GetRig(dsRealObject *myself) const;
 	/** \brief Pushes a rig. Null is pushed as NULL rig object. */
-	void PushRig(dsRunTime *rt, deRig *rig);
+	void PushRig(dsRunTime *rt, deRig::Ref rig);
 	/*@}*/
 
 private:

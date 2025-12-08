@@ -64,8 +64,8 @@ private:
 	decIntList pTextureSkinMappings;
 	decIntList pModelRigMappings;
 	const decStringList *pTextureNames;
-	deoalAModel *pModel;
-	deoalASkin *pSkin;
+	deoalAModel::Ref pModel;
+	deoalASkin::Ref pSkin;
 	
 	decDVector pPosition;
 	decQuaternion pOrientation;
@@ -158,13 +158,13 @@ public:
 	inline deoalAModel *GetModel() const{ return pModel; }
 	
 	/** \brief Set model. */
-	void SetModel(deoalAModel *model, const decStringList *textureNames);
+	void SetModel(deoalAModel::Ref model, const decStringList *textureNames);
 	
 	/** \brief Skin. */
 	inline deoalASkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
-	void SetSkin(deoalASkin *skin);
+	void SetSkin(deoalASkin::Ref skin);
 	
 	/** \brief Texture names. */
 	inline const decStringList *GetTextureNames() const{ return pTextureNames; }

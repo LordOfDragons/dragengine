@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetPlaybackController::gdeUOCComponentSetPlaybackController(gdeObjectClass *objectClass,
-gdeOCComponent *component, const char *newValue) :
-pObjectClass(NULL),
+gdeUOCComponentSetPlaybackController::gdeUOCComponentSetPlaybackController(gdeObjectClass::Ref objectClass,
+gdeOCComponent::Ref component, const char *newValue) :
+
 pComponent(NULL)
 {
 	if(!objectClass || !component){
@@ -55,19 +55,10 @@ pComponent(NULL)
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetPlaybackController::~gdeUOCComponentSetPlaybackController(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

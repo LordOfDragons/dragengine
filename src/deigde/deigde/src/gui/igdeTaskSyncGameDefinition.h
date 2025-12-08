@@ -60,8 +60,8 @@ private:
 	igdeWindowMain &pWindowMain;
 	decPointerList pEditorTasks;
 	
-	igdeGameDefinition *pOldProjectGameDef;
-	igdeGameDefinition *pOldGameDef;
+	igdeGameDefinition::Ref pOldProjectGameDef;
+	igdeGameDefinition::Ref pOldGameDef;
 	eStates pState;
 	int pTaskIndex;
 	

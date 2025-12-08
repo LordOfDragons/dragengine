@@ -36,7 +36,7 @@ class seProperty;
  */
 class seUPropertyConstructedToggleTileX : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	
 	
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUPropertyConstructedToggleTileX(seProperty *property);
+	seUPropertyConstructedToggleTileX(seProperty::Ref property);
 	
 protected:
 	/** \brief Clean up undo. */

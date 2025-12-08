@@ -36,7 +36,7 @@ class ceCameraShot;
  */
 class ceUCCShotToggleAlignTargets : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotToggleAlignTargets(ceCameraShot *cameraShot);
+	ceUCCShotToggleAlignTargets(ceCameraShot::Ref cameraShot);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotToggleAlignTargets();

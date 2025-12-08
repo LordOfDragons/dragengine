@@ -61,7 +61,7 @@ private:
 	cePCBOptionList pOptions;
 	int pSelectedOption;
 	
-	deCanvasView *pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 public:
 	/** \name Constructors and Destructors */

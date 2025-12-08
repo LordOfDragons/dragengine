@@ -75,13 +75,9 @@ aeUSetRuleAddVertexPositionSet::aeUSetRuleAddVertexPositionSet(aeRule *rule, con
 	}
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleAddVertexPositionSet::~aeUSetRuleAddVertexPositionSet(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

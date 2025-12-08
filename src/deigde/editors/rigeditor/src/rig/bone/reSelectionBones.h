@@ -64,15 +64,15 @@ public:
 	/** Retrieves the bone at the given index. */
 	reRigBone *GetBoneAt(int index) const;
 	/** Determines if the given bone exists. */
-	bool HasBone(reRigBone *bone) const;
+	bool HasBone(reRigBone::Ref bone) const;
 	/** Retrieves the index of the given bone or -1 if not found. */
-	int IndexOfBone(reRigBone *bone) const;
+	int IndexOfBone(reRigBone::Ref bone) const;
 	/** Retrieves the index of the bone with the given collider or -1 if not found. */
 	int IndexOfBoneWith(deColliderVolume *collider) const;
 	/** Adds a bone if not existing already. */
-	void AddBone(reRigBone *bone);
+	void AddBone(reRigBone::Ref bone);
 	/** Removes a bone if existing. */
-	void RemoveBone(reRigBone *bone);
+	void RemoveBone(reRigBone::Ref bone);
 	/** Removes all bones. */
 	void RemoveAllBones();
 	
@@ -81,7 +81,7 @@ public:
 	/** Determines if an active bone exists. */
 	bool HasActiveBone() const;
 	/** Sets the acitve bone or NULL. */
-	void SetActiveBone(reRigBone *bone);
+	void SetActiveBone(reRigBone::Ref bone);
 	
 	/** Removes all bones and sets the active bone to NULL. */
 	void Reset();

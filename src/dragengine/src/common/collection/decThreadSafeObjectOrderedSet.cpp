@@ -67,7 +67,7 @@ decThreadSafeObjectOrderedSet::decThreadSafeObjectOrderedSet(const decThreadSafe
 	pObjectSize = 0;
 	
 	if(count > 0){
-		deThreadSafeObject *object;
+		deThreadSafeObject::Ref object;
 		
 		pObjects = new deThreadSafeObject*[count];
 		pObjectSize = count;
@@ -75,9 +75,6 @@ decThreadSafeObjectOrderedSet::decThreadSafeObjectOrderedSet(const decThreadSafe
 		for(pObjectCount=0; pObjectCount<count; pObjectCount++){
 			object = set.pObjects[pObjectCount];
 			pObjects[pObjectCount] = object;
-			if(object){
-				object->AddReference();
-			}
 		}
 	}
 }
@@ -103,7 +100,7 @@ deThreadSafeObject *decThreadSafeObjectOrderedSet::GetAt(int index) const{
 	return pObjects[index];
 }
 
-int decThreadSafeObjectOrderedSet::IndexOf(deThreadSafeObject *object) const{
+int decThreadSafeObjectOrderedSet::IndexOf(deThreadSafeObject::Ref object) const{
 	int p;
 	
 	for(p=0; p<pObjectCount; p++){
@@ -115,7 +112,7 @@ int decThreadSafeObjectOrderedSet::IndexOf(deThreadSafeObject *object) const{
 	return -1;
 }
 
-bool decThreadSafeObjectOrderedSet::Has(deThreadSafeObject *object) const{
+bool decThreadSafeObjectOrderedSet::Has(deThreadSafeObject::Ref object) const{
 	int p;
 	
 	for(p=0; p<pObjectCount; p++){
@@ -127,7 +124,7 @@ bool decThreadSafeObjectOrderedSet::Has(deThreadSafeObject *object) const{
 	return false;
 }
 
-void decThreadSafeObjectOrderedSet::SetAt(int index, deThreadSafeObject *object){
+void decThreadSafeObjectOrderedSet::SetAt(int index, deThreadSafeObject::Ref object){
 	if(index < 0 || index >= pObjectCount){
 		DETHROW(deeInvalidParam);
 	}
@@ -145,13 +142,9 @@ void decThreadSafeObjectOrderedSet::SetAt(int index, deThreadSafeObject *object)
 	}
 	
 	pObjects[index] = object;
-	
-	if(object){
-		object->AddReference();
-	}
 }
 
-void decThreadSafeObjectOrderedSet::Add(deThreadSafeObject *object){
+void decThreadSafeObjectOrderedSet::Add(deThreadSafeObject::Ref object){
 	if(Has(object)){
 		DETHROW(deeInvalidParam);
 	}
@@ -168,13 +161,10 @@ void decThreadSafeObjectOrderedSet::Add(deThreadSafeObject *object){
 	}
 	
 	pObjects[pObjectCount] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
-void decThreadSafeObjectOrderedSet::AddIfAbsent(deThreadSafeObject *object){
+void decThreadSafeObjectOrderedSet::AddIfAbsent(deThreadSafeObject::Ref object){
 	if(Has(object)){
 		return;
 	}
@@ -191,13 +181,10 @@ void decThreadSafeObjectOrderedSet::AddIfAbsent(deThreadSafeObject *object){
 	}
 	
 	pObjects[pObjectCount] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
-void decThreadSafeObjectOrderedSet::Insert(deThreadSafeObject *object, int index){
+void decThreadSafeObjectOrderedSet::Insert(deThreadSafeObject::Ref object, int index){
 	if(Has(object) || index < 0 || index > pObjectCount){
 		DETHROW(deeInvalidParam);
 	}
@@ -219,13 +206,10 @@ void decThreadSafeObjectOrderedSet::Insert(deThreadSafeObject *object, int index
 		pObjects[i] = pObjects[i - 1];
 	}
 	pObjects[index] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
-void decThreadSafeObjectOrderedSet::Move(deThreadSafeObject *object, int to){
+void decThreadSafeObjectOrderedSet::Move(deThreadSafeObject::Ref object, int to){
 	const int from = IndexOf(object);
 	if(from == -1 || to < 0 || to >= pObjectCount){
 		DETHROW(deeInvalidParam);
@@ -248,7 +232,7 @@ void decThreadSafeObjectOrderedSet::Move(deThreadSafeObject *object, int to){
 	pObjects[to] = tempObject;
 }
 
-void decThreadSafeObjectOrderedSet::Remove(deThreadSafeObject *object){
+void decThreadSafeObjectOrderedSet::Remove(deThreadSafeObject::Ref object){
 	int p, position = IndexOf(object);
 	
 	if(position == -1){
@@ -264,7 +248,7 @@ void decThreadSafeObjectOrderedSet::Remove(deThreadSafeObject *object){
 	pObjectCount--;
 }
 
-void decThreadSafeObjectOrderedSet::RemoveIfPresent(deThreadSafeObject *object){
+void decThreadSafeObjectOrderedSet::RemoveIfPresent(deThreadSafeObject::Ref object){
 	int p, position = IndexOf(object);
 	
 	if(position == -1){
@@ -336,14 +320,11 @@ decThreadSafeObjectOrderedSet decThreadSafeObjectOrderedSet::GetHead(int count) 
 	}
 	
 	decThreadSafeObjectOrderedSet set(count);
-	deThreadSafeObject *object;
+	deThreadSafeObject::Ref object;
 	
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return set;
@@ -358,7 +339,7 @@ void decThreadSafeObjectOrderedSet::GetHead(decThreadSafeObjectOrderedSet &set, 
 		count = pObjectCount;
 	}
 	
-	deThreadSafeObject *object;
+	deThreadSafeObject::Ref object;
 	
 	if(count > set.pObjectSize){
 		deThreadSafeObject **newArray = new deThreadSafeObject*[count];
@@ -372,9 +353,6 @@ void decThreadSafeObjectOrderedSet::GetHead(decThreadSafeObjectOrderedSet &set, 
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 }
 
@@ -392,14 +370,11 @@ decThreadSafeObjectOrderedSet decThreadSafeObjectOrderedSet::GetTail(int count) 
 	
 	decThreadSafeObjectOrderedSet set(count);
 	int from = pObjectCount - count;
-	deThreadSafeObject *object;
+	deThreadSafeObject::Ref object;
 	
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[from + set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return set;
@@ -424,14 +399,11 @@ void decThreadSafeObjectOrderedSet::GetTail(decThreadSafeObjectOrderedSet &set, 
 	}
 	
 	int from = pObjectCount - count;
-	deThreadSafeObject *object;
+	deThreadSafeObject::Ref object;
 	
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[from + set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 }
 
@@ -449,14 +421,11 @@ decThreadSafeObjectOrderedSet decThreadSafeObjectOrderedSet::GetMiddle(int from,
 	}
 	
 	decThreadSafeObjectOrderedSet set(count);
-	deThreadSafeObject *object;
+	deThreadSafeObject::Ref object;
 	
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[from + set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return set;
@@ -472,7 +441,7 @@ void decThreadSafeObjectOrderedSet::GetMiddle(decThreadSafeObjectOrderedSet &set
 	if(count > pObjectCount){
 		count = pObjectCount - from;
 	}
-	deThreadSafeObject *object;
+	deThreadSafeObject::Ref object;
 	
 	if(count > set.pObjectSize){
 		deThreadSafeObject **newArray = new deThreadSafeObject*[count];
@@ -486,9 +455,6 @@ void decThreadSafeObjectOrderedSet::GetMiddle(decThreadSafeObjectOrderedSet &set
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[from + set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 }
 
@@ -677,15 +643,12 @@ bool decThreadSafeObjectOrderedSet::operator==(const decThreadSafeObjectOrderedS
 
 decThreadSafeObjectOrderedSet decThreadSafeObjectOrderedSet::operator+(const decThreadSafeObjectOrderedSet &set) const{
 	decThreadSafeObjectOrderedSet nset(pObjectCount + set.pObjectCount);
-	deThreadSafeObject *object;
+	deThreadSafeObject::Ref object;
 	int i;
 	
 	for(i=0; i<pObjectCount; i++){
 		object = pObjects[i];
 		nset.pObjects[i] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	for(i=0; i<set.pObjectCount; i++){
@@ -702,7 +665,7 @@ deThreadSafeObject *decThreadSafeObjectOrderedSet::operator[](int index) const{
 
 
 decThreadSafeObjectOrderedSet &decThreadSafeObjectOrderedSet::operator=(const decThreadSafeObjectOrderedSet &set){
-	deThreadSafeObject *object;
+	deThreadSafeObject::Ref object;
 	
 	RemoveAll();
 	
@@ -718,9 +681,6 @@ decThreadSafeObjectOrderedSet &decThreadSafeObjectOrderedSet::operator=(const de
 	for(pObjectCount=0; pObjectCount<set.pObjectCount; pObjectCount++){
 		object = set.pObjects[pObjectCount];
 		pObjects[pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return *this;

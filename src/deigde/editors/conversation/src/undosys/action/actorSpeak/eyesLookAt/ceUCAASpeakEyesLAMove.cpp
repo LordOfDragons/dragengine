@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakEyesLAMove::ceUCAASpeakEyesLAMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *eyesLookAt, int newIndex){
+ceUCAASpeakEyesLAMove::ceUCAASpeakEyesLAMove(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak,
+ceStrip::Ref eyesLookAt, int newIndex){
 	if(!topic || !actorSpeak || !eyesLookAt){
 		DETHROW(deeInvalidParam);
 	}
@@ -61,25 +61,11 @@ ceStrip *eyesLookAt, int newIndex){
 	SetShortInfo("Move EyesLookAt");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pEyesLA = eyesLookAt;
-	eyesLookAt->AddReference();
 }
 
 ceUCAASpeakEyesLAMove::~ceUCAASpeakEyesLAMove(){
-	if(pEyesLA){
-		pEyesLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

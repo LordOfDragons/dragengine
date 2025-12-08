@@ -47,7 +47,7 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
+	meHTVegetationLayer::Ref pVLayer;
 	
 	meHTVRLink **pLinks;
 	int pLinkCount;
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVLinkCut(meHTVegetationLayer *vlayer);
+	meUHTVLinkCut(meHTVegetationLayer::Ref vlayer);
 	/** \brief Clean up object. */
 	virtual ~meUHTVLinkCut();
 	/*@}*/
@@ -66,7 +66,7 @@ public:
 	/** Number of links to cut. */
 	inline int GetCutLinkCount() const{ return pLinkCount; }
 	/** Adds a link to cut. */
-	void AddLinkToCut(meHTVRLink *link);
+	void AddLinkToCut(meHTVRLink::Ref link);
 	
 	/** \brief Undo. */
 	virtual void Undo();

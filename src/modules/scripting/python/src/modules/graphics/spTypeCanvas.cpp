@@ -49,7 +49,7 @@
 ///////////////////
 
 struct sObjectData{
-	deCanvas *canvas;
+	deCanvas::Ref canvas;
 	deCanvasVisitorIdentify::eCanvasTypes type;
 };
 
@@ -138,7 +138,7 @@ deCanvas *spTypeCanvas::CanvasFromObject(PyObject *object){
 	return ((sObjectData*)GetObjectData(object))->canvas;
 }
 
-PyObject *spTypeCanvas::ObjectFromCanvas(deCanvas *canvas){
+PyObject *spTypeCanvas::ObjectFromCanvas(deCanvas::Ref canvas){
 	if(!canvas){
 		Py_INCREF(Py_None);
 		return Py_None;
@@ -154,7 +154,6 @@ PyObject *spTypeCanvas::ObjectFromCanvas(deCanvas *canvas){
 	
 	sObjectData &od = *((sObjectData*)GetObjectData(pyoGraphics));
 	od.canvas = canvas;
-	canvas->AddReference();
 	od.type = identify.GetType();
 	
 	return pyoGraphics;

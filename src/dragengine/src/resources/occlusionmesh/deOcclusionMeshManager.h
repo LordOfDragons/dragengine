@@ -84,7 +84,7 @@ public:
 	 * Adds a loaded and fully prepared occlusion mesh. This method is to be used only by
 	 * the resource loader to add an occlusion mesh that has been loaded asynchronously.
 	 */
-	void AddLoadedOcclusionMesh(deOcclusionMesh *occmesh);
+	void AddLoadedOcclusionMesh(deOcclusionMesh::Ref occmesh);
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

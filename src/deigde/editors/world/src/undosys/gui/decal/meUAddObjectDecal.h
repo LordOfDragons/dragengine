@@ -41,15 +41,15 @@ class meObject;
 class meUAddObjectDecal : public igdeUndo{
 private:
 	meWorld *pWorld;
-	meDecal *pDecal;
-	meObject *pParentObject;
+	meDecal::Ref pDecal;
+	meObject::Ref pParentObject;
 	
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<meUAddObjectDecal> Ref;
 	
 	// constructor, destructor
-	meUAddObjectDecal(meWorld *world, meObject *parentObject);
+	meUAddObjectDecal(meWorld *world, meObject::Ref parentObject);
 	~meUAddObjectDecal();
 	
 	// Management

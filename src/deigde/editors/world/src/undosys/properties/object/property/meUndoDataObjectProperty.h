@@ -38,7 +38,7 @@ class meObject;
  */
 class meUndoDataObjectProperty : public deObject{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pOldValue;
 	bool pPropertyExists;
 	decStringDictionary pOldProperties;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo data object. */
-	meUndoDataObjectProperty(meObject *object);
+	meUndoDataObjectProperty(meObject::Ref object);
 	
 protected:
 	/** \brief Clean up undo data object. */

@@ -60,7 +60,7 @@
 ////////////////////////////
 
 gdeVAONavSpace::gdeVAONavSpace(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCNavigationSpace *ocnavspace) :
+	const decString &propertyPrefix, gdeOCNavigationSpace::Ref ocnavspace) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCNavSpace(ocnavspace),
 pDDSSpace(NULL),
@@ -69,8 +69,6 @@ pDDSBlocker(NULL)
 	if(!ocnavspace){
 		DETHROW(deeInvalidParam);
 	}
-	ocnavspace->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pBuildDDSSpace();
@@ -135,10 +133,6 @@ void gdeVAONavSpace::pCleanUp(){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDDBlocker);
 		pDDBlocker = NULL;
 	}
-	
-	if(pOCNavSpace){
-		pOCNavSpace->FreeReference();
-	}
 }
 
 
@@ -177,19 +171,17 @@ void gdeVAONavSpace::pBuildDDSSpace(){
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	igdeLoadSaveNavSpace loader(&environment, "gdeVAONavSpace");
-	deNavigationSpace *navspace = NULL;
-	decBaseFileReader *reader = NULL;
+	deNavigationSpace::Ref navspace = NULL;
+	decBaseFileReader::Ref reader = NULL;
 	
 	try{
 		navspace = engine.GetNavigationSpaceManager()->CreateNavigationSpace();
 		reader = vfs->OpenFileForReading(decPath::CreatePathUnix(path));
 		loader.Load(*navspace, *reader);
-		reader->FreeReference();
 		reader = NULL;
 		
 	}catch(const deException &e){
 		if(navspace){
-			navspace->FreeReference();
 			navspace = NULL;
 		}
 		environment.GetLogger()->LogException(LOGSOURCE, e);
@@ -206,13 +198,10 @@ void gdeVAONavSpace::pBuildDDSSpace(){
 		
 	}catch(const deException &){
 		if(navspace){
-			navspace->FreeReference();
 			navspace = NULL;
 		}
 		throw;
 	}
-	
-	navspace->FreeReference();
 	navspace = NULL;
 }
 

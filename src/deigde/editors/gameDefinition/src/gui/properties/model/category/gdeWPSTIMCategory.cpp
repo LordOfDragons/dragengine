@@ -42,9 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeWPSTIMCategory::gdeWPSTIMCategory(gdeWPSTreeModel &tree, eTypes type, gdeCategory *category) :
-gdeWPSTreeItemModel(tree, type),
-pCategory(NULL)
+gdeWPSTIMCategory::gdeWPSTIMCategory(gdeWPSTreeModel &tree, eTypes type, gdeCategory::Ref category) :
+gdeWPSTreeItemModel(tree, type)
 {
 	if(!category){
 		DETHROW(deeInvalidParam);
@@ -54,13 +53,9 @@ pCategory(NULL)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pCategory = category;
-	category->AddReference();
 }
 
 gdeWPSTIMCategory::~gdeWPSTIMCategory(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
 }
 
 

@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUTextureImport::seUTextureImport(seTexture *texture, const seTexture *importTexture){
+seUTextureImport::seUTextureImport(seTexture::Ref texture, const seTexture *importTexture){
 	if(!texture || !importTexture){
 		DETHROW(deeInvalidParam);
 	}
@@ -54,13 +54,9 @@ seUTextureImport::seUTextureImport(seTexture *texture, const seTexture *importTe
 	pNewProperties = importTexture->GetPropertyList();
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 seUTextureImport::~seUTextureImport(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

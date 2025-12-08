@@ -78,7 +78,7 @@ private:
 	bool pEnableAuralization;
 	
 	deSpeaker *pSpeakerRoot;
-	deSpeaker *pSpeakerTail;
+	deSpeaker::Ref pSpeakerTail;
 	int pSpeakerCount;
 	
 	deBaseAudioMicrophone *pPeerAudio;
@@ -192,14 +192,14 @@ public:
 	 * \throws deeInvalidParam \em speaker is NULL.
 	 * \throws deeInvalidParam \em speaker has a parent world.
 	 */
-	void AddSpeaker(deSpeaker *speaker);
+	void AddSpeaker(deSpeaker::Ref speaker);
 	
 	/**
 	 * \brief Remove speaker.
 	 * \throws deeInvalidParam \em speaker is NULL.
 	 * \throws deeInvalidParam Parent world of \em speaker is not this world.
 	 */
-	void RemoveSpeaker(deSpeaker *speaker);
+	void RemoveSpeaker(deSpeaker::Ref speaker);
 	
 	/** \brief Remove all speakers. */
 	void RemoveAllSpeakers();

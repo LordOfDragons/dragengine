@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakToggleUseSpeechAnimation : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakToggleUseSpeechAnimation(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
+	ceUCAASpeakToggleUseSpeechAnimation(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCAASpeakToggleUseSpeechAnimation();
 	/*@}*/

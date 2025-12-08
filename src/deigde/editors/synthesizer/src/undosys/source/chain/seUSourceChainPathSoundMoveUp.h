@@ -37,7 +37,7 @@ class seSourceChain;
  */
 class seUSourceChainPathSoundMoveUp : public igdeUndo{
 private:
-	seSourceChain *pSource;
+	seSourceChain::Ref pSource;
 	
 	int pIndex;
 	

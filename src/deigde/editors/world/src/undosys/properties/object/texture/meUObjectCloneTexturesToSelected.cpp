@@ -44,7 +44,7 @@
 meUObjectCloneTexturesToSelected::meUObjectCloneTexturesToSelected(
 const meObjectList &list, const meObjectTextureList &textureList){
 	int textureCount = textureList.GetTextureCount();
-	meUndoDataObjectTexture *undoData = NULL;
+	meUndoDataObjectTexture::Ref undoData = NULL;
 	const int objectCount = list.GetCount();
 	meObject *object;
 	int i, j;
@@ -67,21 +67,17 @@ const meObjectList &list, const meObjectTextureList &textureList){
 				DETHROW(deeInvalidParam);
 			}
 			
-			undoData = new meUndoDataObjectTexture(object);
+			undoData.TakeOver(new meUndoDataObjectTexture(object));
 			textureCount = object->GetTextureCount();
 			for(j=0; j<textureCount; j++){
 				undoData->GetOldTextureList().AddTexture(object->GetTextureAt(j));
 			}
 			
 			pList.Add(undoData);
-			undoData->FreeReference();
 			undoData = NULL;
 		}
 		
 	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}
@@ -98,7 +94,7 @@ meUObjectCloneTexturesToSelected::~meUObjectCloneTexturesToSelected(){
 
 void meUObjectCloneTexturesToSelected::Undo(){
 	const int count = pList.GetCount();
-	meUndoDataObjectTexture *undoData;
+	meUndoDataObjectTexture::Ref undoData;
 	int i, j, textureCount;
 	meObject *object;
 	
@@ -117,8 +113,8 @@ void meUObjectCloneTexturesToSelected::Undo(){
 
 void meUObjectCloneTexturesToSelected::Redo(){
 	const int count = pList.GetCount();
-	meUndoDataObjectTexture *undoData;
-	meObjectTexture *texture = NULL;
+	meUndoDataObjectTexture::Ref undoData;
+	meObjectTexture::Ref texture = NULL;
 	int i, j, textureCount;
 	meObject *object;
 	
@@ -132,16 +128,12 @@ void meUObjectCloneTexturesToSelected::Redo(){
 			
 			try{
 				for(j=0; j<textureCount; j++){
-					texture = new meObjectTexture(*pTextureList.GetTextureAt(j));
+					texture.TakeOver(new meObjectTexture(*pTextureList.GetTextureAt(j)));
 					newTextureList.AddTexture(texture);
-					texture->FreeReference();
 					texture = NULL;
 				}
 				
 			}catch(const deException &){
-				if(texture){
-					texture->FreeReference();
-				}
 				throw;
 			}
 		}

@@ -42,14 +42,14 @@ private:
 	struct sDictEntry{
 		unsigned int hash;
 		const void *key;
-		deObject *value;
+		deObject::Ref value;
 		sDictEntry *next;
 		
 		sDictEntry();
 		sDictEntry(const sDictEntry &entry);
-		sDictEntry(unsigned int nhash, const void *nkey, deObject *nvalue);
+		sDictEntry(unsigned int nhash, const void *nkey, deObject::Ref nvalue);
 		~sDictEntry();
-		void SetValue(deObject *nvalue);
+		void SetValue(deObject::Ref nvalue);
 	};
 	
 	sDictEntry **pBuckets;
@@ -111,7 +111,7 @@ public:
 	 * \throws deeInvalidParam \em key is NULL.
 	 * \throws deeInvalidParam \em value is NULL.
 	 */
-	void SetAt(const void *key, unsigned int hash, deObject *value);
+	void SetAt(const void *key, unsigned int hash, deObject::Ref value);
 	
 	/**
 	 * \brief Remove a key.

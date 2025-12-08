@@ -37,7 +37,7 @@ class aeRuleAnimationSelect;
  */
 class aeURuleAnimSelectToggleEnableVertexPositionSet : public igdeUndo{
 private:
-	aeRuleAnimationSelect *pRule;
+	aeRuleAnimationSelect::Ref pRule;
 	
 	
 	

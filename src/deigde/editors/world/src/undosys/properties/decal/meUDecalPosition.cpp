@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalPosition::meUDecalPosition(meDecal *decal, const decDVector &newPosition){
+meUDecalPosition::meUDecalPosition(meDecal::Ref decal, const decDVector &newPosition){
 	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
@@ -57,13 +57,9 @@ meUDecalPosition::meUDecalPosition(meDecal *decal, const decDVector &newPosition
 	pNewPosition = newPosition;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalPosition::~meUDecalPosition(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

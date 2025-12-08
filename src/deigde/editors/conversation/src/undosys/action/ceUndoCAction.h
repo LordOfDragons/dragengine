@@ -38,8 +38,8 @@ class ceConversationTopic;
  */
 class ceUndoCAction : public deObject{
 private:
-	ceConversationAction *pAction;
-	ceConversationTopic *pTopic;
+	ceConversationAction::Ref pAction;
+	ceConversationTopic::Ref pTopic;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUndoCAction(ceConversationAction *action, ceConversationTopic *topic);
+	ceUndoCAction(ceConversationAction::Ref action, ceConversationTopic::Ref topic);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUndoCAction();

@@ -43,8 +43,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleMath *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleMath::Ref pRule;
 	
 	meHTVRuleMath::eOperators pOldOp;
 	meHTVRuleMath::eOperators pNewOp;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleMathSetOp(meHTVegetationLayer *vlayer, meHTVRuleMath *rule, meHTVRuleMath::eOperators nop);
+	meUHTVRuleMathSetOp(meHTVegetationLayer::Ref vlayer, meHTVRuleMath::Ref rule, meHTVRuleMath::eOperators nop);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleMathSetOp();
 	/*@}*/

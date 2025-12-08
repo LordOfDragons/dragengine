@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTopicAdd::ceUCTopicAdd(ceConversationFile *file, ceConversationTopic *topic){
+ceUCTopicAdd::ceUCTopicAdd(ceConversationFile::Ref file, ceConversationTopic::Ref topic){
 	if(!file || !topic) DETHROW(deeInvalidParam);
 	
 	pFile = NULL;
@@ -49,19 +49,10 @@ ceUCTopicAdd::ceUCTopicAdd(ceConversationFile *file, ceConversationTopic *topic)
 	SetShortInfo("Add Topic");
 	
 	pFile = file;
-	file->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
 }
 
 ceUCTopicAdd::~ceUCTopicAdd(){
-	if(pTopic){
-		pTopic->FreeReference();
-	}
-	if(pFile){
-		pFile->FreeReference();
-	}
 }
 
 

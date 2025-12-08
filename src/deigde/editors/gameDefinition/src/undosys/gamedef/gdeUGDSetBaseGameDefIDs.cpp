@@ -41,9 +41,8 @@
 ////////////////////////////
 
 gdeUGDSetBaseGameDefIDs::gdeUGDSetBaseGameDefIDs(gdeWindowMain &windowMain,
-gdeGameDefinition *gameDefinition, const decStringList &newValue) :
+gdeGameDefinition::Ref gameDefinition, const decStringList &newValue) :
 pWindowMain(windowMain),
-pGameDefinition(NULL),
 pNewValue(newValue)
 {
 	if(!gameDefinition){
@@ -55,13 +54,9 @@ pNewValue(newValue)
 	pOldValue = gameDefinition->GetBaseGameDefinitionIDList();
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetBaseGameDefIDs::~gdeUGDSetBaseGameDefIDs(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

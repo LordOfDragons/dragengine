@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalMove::meUDecalMove(meWorld *world){
+meUDecalMove::meUDecalMove(meWorld::Ref world){
 	if(!world) DETHROW(deeInvalidParam);
 	
 	const meDecalList &selection = world->GetSelectionDecal().GetSelected();
@@ -73,7 +73,6 @@ meUDecalMove::meUDecalMove(meWorld *world){
 	}
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUDecalMove::~meUDecalMove(){

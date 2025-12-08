@@ -37,7 +37,7 @@ class meWorld;
  */
 class meUWorldSetSize : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	decDVector pOldValue;
 	decDVector pNewValue;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */
-	meUWorldSetSize(meWorld *world, const decDVector &newValue);
+	meUWorldSetSize(meWorld::Ref world, const decDVector &newValue);
 	
 protected:
 	/** Clean up undo object. */

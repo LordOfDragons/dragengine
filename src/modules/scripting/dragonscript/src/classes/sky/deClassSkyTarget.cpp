@@ -43,7 +43,7 @@
 /////////////////////
 
 struct sSkyTargetNatDat{
-	deSky *sky;
+	deSky::Ref sky;
 	int layer;
 	deSkyLayer::eTargets target;
 };
@@ -264,7 +264,7 @@ void deClassSkyTarget::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassSkyTarget::PushTarget(dsRunTime *rt, deSky *sky, int layer,
+void deClassSkyTarget::PushTarget(dsRunTime *rt, deSky::Ref sky, int layer,
 deSkyLayer::eTargets target){
 	if(!rt || !sky || layer < 0 || layer >= sky->GetLayerCount()
 	|| target < deSkyLayer::etOffsetX || target > deSkyLayer::etAmbientIntensity){
@@ -274,7 +274,6 @@ deSkyLayer::eTargets target){
 	rt->CreateObjectNakedOnStack(this);
 	sSkyTargetNatDat &nd = *((sSkyTargetNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.sky = sky;
-	sky->AddReference();
 	nd.layer = layer;
 	nd.target = target;
 }

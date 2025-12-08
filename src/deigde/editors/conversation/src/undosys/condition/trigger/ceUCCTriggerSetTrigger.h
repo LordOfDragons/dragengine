@@ -38,9 +38,9 @@ class ceConversationTopic;
  */
 class ceUCCTriggerSetTrigger : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionTrigger *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionTrigger::Ref pCondition;
 	decString pOldTrigger;
 	decString pNewTrigger;
 	
@@ -51,8 +51,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCCTriggerSetTrigger(ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionTrigger *condition, const char *newTrigger);
+	ceUCCTriggerSetTrigger(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
+		ceCConditionTrigger::Ref condition, const char *newTrigger);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCCTriggerSetTrigger();
 	/*@}*/

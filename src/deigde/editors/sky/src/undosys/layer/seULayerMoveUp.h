@@ -35,7 +35,7 @@ class seLayer;
  */
 class seULayerMoveUp : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	int pIndex;
 	
 	
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerMoveUp(seLayer *layer);
+	seULayerMoveUp(seLayer::Ref layer);
 	
 protected:
 	/** \brief Clean up undo action. */

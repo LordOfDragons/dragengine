@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetCameraTarget::ceUCCShotSetCameraTarget(ceCameraShot *cameraShot, const char *newTarget){
+ceUCCShotSetCameraTarget::ceUCCShotSetCameraTarget(ceCameraShot::Ref cameraShot, const char *newTarget){
 	if(!cameraShot || !newTarget){
 		DETHROW(deeInvalidParam);
 	}
@@ -52,13 +52,9 @@ ceUCCShotSetCameraTarget::ceUCCShotSetCameraTarget(ceCameraShot *cameraShot, con
 	pNewTarget = newTarget;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetCameraTarget::~ceUCCShotSetCameraTarget(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

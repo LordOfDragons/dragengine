@@ -42,9 +42,9 @@ class deoglEnvironmentMap;
  */
 class deoglEnvMapFader{
 public:
-	deoglEnvironmentMap *pEnvMapActive;
-	deoglEnvironmentMap *pEnvMapFading;
-	deoglEnvironmentMap *pEnvMapDelayed;
+	deoglEnvironmentMap::Ref pEnvMapActive;
+	deoglEnvironmentMap::Ref pEnvMapFading;
+	deoglEnvironmentMap::Ref pEnvMapDelayed;
 	float pFadePerTime;
 	float pBlendFactor;
 	
@@ -82,7 +82,7 @@ public:
 	 * is in progress the environment map is set as the fading environment map and fading
 	 * starts.
 	 */
-	void FadeTo(deoglEnvironmentMap *envmap);
+	void FadeTo(deoglEnvironmentMap::Ref envmap);
 	/** Determines if fading is in progess. */
 	bool IsFading() const;
 	/**
@@ -91,7 +91,7 @@ public:
 	 * be deleted or if the contained texture is about to get invalid. This operation can lead
 	 * to popping.
 	 */
-	void Drop(deoglEnvironmentMap *envmap);
+	void Drop(deoglEnvironmentMap::Ref envmap);
 	/** Drop all environment maps. */
 	void DropAll();
 	

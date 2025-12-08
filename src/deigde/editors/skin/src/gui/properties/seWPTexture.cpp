@@ -119,7 +119,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSkin *skin, seTexture *texture) = 0;
+	virtual igdeUndo *OnAction(seSkin::Ref skin, seTexture *texture) = 0;
 	
 	virtual void Update(){
 		seSkin * const skin = pPanel.GetSkin();
@@ -144,11 +144,11 @@ public:
 	cBaseActionProperty(seWPTexture &panel, const char *text, igdeIcon *icon,
 		const char *description) : cBaseAction(panel, text, icon, description){}
 	
-	virtual igdeUndo *OnAction(seSkin *skin, seTexture *texture){
+	virtual igdeUndo *OnAction(seSkin::Ref skin, seTexture *texture){
 		return pPanel.GetProperty() ? OnActionProperty(skin, texture, pPanel.GetProperty()) : nullptr;
 	}
 	
-	virtual igdeUndo *OnActionProperty(seSkin *skin, seTexture *texture, seProperty *property) = 0;
+	virtual igdeUndo *OnActionProperty(seSkin::Ref skin, seTexture *texture, seProperty *property) = 0;
 	
 	
 	void Update(const seSkin &skin, const seTexture &texture) override{
@@ -189,7 +189,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin *skin,
+	virtual igdeUndo *OnChanged(igdeTextField &textField, seSkin::Ref skin,
 		seTexture *texture, seProperty *property) = 0;
 };
 
@@ -214,7 +214,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditPath &editPath, seSkin *skin,
+	virtual igdeUndo *OnChanged(igdeEditPath &editPath, seSkin::Ref skin,
 		seTexture *texture, seProperty *property) = 0;
 };
 
@@ -239,7 +239,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin *skin,
+	virtual igdeUndo *OnChanged(igdeColorBox &colorBox, seSkin::Ref skin,
 		seTexture *texture, seProperty *property) = 0;
 };
 
@@ -590,8 +590,6 @@ public:
 seWPTexture::seWPTexture(seWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(nullptr),
-pSkin(nullptr),
 pRequiresUpdate(false),
 pPreventUpdateMappedTarget(false)
 {
@@ -599,7 +597,7 @@ pPreventUpdateMappedTarget(false)
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPTextureListener(*this);
+	pListener.TakeOver(new seWPTextureListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -740,10 +738,6 @@ pPreventUpdateMappedTarget(false)
 
 seWPTexture::~seWPTexture(){
 	SetSkin(nullptr);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -751,21 +745,19 @@ seWPTexture::~seWPTexture(){
 // Management
 ///////////////
 
-void seWPTexture::SetSkin(seSkin *skin){
+void seWPTexture::SetSkin(seSkin::Ref skin){
 	if(skin == pSkin){
 		return;
 	}
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
 	if(skin){
 		skin->AddListener(pListener);
-		skin->AddReference();
 	}
 	
 	UpdatePropertyMappedTargetList();

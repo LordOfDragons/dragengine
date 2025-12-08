@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeProperty *pProperty;
+	gdeProperty::Ref pProperty;
 	
 	
 	

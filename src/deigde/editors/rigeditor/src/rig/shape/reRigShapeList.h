@@ -57,13 +57,13 @@ public:
 	/** Retrieves the shape at the given index. */
 	reRigShape *GetShapeAt(int index) const;
 	/** Retrieves the index of the shape or -1 if not found. */
-	int IndexOfShape(reRigShape *shape) const;
+	int IndexOfShape(reRigShape::Ref shape) const;
 	/** Determines if the shape exists. */
-	bool HasShape(reRigShape *shape) const;
+	bool HasShape(reRigShape::Ref shape) const;
 	/** Adds a new shape. */
-	void AddShape(reRigShape *shape);
+	void AddShape(reRigShape::Ref shape);
 	/** Removes the given shape. */
-	void RemoveShape(reRigShape *shape);
+	void RemoveShape(reRigShape::Ref shape);
 	/** Removes all shapes. */
 	void RemoveAllShapes();
 	/*@}*/

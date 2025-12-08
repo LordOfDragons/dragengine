@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalSetProperties::meUDecalSetProperties(meDecal *decal, const decStringDictionary &newValues) :
-pDecal(NULL),
+meUDecalSetProperties::meUDecalSetProperties(meDecal::Ref decal, const decStringDictionary &newValues) :
+
 pNewValues(newValues)
 {
 	if(!decal || !decal->GetWorld()){
@@ -54,13 +54,9 @@ pNewValues(newValues)
 	pOldValues = decal->GetProperties();
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalSetProperties::~meUDecalSetProperties(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

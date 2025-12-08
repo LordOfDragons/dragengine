@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetPosition::gdeUOCComponentSetPosition(gdeObjectClass *objectClass,
-gdeOCComponent *component, const decVector &newValue) :
-pObjectClass(NULL),
+gdeUOCComponentSetPosition::gdeUOCComponentSetPosition(gdeObjectClass::Ref objectClass,
+gdeOCComponent::Ref component, const decVector &newValue) :
+
 pComponent(NULL)
 {
 	if(!objectClass || !component){
@@ -55,19 +55,10 @@ pComponent(NULL)
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetPosition::~gdeUOCComponentSetPosition(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

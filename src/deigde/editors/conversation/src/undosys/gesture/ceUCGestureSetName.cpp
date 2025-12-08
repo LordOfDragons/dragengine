@@ -50,7 +50,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCGestureSetName::ceUCGestureSetName(ceGesture *gesture, const char *newName){
+ceUCGestureSetName::ceUCGestureSetName(ceGesture::Ref gesture, const char *newName){
 	if(!gesture || !newName) DETHROW(deeInvalidParam);
 	
 	const ceConversationFileList &fileList = gesture->GetConversation()->GetFileList();
@@ -67,8 +67,6 @@ ceUCGestureSetName::ceUCGestureSetName(ceGesture *gesture, const char *newName){
 	
 	try{
 		pGesture = gesture;
-		gesture->AddReference();
-		
 		for(e=0; e<fileCount; e++){
 			const ceConversationFile &file = *fileList.GetAt(e);
 			const ceConversationTopicList &topicList = file.GetTopicList();
@@ -83,21 +81,12 @@ ceUCGestureSetName::ceUCGestureSetName(ceGesture *gesture, const char *newName){
 		
 	}catch(const deException &){
 		pActionList.RemoveAll();
-		
-		if(pGesture){
-			pGesture->FreeReference();
-		}
-		
 		throw;
 	}
 }
 
 ceUCGestureSetName::~ceUCGestureSetName(){
 	pActionList.RemoveAll();
-	
-	if(pGesture){
-		pGesture->FreeReference();
-	}
 }
 
 
@@ -148,7 +137,7 @@ void ceUCGestureSetName::pSetName(const char *oldName, const char *newName){
 
 void ceUCGestureSetName::pAddActions(ceConversationTopic *topic, const ceConversationActionList &list){
 	const int count = list.GetCount();
-	ceUndoCAction *undoCAction = NULL;
+	ceUndoCAction::Ref undoCAction = NULL;
 	ceConversationAction *action;
 	int i, j, gestureCount;
 	
@@ -163,9 +152,8 @@ void ceUCGestureSetName::pAddActions(ceConversationTopic *topic, const ceConvers
 				gestureCount = gestureList.GetCount();
 				for(j=0; j<gestureCount; j++){
 					if(gestureList.GetAt(j)->GetID() == pOldName){
-						undoCAction = new ceUndoCAction(action, topic);
+						undoCAction.TakeOver(new ceUndoCAction(action, topic));
 						pActionList.Add(undoCAction);
-						undoCAction->FreeReference();
 						undoCAction = NULL;
 						break;
 					}
@@ -200,9 +188,6 @@ void ceUCGestureSetName::pAddActions(ceConversationTopic *topic, const ceConvers
 		}
 		
 	}catch(const deException &){
-		if(undoCAction){
-			undoCAction->FreeReference();
-		}
 		throw;
 	}
 }

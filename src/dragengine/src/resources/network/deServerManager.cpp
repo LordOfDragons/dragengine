@@ -68,10 +68,10 @@ deServer *deServerManager::GetRootServer() const{
 }
 
 deServer *deServerManager::CreateServer(){
-	deServer *server = NULL;
+	deServer::Ref server = NULL;
 	
 	try{
-		server = new deServer(this);
+		server.TakeOver(new deServer(this));
 		
 		GetNetworkSystem()->LoadServer(server);
 		GetScriptingSystem()->LoadServer(server);
@@ -79,9 +79,6 @@ deServer *deServerManager::CreateServer(){
 		pServers.Add(server);
 		
 	}catch(const deException &){
-		if(server){
-			server->FreeReference();
-		}
 		throw;
 	}
 	
@@ -104,7 +101,7 @@ void deServerManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deServerManager::SystemNetworkLoad(){
-	deServer *server = (deServer*)pServers.GetRoot();
+	deServer::Ref server = (deServer*)pServers.GetRoot();
 	deNetworkSystem &netSys = *GetNetworkSystem();
 	
 	while(server){
@@ -117,7 +114,7 @@ void deServerManager::SystemNetworkLoad(){
 }
 
 void deServerManager::SystemNetworkUnload(){
-	deServer *server = (deServer*)pServers.GetRoot();
+	deServer::Ref server = (deServer*)pServers.GetRoot();
 	
 	while(server){
 		server->SetPeerNetwork(NULL);
@@ -126,7 +123,7 @@ void deServerManager::SystemNetworkUnload(){
 }
 
 void deServerManager::SystemScriptingLoad(){
-	deServer *server = (deServer*)pServers.GetRoot();
+	deServer::Ref server = (deServer*)pServers.GetRoot();
 	deScriptingSystem &scrSys = *GetScriptingSystem();
 	
 	while(server){
@@ -139,7 +136,7 @@ void deServerManager::SystemScriptingLoad(){
 }
 
 void deServerManager::SystemScriptingUnload(){
-	deServer *server = (deServer*)pServers.GetRoot();
+	deServer::Ref server = (deServer*)pServers.GetRoot();
 	
 	while(server){
 		server->SetPeerScripting(NULL);

@@ -36,7 +36,7 @@ class seTexture;
  */
 class seUTextureSetName : public igdeUndo{
 private:
-	seTexture *pTexture;
+	seTexture::Ref pTexture;
 	
 	decString pOldName;
 	decString pNewName;
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUTextureSetName(seTexture *texture, const char *newName);
+	seUTextureSetName(seTexture::Ref texture, const char *newName);
 	
 protected:
 	/** \brief Clean up undo. */

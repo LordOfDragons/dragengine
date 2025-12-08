@@ -78,7 +78,7 @@ public:
 		}
 	}
 	
-	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push) = 0;
+	virtual void OnChanged(igdeTextField *textField, reRig::Ref rig, reRigPush::Ref push) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -96,7 +96,7 @@ public:
 		}
 	}
 	
-	virtual void OnChanged(const decVector &vector, reRig *rig, reRigPush *push) = 0;
+	virtual void OnChanged(const decVector &vector, reRig::Ref rig, reRigPush::Ref push) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -114,7 +114,7 @@ public:
 		}
 	}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigPush *push) = 0;
+	virtual void OnTextChanged(igdeComboBox *comboBox, reRig::Ref rig, reRigPush::Ref push) = 0;
 };
 
 
@@ -123,7 +123,7 @@ class cComboType : public cBaseComboBoxListener{
 public:
 	cComboType(reWPPush &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual void OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigPush *push){
+	virtual void OnTextChanged(igdeComboBox *comboBox, reRig::Ref rig, reRigPush::Ref push){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		if(selection){
 			push->SetType((reRigPush::ePushTypes)(intptr_t)selection->GetData());
@@ -135,7 +135,7 @@ class cEditPosition : public cBaseEditVectorListener{
 public:
 	cEditPosition(reWPPush &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual void OnChanged(const decVector &vector, reRig *rig, reRigPush *push){
+	virtual void OnChanged(const decVector &vector, reRig::Ref rig, reRigPush::Ref push){
 		push->SetPosition(vector);
 	}
 };
@@ -144,7 +144,7 @@ class cEditRotation : public cBaseEditVectorListener{
 public:
 	cEditRotation(reWPPush &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual void OnChanged(const decVector &vector, reRig *rig, reRigPush *push){
+	virtual void OnChanged(const decVector &vector, reRig::Ref rig, reRigPush::Ref push){
 		push->SetOrientation(vector);
 	}
 };
@@ -153,7 +153,7 @@ class cTextImpuls : public cBaseTextFieldListener{
 public:
 	cTextImpuls(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push){
+	virtual void OnChanged(igdeTextField *textField, reRig::Ref rig, reRigPush::Ref push){
 		push->SetImpuls(textField->GetFloat());
 	}
 };
@@ -162,7 +162,7 @@ class cTextRayCount : public cBaseTextFieldListener{
 public:
 	cTextRayCount(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push){
+	virtual void OnChanged(igdeTextField *textField, reRig::Ref rig, reRigPush::Ref push){
 		push->SetRayCount(textField->GetInteger());
 	}
 };
@@ -171,7 +171,7 @@ class cTextConeAngle : public cBaseTextFieldListener{
 public:
 	cTextConeAngle(reWPPush &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual void OnChanged(igdeTextField *textField, reRig *rig, reRigPush *push){
+	virtual void OnChanged(igdeTextField *textField, reRig::Ref rig, reRigPush::Ref push){
 		push->SetConeAngle(textField->GetFloat());
 	}
 };
@@ -188,16 +188,13 @@ public:
 
 reWPPush::reWPPush(reWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pRig(NULL),
-pPush(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPPushListener(*this);
+	pListener.TakeOver(new reWPPushListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -225,10 +222,6 @@ pListener(NULL)
 
 reWPPush::~reWPPush(){
 	SetRig(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -236,7 +229,7 @@ reWPPush::~reWPPush(){
 // Management
 ///////////////
 
-void reWPPush::SetRig(reRig *rig){
+void reWPPush::SetRig(reRig::Ref rig){
 	if(rig == pRig){
 		return;
 	}
@@ -245,7 +238,6 @@ void reWPPush::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -253,27 +245,15 @@ void reWPPush::SetRig(reRig *rig){
 	
 	if(rig){
 		rig->AddNotifier(pListener);
-		rig->AddReference();
-		
 		SetPush(rig->GetSelectionPushes()->GetActivePush());
 	}
 }
 
-void reWPPush::SetPush(reRigPush *push){
+void reWPPush::SetPush(reRigPush::Ref push){
 	if(push == pPush){
 		return;
 	}
-	
-	if(pPush){
-		pPush->FreeReference();
-	}
-	
 	pPush = push;
-	
-	if(push){
-		push->AddReference();
-	}
-	
 	UpdatePush();
 }
 

@@ -44,8 +44,8 @@ public:
 	
 	
 private:
-	seSource *pSource;
-	seEffect *pEffect;
+	seSource::Ref pSource;
+	seEffect::Ref pEffect;
 	int pIndex;
 	
 	
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceAddEffect(seSource *source, seEffect *effect, int index);
+	seUSourceAddEffect(seSource::Ref source, seEffect::Ref effect, int index);
 	
 protected:
 	/** \brief Clean up undo action. */

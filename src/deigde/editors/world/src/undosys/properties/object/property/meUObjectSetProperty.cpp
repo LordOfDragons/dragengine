@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectSetProperty::meUObjectSetProperty(meObject *object, const char *key, const char *oldValue, const char *newValue){
+meUObjectSetProperty::meUObjectSetProperty(meObject::Ref object, const char *key, const char *oldValue, const char *newValue){
 	if(!object || !key || !oldValue || !newValue){
 		DETHROW(deeInvalidParam);
 	}
@@ -58,7 +58,6 @@ meUObjectSetProperty::meUObjectSetProperty(meObject *object, const char *key, co
 	pNewValue = newValue;
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectSetProperty::~meUObjectSetProperty(){
@@ -94,7 +93,4 @@ void meUObjectSetProperty::ProgressiveRedo(){
 //////////////////////
 
 void meUObjectSetProperty::pCleanUp(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }

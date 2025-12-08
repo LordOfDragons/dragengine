@@ -80,8 +80,8 @@ class ceWPTTreeItem;
 class ceWPTopic : public igdeContainerFlow{
 private:
 	ceWindowProperties &pWindowProperties;
-	ceWPTopicListener *pListener;
-	ceConversation *pConversation;
+	ceWPTopicListener::Ref pListener;
+	ceConversation::Ref pConversation;
 	
 	igdeComboBoxFilter::Ref pCBFile;
 	igdeButton::Ref pBtnFile;
@@ -148,7 +148,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
-	void SetConversation(ceConversation *conversation);
+	void SetConversation(ceConversation::Ref conversation);
 	
 	/** Action tree model. */
 	inline ceWPTTreeModel *GetActionTreeModel() const{ return pModelTreeActions; }

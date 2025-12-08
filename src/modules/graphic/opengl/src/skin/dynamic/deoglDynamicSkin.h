@@ -46,7 +46,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	const deDynamicSkin &pDynamicSkin;
 	
-	deoglRDynamicSkin *pRDynamicSkin;
+	deoglRDynamicSkin::Ref pRDynamicSkin;
 	
 	decPointerList pRenderables;
 	bool pDirtyRenderables;

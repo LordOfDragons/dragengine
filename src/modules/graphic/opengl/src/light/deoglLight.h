@@ -51,7 +51,7 @@ class deoglLight : public deBaseGraphicLight, deoglDynamicSkinListener, deoglCan
 public:
 	deGraphicOpenGl &pOgl;
 	const deLight &pLight;
-	deoglRLight *pRLight;
+	deoglRLight::Ref pRLight;
 	deoglSkinStateController *pSkinStateController;
 	deoglWorld *pParentWorld;
 	deoglDynamicSkin *pDynamicSkin;

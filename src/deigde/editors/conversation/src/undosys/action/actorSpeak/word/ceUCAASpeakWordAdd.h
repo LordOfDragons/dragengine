@@ -38,9 +38,9 @@ class ceStrip;
  */
 class ceUCAASpeakWordAdd : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pWord;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pWord;
 	int pIndex;
 	
 public:
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakWordAdd(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word, int index);
+	ceUCAASpeakWordAdd(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref word, int index);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakWordAdd();

@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionRemove::ceUCActionRemove(ceConversationTopic *topic, ceConversationAction *action){
+ceUCActionRemove::ceUCActionRemove(ceConversationTopic::Ref topic, ceConversationAction::Ref action){
 	if(!topic || !action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
@@ -52,19 +52,10 @@ ceUCActionRemove::ceUCActionRemove(ceConversationTopic *topic, ceConversationAct
 	SetShortInfo("Remove Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCActionRemove::~ceUCActionRemove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

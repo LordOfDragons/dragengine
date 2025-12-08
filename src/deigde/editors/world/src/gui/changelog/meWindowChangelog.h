@@ -41,9 +41,9 @@ class meWorld;
 class meWindowChangelog : public igdeContainerBorder{
 private:
 	meWindowMain &pWindowMain;
-	meWindowChangelogListener *pListener;
+	meWindowChangelogListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeIconListBox::Ref pListChanges;
 	
@@ -69,7 +69,7 @@ public:
 	inline meWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Set world. */
-	void SetWorld(meWorld *world);
+	void SetWorld(meWorld::Ref world);
 	
 	/** \brief Update changelog list. */
 	void UpdateChangelog();

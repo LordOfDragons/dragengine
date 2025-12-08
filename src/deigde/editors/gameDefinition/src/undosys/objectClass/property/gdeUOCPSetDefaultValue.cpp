@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPSetDefaultValue::gdeUOCPSetDefaultValue(gdeObjectClass *objectClass,
-	gdeProperty *property, const char *newValue, const char *oldValue) :
-pObjectClass(NULL),
-pProperty(NULL)
+gdeUOCPSetDefaultValue::gdeUOCPSetDefaultValue(gdeObjectClass::Ref objectClass,
+	gdeProperty::Ref property, const char *newValue, const char *oldValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCPSetDefaultValue::~gdeUOCPSetDefaultValue(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -37,7 +37,7 @@ class reRigConstraint;
  */
 class reUConstraintSetOffset : public igdeUndo{
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	
 	decVector pOldOffset;
 	decVector pNewOffset;

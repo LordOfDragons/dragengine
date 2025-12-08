@@ -36,7 +36,7 @@ class meHeightTerrain;
  */
 class meUHTSetSectorSize : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
 	
 	float pOldSectorSize;
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetSectorSize(meWorld *world, meHeightTerrain *heightTerrain, float newSectorSize);
+	meUHTSetSectorSize(meWorld::Ref world, meHeightTerrain *heightTerrain, float newSectorSize);
 	
 protected:
 	/** \brief Clean up object. */

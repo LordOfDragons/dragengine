@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectSnapToGrid::meUObjectSnapToGrid(meWorld *world, const meObjectList &objects, float grid) :
-pWorld(NULL),
+meUObjectSnapToGrid::meUObjectSnapToGrid(meWorld::Ref world, const meObjectList &objects, float grid) :
+
 pObjects(NULL),
 pObjectCount(0),
 pGrid((double)grid)
@@ -75,7 +75,6 @@ pGrid((double)grid)
 	}
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUObjectSnapToGrid::~meUObjectSnapToGrid(){
@@ -120,9 +119,5 @@ void meUObjectSnapToGrid::pCleanUp(){
 		}
 		
 		delete [] pObjects;
-	}
-	
-	if(pWorld){
-		pWorld->FreeReference();
 	}
 }

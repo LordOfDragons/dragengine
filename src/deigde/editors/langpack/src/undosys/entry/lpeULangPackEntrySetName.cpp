@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-lpeULangPackEntrySetName::lpeULangPackEntrySetName(lpeLangPackEntry *entry, const char *newName) :
-pEntry(NULL),
+lpeULangPackEntrySetName::lpeULangPackEntrySetName(lpeLangPackEntry::Ref entry, const char *newName) :
+
 pNewName(newName)
 {
 	if(!entry){
@@ -52,13 +52,9 @@ pNewName(newName)
 	pOldName = entry->GetName();
 	
 	pEntry = entry;
-	entry->AddReference();
 }
 
 lpeULangPackEntrySetName::~lpeULangPackEntrySetName(){
-	if(pEntry){
-		pEntry->FreeReference();
-	}
 }
 
 

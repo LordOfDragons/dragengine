@@ -39,8 +39,8 @@
 ////////////////////////////
 
 seUPropertyNodeSetColorize::seUPropertyNodeSetColorize(
-sePropertyNode *node, const decColor &newValue) :
-pNode(NULL),
+sePropertyNode::Ref node, const decColor &newValue) :
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = node->GetColorize();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetColorize::~seUPropertyNodeSetColorize(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

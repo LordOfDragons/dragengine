@@ -103,8 +103,8 @@ deSkin *deSkinManager::CreateSkin(deVirtualFileSystem *vfs, const char *filename
 		DETHROW(deeInvalidParam);
 	}
 	
-	deSkin *skin = NULL;
-	deSkin *findSkin;
+	deSkin::Ref skin = NULL;
+	deSkin::Ref findSkin;
 	
 	try{
 		// check if the skin with this filename already exists. skins with a zero
@@ -117,7 +117,7 @@ deSkin *deSkinManager::CreateSkin(deVirtualFileSystem *vfs, const char *filename
 		}
 		
 		// create skin using the builder
-		skin = new deSkin(this, vfs, filename, decDateTime::GetSystemTime());
+		skin.TakeOver(new deSkin(this, vfs, filename, decDateTime::GetSystemTime()));
 		builder.BuildSkin(skin);
 		
 		// load into graphic system
@@ -130,9 +130,6 @@ deSkin *deSkinManager::CreateSkin(deVirtualFileSystem *vfs, const char *filename
 		
 	}catch(const deException &){
 		LogErrorFormat("Creating skin '%s' failed", filename);
-		if(skin){
-			skin->FreeReference();
-		}
 		throw;
 	}
 	
@@ -147,11 +144,11 @@ deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, 
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	decBaseFileReader *fileReader = NULL;
+	decBaseFileReader::Ref fileReader = NULL;
 	deBaseSkinModule *module;
 	decPath path;
-	deSkin *skin = NULL;
-	deSkin *findSkin;
+	deSkin::Ref skin = NULL;
+	deSkin::Ref findSkin;
 	
 	try{
 		// locate file
@@ -172,7 +169,6 @@ deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, 
 		}
 		
 		if(findSkin){
-			findSkin->AddReference();
 			skin = findSkin;
 			
 		}else{
@@ -183,12 +179,10 @@ deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, 
 			// load the file with it
 			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
 			
-			skin = new deSkin(this, vfs, path.GetPathUnix(), modificationTime);
+			skin.TakeOver(new deSkin(this, vfs, path.GetPathUnix(), modificationTime));
 			skin->SetAsynchron(false);
 			
 			module->LoadSkin(*fileReader, *skin);
-			
-			fileReader->FreeReference();
 			fileReader = NULL;
 			
 			// load resources in properties
@@ -206,12 +200,6 @@ deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, 
 		
 	}catch(const deException &){
 		LogErrorFormat("Loading skin '%s' (base path '%s') failed", filename, basePath ? basePath : "");
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(skin){
-			skin->FreeReference();
-		}
 		throw;
 	}
 	
@@ -222,8 +210,8 @@ deSkin *deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filename, 
 }
 
 deSkin *deSkinManager::LoadDefault(){
-	deSkin *skin = NULL;
-	deSkin * findSkin = NULL;
+	deSkin::Ref skin = NULL;
+	deSkin::Ref findSkin = NULL;
 	deSkinTexture * skinTex = NULL;
 	deSkinPropertyImage * propDiff = NULL;
 	deImage::Ref imgNoTex;
@@ -235,7 +223,6 @@ deSkin *deSkinManager::LoadDefault(){
 			if(!findSkin->GetPeerGraphic()){
 				GetGraphicSystem()->LoadSkin(findSkin);
 			}
-			findSkin->AddReference();
 			skin = findSkin;
 			
 		}else{
@@ -243,8 +230,8 @@ deSkin *deSkinManager::LoadDefault(){
 			imgNoTex.TakeOver(GetImageManager()->LoadDefault());
 			
 			// load skin
-			skin = new deSkin(this, GetEngine()->GetVirtualFileSystem(),
-				SKIN_NO_SKIN, decDateTime::GetSystemTime());
+			skin.TakeOver(new deSkin(this, GetEngine()->GetVirtualFileSystem(),
+				SKIN_NO_SKIN, decDateTime::GetSystemTime()));
 			skinTex = new deSkinTexture("skin");
 			propDiff = new deSkinPropertyImage("color");
 			
@@ -272,9 +259,6 @@ deSkin *deSkinManager::LoadDefault(){
 		if(skinTex){
 			delete skinTex;
 		}
-		if(skin){
-			skin->FreeReference();
-		}
 		throw;
 	}
 	
@@ -283,7 +267,7 @@ deSkin *deSkinManager::LoadDefault(){
 
 
 
-void deSkinManager::AddLoadedSkin(deSkin *skin){
+void deSkinManager::AddLoadedSkin(deSkin::Ref skin){
 	if(!skin){
 		DETHROW(deeInvalidParam);
 	}
@@ -321,7 +305,7 @@ void deSkinManager::ReleaseLeakingResources(){
 	const int count = GetSkinCount();
 	
 	if(count > 0){
-		deSkin *skin = (deSkin*)pSkins.GetRoot();
+		deSkin::Ref skin = (deSkin*)pSkins.GetRoot();
 		
 		LogWarnFormat("%i leaking skins", count);
 		
@@ -340,7 +324,7 @@ void deSkinManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSkinManager::SystemGraphicLoad(){
-	deSkin *skin = (deSkin*)pSkins.GetRoot();
+	deSkin::Ref skin = (deSkin*)pSkins.GetRoot();
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(skin){
@@ -353,7 +337,7 @@ void deSkinManager::SystemGraphicLoad(){
 }
 
 void deSkinManager::SystemGraphicUnload(){
-	deSkin *skin = (deSkin*)pSkins.GetRoot();
+	deSkin::Ref skin = (deSkin*)pSkins.GetRoot();
 	
 	while(skin){
 		skin->SetPeerGraphic(NULL);
@@ -362,7 +346,7 @@ void deSkinManager::SystemGraphicUnload(){
 }
 
 void deSkinManager::SystemAudioLoad(){
-	deSkin *skin = (deSkin*)pSkins.GetRoot();
+	deSkin::Ref skin = (deSkin*)pSkins.GetRoot();
 	deAudioSystem &audsys = *GetAudioSystem();
 	
 	while(skin){
@@ -375,7 +359,7 @@ void deSkinManager::SystemAudioLoad(){
 }
 
 void deSkinManager::SystemAudioUnload(){
-	deSkin *skin = (deSkin*)pSkins.GetRoot();
+	deSkin::Ref skin = (deSkin*)pSkins.GetRoot();
 	
 	while(skin){
 		skin->SetPeerAudio(NULL);
@@ -384,7 +368,7 @@ void deSkinManager::SystemAudioUnload(){
 }
 
 void deSkinManager::SystemPhysicsLoad(){
-	deSkin *skin = (deSkin*)pSkins.GetRoot();
+	deSkin::Ref skin = (deSkin*)pSkins.GetRoot();
 	dePhysicsSystem &physys = *GetPhysicsSystem();
 	
 	while(skin){
@@ -397,7 +381,7 @@ void deSkinManager::SystemPhysicsLoad(){
 }
 
 void deSkinManager::SystemPhysicsUnload(){
-	deSkin *skin = (deSkin*)pSkins.GetRoot();
+	deSkin::Ref skin = (deSkin*)pSkins.GetRoot();
 	
 	while(skin){
 		skin->SetPeerPhysics(NULL);

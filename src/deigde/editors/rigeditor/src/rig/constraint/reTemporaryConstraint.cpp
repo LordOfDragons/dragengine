@@ -52,7 +52,7 @@ const decDVector &position, const decQuaternion &orientation){
 	if(!rig) DETHROW(deeInvalidParam);
 	
 	decDMatrix matrix(decDMatrix::CreateWorld(position, orientation));
-	deColliderComponent *simcol = rig->GetEngineSimulationCollider();
+	deColliderComponent::Ref simcol = rig->GetEngineSimulationCollider();
 	
 	pPosition = position;
 	pOrientation = orientation;
@@ -100,8 +100,6 @@ reTemporaryConstraint::~reTemporaryConstraint(){
 		if(pEngConstraint){
 			pEngSimCollider->RemoveConstraint(pEngConstraint);
 		}
-		
-		pEngSimCollider->FreeReference();
 	}
 }
 

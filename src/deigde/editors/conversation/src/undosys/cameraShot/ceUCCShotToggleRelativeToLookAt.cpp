@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotToggleRelativeToLookAt::ceUCCShotToggleRelativeToLookAt(ceCameraShot *cameraShot){
+ceUCCShotToggleRelativeToLookAt::ceUCCShotToggleRelativeToLookAt(ceCameraShot::Ref cameraShot){
 	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
@@ -47,13 +47,9 @@ ceUCCShotToggleRelativeToLookAt::ceUCCShotToggleRelativeToLookAt(ceCameraShot *c
 	SetShortInfo("Camera Shot Toggle Relative To Look-At");
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotToggleRelativeToLookAt::~ceUCCShotToggleRelativeToLookAt(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

@@ -41,11 +41,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCTextureSetRotation::gdeUOCCTextureSetRotation(gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture* texture, float newValue) :
-pObjectClass(NULL),
-pComponent(NULL),
-pTexture(NULL)
+gdeUOCCTextureSetRotation::gdeUOCCTextureSetRotation(gdeObjectClass::Ref objectClass,
+gdeOCComponent::Ref component, gdeOCComponentTexture::Ref texture, float newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !component || !texture){
 		DETHROW(deeInvalidParam);
@@ -57,25 +55,11 @@ pTexture(NULL)
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCTextureSetRotation::~gdeUOCCTextureSetRotation(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

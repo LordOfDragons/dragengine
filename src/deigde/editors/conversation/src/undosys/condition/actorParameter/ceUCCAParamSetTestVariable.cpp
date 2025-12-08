@@ -42,11 +42,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCAParamSetTestVariable::ceUCCAParamSetTestVariable(ceConversationTopic *topic,
-ceConversationAction *action, ceCConditionActorParameter *condition, const char *newVariable) :
-pTopic(NULL),
-pAction(NULL),
-pCondition(NULL),
+ceUCCAParamSetTestVariable::ceUCCAParamSetTestVariable(ceConversationTopic::Ref topic,
+ceConversationAction::Ref action, ceCConditionActorParameter::Ref condition, const char *newVariable) :
+
+
+
 pNewVariable(newVariable)
 {
 	if(!topic || !action || !condition){
@@ -58,25 +58,11 @@ pNewVariable(newVariable)
 	SetShortInfo("ActorParameter: Set Test Variable");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCAParamSetTestVariable::~ceUCCAParamSetTestVariable(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

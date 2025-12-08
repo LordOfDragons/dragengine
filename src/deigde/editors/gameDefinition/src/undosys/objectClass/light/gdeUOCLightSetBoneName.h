@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetBoneName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetBoneName(gdeObjectClass *objectClass, gdeOCLight *light, const char *newValue);
+	gdeUOCLightSetBoneName(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -40,9 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceMoveEffectUp::seUSourceMoveEffectUp(seSource *source, seEffect *effect) :
-pSource(NULL),
-pEffect(NULL)
+seUSourceMoveEffectUp::seUSourceMoveEffectUp(seSource::Ref source, seEffect::Ref effect) :
+pSource(NULL)
 {
 	if(!effect || !source){
 		DETHROW(deeInvalidParam);
@@ -54,10 +53,7 @@ pEffect(NULL)
 	}
 	
 	pSource = source;
-	source->AddReference();
-	
 	pEffect = effect;
-	effect->AddReference();
 }
 
 seUSourceMoveEffectUp::~seUSourceMoveEffectUp(){
@@ -83,10 +79,4 @@ void seUSourceMoveEffectUp::Redo(){
 //////////////////////
 
 void seUSourceMoveEffectUp::pCleanUp(){
-	if(pEffect){
-		pEffect->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

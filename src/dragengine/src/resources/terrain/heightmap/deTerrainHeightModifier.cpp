@@ -38,13 +38,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-deTerrainHeightModifier::deTerrainHeightModifier(deImage *heightImage){
+deTerrainHeightModifier::deTerrainHeightModifier(deImage::Ref heightImage){
 	if(!heightImage) DETHROW(deeInvalidParam);
 	
 	pScaling = 1.0f;
 	
 	pHeightImage = heightImage;
-	heightImage->AddReference();
 }
 
 deTerrainHeightModifier::~deTerrainHeightModifier(){

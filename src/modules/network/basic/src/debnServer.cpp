@@ -154,7 +154,7 @@ bool debnServer::ListenOn(const char *address){
 	pNetBasic->LogInfoFormat("debnServer.ListenOn: Listening on '%s'", useAddress.GetString());
 	
 	try{
-		pSocket = new debnSocket(*pNetBasic);
+		pSocket.TakeOver(new debnSocket(*pNetBasic));
 		
 		pSocket->GetAddress().SetFromString(useAddress);
 		pSocket->Bind();
@@ -165,7 +165,6 @@ bool debnServer::ListenOn(const char *address){
 		
 	}catch(const deException &e){
 		if(pSocket){
-			pSocket->FreeReference();
 			pSocket = nullptr;
 		}
 		pNetBasic->LogException(e);
@@ -187,8 +186,6 @@ void debnServer::StopListening(){
 		
 		pNetBasic->UnregisterServer(this);
 	}
-	
-	pSocket->FreeReference();
 	pSocket = NULL;
 	
 	pListening = false;

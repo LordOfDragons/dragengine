@@ -47,8 +47,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleMath *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleMath::Ref pRule;
 	
 	float pOldValueA;
 	float pNewValueA;
@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleMathSetValueA(meHTVegetationLayer *vlayer, meHTVRuleMath *rule, float nvalue);
+	meUHTVRuleMathSetValueA(meHTVegetationLayer::Ref vlayer, meHTVRuleMath::Ref rule, float nvalue);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleMathSetValueA();
 	/*@}*/

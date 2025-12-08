@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerToggleMulBySkyLight::seULayerToggleMulBySkyLight(seLayer *layer) :
+seULayerToggleMulBySkyLight::seULayerToggleMulBySkyLight(seLayer::Ref layer) :
 pLayer(NULL)
 {
 	if(!layer){
@@ -49,13 +49,9 @@ pLayer(NULL)
 	SetShortInfo("Toggle Layer Multiply By Sky Light");
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerToggleMulBySkyLight::~seULayerToggleMulBySkyLight(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

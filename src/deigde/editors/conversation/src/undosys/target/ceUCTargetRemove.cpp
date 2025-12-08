@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetRemove::ceUCTargetRemove(ceTarget *target){
+ceUCTargetRemove::ceUCTargetRemove(ceTarget::Ref target){
 	if(!target) DETHROW(deeInvalidParam);
 	
-	ceConversation *conversation = target->GetConversation();
+	ceConversation::Ref conversation = target->GetConversation();
 	if(!conversation) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
@@ -52,10 +52,7 @@ ceUCTargetRemove::ceUCTargetRemove(ceTarget *target){
 	SetShortInfo("Remove Target");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetRemove::~ceUCTargetRemove(){

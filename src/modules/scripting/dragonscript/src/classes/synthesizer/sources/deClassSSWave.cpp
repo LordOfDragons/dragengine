@@ -47,8 +47,8 @@
 /////////////////////
 
 struct sSSWaveNatDat{
-	deSynthesizer *synthesizer;
-	deSynthesizerSourceWave *source;
+	deSynthesizer::Ref synthesizer;
+	deSynthesizerSourceWave::Ref source;
 };
 
 
@@ -72,7 +72,7 @@ void deClassSSWave::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create synthesizer source
-	nd.source = new deSynthesizerSourceWave;
+	nd.source.TakeOver(new deSynthesizerSourceWave);
 	baseClass->AssignSource(myself->GetRealObject(), nd.source);
 }
 
@@ -315,7 +315,7 @@ deSynthesizerSourceWave *deClassSSWave::GetSource(dsRealObject *myself) const{
 	return ((sSSWaveNatDat*)p_GetNativeData(myself->GetBuffer()))->source;
 }
 
-void deClassSSWave::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
+void deClassSSWave::AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref synthesizer){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -333,13 +333,9 @@ void deClassSSWave::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synth
 	}
 	
 	nd.synthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
 }
 
-void deClassSSWave::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceWave *source){
+void deClassSSWave::PushSource(dsRunTime *rt, deSynthesizer::Ref synthesizer, deSynthesizerSourceWave::Ref source){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -359,13 +355,7 @@ void deClassSSWave::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynt
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.synthesizer = synthesizer;
-		if(synthesizer){
-			synthesizer->AddReference();
-		}
-		
 		nd.source = source;
-		source->AddReference();
-		
 		baseClass->AssignSource(rt->GetValue(0)->GetRealObject(), source);
 		baseClass->AssignSynthesizer(rt->GetValue(0)->GetRealObject(), synthesizer);
 		

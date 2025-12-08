@@ -85,17 +85,12 @@ void meIDGroup::Add(const char *id){
 		return;
 	}
 	
-	meIDGroupID *groupID = NULL;
+	meIDGroupID::Ref groupID = NULL;
 	
 	try{
-		groupID = new meIDGroupID(id);
+		groupID.TakeOver(new meIDGroupID(id));
 		pIDs.SetAt(id, groupID);
-		groupID->FreeReference();
-		
 	}catch(const deException &){
-		if(groupID){
-			groupID->FreeReference();
-		}
 		throw;
 	}
 }

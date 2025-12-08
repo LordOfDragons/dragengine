@@ -53,7 +53,7 @@ lpeLangPackEntrySelection::~lpeLangPackEntrySelection(){
 // Management
 ///////////////
 
-void lpeLangPackEntrySelection::Add(lpeLangPackEntry *entry){
+void lpeLangPackEntrySelection::Add(lpeLangPackEntry::Ref entry){
 	DEASSERT_NOTNULL(entry)
 	
 	entry->SetSelected(true);
@@ -63,7 +63,7 @@ void lpeLangPackEntrySelection::Add(lpeLangPackEntry *entry){
 	}
 }
 
-void lpeLangPackEntrySelection::Remove(lpeLangPackEntry *entry){
+void lpeLangPackEntrySelection::Remove(lpeLangPackEntry::Ref entry){
 	DEASSERT_NOTNULL(entry)
 	
 	entry->SetSelected(false);
@@ -90,7 +90,7 @@ bool lpeLangPackEntrySelection::HasActive() const{
 	return pActive != NULL;
 }
 
-void lpeLangPackEntrySelection::SetActive(lpeLangPackEntry *entry){
+void lpeLangPackEntrySelection::SetActive(lpeLangPackEntry::Ref entry){
 	if(entry == pActive){
 		return;
 	}
@@ -102,13 +102,11 @@ void lpeLangPackEntrySelection::SetActive(lpeLangPackEntry *entry){
 	
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = entry;
 	
 	if(entry){
-		entry->AddReference();
 		entry->SetActive(true);
 	}
 }

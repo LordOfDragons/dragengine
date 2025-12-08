@@ -37,8 +37,8 @@ class ceControllerValue;
  */
 class ceUCFPControllerSetValue : public igdeUndo{
 private:
-	ceFacePose *pFacePose;
-	ceControllerValue *pController;
+	ceFacePose::Ref pFacePose;
+	ceControllerValue::Ref pController;
 	float pOldValue;
 	float pNewValue;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCFPControllerSetValue(ceFacePose *facePose, ceControllerValue *controller, float newValue);
+	ceUCFPControllerSetValue(ceFacePose::Ref facePose, ceControllerValue::Ref controller, float newValue);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCFPControllerSetValue();

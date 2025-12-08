@@ -40,8 +40,8 @@ class gdeProperty;
  */
 class gdeUOCPSetDefaultValue : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCPSetDefaultValue(gdeObjectClass *objectClass, gdeProperty *property,
+	gdeUOCPSetDefaultValue(gdeObjectClass::Ref objectClass, gdeProperty::Ref property,
 		const char *newValue, const char *oldValue);
 	
 protected:

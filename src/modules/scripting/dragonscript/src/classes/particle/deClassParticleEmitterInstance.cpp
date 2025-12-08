@@ -64,7 +64,7 @@
 /////////////////////
 
 struct sPEINatDat{
-	deParticleEmitterInstance *instance;
+	deParticleEmitterInstance::Ref instance;
 };
 
 
@@ -757,7 +757,7 @@ dsFunction(init.clsPEI, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassParticleEmitterInstance::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance *instance = ((sPEINatDat*)p_GetNativeData(myself))->instance;
+	deParticleEmitterInstance::Ref instance = ((sPEINatDat*)p_GetNativeData(myself))->instance;
 	
 	rt->PushInt((int)(intptr_t)instance);
 }
@@ -768,7 +768,7 @@ dsFunction(init.clsPEI, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassParticleEmitterInstance::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance *instance = ((sPEINatDat*)p_GetNativeData(myself))->instance;
+	deParticleEmitterInstance::Ref instance = ((sPEINatDat*)p_GetNativeData(myself))->instance;
 	deClassParticleEmitterInstance *clsPEI = (deClassParticleEmitterInstance*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
@@ -905,7 +905,7 @@ deParticleEmitterInstance *deClassParticleEmitterInstance::GetInstance(dsRealObj
 	return ((sPEINatDat*)p_GetNativeData(myself->GetBuffer()))->instance;
 }
 
-void deClassParticleEmitterInstance::PushInstance(dsRunTime *rt, deParticleEmitterInstance *instance){
+void deClassParticleEmitterInstance::PushInstance(dsRunTime *rt, deParticleEmitterInstance::Ref instance){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -917,5 +917,4 @@ void deClassParticleEmitterInstance::PushInstance(dsRunTime *rt, deParticleEmitt
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sPEINatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->instance = instance;
-	instance->AddReference();
 }

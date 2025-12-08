@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCSpeaker *pSpeaker;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCSpeaker(gdeOCSpeaker *speaker);
+	gdeClipboardDataOCSpeaker(gdeOCSpeaker::Ref speaker);
 	
 protected:
 	/**

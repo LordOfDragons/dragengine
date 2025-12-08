@@ -61,7 +61,7 @@ reCamera::~reCamera(){
 // Management
 ///////////////
 
-void reCamera::SetBone(reRigBone *bone){
+void reCamera::SetBone(reRigBone::Ref bone){
 	if(bone != pBone){
 		if(pBone) pBone->FreeReference();
 		
@@ -161,7 +161,6 @@ void reCamera::Reset(){
 	
 	pFreeDistance = 5.0f;
 	if(pBone){
-		pBone->FreeReference();
 		pBone = NULL;
 	}
 	pFreePosition.Set(0.0, 1.0, 0.0);

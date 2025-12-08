@@ -47,7 +47,7 @@ private:
 	debpCommandExecuter *pCommandExecuter;
 	debpParameterList *pParameters;
 	
-	deCollisionInfo *pColInfo;
+	deCollisionInfo::Ref pColInfo;
 	debpCollisionDetection *pCollisionDetection;
 	
 	debpDebug pDebug;

@@ -40,7 +40,7 @@ class deoalComponentTexture{
 private:
 	deoalComponent &pComponent;
 	const int pIndex;
-	deoalAComponentTexture *pATexture;
+	deoalAComponentTexture::Ref pATexture;
 	
 	deoalSkin *pSkin;
 	

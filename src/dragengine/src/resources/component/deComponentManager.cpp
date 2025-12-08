@@ -68,10 +68,10 @@ deComponent *deComponentManager::GetRootComponent() const{
 }
 
 deComponent *deComponentManager::CreateComponent(deModel *model, deSkin *skin){
-	deComponent *component = NULL;
+	deComponent::Ref component = NULL;
 	
 	try{
-		component = new deComponent(this, model, skin);
+		component.TakeOver(new deComponent(this, model, skin));
 		
 		GetGraphicSystem()->LoadComponent(component);
 		GetPhysicsSystem()->LoadComponent(component);
@@ -81,9 +81,6 @@ deComponent *deComponentManager::CreateComponent(deModel *model, deSkin *skin){
 		pComponents.Add(component);
 		
 	}catch(const deException &){
-		if(component){
-			component->FreeReference();
-		}
 		throw;
 	}
 	
@@ -105,7 +102,7 @@ void deComponentManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deComponentManager::SystemGraphicLoad(){
-	deComponent *component = (deComponent*)pComponents.GetRoot();
+	deComponent::Ref component = (deComponent*)pComponents.GetRoot();
 	
 	while(component){
 		if(!component->GetPeerGraphic()){
@@ -117,7 +114,7 @@ void deComponentManager::SystemGraphicLoad(){
 }
 
 void deComponentManager::SystemGraphicUnload(){
-	deComponent *component = (deComponent*)pComponents.GetRoot();
+	deComponent::Ref component = (deComponent*)pComponents.GetRoot();
 	
 	while(component){
 		component->SetPeerGraphic(NULL);
@@ -126,7 +123,7 @@ void deComponentManager::SystemGraphicUnload(){
 }
 
 void deComponentManager::SystemPhysicsLoad(){
-	deComponent *component = (deComponent*)pComponents.GetRoot();
+	deComponent::Ref component = (deComponent*)pComponents.GetRoot();
 	
 	while(component){
 		if(!component->GetPeerPhysics()){
@@ -138,7 +135,7 @@ void deComponentManager::SystemPhysicsLoad(){
 }
 
 void deComponentManager::SystemPhysicsUnload(){
-	deComponent *component = (deComponent*)pComponents.GetRoot();
+	deComponent::Ref component = (deComponent*)pComponents.GetRoot();
 	
 	while(component){
 		component->SetPeerPhysics(NULL);
@@ -147,7 +144,7 @@ void deComponentManager::SystemPhysicsUnload(){
 }
 
 void deComponentManager::SystemAudioLoad(){
-	deComponent *component = (deComponent*)pComponents.GetRoot();
+	deComponent::Ref component = (deComponent*)pComponents.GetRoot();
 	
 	while(component){
 		if(!component->GetPeerAudio()){
@@ -159,7 +156,7 @@ void deComponentManager::SystemAudioLoad(){
 }
 
 void deComponentManager::SystemAudioUnload(){
-	deComponent *component = (deComponent*)pComponents.GetRoot();
+	deComponent::Ref component = (deComponent*)pComponents.GetRoot();
 	
 	while(component){
 		component->SetPeerAudio(NULL);
@@ -168,7 +165,7 @@ void deComponentManager::SystemAudioUnload(){
 }
 
 void deComponentManager::SystemAnimatorLoad(){
-	deComponent *component = (deComponent*)pComponents.GetRoot();
+	deComponent::Ref component = (deComponent*)pComponents.GetRoot();
 	deAnimatorSystem &manager = *GetAnimatorSystem();
 	
 	while(component){
@@ -181,7 +178,7 @@ void deComponentManager::SystemAnimatorLoad(){
 }
 
 void deComponentManager::SystemAnimatorUnload(){
-	deComponent *component = (deComponent*)pComponents.GetRoot();
+	deComponent::Ref component = (deComponent*)pComponents.GetRoot();
 	
 	while(component){
 		component->SetPeerAnimator(NULL);

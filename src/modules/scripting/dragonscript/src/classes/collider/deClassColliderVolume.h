@@ -69,7 +69,7 @@ public:
 	 * \brief Push collider onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is NULL.
 	 */
-	void PushCollider(dsRunTime *rt, deColliderVolume *collider);
+	void PushCollider(dsRunTime *rt, deColliderVolume::Ref collider);
 	/*@}*/
 	
 private:

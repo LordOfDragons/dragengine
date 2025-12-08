@@ -55,8 +55,8 @@ class aeSubAnimator{
 private:
 	deEngine *pEngine;
 	
-	deAnimator *pEngAnimator;
-	deAnimatorInstance *pEngAnimatorInstance;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
 	
 	decString pPathAnimator;
 	

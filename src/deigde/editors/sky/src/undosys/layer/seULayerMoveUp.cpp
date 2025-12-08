@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerMoveUp::seULayerMoveUp(seLayer *layer) :
-pLayer(NULL),
+seULayerMoveUp::seULayerMoveUp(seLayer::Ref layer) :
+
 pIndex(0)
 {
 	if(!layer){
@@ -61,13 +61,9 @@ pIndex(0)
 	}
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerMoveUp::~seULayerMoveUp(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

@@ -61,19 +61,16 @@ deCamera *deCameraManager::GetRootCamera() const{
 }
 
 deCamera *deCameraManager::CreateCamera(){
-	deCamera *camera = NULL;
+	deCamera::Ref camera = NULL;
 	
 	// create and add camera
 	try{
-		camera = new deCamera(this);
+		camera.TakeOver(new deCamera(this));
 		if(!camera) DETHROW(deeOutOfMemory);
 		GetGraphicSystem()->LoadCamera(camera);
 		pCameras.Add(camera);
 		
 	}catch(const deException &){
-		if(camera){
-			camera->FreeReference();
-		}
 		throw;
 	}
 	
@@ -96,7 +93,7 @@ void deCameraManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deCameraManager::SystemGraphicLoad(){
-	deCamera *camera = (deCamera*)pCameras.GetRoot();
+	deCamera::Ref camera = (deCamera*)pCameras.GetRoot();
 	
 	while(camera){
 		if(!camera->GetPeerGraphic()){
@@ -108,7 +105,7 @@ void deCameraManager::SystemGraphicLoad(){
 }
 
 void deCameraManager::SystemGraphicUnload(){
-	deCamera *camera = (deCamera*)pCameras.GetRoot();
+	deCamera::Ref camera = (deCamera*)pCameras.GetRoot();
 	
 	while(camera){
 		camera->SetPeerGraphic(NULL);

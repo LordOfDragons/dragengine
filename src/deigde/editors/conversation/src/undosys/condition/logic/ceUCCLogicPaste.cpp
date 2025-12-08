@@ -43,12 +43,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCLogicPaste::ceUCCLogicPaste(ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionLogic *logic, const ceConversationConditionList &conditions){
+ceUCCLogicPaste::ceUCCLogicPaste(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
+ceCConditionLogic::Ref logic, const ceConversationConditionList &conditions){
 	if(!topic || !action || !logic || conditions.GetCount() == 0) DETHROW(deeInvalidParam);
 	
 	const int count = conditions.GetCount();
-	ceConversationCondition *newCondition = NULL;
+	ceConversationCondition::Ref newCondition = NULL;
 	int i;
 	
 	pTopic = NULL;
@@ -63,41 +63,22 @@ ceCConditionLogic *logic, const ceConversationConditionList &conditions){
 	}
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pLogic = logic;
-	logic->AddReference();
-	
 	try{
 		for(i=0; i<count; i++){
 			newCondition = conditions.GetAt(i)->CreateCopy();
 			pConditions.Add(newCondition);
-			newCondition->FreeReference();
 			newCondition = NULL;
 		}
 		
 	}catch(const deException &){
-		if(newCondition){
-			newCondition->FreeReference();
-		}
 		throw;
 	}
 }
 
 ceUCCLogicPaste::~ceUCCLogicPaste(){
 	pConditions.RemoveAll();
-	if(pLogic){
-		pLogic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

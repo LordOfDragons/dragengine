@@ -41,7 +41,7 @@ class meObject;
  */
 class meUndoDataDecal{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	meObject *pParentObject;
 	int pIndex;
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo data object. */
-	meUndoDataDecal(meDecal *decal);
+	meUndoDataDecal(meDecal::Ref decal);
 	/** \brief Clean up data object. */
 	virtual ~meUndoDataDecal();
 	/*@}*/

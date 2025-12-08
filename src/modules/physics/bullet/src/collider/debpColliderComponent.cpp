@@ -2343,9 +2343,6 @@ void debpColliderComponent::pCleanUp(){
 	if(pSweepCollisionTest){
 		delete pSweepCollisionTest;
 	}
-	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
-	}
 }
 
 void debpColliderComponent::pUpdateBones(){
@@ -2491,7 +2488,7 @@ void debpColliderComponent::pUpdateBones(){
 			}else{
 				// btScaledBvhTriangleMeshShape would contain working scaling but compound scaling is not working
 				
-				debpBulletCompoundShape *bulletShape = NULL;
+				debpBulletCompoundShape::Ref bulletShape = NULL;
 				btCompoundShape *compoundShape = NULL;
 				btTransform transform;
 				transform.setIdentity(); // required, constructor does not initialize anything
@@ -2504,18 +2501,13 @@ void debpColliderComponent::pUpdateBones(){
 					compoundShape->setLocalScaling(btVector3((btScalar)scale.x, (btScalar)scale.y, (btScalar)scale.z));
 						// setLocalScaling has to come last or scaling does not propagate
 					
-					bulletShape = new debpBulletCompoundShape(compoundShape);
+					bulletShape.TakeOver(new debpBulletCompoundShape(compoundShape));
 					bulletShape->AddChildShape(model->GetShape());
 					
 					pSimplePhyBody->SetShape(bulletShape);
-					bulletShape->FreeReference();
-					
 					pSimplePhyBody->SetShapeSurface(0.0f);
 					
 				}catch(const deException &){
-					if(bulletShape){
-						bulletShape->FreeReference();
-					}
 					throw;
 				}
 			}
@@ -2948,7 +2940,6 @@ void debpColliderComponent::pUpdateStaticCollisionTest(){
 	}
 	
 	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
 		pStaticCollisionTestShape = NULL;
 	}
 	
@@ -2956,7 +2947,6 @@ void debpColliderComponent::pUpdateStaticCollisionTest(){
 		pStaticCollisionTestShape = pCreateBPShape();
 		
 		if(pStaticCollisionTestShape){
-			pStaticCollisionTestShape->AddReference();
 			pStaticCollisionTest->setCollisionShape(pStaticCollisionTestShape->GetShape());
 			
 		}else{
@@ -2965,7 +2955,6 @@ void debpColliderComponent::pUpdateStaticCollisionTest(){
 		
 	}catch(const deException &){
 		if(pStaticCollisionTestShape){
-			pStaticCollisionTestShape->FreeReference();
 			pStaticCollisionTestShape = NULL;
 		}
 		throw;

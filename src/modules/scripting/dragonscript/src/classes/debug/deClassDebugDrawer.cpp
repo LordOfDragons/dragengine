@@ -56,7 +56,7 @@
 
 
 struct sDDNatDat{
-	deDebugDrawer *ddrawer;
+	deDebugDrawer::Ref ddrawer;
 };
 
 
@@ -653,7 +653,7 @@ deDebugDrawer* deClassDebugDrawer::GetDebugDrawer(dsRealObject *myself) const{
 	return ((sDDNatDat*)p_GetNativeData(myself->GetBuffer()))->ddrawer;
 }
 
-void deClassDebugDrawer::PushDebugDrawer(dsRunTime *rt, deDebugDrawer *debugDrawer){
+void deClassDebugDrawer::PushDebugDrawer(dsRunTime *rt, deDebugDrawer::Ref debugDrawer){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -665,5 +665,4 @@ void deClassDebugDrawer::PushDebugDrawer(dsRunTime *rt, deDebugDrawer *debugDraw
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sDDNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->ddrawer = debugDrawer;
-	debugDrawer->AddReference();
 }

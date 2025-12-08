@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUMoveObject::meUMoveObject(meWorld *world, const meObjectList &objects){
+meUMoveObject::meUMoveObject(meWorld::Ref world, const meObjectList &objects){
 	if(!world){
 		DETHROW(deeInvalidParam);
 	}
@@ -54,8 +54,6 @@ meUMoveObject::meUMoveObject(meWorld *world, const meObjectList &objects){
 	
 	try{
 		pWorld = world;
-		world->AddReference();
-		
 		int i;
 		for(i=0; i<count; i++){
 			pObjects.Add(meUndoDataObject::Ref::NewWith(objects.GetAt(i)));
@@ -132,7 +130,4 @@ void meUMoveObject::ProgressiveRedo(){
 //////////////////////
 
 void meUMoveObject::pCleanUp(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

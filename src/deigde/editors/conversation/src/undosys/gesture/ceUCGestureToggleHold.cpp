@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCGestureToggleHold::ceUCGestureToggleHold(ceGesture *gesture) :
+ceUCGestureToggleHold::ceUCGestureToggleHold(ceGesture::Ref gesture) :
 pGesture(NULL)
 {
 	if(!gesture){
@@ -49,13 +49,9 @@ pGesture(NULL)
 	SetShortInfo("Gesture toggle hold");
 	
 	pGesture = gesture;
-	gesture->AddReference();
 }
 
 ceUCGestureToggleHold::~ceUCGestureToggleHold(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
 }
 
 

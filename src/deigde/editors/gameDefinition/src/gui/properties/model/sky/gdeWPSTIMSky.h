@@ -35,14 +35,14 @@ class gdeSky;
  */
 class gdeWPSTIMSky : public gdeWPSTreeItemModel{
 private:
-	gdeSky *pSky;
+	gdeSky::Ref pSky;
 	
 	
 public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMSky(gdeWPSTreeModel &tree, gdeSky *sky);
+	gdeWPSTIMSky(gdeWPSTreeModel &tree, gdeSky::Ref sky);
 	
 protected:
 	/** \brief Clean up tree item model. */

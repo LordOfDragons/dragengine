@@ -42,7 +42,7 @@ private:
 	deEngine *pEngine;
 	
 	decString pPathSound;
-	deSound *pSound;
+	deSound::Ref pSound;
 	
 	float pMinSpeed;
 	float pMaxSpeed;

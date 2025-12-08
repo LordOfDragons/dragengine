@@ -47,7 +47,7 @@ class deoglWorld : public deBaseGraphicWorld{
 private:
 	deGraphicOpenGl &pOgl;
 	const deWorld &pWorld;
-	deoglRWorld *pRWorld;
+	deoglRWorld::Ref pRWorld;
 	
 	deoglHeightTerrain *pHeightTerrain;
 	deoglSharedVideoPlayerList *pSharedVideoPlayerList;

@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCATriggerSetName : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCATrigger *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCATrigger::Ref pAction;
 	decString pOldName;
 	decString pNewName;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCATriggerSetName(ceConversationTopic *topic, ceCATrigger *action, const char *newName);
+	ceUCATriggerSetName(ceConversationTopic::Ref topic, ceCATrigger::Ref action, const char *newName);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCATriggerSetName();
 	/*@}*/

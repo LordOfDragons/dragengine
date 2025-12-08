@@ -36,7 +36,7 @@ class aeRuleBoneTransformator;
  */
 class aeURuleBTransSetEnablePos : public igdeUndo{
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

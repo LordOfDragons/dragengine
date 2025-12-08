@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetDefaultInheritPropertyPrefix::gdeUOCSetDefaultInheritPropertyPrefix(gdeObjectClass *objectClass, const char *newValue) :
+gdeUOCSetDefaultInheritPropertyPrefix::gdeUOCSetDefaultInheritPropertyPrefix(gdeObjectClass::Ref objectClass, const char *newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass){
@@ -52,13 +52,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetDefaultInheritPropertyPrefix::~gdeUOCSetDefaultInheritPropertyPrefix(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

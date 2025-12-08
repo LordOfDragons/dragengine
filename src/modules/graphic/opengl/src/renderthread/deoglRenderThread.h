@@ -118,9 +118,9 @@ private:
 	deoglMemoryManager pMemoryManager;
 	decObjectOrderedSet pRRenderWindowList;
 	decObjectOrderedSet pRCaptureCanvasList;
-	deoglRCanvasView *pCanvasInputOverlay;
-	deoglRCanvasView *pCanvasDebugOverlay;
-	deoglRCanvasView *pCanvasOverlay;
+	deoglRCanvasView::Ref pCanvasInputOverlay;
+	deoglRCanvasView::Ref pCanvasDebugOverlay;
+	deoglRCanvasView::Ref pCanvasOverlay;
 	
 	deoglRTChoices *pChoices;
 	deoglRTBufferObject *pBufferObject;
@@ -281,19 +281,19 @@ public:
 	inline deoglRCanvasView *GetCanvasInputOverlay() const{ return pCanvasInputOverlay; }
 	
 	/** Set input overlay canvas view or nullptr. */
-	void SetCanvasInputOverlay(deoglRCanvasView *canvas);
+	void SetCanvasInputOverlay(deoglRCanvasView::Ref canvas);
 	
 	/** Debug overlay canvas view or nullptr. */
 	inline deoglRCanvasView *GetCanvasDebugOverlay() const{ return pCanvasDebugOverlay; }
 	
 	/** Set debug overlay canvas view or nullptr. */
-	void SetCanvasDebugOverlay(deoglRCanvasView *canvas);
+	void SetCanvasDebugOverlay(deoglRCanvasView::Ref canvas);
 	
 	/** Overlay canvas view or nullptr. */
 	inline deoglRCanvasView *GetCanvasOverlay() const{ return pCanvasOverlay; }
 	
 	/** Set overlay canvas view or nullptr. */
-	void SetCanvasOverlay(deoglRCanvasView *canvas);
+	void SetCanvasOverlay(deoglRCanvasView::Ref canvas);
 	
 	
 	

@@ -36,7 +36,7 @@ class feFontImage;
  */
 class feUFontSetImagePath : public igdeUndo{
 private:
-	feFontImage *pImage;
+	feFontImage::Ref pImage;
 	decString pOldPath;
 	decString pNewPath;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUFontSetImagePath(feFontImage *image, const char *newPath);
+	feUFontSetImagePath(feFontImage::Ref image, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo. */

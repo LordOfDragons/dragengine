@@ -47,7 +47,7 @@ class deHeightTerrain;
  */
 class DE_DLL_EXPORT dePropFieldGround{
 private:
-	deHeightTerrain *pHeightTerrain;
+	deHeightTerrain::Ref pHeightTerrain;
 	
 	deComponent **pComponents;
 	int pComponentCount;
@@ -76,7 +76,7 @@ public:
 	inline deHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** \brief Set height terrain or NULL if not set. */
-	void SetHeightTerrain(deHeightTerrain *heightTerrain);
+	void SetHeightTerrain(deHeightTerrain::Ref heightTerrain);
 	/*@}*/
 	
 	
@@ -90,16 +90,16 @@ public:
 	deComponent *GetComponentAt(int index) const;
 	
 	/** \brief Index of the given component or -1 if not found. */
-	int IndexOfComponent(deComponent *component) const;
+	int IndexOfComponent(deComponent::Ref component) const;
 	
 	/** \brief Given component exists. */
-	bool HasComponent(deComponent *component) const;
+	bool HasComponent(deComponent::Ref component) const;
 	
 	/** \brief Adds a component. */
-	void AddComponent(deComponent *component);
+	void AddComponent(deComponent::Ref component);
 	
 	/** \brief Removes a component. */
-	void RemoveComponent(deComponent *component);
+	void RemoveComponent(deComponent::Ref component);
 	
 	/** \brief Removes all components. */
 	void RemoveAllComponents();

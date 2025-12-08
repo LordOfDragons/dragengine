@@ -103,7 +103,7 @@ private:
 	decColor pColorize;
 	
 	float pTransparency;
-	sePropertyNode *pMask;
+	sePropertyNode::Ref pMask;
 	deSkinPropertyNode::eCombineModes pCombineMode;
 	
 	seMapped::Ref *pMapped;
@@ -250,7 +250,7 @@ public:
 	inline sePropertyNode *GetMask() const{ return pMask; }
 	
 	/** Set mask node or \em NULL if not masked. */
-	void SetMask(sePropertyNode *mask);
+	void SetMask(sePropertyNode::Ref mask);
 	
 	/** Combine mode. */
 	inline deSkinPropertyNode::eCombineModes GetCombineMode() const{ return pCombineMode; }

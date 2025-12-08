@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakGestureMove::ceUCAASpeakGestureMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *gesture, int newIndex){
+ceUCAASpeakGestureMove::ceUCAASpeakGestureMove(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak,
+ceStrip::Ref gesture, int newIndex){
 	if(!topic || !actorSpeak || !gesture){
 		DETHROW(deeInvalidParam);
 	}
@@ -61,25 +61,11 @@ ceStrip *gesture, int newIndex){
 	SetShortInfo("Move Gesture");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pGesture = gesture;
-	gesture->AddReference();
 }
 
 ceUCAASpeakGestureMove::~ceUCAASpeakGestureMove(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

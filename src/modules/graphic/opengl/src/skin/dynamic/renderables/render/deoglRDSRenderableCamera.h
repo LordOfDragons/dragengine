@@ -38,7 +38,7 @@ class deoglRCamera;
  */
 class deoglRDSRenderableCamera : public deoglRDSRenderable{
 private:
-	deoglRCamera *pCamera;
+	deoglRCamera::Ref pCamera;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Set camera. */
-	void SetCamera(deoglRCamera *camera);
+	void SetCamera(deoglRCamera::Ref camera);
 	
 	/** Prepare for render. */
 	void PrepareForRender(const deoglRenderPlanMasked *renderPlanMask) override;

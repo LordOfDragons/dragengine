@@ -40,7 +40,7 @@ class seSourceGroup;
  */
 class seUSourceGroupPasteSource : public igdeUndo{
 private:
-	seSourceGroup *pGroup;
+	seSourceGroup::Ref pGroup;
 	seSourceList pSourceList;
 	seLinkList pRemoveLinkList;
 	seControllerList pRemoveControllerList;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceGroupPasteSource(seSourceGroup *group, const seSourceList &sourceList, int index);
+	seUSourceGroupPasteSource(seSourceGroup::Ref group, const seSourceList &sourceList, int index);
 	
 protected:
 	/** \brief Clean up undo action. */

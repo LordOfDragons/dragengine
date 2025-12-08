@@ -69,18 +69,15 @@ deSynthesizer *deSynthesizerManager::GetRootSynthesizer() const{
 }
 
 deSynthesizer *deSynthesizerManager::CreateSynthesizer(){
-	deSynthesizer *synthesizer = NULL;
+	deSynthesizer::Ref synthesizer = NULL;
 	
 	try{
-		synthesizer = new deSynthesizer(this);
+		synthesizer.TakeOver(new deSynthesizer(this));
 		GetSynthesizerSystem()->LoadSynthesizer(synthesizer);
 		
 		pSynthesizers.Add(synthesizer);
 		
 	}catch(const deException &){
-		if(synthesizer){
-			synthesizer->FreeReference();
-		}
 		throw;
 	}
 	
@@ -104,7 +101,7 @@ void deSynthesizerManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSynthesizerManager::SystemSynthesizerLoad(){
-	deSynthesizer *synthesizer = (deSynthesizer*)pSynthesizers.GetRoot();
+	deSynthesizer::Ref synthesizer = (deSynthesizer*)pSynthesizers.GetRoot();
 	deSynthesizerSystem &synthSys = *GetSynthesizerSystem();
 	
 	while(synthesizer){
@@ -117,7 +114,7 @@ void deSynthesizerManager::SystemSynthesizerLoad(){
 }
 
 void deSynthesizerManager::SystemSynthesizerUnload(){
-	deSynthesizer *synthesizer = (deSynthesizer*)pSynthesizers.GetRoot();
+	deSynthesizer::Ref synthesizer = (deSynthesizer*)pSynthesizers.GetRoot();
 	
 	while(synthesizer){
 		synthesizer->SetPeerSynthesizer(NULL);

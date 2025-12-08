@@ -91,8 +91,8 @@ deModelBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	deModel *model = NULL;
-	deModel *findModel;
+	deModel::Ref model = NULL;
+	deModel::Ref findModel;
 	
 	try{
 		// check if a model with this filename already exists. this check is only done if
@@ -106,7 +106,7 @@ deModelBuilder &builder){
 		}
 		
 		// create model using the builder
-		model = new deModel(this, vfs, filename, decDateTime::GetSystemTime());
+		model.TakeOver(new deModel(this, vfs, filename, decDateTime::GetSystemTime()));
 		builder.BuildModel(model);
 		
 		// prepare and check model
@@ -124,9 +124,6 @@ deModelBuilder &builder){
 		pModels.Add(model);
 		
 	}catch(const deException &e){
-		if(model){
-			model->FreeReference();
-		}
 		LogErrorFormat("Creating model '%s' failed", filename);
 		LogException(e);
 		throw;
@@ -144,11 +141,11 @@ deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filenam
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileReader *fileReader = NULL;
+	decBaseFileReader::Ref fileReader = NULL;
 	deBaseModelModule *module;
-	deModel *model = NULL;
+	deModel::Ref model = NULL;
 	decPath path;
-	deModel *findModel;
+	deModel::Ref findModel;
 	
 	try{
 		// locate file
@@ -168,7 +165,6 @@ deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filenam
 		}
 		
 		if(findModel){
-			findModel->AddReference();
 			model = findModel;
 			
 		}else{
@@ -178,15 +174,13 @@ deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filenam
 			
 			// load the file with it
 			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
-			model = new deModel(this, vfs, path.GetPathUnix(), modificationTime);
+			model.TakeOver(new deModel(this, vfs, path.GetPathUnix(), modificationTime));
 			if(!model){
 				DETHROW(deeOutOfMemory);
 			}
 			
 			model->SetAsynchron(false);
 			module->LoadModel(*fileReader, *model);
-			
-			fileReader->FreeReference();
 			fileReader = NULL;
 			
 			// prepare and check model
@@ -206,12 +200,6 @@ deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filenam
 		}
 		
 	}catch(const deException &e){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(model){
-			model->FreeReference();
-		}
 		LogErrorFormat("Loading model '%s' (base path '%s') failed", filename, basePath ? basePath : "");
 		LogException(e);
 		throw;
@@ -224,7 +212,7 @@ deModel *deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *filenam
 	return model;
 }
 
-void deModelManager::AddLoadedModel(deModel *model){
+void deModelManager::AddLoadedModel(deModel::Ref model){
 	if(!model){
 		DETHROW(deeInvalidParam);
 	}
@@ -238,7 +226,7 @@ void deModelManager::ReleaseLeakingResources(){
 	const int count = GetModelCount();
 	
 	if(count > 0){
-		deModel *model = (deModel*)pModels.GetRoot();
+		deModel::Ref model = (deModel*)pModels.GetRoot();
 		int unnamedModelCount = 0;
 		
 		LogWarnFormat("%i leaking models", count);
@@ -268,7 +256,7 @@ void deModelManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deModelManager::SystemGraphicLoad(){
-	deModel *model = (deModel*)pModels.GetRoot();
+	deModel::Ref model = (deModel*)pModels.GetRoot();
 	deGraphicSystem &graSys = *GetGraphicSystem();
 	
 	while(model){
@@ -281,7 +269,7 @@ void deModelManager::SystemGraphicLoad(){
 }
 
 void deModelManager::SystemGraphicUnload(){
-	deModel *model = (deModel*)pModels.GetRoot();
+	deModel::Ref model = (deModel*)pModels.GetRoot();
 	
 	while(model){
 		model->SetPeerGraphic(NULL);
@@ -290,7 +278,7 @@ void deModelManager::SystemGraphicUnload(){
 }
 
 void deModelManager::SystemPhysicsLoad(){
-	deModel *model = (deModel*)pModels.GetRoot();
+	deModel::Ref model = (deModel*)pModels.GetRoot();
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
 	
 	while(model){
@@ -303,7 +291,7 @@ void deModelManager::SystemPhysicsLoad(){
 }
 
 void deModelManager::SystemPhysicsUnload(){
-	deModel *model = (deModel*)pModels.GetRoot();
+	deModel::Ref model = (deModel*)pModels.GetRoot();
 	
 	while(model){
 		model->SetPeerPhysics(NULL);
@@ -312,7 +300,7 @@ void deModelManager::SystemPhysicsUnload(){
 }
 
 void deModelManager::SystemAudioLoad(){
-	deModel *model = (deModel*)pModels.GetRoot();
+	deModel::Ref model = (deModel*)pModels.GetRoot();
 	deAudioSystem &audSys = *GetAudioSystem();
 	
 	while(model){
@@ -325,7 +313,7 @@ void deModelManager::SystemAudioLoad(){
 }
 
 void deModelManager::SystemAudioUnload(){
-	deModel *model = (deModel*)pModels.GetRoot();
+	deModel::Ref model = (deModel*)pModels.GetRoot();
 	
 	while(model){
 		model->SetPeerAudio (NULL);

@@ -86,7 +86,7 @@ public:
 	/** Loads the font from file if possible. */
 	feFont *LoadFont(const char *filename, igdeGameDefinition *gameDefinition);
 	/** Saves the font to file if possible. */
-	void SaveFont(feFont *font, const char *filename);
+	void SaveFont(feFont::Ref font, const char *filename);
 	/*@}*/
 	
 private:

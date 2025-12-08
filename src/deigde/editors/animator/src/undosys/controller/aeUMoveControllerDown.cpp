@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUMoveControllerDown::aeUMoveControllerDown(aeAnimator *animator, aeController *controller){
+aeUMoveControllerDown::aeUMoveControllerDown(aeAnimator::Ref animator, aeController::Ref controller){
 	if(!animator || !controller) DETHROW(deeInvalidParam);
 	
 	pAnimator = NULL;
@@ -50,10 +50,7 @@ aeUMoveControllerDown::aeUMoveControllerDown(aeAnimator *animator, aeController 
 	if(pIndex == -1 || pIndex == animator->GetControllers().GetCount() - 1) DETHROW(deeInvalidParam);
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 aeUMoveControllerDown::~aeUMoveControllerDown(){

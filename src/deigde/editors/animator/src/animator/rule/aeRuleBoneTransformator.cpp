@@ -397,10 +397,10 @@ void aeRuleBoneTransformator::RemoveLinksFromAllTargets(){
 
 
 deAnimatorRule *aeRuleBoneTransformator::CreateEngineRule(){
-	deAnimatorRuleBoneTransformator *engRule = NULL;
+	deAnimatorRuleBoneTransformator::Ref engRule = NULL;
 	
 	try{
-		engRule = new deAnimatorRuleBoneTransformator;
+		engRule.TakeOver(new deAnimatorRuleBoneTransformator);
 		
 		InitEngineRule(engRule);
 		
@@ -427,9 +427,6 @@ deAnimatorRule *aeRuleBoneTransformator::CreateEngineRule(){
 		pTargetScaling.UpdateEngineTarget(GetAnimator(), engRule->GetTargetScaling());
 		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 	

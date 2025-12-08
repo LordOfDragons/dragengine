@@ -41,14 +41,14 @@ class meObjectList;
 class meUObjectAttachTo : public igdeUndo{
 private:
 	struct sObject{
-		meObject *object;
+		meObject::Ref object;
 		meObject *oldAttachTo;
 	};
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	sObject *pObjects;
 	int pObjectCount;
-	meObject *pAttachTo;
+	meObject::Ref pAttachTo;
 	
 	
 	
@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUObjectAttachTo(meWorld *world, const meObjectList &objects, meObject *attachTo);
+	meUObjectAttachTo(meWorld::Ref world, const meObjectList &objects, meObject::Ref attachTo);
 	
 	/** \brief Clean up undo action. */
 	virtual ~meUObjectAttachTo();

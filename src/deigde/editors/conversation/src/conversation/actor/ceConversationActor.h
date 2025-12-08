@@ -68,13 +68,13 @@ private:
 	};
 	
 	struct sFacePose{
-		ceFacePose *facePose;
+		ceFacePose::Ref facePose;
 		float pause;
 		float length;
 	};
 	
 	struct sLookAt{
-		ceTarget *lookAt;
+		ceTarget::Ref lookAt;
 		float pause;
 		float duration;
 	};
@@ -85,14 +85,14 @@ private:
 	ceConversation *pConversation;
 	
 	igdeEnvironment &pEnvironment;
-	deComponent *pEngComponent;
-	deAnimatorInstance *pEngAnimatorInstance;
-	deAnimatorInstance *pEngGestureAnimatorInstance;
-	deAnimator *pEngFacePoseAnimator;
-	deAnimatorInstance *pEngFacePoseAnimatorInstance;
-	deAnimator *pEngEyesAnimator;
-	deAnimatorInstance *pEngEyesAnimatorInstance;
-	deSpeaker *pEngSpeaker;
+	deComponent::Ref pEngComponent;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
+	deAnimatorInstance::Ref pEngGestureAnimatorInstance;
+	deAnimator::Ref pEngFacePoseAnimator;
+	deAnimatorInstance::Ref pEngFacePoseAnimatorInstance;
+	deAnimator::Ref pEngEyesAnimator;
+	deAnimatorInstance::Ref pEngEyesAnimatorInstance;
+	deSpeaker::Ref pEngSpeaker;
 	
 	decString pNameGestureProgress;
 	decString pNameGesturePlayback;
@@ -119,7 +119,7 @@ private:
 	ceSpeechAnimation *pSpeechAnimation;
 	
 	ceActorPoseList pPoses;
-	ceActorPose *pActivePose;
+	ceActorPose::Ref pActivePose;
 	
 	float pHeadLeftRight;
 	float pHeadUpDown;
@@ -139,8 +139,8 @@ private:
 	int pPlayFacePosePos;
 	float pPlayFacePoseElapsed;
 	bool pPlayFacePoseRunning;
-	ceFacePose *pPlayLastFacePose;
-	ceFacePose *pPlayCurFacePose;
+	ceFacePose::Ref pPlayLastFacePose;
+	ceFacePose::Ref pPlayCurFacePose;
 	
 	sLookAt *pPlayHeadLAs;
 	int pPlayHeadLACount;
@@ -148,8 +148,8 @@ private:
 	int pPlayHeadLAPos;
 	float pPlayHeadLAElapsed;
 	bool pPlayHeadLARunning;
-	ceTarget *pPlayLastHeadLA;
-	ceTarget *pPlayCurHeadLA;
+	ceTarget::Ref pPlayLastHeadLA;
+	ceTarget::Ref pPlayCurHeadLA;
 	
 	sLookAt *pPlayEyesLAs;
 	int pPlayEyesLACount;
@@ -157,8 +157,8 @@ private:
 	int pPlayEyesLAPos;
 	float pPlayEyesLAElapsed;
 	bool pPlayEyesLARunning;
-	ceTarget *pPlayLastEyesLA;
-	ceTarget *pPlayCurEyesLA;
+	ceTarget::Ref pPlayLastEyesLA;
+	ceTarget::Ref pPlayCurEyesLA;
 	int pPlayEyesBoneDisable;
 	
 	float pBlinkFreqMin;
@@ -271,13 +271,13 @@ public:
 	inline ceActorPose *GetActivePose() const{ return pActivePose; }
 	
 	/** \brief Set active pose or \em NULL. */
-	void SetActivePose(ceActorPose *pose);
+	void SetActivePose(ceActorPose::Ref pose);
 	
 	/** \brief Notify all poses changed. */
 	void NotifyPosesChanged();
 	
 	/** \brief Notify all pose gestures changed. */
-	void NotifyPoseGesturesChanged(ceActorPose *pose);
+	void NotifyPoseGesturesChanged(ceActorPose::Ref pose);
 	
 	/** Play a voice audio sound file. */
 	void PlayVoiceAudio(deSound *sound);
@@ -308,17 +308,17 @@ public:
 	/** Remove all play face poses. */
 	void RemoveAllPlayFacePoses();
 	/** Adds a play face pose. */
-	void AddPlayFacePose(ceFacePose *facePose, float pause, float length);
+	void AddPlayFacePose(ceFacePose::Ref facePose, float pause, float length);
 	
 	/** Remove all play head look-ats. */
 	void RemoveAllPlayHeadLookAts();
 	/** Adds a play head look-at. */
-	void AddPlayHeadLookAt(ceTarget *lookAt, float pause, float duration);
+	void AddPlayHeadLookAt(ceTarget::Ref lookAt, float pause, float duration);
 	
 	/** Remove all play head look-ats. */
 	void RemoveAllPlayEyesLookAts();
 	/** Adds a play head look-at. */
-	void AddPlayEyesLookAt(ceTarget *lookAt, float pause, float duration);
+	void AddPlayEyesLookAt(ceTarget::Ref lookAt, float pause, float duration);
 	
 	/** \brief Determines if the actor causes waiting if the playback checks for actor waiting. */
 	inline bool GetWaiting() const{ return pWaiting; }

@@ -42,7 +42,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	deCanvas &pCanvas;
 	
-	deoglRCanvas *pRCanvas;
+	deoglRCanvas::Ref pRCanvas;
 	bool pDirtyGeometry;
 	bool pDirtyTransform;
 	bool pDirtyColorTransform;

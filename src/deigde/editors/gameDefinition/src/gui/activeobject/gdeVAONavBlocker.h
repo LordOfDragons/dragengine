@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCNavigationBlocker *pOCNavBlocker;
+	gdeOCNavigationBlocker::Ref pOCNavBlocker;
 	
 	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSBlocker;

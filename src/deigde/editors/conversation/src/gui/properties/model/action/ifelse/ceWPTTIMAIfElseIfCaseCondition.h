@@ -38,7 +38,7 @@ class ceWPTTIMAIfElseIfCase;
  */
 class ceWPTTIMAIfElseIfCaseCondition : public ceWPTTIMConditionContainer{
 private:
-	ceCAIfElseCase *pIfCase;
+	ceCAIfElseCase::Ref pIfCase;
 	
 	
 	
@@ -47,7 +47,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	ceWPTTIMAIfElseIfCaseCondition(ceWindowMain &windowMain,
-		ceConversation &conversation, ceCAIfElse&ifElse, ceCAIfElseCase *ifCase);
+		ceConversation &conversation, ceCAIfElse&ifElse, ceCAIfElseCase::Ref ifCase);
 	
 protected:
 	/** \brief Clean up tree item model. */

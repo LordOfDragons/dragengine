@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUControllerSetLower::peeUControllerSetLower(peeController *controller, float newValue) :
-pController(NULL),
+peeUControllerSetLower::peeUControllerSetLower(peeController::Ref controller, float newValue) :
+
 pNewLower(newValue)
 {
 	if(!controller){
@@ -53,13 +53,9 @@ pNewLower(newValue)
 	pOldUpper = controller->GetUpper();
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 peeUControllerSetLower::~peeUControllerSetLower(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

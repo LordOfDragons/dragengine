@@ -96,8 +96,8 @@ int ZCALLBACK minizip_error_file_func(voidpf opaque,voidpf stream){
 // Constructor, destructor
 ////////////////////////////
 
-dealAssetUnpacker::dealAssetUnpacker(deLogger *logger) :
-pLogger(NULL),
+dealAssetUnpacker::dealAssetUnpacker(deLogger::Ref logger) :
+
 pAsset(NULL),
 pUnpacking(false),
 pStopUnpacking(false),
@@ -115,7 +115,6 @@ pThreadUnpack(0)
 	}
 	
 	pLogger = logger;
-	logger->AddReference();
 }
 
 dealAssetUnpacker::~dealAssetUnpacker(){
@@ -126,10 +125,6 @@ dealAssetUnpacker::~dealAssetUnpacker(){
 	}
 	
 	pthread_mutex_destroy(&pMutex);
-	
-	if(pLogger){
-		pLogger->FreeReference();
-	}
 }
 
 
@@ -271,7 +266,7 @@ void dealAssetUnpacker::pUnpack(){
 	decString realFilename;
 	int curEntry = 0;
 	bool nextFile = true;
-	decBaseFileWriter *writeFile = NULL;
+	decBaseFileWriter::Ref writeFile = NULL;
 	
 	try{
 		// open zip file
@@ -391,7 +386,6 @@ void dealAssetUnpacker::pUnpack(){
 						
 					}else{ // 0 = EOF
 						if(writeFile){
-							writeFile->FreeReference();
 							writeFile = NULL;
 						}
 						break;
@@ -436,9 +430,6 @@ void dealAssetUnpacker::pUnpack(){
 	}catch(const deException &){
 		if(buffer){
 			delete [] buffer;
-		}
-		if(writeFile){
-			writeFile->FreeReference();
 		}
 		pUnpackFailed = true;
 	}

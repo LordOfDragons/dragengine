@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalColorTint::meUDecalColorTint(meDecal *decal, const decColor &newColor){
+meUDecalColorTint::meUDecalColorTint(meDecal::Ref decal, const decColor &newColor){
 	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
@@ -59,13 +59,9 @@ meUDecalColorTint::meUDecalColorTint(meDecal *decal, const decColor &newColor){
 	pNewColor = newColor;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalColorTint::~meUDecalColorTint(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

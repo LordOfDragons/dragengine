@@ -45,7 +45,7 @@
 
 // Native Structure
 struct sCTextNatDat{
-	deCanvasText *canvas;
+	deCanvasText::Ref canvas;
 };
 
 
@@ -265,7 +265,7 @@ deCanvasText *deClassCanvasText::GetCanvas(dsRealObject *myself) const {
 	return ((sCTextNatDat*)p_GetNativeData(myself->GetBuffer()))->canvas;
 }
 
-void deClassCanvasText::PushCanvas(dsRunTime *rt, deCanvasText *canvas){
+void deClassCanvasText::PushCanvas(dsRunTime *rt, deCanvasText::Ref canvas){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -282,8 +282,6 @@ void deClassCanvasText::PushCanvas(dsRunTime *rt, deCanvasText *canvas){
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		canvas->AddReference();
 		nd.canvas = canvas;
 		
 		baseClass->AssignCanvas(rt->GetValue(0)->GetRealObject(), canvas);

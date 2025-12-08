@@ -36,7 +36,7 @@ class ceCameraShot;
  */
 class ceUCCShotToggleLockLookAtTarget : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -45,7 +45,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCCShotToggleLockLookAtTarget(ceCameraShot *cameraShot);
+	ceUCCShotToggleLockLookAtTarget(ceCameraShot::Ref cameraShot);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCCShotToggleLockLookAtTarget();
 	/*@}*/

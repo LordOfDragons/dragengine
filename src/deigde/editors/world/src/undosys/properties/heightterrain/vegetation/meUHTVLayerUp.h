@@ -43,9 +43,9 @@ class meHTVegetationLayer;
  */
 class meUHTVLayerUp : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
-	meHTVegetationLayer *pVLayer;
+	meHTVegetationLayer::Ref pVLayer;
 	int pIndex;
 	
 public:
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUHTVLayerUp(meWorld *world, meHeightTerrain *heightTerrain, meHTVegetationLayer *vlayer);
+	meUHTVLayerUp(meWorld::Ref world, meHeightTerrain *heightTerrain, meHTVegetationLayer::Ref vlayer);
 	
 protected:
 	/** \brief Clean up undo object. */

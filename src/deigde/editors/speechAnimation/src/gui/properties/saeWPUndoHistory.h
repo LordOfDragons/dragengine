@@ -37,8 +37,8 @@ class saeWPUndoHistoryListener;
  */
 class saeWPUndoHistory : public igdeWPUndoHistory{
 private:
-	saeSAnimation *pSAnimation;
-	saeWPUndoHistoryListener *pListener;
+	saeSAnimation::Ref pSAnimation;
+	saeWPUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -62,7 +62,7 @@ public:
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
-	void SetSAnimation(saeSAnimation *sanimation);
+	void SetSAnimation(saeSAnimation::Ref sanimation);
 	/*@}*/
 };
 

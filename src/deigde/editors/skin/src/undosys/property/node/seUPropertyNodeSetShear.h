@@ -38,7 +38,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeSetShear : public igdeUndo{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	float pOldValue;
 	float pNewValue;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetShear(sePropertyNode *node, float newValue);
+	seUPropertyNodeSetShear(sePropertyNode::Ref node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCSpeakerSetPathSound : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetPathSound(gdeObjectClass *objectClass,
-		gdeOCSpeaker *speaker, const char *newValue);
+	gdeUOCSpeakerSetPathSound(gdeObjectClass::Ref objectClass,
+		gdeOCSpeaker::Ref speaker, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

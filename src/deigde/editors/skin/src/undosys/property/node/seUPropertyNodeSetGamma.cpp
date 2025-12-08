@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetGamma::seUPropertyNodeSetGamma(sePropertyNode *node, float newValue) :
-pNode(NULL),
+seUPropertyNodeSetGamma::seUPropertyNodeSetGamma(sePropertyNode::Ref node, float newValue) :
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = node->GetGamma();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetGamma::~seUPropertyNodeSetGamma(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

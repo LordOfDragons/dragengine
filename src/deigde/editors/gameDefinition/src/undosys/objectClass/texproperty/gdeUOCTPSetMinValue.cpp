@@ -40,9 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPSetMinValue::gdeUOCTPSetMinValue(gdeObjectClass *objectClass, gdeProperty *property, float newValue) :
-pObjectClass(NULL),
-pProperty(NULL)
+gdeUOCTPSetMinValue::gdeUOCTPSetMinValue(gdeObjectClass::Ref objectClass, gdeProperty::Ref property, float newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
@@ -54,19 +53,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCTPSetMinValue::~gdeUOCTPSetMinValue(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

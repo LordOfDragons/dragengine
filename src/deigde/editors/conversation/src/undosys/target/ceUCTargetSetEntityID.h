@@ -36,7 +36,7 @@ class ceTarget;
  */
 class ceUCTargetSetEntityID : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decString pOldID;
 	decString pNewID;
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetSetEntityID(ceTarget *target, const char *newID);
+	ceUCTargetSetEntityID(ceTarget::Ref target, const char *newID);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCTargetSetEntityID();

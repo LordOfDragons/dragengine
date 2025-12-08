@@ -36,7 +36,7 @@ class sePropertyNodeText;
  */
 class seUPropertyNodeTextSetSize : public igdeUndo{
 private:
-	sePropertyNodeText *pNode;
+	sePropertyNodeText::Ref pNode;
 	
 	float pOldValue;
 	float pNewValue;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeTextSetSize(sePropertyNodeText *node, float newValue);
+	seUPropertyNodeTextSetSize(sePropertyNodeText::Ref node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAMusicSetName : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAMusic *pMusic;
+	ceConversationTopic::Ref pTopic;
+	ceCAMusic::Ref pMusic;
 	decString pOldName;
 	decString pNewName;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAMusicSetName(ceConversationTopic *topic, ceCAMusic *music, const char *newName);
+	ceUCAMusicSetName(ceConversationTopic::Ref topic, ceCAMusic::Ref music, const char *newName);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAMusicSetName();

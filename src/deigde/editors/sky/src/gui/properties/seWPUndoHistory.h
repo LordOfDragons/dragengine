@@ -37,8 +37,8 @@ class seWPUndoHistoryListener;
  */
 class seWPUndoHistory : public igdeWPUndoHistory{
 private:
-	seWPUndoHistoryListener *pListener;
-	seSky *pSky;
+	seWPUndoHistoryListener::Ref pListener;
+	seSky::Ref pSky;
 	
 	
 	
@@ -62,7 +62,7 @@ public:
 	inline seSky *GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
-	void SetSky(seSky *sky);
+	void SetSky(seSky::Ref sky);
 	/*@}*/
 };
 

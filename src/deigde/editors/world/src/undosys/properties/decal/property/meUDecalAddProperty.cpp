@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalAddProperty::meUDecalAddProperty(meDecal *decal, const char *key, const char *value) :
+meUDecalAddProperty::meUDecalAddProperty(meDecal::Ref decal, const char *key, const char *value) :
 pDecal(NULL)
 {
 	if(!decal || !key || strlen(key) == 0 || !value){
@@ -60,7 +60,6 @@ pDecal(NULL)
 	pValue = value;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalAddProperty::~meUDecalAddProperty(){
@@ -96,7 +95,4 @@ void meUDecalAddProperty::ProgressiveRedo(){
 //////////////////////
 
 void meUDecalAddProperty::pCleanUp(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }

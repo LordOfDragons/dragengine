@@ -63,9 +63,9 @@ private:
 	reRig *pRig;
 	reRigBone *pRigBone;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSShape;
-	deColliderVolume *pCollider;
+	deColliderVolume::Ref pCollider;
 	
 	eShapeTypes pShapeType;
 	

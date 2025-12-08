@@ -38,8 +38,8 @@ class gdeSky;
  */
 class gdeURemoveSky : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeSky *pSky;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeSky::Ref pSky;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeURemoveSky(gdeGameDefinition *gameDefinition, gdeSky *sky);
+	gdeURemoveSky(gdeGameDefinition::Ref gameDefinition, gdeSky::Ref sky);
 	
 protected:
 	/** \brief Clean up undo action. */

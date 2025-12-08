@@ -36,7 +36,7 @@ class reRigBone;
  */
 class reUSetBoneMass : public igdeUndo{
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	float pOldMass;
 	float pNewMass;

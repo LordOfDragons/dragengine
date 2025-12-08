@@ -39,9 +39,9 @@ class ceConversationTopic;
  */
 class ceUCCTriggerSetTestMode : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionTrigger *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionTrigger::Ref pCondition;
 	ceCConditionTrigger::eTestModes pOldTestMode;
 	ceCConditionTrigger::eTestModes pNewTestMode;
 	
@@ -52,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCCTriggerSetTestMode(ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionTrigger *condition, ceCConditionTrigger::eTestModes newTestMode);
+	ceUCCTriggerSetTestMode(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
+		ceCConditionTrigger::Ref condition, ceCConditionTrigger::eTestModes newTestMode);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCCTriggerSetTestMode();
 	/*@}*/

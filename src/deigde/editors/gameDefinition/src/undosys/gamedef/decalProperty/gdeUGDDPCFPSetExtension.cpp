@@ -41,11 +41,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPCFPSetExtension::gdeUGDDPCFPSetExtension(gdeGameDefinition *gamedef,
-gdeProperty *property, gdeFilePattern *filePattern, const char *newValue) :
-pGameDefinition(NULL),
-pProperty(NULL),
-pFilePattern(NULL)
+gdeUGDDPCFPSetExtension::gdeUGDDPCFPSetExtension(gdeGameDefinition::Ref gamedef,
+gdeProperty::Ref property, gdeFilePattern::Ref filePattern, const char *newValue) :
+
+pProperty(NULL)
 {
 	if(!gamedef || !property || !filePattern){
 		DETHROW(deeInvalidParam);
@@ -57,25 +56,11 @@ pFilePattern(NULL)
 	pNewValue = newValue;
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
-	
 	pFilePattern = filePattern;
-	filePattern->AddReference();
 }
 
 gdeUGDDPCFPSetExtension::~gdeUGDDPCFPSetExtension(){
-	if(pFilePattern){
-		pFilePattern->FreeReference();
-	}
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

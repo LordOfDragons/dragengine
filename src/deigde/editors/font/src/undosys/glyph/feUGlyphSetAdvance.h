@@ -36,7 +36,7 @@ class feFontGlyph;
  */
 class feUGlyphSetAdvance : public igdeUndo{
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	
 	int pOldAdvance;
 	int pNewAdvance;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUGlyphSetAdvance(feFontGlyph *glyph, int newAdvance);
+	feUGlyphSetAdvance(feFontGlyph::Ref glyph, int newAdvance);
 	
 protected:
 	/** \brief Clean up undo. */

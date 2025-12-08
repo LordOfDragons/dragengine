@@ -38,7 +38,7 @@ class aeAnimator;
  */
 class aeULinkRemoveUnused : public igdeUndo{
 private:
-	aeAnimator *pAnimator;
+	aeAnimator::Ref pAnimator;
 	aeLinkList pLinks;
 	
 	

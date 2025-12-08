@@ -52,8 +52,8 @@ class meWorld;
 class meWPSDecal : public igdeContainerScroll{
 private:
 	meWPSelection &pWPSelection;
-	meWPSDecalListener *pListener;
-	meWorld *pWorld;
+	meWPSDecalListener::Ref pListener;
+	meWorld::Ref pWorld;
 	
 	igdeSpinTextField::Ref pSpinActive;
 	igdeTextField::Ref pEditSelCount;
@@ -104,7 +104,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld(meWorld *world);
+	void SetWorld(meWorld::Ref world);
 	
 	/** \brief Active decal or NULL. */
 	meDecal *GetActiveDecal() const;

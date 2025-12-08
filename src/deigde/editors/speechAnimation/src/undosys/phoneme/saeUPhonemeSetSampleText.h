@@ -36,7 +36,7 @@ class saePhoneme;
  */
 class saeUPhonemeSetSampleText : public igdeUndo{
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	decString pOldText;
 	decString pNewText;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeSetSampleText(saePhoneme *phoneme, const char *newText);
+	saeUPhonemeSetSampleText(saePhoneme::Ref phoneme, const char *newText);
 	
 protected:
 	/** Clean up undo. */

@@ -82,7 +82,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSynthesizer *synthesizer) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSynthesizer::Ref synthesizer) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -104,7 +104,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSynthesizer *synthesizer) = 0;
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSynthesizer::Ref synthesizer) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -128,7 +128,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSynthesizer *synthesizer) = 0;
+	virtual igdeUndo *OnAction(seSynthesizer::Ref synthesizer) = 0;
 	
 	virtual void Update(){
 		seSynthesizer * const synthesizer = pPanel.GetSynthesizer();
@@ -150,7 +150,7 @@ class cComboChannelCount : public cBaseComboBoxListener{
 public:
 	cComboChannelCount(seWPSynthesizer &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSynthesizer *synthesizer){
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSynthesizer::Ref synthesizer){
 		const int value = decMath::max(comboBox->GetText().ToInt(), 1);
 		return synthesizer->GetChannelCount() != value
 			? new seUSynthesizerSetChannelCount(synthesizer, value) : NULL;
@@ -161,7 +161,7 @@ class cComboSampleRate : public cBaseComboBoxListener{
 public:
 	cComboSampleRate(seWPSynthesizer &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSynthesizer *synthesizer){
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSynthesizer::Ref synthesizer){
 		const int value = decMath::max(comboBox->GetText().ToInt(), 1);
 		return synthesizer->GetSampleRate() != value
 			? new seUSynthesizerSetSampleRate(synthesizer, value) : NULL;
@@ -172,7 +172,7 @@ class cComboBytesPerSample : public cBaseComboBoxListener{
 public:
 	cComboBytesPerSample(seWPSynthesizer &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSynthesizer *synthesizer){
+	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, seSynthesizer::Ref synthesizer){
 		const int value = decMath::max(comboBox->GetText().ToInt(), 1);
 		return synthesizer->GetBytesPerSample() != value
 			? new seUSynthesizerSetBytesPerSample(synthesizer, value) : NULL;
@@ -183,7 +183,7 @@ class cTextSampleCount : public cBaseTextFieldListener{
 public:
 	cTextSampleCount(seWPSynthesizer &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSynthesizer *synthesizer){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSynthesizer::Ref synthesizer){
 		const int value = decMath::max(textField->GetInteger(), 1);
 		return synthesizer->GetSampleCount() != value
 			? new seUSynthesizerSetSampleCount(synthesizer, value) : NULL;
@@ -196,7 +196,7 @@ public:
 	cTextPlayTime(seWPSynthesizer &panel, bool &preventUpdate) :
 	cBaseTextFieldListener(panel), pPreventUpdate(preventUpdate){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, seSynthesizer *synthesizer){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, seSynthesizer::Ref synthesizer){
 		if(pPreventUpdate){
 			return NULL;
 		}
@@ -212,7 +212,7 @@ public:
 	cActionLooping(seWPSynthesizer &panel) : cBaseAction(panel, "Looping",
 		NULL, "Playback looping"){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
+	virtual igdeUndo *OnAction(seSynthesizer::Ref synthesizer){
 		synthesizer->SetLooping(!synthesizer->GetLooping());
 		return NULL;
 	}
@@ -224,7 +224,7 @@ public:
 		panel.GetViewSynthesizer().GetWindowMain().GetIconPlay(),
 		"Start playing back"){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
+	virtual igdeUndo *OnAction(seSynthesizer::Ref synthesizer){
 		synthesizer->Play();
 		return NULL;
 	}
@@ -240,7 +240,7 @@ public:
 		panel.GetViewSynthesizer().GetWindowMain().GetIconPause(),
 		"Pause playing back"){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
+	virtual igdeUndo *OnAction(seSynthesizer::Ref synthesizer){
 		synthesizer->Pause();
 		return NULL;
 	}
@@ -256,7 +256,7 @@ public:
 		panel.GetViewSynthesizer().GetWindowMain().GetIconStop(),
 		"Stop playing back"){}
 	
-	virtual igdeUndo *OnAction(seSynthesizer *synthesizer){
+	virtual igdeUndo *OnAction(seSynthesizer::Ref synthesizer){
 		synthesizer->Stop();
 		return NULL;
 	}
@@ -279,15 +279,13 @@ public:
 seWPSynthesizer::seWPSynthesizer(seViewSynthesizer &viewSynthesizer) :
 igdeContainerScroll(viewSynthesizer.GetEnvironment(), false, true),
 pViewSynthesizer(viewSynthesizer),
-pListener(NULL),
-pSynthesizer(NULL),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new seWPSynthesizerListener(*this);
+	pListener.TakeOver(new seWPSynthesizerListener(*this));
 	
 	
 	pActionPlay.TakeOver(new cActionPlay(*this));
@@ -334,10 +332,6 @@ pPreventUpdate(false)
 seWPSynthesizer::~seWPSynthesizer(){
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -346,21 +340,19 @@ seWPSynthesizer::~seWPSynthesizer(){
 // Management
 ///////////////
 
-void seWPSynthesizer::SetSynthesizer(seSynthesizer *synthesizer){
+void seWPSynthesizer::SetSynthesizer(seSynthesizer::Ref synthesizer){
 	if(synthesizer == pSynthesizer){
 		return;
 	}
 	
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
 	if(synthesizer){
 		synthesizer->AddNotifier(pListener);
-		synthesizer->AddReference();
 	}
 	
 	UpdateSynthesizer();

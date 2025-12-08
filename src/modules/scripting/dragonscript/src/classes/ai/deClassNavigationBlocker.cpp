@@ -45,7 +45,7 @@
 
 
 struct sNavBlockerNatDat{
-	deNavigationBlocker *blocker;
+	deNavigationBlocker::Ref blocker;
 };
 
 
@@ -389,7 +389,7 @@ deNavigationBlocker *deClassNavigationBlocker::GetNavigationBlocker(dsRealObject
 	return ((const sNavBlockerNatDat *)p_GetNativeData(myself->GetBuffer()))->blocker;
 }
 
-void deClassNavigationBlocker::PushNavigationBlocker(dsRunTime *rt, deNavigationBlocker *blocker){
+void deClassNavigationBlocker::PushNavigationBlocker(dsRunTime *rt, deNavigationBlocker::Ref blocker){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -401,5 +401,4 @@ void deClassNavigationBlocker::PushNavigationBlocker(dsRunTime *rt, deNavigation
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sNavBlockerNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->blocker = blocker;
-	blocker->AddReference();
 }

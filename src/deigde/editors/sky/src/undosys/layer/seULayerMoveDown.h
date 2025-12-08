@@ -35,7 +35,7 @@ class seLayer;
  */
 class seULayerMoveDown : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	int pIndex;
 	
 	
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerMoveDown(seLayer *layer);
+	seULayerMoveDown(seLayer::Ref layer);
 	
 protected:
 	/** \brief Clean up undo action. */

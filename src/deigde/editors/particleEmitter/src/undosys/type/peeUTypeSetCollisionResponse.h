@@ -37,7 +37,7 @@ class peeType;
  */
 class peeUTypeSetCollisionResponse : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	deParticleEmitterType::eCollisionResponses pOldResponse;
 	deParticleEmitterType::eCollisionResponses pNewResponse;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	peeUTypeSetCollisionResponse(peeType *type, deParticleEmitterType::eCollisionResponses newResponse);
+	peeUTypeSetCollisionResponse(peeType::Ref type, deParticleEmitterType::eCollisionResponses newResponse);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCCameraSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCCamera *pCamera;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCCamera::Ref pCamera;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCameraSetRotation(gdeObjectClass *objectClass, gdeOCCamera *camera, const decVector &newValue);
+	gdeUOCCameraSetRotation(gdeObjectClass::Ref objectClass, gdeOCCamera::Ref camera, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

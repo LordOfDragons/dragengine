@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetBoneName::gdeUOCSpeakerSetBoneName(gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, const char *newValue) :
-pObjectClass(NULL),
+gdeUOCSpeakerSetBoneName::gdeUOCSpeakerSetBoneName(gdeObjectClass::Ref objectClass,
+gdeOCSpeaker::Ref speaker, const char *newValue) :
+
 pSpeaker(NULL)
 {
 	if(!objectClass || !speaker){
@@ -55,19 +55,10 @@ pSpeaker(NULL)
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetBoneName::~gdeUOCSpeakerSetBoneName(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

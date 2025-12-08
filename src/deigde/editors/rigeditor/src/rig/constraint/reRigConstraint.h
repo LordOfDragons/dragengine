@@ -53,7 +53,7 @@ private:
 	reRig *pRig;
 	reRigBone *pRigBone;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSConstraint;
 	igdeWDebugDrawerShape *pDDSJointError;
 	igdeWCoordSysArrows *pDDSCoordSys;
@@ -62,7 +62,7 @@ private:
 	igdeWAngleRange *pDDSRangeAngularX;
 	igdeWAngleRange *pDDSRangeAngularY;
 	igdeWAngleRange *pDDSRangeAngularZ;
-	deColliderVolume *pCollider;
+	deColliderVolume::Ref pCollider;
 	deColliderConstraint *pEngConstraint;
 	
 	decVector pPosition;
@@ -79,7 +79,7 @@ private:
 	
 	float pBreakingThreshold;
 	
-	reRigBone *pConstraintBone;
+	reRigBone::Ref pConstraintBone;
 	
 	decDMatrix pPoseMatrix1;
 	decDMatrix pPoseMatrix2;
@@ -182,7 +182,7 @@ public:
 	/** \brief Retrieves the constraint rig bone or NULL. */
 	inline reRigBone *GetConstraintBone() const{ return pConstraintBone; }
 	/** \brief Sets the constraint rig bone or NULL. */
-	void SetConstraintBone(reRigBone *bone);
+	void SetConstraintBone(reRigBone::Ref bone);
 	
 	/** \brief Retrieves the first pose matrix. */
 	inline const decDMatrix &GetPoseMatrix1() const{ return pPoseMatrix1; }

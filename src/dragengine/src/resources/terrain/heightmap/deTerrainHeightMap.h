@@ -67,7 +67,7 @@ private:
 	float pScaling;
 	
 	decString pPathHeightImage;
-	deImage *pHeightImage;
+	deImage::Ref pHeightImage;
 	
 	decString pPathVisImage;
 	unsigned char *pVisibleFaces;
@@ -117,7 +117,7 @@ public:
 	inline deImage *GetHeightImage() const{ return pHeightImage; }
 	
 	/** \brief Set height image or NULL if not set. */
-	void SetHeightImage(deImage *heightImage);
+	void SetHeightImage(deImage::Ref heightImage);
 	
 	/** \brief Calculates the extends. */
 	void CalculateExtends(decVector &minExtend, decVector &maxExtend);

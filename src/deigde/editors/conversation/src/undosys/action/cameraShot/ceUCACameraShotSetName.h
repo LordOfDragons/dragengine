@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCACameraShotSetName : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCACameraShot *pCameraShot;
+	ceConversationTopic::Ref pTopic;
+	ceCACameraShot::Ref pCameraShot;
 	decString pOldName;
 	decString pNewName;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCACameraShotSetName(ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newName);
+	ceUCACameraShotSetName(ceConversationTopic::Ref topic, ceCACameraShot::Ref cameraShot, const char *newName);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCACameraShotSetName();

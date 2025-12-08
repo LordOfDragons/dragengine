@@ -62,7 +62,6 @@
 deoglComponent::deoglComponent(deGraphicOpenGl &ogl, deComponent &component) :
 pOgl(ogl),
 pComponent(component),
-pRComponent(NULL),
 
 pParentWorld(NULL),
 pSkinStateController(NULL),
@@ -115,7 +114,7 @@ pRequiresUpdateEverySync(false),
 pLLSyncWorld(this)
 {
 	try{
-		pRComponent = new deoglRComponent(ogl.GetRenderThread());
+		pRComponent.TakeOver(new deoglRComponent(ogl.GetRenderThread()));
 		pSkinStateController = new deoglSkinStateController;
 		
 		pCreateLODs();
@@ -957,11 +956,6 @@ void deoglComponent::pCleanUp(){
 	
 	pDropTextures();
 	pDropLODs();
-	
-	if(pRComponent){
-		pRComponent->FreeReference();
-	}
-	
 	if(pDynamicSkin){
 		pDynamicSkin->RemoveListener(this);
 	}

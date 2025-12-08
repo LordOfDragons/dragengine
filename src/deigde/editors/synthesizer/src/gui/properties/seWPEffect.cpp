@@ -238,8 +238,6 @@ public:
 seWPEffect::seWPEffect(seViewSynthesizer &viewSynthesizer) :
 igdeContainerFlow(viewSynthesizer.GetEnvironment(), igdeContainerFlow::eaY, igdeContainerFlow::esLast),
 pViewSynthesizer(viewSynthesizer),
-pListener(NULL),
-pSynthesizer(NULL),
 pPanelStretch(NULL),
 pActivePanel(NULL)
 {
@@ -247,7 +245,7 @@ pActivePanel(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox;
 	
-	pListener = new seWPEffectListener(*this);
+	pListener.TakeOver(new seWPEffectListener(*this));
 	
 	
 	pActionEffectCopy.TakeOver(new cActionEffectCopy(*this));
@@ -274,10 +272,6 @@ pActivePanel(NULL)
 
 seWPEffect::~seWPEffect(){
 	SetSynthesizer(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -285,21 +279,19 @@ seWPEffect::~seWPEffect(){
 // Management
 ///////////////
 
-void seWPEffect::SetSynthesizer(seSynthesizer *synthesizer){
+void seWPEffect::SetSynthesizer(seSynthesizer::Ref synthesizer){
 	if(synthesizer == pSynthesizer){
 		return;
 	}
 	
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
 	if(synthesizer){
 		synthesizer->AddNotifier(pListener);
-		synthesizer->AddReference();
 	}
 	
 	UpdateEffectList();

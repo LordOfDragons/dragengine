@@ -35,14 +35,14 @@ class gdeOCLight;
  */
 class gdeWPSTIMOCLight : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCLight *pLight;
+	gdeOCLight::Ref pLight;
 	
 	
 public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMOCLight(gdeWPSTreeModel &tree, gdeObjectClass *objectClass, gdeOCLight *light, int index);
+	gdeWPSTIMOCLight(gdeWPSTreeModel &tree, gdeObjectClass *objectClass, gdeOCLight::Ref light, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

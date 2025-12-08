@@ -72,7 +72,7 @@ public:
 	 * \brief Push effect overlay image onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushEffect(dsRunTime *rt, deEffectOverlayImage *effect);
+	void PushEffect(dsRunTime *rt, deEffectOverlayImage::Ref effect);
 	/*@}*/
 	
 private:

@@ -61,8 +61,8 @@ class meWPSObjectListener;
 class meWPSObject : public igdeContainerScroll{
 private:
 	meWPSelection &pWPSelection;
-	meWPSObjectListener *pListener;
-	meWorld *pWorld;
+	meWPSObjectListener::Ref pListener;
+	meWorld::Ref pWorld;
 	
 	
 	igdeActionContextMenu::Ref pActionMenuClass;
@@ -156,7 +156,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
-	void SetWorld(meWorld *world);
+	void SetWorld(meWorld::Ref world);
 	
 	/** Active object. */
 	meObject *GetActiveObject() const;

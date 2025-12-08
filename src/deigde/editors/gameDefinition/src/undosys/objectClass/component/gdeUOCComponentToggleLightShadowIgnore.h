@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCComponentToggleLightShadowIgnore : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentToggleLightShadowIgnore(gdeObjectClass *objectClass, gdeOCComponent *component);
+	gdeUOCComponentToggleLightShadowIgnore(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component);
 	
 protected:
 	/** \brief Clean up undo action. */

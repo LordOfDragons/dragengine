@@ -40,14 +40,14 @@ class deLogger;
  */
 class dealBaseXML{
 private:
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	decString pLoggerSource;
 	
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new base xml read/save. */
-	dealBaseXML(deLogger *logger, const char *loggerSource);
+	dealBaseXML(deLogger::Ref logger, const char *loggerSource);
 	/** Cleans up the base xml read/save. */
 	virtual ~dealBaseXML();
 	/*@}*/

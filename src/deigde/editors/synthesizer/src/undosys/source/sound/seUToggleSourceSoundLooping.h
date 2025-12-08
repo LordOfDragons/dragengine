@@ -37,7 +37,7 @@ class seSourceSound;
  */
 class seUToggleSourceSoundLooping : public igdeUndo{
 private:
-	seSourceSound *pSource;
+	seSourceSound::Ref pSource;
 	
 	
 	

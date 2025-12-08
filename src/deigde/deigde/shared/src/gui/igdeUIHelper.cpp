@@ -271,35 +271,35 @@ const char *description, igdeContainer::Ref &line, int labelAlignment){
 
 
 void igdeUIHelper::EditString(igdeContainer &form, const char *label, const char *description,
-igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	EditString(form, label, description, 15, textField, listener);
 }
 
 void igdeUIHelper::EditString(igdeContainer &form, const char *label, const char *description,
-int rows, igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+int rows, igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	EditString(description, rows, textField, listener);
 	FormLine(form, label, description, textField);
 }
 
 void igdeUIHelper::EditString(igdeContainer &parent, const char *description,
-igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	EditString(description, textField, listener);
 	parent.AddChild(textField);
 }
 
 void igdeUIHelper::EditString(igdeContainer &parent, const char *description, int rows,
-igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	EditString(description, rows, textField, listener);
 	parent.AddChild(textField);
 }
 
 void igdeUIHelper::EditString(const char *description, igdeTextField::Ref &textField,
-igdeTextFieldListener *listener){
+igdeTextFieldListener::Ref listener){
 	EditString(description, 15, textField, listener);
 }
 
 void igdeUIHelper::EditString(const char *description, int rows,
-igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	textField.TakeOver(new igdeTextField(pEnvironment, rows, description));
 	if(listener){
 		textField->AddListener(listener);
@@ -348,34 +348,34 @@ igdeTextArea::Ref &textArea, igdeTextAreaListener *listener){
 
 
 void igdeUIHelper::EditFloat(igdeContainer &form, const char *label, const char *description,
-igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	EditFloat(form, label, description, 6, 3, textField, listener);
 }
 
 void igdeUIHelper::EditFloat(igdeContainer &form, const char *label, const char *description,
-int columns, int precision, igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+int columns, int precision, igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	EditFloat(description, columns, precision, textField, listener);
 	FormLine(form, label, description, textField);
 }
 
 void igdeUIHelper::EditFloat(igdeContainer &parent, const char *description,
-igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	EditFloat(parent, description, 6, 3, textField, listener);
 }
 
 void igdeUIHelper::EditFloat(igdeContainer &parent, const char *description,
-int columns, int precision, igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+int columns, int precision, igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	EditFloat(description, columns, precision, textField, listener);
 	parent.AddChild(textField);
 }
 
 void igdeUIHelper::EditFloat(const char *description, igdeTextField::Ref &textField,
-igdeTextFieldListener *listener){
+igdeTextFieldListener::Ref listener){
 	EditFloat(description, 6, 3, textField, listener);
 }
 
 void igdeUIHelper::EditFloat(const char *description, int columns, int precision,
-igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	textField.TakeOver(new igdeTextField(pEnvironment, columns, description));
 	textField->SetPrecision(precision);
 	if(listener){
@@ -387,34 +387,34 @@ igdeTextField::Ref &textField, igdeTextFieldListener *listener){
 
 
 void igdeUIHelper::EditInteger(igdeContainer &form, const char *label, const char *description,
-igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	EditInteger(form, label, description, 6, textField, listener);
 }
 
 void igdeUIHelper::EditInteger(igdeContainer &form, const char *label, const char *description,
-int columns, igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+int columns, igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	EditInteger(description, columns, textField, listener);
 	FormLine(form, label, description, textField);
 }
 
 void igdeUIHelper::EditInteger(igdeContainer &parent, const char *description,
-igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	EditInteger(parent, description, 6, textField, listener);
 }
 
 void igdeUIHelper::EditInteger(igdeContainer &parent, const char *description, int columns,
-igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	EditInteger(description, columns, textField, listener);
 	parent.AddChild(textField);
 }
 
 void igdeUIHelper::EditInteger(const char *description, igdeTextField::Ref &textField,
-igdeTextFieldListener *listener){
+igdeTextFieldListener::Ref listener){
 	EditInteger(description, 6, textField, listener);
 }
 
 void igdeUIHelper::EditInteger(const char *description, int columns,
-igdeTextField::Ref &textField, igdeTextFieldListener *listener){
+igdeTextField::Ref &textField, igdeTextFieldListener::Ref listener){
 	textField.TakeOver(new igdeTextField(pEnvironment, columns, description));
 	if(listener){
 		textField->AddListener(listener);
@@ -584,7 +584,7 @@ igdeComboBoxFilter::Ref &comboBox, igdeComboBoxListener *listener){
 
 
 void igdeUIHelper::CheckBox(igdeContainer &form, igdeCheckBox::Ref &checkBox,
-igdeAction *action, bool takeOverAction){
+igdeAction::Ref action, bool takeOverAction){
 	CheckBox(checkBox, action, takeOverAction);
 	FormLine(form, "", "", checkBox);
 }
@@ -595,10 +595,9 @@ igdeCheckBox::Ref &checkBox){
 	FormLine(form, "", "", checkBox);
 }
 
-void igdeUIHelper::CheckBox(igdeCheckBox::Ref &checkBox, igdeAction *action, bool takeOverAction){
+void igdeUIHelper::CheckBox(igdeCheckBox::Ref &checkBox, igdeAction::Ref action, bool takeOverAction){
 	checkBox.TakeOver(new igdeCheckBox(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
@@ -608,10 +607,9 @@ igdeCheckBox::Ref &checkBox){
 }
 
 void igdeUIHelper::CheckBoxOnly(igdeContainer &parent, igdeCheckBox::Ref &checkBox,
-igdeAction *action, bool takeOverAction){
+igdeAction::Ref action, bool takeOverAction){
 	checkBox.TakeOver(new igdeCheckBox(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 	parent.AddChild(checkBox);
 }
@@ -992,22 +990,21 @@ int tickSpacing, igdeEditSliderText::Ref &slider, igdeEditSliderTextListener *li
 
 
 
-void igdeUIHelper::Button(igdeContainer &parent, igdeAction *action, bool takeOverAction){
+void igdeUIHelper::Button(igdeContainer &parent, igdeAction::Ref action, bool takeOverAction){
 	igdeButton::Ref button;
 	Button(button, action, takeOverAction);
 	parent.AddChild(button);
 }
 
 void igdeUIHelper::Button(igdeContainer &parent, igdeButton::Ref &button,
-igdeAction *action, bool takeOverAction){
+igdeAction::Ref action, bool takeOverAction){
 	Button(button, action, takeOverAction);
 	parent.AddChild(button);
 }
 
-void igdeUIHelper::Button(igdeButton::Ref &button, igdeAction *action, bool takeOverAction){
+void igdeUIHelper::Button(igdeButton::Ref &button, igdeAction::Ref action, bool takeOverAction){
 	button.TakeOver(new igdeButton(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
@@ -1018,22 +1015,21 @@ void igdeUIHelper::Button(igdeContainer &parent, igdeButton::Ref &button, const 
 
 
 
-void igdeUIHelper::ToggleButton(igdeContainer &parent, igdeAction *action, bool takeOverAction){
+void igdeUIHelper::ToggleButton(igdeContainer &parent, igdeAction::Ref action, bool takeOverAction){
 	igdeToggleButton::Ref button;
 	ToggleButton(button, action, takeOverAction);
 	parent.AddChild(button);
 }
 
 void igdeUIHelper::ToggleButton(igdeContainer &parent, igdeToggleButton::Ref &button,
-igdeAction *action, bool takeOverAction){
+igdeAction::Ref action, bool takeOverAction){
 	ToggleButton(button, action, takeOverAction);
 	parent.AddChild(button);
 }
 
-void igdeUIHelper::ToggleButton(igdeToggleButton::Ref &button, igdeAction *action, bool takeOverAction){
+void igdeUIHelper::ToggleButton(igdeToggleButton::Ref &button, igdeAction::Ref action, bool takeOverAction){
 	button.TakeOver(new igdeToggleButton(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
@@ -1222,101 +1218,96 @@ void igdeUIHelper::Spacer(igdeContainer &parent, const decPoint &size, igdeSpace
 
 
 
-void igdeUIHelper::WPSky(igdeContainer &parent, igdeAction *action,
+void igdeUIHelper::WPSky(igdeContainer &parent, igdeAction::Ref action,
 const char *title, bool stretchLast, bool collapsed, bool takeOverAction){
 	igdeWPSky::Ref panel;
 	WPSky(parent, panel, action, title, stretchLast, collapsed, takeOverAction);
 }
 
 void igdeUIHelper::WPSky(igdeContainer &parent, igdeWPSky::Ref &panel,
-igdeAction *action, const char *title, bool stretchLast, bool collapsed, bool takeOverAction){
+igdeAction::Ref action, const char *title, bool stretchLast, bool collapsed, bool takeOverAction){
 	igdeContainer::Ref groupBox;
 	GroupBoxFlow(parent, groupBox, title, stretchLast, collapsed);
 	WPSky(panel, action, takeOverAction);
 	groupBox->AddChild(panel);
 }
 
-void igdeUIHelper::WPSky(igdeWPSky::Ref &panel, igdeAction *action, bool takeOverAction){
+void igdeUIHelper::WPSky(igdeWPSky::Ref &panel, igdeAction::Ref action, bool takeOverAction){
 	panel.TakeOver(new igdeWPSky(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
 
 
-void igdeUIHelper::WPCamera(igdeContainer &parent, igdeAction *action,
+void igdeUIHelper::WPCamera(igdeContainer &parent, igdeAction::Ref action,
 const char *title, bool stretchLast, bool collapsed, bool takeOverAction){
 	igdeWPCamera::Ref panel;
 	WPCamera(parent, panel, action, title, stretchLast, collapsed, takeOverAction);
 }
 
 void igdeUIHelper::WPCamera(igdeContainer &parent, igdeWPCamera::Ref &panel,
-igdeAction *action, const char *title, bool stretchLast, bool collapsed, bool takeOverAction){
+igdeAction::Ref action, const char *title, bool stretchLast, bool collapsed, bool takeOverAction){
 	igdeContainer::Ref groupBox;
 	GroupBoxFlow(parent, groupBox, title, stretchLast, collapsed);
 	WPCamera(panel, action, takeOverAction);
 	groupBox->AddChild(panel);
 }
 
-void igdeUIHelper::WPCamera(igdeWPCamera::Ref &panel, igdeAction *action, bool takeOverAction){
+void igdeUIHelper::WPCamera(igdeWPCamera::Ref &panel, igdeAction::Ref action, bool takeOverAction){
 	panel.TakeOver(new igdeWPCamera(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
 
 
-void igdeUIHelper::WPWObject(igdeContainer &parent, igdeAction *action,
+void igdeUIHelper::WPWObject(igdeContainer &parent, igdeAction::Ref action,
 const char *title, bool stretchLast, bool collapsed, bool takeOverAction){
 	igdeWPWObject::Ref panel;
 	WPWObject(parent, panel, action, title, stretchLast, collapsed, takeOverAction);
 }
 
 void igdeUIHelper::WPWObject(igdeContainer &parent, igdeWPWObject::Ref &panel,
-igdeAction *action, const char *title, bool stretchLast, bool collapsed, bool takeOverAction){
+igdeAction::Ref action, const char *title, bool stretchLast, bool collapsed, bool takeOverAction){
 	igdeContainer::Ref groupBox;
 	GroupBoxFlow(parent, groupBox, title, stretchLast, collapsed);
 	WPWObject(panel, action, takeOverAction);
 	groupBox->AddChild(panel);
 }
 
-void igdeUIHelper::WPWObject(igdeWPWObject::Ref &panel, igdeAction *action, bool takeOverAction){
+void igdeUIHelper::WPWObject(igdeWPWObject::Ref &panel, igdeAction::Ref action, bool takeOverAction){
 	panel.TakeOver(new igdeWPWObject(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
 
 
 void igdeUIHelper::EditTags(igdeContainer &parent, igdeEditTags::Ref &editTags,
-igdeAction *action, bool takeOverAction){
+igdeAction::Ref action, bool takeOverAction){
 	EditTags(editTags, action, takeOverAction);
 	parent.AddChild(editTags);
 }
 
-void igdeUIHelper::EditTags(igdeEditTags::Ref &editTags, igdeAction *action, bool takeOverAction){
+void igdeUIHelper::EditTags(igdeEditTags::Ref &editTags, igdeAction::Ref action, bool takeOverAction){
 	editTags.TakeOver(new igdeEditTags(*this, 5, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
 
 
 void igdeUIHelper::ToggleTags(igdeContainer &parent, igdeToggleTags::Ref &toggleTags,
-igdeAction *action, bool takeOverAction){
+igdeAction::Ref action, bool takeOverAction){
 	ToggleTags(toggleTags, action, takeOverAction);
 	parent.AddChild(toggleTags);
 }
 
-void igdeUIHelper::ToggleTags(igdeToggleTags::Ref &toggleTags, igdeAction *action,
+void igdeUIHelper::ToggleTags(igdeToggleTags::Ref &toggleTags, igdeAction::Ref action,
 bool takeOverAction){
 	toggleTags.TakeOver(new igdeToggleTags(*this, 5, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
@@ -1339,34 +1330,32 @@ igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener){
 
 
 
-void igdeUIHelper::WPTriggerTable(igdeContainer &parent, igdeAction *action,
+void igdeUIHelper::WPTriggerTable(igdeContainer &parent, igdeAction::Ref action,
 const char *title, bool stretchLast, bool collapsed, bool takeOverAction){
 	igdeWPTriggerTable::Ref panel;
 	WPTriggerTable(parent, panel, action, title, stretchLast, collapsed, takeOverAction);
 }
 
 void igdeUIHelper::WPTriggerTable(igdeContainer &parent, igdeWPTriggerTable::Ref &panel,
-igdeAction *action, const char *title, bool stretchLast, bool collapsed, bool takeOverAction){
+igdeAction::Ref action, const char *title, bool stretchLast, bool collapsed, bool takeOverAction){
 	igdeContainer::Ref groupBox;
 	GroupBoxFlow(parent, groupBox, title, stretchLast, collapsed);
 	WPTriggerTable(panel, action, takeOverAction);
 	groupBox->AddChild(panel);
 }
 
-void igdeUIHelper::WPTriggerTable(igdeWPTriggerTable::Ref &panel, igdeAction *action,
+void igdeUIHelper::WPTriggerTable(igdeWPTriggerTable::Ref &panel, igdeAction::Ref action,
 bool takeOverAction){
 	panel.TakeOver(new igdeWPTriggerTable(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 }
 
 
 
-void igdeUIHelper::MenuCommand(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction){
+void igdeUIHelper::MenuCommand(igdeMenuCascade &menu, igdeAction::Ref action, bool takeOverAction){
 	igdeMenuCommand::Ref entry(igdeMenuCommand::Ref::NewWith(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 	menu.AddChild(entry);
 }
@@ -1375,10 +1364,9 @@ void igdeUIHelper::MenuCommand(igdeMenuCascade &menu, const igdeAction::Ref &act
 	menu.AddChild(igdeMenuCommand::Ref::NewWith(pEnvironment, action));
 }
 
-void igdeUIHelper::MenuCheck(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction){
+void igdeUIHelper::MenuCheck(igdeMenuCascade &menu, igdeAction::Ref action, bool takeOverAction){
 	igdeMenuCheck::Ref entry(igdeMenuCheck::Ref::NewWith(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 	menu.AddChild(entry);
 }
@@ -1387,10 +1375,9 @@ void igdeUIHelper::MenuCheck(igdeMenuCascade &menu, const igdeAction::Ref &actio
 	menu.AddChild(igdeMenuCheck::Ref::NewWith(pEnvironment, action));
 }
 
-void igdeUIHelper::MenuOption(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction){
+void igdeUIHelper::MenuOption(igdeMenuCascade &menu, igdeAction::Ref action, bool takeOverAction){
 	igdeMenuOption::Ref entry(igdeMenuOption::Ref::NewWith(pEnvironment, action));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 	menu.AddChild(entry);
 }
@@ -1412,19 +1399,17 @@ void igdeUIHelper::MenuRecentFiles(igdeMenuCascade &menu, igdeRecentFiles &recen
 
 
 
-void igdeUIHelper::ToolBarButton(igdeToolBar &toolBar, igdeAction *action, bool takeOverAction){
+void igdeUIHelper::ToolBarButton(igdeToolBar &toolBar, igdeAction::Ref action, bool takeOverAction){
 	igdeButton::Ref widget(igdeButton::Ref::NewWith(pEnvironment, action, igdeButton::ebsToolBar));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 	toolBar.AddChild(widget);
 }
 
-void igdeUIHelper::ToolBarToggleButton(igdeToolBar &toolBar, igdeAction *action, bool takeOverAction){
+void igdeUIHelper::ToolBarToggleButton(igdeToolBar &toolBar, igdeAction::Ref action, bool takeOverAction){
 	igdeToggleButton::Ref widget(igdeToggleButton::Ref::NewWith(
 		pEnvironment, action, igdeToggleButton::ebsToolBar));
 	if(takeOverAction && action){
-		action->FreeReference();
 	}
 	toolBar.AddChild(widget);
 }

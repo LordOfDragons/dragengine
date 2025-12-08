@@ -43,7 +43,7 @@
 dedsStyledText::dedsStyledText(){
 	pRootNode = NULL;
 	
-	pRootNode = new dedsSTNParagraph;
+	pRootNode.TakeOver(new dedsSTNParagraph);
 	if(!pRootNode) DSTHROW(dueInvalidParam);
 }
 
@@ -58,13 +58,11 @@ dedsStyledText::~dedsStyledText(){
 ///////////////
 
 
-void dedsStyledText::SetRootNode(dedsStyledTextNode* node){
+void dedsStyledText::SetRootNode(dedsStyledTextNode::Ref node){
 	if(!node) DSTHROW(dueInvalidParam);
 	
 	if(node != pRootNode){
-		pRootNode->FreeReference();
 		pRootNode = node;
-		node->AddReference();
 	}
 }
 

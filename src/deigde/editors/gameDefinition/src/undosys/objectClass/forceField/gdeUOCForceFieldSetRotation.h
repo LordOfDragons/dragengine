@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCForceFieldSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetRotation(gdeObjectClass *objectClass,
-		gdeOCForceField *forceField, const decVector &newValue);
+	gdeUOCForceFieldSetRotation(gdeObjectClass::Ref objectClass,
+		gdeOCForceField::Ref forceField, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

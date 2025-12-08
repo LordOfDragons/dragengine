@@ -36,7 +36,7 @@ class feFontGlyph;
  */
 class feUGlyphSetV : public igdeUndo{
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	
 	int pOldV;
 	int pNewV;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUGlyphSetV(feFontGlyph *glyph, int newV);
+	feUGlyphSetV(feFontGlyph::Ref glyph, int newV);
 	
 protected:
 	/** \brief Clean up undo. */

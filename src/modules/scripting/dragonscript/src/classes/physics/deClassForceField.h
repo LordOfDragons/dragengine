@@ -70,7 +70,7 @@ public:
 	deForceField *GetForceField(dsRealObject *myself) const;
 	
 	/** \brief Push force field which can be \em NULL. */
-	void PushForceField(dsRunTime *rt, deForceField *forcefield);
+	void PushForceField(dsRunTime *rt, deForceField::Ref forcefield);
 	
 	inline dsClass *GetClassForceFieldType() const{ return pClsForceFieldType; }
 	inline dsClass *GetClassForceFieldApplication() const{ return pClsForceFieldApplication; }

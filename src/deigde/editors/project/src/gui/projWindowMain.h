@@ -56,7 +56,7 @@ class decStringList;
  */
 class projWindowMain : public igdeEditorWindow{
 private:
-	projWindowMainListener *pListener;
+	projWindowMainListener::Ref pListener;
 	
 	igdeAction::Ref pActionDistSave;
 	
@@ -91,11 +91,11 @@ private:
 	igdeClipboard pClipboard;
 	projLoadSaveSystem pLoadSaveSystem;
 	
-	projProject *pProject;
+	projProject::Ref pProject;
 	
-	projPanelProfiles *pPanelProfiles;
-	projPanelTestRun *pPanelTestRun;
-	projPanelUndoHistory *pPanelUndoHistory;
+	projPanelProfiles::Ref pPanelProfiles;
+	projPanelTestRun::Ref pPanelTestRun;
+	projPanelUndoHistory::Ref pPanelUndoHistory;
 	
 	igdeTabBook::Ref pTabPanels;
 	
@@ -172,7 +172,7 @@ public:
 	inline projProject *GetProject() const{ return pProject; }
 	
 	/** \brief Set project. */
-	void SetProject(projProject *project);
+	void SetProject(projProject::Ref project);
 	
 	
 	

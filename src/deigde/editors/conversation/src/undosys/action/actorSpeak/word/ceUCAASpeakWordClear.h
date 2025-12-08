@@ -39,8 +39,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakWordClear : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	ceStripList pOldWords;
 	
 	
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCAASpeakWordClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
+	ceUCAASpeakWordClear(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCAASpeakWordClear();

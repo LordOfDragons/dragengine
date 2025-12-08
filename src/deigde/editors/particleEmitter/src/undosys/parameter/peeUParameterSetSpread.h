@@ -37,7 +37,7 @@ class peeParameter;
  */
 class peeUParameterSetSpread : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	peeParameter *pParameter;
 	
 	float pOldSpread;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUParameterSetSpread(peeType* type, peeParameter* parameter, float newSpread);
+	peeUParameterSetSpread(peeType::Ref type, peeParameter* parameter, float newSpread);
 	
 protected:
 	/** \brief Clean up the undo action. */

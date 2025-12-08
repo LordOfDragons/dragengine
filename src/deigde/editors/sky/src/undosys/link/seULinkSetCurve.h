@@ -37,7 +37,7 @@ class seLink;
  */
 class seULinkSetCurve : public igdeUndo{
 private:
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	decCurveBezier pOldCurve;
 	decCurveBezier pNewCurve;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkSetCurve(seLink *link, const decCurveBezier &newCurve);
+	seULinkSetCurve(seLink::Ref link, const decCurveBezier &newCurve);
 	
 protected:
 	/** \brief Clean up undo action. */

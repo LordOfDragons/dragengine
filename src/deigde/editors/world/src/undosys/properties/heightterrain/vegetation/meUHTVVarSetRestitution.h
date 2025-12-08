@@ -41,7 +41,7 @@ class meHTVVariation;
  */
 class meUHTVVarSetRestitution : public igdeUndo{
 private:
-	meHTVVariation *pVariation;
+	meHTVVariation::Ref pVariation;
 	float pOldRestitution;
 	float pNewRestitution;
 	
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUHTVVarSetRestitution(meHTVVariation *variation, float newRestitution);
+	meUHTVVarSetRestitution(meHTVVariation::Ref variation, float newRestitution);
 	
 protected:
 	/** \brief Clean up undo object. */

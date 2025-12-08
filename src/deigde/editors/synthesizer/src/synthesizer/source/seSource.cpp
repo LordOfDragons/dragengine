@@ -69,8 +69,7 @@ pEnabled(true),
 pMinVolume(1.0f),
 pMaxVolume(1.0f),
 pMinPanning(0.0f),
-pMaxPanning(0.0f),
-pActiveEffect(NULL)
+pMaxPanning(0.0f)
 {
 	if(type < deSynthesizerSourceVisitorIdentify::estSound || type > deSynthesizerSourceVisitorIdentify::estGroup){
 		DETHROW(deeInvalidParam);
@@ -92,11 +91,10 @@ pMinPanning(0.0f),
 pMaxPanning(0.0f),
 pTargetBlendFactor(copy.pTargetBlendFactor),
 pTargetVolume(copy.pTargetVolume),
-pTargetPanning(copy.pTargetPanning),
-pActiveEffect(NULL)
+pTargetPanning(copy.pTargetPanning)
 {
 	const int effectCount = copy.pEffects.GetCount();
-	seEffect *effect = NULL;
+	seEffect::Ref effect = NULL;
 	int i;
 	
 	try{
@@ -104,14 +102,10 @@ pActiveEffect(NULL)
 			effect = copy.pEffects.GetAt(i)->CreateCopy();
 			pEffects.Add(effect);
 			effect->SetParentSource(this);
-			effect->FreeReference();
 			effect = NULL;
 		}
 		
 	}catch(const deException &){
-		if(effect){
-			effect->FreeReference();
-		}
 		throw;
 	}
 }
@@ -170,7 +164,7 @@ void seSource::InitEngineSource(deSynthesizerSource *engSource) const{
 	pTargetPanning.UpdateEngineTarget(synthesizer, engSource->GetTargetPanning());
 	
 	// effects
-	deSynthesizerEffect *engEffect = NULL;
+	deSynthesizerEffect::Ref engEffect = NULL;
 	const int effectCount = pEffects.GetCount();
 	int i;
 	
@@ -185,14 +179,10 @@ void seSource::InitEngineSource(deSynthesizerSource *engSource) const{
 			engEffect = effect->CreateEngineEffect();
 			engSource->AddEffect(engEffect);
 			effect->SetEngineEffect(engEffect);
-			engEffect->FreeReference();
 			engEffect = NULL;
 		}
 		
 	}catch(const deException &){
-		if(engEffect){
-			engEffect->FreeReference();
-		}
 		throw;
 	}
 }
@@ -452,28 +442,18 @@ void seSource::SynthesizerDirectoryChanged(){
 // Effects
 ////////////
 
-void seSource::SetActiveEffect(seEffect *effect){
+void seSource::SetActiveEffect(seEffect::Ref effect){
 	if(effect == pActiveEffect){
 		return;
 	}
-	
-	if(pActiveEffect){
-		pActiveEffect->FreeReference();
-	}
-	
 	pActiveEffect = effect;
-	
-	if(effect){
-		effect->AddReference();
-	}
-	
 	seSynthesizer * const synthesizer = GetSynthesizer();
 	if(synthesizer){
 		synthesizer->NotifyActiveEffectChanged(this);
 	}
 }
 
-void seSource::AddEffect(seEffect *effect){
+void seSource::AddEffect(seEffect::Ref effect){
 	pEffects.Add(effect);
 	
 	effect->SetParentSource(this);
@@ -489,7 +469,7 @@ void seSource::AddEffect(seEffect *effect){
 	}
 }
 
-void seSource::InsertEffectAt(seEffect *effect, int index){
+void seSource::InsertEffectAt(seEffect::Ref effect, int index){
 	pEffects.Insert(effect, index);
 	
 	effect->SetParentSource(this);
@@ -505,7 +485,7 @@ void seSource::InsertEffectAt(seEffect *effect, int index){
 	}
 }
 
-void seSource::MoveEffectTo(seEffect *effect, int index){
+void seSource::MoveEffectTo(seEffect::Ref effect, int index){
 	pEffects.Move(effect, index);
 	
 	seSynthesizer * const synthesizer = GetSynthesizer();
@@ -515,7 +495,7 @@ void seSource::MoveEffectTo(seEffect *effect, int index){
 	}
 }
 
-void seSource::RemoveEffect(seEffect *effect){
+void seSource::RemoveEffect(seEffect::Ref effect){
 	const int index = pEffects.IndexOf(effect);
 	if(index == -1){
 		DETHROW(deeInvalidParam);
@@ -581,7 +561,7 @@ seSource &seSource::operator=(const seSource &copy){
 	pTargetPanning = copy.pTargetPanning;
 	
 	const int effectCount = copy.pEffects.GetCount();
-	seEffect *effect = NULL;
+	seEffect::Ref effect = NULL;
 	int i;
 	
 	RemoveAllEffects();
@@ -589,14 +569,10 @@ seSource &seSource::operator=(const seSource &copy){
 		for(i=0; i<effectCount; i++){
 			effect = copy.pEffects.GetAt(i)->CreateCopy();
 			AddEffect(effect);
-			effect->FreeReference();
 			effect = NULL;
 		}
 		
 	}catch(const deException &){
-		if(effect){
-			effect->FreeReference();
-		}
 		throw;
 	}
 	

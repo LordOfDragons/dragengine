@@ -41,7 +41,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deEnvMapProbe &pEnvMapProbe;
 	
-	deoglREnvMapProbe *pREnvMapProbe;
+	deoglREnvMapProbe::Ref pREnvMapProbe;
 	
 	bool pDirtyOctreeNode;
 	bool pDirtyEnvMapProbe;

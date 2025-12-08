@@ -42,7 +42,7 @@ class deoalModel : public deBaseAudioModel{
 private:
 	deAudioOpenAL &pOal;
 	const deModel &pModel;
-	deoalAModel *pAModel;
+	deoalAModel::Ref pAModel;
 	
 	
 	

@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalSize : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decVector pOldSize;
 	decVector pNewSize;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalSize(meDecal *decal, const decVector &newSize);
+	meUDecalSize(meDecal::Ref decal, const decVector &newSize);
 	
 protected:
 	/** \brief Clean up undo object. */

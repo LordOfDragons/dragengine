@@ -63,10 +63,10 @@ public:
 	inline const igdeGDParticleEmitterList &GetEmitterList() const{ return pEmitterList; }
 	
 	/** \brief Add emitter. */
-	void AddEmitter(igdeGDParticleEmitter *emitter);
+	void AddEmitter(igdeGDParticleEmitter::Ref emitter);
 	
 	/** \brief Remove emitter. */
-	void RemoveEmitter(igdeGDParticleEmitter *emitter);
+	void RemoveEmitter(igdeGDParticleEmitter::Ref emitter);
 	
 	/** \brief Remove all emitters. */
 	void RemoveAllEmitters();

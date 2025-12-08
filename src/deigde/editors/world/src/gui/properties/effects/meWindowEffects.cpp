@@ -162,7 +162,7 @@ const char *meWindowEffects::GetEffectTypeNameFor(int type) const{
 void meWindowEffects::UpdateEffectsList(){
 	deEffectVisitorIdentify identify;
 	deCamera *engCamera = NULL;
-	deEffect *engEffect;
+	deEffect::Ref engEffect;
 	int e, effectCount;
 	meCamera *camera;
 	
@@ -185,7 +185,7 @@ void meWindowEffects::UpdateEffectsList(){
 	}
 }
 
-void meWindowEffects::DisplayPanelFor(deEffect *engEffect){
+void meWindowEffects::DisplayPanelFor(deEffect::Ref engEffect){
 	deEffectVisitorIdentify identify;
 	
 	// remove the old panel if existing
@@ -230,7 +230,7 @@ long meWindowEffects::onBtnAddEffectCommand(FXObject *sender, FXSelector selecto
 	int selection = pCBEffectTypes->getCurrentItem();
 	deEffectManager *engEffectManager;
 	deCamera *engCamera = NULL;
-	deEffect *engEffect = NULL;
+	deEffect::Ref engEffect = NULL;
 	deEngine *engine;
 	meCamera *camera;
 	int type;
@@ -278,8 +278,6 @@ long meWindowEffects::onBtnAddEffectCommand(FXObject *sender, FXSelector selecto
 		
 		// add effect to world
 		engCamera->AddEffect(engEffect);
-		engEffect->FreeReference();
-		
 	}catch(const deException &){
 		if(engEffect) engEffect->FreeReference();
 		throw;
@@ -297,7 +295,7 @@ long meWindowEffects::onBtnAddEffectCommand(FXObject *sender, FXSelector selecto
 
 long meWindowEffects::onListEffectsChanged(FXObject *sender, FXSelector selector, void *data){
 	int selection = pListEffects->getCurrentItem();
-	deEffect *engEffect = NULL;
+	deEffect::Ref engEffect = NULL;
 	
 	if(selection > -1){
 		engEffect = (deEffect*)pListEffects->getItemData(selection);

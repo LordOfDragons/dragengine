@@ -79,7 +79,7 @@ public:
 	/** Loads the rig from file if possible. */
 	reRig *LoadRig(const char *filename);
 	/** Saves the rig to file if possible. */
-	void SaveRig(reRig *rig, const char *filename);
+	void SaveRig(reRig::Ref rig, const char *filename);
 	
 private:
 	void pCleanUp();

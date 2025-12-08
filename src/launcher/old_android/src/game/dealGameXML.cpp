@@ -153,14 +153,12 @@ void dealGameXML::pReadGame(const decXmlElementTag &root, dealGame &game){
 				DETHROW(deeInvalidParam);
 			}
 			
-			dealFileFormat *fileFormat = NULL;
+			dealFileFormat::Ref fileFormat = NULL;
 			try{
-				fileFormat = new dealFileFormat;
+				fileFormat.TakeOver(new dealFileFormat);
 				fileFormat->SetType(formatType);
 				fileFormat->SetPattern(pGetCDataString(*tag));
 				fileFormatList.AddFormat(fileFormat);
-				fileFormat->FreeReference();
-				
 			}catch(const deException &){
 				if(fileFormat){
 					delete fileFormat;

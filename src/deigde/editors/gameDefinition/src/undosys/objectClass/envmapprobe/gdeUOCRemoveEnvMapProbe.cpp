@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveEnvMapProbe::gdeUOCRemoveEnvMapProbe(gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe) :
-pObjectClass(NULL),
+gdeUOCRemoveEnvMapProbe::gdeUOCRemoveEnvMapProbe(gdeObjectClass::Ref objectClass, gdeOCEnvMapProbe::Ref envMapProbe) :
+
 pEnvMapProbe(NULL)
 {
 	if(!objectClass || !envMapProbe){
@@ -56,19 +56,10 @@ pEnvMapProbe(NULL)
 	SetShortInfo("Remove environment map probe");
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveEnvMapProbe::~gdeUOCRemoveEnvMapProbe(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

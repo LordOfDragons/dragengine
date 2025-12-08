@@ -53,7 +53,7 @@
 ////////////////////////////
 
 gdeVAONavBlocker::gdeVAONavBlocker(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCNavigationBlocker *ocnavblocker) :
+	const decString &propertyPrefix, gdeOCNavigationBlocker::Ref ocnavblocker) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCNavBlocker(ocnavblocker),
 pDDSBlocker(NULL)
@@ -61,8 +61,6 @@ pDDSBlocker(NULL)
 	if(!ocnavblocker){
 		DETHROW(deeInvalidParam);
 	}
-	ocnavblocker->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pBuildDDSBlocker();
@@ -116,10 +114,6 @@ void gdeVAONavBlocker::pCleanUp(){
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = NULL;
-	}
-	
-	if(pOCNavBlocker){
-		pOCNavBlocker->FreeReference();
 	}
 }
 

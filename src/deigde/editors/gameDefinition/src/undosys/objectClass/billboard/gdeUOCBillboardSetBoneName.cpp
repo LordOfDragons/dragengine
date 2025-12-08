@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetBoneName::gdeUOCBillboardSetBoneName(gdeObjectClass *objectClass,
-gdeOCBillboard *billboard, const char *newValue) :
-pObjectClass(NULL),
+gdeUOCBillboardSetBoneName::gdeUOCBillboardSetBoneName(gdeObjectClass::Ref objectClass,
+gdeOCBillboard::Ref billboard, const char *newValue) :
+
 pBillboard(NULL)
 {
 	if(!objectClass || !billboard){
@@ -55,19 +55,10 @@ pBillboard(NULL)
 	pNewValue = newValue;
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardSetBoneName::~gdeUOCBillboardSetBoneName(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

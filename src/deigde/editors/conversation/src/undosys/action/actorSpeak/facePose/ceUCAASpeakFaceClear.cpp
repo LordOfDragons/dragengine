@@ -42,9 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakFaceClear::ceUCAASpeakFaceClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
-pTopic(NULL),
-pActorSpeak(NULL)
+ceUCAASpeakFaceClear::ceUCAASpeakFaceClear(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak) :
+pTopic(NULL)
 {
 	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pActorSpeak(NULL)
 	pOldFaces = actorSpeak->GetFacePoseList();
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakFaceClear::~ceUCAASpeakFaceClear(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCASetVarSetValue::ceUCASetVarSetValue(ceConversationTopic *topic, ceCASetVariable *action, int newValue){
+ceUCASetVarSetValue::ceUCASetVarSetValue(ceConversationTopic::Ref topic, ceCASetVariable::Ref action, int newValue){
 	if(!topic || !action) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
@@ -52,19 +52,10 @@ ceUCASetVarSetValue::ceUCASetVarSetValue(ceConversationTopic *topic, ceCASetVari
 	SetShortInfo("SetVariable Value");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCASetVarSetValue::~ceUCASetVarSetValue(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

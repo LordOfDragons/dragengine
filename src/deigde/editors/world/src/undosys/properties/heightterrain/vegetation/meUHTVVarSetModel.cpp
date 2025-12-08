@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVVarSetModel::meUHTVVarSetModel(meHTVVariation *variation, const char *newPath){
+meUHTVVarSetModel::meUHTVVarSetModel(meHTVVariation::Ref variation, const char *newPath){
 	if(!variation || !newPath) DETHROW(deeInvalidParam);
 	
 	pVariation = variation;
@@ -48,8 +48,6 @@ meUHTVVarSetModel::meUHTVVarSetModel(meHTVVariation *variation, const char *newP
 	pNewPath = newPath;
 	
 	SetShortInfo("Vegetation Layer Variation Set Model");
-	
-	variation->AddReference();
 }
 
 meUHTVVarSetModel::~meUHTVVarSetModel(){

@@ -66,7 +66,7 @@ reRigConstraint *reSelectionConstraints::GetConstraintAt(int index) const{
 	return pConstraints[index];
 }
 
-bool reSelectionConstraints::HasConstraint(reRigConstraint *constraint) const{
+bool reSelectionConstraints::HasConstraint(reRigConstraint::Ref constraint) const{
 	if(!constraint) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -79,7 +79,7 @@ bool reSelectionConstraints::HasConstraint(reRigConstraint *constraint) const{
 	return false;
 }
 	
-int reSelectionConstraints::IndexOfConstraint(reRigConstraint *constraint) const{
+int reSelectionConstraints::IndexOfConstraint(reRigConstraint::Ref constraint) const{
 	if(!constraint) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -105,7 +105,7 @@ int reSelectionConstraints::IndexOfConstraintWith(deColliderVolume *collider) co
 	return -1;
 }
 
-void reSelectionConstraints::AddConstraint(reRigConstraint *constraint){
+void reSelectionConstraints::AddConstraint(reRigConstraint::Ref constraint){
 	if(HasConstraint(constraint)) DETHROW(deeInvalidParam);
 	
 	if(pConstraintCount == pConstraintSize){
@@ -122,9 +122,6 @@ void reSelectionConstraints::AddConstraint(reRigConstraint *constraint){
 	
 	pConstraints[pConstraintCount] = constraint;
 	pConstraintCount++;
-	
-	constraint->AddReference();
-	
 	constraint->SetSelected(true);
 	
 	pRig->NotifyConstraintSelectedChanged(constraint);
@@ -134,7 +131,7 @@ void reSelectionConstraints::AddConstraint(reRigConstraint *constraint){
 	}
 }
 
-void reSelectionConstraints::RemoveConstraint(reRigConstraint *constraint){
+void reSelectionConstraints::RemoveConstraint(reRigConstraint::Ref constraint){
 	int i, index = IndexOfConstraint(constraint);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -156,8 +153,6 @@ void reSelectionConstraints::RemoveConstraint(reRigConstraint *constraint){
 	}
 	
 	pRig->NotifyConstraintSelectedChanged(constraint);
-	
-	constraint->FreeReference();
 }
 
 void reSelectionConstraints::RemoveAllConstraints(){
@@ -179,7 +174,7 @@ bool reSelectionConstraints::HasActiveConstraint() const{
 	return pActiveConstraint != NULL;
 }
 
-void reSelectionConstraints::SetActiveConstraint(reRigConstraint *constraint){
+void reSelectionConstraints::SetActiveConstraint(reRigConstraint::Ref constraint){
 	if(constraint != pActiveConstraint){
 		if(constraint && !HasConstraint(constraint)) DETHROW(deeInvalidParam);
 		

@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeUSkinSetName::gdeUSkinSetName(
-gdeSkin *skin, const char *newValue) :
+gdeSkin::Ref skin, const char *newValue) :
 pSkin(NULL)
 {
 	if(!skin){
@@ -53,13 +53,9 @@ pSkin(NULL)
 	pNewValue = newValue;
 	
 	pSkin = skin;
-	skin->AddReference();
 }
 
 gdeUSkinSetName::~gdeUSkinSetName(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 }
 
 

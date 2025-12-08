@@ -53,7 +53,7 @@
 /////////////////////
 
 struct sIDFeedbackNatDat{
-	dedsInputDevice *device;
+	dedsInputDevice::Ref device;
 	int feedbackIndex;
 };
 
@@ -424,7 +424,7 @@ void deClassInputDeviceFeedback::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassInputDeviceFeedback::PushFeedback(dsRunTime *rt, dedsInputDevice *device, int index){
+void deClassInputDeviceFeedback::PushFeedback(dsRunTime *rt, dedsInputDevice::Ref device, int index){
 	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetFeedbackCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -433,6 +433,5 @@ void deClassInputDeviceFeedback::PushFeedback(dsRunTime *rt, dedsInputDevice *de
 	sIDFeedbackNatDat &nd = *((sIDFeedbackNatDat*)p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.device = device;
-	device->AddReference();
 	nd.feedbackIndex = index;
 }

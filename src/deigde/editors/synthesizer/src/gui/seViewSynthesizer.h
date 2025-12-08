@@ -43,12 +43,12 @@ class seViewSynthesizer : public igdeContainerBorder{
 private:
 	seWindowMain &pWindowMain;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
-	seWPController *pWPController;
-	seWPLink *pWPLink;
-	seWPSource *pWPSource;
-	seWPSynthesizer *pWPSynthesizer;
+	seWPController::Ref pWPController;
+	seWPLink::Ref pWPLink;
+	seWPSource::Ref pWPSource;
+	seWPSynthesizer::Ref pWPSynthesizer;
 	
 	
 	
@@ -78,7 +78,7 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
-	void SetSynthesizer(seSynthesizer *synthesizer);
+	void SetSynthesizer(seSynthesizer::Ref synthesizer);
 	
 	/** \brief Synthesizer path changed. */
 	void OnSynthesizerPathChanged();

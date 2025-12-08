@@ -38,9 +38,9 @@ class meObject;
  */
 class meUAddObject : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -49,9 +49,9 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUAddObject(meWorld *world, meObject *object);
+	meUAddObject(meWorld::Ref world, meObject::Ref object);
 	/** \brief Create new undo object. */
-	meUAddObject(meWorld *world, const decDVector &position, const char *classname);
+	meUAddObject(meWorld::Ref world, const decDVector &position, const char *classname);
 	/** \brief Clean up undo object. */
 	virtual ~meUAddObject();
 	/*@}*/

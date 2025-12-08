@@ -39,9 +39,9 @@ class gdeObjectClass;
  */
 class gdeUOCCTextureSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	float pOldValue;
 	float pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \rotation Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCTextureSetRotation(gdeObjectClass *objectClass, gdeOCComponent *component,
-		gdeOCComponentTexture *texture, float newValue);
+	gdeUOCCTextureSetRotation(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component,
+		gdeOCComponentTexture::Ref texture, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

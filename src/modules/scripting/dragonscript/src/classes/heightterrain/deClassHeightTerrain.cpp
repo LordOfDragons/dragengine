@@ -59,7 +59,7 @@
 
 
 struct sHTNatDat{
-	deHeightTerrain *hterrain;
+	deHeightTerrain::Ref hterrain;
 };
 
 
@@ -1317,7 +1317,7 @@ deHeightTerrain *deClassHeightTerrain::GetHeightTerrain(dsRealObject *myself) co
 	return ((sHTNatDat*)p_GetNativeData(myself->GetBuffer()))->hterrain;
 }
 
-void deClassHeightTerrain::PushHeightTerrain(dsRunTime *rt, deHeightTerrain *hterrain){
+void deClassHeightTerrain::PushHeightTerrain(dsRunTime *rt, deHeightTerrain::Ref hterrain){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -1329,5 +1329,4 @@ void deClassHeightTerrain::PushHeightTerrain(dsRunTime *rt, deHeightTerrain *hte
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sHTNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->hterrain = hterrain;
-	hterrain->AddReference();
 }

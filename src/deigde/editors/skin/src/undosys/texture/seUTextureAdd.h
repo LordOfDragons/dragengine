@@ -38,8 +38,8 @@ class seTexture;
  */
 class seUTextureAdd : public igdeUndo{
 private:
-	seTexture *pTexture;
-	seSkin *pSkin;
+	seTexture::Ref pTexture;
+	seSkin::Ref pSkin;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUTextureAdd(seSkin *skin, seTexture *texture);
+	seUTextureAdd(seSkin::Ref skin, seTexture::Ref texture);
 	
 protected:
 	/** \brief Clean up undo. */

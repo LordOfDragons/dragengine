@@ -39,7 +39,7 @@ class saeSAnimation;
  */
 class saeUWordAddList : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	saeWordList pWords;
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUWordAddList(saeSAnimation *sanimation, const saeWordList &words);
+	saeUWordAddList(saeSAnimation::Ref sanimation, const saeWordList &words);
 	
 protected:
 	/** Clean up undo. */

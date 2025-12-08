@@ -515,8 +515,6 @@ void seLoadSaveSynthesizer::pReadSynthesizer(const decXmlElementTag &root, seSyn
 			
 			if(source){
 				synthesizer.AddSource(source);
-				source->FreeReference();
-				
 			}else{
 				LogWarnUnknownTag(root, *tag);
 			}
@@ -525,18 +523,13 @@ void seLoadSaveSynthesizer::pReadSynthesizer(const decXmlElementTag &root, seSyn
 }
 
 void seLoadSaveSynthesizer::pReadController(const decXmlElementTag &root, seSynthesizer &synthesizer){
-	seController *controller = NULL;
+	seController::Ref controller = NULL;
 	int i;
 	
 	try{
-		controller = new seController;
+		controller.TakeOver(new seController);
 		synthesizer.AddController(controller);
-		controller->FreeReference();
-		
 	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
 		throw;
 	}
 	
@@ -592,11 +585,11 @@ const decXmlElementTag &root, seController &controller){
 }
 
 void seLoadSaveSynthesizer::pReadLink(const decXmlElementTag &root, seSynthesizer &synthesizer){
-	seLink *link = NULL;
+	seLink::Ref link = NULL;
 	int i;
 	
 	try{
-		link = new seLink;
+		link.TakeOver(new seLink);
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -632,13 +625,7 @@ void seLoadSaveSynthesizer::pReadLink(const decXmlElementTag &root, seSynthesize
 		
 		link->UpdateCurve();
 		synthesizer.AddLink(link);
-		
-		link->FreeReference();
-		
 	}catch(const deException &){
-		if(link){
-			link->FreeReference();
-		}
 		throw;
 	}
 }
@@ -666,11 +653,11 @@ seSource *seLoadSaveSynthesizer::pReadSource(const decXmlElementTag &root, seSyn
 }
 
 seSource *seLoadSaveSynthesizer::pReadSourceSound(const decXmlElementTag &root, seSynthesizer &synthesizer){
-	seSourceSound *source = NULL;
+	seSourceSound::Ref source = NULL;
 	int i;
 	
 	try{
-		source = new seSourceSound(synthesizer.GetEngine());
+		source.TakeOver(new seSourceSound(synthesizer.GetEngine()));
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -724,9 +711,6 @@ seSource *seLoadSaveSynthesizer::pReadSourceSound(const decXmlElementTag &root, 
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -738,7 +722,7 @@ seSource *seLoadSaveSynthesizer::pReadSourceWave(const decXmlElementTag &root, s
 	int i;
 	
 	try{
-		source = new seSourceWave;
+		source.TakeOver(new seSourceWave);
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -802,9 +786,6 @@ seSource *seLoadSaveSynthesizer::pReadSourceWave(const decXmlElementTag &root, s
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -816,7 +797,7 @@ seSource *seLoadSaveSynthesizer::pReadSourceChain(const decXmlElementTag &root, 
 	int i;
 	
 	try{
-		source = new seSourceChain(synthesizer.GetEngine());
+		source.TakeOver(new seSourceChain(synthesizer.GetEngine()));
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -870,9 +851,6 @@ seSource *seLoadSaveSynthesizer::pReadSourceChain(const decXmlElementTag &root, 
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -885,7 +863,7 @@ seSource *seLoadSaveSynthesizer::pReadSourceGroup(const decXmlElementTag &root, 
 	int i;
 	
 	try{
-		source = new seSourceGroup;
+		source.TakeOver(new seSourceGroup);
 		
 		for(i=0; i<elementCount; i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -948,9 +926,6 @@ seSource *seLoadSaveSynthesizer::pReadSourceGroup(const decXmlElementTag &root, 
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -962,7 +937,7 @@ seSource *seLoadSaveSynthesizer::pReadSourceSynthesizer(const decXmlElementTag &
 	int i;
 	
 	try{
-		source = new seSourceSynthesizer(synthesizer.GetEngine());
+		source.TakeOver(new seSourceSynthesizer(synthesizer.GetEngine()));
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -1015,9 +990,6 @@ seSource *seLoadSaveSynthesizer::pReadSourceSynthesizer(const decXmlElementTag &
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -1075,7 +1047,6 @@ seSynthesizer &synthesizer, seSource &source){
 		seEffect * const effect = pReadEffect(root, synthesizer);
 		if(effect){
 			source.AddEffect(effect);
-			effect->FreeReference();
 			return true;
 		}
 	}
@@ -1131,11 +1102,11 @@ seEffect *seLoadSaveSynthesizer::pReadEffect(const decXmlElementTag &root, seSyn
 }
 
 seEffect *seLoadSaveSynthesizer::pReadEffectStretch(const decXmlElementTag &root, seSynthesizer &synthesizer){
-	seEffectStretch *effect = NULL;
+	seEffectStretch::Ref effect = NULL;
 	int i;
 	
 	try{
-		effect = new seEffectStretch;
+		effect.TakeOver(new seEffectStretch);
 		
 		for(i=0; i<root.GetElementCount(); i++){
 			decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -1183,9 +1154,6 @@ seEffect *seLoadSaveSynthesizer::pReadEffectStretch(const decXmlElementTag &root
 		}
 		
 	}catch(const deException &){
-		if(effect){
-			effect->FreeReference();
-		}
 		throw;
 	}
 	

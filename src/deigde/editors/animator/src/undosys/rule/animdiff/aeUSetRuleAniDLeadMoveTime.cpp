@@ -46,8 +46,6 @@ aeUSetRuleAniDLeadMoveTime::aeUSetRuleAniDLeadMoveTime(aeRuleAnimationDifference
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldTime = rule->GetLeadingMoveTime();
 		pNewTime = newTime;
 		

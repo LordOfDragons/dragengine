@@ -42,9 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerRemove::seUControllerRemove(seController *controller) :
-pSky(nullptr),
-pController(nullptr),
+seUControllerRemove::seUControllerRemove(seController::Ref controller) :
+
 pIndex(0),
 pLinks(nullptr),
 pLinkCount(0)
@@ -99,7 +98,6 @@ pLinkCount(0)
 	sky->AddReference();
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 seUControllerRemove::~seUControllerRemove(){
@@ -138,12 +136,5 @@ void seUControllerRemove::pCleanUp(){
 	int i;
 	for(i=0; i<pLinkCount; i++){
 		pLinks[i]->FreeReference();
-	}
-	
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
 	}
 }

@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCComponentToggleRenderEnvMap : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentToggleRenderEnvMap(gdeObjectClass *objectClass, gdeOCComponent *component);
+	gdeUOCComponentToggleRenderEnvMap(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component);
 	
 protected:
 	/** \brief Clean up undo action. */

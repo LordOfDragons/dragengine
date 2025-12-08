@@ -35,7 +35,7 @@ class seController;
  */
 class seUControllerSetMaximum : public igdeUndo{
 private:
-	seController *pController;
+	seController::Ref pController;
 	
 	float pOldMinimum;
 	float pOldMaximum;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUControllerSetMaximum(seController *controller, float newMaximum);
+	seUControllerSetMaximum(seController::Ref controller, float newMaximum);
 	
 protected:
 	/** \brief Clean up undo action. */

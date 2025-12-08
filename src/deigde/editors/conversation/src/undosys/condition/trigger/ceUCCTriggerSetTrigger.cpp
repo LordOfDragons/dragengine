@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCTriggerSetTrigger::ceUCCTriggerSetTrigger(ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionTrigger *condition, const char *newTrigger){
+ceUCCTriggerSetTrigger::ceUCCTriggerSetTrigger(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
+ceCConditionTrigger::Ref condition, const char *newTrigger){
 	if(!topic || !action || !condition){
 		DETHROW(deeInvalidParam);
 	}
@@ -57,25 +57,11 @@ ceCConditionTrigger *condition, const char *newTrigger){
 	SetShortInfo("Condition trigger set trigger");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCTriggerSetTrigger::~ceUCCTriggerSetTrigger(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -104,17 +104,12 @@ void deRLTaskReadSkinPropertyNode::VisitImage(deSkinPropertyNodeImage &node){
 	
 	deResourceLoaderTask * const task = pResourceLoader.AddLoadRequest(
 		pVirtualFileSystem, path, deResourceLoader::ertImage);
-	deRLTaskReadSkinInternal::cInternalTask *internalTask = NULL;
+	deRLTaskReadSkinInternal::cInternalTask::Ref internalTask = NULL;
 	
 	try{
-		internalTask = new deRLTaskReadSkinInternal::cInternalTask(&node, task);
+		internalTask.TakeOver(new deRLTaskReadSkinInternal::cInternalTask(&node, task));
 		pTask.AddInternalTask(internalTask);
-		internalTask->FreeReference();
-		
 	}catch(const deException &){
-		if(internalTask){
-			internalTask->FreeReference();
-		}
 		throw;
 	}
 }
@@ -139,17 +134,12 @@ void deRLTaskReadSkinPropertyNode::VisitText(deSkinPropertyNodeText &node){
 	
 	deResourceLoaderTask * const task = pResourceLoader.AddLoadRequest(
 		pVirtualFileSystem, path, deResourceLoader::ertFont);
-	deRLTaskReadSkinInternal::cInternalTask *internalTask = NULL;
+	deRLTaskReadSkinInternal::cInternalTask::Ref internalTask = NULL;
 	
 	try{
-		internalTask = new deRLTaskReadSkinInternal::cInternalTask(&node, task);
+		internalTask.TakeOver(new deRLTaskReadSkinInternal::cInternalTask(&node, task));
 		pTask.AddInternalTask(internalTask);
-		internalTask->FreeReference();
-		
 	}catch(const deException &){
-		if(internalTask){
-			internalTask->FreeReference();
-		}
 		throw;
 	}
 }

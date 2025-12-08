@@ -96,7 +96,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig *rig, reRigBone *bone) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig::Ref rig, reRigBone::Ref bone) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -119,7 +119,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig *rig, reRigBone *bone) = 0;
+	virtual igdeUndo *OnChanged(const decVector &vector, reRig::Ref rig, reRigBone::Ref bone) = 0;
 };
 
 class cBaseAction : public igdeAction{
@@ -144,7 +144,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(reRig *rig, reRigBone *bone) = 0;
+	virtual igdeUndo *OnAction(reRig::Ref rig, reRigBone::Ref bone) = 0;
 };
 
 class cBaseComboBoxListener : public igdeComboBoxListener{
@@ -167,7 +167,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigBone *bone) = 0;
+	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig::Ref rig, reRigBone::Ref bone) = 0;
 };
 
 
@@ -176,7 +176,7 @@ class cTextName : public cBaseTextFieldListener{
 public:
 	cTextName(reWPBone &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig *rig, reRigBone *bone){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig::Ref rig, reRigBone::Ref bone){
 		const decString &name = textField->GetText();
 		if(name == bone->GetName()){
 			return NULL;
@@ -194,7 +194,7 @@ class cComboParent : public cBaseComboBoxListener{
 public:
 	cComboParent(reWPBone &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig *rig, reRigBone *bone){
+	virtual igdeUndo *OnTextChanged(igdeComboBox *comboBox, reRig::Ref rig, reRigBone::Ref bone){
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
 		reRigBone *parent = NULL;
 		if(selection){
@@ -220,7 +220,7 @@ class cEditPosition : public cBaseEditVectorListener{
 public:
 	cEditPosition(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig *rig, reRigBone *bone){
+	virtual igdeUndo *OnChanged(const decVector &vector, reRig::Ref rig, reRigBone::Ref bone){
 		if(vector.IsEqualTo(bone->GetPosition())){
 			return NULL;
 		}
@@ -232,7 +232,7 @@ class cEditRotation : public cBaseEditVectorListener{
 public:
 	cEditRotation(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig *rig, reRigBone *bone){
+	virtual igdeUndo *OnChanged(const decVector &vector, reRig::Ref rig, reRigBone::Ref bone){
 		if(vector.IsEqualTo(bone->GetOrientation())){
 			return NULL;
 		}
@@ -244,7 +244,7 @@ class cEditCentralMassPoint : public cBaseEditVectorListener{
 public:
 	cEditCentralMassPoint(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig *rig, reRigBone *bone){
+	virtual igdeUndo *OnChanged(const decVector &vector, reRig::Ref rig, reRigBone::Ref bone){
 		if(vector.IsEqualTo(bone->GetCentralMassPoint())){
 			return NULL;
 		}
@@ -256,7 +256,7 @@ class cTextMass : public cBaseTextFieldListener{
 public:
 	cTextMass(reWPBone &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig *rig, reRigBone *bone){
+	virtual igdeUndo *OnChanged(igdeTextField *textField, reRig::Ref rig, reRigBone::Ref bone){
 		const float mass = textField->GetFloat();
 		if(fabsf(mass - bone->GetMass()) < FLOAT_SAFE_EPSILON){
 			return NULL;
@@ -270,7 +270,7 @@ public:
 	cCheckDynamic(reWPBone &panel) : cBaseAction(panel, "Dynamic",
 		"Determines if the bone is affected by physics."){ }
 	
-	virtual igdeUndo *OnAction(reRig *rig, reRigBone *bone){
+	virtual igdeUndo *OnAction(reRig::Ref rig, reRigBone::Ref bone){
 		return new reUToggleBoneDynamic(bone);
 	}
 };
@@ -279,7 +279,7 @@ class cEditIKLimitsLower : public cBaseEditVectorListener{
 public:
 	cEditIKLimitsLower(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigBone *bone){
+	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigBone::Ref bone){
 		if(vector.IsEqualTo(bone->GetIKLimitsLower())){
 			return NULL;
 		}
@@ -291,7 +291,7 @@ class cEditIKLimitsUpper : public cBaseEditVectorListener{
 public:
 	cEditIKLimitsUpper(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigBone *bone){
+	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigBone::Ref bone){
 		if(vector.IsEqualTo(bone->GetIKLimitsUpper())){
 			return NULL;
 		}
@@ -303,7 +303,7 @@ class cEditIKResistance : public cBaseEditVectorListener{
 public:
 	cEditIKResistance(reWPBone &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigBone *bone){
+	virtual igdeUndo *OnChanged(const decVector &vector, reRig*, reRigBone::Ref bone){
 		if(vector.IsEqualTo(bone->GetIKResistance())){
 			return NULL;
 		}
@@ -317,7 +317,7 @@ public:
 	cCheckIKLocked(reWPBone &panel, int axis, const char *text) : cBaseAction(panel, text,
 		"Determines if the IK Axis is locked."), pAxis(axis){ }
 	
-	virtual igdeUndo *OnAction(reRig *rig, reRigBone *bone){
+	virtual igdeUndo *OnAction(reRig::Ref rig, reRigBone::Ref bone){
 		return new reUToggleBoneIKLocked(bone, pAxis);
 	}
 };
@@ -334,16 +334,13 @@ public:
 
 reWPBone::reWPBone(reWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pRig(NULL),
-pBone(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPBoneListener(*this);
+	pListener.TakeOver(new reWPBoneListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -402,14 +399,6 @@ pListener(NULL)
 
 reWPBone::~reWPBone(){
 	SetRig(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
-	
-	if(pBone){
-		pBone->FreeReference();
-	}
 }
 
 
@@ -417,7 +406,7 @@ reWPBone::~reWPBone(){
 // Management
 ///////////////
 
-void reWPBone::SetRig(reRig *rig){
+void reWPBone::SetRig(reRig::Ref rig){
 	if(rig == pRig){
 		return;
 	}
@@ -426,7 +415,6 @@ void reWPBone::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -434,27 +422,15 @@ void reWPBone::SetRig(reRig *rig){
 	
 	if(rig){
 		rig->AddNotifier(pListener);
-		rig->AddReference();
-		
 		SetBone(rig->GetSelectionBones()->GetActiveBone());
 	}
 }
 
-void reWPBone::SetBone(reRigBone *bone){
+void reWPBone::SetBone(reRigBone::Ref bone){
 	if(bone == pBone){
 		return;
 	}
-	
-	if(pBone){
-		pBone->FreeReference();
-	}
-	
 	pBone = bone;
-	
-	if(bone){
-		bone->AddReference();
-	}
-	
 	UpdateBone();
 }
 

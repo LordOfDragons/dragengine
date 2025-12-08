@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTargetSetPosition::ceUCTargetSetPosition(ceTarget *target, const decVector &newPosition){
+ceUCTargetSetPosition::ceUCTargetSetPosition(ceTarget::Ref target, const decVector &newPosition){
 	if(!target) DETHROW(deeInvalidParam);
 	
 	pTarget = NULL;
@@ -50,13 +50,9 @@ ceUCTargetSetPosition::ceUCTargetSetPosition(ceTarget *target, const decVector &
 	pNewPosition = newPosition;
 	
 	pTarget = target;
-	target->AddReference();
 }
 
 ceUCTargetSetPosition::~ceUCTargetSetPosition(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 

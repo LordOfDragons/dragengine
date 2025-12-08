@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeSetSkinPath : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	decString pOldPath;
 	decString pNewPath;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeSetSkinPath(peeType *type, const char *newPath);
+	peeUTypeSetSkinPath(peeType::Ref type, const char *newPath);
 	
 protected:
 	/** \brief Clean up the undo action. */

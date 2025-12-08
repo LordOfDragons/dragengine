@@ -35,7 +35,7 @@ class gdeOCCamera;
  */
 class gdeWPSTIMOCCamera : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCCamera *pCamera;
+	gdeOCCamera::Ref pCamera;
 	
 	
 public:
@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCCamera(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCCamera *camera, int index);
+		gdeOCCamera::Ref camera, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

@@ -44,7 +44,7 @@
 
 
 struct sSynINatDat{
-	deSynthesizerInstance *instance;
+	deSynthesizerInstance::Ref instance;
 };
 
 
@@ -408,7 +408,7 @@ deSynthesizerInstance *deClassSynthesizerInstance::GetSynthesizerInstance(dsReal
 	return ((sSynINatDat*)p_GetNativeData(object->GetBuffer()))->instance;
 }
 
-void deClassSynthesizerInstance::PushSynthesizerInstance(dsRunTime *rt, deSynthesizerInstance *instance){
+void deClassSynthesizerInstance::PushSynthesizerInstance(dsRunTime *rt, deSynthesizerInstance::Ref instance){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -420,5 +420,4 @@ void deClassSynthesizerInstance::PushSynthesizerInstance(dsRunTime *rt, deSynthe
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sSynINatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->instance = instance;
-	instance->AddReference();
 }

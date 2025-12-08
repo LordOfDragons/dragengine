@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightToggleCastShadows : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightToggleCastShadows(gdeObjectClass *objectClass, gdeOCLight *light);
+	gdeUOCLightToggleCastShadows(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light);
 	
 protected:
 	/** \brief Clean up undo action. */

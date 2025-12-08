@@ -66,7 +66,7 @@ public:
 	deBillboard *GetBillboard(dsRealObject *myself) const;
 	
 	/** \brief Pushe billboard. */
-	void PushBillboard(dsRunTime *rt, deBillboard *billboard);
+	void PushBillboard(dsRunTime *rt, deBillboard::Ref billboard);
 	/*@}*/
 	
 	

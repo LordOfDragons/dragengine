@@ -48,7 +48,7 @@ class feLoadSaveSystem;
  */
 class feWindowMain : public igdeEditorWindow{
 private:
-	feWindowMainListener *pListener;
+	feWindowMainListener::Ref pListener;
 	
 	//igdeIcon::Ref pIconEditPaste;
 	
@@ -71,10 +71,10 @@ private:
 	feClipboard *pClipboard;
 	feLoadSaveSystem *pLoadSaveSystem;
 	
-	feViewFontImage *pViewFontImage;
-	feWindowProperties *pWndProps;
+	feViewFontImage::Ref pViewFontImage;
+	feWindowProperties::Ref pWndProps;
 	
-	feFont *pFont;
+	feFont::Ref pFont;
 	
 	igdeFont::sConfiguration pGenFontConfig;
 	
@@ -134,7 +134,7 @@ public:
 	/** Retrieves the rig. */
 	inline feFont *GetFont() const{ return pFont; }
 	/** Sets the font. */
-	void SetFont(feFont *font);
+	void SetFont(feFont::Ref font);
 	/** Creates a new font. */
 	void CreateNewFont();
 	/** Saves the font under the given file. */

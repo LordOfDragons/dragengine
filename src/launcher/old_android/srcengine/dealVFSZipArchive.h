@@ -143,7 +143,7 @@ private:
 		cArchiveDirectory *GetDirectoryByPath(const decPath &path);
 		
 		/** \brief Add directory. */
-		void AddDirectory(cArchiveDirectory *directory);
+		void AddDirectory(cArchiveDirectory::Ref directory);
 		
 		
 		
@@ -163,16 +163,16 @@ private:
 		cArchiveFile *GetFileByPath(const decPath &path) const;
 		
 		/** \brief Add file. */
-		void AddFile(cArchiveFile *file);
+		void AddFile(cArchiveFile::Ref file);
 	};
 	
 	
 	
 private:
 	dealEngineInstance &pEngineInstance;
-	decBaseFileReader *pFileReader;
+	decBaseFileReader::Ref pFileReader;
 	unzFile pZipFile;
-	cArchiveDirectory *pArchiveDirectory;
+	cArchiveDirectory::Ref pArchiveDirectory;
 	deMutex pMutex;
 	
 	
@@ -182,7 +182,7 @@ public:
 	/*@{*/
 	/** \brief Create container. */
 	dealVFSZipArchive(dealEngineInstance &engineInstance,
-		decBaseFileReader *fileReader, const decPath &pathRoot);
+		decBaseFileReader::Ref fileReader, const decPath &pathRoot);
 	
 protected:
 	/**

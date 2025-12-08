@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetName::seULayerSetName(seLayer *layer, const char *newName) :
-pLayer(NULL),
+seULayerSetName::seULayerSetName(seLayer::Ref layer, const char *newName) :
+
 pNewName(newName)
 {
 	if(!layer){
@@ -52,13 +52,9 @@ pNewName(newName)
 	pOldName = layer->GetName();
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerSetName::~seULayerSetName(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

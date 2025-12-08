@@ -40,9 +40,9 @@ class ceConversationTopic;
  */
 class ceUCCLogicPaste : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionLogic *pLogic;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionLogic::Ref pLogic;
 	ceConversationConditionList pConditions;
 	
 public:
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCLogicPaste(ceConversationTopic *topic, ceConversationAction *action, ceCConditionLogic *logic,
+	ceUCCLogicPaste(ceConversationTopic::Ref topic, ceConversationAction::Ref action, ceCConditionLogic::Ref logic,
 		const ceConversationConditionList &conditions);
 protected:
 	/** \brief Clean up undo. */

@@ -41,8 +41,8 @@ class seWPViewListener;
 class seWPView : public igdeContainerScroll{
 private:
 	seWindowProperties &pWindowProperties;
-	seSky *pSky;
-	seWPViewListener *pListener;
+	seSky::Ref pSky;
+	seWPViewListener::Ref pListener;
 	
 	igdeWPWObject::Ref pWPEnvObject;
 	igdeWPCamera::Ref pWPCamera;
@@ -69,7 +69,7 @@ public:
 	inline seSky *GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
-	void SetSky(seSky *sky);
+	void SetSky(seSky::Ref sky);
 	
 	/** \brief Update view. */
 	void UpdateView();

@@ -39,7 +39,7 @@ class aeRuleBoneTransformator;
  */
 class aeURuleBTransSetScaleMin : public igdeUndo{
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	
 	decVector pOldMin;
 	decVector pNewMin;

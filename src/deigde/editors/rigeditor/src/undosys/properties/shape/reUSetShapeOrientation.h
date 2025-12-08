@@ -37,7 +37,7 @@ class reRigShape;
  */
 class reUSetShapeOrientation : public igdeUndo{
 private:
-	reRigShape *pShape;
+	reRigShape::Ref pShape;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;

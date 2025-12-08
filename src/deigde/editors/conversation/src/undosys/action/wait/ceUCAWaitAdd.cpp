@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitAdd::ceUCAWaitAdd(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action, int index){
+ceUCAWaitAdd::ceUCAWaitAdd(ceConversationTopic::Ref topic, ceCAWait::Ref wait, ceConversationAction::Ref action, int index){
 	if(!topic || !wait || !action){
 		DETHROW(deeInvalidParam);
 	}
@@ -58,25 +58,11 @@ ceUCAWaitAdd::ceUCAWaitAdd(ceConversationTopic *topic, ceCAWait *wait, ceConvers
 	SetShortInfo("Action Wait Add Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pWait = wait;
-	wait->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAWaitAdd::~ceUCAWaitAdd(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pWait){
-		pWait->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seURemoveController::seURemoveController(seSynthesizer *synthesizer, seController *controller) :
-pSynthesizer(NULL),
+seURemoveController::seURemoveController(seSynthesizer::Ref synthesizer, seController::Ref controller) :
+
 pController(NULL)
 {
 	if(!synthesizer || !controller){
@@ -54,10 +54,7 @@ pController(NULL)
 	}
 	
 	pSynthesizer = synthesizer;
-	synthesizer->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 seURemoveController::~seURemoveController(){
@@ -83,10 +80,4 @@ void seURemoveController::Redo(){
 //////////////////////
 
 void seURemoveController::pCleanUp(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

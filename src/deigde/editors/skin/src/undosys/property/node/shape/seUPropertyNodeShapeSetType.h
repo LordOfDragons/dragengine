@@ -38,7 +38,7 @@ class sePropertyNodeShape;
  */
 class seUPropertyNodeShapeSetType : public igdeUndo{
 private:
-	sePropertyNodeShape *pNode;
+	sePropertyNodeShape::Ref pNode;
 	
 	deSkinPropertyNodeShape::eShapeTypes pOldValue;
 	deSkinPropertyNodeShape::eShapeTypes pNewValue;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeShapeSetType(sePropertyNodeShape *node,
+	seUPropertyNodeShapeSetType(sePropertyNodeShape::Ref node,
 		deSkinPropertyNodeShape::eShapeTypes newValue);
 	
 protected:

@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetPropertyName::gdeUOCSpeakerSetPropertyName(gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, gdeOCSpeaker::eProperties property, const char *newValue) :
-pObjectClass(NULL),
-pSpeaker(NULL),
+gdeUOCSpeakerSetPropertyName::gdeUOCSpeakerSetPropertyName(gdeObjectClass::Ref objectClass,
+gdeOCSpeaker::Ref speaker, gdeOCSpeaker::eProperties property, const char *newValue) :
+
+
 pProperty(property)
 {
 	if(!objectClass || !speaker){
@@ -55,19 +55,10 @@ pProperty(property)
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetPropertyName::~gdeUOCSpeakerSetPropertyName(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

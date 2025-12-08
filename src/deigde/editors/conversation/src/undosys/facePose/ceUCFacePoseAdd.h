@@ -37,8 +37,8 @@ class ceFacePose;
  */
 class ceUCFacePoseAdd : public igdeUndo{
 private:
-	ceConversation *pConversation;
-	ceFacePose *pFacePose;
+	ceConversation::Ref pConversation;
+	ceFacePose::Ref pFacePose;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCFacePoseAdd(ceConversation *conversation, ceFacePose *facePose);
+	ceUCFacePoseAdd(ceConversation::Ref conversation, ceFacePose::Ref facePose);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCFacePoseAdd();

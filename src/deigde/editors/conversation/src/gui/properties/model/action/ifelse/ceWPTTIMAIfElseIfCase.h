@@ -39,10 +39,10 @@ class ceWPTTIMAIfElseIfCaseActions;
  */
 class ceWPTTIMAIfElseIfCase : public ceWPTTreeItemModel{
 private:
-	ceCAIfElseCase *pIfCase;
+	ceCAIfElseCase::Ref pIfCase;
 	int pIndex;
-	ceWPTTIMAIfElseIfCaseCondition *pCondition;
-	ceWPTTIMAIfElseIfCaseActions *pActions;
+	ceWPTTIMAIfElseIfCaseCondition::Ref pCondition;
+	ceWPTTIMAIfElseIfCaseActions::Ref pActions;
 	
 	
 	
@@ -51,7 +51,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	ceWPTTIMAIfElseIfCase(ceWindowMain &windowMain, ceConversation &conversation,
-		ceCAIfElse &ifElse, ceCAIfElseCase *ifCase, int index);
+		ceCAIfElse &ifElse, ceCAIfElseCase::Ref ifCase, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

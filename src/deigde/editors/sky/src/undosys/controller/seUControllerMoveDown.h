@@ -35,7 +35,7 @@ class seController;
  */
 class seUControllerMoveDown : public igdeUndo{
 private:
-	seController *pController;
+	seController::Ref pController;
 	int pIndex;
 	
 	
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUControllerMoveDown(seController *controller);
+	seUControllerMoveDown(seController::Ref controller);
 	
 protected:
 	/** \brief Clean up undo action. */

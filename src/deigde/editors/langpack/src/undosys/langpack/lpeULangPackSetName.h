@@ -38,7 +38,7 @@ class lpeLangPack;
  */
 class lpeULangPackSetName : public igdeUndo{
 private:
-	lpeLangPack *pLangPack;
+	lpeLangPack::Ref pLangPack;
 	
 	decUnicodeString pOldName;
 	decUnicodeString pNewName;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	lpeULangPackSetName(lpeLangPack *langpack, const decUnicodeString &newName);
+	lpeULangPackSetName(lpeLangPack::Ref langpack, const decUnicodeString &newName);
 	
 protected:
 	/** \brief Clean up undo. */

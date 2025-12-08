@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetSectorSize::meUHTSetSectorSize(meWorld *world, meHeightTerrain *heightTerrain, float newSectorSize){
+meUHTSetSectorSize::meUHTSetSectorSize(meWorld::Ref world, meHeightTerrain *heightTerrain, float newSectorSize){
 	if(!world || !heightTerrain){
 		DETHROW(deeInvalidParam);
 	}
@@ -52,8 +52,6 @@ meUHTSetSectorSize::meUHTSetSectorSize(meWorld *world, meHeightTerrain *heightTe
 	pNewSectorSize = newSectorSize;
 	
 	SetShortInfo("Set Height Terrain Sector Size");
-	
-	world->AddReference();
 }
 
 meUHTSetSectorSize::~meUHTSetSectorSize(){

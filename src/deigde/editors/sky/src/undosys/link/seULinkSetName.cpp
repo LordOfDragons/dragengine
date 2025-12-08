@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkSetName::seULinkSetName(seLink *link, const char *newName) :
-pLink(NULL),
+seULinkSetName::seULinkSetName(seLink::Ref link, const char *newName) :
+
 pNewName(newName)
 {
 	if(!link){
@@ -52,13 +52,9 @@ pNewName(newName)
 	pOldName = link->GetName();
 	
 	pLink = link;
-	link->AddReference();
 }
 
 seULinkSetName::~seULinkSetName(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

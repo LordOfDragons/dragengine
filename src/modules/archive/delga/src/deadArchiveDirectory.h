@@ -101,7 +101,7 @@ public:
 	deadArchiveDirectory *GetDirectoryByPath(const decPath &path);
 	
 	/** \brief Add directory. */
-	void AddDirectory(deadArchiveDirectory *directory);
+	void AddDirectory(deadArchiveDirectory::Ref directory);
 	/*@}*/
 	
 	

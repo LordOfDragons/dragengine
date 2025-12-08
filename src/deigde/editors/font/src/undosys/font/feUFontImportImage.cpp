@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUFontImportImage::feUFontImportImage(feFontImage *fontImage, deImage *newImage, const char *newPath){
+feUFontImportImage::feUFontImportImage(feFontImage::Ref fontImage, deImage *newImage, const char *newPath){
 	if(!newImage || !newPath) DETHROW(deeInvalidParam);
 	
 	if(newImage->GetComponentCount() != 4) DETHROW(deeInvalidParam);
@@ -81,7 +81,6 @@ feUFontImportImage::feUFontImportImage(feFontImage *fontImage, deImage *newImage
 	}
 	
 	pImage = fontImage;
-	fontImage->AddReference();
 }
 
 feUFontImportImage::~feUFontImportImage(){

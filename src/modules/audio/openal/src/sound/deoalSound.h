@@ -41,7 +41,7 @@ class deoalSound : public deBaseAudioSound{
 private:
 	deAudioOpenAL &pOal;
 	deSound &pSound;
-	deoalASound *pASound;
+	deoalASound::Ref pASound;
 	
 	
 	

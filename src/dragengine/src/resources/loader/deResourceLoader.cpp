@@ -107,13 +107,13 @@ deResourceLoaderTask *deResourceLoader::AddLoadRequest(deVirtualFileSystem *vfs,
 const char *path, eResourceType resourceType){
 	// if a tasks exists already use this one. tasks stick around only as long as
 	// the script module has not collected them
-	deResourceLoaderTask *task = pGetTaskWith(vfs, path, resourceType);
+	deResourceLoaderTask::Ref task = pGetTaskWith(vfs, path, resourceType);
 	if(task){
 		return task;
 	}
 	
 	// create and add task
-	deFileResource *freeResource = NULL;
+	deFileResource::Ref freeResource = NULL;
 	
 	try{
 		// create task
@@ -124,7 +124,7 @@ const char *path, eResourceType resourceType){
 				animation = pEngine.GetAnimationManager()->LoadAnimation(vfs, path, "/");
 				freeResource = animation;
 			}
-			task = new deRLTaskReadAnimation(pEngine, *this, vfs, path, animation);
+			task.TakeOver(new deRLTaskReadAnimation(pEngine, *this, vfs, path, animation));
 			}break;
 			
 		case ertFont:{
@@ -133,7 +133,7 @@ const char *path, eResourceType resourceType){
 				font = pEngine.GetFontManager()->LoadFont(vfs, path, "/");
 				freeResource = font;
 			}
-			task = new deRLTaskReadFont(pEngine, *this, vfs, path, font);
+			task.TakeOver(new deRLTaskReadFont(pEngine, *this, vfs, path, font));
 			}break;
 			
 		case ertImage:{
@@ -142,7 +142,7 @@ const char *path, eResourceType resourceType){
 				image = pEngine.GetImageManager()->LoadImage(vfs, path, "/");
 				freeResource = image;
 			}
-			task = new deRLTaskReadImage(pEngine, *this, vfs, path, image);
+			task.TakeOver(new deRLTaskReadImage(pEngine, *this, vfs, path, image));
 			}break;
 			
 		case ertModel:{
@@ -151,7 +151,7 @@ const char *path, eResourceType resourceType){
 				model = pEngine.GetModelManager()->LoadModel(vfs, path, "/");
 				freeResource = model;
 			}
-			task = new deRLTaskReadModel(pEngine, *this, vfs, path, model);
+			task.TakeOver(new deRLTaskReadModel(pEngine, *this, vfs, path, model));
 			}break;
 			
 		case ertOcclusionMesh:{
@@ -162,7 +162,7 @@ const char *path, eResourceType resourceType){
 					vfs, path, "/");
 				freeResource = occlusionMesh;
 			}
-			task = new deRLTaskReadOcclusionMesh(pEngine, *this, vfs, path, occlusionMesh);
+			task.TakeOver(new deRLTaskReadOcclusionMesh(pEngine, *this, vfs, path, occlusionMesh));
 			}break;
 			
 		case ertRig:{
@@ -171,7 +171,7 @@ const char *path, eResourceType resourceType){
 				rig = pEngine.GetRigManager()->LoadRig(vfs, path, "/");
 				freeResource = rig;
 			}
-			task = new deRLTaskReadRig(pEngine, *this, vfs, path, rig);
+			task.TakeOver(new deRLTaskReadRig(pEngine, *this, vfs, path, rig));
 			}break;
 			
 		case ertSkin:{
@@ -180,7 +180,7 @@ const char *path, eResourceType resourceType){
 				skin = pEngine.GetSkinManager()->LoadSkin(vfs, path, "/");
 				freeResource = skin;
 			}
-			task = new deRLTaskReadSkin(pEngine, *this, vfs, path, skin);
+			task.TakeOver(new deRLTaskReadSkin(pEngine, *this, vfs, path, skin));
 			}break;
 			
 		case ertSound:{
@@ -189,7 +189,7 @@ const char *path, eResourceType resourceType){
 				sound = pEngine.GetSoundManager()->LoadSound(path, "/", false);
 				freeResource = sound;
 			}
-			task = new deRLTaskReadSound(pEngine, *this, vfs, path, sound);
+			task.TakeOver(new deRLTaskReadSound(pEngine, *this, vfs, path, sound));
 			}break;
 			
 		case ertLanguagePack:{
@@ -199,7 +199,7 @@ const char *path, eResourceType resourceType){
 				langPack = pEngine.GetLanguagePackManager()->LoadLanguagePack(vfs, path, "/");
 				freeResource = langPack;
 			}
-			task = new deRLTaskReadLanguagePack(pEngine, *this, vfs, path, langPack);
+			task.TakeOver(new deRLTaskReadLanguagePack(pEngine, *this, vfs, path, langPack));
 			}break;
 			
 		case ertVideo:{
@@ -208,7 +208,7 @@ const char *path, eResourceType resourceType){
 				video = pEngine.GetVideoManager()->LoadVideo(path, "/", false);
 				freeResource = video;
 			}
-			task = new deRLTaskReadVideo(pEngine, *this, vfs, path, video);
+			task.TakeOver(new deRLTaskReadVideo(pEngine, *this, vfs, path, video));
 			}break;
 			
 		default:
@@ -216,9 +216,6 @@ const char *path, eResourceType resourceType){
 		}
 		
 	}catch(const deException &e){
-		if(freeResource){
-			freeResource->FreeReference();
-		}
 		pEngine.GetLogger()->LogException(LOGSOURCE, e);
 		throw;
 	}
@@ -245,8 +242,6 @@ const char *path, eResourceType resourceType){
 		}
 		pFinishedTasks.Add(task);
 	}
-	
-	task->FreeReference();
 	return task;
 }
 
@@ -258,12 +253,11 @@ const char *path, deFileResource *resource){
 }
 
 bool deResourceLoader::NextFinishedRequest(deResourceLoaderInfo &info){
-	deResourceLoaderTask *task = NULL;
+	deResourceLoaderTask::Ref task = NULL;
 	
 	while(true){
 		if(pFinishedTasks.GetCount() > 0){
 			task = (deResourceLoaderTask *)pFinishedTasks.GetAt(0);
-			task->AddReference();
 			pFinishedTasks.Remove(task);
 		}
 		
@@ -292,8 +286,6 @@ bool deResourceLoader::NextFinishedRequest(deResourceLoaderInfo &info){
 				DETHROW(deeInvalidParam);
 				}
 			}
-			
-			task->FreeReference();
 			return true;
 		}
 		
@@ -339,7 +331,7 @@ void deResourceLoader::RemoveAllTasks(){
 // Internal use only
 //////////////////////
 
-void deResourceLoader::FinishTask(deResourceLoaderTask *task){
+void deResourceLoader::FinishTask(deResourceLoaderTask::Ref task){
 	if(!task){
 		DETHROW(deeInvalidParam);
 	}

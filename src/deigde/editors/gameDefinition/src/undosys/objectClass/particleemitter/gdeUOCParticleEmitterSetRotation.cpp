@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCParticleEmitterSetRotation::gdeUOCParticleEmitterSetRotation(gdeObjectClass *objectClass,
-gdeOCParticleEmitter *particleEmitter, const decVector &newValue) :
-pObjectClass(NULL),
+gdeUOCParticleEmitterSetRotation::gdeUOCParticleEmitterSetRotation(gdeObjectClass::Ref objectClass,
+gdeOCParticleEmitter::Ref particleEmitter, const decVector &newValue) :
+
 pParticleEmitter(NULL)
 {
 	if(!objectClass || !particleEmitter){
@@ -55,19 +55,10 @@ pParticleEmitter(NULL)
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCParticleEmitterSetRotation::~gdeUOCParticleEmitterSetRotation(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

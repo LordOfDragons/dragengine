@@ -358,9 +358,7 @@ public:
 
 gdeWPSOCNavigationBlocker::gdeWPSOCNavigationBlocker(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -369,7 +367,7 @@ pGameDefinition(NULL)
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
-	pListener = new gdeWPSOCNavigationBlockerListener(*this);
+	pListener.TakeOver(new gdeWPSOCNavigationBlockerListener(*this));
 	
 	helper.GroupBox(content, groupBox, "Object Class Navigation Blocker:");
 	
@@ -423,10 +421,6 @@ pGameDefinition(NULL)
 
 gdeWPSOCNavigationBlocker::~gdeWPSOCNavigationBlocker(){
 	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -434,21 +428,19 @@ gdeWPSOCNavigationBlocker::~gdeWPSOCNavigationBlocker(){
 // Management
 ///////////////
 
-void gdeWPSOCNavigationBlocker::SetGameDefinition(gdeGameDefinition *gameDefinition){
+void gdeWPSOCNavigationBlocker::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdatePropertyList();

@@ -38,7 +38,7 @@ class peeType;
  */
 class peeUTypeSetEmitController : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	deParticleEmitterType::eEmitControllers pController;
 	
 	decString pOldTarget;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeSetEmitController(peeType *type, deParticleEmitterType::eEmitControllers controller,
+	peeUTypeSetEmitController(peeType::Ref type, deParticleEmitterType::eEmitControllers controller,
 		const char *newTarget);
 	
 protected:

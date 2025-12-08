@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCACShotSetLookAtTarget : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCACameraShot *pCameraShot;
+	ceConversationTopic::Ref pTopic;
+	ceCACameraShot::Ref pCameraShot;
 	decString pOldTarget;
 	decString pNewTarget;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCACShotSetLookAtTarget(ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newTarget);
+	ceUCACShotSetLookAtTarget(ceConversationTopic::Ref topic, ceCACameraShot::Ref cameraShot, const char *newTarget);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCACShotSetLookAtTarget();

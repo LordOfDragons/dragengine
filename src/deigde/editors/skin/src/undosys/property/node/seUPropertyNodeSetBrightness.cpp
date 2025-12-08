@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetBrightness::seUPropertyNodeSetBrightness(sePropertyNode *node, float newValue) :
-pNode(NULL),
+seUPropertyNodeSetBrightness::seUPropertyNodeSetBrightness(sePropertyNode::Ref node, float newValue) :
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = node->GetBrightness();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetBrightness::~seUPropertyNodeSetBrightness(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

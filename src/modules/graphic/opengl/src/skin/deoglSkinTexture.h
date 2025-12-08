@@ -143,7 +143,7 @@ private:
 	bool pRenderableMaterialProperties;
 	deoglSkinChannel *pChannels[deoglSkinChannel::CHANNEL_COUNT];
 	deoglSkinTexturePipelinesList pPipelines;
-	deoglSharedSPBElement *pSharedSPBElement;
+	deoglSharedSPBElement::Ref pSharedSPBElement;
 	
 	decColor pAbsorption;
 	float pAbsorptionHalfIntensityDistance;

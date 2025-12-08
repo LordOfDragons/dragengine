@@ -76,13 +76,13 @@ public:
 	void EnableContext(bool enable);
 	
 	/** Add task to process. Returns true if added or false if loader is disabled. */
-	bool AddTask(deoglLoaderThreadTask *task);
+	bool AddTask(deoglLoaderThreadTask::Ref task);
 	
 	/**
 	 * Add task and wait for it to be processed then returns.
 	 * Returns true if process or false if loader is disabled.
 	 */
-	bool AwaitTask(deoglLoaderThreadTask *task);
+	bool AwaitTask(deoglLoaderThreadTask::Ref task);
 	/*@}*/
 	
 	

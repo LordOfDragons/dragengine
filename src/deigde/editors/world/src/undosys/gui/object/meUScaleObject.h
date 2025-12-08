@@ -38,12 +38,12 @@ class meWorld;
  */
 class meUScaleObject : public meBaseUndoScale{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decObjectOrderedSet pObjects;
 	
 public:
 	// constructor, destructor
-	meUScaleObject(meWorld *world, const meObjectList &objects);
+	meUScaleObject(meWorld::Ref world, const meObjectList &objects);
 	virtual ~meUScaleObject();
 	// undo and redo operations
 	virtual void Undo();

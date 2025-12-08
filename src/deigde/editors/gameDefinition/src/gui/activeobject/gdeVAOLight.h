@@ -50,7 +50,7 @@ public:
 	
 	
 private:
-	gdeOCLight *pOCLight;
+	gdeOCLight::Ref pOCLight;
 	
 	deLight::Ref pLight;
 	

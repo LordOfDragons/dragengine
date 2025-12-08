@@ -46,7 +46,7 @@
 
 
 struct sMdlNatDat{
-	deModel *model;
+	deModel::Ref model;
 };
 
 
@@ -338,7 +338,7 @@ deModel *deClassModel::GetModel(dsRealObject *myself) const{
 	return ((sMdlNatDat*)p_GetNativeData(myself->GetBuffer()))->model;
 }
 
-void deClassModel::PushModel(dsRunTime *rt, deModel *model){
+void deClassModel::PushModel(dsRunTime *rt, deModel::Ref model){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -350,5 +350,4 @@ void deClassModel::PushModel(dsRunTime *rt, deModel *model){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sMdlNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->model = model;
-	model->AddReference();
 }

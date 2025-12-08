@@ -72,7 +72,7 @@ public:
 	 * \brief Push capture canvas onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushCaptureCanvas(dsRunTime *rt, deCaptureCanvas *captureCanvas);
+	void PushCaptureCanvas(dsRunTime *rt, deCaptureCanvas::Ref captureCanvas);
 	/*@}*/
 	
 private:

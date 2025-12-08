@@ -41,8 +41,8 @@ class gdeGameDefinition;
 class gdeWPView : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeGameDefinition *pGameDefinition;
-	gdeWPViewListener *pListener;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeWPViewListener::Ref pListener;
 	
 	igdeWPSky::Ref pWPSky;
 	igdeWPCamera::Ref pWPCamera;
@@ -69,7 +69,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not present. */
-	void SetGameDefinition(gdeGameDefinition *gameDefinition);
+	void SetGameDefinition(gdeGameDefinition::Ref gameDefinition);
 	
 	/** \brief Update view. */
 	void UpdateView();

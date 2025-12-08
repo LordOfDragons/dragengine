@@ -53,8 +53,8 @@ class aeAttachment;
 class aeWPView : public igdeContainerScroll{
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPViewListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPViewListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
 	igdeEditPath::Ref pEditDisplayModelPath;
 	igdeEditPath::Ref pEditDisplaySkinPath;
@@ -111,7 +111,7 @@ public:
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator(aeAnimator *animator);
+	void SetAnimator(aeAnimator::Ref animator);
 	
 	/** Attachment. */
 	aeAttachment *GetAttachment() const;

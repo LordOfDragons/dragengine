@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUSetObjectClass::meUSetObjectClass(meObject *object, const char *newcname){
+meUSetObjectClass::meUSetObjectClass(meObject::Ref object, const char *newcname){
 	if(!object || !newcname) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
@@ -61,8 +61,6 @@ meUSetObjectClass::meUSetObjectClass(meObject *object, const char *newcname){
 		pObjects[0].oldsize = object->GetSize();
 		pObjects[0].oldscaling = object->GetScaling();
 		pObjects[0].object = object;
-		object->AddReference();
-		
 		pObjectCount = 1;
 		
 	}catch(const deException &){
@@ -73,7 +71,7 @@ meUSetObjectClass::meUSetObjectClass(meObject *object, const char *newcname){
 
 meUSetObjectClass::meUSetObjectClass(meObjectList &objects, const char *newcname){
 	int count = objects.GetCount();
-	meObject *object;
+	meObject::Ref object;
 	
 	if(count == 0 || !newcname) DETHROW(deeInvalidParam);
 	
@@ -94,7 +92,6 @@ meUSetObjectClass::meUSetObjectClass(meObjectList &objects, const char *newcname
 			pObjects[pObjectCount].oldsize = object->GetSize();
 			pObjects[pObjectCount].oldscaling = object->GetScaling();
 			pObjects[pObjectCount].object = object;
-			object->AddReference();
 		}
 		
 	}catch(const deException &){
@@ -113,7 +110,7 @@ meUSetObjectClass::~meUSetObjectClass(){
 ///////////////
 
 void meUSetObjectClass::Undo(){
-	meObject *object;
+	meObject::Ref object;
 	meWorld *world;
 	int o;
 	
@@ -130,7 +127,7 @@ void meUSetObjectClass::Undo(){
 }
 
 void meUSetObjectClass::Redo(){
-	meObject *object;
+	meObject::Ref object;
 	meWorld *world;
 	int o;
 	

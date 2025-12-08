@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakSetTextBoxTextStyle::ceUCAASpeakSetTextBoxTextStyle(ceConversationTopic *topic,
-ceCAActorSpeak *actorSpeak, const char *newText){
+ceUCAASpeakSetTextBoxTextStyle::ceUCAASpeakSetTextBoxTextStyle(ceConversationTopic::Ref topic,
+ceCAActorSpeak::Ref actorSpeak, const char *newText){
 	if(!topic){
 		DETHROW(deeInvalidParam);
 	}
@@ -55,19 +55,10 @@ ceCAActorSpeak *actorSpeak, const char *newText){
 	SetShortInfo("Actor speak text box text style");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakSetTextBoxTextStyle::~ceUCAASpeakSetTextBoxTextStyle(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

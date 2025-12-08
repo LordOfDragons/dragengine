@@ -39,7 +39,7 @@ class peeParameter;
  */
 class peeUParameterSetCurve : public igdeUndo{
 protected:
-	peeType *pType;
+	peeType::Ref pType;
 	peeParameter *pParameter;
 	
 	decCurveBezier pOldCurve;
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	peeUParameterSetCurve(peeType *type, peeParameter *parameter, const decCurveBezier &newCurve);
+	peeUParameterSetCurve(peeType::Ref type, peeParameter *parameter, const decCurveBezier &newCurve);
 	
 protected:
 	/** \brief Clean up undo. */

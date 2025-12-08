@@ -39,7 +39,7 @@ class ceConversationTopic;
  */
 class ceUCTopicPaste : public igdeUndo{
 private:
-	ceConversationFile *pFile;
+	ceConversationFile::Ref pFile;
 	ceConversationTopicList pTopics;
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCTopicPaste(ceConversationFile *file, const ceConversationTopicList &topics);
+	ceUCTopicPaste(ceConversationFile::Ref file, const ceConversationTopicList &topics);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCTopicPaste();

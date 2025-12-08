@@ -44,7 +44,7 @@
 
 // Native Structure
 struct sEffOverImgMatrixNatDat{
-	deEffectOverlayImage *effect;
+	deEffectOverlayImage::Ref effect;
 };
 
 
@@ -211,7 +211,7 @@ deEffectOverlayImage *deClassEffectOverlayImage::GetEffect(dsRealObject *myself)
 	return ((sEffOverImgMatrixNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
-void deClassEffectOverlayImage::PushEffect(dsRunTime *rt, deEffectOverlayImage *effect){
+void deClassEffectOverlayImage::PushEffect(dsRunTime *rt, deEffectOverlayImage::Ref effect){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -231,8 +231,6 @@ void deClassEffectOverlayImage::PushEffect(dsRunTime *rt, deEffectOverlayImage *
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.effect = effect;
-		effect->AddReference();
-		
 		baseClass->AssignEffect(rt->GetValue(0)->GetRealObject(), effect);
 		
 	}catch(...){

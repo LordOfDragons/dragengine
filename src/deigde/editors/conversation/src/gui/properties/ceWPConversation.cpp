@@ -146,7 +146,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation) = 0;
+	virtual igdeUndo *OnAction(ceConversation::Ref conversation) = 0;
 	
 	virtual void Update(){
 		const ceConversation * const conversation = pPanel.GetConversation();
@@ -181,7 +181,7 @@ public:
 		}
 	}
 	
-	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation *conversation) = 0;
+	virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu, ceConversation::Ref conversation) = 0;
 	
 	virtual void Update(){
 		const ceConversation * const conversation = pPanel.GetConversation();
@@ -217,7 +217,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation *conversation) = 0;
+	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation::Ref conversation) = 0;
 };
 
 class cBaseTextFieldListener : public igdeTextFieldListener{
@@ -237,7 +237,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation *conversation) = 0;
+	virtual igdeUndo *OnChanged(igdeTextField &textField, ceConversation::Ref conversation) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -257,7 +257,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation *conversation) = 0;
+	virtual igdeUndo *OnChanged(igdeEditVector &editVector, ceConversation::Ref conversation) = 0;
 };
 
 
@@ -267,7 +267,7 @@ public:
 	cActionImportConvoAdd(ceWPConversation &panel) : cBaseAction(panel, "",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Import Conversation"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
 		const decString &path = pPanel.GetPathImportConvo();
 		if(path.IsEmpty() || path == conversation->GetFilePath()
 		|| conversation->GetImportConversationPath().Has(path)){
@@ -401,7 +401,7 @@ class cComboTarget : public cBaseComboBoxListener{
 public:
 	cComboTarget(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation *conversation){
+	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation::Ref conversation){
 		conversation->SetActiveTarget(comboBox.GetSelectedItem()
 			? (ceTarget*)comboBox.GetSelectedItem()->GetData() : NULL);
 		return NULL;
@@ -413,7 +413,7 @@ public:
 	cActionTargetAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Target"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
 		decString name("Target");
 		if(!igdeCommonDialogs::GetString(&pPanel, "Add Target", "Name:", name)){
 			return NULL;
@@ -447,7 +447,7 @@ public:
 	cActionTargetRename(ceWPConversation &panel) : cBaseAction(panel,
 	"Rename...", NULL, "Rename Target"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
 		ceTarget * const target = pPanel.GetTarget();
 		if(!target){
 			return NULL;
@@ -544,7 +544,7 @@ class cComboCameraShot : public cBaseComboBoxListener{
 public:
 	cComboCameraShot(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation *conversation){
+	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation::Ref conversation){
 		conversation->SetActiveCameraShot(comboBox.GetSelectedItem()
 			? (ceCameraShot*)comboBox.GetSelectedItem()->GetData() : NULL);
 		return NULL;
@@ -556,7 +556,7 @@ public:
 	cActionCameraShotAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Camera Shot"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
 		decString name("Camera Shot");
 		if(!igdeCommonDialogs::GetString(&pPanel, "Add Camera Shot", "Name:", name)){
 			return NULL;
@@ -589,7 +589,7 @@ public:
 	cActionCameraShotRename(ceWPConversation &panel) : cBaseAction(panel,
 	"Rename...", NULL, "Rename Camera Shot"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		if(!cameraShot){
 			return NULL;
@@ -618,7 +618,7 @@ public:
 	cActionCameraDuplicate(ceWPConversation &panel) : cBaseAction(panel,
 	"Duplicate...", NULL, "Duplicate Camera Shot"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
 		ceCameraShot * const cameraShot = pPanel.GetCameraShot();
 		if(!cameraShot){
 			return NULL;
@@ -966,7 +966,7 @@ class cComboGesture : public cBaseComboBoxListener{
 public:
 	cComboGesture(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation *conversation){
+	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation::Ref conversation){
 		conversation->SetActiveGesture(comboBox.GetSelectedItem()
 			? (ceGesture*)comboBox.GetSelectedItem()->GetData() : NULL);
 		return NULL;
@@ -978,7 +978,7 @@ public:
 	cActionGestureAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Gesture"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
 		decString name("Gesture");
 		if(!igdeCommonDialogs::GetString(&pPanel, "Add Gesture", "Name:", name)){
 			return NULL;
@@ -1012,7 +1012,7 @@ public:
 	cActionGestureRename(ceWPConversation &panel) : cBaseAction(panel,
 	"Rename...", NULL, "Rename Gesture"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
 		ceGesture * const gesture = pPanel.GetGesture();
 		if(!gesture){
 			return NULL;
@@ -1094,7 +1094,7 @@ class cComboFacePose : public cBaseComboBoxListener{
 public:
 	cComboFacePose(ceWPConversation &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation *conversation){
+	virtual igdeUndo *OnChanged(igdeComboBox &comboBox, ceConversation::Ref conversation){
 		conversation->SetActiveFacePose(comboBox.GetSelectedItem()
 			? (ceFacePose*)comboBox.GetSelectedItem()->GetData() : NULL);
 		return NULL;
@@ -1106,7 +1106,7 @@ public:
 	cActionFacePoseAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Face Pose"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
 		decString name("FacePose");
 		if(!igdeCommonDialogs::GetString(&pPanel, "Add Face Pose", "Name:", name)){
 			return NULL;
@@ -1140,7 +1140,7 @@ public:
 	cActionFacePoseRename(ceWPConversation &panel) : cBaseAction(panel,
 	"Rename...", NULL, "Rename Face Pose"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
 		ceFacePose * const facePose = pPanel.GetFacePose();
 		if(!facePose){
 			return NULL;
@@ -1194,7 +1194,7 @@ public:
 	cActionFacePoseControllerAdd(ceWPConversation &panel) : cBaseAction(panel, "Add...",
 	panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add Face Pose Controller"){}
 	
-	virtual igdeUndo *OnAction(ceConversation *conversation){
+	virtual igdeUndo *OnAction(ceConversation::Ref conversation){
 		ceFacePose * const facePose = pPanel.GetFacePose();
 		if(!facePose || conversation->GetFacePoseControllerNameList().GetCount() == 0){
 			return NULL;
@@ -1277,16 +1277,14 @@ public:
 
 ceWPConversation::ceWPConversation(ceWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pConversation(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, groupBox2, form, formLine;
 	igdeActionContextMenu *actionContextMenu;
 	
-	pListener = new ceWPConversationListener(*this);
+	pListener.TakeOver(new ceWPConversationListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -1454,9 +1452,6 @@ pConversation(NULL)
 
 ceWPConversation::~ceWPConversation(){
 	SetConversation(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1464,21 +1459,19 @@ ceWPConversation::~ceWPConversation(){
 // Management
 ///////////////
 
-void ceWPConversation::SetConversation(ceConversation *conversation){
+void ceWPConversation::SetConversation(ceConversation::Ref conversation){
 	if(conversation == pConversation){
 		return;
 	}
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;
 	
 	if(conversation){
 		conversation->AddListener(pListener);
-		conversation->AddReference();
 	}
 	
 	const bool enabled = conversation;

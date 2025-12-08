@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectShapeRotate::meUObjectShapeRotate(meObject *object, const char *property,
+meUObjectShapeRotate::meUObjectShapeRotate(meObject::Ref object, const char *property,
 const meObjectShapeList &list){
 	if(list.GetCount() == 0){
 		DETHROW(deeInvalidParam);
@@ -74,13 +74,9 @@ const meObjectShapeList &list){
 	
 	pProperty = property;
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectShapeRotate::~meUObjectShapeRotate(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

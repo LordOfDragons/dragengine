@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetTrailController::peeUTypeSetTrailController(peeType *type,
+peeUTypeSetTrailController::peeUTypeSetTrailController(peeType::Ref type,
 deParticleEmitterType::eEmitControllers controller, const char *newTarget) :
-pType(NULL),
+
 pController(controller),
 pNewTarget(newTarget)
 {
@@ -54,13 +54,9 @@ pNewTarget(newTarget)
 	pOldTarget = type->GetTrailController(controller);
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetTrailController::~peeUTypeSetTrailController(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

@@ -36,7 +36,7 @@ class seEffectStretch;
  */
 class seUEffectStretchSetMaxPitch : public igdeUndo{
 private:
-	seEffectStretch *pSource;
+	seEffectStretch::Ref pSource;
 	
 	float pOldPitch;
 	float pNewPitch;

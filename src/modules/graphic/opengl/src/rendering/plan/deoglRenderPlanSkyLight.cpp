@@ -97,12 +97,7 @@ pGIShadowUpdateStatic(true),
 pGIRenderTaskStatic(plan.GetRenderThread()),
 pGIRenderTaskDynamic(plan.GetRenderThread()),
 pGIRenderTaskAddStatic(plan.GetRenderThread(), pGIRenderTaskStatic),
-pGIRenderTaskAddDynamic(plan.GetRenderThread(), pGIRenderTaskDynamic),
-pTaskFindContent(NULL),
-pTaskBuildRT1(NULL),
-pTaskBuildRT2(NULL),
-pTaskGIFindContent(NULL),
-pTaskGIUpdateRT(NULL)
+pGIRenderTaskAddDynamic(plan.GetRenderThread(), pGIRenderTaskDynamic)
 {
 	deoglRenderThread &renderThread = plan.GetRenderThread();
 	
@@ -271,11 +266,11 @@ void deoglRenderPlanSkyLight::StartFindContent(){
 	}else{
 		deParallelProcessing &pp = pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing();
 		
-		pTaskFindContent = new deoglRPTSkyLightFindContent(*this);
+		pTaskFindContent.TakeOver(new deoglRPTSkyLightFindContent(*this));
 		pp.AddTaskAsync(pTaskFindContent);
 		
 		if(pPlan.GetUpdateGIState()){
-			pTaskGIFindContent = new deoglRPTSkyLightGIFindContent(*this);
+			pTaskGIFindContent.TakeOver(new deoglRPTSkyLightGIFindContent(*this));
 			pp.AddTaskAsync(pTaskGIFindContent);
 		}
 	}
@@ -298,7 +293,7 @@ void deoglRenderPlanSkyLight::RenderOcclusionTests(){
 	pWaitFinishedGIFindContent();
 	
 	if(pPlan.GetUpdateGIState()){
-		pTaskGIUpdateRT = new deoglRPTSkyLightGIUpdateRT(*this);
+		pTaskGIUpdateRT.TakeOver(new deoglRPTSkyLightGIUpdateRT(*this));
 		pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskGIUpdateRT);
 	}
 	
@@ -331,10 +326,10 @@ void deoglRenderPlanSkyLight::StartBuildRT(){
 	// small amount of content so they can be process sequentially. the 4th cascade on the
 	// other hand usually has large amount of content. for this reason the 4th cascade
 	// render task is build in a separate task
-	pTaskBuildRT1 = new deoglRPTSkyLightBuildRT(*this, pSLCollideList1, 0, 2);
+	pTaskBuildRT1.TakeOver(new deoglRPTSkyLightBuildRT(*this, pSLCollideList1, 0, 2));
 	pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskBuildRT1);
 	
-	pTaskBuildRT2 = new deoglRPTSkyLightBuildRT(*this, pSLCollideList2, 3, 3);
+	pTaskBuildRT2.TakeOver(new deoglRPTSkyLightBuildRT(*this, pSLCollideList2, 3, 3));
 	pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskBuildRT2);
 }
 
@@ -349,8 +344,6 @@ void deoglRenderPlanSkyLight::WaitFinishedGIUpdateRT(){
 	rc.SampleDebugInfoPlanPrepareSkyLightGIUpdateRenderTask(pPlan, pTaskGIUpdateRT->GetElapsedTime());
 	
 // 	const float timePrepare = pTaskGIUpdateRT->GetElapsedTime();
-	
-	pTaskGIUpdateRT->FreeReference();
 	pTaskGIUpdateRT = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
@@ -376,8 +369,6 @@ void deoglRenderPlanSkyLight::WaitFinishedBuildRT1(){
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareSkyLightBuildRT(pPlan, pTaskBuildRT1->GetElapsedTime());
-	
-	pTaskBuildRT1->FreeReference();
 	pTaskBuildRT1 = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
@@ -395,8 +386,6 @@ void deoglRenderPlanSkyLight::WaitFinishedBuildRT2(){
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareSkyLightBuildRT(pPlan, pTaskBuildRT2->GetElapsedTime());
-	
-	pTaskBuildRT2->FreeReference();
 	pTaskBuildRT2 = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
@@ -1150,8 +1139,6 @@ void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
 	
 	pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent(
 		pPlan, pTaskFindContent->GetElapsedTime());
-	
-	pTaskFindContent->FreeReference();
 	pTaskFindContent = NULL;
 }
 
@@ -1164,8 +1151,6 @@ void deoglRenderPlanSkyLight::pWaitFinishedGIFindContent(){
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareSkyLightGIFindContent(pPlan, pTaskGIFindContent->GetElapsedTime());
-	
-	pTaskGIFindContent->FreeReference();
 	pTaskGIFindContent = NULL;
 }
 

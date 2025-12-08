@@ -41,7 +41,7 @@ class deoglOcclusionMesh : public deBaseGraphicOcclusionMesh{
 public:
 	deGraphicOpenGl &pOgl;
 	const deOcclusionMesh &pOcclusionMesh;
-	deoglROcclusionMesh *pROcclusionMesh;
+	deoglROcclusionMesh::Ref pROcclusionMesh;
 	
 public:
 	/** \name Constructors and Destructors */

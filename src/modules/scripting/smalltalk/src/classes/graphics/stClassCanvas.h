@@ -81,7 +81,7 @@ public:
 	deCanvas *OOPToCanvas(OOP object) const;
 	
 	/** \brief Push canvas object or \em nil if canvas is \em NULL. */
-	OOP CanvasToOOP(deCanvas *canvas);
+	OOP CanvasToOOP(deCanvas::Ref canvas);
 	/*@}*/
 	
 	

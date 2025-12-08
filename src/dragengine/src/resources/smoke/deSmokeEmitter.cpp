@@ -174,7 +174,7 @@ void deSmokeEmitter::SetEnableCasting(bool enable){
 
 
 
-void deSmokeEmitter::SetComponent(deComponent *component){
+void deSmokeEmitter::SetComponent(deComponent::Ref component){
 	if(component != pComponent){
 		if(pComponent) pComponent->FreeReference();
 		
@@ -194,7 +194,7 @@ void deSmokeEmitter::SetCastTexture(int texture){
 	}
 }
 
-void deSmokeEmitter::SetSkin(deSkin *skin){
+void deSmokeEmitter::SetSkin(deSkin::Ref skin){
 	if(skin != pSkin){
 		if(pSkin) pSkin->FreeReference();
 		

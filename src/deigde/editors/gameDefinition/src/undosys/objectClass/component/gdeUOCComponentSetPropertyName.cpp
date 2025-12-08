@@ -39,10 +39,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetPropertyName::gdeUOCComponentSetPropertyName(gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponent::eProperties property, const char *newValue) :
-pObjectClass(NULL),
-pComponent(NULL),
+gdeUOCComponentSetPropertyName::gdeUOCComponentSetPropertyName(gdeObjectClass::Ref objectClass,
+gdeOCComponent::Ref component, gdeOCComponent::eProperties property, const char *newValue) :
+
+
 pProperty(property)
 {
 	if(!objectClass || !component){
@@ -55,19 +55,10 @@ pProperty(property)
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetPropertyName::~gdeUOCComponentSetPropertyName(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

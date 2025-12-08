@@ -50,18 +50,10 @@ pType(type),
 pIndex(index),
 pValue(value),
 pSpread(spread),
-pControllerValue(NULL),
-pControllerSpread(NULL),
 pActive(false){
 }
 
 peeParameter::~peeParameter(){
-	if(pControllerSpread){
-		pControllerSpread->FreeReference();
-	}
-	if(pControllerValue){
-		pControllerValue->FreeReference();
-	}
 }
 
 
@@ -101,16 +93,9 @@ void peeParameter::SetSpread(float spread){
 	}
 }
 
-void peeParameter::SetControllerValue(peeController *controller){
+void peeParameter::SetControllerValue(peeController::Ref controller){
 	if(controller != pControllerValue){
-		if(pControllerValue){
-			pControllerValue->FreeReference();
-		}
 		pControllerValue = controller;
-		if(controller){
-			controller->AddReference();
-		}
-		
 		if(pType.GetEmitter() && pType.GetEmitter()->GetEngineEmitter()){
 			deParticleEmitter &engEmitter = *pType.GetEmitter()->GetEngineEmitter();
 			deParticleEmitterType &engType = engEmitter.GetTypeAt(pType.GetIndex());
@@ -138,16 +123,9 @@ void peeParameter::SetCurveValue(const decCurveBezier &curve){
 	NotifyChanged();
 }
 
-void peeParameter::SetControllerSpread(peeController *controller){
+void peeParameter::SetControllerSpread(peeController::Ref controller){
 	if(controller != pControllerSpread){
-		if(pControllerSpread){
-			pControllerSpread->FreeReference();
-		}
 		pControllerSpread = controller;
-		if(controller){
-			controller->AddReference();
-		}
-		
 		if(pType.GetEmitter() && pType.GetEmitter()->GetEngineEmitter()){
 			deParticleEmitter &engEmitter = *pType.GetEmitter()->GetEngineEmitter();
 			deParticleEmitterType &engType = engEmitter.GetTypeAt(pType.GetIndex());

@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCAddCamera : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCCamera *pCamera;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCCamera::Ref pCamera;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCAddCamera(gdeObjectClass *objectClass, gdeOCCamera *camera);
+	gdeUOCAddCamera(gdeObjectClass::Ref objectClass, gdeOCCamera::Ref camera);
 	
 protected:
 	/** \brief Clean up undo action. */

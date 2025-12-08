@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerSetMinimum::seUControllerSetMinimum(seController *controller, float newMinimum) :
-pController(NULL),
+seUControllerSetMinimum::seUControllerSetMinimum(seController::Ref controller, float newMinimum) :
+
 pNewMinimum(newMinimum)
 {
 	if(!controller){
@@ -53,13 +53,9 @@ pNewMinimum(newMinimum)
 	pOldMaximum = controller->GetMaximumValue();
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 seUControllerSetMinimum::~seUControllerSetMinimum(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

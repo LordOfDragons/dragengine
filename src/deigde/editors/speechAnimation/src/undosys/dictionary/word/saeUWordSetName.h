@@ -36,7 +36,7 @@ class saeWord;
  */
 class saeUWordSetName : public igdeUndo{
 private:
-	saeWord *pWord;
+	saeWord::Ref pWord;
 	
 	decString pOldName;
 	decString pNewName;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUWordSetName(saeWord *word, const char *newName);
+	saeUWordSetName(saeWord::Ref word, const char *newName);
 	
 protected:
 	/** Clean up undo. */

@@ -41,8 +41,8 @@ public:
 	
 	
 private:
-	igdeGDProperty *pProperty;
-	meIDGroup *pGroup;
+	igdeGDProperty::Ref pProperty;
+	meIDGroup::Ref pGroup;
 	const decString pPropertyPrefix;
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create mapping between game definition property and Identifier group. */
-	meMapIDGroup(igdeGDProperty *property, meIDGroup *group, const decString &propertyPrefix);
+	meMapIDGroup(igdeGDProperty::Ref property, meIDGroup::Ref group, const decString &propertyPrefix);
 	
 	/** Clean up mapping between game definition property and Identifier group. */
 	virtual ~meMapIDGroup();

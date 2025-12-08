@@ -76,7 +76,7 @@ void aeRuleTrackTo::SetTrackBone(const char *boneName){
 	}
 	
 	if(pTrackBone != boneName){
-		deAnimatorRuleTrackTo *engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
+		deAnimatorRuleTrackTo::Ref engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
 		
 		pTrackBone = boneName;
 		
@@ -94,7 +94,7 @@ void aeRuleTrackTo::SetTrackAxis(deAnimatorRuleTrackTo::eTrackAxis axis){
 	}
 	
 	if(axis != pTrackAxis){
-		deAnimatorRuleTrackTo *engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
+		deAnimatorRuleTrackTo::Ref engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
 		
 		pTrackAxis = axis;
 		
@@ -112,7 +112,7 @@ void aeRuleTrackTo::SetUpAxis(deAnimatorRuleTrackTo::eTrackAxis axis){
 	}
 	
 	if(axis != pUpAxis){
-		deAnimatorRuleTrackTo *engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
+		deAnimatorRuleTrackTo::Ref engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
 		
 		pUpAxis = axis;
 		
@@ -130,7 +130,7 @@ void aeRuleTrackTo::SetUpTarget(deAnimatorRuleTrackTo::eUpTarget target){
 	}
 	
 	if(target != pUpTarget){
-		deAnimatorRuleTrackTo *engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
+		deAnimatorRuleTrackTo::Ref engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
 		
 		pUpTarget = target;
 		
@@ -148,7 +148,7 @@ void aeRuleTrackTo::SetLockedAxis(deAnimatorRuleTrackTo::eLockedAxis axis){
 	}
 	
 	if(axis != pLockedAxis){
-		deAnimatorRuleTrackTo *engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
+		deAnimatorRuleTrackTo::Ref engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
 		
 		pLockedAxis = axis;
 		
@@ -163,7 +163,7 @@ void aeRuleTrackTo::SetLockedAxis(deAnimatorRuleTrackTo::eLockedAxis axis){
 
 
 void aeRuleTrackTo::UpdateTargets(){
-	deAnimatorRuleTrackTo *engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
+	deAnimatorRuleTrackTo::Ref engRule = (deAnimatorRuleTrackTo*)GetEngineRule();
 	
 	aeRule::UpdateTargets();
 	
@@ -214,12 +214,12 @@ void aeRuleTrackTo::RemoveLinksFromAllTargets(){
 
 
 deAnimatorRule *aeRuleTrackTo::CreateEngineRule(){
-	deAnimatorRuleTrackTo *engRule = NULL;
+	deAnimatorRuleTrackTo::Ref engRule = NULL;
 	aeAnimator *animator = GetAnimator();
 	
 	try{
 		// create rule
-		engRule = new deAnimatorRuleTrackTo;
+		engRule.TakeOver(new deAnimatorRuleTrackTo);
 		if(!engRule) DETHROW(deeOutOfMemory);
 		
 		// init rule
@@ -235,9 +235,6 @@ deAnimatorRule *aeRuleTrackTo::CreateEngineRule(){
 		pTargetUp.UpdateEngineTarget(animator, engRule->GetTargetUp());
 		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 	

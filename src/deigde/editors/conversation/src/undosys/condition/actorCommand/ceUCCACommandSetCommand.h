@@ -38,9 +38,9 @@ class ceConversationTopic;
  */
 class ceUCCACommandSetCommand : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionActorCommand *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionActorCommand::Ref pCondition;
 	decString pOldCommand;
 	decString pNewCommand;
 	
@@ -51,8 +51,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCCACommandSetCommand(ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionActorCommand *condition, const char *newCommand);
+	ceUCCACommandSetCommand(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
+		ceCConditionActorCommand::Ref condition, const char *newCommand);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCCACommandSetCommand();
 	/*@}*/

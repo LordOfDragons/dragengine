@@ -40,8 +40,8 @@ class meHTVRuleCurve;
  */
 class meUHTVRuleCurveSetCurve : public igdeUndo{
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleCurve *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleCurve::Ref pRule;
 	
 	decCurveBezier pOldCurve;
 	decCurveBezier pNewCurve;
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleCurveSetCurve(meHTVegetationLayer *vlayer, meHTVRuleCurve *rule, const decCurveBezier &newCurve);
+	meUHTVRuleCurveSetCurve(meHTVegetationLayer::Ref vlayer, meHTVRuleCurve::Ref rule, const decCurveBezier &newCurve);
 	
 protected:
 	/** \brief Clean up object. */

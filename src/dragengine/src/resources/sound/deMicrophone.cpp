@@ -54,7 +54,6 @@ pSpeakerGain(1.0f),
 pEnableAuralization(true),
 
 pSpeakerRoot(NULL),
-pSpeakerTail(NULL),
 pSpeakerCount(0),
 
 pPeerAudio(NULL),
@@ -205,7 +204,7 @@ void deMicrophone::SetEnableAuralization(bool enable){
 // Speakers
 /////////////
 
-void deMicrophone::AddSpeaker(deSpeaker *speaker){
+void deMicrophone::AddSpeaker(deSpeaker::Ref speaker){
 	if(!speaker || speaker->GetParentMicrophone() || speaker->GetParentWorld()){
 		DETHROW(deeInvalidParam);
 	}
@@ -224,14 +223,12 @@ void deMicrophone::AddSpeaker(deSpeaker *speaker){
 	pSpeakerTail = speaker;
 	pSpeakerCount++;
 	speaker->SetParentMicrophone(this);
-	speaker->AddReference();
-	
 	if(pPeerAudio){
 		pPeerAudio->SpeakerAdded(speaker);
 	}
 }
 
-void deMicrophone::RemoveSpeaker(deSpeaker *speaker){
+void deMicrophone::RemoveSpeaker(deSpeaker::Ref speaker){
 	if(!speaker || speaker->GetParentMicrophone() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -256,7 +253,6 @@ void deMicrophone::RemoveSpeaker(deSpeaker *speaker){
 	if(pPeerAudio){
 		pPeerAudio->SpeakerRemoved(speaker);
 	}
-	speaker->FreeReference();
 }
 
 void deMicrophone::RemoveAllSpeakers(){
@@ -266,7 +262,6 @@ void deMicrophone::RemoveAllSpeakers(){
 	
 	while(pSpeakerTail){
 		deSpeaker * const next = pSpeakerTail->GetLLMicrophonePrev();
-		pSpeakerTail->FreeReference();
 		pSpeakerTail = next;
 		pSpeakerCount--;
 	}

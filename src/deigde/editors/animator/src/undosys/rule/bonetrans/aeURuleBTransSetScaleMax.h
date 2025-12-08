@@ -39,7 +39,7 @@ class aeRuleBoneTransformator;
  */
 class aeURuleBTransSetScaleMax : public igdeUndo{
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	
 	decVector pOldMax;
 	decVector pNewMax;

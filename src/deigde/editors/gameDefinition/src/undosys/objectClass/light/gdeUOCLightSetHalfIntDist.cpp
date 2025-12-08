@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetHalfIntDist::gdeUOCLightSetHalfIntDist(gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue) :
-pObjectClass(NULL),
-pLight(NULL)
+gdeUOCLightSetHalfIntDist::gdeUOCLightSetHalfIntDist(gdeObjectClass::Ref objectClass,
+gdeOCLight::Ref light, float newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pLight(NULL)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetHalfIntDist::~gdeUOCLightSetHalfIntDist(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

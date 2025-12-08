@@ -1392,7 +1392,7 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision(sParticle &particle,
 		if(doEmitParticles){
 			deParticleEmitter * const emitEmitter = engType.GetCollisionEmitter();
 			deEngine &engine = *pInstance->GetBullet()->GetGameEngine();
-			deParticleEmitterInstance *emitInstance = NULL;
+			deParticleEmitterInstance::Ref emitInstance = NULL;
 			
 			try{
 				// create instance
@@ -1444,12 +1444,7 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision(sParticle &particle,
 				pInstance->GetParentWorld()->GetWorld().AddParticleEmitter(emitInstance);
 				
 				// cast a burst of particles
-				emitInstance->FreeReference();
-				
 			}catch(const deException &){
-				if(emitInstance){
-					emitInstance->FreeReference();
-				}
 				throw;
 			}
 		}

@@ -46,9 +46,9 @@ class seWPEffectListener;
 class seWPEffect : public igdeContainerFlow{
 private:
 	seViewSynthesizer &pViewSynthesizer;
-	seWPEffectListener *pListener;
+	seWPEffectListener::Ref pListener;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	igdeListBox::Ref pListEffect;
 	
@@ -86,7 +86,7 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
-	void SetSynthesizer(seSynthesizer *synthesizer);
+	void SetSynthesizer(seSynthesizer::Ref synthesizer);
 	
 	/** \brief Source or \em NULL if not set. */
 	seSource *GetSource() const;

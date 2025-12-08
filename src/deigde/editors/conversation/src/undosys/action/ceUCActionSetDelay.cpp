@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionSetDelay::ceUCActionSetDelay(ceConversationTopic *topic, ceConversationAction *action, float newDelay){
+ceUCActionSetDelay::ceUCActionSetDelay(ceConversationTopic::Ref topic, ceConversationAction::Ref action, float newDelay){
 	if(!topic) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
@@ -52,19 +52,10 @@ ceUCActionSetDelay::ceUCActionSetDelay(ceConversationTopic *topic, ceConversatio
 	SetShortInfo("Action Set Delay");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCActionSetDelay::~ceUCActionSetDelay(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

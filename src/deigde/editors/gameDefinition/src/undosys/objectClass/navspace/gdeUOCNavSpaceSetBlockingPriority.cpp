@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetBlockingPriority::gdeUOCNavSpaceSetBlockingPriority(gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, int newValue) :
-pObjectClass(NULL),
-pNavSpace(NULL)
+gdeUOCNavSpaceSetBlockingPriority::gdeUOCNavSpaceSetBlockingPriority(gdeObjectClass::Ref objectClass,
+gdeOCNavigationSpace::Ref navspace, int newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !navspace){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pNavSpace(NULL)
 	pNewValue = newValue;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavSpaceSetBlockingPriority::~gdeUOCNavSpaceSetBlockingPriority(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

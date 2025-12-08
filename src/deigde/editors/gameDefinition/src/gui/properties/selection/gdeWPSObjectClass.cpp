@@ -1113,15 +1113,13 @@ public:
 
 gdeWPSObjectClass::gdeWPSObjectClass(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, form, frameLine;
 	
-	pListener = new gdeWPSObjectClassListener(*this);
+	pListener.TakeOver(new gdeWPSObjectClassListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -1284,10 +1282,6 @@ pGameDefinition(NULL)
 
 gdeWPSObjectClass::~gdeWPSObjectClass(){
 	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1295,7 +1289,7 @@ gdeWPSObjectClass::~gdeWPSObjectClass(){
 // Management
 ///////////////
 
-void gdeWPSObjectClass::SetGameDefinition(gdeGameDefinition *gameDefinition){
+void gdeWPSObjectClass::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}
@@ -1318,15 +1312,12 @@ void gdeWPSObjectClass::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
-		
 		listHideTags.SetUndoSystem(gameDefinition->GetUndoSystem());
 		listPartialHideTags.SetUndoSystem(gameDefinition->GetUndoSystem());
 		properties.SetGameDefinition(gameDefinition);

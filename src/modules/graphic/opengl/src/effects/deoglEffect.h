@@ -42,7 +42,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deEffect &pEffect;
 	
-	deoglREffect *pREffect;
+	deoglREffect::Ref pREffect;
 	
 	bool pDirtyEnabled;
 	

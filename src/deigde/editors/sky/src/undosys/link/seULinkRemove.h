@@ -44,8 +44,8 @@ private:
 		deSkyLayer::eTargets target;
 	};
 	
-	seSky *pSky;
-	seLink *pLink;
+	seSky::Ref pSky;
+	seLink::Ref pLink;
 	
 	sTarget *pTargets;
 	int pTargetCount;
@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkRemove(seLink *link);
+	seULinkRemove(seLink::Ref link);
 	
 protected:
 	/** \brief Clean up undo action. */

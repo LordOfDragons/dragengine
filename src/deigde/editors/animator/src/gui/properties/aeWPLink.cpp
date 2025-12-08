@@ -113,7 +113,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeLink *link) = 0;
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator, aeLink *link) = 0;
 	
 	virtual void Update(){
 		aeAnimator * const animator = pPanel.GetAnimator();
@@ -574,15 +574,13 @@ public:
 aeWPLink::aeWPLink(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pAnimator(NULL),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPLinkListener(*this);
+	pListener.TakeOver(new aeWPLinkListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -653,10 +651,6 @@ pPreventUpdate(false)
 
 aeWPLink::~aeWPLink(){
 	SetAnimator(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -664,21 +658,19 @@ aeWPLink::~aeWPLink(){
 // Management
 ///////////////
 
-void aeWPLink::SetAnimator(aeAnimator *animator){
+void aeWPLink::SetAnimator(aeAnimator::Ref animator){
 	if(animator == pAnimator){
 		return;
 	}
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
 	}
 	
 	UpdateRigBoneList();

@@ -36,7 +36,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetLookAtTarget : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	decString pOldTarget;
 	decString pNewTarget;
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetLookAtTarget(ceCameraShot *cameraShot, const char *newTarget);
+	ceUCCShotSetLookAtTarget(ceCameraShot::Ref cameraShot, const char *newTarget);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetLookAtTarget();

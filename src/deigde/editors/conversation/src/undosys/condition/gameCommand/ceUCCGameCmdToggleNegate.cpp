@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCGameCmdToggleNegate::ceUCCGameCmdToggleNegate(ceConversationTopic *topic,
-ceConversationAction *action, ceCConditionGameCommand *gameCommand){
+ceUCCGameCmdToggleNegate::ceUCCGameCmdToggleNegate(ceConversationTopic::Ref topic,
+ceConversationAction::Ref action, ceCConditionGameCommand::Ref gameCommand){
 	if(!topic || !action || !gameCommand){
 		DETHROW(deeInvalidParam);
 	}
@@ -55,25 +55,11 @@ ceConversationAction *action, ceCConditionGameCommand *gameCommand){
 	SetShortInfo("Condition game command negate");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pGameCommand = gameCommand;
-	gameCommand->AddReference();
 }
 
 ceUCCGameCmdToggleNegate::~ceUCCGameCmdToggleNegate(){
-	if(pGameCommand){
-		pGameCommand->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

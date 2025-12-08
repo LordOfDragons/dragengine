@@ -37,19 +37,16 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUndoDataShape::reUndoDataShape(reRigShape *shape){
+reUndoDataShape::reUndoDataShape(reRigShape::Ref shape){
 	if(!shape) DETHROW(deeInvalidParam);
 	
 	pShape = shape;
-	shape->AddReference();
-	
 	pOldPosition = shape->GetPosition();
 	pOldOrientation = shape->GetOrientation();
 	//pOldSize = object->GetSize();
 }
 
 reUndoDataShape::~reUndoDataShape(){
-	pShape->FreeReference();
 }
 
 

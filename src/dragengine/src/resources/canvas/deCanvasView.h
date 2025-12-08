@@ -39,7 +39,7 @@ public:
 	
 private:
 	deCanvas *pCanvasRoot;
-	deCanvas *pCanvasTail;
+	deCanvas::Ref pCanvasTail;
 	int pCanvasCount;
 	
 	
@@ -76,14 +76,14 @@ public:
 	 * \throws deeInvalidParam \em canvas is NULL.
 	 * \throws deeInvalidParam \em canvas has a parent view.
 	 */
-	void AddCanvas(deCanvas *canvas);
+	void AddCanvas(deCanvas::Ref canvas);
 	
 	/**
 	 * \brief Remove child canvas.
 	 * \throws deeInvalidParam \em canvas is NULL.
 	 * \throws deeInvalidParam \em canvas parent view is not this canvas.
 	 */
-	void RemoveCanvas(deCanvas *canvas);
+	void RemoveCanvas(deCanvas::Ref canvas);
 	
 	/** \brief Remove all child canvas. */
 	void RemoveAllCanvas();

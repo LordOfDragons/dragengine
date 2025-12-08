@@ -40,8 +40,8 @@
 ////////////////////////////
 
 lpeULangPackSetDescription::lpeULangPackSetDescription(
-	lpeLangPack *langpack, const decUnicodeString &newDescription) :
-pLangPack(NULL),
+	lpeLangPack::Ref langpack, const decUnicodeString &newDescription) :
+
 pNewDescription(newDescription)
 {
 	if(!langpack){
@@ -54,13 +54,9 @@ pNewDescription(newDescription)
 	pOldDescription = langpack->GetDescription();
 	
 	pLangPack = langpack;
-	langpack->AddReference();
 }
 
 lpeULangPackSetDescription::~lpeULangPackSetDescription(){
-	if(pLangPack){
-		pLangPack->FreeReference();
-	}
 }
 
 

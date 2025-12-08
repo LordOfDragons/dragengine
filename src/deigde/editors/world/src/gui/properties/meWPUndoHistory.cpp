@@ -42,16 +42,11 @@
 
 meWPUndoHistory::meWPUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pWorld(NULL),
 pListener(new meWPUndoHistoryListener(*this)){
 }
 
 meWPUndoHistory::~meWPUndoHistory(){
 	SetWorld(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -59,7 +54,7 @@ meWPUndoHistory::~meWPUndoHistory(){
 // Management
 ///////////////
 
-void meWPUndoHistory::SetWorld(meWorld *world){
+void meWPUndoHistory::SetWorld(meWorld::Ref world){
 	if(world == pWorld){
 		return;
 	}
@@ -68,15 +63,12 @@ void meWPUndoHistory::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
-		
 		SetUndoSystem(world->GetUndoSystem());
 	}
 }

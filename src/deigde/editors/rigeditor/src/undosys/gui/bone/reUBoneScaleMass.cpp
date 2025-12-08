@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUBoneScaleMass::reUBoneScaleMass(reRig *rig, const decObjectOrderedSet &bones, float newMass){
+reUBoneScaleMass::reUBoneScaleMass(reRig::Ref rig, const decObjectOrderedSet &bones, float newMass){
 	if(!rig || bones.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
@@ -104,7 +104,6 @@ reUBoneScaleMass::reUBoneScaleMass(reRig *rig, const decObjectOrderedSet &bones,
 	}
 	
 	pRig = rig;
-	rig->AddReference();
 }
 
 reUBoneScaleMass::~reUBoneScaleMass(){
@@ -151,9 +150,5 @@ void reUBoneScaleMass::pCleanUp(){
 		}
 		
 		delete [] pBones;
-	}
-	
-	if(pRig){
-		pRig->FreeReference();
 	}
 }

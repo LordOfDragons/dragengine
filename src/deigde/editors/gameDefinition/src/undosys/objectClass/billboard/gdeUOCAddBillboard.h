@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCAddBillboard : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCAddBillboard(gdeObjectClass *objectClass, gdeOCBillboard *billboard);
+	gdeUOCAddBillboard(gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard);
 	
 protected:
 	/** \brief Clean up undo action. */

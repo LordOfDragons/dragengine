@@ -48,8 +48,6 @@ aeURuleBTransSetTransMax::aeURuleBTransSetTransMax(aeRuleBoneTransformator *rule
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMax = rule->GetMaximumTranslation();
 		pNewMax = newMax;
 		
@@ -84,7 +82,4 @@ void aeURuleBTransSetTransMax::Redo(){
 //////////////////////
 
 void aeURuleBTransSetTransMax::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

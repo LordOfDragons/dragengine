@@ -48,8 +48,8 @@
 /////////////////////
 
 struct sSSSoundNatDat{
-	deSynthesizer *synthesizer;
-	deSynthesizerSourceChain *source;
+	deSynthesizer::Ref synthesizer;
+	deSynthesizerSourceChain::Ref source;
 };
 
 
@@ -73,7 +73,7 @@ void deClassSSChain::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create synthesizer source
-	nd.source = new deSynthesizerSourceChain;
+	nd.source.TakeOver(new deSynthesizerSourceChain);
 	baseClass->AssignSource(myself->GetRealObject(), nd.source);
 }
 
@@ -354,7 +354,7 @@ deSynthesizerSourceChain *deClassSSChain::GetSource(dsRealObject *myself) const{
 	return ((sSSSoundNatDat*)p_GetNativeData(myself->GetBuffer()))->source;
 }
 
-void deClassSSChain::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
+void deClassSSChain::AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref synthesizer){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -372,13 +372,9 @@ void deClassSSChain::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synt
 	}
 	
 	nd.synthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
 }
 
-void deClassSSChain::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceChain *source){
+void deClassSSChain::PushSource(dsRunTime *rt, deSynthesizer::Ref synthesizer, deSynthesizerSourceChain::Ref source){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -398,13 +394,7 @@ void deClassSSChain::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSyn
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.synthesizer = synthesizer;
-		if(synthesizer){
-			synthesizer->AddReference();
-		}
-		
 		nd.source = source;
-		source->AddReference();
-		
 		baseClass->AssignSource(rt->GetValue(0)->GetRealObject(), source);
 		baseClass->AssignSynthesizer(rt->GetValue(0)->GetRealObject(), synthesizer);
 		

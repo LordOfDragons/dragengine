@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetAmbientRatio::gdeUOCLightSetAmbientRatio(gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue) :
-pObjectClass(NULL),
-pLight(NULL)
+gdeUOCLightSetAmbientRatio::gdeUOCLightSetAmbientRatio(gdeObjectClass::Ref objectClass,
+gdeOCLight::Ref light, float newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pLight(NULL)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetAmbientRatio::~gdeUOCLightSetAmbientRatio(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

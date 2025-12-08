@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCBillboardSetAxis : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCBillboardSetAxis(gdeObjectClass *objectClass,
-		gdeOCBillboard *billboard, const decVector &newValue);
+	gdeUOCBillboardSetAxis(gdeObjectClass::Ref objectClass,
+		gdeOCBillboard::Ref billboard, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

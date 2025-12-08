@@ -40,8 +40,8 @@ class seLink;
  */
 class seUControllerRemove : public igdeUndo{
 private:
-	seSky *pSky;
-	seController *pController;
+	seSky::Ref pSky;
+	seController::Ref pController;
 	int pIndex;
 	
 	seLink **pLinks;
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	seUControllerRemove(seController *controller);
+	seUControllerRemove(seController::Ref controller);
 	
 protected:
 	/** Clean up undo action. */

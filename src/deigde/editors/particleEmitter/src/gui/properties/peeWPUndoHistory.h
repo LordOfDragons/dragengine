@@ -37,8 +37,8 @@ class peeWPUndoHistoryListener;
  */
 class peeWPUndoHistory : public igdeWPUndoHistory{
 private:
-	peeWPUndoHistoryListener *pListener;
-	peeEmitter *pEmitter;
+	peeWPUndoHistoryListener::Ref pListener;
+	peeEmitter::Ref pEmitter;
 	
 	
 	
@@ -62,7 +62,7 @@ public:
 	inline peeEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
-	void SetEmitter(peeEmitter *emitter);
+	void SetEmitter(peeEmitter::Ref emitter);
 	/*@}*/
 };
 

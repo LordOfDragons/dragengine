@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionAdd::ceUCActionAdd(ceConversationTopic *topic, ceConversationAction *action, int index){
+ceUCActionAdd::ceUCActionAdd(ceConversationTopic::Ref topic, ceConversationAction::Ref action, int index){
 	if(!topic || !action){
 		DETHROW(deeInvalidParam);
 	}
@@ -56,19 +56,10 @@ ceUCActionAdd::ceUCActionAdd(ceConversationTopic *topic, ceConversationAction *a
 	SetShortInfo("Add Action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCActionAdd::~ceUCActionAdd(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

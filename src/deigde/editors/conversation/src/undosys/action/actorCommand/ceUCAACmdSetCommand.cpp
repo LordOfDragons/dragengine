@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAACmdSetCommand::ceUCAACmdSetCommand(ceConversationTopic *topic, ceCAActorCommand *action, const char *newCommand){
+ceUCAACmdSetCommand::ceUCAACmdSetCommand(ceConversationTopic::Ref topic, ceCAActorCommand::Ref action, const char *newCommand){
 	if(!topic || !newCommand) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
@@ -52,19 +52,10 @@ ceUCAACmdSetCommand::ceUCAACmdSetCommand(ceConversationTopic *topic, ceCAActorCo
 	SetShortInfo("Action ActorCommand Set Command");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAACmdSetCommand::~ceUCAACmdSetCommand(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

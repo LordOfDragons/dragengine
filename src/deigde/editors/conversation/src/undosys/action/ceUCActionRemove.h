@@ -37,8 +37,8 @@ class ceConversationAction;
  */
 class ceUCActionRemove : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
 	int pIndex;
 	
 public:
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionRemove(ceConversationTopic *topic, ceConversationAction *action);
+	ceUCActionRemove(ceConversationTopic::Ref topic, ceConversationAction::Ref action);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCActionRemove();

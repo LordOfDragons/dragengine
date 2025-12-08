@@ -60,17 +60,14 @@ deCaptureCanvas *deCaptureCanvasManager::GetRootCaptureCanvas() const{
 }
 
 deCaptureCanvas *deCaptureCanvasManager::CreateCaptureCanvas(){
-	deCaptureCanvas *captureCanvas = NULL;
+	deCaptureCanvas::Ref captureCanvas = NULL;
 	
 	try{
-		captureCanvas = new deCaptureCanvas(this);
+		captureCanvas.TakeOver(new deCaptureCanvas(this));
 		GetGraphicSystem()->LoadCaptureCanvas(captureCanvas);
 		pCaptureCanvas.Add(captureCanvas);
 		
 	}catch(const deException &){
-		if(captureCanvas){
-			captureCanvas->FreeReference();
-		}
 		throw;
 	}
 	
@@ -92,7 +89,7 @@ void deCaptureCanvasManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deCaptureCanvasManager::SystemGraphicLoad(){
-	deCaptureCanvas *captureCanvas = (deCaptureCanvas*)pCaptureCanvas.GetRoot();
+	deCaptureCanvas::Ref captureCanvas = (deCaptureCanvas*)pCaptureCanvas.GetRoot();
 	
 	while(captureCanvas){
 		if(!captureCanvas->GetPeerGraphic()){
@@ -104,7 +101,7 @@ void deCaptureCanvasManager::SystemGraphicLoad(){
 }
 
 void deCaptureCanvasManager::SystemGraphicUnload(){
-	deCaptureCanvas *captureCanvas = (deCaptureCanvas*)pCaptureCanvas.GetRoot();
+	deCaptureCanvas::Ref captureCanvas = (deCaptureCanvas*)pCaptureCanvas.GetRoot();
 	
 	while(captureCanvas){
 		captureCanvas->SetPeerGraphic(NULL);

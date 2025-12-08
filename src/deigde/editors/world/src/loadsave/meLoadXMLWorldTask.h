@@ -51,7 +51,7 @@ class meLoadXMLWorldTask : public igdeStepableTask, igdeBaseXML{
 private:
 	meLoadSaveSystem *pLSSys;
 	meWorld *pWorld;
-	decBaseFileReader *pReader;
+	decBaseFileReader::Ref pReader;
 	decXmlDocument::Ref pXMLDocument;
 	decXmlElementTag *pXMLRoot;
 	int pNextTag;
@@ -63,7 +63,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */
-	meLoadXMLWorldTask(meLoadSaveSystem *lssys, meWorld *world, decBaseFileReader *file);
+	meLoadXMLWorldTask(meLoadSaveSystem *lssys, meWorld *world, decBaseFileReader::Ref file);
 	
 	/** \brief Clean up task. */
 	virtual ~meLoadXMLWorldTask();

@@ -49,7 +49,7 @@ public:
 	/** \brief Retrieves the world from an object. */
 	deWorld *WorldFromObject(PyObject *object);
 	/** \brief Create an object from a world. */
-	PyObject *ObjectFromWorld(deWorld *world);
+	PyObject *ObjectFromWorld(deWorld::Ref world);
 	
 	/** Constructor. */
 	virtual void Constructor(PyObject *myself, PyObject *args, PyObject *kwds);

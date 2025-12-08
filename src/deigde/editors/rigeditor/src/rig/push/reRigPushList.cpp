@@ -59,7 +59,7 @@ reRigPush *reRigPushList::GetPushAt(int index) const{
 	return pPushes[index];
 }
 
-int reRigPushList::IndexOfPush(reRigPush *push) const{
+int reRigPushList::IndexOfPush(reRigPush::Ref push) const{
 	if(!push) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -70,7 +70,7 @@ int reRigPushList::IndexOfPush(reRigPush *push) const{
 	return -1;
 }
 
-bool reRigPushList::HasPush(reRigPush *push) const{
+bool reRigPushList::HasPush(reRigPush::Ref push) const{
 	if(!push) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -81,7 +81,7 @@ bool reRigPushList::HasPush(reRigPush *push) const{
 	return false;
 }
 
-void reRigPushList::AddPush(reRigPush *push){
+void reRigPushList::AddPush(reRigPush::Ref push){
 	if(HasPush(push)) DETHROW(deeInvalidParam);
 	
 	if(pPushCount == pPushSize){
@@ -97,11 +97,9 @@ void reRigPushList::AddPush(reRigPush *push){
 	
 	pPushes[pPushCount] = push;
 	pPushCount++;
-	
-	push->AddReference();
 }
 
-void reRigPushList::RemovePush(reRigPush *push){
+void reRigPushList::RemovePush(reRigPush::Ref push){
 	int i, index = IndexOfPush(push);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -109,8 +107,6 @@ void reRigPushList::RemovePush(reRigPush *push){
 		pPushes[i - 1] = pPushes[i];
 	}
 	pPushCount--;
-	
-	push->FreeReference();
 }
 
 void reRigPushList::RemoveAllPushes(){

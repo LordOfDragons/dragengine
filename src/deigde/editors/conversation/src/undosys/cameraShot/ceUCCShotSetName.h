@@ -40,7 +40,7 @@ class ceConversationTopic;
  */
 class ceUCCShotSetName : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	decString pOldName;
 	decString pNewName;
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetName(ceCameraShot *cameraShot, const char *newName);
+	ceUCCShotSetName(ceCameraShot::Ref cameraShot, const char *newName);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetName();

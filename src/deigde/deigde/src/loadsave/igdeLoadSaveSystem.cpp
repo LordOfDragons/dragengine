@@ -111,41 +111,33 @@ igdeGameProject *igdeLoadSaveSystem::LoadGameProject(const char *filename){
 	}
 	
 	decBaseFileReader::Ref fileReader;
-	igdeGameProject *project = NULL;
+	igdeGameProject::Ref project = NULL;
 	
 	try{
-		project = new igdeGameProject(pWindowMain->GetEnvironment());
+		project.TakeOver(new igdeGameProject(pWindowMain->GetEnvironment()));
 		project->SetFilePath(filename);
 		
 		fileReader.TakeOver(new decDiskFileReader(filename));
 		pLSGameProject->Load(filename, project, fileReader);
 		
 	}catch(const deException &){
-		if(project){
-			project->FreeReference();
-		}
 		throw;
 	}
 	
 	return project;
 }
 
-void igdeLoadSaveSystem::SaveGameProject(igdeGameProject *project, const char *filename){
+void igdeLoadSaveSystem::SaveGameProject(igdeGameProject::Ref project, const char *filename){
 	if(!project || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
-	decDiskFileWriter *fileWriter = NULL;
+	decDiskFileWriter::Ref fileWriter = NULL;
 	
 	try{
-		fileWriter = new decDiskFileWriter(filename, false);
+		fileWriter.TakeOver(new decDiskFileWriter(filename, false));
 		pLSGameProject->Save(project, fileWriter);
-		fileWriter->FreeReference();
-		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		throw;
 	}
 }

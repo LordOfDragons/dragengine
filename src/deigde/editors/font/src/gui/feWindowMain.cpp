@@ -99,7 +99,7 @@ igdeEditorWindow(module)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new feWindowMainListener(*this);
+	pListener.TakeOver(new feWindowMainListener(*this));
 	pLoadSaveSystem = new feLoadSaveSystem(this);
 	pConfiguration = new feConfiguration(*this);
 	pClipboard = new feClipboard;
@@ -114,10 +114,10 @@ igdeEditorWindow(module)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(260)));
 	AddChild(splitted);
 	
-	pWndProps = new feWindowProperties(*this);
+	pWndProps.TakeOver(new feWindowProperties(*this));
 	splitted->AddChild(pWndProps, igdeContainerSplitted::eaSide);
 	
-	pViewFontImage = new feViewFontImage(*this);
+	pViewFontImage.TakeOver(new feViewFontImage(*this));
 	splitted->AddChild(pViewFontImage, igdeContainerSplitted::eaCenter);
 	
 	CreateNewFont();
@@ -135,11 +135,9 @@ feWindowMain::~feWindowMain(){
 	SetFont(NULL);
 	
 	if(pViewFontImage){
-		pViewFontImage->FreeReference();
 		pViewFontImage = NULL;
 	}
 	if(pWndProps){
-		pWndProps->FreeReference();
 		pWndProps = NULL;
 	}
 	
@@ -148,9 +146,6 @@ feWindowMain::~feWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -177,7 +172,7 @@ void feWindowMain::SetGenFontConfig(const igdeFont::sConfiguration &config){
 	pGenFontConfig = config;
 }
 
-void feWindowMain::SetFont(feFont *font){
+void feWindowMain::SetFont(feFont::Ref font){
 	if(font == pFont){
 		return;
 	}
@@ -191,13 +186,11 @@ void feWindowMain::SetFont(feFont *font){
 		pFont->RemoveNotifier(pListener);
 		
 		pFont->Dispose();
-		pFont->FreeReference();
 	}
 	
 	pFont = font;
 	
 	if(font){
-		font->AddReference();
 		font->AddNotifier(pListener);
 		
 		pActionEditUndo->SetUndoSystem(font->GetUndoSystem());
@@ -209,17 +202,12 @@ void feWindowMain::SetFont(feFont *font){
 }
 
 void feWindowMain::CreateNewFont(){
-	feFont *font = NULL;
+	feFont::Ref font = NULL;
 	
 	try{
-		font = new feFont(&GetEnvironment());
+		font.TakeOver(new feFont(&GetEnvironment()));
 		SetFont(font);
-		font->FreeReference();
-		
 	}catch(const deException &){
-		if(font){
-			font->FreeReference();
-		}
 		throw;
 	}
 }
@@ -281,11 +269,9 @@ void feWindowMain::GetChangedDocuments(decStringList &list){
 }
 
 void feWindowMain::LoadDocument(const char *filename){
-	feFont *font = pLoadSaveSystem->LoadFont(filename, GetGameDefinition());
+	feFont::Ref font = pLoadSaveSystem->LoadFont(filename, GetGameDefinition());
 	
 	SetFont(font);
-	font->FreeReference();
-	
 	font->SetFilePath(filename);
 	font->SetChanged(false);
 	font->SetSaved(true);
@@ -366,13 +352,11 @@ public:
 		
 		// load font
 		pWindow.GetEditorModule().LogInfoFormat("Loading font %s", filename.GetString());
-		feFont *font = pWindow.GetLoadSaveSystem().LoadFont(filename,
+		feFont::Ref font = pWindow.GetLoadSaveSystem().LoadFont(filename,
 			pWindow.GetGameProject()->GetGameDefinition());
 		
 		// replace font
 		pWindow.SetFont(font);
-		font->FreeReference();
-		
 		// store information
 		font->SetFilePath(filename);
 		font->SetChanged(false);

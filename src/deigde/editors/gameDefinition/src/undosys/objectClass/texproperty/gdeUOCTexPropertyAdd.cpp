@@ -40,9 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTexPropertyAdd::gdeUOCTexPropertyAdd(gdeObjectClass *objectClass, gdeProperty *property) :
-pObjectClass(NULL),
-pProperty(NULL)
+gdeUOCTexPropertyAdd::gdeUOCTexPropertyAdd(gdeObjectClass::Ref objectClass, gdeProperty::Ref property) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
@@ -51,19 +50,10 @@ pProperty(NULL)
 	SetShortInfo("Object class add texture property");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCTexPropertyAdd::~gdeUOCTexPropertyAdd(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

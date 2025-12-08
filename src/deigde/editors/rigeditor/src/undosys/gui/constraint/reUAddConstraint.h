@@ -38,9 +38,9 @@ class reRigConstraint;
  */
 class reUAddConstraint : public igdeUndo{
 private:
-	reRig *pRig;
-	reRigBone *pBone;
-	reRigConstraint *pConstraint;
+	reRig::Ref pRig;
+	reRigBone::Ref pBone;
+	reRigConstraint::Ref pConstraint;
 	
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUAddConstraint(reRig *pRig, reRigBone *bone, reRigConstraint *constraint);
+	reUAddConstraint(reRig::Ref pRig, reRigBone::Ref bone, reRigConstraint::Ref constraint);
 	
 protected:
 	/** \brief Clean up undo. */

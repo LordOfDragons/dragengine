@@ -439,21 +439,15 @@ public:
 meWindowVegetation::meWindowVegetation(meWindowMain &windowMain) :
 igdeNVBoard(windowMain.GetEnvironment()),
 pWindowMain(windowMain),
-pListener(NULL),
-pWorld(NULL),
-pVLayer(NULL),
 pUnitsToPixel(igdeApplication::app().DisplayScaled(100.0f)),
 pPixelToUnits(1.0f / pUnitsToPixel)
 {
-	pListener = new meWindowVegetationListener(*this);
+	pListener.TakeOver(new meWindowVegetationListener(*this));
 	AddListener(new cBoardListener(*this));
 }
 
 meWindowVegetation::~meWindowVegetation(){
 	SetWorld(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -461,7 +455,7 @@ meWindowVegetation::~meWindowVegetation(){
 // Management
 ///////////////
 
-void meWindowVegetation::SetWorld(meWorld *world){
+void meWindowVegetation::SetWorld(meWorld::Ref world){
 	if(world == pWorld){
 		return;
 	}
@@ -470,15 +464,12 @@ void meWindowVegetation::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
-		
 		const decPoint3 sector; // = pWorld->GetActiveSector();
 		SetSector(decPoint(sector.x, sector.z));
 	}
@@ -487,7 +478,7 @@ void meWindowVegetation::SetWorld(meWorld *world){
 void meWindowVegetation::SetSector(const decPoint &sector){
 	pSector = sector;
 	
-	meHTVegetationLayer *vlayer = NULL;
+	meHTVegetationLayer::Ref vlayer = NULL;
 	if(pWorld){
 		vlayer = pWorld->GetHeightTerrain()->GetActiveVLayer();
 	}
@@ -495,7 +486,7 @@ void meWindowVegetation::SetSector(const decPoint &sector){
 	SetVLayer(vlayer);
 }
 
-void meWindowVegetation::SetVLayer(meHTVegetationLayer *vlayer){
+void meWindowVegetation::SetVLayer(meHTVegetationLayer::Ref vlayer){
 	if(!pWorld && vlayer){
 		DETHROW(deeInvalidParam);
 	}
@@ -505,17 +496,7 @@ void meWindowVegetation::SetVLayer(meHTVegetationLayer *vlayer){
 	}
 	
 	Clear();
-	
-	if(pVLayer){
-		pVLayer->FreeReference();
-	}
-	
 	pVLayer = vlayer;
-	
-	if(vlayer){
-		vlayer->AddReference();
-	}
-	
 	UpdateNodesFromVLayer();
 }
 

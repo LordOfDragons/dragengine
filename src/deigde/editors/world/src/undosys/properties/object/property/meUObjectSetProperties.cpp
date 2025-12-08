@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectSetProperties::meUObjectSetProperties(meObject *object, const decStringDictionary &newValues) :
-pObject(NULL),
+meUObjectSetProperties::meUObjectSetProperties(meObject::Ref object, const decStringDictionary &newValues) :
+
 pNewValues(newValues)
 {
 	if(!object || !object->GetWorld()){
@@ -52,13 +52,9 @@ pNewValues(newValues)
 	pOldValues = object->GetProperties();
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectSetProperties::~meUObjectSetProperties(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

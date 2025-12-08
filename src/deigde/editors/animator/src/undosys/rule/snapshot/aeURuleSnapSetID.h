@@ -37,7 +37,7 @@ class aeRuleStateSnapshot;
  */
 class aeURuleSnapSetID : public igdeUndo{
 private:
-	aeRuleStateSnapshot *pRule;
+	aeRuleStateSnapshot::Ref pRule;
 	
 	int pOldID;
 	int pNewID;

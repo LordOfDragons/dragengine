@@ -65,10 +65,7 @@ pVFSPath("/"),
 
 pSkinManager(NULL),
 pClassManager(NULL),
-pSkyManager(NULL),
-
-pDefaultModel(NULL),
-pDefaultSkin(NULL)
+pSkyManager(NULL)
 {
 	try{
 		pSkinManager = new igdeGDSkinManager;
@@ -156,30 +153,20 @@ void igdeGameDefinition::UpdateWithFound(const igdeGameDefinition &gameDefinitio
 // Engine Objects
 ///////////////////
 
-void igdeGameDefinition::SetDefaultModel(deModel *model){
+void igdeGameDefinition::SetDefaultModel(deModel::Ref model){
 	if(pDefaultModel){
-		pDefaultModel->FreeReference();
 		pDefaultModel = NULL;
 	}
 	
 	pDefaultModel = model;
-	
-	if(model){
-		model->AddReference();
-	}
 }
 
-void igdeGameDefinition::SetDefaultSkin(deSkin *skin){
+void igdeGameDefinition::SetDefaultSkin(deSkin::Ref skin){
 	if(pDefaultSkin){
-		pDefaultSkin->FreeReference();
 		pDefaultSkin = NULL;
 	}
 	
 	pDefaultSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
 }
 
 void igdeGameDefinition::UpdateEngineObjects(){
@@ -187,11 +174,9 @@ void igdeGameDefinition::UpdateEngineObjects(){
 	
 	// free old engine objects
 	if(pDefaultModel){
-		pDefaultModel->FreeReference();
 		pDefaultModel = NULL;
 	}
 	if(pDefaultSkin){
-		pDefaultSkin->FreeReference();
 		pDefaultSkin = NULL;
 	}
 	
@@ -305,11 +290,4 @@ void igdeGameDefinition::pCleanUp(){
 		delete pSkinManager;
 	}
 	pParticleEmitterManager.RemoveAllEmitters();
-	
-	if(pDefaultModel){
-		pDefaultModel->FreeReference();
-	}
-	if(pDefaultSkin){
-		pDefaultSkin->FreeReference();
-	}
 }

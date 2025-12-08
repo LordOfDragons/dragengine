@@ -38,9 +38,9 @@ class ceConversationTopic;
  */
 class ceUCCACommandToggleNegate : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionActorCommand *pActorCommand;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionActorCommand::Ref pActorCommand;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -49,8 +49,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCCACommandToggleNegate(ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionActorCommand *actorCommand);
+	ceUCCACommandToggleNegate(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
+		ceCConditionActorCommand::Ref actorCommand);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCCACommandToggleNegate();
 	/*@}*/

@@ -42,7 +42,7 @@ class deoalSynthesizerInstance : public deBaseAudioSynthesizerInstance{
 private:
 	deAudioOpenAL &pOal;
 	deSynthesizerInstance &pInstance;
-	deoalASynthesizerInstance *pAInstance;
+	deoalASynthesizerInstance::Ref pAInstance;
 	unsigned int pUpdateTracker;
 	bool pDirtyParameters;
 	

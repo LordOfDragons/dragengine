@@ -37,7 +37,7 @@ class meWorld;
  */
 class meUDeleteObject : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decObjectOrderedSet pObjects;
 	decObjectOrderedSet pAttached;
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUDeleteObject(meWorld *world);
+	meUDeleteObject(meWorld::Ref world);
 	
 	/** \brief Clean up undo action. */
 	virtual ~meUDeleteObject();

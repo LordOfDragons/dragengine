@@ -39,7 +39,7 @@ private:
 	deFont::Ref pFont;
 	bool pAlreadyLoaded;
 	
-	deResourceLoaderTask *pTaskImage;
+	deResourceLoaderTask::Ref pTaskImage;
 	
 	
 	

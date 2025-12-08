@@ -44,8 +44,8 @@ private:
 	
 	float pValue;
 	float pSpread;
-	peeController *pControllerValue;
-	peeController *pControllerSpread;
+	peeController::Ref pControllerValue;
+	peeController::Ref pControllerSpread;
 	decCurveBezier pCurveValue;
 	decCurveBezier pCurveSpread;
 	decCurveBezier pCurveProgress;
@@ -80,11 +80,11 @@ public:
 	/** Retrieves the curve controller for the cast value. */
 	inline peeController *GetControllerValue() const{ return pControllerValue; }
 	/** Sets the curve controller for the cast value. */
-	void SetControllerValue(peeController *controller);
+	void SetControllerValue(peeController::Ref controller);
 	/** Retrieves the curve controller for the cast value spread. */
 	inline peeController *GetControllerSpread() const{ return pControllerSpread; }
 	/** Sets the curve controller for the cast value spread. */
-	void SetControllerSpread(peeController *controller);
+	void SetControllerSpread(peeController::Ref controller);
 	/** Retrieves the cast value curve. */
 	inline const decCurveBezier &GetCurveValue() const{ return pCurveValue; }
 	/** Sets the cast value curve. */

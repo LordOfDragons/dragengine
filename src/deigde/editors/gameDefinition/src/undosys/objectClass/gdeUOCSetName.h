@@ -38,7 +38,7 @@ class gdeObjectClass;
  */
 class gdeUOCSetName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSetName(gdeObjectClass *objectClass, const char *newValue);
+	gdeUOCSetName(gdeObjectClass::Ref objectClass, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

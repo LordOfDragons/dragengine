@@ -49,7 +49,7 @@ private:
 	decString pLoggingName;
 	decString pEditorDirectory;
 	decString pEditorPathLib;
-	igdeEditorWindow *pEditorWindow;
+	igdeEditorWindow::Ref pEditorWindow;
 	
 	
 	

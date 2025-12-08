@@ -103,7 +103,7 @@ private:
 	
 	meWorld *pWorld;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSObject;
 	igdeWDebugDrawerShape *pDDSLightAoE;
 	igdeWDebugDrawerShape *pDDSOcclusionMesh;
@@ -113,8 +113,8 @@ private:
 	
 	igdeWObject::Ref pWObject;
 	decObjectList pWOTextures;
-	deComponent *pEngComponentBroken;
-	deColliderVolume *pColDetCollider;
+	deComponent::Ref pEngComponentBroken;
+	deColliderVolume::Ref pColDetCollider;
 	meCamera *pCamera;
 	
 	float pRange;
@@ -131,7 +131,7 @@ private:
 	int pDecalCount;
 	int pDecalSize;
 	
-	meObject *pAttachedTo;
+	meObject::Ref pAttachedTo;
 	meObjectList pAttachedObjectsList;
 	decString pAttachedToID;
 	
@@ -227,13 +227,13 @@ public:
 	/** \brief Determines if a link exists to another object. */
 	bool HasLinkTo(meObject *target) const;
 	/** \brief Determines if a link exists. */
-	bool HasLink(meObjectLink *link) const;
+	bool HasLink(meObjectLink::Ref link) const;
 	/** \brief Retrieves the index of a link or -1 if not found. */
-	int IndexOfLink(meObjectLink *link) const;
+	int IndexOfLink(meObjectLink::Ref link) const;
 	/** \brief Adds a link. */
-	void AddLink(meObjectLink *link);
+	void AddLink(meObjectLink::Ref link);
 	/** \brief Removes a link. */
-	void RemoveLink(meObjectLink *link);
+	void RemoveLink(meObjectLink::Ref link);
 	/** \brief Removes all links. */
 	void RemoveAllLinks();
 	
@@ -243,7 +243,7 @@ public:
 	 *          other object exists as a link partner (either directly or as superclass)
 	 *          in the game definition of this object.
 	 */
-	bool CanLinkTo(meObject *object) const;
+	bool CanLinkTo(meObject::Ref object) const;
 	/*@}*/
 	
 	/** \brief Updates the component mostly playing the animation if any. */
@@ -292,7 +292,7 @@ public:
 	inline meObject *GetAttachedTo() const{ return pAttachedTo; }
 	
 	/** \brief Set object this object is attached to or \em NULL. */
-	void SetAttachedTo(meObject *object);
+	void SetAttachedTo(meObject::Ref object);
 	
 	/** \brief List of attached objects. */
 	inline meObjectList &GetAttachedObjectsList(){ return pAttachedObjectsList; }
@@ -344,19 +344,19 @@ public:
 	/** \brief Retrieves the decal at the given index. */
 	meDecal *GetDecalAt(int index) const;
 	/** \brief Retrieves the index of the decal of -1 if not found. */
-	int IndexOfDecal(meDecal *decal) const;
+	int IndexOfDecal(meDecal::Ref decal) const;
 	/** \brief Determines if the decal exists. */
-	bool HasDecal(meDecal *decal) const;
+	bool HasDecal(meDecal::Ref decal) const;
 	/** \brief Adds a decal. */
-	void AddDecal(meDecal *decal);
+	void AddDecal(meDecal::Ref decal);
 	/** \brief Inserts a decal at the given location. */
-	void InsertDecalAt(meDecal *decal, int index);
+	void InsertDecalAt(meDecal::Ref decal, int index);
 	/** \brief Removes a decal. */
-	void RemoveDecal(meDecal *decal);
+	void RemoveDecal(meDecal::Ref decal);
 	/** \brief Removes all decals. */
 	void RemoveAllDecals();
 	/** \brief Moves a decal to a new location. */
-	void MoveDecalTo(meDecal *decal, int index);
+	void MoveDecalTo(meDecal::Ref decal, int index);
 	/*@}*/
 	
 	/** \name Collision Detection */
@@ -388,21 +388,21 @@ public:
 	/** \brief Determines if a texture with the given name exists. */
 	bool HasTextureNamed(const char *name) const;
 	/** \brief Retrieves the index of the texture or -1 if not found. */
-	int IndexOfTexture(meObjectTexture *texture) const;
+	int IndexOfTexture(meObjectTexture::Ref texture) const;
 	/** \brief Retrieves the index of the texture with the given name or -1 if not found. */
 	int IndexOfTextureNamed(const char *name) const;
 	/** \brief Determines if the texture exists. */
-	bool HasTexture(meObjectTexture *texture) const;
+	bool HasTexture(meObjectTexture::Ref texture) const;
 	/** \brief Adds a texture. */
-	void AddTexture(meObjectTexture *texture);
+	void AddTexture(meObjectTexture::Ref texture);
 	/** \brief Removes a texture. */
-	void RemoveTexture(meObjectTexture *texture);
+	void RemoveTexture(meObjectTexture::Ref texture);
 	/** \brief Removes all textures. */
 	void RemoveAllTextures();
 	/** \brief Retrieves the active texture or NULL. */
 	inline meObjectTexture *GetActiveTexture() const{ return pActiveTexture; }
 	/** \brief Sets the active texture or NULL. */
-	void SetActiveTexture(meObjectTexture *texture);
+	void SetActiveTexture(meObjectTexture::Ref texture);
 	/** \brief Updates the engine component textures. */
 	void UpdateComponentTextures();
 	/**

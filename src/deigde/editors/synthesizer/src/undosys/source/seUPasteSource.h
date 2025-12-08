@@ -40,7 +40,7 @@ class seSynthesizer;
  */
 class seUPasteSource : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	seSourceList pSourceList;
 	seLinkList pRemoveLinkList;
 	seControllerList pRemoveControllerList;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo object. */
-	seUPasteSource(seSynthesizer *synthesizer, const seSourceList &sourceList, int index);
+	seUPasteSource(seSynthesizer::Ref synthesizer, const seSourceList &sourceList, int index);
 	
 protected:
 	/** \brief Clean up the undo object. */

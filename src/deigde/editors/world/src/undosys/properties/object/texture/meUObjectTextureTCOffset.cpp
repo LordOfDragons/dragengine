@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureTCOffset::meUObjectTextureTCOffset(meObjectTexture *texture, const decVector2 &newOffset){
+meUObjectTextureTCOffset::meUObjectTextureTCOffset(meObjectTexture::Ref texture, const decVector2 &newOffset){
 	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
@@ -64,13 +64,9 @@ meUObjectTextureTCOffset::meUObjectTextureTCOffset(meObjectTexture *texture, con
 	pNewOffset = newOffset;
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjectTextureTCOffset::~meUObjectTextureTCOffset(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

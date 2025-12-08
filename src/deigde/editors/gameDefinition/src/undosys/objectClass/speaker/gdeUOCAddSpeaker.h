@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCAddSpeaker : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCAddSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker);
+	gdeUOCAddSpeaker(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker);
 	
 protected:
 	/** \brief Clean up undo action. */

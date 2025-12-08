@@ -35,7 +35,7 @@ class decMemoryFile;
  */
 class decMemoryFileWriter : public decBaseFileWriter{
 private:
-	decMemoryFile *pFile;
+	decMemoryFile::Ref pFile;
 	int pPosition;
 	
 	
@@ -47,7 +47,7 @@ public:
 	 * \brief Create memory file writer.
 	 * \throws deeInvalidParam \em memoryFile is NULL.
 	 */
-	decMemoryFileWriter(decMemoryFile *memoryFile, bool append);
+	decMemoryFileWriter(decMemoryFile::Ref memoryFile, bool append);
 	
 protected:
 	/**

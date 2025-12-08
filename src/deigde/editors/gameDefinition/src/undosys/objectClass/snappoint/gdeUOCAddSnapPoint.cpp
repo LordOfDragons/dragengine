@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddSnapPoint::gdeUOCAddSnapPoint(gdeObjectClass *objectClass, gdeOCSnapPoint *snapPoint) :
-pObjectClass(NULL),
+gdeUOCAddSnapPoint::gdeUOCAddSnapPoint(gdeObjectClass::Ref objectClass, gdeOCSnapPoint::Ref snapPoint) :
+
 pSnapPoint(NULL)
 {
 	if(!objectClass || !snapPoint){
@@ -52,19 +52,10 @@ pSnapPoint(NULL)
 	SetShortInfo("Add snap point");
 	
 	pSnapPoint = snapPoint;
-	snapPoint->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddSnapPoint::~gdeUOCAddSnapPoint(){
-	if(pSnapPoint){
-		pSnapPoint->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

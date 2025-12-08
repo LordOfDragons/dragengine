@@ -43,8 +43,8 @@ private:
 	
 	decObjectOrderedSet pDevices;
 	
-	deainpDeviceMouse *pMouse;
-	deainpDeviceKeyboard *pKeyboard;
+	deainpDeviceMouse::Ref pMouse;
+	deainpDeviceKeyboard::Ref pKeyboard;
 	
 	
 	

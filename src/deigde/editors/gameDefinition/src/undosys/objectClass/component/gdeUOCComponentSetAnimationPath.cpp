@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetAnimationPath::gdeUOCComponentSetAnimationPath(gdeObjectClass *objectClass,
-gdeOCComponent *component, const char *newValue) :
-pObjectClass(NULL),
+gdeUOCComponentSetAnimationPath::gdeUOCComponentSetAnimationPath(gdeObjectClass::Ref objectClass,
+gdeOCComponent::Ref component, const char *newValue) :
+
 pComponent(NULL)
 {
 	if(!objectClass || !component){
@@ -55,19 +55,10 @@ pComponent(NULL)
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetAnimationPath::~gdeUOCComponentSetAnimationPath(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

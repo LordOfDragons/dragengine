@@ -84,10 +84,10 @@ public:
 	deAnimatorRuleInverseKinematic *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
+	void AssignAnimator(dsRealObject *myself, deAnimator::Ref animator);
 	
 	/** \brief Pushes a rule. */
-	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleInverseKinematic *rule);
+	void PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleInverseKinematic::Ref rule);
 	
 	inline dsClass *GetClassARInverseKinematicTarget() const{ return pClsARInverseKinematicTarget; }
 	/*@}*/

@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAActorAddSetActor::ceUCAActorAddSetActor(ceConversationTopic *topic, ceCAActorAdd *action, const char *newActorID){
+ceUCAActorAddSetActor::ceUCAActorAddSetActor(ceConversationTopic::Ref topic, ceCAActorAdd::Ref action, const char *newActorID){
 	if(!topic || !newActorID){
 		DETHROW(deeInvalidParam);
 	}
@@ -54,19 +54,10 @@ ceUCAActorAddSetActor::ceUCAActorAddSetActor(ceConversationTopic *topic, ceCAAct
 	SetShortInfo("Actor add set actor id");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCAActorAddSetActor::~ceUCAActorAddSetActor(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

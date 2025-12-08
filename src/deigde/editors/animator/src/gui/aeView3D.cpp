@@ -392,8 +392,7 @@ public:
 
 aeView3D::aeView3D(aeWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pAnimator(NULL)
+pWindowMain(windowMain)
 {
 	pCameraInteraction.TakeOver(new cCameraInteraction(*this));
 	pLocomotionInteraction.TakeOver(new cLocomotionInteraction(*this));
@@ -418,7 +417,7 @@ aeView3D::~aeView3D(){
 void aeView3D::ResetView(){
 }
 
-void aeView3D::SetAnimator(aeAnimator *animator){
+void aeView3D::SetAnimator(aeAnimator::Ref animator){
 	if(animator == pAnimator){
 		return;
 	}
@@ -437,14 +436,11 @@ void aeView3D::SetAnimator(aeAnimator *animator){
 		}else if(pAnimator->GetWakeboard().GetEnabled()){
 			StopWakeboarding();
 		}
-		
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
-		animator->AddReference();
 		SetRenderWorld(pAnimator->GetCamera()->GetEngineCamera());
 		pCameraInteraction->SetCamera(animator->GetCamera());
 	}

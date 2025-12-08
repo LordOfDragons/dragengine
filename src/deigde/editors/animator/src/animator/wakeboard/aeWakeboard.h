@@ -45,8 +45,8 @@ class aeWakeboard{
 private:
 	aeAnimator *pAnimator;
 	
-	deComponent *pEngComponent;
-	deColliderVolume *pEngCollider;
+	deComponent::Ref pEngComponent;
+	deColliderVolume::Ref pEngCollider;
 	
 	bool pEnabled;
 	

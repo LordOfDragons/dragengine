@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodySetSkin::seUBodySetSkin(seBody *body, const char *newSkin) :
-pBody(NULL),
+seUBodySetSkin::seUBodySetSkin(seBody::Ref body, const char *newSkin) :
+
 pNewSkin(newSkin)
 {
 	if(!body){
@@ -52,13 +52,9 @@ pNewSkin(newSkin)
 	pOldSkin = body->GetSkinPath();
 	
 	pBody = body;
-	body->AddReference();
 }
 
 seUBodySetSkin::~seUBodySetSkin(){
-	if(pBody){
-		pBody->FreeReference();
-	}
 }
 
 

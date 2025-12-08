@@ -41,11 +41,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPCFPRemove::gdeUOCPCFPRemove(gdeObjectClass *objectClass,
-gdeProperty *property, gdeFilePattern *filePattern) :
-pObjectClass(NULL),
-pProperty(NULL),
-pFilePattern(NULL)
+gdeUOCPCFPRemove::gdeUOCPCFPRemove(gdeObjectClass::Ref objectClass,
+gdeProperty::Ref property, gdeFilePattern::Ref filePattern) :
+
+pProperty(NULL)
 {
 	if(!objectClass || !property || !filePattern){
 		DETHROW(deeInvalidParam);
@@ -57,25 +56,11 @@ pFilePattern(NULL)
 	SetShortInfo("Object class property remove custom file pattern");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
-	
 	pFilePattern = filePattern;
-	filePattern->AddReference();
 }
 
 gdeUOCPCFPRemove::~gdeUOCPCFPRemove(){
-	if(pFilePattern){
-		pFilePattern->FreeReference();
-	}
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

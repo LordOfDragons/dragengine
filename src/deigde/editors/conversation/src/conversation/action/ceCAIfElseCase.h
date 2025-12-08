@@ -37,7 +37,7 @@ class ceConversationCondition;
  */
 class ceCAIfElseCase : public deObject{
 private:
-	ceConversationCondition *pCondition;
+	ceConversationCondition::Ref pCondition;
 	ceConversationActionList pActions;
 	bool pTIMExpanded;
 	bool pTIMConditionExpanded;
@@ -68,7 +68,7 @@ public:
 	inline ceConversationCondition *GetCondition() const{ return pCondition; }
 	
 	/** \brief Set condition or \em NULL if there is none. */
-	void SetCondition(ceConversationCondition *condition);
+	void SetCondition(ceConversationCondition::Ref condition);
 	
 	/** \brief List of actions. */
 	inline ceConversationActionList &GetActions(){ return pActions; }

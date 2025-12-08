@@ -35,8 +35,8 @@
  */
 class gdeUCategoryRemove : public gdeUCategoryBase{
 private:
-	gdeCategory *pParent;
-	gdeCategory *pCategory;
+	gdeCategory::Ref pParent;
+	gdeCategory::Ref pCategory;
 	
 	
 	
@@ -45,7 +45,7 @@ public:
 	/*@{*/
 	/** \brief Create undo action. */
 	gdeUCategoryRemove(gdeGameDefinition *gameDefintiion,
-		gdeCategory *category, eCategoryType type);
+		gdeCategory::Ref category, eCategoryType type);
 	
 protected:
 	/** \brief Clean up undo action. */

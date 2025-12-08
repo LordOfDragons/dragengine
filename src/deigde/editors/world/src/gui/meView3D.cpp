@@ -184,8 +184,6 @@ public:
 meView3D::meView3D(meWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain),
-pListener(NULL),
-pWorld(NULL),
 pEditor(NULL)
 {
 	int i;
@@ -198,7 +196,7 @@ pEditor(NULL)
 	pFontStats.TakeOver(fontmgr.LoadFont("/igde/fonts/sans_10.defont", "/"));
 	pFontSizeStats = pFontStats->PrepareSize(pFontStats->GetLineHeight());
 	
-	pListener = new meView3DListener(*this);
+	pListener.TakeOver(new meView3DListener(*this));
 	
 	pListenerEditor.TakeOver(new cEditorInteraction(*this));
 	AddListener(pListenerEditor);
@@ -206,10 +204,6 @@ pEditor(NULL)
 
 meView3D::~meView3D(){
 	SetWorld(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -223,7 +217,7 @@ void meView3D::ResetView(){
 	}
 }
 
-void meView3D::SetWorld(meWorld *world){
+void meView3D::SetWorld(meWorld::Ref world){
 	if(world == pWorld){
 		return;
 	}
@@ -237,13 +231,11 @@ void meView3D::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
-		world->AddReference();
 		world->AddNotifier(pListener);
 		ModeChanged();
 		ActiveCameraChanged();

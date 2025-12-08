@@ -39,9 +39,9 @@
 ////////////////////////////
 
 seUPropertySetConstructedColor::seUPropertySetConstructedColor(
-seProperty *property, const decColor &newValue) :
+seProperty::Ref property, const decColor &newValue) :
 
-pProperty(NULL),
+
 pNewValue(newValue)
 {
 	if(!property){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = property->GetNodeColor();
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetConstructedColor::~seUPropertySetConstructedColor(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

@@ -47,9 +47,8 @@
 ////////////////////////////
 
 gdeWPSTIMOCSnapPoint::gdeWPSTIMOCSnapPoint(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCSnapPoint *snapPoint, int index) :
+	gdeOCSnapPoint::Ref snapPoint, int index) :
 gdeWPSTIMOCSubObject(tree, etObjectClassSnapPoint, objectClass, index),
-pSnapPoint(NULL),
 pIndex(index)
 {
 	if(!snapPoint){
@@ -63,13 +62,9 @@ pIndex(index)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pSnapPoint = snapPoint;
-	snapPoint->AddReference();
 }
 
 gdeWPSTIMOCSnapPoint::~gdeWPSTIMOCSnapPoint(){
-	if(pSnapPoint){
-		pSnapPoint->FreeReference();
-	}
 }
 
 

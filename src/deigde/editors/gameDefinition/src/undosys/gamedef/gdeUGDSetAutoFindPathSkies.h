@@ -40,7 +40,7 @@ class gdeGameDefinition;
  */
 class gdeUGDSetAutoFindPathSkies : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decStringList pOldValue;
 	decStringList pNewValue;
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDSetAutoFindPathSkies(gdeGameDefinition *gameDefinition, const decStringList &newValue);
+	gdeUGDSetAutoFindPathSkies(gdeGameDefinition::Ref gameDefinition, const decStringList &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

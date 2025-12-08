@@ -46,8 +46,8 @@ private:
 		int index;
 	};
 	
-	sePropertyNodeGroup *pParentGroup;
-	sePropertyNodeGroup *pNodeGroup;
+	sePropertyNodeGroup::Ref pParentGroup;
+	sePropertyNodeGroup::Ref pNodeGroup;
 	int pNodeCount;
 	sNode *pNodes;
 	decVector pOffset;

@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleCurveSetCurve::meUHTVRuleCurveSetCurve(meHTVegetationLayer *vlayer,
-	meHTVRuleCurve *rule, const decCurveBezier &newCurve) :
-pVLayer(NULL),
-pRule(NULL),
+meUHTVRuleCurveSetCurve::meUHTVRuleCurveSetCurve(meHTVegetationLayer::Ref vlayer,
+	meHTVRuleCurve::Ref rule, const decCurveBezier &newCurve) :
+
 pNewCurve(newCurve)
 {
 	if(!vlayer || !rule){
@@ -55,19 +54,10 @@ pNewCurve(newCurve)
 	pOldCurve = rule->GetCurve();
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleCurveSetCurve::~meUHTVRuleCurveSetCurve(){
-	if(pRule){
-		pRule->FreeReference();
-	}
-	if(pVLayer){
-		pVLayer->FreeReference();
-	}
 }
 
 

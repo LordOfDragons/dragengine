@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakWordMove::ceUCAASpeakWordMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *word, int newIndex){
+ceUCAASpeakWordMove::ceUCAASpeakWordMove(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak,
+ceStrip::Ref word, int newIndex){
 	if(!topic || !actorSpeak || !word){
 		DETHROW(deeInvalidParam);
 	}
@@ -61,25 +61,11 @@ ceStrip *word, int newIndex){
 	SetShortInfo("Move Word");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 ceUCAASpeakWordMove::~ceUCAASpeakWordMove(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

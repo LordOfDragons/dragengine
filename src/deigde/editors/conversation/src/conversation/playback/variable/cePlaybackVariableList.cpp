@@ -61,7 +61,7 @@ cePlaybackVariable *cePlaybackVariableList::GetAt(int index) const{
 
 cePlaybackVariable *cePlaybackVariableList::GetNamed(const char *name) const{
 	const int count = pVariables.GetCount();
-	cePlaybackVariable *variable;
+	cePlaybackVariable::Ref variable;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -75,7 +75,7 @@ cePlaybackVariable *cePlaybackVariableList::GetNamed(const char *name) const{
 	return NULL;
 }
 
-int cePlaybackVariableList::IndexOf(cePlaybackVariable *variable) const{
+int cePlaybackVariableList::IndexOf(cePlaybackVariable::Ref variable) const{
 	return pVariables.IndexOf(variable);
 }
 
@@ -92,7 +92,7 @@ int cePlaybackVariableList::IndexOfNamed(const char *name) const{
 	return -1;
 }
 
-bool cePlaybackVariableList::Has(cePlaybackVariable *variable) const{
+bool cePlaybackVariableList::Has(cePlaybackVariable::Ref variable) const{
 	return pVariables.Has(variable);
 }
 
@@ -110,20 +110,19 @@ bool cePlaybackVariableList::HasNamed(const char *name) const{
 }
 
 void cePlaybackVariableList::Set(const char *name, int value){
-	cePlaybackVariable *variable = GetNamed(name);
+	cePlaybackVariable::Ref variable = GetNamed(name);
 	
 	if(variable){
 		variable->SetValue(value);
 		
 	}else{
-		variable = new cePlaybackVariable(name, value);
+		variable.TakeOver(new cePlaybackVariable(name, value));
 		
 		pVariables.Add(variable);
-		variable->FreeReference();
 	}
 }
 
-void cePlaybackVariableList::Remove(cePlaybackVariable *variable){
+void cePlaybackVariableList::Remove(cePlaybackVariable::Ref variable){
 	pVariables.Remove(variable);
 }
 

@@ -143,8 +143,8 @@ private:
 	decPointerList pTUCs;
 	bool pDirtyTUCs;
 	deoglDynamicTBOBlock::Ref pBlockMaterial;
-	deoglDynamicTBOUInt32 *pTBOMaterial;
-	deoglDynamicTBOFloat16 *pTBOMaterial2;
+	deoglDynamicTBOUInt32::Ref pTBOMaterial;
+	deoglDynamicTBOFloat16::Ref pTBOMaterial2;
 	
 	bool pDynamic;
 	bool pChanged;

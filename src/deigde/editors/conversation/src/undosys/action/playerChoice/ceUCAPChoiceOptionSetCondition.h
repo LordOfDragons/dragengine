@@ -38,11 +38,11 @@ class ceConversationCondition;
  * \brief Undo action player choice option conversation action set case condition.*/
 class ceUCAPChoiceOptionSetCondition : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
-	ceConversationCondition *pOldCondition;
-	ceConversationCondition *pNewCondition;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
+	ceConversationCondition::Ref pOldCondition;
+	ceConversationCondition::Ref pNewCondition;
 	
 	
 	
@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAPChoiceOptionSetCondition(ceConversationTopic *topic, ceCAPlayerChoice *ifElse,
-		ceCAPlayerChoiceOption *ifcase, ceConversationCondition *newCondition);
+	ceUCAPChoiceOptionSetCondition(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref ifElse,
+		ceCAPlayerChoiceOption::Ref ifcase, ceConversationCondition::Ref newCondition);
 	
 	/** \brief Clean up undo object. */
 	virtual ~ceUCAPChoiceOptionSetCondition();

@@ -44,7 +44,7 @@ private:
 	deoglPropField &pPropField;
 	const dePropFieldType &pType;
 	
-	deoglRPropFieldType *pRType;
+	deoglRPropFieldType::Ref pRType;
 	
 	bool pDirtyType;
 	bool pDirtyInstances;

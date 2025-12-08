@@ -208,7 +208,7 @@ private:
 	
 	deoglRenderPlanTasks::Ref pTasks;
 	
-	deoglRPTFindContent *pTaskFindContent;
+	deoglRPTFindContent::Ref pTaskFindContent;
 	
 	deoglRenderPlanDebug *pDebug;
 	bool pDebugTiming;

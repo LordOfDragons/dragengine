@@ -40,9 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveInherit::gdeUOCRemoveInherit(gdeObjectClass *objectClass, gdeOCInherit *inherit) :
-pObjectClass(NULL),
-pInherit(NULL)
+gdeUOCRemoveInherit::gdeUOCRemoveInherit(gdeObjectClass::Ref objectClass, gdeOCInherit::Ref inherit) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !inherit){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pInherit(NULL)
 	SetShortInfo("Remove inherit");
 	
 	pInherit = inherit;
-	inherit->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveInherit::~gdeUOCRemoveInherit(){
-	if(pInherit){
-		pInherit->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

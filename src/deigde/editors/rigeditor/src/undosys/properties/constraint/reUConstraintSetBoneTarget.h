@@ -37,10 +37,10 @@ class reRigConstraint;
  */
 class reUConstraintSetBoneTarget : public igdeUndo{
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	
-	reRigBone *pOldBone;
-	reRigBone *pNewBone;
+	reRigBone::Ref pOldBone;
+	reRigBone::Ref pNewBone;
 	
 	
 	

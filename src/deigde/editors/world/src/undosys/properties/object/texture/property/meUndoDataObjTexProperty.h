@@ -37,7 +37,7 @@ class meObjectTexture;
  */
 class meUndoDataObjTexProperty : public deObject{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decString pOldValue;
 	bool pPropertyExists;
 	decStringDictionary pOldProperties;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo data. */
-	meUndoDataObjTexProperty(meObjectTexture *texture);
+	meUndoDataObjTexProperty(meObjectTexture::Ref texture);
 	
 protected:
 	/** \brief Clean up undo data. */

@@ -36,7 +36,7 @@ class feFontGlyph;
  */
 class feUGlyphSetBearing : public igdeUndo{
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	
 	int pOldBearing;
 	int pNewBearing;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUGlyphSetBearing(feFontGlyph *glyph, int newBearing);
+	feUGlyphSetBearing(feFontGlyph::Ref glyph, int newBearing);
 	
 protected:
 	/** \brief Clean up undo. */

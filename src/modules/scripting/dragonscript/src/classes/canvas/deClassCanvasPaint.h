@@ -74,7 +74,7 @@ public:
 	 * \brief Push canvas paint onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushCanvas(dsRunTime *rt, deCanvasPaint *canvas);
+	void PushCanvas(dsRunTime *rt, deCanvasPaint::Ref canvas);
 	/*@}*/
 	
 private:

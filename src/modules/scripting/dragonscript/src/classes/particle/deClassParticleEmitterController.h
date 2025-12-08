@@ -68,10 +68,10 @@ public:
 		deParticleEmitterInstance *&instance, int &index) const;
 	
 	/** \brief Push controller. */
-	void PushController(dsRunTime *rt, deParticleEmitter *emitter, int index);
+	void PushController(dsRunTime *rt, deParticleEmitter::Ref emitter, int index);
 	
 	/** \brief Push controller. */
-	void PushController(dsRunTime *rt, deParticleEmitterInstance *instance, int index);
+	void PushController(dsRunTime *rt, deParticleEmitterInstance::Ref instance, int index);
 	/*@}*/
 	
 	

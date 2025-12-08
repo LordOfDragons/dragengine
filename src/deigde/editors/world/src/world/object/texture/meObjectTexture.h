@@ -54,7 +54,7 @@ private:
 	
 	decString pName;
 	decString pSkinPath;
-	deSkin *pEngSkin;
+	deSkin::Ref pEngSkin;
 	decVector2 pTexCoordOffset;
 	decVector2 pTexCoordScaling;
 	float pTexCoordRotation;
@@ -64,7 +64,7 @@ private:
 	decStringDictionary pProperties;
 	decString pActiveProperty;
 	
-	deDynamicSkin *pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	
 	

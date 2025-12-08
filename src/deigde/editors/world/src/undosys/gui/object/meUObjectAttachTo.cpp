@@ -41,13 +41,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectAttachTo::meUObjectAttachTo(meWorld *world, const meObjectList &objects, meObject *attachTo){
+meUObjectAttachTo::meUObjectAttachTo(meWorld::Ref world, const meObjectList &objects, meObject::Ref attachTo){
 	if(!world){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = objects.GetCount();
-	meObject *object;
+	meObject::Ref object;
 	decString text;
 	
 	if(count == 0){
@@ -81,7 +81,6 @@ meUObjectAttachTo::meUObjectAttachTo(meWorld *world, const meObjectList &objects
 			object = objects.GetAt(pObjectCount);
 			
 			pObjects[pObjectCount].object = object;
-			object->AddReference();
 			pObjects[pObjectCount].oldAttachTo = object->GetAttachedTo();
 			if(pObjects[pObjectCount].oldAttachTo){
 				pObjects[pObjectCount].oldAttachTo->AddReference();
@@ -94,12 +93,7 @@ meUObjectAttachTo::meUObjectAttachTo(meWorld *world, const meObjectList &objects
 	}
 	
 	pAttachTo = attachTo;
-	if(attachTo){
-		attachTo->AddReference();
-	}
-	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUObjectAttachTo::~meUObjectAttachTo(){
@@ -112,7 +106,7 @@ meUObjectAttachTo::~meUObjectAttachTo(){
 ///////////////
 
 void meUObjectAttachTo::Undo(){
-	meObject *object;
+	meObject::Ref object;
 	int o;
 	
 	for(o=0; o<pObjectCount; o++){
@@ -126,7 +120,7 @@ void meUObjectAttachTo::Undo(){
 }
 
 void meUObjectAttachTo::Redo(){
-	meObject *object;
+	meObject::Ref object;
 	int o;
 	
 	for(o=0; o<pObjectCount; o++){
@@ -155,13 +149,5 @@ void meUObjectAttachTo::pCleanUp(){
 		}
 		
 		delete [] pObjects;
-	}
-	
-	if(pAttachTo){
-		pAttachTo->FreeReference();
-	}
-	
-	if(pWorld){
-		pWorld->FreeReference();
 	}
 }

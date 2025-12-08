@@ -268,15 +268,13 @@ public:
 seWPLink::seWPLink(seViewSynthesizer &viewSynthesizer) :
 igdeContainerScroll(viewSynthesizer.GetEnvironment(), false, true),
 pViewSynthesizer(viewSynthesizer),
-pListener(NULL),
-pSynthesizer(NULL),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new seWPLinkListener(*this);
+	pListener.TakeOver(new seWPLinkListener(*this));
 	
 	
 	pActionLinkAdd.TakeOver(new cActionLinkAdd(*this));
@@ -313,9 +311,6 @@ pPreventUpdate(false)
 
 seWPLink::~seWPLink(){
 	SetSynthesizer(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -323,21 +318,19 @@ seWPLink::~seWPLink(){
 // Management
 ///////////////
 
-void seWPLink::SetSynthesizer(seSynthesizer *synthesizer){
+void seWPLink::SetSynthesizer(seSynthesizer::Ref synthesizer){
 	if(synthesizer == pSynthesizer){
 		return;
 	}
 	
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
 	if(synthesizer){
 		synthesizer->AddNotifier(pListener);
-		synthesizer->AddReference();
 	}
 	
 	UpdateControllerList();

@@ -42,7 +42,7 @@ class meWorld;
  */
 class meUDecalScale : public meBaseUndoScale{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	meUndoDataDecal **pDecals;
 	int pDecalCount;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo. */
-	meUDecalScale(meWorld *world);
+	meUDecalScale(meWorld::Ref world);
 	/** \brief Clean up undo. */
 	virtual ~meUDecalScale();
 	/*@}*/

@@ -51,7 +51,7 @@ private:
 	
 	decDMatrix pMatrix;
 	
-	deoglEnvironmentMap *pEnvMap;
+	deoglEnvironmentMap::Ref pEnvMap;
 	
 	bool pWorldMarkedRemove;
 	

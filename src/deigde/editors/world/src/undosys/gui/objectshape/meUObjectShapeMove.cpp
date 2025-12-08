@@ -43,7 +43,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectShapeMove::meUObjectShapeMove(meObject *object, const char *property, const meObjectShapeList &list){
+meUObjectShapeMove::meUObjectShapeMove(meObject::Ref object, const char *property, const meObjectShapeList &list){
 	if(list.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
@@ -74,13 +74,9 @@ meUObjectShapeMove::meUObjectShapeMove(meObject *object, const char *property, c
 	
 	pProperty = property;
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectShapeMove::~meUObjectShapeMove(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

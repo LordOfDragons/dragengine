@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCASetAParamSetValue : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASetActorParameter *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCASetActorParameter::Ref pAction;
 	int pOldValue;
 	int pNewValue;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASetAParamSetValue(ceConversationTopic *topic, ceCASetActorParameter *action, int newValue);
+	ceUCASetAParamSetValue(ceConversationTopic::Ref topic, ceCASetActorParameter::Ref action, int newValue);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCASetAParamSetValue();

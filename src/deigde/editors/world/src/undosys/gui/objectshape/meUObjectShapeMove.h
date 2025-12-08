@@ -38,7 +38,7 @@ class meObjectShapeList;
  */
 class meUObjectShapeMove : public meBaseUndoMove{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectShapeMove(meObject *object, const char *property, const meObjectShapeList &list);
+	meUObjectShapeMove(meObject::Ref object, const char *property, const meObjectShapeList &list);
 	/** \brief Clean up undo object. */
 	~meUObjectShapeMove() override;
 	/*@}*/

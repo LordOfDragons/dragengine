@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeRemoveMask::seUPropertyNodeRemoveMask(sePropertyNode *node) :
-pNode(NULL),
+seUPropertyNodeRemoveMask::seUPropertyNodeRemoveMask(sePropertyNode::Ref node) :
+
 pMask(NULL)
 {
 	if(!node || !node->GetProperty() || !node->GetMask()){
@@ -51,24 +51,15 @@ pMask(NULL)
 	SetShortInfo("Node remove mask");
 	
 	pMask = node->GetMask();
-	pMask->AddReference();
-	
 	pOldPosition = pMask->GetPosition();
 	pOldSize = pMask->GetSize();
 	pOldRotation = pMask->GetRotation();
 	pOldShearing = pMask->GetShearing();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeRemoveMask::~seUPropertyNodeRemoveMask(){
-	if(pNode){
-		pNode->FreeReference();
-	}
-	if(pMask){
-		pMask->FreeReference();
-	}
 }
 
 

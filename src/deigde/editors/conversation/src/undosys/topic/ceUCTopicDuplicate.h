@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCTopicDuplicate : public igdeUndo{
 private:
-	ceConversationFile *pFile;
-	ceConversationTopic *pTopic;
+	ceConversationFile::Ref pFile;
+	ceConversationTopic::Ref pTopic;
 	
 	
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCTopicDuplicate(ceConversationFile *file, const ceConversationTopic &topic, const char *newID);
+	ceUCTopicDuplicate(ceConversationFile::Ref file, const ceConversationTopic &topic, const char *newID);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCTopicDuplicate();

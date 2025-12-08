@@ -38,8 +38,8 @@ class projProfile;
  */
 class projUProfileAdd : public igdeUndo{
 private:
-	projProject *pProject;
-	projProfile *pProfile;
+	projProject::Ref pProject;
+	projProfile::Ref pProfile;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileAdd(projProject *project, projProfile *profile);
+	projUProfileAdd(projProject::Ref project, projProfile::Ref profile);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileAdd();

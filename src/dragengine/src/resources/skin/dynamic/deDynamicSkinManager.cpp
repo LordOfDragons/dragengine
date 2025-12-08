@@ -66,10 +66,10 @@ deDynamicSkin *deDynamicSkinManager::GetRootDynamicSkin() const{
 }
 
 deDynamicSkin *deDynamicSkinManager::CreateDynamicSkin(){
-	deDynamicSkin *dynamicSkin = NULL;
+	deDynamicSkin::Ref dynamicSkin = NULL;
 	
 	try{
-		dynamicSkin = new deDynamicSkin(this);
+		dynamicSkin.TakeOver(new deDynamicSkin(this));
 		if(!dynamicSkin) DETHROW(deeOutOfMemory);
 		
 		GetGraphicSystem()->LoadDynamicSkin(dynamicSkin);
@@ -77,9 +77,6 @@ deDynamicSkin *deDynamicSkinManager::CreateDynamicSkin(){
 		pSkins.Add(dynamicSkin);
 		
 	}catch(const deException &){
-		if(dynamicSkin){
-			dynamicSkin->FreeReference();
-		}
 		throw;
 	}
 	
@@ -103,7 +100,7 @@ void deDynamicSkinManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deDynamicSkinManager::SystemGraphicLoad(){
-	deDynamicSkin *dynamicSkin = (deDynamicSkin*)pSkins.GetRoot();
+	deDynamicSkin::Ref dynamicSkin = (deDynamicSkin*)pSkins.GetRoot();
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(dynamicSkin){
@@ -116,7 +113,7 @@ void deDynamicSkinManager::SystemGraphicLoad(){
 }
 
 void deDynamicSkinManager::SystemGraphicUnload(){
-	deDynamicSkin *dynamicSkin = (deDynamicSkin*)pSkins.GetRoot();
+	deDynamicSkin::Ref dynamicSkin = (deDynamicSkin*)pSkins.GetRoot();
 	
 	while(dynamicSkin){
 		dynamicSkin->SetPeerGraphic(NULL);

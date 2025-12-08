@@ -503,21 +503,11 @@ void reRigConstraint::SetBreakingThreshold(float impulseThreshold){
 
 
 
-void reRigConstraint::SetConstraintBone(reRigBone *bone){
+void reRigConstraint::SetConstraintBone(reRigBone::Ref bone){
 	if(bone == pConstraintBone){
 		return;
 	}
-	
-	if(pConstraintBone){
-		pConstraintBone->FreeReference();
-	}
-	
 	pConstraintBone = bone;
-	
-	if(bone){
-		bone->AddReference();
-	}
-	
 	if(pEngConstraint){
 		if(pConstraintBone && pRig){
 			pEngConstraint->SetBone(pRig->IndexOfBone(pConstraintBone));
@@ -631,10 +621,10 @@ bool reRigConstraint::IsVisible() const{
 }
 
 reRigConstraint *reRigConstraint::Duplicate() const{
-	reRigConstraint *constraint = NULL;
+	reRigConstraint::Ref constraint = NULL;
 	
 	try{
-		constraint = new reRigConstraint(pEngine);
+		constraint.TakeOver(new reRigConstraint(pEngine));
 		
 		constraint->SetPosition(pPosition);
 		constraint->SetOrientation(pOrientation);
@@ -657,9 +647,6 @@ reRigConstraint *reRigConstraint::Duplicate() const{
 		constraint->SetConstraintBone(pConstraintBone);
 		
 	}catch(const deException &){
-		if(constraint){
-			constraint->FreeReference();
-		}
 		throw;
 	}
 	
@@ -700,15 +687,6 @@ void reRigConstraint::NotifyEngineConstraintChanged(){
 void reRigConstraint::pCleanUp(){
 	SetRigBone(NULL);
 	SetRig(NULL);
-	
-	if(pConstraintBone){
-		pConstraintBone->FreeReference();
-	}
-	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
-	
 	if(pDof[deColliderConstraint::edofLinearX]){
 		delete pDof[deColliderConstraint::edofLinearX];
 	}
@@ -751,9 +729,6 @@ void reRigConstraint::pCleanUp(){
 	}
 	if(pDDSConstraint){
 		delete pDDSConstraint;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

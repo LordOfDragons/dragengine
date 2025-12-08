@@ -62,33 +62,33 @@ igdeGDCNavigationBlocker *igdeGDCNavigationBlockerList::GetAt(int index) const{
 	return (igdeGDCNavigationBlocker*)pNavigationBlockers.GetAt(index);
 }
 
-int igdeGDCNavigationBlockerList::IndexOf(igdeGDCNavigationBlocker *blocker) const{
+int igdeGDCNavigationBlockerList::IndexOf(igdeGDCNavigationBlocker::Ref blocker) const{
 	return pNavigationBlockers.IndexOf(blocker);
 }
 
-bool igdeGDCNavigationBlockerList::Has(igdeGDCNavigationBlocker *blocker) const{
+bool igdeGDCNavigationBlockerList::Has(igdeGDCNavigationBlocker::Ref blocker) const{
 	return pNavigationBlockers.Has(blocker);
 }
 
-void igdeGDCNavigationBlockerList::Add(igdeGDCNavigationBlocker *blocker){
+void igdeGDCNavigationBlockerList::Add(igdeGDCNavigationBlocker::Ref blocker){
 	if(!blocker){
 		DETHROW(deeInvalidParam);
 	}
 	pNavigationBlockers.Add(blocker);
 }
 
-void igdeGDCNavigationBlockerList::InsertAt(igdeGDCNavigationBlocker *blocker, int index){
+void igdeGDCNavigationBlockerList::InsertAt(igdeGDCNavigationBlocker::Ref blocker, int index){
 	if(!blocker){
 		DETHROW(deeInvalidParam);
 	}
 	pNavigationBlockers.Insert(blocker, index);
 }
 
-void igdeGDCNavigationBlockerList::MoveTo(igdeGDCNavigationBlocker *blocker, int index){
+void igdeGDCNavigationBlockerList::MoveTo(igdeGDCNavigationBlocker::Ref blocker, int index){
 	pNavigationBlockers.Move(blocker, index);
 }
 
-void igdeGDCNavigationBlockerList::Remove(igdeGDCNavigationBlocker *blocker){
+void igdeGDCNavigationBlockerList::Remove(igdeGDCNavigationBlocker::Ref blocker){
 	pNavigationBlockers.Remove(blocker);
 }
 
@@ -99,23 +99,19 @@ void igdeGDCNavigationBlockerList::RemoveAll(){
 
 
 void igdeGDCNavigationBlockerList::SetToDeepCopyFrom(const igdeGDCNavigationBlockerList &list){
-	igdeGDCNavigationBlocker *blocker = NULL;
+	igdeGDCNavigationBlocker::Ref blocker = NULL;
 	const int count = list.GetCount();
 	
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			blocker = new igdeGDCNavigationBlocker(*list.GetAt(i));
+			blocker.TakeOver(new igdeGDCNavigationBlocker(*list.GetAt(i)));
 			Add(blocker);
-			blocker->FreeReference();
 			blocker = NULL;
 		}
 		
 	}catch(const deException &){
-		if(blocker){
-			blocker->FreeReference();
-		}
 		throw;
 	}
 }

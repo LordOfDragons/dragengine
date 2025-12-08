@@ -66,7 +66,7 @@ public:
 	deSoundLevelMeter *GetSoundLevelMeter(dsRealObject *myself) const;
 	
 	/** \brief Push sound level meter or NULL onto the stack. */
-	void PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMeter *soundLevelMeter);
+	void PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMeter::Ref soundLevelMeter);
 	
 	inline dsClass *GetClassSoundLevelMeterType() const{ return pClsSoundLevelMeterType; }
 	/*@}*/

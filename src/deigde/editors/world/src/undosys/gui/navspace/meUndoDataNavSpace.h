@@ -42,7 +42,7 @@ class meNavigationSpace;
  */
 class meUndoDataNavSpace{
 private:
-	meNavigationSpace *pNavSpace;
+	meNavigationSpace::Ref pNavSpace;
 	decDVector pOldPosition;
 	decVector pOldOrientation;
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create navigation space undo data. */
-	meUndoDataNavSpace(meNavigationSpace *navspace);
+	meUndoDataNavSpace(meNavigationSpace::Ref navspace);
 	
 	/** \brief Clean up navigation space undo data. */
 	virtual ~meUndoDataNavSpace();

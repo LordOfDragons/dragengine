@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceGroupMoveSourceDown::seUSourceGroupMoveSourceDown(seSourceGroup *group, seSource *source) :
-pGroup(NULL),
+seUSourceGroupMoveSourceDown::seUSourceGroupMoveSourceDown(seSourceGroup::Ref group, seSource::Ref source) :
+
 pSource(NULL)
 {
 	if(!group || !source){
@@ -53,19 +53,10 @@ pSource(NULL)
 	}
 	
 	pGroup = group;
-	group->AddReference();
-	
 	pSource = source;
-	source->AddReference();
 }
 
 seUSourceGroupMoveSourceDown::~seUSourceGroupMoveSourceDown(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }
 
 

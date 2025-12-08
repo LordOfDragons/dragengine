@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFacePoseAdd::ceUCFacePoseAdd(ceConversation *conversation, ceFacePose *facePose){
+ceUCFacePoseAdd::ceUCFacePoseAdd(ceConversation::Ref conversation, ceFacePose::Ref facePose){
 	if(!conversation || !facePose) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
@@ -49,19 +49,10 @@ ceUCFacePoseAdd::ceUCFacePoseAdd(ceConversation *conversation, ceFacePose *faceP
 	SetShortInfo("Add Face Pose");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pFacePose = facePose;
-	facePose->AddReference();
 }
 
 ceUCFacePoseAdd::~ceUCFacePoseAdd(){
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

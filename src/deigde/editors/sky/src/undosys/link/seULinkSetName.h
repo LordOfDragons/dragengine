@@ -35,7 +35,7 @@ class seLink;
  */
 class seULinkSetName : public igdeUndo{
 private:
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	decString pOldName;
 	decString pNewName;
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkSetName(seLink *link, const char *newName);
+	seULinkSetName(seLink::Ref link, const char *newName);
 	
 protected:
 	/** \brief Clean up undo action. */

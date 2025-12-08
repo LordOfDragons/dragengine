@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCACoordSysAddSetAliasID : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCACoordSystemAdd *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCACoordSystemAdd::Ref pAction;
 	decString pOldAliasID;
 	decString pNewAliasID;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCACoordSysAddSetAliasID(ceConversationTopic *topic, ceCACoordSystemAdd *action, const char *newAliasID);
+	ceUCACoordSysAddSetAliasID(ceConversationTopic::Ref topic, ceCACoordSystemAdd::Ref action, const char *newAliasID);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCACoordSysAddSetAliasID();
 	/*@}*/

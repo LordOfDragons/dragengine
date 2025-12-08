@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakHeadLAAdd::ceUCAASpeakHeadLAAdd(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *headLookAt, int index){
+ceUCAASpeakHeadLAAdd::ceUCAASpeakHeadLAAdd(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref headLookAt, int index){
 	if(!topic || !actorSpeak || !headLookAt){
 		DETHROW(deeInvalidParam);
 	}
@@ -58,25 +58,11 @@ ceUCAASpeakHeadLAAdd::ceUCAASpeakHeadLAAdd(ceConversationTopic *topic, ceCAActor
 	SetShortInfo("Actor Speak Add HeadLookAt");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pHeadLA = headLookAt;
-	headLookAt->AddReference();
 }
 
 ceUCAASpeakHeadLAAdd::~ceUCAASpeakHeadLAAdd(){
-	if(pHeadLA){
-		pHeadLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeSetPhysicsSize : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	float pOldSize;
 	float pNewSize;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeSetPhysicsSize(peeType *type, float newSize);
+	peeUTypeSetPhysicsSize(peeType::Ref type, float newSize);
 	
 protected:
 	/** \brief Clean up the undo action. */

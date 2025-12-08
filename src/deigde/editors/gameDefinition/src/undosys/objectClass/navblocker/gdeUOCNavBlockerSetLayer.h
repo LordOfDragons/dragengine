@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavBlockerSetLayer : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	int pOldValue;
 	int pNewValue;
@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavBlockerSetLayer(gdeObjectClass *objectClass,
-		gdeOCNavigationBlocker *navblocker, int newValue);
+	gdeUOCNavBlockerSetLayer(gdeObjectClass::Ref objectClass,
+		gdeOCNavigationBlocker::Ref navblocker, int newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

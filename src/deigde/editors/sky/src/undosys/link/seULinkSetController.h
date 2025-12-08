@@ -36,10 +36,10 @@ class seController;
  */
 class seULinkSetController : public igdeUndo{
 private:
-	seLink *pLink;
+	seLink::Ref pLink;
 	
-	seController *pOldController;
-	seController *pNewController;
+	seController::Ref pOldController;
+	seController::Ref pNewController;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULinkSetController(seLink *link, seController *newController);
+	seULinkSetController(seLink::Ref link, seController *newController);
 	
 protected:
 	/** \brief Clean up undo action. */

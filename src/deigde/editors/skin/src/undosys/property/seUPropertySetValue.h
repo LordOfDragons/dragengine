@@ -36,7 +36,7 @@ class seProperty;
  */
 class seUPropertySetValue : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	float pOldValue;
 	float pNewValue;
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetValue(seProperty *property, float newValue);
+	seUPropertySetValue(seProperty::Ref property, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */

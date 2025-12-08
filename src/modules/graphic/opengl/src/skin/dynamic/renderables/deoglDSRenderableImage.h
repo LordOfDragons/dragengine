@@ -39,7 +39,7 @@ class deoglRDSRenderableImage;
 class deoglDSRenderableImage : public deoglDSRenderable{
 public:
 	const deDSRenderableImage &pRenderableImage;
-	deoglRDSRenderableImage *pRRenderableImage;
+	deoglRDSRenderableImage::Ref pRRenderableImage;
 	deoglImage *pImage;
 	bool pDirty;
 	

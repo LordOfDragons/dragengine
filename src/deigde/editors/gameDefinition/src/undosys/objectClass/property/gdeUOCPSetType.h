@@ -41,8 +41,8 @@ class gdeObjectClass;
  */
 class gdeUOCPSetType : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
 	
 	gdeProperty::ePropertyTypes pOldValue;
 	gdeProperty::ePropertyTypes pNewValue;
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCPSetType(gdeObjectClass *objectClass, gdeProperty *property, gdeProperty::ePropertyTypes newValue);
+	gdeUOCPSetType(gdeObjectClass::Ref objectClass, gdeProperty::Ref property, gdeProperty::ePropertyTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

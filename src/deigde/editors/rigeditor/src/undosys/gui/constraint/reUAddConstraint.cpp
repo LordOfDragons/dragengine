@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUAddConstraint::reUAddConstraint(reRig *rig, reRigBone *bone, reRigConstraint *constraint){
+reUAddConstraint::reUAddConstraint(reRig::Ref rig, reRigBone::Ref bone, reRigConstraint::Ref constraint){
 	if(!constraint || (!rig && !bone)) DETHROW(deeInvalidParam);
 	
 	pRig = rig;
@@ -51,8 +51,6 @@ reUAddConstraint::reUAddConstraint(reRig *rig, reRigBone *bone, reRigConstraint 
 	if(bone) bone->AddReference();
 	
 	pConstraint = constraint;
-	constraint->AddReference();
-	
 	try{
 		if(bone){
 			SetShortInfo("Add Bone Constraint");
@@ -77,7 +75,7 @@ reUAddConstraint::~reUAddConstraint(){
 ///////////////
 
 void reUAddConstraint::Undo(){
-	reRig *rig = pGetRig();
+	reRig::Ref rig = pGetRig();
 	
 	reSelectionConstraints *selection = rig->GetSelectionConstraints();
 	
@@ -94,7 +92,7 @@ void reUAddConstraint::Undo(){
 }
 
 void reUAddConstraint::Redo(){
-	reRig *rig = pGetRig();
+	reRig::Ref rig = pGetRig();
 	
 	reSelectionConstraints *selection = rig->GetSelectionConstraints();
 	
@@ -123,7 +121,7 @@ void reUAddConstraint::pCleanUp(){
 reRig *reUAddConstraint::pGetRig(){
 	if(pRig) return pRig;
 	
-	reRig *rig = pBone->GetRig();
+	reRig::Ref rig = pBone->GetRig();
 	if(!rig) DETHROW(deeInvalidParam);
 	
 	return rig;

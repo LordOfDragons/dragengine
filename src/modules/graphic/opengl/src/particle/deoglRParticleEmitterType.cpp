@@ -63,8 +63,6 @@ pParameterSamples(NULL),
 
 pTextureSamples(NULL),
 
-pSkin(NULL),
-
 pEmitLight(false)
 {
 	LEAK_CHECK_CREATE(emitter.GetRenderThread(), ParticleEmitterType);
@@ -76,11 +74,6 @@ deoglRParticleEmitterType::~deoglRParticleEmitterType(){
 	if(pParameterSamples){
 		delete [] pParameterSamples;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	if(pTextureSamples){
 		delete pTextureSamples;
 	}
@@ -266,20 +259,11 @@ void deoglRParticleEmitterType::PrepareForRender(){
 
 
 
-void deoglRParticleEmitterType::SetSkin(deoglRSkin *skin){
+void deoglRParticleEmitterType::SetSkin(deoglRSkin::Ref skin){
 	if(skin == pSkin){
 		return;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	pSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
 }
 
 void deoglRParticleEmitterType::CheckEmitLight(const deParticleEmitterType &type){

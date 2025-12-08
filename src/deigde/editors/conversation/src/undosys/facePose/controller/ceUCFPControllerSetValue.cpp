@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCFPControllerSetValue::ceUCFPControllerSetValue(ceFacePose *facePose, ceControllerValue *controller, float newValue){
+ceUCFPControllerSetValue::ceUCFPControllerSetValue(ceFacePose::Ref facePose, ceControllerValue::Ref controller, float newValue){
 	if(!facePose || !controller){
 		DETHROW(deeInvalidParam);
 	}
@@ -54,19 +54,10 @@ ceUCFPControllerSetValue::ceUCFPControllerSetValue(ceFacePose *facePose, ceContr
 	SetShortInfo("Set Face Pose Controller Value");
 	
 	pFacePose = facePose;
-	facePose->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 ceUCFPControllerSetValue::~ceUCFPControllerSetValue(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
 }
 
 

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupAddRule::aeURuleGroupAddRule(aeRuleGroup *group, aeRule *rule, int index){
+aeURuleGroupAddRule::aeURuleGroupAddRule(aeRuleGroup::Ref group, aeRule::Ref rule, int index){
 	if(!group || !rule){
 		DETHROW(deeInvalidParam);
 	}
@@ -50,10 +50,7 @@ aeURuleGroupAddRule::aeURuleGroupAddRule(aeRuleGroup *group, aeRule *rule, int i
 	pIndex = index;
 	
 	pGroup = group;
-	group->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeURuleGroupAddRule::~aeURuleGroupAddRule(){
@@ -80,10 +77,4 @@ void aeURuleGroupAddRule::Redo(){
 //////////////////////
 
 void aeURuleGroupAddRule::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }

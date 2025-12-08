@@ -36,13 +36,13 @@ class ceCAWait;
  */
 class ceUCAWaitPaste : public ceUCActionPaste{
 private:
-	ceCAWait *pWait;
+	ceCAWait::Ref pWait;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitPaste(ceConversationTopic *topic, ceCAWait *wait,
+	ceUCAWaitPaste(ceConversationTopic *topic, ceCAWait::Ref wait,
 		const ceConversationActionList &actions, int index);
 protected:
 	/** \brief Clean up undo. */

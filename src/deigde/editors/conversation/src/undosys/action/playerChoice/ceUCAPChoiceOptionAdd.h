@@ -38,9 +38,9 @@ class ceCAPlayerChoice;
  */
 class ceUCAPChoiceOptionAdd : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
 	int pIndex;
 	
 public:
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAPChoiceOptionAdd(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option, int index);
+	ceUCAPChoiceOptionAdd(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref playerChoice, ceCAPlayerChoiceOption::Ref option, int index);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAPChoiceOptionAdd();

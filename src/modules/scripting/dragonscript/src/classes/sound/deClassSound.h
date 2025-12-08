@@ -65,7 +65,7 @@ public:
 	deSound *GetSound(dsRealObject *myself) const;
 	
 	/** \brief Push sound to stack or \em NULL if \em sound is \em NULL. */
-	void PushSound(dsRunTime *rt, deSound *sound);
+	void PushSound(dsRunTime *rt, deSound::Ref sound);
 	/*@}*/
 	
 	

@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetHintMovement::gdeUOCLightSetHintMovement(gdeObjectClass *objectClass,
-gdeOCLight *light, deLight::eMovementHints newValue) :
-pObjectClass(NULL),
-pLight(NULL)
+gdeUOCLightSetHintMovement::gdeUOCLightSetHintMovement(gdeObjectClass::Ref objectClass,
+gdeOCLight::Ref light, deLight::eMovementHints newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pLight(NULL)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetHintMovement::~gdeUOCLightSetHintMovement(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

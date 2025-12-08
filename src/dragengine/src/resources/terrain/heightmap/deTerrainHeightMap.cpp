@@ -109,7 +109,7 @@ void deTerrainHeightMap::SetPathHeightImage(const char *path){
 	pPathHeightImage = path;
 }
 
-void deTerrainHeightMap::SetHeightImage(deImage *heightImage){
+void deTerrainHeightMap::SetHeightImage(deImage::Ref heightImage){
 	if(heightImage){
 		if(heightImage->GetWidth() != pPointCount.x){
 			DETHROW(deeInvalidParam);
@@ -130,13 +130,11 @@ void deTerrainHeightMap::SetHeightImage(deImage *heightImage){
 	//       deprecated anyways and should be done by physics module
 	if(pHeightImage){
 		pHeightImage->ReleaseImageData();
-		pHeightImage->FreeReference();
 	}
 	
 	pHeightImage = heightImage;
 	
 	if(heightImage){
-		heightImage->AddReference();
 		heightImage->RetainImageData();
 	}
 }

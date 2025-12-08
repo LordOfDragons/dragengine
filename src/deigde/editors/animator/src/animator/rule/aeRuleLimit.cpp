@@ -464,10 +464,10 @@ void aeRuleLimit::SetTargetBone(const char *boneName){
 
 
 deAnimatorRule *aeRuleLimit::CreateEngineRule(){
-	deAnimatorRuleLimit *engRule = NULL;
+	deAnimatorRuleLimit::Ref engRule = NULL;
 	
 	try{
-		engRule = new deAnimatorRuleLimit;
+		engRule.TakeOver(new deAnimatorRuleLimit);
 		
 		InitEngineRule(engRule);
 		
@@ -507,9 +507,6 @@ deAnimatorRule *aeRuleLimit::CreateEngineRule(){
 		engRule->SetEnableVertexPositionSetMax(pEnableVertexPositionSetMax);
 		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 	

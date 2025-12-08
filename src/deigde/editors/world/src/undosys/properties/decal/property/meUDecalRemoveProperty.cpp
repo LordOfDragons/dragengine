@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalRemoveProperty::meUDecalRemoveProperty(meDecal *decal, const char *key, const char *value) :
+meUDecalRemoveProperty::meUDecalRemoveProperty(meDecal::Ref decal, const char *key, const char *value) :
 pDecal(NULL)
 {
 	if(!decal || !key || !value){
@@ -58,7 +58,6 @@ pDecal(NULL)
 	pValue = value;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalRemoveProperty::~meUDecalRemoveProperty(){
@@ -84,7 +83,4 @@ void meUDecalRemoveProperty::Redo(){
 //////////////////////
 
 void meUDecalRemoveProperty::pCleanUp(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }

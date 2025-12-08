@@ -41,8 +41,8 @@
 ////////////////////////////
 
 gdeUGDDPToggleIdentifierUsage::gdeUGDDPToggleIdentifierUsage(
-gdeGameDefinition *gamedef, gdeProperty *property) :
-pGameDefinition(NULL),
+gdeGameDefinition::Ref gamedef, gdeProperty::Ref property) :
+
 pProperty(NULL)
 {
 	if(!gamedef || !property){
@@ -52,19 +52,10 @@ pProperty(NULL)
 	SetShortInfo("Game definition property toggle identifier usage");
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDDPToggleIdentifierUsage::~gdeUGDDPToggleIdentifierUsage(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

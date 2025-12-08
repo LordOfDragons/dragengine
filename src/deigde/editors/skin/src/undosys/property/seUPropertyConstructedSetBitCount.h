@@ -36,7 +36,7 @@ class seProperty;
  */
 class seUPropertyConstructedSetBitCount : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	int pOldValue;
 	int pNewValue;
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUPropertyConstructedSetBitCount(seProperty *property, int newValue);
+	seUPropertyConstructedSetBitCount(seProperty::Ref property, int newValue);
 	
 protected:
 	/** \brief Clean up undo. */

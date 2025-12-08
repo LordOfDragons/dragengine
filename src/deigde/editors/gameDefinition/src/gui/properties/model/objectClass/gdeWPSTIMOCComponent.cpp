@@ -48,9 +48,8 @@
 ////////////////////////////
 
 gdeWPSTIMOCComponent::gdeWPSTIMOCComponent(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCComponent *component, int index) :
-gdeWPSTIMOCSubObject(tree, etObjectClassComponent, objectClass, index),
-pComponent(NULL)
+	gdeOCComponent::Ref component, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassComponent, objectClass, index)
 {
 	if(!component){
 		DETHROW(deeInvalidParam);
@@ -61,13 +60,9 @@ pComponent(NULL)
 	SetText(text);
 	
 	pComponent = component;
-	component->AddReference();
 }
 
 gdeWPSTIMOCComponent::~gdeWPSTIMOCComponent(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
 }
 
 

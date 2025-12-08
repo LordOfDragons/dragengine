@@ -47,7 +47,7 @@
 
 
 struct sSLMNatDat{
-	deSoundLevelMeter *soundLevelMeter;
+	deSoundLevelMeter::Ref soundLevelMeter;
 };
 
 
@@ -441,7 +441,7 @@ deSoundLevelMeter *deClassSoundLevelMeter::GetSoundLevelMeter(dsRealObject *myse
 	return ((sSLMNatDat*)p_GetNativeData(myself->GetBuffer()))->soundLevelMeter;
 }
 
-void deClassSoundLevelMeter::PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMeter *soundLevelMeter){
+void deClassSoundLevelMeter::PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMeter::Ref soundLevelMeter){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -455,5 +455,4 @@ void deClassSoundLevelMeter::PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMete
 	rt->CreateObjectNakedOnStack(this);
 	((sSLMNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))
 		->soundLevelMeter = soundLevelMeter;
-	soundLevelMeter->AddReference();
 }

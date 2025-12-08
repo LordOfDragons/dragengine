@@ -37,7 +37,7 @@ class aeRuleLimit;
  */
 class aeURuleLimitSetCFrame : public igdeUndo{
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	deAnimatorRuleLimit::eCoordinateFrames pOldCoordFrame;
 	deAnimatorRuleLimit::eCoordinateFrames pNewCoordFrame;

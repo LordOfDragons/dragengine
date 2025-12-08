@@ -38,8 +38,8 @@ class seSourceGroup;
  */
 class seUSourceGroupMoveSourceUp : public igdeUndo{
 private:
-	seSourceGroup *pGroup;
-	seSource *pSource;
+	seSourceGroup::Ref pGroup;
+	seSource::Ref pSource;
 	int pIndex;
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUSourceGroupMoveSourceUp(seSourceGroup *group, seSource *source);
+	seUSourceGroupMoveSourceUp(seSourceGroup::Ref group, seSource::Ref source);
 	
 protected:
 	/** \brief Clean up undo action. */

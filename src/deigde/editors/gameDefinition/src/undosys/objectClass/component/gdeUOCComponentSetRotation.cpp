@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCComponentSetRotation::gdeUOCComponentSetRotation(gdeObjectClass *objectClass,
-gdeOCComponent *component, const decVector &newValue) :
-pObjectClass(NULL),
+gdeUOCComponentSetRotation::gdeUOCComponentSetRotation(gdeObjectClass::Ref objectClass,
+gdeOCComponent::Ref component, const decVector &newValue) :
+
 pComponent(NULL)
 {
 	if(!objectClass || !component){
@@ -55,19 +55,10 @@ pComponent(NULL)
 	pNewValue = newValue;
 	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCComponentSetRotation::~gdeUOCComponentSetRotation(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

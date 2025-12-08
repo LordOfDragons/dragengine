@@ -35,7 +35,7 @@ class gdeOCParticleEmitter;
  */
 class gdeWPSTIMOCParticleEmitter : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	
 public:
@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCParticleEmitter(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCParticleEmitter *particleEmitter, int index);
+		gdeOCParticleEmitter::Ref particleEmitter, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

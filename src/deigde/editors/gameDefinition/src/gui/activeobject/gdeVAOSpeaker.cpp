@@ -64,9 +64,6 @@ pDDSCoordSystem(NULL)
 	if(!ocspeaker){
 		DETHROW(deeInvalidParam);
 	}
-	
-	pOCSpeaker->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pUpdateDDShapes();
@@ -115,10 +112,6 @@ void gdeVAOSpeaker::pCleanUp(){
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = NULL;
-	}
-	
-	if(pOCSpeaker){
-		pOCSpeaker->FreeReference();
 	}
 }
 

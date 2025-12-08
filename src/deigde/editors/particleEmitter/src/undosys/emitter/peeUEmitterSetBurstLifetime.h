@@ -36,7 +36,7 @@ class peeEmitter;
  */
 class peeUEmitterSetBurstLifetime : public igdeUndo{
 private:
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	float pOldLifetime;
 	float pNewLifetime;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUEmitterSetBurstLifetime(peeEmitter *emitter, float newLifetime);
+	peeUEmitterSetBurstLifetime(peeEmitter::Ref emitter, float newLifetime);
 	
 protected:
 	/** \brief Clean up the undo action. */

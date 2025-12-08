@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataObjectClass(gdeObjectClass *objectClass);
+	gdeClipboardDataObjectClass(gdeObjectClass::Ref objectClass);
 	
 protected:
 	/**

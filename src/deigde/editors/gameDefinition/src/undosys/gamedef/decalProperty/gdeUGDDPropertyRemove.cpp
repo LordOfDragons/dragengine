@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUGDDPropertyRemove::gdeUGDDPropertyRemove(gdeGameDefinition *gamedef, gdeProperty *property) :
-pGameDefinition(NULL),
+gdeUGDDPropertyRemove::gdeUGDDPropertyRemove(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property) :
+
 pProperty(NULL)
 {
 	if(!gamedef || !property){
@@ -54,19 +54,10 @@ pProperty(NULL)
 	SetShortInfo("Game definition remove property");
 	
 	pGameDefinition = gamedef;
-	gamedef->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUGDDPropertyRemove::~gdeUGDDPropertyRemove(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

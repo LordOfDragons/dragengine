@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalSetProperties : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo decal. */
-	meUDecalSetProperties(meDecal *decal, const decStringDictionary &newValues);
+	meUDecalSetProperties(meDecal::Ref decal, const decStringDictionary &newValues);
 	
 protected:
 	/** \brief Clean up undo decal. */

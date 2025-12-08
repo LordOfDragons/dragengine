@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAWaitSetCondition::ceUCAWaitSetCondition(ceConversationTopic *topic, ceCAWait *wait, ceConversationCondition *newCondition){
+ceUCAWaitSetCondition::ceUCAWaitSetCondition(ceConversationTopic::Ref topic, ceCAWait::Ref wait, ceConversationCondition::Ref newCondition){
 	if(!topic || !wait) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
@@ -52,35 +52,12 @@ ceUCAWaitSetCondition::ceUCAWaitSetCondition(ceConversationTopic *topic, ceCAWai
 	SetShortInfo("Action Wait Set Condition");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pWait = wait;
-	wait->AddReference();
-	
 	pOldCondition = wait->GetCondition();
-	if(pOldCondition){
-		pOldCondition->AddReference();
-	}
-	
 	pNewCondition = newCondition;
-	if(newCondition){
-		newCondition->AddReference();
-	}
 }
 
 ceUCAWaitSetCondition::~ceUCAWaitSetCondition(){
-	if(pNewCondition){
-		pNewCondition->FreeReference();
-	}
-	if(pOldCondition){
-		pOldCondition->FreeReference();
-	}
-	if(pWait){
-		pWait->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

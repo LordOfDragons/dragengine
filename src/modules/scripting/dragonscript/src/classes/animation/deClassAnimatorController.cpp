@@ -47,8 +47,8 @@
 /////////////////////
 
 struct sAnimatorCtrlNatDat{
-	deAnimator *animator;
-	deAnimatorInstance *instance;
+	deAnimator::Ref animator;
+	deAnimatorInstance::Ref instance;
 	int index;
 };
 
@@ -768,7 +768,7 @@ deAnimatorInstance *&instance, int &index) const{
 	index = nd.index;
 }
 
-void deClassAnimatorController::PushController(dsRunTime *rt, deAnimator *animator, int index){
+void deClassAnimatorController::PushController(dsRunTime *rt, deAnimator::Ref animator, int index){
 	if(!rt || !animator || index < 0 || index >= animator->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -777,12 +777,11 @@ void deClassAnimatorController::PushController(dsRunTime *rt, deAnimator *animat
 	sAnimatorCtrlNatDat &nd = *((sAnimatorCtrlNatDat*)p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.animator = animator;
-	animator->AddReference();
 	nd.instance = NULL;
 	nd.index = index;
 }
 
-void deClassAnimatorController::PushController(dsRunTime *rt, deAnimatorInstance *instance, int index){
+void deClassAnimatorController::PushController(dsRunTime *rt, deAnimatorInstance::Ref instance, int index){
 	if(!rt || !instance || index < 0 || index >= instance->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -792,6 +791,5 @@ void deClassAnimatorController::PushController(dsRunTime *rt, deAnimatorInstance
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.animator = NULL;
 	nd.instance = instance;
-	instance->AddReference();
 	nd.index = index;
 }

@@ -49,8 +49,8 @@ private:
 	
 	bool pPressed;
 	
-	deCanvasImage *pCImage;
-	deCanvasText *pCLabel;
+	deCanvasImage::Ref pCImage;
+	deCanvasText::Ref pCLabel;
 	
 	bool pDirtyLabelSize;
 	

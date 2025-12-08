@@ -56,7 +56,7 @@ private:
 	struct sBone{
 		reRigBone *boneSource;
 		
-		reRigBone *boneTarget;
+		reRigBone::Ref boneTarget;
 		decVector oldCMP;
 		float oldMass;
 		bool oldDynamic;
@@ -71,7 +71,7 @@ private:
 	
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	sBone *pBones;
 	int pBoneCount;
@@ -82,7 +82,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new undo. */
-	reUBoneMirror(reRig *rig);
+	reUBoneMirror(reRig::Ref rig);
 	
 protected:
 	/** Clean up the undo. */
@@ -106,7 +106,7 @@ public:
 private:
 	void pCleanUp();
 	
-	reRigBone *pGetBoneWithMirroredName(reRig *rig, reRigBone *bone) const;
+	reRigBone *pGetBoneWithMirroredName(reRig::Ref rig, reRigBone *bone) const;
 };
 
 #endif

@@ -39,7 +39,7 @@ class seClipboardDataPropertyNode;
  */
 class seUPNGroupPasteNodes : public igdeUndo{
 private:
-	sePropertyNodeGroup *pGroup;
+	sePropertyNodeGroup::Ref pGroup;
 	sePropertyNodeList pNodes;
 	int pLayer;
 	
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPNGroupPasteNodes(sePropertyNodeGroup *group, int layer,
+	seUPNGroupPasteNodes(sePropertyNodeGroup::Ref group, int layer,
 		const seClipboardDataPropertyNode &clipboardData);
 	
 protected:

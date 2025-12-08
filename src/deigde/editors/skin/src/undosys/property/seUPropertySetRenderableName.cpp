@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertySetRenderableName::seUPropertySetRenderableName(seProperty *property, const char *newName){
+seUPropertySetRenderableName::seUPropertySetRenderableName(seProperty::Ref property, const char *newName){
 	if(!property || !newName) DETHROW(deeInvalidParam);
 	
 	pProperty = NULL;
@@ -49,13 +49,9 @@ seUPropertySetRenderableName::seUPropertySetRenderableName(seProperty *property,
 	pNewName = newName;
 	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertySetRenderableName::~seUPropertySetRenderableName(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

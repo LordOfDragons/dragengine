@@ -39,7 +39,7 @@ class projProfile;
  */
 class projUProfileSetIdentifier : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decUuid pOldValue;
 	decUuid pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetIdentifier(projProfile *profile, const decUuid &newValue);
+	projUProfileSetIdentifier(projProfile::Ref profile, const decUuid &newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileSetIdentifier();

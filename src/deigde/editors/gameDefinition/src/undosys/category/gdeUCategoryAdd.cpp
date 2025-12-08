@@ -40,11 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUCategoryAdd::gdeUCategoryAdd(gdeGameDefinition *gameDefinition, gdeCategory *parent,
-gdeCategory *category, eCategoryType type) :
-gdeUCategoryBase(gameDefinition, type),
-pParent(NULL),
-pCategory(NULL)
+gdeUCategoryAdd::gdeUCategoryAdd(gdeGameDefinition *gameDefinition, gdeCategory::Ref parent,
+gdeCategory::Ref category, eCategoryType type) :
+gdeUCategoryBase(gameDefinition, type)
 {
 	if(!category){
 		DETHROW(deeInvalidParam);
@@ -53,21 +51,10 @@ pCategory(NULL)
 	SetShortInfo("Category add");
 	
 	pParent = parent;
-	if(parent){
-		parent->AddReference();
-	}
-	
 	pCategory = category;
-	category->AddReference();
 }
 
 gdeUCategoryAdd::~gdeUCategoryAdd(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
-	if(pParent){
-		pParent->FreeReference();
-	}
 }
 
 

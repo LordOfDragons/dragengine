@@ -66,7 +66,7 @@ reRigShape *reSelectionShapes::GetShapeAt(int index) const{
 	return pShapes[index];
 }
 
-bool reSelectionShapes::HasShape(reRigShape *shape) const{
+bool reSelectionShapes::HasShape(reRigShape::Ref shape) const{
 	if(!shape) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -79,7 +79,7 @@ bool reSelectionShapes::HasShape(reRigShape *shape) const{
 	return false;
 }
 	
-int reSelectionShapes::IndexOfShape(reRigShape *shape) const{
+int reSelectionShapes::IndexOfShape(reRigShape::Ref shape) const{
 	if(!shape) DETHROW(deeInvalidParam);
 	int i;
 	
@@ -105,7 +105,7 @@ int reSelectionShapes::IndexOfShapeWith(deColliderVolume *collider) const{
 	return -1;
 }
 
-void reSelectionShapes::AddShape(reRigShape *shape){
+void reSelectionShapes::AddShape(reRigShape::Ref shape){
 	if(HasShape(shape)) DETHROW(deeInvalidParam);
 	
 	if(pShapeCount == pShapeSize){
@@ -122,9 +122,6 @@ void reSelectionShapes::AddShape(reRigShape *shape){
 	
 	pShapes[pShapeCount] = shape;
 	pShapeCount++;
-	
-	shape->AddReference();
-	
 	shape->SetSelected(true);
 	
 	pRig->NotifyShapeSelectedChanged(shape);
@@ -134,7 +131,7 @@ void reSelectionShapes::AddShape(reRigShape *shape){
 	}
 }
 
-void reSelectionShapes::RemoveShape(reRigShape *shape){
+void reSelectionShapes::RemoveShape(reRigShape::Ref shape){
 	int i, index = IndexOfShape(shape);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
@@ -156,8 +153,6 @@ void reSelectionShapes::RemoveShape(reRigShape *shape){
 	}
 	
 	pRig->NotifyShapeSelectedChanged(shape);
-	
-	shape->FreeReference();
 }
 
 void reSelectionShapes::RemoveAllShapes(){
@@ -179,7 +174,7 @@ bool reSelectionShapes::HasActiveShape() const{
 	return pActiveShape != NULL;
 }
 
-void reSelectionShapes::SetActiveShape(reRigShape *shape){
+void reSelectionShapes::SetActiveShape(reRigShape::Ref shape){
 	if(shape != pActiveShape){
 		if(shape && !HasShape(shape)) DETHROW(deeInvalidParam);
 		

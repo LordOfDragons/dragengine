@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetMask::seUPropertyNodeSetMask(sePropertyNode *node, sePropertyNode *mask) :
-pNode(NULL),
+seUPropertyNodeSetMask::seUPropertyNodeSetMask(sePropertyNode::Ref node, sePropertyNode::Ref mask) :
+
 pMask(NULL)
 {
 	if(!node || !node->GetProperty() || node->GetMask() || !mask){
@@ -57,19 +57,10 @@ pMask(NULL)
 	pOldShearing = mask->GetShearing();
 	
 	pMask = mask;
-	mask->AddReference();
-	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetMask::~seUPropertyNodeSetMask(){
-	if(pNode){
-		pNode->FreeReference();
-	}
-	if(pMask){
-		pMask->FreeReference();
-	}
 }
 
 

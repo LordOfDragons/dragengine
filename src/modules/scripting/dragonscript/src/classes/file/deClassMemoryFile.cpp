@@ -47,7 +47,7 @@
 
 
 struct sMemFileNatDat{
-	decMemoryFile *memoryFile;
+	decMemoryFile::Ref memoryFile;
 };
 
 
@@ -70,7 +70,7 @@ void deClassMemoryFile::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	const char * const filename = rt->GetValue(0)->GetString();
 	
 	// create memory file
-	nd.memoryFile = new decMemoryFile(filename);
+	nd.memoryFile.TakeOver(new decMemoryFile(filename));
 }
 
 // public func new( MemoryFile memoryFile )
@@ -92,7 +92,7 @@ void deClassMemoryFile::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 	
 	// create memory file
-	nd.memoryFile = new decMemoryFile(copyMemoryFile->GetFilename());
+	nd.memoryFile.TakeOver(new decMemoryFile(copyMemoryFile->GetFilename()));
 	
 	const int size = copyMemoryFile->GetLength();
 	if(size > 0){
@@ -268,7 +268,7 @@ decMemoryFile *deClassMemoryFile::GetMemoryFile(dsRealObject *myself) const{
 	return ((const sMemFileNatDat *)p_GetNativeData(myself->GetBuffer()))->memoryFile;
 }
 
-void deClassMemoryFile::PushMemoryFile(dsRunTime *rt, decMemoryFile *memoryFile){
+void deClassMemoryFile::PushMemoryFile(dsRunTime *rt, decMemoryFile::Ref memoryFile){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -280,5 +280,4 @@ void deClassMemoryFile::PushMemoryFile(dsRunTime *rt, decMemoryFile *memoryFile)
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sMemFileNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->memoryFile = memoryFile;
-	memoryFile->AddReference();
 }

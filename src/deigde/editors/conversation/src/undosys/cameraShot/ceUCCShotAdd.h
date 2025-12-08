@@ -37,8 +37,8 @@ class ceCameraShot;
  */
 class ceUCCShotAdd : public igdeUndo{
 private:
-	ceConversation *pConversation;
-	ceCameraShot *pCameraShot;
+	ceConversation::Ref pConversation;
+	ceCameraShot::Ref pCameraShot;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotAdd(ceConversation *conversation, ceCameraShot *cameraShot);
+	ceUCCShotAdd(ceConversation::Ref conversation, ceCameraShot::Ref cameraShot);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotAdd();

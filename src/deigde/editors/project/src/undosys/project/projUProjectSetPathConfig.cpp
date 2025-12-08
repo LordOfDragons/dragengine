@@ -40,8 +40,8 @@
 ////////////////////////////
 
 projUProjectSetPathConfig::projUProjectSetPathConfig(
-projProject *project, const char *newValue) :
-pProject(NULL),
+projProject::Ref project, const char *newValue) :
+
 pNewValue(newValue)
 {
 	if(!project){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = project->GetPathConfig();
 	
 	pProject = project;
-	project->AddReference();
 }
 
 projUProjectSetPathConfig::~projUProjectSetPathConfig(){
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 

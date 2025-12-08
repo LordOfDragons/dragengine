@@ -45,7 +45,7 @@ private:
 	float pSpeechLength;
 	float pElapsedTime;
 	ceTextBox *pTextBox;
-	ceTextBoxText *pTextBoxText;
+	ceTextBoxText::Ref pTextBoxText;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -71,7 +71,7 @@ public:
 	/** Text box text or NULL if not owning one. */
 	inline ceTextBoxText *GetTextBoxText() const{ return pTextBoxText; }
 	/** Sets the text box text or NULL if not owning one. */
-	void SetTextBoxText(ceTextBoxText *text);
+	void SetTextBoxText(ceTextBoxText::Ref text);
 	
 	/** Determines if the speech is done. */
 	bool IsSpeechDone() const;

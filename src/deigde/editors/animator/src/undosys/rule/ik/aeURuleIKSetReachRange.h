@@ -36,7 +36,7 @@ class aeRuleInverseKinematic;
  */
 class aeURuleIKSetReachRange : public igdeUndo{
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 	float pOldValue;
 	float pNewValue;

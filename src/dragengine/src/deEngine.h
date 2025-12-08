@@ -133,7 +133,7 @@ private:
 	deErrorTrace *pErrorTrace;
 	bool pScriptFailed;
 	bool pSystemFailed;
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	
 	// systems
 	deModuleSystem *pModSys;
@@ -256,7 +256,7 @@ public:
 	inline deLogger *GetLogger() const{ return pLogger; }
 	
 	/** \brief Set logger. */
-	void SetLogger(deLogger *logger);
+	void SetLogger(deLogger::Ref logger);
 	/*@}*/
 	
 	

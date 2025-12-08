@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUAddParticleEmitter::gdeUAddParticleEmitter(gdeGameDefinition *gameDefinition, gdeParticleEmitter *particleEmitter) :
-pGameDefinition(NULL),
+gdeUAddParticleEmitter::gdeUAddParticleEmitter(gdeGameDefinition::Ref gameDefinition, gdeParticleEmitter::Ref particleEmitter) :
+
 pParticleEmitter(NULL)
 {
 	if(!gameDefinition || !particleEmitter){
@@ -51,19 +51,10 @@ pParticleEmitter(NULL)
 	SetShortInfo("Add particle emitter");
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
-	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUAddParticleEmitter::~gdeUAddParticleEmitter(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

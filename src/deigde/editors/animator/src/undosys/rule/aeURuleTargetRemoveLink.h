@@ -43,10 +43,10 @@ class aeControllerTarget;
  */
 class aeURuleTargetRemoveLink : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	aeControllerTarget *pTarget;
 	
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 public:
 	/** \brief Type holding strong reference. */

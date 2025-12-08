@@ -40,24 +40,15 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUndoCAction::ceUndoCAction(ceConversationAction *action, ceConversationTopic *topic){
+ceUndoCAction::ceUndoCAction(ceConversationAction::Ref action, ceConversationTopic::Ref topic){
 	if(!action || !topic) DETHROW(deeInvalidParam);
 	
 	pAction = NULL;
 	pTopic = NULL;
 	
 	pAction = action;
-	action->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
 }
 
 ceUndoCAction::~ceUndoCAction(){
-	if(pTopic){
-		pTopic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
 }

@@ -47,9 +47,8 @@
 ////////////////////////////
 
 gdeWPSTIMOCNavBlocker::gdeWPSTIMOCNavBlocker(gdeWPSTreeModel &tree,
-	gdeObjectClass *objectClass, gdeOCNavigationBlocker *navBlocker, int index) :
-gdeWPSTIMOCSubObject(tree, etObjectClassNavigationBlocker, objectClass, index),
-pNavBlocker(NULL)
+	gdeObjectClass *objectClass, gdeOCNavigationBlocker::Ref navBlocker, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassNavigationBlocker, objectClass, index)
 {
 	if(!navBlocker){
 		DETHROW(deeInvalidParam);
@@ -62,13 +61,9 @@ pNavBlocker(NULL)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pNavBlocker = navBlocker;
-	navBlocker->AddReference();
 }
 
 gdeWPSTIMOCNavBlocker::~gdeWPSTIMOCNavBlocker(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
 }
 
 

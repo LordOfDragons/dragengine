@@ -38,8 +38,8 @@ class projWindowMain;
  */
 class projPanelUndoHistory : public igdeWPUndoHistory{
 private:
-	projProject *pProject;
-	projPanelUndoHistoryListener *pListener;
+	projProject::Ref pProject;
+	projPanelUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -61,7 +61,7 @@ public:
 	inline projProject *GetProject() const{ return pProject; }
 	
 	/** \brief Set synthesizer. */
-	void SetProject(projProject *project);
+	void SetProject(projProject::Ref project);
 	/*@}*/
 };
 

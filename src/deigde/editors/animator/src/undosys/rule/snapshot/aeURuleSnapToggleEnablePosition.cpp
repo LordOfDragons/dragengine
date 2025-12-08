@@ -48,8 +48,6 @@ aeURuleSnapToggleEnablePosition::aeURuleSnapToggleEnablePosition(aeRuleStateSnap
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule state snapshot toggle enable position");
 		
 	}catch(const deException &){
@@ -81,7 +79,4 @@ void aeURuleSnapToggleEnablePosition::Redo(){
 //////////////////////
 
 void aeURuleSnapToggleEnablePosition::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

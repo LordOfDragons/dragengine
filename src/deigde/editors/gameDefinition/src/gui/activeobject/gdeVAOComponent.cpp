@@ -93,7 +93,7 @@
 ////////////////////////////
 
 gdeVAOComponent::gdeVAOComponent(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-	const decString &propertyPrefix, gdeOCComponent *occomponent) :
+	const decString &propertyPrefix, gdeOCComponent::Ref occomponent) :
 gdeVAOSubObject(view, objectClass, propertyPrefix),
 pOCComponent(occomponent),
 pPlayback(false)
@@ -101,9 +101,6 @@ pPlayback(false)
 	if(!occomponent){
 		DETHROW(deeInvalidParam);
 	}
-	
-	occomponent->AddReference();
-	
 	try{
 		pCreateComponent();
 		pCreateCollider();
@@ -193,10 +190,6 @@ void gdeVAOComponent::GetExtends(decVector &minExtend, decVector &maxExtend) con
 
 void gdeVAOComponent::pCleanUp(){
 	pReleaseResources();
-	
-	if(pOCComponent){
-		pOCComponent->FreeReference();
-	}
 }
 
 

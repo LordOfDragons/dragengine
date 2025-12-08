@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetColor : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	decColor pOldValue;
 	decColor pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetColor(gdeObjectClass *objectClass,
-		gdeOCLight *light, const decColor &newValue);
+	gdeUOCLightSetColor(gdeObjectClass::Ref objectClass,
+		gdeOCLight::Ref light, const decColor &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

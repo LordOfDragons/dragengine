@@ -37,7 +37,7 @@ class reRigBone;
  */
 class reUSetBonePosition : public igdeUndo{
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	decVector pOldPosition;
 	decVector pNewPosition;

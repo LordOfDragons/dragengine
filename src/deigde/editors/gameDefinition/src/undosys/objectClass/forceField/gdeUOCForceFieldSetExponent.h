@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCForceFieldSetExponent : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	float pOldValue;
 	float pNewValue;
@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetExponent(gdeObjectClass *objectClass,
-		gdeOCForceField *forceField, float newValue);
+	gdeUOCForceFieldSetExponent(gdeObjectClass::Ref objectClass,
+		gdeOCForceField::Ref forceField, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

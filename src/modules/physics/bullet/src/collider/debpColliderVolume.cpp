@@ -1388,9 +1388,6 @@ void debpColliderVolume::pCleanUp(){
 	if(pSweepCollisionTest){
 		delete pSweepCollisionTest;
 	}
-	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
-	}
 }
 
 
@@ -1449,7 +1446,6 @@ void debpColliderVolume::pUpdateStaticCollisionTest(){
 	}
 	
 	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
 		pStaticCollisionTestShape = NULL;
 	}
 	
@@ -1467,7 +1463,6 @@ void debpColliderVolume::pUpdateStaticCollisionTest(){
 		
 	}catch(const deException &){
 		if(pStaticCollisionTestShape){
-			pStaticCollisionTestShape->FreeReference();
 			pStaticCollisionTestShape = NULL;
 		}
 		throw;
@@ -1491,7 +1486,7 @@ void debpColliderVolume::pUpdateUseFakeDynamics(){
 		// volume but not using the one in the shape to avoid lots of calculations. for this
 		// though we have to check which shape type we have. hard coded stuff like this is
 		// bad but since it's just a temporary hack it will be tolerated for the time being.
-		debpShape *shape = pShapes.GetShapeAt(0);
+		debpShape::Ref shape = pShapes.GetShapeAt(0);
 		
 		if(shape->GetType() == debpShape::estSphere){
 			const decShapeSphere &sphere = *((debpShapeSphere*)shape)->GetShapeSphere();
@@ -1538,14 +1533,7 @@ void debpColliderVolume::pUpdateBPShape(){
 			shape = pCreateBPShape(); // take over reference
 		}
 		pPhyBody->SetShape(shape);
-		if(shape){
-			shape->FreeReference();
-		}
-		
 	}catch(const deException &){
-		if(shape){
-			shape->FreeReference();
-		}
 		throw;
 	}
 	

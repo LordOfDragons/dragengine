@@ -36,7 +36,7 @@ class sePropertyNodeImage;
  */
 class seUPropertyNodeImageSetPath : public igdeUndo{
 private:
-	sePropertyNodeImage *pNode;
+	sePropertyNodeImage::Ref pNode;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeImageSetPath(sePropertyNodeImage *node, const char *newValue);
+	seUPropertyNodeImageSetPath(sePropertyNodeImage::Ref node, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo. */

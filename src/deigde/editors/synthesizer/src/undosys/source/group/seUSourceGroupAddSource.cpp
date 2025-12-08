@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUSourceGroupAddSource::seUSourceGroupAddSource(seSourceGroup *group, seSource *source, int index) :
-pGroup(NULL),
-pSource(NULL),
+seUSourceGroupAddSource::seUSourceGroupAddSource(seSourceGroup::Ref group, seSource::Ref source, int index) :
+
+
 pIndex(index)
 {
 	if(!group || !source){
@@ -49,19 +49,10 @@ pIndex(index)
 	}
 	
 	pGroup = group;
-	group->AddReference();
-	
 	pSource = source;
-	source->AddReference();
 }
 
 seUSourceGroupAddSource::~seUSourceGroupAddSource(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }
 
 

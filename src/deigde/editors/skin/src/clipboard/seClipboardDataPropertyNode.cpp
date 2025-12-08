@@ -47,21 +47,17 @@ igdeClipboardData(TYPE_NAME)
 		DETHROW(deeInvalidParam);
 	}
 	
-	sePropertyNode *node = NULL;
+	sePropertyNode::Ref node = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
 			node = nodes.GetAt(i)->Copy();
 			pNodes.Add(node);
-			node->FreeReference();
 			node = NULL;
 		}
 		
 	}catch(const deException &){
-		if(node){
-			node->FreeReference();
-		}
 		pNodes.RemoveAll();
 		throw;
 	}

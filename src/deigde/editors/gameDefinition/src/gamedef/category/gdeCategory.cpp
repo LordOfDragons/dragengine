@@ -57,22 +57,18 @@ pAutoCategorizePattern(category.pAutoCategorizePattern),
 pHidden(category.pHidden)
 {
 	const int count = category.pCategories.GetCount();
-	gdeCategory *subCategory = NULL;
+	gdeCategory::Ref subCategory = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			subCategory = new gdeCategory(*category.pCategories.GetAt(i));
+			subCategory.TakeOver(new gdeCategory(*category.pCategories.GetAt(i)));
 			subCategory->pParent = this;
 			pCategories.Add(subCategory);
-			subCategory->FreeReference();
 			subCategory = NULL;
 		}
 		
 	}catch(const deException &){
-		if(subCategory){
-			subCategory->FreeReference();
-		}
 		throw;
 	}
 }
@@ -152,24 +148,20 @@ gdeCategory &gdeCategory::operator=(const gdeCategory &category){
 	pAutoCategorizePattern = category.pAutoCategorizePattern;
 	
 	const int count = category.pCategories.GetCount();
-	gdeCategory *subCategory = NULL;
+	gdeCategory::Ref subCategory = NULL;
 	int i;
 	
 	pCategories.RemoveAll();
 	
 	try{
 		for(i=0; i<count; i++){
-			subCategory = new gdeCategory(*category.pCategories.GetAt(i));
+			subCategory.TakeOver(new gdeCategory(*category.pCategories.GetAt(i)));
 			subCategory->pParent = this;
 			pCategories.Add(subCategory);
-			subCategory->FreeReference();
 			subCategory = NULL;
 		}
 		
 	}catch(const deException &){
-		if(subCategory){
-			subCategory->FreeReference();
-		}
 		throw;
 	}
 	

@@ -54,9 +54,9 @@ class decShapeCapsule;
 class meWPSObjectShape : public igdeContainerScroll{
 private:
 	meWPSelection &pWPSelection;
-	meWPSObjectShapeListener *pListener;
+	meWPSObjectShapeListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	bool pPreventUpdate;
 	
 	igdeTextField::Ref pEditObjectClass;
@@ -113,7 +113,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld(meWorld *world);
+	void SetWorld(meWorld::Ref world);
 	
 	/** \brief Active object. */
 	meObject *GetActiveObject() const;

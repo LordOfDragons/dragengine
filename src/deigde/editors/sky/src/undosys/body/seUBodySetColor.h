@@ -38,7 +38,7 @@ class seBody;
  */
 class seUBodySetColor : public igdeUndo{
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decColor pOldColor;
 	decColor pNewColor;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUBodySetColor(seBody *body, const decColor &newColor);
+	seUBodySetColor(seBody::Ref body, const decColor &newColor);
 	
 protected:
 	/** \brief Clean up undo action. */

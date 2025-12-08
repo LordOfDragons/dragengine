@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleResultSetVar::meUHTVRuleResultSetVar(meHTVegetationLayer *vlayer, meHTVRuleResult *rule, int nvar){
+meUHTVRuleResultSetVar::meUHTVRuleResultSetVar(meHTVegetationLayer::Ref vlayer, meHTVRuleResult::Ref rule, int nvar){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
@@ -53,9 +53,7 @@ meUHTVRuleResultSetVar::meUHTVRuleResultSetVar(meHTVegetationLayer *vlayer, meHT
 	pNewVar = nvar;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleResultSetVar::~meUHTVRuleResultSetVar(){

@@ -38,7 +38,7 @@ class seSource;
  */
 class seUSetSourceMixMode : public igdeUndo{
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	
 	deSynthesizerSource::eMixModes pOldMode;
 	deSynthesizerSource::eMixModes pNewMode;

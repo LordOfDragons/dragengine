@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerSetName::seUControllerSetName(seController *controller, const char *newName) :
-pController(NULL),
+seUControllerSetName::seUControllerSetName(seController::Ref controller, const char *newName) :
+
 pNewName(newName)
 {
 	if(!controller){
@@ -52,13 +52,9 @@ pNewName(newName)
 	pOldName = controller->GetName();
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 seUControllerSetName::~seUControllerSetName(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

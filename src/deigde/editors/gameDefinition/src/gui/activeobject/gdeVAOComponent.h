@@ -48,7 +48,7 @@ public:
 	
 	
 private:
-	gdeOCComponent *pOCComponent;
+	gdeOCComponent::Ref pOCComponent;
 	
 	deCollider::Ref pCollider;
 	deComponent::Ref pComponent;
@@ -62,7 +62,7 @@ public:
 	/*@{*/
 	/** \brief Create active object component. */
 	gdeVAOComponent(gdeViewActiveObject &view, const gdeObjectClass &objectClass,
-		const decString &propertyPrefix, gdeOCComponent *occomponent);
+		const decString &propertyPrefix, gdeOCComponent::Ref occomponent);
 	
 protected:
 	/**

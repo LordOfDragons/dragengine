@@ -42,20 +42,15 @@ const char * const seClipboardDataSource::TYPE_NAME = "source";
 // Constructor, destructor
 ////////////////////////////
 
-seClipboardDataSource::seClipboardDataSource(seSource *source) :
+seClipboardDataSource::seClipboardDataSource(seSource::Ref source) :
 igdeClipboardData(TYPE_NAME)
 {
-	seSource *copySource = NULL;
+	seSource::Ref copySource = NULL;
 	
 	try{
 		copySource = source->CreateCopy();
 		pSources.Add(copySource);
-		copySource->FreeReference();
-		
 	}catch(const deException &){
-		if(copySource){
-			copySource->FreeReference();
-		}
 		throw;
 	}
 }
@@ -64,21 +59,17 @@ seClipboardDataSource::seClipboardDataSource(const seSourceList &sources) :
 igdeClipboardData(TYPE_NAME)
 {
 	const int count = sources.GetCount();
-	seSource *source = NULL;
+	seSource::Ref source = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
 			source = sources.GetAt(i)->CreateCopy();
 			pSources.Add(source);
-			source->FreeReference();
 			source = NULL;
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 }

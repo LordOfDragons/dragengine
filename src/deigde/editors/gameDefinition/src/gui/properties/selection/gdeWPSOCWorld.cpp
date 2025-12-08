@@ -228,15 +228,13 @@ public:
 
 gdeWPSOCWorld::gdeWPSOCWorld(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(nullptr),
-pGameDefinition(nullptr)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCWorldListener(*this);
+	pListener.TakeOver(new gdeWPSOCWorldListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -267,31 +265,25 @@ pGameDefinition(nullptr)
 
 gdeWPSOCWorld::~gdeWPSOCWorld(){
 	SetGameDefinition(nullptr);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
 // Management
 ///////////////
 
-void gdeWPSOCWorld::SetGameDefinition(gdeGameDefinition *gameDefinition){
+void gdeWPSOCWorld::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdatePropertyList();

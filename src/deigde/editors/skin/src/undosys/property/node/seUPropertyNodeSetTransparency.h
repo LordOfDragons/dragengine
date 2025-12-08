@@ -36,7 +36,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeSetTransparency : public igdeUndo{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	float pOldValue;
 	float pNewValue;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetTransparency(sePropertyNode *node, float newValue);
+	seUPropertyNodeSetTransparency(sePropertyNode::Ref node, float newValue);
 	
 protected:
 	/** \brief Clean up undo. */

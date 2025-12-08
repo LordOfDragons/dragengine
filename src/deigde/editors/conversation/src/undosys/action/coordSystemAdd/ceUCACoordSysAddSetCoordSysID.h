@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCACoordSysAddSetCoordSysID : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCACoordSystemAdd *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCACoordSystemAdd::Ref pAction;
 	decString pOldCoordSysID;
 	decString pNewCoordSysID;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCACoordSysAddSetCoordSysID(ceConversationTopic *topic, ceCACoordSystemAdd *action, const char *newCoordSysID);
+	ceUCACoordSysAddSetCoordSysID(ceConversationTopic::Ref topic, ceCACoordSystemAdd::Ref action, const char *newCoordSysID);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCACoordSysAddSetCoordSysID();
 	/*@}*/

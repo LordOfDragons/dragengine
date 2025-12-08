@@ -51,7 +51,7 @@ private:
 	decVector2 pMaxExtend;
 	
 	deEngine *pEngine;
-	dePropField *pEngPF;
+	dePropField::Ref pEngPF;
 	
 	meHTVInstance *pVInstances;
 	int pVInstanceCount;

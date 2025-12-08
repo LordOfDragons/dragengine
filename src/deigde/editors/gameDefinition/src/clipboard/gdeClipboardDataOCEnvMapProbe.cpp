@@ -38,20 +38,15 @@ const char * const gdeClipboardDataOCEnvMapProbe::TYPE_NAME = "OCEnvMapProbe";
 // Constructor, destructor
 ////////////////////////////
 
-gdeClipboardDataOCEnvMapProbe::gdeClipboardDataOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe) :
-igdeClipboardData(TYPE_NAME),
-pEnvMapProbe(NULL)
+gdeClipboardDataOCEnvMapProbe::gdeClipboardDataOCEnvMapProbe(gdeOCEnvMapProbe::Ref envMapProbe) :
+igdeClipboardData(TYPE_NAME)
 {
 	if(!envMapProbe){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
 }
 
 gdeClipboardDataOCEnvMapProbe::~gdeClipboardDataOCEnvMapProbe(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
 }

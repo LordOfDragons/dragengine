@@ -65,23 +65,19 @@ pPlayerChoice(&playerChoice){
 
 void ceWPTMAPChoiceOptionAdd::OnAction(){
 	ceCAPlayerChoiceOption *selectOption = NULL;
-	ceCAPlayerChoiceOption *option = NULL;
+	ceCAPlayerChoiceOption::Ref option = NULL;
 	igdeUndo::Ref undo;
 	
 	try{
-		option = new ceCAPlayerChoiceOption;
+		option.TakeOver(new ceCAPlayerChoiceOption);
 		undo.TakeOver(new ceUCAPChoiceOptionAdd(pTopic, pPlayerChoice,
 			option, pPlayerChoice->GetOptions().GetCount()));
 		selectOption = option;
-		option->FreeReference();
 		option = NULL;
 		
 		pConversation->GetUndoSystem()->Add(undo);
 		
 	}catch(const deException &){
-		if(option){
-			option->FreeReference();
-		}
 		throw;
 	}
 	

@@ -44,7 +44,7 @@ class meHeightTerrain;
  */
 class meUHTSetPathHT : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
 	
 	decString pOldPath;
@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetPathHT(meWorld *world, meHeightTerrain *heightTerrain, const char *newPath);
+	meUHTSetPathHT(meWorld::Ref world, meHeightTerrain *heightTerrain, const char *newPath);
 	
 protected:
 	/** \brief Clean up object. */

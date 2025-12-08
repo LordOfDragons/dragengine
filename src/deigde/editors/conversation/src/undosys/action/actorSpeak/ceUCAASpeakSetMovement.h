@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakSetMovement : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	decString pOldMovement;
 	decString pNewMovement;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakSetMovement(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newMovement);
+	ceUCAASpeakSetMovement(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, const char *newMovement);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakSetMovement();

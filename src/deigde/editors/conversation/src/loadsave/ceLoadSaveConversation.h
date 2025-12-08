@@ -147,7 +147,7 @@ private:
 	void pWriteStripList(decXmlWriter &writer, const ceStripList &list);
 	void pWriteCurveBezier(decXmlWriter &writer, const decCurveBezier &curve);
 	void pWriteCurveBezierPoint(decXmlWriter &writer, const decCurveBezierPoint &point);
-	void pWriteCondition(decXmlWriter &writer, ceConversationCondition *condition);
+	void pWriteCondition(decXmlWriter &writer, ceConversationCondition::Ref condition);
 	void pWriteConditionList(decXmlWriter &writer, const ceConversationConditionList &list);
 	void pWriteConditionLogic(decXmlWriter &writer, const ceCConditionLogic &condition);
 	void pWriteConditionHasActor(decXmlWriter &writer, const ceCConditionHasActor &condition);

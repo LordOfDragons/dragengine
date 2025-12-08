@@ -53,7 +53,7 @@
 /////////////////////
 
 struct sIDAxisNatDat{
-	dedsInputDevice *device;
+	dedsInputDevice::Ref device;
 	int axisIndex;
 };
 
@@ -387,7 +387,7 @@ void deClassInputDeviceAxis::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassInputDeviceAxis::PushAxis(dsRunTime *rt, dedsInputDevice *device, int index){
+void deClassInputDeviceAxis::PushAxis(dsRunTime *rt, dedsInputDevice::Ref device, int index){
 	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetAxisCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -396,6 +396,5 @@ void deClassInputDeviceAxis::PushAxis(dsRunTime *rt, dedsInputDevice *device, in
 	sIDAxisNatDat &nd = *((sIDAxisNatDat*)p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.device = device;
-	device->AddReference();
 	nd.axisIndex = index;
 }

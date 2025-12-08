@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetLightColor::seULayerSetLightColor(seLayer *layer, const decColor &newColor) :
-pLayer(NULL),
+seULayerSetLightColor::seULayerSetLightColor(seLayer::Ref layer, const decColor &newColor) :
+
 pNewColor(newColor)
 {
 	if(!layer){
@@ -52,13 +52,9 @@ pNewColor(newColor)
 	pOldColor = layer->GetLightColor();
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerSetLightColor::~seULayerSetLightColor(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

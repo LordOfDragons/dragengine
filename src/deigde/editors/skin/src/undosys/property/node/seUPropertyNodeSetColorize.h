@@ -38,7 +38,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeSetColorize : public igdeUndo{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	decColor pOldValue;
 	decColor pNewValue;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetColorize(sePropertyNode *node, const decColor &newValue);
+	seUPropertyNodeSetColorize(sePropertyNode::Ref node, const decColor &newValue);
 	
 protected:
 	/** \brief Clean up undo. */

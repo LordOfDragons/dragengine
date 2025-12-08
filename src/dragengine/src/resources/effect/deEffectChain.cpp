@@ -60,11 +60,11 @@ deEffect *deEffectChain::GetEffectAt(int index) const{
 	return pEffects[index];
 }
 
-bool deEffectChain::HasEffect(deEffect *effect) const{
+bool deEffectChain::HasEffect(deEffect::Ref effect) const{
 	return IndexOfEffect(effect) != -1;
 }
 
-int deEffectChain::IndexOfEffect(deEffect *effect) const{
+int deEffectChain::IndexOfEffect(deEffect::Ref effect) const{
 	if(!effect) DETHROW(deeInvalidParam);
 	int i;
 	for(i=0; i<pEffectCount; i++){
@@ -73,11 +73,11 @@ int deEffectChain::IndexOfEffect(deEffect *effect) const{
 	return -1;
 }
 
-void deEffectChain::AddEffect(deEffect *effect){
+void deEffectChain::AddEffect(deEffect::Ref effect){
 	InsertEffect(effect, pEffectCount);
 }
 
-void deEffectChain::InsertEffect(deEffect *effect, int position){
+void deEffectChain::InsertEffect(deEffect::Ref effect, int position){
 	if(HasEffect(effect) || position < 0 || position > pEffectCount) DETHROW(deeInvalidParam);
 	int i;
 	if(pEffectCount == pEffectSize){
@@ -98,10 +98,9 @@ void deEffectChain::InsertEffect(deEffect *effect, int position){
 	}
 	pEffects[position] = effect;
 	pEffectCount++;
-	effect->AddReference();
 }
 
-void deEffectChain::RemoveEffect(deEffect *effect){
+void deEffectChain::RemoveEffect(deEffect::Ref effect){
 	int i, index = IndexOfEffect(effect);
 	if(index == -1) DETHROW(deeInvalidParam);
 	for(i=index; i<pEffectCount-1; i++){
@@ -109,7 +108,6 @@ void deEffectChain::RemoveEffect(deEffect *effect){
 	}
 	pEffects[pEffectCount - 1] = NULL;
 	pEffectCount--;
-	effect->FreeReference();
 }
 
 void deEffectChain::RemoveAllEffects(){
@@ -120,7 +118,7 @@ void deEffectChain::RemoveAllEffects(){
 	}
 }
 
-void deEffectChain::MoveEffect(deEffect *effect, int newPosition){
+void deEffectChain::MoveEffect(deEffect::Ref effect, int newPosition){
 	DETHROW(deeInvalidParam);
 }
 

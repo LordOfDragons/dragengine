@@ -41,7 +41,7 @@ class ceConversationTopic;
  */
 class ceUCTargetSetName : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decString pOldName;
 	decString pNewName;
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCTargetSetName(ceTarget *target, const char *newName);
+	ceUCTargetSetName(ceTarget::Ref target, const char *newName);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCTargetSetName();

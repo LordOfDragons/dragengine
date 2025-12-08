@@ -36,7 +36,7 @@ class aeLink;
  */
 class aeULinkSetBone : public igdeUndo{
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	decString pOldValue;
 	decString pNewValue;

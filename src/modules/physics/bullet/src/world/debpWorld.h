@@ -58,7 +58,7 @@ class debpWorld : public deBasePhysicsWorld{
 private:
 	dePhysicsBullet &pBullet;
 	deWorld &pWorld;
-	deCollisionInfo *pColInfo;
+	deCollisionInfo::Ref pColInfo;
 	debpUnstuckCollider *pUnstuckCollider;
 	
 	debpHeightTerrain *pHeightTerrain;

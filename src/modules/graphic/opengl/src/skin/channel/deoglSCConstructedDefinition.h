@@ -40,8 +40,8 @@ class deEngine;
 class deoglSCConstructedDefinition : public deSkinPropertyNodeVisitor{
 private:
 	const deEngine &pEngine;
-	decMemoryFileWriter *pDefinition;
-	decMemoryFileWriter *pVerify;
+	decMemoryFileWriter::Ref pDefinition;
+	decMemoryFileWriter::Ref pVerify;
 	bool pCacheValid;
 	
 	

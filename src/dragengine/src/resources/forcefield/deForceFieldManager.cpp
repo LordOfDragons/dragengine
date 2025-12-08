@@ -65,10 +65,10 @@ deForceField *deForceFieldManager::GetRootForceField() const{
 }
 
 deForceField *deForceFieldManager::CreateForceField(){
-	deForceField *field = NULL;
+	deForceField::Ref field = NULL;
 	
 	try{
-		field = new deForceField(this);
+		field.TakeOver(new deForceField(this));
 		if(!field) DETHROW(deeOutOfMemory);
 		
 		GetPhysicsSystem()->LoadForceField(field);
@@ -76,9 +76,6 @@ deForceField *deForceFieldManager::CreateForceField(){
 		pFields.Add(field);
 		
 	}catch(const deException &){
-		if(field){
-			field->FreeReference();
-		}
 		throw;
 	}
 	
@@ -100,7 +97,7 @@ void deForceFieldManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deForceFieldManager::SystemPhysicsLoad(){
-	deForceField *field = (deForceField*)pFields.GetRoot();
+	deForceField::Ref field = (deForceField*)pFields.GetRoot();
 	
 	while(field){
 		if(!field->GetPeerPhysics()){
@@ -112,7 +109,7 @@ void deForceFieldManager::SystemPhysicsLoad(){
 }
 
 void deForceFieldManager::SystemPhysicsUnload(){
-	deForceField *field = (deForceField*)pFields.GetRoot();
+	deForceField::Ref field = (deForceField*)pFields.GetRoot();
 	
 	while(field){
 		field->SetPeerPhysics(NULL);

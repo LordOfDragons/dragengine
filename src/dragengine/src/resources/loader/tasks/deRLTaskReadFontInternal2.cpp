@@ -58,8 +58,7 @@ deRLTaskReadFontInternal2::deRLTaskReadFontInternal2(deEngine &engine,
 deResourceLoader &resourceLoader, deVirtualFileSystem *vfs, const char *path, deFont *font) :
 deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertFont),
 pFont(font),
-pAlreadyLoaded(false),
-pTaskImage(NULL)
+pAlreadyLoaded(false)
 {
 	if(!font){
 		DETHROW(deeInvalidParam);
@@ -81,9 +80,6 @@ pTaskImage(NULL)
 }
 
 deRLTaskReadFontInternal2::~deRLTaskReadFontInternal2(){
-	if(pTaskImage){
-		pTaskImage->FreeReference();
-	}
 }
 
 

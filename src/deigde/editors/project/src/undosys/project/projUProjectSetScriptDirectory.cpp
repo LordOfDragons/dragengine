@@ -40,8 +40,8 @@
 ////////////////////////////
 
 projUProjectSetScriptDirectory::projUProjectSetScriptDirectory(
-projProject *project, const char *newValue) :
-pProject(NULL),
+projProject::Ref project, const char *newValue) :
+
 pNewValue(newValue)
 {
 	if(!project){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = project->GetScriptDirectory();
 	
 	pProject = project;
-	project->AddReference();
 }
 
 projUProjectSetScriptDirectory::~projUProjectSetScriptDirectory(){
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 

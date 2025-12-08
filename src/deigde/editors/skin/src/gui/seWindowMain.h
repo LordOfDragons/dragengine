@@ -56,7 +56,7 @@ class decStringList;
  */
 class seWindowMain : public igdeEditorWindow{
 private:
-	seWindowMainListener *pListener;
+	seWindowMainListener::Ref pListener;
 	
 	igdeAction::Ref pActionFileNew;
 	igdeAction::Ref pActionFileNewModel;
@@ -89,13 +89,13 @@ private:
 	igdeClipboard pClipboard;
 	seLoadSaveSystem *pLoadSaveSystem;
 	
-	seWindowProperties *pWindowProperties;
+	seWindowProperties::Ref pWindowProperties;
 	
 	igdeTabBook::Ref pSwitcherViews;
-	seViewSkin *pViewSkin;
-	seViewConstructed *pViewConstructed;
+	seViewSkin::Ref pViewSkin;
+	seViewConstructed::Ref pViewConstructed;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	
 	
 	

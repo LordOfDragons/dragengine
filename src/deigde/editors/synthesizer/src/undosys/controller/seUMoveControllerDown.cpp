@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUMoveControllerDown::seUMoveControllerDown(seSynthesizer *synthesizer, seController *controller) :
-pSynthesizer(NULL),
+seUMoveControllerDown::seUMoveControllerDown(seSynthesizer::Ref synthesizer, seController::Ref controller) :
+
 pController(NULL)
 {
 	if(!synthesizer || !controller){
@@ -54,10 +54,7 @@ pController(NULL)
 	}
 	
 	pSynthesizer = synthesizer;
-	synthesizer->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 seUMoveControllerDown::~seUMoveControllerDown(){
@@ -83,10 +80,4 @@ void seUMoveControllerDown::Redo(){
 //////////////////////
 
 void seUMoveControllerDown::pCleanUp(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

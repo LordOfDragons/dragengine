@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCCameraSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCCamera *pCamera;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCCamera::Ref pCamera;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCameraSetPropertyName(gdeObjectClass *objectClass, gdeOCCamera *camera, const char *newValue);
+	gdeUOCCameraSetPropertyName(gdeObjectClass::Ref objectClass, gdeOCCamera::Ref camera, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

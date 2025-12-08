@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAACmdSetActor : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorCommand *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorCommand::Ref pAction;
 	decString pOldActorID;
 	decString pNewActorID;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAACmdSetActor(ceConversationTopic *topic, ceCAActorCommand *action, const char *newActorID);
+	ceUCAACmdSetActor(ceConversationTopic::Ref topic, ceCAActorCommand::Ref action, const char *newActorID);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAACmdSetActor();

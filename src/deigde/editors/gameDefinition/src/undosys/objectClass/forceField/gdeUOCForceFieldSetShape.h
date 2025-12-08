@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCForceFieldSetShape : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	decShapeList pOldValue;
 	decShapeList pNewValue;
@@ -54,8 +54,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetShape(gdeObjectClass *objectClass,
-		gdeOCForceField *forceField, const decShapeList &newValue);
+	gdeUOCForceFieldSetShape(gdeObjectClass::Ref objectClass,
+		gdeOCForceField::Ref forceField, const decShapeList &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

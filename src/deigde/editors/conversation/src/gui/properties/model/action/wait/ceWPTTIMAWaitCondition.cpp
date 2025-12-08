@@ -52,9 +52,8 @@
 ////////////////////////////
 
 ceWPTTIMAWaitCondition::ceWPTTIMAWaitCondition(
-ceWindowMain &windowMain, ceConversation &conversation, ceCAWait *action) :
-ceWPTTIMConditionContainer(windowMain, conversation, *action, etActionWaitCondition),
-pAction(NULL)
+ceWindowMain &windowMain, ceConversation &conversation, ceCAWait::Ref action) :
+ceWPTTIMConditionContainer(windowMain, conversation, *action, etActionWaitCondition)
 {
 	if(!action){
 		DETHROW(deeInvalidParam);
@@ -63,13 +62,9 @@ pAction(NULL)
 	SetText("Condition");
 	
 	pAction = action;
-	action->AddReference();
 }
 
 ceWPTTIMAWaitCondition::~ceWPTTIMAWaitCondition(){
-	if(pAction){
-		pAction->FreeReference();
-	}
 }
 
 

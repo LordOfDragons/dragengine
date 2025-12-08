@@ -38,7 +38,7 @@ class seProperty;
  */
 class seUPropertySetConstructedSize : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	decPoint3 pOldValue;
 	decPoint3 pNewValue;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUPropertySetConstructedSize(seProperty *property, const decPoint3 &newValue);
+	seUPropertySetConstructedSize(seProperty::Ref property, const decPoint3 &newValue);
 	
 protected:
 	/** \brief Clean up undo. */

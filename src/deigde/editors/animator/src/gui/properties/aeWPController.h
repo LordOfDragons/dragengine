@@ -46,8 +46,8 @@ class aeWPControllerListener;
 class aeWPController : public igdeContainerScroll{
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPControllerListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPControllerListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
 	igdeListBox::Ref pListController;
 	
@@ -91,7 +91,7 @@ public:
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
-	void SetAnimator(aeAnimator *animator);
+	void SetAnimator(aeAnimator::Ref animator);
 	
 	/** Active controller. */
 	aeController *GetController() const;

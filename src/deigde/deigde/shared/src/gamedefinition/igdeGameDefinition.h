@@ -74,8 +74,8 @@ private:
 	igdeGDPropertyList pListWorldProperties;
 	igdeGDPropertyList pListDecalProperties;
 	
-	deModel *pDefaultModel;
-	deSkin *pDefaultSkin;
+	deModel::Ref pDefaultModel;
+	deSkin::Ref pDefaultSkin;
 	
 	
 	
@@ -232,13 +232,13 @@ public:
 	inline deModel *GetDefaultModel() const{ return pDefaultModel; }
 	
 	/** \brief Set default model. */
-	void SetDefaultModel(deModel *model);
+	void SetDefaultModel(deModel::Ref model);
 	
 	/** \brief Default skin. */
 	inline deSkin *GetDefaultSkin() const{ return pDefaultSkin; }
 	
 	/** \brief Set default skin. */
-	void SetDefaultSkin(deSkin *skin);
+	void SetDefaultSkin(deSkin::Ref skin);
 	
 	/** \brief Update engine objects. */
 	virtual void UpdateEngineObjects();

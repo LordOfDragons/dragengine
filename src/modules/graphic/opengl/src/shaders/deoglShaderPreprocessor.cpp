@@ -190,17 +190,12 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 		pLastMappedOutputLine = pOutputLine;
 		
 		if(mapLines && pInputFile){
-			deoglShaderSourceLocation *location = NULL;
+			deoglShaderSourceLocation::Ref location = NULL;
 			
 			try{
-				location = new deoglShaderSourceLocation(pInputFile, pInputLine, pOutputLine);
+				location.TakeOver(new deoglShaderSourceLocation(pInputFile, pInputLine, pOutputLine));
 				pSourceLocations.Add(location);
-				location->FreeReference();
-				
 			}catch(const deException &){
-				if(location){
-					location->FreeReference();
-				}
 				throw;
 			}
 		}
@@ -213,17 +208,12 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 				pLastMappedOutputLine = pOutputLine;
 				
 				if(mapLines && pInputFile){
-					deoglShaderSourceLocation *location = NULL;
+					deoglShaderSourceLocation::Ref location = NULL;
 					
 					try{
-						location = new deoglShaderSourceLocation(pInputFile, pInputLine, pOutputLine);
+						location.TakeOver(new deoglShaderSourceLocation(pInputFile, pInputLine, pOutputLine));
 						pSourceLocations.Add(location);
-						location->FreeReference();
-						
 					}catch(const deException &){
-						if(location){
-							location->FreeReference();
-						}
 						throw;
 					}
 				}
@@ -300,7 +290,7 @@ deoglShaderPreprocessorSymbol *deoglShaderPreprocessor::GetSymbolNamed(const cha
 	return (deoglShaderPreprocessorSymbol*)object;
 }
 
-void deoglShaderPreprocessor::SetSymbol(deoglShaderPreprocessorSymbol *symbol){
+void deoglShaderPreprocessor::SetSymbol(deoglShaderPreprocessorSymbol::Ref symbol){
 	if(!symbol){
 		DETHROW(deeInvalidParam);
 	}
@@ -308,19 +298,14 @@ void deoglShaderPreprocessor::SetSymbol(deoglShaderPreprocessorSymbol *symbol){
 }
 
 void deoglShaderPreprocessor::SetSymbol(const char *name, const char *value){
-	deoglShaderPreprocessorSymbol *symbol = NULL;
+	deoglShaderPreprocessorSymbol::Ref symbol = NULL;
 	
 	pResolveString(value, (int)strlen(value));
 	
 	try{
-		symbol = new deoglShaderPreprocessorSymbol(name, pResolveBuffer);
+		symbol.TakeOver(new deoglShaderPreprocessorSymbol(name, pResolveBuffer));
 		pSymbolTable.SetAt(name, symbol);
-		symbol->FreeReference();
-		
 	}catch(const deException &){
-		if(symbol){
-			symbol->FreeReference();
-		}
 		throw;
 	}
 	

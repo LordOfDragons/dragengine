@@ -43,10 +43,10 @@ class ceCAPlayerChoiceOption;
 class cePCBOption : public deObject{
 private:
 	decUnicodeString pText;
-	ceCAPlayerChoice *pAction;
-	ceCAPlayerChoiceOption *pActionOption;
+	ceCAPlayerChoice::Ref pAction;
+	ceCAPlayerChoiceOption::Ref pActionOption;
 	
-	deCanvasView *pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -79,7 +79,7 @@ public:
 	inline ceCAPlayerChoiceOption *GetActionOption() const{ return pActionOption; }
 	
 	/** \brief Set action option. */
-	void SetActionOption(ceCAPlayerChoice *action, ceCAPlayerChoiceOption *actionOption);
+	void SetActionOption(ceCAPlayerChoice::Ref action, ceCAPlayerChoiceOption *actionOption);
 	
 	/** \brief Canvas view. */
 	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }

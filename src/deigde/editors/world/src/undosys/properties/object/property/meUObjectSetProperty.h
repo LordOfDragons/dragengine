@@ -36,7 +36,7 @@ class meObject;
  */
 class meUObjectSetProperty : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decString pKey;
 	decString pOldValue;
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectSetProperty(meObject *object, const char *key, const char *oldValue, const char *newValue);
+	meUObjectSetProperty(meObject::Ref object, const char *key, const char *oldValue, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo object. */

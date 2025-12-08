@@ -37,7 +37,7 @@ class ceWPTTIMAIfElseElse;
  */
 class ceWPTTIMAIfElse : public ceWPTTIMAction{
 private:
-	ceWPTTIMAIfElseElse *pElse;
+	ceWPTTIMAIfElseElse::Ref pElse;
 	
 	
 	

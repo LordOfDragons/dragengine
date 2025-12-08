@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUWorldAddProperty::meUWorldAddProperty(meWorld *world, const char *key, const char *value) :
-pWorld(NULL),
+meUWorldAddProperty::meUWorldAddProperty(meWorld::Ref world, const char *key, const char *value) :
+
 pKey(key),
 pValue(value)
 {
@@ -51,13 +51,9 @@ pValue(value)
 	SetShortInfo("Add world property");
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUWorldAddProperty::~meUWorldAddProperty(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }
 
 

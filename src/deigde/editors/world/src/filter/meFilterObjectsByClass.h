@@ -56,7 +56,7 @@ private:
 	decStringSet pClassNames;
 	bool pMatchInclusive;
 	
-	meObject *pRejectObject;
+	meObject::Ref pRejectObject;
 	bool pRejectGhosts;
 	
 public:
@@ -81,7 +81,7 @@ public:
 	/** Retrieves the object to reject or NULL. */
 	inline meObject *GetRejectObject() const{ return pRejectObject; }
 	/** Sets the object to reject or NULL. */
-	void SetRejectObject(meObject *object);
+	void SetRejectObject(meObject::Ref object);
 	
 	/** Adds a class name. */
 	void AddClassName(const char *className);
@@ -93,7 +93,7 @@ public:
 	/**
 	 * Determines if the given object is accepted by the filter.
 	 */
-	bool AcceptObject(meObject *object) const override;
+	bool AcceptObject(meObject::Ref object) const override;
 	/*@}*/
 };
 

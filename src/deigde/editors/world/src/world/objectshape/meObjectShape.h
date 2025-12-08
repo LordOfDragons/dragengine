@@ -65,9 +65,9 @@ private:
 	meWorld *pWorld;
 	meObject *pParentObject;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSShape;
-	deColliderVolume *pEngCollider;
+	deColliderVolume::Ref pEngCollider;
 	
 	decShape *pShape;
 	

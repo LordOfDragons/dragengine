@@ -52,9 +52,9 @@ public:
 private:
 	peeEmitter *pEmitter;
 	deEngine *pEngine;
-	deSkin *pEngSkin;
-	deModel *pEngCastModel;
-	deSkin *pEngCastSkin;
+	deSkin::Ref pEngSkin;
+	deModel::Ref pEngCastModel;
+	deSkin::Ref pEngCastSkin;
 	
 	int pIndex;
 	decString pName;
@@ -70,14 +70,14 @@ private:
 	bool pIntervalAsDistance;
 	
 	decString pPathTrailEmitter;
-	deParticleEmitter *pEngTrailEmitter;
+	deParticleEmitter::Ref pEngTrailEmitter;
 	decString pTrailControllers[4];
 	deParticleEmitterType::eEmitControllers pActiveTrailController;
 	
 	float pPhysicsSize;
 	deParticleEmitterType::eCollisionResponses pCollisionResponse;
 	decString pPathCollisionEmitter;
-	deParticleEmitter *pEngCollisionEmitter;
+	deParticleEmitter::Ref pEngCollisionEmitter;
 	float pEmitMinImpulse;
 	decString pEmitControllers[4];
 	deParticleEmitterType::eEmitControllers pActiveEmitController;

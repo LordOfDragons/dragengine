@@ -62,9 +62,8 @@ static void deapngWarning(png_structp errorStruct, png_const_charp message){
 // Constructor, destructor
 ////////////////////////////
 
-deapngReader::deapngReader(deVideoApng &module, decBaseFileReader *reader) :
+deapngReader::deapngReader(deVideoApng &module, decBaseFileReader::Ref reader) :
 pModule(module),
-pReader(nullptr),
 pReadStruct(nullptr),
 pInfoStruct(nullptr),
 pWidth(0),
@@ -95,8 +94,6 @@ pErrorState(false)
 	
 	try{
 		pReader = reader;
-		reader->AddReference();
-		
 		// create structs
 		pReadStruct = png_create_read_struct_2(PNG_LIBPNG_VER_STRING, (png_voidp)this,
 			(png_error_ptr)deapngError, (png_error_ptr)deapngWarning, NULL, NULL, NULL);
@@ -265,9 +262,6 @@ void deapngReader::pCleanUp(){
 	}
 	if(pReadStruct){
 		png_destroy_read_struct(&pReadStruct, &pInfoStruct, NULL);
-	}
-	if(pReader){
-		pReader->FreeReference();
 	}
 }
 

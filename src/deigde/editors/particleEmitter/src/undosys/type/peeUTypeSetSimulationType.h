@@ -37,7 +37,7 @@ class peeType;
  */
 class peeUTypeSetSimulationType : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	deParticleEmitterType::eSimulationTypes pOldSimType;
 	deParticleEmitterType::eSimulationTypes pNewSimType;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	peeUTypeSetSimulationType(peeType *type, deParticleEmitterType::eSimulationTypes newSimType);
+	peeUTypeSetSimulationType(peeType::Ref type, deParticleEmitterType::eSimulationTypes newSimType);
 	
 protected:
 	/** \brief Clean up undo action. */

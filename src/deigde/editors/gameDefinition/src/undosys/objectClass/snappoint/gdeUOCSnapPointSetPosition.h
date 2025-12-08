@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCSnapPointSetPosition : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSnapPoint *pSnapPoint;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSnapPoint::Ref pSnapPoint;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSnapPointSetPosition(gdeObjectClass *objectClass,
-		gdeOCSnapPoint *snapPoint, const decVector &newValue);
+	gdeUOCSnapPointSetPosition(gdeObjectClass::Ref objectClass,
+		gdeOCSnapPoint::Ref snapPoint, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

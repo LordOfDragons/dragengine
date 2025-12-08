@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetPropertyValues::gdeUOCSetPropertyValues(gdeObjectClass *objectClass,
+gdeUOCSetPropertyValues::gdeUOCSetPropertyValues(gdeObjectClass::Ref objectClass,
 const decStringDictionary &newValues) :
 pObjectClass(NULL)
 {
@@ -53,13 +53,9 @@ pObjectClass(NULL)
 	pNewValues = newValues;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetPropertyValues::~gdeUOCSetPropertyValues(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

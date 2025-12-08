@@ -213,7 +213,7 @@ reRig *reLoadSaveSystem::LoadRig(const char *filename){
 	return rig;
 }
 
-void reLoadSaveSystem::SaveRig(reRig *rig, const char *filename){
+void reLoadSaveSystem::SaveRig(reRig::Ref rig, const char *filename){
 	const int lsIndex = IndexOfLSRigMatching(filename);
 	if(lsIndex == -1){
 		DETHROW(deeInvalidParam);

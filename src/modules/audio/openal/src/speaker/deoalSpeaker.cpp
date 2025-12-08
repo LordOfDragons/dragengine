@@ -65,7 +65,6 @@
 deoalSpeaker::deoalSpeaker(deAudioOpenAL &oal, deSpeaker &speaker) :
 pOal(oal),
 pSpeaker(speaker),
-pASpeaker(NULL),
 pParentWorld(NULL),
 pParentMicrophone(NULL),
 pSound(NULL),
@@ -91,7 +90,7 @@ pLLSyncWorld(this),
 pLLSyncMic(this)
 {
 	try{
-		pASpeaker = new deoalASpeaker(oal.GetAudioThread());
+		pASpeaker.TakeOver(new deoalASpeaker(oal.GetAudioThread()));
 		pASpeaker->SetBackLink(this);
 		
 		SourceChanged();
@@ -404,7 +403,6 @@ void deoalSpeaker::pCleanUp(){
 	
 	if(pASpeaker){
 		pASpeaker->SetBackLink(NULL);
-		pASpeaker->FreeReference();
 		pASpeaker = NULL;
 	}
 }

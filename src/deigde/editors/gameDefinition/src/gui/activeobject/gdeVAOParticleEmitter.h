@@ -47,7 +47,7 @@ public:
 	
 	
 private:
-	gdeOCParticleEmitter *pOCParticleEmitter;
+	gdeOCParticleEmitter::Ref pOCParticleEmitter;
 	
 	deParticleEmitter::Ref pEmitter;
 	deParticleEmitterInstance::Ref pInstance;

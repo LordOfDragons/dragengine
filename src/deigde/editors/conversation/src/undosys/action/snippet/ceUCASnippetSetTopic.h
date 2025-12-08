@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCASnippetSetTopic : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASnippet *pSnippet;
+	ceConversationTopic::Ref pTopic;
+	ceCASnippet::Ref pSnippet;
 	decString pOldTopic;
 	decString pNewTopic;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASnippetSetTopic(ceConversationTopic *topic, ceCASnippet *snippet, const char *newTopic);
+	ceUCASnippetSetTopic(ceConversationTopic::Ref topic, ceCASnippet::Ref snippet, const char *newTopic);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCASnippetSetTopic();

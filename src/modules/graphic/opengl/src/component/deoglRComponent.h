@@ -103,16 +103,16 @@ private:
 	decIntList pModelSkinMappings;
 	decIntList pModelRigMappings;
 	deoglRModel::Ref pModel;
-	deoglRSkin *pSkin;
-	deoglRDynamicSkin *pDynamicSkin;
+	deoglRSkin::Ref pSkin;
+	deoglRDynamicSkin::Ref pDynamicSkin;
 	bool pStaticTextures;
 	bool pDirtyModelVBOs;
 	
-	deoglROcclusionMesh *pOcclusionMesh;
+	deoglROcclusionMesh::Ref pOcclusionMesh;
 	bool pDirtyOccMeshVBO;
 	deoglDynamicOcclusionMesh *pDynamicOcclusionMesh;
 	bool pDynOccMeshRequiresPrepareForRender;
-	deoglSharedSPBElement *pOccMeshSharedSPBElement;
+	deoglSharedSPBElement::Ref pOccMeshSharedSPBElement;
 	bool pValidOccMeshSharedSPBElement;
 	bool pDirtyOccMeshSharedSPBElement;
 	deoglSharedSPBRTIGroup::Ref pOccMeshSharedSPBDoubleSided;
@@ -182,13 +182,13 @@ private:
 	decObjectOrderedSet pListeners;
 	int pListenerIndex;
 	
-	deoglEnvironmentMap *pRenderEnvMap;
-	deoglEnvironmentMap *pRenderEnvMapFade;
+	deoglEnvironmentMap::Ref pRenderEnvMap;
+	deoglEnvironmentMap::Ref pRenderEnvMapFade;
 	float pRenderEnvMapFadePerTime;
 	float pRenderEnvMapFadeFactor;
 	bool pDirtyRenderEnvMap;
 	
-	deoglEnvironmentMap *pEnvMap;
+	deoglEnvironmentMap::Ref pEnvMap;
 	
 	uint32_t pCSOctreeIndex;
 	
@@ -328,7 +328,7 @@ public:
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL if not set. */
-	void SetSkin(deoglRSkin *skin);
+	void SetSkin(deoglRSkin::Ref skin);
 	
 	/** Rig changed. */
 	void RigChanged();
@@ -340,13 +340,13 @@ public:
 	 * Set dynamic skin or NULL if not set.
 	 * \note Called from main thread during synchronization.
 	 */
-	void SetDynamicSkin(deoglComponent &component, deoglRDynamicSkin *dynamicSkin);
+	void SetDynamicSkin(deoglComponent &component, deoglRDynamicSkin::Ref dynamicSkin);
 	
 	/** Occlusion mesh or NULL if not set. */
 	inline deoglROcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	/** Set occlusion mesh or NULL if not set. */
-	void SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh);
+	void SetOcclusionMesh(deoglROcclusionMesh::Ref occlusionMesh);
 	
 	/** Dynamic occlusion mesh or NULL if not set. */
 	inline deoglDynamicOcclusionMesh *GetDynamicOcclusionMesh() const{ return pDynamicOcclusionMesh; }
@@ -499,13 +499,13 @@ public:
 	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
 	/** Set render environment map or NULL if not assigned yet. */
-	void SetRenderEnvMap(deoglEnvironmentMap *envmap);
+	void SetRenderEnvMap(deoglEnvironmentMap::Ref envmap);
 	
 	/** Fading render environment map or NULL if not used. */
 	inline deoglEnvironmentMap *GetRenderEnvMapFade() const{ return pRenderEnvMapFade; }
 	
 	/** Set fading render environment map or NULL if not used. */
-	void SetRenderEnvMapFade(deoglEnvironmentMap *envmap);
+	void SetRenderEnvMapFade(deoglEnvironmentMap::Ref envmap);
 	
 	/** Render environment map fade per time. */
 	inline float GetRenderEnvMapFadePerTime() const{ return pRenderEnvMapFadePerTime; }
@@ -526,7 +526,7 @@ public:
 	void InvalidateRenderEnvMap();
 	
 	/** Invalidate render environment map. */
-	void InvalidateRenderEnvMapIf(deoglEnvironmentMap *envmap);
+	void InvalidateRenderEnvMapIf(deoglEnvironmentMap::Ref envmap);
 	
 	/** The world reference point changed. */
 	void WorldReferencePointChanged();

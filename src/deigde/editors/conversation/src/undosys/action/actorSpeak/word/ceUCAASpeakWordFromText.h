@@ -43,8 +43,8 @@ class decUnicodeString;
  */
 class ceUCAASpeakWordFromText : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	ceStripList pOldWords;
 	ceStripList pNewWords;
 	
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAASpeakWordFromText(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
+	ceUCAASpeakWordFromText(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAASpeakWordFromText();

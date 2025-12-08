@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectShapesDelete::meUObjectShapesDelete(meObject *object, const char *property, const meObjectShapeList &list){
+meUObjectShapesDelete::meUObjectShapesDelete(meObject::Ref object, const char *property, const meObjectShapeList &list){
 	if(list.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
@@ -77,13 +77,9 @@ meUObjectShapesDelete::meUObjectShapesDelete(meObject *object, const char *prope
 	
 	pProperty = property;
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectShapesDelete::~meUObjectShapesDelete(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

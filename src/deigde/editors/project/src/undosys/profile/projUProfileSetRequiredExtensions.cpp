@@ -40,8 +40,8 @@
 ////////////////////////////
 
 projUProfileSetRequiredExtensions::projUProfileSetRequiredExtensions(
-projProfile *profile, const decStringSet &newValue) :
-pProfile(NULL),
+projProfile::Ref profile, const decStringSet &newValue) :
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetRequiredExtensions();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetRequiredExtensions::~projUProfileSetRequiredExtensions(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

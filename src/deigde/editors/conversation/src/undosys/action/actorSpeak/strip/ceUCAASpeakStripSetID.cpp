@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakStripSetID::ceUCAASpeakStripSetID(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *strip, const char *newID){
+ceUCAASpeakStripSetID::ceUCAASpeakStripSetID(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak,
+ceStrip::Ref strip, const char *newID){
 	if(!topic || !actorSpeak || !strip || !newID){
 		DETHROW(deeInvalidParam);
 	}
@@ -57,25 +57,11 @@ ceStrip *strip, const char *newID){
 	SetShortInfo("Strip set ID");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pStrip = strip;
-	strip->AddReference();
 }
 
 ceUCAASpeakStripSetID::~ceUCAASpeakStripSetID(){
-	if(pStrip){
-		pStrip->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

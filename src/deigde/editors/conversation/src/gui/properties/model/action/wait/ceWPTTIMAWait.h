@@ -37,8 +37,8 @@ class ceWPTTIMAWaitActions;
  */
 class ceWPTTIMAWait : public ceWPTTIMAction{
 private:
-	ceWPTTIMAWaitCondition *pCondition;
-	ceWPTTIMAWaitActions *pActions;
+	ceWPTTIMAWaitCondition::Ref pCondition;
+	ceWPTTIMAWaitActions::Ref pActions;
 	
 	
 	

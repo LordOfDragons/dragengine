@@ -39,8 +39,8 @@
 ////////////////////////////
 
 seUPropertyNodeShapeSetThickness::seUPropertyNodeShapeSetThickness(
-sePropertyNodeShape *node, float newValue) :
-pNode(NULL),
+sePropertyNodeShape::Ref node, float newValue) :
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = node->GetThickness();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeShapeSetThickness::~seUPropertyNodeShapeSetThickness(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

@@ -84,8 +84,6 @@ saeSAnimation::saeSAnimation(igdeEnvironment* environment) :
 igdeEditableEntity(environment),
 pSky(NULL),
 pCamera(NULL),
-pActivePhoneme(NULL),
-pActiveWord(NULL),
 pDisplayMode(edmWord),
 pDispWordPos(-1),
 pDispWordElapsed(0.0f),
@@ -484,7 +482,7 @@ void saeSAnimation::Update(float elapsed){
 // Phonemes
 /////////////
 
-void saeSAnimation::AddPhoneme(saePhoneme *phoneme){
+void saeSAnimation::AddPhoneme(saePhoneme::Ref phoneme){
 	pPhonemeList.Add(phoneme);
 	phoneme->SetSAnimation(this);
 	NotifyPhonemeStructureChanged();
@@ -494,7 +492,7 @@ void saeSAnimation::AddPhoneme(saePhoneme *phoneme){
 	}
 }
 
-void saeSAnimation::RemovePhoneme(saePhoneme *phoneme){
+void saeSAnimation::RemovePhoneme(saePhoneme::Ref phoneme){
 	if(!phoneme || phoneme->GetSAnimation() != this) DETHROW(deeInvalidParam);
 	
 	if(phoneme->GetActive()){
@@ -533,20 +531,18 @@ bool saeSAnimation::HasActivePhoneme() const{
 	return pActivePhoneme != NULL;
 }
 
-void saeSAnimation::SetActivePhoneme(saePhoneme *phoneme){
+void saeSAnimation::SetActivePhoneme(saePhoneme::Ref phoneme){
 	if(phoneme == pActivePhoneme){
 		return;
 	}
 	
 	if(pActivePhoneme){
 		pActivePhoneme->SetActive(false);
-		pActivePhoneme->FreeReference();
 	}
 	
 	pActivePhoneme = phoneme;
 	
 	if(phoneme){
-		phoneme->AddReference();
 		phoneme->SetActive(true);
 	}
 	
@@ -558,7 +554,7 @@ void saeSAnimation::SetActivePhoneme(saePhoneme *phoneme){
 // Words
 /////////////
 
-void saeSAnimation::AddWord(saeWord *word){
+void saeSAnimation::AddWord(saeWord::Ref word){
 	pWordList.Add(word);
 	word->SetSAnimation(this);
 	NotifyWordStructureChanged();
@@ -568,7 +564,7 @@ void saeSAnimation::AddWord(saeWord *word){
 	}
 }
 
-void saeSAnimation::RemoveWord(saeWord *word){
+void saeSAnimation::RemoveWord(saeWord::Ref word){
 	if(!word || word->GetSAnimation() != this) DETHROW(deeInvalidParam);
 	
 	if(word->GetActive()){
@@ -607,20 +603,18 @@ bool saeSAnimation::HasActiveWord() const{
 	return pActiveWord != NULL;
 }
 
-void saeSAnimation::SetActiveWord(saeWord *word){
+void saeSAnimation::SetActiveWord(saeWord::Ref word){
 	if(word == pActiveWord){
 		return;
 	}
 	
 	if(pActiveWord){
 		pActiveWord->SetActive(false);
-		pActiveWord->FreeReference();
 	}
 	
 	pActiveWord = word;
 	
 	if(word){
-		word->AddReference();
 		word->SetActive(true);
 	}
 	
@@ -728,7 +722,7 @@ void saeSAnimation::NotifyPhonemeStructureChanged(){
 	pDirtyAnimator = true;
 }
 
-void saeSAnimation::NotifyPhonemeChanged(saePhoneme *phoneme){
+void saeSAnimation::NotifyPhonemeChanged(saePhoneme::Ref phoneme){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -762,7 +756,7 @@ void saeSAnimation::NotifyWordStructureChanged(){
 	SetChanged(true);
 }
 
-void saeSAnimation::NotifyWordNameChanged(saeWord *word){
+void saeSAnimation::NotifyWordNameChanged(saeWord::Ref word){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -773,7 +767,7 @@ void saeSAnimation::NotifyWordNameChanged(saeWord *word){
 	SetChanged(true);
 }
 
-void saeSAnimation::NotifyWordChanged(saeWord *word){
+void saeSAnimation::NotifyWordChanged(saeWord::Ref word){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	

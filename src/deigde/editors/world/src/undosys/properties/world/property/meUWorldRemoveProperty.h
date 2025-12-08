@@ -36,7 +36,7 @@ class meWorld;
  */
 class meUWorldRemoveProperty : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	decString pKey;
 	decString pValue;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUWorldRemoveProperty(meWorld *world, const char *key, const char *value);
+	meUWorldRemoveProperty(meWorld::Ref world, const char *key, const char *value);
 	
 protected:
 	/** \brief Clean up undo object. */

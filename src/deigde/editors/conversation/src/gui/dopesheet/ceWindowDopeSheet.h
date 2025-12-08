@@ -94,8 +94,8 @@ public:
 	
 private:
 	ceWindowMain &pWindowMain;
-	ceWindowDopeSheetListener *pListener;
-	ceConversation *pConversation;
+	ceWindowDopeSheetListener::Ref pListener;
+	ceConversation::Ref pConversation;
 	
 	igdeAction::Ref pActionPlayAction;
 	igdeAction::Ref pActionPlayFromhere;
@@ -158,7 +158,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation to monitor. */
-	void SetConversation(ceConversation *conversation);
+	void SetConversation(ceConversation::Ref conversation);
 	
 	/** \brief Active file. */
 	ceConversationFile *GetFile() const;

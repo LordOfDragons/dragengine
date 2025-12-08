@@ -48,7 +48,7 @@ class reCamera : public igdeCamera{
 private:
 	reRig *pRig;
 	
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	decDVector pFreePosition;
 	decVector pFreeOrientation;
@@ -73,7 +73,7 @@ public:
 	/** Retrieves the bone or NULL. */
 	inline reRigBone *GetBone() const{ return pBone; }
 	/** Sets the bone or NULL. */
-	void SetBone(reRigBone *bone);
+	void SetBone(reRigBone::Ref bone);
 	/** Retrieves the free position. */
 	inline const decDVector &GetFreePosition() const{ return pFreePosition; }
 	/** Sets the free position. */

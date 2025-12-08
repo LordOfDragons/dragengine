@@ -54,7 +54,7 @@ public:
 	inline deClassCollider *GetClassCollider() const{ return pClsCol; }
 	
 	deCollisionInfo *GetInfo(dsRealObject *myself) const;
-	void PushInfo(dsRunTime *rt, deCollisionInfo *info);
+	void PushInfo(dsRunTime *rt, deCollisionInfo::Ref info);
 	inline dsClass *GetClassParticleCollisionResponse() const{ return pClsParticleCollisionResponse; }
 
 private:

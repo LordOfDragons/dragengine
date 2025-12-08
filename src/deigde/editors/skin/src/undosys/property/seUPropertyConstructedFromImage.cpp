@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyConstructedFromImage::seUPropertyConstructedFromImage(seProperty *property) :
-pProperty(NULL),
-pOldContent(NULL),
-pNewContent(NULL)
+seUPropertyConstructedFromImage::seUPropertyConstructedFromImage(seProperty::Ref property) :
+
+pOldContent(NULL)
 {
 	if(!property){
 		DETHROW(deeInvalidParam);
@@ -61,32 +60,25 @@ pNewContent(NULL)
 	
 	SetShortInfo("Property constructed from image");
 	
-	sePropertyNodeImage *nodeImage = NULL;
+	sePropertyNodeImage::Ref nodeImage = NULL;
 	
 	try{
-		nodeImage = new sePropertyNodeImage(*property->GetEngine());
+		nodeImage.TakeOver(new sePropertyNodeImage(*property->GetEngine()));
 		nodeImage->SetSize(size);
 		nodeImage->SetPath(property->GetImagePath());
 		
-		pNewContent = new sePropertyNodeGroup(*property->GetEngine());
+		pNewContent.TakeOver(new sePropertyNodeGroup(*property->GetEngine()));
 		pNewContent->SetSize(size);
 		pNewContent->AddNode(nodeImage);
-		nodeImage->FreeReference();
 		nodeImage = NULL;
 		
 	}catch(const deException &){
-		if(nodeImage){
-			nodeImage->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}
 	
 	pOldContent = property->GetNodeGroup();
-	pOldContent->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 seUPropertyConstructedFromImage::~seUPropertyConstructedFromImage(){
@@ -114,13 +106,4 @@ void seUPropertyConstructedFromImage::Redo(){
 //////////////////////
 
 void seUPropertyConstructedFromImage::pCleanUp(){
-	if(pNewContent){
-		pNewContent->FreeReference();
-	}
-	if(pOldContent){
-		pOldContent->FreeReference();
-	}
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }

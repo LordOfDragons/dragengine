@@ -49,15 +49,11 @@
 ////////////////////////////
 
 cePCBOption::cePCBOption() :
-pAction(NULL),
-pActionOption(NULL),
-pCanvasView(NULL){
+
+pActionOption(NULL){
 }
 
 cePCBOption::~cePCBOption(){
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 	SetActionOption(NULL, NULL);
 }
 
@@ -70,29 +66,13 @@ void cePCBOption::SetText(const decUnicodeString &text){
 	pText = text;
 }
 
-void cePCBOption::SetActionOption(ceCAPlayerChoice *action, ceCAPlayerChoiceOption *option){
+void cePCBOption::SetActionOption(ceCAPlayerChoice::Ref action, ceCAPlayerChoiceOption::Ref option){
 	if(action != pAction){
-		if(pAction){
-			pAction->FreeReference();
-		}
-		
 		pAction = action;
-		
-		if(action){
-			action->AddReference();
-		}
 	}
 	
 	if(option != pActionOption){
-		if(pActionOption){
-			pActionOption->FreeReference();
-		}
-		
 		pActionOption = option;
-		
-		if(option){
-			option->AddReference();
-		}
 	}
 }
 
@@ -118,8 +98,8 @@ void cePCBOption::Layout(const cePlayerChoiceBox &pcbox, bool selected){
 	// determine required height
 	deCanvasView &parentVide = *pcbox.GetCanvasView();
 	const decPoint &parentSize = parentVide.GetSize();
-	deCanvasText *canvasText = NULL;
-	deCanvasPaint *canvasBackground = NULL;
+	deCanvasText::Ref canvasText = NULL;
+	deCanvasPaint::Ref canvasBackground = NULL;
 	
 	const decString text(pText.ToUTF8());
 	
@@ -140,7 +120,6 @@ void cePCBOption::Layout(const cePlayerChoiceBox &pcbox, bool selected){
 		canvasBackground->SetOrder(0.0f);
 		canvasBackground->SetSize(pCanvasView->GetSize());
 		pCanvasView->AddCanvas(canvasBackground);
-		canvasBackground->FreeReference();
 		canvasBackground = NULL;
 		
 		canvasText = canvasManager.CreateCanvasText();
@@ -155,16 +134,9 @@ void cePCBOption::Layout(const cePlayerChoiceBox &pcbox, bool selected){
 		canvasText->SetOrder(0.0f);
 		canvasText->SetSize(pCanvasView->GetSize());
 		pCanvasView->AddCanvas(canvasText);
-		canvasText->FreeReference();
 		canvasText = NULL;
 		
 	}catch(const deException &){
-		if(canvasText){
-			canvasText->FreeReference();
-		}
-		if(canvasBackground){
-			canvasBackground->FreeReference();
-		}
 		throw;
 	}
 }

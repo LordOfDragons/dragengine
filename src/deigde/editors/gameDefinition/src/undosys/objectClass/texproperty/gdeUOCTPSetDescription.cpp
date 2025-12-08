@@ -40,9 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPSetDescription::gdeUOCTPSetDescription(gdeObjectClass *objectClass, gdeProperty *property, const char *newValue) :
-pObjectClass(NULL),
-pProperty(NULL)
+gdeUOCTPSetDescription::gdeUOCTPSetDescription(gdeObjectClass::Ref objectClass, gdeProperty::Ref property, const char *newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
@@ -54,19 +53,10 @@ pProperty(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCTPSetDescription::~gdeUOCTPSetDescription(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

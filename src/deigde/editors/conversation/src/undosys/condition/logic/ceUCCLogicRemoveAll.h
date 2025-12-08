@@ -41,9 +41,9 @@ class ceConversationTopic;
  */
 class ceUCCLogicRemoveAll : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionLogic *pLogic;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionLogic::Ref pLogic;
 	ceConversationConditionList pConditions;
 	
 	
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCCLogicRemoveAll(ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionLogic *logic);
+	ceUCCLogicRemoveAll(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
+		ceCConditionLogic::Ref logic);
 	
 	/** \brief Clean up undo object. */
 	virtual ~ceUCCLogicRemoveAll();

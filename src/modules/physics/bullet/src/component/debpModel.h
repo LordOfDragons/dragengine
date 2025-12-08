@@ -78,7 +78,7 @@ private:
 	decVector *pNormals;
 	float *pFaceProbabilities;
 	
-	debpBulletShapeModel *pBulletShape;
+	debpBulletShapeModel::Ref pBulletShape;
 	
 	
 	

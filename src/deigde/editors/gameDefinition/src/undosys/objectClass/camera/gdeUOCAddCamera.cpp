@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddCamera::gdeUOCAddCamera(gdeObjectClass *objectClass, gdeOCCamera *camera) :
-pObjectClass(NULL),
+gdeUOCAddCamera::gdeUOCAddCamera(gdeObjectClass::Ref objectClass, gdeOCCamera::Ref camera) :
+
 pCamera(NULL)
 {
 	if(!objectClass || !camera){
@@ -52,19 +52,10 @@ pCamera(NULL)
 	SetShortInfo("Add camera");
 	
 	pCamera = camera;
-	camera->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddCamera::~gdeUOCAddCamera(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

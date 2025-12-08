@@ -42,7 +42,7 @@ class meWorld;
  */
 class meUDecalMove : public meBaseUndoMove{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	meUndoDataDecal **pDecals;
 	int pDecalCount;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo. */
-	meUDecalMove(meWorld *world);
+	meUDecalMove(meWorld::Ref world);
 	/** \brief Clean up undo. */
 	~meUDecalMove() override;
 	/*@}*/

@@ -88,35 +88,32 @@ seSky *seLoadSaveSystem::LoadSky(const char *filename){
 	}
 	
 	decBaseFileReader::Ref fileReader;
-	seSky *sky = NULL;
+	seSky::Ref sky = NULL;
 	decPath path;
 	
 	path.SetFromUnix(filename);
 	
 	try{
 		fileReader.TakeOver(pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(path));
-		sky = new seSky(&pWindowMain.GetEnvironment());
+		sky.TakeOver(new seSky(&pWindowMain.GetEnvironment()));
 		sky->SetFilePath(filename);
 		pLSSky->LoadSky(*this, *sky, fileReader);
 		sky->SetChanged(false);
 		sky->SetSaved(true);
 		
 	}catch(const deException &){
-		if(sky){
-			sky->FreeReference();
-		}
 		throw;
 	}
 	
 	return sky;
 }
 
-void seLoadSaveSystem::SaveSky(seSky *sky, const char *filename){
+void seLoadSaveSystem::SaveSky(seSky::Ref sky, const char *filename){
 	if(!sky || !filename){
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileWriter *fileWriter = NULL;
+	decBaseFileWriter::Ref fileWriter = NULL;
 	decPath path;
 	
 	path.SetFromUnix(filename);
@@ -124,12 +121,7 @@ void seLoadSaveSystem::SaveSky(seSky *sky, const char *filename){
 	try{
 		fileWriter = pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(path);
 		pLSSky->SaveSky(*this, *sky, *fileWriter);
-		fileWriter->FreeReference();
-		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		throw;
 	}
 }

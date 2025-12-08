@@ -111,7 +111,7 @@ void ceWPTTIMActions::UpdateActions(){
 		ceConversationAction * const action = pActions.GetAt(i);
 		
 		// find item matching action if present
-		ceWPTTIMAction *model = NULL;
+		ceWPTTIMAction::Ref model = NULL;
 		const int childCount = GetChildCount();
 		for(j=i; j<childCount; j++){
 			ceWPTTIMAction * const child = (ceWPTTIMAction*)GetChildAt(j);
@@ -137,11 +137,8 @@ void ceWPTTIMActions::UpdateActions(){
 				model->Update();
 				
 			}catch(const deException &){
-				model->FreeReference();
 				throw;
 			}
-			
-			model->FreeReference();
 		}
 	}
 	

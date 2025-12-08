@@ -38,8 +38,8 @@ class seSynthesizer;
  */
 class seUAddSource : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
-	seSource *pSource;
+	seSynthesizer::Ref pSynthesizer;
+	seSource::Ref pSource;
 	int pIndex;
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUAddSource(seSynthesizer *synthesizer, seSource *source, int index);
+	seUAddSource(seSynthesizer::Ref synthesizer, seSource::Ref source, int index);
 	
 protected:
 	/** \brief Clean up undo action. */

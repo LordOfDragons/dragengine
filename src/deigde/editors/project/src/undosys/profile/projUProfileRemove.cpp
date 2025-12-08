@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileRemove::projUProfileRemove(projProject *project, projProfile *profile) :
-pProject(NULL),
+projUProfileRemove::projUProfileRemove(projProject::Ref project, projProfile::Ref profile) :
+
 pProfile(NULL)
 {
 	if(!project || !profile){
@@ -55,19 +55,10 @@ pProfile(NULL)
 	SetShortInfo("Remove profile");
 	
 	pProfile = profile;
-	profile->AddReference();
-	
 	pProject = project;
-	project->AddReference();
 }
 
 projUProfileRemove::~projUProfileRemove(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 

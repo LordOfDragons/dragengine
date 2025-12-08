@@ -38,7 +38,7 @@ class meNavigationSpace;
  */
 class meUNavSpaceSetPosition : public igdeUndo{
 private:
-	meNavigationSpace *pNavSpace;
+	meNavigationSpace::Ref pNavSpace;
 	
 	decDVector pOldPosition;
 	decDVector pNewPosition;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUNavSpaceSetPosition(meNavigationSpace *navspace, const decDVector &newPosition);
+	meUNavSpaceSetPosition(meNavigationSpace::Ref navspace, const decDVector &newPosition);
 	
 protected:
 	/** \brief Clean up object. */

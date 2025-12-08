@@ -59,15 +59,15 @@ ceStrip *ceStripList::GetAt(int index) const{
 	return (ceStrip*)pList.GetAt(index);
 }
 
-int ceStripList::IndexOf(ceStrip *entry) const{
+int ceStripList::IndexOf(ceStrip::Ref entry) const{
 	return pList.IndexOf(entry);
 }
 
-bool ceStripList::Has(ceStrip *entry) const{
+bool ceStripList::Has(ceStrip::Ref entry) const{
 	return pList.Has(entry);
 }
 
-void ceStripList::Add(ceStrip *entry){
+void ceStripList::Add(ceStrip::Ref entry){
 	if(!entry){
 		DETHROW(deeInvalidParam);
 	}
@@ -75,7 +75,7 @@ void ceStripList::Add(ceStrip *entry){
 	pList.Add(entry);
 }
 
-void ceStripList::InsertAt(ceStrip *entry, int index){
+void ceStripList::InsertAt(ceStrip::Ref entry, int index){
 	if(!entry){
 		DETHROW(deeInvalidParam);
 	}
@@ -83,7 +83,7 @@ void ceStripList::InsertAt(ceStrip *entry, int index){
 	pList.Insert(entry, index);
 }
 
-void ceStripList::MoveTo(ceStrip *entry, int index){
+void ceStripList::MoveTo(ceStrip::Ref entry, int index){
 	if(!entry){
 		DETHROW(deeInvalidParam);
 	}
@@ -91,7 +91,7 @@ void ceStripList::MoveTo(ceStrip *entry, int index){
 	pList.Move(entry, index);
 }
 
-void ceStripList::Remove(ceStrip *entry){
+void ceStripList::Remove(ceStrip::Ref entry){
 	pList.Remove(entry);
 }
 
@@ -103,21 +103,17 @@ void ceStripList::RemoveAll(){
 
 void ceStripList::AddCopyFrom(const ceStripList &list){
 	const int count = list.GetCount();
-	ceStrip *entry = NULL;
+	ceStrip::Ref entry = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			entry = new ceStrip(*list.GetAt(i));
+			entry.TakeOver(new ceStrip(*list.GetAt(i)));
 			pList.Add(entry);
-			entry->FreeReference();
 			entry = NULL;
 		}
 		
 	}catch(const deException &){
-		if(entry){
-			entry->FreeReference();
-		}
 		throw;
 	}
 }

@@ -65,10 +65,10 @@ deWorld *deWorldManager::GetRootWorld() const{
 }
 
 deWorld *deWorldManager::CreateWorld(){
-	deWorld *world = NULL;
+	deWorld::Ref world = NULL;
 	
 	try{
-		world = new deWorld(this);
+		world.TakeOver(new deWorld(this));
 		if(!world){
 			DETHROW(deeOutOfMemory);
 		}
@@ -82,9 +82,6 @@ deWorld *deWorldManager::CreateWorld(){
 		pWorlds.Add(world);
 		
 	}catch(const deException &){
-		if(world){
-			world->FreeReference();
-		}
 		throw;
 	}
 	
@@ -108,7 +105,7 @@ void deWorldManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deWorldManager::SystemGraphicLoad(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
+	deWorld::Ref world = (deWorld*)pWorlds.GetRoot();
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(world){
@@ -121,7 +118,7 @@ void deWorldManager::SystemGraphicLoad(){
 }
 
 void deWorldManager::SystemGraphicUnload(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
+	deWorld::Ref world = (deWorld*)pWorlds.GetRoot();
 	
 	while(world){
 		world->SetPeerGraphic(NULL);
@@ -130,7 +127,7 @@ void deWorldManager::SystemGraphicUnload(){
 }
 
 void deWorldManager::SystemPhysicsLoad(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
+	deWorld::Ref world = (deWorld*)pWorlds.GetRoot();
 	dePhysicsSystem &physys = *GetPhysicsSystem();
 	
 	while(world){
@@ -143,7 +140,7 @@ void deWorldManager::SystemPhysicsLoad(){
 }
 
 void deWorldManager::SystemPhysicsUnload(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
+	deWorld::Ref world = (deWorld*)pWorlds.GetRoot();
 	
 	while(world){
 		world->SetPeerPhysics(NULL);
@@ -152,7 +149,7 @@ void deWorldManager::SystemPhysicsUnload(){
 }
 
 void deWorldManager::SystemAudioLoad(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
+	deWorld::Ref world = (deWorld*)pWorlds.GetRoot();
 	deAudioSystem &audsys = *GetAudioSystem();
 	
 	while(world){
@@ -165,7 +162,7 @@ void deWorldManager::SystemAudioLoad(){
 }
 
 void deWorldManager::SystemAudioUnload(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
+	deWorld::Ref world = (deWorld*)pWorlds.GetRoot();
 	
 	while(world){
 		world->SetPeerAudio(NULL);
@@ -174,7 +171,7 @@ void deWorldManager::SystemAudioUnload(){
 }
 
 void deWorldManager::SystemNetworkLoad(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
+	deWorld::Ref world = (deWorld*)pWorlds.GetRoot();
 	deNetworkSystem &netsys = *GetNetworkSystem();
 	
 	while(world){
@@ -187,7 +184,7 @@ void deWorldManager::SystemNetworkLoad(){
 }
 
 void deWorldManager::SystemNetworkUnload(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
+	deWorld::Ref world = (deWorld*)pWorlds.GetRoot();
 	
 	while(world){
 		world->SetPeerNetwork(NULL);
@@ -196,7 +193,7 @@ void deWorldManager::SystemNetworkUnload(){
 }
 
 void deWorldManager::SystemAILoad(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
+	deWorld::Ref world = (deWorld*)pWorlds.GetRoot();
 	deAISystem &aisys = *GetAISystem();
 	
 	while(world){
@@ -209,7 +206,7 @@ void deWorldManager::SystemAILoad(){
 }
 
 void deWorldManager::SystemAIUnload(){
-	deWorld *world = (deWorld*)pWorlds.GetRoot();
+	deWorld::Ref world = (deWorld*)pWorlds.GetRoot();
 	
 	while(world){
 		world->SetPeerAI(NULL);

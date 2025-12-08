@@ -66,7 +66,7 @@ class DE_DLL_EXPORT deBaseSystem{
 private:
 	const decString pSystemName;
 	deEngine * const pEngine;
-	deLoadableModule *pActiveLoadableModule;
+	deLoadableModule::Ref pActiveLoadableModule;
 	const int pRequiredModuleType;
 	bool pRunning;
 	bool pFailed;

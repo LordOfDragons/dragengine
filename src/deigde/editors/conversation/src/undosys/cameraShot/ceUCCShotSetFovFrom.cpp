@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetFovFrom::ceUCCShotSetFovFrom(ceCameraShot *cameraShot, float newFov){
+ceUCCShotSetFovFrom::ceUCCShotSetFovFrom(ceCameraShot::Ref cameraShot, float newFov){
 	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
@@ -50,13 +50,9 @@ ceUCCShotSetFovFrom::ceUCCShotSetFovFrom(ceCameraShot *cameraShot, float newFov)
 	pNewFov = newFov;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetFovFrom::~ceUCCShotSetFovFrom(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

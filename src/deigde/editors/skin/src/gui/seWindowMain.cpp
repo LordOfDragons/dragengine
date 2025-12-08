@@ -108,13 +108,8 @@
 
 seWindowMain::seWindowMain(seIGDEModule &module) :
 igdeEditorWindow(module),
-pListener(NULL),
 pConfiguration(NULL),
-pLoadSaveSystem(NULL),
-pWindowProperties(NULL),
-pViewSkin(NULL),
-pViewConstructed(NULL),
-pSkin(NULL)
+pLoadSaveSystem(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -122,7 +117,7 @@ pSkin(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new seWindowMainListener(*this);
+	pListener.TakeOver(new seWindowMainListener(*this));
 	pLoadSaveSystem = new seLoadSaveSystem(*this);
 	pConfiguration = new seConfiguration(*this);
 	
@@ -136,16 +131,16 @@ pSkin(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties = new seWindowProperties(*this);
+	pWindowProperties.TakeOver(new seWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	pSwitcherViews.TakeOver(new igdeTabBook(env));
 	splitted->AddChild(pSwitcherViews, igdeContainerSplitted::eaCenter);
 	
-	pViewSkin = new seViewSkin(*this);
+	pViewSkin.TakeOver(new seViewSkin(*this));
 	pSwitcherViews->AddChild(pViewSkin, "Skin Preview");
 	
-	pViewConstructed = new seViewConstructed(*this);
+	pViewConstructed.TakeOver(new seViewConstructed(*this));
 	pSwitcherViews->AddChild(pViewConstructed, "Constructed Channel");
 	
 	CreateNewSkin();
@@ -159,17 +154,6 @@ seWindowMain::~seWindowMain(){
 	}
 	
 	SetSkin(NULL);
-	
-	if(pViewConstructed){
-		pViewConstructed->FreeReference();
-	}
-	if(pViewSkin){
-		pViewSkin->FreeReference();
-	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
-	
 	pClipboard.ClearAll();
 	
 	if(pConfiguration){
@@ -177,10 +161,6 @@ seWindowMain::~seWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -200,7 +180,7 @@ void seWindowMain::ResetViews(){
 
 
 
-void seWindowMain::SetSkin(seSkin *skin){
+void seWindowMain::SetSkin(seSkin::Ref skin){
 	if(skin == pSkin){
 		return;
 	}
@@ -215,13 +195,11 @@ void seWindowMain::SetSkin(seSkin *skin){
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
 		pSkin->Dispose();
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
 	
 	if(skin){
-		skin->AddReference();
 		skin->AddListener(pListener);
 		
 		pActionEditUndo->SetUndoSystem(skin->GetUndoSystem());
@@ -451,7 +429,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(seSkin *skin) = 0;
+	virtual igdeUndo *OnAction(seSkin::Ref skin) = 0;
 	
 	virtual void Update(){
 		if(pWindow.GetSkin()){
@@ -601,7 +579,7 @@ public:
 		"Save As...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSaveAs),
 		"Saves skin under a differen file", deInputEvent::ekcA){}
 	
-	virtual igdeUndo * OnAction(seSkin *skin){
+	virtual igdeUndo * OnAction(seSkin::Ref skin){
 		decString filename(skin->GetFilePath());
 		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Skin",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -622,7 +600,7 @@ public:
 		SetMnemonic(deInputEvent::ekcS);
 	}
 	
-	virtual igdeUndo *OnAction(seSkin *skin){
+	virtual igdeUndo *OnAction(seSkin::Ref skin){
 		if(skin->GetSaved()){
 			if(skin->GetChanged()){
 				pWindow.SaveSkin(skin->GetFilePath());
@@ -683,11 +661,11 @@ public:
 		const char *description, deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
 		cActionBase(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnAction(seSkin *skin){
+	virtual igdeUndo *OnAction(seSkin::Ref skin){
 		return skin->GetActiveMapped() ? OnActionMapped(skin, skin->GetActiveMapped()) : nullptr;
 	}
 	
-	virtual igdeUndo *OnActionMapped(seSkin *skin, seMapped *mapped) = 0;
+	virtual igdeUndo *OnActionMapped(seSkin::Ref skin, seMapped *mapped) = 0;
 	
 	void Update(const seSkin &skin) override{
 		if(skin.GetActiveMapped()){
@@ -709,7 +687,7 @@ public:
 		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add mapped", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(seSkin *skin){
+	virtual igdeUndo *OnAction(seSkin::Ref skin){
 		decString name("Mapped");
 		while(igdeCommonDialogs::GetString(&pWindow, "Add Mapped", "Name:", name)){
 			if(skin->GetMappedList().HasNamed(name)){
@@ -731,13 +709,12 @@ public:
 		"Remove mapped", deInputEvent::ekcR){}
 	
 	virtual igdeUndo *OnActionMapped(seSkin*, seMapped *mapped){
-		seUMappedRemove *undo = new seUMappedRemove(mapped);
+		seUMappedRemove::Ref undo.TakeOver(new seUMappedRemove(mapped));
 		
 		if(undo->GetDependencyCount() > 0 && igdeCommonDialogs::QuestionFormat(&pWindow,
 		igdeCommonDialogs::ebsYesNo, "Remove Mapped", "Mapped is used by %d dependencies. "
 		"Removing the mapped will also unset it from all dependencies.", undo->GetDependencyCount())
 		== igdeCommonDialogs::ebNo){
-			undo->FreeReference();
 			return nullptr;
 		}
 		
@@ -752,11 +729,11 @@ public:
 		const char *description, deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
 		cActionBase(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnAction(seSkin *skin){
+	virtual igdeUndo *OnAction(seSkin::Ref skin){
 		return skin->GetActiveTexture() ? OnActionTexture(skin, skin->GetActiveTexture()) : NULL;
 	}
 	
-	virtual igdeUndo *OnActionTexture(seSkin *skin, seTexture *texture) = 0;
+	virtual igdeUndo *OnActionTexture(seSkin::Ref skin, seTexture *texture) = 0;
 	
 	void Update(const seSkin &skin) override{
 		if(skin.GetActiveTexture()){
@@ -778,7 +755,7 @@ public:
 		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add texture", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(seSkin *skin){
+	virtual igdeUndo *OnAction(seSkin::Ref skin){
 		seDialogAddTexture::Ref dialog(seDialogAddTexture::Ref::NewWith(pWindow));
 		if(!dialog->Run(&pWindow)){
 			return NULL;
@@ -812,7 +789,7 @@ public:
 		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
 			cActionBaseTexture(window, text, icon, description, mnemonic){}
 	
-	igdeUndo *ImportTexture(seSkin *skin, seTexture *texture, const char *skinPath){
+	igdeUndo *ImportTexture(seSkin::Ref skin, seTexture *texture, const char *skinPath){
 		// load Skin
 		pWindow.GetEditorModule().LogInfoFormat("Import from Skin %s", skinPath);
 		
@@ -918,7 +895,7 @@ public:
 		"Import Texture from Game Definition", NULL,
 		"Import Texture from a game definition skin", deInputEvent::ekcI){}
 	
-	virtual igdeUndo *OnActionTexture(seSkin *skin, seTexture *texture){
+	virtual igdeUndo *OnActionTexture(seSkin::Ref skin, seTexture *texture){
 		decString importSkin(pWindow.importSkinLastGD);
 		if(importSkin.IsEmpty()){
 			importSkin = pWindow.GetGameDefinition()->GetSkinManager()->GetDefaultSkinPath();
@@ -938,7 +915,7 @@ public:
 		"Import Texture from File", NULL,
 		"Import Texture from a skin file into the active texture", deInputEvent::ekcM){}
 	
-	virtual igdeUndo *OnActionTexture(seSkin *skin, seTexture *texture){
+	virtual igdeUndo *OnActionTexture(seSkin::Ref skin, seTexture *texture){
 		igdeEnvironment &env = pWindow.GetEnvironment();
 		decString filename(pWindow.importSkinLastPath);
 		if(filename.IsEmpty()){
@@ -961,11 +938,11 @@ public:
 		const char *description, deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :
 		cActionBaseTexture(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnActionTexture(seSkin *skin, seTexture *texture){
+	virtual igdeUndo *OnActionTexture(seSkin::Ref skin, seTexture *texture){
 		return texture->GetActiveProperty() ? OnActionProperty(skin, texture, texture->GetActiveProperty()) : NULL;
 	}
 	
-	virtual igdeUndo *OnActionProperty(seSkin *skin, seTexture *texture, seProperty *property) = 0;
+	virtual igdeUndo *OnActionProperty(seSkin::Ref skin, seTexture *texture, seProperty *property) = 0;
 	
 	void UpdateTexture(const seSkin &skin, const seTexture &texture) override{
 		if(texture.GetActiveProperty()){

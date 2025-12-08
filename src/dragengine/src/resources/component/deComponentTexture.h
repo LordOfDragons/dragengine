@@ -45,10 +45,10 @@ class deDynamicSkin;
  */
 class DE_DLL_EXPORT deComponentTexture{
 private:
-	deSkin *pSkin;
+	deSkin::Ref pSkin;
 	int pTexture;
 	decTexMatrix2 pTransform;
-	deDynamicSkin *pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	
 	
@@ -70,7 +70,7 @@ public:
 	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not set. */
-	void SetSkin(deSkin *skin);
+	void SetSkin(deSkin::Ref skin);
 	
 	/** \brief Texture number. */
 	inline int GetTexture() const{ return pTexture; }
@@ -88,7 +88,7 @@ public:
 	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Set dynamic skin or NULL if not set. */
-	void SetDynamicSkin(deDynamicSkin *dynamicSkin);
+	void SetDynamicSkin(deDynamicSkin::Ref dynamicSkin);
 	/*@}*/
 };
 

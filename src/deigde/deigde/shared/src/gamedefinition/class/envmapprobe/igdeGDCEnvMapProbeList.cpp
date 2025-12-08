@@ -62,15 +62,15 @@ igdeGDCEnvMapProbe *igdeGDCEnvMapProbeList::GetAt(int index) const{
 	return (igdeGDCEnvMapProbe*)pProbes.GetAt(index);
 }
 
-int igdeGDCEnvMapProbeList::IndexOf(igdeGDCEnvMapProbe *probe) const{
+int igdeGDCEnvMapProbeList::IndexOf(igdeGDCEnvMapProbe::Ref probe) const{
 	return pProbes.IndexOf(probe);
 }
 
-bool igdeGDCEnvMapProbeList::Has(igdeGDCEnvMapProbe *probe) const{
+bool igdeGDCEnvMapProbeList::Has(igdeGDCEnvMapProbe::Ref probe) const{
 	return pProbes.Has(probe);
 }
 
-void igdeGDCEnvMapProbeList::Add(igdeGDCEnvMapProbe *probe){
+void igdeGDCEnvMapProbeList::Add(igdeGDCEnvMapProbe::Ref probe){
 	if(!probe){
 		DETHROW(deeInvalidParam);
 	}
@@ -78,7 +78,7 @@ void igdeGDCEnvMapProbeList::Add(igdeGDCEnvMapProbe *probe){
 	pProbes.Add(probe);
 }
 
-void igdeGDCEnvMapProbeList::InsertAt(igdeGDCEnvMapProbe *probe, int index){
+void igdeGDCEnvMapProbeList::InsertAt(igdeGDCEnvMapProbe::Ref probe, int index){
 	if(!probe){
 		DETHROW(deeInvalidParam);
 	}
@@ -86,11 +86,11 @@ void igdeGDCEnvMapProbeList::InsertAt(igdeGDCEnvMapProbe *probe, int index){
 	pProbes.Insert(probe, index);
 }
 
-void igdeGDCEnvMapProbeList::MoveTo(igdeGDCEnvMapProbe *probe, int index){
+void igdeGDCEnvMapProbeList::MoveTo(igdeGDCEnvMapProbe::Ref probe, int index){
 	pProbes.Move(probe, index);
 }
 
-void igdeGDCEnvMapProbeList::Remove(igdeGDCEnvMapProbe *probe){
+void igdeGDCEnvMapProbeList::Remove(igdeGDCEnvMapProbe::Ref probe){
 	pProbes.Remove(probe);
 }
 
@@ -102,22 +102,18 @@ void igdeGDCEnvMapProbeList::RemoveAll(){
 
 void igdeGDCEnvMapProbeList::SetToDeepCopyFrom(const igdeGDCEnvMapProbeList &list){
 	const int count = list.GetCount();
-	igdeGDCEnvMapProbe *probe = NULL;
+	igdeGDCEnvMapProbe::Ref probe = NULL;
 	
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			probe = new igdeGDCEnvMapProbe(*list.GetAt(i));
+			probe.TakeOver(new igdeGDCEnvMapProbe(*list.GetAt(i)));
 			Add(probe);
-			probe->FreeReference();
 			probe = NULL;
 		}
 		
 	}catch(const deException &){
-		if(probe){
-			probe->FreeReference();
-		}
 		throw;
 	}
 }

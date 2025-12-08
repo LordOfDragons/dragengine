@@ -38,7 +38,7 @@ class ceConversationTopic;
  */
 class ceUCActionPaste : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
+	ceConversationTopic::Ref pTopic;
 	ceConversationActionList pActions;
 	int pIndex;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCActionPaste(ceConversationTopic *topic, const ceConversationActionList &actions, int index);
+	ceUCActionPaste(ceConversationTopic::Ref topic, const ceConversationActionList &actions, int index);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCActionPaste();

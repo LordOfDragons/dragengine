@@ -317,7 +317,6 @@ void peeEmitter::FreeEmitter(){
 	pEngEmitterInstance->SetEmitter(NULL);
 	
 	if(pEngEmitter){
-		pEngEmitter->FreeReference();
 		pEngEmitter = NULL;
 	}
 }
@@ -375,7 +374,7 @@ void peeEmitter::RebuildEmitter(){
 // Controllers
 ////////////////
 
-void peeEmitter::AddController(peeController *controller){
+void peeEmitter::AddController(peeController::Ref controller){
 	pControllerList.Add(controller);
 	controller->SetEmitter(this);
 	NotifyControllerStructureChanged();
@@ -385,7 +384,7 @@ void peeEmitter::AddController(peeController *controller){
 	}
 }
 
-void peeEmitter::InsertControllerAt(peeController *controller, int index){
+void peeEmitter::InsertControllerAt(peeController::Ref controller, int index){
 	pControllerList.InsertAt(controller, index);
 	controller->SetEmitter(this);
 	NotifyControllerStructureChanged();
@@ -395,12 +394,12 @@ void peeEmitter::InsertControllerAt(peeController *controller, int index){
 	}
 }
 
-void peeEmitter::MoveControllerTo(peeController *controller, int index){
+void peeEmitter::MoveControllerTo(peeController::Ref controller, int index){
 	pControllerList.MoveTo(controller, index);
 	NotifyControllerStructureChanged();
 }
 
-void peeEmitter::RemoveController(peeController *controller){
+void peeEmitter::RemoveController(peeController::Ref controller){
 	if(!controller || controller->GetEmitter() != this) DETHROW(deeInvalidParam);
 	
 	if(controller->GetActive()){
@@ -439,17 +438,15 @@ bool peeEmitter::HasActiveController() const{
 	return pActiveController != NULL;
 }
 
-void peeEmitter::SetActiveController(peeController *controller){
+void peeEmitter::SetActiveController(peeController::Ref controller){
 	if(controller != pActiveController){
 		if(pActiveController){
 			pActiveController->SetActive(false);
-			pActiveController->FreeReference();
 		}
 		
 		pActiveController = controller;
 		
 		if(controller){
-			controller->AddReference();
 			controller->SetActive(true);
 		}
 		
@@ -462,7 +459,7 @@ void peeEmitter::SetActiveController(peeController *controller){
 // Types
 //////////
 
-void peeEmitter::AddType(peeType *type){
+void peeEmitter::AddType(peeType::Ref type){
 	FreeEmitter();
 	
 	pTypeList.Add(type);
@@ -474,7 +471,7 @@ void peeEmitter::AddType(peeType *type){
 	}
 }
 
-void peeEmitter::InsertTypeAt(peeType *type, int index){
+void peeEmitter::InsertTypeAt(peeType::Ref type, int index){
 	FreeEmitter();
 	
 	pTypeList.InsertAt(type, index);
@@ -486,13 +483,13 @@ void peeEmitter::InsertTypeAt(peeType *type, int index){
 	}
 }
 
-void peeEmitter::MoveTypeTo(peeType *type, int index){
+void peeEmitter::MoveTypeTo(peeType::Ref type, int index){
 	FreeEmitter();
 	pTypeList.MoveTo(type, index);
 	NotifyTypeStructureChanged();
 }
 
-void peeEmitter::RemoveType(peeType *type){
+void peeEmitter::RemoveType(peeType::Ref type){
 	if(!type || type->GetEmitter() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -536,17 +533,15 @@ bool peeEmitter::HasActiveType() const{
 	return pActiveType != NULL;
 }
 
-void peeEmitter::SetActiveType(peeType *type){
+void peeEmitter::SetActiveType(peeType::Ref type){
 	if(type != pActiveType){
 		if(pActiveType){
 			pActiveType->SetActive(false);
-			pActiveType->FreeReference();
 		}
 		
 		pActiveType = type;
 		
 		if(type){
-			type->AddReference();
 			type->SetActive(true);
 		}
 		
@@ -651,7 +646,7 @@ void peeEmitter::NotifyControllerStructureChanged(){
 	SetChanged(true);
 }
 
-void peeEmitter::NotifyControllerNameChanged(peeController *controller){
+void peeEmitter::NotifyControllerNameChanged(peeController::Ref controller){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -664,7 +659,7 @@ void peeEmitter::NotifyControllerNameChanged(peeController *controller){
 	SetChanged(true);
 }
 
-void peeEmitter::NotifyControllerChanged(peeController *controller){
+void peeEmitter::NotifyControllerChanged(peeController::Ref controller){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -675,7 +670,7 @@ void peeEmitter::NotifyControllerChanged(peeController *controller){
 	SetChanged(true);
 }
 
-void peeEmitter::NotifyControllerValueChanged(peeController *controller){
+void peeEmitter::NotifyControllerValueChanged(peeController::Ref controller){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -708,7 +703,7 @@ void peeEmitter::NotifyTypeStructureChanged(){
 	SetChanged(true);
 }
 
-void peeEmitter::NotifyTypeChanged(peeType *type){
+void peeEmitter::NotifyTypeChanged(peeType::Ref type){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -721,7 +716,7 @@ void peeEmitter::NotifyTypeChanged(peeType *type){
 	SetChanged(true);
 }
 
-void peeEmitter::NotifyTypeActiveTrailControllerChanged(peeType *type){
+void peeEmitter::NotifyTypeActiveTrailControllerChanged(peeType::Ref type){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -730,7 +725,7 @@ void peeEmitter::NotifyTypeActiveTrailControllerChanged(peeType *type){
 	}
 }
 
-void peeEmitter::NotifyTypeActiveEmitControllerChanged(peeType *type){
+void peeEmitter::NotifyTypeActiveEmitControllerChanged(peeType::Ref type){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -739,7 +734,7 @@ void peeEmitter::NotifyTypeActiveEmitControllerChanged(peeType *type){
 	}
 }
 
-void peeEmitter::NotifyTypeParameterChanged(peeType *type, peeParameter *parameter){
+void peeEmitter::NotifyTypeParameterChanged(peeType::Ref type, peeParameter *parameter){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -750,7 +745,7 @@ void peeEmitter::NotifyTypeParameterChanged(peeType *type, peeParameter *paramet
 	SetChanged(true);
 }
 
-void peeEmitter::NotifyActiveTypeParameterChanged(peeType *type){
+void peeEmitter::NotifyActiveTypeParameterChanged(peeType::Ref type){
 	const int listenerCount = pListeners.GetCount();
 	int l;
 	
@@ -793,19 +788,13 @@ void peeEmitter::pCleanUp(){
 	if(pEngEmitterInstance){
 		pEngEmitterInstance->SetEmitter(NULL);
 	}
-	if(pEngEmitter){
-		pEngEmitter->FreeReference();
-	}
 	if(pEngWorld){
 		if(pDDEmitter){
 			pEngWorld->RemoveDebugDrawer(pDDEmitter);
-			pDDEmitter->FreeReference();
 		}
 		
 		if(pEngEmitterInstance){
 			pEngWorld->RemoveParticleEmitter(pEngEmitterInstance);
-			pEngEmitterInstance->FreeReference();
 		}
-		pEngWorld->FreeReference();
 	}
 }

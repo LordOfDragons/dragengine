@@ -49,10 +49,6 @@ igdeTriggerExpression::igdeTriggerExpression(){
 
 igdeTriggerExpression::~igdeTriggerExpression(){
 	UnlinkTriggerTargets();
-	
-	if(pRootComponent){
-		pRootComponent->FreeReference();
-	}
 }
 
 
@@ -60,17 +56,9 @@ igdeTriggerExpression::~igdeTriggerExpression(){
 // Management
 ///////////////
 
-void igdeTriggerExpression::SetRootComponent(igdeTriggerExpressionComponent *component){
+void igdeTriggerExpression::SetRootComponent(igdeTriggerExpressionComponent::Ref component){
 	if(component != pRootComponent){
-		if(pRootComponent){
-			pRootComponent->FreeReference();
-		}
-		
 		pRootComponent = component;
-		
-		if(component){
-			component->AddReference();
-		}
 	}
 	
 	pResult = false;

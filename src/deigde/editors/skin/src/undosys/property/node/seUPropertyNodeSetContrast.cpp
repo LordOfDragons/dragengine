@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetContrast::seUPropertyNodeSetContrast(sePropertyNode *node, float newValue) :
-pNode(NULL),
+seUPropertyNodeSetContrast::seUPropertyNodeSetContrast(sePropertyNode::Ref node, float newValue) :
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = node->GetContrast();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetContrast::~seUPropertyNodeSetContrast(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

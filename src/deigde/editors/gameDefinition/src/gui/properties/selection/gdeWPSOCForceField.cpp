@@ -487,15 +487,13 @@ public:
 
 gdeWPSOCForceField::gdeWPSOCForceField(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pGameDefinition(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCForceFieldListener(*this);
+	pListener.TakeOver(new gdeWPSOCForceFieldListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -579,10 +577,6 @@ pGameDefinition(NULL)
 
 gdeWPSOCForceField::~gdeWPSOCForceField(){
 	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -590,21 +584,19 @@ gdeWPSOCForceField::~gdeWPSOCForceField(){
 // Management
 ///////////////
 
-void gdeWPSOCForceField::SetGameDefinition(gdeGameDefinition *gameDefinition){
+void gdeWPSOCForceField::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
 	}
 	
 	UpdatePropertyList();

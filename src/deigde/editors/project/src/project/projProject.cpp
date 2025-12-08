@@ -61,8 +61,6 @@ pScriptDirectory("/scripts"),
 pGameObject("MyGameApp"),
 pPathConfig("/config"),
 pPathCapture("/capture"),
-
-pActiveProfile(nullptr),
 pRemoteServer(std::make_shared<projRemoteServer>(*this, *environment))
 {
 	try{
@@ -129,7 +127,7 @@ void projProject::SetPathCapture(const char *path){
 // Profiles
 /////////////
 
-void projProject::AddProfile(projProfile *profile){
+void projProject::AddProfile(projProfile::Ref profile){
 	pProfiles.Add(profile);
 	profile->SetProject(this);
 	NotifyProfileStructureChanged();
@@ -139,7 +137,7 @@ void projProject::AddProfile(projProfile *profile){
 	}
 }
 
-void projProject::RemoveProfile(projProfile *profile){
+void projProject::RemoveProfile(projProfile::Ref profile){
 	if(!profile || profile->GetProject() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -178,21 +176,11 @@ void projProject::RemoveAllProfiles(){
 
 
 
-void projProject::SetActiveProfile(projProfile *profile){
+void projProject::SetActiveProfile(projProfile::Ref profile){
 	if(profile == pActiveProfile){
 		return;
 	}
-	
-	if(pActiveProfile){
-		pActiveProfile->FreeReference();
-	}
-	
 	pActiveProfile = profile;
-	
-	if(profile){
-		profile->AddReference();
-	}
-	
 	NotifyActiveProfileChanged();
 }
 
@@ -211,7 +199,7 @@ void projProject::NotifyProfileStructureChanged(){
 	pRemoteServer->OnProfileStructureChanged();
 }
 
-void projProject::NotifyProfileChanged(projProfile *profile){
+void projProject::NotifyProfileChanged(projProfile::Ref profile){
 	const int count = pListeners.GetCount();
 	int i;
 	
@@ -224,7 +212,7 @@ void projProject::NotifyProfileChanged(projProfile *profile){
 	pRemoteServer->OnProfileChanged(profile);
 }
 
-void projProject::NotifyProfileNameChanged(projProfile *profile){
+void projProject::NotifyProfileNameChanged(projProfile::Ref profile){
 	const int count = pListeners.GetCount();
 	int i;
 	

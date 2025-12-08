@@ -40,7 +40,7 @@ class meObject;
  */
 class meUSetObjectSize : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decVector pOldSize;
 	decVector pNewSize;
@@ -50,7 +50,7 @@ public:
 	typedef deTObjectReference<meUSetObjectSize> Ref;
 	
 	// constructor, destructor
-	meUSetObjectSize(meObject *object, const decVector &newSize);
+	meUSetObjectSize(meObject::Ref object, const decVector &newSize);
 	
 protected:
 	~meUSetObjectSize();

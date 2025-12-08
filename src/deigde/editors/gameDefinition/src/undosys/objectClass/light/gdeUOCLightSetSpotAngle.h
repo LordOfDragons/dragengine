@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetSpotAngle : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	float pOldValue;
 	float pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetSpotAngle(gdeObjectClass *objectClass, gdeOCLight *light, float newValue);
+	gdeUOCLightSetSpotAngle(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

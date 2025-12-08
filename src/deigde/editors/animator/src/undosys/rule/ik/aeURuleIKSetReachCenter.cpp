@@ -52,13 +52,9 @@ aeURuleIKSetReachCenter::aeURuleIKSetReachCenter(aeRuleInverseKinematic *rule, c
 	pNewValue = newValue;
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleIKSetReachCenter::~aeURuleIKSetReachCenter(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

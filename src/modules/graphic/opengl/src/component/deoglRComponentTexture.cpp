@@ -77,9 +77,6 @@
 deoglRComponentTexture::deoglRComponentTexture(deoglRComponent &component, int index) :
 pComponent(component),
 pIndex(index),
-
-pSkin(NULL),
-pDynamicSkin(NULL),
 pSkinState(NULL),
 
 pUseSkin(NULL),
@@ -91,8 +88,6 @@ pUseDoubleSided(false),
 pUseDecal(false),
 pIsRendered(false),
 pRenderTaskFilters(0),
-
-pSharedSPBElement(NULL),
 
 pTUCDepth(NULL),
 pTUCGeometry(NULL),
@@ -117,19 +112,8 @@ pDirtyTUCsEnvMapUse(true)
 
 deoglRComponentTexture::~deoglRComponentTexture(){
 	LEAK_CHECK_FREE(pComponent.GetRenderThread(), ComponentTexture);
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	pSharedSPBRTIGroup.RemoveAll();
 	pSharedSPBRTIGroupShadow.RemoveAll();
-	if(pSharedSPBElement){
-		pSharedSPBElement->FreeReference();
-	}
-	
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
 	}
@@ -184,19 +168,11 @@ void deoglRComponentTexture::SetTransform(const decTexMatrix2 &matrix){
 
 
 
-void deoglRComponentTexture::SetSkin(deoglRSkin *skin){
+void deoglRComponentTexture::SetSkin(deoglRSkin::Ref skin){
 	if(skin == pSkin){
 		return;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	pSkin = skin;
-	if(skin){
-		skin->AddReference();
-	}
-	
 	pIsRendered = false;
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
@@ -204,19 +180,11 @@ void deoglRComponentTexture::SetSkin(deoglRSkin *skin){
 	pUpdateRenderTaskFilters();
 }
 
-void deoglRComponentTexture::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
+void deoglRComponentTexture::SetDynamicSkin(deoglRDynamicSkin::Ref dynamicSkin){
 	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
-	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
 	pDynamicSkin = dynamicSkin;
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
-	
 	pIsRendered = false;
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
@@ -383,7 +351,6 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 	if(!pValidParamBlocks){
 		// shared spb
 		if(pSharedSPBElement){
-			pSharedSPBElement->FreeReference();
 			pSharedSPBElement = NULL;
 		}
 		
@@ -649,7 +616,7 @@ void deoglRComponentTexture::PrepareTUCs(){
 		
 		if(pUseSkinTexture){
 			deoglRenderThread &renderThread = pComponent.GetRenderThread();
-			deoglRDynamicSkin *dynamicSkin = NULL;
+			deoglRDynamicSkin::Ref dynamicSkin = NULL;
 			deoglSkinState *skinState = NULL;
 			deoglTexUnitConfig unit[8];
 			
@@ -745,7 +712,7 @@ deoglTexUnitsConfig *deoglRComponentTexture::BareGetTUCFor(deoglSkinTexturePipel
 	
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
-	deoglRDynamicSkin *dynamicSkin = NULL;
+	deoglRDynamicSkin::Ref dynamicSkin = NULL;
 	deoglSkinState *skinState = NULL;
 	deoglTexUnitsConfig *tuc = NULL;
 	
@@ -789,7 +756,7 @@ deoglSkinTexturePipelines::eTypes type) const{
 	
 	deoglRenderThread &renderThread = pComponent.GetRenderThread();
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
-	deoglRDynamicSkin *dynamicSkin = NULL;
+	deoglRDynamicSkin::Ref dynamicSkin = NULL;
 	deoglSkinState *skinState = NULL;
 	deoglTexUnitsConfig *tuc = NULL;
 	

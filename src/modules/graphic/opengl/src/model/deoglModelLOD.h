@@ -111,12 +111,12 @@ public:
 	int pVertPosSetCount;
 	int pVertPosSetPosCount;
 	
-	deoglSharedVBOBlock *pVBOBlock;
-	deoglSharedVBOBlock *pVBOBlockPositionWeight;
-	deoglSharedVBOBlock *pVBOBlockCalcNormalTangent;
-	deoglSharedVBOBlock *pVBOBlockWriteSkinnedVBO;
-	deoglSharedVBOBlock *pVBOBlockWithWeight;
-	deoglSharedVBOBlock *pVBOBlockVertPosSet;
+	deoglSharedVBOBlock::Ref pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlockPositionWeight;
+	deoglSharedVBOBlock::Ref pVBOBlockCalcNormalTangent;
+	deoglSharedVBOBlock::Ref pVBOBlockWriteSkinnedVBO;
+	deoglSharedVBOBlock::Ref pVBOBlockWithWeight;
+	deoglSharedVBOBlock::Ref pVBOBlockVertPosSet;
 	GLuint pIBO;
 	deoglVBOLayout::eIndexTypes pIBOType;
 	

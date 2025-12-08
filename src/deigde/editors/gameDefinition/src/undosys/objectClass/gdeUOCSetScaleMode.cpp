@@ -38,7 +38,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetScaleMode::gdeUOCSetScaleMode(gdeObjectClass *objectClass,
+gdeUOCSetScaleMode::gdeUOCSetScaleMode(gdeObjectClass::Ref objectClass,
 gdeObjectClass::eScaleModes newValue) :
 pObjectClass(NULL)
 {
@@ -52,13 +52,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetScaleMode::~gdeUOCSetScaleMode(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

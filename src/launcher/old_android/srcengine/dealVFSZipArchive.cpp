@@ -185,20 +185,15 @@ dealVFSZipArchive::cArchiveDirectory *dealVFSZipArchive::cArchiveDirectory
 
 dealVFSZipArchive::cArchiveDirectory *dealVFSZipArchive::cArchiveDirectory
 ::GetOrAddDirectoryNamed(const char *filename){
-	cArchiveDirectory * directory = GetDirectoryNamed(filename);
+	cArchiveDirectory::Ref directory = GetDirectoryNamed(filename);
 	if(directory){
 		return directory;
 	}
 	
 	try{
-		directory = new cArchiveDirectory(filename);
+		directory.TakeOver(new cArchiveDirectory(filename));
 		pDirectories.Add(directory);
-		directory->FreeReference();
-		
 	}catch(const deException &){
-		if(directory){
-			directory->FreeReference();
-		}
 		throw;
 	}
 	return directory;
@@ -214,7 +209,7 @@ dealVFSZipArchive::cArchiveDirectory *dealVFSZipArchive::cArchiveDirectory
 		return GetDirectoryNamed(path.GetComponentAt(0));
 	}
 	
-	cArchiveDirectory *directory = this;
+	cArchiveDirectory::Ref directory = this;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -227,7 +222,7 @@ dealVFSZipArchive::cArchiveDirectory *dealVFSZipArchive::cArchiveDirectory
 	return directory;
 }
 
-void dealVFSZipArchive::cArchiveDirectory::AddDirectory(cArchiveDirectory *directory){
+void dealVFSZipArchive::cArchiveDirectory::AddDirectory(cArchiveDirectory::Ref directory){
 	if(!directory || HasDirectoryNamed(directory->GetFilename()) || HasFileNamed(directory->GetFilename())){
 		DETHROW(deeInvalidParam);
 	}
@@ -283,7 +278,7 @@ dealVFSZipArchive::cArchiveFile *dealVFSZipArchive::cArchiveDirectory
 		return GetFileNamed(path.GetComponentAt(0));
 	}
 	
-	const cArchiveDirectory *directory = this;
+	const cArchiveDirectory::Ref directory = this;
 	int i;
 	
 	for(i=0; i<count-1; i++){
@@ -296,7 +291,7 @@ dealVFSZipArchive::cArchiveFile *dealVFSZipArchive::cArchiveDirectory
 	return directory->GetFileNamed(path.GetComponentAt(count - 1));
 }
 
-void dealVFSZipArchive::cArchiveDirectory::AddFile(cArchiveFile *file){
+void dealVFSZipArchive::cArchiveDirectory::AddFile(cArchiveFile::Ref file){
 	if(!file || HasDirectoryNamed(file->GetFilename()) || HasFileNamed(file->GetFilename())){
 		DETHROW(deeInvalidParam);
 	}
@@ -312,12 +307,10 @@ void dealVFSZipArchive::cArchiveDirectory::AddFile(cArchiveFile *file){
 ////////////////////////////
 
 dealVFSZipArchive::dealVFSZipArchive(dealEngineInstance &engineInstance,
-decBaseFileReader *fileReader, const decPath &pathRoot) :
+decBaseFileReader::Ref fileReader, const decPath &pathRoot) :
 deVFSContainer(pathRoot),
 pEngineInstance(engineInstance),
-pFileReader(NULL),
-pZipFile(NULL),
-pArchiveDirectory(NULL)
+pZipFile(NULL)
 {
 	if(!fileReader){
 		DETHROW(deeInvalidParam);
@@ -325,8 +318,6 @@ pArchiveDirectory(NULL)
 	
 	try{
 		pFileReader = fileReader;
-		fileReader->AddReference();
-		
 		pOpenZipFile();
 		pBuildFileTable();
 		//LogArchiveContent();
@@ -427,8 +418,8 @@ decBaseFileReader *dealVFSZipArchive::OpenFileForReading(const decPath &path){
 		DETHROW(deeFileNotFound);
 	}
 	
-	decMemoryFile *memoryFile = NULL;
-	decMemoryFileReader *memoryFileReader = NULL;
+	decMemoryFile::Ref memoryFile = NULL;
+	decMemoryFileReader::Ref memoryFileReader = NULL;
 	bool zipFileOpen = false;
 	
 	try{
@@ -451,7 +442,7 @@ decBaseFileReader *dealVFSZipArchive::OpenFileForReading(const decPath &path){
 		}
 		zipFileOpen = true;
 		
-		memoryFile = new decMemoryFile(path.GetPathUnix());
+		memoryFile.TakeOver(new decMemoryFile(path.GetPathUnix()));
 		memoryFile->Resize(file->GetFileSize());
 		const int readBytes = unzReadCurrentFile(pZipFile, memoryFile->GetPointer(), file->GetFileSize());
 		if(readBytes != file->GetFileSize()){
@@ -470,8 +461,7 @@ decBaseFileReader *dealVFSZipArchive::OpenFileForReading(const decPath &path){
 		}
 		zipFileOpen = false;
 		
-		memoryFileReader = new decMemoryFileReader(memoryFile);
-		memoryFile->FreeReference();
+		memoryFileReader.TakeOver(new decMemoryFileReader(memoryFile));
 		memoryFile = NULL;
 		
 		pMutex.Unlock();
@@ -481,13 +471,6 @@ decBaseFileReader *dealVFSZipArchive::OpenFileForReading(const decPath &path){
 			unzCloseCurrentFile(pZipFile);
 		}
 		pMutex.Unlock();
-		
-		if(memoryFileReader){
-			memoryFileReader->FreeReference();
-		}
-		if(memoryFile){
-			memoryFile->FreeReference();
-		}
 		throw;
 	}
 	
@@ -594,14 +577,8 @@ TIME_SYSTEM dealVFSZipArchive::GetFileModificationTime(const decPath &path){
 //////////////////////
 
 void dealVFSZipArchive::pCleanUp(){
-	if(pArchiveDirectory){
-		pArchiveDirectory->FreeReference();
-	}
 	if(pZipFile){
 		unzClose(pZipFile);
-	}
-	if(pFileReader){
-		pFileReader->FreeReference();
 	}
 }
 
@@ -618,7 +595,7 @@ void dealVFSZipArchive::pBuildFileTable(){
 		DETHROW(deeReadFile);
 	}
 	
-	pArchiveDirectory = new cArchiveDirectory("");
+	pArchiveDirectory.TakeOver(new cArchiveDirectory(""));
 	
 	while(true){
 		if(unzGetCurrentFileInfo(pZipFile, &info, NULL, 0, NULL, 0, NULL, 0) != UNZ_OK){
@@ -635,14 +612,14 @@ void dealVFSZipArchive::pBuildFileTable(){
 			decPath archivePath;
 			archivePath.SetFromUnix(filename);
 			
-			cArchiveDirectory *directory = pArchiveDirectory;
+			cArchiveDirectory::Ref directory = pArchiveDirectory;
 			const int count = archivePath.GetComponentCount();
 			int i;
 			for(i=0; i<count-1; i++){
 				directory = directory->GetOrAddDirectoryNamed(archivePath.GetComponentAt(i));
 			}
 			
-			cArchiveFile *file = NULL;
+			cArchiveFile::Ref file = NULL;
 			
 			decDateTime time;
 			time.SetYear(info.tmu_date.tm_year);
@@ -658,15 +635,10 @@ void dealVFSZipArchive::pBuildFileTable(){
 			}
 			
 			try{
-				file = new cArchiveFile(archivePath.GetLastComponent(), archivePosition,
-					info.uncompressed_size, time.ToSystemTime());
+				file.TakeOver(new cArchiveFile(archivePath.GetLastComponent(), archivePosition,
+					info.uncompressed_size, time.ToSystemTime()));
 				directory->AddFile(file);
-				file->FreeReference();
-				
 			}catch(const deException &){
-				if(file){
-					file->FreeReference();
-				}
 				throw;
 			}
 		}

@@ -160,15 +160,8 @@
 gdeWindowMain::gdeWindowMain(igdeEditorModule &module) :
 igdeEditorWindow(module),
 
-pListener(NULL),
-
 pConfiguration(NULL),
-pLoadSaveSystem(NULL),
-
-pViewActiveObject(NULL),
-pWindowProperties(NULL),
-
-pActiveGameDefinition(NULL)
+pLoadSaveSystem(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -177,7 +170,7 @@ pActiveGameDefinition(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new gdeWindowMainListener(*this);
+	pListener.TakeOver(new gdeWindowMainListener(*this));
 	pLoadSaveSystem = new gdeLoadSaveSystem(*this);
 	pConfiguration = new gdeConfiguration(*this);
 	
@@ -191,10 +184,10 @@ pActiveGameDefinition(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(350)));
 	AddChild(splitted);
 	
-	pWindowProperties = new gdeWindowProperties(*this);
+	pWindowProperties.TakeOver(new gdeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewActiveObject = new gdeViewActiveObject(*this);
+	pViewActiveObject.TakeOver(new gdeViewActiveObject(*this));
 	splitted->AddChild(pViewActiveObject, igdeContainerSplitted::eaCenter);
 	
 	CreateNewGameDefinition();
@@ -207,22 +200,11 @@ gdeWindowMain::~gdeWindowMain(){
 	}
 	
 	SetActiveGameDefinition(NULL);
-	
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
-	if(pViewActiveObject){
-		pViewActiveObject->FreeReference();
-	}
-	
 	if(pConfiguration){
 		delete pConfiguration;
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -241,7 +223,7 @@ void gdeWindowMain::ResetViews(){
 
 
 
-void gdeWindowMain::SetActiveGameDefinition(gdeGameDefinition *gameDefinition){
+void gdeWindowMain::SetActiveGameDefinition(gdeGameDefinition::Ref gameDefinition){
 	if(gameDefinition == pActiveGameDefinition){
 		return;
 	}
@@ -253,13 +235,11 @@ void gdeWindowMain::SetActiveGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pActiveGameDefinition){
 		pActiveGameDefinition->RemoveListener(pListener);
-		pActiveGameDefinition->FreeReference();
 	}
 	
 	pActiveGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
-		gameDefinition->AddReference();
 		gameDefinition->AddListener(pListener);
 		
 		pActionEditUndo->SetUndoSystem(gameDefinition->GetUndoSystem());
@@ -290,7 +270,7 @@ void gdeWindowMain::LoadGameProject(bool silentErrors){
 	path.AddUnixPath(project->GetPathProjectGameDefinition());
 	
 	GetEditorModule().LogInfoFormat("Loading Game Definition %s", path.GetPathNative().GetString());
-	gdeGameDefinition *gameDefinition;
+	gdeGameDefinition::Ref gameDefinition;
 	
 	try{
 		gameDefinition = pLoadSaveSystem->LoadGameDefinition(path.GetPathNative());
@@ -306,8 +286,6 @@ void gdeWindowMain::LoadGameProject(bool silentErrors){
 	
 	// set active game definition
 	SetActiveGameDefinition(gameDefinition);
-	gameDefinition->FreeReference();
-	
 	// store information
 	gameDefinition->SetFilePath(path.GetPathNative());
 	gameDefinition->SetChanged(false);
@@ -500,8 +478,6 @@ public:
 		
 		// set active game definition
 		pWindow.SetActiveGameDefinition(gameDefinition);
-		gameDefinition->FreeReference();
-		
 		// store information
 		gameDefinition->SetFilePath(filename);
 		gameDefinition->SetChanged(false);

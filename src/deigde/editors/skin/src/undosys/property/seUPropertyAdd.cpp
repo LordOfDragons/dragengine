@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyAdd::seUPropertyAdd(seTexture *texture, const sePropertyList &properties){
+seUPropertyAdd::seUPropertyAdd(seTexture::Ref texture, const sePropertyList &properties){
 	if(!texture || properties.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
@@ -57,14 +57,10 @@ seUPropertyAdd::seUPropertyAdd(seTexture *texture, const sePropertyList &propert
 	pProperties = properties;
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 seUPropertyAdd::~seUPropertyAdd(){
 	pProperties.RemoveAll();
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

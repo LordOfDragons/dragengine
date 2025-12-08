@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCTextureSetScale : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	decVector2 pOldValue;
 	decVector2 pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */
-	gdeUOCTextureSetScale(gdeObjectClass *objectClass,
-		gdeOCComponentTexture *texture, const decVector2 &newValue);
+	gdeUOCTextureSetScale(gdeObjectClass::Ref objectClass,
+		gdeOCComponentTexture::Ref texture, const decVector2 &newValue);
 	
 protected:
 	/** Clean up undo action. */

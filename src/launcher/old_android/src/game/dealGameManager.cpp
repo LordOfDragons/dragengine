@@ -63,16 +63,11 @@
 /////////////////////////////////
 
 dealGameManager::dealGameManager(dealLauncher &launcher) :
-pLauncher(launcher),
-pActiveProfile(NULL),
-pDefaultProfile(NULL)
+pLauncher(launcher)
 {
 }
 
 dealGameManager::~dealGameManager(){
-	if(pDefaultProfile){
-		pDefaultProfile->FreeReference();
-	}
 	SetActiveProfile(NULL);
 	
 	pGameList.RemoveAll();
@@ -87,9 +82,9 @@ void dealGameManager::LoadGameList(){
 	dealGameXML gameXML(&pLauncher.GetLogger(), LOGSOURCE);
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
-	decBaseFileReader *reader;
+	decBaseFileReader::Ref reader;
 	decPath pattern;
-	dealGame *game;
+	dealGame::Ref game;
 	int i, count;
 	
 	logger.LogInfo(LOGSOURCE, "Loading game list");
@@ -110,11 +105,10 @@ void dealGameManager::LoadGameList(){
 			try{
 				reader = vfs.OpenFileForReading(pathFile);
 				
-				game = new dealGame(pLauncher);
+				game.TakeOver(new dealGame(pLauncher));
 				if(!game) DETHROW(deeOutOfMemory);
 				
 				gameXML.ReadFromFile(*reader, *game);
-				reader->FreeReference();
 				reader = NULL;
 				
 				if(game->GetIdentifier().IsEmpty()){
@@ -131,16 +125,8 @@ void dealGameManager::LoadGameList(){
 				}
 				
 				pGameList.Add(game);
-				game->FreeReference();
-				
 			}catch(const deException &){
 				logger.LogError(LOGSOURCE, "Failed to read game file");
-				if(game){
-					game->FreeReference();
-				}
-				if(reader){
-					reader->FreeReference();
-				}
 			}
 		}
 	}
@@ -175,18 +161,17 @@ void dealGameManager::ApplyProfileChanges(){
 dealGame *dealGameManager::LoadGameFromDisk(const char *path){
 	dealGameXML gameXML(&pLauncher.GetLogger(), LOGSOURCE);
 	deLogger &logger = pLauncher.GetLogger();
-	decBaseFileReader *reader = NULL;
-	dealGame *game = NULL;
+	decBaseFileReader::Ref reader = NULL;
+	dealGame::Ref game = NULL;
 	
 	logger.LogInfoFormat(LOGSOURCE, "Reading game definition file '%s'", path);
 	
 	try{
-		reader = new decDiskFileReader(path);
+		reader.TakeOver(new decDiskFileReader(path));
 		
-		game = new dealGame(pLauncher);
+		game.TakeOver(new dealGame(pLauncher));
 		
 		gameXML.ReadFromFile(*reader, *game);
-		reader->FreeReference();
 		reader = NULL;
 		
 		if(game->GetIdentifier().IsEmpty()){
@@ -204,12 +189,6 @@ dealGame *dealGameManager::LoadGameFromDisk(const char *path){
 		
 	}catch(const deException &){
 		logger.LogError(LOGSOURCE, "Failed to read game file");
-		if(game){
-			game->FreeReference();
-		}
-		if(reader){
-			reader->FreeReference();
-		}
 		throw;
 	}
 	
@@ -222,7 +201,7 @@ void dealGameManager::CreateDefaultProfile(){
 	dealEngineModule *module;
 	
 	if(!pDefaultProfile){
-		pDefaultProfile = new dealGameProfile;
+		pDefaultProfile.TakeOver(new dealGameProfile);
 	}
 	
 	// graphic module
@@ -319,20 +298,11 @@ void dealGameManager::CreateDefaultProfile(){
 
 
 
-void dealGameManager::SetActiveProfile(dealGameProfile *profile){
+void dealGameManager::SetActiveProfile(dealGameProfile::Ref profile){
 	if(profile == pActiveProfile){
 		return;
 	}
-	
-	if(pActiveProfile){
-		pActiveProfile->FreeReference();
-	}
-	
 	pActiveProfile = profile;
-	
-	if(profile){
-		profile->AddReference();
-	}
 }
 
 

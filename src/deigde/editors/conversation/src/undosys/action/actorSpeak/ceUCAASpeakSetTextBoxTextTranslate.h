@@ -38,8 +38,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakSetTextBoxTextTranslate : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	decString pOldText;
 	decString pNewText;
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	ceUCAASpeakSetTextBoxTextTranslate(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, const char *newText);
+	ceUCAASpeakSetTextBoxTextTranslate(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, const char *newText);
 	
 protected:
 	/** Clean up undo. */

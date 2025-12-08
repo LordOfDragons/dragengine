@@ -112,10 +112,6 @@ pVRCamera(nullptr),
 
 pLeakTracker(*this),
 
-pCanvasInputOverlay(nullptr),
-pCanvasDebugOverlay(nullptr),
-pCanvasOverlay(nullptr),
-
 pChoices(nullptr),
 pBufferObject(nullptr),
 pContext(nullptr),
@@ -245,52 +241,25 @@ void deoglRenderThread::SetVRDebugPanelMatrix(const decDMatrix &matrix){
 	pVRDebugPanelMatrix = matrix;
 }
 
-void deoglRenderThread::SetCanvasInputOverlay(deoglRCanvasView *canvas){
+void deoglRenderThread::SetCanvasInputOverlay(deoglRCanvasView::Ref canvas){
 	if(canvas == pCanvasInputOverlay){
 		return;
 	}
-	
-	if(pCanvasInputOverlay){
-		pCanvasInputOverlay->FreeReference();
-	}
-	
 	pCanvasInputOverlay = canvas;
-	
-	if(canvas){
-		canvas->AddReference();
-	}
 }
 
-void deoglRenderThread::SetCanvasDebugOverlay(deoglRCanvasView *canvas){
+void deoglRenderThread::SetCanvasDebugOverlay(deoglRCanvasView::Ref canvas){
 	if(canvas == pCanvasDebugOverlay){
 		return;
 	}
-	
-	if(pCanvasDebugOverlay){
-		pCanvasDebugOverlay->FreeReference();
-	}
-	
 	pCanvasDebugOverlay = canvas;
-	
-	if(canvas){
-		canvas->AddReference();
-	}
 }
 
-void deoglRenderThread::SetCanvasOverlay(deoglRCanvasView *canvas){
+void deoglRenderThread::SetCanvasOverlay(deoglRCanvasView::Ref canvas){
 	if(canvas == pCanvasOverlay){
 		return;
 	}
-	
-	if(pCanvasOverlay){
-		pCanvasOverlay->FreeReference();
-	}
-	
 	pCanvasOverlay = canvas;
-	
-	if(canvas){
-		canvas->AddReference();
-	}
 }
 
 
@@ -2048,15 +2017,13 @@ void deoglRenderThread::DebugMemoryUsage(const char *prefix){
 	FILE *minfoFile = open_memstream(&minfoString, &minfoSize);
 	if(minfoFile){
 		if(malloc_info(0, minfoFile) == 0){
-			decMemoryFile *memFile = new decMemoryFile("malloc_info");
+			decMemoryFile::Ref memFile.TakeOver(new decMemoryFile("malloc_info"));
 			memFile->Resize(minfoSize);
 			memcpy(memFile->GetPointer(), minfoString, minfoSize);
-			decMemoryFileReader *memFileReader = new decMemoryFileReader(memFile);
+			decMemoryFileReader::Ref memFileReader.TakeOver(new decMemoryFileReader(memFile));
 			decXmlDocument xmlDoc;
 			decXmlParser xmlParser(pLogger);
 			xmlParser.ParseXml(memFileReader, &xmlDoc);
-			memFileReader->FreeReference();
-			memFile->FreeReference();
 			long systemCurrent = 0;
 			long systemMax = 0;
 			int i;
@@ -2464,7 +2431,7 @@ void deoglRenderThread::pCleanUpThread(){
 	
 	// guard a reference to the active render window. this is allowed in this call.
 	// the context does steal the reference during cleanup so keep this in mind
-// 	deoglRRenderWindow *cleanUpWindow = NULL;
+// 	deoglRRenderWindow::Ref cleanUpWindow = NULL;
 	
 // 	if( pContext ){
 // 		cleanUpWindow = pContext->GetActiveRRenderWindow();
@@ -2493,15 +2460,12 @@ void deoglRenderThread::pCleanUpThread(){
 		
 		// remove canvas if present
 		if(pCanvasOverlay){
-			pCanvasOverlay->FreeReference();
 			pCanvasOverlay = nullptr;
 		}
 		if(pCanvasDebugOverlay){
-			pCanvasDebugOverlay->FreeReference();
 			pCanvasDebugOverlay = nullptr;
 		}
 		if(pCanvasInputOverlay){
-			pCanvasInputOverlay->FreeReference();
 			pCanvasInputOverlay = nullptr;
 		}
 		#ifdef TIME_CLEANUP

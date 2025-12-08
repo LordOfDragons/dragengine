@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-saeUPhonemeSetIPA::saeUPhonemeSetIPA(saePhoneme *phoneme, int newIPA){
+saeUPhonemeSetIPA::saeUPhonemeSetIPA(saePhoneme::Ref phoneme, int newIPA){
 	if(!phoneme) DETHROW(deeInvalidParam);
 	
 	pPhoneme = NULL;
@@ -50,13 +50,9 @@ saeUPhonemeSetIPA::saeUPhonemeSetIPA(saePhoneme *phoneme, int newIPA){
 	pNewIPA = newIPA;
 	
 	pPhoneme = phoneme;
-	phoneme->AddReference();
 }
 
 saeUPhonemeSetIPA::~saeUPhonemeSetIPA(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
 }
 
 

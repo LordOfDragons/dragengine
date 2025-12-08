@@ -48,7 +48,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	const deBillboard &pBillboard;
 	
-	deoglRBillboard *pRBillboard;
+	deoglRBillboard::Ref pRBillboard;
 	
 	deoglWorld *pParentWorld;
 	deoglSkinStateController *pSkinStateController;

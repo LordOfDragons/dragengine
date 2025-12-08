@@ -43,7 +43,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjDuplicate::meUObjDuplicate(meWorld *world, const decVector &offset) :
+meUObjDuplicate::meUObjDuplicate(meWorld::Ref world, const decVector &offset) :
 pWorld(nullptr)
 {
 	DEASSERT_NOTNULL(world)
@@ -108,7 +108,6 @@ pWorld(nullptr)
 	}
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUObjDuplicate::~meUObjDuplicate(){

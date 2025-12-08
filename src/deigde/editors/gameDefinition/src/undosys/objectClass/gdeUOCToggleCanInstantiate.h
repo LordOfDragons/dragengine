@@ -39,7 +39,7 @@ class gdeObjectClass;
  */
 class gdeUOCToggleCanInstantiate : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCToggleCanInstantiate(gdeObjectClass *objectClass);
+	gdeUOCToggleCanInstantiate(gdeObjectClass::Ref objectClass);
 	
 protected:
 	/** \brief Clean up undo action. */

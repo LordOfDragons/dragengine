@@ -154,16 +154,14 @@ public:
 
 saeWPView::saeWPView(saeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(NULL),
-pSAnimation(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox;
 	igdeAction::Ref action;
 	
-	pListener = new saeWPViewListener(*this);
+	pListener.TakeOver(new saeWPViewListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -188,10 +186,6 @@ pSAnimation(NULL)
 
 saeWPView::~saeWPView(){
 	SetSAnimation(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -199,7 +193,7 @@ saeWPView::~saeWPView(){
 // Management
 ///////////////
 
-void saeWPView::SetSAnimation(saeSAnimation *sanimation){
+void saeWPView::SetSAnimation(saeSAnimation::Ref sanimation){
 	if(sanimation == pSAnimation){
 		return;
 	}
@@ -209,7 +203,6 @@ void saeWPView::SetSAnimation(saeSAnimation *sanimation){
 	
 	if(pSAnimation){
 		pSAnimation->RemoveListener(pListener);
-		pSAnimation->FreeReference();
 	}
 	
 	pSAnimation = sanimation;
@@ -218,8 +211,6 @@ void saeWPView::SetSAnimation(saeSAnimation *sanimation){
 	
 	if(sanimation){
 		sanimation->AddListener(pListener);
-		sanimation->AddReference();
-		
 		pWPSky->SetSky(sanimation->GetSky());
 		pWPCamera->SetCamera(sanimation->GetCamera());
 		

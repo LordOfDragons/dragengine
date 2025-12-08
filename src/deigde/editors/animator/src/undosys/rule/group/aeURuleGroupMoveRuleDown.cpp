@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupMoveRuleDown::aeURuleGroupMoveRuleDown(aeRuleGroup *group, aeRule *rule){
+aeURuleGroupMoveRuleDown::aeURuleGroupMoveRuleDown(aeRuleGroup::Ref group, aeRule::Ref rule){
 	if(!group || !rule){
 		DETHROW(deeInvalidParam);
 	}
@@ -53,10 +53,7 @@ aeURuleGroupMoveRuleDown::aeURuleGroupMoveRuleDown(aeRuleGroup *group, aeRule *r
 	}
 	
 	pGroup = group;
-	group->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeURuleGroupMoveRuleDown::~aeURuleGroupMoveRuleDown(){
@@ -82,10 +79,4 @@ void aeURuleGroupMoveRuleDown::Redo(){
 //////////////////////
 
 void aeURuleGroupMoveRuleDown::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }

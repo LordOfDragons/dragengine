@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerToggleFrozen::seUControllerToggleFrozen(seController *controller) :
+seUControllerToggleFrozen::seUControllerToggleFrozen(seController::Ref controller) :
 pController(NULL)
 {
 	if(!controller){
@@ -49,13 +49,9 @@ pController(NULL)
 	SetShortInfo("Toggle Controller Frozen");
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 seUControllerToggleFrozen::~seUControllerToggleFrozen(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

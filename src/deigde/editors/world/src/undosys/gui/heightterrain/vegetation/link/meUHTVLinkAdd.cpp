@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVLinkAdd::meUHTVLinkAdd(meHTVegetationLayer *vlayer, meHTVRLink *link){
+meUHTVLinkAdd::meUHTVLinkAdd(meHTVegetationLayer::Ref vlayer, meHTVRLink::Ref link){
 	if(!vlayer || !link) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
@@ -52,9 +52,7 @@ meUHTVLinkAdd::meUHTVLinkAdd(meHTVegetationLayer *vlayer, meHTVRLink *link){
 	SetMemoryConsumption(sizeof(meUHTVLinkAdd));
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pLink = link;
-	link->AddReference();
 }
 
 meUHTVLinkAdd::~meUHTVLinkAdd(){

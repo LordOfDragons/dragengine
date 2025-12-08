@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUAddObjectClass : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeObjectClass *pObjectClass;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUAddObjectClass(gdeGameDefinition *gameDefinition, gdeObjectClass *objectClass);
+	gdeUAddObjectClass(gdeGameDefinition::Ref gameDefinition, gdeObjectClass::Ref objectClass);
 	
 protected:
 	/** \brief Clean up undo action. */

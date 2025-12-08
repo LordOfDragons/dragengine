@@ -42,7 +42,7 @@ class deImage;
  */
 class dedsSTNImage : public dedsStyledTextNode{
 private:
-	deImage *pImage;
+	deImage::Ref pImage;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -50,7 +50,7 @@ public:
 	/** Creates a new image node. */
 	dedsSTNImage();
 	/** Creates a new image node with the given image. */
-	dedsSTNImage(deImage *image);
+	dedsSTNImage(deImage::Ref image);
 	/** Cleans up the image node. */
 	~dedsSTNImage() override;
 	/*@}*/
@@ -60,7 +60,7 @@ public:
 	/** Retrieves the image or NULL if not set. */
 	inline deImage *GetImage() const{ return pImage; }
 	/** Sets the image. */
-	void SetImage(deImage *image);
+	void SetImage(deImage::Ref image);
 	/*@}*/
 };
 

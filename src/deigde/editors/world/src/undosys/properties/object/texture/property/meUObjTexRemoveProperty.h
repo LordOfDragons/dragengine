@@ -36,7 +36,7 @@ class meObjectTexture;
  */
 class meUObjTexRemoveProperty : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decString pKey;
 	decString pValue;
 	

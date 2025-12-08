@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeMoveUp : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	int pIndex;
 	
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeMoveUp(peeType *type);
+	peeUTypeMoveUp(peeType::Ref type);
 	
 protected:
 	/** \brief Clean up the undo action. */

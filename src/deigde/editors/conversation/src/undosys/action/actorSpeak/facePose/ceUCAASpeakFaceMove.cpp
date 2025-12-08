@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakFaceMove::ceUCAASpeakFaceMove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak,
-ceStrip *facePose, int newIndex){
+ceUCAASpeakFaceMove::ceUCAASpeakFaceMove(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak,
+ceStrip::Ref facePose, int newIndex){
 	if(!topic || !actorSpeak || !facePose){
 		DETHROW(deeInvalidParam);
 	}
@@ -61,25 +61,11 @@ ceStrip *facePose, int newIndex){
 	SetShortInfo("Move Face Pose");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pFacePose = facePose;
-	facePose->AddReference();
 }
 
 ceUCAASpeakFaceMove::~ceUCAASpeakFaceMove(){
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

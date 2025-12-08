@@ -90,7 +90,7 @@ private:
 	eLayerTypes pLayerType;
 	
 	int pTextures[6];
-	deoglRSkin *pSkin;
+	deoglRSkin::Ref pSkin;
 	
 	sBody *pBodies;
 	int pBodyCount;

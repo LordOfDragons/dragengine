@@ -57,9 +57,7 @@ pColBoneDynamic(false),
 pIndex(index),
 pParent(-1),
 pStaticCollisionTest(NULL),
-pStaticCollisionTestShape(NULL),
 pDirtyStaticTest(true),
-pDebugDrawer(NULL),
 pDDSShape(NULL)
 {
 	pStaticCollisionTestObject.SetOwnerCollider(collider, index);
@@ -224,20 +222,11 @@ btCollisionObject *debpColliderBone::GetStaticCollisionTestPrepare(){
 // Debugging
 //////////////
 
-void debpColliderBone::SetDebugDrawer(deDebugDrawer *debugDrawer){
+void debpColliderBone::SetDebugDrawer(deDebugDrawer::Ref debugDrawer){
 	if(debugDrawer == pDebugDrawer){
 		return;
 	}
-	
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
-	
 	pDebugDrawer = debugDrawer;
-	
-	if(debugDrawer){
-		debugDrawer->AddReference();
-	}
 }
 
 void debpColliderBone::SetDDSShape(deDebugDrawerShape *shape){
@@ -250,10 +239,6 @@ void debpColliderBone::SetDDSShape(deDebugDrawerShape *shape){
 //////////////////////
 
 void debpColliderBone::pCleanUp(){
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
-	
 	RemoveAllConstraints();
 	
 	if(pPhyBody){
@@ -262,9 +247,6 @@ void debpColliderBone::pCleanUp(){
 	
 	if(pStaticCollisionTest){
 		delete pStaticCollisionTest;
-	}
-	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
 	}
 }
 
@@ -280,7 +262,6 @@ void debpColliderBone::pUpdateStaticCollisionTest(){
 	}
 	
 	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
 		pStaticCollisionTestShape = NULL;
 	}
 	
@@ -288,7 +269,6 @@ void debpColliderBone::pUpdateStaticCollisionTest(){
 		pStaticCollisionTestShape = pCreateBPShape();
 		
 		if(pStaticCollisionTestShape){
-			pStaticCollisionTestShape->AddReference();
 			pStaticCollisionTest->setCollisionShape(pStaticCollisionTestShape->GetShape());
 			
 		}else{
@@ -297,7 +277,6 @@ void debpColliderBone::pUpdateStaticCollisionTest(){
 		
 	}catch(const deException &){
 		if(pStaticCollisionTestShape){
-			pStaticCollisionTestShape->FreeReference();
 			pStaticCollisionTestShape = NULL;
 		}
 		throw;

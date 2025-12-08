@@ -53,13 +53,9 @@ pSource(NULL)
 	SetShortInfo("Group source set application type");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceGroupSetApplicationType::~seUSourceGroupSetApplicationType(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

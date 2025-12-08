@@ -62,8 +62,8 @@ private:
 	bool pCurState;
 	eComponentTypes pType;
 	decString pTargetName;
-	igdeTriggerTarget *pTarget;
-	igdeTriggerListener *pTargetListener;
+	igdeTriggerTarget::Ref pTarget;
+	igdeTriggerListener::Ref pTargetListener;
 	decObjectOrderedSet pChildred;
 	
 	
@@ -114,16 +114,16 @@ public:
 	inline igdeTriggerTarget *GetTarget() const{ return pTarget; }
 	
 	/** \brief Set trigger target or NULL. */
-	void SetTarget(igdeTriggerTarget *target);
+	void SetTarget(igdeTriggerTarget::Ref target);
 	
 	/** \brief Target listener or NULL. */
 	inline igdeTriggerListener *GetTargetListener() const{ return pTargetListener; }
 	
 	/** \brief Set target listener or NULL. */
-	void SetTargetListener(igdeTriggerListener *listener);
+	void SetTargetListener(igdeTriggerListener::Ref listener);
 	
 	/** \brief Link trigger targets using the given trigger table. */
-	void LinkTargets(igdeTriggerTargetList &triggerTable, igdeTriggerListener *listener);
+	void LinkTargets(igdeTriggerTargetList &triggerTable, igdeTriggerListener::Ref listener);
 	
 	/** \brief Unlink trigger targets. */
 	void UnlinkTargets();

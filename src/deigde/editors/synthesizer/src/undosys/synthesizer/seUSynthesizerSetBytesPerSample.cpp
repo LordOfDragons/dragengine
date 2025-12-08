@@ -52,8 +52,6 @@ pSynthesizer(NULL)
 	
 	try{
 		pSynthesizer = synthesizer;
-		pSynthesizer->AddReference();
-		
 		SetShortInfo("Synthesizer set bytes per sample");
 		
 	}catch(const deException &){
@@ -85,7 +83,4 @@ void seUSynthesizerSetBytesPerSample::Redo(){
 //////////////////////
 
 void seUSynthesizerSetBytesPerSample::pCleanUp(){
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

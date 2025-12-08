@@ -41,9 +41,9 @@ class gdeFilePattern;
  */
 class gdeUGDWPCFPAdd : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
-	gdeFilePattern *pFilePattern;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeProperty::Ref pProperty;
+	gdeFilePattern::Ref pFilePattern;
 	
 	
 	
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDWPCFPAdd(gdeGameDefinition *gamedef, gdeProperty *property, gdeFilePattern *filePattern);
+	gdeUGDWPCFPAdd(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property, gdeFilePattern::Ref filePattern);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -38,7 +38,7 @@ class lpeLangPack;
  */
 class lpeULangPackSetMissingText : public igdeUndo{
 private:
-	lpeLangPack *pLangPack;
+	lpeLangPack::Ref pLangPack;
 	
 	decUnicodeString pOldMissingText;
 	decUnicodeString pNewMissingText;
@@ -52,7 +52,7 @@ public:
 	/** \missingText Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	lpeULangPackSetMissingText(lpeLangPack *langpack, const decUnicodeString &newMissingText);
+	lpeULangPackSetMissingText(lpeLangPack::Ref langpack, const decUnicodeString &newMissingText);
 	
 protected:
 	/** \brief Clean up undo. */

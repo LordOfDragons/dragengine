@@ -58,7 +58,6 @@
 seSourceSynthesizer::seSourceSynthesizer(deEngine *engine) :
 seSource(deSynthesizerSourceVisitorIdentify::estSynthesizer),
 pEngine(engine),
-pChildSynthesizer(NULL),
 pControllerNames(NULL),
 pControllerNameCount(0),
 pConnections(NULL),
@@ -75,10 +74,6 @@ pControllerNameCount(0),
 pConnections(NULL),
 pConnectionCount(0)
 {
-	if(pChildSynthesizer){
-		pChildSynthesizer->AddReference();
-	}
-	
 	const int controllerNamesCount = copy.pControllerNameCount;
 	if(controllerNamesCount > 0){
 		pControllerNames = new decString[controllerNamesCount];
@@ -121,10 +116,6 @@ seSourceSynthesizer::~seSourceSynthesizer(){
 	if(pControllerNames){
 		delete [] pControllerNames;
 	}
-	
-	if(pChildSynthesizer){
-		pChildSynthesizer->FreeReference();
-	}
 }
 
 
@@ -144,10 +135,10 @@ void seSourceSynthesizer::SetPathSynthesizer(const char *path){
 
 void seSourceSynthesizer::UpdateChildSynthesizer(){
 	deSynthesizerSourceSynthesizer * const source = (deSynthesizerSourceSynthesizer*)GetEngineSource();
-	deSynthesizerController *engController = NULL;
-	deSynthesizerLink *engLink = NULL;
-	deSynthesizerSource *engSource = NULL;
-	seSynthesizer *synthesizer = NULL;
+	deSynthesizerController::Ref engController = NULL;
+	deSynthesizerLink::Ref engLink = NULL;
+	deSynthesizerSource::Ref engSource = NULL;
+	seSynthesizer::Ref synthesizer = NULL;
 	int c, l, s;
 	
 	// free controller name list
@@ -159,7 +150,6 @@ void seSourceSynthesizer::UpdateChildSynthesizer(){
 	
 	// release the sub synthesizer
 	if(pChildSynthesizer){
-		pChildSynthesizer->FreeReference();
 		pChildSynthesizer = NULL;
 	}
 	
@@ -179,7 +169,7 @@ void seSourceSynthesizer::UpdateChildSynthesizer(){
 			for(c=0; c<controllerCount; c++){
 				const seController &controller = *synthesizer->GetControllers().GetAt(c);
 				
-				engController = new deSynthesizerController;
+				engController.TakeOver(new deSynthesizerController);
 				engController->SetValueRange(controller.GetMinimumValue(), controller.GetMaximumValue());
 				engController->SetClamp(controller.GetClamp());
 				engController->SetCurve(controller.GetCurve());
@@ -193,7 +183,7 @@ void seSourceSynthesizer::UpdateChildSynthesizer(){
 			for(l=0; l<linkCount; l++){
 				const seLink &link = *synthesizer->GetLinks().GetAt(l);
 				
-				engLink = new deSynthesizerLink;
+				engLink.TakeOver(new deSynthesizerLink);
 				
 				if(link.GetController()){
 					engLink->SetController(synthesizer->GetControllers().IndexOf(link.GetController()));
@@ -214,7 +204,6 @@ void seSourceSynthesizer::UpdateChildSynthesizer(){
 				engSource = synthesizer->GetSources().GetAt(s)->CreateEngineSource();
 				
 				pChildSynthesizer->AddSource(engSource);
-				engSource->FreeReference();
 				engSource = NULL;
 			}
 			
@@ -228,24 +217,9 @@ void seSourceSynthesizer::UpdateChildSynthesizer(){
 			}
 			
 			// free the loaded synthesizer as it is no more needed
-			synthesizer->FreeReference();
-			
 		}catch(const deException &){
 			GetSynthesizer()->GetEnvironment()->GetLogger()->LogInfoFormat("Synthesizer Editor",
 				"Failed to load child synthesizer '%s' (base directory '%s')", pPathSynthesizer.GetString(), basePath.GetString());
-			
-			if(engSource){
-				engSource->FreeReference();
-			}
-			if(engLink){
-				engLink->FreeReference();
-			}
-			if(engController){
-				engController->FreeReference();
-			}
-			if(synthesizer){
-				synthesizer->FreeReference();
-			}
 		}
 	}
 	
@@ -324,7 +298,7 @@ seController *seSourceSynthesizer::GetControllerAt(int position) const{
 	return pConnections[position];
 }
 
-void seSourceSynthesizer::SetControllerAt(int position, seController *controller){
+void seSourceSynthesizer::SetControllerAt(int position, seController::Ref controller){
 	if(position < 0 || position >= pConnectionCount){
 		DETHROW(deeInvalidParam);
 	}
@@ -340,11 +314,6 @@ void seSourceSynthesizer::SetControllerAt(int position, seController *controller
 	}
 	
 	pConnections[position] = controller;
-	
-	if(controller){
-		controller->AddReference();
-	}
-	
 	if(source){
 		pUpdateConnections(*source);
 	}
@@ -358,7 +327,7 @@ deSynthesizerSource *seSourceSynthesizer::CreateEngineSource(){
 	deSynthesizerSourceSynthesizer *engSource = NULL;
 	
 	try{
-		engSource = new deSynthesizerSourceSynthesizer;
+		engSource.TakeOver(new deSynthesizerSourceSynthesizer);
 		
 		InitEngineSource(engSource);
 		
@@ -367,9 +336,6 @@ deSynthesizerSource *seSourceSynthesizer::CreateEngineSource(){
 		pUpdateConnections(*engSource);
 		
 	}catch(const deException &){
-		if(engSource){
-			engSource->FreeReference();
-		}
 		throw;
 	}
 	
@@ -385,14 +351,9 @@ seSourceSynthesizer &seSourceSynthesizer::operator=(const seSourceSynthesizer &c
 	SetPathSynthesizer(copy.pPathSynthesizer);
 	
 	if(pChildSynthesizer){
-		pChildSynthesizer->FreeReference();
 		pChildSynthesizer = NULL;
 	}
 	pChildSynthesizer = copy.pChildSynthesizer;
-	if(pChildSynthesizer){
-		pChildSynthesizer->AddReference();
-	}
-	
 	if(pControllerNames){
 		delete [] pControllerNames;
 		pControllerNames = NULL;

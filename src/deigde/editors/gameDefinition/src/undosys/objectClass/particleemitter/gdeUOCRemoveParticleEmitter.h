@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCRemoveParticleEmitter : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveParticleEmitter(gdeObjectClass *objectClass, gdeOCParticleEmitter *particleEmitter);
+	gdeUOCRemoveParticleEmitter(gdeObjectClass::Ref objectClass, gdeOCParticleEmitter::Ref particleEmitter);
 	
 protected:
 	/** \brief Clean up undo action. */

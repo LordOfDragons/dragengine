@@ -67,7 +67,7 @@ public:
 	deHeightTerrain *GetHeightTerrain(dsRealObject *myself) const;
 	
 	/** \brief Push height terrain or NULL. */
-	void PushHeightTerrain(dsRunTime *rt, deHeightTerrain *hterrain);
+	void PushHeightTerrain(dsRunTime *rt, deHeightTerrain::Ref hterrain);
 	
 	/** \brief Script module. */
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }

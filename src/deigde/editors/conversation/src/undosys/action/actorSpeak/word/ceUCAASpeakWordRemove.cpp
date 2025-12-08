@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakWordRemove::ceUCAASpeakWordRemove(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *word){
+ceUCAASpeakWordRemove::ceUCAASpeakWordRemove(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref word){
 	if(!topic || !actorSpeak || !word){
 		DETHROW(deeInvalidParam);
 	}
@@ -59,25 +59,11 @@ ceUCAASpeakWordRemove::ceUCAASpeakWordRemove(ceConversationTopic *topic, ceCAAct
 	SetShortInfo("Remove Word");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pWord = word;
-	word->AddReference();
 }
 
 ceUCAASpeakWordRemove::~ceUCAASpeakWordRemove(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

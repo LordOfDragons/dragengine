@@ -71,9 +71,6 @@ pDDSCoordSystem(NULL)
 	if(!ocfield){
 		DETHROW(deeInvalidParam);
 	}
-	
-	pOCForceField->AddReference();
-	
 	try{
 		pCreateDebugDrawer();
 		pCreateForceField();
@@ -194,10 +191,6 @@ void gdeVAOForceField::pCleanUp(){
 	if(pDebugDrawer){
 		pView.GetGameDefinition()->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		pDebugDrawer = NULL;
-	}
-	
-	if(pOCForceField){
-		pOCForceField->FreeReference();
 	}
 }
 

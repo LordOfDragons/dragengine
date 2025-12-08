@@ -43,7 +43,7 @@
 
 // Native Structure
 struct sEffFilKerMatrixNatDat{
-	deEffectFilterKernel *effect;
+	deEffectFilterKernel::Ref effect;
 };
 
 
@@ -239,7 +239,7 @@ deEffectFilterKernel *deClassEffectFilterKernel::GetEffect(dsRealObject *myself)
 	return ((sEffFilKerMatrixNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
-void deClassEffectFilterKernel::PushEffect(dsRunTime *rt, deEffectFilterKernel *effect){
+void deClassEffectFilterKernel::PushEffect(dsRunTime *rt, deEffectFilterKernel::Ref effect){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -259,8 +259,6 @@ void deClassEffectFilterKernel::PushEffect(dsRunTime *rt, deEffectFilterKernel *
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.effect = effect;
-		effect->AddReference();
-		
 		baseClass->AssignEffect(rt->GetValue(0)->GetRealObject(), effect);
 		
 	}catch(...){

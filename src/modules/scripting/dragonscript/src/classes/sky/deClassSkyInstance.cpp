@@ -47,7 +47,7 @@
 /////////////////////
 
 struct sSkyInstNatDat{
-	deSkyInstance *instance;
+	deSkyInstance::Ref instance;
 };
 
 
@@ -354,7 +354,7 @@ deSkyInstance *deClassSkyInstance::GetInstance(dsRealObject *myself) const{
 	return ((sSkyInstNatDat*)p_GetNativeData(myself->GetBuffer()))->instance;
 }
 
-void deClassSkyInstance::PushInstance(dsRunTime *rt, deSkyInstance *instance){
+void deClassSkyInstance::PushInstance(dsRunTime *rt, deSkyInstance::Ref instance){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -366,5 +366,4 @@ void deClassSkyInstance::PushInstance(dsRunTime *rt, deSkyInstance *instance){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sSkyInstNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->instance = instance;
-	instance->AddReference();
 }

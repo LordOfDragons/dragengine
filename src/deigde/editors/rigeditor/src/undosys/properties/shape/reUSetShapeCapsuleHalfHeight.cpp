@@ -43,12 +43,9 @@ reUSetShapeCapsuleHalfHeight::reUSetShapeCapsuleHalfHeight(reRigShapeCapsule *sh
 	pNewHalfHeight = halfHeight;
 	
 	SetShortInfo("Set Capsule Shape Half Height");
-	
-	pShape->AddReference();
 }
 
 reUSetShapeCapsuleHalfHeight::~reUSetShapeCapsuleHalfHeight(){
-	pShape->FreeReference();
 }
 
 

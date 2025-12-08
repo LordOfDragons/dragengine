@@ -57,7 +57,7 @@ public:
 private:
 	projPanelTestRun &pPanelTestRun;
 	const projRemoteClient::Ref pClient;
-	projPanelRemoteClientListener *pListener;
+	projPanelRemoteClientListener::Ref pListener;
 	
 	int pMaxLines;
 	

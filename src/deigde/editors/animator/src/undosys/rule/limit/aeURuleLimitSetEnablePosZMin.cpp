@@ -49,13 +49,9 @@ aeURuleLimitSetEnablePosZMin::aeURuleLimitSetEnablePosZMin(aeRuleLimit *rule){
 	SetShortInfo("Limit toggle enable minimum z position");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnablePosZMin::~aeURuleLimitSetEnablePosZMin(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

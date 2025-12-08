@@ -51,9 +51,9 @@ private:
 	deEngine *pEngine;
 	meWorld *pWorld;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSPath;
-	deNavigator *pEngNavigator;
+	deNavigator::Ref pEngNavigator;
 	
 	decDVector pStartPosition;
 	decDVector pGoalPosition;

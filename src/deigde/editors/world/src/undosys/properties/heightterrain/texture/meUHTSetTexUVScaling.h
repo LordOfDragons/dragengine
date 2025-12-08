@@ -45,9 +45,9 @@ class meHeightTerrainTexture;
  */
 class meUHTSetTexUVScaling : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	decVector2 pOldScaling;
 	decVector2 pNewScaling;
@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetTexUVScaling(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, const decVector2 &newScaling);
+	meUHTSetTexUVScaling(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture, const decVector2 &newScaling);
 	
 protected:
 	/** \brief Clean up object. */

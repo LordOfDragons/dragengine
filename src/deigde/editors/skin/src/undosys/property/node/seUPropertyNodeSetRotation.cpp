@@ -38,8 +38,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUPropertyNodeSetRotation::seUPropertyNodeSetRotation(sePropertyNode *node, float newValue) :
-pNode(NULL),
+seUPropertyNodeSetRotation::seUPropertyNodeSetRotation(sePropertyNode::Ref node, float newValue) :
+
 pNewValue(newValue)
 {
 	if(!node || !node->GetProperty()){
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = node->GetRotation();
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPropertyNodeSetRotation::~seUPropertyNodeSetRotation(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

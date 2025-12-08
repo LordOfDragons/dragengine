@@ -39,11 +39,11 @@ class ceConversationCondition;
  */
 class ceUCAIfElseCaseSetCondition : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
-	ceConversationCondition *pOldCondition;
-	ceConversationCondition *pNewCondition;
+	ceConversationTopic::Ref pTopic;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
+	ceConversationCondition::Ref pOldCondition;
+	ceConversationCondition::Ref pNewCondition;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -52,8 +52,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAIfElseCaseSetCondition(ceConversationTopic *topic, ceCAIfElse *ifElse,
-	ceCAIfElseCase *ifcase, ceConversationCondition *newCondition);
+	ceUCAIfElseCaseSetCondition(ceConversationTopic::Ref topic, ceCAIfElse::Ref ifElse,
+	ceCAIfElseCase::Ref ifcase, ceConversationCondition::Ref newCondition);
 	
 	/** \brief Clean up undo object. */
 	virtual ~ceUCAIfElseCaseSetCondition();

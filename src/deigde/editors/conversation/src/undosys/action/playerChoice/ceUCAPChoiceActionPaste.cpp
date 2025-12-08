@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAPChoiceActionPaste::ceUCAPChoiceActionPaste(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice,
-ceCAPlayerChoiceOption *option, const ceConversationActionList &actions, int index) :
+ceUCAPChoiceActionPaste::ceUCAPChoiceActionPaste(ceConversationTopic *topic, ceCAPlayerChoice::Ref playerChoice,
+ceCAPlayerChoiceOption::Ref option, const ceConversationActionList &actions, int index) :
 ceUCActionPaste(topic, actions, index)
 {
 	if(!playerChoice || actions.GetCount() == 0){
@@ -72,21 +72,12 @@ ceUCActionPaste(topic, actions, index)
 	}
 	
 	pPlayerChoice = playerChoice;
-	playerChoice->AddReference();
-	
 	if(option){
 		pOption = option;
-		option->AddReference();
 	}
 }
 
 ceUCAPChoiceActionPaste::~ceUCAPChoiceActionPaste(){
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
 }
 
 

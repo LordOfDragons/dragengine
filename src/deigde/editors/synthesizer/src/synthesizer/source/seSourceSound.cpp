@@ -52,7 +52,6 @@
 seSourceSound::seSourceSound(deEngine *engine) :
 seSource(deSynthesizerSourceVisitorIdentify::estSound),
 pEngine(engine),
-pSound(NULL),
 pMinSpeed(1.0f),
 pMaxSpeed(1.0f),
 pLooping(false){
@@ -69,15 +68,9 @@ pLooping(copy.pLooping),
 pTargetSpeed(copy.pTargetSpeed),
 pTargetPlay(copy.pTargetPlay)
 {
-	if(pSound){
-		pSound->AddReference();
-	}
 }
 
 seSourceSound::~seSourceSound(){
-	if(pSound){
-		pSound->FreeReference();
-	}
 }
 
 
@@ -97,7 +90,6 @@ void seSourceSound::SetPathSound(const char *path){
 
 void seSourceSound::UpdateSound(){
 	if(pSound){
-		pSound->FreeReference();
 		pSound = NULL;
 	}
 	
@@ -208,11 +200,11 @@ void seSourceSound::RemoveLinksFromAllTargets(){
 
 
 deSynthesizerSource *seSourceSound::CreateEngineSource(){
-	deSynthesizerSourceSound *engSource = NULL;
+	deSynthesizerSourceSound::Ref engSource = NULL;
 	
 	try{
 		// create source
-		engSource = new deSynthesizerSourceSound;
+		engSource.TakeOver(new deSynthesizerSourceSound);
 		
 		// init source
 		InitEngineSource(engSource);
@@ -226,9 +218,6 @@ deSynthesizerSource *seSourceSound::CreateEngineSource(){
 		pTargetPlay.UpdateEngineTarget(GetSynthesizer(), engSource->GetTargetPlay());
 		
 	}catch(const deException &){
-		if(engSource){
-			engSource->FreeReference();
-		}
 		throw;
 	}
 	

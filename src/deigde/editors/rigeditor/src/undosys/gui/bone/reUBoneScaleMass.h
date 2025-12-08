@@ -49,7 +49,7 @@ private:
 	};
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	float pNewMass;
 	
@@ -65,7 +65,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */
-	reUBoneScaleMass(reRig *rig, const decObjectOrderedSet &bones, float newMass);
+	reUBoneScaleMass(reRig::Ref rig, const decObjectOrderedSet &bones, float newMass);
 	
 protected:
 	/** \brief Clean up the undo. */

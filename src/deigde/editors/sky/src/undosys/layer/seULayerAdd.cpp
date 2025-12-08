@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerAdd::seULayerAdd(seSky *sky, seLayer *layer) :
-pSky(NULL),
+seULayerAdd::seULayerAdd(seSky::Ref sky, seLayer::Ref layer) :
+
 pLayer(NULL)
 {
 	if(!sky || !layer){
@@ -51,19 +51,10 @@ pLayer(NULL)
 	SetShortInfo("Add Layer");
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerAdd::~seULayerAdd(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

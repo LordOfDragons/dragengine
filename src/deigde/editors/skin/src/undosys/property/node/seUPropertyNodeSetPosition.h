@@ -38,7 +38,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeSetPosition : public igdeUndo{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	decPoint3 pOldValue;
 	decPoint3 pNewValue;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetPosition(sePropertyNode *node, const decPoint3 &newValue);
+	seUPropertyNodeSetPosition(sePropertyNode::Ref node, const decPoint3 &newValue);
 	
 protected:
 	/** \brief Clean up undo. */

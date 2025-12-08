@@ -40,8 +40,8 @@ class gdeProperty;
  */
 class gdeUGDDPSetMaxValue : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeProperty::Ref pProperty;
 	
 	float pOldValue;
 	float pNewValue;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDDPSetMaxValue(gdeGameDefinition *gamedef, gdeProperty *property, float newValue);
+	gdeUGDDPSetMaxValue(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

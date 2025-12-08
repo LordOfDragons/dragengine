@@ -37,7 +37,7 @@ class reRigShapeCylinder;
  */
 class reUSetShapeCylinderTopRadius : public igdeUndo{
 private:
-	reRigShapeCylinder *pShape;
+	reRigShapeCylinder::Ref pShape;
 	
 	float pOldTopRadius;
 	float pNewTopRadius;

@@ -58,8 +58,8 @@ private:
 	
 	decTexMatrix2 pTransform;
 	
-	deoglRSkin *pSkin;
-	deoglRDynamicSkin *pDynamicSkin;
+	deoglRSkin::Ref pSkin;
+	deoglRDynamicSkin::Ref pDynamicSkin;
 	deoglSkinState *pSkinState;
 	
 	deoglRSkin *pUseSkin;
@@ -72,7 +72,7 @@ private:
 	bool pIsRendered;
 	int pRenderTaskFilters;
 	
-	deoglSharedSPBElement *pSharedSPBElement;
+	deoglSharedSPBElement::Ref pSharedSPBElement;
 	decObjectList pSharedSPBRTIGroup;
 	decObjectList pSharedSPBRTIGroupShadow;
 	
@@ -134,13 +134,13 @@ public:
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL if there is none. */
-	void SetSkin(deoglRSkin *skin);
+	void SetSkin(deoglRSkin::Ref skin);
 	
 	/** Dynamic skin or NULL if there is none. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or NULL if there is none. */
-	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
+	void SetDynamicSkin(deoglRDynamicSkin::Ref dynamicSkin);
 	
 	/** Skin state or NULL if there is none. */
 	inline deoglSkinState *GetSkinState() const{ return pSkinState; }

@@ -86,16 +86,13 @@ static void enumAssets(AAssetManager *assetmgr){
 
 
 /** \brief Global null logger for big trouble situations. */
-deLoggerConsole *pNullLogger = NULL;
+deLoggerConsole::Ref pNullLogger = NULL;
 
 static struct NullLogger{
 	NullLogger(){
-		pNullLogger = new deLoggerConsole;
+		pNullLogger.TakeOver(new deLoggerConsole);
 	}
 	~NullLogger(){
-		if(pNullLogger){
-			pNullLogger->FreeReference();
-		}
 	}
 } vNullLogger;
 
@@ -258,7 +255,6 @@ void android_main(struct android_app *androidApp){
 		
 	}catch(const deException &e){
 		pNullLogger->LogException(LOGSOURCE, e);
-		pNullLogger->FreeReference();
 		return;
 	}
 	

@@ -260,7 +260,7 @@ void meNavigationSpace::SetActive(bool active){
 
 void meNavigationSpace::LoadFromFile(){
 	const char signatureCheck[] = "Drag[en]gine Navigation Space";
-	decBaseFileReader *fileReader = NULL;
+	decBaseFileReader::Ref fileReader = NULL;
 	int vertexCount = 0;
 	int edgeCount = 0;
 	int cornerCount = 0;
@@ -365,14 +365,7 @@ void meNavigationSpace::LoadFromFile(){
 						room.SetType(fileReader->ReadUShort());
 					}
 				}
-				
-				fileReader->FreeReference();
-				
 			}catch(const deException &e){
-				if(fileReader){
-					fileReader->FreeReference();
-				}
-				
 				pEngNavSpace->SetRoomCount(0);
 				pEngNavSpace->SetWallCount(0);
 				pEngNavSpace->SetFaceCount(0);
@@ -412,7 +405,7 @@ void meNavigationSpace::SaveToFile(){
 	}
 	
 	deVirtualFileSystem &vfs = *GetEngine()->GetVirtualFileSystem();
-	decBaseFileWriter *fileWriter = NULL;
+	decBaseFileWriter::Ref fileWriter = NULL;
 	const char signature[] = "Drag[en]gine Navigation Space";
 	int i, count;
 	decPath path;
@@ -475,13 +468,7 @@ void meNavigationSpace::SaveToFile(){
 			fileWriter->WriteUShort(room.GetBackWallCount());
 			fileWriter->WriteUShort((unsigned short)room.GetType());
 		}
-		
-		fileWriter->FreeReference();
-		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		throw;
 	}
 }
@@ -526,26 +513,11 @@ void meNavigationSpace::pCleanUp(){
 	SetWorld(NULL);
 	
 	pObjectPlaceholder = nullptr;
-	
-	if(pEngNavSpace){
-		pEngNavSpace->FreeReference();
-	}
 	if(pEngCollider){
 		pEnvironment->SetColliderUserPointer(pEngCollider, NULL);
-		pEngCollider->FreeReference();
 	}
-	if(pEngColComponent){
-		pEngColComponent->FreeReference();
-	}
-	if(pEngRig){
-		pEngRig->FreeReference();
-	}
-	
 	if(pDDSNavSpace){
 		delete pDDSNavSpace;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 
@@ -554,15 +526,14 @@ void meNavigationSpace::pCleanUp(){
 void meNavigationSpace::pUpdateShapes(){
 	pEngCollider->SetComponent(NULL);
 	if(pEngColComponent){
-		pEngColComponent->FreeReference();
 		pEngColComponent = NULL;
 	}
 	
 	if(pEngNavSpace){
 		deEngine &engine = *GetEngine();
 		bool canBuild = false;
-		deModel *model = NULL;
-		deSkin *skin = NULL;
+		deModel::Ref model = NULL;
+		deSkin::Ref skin = NULL;
 		
 		if(pEngNavSpace->GetRoomCount() > 0 || pEngNavSpace->GetFaceCount() > 0 || pEngNavSpace->GetEdgeCount() > 0){
 			if(pEngNavSpace->GetType() == deNavigationSpace::estGrid){
@@ -588,18 +559,8 @@ void meNavigationSpace::pUpdateShapes(){
 			pEngColComponent->SetRig(pEngRig);
 			
 		}catch(const deException &){
-			if(skin){
-				skin->FreeReference();
-			}
-			if(model){
-				model->FreeReference();
-			}
 			throw;
 		}
-		
-		model->FreeReference();
-		skin->FreeReference();
-		
 		pEngColComponent->SetPosition(pEngCollider->GetPosition());
 		pEngColComponent->SetOrientation(pEngCollider->GetOrientation());
 	}

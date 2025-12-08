@@ -40,7 +40,7 @@ class aeRuleGroup;
  */
 class aeURuleGroupPasteRule : public igdeUndo{
 private:
-	aeRuleGroup *pGroup;
+	aeRuleGroup::Ref pGroup;
 	aeRuleList pRuleList;
 	aeLinkList pRemoveLinkList;
 	aeControllerList pRemoveControllerList;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */
-	aeURuleGroupPasteRule(aeRuleGroup *group, const aeRuleList &ruleList, int index);
+	aeURuleGroupPasteRule(aeRuleGroup::Ref group, const aeRuleList &ruleList, int index);
 protected:
 	/** Clean up undo. */
 	virtual ~aeURuleGroupPasteRule();

@@ -36,7 +36,7 @@ class seProperty;
  */
 class seUPropertySetRenderableName : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	decString pOldName;
 	decString pNewName;
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetRenderableName(seProperty *property, const char *newName);
+	seUPropertySetRenderableName(seProperty::Ref property, const char *newName);
 	
 protected:
 	/** \brief Clean up undo. */

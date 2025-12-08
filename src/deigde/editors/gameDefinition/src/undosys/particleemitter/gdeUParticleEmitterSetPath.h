@@ -38,7 +38,7 @@ class gdeParticleEmitter;
  */
 class gdeUParticleEmitterSetPath : public igdeUndo{
 private:
-	gdeParticleEmitter *pParticleEmitter;
+	gdeParticleEmitter::Ref pParticleEmitter;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUParticleEmitterSetPath(gdeParticleEmitter *particleEmitter, const char *newValue);
+	gdeUParticleEmitterSetPath(gdeParticleEmitter::Ref particleEmitter, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

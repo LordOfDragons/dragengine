@@ -41,8 +41,8 @@
 ////////////////////////////
 
 gdeUOCEnvMapProbeSetInfluencePriority::gdeUOCEnvMapProbeSetInfluencePriority(
-gdeObjectClass *objectClass, gdeOCEnvMapProbe *envMapProbe, int newValue) :
-pObjectClass(NULL),
+gdeObjectClass::Ref objectClass, gdeOCEnvMapProbe::Ref envMapProbe, int newValue) :
+
 pEnvMapProbe(NULL)
 {
 	if(!objectClass || !envMapProbe){
@@ -55,19 +55,10 @@ pEnvMapProbe(NULL)
 	pNewValue = newValue;
 	
 	pEnvMapProbe = envMapProbe;
-	envMapProbe->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCEnvMapProbeSetInfluencePriority::~gdeUOCEnvMapProbeSetInfluencePriority(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeUMoveRuleUp::aeUMoveRuleUp(aeAnimator *animator, aeRule *rule){
+aeUMoveRuleUp::aeUMoveRuleUp(aeAnimator::Ref animator, aeRule::Ref rule){
 	if(!animator || !rule) DETHROW(deeInvalidParam);
 	
 	pAnimator = NULL;
@@ -50,10 +50,7 @@ aeUMoveRuleUp::aeUMoveRuleUp(aeAnimator *animator, aeRule *rule){
 	if(pIndex < 1) DETHROW(deeInvalidParam);
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeUMoveRuleUp::~aeUMoveRuleUp(){

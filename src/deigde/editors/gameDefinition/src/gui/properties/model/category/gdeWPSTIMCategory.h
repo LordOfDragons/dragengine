@@ -35,7 +35,7 @@ class gdeCategory;
  */
 class gdeWPSTIMCategory : public gdeWPSTreeItemModel{
 private:
-	gdeCategory *pCategory;
+	gdeCategory::Ref pCategory;
 	
 	
 	
@@ -43,7 +43,7 @@ protected:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMCategory(gdeWPSTreeModel &tree, eTypes type, gdeCategory *category);
+	gdeWPSTIMCategory(gdeWPSTreeModel &tree, eTypes type, gdeCategory::Ref category);
 	
 protected:
 	/** \brief Clean up tree item model. */

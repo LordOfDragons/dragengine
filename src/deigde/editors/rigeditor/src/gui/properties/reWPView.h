@@ -54,8 +54,8 @@ class reWPView : public igdeContainerScroll{
 private:
 	reWindowProperties &pWindowProperties;
 	
-	reWPViewListener *pListener;
-	reRig *pRig;
+	reWPViewListener::Ref pListener;
+	reRig::Ref pRig;
 	
 	igdeEditPath::Ref pEditModelPath;
 	igdeEditPath::Ref pEditSkinPath;
@@ -121,7 +121,7 @@ public:
 	inline reRig *GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
-	void SetRig(reRig *rig);
+	void SetRig(reRig::Ref rig);
 	
 	/** \brief Update resources. */
 	void UpdateResources();

@@ -68,10 +68,10 @@ deParticleEmitter *deParticleEmitterManager::GetRootParticleEmitter() const{
 }
 
 deParticleEmitter *deParticleEmitterManager::CreateParticleEmitter(){
-	deParticleEmitter *psys = NULL;
+	deParticleEmitter::Ref psys = NULL;
 	
 	try{
-		psys = new deParticleEmitter(this);
+		psys.TakeOver(new deParticleEmitter(this));
 		if(!psys) DETHROW(deeOutOfMemory);
 		
 		GetGraphicSystem()->LoadParticleEmitter(psys);
@@ -80,9 +80,6 @@ deParticleEmitter *deParticleEmitterManager::CreateParticleEmitter(){
 		pParticleEmitters.Add(psys);
 		
 	}catch(const deException &){
-		if(psys){
-			psys->FreeReference();
-		}
 		throw;
 	}
 	
@@ -104,7 +101,7 @@ void deParticleEmitterManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deParticleEmitterManager::SystemGraphicLoad(){
-	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
+	deParticleEmitter::Ref psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
 	
 	while(psys){
 		if(!psys->GetPeerGraphic()){
@@ -116,7 +113,7 @@ void deParticleEmitterManager::SystemGraphicLoad(){
 }
 
 void deParticleEmitterManager::SystemGraphicUnload(){
-	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
+	deParticleEmitter::Ref psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
 	
 	while(psys){
 		psys->SetPeerGraphic(NULL);
@@ -125,7 +122,7 @@ void deParticleEmitterManager::SystemGraphicUnload(){
 }
 
 void deParticleEmitterManager::SystemPhysicsLoad(){
-	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
+	deParticleEmitter::Ref psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
 	
 	while(psys){
 		if(!psys->GetPeerPhysics()){
@@ -137,7 +134,7 @@ void deParticleEmitterManager::SystemPhysicsLoad(){
 }
 
 void deParticleEmitterManager::SystemPhysicsUnload(){
-	deParticleEmitter *psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
+	deParticleEmitter::Ref psys = (deParticleEmitter*)pParticleEmitters.GetRoot();
 	
 	while(psys){
 		psys->SetPeerPhysics(NULL);

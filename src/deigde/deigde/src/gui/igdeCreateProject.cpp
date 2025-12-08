@@ -79,18 +79,10 @@
 igdeCreateProject::igdeCreateProject(igdeWindowMain &windowMain) :
 pWindowMain(windowMain),
 pTemplate(NULL),
-pProject(NULL),
-pGameId(decUuid::Random().ToHexString(false)),
-pGameDef(NULL){
+pGameId(decUuid::Random().ToHexString(false)){
 }
 
 igdeCreateProject::~igdeCreateProject(){
-	if(pGameDef){
-		pGameDef->FreeReference();
-	}
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 
@@ -139,7 +131,7 @@ void igdeCreateProject::CreateProject(){
 	path.AddUnixPath(pPathData);
 	pNativePathData = path.GetPathNative();
 	
-	pProject = new igdeGameProject(pWindowMain.GetEnvironment());
+	pProject.TakeOver(new igdeGameProject(pWindowMain.GetEnvironment()));
 	pProject->SetName(pName);
 	pProject->SetDescription(pDescription);
 	pProject->SetPathProjectGameDefinition(pPathGameDefProject);
@@ -305,7 +297,7 @@ void igdeCreateProject::pCreateGameDefinition(){
 	// create project game definition from shared new game definition file. we store the
 	// file content aside so we can save it as new game definition with a bit of text
 	// replacing. avoids the need to implement a full save code for game definition xml
-	pGameDef = new igdeGameDefinition(pWindowMain.GetEnvironment());
+	pGameDef.TakeOver(new igdeGameDefinition(pWindowMain.GetEnvironment()));
 	
 	pLoadSharedGameDefContent();
 	pSharedGameDefContentReplace();

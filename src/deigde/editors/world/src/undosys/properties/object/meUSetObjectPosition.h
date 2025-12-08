@@ -40,7 +40,7 @@ class meObject;
  */
 class meUSetObjectPosition : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decDVector pOldPosition;
 	decDVector pNewPosition;
@@ -50,7 +50,7 @@ public:
 	typedef deTObjectReference<meUSetObjectPosition> Ref;
 	
 	// constructor, destructor
-	meUSetObjectPosition(meObject *object, const decDVector &newPosition);
+	meUSetObjectPosition(meObject::Ref object, const decDVector &newPosition);
 	
 protected:
 	~meUSetObjectPosition();

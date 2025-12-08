@@ -64,7 +64,7 @@ public:
 	deAnimatorInstance *GetAnimatorInstance(dsRealObject *object) const;
 	
 	/** \brief Push animator instance or NULL on the stack. */
-	void PushAnimatorInstance(dsRunTime *rt, deAnimatorInstance *instance);
+	void PushAnimatorInstance(dsRunTime *rt, deAnimatorInstance::Ref instance);
 	
 	inline dsClass *GetClassAnimatorRuleBlendMode() const{ return pClsAnimatorRuleBlendMode; }
 	/*@}*/

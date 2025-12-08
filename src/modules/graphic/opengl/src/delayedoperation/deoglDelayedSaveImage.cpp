@@ -76,9 +76,9 @@ void deoglDelayedSaveImage::SaveImage(deGraphicOpenGl &ogl, deVirtualFileSystem 
 	//      for this reason no optimization with parallel tasks is used
 	deImageManager &imgmgr = *ogl.GetGameEngine()->GetImageManager();
 	const decString filename(pPath.GetPathUnix());
-	decBaseFileWriter *fileWriter = NULL;
+	decBaseFileWriter::Ref fileWriter = NULL;
 	decPath noConstPath(pPath);
-	deImage *image = NULL;
+	deImage::Ref image = NULL;
 	
 	try{
 		deBaseImageModule * const module = (deBaseImageModule*)ogl.GetGameEngine()->
@@ -91,19 +91,8 @@ void deoglDelayedSaveImage::SaveImage(deGraphicOpenGl &ogl, deVirtualFileSystem 
 		memcpy(image->GetData(), pData, pWidth * pHeight * pDepth * pComponentCount * (pBitCount >> 3));
 		fileWriter = vfs.OpenFileForWriting(noConstPath);
 		module->SaveImage(*fileWriter, *image);
-		
-		fileWriter->FreeReference();
 		fileWriter = NULL;
-		
-		image->FreeReference();
-		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
-		if(image){
-			image->FreeReference();
-		}
 		throw;
 	}
 }

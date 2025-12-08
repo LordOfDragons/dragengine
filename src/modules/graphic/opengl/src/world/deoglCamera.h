@@ -43,7 +43,7 @@ class deoglCamera : public deBaseGraphicCamera{
 private:
 	deGraphicOpenGl &pOgl;
 	const deCamera &pCamera;
-	deoglRCamera *pRCamera;
+	deoglRCamera::Ref pRCamera;
 	
 	deoglWorld *pParentWorld;
 	

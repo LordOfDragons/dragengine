@@ -47,8 +47,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleResult *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleResult::Ref pRule;
 	
 	int pOldVar;
 	int pNewVar;
@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleResultSetVar(meHTVegetationLayer *vlayer, meHTVRuleResult *rule, int nvar);
+	meUHTVRuleResultSetVar(meHTVegetationLayer::Ref vlayer, meHTVRuleResult::Ref rule, int nvar);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleResultSetVar();
 	/*@}*/

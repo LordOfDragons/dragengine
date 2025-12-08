@@ -64,7 +64,7 @@ igdeGDCCTexture *igdeGDCCTextureList::GetAt(int index) const{
 
 igdeGDCCTexture *igdeGDCCTextureList::GetNamed(const char *name) const{
 	const int count = pTextures.GetCount();
-	igdeGDCCTexture *texture;
+	igdeGDCCTexture::Ref texture;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -78,7 +78,7 @@ igdeGDCCTexture *igdeGDCCTextureList::GetNamed(const char *name) const{
 	return NULL;
 }
 
-int igdeGDCCTextureList::IndexOf(igdeGDCCTexture *texture) const{
+int igdeGDCCTextureList::IndexOf(igdeGDCCTexture::Ref texture) const{
 	return pTextures.IndexOf(texture);
 }
 
@@ -95,7 +95,7 @@ int igdeGDCCTextureList::IndexOfNamed(const char *name) const{
 	return -1;
 }
 
-bool igdeGDCCTextureList::Has(igdeGDCCTexture *texture) const{
+bool igdeGDCCTextureList::Has(igdeGDCCTexture::Ref texture) const{
 	return pTextures.Has(texture);
 }
 
@@ -103,7 +103,7 @@ bool igdeGDCCTextureList::HasNamed(const char *name) const{
 	return GetNamed(name) != NULL;
 }
 
-void igdeGDCCTextureList::Add(igdeGDCCTexture *texture){
+void igdeGDCCTextureList::Add(igdeGDCCTexture::Ref texture){
 	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
@@ -111,7 +111,7 @@ void igdeGDCCTextureList::Add(igdeGDCCTexture *texture){
 	pTextures.Add(texture);
 }
 
-void igdeGDCCTextureList::InsertAt(igdeGDCCTexture *texture, int index){
+void igdeGDCCTextureList::InsertAt(igdeGDCCTexture::Ref texture, int index){
 	if(!texture){
 		DETHROW(deeInvalidParam);
 	}
@@ -119,11 +119,11 @@ void igdeGDCCTextureList::InsertAt(igdeGDCCTexture *texture, int index){
 	pTextures.Insert(texture, index);
 }
 
-void igdeGDCCTextureList::MoveTo(igdeGDCCTexture *texture, int index){
+void igdeGDCCTextureList::MoveTo(igdeGDCCTexture::Ref texture, int index){
 	pTextures.Move(texture, index);
 }
 
-void igdeGDCCTextureList::Remove(igdeGDCCTexture *texture){
+void igdeGDCCTextureList::Remove(igdeGDCCTexture::Ref texture){
 	pTextures.Remove(texture);
 }
 
@@ -135,22 +135,18 @@ void igdeGDCCTextureList::RemoveAll(){
 
 void igdeGDCCTextureList::SetToDeepCopyFrom(const igdeGDCCTextureList &list){
 	const int count = list.GetCount();
-	igdeGDCCTexture *texture = NULL;
+	igdeGDCCTexture::Ref texture = NULL;
 	
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			texture = new igdeGDCCTexture(*list.GetAt(i));
+			texture.TakeOver(new igdeGDCCTexture(*list.GetAt(i)));
 			Add(texture);
-			texture->FreeReference();
 			texture = NULL;
 		}
 		
 	}catch(const deException &){
-		if(texture){
-			texture->FreeReference();
-		}
 		throw;
 	}
 }

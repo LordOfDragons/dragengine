@@ -43,7 +43,7 @@ class seProperty;
  */
 class seUPropertySetCurve : public igdeUndo{
 private:
-	seSkyLayer *pLayer;
+	seSkyLayer::Ref pLayer;
 	seProperty *pProperty;
 	
 	decCurveBezier pOldCurve;
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetCurve(seSkyLayer *layer, seProperty *property);
+	seUPropertySetCurve(seSkyLayer::Ref layer, seProperty *property);
 	/** \brief Clean up undo. */
 	virtual ~seUPropertySetCurve();
 	/*@}*/

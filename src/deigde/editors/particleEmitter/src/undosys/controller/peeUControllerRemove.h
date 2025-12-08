@@ -37,8 +37,8 @@ class peeEmitter;
  */
 class peeUControllerRemove : public igdeUndo{
 private:
-	peeEmitter *pEmitter;
-	peeController *pController;
+	peeEmitter::Ref pEmitter;
+	peeController::Ref pController;
 	int pIndex;
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo object. */
-	peeUControllerRemove(peeController *controller);
+	peeUControllerRemove(peeController::Ref controller);
 	
 protected:
 	/** \brief Clean up the undo object. */

@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetCamDistTo::ceUCCShotSetCamDistTo(ceCameraShot *cameraShot, float newDist){
+ceUCCShotSetCamDistTo::ceUCCShotSetCamDistTo(ceCameraShot::Ref cameraShot, float newDist){
 	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
@@ -50,13 +50,9 @@ ceUCCShotSetCamDistTo::ceUCCShotSetCamDistTo(ceCameraShot *cameraShot, float new
 	pNewDist = newDist;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetCamDistTo::~ceUCCShotSetCamDistTo(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

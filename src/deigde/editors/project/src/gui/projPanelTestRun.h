@@ -61,8 +61,8 @@ public:
 private:
 	projWindowMain &pWindowMain;
 	
-	projProject *pProject;
-	projPanelTestRunListener *pListener;
+	projProject::Ref pProject;
+	projPanelTestRunListener::Ref pListener;
 	
 	projTestRunner *pTestRunner;
 	bool pIsRunning;
@@ -117,7 +117,7 @@ public:
 	inline projProject *GetProject() const{ return pProject; }
 	
 	/** \brief Set synthesizer. */
-	void SetProject(projProject *project);
+	void SetProject(projProject::Ref project);
 	
 	/** \brief Test runner or \em NULL. */
 	inline projTestRunner *GetTestRunner() const{ return pTestRunner; }

@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCForceFieldSetTriggerName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	gdeOCForceField::eTriggers pTrigger;
 	decString pOldValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCForceFieldSetTriggerName(gdeObjectClass *objectClass,
-		gdeOCForceField *forceField, gdeOCForceField::eTriggers trigger,
+	gdeUOCForceFieldSetTriggerName(gdeObjectClass::Ref objectClass,
+		gdeOCForceField::Ref forceField, gdeOCForceField::eTriggers trigger,
 		const char *newValue);
 	
 protected:

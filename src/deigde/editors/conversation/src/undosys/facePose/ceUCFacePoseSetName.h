@@ -40,7 +40,7 @@ class ceConversationTopic;
  */
 class ceUCFacePoseSetName : public igdeUndo{
 private:
-	ceFacePose *pFacePose;
+	ceFacePose::Ref pFacePose;
 	
 	decString pOldName;
 	decString pNewName;

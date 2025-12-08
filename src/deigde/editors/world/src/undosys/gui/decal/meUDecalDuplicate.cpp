@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalDuplicate::meUDecalDuplicate(meWorld *world, const decVector &offset) :
-pWorld(NULL),
+meUDecalDuplicate::meUDecalDuplicate(meWorld::Ref world, const decVector &offset) :
+
 pDecals(NULL),
 pDecalCount(0)
 {
@@ -53,7 +53,7 @@ pDecalCount(0)
 	
 	const meDecalList &list = world->GetSelectionDecal().GetSelected();
 	int count = list.GetCount();
-	meDecal *duplicate = NULL;
+	meDecal::Ref duplicate = NULL;
 	meDecal *decal;
 	
 	SetShortInfo("Duplicate decals");
@@ -69,26 +69,20 @@ pDecalCount(0)
 			while(pDecalCount < count){
 				decal = list.GetAt(pDecalCount);
 				
-				duplicate = new meDecal(*decal);
+				duplicate.TakeOver(new meDecal(*decal));
 				duplicate->SetPosition(decal->GetPosition() + offset);
 				pDecals[pDecalCount] = new meUndoDataDecal(duplicate);
 				pDecalCount++;
-				
-				duplicate->FreeReference();
 				duplicate = NULL;
 			}
 		}
 		
 	}catch(const deException &){
-		if(duplicate){
-			duplicate->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUDecalDuplicate::~meUDecalDuplicate(){
@@ -154,9 +148,5 @@ void meUDecalDuplicate::pCleanUp(){
 		}
 		
 		delete [] pDecals;
-	}
-	
-	if(pWorld){
-		pWorld->FreeReference();
 	}
 }

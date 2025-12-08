@@ -57,8 +57,8 @@
 /////////////////////
 
 struct sARIKNatDat{
-	deAnimator *animator;
-	deAnimatorRuleInverseKinematic *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleInverseKinematic::Ref rule;
 };
 
 
@@ -82,7 +82,7 @@ void deClassARInverseKinematic::nfNew::RunFunction(dsRunTime *rt, dsValue *mysel
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleInverseKinematic;
+	nd.rule.TakeOver(new deAnimatorRuleInverseKinematic);
 	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
@@ -490,7 +490,7 @@ deAnimatorRuleInverseKinematic *deClassARInverseKinematic::GetRule(dsRealObject 
 	return ((sARIKNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARInverseKinematic::AssignAnimator(dsRealObject *myself, deAnimator *animator){
+void deClassARInverseKinematic::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -508,13 +508,9 @@ void deClassARInverseKinematic::AssignAnimator(dsRealObject *myself, deAnimator 
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
-void deClassARInverseKinematic::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleInverseKinematic *rule){
+void deClassARInverseKinematic::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleInverseKinematic::Ref rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -534,13 +530,7 @@ void deClassARInverseKinematic::PushRule(dsRunTime *rt, deAnimator *animator, de
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
 		nd.rule = rule;
-		rule->AddReference();
-		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);
 		

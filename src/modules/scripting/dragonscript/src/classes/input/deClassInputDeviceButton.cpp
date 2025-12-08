@@ -52,7 +52,7 @@
 /////////////////////
 
 struct sIDButtonNatDat{
-	dedsInputDevice *device;
+	dedsInputDevice::Ref device;
 	int buttonIndex;
 };
 
@@ -458,7 +458,7 @@ void deClassInputDeviceButton::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassInputDeviceButton::PushButton(dsRunTime *rt, dedsInputDevice *device, int index){
+void deClassInputDeviceButton::PushButton(dsRunTime *rt, dedsInputDevice::Ref device, int index){
 	if(!rt || !device || index < 0 || index >= device->GetDevice()->GetButtonCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -467,6 +467,5 @@ void deClassInputDeviceButton::PushButton(dsRunTime *rt, dedsInputDevice *device
 	sIDButtonNatDat &nd = *((sIDButtonNatDat*)p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.device = device;
-	device->AddReference();
 	nd.buttonIndex = index;
 }

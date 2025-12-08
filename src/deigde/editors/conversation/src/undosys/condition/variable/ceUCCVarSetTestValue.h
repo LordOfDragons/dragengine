@@ -38,9 +38,9 @@ class ceConversationTopic;
  */
 class ceUCCVarSetTestValue : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionVariable *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionVariable::Ref pCondition;
 	int pOldValue;
 	int pNewValue;
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCVarSetTestValue(ceConversationTopic *topic, ceConversationAction *action, ceCConditionVariable *condition, int newValue);
+	ceUCCVarSetTestValue(ceConversationTopic::Ref topic, ceConversationAction::Ref action, ceCConditionVariable::Ref condition, int newValue);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCVarSetTestValue();

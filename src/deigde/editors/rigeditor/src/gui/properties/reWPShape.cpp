@@ -61,9 +61,6 @@
 reWPShape::reWPShape(reWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pShape(NULL),
-pRig(NULL),
-pListener(NULL),
 
 pPanelSphere(NULL),
 pPanelBox(NULL),
@@ -75,7 +72,7 @@ pActivePanel(NULL)
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPShapeListener(*this);
+	pListener.TakeOver(new reWPShapeListener(*this));
 	
 	pSwitcher.TakeOver(new igdeSwitcher(env));
 	AddChild(pSwitcher);
@@ -102,10 +99,6 @@ pActivePanel(NULL)
 
 reWPShape::~reWPShape(){
 	SetRig(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -113,7 +106,7 @@ reWPShape::~reWPShape(){
 // Management
 ///////////////
 
-void reWPShape::SetRig(reRig *rig){
+void reWPShape::SetRig(reRig::Ref rig){
 	if(rig == pRig){
 		return;
 	}
@@ -122,7 +115,6 @@ void reWPShape::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -130,13 +122,11 @@ void reWPShape::SetRig(reRig *rig){
 	
 	if(rig){
 		rig->AddNotifier(pListener);
-		rig->AddReference();
-		
 		SetShape(rig->GetSelectionShapes()->GetActiveShape());
 	}
 }
 
-void reWPShape::SetShape(reRigShape *shape){
+void reWPShape::SetShape(reRigShape::Ref shape){
 	if(shape == pShape){
 		return;
 	}
@@ -145,20 +135,12 @@ void reWPShape::SetShape(reRigShape *shape){
 		pActivePanel->SetShape(NULL, NULL);
 		pActivePanel = NULL;
 	}
-	
-	if(pShape){
-		pShape->FreeReference();
-	}
-	
 	pShape = shape;
 	
 	if(!shape){
 		pSwitcher->SetCurrent(0);
 		return;
 	}
-	
-	shape->AddReference();
-	
 	const reRigShape::eShapeTypes shapeType = shape->GetShapeType();
 	
 	if(shapeType == pPanelSphere->GetRequiredShapeType()){

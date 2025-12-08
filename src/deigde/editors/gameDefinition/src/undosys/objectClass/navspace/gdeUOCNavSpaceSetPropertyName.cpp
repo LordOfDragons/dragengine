@@ -39,10 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCNavSpaceSetPropertyName::gdeUOCNavSpaceSetPropertyName(gdeObjectClass *objectClass,
-gdeOCNavigationSpace *navspace, gdeOCNavigationSpace::eProperties property, const char *newValue) :
-pObjectClass(NULL),
-pNavSpace(NULL),
+gdeUOCNavSpaceSetPropertyName::gdeUOCNavSpaceSetPropertyName(gdeObjectClass::Ref objectClass,
+gdeOCNavigationSpace::Ref navspace, gdeOCNavigationSpace::eProperties property, const char *newValue) :
+
 pProperty(property)
 {
 	if(!objectClass || !navspace){
@@ -55,19 +54,10 @@ pProperty(property)
 	pNewValue = newValue;
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCNavSpaceSetPropertyName::~gdeUOCNavSpaceSetPropertyName(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

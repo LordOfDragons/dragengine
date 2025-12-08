@@ -429,20 +429,15 @@ void cePlaybackProcessAction::ProcessActorSpeak(ceConversation &conversation, ce
 	// update the sub title
 	const decUnicodeString &textBoxText = action.ResolveTextBoxText(conversation);
 	if(textBoxText.GetLength() > 0){
-		ceTextBoxText *text = NULL;
+		ceTextBoxText::Ref text = NULL;
 		
 		try{
-			text = new ceTextBoxText;
+			text.TakeOver(new ceTextBoxText);
 			text->SetName(conversationActor.GetTextBoxName());
 			text->SetText(textBoxText);
 			// TODO text style 
 			playbackActor.SetTextBoxText(text);
-			text->FreeReference();
-			
 		}catch(const deException &){
-			if(text){
-				text->FreeReference();
-			}
 			throw;
 		}
 	}
@@ -617,7 +612,7 @@ void cePlaybackProcessAction::ProcessPlayerChoice(ceConversation &conversation, 
 	const int optionCount = optionList.GetCount();
 	cePlaybackEvaluateCondition evalCondition;
 	ceCAPlayerChoiceOption *option;
-	cePCBOption *pcbOption = NULL;
+	cePCBOption::Ref pcbOption = NULL;
 	int i;
 	
 	cePlayback &playback = *conversation.GetPlayback();
@@ -638,19 +633,15 @@ void cePlaybackProcessAction::ProcessPlayerChoice(ceConversation &conversation, 
 				continue;
 			}
 			
-			pcbOption = new cePCBOption;
+			pcbOption.TakeOver(new cePCBOption);
 			pcbOption->SetText(option->GetText());
 			pcbOption->SetActionOption(action, option);
 			
 			pcbOptionList.Add(pcbOption);
-			pcbOption->FreeReference();
 			pcbOption = NULL;
 		}
 		
 	}catch(const deException &){
-		if(pcbOption){
-			pcbOption->FreeReference();
-		}
 		throw;
 	}
 	

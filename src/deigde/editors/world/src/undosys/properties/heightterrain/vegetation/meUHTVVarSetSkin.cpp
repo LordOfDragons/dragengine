@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVVarSetSkin::meUHTVVarSetSkin(meHTVVariation *variation, const char *newPath){
+meUHTVVarSetSkin::meUHTVVarSetSkin(meHTVVariation::Ref variation, const char *newPath){
 	if(!variation || !newPath) DETHROW(deeInvalidParam);
 	
 	pVariation = variation;
@@ -48,8 +48,6 @@ meUHTVVarSetSkin::meUHTVVarSetSkin(meHTVVariation *variation, const char *newPat
 	pNewPath = newPath;
 	
 	SetShortInfo("Vegetation Layer Variation Set Skin");
-	
-	variation->AddReference();
 }
 
 meUHTVVarSetSkin::~meUHTVVarSetSkin(){

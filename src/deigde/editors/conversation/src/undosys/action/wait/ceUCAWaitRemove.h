@@ -38,9 +38,9 @@ class ceCAWait;
  */
 class ceUCAWaitRemove : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAWait *pWait;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAWait::Ref pWait;
+	ceConversationAction::Ref pAction;
 	int pIndex;
 	
 public:
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAWaitRemove(ceConversationTopic *topic, ceCAWait *wait, ceConversationAction *action);
+	ceUCAWaitRemove(ceConversationTopic::Ref topic, ceCAWait::Ref wait, ceConversationAction::Ref action);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAWaitRemove();

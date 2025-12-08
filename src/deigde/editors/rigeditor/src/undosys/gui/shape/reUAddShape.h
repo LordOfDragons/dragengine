@@ -38,9 +38,9 @@ class reRigShape;
  */
 class reUAddShape : public igdeUndo{
 private:
-	reRig *pRig;
-	reRigBone *pBone;
-	reRigShape *pShape;
+	reRig::Ref pRig;
+	reRigBone::Ref pBone;
+	reRigShape::Ref pShape;
 	
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reUAddShape(reRig *rig, reRigBone *bone, reRigShape *shape);
+	reUAddShape(reRig::Ref rig, reRigBone::Ref bone, reRigShape::Ref shape);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -38,8 +38,8 @@
 // Constructor, Destructor
 ////////////////////////////
 
-decMemoryFileReader::decMemoryFileReader(decMemoryFile *memoryFile) :
-pFile(NULL),
+decMemoryFileReader::decMemoryFileReader(decMemoryFile::Ref memoryFile) :
+
 pPosition(0)
 {
 	if(!memoryFile){
@@ -47,13 +47,9 @@ pPosition(0)
 	}
 	
 	pFile = memoryFile;
-	memoryFile->AddReference();
 }
 
 decMemoryFileReader::~decMemoryFileReader(){
-	if(pFile){
-		pFile->FreeReference();
-	}
 }
 
 

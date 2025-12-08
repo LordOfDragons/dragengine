@@ -38,7 +38,7 @@ class saeWord;
  */
 class saeUWordSetPhonetics : public igdeUndo{
 private:
-	saeWord *pWord;
+	saeWord::Ref pWord;
 	
 	decUnicodeString pOldPhonetics;
 	decUnicodeString pNewPhonetics;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUWordSetPhonetics(saeWord *word, const decUnicodeString &newPhonetics);
+	saeUWordSetPhonetics(saeWord::Ref word, const decUnicodeString &newPhonetics);
 	
 protected:
 	/** Clean up undo. */

@@ -43,7 +43,7 @@ class meHeightTerrainTexture;
  */
 class meUHTTexSetTypeNum : public igdeUndo{
 private:
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	int pOldTypeNumber;
 	int pNewTypeNumber;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTTexSetTypeNum(meHeightTerrainTexture *texture, int newTypeNumber);
+	meUHTTexSetTypeNum(meHeightTerrainTexture::Ref texture, int newTypeNumber);
 	
 protected:
 	/** \brief Clean up object. */

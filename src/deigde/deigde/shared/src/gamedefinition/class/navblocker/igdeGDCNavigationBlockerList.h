@@ -64,22 +64,22 @@ public:
 	igdeGDCNavigationBlocker *GetAt(int index) const;
 	
 	/** \brief Index of an navigation blocker or -1 if not found. */
-	int IndexOf(igdeGDCNavigationBlocker *blocker) const;
+	int IndexOf(igdeGDCNavigationBlocker::Ref blocker) const;
 	
 	/** \brief Determines if an navigation blocker exists. */
-	bool Has(igdeGDCNavigationBlocker *blocker) const;
+	bool Has(igdeGDCNavigationBlocker::Ref blocker) const;
 	
 	/** \brief Adds an navigation blocker. */
-	void Add(igdeGDCNavigationBlocker *blocker);
+	void Add(igdeGDCNavigationBlocker::Ref blocker);
 	
 	/** \brief Inserts a new navigation blocker. */
-	void InsertAt(igdeGDCNavigationBlocker *blocker, int index);
+	void InsertAt(igdeGDCNavigationBlocker::Ref blocker, int index);
 	
 	/** \brief Moves an navigation blocker to a new position. */
-	void MoveTo(igdeGDCNavigationBlocker *blocker, int index);
+	void MoveTo(igdeGDCNavigationBlocker::Ref blocker, int index);
 	
 	/** \brief Removes an navigation blocker. */
-	void Remove(igdeGDCNavigationBlocker *blocker);
+	void Remove(igdeGDCNavigationBlocker::Ref blocker);
 	
 	/** \brief Removes all navigation blockers. */
 	void RemoveAll();

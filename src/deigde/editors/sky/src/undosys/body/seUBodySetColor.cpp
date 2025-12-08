@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodySetColor::seUBodySetColor(seBody *body, const decColor &newColor) :
-pBody(NULL),
+seUBodySetColor::seUBodySetColor(seBody::Ref body, const decColor &newColor) :
+
 pNewColor(newColor)
 {
 	if(!body){
@@ -52,13 +52,9 @@ pNewColor(newColor)
 	pOldColor = body->GetColor();
 	
 	pBody = body;
-	body->AddReference();
 }
 
 seUBodySetColor::~seUBodySetColor(){
-	if(pBody){
-		pBody->FreeReference();
-	}
 }
 
 

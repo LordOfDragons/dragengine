@@ -65,10 +65,10 @@ deSoundLevelMeter *deSoundLevelMeterManager::GetRootSoundLevelMeter() const{
 }
 
 deSoundLevelMeter *deSoundLevelMeterManager::CreateSoundLevelMeter(){
-	deSoundLevelMeter *soundLevelMeter = NULL;
+	deSoundLevelMeter::Ref soundLevelMeter = NULL;
 	
 	try{
-		soundLevelMeter = new deSoundLevelMeter(this);
+		soundLevelMeter.TakeOver(new deSoundLevelMeter(this));
 		
 		GetAudioSystem()->LoadSoundLevelMeter(soundLevelMeter);
 		GetScriptingSystem()->LoadSoundLevelMeter(soundLevelMeter);
@@ -76,9 +76,6 @@ deSoundLevelMeter *deSoundLevelMeterManager::CreateSoundLevelMeter(){
 		pSoundLevelMeters.Add(soundLevelMeter);
 		
 	}catch(const deException &){
-		if(soundLevelMeter){
-			soundLevelMeter->FreeReference();
-		}
 		throw;
 	}
 	
@@ -103,7 +100,7 @@ void deSoundLevelMeterManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSoundLevelMeterManager::SystemAudioLoad(){
-	deSoundLevelMeter *soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
+	deSoundLevelMeter::Ref soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
 	deAudioSystem &audioSystem = *GetAudioSystem();
 	
 	while(soundLevelMeter){
@@ -115,7 +112,7 @@ void deSoundLevelMeterManager::SystemAudioLoad(){
 }
 
 void deSoundLevelMeterManager::SystemAudioUnload(){
-	deSoundLevelMeter *soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
+	deSoundLevelMeter::Ref soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
 	
 	while(soundLevelMeter){
 		soundLevelMeter->SetPeerAudio(NULL);
@@ -124,7 +121,7 @@ void deSoundLevelMeterManager::SystemAudioUnload(){
 }
 
 void deSoundLevelMeterManager::SystemScriptingLoad(){
-	deSoundLevelMeter *soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
+	deSoundLevelMeter::Ref soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
 	deScriptingSystem &scriptingSystem = *GetScriptingSystem();
 	
 	while(soundLevelMeter){
@@ -136,7 +133,7 @@ void deSoundLevelMeterManager::SystemScriptingLoad(){
 }
 
 void deSoundLevelMeterManager::SystemScriptingUnload(){
-	deSoundLevelMeter *soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
+	deSoundLevelMeter::Ref soundLevelMeter = (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
 	
 	while(soundLevelMeter){
 		soundLevelMeter->SetPeerScripting(NULL);

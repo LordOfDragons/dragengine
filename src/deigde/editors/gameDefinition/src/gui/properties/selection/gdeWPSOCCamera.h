@@ -44,9 +44,9 @@ class gdeWPSOCCameraListener;
 class gdeWPSOCCamera : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCCameraListener *pListener;
+	gdeWPSOCCameraListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeTextField::Ref pEditFov, pEditFovRatio, pEditImageDistance, pEditViewDistance;
 	igdeEditVector::Ref pEditPosition, pEditRotation;
@@ -74,7 +74,7 @@ public:
 	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
-	void SetGameDefinition(gdeGameDefinition *gameDefinition);
+	void SetGameDefinition(gdeGameDefinition::Ref gameDefinition);
 	
 	
 	

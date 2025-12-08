@@ -60,9 +60,9 @@ private:
 	deoalAMicrophone *pParentMicrophone;
 	deoalWorldOctree *pOctreeNode;
 	
-	deoalASound *pSound;
-	deoalASynthesizerInstance *pSynthesizer;
-	deoalAVideoPlayer *pVideoPlayer;
+	deoalASound::Ref pSound;
+	deoalASynthesizerInstance::Ref pSynthesizer;
+	deoalAVideoPlayer::Ref pVideoPlayer;
 	unsigned int pSourceUpdateTracker;
 	deSoundDecoder::Ref pSoundDecoder;
 	
@@ -179,8 +179,8 @@ public:
 	 * Set source.
 	 * \warning Called during synchronization time from main thread.
 	 */
-	void SetSource(deoalASound *sound, deoalASynthesizerInstance *synthesizer,
-		deoalAVideoPlayer *videoPlayer);
+	void SetSource(deoalASound::Ref sound, deoalASynthesizerInstance::Ref synthesizer,
+		deoalAVideoPlayer::Ref videoPlayer);
 	
 	/** Sound decoder or NULL. */
 	inline deSoundDecoder *GetSoundDecoder() const{ return pSoundDecoder; }

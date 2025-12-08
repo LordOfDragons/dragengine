@@ -40,7 +40,7 @@ class ceConversationActionList;
  */
 class ceUCTopicSetID : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
+	ceConversationTopic::Ref pTopic;
 	
 	decString pOldID;
 	decString pNewID;
@@ -57,7 +57,7 @@ public:
 	/*@{*/
 	/** \brief Create undo action. */
 	ceUCTopicSetID(const ceConversation &conversation,
-		ceConversationTopic *topic, const char *newID);
+		ceConversationTopic::Ref topic, const char *newID);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCTopicSetID();
@@ -80,7 +80,7 @@ public:
 private:
 	void pSetID(const char *id);
 	
-	void pAddSnippets(ceConversationTopic *topic, const char *matchGroupID,
+	void pAddSnippets(ceConversationTopic::Ref topic, const char *matchGroupID,
 		const char *matchTopicID, const ceConversationActionList &actions);
 };
 

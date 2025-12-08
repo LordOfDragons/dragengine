@@ -43,8 +43,6 @@ reUSetBoneName::reUSetBoneName(reRigBone *bone, const char *newName){
 	if(!bone || !newName) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
-	pBone->AddReference();
-	
 	pOldName = bone->GetName();
 	pNewName = newName;
 	

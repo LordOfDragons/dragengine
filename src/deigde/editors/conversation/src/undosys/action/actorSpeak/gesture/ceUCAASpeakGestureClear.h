@@ -39,8 +39,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakGestureClear : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	ceStripList pOldGestures;
 	
 	
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	ceUCAASpeakGestureClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
+	ceUCAASpeakGestureClear(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak);
 	
 	/** \brief Clean up undo action. */
 	virtual ~ceUCAASpeakGestureClear();

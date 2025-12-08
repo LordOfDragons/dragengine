@@ -37,7 +37,7 @@ class projProject;
  */
 class projUProjectSetPathConfig : public igdeUndo{
 private:
-	projProject *pProject;
+	projProject::Ref pProject;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProjectSetPathConfig(projProject *project, const char *newValue);
+	projUProjectSetPathConfig(projProject::Ref project, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProjectSetPathConfig();

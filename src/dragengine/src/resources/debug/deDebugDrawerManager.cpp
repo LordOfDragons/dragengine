@@ -61,17 +61,14 @@ deDebugDrawer *deDebugDrawerManager::GetRootDebugDrawer() const{
 }
 
 deDebugDrawer *deDebugDrawerManager::CreateDebugDrawer(){
-	deDebugDrawer *debugDrawer = NULL;
+	deDebugDrawer::Ref debugDrawer = NULL;
 	// create and add debug drawer
 	try{
-		debugDrawer = new deDebugDrawer(this);
+		debugDrawer.TakeOver(new deDebugDrawer(this));
 		if(!debugDrawer) DETHROW(deeOutOfMemory);
 		GetGraphicSystem()->LoadDebugDrawer(debugDrawer);
 		pDebugDrawers.Add(debugDrawer);
 	}catch(const deException &){
-		if(debugDrawer){
-			debugDrawer->FreeReference();
-		}
 		throw;
 	}
 	// finished
@@ -93,7 +90,7 @@ void deDebugDrawerManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deDebugDrawerManager::SystemGraphicLoad(){
-	deDebugDrawer *debugDrawer = (deDebugDrawer*)pDebugDrawers.GetRoot();
+	deDebugDrawer::Ref debugDrawer = (deDebugDrawer*)pDebugDrawers.GetRoot();
 	
 	while(debugDrawer){
 		if(!debugDrawer->GetPeerGraphic()){
@@ -105,7 +102,7 @@ void deDebugDrawerManager::SystemGraphicLoad(){
 }
 
 void deDebugDrawerManager::SystemGraphicUnload(){
-	deDebugDrawer *debugDrawer = (deDebugDrawer*)pDebugDrawers.GetRoot();
+	deDebugDrawer::Ref debugDrawer = (deDebugDrawer*)pDebugDrawers.GetRoot();
 	
 	while(debugDrawer){
 		debugDrawer->SetPeerGraphic(NULL);

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleAdd::meUHTVRuleAdd(meHTVegetationLayer *vlayer, meHTVRule *rule){
+meUHTVRuleAdd::meUHTVRuleAdd(meHTVegetationLayer::Ref vlayer, meHTVRule::Ref rule){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
@@ -50,9 +50,7 @@ meUHTVRuleAdd::meUHTVRuleAdd(meHTVegetationLayer *vlayer, meHTVRule *rule){
 	SetMemoryConsumption(sizeof(meUHTVRuleAdd));
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleAdd::~meUHTVRuleAdd(){

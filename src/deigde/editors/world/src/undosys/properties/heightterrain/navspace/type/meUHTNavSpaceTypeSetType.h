@@ -36,7 +36,7 @@ class meHeightTerrainNavSpaceType;
  */
 class meUHTNavSpaceTypeSetType : public igdeUndo{
 private:
-	meHeightTerrainNavSpaceType *pType;
+	meHeightTerrainNavSpaceType::Ref pType;
 	int pOldType;
 	int pNewType;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceTypeSetType(meHeightTerrainNavSpaceType *type, int newType);
+	meUHTNavSpaceTypeSetType(meHeightTerrainNavSpaceType::Ref type, int newType);
 	
 protected:
 	/** \brief Clean up undo action. */

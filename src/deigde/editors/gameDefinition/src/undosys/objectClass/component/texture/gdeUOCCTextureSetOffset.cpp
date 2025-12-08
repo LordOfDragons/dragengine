@@ -41,11 +41,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCTextureSetOffset::gdeUOCCTextureSetOffset(gdeObjectClass *objectClass,
-gdeOCComponent *component, gdeOCComponentTexture* texture, const decVector2 &newValue) :
-pObjectClass(NULL),
-pComponent(NULL),
-pTexture(NULL)
+gdeUOCCTextureSetOffset::gdeUOCCTextureSetOffset(gdeObjectClass::Ref objectClass,
+gdeOCComponent::Ref component, gdeOCComponentTexture::Ref texture, const decVector2 &newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !component || !texture){
 		DETHROW(deeInvalidParam);
@@ -57,25 +55,11 @@ pTexture(NULL)
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pComponent = component;
-	component->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCTextureSetOffset::~gdeUOCCTextureSetOffset(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

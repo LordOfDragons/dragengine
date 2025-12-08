@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAIfElseCaseMove::ceUCAIfElseCaseMove(ceConversationTopic *topic, ceCAIfElse *ifelse, ceCAIfElseCase *ifcase, int newIndex){
+ceUCAIfElseCaseMove::ceUCAIfElseCaseMove(ceConversationTopic::Ref topic, ceCAIfElse::Ref ifelse, ceCAIfElseCase::Ref ifcase, int newIndex){
 	if(!topic || !ifelse || !ifcase){
 		DETHROW(deeInvalidParam);
 	}
@@ -67,25 +67,11 @@ ceUCAIfElseCaseMove::ceUCAIfElseCaseMove(ceConversationTopic *topic, ceCAIfElse 
 	SetShortInfo("If-else move case");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pIfElse = ifelse;
-	ifelse->AddReference();
-	
 	pCase = ifcase;
-	ifcase->AddReference();
 }
 
 ceUCAIfElseCaseMove::~ceUCAIfElseCaseMove(){
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

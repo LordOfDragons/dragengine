@@ -12,14 +12,14 @@ class decZFileWriter;
 // class detZFile
 class detZFile : public detCase{
 private:
-	decMemoryFile *pMemoryFileCompressed;
+	decMemoryFile::Ref pMemoryFileCompressed;
 	char *pTestBuffer;
 	
-	decMemoryFileWriter *pMemoryFileWriter;
-	decZFileWriter *pZWriter;
+	decMemoryFileWriter::Ref pMemoryFileWriter;
+	decZFileWriter::Ref pZWriter;
 	
-	decMemoryFileReader *pMemoryFileReader;
-	decZFileReader *pZReader;
+	decMemoryFileReader::Ref pMemoryFileReader;
+	decZFileReader::Ref pZReader;
 	
 public:
 	detZFile();

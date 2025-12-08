@@ -43,9 +43,9 @@ class feWPGlyphListener;
 class feWPGlyph : public igdeContainerScroll{
 private:
 	feWindowProperties &pWindowProperties;
-	feFont *pFont;
-	feFontGlyph *pGlyph;
-	feWPGlyphListener *pListener;
+	feFont::Ref pFont;
+	feFontGlyph::Ref pGlyph;
+	feWPGlyphListener::Ref pListener;
 	
 	igdeComboBox::Ref pCBGlyph;
 	igdeButton::Ref pBtnGlyphAdd, pBtnGlyphDel;
@@ -75,13 +75,13 @@ public:
 	inline feFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont(feFont *font);
+	void SetFont(feFont::Ref font);
 	
 	/** \brief Glyph. */
 	inline feFontGlyph *GetGlyph() const{ return pGlyph; }
 	
 	/** \brief Set glyph. */
-	void SetGlyph(feFontGlyph *glyph);
+	void SetGlyph(feFontGlyph::Ref glyph);
 	
 	/** \brief Update glyph list. */
 	void UpdateGlyphList();

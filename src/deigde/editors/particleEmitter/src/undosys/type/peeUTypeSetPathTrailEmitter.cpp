@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetPathTrailEmitter::peeUTypeSetPathTrailEmitter(peeType *type, const char *newPath){
+peeUTypeSetPathTrailEmitter::peeUTypeSetPathTrailEmitter(peeType::Ref type, const char *newPath){
 	if(!type || !newPath){
 		DETHROW(deeInvalidParam);
 	}
@@ -52,13 +52,9 @@ peeUTypeSetPathTrailEmitter::peeUTypeSetPathTrailEmitter(peeType *type, const ch
 	pNewPath = newPath;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetPathTrailEmitter::~peeUTypeSetPathTrailEmitter(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

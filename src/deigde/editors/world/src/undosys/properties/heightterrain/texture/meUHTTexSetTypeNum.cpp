@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTTexSetTypeNum::meUHTTexSetTypeNum(meHeightTerrainTexture *texture, int newTypeNumber){
+meUHTTexSetTypeNum::meUHTTexSetTypeNum(meHeightTerrainTexture::Ref texture, int newTypeNumber){
 	if(!texture) DETHROW(deeInvalidParam);
 	
 	pTexture = texture;
@@ -48,8 +48,6 @@ meUHTTexSetTypeNum::meUHTTexSetTypeNum(meHeightTerrainTexture *texture, int newT
 	pNewTypeNumber = newTypeNumber;
 	
 	SetShortInfo("Set Height Terrain Texture Type Number");
-	
-	texture->AddReference();
 }
 
 meUHTTexSetTypeNum::~meUHTTexSetTypeNum(){

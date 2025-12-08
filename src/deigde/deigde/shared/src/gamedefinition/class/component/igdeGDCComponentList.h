@@ -64,22 +64,22 @@ public:
 	igdeGDCComponent *GetAt(int index) const;
 	
 	/** \brief Index of an component or -1 if not found. */
-	int IndexOf(igdeGDCComponent *component) const;
+	int IndexOf(igdeGDCComponent::Ref component) const;
 	
 	/** \brief Determines if an component exists. */
-	bool Has(igdeGDCComponent *component) const;
+	bool Has(igdeGDCComponent::Ref component) const;
 	
 	/** \brief Adds an component. */
-	void Add(igdeGDCComponent *component);
+	void Add(igdeGDCComponent::Ref component);
 	
 	/** \brief Inserts a new component. */
-	void InsertAt(igdeGDCComponent *component, int index);
+	void InsertAt(igdeGDCComponent::Ref component, int index);
 	
 	/** \brief Moves an component to a new position. */
-	void MoveTo(igdeGDCComponent *component, int index);
+	void MoveTo(igdeGDCComponent::Ref component, int index);
 	
 	/** \brief Removes an component. */
-	void Remove(igdeGDCComponent *component);
+	void Remove(igdeGDCComponent::Ref component);
 	
 	/** \brief Removes all components. */
 	void RemoveAll();

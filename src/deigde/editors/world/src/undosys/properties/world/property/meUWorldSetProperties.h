@@ -38,7 +38,7 @@ class meWorld;
  */
 class meUWorldSetProperties : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUWorldSetProperties(meWorld *world, const decStringDictionary &newValues);
+	meUWorldSetProperties(meWorld::Ref world, const decStringDictionary &newValues);
 	
 protected:
 	/** \brief Clean up undo object. */

@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCASnippetSetTopic::ceUCASnippetSetTopic(ceConversationTopic *topic, ceCASnippet *snippet, const char *newTopic){
+ceUCASnippetSetTopic::ceUCASnippetSetTopic(ceConversationTopic::Ref topic, ceCASnippet::Ref snippet, const char *newTopic){
 	if(!topic || !newTopic) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
@@ -52,19 +52,10 @@ ceUCASnippetSetTopic::ceUCASnippetSetTopic(ceConversationTopic *topic, ceCASnipp
 	SetShortInfo("Snippet Set Topic");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pSnippet = snippet;
-	snippet->AddReference();
 }
 
 ceUCASnippetSetTopic::~ceUCASnippetSetTopic(){
-	if(pSnippet){
-		pSnippet->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

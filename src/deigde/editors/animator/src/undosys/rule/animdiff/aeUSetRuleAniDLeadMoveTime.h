@@ -42,7 +42,7 @@ class aeRuleAnimationDifference;
  */
 class aeUSetRuleAniDLeadMoveTime : public igdeUndo{
 private:
-	aeRuleAnimationDifference *pRule;
+	aeRuleAnimationDifference::Ref pRule;
 	
 	float pOldTime;
 	float pNewTime;

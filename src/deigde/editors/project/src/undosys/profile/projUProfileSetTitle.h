@@ -37,7 +37,7 @@ class projProfile;
  */
 class projUProfileSetTitle : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetTitle(projProfile *profile, const char *newValue);
+	projUProfileSetTitle(projProfile::Ref profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileSetTitle();

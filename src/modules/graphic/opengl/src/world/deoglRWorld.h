@@ -73,15 +73,15 @@ private:
 	
 	bool pDirtyNotifySkyChanged;
 	bool pDirtySkyOrder;
-	deoglEnvironmentMap *pSkyEnvMap;
+	deoglEnvironmentMap::Ref pSkyEnvMap;
 	
-	deoglRHeightTerrain *pHeightTerrain;
+	deoglRHeightTerrain::Ref pHeightTerrain;
 	
-	deoglRComponent *pRootComponent;
+	deoglRComponent::Ref pRootComponent;
 	deoglRComponent *pTailComponent;
 	int pComponentCount;
 	
-	deoglRBillboard *pRootBillboard;
+	deoglRBillboard::Ref pRootBillboard;
 	deoglRBillboard *pTailBillboard;
 	int pBillboardCount;
 	
@@ -160,7 +160,7 @@ public:
 	inline deoglRHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Set height terrain or \em NULL if not set. */
-	void SetHeightTerrain(deoglRHeightTerrain *heightTerrain);
+	void SetHeightTerrain(deoglRHeightTerrain::Ref heightTerrain);
 	
 	
 	
@@ -213,11 +213,11 @@ protected:
 	void PrepareForRenderRender(deoglRenderPlan &plan, const deoglRenderPlanMasked *mask);
 public:
 	
-	void AddPrepareForRenderComponent(deoglRComponent *component);
-	void RemovePrepareForRenderComponent(deoglRComponent *component);
+	void AddPrepareForRenderComponent(deoglRComponent::Ref component);
+	void RemovePrepareForRenderComponent(deoglRComponent::Ref component);
 	
-	void AddPrepareForRenderBillboard(deoglRBillboard *billboard);
-	void RemovePrepareForRenderBillboard(deoglRBillboard *billboard);
+	void AddPrepareForRenderBillboard(deoglRBillboard::Ref billboard);
+	void RemovePrepareForRenderBillboard(deoglRBillboard::Ref billboard);
 	
 	void AddPrepareForRenderLight(deoglRLight *light);
 	void RemovePrepareForRenderLight(deoglRLight *light);
@@ -314,10 +314,10 @@ public:
 	inline deoglRComponent *GetRootComponent() const{ return pRootComponent; }
 	
 	/** Add component. */
-	void AddComponent(deoglRComponent *component);
+	void AddComponent(deoglRComponent::Ref component);
 	
 	/** Remove component. */
-	void RemoveComponent(deoglRComponent *component);
+	void RemoveComponent(deoglRComponent::Ref component);
 	
 	/** Remove all component. */
 	void RemoveAllComponents();
@@ -450,10 +450,10 @@ public:
 	inline deoglRBillboard *GetRootBillboard() const{ return pRootBillboard; }
 	
 	/** Add billboard. */
-	void AddBillboard(deoglRBillboard *billboard);
+	void AddBillboard(deoglRBillboard::Ref billboard);
 	
 	/** Remove billboard. */
-	void RemoveBillboard(deoglRBillboard *billboard);
+	void RemoveBillboard(deoglRBillboard::Ref billboard);
 	
 	/** Remove all billboard. */
 	void RemoveAllBillboards();
@@ -485,7 +485,7 @@ public:
 	void RemoveRemovalMarkedSkies();
 	
 	/** Notify skies render static component changed requiring updates. */
-	void SkiesNotifyUpdateStaticComponent(deoglRComponent *component);
+	void SkiesNotifyUpdateStaticComponent(deoglRComponent::Ref component);
 	/*@}*/
 	
 	
@@ -534,16 +534,16 @@ public:
 	void RemoveAllGICascades();
 	
 	/** Notify GI states component entered world. */
-	void GIStatesNotifyComponentEnteredWorld(deoglRComponent *component);
+	void GIStatesNotifyComponentEnteredWorld(deoglRComponent::Ref component);
 	
 	/** Notify GI states component changed layer mask. */
-	void GIStatesNotifyComponentChangedLayerMask(deoglRComponent *component);
+	void GIStatesNotifyComponentChangedLayerMask(deoglRComponent::Ref component);
 	
 	/** Notify GI states component became visible. */
-	void GIStatesNotifyComponentBecameVisible(deoglRComponent *component);
+	void GIStatesNotifyComponentBecameVisible(deoglRComponent::Ref component);
 	
 	/** Notify GI states component changed gi importance. */
-	void GIStatesNotifyComponentChangedGIImportance(deoglRComponent *component);
+	void GIStatesNotifyComponentChangedGIImportance(deoglRComponent::Ref component);
 	/*@}*/
 	
 	

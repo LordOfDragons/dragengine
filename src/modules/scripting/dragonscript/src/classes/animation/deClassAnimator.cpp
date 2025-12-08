@@ -55,7 +55,7 @@
 
 // native structure
 struct sArNatDat{
-	deAnimator *animator;
+	deAnimator::Ref animator;
 };
 
 
@@ -102,7 +102,7 @@ deClassAnimator::nfGetRig::nfGetRig(const sInitData &init) : dsFunction(init.cls
 "getRig", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsRig){
 }
 void deClassAnimator::nfGetRig::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	deClassAnimator *clsAr = (deClassAnimator*)GetOwnerClass();
 	clsAr->GetDS()->GetClassRig()->PushRig(rt, animator->GetRig());
 }
@@ -113,7 +113,7 @@ deClassAnimator::nfSetRig::nfSetRig(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsRig); // rig
 }
 void deClassAnimator::nfSetRig::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	deClassAnimator *clsAr = (deClassAnimator*)GetOwnerClass();
 	dsRealObject *objRig = rt->GetValue(0)->GetRealObject();
 	
@@ -125,7 +125,7 @@ deClassAnimator::nfGetAnimation::nfGetAnimation(const sInitData &init) : dsFunct
 "getAnimation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsAni){
 }
 void deClassAnimator::nfGetAnimation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	deClassAnimator *clsAr = (deClassAnimator*)GetOwnerClass();
 	clsAr->GetDS()->GetClassAnimation()->PushAnimation(rt, animator->GetAnimation());
 }
@@ -136,7 +136,7 @@ deClassAnimator::nfSetAnimation::nfSetAnimation(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsAni); // animation
 }
 void deClassAnimator::nfSetAnimation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	deClassAnimator *clsAr = (deClassAnimator*)GetOwnerClass();
 	dsRealObject *objAnimation = rt->GetValue(0)->GetRealObject();
 	
@@ -150,7 +150,7 @@ deClassAnimator::nfGetControllerCount::nfGetControllerCount(const sInitData &ini
 "getControllerCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassAnimator::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	rt->PushInt(animator->GetControllerCount());
 }
 
@@ -160,7 +160,7 @@ deClassAnimator::nfSetControllerCount::nfSetControllerCount(const sInitData &ini
 	p_AddParameter(init.clsInt); // count
 }
 void deClassAnimator::nfSetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	int count = rt->GetValue(0)->GetInt();
 	deAnimatorController *controller = NULL;
 	
@@ -237,7 +237,7 @@ deClassAnimator::nfGetLinkCount::nfGetLinkCount(const sInitData &init) : dsFunct
 "getLinkCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassAnimator::nfGetLinkCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	
 	rt->PushInt(animator->GetLinkCount());
 }
@@ -248,7 +248,7 @@ deClassAnimator::nfAddLink::nfAddLink(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsInt); // controller
 }
 void deClassAnimator::nfAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	
 	deAnimatorLink *link = NULL;
 	
@@ -273,7 +273,7 @@ deClassAnimator::nfRemoveAllLinks::nfRemoveAllLinks(const sInitData &init) : dsF
 "removeAllLinks", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimator::nfRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	
 	animator->RemoveAllLinks();
 }
@@ -285,7 +285,7 @@ deClassAnimator::nfSetLinkController::nfSetLinkController(const sInitData &init)
 	p_AddParameter(init.clsInt); // controller
 }
 void deClassAnimator::nfSetLinkController::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	
 	int index = rt->GetValue(0)->GetInt();
 	deAnimatorLink *link = animator->GetLinkAt(index);
@@ -460,7 +460,7 @@ deClassAnimator::nfGetRuleCount::nfGetRuleCount(const sInitData &init) : dsFunct
 "getRuleCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassAnimator::nfGetRuleCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	rt->PushInt(animator->GetRuleCount());
 }
 
@@ -470,7 +470,7 @@ deClassAnimator::nfAddRule::nfAddRule(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsArR); // rule
 }
 void deClassAnimator::nfAddRule::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	deClassAnimator &clsAr = *((deClassAnimator*)GetOwnerClass());
 	deClassAnimatorRule &clsArR = *clsAr.GetDS()->GetClassAnimatorRule();
 	
@@ -490,7 +490,7 @@ deClassAnimator::nfGetRuleAt::nfGetRuleAt(const sInitData &init) : dsFunction(in
 	p_AddParameter(init.clsInt); // position
 }
 void deClassAnimator::nfGetRuleAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	deClassAnimator &clsAr = *((deClassAnimator*)GetOwnerClass());
 	deClassAnimatorRule &clsArR = *clsAr.GetDS()->GetClassAnimatorRule();
 	
@@ -507,7 +507,7 @@ deClassAnimator::nfRemoveRuleAt::nfRemoveRuleAt(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsInt); // index
 }
 void deClassAnimator::nfRemoveRuleAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	
 	animator->RemoveRule(animator->GetRuleAt(rt->GetValue(0)->GetInt()));
 }
@@ -517,7 +517,7 @@ deClassAnimator::nfRemoveAllRules::nfRemoveAllRules(const sInitData &init) : dsF
 "removeAllRules", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimator::nfRemoveAllRules::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	
 	animator->RemoveAllRules();
 }
@@ -580,7 +580,7 @@ deClassAnimator::nfHashCode::nfHashCode(const sInitData &init) : dsFunction(init
 }
 
 void deClassAnimator::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)animator);
 }
@@ -591,7 +591,7 @@ deClassAnimator::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassAnimator::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
+	deAnimator::Ref animator = ((sArNatDat*)p_GetNativeData(myself))->animator;
 	deClassAnimator *clsAr = (deClassAnimator*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	if(!p_IsObjOfType(obj, clsAr)){
@@ -724,7 +724,7 @@ deAnimator *deClassAnimator::GetAnimator(dsRealObject *myself) const{
 	return ((sArNatDat*)p_GetNativeData(myself->GetBuffer()))->animator;
 }
 
-void deClassAnimator::PushAnimator(dsRunTime *rt, deAnimator *animator){
+void deClassAnimator::PushAnimator(dsRunTime *rt, deAnimator::Ref animator){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -736,5 +736,4 @@ void deClassAnimator::PushAnimator(dsRunTime *rt, deAnimator *animator){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sArNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->animator = animator;
-	animator->AddReference();
 }

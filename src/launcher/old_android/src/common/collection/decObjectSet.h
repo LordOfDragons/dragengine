@@ -71,25 +71,25 @@ public:
 	deObject *GetAt(int index) const;
 	
 	/** \brief Determine if object exists in the list. */
-	bool Has(deObject *object) const;
+	bool Has(deObject::Ref object) const;
 	
 	/**
 	 * \brief Add object.
 	 * \throws deeInvalidParam \em object is present in the set.
 	 */
-	void Add(deObject *object);
+	void Add(deObject::Ref object);
 	
 	/** \brief Add object if absent from the set. */
-	void AddIfAbsent(deObject *object);
+	void AddIfAbsent(deObject::Ref object);
 	
 	/**
 	 * \brief Remove object.
 	 * \throws deeInvalidParam \em object is is absent from the set.
 	 */
-	void Remove(deObject *object);
+	void Remove(deObject::Ref object);
 	
 	/** \brief Remove object if present in the set. */
-	void RemoveIfPresent(deObject *object);
+	void RemoveIfPresent(deObject::Ref object);
 	
 	/** \brief Remove all objects. */
 	void RemoveAll();
@@ -120,7 +120,7 @@ public:
 	/*@}*/
 	
 private:
-	int pIndexOf(deObject *object) const;
+	int pIndexOf(deObject::Ref object) const;
 };
 
 #endif

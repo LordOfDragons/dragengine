@@ -37,8 +37,8 @@ class meHeightTerrainNavSpaceFace;
  */
 class meUHTNavSpaceFaceAdd : public igdeUndo{
 private:
-	meHeightTerrainNavSpaceType *pType;
-	meHeightTerrainNavSpaceFace *pFace;
+	meHeightTerrainNavSpaceType::Ref pType;
+	meHeightTerrainNavSpaceFace::Ref pFace;
 	
 	
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceFaceAdd(meHeightTerrainNavSpaceType *type, meHeightTerrainNavSpaceFace *face);
+	meUHTNavSpaceFaceAdd(meHeightTerrainNavSpaceType::Ref type, meHeightTerrainNavSpaceFace::Ref face);
 	
 protected:
 	/** \brief Clean up undo action. */

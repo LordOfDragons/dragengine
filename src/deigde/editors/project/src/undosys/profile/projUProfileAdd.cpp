@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileAdd::projUProfileAdd(projProject *project, projProfile *profile) :
-pProject(NULL),
+projUProfileAdd::projUProfileAdd(projProject::Ref project, projProfile::Ref profile) :
+
 pProfile(NULL)
 {
 	if(!project || !profile){
@@ -51,19 +51,10 @@ pProfile(NULL)
 	SetShortInfo("Add profile");
 	
 	pProfile = profile;
-	profile->AddReference();
-	
 	pProject = project;
-	project->AddReference();
 }
 
 projUProfileAdd::~projUProfileAdd(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 

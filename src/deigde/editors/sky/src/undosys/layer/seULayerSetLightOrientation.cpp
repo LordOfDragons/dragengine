@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULayerSetLightOrientation::seULayerSetLightOrientation(seLayer *layer,
+seULayerSetLightOrientation::seULayerSetLightOrientation(seLayer::Ref layer,
 const decVector &newOrientation) :
-pLayer(NULL),
+
 pNewOrientation(newOrientation)
 {
 	if(!layer){
@@ -53,13 +53,9 @@ pNewOrientation(newOrientation)
 	pOldOrientation = layer->GetLightOrientation();
 	
 	pLayer = layer;
-	layer->AddReference();
 }
 
 seULayerSetLightOrientation::~seULayerSetLightOrientation(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

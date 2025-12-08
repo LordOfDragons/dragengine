@@ -48,9 +48,8 @@
 ////////////////////////////
 
 gdeWPSTIMOCForceField::gdeWPSTIMOCForceField(gdeWPSTreeModel &tree,
-	gdeObjectClass *objectClass, gdeOCForceField *forceField, int index) :
-gdeWPSTIMOCSubObject(tree, etObjectClassForceField, objectClass, index),
-pForceField(NULL)
+	gdeObjectClass *objectClass, gdeOCForceField::Ref forceField, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassForceField, objectClass, index)
 {
 	if(!forceField){
 		DETHROW(deeInvalidParam);
@@ -63,13 +62,9 @@ pForceField(NULL)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pForceField = forceField;
-	forceField->AddReference();
 }
 
 gdeWPSTIMOCForceField::~gdeWPSTIMOCForceField(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
 }
 
 

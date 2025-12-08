@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalTCScaling::meUDecalTCScaling(meDecal *decal, const decVector2 &newScaling){
+meUDecalTCScaling::meUDecalTCScaling(meDecal::Ref decal, const decVector2 &newScaling){
 	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
@@ -59,13 +59,9 @@ meUDecalTCScaling::meUDecalTCScaling(meDecal *decal, const decVector2 &newScalin
 	pNewScaling = newScaling;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalTCScaling::~meUDecalTCScaling(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

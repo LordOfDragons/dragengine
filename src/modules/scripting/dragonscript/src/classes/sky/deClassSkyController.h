@@ -64,10 +64,10 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push controller. */
-	void PushController(dsRunTime *rt, deSky *sky, int index);
+	void PushController(dsRunTime *rt, deSky::Ref sky, int index);
 	
 	/** \brief Push controller. */
-	void PushController(dsRunTime *rt, deSkyInstance *instance, int index);
+	void PushController(dsRunTime *rt, deSkyInstance::Ref instance, int index);
 	/*@}*/
 	
 	

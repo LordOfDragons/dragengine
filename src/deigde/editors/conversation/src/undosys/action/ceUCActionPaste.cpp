@@ -40,13 +40,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionPaste::ceUCActionPaste(ceConversationTopic *topic, const ceConversationActionList &actions, int index){
+ceUCActionPaste::ceUCActionPaste(ceConversationTopic::Ref topic, const ceConversationActionList &actions, int index){
 	if(!topic || actions.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = actions.GetCount();
-	ceConversationAction *newAction = NULL;
+	ceConversationAction::Ref newAction = NULL;
 	int i;
 	
 	pTopic = NULL;
@@ -60,29 +60,20 @@ ceUCActionPaste::ceUCActionPaste(ceConversationTopic *topic, const ceConversatio
 	}
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	try{
 		for(i=0; i<count; i++){
 			newAction = actions.GetAt(i)->CreateCopy();
 			pActions.Add(newAction);
-			newAction->FreeReference();
 			newAction = NULL;
 		}
 		
 	}catch(const deException &){
-		if(newAction){
-			newAction->FreeReference();
-		}
 		throw;
 	}
 }
 
 ceUCActionPaste::~ceUCActionPaste(){
 	pActions.RemoveAll();
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

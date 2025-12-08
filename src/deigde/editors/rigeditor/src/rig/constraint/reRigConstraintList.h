@@ -57,13 +57,13 @@ public:
 	/** Retrieves the constraint at the given index. */
 	reRigConstraint *GetConstraintAt(int index) const;
 	/** Retrieves the index of the constraint or -1 if not found. */
-	int IndexOfConstraint(reRigConstraint *constraint) const;
+	int IndexOfConstraint(reRigConstraint::Ref constraint) const;
 	/** Determines if the constraint exists. */
-	bool HasConstraint(reRigConstraint *constraint) const;
+	bool HasConstraint(reRigConstraint::Ref constraint) const;
 	/** Adds a new constraint. */
-	void AddConstraint(reRigConstraint *constraint);
+	void AddConstraint(reRigConstraint::Ref constraint);
 	/** Removes the given constraint. */
-	void RemoveConstraint(reRigConstraint *constraint);
+	void RemoveConstraint(reRigConstraint::Ref constraint);
 	/** Removes all constraints. */
 	void RemoveAllConstraints();
 	/*@}*/

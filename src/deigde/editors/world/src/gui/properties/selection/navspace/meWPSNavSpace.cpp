@@ -168,15 +168,13 @@ public:
 
 meWPSNavSpace::meWPSNavSpace(meWPSelection &wpselection) :
 igdeContainerScroll(wpselection.GetEnvironment(), false, true),
-pWPSelection(wpselection),
-pListener(NULL),
-pWorld(NULL)
+pWPSelection(wpselection)
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox;
 	
-	pListener = new meWPSNavSpaceListener(*this);
+	pListener.TakeOver(new meWPSNavSpaceListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -210,10 +208,6 @@ pWorld(NULL)
 
 meWPSNavSpace::~meWPSNavSpace(){
 	SetWorld(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -221,21 +215,19 @@ meWPSNavSpace::~meWPSNavSpace(){
 // Management
 ///////////////
 
-void meWPSNavSpace::SetWorld(meWorld *world){
+void meWPSNavSpace::SetWorld(meWorld::Ref world){
 	if(world == pWorld){
 		return;
 	}
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
 	
 	if(world){
 		world->AddNotifier(pListener);
-		world->AddReference();
 	}
 	
 	UpdateSelection();

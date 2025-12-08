@@ -38,7 +38,7 @@ class meObjectTexture;
  */
 class meUObjectTextureTCScaling : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decVector2 pOldScaling;
 	decVector2 pNewScaling;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectTextureTCScaling(meObjectTexture *texture, const decVector2 &newScaling);
+	meUObjectTextureTCScaling(meObjectTexture::Ref texture, const decVector2 &newScaling);
 	
 protected:
 	/** \brief Clean up undo object. */

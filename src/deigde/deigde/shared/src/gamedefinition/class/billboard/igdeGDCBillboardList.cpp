@@ -62,15 +62,15 @@ igdeGDCBillboard *igdeGDCBillboardList::GetAt(int index) const{
 	return (igdeGDCBillboard*)pBillboards.GetAt(index);
 }
 
-int igdeGDCBillboardList::IndexOf(igdeGDCBillboard *billboard) const{
+int igdeGDCBillboardList::IndexOf(igdeGDCBillboard::Ref billboard) const{
 	return pBillboards.IndexOf(billboard);
 }
 
-bool igdeGDCBillboardList::Has(igdeGDCBillboard *billboard) const{
+bool igdeGDCBillboardList::Has(igdeGDCBillboard::Ref billboard) const{
 	return pBillboards.Has(billboard);
 }
 
-void igdeGDCBillboardList::Add(igdeGDCBillboard *billboard){
+void igdeGDCBillboardList::Add(igdeGDCBillboard::Ref billboard){
 	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
@@ -78,7 +78,7 @@ void igdeGDCBillboardList::Add(igdeGDCBillboard *billboard){
 	pBillboards.Add(billboard);
 }
 
-void igdeGDCBillboardList::InsertAt(igdeGDCBillboard *billboard, int index){
+void igdeGDCBillboardList::InsertAt(igdeGDCBillboard::Ref billboard, int index){
 	if(!billboard){
 		DETHROW(deeInvalidParam);
 	}
@@ -86,11 +86,11 @@ void igdeGDCBillboardList::InsertAt(igdeGDCBillboard *billboard, int index){
 	pBillboards.Insert(billboard, index);
 }
 
-void igdeGDCBillboardList::MoveTo(igdeGDCBillboard *billboard, int index){
+void igdeGDCBillboardList::MoveTo(igdeGDCBillboard::Ref billboard, int index){
 	pBillboards.Move(billboard, index);
 }
 
-void igdeGDCBillboardList::Remove(igdeGDCBillboard *billboard){
+void igdeGDCBillboardList::Remove(igdeGDCBillboard::Ref billboard){
 	pBillboards.Remove(billboard);
 }
 
@@ -102,22 +102,18 @@ void igdeGDCBillboardList::RemoveAll(){
 
 void igdeGDCBillboardList::SetToDeepCopyFrom(const igdeGDCBillboardList &list){
 	const int count = list.GetCount();
-	igdeGDCBillboard *billboard = NULL;
+	igdeGDCBillboard::Ref billboard = NULL;
 	
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			billboard = new igdeGDCBillboard(*list.GetAt(i));
+			billboard.TakeOver(new igdeGDCBillboard(*list.GetAt(i)));
 			Add(billboard);
-			billboard->FreeReference();
 			billboard = NULL;
 		}
 		
 	}catch(const deException &){
-		if(billboard){
-			billboard->FreeReference();
-		}
 		throw;
 	}
 }

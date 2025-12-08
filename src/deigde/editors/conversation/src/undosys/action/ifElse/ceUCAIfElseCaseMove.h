@@ -38,9 +38,9 @@ class ceCAIfElse;
  */
 class ceUCAIfElseCaseMove : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
+	ceConversationTopic::Ref pTopic;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
 	int pOldIndex;
 	int pNewIndex;
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	ceUCAIfElseCaseMove(ceConversationTopic *topic, ceCAIfElse *ifelse, ceCAIfElseCase *ifcase, int newIndex);
+	ceUCAIfElseCaseMove(ceConversationTopic::Ref topic, ceCAIfElse::Ref ifelse, ceCAIfElseCase::Ref ifcase, int newIndex);
 	
 	/** \brief Clean up undo object. */
 	virtual ~ceUCAIfElseCaseMove();

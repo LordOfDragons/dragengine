@@ -63,12 +63,11 @@ void dePropFieldGround::Clear(){
 	RemoveAllComponents();
 	
 	if(pHeightTerrain){
-		pHeightTerrain->FreeReference();
 		pHeightTerrain = NULL;
 	}
 }
 
-void dePropFieldGround::SetHeightTerrain(deHeightTerrain *heightTerrain){
+void dePropFieldGround::SetHeightTerrain(deHeightTerrain::Ref heightTerrain){
 	if(heightTerrain != pHeightTerrain){
 		if(pHeightTerrain) pHeightTerrain->FreeReference();
 		pHeightTerrain = heightTerrain;
@@ -87,7 +86,7 @@ deComponent *dePropFieldGround::GetComponentAt(int index) const{
 	return pComponents[index];
 }
 
-int dePropFieldGround::IndexOfComponent(deComponent *component) const{
+int dePropFieldGround::IndexOfComponent(deComponent::Ref component) const{
 	if(!component) DETHROW(deeInvalidParam);
 	
 	int t;
@@ -101,7 +100,7 @@ int dePropFieldGround::IndexOfComponent(deComponent *component) const{
 	return -1;
 }
 
-bool dePropFieldGround::HasComponent(deComponent *component) const{
+bool dePropFieldGround::HasComponent(deComponent::Ref component) const{
 	if(!component) DETHROW(deeInvalidParam);
 	
 	int t;
@@ -115,7 +114,7 @@ bool dePropFieldGround::HasComponent(deComponent *component) const{
 	return false;
 }
 
-void dePropFieldGround::AddComponent(deComponent *component){
+void dePropFieldGround::AddComponent(deComponent::Ref component){
 	if(!component) DETHROW(deeInvalidParam);
 	
 	if(pComponentCount == pComponentSize){
@@ -131,11 +130,10 @@ void dePropFieldGround::AddComponent(deComponent *component){
 	}
 	
 	pComponents[pComponentCount] = component;
-	component->AddReference();
 	pComponentCount++;
 }
 
-void dePropFieldGround::RemoveComponent(deComponent *component){
+void dePropFieldGround::RemoveComponent(deComponent::Ref component){
 	int i, index = IndexOfComponent(component);
 	
 	if(index == -1) DETHROW(deeInvalidParam);
@@ -144,8 +142,6 @@ void dePropFieldGround::RemoveComponent(deComponent *component){
 		pComponents[i - 1] = pComponents[i];
 	}
 	pComponentCount--;
-	
-	component->FreeReference();
 }
 
 void dePropFieldGround::RemoveAllComponents(){

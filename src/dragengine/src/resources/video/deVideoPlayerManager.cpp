@@ -69,10 +69,10 @@ deVideoPlayer *deVideoPlayerManager::GetRootVideoPlayer() const{
 }
 
 deVideoPlayer *deVideoPlayerManager::CreateVideoPlayer(){
-	deVideoPlayer *videoPlayer = NULL;
+	deVideoPlayer::Ref videoPlayer = NULL;
 	
 	try{
-		videoPlayer = new deVideoPlayer(this);
+		videoPlayer.TakeOver(new deVideoPlayer(this));
 		if(!videoPlayer) DETHROW(deeOutOfMemory);
 		
 		GetGraphicSystem()->LoadVideoPlayer(videoPlayer);
@@ -81,9 +81,6 @@ deVideoPlayer *deVideoPlayerManager::CreateVideoPlayer(){
 		pVideoPlayers.Add(videoPlayer);
 		
 	}catch(const deException &){
-		if(videoPlayer){
-			videoPlayer->FreeReference();
-		}
 		throw;
 	}
 	
@@ -107,7 +104,7 @@ void deVideoPlayerManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deVideoPlayerManager::SystemAudioLoad(){
-	deVideoPlayer *videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
+	deVideoPlayer::Ref videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
 	deAudioSystem &system = *GetAudioSystem();
 	
 	while(videoPlayer){
@@ -120,7 +117,7 @@ void deVideoPlayerManager::SystemAudioLoad(){
 }
 
 void deVideoPlayerManager::SystemAudioUnload(){
-	deVideoPlayer *videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
+	deVideoPlayer::Ref videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
 	
 	while(videoPlayer){
 		videoPlayer->SetPeerAudio(NULL);
@@ -129,7 +126,7 @@ void deVideoPlayerManager::SystemAudioUnload(){
 }
 
 void deVideoPlayerManager::SystemGraphicLoad(){
-	deVideoPlayer *videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
+	deVideoPlayer::Ref videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(videoPlayer){
@@ -142,7 +139,7 @@ void deVideoPlayerManager::SystemGraphicLoad(){
 }
 
 void deVideoPlayerManager::SystemGraphicUnload(){
-	deVideoPlayer *videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
+	deVideoPlayer::Ref videoPlayer = (deVideoPlayer*)pVideoPlayers.GetRoot();
 	
 	while(videoPlayer){
 		videoPlayer->SetPeerGraphic(NULL);

@@ -46,7 +46,7 @@ public:
 private:
 	deAndroidInput &pAndroidInput;
 	
-	deCanvasView *pCanvas;
+	deCanvasView::Ref pCanvas;
 	
 	int pPointer;
 	decPoint pPointerPosition;

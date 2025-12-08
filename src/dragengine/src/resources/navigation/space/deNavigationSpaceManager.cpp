@@ -66,10 +66,10 @@ deNavigationSpace *deNavigationSpaceManager::GetRootNavigationSpace() const{
 }
 
 deNavigationSpace *deNavigationSpaceManager::CreateNavigationSpace(){
-	deNavigationSpace *navspace = NULL;
+	deNavigationSpace::Ref navspace = NULL;
 	
 	try{
-		navspace = new deNavigationSpace(this);
+		navspace.TakeOver(new deNavigationSpace(this));
 		if(!navspace){
 			DETHROW(deeOutOfMemory);
 		}
@@ -79,9 +79,6 @@ deNavigationSpace *deNavigationSpaceManager::CreateNavigationSpace(){
 		pNavSpaces.Add(navspace);
 		
 	}catch(const deException &){
-		if(navspace){
-			navspace->FreeReference();
-		}
 		throw;
 	}
 	
@@ -105,7 +102,7 @@ void deNavigationSpaceManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deNavigationSpaceManager::SystemAILoad(){
-	deNavigationSpace *navspace = (deNavigationSpace*)pNavSpaces.GetRoot();
+	deNavigationSpace::Ref navspace = (deNavigationSpace*)pNavSpaces.GetRoot();
 	deAISystem &aisys = *GetAISystem();
 	
 	while(navspace){
@@ -118,7 +115,7 @@ void deNavigationSpaceManager::SystemAILoad(){
 }
 
 void deNavigationSpaceManager::SystemAIUnload(){
-	deNavigationSpace *navspace = (deNavigationSpace*)pNavSpaces.GetRoot();
+	deNavigationSpace::Ref navspace = (deNavigationSpace*)pNavSpaces.GetRoot();
 	
 	while(navspace){
 		navspace->SetPeerAI(NULL);

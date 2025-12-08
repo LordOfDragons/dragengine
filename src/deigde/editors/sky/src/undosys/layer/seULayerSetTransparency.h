@@ -35,7 +35,7 @@ class seLayer;
  */
 class seULayerSetTransparency : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	float pOldTransparency;
 	float pNewTransparency;
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerSetTransparency(seLayer *layer, float newTransparency);
+	seULayerSetTransparency(seLayer::Ref layer, float newTransparency);
 	
 protected:
 	/** \brief Clean up undo action. */

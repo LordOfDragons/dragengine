@@ -44,9 +44,9 @@ class meWindowProperties;
 class meWPAdd : public igdeContainerScroll{
 private:
 	meWindowProperties &pWindowProperties;
-	meWPAddListener *pListener;
+	meWPAddListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeAction::Ref pActionClassAdd;
 	igdeAction::Ref pActionClassRemove;
@@ -80,7 +80,7 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
-	void SetWorld(meWorld *world);
+	void SetWorld(meWorld::Ref world);
 	
 	/** \brief Update parameters. */
 	void UpdateParameters();

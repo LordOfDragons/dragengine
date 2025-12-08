@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalPosition : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decDVector pOldPosition;
 	decDVector pNewPosition;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalPosition(meDecal *decal, const decDVector &newPosition);
+	meUDecalPosition(meDecal::Ref decal, const decDVector &newPosition);
 	
 protected:
 	/** \brief Clean up undo object. */

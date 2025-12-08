@@ -61,14 +61,11 @@ pCenter(64, 64),
 
 pPressed(false),
 
-pCImage(NULL),
-pCLabel(NULL),
-
 pDirtyLabelSize(true)
 {
 	deCanvasManager &canvasManager = *androidInput.GetGameEngine()->GetCanvasManager();
 	deImageManager &imageManager = *androidInput.GetGameEngine()->GetImageManager();
-	deImage *image = NULL;
+	deImage::Ref image = NULL;
 	
 	const decPoint size(pRadius * 2, pRadius * 2);
 	
@@ -83,7 +80,6 @@ pDirtyLabelSize(true)
 		image = imageManager.LoadImage(&androidInput.GetVFS(),
 			"/share/images/actionbutton.png", "/");
 		pCImage->SetImage(image);
-		image->FreeReference();
 		image = NULL;
 		GetCanvas()->AddCanvas(pCImage);
 		
@@ -94,9 +90,6 @@ pDirtyLabelSize(true)
 		GetCanvas()->AddCanvas(pCLabel);
 		
 	}catch(const deException &){
-		if(image){
-			image->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}
@@ -224,12 +217,6 @@ void deainpOverlayActionButton::OnRelease(){
 //////////////////////
 
 void deainpOverlayActionButton::pCleanUp(){
-	if(pCLabel){
-		pCLabel->FreeReference();
-	}
-	if(pCImage){
-		pCImage->FreeReference();
-	}
 }
 
 void deainpOverlayActionButton::pUpdateLabelSize(){

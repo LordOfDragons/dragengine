@@ -46,13 +46,13 @@ class meObjectList;
 class meUObjectDropToGround : public igdeUndo{
 private:
 	struct sObject{
-		meObject *object;
+		meObject::Ref object;
 		decDVector oldpos;
 		decVector oldrot;
 	};
 	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	sObject *pObjects;
 	int pObjectCount;
@@ -67,7 +67,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUObjectDropToGround(meWorld *world, const meObjectList &objects);
+	meUObjectDropToGround(meWorld::Ref world, const meObjectList &objects);
 	/** \brief Clean up object. */
 	virtual ~meUObjectDropToGround();
 	/*@}*/

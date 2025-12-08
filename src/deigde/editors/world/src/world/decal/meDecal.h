@@ -61,7 +61,7 @@ public:
 private:
 	igdeEnvironment *pEnvironment;
 	
-	deSkin *pEngSkin;
+	deSkin::Ref pEngSkin;
 	
 	meAttachedDecal **pAttachedDecals;
 	int pAttachedDecalCount;
@@ -69,9 +69,9 @@ private:
 	
 	meWorld *pWorld;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSDecal;
-	deColliderVolume *pCollider;
+	deColliderVolume::Ref pCollider;
 	
 	meObject *pParentObject;
 	
@@ -89,7 +89,7 @@ private:
 	
 	decColor pColorTint;
 	
-	deDynamicSkin *pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	int pID;
 	bool pVisible;

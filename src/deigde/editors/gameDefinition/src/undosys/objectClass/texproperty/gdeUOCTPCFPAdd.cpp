@@ -41,11 +41,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTPCFPAdd::gdeUOCTPCFPAdd(gdeObjectClass *objectClass,
-gdeProperty *property, gdeFilePattern *filePattern) :
-pObjectClass(NULL),
-pProperty(NULL),
-pFilePattern(NULL)
+gdeUOCTPCFPAdd::gdeUOCTPCFPAdd(gdeObjectClass::Ref objectClass,
+gdeProperty::Ref property, gdeFilePattern::Ref filePattern) :
+
+pProperty(NULL)
 {
 	if(!objectClass || !property || !filePattern){
 		DETHROW(deeInvalidParam);
@@ -54,25 +53,11 @@ pFilePattern(NULL)
 	SetShortInfo("Object class texture property add custom file pattern");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
-	
 	pFilePattern = filePattern;
-	filePattern->AddReference();
 }
 
 gdeUOCTPCFPAdd::~gdeUOCTPCFPAdd(){
-	if(pFilePattern){
-		pFilePattern->FreeReference();
-	}
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

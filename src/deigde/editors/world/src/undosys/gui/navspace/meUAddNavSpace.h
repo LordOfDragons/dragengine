@@ -38,8 +38,8 @@ class meNavigationSpace;
  */
 class meUAddNavSpace : public igdeUndo{
 private:
-	meWorld *pWorld;
-	meNavigationSpace *pNavSpace;
+	meWorld::Ref pWorld;
+	meNavigationSpace::Ref pNavSpace;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUAddNavSpace(meWorld *world, const decPoint3 &sector, meNavigationSpace *navspace);
+	meUAddNavSpace(meWorld::Ref world, const decPoint3 &sector, meNavigationSpace::Ref navspace);
 	
 	/** \brief Clean up undo object. */
 	virtual ~meUAddNavSpace();

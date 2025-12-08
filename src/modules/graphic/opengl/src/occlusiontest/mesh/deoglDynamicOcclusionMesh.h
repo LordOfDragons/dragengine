@@ -46,7 +46,7 @@ class deComponent;
 class deoglDynamicOcclusionMesh{
 public:
 	deoglRenderThread &pRenderThread;
-	deoglROcclusionMesh *pOcclusionMesh;
+	deoglROcclusionMesh::Ref pOcclusionMesh;
 	deoglRComponent *pComponent;
 	
 	decIntList pBoneMappings;

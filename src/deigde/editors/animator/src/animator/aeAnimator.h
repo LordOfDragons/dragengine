@@ -102,19 +102,19 @@ public:
 	
 private:
 	aeWindowMain &pWindowMain;
-	deWorld *pEngWorld;
+	deWorld::Ref pEngWorld;
 	
 	igdeWSky *pSky;
 	igdeWObject::Ref pEnvObject;
 	
-	deLight *pEngLight;
-	deComponent *pEngComponent;
-	deAnimator *pEngAnimator;
-	deAnimatorInstance *pEngAnimatorInstance;
-	deColliderComponent *pEngCollider;
+	deLight::Ref pEngLight;
+	deComponent::Ref pEngComponent;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
+	deColliderComponent::Ref pEngCollider;
 	deRig::Ref pEngRig;
 	
-	deDebugDrawer *pDDBones;
+	deDebugDrawer::Ref pDDBones;
 	igdeWCoordSysArrows *pDDSBones;
 	int pDDSBoneCount;
 	float pDDSBoneSize;
@@ -435,21 +435,21 @@ public:
 	/** Retrieves the attachment with the given name or NULL if not found. */
 	aeAttachment *GetAttachmentNamed(const char *name) const;
 	/** Retrieves the index of the attachment or -1 if not found. */
-	int IndexOfAttachment(aeAttachment *attachment) const;
+	int IndexOfAttachment(aeAttachment::Ref attachment) const;
 	/** Determines if the attachment exists. */
-	bool HasAttachment(aeAttachment *attachment) const;
+	bool HasAttachment(aeAttachment::Ref attachment) const;
 	/** Determines if the attachment exists. */
 	bool HasAttachmentNamed(const char *name) const;
 	/** Adds a new attachment. */
-	void AddAttachment(aeAttachment *attachment);
+	void AddAttachment(aeAttachment::Ref attachment);
 	/** Removes the given attachment. */
-	void RemoveAttachment(aeAttachment *attachment);
+	void RemoveAttachment(aeAttachment::Ref attachment);
 	/** Removes all attachments. */
 	void RemoveAllAttachments();
 	/** Retrieves the active attachment or NULL. */
 	inline aeAttachment *GetActiveAttachment() const{ return pActiveAttachment; }
 	/** Sets the active attachment or NULL. */
-	void SetActiveAttachment(aeAttachment *attachment);
+	void SetActiveAttachment(aeAttachment::Ref attachment);
 	
 	/** Attach all attachments. */
 	void AttachAttachments();
@@ -466,13 +466,13 @@ public:
 	/** Retrieves the notifier at the given index. */
 	aeAnimatorNotifier *GetNotifierAt(int index) const;
 	/** Retrieves the index of the notifier or -1 if not found. */
-	int IndexOfNotifier(aeAnimatorNotifier *notifier) const;
+	int IndexOfNotifier(aeAnimatorNotifier::Ref notifier) const;
 	/** Determines if the notifier exists. */
-	bool HasNotifier(aeAnimatorNotifier *notifier) const;
+	bool HasNotifier(aeAnimatorNotifier::Ref notifier) const;
 	/** Adds a new notifier. */
-	void AddNotifier(aeAnimatorNotifier *notifier);
+	void AddNotifier(aeAnimatorNotifier::Ref notifier);
 	/** Removes the given notifier. */
-	void RemoveNotifier(aeAnimatorNotifier *notifier);
+	void RemoveNotifier(aeAnimatorNotifier::Ref notifier);
 	/** Removes all notifiers. */
 	void RemoveAllNotifiers();
 	
@@ -531,7 +531,7 @@ public:
 	/** Notifies all that the active attachment has changed. */
 	void NotifyActiveAttachmentChanged();
 	/** Notifies all that a attachment has changed. */
-	void NotifyAttachmentChanged(aeAttachment *attachment);
+	void NotifyAttachmentChanged(aeAttachment::Ref attachment);
 	/** Notifies all that the count of attachments changed. */
 	void NotifyAttachmentStructureChanged();
 	

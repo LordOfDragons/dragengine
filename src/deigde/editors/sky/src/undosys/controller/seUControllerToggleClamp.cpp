@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUControllerToggleClamp::seUControllerToggleClamp(seController *controller) :
+seUControllerToggleClamp::seUControllerToggleClamp(seController::Ref controller) :
 pController(NULL)
 {
 	if(!controller){
@@ -49,13 +49,9 @@ pController(NULL)
 	SetShortInfo("Toggle Controller Clamp");
 	
 	pController = controller;
-	controller->AddReference();
 }
 
 seUControllerToggleClamp::~seUControllerToggleClamp(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

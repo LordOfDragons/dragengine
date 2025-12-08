@@ -376,15 +376,13 @@ public:
 
 seWPController::seWPController(seViewSynthesizer &viewSynthesizer) :
 igdeContainerScroll(viewSynthesizer.GetEnvironment(), false, true),
-pViewSynthesizer(viewSynthesizer),
-pListener(NULL),
-pSynthesizer(NULL)
+pViewSynthesizer(viewSynthesizer)
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new seWPControllerListener(*this);
+	pListener.TakeOver(new seWPControllerListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -436,9 +434,6 @@ pSynthesizer(NULL)
 
 seWPController::~seWPController(){
 	SetSynthesizer(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -446,21 +441,19 @@ seWPController::~seWPController(){
 // Management
 ///////////////
 
-void seWPController::SetSynthesizer(seSynthesizer *synthesizer){
+void seWPController::SetSynthesizer(seSynthesizer::Ref synthesizer){
 	if(synthesizer == pSynthesizer){
 		return;
 	}
 	
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
 	
 	if(synthesizer){
 		synthesizer->AddNotifier(pListener);
-		synthesizer->AddReference();
 	}
 	
 	UpdateControllerList();

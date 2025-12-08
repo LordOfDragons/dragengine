@@ -40,9 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTexPropertyRemove::gdeUOCTexPropertyRemove(gdeObjectClass *objectClass, gdeProperty *property) :
-pObjectClass(NULL),
-pProperty(NULL)
+gdeUOCTexPropertyRemove::gdeUOCTexPropertyRemove(gdeObjectClass::Ref objectClass, gdeProperty::Ref property) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
@@ -54,19 +53,10 @@ pProperty(NULL)
 	SetShortInfo("Object class remove texture property");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCTexPropertyRemove::~gdeUOCTexPropertyRemove(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

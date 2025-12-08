@@ -103,19 +103,11 @@ void deoglHTSTexture::SetMatrix(const decTexMatrix &matrix){
 	MarkParamBlocksDirty();
 }
 
-void deoglHTSTexture::SetSkin(deoglRSkin *skin){
+void deoglHTSTexture::SetSkin(deoglRSkin::Ref skin){
 	if(skin == pSkin){
 		return;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	pSkin = skin;
-	if(skin){
-		skin->AddReference();
-	}
-	
 	pUseSkinTexture = NULL;
 	if(skin && skin->GetTextureCount() > 0){
 		pUseSkinTexture = &skin->GetTextureAt(0);
@@ -323,10 +315,6 @@ void deoglHTSTexture::PrepareForRender(){
 //////////////////////
 
 void deoglHTSTexture::pCleanUp(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
 		pTUCDepth = NULL;

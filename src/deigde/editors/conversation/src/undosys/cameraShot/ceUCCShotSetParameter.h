@@ -38,7 +38,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetParameter : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	int pParameter;
 	
 	decCurveBezier pOldCurve;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetParameter(ceCameraShot *cameraShot, int parameter);
+	ceUCCShotSetParameter(ceCameraShot::Ref cameraShot, int parameter);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetParameter();

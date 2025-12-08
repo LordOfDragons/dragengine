@@ -45,8 +45,8 @@ class deoglGIBVHDynamic{
 protected:
 	deoglGIBVHLocal &pGIBVHLocal;
 	
-	deoglDynamicTBOFloat32 *pTBONodeBox;
-	deoglDynamicTBOFloat32 *pTBOVertex;
+	deoglDynamicTBOFloat32::Ref pTBONodeBox;
+	deoglDynamicTBOFloat32::Ref pTBOVertex;
 	
 	deoglDynamicTBOBlock::Ref pBlockNode;
 	deoglDynamicTBOBlock::Ref pBlockVertex;

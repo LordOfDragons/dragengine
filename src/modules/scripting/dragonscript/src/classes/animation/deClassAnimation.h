@@ -52,7 +52,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	deAnimation *GetAnimation(dsRealObject *This) const;
-	void PushAnimation(dsRunTime *rt, deAnimation *anim);
+	void PushAnimation(dsRunTime *rt, deAnimation::Ref anim);
 	
 	inline dsClass *GetClassAnimationBoneParameter() const{ return pClsBoneParameter; }
 	

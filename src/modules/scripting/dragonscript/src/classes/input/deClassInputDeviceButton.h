@@ -64,7 +64,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push button. */
-	void PushButton(dsRunTime *rt, dedsInputDevice *device, int index);
+	void PushButton(dsRunTime *rt, dedsInputDevice::Ref device, int index);
 	
 	inline dsClass *GetClassInputDeviceButtonType() const{ return pClsInputDeviceButtonType; }
 	/*@}*/

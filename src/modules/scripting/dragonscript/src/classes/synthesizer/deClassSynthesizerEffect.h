@@ -74,16 +74,16 @@ public:
 	deSynthesizerEffect *GetEffect(dsRealObject *myself) const;
 	
 	/** \brief Assigns effect or \em NULL. */
-	void AssignEffect(dsRealObject *myself, deSynthesizerEffect *effect);
+	void AssignEffect(dsRealObject *myself, deSynthesizerEffect::Ref effect);
 	
 	/** \brief Assigns synthesizer source or \em NULL. */
-	void AssignSource(dsRealObject *myself, deSynthesizerSource *source);
+	void AssignSource(dsRealObject *myself, deSynthesizerSource::Ref source);
 	
 	/**
 	 * \brief Pushes a effect.
 	 * \details Delegates the call to the matching effect script class.
 	 */
-	void PushEffect(dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffect *effect);
+	void PushEffect(dsRunTime *rt, deSynthesizerSource::Ref source, deSynthesizerEffect::Ref effect);
 	/*@}*/
 	
 	

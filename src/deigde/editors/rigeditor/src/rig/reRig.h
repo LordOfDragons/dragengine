@@ -118,13 +118,13 @@ public:
 	};
 	
 private:
-	deWorld *pEngWorld;
-	deLight *pEngLight;
+	deWorld::Ref pEngWorld;
+	deLight::Ref pEngLight;
 	
-	deComponent *pEngComponent;
-	deAnimator *pEngAnimator;
-	deAnimatorInstance *pEngAnimatorInstance;
-	deColliderComponent *pEngSimCollider;
+	deComponent::Ref pEngComponent;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
+	deColliderComponent::Ref pEngSimCollider;
 	deAnimatorRuleAnimation *pEngAnimatorAnim;
 	deAnimatorRuleStateManipulator *pEngAnimatorRestPose;
 	
@@ -134,7 +134,7 @@ private:
 	igdeWSky *pSky;
 	igdeWObject::Ref pEnvObject;
 	
-	deRig *pEngRig;
+	deRig::Ref pEngRig;
 	bool pPoseChanged;
 	
 	decString pModelPath;
@@ -155,7 +155,7 @@ private:
 	reRigBone **pBones;
 	int pBoneCount;
 	int pBoneSize;
-	reRigBone *pRootBone;
+	reRigBone::Ref pRootBone;
 	
 	reRigShape **pShapes;
 	int pShapeCount;
@@ -434,13 +434,13 @@ public:
 	/** Retrieves the bone with the given order or NULL if not found. */
 	reRigBone *GetBoneWithOrder(int order) const;
 	/** Retrieves the index of the bone or -1 if not found. */
-	int IndexOfBone(reRigBone *bone) const;
+	int IndexOfBone(reRigBone::Ref bone) const;
 	/** Determines if the bone exists. */
-	bool HasBone(reRigBone *bone) const;
+	bool HasBone(reRigBone::Ref bone) const;
 	/** Adds a new bone. */
-	void AddBone(reRigBone *bone);
+	void AddBone(reRigBone::Ref bone);
 	/** Removes the given bone. */
-	void RemoveBone(reRigBone *bone);
+	void RemoveBone(reRigBone::Ref bone);
 	/** Removes all bones. */
 	void RemoveAllBones();
 	
@@ -452,7 +452,7 @@ public:
 	/** Retrieves the root bone or NULL if not set. */
 	inline reRigBone *GetRootBone() const{ return pRootBone; }
 	/** Sets the root bone or NULL if not set. */
-	void SetRootBone(reRigBone *rootBone);
+	void SetRootBone(reRigBone::Ref rootBone);
 	/*@}*/
 	
 	/** @name Shapes */
@@ -464,13 +464,13 @@ public:
 	/** Retrieves the shape with the given collider or NULL if not found. */
 	reRigShape *GetShapeWith(deColliderVolume *collider) const;
 	/** Retrieves the index of the shape or -1 if not found. */
-	int IndexOfShape(reRigShape *shape) const;
+	int IndexOfShape(reRigShape::Ref shape) const;
 	/** Determines if the shape exists. */
-	bool HasShape(reRigShape *shape) const;
+	bool HasShape(reRigShape::Ref shape) const;
 	/** Adds a new shape. */
-	void AddShape(reRigShape *shape);
+	void AddShape(reRigShape::Ref shape);
 	/** Removes the given shape. */
-	void RemoveShape(reRigShape *shape);
+	void RemoveShape(reRigShape::Ref shape);
 	/** Removes all shapes. */
 	void RemoveAllShapes();
 	/*@}*/
@@ -484,13 +484,13 @@ public:
 	/** Retrieves the constraint with the given collider or NULL if not found. */
 	reRigConstraint *GetConstraintWith(deColliderVolume *collider) const;
 	/** Retrieves the index of the constraint or -1 if not found. */
-	int IndexOfConstraint(reRigConstraint *constraint) const;
+	int IndexOfConstraint(reRigConstraint::Ref constraint) const;
 	/** Determines if the constraint exists. */
-	bool HasConstraint(reRigConstraint *constraint) const;
+	bool HasConstraint(reRigConstraint::Ref constraint) const;
 	/** Adds a new constraint. */
-	void AddConstraint(reRigConstraint *constraint);
+	void AddConstraint(reRigConstraint::Ref constraint);
 	/** Removes the given constraint. */
-	void RemoveConstraint(reRigConstraint *constraint);
+	void RemoveConstraint(reRigConstraint::Ref constraint);
 	/** Removes all constraints. */
 	void RemoveAllConstraints();
 	/*@}*/
@@ -504,13 +504,13 @@ public:
 	/** Retrieves the push with the given collider or NULL if not found. */
 	reRigPush *GetPushWith(deColliderVolume *collider) const;
 	/** Retrieves the index of the push or -1 if not found. */
-	int IndexOfPush(reRigPush *push) const;
+	int IndexOfPush(reRigPush::Ref push) const;
 	/** Determines if the push exists. */
-	bool HasPush(reRigPush *push) const;
+	bool HasPush(reRigPush::Ref push) const;
 	/** Adds a new push. */
-	void AddPush(reRigPush *push);
+	void AddPush(reRigPush::Ref push);
 	/** Removes the given push. */
-	void RemovePush(reRigPush *push);
+	void RemovePush(reRigPush::Ref push);
 	/** Removes all pushes. */
 	void RemoveAllPushes();
 	/*@}*/
@@ -522,13 +522,13 @@ public:
 	/** Retrieves the notifier at the given index. */
 	reRigNotifier *GetNotifierAt(int index) const;
 	/** Retrieves the index of the notifier or -1 if not found. */
-	int IndexOfNotifier(reRigNotifier *notifier) const;
+	int IndexOfNotifier(reRigNotifier::Ref notifier) const;
 	/** Determines if the notifier exists. */
-	bool HasNotifier(reRigNotifier *notifier) const;
+	bool HasNotifier(reRigNotifier::Ref notifier) const;
 	/** Adds a new notifier. */
-	void AddNotifier(reRigNotifier *notifier);
+	void AddNotifier(reRigNotifier::Ref notifier);
 	/** Removes the given notifier. */
-	void RemoveNotifier(reRigNotifier *notifier);
+	void RemoveNotifier(reRigNotifier::Ref notifier);
 	/** Removes all notifiers. */
 	void RemoveAllNotifiers();
 	
@@ -560,50 +560,50 @@ public:
 	/** Notifies all that the number of bones changed. */
 	void NotifyBoneCountChanged();
 	/** Notifies all that a bone changed. */
-	void NotifyBoneChanged(reRigBone *bone);
+	void NotifyBoneChanged(reRigBone::Ref bone);
 	/** Notifies all that a bone changed selection state. */
-	void NotifyBoneSelectedChanged(reRigBone *bone);
+	void NotifyBoneSelectedChanged(reRigBone::Ref bone);
 	/** Notifies all that all bones have been deselected. */
 	void NotifyAllBonesDeselected();
 	/** Notifies all that the active bone changed. */
 	void NotifyActiveBoneChanged();
 	/** Notifies all that a bone changed. */
-	void NotifyAllBoneChanged(reRigBone *bone);
+	void NotifyAllBoneChanged(reRigBone::Ref bone);
 	
 	/** Notifies all that the number of shapes changed. */
 	void NotifyShapeCountChanged();
 	/** Notifies all that a shape changed. */
-	void NotifyShapeChanged(reRigShape *shape);
+	void NotifyShapeChanged(reRigShape::Ref shape);
 	/** Notifies all that a shape changed selection state. */
-	void NotifyShapeSelectedChanged(reRigShape *shape);
+	void NotifyShapeSelectedChanged(reRigShape::Ref shape);
 	/** Notifies all that all shapes have been deselected. */
 	void NotifyAllShapesDeselected();
 	/** Notifies all that the active shape changed. */
 	void NotifyActiveShapeChanged();
 	/** Notifies all that a shape changed. */
-	void NotifyAllShapeChanged(reRigShape *shape);
+	void NotifyAllShapeChanged(reRigShape::Ref shape);
 	
 	/** Notifies all that the number of constraints changed. */
 	void NotifyConstraintCountChanged();
 	/** Notifies all that a constraint changed. */
-	void NotifyConstraintChanged(reRigConstraint *constraint);
+	void NotifyConstraintChanged(reRigConstraint::Ref constraint);
 	/** Notifies all that a constraint changed selection state. */
-	void NotifyConstraintSelectedChanged(reRigConstraint *constraint);
+	void NotifyConstraintSelectedChanged(reRigConstraint::Ref constraint);
 	/** Notifies all that all constraints have been deselected. */
 	void NotifyAllConstraintsDeselected();
 	/** Notifies all that the active constraint changed. */
 	void NotifyActiveConstraintChanged();
 	/** Notifies all that a constraint changed. */
-	void NotifyAllConstraintChanged(reRigConstraint *constraint);
+	void NotifyAllConstraintChanged(reRigConstraint::Ref constraint);
 	/** Notifies all that a constraint degree of freedom changed. */
-	void NotifyAllConstraintDofChanged(reRigConstraint *constraint, deColliderConstraint::eDegreesOfFreedom dof);
+	void NotifyAllConstraintDofChanged(reRigConstraint::Ref constraint, deColliderConstraint::eDegreesOfFreedom dof);
 	
 	/** Notifies all that the number of pushes changed. */
 	void NotifyPushCountChanged();
 	/** Notifies all that a push changed. */
-	void NotifyPushChanged(reRigPush *push);
+	void NotifyPushChanged(reRigPush::Ref push);
 	/** Notifies all that a push changed selection state. */
-	void NotifyPushSelectedChanged(reRigPush *push);
+	void NotifyPushSelectedChanged(reRigPush::Ref push);
 	/** Notifies all that all pushes have been deselected. */
 	void NotifyAllPushesDeselected();
 	/** Notifies all that the active push changed. */

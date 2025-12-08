@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavSpaceSetBlockingPriority : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationSpace *pNavSpace;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	int pOldValue;
 	int pNewValue;
@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetBlockingPriority(gdeObjectClass *objectClass,
-		gdeOCNavigationSpace *navspace, int newValue);
+	gdeUOCNavSpaceSetBlockingPriority(gdeObjectClass::Ref objectClass,
+		gdeOCNavigationSpace::Ref navspace, int newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -48,8 +48,8 @@
 /////////////////////
 
 struct sSEStretchNatDat{
-	deSynthesizerSource *source;
-	deSynthesizerEffectStretch *effect;
+	deSynthesizerSource::Ref source;
+	deSynthesizerEffectStretch::Ref effect;
 };
 
 
@@ -73,7 +73,7 @@ void deClassSEStretch::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create synthesizer effect
-	nd.effect = new deSynthesizerEffectStretch;
+	nd.effect.TakeOver(new deSynthesizerEffectStretch);
 	baseClass->AssignEffect(myself->GetRealObject(), nd.effect);
 }
 
@@ -320,7 +320,7 @@ deSynthesizerEffectStretch *deClassSEStretch::GetEffect(dsRealObject *myself) co
 	return ((sSEStretchNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
-void deClassSEStretch::AssignSynthesizer(dsRealObject *myself, deSynthesizerSource *source){
+void deClassSEStretch::AssignSynthesizer(dsRealObject *myself, deSynthesizerSource::Ref source){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -338,13 +338,9 @@ void deClassSEStretch::AssignSynthesizer(dsRealObject *myself, deSynthesizerSour
 	}
 	
 	nd.source = source;
-	
-	if(source){
-		source->AddReference();
-	}
 }
 
-void deClassSEStretch::PushEffect(dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffectStretch *effect){
+void deClassSEStretch::PushEffect(dsRunTime *rt, deSynthesizerSource::Ref source, deSynthesizerEffectStretch::Ref effect){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -364,13 +360,7 @@ void deClassSEStretch::PushEffect(dsRunTime *rt, deSynthesizerSource *source, de
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.source = source;
-		if(source){
-			source->AddReference();
-		}
-		
 		nd.effect = effect;
-		effect->AddReference();
-		
 		baseClass->AssignEffect(rt->GetValue(0)->GetRealObject(), effect);
 		baseClass->AssignSource(rt->GetValue(0)->GetRealObject(), source);
 		

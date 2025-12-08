@@ -62,15 +62,15 @@ igdeGDCComponent *igdeGDCComponentList::GetAt(int index) const{
 	return (igdeGDCComponent*)pComponents.GetAt(index);
 }
 
-int igdeGDCComponentList::IndexOf(igdeGDCComponent *component) const{
+int igdeGDCComponentList::IndexOf(igdeGDCComponent::Ref component) const{
 	return pComponents.IndexOf(component);
 }
 
-bool igdeGDCComponentList::Has(igdeGDCComponent *component) const{
+bool igdeGDCComponentList::Has(igdeGDCComponent::Ref component) const{
 	return pComponents.Has(component);
 }
 
-void igdeGDCComponentList::Add(igdeGDCComponent *component){
+void igdeGDCComponentList::Add(igdeGDCComponent::Ref component){
 	if(!component){
 		DETHROW(deeInvalidParam);
 	}
@@ -78,7 +78,7 @@ void igdeGDCComponentList::Add(igdeGDCComponent *component){
 	pComponents.Add(component);
 }
 
-void igdeGDCComponentList::InsertAt(igdeGDCComponent *component, int index){
+void igdeGDCComponentList::InsertAt(igdeGDCComponent::Ref component, int index){
 	if(!component){
 		DETHROW(deeInvalidParam);
 	}
@@ -86,11 +86,11 @@ void igdeGDCComponentList::InsertAt(igdeGDCComponent *component, int index){
 	pComponents.Insert(component, index);
 }
 
-void igdeGDCComponentList::MoveTo(igdeGDCComponent *component, int index){
+void igdeGDCComponentList::MoveTo(igdeGDCComponent::Ref component, int index){
 	pComponents.Move(component, index);
 }
 
-void igdeGDCComponentList::Remove(igdeGDCComponent *component){
+void igdeGDCComponentList::Remove(igdeGDCComponent::Ref component){
 	pComponents.Remove(component);
 }
 
@@ -102,22 +102,18 @@ void igdeGDCComponentList::RemoveAll(){
 
 void igdeGDCComponentList::SetToDeepCopyFrom(const igdeGDCComponentList &list){
 	const int count = list.GetCount();
-	igdeGDCComponent *component = NULL;
+	igdeGDCComponent::Ref component = NULL;
 	
 	int i;
 	
 	try{
 		for(i=0; i<count; i++){
-			component = new igdeGDCComponent(*list.GetAt(i));
+			component.TakeOver(new igdeGDCComponent(*list.GetAt(i)));
 			Add(component);
-			component->FreeReference();
 			component = NULL;
 		}
 		
 	}catch(const deException &){
-		if(component){
-			component->FreeReference();
-		}
 		throw;
 	}
 }

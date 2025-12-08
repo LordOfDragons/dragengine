@@ -42,7 +42,7 @@
 ////////////////////////////
 
 ceUCAASpeakToggleUseSpeechAnimation::ceUCAASpeakToggleUseSpeechAnimation(
-ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
+ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak){
 	if(!topic){
 		DETHROW(deeInvalidParam);
 	}
@@ -53,19 +53,10 @@ ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
 	SetShortInfo("Actor speak toggle use speech animation");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakToggleUseSpeechAnimation::~ceUCAASpeakToggleUseSpeechAnimation(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

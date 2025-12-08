@@ -35,7 +35,7 @@ class seController;
  */
 class seUControllerToggleClamp : public igdeUndo{
 private:
-	seController *pController;
+	seController::Ref pController;
 	
 	
 	
@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUControllerToggleClamp(seController *controller);
+	seUControllerToggleClamp(seController::Ref controller);
 	
 protected:
 	/** \brief Clean up undo action. */

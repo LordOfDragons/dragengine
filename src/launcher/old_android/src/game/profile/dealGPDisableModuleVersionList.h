@@ -65,22 +65,22 @@ public:
 	dealGPDisableModuleVersion *GetWith(const char *name, const char *version) const;
 	
 	/** \brief Entry exists. */
-	bool Has(dealGPDisableModuleVersion *entry) const;
+	bool Has(dealGPDisableModuleVersion::Ref entry) const;
 	
 	/** \brief Matching entry exists. */
 	bool HasWith(const char *name, const char *version) const;
 	
 	/** \brief Index of an entry or -1 if not found. */
-	int IndexOf(dealGPDisableModuleVersion *entry) const;
+	int IndexOf(dealGPDisableModuleVersion::Ref entry) const;
 	
 	/** \brief Index of a matching entry or -1 if not found. */
 	int IndexOfWith(const char *name, const char *version) const;
 	
 	/** \brief Add an entry. */
-	void Add(dealGPDisableModuleVersion *entry);
+	void Add(dealGPDisableModuleVersion::Ref entry);
 	
 	/** \brief Remove an entry. */
-	void Remove(dealGPDisableModuleVersion *entry);
+	void Remove(dealGPDisableModuleVersion::Ref entry);
 	
 	/** \brief Remove all entries. */
 	void RemoveAll();

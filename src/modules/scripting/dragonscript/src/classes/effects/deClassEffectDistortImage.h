@@ -72,7 +72,7 @@ public:
 	 * \brief Push effect distort image onto the stack.
 	 * \details Pushes a \em null object to the stack if \em collider is \em NULL.
 	 */
-	void PushEffect(dsRunTime *rt, deEffectDistortImage *effect);
+	void PushEffect(dsRunTime *rt, deEffectDistortImage::Ref effect);
 	/*@}*/
 	
 private:

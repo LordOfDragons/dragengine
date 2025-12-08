@@ -92,7 +92,6 @@ pTextures(NULL),
 pTextureCount(0),
 
 pDecalRoot(NULL),
-pDecalTail(NULL),
 pDecalCount(0),
 
 pPeerGraphic(NULL),
@@ -639,7 +638,7 @@ void deComponent::SetDynamicSkin(deDynamicSkin *dynamicSkin){
 // Decals
 ////////////
 
-void deComponent::AddDecal(deDecal *decal){
+void deComponent::AddDecal(deDecal::Ref decal){
 	if(!decal || decal->GetParentComponent() || decal->GetParentHeightTerrainSector()){
 		DETHROW(deeInvalidParam);
 	}
@@ -658,8 +657,6 @@ void deComponent::AddDecal(deDecal *decal){
 	pDecalTail = decal;
 	pDecalCount++;
 	decal->SetParentComponent(this);
-	decal->AddReference();
-	
 	if(pPeerGraphic){
 		pPeerGraphic->DecalAdded(decal);
 	}
@@ -671,7 +668,7 @@ void deComponent::AddDecal(deDecal *decal){
 	}
 }
 
-void deComponent::RemoveDecal(deDecal *decal){
+void deComponent::RemoveDecal(deDecal::Ref decal){
 	if(!decal || decal->GetParentComponent() != this){
 		DETHROW(deeInvalidParam);
 	}
@@ -703,8 +700,6 @@ void deComponent::RemoveDecal(deDecal *decal){
 	if(pPeerAudio){
 		pPeerAudio->DecalRemoved(decal);
 	}
-	
-	decal->FreeReference();
 }
 
 void deComponent::RemoveAllDecals(){
@@ -713,7 +708,6 @@ void deComponent::RemoveAllDecals(){
 		pDecalTail->SetParentComponent(NULL);
 		pDecalTail->SetLLComponentPrev(NULL);
 		pDecalTail->SetLLComponentNext(NULL);
-		pDecalTail->FreeReference();
 		pDecalTail = next;
 		pDecalCount--;
 	}

@@ -74,9 +74,6 @@
 deoglRPropFieldType::deoglRPropFieldType(deoglRPropField &propField) :
 pPropField(propField),
 
-pModel(NULL),
-pSkin(NULL),
-
 pUseSkinTexture(NULL),
 
 pClustersRequirePrepareForRender(true),
@@ -93,14 +90,6 @@ pDirtyModel(true)
 
 deoglRPropFieldType::~deoglRPropFieldType(){
 	LEAK_CHECK_FREE(pPropField.GetRenderThread(), PropFieldType);
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pModel){
-		pModel->FreeReference();
-	}
-	
 	RemoveAllClusters();
 }
 
@@ -109,21 +98,11 @@ deoglRPropFieldType::~deoglRPropFieldType(){
 // Management
 ///////////////
 
-void deoglRPropFieldType::SetModel(deoglRModel *model){
+void deoglRPropFieldType::SetModel(deoglRModel::Ref model){
 	if(model == pModel){
 		return;
 	}
-	
-	if(pModel){
-		pModel->FreeReference();
-	}
-	
 	pModel = model;
-	
-	if(model){
-		model->AddReference();
-	}
-	
 	pDirtyModel = true;
 	pPropField.TypeRequiresPrepareForRender();
 	
@@ -134,21 +113,11 @@ void deoglRPropFieldType::SetModel(deoglRModel *model){
 	}
 }
 
-void deoglRPropFieldType::SetSkin(deoglRSkin *skin){
+void deoglRPropFieldType::SetSkin(deoglRSkin::Ref skin){
 	if(skin == pSkin){
 		return;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	pSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
-	
 	pUseSkinTexture = NULL;
 	if(skin && skin->GetTextureCount() > 0){
 		pUseSkinTexture = &skin->GetTextureAt(0);

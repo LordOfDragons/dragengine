@@ -86,10 +86,10 @@ public:
 	deImage *LoadDefault();
 	
 	/** \brief Saves image to the given file. */
-	void SaveImage(deImage *image, const char *filename);
+	void SaveImage(deImage::Ref image, const char *filename);
 	
 	/** \brief Saves image to the given file. */
-	void SaveImage(deVirtualFileSystem *vfs, deImage *image, const char *filename);
+	void SaveImage(deVirtualFileSystem *vfs, deImage::Ref image, const char *filename);
 	
 	/**
 	 * \brief Add loaded and fully prepared image.
@@ -97,7 +97,7 @@ public:
 	 * This method is to be used only by the resource loader to add an image that has
 	 * been loaded asynchronously.
 	 */
-	void AddLoadedImage(deImage *image);
+	void AddLoadedImage(deImage::Ref image);
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

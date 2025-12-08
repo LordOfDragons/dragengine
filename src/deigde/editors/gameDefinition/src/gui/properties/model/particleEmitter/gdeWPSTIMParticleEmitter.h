@@ -35,14 +35,14 @@ class gdeParticleEmitter;
  */
 class gdeWPSTIMParticleEmitter : public gdeWPSTreeItemModel{
 private:
-	gdeParticleEmitter *pParticleEmitter;
+	gdeParticleEmitter::Ref pParticleEmitter;
 	
 	
 public:
 	/** \brief Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new tree item model. */
-	gdeWPSTIMParticleEmitter(gdeWPSTreeModel &tree, gdeParticleEmitter *particleEmitter);
+	gdeWPSTIMParticleEmitter(gdeWPSTreeModel &tree, gdeParticleEmitter::Ref particleEmitter);
 	
 protected:
 	/** \brief Clean up tree item model. */

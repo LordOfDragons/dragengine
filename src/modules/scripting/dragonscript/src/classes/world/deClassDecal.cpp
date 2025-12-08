@@ -50,7 +50,7 @@
 /////////////////////
 
 struct sDecalNatDat{
-	deDecal *decal;
+	deDecal::Ref decal;
 };
 
 
@@ -445,7 +445,7 @@ deDecal *deClassDecal::GetDecal(dsRealObject *myself) const{
 	return ((sDecalNatDat*)p_GetNativeData(myself->GetBuffer()))->decal;
 }
 
-void deClassDecal::PushDecal(dsRunTime *rt, deDecal *decal){
+void deClassDecal::PushDecal(dsRunTime *rt, deDecal::Ref decal){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -457,5 +457,4 @@ void deClassDecal::PushDecal(dsRunTime *rt, deDecal *decal){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sDecalNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->decal = decal;
-	decal->AddReference();
 }

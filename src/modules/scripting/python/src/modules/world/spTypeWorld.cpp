@@ -41,7 +41,7 @@
 ///////////////////
 
 struct sObjectData{
-	deWorld *world;
+	deWorld::Ref world;
 };
 
 
@@ -78,14 +78,12 @@ deWorld *spTypeWorld::WorldFromObject(PyObject *object){
 	}
 }
 
-PyObject *spTypeWorld::ObjectFromWorld(deWorld *world){
+PyObject *spTypeWorld::ObjectFromWorld(deWorld::Ref world){
 	if(world){
 		PyObject *pyoWorld = CreatePyObject();
 		
 		sObjectData &od = *((sObjectData*)GetObjectData(pyoWorld));
 		od.world = world;
-		world->AddReference();
-		
 		return pyoWorld;
 		
 	}else{

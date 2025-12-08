@@ -36,7 +36,7 @@ class aeLink;
  */
 class aeULinkSetVertexPositionSetMaximum : public igdeUndo{
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	float pOldValue;
 	float pNewValue;

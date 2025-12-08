@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACShotSetCameraTarget::ceUCACShotSetCameraTarget(ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newTarget){
+ceUCACShotSetCameraTarget::ceUCACShotSetCameraTarget(ceConversationTopic::Ref topic, ceCACameraShot::Ref cameraShot, const char *newTarget){
 	if(!topic || !newTarget) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
@@ -52,19 +52,10 @@ ceUCACShotSetCameraTarget::ceUCACShotSetCameraTarget(ceConversationTopic *topic,
 	SetShortInfo("Set Camera Target");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCACShotSetCameraTarget::~ceUCACShotSetCameraTarget(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

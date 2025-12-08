@@ -43,7 +43,7 @@ class aeRuleStateManipulator;
  */
 class aeUSetRuleSModMaxRotation : public igdeUndo{
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 	decVector pOldMax;
 	decVector pNewMax;

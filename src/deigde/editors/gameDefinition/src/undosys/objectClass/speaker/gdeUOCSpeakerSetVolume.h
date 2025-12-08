@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCSpeakerSetVolume : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	float pOldValue;
 	float pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetVolume(gdeObjectClass *objectClass, gdeOCSpeaker *speaker, float newValue);
+	gdeUOCSpeakerSetVolume(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker, float newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

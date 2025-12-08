@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotSetCamOrbitFrom::ceUCCShotSetCamOrbitFrom(ceCameraShot *cameraShot, const decVector &newRot){
+ceUCCShotSetCamOrbitFrom::ceUCCShotSetCamOrbitFrom(ceCameraShot::Ref cameraShot, const decVector &newRot){
 	if(!cameraShot) DETHROW(deeInvalidParam);
 	
 	pCameraShot = NULL;
@@ -50,13 +50,9 @@ ceUCCShotSetCamOrbitFrom::ceUCCShotSetCamOrbitFrom(ceCameraShot *cameraShot, con
 	pNewRot = newRot;
 	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotSetCamOrbitFrom::~ceUCCShotSetCamOrbitFrom(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

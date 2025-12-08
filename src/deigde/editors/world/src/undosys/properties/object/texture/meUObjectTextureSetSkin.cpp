@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTexture *texture, const char *newskin){
+meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTexture::Ref texture, const char *newskin){
 	if(!texture || !newskin) DETHROW(deeInvalidParam);
 	
 	meObject *object = texture->GetObject();
@@ -63,8 +63,6 @@ meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTexture *texture, const
 		pTextures[0].oldskin = texture->GetSkinPath();
 		pTextures[0].newskin = newskin;
 		pTextures[0].texture = texture;
-		texture->AddReference();
-		
 		pTextureCount = 1;
 		
 	}catch(const deException &){
@@ -75,7 +73,7 @@ meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTexture *texture, const
 
 meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTextureList &textures, const char *newskin){
 	int count = textures.GetTextureCount();
-	meObjectTexture *texture;
+	meObjectTexture::Ref texture;
 	
 	if(count == 0 || !newskin) DETHROW(deeInvalidParam);
 	
@@ -93,7 +91,6 @@ meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTextureList &textures, 
 			pTextures[pTextureCount].oldskin = texture->GetSkinPath();
 			pTextures[pTextureCount].newskin = newskin;
 			pTextures[pTextureCount].texture = texture;
-			texture->AddReference();
 		}
 		
 	}catch(const deException &){

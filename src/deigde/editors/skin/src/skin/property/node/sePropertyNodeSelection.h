@@ -38,7 +38,7 @@ class sePropertyNodeSelection{
 private:
 	seProperty &pProperty;
 	sePropertyNodeList pSelection;
-	sePropertyNode *pActive;
+	sePropertyNode::Ref pActive;
 	
 	
 	
@@ -60,10 +60,10 @@ public:
 	inline const sePropertyNodeList &GetSelected() const{ return pSelection; }
 	
 	/** \brief Add node to selection if absent. */
-	void Add(sePropertyNode *node);
+	void Add(sePropertyNode::Ref node);
 	
 	/** \brief Remove node from selection if present. */
-	void Remove(sePropertyNode *node);
+	void Remove(sePropertyNode::Ref node);
 	
 	/** \brief Remove all nodes from selection. */
 	void RemoveAll();

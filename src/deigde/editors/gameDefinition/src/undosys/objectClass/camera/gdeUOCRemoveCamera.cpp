@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCRemoveCamera::gdeUOCRemoveCamera(gdeObjectClass *objectClass, gdeOCCamera *camera) :
-pObjectClass(NULL),
+gdeUOCRemoveCamera::gdeUOCRemoveCamera(gdeObjectClass::Ref objectClass, gdeOCCamera::Ref camera) :
+
 pCamera(NULL)
 {
 	if(!objectClass || !camera){
@@ -56,19 +56,10 @@ pCamera(NULL)
 	SetShortInfo("Remove camera");
 	
 	pCamera = camera;
-	camera->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCRemoveCamera::~gdeUOCRemoveCamera(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

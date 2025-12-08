@@ -39,14 +39,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-feUGlyphSetAdvance::feUGlyphSetAdvance(feFontGlyph *glyph, int newAdvance){
+feUGlyphSetAdvance::feUGlyphSetAdvance(feFontGlyph::Ref glyph, int newAdvance){
 	SetShortInfo("Glyph set advance");
 	
 	pOldAdvance = glyph->GetAdvance();
 	pNewAdvance = newAdvance;
 	
 	pGlyph = glyph;
-	glyph->AddReference();
 }
 
 feUGlyphSetAdvance::~feUGlyphSetAdvance(){

@@ -43,8 +43,8 @@ class feWPFontListener;
 class feWPFont : public igdeContainerScroll{
 private:
 	feWindowProperties &pWindowProperties;
-	feFont *pFont;
-	feWPFontListener *pListener;
+	feFont::Ref pFont;
+	feWPFontListener::Ref pListener;
 	
 	igdeTextField::Ref pEditImagePath;
 	igdeButton::Ref pBtnImagePath;
@@ -74,7 +74,7 @@ public:
 	inline feFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont(feFont *font);
+	void SetFont(feFont::Ref font);
 	
 	/** \brief Update font. */
 	void UpdateFont();

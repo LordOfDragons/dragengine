@@ -46,7 +46,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	deVideo &pVideo;
 	
-	deoglRVideo *pRVideo;
+	deoglRVideo::Ref pRVideo;
 	
 	int pCachedFrameCount;
 	bool pCacheFrames;

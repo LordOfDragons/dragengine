@@ -48,13 +48,13 @@ class deImage;
  */
 class DE_DLL_EXPORT deHeightTerrainTexture{
 private:
-	deSkin *pSkin;
+	deSkin::Ref pSkin;
 	
 	decVector2 pProjOffset;
 	decVector2 pProjScaling;
 	float pProjRotation;
 	
-	deImage *pMaskImage;
+	deImage::Ref pMaskImage;
 	
 	
 	
@@ -76,7 +76,7 @@ public:
 	inline deSkin *GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or NULL if not set. */
-	void SetSkin(deSkin *skin);
+	void SetSkin(deSkin::Ref skin);
 	
 	/** \brief Projection offset. */
 	inline const decVector2 &GetProjectionOffset() const{ return pProjOffset; }
@@ -100,7 +100,7 @@ public:
 	inline deImage *GetMaskImage() const{ return pMaskImage; }
 	
 	/** \brief Set mask image or NULL if not set. */
-	void SetMaskImage(deImage *image);
+	void SetMaskImage(deImage::Ref image);
 	/*@}*/
 };
 

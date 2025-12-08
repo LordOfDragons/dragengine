@@ -50,7 +50,7 @@ class igdeStepableTask;
  */
 class saeWindowMain : public igdeEditorWindow{
 private:
-	saeWindowMainListener *pListener;
+	saeWindowMainListener::Ref pListener;
 	
 	igdeAction::Ref pActionFileNew;
 	igdeAction::Ref pActionFileOpen;
@@ -84,10 +84,10 @@ private:
 	igdeClipboard pClipboard;
 	saeLoadSaveSystem *pLoadSaveSystem;
 	
-	saeViewSAnimation *pViewSAnimation;
-	saeWindowProperties *pWindowProperties;
+	saeViewSAnimation::Ref pViewSAnimation;
+	saeWindowProperties::Ref pWindowProperties;
 	
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	
 	
@@ -133,7 +133,7 @@ public:
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
-	void SetSAnimation(saeSAnimation *sanimation);
+	void SetSAnimation(saeSAnimation::Ref sanimation);
 	
 	/** Create new speech animation. */
 	void CreateNewSAnimation();

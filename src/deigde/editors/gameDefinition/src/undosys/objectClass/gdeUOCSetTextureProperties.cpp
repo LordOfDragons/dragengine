@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeUOCSetTextureProperties::gdeUOCSetTextureProperties(
-gdeObjectClass *objectClass, const gdePropertyList &newValue) :
+gdeObjectClass::Ref objectClass, const gdePropertyList &newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass){
@@ -53,13 +53,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetTextureProperties::~gdeUOCSetTextureProperties(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

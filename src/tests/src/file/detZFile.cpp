@@ -43,7 +43,7 @@ void detZFile::Prepare(){
 	pMemoryFileReader = NULL;
 	pZReader = NULL;
 	
-	pMemoryFileCompressed = new decMemoryFile("compressed");
+	pMemoryFileCompressed.TakeOver(new decMemoryFile("compressed"));
 	pTestBuffer = new char[16000];
 }
 
@@ -61,7 +61,6 @@ void detZFile::CleanUp(){
 	}
 	
 	if(pMemoryFileCompressed){
-		pMemoryFileCompressed->FreeReference();
 		pMemoryFileCompressed = NULL;
 	}
 }
@@ -294,33 +293,23 @@ void detZFile::pTestZFile(){
 
 
 void detZFile::pOutputCompressedToFile(){
-	decDiskFileWriter *writer = NULL;
+	decDiskFileWriter::Ref writer = NULL;
 	
 	try{
-		writer = new decDiskFileWriter("detests_ztest_compressed", false);
+		writer.TakeOver(new decDiskFileWriter("detests_ztest_compressed", false));
 		writer->Write(pMemoryFileCompressed->GetPointer(), pMemoryFileCompressed->GetLength());
-		writer->FreeReference();
-		
 	}catch(const deException &){
-		if(writer){
-			writer->FreeReference();
-		}
 		throw;
 	}
 }
 
 void detZFile::pOutputTestBufferToFile(int size){
-	decDiskFileWriter *reader = NULL;
+	decDiskFileWriter::Ref reader = NULL;
 	
 	try{
-		reader = new decDiskFileWriter("detests_ztest_uncompressed", false);
+		reader.TakeOver(new decDiskFileWriter("detests_ztest_uncompressed", false));
 		reader->Write(pTestBuffer, size);
-		reader->FreeReference();
-		
 	}catch(const deException &){
-		if(reader){
-			reader->FreeReference();
-		}
 		throw;
 	}
 }
@@ -328,18 +317,16 @@ void detZFile::pOutputTestBufferToFile(int size){
 
 
 void detZFile::pCreateZWriter(){
-	pMemoryFileWriter = new decMemoryFileWriter(pMemoryFileCompressed, false);
-	pZWriter = new decZFileWriter(pMemoryFileWriter);
+	pMemoryFileWriter.TakeOver(new decMemoryFileWriter(pMemoryFileCompressed, false));
+	pZWriter.TakeOver(new decZFileWriter(pMemoryFileWriter));
 	pMemoryFileWriter = NULL;
 }
 
 void detZFile::pDestroyZWriter(){
 	if(pZWriter){
-		pZWriter->FreeReference();
 		pZWriter = NULL;
 	}
 	if(pMemoryFileWriter){
-		pMemoryFileWriter->FreeReference();
 		pMemoryFileWriter = NULL;
 	}
 }
@@ -347,18 +334,16 @@ void detZFile::pDestroyZWriter(){
 
 
 void detZFile::pCreateZReader(){
-	pMemoryFileReader = new decMemoryFileReader(pMemoryFileCompressed);
-	pZReader = new decZFileReader(pMemoryFileReader);
+	pMemoryFileReader.TakeOver(new decMemoryFileReader(pMemoryFileCompressed));
+	pZReader.TakeOver(new decZFileReader(pMemoryFileReader));
 	pMemoryFileReader = NULL;
 }
 
 void detZFile::pDestroyZReader(){
 	if(pZReader){
-		pZReader->FreeReference();
 		pZReader = NULL;
 	}
 	if(pMemoryFileReader){
-		pMemoryFileReader->FreeReference();
 		pMemoryFileReader = NULL;
 	}
 }

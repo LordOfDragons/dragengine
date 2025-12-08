@@ -84,10 +84,10 @@ public:
 	deAnimatorRuleBoneTransformator *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
+	void AssignAnimator(dsRealObject *myself, deAnimator::Ref animator);
 	
 	/** \brief Pushes a rule. */
-	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleBoneTransformator *rule);
+	void PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleBoneTransformator::Ref rule);
 	
 	inline dsClass *GetClassARBoneTransformatorTarget() const{ return pClsARBoneTransformatorTarget; }
 	inline dsClass *GetClassARBoneTransformatorCFrame() const{ return pClsARBoneTransformatorCFrame; }

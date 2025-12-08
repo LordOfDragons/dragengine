@@ -69,7 +69,7 @@ public:
 	deCamera *GetCamera(dsRealObject *myself) const;
 	
 	/** Push camera to real object. */
-	void PushCamera(dsRunTime *rt, deCamera *camera);
+	void PushCamera(dsRunTime *rt, deCamera::Ref camera);
 	/*@}*/
 	
 	

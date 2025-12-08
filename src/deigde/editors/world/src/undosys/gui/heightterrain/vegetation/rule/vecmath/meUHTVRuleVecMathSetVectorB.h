@@ -49,8 +49,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleVectorMath *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleVectorMath::Ref pRule;
 	
 	decVector pOldVector;
 	decVector pNewVector;
@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleVecMathSetVectorB(meHTVegetationLayer *vlayer, meHTVRuleVectorMath *rule, const decVector &nvector);
+	meUHTVRuleVecMathSetVectorB(meHTVegetationLayer::Ref vlayer, meHTVRuleVectorMath::Ref rule, const decVector &nvector);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleVecMathSetVectorB();
 	/*@}*/

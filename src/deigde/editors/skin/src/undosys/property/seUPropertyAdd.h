@@ -40,7 +40,7 @@ class seTexture;
 class seUPropertyAdd : public igdeUndo{
 private:
 	sePropertyList pProperties;
-	seTexture *pTexture;
+	seTexture::Ref pTexture;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyAdd(seTexture *texture, const sePropertyList &properties);
+	seUPropertyAdd(seTexture::Ref texture, const sePropertyList &properties);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -47,7 +47,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-reUBoneMassFromVolume::reUBoneMassFromVolume(reRig *rig, const decObjectOrderedSet &bones, float density){
+reUBoneMassFromVolume::reUBoneMassFromVolume(reRig::Ref rig, const decObjectOrderedSet &bones, float density){
 	if(!rig || bones.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
@@ -84,7 +84,6 @@ reUBoneMassFromVolume::reUBoneMassFromVolume(reRig *rig, const decObjectOrderedS
 	}
 	
 	pRig = rig;
-	rig->AddReference();
 }
 
 reUBoneMassFromVolume::~reUBoneMassFromVolume(){
@@ -131,10 +130,6 @@ void reUBoneMassFromVolume::pCleanUp(){
 		}
 		
 		delete [] pBones;
-	}
-	
-	if(pRig){
-		pRig->FreeReference();
 	}
 }
 

@@ -46,8 +46,6 @@
 
 deoglRVideoPlayer::deoglRVideoPlayer(deoglRenderThread &renderThread) :
 pRenderThread(renderThread),
-
-pVideo(NULL),
 pCachedFrameTexture(NULL),
 pUpdateCachedFrameTexture(-1),
 
@@ -73,20 +71,11 @@ deoglRVideoPlayer::~deoglRVideoPlayer(){
 // Management
 ///////////////
 
-void deoglRVideoPlayer::SetVideo(deoglRVideo *video){
+void deoglRVideoPlayer::SetVideo(deoglRVideo::Ref video){
 	if(video == pVideo){
 		return;
 	}
-	
-	if(pVideo){
-		pVideo->FreeReference();
-	}
-	
 	pVideo = video;
-	
-	if(video){
-		video->AddReference();
-	}
 }
 
 void deoglRVideoPlayer::SetCachedFrameTexture(deoglTexture *texture){

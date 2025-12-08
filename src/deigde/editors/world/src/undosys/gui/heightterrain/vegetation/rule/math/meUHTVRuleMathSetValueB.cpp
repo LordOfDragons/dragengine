@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTVRuleMathSetValueB::meUHTVRuleMathSetValueB(meHTVegetationLayer *vlayer, meHTVRuleMath *rule, float nvalue){
+meUHTVRuleMathSetValueB::meUHTVRuleMathSetValueB(meHTVegetationLayer::Ref vlayer, meHTVRuleMath::Ref rule, float nvalue){
 	if(!vlayer || !rule) DETHROW(deeInvalidParam);
 	
 	pVLayer = NULL;
@@ -53,9 +53,7 @@ meUHTVRuleMathSetValueB::meUHTVRuleMathSetValueB(meHTVegetationLayer *vlayer, me
 	pNewValueB = nvalue;
 	
 	pVLayer = vlayer;
-	vlayer->AddReference();
 	pRule = rule;
-	rule->AddReference();
 }
 
 meUHTVRuleMathSetValueB::~meUHTVRuleMathSetValueB(){

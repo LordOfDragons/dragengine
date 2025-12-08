@@ -37,7 +37,7 @@ class seLayer;
  */
 class seULayerSetOffset : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	decVector pOldOffset;
 	decVector pNewOffset;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerSetOffset(seLayer *layer, const decVector &newOffset);
+	seULayerSetOffset(seLayer::Ref layer, const decVector &newOffset);
 	
 protected:
 	/** \brief Clean up undo action. */

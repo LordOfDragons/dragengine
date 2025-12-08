@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetLightSkinPath::gdeUOCLightSetLightSkinPath(gdeObjectClass *objectClass,
-gdeOCLight *light, const char *newValue) :
-pObjectClass(NULL),
-pLight(NULL)
+gdeUOCLightSetLightSkinPath::gdeUOCLightSetLightSkinPath(gdeObjectClass::Ref objectClass,
+gdeOCLight::Ref light, const char *newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pLight(NULL)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetLightSkinPath::~gdeUOCLightSetLightSkinPath(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

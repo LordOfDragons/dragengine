@@ -49,8 +49,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleClosestProp *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleClosestProp::Ref pRule;
 	
 	decString pOldPropClass;
 	decString pNewPropClass;
@@ -59,7 +59,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleCPSetClass(meHTVegetationLayer *vlayer, meHTVRuleClosestProp *rule, const char *nclass);
+	meUHTVRuleCPSetClass(meHTVegetationLayer::Ref vlayer, meHTVRuleClosestProp::Ref rule, const char *nclass);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleCPSetClass();
 	/*@}*/

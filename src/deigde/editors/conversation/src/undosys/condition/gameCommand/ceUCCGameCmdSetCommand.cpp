@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCGameCmdSetCommand::ceUCCGameCmdSetCommand(ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionGameCommand *condition, const char *newCommand){
+ceUCCGameCmdSetCommand::ceUCCGameCmdSetCommand(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
+ceCConditionGameCommand::Ref condition, const char *newCommand){
 	if(!topic || !action || !condition || !newCommand){
 		DETHROW(deeInvalidParam);
 	}
@@ -57,25 +57,11 @@ ceCConditionGameCommand *condition, const char *newCommand){
 	SetShortInfo("Condition game command set command");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCGameCmdSetCommand::~ceUCCGameCmdSetCommand(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

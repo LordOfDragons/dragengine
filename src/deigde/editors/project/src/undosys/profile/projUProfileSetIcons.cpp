@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-projUProfileSetIcons::projUProfileSetIcons(projProfile *profile, const decStringSet &newValue) :
-pProfile(NULL),
+projUProfileSetIcons::projUProfileSetIcons(projProfile::Ref profile, const decStringSet &newValue) :
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -52,13 +52,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetIcons();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetIcons::~projUProfileSetIcons(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

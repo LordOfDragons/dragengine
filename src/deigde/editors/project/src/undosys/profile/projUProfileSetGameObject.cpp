@@ -40,8 +40,8 @@
 ////////////////////////////
 
 projUProfileSetGameObject::projUProfileSetGameObject(
-projProfile *profile, const char *newValue) :
-pProfile(NULL),
+projProfile::Ref profile, const char *newValue) :
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetGameObject();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetGameObject::~projUProfileSetGameObject(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

@@ -64,22 +64,22 @@ public:
 	igdeGDCSpeaker *GetAt(int index) const;
 	
 	/** \brief Index of an speaker or -1 if not found. */
-	int IndexOf(igdeGDCSpeaker *speaker) const;
+	int IndexOf(igdeGDCSpeaker::Ref speaker) const;
 	
 	/** \brief Determines if an speaker exists. */
-	bool Has(igdeGDCSpeaker *speaker) const;
+	bool Has(igdeGDCSpeaker::Ref speaker) const;
 	
 	/** \brief Adds an speaker. */
-	void Add(igdeGDCSpeaker *speaker);
+	void Add(igdeGDCSpeaker::Ref speaker);
 	
 	/** \brief Inserts a new speaker. */
-	void InsertAt(igdeGDCSpeaker *speaker, int index);
+	void InsertAt(igdeGDCSpeaker::Ref speaker, int index);
 	
 	/** \brief Moves an speaker to a new position. */
-	void MoveTo(igdeGDCSpeaker *speaker, int index);
+	void MoveTo(igdeGDCSpeaker::Ref speaker, int index);
 	
 	/** \brief Removes an speaker. */
-	void Remove(igdeGDCSpeaker *speaker);
+	void Remove(igdeGDCSpeaker::Ref speaker);
 	
 	/** \brief Removes all speakers. */
 	void RemoveAll();

@@ -49,7 +49,7 @@
 
 // Native structure
 struct sXMLElNatDat{
-	decXmlElement *element;
+	decXmlElement::Ref element;
 };
 
 
@@ -80,15 +80,15 @@ void deClassEasyXMLElement::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	switch(type){
 	case dedsXmlDocument::eetCData:
-		nd.element = new decXmlCharacterData("");
+		nd.element.TakeOver(new decXmlCharacterData(""));
 		break;
 		
 	case dedsXmlDocument::eetTag:
-		nd.element = new decXmlElementTag("");
+		nd.element.TakeOver(new decXmlElementTag(""));
 		break;
 		
 	case dedsXmlDocument::eetComment:
-		nd.element = new decXmlComment("");
+		nd.element.TakeOver(new decXmlComment(""));
 		break;
 		
 	case dedsXmlDocument::eetElement:
@@ -480,18 +480,13 @@ void deClassEasyXMLElement::nfSetAttributeString::RunFunction(dsRunTime *rt, dsV
 		}
 	}
 	
-	decXmlAttValue *attribute = NULL;
+	decXmlAttValue::Ref attribute = NULL;
 	
 	try{
-		attribute = new decXmlAttValue(name);
+		attribute.TakeOver(new decXmlAttValue(name));
 		attribute->SetValue(value);
 		container.AddElement(attribute);
-		attribute->FreeReference();
-		
 	}catch(...){
-		if(attribute){
-			attribute->FreeReference();
-		}
 		throw;
 	}
 }
@@ -529,18 +524,13 @@ void deClassEasyXMLElement::nfSetAttributeInteger::RunFunction(dsRunTime *rt, ds
 		}
 	}
 	
-	decXmlAttValue *attribute = NULL;
+	decXmlAttValue::Ref attribute = NULL;
 	
 	try{
-		attribute = new decXmlAttValue(name);
+		attribute.TakeOver(new decXmlAttValue(name));
 		attribute->SetValue(string);
 		container.AddElement(attribute);
-		attribute->FreeReference();
-		
 	}catch(...){
-		if(attribute){
-			attribute->FreeReference();
-		}
 		throw;
 	}
 }
@@ -578,18 +568,13 @@ void deClassEasyXMLElement::nfSetAttributeFloat::RunFunction(dsRunTime *rt, dsVa
 		}
 	}
 	
-	decXmlAttValue *attribute = NULL;
+	decXmlAttValue::Ref attribute = NULL;
 	
 	try{
-		attribute = new decXmlAttValue(name);
+		attribute.TakeOver(new decXmlAttValue(name));
 		attribute->SetValue(string);
 		container.AddElement(attribute);
-		attribute->FreeReference();
-		
 	}catch(...){
-		if(attribute){
-			attribute->FreeReference();
-		}
 		throw;
 	}
 }
@@ -624,18 +609,13 @@ void deClassEasyXMLElement::nfSetAttributeBool::RunFunction(dsRunTime *rt, dsVal
 		}
 	}
 	
-	decXmlAttValue *attribute = NULL;
+	decXmlAttValue::Ref attribute = NULL;
 	
 	try{
-		attribute = new decXmlAttValue(name);
+		attribute.TakeOver(new decXmlAttValue(name));
 		attribute->SetValue(value ? "true" : "false");
 		container.AddElement(attribute);
-		attribute->FreeReference();
-		
 	}catch(...){
-		if(attribute){
-			attribute->FreeReference();
-		}
 		throw;
 	}
 }
@@ -941,18 +921,13 @@ void deClassEasyXMLElement::nfAddTag::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	const char * const name = rt->GetValue(0)->GetString();
 	decXmlContainer &container = *element.CastToContainer();
-	decXmlElementTag *tag = NULL;
+	decXmlElementTag::Ref tag = NULL;
 	
 	try{
-		tag = new decXmlElementTag(name);
+		tag.TakeOver(new decXmlElementTag(name));
 		container.AddElement(tag);
 		clsXmlElement->PushElement(rt, tag);
-		tag->FreeReference();
-		
 	}catch(...){
-		if(tag){
-			tag->FreeReference();
-		}
 		throw;
 	}
 }
@@ -971,27 +946,17 @@ void deClassEasyXMLElement::nfAddDataTagString::RunFunction(dsRunTime *rt, dsVal
 	const char * const name = rt->GetValue(0)->GetString();
 	const char * const value = rt->GetValue(1)->GetString();
 	decXmlContainer &container = *element.CastToContainer();
-	decXmlCharacterData *cdata = NULL;
-	decXmlElementTag *tag = NULL;
+	decXmlCharacterData::Ref cdata = NULL;
+	decXmlElementTag::Ref tag = NULL;
 	
 	try{
-		tag = new decXmlElementTag(name);
+		tag.TakeOver(new decXmlElementTag(name));
 		
-		cdata = new decXmlCharacterData(value);
+		cdata.TakeOver(new decXmlCharacterData(value));
 		tag->AddElement(cdata);
-		cdata->FreeReference();
-		
 		container.AddElement(tag);
 		clsXmlElement->PushElement(rt, tag);
-		tag->FreeReference();
-		
 	}catch(...){
-		if(cdata){
-			cdata->FreeReference();
-		}
-		if(tag){
-			tag->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1010,30 +975,20 @@ void deClassEasyXMLElement::nfAddDataTagInteger::RunFunction(dsRunTime *rt, dsVa
 	const char * const name = rt->GetValue(0)->GetString();
 	const int value = rt->GetValue(1)->GetInt();
 	decXmlContainer &container = *element.CastToContainer();
-	decXmlCharacterData *cdata = NULL;
-	decXmlElementTag *tag = NULL;
+	decXmlCharacterData::Ref cdata = NULL;
+	decXmlElementTag::Ref tag = NULL;
 	
 	decString text;
 	text.Format("%d", value);
 	
 	try{
-		tag = new decXmlElementTag(name);
+		tag.TakeOver(new decXmlElementTag(name));
 		
-		cdata = new decXmlCharacterData(text);
+		cdata.TakeOver(new decXmlCharacterData(text));
 		tag->AddElement(cdata);
-		cdata->FreeReference();
-		
 		container.AddElement(tag);
 		clsXmlElement->PushElement(rt, tag);
-		tag->FreeReference();
-		
 	}catch(...){
-		if(cdata){
-			cdata->FreeReference();
-		}
-		if(tag){
-			tag->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1052,30 +1007,20 @@ void deClassEasyXMLElement::nfAddDataTagFloat::RunFunction(dsRunTime *rt, dsValu
 	const char * const name = rt->GetValue(0)->GetString();
 	const float value = rt->GetValue(1)->GetFloat();
 	decXmlContainer &container = *element.CastToContainer();
-	decXmlCharacterData *cdata = NULL;
-	decXmlElementTag *tag = NULL;
+	decXmlCharacterData::Ref cdata = NULL;
+	decXmlElementTag::Ref tag = NULL;
 	
 	decString text;
 	text.Format("%.5g", value);
 	
 	try{
-		tag = new decXmlElementTag(name);
+		tag.TakeOver(new decXmlElementTag(name));
 		
-		cdata = new decXmlCharacterData(text);
+		cdata.TakeOver(new decXmlCharacterData(text));
 		tag->AddElement(cdata);
-		cdata->FreeReference();
-		
 		container.AddElement(tag);
 		clsXmlElement->PushElement(rt, tag);
-		tag->FreeReference();
-		
 	}catch(...){
-		if(cdata){
-			cdata->FreeReference();
-		}
-		if(tag){
-			tag->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1094,27 +1039,17 @@ void deClassEasyXMLElement::nfAddDataTagBool::RunFunction(dsRunTime *rt, dsValue
 	const char * const name = rt->GetValue(0)->GetString();
 	const bool value = rt->GetValue(1)->GetBool();
 	decXmlContainer &container = *element.CastToContainer();
-	decXmlCharacterData *cdata = NULL;
-	decXmlElementTag *tag = NULL;
+	decXmlCharacterData::Ref cdata = NULL;
+	decXmlElementTag::Ref tag = NULL;
 	
 	try{
-		tag = new decXmlElementTag(name);
+		tag.TakeOver(new decXmlElementTag(name));
 		
-		cdata = new decXmlCharacterData(value ? "true" : "false");
+		cdata.TakeOver(new decXmlCharacterData(value ? "true" : "false"));
 		tag->AddElement(cdata);
-		cdata->FreeReference();
-		
 		container.AddElement(tag);
 		clsXmlElement->PushElement(rt, tag);
-		tag->FreeReference();
-		
 	}catch(...){
-		if(cdata){
-			cdata->FreeReference();
-		}
-		if(tag){
-			tag->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1148,17 +1083,12 @@ void deClassEasyXMLElement::nfAddComment::RunFunction(dsRunTime *rt, dsValue *my
 	
 	const char * const text = rt->GetValue(0)->GetString();
 	decXmlContainer &container = *element.CastToContainer();
-	decXmlComment *comment = NULL;
+	decXmlComment::Ref comment = NULL;
 	
 	try{
-		comment = new decXmlComment(text);
+		comment.TakeOver(new decXmlComment(text));
 		container.AddElement(comment);
-		comment->FreeReference();
-		
 	}catch(...){
-		if(comment){
-			comment->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1361,7 +1291,7 @@ decXmlElement *deClassEasyXMLElement::GetElement(dsRealObject *myself) const{
 	return ((sXMLElNatDat*)p_GetNativeData(myself->GetBuffer()))->element;
 }
 
-void deClassEasyXMLElement::PushElement(dsRunTime *rt, decXmlElement *element){
+void deClassEasyXMLElement::PushElement(dsRunTime *rt, decXmlElement::Ref element){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -1373,5 +1303,4 @@ void deClassEasyXMLElement::PushElement(dsRunTime *rt, decXmlElement *element){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sXMLElNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->element = element;
-	element->AddReference();
 }

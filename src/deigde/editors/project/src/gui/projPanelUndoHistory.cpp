@@ -42,16 +42,11 @@
 
 projPanelUndoHistory::projPanelUndoHistory(igdeEnvironment &environment) :
 igdeWPUndoHistory(environment),
-pProject(NULL),
 pListener(new projPanelUndoHistoryListener(*this)){
 }
 
 projPanelUndoHistory::~projPanelUndoHistory(){
 	SetProject(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -59,7 +54,7 @@ projPanelUndoHistory::~projPanelUndoHistory(){
 // Management
 ///////////////
 
-void projPanelUndoHistory::SetProject(projProject *project){
+void projPanelUndoHistory::SetProject(projProject::Ref project){
 	if(project == pProject){
 		return;
 	}
@@ -68,13 +63,11 @@ void projPanelUndoHistory::SetProject(projProject *project){
 	
 	if(pProject){
 		pProject->RemoveListener(pListener);
-		pProject->FreeReference();
 	}
 	
 	pProject = project;
 	
 	if(project){
-		project->AddReference();
 		project->AddListener(pListener);
 		
 		SetUndoSystem(project->GetUndoSystem());

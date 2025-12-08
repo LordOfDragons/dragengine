@@ -42,9 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakWordClear::ceUCAASpeakWordClear(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak) :
-pTopic(NULL),
-pActorSpeak(NULL)
+ceUCAASpeakWordClear::ceUCAASpeakWordClear(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak) :
+pTopic(NULL)
 {
 	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pActorSpeak(NULL)
 	pOldWords = actorSpeak->GetWordList();
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakWordClear::~ceUCAASpeakWordClear(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

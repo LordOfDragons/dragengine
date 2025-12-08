@@ -140,35 +140,25 @@ void igdeLSGameProject::Load(const char *filename, igdeGameProject *project, dec
 	}
 	
 	// load the project game definition specified
-	decDiskFileReader *gameDefReader = NULL;
-	igdeGameDefinition *gameDef = NULL;
+	decDiskFileReader::Ref gameDefReader = NULL;
+	igdeGameDefinition::Ref gameDef = NULL;
 	decPath path;
 	
 	try{
 		path.SetFromNative(project->GetDirectoryPath());
 		path.AddUnixPath(project->GetPathProjectGameDefinition());
-		gameDefReader = new decDiskFileReader(path.GetPathNative());
+		gameDefReader.TakeOver(new decDiskFileReader(path.GetPathNative()));
 		
-		gameDef = new igdeGameDefinition(environment);
+		gameDef.TakeOver(new igdeGameDefinition(environment));
 		gameDef->SetFilename(path.GetPathNative());
 		
 		igdeXMLGameDefinition(environment, logger).Load(*gameDefReader, *gameDef);
 		
 		project->SetProjectGameDefinition(gameDef);
-		
-		gameDefReader->FreeReference();
 		gameDefReader = NULL;
-		
-		gameDef->FreeReference();
 		gameDef = NULL;
 		
 	}catch(const deException &){
-		if(gameDefReader){
-			gameDefReader->FreeReference();
-		}
-		if(gameDef){
-			gameDef->FreeReference();
-		}
 		throw;
 	}
 }

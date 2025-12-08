@@ -35,7 +35,7 @@ class gdeOCComponent;
  */
 class gdeWPSTIMOCComponent : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCComponent *pComponent;
+	gdeOCComponent::Ref pComponent;
 	
 	
 public:
@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCComponent(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCComponent *component, int index);
+		gdeOCComponent::Ref component, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

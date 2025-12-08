@@ -42,7 +42,7 @@ class aeRuleInverseKinematic;
  */
 class aeURuleIKSetAdjustOrientation : public igdeUndo{
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

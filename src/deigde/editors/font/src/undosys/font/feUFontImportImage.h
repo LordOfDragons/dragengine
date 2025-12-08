@@ -39,7 +39,7 @@ class deImage;
  */
 class feUFontImportImage : public igdeUndo{
 private:
-	feFontImage *pImage;
+	feFontImage::Ref pImage;
 	
 	int pOldWidth;
 	int pOldHeight;
@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	feUFontImportImage(feFontImage *fontImage, deImage *newImage, const char *newPath);
+	feUFontImportImage(feFontImage::Ref fontImage, deImage *newImage, const char *newPath);
 	
 protected:
 	/** \brief Clean up undo. */

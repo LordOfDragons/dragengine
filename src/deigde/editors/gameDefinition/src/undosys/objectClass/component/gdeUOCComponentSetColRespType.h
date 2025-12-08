@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCComponentSetColRespType : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	deCollider::eResponseType pOldValue;
 	deCollider::eResponseType pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetColRespType(gdeObjectClass *objectClass,
-		gdeOCComponent *component, deCollider::eResponseType newValue);
+	gdeUOCComponentSetColRespType(gdeObjectClass::Ref objectClass,
+		gdeOCComponent::Ref component, deCollider::eResponseType newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

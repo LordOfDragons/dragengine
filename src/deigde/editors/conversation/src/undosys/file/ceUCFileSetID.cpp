@@ -49,8 +49,8 @@
 ////////////////////////////
 
 ceUCFileSetID::ceUCFileSetID(const ceConversation &conversation,
-ceConversationFile *file, const char *newID) :
-pFile(NULL),
+ceConversationFile::Ref file, const char *newID) :
+
 pNewID(newID)
 {
 	if(!file || !newID){
@@ -80,13 +80,9 @@ pNewID(newID)
 	}
 	
 	pFile = file;
-	file->AddReference();
 }
 
 ceUCFileSetID::~ceUCFileSetID(){
-	if(pFile){
-		pFile->FreeReference();
-	}
 }
 
 
@@ -159,17 +155,13 @@ const ceConversationActionList &actions){
 		case ceConversationAction::eatSnippet:{
 			ceCASnippet * const snippet = (ceCASnippet*)action;
 			if(snippet->GetFile() == matchGroupID){
-				ceUndoCAction *undoCAction = NULL;
+				ceUndoCAction::Ref undoCAction = NULL;
 				try{
-					undoCAction = new ceUndoCAction(action, topic);
+					undoCAction.TakeOver(new ceUndoCAction(action, topic));
 					pSnippets.Add(undoCAction);
-					undoCAction->FreeReference();
 					undoCAction = NULL;
 					
 				}catch(const deException &){
-					if(undoCAction){
-						undoCAction->FreeReference();
-					}
 					throw;
 				}
 			}

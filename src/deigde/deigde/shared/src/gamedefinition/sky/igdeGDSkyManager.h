@@ -66,10 +66,10 @@ public:
 	inline const igdeGDSkyList &GetSkyList() const{ return pSkyList; }
 	
 	/** \brief Add sky. */
-	void AddSky(igdeGDSky *sky);
+	void AddSky(igdeGDSky::Ref sky);
 	
 	/** \brief Remove sky. */
-	void RemoveSky(igdeGDSky *sky);
+	void RemoveSky(igdeGDSky::Ref sky);
 	
 	/** \brief Remove all skies. */
 	void RemoveAllSkies();

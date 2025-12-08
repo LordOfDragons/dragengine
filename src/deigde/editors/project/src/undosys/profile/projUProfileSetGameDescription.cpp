@@ -40,8 +40,8 @@
 ////////////////////////////
 
 projUProfileSetGameDescription::projUProfileSetGameDescription(
-projProfile *profile, const char *newValue) :
-pProfile(NULL),
+projProfile::Ref profile, const char *newValue) :
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetGameDescription();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetGameDescription::~projUProfileSetGameDescription(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

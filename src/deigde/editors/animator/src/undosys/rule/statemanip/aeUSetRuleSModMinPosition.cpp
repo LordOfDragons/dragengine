@@ -46,8 +46,6 @@ aeUSetRuleSModMinPosition::aeUSetRuleSModMinPosition(aeRuleStateManipulator *rul
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumPosition();
 		pNewMin = newMin;
 		

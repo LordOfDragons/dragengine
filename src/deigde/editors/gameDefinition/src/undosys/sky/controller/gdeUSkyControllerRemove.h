@@ -37,8 +37,8 @@ class gdeSkyController;
  */
 class gdeUSkyControllerRemove : public igdeUndo{
 private:
-	gdeSky *pSky;
-	gdeSkyController *pController;
+	gdeSky::Ref pSky;
+	gdeSkyController::Ref pController;
 	
 	
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUSkyControllerRemove(gdeSky *sky, gdeSkyController *controller);
+	gdeUSkyControllerRemove(gdeSky::Ref sky, gdeSkyController::Ref controller);
 	
 protected:
 	/** \brief Clean up undo action. */

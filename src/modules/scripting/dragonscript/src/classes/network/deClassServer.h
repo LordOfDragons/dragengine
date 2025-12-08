@@ -53,7 +53,7 @@ public:
 	// internal functions
 	void CreateClassMembers(dsEngine *engine);
 	deServer *GetServer(dsRealObject *myself) const;
-	void PushServer(dsRunTime *rt, deServer *server);
+	void PushServer(dsRunTime *rt, deServer::Ref server);
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	

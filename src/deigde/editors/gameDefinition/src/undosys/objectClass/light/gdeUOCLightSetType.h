@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetType : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	deLight::eLightTypes pOldValue;
 	deLight::eLightTypes pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetType(gdeObjectClass *objectClass,
-		gdeOCLight *light, deLight::eLightTypes newValue);
+	gdeUOCLightSetType(gdeObjectClass::Ref objectClass,
+		gdeOCLight::Ref light, deLight::eLightTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

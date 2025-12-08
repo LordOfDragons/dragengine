@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCTextureSetPathSkin::gdeUOCTextureSetPathSkin(gdeObjectClass *objectClass,
-gdeOCComponentTexture* texture, const char *newValue) :
-pObjectClass(NULL),
+gdeUOCTextureSetPathSkin::gdeUOCTextureSetPathSkin(gdeObjectClass::Ref objectClass,
+gdeOCComponentTexture::Ref texture, const char *newValue) :
+
 pTexture(NULL)
 {
 	if(!objectClass || !texture){
@@ -55,19 +55,10 @@ pTexture(NULL)
 	pNewValue = newValue;
 	
 	pTexture = texture;
-	texture->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCTextureSetPathSkin::~gdeUOCTextureSetPathSkin(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

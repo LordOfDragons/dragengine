@@ -36,7 +36,7 @@ class meHeightTerrainNavSpace;
  */
 class meUHTNavSpaceSetSnapAngle : public igdeUndo{
 private:
-	meHeightTerrainNavSpace *pNavSpace;
+	meHeightTerrainNavSpace::Ref pNavSpace;
 	float pOldSnapAngle;
 	float pNewSnapAngle;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceSetSnapAngle(meHeightTerrainNavSpace *navspace, float newSnapAngle);
+	meUHTNavSpaceSetSnapAngle(meHeightTerrainNavSpace::Ref navspace, float newSnapAngle);
 	
 protected:
 	/** \brief Clean up undo action. */

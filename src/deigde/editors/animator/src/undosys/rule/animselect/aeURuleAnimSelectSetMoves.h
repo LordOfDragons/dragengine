@@ -38,7 +38,7 @@ class aeRuleAnimationSelect;
  */
 class aeURuleAnimSelectSetMoves : public igdeUndo{
 private:
-	aeRuleAnimationSelect *pRule;
+	aeRuleAnimationSelect::Ref pRule;
 	
 	decStringList pOldMoves;
 	decStringList pNewMoves;

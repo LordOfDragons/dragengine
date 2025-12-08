@@ -36,7 +36,7 @@
  */
 class seUPropertySetValueType : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	seProperty::eValueTypes pOldType;
 	seProperty::eValueTypes pNewType;
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertySetValueType(seProperty *property, seProperty::eValueTypes newType);
+	seUPropertySetValueType(seProperty::Ref property, seProperty::eValueTypes newType);
 	
 protected:
 	/** \brief Clean up undo. */

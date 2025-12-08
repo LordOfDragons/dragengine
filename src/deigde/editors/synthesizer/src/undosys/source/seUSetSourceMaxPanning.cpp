@@ -51,8 +51,6 @@ pSource(NULL)
 	
 	try{
 		pSource = source;
-		pSource->AddReference();
-		
 		SetShortInfo("Source set maximum panning");
 		
 	}catch(const deException &){
@@ -84,7 +82,4 @@ void seUSetSourceMaxPanning::Redo(){
 //////////////////////
 
 void seUSetSourceMaxPanning::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

@@ -62,7 +62,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push axis. */
-	void PushAxis(dsRunTime *rt, dedsInputDevice *device, int index);
+	void PushAxis(dsRunTime *rt, dedsInputDevice::Ref device, int index);
 	
 	inline dsClass *GetClassInputDeviceAxisType() const{ return pClsInputDeviceAxisType; }
 	/*@}*/

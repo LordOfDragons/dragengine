@@ -47,8 +47,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleCombine *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleCombine::Ref pRule;
 	
 	float pOldX;
 	float pNewX;
@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTVRuleCombineSetX(meHTVegetationLayer *vlayer, meHTVRuleCombine *rule, float nx);
+	meUHTVRuleCombineSetX(meHTVegetationLayer::Ref vlayer, meHTVRuleCombine::Ref rule, float nx);
 	/** \brief Clean up object. */
 	virtual ~meUHTVRuleCombineSetX();
 	/*@}*/

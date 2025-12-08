@@ -41,7 +41,7 @@ class gdeProperty;
  */
 class gdeDefaultPropertyValue : public igdeEditPropertyValue{
 private:
-	igdeGDProperty *pGDProperty;
+	igdeGDProperty::Ref pGDProperty;
 	
 	
 public:
@@ -62,11 +62,11 @@ public:
 	/*@{*/
 	/** \brief Create and add. */
 	static void CreateAndAdd(igdeContainer &parent, igdeUIHelper &helper,
-		igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener);
+		igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener::Ref listener);
 	
 	static void CreateAndAdd(igdeContainer &form, igdeUIHelper &helper, const char *label,
 		const char *description, igdeEditPropertyValue::Ref &widget,
-		igdeEditPropertyValueListener *listener);
+		igdeEditPropertyValueListener::Ref listener);
 	
 	/** \brief Set value. */
 	void SetValue(const decString &value, const gdeProperty &property);

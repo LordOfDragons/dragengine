@@ -35,7 +35,7 @@ class seBody;
  */
 class seUBodySetSkin : public igdeUndo{
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decString pOldSkin;
 	decString pNewSkin;
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seUBodySetSkin(seBody *body, const char *newSkin);
+	seUBodySetSkin(seBody::Ref body, const char *newSkin);
 	
 protected:
 	/** \brief Clean up undo action. */

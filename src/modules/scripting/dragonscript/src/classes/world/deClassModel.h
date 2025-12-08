@@ -60,7 +60,7 @@ public:
 	/** \brief Retrieves the model from an object. */
 	deModel *GetModel(dsRealObject *myself) const;
 	/** \brief Pushes a model. */
-	void PushModel(dsRunTime *rt, deModel *model);
+	void PushModel(dsRunTime *rt, deModel::Ref model);
 	/*@}*/
 	
 private:

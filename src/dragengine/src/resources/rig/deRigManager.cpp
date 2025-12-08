@@ -81,7 +81,7 @@ deRig *deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filename, d
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	deRig *rig = NULL, *findRig;
+	deRig::Ref rig = NULL, *findRig;
 	
 	try{
 		// check if the rigation with this filename already exists. this check
@@ -95,7 +95,7 @@ deRig *deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filename, d
 		}
 		
 		// create rigation using the builder
-		rig = new deRig(this, vfs, filename, decDateTime::GetSystemTime());
+		rig.TakeOver(new deRig(this, vfs, filename, decDateTime::GetSystemTime()));
 		builder.BuildRig(rig);
 		
 		// check rig
@@ -113,9 +113,6 @@ deRig *deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filename, d
 		pRigs.Add(rig);
 		
 	}catch(const deException &e){
-		if(rig){
-			rig->FreeReference();
-		}
 		LogErrorFormat("Creating rig '%s' failed", filename);
 		LogException(e);
 		throw;
@@ -133,9 +130,9 @@ deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, con
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileReader *fileReader=NULL;
+	decBaseFileReader::Ref fileReader=NULL;
 	deBaseRigModule *module;
-	deRig *rig=NULL, *findRig;
+	deRig::Ref rig=NULL, *findRig;
 	decPath path;
 	
 	try{
@@ -165,7 +162,7 @@ deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, con
 				deModuleSystem::emtRig, path.GetPathUnix());
 			// load the file with it
 			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
-			rig = new deRig(this, vfs, path.GetPathUnix(), modificationTime);
+			rig.TakeOver(new deRig(this, vfs, path.GetPathUnix(), modificationTime));
 			rig->SetAsynchron(false);
 			module->LoadRig(*fileReader, *rig);
 			fileReader->FreeReference(); fileReader = NULL;
@@ -182,12 +179,6 @@ deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, con
 		
 	}catch(const deException &){
 		LogErrorFormat("Loading rig '%s' (base path '%s') failed", filename, basePath ? basePath : "");
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(rig){
-			rig->FreeReference();
-		}
 		throw;
 	}
 	
@@ -195,7 +186,7 @@ deRig *deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename, con
 	return rig;
 }
 
-void deRigManager::AddLoadedRig(deRig *rig){
+void deRigManager::AddLoadedRig(deRig::Ref rig){
 	if(!rig){
 		DETHROW(deeInvalidParam);
 	}
@@ -209,7 +200,7 @@ void deRigManager::ReleaseLeakingResources(){
 	const int count = GetRigCount();
 	
 	if(count > 0){
-		deRig *rig = (deRig*)pRigs.GetRoot();
+		deRig::Ref rig = (deRig*)pRigs.GetRoot();
 		
 		LogWarnFormat("%i leaking rigs", count);
 		
@@ -228,7 +219,7 @@ void deRigManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deRigManager::SystemPhysicsLoad(){
-	deRig *rig = (deRig*)pRigs.GetRoot();
+	deRig::Ref rig = (deRig*)pRigs.GetRoot();
 	dePhysicsSystem &phySys = *GetPhysicsSystem();
 	
 	while(rig){
@@ -241,7 +232,7 @@ void deRigManager::SystemPhysicsLoad(){
 }
 
 void deRigManager::SystemPhysicsUnload(){
-	deRig *rig = (deRig*)pRigs.GetRoot();
+	deRig::Ref rig = (deRig*)pRigs.GetRoot();
 	
 	while(rig){
 		rig->SetPeerPhysics(NULL);

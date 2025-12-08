@@ -58,7 +58,7 @@ public:
 	/** Retrieves the video or NULL if myself is NULL. */
 	deVideo *GetVideo(dsRealObject *myself) const;
 	/** Pushes the video on the stack. Video can be NULL to push a null object. */
-	void PushVideo(dsRunTime *rt, deVideo *video);
+	void PushVideo(dsRunTime *rt, deVideo::Ref video);
 	/** Retrieves the dragon script module. */
 	inline deScriptingDragonScript *GetDS() const{ return pDS; }
 	/*@}*/

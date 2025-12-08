@@ -87,7 +87,7 @@ public:
 	 * This method is to be used only by the resource loader to add an rig that has been
 	 * loaded asynchronously.
 	 */
-	void AddLoadedRig(deRig *rig);
+	void AddLoadedRig(deRig::Ref rig);
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

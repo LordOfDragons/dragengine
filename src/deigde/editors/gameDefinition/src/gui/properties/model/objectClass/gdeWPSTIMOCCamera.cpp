@@ -47,9 +47,8 @@
 ////////////////////////////
 
 gdeWPSTIMOCCamera::gdeWPSTIMOCCamera(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-	gdeOCCamera *camera, int index) :
-gdeWPSTIMOCSubObject(tree, etObjectClassCamera, objectClass, index),
-pCamera(NULL)
+	gdeOCCamera::Ref camera, int index) :
+gdeWPSTIMOCSubObject(tree, etObjectClassCamera, objectClass, index)
 {
 	if(!camera){
 		DETHROW(deeInvalidParam);
@@ -62,13 +61,9 @@ pCamera(NULL)
 	SetIcon(GetWindowMain().GetEnvironment().GetStockIcon(igdeEnvironment::esiNew));
 	
 	pCamera = camera;
-	camera->AddReference();
 }
 
 gdeWPSTIMOCCamera::~gdeWPSTIMOCCamera(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
 }
 
 

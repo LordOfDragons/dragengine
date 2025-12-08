@@ -74,7 +74,7 @@ private:
 	seControllerTarget pTargetPanning;
 	
 	seEffectList pEffects;
-	seEffect *pActiveEffect;
+	seEffect::Ref pActiveEffect;
 	
 	
 	
@@ -229,22 +229,22 @@ public:
 	inline seEffect *GetActiveEffect() const{ return pActiveEffect; }
 	
 	/** \brief Set active effect or \em NULL if none is active. */
-	void SetActiveEffect(seEffect *effect);
+	void SetActiveEffect(seEffect::Ref effect);
 	
 	/** \brief Effects. */
 	inline const seEffectList &GetEffects() const{ return pEffects; }
 	
 	/** \brief Add effect. */
-	void AddEffect(seEffect *effect);
+	void AddEffect(seEffect::Ref effect);
 	
 	/** \brief Insert effect. */
-	void InsertEffectAt(seEffect *effect, int index);
+	void InsertEffectAt(seEffect::Ref effect, int index);
 	
 	/** \brief Move effect. */
-	void MoveEffectTo(seEffect *effect, int index);
+	void MoveEffectTo(seEffect::Ref effect, int index);
 	
 	/** \brief Remove effect. */
-	void RemoveEffect(seEffect *effect);
+	void RemoveEffect(seEffect::Ref effect);
 	
 	/** \brief Remove all effects. */
 	void RemoveAllEffects();

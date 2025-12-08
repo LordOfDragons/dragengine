@@ -44,7 +44,7 @@
 
 // Native Structure
 struct sEffClrMatMatrixNatDat{
-	deEffectColorMatrix *effect;
+	deEffectColorMatrix::Ref effect;
 };
 
 
@@ -212,7 +212,7 @@ deEffectColorMatrix *deClassEffectColorMatrix::GetEffect(dsRealObject *myself) c
 	return ((sEffClrMatMatrixNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
-void deClassEffectColorMatrix::PushEffect(dsRunTime *rt, deEffectColorMatrix *effect){
+void deClassEffectColorMatrix::PushEffect(dsRunTime *rt, deEffectColorMatrix::Ref effect){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -232,8 +232,6 @@ void deClassEffectColorMatrix::PushEffect(dsRunTime *rt, deEffectColorMatrix *ef
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.effect = effect;
-		effect->AddReference();
-		
 		baseClass->AssignEffect(rt->GetValue(0)->GetRealObject(), effect);
 		
 	}catch(...){

@@ -43,7 +43,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTImportHeightImage::meUHTImportHeightImage(meWorld *world, meHeightTerrainSector *sector, deImage *image){
+meUHTImportHeightImage::meUHTImportHeightImage(meWorld::Ref world, meHeightTerrainSector *sector, deImage *image){
 	if(!world || !sector || !image) DETHROW(deeInvalidParam);
 	
 	if(image->GetComponentCount() != 1) DETHROW(deeInvalidParam);
@@ -96,7 +96,6 @@ meUHTImportHeightImage::meUHTImportHeightImage(meWorld *world, meHeightTerrainSe
 	}
 	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUHTImportHeightImage::~meUHTImportHeightImage(){

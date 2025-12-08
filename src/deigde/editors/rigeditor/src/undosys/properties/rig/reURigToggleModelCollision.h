@@ -36,7 +36,7 @@ class reRig;
  */
 class reURigToggleModelCollision : public igdeUndo{
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	
 	

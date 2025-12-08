@@ -37,8 +37,8 @@ class ceGesture;
  */
 class ceUCGestureAdd : public igdeUndo{
 private:
-	ceConversation *pConversation;
-	ceGesture *pGesture;
+	ceConversation::Ref pConversation;
+	ceGesture::Ref pGesture;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCGestureAdd(ceConversation *conversation, ceGesture *gesture);
+	ceUCGestureAdd(ceConversation::Ref conversation, ceGesture::Ref gesture);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCGestureAdd();

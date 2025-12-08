@@ -43,8 +43,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCLogicRemove::ceUCCLogicRemove(ceConversationTopic *topic, ceConversationAction *action,
-ceCConditionLogic *logic, ceConversationCondition *condition){
+ceUCCLogicRemove::ceUCCLogicRemove(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
+ceCConditionLogic::Ref logic, ceConversationCondition::Ref condition){
 	if(!topic || !action || !logic || !condition) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
@@ -59,31 +59,12 @@ ceCConditionLogic *logic, ceConversationCondition *condition){
 	SetShortInfo("Logic Remove Condition");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pLogic = logic;
-	logic->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCLogicRemove::~ceUCCLogicRemove(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pLogic){
-		pLogic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

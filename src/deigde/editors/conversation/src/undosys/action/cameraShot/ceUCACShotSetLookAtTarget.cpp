@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCACShotSetLookAtTarget::ceUCACShotSetLookAtTarget(ceConversationTopic *topic, ceCACameraShot *cameraShot, const char *newTarget){
+ceUCACShotSetLookAtTarget::ceUCACShotSetLookAtTarget(ceConversationTopic::Ref topic, ceCACameraShot::Ref cameraShot, const char *newTarget){
 	if(!topic || !newTarget) DETHROW(deeInvalidParam);
 	
 	pTopic = NULL;
@@ -52,19 +52,10 @@ ceUCACShotSetLookAtTarget::ceUCACShotSetLookAtTarget(ceConversationTopic *topic,
 	SetShortInfo("Set Look-At Target");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCACShotSetLookAtTarget::~ceUCACShotSetLookAtTarget(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

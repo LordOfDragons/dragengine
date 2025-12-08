@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavBlockerToggleEnabled : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	
 	
@@ -50,8 +50,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavBlockerToggleEnabled(gdeObjectClass *objectClass,
-		gdeOCNavigationBlocker *navblocker);
+	gdeUOCNavBlockerToggleEnabled(gdeObjectClass::Ref objectClass,
+		gdeOCNavigationBlocker::Ref navblocker);
 	
 protected:
 	/** \brief Clean up undo action. */

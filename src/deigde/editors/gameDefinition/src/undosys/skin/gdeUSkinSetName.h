@@ -38,7 +38,7 @@ class gdeSkin;
  */
 class gdeUSkinSetName : public igdeUndo{
 private:
-	gdeSkin *pSkin;
+	gdeSkin::Ref pSkin;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUSkinSetName(gdeSkin *skin, const char *newValue);
+	gdeUSkinSetName(gdeSkin::Ref skin, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

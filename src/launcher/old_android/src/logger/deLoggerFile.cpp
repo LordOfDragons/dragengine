@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-deLoggerFile::deLoggerFile(decBaseFileWriter *writer) :
+deLoggerFile::deLoggerFile(decBaseFileWriter::Ref writer) :
 pWriter(NULL)
 {
 	if(!writer){
@@ -48,13 +48,9 @@ pWriter(NULL)
 	}
 	
 	pWriter = writer;
-	writer->AddReference();
 }
 
 deLoggerFile::~deLoggerFile(){
-	if(pWriter){
-		pWriter->FreeReference();
-	}
 }
 
 

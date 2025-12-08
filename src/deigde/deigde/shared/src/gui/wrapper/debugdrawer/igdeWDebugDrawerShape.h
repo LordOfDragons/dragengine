@@ -54,7 +54,7 @@ class deOcclusionMesh;
  */
 class DE_DLL_EXPORT igdeWDebugDrawerShape{
 private:
-	deDebugDrawer *pEngDebugDrawer;
+	deDebugDrawer::Ref pEngDebugDrawer;
 	deDebugDrawerShape *pEngDDShape;
 	
 	decVector pPosition;
@@ -90,7 +90,7 @@ public:
 	inline deDebugDrawer *GetParentDebugDrawer() const{ return pEngDebugDrawer; }
 	
 	/** \brief Set parent debug drawer or NULL. */
-	void SetParentDebugDrawer(deDebugDrawer *debugDrawer);
+	void SetParentDebugDrawer(deDebugDrawer::Ref debugDrawer);
 	
 	/** \brief Position. */
 	inline const decVector &GetPosition() const{ return pPosition; }

@@ -73,7 +73,7 @@
 
 // native structure
 struct sCompNatDat{
-	deComponent *component;
+	deComponent::Ref component;
 };
 
 // native functions
@@ -135,7 +135,7 @@ deClassComponent::nfGetModel::nfGetModel(const sInitData &init) : dsFunction(ini
 "getModel", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsMdl){
 }
 void deClassComponent::nfGetModel::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	clsComp->GetClassModel()->PushModel(rt, component->GetModel());
 }
@@ -145,7 +145,7 @@ deClassComponent::nfGetRig::nfGetRig(const sInitData &init) : dsFunction(init.cl
 "getRig", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsRig){
 }
 void deClassComponent::nfGetRig::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	if(component->GetRig()){
 		clsComp->GetClassRig()->PushRig(rt, component->GetRig());
@@ -159,7 +159,7 @@ deClassComponent::nfGetSkin::nfGetSkin(const sInitData &init) : dsFunction(init.
 "getSkin", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsSkin){
 }
 void deClassComponent::nfGetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	clsComp->GetClassSkin()->PushSkin(rt, component->GetSkin());
 }
@@ -169,7 +169,7 @@ deClassComponent::nfGetPosition::nfGetPosition(const sInitData &init) : dsFuncti
 "getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
 void deClassComponent::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	
 	clsComp->GetClassDVector()->PushDVector(rt, component->GetPosition());
@@ -180,7 +180,7 @@ deClassComponent::nfGetOrientation::nfGetOrientation(const sInitData &init) : ds
 "getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
 void deClassComponent::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	
 	clsComp->GetClassQuaternion()->PushQuaternion(rt, component->GetOrientation());
@@ -191,7 +191,7 @@ deClassComponent::nfGetScaling::nfGetScaling(const sInitData &init) : dsFunction
 "getScaling", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassComponent::nfGetScaling::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	clsComp->GetScriptModule()->PushVector(rt, component->GetScaling());
 }
@@ -221,7 +221,7 @@ deClassComponent::nfGetVisible::nfGetVisible(const sInitData &init) : dsFunction
 "getVisible", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassComponent::nfGetVisible::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	rt->PushBool(component->GetVisible());
 }
 
@@ -285,7 +285,7 @@ deClassComponent::nfSetModel::nfSetModel(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsMdl); // model
 }
 void deClassComponent::nfSetModel::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	
 	component->SetModel(clsComp->GetClassModel()->GetModel(rt->GetValue(0)->GetRealObject()));
@@ -309,7 +309,7 @@ deClassComponent::nfSetSkin::nfSetSkin(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsSkin); // skin
 }
 void deClassComponent::nfSetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	
 	component->SetSkin(clsComp->GetClassSkin()->GetSkin(rt->GetValue(0)->GetRealObject()));
@@ -321,7 +321,7 @@ deClassComponent::nfSetRig::nfSetRig(const sInitData &init) : dsFunction(init.cl
 	p_AddParameter(init.clsRig); // rig
 }
 void deClassComponent::nfSetRig::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	
 	component->SetRig(clsComp->GetClassRig()->GetRig(rt->GetValue(0)->GetRealObject()));
@@ -334,7 +334,7 @@ deClassComponent::nfSetModelAndSkin::nfSetModelAndSkin(const sInitData &init) : 
 	p_AddParameter(init.clsSkin); // skin
 }
 void deClassComponent::nfSetModelAndSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	
 	deModel * const model = clsComp->GetClassModel()->GetModel(rt->GetValue(0)->GetRealObject());
@@ -348,7 +348,7 @@ deClassComponent::nfSetPosition::nfSetPosition(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsDVec); // position
 }
 void deClassComponent::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
@@ -363,7 +363,7 @@ deClassComponent::nfSetOrientation::nfSetOrientation(const sInitData &init) : ds
 	p_AddParameter(init.clsQuat); // orientation
 }
 void deClassComponent::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
@@ -378,7 +378,7 @@ deClassComponent::nfSetScaling::nfSetScaling(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsVec); // scaling
 }
 void deClassComponent::nfSetScaling::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	if(!obj) DSTHROW(dueNullPointer);
@@ -391,7 +391,7 @@ deClassComponent::nfSetVisible::nfSetVisible(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsBool); // visible
 }
 void deClassComponent::nfSetVisible::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	component->SetVisible(rt->GetValue(0)->GetBool());
 }
 
@@ -924,7 +924,7 @@ deClassComponent::nfUpdateBones::nfUpdateBones(const sInitData &init) : dsFuncti
 "updateBones", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassComponent::nfUpdateBones::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	component->PrepareBones();
 }
 
@@ -1203,7 +1203,7 @@ dsFunction(init.clsCom, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassComponent::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)component);
 }
@@ -1214,7 +1214,7 @@ dsFunction(init.clsCom, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassComponent::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = ((sCompNatDat*)p_GetNativeData(myself))->component;
+	deComponent::Ref component = ((sCompNatDat*)p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	if(!p_IsObjOfType(obj, clsComp)){
@@ -1480,7 +1480,7 @@ deComponent *deClassComponent::GetComponent(dsRealObject *myself) const{
 	return ((sCompNatDat*)p_GetNativeData(myself->GetBuffer()))->component;
 }
 
-void deClassComponent::PushComponent(dsRunTime *rt, deComponent *component){
+void deClassComponent::PushComponent(dsRunTime *rt, deComponent::Ref component){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -1492,5 +1492,4 @@ void deClassComponent::PushComponent(dsRunTime *rt, deComponent *component){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sCompNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->component = component;
-	component->AddReference();
 }

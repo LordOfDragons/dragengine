@@ -179,7 +179,7 @@ public:
 	deoglShaderPreprocessorSymbol *GetSymbolNamed(const char *name) const;
 	
 	/** Set symbol. */
-	void SetSymbol(deoglShaderPreprocessorSymbol *symbol);
+	void SetSymbol(deoglShaderPreprocessorSymbol::Ref symbol);
 	
 	/** Set symbol. */
 	void SetSymbol(const char *name, const char *value);

@@ -62,7 +62,7 @@ public:
 	void CreateClassMembers(dsEngine *engine);
 	
 	/** \brief Push feedback. */
-	void PushFeedback(dsRunTime *rt, dedsInputDevice *device, int index);
+	void PushFeedback(dsRunTime *rt, dedsInputDevice::Ref device, int index);
 	
 	inline dsClass *GetClassInputDeviceFeedbackType() const{ return pClsInputDeviceFeedbackType; }
 	/*@}*/

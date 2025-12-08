@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCSpeakerSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetRotation(gdeObjectClass *objectClass,
-		gdeOCSpeaker *speaker, const decVector &newValue);
+	gdeUOCSpeakerSetRotation(gdeObjectClass::Ref objectClass,
+		gdeOCSpeaker::Ref speaker, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

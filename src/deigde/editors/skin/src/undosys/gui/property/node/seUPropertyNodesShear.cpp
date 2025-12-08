@@ -158,12 +158,11 @@ void seUPropertyNodesShear::Redo(){
 //////////////////////
 
 void seUPropertyNodesShear::pAddNodes(sePropertyNode *node){
-	seUPropertyNodeData *data = NULL;
+	seUPropertyNodeData::Ref data = NULL;
 	
 	try{
-		data = new seUPropertyNodeData(node);
+		data.TakeOver(new seUPropertyNodeData(node));
 		pNodes.Add(data);
-		data->FreeReference();
 		data = NULL;
 		
 		if(node->GetMask()){
@@ -180,9 +179,6 @@ void seUPropertyNodesShear::pAddNodes(sePropertyNode *node){
 		}
 		
 	}catch(const deException &){
-		if(data){
-			data->FreeReference();
-		}
 		throw;
 	}
 }

@@ -245,11 +245,9 @@ public:
 ceViewConversation::ceViewConversation(ceWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
 pWindowMain(windowMain),
-pListener(NULL),
-pConversation(NULL),
 pRuleOfThirdsAid(NULL)
 {
-	pListener = new ceViewConversationListener(*this);
+	pListener.TakeOver(new ceViewConversationListener(*this));
 	
 	pCameraMouseListener.TakeOver(new cCameraMouseListener(*this));
 	AddListener(pCameraMouseListener);
@@ -264,9 +262,6 @@ ceViewConversation::~ceViewConversation(){
 	if(pRuleOfThirdsAid){
 		delete pRuleOfThirdsAid;
 	}
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -277,7 +272,7 @@ ceViewConversation::~ceViewConversation(){
 void ceViewConversation::ResetView(){
 }
 
-void ceViewConversation::SetConversation(ceConversation *conversation){
+void ceViewConversation::SetConversation(ceConversation::Ref conversation){
 	if(conversation == pConversation){
 		return;
 	}
@@ -295,13 +290,11 @@ void ceViewConversation::SetConversation(ceConversation *conversation){
 			RemoveCanvas(pConversation->GetTextBox()->GetCanvasView());
 		}
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;
 	
 	if(conversation){
-		conversation->AddReference();
 		conversation->AddListener(pListener);
 		
 		if(GetRenderWindow()){

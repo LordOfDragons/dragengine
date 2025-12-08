@@ -38,7 +38,7 @@ class meNavigationSpace;
  */
 class meUNavSpaceSetOrientation : public igdeUndo{
 private:
-	meNavigationSpace *pNavSpace;
+	meNavigationSpace::Ref pNavSpace;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUNavSpaceSetOrientation(meNavigationSpace *navspace, const decVector &newOrientation);
+	meUNavSpaceSetOrientation(meNavigationSpace::Ref navspace, const decVector &newOrientation);
 	
 protected:
 	/** \brief Clean up object. */

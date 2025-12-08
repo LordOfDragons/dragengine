@@ -48,7 +48,7 @@
 
 
 struct sCTNatDat{
-	dedsCollisionTester *collisionTester;
+	dedsCollisionTester::Ref collisionTester;
 };
 
 
@@ -68,7 +68,7 @@ void deClassCollisionTester::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.collisionTester = NULL;
 	
 	// create layer mask
-	nd.collisionTester = new dedsCollisionTester(clsCT.GetDS());
+	nd.collisionTester.TakeOver(new dedsCollisionTester(clsCT.GetDS()));
 }
 
 // public func new( CollisionTester collisionTester )
@@ -87,7 +87,7 @@ void deClassCollisionTester::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myse
 		DSTHROW(dueNullPointer);
 	}
 	const dedsCollisionTester &other = *(((sCTNatDat*)p_GetNativeData(rt->GetValue(0)))->collisionTester);
-	nd.collisionTester = new dedsCollisionTester(other);
+	nd.collisionTester.TakeOver(new dedsCollisionTester(other));
 }
 
 // public func destructor()
@@ -591,7 +591,7 @@ dedsCollisionTester *deClassCollisionTester::GetCollisionTester(dsRealObject *my
 	return ((sCTNatDat*)p_GetNativeData(myself->GetBuffer()))->collisionTester;
 }
 
-void deClassCollisionTester::PushCollisionTester(dsRunTime *rt, dedsCollisionTester *collisionTester){
+void deClassCollisionTester::PushCollisionTester(dsRunTime *rt, dedsCollisionTester::Ref collisionTester){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -603,5 +603,4 @@ void deClassCollisionTester::PushCollisionTester(dsRunTime *rt, dedsCollisionTes
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sCTNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->collisionTester = collisionTester;
-	collisionTester->AddReference();
 }

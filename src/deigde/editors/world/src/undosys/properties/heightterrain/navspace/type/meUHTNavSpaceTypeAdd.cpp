@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTNavSpaceTypeAdd::meUHTNavSpaceTypeAdd(meHeightTerrainNavSpace *navspace, meHeightTerrainNavSpaceType *type) :
-pNavSpace(NULL),
+meUHTNavSpaceTypeAdd::meUHTNavSpaceTypeAdd(meHeightTerrainNavSpace::Ref navspace, meHeightTerrainNavSpaceType::Ref type) :
+
 pType(NULL)
 {
 	if(!navspace || !type){
@@ -51,19 +51,10 @@ pType(NULL)
 	SetShortInfo("Height terrain nav-space add type");
 	
 	pNavSpace = navspace;
-	navspace->AddReference();
-	
 	pType = type;
-	type->AddReference();
 }
 
 meUHTNavSpaceTypeAdd::~meUHTNavSpaceTypeAdd(){
-	if(pType){
-		pType->FreeReference();
-	}
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

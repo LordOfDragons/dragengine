@@ -58,12 +58,12 @@ public:
 		deSkinPropertyImage *pPropertyImage;
 		deSkinPropertyNodeImage *pNodeImage;
 		deSkinPropertyNodeText *pNodeText;
-		deResourceLoaderTask *pTask;
+		deResourceLoaderTask::Ref pTask;
 		
 	public:
-		cInternalTask(deSkinPropertyImage *propertyImage, deResourceLoaderTask *task);
-		cInternalTask(deSkinPropertyNodeImage *nodeImage, deResourceLoaderTask *task);
-		cInternalTask(deSkinPropertyNodeText *nodeText, deResourceLoaderTask *task);
+		cInternalTask(deSkinPropertyImage *propertyImage, deResourceLoaderTask::Ref task);
+		cInternalTask(deSkinPropertyNodeImage *nodeImage, deResourceLoaderTask::Ref task);
+		cInternalTask(deSkinPropertyNodeText *nodeText, deResourceLoaderTask::Ref task);
 		~cInternalTask() override;
 		
 		inline deSkinPropertyImage *GetPropertyImage() const{ return pPropertyImage; }

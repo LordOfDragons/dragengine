@@ -40,7 +40,7 @@ class meWindowVegetation;
 class meWVNode : public igdeNVNode{
 private:
 	meWindowVegetation &pWindowVegetation;
-	meHTVRule *pRule;
+	meHTVRule::Ref pRule;
 	
 	igdeUndo::Ref pUndoMove;
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create node. */
-	meWVNode(meWindowVegetation &windowVegetation, meHTVRule *rule);
+	meWVNode(meWindowVegetation &windowVegetation, meHTVRule::Ref rule);
 	
 protected:
 	/** \brief Clean up object. */

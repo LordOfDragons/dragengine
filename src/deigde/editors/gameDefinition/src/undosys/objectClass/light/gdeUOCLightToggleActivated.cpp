@@ -40,9 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightToggleActivated::gdeUOCLightToggleActivated(gdeObjectClass *objectClass, gdeOCLight *light) :
-pObjectClass(NULL),
-pLight(NULL)
+gdeUOCLightToggleActivated::gdeUOCLightToggleActivated(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -51,19 +50,10 @@ pLight(NULL)
 	SetShortInfo("Light toggle activated");
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightToggleActivated::~gdeUOCLightToggleActivated(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -75,16 +75,16 @@ public:
 	deSynthesizerSource *GetSource(dsRealObject *myself) const;
 	
 	/** \brief Assigns source or \em NULL. */
-	void AssignSource(dsRealObject *myself, deSynthesizerSource *source);
+	void AssignSource(dsRealObject *myself, deSynthesizerSource::Ref source);
 	
 	/** \brief Assigns synthesizer or \em NULL. */
-	void AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer);
+	void AssignSynthesizer(dsRealObject *myself, deSynthesizer::Ref synthesizer);
 	
 	/**
 	 * \brief Pushes a source.
 	 * \details Delegates the call to the matching source script class.
 	 */
-	void PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSource *source);
+	void PushSource(dsRunTime *rt, deSynthesizer::Ref synthesizer, deSynthesizerSource::Ref source);
 	
 	inline dsClass *GetClassSynthesizerSourceMix() const{ return pClsSynthesizerSourceMix; }
 	/*@}*/

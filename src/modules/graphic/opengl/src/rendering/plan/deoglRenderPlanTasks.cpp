@@ -69,10 +69,7 @@ pSolidGeometryXRayTask(nullptr),
 pSolidGeometryHeight1XRayTask(nullptr),
 pSolidGeometryHeight2XRayTask(nullptr),
 pSolidGeometryOutlineXRayTask(nullptr),
-pSolidDecalsXRayTask(nullptr),
-
-pTaskDepth(NULL),
-pTaskGeometry(NULL)
+pSolidDecalsXRayTask(nullptr)
 {
 	deoglRenderThread &renderthread = plan.GetRenderThread();
 	
@@ -228,10 +225,10 @@ void deoglRenderPlanTasks::StartBuildTasks(const deoglRenderPlanMasked *mask){
 	
 	deParallelProcessing &pp = pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing();
 	
-	pTaskDepth = new deoglRPTBuildRTsDepth(*this, mask);
+	pTaskDepth.TakeOver(new deoglRPTBuildRTsDepth(*this, mask));
 	pp.AddTaskAsync(pTaskDepth);
 	
-	pTaskGeometry = new deoglRPTBuildRTsGeometry(*this, mask);
+	pTaskGeometry.TakeOver(new deoglRPTBuildRTsGeometry(*this, mask));
 	pp.AddTaskAsync(pTaskGeometry);
 }
 
@@ -244,8 +241,6 @@ void deoglRenderPlanTasks::WaitFinishBuildingTasksDepth(){
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareBuildRTs(pPlan, pTaskDepth->GetElapsedTime());
-	
-	pTaskDepth->FreeReference();
 	pTaskDepth = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
@@ -310,8 +305,6 @@ void deoglRenderPlanTasks::WaitFinishBuildingTasksGeometry(){
 	
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareBuildRTs(pPlan, pTaskGeometry->GetElapsedTime());
-	
-	pTaskGeometry->FreeReference();
 	pTaskGeometry = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel

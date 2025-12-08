@@ -35,7 +35,7 @@ class seLayer;
  */
 class seULayerSetLightIntensity : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	float pOldIntensity;
 	float pNewIntensity;
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerSetLightIntensity(seLayer *layer, float newIntensity);
+	seULayerSetLightIntensity(seLayer::Ref layer, float newIntensity);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -48,7 +48,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	deoglRWorld *pParentWorld;
 	
-	deoglRSky *pRSky;
+	deoglRSky::Ref pRSky;
 	
 	int pOrder;
 	decLayerMask pLayerMask;
@@ -108,7 +108,7 @@ public:
 	 * 
 	 * Called during synchronization time.
 	 */
-	void SetRSky(deoglRSky *rsky);
+	void SetRSky(deoglRSky::Ref rsky);
 	
 	
 	

@@ -49,7 +49,7 @@
 
 // Native Structure
 struct sEffNatDat{
-	deEffect *effect;
+	deEffect::Ref effect;
 };
 
 
@@ -199,7 +199,7 @@ void deClassEffect::CreateClassMembers(dsEngine *engine){
 
 
 
-void deClassEffect::AssignEffect(dsRealObject *myself, deEffect *effect){
+void deClassEffect::AssignEffect(dsRealObject *myself, deEffect::Ref effect){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -215,10 +215,6 @@ void deClassEffect::AssignEffect(dsRealObject *myself, deEffect *effect){
 	}
 	
 	nd.effect = effect;
-	
-	if(effect){
-		effect->AddReference();
-	}
 }
 
 
@@ -231,7 +227,7 @@ deEffect *deClassEffect::GetEffect(dsRealObject *myself) const {
 	return ((sEffNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
-void deClassEffect::PushEffect(dsRunTime *rt, deEffect *effect){
+void deClassEffect::PushEffect(dsRunTime *rt, deEffect::Ref effect){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

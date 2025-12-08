@@ -44,18 +44,12 @@
 igdeTriggerExpressionComponent::igdeTriggerExpressionComponent() :
 pNegate(false),
 pCurState(false),
-pType(ectTarget),
-pTarget(NULL),
-pTargetListener(NULL){
+pType(ectTarget){
 }
 
 igdeTriggerExpressionComponent::~igdeTriggerExpressionComponent(){
 	if(pTargetListener){
 		pTarget->RemoveListener(pTargetListener);
-		pTargetListener->FreeReference();
-	}
-	if(pTarget){
-		pTarget->FreeReference();
 	}
 }
 
@@ -83,39 +77,21 @@ void igdeTriggerExpressionComponent::SetTargetName(const char *name){
 	pTargetName = name;
 }
 
-void igdeTriggerExpressionComponent::SetTarget(igdeTriggerTarget *target){
+void igdeTriggerExpressionComponent::SetTarget(igdeTriggerTarget::Ref target){
 	if(target == pTarget){
 		return;
 	}
-	
-	if(pTarget){
-		pTarget->FreeReference();
-	}
-	
 	pTarget = target;
-	
-	if(target){
-		target->AddReference();
-	}
 }
 
-void igdeTriggerExpressionComponent::SetTargetListener(igdeTriggerListener *listener){
+void igdeTriggerExpressionComponent::SetTargetListener(igdeTriggerListener::Ref listener){
 	if(listener == pTargetListener){
 		return;
 	}
-	
-	if(pTargetListener){
-		pTargetListener->FreeReference();
-	}
-	
 	pTargetListener = listener;
-	
-	if(listener){
-		listener->AddReference();
-	}
 }
 
-void igdeTriggerExpressionComponent::LinkTargets(igdeTriggerTargetList &triggerTable, igdeTriggerListener *listener){
+void igdeTriggerExpressionComponent::LinkTargets(igdeTriggerTargetList &triggerTable, igdeTriggerListener::Ref listener){
 	if(pTargetListener){
 		pTarget->RemoveListener(pTargetListener);
 	}

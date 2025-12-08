@@ -47,8 +47,8 @@ public:
 	};
 	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	ceStripList pStrips;
 	sStrip *pOldStates;
 	float pScaling;
@@ -57,7 +57,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */
-	ceUCAASpeakStripsScale(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak);
+	ceUCAASpeakStripsScale(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak);
 	/** \brief Cleans up the undo object. */
 	virtual ~ceUCAASpeakStripsScale();
 	/*@}*/

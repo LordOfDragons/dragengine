@@ -36,8 +36,8 @@ class seSky;
  */
 class seULayerAdd : public igdeUndo{
 private:
-	seSky *pSky;
-	seLayer *pLayer;
+	seSky::Ref pSky;
+	seLayer::Ref pLayer;
 	
 	
 	
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerAdd(seSky *sky, seLayer *layer);
+	seULayerAdd(seSky::Ref sky, seLayer::Ref layer);
 	
 protected:
 	/** \brief Clean up undo action. */

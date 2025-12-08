@@ -40,10 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCLightSetSpotAngle::gdeUOCLightSetSpotAngle(gdeObjectClass *objectClass,
-gdeOCLight *light, float newValue) :
-pObjectClass(NULL),
-pLight(NULL)
+gdeUOCLightSetSpotAngle::gdeUOCLightSetSpotAngle(gdeObjectClass::Ref objectClass,
+gdeOCLight::Ref light, float newValue) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !light){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pLight(NULL)
 	pNewValue = newValue;
 	
 	pLight = light;
-	light->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCLightSetSpotAngle::~gdeUOCLightSetSpotAngle(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

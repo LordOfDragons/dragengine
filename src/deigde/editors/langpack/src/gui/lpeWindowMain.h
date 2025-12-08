@@ -50,7 +50,7 @@ class lpeIGDEModule;
  */
 class lpeWindowMain : public igdeEditorWindow{
 private:
-	lpeWindowMainListener *pListener;
+	lpeWindowMainListener::Ref pListener;
 	
 	//igdeIcon::Ref pIconLangPackNew;
 	
@@ -76,10 +76,10 @@ private:
 	igdeClipboard pClipboard;
 	lpeLoadSaveSystem *pLoadSaveSystem;
 	
-	lpeWindowProperties *pWindowProperties;
-	lpeViewLangPack *pViewLangPack;
+	lpeWindowProperties::Ref pWindowProperties;
+	lpeViewLangPack::Ref pViewLangPack;
 	
-	lpeLangPack *pLangPack;
+	lpeLangPack::Ref pLangPack;
 	
 	
 	
@@ -134,7 +134,7 @@ public:
 	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
 	
 	/** Set language pack. */
-	void SetLangPack(lpeLangPack *langpack);
+	void SetLangPack(lpeLangPack::Ref langpack);
 	
 	/** Create new language pack. */
 	void CreateNewLangPack();
@@ -146,7 +146,7 @@ public:
 	lpeLangPack *GetReferenceLangPack() const;
 	
 	/** Set reference language pack. */
-	void SetReferenceLangPack(lpeLangPack *langpack);
+	void SetReferenceLangPack(lpeLangPack::Ref langpack);
 	
 	/** Select next missing language pack entry. */
 	void SelectNextMissingEntry();

@@ -48,7 +48,7 @@
 /////////////////////
 
 struct sSkyBodyNatDat{
-	deSky *sky;
+	deSky::Ref sky;
 	int layer;
 	int index;
 };
@@ -323,7 +323,7 @@ void deClassSkyBody::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassSkyBody::PushBody(dsRunTime *rt, deSky *sky, int layer, int index){
+void deClassSkyBody::PushBody(dsRunTime *rt, deSky::Ref sky, int layer, int index){
 	if(!rt || !sky){
 		DSTHROW(dueInvalidParam);
 	}
@@ -336,7 +336,6 @@ void deClassSkyBody::PushBody(dsRunTime *rt, deSky *sky, int layer, int index){
 	rt->CreateObjectNakedOnStack(this);
 	sSkyBodyNatDat &nd = *((sSkyBodyNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.sky = sky;
-	sky->AddReference();
 	nd.layer = layer;
 	nd.index = index;
 }

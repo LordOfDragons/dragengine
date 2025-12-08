@@ -40,10 +40,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCShotRemove::ceUCCShotRemove(ceCameraShot *cameraShot){
+ceUCCShotRemove::ceUCCShotRemove(ceCameraShot::Ref cameraShot){
 	if(!cameraShot) DETHROW(deeInvalidParam);
 	
-	ceConversation *conversation = cameraShot->GetConversation();
+	ceConversation::Ref conversation = cameraShot->GetConversation();
 	if(!conversation) DETHROW(deeInvalidParam);
 	
 	pConversation = NULL;
@@ -52,10 +52,7 @@ ceUCCShotRemove::ceUCCShotRemove(ceCameraShot *cameraShot){
 	SetShortInfo("Remove Camera Shot");
 	
 	pConversation = conversation;
-	conversation->AddReference();
-	
 	pCameraShot = cameraShot;
-	cameraShot->AddReference();
 }
 
 ceUCCShotRemove::~ceUCCShotRemove(){

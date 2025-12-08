@@ -42,8 +42,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-aeURuleGroupPasteRule::aeURuleGroupPasteRule(aeRuleGroup *group, const aeRuleList &ruleList, int index) :
-pGroup(NULL),
+aeURuleGroupPasteRule::aeURuleGroupPasteRule(aeRuleGroup::Ref group, const aeRuleList &ruleList, int index) :
+
 pIndex(index){
 	const int ruleCount = ruleList.GetCount();
 	
@@ -51,26 +51,21 @@ pIndex(index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	aeRule *rule = NULL;
+	aeRule::Ref rule = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<ruleCount; i++){
 			rule = ruleList.GetAt(i)->CreateCopy();
 			pRuleList.Add(rule);
-			rule->FreeReference();
 			rule = NULL;
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
 	pGroup = group;
-	group->AddReference();
 }
 
 aeURuleGroupPasteRule::~aeURuleGroupPasteRule(){
@@ -155,7 +150,4 @@ void aeURuleGroupPasteRule::Redo(){
 //////////////////////
 
 void aeURuleGroupPasteRule::pCleanUp(){
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }

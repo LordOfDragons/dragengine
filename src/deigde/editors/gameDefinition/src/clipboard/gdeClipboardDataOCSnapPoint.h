@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCSnapPoint *pSnapPoint;
+	gdeOCSnapPoint::Ref pSnapPoint;
 	
 	
 	
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	gdeClipboardDataOCSnapPoint(gdeOCSnapPoint *snapPoint);
+	gdeClipboardDataOCSnapPoint(gdeOCSnapPoint::Ref snapPoint);
 	
 protected:
 	/**

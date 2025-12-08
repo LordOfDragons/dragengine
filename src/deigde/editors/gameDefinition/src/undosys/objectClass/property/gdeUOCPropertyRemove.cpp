@@ -41,9 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCPropertyRemove::gdeUOCPropertyRemove(gdeObjectClass *objectClass, gdeProperty *property) :
-pObjectClass(NULL),
-pProperty(NULL)
+gdeUOCPropertyRemove::gdeUOCPropertyRemove(gdeObjectClass::Ref objectClass, gdeProperty::Ref property) :
+pObjectClass(NULL)
 {
 	if(!objectClass || !property){
 		DETHROW(deeInvalidParam);
@@ -55,19 +54,10 @@ pProperty(NULL)
 	SetShortInfo("Object class remove property");
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
-	
 	pProperty = property;
-	property->AddReference();
 }
 
 gdeUOCPropertyRemove::~gdeUOCPropertyRemove(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

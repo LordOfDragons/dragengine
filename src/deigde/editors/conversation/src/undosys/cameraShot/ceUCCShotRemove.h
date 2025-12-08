@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotRemove(ceCameraShot *cameraShot);
+	ceUCCShotRemove(ceCameraShot::Ref cameraShot);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotRemove();

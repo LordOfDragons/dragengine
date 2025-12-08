@@ -43,8 +43,8 @@ class aeAnimator;
  */
 class aeUAddController : public igdeUndo{
 private:
-	aeAnimator *pAnimator;
-	aeController *pController;
+	aeAnimator::Ref pAnimator;
+	aeController::Ref pController;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUAddController(aeAnimator *animator, aeController *controller);
+	aeUAddController(aeAnimator::Ref animator, aeController::Ref controller);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUAddController();

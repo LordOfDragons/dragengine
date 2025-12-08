@@ -78,13 +78,8 @@
 
 peeWindowMain::peeWindowMain(igdeEditorModule &module) :
 igdeEditorWindow(module),
-pListener(NULL),
 pConfiguration(NULL),
-pLoadSaveSystem(NULL),
-pViewEmitter(NULL),
-pWindowProperties(NULL),
-pWindowCurves(NULL),
-pEmitter(NULL)
+pLoadSaveSystem(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -93,7 +88,7 @@ pEmitter(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new peeWindowMainListener(*this);
+	pListener.TakeOver(new peeWindowMainListener(*this));
 	pLoadSaveSystem = new peeLoadSaveSystem(*this);
 	pConfiguration = new peeConfiguration(*this);
 	
@@ -107,17 +102,17 @@ pEmitter(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(360)));
 	AddChild(splitted);
 	
-	pWindowProperties = new peeWindowProperties(*this);
+	pWindowProperties.TakeOver(new peeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	igdeContainerSplitted::Ref splitted2(igdeContainerSplitted::Ref::NewWith(
 		env, igdeContainerSplitted::espBottom, igdeApplication::app().DisplayScaled(260)));
 	splitted->AddChild(splitted2, igdeContainerSplitted::eaCenter);
 	
-	pWindowCurves = new peeWindowCurves(*this);
+	pWindowCurves.TakeOver(new peeWindowCurves(*this));
 	splitted2->AddChild(pWindowCurves, igdeContainerSplitted::eaSide);
 	
-	pViewEmitter = new peeViewEmitter(*this);
+	pViewEmitter.TakeOver(new peeViewEmitter(*this));
 	splitted2->AddChild(pViewEmitter, igdeContainerSplitted::eaCenter);
 	
 	CreateNewEmitter();
@@ -130,25 +125,11 @@ peeWindowMain::~peeWindowMain(){
 	}
 	
 	SetEmitter(NULL);
-	
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
-	if(pWindowCurves){
-		pWindowCurves->FreeReference();
-	}
-	if(pViewEmitter){
-		pViewEmitter->FreeReference();
-	}
-	
 	if(pConfiguration){
 		delete pConfiguration;
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -167,7 +148,7 @@ void peeWindowMain::ResetViews(){
 
 
 
-void peeWindowMain::SetEmitter(peeEmitter *emitter){
+void peeWindowMain::SetEmitter(peeEmitter::Ref emitter){
 	if(emitter == pEmitter){
 		return;
 	}
@@ -182,13 +163,11 @@ void peeWindowMain::SetEmitter(peeEmitter *emitter){
 		pEmitter->RemoveListener(pListener);
 		
 		pEmitter->Dispose();
-		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;
 	
 	if(emitter){
-		emitter->AddReference();
 		emitter->AddListener(pListener);
 		
 		pActionEditUndo->SetUndoSystem(emitter->GetUndoSystem());
@@ -201,18 +180,13 @@ void peeWindowMain::SetEmitter(peeEmitter *emitter){
 }
 
 void peeWindowMain::CreateNewEmitter(){
-	peeEmitter *emitter = NULL;
+	peeEmitter::Ref emitter = NULL;
 	
 	try{
-		emitter = new peeEmitter(&GetEnvironment(), *pLoadSaveSystem);
+		emitter.TakeOver(new peeEmitter(&GetEnvironment(), *pLoadSaveSystem));
 		
 		SetEmitter(emitter);
-		emitter->FreeReference();
-		
 	}catch(const deException &){
-		if(emitter){
-			emitter->FreeReference();
-		}
 		throw;
 	}
 }
@@ -281,11 +255,9 @@ void peeWindowMain::GetChangedDocuments(decStringList &list){
 }
 
 void peeWindowMain::LoadDocument(const char *filename){
-	peeEmitter *emitter = pLoadSaveSystem->LoadEmitter(filename);
+	peeEmitter::Ref emitter = pLoadSaveSystem->LoadEmitter(filename);
 	
 	SetEmitter(emitter);
-	emitter->FreeReference();
-	
 	emitter->SetChanged(false);
 	emitter->SetSaved(true);
 	GetRecentFiles().AddFile(filename);
@@ -369,12 +341,10 @@ public:
 		
 		// load emitter
 		pWindow.GetEditorModule().LogInfoFormat("Loading emitter %s", filename.GetString());
-		peeEmitter *emitter = pWindow.GetLoadSaveSystem().LoadEmitter(filename);
+		peeEmitter::Ref emitter = pWindow.GetLoadSaveSystem().LoadEmitter(filename);
 		
 		// replace emitter
 		pWindow.SetEmitter(emitter);
-		emitter->FreeReference();
-		
 		// store information
 		emitter->SetChanged(false);
 		emitter->SetSaved(true);

@@ -57,8 +57,8 @@
 /////////////////////
 
 struct sARAnimDiffNatDat{
-	deAnimator *animator;
-	deAnimatorRuleAnimationDifference *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleAnimationDifference::Ref rule;
 };
 
 
@@ -82,7 +82,7 @@ void deClassARAnimationDifference::nfNew::RunFunction(dsRunTime *rt, dsValue *my
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleAnimationDifference;
+	nd.rule.TakeOver(new deAnimatorRuleAnimationDifference);
 	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
@@ -382,7 +382,7 @@ deAnimatorRuleAnimationDifference *deClassARAnimationDifference::GetRule(dsRealO
 	return ((sARAnimDiffNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARAnimationDifference::AssignAnimator(dsRealObject *myself, deAnimator *animator){
+void deClassARAnimationDifference::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -400,13 +400,9 @@ void deClassARAnimationDifference::AssignAnimator(dsRealObject *myself, deAnimat
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
-void deClassARAnimationDifference::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleAnimationDifference *rule){
+void deClassARAnimationDifference::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleAnimationDifference::Ref rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -426,13 +422,7 @@ void deClassARAnimationDifference::PushRule(dsRunTime *rt, deAnimator *animator,
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
 		nd.rule = rule;
-		rule->AddReference();
-		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);
 		

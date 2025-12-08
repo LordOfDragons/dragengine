@@ -44,7 +44,7 @@ private:
 	bool pAlreadyLoaded;
 	
 	deRLTaskReadFont *pParentTask;
-	deRLTaskReadFontInternal2 *pInternalTask;
+	deRLTaskReadFontInternal2::Ref pInternalTask;
 	
 	
 	

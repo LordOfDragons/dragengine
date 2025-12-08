@@ -35,7 +35,7 @@ class seLayer;
  */
 class seULayerToggleMulBySkyColor : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	
 	
@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerToggleMulBySkyColor(seLayer *layer);
+	seULayerToggleMulBySkyColor(seLayer::Ref layer);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -48,8 +48,7 @@
 ////////////////////////////
 
 seULinkRemove::seULinkRemove(seLink *link) :
-pSynthesizer(NULL),
-pLink(NULL),
+
 
 pTargets(NULL),
 pTargetCount(0)
@@ -88,10 +87,7 @@ pTargetCount(0)
 	}
 	
 	pSynthesizer = synthesizer;
-	pSynthesizer->AddReference();
-	
 	pLink = link;
-	pLink->AddReference();
 }
 
 seULinkRemove::~seULinkRemove(){
@@ -136,16 +132,9 @@ void seULinkRemove::pCleanUp(){
 	for(i=0; i<pTargetCount; i++){
 		pTargets[i].source->FreeReference();
 	}
-	
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }
 
-void seULinkRemove::pAddTargetsForSource(seLink *link, int targetCount, seSource *source){
+void seULinkRemove::pAddTargetsForSource(seLink *link, int targetCount, seSource::Ref source){
 	if(source->GetTargetBlendFactor().HasLink(link)){
 		pAddTarget(targetCount, source, &source->GetTargetBlendFactor());
 	}
@@ -197,15 +186,12 @@ void seULinkRemove::pAddTargetsForSource(seLink *link, int targetCount, seSource
 	}
 }
 
-void seULinkRemove::pAddTarget(int targetCount, seSource *source, seControllerTarget *target){
+void seULinkRemove::pAddTarget(int targetCount, seSource::Ref source, seControllerTarget *target){
 	if(pTargetCount >= targetCount){
 		DETHROW(deeInvalidParam);
 	}
 	
 	pTargets[pTargetCount].source = source;
 	pTargets[pTargetCount].target = target;
-	
-	source->AddReference();
-	
 	pTargetCount++;
 }

@@ -111,10 +111,10 @@ void dealShader::CompileVertexProgram(const char *source){
 }
 
 void dealShader::CompileVertexProgramAsset(const char *filename){
-	decMemoryFile *memoryFileSource = NULL;
+	decMemoryFile::Ref memoryFileSource = NULL;
 	
 	try{
-		memoryFileSource = new decMemoryFile("source");
+		memoryFileSource.TakeOver(new decMemoryFile("source"));
 		pDisplay.GetLauncher().LoadAsset(filename, *memoryFileSource);
 		
 		decString source;
@@ -122,13 +122,7 @@ void dealShader::CompileVertexProgramAsset(const char *filename){
 		memcpy((char*)source.GetString(), memoryFileSource->GetPointer(), memoryFileSource->GetLength());
 		
 		CompileVertexProgram(source);
-		
-		memoryFileSource->FreeReference();
-		
 	}catch(const deException &){
-		if(memoryFileSource){
-			memoryFileSource->FreeReference();
-		}
 		throw;
 	}
 }
@@ -179,10 +173,10 @@ void dealShader::CompileFragmentProgram(const char *source){
 }
 
 void dealShader::CompileFragmentProgramAsset(const char *filename){
-	decMemoryFile *memoryFileSource = NULL;
+	decMemoryFile::Ref memoryFileSource = NULL;
 	
 	try{
-		memoryFileSource = new decMemoryFile("source");
+		memoryFileSource.TakeOver(new decMemoryFile("source"));
 		pDisplay.GetLauncher().LoadAsset(filename, *memoryFileSource);
 		
 		decString source;
@@ -190,13 +184,7 @@ void dealShader::CompileFragmentProgramAsset(const char *filename){
 		memcpy((char*)source.GetString(), memoryFileSource->GetPointer(), memoryFileSource->GetLength());
 		
 		CompileFragmentProgram(source);
-		
-		memoryFileSource->FreeReference();
-		
 	}catch(const deException &){
-		if(memoryFileSource){
-			memoryFileSource->FreeReference();
-		}
 		throw;
 	}
 }

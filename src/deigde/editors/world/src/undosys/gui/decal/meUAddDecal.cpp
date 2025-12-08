@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUAddDecal::meUAddDecal(meWorld *world, meDecal *decal){
+meUAddDecal::meUAddDecal(meWorld::Ref world, meDecal::Ref decal){
 	if(!world || !decal) DETHROW(deeInvalidParam);
 	
 	pWorld = NULL;
@@ -51,10 +51,7 @@ meUAddDecal::meUAddDecal(meWorld *world, meDecal *decal){
 	SetLongInfo("");
 	
 	pDecal = decal;
-	decal->AddReference();
-	
 	pWorld = world;
-	world->AddReference();
 }
 
 meUAddDecal::~meUAddDecal(){

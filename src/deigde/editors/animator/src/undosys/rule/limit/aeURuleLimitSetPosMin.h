@@ -39,7 +39,7 @@ class aeRuleLimit;
  */
 class aeURuleLimitSetPosMin : public igdeUndo{
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	decVector pOldMin;
 	decVector pNewMin;

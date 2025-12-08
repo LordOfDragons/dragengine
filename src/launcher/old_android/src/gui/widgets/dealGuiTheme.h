@@ -40,35 +40,35 @@ class dealGuiTheme : public deObject{
 private:
 	decColor pWidgetBackgroundColor;
 	decColor pWidgetTextColor;
-	dealFont *pWidgetTextFont;
+	dealFont::Ref pWidgetTextFont;
 	int pWidgetTextFontSize;
 	
 	decColor pButtonBackgroundColor;
 	decColor pButtonTextColor;
-	dealImage *pButtonBackgroundImage;
+	dealImage::Ref pButtonBackgroundImage;
 	int pButtonBackgroundImageBorder[4];
 	float pButtonBackgroundImageScale;
 	decColor pButtonBackgroundImageColorize;
 	
 	decColor pButtonPressedBackgroundColor;
 	decColor pButtonPressedTextColor;
-	dealImage *pButtonPressedBackgroundImage;
+	dealImage::Ref pButtonPressedBackgroundImage;
 	int pButtonPressedBackgroundImageBorder[4];
 	float pButtonPressedBackgroundImageScale;
 	decColor pButtonPressedBackgroundImageColorize;
 	
 	decColor pCheckBoxBackgroundColor;
 	decColor pCheckBoxTextColor;
-	dealImage *pCheckBoxImageUnchecked;
-	dealImage *pCheckBoxImageChecked;
+	dealImage::Ref pCheckBoxImageUnchecked;
+	dealImage::Ref pCheckBoxImageChecked;
 	float pCheckBoxImageScale;
 	decColor pCheckBoxImageUncheckedColorize;
 	decColor pCheckBoxImageCheckedColorize;
 	
 	decColor pOptionBoxBackgroundColor;
 	decColor pOptionBoxTextColor;
-	dealImage *pOptionBoxImageDeselected;
-	dealImage *pOptionBoxImageSelected;
+	dealImage::Ref pOptionBoxImageDeselected;
+	dealImage::Ref pOptionBoxImageSelected;
 	float pOptionBoxImageScale;
 	decColor pOptionBoxImageDeselectedColorize;
 	decColor pOptionBoxImageSelectedColorize;
@@ -110,7 +110,7 @@ public:
 	inline dealFont *GetWidgetTextFont() const{ return pWidgetTextFont; }
 	
 	/** \brief Set widget text font. */
-	void SetWidgetTextFont(dealFont *font);
+	void SetWidgetTextFont(dealFont::Ref font);
 	
 	/** \brief Widget text font size. */
 	inline int GetWidgetTextFontSize() const{ return pWidgetTextFontSize; }
@@ -136,7 +136,7 @@ public:
 	inline dealImage *GetButtonBackgroundImage() const{ return pButtonBackgroundImage; }
 	
 	/** \brief Set button background image or \em NULL if not used. */
-	void SetButtonBackgroundImage(dealImage *image);
+	void SetButtonBackgroundImage(dealImage::Ref image);
 	
 	/** \brief Button background image border. */
 	int GetButtonBackgroundImageBorder(int border) const;
@@ -174,7 +174,7 @@ public:
 	inline dealImage *GetButtonPressedBackgroundImage() const{ return pButtonPressedBackgroundImage; }
 	
 	/** \brief Set pressed button background image or \em NULL if not used. */
-	void SetButtonPressedBackgroundImage(dealImage *image);
+	void SetButtonPressedBackgroundImage(dealImage::Ref image);
 	
 	/** \brief Pressed button background image border. */
 	int GetButtonPressedBackgroundImageBorder(int border) const;
@@ -212,13 +212,13 @@ public:
 	inline dealImage *GetCheckBoxImageUnchecked() const{ return pCheckBoxImageUnchecked; }
 	
 	/** \brief Set check box image unchecked. */
-	void SetCheckBoxImageUnchecked(dealImage *image);
+	void SetCheckBoxImageUnchecked(dealImage::Ref image);
 	
 	/** \brief Check box image checked. */
 	inline dealImage *GetCheckBoxImageChecked() const{ return pCheckBoxImageChecked; }
 	
 	/** \brief Set check box image checked. */
-	void SetCheckBoxImageChecked(dealImage *image);
+	void SetCheckBoxImageChecked(dealImage::Ref image);
 	
 	/** \brief Check box image scale. */
 	inline float GetCheckBoxImageScale() const{ return pCheckBoxImageScale; }
@@ -256,13 +256,13 @@ public:
 	inline dealImage *GetOptionBoxImageDeselected() const{ return pOptionBoxImageDeselected; }
 	
 	/** \brief Set option box image deselected. */
-	void SetOptionBoxImageDeselected(dealImage *image);
+	void SetOptionBoxImageDeselected(dealImage::Ref image);
 	
 	/** \brief Option box image selected. */
 	inline dealImage *GetOptionBoxImageSelected() const{ return pOptionBoxImageSelected; }
 	
 	/** \brief Set option box image selected. */
-	void SetOptionBoxImageSelected(dealImage *image);
+	void SetOptionBoxImageSelected(dealImage::Ref image);
 	
 	/** \brief Option box image scale. */
 	inline float GetOptionBoxImageScale() const{ return pOptionBoxImageScale; }

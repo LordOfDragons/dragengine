@@ -214,31 +214,15 @@ void dealGame::SetCanRun(bool canRun){
 
 
 
-void dealGame::SetGlobalProfile(dealGameProfile *profile){
+void dealGame::SetGlobalProfile(dealGameProfile::Ref profile){
 	if(profile != pGlobalProfile){
-		if(pGlobalProfile){
-			pGlobalProfile->FreeReference();
-		}
-		
 		pGlobalProfile = profile;
-		
-		if(profile){
-			profile->AddReference();
-		}
 	}
 }
 
-void dealGame::SetGameProfile(dealGameProfile *profile){
+void dealGame::SetGameProfile(dealGameProfile::Ref profile){
 	if(profile != pGameProfile){
-		if(pGameProfile){
-			pGameProfile->FreeReference();
-		}
-		
 		pGameProfile = profile;
-		
-		if(profile){
-			profile->AddReference();
-		}
 	}
 }
 
@@ -256,7 +240,7 @@ void dealGame::LoadConfig(){
 	dealGameConfigXML configXML(&pLauncher.GetLogger(), LOGSOURCE, pLauncher.GetGameManager());
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
-	decBaseFileReader *reader = NULL;
+	decBaseFileReader::Ref reader = NULL;
 	decPath pathFile;
 	
 	pathFile.SetFromUnix("/config/user/games");
@@ -271,12 +255,7 @@ void dealGame::LoadConfig(){
 			try{
 				reader = vfs.OpenFileForReading(pathFile);
 				configXML.ReadFromFile(*reader, *this);
-				reader->FreeReference();
-				
 			}catch(const deException &){
-				if(reader){
-					reader->FreeReference();
-				}
 				throw;
 			}
 			
@@ -294,7 +273,7 @@ void dealGame::SaveConfig(){
 	dealGameConfigXML configXML(&pLauncher.GetLogger(), LOGSOURCE, pLauncher.GetGameManager());
 	deVirtualFileSystem &vfs = *pLauncher.GetFileSystem();
 	deLogger &logger = pLauncher.GetLogger();
-	decBaseFileWriter *writer = NULL;
+	decBaseFileWriter::Ref writer = NULL;
 	decPath pathFile;
 	
 	pathFile.SetFromUnix("/config/user/games");
@@ -307,12 +286,7 @@ void dealGame::SaveConfig(){
 		try{
 			writer = vfs.OpenFileForWriting(pathFile);
 			configXML.WriteToFile(*writer, *this);
-			writer->FreeReference();
-			
 		}catch(const deException &){
-			if(writer){
-				writer->FreeReference();
-			}
 			logger.LogError(LOGSOURCE, "Failed to write game configuration file (file permission problem)");
 			// DIALOG BOX
 			// "Game configuration can not be written!\n"

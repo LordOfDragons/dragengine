@@ -99,9 +99,9 @@ private:
 	
 	seMapped::Ref pMappedComponents[4];
 	
-	sePropertyNodeGroup *pNodeGroup;
+	sePropertyNodeGroup::Ref pNodeGroup;
 	deSkinPropertyNodeGroup *pEngNodeGroup;
-	sePropertyNodeGroup *pActiveNodeGroup;
+	sePropertyNodeGroup::Ref pActiveNodeGroup;
 	sePropertyNodeSelection pNodeSelection;
 	int pActiveNodeLayer;
 	decColor pNodeColor;
@@ -232,7 +232,7 @@ public:
 	inline sePropertyNodeGroup *GetNodeGroup() const{ return pNodeGroup; }
 	
 	/** \brief Set node group. */
-	void SetNodeGroup(sePropertyNodeGroup *nodeGroup);
+	void SetNodeGroup(sePropertyNodeGroup::Ref nodeGroup);
 	
 	/** \brief Engine node group or \em NULL if not set. */
 	inline deSkinPropertyNodeGroup *GetEngineNodeGroup() const{ return pEngNodeGroup; }
@@ -248,7 +248,7 @@ public:
 	inline sePropertyNodeGroup *GetActiveNodeGroup() const{ return pActiveNodeGroup; }
 	
 	/** \brief Set active node group or \em NULL. */
-	void SetActiveNodeGroup(sePropertyNodeGroup *node);
+	void SetActiveNodeGroup(sePropertyNodeGroup::Ref node);
 	
 	/** \brief Active node layer or \em NULL. */
 	inline int GetActiveNodeLayer() const{ return pActiveNodeLayer; }

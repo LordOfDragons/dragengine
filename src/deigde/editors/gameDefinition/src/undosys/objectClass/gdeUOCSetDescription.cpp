@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSetDescription::gdeUOCSetDescription(gdeObjectClass *objectClass, const char *newValue) :
+gdeUOCSetDescription::gdeUOCSetDescription(gdeObjectClass::Ref objectClass, const char *newValue) :
 pObjectClass(NULL)
 {
 	if(!objectClass){
@@ -52,13 +52,9 @@ pObjectClass(NULL)
 	pNewValue = newValue;
 	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSetDescription::~gdeUOCSetDescription(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

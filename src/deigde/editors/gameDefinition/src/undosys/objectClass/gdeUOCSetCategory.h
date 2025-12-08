@@ -37,7 +37,7 @@ class gdeObjectClass;
  */
 class gdeUOCSetCategory : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSetCategory(gdeObjectClass *objectClass, const char *newValue);
+	gdeUOCSetCategory(gdeObjectClass::Ref objectClass, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

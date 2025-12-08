@@ -106,7 +106,7 @@ public:
 	/** \brief Loads a game project. */
 	igdeGameProject *LoadGameProject(const char *filename);
 	/** \brief Saves a game project. */
-	void SaveGameProject(igdeGameProject *project, const char *filename);
+	void SaveGameProject(igdeGameProject::Ref project, const char *filename);
 	
 	/** \brief Update pattern lists. */
 	void UpdatePatternLists();

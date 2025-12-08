@@ -40,7 +40,7 @@
 ////////////////////////////
 
 gdeUParticleEmitterSetDescription::gdeUParticleEmitterSetDescription(
-gdeParticleEmitter *particleEmitter, const char *newValue) :
+gdeParticleEmitter::Ref particleEmitter, const char *newValue) :
 pParticleEmitter(NULL)
 {
 	if(!particleEmitter){
@@ -53,13 +53,9 @@ pParticleEmitter(NULL)
 	pNewValue = newValue;
 	
 	pParticleEmitter = particleEmitter;
-	particleEmitter->AddReference();
 }
 
 gdeUParticleEmitterSetDescription::~gdeUParticleEmitterSetDescription(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
 }
 
 

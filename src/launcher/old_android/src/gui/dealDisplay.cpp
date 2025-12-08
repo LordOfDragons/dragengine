@@ -64,16 +64,7 @@ pWidth(0),
 pHeight(0),
 
 pVBOShapes(0),
-
-pDefaultGuiTheme(NULL),
-pFontDefault(NULL),
-pFontSizeDefault(0),
-pShaderShape(NULL),
-pShaderShapeTex(NULL),
-
-pContent(NULL),
-pDialog(NULL),
-pCaptureWidget(NULL){
+pFontSizeDefault(0){
 }
 
 dealDisplay::~dealDisplay(){
@@ -224,7 +215,7 @@ void dealDisplay::Init(){
 	
 	// create content widget
 	if(!pContent){
-		pContent = new dealWidgetLayout(*this);
+		pContent.TakeOver(new dealWidgetLayout(*this));
 		pContent->SetSize(decPoint(pWidth, pHeight));
 		pContent->SetBackgroundColor(decColor());
 	}
@@ -251,7 +242,7 @@ void dealDisplay::ConfigChanged(){
 
 
 
-void dealDisplay::SetDialog(dealDialog *dialog){
+void dealDisplay::SetDialog(dealDialog::Ref dialog){
 	if(pDialog == dialog){
 		return;
 	}
@@ -260,32 +251,21 @@ void dealDisplay::SetDialog(dealDialog *dialog){
 	
 	if(pDialog){
 		pDialog->OnDeactivate();
-		pDialog->FreeReference();
 	}
 	
 	pDialog = dialog;
 	
 	if(dialog){
-		dialog->AddReference();
 		dialog->GetContent()->SetSize(decPoint(pWidth, pHeight));
 		dialog->OnActivate();
 	}
 }
 
-void dealDisplay::SetCaptureWidget(dealWidget *widget){
+void dealDisplay::SetCaptureWidget(dealWidget::Ref widget){
 	if(widget == pCaptureWidget){
 		return;
 	}
-	
-	if(pCaptureWidget){
-		pCaptureWidget->FreeReference();
-	}
-	
 	pCaptureWidget = widget;
-	
-	if(widget){
-		widget->AddReference();
-	}
 }
 
 
@@ -322,7 +302,7 @@ void dealDisplay::Paint(){
 	
 	ActivateVBOShapes();
 	
-	dealWidget *widget = pContent;
+	dealWidget::Ref widget = pContent;
 	if(pDialog){
 		widget = pDialog->GetContent();
 	}
@@ -377,26 +357,7 @@ void dealDisplay::pCleanUp(){
 	
 	if(pDialog){
 		pDialog->OnDeactivate();
-		pDialog->FreeReference();
 	}
-	if(pContent){
-		pContent->FreeReference();
-	}
-	
-	if(pFontDefault){
-		pFontDefault->FreeReference();
-	}
-	if(pDefaultGuiTheme){
-		pDefaultGuiTheme->FreeReference();
-	}
-	
-	if(pShaderShapeTex){
-		pShaderShapeTex->FreeReference();
-	}
-	if(pShaderShape){
-		pShaderShape->FreeReference();
-	}
-	
 	if(pVBOShapes){
 		glDeleteBuffers(1, &pVBOShapes);
 	}
@@ -415,12 +376,12 @@ void dealDisplay::pCleanUp(){
 }
 
 void dealDisplay::pLoadDefaultAssets(){
-	pFontDefault = new dealFont(*this, "fonts/nimbus_sans_30.xml");
-	//pFontDefault = new dealFont( *this, "fonts/nimbus_sans_30_bold.xml" );
-	//pFontDefault = new dealFont( *this, "fonts/nimbus_sans_30_border.xml" );
+	pFontDefault.TakeOver(new dealFont(*this, "fonts/nimbus_sans_30.xml"));
+	//pFontDefault.TakeOver(new dealFont( *this, "fonts/nimbus_sans_30_bold.xml" ));
+	//pFontDefault.TakeOver(new dealFont( *this, "fonts/nimbus_sans_30_border.xml" ));
 	pFontSizeDefault = (int)((float)decMath::min(pWidth, pHeight) / 15.0f);
 	
-	pDefaultGuiTheme = new dealGuiTheme(*this);
+	pDefaultGuiTheme.TakeOver(new dealGuiTheme(*this));
 }
 
 void dealDisplay::pCreateShapesVBO(){
@@ -468,7 +429,7 @@ void dealDisplay::pCreateShapesVBO(){
 }
 
 void dealDisplay::pCreateShapeShader(){
-	pShaderShape = new dealShader(*this);
+	pShaderShape.TakeOver(new dealShader(*this));
 	pShaderShape->CompileVertexProgramAsset("shaders/shape/vertex.glsl");
 	pShaderShape->CompileFragmentProgramAsset("shaders/shape/fragment.glsl");
 	pShaderShape->BindAttributeLocation("inPosition", 0);
@@ -484,7 +445,7 @@ void dealDisplay::pCreateShapeShader(){
 }
 
 void dealDisplay::pCreateShapeTexShader(){
-	pShaderShapeTex = new dealShader(*this);
+	pShaderShapeTex.TakeOver(new dealShader(*this));
 	pShaderShapeTex->CompileVertexProgramAsset("shaders/shapetex/vertex.glsl");
 	pShaderShapeTex->CompileFragmentProgramAsset("shaders/shapetex/fragment.glsl");
 	pShaderShapeTex->BindAttributeLocation("inPosition", 0);

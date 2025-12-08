@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavBlockerSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavBlockerSetRotation(gdeObjectClass *objectClass,
-		gdeOCNavigationBlocker *navblocker, const decVector &newValue);
+	gdeUOCNavBlockerSetRotation(gdeObjectClass::Ref objectClass,
+		gdeOCNavigationBlocker::Ref navblocker, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -52,12 +52,9 @@
 
 ceWPTTIMAPlayerChoiceOption::ceWPTTIMAPlayerChoiceOption(ceWindowMain &windowMain,
 ceConversation &conversation, ceCAPlayerChoice &playerChoice,
-ceCAPlayerChoiceOption *option, int index) :
+ceCAPlayerChoiceOption::Ref option, int index) :
 ceWPTTreeItemModel(windowMain, conversation, etActionPlayerChoiceOption),
-pOption(NULL),
-pIndex(index),
-pCondition(NULL),
-pActions(NULL)
+pIndex(index)
 {
 	if(!option){
 		DETHROW(deeInvalidParam);
@@ -66,21 +63,15 @@ pActions(NULL)
 	SetIcon(windowMain.GetIconActionOption());
 	
 	try{
-		pCondition = new ceWPTTIMAPlayerChoiceOptionCondition(
-			windowMain, conversation, playerChoice, option);
+		pCondition.TakeOver(new ceWPTTIMAPlayerChoiceOptionCondition(
+			windowMain, conversation, playerChoice, option));
 		AddChild(pCondition);
 		
-		pActions = new ceWPTTIMAPlayerChoiceOptionActions(
-			windowMain, conversation, option->GetActions());
+		pActions.TakeOver(new ceWPTTIMAPlayerChoiceOptionActions(
+			windowMain, conversation, option->GetActions()));
 		AddChild(pActions);
 		
 	}catch(const deException &){
-		if(pCondition){
-			pCondition->FreeReference();
-		}
-		if(pActions){
-			pActions->FreeReference();
-		}
 		throw;
 	}
 	
@@ -88,15 +79,10 @@ pActions(NULL)
 	pActions->FreeReference(); // held by super-class child list
 	
 	pOption = option;
-	option->AddReference();
-	
 	pUpdateText();
 }
 
 ceWPTTIMAPlayerChoiceOption::~ceWPTTIMAPlayerChoiceOption(){
-	if(pOption){
-		pOption->FreeReference();
-	}
 }
 
 

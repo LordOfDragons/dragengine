@@ -39,9 +39,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetCollisionResponse::peeUTypeSetCollisionResponse(peeType *type,
+peeUTypeSetCollisionResponse::peeUTypeSetCollisionResponse(peeType::Ref type,
 deParticleEmitterType::eCollisionResponses newResponse) :
-pType(NULL),
+
 pNewResponse(newResponse)
 {
 	if(!type){
@@ -53,13 +53,9 @@ pNewResponse(newResponse)
 	pOldResponse = type->GetCollisionResponse();
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetCollisionResponse::~peeUTypeSetCollisionResponse(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

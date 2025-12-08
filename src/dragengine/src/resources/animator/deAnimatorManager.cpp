@@ -67,19 +67,16 @@ deAnimator *deAnimatorManager::GetRootAnimator() const{
 }
 
 deAnimator *deAnimatorManager::CreateAnimator(){
-	deAnimator *animator = NULL;
+	deAnimator::Ref animator = NULL;
 	// load skin
 	try{
 		// create and add animator
-		animator = new deAnimator(this);
+		animator.TakeOver(new deAnimator(this));
 		if(!animator) DETHROW(deeOutOfMemory);
 		GetAnimatorSystem()->LoadAnimator(animator);
 		// add animator
 		pAnimators.Add(animator);
 	}catch(const deException &){
-		if(animator){
-			animator->FreeReference();
-		}
 		throw;
 	}
 	// finished
@@ -103,7 +100,7 @@ void deAnimatorManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deAnimatorManager::SystemAnimatorLoad(){
-	deAnimator *animator = (deAnimator*)pAnimators.GetRoot();
+	deAnimator::Ref animator = (deAnimator*)pAnimators.GetRoot();
 	deAnimatorSystem &aniSys = *GetAnimatorSystem();
 	
 	while(animator){
@@ -116,7 +113,7 @@ void deAnimatorManager::SystemAnimatorLoad(){
 }
 
 void deAnimatorManager::SystemAnimatorUnload(){
-	deAnimator *animator = (deAnimator*)pAnimators.GetRoot();
+	deAnimator::Ref animator = (deAnimator*)pAnimators.GetRoot();
 	
 	while(animator){
 		animator->SetPeerAnimator(NULL);

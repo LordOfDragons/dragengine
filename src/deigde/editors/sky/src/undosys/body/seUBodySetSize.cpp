@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodySetSize::seUBodySetSize(seBody *body, const decVector2 &newSize) :
-pBody(NULL),
+seUBodySetSize::seUBodySetSize(seBody::Ref body, const decVector2 &newSize) :
+
 pNewSize(newSize)
 {
 	if(!body){
@@ -52,13 +52,9 @@ pNewSize(newSize)
 	pOldSize = body->GetSize();
 	
 	pBody = body;
-	body->AddReference();
 }
 
 seUBodySetSize::~seUBodySetSize(){
-	if(pBody){
-		pBody->FreeReference();
-	}
 }
 
 

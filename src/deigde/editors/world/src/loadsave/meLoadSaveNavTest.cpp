@@ -221,11 +221,11 @@ void meLoadSaveNavTest::pReadNavTest(const decXmlElementTag &root, meWorld &worl
 
 void meLoadSaveNavTest::pReadNavTestType(const decXmlElementTag &root, meWorld &world){
 	const int elementCount = root.GetElementCount();
-	mePathFindTestType *type = NULL;
+	mePathFindTestType::Ref type = NULL;
 	int e;
 	
 	try{
-		type = new mePathFindTestType(0);
+		type.TakeOver(new mePathFindTestType(0));
 		
 		for(e=0; e<elementCount; e++){
 			const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -250,14 +250,9 @@ void meLoadSaveNavTest::pReadNavTestType(const decXmlElementTag &root, meWorld &
 		}
 		
 		world.GetPathFindTest()->GetTypeList().Add(type);
-		type->FreeReference();
-		
 		world.GetPathFindTest()->NotifyTypesChanged();
 		
 	}catch(const deException &){
-		if(type){
-			type->FreeReference();
-		}
 		throw;
 	}
 }

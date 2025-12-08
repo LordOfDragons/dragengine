@@ -254,11 +254,11 @@ void aeRuleForeignState::RemoveLinksFromAllTargets(){
 
 
 deAnimatorRule *aeRuleForeignState::CreateEngineRule(){
-	deAnimatorRuleForeignState *engRule = NULL;
+	deAnimatorRuleForeignState::Ref engRule = NULL;
 	
 	try{
 		// create rule
-		engRule = new deAnimatorRuleForeignState;
+		engRule.TakeOver(new deAnimatorRuleForeignState);
 		if(!engRule) DETHROW(deeOutOfMemory);
 		
 		// init rule
@@ -283,9 +283,6 @@ deAnimatorRule *aeRuleForeignState::CreateEngineRule(){
 		pTargetVertexPositionSet.UpdateEngineTarget(GetAnimator(), engRule->GetTargetVertexPositionSet());
 		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 	

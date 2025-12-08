@@ -43,8 +43,8 @@ class aeAnimator;
  */
 class aeUMoveRuleDown : public igdeUndo{
 private:
-	aeAnimator *pAnimator;
-	aeRule *pRule;
+	aeAnimator::Ref pAnimator;
+	aeRule::Ref pRule;
 	int pIndex;
 	
 public:
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	aeUMoveRuleDown(aeAnimator *animator, aeRule *rule);
+	aeUMoveRuleDown(aeAnimator::Ref animator, aeRule::Ref rule);
 protected:
 	/** Clean up undo. */
 	virtual ~aeUMoveRuleDown();

@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUndoDataObjectTexture::meUndoDataObjectTexture(meObject *object){
+meUndoDataObjectTexture::meUndoDataObjectTexture(meObject::Ref object){
 	if(!object){
 		DETHROW(deeInvalidParam);
 	}
@@ -49,21 +49,11 @@ meUndoDataObjectTexture::meUndoDataObjectTexture(meObject *object){
 	pNewTexture = NULL;
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUndoDataObjectTexture::~meUndoDataObjectTexture(){
 	pNewTextureList.RemoveAllTextures();
 	pOldTextureList.RemoveAllTextures();
-	if(pNewTexture){
-		pNewTexture->FreeReference();
-	}
-	if(pOldTexture){
-		pOldTexture->FreeReference();
-	}
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 
@@ -71,26 +61,14 @@ meUndoDataObjectTexture::~meUndoDataObjectTexture(){
 // Management
 ///////////////
 
-void meUndoDataObjectTexture::SetOldTexture(meObjectTexture *texture){
+void meUndoDataObjectTexture::SetOldTexture(meObjectTexture::Ref texture){
 	if(texture != pOldTexture){
-		if(pOldTexture){
-			pOldTexture->FreeReference();
-		}
 		pOldTexture = texture;
-		if(texture){
-			texture->AddReference();
-		}
 	}
 }
 
-void meUndoDataObjectTexture::SetNewTexture(meObjectTexture *texture){
+void meUndoDataObjectTexture::SetNewTexture(meObjectTexture::Ref texture){
 	if(texture != pNewTexture){
-		if(pNewTexture){
-			pNewTexture->FreeReference();
-		}
 		pNewTexture = texture;
-		if(texture){
-			texture->AddReference();
-		}
 	}
 }

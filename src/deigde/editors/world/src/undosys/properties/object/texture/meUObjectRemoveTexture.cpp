@@ -41,10 +41,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectRemoveTexture::meUObjectRemoveTexture(meObjectTexture *texture){
+meUObjectRemoveTexture::meUObjectRemoveTexture(meObjectTexture::Ref texture){
 	if(!texture) DETHROW(deeInvalidParam);
 	
-	meObject *object = texture->GetObject();
+	meObject::Ref object = texture->GetObject();
 	if(!object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
@@ -53,10 +53,7 @@ meUObjectRemoveTexture::meUObjectRemoveTexture(meObjectTexture *texture){
 	SetShortInfo("Remove Object Texture");
 	
 	pObject = object;
-	object->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjectRemoveTexture::~meUObjectRemoveTexture(){

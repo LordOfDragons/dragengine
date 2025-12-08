@@ -57,8 +57,8 @@
 /////////////////////
 
 struct sARStaMNatDat{
-	deAnimator *animator;
-	deAnimatorRuleStateManipulator *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleStateManipulator::Ref rule;
 };
 
 
@@ -82,7 +82,7 @@ void deClassARStateManipulator::nfNew::RunFunction(dsRunTime *rt, dsValue *mysel
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleStateManipulator;
+	nd.rule.TakeOver(new deAnimatorRuleStateManipulator);
 	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
@@ -487,7 +487,7 @@ deAnimatorRuleStateManipulator *deClassARStateManipulator::GetRule(dsRealObject 
 	return ((sARStaMNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARStateManipulator::AssignAnimator(dsRealObject *myself, deAnimator *animator){
+void deClassARStateManipulator::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -505,13 +505,9 @@ void deClassARStateManipulator::AssignAnimator(dsRealObject *myself, deAnimator 
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
-void deClassARStateManipulator::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleStateManipulator *rule){
+void deClassARStateManipulator::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleStateManipulator::Ref rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -531,13 +527,7 @@ void deClassARStateManipulator::PushRule(dsRunTime *rt, deAnimator *animator, de
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
 		nd.rule = rule;
-		rule->AddReference();
-		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);
 		

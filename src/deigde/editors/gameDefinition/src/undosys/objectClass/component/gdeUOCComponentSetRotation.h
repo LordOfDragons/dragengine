@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCComponentSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentSetRotation(gdeObjectClass *objectClass,
-		gdeOCComponent *component, const decVector &newValue);
+	gdeUOCComponentSetRotation(gdeObjectClass::Ref objectClass,
+		gdeOCComponent::Ref component, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

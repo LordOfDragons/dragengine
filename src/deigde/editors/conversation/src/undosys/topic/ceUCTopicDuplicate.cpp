@@ -40,9 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCTopicDuplicate::ceUCTopicDuplicate(ceConversationFile *file, const ceConversationTopic &topic, const char *newID) :
-pFile(NULL),
-pTopic(NULL)
+ceUCTopicDuplicate::ceUCTopicDuplicate(ceConversationFile::Ref file, const ceConversationTopic &topic, const char *newID) :
+pFile(NULL)
 {
 	if(!file){
 		DETHROW(deeInvalidParam);
@@ -51,27 +50,17 @@ pTopic(NULL)
 	SetShortInfo("Duplicate topic");
 	
 	try{
-		pTopic = new ceConversationTopic(topic);
+		pTopic.TakeOver(new ceConversationTopic(topic));
 		pTopic->SetID(newID);
 		
 	}catch(const deException &){
-		if(pTopic){
-			pTopic->FreeReference();
-		}
 		throw;
 	}
 	
 	pFile = file;
-	file->AddReference();
 }
 
 ceUCTopicDuplicate::~ceUCTopicDuplicate(){
-	if(pTopic){
-		pTopic->FreeReference();
-	}
-	if(pFile){
-		pFile->FreeReference();
-	}
 }
 
 

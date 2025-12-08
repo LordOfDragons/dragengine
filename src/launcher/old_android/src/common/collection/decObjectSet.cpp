@@ -68,7 +68,7 @@ decObjectSet::decObjectSet(const decObjectSet &set){
 	pObjectSize = 0;
 	
 	if(count > 0){
-		deObject *object;
+		deObject::Ref object;
 		
 		pObjects = new deObject*[count];
 		pObjectSize = count;
@@ -76,9 +76,6 @@ decObjectSet::decObjectSet(const decObjectSet &set){
 		for(pObjectCount=0; pObjectCount<count; pObjectCount++){
 			object = set.pObjects[pObjectCount];
 			pObjects[pObjectCount] = object;
-			if(object){
-				object->AddReference();
-			}
 		}
 	}
 }
@@ -104,7 +101,7 @@ deObject *decObjectSet::GetAt(int index) const{
 	return pObjects[index];
 }
 
-bool decObjectSet::Has(deObject *object) const{
+bool decObjectSet::Has(deObject::Ref object) const{
 	int p;
 	
 	for(p=0; p<pObjectCount; p++){
@@ -116,7 +113,7 @@ bool decObjectSet::Has(deObject *object) const{
 	return false;
 }
 
-void decObjectSet::Add(deObject *object){
+void decObjectSet::Add(deObject::Ref object){
 	if(Has(object)){
 		DETHROW(deeInvalidParam);
 	}
@@ -133,13 +130,10 @@ void decObjectSet::Add(deObject *object){
 	}
 	
 	pObjects[pObjectCount] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
-void decObjectSet::AddIfAbsent(deObject *object){
+void decObjectSet::AddIfAbsent(deObject::Ref object){
 	if(Has(object)){
 		return;
 	}
@@ -156,13 +150,10 @@ void decObjectSet::AddIfAbsent(deObject *object){
 	}
 	
 	pObjects[pObjectCount] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
-void decObjectSet::Remove(deObject *object){
+void decObjectSet::Remove(deObject::Ref object){
 	int p, position = pIndexOf(object);
 	
 	if(position == -1){
@@ -178,7 +169,7 @@ void decObjectSet::Remove(deObject *object){
 	pObjectCount--;
 }
 
-void decObjectSet::RemoveIfPresent(deObject *object){
+void decObjectSet::RemoveIfPresent(deObject::Ref object){
 	int p, position = pIndexOf(object);
 	
 	if(position == -1){
@@ -232,15 +223,12 @@ bool decObjectSet::operator==(const decObjectSet &set) const{
 
 decObjectSet decObjectSet::operator+(const decObjectSet &set) const{
 	decObjectSet nset(pObjectCount + set.pObjectCount);
-	deObject *object;
+	deObject::Ref object;
 	int i;
 	
 	for(i=0; i<pObjectCount; i++){
 		object = pObjects[i];
 		nset.pObjects[i] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	for(i=0; i<set.pObjectCount; i++){
@@ -257,7 +245,7 @@ deObject *decObjectSet::operator[](int position) const{
 
 
 decObjectSet &decObjectSet::operator=(const decObjectSet &set){
-	deObject *object;
+	deObject::Ref object;
 	
 	RemoveAll();
 	
@@ -273,9 +261,6 @@ decObjectSet &decObjectSet::operator=(const decObjectSet &set){
 	for(pObjectCount=0; pObjectCount<set.pObjectCount; pObjectCount++){
 		object = set.pObjects[pObjectCount];
 		pObjects[pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return *this;
@@ -308,7 +293,7 @@ decObjectSet &decObjectSet::operator+=(const decObjectSet &set){
 // Private Functions
 //////////////////////
 
-int decObjectSet::pIndexOf(deObject *object) const{
+int decObjectSet::pIndexOf(deObject::Ref object) const{
 	int p;
 	
 	for(p=0; p<pObjectCount; p++){

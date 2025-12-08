@@ -36,7 +36,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetTiltFrom : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	float pOldTilt;
 	float pNewTilt;
@@ -48,7 +48,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCShotSetTiltFrom(ceCameraShot *cameraShot, float newTilt);
+	ceUCCShotSetTiltFrom(ceCameraShot::Ref cameraShot, float newTilt);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCShotSetTiltFrom();

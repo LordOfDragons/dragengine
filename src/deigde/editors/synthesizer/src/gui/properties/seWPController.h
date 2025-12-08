@@ -45,9 +45,9 @@ class seWPControllerListener;
 class seWPController : public igdeContainerScroll{
 private:
 	seViewSynthesizer &pViewSynthesizer;
-	seWPControllerListener *pListener;
+	seWPControllerListener::Ref pListener;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	igdeListBox::Ref pListController;
 	igdeTextField::Ref pEditName;
@@ -88,7 +88,7 @@ public:
 	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
-	void SetSynthesizer(seSynthesizer *synthesizer);
+	void SetSynthesizer(seSynthesizer::Ref synthesizer);
 	
 	/** \brief Controller or \em NULL if not set. */
 	seController *GetController() const;

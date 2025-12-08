@@ -74,15 +74,15 @@ public:
 	
 	
 private:
-	deWorld *pEngWorld;
+	deWorld::Ref pEngWorld;
 	
 	igdeWSky *pSky;
 	igdeWObject::Ref pEnvObject;
 	
-	deSkin *pEngSkin;
-	deComponent *pEngComponent;
-	deAnimator *pEngAnimator;
-	deAnimatorInstance *pEngAnimatorInstance;
+	deSkin::Ref pEngSkin;
+	deComponent::Ref pEngComponent;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
 	deAnimatorRuleAnimation *pEngAnimatorAnim;
 	deParticleEmitter *pEngParticleEmitter;
 	deLight::Ref pEngLight;
@@ -99,10 +99,10 @@ private:
 	igdeCamera *pCamera;
 	
 	seMappedList pMappedList;
-	seMapped *pActiveMapped;
+	seMapped::Ref pActiveMapped;
 	
 	seTextureList pTextureList;
-	seTexture *pActiveTexture;
+	seTexture::Ref pActiveTexture;
 	
 	seDynamicSkin *pDynamicSkin;
 	
@@ -222,10 +222,10 @@ public:
 	inline const seMappedList &GetMappedList() const{ return pMappedList; }
 	
 	/** Add mapped. */
-	void AddMapped(seMapped *mapped);
+	void AddMapped(seMapped::Ref mapped);
 	
 	/** Remove mapped. */
-	void RemoveMapped(seMapped *mapped);
+	void RemoveMapped(seMapped::Ref mapped);
 	
 	/** Remove all mappeds. */
 	void RemoveAllMapped();
@@ -237,7 +237,7 @@ public:
 	bool HasActiveMapped() const;
 	
 	/** Set active mapped or nullptr. */
-	void SetActiveMapped(seMapped *mapped);
+	void SetActiveMapped(seMapped::Ref mapped);
 	/*@}*/
 	
 	
@@ -247,9 +247,9 @@ public:
 	/** Retrieves the texture list read-only. */
 	inline const seTextureList &GetTextureList() const{ return pTextureList; }
 	/** Adds a new texture. */
-	void AddTexture(seTexture *texture);
+	void AddTexture(seTexture::Ref texture);
 	/** Removes a texture. */
-	void RemoveTexture(seTexture *texture);
+	void RemoveTexture(seTexture::Ref texture);
 	/** Removes all textures. */
 	void RemoveAllTextures();
 	/** Retrieves the active texture or NULL if none is active. */
@@ -257,7 +257,7 @@ public:
 	/** Determines if there is an active texture or not. */
 	bool HasActiveTexture() const;
 	/** Sets the active texture or NULL if none is active. */
-	void SetActiveTexture(seTexture *texture);
+	void SetActiveTexture(seTexture::Ref texture);
 	/*@}*/
 	
 	
@@ -291,10 +291,10 @@ public:
 	void NotifyMappedStructureChanged();
 	
 	/** Notify all mapped changed. */
-	void NotifyMappedChanged(seMapped *mapped);
+	void NotifyMappedChanged(seMapped::Ref mapped);
 	
 	/** Notify all mapped name changed. */
-	void NotifyMappedNameChanged(seMapped *mapped);
+	void NotifyMappedNameChanged(seMapped::Ref mapped);
 	
 	/** Active mapped changed. */
 	void NotifyActiveMappedChanged();
@@ -304,37 +304,37 @@ public:
 	/** Notify all that textures have been added or removed. */
 	void NotifyTextureStructureChanged();
 	/** Notify all that a texture changed. */
-	void NotifyTextureChanged(seTexture *texture);
+	void NotifyTextureChanged(seTexture::Ref texture);
 	/** Notify all that a texture name changed. */
-	void NotifyTextureNameChanged(seTexture *texture);
+	void NotifyTextureNameChanged(seTexture::Ref texture);
 	/** Active texture changed. */
 	void NotifyActiveTextureChanged();
 	
 	
 	/** Notify all that properties have been added or removed. */
-	void NotifyPropertyStructureChanged(seTexture *texture);
+	void NotifyPropertyStructureChanged(seTexture::Ref texture);
 	/** Notify all that a property changed. */
-	void NotifyPropertyChanged(seTexture *texture, seProperty *property);
+	void NotifyPropertyChanged(seTexture::Ref texture, seProperty *property);
 	/** Active property changed. */
-	void NotifyActivePropertyChanged(seTexture *texture);
+	void NotifyActivePropertyChanged(seTexture::Ref texture);
 	
 	/** \brief Property node structre changed. */
-	void NotifyPropertyNodeStructureChanged(seTexture *texture, seProperty *property);
+	void NotifyPropertyNodeStructureChanged(seTexture::Ref texture, seProperty *property);
 	
 	/** \brief Property node changed. */
-	void NotifyPropertyNodeChanged(seTexture *texture, seProperty *property, sePropertyNode *node);
+	void NotifyPropertyNodeChanged(seTexture::Ref texture, seProperty *property, sePropertyNode *node);
 	
 	/** \brief Active property node changed. */
-	void NotifyPropertyActiveNodeChanged(seTexture *texture, seProperty *property);
+	void NotifyPropertyActiveNodeChanged(seTexture::Ref texture, seProperty *property);
 	
 	/** \brief Property node selection changed. */
-	void NotifyPropertyNodeSelectionChanged(seTexture *texture, seProperty *property);
+	void NotifyPropertyNodeSelectionChanged(seTexture::Ref texture, seProperty *property);
 	
 	/** \brief Active property node group changed. */
-	void NotifyPropertyActiveNodeGroupChanged(seTexture *texture, seProperty *property);
+	void NotifyPropertyActiveNodeGroupChanged(seTexture::Ref texture, seProperty *property);
 	
 	/** \brief Active property node layer changed. */
-	void NotifyPropertyActiveNodeLayerChanged(seTexture *texture, seProperty *property);
+	void NotifyPropertyActiveNodeLayerChanged(seTexture::Ref texture, seProperty *property);
 	
 	/** \brief Dynamic skin renderables have been added or removed. */
 	void NotifyDynamicSkinRenderableStructureChanged();

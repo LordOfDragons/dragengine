@@ -65,10 +65,10 @@ deAnimatorInstance *deAnimatorInstanceManager::GetRootAnimatorInstance() const{
 }
 
 deAnimatorInstance *deAnimatorInstanceManager::CreateAnimatorInstance(){
-	deAnimatorInstance *instance = NULL;
+	deAnimatorInstance::Ref instance = NULL;
 	
 	try{
-		instance = new deAnimatorInstance(this);
+		instance.TakeOver(new deAnimatorInstance(this));
 		if(!instance) DETHROW(deeOutOfMemory);
 		
 		GetAnimatorSystem()->LoadAnimatorInstance(instance);
@@ -76,10 +76,6 @@ deAnimatorInstance *deAnimatorInstanceManager::CreateAnimatorInstance(){
 		pInstances.Add(instance);
 		
 	}catch(const deException &){
-		if(instance){
-			instance->FreeReference();
-		}
-		
 		throw;
 	}
 	
@@ -103,7 +99,7 @@ void deAnimatorInstanceManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deAnimatorInstanceManager::SystemAnimatorLoad(){
-	deAnimatorInstance *instance = (deAnimatorInstance*)pInstances.GetRoot();
+	deAnimatorInstance::Ref instance = (deAnimatorInstance*)pInstances.GetRoot();
 	deAnimatorSystem &aniSys = *GetAnimatorSystem();
 	
 	while(instance){
@@ -116,7 +112,7 @@ void deAnimatorInstanceManager::SystemAnimatorLoad(){
 }
 
 void deAnimatorInstanceManager::SystemAnimatorUnload(){
-	deAnimatorInstance *instance = (deAnimatorInstance*)pInstances.GetRoot();
+	deAnimatorInstance::Ref instance = (deAnimatorInstance*)pInstances.GetRoot();
 	
 	while(instance){
 		instance->SetPeerAnimator(NULL);

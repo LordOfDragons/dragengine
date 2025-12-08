@@ -57,8 +57,8 @@
 /////////////////////
 
 struct sARBoneTransNatDat{
-	deAnimator *animator;
-	deAnimatorRuleBoneTransformator *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleBoneTransformator::Ref rule;
 };
 
 
@@ -82,7 +82,7 @@ void deClassARBoneTransformator::nfNew::RunFunction(dsRunTime *rt, dsValue *myse
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleBoneTransformator;
+	nd.rule.TakeOver(new deAnimatorRuleBoneTransformator);
 	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
 }
 
@@ -580,7 +580,7 @@ deAnimatorRuleBoneTransformator *deClassARBoneTransformator::GetRule(dsRealObjec
 	return ((sARBoneTransNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
-void deClassARBoneTransformator::AssignAnimator(dsRealObject *myself, deAnimator *animator){
+void deClassARBoneTransformator::AssignAnimator(dsRealObject *myself, deAnimator::Ref animator){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -598,13 +598,9 @@ void deClassARBoneTransformator::AssignAnimator(dsRealObject *myself, deAnimator
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
-void deClassARBoneTransformator::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleBoneTransformator *rule){
+void deClassARBoneTransformator::PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleBoneTransformator::Ref rule){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -624,13 +620,7 @@ void deClassARBoneTransformator::PushRule(dsRunTime *rt, deAnimator *animator, d
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
 		nd.rule = rule;
-		rule->AddReference();
-		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);
 		

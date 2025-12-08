@@ -41,7 +41,7 @@ class deoglRenderThread;
 class deoglRCaptureCanvas : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
-	deoglRCanvasView *pCanvasView;
+	deoglRCanvasView::Ref pCanvasView;
 	deoglPixelBuffer::Ref pPixelBuffer;
 	bool pCapturePending;
 	int pComponentCount;
@@ -74,7 +74,7 @@ public:
 	inline deoglRCanvasView *GetCanvasView() const{ return pCanvasView; }
 	
 	/** Set canvas view. */
-	void SetCanvasView(deoglRCanvasView *canvasView);
+	void SetCanvasView(deoglRCanvasView::Ref canvasView);
 	
 	/** Pixel buffer or \em NULL if no capture is pending. */
 	inline const deoglPixelBuffer::Ref &GetPixelBuffer() const{ return pPixelBuffer; }

@@ -35,7 +35,7 @@
 // Class deBaseArchiveContainer
 /////////////////////////////////
 
-deBaseArchiveContainer::deBaseArchiveContainer(decBaseFileReader *reader) :
+deBaseArchiveContainer::deBaseArchiveContainer(decBaseFileReader::Ref reader) :
 pReader(NULL)
 {
 	if(!reader){
@@ -43,11 +43,7 @@ pReader(NULL)
 	}
 	
 	pReader = reader;
-	reader->AddReference();
 }
 
 deBaseArchiveContainer::~deBaseArchiveContainer(){
-	if(pReader){
-		pReader->FreeReference();
-	}
 }

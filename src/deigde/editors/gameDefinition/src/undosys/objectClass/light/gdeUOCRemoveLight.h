@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCRemoveLight : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCRemoveLight(gdeObjectClass *objectClass, gdeOCLight *light);
+	gdeUOCRemoveLight(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light);
 	
 protected:
 	/** \brief Clean up undo action. */

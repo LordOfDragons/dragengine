@@ -101,7 +101,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeRule *rule) = 0;
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator, aeRule *rule) = 0;
 	
 	virtual void Update(){
 		aeAnimator * const animator = pPanel.GetAnimator();
@@ -141,7 +141,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut rule into clipboard"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeRule *rule){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator, aeRule *rule){
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
 			aeClipboardDataRule::Ref::NewWith(rule));
 		
@@ -162,7 +162,7 @@ public:
 	cActionPaste(aeWPRule &panel, const char *name, igdeIcon *icon, const char *description, bool insert) :
 		cBaseAction(panel, name, icon, description), pInsert(insert){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeRule *rule){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator, aeRule *rule){
 		aeClipboardDataRule * const cdata = (aeClipboardDataRule*)pPanel.GetWindowProperties()
 			.GetWindowMain().GetClipboard().GetWithTypeName(aeClipboardDataRule::TYPE_NAME);
 		if(!cdata){
@@ -332,8 +332,6 @@ public:
 aeWPRule::aeWPRule(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pAnimator(NULL),
 pPanelAnim(NULL),
 pPanelAnimDiff(NULL),
 pPanelAnimSelect(NULL),
@@ -353,7 +351,7 @@ pActivePanel(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPRuleListener(*this);
+	pListener.TakeOver(new aeWPRuleListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -414,10 +412,6 @@ pActivePanel(NULL)
 
 aeWPRule::~aeWPRule(){
 	SetAnimator(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -425,21 +419,19 @@ aeWPRule::~aeWPRule(){
 // Management
 ///////////////
 
-void aeWPRule::SetAnimator(aeAnimator *animator){
+void aeWPRule::SetAnimator(aeAnimator::Ref animator){
 	if(animator == pAnimator){
 		return;
 	}
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
 	}
 	
 	if(pActivePanel){

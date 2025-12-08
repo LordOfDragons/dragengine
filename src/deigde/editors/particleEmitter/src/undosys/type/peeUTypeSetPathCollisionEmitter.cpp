@@ -39,7 +39,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeSetPathCollisionEmitter::peeUTypeSetPathCollisionEmitter(peeType *type, const char *newPath){
+peeUTypeSetPathCollisionEmitter::peeUTypeSetPathCollisionEmitter(peeType::Ref type, const char *newPath){
 	if(!type || !newPath){
 		DETHROW(deeInvalidParam);
 	}
@@ -52,13 +52,9 @@ peeUTypeSetPathCollisionEmitter::peeUTypeSetPathCollisionEmitter(peeType *type, 
 	pNewPath = newPath;
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeSetPathCollisionEmitter::~peeUTypeSetPathCollisionEmitter(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

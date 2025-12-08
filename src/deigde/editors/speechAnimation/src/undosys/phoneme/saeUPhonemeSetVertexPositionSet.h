@@ -35,7 +35,7 @@ class saePhoneme;
  */
 class saeUPhonemeSetVertexPositionSet : public igdeUndo{
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	decString pOldName;
 	decString pNewName;
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */
-	saeUPhonemeSetVertexPositionSet(saePhoneme *phoneme, const char *newName);
+	saeUPhonemeSetVertexPositionSet(saePhoneme::Ref phoneme, const char *newName);
 	
 protected:
 	/** Clean up undo. */

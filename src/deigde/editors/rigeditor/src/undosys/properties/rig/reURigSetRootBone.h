@@ -37,10 +37,10 @@ class reRigBone;
  */
 class reURigSetRootBone : public igdeUndo{
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
-	reRigBone *pOldBone;
-	reRigBone *pNewBone;
+	reRigBone::Ref pOldBone;
+	reRigBone::Ref pNewBone;
 	
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	reURigSetRootBone(reRig *rig, reRigBone *rootBone);
+	reURigSetRootBone(reRig *rig, reRigBone::Ref rootBone);
 	
 protected:
 	/** \brief Clean up undo. */

@@ -57,7 +57,7 @@ public:
 	// internal functions
 	void CreateClassMembers(dsEngine *engine);
 	deConnection *GetConnection(dsRealObject *myself) const;
-	void PushConnection(dsRunTime *rt, deConnection *connection);
+	void PushConnection(dsRunTime *rt, deConnection::Ref connection);
 	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	inline deScriptingDragonScript *GetScriptModule() const{ return pScrMgr; }
 	

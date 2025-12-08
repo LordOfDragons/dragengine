@@ -65,9 +65,6 @@
 peeType::peeType(deEngine *engine, const char *name) :
 pEmitter(NULL),
 pEngine(engine),
-pEngSkin(NULL),
-pEngCastModel(NULL),
-pEngCastSkin(NULL),
 
 pIndex(-1),
 pName(name),
@@ -77,13 +74,10 @@ pActiveParameter(NULL),
 pCastFrom(deParticleEmitterType::ecfVertex),
 pSimulationType(deParticleEmitterType::estParticle),
 pIntervalAsDistance(false),
-
-pEngTrailEmitter(NULL),
 pActiveTrailController(deParticleEmitterType::eecLifetime),
 
 pPhysicsSize(0.1f),
 pCollisionResponse(deParticleEmitterType::ecrPhysical),
-pEngCollisionEmitter(NULL),
 pEmitMinImpulse(0.01f),
 pActiveEmitController(deParticleEmitterType::eecLifetime),
 
@@ -487,28 +481,11 @@ void peeType::SetActiveParameter(peeParameter *parameter){
 //////////////////////
 
 void peeType::pCleanUp(){
-	if(pEngCollisionEmitter){
-		pEngCollisionEmitter->FreeReference();
-	}
-	if(pEngTrailEmitter){
-		pEngTrailEmitter->FreeReference();
-	}
-	
 	int i;
 	for(i=0; i<=deParticleEmitterType::epBeamEnd; i++){
 		if(pParameters[i]){
 			delete pParameters[i];
 		}
-	}
-	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
-	if(pEngCastModel){
-		pEngCastModel->FreeReference();
-	}
-	if(pEngCastSkin){
-		pEngCastSkin->FreeReference();
 	}
 }
 
@@ -518,7 +495,6 @@ void peeType::pSetParameter(deParticleEmitterType::eParameters index, float valu
 
 void peeType::pLoadSkin(){
 	if(pEngSkin){
-		pEngSkin->FreeReference();
 		pEngSkin = NULL;
 	}
 	
@@ -534,7 +510,6 @@ void peeType::pLoadSkin(){
 		}catch(const deException &){
 			if(pEmitter){
 				pEngSkin = pEmitter->GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
-				pEngSkin->AddReference();
 			}
 		}
 	}
@@ -546,7 +521,6 @@ void peeType::pLoadSkin(){
 
 void peeType::pLoadModel(){
 	if(pEngCastModel){
-		pEngCastModel->FreeReference();
 		pEngCastModel = NULL;
 	}
 	
@@ -569,7 +543,6 @@ void peeType::pLoadModel(){
 
 void peeType::pLoadModelSkin(){
 	if(pEngCastSkin){
-		pEngCastSkin->FreeReference();
 		pEngCastSkin = NULL;
 	}
 	
@@ -585,7 +558,6 @@ void peeType::pLoadModelSkin(){
 		}catch(const deException &){
 			if(pEmitter){
 				pEngCastSkin = pEmitter->GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
-				pEngCastSkin->AddReference();
 			}
 		}
 	}
@@ -593,7 +565,6 @@ void peeType::pLoadModelSkin(){
 
 void peeType::pLoadCollisionEmitter(){
 	if(pEngCollisionEmitter){
-		pEngCollisionEmitter->FreeReference();
 		pEngCollisionEmitter = NULL;
 	}
 	
@@ -611,7 +582,6 @@ void peeType::pLoadCollisionEmitter(){
 			pPathCollisionEmitter, pEmitter->GetDirectoryPath()).GetPathUnix());
 		emitter->RebuildEmitter();
 		pEngCollisionEmitter = emitter->GetEngineEmitter();
-		pEngCollisionEmitter->AddReference();
 		emitter->FreeEmitter();
 		
 	}catch(const deException &e){
@@ -628,7 +598,6 @@ void peeType::pLoadCollisionEmitter(){
 
 void peeType::pLoadTrailEmitter(){
 	if(pEngTrailEmitter){
-		pEngTrailEmitter->FreeReference();
 		pEngTrailEmitter = NULL;
 	}
 	
@@ -646,7 +615,6 @@ void peeType::pLoadTrailEmitter(){
 			pPathTrailEmitter, pEmitter->GetDirectoryPath()).GetPathUnix());
 		emitter->RebuildEmitter();
 		pEngTrailEmitter = emitter->GetEngineEmitter();
-		pEngTrailEmitter->AddReference();
 		emitter->FreeEmitter();
 		
 	}catch(const deException &e){

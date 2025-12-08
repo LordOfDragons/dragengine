@@ -69,7 +69,7 @@ private:
 	bool pMulBySkyColor;
 	
 	seBodyList pBodies;
-	seBody *pActiveBody;
+	seBody::Ref pActiveBody;
 	
 	seControllerTarget pTargets[deSkyLayer::etAmbientIntensity + 1];
 	deSkyLayer::eTargets pActiveTarget;
@@ -211,16 +211,16 @@ public:
 	const seBodyList &GetBodies() const{ return pBodies; }
 	
 	/** \brief Add body. */
-	void AddBody(seBody *body);
+	void AddBody(seBody::Ref body);
 	
 	/** \brief Insert body. */
-	void InsertBodyAt(seBody *body, int index);
+	void InsertBodyAt(seBody::Ref body, int index);
 	
 	/** \brief Move body. */
-	void MoveBodyTo(seBody *body, int index);
+	void MoveBodyTo(seBody::Ref body, int index);
 	
 	/** \brief Removes body. */
-	void RemoveBody(seBody *body);
+	void RemoveBody(seBody::Ref body);
 	
 	/** \brief Remove all bodies. */
 	void RemoveAllBodies();
@@ -229,7 +229,7 @@ public:
 	inline seBody *GetActiveBody() const{ return pActiveBody; }
 	
 	/** \brief Set active body or \em NULL. */
-	void SetActiveBody(seBody *body);
+	void SetActiveBody(seBody::Ref body);
 	/*@}*/
 	
 	

@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetDistanceOffset::gdeUOCSpeakerSetDistanceOffset(gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, float newValue) :
-pObjectClass(NULL),
+gdeUOCSpeakerSetDistanceOffset::gdeUOCSpeakerSetDistanceOffset(gdeObjectClass::Ref objectClass,
+gdeOCSpeaker::Ref speaker, float newValue) :
+
 pSpeaker(NULL)
 {
 	if(!objectClass || !speaker){
@@ -55,19 +55,10 @@ pSpeaker(NULL)
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetDistanceOffset::~gdeUOCSpeakerSetDistanceOffset(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

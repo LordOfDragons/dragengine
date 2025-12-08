@@ -39,14 +39,10 @@
 ////////////////////////////
 
 deResourceLoaderInfo::deResourceLoaderInfo() :
-pResourceType(deResourceLoader::ertImage),
-pResource(NULL){
+pResourceType(deResourceLoader::ertImage){
 }
 
 deResourceLoaderInfo::~deResourceLoaderInfo(){
-	if(pResource){
-		pResource->FreeReference();
-	}
 }
 
 
@@ -62,18 +58,9 @@ void deResourceLoaderInfo::SetResourceType(deResourceLoader::eResourceType resou
 	pResourceType = resourceType;
 }
 
-void deResourceLoaderInfo::SetResource(deFileResource *resource){
+void deResourceLoaderInfo::SetResource(deFileResource::Ref resource){
 	if(resource == pResource){
 		return;
 	}
-	
-	if(pResource){
-		pResource->FreeReference();
-	}
-	
 	pResource = resource;
-	
-	if(resource){
-		resource->AddReference();
-	}
 }

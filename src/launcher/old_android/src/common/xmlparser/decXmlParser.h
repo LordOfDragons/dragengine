@@ -57,7 +57,7 @@ class deLogger;
  */
 class decXmlParser{
 private:
-	decBaseFileReader *pFile;
+	decBaseFileReader::Ref pFile;
 	int pLine;
 	int pPos;
 	int pCurChar;
@@ -71,7 +71,7 @@ private:
 	int pFilePos;
 	int pFileLen;
 	
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	bool pHasFatalError;
 	
 	
@@ -80,7 +80,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \briefCreate xml parser. */
-	decXmlParser(deLogger *logger);
+	decXmlParser(deLogger::Ref logger);
 	
 	/** Clean up xml parser. */
 	virtual ~decXmlParser();
@@ -98,7 +98,7 @@ public:
 	 * 
 	 * \return true on success or false otherwise
 	 */
-	bool ParseXml(decBaseFileReader *file, decXmlDocument *doc);
+	bool ParseXml(decBaseFileReader::Ref file, decXmlDocument *doc);
 	/*@}*/
 	
 	
@@ -139,7 +139,7 @@ public:
 	 */
 	/*@{*/
 	/** \brief Prepare parsing the file by reseting all counters. */
-	void PrepareParse(decBaseFileReader *file);
+	void PrepareParse(decBaseFileReader::Ref file);
 	
 	/** \brief Parse XML file. */
 	void ParseDocument(decXmlDocument *doc);

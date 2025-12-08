@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCSpeakerSetRollOff::gdeUOCSpeakerSetRollOff(gdeObjectClass *objectClass,
-gdeOCSpeaker *speaker, float newValue) :
-pObjectClass(NULL),
+gdeUOCSpeakerSetRollOff::gdeUOCSpeakerSetRollOff(gdeObjectClass::Ref objectClass,
+gdeOCSpeaker::Ref speaker, float newValue) :
+
 pSpeaker(NULL)
 {
 	if(!objectClass || !speaker){
@@ -55,19 +55,10 @@ pSpeaker(NULL)
 	pNewValue = newValue;
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCSpeakerSetRollOff::~gdeUOCSpeakerSetRollOff(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

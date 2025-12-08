@@ -41,7 +41,7 @@
 
 aeURuleAnimSelectSetMoves::aeURuleAnimSelectSetMoves(aeRuleAnimationSelect *rule,
 const decStringList &newMoves, const char *description) :
-pRule(NULL),
+
 pNewMoves(newMoves)
 {
 	if(!rule){
@@ -53,13 +53,9 @@ pNewMoves(newMoves)
 	SetShortInfo(description);
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleAnimSelectSetMoves::~aeURuleAnimSelectSetMoves(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

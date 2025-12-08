@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCComponentToggleAttachTarget : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCComponentToggleAttachTarget(gdeObjectClass *objectClass, gdeOCComponent *component);
+	gdeUOCComponentToggleAttachTarget(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component);
 	
 protected:
 	/** \brief Clean up undo action. */

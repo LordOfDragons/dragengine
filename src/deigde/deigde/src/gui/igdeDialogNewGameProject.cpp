@@ -281,7 +281,6 @@ public:
 igdeDialogNewGameProject::igdeDialogNewGameProject(igdeWindowMain &windowMain) :
 igdeDialog(windowMain.GetEnvironment(), "New Game Project", windowMain.GetIconApplication()),
 pWindowMain(windowMain),
-pNewProject(NULL),
 pProjectPathChanged(false),
 pProjectGameDefPathChanged(false)
 {
@@ -369,9 +368,6 @@ pProjectGameDefPathChanged(false)
 }
 
 igdeDialogNewGameProject::~igdeDialogNewGameProject(){
-	if(pNewProject){
-		pNewProject->FreeReference();
-	}
 }
 
 
@@ -458,8 +454,6 @@ bool igdeDialogNewGameProject::Accept(){
 	}
 	
 	pNewProject = createProject.GetProject();
-	pNewProject->AddReference();
-	
 	pWindowMain.AddRecentGameProject(pNewProject->GetFilePath());
 	
 	return igdeDialog::Accept();

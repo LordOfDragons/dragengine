@@ -44,7 +44,7 @@ private:
 	deDecal::Ref pEngDecal;
 	
 	meDecal *pDecal;
-	meObject *pParentObject;
+	meObject::Ref pParentObject;
 	
 	
 	
@@ -72,7 +72,7 @@ public:
 	inline meObject *GetParentObject() const{ return pParentObject; }
 	
 	/** \brief Set parent object. */
-	void SetParentObject(meObject *object);
+	void SetParentObject(meObject::Ref object);
 	
 	/** \brief Attach decal to parent. */
 	void AttachToParent();

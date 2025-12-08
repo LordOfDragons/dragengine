@@ -44,7 +44,7 @@ public:
 	
 	
 private:
-	gdeOCEnvMapProbe *pOCEnvMapProbe;
+	gdeOCEnvMapProbe::Ref pOCEnvMapProbe;
 	
 	deEnvMapProbe::Ref pEnvMapProbe;
 	

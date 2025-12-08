@@ -44,7 +44,7 @@ private:
 	deEngine *pEngine;
 	
 	decString pPathSynthesizer;
-	deSynthesizer *pChildSynthesizer;
+	deSynthesizer::Ref pChildSynthesizer;
 	decString *pControllerNames;
 	int pControllerNameCount;
 	
@@ -102,7 +102,7 @@ public:
 	seController *GetControllerAt(int position) const;
 	
 	/** \brief Set controller for child controller or \em NULL if not set. */
-	void SetControllerAt(int position, seController *controller);
+	void SetControllerAt(int position, seController::Ref controller);
 	
 	
 	

@@ -36,7 +36,7 @@ class meObject;
  */
 class meUObjectShapeAdd : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUObjectShapeAdd(meObject *object, const char *property, const decShape &shape);
+	meUObjectShapeAdd(meObject::Ref object, const char *property, const decShape &shape);
 	/** \brief Clean up undo object. */
 	virtual ~meUObjectShapeAdd();
 	/*@}*/

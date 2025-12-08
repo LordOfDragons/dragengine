@@ -35,7 +35,7 @@ class gdeOCSnapPoint;
  */
 class gdeWPSTIMOCSnapPoint : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCSnapPoint *pSnapPoint;
+	gdeOCSnapPoint::Ref pSnapPoint;
 	int pIndex;
 	
 	
@@ -45,7 +45,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCSnapPoint(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCSnapPoint *snapPoint, int index);
+		gdeOCSnapPoint::Ref snapPoint, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

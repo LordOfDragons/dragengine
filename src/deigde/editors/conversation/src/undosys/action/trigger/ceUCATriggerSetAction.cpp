@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCATriggerSetAction::ceUCATriggerSetAction(ceConversationTopic *topic, ceCATrigger *action, ceCATrigger::eActions newOperator){
+ceUCATriggerSetAction::ceUCATriggerSetAction(ceConversationTopic::Ref topic, ceCATrigger::Ref action, ceCATrigger::eActions newOperator){
 	if(!topic || !action){
 		DETHROW(deeInvalidParam);
 	}
@@ -53,19 +53,10 @@ ceUCATriggerSetAction::ceUCATriggerSetAction(ceConversationTopic *topic, ceCATri
 	SetShortInfo("Action trigger set action");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCATriggerSetAction::~ceUCATriggerSetAction(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

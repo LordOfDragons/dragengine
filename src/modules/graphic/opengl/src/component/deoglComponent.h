@@ -48,7 +48,7 @@ class deoglComponent : public deBaseGraphicComponent, deoglDynamicSkinListener{
 public:
 	deGraphicOpenGl &pOgl;
 	deComponent &pComponent;
-	deoglRComponent *pRComponent;
+	deoglRComponent::Ref pRComponent;
 	
 	deoglWorld *pParentWorld;
 	deoglSkinStateController *pSkinStateController;

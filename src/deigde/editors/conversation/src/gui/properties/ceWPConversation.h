@@ -52,8 +52,8 @@ class ceControllerValue;
 class ceWPConversation : public igdeContainerScroll{
 private:
 	ceWindowProperties &pWindowProperties;
-	ceWPConversationListener *pListener;
-	ceConversation *pConversation;
+	ceWPConversationListener::Ref pListener;
+	ceConversation::Ref pConversation;
 	
 	igdeEditPath::Ref pPathImportConvo;
 	igdeButton::Ref pBtnImportConvoAdd;
@@ -131,7 +131,7 @@ public:
 	inline ceConversation *GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation. */
-	void SetConversation(ceConversation *conversation);
+	void SetConversation(ceConversation::Ref conversation);
 	
 	/** \brief Update conversation. */
 	void UpdateConversation();

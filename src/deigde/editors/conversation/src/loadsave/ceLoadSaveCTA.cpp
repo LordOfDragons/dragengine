@@ -207,18 +207,13 @@ void ceLoadSaveCTA::ReadActor(const decXmlElementTag &root, ceConversationActor 
 			pReadPose(*tag, actor);
 			
 		}else if(tagName == "command"){
-			cePlaybackCommand *command = NULL;
+			cePlaybackCommand::Ref command = NULL;
 			
 			try{
-				command = new cePlaybackCommand(GetCDataString(*tag),
-					GetAttributeBool(*tag, "value"));
+				command.TakeOver(new cePlaybackCommand(GetCDataString(*tag),
+					GetAttributeBool(*tag, "value")));
 				actor.GetCommands().Add(command);
-				command->FreeReference();
-				
 			}catch(const deException &){
-				if(command){
-					command->FreeReference();
-				}
 				throw;
 			}
 			
@@ -353,7 +348,7 @@ void ceLoadSaveCTA::pReadPose(const decXmlElementTag &root, ceConversationActor 
 				pose->GetControllers().Add(controller);
 				
 			}else if(tagName == "gesture"){
-				ceActorGesture *gesture = NULL;
+				ceActorGesture::Ref gesture = NULL;
 				
 				const decString gestureName(GetAttributeString(*tag, "name"));
 				
@@ -366,15 +361,10 @@ void ceLoadSaveCTA::pReadPose(const decXmlElementTag &root, ceConversationActor 
 				}
 				
 				try{
-					gesture = new ceActorGesture(actor.GetEnvironment(), gestureName);
+					gesture.TakeOver(new ceActorGesture(actor.GetEnvironment(), gestureName));
 					gesture->SetPathAnimator(GetCDataString(*tag));
 					pose->GetGestures().Add(gesture);
-					gesture->FreeReference();
-					
 				}catch(const deException &){
-					if(gesture){
-						gesture->FreeReference();
-					}
 					throw;
 				}
 				

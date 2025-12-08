@@ -61,21 +61,17 @@ pCategory(sky.pCategory),
 pTags(sky.pTags)
 {
 	const int controllerCount = sky.pControllers.GetCount();
-	gdeSkyController *controller = NULL;
+	gdeSkyController::Ref controller = NULL;
 	int i;
 	
 	try{
 		for(i=0; i<controllerCount; i++){
-			controller = new gdeSkyController(*sky.pControllers.GetAt(i));
+			controller.TakeOver(new gdeSkyController(*sky.pControllers.GetAt(i)));
 			pControllers.Add(controller);
-			controller->FreeReference();
 			controller = NULL;
 		}
 		
 	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
 		throw;
 	}
 }
@@ -160,7 +156,7 @@ void gdeSky::SetTags(const decStringSet &tags){
 // Controllers
 ////////////////
 
-void gdeSky::AddController(gdeSkyController *controller){
+void gdeSky::AddController(gdeSkyController::Ref controller){
 	if(!controller){
 		DETHROW(deeInvalidParam);
 	}
@@ -171,7 +167,7 @@ void gdeSky::AddController(gdeSkyController *controller){
 	}
 }
 
-void gdeSky::RemoveController(gdeSkyController *controller){
+void gdeSky::RemoveController(gdeSkyController::Ref controller){
 	pControllers.Remove(controller);
 	
 	if(pGameDefinition){
@@ -183,7 +179,7 @@ void gdeSky::RemoveAllControllers(){
 	pControllers.RemoveAll();
 }
 
-void gdeSky::NotifyControllerChanged(gdeSkyController *controller){
+void gdeSky::NotifyControllerChanged(gdeSkyController::Ref controller){
 	if(pGameDefinition){
 		pGameDefinition->NotifySkyControllerChanged(this, controller);
 	}

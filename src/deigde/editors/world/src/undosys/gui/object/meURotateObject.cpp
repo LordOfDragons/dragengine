@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meURotateObject::meURotateObject(meWorld *world, const meObjectList &objects){
+meURotateObject::meURotateObject(meWorld::Ref world, const meObjectList &objects){
 	if(!world){
 		DETHROW(deeInvalidParam);
 	}
@@ -53,8 +53,6 @@ meURotateObject::meURotateObject(meWorld *world, const meObjectList &objects){
 	
 	try{
 		pWorld = world;
-		world->AddReference();
-		
 		int i;
 		for(i=0; i<count; i++){
 			pObjects.Add(meUndoDataObject::Ref::NewWith(objects.GetAt(i)));

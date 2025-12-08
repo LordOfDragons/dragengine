@@ -144,10 +144,10 @@ void aeRuleStateSnapshot::SetEnableVertexPositionSet(bool enabled){
 
 
 deAnimatorRule *aeRuleStateSnapshot::CreateEngineRule(){
-	deAnimatorRuleStateSnapshot *engRule = NULL;
+	deAnimatorRuleStateSnapshot::Ref engRule = NULL;
 	
 	try{
-		engRule = new deAnimatorRuleStateSnapshot;
+		engRule.TakeOver(new deAnimatorRuleStateSnapshot);
 		
 		InitEngineRule(engRule);
 		
@@ -160,9 +160,6 @@ deAnimatorRule *aeRuleStateSnapshot::CreateEngineRule(){
 		engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
 		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 	

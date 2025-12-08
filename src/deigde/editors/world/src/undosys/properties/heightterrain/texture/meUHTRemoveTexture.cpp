@@ -42,18 +42,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTRemoveTexture::meUHTRemoveTexture(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture){
+meUHTRemoveTexture::meUHTRemoveTexture(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture){
 	if(!world || !sector || !texture) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
 	pSector = sector;
 	
 	SetShortInfo("Height Terrain Add Texture");
-	
-	world->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUHTRemoveTexture::~meUHTRemoveTexture(){

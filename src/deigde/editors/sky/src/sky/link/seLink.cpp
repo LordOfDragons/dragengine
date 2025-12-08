@@ -46,8 +46,6 @@ pSky(NULL),
 pIndex(-1),
 
 pName("Link"),
-
-pController(NULL),
 pRepeat(1),
 
 pSelected(false),
@@ -55,9 +53,6 @@ pActive(false){
 }
 
 seLink::~seLink(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 
@@ -90,21 +85,11 @@ void seLink::NotifyCurveChanged(){
 	}
 }
 
-void seLink::SetController(seController *controller){
+void seLink::SetController(seController::Ref controller){
 	if(controller == pController){
 		return;
 	}
-	
-	if(pController){
-		pController->FreeReference();
-	}
-	
 	pController = controller;
-	
-	if(controller){
-		controller->AddReference();
-	}
-	
 	if(pSky){
 		pSky->NotifyLinkChanged(this);
 	}

@@ -35,7 +35,7 @@ class gdeOCForceField;
  */
 class gdeWPSTIMOCForceField : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCForceField *pForceField;
+	gdeOCForceField::Ref pForceField;
 	
 	
 public:
@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCForceField(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCForceField *forceField, int index);
+		gdeOCForceField::Ref forceField, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

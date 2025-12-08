@@ -56,17 +56,17 @@ public:
 	/** Retrieves the named variable or NULL if not found. */
 	cePlaybackVariable *GetNamed(const char *name) const;
 	/** Retrieves the index of a variable or -1 if not found. */
-	int IndexOf(cePlaybackVariable *variable) const;
+	int IndexOf(cePlaybackVariable::Ref variable) const;
 	/** Retrieves the index of a named variable or -1 if not found. */
 	int IndexOfNamed(const char *name) const;
 	/** Determines if a variable exists. */
-	bool Has(cePlaybackVariable *variable) const;
+	bool Has(cePlaybackVariable::Ref variable) const;
 	/** Determines if a named variable exists. */
 	bool HasNamed(const char *name) const;
 	/** Sets a variable adding it if not existing. */
 	void Set(const char *name, int value);
 	/** Removes a variable. */
-	void Remove(cePlaybackVariable *variable);
+	void Remove(cePlaybackVariable::Ref variable);
 	/** Removes all variables. */
 	void RemoveAll();
 	

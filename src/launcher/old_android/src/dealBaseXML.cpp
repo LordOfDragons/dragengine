@@ -45,17 +45,15 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-dealBaseXML::dealBaseXML(deLogger *logger, const char *loggerSource){
+dealBaseXML::dealBaseXML(deLogger::Ref logger, const char *loggerSource){
 	if(!logger || !loggerSource) DETHROW(deeInvalidParam);
 	
 	pLoggerSource = loggerSource;
 	
 	pLogger = logger;
-	logger->AddReference();
 }
 
 dealBaseXML::~dealBaseXML(){
-	pLogger->FreeReference();
 }
 
 

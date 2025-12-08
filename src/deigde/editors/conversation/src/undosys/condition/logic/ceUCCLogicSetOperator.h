@@ -40,9 +40,9 @@ class ceConversationTopic;
  */
 class ceUCCLogicSetOperator : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionLogic *pLogic;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionLogic::Ref pLogic;
 	ceCConditionLogic::eOperators pOldOperator;
 	ceCConditionLogic::eOperators pNewOperator;
 	
@@ -53,8 +53,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCCLogicSetOperator(ceConversationTopic *topic, ceConversationAction *action,
-		ceCConditionLogic *logic, ceCConditionLogic::eOperators newOperator);
+	ceUCCLogicSetOperator(ceConversationTopic::Ref topic, ceConversationAction::Ref action,
+		ceCConditionLogic::Ref logic, ceCConditionLogic::eOperators newOperator);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCCLogicSetOperator();

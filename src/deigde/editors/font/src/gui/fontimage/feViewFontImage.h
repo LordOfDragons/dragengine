@@ -45,8 +45,8 @@ class feFont;
 class feViewFontImage : public igdeContainerBorder{
 private:
 	feWindowMain &pWindowMain;
-	feViewFontImageListener *pListener;
-	feFont *pFont;
+	feViewFontImageListener::Ref pListener;
+	feFont::Ref pFont;
 	
 	decPoint pContentSize;
 	decPoint pScrollOffset;
@@ -54,7 +54,7 @@ private:
 	igdeScrollBar::Ref pSBHorizontal;
 	igdeScrollBar::Ref pSBVertical;
 	igdeComboBox::Ref pCBZoom;
-	feViewFIImage *pViewImage;
+	feViewFIImage::Ref pViewImage;
 	
 	
 	
@@ -76,7 +76,7 @@ public:
 	inline feFont *GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
-	void SetFont(feFont *font);
+	void SetFont(feFont::Ref font);
 	
 	/** \brief Set if rendering is enabled. */
 	void SetEnableRendering(bool enable);

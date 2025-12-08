@@ -41,7 +41,7 @@ class deoglModel : public deBaseGraphicModel{
 public:
 	deGraphicOpenGl &pOgl;
 	const deModel &pModel;
-	deoglRModel *pRModel;
+	deoglRModel::Ref pRModel;
 	
 public:
 	/** \name Constructors and Destructors */

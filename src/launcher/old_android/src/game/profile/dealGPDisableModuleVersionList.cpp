@@ -81,7 +81,7 @@ dealGPDisableModuleVersion *dealGPDisableModuleVersionList::GetWith(const char *
 	return NULL;
 }
 
-bool dealGPDisableModuleVersionList::Has(dealGPDisableModuleVersion *entry) const{
+bool dealGPDisableModuleVersionList::Has(dealGPDisableModuleVersion::Ref entry) const{
 	return pList.Has(entry);
 }
 
@@ -89,7 +89,7 @@ bool dealGPDisableModuleVersionList::HasWith(const char *name, const char *versi
 	return GetWith(name, version) != NULL;
 }
 
-int dealGPDisableModuleVersionList::IndexOf(dealGPDisableModuleVersion *entry) const{
+int dealGPDisableModuleVersionList::IndexOf(dealGPDisableModuleVersion::Ref entry) const{
 	return pList.IndexOf(entry);
 }
 
@@ -111,14 +111,14 @@ int dealGPDisableModuleVersionList::IndexOfWith(const char *name, const char *ve
 	return -1;
 }
 
-void dealGPDisableModuleVersionList::Add(dealGPDisableModuleVersion *entry){
+void dealGPDisableModuleVersionList::Add(dealGPDisableModuleVersion::Ref entry){
 	if(!entry || HasWith(entry->GetName(), entry->GetVersion())){
 		DETHROW(deeInvalidParam);
 	}
 	pList.Add(entry);
 }
 
-void dealGPDisableModuleVersionList::Remove(dealGPDisableModuleVersion *entry){
+void dealGPDisableModuleVersionList::Remove(dealGPDisableModuleVersion::Ref entry){
 	const int index = IndexOf(entry);
 	
 	if(index == -1){
@@ -139,7 +139,7 @@ void dealGPDisableModuleVersionList::RemoveAll(){
 
 dealGPDisableModuleVersionList &dealGPDisableModuleVersionList::operator=(const dealGPDisableModuleVersionList &other){
 	const decObjectList &otherList = other.pList;
-	dealGPDisableModuleVersion *entry = NULL;
+	dealGPDisableModuleVersion::Ref entry = NULL;
 	const int count = otherList.GetCount();
 	int i;
 	
@@ -147,16 +147,12 @@ dealGPDisableModuleVersionList &dealGPDisableModuleVersionList::operator=(const 
 	
 	try{
 		for(i=0; i<count; i++){
-			entry = new dealGPDisableModuleVersion(*((dealGPDisableModuleVersion*)otherList.GetAt(i)));
+			entry.TakeOver(new dealGPDisableModuleVersion(*((dealGPDisableModuleVersion*)otherList.GetAt(i))));
 			pList.Add(entry);
-			entry->FreeReference();
 			entry = NULL;
 		}
 		
 	}catch(const deException &){
-		if(entry){
-			entry->FreeReference();
-		}
 		throw;
 	}
 	

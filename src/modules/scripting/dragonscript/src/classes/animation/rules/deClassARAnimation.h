@@ -79,10 +79,10 @@ public:
 	deAnimatorRuleAnimation *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
+	void AssignAnimator(dsRealObject *myself, deAnimator::Ref animator);
 	
 	/** \brief Pushes a rule. */
-	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleAnimation *rule);
+	void PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRuleAnimation::Ref rule);
 	
 	inline dsClass *GetClassARAnimationTarget() const{ return pClsARAnimationTarget; }
 	/*@}*/

@@ -54,8 +54,8 @@ number of files per directory limited improving searching for free slots.
 // Constructor, destructor
 ////////////////////////////
 
-deCacheHelper::deCacheHelper(deVirtualFileSystem *vfs, const decPath &cachePath) :
-pVFS(NULL),
+deCacheHelper::deCacheHelper(deVirtualFileSystem::Ref vfs, const decPath &cachePath) :
+
 pCachePath(cachePath),
 pCompressionMethod(ecmZCompression)
 {
@@ -64,15 +64,10 @@ pCompressionMethod(ecmZCompression)
 	}
 	
 	pVFS = vfs;
-	vfs->AddReference();
-	
 	BuildMapping();
 }
 
 deCacheHelper::~deCacheHelper(){
-	if(pVFS){
-		pVFS->FreeReference();
-	}
 }
 
 
@@ -100,8 +95,8 @@ decBaseFileReader *deCacheHelper::Read(const char *id){
 	
 	path.AddComponent(fileTitle);
 	
-	decBaseFileReader *reader = NULL;
-	decZFileReader *zreader = NULL;
+	decBaseFileReader::Ref reader = NULL;
+	decZFileReader::Ref zreader = NULL;
 	
 	if(pVFS->CanReadFile(path)){
 		decString testID;
@@ -114,25 +109,17 @@ decBaseFileReader *deCacheHelper::Read(const char *id){
 			reader->ReadString16Into(testID);
 			if(testID != id){
 				pMapping.SetAt(slot, "");
-				reader->FreeReference();
 				return NULL;
 			}
 			
 			const int compression = reader->ReadByte();
 			if(compression == 'z'){
-				zreader = new decZFileReader(reader);
-				reader->FreeReference();
+				zreader.TakeOver(new decZFileReader(reader));
 				reader = zreader;
 				zreader = NULL;
 			}
 			
 		}catch(const deException &){
-			if(zreader){
-				zreader->FreeReference();
-			}
-			if(reader){
-				reader->FreeReference();
-			}
 			throw;
 		}
 		
@@ -168,8 +155,8 @@ decBaseFileWriter *deCacheHelper::Write(const char *id){
 	
 	path.AddComponent(fileTitle);
 	
-	decBaseFileWriter *writer = NULL;
-	decZFileWriter *zwriter = NULL;
+	decBaseFileWriter::Ref writer = NULL;
+	decZFileWriter::Ref zwriter = NULL;
 	
 	try{
 		writer = pVFS->OpenFileForWriting(path);
@@ -177,8 +164,7 @@ decBaseFileWriter *deCacheHelper::Write(const char *id){
 		
 		if(pCompressionMethod == ecmZCompression){
 			writer->WriteByte('z'); // z-compressed
-			zwriter = new decZFileWriter(writer);
-			writer->FreeReference();
+			zwriter.TakeOver(new decZFileWriter(writer));
 			writer = zwriter;
 			zwriter = NULL;
 			
@@ -187,12 +173,6 @@ decBaseFileWriter *deCacheHelper::Write(const char *id){
 		}
 		
 	}catch(const deException &){
-		if(zwriter){
-			zwriter->FreeReference();
-		}
-		if(writer){
-			writer->FreeReference();
-		}
 		throw;
 	}
 	
@@ -265,7 +245,7 @@ void deCacheHelper::BuildMapping(){
 	}
 	
 	// read the IDs from all cache files entering them into the proper slot of the mapping table
-	decBaseFileReader *reader = NULL;
+	decBaseFileReader::Ref reader = NULL;
 	decString id;
 	
 	try{
@@ -275,16 +255,12 @@ void deCacheHelper::BuildMapping(){
 			
 			reader = pVFS->OpenFileForReading(file);
 			reader->ReadString16Into(id);
-			reader->FreeReference();
 			reader = NULL;
 			
 			pMapping.SetAt(slot, id);
 		}
 		
 	}catch(const deException &){
-		if(reader){
-			reader->FreeReference();
-		}
 		throw;
 	}
 }

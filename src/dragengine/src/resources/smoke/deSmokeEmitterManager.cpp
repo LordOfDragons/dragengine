@@ -68,10 +68,10 @@ deSmokeEmitter *deSmokeEmitterManager::GetRootSmokeEmitter() const{
 }
 
 deSmokeEmitter *deSmokeEmitterManager::CreateSmokeEmitter(){
-	deSmokeEmitter *smokeEmitter = NULL;
+	deSmokeEmitter::Ref smokeEmitter = NULL;
 	
 	try{
-		smokeEmitter = new deSmokeEmitter(this);
+		smokeEmitter.TakeOver(new deSmokeEmitter(this));
 		if(!smokeEmitter) DETHROW(deeOutOfMemory);
 		
 		GetGraphicSystem()->LoadSmokeEmitter(smokeEmitter);
@@ -80,9 +80,6 @@ deSmokeEmitter *deSmokeEmitterManager::CreateSmokeEmitter(){
 		pSmokeEmitters.Add(smokeEmitter);
 		
 	}catch(const deException &){
-		if(smokeEmitter){
-			smokeEmitter->FreeReference();
-		}
 		throw;
 	}
 	
@@ -104,7 +101,7 @@ void deSmokeEmitterManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSmokeEmitterManager::SystemGraphicLoad(){
-	deSmokeEmitter *smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
+	deSmokeEmitter::Ref smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
 	
 	while(smokeEmitter){
 		if(!smokeEmitter->GetPeerGraphic()){
@@ -116,7 +113,7 @@ void deSmokeEmitterManager::SystemGraphicLoad(){
 }
 
 void deSmokeEmitterManager::SystemGraphicUnload(){
-	deSmokeEmitter *smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
+	deSmokeEmitter::Ref smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
 	
 	while(smokeEmitter){
 		smokeEmitter->SetPeerGraphic(NULL);
@@ -125,7 +122,7 @@ void deSmokeEmitterManager::SystemGraphicUnload(){
 }
 
 void deSmokeEmitterManager::SystemPhysicsLoad(){
-	deSmokeEmitter *smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
+	deSmokeEmitter::Ref smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
 	
 	while(smokeEmitter){
 		if(!smokeEmitter->GetPeerPhysics()){
@@ -137,7 +134,7 @@ void deSmokeEmitterManager::SystemPhysicsLoad(){
 }
 
 void deSmokeEmitterManager::SystemPhysicsUnload(){
-	deSmokeEmitter *smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
+	deSmokeEmitter::Ref smokeEmitter = (deSmokeEmitter*)pSmokeEmitters.GetRoot();
 	
 	while(smokeEmitter){
 		smokeEmitter->SetPeerPhysics(NULL);

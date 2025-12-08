@@ -48,7 +48,7 @@ class deoalSoundLevelMeter : public deBaseAudioSoundLevelMeter{
 private:
 	deAudioOpenAL &pOal;
 	deSoundLevelMeter &pSoundLevelMeter;
-	deoalASoundLevelMeter *pASoundLevelMeter;
+	deoalASoundLevelMeter::Ref pASoundLevelMeter;
 	
 	deoalWorld *pParentWorld;
 	

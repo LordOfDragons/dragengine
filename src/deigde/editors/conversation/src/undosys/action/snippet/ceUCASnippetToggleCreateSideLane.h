@@ -36,8 +36,8 @@ class ceConversationTopic;
  */
 class ceUCASnippetToggleCreateSideLane : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASnippet *pSnippet;
+	ceConversationTopic::Ref pTopic;
+	ceCASnippet::Ref pSnippet;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCASnippetToggleCreateSideLane(ceConversationTopic *topic, ceCASnippet *snippet);
+	ceUCASnippetToggleCreateSideLane(ceConversationTopic::Ref topic, ceCASnippet::Ref snippet);
 	
 protected:
 	/** \brief Clean up undo. */

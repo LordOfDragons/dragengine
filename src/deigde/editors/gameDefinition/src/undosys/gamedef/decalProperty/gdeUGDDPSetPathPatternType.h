@@ -41,8 +41,8 @@ class gdeGameDefinition;
  */
 class gdeUGDDPSetPathPatternType : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeProperty::Ref pProperty;
 	
 	gdeProperty::ePathPatternTypes pOldValue;
 	gdeProperty::ePathPatternTypes pNewValue;
@@ -56,7 +56,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUGDDPSetPathPatternType(gdeGameDefinition *gamedef, gdeProperty *property, gdeProperty::ePathPatternTypes newValue);
+	gdeUGDDPSetPathPatternType(gdeGameDefinition::Ref gamedef, gdeProperty::Ref property, gdeProperty::ePathPatternTypes newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

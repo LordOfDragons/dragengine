@@ -37,8 +37,8 @@
 ////////////////////////////
 
 ceUCASnippetToggleCreateSideLane::ceUCASnippetToggleCreateSideLane(
-	ceConversationTopic *topic, ceCASnippet *snippet) :
-pTopic(nullptr),
+	ceConversationTopic::Ref topic, ceCASnippet::Ref snippet) :
+
 pSnippet(nullptr)
 {
 	DEASSERT_NOTNULL(topic)
@@ -47,19 +47,10 @@ pSnippet(nullptr)
 	SetShortInfo("Snippet Toggle Create Side lane");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pSnippet = snippet;
-	snippet->AddReference();
 }
 
 ceUCASnippetToggleCreateSideLane::~ceUCASnippetToggleCreateSideLane(){
-	if(pSnippet){
-		pSnippet->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

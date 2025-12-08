@@ -60,7 +60,7 @@
 
 // Native Structure
 struct sCanvasNatDat{
-	deCanvas *canvas;
+	deCanvas::Ref canvas;
 };
 
 
@@ -504,7 +504,7 @@ void deClassCanvas::CreateClassMembers(dsEngine *engine){
 
 
 
-void deClassCanvas::AssignCanvas(dsRealObject *myself, deCanvas *canvas){
+void deClassCanvas::AssignCanvas(dsRealObject *myself, deCanvas::Ref canvas){
 	if(!myself){
 		DSTHROW(dueInvalidParam);
 	}
@@ -520,10 +520,6 @@ void deClassCanvas::AssignCanvas(dsRealObject *myself, deCanvas *canvas){
 	}
 	
 	nd.canvas = canvas;
-	
-	if(canvas){
-		canvas->AddReference();
-	}
 }
 
 
@@ -536,7 +532,7 @@ deCanvas *deClassCanvas::GetCanvas(dsRealObject *myself) const {
 	return ((sCanvasNatDat*)p_GetNativeData(myself->GetBuffer()))->canvas;
 }
 
-void deClassCanvas::PushCanvas(dsRunTime *rt, deCanvas *canvas){
+void deClassCanvas::PushCanvas(dsRunTime *rt, deCanvas::Ref canvas){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}

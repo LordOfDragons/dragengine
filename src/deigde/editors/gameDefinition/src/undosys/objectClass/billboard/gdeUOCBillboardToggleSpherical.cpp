@@ -41,8 +41,8 @@
 ////////////////////////////
 
 gdeUOCBillboardToggleSpherical::gdeUOCBillboardToggleSpherical(
-gdeObjectClass *objectClass, gdeOCBillboard *billboard) :
-pObjectClass(NULL),
+gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard) :
+
 pBillboard(NULL)
 {
 	if(!objectClass || !billboard){
@@ -52,19 +52,10 @@ pBillboard(NULL)
 	SetShortInfo("Billboard toggle spherical");
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardToggleSpherical::~gdeUOCBillboardToggleSpherical(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

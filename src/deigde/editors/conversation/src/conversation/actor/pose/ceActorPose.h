@@ -42,7 +42,7 @@ class deAnimator;
 class ceActorPose : public deObject{
 private:
 	igdeEnvironment &pEnvironment;
-	deAnimator *pEngAnimator;
+	deAnimator::Ref pEngAnimator;
 	
 	decString pName;
 	decString pPathAnimator;

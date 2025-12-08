@@ -39,9 +39,9 @@ class gdeObjectClass;
  */
 class gdeUOCCAddTexture : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	
 	
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCCAddTexture(gdeObjectClass *objectClass, gdeOCComponent *component, gdeOCComponentTexture *texture);
+	gdeUOCCAddTexture(gdeObjectClass::Ref objectClass, gdeOCComponent::Ref component, gdeOCComponentTexture::Ref texture);
 	
 protected:
 	/** \brief Clean up undo action. */

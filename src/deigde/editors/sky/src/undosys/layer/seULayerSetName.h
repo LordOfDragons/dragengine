@@ -35,7 +35,7 @@ class seLayer;
  */
 class seULayerSetName : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	decString pOldName;
 	decString pNewName;
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerSetName(seLayer *layer, const char *newName);
+	seULayerSetName(seLayer::Ref layer, const char *newName);
 	
 protected:
 	/** \brief Clean up undo action. */

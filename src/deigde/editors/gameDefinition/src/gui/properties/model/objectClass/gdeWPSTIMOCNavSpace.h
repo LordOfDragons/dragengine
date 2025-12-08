@@ -35,7 +35,7 @@ class gdeOCNavigationSpace;
  */
 class gdeWPSTIMOCNavSpace : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCNavigationSpace *pNavSpace;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	
 public:
@@ -43,7 +43,7 @@ public:
 	/*@{*/
 	/** \brief Create new tree item model. */
 	gdeWPSTIMOCNavSpace(gdeWPSTreeModel &tree, gdeObjectClass *objectClass,
-		gdeOCNavigationSpace *navSpace, int index);
+		gdeOCNavigationSpace::Ref navSpace, int index);
 	
 protected:
 	/** \brief Clean up tree item model. */

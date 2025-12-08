@@ -145,7 +145,7 @@ private:
 	meHeightTerrainNavSpace *pActiveNavSpace;
 	decIntList pSelectedNavPoints;
 	
-	deDebugDrawer *pDDSelNavPoints;
+	deDebugDrawer::Ref pDDSelNavPoints;
 	
 	
 	
@@ -312,21 +312,21 @@ public:
 	/** Determines if a texture with the given name exists. */
 	bool HasTextureNamed(const char *name) const;
 	/** Retrieves the index of the texture or -1 if not found. */
-	int IndexOfTexture(meHeightTerrainTexture *texture) const;
+	int IndexOfTexture(meHeightTerrainTexture::Ref texture) const;
 	/** Retrieves the index of the texture with the given name or -1 if not found. */
 	int IndexOfTextureNamed(const char *name) const;
 	/** Determines if the texture exists. */
-	bool HasTexture(meHeightTerrainTexture *texture) const;
+	bool HasTexture(meHeightTerrainTexture::Ref texture) const;
 	/** Adds a texture. */
-	void AddTexture(meHeightTerrainTexture *texture);
+	void AddTexture(meHeightTerrainTexture::Ref texture);
 	/** Removes a texture. */
-	void RemoveTexture(meHeightTerrainTexture *texture);
+	void RemoveTexture(meHeightTerrainTexture::Ref texture);
 	/** Removes all textures. */
 	void RemoveAllTextures();
 	/** Retrieves the active texture or NULL. */
 	inline meHeightTerrainTexture *GetActiveTexture() const{ return pActiveTexture; }
 	/** Sets the active texture or NULL. */
-	void SetActiveTexture(meHeightTerrainTexture *texture);
+	void SetActiveTexture(meHeightTerrainTexture::Ref texture);
 	/** Retrieves the texture under the given point. */
 	meHeightTerrainTexture *GetTextureUnder(float x, float y) const;
 	/*@}*/
@@ -340,19 +340,19 @@ public:
 	/** Retrieves the prop field at the given index. */
 	meHeightTerrainPFLayer *GetPFLayerAt(int index) const;
 	/** Retrieves the index of the prop field or -1 if not found. */
-	int IndexOfPFLayer(meHeightTerrainPFLayer *pflayer) const;
+	int IndexOfPFLayer(meHeightTerrainPFLayer::Ref pflayer) const;
 	/** Determines if the prop field exists. */
-	bool HasPFLayer(meHeightTerrainPFLayer *pflayer) const;
+	bool HasPFLayer(meHeightTerrainPFLayer::Ref pflayer) const;
 	/** Adds a prop field. */
-	void AddPFLayer(meHeightTerrainPFLayer *pflayer);
+	void AddPFLayer(meHeightTerrainPFLayer::Ref pflayer);
 	/** Removes a prop field. */
-	void RemovePFLayer(meHeightTerrainPFLayer *pflayer);
+	void RemovePFLayer(meHeightTerrainPFLayer::Ref pflayer);
 	/** Removes all prop fields. */
 	void RemoveAllPFLayers();
 	/** Retrieves the active prop field or NULL. */
 	inline meHeightTerrainPFLayer *GetActivePFLayer() const{ return pActivePFLayer; }
 	/** Sets the active prop field or NULL. */
-	void SetActivePFLayer(meHeightTerrainPFLayer *pflayer);
+	void SetActivePFLayer(meHeightTerrainPFLayer::Ref pflayer);
 	
 	/** Retrieves the number of cells prop fields. */
 	inline int GetPropFieldCellCount() const{ return pPropFieldCellCount; }

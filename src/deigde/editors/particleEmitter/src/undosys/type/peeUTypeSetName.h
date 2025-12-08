@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeSetName : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	decString pOldName;
 	decString pNewName;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo action. */
-	peeUTypeSetName(peeType *type, const char *newName);
+	peeUTypeSetName(peeType::Ref type, const char *newName);
 	
 protected:
 	/** \brief Clean up the undo action. */

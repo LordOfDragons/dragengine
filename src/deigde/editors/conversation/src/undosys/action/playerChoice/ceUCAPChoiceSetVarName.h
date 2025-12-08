@@ -37,8 +37,8 @@ class ceCAPlayerChoice;
  */
 class ceUCAPChoiceSetVarName : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
 	decString pOldName;
 	decString pNewName;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	ceUCAPChoiceSetVarName(ceConversationTopic *topic, ceCAPlayerChoice *playerChoice, const char *newName);
+	ceUCAPChoiceSetVarName(ceConversationTopic::Ref topic, ceCAPlayerChoice::Ref playerChoice, const char *newName);
 protected:
 	/** \brief Clean up undo. */
 	virtual ~ceUCAPChoiceSetVarName();

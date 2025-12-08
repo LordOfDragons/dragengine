@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCAddSpeaker::gdeUOCAddSpeaker(gdeObjectClass *objectClass, gdeOCSpeaker *speaker) :
-pObjectClass(NULL),
+gdeUOCAddSpeaker::gdeUOCAddSpeaker(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker) :
+
 pSpeaker(NULL)
 {
 	if(!objectClass || !speaker){
@@ -52,19 +52,10 @@ pSpeaker(NULL)
 	SetShortInfo("Add speaker");
 	
 	pSpeaker = speaker;
-	speaker->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCAddSpeaker::~gdeUOCAddSpeaker(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

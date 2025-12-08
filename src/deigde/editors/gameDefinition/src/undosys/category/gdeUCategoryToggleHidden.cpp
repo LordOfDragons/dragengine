@@ -41,9 +41,8 @@
 ////////////////////////////
 
 gdeUCategoryToggleHidden::gdeUCategoryToggleHidden(gdeGameDefinition *gameDefinition,
-gdeCategory *category, eCategoryType type) :
-gdeUCategoryBase(gameDefinition, type),
-pCategory(NULL)
+gdeCategory::Ref category, eCategoryType type) :
+gdeUCategoryBase(gameDefinition, type)
 {
 	if(!category){
 		DETHROW(deeInvalidParam);
@@ -52,13 +51,9 @@ pCategory(NULL)
 	SetShortInfo("Category toggle hidden");
 	
 	pCategory = category;
-	category->AddReference();
 }
 
 gdeUCategoryToggleHidden::~gdeUCategoryToggleHidden(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
 }
 
 

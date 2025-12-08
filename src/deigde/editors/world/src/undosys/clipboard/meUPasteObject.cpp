@@ -43,13 +43,13 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUPasteObject::meUPasteObject(meWorld *world, meClipboardDataObject *clip){
+meUPasteObject::meUPasteObject(meWorld::Ref world, meClipboardDataObject *clip){
 	if(!world || !clip){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = clip->GetObjectCount();
-	meObject *object = NULL;
+	meObject::Ref object = NULL;
 	int i;
 	
 	SetShortInfo("Paste Objects");
@@ -62,15 +62,12 @@ meUPasteObject::meUPasteObject(meWorld *world, meClipboardDataObject *clip){
 	}
 	
 	pWorld = world;
-	world->AddReference();
-	
 	try{
 		for(i=0; i<count; i++){
-			object = new meObject(world->GetEnvironment());
+			object.TakeOver(new meObject(world->GetEnvironment()));
 			object->SetID(world->NextObjectID());
 			clip->GetObjectAt(i)->UpdateObject(*object);
 			pObjects.Add(object);
-			object->FreeReference();
 			object = NULL;
 		}
 		
@@ -79,9 +76,6 @@ meUPasteObject::meUPasteObject(meWorld *world, meClipboardDataObject *clip){
 		}
 		
 	}catch(const deException &){
-		if(object){
-			object->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}
@@ -158,7 +152,4 @@ void meUPasteObject::Redo(){
 //////////////////////
 
 void meUPasteObject::pCleanUp(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

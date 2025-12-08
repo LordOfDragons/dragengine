@@ -37,8 +37,8 @@ class lpeWPUndoHistoryListener;
  */
 class lpeWPUndoHistory : public igdeWPUndoHistory{
 private:
-	lpeWPUndoHistoryListener *pListener;
-	lpeLangPack *pLangPack;
+	lpeWPUndoHistoryListener::Ref pListener;
+	lpeLangPack::Ref pLangPack;
 	
 	
 	
@@ -62,7 +62,7 @@ public:
 	inline lpeLangPack *GetLangPack() const{ return pLangPack; }
 	
 	/** \brief Set language pack or NULL. */
-	void SetLangPack(lpeLangPack *langpack);
+	void SetLangPack(lpeLangPack::Ref langpack);
 	/*@}*/
 };
 

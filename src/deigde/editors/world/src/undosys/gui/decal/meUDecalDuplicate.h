@@ -40,7 +40,7 @@ class meUndoDataDecal;
  */
 class meUDecalDuplicate : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	meUndoDataDecal **pDecals;
 	int pDecalCount;
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */
-	meUDecalDuplicate(meWorld *world, const decVector &offset);
+	meUDecalDuplicate(meWorld::Ref world, const decVector &offset);
 	
 	/** \brief Clean up undo object. */
 	virtual ~meUDecalDuplicate();

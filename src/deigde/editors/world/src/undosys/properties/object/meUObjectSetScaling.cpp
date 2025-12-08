@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjectSetScaling::meUObjectSetScaling(meObject *object, const decVector &nscaling){
+meUObjectSetScaling::meUObjectSetScaling(meObject::Ref object, const decVector &nscaling){
 	if(!object) DETHROW(deeInvalidParam);
 	
 	meWorld *world = object->GetWorld();
@@ -52,7 +52,6 @@ meUObjectSetScaling::meUObjectSetScaling(meObject *object, const decVector &nsca
 	SetShortInfo("Object Set Scaling");
 	
 	pObject = object;
-	object->AddReference();
 }
 
 meUObjectSetScaling::~meUObjectSetScaling(){

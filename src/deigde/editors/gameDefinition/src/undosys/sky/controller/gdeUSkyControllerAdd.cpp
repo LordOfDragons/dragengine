@@ -40,8 +40,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUSkyControllerAdd::gdeUSkyControllerAdd(gdeSky *sky, gdeSkyController *controller) :
-pSky(NULL),
+gdeUSkyControllerAdd::gdeUSkyControllerAdd(gdeSky::Ref sky, gdeSkyController::Ref controller) :
+
 pController(NULL)
 {
 	if(!sky || !controller){
@@ -55,19 +55,10 @@ pController(NULL)
 	SetShortInfo("Add sky controller");
 	
 	pSky = sky;
-	sky->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 gdeUSkyControllerAdd::~gdeUSkyControllerAdd(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

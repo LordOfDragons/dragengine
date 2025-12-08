@@ -73,16 +73,16 @@ public:
 	deAnimatorRule *GetRule(dsRealObject *myself) const;
 	
 	/** \brief Assigns rule or \em NULL. */
-	void AssignRule(dsRealObject *myself, deAnimatorRule *rule);
+	void AssignRule(dsRealObject *myself, deAnimatorRule::Ref rule);
 	
 	/** \brief Assigns animator or \em NULL. */
-	void AssignAnimator(dsRealObject *myself, deAnimator *animator);
+	void AssignAnimator(dsRealObject *myself, deAnimator::Ref animator);
 	
 	/**
 	 * \brief Pushes a rule.
 	 * \details Delegates the call to the matching rule script class.
 	 */
-	void PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRule *rule);
+	void PushRule(dsRunTime *rt, deAnimator::Ref animator, deAnimatorRule::Ref rule);
 	
 	inline dsClass *GetClassAnimatorRuleBlendMode() const{ return pClsAnimatorRuleBlendMode; }
 	/*@}*/

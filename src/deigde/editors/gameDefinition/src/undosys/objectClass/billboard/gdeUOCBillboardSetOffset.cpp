@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCBillboardSetOffset::gdeUOCBillboardSetOffset(gdeObjectClass *objectClass,
-gdeOCBillboard *billboard, const decVector2 &newValue) :
-pObjectClass(NULL),
+gdeUOCBillboardSetOffset::gdeUOCBillboardSetOffset(gdeObjectClass::Ref objectClass,
+gdeOCBillboard::Ref billboard, const decVector2 &newValue) :
+
 pBillboard(NULL)
 {
 	if(!objectClass || !billboard){
@@ -55,19 +55,10 @@ pBillboard(NULL)
 	pNewValue = newValue;
 	
 	pBillboard = billboard;
-	billboard->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCBillboardSetOffset::~gdeUOCBillboardSetOffset(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

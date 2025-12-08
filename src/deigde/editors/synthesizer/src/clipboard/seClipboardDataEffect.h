@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create clipboard data. */
-	seClipboardDataEffect(seEffect *effect);
+	seClipboardDataEffect(seEffect::Ref effect);
 	
 	/** \brief Create clipboard data. */
 	seClipboardDataEffect(const seEffectList &effects);

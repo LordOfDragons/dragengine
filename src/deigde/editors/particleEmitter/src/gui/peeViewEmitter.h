@@ -41,7 +41,7 @@ class peeViewEmitter : public igdeViewRenderWindow{
 private:
 	peeWindowMain &pWindowMain;
 	
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	igdeMouseCameraListener::Ref pCameraInteraction;
 	
@@ -73,7 +73,7 @@ public:
 	inline peeEmitter *GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
-	void SetEmitter(peeEmitter *emitter);
+	void SetEmitter(peeEmitter::Ref emitter);
 	
 	/** \brief Game like frame update. */
 	virtual void OnFrameUpdate(float elapsed);

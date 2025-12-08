@@ -41,7 +41,7 @@
 ////////////////////////////
 
 ceCAPlayerChoiceOption::ceCAPlayerChoiceOption() :
-pCondition(NULL),
+
 pTIMExpanded(true),
 pTIMConditionExpanded(true),
 pTIMActionsExpanded(true){
@@ -49,13 +49,12 @@ pTIMActionsExpanded(true){
 
 ceCAPlayerChoiceOption::ceCAPlayerChoiceOption(const ceCAPlayerChoiceOption &option) :
 pText(option.pText),
-pCondition(NULL),
 pTIMExpanded(option.pTIMExpanded),
 pTIMConditionExpanded(option.pTIMConditionExpanded),
 pTIMActionsExpanded(option.pTIMActionsExpanded)
 {
 	const ceConversationActionList &actions = option.GetActions();
-	ceConversationAction *action = NULL;
+	ceConversationAction::Ref action = NULL;
 	int i;
 	
 	try{
@@ -67,14 +66,10 @@ pTIMActionsExpanded(option.pTIMActionsExpanded)
 		for(i=0; i<count; i++){
 			action = actions.GetAt(i)->CreateCopy();
 			pActions.Add(action);
-			action->FreeReference();
 			action = NULL;
 		}
 		
 	}catch(const deException &){
-		if(action){
-			action->FreeReference();
-		}
 		pActions.RemoveAll();
 		throw;
 	}
@@ -94,20 +89,11 @@ void ceCAPlayerChoiceOption::SetText(const decUnicodeString &text){
 	pText = text;
 }
 
-void ceCAPlayerChoiceOption::SetCondition(ceConversationCondition *condition){
+void ceCAPlayerChoiceOption::SetCondition(ceConversationCondition::Ref condition){
 	if(condition == pCondition){
 		return;
 	}
-	
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	
 	pCondition = condition;
-	
-	if(condition){
-		condition->AddReference();
-	}
 }
 
 

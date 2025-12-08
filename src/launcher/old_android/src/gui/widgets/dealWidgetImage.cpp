@@ -42,18 +42,14 @@
 // Constructors, destructors
 //////////////////////////////
 
-dealWidgetImage::dealWidgetImage(dealDisplay &display, dealImage *image) :
+dealWidgetImage::dealWidgetImage(dealDisplay &display, dealImage::Ref image) :
 dealWidget(display),
-pImage(NULL),
 pColorize(1.0f, 1.0f, 1.0f),
 pScaling(1.0f){
 	SetImage(image);
 }
 
 dealWidgetImage::~dealWidgetImage(){
-	if(pImage){
-		pImage->FreeReference();
-	}
 }
 
 
@@ -61,21 +57,11 @@ dealWidgetImage::~dealWidgetImage(){
 // Management
 ///////////////
 
-void dealWidgetImage::SetImage(dealImage *image){
+void dealWidgetImage::SetImage(dealImage::Ref image){
 	if(image == pImage){
 		return;
 	}
-	
-	if(pImage){
-		pImage->FreeReference();
-	}
-	
 	pImage = image;
-	
-	if(image){
-		image->AddReference();
-	}
-	
 	DirtyParentLayout();
 }
 

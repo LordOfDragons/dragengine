@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCCAParamSetOperator::ceUCCAParamSetOperator(ceConversationTopic *topic,
-ceConversationAction *action, ceCConditionActorParameter *condition,
+ceUCCAParamSetOperator::ceUCCAParamSetOperator(ceConversationTopic::Ref topic,
+ceConversationAction::Ref action, ceCConditionActorParameter::Ref condition,
 ceCConditionActorParameter::eOperators newOperator){
 	if(!topic || !action || !condition) DETHROW(deeInvalidParam);
 	
@@ -55,25 +55,11 @@ ceCConditionActorParameter::eOperators newOperator){
 	SetShortInfo("Condition ActorParameter: Set Operator");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
-	
 	pCondition = condition;
-	condition->AddReference();
 }
 
 ceUCCAParamSetOperator::~ceUCCAParamSetOperator(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

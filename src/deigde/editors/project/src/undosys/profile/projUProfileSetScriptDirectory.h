@@ -37,7 +37,7 @@ class projProfile;
  */
 class projUProfileSetScriptDirectory : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	projUProfileSetScriptDirectory(projProfile *profile, const char *newValue);
+	projUProfileSetScriptDirectory(projProfile::Ref profile, const char *newValue);
 	
 	/** \brief Clean up undo action. */
 	virtual ~projUProfileSetScriptDirectory();

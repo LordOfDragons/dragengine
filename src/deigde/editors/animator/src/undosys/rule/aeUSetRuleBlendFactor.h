@@ -37,7 +37,7 @@ class aeRule;
  */
 class aeUSetRuleBlendFactor : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 	float pOldFactor;
 	float pNewFactor;

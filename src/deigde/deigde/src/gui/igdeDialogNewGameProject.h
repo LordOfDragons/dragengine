@@ -52,7 +52,7 @@ public:
 	
 private:
 	igdeWindowMain &pWindowMain;
-	igdeGameProject *pNewProject;
+	igdeGameProject::Ref pNewProject;
 	
 	igdeTextField::Ref pEditName;
 	igdeTextArea::Ref pEditDescription;

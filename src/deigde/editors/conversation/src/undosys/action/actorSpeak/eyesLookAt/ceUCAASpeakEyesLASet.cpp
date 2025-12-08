@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakEyesLASet::ceUCAASpeakEyesLASet(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak, ceStrip *eyesLookAt, ceStrip *newStrip){
+ceUCAASpeakEyesLASet::ceUCAASpeakEyesLASet(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak, ceStrip::Ref eyesLookAt, ceStrip::Ref newStrip){
 	if(!topic || !actorSpeak || !eyesLookAt || !newStrip){
 		DETHROW(deeInvalidParam);
 	}
@@ -55,37 +55,15 @@ ceUCAASpeakEyesLASet::ceUCAASpeakEyesLASet(ceConversationTopic *topic, ceCAActor
 	
 	SetShortInfo("Set eyes look-at");
 	
-	pOldStrip = new ceStrip(*eyesLookAt);
+	pOldStrip.TakeOver(new ceStrip(*eyesLookAt));
 	
 	pNewStrip = newStrip;
-	newStrip->AddReference();
-	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
-	
 	pEyesLA = eyesLookAt;
-	eyesLookAt->AddReference();
 }
 
 ceUCAASpeakEyesLASet::~ceUCAASpeakEyesLASet(){
-	if(pNewStrip){
-		pNewStrip->FreeReference();
-	}
-	if(pOldStrip){
-		pOldStrip->FreeReference();
-	}
-	if(pEyesLA){
-		pEyesLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCBillboardSetBoneName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCBillboardSetBoneName(gdeObjectClass *objectClass, gdeOCBillboard *billboard, const char *newValue);
+	gdeUOCBillboardSetBoneName(gdeObjectClass::Ref objectClass, gdeOCBillboard::Ref billboard, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

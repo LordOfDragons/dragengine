@@ -69,10 +69,10 @@ deSpeaker *deSpeakerManager::GetRootSpeaker() const{
 }
 
 deSpeaker *deSpeakerManager::CreateSpeaker(){
-	deSpeaker *speaker = NULL;
+	deSpeaker::Ref speaker = NULL;
 	
 	try{
-		speaker = new deSpeaker(this);
+		speaker.TakeOver(new deSpeaker(this));
 		if(!speaker) DETHROW(deeOutOfMemory);
 		
 		GetAudioSystem()->LoadSpeaker(speaker);
@@ -81,9 +81,6 @@ deSpeaker *deSpeakerManager::CreateSpeaker(){
 		pSpeakers.Add(speaker);
 		
 	}catch(const deException &){
-		if(speaker){
-			speaker->FreeReference();
-		}
 		throw;
 	}
 	
@@ -107,7 +104,7 @@ void deSpeakerManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deSpeakerManager::SystemAudioLoad(){
-	deSpeaker *speaker = (deSpeaker*)pSpeakers.GetRoot();
+	deSpeaker::Ref speaker = (deSpeaker*)pSpeakers.GetRoot();
 	deAudioSystem &audSys = *GetAudioSystem();
 	
 	while(speaker){
@@ -120,7 +117,7 @@ void deSpeakerManager::SystemAudioLoad(){
 }
 
 void deSpeakerManager::SystemAudioUnload(){
-	deSpeaker *speaker = (deSpeaker*)pSpeakers.GetRoot();
+	deSpeaker::Ref speaker = (deSpeaker*)pSpeakers.GetRoot();
 	
 	while(speaker){
 		speaker->SetPeerAudio(NULL);
@@ -129,7 +126,7 @@ void deSpeakerManager::SystemAudioUnload(){
 }
 
 void deSpeakerManager::SystemScriptingLoad(){
-	deSpeaker *speaker = (deSpeaker*)pSpeakers.GetRoot();
+	deSpeaker::Ref speaker = (deSpeaker*)pSpeakers.GetRoot();
 	deScriptingSystem &scriptingSystem = *GetScriptingSystem();
 	
 	while(speaker){
@@ -141,7 +138,7 @@ void deSpeakerManager::SystemScriptingLoad(){
 }
 
 void deSpeakerManager::SystemScriptingUnload(){
-	deSpeaker *speaker = (deSpeaker*)pSpeakers.GetRoot();
+	deSpeaker::Ref speaker = (deSpeaker*)pSpeakers.GetRoot();
 	
 	while(speaker){
 		speaker->SetPeerScripting(NULL);

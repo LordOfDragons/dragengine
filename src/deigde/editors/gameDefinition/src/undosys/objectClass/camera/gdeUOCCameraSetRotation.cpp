@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-gdeUOCCameraSetRotation::gdeUOCCameraSetRotation(gdeObjectClass *objectClass,
-gdeOCCamera *camera, const decVector &newValue) :
-pObjectClass(NULL),
+gdeUOCCameraSetRotation::gdeUOCCameraSetRotation(gdeObjectClass::Ref objectClass,
+gdeOCCamera::Ref camera, const decVector &newValue) :
+
 pCamera(NULL)
 {
 	if(!objectClass || !camera){
@@ -55,19 +55,10 @@ pCamera(NULL)
 	pNewValue = newValue;
 	
 	pCamera = camera;
-	camera->AddReference();
-	
 	pObjectClass = objectClass;
-	objectClass->AddReference();
 }
 
 gdeUOCCameraSetRotation::~gdeUOCCameraSetRotation(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetTriggerName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	gdeOCLight::eTriggers pTrigger;
 	decString pOldValue;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetTriggerName(gdeObjectClass *objectClass, gdeOCLight *light,
+	gdeUOCLightSetTriggerName(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light,
 		gdeOCLight::eTriggers trigger, const char *newValue);
 	
 protected:

@@ -40,9 +40,9 @@
 // Constructor, destructor
 ////////////////////////////
 
-seUBodyRemove::seUBodyRemove(seBody *body) :
-pLayer(NULL),
-pBody(NULL),
+seUBodyRemove::seUBodyRemove(seBody::Ref body) :
+
+
 pIndex(0)
 {
 	if(!body){
@@ -65,16 +65,9 @@ pIndex(0)
 	layer->AddReference();
 	
 	pBody = body;
-	body->AddReference();
 }
 
 seUBodyRemove::~seUBodyRemove(){
-	if(pBody){
-		pBody->FreeReference();
-	}
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

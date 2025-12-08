@@ -40,12 +40,12 @@ class seControllerTarget;
 class seULinkRemove : public igdeUndo{
 private:
 	struct sTarget{
-		seSource *source;
+		seSource::Ref source;
 		seControllerTarget *target;
 	};
 	
-	seSynthesizer *pSynthesizer;
-	seLink *pLink;
+	seSynthesizer::Ref pSynthesizer;
+	seLink::Ref pLink;
 	
 	sTarget *pTargets;
 	int pTargetCount;
@@ -80,8 +80,8 @@ public:
 	
 private:
 	void pCleanUp();
-	void pAddTargetsForSource(seLink *link, int targetCount, seSource *source);
-	void pAddTarget(int targetCount, seSource *source, seControllerTarget *target);
+	void pAddTargetsForSource(seLink *link, int targetCount, seSource::Ref source);
+	void pAddTarget(int targetCount, seSource::Ref source, seControllerTarget *target);
 };
 
 #endif

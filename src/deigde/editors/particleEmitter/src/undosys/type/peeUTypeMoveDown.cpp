@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-peeUTypeMoveDown::peeUTypeMoveDown(peeType *type){
+peeUTypeMoveDown::peeUTypeMoveDown(peeType::Ref type){
 	if(!type){
 		DETHROW(deeInvalidParam);
 	}
@@ -60,13 +60,9 @@ peeUTypeMoveDown::peeUTypeMoveDown(peeType *type){
 	}
 	
 	pType = type;
-	type->AddReference();
 }
 
 peeUTypeMoveDown::~peeUTypeMoveDown(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

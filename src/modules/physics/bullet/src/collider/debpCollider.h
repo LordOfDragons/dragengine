@@ -103,7 +103,7 @@ private:
 	int pPPCTColliderIndex;
 	int pUpdateOctreeIndex;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSShape;
 	
 	

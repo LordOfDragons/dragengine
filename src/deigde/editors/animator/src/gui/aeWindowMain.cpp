@@ -112,11 +112,7 @@
 
 aeWindowMain::aeWindowMain(aeIGDEModule &module) :
 igdeEditorWindow(module),
-pListener(NULL),
-pLoadSaveSystem(NULL),
-pView3D(NULL),
-pWindowProperties(NULL),
-pAnimator(NULL)
+pLoadSaveSystem(NULL)
 {
 	igdeEnvironment &env = GetEnvironment();
 	
@@ -124,7 +120,7 @@ pAnimator(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new aeWindowMainListener(*this);
+	pListener.TakeOver(new aeWindowMainListener(*this));
 	pLoadSaveSystem = new aeLoadSaveSystem(this);
 	pConfiguration = new aeConfiguration(*this);
 	
@@ -138,10 +134,10 @@ pAnimator(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties = new aeWindowProperties(*this);
+	pWindowProperties.TakeOver(new aeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pView3D = new aeView3D(*this);
+	pView3D.TakeOver(new aeView3D(*this));
 	splitted->AddChild(pView3D, igdeContainerSplitted::eaCenter);
 	
 	CreateNewAnimator();
@@ -154,14 +150,6 @@ aeWindowMain::~aeWindowMain(){
 	}
 	
 	SetAnimator(NULL);
-	
-	if(pView3D){
-		pView3D->FreeReference();
-	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
-	
 	pClipboard.ClearAll();
 	
 	if(pConfiguration){
@@ -169,10 +157,6 @@ aeWindowMain::~aeWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -191,7 +175,7 @@ void aeWindowMain::ResetViews(){
 
 
 
-void aeWindowMain::SetAnimator(aeAnimator *animator){
+void aeWindowMain::SetAnimator(aeAnimator::Ref animator){
 	if(animator == pAnimator){
 		return;
 	}
@@ -205,13 +189,11 @@ void aeWindowMain::SetAnimator(aeAnimator *animator){
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
 		pAnimator->Dispose();
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
-		animator->AddReference();
 		animator->AddNotifier(pListener);
 		
 		pActionEditUndo->SetUndoSystem(animator->GetUndoSystem());
@@ -473,7 +455,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator) = 0;
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator) = 0;
 	
 	virtual void Update(){
 		if(pWindow.GetAnimator()){
@@ -546,7 +528,7 @@ public:
 		"Save As...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiSave),
 		"Saves animator under a differen file", deInputEvent::ekcA){}
 	
-	virtual igdeUndo * OnAction(aeAnimator *animator){
+	virtual igdeUndo * OnAction(aeAnimator::Ref animator){
 		decString filename(animator->GetFilePath());
 		if(igdeCommonDialogs::GetFileSave(&pWindow, "Save Animator",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
@@ -567,7 +549,7 @@ public:
 		SetMnemonic(deInputEvent::ekcS);
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		if(animator->GetSaved()){
 			if(animator->GetChanged()){
 				pWindow.SaveAnimator(animator->GetFilePath());
@@ -627,7 +609,7 @@ public:
 		"Locomotion Testing", NULL, "Enables/Disabled the locomotion testing",
 		deInputEvent::esmControl, deInputEvent::ekcL, deInputEvent::ekcL){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		if(animator->GetWakeboard().GetEnabled()){
 			return NULL;
 		}
@@ -652,7 +634,7 @@ public:
 		"Wakeboarding", NULL, "Enables/Disabled wakeboarding",
 		deInputEvent::esmControl, deInputEvent::ekcW, deInputEvent::ekcW){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		if(animator->GetLocomotion().GetEnabled()){
 			return NULL;
 		}
@@ -676,7 +658,7 @@ public:
 	cActionEditShowBones(aeWindowMain &window) : cActionBase(window,
 		"Show Bones", NULL, "Show bones", deInputEvent::ekcB){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		animator->SetShowBones(!animator->GetShowBones());
 		return NULL;
 	}
@@ -691,7 +673,7 @@ public:
 	cActionEditDDBoneSize(aeWindowMain &window) : cActionBase(window,
 		"Show Bones Base Size...", NULL, "Show bones base size", deInputEvent::ekcS){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		float size = animator->GetDDBoneSize();
 		if(igdeCommonDialogs::GetFloat(&pWindow, "Set bone base size", "Size:", size)){
 			animator->SetDDBoneSize(size);
@@ -713,12 +695,12 @@ public:
 		const char *description, deInputEvent::eKeyCodes mnemonic) :
 	cActionBase(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		return animator->GetActiveController()
 			? OnActionController(animator, animator->GetActiveController()) : NULL;
 	}
 	
-	virtual igdeUndo *OnActionController(aeAnimator *animator, aeController *controller) = 0;
+	virtual igdeUndo *OnActionController(aeAnimator::Ref animator, aeController *controller) = 0;
 	
 	void Update(const aeAnimator &animator) override{
 		if(animator.GetActiveController()){
@@ -742,7 +724,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add a controller", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		decString name("Controller");
 		if(!igdeCommonDialogs::GetString(&pWindow, "Add Controller", "Name:", name)){
 			return NULL;
@@ -763,7 +745,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Duplicate controller", deInputEvent::ekcD){}
 	
-	virtual igdeUndo *OnActionController(aeAnimator *animator, aeController *controller){
+	virtual igdeUndo *OnActionController(aeAnimator::Ref animator, aeController *controller){
 		decString name(controller->GetName() + " Copy");
 		if(!igdeCommonDialogs::GetString(&pWindow, "Duplicate Controller", "Name:", name)){
 			return nullptr;
@@ -786,7 +768,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove controller", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnActionController(aeAnimator *animator, aeController *controller){
+	virtual igdeUndo *OnActionController(aeAnimator::Ref animator, aeController *controller){
 		const aeLinkList &links = animator->GetLinks();
 		const int count = links.GetCount();
 		int i, usageCount = 0;
@@ -821,7 +803,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 		"Move controller up", deInputEvent::ekcU){}
 	
-	virtual igdeUndo *OnActionController(aeAnimator *animator, aeController *controller){
+	virtual igdeUndo *OnActionController(aeAnimator::Ref animator, aeController *controller){
 		return animator->GetControllers().IndexOf(controller) > 0
 			? new aeUMoveControllerUp(animator, controller) : NULL;
 	}
@@ -837,7 +819,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 		"Move controller down", deInputEvent::ekcD){}
 	
-	virtual igdeUndo *OnActionController(aeAnimator *animator, aeController *controller){
+	virtual igdeUndo *OnActionController(aeAnimator::Ref animator, aeController *controller){
 		return animator->GetControllers().IndexOf(controller) < animator->GetControllers().GetCount() - 1
 			? new aeUMoveControllerDown(animator, controller) : NULL;
 	}
@@ -862,11 +844,11 @@ public:
 		const char *description, deInputEvent::eKeyCodes mnemonic) :
 	cActionBase(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		return animator->GetActiveLink() ? OnActionLink(animator, animator->GetActiveLink()) : NULL;
 	}
 	
-	virtual igdeUndo *OnActionLink(aeAnimator *animator, aeLink *link) = 0;
+	virtual igdeUndo *OnActionLink(aeAnimator::Ref animator, aeLink *link) = 0;
 	
 	void Update(const aeAnimator &animator) override{
 		if(animator.GetActiveLink()){
@@ -890,7 +872,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add a link", deInputEvent::ekcA){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		decString name("Link");
 		if(!igdeCommonDialogs::GetString(&pWindow, "Add Link", "Name:", name)){
 			return NULL;
@@ -907,7 +889,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Duplicate link", deInputEvent::ekcD){}
 	
-	virtual igdeUndo *OnActionLink(aeAnimator *animator, aeLink *link){
+	virtual igdeUndo *OnActionLink(aeAnimator::Ref animator, aeLink *link){
 		decString name(link->GetName() + " Copy");
 		if(!igdeCommonDialogs::GetString(&pWindow, "Duplicate Link", "Name:", name)){
 			return NULL;
@@ -925,7 +907,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove link", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnActionLink(aeAnimator *animator, aeLink *link){
+	virtual igdeUndo *OnActionLink(aeAnimator::Ref animator, aeLink *link){
 		const int usageCount = animator->CountLinkUsage(link);
 		if(usageCount > 0){
 			decString text;
@@ -949,7 +931,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove links not used in any rule target", deInputEvent::ekcU){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		return new aeULinkRemoveUnused(animator);
 	}
 };
@@ -968,11 +950,11 @@ public:
 		const char *description, deInputEvent::eKeyCodes mnemonic) :
 	cActionBase(window, text, icon, description, mnemonic){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator){
+	virtual igdeUndo *OnAction(aeAnimator::Ref animator){
 		return animator->GetActiveRule() ? OnActionRule(animator, animator->GetActiveRule()) : NULL;
 	}
 	
-	virtual igdeUndo *OnActionRule(aeAnimator *animator, aeRule *rule) = 0;
+	virtual igdeUndo *OnActionRule(aeAnimator::Ref animator, aeRule *rule) = 0;
 	
 	void Update(const aeAnimator &animator) override{
 		if(animator.GetActiveRule()){
@@ -1030,7 +1012,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove rule", deInputEvent::ekcR){}
 	
-	virtual igdeUndo *OnActionRule(aeAnimator *animator, aeRule *rule){
+	virtual igdeUndo *OnActionRule(aeAnimator::Ref animator, aeRule *rule){
 		aeRuleGroup * const parentGroup = rule->GetParentGroup();
 		
 		if(parentGroup){
@@ -1048,7 +1030,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiUp),
 		"Move rule up", deInputEvent::ekcU){}
 	
-	virtual igdeUndo *OnActionRule(aeAnimator *animator, aeRule *rule){
+	virtual igdeUndo *OnActionRule(aeAnimator::Ref animator, aeRule *rule){
 		aeRuleGroup * const parentGroup = rule->GetParentGroup();
 		
 		if(parentGroup){
@@ -1079,7 +1061,7 @@ public:
 		window.GetEnvironment().GetStockIcon(igdeEnvironment::esiDown),
 		"Move rule down", deInputEvent::ekcD){}
 	
-	virtual igdeUndo *OnActionRule(aeAnimator *animator, aeRule *rule){
+	virtual igdeUndo *OnActionRule(aeAnimator::Ref animator, aeRule *rule){
 		aeRuleGroup * const pg = rule->GetParentGroup();
 		
 		if(pg){

@@ -57,7 +57,7 @@
 
 
 struct sLigNatDat{
-	deLight *light;
+	deLight::Ref light;
 };
 
 
@@ -981,7 +981,7 @@ deLight *deClassLight::GetLight(dsRealObject *myself) const{
 	return ((sLigNatDat*)p_GetNativeData(myself->GetBuffer()))->light;
 }
 
-void deClassLight::PushLight(dsRunTime *rt, deLight *light){
+void deClassLight::PushLight(dsRunTime *rt, deLight::Ref light){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -993,5 +993,4 @@ void deClassLight::PushLight(dsRunTime *rt, deLight *light){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sLigNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->light = light;
-	light->AddReference();
 }

@@ -38,8 +38,8 @@ class seSynthesizer;
  */
 class seURemoveController : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
-	seController *pController;
+	seSynthesizer::Ref pSynthesizer;
+	seController::Ref pController;
 	int pIndex;
 	
 	
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seURemoveController(seSynthesizer *synthesizer, seController *controller);
+	seURemoveController(seSynthesizer::Ref synthesizer, seController::Ref controller);
 	
 protected:
 	/** \brief Clean up undo action. */

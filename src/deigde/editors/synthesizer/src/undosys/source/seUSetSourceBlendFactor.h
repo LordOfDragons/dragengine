@@ -37,7 +37,7 @@ class seSource;
  */
 class seUSetSourceBlendFactor : public igdeUndo{
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	
 	float pOldFactor;
 	float pNewFactor;

@@ -70,10 +70,10 @@ deParticleEmitterInstance *deParticleEmitterInstanceManager::GetRootInstance() c
 }
 
 deParticleEmitterInstance *deParticleEmitterInstanceManager::CreateInstance(){
-	deParticleEmitterInstance *instance = NULL;
+	deParticleEmitterInstance::Ref instance = NULL;
 	
 	try{
-		instance = new deParticleEmitterInstance(this);
+		instance.TakeOver(new deParticleEmitterInstance(this));
 		
 		GetGraphicSystem()->LoadParticleEmitterInstance(instance);
 		GetPhysicsSystem()->LoadParticleEmitterInstance(instance);
@@ -82,9 +82,6 @@ deParticleEmitterInstance *deParticleEmitterInstanceManager::CreateInstance(){
 		pInstances.Add(instance);
 		
 	}catch(const deException &){
-		if(instance){
-			instance->FreeReference();
-		}
 		throw;
 	}
 	
@@ -106,7 +103,7 @@ void deParticleEmitterInstanceManager::ReleaseLeakingResources(){
 ////////////////////
 
 void deParticleEmitterInstanceManager::SystemGraphicLoad(){
-	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
+	deParticleEmitterInstance::Ref instance = (deParticleEmitterInstance*)pInstances.GetRoot();
 	deGraphicSystem &grasys = *GetGraphicSystem();
 	
 	while(instance){
@@ -119,7 +116,7 @@ void deParticleEmitterInstanceManager::SystemGraphicLoad(){
 }
 
 void deParticleEmitterInstanceManager::SystemGraphicUnload(){
-	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
+	deParticleEmitterInstance::Ref instance = (deParticleEmitterInstance*)pInstances.GetRoot();
 	
 	while(instance){
 		instance->SetPeerGraphic(NULL);
@@ -128,7 +125,7 @@ void deParticleEmitterInstanceManager::SystemGraphicUnload(){
 }
 
 void deParticleEmitterInstanceManager::SystemPhysicsLoad(){
-	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
+	deParticleEmitterInstance::Ref instance = (deParticleEmitterInstance*)pInstances.GetRoot();
 	dePhysicsSystem &physys = *GetPhysicsSystem();
 	
 	while(instance){
@@ -141,7 +138,7 @@ void deParticleEmitterInstanceManager::SystemPhysicsLoad(){
 }
 
 void deParticleEmitterInstanceManager::SystemPhysicsUnload(){
-	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
+	deParticleEmitterInstance::Ref instance = (deParticleEmitterInstance*)pInstances.GetRoot();
 	
 	while(instance){
 		instance->SetPeerPhysics(NULL);
@@ -150,7 +147,7 @@ void deParticleEmitterInstanceManager::SystemPhysicsUnload(){
 }
 
 void deParticleEmitterInstanceManager::SystemScriptingLoad(){
-	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
+	deParticleEmitterInstance::Ref instance = (deParticleEmitterInstance*)pInstances.GetRoot();
 	deScriptingSystem &scrsys = *GetScriptingSystem();
 	
 	while(instance){
@@ -163,7 +160,7 @@ void deParticleEmitterInstanceManager::SystemScriptingLoad(){
 }
 
 void deParticleEmitterInstanceManager::SystemScriptingUnload(){
-	deParticleEmitterInstance *instance = (deParticleEmitterInstance*)pInstances.GetRoot();
+	deParticleEmitterInstance::Ref instance = (deParticleEmitterInstance*)pInstances.GetRoot();
 	
 	while(instance){
 		instance->SetPeerScripting(NULL);

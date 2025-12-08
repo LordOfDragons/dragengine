@@ -41,7 +41,7 @@
 ////////////////////////////
 
 meUDecalPropertyRemoveFromSelected::meUDecalPropertyRemoveFromSelected(const meDecalList &list, const char *key){
-	meUndoDataDecalProperty *undoData = NULL;
+	meUndoDataDecalProperty::Ref undoData = NULL;
 	const int count = list.GetCount();
 	meDecal *decal;
 	int i;
@@ -62,21 +62,17 @@ meUDecalPropertyRemoveFromSelected::meUDecalPropertyRemoveFromSelected(const meD
 			
 			const decStringDictionary &properties = decal->GetProperties();
 			
-			undoData = new meUndoDataDecalProperty(decal);
+			undoData.TakeOver(new meUndoDataDecalProperty(decal));
 			undoData->SetPropertyExists(properties.Has(key));
 			if(undoData->GetPropertyExists()){
 				undoData->SetOldValue(properties.GetAt(key));
 			}
 			
 			pList.Add(undoData);
-			undoData->FreeReference();
 			undoData = NULL;
 		}
 		
 	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}

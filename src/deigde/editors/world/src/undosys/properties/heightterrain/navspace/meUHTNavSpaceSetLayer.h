@@ -36,7 +36,7 @@ class meHeightTerrainNavSpace;
  */
 class meUHTNavSpaceSetLayer : public igdeUndo{
 private:
-	meHeightTerrainNavSpace *pNavSpace;
+	meHeightTerrainNavSpace::Ref pNavSpace;
 	int pOldLayer;
 	int pNewLayer;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	meUHTNavSpaceSetLayer(meHeightTerrainNavSpace *navspace, int newLayer);
+	meUHTNavSpaceSetLayer(meHeightTerrainNavSpace::Ref navspace, int newLayer);
 	
 protected:
 	/** \brief Clean up undo action. */

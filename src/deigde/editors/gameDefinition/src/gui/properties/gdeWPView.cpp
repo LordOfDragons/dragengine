@@ -100,15 +100,13 @@ public:
 
 gdeWPView::gdeWPView(gdeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pGameDefinition(NULL),
-pListener(NULL)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content;
 	
-	pListener = new gdeWPViewListener(*this);
+	pListener.TakeOver(new gdeWPViewListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -121,10 +119,6 @@ pListener(NULL)
 
 gdeWPView::~gdeWPView(){
 	SetGameDefinition(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -132,7 +126,7 @@ gdeWPView::~gdeWPView(){
 // Management
 ///////////////
 
-void gdeWPView::SetGameDefinition(gdeGameDefinition *gameDefinition){
+void gdeWPView::SetGameDefinition(gdeGameDefinition::Ref gameDefinition){
 	if(gameDefinition == pGameDefinition){
 		return;
 	}
@@ -142,15 +136,12 @@ void gdeWPView::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
 	
 	if(gameDefinition){
 		gameDefinition->AddListener(pListener);
-		gameDefinition->AddReference();
-		
 		pWPCamera->SetCamera(gameDefinition->GetCamera());
 		pWPSky->SetSky(gameDefinition->GetSky());
 	}

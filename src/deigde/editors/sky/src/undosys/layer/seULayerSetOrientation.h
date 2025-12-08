@@ -37,7 +37,7 @@ class seLayer;
  */
 class seULayerSetOrientation : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;
@@ -51,7 +51,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	seULayerSetOrientation(seLayer *layer, const decVector &newOrientation);
+	seULayerSetOrientation(seLayer::Ref layer, const decVector &newOrientation);
 	
 protected:
 	/** \brief Clean up undo action. */

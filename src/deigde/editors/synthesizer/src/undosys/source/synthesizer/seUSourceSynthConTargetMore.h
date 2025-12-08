@@ -36,7 +36,7 @@ class seSourceSynthesizer;
  */
 class seUSourceSynthConTargetMore : public igdeUndo{
 private:
-	seSourceSynthesizer *pSource;
+	seSourceSynthesizer::Ref pSource;
 	
 	
 	

@@ -68,8 +68,7 @@ public:
 
 seViewSkin::seViewSkin(seWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pSkin(NULL)
+pWindowMain(windowMain)
 {
 	pCameraInteraction.TakeOver(new cCameraInteraction(*this));
 	
@@ -88,7 +87,7 @@ seViewSkin::~seViewSkin(){
 void seViewSkin::ResetView(){
 }
 
-void seViewSkin::SetSkin(seSkin *skin){
+void seViewSkin::SetSkin(seSkin::Ref skin){
 	if(skin == pSkin){
 		return;
 	}
@@ -96,15 +95,9 @@ void seViewSkin::SetSkin(seSkin *skin){
 	pCameraInteraction->SetCamera(NULL);
 	
 	SetRenderWorld(NULL);
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	pSkin = skin;
 	
 	if(skin){
-		skin->AddReference();
 		SetRenderWorld(skin->GetCamera()->GetEngineCamera());
 		pCameraInteraction->SetCamera(skin->GetCamera());
 	}

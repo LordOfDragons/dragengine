@@ -40,8 +40,8 @@
 ////////////////////////////
 
 gdeUGDSetAutoFindPathSkins::gdeUGDSetAutoFindPathSkins(
-	gdeGameDefinition *gameDefinition, const decStringList &newValue) :
-pGameDefinition(NULL),
+	gdeGameDefinition::Ref gameDefinition, const decStringList &newValue) :
+
 pNewValue(newValue)
 {
 	if(!gameDefinition){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = gameDefinition->GetAutoFindPathSkins();
 	
 	pGameDefinition = gameDefinition;
-	gameDefinition->AddReference();
 }
 
 gdeUGDSetAutoFindPathSkins::~gdeUGDSetAutoFindPathSkins(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

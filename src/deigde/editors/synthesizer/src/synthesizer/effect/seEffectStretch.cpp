@@ -170,11 +170,11 @@ void seEffectStretch::RemoveLinksFromAllTargets(){
 
 
 deSynthesizerEffect *seEffectStretch::CreateEngineEffect(){
-	deSynthesizerEffectStretch *engEffect = NULL;
+	deSynthesizerEffectStretch::Ref engEffect = NULL;
 	
 	try{
 		// create effect
-		engEffect = new deSynthesizerEffectStretch;
+		engEffect.TakeOver(new deSynthesizerEffectStretch);
 		
 		// init effect
 		InitEngineEffect(engEffect);
@@ -188,9 +188,6 @@ deSynthesizerEffect *seEffectStretch::CreateEngineEffect(){
 		pTargetPitch.UpdateEngineTarget(GetSynthesizer(), engEffect->GetTargetPitch());
 		
 	}catch(const deException &){
-		if(engEffect){
-			engEffect->FreeReference();
-		}
 		throw;
 	}
 	

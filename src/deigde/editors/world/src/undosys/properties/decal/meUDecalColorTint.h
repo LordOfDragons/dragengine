@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalColorTint : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	decColor pOldColor;
 	decColor pNewColor;
 	
@@ -49,7 +49,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */
-	meUDecalColorTint(meDecal *decal, const decColor &newColor);
+	meUDecalColorTint(meDecal::Ref decal, const decColor &newColor);
 	
 protected:
 	/** \brief Clean up undo object. */

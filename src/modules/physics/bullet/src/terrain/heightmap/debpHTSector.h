@@ -77,7 +77,7 @@ private:
 	
 	debpPhysicsBody *pPhyBody;
 	debpHeightTerrainShape *pShape;
-	debpBulletShape *pBulletShape;
+	debpBulletShape::Ref pBulletShape;
 	
 public:
 	/** @name Constructors and Destructors */

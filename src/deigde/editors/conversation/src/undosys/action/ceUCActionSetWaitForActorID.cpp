@@ -41,8 +41,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCActionSetWaitForActorID::ceUCActionSetWaitForActorID(ceConversationTopic *topic,
-ceConversationAction *action, const char *newID) :
+ceUCActionSetWaitForActorID::ceUCActionSetWaitForActorID(ceConversationTopic::Ref topic,
+ceConversationAction::Ref action, const char *newID) :
 pNewID(newID)
 {
 	if(!topic){
@@ -56,19 +56,10 @@ pNewID(newID)
 	SetShortInfo("Action Set Wait For Actor ID ");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pAction = action;
-	action->AddReference();
 }
 
 ceUCActionSetWaitForActorID::~ceUCActionSetWaitForActorID(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

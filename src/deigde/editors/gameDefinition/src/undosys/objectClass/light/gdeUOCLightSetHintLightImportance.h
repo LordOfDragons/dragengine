@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetHintLightImportance : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	int pOldValue;
 	int pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCLightSetHintLightImportance(gdeObjectClass *objectClass, gdeOCLight *light, int newValue);
+	gdeUOCLightSetHintLightImportance(gdeObjectClass::Ref objectClass, gdeOCLight::Ref light, int newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

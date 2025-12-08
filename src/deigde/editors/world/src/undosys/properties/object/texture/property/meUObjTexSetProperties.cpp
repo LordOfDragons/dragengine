@@ -40,7 +40,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjTexSetProperties::meUObjTexSetProperties(meObjectTexture *texture,
+meUObjTexSetProperties::meUObjTexSetProperties(meObjectTexture::Ref texture,
 const decStringDictionary &newValues) :
 pTexture(texture),
 pNewValues(newValues)
@@ -54,13 +54,9 @@ pNewValues(newValues)
 	pOldValues = texture->GetProperties();
 	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUObjTexSetProperties::~meUObjTexSetProperties(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

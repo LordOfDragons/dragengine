@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavSpaceSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationSpace *pNavSpace;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	decVector pOldValue;
 	decVector pNewValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCNavSpaceSetRotation(gdeObjectClass *objectClass,
-		gdeOCNavigationSpace *navspace, const decVector &newValue);
+	gdeUOCNavSpaceSetRotation(gdeObjectClass::Ref objectClass,
+		gdeOCNavigationSpace::Ref navspace, const decVector &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCSpeakerSetBoneName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -53,7 +53,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerSetBoneName(gdeObjectClass *objectClass, gdeOCSpeaker *speaker, const char *newValue);
+	gdeUOCSpeakerSetBoneName(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

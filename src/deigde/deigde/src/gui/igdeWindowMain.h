@@ -93,8 +93,8 @@ private:
 	deVirtualFileSystem::Ref pVFS;
 	igdeTemplateList *pTemplates;
 	igdeGameDefinitionList *pSharedGameDefinitions;
-	igdeGameDefinition *pIGDEGameDefinition;
-	igdeGameProject *pGameProject;
+	igdeGameDefinition::Ref pIGDEGameDefinition;
+	igdeGameProject::Ref pGameProject;
 	igdeGuiTheme::Ref pDefaultGuiTheme;
 	decObjectDictionary pGuiThemes;
 	igdeSharedFontList *pSharedFontList;
@@ -267,7 +267,7 @@ public:
 	/** Retrieves the active game project. */
 	inline igdeGameProject *GetGameProject() const{ return pGameProject; }
 	/** Sets the active game project. */
-	void SetGameProject(igdeGameProject *project);
+	void SetGameProject(igdeGameProject::Ref project);
 	/**
 	 * Creates a new game project.
 	 * \returns True of the project has been created or false otherwise.

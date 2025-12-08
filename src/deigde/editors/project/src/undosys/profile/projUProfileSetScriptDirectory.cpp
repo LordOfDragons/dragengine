@@ -40,8 +40,8 @@
 ////////////////////////////
 
 projUProfileSetScriptDirectory::projUProfileSetScriptDirectory(
-projProfile *profile, const char *newValue) :
-pProfile(NULL),
+projProfile::Ref profile, const char *newValue) :
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetScriptDirectory();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetScriptDirectory::~projUProfileSetScriptDirectory(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

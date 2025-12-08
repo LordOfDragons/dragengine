@@ -48,19 +48,13 @@ decObjectDictionary::sDictEntry::sDictEntry(const decObjectDictionary::sDictEntr
 	hash = entry.hash;
 	key = entry.key;
 	value = entry.value;
-	if(value){
-		value->AddReference();
-	}
 	next = NULL;
 }
 
-decObjectDictionary::sDictEntry::sDictEntry(unsigned int nhash, const char *nkey, deObject *nvalue){
+decObjectDictionary::sDictEntry::sDictEntry(unsigned int nhash, const char *nkey, deObject::Ref nvalue){
 	hash = nhash;
 	key = nkey;
 	value = nvalue;
-	if(value){
-		value->AddReference();
-	}
 	next = NULL;
 }
 
@@ -69,17 +63,9 @@ decObjectDictionary::sDictEntry::~sDictEntry(){
 	next = NULL;
 }
 
-void decObjectDictionary::sDictEntry::SetValue(deObject *nvalue){
+void decObjectDictionary::sDictEntry::SetValue(deObject::Ref nvalue){
 	if(nvalue != value){
-		if(value){
-			value->FreeReference();
-		}
-		
 		value = nvalue;
-		
-		if(nvalue){
-			nvalue->AddReference();
-		}
 	}
 }
 
@@ -230,7 +216,7 @@ bool decObjectDictionary::GetAt(const char *key, deObject **object) const{
 	return false;
 }
 
-void decObjectDictionary::SetAt(const char *key, deObject *value){
+void decObjectDictionary::SetAt(const char *key, deObject::Ref value){
 	if(!key){
 		DETHROW(deeNullPointer);
 	}

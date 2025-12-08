@@ -49,7 +49,7 @@ class deDebugDrawerVolume;
 class meLumimeter : public deObject{
 private:
 	deEngine *pEngine;
-	deLumimeter *pLumimeter;
+	deLumimeter::Ref pLumimeter;
 	deDebugDrawerVolume *pDDVolume;
 	meWorld *pWorld;
 	
@@ -62,7 +62,7 @@ private:
 	
 	bool pTrackCamera;
 	
-	meObject *pHostObject;
+	meObject::Ref pHostObject;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -123,7 +123,7 @@ public:
 	/** Retrieves the host object or NULL if not attached to any object. */
 	inline meObject *GetHostObject() const{ return pHostObject; }
 	/** Sets the host object or NULL if not attached to any object. */
-	void SetHostObject(meObject *object);
+	void SetHostObject(meObject::Ref object);
 	/** Determines if this lumimeter has a host object. */
 	bool HasHostObject() const;
 	/*@}*/

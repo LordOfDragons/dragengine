@@ -36,7 +36,7 @@ class sePropertyNodeText;
  */
 class seUPropertyNodeTextSetPath : public igdeUndo{
 private:
-	sePropertyNodeText *pNode;
+	sePropertyNodeText::Ref pNode;
 	
 	decString pOldValue;
 	decString pNewValue;
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeTextSetPath(sePropertyNodeText *node, const char *newValue);
+	seUPropertyNodeTextSetPath(sePropertyNodeText::Ref node, const char *newValue);
 	
 protected:
 	/** \brief Clean up undo. */

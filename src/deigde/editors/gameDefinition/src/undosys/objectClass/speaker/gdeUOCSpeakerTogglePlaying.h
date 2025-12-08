@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCSpeakerTogglePlaying : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	
 	
@@ -50,7 +50,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSpeakerTogglePlaying(gdeObjectClass *objectClass, gdeOCSpeaker *speaker);
+	gdeUOCSpeakerTogglePlaying(gdeObjectClass::Ref objectClass, gdeOCSpeaker::Ref speaker);
 	
 protected:
 	/** \brief Clean up undo action. */

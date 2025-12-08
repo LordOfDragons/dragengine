@@ -42,7 +42,7 @@
 
 // native structure
 struct sImgNatDat{
-	deImage *image;
+	deImage::Ref image;
 };
 
 // native functions
@@ -107,7 +107,7 @@ deClassImage::nfGetFilename::nfGetFilename(const sInitData &init) : dsFunction(i
 "getFilename", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassImage::nfGetFilename::RunFunction(dsRunTime *RT, dsValue *This){
-	deImage *image = ((sImgNatDat*)p_GetNativeData(This))->image;
+	deImage::Ref image = ((sImgNatDat*)p_GetNativeData(This))->image;
 	RT->PushString(image->GetFilename());
 }
 
@@ -116,7 +116,7 @@ deClassImage::nfGetWidth::nfGetWidth(const sInitData &init) : dsFunction(init.cl
 "getWidth", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassImage::nfGetWidth::RunFunction(dsRunTime *RT, dsValue *This){
-	deImage *image = ((sImgNatDat*)p_GetNativeData(This))->image;
+	deImage::Ref image = ((sImgNatDat*)p_GetNativeData(This))->image;
 	RT->PushInt(image->GetWidth());
 }
 
@@ -125,7 +125,7 @@ deClassImage::nfGetHeight::nfGetHeight(const sInitData &init) : dsFunction(init.
 "getHeight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassImage::nfGetHeight::RunFunction(dsRunTime *RT, dsValue *This){
-	deImage *image = ((sImgNatDat*)p_GetNativeData(This))->image;
+	deImage::Ref image = ((sImgNatDat*)p_GetNativeData(This))->image;
 	RT->PushInt(image->GetHeight());
 }
 
@@ -134,7 +134,7 @@ deClassImage::nfGetDepth::nfGetDepth(const sInitData &init) : dsFunction(init.cl
 "getDepth", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassImage::nfGetDepth::RunFunction(dsRunTime *RT, dsValue *This){
-	deImage *image = ((sImgNatDat*) p_GetNativeData(This))->image;
+	deImage::Ref image = ((sImgNatDat*) p_GetNativeData(This))->image;
 	RT->PushInt(image->GetDepth());
 }
 
@@ -143,7 +143,7 @@ deClassImage::nfGetComponentCount::nfGetComponentCount(const sInitData &init) : 
 "getComponentCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassImage::nfGetComponentCount::RunFunction(dsRunTime *RT, dsValue *This){
-	deImage *image = ((sImgNatDat*)p_GetNativeData(This))->image;
+	deImage::Ref image = ((sImgNatDat*)p_GetNativeData(This))->image;
 	RT->PushInt(image->GetComponentCount());
 }
 
@@ -152,7 +152,7 @@ deClassImage::nfGetBitCount::nfGetBitCount(const sInitData &init) : dsFunction(i
 "getBitCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassImage::nfGetBitCount::RunFunction(dsRunTime *RT, dsValue *This){
-	deImage *image = ((sImgNatDat*)p_GetNativeData(This))->image;
+	deImage::Ref image = ((sImgNatDat*)p_GetNativeData(This))->image;
 	RT->PushInt(image->GetBitCount());
 }
 
@@ -161,7 +161,7 @@ deClassImage::nfGetSize::nfGetSize(const sInitData &init) : dsFunction(init.clsI
 "getSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsPt){
 }
 void deClassImage::nfGetSize::RunFunction(dsRunTime *RT, dsValue *This){
-	deImage *image = ((sImgNatDat*)p_GetNativeData(This))->image;
+	deImage::Ref image = ((sImgNatDat*)p_GetNativeData(This))->image;
 	deClassImage *clsImg = (deClassImage*)GetOwnerClass();
 	clsImg->GetScriptModule()->PushPoint(RT, 
 		decPoint(image->GetWidth(), image->GetHeight()));
@@ -296,7 +296,7 @@ deImage *deClassImage::GetImage(dsRealObject *myself) const{
 	return ((sImgNatDat*)p_GetNativeData(myself->GetBuffer()))->image;
 }
 
-void deClassImage::PushImage(dsRunTime *rt, deImage *image){
+void deClassImage::PushImage(dsRunTime *rt, deImage::Ref image){
 	if(!rt){
 		DSTHROW(dueInvalidParam);
 	}
@@ -308,5 +308,4 @@ void deClassImage::PushImage(dsRunTime *rt, deImage *image){
 	
 	rt->CreateObjectNakedOnStack(this);
 	((sImgNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->image = image;
-	image->AddReference();
 }

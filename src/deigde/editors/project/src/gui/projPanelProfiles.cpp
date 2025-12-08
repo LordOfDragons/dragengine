@@ -112,7 +112,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnAction(projProject *project, projProfile *profile) = 0;
+	virtual igdeUndo *OnAction(projProject::Ref project, projProfile *profile) = 0;
 	
 	virtual void Update(){
 		const projProject * const project = pPanel.GetProject();
@@ -144,7 +144,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject *project,
+	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject::Ref project,
 		projProfile *profile) = 0;
 };
 
@@ -172,7 +172,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextArea *textArea, projProject *project,
+	virtual igdeUndo *OnChanged(igdeTextArea *textArea, projProject::Ref project,
 		projProfile *profile) = 0;
 };
 
@@ -200,7 +200,7 @@ public:
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditPoint *editPoint, projProject *project,
+	virtual igdeUndo *OnChanged(igdeEditPoint *editPoint, projProject::Ref project,
 		projProfile *profile) = 0;
 };
 
@@ -235,7 +235,7 @@ class cTextName : public cBaseTextFieldListener{
 public:
 	cTextName(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject *project,
+	virtual igdeUndo *OnChanged(igdeTextField *textField, projProject::Ref project,
 	projProfile *profile){
 		const decString &name = textField->GetText();
 		if(name == profile->GetName()){
@@ -662,15 +662,12 @@ projPanelProfiles::projPanelProfiles(projWindowMain &windowMain) :
 igdeContainerSplitted(windowMain.GetEnvironment(), igdeContainerSplitted::espLeft,
 	igdeApplication::app().DisplayScaled(250)),
 
-pWindowMain(windowMain),
-
-pProject(NULL),
-pListener(NULL)
+pWindowMain(windowMain)
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new projPanelProfilesListener(*this);
+	pListener.TakeOver(new projPanelProfilesListener(*this));
 	
 	
 	
@@ -845,10 +842,6 @@ pListener(NULL)
 
 projPanelProfiles::~projPanelProfiles(){
 	SetProject(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -856,7 +849,7 @@ projPanelProfiles::~projPanelProfiles(){
 // Management
 ///////////////
 
-void projPanelProfiles::SetProject(projProject *project){
+void projPanelProfiles::SetProject(projProject::Ref project){
 	if(project == pProject){
 		return;
 	}
@@ -867,13 +860,11 @@ void projPanelProfiles::SetProject(projProject *project){
 	
 	if(pProject){
 		pProject->RemoveListener(pListener);
-		pProject->FreeReference();
 	}
 	
 	pProject = project;
 	
 	if(project){
-		project->AddReference();
 		project->AddListener(pListener);
 	}
 	

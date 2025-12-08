@@ -40,7 +40,7 @@ class gdeObjectClass;
  */
 class gdeUOCSetHideTags : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;
@@ -54,7 +54,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCSetHideTags(gdeObjectClass *objectClass, const decStringSet &newValue);
+	gdeUOCSetHideTags(gdeObjectClass::Ref objectClass, const decStringSet &newValue);
 	
 protected:
 	/** \brief Clean up undo action. */

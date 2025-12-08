@@ -38,7 +38,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeSetCombineMode : public igdeUndo{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	deSkinPropertyNode::eCombineModes pOldValue;
 	deSkinPropertyNode::eCombineModes pNewValue;
@@ -52,7 +52,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
-	seUPropertyNodeSetCombineMode(sePropertyNode *node, deSkinPropertyNode::eCombineModes newValue);
+	seUPropertyNodeSetCombineMode(sePropertyNode::Ref node, deSkinPropertyNode::eCombineModes newValue);
 	
 protected:
 	/** \brief Clean up undo. */

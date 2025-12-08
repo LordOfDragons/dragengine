@@ -47,7 +47,7 @@ public:
 	
 private:
 	decString pPathSubAnimator;
-	deAnimator *pSubAnimator;
+	deAnimator::Ref pSubAnimator;
 	
 	bool pEnablePosition;
 	bool pEnableOrientation;

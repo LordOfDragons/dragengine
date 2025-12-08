@@ -45,7 +45,7 @@ const char * const ceClipboardDataCondition::TYPE_NAME = "condition";
 ceClipboardDataCondition::ceClipboardDataCondition(const ceConversationConditionList &conditions) :
 igdeClipboardData(TYPE_NAME)
 {
-	ceConversationCondition *condition = NULL;
+	ceConversationCondition::Ref condition = NULL;
 	const int count = conditions.GetCount();
 	int i;
 	
@@ -53,14 +53,10 @@ igdeClipboardData(TYPE_NAME)
 		for(i=0; i<count; i++){
 			condition = conditions.GetAt(i)->CreateCopy();
 			pConditions.Add(condition);
-			condition->FreeReference();
 			condition = NULL;
 		}
 		
 	}catch(const deException &){
-		if(condition){
-			condition->FreeReference();
-		}
 		throw;
 	}
 }

@@ -38,12 +38,12 @@ class meWorld;
  */
 class meURotateObject : public meBaseUndoRotate{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decObjectOrderedSet pObjects;
 	
 public:
 	// constructor, destructor
-	meURotateObject(meWorld *world, const meObjectList &objects);
+	meURotateObject(meWorld::Ref world, const meObjectList &objects);
 	virtual ~meURotateObject();
 	
 	// undo and redo operations

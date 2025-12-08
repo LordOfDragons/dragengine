@@ -39,8 +39,8 @@
 // Constructor, destructor
 ////////////////////////////
 
-seULinkSetRepeat::seULinkSetRepeat(seLink *link, int newRepeat) :
-pLink(NULL),
+seULinkSetRepeat::seULinkSetRepeat(seLink::Ref link, int newRepeat) :
+
 pNewRepeat(newRepeat)
 {
 	if(!link){
@@ -52,13 +52,9 @@ pNewRepeat(newRepeat)
 	pOldRepeat = link->GetRepeat();
 	
 	pLink = link;
-	link->AddReference();
 }
 
 seULinkSetRepeat::~seULinkSetRepeat(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

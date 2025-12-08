@@ -72,9 +72,9 @@ private:
 	
 	eElementTypes pType;
 	decPoint3 pSector;
-	meWorld *pWorld;
-	meHeightTerrainTexture *pHTTexture;
-	meHeightTerrainNavSpace *pHTNavSpace;
+	meWorld::Ref pWorld;
+	meHeightTerrainTexture::Ref pHTTexture;
+	meHeightTerrainNavSpace::Ref pHTNavSpace;
 	
 	
 	
@@ -110,19 +110,19 @@ public:
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world or \em NULL. */
-	void SetWorld(meWorld *world);
+	void SetWorld(meWorld::Ref world);
 	
 	/** \brief Height terrain texture or \em NULL. */
 	inline meHeightTerrainTexture *GetHTTexture() const{ return pHTTexture; }
 	
 	/** \brief Set height terrain texture or \em NULL. */
-	void SetHTTexture(meHeightTerrainTexture *texture);
+	void SetHTTexture(meHeightTerrainTexture::Ref texture);
 	
 	/** \brief Height terrain navigation space or \em NULL. */
 	inline meHeightTerrainNavSpace *GetHTNavSpace() const{ return pHTNavSpace; }
 	
 	/** \brief Set height terrain navigation space or \em NULL. */
-	void SetHTNavSpace(meHeightTerrainNavSpace *navspace);
+	void SetHTNavSpace(meHeightTerrainNavSpace::Ref navspace);
 	
 	/** \brief Update item text. */
 	void UpdateText();

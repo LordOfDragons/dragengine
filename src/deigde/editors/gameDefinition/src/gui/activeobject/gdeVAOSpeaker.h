@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCSpeaker *pOCSpeaker;
+	gdeOCSpeaker::Ref pOCSpeaker;
 	
 	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;

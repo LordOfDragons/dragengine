@@ -70,10 +70,10 @@ dePropField *dePropFieldManager::GetRootPropField() const{
 }
 
 dePropField *dePropFieldManager::CreatePropField(){
-	dePropField *field = NULL;
+	dePropField::Ref field = NULL;
 	
 	try{
-		field = new dePropField(this);
+		field.TakeOver(new dePropField(this));
 		
 		GetGraphicSystem()->LoadPropField(field);
 		GetPhysicsSystem()->LoadPropField(field);
@@ -82,9 +82,6 @@ dePropField *dePropFieldManager::CreatePropField(){
 		pFields.Add(field);
 		
 	}catch(const deException &){
-		if(field){
-			field->FreeReference();
-		}
 		throw;
 	}
 	
@@ -106,7 +103,7 @@ void dePropFieldManager::ReleaseLeakingResources(){
 ////////////////////
 
 void dePropFieldManager::SystemGraphicLoad(){
-	dePropField *field = (dePropField*)pFields.GetRoot();
+	dePropField::Ref field = (dePropField*)pFields.GetRoot();
 	
 	while(field){
 		if(!field->GetPeerGraphic()){
@@ -118,7 +115,7 @@ void dePropFieldManager::SystemGraphicLoad(){
 }
 
 void dePropFieldManager::SystemGraphicUnload(){
-	dePropField *field = (dePropField*)pFields.GetRoot();
+	dePropField::Ref field = (dePropField*)pFields.GetRoot();
 	
 	while(field){
 		field->SetPeerGraphic(NULL);
@@ -127,7 +124,7 @@ void dePropFieldManager::SystemGraphicUnload(){
 }
 
 void dePropFieldManager::SystemPhysicsLoad(){
-	dePropField *field = (dePropField*)pFields.GetRoot();
+	dePropField::Ref field = (dePropField*)pFields.GetRoot();
 	
 	while(field){
 		if(!field->GetPeerPhysics()){
@@ -139,7 +136,7 @@ void dePropFieldManager::SystemPhysicsLoad(){
 }
 
 void dePropFieldManager::SystemPhysicsUnload(){
-	dePropField *field = (dePropField*)pFields.GetRoot();
+	dePropField::Ref field = (dePropField*)pFields.GetRoot();
 	
 	while(field){
 		field->SetPeerPhysics(NULL);
@@ -148,7 +145,7 @@ void dePropFieldManager::SystemPhysicsUnload(){
 }
 
 void dePropFieldManager::SystemScriptingLoad(){
-	dePropField *field = (dePropField*)pFields.GetRoot();
+	dePropField::Ref field = (dePropField*)pFields.GetRoot();
 	
 	while(field){
 		if(!field->GetPeerPhysics()){
@@ -160,7 +157,7 @@ void dePropFieldManager::SystemScriptingLoad(){
 }
 
 void dePropFieldManager::SystemScriptingUnload(){
-	dePropField *field = (dePropField*)pFields.GetRoot();
+	dePropField::Ref field = (dePropField*)pFields.GetRoot();
 	
 	while(field){
 		field->SetPeerScripting(NULL);

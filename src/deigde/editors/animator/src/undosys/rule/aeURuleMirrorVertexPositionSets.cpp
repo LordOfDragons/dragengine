@@ -60,13 +60,9 @@ pRule(nullptr)
 	pPatterns.Add(" right");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleMirrorVertexPositionSets::~aeURuleMirrorVertexPositionSets(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

@@ -44,7 +44,7 @@ private:
 	saeWindowMain &pWindowMain;
 	deFont::Ref pFontStats;
 	
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	igdeMouseCameraListener::Ref pCameraInteraction;
 	
@@ -73,7 +73,7 @@ public:
 	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
-	void SetSAnimation(saeSAnimation *sanimation);
+	void SetSAnimation(saeSAnimation::Ref sanimation);
 	
 	/** Game like frame update. */
 	virtual void OnFrameUpdate(float elapsed);

@@ -45,7 +45,7 @@ public:
 	
 private:
 	const decPath pArchivePath;
-	deArchive *pArchive;
+	deArchive::Ref pArchive;
 	
 	deArchiveContainer *pLLManagerPrev;
 	deArchiveContainer *pLLManagerNext;
@@ -59,7 +59,7 @@ public:
 	 * \brief Create archive container.
 	 * \warning For internal use only. Never call on your own!
 	 */
-	deArchiveContainer(const decPath &rootPath, deArchive *archive, const decPath &archivePath);
+	deArchiveContainer(const decPath &rootPath, deArchive::Ref archive, const decPath &archivePath);
 	
 protected:
 	/**

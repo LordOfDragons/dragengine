@@ -41,7 +41,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUDecalTCOffset::meUDecalTCOffset(meDecal *decal, const decVector2 &newOffset){
+meUDecalTCOffset::meUDecalTCOffset(meDecal::Ref decal, const decVector2 &newOffset){
 	if(!decal){
 		DETHROW(deeInvalidParam);
 	}
@@ -59,13 +59,9 @@ meUDecalTCOffset::meUDecalTCOffset(meDecal *decal, const decVector2 &newOffset){
 	pNewOffset = newOffset;
 	
 	pDecal = decal;
-	decal->AddReference();
 }
 
 meUDecalTCOffset::~meUDecalTCOffset(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

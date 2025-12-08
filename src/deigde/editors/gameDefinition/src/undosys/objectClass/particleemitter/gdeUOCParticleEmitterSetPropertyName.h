@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCParticleEmitterSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	gdeOCParticleEmitter::eProperties pProperty;
 	decString pOldValue;
@@ -55,8 +55,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */
-	gdeUOCParticleEmitterSetPropertyName(gdeObjectClass *objectClass,
-		gdeOCParticleEmitter *particleEmitter, gdeOCParticleEmitter::eProperties property,
+	gdeUOCParticleEmitterSetPropertyName(gdeObjectClass::Ref objectClass,
+		gdeOCParticleEmitter::Ref particleEmitter, gdeOCParticleEmitter::eProperties property,
 		const char *newValue);
 	
 protected:

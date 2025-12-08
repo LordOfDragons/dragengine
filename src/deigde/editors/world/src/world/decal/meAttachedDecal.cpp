@@ -47,8 +47,7 @@
 
 meAttachedDecal::meAttachedDecal(deEngine *engine, meDecal *decal) :
 pEngine(engine),
-pDecal(decal),
-pParentObject(NULL)
+pDecal(decal)
 {
 	if(!engine || !decal){
 		DETHROW(deeInvalidParam);
@@ -59,9 +58,6 @@ pParentObject(NULL)
 
 meAttachedDecal::~meAttachedDecal(){
 	RemoveFromParent();
-	if(pParentObject){
-		pParentObject->FreeReference();
-	}
 }
 
 
@@ -69,7 +65,7 @@ meAttachedDecal::~meAttachedDecal(){
 // Management
 ///////////////
 
-void meAttachedDecal::SetParentObject(meObject *object){
+void meAttachedDecal::SetParentObject(meObject::Ref object){
 	if(object == pParentObject){
 		return;
 	}
@@ -77,16 +73,10 @@ void meAttachedDecal::SetParentObject(meObject *object){
 	RemoveFromParent();
 	
 	if(pParentObject){
-		pParentObject->FreeReference();
 		pParentObject = NULL;
 	}
 	
 	pParentObject = object;
-	
-	if(object){
-		object->AddReference();
-	}
-	
 	AttachToParent();
 }
 

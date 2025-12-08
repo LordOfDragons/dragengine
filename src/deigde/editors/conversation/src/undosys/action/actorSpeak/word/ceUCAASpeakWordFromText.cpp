@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-ceUCAASpeakWordFromText::ceUCAASpeakWordFromText(ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
+ceUCAASpeakWordFromText::ceUCAASpeakWordFromText(ceConversationTopic::Ref topic, ceCAActorSpeak::Ref actorSpeak){
 	if(!topic || !actorSpeak){
 		DETHROW(deeInvalidParam);
 	}
@@ -54,19 +54,10 @@ ceUCAASpeakWordFromText::ceUCAASpeakWordFromText(ceConversationTopic *topic, ceC
 	SetShortInfo("Actor Speak Words From Text");
 	
 	pTopic = topic;
-	topic->AddReference();
-	
 	pActorSpeak = actorSpeak;
-	actorSpeak->AddReference();
 }
 
 ceUCAASpeakWordFromText::~ceUCAASpeakWordFromText(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 
@@ -77,7 +68,7 @@ ceUCAASpeakWordFromText::~ceUCAASpeakWordFromText(){
 void ceUCAASpeakWordFromText::SetWordsFromText(const decUnicodeString &text, float letterDuration){
 	const decUnicodeString padding = decUnicodeString::NewFromUTF8(" \t\n\r,.;:\"?!");
 	decUnicodeString word;
-	ceStrip *entry = NULL;
+	ceStrip::Ref entry = NULL;
 	int character;
 	int i, length;
 	
@@ -96,9 +87,8 @@ void ceUCAASpeakWordFromText::SetWordsFromText(const decUnicodeString &text, flo
 			
 			if(padding.Find(character, 0) != -1){
 				if(!word.IsEmpty()){
-					entry = new ceStrip(word.GetLower().ToUTF8().GetString(), letterDuration * (float)word.GetLength(), 0.0f);
+					entry.TakeOver(new ceStrip(word.GetLower().ToUTF8().GetString(), letterDuration * (float)word.GetLength(), 0.0f));
 					pNewWords.Add(entry);
-					entry->FreeReference();
 					entry = NULL;
 					
 					word.SetFromUTF8("");
@@ -110,9 +100,6 @@ void ceUCAASpeakWordFromText::SetWordsFromText(const decUnicodeString &text, flo
 		}
 		
 	}catch(const deException &){
-		if(entry){
-			entry->FreeReference();
-		}
 		throw;
 	}
 }

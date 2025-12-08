@@ -176,11 +176,11 @@ void aeRuleAnimation::RemoveLinksFromAllTargets(){
 
 
 deAnimatorRule *aeRuleAnimation::CreateEngineRule(){
-	deAnimatorRuleAnimation *engRule = NULL;
+	deAnimatorRuleAnimation::Ref engRule = NULL;
 	
 	try{
 		// create rule
-		engRule = new deAnimatorRuleAnimation;
+		engRule.TakeOver(new deAnimatorRuleAnimation);
 		if(!engRule) DETHROW(deeOutOfMemory);
 		
 		// init rule
@@ -196,9 +196,6 @@ deAnimatorRule *aeRuleAnimation::CreateEngineRule(){
 		pTargetMoveTime.UpdateEngineTarget(GetAnimator(), engRule->GetTargetMoveTime());
 		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 	

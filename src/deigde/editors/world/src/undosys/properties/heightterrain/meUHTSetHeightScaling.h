@@ -42,7 +42,7 @@ class meHeightTerrain;
  */
 class meUHTSetHeightScaling : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
 	
 	float pOldHeightScaling;
@@ -55,7 +55,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */
-	meUHTSetHeightScaling(meWorld *world, meHeightTerrain *heightTerrain, float newHeightScaling);
+	meUHTSetHeightScaling(meWorld::Ref world, meHeightTerrain *heightTerrain, float newHeightScaling);
 	
 protected:
 	/** \brief Clean up object. */

@@ -45,8 +45,8 @@
 /////////////////////
 
 struct sSkyCtrlNatDat{
-	deSky *sky;
-	deSkyInstance *instance;
+	deSky::Ref sky;
+	deSkyInstance::Ref instance;
 	int index;
 };
 
@@ -494,7 +494,7 @@ void deClassSkyController::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassSkyController::PushController(dsRunTime *rt, deSky *sky, int index){
+void deClassSkyController::PushController(dsRunTime *rt, deSky::Ref sky, int index){
 	if(!rt || !sky || index < 0 || index >= sky->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -502,12 +502,11 @@ void deClassSkyController::PushController(dsRunTime *rt, deSky *sky, int index){
 	rt->CreateObjectNakedOnStack(this);
 	sSkyCtrlNatDat &nd = *((sSkyCtrlNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.sky = sky;
-	sky->AddReference();
 	nd.instance = NULL;
 	nd.index = index;
 }
 
-void deClassSkyController::PushController(dsRunTime *rt, deSkyInstance *instance, int index){
+void deClassSkyController::PushController(dsRunTime *rt, deSkyInstance::Ref instance, int index){
 	if(!rt || !instance || index < 0 || index >= instance->GetControllerCount()){
 		DSTHROW(dueInvalidParam);
 	}
@@ -516,6 +515,5 @@ void deClassSkyController::PushController(dsRunTime *rt, deSkyInstance *instance
 	sSkyCtrlNatDat &nd = *((sSkyCtrlNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.sky = NULL;
 	nd.instance = instance;
-	instance->AddReference();
 	nd.index = index;
 }

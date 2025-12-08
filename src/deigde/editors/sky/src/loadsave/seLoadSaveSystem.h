@@ -72,7 +72,7 @@ public:
 	seSky *LoadSky(const char *filename);
 	
 	/** \brief Save sky to file. */
-	void SaveSky(seSky *sky, const char *filename);
+	void SaveSky(seSky::Ref sky, const char *filename);
 	
 	/** \brief File pattern list. */
 	inline const igdeFilePatternList *GetSkyFilePatterns() const{ return &pFPSky; }

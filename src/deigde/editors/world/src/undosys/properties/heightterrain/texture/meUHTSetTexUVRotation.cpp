@@ -42,7 +42,7 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUHTSetTexUVRotation::meUHTSetTexUVRotation(meWorld *world, meHeightTerrainSector *sector, meHeightTerrainTexture *texture, float newRotation){
+meUHTSetTexUVRotation::meUHTSetTexUVRotation(meWorld::Ref world, meHeightTerrainSector *sector, meHeightTerrainTexture::Ref texture, float newRotation){
 	if(!world || !sector || !texture) DETHROW(deeInvalidParam);
 	
 	pWorld = world;
@@ -52,11 +52,7 @@ meUHTSetTexUVRotation::meUHTSetTexUVRotation(meWorld *world, meHeightTerrainSect
 	pNewRotation = newRotation;
 	
 	SetShortInfo("Set Height Terrain Texture UV Rotation");
-	
-	world->AddReference();
-	
 	pTexture = texture;
-	texture->AddReference();
 }
 
 meUHTSetTexUVRotation::~meUHTSetTexUVRotation(){

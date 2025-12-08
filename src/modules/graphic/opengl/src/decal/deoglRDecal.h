@@ -84,8 +84,8 @@ private:
 	decTexMatrix2 pTransform;
 	bool pVisible;
 	
-	deoglRSkin *pSkin;
-	deoglRDynamicSkin *pDynamicSkin;
+	deoglRSkin::Ref pSkin;
+	deoglRDynamicSkin::Ref pDynamicSkin;
 	deoglSkinState *pSkinState;
 	
 	deoglRSkin *pUseSkin;
@@ -97,7 +97,7 @@ private:
 	bool pDirtyPrepareSkinStateRenderables;
 	bool pDirtyRenderSkinStateRenderables;
 	
-	deoglSharedVBOBlock *pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlock;
 	int pPointCount;
 	
 	bool pDirtyVBO;
@@ -107,7 +107,7 @@ private:
 	bool pComponentMarkedRemove;
 	deoglWorldComputeElement::Ref pWorldComputeElement;
 	
-	deoglSharedSPBElement *pSharedSPBElement;
+	deoglSharedSPBElement::Ref pSharedSPBElement;
 	deoglRenderTaskSharedInstance *pRTSInstance;
 	
 	deoglTexUnitsConfig *pTUCGeometry, *pTUCDepth, *pTUCCounter, *pTUCShadow, *pTUCEnvMap;
@@ -191,13 +191,13 @@ public:
 	inline deoglRSkin *GetSkin() const{ return pSkin; }
 	
 	/** Set skin or \em NULL if not set. */
-	void SetSkin(deoglRSkin *skin);
+	void SetSkin(deoglRSkin::Ref skin);
 	
 	/** Dynamic skin or \em NULL if not set. */
 	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or \em NULL if not set. */
-	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
+	void SetDynamicSkin(deoglRDynamicSkin::Ref dynamicSkin);
 	
 	/** Retrieves the skin state or NULL if there is none. */
 	inline deoglSkinState *GetSkinState() const{ return pSkinState; }
