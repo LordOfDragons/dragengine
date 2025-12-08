@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class aeUSetRuleSModMaxSize
 ////////////////////////////
 
@@ -62,8 +60,6 @@ aeUSetRuleSModMaxSize::~aeUSetRuleSModMaxSize(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -75,11 +71,9 @@ void aeUSetRuleSModMaxSize::Redo(){
 	pRule->SetMaximumSize(pNewMax);
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void aeUSetRuleSModMaxSize::pCleanUp(){
-	if(pRule) pRule->FreeReference();
+
 }

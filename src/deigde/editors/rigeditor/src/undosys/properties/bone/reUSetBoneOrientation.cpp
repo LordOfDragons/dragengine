@@ -27,8 +27,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class reUSetBoneOrientation
 /////////////////////////////
 
@@ -56,8 +54,6 @@ reUSetBoneOrientation::~reUSetBoneOrientation(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -69,11 +65,9 @@ void reUSetBoneOrientation::Redo(){
 	pBone->SetOrientation(pNewOrientation);
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void reUSetBoneOrientation::pCleanUp(){
-	if(pBone) pBone->FreeReference();
+
 }

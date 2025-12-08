@@ -32,8 +32,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUHTVRuleVecMathSetVectorA
 //////////////////////////////////////
 
@@ -59,11 +57,8 @@ meUHTVRuleVecMathSetVectorA::meUHTVRuleVecMathSetVectorA(meHTVegetationLayer *vl
 }
 
 meUHTVRuleVecMathSetVectorA::~meUHTVRuleVecMathSetVectorA(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////

@@ -32,8 +32,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUHTVRuleCombineSetY
 ////////////////////////////////
 
@@ -59,11 +57,8 @@ meUHTVRuleCombineSetY::meUHTVRuleCombineSetY(meHTVegetationLayer *vlayer, meHTVR
 }
 
 meUHTVRuleCombineSetY::~meUHTVRuleCombineSetY(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////

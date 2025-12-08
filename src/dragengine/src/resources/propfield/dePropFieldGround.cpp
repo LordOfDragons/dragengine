@@ -31,8 +31,6 @@
 #include "../terrain/heightmap/deHeightTerrain.h"
 #include "../../common/exceptions.h"
 
-
-
 // Class dePropFieldGround
 ////////////////////////////
 
@@ -51,10 +49,8 @@ dePropFieldGround::~dePropFieldGround(){
 	RemoveAllComponents();
 	if(pComponents) delete [] pComponents;
 	
-	if(pHeightTerrain) pHeightTerrain->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////
@@ -68,13 +64,11 @@ void dePropFieldGround::Clear(){
 
 void dePropFieldGround::SetHeightTerrain(deHeightTerrain *heightTerrain){
 	if(pHeightTerrain != heightTerrain){
-		if(pHeightTerrain) pHeightTerrain->FreeReference();
+
 		pHeightTerrain = heightTerrain;
 		if(heightTerrain) heightTerrain->AddReference();
 	}
 }
-
-
 
 // Components
 //////////////

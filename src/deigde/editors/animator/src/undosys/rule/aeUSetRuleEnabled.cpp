@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class aeUSetRuleEnabled
 ////////////////////////////
 
@@ -59,8 +57,6 @@ aeUSetRuleEnabled::~aeUSetRuleEnabled(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -72,11 +68,9 @@ void aeUSetRuleEnabled::Redo(){
 	pRule->SetEnabled(!pRule->GetEnabled());
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void aeUSetRuleEnabled::pCleanUp(){
-	if(pRule) pRule->FreeReference();
+
 }

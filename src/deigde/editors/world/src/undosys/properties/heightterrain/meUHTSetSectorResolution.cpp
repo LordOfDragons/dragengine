@@ -32,8 +32,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUHTSetSectorResolution
 /////////////////////////////
 
@@ -58,14 +56,11 @@ meHeightTerrain *heightTerrain, int newSectorResolution){
 }
 
 meUHTSetSectorResolution::~meUHTSetSectorResolution(){
-	if(pWorld) pWorld->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////
-
 
 void meUHTSetSectorResolution::Undo(){
 	pHeightTerrain->SetSectorResolution(pOldSectorResolution);

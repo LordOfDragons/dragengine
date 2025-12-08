@@ -28,8 +28,6 @@
 #include "../../../world/object/meObject.h"
 #include "dragengine/common/exceptions.h"
 
-
-
 // Class meURaiseDecalTop
 ///////////////////////////
 
@@ -55,10 +53,8 @@ meURaiseDecalTop::meURaiseDecalTop(meWorld *world, meDecal *decal){
 }
 
 meURaiseDecalTop::~meURaiseDecalTop(){
-	if(pDecal) pDecal->FreeReference();
+
 }
-
-
 
 // Undo and Redo operations
 /////////////////////////////

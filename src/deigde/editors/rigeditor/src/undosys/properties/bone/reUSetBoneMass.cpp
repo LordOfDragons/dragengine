@@ -27,8 +27,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class reUSetBoneMass
 ////////////////////////
 
@@ -56,8 +54,6 @@ reUSetBoneMass::~reUSetBoneMass(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -69,11 +65,9 @@ void reUSetBoneMass::Redo(){
 	pBone->SetMass(pNewMass);
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void reUSetBoneMass::pCleanUp(){
-	if(pBone) pBone->FreeReference();
+
 }

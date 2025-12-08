@@ -39,8 +39,6 @@
 #include <dragengine/common/shape/decShapeHull.h>
 #include "dragengine/common/exceptions.h"
 
-
-
 // Class reCreateRigShape
 ///////////////////////////
 
@@ -55,20 +53,16 @@ reCreateRigShape::reCreateRigShape(deEngine *engine){
 }
 
 reCreateRigShape::~reCreateRigShape(){
-	if(pRigShape) pRigShape->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////
 
 void reCreateRigShape::Reset(){
-	if(pRigShape) pRigShape->FreeReference();
+
 	pRigShape = NULL;
 }
-
-
 
 // Visiting
 /////////////

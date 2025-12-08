@@ -33,8 +33,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUHTSetPathHI
 /////////////////////////
 
@@ -56,14 +54,11 @@ meUHTSetPathHI::meUHTSetPathHI(meWorld *world, meHeightTerrainSector *sector, co
 }
 
 meUHTSetPathHI::~meUHTSetPathHI(){
-	if(pWorld) pWorld->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////
-
 
 void meUHTSetPathHI::Undo(){
 	pSector->SetPathHeightImage(pOldPath.GetString(), false);

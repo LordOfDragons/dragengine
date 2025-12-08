@@ -35,8 +35,6 @@
 #include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUHTImportHeightImage
 /////////////////////////////////
 
@@ -103,8 +101,6 @@ meUHTImportHeightImage::~meUHTImportHeightImage(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -116,8 +112,6 @@ void meUHTImportHeightImage::Redo(){
 	pDoIt(pNewHeights);
 }
 
-
-
 // Private Functions
 //////////////////////
 
@@ -125,7 +119,7 @@ void meUHTImportHeightImage::pCleanUp(){
 	if(pNewHeights) delete [] pNewHeights;
 	if(pOldHeights) delete [] pOldHeights;
 	
-	if(pWorld) pWorld->FreeReference();
+
 }
 
 void meUHTImportHeightImage::pDoIt(float *heights){

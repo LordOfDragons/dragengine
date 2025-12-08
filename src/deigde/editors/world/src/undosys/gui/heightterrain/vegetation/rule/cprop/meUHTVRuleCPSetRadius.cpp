@@ -32,8 +32,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUHTVRuleCPSetRadius
 ////////////////////////////////
 
@@ -59,11 +57,8 @@ meUHTVRuleCPSetRadius::meUHTVRuleCPSetRadius(meHTVegetationLayer *vlayer, meHTVR
 }
 
 meUHTVRuleCPSetRadius::~meUHTVRuleCPSetRadius(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////

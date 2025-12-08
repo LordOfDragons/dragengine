@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class feUGlyphSetV
 ///////////////////////
 
@@ -50,10 +48,8 @@ feUGlyphSetV::feUGlyphSetV(feFontGlyph *glyph, int newV){
 }
 
 feUGlyphSetV::~feUGlyphSetV(){
-	if(pGlyph) pGlyph->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////

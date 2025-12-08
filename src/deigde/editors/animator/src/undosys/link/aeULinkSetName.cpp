@@ -32,8 +32,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class aeULinkSetName
 /////////////////////////
 
@@ -54,10 +52,8 @@ aeULinkSetName::aeULinkSetName(aeLink *link, const char *newName){
 }
 
 aeULinkSetName::~aeULinkSetName(){
-	if(pLink) pLink->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////

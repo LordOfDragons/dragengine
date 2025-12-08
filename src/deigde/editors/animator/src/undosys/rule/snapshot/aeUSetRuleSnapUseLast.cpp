@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class aeUSetRuleSnapUseLast
 ////////////////////////////////
 
@@ -59,8 +57,6 @@ aeUSetRuleSnapUseLast::~aeUSetRuleSnapUseLast(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -72,11 +68,9 @@ void aeUSetRuleSnapUseLast::Redo(){
 	pRule->SetUseLastState(!pRule->GetUseLastState());
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void aeUSetRuleSnapUseLast::pCleanUp(){
-	if(pRule) pRule->FreeReference();
+
 }

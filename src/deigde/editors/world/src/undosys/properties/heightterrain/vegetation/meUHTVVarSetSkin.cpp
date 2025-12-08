@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUHTVVarSetSkin
 ///////////////////////////
 
@@ -53,10 +51,8 @@ meUHTVVarSetSkin::meUHTVVarSetSkin(meHTVVariation *variation, const char *newPat
 }
 
 meUHTVVarSetSkin::~meUHTVVarSetSkin(){
-	if(pVariation) pVariation->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////

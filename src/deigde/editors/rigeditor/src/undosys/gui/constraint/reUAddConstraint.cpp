@@ -33,8 +33,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class reUAddConstraint
 ///////////////////////////
 
@@ -70,8 +68,6 @@ reUAddConstraint::reUAddConstraint(reRig *rig, reRigBone *bone, reRigConstraint 
 reUAddConstraint::~reUAddConstraint(){
 	pCleanUp();
 }
-
-
 
 // Management
 ///////////////
@@ -109,15 +105,11 @@ void reUAddConstraint::Redo(){
 	selection->AddConstraint(pConstraint);
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void reUAddConstraint::pCleanUp(){
-	if(pConstraint) pConstraint->FreeReference();
-	if(pBone) pBone->FreeReference();
-	if(pRig) pRig->FreeReference();
+
 }
 
 reRig *reUAddConstraint::pGetRig(){

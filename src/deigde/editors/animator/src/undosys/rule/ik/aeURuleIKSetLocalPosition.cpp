@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class aeURuleIKSetLocalPosition
 ////////////////////////////////////
 
@@ -62,8 +60,6 @@ aeURuleIKSetLocalPosition::~aeURuleIKSetLocalPosition(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -75,11 +71,9 @@ void aeURuleIKSetLocalPosition::Redo(){
 	pRule->SetLocalPosition(pNewPos);
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void aeURuleIKSetLocalPosition::pCleanUp(){
-	if(pRule) pRule->FreeReference();
+
 }

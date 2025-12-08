@@ -29,8 +29,6 @@
 #include "../../../worldedit.h"
 #include "dragengine/common/exceptions.h"
 
-
-
 // Class meULowerDecalOne
 ///////////////////////////
 
@@ -52,10 +50,8 @@ meULowerDecalOne::meULowerDecalOne(meWorld *world, meDecal *decal){
 }
 
 meULowerDecalOne::~meULowerDecalOne(){
-	if(pDecal) pDecal->FreeReference();
+
 }
-
-
 
 // Undo and Redo operations
 /////////////////////////////

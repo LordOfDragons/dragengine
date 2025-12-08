@@ -28,8 +28,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUSetObjectRotation
 ///////////////////////////////
 
@@ -52,10 +50,8 @@ meUSetObjectRotation::meUSetObjectRotation(meObject *object, const decVector &ne
 }
 
 meUSetObjectRotation::~meUSetObjectRotation(){
-	if(pObject) pObject->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////

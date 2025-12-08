@@ -27,8 +27,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class reUSetBoneIKLimitsUpper
 //////////////////////////////////
 
@@ -56,8 +54,6 @@ reUSetBoneIKLimitsUpper::~reUSetBoneIKLimitsUpper(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -69,11 +65,9 @@ void reUSetBoneIKLimitsUpper::Redo(){
 	pBone->SetIKLimitsUpper(pNewIKLimitsUpper);
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void reUSetBoneIKLimitsUpper::pCleanUp(){
-	if(pBone) pBone->FreeReference();
+
 }

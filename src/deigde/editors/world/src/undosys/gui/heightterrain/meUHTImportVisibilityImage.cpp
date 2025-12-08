@@ -36,8 +36,6 @@
 #include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUHTImportVisibilityImage
 /////////////////////////////////////
 
@@ -117,8 +115,6 @@ meUHTImportVisibilityImage::~meUHTImportVisibilityImage(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -130,8 +126,6 @@ void meUHTImportVisibilityImage::Redo(){
 	pDoIt(pNewVis);
 }
 
-
-
 // Private Functions
 //////////////////////
 
@@ -139,7 +133,7 @@ void meUHTImportVisibilityImage::pCleanUp(){
 	if(pNewVis) delete pNewVis;
 	if(pOldVis) delete pOldVis;
 	
-	if(pWorld) pWorld->FreeReference();
+
 }
 
 void meUHTImportVisibilityImage::pDoIt(meBitArray *vis){

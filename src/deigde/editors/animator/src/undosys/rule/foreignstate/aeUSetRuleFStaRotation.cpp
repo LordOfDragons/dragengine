@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class aeUSetRuleFStaRotation
 /////////////////////////////////
 
@@ -62,8 +60,6 @@ aeUSetRuleFStaRotation::~aeUSetRuleFStaRotation(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -75,11 +71,9 @@ void aeUSetRuleFStaRotation::Redo(){
 	pRule->SetScaleOrientation(pNewScale);
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void aeUSetRuleFStaRotation::pCleanUp(){
-	if(pRule) pRule->FreeReference();
+
 }

@@ -45,8 +45,6 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class feFont
 /////////////////
 
@@ -88,8 +86,6 @@ igdeEditableEntity(environment)
 feFont::~feFont(){
 	pCleanUp();
 }
-
-
 
 // Management
 ///////////////
@@ -137,8 +133,6 @@ void feFont::SetWorkMode(int mode){
 	}
 }
 
-
-
 void feFont::Dispose(){
 	GetUndoSystem()->RemoveAll();
 	pGlyphSelection->Reset();
@@ -180,11 +174,8 @@ void feFont::Rebuild(){
 	}
 }
 
-
-
 // Glyphs
 ///////////
-
 
 int feFont::GetGlyphCount() const{
 	return pGlyphs.GetGlyphCount();
@@ -243,8 +234,6 @@ void feFont::RemoveAllGlyphs(){
 	NotifyGlyphStructureChanged();
 }
 
-
-
 // Notifiers
 //////////////
 
@@ -255,8 +244,6 @@ void feFont::AddNotifier(feFontNotifier *notifier){
 void feFont::RemoveNotifier(feFontNotifier *notifier){
 	pListeners.Remove(notifier);
 }
-
-
 
 void feFont::NotifyModeChanged(){
 	const int count = pListeners.GetCount();
@@ -287,8 +274,6 @@ void feFont::NotifyUndoChanged(){
 	}
 }
 
-
-
 void feFont::NotifyFontChanged(){
 	const int count = pListeners.GetCount();
 	int i;
@@ -300,8 +285,6 @@ void feFont::NotifyFontChanged(){
 	SetChanged(true);
 }
 
-
-
 void feFont::NotifyImageChanged(feFontImage *image){
 	const int count = pListeners.GetCount();
 	int i;
@@ -312,8 +295,6 @@ void feFont::NotifyImageChanged(feFontImage *image){
 	
 	SetChanged(true);
 }
-
-
 
 void feFont::NotifyGlyphStructureChanged(){
 	const int count = pListeners.GetCount();
@@ -355,8 +336,6 @@ void feFont::NotifyActiveGlyphChanged(){
 	}
 }
 
-
-
 // Private Functions
 //////////////////////
 
@@ -370,5 +349,5 @@ void feFont::pCleanUp(){
 	if(pGlyphSelection) delete pGlyphSelection;
 	RemoveAllGlyphs();
 	
-	if(pEngFont) pEngFont->FreeReference();
+
 }

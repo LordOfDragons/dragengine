@@ -34,8 +34,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUHTVLinkCut
 ////////////////////////
 
@@ -65,10 +63,8 @@ meUHTVLinkCut::~meUHTVLinkCut(){
 		delete [] pLinks;
 	}
 	
-	if(pVLayer) pVLayer->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////
@@ -87,8 +83,6 @@ void meUHTVLinkCut::AddLinkToCut(meHTVRLink *link){
 	
 	link->AddReference();
 }
-
-
 
 void meUHTVLinkCut::Undo(){
 	meHTVRule *ruleSource, *ruleDestination;

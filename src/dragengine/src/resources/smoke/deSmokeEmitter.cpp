@@ -37,8 +37,6 @@
 #include "../../systems/modules/physics/deBasePhysicsSmokeEmitter.h"
 #include "../../common/exceptions.h"
 
-
-
 // Class deSmokeEmitter
 ///////////////////////////
 
@@ -79,11 +77,8 @@ deSmokeEmitter::~deSmokeEmitter(){
 		pPeerGraphic = NULL;
 	}
 	
-	if(pSkin) pSkin->FreeReference();
-	if(pComponent) pComponent->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////
@@ -104,8 +99,6 @@ void deSmokeEmitter::SetEmitterOrientation(const decQuaternion &orientation){
 	}
 }
 
-
-
 void deSmokeEmitter::SetVolumePosition(const decDVector &position){
 	if(!position.IsEqualTo(pVolumePosition)){
 		pVolumePosition = position;
@@ -113,8 +106,6 @@ void deSmokeEmitter::SetVolumePosition(const decDVector &position){
 		if(pPeerGraphic) pPeerGraphic->VolumePositionChanged();
 	}
 }
-
-
 
 void deSmokeEmitter::SetMinCastDirection(const decVector &deviation){
 	if(!deviation.IsEqualTo(pCastDirectionMin)){
@@ -172,11 +163,9 @@ void deSmokeEmitter::SetEnableCasting(bool enable){
 	}
 }
 
-
-
 void deSmokeEmitter::SetComponent(deComponent *component){
 	if(component != pComponent){
-		if(pComponent) pComponent->FreeReference();
+
 		
 		pComponent = component;
 		
@@ -196,7 +185,7 @@ void deSmokeEmitter::SetCastTexture(int texture){
 
 void deSmokeEmitter::SetSkin(deSkin *skin){
 	if(skin != pSkin){
-		if(pSkin) pSkin->FreeReference();
+
 		
 		pSkin = skin;
 		
@@ -235,8 +224,6 @@ void deSmokeEmitter::SetUseLocalGravity(bool useLocalGravity){
 	}
 }
 
-
-
 void deSmokeEmitter::SetPoints(deSmokeDensityPoint *points, int count){
 	pPoints = points;
 	pPointCount = count;
@@ -247,8 +234,6 @@ void deSmokeEmitter::SetPoints(deSmokeDensityPoint *points, int count){
 void deSmokeEmitter::NotifyPointsChanged(){
 	if(pPeerGraphic) pPeerGraphic->PointsChanged();
 }
-
-
 
 // System Peers
 /////////////////
@@ -262,8 +247,6 @@ void deSmokeEmitter::SetPeerPhysics(deBasePhysicsSmokeEmitter *peer){
 	if(pPeerPhysics) delete pPeerPhysics;
 	pPeerPhysics = peer;
 }
-
-
 
 // Linked List
 ////////////////

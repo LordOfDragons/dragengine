@@ -31,8 +31,6 @@
 #include "../../image/deImage.h"
 #include "../../../common/exceptions.h"
 
-
-
 // Class deHeightTerrainTexture
 /////////////////////////////////
 
@@ -49,25 +47,19 @@ deHeightTerrainTexture::deHeightTerrainTexture(){
 }
 
 deHeightTerrainTexture::~deHeightTerrainTexture(){
-	if(pMaskImage) pMaskImage->FreeReference();
-	if(pSkin) pSkin->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////
 
-
 void deHeightTerrainTexture::SetSkin(deSkin *skin){
-	if(pSkin) pSkin->FreeReference();
+
 	
 	pSkin = skin;
 	
 	if(skin) skin->AddReference();
 }
-
-
 
 void deHeightTerrainTexture::SetProjectionOffset(const decVector2 &offset){
 	pProjOffset = offset;
@@ -81,10 +73,8 @@ void deHeightTerrainTexture::SetProjectionRotation(float rotation){
 	pProjRotation = rotation;
 }
 
-
-
 void deHeightTerrainTexture::SetMaskImage(deImage *image){
-	if(pMaskImage) pMaskImage->FreeReference();
+
 	
 	pMaskImage = image;
 	

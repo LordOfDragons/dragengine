@@ -29,8 +29,6 @@
 #include "../../../worldedit.h"
 #include "dragengine/common/exceptions.h"
 
-
-
 // Class meULowerDecalBottom
 ///////////////////////////
 
@@ -56,10 +54,8 @@ meULowerDecalBottom::meULowerDecalBottom(meWorld *world, meDecal *decal){
 }
 
 meULowerDecalBottom::~meULowerDecalBottom(){
-	if(pDecal) pDecal->FreeReference();
+
 }
-
-
 
 // Undo and Redo operations
 /////////////////////////////

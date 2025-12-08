@@ -33,8 +33,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUObjectRemoveTexture
 /////////////////////////////////
 
@@ -60,11 +58,8 @@ meUObjectRemoveTexture::meUObjectRemoveTexture(meObjectTexture *texture){
 }
 
 meUObjectRemoveTexture::~meUObjectRemoveTexture(){
-	if(pTexture) pTexture->FreeReference();
-	if(pObject) pObject->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////

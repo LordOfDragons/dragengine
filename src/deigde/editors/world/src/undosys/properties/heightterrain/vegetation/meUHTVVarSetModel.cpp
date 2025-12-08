@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUHTVVarSetModel
 ////////////////////////////
 
@@ -53,10 +51,8 @@ meUHTVVarSetModel::meUHTVVarSetModel(meHTVVariation *variation, const char *newP
 }
 
 meUHTVVarSetModel::~meUHTVVarSetModel(){
-	if(pVariation) pVariation->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////

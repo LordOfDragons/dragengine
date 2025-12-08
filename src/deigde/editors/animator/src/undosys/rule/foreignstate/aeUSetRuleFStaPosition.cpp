@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class aeUSetRuleFStaPosition
 /////////////////////////////////
 
@@ -62,8 +60,6 @@ aeUSetRuleFStaPosition::~aeUSetRuleFStaPosition(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -75,11 +71,9 @@ void aeUSetRuleFStaPosition::Redo(){
 	pRule->SetScalePosition(pNewScale);
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void aeUSetRuleFStaPosition::pCleanUp(){
-	if(pRule) pRule->FreeReference();
+
 }

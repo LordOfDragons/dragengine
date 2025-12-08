@@ -27,8 +27,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class reUSetBonePosition
 /////////////////////////////
 
@@ -56,8 +54,6 @@ reUSetBonePosition::~reUSetBonePosition(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -69,11 +65,9 @@ void reUSetBonePosition::Redo(){
 	pBone->SetPosition(pNewPosition);
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void reUSetBonePosition::pCleanUp(){
-	if(pBone) pBone->FreeReference();
+
 }

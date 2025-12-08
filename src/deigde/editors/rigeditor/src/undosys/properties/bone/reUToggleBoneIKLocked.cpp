@@ -27,8 +27,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class reUToggleBoneIKLocked
 ////////////////////////////////
 
@@ -57,8 +55,6 @@ reUToggleBoneIKLocked::~reUToggleBoneIKLocked(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -70,11 +66,9 @@ void reUToggleBoneIKLocked::Redo(){
 	pBone->SetIKLocked(pAxis, !pBone->GetIKLocked(pAxis));
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void reUToggleBoneIKLocked::pCleanUp(){
-	if(pBone) pBone->FreeReference();
+
 }

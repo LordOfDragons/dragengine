@@ -32,8 +32,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class aeUAddController
 ///////////////////////////
 
@@ -57,8 +55,6 @@ aeUAddController::~aeUAddController(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -71,12 +67,9 @@ void aeUAddController::Redo(){
 	pAnimator->SetActiveController(pController);
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void aeUAddController::pCleanUp(){
-	if(pController) pController->FreeReference();
-	if(pAnimator) pAnimator->FreeReference();
+
 }

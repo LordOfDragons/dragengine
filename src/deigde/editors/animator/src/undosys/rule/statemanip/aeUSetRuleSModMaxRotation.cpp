@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class aeUSetRuleSModMaxRotation
 ////////////////////////////////////
 
@@ -62,8 +60,6 @@ aeUSetRuleSModMaxRotation::~aeUSetRuleSModMaxRotation(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -75,11 +71,9 @@ void aeUSetRuleSModMaxRotation::Redo(){
 	pRule->SetMaximumRotation(pNewMax);
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void aeUSetRuleSModMaxRotation::pCleanUp(){
-	if(pRule) pRule->FreeReference();
+
 }

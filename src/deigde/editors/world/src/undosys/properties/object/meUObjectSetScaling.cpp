@@ -32,8 +32,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUObjectSetScaling
 //////////////////////////////
 
@@ -56,10 +54,8 @@ meUObjectSetScaling::meUObjectSetScaling(meObject *object, const decVector &nsca
 }
 
 meUObjectSetScaling::~meUObjectSetScaling(){
-	if(pObject) pObject->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////

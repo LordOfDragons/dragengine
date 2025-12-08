@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class feUFontSetImagePath
 //////////////////////////////
 
@@ -52,10 +50,8 @@ feUFontSetImagePath::feUFontSetImagePath(feFontImage *image, const char *newPath
 }
 
 feUFontSetImagePath::~feUFontSetImagePath(){
-	if(pImage) pImage->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////

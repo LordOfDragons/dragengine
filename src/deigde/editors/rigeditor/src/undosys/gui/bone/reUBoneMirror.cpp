@@ -41,8 +41,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class reUBoneMirror
 ////////////////////////
 
@@ -136,8 +134,6 @@ reUBoneMirror::reUBoneMirror(reRig *rig){
 reUBoneMirror::~reUBoneMirror(){
 	pCleanUp();
 }
-
-
 
 // Undo and Redo operations
 /////////////////////////////
@@ -412,8 +408,6 @@ void reUBoneMirror::Redo(){
 	}
 }
 
-
-
 // Private Functions
 //////////////////////
 
@@ -432,10 +426,8 @@ void reUBoneMirror::pCleanUp(){
 		delete [] pBones;
 	}
 	
-	if(pRig) pRig->FreeReference();
+
 }
-
-
 
 reRigBone *reUBoneMirror::pGetBoneWithMirroredName(reRig *rig, reRigBone *bone) const{
 	const decString nameBone(bone->GetName().GetLower());

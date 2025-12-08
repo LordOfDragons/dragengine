@@ -28,7 +28,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
 // Class feUGlyphSetHeight
 ////////////////////////////
 
@@ -46,10 +45,8 @@ feUGlyphSetHeight::feUGlyphSetHeight(feFontGlyph *glyph, int newValue){
 }
 
 feUGlyphSetHeight::~feUGlyphSetHeight(){
-	if(pGlyph) pGlyph->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////

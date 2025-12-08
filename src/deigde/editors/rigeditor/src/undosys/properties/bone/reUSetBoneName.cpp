@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class reUSetBoneName
 /////////////////////////
 
@@ -54,8 +52,6 @@ reUSetBoneName::~reUSetBoneName(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -67,11 +63,9 @@ void reUSetBoneName::Redo(){
 	pBone->SetName(pNewName.GetString());
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void reUSetBoneName::pCleanUp(){
-	if(pBone) pBone->FreeReference();
+
 }

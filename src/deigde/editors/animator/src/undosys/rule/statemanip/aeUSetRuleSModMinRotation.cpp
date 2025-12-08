@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class aeUSetRuleSModMinRotation
 ////////////////////////////////////
 
@@ -62,8 +60,6 @@ aeUSetRuleSModMinRotation::~aeUSetRuleSModMinRotation(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -75,11 +71,9 @@ void aeUSetRuleSModMinRotation::Redo(){
 	pRule->SetMinimumRotation(pNewMin);
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void aeUSetRuleSModMinRotation::pCleanUp(){
-	if(pRule) pRule->FreeReference();
+
 }

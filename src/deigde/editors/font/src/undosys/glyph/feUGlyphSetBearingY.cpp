@@ -28,7 +28,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
 // Class feUGlyphSetBearingY
 //////////////////////////////
 
@@ -46,10 +45,8 @@ feUGlyphSetBearingY::feUGlyphSetBearingY(feFontGlyph *glyph, int newValue){
 }
 
 feUGlyphSetBearingY::~feUGlyphSetBearingY(){
-	if(pGlyph) pGlyph->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////

@@ -35,8 +35,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUObjDuplicate
 //////////////////////////
 
@@ -115,8 +113,6 @@ meUObjDuplicate::~meUObjDuplicate(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -171,11 +167,9 @@ void meUObjDuplicate::Redo(){
 	pWorld->NotifyObjectSelectionChanged();
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void meUObjDuplicate::pCleanUp(){
-	if(pWorld) pWorld->FreeReference();
+
 }

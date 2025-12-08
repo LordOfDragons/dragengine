@@ -39,7 +39,6 @@
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/exceptions.h>
 
-
 class cSorter : public meObjectList::Comparator{
 public:
 	cSorter() = default;
@@ -48,7 +47,6 @@ public:
 		return d > DOUBLE_SAFE_EPSILON ? 1 : (d < -DOUBLE_SAFE_EPSILON ? -1 : 0);
 	}
 };
-
 
 // Class meUObjectDropToGround
 ////////////////////////////////
@@ -106,8 +104,6 @@ meUObjectDropToGround::~meUObjectDropToGround(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -118,8 +114,6 @@ void meUObjectDropToGround::SetDropOnObjects(bool dropOnObjects){
 void meUObjectDropToGround::SetAlign(bool align){
 	pAlign = align;
 }
-
-
 
 void meUObjectDropToGround::Undo(){
 	meObject *object;
@@ -237,8 +231,6 @@ void meUObjectDropToGround::Redo(){
 	}
 }
 
-
-
 // Private Functions
 //////////////////////
 
@@ -252,5 +244,5 @@ void meUObjectDropToGround::pCleanUp(){
 		delete [] pObjects;
 	}
 	
-	if(pWorld) pWorld->FreeReference();
+
 }

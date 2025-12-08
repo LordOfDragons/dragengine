@@ -48,14 +48,10 @@
 #include <dragengine/resources/animator/rule/deAnimatorRuleSubAnimator.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
 
-
-
 // Definitions
 ////////////////
 
 #define LOGSOURCE "Animator Editor"
-
-
 
 // Class aeRuleSubAnimator
 ////////////////////////////
@@ -86,10 +82,8 @@ pConnections(copy.pConnections)
 }
 
 aeRuleSubAnimator::~aeRuleSubAnimator(){
-	if(pSubAnimator) pSubAnimator->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////
@@ -247,8 +241,6 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	NotifyRuleChanged();
 }
 
-
-
 int aeRuleSubAnimator::GetConnectionCount() const{
 	return pConnections.GetCount();
 }
@@ -271,8 +263,6 @@ void aeRuleSubAnimator::SetControllerAt(int position, aeController *controller){
 	
 	NotifyRuleChanged();
 }
-
-
 
 void aeRuleSubAnimator::SetEnablePosition(bool enabled){
 	if(pEnablePosition != enabled){
@@ -318,8 +308,6 @@ void aeRuleSubAnimator::SetEnableVertexPositionSet(bool enabled){
 	}
 }
 
-
-
 deAnimatorRule *aeRuleSubAnimator::CreateEngineRule(){
 	deAnimatorRuleSubAnimator *engRule = NULL;
 	
@@ -348,8 +336,6 @@ deAnimatorRule *aeRuleSubAnimator::CreateEngineRule(){
 	return engRule;
 }
 
-
-
 void aeRuleSubAnimator::UpdateCompAnim(){
 	deAnimatorRuleSubAnimator * const rule = (deAnimatorRuleSubAnimator*)GetEngineRule();
 	if(rule){
@@ -357,8 +343,6 @@ void aeRuleSubAnimator::UpdateCompAnim(){
 		NotifyRuleChanged();
 	}
 }
-
-
 
 // Operators
 //////////////
@@ -388,8 +372,6 @@ aeRuleSubAnimator &aeRuleSubAnimator::operator=(const aeRuleSubAnimator &copy){
 	return *this;
 }
 
-
-
 aeRule *aeRuleSubAnimator::CreateCopy() const{
 	return new aeRuleSubAnimator(*this);
 }
@@ -401,8 +383,6 @@ void aeRuleSubAnimator::ListLinks(aeLinkList &list){
 void aeRuleSubAnimator::OnParentAnimatorChanged(){
 	LoadSubAnimator();
 }
-
-
 
 // Private Functions
 //////////////////////

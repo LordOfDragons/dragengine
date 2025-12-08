@@ -33,8 +33,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meFilterObjectsByClass
 /////////////////////////////////
 
@@ -48,11 +46,9 @@ meFilterObjectsByClass::meFilterObjectsByClass(){
 }
 
 meFilterObjectsByClass::~meFilterObjectsByClass(){
-	if(pRejectObject) pRejectObject->FreeReference();
+
 	RemoveAllClassNames();
 }
-
-
 
 // Management
 ///////////////
@@ -67,15 +63,13 @@ void meFilterObjectsByClass::SetRejectGhosts(bool rejectGhosts){
 
 void meFilterObjectsByClass::SetRejectObject(meObject *object){
 	if(object != pRejectObject){
-		if(pRejectObject) pRejectObject->FreeReference();
+
 		
 		pRejectObject = object;
 		
 		if(object) object->AddReference();
 	}
 }
-
-
 
 void meFilterObjectsByClass::AddClassName(const char *className){
 	pClassNames.Add(className);
@@ -88,8 +82,6 @@ void meFilterObjectsByClass::RemoveAllClassNames(){
 void meFilterObjectsByClass::SetClassNamesFrom(const decStringSet &set){
 	pClassNames = set;
 }
-
-
 
 bool meFilterObjectsByClass::AcceptObject(meObject *object) const{
 	if(!object) DETHROW(deeInvalidParam);

@@ -34,8 +34,6 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class reCamera
 ///////////////////
 
@@ -56,14 +54,12 @@ reCamera::reCamera(reRig *rig, deEngine *engine) : igdeCamera(engine){
 reCamera::~reCamera(){
 }
 
-
-
 // Management
 ///////////////
 
 void reCamera::SetBone(reRigBone *bone){
 	if(pBone != bone){
-		if(pBone) pBone->FreeReference();
+
 		
 		pBone = bone;
 		
@@ -153,8 +149,6 @@ void reCamera::Update(){
 		pRig->NotifyCameraViewChanged();
 	}
 }
-
-
 
 void reCamera::Reset(){
 	igdeCamera::Reset();

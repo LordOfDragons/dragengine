@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class aeUSetRuleSModMinSize
 ////////////////////////////////
 
@@ -62,8 +60,6 @@ aeUSetRuleSModMinSize::~aeUSetRuleSModMinSize(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -75,11 +71,9 @@ void aeUSetRuleSModMinSize::Redo(){
 	pRule->SetMinimumSize(pNewMin);
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void aeUSetRuleSModMinSize::pCleanUp(){
-	if(pRule) pRule->FreeReference();
+
 }

@@ -31,8 +31,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class aeUSetRuleSModMaxPosition
 ////////////////////////////
 
@@ -62,8 +60,6 @@ aeUSetRuleSModMaxPosition::~aeUSetRuleSModMaxPosition(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
 
@@ -75,11 +71,9 @@ void aeUSetRuleSModMaxPosition::Redo(){
 	pRule->SetMaximumPosition(pNewMax);
 }
 
-
-
 // Private Functions
 //////////////////////
 
 void aeUSetRuleSModMaxPosition::pCleanUp(){
-	if(pRule) pRule->FreeReference();
+
 }

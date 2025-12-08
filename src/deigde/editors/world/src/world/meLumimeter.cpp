@@ -34,8 +34,6 @@
 #include "dragengine/resources/sensor/deLumimeterManager.h"
 #include "dragengine/common/exceptions.h"
 
-
-
 // Class meLumimeter
 //////////////////////
 
@@ -79,8 +77,6 @@ meLumimeter::meLumimeter(deEngine *engine){
 meLumimeter::~meLumimeter(){
 	pCleanUp();
 }
-
-
 
 // Management
 ///////////////
@@ -174,8 +170,6 @@ void meLumimeter::SetConeExponent(float exponent){
 	pWorld->NotifyLumimeterChanged();
 }
 
-
-
 void meLumimeter::SetTrackCamera(bool trackCamera){
 	if(pTrackCamera == trackCamera){
 		return;
@@ -185,8 +179,6 @@ void meLumimeter::SetTrackCamera(bool trackCamera){
 	
 	pWorld->NotifyLumimeterChanged();
 }
-
-
 
 bool meLumimeter::HasHostObject() const{
 	return pHostObject != nullptr;
@@ -203,8 +195,6 @@ void meLumimeter::SetHostObject(meObject *object){
 	pWorld->NotifyLumimeterChanged();
 }
 
-
-
 // Measuring
 //////////////
 
@@ -216,8 +206,6 @@ decColor meLumimeter::MeasureColor(){
 	return pLumimeter ? pLumimeter->MeasureColor() : decColor();
 }
 
-
-
 // Private Functions
 //////////////////////
 
@@ -225,7 +213,7 @@ void meLumimeter::pCleanUp(){
 	SetHostObject(NULL);
 	SetWorld(NULL);
 	
-	if(pLumimeter) pLumimeter->FreeReference();
+
 }
 
 void meLumimeter::pUpdateDDVolume(){

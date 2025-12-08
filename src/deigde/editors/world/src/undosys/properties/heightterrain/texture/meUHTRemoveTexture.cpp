@@ -34,8 +34,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUHTRemoveTexture
 /////////////////////////////
 
@@ -57,15 +55,11 @@ meUHTRemoveTexture::meUHTRemoveTexture(meWorld *world, meHeightTerrainSector *se
 }
 
 meUHTRemoveTexture::~meUHTRemoveTexture(){
-	if(pTexture) pTexture->FreeReference();
-	if(pWorld) pWorld->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////
-
 
 void meUHTRemoveTexture::Undo(){
 	pSector->AddTexture(pTexture);

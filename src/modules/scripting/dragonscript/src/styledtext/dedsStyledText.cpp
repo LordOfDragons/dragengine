@@ -32,8 +32,6 @@
 
 #include <libdscript/exceptions.h>
 
-
-
 // Class dedsStyledText
 /////////////////////////
 
@@ -47,16 +45,12 @@ dedsStyledText::dedsStyledText(){
 	if(!pRootNode) DSTHROW(dueInvalidParam);
 }
 
-
 dedsStyledText::~dedsStyledText(){
 	pCleanUp();
 }
 
-
-
 // Management
 ///////////////
-
 
 void dedsStyledText::SetRootNode(dedsStyledTextNode* node){
 	if(!node) DSTHROW(dueInvalidParam);
@@ -67,12 +61,9 @@ void dedsStyledText::SetRootNode(dedsStyledTextNode* node){
 	}
 }
 
-
-
 // Private functions
 //////////////////////
 
-
 void dedsStyledText::pCleanUp(){
-	if(pRootNode) pRootNode->FreeReference();
+
 }

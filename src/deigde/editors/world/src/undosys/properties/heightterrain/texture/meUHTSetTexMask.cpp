@@ -34,8 +34,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUHTSetTexMask
 //////////////////////////
 
@@ -60,15 +58,11 @@ meUHTSetTexMask::meUHTSetTexMask(meWorld *world, meHeightTerrainSector *sector, 
 }
 
 meUHTSetTexMask::~meUHTSetTexMask(){
-	if(pTexture) pTexture->FreeReference();
-	if(pWorld) pWorld->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////
-
 
 void meUHTSetTexMask::Undo(){
 	pTexture->SetPathMask(pOldPath.GetString(), false);

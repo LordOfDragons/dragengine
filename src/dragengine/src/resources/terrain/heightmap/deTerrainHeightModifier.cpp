@@ -30,8 +30,6 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 
-
-
 // Class deTerrainHeightModifier
 //////////////////////////////////
 
@@ -48,10 +46,8 @@ deTerrainHeightModifier::deTerrainHeightModifier(deImage *heightImage){
 }
 
 deTerrainHeightModifier::~deTerrainHeightModifier(){
-	if(pHeightImage) pHeightImage->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////

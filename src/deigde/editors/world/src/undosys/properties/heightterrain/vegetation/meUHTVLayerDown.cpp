@@ -33,8 +33,6 @@
 
 #include <dragengine/common/exceptions.h>
 
-
-
 // Class meUHTVLayerDown
 //////////////////////////
 
@@ -59,11 +57,8 @@ meUHTVLayerDown::meUHTVLayerDown(meWorld *world, meHeightTerrain *heightTerrain,
 }
 
 meUHTVLayerDown::~meUHTVLayerDown(){
-	if(pVLayer) pVLayer->FreeReference();
-	if(pWorld) pWorld->FreeReference();
+
 }
-
-
 
 // Management
 ///////////////
