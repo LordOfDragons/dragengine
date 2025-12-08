@@ -82,9 +82,6 @@ dePropField *dePropFieldManager::CreatePropField(){
 		pFields.Add(field);
 		
 	}catch(const deException &){
-		if(field){
-			field->FreeReference();
-		}
 		throw;
 	}
 	

@@ -406,8 +406,6 @@ void reUBoneMirror::Redo(){
 		}
 		
 	}catch(const deException &){
-		if(shape) shape->FreeReference();
-		if(constraint) constraint->FreeReference();
 		throw;
 	}
 }
@@ -432,7 +430,6 @@ void reUBoneMirror::pCleanUp(){
 		delete [] pBones;
 	}
 	
-	if(pRig) pRig->FreeReference();
 }
 
 

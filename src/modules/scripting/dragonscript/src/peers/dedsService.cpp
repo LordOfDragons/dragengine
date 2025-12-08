@@ -144,9 +144,6 @@ void dedsService::SetCallback(dsRealObject *object){
 void dedsService::RequestResponse(const decUniqueID &id,
 const deServiceObject::Ref &response, bool finished){
 	if(!pHasCB){
-		if(response){
-			response->FreeReference();
-		}
 		return;
 	}
 	
@@ -172,9 +169,6 @@ const deServiceObject::Ref &response, bool finished){
 
 void dedsService::RequestFailed(const decUniqueID &id, const deServiceObject::Ref &error){
 	if(!pHasCB){
-		if(error){
-			error->FreeReference();
-		}
 		return;
 	}
 	
@@ -199,9 +193,6 @@ void dedsService::RequestFailed(const decUniqueID &id, const deServiceObject::Re
 
 void dedsService::EventReceived(const deServiceObject::Ref &event){
 	if(!pHasCB){
-		if(event){
-			event->FreeReference();
-		}
 		return;
 	}
 	

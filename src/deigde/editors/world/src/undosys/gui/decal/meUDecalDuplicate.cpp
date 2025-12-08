@@ -80,9 +80,6 @@ pDecalCount(0)
 		}
 		
 	}catch(const deException &){
-		if(duplicate){
-			duplicate->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}

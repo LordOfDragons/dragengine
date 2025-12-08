@@ -60,8 +60,6 @@ meUHTSetTexMask::meUHTSetTexMask(meWorld *world, meHeightTerrainSector *sector, 
 }
 
 meUHTSetTexMask::~meUHTSetTexMask(){
-	if(pTexture) pTexture->FreeReference();
-	if(pWorld) pWorld->FreeReference();
 }
 
 

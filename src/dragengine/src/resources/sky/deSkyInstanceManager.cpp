@@ -73,9 +73,6 @@ deSkyInstance *deSkyInstanceManager::CreateSkyInstance(){
 		pInstances.Add(instance);
 		
 	}catch(const deException &){
-		if(instance){
-			instance->FreeReference();
-		}
 		
 		throw;
 	}

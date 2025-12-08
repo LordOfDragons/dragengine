@@ -54,7 +54,6 @@ seUTextureSetName::seUTextureSetName(seTexture *texture, const char *newName){
 }
 
 seUTextureSetName::~seUTextureSetName(){
-	if(pTexture) pTexture->FreeReference();
 }
 
 

@@ -204,9 +204,6 @@ void ceLoadSaveCTS::pReadCTS(const decXmlElementTag &root, ceConversation &conve
 					actor->FreeReference();
 					
 				}catch(const deException &){
-					if(actor){
-						actor->FreeReference();
-					}
 					throw;
 				}
 				
@@ -265,9 +262,6 @@ void ceLoadSaveCTS::pReadCoordSystem(const decXmlElementTag &root, ceConversatio
 		coordSystem->FreeReference();
 		
 	}catch(const deException &){
-		if(coordSystem){
-			coordSystem->FreeReference();
-		}
 		throw;
 	}
 }
@@ -314,9 +308,6 @@ void ceLoadSaveCTS::pReadProp(const decXmlElementTag &root, ceConversation &conv
 		prop->FreeReference();
 		
 	}catch(const deException &){
-		if(prop){
-			prop->FreeReference();
-		}
 		throw;
 	}
 }

@@ -56,7 +56,6 @@ meUHTSetPathPFCache::meUHTSetPathPFCache(meWorld *world, meHeightTerrainSector *
 }
 
 meUHTSetPathPFCache::~meUHTSetPathPFCache(){
-	if(pWorld) pWorld->FreeReference();
 }
 
 

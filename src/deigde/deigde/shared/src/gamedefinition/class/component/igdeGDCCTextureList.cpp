@@ -148,9 +148,6 @@ void igdeGDCCTextureList::SetToDeepCopyFrom(const igdeGDCCTextureList &list){
 		}
 		
 	}catch(const deException &){
-		if(texture){
-			texture->FreeReference();
-		}
 		throw;
 	}
 }

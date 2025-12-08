@@ -75,9 +75,6 @@ deNavigationBlocker *deNavigationBlockerManager::CreateNavigationBlocker(){
 		pBlockers.Add(blocker);
 		
 	}catch(const deException &){
-		if(blocker){
-			blocker->FreeReference();
-		}
 		throw;
 	}
 	

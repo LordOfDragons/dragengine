@@ -397,9 +397,6 @@ void dealEngineConfigXML::pReadProfileDisableModuleVersions(const decXmlElementT
 					entry->FreeReference();
 					
 				}catch(const deException &){
-					if(entry){
-						entry->FreeReference();
-					}
 					throw;
 				}
 				
@@ -486,7 +483,6 @@ void dealEngineConfigXML::pReadProfileModuleParameters(const decXmlElementTag &r
 					parametersList.AddParameter(parameters);
 					
 				}catch(const deException &){
-					if(parameters) parameters->FreeReference();
 					throw;
 				}
 				

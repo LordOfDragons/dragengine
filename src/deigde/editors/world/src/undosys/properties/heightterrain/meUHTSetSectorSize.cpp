@@ -57,7 +57,6 @@ meUHTSetSectorSize::meUHTSetSectorSize(meWorld *world, meHeightTerrain *heightTe
 }
 
 meUHTSetSectorSize::~meUHTSetSectorSize(){
-	if(pWorld) pWorld->FreeReference();
 }
 
 

@@ -83,9 +83,6 @@ void dealGPModule::CopyFrom(const dealGPModule &module){
 		}
 		
 	}catch(const deException &){
-		if(parameter){
-			parameter->FreeReference();
-		}
 		throw;
 	}
 }

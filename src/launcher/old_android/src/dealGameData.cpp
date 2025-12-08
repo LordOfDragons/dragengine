@@ -392,20 +392,8 @@ void dealGameData::pReadGameDefinitions(){
 		reader->FreeReference();
 		
 	}catch(const deException &){
-		if(game){
-			game->FreeReference();
-		}
-		if(memoryFileReader){
-			memoryFileReader->FreeReference();
-		}
-		if(memoryFile){
-			memoryFile->FreeReference();
-		}
 		if(zipFile){
 			unzClose(zipFile);
-		}
-		if(reader){
-			reader->FreeReference();
 		}
 		throw;
 	}

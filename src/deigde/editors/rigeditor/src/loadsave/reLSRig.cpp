@@ -247,9 +247,6 @@ void reLSRig::LoadRig(reRig *rig, decBaseFileReader *file){
 		
 	}catch(const deException &){
 		//e.PrintError();
-		if(constraint) constraint->FreeReference();
-		if(rigBone) rigBone->FreeReference();
-		if(engRig) engRig->FreeReference();
 		throw;
 	}
 }

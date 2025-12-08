@@ -69,9 +69,6 @@ deDebugDrawer *deDebugDrawerManager::CreateDebugDrawer(){
 		GetGraphicSystem()->LoadDebugDrawer(debugDrawer);
 		pDebugDrawers.Add(debugDrawer);
 	}catch(const deException &){
-		if(debugDrawer){
-			debugDrawer->FreeReference();
-		}
 		throw;
 	}
 	// finished

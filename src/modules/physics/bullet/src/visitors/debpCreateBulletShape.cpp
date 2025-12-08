@@ -227,12 +227,6 @@ printf("debpCreateBulletShape.VisitShapeSphere: r=%g as=(%g,%g) pos=(%g,%g,%g)\n
 		}
 		
 	}catch(const deException &){
-		if(bulletShapeSphere){
-			bulletShapeSphere->FreeReference();
-		}
-		if(bulletShapeCompound){
-			bulletShapeCompound->FreeReference();
-		}
 		throw;
 	}
 	
@@ -353,12 +347,6 @@ boxShape->getHalfExtentsWithoutMargin().getY(), boxShape->getHalfExtentsWithoutM
 		}
 		
 	}catch(const deException &){
-		if(bulletShapeHull){
-			bulletShapeHull->FreeReference();
-		}
-		if(bulletShapeBox){
-			bulletShapeBox->FreeReference();
-		}
 		throw;
 	}
 	
@@ -415,9 +403,6 @@ cylinderShape->getHalfExtentsWithMargin().getY(), cylinderShape->getHalfExtentsW
 		}
 		
 	}catch(const deException &){
-		if(bulletShapeCylinder){
-			bulletShapeCylinder->FreeReference();
-		}
 		throw;
 	}
 	
@@ -484,9 +469,6 @@ capsuleShape->getSphereRadius(0), capsuleShape->getSphereRadius(0));
 		}
 		
 	}catch(const deException &){
-		if(bulletShapeCapsule){
-			bulletShapeCapsule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -549,9 +531,6 @@ void debpCreateBulletShape::VisitShapeHull(decShapeHull &hull){
 		}
 		
 	}catch(const deException &){
-		if(bulletShapeHull){
-			bulletShapeHull->FreeReference();
-		}
 		throw;
 	}
 	
@@ -614,9 +593,6 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 		}
 		
 	}catch(const deException &){
-		if(bulletShape){
-			bulletShape->FreeReference();
-		}
 		throw;
 	}
 	

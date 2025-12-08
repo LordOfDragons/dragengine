@@ -50,7 +50,6 @@ feUGlyphSetBearing::feUGlyphSetBearing(feFontGlyph *glyph, int newBearing){
 }
 
 feUGlyphSetBearing::~feUGlyphSetBearing(){
-	if(pGlyph) pGlyph->FreeReference();
 }
 
 

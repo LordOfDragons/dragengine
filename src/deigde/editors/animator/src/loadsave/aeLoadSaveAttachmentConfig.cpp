@@ -259,9 +259,6 @@ void aeLoadSaveAttachmentConfig::pReadAttachment(const decXmlElementTag &root, a
 		attachment->FreeReference();
 		
 	}catch(const deException &){
-		if(attachment){
-			attachment->FreeReference();
-		}
 		throw;
 	}
 }

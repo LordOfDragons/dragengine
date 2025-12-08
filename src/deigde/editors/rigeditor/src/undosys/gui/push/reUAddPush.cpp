@@ -92,6 +92,4 @@ void reUAddPush::Redo(){
 //////////////////////
 
 void reUAddPush::pCleanUp(){
-	if(pPush) pPush->FreeReference();
-	if(pRig) pRig->FreeReference();
 }

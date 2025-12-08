@@ -52,7 +52,6 @@ feUFontSetImagePath::feUFontSetImagePath(feFontImage *image, const char *newPath
 }
 
 feUFontSetImagePath::~feUFontSetImagePath(){
-	if(pImage) pImage->FreeReference();
 }
 
 

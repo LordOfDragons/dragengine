@@ -503,9 +503,6 @@ void deoglDebugSnapshot::pTakeSnapshotStates() const{
 		pRenderThread.GetDelayedOperations().AddFileWrite(file);
 		
 	}catch(const deException &e){
-		if(writer){
-			writer->FreeReference();
-		}
 		if(file){
 			delete file;
 		}

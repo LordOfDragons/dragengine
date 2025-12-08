@@ -86,9 +86,6 @@ deoglSharedSPBRTIGroup *deoglSharedSPBRTIGroupList::AddWith(deoglSharedSPB &shar
 		pGroups.Add(group);
 		
 	}catch(const deException &){
-		if(group){
-			group->FreeReference();
-		}
 		throw;
 	}
 	return group;

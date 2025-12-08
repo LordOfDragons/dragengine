@@ -82,9 +82,6 @@ deWorld *deWorldManager::CreateWorld(){
 		pWorlds.Add(world);
 		
 	}catch(const deException &){
-		if(world){
-			world->FreeReference();
-		}
 		throw;
 	}
 	

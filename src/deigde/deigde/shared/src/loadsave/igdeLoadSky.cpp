@@ -300,9 +300,6 @@ deSkyLayer &layer, const char *basePath){
 					skin->FreeReference();
 					
 				}catch(const deException &){
-					if(skin){
-						skin->FreeReference();
-					}
 					LogWarnGenericProblemTag(*tag, tag->GetName(),
 						"Failed loading resource file");
 				}
@@ -456,9 +453,6 @@ deSkyLayerBody &body, const char *basePath){
 					skin->FreeReference();
 					
 				}catch(const deException &){
-					if(skin){
-						skin->FreeReference();
-					}
 					LogWarnGenericProblemTag(*tag, tag->GetName(),
 						"Failed loading resource file");
 				}

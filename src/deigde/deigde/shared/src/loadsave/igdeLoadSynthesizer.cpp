@@ -177,9 +177,6 @@ void igdeLoadSynthesizer::pReadController(const decXmlElementTag &root, deSynthe
 		controller->FreeReference();
 		
 	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
 		throw;
 	}
 	
@@ -233,9 +230,6 @@ void igdeLoadSynthesizer::pReadLink(const decXmlElementTag &root, deSynthesizer 
 		link->FreeReference();
 		
 	}catch(const deException &){
-		if(link){
-			link->FreeReference();
-		}
 		throw;
 	}
 }
@@ -296,9 +290,6 @@ const char *basePath, deSynthesizer &synthesizer){
 						sound->FreeReference();
 						
 					}catch(const deException &){
-						if(sound){
-							sound->FreeReference();
-						}
 						LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 					}
 				}
@@ -337,9 +328,6 @@ const char *basePath, deSynthesizer &synthesizer){
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -412,9 +400,6 @@ deSynthesizerSource *igdeLoadSynthesizer::pReadSourceWave(const decXmlElementTag
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -453,9 +438,6 @@ const char *basePath, deSynthesizer &synthesizer){
 						sound->FreeReference();
 						
 					}catch(const deException &){
-						if(sound){
-							sound->FreeReference();
-						}
 						LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 					}
 				}
@@ -494,9 +476,6 @@ const char *basePath, deSynthesizer &synthesizer){
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -569,9 +548,6 @@ const char *basePath, deSynthesizer &synthesizer){
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -621,12 +597,6 @@ const char *basePath, deSynthesizer &synthesizer){
 					reader->FreeReference();
 					
 				}catch(const deException &){
-					if(childSynthesizer){
-						childSynthesizer->FreeReference();
-					}
-					if(reader){
-						reader->FreeReference();
-					}
 					LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading synthesizer");
 				}
 				
@@ -654,9 +624,6 @@ const char *basePath, deSynthesizer &synthesizer){
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -801,9 +768,6 @@ deSynthesizer &synthesizer){
 		}
 		
 	}catch(const deException &){
-		if(effect){
-			effect->FreeReference();
-		}
 		throw;
 	}
 	

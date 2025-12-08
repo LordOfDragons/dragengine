@@ -300,9 +300,6 @@ void detZFile::pOutputCompressedToFile(){
 		writer->FreeReference();
 		
 	}catch(const deException &){
-		if(writer){
-			writer->FreeReference();
-		}
 		throw;
 	}
 }
@@ -316,9 +313,6 @@ void detZFile::pOutputTestBufferToFile(int size){
 		reader->FreeReference();
 		
 	}catch(const deException &){
-		if(reader){
-			reader->FreeReference();
-		}
 		throw;
 	}
 }

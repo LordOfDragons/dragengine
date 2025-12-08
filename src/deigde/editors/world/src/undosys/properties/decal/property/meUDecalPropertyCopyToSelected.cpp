@@ -76,9 +76,6 @@ const meDecalList &list, const char *key, const char *value){
 		}
 		
 	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}

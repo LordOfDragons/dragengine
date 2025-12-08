@@ -79,9 +79,6 @@ deNavigationSpace *deNavigationSpaceManager::CreateNavigationSpace(){
 		pNavSpaces.Add(navspace);
 		
 	}catch(const deException &){
-		if(navspace){
-			navspace->FreeReference();
-		}
 		throw;
 	}
 	

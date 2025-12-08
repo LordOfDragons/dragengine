@@ -81,5 +81,4 @@ void aeURuleIKSetLocalRotation::Redo(){
 //////////////////////
 
 void aeURuleIKSetLocalRotation::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

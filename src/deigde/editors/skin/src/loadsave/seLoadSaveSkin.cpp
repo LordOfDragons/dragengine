@@ -256,18 +256,6 @@ const igdeTexturePropertyList &knownPropertyList){
 		engSkin->FreeReference();
 		
 	}catch(const deException &){
-		if(nodeGroup){
-			nodeGroup->FreeReference();
-		}
-		if(property){
-			property->FreeReference();
-		}
-		if(texture){
-			texture->FreeReference();
-		}
-		if(engSkin){
-			engSkin->FreeReference();
-		}
 		throw;
 	}
 }
@@ -293,12 +281,6 @@ const deSkinPropertyNodeGroup &engNodeGroup){
 		}
 		
 	}catch(const deException &){
-		if(childNode){
-			childNode->FreeReference();
-		}
-		if(nodeGroup){
-			nodeGroup->FreeReference();
-		}
 		throw;
 	}
 	
@@ -395,9 +377,6 @@ sePropertyNode *seLoadSaveSkin::LoadPropertyNode(seSkin &skin, deSkinPropertyNod
 		}
 		
 	}catch(const deException &){
-		if(childNode){
-			childNode->FreeReference();
-		}
 		throw;
 	}
 	
@@ -428,9 +407,6 @@ const deSkinPropertyNode &engNode){
 			mask->FreeReference();
 			
 		}catch(const deException &){
-			if(mask){
-				mask->FreeReference();
-			}
 			throw;
 		}
 	}
@@ -484,9 +460,6 @@ void seLoadSaveSkin::SaveSkin(seSkin *skin, decBaseFileWriter *file){
 		temporarySkin->FreeReference();
 		
 	}catch(const deException &){
-		if(temporarySkin){
-			temporarySkin->FreeReference();
-		}
 		throw;
 	}
 }

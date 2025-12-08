@@ -51,7 +51,6 @@ aeALGroundChecker::aeALGroundChecker(){
 }
 
 aeALGroundChecker::~aeALGroundChecker(){
-	if(pColInfo) pColInfo->FreeReference();
 }
 
 

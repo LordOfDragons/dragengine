@@ -159,9 +159,6 @@ void igdeLoadAnimator::pReadAnimator(const decXmlElementTag &root, const char *b
 					rig->FreeReference();
 					
 				}catch(const deException &){
-					if(rig){
-						rig->FreeReference();
-					}
 					LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 				}
 			}
@@ -176,9 +173,6 @@ void igdeLoadAnimator::pReadAnimator(const decXmlElementTag &root, const char *b
 					animation->FreeReference();
 					
 				}catch(const deException &){
-					if(animation){
-						animation->FreeReference();
-					}
 					LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 				}
 			}
@@ -435,9 +429,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleAnimation(const decXmlElementTag &ro
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -505,9 +496,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleAnimationDifference(const decXmlElem
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -567,9 +555,6 @@ deAnimator &animator){
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -711,9 +696,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleBoneTransformator(const decXmlElemen
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -812,9 +794,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleStateManipulator(const decXmlElement
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -870,9 +849,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleStateSnapshot(const decXmlElementTag
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -969,9 +945,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleInverseKinematic(const decXmlElement
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -1078,9 +1051,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleForeignState(const decXmlElementTag 
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -1240,9 +1210,6 @@ const char *basePath, deAnimator &animator){
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -1329,9 +1296,6 @@ const char *basePath, deAnimator &animator){
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -1459,9 +1423,6 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleLimit(const decXmlElementTag &root, 
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	
@@ -1596,9 +1557,6 @@ deAnimatorRule *igdeLoadAnimator::pReadRuleTrackTo(const decXmlElementTag &root,
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	

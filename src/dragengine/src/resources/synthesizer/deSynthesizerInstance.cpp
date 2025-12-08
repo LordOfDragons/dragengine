@@ -219,9 +219,6 @@ void deSynthesizerInstance::pUpdateControllers(){
 		}
 		
 	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
 		throw;
 	}
 }

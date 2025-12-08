@@ -113,9 +113,6 @@ void igdeGDCNavigationBlockerList::SetToDeepCopyFrom(const igdeGDCNavigationBloc
 		}
 		
 	}catch(const deException &){
-		if(blocker){
-			blocker->FreeReference();
-		}
 		throw;
 	}
 }

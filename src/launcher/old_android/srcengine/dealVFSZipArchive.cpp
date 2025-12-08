@@ -196,9 +196,6 @@ dealVFSZipArchive::cArchiveDirectory *dealVFSZipArchive::cArchiveDirectory
 		directory->FreeReference();
 		
 	}catch(const deException &){
-		if(directory){
-			directory->FreeReference();
-		}
 		throw;
 	}
 	return directory;
@@ -482,12 +479,6 @@ decBaseFileReader *dealVFSZipArchive::OpenFileForReading(const decPath &path){
 		}
 		pMutex.Unlock();
 		
-		if(memoryFileReader){
-			memoryFileReader->FreeReference();
-		}
-		if(memoryFile){
-			memoryFile->FreeReference();
-		}
 		throw;
 	}
 	
@@ -658,9 +649,6 @@ void dealVFSZipArchive::pBuildFileTable(){
 				file->FreeReference();
 				
 			}catch(const deException &){
-				if(file){
-					file->FreeReference();
-				}
 				throw;
 			}
 		}

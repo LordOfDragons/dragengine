@@ -85,9 +85,6 @@ pControllerNames(pose.pControllerNames)
 			gesture->FreeReference();
 			
 		}catch(const deException &){
-			if(gesture){
-				gesture->FreeReference();
-			}
 			throw;
 		}
 	}
@@ -108,9 +105,6 @@ pControllerNames(pose.pControllerNames)
 			controller->FreeReference();
 			
 		}catch(const deException &){
-			if(controller){
-				controller->FreeReference();
-			}
 			throw;
 		}
 	}
@@ -168,9 +162,6 @@ void ceActorPose::pLoadAnimator(){
 		pEngAnimator = animator;
 		
 	}catch(const deException &e){
-		if(animator){
-			animator->FreeReference();
-		}
 		pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 		
 		// ignore missing or broken animators. this can easily happen during development

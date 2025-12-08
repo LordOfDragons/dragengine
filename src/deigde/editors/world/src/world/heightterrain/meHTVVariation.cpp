@@ -67,8 +67,6 @@ meHTVVariation::meHTVVariation(deEngine *engine){
 }
 
 meHTVVariation::~meHTVVariation(){
-	if(pSkin) pSkin->FreeReference();
-	if(pModel) pModel->FreeReference();
 }
 
 

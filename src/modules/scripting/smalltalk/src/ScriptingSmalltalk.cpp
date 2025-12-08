@@ -639,9 +639,6 @@ void ScriptingSmalltalk::pAddScripts(deVirtualFileSystem &vfs, const char *path)
 		}
 		
 	}catch(const deException &e){
-		if(filereader){
-			filereader->FreeReference();
-		}
 		/*
 		SetErrorTrace(e);
 		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::pAddScripts", __LINE__);

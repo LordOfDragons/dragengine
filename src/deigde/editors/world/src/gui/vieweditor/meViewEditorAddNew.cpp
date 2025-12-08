@@ -151,9 +151,6 @@ void meViewEditorAddNew::OnLeftMouseButtonPress(int x, int y, bool shift, bool c
 			object->FreeReference();
 			
 		}catch(const deException &e){
-			if(object){
-				object->FreeReference();
-			}
 			pUndoAddObject = nullptr;
 			
 			delete pClosestElement;

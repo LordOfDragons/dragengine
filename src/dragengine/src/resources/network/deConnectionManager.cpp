@@ -79,9 +79,6 @@ deConnection *deConnectionManager::CreateConnection(){
 		pConnections.Add(connection);
 		
 	}catch(const deException &){
-		if(connection){
-			connection->FreeReference();
-		}
 		throw;
 	}
 	

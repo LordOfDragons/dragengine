@@ -215,10 +215,6 @@ feFont *feLoadSaveSystem::LoadFont(const char *filename, igdeGameDefinition *gam
 		fileReader->FreeReference();
 		
 	}catch(const deException &){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(font) font->FreeReference();
 		throw;
 	}
 	
@@ -246,9 +242,6 @@ void feLoadSaveSystem::SaveFont(feFont *font, const char *filename){
 		fileWriter->FreeReference();
 		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		throw;
 	}
 }

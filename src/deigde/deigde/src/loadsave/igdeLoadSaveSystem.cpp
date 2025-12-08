@@ -121,9 +121,6 @@ igdeGameProject *igdeLoadSaveSystem::LoadGameProject(const char *filename){
 		pLSGameProject->Load(filename, project, fileReader);
 		
 	}catch(const deException &){
-		if(project){
-			project->FreeReference();
-		}
 		throw;
 	}
 	
@@ -143,9 +140,6 @@ void igdeLoadSaveSystem::SaveGameProject(igdeGameProject *project, const char *f
 		fileWriter->FreeReference();
 		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		throw;
 	}
 }

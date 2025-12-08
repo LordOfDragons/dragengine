@@ -170,17 +170,11 @@ void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 		
 	}catch(const deException &e){
 		pEngine->GetLogger()->LogException("Animator Editor", e);
-		if(engRule){
-			engRule->FreeReference();
-		}
 		if(engLink){
 			delete engLink;
 		}
 		if(engController){
 			delete engController;
-		}
-		if(animator){
-			animator->FreeReference();
 		}
 			pEngAnimator = NULL;
 		}
@@ -252,9 +246,6 @@ void aeSubAnimator::AddRuleSS(){
 		engRule->FreeReference();
 		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 }
@@ -282,9 +273,6 @@ const char *solverBone, int linkBlendFactor){
 		engRule->FreeReference();
 		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 }

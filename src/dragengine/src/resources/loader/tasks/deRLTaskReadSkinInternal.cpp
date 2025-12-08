@@ -316,9 +316,6 @@ bool deRLTaskReadSkinInternal::pApplyInternal(){
 					fallbackImage->FreeReference();
 					
 				}catch(const deException &){
-					if(fallbackImage){
-						fallbackImage->FreeReference();
-					}
 					return false;
 				}
 			}
@@ -338,9 +335,6 @@ bool deRLTaskReadSkinInternal::pApplyInternal(){
 					fallbackImage->FreeReference();
 					
 				}catch(const deException &){
-					if(fallbackImage){
-						fallbackImage->FreeReference();
-					}
 					return false;
 				}
 			}

@@ -48,7 +48,6 @@ deTerrainHeightModifier::deTerrainHeightModifier(deImage *heightImage){
 }
 
 deTerrainHeightModifier::~deTerrainHeightModifier(){
-	if(pHeightImage) pHeightImage->FreeReference();
 }
 
 

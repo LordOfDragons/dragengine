@@ -159,12 +159,6 @@ const char *basePath, bool asynchron){
 	}catch(const deException &){
 		LogErrorFormat("Loading sound '%s' (base path '%s') failed",
 			filename, basePath ? basePath : "");
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(sound){
-			sound->FreeReference();
-		}
 		throw;
 	}
 	
@@ -196,9 +190,6 @@ void deSoundManager::SaveSound(deVirtualFileSystem *vfs, deSound *sound, const c
 		fileWriter->FreeReference();
 		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		throw;
 	}
 }
@@ -242,14 +233,8 @@ deSoundDecoder *deSoundManager::CreateDecoder(deSound *sound){
 		soundDecoder->SetPeerSound(peer);
 		
 	}catch(const deException &e){
-		if(reader){
-			reader->FreeReference();
-		}
 		if(peer){
 			delete peer;
-		}
-		if(soundDecoder){
-			soundDecoder->FreeReference();
 		}
 		
 		LogErrorFormat("Creating decoder for sound '%s' failed",

@@ -52,7 +52,6 @@ aeUSetRuleFStaBone::aeUSetRuleFStaBone(aeRuleForeignState *rule, const char *new
 }
 
 aeUSetRuleFStaBone::~aeUSetRuleFStaBone(){
-	if(pRule) pRule->FreeReference();
 }
 
 

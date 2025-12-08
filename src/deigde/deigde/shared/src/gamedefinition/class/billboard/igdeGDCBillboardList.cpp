@@ -115,9 +115,6 @@ void igdeGDCBillboardList::SetToDeepCopyFrom(const igdeGDCBillboardList &list){
 		}
 		
 	}catch(const deException &){
-		if(billboard){
-			billboard->FreeReference();
-		}
 		throw;
 	}
 }

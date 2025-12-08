@@ -52,7 +52,6 @@ meUSetObjectRotation::meUSetObjectRotation(meObject *object, const decVector &ne
 }
 
 meUSetObjectRotation::~meUSetObjectRotation(){
-	if(pObject) pObject->FreeReference();
 }
 
 

@@ -125,5 +125,4 @@ void meUDecalMove::pCleanUp(){
 		delete [] pDecals;
 	}
 	
-	if(pWorld) pWorld->FreeReference();
 }

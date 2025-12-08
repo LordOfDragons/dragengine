@@ -59,8 +59,6 @@ meUHTVRuleCombineSetY::meUHTVRuleCombineSetY(meHTVegetationLayer *vlayer, meHTVR
 }
 
 meUHTVRuleCombineSetY::~meUHTVRuleCombineSetY(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

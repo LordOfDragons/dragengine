@@ -82,9 +82,6 @@ deParticleEmitterInstance *deParticleEmitterInstanceManager::CreateInstance(){
 		pInstances.Add(instance);
 		
 	}catch(const deException &){
-		if(instance){
-			instance->FreeReference();
-		}
 		throw;
 	}
 	

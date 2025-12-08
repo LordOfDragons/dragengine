@@ -58,7 +58,6 @@ meUndoDataDecal::meUndoDataDecal(meDecal *decal){
 }
 
 meUndoDataDecal::~meUndoDataDecal(){
-	if(pDecal) pDecal->FreeReference();
 }
 
 

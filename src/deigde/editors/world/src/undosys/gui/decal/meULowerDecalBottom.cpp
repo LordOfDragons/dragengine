@@ -56,7 +56,6 @@ meULowerDecalBottom::meULowerDecalBottom(meWorld *world, meDecal *decal){
 }
 
 meULowerDecalBottom::~meULowerDecalBottom(){
-	if(pDecal) pDecal->FreeReference();
 }
 
 

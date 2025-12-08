@@ -70,9 +70,6 @@ pHidden(category.pHidden)
 		}
 		
 	}catch(const deException &){
-		if(subCategory){
-			subCategory->FreeReference();
-		}
 		throw;
 	}
 }
@@ -167,9 +164,6 @@ gdeCategory &gdeCategory::operator=(const gdeCategory &category){
 		}
 		
 	}catch(const deException &){
-		if(subCategory){
-			subCategory->FreeReference();
-		}
 		throw;
 	}
 	

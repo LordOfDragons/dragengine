@@ -58,7 +58,6 @@ meHeightTerrain *heightTerrain, int newSectorResolution){
 }
 
 meUHTSetSectorResolution::~meUHTSetSectorResolution(){
-	if(pWorld) pWorld->FreeReference();
 }
 
 

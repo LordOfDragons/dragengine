@@ -115,9 +115,6 @@ void reUAddConstraint::Redo(){
 //////////////////////
 
 void reUAddConstraint::pCleanUp(){
-	if(pConstraint) pConstraint->FreeReference();
-	if(pBone) pBone->FreeReference();
-	if(pRig) pRig->FreeReference();
 }
 
 reRig *reUAddConstraint::pGetRig(){

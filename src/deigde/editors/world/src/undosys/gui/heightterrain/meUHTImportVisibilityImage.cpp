@@ -139,7 +139,6 @@ void meUHTImportVisibilityImage::pCleanUp(){
 	if(pNewVis) delete pNewVis;
 	if(pOldVis) delete pOldVis;
 	
-	if(pWorld) pWorld->FreeReference();
 }
 
 void meUHTImportVisibilityImage::pDoIt(meBitArray *vis){

@@ -533,9 +533,6 @@ void seSynthesizer::RebuildSources(){
 		}
 		
 	}catch(const deException &){
-		if(engSource){
-			engSource->FreeReference();
-		}
 		throw;
 	}
 }
@@ -906,9 +903,6 @@ void seSynthesizer::pUpdateEngineControllers(){
 		}
 		
 	}catch(const deException &){
-		if(engController){
-			engController->FreeReference();
-		}
 		
 		throw;
 	}

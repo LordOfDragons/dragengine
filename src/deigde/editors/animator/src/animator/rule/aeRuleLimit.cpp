@@ -507,9 +507,6 @@ deAnimatorRule *aeRuleLimit::CreateEngineRule(){
 		engRule->SetEnableVertexPositionSetMax(pEnableVertexPositionSetMax);
 		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 	

@@ -75,9 +75,6 @@ deCanvasImage *deCanvasManager::CreateCanvasImage(){
 		pCanvas.Add(canvas);
 		
 	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		throw;
 	}
 	
@@ -93,9 +90,6 @@ deCanvasPaint *deCanvasManager::CreateCanvasPaint(){
 		pCanvas.Add(canvas);
 		
 	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		throw;
 	}
 	
@@ -111,9 +105,6 @@ deCanvasCanvasView *deCanvasManager::CreateCanvasCanvasView(){
 		pCanvas.Add(canvas);
 		
 	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		throw;
 	}
 	
@@ -129,9 +120,6 @@ deCanvasRenderWorld *deCanvasManager::CreateCanvasRenderWorld(){
 		pCanvas.Add(canvas);
 		
 	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		throw;
 	}
 	
@@ -147,9 +135,6 @@ deCanvasText *deCanvasManager::CreateCanvasText(){
 		pCanvas.Add(canvas);
 		
 	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		throw;
 	}
 	
@@ -165,9 +150,6 @@ deCanvasVideoPlayer *deCanvasManager::CreateCanvasVideoPlayer(){
 		pCanvas.Add(canvas);
 		
 	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		throw;
 	}
 	
@@ -183,9 +165,6 @@ deCanvasView *deCanvasManager::CreateCanvasView(){
 		pCanvas.Add(canvas);
 		
 	}catch(const deException &){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		throw;
 	}
 	

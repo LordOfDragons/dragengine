@@ -89,9 +89,6 @@ meIDGroup *meIDGroupList::GetOrAddNamed(const char *name){
 			group->FreeReference();
 			
 		}catch(const deException &){
-			if(group){
-				group->FreeReference();
-			}
 			throw;
 		}
 	}

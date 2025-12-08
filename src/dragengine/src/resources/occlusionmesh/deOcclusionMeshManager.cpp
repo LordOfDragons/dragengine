@@ -121,9 +121,6 @@ const char *filename, deOcclusionMeshBuilder &builder){
 		pMeshes.Add(occmesh);
 		
 	}catch(const deException &e){
-		if(occmesh){
-			occmesh->FreeReference();
-		}
 		LogErrorFormat("Creating occlusion mesh '%s' failed", filename);
 		LogException(e);
 		throw;
@@ -200,12 +197,6 @@ const char *filename, const char *basePath){
 		}
 		
 	}catch(const deException &e){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(occmesh){
-			occmesh->FreeReference();
-		}
 		LogErrorFormat("Loading occlusion mesh '%s' (base path '%s') failed", filename, basePath ? basePath : "");
 		LogException(e);
 		throw;

@@ -277,7 +277,6 @@ void meSaveSupport::SaveHTHeightImage(meWorld *world, meHeightTerrainSector *sec
 		saveImage->FreeReference();
 		
 	}catch(const deException &e){
-		if(saveImage) saveImage->FreeReference();
 		pWindowMain->GetLogger()->LogException(LOGSOURCE, e);
 		throw;
 	}
@@ -337,7 +336,6 @@ void meSaveSupport::SaveHTVisibilityImage(meWorld *world, meHeightTerrainSector 
 		saveImage->FreeReference();
 		
 	}catch(const deException &e){
-		if(saveImage) saveImage->FreeReference();
 		pWindowMain->GetLogger()->LogException(LOGSOURCE, e);
 		throw;
 	}

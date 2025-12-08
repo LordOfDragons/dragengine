@@ -255,9 +255,6 @@ void meLoadSaveNavTest::pReadNavTestType(const decXmlElementTag &root, meWorld &
 		world.GetPathFindTest()->NotifyTypesChanged();
 		
 	}catch(const deException &){
-		if(type){
-			type->FreeReference();
-		}
 		throw;
 	}
 }

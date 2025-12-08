@@ -62,10 +62,6 @@ pAttachToIndex(-1)
 		}
 		
 	}catch(const deException &){
-		if(texture){
-			texture->FreeReference();
-			throw;
-		}
 	}
 }
 
@@ -106,10 +102,6 @@ void meCDOObject::UpdateObject(meObject &object) const{
 		}
 		
 	}catch(const deException &){
-		if(texture){
-			texture->FreeReference();
-			throw;
-		}
 	}
 	
 	object.SetAttachedToID(pAttachToID); // attach to non-pasted object

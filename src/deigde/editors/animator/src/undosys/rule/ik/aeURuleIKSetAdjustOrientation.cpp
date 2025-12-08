@@ -78,5 +78,4 @@ void aeURuleIKSetAdjustOrientation::Redo(){
 //////////////////////
 
 void aeURuleIKSetAdjustOrientation::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

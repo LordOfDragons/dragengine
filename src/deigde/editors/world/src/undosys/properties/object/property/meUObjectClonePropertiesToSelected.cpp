@@ -70,9 +70,6 @@ const meObjectList &list, const decStringDictionary &properties){
 		}
 		
 	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}

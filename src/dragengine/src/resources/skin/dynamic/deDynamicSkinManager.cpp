@@ -77,9 +77,6 @@ deDynamicSkin *deDynamicSkinManager::CreateDynamicSkin(){
 		pSkins.Add(dynamicSkin);
 		
 	}catch(const deException &){
-		if(dynamicSkin){
-			dynamicSkin->FreeReference();
-		}
 		throw;
 	}
 	

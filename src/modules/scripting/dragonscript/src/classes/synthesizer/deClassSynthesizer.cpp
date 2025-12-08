@@ -275,9 +275,6 @@ void deClassSynthesizer::nfAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
 		link->FreeReference();
 		
 	}catch(...){
-		if(link){
-			link->FreeReference();
-		}
 		throw;
 	}
 	

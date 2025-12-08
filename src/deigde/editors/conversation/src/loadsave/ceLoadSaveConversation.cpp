@@ -1276,9 +1276,6 @@ void ceLoadSaveConversation::pReadTarget(const decXmlElementTag &root, ceConvers
 		target->FreeReference();
 		
 	}catch(const deException &){
-		if(target){
-			target->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1409,9 +1406,6 @@ void ceLoadSaveConversation::pReadCameraShot(const decXmlElementTag &root, ceCon
 		cameraShot->FreeReference();
 		
 	}catch(const deException &){
-		if(cameraShot){
-			cameraShot->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1452,9 +1446,6 @@ void ceLoadSaveConversation::pReadGesture(const decXmlElementTag &root, ceConver
 		gesture->FreeReference();
 		
 	}catch(const deException &){
-		if(gesture){
-			gesture->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1497,12 +1488,6 @@ void ceLoadSaveConversation::pReadFacePose(const decXmlElementTag &root, ceConve
 		facePose->FreeReference();
 		
 	}catch(const deException &){
-		if(entry){
-			entry->FreeReference();
-		}
-		if(facePose){
-			facePose->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1537,9 +1522,6 @@ void ceLoadSaveConversation::pReadFile(const decXmlElementTag &root, ceConversat
 		file->FreeReference();
 		
 	}catch(const deException &){
-		if(file){
-			file->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1577,9 +1559,6 @@ void ceLoadSaveConversation::pReadTopic(const decXmlElementTag &root, ceConversa
 		topic->FreeReference();
 		
 	}catch(const deException &){
-		if(topic){
-			topic->FreeReference();
-		}
 		throw;
 	}
 }
@@ -1607,9 +1586,6 @@ void ceLoadSaveConversation::pReadActionList(const decXmlElementTag &root, ceCon
 				action->FreeReference();
 				
 			}catch(const deException &){
-				if(action){
-					action->FreeReference();
-				}
 				throw;
 			}
 		}
@@ -1625,9 +1601,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionCameraShot(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1641,9 +1614,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionMusic(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1657,9 +1627,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionActorSpeak(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1673,9 +1640,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionIfElse(root, conversation, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1689,9 +1653,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionPlayerChoice(root, conversation, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1705,9 +1666,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionStopConversation(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1721,9 +1679,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionStopTopic(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1737,9 +1692,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionSnippet(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1753,9 +1705,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionSetVariable(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1769,9 +1718,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionSetActorParameter(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1785,9 +1731,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionActorCommand(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1801,9 +1744,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionGameCommand(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1817,9 +1757,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionWait(root, conversation, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1833,9 +1770,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionTrigger(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1849,9 +1783,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionActorAdd(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1865,9 +1796,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionActorRemove(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1881,9 +1809,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionCoordSystemAdd(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1897,9 +1822,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionCoordSystemRemove(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -1913,9 +1835,6 @@ ceConversationAction *ceLoadSaveConversation::pReadAction(const decXmlElementTag
 			pReadActionComment(root, *action);
 			
 		}catch(const deException &){
-			if(action){
-				action->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2144,9 +2063,6 @@ void ceLoadSaveConversation::pReadActionIfElseCase(const decXmlElementTag &root,
 		ifcase->FreeReference();
 		
 	}catch(const deException &){
-		if(ifcase){
-			ifcase->FreeReference();
-		}
 		throw;
 	}
 }
@@ -2217,9 +2133,6 @@ void ceLoadSaveConversation::pReadActionPlayerChoiceOption(const decXmlElementTa
 		option->FreeReference();
 		
 	}catch(const deException &){
-		if(option){
-			option->FreeReference();
-		}
 		throw;
 	}
 }
@@ -2608,9 +2521,6 @@ ceConversation &conversation, ceConversationConditionList &list){
 				condition->FreeReference();
 				
 			}catch(const deException &){
-				if(condition){
-					condition->FreeReference();
-				}
 				throw;
 			}
 		}
@@ -2626,9 +2536,6 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 			pReadConditionLogic(root, conversation, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2642,9 +2549,6 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 			pReadConditionHasActor(root, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2658,9 +2562,6 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 			pReadConditionActorInConversation(root, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2674,9 +2575,6 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 			pReadConditionVariable(root, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2690,9 +2588,6 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 			pReadConditionActorParameter(root, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2706,9 +2601,6 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 			pReadConditionActorCommand(root, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2722,9 +2614,6 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 			pReadConditionGameCommand(root, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -2738,9 +2627,6 @@ ceConversationCondition *ceLoadSaveConversation::pReadCondition(const decXmlElem
 			pReadConditionTrigger(root, *condition);
 			
 		}catch(const deException &){
-			if(condition){
-				condition->FreeReference();
-			}
 			throw;
 		}
 		
@@ -3050,9 +2936,6 @@ void ceLoadSaveConversation::pReadStripList(const decXmlElementTag &root, ceStri
 					entry->FreeReference();
 					
 				}catch(const deException &){
-					if(entry){
-						entry->FreeReference();
-					}
 					throw;
 				}
 				

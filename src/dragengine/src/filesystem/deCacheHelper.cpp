@@ -124,12 +124,6 @@ decBaseFileReader *deCacheHelper::Read(const char *id){
 			}
 			
 		}catch(const deException &){
-			if(zreader){
-				zreader->FreeReference();
-			}
-			if(reader){
-				reader->FreeReference();
-			}
 			throw;
 		}
 		
@@ -184,12 +178,6 @@ decBaseFileWriter *deCacheHelper::Write(const char *id){
 		}
 		
 	}catch(const deException &){
-		if(zwriter){
-			zwriter->FreeReference();
-		}
-		if(writer){
-			writer->FreeReference();
-		}
 		throw;
 	}
 	
@@ -279,9 +267,6 @@ void deCacheHelper::BuildMapping(){
 		}
 		
 	}catch(const deException &){
-		if(reader){
-			reader->FreeReference();
-		}
 		throw;
 	}
 }

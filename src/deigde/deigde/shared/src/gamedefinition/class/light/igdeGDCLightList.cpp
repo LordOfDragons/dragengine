@@ -115,9 +115,6 @@ void igdeGDCLightList::SetToDeepCopyFrom(const igdeGDCLightList &list){
 		}
 		
 	}catch(const deException &){
-		if(light){
-			light->FreeReference();
-		}
 		throw;
 	}
 }

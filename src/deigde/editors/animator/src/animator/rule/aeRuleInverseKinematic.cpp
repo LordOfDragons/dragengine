@@ -344,9 +344,6 @@ deAnimatorRule *aeRuleInverseKinematic::CreateEngineRule(){
 		pTargetReachCenter.UpdateEngineTarget(animator, engRule->GetTargetReachCenter());
 		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 	

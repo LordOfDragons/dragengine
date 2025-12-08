@@ -449,9 +449,6 @@ void seLoadSaveSky::pReadController(const decXmlElementTag &root, seSky &sky){
 		controller->FreeReference();
 		
 	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
 		throw;
 	}
 }

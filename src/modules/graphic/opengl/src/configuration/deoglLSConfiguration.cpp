@@ -86,9 +86,6 @@ void deoglLSConfiguration::LoadConfig(deoglConfiguration &configuration){
 		}
 		
 	}catch(const deException &e){
-		if(file){
-			file->FreeReference();
-		}
 		pOgl.LogException(e);
 		throw;
 	}

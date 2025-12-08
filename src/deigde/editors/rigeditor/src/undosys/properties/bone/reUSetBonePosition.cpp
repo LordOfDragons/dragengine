@@ -75,5 +75,4 @@ void reUSetBonePosition::Redo(){
 //////////////////////
 
 void reUSetBonePosition::pCleanUp(){
-	if(pBone) pBone->FreeReference();
 }

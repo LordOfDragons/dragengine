@@ -387,10 +387,6 @@ void dealAssetUnpacker::pUnpack(){
 						DETHROW(deeReadFile);
 						
 					}else{ // 0 = EOF
-						if(writeFile){
-							writeFile->FreeReference();
-							writeFile = NULL;
-						}
 						break;
 					}
 				}
@@ -433,9 +429,6 @@ void dealAssetUnpacker::pUnpack(){
 	}catch(const deException &){
 		if(buffer){
 			delete [] buffer;
-		}
-		if(writeFile){
-			writeFile->FreeReference();
 		}
 		pUnpackFailed = true;
 	}

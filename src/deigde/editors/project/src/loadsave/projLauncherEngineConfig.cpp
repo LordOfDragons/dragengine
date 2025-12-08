@@ -180,9 +180,6 @@ const decXmlElementTag &root, projTestRunner &testRunner){
 		profile->FreeReference();
 		
 	}catch(const deException &){
-		if(profile){
-			profile->FreeReference();
-		}
 		throw;
 	}
 }
@@ -303,9 +300,6 @@ const decXmlElementTag &root, projTRProfile &profile, const char *module){
 				parameter->FreeReference();
 				
 			}catch(const deException &){
-				if(parameter){
-					parameter->FreeReference();
-				}
 				throw;
 			}
 			

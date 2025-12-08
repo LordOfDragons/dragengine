@@ -286,9 +286,6 @@ void saeLoadSaveSAnimation::pReadPhoneme(const decXmlElementTag &root, saeSAnima
 		sanimation.AddPhoneme(phoneme);
 		
 	}catch(const deException &){
-		if(phoneme){
-			phoneme->FreeReference();
-		}
 		
 		throw;
 	}
@@ -329,9 +326,6 @@ void saeLoadSaveSAnimation::pReadWord(const decXmlElementTag &root, saeSAnimatio
 		sanimation.AddWord(word);
 		
 	}catch(const deException &){
-		if(word){
-			word->FreeReference();
-		}
 		
 		throw;
 	}

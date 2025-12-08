@@ -391,9 +391,6 @@ void deClassNavigator::nfNearestPoint::RunFunction(dsRunTime *rt, dsValue *mysel
 		navinfo->FreeReference();
 		
 	}catch(const duException &){
-		if(navinfo){
-			navinfo->FreeReference();
-		}
 		throw;
 	}
 }
@@ -430,9 +427,6 @@ void deClassNavigator::nfLineCollide::RunFunction(dsRunTime *rt, dsValue *myself
 		navinfo->FreeReference();
 		
 	}catch(const duException &){
-		if(navinfo){
-			navinfo->FreeReference();
-		}
 		throw;
 	}
 }
@@ -470,9 +464,6 @@ void deClassNavigator::nfPathCollideRay::RunFunction(dsRunTime *rt, dsValue *mys
 			navinfo->FreeReference();
 			
 		}catch(const duException &){
-			if(navinfo){
-				navinfo->FreeReference();
-			}
 			throw;
 		}
 		
@@ -518,9 +509,6 @@ void deClassNavigator::nfPathCollideRay2::RunFunction(dsRunTime *rt, dsValue *my
 			navinfo->FreeReference();
 			
 		}catch(const duException &){
-			if(navinfo){
-				navinfo->FreeReference();
-			}
 			throw;
 		}
 		
@@ -561,9 +549,6 @@ void deClassNavigator::nfPathCollideShape::RunFunction(dsRunTime *rt, dsValue *m
 			navinfo->FreeReference();
 			
 		}catch(const duException &){
-			if(navinfo){
-				navinfo->FreeReference();
-			}
 			throw;
 		}
 		
@@ -612,9 +597,6 @@ void deClassNavigator::nfPathCollideShape2::RunFunction(dsRunTime *rt, dsValue *
 			navinfo->FreeReference();
 			
 		}catch(const duException &){
-			if(navinfo){
-				navinfo->FreeReference();
-			}
 			throw;
 		}
 		

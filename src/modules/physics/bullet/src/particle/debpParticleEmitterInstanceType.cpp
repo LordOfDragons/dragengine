@@ -1445,9 +1445,6 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision(sParticle &particle,
 				emitInstance->FreeReference();
 				
 			}catch(const deException &){
-				if(emitInstance){
-					emitInstance->FreeReference();
-				}
 				throw;
 			}
 		}

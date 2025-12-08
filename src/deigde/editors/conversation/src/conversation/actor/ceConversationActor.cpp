@@ -744,15 +744,6 @@ void ceConversationActor::pUpdateComponent(){
 		}
 		
 	}catch(const deException &e){
-		if(model){
-			model->FreeReference();
-		}
-		if(skin){
-			skin->FreeReference();
-		}
-		if(rig){
-			rig->FreeReference();
-		}
 		pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 	}
 	
@@ -795,29 +786,8 @@ void ceConversationActor::pUpdateComponent(){
 		}
 		
 		// free the reference we hold
-		if(rig){
-			rig->FreeReference();
-			rig = nullptr;
-		}
-		if(model){
-			model->FreeReference();
-			model = nullptr;
-		}
-		if(skin){
-			skin->FreeReference();
-			skin = nullptr;
-		}
 		
 	}catch(const deException &){
-		if(model){
-			model->FreeReference();
-		}
-		if(skin){
-			skin->FreeReference();
-		}
-		if(rig){
-			rig->FreeReference();
-		}
 		throw;
 	}
 	
@@ -847,9 +817,6 @@ void ceConversationActor::pUpdateSpeechAnimation(){
 			reader->FreeReference();
 			
 		}catch(const deException &){
-			if(reader){
-				reader->FreeReference();
-			}
 		}
 	}
 	
@@ -890,12 +857,6 @@ void ceConversationActor::pUpdateFacePoseAnimator(){
 			reader->FreeReference();
 			
 		}catch(const deException &e){
-			if(animator){
-				animator->FreeReference();
-			}
-			if(reader){
-				reader->FreeReference();
-			}
 			pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 		}
 	}
@@ -924,12 +885,6 @@ void ceConversationActor::pUpdateEyesAnimator(){
 			reader->FreeReference();
 			
 		}catch(const deException &e){
-			if(animator){
-				animator->FreeReference();
-			}
-			if(reader){
-				reader->FreeReference();
-			}
 			pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 		}
 	}

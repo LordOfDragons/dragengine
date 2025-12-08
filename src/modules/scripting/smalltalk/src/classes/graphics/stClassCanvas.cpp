@@ -252,9 +252,6 @@ OOP stClassCanvas::ccNew(OOP self, OOP type){
 		canvas->FreeReference();
 		
 	}catch(const deException &e){
-		if(canvas){
-			canvas->FreeReference();
-		}
 		result = st.GetNil();
 		e.PrintError();
 	}

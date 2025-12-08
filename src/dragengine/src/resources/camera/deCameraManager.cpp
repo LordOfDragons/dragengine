@@ -71,9 +71,6 @@ deCamera *deCameraManager::CreateCamera(){
 		pCameras.Add(camera);
 		
 	}catch(const deException &){
-		if(camera){
-			camera->FreeReference();
-		}
 		throw;
 	}
 	

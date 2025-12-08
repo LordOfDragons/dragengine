@@ -111,9 +111,6 @@ ceConversation *ceLoadSaveSystem::LoadConversation(const char *filename){
 				decPath::CreatePathUnix(filename))), filename);
 		
 	}catch(const deException &){
-		if(conversation){
-			conversation->FreeReference();
-		}
 		throw;
 	}
 	

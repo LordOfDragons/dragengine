@@ -53,7 +53,6 @@ meUHTVVarSetRestitution::meUHTVVarSetRestitution(meHTVVariation *variation, floa
 }
 
 meUHTVVarSetRestitution::~meUHTVVarSetRestitution(){
-	if(pVariation) pVariation->FreeReference();
 }
 
 

@@ -290,15 +290,6 @@ pDirtyRig(true)
 		if(engLink){
 			delete engLink;
 		}
-		if(amRuleRestPose){
-			amRuleRestPose->FreeReference();
-		}
-		if(amRuleAnim){
-			amRuleAnim->FreeReference();
-		}
-		if(amRuleStateSnapshot){
-			amRuleStateSnapshot->FreeReference();
-		}
 		if(amController){
 			delete amController;
 		}
@@ -2031,12 +2022,8 @@ void reRig::pUpdateComponent(){
 		}
 		
 		// free the reference we hold
-		if(model) model->FreeReference();
-		if(skin) skin->FreeReference();
 		
 	}catch(const deException &){
-		if(model) model->FreeReference();
-		if(skin) skin->FreeReference();
 		throw;
 	}
 	
@@ -2096,10 +2083,8 @@ void reRig::pUpdateAnimator(){
 		pEngAnimator->SetAnimation(animation);
 		
 		// free the reference we hold
-		if(animation) animation->FreeReference();
 		
 	}catch(const deException &){
-		if(animation) animation->FreeReference();
 		throw;
 	}
 	

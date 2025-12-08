@@ -59,8 +59,6 @@ meUHTVRuleMathSetValueA::meUHTVRuleMathSetValueA(meHTVegetationLayer *vlayer, me
 }
 
 meUHTVRuleMathSetValueA::~meUHTVRuleMathSetValueA(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

@@ -197,10 +197,6 @@ void ceCAActorSpeak::pLoadSound(){
 		}
 		
 	}catch(const deException &e){
-		if(sound){
-			sound->FreeReference();
-			sound = NULL;
-		}
 		pEngine->GetLogger()->LogException(LOGSOURCE, e);
 	}
 	

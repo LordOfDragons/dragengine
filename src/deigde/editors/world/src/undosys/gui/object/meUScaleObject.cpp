@@ -142,5 +142,4 @@ void meUScaleObject::ProgressiveRedo(){
 //////////////////////
 
 void meUScaleObject::pCleanUp(){
-	if(pWorld) pWorld->FreeReference();
 }

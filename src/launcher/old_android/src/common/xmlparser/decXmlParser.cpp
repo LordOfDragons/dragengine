@@ -86,7 +86,6 @@ decXmlParser::~decXmlParser(){
 	if(pCleanString) delete [] pCleanString;
 	if(pToken) delete [] pToken;
 	
-	if(pLogger) pLogger->FreeReference();
 }
 
 
@@ -350,9 +349,6 @@ bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requi
 		tag->FreeReference();
 		
 	}catch(const deException &){
-		if(charData){
-			charData->FreeReference();
-		}
 		tag->FreeReference();
 		throw;
 	}
@@ -453,12 +449,6 @@ bool decXmlParser::ParseReference(decXmlContainer *container){
 			return false;
 		}
 	}catch(const deException &){
-		if(charRef){
-			charRef->FreeReference();
-		}
-		if(entRef){
-			entRef->FreeReference();
-		}
 		throw;
 	}
 	return true;
@@ -492,9 +482,6 @@ bool decXmlParser::ParseCDSect(decXmlContainer *container){
 		cdsect = NULL;
 		if(!ParseToken("]]>")) RaiseFatalError();
 	}catch(const deException &){
-		if(cdsect){
-			cdsect->FreeReference();
-		}
 		throw;
 	}
 	return true;
@@ -530,12 +517,6 @@ void decXmlParser::ParseAttribute(decXmlContainer *container){
 			attValue->FreeReference();
 		}
 	}catch(const deException &){
-		if(ns){
-			ns->FreeReference();
-		}
-		if(attValue){
-			attValue->FreeReference();
-		}
 		throw;
 	}
 }

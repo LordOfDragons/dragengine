@@ -151,7 +151,6 @@ long meWEFDistortImage::onEditImageCommand(FXObject *sender, FXSelector selector
 			image->FreeReference();
 			
 		}catch(const deException &e){
-			if(image) image->FreeReference();
 			pWndEffects->GetWindowMain()->GetLogger()->LogException("World Editor", e);
 		}
 	}

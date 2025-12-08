@@ -117,9 +117,6 @@ void ceSpeechAnimationXML::pReadSAnimation(const decXmlElementTag &root, const c
 						rig->FreeReference();
 						
 					}catch(const deException &){
-						if(rig){
-							rig->FreeReference();
-						}
 						LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 					}
 				}
@@ -134,9 +131,6 @@ void ceSpeechAnimationXML::pReadSAnimation(const decXmlElementTag &root, const c
 						animation->FreeReference();
 						
 					}catch(const deException &){
-						if(animation){
-							animation->FreeReference();
-						}
 						LogWarnGenericProblemTag(root, tag->GetName(), "Failed loading resource file");
 					}
 				}
@@ -196,9 +190,6 @@ void ceSpeechAnimationXML::pReadPhoneme(const decXmlElementTag &root, ceSpeechAn
 		sanimation.GetPhonemeList().Add(phoneme);
 		
 	}catch(const deException &){
-		if(phoneme){
-			phoneme->FreeReference();
-		}
 		
 		throw;
 	}
@@ -230,9 +221,6 @@ void ceSpeechAnimationXML::pReadWord(const decXmlElementTag &root, ceSpeechAnima
 		sanimation.GetWordList().Add(word);
 		
 	}catch(const deException &){
-		if(word){
-			word->FreeReference();
-		}
 		
 		throw;
 	}

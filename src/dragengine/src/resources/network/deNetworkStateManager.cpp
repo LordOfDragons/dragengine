@@ -80,9 +80,6 @@ deNetworkState *deNetworkStateManager::CreateState(bool readOnly){
 		pStates.Add(state);
 		
 	}catch(const deException &){
-		if(state){
-			state->FreeReference();
-		}
 		throw;
 	}
 	

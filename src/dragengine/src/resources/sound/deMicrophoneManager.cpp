@@ -78,9 +78,6 @@ deMicrophone *deMicrophoneManager::CreateMicrophone(){
 		pMicrophones.Add(microphone);
 		
 	}catch(const deException &){
-		if(microphone){
-			microphone->FreeReference();
-		}
 		throw;
 	}
 	

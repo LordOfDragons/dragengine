@@ -49,8 +49,6 @@ deHeightTerrainTexture::deHeightTerrainTexture(){
 }
 
 deHeightTerrainTexture::~deHeightTerrainTexture(){
-	if(pMaskImage) pMaskImage->FreeReference();
-	if(pSkin) pSkin->FreeReference();
 }
 
 
@@ -60,7 +58,6 @@ deHeightTerrainTexture::~deHeightTerrainTexture(){
 
 
 void deHeightTerrainTexture::SetSkin(deSkin *skin){
-	if(pSkin) pSkin->FreeReference();
 	
 	pSkin = skin;
 	
@@ -84,7 +81,6 @@ void deHeightTerrainTexture::SetProjectionRotation(float rotation){
 
 
 void deHeightTerrainTexture::SetMaskImage(deImage *image){
-	if(pMaskImage) pMaskImage->FreeReference();
 	
 	pMaskImage = image;
 	

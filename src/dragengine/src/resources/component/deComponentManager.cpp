@@ -81,9 +81,6 @@ deComponent *deComponentManager::CreateComponent(deModel *model, deSkin *skin){
 		pComponents.Add(component);
 		
 	}catch(const deException &){
-		if(component){
-			component->FreeReference();
-		}
 		throw;
 	}
 	

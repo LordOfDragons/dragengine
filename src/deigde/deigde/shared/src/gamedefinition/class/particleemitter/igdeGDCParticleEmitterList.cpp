@@ -115,9 +115,6 @@ void igdeGDCParticleEmitterList::SetToDeepCopyFrom(const igdeGDCParticleEmitterL
 		}
 		
 	}catch(const deException &){
-		if(emitter){
-			emitter->FreeReference();
-		}
 		throw;
 	}
 }

@@ -52,7 +52,6 @@ aeUSetRuleAniDLeadMoveName::aeUSetRuleAniDLeadMoveName(aeRuleAnimationDifference
 }
 
 aeUSetRuleAniDLeadMoveName::~aeUSetRuleAniDLeadMoveName(){
-	if(pRule) pRule->FreeReference();
 }
 
 

@@ -71,7 +71,6 @@ pValueSize(0)
 deErrorTracePoint::~deErrorTracePoint(){
 	RemoveAllValues();
 	if(pValues) delete [] pValues;
-	if(pSourceModule) pSourceModule->FreeReference();
 }
 
 

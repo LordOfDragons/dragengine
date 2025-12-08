@@ -429,9 +429,6 @@ void igdeTriggerExpressionEditor::RebuildTree(){
 			component->FreeReference();
 			
 		}catch(const deException &){
-			if(component){
-				component->FreeReference();
-			}
 			pWorkExpression = nullptr;
 			throw;
 		}

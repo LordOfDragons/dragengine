@@ -81,9 +81,6 @@ deSpeaker *deSpeakerManager::CreateSpeaker(){
 		pSpeakers.Add(speaker);
 		
 	}catch(const deException &){
-		if(speaker){
-			speaker->FreeReference();
-		}
 		throw;
 	}
 	

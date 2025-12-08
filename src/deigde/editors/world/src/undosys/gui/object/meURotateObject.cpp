@@ -123,5 +123,4 @@ void meURotateObject::ProgressiveRedo(){
 //////////////////////
 
 void meURotateObject::pCleanUp(){
-	if(pWorld) pWorld->FreeReference();
 }

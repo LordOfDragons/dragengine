@@ -59,8 +59,6 @@ meUHTVRuleVecMathSetVectorB::meUHTVRuleVecMathSetVectorB(meHTVegetationLayer *vl
 }
 
 meUHTVRuleVecMathSetVectorB::~meUHTVRuleVecMathSetVectorB(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

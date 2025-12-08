@@ -59,8 +59,6 @@ meUHTVRuleCPSetClass::meUHTVRuleCPSetClass(meHTVegetationLayer *vlayer, meHTVRul
 }
 
 meUHTVRuleCPSetClass::~meUHTVRuleCPSetClass(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

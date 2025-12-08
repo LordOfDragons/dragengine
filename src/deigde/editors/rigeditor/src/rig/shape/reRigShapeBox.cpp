@@ -79,7 +79,6 @@ reRigShape *reRigShapeBox::Duplicate() const{
 		shape->SetHalfExtends(GetHalfExtends());
 		
 	}catch(const deException &){
-		if(shape) shape->FreeReference();
 		throw;
 	}
 	

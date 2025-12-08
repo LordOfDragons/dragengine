@@ -76,5 +76,4 @@ void reUToggleBoneIKLocked::Redo(){
 //////////////////////
 
 void reUToggleBoneIKLocked::pCleanUp(){
-	if(pBone) pBone->FreeReference();
 }

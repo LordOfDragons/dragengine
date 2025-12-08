@@ -94,10 +94,6 @@ void deSkinPropertyNodeVisitorLoad::VisitImage(deSkinPropertyNodeImage &node){
 			image = NULL;
 			
 		}catch(const deException &){
-			if(image){
-				image->FreeReference();
-				image = NULL;
-			}
 		}
 	}
 }
@@ -120,10 +116,6 @@ void deSkinPropertyNodeVisitorLoad::VisitText(deSkinPropertyNodeText &node){
 			font = NULL;
 			
 		}catch(const deException &){
-			if(font){
-				font->FreeReference();
-				font = NULL;
-			}
 		}
 	}
 }

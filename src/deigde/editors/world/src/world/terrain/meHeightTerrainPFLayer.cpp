@@ -220,10 +220,6 @@ void meHeightTerrainPFLayer::LoadMaskFromImage(){
 				}
 				
 			}catch(const deException &e){
-				if(image){
-					image->FreeReference();
-					image = NULL;
-				}
 				if(pHTSector && pHTSector->GetHeightTerrain()){
 					pHTSector->GetHeightTerrain()->GetWorld().GetLogger()->LogException(LOGSOURCE, e);
 				}

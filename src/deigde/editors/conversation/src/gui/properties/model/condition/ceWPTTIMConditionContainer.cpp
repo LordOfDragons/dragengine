@@ -84,9 +84,6 @@ void ceWPTTIMConditionContainer::SetCondition(ceConversationCondition *condition
 		child->FreeReference(); // held by superclass child list
 		
 	}catch(const deException &){
-		if(child){
-			child->FreeReference();
-		}
 		throw;
 	}
 }

@@ -604,9 +604,6 @@ deVirtualFileSystem *gdeGameDefinition::GetPreviewVFS(){
 				container->FreeReference();
 				
 			}catch(const deException &){
-				if(container){
-					container->FreeReference();
-				}
 					pVFS = NULL;
 				}
 				

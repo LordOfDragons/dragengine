@@ -80,9 +80,6 @@ ceCConditionLogic *logic, const ceConversationConditionList &conditions){
 		}
 		
 	}catch(const deException &){
-		if(newCondition){
-			newCondition->FreeReference();
-		}
 		throw;
 	}
 }

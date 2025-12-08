@@ -160,9 +160,6 @@ deAnimatorRule *aeRuleStateSnapshot::CreateEngineRule(){
 		engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
 		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 	

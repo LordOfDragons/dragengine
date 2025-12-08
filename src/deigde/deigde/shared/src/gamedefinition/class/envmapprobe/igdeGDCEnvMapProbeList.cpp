@@ -115,9 +115,6 @@ void igdeGDCEnvMapProbeList::SetToDeepCopyFrom(const igdeGDCEnvMapProbeList &lis
 		}
 		
 	}catch(const deException &){
-		if(probe){
-			probe->FreeReference();
-		}
 		throw;
 	}
 }

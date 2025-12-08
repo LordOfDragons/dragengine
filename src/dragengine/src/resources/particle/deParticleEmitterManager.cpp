@@ -80,9 +80,6 @@ deParticleEmitter *deParticleEmitterManager::CreateParticleEmitter(){
 		pParticleEmitters.Add(psys);
 		
 	}catch(const deException &){
-		if(psys){
-			psys->FreeReference();
-		}
 		throw;
 	}
 	

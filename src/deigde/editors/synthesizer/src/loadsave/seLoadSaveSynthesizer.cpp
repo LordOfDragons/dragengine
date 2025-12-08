@@ -534,9 +534,6 @@ void seLoadSaveSynthesizer::pReadController(const decXmlElementTag &root, seSynt
 		controller->FreeReference();
 		
 	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
 		throw;
 	}
 	
@@ -636,9 +633,6 @@ void seLoadSaveSynthesizer::pReadLink(const decXmlElementTag &root, seSynthesize
 		link->FreeReference();
 		
 	}catch(const deException &){
-		if(link){
-			link->FreeReference();
-		}
 		throw;
 	}
 }
@@ -724,9 +718,6 @@ seSource *seLoadSaveSynthesizer::pReadSourceSound(const decXmlElementTag &root, 
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -802,9 +793,6 @@ seSource *seLoadSaveSynthesizer::pReadSourceWave(const decXmlElementTag &root, s
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -870,9 +858,6 @@ seSource *seLoadSaveSynthesizer::pReadSourceChain(const decXmlElementTag &root, 
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -948,9 +933,6 @@ seSource *seLoadSaveSynthesizer::pReadSourceGroup(const decXmlElementTag &root, 
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -1015,9 +997,6 @@ seSource *seLoadSaveSynthesizer::pReadSourceSynthesizer(const decXmlElementTag &
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	
@@ -1183,9 +1162,6 @@ seEffect *seLoadSaveSynthesizer::pReadEffectStretch(const decXmlElementTag &root
 		}
 		
 	}catch(const deException &){
-		if(effect){
-			effect->FreeReference();
-		}
 		throw;
 	}
 	

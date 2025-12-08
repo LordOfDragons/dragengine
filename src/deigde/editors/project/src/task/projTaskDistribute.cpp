@@ -369,9 +369,6 @@ void projTaskDistribute::pScanDirectory(const decPath &path){
 		directory->FreeReference();
 		
 	}catch(const deException &){
-		if(directory){
-			directory->FreeReference();
-		}
 		throw;
 	}
 }

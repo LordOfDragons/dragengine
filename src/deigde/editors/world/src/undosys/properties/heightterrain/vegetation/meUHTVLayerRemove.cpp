@@ -59,8 +59,6 @@ meUHTVLayerRemove::meUHTVLayerRemove(meWorld *world, meHeightTerrain *heightTerr
 }
 
 meUHTVLayerRemove::~meUHTVLayerRemove(){
-	if(pVLayer) pVLayer->FreeReference();
-	if(pWorld) pWorld->FreeReference();
 }
 
 

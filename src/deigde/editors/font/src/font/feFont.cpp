@@ -370,5 +370,4 @@ void feFont::pCleanUp(){
 	if(pGlyphSelection) delete pGlyphSelection;
 	RemoveAllGlyphs();
 	
-	if(pEngFont) pEngFont->FreeReference();
 }

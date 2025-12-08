@@ -68,9 +68,6 @@ pTreeListExpanded(copy.pTreeListExpanded)
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 }
@@ -291,12 +288,6 @@ deSynthesizerSource *seSourceGroup::CreateEngineSource(){
 		pTargetSelect.UpdateEngineTarget(GetSynthesizer(), engSource->GetTargetSelect());
 		
 	}catch(const deException &){
-		if(subEngSource){
-			subEngSource->FreeReference();
-		}
-		if(engSource){
-			engSource->FreeReference();
-		}
 		throw;
 	}
 	
@@ -375,9 +366,6 @@ seSourceGroup &seSourceGroup::operator=(const seSourceGroup &copy){
 		}
 		
 	}catch(const deException &){
-		if(source){
-			source->FreeReference();
-		}
 		throw;
 	}
 	

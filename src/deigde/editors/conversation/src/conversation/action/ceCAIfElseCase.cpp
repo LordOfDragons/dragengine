@@ -71,9 +71,6 @@ pTIMActionsExpanded(ifcase.pTIMActionsExpanded)
 		}
 		
 	}catch(const deException &){
-		if(newAction){
-			newAction->FreeReference();
-		}
 		pActions.RemoveAll();
 		throw;
 	}

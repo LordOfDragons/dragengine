@@ -59,9 +59,6 @@ igdeClipboardData(TYPE_NAME)
 		}
 		
 	}catch(const deException &){
-		if(node){
-			node->FreeReference();
-		}
 		pNodes.RemoveAll();
 		throw;
 	}

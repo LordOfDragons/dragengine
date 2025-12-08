@@ -170,9 +170,6 @@ void dealConfiguration::InitVirtualFileSystem(){
 		}
 		
 	}catch(const deException &){
-		if(diskDir){
-			diskDir->FreeReference();
-		}
 		throw;
 	}
 }
@@ -210,9 +207,6 @@ void dealConfiguration::LoadConfiguration(){
 				reader->FreeReference();
 				
 			}catch(const deException &){
-				if(reader){
-					reader->FreeReference();
-				}
 				throw;
 			}
 			
@@ -239,9 +233,6 @@ void dealConfiguration::LoadConfiguration(){
 				reader->FreeReference();
 				
 			}catch(const deException &){
-				if(reader){
-					reader->FreeReference();
-				}
 				throw;
 			}
 			
@@ -272,9 +263,6 @@ void dealConfiguration::SaveConfiguration(){
 			writer->FreeReference();
 			
 		}catch(const deException &){
-			if(writer){
-				writer->FreeReference();
-			}
 			logger.LogError(LOGSOURCE, "Failed to write user configuration file (file permission problem)");
 			// DIALOG BOX
 			// "User configuration can not be written!\n"

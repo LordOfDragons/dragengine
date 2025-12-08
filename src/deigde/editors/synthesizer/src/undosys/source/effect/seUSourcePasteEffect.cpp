@@ -64,9 +64,6 @@ pIndex(index)
 		}
 		
 	}catch(const deException &){
-		if(effect){
-			effect->FreeReference();
-		}
 		throw;
 	}
 	

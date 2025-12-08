@@ -54,10 +54,7 @@ reURigSetRootBone::reURigSetRootBone(reRig *rig, reRigBone *rootBone){
 }
 
 reURigSetRootBone::~reURigSetRootBone(){
-	if(pNewBone) pNewBone->FreeReference();
-	if(pOldBone) pOldBone->FreeReference();
 	
-	if(pRig) pRig->FreeReference();
 }
 
 

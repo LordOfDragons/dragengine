@@ -115,9 +115,6 @@ void ceStripList::AddCopyFrom(const ceStripList &list){
 		}
 		
 	}catch(const deException &){
-		if(entry){
-			entry->FreeReference();
-		}
 		throw;
 	}
 }

@@ -102,9 +102,6 @@ seSky *seLoadSaveSystem::LoadSky(const char *filename){
 		sky->SetSaved(true);
 		
 	}catch(const deException &){
-		if(sky){
-			sky->FreeReference();
-		}
 		throw;
 	}
 	
@@ -127,9 +124,6 @@ void seLoadSaveSystem::SaveSky(seSky *sky, const char *filename){
 		fileWriter->FreeReference();
 		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		throw;
 	}
 }

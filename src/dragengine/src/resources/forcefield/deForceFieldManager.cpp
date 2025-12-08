@@ -76,9 +76,6 @@ deForceField *deForceFieldManager::CreateForceField(){
 		pFields.Add(field);
 		
 	}catch(const deException &){
-		if(field){
-			field->FreeReference();
-		}
 		throw;
 	}
 	

@@ -78,8 +78,5 @@ void reUSetBoneParent::Redo(){
 //////////////////////
 
 void reUSetBoneParent::pCleanUp(){
-	if(pNewParent) pNewParent->FreeReference();
-	if(pOldParent) pOldParent->FreeReference();
 	
-	if(pBone) pBone->FreeReference();
 }

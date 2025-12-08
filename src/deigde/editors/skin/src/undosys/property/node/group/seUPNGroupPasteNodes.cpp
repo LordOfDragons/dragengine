@@ -76,9 +76,6 @@ pLayer(layer)
 		group->AddReference();
 		
 	}catch(const deException &){
-		if(pasteNode){
-			pasteNode->FreeReference();
-		}
 		pNodes.RemoveAll();
 		throw;
 	}

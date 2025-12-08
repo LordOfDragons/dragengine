@@ -60,8 +60,6 @@ meUHTSetTexUVRotation::meUHTSetTexUVRotation(meWorld *world, meHeightTerrainSect
 }
 
 meUHTSetTexUVRotation::~meUHTSetTexUVRotation(){
-	if(pTexture) pTexture->FreeReference();
-	if(pWorld) pWorld->FreeReference();
 }
 
 

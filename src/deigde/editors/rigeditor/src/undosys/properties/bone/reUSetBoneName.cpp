@@ -73,5 +73,4 @@ void reUSetBoneName::Redo(){
 //////////////////////
 
 void reUSetBoneName::pCleanUp(){
-	if(pBone) pBone->FreeReference();
 }

@@ -74,9 +74,6 @@ meUDecalPropertyRemoveFromSelected::meUDecalPropertyRemoveFromSelected(const meD
 		}
 		
 	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}

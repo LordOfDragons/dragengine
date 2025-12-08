@@ -81,9 +81,6 @@ deVideoPlayer *deVideoPlayerManager::CreateVideoPlayer(){
 		pVideoPlayers.Add(videoPlayer);
 		
 	}catch(const deException &){
-		if(videoPlayer){
-			videoPlayer->FreeReference();
-		}
 		throw;
 	}
 	

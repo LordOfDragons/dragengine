@@ -53,7 +53,6 @@ meUHTTexSetTypeNum::meUHTTexSetTypeNum(meHeightTerrainTexture *texture, int newT
 }
 
 meUHTTexSetTypeNum::~meUHTTexSetTypeNum(){
-	if(pTexture) pTexture->FreeReference();
 }
 
 

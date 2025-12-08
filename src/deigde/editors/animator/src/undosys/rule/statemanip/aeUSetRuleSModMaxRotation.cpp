@@ -81,5 +81,4 @@ void aeUSetRuleSModMaxRotation::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMaxRotation::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

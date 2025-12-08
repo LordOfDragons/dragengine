@@ -98,12 +98,6 @@ peeEmitter *peeLoadSaveSystem::LoadEmitter(const char *filename){
 		fileReader->FreeReference();
 		
 	}catch(const deException &){
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(emitter){
-			emitter->FreeReference();
-		}
 		throw;
 	}
 	
@@ -126,9 +120,6 @@ void peeLoadSaveSystem::SaveEmitter(peeEmitter *emitter, const char *filename){
 		fileWriter->FreeReference();
 		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		throw;
 	}
 }

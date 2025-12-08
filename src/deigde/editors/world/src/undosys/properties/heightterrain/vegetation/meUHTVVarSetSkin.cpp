@@ -53,7 +53,6 @@ meUHTVVarSetSkin::meUHTVVarSetSkin(meHTVVariation *variation, const char *newPat
 }
 
 meUHTVVarSetSkin::~meUHTVVarSetSkin(){
-	if(pVariation) pVariation->FreeReference();
 }
 
 

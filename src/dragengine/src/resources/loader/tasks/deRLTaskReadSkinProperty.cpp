@@ -104,9 +104,6 @@ void deRLTaskReadSkinProperty::VisitImage(deSkinPropertyImage &property){
 		internalTask->FreeReference();
 		
 	}catch(const deException &){
-		if(internalTask){
-			internalTask->FreeReference();
-		}
 		throw;
 	}
 }

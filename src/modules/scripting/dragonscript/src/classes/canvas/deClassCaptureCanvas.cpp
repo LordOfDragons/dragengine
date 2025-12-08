@@ -155,9 +155,6 @@ void deClassCaptureCanvas::nfSetImage::RunFunction(dsRunTime *rt, dsValue *mysel
 		image->FreeReference();
 		
 	}catch(...){
-		if(image){
-			image->FreeReference();
-		}
 		throw;
 	}
 }

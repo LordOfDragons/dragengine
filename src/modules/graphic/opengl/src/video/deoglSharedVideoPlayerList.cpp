@@ -124,9 +124,6 @@ deVideo *video, int currentFrame, float playbackSpeed){
 		if(sharedVideoPlayer){
 			delete sharedVideoPlayer;
 		}
-		if(videoPlayer){
-			videoPlayer->FreeReference();
-		}
 		throw;
 	}
 	

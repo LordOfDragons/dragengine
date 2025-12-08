@@ -281,7 +281,6 @@ long meWindowEffects::onBtnAddEffectCommand(FXObject *sender, FXSelector selecto
 		engEffect->FreeReference();
 		
 	}catch(const deException &){
-		if(engEffect) engEffect->FreeReference();
 		throw;
 	}
 	

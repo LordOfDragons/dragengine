@@ -57,7 +57,6 @@ seUPropertySetCurve::seUPropertySetCurve(seSkyLayer *layer, seProperty *property
 }
 
 seUPropertySetCurve::~seUPropertySetCurve(){
-	if(pLayer) pLayer->FreeReference();
 }
 
 

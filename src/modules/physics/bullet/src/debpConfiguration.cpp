@@ -120,9 +120,6 @@ void debpConfiguration::LoadConfig(){
 		reader->FreeReference();
 		
 	}catch(const deException &){
-		if(reader){
-			reader->FreeReference();
-		}
 		throw;
 	}
 	

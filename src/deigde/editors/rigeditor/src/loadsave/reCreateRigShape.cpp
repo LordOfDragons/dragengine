@@ -55,7 +55,6 @@ reCreateRigShape::reCreateRigShape(deEngine *engine){
 }
 
 reCreateRigShape::~reCreateRigShape(){
-	if(pRigShape) pRigShape->FreeReference();
 }
 
 
@@ -64,7 +63,6 @@ reCreateRigShape::~reCreateRigShape(){
 ///////////////
 
 void reCreateRigShape::Reset(){
-	if(pRigShape) pRigShape->FreeReference();
 	pRigShape = NULL;
 }
 

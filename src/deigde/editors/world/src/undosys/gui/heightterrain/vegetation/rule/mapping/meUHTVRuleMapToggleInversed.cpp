@@ -56,8 +56,6 @@ meUHTVRuleMapToggleInversed::meUHTVRuleMapToggleInversed(meHTVegetationLayer *vl
 }
 
 meUHTVRuleMapToggleInversed::~meUHTVRuleMapToggleInversed(){
-	if(pRule) pRule->FreeReference();
-	if(pVLayer) pVLayer->FreeReference();
 }
 
 

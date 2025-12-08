@@ -74,9 +74,6 @@ deColliderVolume *deColliderManager::CreateColliderVolume(){
 		GetScriptingSystem()->LoadCollider(collider);
 		pColliders.Add(collider);
 	}catch(const deException &){
-		if(collider){
-			collider->FreeReference();
-		}
 		throw;
 	}
 	// finished
@@ -93,9 +90,6 @@ deColliderRig *deColliderManager::CreateColliderRig(){
 		GetScriptingSystem()->LoadCollider(collider);
 		pColliders.Add(collider);
 	}catch(const deException &){
-		if(collider){
-			collider->FreeReference();
-		}
 		throw;
 	}
 	// finished
@@ -112,9 +106,6 @@ deColliderComponent *deColliderManager::CreateColliderComponent(){
 		GetScriptingSystem()->LoadCollider(collider);
 		pColliders.Add(collider);
 	}catch(const deException &){
-		if(collider){
-			collider->FreeReference();
-		}
 		throw;
 	}
 	// finished

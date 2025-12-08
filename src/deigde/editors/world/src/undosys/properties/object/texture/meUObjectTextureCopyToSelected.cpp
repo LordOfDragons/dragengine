@@ -74,9 +74,6 @@ meUObjectTextureCopyToSelected::meUObjectTextureCopyToSelected(const meObjectLis
 		}
 		
 	}catch(const deException &){
-		if(undoData){
-			undoData->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}
@@ -132,9 +129,6 @@ void meUObjectTextureCopyToSelected::Redo(){
 				texture = NULL;
 				
 			}catch(const deException &){
-				if(texture){
-					texture->FreeReference();
-				}
 				throw;
 			}
 		}

@@ -185,10 +185,6 @@ void gdeVAONavSpace::pBuildDDSSpace(){
 		reader = NULL;
 		
 	}catch(const deException &e){
-		if(navspace){
-			navspace->FreeReference();
-			navspace = NULL;
-		}
 		environment.GetLogger()->LogException(LOGSOURCE, e);
 		return;
 	}
@@ -202,10 +198,6 @@ void gdeVAONavSpace::pBuildDDSSpace(){
 		pDDSSpace->AddNavSpaceFaces(*navspace);
 		
 	}catch(const deException &){
-		if(navspace){
-			navspace->FreeReference();
-			navspace = NULL;
-		}
 		throw;
 	}
 	

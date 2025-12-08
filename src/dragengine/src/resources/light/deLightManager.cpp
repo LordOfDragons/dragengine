@@ -62,9 +62,6 @@ deLight *deLightManager::CreateLight(){
 		GetGraphicSystem()->LoadLight(light);
 		pLights.Add(light);
 	}catch(const deException &){
-		if(light){
-			light->FreeReference();
-		}
 		throw;
 	}
 	// finished

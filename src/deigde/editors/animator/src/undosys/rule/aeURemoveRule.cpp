@@ -79,6 +79,4 @@ void aeURemoveRule::Redo(){
 //////////////////////
 
 void aeURemoveRule::pCleanUp(){
-	if(pRule) pRule->FreeReference();
-	if(pAnimator) pAnimator->FreeReference();
 }

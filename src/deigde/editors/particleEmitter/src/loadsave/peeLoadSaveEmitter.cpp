@@ -439,9 +439,6 @@ void peeLoadSaveEmitter::pReadController(const decXmlElementTag &root, peeEmitte
 		controller->FreeReference();
 		
 	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
 		throw;
 	}
 }
@@ -567,9 +564,6 @@ void peeLoadSaveEmitter::pReadType(const decXmlElementTag &root, peeEmitter &emi
 		type->FreeReference();
 		
 	}catch(const deException &){
-		if(type){
-			type->FreeReference();
-		}
 		throw;
 	}
 }

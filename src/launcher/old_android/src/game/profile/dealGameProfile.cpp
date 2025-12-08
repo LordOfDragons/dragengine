@@ -216,9 +216,6 @@ void dealGameProfile::CopyFrom(const dealGameProfile &profile){
 		}
 		
 	}catch(const deException &){
-		if(module){
-			module->FreeReference();
-		}
 		throw;
 	}
 	

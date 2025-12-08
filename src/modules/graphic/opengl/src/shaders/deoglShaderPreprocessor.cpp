@@ -198,9 +198,6 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 				location->FreeReference();
 				
 			}catch(const deException &){
-				if(location){
-					location->FreeReference();
-				}
 				throw;
 			}
 		}
@@ -221,9 +218,6 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 						location->FreeReference();
 						
 					}catch(const deException &){
-						if(location){
-							location->FreeReference();
-						}
 						throw;
 					}
 				}
@@ -318,9 +312,6 @@ void deoglShaderPreprocessor::SetSymbol(const char *name, const char *value){
 		symbol->FreeReference();
 		
 	}catch(const deException &){
-		if(symbol){
-			symbol->FreeReference();
-		}
 		throw;
 	}
 	

@@ -79,8 +79,6 @@ deSmokeEmitter::~deSmokeEmitter(){
 		pPeerGraphic = NULL;
 	}
 	
-	if(pSkin) pSkin->FreeReference();
-	if(pComponent) pComponent->FreeReference();
 }
 
 
@@ -176,7 +174,6 @@ void deSmokeEmitter::SetEnableCasting(bool enable){
 
 void deSmokeEmitter::SetComponent(deComponent *component){
 	if(component != pComponent){
-		if(pComponent) pComponent->FreeReference();
 		
 		pComponent = component;
 		
@@ -196,7 +193,6 @@ void deSmokeEmitter::SetCastTexture(int texture){
 
 void deSmokeEmitter::SetSkin(deSkin *skin){
 	if(skin != pSkin){
-		if(pSkin) pSkin->FreeReference();
 		
 		pSkin = skin;
 		

@@ -75,5 +75,4 @@ void reUSetBoneIKLimitsUpper::Redo(){
 //////////////////////
 
 void reUSetBoneIKLimitsUpper::pCleanUp(){
-	if(pBone) pBone->FreeReference();
 }

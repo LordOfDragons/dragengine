@@ -76,9 +76,6 @@ deSoundLevelMeter *deSoundLevelMeterManager::CreateSoundLevelMeter(){
 		pSoundLevelMeters.Add(soundLevelMeter);
 		
 	}catch(const deException &){
-		if(soundLevelMeter){
-			soundLevelMeter->FreeReference();
-		}
 		throw;
 	}
 	

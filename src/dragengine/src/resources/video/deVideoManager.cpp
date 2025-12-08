@@ -152,9 +152,6 @@ const char *basePath, bool asynchron){
 	}catch(const deException &){
 		LogErrorFormat("Loading video '%s' (base path '%s') failed",
 			filename, basePath ? basePath : "");
-		if(video){
-			video->FreeReference();
-		}
 		throw;
 	}
 	
@@ -182,9 +179,6 @@ void deVideoManager::SaveVideo(deVirtualFileSystem *vfs, deVideo *video, const c
 		fileWriter->FreeReference();
 		
 	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
 		LogErrorFormat("Saving video '%s' failed", filename);
 		throw;
 	}
@@ -224,9 +218,6 @@ deVideoDecoder *deVideoManager::CreateDecoder(deVideo *video){
 	}catch(const deException &e){
 		if(peer){
 			delete peer;
-		}
-		if(videoDecoder){
-			videoDecoder->FreeReference();
 		}
 		
 		LogErrorFormat("Creating decoder for video '%s' failed",
@@ -291,9 +282,6 @@ deVideoAudioDecoder *deVideoManager::CreateAudioDecoder(deVideo *video){
 	}catch(const deException &e){
 		if(peer){
 			delete peer;
-		}
-		if(audioDecoder){
-			audioDecoder->FreeReference();
 		}
 		
 		LogErrorFormat("Creating decoder for video '%s' failed",

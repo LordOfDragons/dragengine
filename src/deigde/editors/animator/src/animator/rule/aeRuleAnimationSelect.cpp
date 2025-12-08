@@ -197,9 +197,6 @@ deAnimatorRule *aeRuleAnimationSelect::CreateEngineRule(){
 		pTargetSelect.UpdateEngineTarget(GetAnimator(), engRule->GetTargetSelect());
 		
 	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
 		throw;
 	}
 	

@@ -1164,9 +1164,6 @@ void meObject::CheckLinks(){
 						link->FreeReference();
 						
 					}catch(const deException &){
-						if(link){
-							link->FreeReference();
-						}
 						throw;
 					}
 				}
@@ -2493,9 +2490,6 @@ void meObject::pCreateSnapPoints(){
 		}
 		
 	}catch(const deException &){
-		if(snapPoint){
-			snapPoint->FreeReference();
-		}
 		throw;
 	}
 	

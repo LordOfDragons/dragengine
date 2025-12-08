@@ -70,9 +70,6 @@ deRenderWindow *deRenderWindowManager::CreateRenderWindow(){
 		pRenderWindows.Add(renderWindow);
 		
 	}catch(const deException &){
-		if(renderWindow){
-			renderWindow->FreeReference();
-		}
 		throw;
 	}
 	
@@ -111,9 +108,6 @@ deRenderWindow *deRenderWindowManager::CreateRenderWindowInside(HWND window)
 		pRenderWindows.Add(renderWindow);
 		
 	}catch(const deException &){
-		if(renderWindow){
-			renderWindow->FreeReference();
-		}
 		throw;
 	}
 	

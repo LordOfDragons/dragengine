@@ -440,9 +440,6 @@ void cePlaybackProcessAction::ProcessActorSpeak(ceConversation &conversation, ce
 			text->FreeReference();
 			
 		}catch(const deException &){
-			if(text){
-				text->FreeReference();
-			}
 			throw;
 		}
 	}
@@ -648,9 +645,6 @@ void cePlaybackProcessAction::ProcessPlayerChoice(ceConversation &conversation, 
 		}
 		
 	}catch(const deException &){
-		if(pcbOption){
-			pcbOption->FreeReference();
-		}
 		throw;
 	}
 	

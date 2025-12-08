@@ -80,9 +80,6 @@ deSmokeEmitter *deSmokeEmitterManager::CreateSmokeEmitter(){
 		pSmokeEmitters.Add(smokeEmitter);
 		
 	}catch(const deException &){
-		if(smokeEmitter){
-			smokeEmitter->FreeReference();
-		}
 		throw;
 	}
 	

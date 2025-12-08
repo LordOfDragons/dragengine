@@ -1552,29 +1552,8 @@ void aeAnimator::pUpdateComponent(){
 		pEngAnimator->SetRig(pEngRig);
 		
 		// free the reference we hold
-		if(displayRig){
-			displayRig->FreeReference();
-			displayRig = NULL;
-		}
-		if(displayModel){
-			displayModel->FreeReference();
-			displayModel = NULL;
-		}
-		if(displaySkin){
-			displaySkin->FreeReference();
-			displaySkin = NULL;
-		}
 		
 	}catch(const deException &){
-		if(displayModel){
-			displayModel->FreeReference();
-		}
-		if(displaySkin){
-			displaySkin->FreeReference();
-		}
-		if(displayRig){
-			displayRig->FreeReference();
-		}
 		throw;
 	}
 	

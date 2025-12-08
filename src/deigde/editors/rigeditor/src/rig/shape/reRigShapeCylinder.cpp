@@ -97,7 +97,6 @@ reRigShape *reRigShapeCylinder::Duplicate() const{
 		shape->SetBottomRadius(GetBottomRadius());
 		
 	}catch(const deException &){
-		if(shape) shape->FreeReference();
 		throw;
 	}
 	
