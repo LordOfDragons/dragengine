@@ -73,8 +73,6 @@ igdeGDClass::igdeGDClass(const char *name){
 	pIsAttachableBehavior = false;
 	pInheritSubObjects = FilterSubObjectsAll;
 	
-	pPreviewImage = NULL;
-	
 	try{
 		pCamera = new igdeGDCamera;
 		
@@ -89,8 +87,6 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 	int i, count;
 	
 	pCamera = NULL;
-	
-	pPreviewImage = NULL;
 	
 	try{
 		pName = gdclass.pName;
@@ -255,11 +251,6 @@ void igdeGDClass::Check(){
 
 
 void igdeGDClass::SetPreviewImage(deImage *image){
-	if(pPreviewImage == image){
-		return;
-	}
-	
-	
 	pPreviewImage = image;
 }
 

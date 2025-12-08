@@ -89,7 +89,6 @@
 igdeEngineController::igdeEngineController(igdeMainWindow &mainWindow) :
 pMainWindow(mainWindow),
 pEngine(NULL),
-pMainRenderWindow(NULL),
 pReadyForUse(false),
 pRunning(false),
 pRenderCounter(0)
@@ -608,14 +607,14 @@ void igdeEngineController::pCreateMainRenderWindow(){
 	}
 	
 	#ifdef IGDE_TOOLKIT_NULL
-		pMainRenderWindow = pEngine->GetRenderWindowManager()->CreateRenderWindow();
+		pMainRenderWindow.TakeOver(pEngine->GetRenderWindowManager()->CreateRenderWindow());
 	#else
 		if(!igdeNativeWidget::HasNativeParent(pMainWindow)){
 			DETHROW(deeNullPointer);
 		}
 		
-		pMainRenderWindow = pEngine->GetRenderWindowManager()->CreateRenderWindowInside(
-			igdeNativeWidget::NativeWidgetID(pMainWindow));
+		pMainRenderWindow.TakeOver(pEngine->GetRenderWindowManager()->CreateRenderWindowInside(
+			igdeNativeWidget::NativeWidgetID(pMainWindow)));
 	#endif
 	
 	pMainRenderWindow->SetSize(0, 0);
