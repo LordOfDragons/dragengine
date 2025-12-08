@@ -51,7 +51,7 @@ pFile(NULL)
 	SetShortInfo("Duplicate file");
 	
 	try{
-		pFile.TakeOverWith(file);
+		pFile.TakeOver(new ceConversationFile(file));
 		pFile->SetID(newID);
 		
 	}catch(const deException &){

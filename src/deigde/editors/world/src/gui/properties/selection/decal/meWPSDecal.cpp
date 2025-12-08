@@ -473,17 +473,17 @@ pWorld(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new meWPSDecalListener(*this));
 	
-	pActionPropCopyToSel.TakeOverWith(*this);
-	pActionPropRemoveFromSel.TakeOverWith(*this);
-	pActionPropCloneToSel.TakeOverWith(*this);
+	pActionPropCopyToSel.TakeOver(new cActionPropCopyToSel(*this));
+	pActionPropRemoveFromSel.TakeOver(new cActionPropRemoveFromSel(*this));
+	pActionPropCloneToSel.TakeOver(new cActionPropCloneToSel(*this));
 	
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
-	groupBox.TakeOverWith(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10);
+	groupBox.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10));
 	content->AddChild(groupBox);
 	helper.Label(groupBox, "Selected:");
 	helper.EditInteger(groupBox, "Number of selected decals", 3, pEditSelCount, NULL);
@@ -527,7 +527,7 @@ pWorld(NULL)
 	// properties
 	helper.GroupBoxFlow(content, groupBox, "Properties:");
 	
-	pEditProperties.TakeOverWith(*this);
+	pEditProperties.TakeOver(new cEditProperties(*this));
 	groupBox->AddChild(pEditProperties);
 }
 

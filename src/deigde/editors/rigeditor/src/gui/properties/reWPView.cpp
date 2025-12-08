@@ -557,15 +557,15 @@ pRig(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeAction::Ref action;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new reWPViewListener(*this));
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	
 	// resources
 	helper.GroupBoxFlow(content, groupBox, "Resources:");
-	form.TakeOverWith(env);
+	form.TakeOver(new igdeContainerForm(env));
 	groupBox->AddChild(form);
 	
 	helper.EditPath(form, "Model:", "Path to the model resource to use.",
@@ -621,10 +621,10 @@ pRig(NULL)
 		pEditSensitivity, new cTextSensitivity(*this));
 	
 	// property panels
-	action.TakeOverWith(*this);
+	action.TakeOver(new cActionSkyChanged(*this));
 	helper.WPSky(content, pWPSky, action, "Sky:", false, true);
 	
-	action.TakeOverWith(*this);
+	action.TakeOver(new cActionEnvObjChanged(*this));
 	helper.WPWObject(content, pWPEnvObject, action, "Environment Object:", false, true);
 	
 	// camera

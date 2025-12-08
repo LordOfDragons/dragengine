@@ -84,7 +84,7 @@ gdeGameDefinition *gdeLoadSaveSystem::LoadGameDefinition(const char *filename){
 	gdeGameDefinition *gameDefinition = NULL;
 	
 	try{
-		fileReader.TakeOverWith(filename);
+		fileReader.TakeOver(new decDiskFileReader(filename));
 		gameDefinition = new gdeGameDefinition(&pWindowMain.GetEnvironment());
 		pLSGameDef.LoadGameDefinition(*gameDefinition, fileReader);
 		
@@ -130,7 +130,7 @@ gdeObjectClass *gdeLoadSaveSystem::LoadXmlEClass(const char *filename){
 	gdeObjectClass *objectClass = NULL;
 	
 	try{
-		fileReader.TakeOverWith(filename);
+		fileReader.TakeOver(new decDiskFileReader(filename));
 		
 		objectClass = pLSXmlEClass.LoadXmlEClass(*fileReader);
 		fileReader->FreeReference();

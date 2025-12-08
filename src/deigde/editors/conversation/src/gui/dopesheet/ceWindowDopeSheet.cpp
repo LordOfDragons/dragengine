@@ -345,17 +345,17 @@ pVAPreview(NULL)
 	igdeContainer::Ref panel, panel2, panel3, panel4, panel5;
 	int i;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new ceWindowDopeSheetListener(*this));
 	
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
 	pGetFontText();
 	
 	// actions
-	pActionPlayAction.TakeOverWith(*this);
-	pActionPlayFromhere.TakeOverWith(*this);
-	pActionPause.TakeOverWith(*this);
-	pActionSelectCurAction.TakeOverWith(*this);
+	pActionPlayAction.TakeOver(new cActionPlayAction(*this));
+	pActionPlayFromhere.TakeOver(new cActionPlayFromHere(*this));
+	pActionPause.TakeOver(new cActionPause(*this));
+	pActionSelectCurAction.TakeOver(new cActionSelectCurAction(*this));
 	
 	
 	// lanes
@@ -371,7 +371,7 @@ pVAPreview(NULL)
 	
 	
 	// buttons on the left
-	panel.TakeOverWith(env, igdeContainerFlow::eaYCenter, igdeContainerFlow::esNone);
+	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaYCenter, igdeContainerFlow::esNone));
 	helper.Button(panel, pBtnPlayAction, pActionPlayAction);
 	helper.Button(panel, pBtnPlayFromHere, pActionPlayFromhere);
 	helper.Button(panel, pBtnPlayPause, pActionPause);
@@ -379,17 +379,17 @@ pVAPreview(NULL)
 	AddChild(panel);
 	
 	// scroll bar, dope sheet lane titles and dope sheet content in the center
-	panel.TakeOverWith(env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 2);
+	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 2));
 	
-	panel2.TakeOverWith(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 2);
+	panel2.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 2));
 	
-	panel3.TakeOverWith(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast);
+	panel3.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast));
 	helper.Spacer(panel3, decPoint(10, pVAPreviewHeight));
 	
-	panel4.TakeOverWith(env, igdeContainerBox::eaY);
+	panel4.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaY));
 	for(i=0; i<pLanes.GetCount(); i++){
 		const ceWDSLane &lane2 = *((ceWDSLane*)pLanes.GetAt(i));
-		panel5.TakeOverWith(env, igdeContainerFlow::eaY);
+		panel5.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 		helper.Spacer(panel5, decPoint(10, 2));
 		helper.Label(panel5, lane2.GetLabel(), lane2.GetDescription(), igdeLabel::eaLeft | igdeLabel::eaMiddle);
 		helper.Spacer(panel5, decPoint(10, 2));
@@ -405,7 +405,7 @@ pVAPreview(NULL)
 	panel->AddChild(panel2);
 	
 	// scroll and zoom frame on bottom
-	panel2.TakeOverWith(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 2);
+	panel2.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 2));
 	
 	helper.Label(panel2, "Time-Scale:", "Time scaling");
 	helper.ComboBox(panel2, true, "Time scaling", pCBTimeScale, new cComboTimeScale(*this));

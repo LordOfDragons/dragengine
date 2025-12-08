@@ -307,7 +307,7 @@ public:
 			return;
 			
 		}else{
-			pUndo.TakeOverWith(pPanel.GetLink(), viewCurveBezier->GetCurve());
+			pUndo.TakeOver(new seULinkSetCurve(pPanel.GetLink(), viewCurveBezier->GetCurve()));
 		}
 		
 		pPanel.GetSky()->GetUndoSystem()->Add(pUndo);
@@ -320,7 +320,7 @@ public:
 			pUndo->Redo();
 			
 		}else if(pPanel.GetLink() && pPanel.GetLink()->GetCurve() != viewCurveBezier->GetCurve()){
-			pUndo.TakeOverWith(pPanel.GetLink(), viewCurveBezier->GetCurve());
+			pUndo.TakeOver(new seULinkSetCurve(pPanel.GetLink(), viewCurveBezier->GetCurve()));
 		}
 	}
 };
@@ -345,9 +345,9 @@ pSky(NULL)
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new seWPLinkListener(*this));
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	// link list
@@ -355,13 +355,13 @@ pSky(NULL)
 	
 	helper.ListBox(groupBox, 8, "Links", pListLinks, new cListLinks(*this));
 	
-	pActionLinkAdd.TakeOverWith(*this);
-	pActionLinkRemove.TakeOverWith(*this);
+	pActionLinkAdd.TakeOver(new cActionLinkAdd(*this));
+	pActionLinkRemove.TakeOver(new cActionLinkRemove(*this));
 	
 	// link settings
 	helper.GroupBoxFlow(content, groupBox, "Link Settings:");
 	
-	frameLine.TakeOverWith(env);
+	frameLine.TakeOver(new igdeContainerForm(env));
 	groupBox->AddChild(frameLine);
 	
 	helper.EditString(frameLine, "Name:", "Name of the link", pEditName, new cTextName(*this));

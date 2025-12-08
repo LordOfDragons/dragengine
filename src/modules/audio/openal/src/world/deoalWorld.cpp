@@ -67,7 +67,7 @@ pDirtyAllMicLayerMask(true),
 pDirtyAudioParameters(true)
 {
 	try{
-		pAWorld.TakeOverWith(oal.GetAudioThread(), world.GetSize() * 0.5);
+		pAWorld.TakeOver(new deoalAWorld(oal.GetAudioThread(), world.GetSize() * 0.5));
 		
 		deComponent *component = world.GetRootComponent();
 		while(component){

@@ -123,7 +123,7 @@ pRig(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new reWindowMainListener(*this));
 	pLoadSaveSystem = new reLoadSaveSystem(*this);
 	pConfiguration = new reConfiguration(*this);
 	pClipboard = new reClipboard;
@@ -138,10 +138,10 @@ pRig(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	AddChild(splitted);
 	
-	pWindowProperties.TakeOverWith(*this);
+	pWindowProperties.TakeOver(new reWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pView3D.TakeOverWith(*this);
+	pView3D.TakeOver(new reView3D(*this));
 	splitted->AddChild(pView3D, igdeContainerSplitted::eaCenter);
 	
 	CreateNewRig();
@@ -1286,16 +1286,16 @@ void reWindowMain::pLoadIcons(){
 }
 
 void reWindowMain::pCreateActions(){
-	pActionFileNew.TakeOverWith(*this);
-	pActionFileOpen.TakeOverWith(*this);
-	pActionFileSave.TakeOverWith(*this);
-	pActionFileSaveAs.TakeOverWith(*this);
+	pActionFileNew.TakeOver(new cActionFileNew(*this));
+	pActionFileOpen.TakeOver(new cActionFileOpen(*this));
+	pActionFileSave.TakeOver(new cActionFileSave(*this));
+	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
 	
-	pActionEditUndo.TakeOverWith(GetEnvironment());
-	pActionEditRedo.TakeOverWith(GetEnvironment());
-	pActionEditCut.TakeOverWith(*this);
-	pActionEditCopy.TakeOverWith(*this);
-	pActionEditPaste.TakeOverWith(*this);
+	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
+	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
+	pActionEditCut.TakeOver(new cActionEditCut(*this));
+	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
+	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
 	
 	pActionEditBoneMode.TakeOver(new cActionEditElementMode(*this, reRig::eemBone,
 		"Bone Mode", pIconEditBone, "Bone mode",
@@ -1333,42 +1333,42 @@ void reWindowMain::pCreateActions(){
 // 		"3D-Cursor Mode", pIconEdit3DCursor, "3D-Cursor mode",
 // 		deInputEvent::esmNone, deInputEvent::ekc5, deInputEvent::ekcU ) );
 	
-	pActionEditSelectAll.TakeOverWith(*this);
-	pActionEditSelectAllWithShapes.TakeOverWith(*this);
-	pActionEditSelectNone.TakeOverWith(*this);
-	pActionEditDelete.TakeOverWith(*this);
-	pActionEditLockAxisX.TakeOverWith(*this);
-	pActionEditLockAxisY.TakeOverWith(*this);
-	pActionEditLockAxisZ.TakeOverWith(*this);
-	pActionEditLockLocal.TakeOverWith(*this);
+	pActionEditSelectAll.TakeOver(new cActionEditSelectAll(*this));
+	pActionEditSelectAllWithShapes.TakeOver(new cActionEditSelectAllWithShapes(*this));
+	pActionEditSelectNone.TakeOver(new cActionEditSelectNone(*this));
+	pActionEditDelete.TakeOver(new cActionEditDelete(*this));
+	pActionEditLockAxisX.TakeOver(new cActionEditLockAxisX(*this));
+	pActionEditLockAxisY.TakeOver(new cActionEditLockAxisY(*this));
+	pActionEditLockAxisZ.TakeOver(new cActionEditLockAxisZ(*this));
+	pActionEditLockLocal.TakeOver(new cActionEditLockLocal(*this));
 	
-	pActionRigAddSphere.TakeOverWith(*this);
-	pActionRigAddBox.TakeOverWith(*this);
-	pActionRigAddCylinder.TakeOverWith(*this);
-	pActionRigAddCapsule.TakeOverWith(*this);
-	pActionRigAddConstraint.TakeOverWith(*this);
-	pActionRigAddPush.TakeOverWith(*this);
-	pActionRigShowShapes.TakeOverWith(*this);
-	pActionRigShowConstraints.TakeOverWith(*this);
-	pActionRigShowPushes.TakeOverWith(*this);
+	pActionRigAddSphere.TakeOver(new cActionRigAddSphere(*this));
+	pActionRigAddBox.TakeOver(new cActionRigAddBox(*this));
+	pActionRigAddCylinder.TakeOver(new cActionRigAddCylinder(*this));
+	pActionRigAddCapsule.TakeOver(new cActionRigAddCapsule(*this));
+	pActionRigAddConstraint.TakeOver(new cActionRigAddConstraint(*this));
+	pActionRigAddPush.TakeOver(new cActionRigAddPush(*this));
+	pActionRigShowShapes.TakeOver(new cActionRigShowShapes(*this));
+	pActionRigShowConstraints.TakeOver(new cActionRigShowConstraints(*this));
+	pActionRigShowPushes.TakeOver(new cActionRigShowPushes(*this));
 	
-	pActionBoneAdd.TakeOverWith(*this);
-	pActionBoneAddSphere.TakeOverWith(*this);
-	pActionBoneAddBox.TakeOverWith(*this);
-	pActionBoneAddCylinder.TakeOverWith(*this);
-	pActionBoneAddCapsule.TakeOverWith(*this);
-	pActionBoneAddConstraint.TakeOverWith(*this);
-	pActionBoneShowBones.TakeOverWith(*this);
-	pActionBoneShowAllShapes.TakeOverWith(*this);
-	pActionBoneShowAllConstraints.TakeOverWith(*this);
-	pActionBoneMirror.TakeOverWith(*this);
-	pActionBoneImport.TakeOverWith(*this);
-	pActionBoneScaleMass.TakeOverWith(*this);
-	pActionBoneMassFromVolume.TakeOverWith(*this);
+	pActionBoneAdd.TakeOver(new cActionBoneAdd(*this));
+	pActionBoneAddSphere.TakeOver(new cActionBoneAddSphere(*this));
+	pActionBoneAddBox.TakeOver(new cActionBoneAddBox(*this));
+	pActionBoneAddCylinder.TakeOver(new cActionBoneAddCylinder(*this));
+	pActionBoneAddCapsule.TakeOver(new cActionBoneAddCapsule(*this));
+	pActionBoneAddConstraint.TakeOver(new cActionBoneAddConstraint(*this));
+	pActionBoneShowBones.TakeOver(new cActionBoneShowBones(*this));
+	pActionBoneShowAllShapes.TakeOver(new cActionBoneShowShapes(*this));
+	pActionBoneShowAllConstraints.TakeOver(new cActionBoneShowConstraints(*this));
+	pActionBoneMirror.TakeOver(new cActionBoneMirror(*this));
+	pActionBoneImport.TakeOver(new cActionBoneImport(*this));
+	pActionBoneScaleMass.TakeOver(new cActionBoneScaleMass(*this));
+	pActionBoneMassFromVolume.TakeOver(new cActionBoneMassFromVolume(*this));
 	
-	pActionViewShapeXRay.TakeOverWith(*this);
+	pActionViewShapeXRay.TakeOver(new cActionViewShapeXRay(*this));
 	
-	pActionSimulationRun.TakeOverWith(*this);
+	pActionSimulationRun.TakeOver(new cActionSimRun(*this));
 	
 	
 	// register for updating
@@ -1432,7 +1432,7 @@ void reWindowMain::pCreateActions(){
 void reWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOverWith(GetEnvironment());
+	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -1444,7 +1444,7 @@ void reWindowMain::pCreateToolBarFile(){
 void reWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOverWith(GetEnvironment());
+	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -1480,27 +1480,27 @@ void reWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOverWith(env, "File", deInputEvent::ekcF);
+	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWith(env, "Edit", deInputEvent::ekcE);
+	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWith(env, "Rig", deInputEvent::ekcR);
+	cascade.TakeOver(new igdeMenuCascade(env, "Rig", deInputEvent::ekcR));
 	pCreateMenuRig(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWith(env, "Bone", deInputEvent::ekcB);
+	cascade.TakeOver(new igdeMenuCascade(env, "Bone", deInputEvent::ekcB));
 	pCreateMenuBone(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWith(env, "View", deInputEvent::ekcV);
+	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcV));
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWith(env, "Simulation", deInputEvent::ekcS);
+	cascade.TakeOver(new igdeMenuCascade(env, "Simulation", deInputEvent::ekcS));
 	pCreateMenuSimulation(cascade);
 	AddSharedMenu(cascade);
 }

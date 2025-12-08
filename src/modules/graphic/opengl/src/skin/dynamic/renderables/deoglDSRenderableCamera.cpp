@@ -52,7 +52,7 @@ pCamera(NULL),
 pDirty(true)
 {
 	try{
-		pRRenderableCamera.TakeOverWith(*dynamicSkin.GetRDynamicSkin());
+		pRRenderableCamera.TakeOver(new deoglRDSRenderableCamera(*dynamicSkin.GetRDynamicSkin()));
 		
 		if(renderable.GetCamera()){
 			pCamera = (deoglCamera*)renderable.GetCamera()->GetPeerGraphic();

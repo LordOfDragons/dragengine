@@ -94,7 +94,7 @@ public:
 			return;
 			
 		}else{
-			pUndo.TakeOverWith(pPanel.GetLink(), viewCurveBezier->GetCurve());
+			pUndo.TakeOver(new seULinkSetCurve(pPanel.GetLink(), viewCurveBezier->GetCurve()));
 		}
 		
 		pPanel.GetSky()->GetUndoSystem()->Add(pUndo);
@@ -107,7 +107,7 @@ public:
 			pUndo->Redo();
 			
 		}else if(pPanel.GetLink() && pPanel.GetLink()->GetCurve() != viewCurveBezier->GetCurve()){
-			pUndo.TakeOverWith(pPanel.GetLink(), viewCurveBezier->GetCurve());
+			pUndo.TakeOver(new seULinkSetCurve(pPanel.GetLink(), viewCurveBezier->GetCurve()));
 		}
 	}
 };
@@ -132,7 +132,7 @@ pSky(NULL)
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new seWindowCurvesListener(*this));
 	
 	helper.ListBox(5, "Link to edit", pListLinks, new cListLinks(*this));
 	pListLinks->SetDefaultSorter();

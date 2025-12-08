@@ -163,7 +163,7 @@ void dealFont::pReadFont(const decXmlElementTag &root){
 			if(pImage){
 				DETHROW(deeInvalidParam);
 			}
-			pImage.TakeOverWith(pDisplay, decString("fonts/") + cdata->GetData());
+			pImage.TakeOver(new dealImage(pDisplay, decString("fonts/") + cdata->GetData()));
 			
 		}else if(strcmp(tag->GetName(), "lineHeight") == 0){
 			decXmlCharacterData * const cdata = tag->GetFirstData();

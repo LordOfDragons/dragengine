@@ -49,7 +49,7 @@ pValue(renderable.GetValue()),
 pDirty(true)
 {
 	try{
-		pRRenderableValue.TakeOverWith(*dynamicSkin.GetRDynamicSkin());
+		pRRenderableValue.TakeOver(new deoglRDSRenderableValue(*dynamicSkin.GetRDynamicSkin()));
 		
 	}catch(const deException &){
 		pCleanUp();

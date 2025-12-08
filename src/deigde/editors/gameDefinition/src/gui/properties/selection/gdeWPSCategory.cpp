@@ -222,9 +222,9 @@ pGameDefinition(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new gdeWPSCategoryListener(*this));
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	// category
@@ -236,7 +236,7 @@ pGameDefinition(NULL)
 	
 	// auto categorize
 	helper.GroupBoxFlow(content, groupBox, "Auto Categorize:");
-	pAutoCategorizePattern.TakeOverWith(*this);
+	pAutoCategorizePattern.TakeOver(new cEditAutoCategorizePattern(*this));
 	groupBox->AddChild(pAutoCategorizePattern);
 	
 	// element listing

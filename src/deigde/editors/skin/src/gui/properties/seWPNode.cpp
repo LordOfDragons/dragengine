@@ -494,7 +494,7 @@ public:
 			pUndo->Redo();
 			
 		}else{
-			pUndo.TakeOverWith(node, sliderText->GetValue());
+			pUndo.TakeOver(new seUPropertyNodeSetTransparency(node, sliderText->GetValue()));
 			skin->GetUndoSystem()->Add(pUndo);
 		}
 		pUndo = NULL;
@@ -514,7 +514,7 @@ public:
 			pUndo->Redo();
 			
 		}else{
-			pUndo.TakeOverWith(node, sliderText->GetValue());
+			pUndo.TakeOver(new seUPropertyNodeSetTransparency(node, sliderText->GetValue()));
 			skin->GetUndoSystem()->Add(pUndo);
 		}
 	}
@@ -677,7 +677,7 @@ public:
 			pUndo->Redo();
 			
 		}else{
-			pUndo.TakeOverWith(node, text);
+			pUndo.TakeOver(new seUPropertyNodeTextSetText(node, text));
 			pPanel.GetSkin()->GetUndoSystem()->Add(pUndo);
 		}
 	}
@@ -759,10 +759,10 @@ pPreventUpdate(false)
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new seWPNodeListener(*this));
 	
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	
@@ -809,7 +809,7 @@ pPreventUpdate(false)
 	
 	
 	// type specific
-	pSwitcher.TakeOverWith(env);
+	pSwitcher.TakeOver(new igdeSwitcher(env));
 	content->AddChild(pSwitcher);
 	
 	
@@ -818,7 +818,7 @@ pPreventUpdate(false)
 	
 	
 	// image node
-	panel.TakeOverWith(env, igdeContainerFlow::eaY);
+	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Image:");
 	
@@ -832,7 +832,7 @@ pPreventUpdate(false)
 	
 	
 	// shape node
-	panel.TakeOverWith(env, igdeContainerFlow::eaY);
+	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Shape:");
 	
@@ -847,7 +847,7 @@ pPreventUpdate(false)
 	
 	
 	// text node
-	panel.TakeOverWith(env, igdeContainerFlow::eaY);
+	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Text:");
 	
@@ -863,7 +863,7 @@ pPreventUpdate(false)
 	
 	
 	// group node
-	panel.TakeOverWith(env, igdeContainerFlow::eaY);
+	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Group:");
 }

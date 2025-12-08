@@ -1450,38 +1450,38 @@ pPreventUpdate(false)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new meWPSObjectListener(*this));
 	
 	
-	pActionMenuClass.TakeOverWith(*this);
-	pActionClassBrowse.TakeOverWith(*this);
-	pActionClassEdit.TakeOverWith(*this);
+	pActionMenuClass.TakeOver(new cActionMenuClass(*this));
+	pActionClassBrowse.TakeOver(new cActionClassBrowse(*this));
+	pActionClassEdit.TakeOver(new cActionClassEdit(*this));
 	
-	pActionIdClass.TakeOverWith(*this);
-	pActionIdFind.TakeOverWith(*this);
+	pActionIdClass.TakeOver(new cActionMenuId(*this));
+	pActionIdFind.TakeOver(new cActionIdFind(*this));
 	
-	pActionMenuPosition.TakeOverWith(*this);
-	pActionMenuRotation.TakeOverWith(*this);
-	pActionMenuScale.TakeOverWith(*this);
+	pActionMenuPosition.TakeOver(new cActionMenuPosition(*this));
+	pActionMenuRotation.TakeOver(new cActionMenuRotation(*this));
+	pActionMenuScale.TakeOver(new cActionMenuScale(*this));
 	
-	pActionMenuTexture.TakeOverWith(*this);
-	pActionTextureAddCustom.TakeOverWith(*this);
-	pActionTextureAddAllModel.TakeOverWith(*this);
-	pActionTextureRemove.TakeOverWith(*this);
-	pActionTextureRemoveAll.TakeOverWith(*this);
-	pActionTextureRemoveAllNotModel.TakeOverWith(*this);
-	pActionTextureCopyToSelected.TakeOverWith(*this);
-	pActionTextureCloneToSelected.TakeOverWith(*this);
+	pActionMenuTexture.TakeOver(new cActionMenuTexture(*this));
+	pActionTextureAddCustom.TakeOver(new cActionTextureAddCustom(*this));
+	pActionTextureAddAllModel.TakeOver(new cActionTextureAddAllModel(*this));
+	pActionTextureRemove.TakeOver(new cActionTextureRemove(*this));
+	pActionTextureRemoveAll.TakeOver(new cActionTextureRemoveAll(*this));
+	pActionTextureRemoveAllNotModel.TakeOver(new cActionTextureRemoveAllNotModel(*this));
+	pActionTextureCopyToSelected.TakeOver(new cActionTextureCopyToSelected(*this));
+	pActionTextureCloneToSelected.TakeOver(new cActionTextureCloneToSelected(*this));
 	
-	pActionPropCopyToSel.TakeOverWith(*this);
-	pActionPropRemoveFromSel.TakeOverWith(*this);
-	pActionPropCloneToSel.TakeOverWith(*this);
+	pActionPropCopyToSel.TakeOver(new cActionPropCopyToSel(*this));
+	pActionPropRemoveFromSel.TakeOver(new cActionPropRemoveFromSel(*this));
+	pActionPropCloneToSel.TakeOver(new cActionPropCloneToSel(*this));
 	
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
-	groupBox.TakeOverWith(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10);
+	groupBox.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast, 10));
 	content->AddChild(groupBox);
 	helper.Label(groupBox, "Selected:");
 	helper.EditInteger(groupBox, "Number of selected objects", 3, pEditSelCount, NULL);
@@ -1529,7 +1529,7 @@ pPreventUpdate(false)
 	// properties
 	helper.GroupBoxFlow(content, groupBox, "Properties:");
 	
-	pEditProperties.TakeOverWith(*this);
+	pEditProperties.TakeOver(new cEditObjectProperties(*this));
 	groupBox->AddChild(pEditProperties);
 	
 	
@@ -1574,7 +1574,7 @@ pPreventUpdate(false)
 	// texture properties tables
 	helper.GroupBoxFlow(content, groupBox, "Texture Properties:", false, true);
 	
-	pEditTexProperties.TakeOverWith(*this);
+	pEditTexProperties.TakeOver(new cEditTextureProperties(*this));
 	groupBox->AddChild(pEditTexProperties);
 	
 	
@@ -2151,7 +2151,7 @@ void meWPSObject::SlideLightProperty(igdeGDCLight::eProperties property, const c
 				pUndoSetProperty->Redo();
 				
 			}else{
-				pUndoAddProperty.TakeOverWith(object, propertyName, value);
+				pUndoAddProperty.TakeOver(new meUObjectAddProperty(object, propertyName, value));
 				pUndoAddProperty->Redo();
 			}
 		}

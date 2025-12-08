@@ -1286,16 +1286,16 @@ pConversation(NULL)
 	igdeContainer::Ref content, groupBox, groupBox2, form, formLine;
 	igdeActionContextMenu *actionContextMenu;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new ceWPConversationListener(*this));
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	
 	// import conversation
 	helper.GroupBoxFlow(content, groupBox, "Import Conversation:", true, true);
 	
-	formLine.TakeOverWith(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	formLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
 	helper.EditPath(formLine, "Path to add to import list", *windowProperties.GetWindowMain()
 		.GetLoadSaveSystem().GetConversationFilePatterns(), pPathImportConvo, NULL);
 	helper.Button(formLine, new cActionImportConvoAdd(*this), true);
@@ -1331,7 +1331,7 @@ pConversation(NULL)
 	// camera shots
 	helper.GroupBoxFlow(content, groupBox, "Camera Shots:", false, false);
 	
-	form.TakeOverWith(env);
+	form.TakeOver(new igdeContainerForm(env));
 	groupBox->AddChild(form);
 	helper.FormLineStretchFirst(form, "Camera Shot:", "Camera Shot to edit", formLine);
 	helper.ComboBoxFilter(formLine, "Camera Shot to edit", pCBCameraShot, new cComboCameraShot(*this));

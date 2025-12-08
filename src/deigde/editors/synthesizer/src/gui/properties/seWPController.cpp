@@ -216,7 +216,7 @@ public:
 			return;
 			
 		}else{
-			pUndo.TakeOverWith(pPanel.GetController(), viewCurveBezier->GetCurve());
+			pUndo.TakeOver(new seUControllerSetCurve(pPanel.GetController(), viewCurveBezier->GetCurve()));
 		}
 		
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add(pUndo);
@@ -229,7 +229,7 @@ public:
 			pUndo->Redo();
 			
 		}else if(pPanel.GetController() && pPanel.GetController()->GetCurve() != viewCurveBezier->GetCurve()){
-			pUndo.TakeOverWith(pPanel.GetController(), viewCurveBezier->GetCurve());
+			pUndo.TakeOver(new seUControllerSetCurve(pPanel.GetController(), viewCurveBezier->GetCurve()));
 		}
 	}
 };
@@ -384,10 +384,10 @@ pSynthesizer(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new seWPControllerListener(*this));
 	
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	
@@ -414,7 +414,7 @@ pSynthesizer(NULL)
 	pEditCurve->SetClampMin(decVector2(0.0f, 0.0f));
 	pEditCurve->SetClampMax(decVector2(1.0f, 1.0f));
 	
-	formLine.TakeOverWith(env, igdeContainerFlow::eaX);
+	formLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX));
 	groupBox->AddChild(formLine);
 	helper.EditFloat(formLine, "Constant curve value", 6, 3,
 		pEditCurveSetConstValue, new cTextCurveConstValue(*this));

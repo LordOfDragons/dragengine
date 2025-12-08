@@ -177,7 +177,7 @@ pActiveGameDefinition(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new gdeWindowMainListener(*this));
 	pLoadSaveSystem = new gdeLoadSaveSystem(*this);
 	pConfiguration = new gdeConfiguration(*this);
 	
@@ -191,10 +191,10 @@ pActiveGameDefinition(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(350)));
 	AddChild(splitted);
 	
-	pWindowProperties.TakeOverWith(*this);
+	pWindowProperties.TakeOver(new gdeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewActiveObject.TakeOverWith(*this);
+	pViewActiveObject.TakeOver(new gdeViewActiveObject(*this));
 	splitted->AddChild(pViewActiveObject, igdeContainerSplitted::eaCenter);
 	
 	CreateNewGameDefinition();
@@ -705,116 +705,116 @@ void gdeWindowMain::pLoadIcons(){
 }
 
 void gdeWindowMain::pCreateActions(){
-	pActionGDNew.TakeOverWith(*this);
-	pActionGDOpen.TakeOverWith(*this);
-	pActionGDOpenProject.TakeOverWith(*this);
-	pActionGDSave.TakeOverWith(*this);
-	pActionGDSaveAs.TakeOverWith(*this);
-	pActionEditUndo.TakeOverWith(GetEnvironment());
-	pActionEditRedo.TakeOverWith(GetEnvironment());
-	pActionEditCut.TakeOverWith(*this);
-	pActionEditCopy.TakeOverWith(*this);
-	pActionEditPaste.TakeOverWith(*this);
-	pActionEditFind.TakeOverWith(*this);
-	pActionViewShowEnvMapProbes.TakeOverWith(*this);
-	pActionViewShowNavBlockers.TakeOverWith(*this);
+	pActionGDNew.TakeOver(new cActionGameDefNew(*this));
+	pActionGDOpen.TakeOver(new cActionGameDefOpen(*this));
+	pActionGDOpenProject.TakeOver(new cActionGameDefOpenProject(*this));
+	pActionGDSave.TakeOver(new cActionGameDefSave(*this));
+	pActionGDSaveAs.TakeOver(new cActionGameDefSaveAs(*this));
+	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
+	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
+	pActionEditCut.TakeOver(new cActionEditCut(*this));
+	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
+	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
+	pActionEditFind.TakeOver(new cActionEditFind(*this));
+	pActionViewShowEnvMapProbes.TakeOver(new cActionViewShowEnvMapProbes(*this));
+	pActionViewShowNavBlockers.TakeOver(new cActionViewShowNavBlockers(*this));
 	
-	pActionCategoryAdd.TakeOverWith(*this);
-	pActionCategoryRemove.TakeOverWith(*this);
-	pActionCategoryObjectClassAdd.TakeOverWith(*this);
-	pActionCategoryParticleEmitterAdd.TakeOverWith(*this);
-	pActionCategorySkinAdd.TakeOverWith(*this);
-	pActionCategorySkyAdd.TakeOverWith(*this);
+	pActionCategoryAdd.TakeOver(new gdeMACategoryAdd(*this));
+	pActionCategoryRemove.TakeOver(new gdeMACategoryRemove(*this));
+	pActionCategoryObjectClassAdd.TakeOver(new gdeMACategoryObjectClassAdd(*this));
+	pActionCategoryParticleEmitterAdd.TakeOver(new gdeMACategoryParticleEmitterAdd(*this));
+	pActionCategorySkinAdd.TakeOver(new gdeMACategorySkinAdd(*this));
+	pActionCategorySkyAdd.TakeOver(new gdeMACategorySkyAdd(*this));
 	
-	pActionObjectClassAdd.TakeOverWith(*this);
-	pActionObjectClassRemove.TakeOverWith(*this);
-	pActionObjectClassCopy.TakeOverWith(*this);
-	pActionObjectClassCut.TakeOverWith(*this);
-	pActionObjectClassPaste.TakeOverWith(*this);
-	pActionObjectClassExportXmlEClass.TakeOverWith(*this);
-	pActionObjectClassDuplicate.TakeOverWith(*this);
-	pActionObjectClassSubclass.TakeOverWith(*this);
+	pActionObjectClassAdd.TakeOver(new gdeMAObjectClassAdd(*this));
+	pActionObjectClassRemove.TakeOver(new gdeMAObjectClassRemove(*this));
+	pActionObjectClassCopy.TakeOver(new gdeMAObjectClassCopy(*this));
+	pActionObjectClassCut.TakeOver(new gdeMAObjectClassCut(*this));
+	pActionObjectClassPaste.TakeOver(new gdeMAObjectClassPaste(*this));
+	pActionObjectClassExportXmlEClass.TakeOver(new gdeMAObjectClassExportXmlEClass(*this));
+	pActionObjectClassDuplicate.TakeOver(new gdeMAObjectClassDuplicate(*this));
+	pActionObjectClassSubclass.TakeOver(new gdeMAObjectClassSubclass(*this));
 	
-	pActionOCBillboardAdd.TakeOverWith(*this);
-	pActionOCBillboardRemove.TakeOverWith(*this);
-	pActionOCBillboardCopy.TakeOverWith(*this);
-	pActionOCBillboardCut.TakeOverWith(*this);
-	pActionOCBillboardPaste.TakeOverWith(*this);
+	pActionOCBillboardAdd.TakeOver(new gdeMAOCBillboardAdd(*this));
+	pActionOCBillboardRemove.TakeOver(new gdeMAOCBillboardRemove(*this));
+	pActionOCBillboardCopy.TakeOver(new gdeMAOCBillboardCopy(*this));
+	pActionOCBillboardCut.TakeOver(new gdeMAOCBillboardCut(*this));
+	pActionOCBillboardPaste.TakeOver(new gdeMAOCBillboardPaste(*this));
 	
-	pActionOCCameraAdd.TakeOverWith(*this);
-	pActionOCCameraRemove.TakeOverWith(*this);
-	pActionOCCameraCopy.TakeOverWith(*this);
-	pActionOCCameraCut.TakeOverWith(*this);
-	pActionOCCameraPaste.TakeOverWith(*this);
+	pActionOCCameraAdd.TakeOver(new gdeMAOCCameraAdd(*this));
+	pActionOCCameraRemove.TakeOver(new gdeMAOCCameraRemove(*this));
+	pActionOCCameraCopy.TakeOver(new gdeMAOCCameraCopy(*this));
+	pActionOCCameraCut.TakeOver(new gdeMAOCCameraCut(*this));
+	pActionOCCameraPaste.TakeOver(new gdeMAOCCameraPaste(*this));
 	
-	pActionOCComponentAdd.TakeOverWith(*this);
-	pActionOCComponentRemove.TakeOverWith(*this);
-	pActionOCComponentCopy.TakeOverWith(*this);
-	pActionOCComponentCut.TakeOverWith(*this);
-	pActionOCComponentPaste.TakeOverWith(*this);
+	pActionOCComponentAdd.TakeOver(new gdeMAOCComponentAdd(*this));
+	pActionOCComponentRemove.TakeOver(new gdeMAOCComponentRemove(*this));
+	pActionOCComponentCopy.TakeOver(new gdeMAOCComponentCopy(*this));
+	pActionOCComponentCut.TakeOver(new gdeMAOCComponentCut(*this));
+	pActionOCComponentPaste.TakeOver(new gdeMAOCComponentPaste(*this));
 	
-	pActionOCEnvMapProbeAdd.TakeOverWith(*this);
-	pActionOCEnvMapProbeRemove.TakeOverWith(*this);
-	pActionOCEnvMapProbeCopy.TakeOverWith(*this);
-	pActionOCEnvMapProbeCut.TakeOverWith(*this);
-	pActionOCEnvMapProbePaste.TakeOverWith(*this);
+	pActionOCEnvMapProbeAdd.TakeOver(new gdeMAOCEnvMapProbeAdd(*this));
+	pActionOCEnvMapProbeRemove.TakeOver(new gdeMAOCEnvMapProbeRemove(*this));
+	pActionOCEnvMapProbeCopy.TakeOver(new gdeMAOCEnvMapProbeCopy(*this));
+	pActionOCEnvMapProbeCut.TakeOver(new gdeMAOCEnvMapProbeCut(*this));
+	pActionOCEnvMapProbePaste.TakeOver(new gdeMAOCEnvMapProbePaste(*this));
 	
-	pActionOCLightAdd.TakeOverWith(*this);
-	pActionOCLightRemove.TakeOverWith(*this);
-	pActionOCLightCopy.TakeOverWith(*this);
-	pActionOCLightCut.TakeOverWith(*this);
-	pActionOCLightPaste.TakeOverWith(*this);
+	pActionOCLightAdd.TakeOver(new gdeMAOCLightAdd(*this));
+	pActionOCLightRemove.TakeOver(new gdeMAOCLightRemove(*this));
+	pActionOCLightCopy.TakeOver(new gdeMAOCLightCopy(*this));
+	pActionOCLightCut.TakeOver(new gdeMAOCLightCut(*this));
+	pActionOCLightPaste.TakeOver(new gdeMAOCLightPaste(*this));
 	
-	pActionOCNavBlockerAdd.TakeOverWith(*this);
-	pActionOCNavBlockerRemove.TakeOverWith(*this);
-	pActionOCNavBlockerCopy.TakeOverWith(*this);
-	pActionOCNavBlockerCut.TakeOverWith(*this);
-	pActionOCNavBlockerPaste.TakeOverWith(*this);
+	pActionOCNavBlockerAdd.TakeOver(new gdeMAOCNavBlockerAdd(*this));
+	pActionOCNavBlockerRemove.TakeOver(new gdeMAOCNavBlockerRemove(*this));
+	pActionOCNavBlockerCopy.TakeOver(new gdeMAOCNavBlockerCopy(*this));
+	pActionOCNavBlockerCut.TakeOver(new gdeMAOCNavBlockerCut(*this));
+	pActionOCNavBlockerPaste.TakeOver(new gdeMAOCNavBlockerPaste(*this));
 	
-	pActionOCNavSpaceAdd.TakeOverWith(*this);
-	pActionOCNavSpaceRemove.TakeOverWith(*this);
-	pActionOCNavSpaceCopy.TakeOverWith(*this);
-	pActionOCNavSpaceCut.TakeOverWith(*this);
-	pActionOCNavSpacePaste.TakeOverWith(*this);
+	pActionOCNavSpaceAdd.TakeOver(new gdeMAOCNavSpaceAdd(*this));
+	pActionOCNavSpaceRemove.TakeOver(new gdeMAOCNavSpaceRemove(*this));
+	pActionOCNavSpaceCopy.TakeOver(new gdeMAOCNavSpaceCopy(*this));
+	pActionOCNavSpaceCut.TakeOver(new gdeMAOCNavSpaceCut(*this));
+	pActionOCNavSpacePaste.TakeOver(new gdeMAOCNavSpacePaste(*this));
 	
-	pActionOCParticleEmitterAdd.TakeOverWith(*this);
-	pActionOCParticleEmitterRemove.TakeOverWith(*this);
-	pActionOCParticleEmitterCopy.TakeOverWith(*this);
-	pActionOCParticleEmitterCut.TakeOverWith(*this);
-	pActionOCParticleEmitterPaste.TakeOverWith(*this);
+	pActionOCParticleEmitterAdd.TakeOver(new gdeMAOCParticleEmitterAdd(*this));
+	pActionOCParticleEmitterRemove.TakeOver(new gdeMAOCParticleEmitterRemove(*this));
+	pActionOCParticleEmitterCopy.TakeOver(new gdeMAOCParticleEmitterCopy(*this));
+	pActionOCParticleEmitterCut.TakeOver(new gdeMAOCParticleEmitterCut(*this));
+	pActionOCParticleEmitterPaste.TakeOver(new gdeMAOCParticleEmitterPaste(*this));
 	
-	pActionOCForceFieldAdd.TakeOverWith(*this);
-	pActionOCForceFieldRemove.TakeOverWith(*this);
-	pActionOCForceFieldCopy.TakeOverWith(*this);
-	pActionOCForceFieldCut.TakeOverWith(*this);
-	pActionOCForceFieldPaste.TakeOverWith(*this);
+	pActionOCForceFieldAdd.TakeOver(new gdeMAOCForceFieldAdd(*this));
+	pActionOCForceFieldRemove.TakeOver(new gdeMAOCForceFieldRemove(*this));
+	pActionOCForceFieldCopy.TakeOver(new gdeMAOCForceFieldCopy(*this));
+	pActionOCForceFieldCut.TakeOver(new gdeMAOCForceFieldCut(*this));
+	pActionOCForceFieldPaste.TakeOver(new gdeMAOCForceFieldPaste(*this));
 	
-	pActionOCSnapPointAdd.TakeOverWith(*this);
-	pActionOCSnapPointRemove.TakeOverWith(*this);
-	pActionOCSnapPointCopy.TakeOverWith(*this);
-	pActionOCSnapPointCut.TakeOverWith(*this);
-	pActionOCSnapPointPaste.TakeOverWith(*this);
+	pActionOCSnapPointAdd.TakeOver(new gdeMAOCSnapPointAdd(*this));
+	pActionOCSnapPointRemove.TakeOver(new gdeMAOCSnapPointRemove(*this));
+	pActionOCSnapPointCopy.TakeOver(new gdeMAOCSnapPointCopy(*this));
+	pActionOCSnapPointCut.TakeOver(new gdeMAOCSnapPointCut(*this));
+	pActionOCSnapPointPaste.TakeOver(new gdeMAOCSnapPointPaste(*this));
 	
-	pActionOCSpeakerAdd.TakeOverWith(*this);
-	pActionOCSpeakerRemove.TakeOverWith(*this);
-	pActionOCSpeakerCopy.TakeOverWith(*this);
-	pActionOCSpeakerCut.TakeOverWith(*this);
-	pActionOCSpeakerPaste.TakeOverWith(*this);
+	pActionOCSpeakerAdd.TakeOver(new gdeMAOCSpeakerAdd(*this));
+	pActionOCSpeakerRemove.TakeOver(new gdeMAOCSpeakerRemove(*this));
+	pActionOCSpeakerCopy.TakeOver(new gdeMAOCSpeakerCopy(*this));
+	pActionOCSpeakerCut.TakeOver(new gdeMAOCSpeakerCut(*this));
+	pActionOCSpeakerPaste.TakeOver(new gdeMAOCSpeakerPaste(*this));
 	
-	pActionOCWorldAdd.TakeOverWith(*this);
-	pActionOCWorldRemove.TakeOverWith(*this);
-	pActionOCWorldCopy.TakeOverWith(*this);
-	pActionOCWorldCut.TakeOverWith(*this);
-	pActionOCWorldPaste.TakeOverWith(*this);
+	pActionOCWorldAdd.TakeOver(new gdeMAOCWorldAdd(*this));
+	pActionOCWorldRemove.TakeOver(new gdeMAOCWorldRemove(*this));
+	pActionOCWorldCopy.TakeOver(new gdeMAOCWorldCopy(*this));
+	pActionOCWorldCut.TakeOver(new gdeMAOCWorldCut(*this));
+	pActionOCWorldPaste.TakeOver(new gdeMAOCWorldPaste(*this));
 	
-	pActionParticleEmitterAdd.TakeOverWith(*this);
-	pActionParticleEmitterRemove.TakeOverWith(*this);
+	pActionParticleEmitterAdd.TakeOver(new gdeMAParticleEmitterAdd(*this));
+	pActionParticleEmitterRemove.TakeOver(new gdeMAParticleEmitterRemove(*this));
 	
-	pActionSkinAdd.TakeOverWith(*this);
-	pActionSkinRemove.TakeOverWith(*this);
+	pActionSkinAdd.TakeOver(new gdeMASkinAdd(*this));
+	pActionSkinRemove.TakeOver(new gdeMASkinRemove(*this));
 	
-	pActionSkyAdd.TakeOverWith(*this);
-	pActionSkyRemove.TakeOverWith(*this);
+	pActionSkyAdd.TakeOver(new gdeMASkyAdd(*this));
+	pActionSkyRemove.TakeOver(new gdeMASkyRemove(*this));
 	
 	
 	// register for updating
@@ -932,7 +932,7 @@ void gdeWindowMain::pCreateActions(){
 void gdeWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOverWith(GetEnvironment());
+	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBFile, pActionGDNew);
 	helper.ToolBarButton(pTBFile, pActionGDOpenProject);
@@ -944,7 +944,7 @@ void gdeWindowMain::pCreateToolBarFile(){
 void gdeWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOverWith(GetEnvironment());
+	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -968,15 +968,15 @@ void gdeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOverWith(env, "Game-Definition", deInputEvent::ekcG);
+	cascade.TakeOver(new igdeMenuCascade(env, "Game-Definition", deInputEvent::ekcG));
 	pCreateMenuGameDef(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWith(env, "Edit", deInputEvent::ekcE);
+	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWith(env, "View", deInputEvent::ekcV);
+	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcV));
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

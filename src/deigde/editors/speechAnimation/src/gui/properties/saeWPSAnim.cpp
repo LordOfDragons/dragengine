@@ -585,9 +585,9 @@ pSAnimation(nullptr)
 	igdeContainer::Ref content, groupBox, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new saeWPSAnimListener(*this));
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	
@@ -606,7 +606,7 @@ pSAnimation(nullptr)
 	
 	helper.GroupBoxFlow(content, groupBox, "Neutral vertex position sets:");
 	
-	formLine.TakeOverWith(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	formLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
 	groupBox->AddChild(formLine);
 	helper.ComboBoxFilter(formLine, true, "Set name", pCBNeutralVertexPositionSets, nullptr);
 	helper.Button(formLine, pBtnNeutralVertexPositionSetAdd, new cActionNeutralVertexPositionSetsAdd(*this), true);
@@ -653,7 +653,7 @@ pSAnimation(nullptr)
 	helper.FormLineStretchFirst(groupBox, "Phonetics", "Phonetics of the word.", formLine);
 	helper.EditString(formLine, "Phonetics of the word.",
 		pEditWordPhonetics, new cTextWordPhonetics(*this));
-	pActionWordAddIpa.TakeOverWith(*this, pEditWordPhonetics);
+	pActionWordAddIpa.TakeOver(new cActionWordAddIpa(*this, pEditWordPhonetics));
 	helper.Button(formLine, pBtnWordAddIPA, pActionWordAddIpa);
 }
 

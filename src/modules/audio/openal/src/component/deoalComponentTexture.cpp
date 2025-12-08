@@ -55,7 +55,7 @@ pSkin(NULL),
 pDirtyTexture(true)
 {
 	try{
-		pATexture.TakeOverWith(*component.GetAComponent(), index);
+		pATexture.TakeOver(new deoalAComponentTexture(*component.GetAComponent(), index));
 		TextureChanged(component.GetComponent().GetTextureAt(index));
 		
 	}catch(const deException &){

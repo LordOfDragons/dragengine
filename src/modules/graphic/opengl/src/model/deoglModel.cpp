@@ -47,7 +47,7 @@ pOgl(ogl),
 pModel(model),
 pRModel(NULL){
 	try{
-		pRModel.TakeOverWith(ogl.GetRenderThread(), model);
+		pRModel.TakeOver(new deoglRModel(ogl.GetRenderThread(), model));
 		
 	}catch(const deException &){
 		pCleanUp();

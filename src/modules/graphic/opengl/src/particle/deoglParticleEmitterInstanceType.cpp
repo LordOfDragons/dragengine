@@ -61,7 +61,7 @@ pDirtyType(true),
 pDirtyParamBlocks(true)
 {
 	try{
-		pRType.TakeOverWith(*instance.GetRInstance(), index);
+		pRType.TakeOver(new deoglRParticleEmitterInstanceType(*instance.GetRInstance(), index));
 		
 	}catch(const deException &){
 		pCleanUp();

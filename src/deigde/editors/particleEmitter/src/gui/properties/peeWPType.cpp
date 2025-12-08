@@ -769,17 +769,17 @@ pPreventUpdate(false)
 	igdeContainer::Ref content, groupBox, form, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new peeWPTypeListener(*this));
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	pIconUnused = env.GetStockIcon(igdeEnvironment::esiSmallMinus);
 	pIconUsed = env.GetStockIcon(igdeEnvironment::esiSmallPlus);
 	
-	pActionTypeAdd.TakeOverWith(*this);
-	pActionTypeRemove.TakeOverWith(*this);
-	pActionTypeRename.TakeOverWith(*this);
+	pActionTypeAdd.TakeOver(new cActionTypeAdd(*this));
+	pActionTypeRemove.TakeOver(new cActionTypeRemove(*this));
+	pActionTypeRename.TakeOver(new cActionTypeRename(*this));
 	
 	
 	// emitter settings
@@ -869,7 +869,7 @@ pPreventUpdate(false)
 	helper.ListBox(groupBox, 10, "Parameters", pListParams, new cListTypes(*this));
 	AddParametersToListBox(pListParams, pIconUnused);
 	
-	form.TakeOverWith(env);
+	form.TakeOver(new igdeContainerForm(env));
 	groupBox->AddChild(form);
 	
 	helper.EditFloat(form, "Cast Range:",

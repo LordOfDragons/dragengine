@@ -53,7 +53,7 @@ pDirtyDebugDrawer(true),
 pDirtyShapes(true)
 {
 	try{
-		pRDebugDrawer.TakeOverWith(ogl.GetRenderThread());
+		pRDebugDrawer.TakeOver(new deoglRDebugDrawer(ogl.GetRenderThread()));
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -366,10 +366,10 @@ pGameDefinition(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new gdeWPSOCNavigationBlockerListener(*this));
 	
 	helper.GroupBox(content, groupBox, "Object Class Navigation Blocker:");
 	

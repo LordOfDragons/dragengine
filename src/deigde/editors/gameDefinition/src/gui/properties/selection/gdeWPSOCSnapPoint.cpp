@@ -206,9 +206,9 @@ pGameDefinition(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new gdeWPSOCSnapPointListener(*this));
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	helper.GroupBox(content, groupBox, "Object Class Particle Emitter:");

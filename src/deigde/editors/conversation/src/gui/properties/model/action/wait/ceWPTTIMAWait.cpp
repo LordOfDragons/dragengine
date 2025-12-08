@@ -53,10 +53,10 @@ pActions(NULL)
 	SetText("Wait");
 	
 	try{
-		pCondition.TakeOverWith(windowMain, conversation, action);
+		pCondition.TakeOver(new ceWPTTIMAWaitCondition(windowMain, conversation, action));
 		AddChild(pCondition);
 		
-		pActions.TakeOverWith(windowMain, conversation, action->GetActions());
+		pActions.TakeOver(new ceWPTTIMAWaitActions(windowMain, conversation, action->GetActions()));
 		AddChild(pActions);
 		
 	}catch(const deException &){

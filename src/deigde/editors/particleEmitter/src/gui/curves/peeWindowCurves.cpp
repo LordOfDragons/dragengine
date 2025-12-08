@@ -101,20 +101,20 @@ public:
 		
 		switch(pPanel.GetCurve()){
 		case peeWindowCurves::ecValue:
-			pUndo.TakeOverWith(type, parameter, view->GetCurve());
+			pUndo.TakeOver(new peeUParameterSetCurveValue(type, parameter, view->GetCurve()));
 			break;
 			
 		case peeWindowCurves::ecSpread:
-			pUndo.TakeOverWith(type, parameter, view->GetCurve());
+			pUndo.TakeOver(new peeUParameterSetCurveSpread(type, parameter, view->GetCurve()));
 			break;
 			
 		case peeWindowCurves::ecBeam:
-			pUndo.TakeOverWith(type, parameter, view->GetCurve());
+			pUndo.TakeOver(new peeUParameterSetCurveBeam(type, parameter, view->GetCurve()));
 			break;
 			
 		case peeWindowCurves::ecProgress:
 		default:
-			pUndo.TakeOverWith(type, parameter, view->GetCurve());
+			pUndo.TakeOver(new peeUParameterSetCurveProgress(type, parameter, view->GetCurve()));
 			break;
 		}
 		
@@ -145,7 +145,7 @@ pEmitter(NULL)
 	pIconCurveEmpty = env.GetStockIcon(igdeEnvironment::esiSmallMinus);
 	pIconCurveUsed = env.GetStockIcon(igdeEnvironment::esiSmallPlus);
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new peeWindowCurvesListener(*this));
 	
 	helper.ListBox(4, "Curve to edit", pListCurves, new cListCurves(*this));
 	pListCurves->AddItem("Value", pIconCurveEmpty, (void*)(intptr_t)ecValue);

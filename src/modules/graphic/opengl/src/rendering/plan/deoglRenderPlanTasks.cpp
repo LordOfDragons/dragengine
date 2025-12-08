@@ -92,11 +92,11 @@ pTaskGeometry(NULL)
 	pSolidGeometryOutlineXRayTask = new deoglRenderTask(renderthread);
 	pSolidDecalsXRayTask = new deoglRenderTask(renderthread);
 	
-	pCRTSolidDepth.TakeOverWith(renderthread);
-	pCRTSolidGeometry.TakeOverWith(renderthread);
+	pCRTSolidDepth.TakeOver(new deoglComputeRenderTask(renderthread));
+	pCRTSolidGeometry.TakeOver(new deoglComputeRenderTask(renderthread));
 	
-	pCRTSolidDepthXRay.TakeOverWith(renderthread);
-	pCRTSolidGeometryXRay.TakeOverWith(renderthread);
+	pCRTSolidDepthXRay.TakeOver(new deoglComputeRenderTask(renderthread));
+	pCRTSolidGeometryXRay.TakeOver(new deoglComputeRenderTask(renderthread));
 }
 
 deoglRenderPlanTasks::~deoglRenderPlanTasks(){
@@ -228,10 +228,10 @@ void deoglRenderPlanTasks::StartBuildTasks(const deoglRenderPlanMasked *mask){
 	
 	deParallelProcessing &pp = pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing();
 	
-	pTaskDepth.TakeOverWith(*this, mask);
+	pTaskDepth.TakeOver(new deoglRPTBuildRTsDepth(*this, mask));
 	pp.AddTaskAsync(pTaskDepth);
 	
-	pTaskGeometry.TakeOverWith(*this, mask);
+	pTaskGeometry.TakeOver(new deoglRPTBuildRTsGeometry(*this, mask));
 	pp.AddTaskAsync(pTaskGeometry);
 }
 

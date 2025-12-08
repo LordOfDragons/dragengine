@@ -98,7 +98,7 @@ pSAnimation(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new saeWindowMainListener(*this));
 	pLoadSaveSystem = new saeLoadSaveSystem(*this);
 	pConfiguration = new saeConfiguration(*this);
 	
@@ -112,10 +112,10 @@ pSAnimation(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	AddChild(splitted);
 	
-	pWindowProperties.TakeOverWith(*this);
+	pWindowProperties.TakeOver(new saeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewSAnimation.TakeOverWith(*this);
+	pViewSAnimation.TakeOver(new saeViewSAnimation(*this));
 	splitted->AddChild(pViewSAnimation, igdeContainerSplitted::eaCenter);
 	
 	CreateNewSAnimation();
@@ -671,16 +671,16 @@ void saeWindowMain::pLoadIcons(){
 }
 
 void saeWindowMain::pCreateActions(){
-	pActionFileNew.TakeOverWith(*this);
-	pActionFileOpen.TakeOverWith(*this);
-	pActionFileSave.TakeOverWith(*this);
-	pActionFileSaveAs.TakeOverWith(*this);
+	pActionFileNew.TakeOver(new cActionFileNew(*this));
+	pActionFileOpen.TakeOver(new cActionFileOpen(*this));
+	pActionFileSave.TakeOver(new cActionFileSave(*this));
+	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
 	
-	pActionEditUndo.TakeOverWith(GetEnvironment());
-	pActionEditRedo.TakeOverWith(GetEnvironment());
-	pActionEditCut.TakeOverWith(*this);
-	pActionEditCopy.TakeOverWith(*this);
-	pActionEditPaste.TakeOverWith(*this);
+	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
+	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
+	pActionEditCut.TakeOver(new cActionEditCut(*this));
+	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
+	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
 	
 	pActionViewDispModePhoneme.TakeOver(new cActionViewDisplayMode(*this,
 		saeSAnimation::edmPhoneme, "Display Active Phoneme", NULL,
@@ -690,12 +690,12 @@ void saeWindowMain::pCreateActions(){
 		saeSAnimation::edmWord, "Display Active Word", NULL,
 		"Display active word in the preview window", deInputEvent::ekcW));
 	
-	pActionPhonemeAdd.TakeOverWith(*this);
-	pActionPhonemeRemove.TakeOverWith(*this);
+	pActionPhonemeAdd.TakeOver(new cActionPhonemeAdd(*this));
+	pActionPhonemeRemove.TakeOver(new cActionPhonemeRemove(*this));
 	
-	pActionWordAdd.TakeOverWith(*this);
-	pActionWordRemove.TakeOverWith(*this);
-	pActionWordAddList.TakeOverWith(*this);
+	pActionWordAdd.TakeOver(new cActionWordAdd(*this));
+	pActionWordRemove.TakeOver(new cActionWordRemove(*this));
+	pActionWordAddList.TakeOver(new cActionWordAddList(*this));
 	
 	
 	
@@ -725,7 +725,7 @@ void saeWindowMain::pCreateActions(){
 void saeWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOverWith(GetEnvironment());
+	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -737,7 +737,7 @@ void saeWindowMain::pCreateToolBarFile(){
 void saeWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOverWith(GetEnvironment());
+	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -754,23 +754,23 @@ void saeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOverWith(env, "File", deInputEvent::ekcF);
+	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWith(env, "Edit", deInputEvent::ekcE);
+	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWith(env, "Phoneme", deInputEvent::ekcP);
+	cascade.TakeOver(new igdeMenuCascade(env, "Phoneme", deInputEvent::ekcP));
 	pCreateMenuPhoneme(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWith(env, "Word", deInputEvent::ekcW);
+	cascade.TakeOver(new igdeMenuCascade(env, "Word", deInputEvent::ekcW));
 	pCreateMenuWord(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWith(env, "View", deInputEvent::ekcI);
+	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcI));
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

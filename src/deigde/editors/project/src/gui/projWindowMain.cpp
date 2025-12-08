@@ -110,7 +110,7 @@ pPanelUndoHistory(nullptr)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new projWindowMainListener(*this));
 	pConfiguration = new projConfiguration(*this);
 	
 	pConfiguration->LoadConfiguration();
@@ -119,16 +119,16 @@ pPanelUndoHistory(nullptr)
 	pCreateToolBarDistribute();
 	pCreateToolBarEdit();
 	
-	pTabPanels.TakeOverWith(env);
+	pTabPanels.TakeOver(new igdeTabBook(env));
 	AddChild(pTabPanels);
 	
-	pPanelProfiles.TakeOverWith(*this);
+	pPanelProfiles.TakeOver(new projPanelProfiles(*this));
 	pTabPanels->AddChild(pPanelProfiles, "Profiles");
 	
-	pPanelTestRun.TakeOverWith(*this);
+	pPanelTestRun.TakeOver(new projPanelTestRun(*this));
 	pTabPanels->AddChild(pPanelTestRun, "Test-Run");
 	
-	pPanelUndoHistory.TakeOverWith(env);
+	pPanelUndoHistory.TakeOver(new projPanelUndoHistory(env));
 	pTabPanels->AddChild(pPanelUndoHistory, "Undo History");
 	
 	// load game project
@@ -211,7 +211,7 @@ void projWindowMain::LoadProject(){
 		decBaseFileReader::Ref reader;
 		
 		try{
-			reader.TakeOverWith(project->GetFilePath());
+			reader.TakeOver(new decDiskFileReader(project->GetFilePath()));
 			
 		}catch(const deException &){
 			// file does not exist. this is fine and allowed.
@@ -588,7 +588,7 @@ public:
 			}else{
 				profile->SetIdentifier(decUuid::Random());
 			}
-			undo.TakeOverWith(project, profile);
+			undo.TakeOver(new projUProfileAdd(project, profile));
 			safeProfile = profile;
 			profile->FreeReference();
 			profile = NULL;
@@ -676,7 +676,7 @@ public:
 		try{
 			duplicatedProfile = new projProfile(*profile);
 			duplicatedProfile->SetName(name);
-			undo.TakeOverWith(project, duplicatedProfile);
+			undo.TakeOver(new projUProfileAdd(project, duplicatedProfile));
 			safeProfile = duplicatedProfile;
 			duplicatedProfile->FreeReference();
 			duplicatedProfile = NULL;
@@ -772,17 +772,17 @@ void projWindowMain::pLoadIcons(){
 void projWindowMain::pCreateActions(){
 	igdeEnvironment &env = GetEnvironment();
 	
-	pActionDistSave.TakeOverWith(*this);
-	pActionEditUndo.TakeOverWith(env);
-	pActionEditRedo.TakeOverWith(env);
-	pActionEditCut.TakeOverWith(*this);
-	pActionEditCopy.TakeOverWith(*this);
-	pActionEditPaste.TakeOverWith(*this);
-	pActionProfileAdd.TakeOverWith(*this);
-	pActionProfileRemove.TakeOverWith(*this);
-	pActionProfileDuplicate.TakeOverWith(*this);
-	pActionProfileDistribute.TakeOverWith(*this);
-	pActionProfileTestRun.TakeOverWith(*this);
+	pActionDistSave.TakeOver(new cActionDistSave(*this));
+	pActionEditUndo.TakeOver(new igdeActionUndo(env));
+	pActionEditRedo.TakeOver(new igdeActionRedo(env));
+	pActionEditCut.TakeOver(new cActionEditCut(*this));
+	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
+	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
+	pActionProfileAdd.TakeOver(new cActionProfileAdd(*this));
+	pActionProfileRemove.TakeOver(new cActionProfileRemove(*this));
+	pActionProfileDuplicate.TakeOver(new cActionProfileDuplicate(*this));
+	pActionProfileDistribute.TakeOver(new cActionProfileDistribute(*this));
+	pActionProfileTestRun.TakeOver(new cActionProfileTestRun(*this));
 	
 	pActionShowDelga.TakeOver(new igdeActionExternOpen(env,
 		"Browse DELGA", env.GetStockIcon(igdeEnvironment::esiOpen),
@@ -812,7 +812,7 @@ void projWindowMain::pCreateActions(){
 void projWindowMain::pCreateToolBarDistribute(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBDistribute.TakeOverWith(GetEnvironment());
+	pTBDistribute.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBDistribute, pActionDistSave);
 	
@@ -822,7 +822,7 @@ void projWindowMain::pCreateToolBarDistribute(){
 void projWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOverWith(GetEnvironment());
+	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -839,15 +839,15 @@ void projWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOverWith(env, "Project", deInputEvent::ekcD);
+	cascade.TakeOver(new igdeMenuCascade(env, "Project", deInputEvent::ekcD));
 	pCreateMenuDistribute(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWith(env, "Edit", deInputEvent::ekcE);
+	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWith(env, "Profile", deInputEvent::ekcP);
+	cascade.TakeOver(new igdeMenuCascade(env, "Profile", deInputEvent::ekcP));
 	pCreateMenuProfile(cascade);
 	AddSharedMenu(cascade);
 }

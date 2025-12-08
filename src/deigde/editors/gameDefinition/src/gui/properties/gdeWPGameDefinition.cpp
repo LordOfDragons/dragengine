@@ -480,9 +480,9 @@ pListener(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new gdeWPGameDefinitionListener(*this));
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	// game definition
@@ -494,7 +494,7 @@ pListener(NULL)
 	helper.FormLineStretchFirst(groupBox, "Base Path:", "Base path to project data files", frameLine);
 	helper.EditString(frameLine, "Base path to project data files",
 		pEditBasePath, new cEditBasePath(*this));
-	pActionBasePath.TakeOverWith(*this, pEditBasePath);
+	pActionBasePath.TakeOver(new cActionBasePath(*this, pEditBasePath));
 	helper.Button(frameLine, pActionBasePath);
 	
 	helper.EditString(groupBox, "VFS Path:", "VFS path the base path will be visible at",
@@ -515,25 +515,25 @@ pListener(NULL)
 	
 	// world properties
 	helper.GroupBoxFlow(content, groupBox, "World Properties:", false, true);
-	pEditWorldProperties.TakeOverWith(*this);
+	pEditWorldProperties.TakeOver(new cEditWorldProperties(*this));
 	groupBox->AddChild(pEditWorldProperties);
 	
 	// decal properties
 	helper.GroupBoxFlow(content, groupBox, "Decal Properties:", false, true);
-	pEditDecalProperties.TakeOverWith(*this);
+	pEditDecalProperties.TakeOver(new cEditDecalProperties(*this));
 	groupBox->AddChild(pEditDecalProperties);
 	
 	// auto find path
 	helper.GroupBoxFlow(content, groupBox, "Auto Find Path Object Classes:", false, true);
-	pEditAutoFindPathObjectClasses.TakeOverWith(*this);
+	pEditAutoFindPathObjectClasses.TakeOver(new cEditAutoFindPathObjectClasses(*this));
 	groupBox->AddChild(pEditAutoFindPathObjectClasses);
 	
 	helper.GroupBoxFlow(content, groupBox, "Auto Find Path Skins:", false, true);
-	pEditAutoFindPathSkins.TakeOverWith(*this);
+	pEditAutoFindPathSkins.TakeOver(new cEditAutoFindPathSkins(*this));
 	groupBox->AddChild(pEditAutoFindPathSkins);
 	
 	helper.GroupBoxFlow(content, groupBox, "Auto Find Path Skies:", false, true);
-	pEditAutoFindPathSkies.TakeOverWith(*this);
+	pEditAutoFindPathSkies.TakeOver(new cEditAutoFindPathSkies(*this));
 	groupBox->AddChild(pEditAutoFindPathSkies);
 }
 

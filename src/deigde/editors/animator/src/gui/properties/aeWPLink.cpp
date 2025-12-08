@@ -351,7 +351,7 @@ public:
 			return;
 			
 		}else{
-			pUndo.TakeOverWith(pPanel.GetLink(), viewCurveBezier->GetCurve());
+			pUndo.TakeOver(new aeULinkSetCurve(pPanel.GetLink(), viewCurveBezier->GetCurve()));
 		}
 		
 		pPanel.GetAnimator()->GetUndoSystem()->Add(pUndo);
@@ -364,7 +364,7 @@ public:
 			pUndo->Redo();
 			
 		}else if(pPanel.GetLink() && pPanel.GetLink()->GetCurve() != viewCurveBezier->GetCurve()){
-			pUndo.TakeOverWith(pPanel.GetLink(), viewCurveBezier->GetCurve());
+			pUndo.TakeOver(new aeULinkSetCurve(pPanel.GetLink(), viewCurveBezier->GetCurve()));
 		}
 	}
 	
@@ -582,10 +582,10 @@ pPreventUpdate(false)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new aeWPLinkListener(*this));
 	
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	

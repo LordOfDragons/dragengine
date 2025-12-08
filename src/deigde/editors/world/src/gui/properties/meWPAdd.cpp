@@ -204,13 +204,13 @@ pWorld(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new meWPAddListener(*this));
 	
-	pActionClassAdd.TakeOverWith(*this, pComboObjClass);
-	pActionClassRemove.TakeOverWith(*this, pListObjClasses);
-	pActionClassClear.TakeOverWith(*this);
+	pActionClassAdd.TakeOver(new cActionClassAdd(*this, pComboObjClass));
+	pActionClassRemove.TakeOver(new cActionClassRemove(*this, pListObjClasses));
+	pActionClassClear.TakeOver(new cActionClassClear(*this));
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	// object filter
@@ -219,7 +219,7 @@ pWorld(NULL)
 	
 	helper.CheckBoxOnly(groupBox, pChkFilterObjects, new cActionFilterObjects(*this), true);
 	
-	formLine.TakeOverWith(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	formLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
 	groupBox->AddChild(formLine);
 	helper.ComboBoxFilter(formLine, "Object filter", pComboObjClass, NULL);
 	pComboObjClass->SetDefaultSorter();

@@ -1356,36 +1356,36 @@ pVVariation(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new meWPHeightTerrainListener(*this));
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	
-	pActionMenuTexture.TakeOverWith(*this);
-	pActionTextureAdd.TakeOverWith(*this);
-	pActionTextureRemove.TakeOverWith(*this);
+	pActionMenuTexture.TakeOver(new cActionMenuTexture(*this));
+	pActionTextureAdd.TakeOver(new cActionTextureAdd(*this));
+	pActionTextureRemove.TakeOver(new cActionTextureRemove(*this));
 	
-	pActionMenuNavSpace.TakeOverWith(*this);
-	pActionNavSpaceAdd.TakeOverWith(*this);
-	pActionNavSpaceRemove.TakeOverWith(*this);
+	pActionMenuNavSpace.TakeOver(new cActionMenuNavSpace(*this));
+	pActionNavSpaceAdd.TakeOver(new cActionNavSpaceAdd(*this));
+	pActionNavSpaceRemove.TakeOver(new cActionNavSpaceRemove(*this));
 	
-	pActionMenuNavSpaceType.TakeOverWith(*this);
-	pActionNavSpaceTypeAdd.TakeOverWith(*this);
-	pActionNavSpaceTypeRemove.TakeOverWith(*this);
+	pActionMenuNavSpaceType.TakeOver(new cActionMenuNavSpaceType(*this));
+	pActionNavSpaceTypeAdd.TakeOver(new cActionNavSpaceTypeAdd(*this));
+	pActionNavSpaceTypeRemove.TakeOver(new cActionNavSpaceTypeRemove(*this));
 	
-	pActionNavSpaceFaceAdd.TakeOverWith(*this);
-	pActionNavSpaceFaceRemove.TakeOverWith(*this);
+	pActionNavSpaceFaceAdd.TakeOver(new cActionNavSpaceFaceAdd(*this));
+	pActionNavSpaceFaceRemove.TakeOver(new cActionNavSpaceFaceRemove(*this));
 	
-	pActionMenuVLayer.TakeOverWith(*this);
-	pActionVLayerAdd.TakeOverWith(*this);
-	pActionVLayerRemove.TakeOverWith(*this);
-	pActionVLayerUp.TakeOverWith(*this);
-	pActionVLayerDown.TakeOverWith(*this);
+	pActionMenuVLayer.TakeOver(new cActionMenuVLayer(*this));
+	pActionVLayerAdd.TakeOver(new cActionVLayerAdd(*this));
+	pActionVLayerRemove.TakeOver(new cActionVLayerRemove(*this));
+	pActionVLayerUp.TakeOver(new cActionVLayerUp(*this));
+	pActionVLayerDown.TakeOver(new cActionVLayerDown(*this));
 	
-	pActionMenuVVariation.TakeOverWith(*this);
-	pActionVVariationAdd.TakeOverWith(*this);
-	pActionVVariationRemove.TakeOverWith(*this);
+	pActionMenuVVariation.TakeOver(new cActionMenuVVariation(*this));
+	pActionVVariationAdd.TakeOver(new cActionVVariationAdd(*this));
+	pActionVVariationRemove.TakeOver(new cActionVVariationRemove(*this));
 	
 	
 	// height terrain

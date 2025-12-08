@@ -140,7 +140,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionSourceAddSynthesizer());
 		menu.AddChild(submenu);
 		
-		submenu.TakeOverWith(menu.GetEnvironment(), "Add Into Group");
+		submenu.TakeOver(new igdeMenuCascade(menu.GetEnvironment(), "Add Into Group"));
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddWave());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddSound());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddChain());
@@ -148,7 +148,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddSynthesizer());
 		menu.AddChild(submenu);
 		
-		submenu.TakeOverWith(menu.GetEnvironment(), "Insert");
+		submenu.TakeOver(new igdeMenuCascade(menu.GetEnvironment(), "Insert"));
 		helper.MenuCommand(submenu, windowMain.GetActionSourceInsertWave());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceInsertSound());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceInsertChain());
@@ -211,10 +211,10 @@ public:
 		
 		igdeUndo::Ref undo;
 		if(source->GetParentGroup()){
-			undo.TakeOverWith(source->GetParentGroup(), source);
+			undo.TakeOver(new seUSourceGroupRemoveSource(source->GetParentGroup(), source));
 			
 		}else{
-			undo.TakeOverWith(pPanel.GetSynthesizer(), source);
+			undo.TakeOver(new seURemoveSource(pPanel.GetSynthesizer(), source));
 		}
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add(undo);
 	}
@@ -255,7 +255,7 @@ public:
 		}else{
 			const seSourceList &list = pPanel.GetSynthesizer()->GetSources();
 			const int index = source ? list.IndexOf(source) : list.GetCount();
-			undo.TakeOverWith(pPanel.GetSynthesizer(), cdata->GetSources(), index);
+			undo.TakeOver(new seUPasteSource(pPanel.GetSynthesizer(), cdata->GetSources(), index));
 		}
 		
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add(undo);
@@ -288,7 +288,7 @@ public:
 		
 		igdeUndo::Ref undo;
 		seSourceGroup * const group = (seSourceGroup*)source;
-		undo.TakeOverWith(group, cdata->GetSources(), group->GetSources().GetCount());
+		undo.TakeOver(new seUSourceGroupPasteSource(group, cdata->GetSources(), group->GetSources().GetCount()));
 		
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add(undo);
 	}
@@ -327,16 +327,16 @@ pActivePanel(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new seWPSourceListener(*this));
 	
 	
-	pActionSourceCopy.TakeOverWith(*this);
-	pActionSourceCut.TakeOverWith(*this);
-	pActionSourcePaste.TakeOverWith(*this);
-	pActionSourcePasteIntoGroup.TakeOverWith(*this);
+	pActionSourceCopy.TakeOver(new cActionSourceCopy(*this));
+	pActionSourceCut.TakeOver(new cActionSourceCut(*this));
+	pActionSourcePaste.TakeOver(new cActionSourcePaste(*this));
+	pActionSourcePasteIntoGroup.TakeOver(new cActionSourcePasteIntoGroup(*this));
 	
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast));
 	AddChild(content);
 	
 	
@@ -344,7 +344,7 @@ pActivePanel(NULL)
 	helper.TreeList(groupBox, pTreeSource, 10, "Sources", new cTreeSources(*this));
 	
 	
-	pSwitcher.TakeOverWith(env);
+	pSwitcher.TakeOver(new igdeSwitcher(env));
 	content->AddChild(pSwitcher);
 	
 	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));

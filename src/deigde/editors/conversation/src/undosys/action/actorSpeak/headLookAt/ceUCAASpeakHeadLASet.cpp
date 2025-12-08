@@ -55,7 +55,7 @@ ceUCAASpeakHeadLASet::ceUCAASpeakHeadLASet(ceConversationTopic *topic, ceCAActor
 	
 	SetShortInfo("Set head look-at");
 	
-	pOldStrip.TakeOverWith(*headLookAt);
+	pOldStrip.TakeOver(new ceStrip(*headLookAt));
 	
 	pNewStrip = newStrip;
 	newStrip->AddReference();

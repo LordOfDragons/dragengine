@@ -619,18 +619,18 @@ pWorld(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new meWPWorldListener(*this));
 	
 	
-	pActionPFTTypeAdd.TakeOverWith(*this);
-	pActionPFTTypeRemove.TakeOverWith(*this);
-	pActionPFTTypeClear.TakeOverWith(*this);
-	pActionMusicPlay.TakeOverWith(*this);
-	pActionMusicPause.TakeOverWith(*this);
-	pActionMusicStop.TakeOverWith(*this);
+	pActionPFTTypeAdd.TakeOver(new cActionPFTTypeAdd(*this));
+	pActionPFTTypeRemove.TakeOver(new cActionPFTTypeRemove(*this));
+	pActionPFTTypeClear.TakeOver(new cActionPFTTypeClear(*this));
+	pActionMusicPlay.TakeOver(new cActionMusicPlay(*this));
+	pActionMusicPause.TakeOver(new cActionMusicPause(*this));
+	pActionMusicStop.TakeOver(new cActionMusicStop(*this));
 	
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	
@@ -646,7 +646,7 @@ pWorld(NULL)
 	// properties
 	helper.GroupBoxFlow(content, groupBox, "World Properties:", false, false);
 	
-	pEditProperties.TakeOverWith(*this);
+	pEditProperties.TakeOver(new cEditWorldProperties(*this));
 	groupBox->AddChild(pEditProperties);
 	
 	
@@ -682,7 +682,7 @@ pWorld(NULL)
 	
 	helper.FormLineStretchFirst(groupBox, "Type:", "Type to edit", formLine);
 	helper.ComboBox(formLine, "Type to edit", pCBPFTType, new cComboPFTType(*this));
-	pActionPFTTypes.TakeOverWith(*this);
+	pActionPFTTypes.TakeOver(new cActionPFTTypes(*this));
 	helper.Button(formLine, pBtnPFTTypes, pActionPFTTypes, true);
 	pActionPFTTypes->SetWidget(pBtnPFTTypes);
 	

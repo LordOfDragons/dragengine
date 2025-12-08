@@ -117,7 +117,7 @@ pWorld(NULL)
 {
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new meWindowChangelogListener(*this));
 	
 	igdeUIHelper::sColumnHeader headers[3] = {
 		igdeUIHelper::sColumnHeader("Sector", nullptr, igdeApplication::app().DisplayScaled(50)),
@@ -180,7 +180,7 @@ void meWindowChangelog::UpdateChangelog(){
 	
 	try{
 		if(pWorld->GetChanged()){
-			refEntry.TakeOverWith(*this, meWCEntry::eetWorld);
+			refEntry.TakeOver(new meWCEntry(*this, meWCEntry::eetWorld));
 			meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
 			entry.SetWorld(pWorld);
 			entry.UpdateText();
@@ -192,7 +192,7 @@ void meWindowChangelog::UpdateChangelog(){
 			const int htsectorCount = hterrain->GetSectorCount();
 			
 			if(pWorld->GetHeightTerrain()->GetChanged()){
-				refEntry.TakeOverWith(*this, meWCEntry::eetHeightTerrain);
+				refEntry.TakeOver(new meWCEntry(*this, meWCEntry::eetHeightTerrain));
 				meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
 				entry.SetWorld(pWorld);
 				entry.UpdateText();
@@ -204,7 +204,7 @@ void meWindowChangelog::UpdateChangelog(){
 				const decPoint &scoord = htsector.GetCoordinates();
 				
 				if(htsector.GetHeightImageChanged()){
-					refEntry.TakeOverWith(*this, meWCEntry::eetHTHeight);
+					refEntry.TakeOver(new meWCEntry(*this, meWCEntry::eetHTHeight));
 					meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
 					entry.SetWorld(pWorld);
 					entry.SetSector(decPoint3(scoord.x, 0, scoord.y));
@@ -213,7 +213,7 @@ void meWindowChangelog::UpdateChangelog(){
 				}
 				
 				if(htsector.GetVisibilityChanged()){
-					refEntry.TakeOverWith(*this, meWCEntry::eetHTVisibility);
+					refEntry.TakeOver(new meWCEntry(*this, meWCEntry::eetHTVisibility));
 					meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
 					entry.SetWorld(pWorld);
 					entry.SetSector(decPoint3(scoord.x, 0, scoord.y));
@@ -222,7 +222,7 @@ void meWindowChangelog::UpdateChangelog(){
 				}
 				
 				if(htsector.GetPFCacheChanged()){
-					refEntry.TakeOverWith(*this, meWCEntry::eetHTPFCache);
+					refEntry.TakeOver(new meWCEntry(*this, meWCEntry::eetHTPFCache));
 					meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
 					entry.SetWorld(pWorld);
 					entry.SetSector(decPoint3(scoord.x, 0, scoord.y));
@@ -239,7 +239,7 @@ void meWindowChangelog::UpdateChangelog(){
 							continue;
 						}
 						
-						refEntry.TakeOverWith(*this, meWCEntry::eetHTTextureMask);
+						refEntry.TakeOver(new meWCEntry(*this, meWCEntry::eetHTTextureMask));
 						meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
 						entry.SetHTTexture(&httexture);
 						entry.SetSector(decPoint3(scoord.x, 0, scoord.y));
@@ -255,7 +255,7 @@ void meWindowChangelog::UpdateChangelog(){
 						continue;
 					}
 					
-					refEntry.TakeOverWith(*this, meWCEntry::eetHTNavSpace);
+					refEntry.TakeOver(new meWCEntry(*this, meWCEntry::eetHTNavSpace));
 					meWCEntry &entry = (meWCEntry&)(igdeListItem&)refEntry;
 					entry.SetHTNavSpace(navspace);
 					entry.SetSector(decPoint3(scoord.x, 0, scoord.y));

@@ -70,7 +70,7 @@ deoglCaptureCanvas::~deoglCaptureCanvas(){
 
 void deoglCaptureCanvas::SyncToRender(){
 	if(!pRCaptureCanvas){
-		pRCaptureCanvas.TakeOverWith(GetOgl().GetRenderThread());
+		pRCaptureCanvas.TakeOver(new deoglRCaptureCanvas(GetOgl().GetRenderThread()));
 	}
 	
 	if(pDirtyCanvasView){

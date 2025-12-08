@@ -82,7 +82,7 @@ pActive(false)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pNodeGroup.TakeOverWith(*engine);
+	pNodeGroup.TakeOver(new sePropertyNodeGroup(*engine));
 	pNodeGroup->SetProperty(this);
 }
 
@@ -125,7 +125,7 @@ pActive(false)
 	pMappedComponents[2] = property.pMappedComponents[2];
 	pMappedComponents[3] = property.pMappedComponents[3];
 	
-	pNodeGroup.TakeOverWith(*property.pNodeGroup);
+	pNodeGroup.TakeOver(new sePropertyNodeGroup(*property.pNodeGroup));
 	pNodeGroup->SetProperty(this);
 }
 

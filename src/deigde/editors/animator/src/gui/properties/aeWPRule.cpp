@@ -274,7 +274,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddMirror());
 		menu.AddChild(submenu);
 		
-		submenu.TakeOverWith(menu.GetEnvironment(), "Add Into Group");
+		submenu.TakeOver(new igdeMenuCascade(menu.GetEnvironment(), "Add Into Group"));
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnim());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnimDiff());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupAnimSelect());
@@ -290,7 +290,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionRuleAddIntoGroupMirror());
 		menu.AddChild(submenu);
 		
-		submenu.TakeOverWith(menu.GetEnvironment(), "Insert");
+		submenu.TakeOver(new igdeMenuCascade(menu.GetEnvironment(), "Insert"));
 		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnim());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnimDiff());
 		helper.MenuCommand(submenu, windowMain.GetActionRuleInsertAnimSelect());
@@ -353,10 +353,10 @@ pActivePanel(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new aeWPRuleListener(*this));
 	
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	
@@ -364,7 +364,7 @@ pActivePanel(NULL)
 	helper.TreeList(groupBox, pTreeRule, 8, "Rules", new cTreeRules(*this));
 	
 	
-	pSwitcher.TakeOverWith(env);
+	pSwitcher.TakeOver(new igdeSwitcher(env));
 	content->AddChild(pSwitcher);
 	
 	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));

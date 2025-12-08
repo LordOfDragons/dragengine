@@ -1121,25 +1121,25 @@ pGameDefinition(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, form, frameLine;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new gdeWPSObjectClassListener(*this));
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	
 	// actions
-	pActionInheritAdd.TakeOverWith(*this);
-	pActionInheritRemove.TakeOverWith(*this);
-	pActionInheritRemoveAll.TakeOverWith(*this);
+	pActionInheritAdd.TakeOver(new cActionInheritAdd(*this));
+	pActionInheritRemove.TakeOver(new cActionInheritRemove(*this));
+	pActionInheritRemoveAll.TakeOver(new cActionInheritRemoveAll(*this));
 	
-	pActionPropertyValueSet.TakeOverWith(*this);
-	pActionPropertyValueRemove.TakeOverWith(*this);
-	pActionPropertyValueClear.TakeOverWith(*this);
-	pActionPropertyValuesFromSubObjects.TakeOverWith(*this);
+	pActionPropertyValueSet.TakeOver(new cActionPropertyValueSet(*this));
+	pActionPropertyValueRemove.TakeOver(new cActionPropertyValueRemove(*this));
+	pActionPropertyValueClear.TakeOver(new cActionPropertyValueClear(*this));
+	pActionPropertyValuesFromSubObjects.TakeOver(new cActionPropertyValuesFromSubObjects(*this));
 	
-	pActionTexturesMenu.TakeOverWith(*this);
-	pActionTextureAdd.TakeOverWith(*this);
-	pActionTextureRemove.TakeOverWith(*this);
+	pActionTexturesMenu.TakeOver(new cActionTexturesMenu(*this));
+	pActionTextureAdd.TakeOver(new cActionTextureAdd(*this));
+	pActionTextureRemove.TakeOver(new cActionTextureRemove(*this));
 	
 	
 	// object class
@@ -1175,7 +1175,7 @@ pGameDefinition(NULL)
 	helper.ListBox(groupBox, 5, "Inherited object classes", pListInherits, new cListInherits(*this));
 	pListInherits->SetDefaultSorter();
 	
-	form.TakeOverWith(env);
+	form.TakeOver(new igdeContainerForm(env));
 	groupBox->AddChild(form);
 	
 	helper.FormLineStretchFirst(form, "Name:", "Name of class to inherit", frameLine);
@@ -1220,14 +1220,14 @@ pGameDefinition(NULL)
 	
 	// properties
 	helper.GroupBoxFlow(content, groupBox, "Properties:");
-	pEditProperties.TakeOverWith(*this);
+	pEditProperties.TakeOver(new cEditProperties(*this));
 	groupBox->AddChild(pEditProperties);
 	
 	
 	// property values
 	helper.GroupBoxFlow(content, groupBox, "Property Values:", true);
 	
-	frameLine.TakeOverWith(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	frameLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
 	helper.ComboBox(frameLine, true, "Property value to set", pCBPropertyValuesKeys, NULL);
 	pCBPropertyValuesKeys->SetDefaultSorter();
 	helper.Button(frameLine, pBtnPropertyValueSet, pActionPropertyValueSet);
@@ -1245,17 +1245,17 @@ pGameDefinition(NULL)
 	
 	// texture properties
 	helper.GroupBoxFlow(content, groupBox, "Texture Properties:", false, true);
-	pEditTextureProperties.TakeOverWith(*this);
+	pEditTextureProperties.TakeOver(new cEditTextureProperties(*this));
 	groupBox->AddChild(pEditTextureProperties);
 	
 	
 	// tagging
 	helper.GroupBoxFlow(content, groupBox, "Hide Tags:", false, true);
-	pListHideTags.TakeOverWith(*this, helper);
+	pListHideTags.TakeOver(new cListHideTags(*this, helper));
 	groupBox->AddChild(pListHideTags);
 	
 	helper.GroupBoxFlow(content, groupBox, "Partial Hide Tags:", false, true);
-	pListPartialHideTags.TakeOverWith(*this, helper);
+	pListPartialHideTags.TakeOver(new cListPartialHideTags(*this, helper));
 	groupBox->AddChild(pListPartialHideTags);
 	
 	

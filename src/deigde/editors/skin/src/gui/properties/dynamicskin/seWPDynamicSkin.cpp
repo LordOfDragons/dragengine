@@ -420,10 +420,10 @@ pSkin(NULL)
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new seWPDynamicSkinListener(*this));
 	
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	
@@ -433,7 +433,7 @@ pSkin(NULL)
 	helper.ListBox(groupBox, 6, "Select renderable to edit", pListRenderable, new cListRenderable(*this));
 	pListRenderable->SetDefaultSorter();
 	
-	form.TakeOverWith(env);
+	form.TakeOver(new igdeContainerForm(env));
 	groupBox->AddChild(form);
 	helper.EditString(form, "Name:", "Unique name of the renderable", pEditName, new cTextRenderableName(*this));
 	
@@ -447,7 +447,7 @@ pSkin(NULL)
 	
 	
 	// type specific panels
-	pSwitcher.TakeOverWith(env);
+	pSwitcher.TakeOver(new igdeSwitcher(env));
 	content->AddChild(pSwitcher);
 	
 	
@@ -456,7 +456,7 @@ pSkin(NULL)
 	
 	
 	// value
-	panel.TakeOverWith(env, igdeContainerFlow::eaY);
+	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Value:");
 	helper.EditSliderText(groupBox, "Value:", "Value", 0.0f, 1.0f, 6, 3, 0.1f, pSldValue, new cSliderValue(*this));
@@ -465,7 +465,7 @@ pSkin(NULL)
 	
 	
 	// color
-	panel.TakeOverWith(env, igdeContainerFlow::eaY);
+	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Color:");
 	helper.ColorBox(groupBox, "Color:", "Color", pClrColor, new cColorColor(*this));
@@ -480,7 +480,7 @@ pSkin(NULL)
 	
 	
 	// image
-	panel.TakeOverWith(env, igdeContainerFlow::eaY);
+	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Image:");
 	helper.EditPath(groupBox, "Path:", "Path to image", igdeEnvironment::efpltImage,
@@ -488,7 +488,7 @@ pSkin(NULL)
 	
 	
 	// video
-	panel.TakeOverWith(env, igdeContainerFlow::eaY);
+	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	pSwitcher->AddChild(panel);
 	helper.GroupBox(panel, groupBox, "Video:");
 	helper.EditPath(groupBox, "Path:", "Path to video", igdeEnvironment::efpltVideo,

@@ -55,34 +55,34 @@ pDIWorldStepSimulation(NULL),
 pDIWorldUpdateOctrees(NULL),
 pDIWorldCheckDynamicCollisions(NULL)
 {
-	pDIColliderPrepareDetection.TakeOverWith("Collider PrepareDetection:");
+	pDIColliderPrepareDetection.TakeOver(new debpDebugInformation("Collider PrepareDetection:"));
 	pDebugInfoList.Add(pDIColliderPrepareDetection);
 	
-	pDIColliderDetectCustomCollision.TakeOverWith("Collider DetectCustomCollision:");
+	pDIColliderDetectCustomCollision.TakeOver(new debpDebugInformation("Collider DetectCustomCollision:"));
 	pDebugInfoList.Add(pDIColliderDetectCustomCollision);
 	
-	pDIColliderUpdateFromBody.TakeOverWith("Collider UpdateFromBody:");
+	pDIColliderUpdateFromBody.TakeOver(new debpDebugInformation("Collider UpdateFromBody:"));
 	pDebugInfoList.Add(pDIColliderUpdateFromBody);
 	
-	pDIColliderFinishDetection.TakeOverWith("Collider FinishDetection:");
+	pDIColliderFinishDetection.TakeOver(new debpDebugInformation("Collider FinishDetection:"));
 	pDebugInfoList.Add(pDIColliderFinishDetection);
 	
-	pDIColliderCollisionTests.TakeOverWith("Collider CollisionTests:");
+	pDIColliderCollisionTests.TakeOver(new debpDebugInformation("Collider CollisionTests:"));
 	pDebugInfoList.Add(pDIColliderCollisionTests);
 	
-	pDIColliderUpdateOctree.TakeOverWith("Collider UpdateOctreePosition:");
+	pDIColliderUpdateOctree.TakeOver(new debpDebugInformation("Collider UpdateOctreePosition:"));
 	pDebugInfoList.Add(pDIColliderUpdateOctree);
 	
-	pDITouchSensorApplyChanges.TakeOverWith("TouchSensor ApplyChanges:");
+	pDITouchSensorApplyChanges.TakeOver(new debpDebugInformation("TouchSensor ApplyChanges:"));
 	pDebugInfoList.Add(pDITouchSensorApplyChanges);
 	
-	pDIWorldStepSimulation.TakeOverWith("World StepSimulation:");
+	pDIWorldStepSimulation.TakeOver(new debpDebugInformation("World StepSimulation:"));
 	pDebugInfoList.Add(pDIWorldStepSimulation);
 	
-	pDIWorldUpdateOctrees.TakeOverWith("World UpdateOctrees:");
+	pDIWorldUpdateOctrees.TakeOver(new debpDebugInformation("World UpdateOctrees:"));
 	pDebugInfoList.Add(pDIWorldUpdateOctrees);
 	
-	pDIWorldCheckDynamicCollisions.TakeOverWith("World CheckDynamicCollisions:");
+	pDIWorldCheckDynamicCollisions.TakeOver(new debpDebugInformation("World CheckDynamicCollisions:"));
 	pDebugInfoList.Add(pDIWorldCheckDynamicCollisions);
 }
 

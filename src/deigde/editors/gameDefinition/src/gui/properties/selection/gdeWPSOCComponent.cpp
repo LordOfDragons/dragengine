@@ -958,18 +958,18 @@ pDirtyEngModelTexNames(true)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener.TakeOverWith(*this);
+	pListener.TakeOver(new gdeWPSOCComponentListener(*this));
 	
-	content.TakeOverWith(env, igdeContainerFlow::eaY);
+	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
 	// actions
-	pActionTexturesMenu.TakeOverWith(*this);
-	pActionTextureAdd.TakeOverWith(*this);
-	pActionTextureRemove.TakeOverWith(*this);
-	pActionTexturePropertyValueClear.TakeOverWith(*this);
-	pActionTexturePropertyValueRemove.TakeOverWith(*this);
-	pActionTexturePropertyValueSet.TakeOverWith(*this);
+	pActionTexturesMenu.TakeOver(new cActionTexturesMenu(*this));
+	pActionTextureAdd.TakeOver(new cActionTextureAdd(*this));
+	pActionTextureRemove.TakeOver(new cActionTextureRemove(*this));
+	pActionTexturePropertyValueClear.TakeOver(new cActionPropertyValueClear(*this));
+	pActionTexturePropertyValueRemove.TakeOver(new cActionPropertyValueRemove(*this));
+	pActionTexturePropertyValueSet.TakeOver(new cActionPropertyValueSet(*this));
 	
 	
 	// component
@@ -1067,7 +1067,7 @@ pDirtyEngModelTexNames(true)
 	// texture property values
 	helper.GroupBoxFlow(content, groupBox, "Texture Properties:", false, true);
 	
-	frameLine.TakeOverWith(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
+	frameLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
 	helper.ComboBox(frameLine, "Property value to set", pTextureCBPropertyKeys, NULL);
 	pTextureCBPropertyKeys->SetDefaultSorter();
 	helper.Button(frameLine, pTextureBtnPropertyValueSet, pActionTexturePropertyValueSet);
