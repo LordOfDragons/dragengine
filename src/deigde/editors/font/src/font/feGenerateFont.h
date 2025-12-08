@@ -89,7 +89,7 @@ public:
 	void SetEnlargeGlpyh(int enlarge);
 	
 	/** \brief Generate font with properties. */
-	feFont *GenerateFont();
+	feFont::Ref GenerateFont();
 	/*@}*/
 	
 	

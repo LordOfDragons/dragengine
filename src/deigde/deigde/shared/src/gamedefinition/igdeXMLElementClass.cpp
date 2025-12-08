@@ -302,7 +302,6 @@ igdeGDClass *igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root
 	
 	gdClass->SetPropertyValues(properties);
 	
-	gdClass->AddReference(); // caller takes over reference
 	return gdClass;
 }
 

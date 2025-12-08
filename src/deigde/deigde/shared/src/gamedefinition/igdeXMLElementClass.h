@@ -96,7 +96,7 @@ protected:
 	
 	
 private:
-	igdeGDClass *pReadElementClass(const decXmlElementTag &root, const char *filename);
+	igdeGDClass::Ref pReadElementClass(const decXmlElementTag &root, const char *filename);
 	void pReadBehavior(const decXmlElementTag &root, igdeGDClass &gdClass,
 		const char *filename, const decString &basePathStr);
 	bool pReadPropertyValue(const decXmlElementTag &root, decString &value,

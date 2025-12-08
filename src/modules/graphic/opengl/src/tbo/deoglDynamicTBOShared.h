@@ -94,7 +94,7 @@ public:
 	int GetBlockCount() const;
 	
 	/** Block at index. */
-	deoglDynamicTBOBlock *GetBlockAt(int index) const;
+	deoglDynamicTBOBlock::Ref GetBlockAt(int index) const;
 	
 	/** Add block. Returns block or NULL if not enough space. */
 	deoglDynamicTBOBlock *AddBlock(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = NULL);

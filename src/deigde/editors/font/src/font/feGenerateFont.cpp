@@ -116,8 +116,6 @@ feFont* feGenerateFont::GenerateFont(){
 	pAddGlyphs(*font);
 	pCalcLayout(*font);
 	pRenderImage(*font);
-	
-	font->AddReference(); // caller takes over reference
 	return font;
 }
 

@@ -62,7 +62,6 @@ aeRuleMirror *aeRuleMirror::CreateDefault(){
 	Ref rule(Ref::New(new aeRuleMirror));
 	rule->pMatchNames.Add(aeRuleMirror::cMatchName::Ref::NewWith(
 		".l", ".r", deAnimatorRuleMirror::emntLast));
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
@@ -231,8 +230,6 @@ deAnimatorRule *aeRuleMirror::CreateEngineRule(){
 		const cMatchName &matchName = *((cMatchName*)pMatchNames.GetAt(i));
 		engRule->AddMatchName(matchName.GetFirst(), matchName.GetSecond(), matchName.GetType());
 	}
-	
-	engRule->AddReference(); // caller inherits reference
 	return engRule;
 }
 

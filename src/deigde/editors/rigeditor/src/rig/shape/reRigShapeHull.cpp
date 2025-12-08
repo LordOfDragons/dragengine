@@ -140,8 +140,6 @@ reRigShape *reRigShapeHull::Duplicate() const{
 		shape->pPointCount = pPointCount;
 		memcpy(shape->pPoints, pPoints, sizeof(decVector) * pPointCount);
 	}
-	
-	shape->AddReference(); // caller takes over reference
 	return shape;
 }
 

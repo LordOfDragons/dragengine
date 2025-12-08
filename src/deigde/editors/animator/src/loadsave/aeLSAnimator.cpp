@@ -2127,8 +2127,6 @@ aeRule *aeLSAnimator::pLoadRuleAnimation(decXmlElementTag *root, aeAnimator &ani
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
@@ -2194,8 +2192,6 @@ aeRule *aeLSAnimator::pLoadRuleAnimationDifference(decXmlElementTag *root, aeAni
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
@@ -2259,8 +2255,6 @@ aeRule *aeLSAnimator::pLoadRuleAnimationSelect(decXmlElementTag *root, aeAnimato
 	}
 	
 	rule->SetMoves(moves);
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
@@ -2406,8 +2400,6 @@ aeRule *aeLSAnimator::pLoadRuleBoneTransformator(decXmlElementTag *root, aeAnima
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
@@ -2504,8 +2496,6 @@ aeRule *aeLSAnimator::pLoadRuleStateManipulator(decXmlElementTag *root, aeAnimat
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
@@ -2557,8 +2547,6 @@ aeRule *aeLSAnimator::pLoadRuleStateSnapshot(decXmlElementTag *root, aeAnimator 
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
@@ -2689,8 +2677,6 @@ aeRule *aeLSAnimator::pLoadRuleInverseKinematic(decXmlElementTag *root, aeAnimat
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
@@ -2800,8 +2786,6 @@ aeRule *aeLSAnimator::pLoadRuleForeignState(decXmlElementTag *root, aeAnimator &
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
@@ -2897,8 +2881,6 @@ aeRule *aeLSAnimator::pLoadRuleMirror(decXmlElementTag *root, aeAnimator &animat
 				tag->GetPositionNumber(), tag->GetName().GetString());
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
@@ -2979,8 +2961,6 @@ aeRule *aeLSAnimator::pLoadRuleGroup(decXmlElementTag *root, aeAnimator &animato
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
@@ -3051,8 +3031,6 @@ aeRule *aeLSAnimator::pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimator &a
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
@@ -3217,8 +3195,6 @@ aeRule *aeLSAnimator::pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &anima
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
@@ -3349,8 +3325,6 @@ aeRule *aeLSAnimator::pLoadRuleLimit(decXmlElementTag *root, aeAnimator &animato
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
