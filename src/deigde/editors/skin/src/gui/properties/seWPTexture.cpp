@@ -599,7 +599,7 @@ pPreventUpdateMappedTarget(false)
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPTextureListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -654,7 +654,7 @@ pPreventUpdateMappedTarget(false)
 	
 	
 	// property panel switcher
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher.TakeOverWith(env);
 	content->AddChild(pSwitcher);
 	
 	
@@ -741,9 +741,6 @@ pPreventUpdateMappedTarget(false)
 seWPTexture::~seWPTexture(){
 	SetSkin(nullptr);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -752,13 +749,12 @@ seWPTexture::~seWPTexture(){
 ///////////////
 
 void seWPTexture::SetSkin(seSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;

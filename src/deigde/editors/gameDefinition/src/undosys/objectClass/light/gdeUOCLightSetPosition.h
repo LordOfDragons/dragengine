@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeObjectClass.h"
+#include "gdeOCLight.h"
 
-class gdeOCLight;
-class gdeObjectClass;
 
 
 
@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetPosition : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	decVector pOldValue;
 	decVector pNewValue;

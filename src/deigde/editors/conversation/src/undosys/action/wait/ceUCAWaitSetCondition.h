@@ -26,10 +26,10 @@
 #define _CEUCAWAITSETCONDITION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationCondition.h"
+#include "ceCAWait.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceCAWait;
-class ceConversationCondition;
 
 
 
@@ -38,10 +38,10 @@ class ceConversationCondition;
  */
 class ceUCAWaitSetCondition : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAWait *pWait;
-	ceConversationCondition *pOldCondition;
-	ceConversationCondition *pNewCondition;
+	ceConversationTopic::Ref pTopic;
+	ceCAWait::Ref pWait;
+	ceConversationCondition::Ref pOldCondition;
+	ceConversationCondition::Ref pNewCondition;
 	
 public:
 	/** \brief Type holding strong reference. */

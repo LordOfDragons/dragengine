@@ -27,9 +27,9 @@
 #define _GDEUOCNAVSPACESETPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCNavigationSpace.h"
 
-class gdeOCNavigationSpace;
-class gdeObjectClass;
 
 
 
@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavSpaceSetPath : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationSpace *pNavSpace;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	decString pOldValue;
 	decString pNewValue;

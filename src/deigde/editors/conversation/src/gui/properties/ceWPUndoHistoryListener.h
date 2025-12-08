@@ -35,6 +35,12 @@ class ceWPUndoHistory;
  * \brief Undo History Properties Panel Listener.
  */
 class ceWPUndoHistoryListener : public ceConversationListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceWPUndoHistoryListener> Ref;
+	
+	
+
 private:
 	ceWPUndoHistory &pPanel;
 	

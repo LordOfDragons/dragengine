@@ -269,7 +269,7 @@ void debnConnection::ProcessReliableMessage(decBaseFileReader &reader){
 	//pNetBasic->LogInfoFormat( "Reliable message: number %i with length %i.", number, length );
 	
 	// if the number is the next one expected send directly to the script
-	if(number == pReliableNumberRecv){
+	if(pReliableNumberRecv == number){
 		// process message
 		pProcessReliableMessage(number, reader);
 		
@@ -323,7 +323,7 @@ void debnConnection::ProcessReliableLinkState(decBaseFileReader &reader){
 	//length = reader.GetDataLength() - reader.GetPosition();
 	
 	// if the number is the next one expected send directly to the script
-	if(number == pReliableNumberRecv){
+	if(pReliableNumberRecv == number){
 		// process the link
 		pProcessLinkState(number, reader);
 		
@@ -487,7 +487,7 @@ void debnConnection::ProcessReliableMessageLong(decBaseFileReader &reader){
 	pSocket->SendDatagram(*pNetBasic->GetSharedSendDatagram(), pRemoteAddress);
 	
 	// if the number is the next one expected send directly to the script
-	if(number == pReliableNumberRecv){
+	if(pReliableNumberRecv == number){
 		// process message
 		pProcessReliableMessageLong(number, reader);
 		
@@ -535,7 +535,7 @@ void debnConnection::ProcessReliableLinkStateLong(decBaseFileReader &reader){
 	pSocket->SendDatagram(*pNetBasic->GetSharedSendDatagram(), pRemoteAddress);
 	
 	// if the number is the next one expected send directly to the script
-	if(number == pReliableNumberRecv){
+	if(pReliableNumberRecv == number){
 		// process the link
 		pProcessLinkStateLong(number, reader);
 		
@@ -561,7 +561,7 @@ bool debnConnection::ConnectTo(const char *address){
 	remoteAddress.SetFromString(address);
 	
 	// create connect socket
-	pSocket = new debnSocket(*pNetBasic);
+	pSocket.TakeOverWith(*pNetBasic);
 	
 	if(remoteAddress.GetType() == debnAddress::eatIPv6){
 		pSocket->GetAddress().SetIPv6Any();
@@ -846,9 +846,6 @@ void debnConnection::pCleanUp(){
 	if(pModifiedStateLinks){
 		delete pModifiedStateLinks;
 	}
-	if(pSocket){
-		pSocket->FreeReference();
-	}
 	
 	if(pReliableMessagesRecv){
 		delete pReliableMessagesRecv;
@@ -884,8 +881,6 @@ void debnConnection::pDisconnect(){
 	
 	// free the socket
 	pConnectionState = ecsDisconnected;
-	if(pSocket){
-		pSocket->FreeReference();
 		pSocket = NULL;
 	}
 	
@@ -1360,7 +1355,7 @@ void debnConnection::pSendPendingReliables(){
 	// check if there are messages inside the window that can be send
 	for(i=0; i<count; i++){
 		// if we hit the window size exit
-		if(i == pReliableWindowSize) break;
+		if(pReliableWindowSize == i) break;
 		
 		// if the message is pending send it
 		debnMessage * const bnMessage = pReliableMessagesSend->GetMessageAt(i);

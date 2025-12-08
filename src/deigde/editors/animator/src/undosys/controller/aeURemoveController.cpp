@@ -68,10 +68,7 @@ pIndex(-1)
 	}
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 aeURemoveController::~aeURemoveController(){
@@ -109,10 +106,4 @@ void aeURemoveController::Redo(){
 //////////////////////
 
 void aeURemoveController::pCleanUp(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pAnimator){
-		pAnimator->FreeReference();
-	}
 }

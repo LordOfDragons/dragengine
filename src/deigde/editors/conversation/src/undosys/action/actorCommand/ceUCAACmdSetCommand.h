@@ -26,9 +26,9 @@
 #define _CEUCAACMDSETCOMMAND_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAActorCommand.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorCommand;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAACmdSetCommand : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorCommand *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorCommand::Ref pAction;
 	decString pOldCommand;
 	decString pNewCommand;
 	

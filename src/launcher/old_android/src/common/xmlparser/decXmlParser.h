@@ -25,6 +25,8 @@
 #ifndef _DECXMLPARSER_H_
 #define _DECXMLPARSER_H_
 
+#include "decBaseFileReader.h"
+#include "deLogger.h"
 #define DEXP_EOF 0x100
 
 class decXmlDocument;
@@ -33,8 +35,6 @@ class decXmlContainer;
 class decXmlElement;
 class decXmlVisitor;
 class decXmlAttValue;
-class decBaseFileReader;
-class deLogger;
 
 
 
@@ -57,7 +57,7 @@ class deLogger;
  */
 class decXmlParser{
 private:
-	decBaseFileReader *pFile;
+	decBaseFileReader::Ref pFile;
 	int pLine;
 	int pPos;
 	int pCurChar;
@@ -71,7 +71,7 @@ private:
 	int pFilePos;
 	int pFileLen;
 	
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	bool pHasFatalError;
 	
 	

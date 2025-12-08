@@ -318,83 +318,48 @@ void dedsLocomotion::SetTiltMode(eTiltModes mode){
 }
 
 void dedsLocomotion::SetCCTTiltSingle(deColliderCollisionTest *collisionTest){
-	if(collisionTest == pCCTTiltSingle){
+	if(pCCTTiltSingle == collisionTest){
 		return;
 	}
 	
-	if(pCCTTiltSingle){
-		pCCTTiltSingle->FreeReference();
-	}
 	
 	pCCTTiltSingle = collisionTest;
-	
-	if(collisionTest){
-		collisionTest->AddReference();
-	}
 }
 
 void dedsLocomotion::SetCCTTiltFrontLeft(deColliderCollisionTest *collisionTest){
-	if(collisionTest == pCCTTiltFrontLeft){
+	if(pCCTTiltFrontLeft == collisionTest){
 		return;
 	}
 	
-	if(pCCTTiltFrontLeft){
-		pCCTTiltFrontLeft->FreeReference();
-	}
 	
 	pCCTTiltFrontLeft = collisionTest;
-	
-	if(collisionTest){
-		collisionTest->AddReference();
-	}
 }
 
 void dedsLocomotion::SetCCTTiltFrontRight(deColliderCollisionTest *collisionTest){
-	if(collisionTest == pCCTTiltFrontRight){
+	if(pCCTTiltFrontRight == collisionTest){
 		return;
 	}
 	
-	if(pCCTTiltFrontRight){
-		pCCTTiltFrontRight->FreeReference();
-	}
 	
 	pCCTTiltFrontRight = collisionTest;
-	
-	if(collisionTest){
-		collisionTest->AddReference();
-	}
 }
 
 void dedsLocomotion::SetCCTTiltBackLeft(deColliderCollisionTest *collisionTest){
-	if(collisionTest == pCCTTiltBackLeft){
+	if(pCCTTiltBackLeft == collisionTest){
 		return;
 	}
 	
-	if(pCCTTiltBackLeft){
-		pCCTTiltBackLeft->FreeReference();
-	}
 	
 	pCCTTiltBackLeft = collisionTest;
-	
-	if(collisionTest){
-		collisionTest->AddReference();
-	}
 }
 
 void dedsLocomotion::SetCCTTiltBackRight(deColliderCollisionTest *collisionTest){
-	if(collisionTest == pCCTTiltBackRight){
+	if(pCCTTiltBackRight == collisionTest){
 		return;
 	}
 	
-	if(pCCTTiltBackRight){
-		pCCTTiltBackRight->FreeReference();
-	}
 	
 	pCCTTiltBackRight = collisionTest;
-	
-	if(collisionTest){
-		collisionTest->AddReference();
-	}
 }
 
 
@@ -528,19 +493,12 @@ void dedsLocomotion::RemoveAllControllerMappings(){
 
 
 void dedsLocomotion::SetAICollider(deCollider *collider){
-	if(collider == pAICollider){
+	if(pAICollider == collider){
 		return;
 	}
 	
-	if(pAICollider){
-		pAICollider->FreeReference();
-	}
 	
 	pAICollider = collider;
-	
-	if(collider){
-		collider->AddReference();
-	}
 }
 
 void dedsLocomotion::SetUpdateAIColliderAngularVelocity(bool updateAngularVelocity){
@@ -648,7 +606,7 @@ void dedsLocomotion::UpdateLocomotion(float elapsed){
 
 void dedsLocomotion::UpdateIsMoving(){
 	const bool isMoving = fabsf(pAnalogMovingSpeed) > 0.001f;
-	if(isMoving == pIsMoving){
+	if(pIsMoving == isMoving){
 		return;
 	}
 	

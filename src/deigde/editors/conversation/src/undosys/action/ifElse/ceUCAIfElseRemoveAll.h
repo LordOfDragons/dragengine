@@ -28,10 +28,10 @@
 #include "../../../conversation/action/ceConversationActionList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAIfElse.h"
+#include "ceCAIfElseCase.h"
+#include "ceConversationTopic.h"
 
-class ceCAIfElseCase;
-class ceConversationTopic;
-class ceCAIfElse;
 
 
 
@@ -40,9 +40,9 @@ class ceCAIfElse;
  */
 class ceUCAIfElseRemoveAll : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
+	ceConversationTopic::Ref pTopic;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
 	ceConversationActionList pActionList;
 	
 public:

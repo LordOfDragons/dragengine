@@ -28,8 +28,8 @@
 #include "deoglRCanvas.h"
 
 #include <dragengine/common/collection/decObjectList.h>
+#include "deoglRenderTarget.h"
 
-class deoglRenderTarget;
 class deoglRenderPlanMasked;
 
 
@@ -40,7 +40,7 @@ class deoglRCanvasView : public deoglRCanvas{
 private:
 	decObjectList pChildren;
 	unsigned int pPaintTracker;
-	deoglRenderTarget *pRenderTarget;
+	deoglRenderTarget::Ref pRenderTarget;
 	bool pResizeRenderTarget;
 	
 	
@@ -77,7 +77,7 @@ public:
 	void IncrementPaintTracker();
 	
 	/** Render target or \em NULL if not ready. */
-	inline deoglRenderTarget *GetRenderTarget() const{ return pRenderTarget; }
+	inline const deoglRenderTarget::Ref &GetRenderTarget() const{ return pRenderTarget; }
 	
 	/** Render target has to be resized. */
 	void SetResizeRenderTarget();

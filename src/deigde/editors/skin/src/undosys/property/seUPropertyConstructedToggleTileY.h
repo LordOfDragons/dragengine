@@ -26,8 +26,8 @@
 #define _SEUPROPERTYSETCONSTRUCTEDTILEY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seProperty.h"
 
-class seProperty;
 
 
 
@@ -36,7 +36,7 @@ class seProperty;
  */
 class seUPropertyConstructedToggleTileY : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	
 	

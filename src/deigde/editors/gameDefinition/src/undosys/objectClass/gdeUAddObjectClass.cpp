@@ -58,12 +58,6 @@ pObjectClass(NULL)
 }
 
 gdeUAddObjectClass::~gdeUAddObjectClass(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

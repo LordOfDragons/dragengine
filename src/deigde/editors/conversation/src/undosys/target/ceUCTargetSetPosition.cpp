@@ -54,9 +54,6 @@ ceUCTargetSetPosition::ceUCTargetSetPosition(ceTarget *target, const decVector &
 }
 
 ceUCTargetSetPosition::~ceUCTargetSetPosition(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 

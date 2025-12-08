@@ -26,9 +26,9 @@
 #define _MEUOBJECTSHAPEREPLACE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meObject.h"
 
 class decShape;
-class meObject;
 
 
 /**
@@ -36,7 +36,7 @@ class meObject;
  */
 class meUObjectShapeReplace : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;

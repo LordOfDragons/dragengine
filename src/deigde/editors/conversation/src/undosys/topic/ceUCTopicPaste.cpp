@@ -88,9 +88,6 @@ pFile(NULL){
 
 ceUCTopicPaste::~ceUCTopicPaste(){
 	pTopics.RemoveAll();
-	if(pFile){
-		pFile->FreeReference();
-	}
 }
 
 

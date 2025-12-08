@@ -35,6 +35,12 @@ class meWindowMain;
  * \brief Window Main Listener.
  */
 class meWindowMainListener : public meWorldNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meWindowMainListener> Ref;
+	
+	
+
 private:
 	meWindowMain &pWindowMain;
 	

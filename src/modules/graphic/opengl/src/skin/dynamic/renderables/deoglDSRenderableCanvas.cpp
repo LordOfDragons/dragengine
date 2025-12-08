@@ -53,7 +53,7 @@ pCanvasView(NULL),
 pDirty(true)
 {
 	try{
-		pRRenderableCanvas = new deoglRDSRenderableCanvas(*dynamicSkin.GetRDynamicSkin(), renderable);
+		pRRenderableCanvas.TakeOverWith(*dynamicSkin.GetRDynamicSkin(), renderable);
 		
 		if(renderable.GetCanvas()){
 			pCanvasView = (deoglCanvasView*)renderable.GetCanvas()->GetPeerGraphic();
@@ -83,7 +83,7 @@ void deoglDSRenderableCanvas::RenderableChanged(){
 	deoglCanvasView * const canvasView = pRenderableCanvas.GetCanvas()
 		? (deoglCanvasView*)pRenderableCanvas.GetCanvas()->GetPeerGraphic() : NULL;
 	
-	if(canvasView != pCanvasView){
+	if(pCanvasView != canvasView){
 		if(pCanvasView){
 			pCanvasView->RemoveListener(this);
 		}
@@ -139,9 +139,6 @@ void deoglDSRenderableCanvas::CanvasViewRequiresSync(){
 //////////////////////
 
 void deoglDSRenderableCanvas::pCleanUp(){
-	if(pRRenderableCanvas){
-		pRRenderableCanvas->FreeReference();
-	}
 	
 	if(pCanvasView){
 		pCanvasView->RemoveListener(this);

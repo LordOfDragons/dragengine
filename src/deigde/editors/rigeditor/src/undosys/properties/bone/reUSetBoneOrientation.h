@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include "dragengine/common/math/decMath.h"
+#include "reRigBone.h"
 
-class reRigBone;
 
 
 
@@ -37,7 +37,7 @@ class reRigBone;
  */
 class reUSetBoneOrientation : public igdeUndo{
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;

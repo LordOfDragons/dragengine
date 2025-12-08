@@ -26,11 +26,11 @@
 #define _CEUCCLOGICREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCConditionLogic.h"
+#include "ceConversationCondition.h"
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceCConditionLogic;
-class ceConversationCondition;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -39,10 +39,10 @@ class ceConversationTopic;
  */
 class ceUCCLogicRemove : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionLogic *pLogic;
-	ceConversationCondition *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionLogic::Ref pLogic;
+	ceConversationCondition::Ref pCondition;
 	int pIndex;
 	
 public:

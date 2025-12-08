@@ -35,6 +35,12 @@ class meWindowChangelog;
  * \brief Changelog Window Listener
  */
 class meWindowChangelogListener : public meWorldNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meWindowChangelogListener> Ref;
+	
+	
+
 private:
 	meWindowChangelog &pWindow;
 	

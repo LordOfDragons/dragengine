@@ -31,8 +31,8 @@
 #include "../../../synthesizer/effect/seEffectList.h"
 #include "../../../synthesizer/link/seLinkList.h"
 #include "../../../synthesizer/controller/seControllerList.h"
+#include "seSource.h"
 
-class seSource;
 
 
 
@@ -41,7 +41,7 @@ class seSource;
  */
 class seUSourcePasteEffect : public igdeUndo{
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	seEffectList pEffectList;
 	seLinkList pRemoveLinkList;
 	seControllerList pRemoveControllerList;

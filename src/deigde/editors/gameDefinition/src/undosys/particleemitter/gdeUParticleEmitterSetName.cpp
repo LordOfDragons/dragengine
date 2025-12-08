@@ -57,9 +57,6 @@ pParticleEmitter(NULL)
 }
 
 gdeUParticleEmitterSetName::~gdeUParticleEmitterSetName(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
 }
 
 

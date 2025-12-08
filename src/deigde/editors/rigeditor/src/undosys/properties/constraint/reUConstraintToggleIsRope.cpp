@@ -49,13 +49,9 @@ reUConstraintToggleIsRope::reUConstraintToggleIsRope(reRigConstraint *constraint
 	
 	SetShortInfo("Constraint toggle is rope");
 	
-	pConstraint->AddReference();
 }
 
 reUConstraintToggleIsRope::~reUConstraintToggleIsRope(){
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 }
 
 

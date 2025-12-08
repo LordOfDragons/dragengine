@@ -790,7 +790,7 @@ pClipboard(NULL)
 	
 	// type specific parameters
 	helper.GroupBoxFlow(*this, group, "Parameters:", false, true);
-	pSwiParameters.TakeOver(new igdeSwitcher(env));
+	pSwiParameters.TakeOverWith(env);
 	group->AddChild(pSwiParameters);
 	
 	

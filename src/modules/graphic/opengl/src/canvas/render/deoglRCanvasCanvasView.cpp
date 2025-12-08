@@ -62,17 +62,11 @@ deoglRCanvasCanvasView::~deoglRCanvasCanvasView(){
 ///////////////
 
 void deoglRCanvasCanvasView::SetCanvasView(deoglRCanvasView *canvasView){
-	if(canvasView == pCanvasView){
+	if(pCanvasView == canvasView){
 		return;
 	}
 	
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 	pCanvasView = canvasView;
-	if(canvasView){
-		canvasView->AddReference();
-	}
 }
 
 void deoglRCanvasCanvasView::SetTCTransform(const decTexMatrix2 &transform){

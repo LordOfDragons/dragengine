@@ -46,7 +46,6 @@ aeUSetRuleSModMaxPosition::aeUSetRuleSModMaxPosition(aeRuleStateManipulator *rul
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldMax = rule->GetMaximumPosition();
 		pNewMax = newMax;
@@ -82,5 +81,4 @@ void aeUSetRuleSModMaxPosition::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMaxPosition::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

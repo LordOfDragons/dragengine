@@ -26,8 +26,8 @@
 #define _SEUTEXTURESETNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seTexture.h"
 
-class seTexture;
 
 
 
@@ -36,7 +36,7 @@ class seTexture;
  */
 class seUTextureSetName : public igdeUndo{
 private:
-	seTexture *pTexture;
+	seTexture::Ref pTexture;
 	
 	decString pOldName;
 	decString pNewName;

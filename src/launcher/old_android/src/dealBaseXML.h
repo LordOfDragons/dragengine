@@ -26,10 +26,10 @@
 #define _DEALBASEXML_H_
 
 #include "common/string/decString.h"
+#include "deLogger.h"
 
 class decXmlWriter;
 class decXmlElementTag;
-class deLogger;
 
 
 
@@ -40,7 +40,7 @@ class deLogger;
  */
 class dealBaseXML{
 private:
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	decString pLoggerSource;
 	
 public:
@@ -56,7 +56,7 @@ protected:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
+	inline const deLogger::Ref &GetLogger() const{ return pLogger; }
 	/** Retrieves the logger source. */
 	inline const decString &GetLoggerSource() const{ return pLoggerSource; }
 	

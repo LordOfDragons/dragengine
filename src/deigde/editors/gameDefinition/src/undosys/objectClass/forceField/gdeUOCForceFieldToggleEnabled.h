@@ -27,9 +27,9 @@
 #define _GDEUOCFORCEFIELDTOGGLEENABLED_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCForceField.h"
 
-class gdeOCForceField;
-class gdeObjectClass;
 
 
 
@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCForceFieldToggleEnabled : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	
 	

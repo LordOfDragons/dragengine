@@ -156,8 +156,6 @@ void deAndroidInput::CleanUp(){
 		pOverlaySystem = NULL;
 	}
 	
-	if(pFontDefault){
-		pFontDefault->FreeReference();
 		pFontDefault = NULL;
 	}
 	

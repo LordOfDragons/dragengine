@@ -26,10 +26,10 @@
 #define _REUREMOVECONSTRAINT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRigConstraint.h"
+#include "reRigBone.h"
+#include "reRig.h"
 
-class reRig;
-class reRigConstraint;
-class reRigBone;
 class reRigConstraintList;
 
 
@@ -40,12 +40,12 @@ class reRigConstraintList;
 class reURemoveConstraint : public igdeUndo{
 private:
 	struct sEntry{
-		reRigConstraint *constraint;
-		reRigBone *bone;
+		reRigConstraint::Ref constraint;
+		reRigBone::Ref bone;
 	};
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	sEntry *pEntries;
 	int pEntryCount;

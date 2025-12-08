@@ -27,9 +27,9 @@
 #define _GDEUSKINSETCATEGORY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeSkin.h"
 
 class gdeOCSpeaker;
-class gdeSkin;
 
 
 
@@ -38,7 +38,7 @@ class gdeSkin;
  */
 class gdeUSkinSetCategory : public igdeUndo{
 private:
-	gdeSkin *pSkin;
+	gdeSkin::Ref pSkin;
 	
 	decString pOldValue;
 	decString pNewValue;

@@ -55,7 +55,7 @@ ceUCAASpeakBodyLASet::ceUCAASpeakBodyLASet(ceConversationTopic *topic, ceCAActor
 	
 	SetShortInfo("Set body look-at");
 	
-	pOldStrip = new ceStrip(*bodyLookAt);
+	pOldStrip.TakeOverWith(*bodyLookAt);
 	
 	pNewStrip = newStrip;
 	newStrip->AddReference();
@@ -71,21 +71,6 @@ ceUCAASpeakBodyLASet::ceUCAASpeakBodyLASet(ceConversationTopic *topic, ceCAActor
 }
 
 ceUCAASpeakBodyLASet::~ceUCAASpeakBodyLASet(){
-	if(pNewStrip){
-		pNewStrip->FreeReference();
-	}
-	if(pOldStrip){
-		pOldStrip->FreeReference();
-	}
-	if(pBodyLA){
-		pBodyLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -27,8 +27,8 @@
 #define _AEUSETRULESID_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleStateSnapshot.h"
 
-class aeRuleStateSnapshot;
 
 
 
@@ -37,7 +37,7 @@ class aeRuleStateSnapshot;
  */
 class aeURuleSnapSetID : public igdeUndo{
 private:
-	aeRuleStateSnapshot *pRule;
+	aeRuleStateSnapshot::Ref pRule;
 	
 	int pOldID;
 	int pNewID;

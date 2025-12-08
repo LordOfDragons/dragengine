@@ -27,9 +27,9 @@
 #define _GDEUOCCOMPONENTSETANIMATIONPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCComponent.h"
 
-class gdeOCComponent;
-class gdeObjectClass;
 
 
 
@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCComponentSetAnimationPath : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	decString pOldValue;
 	decString pNewValue;

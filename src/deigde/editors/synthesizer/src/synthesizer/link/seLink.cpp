@@ -60,16 +60,12 @@ pCurve(copy.pCurve)
 {
 	pController = copy.pController;
 	if(pController){
-		pController->AddReference();
 	}
 }
 
 seLink::~seLink(){
 	SetSynthesizer(NULL);
 	
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 
@@ -78,7 +74,7 @@ seLink::~seLink(){
 ///////////////
 
 void seLink::SetSynthesizer(seSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	
@@ -126,19 +122,12 @@ void seLink::SetName(const char *name){
 }
 
 void seLink::SetController(seController *controller){
-	if(controller == pController){
+	if(pController == controller){
 		return;
 	}
 	
-	if(pController){
-		pController->FreeReference();
-	}
 	
 	pController = controller;
-	
-	if(controller){
-		controller->AddReference();
-	}
 	
 	UpdateController();
 	
@@ -152,7 +141,7 @@ void seLink::SetRepeat(int repeat){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(repeat == pRepeat){
+	if(pRepeat == repeat){
 		return;
 	}
 	

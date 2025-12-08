@@ -29,11 +29,11 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/curve/decCurveBezier.h>
+#include "deoglRWorld.h"
 
 class deoglREffect;
 class deoglRenderPlan;
 class deoglRenderThread;
-class deoglRWorld;
 class deoglTexture;
 class deoglVR;
 
@@ -44,7 +44,7 @@ class deoglVR;
 class deoglRCamera : public deObject{
 private:
 	deoglRenderThread &pRenderThread;
-	deoglRWorld *pParentWorld;
+	deoglRWorld::Ref pParentWorld;
 	
 	decDVector pPosition;
 	decDMatrix pInverseCameraMatrix;
@@ -108,7 +108,7 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** Parent world or \em NULL if not set. */
-	inline deoglRWorld *GetParentWorld() const{ return pParentWorld; }
+	inline const deoglRWorld::Ref &GetParentWorld() const{ return pParentWorld; }
 	
 	/** Set parent world or \em NULL if not set. */
 	void SetParentWorld(deoglRWorld *parentWorld);

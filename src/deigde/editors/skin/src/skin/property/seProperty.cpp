@@ -82,7 +82,7 @@ pActive(false)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pNodeGroup = new sePropertyNodeGroup(*engine);
+	pNodeGroup.TakeOverWith(*engine);
 	pNodeGroup->SetProperty(this);
 }
 
@@ -125,18 +125,14 @@ pActive(false)
 	pMappedComponents[2] = property.pMappedComponents[2];
 	pMappedComponents[3] = property.pMappedComponents[3];
 	
-	pNodeGroup = new sePropertyNodeGroup(*property.pNodeGroup);
+	pNodeGroup.TakeOverWith(*property.pNodeGroup);
 	pNodeGroup->SetProperty(this);
 }
 
 seProperty::~seProperty(){
-	if(pActiveNodeGroup){
-		pActiveNodeGroup->FreeReference();
-	}
 	pNodeSelection.RemoveAll();
 	if(pNodeGroup){
 		pNodeGroup->SetProperty(NULL);
-		pNodeGroup->FreeReference();
 	}
 }
 
@@ -146,7 +142,7 @@ seProperty::~seProperty(){
 ///////////////
 
 void seProperty::SetTexture(seTexture *texture){
-	if(texture == pTexture){
+	if(pTexture == texture){
 		return;
 	}
 	
@@ -177,7 +173,7 @@ void seProperty::SetBoneName(const char *name){
 }
 
 void seProperty::SetValueType(eValueTypes type){
-	if(type == pValueType){
+	if(pValueType == type){
 		return;
 	}
 	
@@ -256,7 +252,7 @@ void seProperty::UpdateVideo(){
 }
 
 void seProperty::SetVideoSharedTime(bool shareTime){
-	if(shareTime == pVideoSharedTime){
+	if(pVideoSharedTime == shareTime){
 		return;
 	}
 	
@@ -291,7 +287,6 @@ void seProperty::SetNodeGroup(sePropertyNodeGroup *nodeGroup){
 	pNodeSelection.RemoveAll();
 	
 	pNodeGroup->SetProperty(NULL);
-	pNodeGroup->FreeReference();
 	
 	pNodeGroup = nodeGroup;
 	
@@ -310,7 +305,7 @@ void seProperty::UpdateEngineNodeGroup(){
 }
 
 void seProperty::SetActiveNodeGroup(sePropertyNodeGroup *node){
-	if(node == pActiveNodeGroup){
+	if(pActiveNodeGroup == node){
 		return;
 	}
 	
@@ -321,7 +316,6 @@ void seProperty::SetActiveNodeGroup(sePropertyNodeGroup *node){
 	
 	if(pActiveNodeGroup){
 		pActiveNodeGroup->SetActiveGroup(false);
-		pActiveNodeGroup->FreeReference();
 	}
 	
 	pActiveNodeGroup = node;
@@ -344,7 +338,7 @@ void seProperty::SetActiveNodeGroup(sePropertyNodeGroup *node){
 }
 
 void seProperty::SetActiveNodeLayer(int layer){
-	if(layer == pActiveNodeLayer){
+	if(pActiveNodeLayer == layer){
 		return;
 	}
 	
@@ -365,7 +359,7 @@ void seProperty::SetNodeColor(const decColor &color){
 }
 
 void seProperty::SetNodeTileX(bool tileX){
-	if(tileX == pNodeTileX){
+	if(pNodeTileX == tileX){
 		return;
 	}
 	
@@ -374,7 +368,7 @@ void seProperty::SetNodeTileX(bool tileX){
 }
 
 void seProperty::SetNodeTileY(bool tileY){
-	if(tileY == pNodeTileY){
+	if(pNodeTileY == tileY){
 		return;
 	}
 	
@@ -383,7 +377,7 @@ void seProperty::SetNodeTileY(bool tileY){
 }
 
 void seProperty::SetNodeBitCount(int bitCount){
-	if(bitCount == pNodeBitCount){
+	if(pNodeBitCount == bitCount){
 		return;
 	}
 	

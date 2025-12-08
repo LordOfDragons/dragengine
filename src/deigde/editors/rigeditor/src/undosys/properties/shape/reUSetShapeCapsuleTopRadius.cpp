@@ -43,11 +43,9 @@ reUSetShapeCapsuleTopRadius::reUSetShapeCapsuleTopRadius(reRigShapeCapsule *shap
 	
 	SetShortInfo("Set Capsule Shape Half Height");
 	
-	pShape->AddReference();
 }
 
 reUSetShapeCapsuleTopRadius::~reUSetShapeCapsuleTopRadius(){
-	pShape->FreeReference();
 }
 
 

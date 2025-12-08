@@ -78,7 +78,7 @@ pDirtyLabelSize(true)
 	try{
 		GetCanvas()->SetSize(size);
 		
-		pCImage = canvasManager.CreateCanvasImage();
+		pCImage.TakeOver(canvasManager.CreateCanvasImage());
 		pCImage->SetSize(size);
 		image = imageManager.LoadImage(&androidInput.GetVFS(),
 			"/share/images/actionbutton.png", "/");
@@ -87,7 +87,7 @@ pDirtyLabelSize(true)
 		image = NULL;
 		GetCanvas()->AddCanvas(pCImage);
 		
-		pCLabel = canvasManager.CreateCanvasText();
+		pCLabel.TakeOver(canvasManager.CreateCanvasText());
 		pCLabel->SetSize(size);
 		pCLabel->SetColor(decColor(1.0f, 1.0f, 1.0f));
 		pCLabel->SetFont(androidInput.GetDefaultFont());
@@ -119,7 +119,7 @@ void deainpOverlayActionButton::SetBinding(const deainpInputBinding &binding){
 
 void deainpOverlayActionButton::SetRadius(int radius){
 	radius = decMath::max(radius, 0);
-	if(radius == pRadius){
+	if(pRadius == radius){
 		return;
 	}
 	
@@ -132,7 +132,7 @@ void deainpOverlayActionButton::SetRadius(int radius){
 }
 
 void deainpOverlayActionButton::SetCenter(const decPoint &center){
-	if(center == pCenter){
+	if(pCenter == center){
 		return;
 	}
 	
@@ -224,12 +224,6 @@ void deainpOverlayActionButton::OnRelease(){
 //////////////////////
 
 void deainpOverlayActionButton::pCleanUp(){
-	if(pCLabel){
-		pCLabel->FreeReference();
-	}
-	if(pCImage){
-		pCImage->FreeReference();
-	}
 }
 
 void deainpOverlayActionButton::pUpdateLabelSize(){

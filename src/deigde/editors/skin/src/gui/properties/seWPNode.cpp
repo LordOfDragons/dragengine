@@ -759,7 +759,7 @@ pPreventUpdate(false)
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPNodeListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -809,7 +809,7 @@ pPreventUpdate(false)
 	
 	
 	// type specific
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher.TakeOverWith(env);
 	content->AddChild(pSwitcher);
 	
 	
@@ -871,9 +871,6 @@ pPreventUpdate(false)
 seWPNode::~seWPNode(){
 	SetSkin(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -882,13 +879,12 @@ seWPNode::~seWPNode(){
 ///////////////
 
 void seWPNode::SetSkin(seSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;

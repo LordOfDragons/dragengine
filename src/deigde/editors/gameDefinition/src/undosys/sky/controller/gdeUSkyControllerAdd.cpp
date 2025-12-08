@@ -62,12 +62,6 @@ pController(NULL)
 }
 
 gdeUSkyControllerAdd::~gdeUSkyControllerAdd(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

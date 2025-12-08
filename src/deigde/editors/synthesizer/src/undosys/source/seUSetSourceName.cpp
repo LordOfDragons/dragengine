@@ -52,13 +52,9 @@ pSource(NULL)
 	SetShortInfo("Set Source Name");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSetSourceName::~seUSetSourceName(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

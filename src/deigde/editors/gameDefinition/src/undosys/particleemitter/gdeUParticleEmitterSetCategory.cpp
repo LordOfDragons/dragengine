@@ -57,9 +57,6 @@ pParticleEmitter(NULL)
 }
 
 gdeUParticleEmitterSetCategory::~gdeUParticleEmitterSetCategory(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
 }
 
 

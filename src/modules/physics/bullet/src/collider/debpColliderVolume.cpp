@@ -1388,9 +1388,6 @@ void debpColliderVolume::pCleanUp(){
 	if(pSweepCollisionTest){
 		delete pSweepCollisionTest;
 	}
-	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
-	}
 }
 
 
@@ -1448,14 +1445,12 @@ void debpColliderVolume::pUpdateStaticCollisionTest(){
 		return;
 	}
 	
-	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
 		pStaticCollisionTestShape = NULL;
 	}
 	
 	try{
 		if(pColliderVolume.GetShapes().GetCount() > 0){
-			pStaticCollisionTestShape = pCreateBPShape(); // take over reference
+			pStaticCollisionTestShape.TakeOver(pCreateBPShape()); // take over reference
 		}
 		
 		if(pStaticCollisionTestShape && pStaticCollisionTestShape->GetShape()){
@@ -1466,8 +1461,6 @@ void debpColliderVolume::pUpdateStaticCollisionTest(){
 		}
 		
 	}catch(const deException &){
-		if(pStaticCollisionTestShape){
-			pStaticCollisionTestShape->FreeReference();
 			pStaticCollisionTestShape = NULL;
 		}
 		throw;
@@ -1511,7 +1504,7 @@ void debpColliderVolume::pUpdateUseFakeDynamics(){
 			
 		} // cylinders and capsules are anyways not supported yet
 		
-		if(useFakeDynamics != pUseFakeDynamics){
+		if(pUseFakeDynamics != useFakeDynamics){
 			pUseFakeDynamics = useFakeDynamics;
 			ResponseTypeChanged();
 		}

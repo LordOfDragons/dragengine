@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/collider/deColliderConstraint.h>
+#include "reRigConstraint.h"
 
-class reRigConstraint;
 
 
 
@@ -38,7 +38,7 @@ class reRigConstraint;
  */
 class reUConstraintDofSetLowerLimit : public igdeUndo{
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	deColliderConstraint::eDegreesOfFreedom pDof;
 	
 	float pOldValue;

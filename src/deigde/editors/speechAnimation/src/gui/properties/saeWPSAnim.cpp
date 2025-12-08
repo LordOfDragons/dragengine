@@ -585,7 +585,7 @@ pSAnimation(nullptr)
 	igdeContainer::Ref content, groupBox, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new saeWPSAnimListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -660,9 +660,6 @@ pSAnimation(nullptr)
 saeWPSAnim::~saeWPSAnim(){
 	SetSAnimation(nullptr);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -671,13 +668,12 @@ saeWPSAnim::~saeWPSAnim(){
 ///////////////
 
 void saeWPSAnim::SetSAnimation(saeSAnimation *sanimation){
-	if(sanimation == pSAnimation){
+	if(pSAnimation == sanimation){
 		return;
 	}
 	
 	if(pSAnimation){
 		pSAnimation->RemoveListener(pListener);
-		pSAnimation->FreeReference();
 	}
 	
 	pSAnimation = sanimation;

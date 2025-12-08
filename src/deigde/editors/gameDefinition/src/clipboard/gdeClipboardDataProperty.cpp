@@ -51,7 +51,4 @@ pProperty(NULL)
 }
 
 gdeClipboardDataProperty::~gdeClipboardDataProperty(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }

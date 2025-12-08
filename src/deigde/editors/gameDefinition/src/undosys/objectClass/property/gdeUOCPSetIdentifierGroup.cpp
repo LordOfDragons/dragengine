@@ -63,12 +63,6 @@ pProperty(NULL)
 }
 
 gdeUOCPSetIdentifierGroup::~gdeUOCPSetIdentifierGroup(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

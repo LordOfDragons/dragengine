@@ -57,9 +57,6 @@ ceUCCShotSetParameter::ceUCCShotSetParameter(ceCameraShot *cameraShot, int param
 }
 
 ceUCCShotSetParameter::~ceUCCShotSetParameter(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

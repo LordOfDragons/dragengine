@@ -54,9 +54,6 @@ saeUPhonemeSetLength::saeUPhonemeSetLength(saePhoneme *phoneme, float newLength)
 }
 
 saeUPhonemeSetLength::~saeUPhonemeSetLength(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
 }
 
 

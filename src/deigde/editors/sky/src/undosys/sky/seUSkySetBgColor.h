@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "seSky.h"
 
-class seSky;
 
 
 
@@ -38,7 +38,7 @@ class seSky;
  */
 class seUSkySetBgColor : public igdeUndo{
 private:
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	decColor pOldColor;
 	decColor pNewColor;

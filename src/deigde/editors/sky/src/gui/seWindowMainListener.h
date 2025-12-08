@@ -35,6 +35,12 @@ class seWindowMain;
  * \brief Window main listener.
  */
 class seWindowMainListener : public seSkyListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seWindowMainListener> Ref;
+	
+	
+
 private:
 	seWindowMain &pWindow;
 	

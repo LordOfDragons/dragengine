@@ -59,12 +59,6 @@ pBillboard(NULL)
 }
 
 gdeUOCBillboardToggleSpherical::~gdeUOCBillboardToggleSpherical(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

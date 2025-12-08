@@ -29,10 +29,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeFilePattern.h"
+#include "gdeProperty.h"
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
-class gdeProperty;
-class gdeFilePattern;
 
 
 
@@ -41,9 +41,9 @@ class gdeFilePattern;
  */
 class gdeUGDWPCFPSetName : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
-	gdeFilePattern *pFilePattern;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeProperty::Ref pProperty;
+	gdeFilePattern::Ref pFilePattern;
 	
 	decString pOldValue;
 	decString pNewValue;

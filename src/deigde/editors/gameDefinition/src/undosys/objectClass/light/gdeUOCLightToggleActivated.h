@@ -27,9 +27,9 @@
 #define _GDEUOCLIGHTTOGGLEACTIVATED_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCLight.h"
 
-class gdeOCLight;
-class gdeObjectClass;
 
 
 
@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightToggleActivated : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	
 	

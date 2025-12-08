@@ -30,8 +30,8 @@
 #include <dragengine/common/collection/decIntList.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
-class deCanvasView;
 class deGraphicContext;
 class ceConversation;
 
@@ -60,7 +60,7 @@ private:
 	decStringList pLayoutTexts;
 	decIntList pLayoutWidths;
 	
-	deCanvasView *pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -125,7 +125,7 @@ public:
 	void Clear();
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/**
 	 * \brief Update canvas.

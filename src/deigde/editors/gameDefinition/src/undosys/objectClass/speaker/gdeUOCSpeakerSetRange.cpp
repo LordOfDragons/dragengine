@@ -62,12 +62,6 @@ pSpeaker(NULL)
 }
 
 gdeUOCSpeakerSetRange::~gdeUOCSpeakerSetRange(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

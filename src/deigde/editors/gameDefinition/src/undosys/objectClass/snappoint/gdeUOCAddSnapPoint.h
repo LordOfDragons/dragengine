@@ -27,9 +27,9 @@
 #define _GDEUOCADDSNAPPOINT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeOCSnapPoint.h"
+#include "gdeObjectClass.h"
 
-class gdeOCSnapPoint;
-class gdeObjectClass;
 
 
 
@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCAddSnapPoint : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSnapPoint *pSnapPoint;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSnapPoint::Ref pSnapPoint;
 	
 	
 	

@@ -56,9 +56,6 @@ pNewName(newName)
 }
 
 seULinkSetName::~seULinkSetName(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

@@ -141,7 +141,7 @@ pEnvMap(NULL),
 pWorldMarkedRemove(false)
 {
 	try{
-		pEnvMap = new deoglEnvironmentMap(renderThread);
+		pEnvMap.TakeOverWith(renderThread);
 		pEnvMap->SetSize(renderThread.GetConfiguration().GetEnvMapSize());
 		pEnvMap->SetIsFloat(true);
 		pEnvMap->SetSkyOnly(false);
@@ -164,7 +164,7 @@ deoglREnvMapProbe::~deoglREnvMapProbe(){
 ///////////////
 
 void deoglREnvMapProbe::SetParentWorld(deoglRWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -260,7 +260,4 @@ void deoglREnvMapProbe::SetWorldMarkedRemove(bool marked){
 void deoglREnvMapProbe::pCleanUp(){
 	SetParentWorld(NULL);
 	
-	if(pEnvMap){
-		pEnvMap->FreeReference();
-	}
 }

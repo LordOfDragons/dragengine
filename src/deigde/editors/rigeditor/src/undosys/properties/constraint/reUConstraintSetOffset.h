@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
+#include "reRigConstraint.h"
 
-class reRigConstraint;
 
 
 
@@ -37,7 +37,7 @@ class reRigConstraint;
  */
 class reUConstraintSetOffset : public igdeUndo{
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	
 	decVector pOldOffset;
 	decVector pNewOffset;

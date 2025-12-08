@@ -84,9 +84,6 @@ ceUCFacePoseSetName::ceUCFacePoseSetName(ceFacePose *facePose, const char *newNa
 	}catch(const deException &){
 		pActionList.RemoveAll();
 		
-		if(pFacePose){
-			pFacePose->FreeReference();
-		}
 		
 		throw;
 	}
@@ -95,9 +92,6 @@ ceUCFacePoseSetName::ceUCFacePoseSetName(ceFacePose *facePose, const char *newNa
 ceUCFacePoseSetName::~ceUCFacePoseSetName(){
 	pActionList.RemoveAll();
 	
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
 }
 
 

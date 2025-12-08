@@ -55,68 +55,38 @@ pDIWorldStepSimulation(NULL),
 pDIWorldUpdateOctrees(NULL),
 pDIWorldCheckDynamicCollisions(NULL)
 {
-	pDIColliderPrepareDetection = new debpDebugInformation("Collider PrepareDetection:");
+	pDIColliderPrepareDetection.TakeOverWith("Collider PrepareDetection:");
 	pDebugInfoList.Add(pDIColliderPrepareDetection);
 	
-	pDIColliderDetectCustomCollision = new debpDebugInformation("Collider DetectCustomCollision:");
+	pDIColliderDetectCustomCollision.TakeOverWith("Collider DetectCustomCollision:");
 	pDebugInfoList.Add(pDIColliderDetectCustomCollision);
 	
-	pDIColliderUpdateFromBody = new debpDebugInformation("Collider UpdateFromBody:");
+	pDIColliderUpdateFromBody.TakeOverWith("Collider UpdateFromBody:");
 	pDebugInfoList.Add(pDIColliderUpdateFromBody);
 	
-	pDIColliderFinishDetection = new debpDebugInformation("Collider FinishDetection:");
+	pDIColliderFinishDetection.TakeOverWith("Collider FinishDetection:");
 	pDebugInfoList.Add(pDIColliderFinishDetection);
 	
-	pDIColliderCollisionTests = new debpDebugInformation("Collider CollisionTests:");
+	pDIColliderCollisionTests.TakeOverWith("Collider CollisionTests:");
 	pDebugInfoList.Add(pDIColliderCollisionTests);
 	
-	pDIColliderUpdateOctree = new debpDebugInformation("Collider UpdateOctreePosition:");
+	pDIColliderUpdateOctree.TakeOverWith("Collider UpdateOctreePosition:");
 	pDebugInfoList.Add(pDIColliderUpdateOctree);
 	
-	pDITouchSensorApplyChanges = new debpDebugInformation("TouchSensor ApplyChanges:");
+	pDITouchSensorApplyChanges.TakeOverWith("TouchSensor ApplyChanges:");
 	pDebugInfoList.Add(pDITouchSensorApplyChanges);
 	
-	pDIWorldStepSimulation = new debpDebugInformation("World StepSimulation:");
+	pDIWorldStepSimulation.TakeOverWith("World StepSimulation:");
 	pDebugInfoList.Add(pDIWorldStepSimulation);
 	
-	pDIWorldUpdateOctrees = new debpDebugInformation("World UpdateOctrees:");
+	pDIWorldUpdateOctrees.TakeOverWith("World UpdateOctrees:");
 	pDebugInfoList.Add(pDIWorldUpdateOctrees);
 	
-	pDIWorldCheckDynamicCollisions = new debpDebugInformation("World CheckDynamicCollisions:");
+	pDIWorldCheckDynamicCollisions.TakeOverWith("World CheckDynamicCollisions:");
 	pDebugInfoList.Add(pDIWorldCheckDynamicCollisions);
 }
 
 debpDebug::~debpDebug(){
-	if(pDIWorldCheckDynamicCollisions){
-		pDIWorldCheckDynamicCollisions->FreeReference();
-	}
-	if(pDIWorldUpdateOctrees){
-		pDIWorldUpdateOctrees->FreeReference();
-	}
-	if(pDIWorldStepSimulation){
-		pDIWorldStepSimulation->FreeReference();
-	}
-	if(pDITouchSensorApplyChanges){
-		pDITouchSensorApplyChanges->FreeReference();
-	}
-	if(pDIColliderPrepareDetection){
-		pDIColliderPrepareDetection->FreeReference();
-	}
-	if(pDIColliderDetectCustomCollision){
-		pDIColliderDetectCustomCollision->FreeReference();
-	}
-	if(pDIColliderUpdateOctree){
-		pDIColliderUpdateOctree->FreeReference();
-	}
-	if(pDIColliderUpdateFromBody){
-		pDIColliderUpdateFromBody->FreeReference();
-	}
-	if(pDIColliderFinishDetection){
-		pDIColliderFinishDetection->FreeReference();
-	}
-	if(pDIColliderCollisionTests){
-		pDIColliderCollisionTests->FreeReference();
-	}
 }
 
 
@@ -125,7 +95,7 @@ debpDebug::~debpDebug(){
 ///////////////
 
 void debpDebug::SetEnabled(bool enabled){
-	if(enabled == pEnabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	

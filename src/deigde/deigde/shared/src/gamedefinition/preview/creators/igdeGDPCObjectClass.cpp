@@ -130,7 +130,7 @@ void igdeGDPCObjectClass::PrepareCanvasForRender(){
 	pCamera->SetHighestIntensity(pSky->GetMaxLightIntensity());
 	
 	// create the object class wrapper
-	pObject.TakeOver(new igdeWObject(environment));
+	pObject.TakeOverWith(environment);
 	pObject->SetWorld(pWorld);
 	pObject->SetAsyncLoadFinished(&pAsyncFinished);
 	DebugLog("set gdclass");

@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include "../../../conversation/action/ceConversationActionList.h"
+#include "ceCAWait.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceCAWait;
 
 
 
@@ -38,8 +38,8 @@ class ceCAWait;
  */
 class ceUCAWaitRemoveAll : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAWait *pWait;
+	ceConversationTopic::Ref pTopic;
+	ceCAWait::Ref pWait;
 	ceConversationActionList pActionList;
 	
 public:

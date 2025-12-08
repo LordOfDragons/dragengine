@@ -48,9 +48,6 @@ pListener(new saeWPUndoHistoryListener(*this)){
 
 saeWPUndoHistory::~saeWPUndoHistory(){
 	SetSAnimation(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -59,7 +56,7 @@ saeWPUndoHistory::~saeWPUndoHistory(){
 ///////////////
 
 void saeWPUndoHistory::SetSAnimation(saeSAnimation *sanimation){
-	if(sanimation == pSAnimation){
+	if(pSAnimation == sanimation){
 		return;
 	}
 	
@@ -67,7 +64,6 @@ void saeWPUndoHistory::SetSAnimation(saeSAnimation *sanimation){
 	
 	if(pSAnimation){
 		pSAnimation->RemoveListener(pListener);
-		pSAnimation->FreeReference();
 	}
 	
 	pSAnimation = sanimation;

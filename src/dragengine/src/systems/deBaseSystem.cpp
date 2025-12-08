@@ -69,8 +69,6 @@ deBaseSystem::~deBaseSystem(){
 	
 	ClearPermanents();
 	
-	if(pActiveLoadableModule){
-		pActiveLoadableModule->FreeReference();
 		pActiveLoadableModule = NULL;
 	}
 }
@@ -194,14 +192,10 @@ void deBaseSystem::SetActiveModule(deLoadableModule *module){
 		module->GetName().GetString(), module->GetVersion().GetString());
 	
 	// set new module
-	if(pActiveLoadableModule){
-		pActiveLoadableModule->FreeReference();
-	}
 	
 	pActiveLoadableModule = module;
 	
 	if(pActiveLoadableModule){
-		pActiveLoadableModule->AddReference();
 	}
 }
 

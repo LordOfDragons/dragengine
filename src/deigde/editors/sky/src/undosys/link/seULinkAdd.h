@@ -26,9 +26,9 @@
 #define _SEULINKADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLink.h"
+#include "seSky.h"
 
-class seLink;
-class seSky;
 
 
 /**
@@ -36,8 +36,8 @@ class seSky;
  */
 class seULinkAdd : public igdeUndo{
 private:
-	seSky *pSky;
-	seLink *pLink;
+	seSky::Ref pSky;
+	seLink::Ref pLink;
 	
 	
 	

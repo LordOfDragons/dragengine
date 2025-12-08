@@ -62,15 +62,6 @@ ceUCCHasActorToggleNegate::ceUCCHasActorToggleNegate(ceConversationTopic *topic,
 }
 
 ceUCCHasActorToggleNegate::~ceUCCHasActorToggleNegate(){
-	if(pHasActor){
-		pHasActor->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

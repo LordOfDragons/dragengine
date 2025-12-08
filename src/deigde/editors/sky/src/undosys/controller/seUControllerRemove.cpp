@@ -140,10 +140,4 @@ void seUControllerRemove::pCleanUp(){
 		pLinks[i]->FreeReference();
 	}
 	
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }

@@ -28,9 +28,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meObjectTexture.h"
 
 // predefinitions
-class meObjectTexture;
 class meObjectTextureList;
 
 
@@ -41,7 +41,7 @@ class meObjectTextureList;
 class meUObjectTextureSetSkin : public igdeUndo{
 private:
 	struct sTexture{
-		meObjectTexture *texture;
+		meObjectTexture::Ref texture;
 		decString oldskin;
 		decString newskin;
 	};

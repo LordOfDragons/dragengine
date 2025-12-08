@@ -48,7 +48,4 @@ pFile(NULL)
 }
 
 deBaseSoundDecoder::~deBaseSoundDecoder(){
-	if(pFile){
-		pFile->FreeReference();
-	}
 }

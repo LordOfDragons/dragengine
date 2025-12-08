@@ -419,7 +419,7 @@ void aeView3D::ResetView(){
 }
 
 void aeView3D::SetAnimator(aeAnimator *animator){
-	if(animator == pAnimator){
+	if(pAnimator == animator){
 		return;
 	}
 	
@@ -438,7 +438,6 @@ void aeView3D::SetAnimator(aeAnimator *animator){
 			StopWakeboarding();
 		}
 		
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;

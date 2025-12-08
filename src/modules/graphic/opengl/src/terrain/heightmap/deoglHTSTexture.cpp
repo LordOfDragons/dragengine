@@ -104,17 +104,11 @@ void deoglHTSTexture::SetMatrix(const decTexMatrix &matrix){
 }
 
 void deoglHTSTexture::SetSkin(deoglRSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	pSkin = skin;
-	if(skin){
-		skin->AddReference();
-	}
 	
 	pUseSkinTexture = NULL;
 	if(skin && skin->GetTextureCount() > 0){
@@ -323,9 +317,6 @@ void deoglHTSTexture::PrepareForRender(){
 //////////////////////
 
 void deoglHTSTexture::pCleanUp(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
@@ -370,7 +361,7 @@ void deoglHTSTexture::pPrepareParamBlock(){
 					.GetRenderThread().GetBufferObject().GetLayoutSkinInstanceUBO()));
 				
 			}else{*/
-				pParamBlock = skinShader.CreateSPBInstParam();
+				pParamBlock.TakeOver(skinShader.CreateSPBInstParam());
 			//}
 		}
 		

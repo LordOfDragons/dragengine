@@ -56,9 +56,6 @@ pNewSnapAngle(newSnapAngle)
 }
 
 meUHTNavSpaceSetSnapAngle::~meUHTNavSpaceSetSnapAngle(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

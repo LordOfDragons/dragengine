@@ -161,7 +161,6 @@ public:
 ////////////////////////////
 
 igdeWDebugDrawerShape::igdeWDebugDrawerShape(){
-	pEngDebugDrawer = NULL;
 	pEngDDShape = NULL;
 	
 	pScale.Set(1.0f, 1.0f, 1.0f);
@@ -182,7 +181,7 @@ igdeWDebugDrawerShape::~igdeWDebugDrawerShape(){
 ///////////////
 
 void igdeWDebugDrawerShape::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
-	if(debugDrawer == pEngDebugDrawer){
+	if(pEngDebugDrawer == debugDrawer){
 		return;
 	}
 	
@@ -191,15 +190,8 @@ void igdeWDebugDrawerShape::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
 		pEngDDShape = NULL;
 	}
 	
-	if(pEngDebugDrawer){
-		pEngDebugDrawer->FreeReference();
-	}
 	
 	pEngDebugDrawer = debugDrawer;
-	
-	if(debugDrawer){
-		debugDrawer->AddReference();
-	}
 	
 	pUpdateDDShape();
 }
@@ -289,7 +281,7 @@ void igdeWDebugDrawerShape::SetFillColor(const decColor &color){
 }
 
 void igdeWDebugDrawerShape::SetVisible(bool visible){
-	if(visible == pVisible){
+	if(pVisible == visible){
 		return;
 	}
 	

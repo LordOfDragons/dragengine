@@ -61,12 +61,6 @@ pProperty(NULL)
 }
 
 gdeUOCTPSetPathPatternType::~gdeUOCTPSetPathPatternType(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -62,19 +62,12 @@ deoglRCaptureCanvas::~deoglRCaptureCanvas(){
 ///////////////
 
 void deoglRCaptureCanvas::SetCanvasView(deoglRCanvasView *canvasView){
-	if(canvasView == pCanvasView){
+	if(pCanvasView == canvasView){
 		return;
 	}
 	
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 	
 	pCanvasView = canvasView;
-	
-	if(canvasView){
-		canvasView->AddReference();
-	}
 }
 
 void deoglRCaptureCanvas::SetCapturePending(bool capturePending){
@@ -115,7 +108,7 @@ void deoglRCaptureCanvas::StartCapture(int width, int height, int componentCount
 		}
 	}
 	
-	pPixelBuffer.TakeOver(new deoglPixelBuffer(pbformat, width, height, 1));
+	pPixelBuffer.TakeOverWith(pbformat, width, height, 1);
 	
 	pCapturePending = true;
 	pComponentCount = componentCount;
@@ -135,7 +128,7 @@ void deoglRCaptureCanvas::CaptureRenderWindow(deoglRRenderWindow &renderWindow){
 	}
 	
 	deoglRCanvasView * const rcanvasView = renderWindow.GetRCanvasView();
-	if(rcanvasView != pCanvasView){
+	if(pCanvasView != rcanvasView){
 		return;
 	}
 	

@@ -48,7 +48,6 @@ pSource(NULL)
 	
 	try{
 		pSource = source;
-		pSource->AddReference();
 		
 		SetShortInfo("Toggle source enabled");
 		
@@ -81,7 +80,4 @@ void seUSourceToggleEnabled::Redo(){
 //////////////////////
 
 void seUSourceToggleEnabled::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

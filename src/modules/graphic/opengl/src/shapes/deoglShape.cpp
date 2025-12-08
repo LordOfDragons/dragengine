@@ -112,7 +112,6 @@ pPointCountLines(0){
 deoglShape::~deoglShape(){
 	if(pVBOBlock){
 		pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
-		pVBOBlock->FreeReference();
 	}
 }
 
@@ -135,7 +134,6 @@ deoglSharedVBOBlock *deoglShape::GetVBOBlock(){
 		}catch(const deException &){
 			if(pVBOBlock){
 				pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
-				pVBOBlock->FreeReference();
 				pVBOBlock = NULL;
 			}
 			throw;

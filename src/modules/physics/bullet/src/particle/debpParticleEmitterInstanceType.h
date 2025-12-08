@@ -28,11 +28,11 @@
 #include "LinearMath/btVector3.h"
 
 #include <dragengine/resources/particle/deParticleEmitterInstanceType.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
 
 class debpForceField;
 class debpParticleEmitterInstance;
 class debpComponent;
-class deParticleEmitterInstance;
 
 
 
@@ -88,7 +88,7 @@ public:
 		unsigned char castBlue;
 		unsigned char castTransparency;
 		
-		deParticleEmitterInstance *trailEmitter;
+		deParticleEmitterInstance::Ref trailEmitter;
 	};
 	
 private:

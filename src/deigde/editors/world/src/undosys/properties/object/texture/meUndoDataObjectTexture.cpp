@@ -55,15 +55,6 @@ meUndoDataObjectTexture::meUndoDataObjectTexture(meObject *object){
 meUndoDataObjectTexture::~meUndoDataObjectTexture(){
 	pNewTextureList.RemoveAllTextures();
 	pOldTextureList.RemoveAllTextures();
-	if(pNewTexture){
-		pNewTexture->FreeReference();
-	}
-	if(pOldTexture){
-		pOldTexture->FreeReference();
-	}
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 
@@ -72,25 +63,13 @@ meUndoDataObjectTexture::~meUndoDataObjectTexture(){
 ///////////////
 
 void meUndoDataObjectTexture::SetOldTexture(meObjectTexture *texture){
-	if(texture != pOldTexture){
-		if(pOldTexture){
-			pOldTexture->FreeReference();
-		}
+	if(pOldTexture != texture){
 		pOldTexture = texture;
-		if(texture){
-			texture->AddReference();
-		}
 	}
 }
 
 void meUndoDataObjectTexture::SetNewTexture(meObjectTexture *texture){
-	if(texture != pNewTexture){
-		if(pNewTexture){
-			pNewTexture->FreeReference();
-		}
+	if(pNewTexture != texture){
 		pNewTexture = texture;
-		if(texture){
-			texture->AddReference();
-		}
 	}
 }

@@ -49,9 +49,6 @@ pLangPack(NULL){
 lpeWPUndoHistory::~lpeWPUndoHistory(){
 	SetLangPack(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -60,7 +57,7 @@ lpeWPUndoHistory::~lpeWPUndoHistory(){
 ///////////////
 
 void lpeWPUndoHistory::SetLangPack(lpeLangPack *langpack){
-	if(langpack == pLangPack){
+	if(pLangPack == langpack){
 		return;
 	}
 	
@@ -68,7 +65,6 @@ void lpeWPUndoHistory::SetLangPack(lpeLangPack *langpack){
 	
 	if(pLangPack){
 		pLangPack->RemoveListener(pListener);
-		pLangPack->FreeReference();
 		pLangPack = NULL;
 	}
 	

@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeShape.h>
+#include "sePropertyNodeShape.h"
 
-class sePropertyNodeShape;
 
 
 
@@ -38,7 +38,7 @@ class sePropertyNodeShape;
  */
 class seUPropertyNodeShapeSetType : public igdeUndo{
 private:
-	sePropertyNodeShape *pNode;
+	sePropertyNodeShape::Ref pNode;
 	
 	deSkinPropertyNodeShape::eShapeTypes pOldValue;
 	deSkinPropertyNodeShape::eShapeTypes pNewValue;

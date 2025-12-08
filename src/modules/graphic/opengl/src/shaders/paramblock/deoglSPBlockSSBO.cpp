@@ -67,7 +67,7 @@ pPersistentMapped(nullptr),
 pMemoryGPUSSBO(0)
 {
 	if(pUseDSA){
-		pFenceTransfer.TakeOver(new deoglFence(renderThread));
+		pFenceTransfer.TakeOverWith(renderThread);
 	}
 }
 
@@ -88,7 +88,7 @@ pPersistentMapped(nullptr),
 pMemoryGPUSSBO(paramBlock.pMemoryGPUSSBO)
 {
 	if(pUseDSA){
-		pFenceTransfer.TakeOver(new deoglFence(paramBlock.GetRenderThread()));
+		pFenceTransfer.TakeOverWith(paramBlock.GetRenderThread());
 	}
 }
 
@@ -109,7 +109,7 @@ pPersistentMapped(nullptr),
 pMemoryGPUSSBO(paramBlock.pMemoryGPUSSBO)
 {
 	if(pUseDSA){
-		pFenceTransfer.TakeOver(new deoglFence(paramBlock.GetRenderThread()));
+		pFenceTransfer.TakeOverWith(paramBlock.GetRenderThread());
 	}
 }
 

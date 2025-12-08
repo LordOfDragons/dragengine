@@ -48,7 +48,6 @@ aeURuleAnimToggleEnablePosition::aeURuleAnimToggleEnablePosition(aeRuleAnimation
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		SetShortInfo("Rule animation toggle enable position");
 		
@@ -81,7 +80,4 @@ void aeURuleAnimToggleEnablePosition::Redo(){
 //////////////////////
 
 void aeURuleAnimToggleEnablePosition::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

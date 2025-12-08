@@ -29,8 +29,8 @@
 #include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 
@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCForceFieldSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	gdeOCForceField::eProperties pProperty;
 	decString pOldValue;

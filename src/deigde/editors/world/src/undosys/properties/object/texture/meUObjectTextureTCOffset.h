@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meObjectTexture.h"
 
-class meObjectTexture;
 
 
 
@@ -38,7 +38,7 @@ class meObjectTexture;
  */
 class meUObjectTextureTCOffset : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decVector2 pOldOffset;
 	decVector2 pNewOffset;
 	

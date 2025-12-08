@@ -69,12 +69,6 @@ pNewValue(NULL)
 }
 
 gdeUOCEnvMapProbeSetShapeReflection::~gdeUOCEnvMapProbeSetShapeReflection(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 	if(pNewValue){
 		delete pNewValue;
 	}

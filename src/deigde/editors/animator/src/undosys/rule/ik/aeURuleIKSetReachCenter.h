@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "aeRuleInverseKinematic.h"
 
-class aeRuleInverseKinematic;
 
 
 
@@ -38,7 +38,7 @@ class aeRuleInverseKinematic;
  */
 class aeURuleIKSetReachCenter : public igdeUndo{
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 	decVector pOldValue;
 	decVector pNewValue;

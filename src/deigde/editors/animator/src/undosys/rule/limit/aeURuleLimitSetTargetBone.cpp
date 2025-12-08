@@ -52,13 +52,9 @@ aeURuleLimitSetTargetBone::aeURuleLimitSetTargetBone(aeRuleLimit *rule, const ch
 	SetShortInfo("Limit set target bone");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetTargetBone::~aeURuleLimitSetTargetBone(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

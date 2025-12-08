@@ -31,12 +31,12 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class meHeightTerrainNavSpaceType;
 class meHeightTerrainSector;
 
 class deEngine;
-class deDebugDrawer;
 class deHeightTerrainNavSpace;
 
 
@@ -67,7 +67,7 @@ private:
 	
 	bool pActive;
 	
-	deDebugDrawer *pDDTypeFaces;
+	deDebugDrawer::Ref pDDTypeFaces;
 	bool pBulkUpdate;
 	
 	
@@ -238,7 +238,7 @@ public:
 	void SetActiveType(meHeightTerrainNavSpaceType *type);
 	
 	/** \brief Type faces debug drawer for use by types only. */
-	inline deDebugDrawer *GetDDTypeFaces() const{ return pDDTypeFaces; }
+	inline const deDebugDrawer::Ref &GetDDTypeFaces() const{ return pDDTypeFaces; }
 	
 	/** \brief Notify listeners type count changed. */
 	void NotifyTypeCountChanged();

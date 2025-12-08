@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCLIGHT_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCLight.h"
 
-class gdeOCLight;
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCLight *pLight;
+	gdeOCLight::Ref pLight;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Light. */
-	gdeOCLight *GetLight() const{ return pLight; }
+	const gdeOCLight::Ref &GetLight() const{ return pLight; }
 	/*@}*/
 };
 

@@ -56,9 +56,6 @@ pNewCurve(newCurve)
 }
 
 seULinkSetCurve::~seULinkSetCurve(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

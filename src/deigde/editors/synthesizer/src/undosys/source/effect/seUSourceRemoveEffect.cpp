@@ -83,10 +83,4 @@ void seUSourceRemoveEffect::Redo(){
 //////////////////////
 
 void seUSourceRemoveEffect::pCleanUp(){
-	if(pEffect){
-		pEffect->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

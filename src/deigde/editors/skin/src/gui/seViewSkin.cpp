@@ -89,7 +89,7 @@ void seViewSkin::ResetView(){
 }
 
 void seViewSkin::SetSkin(seSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
@@ -97,9 +97,6 @@ void seViewSkin::SetSkin(seSkin *skin){
 	
 	SetRenderWorld(NULL);
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	pSkin = skin;
 	

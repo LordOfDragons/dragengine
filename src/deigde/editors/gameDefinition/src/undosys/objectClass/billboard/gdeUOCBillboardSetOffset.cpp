@@ -62,12 +62,6 @@ pBillboard(NULL)
 }
 
 gdeUOCBillboardSetOffset::~gdeUOCBillboardSetOffset(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

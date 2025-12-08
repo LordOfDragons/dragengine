@@ -161,7 +161,7 @@ void meHeightTerrainSector::RebuildEngineSector(){
 }
 
 void meHeightTerrainSector::SetHeightTerrain(meHeightTerrain *heightTerrain){
-	if(heightTerrain == pHeightTerrain){
+	if(pHeightTerrain == heightTerrain){
 		return;
 	}
 	
@@ -174,7 +174,6 @@ void meHeightTerrainSector::SetHeightTerrain(meHeightTerrain *heightTerrain){
 			if(world){
 				world->RemoveDebugDrawer(pDDSelNavPoints);
 			}
-			pDDSelNavPoints->FreeReference();
 		}
 		
 		if(world){
@@ -300,7 +299,7 @@ void meHeightTerrainSector::DestroyEngineSector(){
 
 
 void meHeightTerrainSector::SetCoordinates(const decPoint &coordinates){
-	if(coordinates == pCoordinates){
+	if(pCoordinates == coordinates){
 		return;
 	}
 	
@@ -331,7 +330,7 @@ void meHeightTerrainSector::SectorSizeOrResChanged(){
 
 
 void meHeightTerrainSector::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	
@@ -613,7 +612,7 @@ void meHeightTerrainSector::ShowStateChanged(){
 void meHeightTerrainSector::SetDataType(int dataType){
 	if(dataType < edtInt8 || dataType > edtFloat) DETHROW(deeInvalidParam);
 	
-	if(dataType != pDataType){
+	if(pDataType != dataType){
 		pDataType = dataType;
 		
 		SetHeightImageChanged(true);
@@ -658,7 +657,7 @@ void meHeightTerrainSector::SetPathHeightImage(const char *path, bool loadFile){
 }
 
 void meHeightTerrainSector::SetHeightImageChanged(bool changed){
-	if(changed == pHeightImageChanged){
+	if(pHeightImageChanged == changed){
 		return;
 	}
 	
@@ -700,7 +699,7 @@ void meHeightTerrainSector::SetPathVisibilityImage(const char *path){
 }
 
 void meHeightTerrainSector::SetVisibilityChanged(bool changed){
-	if(changed == pVisImageChanged){
+	if(pVisImageChanged == changed){
 		return;
 	}
 	
@@ -940,7 +939,7 @@ void meHeightTerrainSector::RemoveTexture(meHeightTerrainTexture *texture){
 		texture->SetEngineTexture(NULL);
 	}
 	
-	if(texture == pActiveTexture) SetActiveTexture(NULL);
+	if(pActiveTexture == texture) SetActiveTexture(NULL);
 	
 	for(i=index+1; i<pTextureCount; i++){
 		pTextures[i - 1] = pTextures[i];
@@ -988,7 +987,7 @@ void meHeightTerrainSector::RemoveAllTextures(){
 }
 
 void meHeightTerrainSector::SetActiveTexture(meHeightTerrainTexture *texture){
-	if(texture != pActiveTexture){
+	if(pActiveTexture != texture){
 		pActiveTexture = texture;
 		
 		if(pHeightTerrain){
@@ -1266,7 +1265,7 @@ void meHeightTerrainSector::SetPathPFCache(const char *path){
 }
 
 void meHeightTerrainSector::SetPFCacheChanged(bool changed){
-	if(changed == pPFCacheChanged){
+	if(pPFCacheChanged == changed){
 		return;
 	}
 	
@@ -1409,7 +1408,7 @@ void meHeightTerrainSector::RemoveNavSpace(meHeightTerrainNavSpace *navspace){
 		navspace->SetEngineNavSpace(NULL);
 	}
 	
-	if(navspace == pActiveNavSpace){
+	if(pActiveNavSpace == navspace){
 		SetActiveNavSpace(NULL);
 	}
 	
@@ -1451,7 +1450,7 @@ void meHeightTerrainSector::RemoveAllNavSpaces(){
 }
 
 void meHeightTerrainSector::SetActiveNavSpace(meHeightTerrainNavSpace *navspace){
-	if(navspace == pActiveNavSpace){
+	if(pActiveNavSpace == navspace){
 		return;
 	}
 	
@@ -1976,7 +1975,7 @@ void meHeightTerrainSector::pUpdateDDEdgesHeights(const decPoint &fromGrid, cons
 
 
 void meHeightTerrainSector::pCreateDDSelNavPoints(){
-	pDDSelNavPoints = pEngine->GetDebugDrawerManager()->CreateDebugDrawer();
+	pDDSelNavPoints.TakeOver(pEngine->GetDebugDrawerManager()->CreateDebugDrawer());
 	pDDSelNavPoints->SetXRay(false);
 	
 	deDebugDrawerShape *ddshape = NULL;

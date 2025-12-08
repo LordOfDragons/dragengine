@@ -105,7 +105,7 @@ pSynthesizer(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new seWindowMainListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	pConfiguration.LoadConfiguration();
 	
@@ -125,9 +125,6 @@ seWindowMain::~seWindowMain(){
 	
 	SetSynthesizer(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -146,7 +143,7 @@ void seWindowMain::ResetViews(){
 
 
 void seWindowMain::SetSynthesizer(seSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	
@@ -158,7 +155,6 @@ void seWindowMain::SetSynthesizer(seSynthesizer *synthesizer){
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
 		pSynthesizer->Dispose();
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;
@@ -886,8 +882,8 @@ void seWindowMain::pCreateActions(){
 	pActionFileSave.TakeOver(new cActionFileSave(*this));
 	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
 	
-	pActionEditUndo.TakeOver(new igdeActionUndo(environment));
-	pActionEditRedo.TakeOver(new igdeActionRedo(environment));
+	pActionEditUndo.TakeOverWith(environment);
+	pActionEditRedo.TakeOverWith(environment);
 	
 	pActionEditCut.TakeOver(new cActionEditCut(*this));
 	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
@@ -1015,7 +1011,7 @@ void seWindowMain::pCreateActions(){
 void seWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -1027,7 +1023,7 @@ void seWindowMain::pCreateToolBarFile(){
 void seWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -1044,23 +1040,23 @@ void seWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
+	cascade.TakeOverWith(env, "File", deInputEvent::ekcF);
 	pCreateMenuSynthesizer(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade.TakeOverWith(env, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Controller", deInputEvent::ekcC));
+	cascade.TakeOverWith(env, "Controller", deInputEvent::ekcC);
 	pCreateMenuController(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Source", deInputEvent::ekcS));
+	cascade.TakeOverWith(env, "Source", deInputEvent::ekcS);
 	pCreateMenuSource(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Effect", deInputEvent::ekcE));
+	cascade.TakeOverWith(env, "Effect", deInputEvent::ekcE);
 	pCreateMenuEffect(cascade);
 	AddSharedMenu(cascade);
 }
@@ -1108,7 +1104,7 @@ void seWindowMain::pCreateMenuSource(igdeMenuCascade &menu){
 	helper.MenuCommand(submenu, pActionSourceAddSynthesizer);
 	menu.AddChild(submenu);
 	
-	submenu.TakeOver(new igdeMenuCascade(GetEnvironment(), "Insert", deInputEvent::ekcI));
+	submenu.TakeOverWith(GetEnvironment(), "Insert", deInputEvent::ekcI);
 	helper.MenuCommand(submenu, pActionSourceInsertWave);
 	helper.MenuCommand(submenu, pActionSourceInsertSound);
 	helper.MenuCommand(submenu, pActionSourceInsertChain);
@@ -1116,7 +1112,7 @@ void seWindowMain::pCreateMenuSource(igdeMenuCascade &menu){
 	helper.MenuCommand(submenu, pActionSourceInsertSynthesizer);
 	menu.AddChild(submenu);
 	
-	submenu.TakeOver(new igdeMenuCascade(GetEnvironment(), "Add Into Group"));
+	submenu.TakeOverWith(GetEnvironment(), "Add Into Group");
 	helper.MenuCommand(submenu, pActionSourceGroupAddWave);
 	helper.MenuCommand(submenu, pActionSourceGroupAddSound);
 	helper.MenuCommand(submenu, pActionSourceGroupAddChain);
@@ -1137,7 +1133,7 @@ void seWindowMain::pCreateMenuEffect(igdeMenuCascade &menu){
 	helper.MenuCommand(submenu, pActionEffectAddStretch);
 	menu.AddChild(submenu);
 	
-	submenu.TakeOver(new igdeMenuCascade(GetEnvironment(), "Insert", deInputEvent::ekcI));
+	submenu.TakeOverWith(GetEnvironment(), "Insert", deInputEvent::ekcI);
 	helper.MenuCommand(submenu, pActionEffectInsertStretch);
 	menu.AddChild(submenu);
 	

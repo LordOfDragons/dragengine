@@ -55,7 +55,7 @@ pSkin(NULL),
 pDirtyTexture(true)
 {
 	try{
-		pATexture = new deoalAComponentTexture(*component.GetAComponent(), index);
+		pATexture.TakeOverWith(*component.GetAComponent(), index);
 		TextureChanged(component.GetComponent().GetTextureAt(index));
 		
 	}catch(const deException &){
@@ -140,7 +140,4 @@ void deoalComponentTexture::MarkDirty(){
 //////////////////////
 
 void deoalComponentTexture::pCleanUp(){
-	if(pATexture){
-		pATexture->FreeReference();
-	}
 }

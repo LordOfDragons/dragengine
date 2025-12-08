@@ -26,9 +26,9 @@
 #define _DEOGLSKIN_H_
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicSkin.h>
+#include "deoglRSkin.h"
 
 class deGraphicOpenGl;
-class deoglRSkin;
 class deSkin;
 
 
@@ -41,7 +41,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deSkin &pSkin;
 	
-	deoglRSkin *pRSkin;
+	deoglRSkin::Ref pRSkin;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -66,7 +66,7 @@ public:
 	
 	
 	/** Render skin. */
-	inline deoglRSkin *GetRSkin() const{ return pRSkin; }
+	inline const deoglRSkin::Ref &GetRSkin() const{ return pRSkin; }
 
 
 	/** Recreate deoglRSkin. */

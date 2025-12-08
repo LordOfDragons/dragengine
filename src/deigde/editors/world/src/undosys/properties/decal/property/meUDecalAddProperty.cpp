@@ -96,7 +96,4 @@ void meUDecalAddProperty::ProgressiveRedo(){
 //////////////////////
 
 void meUDecalAddProperty::pCleanUp(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }

@@ -68,15 +68,6 @@ ceUCAASpeakWordAdd::ceUCAASpeakWordAdd(ceConversationTopic *topic, ceCAActorSpea
 }
 
 ceUCAASpeakWordAdd::~ceUCAASpeakWordAdd(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

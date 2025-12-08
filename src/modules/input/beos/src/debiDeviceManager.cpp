@@ -193,22 +193,16 @@ decString debiDeviceManager::NormalizeID(const char *id){
 
 void debiDeviceManager::pCleanUp(){
 	pDevices.RemoveAll();
-	if(pKeyboard){
-		pKeyboard->FreeReference();
-	}
-	if(pMouse){
-		pMouse->FreeReference();
-	}
 }
 
 
 
 void debiDeviceManager::pCreateDevices(){
-	pMouse = new debiDeviceMouse(pModule);
+	pMouse.TakeOverWith(pModule);
 	pMouse->SetIndex(pDevices.GetCount());
 	pDevices.Add(pMouse);
 	
-	pKeyboard = new debiDeviceKeyboard(pModule);
+	pKeyboard.TakeOverWith(pModule);
 	pKeyboard->SetIndex(pDevices.GetCount());
 	pDevices.Add(pKeyboard);
 	

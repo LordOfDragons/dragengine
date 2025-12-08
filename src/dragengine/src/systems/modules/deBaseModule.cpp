@@ -283,9 +283,6 @@ deErrorTracePoint *deBaseModule::AddErrorTracePoint(const char *sourceFunc, int 
 //////////////////////
 
 void deBaseModule::pCleanUp(){
-	if(pVFS){
-		pVFS->FreeReference();
-	}
 }
 
 void deBaseModule::pCreateVFS(){
@@ -409,7 +406,7 @@ void deBaseModule::pCreateVFS(){
 		pathDisk.AddUnixPath(typeDirectory);
 		pathDisk.AddUnixPath(directoryName);
 		
-		cachedContainer.TakeOver(new deVFSCacheDiskDirectory(pathRoot, pathDisk));
+		cachedContainer.TakeOverWith(pathRoot, pathDisk);
 		cachedContainer->SetMaxCacheSize(1000000); // 1000MB
 		pVFS->AddContainer(cachedContainer);
 	}

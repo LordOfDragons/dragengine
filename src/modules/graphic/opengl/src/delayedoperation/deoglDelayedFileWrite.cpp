@@ -45,7 +45,7 @@ deoglDelayedFileWrite::deoglDelayedFileWrite(const decPath &path) :
 pMemoryFile(NULL),
 pPath(path){
 	try{
-		pMemoryFile = new decMemoryFile(path.GetPathUnix());
+		pMemoryFile.TakeOverWith(path.GetPathUnix());
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -89,7 +89,4 @@ void deoglDelayedFileWrite::SaveFile(deVirtualFileSystem &vfs){
 //////////////////////
 
 void deoglDelayedFileWrite::pCleanUp(){
-	if(pMemoryFile){
-		pMemoryFile->FreeReference();
-	}
 }

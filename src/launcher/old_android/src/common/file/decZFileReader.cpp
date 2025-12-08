@@ -100,7 +100,6 @@ pContentPosition(0)
 	pZStream = zstream;
 	
 	pReader = reader;
-	pReader->AddReference();
 	pFileLength = reader->GetLength();
 	pFilePosition = 1; // one option byte read
 }
@@ -111,9 +110,6 @@ decZFileReader::~decZFileReader(){
 		delete (z_stream*)pZStream;
 	}
 	
-	if(pReader){
-		pReader->FreeReference();
-	}
 	if(pContent){
 		free(pContent);
 	}

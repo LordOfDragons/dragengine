@@ -55,9 +55,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeSetShear::~seUPropertyNodeSetShear(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

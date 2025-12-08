@@ -27,10 +27,10 @@
 
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "reRigShape.h"
+#include "reRig.h"
+#include "reWPShapeListener.h"
 
-class reRig;
-class reRigShape;
-class reWPShapeListener;
 class reWPPanelShape;
 class reWPPanelShapeSphere;
 class reWPPanelShapeBox;
@@ -47,9 +47,9 @@ class reWindowProperties;
 class reWPShape : public igdeContainerScroll{
 private:
 	reWindowProperties &pWindowProperties;
-	reRigShape *pShape;
-	reRig *pRig;
-	reWPShapeListener *pListener;
+	reRigShape::Ref pShape;
+	reRig::Ref pRig;
+	reWPShapeListener::Ref pListener;
 	
 	igdeSwitcher::Ref pSwitcher;
 	reWPPanelShapeSphere *pPanelSphere;
@@ -81,13 +81,13 @@ public:
 	inline reWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);
 	
 	/** \brief Shape. */
-	inline reRigShape *GetShape() const{ return pShape; }
+	inline const reRigShape::Ref &GetShape() const{ return pShape; }
 	
 	/** \brief Set shape. */
 	void SetShape(reRigShape *shape);

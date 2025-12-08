@@ -287,7 +287,7 @@ pPreventUpdate(false)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new seWPSynthesizerListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	
 	pActionPlay.TakeOver(new cActionPlay(*this));
@@ -334,10 +334,6 @@ pPreventUpdate(false)
 seWPSynthesizer::~seWPSynthesizer(){
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -347,13 +343,12 @@ seWPSynthesizer::~seWPSynthesizer(){
 ///////////////
 
 void seWPSynthesizer::SetSynthesizer(seSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;

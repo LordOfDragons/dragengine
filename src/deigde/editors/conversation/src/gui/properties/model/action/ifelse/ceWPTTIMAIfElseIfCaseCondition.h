@@ -26,9 +26,9 @@
 #define _CEWPTTIMAIFELSEIFCASECONDITION_H_
 
 #include "../../condition/ceWPTTIMConditionContainer.h"
+#include "ceCAIfElseCase.h"
 
 class ceCAIfElse;
-class ceCAIfElseCase;
 class ceWPTTIMAIfElse;
 class ceWPTTIMAIfElseIfCase;
 
@@ -38,7 +38,7 @@ class ceWPTTIMAIfElseIfCase;
  */
 class ceWPTTIMAIfElseIfCaseCondition : public ceWPTTIMConditionContainer{
 private:
-	ceCAIfElseCase *pIfCase;
+	ceCAIfElseCase::Ref pIfCase;
 	
 	
 	
@@ -60,7 +60,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief If-Case. */
-	inline ceCAIfElseCase *GetIfCase() const{ return pIfCase; }
+	inline const ceCAIfElseCase::Ref &GetIfCase() const{ return pIfCase; }
 	
 	/** \brief Parent if-case model. */
 	ceWPTTIMAIfElseIfCase *GetModelIfCase() const;

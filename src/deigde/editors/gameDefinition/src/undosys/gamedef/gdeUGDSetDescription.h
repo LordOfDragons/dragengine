@@ -27,9 +27,9 @@
 #define _GDEUGDSETDESCRIPTION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeGameDefinition.h"
 
 class gdeOCSpeaker;
-class gdeGameDefinition;
 
 
 
@@ -38,7 +38,7 @@ class gdeGameDefinition;
  */
 class gdeUGDSetDescription : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decString pOldValue;
 	decString pNewValue;

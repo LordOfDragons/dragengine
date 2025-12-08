@@ -26,9 +26,9 @@
 #define _REUADDPUSH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRigPush.h"
+#include "reRig.h"
 
-class reRig;
-class reRigPush;
 
 
 
@@ -37,8 +37,8 @@ class reRigPush;
  */
 class reUAddPush : public igdeUndo{
 private:
-	reRig *pRig;
-	reRigPush *pPush;
+	reRig::Ref pRig;
+	reRigPush::Ref pPush;
 	
 	
 	

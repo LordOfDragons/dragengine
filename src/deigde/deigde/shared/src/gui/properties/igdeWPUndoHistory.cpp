@@ -74,21 +74,21 @@ pUndoSystem(NULL)
 		environment, igdeContainerBox::eaX));
 	buttons->AddChild(buttonLine);
 	
-	pActionUndo.TakeOver(new igdeActionUndo(environment));
+	pActionUndo.TakeOverWith(environment);
 	helper.Button(buttonLine, pActionUndo);
 	
-	pActionRedo.TakeOver(new igdeActionRedo(environment));
+	pActionRedo.TakeOverWith(environment);
 	helper.Button(buttonLine, pActionRedo);
 	
 	// button row 2
-	buttonLine.TakeOver(new igdeContainerBox(environment, igdeContainerBox::eaX));
+	buttonLine.TakeOverWith(environment, igdeContainerBox::eaX);
 	buttons->AddChild(buttonLine);
 	
-	pActionClear.TakeOver(new igdeActionClearUndo(environment));
+	pActionClear.TakeOverWith(environment);
 	helper.Button(buttonLine, pActionClear);
 	
 	// undo action list
-	pListUndo.TakeOver(new igdeListBox(environment, 10));
+	pListUndo.TakeOverWith(environment, 10);
 	groupBox->AddChild(pListUndo, igdeContainerBorder::eaCenter);
 }
 

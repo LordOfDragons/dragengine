@@ -56,9 +56,6 @@ pNewSnapDist(newSnapDist)
 }
 
 meUHTNavSpaceSetSnapDist::~meUHTNavSpaceSetSnapDist(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

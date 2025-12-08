@@ -26,9 +26,9 @@
 #define _SEULINKADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLink.h"
+#include "seSynthesizer.h"
 
-class seLink;
-class seSynthesizer;
 
 
 
@@ -42,8 +42,8 @@ public:
 	
 	
 private:
-	seSynthesizer *pSynthesizer;
-	seLink *pLink;
+	seSynthesizer::Ref pSynthesizer;
+	seLink::Ref pLink;
 	
 	
 	

@@ -56,9 +56,6 @@ pNewSkin(newSkin)
 }
 
 seULayerSetSkin::~seULayerSetSkin(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

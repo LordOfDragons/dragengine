@@ -73,8 +73,6 @@ igdeGDClass::igdeGDClass(const char *name){
 	pIsAttachableBehavior = false;
 	pInheritSubObjects = FilterSubObjectsAll;
 	
-	pPreviewImage = NULL;
-	
 	try{
 		pCamera = new igdeGDCamera;
 		
@@ -89,8 +87,6 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 	int i, count;
 	
 	pCamera = NULL;
-	
-	pPreviewImage = NULL;
 	
 	try{
 		pName = gdclass.pName;
@@ -255,19 +251,7 @@ void igdeGDClass::Check(){
 
 
 void igdeGDClass::SetPreviewImage(deImage *image){
-	if(image == pPreviewImage){
-		return;
-	}
-	
-	if(pPreviewImage){
-		pPreviewImage->FreeReference();
-	}
-	
 	pPreviewImage = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
 void igdeGDClass::SetDefaultInheritPropertyPrefix(const decString &prefix){
@@ -1061,9 +1045,6 @@ const decIntList igdeGDClass::GetEnvMapProbesIndicesWithLinkedProperty(const cha
 //////////////////////
 
 void igdeGDClass::pCleanUp(){
-	if(pPreviewImage){
-		pPreviewImage->FreeReference();
-	}
 	
 	RemoveAllSpeakers();
 	RemoveAllNavigationBlockers();

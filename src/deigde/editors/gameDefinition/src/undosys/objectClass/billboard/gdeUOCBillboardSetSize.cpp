@@ -62,12 +62,6 @@ pBillboard(NULL)
 }
 
 gdeUOCBillboardSetSize::~gdeUOCBillboardSetSize(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

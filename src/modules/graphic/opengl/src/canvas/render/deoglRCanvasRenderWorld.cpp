@@ -66,19 +66,12 @@ deoglRCanvasRenderWorld::~deoglRCanvasRenderWorld(){
 ///////////////
 
 void deoglRCanvasRenderWorld::SetCamera(deoglRCamera *camera){
-	if(camera == pCamera){
+	if(pCamera == camera){
 		return;
 	}
 	
-	if(pCamera){
-		pCamera->FreeReference();
-	}
 	
 	pCamera = camera;
-	
-	if(camera){
-		camera->AddReference();
-	}
 	
 	pForceToneMapAdaption = true;
 }

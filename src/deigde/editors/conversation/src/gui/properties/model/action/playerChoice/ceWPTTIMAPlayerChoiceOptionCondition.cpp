@@ -70,9 +70,6 @@ pOption(NULL)
 }
 
 ceWPTTIMAPlayerChoiceOptionCondition::~ceWPTTIMAPlayerChoiceOptionCondition(){
-	if(pOption){
-		pOption->FreeReference();
-	}
 }
 
 

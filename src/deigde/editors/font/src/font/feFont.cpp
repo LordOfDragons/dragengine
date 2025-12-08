@@ -73,7 +73,7 @@ igdeEditableEntity(environment)
 	try{
 		pGlyphSelection = new feFontGlyphSelection(this);
 		
-		pFontImage = new feFontImage(GetEngine());
+		pFontImage.TakeOverWith(GetEngine());
 		pFontImage->SetParentFont(this);
 		
 		SetChanged(false);
@@ -97,14 +97,14 @@ feFont::~feFont(){
 void feFont::SetLineHeight(int lineHeight){
 	DEASSERT_TRUE(lineHeight > 0)
 	
-	if(lineHeight != pLineHeight){
+	if(pLineHeight != lineHeight){
 		pLineHeight = lineHeight;
 		NotifyFontChanged();
 	}
 }
 
 void feFont::SetColorFont(bool colorFont){
-	if(colorFont != pColorFont){
+	if(pColorFont != colorFont){
 		pColorFont = colorFont;
 		NotifyFontChanged();
 	}
@@ -113,7 +113,7 @@ void feFont::SetColorFont(bool colorFont){
 void feFont::SetBaseLine(int baseLine){
 	DEASSERT_TRUE(baseLine >= 0)
 	
-	if(baseLine != pBaseLine){
+	if(pBaseLine != baseLine){
 		pBaseLine = baseLine;
 		NotifyFontChanged();
 	}
@@ -122,7 +122,7 @@ void feFont::SetBaseLine(int baseLine){
 void feFont::SetElementMode(int mode){
 	if(mode < eemBone || mode > eemPush) DETHROW(deeInvalidParam);
 	
-	if(mode != pElementMode){
+	if(pElementMode != mode){
 		pElementMode = mode;
 		NotifyModeChanged();
 	}
@@ -131,7 +131,7 @@ void feFont::SetElementMode(int mode){
 void feFont::SetWorkMode(int mode){
 	if(mode < ewmSelect || mode > ewm3DCursor) DETHROW(deeInvalidParam);
 	
-	if(mode != pWorkMode){
+	if(pWorkMode != mode){
 		pWorkMode = mode;
 		NotifyModeChanged();
 	}
@@ -161,8 +161,6 @@ void feFont::Invalidate(){
 void feFont::Rebuild(){
 	if(pDirtyFont){
 		// free the old font
-		if(pEngFont){
-			pEngFont->FreeReference();
 			pEngFont = NULL;
 		}
 		
@@ -174,7 +172,7 @@ void feFont::Rebuild(){
 			// using loading but this is okay for what we use them here.
 			feFontBuilder builder(this);
 			
-			pEngFont = GetEngine()->GetFontManager()->CreateFont("", builder);
+			pEngFont.TakeOver(GetEngine()->GetFontManager()->CreateFont("", builder));
 		}
 		
 		// no more dirty
@@ -367,7 +365,6 @@ void feFont::pCleanUp(){
 	
 	if(pFontImage){
 		pFontImage->SetParentFont(NULL);
-		pFontImage->FreeReference();
 	}
 	
 	if(pGlyphSelection) delete pGlyphSelection;

@@ -61,12 +61,6 @@ pProperty(NULL)
 }
 
 gdeUGDDPSetMaxValue::~gdeUGDDPSetMaxValue(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

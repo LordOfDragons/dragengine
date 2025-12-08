@@ -586,7 +586,7 @@ pViewMode(evmPreview)
 	igdeContainer::Ref groupBox, form, frameLine;
 	
 	
-	pListener = new meWPBrowserListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	
 	pActionSetClass.TakeOver(new cActionSetClass(*this));
@@ -609,8 +609,8 @@ pViewMode(evmPreview)
 	pActionPIRebuild.TakeOver(new cActionPIRebuild(*this));
 	
 	
-	content.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espTop,
-		igdeApplication::app().DisplayScaled(400)));
+	content.TakeOverWith(env, igdeContainerSplitted::espTop,
+		igdeApplication::app().DisplayScaled(400));
 	AddChild(content);
 	
 	
@@ -636,7 +636,7 @@ pViewMode(evmPreview)
 		"Filter", NULL, "Browse by filtering"), true);
 	
 	
-	pSwitcherSelBy.TakeOver(new igdeSwitcher(env));
+	pSwitcherSelBy.TakeOverWith(env);
 	groupBox->AddChild(pSwitcherSelBy);
 	
 	
@@ -679,9 +679,6 @@ pViewMode(evmPreview)
 meWPBrowser::~meWPBrowser(){
 	SetWorld(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -690,13 +687,12 @@ meWPBrowser::~meWPBrowser(){
 ///////////////
 
 void meWPBrowser::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
@@ -844,7 +840,7 @@ void meWPBrowser::RebuildPISelectedItem(){
 	
 	igdeIcon::Ref icon;
 	const int iconSize = GetPreviewIconSize();
-	icon.TakeOver(new igdeIcon(*pvmgr.GetImageCreating(), iconSize, iconSize));
+	icon.TakeOverWith(*pvmgr.GetImageCreating(), iconSize, iconSize);
 	
 	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pListItems, item, iconSize));
 	
@@ -942,7 +938,7 @@ void meWPBrowser::SelectCategory(igdeGDCategory *category){
 }
 
 void meWPBrowser::SetSelectionMode(eSelectionMode mode){
-	if(mode == pSelectionMode){
+	if(pSelectionMode == mode){
 		return;
 	}
 	
@@ -981,7 +977,7 @@ igdeGDSky *meWPBrowser::GetSelectedSky() const{
 }
 
 void meWPBrowser::SetPreviewSize(ePreviewSize size){
-	if(size == pPreviewSize){
+	if(pPreviewSize == size){
 		return;
 	}
 	
@@ -990,7 +986,7 @@ void meWPBrowser::SetPreviewSize(ePreviewSize size){
 }
 
 void meWPBrowser::SetViewMode(eViewModes viewMode){
-	if(viewMode == pViewMode){
+	if(pViewMode == viewMode){
 		return;
 	}
 	

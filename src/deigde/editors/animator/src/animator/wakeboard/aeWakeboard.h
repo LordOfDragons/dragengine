@@ -28,11 +28,11 @@
 
 // includes
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 
 // predefinitions
 class aeAnimator;
-class deColliderVolume;
-class deComponent;
 
 
 
@@ -45,8 +45,8 @@ class aeWakeboard{
 private:
 	aeAnimator *pAnimator;
 	
-	deComponent *pEngComponent;
-	deColliderVolume *pEngCollider;
+	deComponent::Ref pEngComponent;
+	deColliderVolume::Ref pEngCollider;
 	
 	bool pEnabled;
 	
@@ -74,9 +74,9 @@ public:
 	/** Retrieves the animator. */
 	inline aeAnimator *GetAnimator() const{ return pAnimator; }
 	/** Retrieves the component. */
-	inline deComponent *GetComponent() const{ return pEngComponent; }
+	inline const deComponent::Ref &GetComponent() const{ return pEngComponent; }
 	/** Retrieves the collider. */
-	inline deColliderVolume *GetCollider() const{ return pEngCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pEngCollider; }
 	
 	/** Determines if the wakeboard is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }

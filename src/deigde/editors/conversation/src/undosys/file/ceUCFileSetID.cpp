@@ -84,9 +84,6 @@ pNewID(newID)
 }
 
 ceUCFileSetID::~ceUCFileSetID(){
-	if(pFile){
-		pFile->FreeReference();
-	}
 }
 
 

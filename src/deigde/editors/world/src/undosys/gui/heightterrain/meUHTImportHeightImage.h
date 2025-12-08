@@ -30,9 +30,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decString.h>
+#include "meWorld.h"
 
 // predefinitions
-class meWorld;
 class meHeightTerrainSector;
 
 class deImage;
@@ -51,7 +51,7 @@ public:
 	
 	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
 	
 	float *pOldHeights;

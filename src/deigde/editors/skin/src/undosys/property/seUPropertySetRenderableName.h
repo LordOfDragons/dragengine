@@ -26,8 +26,8 @@
 #define _SEUPROPERTYSETRENDERABLENAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seProperty.h"
 
-class seProperty;
 
 
 
@@ -36,7 +36,7 @@ class seProperty;
  */
 class seUPropertySetRenderableName : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	decString pOldName;
 	decString pNewName;

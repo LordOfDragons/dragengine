@@ -35,6 +35,12 @@ class meWPSObject;
  * \brief Object panel listener.
  */
 class meWPSObjectListener : public meWorldNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meWPSObjectListener> Ref;
+	
+	
+
 private:
 	meWPSObject &pPanel;
 	

@@ -221,8 +221,8 @@ deoglRenderBase(renderThread)
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
 	
-	pRenderSkyIntoEnvMapPBSingleUse.TakeOver(new deoglSPBSingleUse(renderThread,
-		deoglSkinShader::CreateSPBRender(renderThread)));
+	pRenderSkyIntoEnvMapPBSingleUse.TakeOverWith(renderThread,
+		deoglSkinShader::CreateSPBRender(renderThread));
 	
 	
 	renderThread.GetShader().SetCommonDefines(commonDefines);

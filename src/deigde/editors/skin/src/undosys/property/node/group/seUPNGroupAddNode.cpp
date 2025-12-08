@@ -58,12 +58,6 @@ pChild(NULL)
 }
 
 seUPNGroupAddNode::~seUPNGroupAddNode(){
-	if(pChild){
-		pChild->FreeReference();
-	}
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

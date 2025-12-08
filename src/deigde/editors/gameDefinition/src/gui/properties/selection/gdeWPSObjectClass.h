@@ -40,16 +40,16 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSObjectClassListener.h"
 
 class gdeFilePattern;
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeProperty;
 class gdeOCComponentTexture;
 class gdeOCInherit;
 class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSObjectClassListener;
 
 
 /**
@@ -58,9 +58,9 @@ class gdeWPSObjectClassListener;
 class gdeWPSObjectClass : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSObjectClassListener *pListener;
+	gdeWPSObjectClassListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeAction::Ref pActionInheritAdd;
 	igdeAction::Ref pActionInheritRemove;
@@ -142,7 +142,7 @@ public:
 	inline gdeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

@@ -63,12 +63,6 @@ pSnapPoint(NULL)
 }
 
 gdeUOCRemoveSnapPoint::~gdeUOCRemoveSnapPoint(){
-	if(pSnapPoint){
-		pSnapPoint->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

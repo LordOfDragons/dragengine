@@ -391,7 +391,7 @@ pPreventUpdate(false)
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPConstraintListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -488,9 +488,6 @@ pPreventUpdate(false)
 reWPConstraint::~reWPConstraint(){
 	SetRig(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -499,7 +496,7 @@ reWPConstraint::~reWPConstraint(){
 ///////////////
 
 void reWPConstraint::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -507,7 +504,6 @@ void reWPConstraint::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -522,19 +518,12 @@ void reWPConstraint::SetRig(reRig *rig){
 }
 
 void reWPConstraint::SetConstraint(reRigConstraint *constraint){
-	if(constraint == pConstraint){
+	if(pConstraint == constraint){
 		return;
 	}
 	
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 	
 	pConstraint = constraint;
-	
-	if(constraint){
-		constraint->AddReference();
-	}
 	
 	UpdateBoneLists();
 	UpdateConstraint();
@@ -643,7 +632,7 @@ void reWPConstraint::UpdateConstraint(){
 	}
 	
 	// enable UI
-	const bool enabled = pConstraint != NULL;
+	const bool enabled = pConstraint != nullptr;
 	pEditBoneParent->SetEnabled(enabled);
 	pCBBoneTarget->SetEnabled(enabled);
 	pEditPosition->SetEnabled(enabled);

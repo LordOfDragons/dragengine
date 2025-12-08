@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeObjectClass.h"
+#include "gdeOCParticleEmitter.h"
 
-class gdeOCParticleEmitter;
-class gdeObjectClass;
 
 
 
@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCParticleEmitterSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	decVector pOldValue;
 	decVector pNewValue;

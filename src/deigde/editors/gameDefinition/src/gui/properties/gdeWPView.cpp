@@ -108,7 +108,7 @@ pListener(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content;
 	
-	pListener = new gdeWPViewListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -122,9 +122,6 @@ pListener(NULL)
 gdeWPView::~gdeWPView(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -133,7 +130,7 @@ gdeWPView::~gdeWPView(){
 ///////////////
 
 void gdeWPView::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	
@@ -142,7 +139,6 @@ void gdeWPView::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

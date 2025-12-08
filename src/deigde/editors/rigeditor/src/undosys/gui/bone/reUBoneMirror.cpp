@@ -92,7 +92,6 @@ reUBoneMirror::reUBoneMirror(reRig *rig){
 				boneTarget = pGetBoneWithMirroredName(rig, ubone.boneSource);
 				
 				if(boneTarget){
-					boneTarget->AddReference();
 					ubone.boneTarget = boneTarget;
 					
 					ubone.oldCMP = boneTarget->GetCentralMassPoint();

@@ -99,9 +99,6 @@ pActiveTexture(NULL)
 }
 
 gdeOCComponent::~gdeOCComponent(){
-	if(pActiveTexture){
-		pActiveTexture->FreeReference();
-	}
 }
 
 
@@ -217,17 +214,10 @@ bool gdeOCComponent::HasPropertyWithName(const char *name) const{
 
 
 void gdeOCComponent::SetActiveTexture(gdeOCComponentTexture *texture){
-	if(texture == pActiveTexture){
+	if(pActiveTexture == texture){
 		return;
 	}
 	
-	if(pActiveTexture){
-		pActiveTexture->FreeReference();
-	}
 	
 	pActiveTexture = texture;
-	
-	if(texture){
-		texture->AddReference();
-	}
 }

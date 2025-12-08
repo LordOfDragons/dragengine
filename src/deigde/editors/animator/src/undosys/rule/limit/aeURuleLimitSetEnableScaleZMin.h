@@ -26,8 +26,8 @@
 #define _AEURULELIMITSETENABLESCALEZMIN_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleLimit.h"
 
-class aeRuleLimit;
 
 
 
@@ -36,7 +36,7 @@ class aeRuleLimit;
  */
 class aeURuleLimitSetEnableScaleZMin : public igdeUndo{
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

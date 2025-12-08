@@ -303,7 +303,4 @@ void reUBoneImportFromFile::pCleanUp(){
 		delete [] pBones;
 	}
 	
-	if(pRig){
-		pRig->FreeReference();
-	}
 }

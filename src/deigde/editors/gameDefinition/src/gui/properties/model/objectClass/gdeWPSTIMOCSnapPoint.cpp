@@ -67,9 +67,6 @@ pIndex(index)
 }
 
 gdeWPSTIMOCSnapPoint::~gdeWPSTIMOCSnapPoint(){
-	if(pSnapPoint){
-		pSnapPoint->FreeReference();
-	}
 }
 
 

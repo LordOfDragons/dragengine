@@ -26,8 +26,8 @@
 #define _SAEUWORDSETNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "saeWord.h"
 
-class saeWord;
 
 
 
@@ -36,7 +36,7 @@ class saeWord;
  */
 class saeUWordSetName : public igdeUndo{
 private:
-	saeWord *pWord;
+	saeWord::Ref pWord;
 	
 	decString pOldName;
 	decString pNewName;

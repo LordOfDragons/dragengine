@@ -48,13 +48,10 @@ gdeDefaultPropertyValue::gdeDefaultPropertyValue(igdeUIHelper &helper) :
 igdeEditPropertyValue(helper),
 pGDProperty(NULL)
 {
-	pGDProperty = new igdeGDProperty("Property");
+	pGDProperty.TakeOverWith("Property");
 }
 
 gdeDefaultPropertyValue::~gdeDefaultPropertyValue(){
-	if(pGDProperty){
-		pGDProperty->FreeReference();
-	}
 }
 
 

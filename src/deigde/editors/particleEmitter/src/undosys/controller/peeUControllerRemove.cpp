@@ -62,12 +62,6 @@ peeUControllerRemove::peeUControllerRemove(peeController *controller){
 }
 
 peeUControllerRemove::~peeUControllerRemove(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

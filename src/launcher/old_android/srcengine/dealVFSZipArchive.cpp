@@ -594,14 +594,8 @@ TIME_SYSTEM dealVFSZipArchive::GetFileModificationTime(const decPath &path){
 //////////////////////
 
 void dealVFSZipArchive::pCleanUp(){
-	if(pArchiveDirectory){
-		pArchiveDirectory->FreeReference();
-	}
 	if(pZipFile){
 		unzClose(pZipFile);
-	}
-	if(pFileReader){
-		pFileReader->FreeReference();
 	}
 }
 
@@ -618,7 +612,7 @@ void dealVFSZipArchive::pBuildFileTable(){
 		DETHROW(deeReadFile);
 	}
 	
-	pArchiveDirectory = new cArchiveDirectory("");
+	pArchiveDirectory.TakeOverWith("");
 	
 	while(true){
 		if(unzGetCurrentFileInfo(pZipFile, &info, NULL, 0, NULL, 0, NULL, 0) != UNZ_OK){

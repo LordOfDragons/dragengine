@@ -58,12 +58,6 @@ pProperty(NULL)
 }
 
 gdeUOCTexPropertyAdd::~gdeUOCTexPropertyAdd(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

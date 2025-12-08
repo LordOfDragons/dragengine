@@ -51,13 +51,10 @@ pTopic(NULL)
 	SetShortInfo("Duplicate topic");
 	
 	try{
-		pTopic = new ceConversationTopic(topic);
+		pTopic.TakeOverWith(topic);
 		pTopic->SetID(newID);
 		
 	}catch(const deException &){
-		if(pTopic){
-			pTopic->FreeReference();
-		}
 		throw;
 	}
 	
@@ -66,12 +63,6 @@ pTopic(NULL)
 }
 
 ceUCTopicDuplicate::~ceUCTopicDuplicate(){
-	if(pTopic){
-		pTopic->FreeReference();
-	}
-	if(pFile){
-		pFile->FreeReference();
-	}
 }
 
 

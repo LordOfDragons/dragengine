@@ -64,12 +64,6 @@ ceUCAASpeakStripsScale::~ceUCAASpeakStripsScale(){
 	if(pOldStates){
 		delete [] pOldStates;
 	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

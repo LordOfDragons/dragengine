@@ -56,12 +56,6 @@ saeUWordAdd::saeUWordAdd(saeSAnimation *sanimation, saeWord *word){
 }
 
 saeUWordAdd::~saeUWordAdd(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

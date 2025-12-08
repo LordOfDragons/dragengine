@@ -97,7 +97,7 @@ void debpPhysicsBody::SetDynamicsWorld(debpCollisionWorld *dynWorld){
 }
 
 void debpPhysicsBody::SetShape(debpBulletShape *shape){
-	if(shape == pShape){
+	if(pShape == shape){
 		return;
 	}
 	
@@ -112,16 +112,9 @@ void debpPhysicsBody::SetShape(debpBulletShape *shape){
 		pFreeRigidBody();
 	}
 	
-	if(pShape){
-		pShape->FreeReference();
-	}
 	
 	pShape = shape;
 	pShapeSurface = 0.0f;
-	
-	if(shape){
-		shape->AddReference();
-	}
 	
 	pCreateRigidBody();
 }
@@ -322,7 +315,7 @@ void debpPhysicsBody::SetResponseType(eResponseTypes responseType){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(responseType == pResponseType){
+	if(pResponseType == responseType){
 		return;
 	}
 	
@@ -558,9 +551,6 @@ void debpPhysicsBody::RemoveConstraint(debpColliderConstraint *constraint){
 void debpPhysicsBody::pCleanUp(){
 	pFreeRigidBody();
 	
-	if(pShape){
-		pShape->FreeReference();
-	}
 	
 	// constraints should not be linked any more at this time. if though this is for
 	// some strange reason still the case notify them that we are no more valid. we

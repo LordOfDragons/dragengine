@@ -28,11 +28,11 @@
 #include "../../../conversation/condition/ceConversationConditionList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCConditionLogic.h"
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceCConditionLogic;
 class ceConversationCondition;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -41,9 +41,9 @@ class ceConversationTopic;
  */
 class ceUCCLogicRemoveAll : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionLogic *pLogic;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionLogic::Ref pLogic;
 	ceConversationConditionList pConditions;
 	
 	

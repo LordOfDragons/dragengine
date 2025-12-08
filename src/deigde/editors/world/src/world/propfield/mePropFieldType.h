@@ -30,12 +30,12 @@
 #include <dragengine/common/string/decString.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 // predefinitions
 class mePropField;
 
-class deSkin;
-class deModel;
 class deEngine;
 class dePropFieldType;
 class dePropFieldInstance;
@@ -55,9 +55,9 @@ private:
 	dePropFieldType *pEngPFType;
 	
 	decString pPathModel;
-	deModel *pModel;
+	deModel::Ref pModel;
 	decString pPathSkin;
-	deSkin *pSkin;
+	deSkin::Ref pSkin;
 	float pRotPerForceX;
 	float pRotPerForceZ;
 	

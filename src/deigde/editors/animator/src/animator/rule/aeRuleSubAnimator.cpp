@@ -65,7 +65,6 @@
 
 aeRuleSubAnimator::aeRuleSubAnimator() :
 aeRule(deAnimatorRuleVisitorIdentify::ertSubAnimator),
-pSubAnimator(NULL),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(true),
@@ -77,17 +76,13 @@ pEnableVertexPositionSet(true)
 aeRuleSubAnimator::aeRuleSubAnimator(const aeRuleSubAnimator &copy) :
 aeRule(copy),
 pPathSubAnimator(copy.pPathSubAnimator),
-pSubAnimator(NULL),
+pSubAnimator(copy.pSubAnimator),
 pEnablePosition(copy.pEnablePosition),
 pEnableOrientation(copy.pEnableOrientation),
 pEnableSize(copy.pEnableSize),
 pEnableVertexPositionSet(copy.pEnableVertexPositionSet),
 pConnections(copy.pConnections)
 {
-	pSubAnimator = copy.pSubAnimator;
-	if(pSubAnimator){
-		pSubAnimator->AddReference();
-	}
 }
 
 aeRuleSubAnimator::~aeRuleSubAnimator(){
@@ -123,10 +118,7 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	}
 	
 	// release the sub animator
-	if(pSubAnimator){
-		pSubAnimator->FreeReference();
-		pSubAnimator = NULL;
-	}
+	pSubAnimator = nullptr;
 	
 	// if there is no parent animator no loading can be done
 	aeAnimator * const parentAnimator = GetAnimator();
@@ -160,7 +152,7 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 			ruleCount = animator->GetRules().GetCount();
 			
 			// create animator
-			pSubAnimator = engine->GetAnimatorManager()->CreateAnimator();
+			pSubAnimator.TakeOver(engine->GetAnimatorManager()->CreateAnimator());
 			pSubAnimator->SetRig(animator->GetEngineAnimator()->GetRig());
 			pSubAnimator->SetAnimation(animator->GetEngineAnimator()->GetAnimation());
 			
@@ -282,7 +274,7 @@ void aeRuleSubAnimator::SetControllerAt(int position, aeController *controller){
 
 
 void aeRuleSubAnimator::SetEnablePosition(bool enabled){
-	if(enabled != pEnablePosition){
+	if(pEnablePosition != enabled){
 		pEnablePosition = enabled;
 		
 		if(GetEngineRule()){
@@ -293,7 +285,7 @@ void aeRuleSubAnimator::SetEnablePosition(bool enabled){
 }
 
 void aeRuleSubAnimator::SetEnableOrientation(bool enabled){
-	if(enabled != pEnableOrientation){
+	if(pEnableOrientation != enabled){
 		pEnableOrientation = enabled;
 		
 		if(GetEngineRule()){
@@ -304,7 +296,7 @@ void aeRuleSubAnimator::SetEnableOrientation(bool enabled){
 }
 
 void aeRuleSubAnimator::SetEnableSize(bool enabled){
-	if(enabled != pEnableSize){
+	if(pEnableSize != enabled){
 		pEnableSize = enabled;
 		
 		if(GetEngineRule()){
@@ -315,7 +307,7 @@ void aeRuleSubAnimator::SetEnableSize(bool enabled){
 }
 
 void aeRuleSubAnimator::SetEnableVertexPositionSet(bool enabled){
-	if(enabled != pEnableVertexPositionSet){
+	if(pEnableVertexPositionSet != enabled){
 		pEnableVertexPositionSet = enabled;
 		
 		if(GetEngineRule()){
@@ -378,14 +370,7 @@ aeRuleSubAnimator &aeRuleSubAnimator::operator=(const aeRuleSubAnimator &copy){
 	SetEnableSize(copy.pEnableSize);
 	SetEnableVertexPositionSet(copy.pEnableVertexPositionSet);
 	
-	if(pSubAnimator){
-		pSubAnimator->FreeReference();
-		pSubAnimator = NULL;
-	}
 	pSubAnimator = copy.pSubAnimator;
-	if(pSubAnimator){
-		pSubAnimator->AddReference();
-	}
 	
 	pConnections = copy.pConnections;
 	

@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "sePropertyNodeImage.h"
 
-class sePropertyNodeImage;
 
 
 
@@ -38,7 +38,7 @@ class sePropertyNodeImage;
  */
 class seUPropertyNodeImageSetRepeat : public igdeUndo{
 private:
-	sePropertyNodeImage *pNode;
+	sePropertyNodeImage::Ref pNode;
 	
 	decPoint pOldValue;
 	decPoint pNewValue;

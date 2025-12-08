@@ -427,10 +427,6 @@ void deClassARGroup::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	}
 	
 	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
 }
 
 void deClassARGroup::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleGroup *rule){
@@ -453,9 +449,6 @@ void deClassARGroup::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRul
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
 		
 		nd.rule = rule;
 		rule->AddReference();

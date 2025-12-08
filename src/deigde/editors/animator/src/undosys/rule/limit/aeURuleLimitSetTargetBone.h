@@ -26,8 +26,8 @@
 #define _AEURULELIMITSETTARGETBONE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleLimit.h"
 
-class aeRuleLimit;
 
 
 
@@ -36,7 +36,7 @@ class aeRuleLimit;
  */
 class aeURuleLimitSetTargetBone : public igdeUndo{
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	decString pOldBone;
 	decString pNewBone;

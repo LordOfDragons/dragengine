@@ -106,7 +106,7 @@ pListener(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content;
 	
-	pListener = new seWPViewListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -120,9 +120,6 @@ pListener(NULL)
 seWPView::~seWPView(){
 	SetSky(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -131,7 +128,7 @@ seWPView::~seWPView(){
 ///////////////
 
 void seWPView::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	
@@ -140,7 +137,6 @@ void seWPView::SetSky(seSky *sky){
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 		pSky = NULL;
 	}
 	

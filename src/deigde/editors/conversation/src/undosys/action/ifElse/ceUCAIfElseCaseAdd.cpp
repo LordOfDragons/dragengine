@@ -67,15 +67,6 @@ ceUCAIfElseCaseAdd::ceUCAIfElseCaseAdd(ceConversationTopic *topic, ceCAIfElse *i
 }
 
 ceUCAIfElseCaseAdd::~ceUCAIfElseCaseAdd(){
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -106,7 +106,7 @@ void saeViewSAnimation::ResetView(){
 }
 
 void saeViewSAnimation::SetSAnimation(saeSAnimation *sanimation){
-	if(sanimation == pSAnimation){
+	if(pSAnimation == sanimation){
 		return;
 	}
 	
@@ -114,9 +114,6 @@ void saeViewSAnimation::SetSAnimation(saeSAnimation *sanimation){
 	
 	SetRenderWorld(NULL);
 	
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 	
 	pSAnimation = sanimation;
 	

@@ -247,20 +247,13 @@ void deoglRBillboard::UpdateOctreeNode(){
 
 
 void deoglRBillboard::SetSkin(deoglRSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	pSkin = skin;
 	pUseSkinTexture = skin && skin->GetTextureCount() > 0 ? &skin->GetTextureAt(0) : NULL;
-	
-	if(skin){
-		skin->AddReference();
-	}
 	
 	pDirtySharedSPBElement = true;
 	pRequiresPrepareForRender();
@@ -272,19 +265,12 @@ void deoglRBillboard::SetSkin(deoglRSkin *skin){
 
 void deoglRBillboard::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	// NOTE this is called from the main thread during synchronization
-	if(dynamicSkin == pDynamicSkin){
+	if(pDynamicSkin == dynamicSkin){
 		return;
 	}
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
 	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
 	
 	pSkinRendered.SetDirty();
 }
@@ -312,7 +298,7 @@ void deoglRBillboard::SetLayerMask(const decLayerMask &layerMask){
 }
 
 void deoglRBillboard::SetVisible(bool visible){
-	if(visible == pVisible){
+	if(pVisible == visible){
 		return;
 	}
 	
@@ -746,7 +732,7 @@ void deoglRBillboard::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	// switch may still occur. a possible solution would be to delay the switch until the fading
 	// is finished. for this we would have to keep the dirty flag set, which is currently set
 	// outside somewhere
-	if(envmap == pRenderEnvMap){
+	if(pRenderEnvMap == envmap){
 		return;
 	}
 	
@@ -754,7 +740,6 @@ void deoglRBillboard::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	
 	if(pRenderEnvMap){
 		pRenderEnvMap->GetBillboardList().RemoveIfExisting(this);
-		pRenderEnvMap->FreeReference();
 	}
 	
 	pRenderEnvMap = envmap;
@@ -774,13 +759,12 @@ void deoglRBillboard::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 }
 
 void deoglRBillboard::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
-	if(envmap == pRenderEnvMapFade){
+	if(pRenderEnvMapFade == envmap){
 		return;
 	}
 	
 	if(pRenderEnvMapFade){
 		pRenderEnvMapFade->GetBillboardList().RemoveIfExisting(this);
-		pRenderEnvMapFade->FreeReference();
 	}
 	
 	pRenderEnvMapFade = envmap;
@@ -936,22 +920,7 @@ void deoglRBillboard::PrepareQuickDispose(){
 void deoglRBillboard::pCleanUp(){
 	SetParentWorld(NULL);
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pRenderEnvMap){
-		pRenderEnvMap->FreeReference();
-	}
-	if(pRenderEnvMapFade){
-		pRenderEnvMapFade->FreeReference();
-	}
 	
-	if(pSharedSPBElement){
-		pSharedSPBElement->FreeReference();
-	}
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
 	}

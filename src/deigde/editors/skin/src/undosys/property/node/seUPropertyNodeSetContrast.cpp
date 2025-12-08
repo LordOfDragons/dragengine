@@ -55,9 +55,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeSetContrast::~seUPropertyNodeSetContrast(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

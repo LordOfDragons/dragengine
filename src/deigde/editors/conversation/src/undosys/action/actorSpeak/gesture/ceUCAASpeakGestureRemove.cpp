@@ -69,15 +69,6 @@ ceUCAASpeakGestureRemove::ceUCAASpeakGestureRemove(ceConversationTopic *topic, c
 }
 
 ceUCAASpeakGestureRemove::~ceUCAASpeakGestureRemove(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

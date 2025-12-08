@@ -27,9 +27,9 @@
 #define _GDEUOCREMOVEOBJECTCLASS_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
-class gdeObjectClass;
 
 
 
@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeURemoveObjectClass : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeObjectClass *pObjectClass;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 	

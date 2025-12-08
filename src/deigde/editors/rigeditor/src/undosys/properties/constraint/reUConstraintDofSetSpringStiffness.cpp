@@ -56,13 +56,9 @@ deColliderConstraint::eDegreesOfFreedom dof, float newValue){
 	
 	SetShortInfo("Constraint DOF set spring stiffness");
 	
-	pConstraint->AddReference();
 }
 
 reUConstraintDofSetSpringStiffness::~reUConstraintDofSetSpringStiffness(){
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 }
 
 

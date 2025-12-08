@@ -419,7 +419,7 @@ pGameDefinition(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCBillboardListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -468,9 +468,6 @@ pGameDefinition(NULL)
 gdeWPSOCBillboard::~gdeWPSOCBillboard(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -479,13 +476,12 @@ gdeWPSOCBillboard::~gdeWPSOCBillboard(){
 ///////////////
 
 void gdeWPSOCBillboard::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

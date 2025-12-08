@@ -29,11 +29,11 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/undo/igdeUndo.h>
+#include "seWindowCurvesListener.h"
+#include "seSky.h"
 
 class seWindowMain;
-class seSky;
 class seLink;
-class seWindowCurvesListener;
 
 
 /**
@@ -42,9 +42,9 @@ class seWindowCurvesListener;
 class seWindowCurves : public igdeContainerSplitted{
 private:
 	seWindowMain &pWindowMain;
-	seWindowCurvesListener *pListener;
+	seWindowCurvesListener::Ref pListener;
 	
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	igdeViewCurveBezier::Ref pEditCurve;
 	igdeListBox::Ref pListLinks;
@@ -73,7 +73,7 @@ public:
 	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);

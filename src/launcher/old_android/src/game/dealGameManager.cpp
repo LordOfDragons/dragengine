@@ -70,9 +70,6 @@ pDefaultProfile(NULL)
 }
 
 dealGameManager::~dealGameManager(){
-	if(pDefaultProfile){
-		pDefaultProfile->FreeReference();
-	}
 	SetActiveProfile(NULL);
 	
 	pGameList.RemoveAll();
@@ -324,15 +321,8 @@ void dealGameManager::SetActiveProfile(dealGameProfile *profile){
 		return;
 	}
 	
-	if(pActiveProfile){
-		pActiveProfile->FreeReference();
-	}
 	
 	pActiveProfile = profile;
-	
-	if(profile){
-		profile->AddReference();
-	}
 }
 
 

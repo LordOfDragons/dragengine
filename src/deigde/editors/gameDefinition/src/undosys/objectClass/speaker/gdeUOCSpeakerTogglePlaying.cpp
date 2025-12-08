@@ -58,12 +58,6 @@ pSpeaker(NULL)
 }
 
 gdeUOCSpeakerTogglePlaying::~gdeUOCSpeakerTogglePlaying(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

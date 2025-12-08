@@ -58,12 +58,6 @@ peeUTypeAdd::peeUTypeAdd(peeEmitter *emitter, peeType *type){
 }
 
 peeUTypeAdd::~peeUTypeAdd(){
-	if(pType){
-		pType->FreeReference();
-	}
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

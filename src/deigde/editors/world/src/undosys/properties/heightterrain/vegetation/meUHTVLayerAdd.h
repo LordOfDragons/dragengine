@@ -28,11 +28,11 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meHTVegetationLayer.h"
+#include "meWorld.h"
 
 // predefinitions
-class meWorld;
 class meHeightTerrain;
-class meHTVegetationLayer;
 
 
 
@@ -43,9 +43,9 @@ class meHTVegetationLayer;
  */
 class meUHTVLayerAdd : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
-	meHTVegetationLayer *pVLayer;
+	meHTVegetationLayer::Ref pVLayer;
 	
 public:
 	/** \brief Type holding strong reference. */

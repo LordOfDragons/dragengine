@@ -62,12 +62,6 @@ pLight(NULL)
 }
 
 gdeUOCLightSetBoneName::~gdeUOCLightSetBoneName(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

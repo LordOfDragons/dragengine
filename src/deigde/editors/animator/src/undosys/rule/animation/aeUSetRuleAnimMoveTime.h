@@ -29,9 +29,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleAnimation.h"
 
 // predefinitions
-class aeRuleAnimation;
 
 
 
@@ -42,7 +42,7 @@ class aeRuleAnimation;
  */
 class aeUSetRuleAnimMoveTime : public igdeUndo{
 private:
-	aeRuleAnimation *pRule;
+	aeRuleAnimation::Ref pRule;
 	
 	float pOldTime;
 	float pNewTime;

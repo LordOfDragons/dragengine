@@ -52,7 +52,4 @@ pParticleEmitter(NULL)
 }
 
 gdeClipboardDataOCParticleEmitter::~gdeClipboardDataOCParticleEmitter(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
 }

@@ -31,9 +31,9 @@
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/event/igdeAction.h>
+#include "meWPAddListener.h"
+#include "meWorld.h"
 
-class meWorld;
-class meWPAddListener;
 class meWindowProperties;
 
 
@@ -44,9 +44,9 @@ class meWindowProperties;
 class meWPAdd : public igdeContainerScroll{
 private:
 	meWindowProperties &pWindowProperties;
-	meWPAddListener *pListener;
+	meWPAddListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeAction::Ref pActionClassAdd;
 	igdeAction::Ref pActionClassRemove;
@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Get world. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

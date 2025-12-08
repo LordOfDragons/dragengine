@@ -60,9 +60,6 @@ pNewValue(newValue)
 }
 
 gdeUCategorySetAutoCategorizePattern::~gdeUCategorySetAutoCategorizePattern(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
 }
 
 

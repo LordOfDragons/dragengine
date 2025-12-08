@@ -56,7 +56,4 @@ pNavSpace(NULL)
 }
 
 meUndoDataNavSpace::~meUndoDataNavSpace(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }

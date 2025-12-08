@@ -27,13 +27,13 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/logger/deLogger.h>
 
 class decCurveBezierPoint;
 class decCurveBezier;
 class deException;
 class decXmlWriter;
 class decXmlElementTag;
-class deLogger;
 
 
 
@@ -46,7 +46,7 @@ class deLogger;
  */
 class DE_DLL_EXPORT igdeBaseXML{
 private:
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	decString pLoggerSource;
 	
 	
@@ -67,7 +67,7 @@ protected:
 	/** \name Management */
 	/*@{*/
 	/** \brief Logger. */
-	inline deLogger *GetLogger() const{ return pLogger; }
+	inline const deLogger::Ref &GetLogger() const{ return pLogger; }
 	
 	/** \brief Logger source. */
 	inline const decString &GetLoggerSource() const{ return pLoggerSource; }

@@ -91,7 +91,7 @@ pLLSyncWorld(this),
 pLLSyncMic(this)
 {
 	try{
-		pASpeaker = new deoalASpeaker(oal.GetAudioThread());
+		pASpeaker.TakeOverWith(oal.GetAudioThread());
 		pASpeaker->SetBackLink(this);
 		
 		SourceChanged();
@@ -112,7 +112,7 @@ deoalSpeaker::~deoalSpeaker(){
 ///////////////
 
 void deoalSpeaker::SetParentWorld(deoalWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -404,7 +404,6 @@ void deoalSpeaker::pCleanUp(){
 	
 	if(pASpeaker){
 		pASpeaker->SetBackLink(NULL);
-		pASpeaker->FreeReference();
 		pASpeaker = NULL;
 	}
 }

@@ -28,8 +28,8 @@
 #include "../../../../skin/property/node/sePropertyNodeList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "sePropertyNodeGroup.h"
 
-class sePropertyNodeGroup;
 class seClipboardDataPropertyNode;
 
 
@@ -39,7 +39,7 @@ class seClipboardDataPropertyNode;
  */
 class seUPNGroupPasteNodes : public igdeUndo{
 private:
-	sePropertyNodeGroup *pGroup;
+	sePropertyNodeGroup::Ref pGroup;
 	sePropertyNodeList pNodes;
 	int pLayer;
 	

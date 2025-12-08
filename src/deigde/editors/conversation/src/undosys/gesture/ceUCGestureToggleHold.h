@@ -26,8 +26,8 @@
 #define _CEUCGESTURETOGGLEHOLD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceGesture.h"
 
-class ceGesture;
 
 
 
@@ -36,7 +36,7 @@ class ceGesture;
  */
 class ceUCGestureToggleHold : public igdeUndo{
 private:
-	ceGesture *pGesture;
+	ceGesture::Ref pGesture;
 	
 	
 	

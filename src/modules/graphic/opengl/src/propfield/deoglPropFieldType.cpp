@@ -63,7 +63,7 @@ pDirtyInstances(true),
 pDirtyBendStates(true)
 {
 	try{
-		pRType = new deoglRPropFieldType(*propField.GetRPropField());
+		pRType.TakeOverWith(*propField.GetRPropField());
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -138,8 +138,6 @@ void deoglPropFieldType::InstanceCountChanged(){
 //////////////////////
 
 void deoglPropFieldType::pCleanUp(){
-	if(pRType){
-		pRType->FreeReference();
 		pRType = NULL;
 	}
 }

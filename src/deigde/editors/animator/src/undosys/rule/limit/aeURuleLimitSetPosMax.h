@@ -29,8 +29,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "aeRuleLimit.h"
 
-class aeRuleLimit;
 
 
 
@@ -39,7 +39,7 @@ class aeRuleLimit;
  */
 class aeURuleLimitSetPosMax : public igdeUndo{
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	decVector pOldMax;
 	decVector pNewMax;

@@ -26,8 +26,8 @@
 #define _FEUFONTSETIMAGEPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "feFontImage.h"
 
-class feFontImage;
 
 
 
@@ -36,7 +36,7 @@ class feFontImage;
  */
 class feUFontSetImagePath : public igdeUndo{
 private:
-	feFontImage *pImage;
+	feFontImage::Ref pImage;
 	decString pOldPath;
 	decString pNewPath;
 	

@@ -62,12 +62,6 @@ pComponent(NULL)
 }
 
 gdeUOCComponentSetPosition::~gdeUOCComponentSetPosition(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

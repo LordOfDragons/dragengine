@@ -26,9 +26,9 @@
 #define _PEEUTYPEADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "peeEmitter.h"
+#include "peeType.h"
 
-class peeType;
-class peeEmitter;
 
 
 
@@ -37,8 +37,8 @@ class peeEmitter;
  */
 class peeUTypeAdd : public igdeUndo{
 private:
-	peeEmitter *pEmitter;
-	peeType *pType;
+	peeEmitter::Ref pEmitter;
+	peeType::Ref pType;
 	
 	
 	

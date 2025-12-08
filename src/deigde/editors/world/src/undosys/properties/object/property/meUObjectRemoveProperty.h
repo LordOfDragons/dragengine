@@ -26,8 +26,8 @@
 #define _MEUOBJECTREMOVEPROPERTY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meObject.h"
 
-class meObject;
 
 
 
@@ -36,7 +36,7 @@ class meObject;
  */
 class meUObjectRemoveProperty : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decString pKey;
 	decString pValue;

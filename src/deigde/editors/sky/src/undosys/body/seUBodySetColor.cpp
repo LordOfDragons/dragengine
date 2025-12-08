@@ -56,9 +56,6 @@ pNewColor(newColor)
 }
 
 seUBodySetColor::~seUBodySetColor(){
-	if(pBody){
-		pBody->FreeReference();
-	}
 }
 
 

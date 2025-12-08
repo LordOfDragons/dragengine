@@ -76,7 +76,7 @@ pDirtyInstance(true),
 pDirtyTypes(true)
 {
 	try{
-		pRInstance = new deoglRParticleEmitterInstance(ogl.GetRenderThread());
+		pRInstance.TakeOverWith(ogl.GetRenderThread());
 		EmitterChanged();
 		
 	}catch(const deException &){
@@ -253,8 +253,6 @@ void deoglParticleEmitterInstance::pCleanUp(){
 	}
 	
 	// types holds a reference to pRInstance. do not remove it earlier
-	if(pRInstance){
-		pRInstance->FreeReference();
 		pRInstance = NULL;
 	}
 }

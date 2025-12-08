@@ -27,9 +27,9 @@
 #define _GDEUOCENVMAPPROBESETSHAPEREFLECTION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCEnvMapProbe.h"
 
-class gdeOCEnvMapProbe;
-class gdeObjectClass;
 class decShape;
 
 
@@ -39,8 +39,8 @@ class decShape;
  */
 class gdeUOCEnvMapProbeSetShapeReflection : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	const decShape *pOldValue;
 	const decShape *pNewValue;

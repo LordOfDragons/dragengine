@@ -87,9 +87,6 @@ void reRigTexture::LoadSkin(){
 	}
 	
 	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 	pEngSkin = engSkin;
 }
 
@@ -99,7 +96,4 @@ void reRigTexture::LoadSkin(){
 //////////////////////
 
 void reRigTexture::pCleanUp(){
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 }

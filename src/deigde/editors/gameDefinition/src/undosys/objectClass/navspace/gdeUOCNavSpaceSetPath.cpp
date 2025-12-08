@@ -62,12 +62,6 @@ pNavSpace(NULL)
 }
 
 gdeUOCNavSpaceSetPath::~gdeUOCNavSpaceSetPath(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

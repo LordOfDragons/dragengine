@@ -115,7 +115,7 @@ pRequiresUpdateEverySync(false),
 pLLSyncWorld(this)
 {
 	try{
-		pRComponent = new deoglRComponent(ogl.GetRenderThread());
+		pRComponent.TakeOverWith(ogl.GetRenderThread());
 		pSkinStateController = new deoglSkinStateController;
 		
 		pCreateLODs();
@@ -958,9 +958,6 @@ void deoglComponent::pCleanUp(){
 	pDropTextures();
 	pDropLODs();
 	
-	if(pRComponent){
-		pRComponent->FreeReference();
-	}
 	
 	if(pDynamicSkin){
 		pDynamicSkin->RemoveListener(this);

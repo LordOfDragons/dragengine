@@ -56,12 +56,6 @@ ceUCGestureAdd::ceUCGestureAdd(ceConversation *conversation, ceGesture *gesture)
 }
 
 ceUCGestureAdd::~ceUCGestureAdd(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

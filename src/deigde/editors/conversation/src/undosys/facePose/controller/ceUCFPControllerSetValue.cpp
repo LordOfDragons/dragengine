@@ -61,12 +61,6 @@ ceUCFPControllerSetValue::ceUCFPControllerSetValue(ceFacePose *facePose, ceContr
 }
 
 ceUCFPControllerSetValue::~ceUCFPControllerSetValue(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
 }
 
 

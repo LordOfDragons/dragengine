@@ -206,7 +206,7 @@ pGameDefinition(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCSnapPointListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -227,9 +227,6 @@ pGameDefinition(NULL)
 gdeWPSOCSnapPoint::~gdeWPSOCSnapPoint(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -238,13 +235,12 @@ gdeWPSOCSnapPoint::~gdeWPSOCSnapPoint(){
 ///////////////
 
 void gdeWPSOCSnapPoint::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

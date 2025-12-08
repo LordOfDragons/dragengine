@@ -81,7 +81,6 @@ pMulBySkyColor(layer.GetMuliplyBySkyColor())
 	
 	if(layer.GetSkin()){
 		pSkin = ((deoglSkin*)layer.GetSkin()->GetPeerGraphic())->GetRSkin();
-		pSkin->AddReference();
 	}
 	
 	pUpdateSkins();
@@ -99,9 +98,6 @@ pMulBySkyColor(layer.GetMuliplyBySkyColor())
 deoglRSkyLayer::~deoglRSkyLayer(){
 	int i;
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	if(pBodies){
 		for(i=0; i<pBodyCount; i++){

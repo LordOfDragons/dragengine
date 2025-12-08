@@ -59,12 +59,6 @@ pBillboard(NULL)
 }
 
 gdeUOCBillboardToggleRenderEnvMap::~gdeUOCBillboardToggleRenderEnvMap(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

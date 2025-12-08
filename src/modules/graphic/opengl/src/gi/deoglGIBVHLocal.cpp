@@ -55,11 +55,11 @@ pTBOTexCoord(NULL),
 pBlockUsageCount(0)
 {
 	try{
-		pTBONodeBox = new deoglDynamicTBOFloat32(renderThread, 4);
-		pTBOIndex = new deoglDynamicTBOUInt16(renderThread, 2);
-		pTBOFace = new deoglDynamicTBOUInt16(renderThread, 4);
-		pTBOVertex = new deoglDynamicTBOFloat32(renderThread, 4);
-		pTBOTexCoord = new deoglDynamicTBOFloat16(renderThread, 2);
+		pTBONodeBox.TakeOverWith(renderThread, 4);
+		pTBOIndex.TakeOverWith(renderThread, 2);
+		pTBOFace.TakeOverWith(renderThread, 4);
+		pTBOVertex.TakeOverWith(renderThread, 4);
+		pTBOTexCoord.TakeOverWith(renderThread, 2);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -233,21 +233,6 @@ void deoglGIBVHLocal::RemoveBlockUsage(){
 void deoglGIBVHLocal::pCleanUp(){
 	DropBlocks();
 	
-	if(pTBONodeBox){
-		pTBONodeBox->FreeReference();
-	}
-	if(pTBOIndex){
-		pTBOIndex->FreeReference();
-	}
-	if(pTBOFace){
-		pTBOFace->FreeReference();
-	}
-	if(pTBOVertex){
-		pTBOVertex->FreeReference();
-	}
-	if(pTBOTexCoord){
-		pTBOTexCoord->FreeReference();
-	}
 }
 
 void deoglGIBVHLocal::pUpdateBVHExtends(deoglBVHNode &node){

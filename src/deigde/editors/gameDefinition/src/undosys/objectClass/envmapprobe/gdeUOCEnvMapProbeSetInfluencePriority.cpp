@@ -62,12 +62,6 @@ pEnvMapProbe(NULL)
 }
 
 gdeUOCEnvMapProbeSetInfluencePriority::~gdeUOCEnvMapProbeSetInfluencePriority(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -62,12 +62,6 @@ pComponent(NULL)
 }
 
 gdeUOCComponentSetRotation::~gdeUOCComponentSetRotation(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

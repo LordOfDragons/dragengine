@@ -49,13 +49,9 @@ aeURuleLimitSetEnablePosYMax::aeURuleLimitSetEnablePosYMax(aeRuleLimit *rule){
 	SetShortInfo("Limit toggle enable maximum y position");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnablePosYMax::~aeURuleLimitSetEnablePosYMax(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

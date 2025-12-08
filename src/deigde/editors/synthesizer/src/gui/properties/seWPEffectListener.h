@@ -35,6 +35,12 @@ class seWPEffect;
  * \brief Source properties panel listener.
  */
 class seWPEffectListener : public seSynthesizerNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seWPEffectListener> Ref;
+	
+	
+
 private:
 	seWPEffect &pPanel;
 	

@@ -159,20 +159,14 @@ void deainpDeviceManager::LogDevices(){
 
 void deainpDeviceManager::pCleanUp(){
 	pDevices.RemoveAll();
-	if(pKeyboard){
-		pKeyboard->FreeReference();
-	}
-	if(pMouse){
-		pMouse->FreeReference();
-	}
 }
 
 void deainpDeviceManager::pCreateDevices(){
-	pMouse = new deainpDeviceMouse(pModule);
+	pMouse.TakeOverWith(pModule);
 	pMouse->SetIndex(pDevices.GetCount());
 	pDevices.Add(pMouse);
 	
-	pKeyboard = new deainpDeviceKeyboard(pModule);
+	pKeyboard.TakeOverWith(pModule);
 	pKeyboard->SetIndex(pDevices.GetCount());
 	pDevices.Add(pKeyboard);
 }

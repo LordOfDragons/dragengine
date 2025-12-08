@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "sePropertyNodeGroup.h"
 
-class sePropertyNodeGroup;
 
 
 
@@ -41,15 +41,15 @@ class sePropertyNodeGroup;
 class seUPNUngroupNodes : public igdeUndo{
 private:
 	struct sNode {
-		sePropertyNode *node;
+		sePropertyNode::Ref node;
 		decPoint3 position;
 		decPoint3 size;
 		float rotation;
 		float shearing;
 	};
 	
-	sePropertyNodeGroup *pParentGroup;
-	sePropertyNodeGroup *pNodeGroup;
+	sePropertyNodeGroup::Ref pParentGroup;
+	sePropertyNodeGroup::Ref pNodeGroup;
 	int pIndex;
 	int pNodeCount;
 	sNode *pNodes;

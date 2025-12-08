@@ -30,9 +30,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meHeightTerrainTexture.h"
 
 // predefinitions
-class meHeightTerrainTexture;
 
 
 
@@ -43,7 +43,7 @@ class meHeightTerrainTexture;
  */
 class meUHTTexSetTypeNum : public igdeUndo{
 private:
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	int pOldTypeNumber;
 	int pNewTypeNumber;

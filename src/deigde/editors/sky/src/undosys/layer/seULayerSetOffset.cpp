@@ -56,9 +56,6 @@ pNewOffset(newOffset)
 }
 
 seULayerSetOffset::~seULayerSetOffset(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

@@ -71,7 +71,7 @@ meObjectLink::meObjectLink(igdeEnvironment *environment, meObject *anchor, meObj
 		target->AddReference();
 		
 		// create debug drawer and shapes
-		pDebugDrawer = environment->GetEngineController()->GetEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(environment->GetEngineController()->GetEngine()->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSConnection = new igdeWConnection;
@@ -100,7 +100,7 @@ meObjectLink::~meObjectLink(){
 ///////////////
 
 void meObjectLink::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -135,18 +135,9 @@ void meObjectLink::ObjectsMoved(){
 void meObjectLink::pCleanUp(){
 	SetWorld(NULL);
 	
-	if(pTarget){
-		pTarget->FreeReference();
-	}
-	if(pAnchor){
-		pAnchor->FreeReference();
-	}
 	
 	if(pDDSConnection){
 		delete pDDSConnection;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

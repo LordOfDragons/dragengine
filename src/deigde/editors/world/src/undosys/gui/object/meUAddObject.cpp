@@ -71,7 +71,7 @@ meUAddObject::meUAddObject(meWorld *world, const decDVector &position, const cha
 		pWorld = world;
 		world->AddReference();
 		
-		pObject = new meObject(world->GetEnvironment());
+		pObject.TakeOverWith(world->GetEnvironment());
 		pObject->SetPosition(position);
 		pObject->SetSize(decVector(0.5f, 0.5f, 0.5f));
 		pObject->SetClassName(classname);
@@ -125,10 +125,4 @@ void meUAddObject::Redo(){
 //////////////////////
 
 void meUAddObject::pCleanUp(){
-	if(pObject){
-		pObject->FreeReference();
-	}
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

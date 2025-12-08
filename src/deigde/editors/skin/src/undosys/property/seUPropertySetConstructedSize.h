@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "seProperty.h"
 
-class seProperty;
 
 
 
@@ -38,7 +38,7 @@ class seProperty;
  */
 class seUPropertySetConstructedSize : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	decPoint3 pOldValue;
 	decPoint3 pNewValue;

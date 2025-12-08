@@ -27,8 +27,8 @@
 #define _AEURULEGROUPTOGGLEENABLESIZE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleGroup.h"
 
-class aeRuleGroup;
 
 
 
@@ -37,7 +37,7 @@ class aeRuleGroup;
  */
 class aeURuleGroupToggleEnableSize : public igdeUndo{
 private:
-	aeRuleGroup *pRule;
+	aeRuleGroup::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

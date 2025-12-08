@@ -552,7 +552,7 @@ pGameDefinition(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCLightListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -658,9 +658,6 @@ pGameDefinition(NULL)
 gdeWPSOCLight::~gdeWPSOCLight(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -669,13 +666,12 @@ gdeWPSOCLight::~gdeWPSOCLight(){
 ///////////////
 
 void gdeWPSOCLight::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

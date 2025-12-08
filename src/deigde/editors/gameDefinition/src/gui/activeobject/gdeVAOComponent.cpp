@@ -194,9 +194,6 @@ void gdeVAOComponent::GetExtends(decVector &minExtend, decVector &maxExtend) con
 void gdeVAOComponent::pCleanUp(){
 	pReleaseResources();
 	
-	if(pOCComponent){
-		pOCComponent->FreeReference();
-	}
 }
 
 

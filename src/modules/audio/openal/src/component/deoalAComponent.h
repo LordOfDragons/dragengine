@@ -31,11 +31,11 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/utils/decLayerMask.h>
+#include "deoalASkin.h"
+#include "deoalAModel.h"
 
 class deoalAComponentBone;
 class deoalAComponentTexture;
-class deoalAModel;
-class deoalASkin;
 class deoalAudioThread;
 class deoalAWorld;
 class deoalComponentOctree;
@@ -64,8 +64,8 @@ private:
 	decIntList pTextureSkinMappings;
 	decIntList pModelRigMappings;
 	const decStringList *pTextureNames;
-	deoalAModel *pModel;
-	deoalASkin *pSkin;
+	deoalAModel::Ref pModel;
+	deoalASkin::Ref pSkin;
 	
 	decDVector pPosition;
 	decQuaternion pOrientation;
@@ -155,13 +155,13 @@ public:
 	
 	
 	/** \brief Model. */
-	inline deoalAModel *GetModel() const{ return pModel; }
+	inline const deoalAModel::Ref &GetModel() const{ return pModel; }
 	
 	/** \brief Set model. */
 	void SetModel(deoalAModel *model, const decStringList *textureNames);
 	
 	/** \brief Skin. */
-	inline deoalASkin *GetSkin() const{ return pSkin; }
+	inline const deoalASkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(deoalASkin *skin);

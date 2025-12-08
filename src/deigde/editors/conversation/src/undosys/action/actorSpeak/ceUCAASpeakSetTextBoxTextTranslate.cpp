@@ -61,12 +61,6 @@ pNewText(newText)
 }
 
 ceUCAASpeakSetTextBoxTextTranslate::~ceUCAASpeakSetTextBoxTextTranslate(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

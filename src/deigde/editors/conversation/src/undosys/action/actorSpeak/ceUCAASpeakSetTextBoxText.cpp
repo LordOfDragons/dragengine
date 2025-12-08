@@ -59,12 +59,6 @@ ceUCAASpeakSetTextBoxText::ceUCAASpeakSetTextBoxText(ceConversationTopic *topic,
 }
 
 ceUCAASpeakSetTextBoxText::~ceUCAASpeakSetTextBoxText(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -40,12 +40,12 @@
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/sound/deSpeaker.h>
 #include <dragengine/resources/sound/deSound.h>
+#include "ceConversation.h"
+#include "ceWindowDopeSheetListener.h"
 
 
-class ceWindowDopeSheetListener;
 class ceViewDopeSheet;
 class ceWindowMain;
-class ceConversation;
 class ceCameraShot;
 class ceConversationFile;
 class ceConversationTopic;
@@ -94,8 +94,8 @@ public:
 	
 private:
 	ceWindowMain &pWindowMain;
-	ceWindowDopeSheetListener *pListener;
-	ceConversation *pConversation;
+	ceWindowDopeSheetListener::Ref pListener;
+	ceConversation::Ref pConversation;
 	
 	igdeAction::Ref pActionPlayAction;
 	igdeAction::Ref pActionPlayFromhere;
@@ -155,7 +155,7 @@ public:
 	
 	
 	/** \brief Conversation to monitor. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation to monitor. */
 	void SetConversation(ceConversation *conversation);

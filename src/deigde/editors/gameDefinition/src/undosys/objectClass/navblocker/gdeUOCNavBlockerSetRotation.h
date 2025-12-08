@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeObjectClass.h"
+#include "gdeOCNavigationBlocker.h"
 
-class gdeOCNavigationBlocker;
-class gdeObjectClass;
 
 
 
@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavBlockerSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	decVector pOldValue;
 	decVector pNewValue;

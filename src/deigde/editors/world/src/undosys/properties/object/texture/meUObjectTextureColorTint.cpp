@@ -68,9 +68,6 @@ meUObjectTextureColorTint::meUObjectTextureColorTint(meObjectTexture *texture, c
 }
 
 meUObjectTextureColorTint::~meUObjectTextureColorTint(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

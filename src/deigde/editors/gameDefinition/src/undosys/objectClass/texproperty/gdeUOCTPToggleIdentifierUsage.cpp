@@ -59,12 +59,6 @@ pProperty(NULL)
 }
 
 gdeUOCTPToggleIdentifierUsage::~gdeUOCTPToggleIdentifierUsage(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -67,15 +67,6 @@ pTexture(NULL)
 }
 
 gdeUOCCTextureSetName::~gdeUOCCTextureSetName(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

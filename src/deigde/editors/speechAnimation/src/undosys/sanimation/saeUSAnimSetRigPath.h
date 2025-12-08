@@ -26,8 +26,8 @@
 #define _SAEUSANIMSETRIGPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "saeSAnimation.h"
 
-class saeSAnimation;
 
 
 
@@ -36,7 +36,7 @@ class saeSAnimation;
  */
 class saeUSAnimSetRigPath : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	decString pOldPath;
 	decString pNewPath;

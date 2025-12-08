@@ -71,7 +71,7 @@ pDirtyInstances(true)
 	int t;
 	
 	try{
-		pRPropField = new deoglRPropField(ogl.GetRenderThread());
+		pRPropField.TakeOverWith(ogl.GetRenderThread());
 		
 		for(t=0; t<typeCount; t++){
 			TypeAdded(t, propField.GetTypeAt(t));
@@ -138,7 +138,7 @@ void deoglPropField::SyncToRender(){
 
 
 void deoglPropField::SetLODLevel(int level){
-	if(level != pLODLevel){
+	if(pLODLevel != level){
 		pLODLevel = level;
 		pDirtyInstances = true;
 	}
@@ -311,8 +311,6 @@ void deoglPropField::BendStatesChanged(int index, dePropFieldType *type){
 //////////////////////
 
 void deoglPropField::pCleanUp(){
-	if(pRPropField){
-		pRPropField->FreeReference();
 		pRPropField = NULL;
 	}
 	

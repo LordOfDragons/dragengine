@@ -30,9 +30,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decString.h>
+#include "meWorld.h"
 
 // predefinitions
-class meWorld;
 class meHeightTerrainSector;
 class meBitArray;
 
@@ -47,7 +47,7 @@ class deImage;
  */
 class meUHTImportVisibilityImage : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
 	
 	meBitArray *pOldVis;

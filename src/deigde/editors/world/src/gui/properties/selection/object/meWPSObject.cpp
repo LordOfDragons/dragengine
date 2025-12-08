@@ -776,8 +776,8 @@ public:
 		helper.MenuCommand(contextMenu, pPanel.GetActionTextureAddCustom());
 		helper.MenuCommand(contextMenu, pPanel.GetActionTextureAddAllModel());
 		
-		cascade.TakeOver(new igdeMenuCascade(env, "Add From Model",
-			env.GetStockIcon(igdeEnvironment::esiPlus)));
+		cascade.TakeOverWith(env, "Add From Model",
+			env.GetStockIcon(igdeEnvironment::esiPlus));
 		contextMenu.AddChild(cascade);
 		
 		count = textureNames.GetCount();
@@ -792,8 +792,8 @@ public:
 		helper.MenuCommand(contextMenu, pPanel.GetActionTextureRemoveAll());
 		helper.MenuCommand(contextMenu, pPanel.GetActionTextureRemoveAllNotModel());
 		
-		cascade.TakeOver(new igdeMenuCascade(env, "Remove From Model",
-			env.GetStockIcon(igdeEnvironment::esiMinus)));
+		cascade.TakeOverWith(env, "Remove From Model",
+			env.GetStockIcon(igdeEnvironment::esiMinus));
 		contextMenu.AddChild(cascade);
 		
 		count = textureNames.GetCount();
@@ -1450,7 +1450,7 @@ pPreventUpdate(false)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new meWPSObjectListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	
 	pActionMenuClass.TakeOver(new cActionMenuClass(*this));
@@ -1600,9 +1600,6 @@ pPreventUpdate(false)
 
 meWPSObject::~meWPSObject(){
 	SetWorld(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1611,7 +1608,7 @@ meWPSObject::~meWPSObject(){
 ///////////////
 
 void meWPSObject::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -1630,7 +1627,6 @@ void meWPSObject::SetWorld(meWorld *world){
 		editTextureProperties.SetIdentifiers(decStringSet());
 		
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

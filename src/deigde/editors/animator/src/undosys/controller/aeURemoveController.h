@@ -29,9 +29,9 @@
 #include "../../animator/link/aeLinkList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeAnimator.h"
+#include "aeController.h"
 
-class aeController;
-class aeAnimator;
 
 
 
@@ -40,8 +40,8 @@ class aeAnimator;
  */
 class aeURemoveController : public igdeUndo{
 private:
-	aeAnimator *pAnimator;
-	aeController *pController;
+	aeAnimator::Ref pAnimator;
+	aeController::Ref pController;
 	int pIndex;
 	
 	aeLinkList pLinksUsingController;

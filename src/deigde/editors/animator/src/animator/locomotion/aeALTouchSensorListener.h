@@ -41,6 +41,12 @@ class aeAnimatorLocomotion;
  * typical Player AI type collision handling.
  */
 class aeALTouchSensorListener : public deBaseScriptingTouchSensor{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeALTouchSensorListener> Ref;
+	
+	
+
 private:
 	aeAnimatorLocomotion *pLocomotion;
 	

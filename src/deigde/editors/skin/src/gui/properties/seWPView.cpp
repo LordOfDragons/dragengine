@@ -287,7 +287,7 @@ pSkin(NULL)
 	igdeContainer::Ref content, groupBox, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPViewListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -325,9 +325,6 @@ pSkin(NULL)
 seWPView::~seWPView(){
 	SetSkin(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -336,7 +333,7 @@ seWPView::~seWPView(){
 ///////////////
 
 void seWPView::SetSkin(seSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
@@ -346,7 +343,6 @@ void seWPView::SetSkin(seSkin *skin){
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 		pSkin = NULL;
 	}
 	

@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "reRigBone.h"
 
-class reRigBone;
 
 
 
@@ -38,7 +38,7 @@ class reRigBone;
  */
 class reUSetBoneIKResistance : public igdeUndo{
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	decVector pOldIKResistance;
 	decVector pNewIKResistance;

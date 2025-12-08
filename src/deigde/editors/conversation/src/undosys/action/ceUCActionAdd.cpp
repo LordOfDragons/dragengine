@@ -63,12 +63,6 @@ ceUCActionAdd::ceUCActionAdd(ceConversationTopic *topic, ceConversationAction *a
 }
 
 ceUCActionAdd::~ceUCActionAdd(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

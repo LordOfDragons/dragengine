@@ -28,10 +28,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeLink.h"
+#include "aeRule.h"
 
 // predefinitions
-class aeRule;
-class aeLink;
 class aeControllerTarget;
 
 
@@ -43,10 +43,10 @@ class aeControllerTarget;
  */
 class aeURuleTargetRemoveLink : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	aeControllerTarget *pTarget;
 	
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 public:
 	/** \brief Type holding strong reference. */

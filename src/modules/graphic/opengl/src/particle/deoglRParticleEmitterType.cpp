@@ -77,9 +77,6 @@ deoglRParticleEmitterType::~deoglRParticleEmitterType(){
 		delete [] pParameterSamples;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	if(pTextureSamples){
 		delete pTextureSamples;
@@ -132,7 +129,7 @@ void deoglRParticleEmitterType::UpdateParameterSamples(const deParticleEmitterTy
 	const float * const samplesTranspBeam = pParameterSamples + escTransparencyBeam * 256;
 	const float * const samplesEmissiveBeam = pParameterSamples + escEmissivityBeam * 256;
 	
-	pPixelBufferSamples.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat3, 256, 4, 1));
+	pPixelBufferSamples.TakeOverWith(deoglPixelBuffer::epfFloat3, 256, 4, 1);
 	deoglPixelBuffer::sFloat3 *pbdata = pPixelBufferSamples->GetPointerFloat3();
 	int i;
 	
@@ -267,19 +264,12 @@ void deoglRParticleEmitterType::PrepareForRender(){
 
 
 void deoglRParticleEmitterType::SetSkin(deoglRSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	pSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
 }
 
 void deoglRParticleEmitterType::CheckEmitLight(const deParticleEmitterType &type){
@@ -301,7 +291,7 @@ deoglLightPipelines &deoglRParticleEmitterType::GetPipelines(){
 		return pPipelines;
 	}
 	
-	pPipelines.TakeOver(new deoglLightPipelinesParticle(*this));
+	pPipelines.TakeOverWith(*this);
 	
 	deoglBatchedShaderLoading batched(pEmitter.GetRenderThread(), 1000.0f, true);
 	try{

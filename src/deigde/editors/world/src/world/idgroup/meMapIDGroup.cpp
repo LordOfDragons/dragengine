@@ -54,10 +54,4 @@ pPropertyPrefix(propertyPrefix)
 }
 
 meMapIDGroup::~meMapIDGroup(){
-	if(pGroup){
-		pGroup->FreeReference();
-	}
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }

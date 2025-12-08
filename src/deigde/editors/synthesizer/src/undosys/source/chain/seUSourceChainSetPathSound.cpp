@@ -54,13 +54,9 @@ pNewPath(newPath)
 	SetShortInfo("Chain source set path sound");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceChainSetPathSound::~seUSourceChainSetPathSound(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

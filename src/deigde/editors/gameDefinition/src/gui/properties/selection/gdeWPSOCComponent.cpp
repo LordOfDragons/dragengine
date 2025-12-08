@@ -958,7 +958,7 @@ pDirtyEngModelTexNames(true)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSOCComponentListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -1086,9 +1086,6 @@ pDirtyEngModelTexNames(true)
 gdeWPSOCComponent::~gdeWPSOCComponent(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1097,13 +1094,12 @@ gdeWPSOCComponent::~gdeWPSOCComponent(){
 ///////////////
 
 void gdeWPSOCComponent::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

@@ -65,15 +65,6 @@ ceCConditionHasActor *hasActor, const char *newID){
 }
 
 ceUCCHasActorSetActor::~ceUCCHasActorSetActor(){
-	if(pHasActor){
-		pHasActor->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

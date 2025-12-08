@@ -520,10 +520,6 @@ void deClassCanvas::AssignCanvas(dsRealObject *myself, deCanvas *canvas){
 	}
 	
 	nd.canvas = canvas;
-	
-	if(canvas){
-		canvas->AddReference();
-	}
 }
 
 

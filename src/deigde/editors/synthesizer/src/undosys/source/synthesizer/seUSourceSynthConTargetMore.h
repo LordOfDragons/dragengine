@@ -26,8 +26,8 @@
 #define _SEUSOURCESYNTHCONTARGETMORE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSourceSynthesizer.h"
 
-class seSourceSynthesizer;
 
 
 
@@ -36,7 +36,7 @@ class seSourceSynthesizer;
  */
 class seUSourceSynthConTargetMore : public igdeUndo{
 private:
-	seSourceSynthesizer *pSource;
+	seSourceSynthesizer::Ref pSource;
 	
 	
 	

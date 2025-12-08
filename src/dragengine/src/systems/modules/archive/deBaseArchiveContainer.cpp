@@ -47,7 +47,4 @@ pReader(NULL)
 }
 
 deBaseArchiveContainer::~deBaseArchiveContainer(){
-	if(pReader){
-		pReader->FreeReference();
-	}
 }

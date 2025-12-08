@@ -53,9 +53,6 @@ peeUEmitterToggleEmitBurst::peeUEmitterToggleEmitBurst(peeEmitter *emitter){
 }
 
 peeUEmitterToggleEmitBurst::~peeUEmitterToggleEmitBurst(){
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

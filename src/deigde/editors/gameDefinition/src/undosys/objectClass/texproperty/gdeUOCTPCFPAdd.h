@@ -29,10 +29,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeFilePattern.h"
+#include "gdeObjectClass.h"
+#include "gdeProperty.h"
 
-class gdeObjectClass;
-class gdeProperty;
-class gdeFilePattern;
 
 
 
@@ -41,9 +41,9 @@ class gdeFilePattern;
  */
 class gdeUOCTPCFPAdd : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
-	gdeFilePattern *pFilePattern;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
+	gdeFilePattern::Ref pFilePattern;
 	
 	
 	

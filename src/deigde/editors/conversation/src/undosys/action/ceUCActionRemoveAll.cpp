@@ -56,9 +56,6 @@ ceUCActionRemoveAll::ceUCActionRemoveAll(ceConversationTopic *topic){
 }
 
 ceUCActionRemoveAll::~ceUCActionRemoveAll(){
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

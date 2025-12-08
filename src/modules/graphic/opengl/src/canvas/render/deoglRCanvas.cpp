@@ -57,12 +57,6 @@ pMaskRenderTarget(NULL){
 }
 
 deoglRCanvas::~deoglRCanvas(){
-	if(pMask){
-		pMask->FreeReference();
-	}
-	if(pMaskRenderTarget){
-		pMaskRenderTarget->FreeReference();
-	}
 }
 
 
@@ -99,19 +93,12 @@ void deoglRCanvas::SetBlendMode(deCanvas::eBlendModes mode){
 }
 
 void deoglRCanvas::SetMask(deoglRCanvas *mask){
-	if(mask == pMask){
+	if(pMask == mask){
 		return;
 	}
 	
-	if(pMask){
-		pMask->FreeReference();
-	}
 	
 	pMask = mask;
-	
-	if(mask){
-		mask->AddReference();
-	}
 }
 
 void deoglRCanvas::SetVisible(bool visible){
@@ -140,7 +127,7 @@ void deoglRCanvas::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask)
 		pMaskRenderTarget->SetSize(decPoint(width, height));
 		
 	}else{
-		pMaskRenderTarget = new deoglRenderTarget(GetRenderThread(), decPoint(width, height), 1, 8);
+		pMaskRenderTarget.TakeOverWith(GetRenderThread(), decPoint(width, height), 1, 8);
 	}
 }
 

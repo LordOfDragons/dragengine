@@ -59,12 +59,6 @@ pComponent(NULL)
 }
 
 gdeUOCComponentToggleAffectsAudio::~gdeUOCComponentToggleAffectsAudio(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

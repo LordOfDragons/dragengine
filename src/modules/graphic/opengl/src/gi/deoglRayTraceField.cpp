@@ -61,7 +61,7 @@ pProbesPerLine(128), // equals image width of 1024
 pTexRays(renderThread)
 {
 	try{
-		pUBO.TakeOver(new deoglSPBlockUBO(renderThread));
+		pUBO.TakeOverWith(renderThread);
 		deoglSPBlockUBO &ubo = pUBO;
 		
 		ubo.SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());

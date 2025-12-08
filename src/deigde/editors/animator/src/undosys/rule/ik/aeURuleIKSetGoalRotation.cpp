@@ -46,7 +46,6 @@ aeURuleIKSetGoalRotation::aeURuleIKSetGoalRotation(aeRuleInverseKinematic *rule,
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldRot = rule->GetGoalOrientation();
 		pNewRot = newRot;
@@ -82,5 +81,4 @@ void aeURuleIKSetGoalRotation::Redo(){
 //////////////////////
 
 void aeURuleIKSetGoalRotation::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

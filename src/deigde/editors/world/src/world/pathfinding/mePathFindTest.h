@@ -31,15 +31,15 @@
 #include <dragengine/deObject.h>
 #include <dragengine/resources/navigation/navigator/deNavigatorPath.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/navigation/navigator/deNavigator.h>
 
 class meObject;
 class meWorld;
 
 class igdeWDebugDrawerShape;
 
-class deNavigator;
 class deEngine;
-class deDebugDrawer;
 
 
 
@@ -51,9 +51,9 @@ private:
 	deEngine *pEngine;
 	meWorld *pWorld;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSPath;
-	deNavigator *pEngNavigator;
+	deNavigator::Ref pEngNavigator;
 	
 	decDVector pStartPosition;
 	decDVector pGoalPosition;
@@ -86,7 +86,7 @@ public:
 	/** \brief Retrieves the game engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	/** \brief Retrieves the engine navigator. */
-	inline deNavigator *GetEngineNavigator() const{ return pEngNavigator; }
+	inline const deNavigator::Ref &GetEngineNavigator() const{ return pEngNavigator; }
 	
 	/** \brief Retrieves the world or NULL. */
 	inline meWorld *GetWorld() const{ return pWorld; }

@@ -35,6 +35,12 @@ class gdeWPSOCCamera;
  * \brief Object class camera panel listener.
  */
 class gdeWPSOCCameraListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSOCCameraListener> Ref;
+	
+	
+
 private:
 	gdeWPSOCCamera &pPanel;
 	

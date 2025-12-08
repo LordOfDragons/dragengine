@@ -63,7 +63,6 @@ meUDecalSkin::meUDecalSkin(meDecal *decal, const char *newskin){
 		pDecals[0].oldskin = decal->GetSkinPath();
 		pDecals[0].newskin = newskin;
 		pDecals[0].decal = decal;
-		decal->AddReference();
 		
 		pDecalCount = 1;
 		
@@ -95,7 +94,6 @@ meUDecalSkin::meUDecalSkin(meDecalList &decals, const char *newskin){
 			pDecals[pDecalCount].oldskin = decal->GetSkinPath();
 			pDecals[pDecalCount].newskin = newskin;
 			pDecals[pDecalCount].decal = decal;
-			decal->AddReference();
 		}
 		
 	}catch(const deException &){

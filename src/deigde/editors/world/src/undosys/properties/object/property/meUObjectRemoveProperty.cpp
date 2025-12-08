@@ -82,7 +82,4 @@ void meUObjectRemoveProperty::Redo(){
 //////////////////////
 
 void meUObjectRemoveProperty::pCleanUp(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }

@@ -27,9 +27,9 @@
 #define _GDEUOCSKYCONTROLLERREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeSky.h"
+#include "gdeSkyController.h"
 
-class gdeSky;
-class gdeSkyController;
 
 
 /**
@@ -37,8 +37,8 @@ class gdeSkyController;
  */
 class gdeUSkyControllerRemove : public igdeUndo{
 private:
-	gdeSky *pSky;
-	gdeSkyController *pController;
+	gdeSky::Ref pSky;
+	gdeSkyController::Ref pController;
 	
 	
 	

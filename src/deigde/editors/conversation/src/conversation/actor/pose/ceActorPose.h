@@ -30,9 +30,9 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/animator/deAnimator.h>
 
 class igdeEnvironment;
-class deAnimator;
 
 
 
@@ -42,7 +42,7 @@ class deAnimator;
 class ceActorPose : public deObject{
 private:
 	igdeEnvironment &pEnvironment;
-	deAnimator *pEngAnimator;
+	deAnimator::Ref pEngAnimator;
 	
 	decString pName;
 	decString pPathAnimator;
@@ -81,7 +81,7 @@ public:
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** Engine animator or \em NULL. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	
 	
 	

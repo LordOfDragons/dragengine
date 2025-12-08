@@ -53,9 +53,6 @@ seUPropertySetColor::seUPropertySetColor(seProperty *property, const decColor &n
 }
 
 seUPropertySetColor::~seUPropertySetColor(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

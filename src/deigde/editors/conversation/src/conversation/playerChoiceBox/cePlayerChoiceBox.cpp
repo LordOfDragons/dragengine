@@ -72,7 +72,7 @@ pSelectedOption(-1),
 pCanvasView(NULL)
 {
 	try{
-		pCanvasView = conversation.GetEngine()->GetCanvasManager()->CreateCanvasView();
+		pCanvasView.TakeOver(conversation.GetEngine()->GetCanvasManager()->CreateCanvasView());
 		pCanvasView->SetOrder(11.0f);
 		
 		SetPathFont("/igde/fonts/sans_9_border.defont");
@@ -119,7 +119,7 @@ void cePlayerChoiceBox::SetTextColor(const decColor &color){
 void cePlayerChoiceBox::SetTextSize(int size){
 	size = decMath::max(size, 1);
 	
-	if(size == pTextSize){
+	if(pTextSize == size){
 		return;
 	}
 	
@@ -168,7 +168,7 @@ void cePlayerChoiceBox::SetSelectedOption(int index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(index == pSelectedOption){
+	if(pSelectedOption == index){
 		return;
 	}
 	
@@ -280,9 +280,6 @@ void cePlayerChoiceBox::UpdateCanvas(){
 void cePlayerChoiceBox::pCleanUp(){
 	pOptions.RemoveAll();
 	
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 }
 
 

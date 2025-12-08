@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "sePropertyNodeShape.h"
 
-class sePropertyNodeShape;
 
 
 
@@ -38,7 +38,7 @@ class sePropertyNodeShape;
  */
 class seUPropertyNodeShapeSetFillColor : public igdeUndo{
 private:
-	sePropertyNodeShape *pNode;
+	sePropertyNodeShape::Ref pNode;
 	
 	decColor pOldValue;
 	decColor pNewValue;

@@ -27,9 +27,9 @@
 
 #include "../meBaseUndoMove.h"
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "meWorld.h"
 
 class meObjectList;
-class meWorld;
 
 
 
@@ -38,7 +38,7 @@ class meWorld;
  */
 class meUMoveObject : public meBaseUndoMove{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decObjectOrderedSet pObjects;
 	
 	

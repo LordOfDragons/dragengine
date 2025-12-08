@@ -26,9 +26,9 @@
 #define _CEUCTOPICDUPLICATE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationFile.h"
+#include "ceConversationTopic.h"
 
-class ceConversationFile;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCTopicDuplicate : public igdeUndo{
 private:
-	ceConversationFile *pFile;
-	ceConversationTopic *pTopic;
+	ceConversationFile::Ref pFile;
+	ceConversationTopic::Ref pTopic;
 	
 	
 	
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Duplicate topic. */
-	inline ceConversationTopic *GetDuplicateTopic() const{ return pTopic; }
+	inline const ceConversationTopic::Ref &GetDuplicateTopic() const{ return pTopic; }
 	
 	/** \brief Undo action. */
 	virtual void Undo();

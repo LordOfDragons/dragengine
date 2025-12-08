@@ -27,9 +27,9 @@
 #define _GDEUOCBILLBOARDSETBONENAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCBillboard.h"
 
-class gdeOCBillboard;
-class gdeObjectClass;
 
 
 
@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCBillboardSetBoneName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	decString pOldValue;
 	decString pNewValue;

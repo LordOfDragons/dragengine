@@ -85,7 +85,7 @@ dedaiNavBlocker::~dedaiNavBlocker(){
 ///////////////
 
 void dedaiNavBlocker::SetParentWorld(dedaiWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -166,7 +166,7 @@ void dedaiNavBlocker::UpdateDDSBlocker(){
 	if(devmode.GetEnabled() && devmode.GetShowBlockers() && pNavBlocker.GetEnabled()){
 		// ensure the debug drawer exists
 		if(!pDebugDrawer){
-			pDebugDrawer = pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
+			pDebugDrawer.TakeOver(pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer());
 			pDebugDrawer->SetXRay(true);
 			
 			if(pParentWorld){
@@ -204,7 +204,6 @@ void dedaiNavBlocker::UpdateDDSBlocker(){
 			
 			pDDSBlocker = NULL;
 			
-			pDebugDrawer->FreeReference();
 			pDebugDrawer = NULL;
 		}
 	}
@@ -349,9 +348,6 @@ void dedaiNavBlocker::BlockingPriorityChanged(){
 void dedaiNavBlocker::pCleanUp(){
 	SetParentWorld(NULL);
 	
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
 }
 
 void dedaiNavBlocker::pUpdateMatrices(){

@@ -35,6 +35,12 @@ class lpeWindowMain;
  * \brief Window Main Listener.
  */
 class lpeWindowMainListener : public lpeLangPackListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<lpeWindowMainListener> Ref;
+	
+	
+
 private:
 	lpeWindowMain &pWindow;
 	

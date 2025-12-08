@@ -26,9 +26,9 @@
 #define _CEUCACTIONSETDELAY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCActionSetDelay : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
 	float pOldDelay;
 	float pNewDelay;
 	

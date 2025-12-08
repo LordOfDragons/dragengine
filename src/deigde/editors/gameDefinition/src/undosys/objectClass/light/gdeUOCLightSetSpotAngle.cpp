@@ -62,12 +62,6 @@ pLight(NULL)
 }
 
 gdeUOCLightSetSpotAngle::~gdeUOCLightSetSpotAngle(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -59,19 +59,12 @@ deoglRDSRenderableVideoFrame::~deoglRDSRenderableVideoFrame(){
 ///////////////
 
 void deoglRDSRenderableVideoFrame::SetVideoPlayer(deoglRVideoPlayer *videoPlayer){
-	if(videoPlayer == pVideoPlayer){
+	if(pVideoPlayer == videoPlayer){
 		return;
 	}
 	
-	if(pVideoPlayer){
-		pVideoPlayer->FreeReference();
-	}
 	
 	pVideoPlayer = videoPlayer;
-	
-	if(videoPlayer){
-		videoPlayer->AddReference();
-	}
 }
 
 void deoglRDSRenderableVideoFrame::PrepareForRender(const deoglRenderPlanMasked *){

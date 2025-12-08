@@ -61,9 +61,6 @@ meUDecalRotation::meUDecalRotation(meDecal *decal, const decVector &newRotation)
 }
 
 meUDecalRotation::~meUDecalRotation(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

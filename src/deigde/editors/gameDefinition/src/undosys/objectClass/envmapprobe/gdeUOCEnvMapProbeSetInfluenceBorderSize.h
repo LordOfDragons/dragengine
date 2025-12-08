@@ -27,9 +27,9 @@
 #define _GDEUOCENVMAPPROBESETINFLUENCEBORDERSIZE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCEnvMapProbe.h"
 
-class gdeOCEnvMapProbe;
-class gdeObjectClass;
 
 
 
@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCEnvMapProbeSetInfluenceBorderSize : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	float pOldValue;
 	float pNewValue;

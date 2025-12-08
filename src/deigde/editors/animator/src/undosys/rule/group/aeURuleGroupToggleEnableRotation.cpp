@@ -48,7 +48,6 @@ aeURuleGroupToggleEnableRotation::aeURuleGroupToggleEnableRotation(aeRuleGroup *
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		SetShortInfo("Rule group toggle enable rotation");
 		
@@ -81,7 +80,4 @@ void aeURuleGroupToggleEnableRotation::Redo(){
 //////////////////////
 
 void aeURuleGroupToggleEnableRotation::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

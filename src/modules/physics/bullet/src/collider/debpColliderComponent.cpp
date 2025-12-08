@@ -2316,7 +2316,7 @@ void debpColliderComponent::ComponentMeshDirty(){
 
 
 bool debpColliderComponent::IsSimpleShape() const{
-	return pSimplePhyBody != NULL;
+	return pSimplePhyBody != nullptr;
 }
 
 
@@ -2342,9 +2342,6 @@ void debpColliderComponent::pCleanUp(){
 	}
 	if(pSweepCollisionTest){
 		delete pSweepCollisionTest;
-	}
-	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
 	}
 }
 
@@ -2947,16 +2944,13 @@ void debpColliderComponent::pUpdateStaticCollisionTest(){
 		return;
 	}
 	
-	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
 		pStaticCollisionTestShape = NULL;
 	}
 	
 	try{
-		pStaticCollisionTestShape = pCreateBPShape();
+		pStaticCollisionTestShape.TakeOver(pCreateBPShape());
 		
 		if(pStaticCollisionTestShape){
-			pStaticCollisionTestShape->AddReference();
 			pStaticCollisionTest->setCollisionShape(pStaticCollisionTestShape->GetShape());
 			
 		}else{
@@ -2964,8 +2958,6 @@ void debpColliderComponent::pUpdateStaticCollisionTest(){
 		}
 		
 	}catch(const deException &){
-		if(pStaticCollisionTestShape){
-			pStaticCollisionTestShape->FreeReference();
 			pStaticCollisionTestShape = NULL;
 		}
 		throw;

@@ -384,7 +384,7 @@ pSynthesizer(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new seWPControllerListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -436,9 +436,6 @@ pSynthesizer(NULL)
 
 seWPController::~seWPController(){
 	SetSynthesizer(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -447,13 +444,12 @@ seWPController::~seWPController(){
 ///////////////
 
 void seWPController::SetSynthesizer(seSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;

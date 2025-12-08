@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include "saeWord.h"
 
-class saeWord;
 
 
 
@@ -38,7 +38,7 @@ class saeWord;
  */
 class saeUWordSetPhonetics : public igdeUndo{
 private:
-	saeWord *pWord;
+	saeWord::Ref pWord;
 	
 	decUnicodeString pOldPhonetics;
 	decUnicodeString pNewPhonetics;

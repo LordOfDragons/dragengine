@@ -74,23 +74,23 @@ pOptionBoxImageSelectedColorize(1.0f, 1.0f, 1.0f)
 {
 	SetWidgetTextFont(display.GetDefaultFont());
 	
-	pButtonBackgroundImage = new dealImage(display, "guitheme/button_normal.tga");
+	pButtonBackgroundImage.TakeOverWith(display, "guitheme/button_normal.tga");
 	pButtonBackgroundImageBorder[0] = 4;
 	pButtonBackgroundImageBorder[1] = 4;
 	pButtonBackgroundImageBorder[2] = 4;
 	pButtonBackgroundImageBorder[3] = 4;
 	
-	pButtonPressedBackgroundImage = new dealImage(display, "guitheme/button_pressed.tga");
+	pButtonPressedBackgroundImage.TakeOverWith(display, "guitheme/button_pressed.tga");
 	pButtonPressedBackgroundImageBorder[0] = 4;
 	pButtonPressedBackgroundImageBorder[1] = 4;
 	pButtonPressedBackgroundImageBorder[2] = 4;
 	pButtonPressedBackgroundImageBorder[3] = 4;
 	
-	pCheckBoxImageUnchecked = new dealImage(display, "guitheme/checkbox_unchecked.tga");
-	pCheckBoxImageChecked = new dealImage(display, "guitheme/checkbox_checked.tga");
+	pCheckBoxImageUnchecked.TakeOverWith(display, "guitheme/checkbox_unchecked.tga");
+	pCheckBoxImageChecked.TakeOverWith(display, "guitheme/checkbox_checked.tga");
 	
-	pOptionBoxImageDeselected = new dealImage(display, "guitheme/optionbox_deselected.tga");
-	pOptionBoxImageSelected = new dealImage(display, "guitheme/optionbox_selected.tga");
+	pOptionBoxImageDeselected.TakeOverWith(display, "guitheme/optionbox_deselected.tga");
+	pOptionBoxImageSelected.TakeOverWith(display, "guitheme/optionbox_selected.tga");
 }
 
 dealGuiTheme::dealGuiTheme(const dealGuiTheme &copy) :
@@ -149,30 +149,9 @@ pOptionBoxImageSelectedColorize(copy.pOptionBoxImageSelectedColorize)
 }
 
 dealGuiTheme::~dealGuiTheme(){
-	if(pWidgetTextFont){
-		pWidgetTextFont->FreeReference();
-	}
 	
-	if(pButtonBackgroundImage){
-		pButtonBackgroundImage->FreeReference();
-	}
-	if(pButtonPressedBackgroundImage){
-		pButtonPressedBackgroundImage->FreeReference();
-	}
 	
-	if(pCheckBoxImageUnchecked){
-		pCheckBoxImageUnchecked->FreeReference();
-	}
-	if(pCheckBoxImageChecked){
-		pCheckBoxImageChecked->FreeReference();
-	}
 	
-	if(pOptionBoxImageDeselected){
-		pOptionBoxImageDeselected->FreeReference();
-	}
-	if(pOptionBoxImageSelected){
-		pOptionBoxImageSelected->FreeReference();
-	}
 }
 
 
@@ -189,19 +168,12 @@ void dealGuiTheme::SetWidgetTextColor(const decColor &color){
 }
 
 void dealGuiTheme::SetWidgetTextFont(dealFont *font){
-	if(font == pWidgetTextFont){
+	if(pWidgetTextFont == font){
 		return;
 	}
 	
-	if(pWidgetTextFont){
-		pWidgetTextFont->FreeReference();
-	}
 	
 	pWidgetTextFont = font;
-	
-	if(font){
-		font->AddReference();
-	}
 }
 
 void dealGuiTheme::SetWidgetTextFontSize(int size){
@@ -219,19 +191,12 @@ void dealGuiTheme::SetButtonTextColor(const decColor &color){
 }
 
 void dealGuiTheme::SetButtonBackgroundImage(dealImage *image){
-	if(image == pButtonBackgroundImage){
+	if(pButtonBackgroundImage == image){
 		return;
 	}
 	
-	if(pButtonBackgroundImage){
-		pButtonBackgroundImage->FreeReference();
-	}
 	
 	pButtonBackgroundImage = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
 int dealGuiTheme::GetButtonBackgroundImageBorder(int border) const{
@@ -269,19 +234,12 @@ void dealGuiTheme::SetButtonPressedTextColor(const decColor &color){
 }
 
 void dealGuiTheme::SetButtonPressedBackgroundImage(dealImage *image){
-	if(image == pButtonPressedBackgroundImage){
+	if(pButtonPressedBackgroundImage == image){
 		return;
 	}
 	
-	if(pButtonPressedBackgroundImage){
-		pButtonPressedBackgroundImage->FreeReference();
-	}
 	
 	pButtonPressedBackgroundImage = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
 int dealGuiTheme::GetButtonPressedBackgroundImageBorder(int border) const{
@@ -319,35 +277,21 @@ void dealGuiTheme::SetCheckBoxTextColor(const decColor &color){
 }
 
 void dealGuiTheme::SetCheckBoxImageUnchecked(dealImage *image){
-	if(image == pCheckBoxImageUnchecked){
+	if(pCheckBoxImageUnchecked == image){
 		return;
 	}
 	
-	if(pCheckBoxImageUnchecked){
-		pCheckBoxImageUnchecked->FreeReference();
-	}
 	
 	pCheckBoxImageUnchecked = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
 void dealGuiTheme::SetCheckBoxImageChecked(dealImage *image){
-	if(image == pCheckBoxImageChecked){
+	if(pCheckBoxImageChecked == image){
 		return;
 	}
 	
-	if(pCheckBoxImageChecked){
-		pCheckBoxImageChecked->FreeReference();
-	}
 	
 	pCheckBoxImageChecked = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
 void dealGuiTheme::SetCheckBoxImageScale(float scale){
@@ -373,35 +317,21 @@ void dealGuiTheme::SetOptionBoxTextColor(const decColor &color){
 }
 
 void dealGuiTheme::SetOptionBoxImageDeselected(dealImage *image){
-	if(image == pOptionBoxImageDeselected){
+	if(pOptionBoxImageDeselected == image){
 		return;
 	}
 	
-	if(pOptionBoxImageDeselected){
-		pOptionBoxImageDeselected->FreeReference();
-	}
 	
 	pOptionBoxImageDeselected = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
 void dealGuiTheme::SetOptionBoxImageSelected(dealImage *image){
-	if(image == pOptionBoxImageSelected){
+	if(pOptionBoxImageSelected == image){
 		return;
 	}
 	
-	if(pOptionBoxImageSelected){
-		pOptionBoxImageSelected->FreeReference();
-	}
 	
 	pOptionBoxImageSelected = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
 void dealGuiTheme::SetOptionBoxImageScale(float scale){

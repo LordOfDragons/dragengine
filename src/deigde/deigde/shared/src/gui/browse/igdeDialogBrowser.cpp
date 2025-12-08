@@ -327,7 +327,7 @@ void igdeDialogBrowser::RebuildPISelectedItem(){
 	
 	igdeIcon::Ref icon;
 	const int iconSize = GetPreviewIconSize();
-	icon.TakeOver(new igdeIcon(*pvmgr.GetImageCreating(), iconSize, iconSize));
+	icon.TakeOverWith(*pvmgr.GetImageCreating(), iconSize, iconSize);
 	
 	const igdeBrowseItemGDPreviewListener::Ref listener(
 		igdeBrowseItemGDPreviewListener::Ref::NewWith(pListItems, item, iconSize));

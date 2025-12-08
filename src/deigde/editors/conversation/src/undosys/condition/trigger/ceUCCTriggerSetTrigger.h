@@ -26,10 +26,10 @@
 #define _CEUCCTRIGGERSETTRIGGER_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCConditionTrigger.h"
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceCConditionTrigger;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -38,9 +38,9 @@ class ceConversationTopic;
  */
 class ceUCCTriggerSetTrigger : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionTrigger *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionTrigger::Ref pCondition;
 	decString pOldTrigger;
 	decString pNewTrigger;
 	

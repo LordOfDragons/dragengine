@@ -26,9 +26,9 @@
 #define _CEUCACTIONADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceConversationAction;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationAction;
  */
 class ceUCActionAdd : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
 	int pIndex;
 	
 public:

@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
+#include "aeRule.h"
 
-class aeRule;
 
 
 
@@ -38,7 +38,7 @@ class aeRule;
  */
 class aeUSetRuleBlendMode : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 	deAnimatorRule::eBlendModes pOldMode;
 	deAnimatorRule::eBlendModes pNewMode;

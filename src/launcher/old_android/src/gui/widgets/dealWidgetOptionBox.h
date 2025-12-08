@@ -27,11 +27,11 @@
 
 #include "dealWidgetLayoutFlow.h"
 #include "../../common/string/decString.h"
+#include "dealWidgetOptionGroup.h"
 
 class dealWidgetLabel;
 class dealWidgetImage;
 class dealImage;
-class dealWidgetOptionGroup;
 
 
 
@@ -45,7 +45,7 @@ private:
 	dealWidgetImage *pBoxImageDeselected;
 	dealWidgetImage *pBoxImageSelected;
 	
-	dealWidgetOptionGroup *pGroup;
+	dealWidgetOptionGroup::Ref pGroup;
 	bool pSelected;
 	
 public:
@@ -96,7 +96,7 @@ public:
 	
 	
 	/** \brief Group or \em NULL if not assigned to one. */
-	inline dealWidgetOptionGroup *GetGroup() const{ return pGroup; }
+	inline const dealWidgetOptionGroup::Ref &GetGroup() const{ return pGroup; }
 	
 	/** \brief Set group or \em NULL if not assigned to one. */
 	void SetGroup(dealWidgetOptionGroup *group);

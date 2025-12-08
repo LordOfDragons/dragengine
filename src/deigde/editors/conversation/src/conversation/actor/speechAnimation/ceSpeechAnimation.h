@@ -31,10 +31,10 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 
 class deEngine;
-class deAnimator;
-class deAnimatorInstance;
 
 
 
@@ -50,8 +50,8 @@ private:
 	
 	deEngine *pEngine;
 	
-	deAnimator *pEngAnimator;
-	deAnimatorInstance *pEngAnimatorInstance;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
 	
 	decString pNeutralMoveName;
 	decStringSet pNeutralVertexPositionSets;
@@ -86,10 +86,10 @@ public:
 	inline deEngine *GetEngine() const{ return pEngine; }
 	
 	/** Animator. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	
 	/** Animator instance. */
-	inline deAnimatorInstance *GetEngineAnimatorInstance() const{ return pEngAnimatorInstance; }
+	inline const deAnimatorInstance::Ref &GetEngineAnimatorInstance() const{ return pEngAnimatorInstance; }
 	
 	/** Neutral move name. */
 	inline const decString &GetNeutralMoveName() const{ return pNeutralMoveName; }

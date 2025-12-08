@@ -27,9 +27,9 @@
 #define _GDEUOBJECTCLASSSETDEFAULTINHERITPROPERTYPREFIX_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
 
 class gdeOCSpeaker;
-class gdeObjectClass;
 
 
 
@@ -38,7 +38,7 @@ class gdeObjectClass;
  */
 class gdeUOCSetDefaultInheritPropertyPrefix : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decString pOldValue;
 	decString pNewValue;

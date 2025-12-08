@@ -65,10 +65,7 @@ pVFSPath("/"),
 
 pSkinManager(NULL),
 pClassManager(NULL),
-pSkyManager(NULL),
-
-pDefaultModel(NULL),
-pDefaultSkin(NULL)
+pSkyManager(NULL)
 {
 	try{
 		pSkinManager = new igdeGDSkinManager;
@@ -157,48 +154,24 @@ void igdeGameDefinition::UpdateWithFound(const igdeGameDefinition &gameDefinitio
 ///////////////////
 
 void igdeGameDefinition::SetDefaultModel(deModel *model){
-	if(pDefaultModel){
-		pDefaultModel->FreeReference();
-		pDefaultModel = NULL;
-	}
-	
 	pDefaultModel = model;
-	
-	if(model){
-		model->AddReference();
-	}
 }
 
 void igdeGameDefinition::SetDefaultSkin(deSkin *skin){
-	if(pDefaultSkin){
-		pDefaultSkin->FreeReference();
-		pDefaultSkin = NULL;
-	}
-	
 	pDefaultSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
 }
 
 void igdeGameDefinition::UpdateEngineObjects(){
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 	
-	// free old engine objects
-	if(pDefaultModel){
-		pDefaultModel->FreeReference();
-		pDefaultModel = NULL;
-	}
-	if(pDefaultSkin){
-		pDefaultSkin->FreeReference();
-		pDefaultSkin = NULL;
-	}
+	pDefaultModel = nullptr;
+	pDefaultSkin = nullptr;
 	
-	// load default engine objects
 	try{
-		pDefaultModel = engine.GetModelManager()->LoadModel("/igde/models/box/box.demodel", "/");
-		pDefaultSkin = engine.GetSkinManager()->LoadSkin("/igde/models/box/materials/problem.deskin", "/");
+		pDefaultModel.TakeOver(engine.GetModelManager()->LoadModel(
+			"/igde/models/box/box.demodel", "/"));
+		pDefaultSkin.TakeOver(engine.GetSkinManager()->LoadSkin(
+			"/igde/models/box/materials/problem.deskin", "/"));
 		
 	}catch(const deException &e){
 		e.PrintError();
@@ -306,10 +279,4 @@ void igdeGameDefinition::pCleanUp(){
 	}
 	pParticleEmitterManager.RemoveAllEmitters();
 	
-	if(pDefaultModel){
-		pDefaultModel->FreeReference();
-	}
-	if(pDefaultSkin){
-		pDefaultSkin->FreeReference();
-	}
 }

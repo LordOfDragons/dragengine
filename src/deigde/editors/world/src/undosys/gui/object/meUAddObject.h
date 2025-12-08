@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
+#include "meObject.h"
+#include "meWorld.h"
 
-class meWorld;
-class meObject;
 
 
 
@@ -38,9 +38,9 @@ class meObject;
  */
 class meUAddObject : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the object to add. */
-	inline meObject *GetObject() const{ return pObject; }
+	inline const meObject::Ref &GetObject() const{ return pObject; }
 	
 	/** \brief Undo. */
 	virtual void Undo();

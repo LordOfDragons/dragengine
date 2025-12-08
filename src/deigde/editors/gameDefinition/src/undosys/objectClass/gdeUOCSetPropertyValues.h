@@ -29,8 +29,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decStringDictionary.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 
@@ -39,7 +39,7 @@ class gdeObjectClass;
  */
 class gdeUOCSetPropertyValues : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;

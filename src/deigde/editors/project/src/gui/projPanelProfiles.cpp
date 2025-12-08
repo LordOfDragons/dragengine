@@ -670,7 +670,7 @@ pListener(NULL)
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new projPanelProfilesListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	
 	
@@ -846,9 +846,6 @@ pListener(NULL)
 projPanelProfiles::~projPanelProfiles(){
 	SetProject(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -867,7 +864,6 @@ void projPanelProfiles::SetProject(projProject *project){
 	
 	if(pProject){
 		pProject->RemoveListener(pListener);
-		pProject->FreeReference();
 	}
 	
 	pProject = project;
@@ -882,7 +878,7 @@ void projPanelProfiles::SetProject(projProject *project){
 }
 
 void projPanelProfiles::UpdateProject(){
-	pListProfiles->SetEnabled(pProject != NULL);
+	pListProfiles->SetEnabled(pProject != nullptr);
 }
 
 projProfile *projPanelProfiles::GetActiveProfile() const{

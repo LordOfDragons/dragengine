@@ -75,9 +75,6 @@ decThreadSafeObjectOrderedSet::decThreadSafeObjectOrderedSet(const decThreadSafe
 		for(pObjectCount=0; pObjectCount<count; pObjectCount++){
 			object = set.pObjects[pObjectCount];
 			pObjects[pObjectCount] = object;
-			if(object){
-				object->AddReference();
-			}
 		}
 	}
 }
@@ -145,10 +142,6 @@ void decThreadSafeObjectOrderedSet::SetAt(int index, deThreadSafeObject *object)
 	}
 	
 	pObjects[index] = object;
-	
-	if(object){
-		object->AddReference();
-	}
 }
 
 void decThreadSafeObjectOrderedSet::Add(deThreadSafeObject *object){
@@ -168,9 +161,6 @@ void decThreadSafeObjectOrderedSet::Add(deThreadSafeObject *object){
 	}
 	
 	pObjects[pObjectCount] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
@@ -191,9 +181,6 @@ void decThreadSafeObjectOrderedSet::AddIfAbsent(deThreadSafeObject *object){
 	}
 	
 	pObjects[pObjectCount] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
@@ -219,9 +206,6 @@ void decThreadSafeObjectOrderedSet::Insert(deThreadSafeObject *object, int index
 		pObjects[i] = pObjects[i - 1];
 	}
 	pObjects[index] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
@@ -341,9 +325,6 @@ decThreadSafeObjectOrderedSet decThreadSafeObjectOrderedSet::GetHead(int count) 
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return set;
@@ -372,9 +353,6 @@ void decThreadSafeObjectOrderedSet::GetHead(decThreadSafeObjectOrderedSet &set, 
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 }
 
@@ -397,9 +375,6 @@ decThreadSafeObjectOrderedSet decThreadSafeObjectOrderedSet::GetTail(int count) 
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[from + set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return set;
@@ -429,9 +404,6 @@ void decThreadSafeObjectOrderedSet::GetTail(decThreadSafeObjectOrderedSet &set, 
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[from + set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 }
 
@@ -454,9 +426,6 @@ decThreadSafeObjectOrderedSet decThreadSafeObjectOrderedSet::GetMiddle(int from,
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[from + set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return set;
@@ -486,9 +455,6 @@ void decThreadSafeObjectOrderedSet::GetMiddle(decThreadSafeObjectOrderedSet &set
 	for(set.pObjectCount=0; set.pObjectCount<count; set.pObjectCount++){
 		object = pObjects[from + set.pObjectCount];
 		set.pObjects[set.pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 }
 
@@ -683,9 +649,6 @@ decThreadSafeObjectOrderedSet decThreadSafeObjectOrderedSet::operator+(const dec
 	for(i=0; i<pObjectCount; i++){
 		object = pObjects[i];
 		nset.pObjects[i] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	for(i=0; i<set.pObjectCount; i++){
@@ -718,9 +681,6 @@ decThreadSafeObjectOrderedSet &decThreadSafeObjectOrderedSet::operator=(const de
 	for(pObjectCount=0; pObjectCount<set.pObjectCount; pObjectCount++){
 		object = set.pObjects[pObjectCount];
 		pObjects[pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return *this;

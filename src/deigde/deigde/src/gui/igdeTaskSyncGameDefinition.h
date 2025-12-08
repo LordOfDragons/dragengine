@@ -29,9 +29,9 @@
 
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/string/decStringList.h>
+#include "igdeGameDefinition.h"
 
 class igdeWindowMain;
-class igdeGameDefinition;
 
 
 
@@ -60,8 +60,8 @@ private:
 	igdeWindowMain &pWindowMain;
 	decPointerList pEditorTasks;
 	
-	igdeGameDefinition *pOldProjectGameDef;
-	igdeGameDefinition *pOldGameDef;
+	igdeGameDefinition::Ref pOldProjectGameDef;
+	igdeGameDefinition::Ref pOldGameDef;
 	eStates pState;
 	int pTaskIndex;
 	

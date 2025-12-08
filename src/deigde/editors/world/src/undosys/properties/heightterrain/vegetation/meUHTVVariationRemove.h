@@ -28,10 +28,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meHTVVariation.h"
+#include "meHTVegetationLayer.h"
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVVariation;
 
 
 
@@ -42,8 +42,8 @@ class meHTVVariation;
  */
 class meUHTVVariationRemove : public igdeUndo{
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVVariation *pVariation;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVVariation::Ref pVariation;
 	int pIndex;
 	
 public:

@@ -764,7 +764,7 @@ pPanelCTrigger(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox, formLine;
 	
-	pListener = new ceWPTopicListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	
 	// conversation
@@ -793,7 +793,7 @@ pPanelCTrigger(NULL)
 	helper.TreeList(10, "Topic Actions", pTreeActions, new cTreeActionsListener(*this));
 	groupActions->AddChild(pTreeActions, igdeContainerBorder::eaCenter);
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher.TakeOverWith(env);
 	groupActions->AddChild(pSwitcher, igdeContainerBorder::eaBottom);
 	
 	helper.Label(pSwitcher, ""); // empty panel
@@ -860,9 +860,6 @@ pPanelCTrigger(NULL)
 ceWPTopic::~ceWPTopic(){
 	SetConversation(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -871,7 +868,7 @@ ceWPTopic::~ceWPTopic(){
 ///////////////
 
 void ceWPTopic::SetConversation(ceConversation *conversation){
-	if(conversation == pConversation){
+	if(pConversation == conversation){
 		return;
 	}
 	
@@ -883,7 +880,6 @@ void ceWPTopic::SetConversation(ceConversation *conversation){
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;

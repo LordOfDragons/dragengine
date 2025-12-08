@@ -58,9 +58,6 @@ peeUControllerMoveDown::peeUControllerMoveDown(peeController *controller){
 }
 
 peeUControllerMoveDown::~peeUControllerMoveDown(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

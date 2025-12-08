@@ -55,9 +55,6 @@ pBitCount(renderable.GetBitCount())
 
 deoglRDSRenderableCanvas::~deoglRDSRenderableCanvas(){
 	LEAK_CHECK_FREE(GetDynamicSkin().GetRenderThread(), DSRenderableCanvas);
-	if(pCanvas){
-		pCanvas->FreeReference();
-	}
 }
 
 
@@ -66,19 +63,12 @@ deoglRDSRenderableCanvas::~deoglRDSRenderableCanvas(){
 ///////////////
 
 void deoglRDSRenderableCanvas::SetCanvas(deoglRCanvasView *canvas){
-	if(canvas == pCanvas){
+	if(pCanvas == canvas){
 		return;
 	}
 	
-	if(pCanvas){
-		pCanvas->FreeReference();
-	}
 	
 	pCanvas = canvas;
-	
-	if(canvas){
-		canvas->AddReference();
-	}
 }
 
 void deoglRDSRenderableCanvas::SetComponentCount(int componentCount){

@@ -83,7 +83,6 @@ pTargetCount(0)
 					
 					pTargets[pTargetCount].layer = layer;
 					pTargets[pTargetCount].target = target;
-					layer->AddReference();
 					pTargetCount++;
 				}
 			}
@@ -141,10 +140,4 @@ void seULinkRemove::pCleanUp(){
 		pTargets[i].layer->FreeReference();
 	}
 	
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }

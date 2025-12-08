@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 projUProfileSetIdentifier::~projUProfileSetIdentifier(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

@@ -52,7 +52,7 @@
 ////////////////////////////
 
 igdeGDClassManager::igdeGDClassManager(){
-	pCategories.TakeOver(new igdeGDCategory("Classes"));
+	pCategories.TakeOverWith("Classes");
 }
 
 igdeGDClassManager::~igdeGDClassManager(){
@@ -197,7 +197,7 @@ void igdeGDClassManager::UpdateWith(const igdeGDClassManager &classManager){
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdClass.TakeOver(new igdeGDClass(*classManager.GetAt(i)));
+		gdClass.TakeOverWith(*classManager.GetAt(i));
 		igdeGDClass * const gdclassCheck = GetNamed(gdClass->GetName());
 		if(gdclassCheck){
 			Remove(gdclassCheck);
@@ -278,7 +278,7 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 				reused = true;
 				
 			}else{
-				gdclass.TakeOver(new igdeGDClass(*eclass));
+				gdclass.TakeOverWith(*eclass);
 				gdclass->ResolveInheritClasses(*this);
 				
 				if(detectRetry){

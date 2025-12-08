@@ -80,9 +80,6 @@ ceUCActionPaste::ceUCActionPaste(ceConversationTopic *topic, const ceConversatio
 
 ceUCActionPaste::~ceUCActionPaste(){
 	pActions.RemoveAll();
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

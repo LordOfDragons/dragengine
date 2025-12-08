@@ -127,7 +127,7 @@ void deoglRCanvasPaint::SetPointCount(int count){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(count == pPointCount){
+	if(pPointCount == count){
 		return;
 	}
 	
@@ -176,7 +176,6 @@ void deoglRCanvasPaint::pCleanUp(){
 	}
 	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
-		pVBOBlock->FreeReference();
 	}
 }
 

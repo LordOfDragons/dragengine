@@ -49,7 +49,7 @@ pValue(renderable.GetValue()),
 pDirty(true)
 {
 	try{
-		pRRenderableValue = new deoglRDSRenderableValue(*dynamicSkin.GetRDynamicSkin());
+		pRRenderableValue.TakeOverWith(*dynamicSkin.GetRDynamicSkin());
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -99,7 +99,4 @@ void deoglDSRenderableValue::SyncToRender(){
 //////////////////////
 
 void deoglDSRenderableValue::pCleanUp(){
-	if(pRRenderableValue){
-		pRRenderableValue->FreeReference();
-	}
 }

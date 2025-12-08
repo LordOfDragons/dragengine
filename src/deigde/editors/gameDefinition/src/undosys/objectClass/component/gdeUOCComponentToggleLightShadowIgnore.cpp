@@ -59,12 +59,6 @@ pComponent(NULL)
 }
 
 gdeUOCComponentToggleLightShadowIgnore::~gdeUOCComponentToggleLightShadowIgnore(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -26,8 +26,8 @@
 #define _SEUPROPERTYNODESETROTATION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "sePropertyNode.h"
 
-class sePropertyNode;
 
 
 
@@ -36,7 +36,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeSetRotation : public igdeUndo{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	float pOldValue;
 	float pNewValue;

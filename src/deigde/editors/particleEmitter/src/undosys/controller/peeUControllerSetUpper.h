@@ -26,8 +26,8 @@
 #define _PEEUCONTROLLERSETUPPER_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "peeController.h"
 
-class peeController;
 
 
 /**
@@ -35,7 +35,7 @@ class peeController;
  */
 class peeUControllerSetUpper : public igdeUndo{
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	
 	float pOldLower;
 	float pOldUpper;

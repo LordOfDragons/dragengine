@@ -57,9 +57,6 @@ pGameDefinition(NULL)
 }
 
 gdeUGDSetDescription::~gdeUGDSetDescription(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

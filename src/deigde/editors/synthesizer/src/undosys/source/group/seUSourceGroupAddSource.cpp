@@ -56,12 +56,6 @@ pIndex(index)
 }
 
 seUSourceGroupAddSource::~seUSourceGroupAddSource(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }
 
 

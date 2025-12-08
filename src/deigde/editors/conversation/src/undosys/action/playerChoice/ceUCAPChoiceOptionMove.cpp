@@ -75,15 +75,6 @@ ceUCAPChoiceOptionMove::ceUCAPChoiceOptionMove(ceConversationTopic *topic, ceCAP
 }
 
 ceUCAPChoiceOptionMove::~ceUCAPChoiceOptionMove(){
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

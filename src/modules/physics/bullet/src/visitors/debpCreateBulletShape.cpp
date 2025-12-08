@@ -94,12 +94,8 @@ void debpCreateBulletShape::SetNoMargin(bool noMargin){
 }
 
 void debpCreateBulletShape::Reset(){
-	if(pBulletCompoundShape){
-		pBulletCompoundShape->FreeReference();
 		pBulletCompoundShape = NULL;
 	}
-	if(pBulletShape){
-		pBulletShape->FreeReference();
 		pBulletShape = NULL;
 	}
 	
@@ -151,7 +147,7 @@ void debpCreateBulletShape::VisitShapeSphere(decShapeSphere &sphere){
 	const decVector position = sphere.GetPosition() + pOffset;
 	const decVector2 &axisScaling = sphere.GetAxisScaling();
 	const float radius = sphere.GetRadius();
-	const bool hasNoShape = (pBulletShape == NULL);
+	const bool hasNoShape = (pBulletShape == nullptr);
 	debpBulletShape *bulletShapeSphere = NULL;
 	debpBulletCompoundShape *bulletShapeCompound = NULL;
 	btCompoundShape *compoundShape = NULL;
@@ -254,7 +250,7 @@ void debpCreateBulletShape::VisitShapeBox(decShapeBox &box){
 	const decVector &halfExtends = box.GetHalfExtends();
 	const decVector2 &tapering = box.GetTapering();
 	float smallestHalfExtends, ccdRadius = 0.0f;
-	bool hasNoShape = (pBulletShape == NULL);
+	bool hasNoShape = (pBulletShape == nullptr);
 	bool needsTransform = false;
 	btConvexHullShape *hullShape = NULL;
 	debpBulletShape *bulletShapeHull = NULL;
@@ -384,7 +380,7 @@ void debpCreateBulletShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 	const float topRadius = cylinder.GetTopRadius();
 	//float bottomRadius = cylinder->GetBottomRadius();
 	debpBulletShape *bulletShapeCylinder = NULL;
-	bool hasNoShape = (pBulletShape == NULL);
+	bool hasNoShape = (pBulletShape == nullptr);
 	btCylinderShape *cylinderShape = NULL;
 	bool needsTransform = false;
 	
@@ -443,7 +439,7 @@ void debpCreateBulletShape::VisitShapeCapsule(decShapeCapsule &capsule){
 	const float bottomRadius = capsule.GetBottomRadius();
 	//const decVector2 &topAxisScaling = capsule->GetTopAxisScaling();
 	//const decVector2 &bottomAxisScaling = capsule->GetBottomAxisScaling();
-	const bool hasNoShape = (pBulletShape == NULL);
+	const bool hasNoShape = (pBulletShape == nullptr);
 	debpBulletShape *bulletShapeCapsule = NULL;
 	btMultiSphereShape *capsuleShape = NULL;
 	bool needsTransform = false;
@@ -509,7 +505,7 @@ void debpCreateBulletShape::VisitShapeHull(decShapeHull &hull){
 	const decVector position(hull.GetPosition() + pOffset);
 	const decQuaternion &orientation = hull.GetOrientation();
 	const int pointCount = hull.GetPointCount();
-	const bool hasNoShape = pBulletShape == NULL;
+	const bool hasNoShape = pBulletShape == nullptr;
 	decVector center, minExtends, maxExtends;
 	debpBulletShape *bulletShapeHull = NULL;
 	btConvexHullShape *hullShape = NULL;
@@ -614,7 +610,6 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 			transform.setIdentity(); // required, constructor does not initialize anything
 			compoundShape->addChildShape(transform, pBulletShape->GetShape());
 			bulletShape->AddChildShape(pBulletShape);
-			pBulletShape->FreeReference();
 			pBulletShape = NULL;
 		}
 		
@@ -625,9 +620,6 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 		throw;
 	}
 	
-	if(pBulletCompoundShape){
-		pBulletCompoundShape->FreeReference();
-	}
 	pBulletCompoundShape = bulletShape;
 }
 
@@ -655,9 +647,6 @@ void debpCreateBulletShape::pAddCollisionShape(debpBulletShape *collisionShape){
 		printf("debpCreateBulletShape.pAddCollisionShape: set collision shape\n");
 		#endif
 		
-		if(pBulletShape){
-			pBulletShape->FreeReference();
-		}
 		pBulletShape = collisionShape;
 	}
 }

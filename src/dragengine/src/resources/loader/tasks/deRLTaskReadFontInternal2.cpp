@@ -81,9 +81,6 @@ pTaskImage(NULL)
 }
 
 deRLTaskReadFontInternal2::~deRLTaskReadFontInternal2(){
-	if(pTaskImage){
-		pTaskImage->FreeReference();
-	}
 }
 
 

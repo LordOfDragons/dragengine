@@ -26,8 +26,8 @@
 #define _MEUNDODATANAVSPACE_H_
 
 #include <dragengine/common/math/decMath.h>
+#include "meNavigationSpace.h"
 
-class meNavigationSpace;
 
 
 
@@ -42,7 +42,7 @@ class meNavigationSpace;
  */
 class meUndoDataNavSpace{
 private:
-	meNavigationSpace *pNavSpace;
+	meNavigationSpace::Ref pNavSpace;
 	decDVector pOldPosition;
 	decVector pOldOrientation;
 	
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Navigation space. */
-	inline meNavigationSpace *GetNavSpace() const{ return pNavSpace; }
+	inline const meNavigationSpace::Ref &GetNavSpace() const{ return pNavSpace; }
 	
 	/** \brief Position before action. */
 	inline const decDVector &GetOldPosition() const{ return pOldPosition; }

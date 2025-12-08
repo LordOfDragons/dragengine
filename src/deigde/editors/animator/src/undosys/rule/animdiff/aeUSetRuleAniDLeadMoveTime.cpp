@@ -46,7 +46,6 @@ aeUSetRuleAniDLeadMoveTime::aeUSetRuleAniDLeadMoveTime(aeRuleAnimationDifference
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldTime = rule->GetLeadingMoveTime();
 		pNewTime = newTime;
@@ -82,5 +81,4 @@ void aeUSetRuleAniDLeadMoveTime::Redo(){
 //////////////////////
 
 void aeUSetRuleAniDLeadMoveTime::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

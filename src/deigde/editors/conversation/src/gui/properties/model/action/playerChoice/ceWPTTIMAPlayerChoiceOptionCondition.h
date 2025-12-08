@@ -26,9 +26,9 @@
 #define _CEWPTTIMAPLAYERCHOICEOPTIONCONDITION_H_
 
 #include "../../condition/ceWPTTIMConditionContainer.h"
+#include "ceCAPlayerChoiceOption.h"
 
 class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
 class ceWPTTIMAPlayerChoice;
 class ceWPTTIMAPlayerChoiceOption;
 
@@ -39,7 +39,7 @@ class ceWPTTIMAPlayerChoiceOption;
  */
 class ceWPTTIMAPlayerChoiceOptionCondition : public ceWPTTIMConditionContainer{
 private:
-	ceCAPlayerChoiceOption *pOption;
+	ceCAPlayerChoiceOption::Ref pOption;
 	
 	
 	

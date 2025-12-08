@@ -68,9 +68,6 @@ meUObjectTextureTCScaling::meUObjectTextureTCScaling(meObjectTexture *texture, c
 }
 
 meUObjectTextureTCScaling::~meUObjectTextureTCScaling(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

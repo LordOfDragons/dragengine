@@ -63,12 +63,6 @@ pForceField(NULL)
 }
 
 gdeUOCRemoveForceField::~gdeUOCRemoveForceField(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

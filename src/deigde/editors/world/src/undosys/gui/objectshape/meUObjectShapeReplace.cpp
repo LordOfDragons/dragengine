@@ -88,9 +88,6 @@ meUObjectShapeReplace::meUObjectShapeReplace(meObject *object, const char *prope
 }
 
 meUObjectShapeReplace::~meUObjectShapeReplace(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

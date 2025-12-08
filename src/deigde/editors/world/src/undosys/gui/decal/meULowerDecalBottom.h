@@ -29,10 +29,10 @@
 // includes
 #include <deigde/undo/igdeUndo.h>
 #include "dragengine/common/math/decMath.h"
+#include "meDecal.h"
 
 // predefinitions
 class meWorld;
-class meDecal;
 
 
 
@@ -42,7 +42,7 @@ class meDecal;
 class meULowerDecalBottom : public igdeUndo{
 private:
 	meWorld *pWorld;
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	int pOldIndex;
 	

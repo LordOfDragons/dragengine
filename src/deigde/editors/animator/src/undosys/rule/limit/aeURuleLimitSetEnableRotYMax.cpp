@@ -49,13 +49,9 @@ aeURuleLimitSetEnableRotYMax::aeURuleLimitSetEnableRotYMax(aeRuleLimit *rule){
 	SetShortInfo("Limit toggle enable maximum y rotation");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableRotYMax::~aeURuleLimitSetEnableRotYMax(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

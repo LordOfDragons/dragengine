@@ -79,10 +79,4 @@ void seUSourceAddEffect::Redo(){
 //////////////////////
 
 void seUSourceAddEffect::pCleanUp(){
-	if(pEffect){
-		pEffect->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

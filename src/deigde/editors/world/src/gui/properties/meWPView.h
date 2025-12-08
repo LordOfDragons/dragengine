@@ -37,10 +37,10 @@
 #include <deigde/gui/properties/igdeWPWObject.h>
 #include <deigde/gui/properties/igdeWPCamera.h>
 #include <deigde/gui/properties/igdeWPTriggerTable.h>
+#include "meWPViewListener.h"
+#include "meWorld.h"
 
 class meWindowProperties;
-class meWPViewListener;
-class meWorld;
 class meCamera;
 
 
@@ -51,9 +51,9 @@ class meCamera;
 class meWPView : public igdeContainerScroll{
 private:
 	meWindowProperties &pWindowProperties;
-	meWPViewListener *pListener;
+	meWPViewListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeTextField::Ref pEditMoveStep;
 	igdeCheckBox::Ref pChkMoveSnap;
@@ -110,7 +110,7 @@ public:
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

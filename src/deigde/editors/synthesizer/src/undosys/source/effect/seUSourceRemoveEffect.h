@@ -27,9 +27,9 @@
 #define _SEUSOURCEREMOVEEFFECT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSource.h"
+#include "seEffect.h"
 
-class seSource;
-class seEffect;
 
 
 
@@ -38,8 +38,8 @@ class seEffect;
  */
 class seUSourceRemoveEffect : public igdeUndo{
 private:
-	seEffect *pEffect;
-	seSource *pSource;
+	seEffect::Ref pEffect;
+	seSource::Ref pSource;
 	int pIndex;
 	
 	

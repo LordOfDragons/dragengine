@@ -35,13 +35,13 @@
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "aeAnimator.h"
+#include "aeWPPlaygroundListener.h"
 
 
-class aeAnimator;
 class aeController;
 class aeWindowProperties;
 class aeAnimatorLocomotionLeg;
-class aeWPPlaygroundListener;
 
 
 
@@ -59,8 +59,8 @@ private:
 	
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPPlaygroundListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPPlaygroundListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
 	igdeContainer::Ref pFraContent;
 	sController *pControllers;
@@ -112,7 +112,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

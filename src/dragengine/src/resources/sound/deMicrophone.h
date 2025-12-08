@@ -28,9 +28,9 @@
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
+#include <dragengine/resources/sound/deSpeaker.h>
 
 class deWorld;
-class deSpeaker;
 class deMicrophone;
 class deMicrophoneManager;
 class deBaseAudioMicrophone;
@@ -78,7 +78,7 @@ private:
 	bool pEnableAuralization;
 	
 	deSpeaker *pSpeakerRoot;
-	deSpeaker *pSpeakerTail;
+	deSpeaker::Ref pSpeakerTail;
 	int pSpeakerCount;
 	
 	deBaseAudioMicrophone *pPeerAudio;

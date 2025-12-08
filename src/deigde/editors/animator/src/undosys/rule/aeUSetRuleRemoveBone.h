@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/string/decStringSet.h>
+#include "aeRule.h"
 
-class aeRule;
 
 
 
@@ -37,7 +37,7 @@ class aeRule;
  */
 class aeUSetRuleRemoveBone : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	decStringSet pBones;
 	
 	

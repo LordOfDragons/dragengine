@@ -35,6 +35,12 @@ class gdeWPSelection;
  * \brief Selection Panel Listener.
  */
 class gdeWPSelectionListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSelectionListener> Ref;
+	
+	
+
 private:
 	gdeWPSelection &pPanel;
 	

@@ -27,9 +27,9 @@
 #define _GDEUOCADDINHERIT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCInherit.h"
 
-class gdeOCInherit;
-class gdeObjectClass;
 
 
 
@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCAddInherit : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCInherit *pInherit;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCInherit::Ref pInherit;
 	
 	
 	

@@ -27,8 +27,8 @@
 #define _AEURULEANIMDIFFTOGGLEENABLESIZE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleAnimationDifference.h"
 
-class aeRuleAnimationDifference;
 
 
 
@@ -37,7 +37,7 @@ class aeRuleAnimationDifference;
  */
 class aeURuleAnimDiffToggleEnableSize : public igdeUndo{
 private:
-	aeRuleAnimationDifference *pRule;
+	aeRuleAnimationDifference::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

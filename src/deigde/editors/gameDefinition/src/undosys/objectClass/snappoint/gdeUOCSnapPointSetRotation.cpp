@@ -62,12 +62,6 @@ pSnapPoint(NULL)
 }
 
 gdeUOCSnapPointSetRotation::~gdeUOCSnapPointSetRotation(){
-	if(pSnapPoint){
-		pSnapPoint->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

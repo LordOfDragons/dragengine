@@ -94,7 +94,7 @@ deoalMicrophone::~deoalMicrophone(){
 ///////////////
 
 void deoalMicrophone::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	
@@ -106,7 +106,7 @@ void deoalMicrophone::SetActive(bool active){
 }
 
 void deoalMicrophone::SetParentWorld(deoalWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -296,8 +296,6 @@ void deoalMicrophone::pCleanUp(){
 		pOal.SetActiveMicrophone(NULL);
 	}
 	
-	if(pAMicrophone){
-		pAMicrophone->FreeReference();
 		pAMicrophone = NULL;
 	}
 	

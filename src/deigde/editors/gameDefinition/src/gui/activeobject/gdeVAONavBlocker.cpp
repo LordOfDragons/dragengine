@@ -118,9 +118,6 @@ void gdeVAONavBlocker::pCleanUp(){
 		pDebugDrawer = NULL;
 	}
 	
-	if(pOCNavBlocker){
-		pOCNavBlocker->FreeReference();
-	}
 }
 
 

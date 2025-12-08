@@ -48,7 +48,6 @@ aeURuleBTransSetRotMin::aeURuleBTransSetRotMin(aeRuleBoneTransformator *rule, co
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldMin = rule->GetMinimumRotation();
 		pNewMin = newMin;
@@ -84,7 +83,4 @@ void aeURuleBTransSetRotMin::Redo(){
 //////////////////////
 
 void aeURuleBTransSetRotMin::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

@@ -57,13 +57,10 @@ pDirtyControllers(true),
 pDirtyLayerMask(true),
 pSkyUpdateState(0)
 {
-	pRInstance = new deoglRSkyInstance(pOgl.GetRenderThread());
+	pRInstance.TakeOverWith(pOgl.GetRenderThread());
 }
 
 deoglSkyInstance::~deoglSkyInstance(){
-	if(pRInstance){
-		pRInstance->FreeReference();
-	}
 }
 
 

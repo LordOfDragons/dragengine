@@ -79,18 +79,10 @@
 igdeCreateProject::igdeCreateProject(igdeWindowMain &windowMain) :
 pWindowMain(windowMain),
 pTemplate(NULL),
-pProject(NULL),
-pGameId(decUuid::Random().ToHexString(false)),
-pGameDef(NULL){
+pGameId(decUuid::Random().ToHexString(false)){
 }
 
 igdeCreateProject::~igdeCreateProject(){
-	if(pGameDef){
-		pGameDef->FreeReference();
-	}
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 
@@ -139,7 +131,7 @@ void igdeCreateProject::CreateProject(){
 	path.AddUnixPath(pPathData);
 	pNativePathData = path.GetPathNative();
 	
-	pProject = new igdeGameProject(pWindowMain.GetEnvironment());
+	pProject.TakeOverWith(pWindowMain.GetEnvironment());
 	pProject->SetName(pName);
 	pProject->SetDescription(pDescription);
 	pProject->SetPathProjectGameDefinition(pPathGameDefProject);
@@ -258,7 +250,7 @@ void igdeCreateProject::pCopyDefaultFiles(){
 	path = pNativePathProject;
 	path.AddComponent(".gitattributes");
 	
-	writer.TakeOver(new decDiskFileWriter(path.GetPathNative(), false));
+	writer.TakeOverWith(path.GetPathNative(), false);
 	
 	const char * const extensions[] = {
 		// images
@@ -305,7 +297,7 @@ void igdeCreateProject::pCreateGameDefinition(){
 	// create project game definition from shared new game definition file. we store the
 	// file content aside so we can save it as new game definition with a bit of text
 	// replacing. avoids the need to implement a full save code for game definition xml
-	pGameDef = new igdeGameDefinition(pWindowMain.GetEnvironment());
+	pGameDef.TakeOverWith(pWindowMain.GetEnvironment());
 	
 	pLoadSharedGameDefContent();
 	pSharedGameDefContentReplace();
@@ -331,7 +323,7 @@ void igdeCreateProject::pLoadSharedGameDefContent(){
 	reader->SetPosition(0);
 	
 	igdeXMLGameDefinition loadGameDefinition(pWindowMain.GetEnvironment(), pWindowMain.GetLogger());
-	loadGameDefinition.Load(reader, *pGameDef);
+	loadGameDefinition.Load(reader, pGameDef);
 }
 
 void igdeCreateProject::pSharedGameDefContentReplace(){
@@ -406,12 +398,12 @@ void igdeCreateProject::pApplyTemplate(){
 		decPath::CreatePathUnix(VFS_DIR_DATA), decPath::CreatePathNative(pNativePathData)));
 	pVFS->AddContainer(container);
 	
-	container.TakeOver(new deVFSDiskDirectory(decPath::CreatePathUnix(VFS_DIR_PROJECT),
-		pNativePathProject));
+	container.TakeOverWith(decPath::CreatePathUnix(VFS_DIR_PROJECT),
+		pNativePathProject);
 	pVFS->AddContainer(container);
 	
-	container.TakeOver(new deVFSDiskDirectory(decPath::CreatePathUnix(VFS_DIR_TEMPLATE),
-		decPath::CreatePathNative(pTemplate->GetBasePath())));
+	container.TakeOverWith(decPath::CreatePathUnix(VFS_DIR_TEMPLATE),
+		decPath::CreatePathNative(pTemplate->GetBasePath()));
 	((deVFSDiskDirectory&)(deVFSContainer&)container).SetReadOnly(true);
 	pVFS->AddContainer(container);
 	

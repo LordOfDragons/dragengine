@@ -83,7 +83,7 @@ pColliderOwner(this)
 	deEngine &engine = *environment->GetEngineController()->GetEngine();
 	
 	try{
-		pEngCollider = engine.GetColliderManager()->CreateColliderVolume();
+		pEngCollider.TakeOver(engine.GetColliderManager()->CreateColliderVolume());
 		pEngCollider->SetEnabled(true);
 		pEngCollider->SetResponseType(deCollider::ertStatic);
 		pEngCollider->SetUseLocalGravity(true);
@@ -99,7 +99,7 @@ pColliderOwner(this)
 		pEnvironment->SetColliderUserPointer(pEngCollider, &pColliderOwner);
 		
 		// create debug drawer and shapes
-		pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSShape = new igdeWDebugDrawerShape;
@@ -125,7 +125,7 @@ meObjectShape::~meObjectShape(){
 ///////////////
 
 void meObjectShape::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -180,7 +180,7 @@ void meObjectShape::SetShape(const decShape &shape){
 
 
 void meObjectShape::SetSelected(bool selected){
-	if(selected == pSelected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -189,7 +189,7 @@ void meObjectShape::SetSelected(bool selected){
 }
 
 void meObjectShape::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	
@@ -280,13 +280,9 @@ void meObjectShape::pCleanUp(){
 	
 	if(pEngCollider){
 		pEnvironment->SetColliderUserPointer(pEngCollider, NULL);
-		pEngCollider->FreeReference();
 	}
 	
 	if(pDDSShape){
 		delete pDDSShape;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }

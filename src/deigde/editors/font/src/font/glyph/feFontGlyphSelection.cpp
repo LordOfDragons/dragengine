@@ -119,14 +119,13 @@ void feFontGlyphSelection::GetSelectedList(feFontGlyphList &list) const{
 
 
 bool feFontGlyphSelection::HasActiveGlyph() const{
-	return pActive != NULL;
+	return pActive != nullptr;
 }
 
 void feFontGlyphSelection::SetActiveGlyph(feFontGlyph *glyph){
-	if(glyph != pActive){
+	if(pActive != glyph){
 		if(pActive){
 			pActive->SetActive(false);
-			pActive->FreeReference();
 		}
 		
 		pActive = glyph;

@@ -78,13 +78,13 @@ mePathFindTest::mePathFindTest(deEngine *engine){
 	pDirtyPath = true;
 	
 	try{
-		pEngNavigator = engine->GetNavigatorManager()->CreateNavigator();
+		pEngNavigator.TakeOver(engine->GetNavigatorManager()->CreateNavigator());
 		pEngNavigator->SetSpaceType(pSpaceType);
 		pEngNavigator->SetMaxOutsideDistance(0.5f);
 		pEngNavigator->SetBlockingCost(pBlockingCost);
 		
 		// create debug drawer and shapes
-		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		pDebugDrawer->SetVisible(pShowPath);
 		
@@ -109,7 +109,7 @@ mePathFindTest::~mePathFindTest(){
 ///////////////
 
 void mePathFindTest::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -195,7 +195,7 @@ void mePathFindTest::SetGoalOrientation(const decVector &orientation){
 }
 
 void mePathFindTest::SetLayer(int layer){
-	if(layer == pLayer){
+	if(pLayer == layer){
 		return;
 	}
 	
@@ -211,7 +211,7 @@ void mePathFindTest::SetLayer(int layer){
 }
 
 void mePathFindTest::SetSpaceType(deNavigationSpace::eSpaceTypes spaceType){
-	if(spaceType == pSpaceType){
+	if(pSpaceType == spaceType){
 		return;
 	}
 	
@@ -247,7 +247,7 @@ void mePathFindTest::SetBlockingCost(float cost){
 }
 
 void mePathFindTest::SetShowPath(bool showPath){
-	if(showPath == pShowPath){
+	if(pShowPath == showPath){
 		return;
 	}
 	
@@ -293,15 +293,9 @@ void mePathFindTest::Update(){
 void mePathFindTest::pCleanUp(){
 	SetWorld(NULL);
 	
-	if(pEngNavigator){
-		pEngNavigator->FreeReference();
-	}
 	
 	if(pDDSPath){
 		delete pDDSPath;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

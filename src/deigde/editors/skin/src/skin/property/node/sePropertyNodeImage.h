@@ -26,8 +26,8 @@
 #define _SEPROPERTYNODEIMAGE_H_
 
 #include "sePropertyNode.h"
+#include <dragengine/resources/image/deImage.h>
 
-class deImage;
 
 
 /**
@@ -40,7 +40,7 @@ public:
 	
 private:
 	decString pPath;
-	deImage *pImage;
+	deImage::Ref pImage;
 	decPoint pRepeat;
 	
 	
@@ -69,7 +69,7 @@ public:
 	void SetPath(const char *path);
 	
 	/** \brief Image or \em NULL if not set. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Update image. */
 	void UpdateImage();

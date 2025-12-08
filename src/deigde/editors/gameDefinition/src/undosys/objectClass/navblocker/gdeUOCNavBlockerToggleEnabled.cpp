@@ -59,12 +59,6 @@ pNavBlocker(NULL)
 }
 
 gdeUOCNavBlockerToggleEnabled::~gdeUOCNavBlockerToggleEnabled(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -30,10 +30,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meObject.h"
+#include "meWorld.h"
 
 // predefinitions
-class meWorld;
-class meObject;
 class meObjectList;
 
 
@@ -46,13 +46,13 @@ class meObjectList;
 class meUObjectDropToGround : public igdeUndo{
 private:
 	struct sObject{
-		meObject *object;
+		meObject::Ref object;
 		decDVector oldpos;
 		decVector oldrot;
 	};
 	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	sObject *pObjects;
 	int pObjectCount;

@@ -62,12 +62,6 @@ pLight(NULL)
 }
 
 gdeUOCLightSetLightSkinPath::~gdeUOCLightSetLightSkinPath(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

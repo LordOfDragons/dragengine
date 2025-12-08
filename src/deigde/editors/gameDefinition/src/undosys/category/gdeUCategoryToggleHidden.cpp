@@ -56,9 +56,6 @@ pCategory(NULL)
 }
 
 gdeUCategoryToggleHidden::~gdeUCategoryToggleHidden(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
 }
 
 

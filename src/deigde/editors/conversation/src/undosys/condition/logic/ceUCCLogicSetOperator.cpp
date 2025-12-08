@@ -65,15 +65,6 @@ ceCConditionLogic::eOperators newOperator){
 }
 
 ceUCCLogicSetOperator::~ceUCCLogicSetOperator(){
-	if(pLogic){
-		pLogic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

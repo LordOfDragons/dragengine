@@ -30,9 +30,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decString.h>
+#include "meWorld.h"
 
 // predefinitions
-class meWorld;
 class meHeightTerrainSector;
 
 
@@ -44,7 +44,7 @@ class meHeightTerrainSector;
  */
 class meUHTSetPathVI : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
 	
 	decString pOldPath;

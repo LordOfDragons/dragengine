@@ -28,9 +28,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "reRig.h"
+#include "reRigBone.h"
 
-class reRig;
-class reRigBone;
 class reRigShapeList;
 class reRigConstraintList;
 
@@ -60,8 +60,8 @@ private:
 	};
 	
 	struct sBone{
-		reRigBone *bone;
-		reRigBone *importBone;
+		reRigBone::Ref bone;
+		reRigBone::Ref importBone;
 		
 		decVector oldCMP;
 		float oldMass;
@@ -77,7 +77,7 @@ private:
 	
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	float pScale;
 	bool pImportBoneProperties;

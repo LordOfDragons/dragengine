@@ -49,9 +49,6 @@ pCanvasView(NULL){
 }
 
 ceTextBoxText::~ceTextBoxText(){
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 }
 
 

@@ -28,10 +28,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/curve/decCurveBezier.h>
+#include "meHTVegetationLayer.h"
+#include "meHTVRuleCurve.h"
 
 
-class meHTVegetationLayer;
-class meHTVRuleCurve;
 
 
 
@@ -40,8 +40,8 @@ class meHTVRuleCurve;
  */
 class meUHTVRuleCurveSetCurve : public igdeUndo{
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleCurve *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleCurve::Ref pRule;
 	
 	decCurveBezier pOldCurve;
 	decCurveBezier pNewCurve;

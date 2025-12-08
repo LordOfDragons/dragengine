@@ -205,7 +205,7 @@ void deoglVREye::BeginFrame(deBaseVRModule &vrmodule){
 			pRenderTarget->SetSize(pTargetSize);
 			
 		}else{
-			pRenderTarget.TakeOver(new deoglRenderTarget(renderThread, pTargetSize, 4, 8));
+			pRenderTarget.TakeOverWith(renderThread, pTargetSize, 4, 8);
 		}
 	}
 	

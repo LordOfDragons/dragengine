@@ -62,12 +62,6 @@ pNewCurve(newCurve)
 }
 
 meUHTVRuleCurveSetCurve::~meUHTVRuleCurveSetCurve(){
-	if(pRule){
-		pRule->FreeReference();
-	}
-	if(pVLayer){
-		pVLayer->FreeReference();
-	}
 }
 
 

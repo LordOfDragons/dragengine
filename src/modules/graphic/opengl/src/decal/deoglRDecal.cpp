@@ -205,22 +205,12 @@ deoglRDecal::~deoglRDecal(){
 	NotifyDecalDestroyed();
 	pListeners.RemoveAll();
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	if(pRTSInstance){
 		pRTSInstance->ReturnToPool();
-	}
-	if(pSharedSPBElement){
-		pSharedSPBElement->FreeReference();
 	}
 	
 	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
-		pVBOBlock->FreeReference();
 	}
 	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
@@ -312,19 +302,12 @@ void deoglRDecal::SetDirtyVBO(){
 
 
 void deoglRDecal::SetSkin(deoglRSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	pSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
 	
 	pDirtyUseTexture = true;
 	
@@ -340,19 +323,12 @@ void deoglRDecal::SetSkin(deoglRSkin *skin){
 }
 
 void deoglRDecal::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
-	if(dynamicSkin == pDynamicSkin){
+	if(pDynamicSkin == dynamicSkin){
 		return;
 	}
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
 	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
 	
 	pDirtyUseTexture = true;
 	
@@ -365,7 +341,7 @@ void deoglRDecal::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 }
 
 void deoglRDecal::SetSkinState(deoglSkinState *skinState){
-	if(skinState == pSkinState){
+	if(pSkinState == skinState){
 		return;
 	}
 	
@@ -434,7 +410,7 @@ deoglRComponent &deoglRDecal::GetParentComponentRef() const{
 
 void deoglRDecal::SetParentComponent(deoglRComponent *component){
 	// NOTE this is called from the main thread during synchronization
-	if(component == pParentComponent){
+	if(pParentComponent == component){
 		return;
 	}
 	
@@ -917,7 +893,6 @@ void deoglRDecal::pPrepareVBO(){
 	
 	if(pVBOBlock){
 		pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
-		pVBOBlock->FreeReference();
 		pVBOBlock = NULL;
 	}
 	

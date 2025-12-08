@@ -26,8 +26,8 @@
 #define _CEUCCSHOTSETCAMERATARGET_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCameraShot.h"
 
-class ceCameraShot;
 
 
 
@@ -36,7 +36,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetCameraTarget : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	decString pOldTarget;
 	decString pNewTarget;

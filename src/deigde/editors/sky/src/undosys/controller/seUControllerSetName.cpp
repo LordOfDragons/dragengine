@@ -56,9 +56,6 @@ pNewName(newName)
 }
 
 seUControllerSetName::~seUControllerSetName(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

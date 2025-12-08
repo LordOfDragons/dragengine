@@ -132,7 +132,7 @@ void ceConversationFile::RemoveTopic(ceConversationTopic *topic){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(topic == pActiveTopic){
+	if(pActiveTopic == topic){
 		if(pTopics.GetCount() == 1){
 			SetActiveTopic(NULL);
 			
@@ -171,19 +171,12 @@ void ceConversationFile::RemoveAllTopics(){
 }
 
 void ceConversationFile::SetActiveTopic(ceConversationTopic *topic){
-	if(topic == pActiveTopic){
+	if(pActiveTopic == topic){
 		return;
 	}
 	
-	if(pActiveTopic){
-		pActiveTopic->FreeReference();
-	}
 	
 	pActiveTopic = topic;
-	
-	if(topic){
-		topic->AddReference();
-	}
 	
 	if(pConversation){
 		pConversation->NotifyActiveTopicChanged(this);

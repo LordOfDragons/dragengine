@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeOCSpeaker.h"
+#include "gdeObjectClass.h"
 
-class gdeOCSpeaker;
-class gdeObjectClass;
 
 
 
@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCSpeakerSetPosition : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	decVector pOldValue;
 	decVector pNewValue;

@@ -52,7 +52,7 @@ pInputDataCount(0),
 pInputDataSize(0)
 {
 	try{
-		pSSBOInput.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etStream));
+		pSSBOInput.TakeOverWith(renderThread, deoglSPBlockSSBO::etStream);
 		pSSBOInput->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 		pSSBOInput->SetParameterCount(2);
 		pSSBOInput->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1); // vec3 minExtend
@@ -60,7 +60,7 @@ pInputDataSize(0)
 		pSSBOInput->MapToStd140();
 		pSSBOInput->SetBindingPoint(0);
 		
-		pSSBOResult.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etRead));
+		pSSBOResult.TakeOverWith(renderThread, deoglSPBlockSSBO::etRead);
 		pSSBOResult->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 		pSSBOResult->SetParameterCount(1);
 		pSSBOResult->GetParameterAt(0).SetAll(deoglSPBParameter::evtBool, 4, 1, 1); // bvec4 result

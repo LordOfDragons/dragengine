@@ -62,12 +62,6 @@ ceCACoordSystemAdd *action, const char *newAliasID){
 }
 
 ceUCACoordSysAddSetAliasID::~ceUCACoordSysAddSetAliasID(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

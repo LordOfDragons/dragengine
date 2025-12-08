@@ -66,7 +66,7 @@ pDecodeThread(NULL),
 
 pRVideoPlayer(NULL)
 {
-	pRVideoPlayer = new deoglRVideoPlayer(ogl.GetRenderThread());
+	pRVideoPlayer.TakeOverWith(ogl.GetRenderThread());
 	
 	SourceChanged();
 }
@@ -77,9 +77,6 @@ deoglVideoPlayer::~deoglVideoPlayer(){
 		delete pDecodeThread;
 	}
 	
-	if(pRVideoPlayer){
-		pRVideoPlayer->FreeReference();
-	}
 	
 	// notify owners we are about to be deleted. required since owners hold only a weak pointer
 	// to the dynamic skin and are notified only after switching to a new dynamic skin. in this
@@ -110,7 +107,7 @@ void deoglVideoPlayer::SetCurrentFrame(int frame){
 	}
 	
 	frame = decMath::clamp(frame, 0, pVideo->GetVideo().GetFrameCount() - 1);
-	if(frame == pCurFrame){
+	if(pCurFrame == frame){
 		return;
 	}
 	

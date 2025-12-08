@@ -641,10 +641,10 @@ bool deScriptingDragonScript::Init(const char *scriptDirectory, const char *game
 		pScriptEngine->SetEngineManager(dsmanager);
 		dsmanager = nullptr;
 		
-		pLoadingScreen.TakeOver(new dedsLoadingScreen(*this));
+		pLoadingScreen.TakeOverWith(*this);
 		
 #ifdef OS_ANDROID_QUEST
-		pVRPlaceholder.TakeOver(new dedsVRPlaceholder(*this));
+		pVRPlaceholder.TakeOverWith(*this);
 #endif
 		
 		pState = esSkipOneFrame;
@@ -745,8 +745,6 @@ void deScriptingDragonScript::ShutDown(){
 	
 	pRemoveVFSContainerHideScriptDirectory();
 	
-	if(pColInfo){
-		pColInfo->FreeReference();
 		pColInfo = nullptr;
 	}
 	
@@ -1612,7 +1610,7 @@ void deScriptingDragonScript::pLoadGamePackage(const char *directory, const char
 		deErrorTracePoint *tracePoint = AddErrorTracePoint("deScriptingDragonScript::pLoadGamePackage", __LINE__);
 		tracePoint->AddValue("directory", directory);
 		tracePoint->AddValue("gameClass", gameClass);
-		tracePoint->AddValueBool("gameClassPresent", pClsGame != NULL);
+		tracePoint->AddValueBool("gameClassPresent", pClsGame != nullptr);
 		if(package){
 			tracePoint->AddValueInt("packageClassCount", package->GetClassCount());
 			tracePoint->AddValueInt("packageHostClassCount", package->GetHostClassCount());

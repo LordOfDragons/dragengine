@@ -56,12 +56,6 @@ ceUCTargetAdd::ceUCTargetAdd(ceConversation *conversation, ceTarget *target){
 }
 
 ceUCTargetAdd::~ceUCTargetAdd(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

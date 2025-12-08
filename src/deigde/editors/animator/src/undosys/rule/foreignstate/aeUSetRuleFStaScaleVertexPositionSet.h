@@ -26,8 +26,8 @@
 #define _AEUSETRULEFSTASCALEVERTEXPOSITIONSET_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleForeignState.h"
 
-class aeRuleForeignState;
 
 
 /**
@@ -35,7 +35,7 @@ class aeRuleForeignState;
  */
 class aeUSetRuleFStaScaleVertexPositionSet : public igdeUndo{
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 	float pOldScale;
 	float pNewScale;

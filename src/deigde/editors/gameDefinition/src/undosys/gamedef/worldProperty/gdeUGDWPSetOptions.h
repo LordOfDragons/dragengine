@@ -30,9 +30,9 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringList.h>
+#include "gdeProperty.h"
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
-class gdeProperty;
 
 
 
@@ -41,8 +41,8 @@ class gdeProperty;
  */
 class gdeUGDWPSetOptions : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeProperty::Ref pProperty;
 	
 	decStringList pOldValue;
 	decStringList pNewValue;

@@ -27,8 +27,8 @@
 #define _AEURULEANIMTOGGLEENABLEROTATION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleAnimation.h"
 
-class aeRuleAnimation;
 
 
 
@@ -37,7 +37,7 @@ class aeRuleAnimation;
  */
 class aeURuleAnimToggleEnableRotation : public igdeUndo{
 private:
-	aeRuleAnimation *pRule;
+	aeRuleAnimation::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

@@ -51,7 +51,4 @@ pBillboard(NULL)
 }
 
 gdeClipboardDataOCBillboard::~gdeClipboardDataOCBillboard(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
 }

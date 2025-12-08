@@ -26,8 +26,8 @@
 #define _AEURULESUBANIMTOGGLEENABLEVERTEXPOSITIONSET_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleSubAnimator.h"
 
-class aeRuleSubAnimator;
 
 
 /**
@@ -35,7 +35,7 @@ class aeRuleSubAnimator;
  */
 class aeURuleSubAnimToggleEnableVertexPositionSet : public igdeUndo{
 private:
-	aeRuleSubAnimator *pRule;
+	aeRuleSubAnimator::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

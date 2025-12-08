@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include "lpeLangPackEntry.h"
 
-class lpeLangPackEntry;
 
 
 
@@ -38,7 +38,7 @@ class lpeLangPackEntry;
  */
 class lpeULangPackEntrySetText : public igdeUndo{
 private:
-	lpeLangPackEntry *pEntry;
+	lpeLangPackEntry::Ref pEntry;
 	
 	decUnicodeString pOldText;
 	decUnicodeString pNewText;

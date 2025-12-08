@@ -32,12 +32,12 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSOCEnvMapProbeListener.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCEnvMapProbe;
 class gdeWindowProperties;
-class gdeWPSOCEnvMapProbeListener;
 
 
 
@@ -47,9 +47,9 @@ class gdeWPSOCEnvMapProbeListener;
 class gdeWPSOCEnvMapProbe : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCEnvMapProbeListener *pListener;
+	gdeWPSOCEnvMapProbeListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditVector::Ref pEditPosition;
 	igdeEditVector::Ref pEditRotation;
@@ -83,7 +83,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

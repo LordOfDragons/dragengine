@@ -49,13 +49,9 @@ aeURuleLimitSetEnableScaleZMin::aeURuleLimitSetEnableScaleZMin(aeRuleLimit *rule
 	SetShortInfo("Limit toggle enable minimum z scaling");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableScaleZMin::~aeURuleLimitSetEnableScaleZMin(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

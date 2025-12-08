@@ -26,8 +26,8 @@
 #define _PEEUCONTROLLERMOVEUP_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "peeController.h"
 
-class peeController;
 
 
 
@@ -36,7 +36,7 @@ class peeController;
  */
 class peeUControllerMoveUp : public igdeUndo{
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	int pIndex;
 	
 	

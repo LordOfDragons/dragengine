@@ -46,7 +46,6 @@ aeUSetRuleFStaEnablePos::aeUSetRuleFStaEnablePos(aeRuleForeignState *rule){
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		SetShortInfo("Set bone rotator rule enable position");
 		
@@ -79,5 +78,4 @@ void aeUSetRuleFStaEnablePos::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaEnablePos::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

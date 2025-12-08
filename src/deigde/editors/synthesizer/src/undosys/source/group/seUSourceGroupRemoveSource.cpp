@@ -60,12 +60,6 @@ pSource(NULL)
 }
 
 seUSourceGroupRemoveSource::~seUSourceGroupRemoveSource(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }
 
 

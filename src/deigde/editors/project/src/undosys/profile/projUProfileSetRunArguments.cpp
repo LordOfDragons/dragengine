@@ -55,9 +55,6 @@ pNewValue(newValue)
 }
 
 projUProfileSetRunArguments::~projUProfileSetRunArguments(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

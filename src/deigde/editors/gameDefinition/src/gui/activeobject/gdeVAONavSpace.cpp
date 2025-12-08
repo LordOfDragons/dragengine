@@ -136,9 +136,6 @@ void gdeVAONavSpace::pCleanUp(){
 		pDDBlocker = NULL;
 	}
 	
-	if(pOCNavSpace){
-		pOCNavSpace->FreeReference();
-	}
 }
 
 

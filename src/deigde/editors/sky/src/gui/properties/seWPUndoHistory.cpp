@@ -49,9 +49,6 @@ pSky(NULL){
 seWPUndoHistory::~seWPUndoHistory(){
 	SetSky(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -60,7 +57,7 @@ seWPUndoHistory::~seWPUndoHistory(){
 ///////////////
 
 void seWPUndoHistory::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	
@@ -68,7 +65,6 @@ void seWPUndoHistory::SetSky(seSky *sky){
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;

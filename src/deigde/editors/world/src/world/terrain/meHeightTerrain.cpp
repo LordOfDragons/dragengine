@@ -116,7 +116,7 @@ decString meHeightTerrain::GetBaseDirectory() const{
 }
 
 void meHeightTerrain::SetDepChanged(bool changed){
-	if(changed == pDepChanged){
+	if(pDepChanged == changed){
 		return;
 	}
 	
@@ -129,7 +129,7 @@ void meHeightTerrain::SetDepChanged(bool changed){
 }
 
 void meHeightTerrain::SetChanged(bool changed){
-	if(changed == pChanged){
+	if(pChanged == changed){
 		return;
 	}
 	
@@ -162,7 +162,6 @@ void meHeightTerrain::SetSectorSize(float size){
 	
 	if(pEngHT){
 		pWorld.GetEngineWorld()->SetHeightTerrain(NULL);
-		pEngHT->FreeReference();
 		pEngHT = NULL;
 	}
 	
@@ -183,7 +182,7 @@ void meHeightTerrain::SetSectorResolution(int dimension){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(dimension == pSectorResolution){
+	if(pSectorResolution == dimension){
 		return;
 	}
 	
@@ -195,7 +194,6 @@ void meHeightTerrain::SetSectorResolution(int dimension){
 	
 	if(pEngHT){
 		pWorld.GetEngineWorld()->SetHeightTerrain(NULL);
-		pEngHT->FreeReference();
 		pEngHT = NULL;
 	}
 	
@@ -520,7 +518,7 @@ void meHeightTerrain::RemoveAllSectors(){
 
 
 void meHeightTerrain::SetActiveSector(meHeightTerrainSector *sector){
-	if(sector == pActiveSector){
+	if(pActiveSector == sector){
 		return;
 	}
 	
@@ -605,7 +603,7 @@ void meHeightTerrain::RemoveVLayer(meHTVegetationLayer *vlayer){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(vlayer == pActiveVLayer){
+	if(pActiveVLayer == vlayer){
 		SetActiveVLayer(NULL);
 	}
 	
@@ -633,7 +631,7 @@ void meHeightTerrain::RemoveAllVLayers(){
 }
 
 void meHeightTerrain::SetActiveVLayer(meHTVegetationLayer *vlayer){
-	if(vlayer != pActiveVLayer){
+	if(pActiveVLayer != vlayer){
 		pActiveVLayer = vlayer;
 		pWorld.NotifyHTActiveVLayerChanged();
 	}
@@ -655,7 +653,6 @@ void meHeightTerrain::pCleanUp(){
 	
 	if(pEngHT){
 		pWorld.GetEngineWorld()->SetHeightTerrain(NULL);
-		pEngHT->FreeReference();
 	}
 }
 
@@ -675,12 +672,11 @@ void meHeightTerrain::pUpdateHeightTerrain(){
 	// release the height terrain
 	if(pEngHT){
 		pWorld.GetEngineWorld()->SetHeightTerrain(NULL);
-		pEngHT->FreeReference();
 		pEngHT = NULL;
 	}
 	
 	// create a new height terrain
-	pEngHT = pWorld.GetEngine()->GetHeightTerrainManager()->CreateHeightTerrain(pSectorSize, pSectorResolution);
+	pEngHT.TakeOver(pWorld.GetEngine()->GetHeightTerrainManager()->CreateHeightTerrain(pSectorSize, pSectorResolution));
 	pWorld.GetEngineWorld()->SetHeightTerrain(pEngHT);
 	
 	decLayerMask collisionCategory;

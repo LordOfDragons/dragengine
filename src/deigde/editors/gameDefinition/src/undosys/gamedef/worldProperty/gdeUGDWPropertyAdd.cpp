@@ -58,12 +58,6 @@ pProperty(NULL)
 }
 
 gdeUGDWPropertyAdd::~gdeUGDWPropertyAdd(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

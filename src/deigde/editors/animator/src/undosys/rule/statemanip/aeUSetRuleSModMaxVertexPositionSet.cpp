@@ -43,7 +43,6 @@ aeUSetRuleSModMaxVertexPositionSet::aeUSetRuleSModMaxVertexPositionSet(
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldMax = rule->GetMaximumVertexPositionSet();
 		pNewMax = newMax;
@@ -79,7 +78,4 @@ void aeUSetRuleSModMaxVertexPositionSet::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMaxVertexPositionSet::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

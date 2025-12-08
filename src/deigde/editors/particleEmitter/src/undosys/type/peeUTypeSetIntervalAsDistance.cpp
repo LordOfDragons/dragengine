@@ -53,9 +53,6 @@ peeUTypeSetIntervalAsDistance::peeUTypeSetIntervalAsDistance(peeType *type){
 }
 
 peeUTypeSetIntervalAsDistance::~peeUTypeSetIntervalAsDistance(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

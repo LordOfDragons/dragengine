@@ -62,12 +62,6 @@ pComponent(NULL)
 }
 
 gdeUOCComponentSetBoneName::~gdeUOCComponentSetBoneName(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -54,9 +54,6 @@ pNewValue(newValue)
 }
 
 gdeUOCSetInheritSubObjects::~gdeUOCSetInheritSubObjects(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -26,10 +26,10 @@
 #define _CEUCCAPARAMSETTESTVARIABLE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCConditionActorParameter.h"
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceCConditionActorParameter;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -38,9 +38,9 @@ class ceConversationTopic;
  */
 class ceUCCAParamSetTestVariable : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionActorParameter *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionActorParameter::Ref pCondition;
 	decString pOldVariable;
 	decString pNewVariable;
 	

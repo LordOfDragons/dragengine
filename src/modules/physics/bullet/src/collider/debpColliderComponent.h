@@ -29,10 +29,10 @@
 #include "../shape/debpShapeList.h"
 #include "../debpCollisionObject.h"
 #include "../forcefield/debpForceFieldFluctuation.h"
+#include "debpBulletShape.h"
 
 class btGhostObject;
 class btCollisionObject;
-class debpBulletShape;
 class debpColliderBone;
 class debpColliderBones;
 class debpComponent;
@@ -104,7 +104,7 @@ private:
 	debpSweepCollisionTest *pSweepCollisionTest;
 	
 	btGhostObject *pStaticCollisionTest;
-	debpBulletShape *pStaticCollisionTestShape;
+	debpBulletShape::Ref pStaticCollisionTestShape;
 	debpCollisionObject pStaticCollisionTestObject;
 	
 	debpForceFieldFluctuation pForceFieldFluctuation;

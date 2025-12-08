@@ -99,7 +99,7 @@ igdeEditorWindow(module)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new feWindowMainListener(*this);
+	pListener.TakeOverWith(*this);
 	pLoadSaveSystem = new feLoadSaveSystem(this);
 	pConfiguration = new feConfiguration(*this);
 	pClipboard = new feClipboard;
@@ -114,10 +114,10 @@ igdeEditorWindow(module)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(260)));
 	AddChild(splitted);
 	
-	pWndProps = new feWindowProperties(*this);
+	pWndProps.TakeOverWith(*this);
 	splitted->AddChild(pWndProps, igdeContainerSplitted::eaSide);
 	
-	pViewFontImage = new feViewFontImage(*this);
+	pViewFontImage.TakeOverWith(*this);
 	splitted->AddChild(pViewFontImage, igdeContainerSplitted::eaCenter);
 	
 	CreateNewFont();
@@ -134,12 +134,8 @@ feWindowMain::~feWindowMain(){
 	
 	SetFont(NULL);
 	
-	if(pViewFontImage){
-		pViewFontImage->FreeReference();
 		pViewFontImage = NULL;
 	}
-	if(pWndProps){
-		pWndProps->FreeReference();
 		pWndProps = NULL;
 	}
 	
@@ -148,9 +144,6 @@ feWindowMain::~feWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -178,7 +171,7 @@ void feWindowMain::SetGenFontConfig(const igdeFont::sConfiguration &config){
 }
 
 void feWindowMain::SetFont(feFont *font){
-	if(font == pFont){
+	if(pFont == font){
 		return;
 	}
 	
@@ -191,7 +184,6 @@ void feWindowMain::SetFont(feFont *font){
 		pFont->RemoveNotifier(pListener);
 		
 		pFont->Dispose();
-		pFont->FreeReference();
 	}
 	
 	pFont = font;
@@ -521,8 +513,8 @@ void feWindowMain::pCreateActions(){
 	pActionFontSave.TakeOver(new cActionFontSave(*this));
 	pActionFontSaveAs.TakeOver(new cActionFontSaveAs(*this));
 	pActionFontGenerate.TakeOver(new cActionFontGenerate(*this));
-	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
-	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
+	pActionEditUndo.TakeOverWith(GetEnvironment());
+	pActionEditRedo.TakeOverWith(GetEnvironment());
 	pActionEditCut.TakeOver(new cActionEditCut(*this));
 	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
 	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
@@ -544,7 +536,7 @@ void feWindowMain::pCreateActions(){
 void feWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionFontNew);
 	helper.ToolBarButton(pTBFile, pActionFontOpen);
@@ -556,7 +548,7 @@ void feWindowMain::pCreateToolBarFile(){
 void feWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -573,11 +565,11 @@ void feWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Font", deInputEvent::ekcF));
+	cascade.TakeOverWith(env, "Font", deInputEvent::ekcF);
 	pCreateMenuFont(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade.TakeOverWith(env, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 }

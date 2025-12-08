@@ -26,8 +26,8 @@
 #define _SEUCONTROLLERSETNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seController.h"
 
-class seController;
 
 
 /**
@@ -35,7 +35,7 @@ class seController;
  */
 class seUControllerSetName : public igdeUndo{
 private:
-	seController *pController;
+	seController::Ref pController;
 	
 	decString pOldName;
 	decString pNewName;

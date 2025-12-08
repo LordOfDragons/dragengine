@@ -26,9 +26,9 @@
 #define _CEUCAASPEAKSETPATHSOUND_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAActorSpeak.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorSpeak;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakSetPathSound : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	decString pOldPath;
 	decString pNewPath;
 	

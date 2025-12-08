@@ -27,8 +27,8 @@
 
 #include "../meBaseUndoMove.h"
 #include <dragengine/common/collection/decIntList.h>
+#include "meObject.h"
 
-class meObject;
 class meObjectShapeList;
 
 
@@ -38,7 +38,7 @@ class meObjectShapeList;
  */
 class meUObjectShapeMove : public meBaseUndoMove{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;

@@ -69,9 +69,6 @@ pLLSyncWorld(this){
 }
 
 deoalSoundLevelMeter::~deoalSoundLevelMeter(){
-	if(pASoundLevelMeter){
-		pASoundLevelMeter->FreeReference();
-	}
 	
 	if(pSpeakers){
 		delete [] pSpeakers;
@@ -84,7 +81,7 @@ deoalSoundLevelMeter::~deoalSoundLevelMeter(){
 ///////////////
 
 void deoalSoundLevelMeter::SetParentWorld(deoalWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	

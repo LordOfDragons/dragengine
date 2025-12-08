@@ -46,13 +46,9 @@ pNewName(newName)
 	SetShortInfo("Set foreign state rule vertex position set");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleFStaVertexPositionSet::~aeUSetRuleFStaVertexPositionSet(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

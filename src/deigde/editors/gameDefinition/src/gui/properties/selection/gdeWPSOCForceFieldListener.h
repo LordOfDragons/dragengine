@@ -35,6 +35,12 @@ class gdeWPSOCForceField;
  * \brief Object class force field panel listener.
  */
 class gdeWPSOCForceFieldListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSOCForceFieldListener> Ref;
+	
+	
+
 private:
 	gdeWPSOCForceField &pPanel;
 	

@@ -64,7 +64,6 @@ pOrigin(origin)
 			}
 			
 			pNodes[pCount].node = node;
-			node->AddReference();
 			pNodes[pCount].position = node->GetPosition();
 			pNodes[pCount].rotation = node->GetRotation();
 		}

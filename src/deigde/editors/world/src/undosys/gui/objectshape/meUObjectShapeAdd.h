@@ -26,9 +26,9 @@
 #define _MEUOBJECTSHAPEADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meObject.h"
 
 class decShape;
-class meObject;
 
 
 /**
@@ -36,7 +36,7 @@ class meObject;
  */
 class meUObjectShapeAdd : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;

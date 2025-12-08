@@ -26,9 +26,9 @@
 #define _CEUCAIFELSEPASTE_H_
 
 #include "../ceUCActionPaste.h"
+#include "ceCAIfElse.h"
+#include "ceCAIfElseCase.h"
 
-class ceCAIfElseCase;
-class ceCAIfElse;
 
 
 
@@ -37,8 +37,8 @@ class ceCAIfElse;
  */
 class ceUCAIfElsePaste : public ceUCActionPaste{
 private:
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
 	
 public:
 	/** \name Constructors and Destructors */

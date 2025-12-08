@@ -28,8 +28,8 @@
 #include "../../../conversation/action/ceCATrigger.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
 
 
 
@@ -38,8 +38,8 @@ class ceConversationTopic;
  */
 class ceUCATriggerSetAction : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCATrigger *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCATrigger::Ref pAction;
 	ceCATrigger::eActions pOldAction;
 	ceCATrigger::eActions pNewAction;
 	

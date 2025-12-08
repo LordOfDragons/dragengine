@@ -95,9 +95,6 @@ ceUCTargetSetName::ceUCTargetSetName(ceTarget *target, const char *newName){
 	}catch(const deException &){
 		pActionList.RemoveAll();
 		
-		if(pTarget){
-			pTarget->FreeReference();
-		}
 		
 		throw;
 	}
@@ -107,9 +104,6 @@ ceUCTargetSetName::~ceUCTargetSetName(){
 	pCameraShotList.RemoveAll();
 	pActionList.RemoveAll();
 	
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 

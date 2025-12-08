@@ -30,9 +30,9 @@
 // includes
 #include <deigde/undo/igdeUndo.h>
 #include "dragengine/common/math/decMath.h"
+#include "aeRuleInverseKinematic.h"
 
 // predefinitions
-class aeRuleInverseKinematic;
 
 
 
@@ -43,7 +43,7 @@ class aeRuleInverseKinematic;
  */
 class aeURuleIKSetGoalRotation : public igdeUndo{
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 	decVector pOldRot;
 	decVector pNewRot;

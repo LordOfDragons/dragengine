@@ -62,12 +62,6 @@ pLight(NULL)
 }
 
 gdeUOCLightSetSpotRatio::~gdeUOCLightSetSpotRatio(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

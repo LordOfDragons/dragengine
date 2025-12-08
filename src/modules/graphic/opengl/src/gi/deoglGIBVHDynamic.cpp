@@ -50,10 +50,10 @@ pTBOVertex(NULL),
 pBlockUsageCount(0)
 {
 	try{
-		pTBONodeBox = new deoglDynamicTBOFloat32(bvhLocal.GetRenderThread(), 4);
+		pTBONodeBox.TakeOverWith(bvhLocal.GetRenderThread(), 4);
 		pTBONodeBox->SetDataCount(bvhLocal.GetTBONodeBox()->GetDataCount());
 		
-		pTBOVertex = new deoglDynamicTBOFloat32(bvhLocal.GetRenderThread(), 4);
+		pTBOVertex.TakeOverWith(bvhLocal.GetRenderThread(), 4);
 		pTBOVertex->SetDataCount(bvhLocal.GetTBOVertex()->GetDataCount());
 		
 	}catch(const deException &){
@@ -177,12 +177,6 @@ void deoglGIBVHDynamic::RemoveBlockUsage(){
 void deoglGIBVHDynamic::pCleanUp(){
 	DropBlocks();
 	
-	if(pTBONodeBox){
-		pTBONodeBox->FreeReference();
-	}
-	if(pTBOVertex){
-		pTBOVertex->FreeReference();
-	}
 }
 
 void deoglGIBVHDynamic::pCalcNodeExtends(const deoglBVHNode &node, decVector &minExtend, decVector &maxExtend){

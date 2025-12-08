@@ -59,12 +59,6 @@ ceUCAASpeakSetMovement::ceUCAASpeakSetMovement(ceConversationTopic *topic, ceCAA
 }
 
 ceUCAASpeakSetMovement::~ceUCAASpeakSetMovement(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

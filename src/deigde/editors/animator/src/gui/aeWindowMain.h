@@ -40,17 +40,17 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
+#include "aeAnimator.h"
+#include "aeWindowProperties.h"
+#include "aeView3D.h"
+#include "aeWindowMainListener.h"
 
 
 class aeRule;
 class decStringList;
 class aeConfiguration;
-class aeView3D;
-class aeAnimator;
-class aeWindowProperties;
 class deCmdLineArgs;
 class aeLoadSaveSystem;
-class aeWindowMainListener;
 class aeIGDEModule;
 class igdeGameDefinition;
 class igdeEnvironment;
@@ -68,7 +68,7 @@ class igdeStepableTask;
  */
 class aeWindowMain : public igdeEditorWindow{
 private:
-	aeWindowMainListener *pListener;
+	aeWindowMainListener::Ref pListener;
 	
 	igdeIcon::Ref pIconRuleAnimation;
 	igdeIcon::Ref pIconRuleAnimationDifference;
@@ -164,10 +164,10 @@ private:
 	igdeClipboard pClipboard;
 	aeLoadSaveSystem *pLoadSaveSystem;
 	
-	aeView3D *pView3D;
-	aeWindowProperties *pWindowProperties;
+	aeView3D::Ref pView3D;
+	aeWindowProperties::Ref pWindowProperties;
 	
-	aeAnimator *pAnimator;
+	aeAnimator::Ref pAnimator;
 	
 	
 	
@@ -207,7 +207,7 @@ public:
 	inline aeLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

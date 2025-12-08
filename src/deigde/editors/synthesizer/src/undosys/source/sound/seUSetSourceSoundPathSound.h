@@ -27,8 +27,8 @@
 #define _SEUSETSOURCESOUNDPATHSOUND_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSourceSound.h"
 
-class seSourceSound;
 
 
 
@@ -37,7 +37,7 @@ class seSourceSound;
  */
 class seUSetSourceSoundPathSound : public igdeUndo{
 private:
-	seSourceSound *pSource;
+	seSourceSound::Ref pSource;
 	
 	decString pOldPath;
 	decString pNewPath;

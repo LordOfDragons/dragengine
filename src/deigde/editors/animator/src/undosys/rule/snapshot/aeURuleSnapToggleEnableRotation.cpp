@@ -48,7 +48,6 @@ aeURuleSnapToggleEnableRotation::aeURuleSnapToggleEnableRotation(aeRuleStateSnap
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		SetShortInfo("Rule state snapshot toggle enable rotation");
 		
@@ -81,7 +80,4 @@ void aeURuleSnapToggleEnableRotation::Redo(){
 //////////////////////
 
 void aeURuleSnapToggleEnableRotation::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

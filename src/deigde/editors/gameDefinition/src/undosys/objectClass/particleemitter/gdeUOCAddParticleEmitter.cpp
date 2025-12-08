@@ -59,12 +59,6 @@ pParticleEmitter(NULL)
 }
 
 gdeUOCAddParticleEmitter::~gdeUOCAddParticleEmitter(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

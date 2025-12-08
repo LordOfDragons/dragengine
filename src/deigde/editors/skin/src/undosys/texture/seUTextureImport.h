@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include "../../skin/property/sePropertyList.h"
+#include "seTexture.h"
 
-class seTexture;
 
 
 
@@ -37,7 +37,7 @@ class seTexture;
  */
 class seUTextureImport : public igdeUndo{
 private:
-	seTexture *pTexture;
+	seTexture::Ref pTexture;
 	
 	sePropertyList pOldProperties;
 	sePropertyList pNewProperties;

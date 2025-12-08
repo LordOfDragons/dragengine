@@ -67,15 +67,6 @@ ceCConditionGameCommand *condition, const char *newCommand){
 }
 
 ceUCCGameCmdSetCommand::~ceUCCGameCmdSetCommand(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

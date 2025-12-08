@@ -34,11 +34,11 @@
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/video/deVideo.h>
 #include <dragengine/resources/skin/property/deSkinPropertyMapped.h>
+#include "sePropertyNodeGroup.h"
 
 class seTexture;
 
 class deEngine;
-class sePropertyNodeGroup;
 class deSkinPropertyNodeGroup;
 
 class igdeTexturePropertyList;
@@ -99,9 +99,9 @@ private:
 	
 	seMapped::Ref pMappedComponents[4];
 	
-	sePropertyNodeGroup *pNodeGroup;
+	sePropertyNodeGroup::Ref pNodeGroup;
 	deSkinPropertyNodeGroup *pEngNodeGroup;
-	sePropertyNodeGroup *pActiveNodeGroup;
+	sePropertyNodeGroup::Ref pActiveNodeGroup;
 	sePropertyNodeSelection pNodeSelection;
 	int pActiveNodeLayer;
 	decColor pNodeColor;
@@ -229,7 +229,7 @@ public:
 	
 	
 	/** \brief Node group. */
-	inline sePropertyNodeGroup *GetNodeGroup() const{ return pNodeGroup; }
+	inline const sePropertyNodeGroup::Ref &GetNodeGroup() const{ return pNodeGroup; }
 	
 	/** \brief Set node group. */
 	void SetNodeGroup(sePropertyNodeGroup *nodeGroup);
@@ -245,7 +245,7 @@ public:
 	const sePropertyNodeSelection &GetNodeSelection() const{ return pNodeSelection; }
 	
 	/** \brief Active node group or \em NULL. */
-	inline sePropertyNodeGroup *GetActiveNodeGroup() const{ return pActiveNodeGroup; }
+	inline const sePropertyNodeGroup::Ref &GetActiveNodeGroup() const{ return pActiveNodeGroup; }
 	
 	/** \brief Set active node group or \em NULL. */
 	void SetActiveNodeGroup(sePropertyNodeGroup *node);

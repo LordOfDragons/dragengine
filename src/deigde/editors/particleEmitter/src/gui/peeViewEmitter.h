@@ -28,9 +28,9 @@
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseDragListener.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
+#include "peeEmitter.h"
 
 class peeWindowMain;
-class peeEmitter;
 
 
 
@@ -41,7 +41,7 @@ class peeViewEmitter : public igdeViewRenderWindow{
 private:
 	peeWindowMain &pWindowMain;
 	
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	igdeMouseCameraListener::Ref pCameraInteraction;
 	
@@ -70,7 +70,7 @@ public:
 	void ResetView();
 	
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
 	void SetEmitter(peeEmitter *emitter);

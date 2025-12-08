@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeProperty.h"
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
-class gdeProperty;
 
 
 
@@ -40,8 +40,8 @@ class gdeProperty;
  */
 class gdeUGDDPSetName : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeProperty::Ref pProperty;
 	
 	decString pOldValue;
 	decString pNewValue;

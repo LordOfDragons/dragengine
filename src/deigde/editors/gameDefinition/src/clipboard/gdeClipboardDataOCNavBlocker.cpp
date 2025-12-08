@@ -51,7 +51,4 @@ pNavBlocker(NULL)
 }
 
 gdeClipboardDataOCNavBlocker::~gdeClipboardDataOCNavBlocker(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
 }

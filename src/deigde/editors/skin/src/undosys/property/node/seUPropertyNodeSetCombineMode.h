@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNode.h>
+#include "sePropertyNode.h"
 
-class sePropertyNode;
 
 
 
@@ -38,7 +38,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeSetCombineMode : public igdeUndo{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	deSkinPropertyNode::eCombineModes pOldValue;
 	deSkinPropertyNode::eCombineModes pNewValue;

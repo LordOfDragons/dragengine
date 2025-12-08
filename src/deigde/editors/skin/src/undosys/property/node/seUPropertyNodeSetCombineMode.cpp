@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeSetCombineMode::~seUPropertyNodeSetCombineMode(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

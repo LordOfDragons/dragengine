@@ -35,6 +35,12 @@ class reWPPush;
  * \brief Push panel listenerer
  */
 class reWPPushListener : public reRigNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reWPPushListener> Ref;
+	
+	
+
 private:
 	reWPPush &pPanel;
 	

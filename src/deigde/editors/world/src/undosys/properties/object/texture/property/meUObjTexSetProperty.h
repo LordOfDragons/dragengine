@@ -26,8 +26,8 @@
 #define _MEUOBJTEXSETPROPERTY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meObjectTexture.h"
 
-class meObjectTexture;
 
 
 
@@ -36,7 +36,7 @@ class meObjectTexture;
  */
 class meUObjTexSetProperty : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decString pKey;
 	decString pOldValue;
 	decString pNewValue;

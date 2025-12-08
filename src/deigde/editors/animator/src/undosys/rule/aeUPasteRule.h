@@ -30,8 +30,8 @@
 #include "../../animator/rule/aeRuleList.h"
 #include "../../animator/link/aeLinkList.h"
 #include "../../animator/controller/aeControllerList.h"
+#include "aeAnimator.h"
 
-class aeAnimator;
 
 
 
@@ -40,7 +40,7 @@ class aeAnimator;
  */
 class aeUPasteRule : public igdeUndo{
 private:
-	aeAnimator *pAnimator;
+	aeAnimator::Ref pAnimator;
 	aeRuleList pRuleList;
 	aeLinkList pRemoveLinkList;
 	aeControllerList pRemoveControllerList;

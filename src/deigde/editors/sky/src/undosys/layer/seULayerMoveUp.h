@@ -26,8 +26,8 @@
 #define _SEULAYERMOVEUP_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLayer.h"
 
-class seLayer;
 
 
 /**
@@ -35,7 +35,7 @@ class seLayer;
  */
 class seULayerMoveUp : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	int pIndex;
 	
 	

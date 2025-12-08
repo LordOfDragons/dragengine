@@ -62,17 +62,11 @@ deoglRCanvasVideoPlayer::~deoglRCanvasVideoPlayer(){
 ///////////////
 
 void deoglRCanvasVideoPlayer::SetVideoPlayer(deoglRVideoPlayer *videoPlayer){
-	if(videoPlayer == pVideoPlayer){
+	if(pVideoPlayer == videoPlayer){
 		return;
 	}
 	
-	if(pVideoPlayer){
-		pVideoPlayer->FreeReference();
-	}
 	pVideoPlayer = videoPlayer;
-	if(videoPlayer){
-		videoPlayer->AddReference();
-	}
 }
 
 void deoglRCanvasVideoPlayer::SetTCTransform(const decTexMatrix2 &transform){

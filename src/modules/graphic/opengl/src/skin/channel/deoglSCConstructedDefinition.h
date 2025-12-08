@@ -27,9 +27,9 @@
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeVisitor.h>
 #include <dragengine/common/math/decMath.h>
+#include "decMemoryFileWriter.h"
 
 class deSkinPropertyConstructed;
-class decMemoryFileWriter;
 class decMemoryFile;
 class deEngine;
 
@@ -40,8 +40,8 @@ class deEngine;
 class deoglSCConstructedDefinition : public deSkinPropertyNodeVisitor{
 private:
 	const deEngine &pEngine;
-	decMemoryFileWriter *pDefinition;
-	decMemoryFileWriter *pVerify;
+	decMemoryFileWriter::Ref pDefinition;
+	decMemoryFileWriter::Ref pVerify;
 	bool pCacheValid;
 	
 	

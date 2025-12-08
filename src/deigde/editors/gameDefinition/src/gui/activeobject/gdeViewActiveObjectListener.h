@@ -35,6 +35,12 @@ class gdeViewActiveObject;
  * \brief Active object view listener.
  */
 class gdeViewActiveObjectListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeViewActiveObjectListener> Ref;
+	
+	
+
 private:
 	gdeViewActiveObject &pView;
 	

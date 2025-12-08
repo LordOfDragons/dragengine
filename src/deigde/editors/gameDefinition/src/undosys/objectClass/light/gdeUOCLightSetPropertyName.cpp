@@ -62,12 +62,6 @@ pProperty(property)
 }
 
 gdeUOCLightSetPropertyName::~gdeUOCLightSetPropertyName(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

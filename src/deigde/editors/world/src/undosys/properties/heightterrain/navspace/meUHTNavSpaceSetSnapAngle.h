@@ -26,8 +26,8 @@
 #define _MEUHTNAVSPACESETSNAPANGLE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meHeightTerrainNavSpace.h"
 
-class meHeightTerrainNavSpace;
 
 
 
@@ -36,7 +36,7 @@ class meHeightTerrainNavSpace;
  */
 class meUHTNavSpaceSetSnapAngle : public igdeUndo{
 private:
-	meHeightTerrainNavSpace *pNavSpace;
+	meHeightTerrainNavSpace::Ref pNavSpace;
 	float pOldSnapAngle;
 	float pNewSnapAngle;
 	

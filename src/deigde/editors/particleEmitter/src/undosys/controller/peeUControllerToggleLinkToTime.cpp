@@ -53,9 +53,6 @@ peeUControllerToggleLinkToTime::peeUControllerToggleLinkToTime(peeController *co
 }
 
 peeUControllerToggleLinkToTime::~peeUControllerToggleLinkToTime(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

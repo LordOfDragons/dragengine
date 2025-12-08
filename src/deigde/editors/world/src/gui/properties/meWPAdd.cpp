@@ -204,7 +204,7 @@ pWorld(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new meWPAddListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	pActionClassAdd.TakeOver(new cActionClassAdd(*this, pComboObjClass));
 	pActionClassRemove.TakeOver(new cActionClassRemove(*this, pListObjClasses));
@@ -241,9 +241,6 @@ pWorld(NULL)
 meWPAdd::~meWPAdd(){
 	SetWorld(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -252,13 +249,12 @@ meWPAdd::~meWPAdd(){
 ///////////////
 
 void meWPAdd::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

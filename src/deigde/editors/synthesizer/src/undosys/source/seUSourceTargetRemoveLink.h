@@ -26,9 +26,9 @@
 #define _SEUSOURCETARGETREMOVELINK_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLink.h"
+#include "seSource.h"
 
-class seSource;
-class seLink;
 class seControllerTarget;
 
 
@@ -38,10 +38,10 @@ class seControllerTarget;
  */
 class seUSourceTargetRemoveLink : public igdeUndo{
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	seControllerTarget *pTarget;
 	
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	
 	

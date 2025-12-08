@@ -59,12 +59,6 @@ ceUCFileRemove::ceUCFileRemove(ceConversationFile *file){
 }
 
 ceUCFileRemove::~ceUCFileRemove(){
-	if(pFile){
-		pFile->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

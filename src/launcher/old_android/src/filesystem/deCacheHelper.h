@@ -27,11 +27,11 @@
 
 #include "../common/string/decStringList.h"
 #include "../common/file/decPath.h"
+#include "deVirtualFileSystem.h"
 
 class deLogger;
 class decBaseFileWriter;
 class decBaseFileReader;
-class deVirtualFileSystem;
 
 
 /**
@@ -67,7 +67,7 @@ public:
 	
 	
 private:
-	deVirtualFileSystem *pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	decPath pCachePath;
 	
 	decStringList pMapping;

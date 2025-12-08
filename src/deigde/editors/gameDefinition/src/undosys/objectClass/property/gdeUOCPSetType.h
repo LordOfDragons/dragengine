@@ -31,8 +31,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 
@@ -41,8 +41,8 @@ class gdeObjectClass;
  */
 class gdeUOCPSetType : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
 	
 	gdeProperty::ePropertyTypes pOldValue;
 	gdeProperty::ePropertyTypes pNewValue;

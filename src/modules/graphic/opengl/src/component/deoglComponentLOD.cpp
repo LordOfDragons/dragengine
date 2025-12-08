@@ -47,7 +47,7 @@ pLODIndex(lodIndex),
 pRLOD(NULL)
 {
 	try{
-		pRLOD = new deoglRComponentLOD(*component.GetRComponent(), lodIndex);
+		pRLOD.TakeOverWith(*component.GetRComponent(), lodIndex);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -70,7 +70,4 @@ deoglComponentLOD::~deoglComponentLOD(){
 //////////////////////
 
 void deoglComponentLOD::pCleanUp(){
-	if(pRLOD){
-		pRLOD->FreeReference();
-	}
 }

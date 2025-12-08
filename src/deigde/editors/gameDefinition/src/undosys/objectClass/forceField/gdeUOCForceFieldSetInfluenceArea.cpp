@@ -62,12 +62,6 @@ pForceField(NULL)
 }
 
 gdeUOCForceFieldSetInfluenceArea::~gdeUOCForceFieldSetInfluenceArea(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

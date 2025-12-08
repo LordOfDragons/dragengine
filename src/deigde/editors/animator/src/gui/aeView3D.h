@@ -31,10 +31,10 @@
 #include <deigde/gui/event/igdeMouseKeyListener.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
 #include <deigde/undo/igdeUndo.h>
+#include "aeAnimator.h"
 
 
 class aeWindowMain;
-class aeAnimator;
 
 
 
@@ -45,7 +45,7 @@ class aeView3D : public igdeViewRenderWindow{
 private:
 	aeWindowMain &pWindowMain;
 	
-	aeAnimator *pAnimator;
+	aeAnimator::Ref pAnimator;
 	
 	igdeMouseCameraListener::Ref pCameraInteraction;
 	igdeMouseKeyListener::Ref pLocomotionInteraction;
@@ -79,7 +79,7 @@ public:
 	void ResetView();
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

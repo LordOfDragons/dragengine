@@ -30,6 +30,8 @@
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
+#include "ceConversation.h"
+#include "ceWPTopicListener.h"
 
 class ceWPAComment;
 class ceWPACoordSystemRemove;
@@ -39,8 +41,6 @@ class ceWPAActorAdd;
 class ceWPCTrigger;
 class ceWPATrigger;
 class ceWindowProperties;
-class ceWPTopicListener;
-class ceConversation;
 class ceConversationFile;
 class ceConversationTopic;
 class ceConversationAction;
@@ -80,8 +80,8 @@ class ceWPTTreeItem;
 class ceWPTopic : public igdeContainerFlow{
 private:
 	ceWindowProperties &pWindowProperties;
-	ceWPTopicListener *pListener;
-	ceConversation *pConversation;
+	ceWPTopicListener::Ref pListener;
+	ceConversation::Ref pConversation;
 	
 	igdeComboBoxFilter::Ref pCBFile;
 	igdeButton::Ref pBtnFile;
@@ -145,7 +145,7 @@ public:
 	inline ceWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
 	void SetConversation(ceConversation *conversation);

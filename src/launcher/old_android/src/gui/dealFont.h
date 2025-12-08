@@ -29,9 +29,9 @@
 #include <GLES2/gl2.h>
 
 #include "../deObject.h"
+#include "dealImage.h"
 
 class dealDisplay;
-class dealImage;
 class decXmlElementTag;
 
 
@@ -61,7 +61,7 @@ public:
 private:
 	dealDisplay &pDisplay;
 	
-	dealImage *pImage;
+	dealImage::Ref pImage;
 	
 	int pLineHeight;
 	sGlyph *pGlyphs;
@@ -86,7 +86,7 @@ public:
 	inline dealDisplay &GetDisplay() const{ return pDisplay; }
 	
 	/** \brief Image. */
-	inline dealImage *GetImage() const{ return pImage; }
+	inline const dealImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Line height. */
 	inline int GetLineHeight() const{ return pLineHeight; }

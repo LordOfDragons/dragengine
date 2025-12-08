@@ -55,9 +55,6 @@ pCanvasView(NULL){
 }
 
 cePCBOption::~cePCBOption(){
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 	SetActionOption(NULL, NULL);
 }
 
@@ -71,28 +68,14 @@ void cePCBOption::SetText(const decUnicodeString &text){
 }
 
 void cePCBOption::SetActionOption(ceCAPlayerChoice *action, ceCAPlayerChoiceOption *option){
-	if(action != pAction){
-		if(pAction){
-			pAction->FreeReference();
-		}
+	if(pAction != action){
 		
 		pAction = action;
-		
-		if(action){
-			action->AddReference();
-		}
 	}
 	
-	if(option != pActionOption){
-		if(pActionOption){
-			pActionOption->FreeReference();
-		}
+	if(pActionOption != option){
 		
 		pActionOption = option;
-		
-		if(option){
-			option->AddReference();
-		}
 	}
 }
 
@@ -102,7 +85,7 @@ void cePCBOption::Layout(const cePlayerChoiceBox &pcbox, bool selected){
 	// create canvas if not existing
 	deCanvasManager &canvasManager = *pcbox.GetConversation().GetEngine()->GetCanvasManager();
 	if(!pCanvasView){
-		pCanvasView = canvasManager.CreateCanvasView();
+		pCanvasView.TakeOver(canvasManager.CreateCanvasView());
 	}
 	
 	// clear canvas

@@ -62,12 +62,6 @@ pLight(NULL)
 }
 
 gdeUOCLightSetRange::~gdeUOCLightSetRange(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

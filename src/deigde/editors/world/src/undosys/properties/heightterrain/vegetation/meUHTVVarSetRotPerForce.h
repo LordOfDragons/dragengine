@@ -28,9 +28,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meHTVVariation.h"
 
 // predefinitions
-class meHTVVariation;
 
 
 
@@ -41,7 +41,7 @@ class meHTVVariation;
  */
 class meUHTVVarSetRotPerForce : public igdeUndo{
 private:
-	meHTVVariation *pVariation;
+	meHTVVariation::Ref pVariation;
 	float pOldRotPerForce;
 	float pNewRotPerForce;
 	

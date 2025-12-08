@@ -27,8 +27,8 @@
 #define _SEUSYNTHESIZERSETSAMPLECOUNT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSynthesizer.h"
 
-class seSynthesizer;
 
 
 
@@ -37,7 +37,7 @@ class seSynthesizer;
  */
 class seUSynthesizerSetSampleCount : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	int pOldSampleCount;
 	int pNewSampleCount;

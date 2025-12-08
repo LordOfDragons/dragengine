@@ -132,7 +132,7 @@ dealEngineInstance::~dealEngineInstance(){
 ///////////////
 
 bool dealEngineInstance::IsRunning() const{
-	return pEngine != NULL;
+	return pEngine != nullptr;
 }
 
 bool dealEngineInstance::Start(const char *logfile, const char *cacheAppID){
@@ -520,14 +520,11 @@ bool dealEngineInstance::OpenDelga(int fileDescriptor, long fileOffset, long fil
 	try{
 		fileReader = new dealFDFileReader("DELGA", fileDescriptor, fileOffset, fileLength);
 		
-		pDelga = new dealVFSZipArchive(*this, fileReader, pathRoot);
+		pDelga.TakeOverWith(*this, fileReader, pathRoot);
 		fileReader->FreeReference();
 		fileReader = NULL;
 		
 	}catch(const deException &e){
-		if(pDelga){
-			pDelga->FreeReference();
-		}
 		if(fileReader){
 			fileReader->FreeReference();
 		}
@@ -932,13 +929,7 @@ bool dealEngineInstance::TerminateAppWindow(){
 void dealEngineInstance::pCleanUp(){
 	Stop();
 	
-	if(pDelga){
-		pDelga->FreeReference();
-	}
 	
-	if(pLogger){
-		pLogger->FreeReference();
-	}
 }
 
 
@@ -968,7 +959,7 @@ void dealEngineInstance::pCreateLogger(const char *logfile){
 				fileWriter = diskDir->OpenFileForWriting(filePath);
 			}
 			
-			pLogger = new deLoggerFile(fileWriter);
+			pLogger.TakeOver(new deLoggerFile(fileWriter));
 			fileWriter->FreeReference();
 			
 			diskDir->FreeReference();
@@ -1074,8 +1065,6 @@ void dealEngineInstance::pCreateOSFileSystem(){
 }
 
 void dealEngineInstance::pCloseOSFileSystem(){
-	if(pOSFileSystem){
-		pOSFileSystem->FreeReference();
 		pOSFileSystem = NULL;
 	}
 	

@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 gdeUGDSetScriptModule::~gdeUGDSetScriptModule(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

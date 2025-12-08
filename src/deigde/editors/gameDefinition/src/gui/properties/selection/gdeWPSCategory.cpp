@@ -222,7 +222,7 @@ pGameDefinition(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPSCategoryListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -249,9 +249,6 @@ pGameDefinition(NULL)
 gdeWPSCategory::~gdeWPSCategory(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -260,7 +257,7 @@ gdeWPSCategory::~gdeWPSCategory(){
 ///////////////
 
 void gdeWPSCategory::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	
@@ -270,7 +267,6 @@ void gdeWPSCategory::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

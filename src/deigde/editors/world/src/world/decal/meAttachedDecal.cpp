@@ -59,9 +59,6 @@ pParentObject(NULL)
 
 meAttachedDecal::~meAttachedDecal(){
 	RemoveFromParent();
-	if(pParentObject){
-		pParentObject->FreeReference();
-	}
 }
 
 
@@ -70,22 +67,16 @@ meAttachedDecal::~meAttachedDecal(){
 ///////////////
 
 void meAttachedDecal::SetParentObject(meObject *object){
-	if(object == pParentObject){
+	if(pParentObject == object){
 		return;
 	}
 	
 	RemoveFromParent();
 	
-	if(pParentObject){
-		pParentObject->FreeReference();
 		pParentObject = NULL;
 	}
 	
 	pParentObject = object;
-	
-	if(object){
-		object->AddReference();
-	}
 	
 	AttachToParent();
 }

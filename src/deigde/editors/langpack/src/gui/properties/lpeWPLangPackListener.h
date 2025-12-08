@@ -35,6 +35,12 @@ class lpeWPLangPack;
  * \brief Language pack property panel listener.
  */
 class lpeWPLangPackListener : public lpeLangPackListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<lpeWPLangPackListener> Ref;
+	
+	
+
 private:
 	lpeWPLangPack &pPanel;
 	

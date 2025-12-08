@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
+#include "aeRuleTrackTo.h"
 
-class aeRuleTrackTo;
 
 
 
@@ -37,7 +37,7 @@ class aeRuleTrackTo;
  */
 class aeURuleTrackToSetLockedAxis : public igdeUndo{
 private:
-	aeRuleTrackTo *pRule;
+	aeRuleTrackTo::Ref pRule;
 	
 	deAnimatorRuleTrackTo::eLockedAxis pOldAxis;
 	deAnimatorRuleTrackTo::eLockedAxis pNewAxis;

@@ -97,16 +97,13 @@ void peeViewEmitter::ResetView(){
 }
 
 void peeViewEmitter::SetEmitter(peeEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	
 	pCameraInteraction->SetCamera(NULL);
 	SetRenderWorld(NULL);
 	
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 	
 	pEmitter = emitter;
 	

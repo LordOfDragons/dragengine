@@ -215,9 +215,6 @@ void deoglDynamicOcclusionMesh::PrepareBVH(){
 //////////////////////
 
 void deoglDynamicOcclusionMesh::pCleanUp(){
-	if(pOcclusionMesh){
-		pOcclusionMesh->FreeReference();
-	}
 	
 	if(pVBOData){
 		delete [] pVBOData;

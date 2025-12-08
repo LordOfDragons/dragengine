@@ -29,10 +29,10 @@
 #include <dragengine/systems/modules/graphic/deBaseGraphicParticleEmitterInstance.h>
 
 #include "../deoglBasics.h"
+#include "deoglRParticleEmitterInstance.h"
 
 class deoglParticleEmitter;
 class deoglParticleEmitterInstanceType;
-class deoglRParticleEmitterInstance;
 
 class deGraphicOpenGl;
 class deParticleEmitterInstance;
@@ -45,7 +45,7 @@ class deoglParticleEmitterInstance : public deBaseGraphicParticleEmitterInstance
 private:
 	deGraphicOpenGl &pOgl;
 	const deParticleEmitterInstance &pInstance;
-	deoglRParticleEmitterInstance *pRInstance;
+	deoglRParticleEmitterInstance::Ref pRInstance;
 	
 	deoglParticleEmitter *pEmitter;
 	
@@ -82,7 +82,7 @@ public:
 	
 	
 	/** Render particle emitter instance. */
-	inline deoglRParticleEmitterInstance *GetRInstance() const{ return pRInstance; }
+	inline const deoglRParticleEmitterInstance::Ref &GetRInstance() const{ return pRInstance; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

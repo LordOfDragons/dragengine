@@ -27,9 +27,9 @@
 #define _SEUSOURCEMOVEEFFECTUP_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSource.h"
+#include "seEffect.h"
 
-class seEffect;
-class seSource;
 
 
 
@@ -38,8 +38,8 @@ class seSource;
  */
 class seUSourceMoveEffectUp : public igdeUndo{
 private:
-	seSource *pSource;
-	seEffect *pEffect;
+	seSource::Ref pSource;
+	seEffect::Ref pEffect;
 	int pIndex;
 	
 	

@@ -76,9 +76,6 @@ decObjectSet::decObjectSet(const decObjectSet &set){
 		for(pObjectCount=0; pObjectCount<count; pObjectCount++){
 			object = set.pObjects[pObjectCount];
 			pObjects[pObjectCount] = object;
-			if(object){
-				object->AddReference();
-			}
 		}
 	}
 }
@@ -133,9 +130,6 @@ void decObjectSet::Add(deObject *object){
 	}
 	
 	pObjects[pObjectCount] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
@@ -156,9 +150,6 @@ void decObjectSet::AddIfAbsent(deObject *object){
 	}
 	
 	pObjects[pObjectCount] = object;
-	if(object){
-		object->AddReference();
-	}
 	pObjectCount++;
 }
 
@@ -403,9 +394,6 @@ decObjectSet decObjectSet::operator+(const decObjectSet &set) const{
 	for(i=0; i<pObjectCount; i++){
 		object = pObjects[i];
 		nset.pObjects[i] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	for(i=0; i<set.pObjectCount; i++){
@@ -442,9 +430,6 @@ decObjectSet &decObjectSet::operator=(const decObjectSet &set){
 	for(pObjectCount=0; pObjectCount<set.pObjectCount; pObjectCount++){
 		object = set.pObjects[pObjectCount];
 		pObjects[pObjectCount] = object;
-		if(object){
-			object->AddReference();
-		}
 	}
 	
 	return *this;

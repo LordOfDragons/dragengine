@@ -61,12 +61,6 @@ ceUCAGameCmdSetCommand::ceUCAGameCmdSetCommand(ceConversationTopic *topic, ceCAG
 }
 
 ceUCAGameCmdSetCommand::~ceUCAGameCmdSetCommand(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

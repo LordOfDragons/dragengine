@@ -51,8 +51,6 @@
 
 igdeTaskSyncGameDefinition::igdeTaskSyncGameDefinition(igdeWindowMain &windowMain) :
 pWindowMain(windowMain),
-pOldProjectGameDef(NULL),
-pOldGameDef(NULL),
 pState(esReloadProjectGameDef),
 pTaskIndex(0),
 pLastProgress(-1.0f),
@@ -102,10 +100,8 @@ bool igdeTaskSyncGameDefinition::Step(){
 		igdeGameProject &project = *pWindowMain.GetGameProject();
 		
 		pOldProjectGameDef = project.GetProjectGameDefinition();
-		pOldProjectGameDef->AddReference();
 		
 		pOldGameDef = project.GetGameDefinition();
-		pOldGameDef->AddReference();
 		
 		if(!pReloadXMLElementClasses){
 			pLoadProjectGameDefinition();
@@ -179,13 +175,6 @@ void igdeTaskSyncGameDefinition::pCleanUp(){
 	while(pTaskIndex<taskCount){
 		delete (igdeStepableTask*)pEditorTasks.GetAt(pTaskIndex++);
 	}
-	
-	if(pOldGameDef){
-		pOldGameDef->FreeReference();
-	}
-	if(pOldProjectGameDef){
-		pOldProjectGameDef->FreeReference();
-	}
 }
 
 void igdeTaskSyncGameDefinition::pUpdateProgress(bool force){
@@ -204,34 +193,18 @@ void igdeTaskSyncGameDefinition::pUpdateProgress(bool force){
 
 void igdeTaskSyncGameDefinition::pLoadProjectGameDefinition(){
 	igdeGameProject &project = *pWindowMain.GetGameProject();
-	igdeGameDefinition *gamedef = NULL;
-	decDiskFileReader *reader = NULL;
 	decPath path;
+	path.SetFromNative(project.GetDirectoryPath());
+	path.AddUnixPath(project.GetPathProjectGameDefinition());
 	
-	try{
-		path.SetFromNative(project.GetDirectoryPath());
-		path.AddUnixPath(project.GetPathProjectGameDefinition());
-		reader = new decDiskFileReader(path.GetPathNative());
-		
-		gamedef = new igdeGameDefinition(pWindowMain.GetEnvironment());
-		gamedef->SetFilename(path.GetPathNative());
-		
-		igdeXMLGameDefinition(pWindowMain.GetEnvironment(), pWindowMain.GetLogger()).Load(*reader, *gamedef);
-		
-		project.SetProjectGameDefinition(gamedef);
-		
-		reader->FreeReference();
-		gamedef->FreeReference();
-		
-	}catch(const deException &){
-		if(reader){
-			reader->FreeReference();
-		}
-		if(gamedef){
-			gamedef->FreeReference();
-		}
-		throw;
-	}
+	const igdeGameDefinition::Ref gamedef(
+		igdeGameDefinition::Ref::NewWith(pWindowMain.GetEnvironment()));
+	gamedef->SetFilename(path.GetPathNative());
+	
+	igdeXMLGameDefinition(pWindowMain.GetEnvironment(), pWindowMain.GetLogger()).Load(
+		decDiskFileReader::Ref::NewWith(path.GetPathNative()), gamedef);
+	
+	project.SetProjectGameDefinition(gamedef);
 }
 
 void igdeTaskSyncGameDefinition::pCreateEditorTasks(){

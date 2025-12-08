@@ -95,7 +95,7 @@ deoalAComponent::~deoalAComponent(){
 ///////////////
 
 void deoalAComponent::SetParentWorld(deoalAWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -141,16 +141,9 @@ void deoalAComponent::SetModel(deoalAModel *model, const decStringList *textureN
 	pDropWeightMatrices();
 	pDropFaces();
 	
-	if(pModel){
-		pModel->FreeReference();
-	}
 	
 	pModel = model;
 	pTextureNames = textureNames;
-	
-	if(model){
-		model->AddReference();
-	}
 	
 	pDirtyTextureUseSkin = true;
 	pDirtyExtends = true;
@@ -167,17 +160,11 @@ void deoalAComponent::SetModel(deoalAModel *model, const decStringList *textureN
 }
 
 void deoalAComponent::SetSkin(deoalASkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	pSkin = skin;
-	if(skin){
-		skin->AddReference();
-	}
 	
 	pUpdateTextureSkinMappings();
 }
@@ -283,7 +270,7 @@ void deoalAComponent::InitBones(const deComponent &component){
 	
 	pDropFaces();
 	
-	if(boneCount != pBoneCount){
+	if(pBoneCount != boneCount){
 		if(pBones){
 			delete [] pBones;
 			pBones = NULL;
@@ -439,12 +426,6 @@ void deoalAComponent::pCleanUp(){
 	
 	pTextures.RemoveAll();
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pModel){
-		pModel->FreeReference();
-	}
 }
 
 
@@ -795,7 +776,7 @@ void deoalAComponent::pUpdateFaces(){
 	}
 	
 	const int count = pModel->GetFaceCount();
-	if(count != pFaceCount){
+	if(pFaceCount != count){
 		pDropFaces();
 	}
 	

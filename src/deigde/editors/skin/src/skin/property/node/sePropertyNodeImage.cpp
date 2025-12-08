@@ -59,14 +59,10 @@ pRepeat(node.pRepeat)
 {
 	pImage = node.pImage;
 	if(pImage){
-		pImage->AddReference();
 	}
 }
 
 sePropertyNodeImage::~sePropertyNodeImage(){
-	if(pImage){
-		pImage->FreeReference();
-	}
 }
 
 
@@ -98,16 +94,13 @@ void sePropertyNodeImage::UpdateImage(){
 		}
 	}
 	
-	if(image == pImage){
+	if(pImage == image){
 		if(image){
 			image->FreeReference();
 		}
 		return;
 	}
 	
-	if(pImage){
-		pImage->FreeReference();
-	}
 	pImage = image;
 }
 
@@ -116,7 +109,7 @@ void sePropertyNodeImage::SetRepeat(const decPoint &count){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(count == pRepeat){
+	if(pRepeat == count){
 		return;
 	}
 	

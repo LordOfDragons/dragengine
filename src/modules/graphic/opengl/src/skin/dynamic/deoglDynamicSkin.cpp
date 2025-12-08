@@ -66,7 +66,7 @@ pDirtyRenderables(true)
 	int i;
 	
 	try{
-		pRDynamicSkin = new deoglRDynamicSkin(ogl.GetRenderThread());
+		pRDynamicSkin.TakeOverWith(ogl.GetRenderThread());
 		
 		for(i=0; i<renderableCount; i++){
 			RenderableAdded(i, dynamicSkin.GetRenderableAt(i));
@@ -249,9 +249,6 @@ void deoglDynamicSkin::pCleanUp(){
 	}
 	pRenderables.RemoveAll();
 	
-	if(pRDynamicSkin){
-		pRDynamicSkin->FreeReference();
-	}
 	
 	// notify owners we are about to be deleted. required since owners hold only a weak pointer
 	// to the dynamic skin and are notified only after switching to a new dynamic skin. in this

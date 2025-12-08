@@ -62,12 +62,6 @@ pActorSpeak(NULL)
 }
 
 ceUCAASpeakGestureClear::~ceUCAASpeakGestureClear(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

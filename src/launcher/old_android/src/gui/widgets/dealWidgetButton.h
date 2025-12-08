@@ -27,10 +27,10 @@
 
 #include "dealWidgetLayoutFlow.h"
 #include "../../common/string/decString.h"
+#include "dealWidgetBorderImage.h"
 
 class dealWidgetLabel;
 class dealWidgetImage;
-class dealWidgetBorderImage;
 class dealImage;
 
 
@@ -46,8 +46,8 @@ private:
 	
 	dealWidgetLabel *pLabel;
 	dealWidgetImage *pImage;
-	dealWidgetBorderImage *pBgImageNormal;
-	dealWidgetBorderImage *pBgImagePressed;
+	dealWidgetBorderImage::Ref pBgImageNormal;
+	dealWidgetBorderImage::Ref pBgImagePressed;
 	
 	bool pPressed;
 	

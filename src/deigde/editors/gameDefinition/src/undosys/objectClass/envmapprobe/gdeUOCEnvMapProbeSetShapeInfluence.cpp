@@ -62,12 +62,6 @@ pEnvMapProbe(NULL)
 }
 
 gdeUOCEnvMapProbeSetShapeInfluence::~gdeUOCEnvMapProbeSetShapeInfluence(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

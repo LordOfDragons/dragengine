@@ -38,11 +38,11 @@
 #include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "meWPSDecalListener.h"
+#include "meWorld.h"
 
 class meWPSelection;
-class meWPSDecalListener;
 class meDecal;
-class meWorld;
 
 
 
@@ -52,8 +52,8 @@ class meWorld;
 class meWPSDecal : public igdeContainerScroll{
 private:
 	meWPSelection &pWPSelection;
-	meWPSDecalListener *pListener;
-	meWorld *pWorld;
+	meWPSDecalListener::Ref pListener;
+	meWorld::Ref pWorld;
 	
 	igdeSpinTextField::Ref pSpinActive;
 	igdeTextField::Ref pEditSelCount;
@@ -101,7 +101,7 @@ public:
 	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

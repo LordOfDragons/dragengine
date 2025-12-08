@@ -46,7 +46,6 @@ aeURuleIKSetLocalPosition::aeURuleIKSetLocalPosition(aeRuleInverseKinematic *rul
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldPos = rule->GetLocalPosition();
 		pNewPos = newPos;
@@ -82,5 +81,4 @@ void aeURuleIKSetLocalPosition::Redo(){
 //////////////////////
 
 void aeURuleIKSetLocalPosition::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

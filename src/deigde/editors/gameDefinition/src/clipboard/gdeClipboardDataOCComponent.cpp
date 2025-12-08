@@ -51,7 +51,4 @@ pComponent(NULL)
 }
 
 gdeClipboardDataOCComponent::~gdeClipboardDataOCComponent(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
 }

@@ -65,7 +65,6 @@ pDDSCoordSystem(NULL)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pOCSpeaker->AddReference();
 	
 	try{
 		pCreateDebugDrawer();
@@ -117,9 +116,6 @@ void gdeVAOSpeaker::pCleanUp(){
 		pDebugDrawer = NULL;
 	}
 	
-	if(pOCSpeaker){
-		pOCSpeaker->FreeReference();
-	}
 }
 
 

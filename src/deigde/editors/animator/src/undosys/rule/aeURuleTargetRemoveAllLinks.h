@@ -28,8 +28,8 @@
 #include "../../animator/link/aeLinkList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRule.h"
 
-class aeRule;
 class aeControllerTarget;
 
 
@@ -38,7 +38,7 @@ class aeControllerTarget;
  */
 class aeURuleTargetRemoveAllLinks : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	aeControllerTarget *pTarget;
 	
 	aeLinkList pLinks;

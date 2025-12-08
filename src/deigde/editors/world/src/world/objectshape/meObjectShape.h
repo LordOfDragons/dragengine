@@ -31,6 +31,8 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 
 
 class meObject;
@@ -39,8 +41,6 @@ class meWorld;
 class igdeWDebugDrawerShape;
 class igdeEnvironment;
 
-class deColliderVolume;
-class deDebugDrawer;
 class deEngine;
 class decShape;
 
@@ -65,9 +65,9 @@ private:
 	meWorld *pWorld;
 	meObject *pParentObject;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSShape;
-	deColliderVolume *pEngCollider;
+	deColliderVolume::Ref pEngCollider;
 	
 	decShape *pShape;
 	
@@ -93,7 +93,7 @@ public:
 	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief Retrieves the engine collider. */
-	inline deColliderVolume *GetEngineCollider() const{ return pEngCollider; }
+	inline const deColliderVolume::Ref &GetEngineCollider() const{ return pEngCollider; }
 	
 	/** \brief Retrieves the world or NULL. */
 	inline meWorld *GetWorld() const{ return pWorld; }

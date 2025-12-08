@@ -369,7 +369,7 @@ pGameDefinition(NULL)
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
 	
-	pListener = new gdeWPSOCNavigationBlockerListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	helper.GroupBox(content, groupBox, "Object Class Navigation Blocker:");
 	
@@ -424,9 +424,6 @@ pGameDefinition(NULL)
 gdeWPSOCNavigationBlocker::~gdeWPSOCNavigationBlocker(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -435,13 +432,12 @@ gdeWPSOCNavigationBlocker::~gdeWPSOCNavigationBlocker(){
 ///////////////
 
 void gdeWPSOCNavigationBlocker::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

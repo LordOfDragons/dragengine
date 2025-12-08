@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 projUProfileSetGameDescription::~projUProfileSetGameDescription(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

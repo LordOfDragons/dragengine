@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCENVMAPPROBE_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCEnvMapProbe.h"
 
-class gdeOCEnvMapProbe;
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief EnvMapProbe. */
-	gdeOCEnvMapProbe *GetEnvMapProbe() const{ return pEnvMapProbe; }
+	const gdeOCEnvMapProbe::Ref &GetEnvMapProbe() const{ return pEnvMapProbe; }
 	/*@}*/
 };
 

@@ -62,12 +62,6 @@ pEnvMapProbe(NULL)
 }
 
 gdeUOCEnvMapProbeSetScaling::~gdeUOCEnvMapProbeSetScaling(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

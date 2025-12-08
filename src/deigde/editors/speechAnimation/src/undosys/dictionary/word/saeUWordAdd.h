@@ -26,9 +26,9 @@
 #define _SAEUWORDADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "saeSAnimation.h"
+#include "saeWord.h"
 
-class saeWord;
-class saeSAnimation;
 
 
 
@@ -37,8 +37,8 @@ class saeSAnimation;
  */
 class saeUWordAdd : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
-	saeWord *pWord;
+	saeSAnimation::Ref pSAnimation;
+	saeWord::Ref pWord;
 	
 	
 	

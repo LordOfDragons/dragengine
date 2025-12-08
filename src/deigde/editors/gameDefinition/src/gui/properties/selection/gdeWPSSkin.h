@@ -33,12 +33,12 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSSkinListener.h"
 
-class gdeGameDefinition;
 class gdeSkin;
 class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSSkinListener;
 
 
 
@@ -48,9 +48,9 @@ class gdeWPSSkinListener;
 class gdeWPSSkin : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSSkinListener *pListener;
+	gdeWPSSkinListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditPath::Ref pEditPath;
 	igdeTextField::Ref pEditName;
@@ -78,7 +78,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

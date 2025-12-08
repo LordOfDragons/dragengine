@@ -132,13 +132,12 @@ void dealWidgetOptionBox::SetImage(dealImage *image){
 
 
 void dealWidgetOptionBox::SetGroup(dealWidgetOptionGroup *group){
-	if(group == pGroup){
+	if(pGroup == group){
 		return;
 	}
 	
 	if(pGroup){
 		pGroup->Remove(this);
-		pGroup->FreeReference();
 	}
 	
 	if(group){
@@ -150,7 +149,7 @@ void dealWidgetOptionBox::SetGroup(dealWidgetOptionGroup *group){
 }
 
 void dealWidgetOptionBox::SetSelected(bool selected){
-	if(selected == pSelected){
+	if(pSelected == selected){
 		return;
 	}
 	

@@ -91,7 +91,7 @@ pIKLocked{false, false, false}
 	pName = "Bone";
 	
 	try{
-		pCollider = engine->GetColliderManager()->CreateColliderVolume();
+		pCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume());
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(deCollider::ertKinematic);
 		pCollider->SetUseLocalGravity(true);
@@ -102,7 +102,7 @@ pIKLocked{false, false, false}
 		pCollider->SetCollisionFilter(decCollisionFilter(layerMask));
 		
 		// create debug drawer and shapes
-		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSBone = new igdeWDebugDrawerShape;
@@ -145,7 +145,7 @@ void reRigBone::SetName(const char *name){
 }
 
 void reRigBone::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -180,7 +180,7 @@ void reRigBone::SetOrder(int order){
 }
 
 void reRigBone::SetParentBone(reRigBone *bone){
-	if(bone == pParentBone){
+	if(pParentBone == bone){
 		return;
 	}
 	
@@ -273,7 +273,7 @@ void reRigBone::SetMatrices(const decMatrix &matrix){
 }
 
 void reRigBone::SetDynamic(bool dynamic){
-	if(dynamic == pDynamic){
+	if(pDynamic == dynamic){
 		return;
 	}
 	
@@ -299,7 +299,7 @@ void reRigBone::SetMass(float mass){
 }
 
 void reRigBone::SetSelected(bool selected){
-	if(selected == pSelected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -313,7 +313,7 @@ void reRigBone::SetSelected(bool selected){
 }
 
 void reRigBone::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	
@@ -723,9 +723,6 @@ void reRigBone::RemoveAllConstraints(){
 void reRigBone::pCleanUp(){
 	SetRig(NULL);
 	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
 	
 	RemoveAllConstraints();
 	RemoveAllShapes();
@@ -738,9 +735,6 @@ void reRigBone::pCleanUp(){
 	}
 	if(pDDSBone){
 		delete pDDSBone;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

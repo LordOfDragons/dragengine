@@ -26,8 +26,8 @@
 #define _FEUGLYPHSETADVANCE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "feFontGlyph.h"
 
-class feFontGlyph;
 
 
 
@@ -36,7 +36,7 @@ class feFontGlyph;
  */
 class feUGlyphSetAdvance : public igdeUndo{
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	
 	int pOldAdvance;
 	int pNewAdvance;

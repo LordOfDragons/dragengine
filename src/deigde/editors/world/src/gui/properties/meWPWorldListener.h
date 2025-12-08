@@ -35,6 +35,12 @@ class meWPWorld;
  * World panel listener
  */
 class meWPWorldListener : public meWorldNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meWPWorldListener> Ref;
+	
+	
+
 private:
 	meWPWorld &pPanel;
 	

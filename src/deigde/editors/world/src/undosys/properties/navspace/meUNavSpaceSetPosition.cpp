@@ -63,9 +63,6 @@ meUNavSpaceSetPosition::meUNavSpaceSetPosition(meNavigationSpace *navspace, cons
 }
 
 meUNavSpaceSetPosition::~meUNavSpaceSetPosition(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

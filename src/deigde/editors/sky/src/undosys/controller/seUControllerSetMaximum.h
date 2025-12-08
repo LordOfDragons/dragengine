@@ -26,8 +26,8 @@
 #define _SEUCONTROLLERSETMAXIMUM_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seController.h"
 
-class seController;
 
 
 /**
@@ -35,7 +35,7 @@ class seController;
  */
 class seUControllerSetMaximum : public igdeUndo{
 private:
-	seController *pController;
+	seController::Ref pController;
 	
 	float pOldMinimum;
 	float pOldMaximum;

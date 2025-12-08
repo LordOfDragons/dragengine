@@ -26,10 +26,10 @@
 #define _REUREMOVESHAPE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRigShape.h"
+#include "reRigBone.h"
+#include "reRig.h"
 
-class reRig;
-class reRigShape;
-class reRigBone;
 class reRigShapeList;
 
 
@@ -40,12 +40,12 @@ class reRigShapeList;
 class reURemoveShape : public igdeUndo{
 private:
 	struct sEntry{
-		reRigShape *shape;
-		reRigBone *bone;
+		reRigShape::Ref shape;
+		reRigBone::Ref bone;
 	};
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	sEntry *pEntries;
 	int pEntryCount;

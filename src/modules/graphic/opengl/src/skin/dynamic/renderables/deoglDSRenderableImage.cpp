@@ -51,7 +51,7 @@ pImage(NULL),
 pDirty(true)
 {
 	try{
-		pRRenderableImage = new deoglRDSRenderableImage(*dynamicSkin.GetRDynamicSkin());
+		pRRenderableImage.TakeOverWith(*dynamicSkin.GetRDynamicSkin());
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -76,7 +76,7 @@ void deoglDSRenderableImage::RenderableChanged(){
 	deoglImage * const image = pRenderableImage.GetImage()
 		? (deoglImage*)pRenderableImage.GetImage()->GetPeerGraphic() : NULL;
 	
-	if(image != pImage){
+	if(pImage != image){
 		pImage = image;
 		pDirty = true;
 		
@@ -111,7 +111,4 @@ void deoglDSRenderableImage::SyncToRender(){
 //////////////////////
 
 void deoglDSRenderableImage::pCleanUp(){
-	if(pRRenderableImage){
-		pRRenderableImage->FreeReference();
-	}
 }

@@ -35,6 +35,12 @@ class lpeViewLangPack;
  * \brief Language pack view listener.
  */
 class lpeViewLangPackListener : public lpeLangPackListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<lpeViewLangPackListener> Ref;
+	
+	
+
 private:
 	lpeViewLangPack &pPanel;
 	

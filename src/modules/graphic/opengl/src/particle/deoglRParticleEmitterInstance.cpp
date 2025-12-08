@@ -134,9 +134,6 @@ deoglRParticleEmitterInstance::~deoglRParticleEmitterInstance(){
 	if(pIndices){
 		delete [] pIndices;
 	}
-	if(pRenderEnvMap){
-		pRenderEnvMap->FreeReference();
-	}
 	if(pVAO){
 		delete pVAO;
 	}
@@ -153,29 +150,21 @@ deoglRParticleEmitterInstance::~deoglRParticleEmitterInstance(){
 ///////////////
 
 void deoglRParticleEmitterInstance::SetEmitter(deoglRParticleEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 	
 	pEmitter = emitter;
-	
-	if(emitter){
-		emitter->AddReference();
-	}
 }
 
 void deoglRParticleEmitterInstance::SetParentWorld(deoglRWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
 	if(pRenderEnvMap){
 		pRenderEnvMap->GetParticleEmitterInstanceList().RemoveIfExisting(this);
-		pRenderEnvMap->FreeReference();
 		pRenderEnvMap = NULL;
 	}
 	pWorldComputeElement->RemoveFromCompute();
@@ -276,13 +265,12 @@ void deoglRParticleEmitterInstance::UpdateExtends(const deParticleEmitterInstanc
 
 
 void deoglRParticleEmitterInstance::SetRenderEnvMap(deoglEnvironmentMap *envmap){
-	if(envmap == pRenderEnvMap){
+	if(pRenderEnvMap == envmap){
 		return;
 	}
 	
 	if(pRenderEnvMap){
 		pRenderEnvMap->GetParticleEmitterInstanceList().RemoveIfExisting(this);
-		pRenderEnvMap->FreeReference();
 	}
 	
 	pRenderEnvMap = envmap;

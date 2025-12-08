@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/synthesizer/source/deSynthesizerSourceGroup.h>
+#include "seSourceGroup.h"
 
-class seSourceGroup;
 
 
 
@@ -38,7 +38,7 @@ class seSourceGroup;
  */
 class seUSourceGroupSetApplicationType : public igdeUndo{
 private:
-	seSourceGroup *pSource;
+	seSourceGroup::Ref pSource;
 	
 	deSynthesizerSourceGroup::eApplicationTypes pOldType;
 	deSynthesizerSourceGroup::eApplicationTypes pNewType;

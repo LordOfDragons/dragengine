@@ -33,10 +33,10 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "saeSAnimation.h"
+#include "saeWPSAnimListener.h"
 
 class saeWindowProperties;
-class saeWPSAnimListener;
-class saeSAnimation;
 class saePhoneme;
 class saeWord;
 
@@ -49,8 +49,8 @@ class saeWPSAnim : public igdeContainerScroll{
 private:
 	saeWindowProperties &pWindowProperties;
 	
-	saeWPSAnimListener *pListener;
-	saeSAnimation *pSAnimation;
+	saeWPSAnimListener::Ref pListener;
+	saeSAnimation::Ref pSAnimation;
 	
 	igdeAction::Ref pActionWordAddIpa;
 	
@@ -97,7 +97,7 @@ public:
 	inline saeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline const saeSAnimation::Ref &GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
 	void SetSAnimation(saeSAnimation *sanimation);

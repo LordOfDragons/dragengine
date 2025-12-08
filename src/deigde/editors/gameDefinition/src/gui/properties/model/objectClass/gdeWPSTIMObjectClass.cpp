@@ -87,9 +87,6 @@ pObjectClass(NULL)
 }
 
 gdeWPSTIMObjectClass::~gdeWPSTIMObjectClass(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

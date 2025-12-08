@@ -35,6 +35,12 @@ class aeWPLink;
  * Link panel listener
  */
 class aeWPLinkListener : public aeAnimatorNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeWPLinkListener> Ref;
+	
+	
+
 private:
 	aeWPLink &pPanel;
 	

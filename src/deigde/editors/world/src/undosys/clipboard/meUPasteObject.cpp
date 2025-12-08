@@ -158,7 +158,4 @@ void meUPasteObject::Redo(){
 //////////////////////
 
 void meUPasteObject::pCleanUp(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

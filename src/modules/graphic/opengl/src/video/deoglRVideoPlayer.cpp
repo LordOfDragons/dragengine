@@ -74,19 +74,12 @@ deoglRVideoPlayer::~deoglRVideoPlayer(){
 ///////////////
 
 void deoglRVideoPlayer::SetVideo(deoglRVideo *video){
-	if(video == pVideo){
+	if(pVideo == video){
 		return;
 	}
 	
-	if(pVideo){
-		pVideo->FreeReference();
-	}
 	
 	pVideo = video;
-	
-	if(video){
-		video->AddReference();
-	}
 }
 
 void deoglRVideoPlayer::SetCachedFrameTexture(deoglTexture *texture){

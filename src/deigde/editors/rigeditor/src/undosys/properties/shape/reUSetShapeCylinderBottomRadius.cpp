@@ -44,11 +44,9 @@ reUSetShapeCylinderBottomRadius::reUSetShapeCylinderBottomRadius(reRigShapeCylin
 	
 	SetShortInfo("Set Cylinder Shape Half Height");
 	
-	pShape->AddReference();
 }
 
 reUSetShapeCylinderBottomRadius::~reUSetShapeCylinderBottomRadius(){
-	pShape->FreeReference();
 }
 
 

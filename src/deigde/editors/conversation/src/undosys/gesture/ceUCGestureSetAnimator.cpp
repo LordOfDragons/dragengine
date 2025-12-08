@@ -54,9 +54,6 @@ ceUCGestureSetAnimator::ceUCGestureSetAnimator(ceGesture *gesture, const char *n
 }
 
 ceUCGestureSetAnimator::~ceUCGestureSetAnimator(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
 }
 
 

@@ -67,15 +67,6 @@ ceCConditionTrigger *condition, const char *newTrigger){
 }
 
 ceUCCTriggerSetTrigger::~ceUCCTriggerSetTrigger(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

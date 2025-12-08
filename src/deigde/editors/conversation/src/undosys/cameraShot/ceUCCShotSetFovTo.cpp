@@ -54,9 +54,6 @@ ceUCCShotSetFovTo::ceUCCShotSetFovTo(ceCameraShot *cameraShot, float newFov){
 }
 
 ceUCCShotSetFovTo::~ceUCCShotSetFovTo(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

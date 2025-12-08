@@ -345,7 +345,7 @@ pSky(NULL)
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPLinkListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -378,9 +378,6 @@ pSky(NULL)
 seWPLink::~seWPLink(){
 	SetSky(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -389,13 +386,12 @@ seWPLink::~seWPLink(){
 ///////////////
 
 void seWPLink::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;

@@ -2113,10 +2113,6 @@ void deClassCollider::AssignCollider(dsRealObject *myself, deCollider *collider)
 	}
 	
 	nd.collider = collider;
-	
-	if(collider){
-		collider->AddReference();
-	}
 }
 
 void deClassCollider::PushCollider(dsRunTime *rt, deCollider *collider){

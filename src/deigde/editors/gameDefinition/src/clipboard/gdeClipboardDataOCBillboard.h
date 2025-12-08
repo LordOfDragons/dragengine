@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCBILLBOARD_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCBillboard.h"
 
-class gdeOCBillboard;
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCBillboard *pBillboard;
+	gdeOCBillboard::Ref pBillboard;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Billboard. */
-	gdeOCBillboard *GetBillboard() const{ return pBillboard; }
+	const gdeOCBillboard::Ref &GetBillboard() const{ return pBillboard; }
 	/*@}*/
 };
 

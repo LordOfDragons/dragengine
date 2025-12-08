@@ -26,8 +26,8 @@
 #define _CEWPTTREEMODEL_H_
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "ceConversation.h"
 
-class ceConversation;
 class ceConversationAction;
 class ceConversationCondition;
 class ceWPTTIMAction;
@@ -64,7 +64,7 @@ public:
 	
 private:
 	ceWindowMain &pWindowMain;
-	ceConversation *pConversation;
+	ceConversation::Ref pConversation;
 	ceWPTTreeModelListener *pListener;
 	ceConversationListener &pForwardListener;
 	
@@ -95,7 +95,7 @@ public:
 	inline ceWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** Game definition. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	
 	

@@ -27,8 +27,8 @@
 #define _SEUSOURCEWAVESETMINFREQUENCY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSourceWave.h"
 
-class seSourceWave;
 
 
 /**
@@ -36,7 +36,7 @@ class seSourceWave;
  */
 class seUSourceWaveSetMinFrequency : public igdeUndo{
 private:
-	seSourceWave *pSource;
+	seSourceWave::Ref pSource;
 	
 	float pOldFrequency;
 	float pNewFrequency;

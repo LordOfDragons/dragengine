@@ -53,9 +53,6 @@ pLayer(NULL)
 }
 
 seULayerToggleMulBySkyColor::~seULayerToggleMulBySkyColor(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

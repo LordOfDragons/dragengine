@@ -59,12 +59,6 @@ ceConversationTopic *topic, ceConversationAction *action)
 }
 
 ceUCActionToggleWaitSpeakOnly::~ceUCActionToggleWaitSpeakOnly(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

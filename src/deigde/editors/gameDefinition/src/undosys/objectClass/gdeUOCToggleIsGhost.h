@@ -29,8 +29,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 
@@ -39,7 +39,7 @@ class gdeObjectClass;
  */
 class gdeUOCToggleIsGhost : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 	

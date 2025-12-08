@@ -75,9 +75,9 @@ pActivePanel(NULL)
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPShapeListener(*this);
+	pListener.TakeOverWith(*this);
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher.TakeOverWith(env);
 	AddChild(pSwitcher);
 	
 	helper.Label(pSwitcher, "No Active Shape");
@@ -103,9 +103,6 @@ pActivePanel(NULL)
 reWPShape::~reWPShape(){
 	SetRig(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -114,7 +111,7 @@ reWPShape::~reWPShape(){
 ///////////////
 
 void reWPShape::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -122,7 +119,6 @@ void reWPShape::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -137,7 +133,7 @@ void reWPShape::SetRig(reRig *rig){
 }
 
 void reWPShape::SetShape(reRigShape *shape){
-	if(shape == pShape){
+	if(pShape == shape){
 		return;
 	}
 	
@@ -146,9 +142,6 @@ void reWPShape::SetShape(reRigShape *shape){
 		pActivePanel = NULL;
 	}
 	
-	if(pShape){
-		pShape->FreeReference();
-	}
 	
 	pShape = shape;
 	

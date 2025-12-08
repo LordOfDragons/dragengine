@@ -37,6 +37,7 @@
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 #include "../../common/string/decString.h"
+#include <dragengine/resources/decal/deDecal.h>
 
 
 class deBaseAnimatorComponent;
@@ -46,7 +47,6 @@ class deBasePhysicsComponent;
 class deComponentBone;
 class deComponentManager;
 class deComponentTexture;
-class deDecal;
 class deDecalList;
 class deWorld;
 class decShape;
@@ -116,7 +116,7 @@ private:
 	deDynamicSkin::Ref pDynamicSkin;
 	
 	deDecal *pDecalRoot;
-	deDecal *pDecalTail;
+	deDecal::Ref pDecalTail;
 	int pDecalCount;
 	
 	deParallelTask::Ref pAnimatorTask;

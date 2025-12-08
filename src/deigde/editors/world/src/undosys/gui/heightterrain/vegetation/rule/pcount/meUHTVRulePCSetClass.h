@@ -30,10 +30,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decString.h>
+#include "meHTVegetationLayer.h"
+#include "meHTVRulePropCount.h"
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRulePropCount;
 
 
 
@@ -49,8 +49,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRulePropCount *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRulePropCount::Ref pRule;
 	
 	decString pOldPropClass;
 	decString pNewPropClass;

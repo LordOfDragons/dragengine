@@ -68,15 +68,6 @@ ceUCAASpeakHeadLAAdd::ceUCAASpeakHeadLAAdd(ceConversationTopic *topic, ceCAActor
 }
 
 ceUCAASpeakHeadLAAdd::~ceUCAASpeakHeadLAAdd(){
-	if(pHeadLA){
-		pHeadLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

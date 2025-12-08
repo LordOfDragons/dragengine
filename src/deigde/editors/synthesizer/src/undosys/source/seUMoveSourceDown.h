@@ -27,9 +27,9 @@
 #define _SEUMOVESOURCEDOWN_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSource.h"
+#include "seSynthesizer.h"
 
-class seSource;
-class seSynthesizer;
 
 
 
@@ -38,8 +38,8 @@ class seSynthesizer;
  */
 class seUMoveSourceDown : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
-	seSource *pSource;
+	seSynthesizer::Ref pSynthesizer;
+	seSource::Ref pSource;
 	int pIndex;
 	
 	

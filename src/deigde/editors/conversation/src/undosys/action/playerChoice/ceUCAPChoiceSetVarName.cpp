@@ -60,12 +60,6 @@ ceUCAPChoiceSetVarName::ceUCAPChoiceSetVarName(ceConversationTopic *topic, ceCAP
 }
 
 ceUCAPChoiceSetVarName::~ceUCAPChoiceSetVarName(){
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

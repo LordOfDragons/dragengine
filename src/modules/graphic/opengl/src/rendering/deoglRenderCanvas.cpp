@@ -189,79 +189,79 @@ pDebugCountCanvasCanvasView(0)
 		const decColor colorBgParallel2(0.025f, 0.05f, 0.05f, 0.75f);
 		const decColor colorBgParallel3(0.05f, 0.05f, 0.025f, 0.75f);
 		
-		pDebugInfoCanvas.TakeOver(new deoglDebugInformation("Canvas", colorText, colorBg));
+		pDebugInfoCanvas.TakeOverWith("Canvas", colorText, colorBg);
 		
-		pDebugInfoCanvasView.TakeOver(new deoglDebugInformation("View", colorText, colorBgSub));
+		pDebugInfoCanvasView.TakeOverWith("View", colorText, colorBgSub);
 		pDebugInfoCanvas->GetChildren().Add(pDebugInfoCanvasView);
 		
-		pDebugInfoCanvasImage.TakeOver(new deoglDebugInformation("Image", colorText, colorBgSub));
+		pDebugInfoCanvasImage.TakeOverWith("Image", colorText, colorBgSub);
 		pDebugInfoCanvas->GetChildren().Add(pDebugInfoCanvasImage);
 		
-		pDebugInfoCanvasPaint.TakeOver(new deoglDebugInformation("Paint", colorText, colorBgSub));
+		pDebugInfoCanvasPaint.TakeOverWith("Paint", colorText, colorBgSub);
 		pDebugInfoCanvas->GetChildren().Add(pDebugInfoCanvasPaint);
 		
-		pDebugInfoCanvasRenderWorld.TakeOver(new deoglDebugInformation("Render World", colorText, colorBgSub));
+		pDebugInfoCanvasRenderWorld.TakeOverWith("Render World", colorText, colorBgSub);
 		pDebugInfoCanvas->GetChildren().Add(pDebugInfoCanvasRenderWorld);
 		
-		pDebugInfoCanvasText.TakeOver(new deoglDebugInformation("Text", colorText, colorBgSub));
+		pDebugInfoCanvasText.TakeOverWith("Text", colorText, colorBgSub);
 		pDebugInfoCanvas->GetChildren().Add(pDebugInfoCanvasText);
 		
-		pDebugInfoCanvasVideoPlayer.TakeOver(new deoglDebugInformation("Video Player", colorText, colorBgSub));
+		pDebugInfoCanvasVideoPlayer.TakeOverWith("Video Player", colorText, colorBgSub);
 		pDebugInfoCanvas->GetChildren().Add(pDebugInfoCanvasVideoPlayer);
 		
-		pDebugInfoCanvasCanvasView.TakeOver(new deoglDebugInformation("Canvas View", colorText, colorBgSub));
+		pDebugInfoCanvasCanvasView.TakeOverWith("Canvas View", colorText, colorBgSub);
 		pDebugInfoCanvas->GetChildren().Add(pDebugInfoCanvasCanvasView);
 		
 		
 		
-		pDebugInfoPlanPrepare.TakeOver(new deoglDebugInformation("Plan Prepare", colorText, colorBg));
+		pDebugInfoPlanPrepare.TakeOverWith("Plan Prepare", colorText, colorBg);
 		
-		pDebugInfoPlanPrepareEarlyWorld.TakeOver(new deoglDebugInformation("Early World", colorText, colorBgSub));
+		pDebugInfoPlanPrepareEarlyWorld.TakeOverWith("Early World", colorText, colorBgSub);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPrepareEarlyWorld);
 		
-		pDebugInfoPlanPrepareFindContent.TakeOver(new deoglDebugInformation("Find Content", colorText, colorBgParallel1));
+		pDebugInfoPlanPrepareFindContent.TakeOverWith("Find Content", colorText, colorBgParallel1);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPrepareFindContent);
 		
-		pDebugInfoPlanPrepareBuildRTs.TakeOver(new deoglDebugInformation("Build RTs", colorText, colorBgParallel3));
+		pDebugInfoPlanPrepareBuildRTs.TakeOverWith("Build RTs", colorText, colorBgParallel3);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPrepareBuildRTs);
 		
-		pDebugInfoPlanPrepareSkyLightFindContent.TakeOver(new deoglDebugInformation("SL Find Content", colorText, colorBgParallel2));
+		pDebugInfoPlanPrepareSkyLightFindContent.TakeOverWith("SL Find Content", colorText, colorBgParallel2);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPrepareSkyLightFindContent);
 		
-		pDebugInfoPlanPrepareSkyLightBuildRT.TakeOver(new deoglDebugInformation("SL Build RT", colorText, colorBgParallel3));
+		pDebugInfoPlanPrepareSkyLightBuildRT.TakeOverWith("SL Build RT", colorText, colorBgParallel3);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPrepareSkyLightBuildRT);
 		
-		pDebugInfoPlanPrepareSkyLightGIFindContent.TakeOver(new deoglDebugInformation("SL GI Find Content", colorText, colorBgParallel2));
+		pDebugInfoPlanPrepareSkyLightGIFindContent.TakeOverWith("SL GI Find Content", colorText, colorBgParallel2);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPrepareSkyLightGIFindContent);
 		
-		pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask.TakeOver(new deoglDebugInformation("SL GI Update RT", colorText, colorBgParallel3));
+		pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask.TakeOverWith("SL GI Update RT", colorText, colorBgParallel3);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPrepareSkyLightGIUpdateRenderTask);
 		
-		pDebugInfoPlanPrepareWorld.TakeOver(new deoglDebugInformation("World", colorText, colorBgParallel1));
+		pDebugInfoPlanPrepareWorld.TakeOverWith("World", colorText, colorBgParallel1);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPrepareWorld);
 		
-		pDebugInfoPlanPrepareGIUpdate.TakeOver(new deoglDebugInformation("GI Update", colorText, colorBgParallel1));
+		pDebugInfoPlanPrepareGIUpdate.TakeOverWith("GI Update", colorText, colorBgParallel1);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPrepareGIUpdate);
 		
-		pDebugInfoPlanPrepareCulling.TakeOver(new deoglDebugInformation("Culling", colorText, colorBgSub));
+		pDebugInfoPlanPrepareCulling.TakeOverWith("Culling", colorText, colorBgSub);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPrepareCulling);
 		
-		pDebugInfoPlanPrepareEnvMaps.TakeOver(new deoglDebugInformation("Env-Maps", colorText, colorBgSub));
+		pDebugInfoPlanPrepareEnvMaps.TakeOverWith("Env-Maps", colorText, colorBgSub);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPrepareEnvMaps);
 		
-		pDebugInfoPlanPreparePrepareContent.TakeOver(new deoglDebugInformation("Prepare Content", colorText, colorBgSub));
+		pDebugInfoPlanPreparePrepareContent.TakeOverWith("Prepare Content", colorText, colorBgSub);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPreparePrepareContent);
 			
-			pDebugInfoPlanPrepareHTViewVBOs.TakeOver(new deoglDebugInformation("HT-View VBOs", colorText, colorBgSub2));
+			pDebugInfoPlanPrepareHTViewVBOs.TakeOverWith("HT-View VBOs", colorText, colorBgSub2);
 			pDebugInfoPlanPreparePrepareContent->GetChildren().Add(pDebugInfoPlanPrepareHTViewVBOs);
 		
-		pDebugInfoPlanPrepareBuildPlan.TakeOver(new deoglDebugInformation("Build Plan", colorText, colorBgSub));
+		pDebugInfoPlanPrepareBuildPlan.TakeOverWith("Build Plan", colorText, colorBgSub);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPrepareBuildPlan);
 		
-		pDebugInfoPlanPrepareLights.TakeOver(new deoglDebugInformation("Lights", colorText, colorBgSub));
+		pDebugInfoPlanPrepareLights.TakeOverWith("Lights", colorText, colorBgSub);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPrepareLights);
 		
-		pDebugInfoPlanPrepareFinish.TakeOver(new deoglDebugInformation("Finish", colorText, colorBgSub));
+		pDebugInfoPlanPrepareFinish.TakeOverWith("Finish", colorText, colorBgSub);
 		pDebugInfoPlanPrepare->GetChildren().Add(pDebugInfoPlanPrepareFinish);
 		
 	}catch(const deException &){

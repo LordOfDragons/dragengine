@@ -26,9 +26,9 @@
 #define _CEUCGESTUREADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversation.h"
+#include "ceGesture.h"
 
-class ceConversation;
-class ceGesture;
 
 
 
@@ -37,8 +37,8 @@ class ceGesture;
  */
 class ceUCGestureAdd : public igdeUndo{
 private:
-	ceConversation *pConversation;
-	ceGesture *pGesture;
+	ceConversation::Ref pConversation;
+	ceGesture::Ref pGesture;
 	
 public:
 	/** \brief Type holding strong reference. */

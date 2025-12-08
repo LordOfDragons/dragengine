@@ -420,7 +420,7 @@ pSkin(NULL)
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPDynamicSkinListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -447,7 +447,7 @@ pSkin(NULL)
 	
 	
 	// type specific panels
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher.TakeOverWith(env);
 	content->AddChild(pSwitcher);
 	
 	
@@ -506,9 +506,6 @@ pSkin(NULL)
 seWPDynamicSkin::~seWPDynamicSkin(){
 	SetSkin(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -517,13 +514,12 @@ seWPDynamicSkin::~seWPDynamicSkin(){
 ///////////////
 
 void seWPDynamicSkin::SetSkin(seSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;

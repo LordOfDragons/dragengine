@@ -34,6 +34,12 @@ class seWPSky;
  * \brief Sky properties panel listener.
  */
 class seWPSkyListener : public seSkyListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seWPSkyListener> Ref;
+	
+	
+
 private:
 	seWPSky &pPanel;
 	

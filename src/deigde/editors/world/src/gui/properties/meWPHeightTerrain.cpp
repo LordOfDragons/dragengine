@@ -1356,7 +1356,7 @@ pVVariation(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new meWPHeightTerrainListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -1554,9 +1554,6 @@ pVVariation(NULL)
 
 meWPHeightTerrain::~meWPHeightTerrain(){
 	SetWorld(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1565,7 +1562,7 @@ meWPHeightTerrain::~meWPHeightTerrain(){
 ///////////////
 
 void meWPHeightTerrain::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -1574,7 +1571,6 @@ void meWPHeightTerrain::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
@@ -1642,19 +1638,12 @@ void meWPHeightTerrain::SetTexture(meHeightTerrainTexture *texture){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(texture == pTexture){
+	if(pTexture == texture){
 		return;
 	}
 	
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 	
 	pTexture = texture;
-	
-	if(texture){
-		texture->AddReference();
-	}
 	
 	pCBTexture->SetSelectionWithData(texture);
 	
@@ -1675,23 +1664,16 @@ void meWPHeightTerrain::SetVLayer(meHTVegetationLayer *vlayer){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(vlayer == pVLayer){
+	if(pVLayer == vlayer){
 		return;
 	}
 	
 	SetVVariation(NULL);
 	
-	if(pVLayer){
-		pVLayer->FreeReference();
-	}
 	
 	pVLayer = vlayer;
 	
 	UpdateVVariationList();
-	
-	if(vlayer){
-		vlayer->AddReference();
-	}
 	
 	pCBVLayer->SetSelectionWithData(vlayer);
 	UpdateVLayer();
@@ -1702,19 +1684,12 @@ void meWPHeightTerrain::SetVVariation(meHTVVariation *variation){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(variation == pVVariation){
+	if(pVVariation == variation){
 		return;
 	}
 	
-	if(pVVariation){
-		pVVariation->FreeReference();
-	}
 	
 	pVVariation = variation;
-	
-	if(variation){
-		variation->AddReference();
-	}
 	
 	pCBVVariation->SetSelectionWithData(variation);
 	UpdateVVariation();

@@ -62,12 +62,6 @@ pEnvMapProbe(NULL)
 }
 
 gdeUOCEnvMapProbeSetInfluenceBorderSize::~gdeUOCEnvMapProbeSetInfluenceBorderSize(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

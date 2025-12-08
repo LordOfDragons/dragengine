@@ -26,8 +26,8 @@
 #define _SEUPROPERTYNODESHAPESETTHICKNESS_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "sePropertyNodeShape.h"
 
-class sePropertyNodeShape;
 
 
 
@@ -36,7 +36,7 @@ class sePropertyNodeShape;
  */
 class seUPropertyNodeShapeSetThickness : public igdeUndo{
 private:
-	sePropertyNodeShape *pNode;
+	sePropertyNodeShape::Ref pNode;
 	
 	float pOldValue;
 	float pNewValue;

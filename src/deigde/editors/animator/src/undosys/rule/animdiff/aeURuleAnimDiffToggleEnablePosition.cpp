@@ -48,7 +48,6 @@ aeURuleAnimDiffToggleEnablePosition::aeURuleAnimDiffToggleEnablePosition(aeRuleA
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		SetShortInfo("Rule animation difference toggle enable position");
 		
@@ -81,7 +80,4 @@ void aeURuleAnimDiffToggleEnablePosition::Redo(){
 //////////////////////
 
 void aeURuleAnimDiffToggleEnablePosition::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

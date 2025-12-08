@@ -65,7 +65,6 @@ pDDSCoordSystem(NULL)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pOCCamera->AddReference();
 	
 	try{
 		pCreateDebugDrawer();
@@ -117,9 +116,6 @@ void gdeVAOCamera::pCleanUp(){
 		pDebugDrawer = NULL;
 	}
 	
-	if(pOCCamera){
-		pOCCamera->FreeReference();
-	}
 }
 
 

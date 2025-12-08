@@ -63,9 +63,6 @@ meUDecalTCOffset::meUDecalTCOffset(meDecal *decal, const decVector2 &newOffset){
 }
 
 meUDecalTCOffset::~meUDecalTCOffset(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

@@ -51,7 +51,4 @@ pSpeaker(NULL)
 }
 
 gdeClipboardDataOCSpeaker::~gdeClipboardDataOCSpeaker(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
 }

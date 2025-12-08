@@ -27,8 +27,8 @@
 #define _SEUSOURCECHAINPATHSOUNDMOVEDOWN_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSourceChain.h"
 
-class seSourceChain;
 
 
 
@@ -37,7 +37,7 @@ class seSourceChain;
  */
 class seUSourceChainPathSoundMoveDown : public igdeUndo{
 private:
-	seSourceChain *pSource;
+	seSourceChain::Ref pSource;
 	
 	int pIndex;
 	

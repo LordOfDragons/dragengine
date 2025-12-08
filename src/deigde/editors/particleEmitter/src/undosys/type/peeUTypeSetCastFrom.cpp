@@ -56,9 +56,6 @@ peeUTypeSetCastFrom::peeUTypeSetCastFrom(peeType *type, deParticleEmitterType::e
 }
 
 peeUTypeSetCastFrom::~peeUTypeSetCastFrom(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

@@ -47,9 +47,6 @@ meUCameraMoveObject::meUCameraMoveObject(meObject *object){
 }
 
 meUCameraMoveObject::~meUCameraMoveObject(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

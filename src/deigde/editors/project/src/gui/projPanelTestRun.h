@@ -39,9 +39,9 @@
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
+#include "projProject.h"
+#include "projPanelTestRunListener.h"
 
-class projProject;
-class projPanelTestRunListener;
 class projTestRunner;
 class projWindowMain;
 
@@ -61,8 +61,8 @@ public:
 private:
 	projWindowMain &pWindowMain;
 	
-	projProject *pProject;
-	projPanelTestRunListener *pListener;
+	projProject::Ref pProject;
+	projPanelTestRunListener::Ref pListener;
 	
 	projTestRunner *pTestRunner;
 	bool pIsRunning;
@@ -114,7 +114,7 @@ public:
 	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Project. */
-	inline projProject *GetProject() const{ return pProject; }
+	inline const projProject::Ref &GetProject() const{ return pProject; }
 	
 	/** \brief Set synthesizer. */
 	void SetProject(projProject *project);

@@ -53,21 +53,13 @@ pLink(NULL)
 	SetShortInfo("Source Target Add Link");
 	
 	pSource = source;
-	pSource->AddReference();
 	
 	pTarget = target;
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 seUSourceTargetAddLink::~seUSourceTargetAddLink(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

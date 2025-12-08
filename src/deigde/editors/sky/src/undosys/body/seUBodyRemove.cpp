@@ -69,12 +69,6 @@ pIndex(0)
 }
 
 seUBodyRemove::~seUBodyRemove(){
-	if(pBody){
-		pBody->FreeReference();
-	}
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

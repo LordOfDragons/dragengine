@@ -288,10 +288,6 @@ deoglSharedVBOBlock *deoglSharedVBO::AddBlock(int size, int indexCount){
 		pDirty = true;
 	}
 	
-	if(block){
-		block->AddReference();
-	}
-	
 	return block;
 }
 

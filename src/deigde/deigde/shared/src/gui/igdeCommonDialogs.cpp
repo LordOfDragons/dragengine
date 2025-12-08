@@ -210,7 +210,7 @@ const char *text, decString &value){
 	
 	igdeDialogMultilineValue::Ref dialog;
 	
-	dialog.TakeOver(new igdeDialogMultilineValue(owner->GetEnvironment(), title, text));
+	dialog.TakeOverWith(owner->GetEnvironment(), title, text);
 	dialog->SetValue(value);
 	if(dialog->Run(owner)){
 		value = dialog->GetValue();

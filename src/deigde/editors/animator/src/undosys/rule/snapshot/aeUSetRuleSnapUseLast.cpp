@@ -46,7 +46,6 @@ aeUSetRuleSnapUseLast::aeUSetRuleSnapUseLast(aeRuleStateSnapshot *rule){
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		SetShortInfo("Set state snapshot rule use last");
 		
@@ -79,5 +78,4 @@ void aeUSetRuleSnapUseLast::Redo(){
 //////////////////////
 
 void aeUSetRuleSnapUseLast::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

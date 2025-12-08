@@ -50,15 +50,12 @@ pLayoutHorizontal(decPoint(), decPoint(256, 256)),
 pLayoutVertical(decPoint(), decPoint(256, 256))
 {
 	deCanvasManager &canvasManager = *androidInput.GetGameEngine()->GetCanvasManager();
-	pCanvas = canvasManager.CreateCanvasView();
+	pCanvas.TakeOver(canvasManager.CreateCanvasView());
 	pCanvas->SetSize(decPoint(256, 256));
 	pCanvas->SetTransparency(0.35f); // 35% coverage
 }
 
 deainpOverlay::~deainpOverlay(){
-	if(pCanvas){
-		pCanvas->FreeReference();
-	}
 }
 
 
@@ -88,14 +85,14 @@ decPoint deainpOverlay::PointerMove(const decPoint &position){
 
 
 void deainpOverlay::SetLayoutHorizontal(const deainpLayout &layout){
-	if(layout == pLayoutHorizontal){
+	if(pLayoutHorizontal == layout){
 		return;
 	}
 	pLayoutHorizontal = layout;
 }
 
 void deainpOverlay::SetLayoutVertical(const deainpLayout &layout){
-	if(layout == pLayoutVertical){
+	if(pLayoutVertical == layout){
 		return;
 	}
 	pLayoutVertical = layout;

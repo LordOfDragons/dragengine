@@ -28,8 +28,8 @@
 #include <dragengine/deObject.h>
 
 #include "deoglRDSRenderable.h"
+#include "deoglRCanvasView.h"
 
-class deoglRCanvasView;
 class deDSRenderableCanvas;
 
 
@@ -39,7 +39,7 @@ class deDSRenderableCanvas;
  */
 class deoglRDSRenderableCanvas : public deoglRDSRenderable{
 private:
-	deoglRCanvasView *pCanvas;
+	deoglRCanvasView::Ref pCanvas;
 	int pComponentCount;
 	int pBitCount;
 	

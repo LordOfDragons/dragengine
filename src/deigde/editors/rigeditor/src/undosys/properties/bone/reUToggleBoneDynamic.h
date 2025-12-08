@@ -26,8 +26,8 @@
 #define _REUTOGGLEBONEDYNAMIC_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRigBone.h"
 
-class reRigBone;
 
 
 
@@ -36,7 +36,7 @@ class reRigBone;
  */
 class reUToggleBoneDynamic : public igdeUndo{
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	
 	

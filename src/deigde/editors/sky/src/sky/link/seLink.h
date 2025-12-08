@@ -29,9 +29,9 @@
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include "seController.h"
 
 class seSky;
-class seController;
 
 
 
@@ -45,7 +45,7 @@ private:
 	
 	decString pName;
 	
-	seController *pController;
+	seController::Ref pController;
 	decCurveBezier pCurve;
 	int pRepeat;
 	
@@ -91,7 +91,7 @@ public:
 	void SetName(const char *name);
 	
 	/** \brief Controller or \em NULL. */
-	inline seController *GetController() const{ return pController; }
+	inline const seController::Ref &GetController() const{ return pController; }
 	
 	/** \brief Set controller or \em NULL. */
 	void SetController(seController *controller);

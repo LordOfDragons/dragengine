@@ -555,7 +555,7 @@ void seViewConstructedView::ResetView(){
 }
 
 void seViewConstructedView::SetSkin(seSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
@@ -563,7 +563,6 @@ void seViewConstructedView::SetSkin(seSkin *skin){
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;
@@ -581,7 +580,7 @@ void seViewConstructedView::SetSkin(seSkin *skin){
 
 void seViewConstructedView::SetZoom(int zoom){
 	zoom = decMath::clamp(zoom, 25, 800);
-	if(zoom == pZoom){
+	if(pZoom == zoom){
 		return;
 	}
 	
@@ -593,7 +592,7 @@ void seViewConstructedView::SetZoom(int zoom){
 }
 
 void seViewConstructedView::SetOffset(const decPoint &offset){
-	if(offset == pOffset){
+	if(pOffset == offset){
 		return;
 	}
 	

@@ -338,7 +338,7 @@ void deoglRComponent::UpdateOctreeNode(){
 
 
 void deoglRComponent::SetVisible(bool visible){
-	if(visible == pVisible){
+	if(pVisible == visible){
 		return;
 	}
 	
@@ -355,7 +355,7 @@ void deoglRComponent::SetVisible(bool visible){
 }
 
 void deoglRComponent::SetMovementHint(deComponent::eMovementHints hint){
-	if(hint == pMovementHint){
+	if(pMovementHint == hint){
 		return;
 	}
 	
@@ -368,7 +368,7 @@ void deoglRComponent::SetMovementHint(deComponent::eMovementHints hint){
 }
 
 void deoglRComponent::SetGIImportance(int importance){
-	if(importance == pGIImportance){
+	if(pGIImportance == importance){
 		return;
 	}
 	
@@ -382,7 +382,7 @@ void deoglRComponent::SetGIImportance(int importance){
 }
 
 void deoglRComponent::SetLayerMask(const decLayerMask &layerMask){
-	if(layerMask == pLayerMask){
+	if(pLayerMask == layerMask){
 		return;
 	}
 	
@@ -439,17 +439,11 @@ void deoglRComponent::SetModel(deoglRModel *model){
 }
 
 void deoglRComponent::SetSkin(deoglRSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	pSkin = skin;
-	if(skin){
-		skin->AddReference();
-	}
 	
 	pUpdateModelSkinMappings();
 	
@@ -473,19 +467,12 @@ void deoglRComponent::RigChanged(){
 
 void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSkin *dynamicSkin){
 	// NOTE this is called from the main thread during synchronization
-	if(dynamicSkin == pDynamicSkin){
+	if(pDynamicSkin == dynamicSkin){
 		return;
 	}
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
 	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
 	
 	// texture can use the dynamic skin we had so far for their skin state.
 	// force an update to make sure everything matches up again
@@ -510,7 +497,7 @@ void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSki
 }
 
 void deoglRComponent::SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh){
-	if(occlusionMesh == pOcclusionMesh){
+	if(pOcclusionMesh == occlusionMesh){
 		return;
 	}
 	
@@ -520,19 +507,10 @@ void deoglRComponent::SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh){
 	}
 	pOccMeshSharedSPBDoubleSided = nullptr;
 	pOccMeshSharedSPBSingleSided = nullptr;
-	if(pOccMeshSharedSPBElement){
-		pOccMeshSharedSPBElement->FreeReference();
 		pOccMeshSharedSPBElement = NULL;
-	}
-	if(pOcclusionMesh){
-		pOcclusionMesh->FreeReference();
 	}
 	
 	pOcclusionMesh = occlusionMesh;
-	
-	if(occlusionMesh){
-		occlusionMesh->AddReference();
-	}
 	
 	if(occlusionMesh){
 		if(occlusionMesh->GetWeightsCount() > 0){
@@ -714,7 +692,7 @@ void deoglRComponent::UpdateVertexPositionSets(const deComponent &component){
 	const int count = component.GetVertexPositionSetCount();
 	int i;
 	
-	if(count != pVertexPositionSetCount){
+	if(pVertexPositionSetCount != count){
 		if(pVertexPositionSetWeights){
 			delete [] pVertexPositionSetWeights;
 			pVertexPositionSetWeights = nullptr;
@@ -1036,7 +1014,7 @@ void deoglRComponent::SetOccluded(bool occluded){
 // }
 
 void deoglRComponent::SetRenderMode(eRenderModes renderMode){
-	if(renderMode == pRenderMode){
+	if(pRenderMode == renderMode){
 		return;
 	}
 	
@@ -1057,7 +1035,7 @@ void deoglRComponent::DirtySolid(){
 }
 
 void deoglRComponent::SetRenderStatic(bool isStatic){
-	if(isStatic == pRenderStatic){
+	if(pRenderStatic == isStatic){
 		return;
 	}
 	
@@ -1104,7 +1082,7 @@ void deoglRComponent::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	// switch may still occur. a possible solution would be to delay the switch until the fading
 	// is finished. for this we would have to keep the dirty flag set, which is currently set
 	// outside somewhere
-	if(envmap == pRenderEnvMap){
+	if(pRenderEnvMap == envmap){
 		return;
 	}
 	
@@ -1112,7 +1090,6 @@ void deoglRComponent::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	
 	if(pRenderEnvMap){
 		pRenderEnvMap->GetComponentList().RemoveIfExisting(this);
-		pRenderEnvMap->FreeReference();
 	}
 	
 	pRenderEnvMap = envmap;
@@ -1132,13 +1109,12 @@ void deoglRComponent::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 }
 
 void deoglRComponent::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
-	if(envmap == pRenderEnvMapFade){
+	if(pRenderEnvMapFade == envmap){
 		return;
 	}
 	
 	if(pRenderEnvMapFade){
 		pRenderEnvMapFade->GetComponentList().RemoveIfExisting(this);
-		pRenderEnvMapFade->FreeReference();
 	}
 	
 	pRenderEnvMapFade = envmap;
@@ -1788,29 +1764,9 @@ void deoglRComponent::pCleanUp(){
 		delete [] pBoneMatrices;
 	}
 	
-	if(pOccMeshSharedSPBElement){
-		pOccMeshSharedSPBElement->FreeReference();
 			// has to be done before pOcclusionMesh mesh is released
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pOcclusionMesh){
-		pOcclusionMesh->FreeReference();
-	}
-	if(pEnvMap){
-		pEnvMap->FreeReference();
-	}
-	if(pRenderEnvMap){
-		pRenderEnvMap->FreeReference();
-	}
-	if(pRenderEnvMapFade){
-		pRenderEnvMapFade->FreeReference();
-	}
 	
 	if(pSkinState){
 		delete pSkinState;
@@ -1973,13 +1929,7 @@ void deoglRComponent::pCheckRenderModifier(deoglRCamera *rcamera){
 	skin = ((deoglSkin*)finalSkin->GetPeerGraphic())->GetRSkin();
 	
 	if(pSkin != skin){
-		if(pSkin){
-			pSkin->FreeReference();
-		}
 		pSkin = skin;
-		if(skin){
-			skin->AddReference();
-		}
 		
 		pUpdateModelSkinMappings();
 	}
@@ -2268,8 +2218,6 @@ void deoglRComponent::pPrepareTextureTUCs(){
 void deoglRComponent::pPrepareParamBlocks(){
 	if(!pValidOccMeshSharedSPBElement){
 		// shared spb
-		if(pOccMeshSharedSPBElement){
-			pOccMeshSharedSPBElement->FreeReference();
 			pOccMeshSharedSPBElement = NULL;
 		}
 		

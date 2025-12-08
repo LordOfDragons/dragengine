@@ -56,9 +56,6 @@ peeUTypeSetModelPath::peeUTypeSetModelPath(peeType *type, const char *newPath){
 }
 
 peeUTypeSetModelPath::~peeUTypeSetModelPath(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

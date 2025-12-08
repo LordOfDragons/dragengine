@@ -26,10 +26,10 @@
 #define _DEALDIALOGMAIN_H_
 
 #include "../dealDialog.h"
+#include "dealWidgetButton.h"
 
 
 class dealWidgetTaskStatus;
-class dealWidgetButton;
 
 
 /**
@@ -39,7 +39,7 @@ class dealWidgetButton;
 class dealDialogMain : public dealDialog{
 private:
 	dealWidgetTaskStatus *pTaskCheckEngine;
-	dealWidgetButton *pButtonRun;
+	dealWidgetButton::Ref pButtonRun;
 	
 	
 	

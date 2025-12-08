@@ -339,7 +339,7 @@ public:
 			if(mapped->GetCurve() == viewCurveBezier->GetCurve()){
 				return;
 			}
-			pUndo.TakeOver(new seUMappedSetCurve(mapped, viewCurveBezier->GetCurve()));
+			pUndo.TakeOverWith(mapped, viewCurveBezier->GetCurve());
 		}
 		
 		skin->GetUndoSystem()->Add(pUndo);
@@ -361,7 +361,7 @@ public:
 			if(mapped->GetCurve() == viewCurveBezier->GetCurve()){
 				return;
 			}
-			pUndo.TakeOver(new seUMappedSetCurve(mapped, viewCurveBezier->GetCurve()));
+			pUndo.TakeOverWith(mapped, viewCurveBezier->GetCurve());
 		}
 	}
 };

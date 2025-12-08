@@ -71,15 +71,6 @@ ceStrip *eyesLookAt, int newIndex){
 }
 
 ceUCAASpeakEyesLAMove::~ceUCAASpeakEyesLAMove(){
-	if(pEyesLA){
-		pEyesLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

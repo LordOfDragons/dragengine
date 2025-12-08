@@ -70,7 +70,7 @@ pHeight(0),
 pCanvasView(NULL)
 {
 	try{
-		pCanvasView = conversation.GetEngine()->GetCanvasManager()->CreateCanvasView();
+		pCanvasView.TakeOver(conversation.GetEngine()->GetCanvasManager()->CreateCanvasView());
 		pCanvasView->SetOrder(12.0f);
 		
 		SetPathFont("/igde/fonts/sans_9_border.defont");
@@ -122,7 +122,7 @@ void ceConversationInfoBox::SetTextColor(const decColor &color){
 void ceConversationInfoBox::SetTextSize(int size){
 	size = decMath::max(size, 1);
 	
-	if(size == pTextSize){
+	if(pTextSize == size){
 		return;
 	}
 	
@@ -250,9 +250,6 @@ void ceConversationInfoBox::UpdateCanvas(){
 //////////////////////
 
 void ceConversationInfoBox::pCleanUp(){
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 }
 
 

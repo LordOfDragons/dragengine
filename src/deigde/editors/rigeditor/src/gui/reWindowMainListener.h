@@ -35,6 +35,12 @@ class reWindowMain;
  * \brief Main window listener.
  */
 class reWindowMainListener : public reRigNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reWindowMainListener> Ref;
+	
+	
+
 private:
 	reWindowMain &pWindow;
 	

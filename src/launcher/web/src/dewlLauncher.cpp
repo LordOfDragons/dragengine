@@ -112,7 +112,7 @@ const std::string &parameter, const std::string &value){
 	
 	delGPModule::Ref gpmodule(pModuleParameters->GetNamed(module.c_str()));
 	if(!gpmodule){
-		gpmodule.TakeOver(new delGPModule(module.c_str()));
+		gpmodule.TakeOverWith(module.c_str());
 		pModuleParameters->Add(gpmodule);
 	}
 	
@@ -121,7 +121,7 @@ const std::string &parameter, const std::string &value){
 		gpparam->SetValue(value.c_str());
 		
 	}else{
-		gpparam.TakeOver(new delGPMParameter(parameter.c_str(), value.c_str()));
+		gpparam.TakeOverWith(parameter.c_str(), value.c_str());
 		gpmodule->GetParameters().Add(gpparam);
 	}
 }

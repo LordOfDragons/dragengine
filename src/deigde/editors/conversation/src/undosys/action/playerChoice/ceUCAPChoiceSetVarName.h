@@ -26,9 +26,9 @@
 #define _CEUCAPCHOICESETVARNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAPlayerChoice.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceCAPlayerChoice;
 
 
 
@@ -37,8 +37,8 @@ class ceCAPlayerChoice;
  */
 class ceUCAPChoiceSetVarName : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
 	decString pOldName;
 	decString pNewName;
 	

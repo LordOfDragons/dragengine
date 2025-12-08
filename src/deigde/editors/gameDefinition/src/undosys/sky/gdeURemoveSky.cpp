@@ -63,12 +63,6 @@ pSky(NULL)
 }
 
 gdeURemoveSky::~gdeURemoveSky(){
-	if(pSky){
-		pSky->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

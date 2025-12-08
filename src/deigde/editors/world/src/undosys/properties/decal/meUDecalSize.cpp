@@ -61,9 +61,6 @@ meUDecalSize::meUDecalSize(meDecal *decal, const decVector &newSize){
 }
 
 meUDecalSize::~meUDecalSize(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

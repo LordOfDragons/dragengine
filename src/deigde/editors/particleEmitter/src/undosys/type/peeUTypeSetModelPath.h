@@ -26,8 +26,8 @@
 #define _PEEUTYPESETMODELPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "peeType.h"
 
-class peeType;
 
 
 
@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeSetModelPath : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	decString pOldPath;
 	decString pNewPath;

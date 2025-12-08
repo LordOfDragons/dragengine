@@ -28,8 +28,8 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
+#include "meDecal.h"
 
-class meDecal;
 
 
 
@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUndoDataDecalProperty : public deObject{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	decString pOldValue;
 	bool pPropertyExists;
 	decStringDictionary pOldProperties;
@@ -66,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Decal pointer. */
-	inline meDecal *GetDecal() const{ return pDecal; }
+	inline const meDecal::Ref &GetDecal() const{ return pDecal; }
 	
 	/** \brief Old property value. */
 	inline const decString &GetOldValue() const{ return pOldValue; }

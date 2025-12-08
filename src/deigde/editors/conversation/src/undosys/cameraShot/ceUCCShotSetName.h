@@ -28,8 +28,8 @@
 #include "../action/ceUndoCActionList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCameraShot.h"
 
-class ceCameraShot;
 class ceConversationActionList;
 class ceConversationTopic;
 
@@ -40,7 +40,7 @@ class ceConversationTopic;
  */
 class ceUCCShotSetName : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	decString pOldName;
 	decString pNewName;

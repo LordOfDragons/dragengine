@@ -29,9 +29,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleForeignState.h"
 
 // predefinitions
-class aeRuleForeignState;
 
 
 
@@ -42,7 +42,7 @@ class aeRuleForeignState;
  */
 class aeUSetRuleFStaEnablePos : public igdeUndo{
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

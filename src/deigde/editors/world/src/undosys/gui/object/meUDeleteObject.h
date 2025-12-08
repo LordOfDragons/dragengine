@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "meWorld.h"
 
-class meWorld;
 
 
 
@@ -37,7 +37,7 @@ class meWorld;
  */
 class meUDeleteObject : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decObjectOrderedSet pObjects;
 	decObjectOrderedSet pAttached;
 	

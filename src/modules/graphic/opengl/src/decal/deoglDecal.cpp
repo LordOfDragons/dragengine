@@ -73,7 +73,7 @@ pNotifyTUCChanged(false),
 pParentComponent(NULL)
 {
 	try{
-		pRDecal = new deoglRDecal(ogl.GetRenderThread());
+		pRDecal.TakeOverWith(ogl.GetRenderThread());
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -255,9 +255,6 @@ void deoglDecal::VisibleChanged(){
 //////////////////////
 
 void deoglDecal::pCleanUp(){
-	if(pRDecal){
-		pRDecal->FreeReference();
-	}
 	
 	if(pDynamicSkin){
 		pDynamicSkin->RemoveListener(this);

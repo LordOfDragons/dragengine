@@ -35,6 +35,12 @@ class aeWPAnimator;
  * Animator panel listener
  */
 class aeWPAnimatorListener : public aeAnimatorNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeWPAnimatorListener> Ref;
+	
+	
+
 private:
 	aeWPAnimator &pPanel;
 	

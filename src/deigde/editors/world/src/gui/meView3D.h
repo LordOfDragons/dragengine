@@ -33,11 +33,11 @@
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
+#include "meView3DListener.h"
+#include "meWorld.h"
 
-class meView3DListener;
 class meViewEditor;
 
-class meWorld;
 class meWindowMain;
 
 
@@ -47,9 +47,9 @@ class meWindowMain;
 class meView3D : public igdeViewRenderWindow{
 private:
 	meWindowMain &pWindowMain;
-	meView3DListener *pListener;
+	meView3DListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeMouseKeyListener::Ref pListenerEditor;
 	meViewEditor *pEditor;
@@ -87,7 +87,7 @@ public:
 	void ResetView();
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world render. */
 	void SetWorld(meWorld *world);

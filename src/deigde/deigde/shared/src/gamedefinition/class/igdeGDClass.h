@@ -48,12 +48,12 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/decStringDictionary.h>
+#include <dragengine/resources/image/deImage.h>
 
 class deglIntList;
 class igdeGDClassInherit;
 class igdeGDCamera;
 class igdeGDClassManager;
-class deImage;
 
 
 
@@ -131,7 +131,7 @@ private:
 	decString pPathEClass;
 	igdeGDCCTextureList pComponentTextures;
 	
-	deImage *pPreviewImage;
+	deImage::Ref pPreviewImage;
 	
 	
 	
@@ -244,7 +244,7 @@ public:
 	void Check();
 	
 	/** \brief Preview image or NULL if not created yet. */
-	inline deImage *GetPreviewImage() const{ return pPreviewImage; }
+	inline const deImage::Ref &GetPreviewImage() const{ return pPreviewImage; }
 	
 	/** \brief Set preview image or NULL if not created yet. */
 	void SetPreviewImage(deImage *image);

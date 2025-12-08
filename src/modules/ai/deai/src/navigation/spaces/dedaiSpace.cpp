@@ -107,7 +107,7 @@ dedaiSpace::~dedaiSpace(){
 ///////////////
 
 void dedaiSpace::SetParentWorld(dedaiWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -140,7 +140,7 @@ void dedaiSpace::SetParentWorld(dedaiWorld *world){
 
 
 void dedaiSpace::SetOwnerNavSpace(dedaiNavSpace *navSpace){
-	if(navSpace == pOwnerNavSpace){
+	if(pOwnerNavSpace == navSpace){
 		return;
 	}
 	
@@ -175,7 +175,7 @@ void dedaiSpace::SetOwnerNavSpace(dedaiNavSpace *navSpace){
 }
 
 void dedaiSpace::SetOwnerHTNavSpace(dedaiHeightTerrainNavSpace *htNavSpace){
-	if(htNavSpace == pOwnerHTNavSpace){
+	if(pOwnerHTNavSpace == htNavSpace){
 		return;
 	}
 	
@@ -216,7 +216,7 @@ void dedaiSpace::SetType(deNavigationSpace::eSpaceTypes type){
 }
 
 void dedaiSpace::SetLayerNumber(int layerNumber){
-	if(layerNumber == pLayerNumber){
+	if(pLayerNumber == layerNumber){
 		return;
 	}
 	
@@ -421,7 +421,7 @@ void dedaiSpace::UpdateDDSSpace(){
 	if(devmode.GetEnabled() && devmode.GetShowSpaces()){
 		// ensure the debug drawer exists
 		if(!pDebugDrawer){
-			pDebugDrawer = pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
+			pDebugDrawer.TakeOver(pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer());
 			pDebugDrawer->SetXRay(true);
 			
 			if(pParentWorld){
@@ -500,7 +500,6 @@ void dedaiSpace::UpdateDDSSpace(){
 			pDDSMismatching = NULL;
 			pDDSHighlightCostType = NULL;
 			
-			pDebugDrawer->FreeReference();
 			pDebugDrawer = NULL;
 		}
 	}
@@ -646,7 +645,7 @@ void dedaiSpace::AddSpaceBlockerSplitters(decConvexVolumeList &list){
 			dedaiNavSpace * const navspace = (dedaiNavSpace*)engNavSpace->GetPeerAI();
 			
 			// only blocked by a different navigation space than our owner
-			if(navspace == pOwnerNavSpace){
+			if(pOwnerNavSpace == navspace){
 				engNavSpace = engNavSpace->GetLLWorldNext();
 				continue;
 			}
@@ -746,9 +745,6 @@ void dedaiSpace::pCleanUp(){
 		delete pGrid;
 	}
 	
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
 }
 
 void dedaiSpace::pUpdateMatrices(){

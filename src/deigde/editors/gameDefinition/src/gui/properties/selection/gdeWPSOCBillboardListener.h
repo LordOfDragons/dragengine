@@ -35,6 +35,12 @@ class gdeWPSOCBillboard;
  * \brief Object class billboard panel listener.
  */
 class gdeWPSOCBillboardListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSOCBillboardListener> Ref;
+	
+	
+
 private:
 	gdeWPSOCBillboard &pPanel;
 	

@@ -46,7 +46,6 @@ aeURuleIKSetAdjustOrientation::aeURuleIKSetAdjustOrientation(aeRuleInverseKinema
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		SetShortInfo("Inverse Kinematic set adjust orientation");
 		
@@ -79,5 +78,4 @@ void aeURuleIKSetAdjustOrientation::Redo(){
 //////////////////////
 
 void aeURuleIKSetAdjustOrientation::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

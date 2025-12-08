@@ -51,7 +51,6 @@ reURemoveConstraint::reURemoveConstraint(reRigConstraintList &list){
 	
 	pRig = list.GetConstraintAt(0)->GetRig();
 	if(!pRig) DETHROW(deeInvalidParam);
-	pRig->AddReference();
 	
 	pEntries = NULL;
 	pEntryCount = 0;
@@ -67,7 +66,6 @@ reURemoveConstraint::reURemoveConstraint(reRigConstraintList &list){
 			if(constraint->GetRig() != pRig) DETHROW(deeInvalidParam);
 			
 			pEntries[pEntryCount].constraint = constraint;
-			constraint->AddReference();
 			
 			pEntries[pEntryCount].bone = bone;
 			if(bone) bone->AddReference();
@@ -148,7 +146,4 @@ void reURemoveConstraint::pCleanUp(){
 		delete [] pEntries;
 	}
 	
-	if(pRig){
-		pRig->FreeReference();
-	}
 }

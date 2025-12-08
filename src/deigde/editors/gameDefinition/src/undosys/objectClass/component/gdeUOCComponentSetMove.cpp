@@ -62,12 +62,6 @@ pComponent(NULL)
 }
 
 gdeUOCComponentSetMove::~gdeUOCComponentSetMove(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

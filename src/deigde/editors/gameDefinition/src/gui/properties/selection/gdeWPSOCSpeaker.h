@@ -34,12 +34,12 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSOCSpeakerListener.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCSpeaker;
 class gdeWindowProperties;
-class gdeWPSOCSpeakerListener;
 
 
 
@@ -49,9 +49,9 @@ class gdeWPSOCSpeakerListener;
 class gdeWPSOCSpeaker : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCSpeakerListener *pListener;
+	gdeWPSOCSpeakerListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditPath::Ref pEditPathSound;
 	igdeEditVector::Ref pEditPosition;
@@ -88,7 +88,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

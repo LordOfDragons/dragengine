@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meObject.h"
 
-class meObject;
 
 
 /**
@@ -37,7 +37,7 @@ class meObject;
  */
 class meUCameraMoveObject : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decDVector pOldPosition, pNewPosition;
 	
 public:

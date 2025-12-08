@@ -26,8 +26,8 @@
 #define _DETERRAINHEIGHTMODIFIER_H_
 
 #include "../../../common/math/decMath.h"
+#include <dragengine/resources/image/deImage.h>
 
-class deImage;
 
 
 /**
@@ -43,7 +43,7 @@ class deImage;
  */
 class DE_DLL_EXPORT deTerrainHeightModifier{
 private:
-	deImage *pHeightImage;
+	deImage::Ref pHeightImage;
 	decPoint pPosition;
 	float pScaling;
 	
@@ -76,7 +76,7 @@ public:
 	void SetScaling(float scaling);
 	
 	/** \brief Height image. */
-	inline deImage *GetHeightImage() const{ return pHeightImage; }
+	inline const deImage::Ref &GetHeightImage() const{ return pHeightImage; }
 	/*@}*/
 };
 

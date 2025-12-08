@@ -276,7 +276,7 @@ pPreventUpdate(false)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new seWPLinkListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	
 	pActionLinkAdd.TakeOver(new cActionLinkAdd(*this));
@@ -313,9 +313,6 @@ pPreventUpdate(false)
 
 seWPLink::~seWPLink(){
 	SetSynthesizer(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -324,13 +321,12 @@ seWPLink::~seWPLink(){
 ///////////////
 
 void seWPLink::SetSynthesizer(seSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;

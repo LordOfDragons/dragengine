@@ -27,8 +27,8 @@
 
 #include "deainpInputBinding.h"
 #include "deainpOverlay.h"
+#include <dragengine/resources/canvas/deCanvasImage.h>
 
-class deCanvasImage;
 
 
 /**
@@ -72,7 +72,7 @@ private:
 	float pUpDownPerSecond;
 	
 	deCanvasView *pCanvas;
-	deCanvasImage *pCImage;
+	deCanvasImage::Ref pCImage;
 	
 public:
 	/** \name Constructors and Destructors */

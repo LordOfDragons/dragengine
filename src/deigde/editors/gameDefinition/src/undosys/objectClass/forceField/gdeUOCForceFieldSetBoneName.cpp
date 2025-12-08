@@ -62,12 +62,6 @@ pForceField(NULL)
 }
 
 gdeUOCForceFieldSetBoneName::~gdeUOCForceFieldSetBoneName(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

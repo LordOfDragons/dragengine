@@ -50,13 +50,9 @@ pLink(nullptr)
 	SetShortInfo("Link set bone parameter");
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 aeULinkToggleWrapY::~aeULinkToggleWrapY(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

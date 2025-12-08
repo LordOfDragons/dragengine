@@ -249,7 +249,7 @@ pListener(NULL),
 pConversation(NULL),
 pRuleOfThirdsAid(NULL)
 {
-	pListener = new ceViewConversationListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	pCameraMouseListener.TakeOver(new cCameraMouseListener(*this));
 	AddListener(pCameraMouseListener);
@@ -264,9 +264,6 @@ ceViewConversation::~ceViewConversation(){
 	if(pRuleOfThirdsAid){
 		delete pRuleOfThirdsAid;
 	}
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -278,7 +275,7 @@ void ceViewConversation::ResetView(){
 }
 
 void ceViewConversation::SetConversation(ceConversation *conversation){
-	if(conversation == pConversation){
+	if(pConversation == conversation){
 		return;
 	}
 	
@@ -295,7 +292,6 @@ void ceViewConversation::SetConversation(ceConversation *conversation){
 			RemoveCanvas(pConversation->GetTextBox()->GetCanvasView());
 		}
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;

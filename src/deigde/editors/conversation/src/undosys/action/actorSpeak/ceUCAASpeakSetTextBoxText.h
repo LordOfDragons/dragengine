@@ -28,9 +28,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include "ceCAActorSpeak.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorSpeak;
-class ceConversationTopic;
 
 
 
@@ -39,8 +39,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakSetTextBoxText : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	decUnicodeString pOldText;
 	decUnicodeString pNewText;
 	

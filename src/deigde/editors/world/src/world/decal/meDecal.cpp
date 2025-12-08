@@ -176,7 +176,6 @@ pColliderOwner(this)
 	try{
 		pEngSkin = decal.pEngSkin;
 		if(pEngSkin){
-			pEngSkin->AddReference();
 		}
 		// pUpdateSkin(); // not needed as there are no decals yet
 		
@@ -221,7 +220,7 @@ void meDecal::SetWorld(meWorld *world){
 }
 
 void meDecal::SetParentObject(meObject *object){
-	if(object == pParentObject){
+	if(pParentObject == object){
 		return;
 	}
 	
@@ -429,7 +428,7 @@ void meDecal::UpdateDynamicSkin(){
 	if(requiresDynamicSkin){
 		if(!pDynamicSkin){
 			deEngine &engine = *pEnvironment->GetEngineController()->GetEngine();
-			pDynamicSkin = engine.GetDynamicSkinManager()->CreateDynamicSkin();
+			pDynamicSkin.TakeOver(engine.GetDynamicSkinManager()->CreateDynamicSkin());
 		}
 		
 		pDynamicSkin->RemoveAllRenderables();
@@ -441,8 +440,6 @@ void meDecal::UpdateDynamicSkin(){
 		}
 		
 	}else{
-		if(pDynamicSkin){
-			pDynamicSkin->FreeReference();
 			pDynamicSkin = NULL;
 		}
 	}
@@ -457,7 +454,7 @@ void meDecal::SetID(int id){
 }
 
 void meDecal::SetVisible(bool visible){
-	if(visible == pVisible){
+	if(pVisible == visible){
 		return;
 	}
 	
@@ -481,7 +478,7 @@ void meDecal::SetVisible(bool visible){
 
 
 void meDecal::SetSelected(bool selected){
-	if(selected == pSelected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -490,7 +487,7 @@ void meDecal::SetSelected(bool selected){
 }
 
 void meDecal::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	
@@ -657,7 +654,7 @@ void meDecal::pInitShared(){
 	try{
 		pTimerReattachDecals.TakeOver(new meDecalTimerReattachDecals(*this));
 		
-		pCollider = engine.GetColliderManager()->CreateColliderVolume();
+		pCollider.TakeOver(engine.GetColliderManager()->CreateColliderVolume());
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(deCollider::ertKinematic);
 		pCollider->SetUseLocalGravity(true);
@@ -673,7 +670,7 @@ void meDecal::pInitShared(){
 		pEnvironment->SetColliderUserPointer(pCollider, &pColliderOwner);
 		
 		// create debug drawer and shapes
-		pDebugDrawer = engine.GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine.GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSDecal = new igdeWDebugDrawerShape;
@@ -695,23 +692,13 @@ void meDecal::pCleanUp(){
 	
 	if(pCollider){
 		pEnvironment->SetColliderUserPointer(pCollider, NULL);
-		pCollider->FreeReference();
 	}
 	
 	DetachDecals();
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 	
 	if(pDDSDecal){
 		delete pDDSDecal;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 
@@ -930,8 +917,6 @@ void meDecal::pLoadSkin(){
 		}
 	}
 	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
 		pEngSkin = NULL;
 	}
 	

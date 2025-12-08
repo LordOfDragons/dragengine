@@ -46,7 +46,6 @@ aeUSetRuleSModMaxSize::aeUSetRuleSModMaxSize(aeRuleStateManipulator *rule, const
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldMax = rule->GetMaximumSize();
 		pNewMax = newMax;
@@ -82,5 +81,4 @@ void aeUSetRuleSModMaxSize::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMaxSize::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

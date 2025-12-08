@@ -59,12 +59,6 @@ pBillboard(NULL)
 }
 
 gdeUOCBillboardToggleDoNotScale::~gdeUOCBillboardToggleDoNotScale(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

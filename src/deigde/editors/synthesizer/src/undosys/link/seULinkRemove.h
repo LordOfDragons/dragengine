@@ -26,10 +26,10 @@
 #define _SEULINKREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLink.h"
+#include "seSource.h"
+#include "seSynthesizer.h"
 
-class seLink;
-class seSource;
-class seSynthesizer;
 class seControllerTarget;
 
 
@@ -40,12 +40,12 @@ class seControllerTarget;
 class seULinkRemove : public igdeUndo{
 private:
 	struct sTarget{
-		seSource *source;
+		seSource::Ref source;
 		seControllerTarget *target;
 	};
 	
-	seSynthesizer *pSynthesizer;
-	seLink *pLink;
+	seSynthesizer::Ref pSynthesizer;
+	seLink::Ref pLink;
 	
 	sTarget *pTargets;
 	int pTargetCount;

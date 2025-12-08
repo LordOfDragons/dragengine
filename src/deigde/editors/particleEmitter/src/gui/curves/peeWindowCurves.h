@@ -31,11 +31,11 @@
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/undo/igdeUndo.h>
+#include "peeEmitter.h"
+#include "peeWindowCurvesListener.h"
 
-class peeEmitter;
 class peeParameter;
 class peeType;
-class peeWindowCurvesListener;
 class peeWindowMain;
 
 
@@ -57,9 +57,9 @@ public:
 	
 private:
 	peeWindowMain &pWindowMain;
-	peeWindowCurvesListener *pListener;
+	peeWindowCurvesListener::Ref pListener;
 	
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	igdeIcon::Ref pIconCurveEmpty;
 	igdeIcon::Ref pIconCurveUsed;
@@ -100,7 +100,7 @@ public:
 	eCurves GetCurve() const;
 	
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
 	void SetEmitter(peeEmitter *emitter);

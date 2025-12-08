@@ -26,10 +26,10 @@
 #define _REUADDSHAPE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRig.h"
+#include "reRigBone.h"
+#include "reRigShape.h"
 
-class reRig;
-class reRigBone;
-class reRigShape;
 
 
 
@@ -38,9 +38,9 @@ class reRigShape;
  */
 class reUAddShape : public igdeUndo{
 private:
-	reRig *pRig;
-	reRigBone *pBone;
-	reRigShape *pShape;
+	reRig::Ref pRig;
+	reRigBone::Ref pBone;
+	reRigShape::Ref pShape;
 	
 	
 	

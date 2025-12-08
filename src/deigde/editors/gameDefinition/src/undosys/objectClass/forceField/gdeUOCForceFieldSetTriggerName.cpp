@@ -62,12 +62,6 @@ pTrigger(trigger)
 }
 
 gdeUOCForceFieldSetTriggerName::~gdeUOCForceFieldSetTriggerName(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meWorld.h"
 
-class meWorld;
 class meDecal;
 class meUndoDataDecal;
 
@@ -40,7 +40,7 @@ class meUndoDataDecal;
  */
 class meUDecalDuplicate : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	meUndoDataDecal **pDecals;
 	int pDecalCount;

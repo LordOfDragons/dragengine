@@ -30,11 +30,11 @@
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "aeAnimator.h"
+#include "aeWPAnimatorListener.h"
 
 
-class aeAnimator;
 class aeWindowProperties;
-class aeWPAnimatorListener;
 
 
 
@@ -44,8 +44,8 @@ class aeWPAnimatorListener;
 class aeWPAnimator : public igdeContainerScroll{
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPAnimatorListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPAnimatorListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
 	igdeEditPath::Ref pEditRigPath;
 	igdeEditPath::Ref pEditAnimPath;
@@ -82,7 +82,7 @@ public:
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

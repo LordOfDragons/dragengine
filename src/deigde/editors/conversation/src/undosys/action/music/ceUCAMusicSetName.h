@@ -26,9 +26,9 @@
 #define _CEUCAMUSICSETNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAMusic.h"
+#include "ceConversationTopic.h"
 
-class ceCAMusic;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAMusicSetName : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAMusic *pMusic;
+	ceConversationTopic::Ref pTopic;
+	ceCAMusic::Ref pMusic;
 	decString pOldName;
 	decString pNewName;
 	

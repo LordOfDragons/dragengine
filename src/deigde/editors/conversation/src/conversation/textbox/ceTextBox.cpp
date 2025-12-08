@@ -65,7 +65,7 @@ pTextOffset(200),
 pCanvasView(NULL)
 {
 	try{
-		pCanvasView = engine.GetCanvasManager()->CreateCanvasView();
+		pCanvasView.TakeOver(engine.GetCanvasManager()->CreateCanvasView());
 		pCanvasView->SetOrder(10.0f);
 		
 		SetPathFont("/igde/fonts/sans_9_border.defont");
@@ -117,7 +117,7 @@ void ceTextBox::SetTextColor(const decColor &color){
 void ceTextBox::SetTextSize(int size){
 	size = decMath::max(size, 1);
 	
-	if(size == pTextSize){
+	if(pTextSize == size){
 		return;
 	}
 	
@@ -144,7 +144,7 @@ void ceTextBox::SetTextOffset(int offset){
 		offset = 0;
 	}
 	
-	if(offset == pTextOffset){
+	if(pTextOffset == offset){
 		return;
 	}
 	
@@ -230,9 +230,6 @@ void ceTextBox::UpdateCanvas(){
 void ceTextBox::pCleanUp(){
 	pTexts.RemoveAll();
 	
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 }
 
 

@@ -60,19 +60,12 @@ deoglRDSRenderableCamera::~deoglRDSRenderableCamera(){
 ///////////////
 
 void deoglRDSRenderableCamera::SetCamera(deoglRCamera *camera){
-	if(camera == pCamera){
+	if(pCamera == camera){
 		return;
 	}
 	
-	if(pCamera){
-		pCamera->FreeReference();
-	}
 	
 	pCamera = camera;
-	
-	if(camera){
-		camera->AddReference();
-	}
 }
 
 void deoglRDSRenderableCamera::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask){

@@ -51,9 +51,6 @@ peeUControllerToggleClamp::peeUControllerToggleClamp(peeController *controller){
 }
 
 peeUControllerToggleClamp::~peeUControllerToggleClamp(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

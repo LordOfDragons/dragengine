@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decString.h>
+#include "lpeLangPack.h"
 
-class lpeLangPack;
 
 
 
@@ -38,7 +38,7 @@ class lpeLangPack;
  */
 class lpeULangPackSetIdentifier : public igdeUndo{
 private:
-	lpeLangPack *pLangPack;
+	lpeLangPack::Ref pLangPack;
 	
 	decString pOldIdentifier;
 	decString pNewIdentifier;

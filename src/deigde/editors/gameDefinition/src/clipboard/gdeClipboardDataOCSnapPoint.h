@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCSNAPPOINT_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCSnapPoint.h"
 
-class gdeOCSnapPoint;
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCSnapPoint *pSnapPoint;
+	gdeOCSnapPoint::Ref pSnapPoint;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief SnapPoint. */
-	gdeOCSnapPoint *GetSnapPoint() const{ return pSnapPoint; }
+	const gdeOCSnapPoint::Ref &GetSnapPoint() const{ return pSnapPoint; }
 	/*@}*/
 };
 

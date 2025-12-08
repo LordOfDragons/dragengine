@@ -587,7 +587,7 @@ pAnimator(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPViewListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -683,13 +683,9 @@ aeWPView::~aeWPView(){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 		pAnimator = NULL;
 	}
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -698,7 +694,7 @@ aeWPView::~aeWPView(){
 ///////////////
 
 void aeWPView::SetAnimator(aeAnimator *animator){
-	if(animator == pAnimator){
+	if(pAnimator == animator){
 		return;
 	}
 	
@@ -708,7 +704,6 @@ void aeWPView::SetAnimator(aeAnimator *animator){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;

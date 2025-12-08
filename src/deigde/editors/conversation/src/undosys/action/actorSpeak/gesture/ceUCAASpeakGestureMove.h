@@ -26,10 +26,10 @@
 #define _CEUCAASPEAKGESTUREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceStrip.h"
+#include "ceCAActorSpeak.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorSpeak;
-class ceConversationTopic;
-class ceStrip;
 
 
 
@@ -38,9 +38,9 @@ class ceStrip;
  */
 class ceUCAASpeakGestureMove : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pGesture;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pGesture;
 	int pOldIndex;
 	int pNewIndex;
 	

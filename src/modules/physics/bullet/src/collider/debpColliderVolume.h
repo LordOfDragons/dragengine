@@ -30,6 +30,7 @@
 #include "debpCollider.h"
 #include "../shape/debpShapeList.h"
 #include "../debpCollisionObject.h"
+#include "debpBulletShape.h"
 
 class debpGhostObject;
 class btGhostObject;
@@ -37,7 +38,6 @@ class debpSweepCollisionTest;
 class deColliderVolume;
 class debpMotionState;
 class debpPhysicsBody;
-class debpBulletShape;
 class deCollisionInfo;
 
 
@@ -76,7 +76,7 @@ private:
 	debpSweepCollisionTest *pSweepCollisionTest;
 	
 	btGhostObject *pStaticCollisionTest;
-	debpBulletShape *pStaticCollisionTestShape;
+	debpBulletShape::Ref pStaticCollisionTestShape;
 	debpCollisionObject pStaticCollisionTestObject;
 	
 	debpGhostObject *pGhostKinematicMovement;

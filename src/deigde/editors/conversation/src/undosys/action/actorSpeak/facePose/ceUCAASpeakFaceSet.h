@@ -26,10 +26,10 @@
 #define _CEUCAASPEAKFACESET_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceStrip.h"
+#include "ceCAActorSpeak.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorSpeak;
-class ceConversationTopic;
-class ceStrip;
 
 
 
@@ -38,12 +38,12 @@ class ceStrip;
  */
 class ceUCAASpeakFaceSet : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pFacePose;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pFacePose;
 	
-	ceStrip *pOldStrip;
-	ceStrip *pNewStrip;
+	ceStrip::Ref pOldStrip;
+	ceStrip::Ref pNewStrip;
 	
 public:
 	/** \brief Type holding strong reference. */

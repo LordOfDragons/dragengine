@@ -29,8 +29,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "projProfile.h"
 
-class projProfile;
 
 
 
@@ -39,7 +39,7 @@ class projProfile;
  */
 class projUProfileSetWindowSize : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decPoint pOldValue;
 	decPoint pNewValue;

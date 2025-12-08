@@ -52,7 +52,6 @@ pSynthesizer(NULL)
 	
 	try{
 		pSynthesizer = synthesizer;
-		pSynthesizer->AddReference();
 		
 		SetShortInfo("Synthesizer set sample rate");
 		
@@ -85,7 +84,4 @@ void seUSynthesizerSetSampleRate::Redo(){
 //////////////////////
 
 void seUSynthesizerSetSampleRate::pCleanUp(){
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

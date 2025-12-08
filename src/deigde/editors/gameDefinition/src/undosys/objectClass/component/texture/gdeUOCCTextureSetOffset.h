@@ -29,10 +29,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeOCComponentTexture.h"
+#include "gdeObjectClass.h"
+#include "gdeOCComponent.h"
 
-class gdeOCComponent;
-class gdeOCComponentTexture;
-class gdeObjectClass;
 
 
 
@@ -41,9 +41,9 @@ class gdeObjectClass;
  */
 class gdeUOCCTextureSetOffset : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	decVector2 pOldValue;
 	decVector2 pNewValue;

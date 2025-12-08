@@ -56,9 +56,6 @@ ceUCCShotSetRotFrom::ceUCCShotSetRotFrom(ceCameraShot *cameraShot, const decVect
 }
 
 ceUCCShotSetRotFrom::~ceUCCShotSetRotFrom(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

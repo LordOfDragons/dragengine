@@ -54,12 +54,10 @@ pNewController(NULL)
 	
 	pOldController = link->GetController();
 	if(pOldController){
-		pOldController->AddReference();
 	}
 	
 	pNewController = newController;
 	if(pNewController){
-		pNewController->AddReference();
 	}
 	
 	pLink = link;
@@ -67,15 +65,6 @@ pNewController(NULL)
 }
 
 seULinkSetController::~seULinkSetController(){
-	if(pOldController){
-		pOldController->FreeReference();
-	}
-	if(pNewController){
-		pNewController->FreeReference();
-	}
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

@@ -28,10 +28,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meHTVegetationLayer.h"
+#include "meHTVRuleMapping.h"
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleMapping;
 
 
 
@@ -47,8 +47,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleMapping *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleMapping::Ref pRule;
 	
 	float pOldLower;
 	float pNewLower;

@@ -62,12 +62,6 @@ pNavSpace(NULL)
 }
 
 gdeUOCNavSpaceSetSnapAngle::~gdeUOCNavSpaceSetSnapAngle(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

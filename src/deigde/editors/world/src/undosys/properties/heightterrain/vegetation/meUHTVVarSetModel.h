@@ -30,9 +30,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decString.h>
+#include "meHTVVariation.h"
 
 // predefinitions
-class meHTVVariation;
 
 
 
@@ -43,7 +43,7 @@ class meHTVVariation;
  */
 class meUHTVVarSetModel : public igdeUndo{
 private:
-	meHTVVariation *pVariation;
+	meHTVVariation::Ref pVariation;
 	decString pOldPath;
 	decString pNewPath;
 	

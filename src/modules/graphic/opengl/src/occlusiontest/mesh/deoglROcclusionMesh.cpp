@@ -256,7 +256,6 @@ void deoglROcclusionMesh::pCleanUp(){
 	}
 	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
-		pVBOBlock->FreeReference();
 	}
 }
 

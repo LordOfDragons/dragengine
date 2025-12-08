@@ -174,7 +174,7 @@ pPreventUpdate(false)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, form, formLine;
 	
-	pListener = new meWPSObjectShapeListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -211,9 +211,6 @@ pPreventUpdate(false)
 meWPSObjectShape::~meWPSObjectShape(){
 	SetWorld(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -222,13 +219,12 @@ meWPSObjectShape::~meWPSObjectShape(){
 ///////////////
 
 void meWPSObjectShape::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
@@ -578,7 +574,7 @@ void meWPSObjectShape::pCreateShapePanels(){
 	igdeContainer::Ref groupBox;
 	
 	
-	pSwitcherShapeType.TakeOver(new igdeSwitcher(env));
+	pSwitcherShapeType.TakeOverWith(env);
 	
 	
 	// none

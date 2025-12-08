@@ -29,10 +29,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeAnimator.h"
+#include "aeController.h"
 
 // predefinitions
-class aeController;
-class aeAnimator;
 
 
 
@@ -43,8 +43,8 @@ class aeAnimator;
  */
 class aeUMoveControllerUp : public igdeUndo{
 private:
-	aeAnimator *pAnimator;
-	aeController *pController;
+	aeAnimator::Ref pAnimator;
+	aeController::Ref pController;
 	int pIndex;
 	
 public:

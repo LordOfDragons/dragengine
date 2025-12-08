@@ -133,22 +133,7 @@ deoglSkinChannel::~deoglSkinChannel(){
 		delete pTexture;
 	}
 	
-	if(pCacheConstrDefSource1){
-		pCacheConstrDefSource1->FreeReference();
-	}
-	if(pCacheConstrDefSource2){
-		pCacheConstrDefSource2->FreeReference();
-	}
-	if(pCacheConstrVerifySource1){
-		pCacheConstrVerifySource1->FreeReference();
-	}
-	if(pCacheConstrVerifySource2){
-		pCacheConstrVerifySource2->FreeReference();
-	}
 	
-	if(pCacheVerify){
-		pCacheVerify->FreeReference();
-	}
 }
 
 
@@ -199,7 +184,7 @@ void deoglSkinChannel::SetFactorV(float factor){
 }
 
 void deoglSkinChannel::SetCombinedTexture(deoglCombinedTexture *combinedTexture){
-	if(combinedTexture != pCombinedTexture){
+	if(pCombinedTexture != combinedTexture){
 		if(pCombinedTexture){
 			pCombinedTexture->RemoveUsage();
 		}
@@ -362,25 +347,15 @@ void deoglSkinChannel::BuildChannel(const deSkinTexture &engTexture){
 }
 
 void deoglSkinChannel::ClearCacheData(){
-	if(pCacheVerify){
-		pCacheVerify->FreeReference();
 		pCacheVerify = NULL;
 	}
 	
-	if(pCacheConstrDefSource1){
-		pCacheConstrDefSource1->FreeReference();
 		pCacheConstrDefSource1 = NULL;
 	}
-	if(pCacheConstrDefSource2){
-		pCacheConstrDefSource2->FreeReference();
 		pCacheConstrDefSource2 = NULL;
 	}
-	if(pCacheConstrVerifySource1){
-		pCacheConstrVerifySource1->FreeReference();
 		pCacheConstrVerifySource1 = NULL;
 	}
-	if(pCacheConstrVerifySource2){
-		pCacheConstrVerifySource2->FreeReference();
 		pCacheConstrVerifySource2 = NULL;
 	}
 	
@@ -898,12 +873,12 @@ const deoglVSDetermineChannelFormat &channelFormat){
 	// create pixel buffer if required and fill it
 	//if( ! pUniform ){
 		if(mipMapped){
-			pPixelBufferMipMap.TakeOver(new deoglPixelBufferMipMap(pixelBufferFormat,
-				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 100));
+			pPixelBufferMipMap.TakeOverWith(pixelBufferFormat,
+				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 100);
 			
 		}else{
-			pPixelBufferMipMap.TakeOver(new deoglPixelBufferMipMap(pixelBufferFormat,
-				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 0));
+			pPixelBufferMipMap.TakeOverWith(pixelBufferFormat,
+				pixelBufferSize.x, pixelBufferSize.y, pixelBufferSize.z, 0);
 		}
 	//}
 }
@@ -1356,10 +1331,10 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 			return;
 		}
 		
-		pCacheConstrDefSource2 = new decMemoryFile("");
+		pCacheConstrDefSource2.TakeOverWith("");
 		memoryFileDef = pCacheConstrDefSource2;
 		
-		pCacheConstrVerifySource2 = new decMemoryFile("");
+		pCacheConstrVerifySource2.TakeOverWith("");
 		memoryFileVerify = pCacheConstrVerifySource2;
 		
 	}else{
@@ -1368,10 +1343,10 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 			return;
 		}
 		
-		pCacheConstrDefSource1 = new decMemoryFile("");
+		pCacheConstrDefSource1.TakeOverWith("");
 		memoryFileDef = pCacheConstrDefSource1;
 		
-		pCacheConstrVerifySource1 = new decMemoryFile("");
+		pCacheConstrVerifySource1.TakeOverWith("");
 		memoryFileVerify = pCacheConstrVerifySource1;
 	}
 	
@@ -1810,7 +1785,7 @@ void deoglSkinChannel::pBuildCacheVerify(){
 	}
 	
 	if(!pCacheVerify){
-		pCacheVerify = new decMemoryFile("");
+		pCacheVerify.TakeOverWith("");
 	}
 	
 	decMemoryFileWriter *writer = NULL;

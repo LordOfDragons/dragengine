@@ -153,9 +153,9 @@ pModelTreeObjects(NULL)
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new gdeWPSelectionListener(*this);
+	pListener.TakeOverWith(*this);
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher.TakeOverWith(env);
 	AddChild(pSwitcher, igdeContainerSplitted::eaSide);
 	
 	helper.TreeList(10, "Game definition objects", pTreeObjects, new cTreeObjects(*this));
@@ -220,9 +220,6 @@ pModelTreeObjects(NULL)
 gdeWPSelection::~gdeWPSelection(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -231,7 +228,7 @@ gdeWPSelection::~gdeWPSelection(){
 ///////////////
 
 void gdeWPSelection::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	
@@ -260,7 +257,6 @@ void gdeWPSelection::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

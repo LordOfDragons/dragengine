@@ -28,8 +28,8 @@
 #include "../../conversation/action/ceConversationActionList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
 
 
 
@@ -38,7 +38,7 @@ class ceConversationTopic;
  */
 class ceUCActionPaste : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
+	ceConversationTopic::Ref pTopic;
 	ceConversationActionList pActions;
 	int pIndex;
 	

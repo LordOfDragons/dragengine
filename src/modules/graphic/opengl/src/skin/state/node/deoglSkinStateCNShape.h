@@ -29,8 +29,8 @@
 #include "deoglSkinStateConstructedNode.h"
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeShape.h>
+#include "deoglSharedVBOBlock.h"
 
-class deoglSharedVBOBlock;
 
 
 /**
@@ -51,7 +51,7 @@ private:
 	
 	bool pIsThick;
 	
-	deoglSharedVBOBlock *pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlock;
 	bool pDirtyVBOBlock;
 	int pVBOBlockPointCount;
 	
@@ -121,7 +121,7 @@ public:
 	/** \name Points */
 	/*@{*/
 	/** VBO block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	inline const deoglSharedVBOBlock::Ref &GetVBOBlock() const{ return pVBOBlock; }
 	
 	
 	

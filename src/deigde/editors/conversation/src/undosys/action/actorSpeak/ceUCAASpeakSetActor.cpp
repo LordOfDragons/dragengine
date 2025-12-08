@@ -59,12 +59,6 @@ ceUCAASpeakSetActor::ceUCAASpeakSetActor(ceConversationTopic *topic, ceCAActorSp
 }
 
 ceUCAASpeakSetActor::~ceUCAASpeakSetActor(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

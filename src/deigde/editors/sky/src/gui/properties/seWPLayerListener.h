@@ -35,6 +35,12 @@ class seWPLayer;
  * \brief Layer properties panel listener.
  */
 class seWPLayerListener : public seSkyListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seWPLayerListener> Ref;
+	
+	
+
 private:
 	seWPLayer &pPanel;
 	

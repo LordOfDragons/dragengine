@@ -27,8 +27,8 @@
 #define _AEURULEANIMSELECTTOGGLEENABLEPOSITION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleAnimationSelect.h"
 
-class aeRuleAnimationSelect;
 
 
 
@@ -37,7 +37,7 @@ class aeRuleAnimationSelect;
  */
 class aeURuleAnimSelectToggleEnablePosition : public igdeUndo{
 private:
-	aeRuleAnimationSelect *pRule;
+	aeRuleAnimationSelect::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

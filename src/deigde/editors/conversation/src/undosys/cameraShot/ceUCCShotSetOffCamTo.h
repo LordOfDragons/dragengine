@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "ceCameraShot.h"
 
-class ceCameraShot;
 
 
 
@@ -38,7 +38,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetOffCamTo : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	decVector pOldPos;
 	decVector pNewPos;

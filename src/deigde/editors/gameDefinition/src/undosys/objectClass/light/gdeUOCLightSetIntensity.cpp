@@ -62,12 +62,6 @@ pLight(NULL)
 }
 
 gdeUOCLightSetIntensity::~gdeUOCLightSetIntensity(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

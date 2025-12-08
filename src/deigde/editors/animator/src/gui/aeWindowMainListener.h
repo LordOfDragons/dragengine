@@ -35,6 +35,12 @@ class aeWindowMain;
  * Main window listener.
  */
 class aeWindowMainListener : public aeAnimatorNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeWindowMainListener> Ref;
+	
+	
+
 private:
 	aeWindowMain &pWindowMain;
 	

@@ -26,9 +26,9 @@
 #define _SEUTEXTUREREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSkin.h"
+#include "seTexture.h"
 
-class seSkin;
-class seTexture;
 
 
 
@@ -37,8 +37,8 @@ class seTexture;
  */
 class seUTextureRemove : public igdeUndo{
 private:
-	seTexture *pTexture;
-	seSkin *pSkin;
+	seTexture::Ref pTexture;
+	seSkin::Ref pSkin;
 	
 public:
 	/** \brief Type holding strong reference. */

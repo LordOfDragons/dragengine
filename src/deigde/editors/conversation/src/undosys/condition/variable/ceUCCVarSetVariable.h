@@ -26,10 +26,10 @@
 #define _CEUCCVARSETVARIABLE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationAction.h"
+#include "ceCConditionVariable.h"
+#include "ceConversationTopic.h"
 
-class ceCConditionVariable;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -38,9 +38,9 @@ class ceConversationTopic;
  */
 class ceUCCVarSetVariable : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionVariable *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionVariable::Ref pCondition;
 	decString pOldVariable;
 	decString pNewVariable;
 	

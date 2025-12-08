@@ -62,12 +62,6 @@ pActorSpeak(NULL)
 }
 
 ceUCAASpeakFaceClear::~ceUCAASpeakFaceClear(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

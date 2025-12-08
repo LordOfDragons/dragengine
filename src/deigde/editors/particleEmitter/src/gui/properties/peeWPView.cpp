@@ -181,7 +181,7 @@ pListener(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox;
 	
-	pListener = new peeWPViewListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -210,9 +210,6 @@ pListener(NULL)
 peeWPView::~peeWPView(){
 	SetEmitter(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -221,7 +218,7 @@ peeWPView::~peeWPView(){
 ///////////////
 
 void peeWPView::SetEmitter(peeEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	
@@ -231,7 +228,6 @@ void peeWPView::SetEmitter(peeEmitter *emitter){
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 		pEmitter = NULL;
 	}
 	
@@ -270,7 +266,7 @@ void peeWPView::UpdateView(){
 		pChkEmitterEnableCasting->SetChecked(false);
 	}
 	
-	const bool enabled = pEmitter != NULL;
+	const bool enabled = pEmitter != nullptr;
 	pEditEmitterPosition->SetEnabled(enabled);
 	pEditEmitterRotation->SetEnabled(enabled);
 	pEditEmitterBurstInterval->SetEnabled(enabled);

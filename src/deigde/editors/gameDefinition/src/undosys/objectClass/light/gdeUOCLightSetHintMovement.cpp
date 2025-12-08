@@ -62,12 +62,6 @@ pLight(NULL)
 }
 
 gdeUOCLightSetHintMovement::~gdeUOCLightSetHintMovement(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

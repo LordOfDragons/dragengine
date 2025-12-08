@@ -159,7 +159,4 @@ void meUDeleteObject::Redo(){
 //////////////////////
 
 void meUDeleteObject::pCleanUp(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

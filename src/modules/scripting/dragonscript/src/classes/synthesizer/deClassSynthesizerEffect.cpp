@@ -207,10 +207,6 @@ void deClassSynthesizerEffect::AssignEffect(dsRealObject *myself, deSynthesizerE
 	}
 	
 	nd.effect = effect;
-	
-	if(effect){
-		effect->AddReference();
-	}
 }
 
 void deClassSynthesizerEffect::AssignSource(dsRealObject *myself, deSynthesizerSource *source){
@@ -229,10 +225,6 @@ void deClassSynthesizerEffect::AssignSource(dsRealObject *myself, deSynthesizerS
 	}
 	
 	nd.source = source;
-	
-	if(source){
-		source->AddReference();
-	}
 }
 
 void deClassSynthesizerEffect::PushEffect(dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffect *effect){

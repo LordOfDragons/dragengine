@@ -63,12 +63,6 @@ pParticleEmitter(NULL)
 }
 
 gdeURemoveParticleEmitter::~gdeURemoveParticleEmitter(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

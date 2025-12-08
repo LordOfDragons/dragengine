@@ -65,7 +65,6 @@ void ceWPTTreeItem::SetModel(ceWPTTreeItemModel *model){
 	
 	if(pModel){
 		pModel->SetTreeItem(NULL);
-		pModel->FreeReference();
 	}
 	
 	pModel = model;

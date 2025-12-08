@@ -26,8 +26,8 @@
 #define _REUSHAPESETPROPERTY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRigShape.h"
 
-class reRigShape;
 
 
 
@@ -36,7 +36,7 @@ class reRigShape;
  */
 class reUShapeSetProperty : public igdeUndo{
 private:
-	reRigShape *pShape;
+	reRigShape::Ref pShape;
 	
 	decString pOldProperty;
 	decString pNewProperty;

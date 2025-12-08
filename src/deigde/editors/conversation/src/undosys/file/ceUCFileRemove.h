@@ -26,9 +26,9 @@
 #define _CEUCFILEREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversation.h"
+#include "ceConversationFile.h"
 
-class ceConversation;
-class ceConversationFile;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationFile;
  */
 class ceUCFileRemove : public igdeUndo{
 private:
-	ceConversation *pConversation;
-	ceConversationFile *pFile;
+	ceConversation::Ref pConversation;
+	ceConversationFile::Ref pFile;
 	
 public:
 	/** \brief Type holding strong reference. */

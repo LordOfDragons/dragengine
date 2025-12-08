@@ -57,9 +57,6 @@ pNewOrientation(newOrientation)
 }
 
 seULayerSetLightOrientation::~seULayerSetLightOrientation(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

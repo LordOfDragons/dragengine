@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 projUProfileSetRequiredExtensions::~projUProfileSetRequiredExtensions(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

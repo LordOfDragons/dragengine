@@ -26,9 +26,9 @@
 #define _MEUHTNAVSPACEFACEREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meHeightTerrainNavSpaceFace.h"
+#include "meHeightTerrainNavSpaceType.h"
 
-class meHeightTerrainNavSpaceType;
-class meHeightTerrainNavSpaceFace;
 
 class decObjectOrderedSet;
 
@@ -40,8 +40,8 @@ class decObjectOrderedSet;
 class meUHTNavSpaceFaceRemove : public igdeUndo{
 private:
 	struct sFace{
-		meHeightTerrainNavSpaceType *type;
-		meHeightTerrainNavSpaceFace *face;
+		meHeightTerrainNavSpaceType::Ref type;
+		meHeightTerrainNavSpaceFace::Ref face;
 	};
 	
 	sFace *pFaces;

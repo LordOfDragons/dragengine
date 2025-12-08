@@ -33,8 +33,8 @@
 #include "unzip.h"
 #include "common/string/decString.h"
 #include "common/string/decStringList.h"
+#include "deLogger.h"
 
-class deLogger;
 class decBaseFileWriter;
 
 
@@ -71,7 +71,7 @@ public:
 	};
 	
 private:
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	AAsset *pAsset;
 	decString pTargetDirectory;
 	bool pUnpacking;

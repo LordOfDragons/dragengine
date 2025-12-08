@@ -259,7 +259,7 @@ pMaxLines(500)
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new projPanelTestRunListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	
 	// create actions
@@ -318,18 +318,18 @@ pMaxLines(500)
 	
 	
 	// content
-	pTabContent.TakeOver(new igdeTabBook(env));
+	pTabContent.TakeOverWith(env);
 	AddChild(pTabContent, eaCenter);
 	
 	// logs widget
-	pEditLogs.TakeOver(new igdeTextArea(env, 60, 10, false));
+	pEditLogs.TakeOverWith(env, 60, 10, false);
 	
 	igdeTextStyle::Ref style(igdeTextStyle::Ref::NewWith(styleWarning));
 	style->SetColor(decColor(0.0f, 0.0f, 0.0f));
 	style->SetBgColor(decColor(1.0f, 0.815f, 0.0f));
 	pEditLogs->AddStyle(style);
 	
-	style.TakeOver(new igdeTextStyle(styleError));
+	style.TakeOverWith(styleError);
 	style->SetColor(decColor(1.0f, 1.0f, 0.5f));
 	style->SetBgColor(decColor(0.75f, 0.0f, 0.0f));
 // 	style->SetBold( true );
@@ -347,9 +347,6 @@ pMaxLines(500)
 projPanelTestRun::~projPanelTestRun(){
 	SetProject(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -369,7 +366,6 @@ void projPanelTestRun::SetProject(projProject *project){
 	
 	if(pProject){
 		pProject->RemoveListener(pListener);
-		pProject->FreeReference();
 	}
 	
 	pEditLogs->ClearText();

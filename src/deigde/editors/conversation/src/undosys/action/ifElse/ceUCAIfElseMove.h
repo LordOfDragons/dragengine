@@ -26,11 +26,11 @@
 #define _CEUCAIFELSEMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAIfElse.h"
+#include "ceCAIfElseCase.h"
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceCAIfElseCase;
-class ceConversationTopic;
-class ceConversationAction;
-class ceCAIfElse;
 
 
 
@@ -39,10 +39,10 @@ class ceCAIfElse;
  */
 class ceUCAIfElseMove : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
+	ceConversationAction::Ref pAction;
 	int pOldIndex;
 	int pNewIndex;
 	

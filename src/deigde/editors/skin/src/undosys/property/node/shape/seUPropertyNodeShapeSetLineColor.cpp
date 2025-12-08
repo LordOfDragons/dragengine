@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeShapeSetLineColor::~seUPropertyNodeShapeSetLineColor(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

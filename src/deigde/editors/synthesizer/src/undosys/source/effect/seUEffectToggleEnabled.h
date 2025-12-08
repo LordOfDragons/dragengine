@@ -27,8 +27,8 @@
 #define _SEUEFFECTTOGGLEENABLED_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seEffect.h"
 
-class seEffect;
 
 
 
@@ -37,7 +37,7 @@ class seEffect;
  */
 class seUEffectToggleEnabled : public igdeUndo{
 private:
-	seEffect *pEffect;
+	seEffect::Ref pEffect;
 	
 	
 	

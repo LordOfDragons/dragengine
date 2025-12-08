@@ -74,15 +74,6 @@ ceUCAIfElseRemoveAll::ceUCAIfElseRemoveAll(ceConversationTopic *topic, ceCAIfEls
 }
 
 ceUCAIfElseRemoveAll::~ceUCAIfElseRemoveAll(){
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

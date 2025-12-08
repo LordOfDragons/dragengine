@@ -262,7 +262,7 @@ deoglRenderPlan::~deoglRenderPlan(){
 ///////////////
 
 void deoglRenderPlan::SetWorld(deoglRWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -342,10 +342,10 @@ void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
 	// we can not create these objects during construction time since they can create OpenGL
 	// objects and render plan objects are potentially created from inside main thread
 	if(!pCompute){
-		pCompute.TakeOver(new deoglRenderPlanCompute(*this));
+		pCompute.TakeOverWith(*this);
 	}
 	if(!pTasks){
-		pTasks.TakeOver(new deoglRenderPlanTasks(*this));
+		pTasks.TakeOverWith(*this);
 	}
 	
 	// the rest is safe
@@ -806,7 +806,7 @@ void deoglRenderPlan::pStartFindContent(const deoglRenderPlanMasked *mask){
 	pOcclusionTest->RemoveAllInputData();
 	
 	if(!pRenderThread.GetChoices().GetUseComputeRenderTask()){
-		pTaskFindContent = new deoglRPTFindContent(*this);
+		pTaskFindContent.TakeOverWith(*this);
 		pRenderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskFindContent);
 	}
 	
@@ -833,7 +833,6 @@ void deoglRenderPlan::pWaitFinishedFindContent(const deoglRenderPlanMasked *mask
 	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent(
 		*this, pTaskFindContent->GetElapsedTime() );
 	
-	pTaskFindContent->FreeReference();
 	pTaskFindContent = NULL;
 }
 
@@ -1833,7 +1832,7 @@ void deoglRenderPlan::SetLodLevelOffset(int offset){
 }
 
 void deoglRenderPlan::SetOcclusionMap(deoglOcclusionMap *occlusionMap){
-	if(occlusionMap == pOcclusionMap){
+	if(pOcclusionMap == occlusionMap){
 		return;
 	}
 	
@@ -1845,7 +1844,7 @@ void deoglRenderPlan::SetOcclusionMap(deoglOcclusionMap *occlusionMap){
 }
 
 void deoglRenderPlan::SetOcclusionTest(deoglOcclusionTest *occlusionTest){
-	if(occlusionTest == pOcclusionTest){
+	if(pOcclusionTest == occlusionTest){
 		return;
 	}
 	
@@ -2254,7 +2253,7 @@ void deoglRenderPlan::pUpdateHTView(){
 	pHTView = nullptr;
 	
 	if(pWorld && pWorld->GetHeightTerrain()){
-		pHTView.TakeOver(new deoglHTView(pWorld->GetHeightTerrain()));
+		pHTView.TakeOverWith(pWorld->GetHeightTerrain());
 		pHTView->Prepare();
 	}
 }

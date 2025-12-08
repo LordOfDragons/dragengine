@@ -26,8 +26,8 @@
 #define _SEUPROPERTYNODETEXTSETPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "sePropertyNodeText.h"
 
-class sePropertyNodeText;
 
 
 
@@ -36,7 +36,7 @@ class sePropertyNodeText;
  */
 class seUPropertyNodeTextSetPath : public igdeUndo{
 private:
-	sePropertyNodeText *pNode;
+	sePropertyNodeText::Ref pNode;
 	
 	decString pOldValue;
 	decString pNewValue;

@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCNAVSPACE_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCNavigationSpace.h"
 
-class gdeOCNavigationSpace;
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCNavigationSpace *pNavSpace;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief NavSpace. */
-	gdeOCNavigationSpace *GetNavSpace() const{ return pNavSpace; }
+	const gdeOCNavigationSpace::Ref &GetNavSpace() const{ return pNavSpace; }
 	/*@}*/
 };
 

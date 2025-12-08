@@ -26,8 +26,8 @@
 #define _CEUCCSHOTSETTILTTO_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCameraShot.h"
 
-class ceCameraShot;
 
 
 
@@ -36,7 +36,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetTiltTo : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	float pOldTilt;
 	float pNewTilt;

@@ -44,7 +44,7 @@
 igdeGDParticleEmitterManager::igdeGDParticleEmitterManager() :
 pDefaultPath("default")
 {
-	pCategories.TakeOver(new igdeGDCategory("Particle Emitters"));
+	pCategories.TakeOverWith("Particle Emitters");
 }
 
 igdeGDParticleEmitterManager::~igdeGDParticleEmitterManager(){

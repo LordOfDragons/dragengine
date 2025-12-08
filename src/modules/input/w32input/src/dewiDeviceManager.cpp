@@ -267,11 +267,11 @@ void dewiDeviceManager::pCleanUp(){
 }
 
 void dewiDeviceManager::pCreateDevices(){
-	pMouse.TakeOver(new dewiDeviceMouse(pModule));
+	pMouse.TakeOverWith(pModule);
 	pMouse->SetIndex(pDevices.GetCount());
 	pDevices.Add(pMouse);
 	
-	pKeyboard.TakeOver(new dewiDeviceKeyboard(pModule));
+	pKeyboard.TakeOverWith(pModule);
 	pKeyboard->SetIndex(pDevices.GetCount());
 	pDevices.Add(pKeyboard);
 }

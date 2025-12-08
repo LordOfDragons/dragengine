@@ -26,9 +26,9 @@
 #define _CEUCACSHOTSETLOOKATTARGET_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCACameraShot.h"
+#include "ceConversationTopic.h"
 
-class ceCACameraShot;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCACShotSetLookAtTarget : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCACameraShot *pCameraShot;
+	ceConversationTopic::Ref pTopic;
+	ceCACameraShot::Ref pCameraShot;
 	decString pOldTarget;
 	decString pNewTarget;
 	

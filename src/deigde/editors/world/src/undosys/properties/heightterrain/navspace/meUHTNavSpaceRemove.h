@@ -26,9 +26,9 @@
 #define _MEUHTNAVSPACEREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meHeightTerrainNavSpace.h"
+#include "meHeightTerrainSector.h"
 
-class meHeightTerrainSector;
-class meHeightTerrainNavSpace;
 
 
 
@@ -37,8 +37,8 @@ class meHeightTerrainNavSpace;
  */
 class meUHTNavSpaceRemove : public igdeUndo{
 private:
-	meHeightTerrainSector *pSector;
-	meHeightTerrainNavSpace *pNavSpace;
+	meHeightTerrainSector::Ref pSector;
+	meHeightTerrainNavSpace::Ref pNavSpace;
 	
 	
 	

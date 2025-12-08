@@ -26,9 +26,9 @@
 #define _SAEUPHONEMEADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "saeSAnimation.h"
+#include "saePhoneme.h"
 
-class saePhoneme;
-class saeSAnimation;
 
 
 
@@ -37,8 +37,8 @@ class saeSAnimation;
  */
 class saeUPhonemeAdd : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
-	saePhoneme *pPhoneme;
+	saeSAnimation::Ref pSAnimation;
+	saePhoneme::Ref pPhoneme;
 	
 	
 	

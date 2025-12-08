@@ -73,7 +73,7 @@ reRigPush::reRigPush(deEngine *engine){
 	pActive = false;
 	
 	try{
-		pCollider = engine->GetColliderManager()->CreateColliderVolume();
+		pCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume());
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(deCollider::ertKinematic);
 		pCollider->SetUseLocalGravity(true);
@@ -84,7 +84,7 @@ reRigPush::reRigPush(deEngine *engine){
 		pCollider->SetCollisionFilter(decCollisionFilter(layerMask));
 		
 		// create debug drawer and shapes
-		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSPush = new igdeWDebugDrawerShape;
@@ -117,7 +117,7 @@ reRigPush::reRigPush(const reRigPush &push){
 	pActive = false;
 	
 	try{
-		pCollider = pEngine->GetColliderManager()->CreateColliderVolume();
+		pCollider.TakeOver(pEngine->GetColliderManager()->CreateColliderVolume());
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(deCollider::ertKinematic);
 		pCollider->SetUseLocalGravity(true);
@@ -128,7 +128,7 @@ reRigPush::reRigPush(const reRigPush &push){
 		pCollider->SetCollisionFilter(decCollisionFilter(layerMask));
 		
 		// create debug drawer and shapes
-		pDebugDrawer = pEngine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(pEngine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSPush = new igdeWDebugDrawerShape;
@@ -171,7 +171,7 @@ void reRigPush::SetRig(reRig *rig){
 
 
 void reRigPush::SetType(reRigPush::ePushTypes type){
-	if(type == pType){
+	if(pType == type){
 		return;
 	}
 	
@@ -229,7 +229,7 @@ void reRigPush::SetRayCount(int rayCount){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(rayCount != pRayCount){
+	if(pRayCount != rayCount){
 		pRayCount = rayCount;
 		
 		if(pRig){
@@ -253,7 +253,7 @@ void reRigPush::SetConeAngle(float angle){
 
 
 void reRigPush::SetSelected(bool selected){
-	if(selected == pSelected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -263,7 +263,7 @@ void reRigPush::SetSelected(bool selected){
 }
 
 void reRigPush::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	
@@ -299,15 +299,9 @@ bool reRigPush::IsVisible() const{
 void reRigPush::pCleanUp(){
 	SetRig(NULL);
 	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
 	
 	if(pDDSPush){
 		delete pDDSPush;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

@@ -62,13 +62,9 @@ pAnimator(NULL)
 	}
 	
 	pAnimator = animator;
-	pAnimator->AddReference();
 }
 
 aeULinkRemoveUnused::~aeULinkRemoveUnused(){
-	if(pAnimator){
-		pAnimator->FreeReference();
-	}
 }
 
 

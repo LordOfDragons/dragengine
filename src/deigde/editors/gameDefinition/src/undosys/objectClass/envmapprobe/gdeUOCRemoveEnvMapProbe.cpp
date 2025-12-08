@@ -63,12 +63,6 @@ pEnvMapProbe(NULL)
 }
 
 gdeUOCRemoveEnvMapProbe::~gdeUOCRemoveEnvMapProbe(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

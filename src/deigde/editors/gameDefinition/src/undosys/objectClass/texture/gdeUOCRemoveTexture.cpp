@@ -64,12 +64,6 @@ pTexture(NULL)
 }
 
 gdeUOCRemoveTexture::~gdeUOCRemoveTexture(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

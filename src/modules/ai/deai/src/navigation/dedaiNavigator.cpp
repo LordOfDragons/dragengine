@@ -94,7 +94,7 @@ dedaiNavigator::~dedaiNavigator(){
 ///////////////
 
 void dedaiNavigator::SetParentWorld(dedaiWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -167,7 +167,7 @@ void dedaiNavigator::UpdateDDSPath(){
 	if(devmode.GetEnabled() && (devmode.GetShowPath() || devmode.GetShowPathFaces())){
 		// ensure the debug drawer exists
 		if(!pDebugDrawer){
-			pDebugDrawer = pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer();
+			pDebugDrawer.TakeOver(pDEAI.GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer());
 			pDebugDrawer->SetXRay(true);
 			
 			if(pParentWorld){
@@ -241,7 +241,6 @@ void dedaiNavigator::UpdateDDSPath(){
 			pDDSPathFacesOpen = NULL;
 			pDDSPathFacesClosed = NULL;
 			
-			pDebugDrawer->FreeReference();
 			pDebugDrawer = NULL;
 		}
 	}
@@ -626,14 +625,11 @@ void dedaiNavigator::pCleanUp(){
 	if(pTypeMappings){
 		delete [] pTypeMappings;
 	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
 }
 
 void dedaiNavigator::pUpdateTypeMappings(){
 	const int typeCount = pLayer->GetCostTable().GetTypeCount();
-	if(typeCount != pTypeMappingCount){
+	if(pTypeMappingCount != typeCount){
 		if(pTypeMappings){
 			delete [] pTypeMappings;
 			pTypeMappings = NULL;

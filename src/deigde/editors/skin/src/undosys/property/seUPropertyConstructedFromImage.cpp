@@ -68,7 +68,7 @@ pNewContent(NULL)
 		nodeImage->SetSize(size);
 		nodeImage->SetPath(property->GetImagePath());
 		
-		pNewContent = new sePropertyNodeGroup(*property->GetEngine());
+		pNewContent.TakeOverWith(*property->GetEngine());
 		pNewContent->SetSize(size);
 		pNewContent->AddNode(nodeImage);
 		nodeImage->FreeReference();
@@ -83,7 +83,6 @@ pNewContent(NULL)
 	}
 	
 	pOldContent = property->GetNodeGroup();
-	pOldContent->AddReference();
 	
 	pProperty = property;
 	property->AddReference();
@@ -114,13 +113,4 @@ void seUPropertyConstructedFromImage::Redo(){
 //////////////////////
 
 void seUPropertyConstructedFromImage::pCleanUp(){
-	if(pNewContent){
-		pNewContent->FreeReference();
-	}
-	if(pOldContent){
-		pOldContent->FreeReference();
-	}
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }

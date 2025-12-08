@@ -39,7 +39,6 @@ reUSetBoneParent::reUSetBoneParent(reRigBone *bone, reRigBone *parent){
 	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
-	pBone->AddReference();
 	
 	pOldParent = bone->GetParentBone();
 	if(pOldParent) pOldParent->AddReference();

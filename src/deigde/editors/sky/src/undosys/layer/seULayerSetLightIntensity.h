@@ -26,8 +26,8 @@
 #define _SEULAYERTSETLIGHTINTENSITY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLayer.h"
 
-class seLayer;
 
 
 /**
@@ -35,7 +35,7 @@ class seLayer;
  */
 class seULayerSetLightIntensity : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	float pOldIntensity;
 	float pNewIntensity;

@@ -58,12 +58,6 @@ pLayer(NULL)
 }
 
 seULayerAdd::~seULayerAdd(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

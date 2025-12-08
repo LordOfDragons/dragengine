@@ -49,9 +49,6 @@ pListener(new reWPUndoHistoryListener(*this)){
 reWPUndoHistory::~reWPUndoHistory(){
 	SetRig(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -60,7 +57,7 @@ reWPUndoHistory::~reWPUndoHistory(){
 ///////////////
 
 void reWPUndoHistory::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -68,7 +65,6 @@ void reWPUndoHistory::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 	}
 	
 	pRig = rig;

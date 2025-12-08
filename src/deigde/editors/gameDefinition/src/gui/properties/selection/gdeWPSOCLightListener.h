@@ -35,6 +35,12 @@ class gdeWPSOCLight;
  * \brief Object class light panel listener.
  */
 class gdeWPSOCLightListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSOCLightListener> Ref;
+	
+	
+
 private:
 	gdeWPSOCLight &pPanel;
 	

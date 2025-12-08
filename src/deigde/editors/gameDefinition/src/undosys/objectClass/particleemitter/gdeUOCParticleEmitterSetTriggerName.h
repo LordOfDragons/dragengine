@@ -29,8 +29,8 @@
 #include "../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 
@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCParticleEmitterSetTriggerName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	gdeOCParticleEmitter::eTriggers pTrigger;
 	decString pOldValue;

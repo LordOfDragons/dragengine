@@ -26,10 +26,10 @@
 #define _CEUCAPCHOICEOPTIONREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAPlayerChoiceOption.h"
+#include "ceCAPlayerChoice.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceCAPlayerChoiceOption;
-class ceCAPlayerChoice;
 
 
 
@@ -38,9 +38,9 @@ class ceCAPlayerChoice;
  */
 class ceUCAPChoiceOptionRemove : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
 	int pIndex;
 	
 public:

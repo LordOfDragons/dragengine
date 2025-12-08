@@ -56,9 +56,6 @@ pNewColor(newColor)
 }
 
 seULayerSetColor::~seULayerSetColor(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

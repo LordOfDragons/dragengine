@@ -26,9 +26,9 @@
 #define _CEUCASNIPPETSETTOPIC_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCASnippet.h"
+#include "ceConversationTopic.h"
 
-class ceCASnippet;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCASnippetSetTopic : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASnippet *pSnippet;
+	ceConversationTopic::Ref pTopic;
+	ceCASnippet::Ref pSnippet;
 	decString pOldTopic;
 	decString pNewTopic;
 	

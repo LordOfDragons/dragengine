@@ -27,9 +27,9 @@
 #define _GDEUSKYCONTROLLERSETVALUE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeSky.h"
+#include "gdeSkyController.h"
 
-class gdeSky;
-class gdeSkyController;
 
 
 
@@ -38,8 +38,8 @@ class gdeSkyController;
  */
 class gdeUSkyControllerSetValue : public igdeUndo{
 private:
-	gdeSky *pSky;
-	gdeSkyController *pController;
+	gdeSky::Ref pSky;
+	gdeSkyController::Ref pController;
 	
 	float pOldValue;
 	float pNewValue;

@@ -32,12 +32,12 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSParticleEmitterListener.h"
 
-class gdeGameDefinition;
 class gdeParticleEmitter;
 class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSParticleEmitterListener;
 
 
 
@@ -47,9 +47,9 @@ class gdeWPSParticleEmitterListener;
 class gdeWPSParticleEmitter : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSParticleEmitterListener *pListener;
+	gdeWPSParticleEmitterListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditPath::Ref pEditPath;
 	igdeTextField::Ref pEditName;
@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

@@ -59,13 +59,9 @@ pNewPath(newPath)
 	SetShortInfo("Sub-Animator: Set animator path");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleSASetPathAnimator::~aeURuleSASetPathAnimator(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

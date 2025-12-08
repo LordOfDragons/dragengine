@@ -27,9 +27,9 @@
 #define _GDEUOCREMOVENAVBLOCKER_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCNavigationBlocker.h"
 
-class gdeOCNavigationBlocker;
-class gdeObjectClass;
 
 
 
@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCRemoveNavBlocker : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	
 	

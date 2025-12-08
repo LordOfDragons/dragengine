@@ -54,9 +54,6 @@ saeUWordSetName::saeUWordSetName(saeWord *word, const char *newName){
 }
 
 saeUWordSetName::~saeUWordSetName(){
-	if(pWord){
-		pWord->FreeReference();
-	}
 }
 
 

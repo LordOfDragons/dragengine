@@ -254,7 +254,7 @@ pListener(NULL)
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new feWPGlyphListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -287,9 +287,6 @@ feWPGlyph::~feWPGlyph(){
 	SetGlyph(NULL);
 	SetFont(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -298,7 +295,7 @@ feWPGlyph::~feWPGlyph(){
 ///////////////
 
 void feWPGlyph::SetFont(feFont *font){
-	if(font == pFont){
+	if(pFont == font){
 		return;
 	}
 	
@@ -306,7 +303,6 @@ void feWPGlyph::SetFont(feFont *font){
 	
 	if(pFont){
 		pFont->RemoveNotifier(pListener);
-		pFont->FreeReference();
 		pFont = NULL;
 	}
 	
@@ -325,20 +321,14 @@ void feWPGlyph::SetGlyph(feFontGlyph *glyph){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(glyph == pGlyph){
+	if(pGlyph == glyph){
 		return;
 	}
 	
-	if(pGlyph){
-		pGlyph->FreeReference();
 		pGlyph = NULL;
 	}
 	
 	pGlyph = glyph;
-	
-	if(glyph){
-		glyph->AddReference();
-	}
 	
 	pCBGlyph->SetSelection(pFont->IndexOfGlyph(glyph));
 	
@@ -375,7 +365,7 @@ void feWPGlyph::UpdateGlyphList(){
 	}
 	pCBGlyph->SetSelection(g);
 	
-	if(glyph != pGlyph){
+	if(pGlyph != glyph){
 		SetGlyph(glyph);
 		
 	}else{

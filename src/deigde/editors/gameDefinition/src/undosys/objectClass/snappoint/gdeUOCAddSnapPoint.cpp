@@ -59,12 +59,6 @@ pSnapPoint(NULL)
 }
 
 gdeUOCAddSnapPoint::~gdeUOCAddSnapPoint(){
-	if(pSnapPoint){
-		pSnapPoint->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

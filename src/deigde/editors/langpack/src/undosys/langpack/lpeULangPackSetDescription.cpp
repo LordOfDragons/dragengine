@@ -58,9 +58,6 @@ pNewDescription(newDescription)
 }
 
 lpeULangPackSetDescription::~lpeULangPackSetDescription(){
-	if(pLangPack){
-		pLangPack->FreeReference();
-	}
 }
 
 

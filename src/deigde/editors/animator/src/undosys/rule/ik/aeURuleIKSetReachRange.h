@@ -26,8 +26,8 @@
 #define _AEURULEIKSETREACHRANGE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleInverseKinematic.h"
 
-class aeRuleInverseKinematic;
 
 
 
@@ -36,7 +36,7 @@ class aeRuleInverseKinematic;
  */
 class aeURuleIKSetReachRange : public igdeUndo{
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 	float pOldValue;
 	float pNewValue;

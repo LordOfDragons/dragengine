@@ -62,12 +62,6 @@ pTrigger(trigger)
 }
 
 gdeUOCParticleEmitterSetTriggerName::~gdeUOCParticleEmitterSetTriggerName(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

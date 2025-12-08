@@ -26,8 +26,8 @@
 #define _CEUCCSHOTSETCAMDISTTO_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCameraShot.h"
 
-class ceCameraShot;
 
 
 
@@ -36,7 +36,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetCamDistTo : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	float pOldDist;
 	float pNewDist;

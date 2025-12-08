@@ -68,15 +68,6 @@ ceUCAASpeakFaceAdd::ceUCAASpeakFaceAdd(ceConversationTopic *topic, ceCAActorSpea
 }
 
 ceUCAASpeakFaceAdd::~ceUCAASpeakFaceAdd(){
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

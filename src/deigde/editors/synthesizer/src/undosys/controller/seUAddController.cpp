@@ -80,10 +80,4 @@ void seUAddController::Redo(){
 //////////////////////
 
 void seUAddController::pCleanUp(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

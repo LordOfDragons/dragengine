@@ -151,7 +151,7 @@ peeType::~peeType(){
 ///////////////
 
 void peeType::SetEmitter(peeEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	
@@ -216,7 +216,7 @@ void peeType::SetCastFrom(deParticleEmitterType::eCastFrom castFrom){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(castFrom == pCastFrom){
+	if(pCastFrom == castFrom){
 		return;
 	}
 	
@@ -229,7 +229,7 @@ void peeType::SetSimulationType(deParticleEmitterType::eSimulationTypes simulati
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(simulationType == pSimulationType){
+	if(pSimulationType == simulationType){
 		return;
 	}
 	
@@ -238,7 +238,7 @@ void peeType::SetSimulationType(deParticleEmitterType::eSimulationTypes simulati
 }
 
 void peeType::SetIntervalAsDistance(bool intervalAsDistance){
-	if(intervalAsDistance == pIntervalAsDistance){
+	if(pIntervalAsDistance == intervalAsDistance){
 		return;
 	}
 	
@@ -270,7 +270,7 @@ void peeType::SetTrailController(deParticleEmitterType::eEmitControllers control
 }
 
 void peeType::SetActiveTrailController(deParticleEmitterType::eEmitControllers index){
-	if(index == pActiveTrailController){
+	if(pActiveTrailController == index){
 		return;
 	}
 	
@@ -294,7 +294,7 @@ void peeType::SetPhysicsSize(float size){
 }
 
 void peeType::SetCollisionResponse(deParticleEmitterType::eCollisionResponses response){
-	if(response == pCollisionResponse){
+	if(pCollisionResponse == response){
 		return;
 	}
 	
@@ -337,7 +337,7 @@ void peeType::SetEmitController(deParticleEmitterType::eEmitControllers controll
 }
 
 void peeType::SetActiveEmitController(deParticleEmitterType::eEmitControllers index){
-	if(index == pActiveEmitController){
+	if(pActiveEmitController == index){
 		return;
 	}
 	
@@ -487,12 +487,6 @@ void peeType::SetActiveParameter(peeParameter *parameter){
 //////////////////////
 
 void peeType::pCleanUp(){
-	if(pEngCollisionEmitter){
-		pEngCollisionEmitter->FreeReference();
-	}
-	if(pEngTrailEmitter){
-		pEngTrailEmitter->FreeReference();
-	}
 	
 	int i;
 	for(i=0; i<=deParticleEmitterType::epBeamEnd; i++){
@@ -501,15 +495,6 @@ void peeType::pCleanUp(){
 		}
 	}
 	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
-	if(pEngCastModel){
-		pEngCastModel->FreeReference();
-	}
-	if(pEngCastSkin){
-		pEngCastSkin->FreeReference();
-	}
 }
 
 void peeType::pSetParameter(deParticleEmitterType::eParameters index, float value, float spread){
@@ -517,8 +502,6 @@ void peeType::pSetParameter(deParticleEmitterType::eParameters index, float valu
 }
 
 void peeType::pLoadSkin(){
-	if(pEngSkin){
-		pEngSkin->FreeReference();
 		pEngSkin = NULL;
 	}
 	
@@ -534,7 +517,6 @@ void peeType::pLoadSkin(){
 		}catch(const deException &){
 			if(pEmitter){
 				pEngSkin = pEmitter->GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
-				pEngSkin->AddReference();
 			}
 		}
 	}
@@ -545,8 +527,6 @@ void peeType::pLoadSkin(){
 }
 
 void peeType::pLoadModel(){
-	if(pEngCastModel){
-		pEngCastModel->FreeReference();
 		pEngCastModel = NULL;
 	}
 	
@@ -568,8 +548,6 @@ void peeType::pLoadModel(){
 }
 
 void peeType::pLoadModelSkin(){
-	if(pEngCastSkin){
-		pEngCastSkin->FreeReference();
 		pEngCastSkin = NULL;
 	}
 	
@@ -585,15 +563,12 @@ void peeType::pLoadModelSkin(){
 		}catch(const deException &){
 			if(pEmitter){
 				pEngCastSkin = pEmitter->GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
-				pEngCastSkin->AddReference();
 			}
 		}
 	}
 }
 
 void peeType::pLoadCollisionEmitter(){
-	if(pEngCollisionEmitter){
-		pEngCollisionEmitter->FreeReference();
 		pEngCollisionEmitter = NULL;
 	}
 	
@@ -611,7 +586,6 @@ void peeType::pLoadCollisionEmitter(){
 			pPathCollisionEmitter, pEmitter->GetDirectoryPath()).GetPathUnix());
 		emitter->RebuildEmitter();
 		pEngCollisionEmitter = emitter->GetEngineEmitter();
-		pEngCollisionEmitter->AddReference();
 		emitter->FreeEmitter();
 		
 	}catch(const deException &e){
@@ -627,8 +601,6 @@ void peeType::pLoadCollisionEmitter(){
 }
 
 void peeType::pLoadTrailEmitter(){
-	if(pEngTrailEmitter){
-		pEngTrailEmitter->FreeReference();
 		pEngTrailEmitter = NULL;
 	}
 	
@@ -646,7 +618,6 @@ void peeType::pLoadTrailEmitter(){
 			pPathTrailEmitter, pEmitter->GetDirectoryPath()).GetPathUnix());
 		emitter->RebuildEmitter();
 		pEngTrailEmitter = emitter->GetEngineEmitter();
-		pEngTrailEmitter->AddReference();
 		emitter->FreeEmitter();
 		
 	}catch(const deException &e){

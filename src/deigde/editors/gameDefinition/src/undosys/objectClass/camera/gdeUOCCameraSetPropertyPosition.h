@@ -26,9 +26,9 @@
 #define _GDEUOCCAMERASETPROPERTYPOSITION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeOCCamera.h"
+#include "gdeObjectClass.h"
 
-class gdeOCCamera;
-class gdeObjectClass;
 
 
 /**
@@ -36,8 +36,8 @@ class gdeObjectClass;
  */
 class gdeUOCCameraSetPropertyPosition : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCCamera *pCamera;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCCamera::Ref pCamera;
 	decString pOldValue, pNewValue;
 	
 	

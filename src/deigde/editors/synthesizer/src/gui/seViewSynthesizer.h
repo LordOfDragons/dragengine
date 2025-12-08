@@ -26,13 +26,13 @@
 #define _SEVIEWSYNTHESIZER_H_
 
 #include <deigde/gui/layout/igdeContainerBorder.h>
+#include "seWPSynthesizer.h"
+#include "seWPSource.h"
+#include "seSynthesizer.h"
+#include "seWPController.h"
+#include "seWPLink.h"
 
-class seWPSource;
-class seWPLink;
-class seWPController;
-class seWPSynthesizer;
 class seWindowMain;
-class seSynthesizer;
 
 
 
@@ -43,12 +43,12 @@ class seViewSynthesizer : public igdeContainerBorder{
 private:
 	seWindowMain &pWindowMain;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
-	seWPController *pWPController;
-	seWPLink *pWPLink;
-	seWPSource *pWPSource;
-	seWPSynthesizer *pWPSynthesizer;
+	seWPController::Ref pWPController;
+	seWPLink::Ref pWPLink;
+	seWPSource::Ref pWPSource;
+	seWPSynthesizer::Ref pWPSynthesizer;
 	
 	
 	
@@ -75,7 +75,7 @@ public:
 	void ResetView();
 	
 	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline const seSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);

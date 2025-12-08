@@ -68,51 +68,30 @@ void meWCEntry::SetSector(const decPoint3 &sector){
 }
 
 void meWCEntry::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 	
 	pWorld = world;
-	
-	if(world){
-		world->AddReference();
-	}
 }
 
 void meWCEntry::SetHTTexture(meHeightTerrainTexture *texture){
-	if(texture == pHTTexture){
+	if(pHTTexture == texture){
 		return;
 	}
 	
-	if(pHTTexture){
-		pHTTexture->FreeReference();
-	}
 	
 	pHTTexture = texture;
-	
-	if(texture){
-		texture->AddReference();
-	}
 }
 
 void meWCEntry::SetHTNavSpace(meHeightTerrainNavSpace *navspace){
-	if(navspace == pHTNavSpace){
+	if(pHTNavSpace == navspace){
 		return;
 	}
 	
-	if(pHTNavSpace){
-		pHTNavSpace->FreeReference();
-	}
 	
 	pHTNavSpace = navspace;
-	
-	if(navspace){
-		navspace->AddReference();
-	}
 }
 
 

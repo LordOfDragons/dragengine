@@ -35,7 +35,7 @@
  */
 class aeURuleBTransSetInputSource : public igdeUndo{
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	deAnimatorRuleBoneTransformator::eInputSources pOldValue, pNewValue;
 	
 public:

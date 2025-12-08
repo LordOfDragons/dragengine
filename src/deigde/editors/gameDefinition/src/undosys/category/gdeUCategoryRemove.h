@@ -35,8 +35,8 @@
  */
 class gdeUCategoryRemove : public gdeUCategoryBase{
 private:
-	gdeCategory *pParent;
-	gdeCategory *pCategory;
+	gdeCategory::Ref pParent;
+	gdeCategory::Ref pCategory;
 	
 	
 	

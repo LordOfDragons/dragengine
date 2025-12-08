@@ -38,11 +38,11 @@
 #include <deigde/gui/properties/igdeWPCamera.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "aeAnimator.h"
+#include "aeWPViewListener.h"
 
 class aeWindowProperties;
 class aeGameDefinition;
-class aeWPViewListener;
-class aeAnimator;
 class aeAttachment;
 
 
@@ -53,8 +53,8 @@ class aeAttachment;
 class aeWPView : public igdeContainerScroll{
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPViewListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPViewListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
 	igdeEditPath::Ref pEditDisplayModelPath;
 	igdeEditPath::Ref pEditDisplaySkinPath;
@@ -108,7 +108,7 @@ public:
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

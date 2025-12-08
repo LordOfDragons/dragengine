@@ -54,9 +54,6 @@ pWriter(NULL)
 }
 
 deLoggerFile::~deLoggerFile(){
-	if(pWriter){
-		pWriter->FreeReference();
-	}
 }
 
 

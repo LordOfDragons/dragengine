@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeImageSetPath::~seUPropertyNodeImageSetPath(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

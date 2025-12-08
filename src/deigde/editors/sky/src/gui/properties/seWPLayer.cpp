@@ -846,7 +846,7 @@ pSky(NULL)
 	igdeContainer::Ref content, groupBox, frameLine, frameLine2;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPLayerListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -958,13 +958,9 @@ pSky(NULL)
 seWPLayer::~seWPLayer(){
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 		pSky = NULL;
 	}
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -973,13 +969,12 @@ seWPLayer::~seWPLayer(){
 ///////////////
 
 void seWPLayer::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;
@@ -1081,7 +1076,7 @@ void seWPLayer::UpdateLayer(){
 		pEditLightOrientation->SetVector(decVector());
 	}
 	
-	const bool enabled = layer != NULL;
+	const bool enabled = layer != nullptr;
 	pEditName->SetEnabled(enabled);
 	pEditSkin->SetEnabled(enabled);
 	pEditOffset->SetEnabled(enabled);
@@ -1111,7 +1106,7 @@ void seWPLayer::UpdateBodyList(){
 		pSpinBody->SetRange(0, 0);
 	}
 	
-	const bool enabled = layer != NULL;
+	const bool enabled = layer != nullptr;
 	pSpinBody->SetEnabled(enabled);
 	
 	pActionBodyAdd->Update();
@@ -1212,7 +1207,7 @@ void seWPLayer::UpdateTarget(){
 		pListLinks->RemoveAllItems();
 	}
 	
-	const bool enabled = layer != NULL;
+	const bool enabled = layer != nullptr;
 	pListLinks->SetEnabled(enabled);
 	pBtnLinkAdd->SetEnabled(enabled);
 }

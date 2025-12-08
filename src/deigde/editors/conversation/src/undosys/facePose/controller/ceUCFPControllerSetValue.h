@@ -26,9 +26,9 @@
 #define _CEUCFPCONTROLLERSETVALUE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceFacePose.h"
+#include "ceControllerValue.h"
 
-class ceFacePose;
-class ceControllerValue;
 
 
 
@@ -37,8 +37,8 @@ class ceControllerValue;
  */
 class ceUCFPControllerSetValue : public igdeUndo{
 private:
-	ceFacePose *pFacePose;
-	ceControllerValue *pController;
+	ceFacePose::Ref pFacePose;
+	ceControllerValue::Ref pController;
 	float pOldValue;
 	float pNewValue;
 	

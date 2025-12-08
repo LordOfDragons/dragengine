@@ -71,8 +71,6 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 	decVector boxHalfSize(5.0f, 0.05f, 5.0f);
 	decVector boxPosition(0.0f, -boxHalfSize.y, 0.0f);
 	decLayerMask layermask;
-	deSkin *engSkin = NULL;
-	deModel *engModel = NULL;
 	decShape *shapeBox = NULL;
 	decShapeList shapeList;
 	
@@ -82,9 +80,6 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 	layermask.SetBit(aeAnimator::eclGround);
 	
 	pAnimator = animator;
-	
-	pEngComponent = NULL;
-	pEngCollider = NULL;
 	
 	pEnabled = false;
 	
@@ -99,20 +94,16 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 		animator->GetWindowMain().GetEditorModule().GetEditorDirectory().GetString());
 	
 	try{
-		engModel = engine->GetModelManager()->LoadModel(vfsData,
-			pathData + "models/wakeboard/wakeboard.demodel", "/");
-		engSkin = engine->GetSkinManager()->LoadSkin(vfsData,
-			pathData + "models/wakeboard/wakeboard.deskin", "/");
+		const deModel::Ref engModel(deModel::Ref::New(engine->GetModelManager()->LoadModel(
+			vfsData, pathData + "models/wakeboard/wakeboard.demodel", "/")));
+		const deSkin::Ref engSkin(deSkin::Ref::New(engine->GetSkinManager()->LoadSkin(
+			vfsData, pathData + "models/wakeboard/wakeboard.deskin", "/")));
 		
-		pEngComponent = engine->GetComponentManager()->CreateComponent(engModel, engSkin);
+		pEngComponent.TakeOver(engine->GetComponentManager()->CreateComponent(engModel, engSkin));
 		pEngComponent->SetVisible(pEnabled);
-		engModel->FreeReference();
-		engModel = NULL;
-		engSkin->FreeReference();
-		engSkin = NULL;
 		engWorld.AddComponent(pEngComponent);
 		
-		pEngCollider = engine->GetColliderManager()->CreateColliderVolume();
+		pEngCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume());
 		pEngCollider->SetResponseType(deCollider::ertKinematic);
 		pEngCollider->SetUseLocalGravity(true);
 		pEngCollider->SetEnabled(true);
@@ -130,12 +121,6 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 		if(shapeBox){
 			delete shapeBox;
 		}
-		if(engSkin){
-			engSkin->FreeReference();
-		}
-		if(engModel){
-			engModel->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}
@@ -151,7 +136,7 @@ aeWakeboard::~aeWakeboard(){
 ///////////////
 
 void aeWakeboard::SetEnabled(bool enabled){
-	if(enabled == pEnabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -238,12 +223,10 @@ void aeWakeboard::pCleanUp(){
 		
 		if(pEngCollider){
 			engWorld.RemoveCollider(pEngCollider);
-			pEngCollider->FreeReference();
 		}
 		
 		if(pEngComponent){
 			engWorld.RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 		}
 	}
 }

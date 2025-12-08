@@ -29,9 +29,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleInverseKinematic.h"
 
 // predefinitions
-class aeRuleInverseKinematic;
 
 
 
@@ -42,7 +42,7 @@ class aeRuleInverseKinematic;
  */
 class aeURuleIKSetUseSolverBone : public igdeUndo{
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

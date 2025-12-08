@@ -49,9 +49,6 @@ pNewName(newName)
 }
 
 saeUPhonemeSetVertexPositionSet::~saeUPhonemeSetVertexPositionSet(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
 }
 
 

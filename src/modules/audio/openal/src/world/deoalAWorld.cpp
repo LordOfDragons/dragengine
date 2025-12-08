@@ -229,7 +229,6 @@ void deoalAWorld::RemoveAllComponents(){
 		pRootComponent->SetParentWorld(nullptr);
 		pRootComponent->SetWorldMarkedRemove(false);
 		pComponentCount--;
-		pRootComponent->FreeReference();
 		
 		pRootComponent = next;
 	}
@@ -342,7 +341,6 @@ void deoalAWorld::RemoveAllSpeakers(){
 		pRootSpeaker->SetEnabled(false);
 		
 		pSpeakerCount--;
-		pRootSpeaker->FreeReference();
 		
 		pRootSpeaker = next;
 	}
@@ -437,7 +435,6 @@ void deoalAWorld::RemoveAllMicrophones(){
 		pRootMicrophone->SetParentWorld(nullptr);
 		pRootMicrophone->SetWorldMarkedRemove(false);
 		pMicrophoneCount--;
-		pRootMicrophone->FreeReference();
 		
 		pRootMicrophone = next;
 	}
@@ -537,7 +534,6 @@ void deoalAWorld::RemoveAllSoundLevelMeters(){
 		pRootSoundLevelMeter->SetWorldMarkedRemove(false);
 		
 		pSoundLevelMeterCount--;
-		pRootSoundLevelMeter->FreeReference();
 		
 		pRootSoundLevelMeter = next;
 	}
@@ -575,21 +571,18 @@ void deoalAWorld::pCleanUp(){
 	while(pRootComponent){
 		deoalAComponent * const next = pRootComponent->GetLLWorldNext();
 		pRootComponent->PrepareQuickDispose();
-		pRootComponent->FreeReference();
 		pRootComponent = next;
 	}
 	
 	while(pRootSpeaker){
 		deoalASpeaker * const next = pRootSpeaker->GetLLWorldNext();
 		pRootSpeaker->PrepareQuickDispose();
-		pRootSpeaker->FreeReference();
 		pRootSpeaker = next;
 	}
 	
 	while(pRootMicrophone){
 		deoalAMicrophone * const next = pRootMicrophone->GetLLWorldNext();
 		pRootMicrophone->PrepareQuickDispose();
-		pRootMicrophone->FreeReference();
 		pRootMicrophone = next;
 	}
 	

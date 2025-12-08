@@ -66,15 +66,6 @@ ceCConditionTrigger *condition, ceCConditionTrigger::eTestModes newTestMode){
 }
 
 ceUCCTriggerSetTestMode::~ceUCCTriggerSetTestMode(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -28,11 +28,11 @@
 #include "aeRule.h"
 
 #include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/resources/animator/deAnimator.h>
 
 class aeController;
 class aeLoadSaveSystem;
 
-class deAnimator;
 class deAnimatorRuleSubAnimator;
 
 
@@ -47,7 +47,7 @@ public:
 	
 private:
 	decString pPathSubAnimator;
-	deAnimator *pSubAnimator;
+	deAnimator::Ref pSubAnimator;
 	
 	bool pEnablePosition;
 	bool pEnableOrientation;
@@ -74,7 +74,7 @@ public:
 	/** Set the path to the sub animator. */
 	void SetPathSubAnimator(const char *path);
 	/** Retrieve the sub animator or NULL if not existing. */
-	inline deAnimator *GetSubAnimator() const{ return pSubAnimator; }
+	inline const deAnimator::Ref &GetSubAnimator() const{ return pSubAnimator; }
 	/** Load the sub animator using the stored path. */
 	void LoadSubAnimator();
 	

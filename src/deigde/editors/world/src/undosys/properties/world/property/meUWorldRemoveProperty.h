@@ -26,8 +26,8 @@
 #define _MEUWORLDREMOVEPROPERTY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meWorld.h"
 
-class meWorld;
 
 
 
@@ -36,7 +36,7 @@ class meWorld;
  */
 class meUWorldRemoveProperty : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	decString pKey;
 	decString pValue;

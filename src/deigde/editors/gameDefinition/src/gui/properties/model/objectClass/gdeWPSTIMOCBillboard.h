@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCBILLBOARD_H_
 
 #include "gdeWPSTIMOCSubObject.h"
+#include "gdeOCBillboard.h"
 
-class gdeOCBillboard;
 
 
 /**
@@ -35,7 +35,7 @@ class gdeOCBillboard;
  */
 class gdeWPSTIMOCBillboard : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCBillboard *pBillboard;
+	gdeOCBillboard::Ref pBillboard;
 	
 	
 public:
@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Billboard. */
-	inline gdeOCBillboard *GetOCBillboard() const{ return pBillboard; }
+	inline const gdeOCBillboard::Ref &GetOCBillboard() const{ return pBillboard; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

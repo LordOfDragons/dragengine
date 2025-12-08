@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include "dragengine/common/math/decMath.h"
+#include "reRigShapeCylinder.h"
 
-class reRigShapeCylinder;
 
 
 
@@ -37,7 +37,7 @@ class reRigShapeCylinder;
  */
 class reUSetShapeCylinderBottomRadius : public igdeUndo{
 private:
-	reRigShapeCylinder *pShape;
+	reRigShapeCylinder::Ref pShape;
 	
 	float pOldBottomRadius;
 	float pNewBottomRadius;

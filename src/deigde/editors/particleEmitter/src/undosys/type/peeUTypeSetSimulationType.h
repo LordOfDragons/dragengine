@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
+#include "peeType.h"
 
-class peeType;
 
 
 
@@ -37,7 +37,7 @@ class peeType;
  */
 class peeUTypeSetSimulationType : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	deParticleEmitterType::eSimulationTypes pOldSimType;
 	deParticleEmitterType::eSimulationTypes pNewSimType;

@@ -26,9 +26,9 @@
 #define _CEUCACAMERASHOTSETNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCACameraShot.h"
+#include "ceConversationTopic.h"
 
-class ceCACameraShot;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCACameraShotSetName : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCACameraShot *pCameraShot;
+	ceConversationTopic::Ref pTopic;
+	ceCACameraShot::Ref pCameraShot;
 	decString pOldName;
 	decString pNewName;
 	

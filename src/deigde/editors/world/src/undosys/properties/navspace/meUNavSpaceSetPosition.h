@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meNavigationSpace.h"
 
-class meNavigationSpace;
 
 
 
@@ -38,7 +38,7 @@ class meNavigationSpace;
  */
 class meUNavSpaceSetPosition : public igdeUndo{
 private:
-	meNavigationSpace *pNavSpace;
+	meNavigationSpace::Ref pNavSpace;
 	
 	decDVector pOldPosition;
 	decDVector pNewPosition;

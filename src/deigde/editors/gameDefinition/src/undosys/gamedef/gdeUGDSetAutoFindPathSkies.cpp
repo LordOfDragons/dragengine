@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 gdeUGDSetAutoFindPathSkies::~gdeUGDSetAutoFindPathSkies(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

@@ -78,9 +78,6 @@ const meObjectShapeList &list){
 }
 
 meUObjectShapeRotate::~meUObjectShapeRotate(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

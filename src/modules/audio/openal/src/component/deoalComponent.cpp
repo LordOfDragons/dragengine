@@ -87,7 +87,7 @@ pLLSyncWorld(this)
 	(void)pDirtyDynamicSkin; // not used yet
 	
 	try{
-		pAComponent = new deoalAComponent(oal.GetAudioThread());
+		pAComponent.TakeOverWith(oal.GetAudioThread());
 		
 		ModelAndSkinChanged();
 		AudioModelChanged();
@@ -108,7 +108,7 @@ deoalComponent::~deoalComponent(){
 ///////////////
 
 void deoalComponent::SetParentWorld(deoalWorld *world){
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -365,9 +365,6 @@ void deoalComponent::pCleanUp(){
 	
 	pDropTextures();
 	
-	if(pAComponent){
-		pAComponent->FreeReference();
-	}
 }
 
 

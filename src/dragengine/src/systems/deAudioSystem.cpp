@@ -123,19 +123,12 @@ void deAudioSystem::PreStop(){
 ///////////////
 
 void deAudioSystem::SetActiveMicrophone(deMicrophone *microphone){
-	if(microphone == pActiveMic){
+	if(pActiveMic == microphone){
 		return;
 	}
 	
-	if(pActiveMic){
-		pActiveMic->FreeReference();
-	}
 	
 	pActiveMic = microphone;
-	
-	if(microphone){
-		microphone->AddReference();
-	}
 	
 	if(GetIsRunning()){
 		pActiveModule->SetActiveMicrophone(microphone);
@@ -349,7 +342,4 @@ void deAudioSystem::LoadHeightTerrain(deHeightTerrain &heightTerrain){
 //////////////////////
 
 void deAudioSystem::pCleanUp(){
-	if(pActiveMic){
-		pActiveMic->FreeReference();
-	}
 }

@@ -46,7 +46,6 @@ aeUSetRuleSModEnablePos::aeUSetRuleSModEnablePos(aeRuleStateManipulator *rule){
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		SetShortInfo("Set state manipulator rule enable position");
 		
@@ -79,5 +78,4 @@ void aeUSetRuleSModEnablePos::Redo(){
 //////////////////////
 
 void aeUSetRuleSModEnablePos::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

@@ -59,12 +59,6 @@ ceUCActionSetDelay::ceUCActionSetDelay(ceConversationTopic *topic, ceConversatio
 }
 
 ceUCActionSetDelay::~ceUCActionSetDelay(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -71,15 +71,6 @@ ceStrip *headLookAt, int newIndex){
 }
 
 ceUCAASpeakHeadLAMove::~ceUCAASpeakHeadLAMove(){
-	if(pHeadLA){
-		pHeadLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

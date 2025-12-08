@@ -28,8 +28,8 @@
 #include "../../../../../../world/heightterrain/rules/meHTVRuleMath.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "meHTVegetationLayer.h"
 
-class meHTVegetationLayer;
 
 
 
@@ -43,8 +43,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleMath *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleMath::Ref pRule;
 	
 	meHTVRuleMath::eOperators pOldOp;
 	meHTVRuleMath::eOperators pNewOp;

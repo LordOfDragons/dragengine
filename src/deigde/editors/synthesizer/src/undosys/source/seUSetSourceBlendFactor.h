@@ -27,8 +27,8 @@
 #define _SEUSETSOURCEBLENDFACTOR_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSource.h"
 
-class seSource;
 
 
 
@@ -37,7 +37,7 @@ class seSource;
  */
 class seUSetSourceBlendFactor : public igdeUndo{
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	
 	float pOldFactor;
 	float pNewFactor;

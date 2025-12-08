@@ -74,8 +74,8 @@ pCacheValid(true)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pDefinition = new decMemoryFileWriter(definition, false);
-	pVerify = new decMemoryFileWriter(verify, false);
+	pDefinition.TakeOverWith(definition, false);
+	pVerify.TakeOverWith(verify, false);
 	
 	// property contains properties not covered in the content but required for constructing.
 	// these properties are stored first
@@ -106,12 +106,6 @@ pCacheValid(true)
 }
 
 deoglSCConstructedDefinition::~deoglSCConstructedDefinition(){
-	if(pVerify){
-		pVerify->FreeReference();
-	}
-	if(pDefinition){
-		pDefinition->FreeReference();
-	}
 }
 
 

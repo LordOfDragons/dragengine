@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAPROPERTY_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeProperty.h"
 
-class gdeProperty;
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeProperty *pProperty;
+	gdeProperty::Ref pProperty;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Property. */
-	gdeProperty *GetProperty() const{ return pProperty; }
+	const gdeProperty::Ref &GetProperty() const{ return pProperty; }
 	/*@}*/
 };
 

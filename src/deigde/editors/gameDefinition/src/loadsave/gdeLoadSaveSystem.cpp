@@ -130,7 +130,7 @@ gdeObjectClass *gdeLoadSaveSystem::LoadXmlEClass(const char *filename){
 	gdeObjectClass *objectClass = NULL;
 	
 	try{
-		fileReader = new decDiskFileReader(filename);
+		fileReader.TakeOver(new decDiskFileReader(filename));
 		
 		objectClass = pLSXmlEClass.LoadXmlEClass(*fileReader);
 		fileReader->FreeReference();

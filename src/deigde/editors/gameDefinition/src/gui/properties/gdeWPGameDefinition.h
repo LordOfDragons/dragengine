@@ -32,11 +32,11 @@
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPGameDefinitionListener.h"
 
-class gdeGameDefinition;
 class gdeWindowProperties;
 class gdeWindowMain;
-class gdeWPGameDefinitionListener;
 class gdeWPPropertyList;
 class gdeProperty;
 
@@ -48,8 +48,8 @@ class gdeProperty;
 class gdeWPGameDefinition : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeGameDefinition *pGameDefinition;
-	gdeWPGameDefinitionListener *pListener;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeWPGameDefinitionListener::Ref pListener;
 	
 	igdeAction::Ref pActionBasePath;
 	
@@ -92,7 +92,7 @@ public:
 	inline gdeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Game definition or \em NULL. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

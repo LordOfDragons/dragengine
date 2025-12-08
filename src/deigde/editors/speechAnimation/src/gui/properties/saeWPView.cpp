@@ -163,7 +163,7 @@ pSAnimation(NULL)
 	igdeContainer::Ref content, groupBox;
 	igdeAction::Ref action;
 	
-	pListener = new saeWPViewListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -189,9 +189,6 @@ pSAnimation(NULL)
 saeWPView::~saeWPView(){
 	SetSAnimation(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -200,7 +197,7 @@ saeWPView::~saeWPView(){
 ///////////////
 
 void saeWPView::SetSAnimation(saeSAnimation *sanimation){
-	if(sanimation == pSAnimation){
+	if(pSAnimation == sanimation){
 		return;
 	}
 	
@@ -209,7 +206,6 @@ void saeWPView::SetSAnimation(saeSAnimation *sanimation){
 	
 	if(pSAnimation){
 		pSAnimation->RemoveListener(pListener);
-		pSAnimation->FreeReference();
 	}
 	
 	pSAnimation = sanimation;
@@ -247,7 +243,7 @@ void saeWPView::UpdateView(){
 		pEditDisplayRigPath->ClearPath();
 	}
 	
-	const bool enabled = pSAnimation != NULL;
+	const bool enabled = pSAnimation != nullptr;
 	pEditDisplayModelPath->SetEnabled(enabled);
 	pEditDisplaySkinPath->SetEnabled(enabled);
 	pEditDisplayRigPath->SetEnabled(enabled);

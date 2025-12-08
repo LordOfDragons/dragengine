@@ -49,9 +49,6 @@ pListener(new aeWPUndoHistoryListener(*this)){
 aeWPUndoHistory::~aeWPUndoHistory(){
 	SetAnimator(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -60,7 +57,7 @@ aeWPUndoHistory::~aeWPUndoHistory(){
 ///////////////
 
 void aeWPUndoHistory::SetAnimator(aeAnimator *animator){
-	if(animator == pWorld){
+	if(pWorld == animator){
 		return;
 	}
 	
@@ -68,7 +65,6 @@ void aeWPUndoHistory::SetAnimator(aeAnimator *animator){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = animator;

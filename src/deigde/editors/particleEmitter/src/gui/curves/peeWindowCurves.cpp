@@ -145,7 +145,7 @@ pEmitter(NULL)
 	pIconCurveEmpty = env.GetStockIcon(igdeEnvironment::esiSmallMinus);
 	pIconCurveUsed = env.GetStockIcon(igdeEnvironment::esiSmallPlus);
 	
-	pListener = new peeWindowCurvesListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	helper.ListBox(4, "Curve to edit", pListCurves, new cListCurves(*this));
 	pListCurves->AddItem("Value", pIconCurveEmpty, (void*)(intptr_t)ecValue);
@@ -163,9 +163,6 @@ pEmitter(NULL)
 
 peeWindowCurves::~peeWindowCurves(){
 	SetEmitter(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -174,7 +171,7 @@ peeWindowCurves::~peeWindowCurves(){
 ///////////////
 
 void peeWindowCurves::SetEmitter(peeEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	
@@ -182,7 +179,6 @@ void peeWindowCurves::SetEmitter(peeEmitter *emitter){
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;

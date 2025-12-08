@@ -198,7 +198,7 @@ pEditor(NULL)
 	pFontStats.TakeOver(fontmgr.LoadFont("/igde/fonts/sans_10.defont", "/"));
 	pFontSizeStats = pFontStats->PrepareSize(pFontStats->GetLineHeight());
 	
-	pListener = new meView3DListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	pListenerEditor.TakeOver(new cEditorInteraction(*this));
 	AddListener(pListenerEditor);
@@ -207,9 +207,6 @@ pEditor(NULL)
 meView3D::~meView3D(){
 	SetWorld(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -224,7 +221,7 @@ void meView3D::ResetView(){
 }
 
 void meView3D::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -237,7 +234,6 @@ void meView3D::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

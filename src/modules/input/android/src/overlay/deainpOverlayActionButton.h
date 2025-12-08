@@ -27,9 +27,9 @@
 
 #include "deainpInputBinding.h"
 #include "deainpOverlay.h"
+#include <dragengine/resources/canvas/deCanvasImage.h>
+#include <dragengine/resources/canvas/deCanvasText.h>
 
-class deCanvasImage;
-class deCanvasText;
 class deFont;
 
 
@@ -49,8 +49,8 @@ private:
 	
 	bool pPressed;
 	
-	deCanvasImage *pCImage;
-	deCanvasText *pCLabel;
+	deCanvasImage::Ref pCImage;
+	deCanvasText::Ref pCLabel;
 	
 	bool pDirtyLabelSize;
 	

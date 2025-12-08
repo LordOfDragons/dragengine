@@ -53,9 +53,6 @@ pObjectClass(NULL)
 }
 
 gdeUOCToggleIsGhost::~gdeUOCToggleIsGhost(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

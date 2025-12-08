@@ -27,9 +27,9 @@
 #define _PROJUREMOVEPROFILE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "projProfile.h"
+#include "projProject.h"
 
-class projProject;
-class projProfile;
 
 
 
@@ -38,8 +38,8 @@ class projProfile;
  */
 class projUProfileRemove : public igdeUndo{
 private:
-	projProject *pProject;
-	projProfile *pProfile;
+	projProject::Ref pProject;
+	projProfile::Ref pProfile;
 	
 	
 	

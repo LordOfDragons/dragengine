@@ -29,13 +29,13 @@
 // includes
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/propfield/dePropField.h>
 
 // predefinitions
 class mePropFieldType;
 class meWorld;
 
 class deEngine;
-class dePropField;
 
 
 
@@ -49,7 +49,7 @@ private:
 	deEngine *pEngine;
 	
 	meWorld *pWorld;
-	dePropField *pEngPF;
+	dePropField::Ref pEngPF;
 	
 	decDVector pPosition;
 	
@@ -74,7 +74,7 @@ public:
 	void SetWorld(meWorld *world);
 	
 	/** Retrieves the engine height terrain. */
-	inline dePropField *GetEnginePropField() const{ return pEngPF; }
+	inline const dePropField::Ref &GetEnginePropField() const{ return pEngPF; }
 	
 	/** Retrieves the position. */
 	inline const decDVector &GetPosition() const{ return pPosition; }

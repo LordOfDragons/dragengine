@@ -66,7 +66,6 @@ pGrid((double)grid)
 			
 			pObjects[pObjectCount].object = object;
 			pObjects[pObjectCount].position = object->GetPosition();
-			object->AddReference();
 		}
 		
 	}catch(const deException &){
@@ -122,7 +121,4 @@ void meUObjectSnapToGrid::pCleanUp(){
 		delete [] pObjects;
 	}
 	
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

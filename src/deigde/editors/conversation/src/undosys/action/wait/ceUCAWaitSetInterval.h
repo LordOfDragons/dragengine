@@ -26,9 +26,9 @@
 #define _CEUCAWAITSETINTERVAL_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAWait.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceCAWait;
 
 
 
@@ -37,8 +37,8 @@ class ceCAWait;
  */
 class ceUCAWaitSetInterval : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAWait *pWait;
+	ceConversationTopic::Ref pTopic;
+	ceCAWait::Ref pWait;
 	float pOldInterval;
 	float pNewInterval;
 	

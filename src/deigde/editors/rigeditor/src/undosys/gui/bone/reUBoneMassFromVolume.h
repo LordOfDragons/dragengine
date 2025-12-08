@@ -28,10 +28,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "reRig.h"
+#include "reRigBone.h"
 
 class decObjectOrderedSet;
-class reRig;
-class reRigBone;
 
 
 
@@ -46,7 +46,7 @@ public:
 
 private:
 	struct sBone{
-		reRigBone *bone;
+		reRigBone::Ref bone;
 		float oldMass;
 		float newMass;
 	};
@@ -54,7 +54,7 @@ private:
 	
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	float pDensity;
 	

@@ -26,8 +26,8 @@
 #define _MEUHTNAVSPACETYPESETTYPE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meHeightTerrainNavSpaceType.h"
 
-class meHeightTerrainNavSpaceType;
 
 
 
@@ -36,7 +36,7 @@ class meHeightTerrainNavSpaceType;
  */
 class meUHTNavSpaceTypeSetType : public igdeUndo{
 private:
-	meHeightTerrainNavSpaceType *pType;
+	meHeightTerrainNavSpaceType::Ref pType;
 	int pOldType;
 	int pNewType;
 	

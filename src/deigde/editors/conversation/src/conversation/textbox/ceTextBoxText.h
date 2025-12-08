@@ -28,8 +28,8 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
-class deCanvasView;
 class ceTextBox;
 class deGraphicContext;
 
@@ -43,7 +43,7 @@ private:
 	decUnicodeString pName;
 	decUnicodeString pText;
 	
-	deCanvasView *pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -76,7 +76,7 @@ public:
 	void SetText(const decUnicodeString &text);
 	
 	/** \brief Canvas view. */
-	inline deCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** \brief Layout text. Create canvas if not existing. */
 	void Layout(const ceTextBox &textBox);

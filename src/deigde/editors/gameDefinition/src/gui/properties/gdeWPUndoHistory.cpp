@@ -50,9 +50,6 @@ pGameDefinition(NULL){
 gdeWPUndoHistory::~gdeWPUndoHistory(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -61,7 +58,7 @@ gdeWPUndoHistory::~gdeWPUndoHistory(){
 ///////////////
 
 void gdeWPUndoHistory::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	
@@ -69,7 +66,6 @@ void gdeWPUndoHistory::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

@@ -28,9 +28,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meObject.h"
+#include "meWorld.h"
 
-class meWorld;
-class meObject;
 class meObjectList;
 
 
@@ -41,14 +41,14 @@ class meObjectList;
 class meUObjectSnapToGrid : public igdeUndo{
 private:
 	struct sObject{
-		meObject *object;
+		meObject::Ref object;
 		decDVector position;
 	};
 	
 	
 	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	sObject *pObjects;
 	int pObjectCount;

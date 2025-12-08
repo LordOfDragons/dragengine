@@ -52,7 +52,6 @@ pEffect(NULL)
 	
 	try{
 		pEffect = effect;
-		pEffect->AddReference();
 		
 		SetShortInfo("Effect set strength");
 		
@@ -85,7 +84,4 @@ void seUEffectSetStrength::Redo(){
 //////////////////////
 
 void seUEffectSetStrength::pCleanUp(){
-	if(pEffect){
-		pEffect->FreeReference();
-	}
 }

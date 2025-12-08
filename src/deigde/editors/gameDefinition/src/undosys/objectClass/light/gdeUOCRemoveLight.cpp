@@ -63,12 +63,6 @@ pLight(NULL)
 }
 
 gdeUOCRemoveLight::~gdeUOCRemoveLight(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

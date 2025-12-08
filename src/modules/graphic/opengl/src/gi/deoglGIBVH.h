@@ -32,6 +32,9 @@
 #include "../tbo/deoglDynamicTBOBlock.h"
 
 #include <dragengine/common/math/decMath.h>
+#include "deoglDynamicTBOUInt32.h"
+#include "deoglDynamicTBOUInt16.h"
+#include "deoglDynamicTBOFloat32.h"
 
 class deoglGIBVHLocal;
 class deoglGIInstance;
@@ -47,9 +50,6 @@ class deoglRWorld;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;
-class deoglDynamicTBOFloat32;
-class deoglDynamicTBOUInt32;
-class deoglDynamicTBOUInt16;
 
 
 /**
@@ -195,11 +195,11 @@ private:
 	
 	int pIndexRootNode;
 	
-	deoglDynamicTBOUInt32 *pTBOInstance;
-	deoglDynamicTBOFloat32 *pTBOMatrix;
+	deoglDynamicTBOUInt32::Ref pTBOInstance;
+	deoglDynamicTBOFloat32::Ref pTBOMatrix;
 	
-	deoglDynamicTBOFloat32 *pBVHTBONodeBox;
-	deoglDynamicTBOUInt16 *pBVHTBOIndex;
+	deoglDynamicTBOFloat32::Ref pBVHTBONodeBox;
+	deoglDynamicTBOUInt16::Ref pBVHTBOIndex;
 	deoglDynamicTBOBlock::Ref pBlockBVH;
 	
 	deoglRenderTask pRenderTaskMaterial;
@@ -262,10 +262,10 @@ public:
 	
 	
 	/** TBO for instance data. */
-	inline deoglDynamicTBOUInt32 *GetTBOInstance() const{ return pTBOInstance; }
+	inline const deoglDynamicTBOUInt32::Ref &GetTBOInstance() const{ return pTBOInstance; }
 	
 	/** TBO for instance matrices. */
-	inline deoglDynamicTBOFloat32 *GetTBOMatrix() const{ return pTBOMatrix; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBOMatrix() const{ return pTBOMatrix; }
 	
 	/** Render materials render task. */
 	inline deoglRenderTask &GetRenderTaskMaterial(){ return pRenderTaskMaterial; }

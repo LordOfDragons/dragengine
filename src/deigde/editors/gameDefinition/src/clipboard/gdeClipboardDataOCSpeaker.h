@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCSPEAKER_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCSpeaker.h"
 
-class gdeOCSpeaker;
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCSpeaker *pSpeaker;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Speaker. */
-	gdeOCSpeaker *GetSpeaker() const{ return pSpeaker; }
+	const gdeOCSpeaker::Ref &GetSpeaker() const{ return pSpeaker; }
 	/*@}*/
 };
 

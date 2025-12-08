@@ -180,7 +180,7 @@ pRecentFilesLangPack(*this)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener = new ceWindowMainListener(*this);
+	pListener.TakeOverWith(*this);
 	pLoadSaveSystem = new ceLoadSaveSystem(*this);
 	pConfiguration = new ceConfiguration(*this);
 	
@@ -194,17 +194,17 @@ pRecentFilesLangPack(*this)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties = new ceWindowProperties(*this);
+	pWindowProperties.TakeOverWith(*this);
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(
 		env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5));
 	splitted->AddChild(panel, igdeContainerSplitted::eaCenter);
 	
-	pViewConversation = new ceViewConversation(*this);
+	pViewConversation.TakeOverWith(*this);
 	panel->AddChild(pViewConversation);
 	
-	pWindowDopeSheet = new ceWindowDopeSheet(*this);
+	pWindowDopeSheet.TakeOverWith(*this);
 	panel->AddChild(pWindowDopeSheet);
 	
 	CreateNewConversation();
@@ -218,15 +218,6 @@ ceWindowMain::~ceWindowMain(){
 	
 	SetConversation(NULL);
 	
-	if(pWindowDopeSheet){
-		pWindowDopeSheet->FreeReference();
-	}
-	if(pViewConversation){
-		pViewConversation->FreeReference();
-	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
 	
 	if(pConfiguration){
 		delete pConfiguration;
@@ -235,9 +226,6 @@ ceWindowMain::~ceWindowMain(){
 		delete pLoadSaveSystem;
 	}
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 	
 }
 
@@ -257,7 +245,7 @@ void ceWindowMain::ResetViews(){
 
 
 void ceWindowMain::SetConversation(ceConversation *conversation){
-	if(conversation == pConversation){
+	if(pConversation == conversation){
 		return;
 	}
 	
@@ -271,7 +259,6 @@ void ceWindowMain::SetConversation(ceConversation *conversation){
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
 		pConversation->Dispose();
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;
@@ -936,8 +923,8 @@ void ceWindowMain::pCreateActions(){
 	pActionFileSave.TakeOver(new cActionFileSave(*this));
 	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
 	
-	pActionEditUndo.TakeOver(new igdeActionUndo(environment));
-	pActionEditRedo.TakeOver(new igdeActionRedo(environment));
+	pActionEditUndo.TakeOverWith(environment);
+	pActionEditRedo.TakeOverWith(environment);
 	
 	pActionEditCut.TakeOver(new cActionEditCut(*this));
 	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
@@ -983,7 +970,7 @@ void ceWindowMain::pCreateActions(){
 void ceWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -995,7 +982,7 @@ void ceWindowMain::pCreateToolBarFile(){
 void ceWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -1012,15 +999,15 @@ void ceWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
+	cascade.TakeOverWith(env, "File", deInputEvent::ekcF);
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade.TakeOverWith(env, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcV));
+	cascade.TakeOverWith(env, "View", deInputEvent::ekcV);
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

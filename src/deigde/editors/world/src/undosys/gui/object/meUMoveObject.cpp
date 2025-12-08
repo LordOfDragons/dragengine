@@ -132,7 +132,4 @@ void meUMoveObject::ProgressiveRedo(){
 //////////////////////
 
 void meUMoveObject::pCleanUp(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

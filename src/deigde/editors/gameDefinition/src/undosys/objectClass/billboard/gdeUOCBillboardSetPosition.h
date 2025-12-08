@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeObjectClass.h"
+#include "gdeOCBillboard.h"
 
-class gdeOCBillboard;
-class gdeObjectClass;
 
 
 
@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCBillboardSetPosition : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	decVector pOldValue;
 	decVector pNewValue;

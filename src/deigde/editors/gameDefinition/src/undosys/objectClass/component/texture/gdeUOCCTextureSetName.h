@@ -27,10 +27,10 @@
 #define _GDEUOCCTEXTURESETNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeOCComponentTexture.h"
+#include "gdeObjectClass.h"
+#include "gdeOCComponent.h"
 
-class gdeOCComponent;
-class gdeOCComponentTexture;
-class gdeObjectClass;
 
 
 
@@ -39,9 +39,9 @@ class gdeObjectClass;
  */
 class gdeUOCCTextureSetName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	decString pOldValue;
 	decString pNewValue;

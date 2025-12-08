@@ -27,9 +27,9 @@
 #define _SEUADDSOURCE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSource.h"
+#include "seSynthesizer.h"
 
-class seSource;
-class seSynthesizer;
 
 
 
@@ -38,8 +38,8 @@ class seSynthesizer;
  */
 class seUAddSource : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
-	seSource *pSource;
+	seSynthesizer::Ref pSynthesizer;
+	seSource::Ref pSource;
 	int pIndex;
 	
 	

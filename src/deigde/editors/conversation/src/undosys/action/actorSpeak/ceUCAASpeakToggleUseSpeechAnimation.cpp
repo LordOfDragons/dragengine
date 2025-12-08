@@ -60,12 +60,6 @@ ceConversationTopic *topic, ceCAActorSpeak *actorSpeak){
 }
 
 ceUCAASpeakToggleUseSpeechAnimation::~ceUCAASpeakToggleUseSpeechAnimation(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

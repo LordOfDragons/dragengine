@@ -56,9 +56,6 @@ pNewOrientation(newOrientation)
 }
 
 seULayerSetOrientation::~seULayerSetOrientation(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

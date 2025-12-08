@@ -63,7 +63,6 @@ meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTexture *texture, const
 		pTextures[0].oldskin = texture->GetSkinPath();
 		pTextures[0].newskin = newskin;
 		pTextures[0].texture = texture;
-		texture->AddReference();
 		
 		pTextureCount = 1;
 		
@@ -93,7 +92,6 @@ meUObjectTextureSetSkin::meUObjectTextureSetSkin(meObjectTextureList &textures, 
 			pTextures[pTextureCount].oldskin = texture->GetSkinPath();
 			pTextures[pTextureCount].newskin = newskin;
 			pTextures[pTextureCount].texture = texture;
-			texture->AddReference();
 		}
 		
 	}catch(const deException &){

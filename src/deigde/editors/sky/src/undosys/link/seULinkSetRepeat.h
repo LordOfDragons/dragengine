@@ -26,8 +26,8 @@
 #define _SEULINKSETREPEAT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLink.h"
 
-class seLink;
 
 
 /**
@@ -35,7 +35,7 @@ class seLink;
  */
 class seULinkSetRepeat : public igdeUndo{
 private:
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	int pOldRepeat;
 	int pNewRepeat;

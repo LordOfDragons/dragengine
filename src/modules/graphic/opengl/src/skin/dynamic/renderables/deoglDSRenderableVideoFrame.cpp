@@ -52,7 +52,7 @@ pVideoPlayer(NULL),
 pDirty(true)
 {
 	try{
-		pRRenderableVideoFrame = new deoglRDSRenderableVideoFrame(*dynamicSkin.GetRDynamicSkin());
+		pRRenderableVideoFrame.TakeOverWith(*dynamicSkin.GetRDynamicSkin());
 		
 		if(renderable.GetVideoPlayer()){
 			pVideoPlayer = (deoglVideoPlayer*)renderable.GetVideoPlayer()->GetPeerGraphic();
@@ -82,7 +82,7 @@ void deoglDSRenderableVideoFrame::RenderableChanged(){
 	deoglVideoPlayer * const videoPlayer = pRenderableVideoFrame.GetVideoPlayer()
 		? (deoglVideoPlayer*)pRenderableVideoFrame.GetVideoPlayer()->GetPeerGraphic() : NULL;
 	
-	if(videoPlayer != pVideoPlayer){
+	if(pVideoPlayer != videoPlayer){
 		if(pVideoPlayer){
 			pVideoPlayer->GetNotifyRenderables().Remove(this);
 		}
@@ -136,9 +136,6 @@ void deoglDSRenderableVideoFrame::DropVideoPlayer(){
 //////////////////////
 
 void deoglDSRenderableVideoFrame::pCleanUp(){
-	if(pRRenderableVideoFrame){
-		pRRenderableVideoFrame->FreeReference();
-	}
 	
 	if(pVideoPlayer){
 		pVideoPlayer->GetNotifyRenderables().Remove(this);

@@ -27,9 +27,9 @@
 #define _SEUSOURCEGROUPADDSOURCE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSource.h"
+#include "seSourceGroup.h"
 
-class seSource;
-class seSourceGroup;
 
 
 
@@ -38,8 +38,8 @@ class seSourceGroup;
  */
 class seUSourceGroupAddSource : public igdeUndo{
 private:
-	seSourceGroup *pGroup;
-	seSource *pSource;
+	seSourceGroup::Ref pGroup;
+	seSource::Ref pSource;
 	int pIndex;
 	
 	

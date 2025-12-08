@@ -55,7 +55,7 @@ ceUCAASpeakWordSet::ceUCAASpeakWordSet(ceConversationTopic *topic, ceCAActorSpea
 	
 	SetShortInfo("Set Word");
 	
-	pOldStrip = new ceStrip(*word);
+	pOldStrip.TakeOverWith(*word);
 	
 	pNewStrip = newStrip;
 	newStrip->AddReference();
@@ -71,21 +71,6 @@ ceUCAASpeakWordSet::ceUCAASpeakWordSet(ceConversationTopic *topic, ceCAActorSpea
 }
 
 ceUCAASpeakWordSet::~ceUCAASpeakWordSet(){
-	if(pNewStrip){
-		pNewStrip->FreeReference();
-	}
-	if(pOldStrip){
-		pOldStrip->FreeReference();
-	}
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -31,13 +31,13 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 // predefinitions
 class meHTVegetationLayer;
 
 class deEngine;
-class deSkin;
-class deModel;
 
 
 
@@ -55,9 +55,9 @@ private:
 	deEngine *pEngine;
 	
 	decString pPathModel;
-	deModel *pModel;
+	deModel::Ref pModel;
 	decString pPathSkin;
-	deSkin *pSkin;
+	deSkin::Ref pSkin;
 	float pRotationPerForce;
 	float pRestitution;
 	
@@ -91,13 +91,13 @@ public:
 	/** Sets the model path. */
 	void SetPathModel(const char *path);
 	/** Retrieves the engine model or NULL if not valid. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	/** Retrieves the skin path. */
 	inline const decString &GetPathSkin() const{ return pPathSkin; }
 	/** Sets the skin path. */
 	void SetPathSkin(const char *path);
 	/** Retrieves the engine skin or NULL if not valid. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	/** Retrieves the rotation per force. */
 	inline float GetRotationPerForce() const{ return pRotationPerForce; }
 	/** Sets the rotation per force. */

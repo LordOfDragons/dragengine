@@ -333,10 +333,6 @@ void deClassSSWave::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synth
 	}
 	
 	nd.synthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
 }
 
 void deClassSSWave::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceWave *source){
@@ -359,9 +355,6 @@ void deClassSSWave::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynt
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.synthesizer = synthesizer;
-		if(synthesizer){
-			synthesizer->AddReference();
-		}
 		
 		nd.source = source;
 		source->AddReference();

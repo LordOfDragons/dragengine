@@ -83,18 +83,6 @@ ceCAPlayerChoiceOption *option, ceConversationAction *action){
 }
 
 ceUCAPChoiceActionRemove::~ceUCAPChoiceActionRemove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

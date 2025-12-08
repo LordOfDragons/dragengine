@@ -87,13 +87,12 @@ void meObjectShapeSelection::RemoveAll(){
 
 
 bool meObjectShapeSelection::HasActive() const{
-	return pActive != NULL;
+	return pActive != nullptr;
 }
 
 void meObjectShapeSelection::SetActive(meObjectShape *objectShape){
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = objectShape;

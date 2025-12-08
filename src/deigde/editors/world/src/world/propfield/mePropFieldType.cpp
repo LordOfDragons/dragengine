@@ -148,7 +148,7 @@ void mePropFieldType::UpdateEnginePFType(){
 		engPFTInstanceCount = pEngPFType->GetInstanceCount();
 	}
 	
-	if(engPFTInstanceCount == pInstanceCount){
+	if(pInstanceCount == engPFTInstanceCount){
 		if(pEngPFType){
 			dePropFieldInstance *engPFTInstances = pEngPFType->GetInstances();
 			int i;
@@ -201,8 +201,6 @@ void mePropFieldType::SetPathModel(const char *path){
 	
 	pPathModel = path;
 	
-	if(pModel){
-		pModel->FreeReference();
 		pModel = NULL;
 	}
 	
@@ -223,8 +221,6 @@ void mePropFieldType::SetPathSkin(const char *path){
 	
 	pPathSkin = path;
 	
-	if(pSkin){
-		pSkin->FreeReference();
 		pSkin = NULL;
 	}
 	
@@ -235,7 +231,6 @@ void mePropFieldType::SetPathSkin(const char *path){
 		}catch(const deException &){
 			if(pPropField && pPropField->GetWorld()){
 				pSkin = pPropField->GetWorld()->GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
-				pSkin->AddReference();
 			}
 		}
 	}

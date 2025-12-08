@@ -56,12 +56,6 @@ ceUCCShotAdd::ceUCCShotAdd(ceConversation *conversation, ceCameraShot *cameraSho
 }
 
 ceUCCShotAdd::~ceUCCShotAdd(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

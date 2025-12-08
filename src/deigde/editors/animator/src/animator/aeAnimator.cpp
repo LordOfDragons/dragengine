@@ -102,12 +102,6 @@ pWindowMain(windowMain)
 	
 	pEngWorld = NULL;
 	
-	pEngLight = NULL;
-	pEngComponent = NULL;
-	pEngAnimator = NULL;
-	pEngAnimatorInstance = NULL;
-	pEngCollider = NULL;
-	
 	pLocomotion = NULL;
 	pWakeboard = NULL;
 	pSubAnimator = NULL;
@@ -129,7 +123,6 @@ pWindowMain(windowMain)
 	pPlaySpeed = 1.0f;
 	pTimeStep = 0.05f;
 	
-	pDDBones = NULL;
 	pDDSBones = NULL;
 	pDDSBoneCount = 0;
 	pDDSBoneSize = 1.0f;
@@ -147,7 +140,7 @@ pWindowMain(windowMain)
 		pCreateCamera();
 		pCreateCollider();
 		
-		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
+		pEngAnimatorInstance.TakeOver(engine->GetAnimatorInstanceManager()->CreateAnimatorInstance());
 		pEngAnimatorInstance->SetAnimator(pEngAnimator);
 		
 		pLocomotion = new aeAnimatorLocomotion(this);
@@ -159,7 +152,7 @@ pWindowMain(windowMain)
 		pSky->SetWorld(pEngWorld);
 		
 		// create the environment wrapper object
-		pEnvObject.TakeOver(new igdeWObject(windowMain.GetEnvironment()));
+		pEnvObject.TakeOverWith(windowMain.GetEnvironment());
 		pEnvObject->SetWorld(pEngWorld);
 		pEnvObject->SetPosition(decDVector(0.0, 0.0, 0.0));
 		
@@ -174,7 +167,7 @@ pWindowMain(windowMain)
 		pEnvObject->SetGDClassName("IGDETestTerrain");
 		
 		// create debug drawers
-		pDDBones = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDDBones.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDDBones->SetXRay(true);
 		pDDBones->SetVisible(false);
 		pEngWorld->AddDebugDrawer(pDDBones);
@@ -406,7 +399,7 @@ void aeAnimator::SetTimeStep(float timeStep){
 
 
 void aeAnimator::SetResetState(bool resetState){
-	if(resetState != pResetState){
+	if(pResetState != resetState){
 		pResetState = resetState;
 		RebuildRules();
 		NotifyViewChanged();
@@ -512,7 +505,7 @@ void aeAnimator::RemoveAllControllers(){
 }
 
 void aeAnimator::SetActiveController(aeController *controller){
-	if(controller == pActiveController){
+	if(pActiveController == controller){
 		return;
 	}
 	
@@ -615,7 +608,7 @@ void aeAnimator::RemoveAllLinks(){
 }
 
 void aeAnimator::SetActiveLink(aeLink *link){
-	if(link == pActiveLink){
+	if(pActiveLink == link){
 		return;
 	}
 	
@@ -700,7 +693,7 @@ void aeAnimator::RemoveAllRules(){
 }
 
 void aeAnimator::SetActiveRule(aeRule *rule){
-	if(rule == pActiveRule){
+	if(pActiveRule == rule){
 		return;
 	}
 	
@@ -741,7 +734,7 @@ void aeAnimator::RebuildRules(){
 ////////////////////
 
 void aeAnimator::SetListBones(const decStringSet &bones){
-	if(bones == pListBones){
+	if(pListBones == bones){
 		return;
 	}
 	
@@ -802,7 +795,7 @@ void aeAnimator::RemoveAllBones(){
 ///////////////////////////////////
 
 void aeAnimator::SetListVertexPositionSets(const decStringSet &sets){
-	if(sets == pListVertexPositionSets){
+	if(pListVertexPositionSets == sets){
 		return;
 	}
 	
@@ -940,7 +933,9 @@ void aeAnimator::RemoveAttachment(aeAttachment *attachment){
 	int i, index = IndexOfAttachment(attachment);
 	if(index == -1) DETHROW(deeInvalidParam);
 	
-	if(attachment == pActiveAttachment) SetActiveAttachment(NULL);
+	if(pActiveAttachment == attachment){
+		SetActiveAttachment(NULL);
+	}
 	
 	for(i=index+1; i<pAttachmentCount; i++){
 		pAttachments[i - 1] = pAttachments[i];
@@ -966,7 +961,7 @@ void aeAnimator::RemoveAllAttachments(){
 }
 
 void aeAnimator::SetActiveAttachment(aeAttachment *attachment){
-	if(attachment != pActiveAttachment){
+	if(pActiveAttachment != attachment){
 		pActiveAttachment = attachment;
 		
 		NotifyActiveAttachmentChanged();
@@ -1397,36 +1392,29 @@ void aeAnimator::pCleanUp(){
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetAnimator(NULL);
 		pEngAnimatorInstance->SetComponent(NULL);
-		pEngAnimatorInstance->FreeReference();
 	}
 	if(pEngAnimator){
 		pEngAnimator->SetRig(NULL);
-		pEngAnimator->FreeReference();
 	}
 	
 	if(pEngWorld){
 		if(pDDBones){
 			pEngWorld->RemoveDebugDrawer(pDDBones);
-			pDDBones->FreeReference();
 		}
 		
 		if(pEngComponent){
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 		}
 		
 		if(pEngCollider){
 			pEngCollider->SetComponent(NULL);
 			pEngWorld->RemoveCollider(pEngCollider);
-			pEngCollider->FreeReference();
 		}
 		
 		if(pEngLight){
 			pEngWorld->RemoveLight(pEngLight);
-			pEngLight->FreeReference();
 		}
 		
-		pEngWorld->FreeReference();
 	}
 }
 
@@ -1436,14 +1424,14 @@ void aeAnimator::pCreateWorld(){
 	deEngine * const engine = GetEngine();
 	
 	// create world
-	pEngWorld = engine->GetWorldManager()->CreateWorld();
+	pEngWorld.TakeOver(engine->GetWorldManager()->CreateWorld());
 	pEngWorld->SetGravity(decVector(0.0f, -9.81f, 0.0f));
 	pEngWorld->SetDisableLights(false);
 	
 	pEngWorld->SetAmbientLight(decColor(0.0f, 0.0f, 0.0f));
 	
 	// create animator
-	pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
+	pEngAnimator.TakeOver(engine->GetAnimatorManager()->CreateAnimator());
 	
 	// create sub animator
 	pSubAnimator = new aeSubAnimator(engine);
@@ -1461,7 +1449,7 @@ void aeAnimator::pCreateCamera(){
 }
 
 void aeAnimator::pCreateCollider(){
-	pEngCollider = GetEngine()->GetColliderManager()->CreateColliderComponent();
+	pEngCollider.TakeOver(GetEngine()->GetColliderManager()->CreateColliderComponent());
 	
 	pEngCollider->SetResponseType(deCollider::ertKinematic);
 	pEngCollider->SetUseLocalGravity(true);
@@ -1478,9 +1466,9 @@ void aeAnimator::pCreateCollider(){
 
 void aeAnimator::pUpdateComponent(){
 	deEngine * const engine = GetEngine();
-	deModel *displayModel = NULL;
-	deSkin *displaySkin = NULL;
-	deRig *displayRig = NULL;
+	deModel::Ref displayModel;
+	deSkin::Ref displaySkin;
+	deRig::Ref displayRig;
 	
 	// detach all colliders
 	DetachAttachments();
@@ -1492,19 +1480,22 @@ void aeAnimator::pUpdateComponent(){
 	// try to load the model, skin and rig if possible
 	try{
 		if(!pDisplayModelPath.IsEmpty()){
-			displayModel = engine->GetModelManager()->LoadModel(pDisplayModelPath, GetDirectoryPath());
+			displayModel.TakeOver(engine->GetModelManager()->LoadModel(
+				pDisplayModelPath, GetDirectoryPath()));
 		}
 		
 		if(!pDisplaySkinPath.IsEmpty()){
-			displaySkin = engine->GetSkinManager()->LoadSkin(pDisplaySkinPath, GetDirectoryPath());
+			displaySkin.TakeOver(engine->GetSkinManager()->LoadSkin(
+				pDisplaySkinPath, GetDirectoryPath()));
 		}
 		
 		if(!pDisplayRigPath.IsEmpty()){
-			displayRig = engine->GetRigManager()->LoadRig(pDisplayRigPath, GetDirectoryPath());
+			displayRig.TakeOver(engine->GetRigManager()->LoadRig(
+				pDisplayRigPath, GetDirectoryPath()));
 		}
 		
 		if(pRigPath.IsEmpty()){
-			pEngRig = NULL;
+			pEngRig = nullptr;
 			
 		}else{
 			pEngRig.TakeOver(engine->GetRigManager()->LoadRig(pRigPath, GetDirectoryPath()));
@@ -1514,81 +1505,51 @@ void aeAnimator::pUpdateComponent(){
 		GetLogger()->LogException(LOGSOURCE, e);
 	}
 	
-	// protect the loaded parts
-	try{
-		// if the skin is missing use the default one
-		if(!displaySkin){
-			displaySkin = GetGameDefinition()->GetDefaultSkin();
-			displaySkin->AddReference();
-		}
-		
-		// reset the animator
-		pEngAnimatorInstance->SetComponent(NULL); // otherwise the animator is not reset
-		
-		// update the component with the model and skin
-		if(displayModel && displaySkin){
-			if(pEngComponent){
-				pEngComponent->SetModelAndSkin(displayModel, displaySkin);
-				
-			}else{
-				pEngComponent = engine->GetComponentManager()->CreateComponent(displayModel, displaySkin);
-				pEngWorld->AddComponent(pEngComponent);
-				
-				pEngCollider->AddAttachment(new deColliderAttachment(pEngComponent));
-			}
-			
-		}else if(pEngComponent){
-			deColliderAttachment * const attachment = pEngCollider->GetAttachmentWith(pEngComponent);
-			if(attachment){
-				pEngCollider->RemoveAttachment(attachment);
-			}
-			
-			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
-			pEngComponent = NULL;
-		}
-		
-		// set the rig if the component exists
-		if(pEngComponent){
-			pEngComponent->SetRig(displayRig);
-			pEngComponent->SetVisible(true);
-			pEngComponent->SetPosition(decDVector());
-			pEngComponent->SetOrientation(decQuaternion());
-		}
-		
-		// set animator rig
-		pEngAnimator->SetRig(pEngRig);
-		
-		// free the reference we hold
-		if(displayRig){
-			displayRig->FreeReference();
-			displayRig = NULL;
-		}
-		if(displayModel){
-			displayModel->FreeReference();
-			displayModel = NULL;
-		}
-		if(displaySkin){
-			displaySkin->FreeReference();
-			displaySkin = NULL;
-		}
-		
-	}catch(const deException &){
-		if(displayModel){
-			displayModel->FreeReference();
-		}
-		if(displaySkin){
-			displaySkin->FreeReference();
-		}
-		if(displayRig){
-			displayRig->FreeReference();
-		}
-		throw;
+	// if the skin is missing use the default one
+	if(!displaySkin){
+		displaySkin = GetGameDefinition()->GetDefaultSkin();
 	}
+	
+	// reset the animator
+	pEngAnimatorInstance->SetComponent(NULL); // otherwise the animator is not reset
+	
+	// update the component with the model and skin
+	if(displayModel && displaySkin){
+		if(pEngComponent){
+			pEngComponent->SetModelAndSkin(displayModel, displaySkin);
+			
+		}else{
+			pEngComponent.TakeOver(engine->GetComponentManager()->CreateComponent(
+				displayModel, displaySkin));
+			pEngWorld->AddComponent(pEngComponent);
+			
+			pEngCollider->AddAttachment(new deColliderAttachment(pEngComponent));
+		}
+		
+	}else if(pEngComponent){
+		deColliderAttachment * const attachment = pEngCollider->GetAttachmentWith(pEngComponent);
+		if(attachment){
+			pEngCollider->RemoveAttachment(attachment);
+		}
+		
+		pEngWorld->RemoveComponent(pEngComponent);
+		pEngComponent = nullptr;
+	}
+	
+	// set the rig if the component exists
+	if(pEngComponent){
+		pEngComponent->SetRig(displayRig);
+		pEngComponent->SetVisible(true);
+		pEngComponent->SetPosition(decDVector());
+		pEngComponent->SetOrientation(decQuaternion());
+	}
+	
+	// set animator rig
+	pEngAnimator->SetRig(pEngRig);
 	
 	// update the collider
 	pEngCollider->SetComponent(pEngComponent);
-	pEngCollider->SetEnabled(pEngComponent != NULL);
+	pEngCollider->SetEnabled(pEngComponent != nullptr);
 	
 	// update the animator
 	pEngAnimatorInstance->SetComponent(pEngComponent);
@@ -1696,7 +1657,7 @@ void aeAnimator::pUpdateDDSBones(){
 		matrix = decDMatrix(pEngComponent->GetMatrix()).Normalized();
 	}
 	
-	if(boneCount != pDDSBoneCount){
+	if(pDDSBoneCount != boneCount){
 		if(pDDSBones){
 			delete [] pDDSBones;
 			pDDSBones = NULL;

@@ -26,9 +26,9 @@
 #define _SEUSOURCESYNTHCONTARGETLESS_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seController.h"
+#include "seSourceSynthesizer.h"
 
-class seSourceSynthesizer;
-class seController;
 
 
 
@@ -37,8 +37,8 @@ class seController;
  */
 class seUSourceSynthConTargetLess : public igdeUndo{
 private:
-	seSourceSynthesizer *pSource;
-	seController *pOldController;
+	seSourceSynthesizer::Ref pSource;
+	seController::Ref pOldController;
 	
 	
 	

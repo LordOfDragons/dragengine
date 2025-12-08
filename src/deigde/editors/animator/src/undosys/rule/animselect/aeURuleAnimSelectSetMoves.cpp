@@ -53,13 +53,9 @@ pNewMoves(newMoves)
 	SetShortInfo(description);
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleAnimSelectSetMoves::~aeURuleAnimSelectSetMoves(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

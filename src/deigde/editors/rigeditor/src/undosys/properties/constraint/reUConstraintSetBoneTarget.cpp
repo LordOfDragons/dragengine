@@ -53,25 +53,13 @@ reUConstraintSetBoneTarget::reUConstraintSetBoneTarget(reRigConstraint *constrai
 	
 	SetShortInfo("Constraint set target bone");
 	
-	pConstraint->AddReference();
 	if(pOldBone){
-		pOldBone->AddReference();
 	}
 	if(pNewBone){
-		pNewBone->AddReference();
 	}
 }
 
 reUConstraintSetBoneTarget::~reUConstraintSetBoneTarget(){
-	if(pNewBone){
-		pNewBone->FreeReference();
-	}
-	if(pOldBone){
-		pOldBone->FreeReference();
-	}
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 }
 
 

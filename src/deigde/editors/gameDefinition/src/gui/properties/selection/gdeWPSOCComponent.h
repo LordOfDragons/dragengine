@@ -45,13 +45,13 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSOCComponentListener.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCComponent;
 class gdeOCComponentTexture;
 class gdeWindowProperties;
-class gdeWPSOCComponentListener;
 
 
 
@@ -61,9 +61,9 @@ class gdeWPSOCComponentListener;
 class gdeWPSOCComponent : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCComponentListener *pListener;
+	gdeWPSOCComponentListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decStringList pEngModelTexNames;
 	decString pEngModelPath;
@@ -133,7 +133,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

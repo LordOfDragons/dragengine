@@ -28,9 +28,9 @@
 #include "../../../sanimation/dictionary/saeWordList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "saeSAnimation.h"
 
 
-class saeSAnimation;
 
 
 
@@ -39,7 +39,7 @@ class saeSAnimation;
  */
 class saeUWordAddList : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	saeWordList pWords;
 	
 	

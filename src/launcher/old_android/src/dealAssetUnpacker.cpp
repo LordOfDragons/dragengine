@@ -127,9 +127,6 @@ dealAssetUnpacker::~dealAssetUnpacker(){
 	
 	pthread_mutex_destroy(&pMutex);
 	
-	if(pLogger){
-		pLogger->FreeReference();
-	}
 }
 
 

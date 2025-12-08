@@ -372,10 +372,6 @@ void deClassSSChain::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synt
 	}
 	
 	nd.synthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
 }
 
 void deClassSSChain::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceChain *source){
@@ -398,9 +394,6 @@ void deClassSSChain::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSyn
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.synthesizer = synthesizer;
-		if(synthesizer){
-			synthesizer->AddReference();
-		}
 		
 		nd.source = source;
 		source->AddReference();

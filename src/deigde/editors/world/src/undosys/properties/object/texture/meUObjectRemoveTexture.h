@@ -28,11 +28,11 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meObject.h"
+#include "meObjectTexture.h"
 
 // predefinitions
 class meWorld;
-class meObject;
-class meObjectTexture;
 
 
 
@@ -41,8 +41,8 @@ class meObjectTexture;
  */
 class meUObjectRemoveTexture : public igdeUndo{
 private:
-	meObject *pObject;
-	meObjectTexture *pTexture;
+	meObject::Ref pObject;
+	meObjectTexture::Ref pTexture;
 	
 public:
 	/** \brief Type holding strong reference. */

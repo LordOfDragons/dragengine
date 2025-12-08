@@ -46,7 +46,6 @@ aeUSetRuleSModMaxRotation::aeUSetRuleSModMaxRotation(aeRuleStateManipulator *rul
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldMax = rule->GetMaximumRotation();
 		pNewMax = newMax;
@@ -82,5 +81,4 @@ void aeUSetRuleSModMaxRotation::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMaxRotation::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

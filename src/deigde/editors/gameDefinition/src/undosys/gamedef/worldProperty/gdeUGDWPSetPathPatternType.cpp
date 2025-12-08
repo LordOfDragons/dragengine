@@ -61,12 +61,6 @@ pProperty(NULL)
 }
 
 gdeUGDWPSetPathPatternType::~gdeUGDWPSetPathPatternType(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

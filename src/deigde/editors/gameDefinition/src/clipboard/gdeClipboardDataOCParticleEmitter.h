@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCPARTICLEEMITTER_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCParticleEmitter.h"
 
-class gdeOCParticleEmitter;
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ParticleEmitter. */
-	gdeOCParticleEmitter *GetParticleEmitter() const{ return pParticleEmitter; }
+	const gdeOCParticleEmitter::Ref &GetParticleEmitter() const{ return pParticleEmitter; }
 	/*@}*/
 };
 

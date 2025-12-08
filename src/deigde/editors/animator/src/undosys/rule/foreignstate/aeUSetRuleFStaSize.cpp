@@ -46,7 +46,6 @@ aeUSetRuleFStaSize::aeUSetRuleFStaSize(aeRuleForeignState *rule, float newScale)
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldScale = rule->GetScaleSize();
 		pNewScale = newScale;
@@ -82,5 +81,4 @@ void aeUSetRuleFStaSize::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaSize::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

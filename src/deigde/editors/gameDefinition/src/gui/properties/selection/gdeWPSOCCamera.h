@@ -29,12 +29,12 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSOCCameraListener.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCCamera;
 class gdeWindowProperties;
-class gdeWPSOCCameraListener;
 
 
 
@@ -44,9 +44,9 @@ class gdeWPSOCCameraListener;
 class gdeWPSOCCamera : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCCameraListener *pListener;
+	gdeWPSOCCameraListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeTextField::Ref pEditFov, pEditFovRatio, pEditImageDistance, pEditViewDistance;
 	igdeEditVector::Ref pEditPosition, pEditRotation;
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

@@ -94,7 +94,7 @@ pPlayTime(10.0f)
 		
 		pCreateWorld();
 		
-		pEngSynthesizerInstance = GetEngine()->GetSynthesizerInstanceManager()->CreateSynthesizerInstance();
+		pEngSynthesizerInstance.TakeOver(GetEngine()->GetSynthesizerInstanceManager()->CreateSynthesizerInstance());
 		pEngSynthesizerInstance->SetSynthesizer(pEngSynthesizer);
 		pEngSynthesizerInstance->SetSampleCount(pSampleCount);
 		
@@ -117,7 +117,7 @@ seSynthesizer::~seSynthesizer(){
 
 void seSynthesizer::SetChannelCount(int channelCount){
 	channelCount = decMath::max(channelCount, 1);
-	if(channelCount == pChannelCount){
+	if(pChannelCount == channelCount){
 		return;
 	}
 	
@@ -129,7 +129,7 @@ void seSynthesizer::SetChannelCount(int channelCount){
 
 void seSynthesizer::SetSampleRate(int sampleRate){
 	sampleRate = decMath::max(sampleRate, 1);
-	if(sampleRate == pSampleRate){
+	if(pSampleRate == sampleRate){
 		return;
 	}
 	
@@ -142,7 +142,7 @@ void seSynthesizer::SetSampleRate(int sampleRate){
 
 void seSynthesizer::SetBytesPerSample(int bytesPerSample){
 	bytesPerSample = decMath::max(bytesPerSample, 1);
-	if(bytesPerSample == pBytesPerSample){
+	if(pBytesPerSample == bytesPerSample){
 		return;
 	}
 	
@@ -155,7 +155,7 @@ void seSynthesizer::SetBytesPerSample(int bytesPerSample){
 void seSynthesizer::SetSampleCount(int sampleCount){
 	sampleCount = decMath::max(sampleCount, 0);
 	
-	if(sampleCount == pSampleCount){
+	if(pSampleCount == sampleCount){
 		return;
 	}
 	
@@ -308,7 +308,7 @@ void seSynthesizer::RemoveController(seController *controller){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(controller == pActiveController){
+	if(pActiveController == controller){
 		if(pControllers.GetCount() == 1){
 			SetActiveController(NULL);
 			
@@ -342,7 +342,7 @@ void seSynthesizer::RemoveAllControllers(){
 }
 
 void seSynthesizer::SetActiveController(seController *controller){
-	if(controller == pActiveController){
+	if(pActiveController == controller){
 		return;
 	}
 	
@@ -381,7 +381,7 @@ void seSynthesizer::RemoveLink(seLink *link){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(link == pActiveLink){
+	if(pActiveLink == link){
 		if(pLinks.GetCount() == 1){
 			SetActiveLink(NULL);
 			
@@ -414,7 +414,7 @@ void seSynthesizer::RemoveAllLinks(){
 }
 
 void seSynthesizer::SetActiveLink(seLink *link){
-	if(link == pActiveLink){
+	if(pActiveLink == link){
 		return;
 	}
 	
@@ -468,7 +468,7 @@ void seSynthesizer::RemoveSource(seSource *source){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(source == pActiveSource){
+	if(pActiveSource == source){
 		if(pSources.GetCount() == 1){
 			SetActiveSource(NULL);
 			
@@ -502,7 +502,7 @@ void seSynthesizer::RemoveAllSources(){
 }
 
 void seSynthesizer::SetActiveSource(seSource *source){
-	if(source == pActiveSource){
+	if(pActiveSource == source){
 		return;
 	}
 	
@@ -807,18 +807,13 @@ void seSynthesizer::pCleanUp(){
 		}
 		
 		pEngSynthesizerInstance->SetSynthesizer(NULL);
-		pEngSynthesizerInstance->FreeReference();
 	}
 	
-	if(pEngSynthesizer){
-		pEngSynthesizer->FreeReference();
-	}
 	
 	if(pEngSpeaker){
 		if(pEngMicrophone){
 			pEngMicrophone->RemoveSpeaker(pEngSpeaker);
 		}
-		pEngSpeaker->FreeReference();
 	}
 	
 	if(pEngWorld){
@@ -828,10 +823,8 @@ void seSynthesizer::pCleanUp(){
 			}
 			
 			pEngWorld->RemoveMicrophone(pEngMicrophone);
-			pEngMicrophone->FreeReference();
 		}
 		
-		pEngWorld->FreeReference();
 	}
 }
 
@@ -841,7 +834,7 @@ void seSynthesizer::pCreateWorld(){
 	deEngine * const engine = GetEngine();
 	
 	// create world
-	pEngWorld = engine->GetWorldManager()->CreateWorld();
+	pEngWorld.TakeOver(engine->GetWorldManager()->CreateWorld());
 	pEngWorld->SetGravity(decVector(0.0f, -9.81f, 0.0f));
 	pEngWorld->SetDisableLights(false);
 	
@@ -851,13 +844,13 @@ void seSynthesizer::pCreateWorld(){
 	decLayerMask layerMaskAudio;
 	layerMaskAudio.SetBit(0);
 	
-	pEngMicrophone = engine->GetMicrophoneManager()->CreateMicrophone();
+	pEngMicrophone.TakeOver(engine->GetMicrophoneManager()->CreateMicrophone());
 	pEngMicrophone->SetType(deMicrophone::emtPoint);
 	pEngMicrophone->SetLayerMask(layerMaskAudio);
 	pEngWorld->AddMicrophone(pEngMicrophone);
 	
 	// create speaker
-	pEngSpeaker = engine->GetSpeakerManager()->CreateSpeaker();
+	pEngSpeaker.TakeOver(engine->GetSpeakerManager()->CreateSpeaker());
 	pEngSpeaker->SetType(deSpeaker::estPoint);
 	pEngSpeaker->SetLooping(false);
 	pEngSpeaker->SetPlaySpeed(1.0f);
@@ -867,7 +860,7 @@ void seSynthesizer::pCreateWorld(){
 	pEngMicrophone->AddSpeaker(pEngSpeaker);
 	
 	// create synthesizer
-	pEngSynthesizer = engine->GetSynthesizerManager()->CreateSynthesizer();
+	pEngSynthesizer.TakeOver(engine->GetSynthesizerManager()->CreateSynthesizer());
 	pEngSynthesizer->SetChannelCount(pChannelCount);
 	pEngSynthesizer->SetSampleRate(pSampleRate);
 	pEngSynthesizer->SetBytesPerSample(pBytesPerSample);

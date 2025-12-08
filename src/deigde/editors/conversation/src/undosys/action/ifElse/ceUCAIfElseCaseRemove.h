@@ -26,10 +26,10 @@
 #define _CEUCAIFELSECASEREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAIfElse.h"
+#include "ceCAIfElseCase.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceCAIfElseCase;
-class ceCAIfElse;
 
 
 
@@ -38,9 +38,9 @@ class ceCAIfElse;
  */
 class ceUCAIfElseCaseRemove : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
+	ceConversationTopic::Ref pTopic;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
 	int pIndex;
 	
 public:

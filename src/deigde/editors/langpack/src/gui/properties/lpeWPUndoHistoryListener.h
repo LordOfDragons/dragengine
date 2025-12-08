@@ -35,6 +35,12 @@ class lpeWPUndoHistory;
  * \brief Undo history properties panel listener.
  */
 class lpeWPUndoHistoryListener : public lpeLangPackListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<lpeWPUndoHistoryListener> Ref;
+	
+	
+
 private:
 	lpeWPUndoHistory &pPanel;
 	

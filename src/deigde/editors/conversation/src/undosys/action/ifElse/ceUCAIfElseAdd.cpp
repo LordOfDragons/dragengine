@@ -84,18 +84,6 @@ ceCAIfElseCase *ifcase, ceConversationAction *action, int index){
 }
 
 ceUCAIfElseAdd::~ceUCAIfElseAdd(){
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -29,8 +29,8 @@
 #include "../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 
@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCEnvMapProbeSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	gdeOCEnvMapProbe::eProperties pProperty;
 	decString pOldValue;

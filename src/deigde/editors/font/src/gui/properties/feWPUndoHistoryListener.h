@@ -35,6 +35,12 @@ class feWPUndoHistory;
  * \brief Undo History Panel Listener.
  */
 class feWPUndoHistoryListener : public feFontNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<feWPUndoHistoryListener> Ref;
+	
+	
+
 private:
 	feWPUndoHistory &pPanel;
 	

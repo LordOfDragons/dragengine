@@ -121,15 +121,8 @@ void deoglRCamera::SetParentWorld(deoglRWorld *parentWorld){
 	
 	pPlan->SetWorld(NULL); // has to come first since SetWorld accesses previous world
 	
-	if(pParentWorld){
-		pParentWorld->FreeReference();
-	}
 	
 	pParentWorld = parentWorld;
-	
-	if(parentWorld){
-		parentWorld->AddReference();
-	}
 	
 	pPlan->SetWorld(parentWorld);
 }
@@ -229,7 +222,7 @@ void deoglRCamera::SetBloomSize(float size){
 }
 
 void deoglRCamera::SetToneMapCurve(const decCurveBezier &curve){
-	if(curve == pToneMapCurve){
+	if(pToneMapCurve == curve){
 		return;
 	}
 	

@@ -26,9 +26,9 @@
 #define _CEUCAASPEAKTOGGLEUSESPEECHANIMATION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAActorSpeak.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorSpeak;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakToggleUseSpeechAnimation : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	
 public:
 	/** \brief Type holding strong reference. */

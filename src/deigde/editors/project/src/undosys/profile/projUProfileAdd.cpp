@@ -58,12 +58,6 @@ pProfile(NULL)
 }
 
 projUProfileAdd::~projUProfileAdd(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 

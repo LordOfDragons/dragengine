@@ -62,12 +62,6 @@ pProperty(property)
 }
 
 gdeUOCComponentSetPropertyName::~gdeUOCComponentSetPropertyName(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

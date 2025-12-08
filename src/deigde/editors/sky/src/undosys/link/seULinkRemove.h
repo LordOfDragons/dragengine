@@ -28,10 +28,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/sky/deSkyLayer.h>
+#include "seLink.h"
+#include "seSky.h"
+#include "seLayer.h"
 
-class seLayer;
-class seLink;
-class seSky;
 
 
 /**
@@ -40,12 +40,12 @@ class seSky;
 class seULinkRemove : public igdeUndo{
 private:
 	struct sTarget{
-		seLayer *layer;
+		seLayer::Ref layer;
 		deSkyLayer::eTargets target;
 	};
 	
-	seSky *pSky;
-	seLink *pLink;
+	seSky::Ref pSky;
+	seLink::Ref pLink;
 	
 	sTarget *pTargets;
 	int pTargetCount;

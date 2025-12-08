@@ -1746,7 +1746,7 @@ pConversation(NULL)
 	igdeContainer::Ref content, groupBox, groupBox2, form, formLine;
 	igdeActionContextMenu *actionContextMenu;
 	
-	pListener = new ceWPViewListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -1949,9 +1949,6 @@ pConversation(NULL)
 ceWPView::~ceWPView(){
 	SetConversation(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1960,7 +1957,7 @@ ceWPView::~ceWPView(){
 ///////////////
 
 void ceWPView::SetConversation(ceConversation *conversation){
-	if(conversation == pConversation){
+	if(pConversation == conversation){
 		return;
 	}
 	
@@ -1972,7 +1969,6 @@ void ceWPView::SetConversation(ceConversation *conversation){
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;

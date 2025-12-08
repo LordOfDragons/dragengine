@@ -26,10 +26,10 @@
 #define _CEUCAASPEAKHEADLAMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceStrip.h"
+#include "ceCAActorSpeak.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorSpeak;
-class ceConversationTopic;
-class ceStrip;
 
 
 
@@ -38,9 +38,9 @@ class ceStrip;
  */
 class ceUCAASpeakHeadLAMove : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pHeadLA;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pHeadLA;
 	int pOldIndex;
 	int pNewIndex;
 	

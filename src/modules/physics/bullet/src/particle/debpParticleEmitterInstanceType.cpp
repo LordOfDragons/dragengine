@@ -610,7 +610,6 @@ void debpParticleEmitterInstanceType::KillParticle(int index){
 	if(trailEmitter){
 		trailEmitter->SetEnableCasting(false);
 		trailEmitter->SetRemoveAfterLastParticleDied(true);
-		trailEmitter->FreeReference();
 		pParticles[index].trailEmitter = NULL;
 	}
 	
@@ -644,7 +643,6 @@ void debpParticleEmitterInstanceType::KillAllParticles(){
 		if(trailEmitter){
 			trailEmitter->SetEnableCasting(false);
 			trailEmitter->SetRemoveAfterLastParticleDied(true);
-			trailEmitter->FreeReference();
 			pParticles[pParticleCount].trailEmitter = NULL;
 		}
 	}

@@ -27,8 +27,8 @@
 #define _SEUBODYMOVEDOWN_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seBody.h"
 
-class seBody;
 
 
 /**
@@ -36,7 +36,7 @@ class seBody;
  */
 class seUBodyMoveDown : public igdeUndo{
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	int pIndex;
 	
 	

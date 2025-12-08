@@ -57,9 +57,6 @@ pIndex(index)
 }
 
 gdeWPSTIMOCSubObject::~gdeWPSTIMOCSubObject(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

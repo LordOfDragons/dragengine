@@ -62,12 +62,6 @@ pTexture(NULL)
 }
 
 gdeUOCTextureSetColorTint::~gdeUOCTextureSetColorTint(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

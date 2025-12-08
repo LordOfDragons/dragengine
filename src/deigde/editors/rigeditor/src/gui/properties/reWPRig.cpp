@@ -240,7 +240,7 @@ pListener(NULL)
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPRigListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -267,9 +267,6 @@ pListener(NULL)
 reWPRig::~reWPRig(){
 	SetRig(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -278,13 +275,12 @@ reWPRig::~reWPRig(){
 ///////////////
 
 void reWPRig::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -338,7 +334,7 @@ void reWPRig::UpdateRig(){
 		pEditMass->ClearText();
 	}
 	
-	const bool enabled = pRig != NULL;
+	const bool enabled = pRig != nullptr;
 	pCBRootBone->SetEnabled(enabled);
 	pEditCentralMassPoint->SetEnabled(enabled);
 	pChkModelCollision->SetEnabled(enabled);

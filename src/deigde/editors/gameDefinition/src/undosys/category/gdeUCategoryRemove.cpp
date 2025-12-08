@@ -98,12 +98,6 @@ pCategory(NULL)
 }
 
 gdeUCategoryRemove::~gdeUCategoryRemove(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
-	if(pParent){
-		pParent->FreeReference();
-	}
 }
 
 
@@ -149,7 +143,7 @@ void gdeUCategoryRemove::Redo(){
 	
 	gdeCategory *activeCheck = gameDefinition.GetActiveCategory();
 	while(activeCheck){
-		if(activeCheck == pCategory){
+		if(pCategory == activeCheck){
 			switch(gameDefinition.GetSelectedObjectType()){
 			case gdeGameDefinition::eotCategoryObjectClass:
 			case gdeGameDefinition::eotCategoryParticleEmitter:

@@ -26,8 +26,8 @@
 #define _AEULINKSETBONE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeLink.h"
 
-class aeLink;
 
 
 
@@ -36,7 +36,7 @@ class aeLink;
  */
 class aeULinkSetBone : public igdeUndo{
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	decString pOldValue;
 	decString pNewValue;

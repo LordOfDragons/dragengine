@@ -52,7 +52,7 @@ pMainWindow(mainWindow)
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));
 	
-	pTabPanels.TakeOver(new igdeTabBook(environment));
+	pTabPanels.TakeOverWith(environment);
 	
 	panel.TakeOver(new igdeDEStatus(*this));
 	pTabPanels->AddChild(panel, "Engine Status");

@@ -26,9 +26,9 @@
 #define _CEUCACOMMENTSETCOMMENT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAComment.h"
+#include "ceConversationTopic.h"
 
-class ceCAComment;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCACommentSetComment : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAComment *pComment;
+	ceConversationTopic::Ref pTopic;
+	ceCAComment::Ref pComment;
 	decString pOldComment;
 	decString pNewComment;
 	

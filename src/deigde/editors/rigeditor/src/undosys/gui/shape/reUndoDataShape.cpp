@@ -49,7 +49,6 @@ reUndoDataShape::reUndoDataShape(reRigShape *shape){
 }
 
 reUndoDataShape::~reUndoDataShape(){
-	pShape->FreeReference();
 }
 
 

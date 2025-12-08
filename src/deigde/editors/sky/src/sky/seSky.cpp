@@ -93,7 +93,7 @@ pActiveLayer(NULL)
 	try{
 		SetFilePath("new.desky");
 		
-		pEngWorld = engine->GetWorldManager()->CreateWorld();
+		pEngWorld.TakeOver(engine->GetWorldManager()->CreateWorld());
 		pEngWorld->SetGravity(decVector());
 		pEngWorld->SetDisableLights(false);
 		pEngWorld->SetAmbientLight(decColor());
@@ -105,15 +105,15 @@ pActiveLayer(NULL)
 		pCamera->SetLowestIntensity(1.0f);
 		pCamera->SetAdaptionTime(1.0f);
 		
-		pEngSkyInstance = engine->GetSkyInstanceManager()->CreateSkyInstance();
+		pEngSkyInstance.TakeOver(engine->GetSkyInstanceManager()->CreateSkyInstance());
 		pEngWorld->AddSky(pEngSkyInstance);
 		
-		pEnvObject.TakeOver(new igdeWObject(*environment));
+		pEnvObject.TakeOverWith(*environment);
 		pEnvObject->SetWorld(pEngWorld);
 		pEnvObject->SetPosition(decDVector(0.0, -1.8, 0.0));
 		pEnvObject->SetGDClassName("IGDETestTerrain");
 		
-		pDDHorizon = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDDHorizon.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDDHorizon->SetXRay(true);
 		pEngWorld->AddDebugDrawer(pDDHorizon);
 		
@@ -181,8 +181,6 @@ void seSky::RebuildEngineSky(){
 	// drop old sky
 	pEngSkyInstance->SetSky(NULL);
 	
-	if(pEngSky){
-		pEngSky->FreeReference();
 		pEngSky = NULL;
 	}
 	
@@ -190,7 +188,7 @@ void seSky::RebuildEngineSky(){
 	int i, j, k;
 	
 	try{
-		pEngSky = GetEngine()->GetSkyManager()->CreateSky();
+		pEngSky.TakeOver(GetEngine()->GetSkyManager()->CreateSky());
 		
 		pEngSky->SetBgColor(pBgColor);
 		
@@ -276,8 +274,6 @@ void seSky::RebuildEngineSky(){
 		pEngSky->NotifyParametersChanged();
 		
 	}catch(const deException &){
-		if(pEngSky){
-			pEngSky->FreeReference();
 			pEngSky = NULL;
 		}
 		throw;
@@ -408,13 +404,12 @@ void seSky::RemoveAllControllers(){
 }
 
 void seSky::SetActiveController(seController *controller){
-	if(controller == pActiveController){
+	if(pActiveController == controller){
 		return;
 	}
 	
 	if(pActiveController){
 		pActiveController->SetActive(false);
-		pActiveController->FreeReference();
 	}
 	
 	pActiveController = controller;
@@ -516,13 +511,12 @@ void seSky::RemoveAllLinks(){
 }
 
 void seSky::SetActiveLink(seLink *link){
-	if(link == pActiveLink){
+	if(pActiveLink == link){
 		return;
 	}
 	
 	if(pActiveLink){
 		pActiveLink->SetActive(false);
-		pActiveLink->FreeReference();
 	}
 	
 	pActiveLink = link;
@@ -633,13 +627,12 @@ void seSky::RemoveAllLayers(){
 }
 
 void seSky::SetActiveLayer(seLayer *layer){
-	if(layer == pActiveLayer){
+	if(pActiveLayer == layer){
 		return;
 	}
 	
 	if(pActiveLayer){
 		pActiveLayer->SetActive(false);
-		pActiveLayer->FreeReference();
 	}
 	
 	pActiveLayer = layer;
@@ -996,19 +989,13 @@ void seSky::pCleanUp(){
 		
 		if(pDDHorizon){
 			pEngWorld->RemoveDebugDrawer(pDDHorizon);
-			pDDHorizon->FreeReference();
 		}
 		
 		if(pEngSkyInstance){
 			pEngWorld->RemoveSky(pEngSkyInstance);
-			pEngSkyInstance->FreeReference();
 		}
 		
-		if(pEngSky){
-			pEngSky->FreeReference();
-		}
 		
-		pEngWorld->FreeReference();
 	}
 }
 

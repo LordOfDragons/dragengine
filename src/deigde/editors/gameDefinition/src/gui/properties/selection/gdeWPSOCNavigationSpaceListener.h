@@ -35,6 +35,12 @@ class gdeWPSOCNavigationSpace;
  * \brief Object class navigation space panel listener.
  */
 class gdeWPSOCNavigationSpaceListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSOCNavigationSpaceListener> Ref;
+	
+	
+
 private:
 	gdeWPSOCNavigationSpace &pPanel;
 	

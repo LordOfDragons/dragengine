@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decStringList.h>
+#include "aeRuleAnimationSelect.h"
 
-class aeRuleAnimationSelect;
 
 
 
@@ -38,7 +38,7 @@ class aeRuleAnimationSelect;
  */
 class aeURuleAnimSelectSetMoves : public igdeUndo{
 private:
-	aeRuleAnimationSelect *pRule;
+	aeRuleAnimationSelect::Ref pRule;
 	
 	decStringList pOldMoves;
 	decStringList pNewMoves;

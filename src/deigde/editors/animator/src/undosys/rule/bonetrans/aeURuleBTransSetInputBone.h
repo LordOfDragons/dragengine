@@ -26,8 +26,8 @@
 #define _AEURULEBTRANSSETINPUTBONE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleBoneTransformator.h"
 
-class aeRuleBoneTransformator;
 
 
 /**
@@ -35,7 +35,7 @@ class aeRuleBoneTransformator;
  */
 class aeURuleBTransSetInputBone : public igdeUndo{
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	decString pOldBone, pNewBone;
 	
 public:

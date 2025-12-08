@@ -27,9 +27,9 @@
 #define _SEUADDCONTROLLER_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seController.h"
+#include "seSynthesizer.h"
 
-class seController;
-class seSynthesizer;
 
 
 
@@ -38,8 +38,8 @@ class seSynthesizer;
  */
 class seUAddController : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
-	seController *pController;
+	seSynthesizer::Ref pSynthesizer;
+	seController::Ref pController;
 	
 	
 	

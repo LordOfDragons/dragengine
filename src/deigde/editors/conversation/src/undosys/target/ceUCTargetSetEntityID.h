@@ -26,8 +26,8 @@
 #define _CEUCTARGETSETENTITYID_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceTarget.h"
 
-class ceTarget;
 
 
 
@@ -36,7 +36,7 @@ class ceTarget;
  */
 class ceUCTargetSetEntityID : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decString pOldID;
 	decString pNewID;

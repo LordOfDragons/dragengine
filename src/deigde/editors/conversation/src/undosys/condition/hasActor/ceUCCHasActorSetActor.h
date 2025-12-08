@@ -26,10 +26,10 @@
 #define _CEUCCHASACTORSETACTORID_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCConditionHasActor.h"
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceCConditionHasActor;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -38,9 +38,9 @@ class ceConversationTopic;
  */
 class ceUCCHasActorSetActor : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionHasActor *pHasActor;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionHasActor::Ref pHasActor;
 	decString pOldID;
 	decString pNewID;
 	

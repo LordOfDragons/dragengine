@@ -480,7 +480,7 @@ pListener(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener = new gdeWPGameDefinitionListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -540,9 +540,6 @@ pListener(NULL)
 gdeWPGameDefinition::~gdeWPGameDefinition(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -551,7 +548,7 @@ gdeWPGameDefinition::~gdeWPGameDefinition(){
 ///////////////
 
 void gdeWPGameDefinition::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	
@@ -577,7 +574,6 @@ void gdeWPGameDefinition::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
@@ -648,7 +644,7 @@ void gdeWPGameDefinition::UpdateWorld(){
 		pChkIsProjectGameDef->SetChecked(false);
 	}
 	
-	const bool enabled = pGameDefinition != NULL;
+	const bool enabled = pGameDefinition != nullptr;
 	pEditID->SetEnabled(enabled);
 	pEditDescription->SetEnabled(enabled);
 	pEditBasePath->SetEnabled(enabled);

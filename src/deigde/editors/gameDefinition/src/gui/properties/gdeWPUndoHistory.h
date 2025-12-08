@@ -26,9 +26,9 @@
 #define _GDEWPUNDOHISTORY_H_
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPUndoHistoryListener.h"
 
-class gdeGameDefinition;
-class gdeWPUndoHistoryListener;
 
 
 
@@ -37,8 +37,8 @@ class gdeWPUndoHistoryListener;
  */
 class gdeWPUndoHistory : public igdeWPUndoHistory{
 private:
-	gdeWPUndoHistoryListener *pListener;
-	gdeGameDefinition *pGameDefinition;
+	gdeWPUndoHistoryListener::Ref pListener;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	
 	
@@ -57,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Monitored game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition to monitor or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

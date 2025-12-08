@@ -211,12 +211,12 @@ public:
 		
 		switch(pSorting){
 		case esNameDescending:
-			sorter.TakeOver(new igdeListItemSorter(false));
+			sorter.TakeOverWith(false);
 			break;
 			
 		case esNameAscending:
 		default:
-			sorter.TakeOver(new igdeListItemSorter(true));
+			sorter.TakeOverWith(true);
 			break;
 		}
 		

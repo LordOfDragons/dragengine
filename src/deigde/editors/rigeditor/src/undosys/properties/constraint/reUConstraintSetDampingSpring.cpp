@@ -52,13 +52,9 @@ reUConstraintSetDampingSpring::reUConstraintSetDampingSpring(reRigConstraint *co
 	
 	SetShortInfo("Constraint set spring damping");
 	
-	pConstraint->AddReference();
 }
 
 reUConstraintSetDampingSpring::~reUConstraintSetDampingSpring(){
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 }
 
 

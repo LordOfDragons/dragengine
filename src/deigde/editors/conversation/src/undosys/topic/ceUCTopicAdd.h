@@ -26,9 +26,9 @@
 #define _CEUCTOPICADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationFile.h"
+#include "ceConversationTopic.h"
 
-class ceConversationFile;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCTopicAdd : public igdeUndo{
 private:
-	ceConversationFile *pFile;
-	ceConversationTopic *pTopic;
+	ceConversationFile::Ref pFile;
+	ceConversationTopic::Ref pTopic;
 	
 public:
 	/** \brief Type holding strong reference. */

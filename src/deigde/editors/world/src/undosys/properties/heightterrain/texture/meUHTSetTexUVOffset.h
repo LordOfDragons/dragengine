@@ -30,11 +30,11 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meHeightTerrainTexture.h"
+#include "meWorld.h"
 
 // predefinitions
-class meWorld;
 class meHeightTerrainSector;
-class meHeightTerrainTexture;
 
 
 
@@ -45,9 +45,9 @@ class meHeightTerrainTexture;
  */
 class meUHTSetTexUVOffset : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	decVector2 pOldOffset;
 	decVector2 pNewOffset;

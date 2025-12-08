@@ -114,7 +114,7 @@ pLoadSaveSystem(loadSaveSystem)
 		SetFilePath("new.depemit");
 		
 		// create world
-		pEngWorld = engine->GetWorldManager()->CreateWorld();
+		pEngWorld.TakeOver(engine->GetWorldManager()->CreateWorld());
 		pEngWorld->SetGravity(decVector(0.0f, -9.81f, 0.0f));
 		pEngWorld->SetDisableLights(false);
 		pEngWorld->SetAmbientLight(decColor(0.0f, 0.0f, 0.0f));
@@ -136,7 +136,7 @@ pLoadSaveSystem(loadSaveSystem)
 		pSky->SetWorld(pEngWorld);
 		
 		// create the environment wrapper object
-		pEnvObject.TakeOver(new igdeWObject(*environment));
+		pEnvObject.TakeOverWith(*environment);
 		pEnvObject->SetWorld(pEngWorld);
 		pEnvObject->SetPosition(decDVector(0.0, 0.0, 0.0));
 		
@@ -148,7 +148,7 @@ pLoadSaveSystem(loadSaveSystem)
 		pEnvObject->SetGDClassName("IGDETestTerrain");
 		
 		// create particle emitter instance
-		pEngEmitterInstance = engine->GetParticleEmitterInstanceManager()->CreateInstance();
+		pEngEmitterInstance.TakeOver(engine->GetParticleEmitterInstanceManager()->CreateInstance());
 		pEngWorld->AddParticleEmitter(pEngEmitterInstance);
 		
 		pEngEmitterInstance->SetPosition(decDVector(pPosition));
@@ -163,7 +163,7 @@ pLoadSaveSystem(loadSaveSystem)
 		pEngEmitterInstance->SetCollisionFilter(decCollisionFilter(layerMask, layerMask));
 		
 		// create debug drawers
-		pDDEmitter = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDDEmitter.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDDEmitter->SetXRay(true);
 		pEngWorld->AddDebugDrawer(pDDEmitter);
 		
@@ -240,7 +240,7 @@ void peeEmitter::SetBurstLifetime(float lifetime){
 }
 
 void peeEmitter::SetEmitBurst(bool emitBurst){
-	if(emitBurst != pEmitBurst){
+	if(pEmitBurst != emitBurst){
 		pEmitBurst = emitBurst;
 		
 		FreeEmitter();
@@ -251,7 +251,7 @@ void peeEmitter::SetEmitBurst(bool emitBurst){
 }
 
 void peeEmitter::SetEnableCasting(bool enableCasting){
-	if(enableCasting != pEnableCasting){
+	if(pEnableCasting != enableCasting){
 		pEnableCasting = enableCasting;
 		
 		NotifyEmitterChanged();
@@ -316,8 +316,6 @@ void peeEmitter::Update(float elapsed){
 void peeEmitter::FreeEmitter(){
 	pEngEmitterInstance->SetEmitter(NULL);
 	
-	if(pEngEmitter){
-		pEngEmitter->FreeReference();
 		pEngEmitter = NULL;
 	}
 }
@@ -340,7 +338,7 @@ void peeEmitter::RebuildEmitter(){
 	pBurstTimer = 0.0f;
 	
 	try{
-		pEngEmitter = GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter();
+		pEngEmitter.TakeOver(GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter());
 		
 		for(i=0; i<controllerCount; i++){
 			engController = new deParticleEmitterController;
@@ -436,14 +434,13 @@ void peeEmitter::RemoveAllControllers(){
 }
 
 bool peeEmitter::HasActiveController() const{
-	return pActiveController != NULL;
+	return pActiveController != nullptr;
 }
 
 void peeEmitter::SetActiveController(peeController *controller){
-	if(controller != pActiveController){
+	if(pActiveController != controller){
 		if(pActiveController){
 			pActiveController->SetActive(false);
-			pActiveController->FreeReference();
 		}
 		
 		pActiveController = controller;
@@ -533,14 +530,13 @@ void peeEmitter::RemoveAllTypes(){
 }
 
 bool peeEmitter::HasActiveType() const{
-	return pActiveType != NULL;
+	return pActiveType != nullptr;
 }
 
 void peeEmitter::SetActiveType(peeType *type){
-	if(type != pActiveType){
+	if(pActiveType != type){
 		if(pActiveType){
 			pActiveType->SetActive(false);
-			pActiveType->FreeReference();
 		}
 		
 		pActiveType = type;
@@ -793,19 +789,13 @@ void peeEmitter::pCleanUp(){
 	if(pEngEmitterInstance){
 		pEngEmitterInstance->SetEmitter(NULL);
 	}
-	if(pEngEmitter){
-		pEngEmitter->FreeReference();
-	}
 	if(pEngWorld){
 		if(pDDEmitter){
 			pEngWorld->RemoveDebugDrawer(pDDEmitter);
-			pDDEmitter->FreeReference();
 		}
 		
 		if(pEngEmitterInstance){
 			pEngWorld->RemoveParticleEmitter(pEngEmitterInstance);
-			pEngEmitterInstance->FreeReference();
 		}
-		pEngWorld->FreeReference();
 	}
 }

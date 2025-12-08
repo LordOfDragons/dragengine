@@ -43,14 +43,10 @@
 ////////////////////////////
 
 igdeEditorModule::igdeEditorModule(igdeEnvironment &environment) :
-pEnvironment(environment),
-pEditorWindow(NULL){
+pEnvironment(environment){
 }
 
 igdeEditorModule::~igdeEditorModule(){
-	if(pEditorWindow){
-		pEditorWindow->FreeReference();
-	}
 }
 
 
@@ -71,7 +67,7 @@ void igdeEditorModule::SetEditorWindow(igdeEditorWindow *editorWindow){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(editorWindow == pEditorWindow){
+	if(pEditorWindow == editorWindow){
 		return;
 	}
 	
@@ -81,7 +77,6 @@ void igdeEditorModule::SetEditorWindow(igdeEditorWindow *editorWindow){
 		if(pEditorWindow->GetParent() == uiContainer){
 			uiContainer->RemoveChild(pEditorWindow);
 		}
-		pEditorWindow->FreeReference();
 	}
 	
 	pEditorWindow = editorWindow;
@@ -171,12 +166,7 @@ void igdeEditorModule::OnGameProjectChanged(){
 }
 
 igdeStepableTask *igdeEditorModule::OnGameDefinitionChanged(){
-	if(pEditorWindow){
-		return pEditorWindow->OnGameDefinitionChanged();
-		
-	}else{
-		return NULL;
-	}
+	return pEditorWindow ? pEditorWindow->OnGameDefinitionChanged() : nullptr;
 }
 
 bool igdeEditorModule::ProcessCommandLine(decUnicodeStringList&){

@@ -64,7 +64,7 @@ pDynamicSkinRenderablesChanged(true),
 pDirtyRenderableMapping(true)
 {
 	try{
-		pRTexture = new deoglRComponentTexture(*component.GetRComponent(), index);
+		pRTexture.TakeOverWith(*component.GetRComponent(), index);
 		pSkinStateController = new deoglSkinStateController;
 		
 		TextureChanged(component.GetComponent().GetTextureAt(index));
@@ -192,7 +192,7 @@ void deoglComponentTexture::TextureChanged(const deComponentTexture &texture){
 		skin = (deoglSkin*)texture.GetSkin()->GetPeerGraphic();
 	}
 	
-	if(skin != pSkin){
+	if(pSkin != skin){
 		pSkin = skin;
 		pDirtyRenderableMapping = true;
 		pComponent.DirtyTextureUseSkin();
@@ -204,7 +204,7 @@ void deoglComponentTexture::TextureChanged(const deComponentTexture &texture){
 		dynamicSkin = (deoglDynamicSkin*)texture.GetDynamicSkin()->GetPeerGraphic();
 	}
 	
-	if(dynamicSkin != pDynamicSkin){
+	if(pDynamicSkin != dynamicSkin){
 		if(pDynamicSkin){
 			pDynamicSkin->RemoveListener(this);
 		}
@@ -232,9 +232,6 @@ void deoglComponentTexture::pCleanUp(){
 		delete pSkinStateController;
 	}
 	
-	if(pRTexture){
-		pRTexture->FreeReference();
-	}
 	
 	if(pDynamicSkin){
 		pDynamicSkin->RemoveListener(this);

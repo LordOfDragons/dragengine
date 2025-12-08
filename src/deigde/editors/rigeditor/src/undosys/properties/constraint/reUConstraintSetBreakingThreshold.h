@@ -26,8 +26,8 @@
 #define _REUCONSTRAINTSETBREAKINGTHRESHOLD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRigConstraint.h"
 
-class reRigConstraint;
 
 
 
@@ -36,7 +36,7 @@ class reRigConstraint;
  */
 class reUConstraintSetBreakingThreshold : public igdeUndo{
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	
 	float pOldBreakingThreshold;
 	float pNewBreakingThreshold;

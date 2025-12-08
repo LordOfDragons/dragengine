@@ -51,7 +51,6 @@ aeUSetRuleBlendMode::aeUSetRuleBlendMode(aeRule *rule, deAnimatorRule::eBlendMod
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		SetShortInfo("Rule set blend mode");
 		
@@ -84,7 +83,4 @@ void aeUSetRuleBlendMode::Redo(){
 //////////////////////
 
 void aeUSetRuleBlendMode::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

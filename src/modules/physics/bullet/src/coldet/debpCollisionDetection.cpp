@@ -157,9 +157,6 @@ debpCollisionDetection::~debpCollisionDetection(){
 		delete pPointTestShape;
 	}
 	
-	if(pColInfo){
-		pColInfo->FreeReference();
-	}
 }
 
 

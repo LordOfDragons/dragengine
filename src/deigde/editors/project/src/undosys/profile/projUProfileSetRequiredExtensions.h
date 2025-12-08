@@ -29,8 +29,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decStringSet.h>
+#include "projProfile.h"
 
-class projProfile;
 
 
 
@@ -39,7 +39,7 @@ class projProfile;
  */
 class projUProfileSetRequiredExtensions : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;

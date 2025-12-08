@@ -56,9 +56,6 @@ pNewName(newName)
 }
 
 lpeULangPackEntrySetName::~lpeULangPackEntrySetName(){
-	if(pEntry){
-		pEntry->FreeReference();
-	}
 }
 
 

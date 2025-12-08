@@ -358,10 +358,6 @@ void deClassSSGroup::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synt
 	}
 	
 	nd.synthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
 }
 
 void deClassSSGroup::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceGroup *source){
@@ -384,9 +380,6 @@ void deClassSSGroup::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSyn
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
 		nd.synthesizer = synthesizer;
-		if(synthesizer){
-			synthesizer->AddReference();
-		}
 		
 		nd.source = source;
 		source->AddReference();

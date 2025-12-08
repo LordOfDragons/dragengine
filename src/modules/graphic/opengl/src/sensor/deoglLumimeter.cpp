@@ -53,7 +53,7 @@ pDirtyLumimeter(true),
 pDirtyOctree(true)
 {
 	try{
-		pRLumimeter = new deoglRLumimeter(ogl.GetRenderThread());
+		pRLumimeter.TakeOverWith(ogl.GetRenderThread());
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -123,7 +123,4 @@ decColor deoglLumimeter::MeasureColor(){
 //////////////////////
 
 void deoglLumimeter::pCleanUp(){
-	if(pRLumimeter){
-		pRLumimeter->FreeReference();
-	}
 }

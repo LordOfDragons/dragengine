@@ -27,8 +27,8 @@
 #define _SEUEFFECTSTRETCHSETMAXPITCH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seEffectStretch.h"
 
-class seEffectStretch;
 
 
 /**
@@ -36,7 +36,7 @@ class seEffectStretch;
  */
 class seUEffectStretchSetMaxPitch : public igdeUndo{
 private:
-	seEffectStretch *pSource;
+	seEffectStretch::Ref pSource;
 	
 	float pOldPitch;
 	float pNewPitch;

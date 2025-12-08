@@ -25,7 +25,7 @@
 #ifndef _DEOGLPARTICLEEMITTERINSTANCETYPE_H_
 #define _DEOGLPARTICLEEMITTERINSTANCETYPE_H_
 
-class deoglRParticleEmitterInstanceType;
+#include "deoglRParticleEmitterInstanceType.h"
 class deParticleEmitterInstanceType;
 
 class deoglParticleEmitterInstance;
@@ -39,7 +39,7 @@ private:
 	deoglParticleEmitterInstance &pEmitterInstance;
 	const int pIndex;
 	
-	deoglRParticleEmitterInstanceType *pRType;
+	deoglRParticleEmitterInstanceType::Ref pRType;
 	
 	bool pDirtyType;
 	bool pDirtyParamBlocks;
@@ -62,7 +62,7 @@ public:
 	inline deoglParticleEmitterInstance &GetEmitterInstance(){ return pEmitterInstance; }
 	
 	/** Render type. */
-	inline deoglRParticleEmitterInstanceType *GetRType() const{ return pRType; }
+	inline const deoglRParticleEmitterInstanceType::Ref &GetRType() const{ return pRType; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

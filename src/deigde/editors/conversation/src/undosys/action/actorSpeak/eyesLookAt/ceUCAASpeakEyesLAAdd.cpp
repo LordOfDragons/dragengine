@@ -68,15 +68,6 @@ ceUCAASpeakEyesLAAdd::ceUCAASpeakEyesLAAdd(ceConversationTopic *topic, ceCAActor
 }
 
 ceUCAASpeakEyesLAAdd::~ceUCAASpeakEyesLAAdd(){
-	if(pEyesLA){
-		pEyesLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

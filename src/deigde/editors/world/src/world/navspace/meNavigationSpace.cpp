@@ -108,9 +108,9 @@ pColliderOwner(this)
 	
 	try{
 		meRigBuilderMeshCollision rigBuilder;
-		pEngRig = engine->GetRigManager()->CreateRig("", rigBuilder);
+		pEngRig.TakeOver(engine->GetRigManager()->CreateRig("", rigBuilder));
 		
-		pEngCollider = engine->GetColliderManager()->CreateColliderComponent();
+		pEngCollider.TakeOver(engine->GetColliderManager()->CreateColliderComponent());
 		pEngCollider->SetEnabled(true);
 		pEngCollider->SetResponseType(deCollider::ertStatic);
 		pEngCollider->SetUseLocalGravity(true);
@@ -125,10 +125,10 @@ pColliderOwner(this)
 		
 		environment->SetColliderUserPointer(pEngCollider, &pColliderOwner);
 		
-		pEngNavSpace = engine->GetNavigationSpaceManager()->CreateNavigationSpace();
+		pEngNavSpace.TakeOver(engine->GetNavigationSpaceManager()->CreateNavigationSpace());
 		
 		// create debug drawer and shapes
-		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSNavSpace = new igdeWDebugDrawerShape;
@@ -138,7 +138,7 @@ pColliderOwner(this)
 		pUpdateDDSColors();
 		pUpdateShapes();
 		
-		pObjectPlaceholder.TakeOver(new igdeWObject(*environment));
+		pObjectPlaceholder.TakeOverWith(*environment);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -239,7 +239,7 @@ void meNavigationSpace::SetFilename(const char *filename){
 
 
 void meNavigationSpace::SetSelected(bool selected){
-	if(selected == pSelected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -248,7 +248,7 @@ void meNavigationSpace::SetSelected(bool selected){
 }
 
 void meNavigationSpace::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	
@@ -527,25 +527,12 @@ void meNavigationSpace::pCleanUp(){
 	
 	pObjectPlaceholder = nullptr;
 	
-	if(pEngNavSpace){
-		pEngNavSpace->FreeReference();
-	}
 	if(pEngCollider){
 		pEnvironment->SetColliderUserPointer(pEngCollider, NULL);
-		pEngCollider->FreeReference();
-	}
-	if(pEngColComponent){
-		pEngColComponent->FreeReference();
-	}
-	if(pEngRig){
-		pEngRig->FreeReference();
 	}
 	
 	if(pDDSNavSpace){
 		delete pDDSNavSpace;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 
@@ -553,8 +540,6 @@ void meNavigationSpace::pCleanUp(){
 
 void meNavigationSpace::pUpdateShapes(){
 	pEngCollider->SetComponent(NULL);
-	if(pEngColComponent){
-		pEngColComponent->FreeReference();
 		pEngColComponent = NULL;
 	}
 	
@@ -584,7 +569,7 @@ void meNavigationSpace::pUpdateShapes(){
 			}
 			
 			skin = engine.GetSkinManager()->LoadDefault();
-			pEngColComponent = engine.GetComponentManager()->CreateComponent(model, skin);
+			pEngColComponent.TakeOver(engine.GetComponentManager()->CreateComponent(model, skin));
 			pEngColComponent->SetRig(pEngRig);
 			
 		}catch(const deException &){

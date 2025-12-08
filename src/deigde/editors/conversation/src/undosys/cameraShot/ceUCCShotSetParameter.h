@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/curve/decCurveBezier.h>
+#include "ceCameraShot.h"
 
-class ceCameraShot;
 
 
 
@@ -38,7 +38,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetParameter : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	int pParameter;
 	
 	decCurveBezier pOldCurve;

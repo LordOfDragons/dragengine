@@ -77,15 +77,6 @@ ceUCAIfElseCaseMove::ceUCAIfElseCaseMove(ceConversationTopic *topic, ceCAIfElse 
 }
 
 ceUCAIfElseCaseMove::~ceUCAIfElseCaseMove(){
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

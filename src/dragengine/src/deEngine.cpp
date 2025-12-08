@@ -346,8 +346,7 @@ void deEngine::SetLogger(deLogger *logger){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(logger != pLogger){
-		pLogger->FreeReference();
+	if(pLogger != logger){
 		pLogger = logger;
 		logger->AddReference();
 	}
@@ -1376,9 +1375,6 @@ void deEngine::pCleanUp(){
 	}
 	
 	// free logger
-	if(pLogger){
-		pLogger->FreeReference();
-	}
 	
 	// free os file system if present
 	pOSFileSystem = nullptr;

@@ -550,7 +550,7 @@ pPreventUpdateCamera(false)
 	igdeContainer::Ref content, groupBox, form, formLine;
 	igdeActionContextMenu::Ref actionMenu;
 	
-	pListener = new meWPViewListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -651,9 +651,6 @@ pPreventUpdateCamera(false)
 
 meWPView::~meWPView(){
 	SetWorld(nullptr);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -662,7 +659,7 @@ meWPView::~meWPView(){
 ///////////////
 
 void meWPView::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -676,7 +673,6 @@ void meWPView::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

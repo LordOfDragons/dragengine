@@ -27,9 +27,9 @@
 #define _GDEUOCREMOVEPARTICLEEMITTER_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCParticleEmitter.h"
 
-class gdeOCParticleEmitter;
-class gdeObjectClass;
 
 
 
@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCRemoveParticleEmitter : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	
 	

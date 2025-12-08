@@ -122,7 +122,7 @@ void deTerrainHeightMap::SetHeightImage(deImage *heightImage){
 		}
 	}
 	
-	if(heightImage == pHeightImage){
+	if(pHeightImage == heightImage){
 		return;
 	}
 	
@@ -130,7 +130,6 @@ void deTerrainHeightMap::SetHeightImage(deImage *heightImage){
 	//       deprecated anyways and should be done by physics module
 	if(pHeightImage){
 		pHeightImage->ReleaseImageData();
-		pHeightImage->FreeReference();
 	}
 	
 	pHeightImage = heightImage;

@@ -63,12 +63,6 @@ pNewID(newID)
 }
 
 ceUCActionSetWaitForActorID::~ceUCActionSetWaitForActorID(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

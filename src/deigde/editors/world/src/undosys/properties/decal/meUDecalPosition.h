@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meDecal.h"
 
-class meDecal;
 
 
 
@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalPosition : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decDVector pOldPosition;
 	decDVector pNewPosition;

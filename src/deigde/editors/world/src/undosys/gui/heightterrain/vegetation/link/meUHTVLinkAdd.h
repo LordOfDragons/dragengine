@@ -28,10 +28,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meHTVRLink.h"
+#include "meHTVegetationLayer.h"
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRLink;
 
 
 
@@ -47,8 +47,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRLink *pLink;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRLink::Ref pLink;
 	
 public:
 	/** \name Constructors and Destructors */

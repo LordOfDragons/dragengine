@@ -55,13 +55,9 @@ pSource(NULL)
 	SetShortInfo("Synthesizer source set synthesizer path");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceSynthSetPathSynthesizer::~seUSourceSynthSetPathSynthesizer(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

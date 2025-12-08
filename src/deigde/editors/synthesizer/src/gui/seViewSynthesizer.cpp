@@ -70,38 +70,26 @@ pWPSynthesizer(NULL)
 	igdeContainerBox::Ref panels(igdeContainerBox::Ref::NewWith(env, igdeContainerBox::eaX, 10));
 	AddChild(panels, eaCenter);
 	
-	pWPController = new seWPController(*this);
+	pWPController.TakeOverWith(*this);
 	panels->AddChild(pWPController);
 	helper.Separator(panels, false);
 	
-	pWPLink = new seWPLink(*this);
+	pWPLink.TakeOverWith(*this);
 	panels->AddChild(pWPLink);
 	helper.Separator(panels, false);
 	
-	pWPSource = new seWPSource(*this);
+	pWPSource.TakeOverWith(*this);
 	panels->AddChild(pWPSource);
 	helper.Separator(panels, false);
 	
 	// right
-	pWPSynthesizer = new seWPSynthesizer(*this);
+	pWPSynthesizer.TakeOverWith(*this);
 	AddChild(pWPSynthesizer, eaRight);
 }
 
 seViewSynthesizer::~seViewSynthesizer(){
 	SetSynthesizer(NULL);
 	
-	if(pWPController){
-		pWPController->FreeReference();
-	}
-	if(pWPLink){
-		pWPLink->FreeReference();
-	}
-	if(pWPSource){
-		pWPSource->FreeReference();
-	}
-	if(pWPSynthesizer){
-		pWPSynthesizer->FreeReference();
-	}
 }
 
 
@@ -110,19 +98,12 @@ seViewSynthesizer::~seViewSynthesizer(){
 ///////////////
 
 void seViewSynthesizer::SetSynthesizer(seSynthesizer *synthesizer){
-	if(synthesizer == pSynthesizer){
+	if(pSynthesizer == synthesizer){
 		return;
 	}
 	
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 	
 	pSynthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
 	
 	pWPController->SetSynthesizer(synthesizer);
 	pWPLink->SetSynthesizer(synthesizer);

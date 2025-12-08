@@ -52,9 +52,6 @@ pProperty(NULL)
 }
 
 seUPropertyConstructedToggleTileY::~seUPropertyConstructedToggleTileY(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

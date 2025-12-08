@@ -86,13 +86,12 @@ void meDecalSelection::RemoveAll(){
 
 
 bool meDecalSelection::HasActive() const{
-	return pActive != NULL;
+	return pActive != nullptr;
 }
 
 void meDecalSelection::SetActive(meDecal *object){
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = object;

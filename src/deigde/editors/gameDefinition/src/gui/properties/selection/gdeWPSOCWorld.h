@@ -33,11 +33,11 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSOCWorldListener.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeWindowProperties;
-class gdeWPSOCWorldListener;
 
 
 /**
@@ -46,9 +46,9 @@ class gdeWPSOCWorldListener;
 class gdeWPSOCWorld : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCWorldListener *pListener;
+	gdeWPSOCWorldListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditPath::Ref pEditPath;
 	igdeEditVector::Ref pEditPosition;
@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or nullptr if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or nullptr if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

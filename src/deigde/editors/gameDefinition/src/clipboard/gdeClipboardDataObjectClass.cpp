@@ -51,7 +51,4 @@ pObjectClass(NULL)
 }
 
 gdeClipboardDataObjectClass::~gdeClipboardDataObjectClass(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }

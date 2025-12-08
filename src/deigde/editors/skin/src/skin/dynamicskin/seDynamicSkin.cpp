@@ -65,7 +65,7 @@ seDynamicSkin::seDynamicSkin(seSkin *parentSkin){
 	pActiveRenderable = NULL;
 	
 	try{
-		pEngDynamicSkin = parentSkin->GetEngine()->GetDynamicSkinManager()->CreateDynamicSkin();
+		pEngDynamicSkin.TakeOver(parentSkin->GetEngine()->GetDynamicSkinManager()->CreateDynamicSkin());
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -159,14 +159,13 @@ void seDynamicSkin::RemoveAllRenderables(){
 }
 
 bool seDynamicSkin::HasActiveRenderable() const{
-	return pActiveRenderable != NULL;
+	return pActiveRenderable != nullptr;
 }
 
 void seDynamicSkin::SetActiveRenderable(seDynamicSkinRenderable *renderable){
-	if(renderable != pActiveRenderable){
+	if(pActiveRenderable != renderable){
 		if(pActiveRenderable){
 			pActiveRenderable->SetActive(false);
-			pActiveRenderable->FreeReference();
 		}
 		
 		pActiveRenderable = renderable;
@@ -189,7 +188,4 @@ void seDynamicSkin::pCleanUp(){
 	SetActiveRenderable(NULL);
 	RemoveAllRenderables();
 	
-	if(pEngDynamicSkin){
-		pEngDynamicSkin->FreeReference();
-	}
 }

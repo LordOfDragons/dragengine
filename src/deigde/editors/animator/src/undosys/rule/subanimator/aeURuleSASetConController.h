@@ -28,10 +28,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleSubAnimator.h"
+#include "aeController.h"
 
 // predefinitions
-class aeRuleSubAnimator;
-class aeController;
 
 
 
@@ -42,11 +42,11 @@ class aeController;
  */
 class aeURuleSASetConController : public igdeUndo{
 private:
-	aeRuleSubAnimator *pRule;
+	aeRuleSubAnimator::Ref pRule;
 	
 	int pTarget;
-	aeController *pOldController;
-	aeController *pNewController;
+	aeController::Ref pOldController;
+	aeController::Ref pNewController;
 	
 public:
 	/** \brief Type holding strong reference. */

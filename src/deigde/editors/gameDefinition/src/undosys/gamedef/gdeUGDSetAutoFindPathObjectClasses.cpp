@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 gdeUGDSetAutoFindPathObjectClasses::~gdeUGDSetAutoFindPathObjectClasses(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

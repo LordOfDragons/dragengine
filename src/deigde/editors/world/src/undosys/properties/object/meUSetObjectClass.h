@@ -30,9 +30,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meObject.h"
 
 // predefinitions
-class meObject;
 class meObjectList;
 
 
@@ -43,7 +43,7 @@ class meObjectList;
 class meUSetObjectClass : public igdeUndo{
 private:
 	struct sObject{
-		meObject *object;
+		meObject::Ref object;
 		decString oldcname;
 		decString newcname;
 		decVector oldsize;

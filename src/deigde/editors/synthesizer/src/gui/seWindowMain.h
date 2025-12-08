@@ -40,13 +40,13 @@
 
 #include <dragengine/resources/synthesizer/source/deSynthesizerSourceVisitorIdentify.h>
 #include <dragengine/resources/synthesizer/effect/deSynthesizerEffectVisitorIdentify.h>
+#include "seWindowMainListener.h"
+#include "seSynthesizer.h"
 
 class seIGDEModule;
 class seSource;
 class seEffect;
-class seSynthesizer;
 class seViewSynthesizer;
-class seWindowMainListener;
 
 
 
@@ -55,7 +55,7 @@ class seWindowMainListener;
  */
 class seWindowMain : public igdeEditorWindow{
 private:
-	seWindowMainListener *pListener;
+	seWindowMainListener::Ref pListener;
 	
 	igdeIcon::Ref pIconSourceSound;
 	igdeIcon::Ref pIconSourceWave;
@@ -125,7 +125,7 @@ private:
 	
 	seViewSynthesizer *pViewSynthesizer;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	
 	
@@ -168,7 +168,7 @@ public:
 	
 	
 	/** \brief Synthesizer. */
-	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline const seSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer. */
 	void SetSynthesizer(seSynthesizer *synthesizer);

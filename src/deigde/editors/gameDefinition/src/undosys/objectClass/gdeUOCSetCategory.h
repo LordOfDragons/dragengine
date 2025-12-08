@@ -27,8 +27,8 @@
 #define _GDEUOBJECTCLASSSETCATEGORY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 
@@ -37,7 +37,7 @@ class gdeObjectClass;
  */
 class gdeUOCSetCategory : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decString pOldValue;
 	decString pNewValue;

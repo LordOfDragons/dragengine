@@ -26,8 +26,8 @@
 #define _SAEUPHONEMESETLENGTH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "saePhoneme.h"
 
-class saePhoneme;
 
 
 
@@ -36,7 +36,7 @@ class saePhoneme;
  */
 class saeUPhonemeSetLength : public igdeUndo{
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	float pOldLength;
 	float pNewLength;

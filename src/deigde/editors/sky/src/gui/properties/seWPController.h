@@ -32,11 +32,11 @@
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "seWPControllerListener.h"
+#include "seSky.h"
 
-class seSky;
 class seController;
 class seWindowProperties;
-class seWPControllerListener;
 
 
 /**
@@ -45,9 +45,9 @@ class seWPControllerListener;
 class seWPController : public igdeContainerScroll{
 private:
 	seWindowProperties &pWindowProperties;
-	seWPControllerListener *pListener;
+	seWPControllerListener::Ref pListener;
 	
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	igdeAction::Ref pActionControllerAdd;
 	igdeAction::Ref pActionControllerRemove;
@@ -82,7 +82,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);

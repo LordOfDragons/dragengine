@@ -557,7 +557,7 @@ pRig(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeAction::Ref action;
 	
-	pListener = new reWPViewListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -684,9 +684,6 @@ pRig(NULL)
 reWPView::~reWPView(){
 	SetRig(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -695,7 +692,7 @@ reWPView::~reWPView(){
 ///////////////
 
 void reWPView::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -704,7 +701,6 @@ void reWPView::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -751,7 +747,7 @@ void reWPView::UpdateResources(){
 		pEditAnimPath->ClearPath();
 	}
 	
-	const bool enabled = pRig != NULL;
+	const bool enabled = pRig != nullptr;
 	pEditModelPath->SetEnabled(enabled);
 	pEditSkinPath->SetEnabled(enabled);
 	pEditAnimPath->SetEnabled(enabled);
@@ -868,7 +864,7 @@ void reWPView::UpdateView(){
 		pEditLocalGravity->SetVector(decVector());
 	}
 	
-	const bool enabled = pRig != NULL;
+	const bool enabled = pRig != nullptr;
 	
 	pCBAnimMoves->SetEnabled(enabled);
 	pSldMoveTime->SetEnabled(enabled);

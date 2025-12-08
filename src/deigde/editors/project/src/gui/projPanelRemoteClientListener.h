@@ -34,6 +34,12 @@ class projPanelRemoteClient;
  * \brief Panel test-run listener.
  */
 class projPanelRemoteClientListener : public projRemoteClientListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<projPanelRemoteClientListener> Ref;
+	
+	
+
 private:
 	projPanelRemoteClient &pPanel;
 	

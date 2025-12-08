@@ -53,9 +53,6 @@ pPropertyExists(false)
 
 meUndoDataObjectProperty::~meUndoDataObjectProperty(){
 	pOldProperties.RemoveAll();
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

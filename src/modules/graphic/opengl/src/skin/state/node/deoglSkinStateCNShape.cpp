@@ -86,7 +86,6 @@ pVBOBlockPointCount(0)
 deoglSkinStateCNShape::~deoglSkinStateCNShape(){
 	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
-		pVBOBlock->FreeReference();
 	}
 }
 

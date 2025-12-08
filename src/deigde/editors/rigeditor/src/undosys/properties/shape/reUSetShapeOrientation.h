@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include "dragengine/common/math/decMath.h"
+#include "reRigShape.h"
 
-class reRigShape;
 
 
 
@@ -37,7 +37,7 @@ class reRigShape;
  */
 class reUSetShapeOrientation : public igdeUndo{
 private:
-	reRigShape *pShape;
+	reRigShape::Ref pShape;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;

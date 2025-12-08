@@ -1121,7 +1121,7 @@ pGameDefinition(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, form, frameLine;
 	
-	pListener = new gdeWPSObjectClassListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -1285,9 +1285,6 @@ pGameDefinition(NULL)
 gdeWPSObjectClass::~gdeWPSObjectClass(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1296,7 +1293,7 @@ gdeWPSObjectClass::~gdeWPSObjectClass(){
 ///////////////
 
 void gdeWPSObjectClass::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	
@@ -1318,7 +1315,6 @@ void gdeWPSObjectClass::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

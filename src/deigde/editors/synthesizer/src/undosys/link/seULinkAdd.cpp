@@ -52,19 +52,11 @@ pLink(NULL)
 	SetShortInfo("Add Link");
 	
 	pSynthesizer = synthesizer;
-	pSynthesizer->AddReference();
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 seULinkAdd::~seULinkAdd(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }
 
 

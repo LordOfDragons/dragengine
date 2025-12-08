@@ -26,8 +26,8 @@
 #define _AEULINKSETVERTEXPOSITIONSETMINIMUM_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeLink.h"
 
-class aeLink;
 
 
 
@@ -36,7 +36,7 @@ class aeLink;
  */
 class aeULinkSetVertexPositionSetMinimum : public igdeUndo{
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	float pOldValue;
 	float pNewValue;

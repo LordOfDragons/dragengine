@@ -26,9 +26,9 @@
 #define _SEWPUNDOHISTORY_H_
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "seSky.h"
+#include "seWPUndoHistoryListener.h"
 
-class seSky;
-class seWPUndoHistoryListener;
 
 
 
@@ -37,8 +37,8 @@ class seWPUndoHistoryListener;
  */
 class seWPUndoHistory : public igdeWPUndoHistory{
 private:
-	seWPUndoHistoryListener *pListener;
-	seSky *pSky;
+	seWPUndoHistoryListener::Ref pListener;
+	seSky::Ref pSky;
 	
 	
 	
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);

@@ -30,6 +30,7 @@
 #include "../shape/debpShapeTransform.h"
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/collider/deCollisionInfo.h>
 
 class decCollisionFilter;
 class dePhysicsBullet;
@@ -49,7 +50,6 @@ class debpSharedCollisionFiltering;
 class debpContactResultCallback;
 
 class deBaseScriptingCollider;
-class deCollisionInfo;
 class debpDCollisionBox;
 
 class btSphereShape;
@@ -101,7 +101,7 @@ struct debpCollisionResult{
 class debpCollisionDetection{
 private:
 	dePhysicsBullet &pBullet;
-	deCollisionInfo *pColInfo;
+	deCollisionInfo::Ref pColInfo;
 	debpShapeTransform pShape1;
 	debpShapeTransform pShape2;
 	debpSweepCollisionTest pRayHackShape;

@@ -62,12 +62,6 @@ pLight(NULL)
 }
 
 gdeUOCLightSetHintLightImportance::~gdeUOCLightSetHintLightImportance(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

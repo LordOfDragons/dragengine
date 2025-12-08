@@ -203,7 +203,6 @@ void dePhysicsBullet::CleanUp(){
 	
 	if(pColInfo){
 		pColInfo->Clear(); // just to be safe in case somebody still holds a reference
-		pColInfo->FreeReference();
 		pColInfo = NULL;
 	}
 	

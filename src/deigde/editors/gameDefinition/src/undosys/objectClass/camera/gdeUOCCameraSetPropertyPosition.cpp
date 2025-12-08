@@ -60,12 +60,6 @@ pCamera(nullptr)
 }
 
 gdeUOCCameraSetPropertyPosition::~gdeUOCCameraSetPropertyPosition(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

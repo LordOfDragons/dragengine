@@ -769,7 +769,7 @@ pPreventUpdate(false)
 	igdeContainer::Ref content, groupBox, form, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new peeWPTypeListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -887,13 +887,9 @@ pPreventUpdate(false)
 peeWPType::~peeWPType(){
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 		pEmitter = NULL;
 	}
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -902,13 +898,12 @@ peeWPType::~peeWPType(){
 ///////////////
 
 void peeWPType::SetEmitter(peeEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;
@@ -963,7 +958,7 @@ void peeWPType::UpdateEmitter(){
 		pChkEmitBurst->SetChecked(false);
 	}
 	
-	const bool enabled = pEmitter != NULL;
+	const bool enabled = pEmitter != nullptr;
 	pEditBurstLifetime->SetEnabled(enabled);
 	pChkEmitBurst->SetEnabled(enabled);
 }
@@ -1053,7 +1048,7 @@ void peeWPType::UpdateType(){
 		}
 	}
 	
-	const bool enabled = type != NULL;
+	const bool enabled = type != nullptr;
 	
 	pEditSkin->SetEnabled(enabled);
 	pEditModel->SetEnabled(enabled);
@@ -1087,8 +1082,8 @@ void peeWPType::UpdateControllerList(){
 		pCBParamCtrlValue->AddItem("< None >", NULL, NULL);
 		pCBParamCtrlSpread->AddItem("< None >", NULL, NULL);
 		
-		pCBParamCtrlValue->SetEnabled(pEmitter != NULL);
-		pCBParamCtrlSpread->SetEnabled(pEmitter != NULL);
+		pCBParamCtrlValue->SetEnabled(pEmitter != nullptr);
+		pCBParamCtrlSpread->SetEnabled(pEmitter != nullptr);
 		
 		if(!pEmitter){
 			return;

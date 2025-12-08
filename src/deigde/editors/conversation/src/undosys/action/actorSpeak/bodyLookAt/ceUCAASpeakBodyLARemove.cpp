@@ -69,15 +69,6 @@ ceUCAASpeakBodyLARemove::ceUCAASpeakBodyLARemove(ceConversationTopic *topic, ceC
 }
 
 ceUCAASpeakBodyLARemove::~ceUCAASpeakBodyLARemove(){
-	if(pBodyLA){
-		pBodyLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

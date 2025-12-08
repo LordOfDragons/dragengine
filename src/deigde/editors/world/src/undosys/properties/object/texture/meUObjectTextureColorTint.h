@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meObjectTexture.h"
 
-class meObjectTexture;
 
 
 
@@ -38,7 +38,7 @@ class meObjectTexture;
  */
 class meUObjectTextureColorTint : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decColor pOldColor;
 	decColor pNewColor;
 	

@@ -51,7 +51,4 @@ pLight(NULL)
 }
 
 gdeClipboardDataOCLight::~gdeClipboardDataOCLight(){
-	if(pLight){
-		pLight->FreeReference();
-	}
 }

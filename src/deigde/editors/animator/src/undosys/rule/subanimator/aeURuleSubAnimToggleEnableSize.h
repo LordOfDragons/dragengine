@@ -27,8 +27,8 @@
 #define _AEURULESUBANIMTOGGLEENABLESIZE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleSubAnimator.h"
 
-class aeRuleSubAnimator;
 
 
 
@@ -37,7 +37,7 @@ class aeRuleSubAnimator;
  */
 class aeURuleSubAnimToggleEnableSize : public igdeUndo{
 private:
-	aeRuleSubAnimator *pRule;
+	aeRuleSubAnimator::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

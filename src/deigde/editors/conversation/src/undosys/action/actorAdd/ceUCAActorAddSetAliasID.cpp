@@ -61,12 +61,6 @@ ceUCAActorAddSetAliasID::ceUCAActorAddSetAliasID(ceConversationTopic *topic, ceC
 }
 
 ceUCAActorAddSetAliasID::~ceUCAActorAddSetAliasID(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

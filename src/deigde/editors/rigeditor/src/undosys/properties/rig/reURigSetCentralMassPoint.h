@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
+#include "reRig.h"
 
-class reRig;
 
 
 
@@ -37,7 +37,7 @@ class reRig;
  */
 class reURigSetCentralMassPoint : public igdeUndo{
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	decVector pOldCMP;
 	decVector pNewCmp;

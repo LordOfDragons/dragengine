@@ -312,10 +312,10 @@ pIsGACOpenGL(false),
 		pEnumSwapchainFormats();
 		
 		// create swap chains
-		pSwapchainLeftEye.TakeOver(new deoxrSwapchain(
-			*this, pSystem.GetLeftEyeViewSize(), deoxrSwapchain::etColor ) );
-		pSwapchainRightEye.TakeOver(new deoxrSwapchain(
-			*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etColor ) );
+		pSwapchainLeftEye.TakeOverWith(
+			*this, pSystem.GetLeftEyeViewSize(), deoxrSwapchain::etColor );
+		pSwapchainRightEye.TakeOverWith(
+			*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etColor );
 		
 		if(pSystem.GetInstance().SupportsExtension(deoxrInstance::extKHRCompositionLayerDepth)){
 			// pSwapchainDepthLeftEye.TakeOver( new deoxrSwapchain(
@@ -497,14 +497,14 @@ void deoxrSession::BeginFrame(){
 	// changes the mask could change too but this is nigh impossible to ever happen
 	if(instance.SupportsExtension(deoxrInstance::extKHRVisibilityMask)){
 		if(!pLeftEyeHiddenMesh){
-			pLeftEyeHiddenMesh.TakeOver(new deoxrHiddenMesh(*this,
-				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 0));
+			pLeftEyeHiddenMesh.TakeOverWith(*this,
+				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 0);
 			UpdateLeftEyeHiddenMesh();
 		}
 		
 		if(!pRightEyeHiddenMesh){
-			pRightEyeHiddenMesh.TakeOver(new deoxrHiddenMesh(*this,
-				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 1));
+			pRightEyeHiddenMesh.TakeOverWith(*this,
+				XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, 1);
 			UpdateRightEyeHiddenMesh();
 		}
 	}
@@ -880,7 +880,7 @@ void deoxrSession::pDebugPrintActiveProfilePath(const deoxrPath &path, const cha
 }
 
 void deoxrSession::pCreateSpaces(){
-	pSpaceStage.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_STAGE, pSpaceOriginPose));
+	pSpaceStage.TakeOverWith(*this, XR_REFERENCE_SPACE_TYPE_STAGE, pSpaceOriginPose);
 	pSpaceLocal.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_LOCAL, pSpaceOriginPose));
 	// pSpaceLocal.TakeOver(new deoxrSpace(*this, XR_REFERENCE_SPACE_TYPE_LOCAL_FLOOR));
 	

@@ -26,8 +26,8 @@
 #define _SEULINKSETNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLink.h"
 
-class seLink;
 
 
 
@@ -36,7 +36,7 @@ class seLink;
  */
 class seULinkSetName : public igdeUndo{
 private:
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	decString pOldName;
 	decString pNewName;

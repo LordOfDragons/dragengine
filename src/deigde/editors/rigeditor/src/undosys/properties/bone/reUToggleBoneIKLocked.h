@@ -26,8 +26,8 @@
 #define _REUTOGGLEBONEIKLOCKED_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRigBone.h"
 
-class reRigBone;
 
 
 
@@ -36,7 +36,7 @@ class reRigBone;
  */
 class reUToggleBoneIKLocked : public igdeUndo{
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	int pAxis;
 	
 	

@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decStringDictionary.h>
+#include "meDecal.h"
 
-class meDecal;
 
 
 
@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalSetProperties : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;

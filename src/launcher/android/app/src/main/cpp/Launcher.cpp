@@ -238,9 +238,6 @@ JNIEnv *env, jobject thiz, jlong plauncher){
     try {
         const Launcher &launcher = *((Launcher*)(intptr_t)plauncher);
         delGameProfile * const profile = launcher.GetGameManager().GetDefaultProfile();
-        if(profile){
-            profile->AddReference();
-        }
         return (jlong)(intptr_t)profile;
     }catch(const deException &e){
         h.throwException(e);
@@ -256,9 +253,6 @@ JNIEnv *env, jobject thiz, jlong plauncher){
     try {
         const Launcher &launcher = *((Launcher*)(intptr_t)plauncher);
         delGameProfile * const profile = launcher.GetGameManager().GetActiveProfile();
-        if(profile){
-            profile->AddReference();
-        }
         return (jlong)(intptr_t)profile;
     }catch(const deException &e){
         h.throwException(e);

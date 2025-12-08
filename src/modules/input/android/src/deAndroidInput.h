@@ -34,11 +34,11 @@
 #include <android/native_activity.h>
 #include <android/input.h>
 #include <game-activity/native_app_glue/android_native_app_glue.h>
+#include <dragengine/resources/font/deFont.h>
 
 class deOSAndroid;
 class deainpOverlaySystem;
 class deainpDeviceManager;
-class deFont;
 
 
 
@@ -64,7 +64,7 @@ private:
 	
 	deainpOverlaySystem *pOverlaySystem;
 	
-	deFont *pFontDefault;
+	deFont::Ref pFontDefault;
 	
 	decTimer pInputTimer;
 	float pElapsedTime;
@@ -102,7 +102,7 @@ public:
 	inline deainpOverlaySystem *GetOverlaySystem() const{ return pOverlaySystem; }
 	
 	/** \brief Default font. */
-	inline deFont *GetDefaultFont() const{ return pFontDefault; }
+	inline const deFont::Ref &GetDefaultFont() const{ return pFontDefault; }
 	
 	/** \brief Elapsed time since the last event processing. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }

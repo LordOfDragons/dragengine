@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decStringList.h>
+#include "gdeGameDefinition.h"
 
 class gdeOCSpeaker;
-class gdeGameDefinition;
 
 
 
@@ -40,7 +40,7 @@ class gdeGameDefinition;
  */
 class gdeUGDSetAutoFindPathObjectClasses : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decStringList pOldValue;
 	decStringList pNewValue;

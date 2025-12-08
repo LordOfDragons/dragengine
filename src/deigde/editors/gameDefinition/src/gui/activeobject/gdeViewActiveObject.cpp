@@ -178,7 +178,7 @@ void gdeViewActiveObject::ResetView(){
 }
 
 void gdeViewActiveObject::SetGameDefinition(gdeGameDefinition *gameDefinition){
-	if(gameDefinition == pGameDefinition){
+	if(pGameDefinition == gameDefinition){
 		return;
 	}
 	
@@ -196,7 +196,6 @@ void gdeViewActiveObject::SetGameDefinition(gdeGameDefinition *gameDefinition){
 			pGameDefinition->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		}
 		
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
@@ -338,8 +337,6 @@ void gdeViewActiveObject::ClearResources(){
 		pPreviewComponent = NULL;
 	}
 	
-	if(pObjectClass){
-		pObjectClass->FreeReference();
 		pObjectClass = NULL;
 	}
 }
@@ -762,7 +759,7 @@ void gdeViewActiveObject::RebuildOCWorld(gdeOCWorld *ocworld){
 
 
 void gdeViewActiveObject::SetShowEnvMapProbes(bool show){
-	if(show == pShowEnvMapProbes){
+	if(pShowEnvMapProbes == show){
 		return;
 	}
 	
@@ -777,7 +774,7 @@ void gdeViewActiveObject::SetShowEnvMapProbes(bool show){
 }
 
 void gdeViewActiveObject::SetShowNavBlockers(bool show){
-	if(show == pShowNavBlockers){
+	if(pShowNavBlockers == show){
 		return;
 	}
 	
@@ -822,7 +819,6 @@ void gdeViewActiveObject::pInitObjectClass(){
 	if(!pObjectClass){
 		return;
 	}
-	pObjectClass->AddReference();
 	pInitObjectClassOCs(*pObjectClass, "", igdeGDClass::FilterSubObjectsAll);
 	pAddComponentShadowIgnore();
 }

@@ -103,7 +103,7 @@ pListener(NULL),
 pFont(NULL),
 pViewImage(NULL)
 {
-	pListener = new feViewFontImageListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	
@@ -113,11 +113,11 @@ pViewImage(NULL)
 	
 	cScrollView::Ref scrollView(cScrollView::Ref::NewWith(*this));
 	
-	pSBHorizontal.TakeOver(new igdeScrollBar(env, igdeScrollBar::eoHorizontal));
+	pSBHorizontal.TakeOverWith(env, igdeScrollBar::eoHorizontal);
 	pSBHorizontal->AddListener(scrollView);
 	bottomLine->AddChild(pSBHorizontal);
 	
-	pCBZoom.TakeOver(new igdeComboBox(env, 6, 7, true));
+	pCBZoom.TakeOverWith(env, 6, 7, true);
 	pCBZoom->SetDescription("Select zoom factor");
 	pCBZoom->AddItem("100");
 	pCBZoom->AddItem("150");
@@ -132,21 +132,17 @@ pViewImage(NULL)
 	cChangeZoom::Ref changeZoom(cChangeZoom::Ref::NewWith(*this));
 	pCBZoom->AddListener(changeZoom);
 	
-	pSBVertical.TakeOver(new igdeScrollBar(env, igdeScrollBar::eoVertical));
+	pSBVertical.TakeOverWith(env, igdeScrollBar::eoVertical);
 	pSBVertical->AddListener(scrollView);
 	AddChild(pSBVertical, igdeContainerBorder::eaRight);
 	
-	pViewImage = new feViewFIImage(windowMain);
+	pViewImage.TakeOverWith(windowMain);
 	AddChild(pViewImage, igdeContainerBorder::eaCenter);
-	pViewImage->FreeReference();
 }
 
 feViewFontImage::~feViewFontImage(){
 	SetFont(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -155,13 +151,12 @@ feViewFontImage::~feViewFontImage(){
 ///////////////
 
 void feViewFontImage::SetFont(feFont *font){
-	if(font == pFont){
+	if(pFont == font){
 		return;
 	}
 	
 	if(pFont){
 		pFont->RemoveNotifier(pListener);
-		pFont->FreeReference();
 	}
 	
 	pFont = font;

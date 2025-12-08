@@ -215,7 +215,7 @@ pWOAsyncFinished(*this)
 	pAttachedTo = nullptr;
 	
 	try{
-		pWObject.TakeOver(new igdeWObject(*environment));
+		pWObject.TakeOverWith(*environment);
 		
 		// collision filter
 		decLayerMask collisionCategory;
@@ -263,7 +263,7 @@ pWOAsyncFinished(*this)
 		pWObject->SetRenderEnvMapMask(1 << meWorld::elmEnvMapProbes);
 		pWObject->SetAudioLayerMask(1 << meWorld::elmAudio);
 		
-		pColDetCollider = engine->GetColliderManager()->CreateColliderVolume();
+		pColDetCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume());
 		pColDetCollider->SetEnabled(true);
 		pColDetCollider->SetResponseType(deCollider::ertKinematic);
 		pColDetCollider->SetUseLocalGravity(true);
@@ -272,7 +272,7 @@ pWOAsyncFinished(*this)
 		pWObject->SetAsyncLoadFinished(&pWOAsyncFinished);
 		
 		// create debug drawer and shapes
-		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSObject = new igdeWDebugDrawerShape;
@@ -333,7 +333,7 @@ void meObject::Dispose(){
 }
 
 void meObject::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -389,7 +389,7 @@ void meObject::SetWorld(meWorld *world){
 }
 
 void meObject::SetSelected(bool selected){
-	if(selected == pSelected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -400,7 +400,7 @@ void meObject::SetSelected(bool selected){
 }
 
 void meObject::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	
@@ -413,7 +413,7 @@ void meObject::SetActive(bool active){
 }
 
 void meObject::SetVisible(bool visible){
-	if(visible == pVisible){
+	if(pVisible == visible){
 		return;
 	}
 	
@@ -426,7 +426,7 @@ void meObject::SetVisible(bool visible){
 }
 
 void meObject::SetShowMissingTextures(bool showMissingTextures){
-	if(showMissingTextures == pShowMissingTextures){
+	if(pShowMissingTextures == showMissingTextures){
 		return;
 	}
 	
@@ -465,7 +465,7 @@ void meObject::OnGameDefinitionChanged(){
 		UpdateIDGroupList();
 	}
 	
-	if(classDef == pClassDef){
+	if(pClassDef == classDef){
 		return;
 	}
 	
@@ -646,7 +646,7 @@ void meObject::SetRotation(const decVector &rotation){
 }
 
 void meObject::SetID(const decUniqueID &id){
-	if(id == pID){
+	if(pID == id){
 		return;
 	}
 	
@@ -706,7 +706,7 @@ void meObject::UpdateDDSObjectShapes(){
 
 
 void meObject::SetAttachedTo(meObject *object){
-	if(object == pAttachedTo){
+	if(pAttachedTo == object){
 		return;
 	}
 	
@@ -717,7 +717,6 @@ void meObject::SetAttachedTo(meObject *object){
 		}
 		
 		pAttachedTo->GetAttachedObjectsList().Remove(this);
-		pAttachedTo->FreeReference();
 	}
 	
 	meObject * const oldObject = pAttachedTo;
@@ -1300,7 +1299,7 @@ void meObject::RemoveTexture(meObjectTexture *texture){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(texture == pActiveTexture){
+	if(pActiveTexture == texture){
 		SetActiveTexture(NULL);
 	}
 	
@@ -1344,7 +1343,7 @@ void meObject::RemoveAllTextures(){
 }
 
 void meObject::SetActiveTexture(meObjectTexture *texture){
-	if(texture != pActiveTexture){
+	if(pActiveTexture != texture){
 		pActiveTexture = texture;
 		
 		if(pWorld){
@@ -1906,12 +1905,6 @@ void meObject::pCleanUp(){
 		delete [] pTextures;
 	}
 	
-	if(pColDetCollider){
-		pColDetCollider->FreeReference();
-	}
-	if(pEngComponentBroken){
-		pEngComponentBroken->FreeReference();
-	}
 	pWObject = nullptr;
 	
 	if(pCamera){
@@ -1932,9 +1925,6 @@ void meObject::pCleanUp(){
 	}
 	if(pDDSObject){
 		delete pDDSObject;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 
@@ -2292,8 +2282,8 @@ void meObject::pUpdateBrokenComponent(){
 	if(IsComponentBroken()){
 		if(!pEngComponentBroken){
 			const igdeGameDefinition &gamedef = *pEnvironment->GetGameProject()->GetGameDefinition();
-			pEngComponentBroken = pEnvironment->GetEngineController()->GetEngine()->
-				GetComponentManager()->CreateComponent(gamedef.GetDefaultModel(), gamedef.GetDefaultSkin());
+			pEngComponentBroken.TakeOver(pEnvironment->GetEngineController()->GetEngine()->
+				GetComponentManager()->CreateComponent(gamedef.GetDefaultModel(), gamedef.GetDefaultSkin()));
 			pEngComponentBroken->SetPosition(pWObject->GetPosition());
 			pEngComponentBroken->SetOrientation(pWObject->GetOrientation());
 			
@@ -2317,7 +2307,6 @@ void meObject::pUpdateBrokenComponent(){
 		if(pWorld){
 			pWorld->GetEngineWorld()->RemoveComponent(pEngComponentBroken);
 		}
-		pEngComponentBroken->FreeReference();
 		pEngComponentBroken = nullptr;
 	}
 }

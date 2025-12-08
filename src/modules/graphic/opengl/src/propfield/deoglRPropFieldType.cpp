@@ -94,12 +94,6 @@ pDirtyModel(true)
 deoglRPropFieldType::~deoglRPropFieldType(){
 	LEAK_CHECK_FREE(pPropField.GetRenderThread(), PropFieldType);
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pModel){
-		pModel->FreeReference();
-	}
 	
 	RemoveAllClusters();
 }
@@ -110,19 +104,12 @@ deoglRPropFieldType::~deoglRPropFieldType(){
 ///////////////
 
 void deoglRPropFieldType::SetModel(deoglRModel *model){
-	if(model == pModel){
+	if(pModel == model){
 		return;
 	}
 	
-	if(pModel){
-		pModel->FreeReference();
-	}
 	
 	pModel = model;
-	
-	if(model){
-		model->AddReference();
-	}
 	
 	pDirtyModel = true;
 	pPropField.TypeRequiresPrepareForRender();
@@ -135,19 +122,12 @@ void deoglRPropFieldType::SetModel(deoglRModel *model){
 }
 
 void deoglRPropFieldType::SetSkin(deoglRSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	pSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
 	
 	pUseSkinTexture = NULL;
 	if(skin && skin->GetTextureCount() > 0){
@@ -685,11 +665,11 @@ void deoglRPropFieldType::pPrepareParamBlock(){
 				GetWithRef(deoglSkinTexturePipelines::etGeometry).GetShader();
 			
 			/*if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlock.TakeOver(new deoglSPBlockUBO(*pPropField.GetRenderThread()
-					.GetBufferObject().GetLayoutSkinInstanceUBO()));
+				pParamBlock.TakeOverWith(*pPropField.GetRenderThread()
+					.GetBufferObject().GetLayoutSkinInstanceUBO());
 				
 			}else{*/
-				pParamBlock = skinShader.CreateSPBInstParam();
+				pParamBlock.TakeOver(skinShader.CreateSPBInstParam());
 			//}
 		}
 		

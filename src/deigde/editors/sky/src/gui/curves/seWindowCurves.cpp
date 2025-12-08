@@ -132,7 +132,7 @@ pSky(NULL)
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWindowCurvesListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	helper.ListBox(5, "Link to edit", pListLinks, new cListLinks(*this));
 	pListLinks->SetDefaultSorter();
@@ -147,9 +147,6 @@ pSky(NULL)
 
 seWindowCurves::~seWindowCurves(){
 	SetSky(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -158,7 +155,7 @@ seWindowCurves::~seWindowCurves(){
 ///////////////
 
 void seWindowCurves::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	
@@ -166,7 +163,6 @@ void seWindowCurves::SetSky(seSky *sky){
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;

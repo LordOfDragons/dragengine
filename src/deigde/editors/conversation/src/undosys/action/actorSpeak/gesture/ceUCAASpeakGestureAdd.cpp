@@ -68,15 +68,6 @@ ceUCAASpeakGestureAdd::ceUCAASpeakGestureAdd(ceConversationTopic *topic, ceCAAct
 }
 
 ceUCAASpeakGestureAdd::~ceUCAASpeakGestureAdd(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

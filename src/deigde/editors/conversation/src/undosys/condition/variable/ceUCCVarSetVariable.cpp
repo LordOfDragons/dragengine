@@ -65,15 +65,6 @@ ceCConditionVariable *condition, const char *newVariable){
 }
 
 ceUCCVarSetVariable::~ceUCCVarSetVariable(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

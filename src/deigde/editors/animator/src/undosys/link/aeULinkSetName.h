@@ -28,9 +28,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeLink.h"
 
 // predefinitions
-class aeLink;
 
 
 
@@ -41,7 +41,7 @@ class aeLink;
  */
 class aeULinkSetName : public igdeUndo{
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	decString pOldName;
 	decString pNewName;

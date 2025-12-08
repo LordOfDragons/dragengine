@@ -108,10 +108,10 @@ pLangPack(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(320)));
 	AddChild(splitted);
 	
-	pWindowProperties = new lpeWindowProperties(*this);
+	pWindowProperties.TakeOverWith(*this);
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewLangPack = new lpeViewLangPack(*this);
+	pViewLangPack.TakeOverWith(*this);
 	splitted->AddChild(pViewLangPack, igdeContainerSplitted::eaCenter);
 	
 	CreateNewLangPack();
@@ -124,12 +124,8 @@ lpeWindowMain::~lpeWindowMain(){
 	
 	SetLangPack(NULL);
 	
-	if(pViewLangPack){
-		pViewLangPack->FreeReference();
 		pViewLangPack = NULL;
 	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
 		pWindowProperties = NULL;
 	}
 	
@@ -140,9 +136,6 @@ lpeWindowMain::~lpeWindowMain(){
 		delete pLoadSaveSystem;
 	}
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -157,7 +150,7 @@ bool lpeWindowMain::QuitRequest(){
 
 
 void lpeWindowMain::SetLangPack(lpeLangPack *langpack){
-	if(langpack == pLangPack){
+	if(pLangPack == langpack){
 		return;
 	}
 	
@@ -168,7 +161,6 @@ void lpeWindowMain::SetLangPack(lpeLangPack *langpack){
 	
 	if(pLangPack){
 		pLangPack->RemoveListener(pListener);
-		pLangPack->FreeReference();
 	}
 	
 	pLangPack = langpack;
@@ -585,8 +577,8 @@ void lpeWindowMain::pCreateActions(){
 	pActionLangPackSave.TakeOver(new cActionLangPackSave(*this));
 	pActionLangPackSaveAs.TakeOver(new cActionLangPackSaveAs(*this));
 	pActionLangPackOpenRef.TakeOver(new cActionLangPackOpenRef(*this));
-	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
-	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
+	pActionEditUndo.TakeOverWith(GetEnvironment());
+	pActionEditRedo.TakeOverWith(GetEnvironment());
 	pActionEditCut.TakeOver(new cActionEditCut(*this));
 	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
 	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
@@ -614,7 +606,7 @@ void lpeWindowMain::pCreateActions(){
 void lpeWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBFile.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBFile, pActionLangPackNew);
 	helper.ToolBarButton(pTBFile, pActionLangPackOpen);
@@ -634,7 +626,7 @@ void lpeWindowMain::pCreateToolBarFile(){
 void lpeWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
+	pTBEdit.TakeOverWith(GetEnvironment());
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -651,15 +643,15 @@ void lpeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Language Pack", deInputEvent::ekcL));
+	cascade.TakeOverWith(env, "Language Pack", deInputEvent::ekcL);
 	pCreateMenuLangPack(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
+	cascade.TakeOverWith(env, "Edit", deInputEvent::ekcE);
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOver(new igdeMenuCascade(env, "Entry", deInputEvent::ekcN));
+	cascade.TakeOverWith(env, "Entry", deInputEvent::ekcN);
 	pCreateMenuEntry(cascade);
 	AddSharedMenu(cascade);
 }

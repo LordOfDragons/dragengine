@@ -46,7 +46,6 @@ aeUSetRuleSModMinPosition::aeUSetRuleSModMinPosition(aeRuleStateManipulator *rul
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldMin = rule->GetMinimumPosition();
 		pNewMin = newMin;
@@ -82,5 +81,4 @@ void aeUSetRuleSModMinPosition::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMinPosition::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

@@ -51,13 +51,10 @@ pFile(NULL)
 	SetShortInfo("Duplicate file");
 	
 	try{
-		pFile = new ceConversationFile(file);
+		pFile.TakeOverWith(file);
 		pFile->SetID(newID);
 		
 	}catch(const deException &){
-		if(pFile){
-			pFile->FreeReference();
-		}
 		throw;
 	}
 	
@@ -66,12 +63,6 @@ pFile(NULL)
 }
 
 ceUCFileDuplicate::~ceUCFileDuplicate(){
-	if(pFile){
-		pFile->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "feFontImage.h"
 
-class feFontImage;
 class deImage;
 
 
@@ -39,7 +39,7 @@ class deImage;
  */
 class feUFontImportImage : public igdeUndo{
 private:
-	feFontImage *pImage;
+	feFontImage::Ref pImage;
 	
 	int pOldWidth;
 	int pOldHeight;

@@ -65,7 +65,7 @@ pSucceeded(false)
 		return;
 	}
 	
-	pImage.TakeOver(new deImage(engine.GetImageManager(), vfs, path, 0));
+	pImage.TakeOverWith(engine.GetImageManager(), vfs, path, 0);
 	LogCreateExit();
 }
 

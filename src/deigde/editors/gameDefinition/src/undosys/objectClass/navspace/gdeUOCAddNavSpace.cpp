@@ -59,12 +59,6 @@ pNavSpace(NULL)
 }
 
 gdeUOCAddNavSpace::~gdeUOCAddNavSpace(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

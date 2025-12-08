@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include "../../animator/link/aeLinkList.h"
+#include "aeAnimator.h"
 
 class aeRule;
-class aeAnimator;
 
 
 
@@ -38,7 +38,7 @@ class aeAnimator;
  */
 class aeULinkRemoveUnused : public igdeUndo{
 private:
-	aeAnimator *pAnimator;
+	aeAnimator::Ref pAnimator;
 	aeLinkList pLinks;
 	
 	

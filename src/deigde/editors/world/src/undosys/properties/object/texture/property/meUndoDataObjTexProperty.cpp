@@ -50,9 +50,6 @@ pPropertyExists(false)
 }
 
 meUndoDataObjTexProperty::~meUndoDataObjTexProperty(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

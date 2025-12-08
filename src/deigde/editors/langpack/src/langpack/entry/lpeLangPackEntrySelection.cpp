@@ -87,11 +87,11 @@ void lpeLangPackEntrySelection::RemoveAll(){
 
 
 bool lpeLangPackEntrySelection::HasActive() const{
-	return pActive != NULL;
+	return pActive != nullptr;
 }
 
 void lpeLangPackEntrySelection::SetActive(lpeLangPackEntry *entry){
-	if(entry == pActive){
+	if(pActive == entry){
 		return;
 	}
 	
@@ -102,7 +102,6 @@ void lpeLangPackEntrySelection::SetActive(lpeLangPackEntry *entry){
 	
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = entry;

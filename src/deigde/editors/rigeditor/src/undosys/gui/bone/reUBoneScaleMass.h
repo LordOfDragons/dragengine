@@ -28,10 +28,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "reRig.h"
+#include "reRigBone.h"
 
 class decObjectOrderedSet;
-class reRig;
-class reRigBone;
 
 
 
@@ -43,13 +43,13 @@ class reRigBone;
 class reUBoneScaleMass : public igdeUndo{
 private:
 	struct sBone{
-		reRigBone *bone;
+		reRigBone::Ref bone;
 		float oldMass;
 		float newMass;
 	};
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	float pNewMass;
 	

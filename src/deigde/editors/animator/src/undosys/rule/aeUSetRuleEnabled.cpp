@@ -46,7 +46,6 @@ aeUSetRuleEnabled::aeUSetRuleEnabled(aeRule *rule){
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		SetShortInfo("Set rule enabled");
 		
@@ -79,5 +78,4 @@ void aeUSetRuleEnabled::Redo(){
 //////////////////////
 
 void aeUSetRuleEnabled::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

@@ -26,9 +26,9 @@
 #define _MEATTACHEDDECAL_H_
 
 #include <dragengine/resources/decal/deDecal.h>
+#include "meObject.h"
 
 class meDecal;
-class meObject;
 
 class deEngine;
 class deSkin;
@@ -44,7 +44,7 @@ private:
 	deDecal::Ref pEngDecal;
 	
 	meDecal *pDecal;
-	meObject *pParentObject;
+	meObject::Ref pParentObject;
 	
 	
 	
@@ -69,7 +69,7 @@ public:
 	inline deDecal *GetEngineDecal() const{ return pEngDecal; }
 	
 	/** \brief Parent object or NULL. */
-	inline meObject *GetParentObject() const{ return pParentObject; }
+	inline const meObject::Ref &GetParentObject() const{ return pParentObject; }
 	
 	/** \brief Set parent object. */
 	void SetParentObject(meObject *object);

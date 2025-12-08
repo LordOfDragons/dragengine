@@ -26,8 +26,8 @@
 #define _PEEUTYPESETEMITMINIMPULSE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "peeType.h"
 
-class peeType;
 
 
 
@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeSetEmitMinImpulse : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	float pOldImpulse;
 	float pNewImpulse;

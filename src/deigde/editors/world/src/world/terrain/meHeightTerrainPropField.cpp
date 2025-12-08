@@ -78,7 +78,7 @@ pListener(NULL)
 	
 	try{
 		pListener = new meUpdateHeightTerrainPropField(this);
-		pEngPF = engine->GetPropFieldManager()->CreatePropField();
+		pEngPF.TakeOver(engine->GetPropFieldManager()->CreatePropField());
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -96,7 +96,7 @@ meHeightTerrainPropField::~meHeightTerrainPropField(){
 ///////////////
 
 void meHeightTerrainPropField::SetHTSector(meHeightTerrainSector *htsector){
-	if(htsector == pHTSector){
+	if(pHTSector == htsector){
 		return;
 	}
 	
@@ -275,9 +275,6 @@ void meHeightTerrainPropField::pCleanUp(){
 		delete [] pVInstances;
 	}
 	
-	if(pEngPF){
-		pEngPF->FreeReference();
-	}
 	
 	if(pListener){
 		delete pListener;

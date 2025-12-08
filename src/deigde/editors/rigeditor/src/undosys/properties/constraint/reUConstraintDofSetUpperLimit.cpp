@@ -56,13 +56,9 @@ deColliderConstraint::eDegreesOfFreedom dof, float newValue){
 	
 	SetShortInfo("Constraint DOF set upper limit");
 	
-	pConstraint->AddReference();
 }
 
 reUConstraintDofSetUpperLimit::~reUConstraintDofSetUpperLimit(){
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 }
 
 

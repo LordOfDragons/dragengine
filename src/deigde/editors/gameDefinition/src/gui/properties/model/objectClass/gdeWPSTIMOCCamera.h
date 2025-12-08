@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCCAMERA_H_
 
 #include "gdeWPSTIMOCSubObject.h"
+#include "gdeOCCamera.h"
 
-class gdeOCCamera;
 
 
 /**
@@ -35,7 +35,7 @@ class gdeOCCamera;
  */
 class gdeWPSTIMOCCamera : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCCamera *pCamera;
+	gdeOCCamera::Ref pCamera;
 	
 	
 public:
@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Camera. */
-	inline gdeOCCamera *GetOCCamera() const{ return pCamera; }
+	inline const gdeOCCamera::Ref &GetOCCamera() const{ return pCamera; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

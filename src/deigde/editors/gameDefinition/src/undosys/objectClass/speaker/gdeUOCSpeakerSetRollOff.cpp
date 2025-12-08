@@ -62,12 +62,6 @@ pSpeaker(NULL)
 }
 
 gdeUOCSpeakerSetRollOff::~gdeUOCSpeakerSetRollOff(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -55,12 +55,10 @@ peeUParameterSetControllerValue::peeUParameterSetControllerValue(peeType *type, 
 	
 	pOldController = parameter->GetControllerValue();
 	if(pOldController){
-		pOldController->AddReference();
 	}
 	
 	pNewController = newController;
 	if(pNewController){
-		pNewController->AddReference();
 	}
 	
 	pType = type;
@@ -68,15 +66,6 @@ peeUParameterSetControllerValue::peeUParameterSetControllerValue(peeType *type, 
 }
 
 peeUParameterSetControllerValue::~peeUParameterSetControllerValue(){
-	if(pNewController){
-		pNewController->FreeReference();
-	}
-	if(pOldController){
-		pOldController->FreeReference();
-	}
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

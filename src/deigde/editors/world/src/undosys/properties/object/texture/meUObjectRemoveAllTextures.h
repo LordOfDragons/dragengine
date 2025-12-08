@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include "../../../../world/object/texture/meObjectTextureList.h"
+#include "meObject.h"
 
-class meObject;
 
 
 
@@ -37,7 +37,7 @@ class meObject;
  */
 class meUObjectRemoveAllTextures : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	meObjectTextureList pTextureList;
 	
 public:

@@ -35,6 +35,12 @@ class peeWPUndoHistory;
  * \brief Undo History Properties Panel Listener.
  */
 class peeWPUndoHistoryListener : public peeEmitterListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<peeWPUndoHistoryListener> Ref;
+	
+	
+
 private:
 	peeWPUndoHistory &pPanel;
 	

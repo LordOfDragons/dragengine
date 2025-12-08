@@ -26,9 +26,9 @@
 #define _SEUEFFECTTARGETADDLINK_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLink.h"
+#include "seEffect.h"
 
-class seEffect;
-class seLink;
 class seControllerTarget;
 
 
@@ -38,10 +38,10 @@ class seControllerTarget;
  */
 class seUEffectTargetAddLink : public igdeUndo{
 private:
-	seEffect *pEffect;
+	seEffect::Ref pEffect;
 	seControllerTarget *pTarget;
 	
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	
 	

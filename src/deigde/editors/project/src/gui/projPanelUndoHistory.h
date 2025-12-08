@@ -26,9 +26,9 @@
 #define _PROJPANELUNDOHISTORY_H_
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "projPanelUndoHistoryListener.h"
+#include "projProject.h"
 
-class projProject;
-class projPanelUndoHistoryListener;
 class projWindowMain;
 
 
@@ -38,8 +38,8 @@ class projWindowMain;
  */
 class projPanelUndoHistory : public igdeWPUndoHistory{
 private:
-	projProject *pProject;
-	projPanelUndoHistoryListener *pListener;
+	projProject::Ref pProject;
+	projPanelUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Project. */
-	inline projProject *GetProject() const{ return pProject; }
+	inline const projProject::Ref &GetProject() const{ return pProject; }
 	
 	/** \brief Set synthesizer. */
 	void SetProject(projProject *project);

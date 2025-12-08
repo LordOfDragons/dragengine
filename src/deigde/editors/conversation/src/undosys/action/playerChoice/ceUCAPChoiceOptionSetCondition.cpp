@@ -67,31 +67,12 @@ pNewCondition(NULL)
 	
 	pOldCondition = ifcase->GetCondition();
 	if(pOldCondition){
-		pOldCondition->AddReference();
 	}
 	
 	pNewCondition = newCondition;
-	if(newCondition){
-		newCondition->AddReference();
-	}
 }
 
 ceUCAPChoiceOptionSetCondition::~ceUCAPChoiceOptionSetCondition(){
-	if(pNewCondition){
-		pNewCondition->FreeReference();
-	}
-	if(pOldCondition){
-		pOldCondition->FreeReference();
-	}
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

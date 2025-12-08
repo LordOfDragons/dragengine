@@ -345,7 +345,7 @@ pVAPreview(NULL)
 	igdeContainer::Ref panel, panel2, panel3, panel4, panel5;
 	int i;
 	
-	pListener = new ceWindowDopeSheetListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
@@ -433,9 +433,6 @@ pVAPreview(NULL)
 ceWindowDopeSheet::~ceWindowDopeSheet(){
 	SetConversation(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 	if(pVAPreview){
 		delete pVAPreview;
 	}
@@ -447,7 +444,7 @@ ceWindowDopeSheet::~ceWindowDopeSheet(){
 ///////////////
 
 void ceWindowDopeSheet::SetConversation(ceConversation *conversation){
-	if(conversation == pConversation){
+	if(pConversation == conversation){
 		return;
 	}
 	
@@ -455,7 +452,6 @@ void ceWindowDopeSheet::SetConversation(ceConversation *conversation){
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;

@@ -59,12 +59,6 @@ pProperty(NULL)
 }
 
 gdeUOCPropertyAdd::~gdeUOCPropertyAdd(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

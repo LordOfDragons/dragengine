@@ -26,13 +26,13 @@
 #define _MEHEIGHTTERRAINPROPFIELD_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/propfield/dePropField.h>
 
 class meHeightTerrainSector;
 class meUpdateHeightTerrainPropField;
 class meHTVInstance;
 
 class deEngine;
-class dePropField;
 class dePropFieldType;
 class dePropFieldInstance;
 
@@ -51,7 +51,7 @@ private:
 	decVector2 pMaxExtend;
 	
 	deEngine *pEngine;
-	dePropField *pEngPF;
+	dePropField::Ref pEngPF;
 	
 	meHTVInstance *pVInstances;
 	int pVInstanceCount;
@@ -99,7 +99,7 @@ public:
 	
 	
 	/** \brief Engine prop field. */
-	inline dePropField *GetEnginePropField() const{ return pEngPF; }
+	inline const dePropField::Ref &GetEnginePropField() const{ return pEngPF; }
 	
 	
 	

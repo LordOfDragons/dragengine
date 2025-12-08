@@ -63,12 +63,6 @@ pLink(NULL)
 }
 
 seUTargetAddLink::~seUTargetAddLink(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

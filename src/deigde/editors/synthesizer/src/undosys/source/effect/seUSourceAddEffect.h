@@ -27,9 +27,9 @@
 #define _SEUSOURCEADDEFFECT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSource.h"
+#include "seEffect.h"
 
-class seSource;
-class seEffect;
 class seSynthesizer;
 
 
@@ -44,8 +44,8 @@ public:
 	
 	
 private:
-	seSource *pSource;
-	seEffect *pEffect;
+	seSource::Ref pSource;
+	seEffect::Ref pEffect;
 	int pIndex;
 	
 	

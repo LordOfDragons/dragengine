@@ -26,9 +26,9 @@
 #define _SEUSOURCESYNTHSETCONCONTROLLER_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seController.h"
+#include "seSourceSynthesizer.h"
 
-class seSourceSynthesizer;
-class seController;
 
 
 
@@ -37,11 +37,11 @@ class seController;
  */
 class seUSourceSynthSetConController : public igdeUndo{
 private:
-	seSourceSynthesizer *pSource;
+	seSourceSynthesizer::Ref pSource;
 	
 	int pTarget;
-	seController *pOldController;
-	seController *pNewController;
+	seController::Ref pOldController;
+	seController::Ref pNewController;
 	
 	
 	

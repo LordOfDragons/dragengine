@@ -27,9 +27,9 @@
 #define _GDEUOCADDSKY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeSky.h"
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
-class gdeSky;
 
 
 
@@ -38,8 +38,8 @@ class gdeSky;
  */
 class gdeUAddSky : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeSky *pSky;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeSky::Ref pSky;
 	
 	
 	

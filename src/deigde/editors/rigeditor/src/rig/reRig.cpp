@@ -204,7 +204,7 @@ pDirtyRig(true)
 		SetFilePath("new.derig");
 		
 		// create animator
-		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
+		pEngAnimator.TakeOver(engine->GetAnimatorManager()->CreateAnimator());
 		
 		amController = new deAnimatorController;
 		amController->SetClamp(true);
@@ -240,7 +240,7 @@ pDirtyRig(true)
 		amRuleRestPose->FreeReference();
 		amRuleRestPose = NULL;
 		
-		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
+		pEngAnimatorInstance.TakeOver(engine->GetAnimatorInstanceManager()->CreateAnimatorInstance());
 		pEngAnimatorInstance->SetAnimator(pEngAnimator);
 		
 		// create the world and scene
@@ -255,7 +255,7 @@ pDirtyRig(true)
 		pSky->SetWorld(pEngWorld);
 		
 		// create the environment wrapper object
-		pEnvObject.TakeOver(new igdeWObject(*environment));
+		pEnvObject.TakeOverWith(*environment);
 		pEnvObject->SetWorld(pEngWorld);
 		pEnvObject->SetPosition(decDVector(0.0, 0.0, 0.0));
 		
@@ -267,7 +267,7 @@ pDirtyRig(true)
 		pEnvObject->SetGDClassName("IGDETestTerrain");
 		
 		// create simulation collider
-		pEngSimCollider = engine->GetColliderManager()->CreateColliderComponent();
+		pEngSimCollider.TakeOver(engine->GetColliderManager()->CreateColliderComponent());
 		pEngSimCollider->SetEnabled(false);
 		pEngSimCollider->SetResponseType(deCollider::ertDynamic);
 		pEngSimCollider->SetUseLocalGravity(false);//! pDynamic);
@@ -386,7 +386,7 @@ void reRig::SetCentralMassPoint(const decVector &cmp){
 }
 
 void reRig::SetModelCollision(bool modelCollision){
-	if(modelCollision == pModelCollision){
+	if(pModelCollision == modelCollision){
 		return;
 	}
 	
@@ -417,7 +417,7 @@ void reRig::SetMoveTime(float moveTime){
 }
 
 void reRig::SetShowBones(bool showBones){
-	if(showBones == pShowBones){
+	if(pShowBones == showBones){
 		return;
 	}
 	
@@ -428,7 +428,7 @@ void reRig::SetShowBones(bool showBones){
 }
 
 void reRig::SetShowRigShapes(bool showShapes){
-	if(showShapes != pShowRigShapes){
+	if(pShowRigShapes != showShapes){
 		pShowRigShapes = showShapes;
 		
 		pShapeShowStateChanged();
@@ -437,7 +437,7 @@ void reRig::SetShowRigShapes(bool showShapes){
 }
 
 void reRig::SetShowAllBoneShapes(bool showShapes){
-	if(showShapes != pShowAllBoneShapes){
+	if(pShowAllBoneShapes != showShapes){
 		pShowAllBoneShapes = showShapes;
 		
 		pBoneShowStateChanged();
@@ -446,7 +446,7 @@ void reRig::SetShowAllBoneShapes(bool showShapes){
 }
 
 void reRig::SetShapeXRay(bool xray){
-	if(xray == pShowShapeXRay){
+	if(pShowShapeXRay == xray){
 		return;
 	}
 	
@@ -459,7 +459,7 @@ void reRig::SetShapeXRay(bool xray){
 }
 
 void reRig::SetShowRigConstraints(bool showConstraints){
-	if(showConstraints != pShowRigConstraints){
+	if(pShowRigConstraints != showConstraints){
 		pShowRigConstraints = showConstraints;
 		
 		pConstraintShowStateChanged();
@@ -468,7 +468,7 @@ void reRig::SetShowRigConstraints(bool showConstraints){
 }
 
 void reRig::SetShowAllBoneConstraints(bool showConstraints){
-	if(showConstraints != pShowAllBoneConstraints){
+	if(pShowAllBoneConstraints != showConstraints){
 		pShowAllBoneConstraints = showConstraints;
 		
 		pBoneShowStateChanged();
@@ -477,7 +477,7 @@ void reRig::SetShowAllBoneConstraints(bool showConstraints){
 }
 
 void reRig::SetShowRigPushes(bool showPushes){
-	if(showPushes != pShowRigPushes){
+	if(pShowRigPushes != showPushes){
 		pShowRigPushes = showPushes;
 		
 		pPushShowStateChanged();
@@ -486,7 +486,7 @@ void reRig::SetShowRigPushes(bool showPushes){
 }
 
 void reRig::SetUseRestPose(bool useRestPose){
-	if(useRestPose == pUseRestPose){
+	if(pUseRestPose == useRestPose){
 		return;
 	}
 	
@@ -637,7 +637,6 @@ void reRig::Rebuild(){
 		
 		pEngAnimator->SetRig(NULL);
 		
-		pEngRig->FreeReference();
 		pEngRig = NULL;
 		
 	// if the rig does not exist we have to init the pose matrices from the
@@ -656,7 +655,7 @@ void reRig::Rebuild(){
 	// using loading but this is okay for what we use them here.
 	reRigBuilder builder(this);
 	
-	pEngRig = GetEngine()->GetRigManager()->CreateRig("", builder);
+	pEngRig.TakeOver(GetEngine()->GetRigManager()->CreateRig("", builder));
 	
 	// add to the component
 	pEngAnimator->SetRig(pEngRig);
@@ -756,7 +755,7 @@ void reRig::SetElementMode(eElementModes mode){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(mode != pElementMode){
+	if(pElementMode != mode){
 		pElementMode = mode;
 		NotifyModeChanged();
 	}
@@ -767,7 +766,7 @@ void reRig::SetWorkMode(eWorkModes mode){
 		DETHROW(deeInvalidParam);
 	}
 	
-	if(mode != pWorkMode){
+	if(pWorkMode != mode){
 		pWorkMode = mode;
 		NotifyModeChanged();
 	}
@@ -790,7 +789,7 @@ void reRig::SetUseLocal(bool useLocal){
 }
 
 void reRig::SetSimulationRunning(bool simulationRunning){
-	if(simulationRunning == pSimulationRunning){
+	if(pSimulationRunning == simulationRunning){
 		return;
 	}
 	
@@ -935,7 +934,7 @@ void reRig::SetSlowmotion(float slowmotion){
 }
 
 void reRig::SetDynamic(bool dynamic){
-	if(dynamic != pDynamic){
+	if(pDynamic != dynamic){
 		pDynamic = dynamic;
 		
 		if(dynamic){
@@ -1140,16 +1139,9 @@ void reRig::SetAllBonesVisited(bool visited){
 }
 
 void reRig::SetRootBone(reRigBone *rootBone){
-	if(rootBone != pRootBone){
-		if(pRootBone){
-			pRootBone->FreeReference();
-		}
+	if(pRootBone != rootBone){
 		
 		pRootBone = rootBone;
-		
-		if(rootBone){
-			rootBone->AddReference();
-		}
 		
 		NotifyRigChanged();
 	}
@@ -1903,9 +1895,6 @@ void reRig::pCleanUp(){
 		delete pSelectionBones;
 	}
 	
-	if(pRootBone){
-		pRootBone->FreeReference();
-	}
 	
 	RemoveAllNotifiers();
 	if(pNotifiers){
@@ -1942,39 +1931,26 @@ void reRig::pCleanUp(){
 	
 	if(pEngSimCollider){
 		pEngSimCollider->SetComponent(NULL);
-		pEngSimCollider->FreeReference();
 	}
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetComponent(NULL);
 		pEngAnimatorInstance->SetAnimator(NULL);
-		pEngAnimatorInstance->FreeReference();
 	}
 	if(pEngAnimator){
 		pEngAnimator->SetRig(NULL);
-		pEngAnimator->FreeReference();
 	}
 	if(pEngComponent){
 		pEngComponent->SetRig(NULL);
-		pEngComponent->FreeReference();
-	}
-	if(pEngRig){
-		pEngRig->FreeReference();
 	}
 	
-	if(pEngLight){
-		pEngLight->FreeReference();
-	}
 	
-	if(pEngWorld){
-		pEngWorld->FreeReference();
-	}
 }
 
 
 
 void reRig::pCreateWorld(){
 	// create world
-	pEngWorld = GetEngine()->GetWorldManager()->CreateWorld();
+	pEngWorld.TakeOver(GetEngine()->GetWorldManager()->CreateWorld());
 	//pEngWorld->SetSectorSize( decVector( 500.0f, 500.0f, 500.0f ) );
 	pEngWorld->SetAmbientLight(decColor(0.0f, 0.0f, 0.0f)); //decColor(0.1f, 0.1f, 0.1f));
 	pEngWorld->SetGravity(pGravity);
@@ -2028,14 +2004,13 @@ void reRig::pUpdateComponent(){
 				
 			}else{
 				rebuildTextures = true;
-				pEngComponent = GetEngine()->GetComponentManager()->CreateComponent(model, skin);
+				pEngComponent.TakeOver(GetEngine()->GetComponentManager()->CreateComponent(model, skin));
 				pEngWorld->AddComponent(pEngComponent);
 			}
 			
 		}else if(pEngComponent){
 			pEngSimCollider->SetComponent(NULL);
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 			pEngComponent = NULL;
 		}
 		

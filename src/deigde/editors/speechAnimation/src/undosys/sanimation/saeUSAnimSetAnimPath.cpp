@@ -54,9 +54,6 @@ saeUSAnimSetAnimPath::saeUSAnimSetAnimPath(saeSAnimation *sanimation, const char
 }
 
 saeUSAnimSetAnimPath::~saeUSAnimSetAnimPath(){
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

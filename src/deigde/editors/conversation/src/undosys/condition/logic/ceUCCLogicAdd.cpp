@@ -68,18 +68,6 @@ ceCConditionLogic *logic, ceConversationCondition *condition){
 }
 
 ceUCCLogicAdd::~ceUCCLogicAdd(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pLogic){
-		pLogic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

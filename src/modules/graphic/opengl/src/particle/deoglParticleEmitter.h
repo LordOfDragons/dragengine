@@ -27,8 +27,8 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicParticleEmitter.h>
+#include "deoglRParticleEmitter.h"
 
-class deoglRParticleEmitter;
 class deoglParticleEmitterType;
 
 class deGraphicOpenGl;
@@ -44,7 +44,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deParticleEmitter &pParticleEmitter;
 	
-	deoglRParticleEmitter *pREmitter;
+	deoglRParticleEmitter::Ref pREmitter;
 	
 	deoglParticleEmitterType **pTypes;
 	int pTypeCount;
@@ -74,7 +74,7 @@ public:
 	
 	
 	/** Render particle emitter. */
-	inline deoglRParticleEmitter *GetREmitter() const{ return pREmitter; }
+	inline const deoglRParticleEmitter::Ref &GetREmitter() const{ return pREmitter; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

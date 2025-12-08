@@ -49,11 +49,9 @@ aeUSetRuleFStaBone::aeUSetRuleFStaBone(aeRuleForeignState *rule, const char *new
 	SetShortInfo("Set foreign state rule bone name");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleFStaBone::~aeUSetRuleFStaBone(){
-	if(pRule) pRule->FreeReference();
 }
 
 

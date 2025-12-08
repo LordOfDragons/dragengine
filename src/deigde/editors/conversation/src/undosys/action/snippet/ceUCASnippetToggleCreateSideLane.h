@@ -26,9 +26,9 @@
 #define _CEUCASNIPPETTOGGLECREATESIDELANE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCASnippet.h"
+#include "ceConversationTopic.h"
 
-class ceCASnippet;
-class ceConversationTopic;
 
 
 /**
@@ -36,8 +36,8 @@ class ceConversationTopic;
  */
 class ceUCASnippetToggleCreateSideLane : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASnippet *pSnippet;
+	ceConversationTopic::Ref pTopic;
+	ceCASnippet::Ref pSnippet;
 	
 public:
 	/** \brief Type holding strong reference. */

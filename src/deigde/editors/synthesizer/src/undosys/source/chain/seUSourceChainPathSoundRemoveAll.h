@@ -29,8 +29,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decStringList.h>
+#include "seSourceChain.h"
 
-class seSourceChain;
 
 
 
@@ -39,7 +39,7 @@ class seSourceChain;
  */
 class seUSourceChainPathSoundRemoveAll : public igdeUndo{
 private:
-	seSourceChain *pSource;
+	seSourceChain::Ref pSource;
 	
 	decStringList pPathSounds;
 	

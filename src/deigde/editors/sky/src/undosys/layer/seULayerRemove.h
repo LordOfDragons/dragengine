@@ -26,9 +26,9 @@
 #define _SEULAYERREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSky.h"
+#include "seLayer.h"
 
-class seLayer;
-class seSky;
 
 
 /**
@@ -36,8 +36,8 @@ class seSky;
  */
 class seULayerRemove : public igdeUndo{
 private:
-	seSky *pSky;
-	seLayer *pLayer;
+	seSky::Ref pSky;
+	seLayer::Ref pLayer;
 	int pIndex;
 	
 	

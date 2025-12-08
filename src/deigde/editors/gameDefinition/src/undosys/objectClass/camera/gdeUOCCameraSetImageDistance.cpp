@@ -62,12 +62,6 @@ pCamera(NULL)
 }
 
 gdeUOCCameraSetImageDistance::~gdeUOCCameraSetImageDistance(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

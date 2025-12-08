@@ -62,12 +62,6 @@ pParticleEmitter(NULL)
 }
 
 gdeUOCParticleEmitterSetPath::~gdeUOCParticleEmitterSetPath(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

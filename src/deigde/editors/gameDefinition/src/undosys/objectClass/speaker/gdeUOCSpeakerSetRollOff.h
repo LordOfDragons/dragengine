@@ -27,9 +27,9 @@
 #define _GDEUOCSPEAKERSETROLLOFF_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeOCSpeaker.h"
+#include "gdeObjectClass.h"
 
-class gdeOCSpeaker;
-class gdeObjectClass;
 
 
 
@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCSpeakerSetRollOff : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	float pOldValue;
 	float pNewValue;

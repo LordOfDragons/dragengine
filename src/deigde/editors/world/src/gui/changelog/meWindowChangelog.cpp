@@ -117,7 +117,7 @@ pWorld(NULL)
 {
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	pListener = new meWindowChangelogListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	igdeUIHelper::sColumnHeader headers[3] = {
 		igdeUIHelper::sColumnHeader("Sector", nullptr, igdeApplication::app().DisplayScaled(50)),
@@ -134,13 +134,9 @@ pWorld(NULL)
 meWindowChangelog::~meWindowChangelog(){
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 		pWorld = NULL;
 	}
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -149,7 +145,7 @@ meWindowChangelog::~meWindowChangelog(){
 ///////////////
 
 void meWindowChangelog::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -157,7 +153,6 @@ void meWindowChangelog::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

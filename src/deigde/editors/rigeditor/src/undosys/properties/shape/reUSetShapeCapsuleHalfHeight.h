@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include "dragengine/common/math/decMath.h"
+#include "reRigShapeCapsule.h"
 
-class reRigShapeCapsule;
 
 
 
@@ -37,7 +37,7 @@ class reRigShapeCapsule;
  */
 class reUSetShapeCapsuleHalfHeight : public igdeUndo{
 private:
-	reRigShapeCapsule *pShape;
+	reRigShapeCapsule::Ref pShape;
 	
 	float pOldHalfHeight;
 	float pNewHalfHeight;

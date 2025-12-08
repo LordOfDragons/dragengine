@@ -87,22 +87,10 @@ pLastPlayedActionTopic(NULL)
 }
 
 cePlayback::~cePlayback(){
-	if(pLastPlayedAction){
-		pLastPlayedAction->FreeReference();
-	}
-	if(pLastPlayedActionTopic){
-		pLastPlayedActionTopic->FreeReference();
-	}
 	if(pActors){
 		delete [] pActors;
 	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 	ClearTextBoxText();
-	if(pTextBoxText){
-		pTextBoxText->FreeReference();
-	}
 	if(pCamera){
 		delete pCamera;
 	}
@@ -114,16 +102,9 @@ cePlayback::~cePlayback(){
 ///////////////
 
 void cePlayback::SetTopic(ceConversationTopic *topic){
-	if(topic != pTopic){
-		if(pTopic){
-			pTopic->FreeReference();
-		}
+	if(pTopic != topic){
 		
 		pTopic = topic;
-		
-		if(topic){
-			topic->AddReference();
-		}
 		
 		Rewind();
 		
@@ -132,7 +113,7 @@ void cePlayback::SetTopic(ceConversationTopic *topic){
 }
 
 void cePlayback::SetRunning(bool running){
-	if(running == pRunning){
+	if(pRunning == running){
 		return;
 	}
 	
@@ -168,7 +149,7 @@ void cePlayback::SetCameraHandling(eCameraHandling handling){
 }
 
 void cePlayback::SetAutoAdvanceCommands(bool autoAdvance){
-	if(autoAdvance == pAutoAdvanceCommands){
+	if(pAutoAdvanceCommands == autoAdvance){
 		return;
 	}
 	
@@ -287,7 +268,7 @@ void cePlayback::PlaySingleAction(ceConversationAction *action, float time){
 
 
 void cePlayback::SetActorCount(int count){
-	if(count != pActorCount){
+	if(pActorCount != count){
 		int i;
 		
 		if(pActors){
@@ -677,27 +658,13 @@ void cePlayback::pProcessActions(float elapsed){
 }
 
 void cePlayback::SetLastPlayedAction(ceConversationTopic *topic, ceConversationAction *action){
-	if(topic != pLastPlayedActionTopic){
-		if(pLastPlayedActionTopic){
-			pLastPlayedActionTopic->FreeReference();
-		}
+	if(pLastPlayedActionTopic != topic){
 		
 		pLastPlayedActionTopic = topic;
-		
-		if(topic){
-			topic->AddReference();
-		}
 	}
 	
-	if(action != pLastPlayedAction){
-		if(pLastPlayedAction){
-			pLastPlayedAction->FreeReference();
-		}
+	if(pLastPlayedAction != action){
 		
 		pLastPlayedAction = action;
-		
-		if(action){
-			action->AddReference();
-		}
 	}
 }

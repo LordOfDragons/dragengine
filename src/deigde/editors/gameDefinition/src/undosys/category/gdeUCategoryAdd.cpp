@@ -53,21 +53,12 @@ pCategory(NULL)
 	SetShortInfo("Category add");
 	
 	pParent = parent;
-	if(parent){
-		parent->AddReference();
-	}
 	
 	pCategory = category;
 	category->AddReference();
 }
 
 gdeUCategoryAdd::~gdeUCategoryAdd(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
-	if(pParent){
-		pParent->FreeReference();
-	}
 }
 
 
@@ -80,7 +71,7 @@ void gdeUCategoryAdd::Undo(){
 	
 	gdeCategory *activeCheck = gameDefinition.GetActiveCategory();
 	while(activeCheck){
-		if(activeCheck == pCategory){
+		if(pCategory == activeCheck){
 			switch(gameDefinition.GetSelectedObjectType()){
 			case gdeGameDefinition::eotCategoryObjectClass:
 			case gdeGameDefinition::eotCategoryParticleEmitter:

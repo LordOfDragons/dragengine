@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCFORCEFIELD_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCForceField.h"
 
-class gdeOCForceField;
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCForceField *pForceField;
+	gdeOCForceField::Ref pForceField;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ForceField. */
-	gdeOCForceField *GetForceField() const{ return pForceField; }
+	const gdeOCForceField::Ref &GetForceField() const{ return pForceField; }
 	/*@}*/
 };
 

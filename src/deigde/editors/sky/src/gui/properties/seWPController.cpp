@@ -380,7 +380,7 @@ pSky(NULL)
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new seWPControllerListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -415,13 +415,9 @@ pSky(NULL)
 seWPController::~seWPController(){
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 		pSky = NULL;
 	}
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -430,13 +426,12 @@ seWPController::~seWPController(){
 ///////////////
 
 void seWPController::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;

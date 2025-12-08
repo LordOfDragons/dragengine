@@ -42,7 +42,6 @@ aeUSetRuleFStaEnableVertexPositionSet::aeUSetRuleFStaEnableVertexPositionSet(aeR
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		SetShortInfo("Set bone rotator rule enable vertex position set");
 		
@@ -75,5 +74,4 @@ void aeUSetRuleFStaEnableVertexPositionSet::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaEnableVertexPositionSet::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

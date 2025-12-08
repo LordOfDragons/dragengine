@@ -62,12 +62,6 @@ pBillboard(NULL)
 }
 
 gdeUOCBillboardSetBoneName::~gdeUOCBillboardSetBoneName(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

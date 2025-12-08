@@ -62,12 +62,6 @@ pProfile(NULL)
 }
 
 projUProfileRemove::~projUProfileRemove(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 

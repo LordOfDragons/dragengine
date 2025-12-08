@@ -61,7 +61,6 @@ meUSetObjectClass::meUSetObjectClass(meObject *object, const char *newcname){
 		pObjects[0].oldsize = object->GetSize();
 		pObjects[0].oldscaling = object->GetScaling();
 		pObjects[0].object = object;
-		object->AddReference();
 		
 		pObjectCount = 1;
 		
@@ -94,7 +93,6 @@ meUSetObjectClass::meUSetObjectClass(meObjectList &objects, const char *newcname
 			pObjects[pObjectCount].oldsize = object->GetSize();
 			pObjects[pObjectCount].oldscaling = object->GetScaling();
 			pObjects[pObjectCount].object = object;
-			object->AddReference();
 		}
 		
 	}catch(const deException &){

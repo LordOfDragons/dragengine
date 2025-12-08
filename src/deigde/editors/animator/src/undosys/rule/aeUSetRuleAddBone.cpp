@@ -79,13 +79,9 @@ aeUSetRuleAddBone::aeUSetRuleAddBone(aeRule *rule, const char *pattern){
 	}
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleAddBone::~aeUSetRuleAddBone(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

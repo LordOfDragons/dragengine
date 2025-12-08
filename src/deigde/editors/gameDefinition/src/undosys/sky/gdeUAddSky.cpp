@@ -58,12 +58,6 @@ pSky(NULL)
 }
 
 gdeUAddSky::~gdeUAddSky(){
-	if(pSky){
-		pSky->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

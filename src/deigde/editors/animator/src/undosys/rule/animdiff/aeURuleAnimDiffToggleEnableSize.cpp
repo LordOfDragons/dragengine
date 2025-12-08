@@ -48,7 +48,6 @@ aeURuleAnimDiffToggleEnableSize::aeURuleAnimDiffToggleEnableSize(aeRuleAnimation
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		SetShortInfo("Rule animation toggle enable size");
 		
@@ -81,7 +80,4 @@ void aeURuleAnimDiffToggleEnableSize::Redo(){
 //////////////////////
 
 void aeURuleAnimDiffToggleEnableSize::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

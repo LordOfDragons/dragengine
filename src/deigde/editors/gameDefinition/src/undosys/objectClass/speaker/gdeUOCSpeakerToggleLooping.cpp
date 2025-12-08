@@ -58,12 +58,6 @@ pSpeaker(NULL)
 }
 
 gdeUOCSpeakerToggleLooping::~gdeUOCSpeakerToggleLooping(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

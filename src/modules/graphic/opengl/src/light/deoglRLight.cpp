@@ -254,7 +254,7 @@ void deoglRLight::UpdateSkin(float elapsed){
 
 
 void deoglRLight::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	
@@ -308,15 +308,12 @@ void deoglRLight::SetAmbientRatio(float ratio){
 
 
 void deoglRLight::SetLightSkin(deoglRSkin *skin){
-	if(skin == pLightSkin){
+	if(pLightSkin == skin){
 		return;
 	}
 	
 	pUseSkinTexture = NULL;
 	
-	if(pLightSkin){
-		pLightSkin->FreeReference();
-	}
 	
 	pLightSkin = skin;
 	
@@ -336,37 +333,23 @@ void deoglRLight::SetLightSkin(deoglRSkin *skin){
 }
 
 void deoglRLight::SetLightCanvas(deoglRCanvasView *canvas){
-	if(canvas == pLightCanvas){
+	if(pLightCanvas == canvas){
 		return;
 	}
 	
-	if(pLightCanvas){
-		pLightCanvas->FreeReference();
-	}
 	
 	pLightCanvas = canvas;
-	
-	if(canvas){
-		canvas->AddReference();
-	}
 	
 	   pRequiresPrepareForRender();
 }
 
 void deoglRLight::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
-	if(dynamicSkin == pDynamicSkin){
+	if(pDynamicSkin == dynamicSkin){
 		return;
 	}
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
 	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
 }
 
 void deoglRLight::SetTransform(const decTexMatrix2 &matrix){
@@ -573,7 +556,7 @@ void deoglRLight::SetLightVolumeDirty(){
 
 
 void deoglRLight::SetLightVolumeCropBox(decShapeBox *box){
-	if(box == pLightVolumeCropBox){
+	if(pLightVolumeCropBox == box){
 		return;
 	}
 	
@@ -1102,15 +1085,6 @@ void deoglRLight::pCleanUp(){
 		delete pColVol;
 	}
 	
-	if(pLightCanvas){
-		pLightCanvas->FreeReference();
-	}
-	if(pLightSkin){
-		pLightSkin->FreeReference();
-	}
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
 	
 	if(pLightVolume){
 		delete pLightVolume;

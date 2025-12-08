@@ -29,8 +29,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/utils/decUuid.h>
+#include "projProfile.h"
 
-class projProfile;
 
 
 
@@ -39,7 +39,7 @@ class projProfile;
  */
 class projUProfileSetIdentifier : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decUuid pOldValue;
 	decUuid pNewValue;

@@ -26,8 +26,8 @@
 #define _SAEUPHONEMESETSAMPLETEXT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "saePhoneme.h"
 
-class saePhoneme;
 
 
 
@@ -36,7 +36,7 @@ class saePhoneme;
  */
 class saeUPhonemeSetSampleText : public igdeUndo{
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	decString pOldText;
 	decString pNewText;

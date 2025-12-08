@@ -35,9 +35,9 @@
 #include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
+#include "projPanelRemoteClientListener.h"
 
 class projPanelTestRun;
-class projPanelRemoteClientListener;
 
 
 /**
@@ -57,7 +57,7 @@ public:
 private:
 	projPanelTestRun &pPanelTestRun;
 	const projRemoteClient::Ref pClient;
-	projPanelRemoteClientListener *pListener;
+	projPanelRemoteClientListener::Ref pListener;
 	
 	int pMaxLines;
 	

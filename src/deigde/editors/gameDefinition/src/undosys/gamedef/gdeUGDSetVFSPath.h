@@ -27,8 +27,8 @@
 #define _GDEUGDSETVFSPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
 
 
 
@@ -37,7 +37,7 @@ class gdeGameDefinition;
  */
 class gdeUGDSetVFSPath : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decString pOldValue;
 	decString pNewValue;

@@ -59,12 +59,6 @@ pComponent(NULL)
 }
 
 gdeUOCComponentToggleAttachTarget::~gdeUOCComponentToggleAttachTarget(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

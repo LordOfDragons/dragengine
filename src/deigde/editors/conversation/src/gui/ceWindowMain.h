@@ -33,16 +33,16 @@
 #include <deigde/gui/event/igdeActionUndo.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "ceConversation.h"
+#include "ceWindowDopeSheet.h"
+#include "ceWindowProperties.h"
+#include "ceWindowMainListener.h"
+#include "ceViewConversation.h"
 
 
 class decStringList;
 class decStringSet;
-class ceWindowMainListener;
-class ceViewConversation;
 class ceConfiguration;
-class ceConversation;
-class ceWindowProperties;
-class ceWindowDopeSheet;
 class ceLoadSaveSystem;
 class ceIGDEModule;
 class igdeStepableTask;
@@ -90,7 +90,7 @@ private:
 		void FilesChanged() override;
 	};
 	
-	ceWindowMainListener *pListener;
+	ceWindowMainListener::Ref pListener;
 	
 	igdeIcon::Ref pIconActionCameraShot;
 	igdeIcon::Ref pIconActionMusic;
@@ -156,11 +156,11 @@ private:
 	igdeClipboard pClipboard;
 	ceLoadSaveSystem *pLoadSaveSystem;
 	
-	ceViewConversation *pViewConversation;
-	ceWindowProperties *pWindowProperties;
-	ceWindowDopeSheet *pWindowDopeSheet;
+	ceViewConversation::Ref pViewConversation;
+	ceWindowProperties::Ref pWindowProperties;
+	ceWindowDopeSheet::Ref pWindowDopeSheet;
 	
-	ceConversation *pConversation;
+	ceConversation::Ref pConversation;
 	
 	cRecentFilesCTS pRecentFilesCTS;
 	cRecentFilesCTA pRecentFilesCTA;
@@ -202,7 +202,7 @@ public:
 	inline ceLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** Conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** Set conversation. */
 	void SetConversation(ceConversation *conversation);

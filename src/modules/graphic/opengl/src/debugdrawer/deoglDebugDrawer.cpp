@@ -53,7 +53,7 @@ pDirtyDebugDrawer(true),
 pDirtyShapes(true)
 {
 	try{
-		pRDebugDrawer = new deoglRDebugDrawer(ogl.GetRenderThread());
+		pRDebugDrawer.TakeOverWith(ogl.GetRenderThread());
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -134,7 +134,4 @@ void deoglDebugDrawer::ShapeLayoutChanged(){
 //////////////////////
 
 void deoglDebugDrawer::pCleanUp(){
-	if(pRDebugDrawer){
-		pRDebugDrawer->FreeReference();
-	}
 }

@@ -62,13 +62,10 @@ aeSubAnimator::aeSubAnimator(deEngine *engine){
 	
 	pEngine = engine;
 	
-	pEngAnimator = NULL;
-	pEngAnimatorInstance = NULL;
-	
 	try{
-		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
+		pEngAnimator.TakeOver(engine->GetAnimatorManager()->CreateAnimator());
 		
-		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
+		pEngAnimatorInstance.TakeOver(engine->GetAnimatorInstanceManager()->CreateAnimatorInstance());
 		pEngAnimatorInstance->SetAnimator(pEngAnimator);
 		
 	}catch(const deException &){
@@ -95,10 +92,7 @@ void aeSubAnimator::SetPathAnimator(const char *path){
 void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 	pEngAnimatorInstance->SetAnimation(NULL);
 	
-	if(pEngAnimator){
-		pEngAnimator->FreeReference();
-		pEngAnimator = NULL;
-	}
+	pEngAnimator = nullptr;
 	
 	if(pPathAnimator.IsEmpty()){
 		pEngAnimatorInstance->SetAnimator(NULL);
@@ -184,10 +178,7 @@ void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 		if(animator){
 			animator->FreeReference();
 		}
-		if(pEngAnimator){
-			pEngAnimator->FreeReference();
-			pEngAnimator = NULL;
-		}
+		pEngAnimator = nullptr;
 	}
 	
 	pEngAnimatorInstance->SetAnimator(pEngAnimator);
@@ -365,12 +356,10 @@ void aeSubAnimator::pCleanUp(){
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetAnimator(NULL);
 		pEngAnimatorInstance->SetComponent(NULL);
-		pEngAnimatorInstance->FreeReference();
 	}
 	
 	if(pEngAnimator){
 		pEngAnimator->SetRig(NULL);
 		pEngAnimator->SetAnimation(NULL);
-		pEngAnimator->FreeReference();
 	}
 }

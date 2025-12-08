@@ -26,8 +26,8 @@
 #define _PEEUEMITTERTOGGLEEMITBURST_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "peeEmitter.h"
 
-class peeEmitter;
 
 
 
@@ -36,7 +36,7 @@ class peeEmitter;
  */
 class peeUEmitterToggleEmitBurst : public igdeUndo{
 private:
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	
 	

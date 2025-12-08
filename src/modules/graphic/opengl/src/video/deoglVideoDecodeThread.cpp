@@ -294,11 +294,11 @@ void deoglVideoDecodeThread::PreparePixelBuffers(){
 	
 	// create pixel buffers if not existing
 	if(!pPixelBufferDecode){
-		pPixelBufferDecode.TakeOver(new deoglPixelBuffer(pbFormat, width, height, 1));
+		pPixelBufferDecode.TakeOverWith(pbFormat, width, height, 1);
 	}
 	
 	if(!pPixelBufferTexture){
-		pPixelBufferTexture.TakeOver(new deoglPixelBuffer(pbFormat, width, height, 1));
+		pPixelBufferTexture.TakeOverWith(pbFormat, width, height, 1);
 	}
 }
 

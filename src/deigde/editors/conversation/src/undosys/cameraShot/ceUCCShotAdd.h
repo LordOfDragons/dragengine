@@ -26,9 +26,9 @@
 #define _CEUCCSHOTADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCameraShot.h"
+#include "ceConversation.h"
 
-class ceConversation;
-class ceCameraShot;
 
 
 
@@ -37,8 +37,8 @@ class ceCameraShot;
  */
 class ceUCCShotAdd : public igdeUndo{
 private:
-	ceConversation *pConversation;
-	ceCameraShot *pCameraShot;
+	ceConversation::Ref pConversation;
+	ceCameraShot::Ref pCameraShot;
 	
 public:
 	/** \brief Type holding strong reference. */

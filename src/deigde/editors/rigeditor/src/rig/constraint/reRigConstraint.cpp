@@ -118,7 +118,7 @@ reRigConstraint::reRigConstraint(deEngine *engine){
 		pDof[deColliderConstraint::edofAngularY] = new reRigConstraintDof(*this, deColliderConstraint::edofAngularY);
 		pDof[deColliderConstraint::edofAngularZ] = new reRigConstraintDof(*this, deColliderConstraint::edofAngularZ);
 		
-		pCollider = engine->GetColliderManager()->CreateColliderVolume();
+		pCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume());
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(deCollider::ertKinematic);
 		pCollider->SetUseLocalGravity(true);
@@ -129,7 +129,7 @@ reRigConstraint::reRigConstraint(deEngine *engine){
 		pCollider->SetCollisionFilter(decCollisionFilter(layerMask));
 		
 		// create debug drawer and shapes
-		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		
 		pDDSConstraint = new igdeWDebugDrawerShape;
@@ -196,7 +196,7 @@ reRigConstraint::~reRigConstraint(){
 ///////////////
 
 void reRigConstraint::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -216,7 +216,7 @@ void reRigConstraint::SetRig(reRig *rig){
 }
 
 void reRigConstraint::SetRigBone(reRigBone *rigBone){
-	if(rigBone == pRigBone){
+	if(pRigBone == rigBone){
 		return;
 	}
 	
@@ -225,7 +225,7 @@ void reRigConstraint::SetRigBone(reRigBone *rigBone){
 }
 
 void reRigConstraint::SetEngineConstraint(deColliderConstraint *constraint){
-	if(constraint == pEngConstraint){
+	if(pEngConstraint == constraint){
 		return;
 	}
 	
@@ -466,7 +466,7 @@ void reRigConstraint::SetSpringDamping(float damping){
 
 
 void reRigConstraint::SetIsRope(bool isRope){
-	if(isRope == pIsRope){
+	if(pIsRope == isRope){
 		return;
 	}
 	
@@ -504,19 +504,12 @@ void reRigConstraint::SetBreakingThreshold(float impulseThreshold){
 
 
 void reRigConstraint::SetConstraintBone(reRigBone *bone){
-	if(bone == pConstraintBone){
+	if(pConstraintBone == bone){
 		return;
 	}
 	
-	if(pConstraintBone){
-		pConstraintBone->FreeReference();
-	}
 	
 	pConstraintBone = bone;
-	
-	if(bone){
-		bone->AddReference();
-	}
 	
 	if(pEngConstraint){
 		if(pConstraintBone && pRig){
@@ -540,7 +533,7 @@ void reRigConstraint::SetConstraintBone(reRigBone *bone){
 
 
 void reRigConstraint::SetShowJointError(bool showJointError){
-	if(showJointError == pShowJointError){
+	if(pShowJointError == showJointError){
 		return;
 	}
 	
@@ -552,7 +545,7 @@ void reRigConstraint::SetShowJointError(bool showJointError){
 
 
 void reRigConstraint::SetSelected(bool selected){
-	if(selected == pSelected){
+	if(pSelected == selected){
 		return;
 	}
 	
@@ -562,7 +555,7 @@ void reRigConstraint::SetSelected(bool selected){
 }
 
 void reRigConstraint::SetActive(bool active){
-	if(active == pActive){
+	if(pActive == active){
 		return;
 	}
 	
@@ -701,13 +694,7 @@ void reRigConstraint::pCleanUp(){
 	SetRigBone(NULL);
 	SetRig(NULL);
 	
-	if(pConstraintBone){
-		pConstraintBone->FreeReference();
-	}
 	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
 	
 	if(pDof[deColliderConstraint::edofLinearX]){
 		delete pDof[deColliderConstraint::edofLinearX];
@@ -751,9 +738,6 @@ void reRigConstraint::pCleanUp(){
 	}
 	if(pDDSConstraint){
 		delete pDDSConstraint;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

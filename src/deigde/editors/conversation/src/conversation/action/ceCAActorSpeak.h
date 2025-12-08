@@ -31,11 +31,11 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include <dragengine/resources/sound/deSound.h>
 
 class ceConversation;
 
 class deEngine;
-class deSound;
 
 
 
@@ -51,7 +51,7 @@ public:
 	
 private:
 	deEngine *pEngine;
-	deSound *pEngSound;
+	deSound::Ref pEngSound;
 	bool pLoaded;
 	
 	decString pActor;

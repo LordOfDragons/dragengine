@@ -26,8 +26,8 @@
 #define _DEOGLEFFECT_H_
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicEffect.h>
+#include "deoglREffect.h"
 
-class deoglREffect;
 
 class deEffect;
 class deGraphicOpenGl;
@@ -42,7 +42,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deEffect &pEffect;
 	
-	deoglREffect *pREffect;
+	deoglREffect::Ref pREffect;
 	
 	bool pDirtyEnabled;
 	
@@ -69,7 +69,7 @@ public:
 	
 	
 	/** Render effect. */
-	inline deoglREffect *GetREffect() const{ return pREffect; }
+	inline const deoglREffect::Ref &GetREffect() const{ return pREffect; }
 	
 	/** Update render thread counterpart if required. */
 	virtual void SyncToRender();

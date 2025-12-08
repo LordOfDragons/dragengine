@@ -27,8 +27,8 @@
 #define _AEURULESNAPTOGGLEENABLEVERTEXPOSITIONSET_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleStateSnapshot.h"
 
-class aeRuleStateSnapshot;
 
 
 /**
@@ -36,7 +36,7 @@ class aeRuleStateSnapshot;
  */
 class aeURuleSnapToggleEnableVertexPositionSet : public igdeUndo{
 private:
-	aeRuleStateSnapshot *pRule;
+	aeRuleStateSnapshot::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

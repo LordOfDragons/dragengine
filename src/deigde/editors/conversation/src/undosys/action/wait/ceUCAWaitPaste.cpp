@@ -67,9 +67,6 @@ ceUCActionPaste(topic, actions, index)
 }
 
 ceUCAWaitPaste::~ceUCAWaitPaste(){
-	if(pWait){
-		pWait->FreeReference();
-	}
 }
 
 

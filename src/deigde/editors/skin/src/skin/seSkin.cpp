@@ -135,7 +135,7 @@ pPreviewMode(epmModel)
 		SetFilePath("new.deskin");
 		
 		// create animator
-		pEngAnimator = engine->GetAnimatorManager()->CreateAnimator();
+		pEngAnimator.TakeOver(engine->GetAnimatorManager()->CreateAnimator());
 		
 		amController = new deAnimatorController;
 		amController->SetClamp(false);
@@ -157,11 +157,11 @@ pPreviewMode(epmModel)
 		amRuleAnim->FreeReference();
 		amRuleAnim = NULL;
 		
-		pEngAnimatorInstance = engine->GetAnimatorInstanceManager()->CreateAnimatorInstance();
+		pEngAnimatorInstance.TakeOver(engine->GetAnimatorInstanceManager()->CreateAnimatorInstance());
 		pEngAnimatorInstance->SetAnimator(pEngAnimator);
 		
 		// create world
-		pEngWorld = engine->GetWorldManager()->CreateWorld();
+		pEngWorld.TakeOver(engine->GetWorldManager()->CreateWorld());
 		pEngWorld->SetGravity(decVector(0.0f, -9.81f, 0.0f));
 		pEngWorld->SetDisableLights(false);
 		pEngWorld->SetAmbientLight(decColor(0.0f, 0.0f, 0.0f));
@@ -183,7 +183,7 @@ pPreviewMode(epmModel)
 		pSky->SetWorld(pEngWorld);
 		
 		// create the environment wrapper object
-		pEnvObject.TakeOver(new igdeWObject(*environment));
+		pEnvObject.TakeOverWith(*environment);
 		pEnvObject->SetWorld(pEngWorld);
 		pEnvObject->SetPosition(decDVector(0.0, -2.0, 0.0));
 		
@@ -199,7 +199,7 @@ pPreviewMode(epmModel)
 		
 		// create empty skin
 		deSkinBuilder skinBuilder;
-		pEngSkin = engine->GetSkinManager()->CreateSkin("", skinBuilder);
+		pEngSkin.TakeOver(engine->GetSkinManager()->CreateSkin("", skinBuilder));
 		
 		// create dynamic skin
 		pDynamicSkin = new seDynamicSkin(this);
@@ -229,7 +229,7 @@ seSkin::~seSkin(){
 ///////////////
 
 void seSkin::SetPreviewMode(ePreviewMode mode){
-	if(mode == pPreviewMode){
+	if(pPreviewMode == mode){
 		return;
 	}
 	
@@ -523,13 +523,12 @@ bool seSkin::HasActiveMapped() const{
 }
 
 void seSkin::SetActiveMapped(seMapped *mapped){
-	if(mapped == pActiveMapped){
+	if(pActiveMapped == mapped){
 		return;
 	}
 	
 	if(pActiveMapped){
 		pActiveMapped->SetActive(false);
-		pActiveMapped->FreeReference();
 	}
 	
 	pActiveMapped = mapped;
@@ -594,14 +593,13 @@ void seSkin::RemoveAllTextures(){
 }
 
 bool seSkin::HasActiveTexture() const{
-	return pActiveTexture != NULL;
+	return pActiveTexture != nullptr;
 }
 
 void seSkin::SetActiveTexture(seTexture *texture){
-	if(texture != pActiveTexture){
+	if(pActiveTexture != texture){
 		if(pActiveTexture){
 			pActiveTexture->SetActive(false);
-			pActiveTexture->FreeReference();
 		}
 		
 		pActiveTexture = texture;
@@ -955,17 +953,10 @@ void seSkin::pCleanUp(){
 	SetActiveMapped(nullptr);
 	RemoveAllMapped();
 	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetComponent(NULL);
-		pEngAnimatorInstance->FreeReference();
 	}
 	pEngAnimatorAnim = nullptr;
-	if(pEngAnimator){
-		pEngAnimator->FreeReference();
-	}
 	
 	if(pDynamicSkin){
 		delete pDynamicSkin;
@@ -977,9 +968,7 @@ void seSkin::pCleanUp(){
 		}
 		if(pEngComponent && pEngComponent->GetParentWorld()){
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 		}
-		pEngWorld->FreeReference();
 	}
 }
 
@@ -1067,13 +1056,12 @@ void seSkin::pUpdateComponent(){
 				pEngComponent->SetModelAndSkin(model, pEngSkin);
 				
 			}else{
-				pEngComponent = GetEngine()->GetComponentManager()->CreateComponent(model, pEngSkin);
+				pEngComponent.TakeOver(GetEngine()->GetComponentManager()->CreateComponent(model, pEngSkin));
 				pEngWorld->AddComponent(pEngComponent);
 			}
 			
 		}else if(pEngComponent){
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 			pEngComponent = NULL;
 		}
 		

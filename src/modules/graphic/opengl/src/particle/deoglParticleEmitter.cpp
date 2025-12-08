@@ -59,7 +59,7 @@ pTypeCount(0),
 pDirtyTypes(true)
 {
 	try{
-		pREmitter = new deoglRParticleEmitter(ogl.GetRenderThread());
+		pREmitter.TakeOverWith(ogl.GetRenderThread());
 		TypeCountChanged();
 		
 	}catch(const deException &){
@@ -154,8 +154,6 @@ void deoglParticleEmitter::pCleanUp(){
 	}
 	
 	// types holds a reference to pREmitter. do not remove it earlier
-	if(pREmitter){
-		pREmitter->FreeReference();
 		pREmitter = NULL;
 	}
 }

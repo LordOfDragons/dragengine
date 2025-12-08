@@ -35,6 +35,12 @@ class seWPController;
  * \brief Controller properties panel listener.
  */
 class seWPControllerListener : public seSynthesizerNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seWPControllerListener> Ref;
+	
+	
+
 private:
 	seWPController &pPanel;
 	

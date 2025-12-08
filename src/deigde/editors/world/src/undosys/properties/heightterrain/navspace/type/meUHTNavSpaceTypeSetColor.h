@@ -28,8 +28,8 @@
 #include <dragengine/common/math/decMath.h>
 
 #include <deigde/undo/igdeUndo.h>
+#include "meHeightTerrainNavSpaceType.h"
 
-class meHeightTerrainNavSpaceType;
 
 
 
@@ -43,7 +43,7 @@ public:
 	
 	
 private:
-	meHeightTerrainNavSpaceType *pType;
+	meHeightTerrainNavSpaceType::Ref pType;
 	decColor pOldColor;
 	decColor pNewColor;
 	

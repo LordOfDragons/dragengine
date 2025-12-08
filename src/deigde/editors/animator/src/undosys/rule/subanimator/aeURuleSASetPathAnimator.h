@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/collection/decObjectList.h>
+#include "aeRuleSubAnimator.h"
 
-class aeRuleSubAnimator;
 class aeController;
 
 
@@ -38,7 +38,7 @@ class aeController;
  */
 class aeURuleSASetPathAnimator : public igdeUndo{
 private:
-	aeRuleSubAnimator *pRule;
+	aeRuleSubAnimator::Ref pRule;
 	
 	decString pOldPath;
 	decString pNewPath;

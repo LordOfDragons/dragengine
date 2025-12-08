@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/string/decStringList.h>
+#include "aeRule.h"
 
-class aeRule;
 
 
 
@@ -45,7 +45,7 @@ class aeRule;
  */
 class aeURuleMirrorVertexPositionSets : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	decStringList pPatterns;
 	
 public:

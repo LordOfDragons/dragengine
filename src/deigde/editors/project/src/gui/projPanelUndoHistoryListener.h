@@ -35,6 +35,12 @@ class projPanelUndoHistory;
  * \brief Panel undo history listener.
  */
 class projPanelUndoHistoryListener : public projProjectListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<projPanelUndoHistoryListener> Ref;
+	
+	
+
 private:
 	projPanelUndoHistory &pPanel;
 	

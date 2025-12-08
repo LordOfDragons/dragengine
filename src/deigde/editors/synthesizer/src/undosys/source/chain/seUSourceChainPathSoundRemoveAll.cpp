@@ -51,13 +51,9 @@ pSource(NULL)
 	SetShortInfo("Chain source remove all path sounds");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceChainPathSoundRemoveAll::~seUSourceChainPathSoundRemoveAll(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

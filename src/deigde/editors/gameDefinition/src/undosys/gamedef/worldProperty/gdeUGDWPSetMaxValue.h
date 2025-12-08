@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeProperty.h"
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
-class gdeProperty;
 
 
 
@@ -40,8 +40,8 @@ class gdeProperty;
  */
 class gdeUGDWPSetMaxValue : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeProperty::Ref pProperty;
 	
 	float pOldValue;
 	float pNewValue;

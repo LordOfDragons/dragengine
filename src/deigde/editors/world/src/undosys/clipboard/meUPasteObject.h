@@ -31,9 +31,9 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decIntList.h>
+#include "meWorld.h"
 
 class meClipboardDataObject;
-class meWorld;
 
 
 
@@ -45,7 +45,7 @@ class meWorld;
  */
 class meUPasteObject : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meObjectList pObjects;
 	decIntList pAttachedToIndexList;
 	

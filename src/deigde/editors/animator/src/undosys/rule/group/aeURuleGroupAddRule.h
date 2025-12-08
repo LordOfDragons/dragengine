@@ -27,9 +27,9 @@
 #define _AEURULEGROUPADDRULE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleGroup.h"
+#include "aeRule.h"
 
-class aeRule;
-class aeRuleGroup;
 
 
 
@@ -38,8 +38,8 @@ class aeRuleGroup;
  */
 class aeURuleGroupAddRule : public igdeUndo{
 private:
-	aeRuleGroup *pGroup;
-	aeRule *pRule;
+	aeRuleGroup::Ref pGroup;
+	aeRule::Ref pRule;
 	int pIndex;
 	
 public:

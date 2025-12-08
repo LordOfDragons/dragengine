@@ -29,9 +29,9 @@
 
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicBillboard.h>
+#include "deoglRBillboard.h"
 
 class deGraphicOpenGl;
-class deoglRBillboard;
 class deoglDynamicSkin;
 class deoglSkinStateController;
 class deoglWorld;
@@ -48,7 +48,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	const deBillboard &pBillboard;
 	
-	deoglRBillboard *pRBillboard;
+	deoglRBillboard::Ref pRBillboard;
 	
 	deoglWorld *pParentWorld;
 	deoglSkinStateController *pSkinStateController;
@@ -100,7 +100,7 @@ public:
 	
 	
 	/** Render billboard. */
-	inline deoglRBillboard *GetRBillboard() const{ return pRBillboard; }
+	inline const deoglRBillboard::Ref &GetRBillboard() const{ return pRBillboard; }
 	
 	
 	

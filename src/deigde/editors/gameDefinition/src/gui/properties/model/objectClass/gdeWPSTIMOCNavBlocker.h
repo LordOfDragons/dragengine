@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCNAVBLOCKER_H_
 
 #include "gdeWPSTIMOCSubObject.h"
+#include "gdeOCNavigationBlocker.h"
 
-class gdeOCNavigationBlocker;
 
 
 /**
@@ -35,7 +35,7 @@ class gdeOCNavigationBlocker;
  */
 class gdeWPSTIMOCNavBlocker : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	
 public:
@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Navigation blocker. */
-	inline gdeOCNavigationBlocker *GetOCNavBlocker() const{ return pNavBlocker; }
+	inline const gdeOCNavigationBlocker::Ref &GetOCNavBlocker() const{ return pNavBlocker; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

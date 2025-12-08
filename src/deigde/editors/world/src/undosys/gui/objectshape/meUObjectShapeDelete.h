@@ -28,8 +28,8 @@
 #include <dragengine/common/shape/decShapeList.h>
 
 #include <deigde/undo/igdeUndo.h>
+#include "meObject.h"
 
-class meObject;
 class meObjectShapeList;
 
 
@@ -39,7 +39,7 @@ class meObjectShapeList;
  */
 class meUObjectShapesDelete : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;

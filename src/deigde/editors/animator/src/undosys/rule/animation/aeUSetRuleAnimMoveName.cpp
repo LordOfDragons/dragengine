@@ -49,11 +49,9 @@ aeUSetRuleAnimMoveName::aeUSetRuleAnimMoveName(aeRuleAnimation *rule, const char
 	SetShortInfo("Set animation rule move name");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleAnimMoveName::~aeUSetRuleAnimMoveName(){
-	if(pRule) pRule->FreeReference();
 }
 
 

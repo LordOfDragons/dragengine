@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeOCCamera.h"
+#include "gdeObjectClass.h"
 
-class gdeOCCamera;
-class gdeObjectClass;
 
 
 
@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCCameraSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCCamera *pCamera;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCCamera::Ref pCamera;
 	
 	decVector pOldValue;
 	decVector pNewValue;

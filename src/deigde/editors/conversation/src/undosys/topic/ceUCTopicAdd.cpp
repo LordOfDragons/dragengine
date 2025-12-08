@@ -56,12 +56,6 @@ ceUCTopicAdd::ceUCTopicAdd(ceConversationFile *file, ceConversationTopic *topic)
 }
 
 ceUCTopicAdd::~ceUCTopicAdd(){
-	if(pTopic){
-		pTopic->FreeReference();
-	}
-	if(pFile){
-		pFile->FreeReference();
-	}
 }
 
 

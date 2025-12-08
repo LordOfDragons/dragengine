@@ -56,7 +56,7 @@ pWindowProperties(windowProperties),
 pListener(NULL),
 pWorld(NULL)
 {
-	pListener = new meWPSelectionListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	GetEnvironment().GetUIHelper().Label(*this, "No Selection");
 	
@@ -78,9 +78,6 @@ pWorld(NULL)
 meWPSelection::~meWPSelection(){
 	SetWorld(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -89,7 +86,7 @@ meWPSelection::~meWPSelection(){
 ///////////////
 
 void meWPSelection::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -100,7 +97,6 @@ void meWPSelection::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

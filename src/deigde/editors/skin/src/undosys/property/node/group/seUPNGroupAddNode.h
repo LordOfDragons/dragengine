@@ -26,9 +26,9 @@
 #define _SEUPNGROUPADDNODE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "sePropertyNodeGroup.h"
+#include "sePropertyNode.h"
 
-class sePropertyNode;
-class sePropertyNodeGroup;
 
 
 
@@ -37,8 +37,8 @@ class sePropertyNodeGroup;
  */
 class seUPNGroupAddNode : public igdeUndo{
 private:
-	sePropertyNodeGroup *pNode;
-	sePropertyNode *pChild;
+	sePropertyNodeGroup::Ref pNode;
+	sePropertyNode::Ref pChild;
 	
 	
 	

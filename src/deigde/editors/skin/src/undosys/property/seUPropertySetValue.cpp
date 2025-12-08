@@ -53,9 +53,6 @@ seUPropertySetValue::seUPropertySetValue(seProperty *property, float newValue){
 }
 
 seUPropertySetValue::~seUPropertySetValue(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

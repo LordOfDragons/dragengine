@@ -28,9 +28,9 @@
 #include <dragengine/systems/modules/graphic/deBaseGraphicDynamicSkin.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/collection/decPointerSet.h>
+#include "deoglRDynamicSkin.h"
 
 class deoglDSRenderable;
-class deoglRDynamicSkin;
 class deoglDynamicSkinListener;
 
 class deGraphicOpenGl;
@@ -46,7 +46,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	const deDynamicSkin &pDynamicSkin;
 	
-	deoglRDynamicSkin *pRDynamicSkin;
+	deoglRDynamicSkin::Ref pRDynamicSkin;
 	
 	decPointerList pRenderables;
 	bool pDirtyRenderables;
@@ -76,7 +76,7 @@ public:
 	inline const deDynamicSkin &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Render dynamic skin. */
-	inline deoglRDynamicSkin *GetRDynamicSkin() const{ return pRDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetRDynamicSkin() const{ return pRDynamicSkin; }
 	
 	
 	

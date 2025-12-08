@@ -174,16 +174,10 @@ deoalAVideoPlayer *videoPlayer){
 	// drop old source and decoder if present
 	pSoundDecoder = NULL;
 	
-	if(pVideoPlayer){
-		pVideoPlayer->FreeReference();
 		pVideoPlayer = NULL;
 	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
 		pSynthesizer = NULL;
 	}
-	if(pSound){
-		pSound->FreeReference();
 		pSound = NULL;
 	}
 	pSourceUpdateTracker = 0;
@@ -193,19 +187,10 @@ deoalAVideoPlayer *videoPlayer){
 	
 	// store new source
 	pSound = sound;
-	if(sound){
-		sound->AddReference();
-	}
 	
 	pSynthesizer = synthesizer;
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
 	
 	pVideoPlayer = videoPlayer;
-	if(videoPlayer){
-		videoPlayer->AddReference();
-	}
 	
 	// update play position since speaker updates it from new source if present
 	pUpdatePlayRange();
@@ -283,7 +268,7 @@ void deoalASpeaker::SetPlayState(deSpeaker::ePlayStates playState){
 }
 
 void deoalASpeaker::SetLooping(bool looping){
-	if(looping == pLooping){
+	if(pLooping == looping){
 		return;
 	}
 	
@@ -292,7 +277,7 @@ void deoalASpeaker::SetLooping(bool looping){
 }
 
 void deoalASpeaker::SetMuted(bool muted){
-	if(muted == pMuted){
+	if(pMuted == muted){
 		return;
 	}
 	
@@ -559,7 +544,7 @@ void deoalASpeaker::PrepareQuickDispose(){
 void deoalASpeaker::SetEnabled(bool enabled){
 	// WARNING Called during synchronization time from main thread.
 	
-	if(enabled == pEnabled){
+	if(pEnabled == enabled){
 		return;
 	}
 	
@@ -595,7 +580,7 @@ void deoalASpeaker::SetFlag(bool flag){
 void deoalASpeaker::SetParentWorld(deoalAWorld *world){
 	// WARNING Called during synchronization time from main thread.
 	
-	if(world == pParentWorld){
+	if(pParentWorld == world){
 		return;
 	}
 	
@@ -620,7 +605,7 @@ void deoalASpeaker::SetParentWorld(deoalAWorld *world){
 void deoalASpeaker::SetParentMicrophone(deoalAMicrophone *microphone){
 	// WARNING Called during synchronization time from main thread.
 	
-	if(microphone == pParentMicrophone){
+	if(pParentMicrophone == microphone){
 		return;
 	}
 	
@@ -760,7 +745,7 @@ bool deoalASpeaker::AffectsActiveMicrophone() const{
 	if(!microphone){
 		return false;
 	}
-	if(microphone == pParentMicrophone){
+	if(pParentMicrophone == microphone){
 		return true;
 	}
 	return pParentWorld && microphone->GetParentWorld() == pParentWorld
@@ -827,16 +812,10 @@ void deoalASpeaker::pCleanUp(){
 		delete pEnvironment;
 		pEnvironment = nullptr;
 	}
-	if(pSound){
-		pSound->FreeReference();
 		pSound = nullptr;
 	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
 		pSynthesizer = nullptr;
 	}
-	if(pVideoPlayer){
-		pVideoPlayer->FreeReference();
 		pVideoPlayer = nullptr;
 	}
 	

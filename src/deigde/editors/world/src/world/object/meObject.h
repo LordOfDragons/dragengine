@@ -42,6 +42,9 @@
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShapeList.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
 
 class meCamera;
 class meDecal;
@@ -55,12 +58,9 @@ class igdeWDebugDrawerShape;
 class igdeGameDefinition;
 
 class deCollider;
-class deColliderVolume;
-class deComponent;
 class deComponentTexture;
 class decShape;
 class decStringList;
-class deDebugDrawer;
 class deDecalList;
 class deEngine;
 
@@ -103,7 +103,7 @@ private:
 	
 	meWorld *pWorld;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSObject;
 	igdeWDebugDrawerShape *pDDSLightAoE;
 	igdeWDebugDrawerShape *pDDSOcclusionMesh;
@@ -113,8 +113,8 @@ private:
 	
 	igdeWObject::Ref pWObject;
 	decObjectList pWOTextures;
-	deComponent *pEngComponentBroken;
-	deColliderVolume *pColDetCollider;
+	deComponent::Ref pEngComponentBroken;
+	deColliderVolume::Ref pColDetCollider;
 	meCamera *pCamera;
 	
 	float pRange;
@@ -131,7 +131,7 @@ private:
 	int pDecalCount;
 	int pDecalSize;
 	
-	meObject *pAttachedTo;
+	meObject::Ref pAttachedTo;
 	meObjectList pAttachedObjectsList;
 	decString pAttachedToID;
 	
@@ -176,10 +176,10 @@ public:
 	/** \brief Retrieves the object wrapper. */
 	inline const igdeWObject::Ref &GetObjectWrapper() const{ return pWObject; }
 	/** \brief Retrieves the collision detection collider. */
-	inline deColliderVolume *GetColDetCollider() const{ return pColDetCollider; }
+	inline const deColliderVolume::Ref &GetColDetCollider() const{ return pColDetCollider; }
 	
 	/** \brief Debug drawer. */
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	inline const deDebugDrawer::Ref &GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	/** \brief Dispose of the component. */
 	void Dispose();
@@ -289,7 +289,7 @@ public:
 	
 	
 	/** \brief Object this object is attached to or \em NULL. */
-	inline meObject *GetAttachedTo() const{ return pAttachedTo; }
+	inline const meObject::Ref &GetAttachedTo() const{ return pAttachedTo; }
 	
 	/** \brief Set object this object is attached to or \em NULL. */
 	void SetAttachedTo(meObject *object);

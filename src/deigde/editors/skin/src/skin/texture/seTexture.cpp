@@ -108,7 +108,7 @@ seTexture::~seTexture(){
 ///////////////
 
 void seTexture::SetSkin(seSkin *skin){
-	if(skin == pSkin){
+	if(pSkin == skin){
 		return;
 	}
 	
@@ -163,8 +163,6 @@ void seTexture::UpdateEngineSkin(){
 	}
 	
 	// free the old skin
-	if(pEngSkin){
-		pEngSkin->FreeReference();
 		pEngSkin = NULL;
 	}
 	
@@ -172,7 +170,7 @@ void seTexture::UpdateEngineSkin(){
 	// named skins can only exist once but unnamed skins can exist multiple times.
 	seTextureSkinBuilder builder(*pSkin, *this);
 	
-	pEngSkin = GetEngine()->GetSkinManager()->CreateSkin("", builder);
+	pEngSkin.TakeOver(GetEngine()->GetSkinManager()->CreateSkin("", builder));
 	
 	// update component and light with the new skin
 	AssignSkinToComponentTexture();
@@ -295,7 +293,7 @@ void seTexture::RemoveAllProperties(){
 }
 
 bool seTexture::HasActiveProperty() const{
-	return pActiveProperty != NULL;
+	return pActiveProperty != nullptr;
 }
 
 void seTexture::SetActiveProperty(seProperty *property){
@@ -305,7 +303,6 @@ void seTexture::SetActiveProperty(seProperty *property){
 	
 	if(pActiveProperty){
 		pActiveProperty->SetActive(false);
-		pActiveProperty->FreeReference();
 	}
 	
 	pActiveProperty = property;
@@ -360,9 +357,6 @@ void seTexture::SetTexCoordRotation(float rotation){
 void seTexture::pCleanUp(){
 	RemoveAllProperties();
 	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 }
 
 void seTexture::pUpdateTexCoordTransform(){

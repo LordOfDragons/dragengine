@@ -33,12 +33,12 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSOCNavigationSpaceListener.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCNavigationSpace;
 class gdeWindowProperties;
-class gdeWPSOCNavigationSpaceListener;
 
 
 
@@ -48,9 +48,9 @@ class gdeWPSOCNavigationSpaceListener;
 class gdeWPSOCNavigationSpace : public igdeContainerScroll{
 private:
 	gdeWindowProperties &pWindowProperties;
-	gdeWPSOCNavigationSpaceListener *pListener;
+	gdeWPSOCNavigationSpaceListener::Ref pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	igdeEditPath::Ref pEditPath;
 	igdeEditVector::Ref pEditPosition;
@@ -85,7 +85,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Game definition or \em NULL if not set. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition or \em NULL if not set. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);

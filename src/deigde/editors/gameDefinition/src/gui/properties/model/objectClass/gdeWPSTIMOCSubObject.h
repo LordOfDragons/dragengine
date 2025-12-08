@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCSUBOBJECT_H_
 
 #include "../gdeWPSTreeItemModel.h"
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 /**
@@ -35,7 +35,7 @@ class gdeObjectClass;
  */
 class gdeWPSTIMOCSubObject : public gdeWPSTreeItemModel{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	int pIndex;
 	
 	
@@ -57,7 +57,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Object class. */
-	inline gdeObjectClass *GetObjectClass() const{ return pObjectClass; }
+	inline const gdeObjectClass::Ref &GetObjectClass() const{ return pObjectClass; }
 	
 	/** \brief Index. */
 	inline int GetIndex() const{ return pIndex; }

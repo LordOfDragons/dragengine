@@ -30,10 +30,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meHTVegetationLayer.h"
+#include "meHTVRuleVectorMath.h"
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleVectorMath;
 
 
 
@@ -49,8 +49,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleVectorMath *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleVectorMath::Ref pRule;
 	
 	decVector pOldVector;
 	decVector pNewVector;

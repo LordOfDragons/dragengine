@@ -189,7 +189,7 @@ pTurnIP(0.0f)
 		pTouchSensorListener.SetAnimatorLocomotion(this);
 		
 		// create debug drawers
-		pDebugDrawer = engine->GetDebugDrawerManager()->CreateDebugDrawer();
+		pDebugDrawer.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
 		pDebugDrawer->SetXRay(true);
 		pDebugDrawer->SetVisible(false);
 		animator->GetEngineWorld()->AddDebugDrawer(pDebugDrawer);
@@ -603,7 +603,7 @@ void aeAnimatorLocomotion::SetShowShapes(bool showShapes){
 
 
 void aeAnimatorLocomotion::SetLocomotionType(eLocomotionTypes type){
-	if(type == pLocomotionType){
+	if(pLocomotionType == type){
 		return;
 	}
 	
@@ -770,7 +770,7 @@ void aeAnimatorLocomotion::SetUseLegPairCount(int pairCount){
 
 
 void aeAnimatorLocomotion::SetEnabled(bool enabled){
-	if(enabled != pEnabled){
+	if(pEnabled != enabled){
 		pEnabled = enabled;
 		
 		if(pCollider){
@@ -1059,7 +1059,7 @@ void aeAnimatorLocomotion::PostPhysics(){
 	pTouchSensor->ColliderMoveHits(pGroundPlaneCollider,
 		decVector(0.0f, -tiltMoveDist, 0.0f), &pGroundChecker);
 	if(pGroundChecker.HasCollision()){
-		pGroundPlaneOffsetFL -= pGroundChecker.GetCollisionInfo().GetDistance() * tiltMoveDist;
+		pGroundPlaneOffsetFL -= pGroundChecker.GetCollisionInfo()->GetDistance() * tiltMoveDist;
 	}
 	
 	pGroundChecker.Reset();
@@ -1068,7 +1068,7 @@ void aeAnimatorLocomotion::PostPhysics(){
 	pTouchSensor->ColliderMoveHits(pGroundPlaneCollider,
 		decVector(0.0f, -tiltMoveDist, 0.0f), &pGroundChecker);
 	if(pGroundChecker.HasCollision()){
-		pGroundPlaneOffsetFR -= pGroundChecker.GetCollisionInfo().GetDistance() * tiltMoveDist;
+		pGroundPlaneOffsetFR -= pGroundChecker.GetCollisionInfo()->GetDistance() * tiltMoveDist;
 	}
 	
 	pGroundChecker.Reset();
@@ -1077,7 +1077,7 @@ void aeAnimatorLocomotion::PostPhysics(){
 	pTouchSensor->ColliderMoveHits(pGroundPlaneCollider,
 		decVector(0.0f, -tiltMoveDist, 0.0f), &pGroundChecker);
 	if(pGroundChecker.HasCollision()){
-		pGroundPlaneOffsetBL -= pGroundChecker.GetCollisionInfo().GetDistance() * tiltMoveDist;
+		pGroundPlaneOffsetBL -= pGroundChecker.GetCollisionInfo()->GetDistance() * tiltMoveDist;
 	}
 	
 	pGroundChecker.Reset();
@@ -1086,7 +1086,7 @@ void aeAnimatorLocomotion::PostPhysics(){
 	pTouchSensor->ColliderMoveHits(pGroundPlaneCollider,
 		decVector(0.0f, -tiltMoveDist, 0.0f), &pGroundChecker);
 	if(pGroundChecker.HasCollision()){
-		pGroundPlaneOffsetBR -= pGroundChecker.GetCollisionInfo().GetDistance() * tiltMoveDist;
+		pGroundPlaneOffsetBR -= pGroundChecker.GetCollisionInfo()->GetDistance() * tiltMoveDist;
 	}
 	
 	// determine the offset relative to the collider. this determines how much the root bone has to be
@@ -1205,28 +1205,19 @@ void aeAnimatorLocomotion::pCleanUp(){
 	pDDSDragonColFeet.SetParentDebugDrawer(NULL);
 	pDDSCollider.SetParentDebugDrawer(NULL);
 	
-	if(pGroundPlaneCollider) pGroundPlaneCollider->FreeReference();
-	if(pFootCollider) pFootCollider->FreeReference();
-	if(pDragonColBody) pDragonColBody->FreeReference();
-	if(pGroundCheckCollider) pGroundCheckCollider->FreeReference();
-	if(pTGCollider) pTGCollider->FreeReference();
-	
 	if(pAnimator){
 		deWorld *world = pAnimator->GetEngineWorld();
 		
 		if(pTouchSensor){
 			world->RemoveTouchSensor(pTouchSensor);
-			pTouchSensor->FreeReference();
 		}
 		
 		if(pCollider){
 			world->RemoveCollider(pCollider);
-			pCollider->FreeReference();
 		}
 		
 		if(pDebugDrawer){
 			world->RemoveDebugDrawer(pDebugDrawer);
-			pDebugDrawer->FreeReference();
 		}
 	}
 }
@@ -1247,7 +1238,7 @@ void aeAnimatorLocomotion::pCreateCollider(){
 	layermask2.SetBit(aeAnimator::eclGround);
 	
 	// collider for movement
-	pCollider = colmgr.CreateColliderVolume();
+	pCollider.TakeOver(colmgr.CreateColliderVolume());
 	
 	pCollider->SetResponseType(deCollider::ertKinematic);
 	pCollider->SetUseLocalGravity(true);
@@ -1258,7 +1249,7 @@ void aeAnimatorLocomotion::pCreateCollider(){
 	engWorld.AddCollider(pCollider);
 	
 	// touch ground collider
-	pTGCollider = colmgr.CreateColliderVolume();
+	pTGCollider.TakeOver(colmgr.CreateColliderVolume());
 	pTGCollider->SetResponseType(deCollider::ertKinematic);
 	pTGCollider->SetUseLocalGravity(true);
 	pTGCollider->SetEnabled(false);
@@ -1266,21 +1257,21 @@ void aeAnimatorLocomotion::pCreateCollider(){
 	
 	// ground check collider
 	/*
-	pGroundCheckCollider = colmgr.CreateColliderVolume();
+	pGroundCheckCollider.TakeOver(colmgr.CreateColliderVolume());
 	pGroundCheckCollider->SetResponseType(deCollider::ertKinematic);
 	pGroundCheckCollider->SetUseLocalGravity(true);
 	pGroundCheckCollider->SetEnabled(false);
 	pGroundCheckCollider->GetLayerMask() = layermask2;
 	pGroundCheckCollider->NotifyLayerMaskChanged();
 	*/
-	pDragonColBody = colmgr.CreateColliderVolume();
+	pDragonColBody.TakeOver(colmgr.CreateColliderVolume());
 	pDragonColBody->SetResponseType(deCollider::ertKinematic);
 	pDragonColBody->SetUseLocalGravity(true);
 	pDragonColBody->SetEnabled(false);
 	pDragonColBody->SetCollisionFilter(decCollisionFilter(layermask2));
 	
 	// ground plane collider
-	pGroundPlaneCollider = colmgr.CreateColliderVolume();
+	pGroundPlaneCollider.TakeOver(colmgr.CreateColliderVolume());
 	pGroundPlaneCollider->SetResponseType(deCollider::ertKinematic);
 	pGroundPlaneCollider->SetUseLocalGravity(true);
 	pGroundPlaneCollider->SetEnabled(false);
@@ -1288,7 +1279,7 @@ void aeAnimatorLocomotion::pCreateCollider(){
 	
 	// foot collider
 	/*
-	pFootCollider = colmgr.CreateColliderVolume();
+	pFootCollider.TakeOver(colmgr.CreateColliderVolume());
 	pFootCollider->SetResponseType(deCollider::ertKinematic);
 	pFootCollider->SetUseLocalGravity(true);
 	pFootCollider->SetEnabled(false);
@@ -1301,7 +1292,7 @@ void aeAnimatorLocomotion::pCreateCollider(){
 
 void aeAnimatorLocomotion::pCreateTouchSensor(){
 	// create the touch sensor
-	pTouchSensor = pAnimator->GetEngine()->GetTouchSensorManager()->CreateTouchSensor();
+	pTouchSensor.TakeOver(pAnimator->GetEngine()->GetTouchSensorManager()->CreateTouchSensor());
 	
 	// setup some important parameters
 	
@@ -1357,7 +1348,7 @@ void aeAnimatorLocomotion::pUpdateIsMoving(){
 	}
 	
 	// apply to locomotion
-	if(isMoving != pIsMoving){
+	if(pIsMoving != isMoving){
 		if(isMoving){
 			pIsTurningIP = false;
 			pTurnIP = 0.0f;

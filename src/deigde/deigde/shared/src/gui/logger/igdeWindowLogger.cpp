@@ -71,24 +71,22 @@ const char *igdeWindowLogger::styleError = "error";
 
 igdeWindowLogger::igdeWindowLogger(igdeEnvironment &environment) :
 igdeWindow(environment, "Logging History"),
-pListener(NULL),
-pLogger(NULL),
 pPendingAddedLogs(0),
 pPendingClearLogs(false)
 {
-	pListener = new igdeWindowLoggerListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	SetPosition(decPoint(10, 50));
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));
 	
-	pEditLogs.TakeOver(new igdeTextArea(environment, 60, 10, false));
+	pEditLogs.TakeOverWith(environment, 60, 10, false);
 	
 	igdeTextStyle::Ref style(igdeTextStyle::Ref::NewWith(styleWarning));
 	style->SetColor(decColor(0.0f, 0.0f, 0.0f));
 	style->SetBgColor(decColor(1.0f, 0.815f, 0.0f));
 	pEditLogs->AddStyle(style);
 	
-	style.TakeOver(new igdeTextStyle(styleError));
+	style.TakeOverWith(styleError);
 	style->SetColor(decColor(1.0f, 1.0f, 0.5f));
 	style->SetBgColor(decColor(0.75f, 0.0f, 0.0f));
 // 	style->SetBold( true );
@@ -99,9 +97,6 @@ pPendingClearLogs(false)
 
 igdeWindowLogger::~igdeWindowLogger(){
 	SetLogger(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -110,19 +105,17 @@ igdeWindowLogger::~igdeWindowLogger(){
 ///////////////
 
 void igdeWindowLogger::SetLogger(igdeLoggerHistory *logger){
-	if(logger == pLogger){
+	if(pLogger == logger){
 		return;
 	}
 	
 	if(pLogger){
 		pLogger->RemoveListener(pListener);
-		pLogger->FreeReference();
 	}
 	
 	pLogger = logger;
 	
 	if(logger){
-		logger->AddReference();
 		logger->AddListener(pListener);
 	}
 	

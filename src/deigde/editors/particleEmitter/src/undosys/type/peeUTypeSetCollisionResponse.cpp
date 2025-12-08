@@ -57,9 +57,6 @@ pNewResponse(newResponse)
 }
 
 peeUTypeSetCollisionResponse::~peeUTypeSetCollisionResponse(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

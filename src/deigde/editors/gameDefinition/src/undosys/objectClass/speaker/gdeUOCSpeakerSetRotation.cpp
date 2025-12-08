@@ -62,12 +62,6 @@ pSpeaker(NULL)
 }
 
 gdeUOCSpeakerSetRotation::~gdeUOCSpeakerSetRotation(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

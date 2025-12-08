@@ -52,9 +52,6 @@ pProperty(NULL)
 }
 
 seUPropertyConstructedToggleTileX::~seUPropertyConstructedToggleTileX(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

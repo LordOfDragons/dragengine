@@ -26,9 +26,9 @@
 #define _CEUCAACMDSETACTORID_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAActorCommand.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorCommand;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAACmdSetActor : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorCommand *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorCommand::Ref pAction;
 	decString pOldActorID;
 	decString pNewActorID;
 	

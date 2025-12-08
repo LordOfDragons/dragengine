@@ -58,9 +58,6 @@ pCategory(NULL)
 }
 
 gdeWPSTIMCategory::~gdeWPSTIMCategory(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
 }
 
 

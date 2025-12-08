@@ -75,12 +75,6 @@ pActions(NULL)
 		AddChild(pActions);
 		
 	}catch(const deException &){
-		if(pCondition){
-			pCondition->FreeReference();
-		}
-		if(pActions){
-			pActions->FreeReference();
-		}
 		throw;
 	}
 	
@@ -94,9 +88,6 @@ pActions(NULL)
 }
 
 ceWPTTIMAPlayerChoiceOption::~ceWPTTIMAPlayerChoiceOption(){
-	if(pOption){
-		pOption->FreeReference();
-	}
 }
 
 
@@ -119,7 +110,7 @@ ceWPTTIMAPlayerChoice *ceWPTTIMAPlayerChoiceOption::GetModelPlayerChoice() const
 }
 
 void ceWPTTIMAPlayerChoiceOption::SetIndex(int index){
-	if(index == pIndex){
+	if(pIndex == index){
 		return;
 	}
 	

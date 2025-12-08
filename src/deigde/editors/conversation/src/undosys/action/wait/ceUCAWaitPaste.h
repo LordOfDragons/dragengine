@@ -26,8 +26,8 @@
 #define _CEUCAWAITPASTE_H_
 
 #include "../ceUCActionPaste.h"
+#include "ceCAWait.h"
 
-class ceCAWait;
 
 
 
@@ -36,7 +36,7 @@ class ceCAWait;
  */
 class ceUCAWaitPaste : public ceUCActionPaste{
 private:
-	ceCAWait *pWait;
+	ceCAWait::Ref pWait;
 	
 public:
 	/** \name Constructors and Destructors */

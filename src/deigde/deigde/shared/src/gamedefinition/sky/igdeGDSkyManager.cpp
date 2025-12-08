@@ -47,7 +47,7 @@
 ////////////////////////////
 
 igdeGDSkyManager::igdeGDSkyManager(){
-	pCategories.TakeOver(new igdeGDCategory("Skies"));
+	pCategories.TakeOverWith("Skies");
 }
 
 igdeGDSkyManager::~igdeGDSkyManager(){

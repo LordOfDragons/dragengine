@@ -57,9 +57,6 @@ pObjectClass(NULL)
 }
 
 gdeUOCSetTextureProperties::~gdeUOCSetTextureProperties(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

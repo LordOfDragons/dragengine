@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "seLayer.h"
 
-class seLayer;
 
 
 /**
@@ -37,7 +37,7 @@ class seLayer;
  */
 class seULayerSetLightColor : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	decColor pOldColor;
 	decColor pNewColor;

@@ -26,8 +26,8 @@
 #define _DECMEMORYFILEWRITER_H_
 
 #include "decBaseFileWriter.h"
+#include "decMemoryFile.h"
 
-class decMemoryFile;
 
 
 /**
@@ -40,7 +40,7 @@ public:
 	
 	
 private:
-	decMemoryFile *pFile;
+	decMemoryFile::Ref pFile;
 	int pPosition;
 	
 	

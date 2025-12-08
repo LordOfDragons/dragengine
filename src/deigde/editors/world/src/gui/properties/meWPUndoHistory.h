@@ -26,9 +26,9 @@
 #define _MEWPUNDOHISTORY_H_
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "meWorld.h"
+#include "meWPUndoHistoryListener.h"
 
-class meWorld;
-class meWPUndoHistoryListener;
 
 
 
@@ -37,8 +37,8 @@ class meWPUndoHistoryListener;
  */
 class meWPUndoHistory : public igdeWPUndoHistory{
 private:
-	meWorld *pWorld;
-	meWPUndoHistoryListener *pListener;
+	meWorld::Ref pWorld;
+	meWPUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

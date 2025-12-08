@@ -62,12 +62,6 @@ pSpeaker(NULL)
 }
 
 gdeUOCSpeakerSetPathSound::~gdeUOCSpeakerSetPathSound(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

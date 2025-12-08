@@ -49,13 +49,9 @@ pSource(NULL)
 	SetShortInfo("Toggle sound source looping");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUToggleSourceSoundLooping::~seUToggleSourceSoundLooping(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

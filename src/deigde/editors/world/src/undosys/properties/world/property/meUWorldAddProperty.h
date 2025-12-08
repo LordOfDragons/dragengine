@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meWorld.h"
 
-class meWorld;
 
 
 
@@ -38,7 +38,7 @@ class meWorld;
  */
 class meUWorldAddProperty : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	decString pKey;
 	decString pValue;

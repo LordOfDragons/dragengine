@@ -62,12 +62,6 @@ pNavSpace(NULL)
 }
 
 gdeUOCNavSpaceSetSnapDistance::~gdeUOCNavSpaceSetSnapDistance(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

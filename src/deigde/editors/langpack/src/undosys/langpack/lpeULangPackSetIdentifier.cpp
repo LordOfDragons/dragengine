@@ -54,9 +54,6 @@ pNewIdentifier(newIdentifier)
 }
 
 lpeULangPackSetIdentifier::~lpeULangPackSetIdentifier(){
-	if(pLangPack){
-		pLangPack->FreeReference();
-	}
 }
 
 

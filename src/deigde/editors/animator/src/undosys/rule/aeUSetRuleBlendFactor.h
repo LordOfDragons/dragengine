@@ -27,8 +27,8 @@
 #define _AEUSETRULEBLENDFACTOR_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRule.h"
 
-class aeRule;
 
 
 
@@ -37,7 +37,7 @@ class aeRule;
  */
 class aeUSetRuleBlendFactor : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 	float pOldFactor;
 	float pNewFactor;

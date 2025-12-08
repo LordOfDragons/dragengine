@@ -29,9 +29,9 @@
 // includes
 #include <deigde/undo/igdeUndo.h>
 #include "dragengine/common/math/decMath.h"
+#include "meObject.h"
 
 // predefinitions
-class meObject;
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decVector pOldRotation;
 	decVector pNewRotation;

@@ -70,9 +70,6 @@ pCompressionMethod(ecmZCompression)
 }
 
 deCacheHelper::~deCacheHelper(){
-	if(pVFS){
-		pVFS->FreeReference();
-	}
 }
 
 

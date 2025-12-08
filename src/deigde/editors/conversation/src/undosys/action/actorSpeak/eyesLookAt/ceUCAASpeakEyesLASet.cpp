@@ -55,7 +55,7 @@ ceUCAASpeakEyesLASet::ceUCAASpeakEyesLASet(ceConversationTopic *topic, ceCAActor
 	
 	SetShortInfo("Set eyes look-at");
 	
-	pOldStrip = new ceStrip(*eyesLookAt);
+	pOldStrip.TakeOverWith(*eyesLookAt);
 	
 	pNewStrip = newStrip;
 	newStrip->AddReference();
@@ -71,21 +71,6 @@ ceUCAASpeakEyesLASet::ceUCAASpeakEyesLASet(ceConversationTopic *topic, ceCAActor
 }
 
 ceUCAASpeakEyesLASet::~ceUCAASpeakEyesLASet(){
-	if(pNewStrip){
-		pNewStrip->FreeReference();
-	}
-	if(pOldStrip){
-		pOldStrip->FreeReference();
-	}
-	if(pEyesLA){
-		pEyesLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

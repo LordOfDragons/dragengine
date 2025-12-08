@@ -57,9 +57,6 @@ pNewText(newName)
 }
 
 lpeULangPackEntrySetText::~lpeULangPackEntrySetText(){
-	if(pEntry){
-		pEntry->FreeReference();
-	}
 }
 
 

@@ -70,12 +70,6 @@ pPressed(false)
 }
 
 dealWidgetButton::~dealWidgetButton(){
-	if(pBgImageNormal){
-		pBgImageNormal->FreeReference();
-	}
-	if(pBgImagePressed){
-		pBgImagePressed->FreeReference();
-	}
 }
 
 
@@ -303,8 +297,8 @@ void dealWidgetButton::pBuildContent(){
 	dealDisplay &display = GetDisplay();
 	
 	// background images
-	pBgImageNormal = new dealWidgetBorderImage(display);
-	pBgImagePressed = new dealWidgetBorderImage(display);
+	pBgImageNormal.TakeOverWith(display);
+	pBgImagePressed.TakeOverWith(display);
 	
 	// content
 	pImage = new dealWidgetImage(display);

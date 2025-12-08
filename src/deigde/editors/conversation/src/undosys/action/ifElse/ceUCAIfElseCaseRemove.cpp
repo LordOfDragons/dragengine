@@ -68,15 +68,6 @@ ceUCAIfElseCaseRemove::ceUCAIfElseCaseRemove(ceConversationTopic *topic, ceCAIfE
 }
 
 ceUCAIfElseCaseRemove::~ceUCAIfElseCaseRemove(){
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

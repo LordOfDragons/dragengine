@@ -61,12 +61,6 @@ pNewOp(nop)
 }
 
 meUHTVRuleVecMathSetOp::~meUHTVRuleVecMathSetOp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
-	if(pVLayer){
-		pVLayer->FreeReference();
-	}
 }
 
 

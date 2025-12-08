@@ -26,8 +26,8 @@
 #define _MEUHTSETSECTORSIZE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meWorld.h"
 
-class meWorld;
 class meHeightTerrain;
 
 
@@ -36,7 +36,7 @@ class meHeightTerrain;
  */
 class meUHTSetSectorSize : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
 	
 	float pOldSectorSize;

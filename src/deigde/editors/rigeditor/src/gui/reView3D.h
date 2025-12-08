@@ -31,9 +31,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "reRig.h"
 
 class reWindowMain;
-class reRig;
 class reCamera;
 class deColliderVolume;
 class deBaseScriptingCollider;
@@ -49,7 +49,7 @@ class reView3D : public igdeViewRenderWindow{
 private:
 	reWindowMain &pWindowMain;
 	
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	igdeMouseCameraListener::Ref pCameraInteraction;
 	igdeMouseDragListener::Ref pSimulationInteraction;
@@ -83,7 +83,7 @@ public:
 	void ResetView();
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);

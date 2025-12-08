@@ -56,12 +56,6 @@ pActive(false){
 }
 
 peeParameter::~peeParameter(){
-	if(pControllerSpread){
-		pControllerSpread->FreeReference();
-	}
-	if(pControllerValue){
-		pControllerValue->FreeReference();
-	}
 }
 
 
@@ -102,14 +96,8 @@ void peeParameter::SetSpread(float spread){
 }
 
 void peeParameter::SetControllerValue(peeController *controller){
-	if(controller != pControllerValue){
-		if(pControllerValue){
-			pControllerValue->FreeReference();
-		}
+	if(pControllerValue != controller){
 		pControllerValue = controller;
-		if(controller){
-			controller->AddReference();
-		}
 		
 		if(pType.GetEmitter() && pType.GetEmitter()->GetEngineEmitter()){
 			deParticleEmitter &engEmitter = *pType.GetEmitter()->GetEngineEmitter();
@@ -139,14 +127,8 @@ void peeParameter::SetCurveValue(const decCurveBezier &curve){
 }
 
 void peeParameter::SetControllerSpread(peeController *controller){
-	if(controller != pControllerSpread){
-		if(pControllerSpread){
-			pControllerSpread->FreeReference();
-		}
+	if(pControllerSpread != controller){
 		pControllerSpread = controller;
-		if(controller){
-			controller->AddReference();
-		}
 		
 		if(pType.GetEmitter() && pType.GetEmitter()->GetEngineEmitter()){
 			deParticleEmitter &engEmitter = *pType.GetEmitter()->GetEngineEmitter();

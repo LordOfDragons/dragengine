@@ -26,10 +26,10 @@
 #define _CEUCCGAMECMDTOGGLENEGATE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCConditionGameCommand.h"
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceCConditionGameCommand;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 
@@ -38,9 +38,9 @@ class ceConversationTopic;
  */
 class ceUCCGameCmdToggleNegate : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionGameCommand *pGameCommand;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionGameCommand::Ref pGameCommand;
 	
 public:
 	/** \brief Type holding strong reference. */

@@ -27,8 +27,8 @@
 #define _GDEUSKYSETCATEGORY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeSky.h"
 
-class gdeSky;
 
 
 
@@ -37,7 +37,7 @@ class gdeSky;
  */
 class gdeUSkySetCategory : public igdeUndo{
 private:
-	gdeSky *pSky;
+	gdeSky::Ref pSky;
 	
 	decString pOldValue;
 	decString pNewValue;

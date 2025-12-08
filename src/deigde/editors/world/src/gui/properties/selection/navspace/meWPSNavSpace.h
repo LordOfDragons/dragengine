@@ -32,10 +32,10 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "meWorld.h"
+#include "meWPSNavSpaceListener.h"
 
-class meWPSNavSpaceListener;
 class meWPSelection;
-class meWorld;
 class meNavigationSpace;
 
 
@@ -46,9 +46,9 @@ class meNavigationSpace;
 class meWPSNavSpace : public igdeContainerScroll{
 private:
 	meWPSelection &pWPSelection;
-	meWPSNavSpaceListener *pListener;
+	meWPSNavSpaceListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeSpinTextField::Ref pSpinActive;
 	igdeTextField::Ref pEditSelCount;
@@ -79,7 +79,7 @@ public:
 	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

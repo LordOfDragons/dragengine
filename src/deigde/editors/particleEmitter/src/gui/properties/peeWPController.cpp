@@ -370,7 +370,7 @@ pEmitter(NULL)
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new peeWPControllerListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -405,13 +405,9 @@ pEmitter(NULL)
 peeWPController::~peeWPController(){
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 		pEmitter = NULL;
 	}
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -420,13 +416,12 @@ peeWPController::~peeWPController(){
 ///////////////
 
 void peeWPController::SetEmitter(peeEmitter *emitter){
-	if(emitter == pEmitter){
+	if(pEmitter == emitter){
 		return;
 	}
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;

@@ -26,10 +26,10 @@
 #define _CEUCAWAITADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationAction.h"
+#include "ceCAWait.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceConversationAction;
-class ceCAWait;
 
 
 
@@ -38,9 +38,9 @@ class ceCAWait;
  */
 class ceUCAWaitAdd : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAWait *pWait;
-	ceConversationAction *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAWait::Ref pWait;
+	ceConversationAction::Ref pAction;
 	int pIndex;
 	
 public:

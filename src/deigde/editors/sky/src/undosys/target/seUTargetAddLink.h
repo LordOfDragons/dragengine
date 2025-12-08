@@ -28,9 +28,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/sky/deSkyLayer.h>
+#include "seLink.h"
+#include "seLayer.h"
 
-class seLayer;
-class seLink;
 
 
 /**
@@ -38,9 +38,9 @@ class seLink;
  */
 class seUTargetAddLink : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	deSkyLayer::eTargets pTarget;
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	
 	

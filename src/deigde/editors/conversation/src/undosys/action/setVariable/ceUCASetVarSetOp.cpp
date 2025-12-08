@@ -59,12 +59,6 @@ ceCASetVariable *action, ceCASetVariable::eOperators newOperator){
 }
 
 ceUCASetVarSetOp::~ceUCASetVarSetOp(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

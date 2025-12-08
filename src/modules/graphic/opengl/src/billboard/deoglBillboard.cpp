@@ -78,7 +78,7 @@ pRequiresUpdateEverySync(false),
 pLLSyncWorld(this)
 {
 	try{
-		pRBillboard = new deoglRBillboard(ogl.GetRenderThread());
+		pRBillboard.TakeOverWith(ogl.GetRenderThread());
 		pSkinStateController = new deoglSkinStateController;
 		
 	}catch(const deException &){
@@ -344,9 +344,6 @@ void deoglBillboard::LayerMaskChanged(){
 void deoglBillboard::pCleanUp(){
 	if(pSkinStateController){
 		delete pSkinStateController;
-	}
-	if(pRBillboard){
-		pRBillboard->FreeReference();
 	}
 	if(pDynamicSkin){
 		pDynamicSkin->RemoveListener(this);

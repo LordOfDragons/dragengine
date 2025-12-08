@@ -32,14 +32,14 @@
 #include <deigde/gui/event/igdeActionUndo.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "seWindowCurves.h"
+#include "seWindowMainListener.h"
+#include "seWindowProperties.h"
+#include "seViewSky.h"
+#include "seSky.h"
 
 class decStringList;
-class seWindowMainListener;
-class seViewSky;
 class seConfiguration;
-class seSky;
-class seWindowProperties;
-class seWindowCurves;
 class seEngineController;
 class seLoadSaveSystem;
 class seIGDEModule;
@@ -52,7 +52,7 @@ class igdeStepableTask;
  */
 class seWindowMain : public igdeEditorWindow{
 private:
-	seWindowMainListener *pListener;
+	seWindowMainListener::Ref pListener;
 	
 	//igdeIcon::Ref pIconSkyNew;
 	
@@ -76,11 +76,11 @@ private:
 	igdeClipboard pClipboard;
 	seLoadSaveSystem *pLoadSaveSystem;
 	
-	seViewSky *pViewSky;
-	seWindowProperties *pWindowProperties;
-	seWindowCurves *pWindowCurves;
+	seViewSky::Ref pViewSky;
+	seWindowProperties::Ref pWindowProperties;
+	seWindowCurves::Ref pWindowCurves;
 	
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	
 	
@@ -138,7 +138,7 @@ public:
 	
 	
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *Sky);

@@ -81,7 +81,7 @@ pColliderOwner(this)
 		decLayerMask collisionFilter;
 		collisionFilter.SetBit(meWorld::eclmEditing);
 		
-		pCollider = engine->GetColliderManager()->CreateColliderVolume();
+		pCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume());
 		pCollider->SetEnabled(true);
 		pCollider->SetResponseType(deCollider::ertStatic);
 		pCollider->SetUseLocalGravity(true);
@@ -132,7 +132,7 @@ meObjectSnapPoint::~meObjectSnapPoint(){
 ///////////////
 
 void meObjectSnapPoint::SetWorld(meWorld *world){
-	if(world == pWorld){
+	if(pWorld == world){
 		return;
 	}
 	
@@ -165,9 +165,6 @@ void meObjectSnapPoint::pCleanUp(){
 		pObject->GetEnvironment()->SetColliderUserPointer(pCollider, NULL);
 	}
 	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
 	
 	if(pDDShape){
 		delete pDDShape;

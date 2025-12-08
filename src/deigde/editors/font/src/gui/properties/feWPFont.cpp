@@ -213,7 +213,7 @@ pListener(NULL)
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new feWPFontListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -237,9 +237,6 @@ pListener(NULL)
 feWPFont::~feWPFont(){
 	SetFont(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -248,13 +245,12 @@ feWPFont::~feWPFont(){
 ///////////////
 
 void feWPFont::SetFont(feFont *font){
-	if(font == pFont){
+	if(pFont == font){
 		return;
 	}
 	
 	if(pFont){
 		pFont->RemoveNotifier(pListener);
-		pFont->FreeReference();
 		pFont = NULL;
 	}
 	

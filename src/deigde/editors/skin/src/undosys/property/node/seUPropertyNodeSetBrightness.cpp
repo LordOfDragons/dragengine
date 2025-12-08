@@ -55,9 +55,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeSetBrightness::~seUPropertyNodeSetBrightness(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

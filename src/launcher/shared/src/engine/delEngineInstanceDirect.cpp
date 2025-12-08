@@ -803,7 +803,7 @@ const char *gameObject, delGPModuleList *collectChangedParams){
 				
 				delGPModule::Ref gpmodule(collectChangedParams->GetNamed(moduleName));
 				if(!gpmodule){
-					gpmodule.TakeOver(new delGPModule(moduleName));
+					gpmodule.TakeOverWith(moduleName);
 					collectChangedParams->Add(gpmodule);
 				}
 				
@@ -1167,7 +1167,7 @@ void delEngineInstanceDirect::RunSingleFrameUpdate(){
 					
 					delGPModule::Ref gpmodule(pGameCollectChangedParams->GetNamed(moduleName));
 					if(!gpmodule){
-						gpmodule.TakeOver(new delGPModule(moduleName));
+						gpmodule.TakeOverWith(moduleName);
 						pGameCollectChangedParams->Add(gpmodule);
 					}
 					

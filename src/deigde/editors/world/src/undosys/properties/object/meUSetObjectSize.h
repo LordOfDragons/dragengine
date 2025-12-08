@@ -29,9 +29,9 @@
 // includes
 #include <deigde/undo/igdeUndo.h>
 #include "dragengine/common/math/decMath.h"
+#include "meObject.h"
 
 // predefinitions
-class meObject;
 
 
 
@@ -40,7 +40,7 @@ class meObject;
  */
 class meUSetObjectSize : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decVector pOldSize;
 	decVector pNewSize;

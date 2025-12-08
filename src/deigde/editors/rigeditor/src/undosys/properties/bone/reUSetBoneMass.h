@@ -26,8 +26,8 @@
 #define _REUSETBONEMASS_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRigBone.h"
 
-class reRigBone;
 
 
 
@@ -36,7 +36,7 @@ class reRigBone;
  */
 class reUSetBoneMass : public igdeUndo{
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	float pOldMass;
 	float pNewMass;

@@ -35,6 +35,12 @@ class reWPUndoHistory;
  * \brief Undo History Panel Listener.
  */
 class reWPUndoHistoryListener : public reRigNotifier{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reWPUndoHistoryListener> Ref;
+	
+	
+
 private:
 	reWPUndoHistory &pPanel;
 	

@@ -26,8 +26,8 @@
 #define _AEUSETRULESMODENABLEVERTEXPOSITIONSET_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleStateManipulator.h"
 
-class aeRuleStateManipulator;
 
 
 /**
@@ -35,7 +35,7 @@ class aeRuleStateManipulator;
  */
 class aeUSetRuleSModEnableVertexPositionSet : public igdeUndo{
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

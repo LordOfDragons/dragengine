@@ -27,9 +27,9 @@
 #define _GDEUPARTICLEEMITTERSETPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeParticleEmitter.h"
 
 class gdeOCSpeaker;
-class gdeParticleEmitter;
 
 
 
@@ -38,7 +38,7 @@ class gdeParticleEmitter;
  */
 class gdeUParticleEmitterSetPath : public igdeUndo{
 private:
-	gdeParticleEmitter *pParticleEmitter;
+	gdeParticleEmitter::Ref pParticleEmitter;
 	
 	decString pOldValue;
 	decString pNewValue;

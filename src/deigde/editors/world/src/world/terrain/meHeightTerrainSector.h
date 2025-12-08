@@ -32,6 +32,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class meBitArray;
 class meHeightTerrain;
@@ -41,7 +42,6 @@ class meHeightTerrainPropField;
 class meHeightTerrainTexture;
 class meHTVegetationLayer;
 
-class deDebugDrawer;
 class deDebugDrawerShape;
 class deEngine;
 class deHeightTerrainSector;
@@ -145,7 +145,7 @@ private:
 	meHeightTerrainNavSpace *pActiveNavSpace;
 	decIntList pSelectedNavPoints;
 	
-	deDebugDrawer *pDDSelNavPoints;
+	deDebugDrawer::Ref pDDSelNavPoints;
 	
 	
 	

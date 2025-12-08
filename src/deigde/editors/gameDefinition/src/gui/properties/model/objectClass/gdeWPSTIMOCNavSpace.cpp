@@ -67,9 +67,6 @@ pNavSpace(NULL)
 }
 
 gdeWPSTIMOCNavSpace::~gdeWPSTIMOCNavSpace(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

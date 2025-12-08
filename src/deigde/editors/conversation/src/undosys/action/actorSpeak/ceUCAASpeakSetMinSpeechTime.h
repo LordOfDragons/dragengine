@@ -26,9 +26,9 @@
 #define _CEUCAASPEAKSETMINSPEECHTIME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAActorSpeak.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorSpeak;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakSetMinSpeechTime : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	float pOldTime;
 	float pNewTime;
 	

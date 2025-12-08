@@ -28,10 +28,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meHTVegetationLayer.h"
+#include "meHTVRulePropCount.h"
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRulePropCount;
 
 
 
@@ -47,8 +47,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRulePropCount *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRulePropCount::Ref pRule;
 	
 	float pOldRadius;
 	float pNewRadius;

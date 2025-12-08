@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCCOMPONENT_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCComponent.h"
 
-class gdeOCComponent;
 
 
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCComponent *pComponent;
+	gdeOCComponent::Ref pComponent;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Component. */
-	gdeOCComponent *GetComponent() const{ return pComponent; }
+	const gdeOCComponent::Ref &GetComponent() const{ return pComponent; }
 	/*@}*/
 };
 

@@ -29,13 +29,13 @@
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "seWPSourceListener.h"
+#include "seSynthesizer.h"
 
 
 
-class seSynthesizer;
 class seSource;
 class seViewSynthesizer;
-class seWPSourceListener;
 class seWPAPanelSourceSound;
 class seWPAPanelSourceWave;
 class seWPAPanelSourceChain;
@@ -52,9 +52,9 @@ class igdeTreeItem;
 class seWPSource : public igdeContainerScroll{
 private:
 	seViewSynthesizer &pViewSynthesizer;
-	seWPSourceListener *pListener;
+	seWPSourceListener::Ref pListener;
 	
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	igdeTreeList::Ref pTreeSource;
 	
@@ -93,7 +93,7 @@ public:
 	inline seViewSynthesizer &GetViewSynthesizer() const{ return pViewSynthesizer; }
 	
 	/** \brief Synthesizer or \em NULL if not set. */
-	inline seSynthesizer *GetSynthesizer() const{ return pSynthesizer; }
+	inline const seSynthesizer::Ref &GetSynthesizer() const{ return pSynthesizer; }
 	
 	/** \brief Set synthesizer or \em NULL if not set. */
 	void SetSynthesizer(seSynthesizer *synthesizer);

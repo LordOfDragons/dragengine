@@ -75,7 +75,7 @@ void debpGhostObject::SetDynamicsWorld(debpCollisionWorld *dynWorld){
 }
 
 void debpGhostObject::SetShape(debpBulletShape *shape){
-	if(shape == pShape){
+	if(pShape == shape){
 		return;
 	}
 	
@@ -88,15 +88,8 @@ void debpGhostObject::SetShape(debpBulletShape *shape){
 		pFreeGhostObject();
 	}
 	
-	if(pShape){
-		pShape->FreeReference();
-	}
 	
 	pShape = shape;
-	
-	if(shape){
-		shape->AddReference();
-	}
 	
 	pCreateGhostObject();
 }
@@ -160,9 +153,6 @@ void debpGhostObject::UpdateAABB(){
 void debpGhostObject::pCleanUp(){
 	pFreeGhostObject();
 	
-	if(pShape){
-		pShape->FreeReference();
-	}
 }
 
 void debpGhostObject::pCreateGhostObject(){

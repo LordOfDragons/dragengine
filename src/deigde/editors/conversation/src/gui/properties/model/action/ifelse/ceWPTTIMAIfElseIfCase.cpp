@@ -73,12 +73,6 @@ pActions(NULL)
 		AddChild(pActions);
 		
 	}catch(const deException &){
-		if(pCondition){
-			pCondition->FreeReference();
-		}
-		if(pActions){
-			pActions->FreeReference();
-		}
 		throw;
 	}
 	
@@ -92,9 +86,6 @@ pActions(NULL)
 }
 
 ceWPTTIMAIfElseIfCase::~ceWPTTIMAIfElseIfCase(){
-	if(pIfCase){
-		pIfCase->FreeReference();
-	}
 }
 
 
@@ -117,7 +108,7 @@ ceWPTTIMAIfElse *ceWPTTIMAIfElseIfCase::GetModelIfElse() const{
 }
 
 void ceWPTTIMAIfElseIfCase::SetIndex(int index){
-	if(index == pIndex){
+	if(pIndex == index){
 		return;
 	}
 	

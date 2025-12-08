@@ -27,8 +27,8 @@
 #define _SEUSETSOURCESOUNDMINSPEED_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSourceSound.h"
 
-class seSourceSound;
 
 
 
@@ -37,7 +37,7 @@ class seSourceSound;
  */
 class seUSetSourceSoundMinSpeed : public igdeUndo{
 private:
-	seSourceSound *pSource;
+	seSourceSound::Ref pSource;
 	
 	float pOldSpeed;
 	float pNewSpeed;

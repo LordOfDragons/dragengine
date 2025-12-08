@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/skin/property/deSkinPropertyMapped.h>
+#include "seProperty.h"
 
-class seProperty;
 
 
 /**
@@ -39,7 +39,7 @@ class seProperty;
  */
 class seUPropertySetMappedComponent : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	int pIndex;
 	const seMapped::Ref pOldValue;

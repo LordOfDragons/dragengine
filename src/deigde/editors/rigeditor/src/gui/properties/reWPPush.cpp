@@ -197,7 +197,7 @@ pListener(NULL)
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPPushListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -226,9 +226,6 @@ pListener(NULL)
 reWPPush::~reWPPush(){
 	SetRig(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -237,7 +234,7 @@ reWPPush::~reWPPush(){
 ///////////////
 
 void reWPPush::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -245,7 +242,6 @@ void reWPPush::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -264,15 +260,8 @@ void reWPPush::SetPush(reRigPush *push){
 		return;
 	}
 	
-	if(pPush){
-		pPush->FreeReference();
-	}
 	
 	pPush = push;
-	
-	if(push){
-		push->AddReference();
-	}
 	
 	UpdatePush();
 }
@@ -295,7 +284,7 @@ void reWPPush::UpdatePush(){
 		pEditConeAngle->ClearText();
 	}
 	
-	const bool enabled = pPush != NULL;
+	const bool enabled = pPush != nullptr;
 	pCBType->SetEnabled(enabled);
 	pEditPosition->SetEnabled(enabled);
 	pEditRotation->SetEnabled(enabled);

@@ -32,6 +32,10 @@
 #include <deigde/gui/event/igdeActionUndo.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "gdeGameDefinition.h"
+#include "gdeWindowMainListener.h"
+#include "gdeWindowProperties.h"
+#include "gdeViewActiveObject.h"
 
 class gdeMACategory;
 class gdeMAParticleEmitter;
@@ -51,12 +55,8 @@ class gdeMAOCSpeaker;
 class gdeMAOCWorld;
 
 class gdeConfiguration;
-class gdeGameDefinition;
 class gdeIGDEModule;
 class gdeLoadSaveSystem;
-class gdeViewActiveObject;
-class gdeWindowMainListener;
-class gdeWindowProperties;
 
 class igdeStepableTask;
 class decStringList;
@@ -68,7 +68,7 @@ class decStringList;
  */
 class gdeWindowMain : public igdeEditorWindow{
 private:
-	gdeWindowMainListener *pListener;
+	gdeWindowMainListener::Ref pListener;
 	
 	igdeIcon::Ref pIconShowEnvMapProbes;
 	igdeIcon::Ref pIconShowNavBlockers;
@@ -193,10 +193,10 @@ private:
 	igdeClipboard pClipboard;
 	gdeLoadSaveSystem *pLoadSaveSystem;
 	
-	gdeViewActiveObject *pViewActiveObject;
-	gdeWindowProperties *pWindowProperties;
+	gdeViewActiveObject::Ref pViewActiveObject;
+	gdeWindowProperties::Ref pWindowProperties;
 	
-	gdeGameDefinition *pActiveGameDefinition;
+	gdeGameDefinition::Ref pActiveGameDefinition;
 	
 	decString pLastPathGameDef;
 	
@@ -362,7 +362,7 @@ public:
 	
 	
 	/** \brief Active game definition. */
-	inline gdeGameDefinition *GetActiveGameDefinition() const{ return pActiveGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetActiveGameDefinition() const{ return pActiveGameDefinition; }
 	
 	/** \brief Set active game definition. */
 	void SetActiveGameDefinition(gdeGameDefinition *gameDefinition);

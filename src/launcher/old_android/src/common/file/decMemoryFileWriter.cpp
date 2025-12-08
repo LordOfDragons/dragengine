@@ -59,7 +59,6 @@ pPosition(0)
 decMemoryFileWriter::~decMemoryFileWriter(){
 	if(pFile){
 		pFile->Touch();
-		pFile->FreeReference();
 	}
 }
 

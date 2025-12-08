@@ -65,15 +65,6 @@ ceCConditionVariable *condition, int newValue){
 }
 
 ceUCCVarSetTestValue::~ceUCCVarSetTestValue(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

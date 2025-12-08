@@ -67,15 +67,6 @@ pFilePattern(NULL)
 }
 
 gdeUGDDPCFPSetPattern::~gdeUGDDPCFPSetPattern(){
-	if(pFilePattern){
-		pFilePattern->FreeReference();
-	}
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

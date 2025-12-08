@@ -44,11 +44,9 @@ reUSetShapePosition::reUSetShapePosition(reRigShape *shape, const decVector &new
 	
 	SetShortInfo("Set Shape Position");
 	
-	pShape->AddReference();
 }
 
 reUSetShapePosition::~reUSetShapePosition(){
-	pShape->FreeReference();
 }
 
 

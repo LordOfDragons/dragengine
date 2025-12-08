@@ -35,6 +35,12 @@ class gdeWPSOCEnvMapProbe;
  * \brief Object class environment map probe panel listener.
  */
 class gdeWPSOCEnvMapProbeListener : public gdeGameDefinitionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeWPSOCEnvMapProbeListener> Ref;
+	
+	
+
 private:
 	gdeWPSOCEnvMapProbe &pPanel;
 	

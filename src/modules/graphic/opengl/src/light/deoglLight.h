@@ -31,8 +31,8 @@
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicLight.h>
+#include "deoglRLight.h"
 
-class deoglRLight;
 class deoglSkinStateController;
 class deoglWorld;
 class deoglDynamicSkin;
@@ -51,7 +51,7 @@ class deoglLight : public deBaseGraphicLight, deoglDynamicSkinListener, deoglCan
 public:
 	deGraphicOpenGl &pOgl;
 	const deLight &pLight;
-	deoglRLight *pRLight;
+	deoglRLight::Ref pRLight;
 	deoglSkinStateController *pSkinStateController;
 	deoglWorld *pParentWorld;
 	deoglDynamicSkin *pDynamicSkin;
@@ -129,7 +129,7 @@ public:
 	
 	
 	/** Render light. */
-	inline deoglRLight *GetRLight() const{ return pRLight; }
+	inline const deoglRLight::Ref &GetRLight() const{ return pRLight; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

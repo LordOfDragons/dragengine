@@ -255,13 +255,9 @@ void deoalAudioThread::CleanUp(){
 	
 	SetActiveMicrophone(nullptr);
 	
-	if(pDeactiveMicrophone){
-		pDeactiveMicrophone->FreeReference();
 		pDeactiveMicrophone = NULL;
 	}
 	
-	if(pActiveWorld){
-		pActiveWorld->FreeReference();
 		pActiveWorld = NULL;
 	}
 	pProcessOnceWorld.RemoveAll();
@@ -618,12 +614,10 @@ void deoalAudioThread::Run(){
 void deoalAudioThread::SetActiveMicrophone(deoalAMicrophone *microphone){
 	// WARNING called from the main thread
 	
-	if(pDeactiveMicrophone){
-		pDeactiveMicrophone->FreeReference();
 		pDeactiveMicrophone = NULL;
 	}
 	
-	if(microphone != pActiveMicrophone){
+	if(pActiveMicrophone != microphone){
 		if(pActiveMicrophone){
 			pDeactiveMicrophone = pActiveMicrophone;
 			pActiveMicrophone->SetActive(false);
@@ -638,10 +632,9 @@ void deoalAudioThread::SetActiveMicrophone(deoalAMicrophone *microphone){
 	}
 	
 	deoalAWorld * const world = microphone ? microphone->GetParentWorld() : nullptr;
-	if(world != pActiveWorld){
+	if(pActiveWorld != world){
 		if(pActiveWorld){
 			pProcessOnceWorld.AddIfAbsent(pActiveWorld);
-			pActiveWorld->FreeReference();
 		}
 		
 		pActiveWorld = world;
@@ -729,13 +722,9 @@ void deoalAudioThread::pCleanUpThread(){
 	
 	SetActiveMicrophone(nullptr);
 	
-	if(pDeactiveMicrophone){
-		pDeactiveMicrophone->FreeReference();
 		pDeactiveMicrophone = NULL;
 	}
 	
-	if(pActiveWorld){
-		pActiveWorld->FreeReference();
 		pActiveWorld = NULL;
 	}
 	pProcessOnceWorld.RemoveAll();

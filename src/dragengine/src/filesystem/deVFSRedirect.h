@@ -26,8 +26,8 @@
 #define _DEVFSREDIRECT_H_
 
 #include "deVFSContainer.h"
+#include "deVirtualFileSystem.h"
 
-class deVirtualFileSystem;
 
 
 /**
@@ -47,8 +47,8 @@ public:
 	
 private:
 	const decPath pRedirectPath;
-	deVFSContainer *pContainer;
-	deVirtualFileSystem *pVFS;
+	deVFSContainer::Ref pContainer;
+	deVirtualFileSystem::Ref pVFS;
 	bool pHoldVFSReference;
 	
 	

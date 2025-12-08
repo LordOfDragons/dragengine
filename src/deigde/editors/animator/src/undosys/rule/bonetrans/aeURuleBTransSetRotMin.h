@@ -29,8 +29,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "aeRuleBoneTransformator.h"
 
-class aeRuleBoneTransformator;
 
 
 
@@ -39,7 +39,7 @@ class aeRuleBoneTransformator;
  */
 class aeURuleBTransSetRotMin : public igdeUndo{
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	
 	decVector pOldMin;
 	decVector pNewMin;

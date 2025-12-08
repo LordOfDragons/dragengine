@@ -86,13 +86,12 @@ void meObjectSelection::RemoveAll(){
 
 
 bool meObjectSelection::HasActive() const{
-	return pActive != NULL;
+	return pActive != nullptr;
 }
 
 void meObjectSelection::SetActive(meObject *object){
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = object;

@@ -28,8 +28,8 @@
 #include "gdeVAOSubObject.h"
 
 #include <dragengine/resources/debug/deDebugDrawer.h>
+#include "gdeOCNavigationSpace.h"
 
-class gdeOCNavigationSpace;
 
 class igdeWDebugDrawerShape;
 
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCNavigationSpace *pOCNavSpace;
+	gdeOCNavigationSpace::Ref pOCNavSpace;
 	
 	deDebugDrawer::Ref pDDSpace;
 	deDebugDrawer::Ref pDDBlocker;
@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class navigation space. */
-	inline gdeOCNavigationSpace *GetOCNavSpace() const{ return pOCNavSpace; }
+	inline const gdeOCNavigationSpace::Ref &GetOCNavSpace() const{ return pOCNavSpace; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;

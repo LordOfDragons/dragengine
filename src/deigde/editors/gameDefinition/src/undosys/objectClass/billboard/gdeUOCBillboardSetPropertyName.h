@@ -29,8 +29,8 @@
 #include "../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 
@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCBillboardSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	gdeOCBillboard::eProperties pProperty;
 	decString pOldValue;

@@ -28,8 +28,8 @@
 #include <dragengine/common/math/decMath.h>
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceTarget.h"
 
-class ceTarget;
 
 
 
@@ -38,7 +38,7 @@ class ceTarget;
  */
 class ceUCTargetSetPosition : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decVector pOldPosition;
 	decVector pNewPosition;

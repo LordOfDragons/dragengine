@@ -343,7 +343,7 @@ pListener(NULL)
 	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener = new reWPBoneListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -403,13 +403,7 @@ pListener(NULL)
 reWPBone::~reWPBone(){
 	SetRig(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 	
-	if(pBone){
-		pBone->FreeReference();
-	}
 }
 
 
@@ -418,7 +412,7 @@ reWPBone::~reWPBone(){
 ///////////////
 
 void reWPBone::SetRig(reRig *rig){
-	if(rig == pRig){
+	if(pRig == rig){
 		return;
 	}
 	
@@ -426,7 +420,6 @@ void reWPBone::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -441,19 +434,12 @@ void reWPBone::SetRig(reRig *rig){
 }
 
 void reWPBone::SetBone(reRigBone *bone){
-	if(bone == pBone){
+	if(pBone == bone){
 		return;
 	}
 	
-	if(pBone){
-		pBone->FreeReference();
-	}
 	
 	pBone = bone;
-	
-	if(bone){
-		bone->AddReference();
-	}
 	
 	UpdateBone();
 }
@@ -513,7 +499,7 @@ void reWPBone::UpdateBone(){
 		pChkIKLockedZ->SetChecked(false);
 	}
 	
-	const bool enabled = pBone != NULL;
+	const bool enabled = pBone != nullptr;
 	pEditName->SetEnabled(enabled);
 	pCBParent->SetEnabled(enabled);
 	pEditPosition->SetEnabled(enabled);

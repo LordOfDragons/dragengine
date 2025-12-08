@@ -28,8 +28,8 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicPropField.h>
+#include "deoglRPropField.h"
 
-class deoglRPropField;
 class deoglPropFieldType;
 
 class deGraphicOpenGl;
@@ -46,7 +46,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	dePropField &pPropField;
 	
-	deoglRPropField *pRPropField;
+	deoglRPropField::Ref pRPropField;
 	
 	decPointerList pTypes;
 	
@@ -82,7 +82,7 @@ public:
 	
 	
 	/** Render prop field. */
-	inline deoglRPropField *GetRPropField() const{ return pRPropField; }
+	inline const deoglRPropField::Ref &GetRPropField() const{ return pRPropField; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

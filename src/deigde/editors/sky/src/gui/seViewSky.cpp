@@ -97,16 +97,13 @@ void seViewSky::ResetView(){
 }
 
 void seViewSky::SetSky(seSky *sky){
-	if(sky == pSky){
+	if(pSky == sky){
 		return;
 	}
 	
 	pCameraInteraction->SetCamera(NULL);
 	SetRenderWorld(NULL);
 	
-	if(pSky){
-		pSky->FreeReference();
-	}
 	
 	pSky = sky;
 	

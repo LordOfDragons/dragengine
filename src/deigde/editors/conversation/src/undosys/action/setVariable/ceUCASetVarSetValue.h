@@ -26,9 +26,9 @@
 #define _CEUCASETVARSETVALUE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCASetVariable.h"
+#include "ceConversationTopic.h"
 
-class ceCASetVariable;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCASetVarSetValue : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASetVariable *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCASetVariable::Ref pAction;
 	int pOldValue;
 	int pNewValue;
 	

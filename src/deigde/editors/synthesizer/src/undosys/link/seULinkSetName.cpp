@@ -53,13 +53,9 @@ pLink(NULL)
 	SetShortInfo("Set Link Name");
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 seULinkSetName::~seULinkSetName(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

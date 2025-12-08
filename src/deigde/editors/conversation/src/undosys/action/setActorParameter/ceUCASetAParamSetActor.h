@@ -26,9 +26,9 @@
 #define _CEUCASETAPARAMSETACTOR_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCASetActorParameter.h"
+#include "ceConversationTopic.h"
 
-class ceCASetActorParameter;
-class ceConversationTopic;
 
 
 
@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCASetAParamSetActor : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASetActorParameter *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCASetActorParameter::Ref pAction;
 	decString pOldActorID;
 	decString pNewActorID;
 	

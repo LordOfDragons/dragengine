@@ -52,13 +52,9 @@ reUConstraintSetPosition::reUConstraintSetPosition(reRigConstraint *constraint, 
 	
 	SetShortInfo("Constraint set position");
 	
-	pConstraint->AddReference();
 }
 
 reUConstraintSetPosition::~reUConstraintSetPosition(){
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 }
 
 

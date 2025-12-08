@@ -52,7 +52,4 @@ pForceField(NULL)
 }
 
 gdeClipboardDataOCForceField::~gdeClipboardDataOCForceField(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
 }

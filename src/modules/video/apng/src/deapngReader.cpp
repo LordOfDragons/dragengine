@@ -232,7 +232,7 @@ void deapngReader::CopyAccumImage(void *buffer, int size) const{
 	if(!buffer){
 		DETHROW(deeInvalidParam);
 	}
-	if(size != pImageSize){
+	if(pImageSize != size){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -265,9 +265,6 @@ void deapngReader::pCleanUp(){
 	}
 	if(pReadStruct){
 		png_destroy_read_struct(&pReadStruct, &pInfoStruct, NULL);
-	}
-	if(pReader){
-		pReader->FreeReference();
 	}
 }
 

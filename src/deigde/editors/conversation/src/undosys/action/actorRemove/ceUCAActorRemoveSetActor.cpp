@@ -61,12 +61,6 @@ ceUCAActorRemoveSetActor::ceUCAActorRemoveSetActor(ceConversationTopic *topic, c
 }
 
 ceUCAActorRemoveSetActor::~ceUCAActorRemoveSetActor(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

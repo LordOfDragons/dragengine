@@ -63,9 +63,6 @@ meUNavSpaceSetOrientation::meUNavSpaceSetOrientation(meNavigationSpace *navspace
 }
 
 meUNavSpaceSetOrientation::~meUNavSpaceSetOrientation(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

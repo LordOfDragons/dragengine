@@ -43,7 +43,6 @@ pRule(nullptr)
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldScale = rule->GetScaleVertexPositionSet();
 		pNewScale = newScale;
@@ -79,7 +78,4 @@ void aeUSetRuleFStaScaleVertexPositionSet::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaScaleVertexPositionSet::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

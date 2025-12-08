@@ -45,6 +45,11 @@ class deException;
  * \brief Editor window.
  */
 class DE_DLL_EXPORT igdeEditorWindow : public igdeContainerBox{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditorWindow> Ref;
+	
+	
 private:
 	igdeEditorModule &pEditorModule;
 	bool pActiveModule;

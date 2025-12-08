@@ -30,10 +30,10 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "reRig.h"
+#include "reWPRigListener.h"
 
-class reRig;
 class reWindowProperties;
-class reWPRigListener;
 
 
 
@@ -43,8 +43,8 @@ class reWPRigListener;
 class reWPRig : public igdeContainerScroll{
 private:
 	reWindowProperties &pWindowProperties;
-	reRig *pRig;
-	reWPRigListener *pListener;
+	reRig::Ref pRig;
+	reWPRigListener::Ref pListener;
 	
 	igdeComboBox::Ref pCBRootBone;
 	igdeCheckBox::Ref pChkDynamic;
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);

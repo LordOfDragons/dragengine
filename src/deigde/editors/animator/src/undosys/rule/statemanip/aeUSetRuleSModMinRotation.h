@@ -30,9 +30,9 @@
 // includes
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
+#include "aeRuleStateManipulator.h"
 
 // predefinitions
-class aeRuleStateManipulator;
 
 
 
@@ -43,7 +43,7 @@ class aeRuleStateManipulator;
  */
 class aeUSetRuleSModMinRotation : public igdeUndo{
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 	decVector pOldMin;
 	decVector pNewMin;

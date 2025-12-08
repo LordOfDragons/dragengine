@@ -26,8 +26,8 @@
 #define _AEURULEBTRANSSETENABLESIZE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleBoneTransformator.h"
 
-class aeRuleBoneTransformator;
 
 
 
@@ -36,7 +36,7 @@ class aeRuleBoneTransformator;
  */
 class aeURuleBTransSetEnableSize : public igdeUndo{
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

@@ -480,7 +480,7 @@ pControllerCount(0)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPPlaygroundListener(*this);
+	pListener.TakeOverWith(*this);
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -572,13 +572,9 @@ aeWPPlayground::~aeWPPlayground(){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 		pAnimator = NULL;
 	}
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -587,13 +583,12 @@ aeWPPlayground::~aeWPPlayground(){
 ///////////////
 
 void aeWPPlayground::SetAnimator(aeAnimator *animator){
-	if(animator == pAnimator){
+	if(pAnimator == animator){
 		return;
 	}
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;

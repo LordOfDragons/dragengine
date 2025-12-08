@@ -56,9 +56,6 @@ pNewName(newName)
 }
 
 seULayerSetName::~seULayerSetName(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

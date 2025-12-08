@@ -27,8 +27,8 @@
 #define _PROJUPROFILESETALIASIDENTIFIER_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "projProfile.h"
 
-class projProfile;
 
 
 
@@ -37,7 +37,7 @@ class projProfile;
  */
 class projUProfileSetAliasIdentifier : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decString pOldValue;
 	decString pNewValue;

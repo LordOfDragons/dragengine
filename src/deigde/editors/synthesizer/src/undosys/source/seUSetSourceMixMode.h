@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/synthesizer/source/deSynthesizerSource.h>
+#include "seSource.h"
 
-class seSource;
 
 
 
@@ -38,7 +38,7 @@ class seSource;
  */
 class seUSetSourceMixMode : public igdeUndo{
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	
 	deSynthesizerSource::eMixModes pOldMode;
 	deSynthesizerSource::eMixModes pNewMode;

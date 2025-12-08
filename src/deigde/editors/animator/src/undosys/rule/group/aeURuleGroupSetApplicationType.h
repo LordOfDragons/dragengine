@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleGroup.h>
+#include "aeRuleGroup.h"
 
-class aeRuleGroup;
 
 
 
@@ -38,7 +38,7 @@ class aeRuleGroup;
  */
 class aeURuleGroupSetApplicationType : public igdeUndo{
 private:
-	aeRuleGroup *pRule;
+	aeRuleGroup::Ref pRule;
 	
 	deAnimatorRuleGroup::eApplicationTypes pOldType;
 	deAnimatorRuleGroup::eApplicationTypes pNewType;

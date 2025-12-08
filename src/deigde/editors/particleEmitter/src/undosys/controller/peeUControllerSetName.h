@@ -26,8 +26,8 @@
 #define _PEEUCONTROLLERSETNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "peeController.h"
 
-class peeController;
 
 
 
@@ -36,7 +36,7 @@ class peeController;
  */
 class peeUControllerSetName : public igdeUndo{
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	
 	decString pOldName;
 	decString pNewName;

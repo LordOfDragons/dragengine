@@ -48,16 +48,12 @@ aeULinkSetVertexPositionSet::aeULinkSetVertexPositionSet(aeLink *link, const cha
 	SetShortInfo("Link set vertex position set");
 	
 	pLink = link;
-	pLink->AddReference();
 	
 	pOldValue = link->GetVertexPositionSet();
 	pNewValue = newSet;
 }
 
 aeULinkSetVertexPositionSet::~aeULinkSetVertexPositionSet(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

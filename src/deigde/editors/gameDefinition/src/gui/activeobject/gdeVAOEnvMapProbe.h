@@ -28,8 +28,8 @@
 #include "gdeVAOSubObject.h"
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/probe/deEnvMapProbe.h>
+#include "gdeOCEnvMapProbe.h"
 
-class gdeOCEnvMapProbe;
 class igdeWDebugDrawerShape;
 
 
@@ -44,7 +44,7 @@ public:
 	
 	
 private:
-	gdeOCEnvMapProbe *pOCEnvMapProbe;
+	gdeOCEnvMapProbe::Ref pOCEnvMapProbe;
 	
 	deEnvMapProbe::Ref pEnvMapProbe;
 	
@@ -79,7 +79,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class envMapProbe. */
-	inline gdeOCEnvMapProbe *GetOCEnvMapProbe() const{ return pOCEnvMapProbe; }
+	inline const gdeOCEnvMapProbe::Ref &GetOCEnvMapProbe() const{ return pOCEnvMapProbe; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;

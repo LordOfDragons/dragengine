@@ -62,12 +62,6 @@ pParticleEmitter(NULL)
 }
 
 gdeUOCParticleEmitterSetBoneName::~gdeUOCParticleEmitterSetBoneName(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

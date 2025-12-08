@@ -613,7 +613,7 @@ void aeController::pCreateGizmos(){
 	
 	switch(pVectorSimulation){
 	case evsPosition:
-		pGizmoIKPosition.TakeOver(new aeGizmoControllerIKPosition(*pAnimator->GetEnvironment(), *this));
+		pGizmoIKPosition.TakeOverWith(*pAnimator->GetEnvironment(), *this);
 		pGizmoIKPosition->SetWorld(pAnimator->GetEngineWorld());
 		break;
 		

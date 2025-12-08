@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "seBody.h"
 
-class seBody;
 
 
 
@@ -38,7 +38,7 @@ class seBody;
  */
 class seUBodySetColor : public igdeUndo{
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decColor pOldColor;
 	decColor pNewColor;

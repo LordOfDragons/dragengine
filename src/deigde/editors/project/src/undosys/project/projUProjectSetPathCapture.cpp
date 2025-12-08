@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 projUProjectSetPathCapture::~projUProjectSetPathCapture(){
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 

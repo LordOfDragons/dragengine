@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/curve/decCurveBezier.h>
+#include "seLink.h"
 
-class seLink;
 
 
 
@@ -37,7 +37,7 @@ class seLink;
  */
 class seULinkSetCurve : public igdeUndo{
 private:
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	decCurveBezier pOldCurve;
 	decCurveBezier pNewCurve;

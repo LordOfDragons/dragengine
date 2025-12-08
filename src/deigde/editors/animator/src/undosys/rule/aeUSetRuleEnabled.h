@@ -29,9 +29,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeRule.h"
 
 // predefinitions
-class aeRule;
 
 
 
@@ -42,7 +42,7 @@ class aeRule;
  */
 class aeUSetRuleEnabled : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

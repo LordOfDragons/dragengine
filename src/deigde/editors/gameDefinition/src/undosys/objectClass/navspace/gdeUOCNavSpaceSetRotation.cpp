@@ -62,12 +62,6 @@ pNavSpace(NULL)
 }
 
 gdeUOCNavSpaceSetRotation::~gdeUOCNavSpaceSetRotation(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

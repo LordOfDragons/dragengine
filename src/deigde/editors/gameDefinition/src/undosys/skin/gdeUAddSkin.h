@@ -27,9 +27,9 @@
 #define _GDEUOCADDSKIN_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeSkin.h"
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
-class gdeSkin;
 
 
 
@@ -38,8 +38,8 @@ class gdeSkin;
  */
 class gdeUAddSkin : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeSkin *pSkin;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeSkin::Ref pSkin;
 	
 	
 	

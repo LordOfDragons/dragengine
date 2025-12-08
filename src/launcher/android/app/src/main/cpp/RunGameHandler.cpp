@@ -103,7 +103,7 @@ void RunGameHandler::Command(BaseGameActivityAdapter &adapter, int32_t cmd){
             "APP_CMD_INIT_WINDOW: savedState(%d bytes)", (int)size);
 
         if(size > 0 && data){
-            pSavedState.TakeOver(new decMemoryFile("savedState"));
+            pSavedState.TakeOverWith("savedState");
             decMemoryFileWriter::Ref::NewWith(pSavedState, false)
                     ->Write(data, (int)size);
         }

@@ -26,9 +26,9 @@
 #define _SEUBODYREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seBody.h"
+#include "seLayer.h"
 
-class seLayer;
-class seBody;
 
 
 /**
@@ -36,8 +36,8 @@ class seBody;
  */
 class seUBodyRemove : public igdeUndo{
 private:
-	seLayer *pLayer;
-	seBody *pBody;
+	seLayer::Ref pLayer;
+	seBody::Ref pBody;
 	int pIndex;
 	
 	

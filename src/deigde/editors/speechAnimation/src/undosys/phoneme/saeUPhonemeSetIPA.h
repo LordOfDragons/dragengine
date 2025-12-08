@@ -26,8 +26,8 @@
 #define _SAEUPHONEMESETIPA_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "saePhoneme.h"
 
-class saePhoneme;
 
 
 
@@ -36,7 +36,7 @@ class saePhoneme;
  */
 class saeUPhonemeSetIPA : public igdeUndo{
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	int pOldIPA;
 	int pNewIPA;

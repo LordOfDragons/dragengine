@@ -26,8 +26,8 @@
 #define _MEUHTSETSECTORRESOLUTION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meWorld.h"
 
-class meWorld;
 class meHeightTerrain;
 
 
@@ -36,7 +36,7 @@ class meHeightTerrain;
  */
 class meUHTSetSectorResolution : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
 	
 	int pOldSectorResolution;

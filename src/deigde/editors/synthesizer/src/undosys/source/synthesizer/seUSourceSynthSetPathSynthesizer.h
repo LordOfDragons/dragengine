@@ -26,8 +26,8 @@
 #define _SEUSOURCESYNTHSETPATHSYNTHESIZER_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSourceSynthesizer.h"
 
-class seSourceSynthesizer;
 
 
 
@@ -36,7 +36,7 @@ class seSourceSynthesizer;
  */
 class seUSourceSynthSetPathSynthesizer : public igdeUndo{
 private:
-	seSourceSynthesizer *pSource;
+	seSourceSynthesizer::Ref pSource;
 	
 	decString pOldPath;
 	decString pNewPath;

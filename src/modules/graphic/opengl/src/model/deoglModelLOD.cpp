@@ -940,27 +940,21 @@ void deoglModelLOD::pCleanUp(){
 	
 	if(pVBOBlockWithWeight){
 		pVBOBlockWithWeight->DelayedRemove();
-		pVBOBlockWithWeight->FreeReference();
 	}
 	if(pVBOBlockVertPosSet){
 		pVBOBlockVertPosSet->DelayedRemove();
-		pVBOBlockVertPosSet->FreeReference();
 	}
 	if(pVBOBlockWriteSkinnedVBO){
 		pVBOBlockWriteSkinnedVBO->DelayedRemove();
-		pVBOBlockWriteSkinnedVBO->FreeReference();
 	}
 	if(pVBOBlockCalcNormalTangent){
 		pVBOBlockCalcNormalTangent->DelayedRemove();
-		pVBOBlockCalcNormalTangent->FreeReference();
 	}
 	if(pVBOBlockPositionWeight){
 		pVBOBlockPositionWeight->DelayedRemove();
-		pVBOBlockPositionWeight->FreeReference();
 	}
 	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
-		pVBOBlock->FreeReference();
 	}
 	
 	pModel.GetRenderThread().GetDelayedOperations().DeleteOpenGLBuffer(pIBO);
@@ -1407,7 +1401,7 @@ void deoglModelLOD::pBuildArrays(const deModel &engModel){
 				texture.SetFaceCount(texFaceCount);
 			}
 			
-			if(f != pFaceCount){
+			if(pFaceCount != f){
 				DETHROW(deeInvalidParam);
 			}
 			

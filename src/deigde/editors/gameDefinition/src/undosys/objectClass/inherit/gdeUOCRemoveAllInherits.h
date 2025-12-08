@@ -28,8 +28,8 @@
 
 #include "../../../gamedef/objectClass/inherit/gdeOCInheritList.h"
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 
@@ -38,7 +38,7 @@ class gdeObjectClass;
  */
 class gdeUOCRemoveAllInherits : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	gdeOCInheritList pInherits;
 	
 	

@@ -923,9 +923,6 @@ deColliderCollisionTest *collisionTest, deCollider *parentCollider){
 	collisionTest->AddReference();
 	
 	nd.parentCollider = parentCollider;
-	if(parentCollider){
-		parentCollider->AddReference();
-	}
 }
 
 deCollider *deClassColliderCollisionTest::GetParentCollider(dsRealObject *myself) const{
@@ -949,7 +946,4 @@ void deClassColliderCollisionTest::SetParentCollider(dsRealObject *myself, deCol
 		nd.parentCollider->FreeReference();
 	}
 	nd.parentCollider = collider;
-	if(collider){
-		collider->AddReference();
-	}
 }

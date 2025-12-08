@@ -28,9 +28,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meWorld.h"
 
 // predefinitions
-class meWorld;
 class meHeightTerrain;
 
 
@@ -42,7 +42,7 @@ class meHeightTerrain;
  */
 class meUHTSetBaseHeight : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
 	
 	float pOldBaseHeight;

@@ -26,8 +26,8 @@
 #define _MEUDECALSETPROPERTY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meDecal.h"
 
-class meDecal;
 
 
 
@@ -36,7 +36,7 @@ class meDecal;
  */
 class meUDecalSetProperty : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decString pKey;
 	decString pOldValue;

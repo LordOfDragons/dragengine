@@ -85,13 +85,12 @@ void meNavigationSpaceSelection::RemoveAll(){
 
 
 bool meNavigationSpaceSelection::HasActive() const{
-	return pActive != NULL;
+	return pActive != nullptr;
 }
 
 void meNavigationSpaceSelection::SetActive(meNavigationSpace *navspaces){
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = navspaces;

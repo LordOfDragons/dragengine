@@ -135,17 +135,17 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pGuiParams = new meWorldGuiParameters(*this);
 		
 		// create world
-		pDEWorld = engine->GetWorldManager()->CreateWorld();
+		pDEWorld.TakeOver(engine->GetWorldManager()->CreateWorld());
 		pDEWorld->SetSize(pSize);
 		pDEWorld->SetGravity(pGravity);
 		pDEWorld->SetDisableLights(pFullBright);
 		pUpdateAmbientLight();
 		
 		// create collision detection collider
-		pEngColCollider = engine->GetColliderManager()->CreateColliderVolume();
+		pEngColCollider.TakeOver(engine->GetColliderManager()->CreateColliderVolume());
 		
 		// create height terrain
-		pHeightTerrain = new meHeightTerrain(*this);
+		pHeightTerrain.TakeOverWith(*this);
 		
 		meHeightTerrainSector * const htsector = new meHeightTerrainSector(engine, decPoint());
 		pHeightTerrain->AddSector(htsector);
@@ -161,7 +161,7 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pSky->SetWorld(pDEWorld);
 		
 		// background object
-		pBgObject.TakeOver(new igdeWObject(*environment));
+		pBgObject.TakeOverWith(*environment);
 		pBgObject->SetWorld(pDEWorld);
 		
 		// create weather
@@ -181,11 +181,11 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pActiveCamera = pFreeRoamCamera;
 		
 		// create sensors
-		pLumimeter = new meLumimeter(engine);
+		pLumimeter.TakeOverWith(engine);
 		pLumimeter->SetWorld(this);
 		
 		// create microphone
-		pEngMicrophone = engine->GetMicrophoneManager()->CreateMicrophone();
+		pEngMicrophone.TakeOver(engine->GetMicrophoneManager()->CreateMicrophone());
 		pEngMicrophone->SetMuted(false);
 		pEngMicrophone->SetType(deMicrophone::emtPoint); // directed in fact but that's for later
 		decLayerMask layerMaskMicrophone;
@@ -195,10 +195,10 @@ pNextObjectID(1) // 0 is reserved for invalid or undefined IDs
 		pDEWorld->AddMicrophone(pEngMicrophone);
 		
 		// create path find test
-		pPathFindTest = new mePathFindTest(engine);
+		pPathFindTest.TakeOverWith(engine);
 		pPathFindTest->SetWorld(this);
 		
-		pMusic.TakeOver(new meMusic(*this));
+		pMusic.TakeOverWith(*this);
 		
 		// debug drawer
 		pDDLimitBox.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
@@ -260,7 +260,7 @@ void meWorld::SetLimitBoxExtends(const decVector &minExtend, const decVector &ma
 }
 
 void meWorld::SetNextObjectID(const decUniqueID& id){
-	if(id == pNextObjectID){
+	if(pNextObjectID == id){
 		return;
 	}
 	
@@ -350,7 +350,7 @@ const decQuaternion &orientation, deBaseScriptingCollider *listener, const decCo
 ////////////
 
 void meWorld::SetDepChanged(bool changed){
-	if(changed == pDepChanged){
+	if(pDepChanged == changed){
 		return;
 	}
 	
@@ -718,7 +718,7 @@ void meWorld::SetActiveProperty(const char *property){
 ///////////
 
 void meWorld::SetActiveCamera(meCamera *camera){
-	if(camera == pActiveCamera){
+	if(pActiveCamera == camera){
 		return;
 	}
 	
@@ -1796,9 +1796,6 @@ void meWorld::pCleanUp(){
 		delete pFreeRoamCamera;
 	}
 	
-	if(pHeightTerrain){
-		pHeightTerrain->FreeReference();
-	}
 	
 	if(pWeather){
 		delete pWeather;
@@ -1807,27 +1804,19 @@ void meWorld::pCleanUp(){
 	pMusic = nullptr;
 	if(pPathFindTest){
 		pPathFindTest->SetWorld(nullptr);
-		pPathFindTest->FreeReference();
 	}
 	if(pLumimeter){
 		pLumimeter->SetWorld(nullptr);
-		pLumimeter->FreeReference();
 	}
 	
 	if(pGuiParams){
 		delete pGuiParams;
 	}
 	
-	if(pEngColCollider){
-		pEngColCollider->FreeReference();
-	}
 	
 	pBgObject = nullptr;
 	if(pSky){
 		delete pSky;
-	}
-	if(pEngForceField){
-		pEngForceField->FreeReference();
 	}
 	
 	if(pDEWorld){
@@ -1837,10 +1826,8 @@ void meWorld::pCleanUp(){
 			}
 			
 			pDEWorld->RemoveMicrophone(pEngMicrophone);
-			pEngMicrophone->FreeReference();
 		}
 		
-		pDEWorld->FreeReference();
 	}
 }
 

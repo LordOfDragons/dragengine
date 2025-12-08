@@ -81,7 +81,6 @@ meUObjectAttachTo::meUObjectAttachTo(meWorld *world, const meObjectList &objects
 			object = objects.GetAt(pObjectCount);
 			
 			pObjects[pObjectCount].object = object;
-			object->AddReference();
 			pObjects[pObjectCount].oldAttachTo = object->GetAttachedTo();
 			if(pObjects[pObjectCount].oldAttachTo){
 				pObjects[pObjectCount].oldAttachTo->AddReference();
@@ -94,9 +93,6 @@ meUObjectAttachTo::meUObjectAttachTo(meWorld *world, const meObjectList &objects
 	}
 	
 	pAttachTo = attachTo;
-	if(attachTo){
-		attachTo->AddReference();
-	}
 	
 	pWorld = world;
 	world->AddReference();
@@ -132,7 +128,7 @@ void meUObjectAttachTo::Redo(){
 	for(o=0; o<pObjectCount; o++){
 		object = pObjects[o].object;
 		
-		if(object != pAttachTo){
+		if(pAttachTo != object){
 			object->SetAttachedTo(pAttachTo);
 			pWorld->NotifyObjectGeometryChanged(object);
 		}
@@ -157,11 +153,5 @@ void meUObjectAttachTo::pCleanUp(){
 		delete [] pObjects;
 	}
 	
-	if(pAttachTo){
-		pAttachTo->FreeReference();
-	}
 	
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

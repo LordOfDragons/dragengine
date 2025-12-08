@@ -26,9 +26,9 @@
 #define _SEUCONTROLLERADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seController.h"
+#include "seSky.h"
 
-class seController;
-class seSky;
 
 
 
@@ -37,8 +37,8 @@ class seSky;
  */
 class seUControllerAdd : public igdeUndo{
 private:
-	seSky *pSky;
-	seController *pController;
+	seSky::Ref pSky;
+	seController::Ref pController;
 	
 	
 	

@@ -1102,16 +1102,16 @@ void deoglRTContext::pCreateContext(){
 	
 #elif defined BACKEND_VULKAN
 	logger.LogInfo("Creating Vulkan device");
-	pVulkan.TakeOver(new deSharedVulkan(pRenderThread.GetOgl()));
-	pDevice = pVulkan->GetInstance().CreateDeviceHeadlessGraphic(0);
+	pVulkan.TakeOverWith(pRenderThread.GetOgl());
+	pDevice.TakeOver(pVulkan->GetInstance().CreateDeviceHeadlessGraphic(0));
 	
 	pQueueGraphic = &pDevice->GetGraphicQueue();
 	pQueueCompute = &pDevice->GetComputeQueue();
 	pQueueTransfer = &pDevice->GetTransferQueue();
 	
-	pCommandPoolGraphic = pQueueGraphic->CreateCommandPool();
-	pCommandPoolCompute = pQueueCompute->CreateCommandPool();
-	pCommandPoolTransfer = pQueueTransfer->CreateCommandPool();
+	pCommandPoolGraphic.TakeOver(pQueueGraphic->CreateCommandPool());
+	pCommandPoolCompute.TakeOver(pQueueCompute->CreateCommandPool());
+	pCommandPoolTransfer.TakeOver(pQueueTransfer->CreateCommandPool());
 #endif // BACKEND_OPENGL
 }
 

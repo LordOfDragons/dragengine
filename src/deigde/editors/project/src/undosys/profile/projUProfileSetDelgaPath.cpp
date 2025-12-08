@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 projUProfileSetDelgaPath::~projUProfileSetDelgaPath(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

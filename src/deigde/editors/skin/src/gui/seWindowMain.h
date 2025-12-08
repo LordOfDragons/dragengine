@@ -33,18 +33,18 @@
 #include <deigde/gui/event/igdeActionUndo.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "seSkin.h"
+#include "seViewSkin.h"
+#include "seWindowMainListener.h"
+#include "seWindowProperties.h"
+#include "seViewConstructed.h"
 
 class seConfiguration;
 class seEngineController;
 class seIGDEModule;
 class seLoadSaveSystem;
-class seSkin;
 class seTexture;
 class seMapped;
-class seViewConstructed;
-class seViewSkin;
-class seWindowMainListener;
-class seWindowProperties;
 class igdeStepableTask;
 
 class decStringList;
@@ -56,7 +56,7 @@ class decStringList;
  */
 class seWindowMain : public igdeEditorWindow{
 private:
-	seWindowMainListener *pListener;
+	seWindowMainListener::Ref pListener;
 	
 	igdeAction::Ref pActionFileNew;
 	igdeAction::Ref pActionFileNewModel;
@@ -89,13 +89,13 @@ private:
 	igdeClipboard pClipboard;
 	seLoadSaveSystem *pLoadSaveSystem;
 	
-	seWindowProperties *pWindowProperties;
+	seWindowProperties::Ref pWindowProperties;
 	
 	igdeTabBook::Ref pSwitcherViews;
-	seViewSkin *pViewSkin;
-	seViewConstructed *pViewConstructed;
+	seViewSkin::Ref pViewSkin;
+	seViewConstructed::Ref pViewConstructed;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	
 	
 	
@@ -137,7 +137,7 @@ public:
 	inline seLoadSaveSystem &GetLoadSaveSystem() const{ return *pLoadSaveSystem; }
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set Skin. */
 	void SetSkin(seSkin *Skin);

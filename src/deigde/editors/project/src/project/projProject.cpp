@@ -183,15 +183,8 @@ void projProject::SetActiveProfile(projProfile *profile){
 		return;
 	}
 	
-	if(pActiveProfile){
-		pActiveProfile->FreeReference();
-	}
 	
 	pActiveProfile = profile;
-	
-	if(profile){
-		profile->AddReference();
-	}
 	
 	NotifyActiveProfileChanged();
 }

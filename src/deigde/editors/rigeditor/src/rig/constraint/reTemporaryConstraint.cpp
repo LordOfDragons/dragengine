@@ -101,7 +101,6 @@ reTemporaryConstraint::~reTemporaryConstraint(){
 			pEngSimCollider->RemoveConstraint(pEngConstraint);
 		}
 		
-		pEngSimCollider->FreeReference();
 	}
 }
 

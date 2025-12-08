@@ -28,10 +28,10 @@
 
 // includes
 #include "../meBaseUndoMove.h"
+#include "meWorld.h"
 
 // predefinitions
 class meUndoDataDecal;
-class meWorld;
 
 
 
@@ -42,7 +42,7 @@ class meWorld;
  */
 class meUDecalMove : public meBaseUndoMove{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	meUndoDataDecal **pDecals;
 	int pDecalCount;

@@ -53,7 +53,7 @@
 	// TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
 	igdeContainerFlow::Ref nvnode(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));
 	igdeNVSlot::Ref nvslot1, nvslot2, nvslot3, nvslot4;
-	nvslot1.TakeOver(new igdeNVSlot(env, "Input 1", "This is a test input", true));
+	nvslot1.TakeOverWith(env, "Input 1", "This is a test input", true);
 	nvnode->AddChild(nvslot1);
 	nvslot2.TakeOver(new igdeNVSlot(env, "Input 2", "This is a test input", true));
 	nvslot2->SetColor(decColor(1.0f, 0.0f, 0.0f));
