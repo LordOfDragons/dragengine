@@ -57,7 +57,7 @@ pDirtyControllers(true),
 pDirtyLayerMask(true),
 pSkyUpdateState(0)
 {
-	pRInstance.TakeOverWithpOgl.GetRenderThread());
+	pRInstance.TakeOver(new deoglRSkyInstance(pOgl.GetRenderThread()));
 }
 
 deoglSkyInstance::~deoglSkyInstance(){

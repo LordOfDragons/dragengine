@@ -124,7 +124,7 @@ pAnimator(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new aeWindowMainListener(*this));
 	pLoadSaveSystem = new aeLoadSaveSystem(this);
 	pConfiguration = new aeConfiguration(*this);
 	
@@ -138,10 +138,10 @@ pAnimator(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties.TakeOverWith*this);
+	pWindowProperties.TakeOver(new aeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pView3D.TakeOverWith*this);
+	pView3D.TakeOver(new aeView3D(*this));
 	splitted->AddChild(pView3D, igdeContainerSplitted::eaCenter);
 	
 	CreateNewAnimator();
@@ -1125,8 +1125,8 @@ void aeWindowMain::pCreateActions(){
 	pActionFileSave.TakeOver(new cActionFileSave(*this));
 	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
 	
-	pActionEditUndo.TakeOverWithenvironment);
-	pActionEditRedo.TakeOverWithenvironment);
+	pActionEditUndo.TakeOver(new igdeActionUndo(environment));
+	pActionEditRedo.TakeOver(new igdeActionRedo(environment));
 	
 	pActionEditCut.TakeOver(new cActionEditCut(*this));
 	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
@@ -1298,7 +1298,7 @@ void aeWindowMain::pCreateActions(){
 void aeWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOverWithGetEnvironment());
+	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -1310,7 +1310,7 @@ void aeWindowMain::pCreateToolBarFile(){
 void aeWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOverWithGetEnvironment());
+	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -1342,23 +1342,23 @@ void aeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOverWithenv, "File", deInputEvent::ekcF);
+	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Edit", deInputEvent::ekcE);
+	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Controller", deInputEvent::ekcC);
+	cascade.TakeOver(new igdeMenuCascade(env, "Controller", deInputEvent::ekcC));
 	pCreateMenuController(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Link", deInputEvent::ekcL);
+	cascade.TakeOver(new igdeMenuCascade(env, "Link", deInputEvent::ekcL));
 	pCreateMenuLink(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Rule", deInputEvent::ekcR);
+	cascade.TakeOver(new igdeMenuCascade(env, "Rule", deInputEvent::ekcR));
 	pCreateMenuRule(cascade);
 	AddSharedMenu(cascade);
 }
@@ -1432,7 +1432,7 @@ void aeWindowMain::pCreateMenuRule(igdeMenuCascade &menu){
 	helper.MenuCommand(subMenu, pActionRuleAddLimit);
 	helper.MenuCommand(subMenu, pActionRuleAddMirror);
 	
-	subMenu.TakeOverWithGetEnvironment(), "Insert", deInputEvent::ekcI);
+	subMenu.TakeOver(new igdeMenuCascade(GetEnvironment(), "Insert", deInputEvent::ekcI));
 	menu.AddChild(subMenu);
 	helper.MenuCommand(subMenu, pActionRuleInsertAnim);
 	helper.MenuCommand(subMenu, pActionRuleInsertAnimDiff);

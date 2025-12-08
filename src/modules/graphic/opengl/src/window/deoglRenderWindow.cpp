@@ -71,7 +71,7 @@ pRRenderWindow(NULL)
 	try{
 		pCanvasView = (deoglCanvasView*)renderWindow.GetCanvasView()->GetPeerGraphic();
 		
-		pRRenderWindow.TakeOverWithogl.GetRenderThread());
+		pRRenderWindow.TakeOver(new deoglRRenderWindow(ogl.GetRenderThread()));
 		
 		pRRenderWindow->SetHostWindow(renderWindow.GetHostWindow());
 		pRRenderWindow->SetPosition(renderWindow.GetX(), renderWindow.GetY());

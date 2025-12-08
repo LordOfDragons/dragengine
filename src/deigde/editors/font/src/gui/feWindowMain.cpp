@@ -99,7 +99,7 @@ igdeEditorWindow(module)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new feWindowMainListener(*this));
 	pLoadSaveSystem = new feLoadSaveSystem(this);
 	pConfiguration = new feConfiguration(*this);
 	pClipboard = new feClipboard;
@@ -114,10 +114,10 @@ igdeEditorWindow(module)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(260)));
 	AddChild(splitted);
 	
-	pWndProps.TakeOverWith*this);
+	pWndProps.TakeOver(new feWindowProperties(*this));
 	splitted->AddChild(pWndProps, igdeContainerSplitted::eaSide);
 	
-	pViewFontImage.TakeOverWith*this);
+	pViewFontImage.TakeOver(new feViewFontImage(*this));
 	splitted->AddChild(pViewFontImage, igdeContainerSplitted::eaCenter);
 	
 	CreateNewFont();
@@ -513,8 +513,8 @@ void feWindowMain::pCreateActions(){
 	pActionFontSave.TakeOver(new cActionFontSave(*this));
 	pActionFontSaveAs.TakeOver(new cActionFontSaveAs(*this));
 	pActionFontGenerate.TakeOver(new cActionFontGenerate(*this));
-	pActionEditUndo.TakeOverWithGetEnvironment());
-	pActionEditRedo.TakeOverWithGetEnvironment());
+	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
+	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
 	pActionEditCut.TakeOver(new cActionEditCut(*this));
 	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
 	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
@@ -536,7 +536,7 @@ void feWindowMain::pCreateActions(){
 void feWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOverWithGetEnvironment());
+	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBFile, pActionFontNew);
 	helper.ToolBarButton(pTBFile, pActionFontOpen);
@@ -548,7 +548,7 @@ void feWindowMain::pCreateToolBarFile(){
 void feWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOverWithGetEnvironment());
+	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -565,11 +565,11 @@ void feWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOverWithenv, "Font", deInputEvent::ekcF);
+	cascade.TakeOver(new igdeMenuCascade(env, "Font", deInputEvent::ekcF));
 	pCreateMenuFont(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Edit", deInputEvent::ekcE);
+	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 }

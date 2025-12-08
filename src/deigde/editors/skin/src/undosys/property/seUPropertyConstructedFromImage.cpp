@@ -68,7 +68,7 @@ pNewContent(NULL)
 		nodeImage->SetSize(size);
 		nodeImage->SetPath(property->GetImagePath());
 		
-		pNewContent.TakeOverWith*property->GetEngine());
+		pNewContent.TakeOver(new sePropertyNodeGroup(*property->GetEngine()));
 		pNewContent->SetSize(size);
 		pNewContent->AddNode(nodeImage);
 		nodeImage->FreeReference();

@@ -93,7 +93,7 @@ pEmitter(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new peeWindowMainListener(*this));
 	pLoadSaveSystem = new peeLoadSaveSystem(*this);
 	pConfiguration = new peeConfiguration(*this);
 	
@@ -107,17 +107,17 @@ pEmitter(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(360)));
 	AddChild(splitted);
 	
-	pWindowProperties.TakeOverWith*this);
+	pWindowProperties.TakeOver(new peeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	igdeContainerSplitted::Ref splitted2(igdeContainerSplitted::Ref::NewWith(
 		env, igdeContainerSplitted::espBottom, igdeApplication::app().DisplayScaled(260)));
 	splitted->AddChild(splitted2, igdeContainerSplitted::eaCenter);
 	
-	pWindowCurves.TakeOverWith*this);
+	pWindowCurves.TakeOver(new peeWindowCurves(*this));
 	splitted2->AddChild(pWindowCurves, igdeContainerSplitted::eaSide);
 	
-	pViewEmitter.TakeOverWith*this);
+	pViewEmitter.TakeOver(new peeViewEmitter(*this));
 	splitted2->AddChild(pViewEmitter, igdeContainerSplitted::eaCenter);
 	
 	CreateNewEmitter();
@@ -484,8 +484,8 @@ void peeWindowMain::pCreateActions(){
 	pActionEmitterOpen.TakeOver(new cActionEmitterOpen(*this));
 	pActionEmitterSave.TakeOver(new cActionEmitterSave(*this));
 	pActionEmitterSaveAs.TakeOver(new cActionEmitterSaveAs(*this));
-	pActionEditUndo.TakeOverWithGetEnvironment());
-	pActionEditRedo.TakeOverWithGetEnvironment());
+	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
+	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
 	pActionEditCut.TakeOver(new cActionEditCut(*this));
 	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
 	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
@@ -506,7 +506,7 @@ void peeWindowMain::pCreateActions(){
 void peeWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOverWithGetEnvironment());
+	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBFile, pActionEmitterNew);
 	helper.ToolBarButton(pTBFile, pActionEmitterOpen);
@@ -518,7 +518,7 @@ void peeWindowMain::pCreateToolBarFile(){
 void peeWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOverWithGetEnvironment());
+	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -535,11 +535,11 @@ void peeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOverWithenv, "Emitter", deInputEvent::ekcM);
+	cascade.TakeOver(new igdeMenuCascade(env, "Emitter", deInputEvent::ekcM));
 	pCreateMenuEmitter(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Edit", deInputEvent::ekcE);
+	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 }

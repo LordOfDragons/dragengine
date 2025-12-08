@@ -56,7 +56,7 @@ pWindowProperties(windowProperties),
 pListener(NULL),
 pWorld(NULL)
 {
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new meWPSelectionListener(*this));
 	
 	GetEnvironment().GetUIHelper().Label(*this, "No Selection");
 	

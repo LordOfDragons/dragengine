@@ -72,7 +72,7 @@ pSucceeded(false)
 	// the loaded resources, creating font peers and finalize the font. creating the
 	// peers can be done asynchronous
 	try{
-		pInternalTask.TakeOverWithengine, resourceLoader, vfs, path, this);
+		pInternalTask.TakeOver(new deRLTaskReadFontInternal(engine, resourceLoader, vfs, path, this));
 		
 		switch(pInternalTask->GetState()){
 		case esPending:

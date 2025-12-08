@@ -846,7 +846,7 @@ pSky(NULL)
 	igdeContainer::Ref content, groupBox, frameLine, frameLine2;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new seWPLayerListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);

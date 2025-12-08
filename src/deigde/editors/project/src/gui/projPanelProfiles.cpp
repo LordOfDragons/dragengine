@@ -670,7 +670,7 @@ pListener(NULL)
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new projPanelProfilesListener(*this));
 	
 	
 	

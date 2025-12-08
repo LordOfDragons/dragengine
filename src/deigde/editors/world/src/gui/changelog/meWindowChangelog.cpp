@@ -117,7 +117,7 @@ pWorld(NULL)
 {
 	igdeUIHelper &helper = windowMain.GetEnvironment().GetUIHelper();
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new meWindowChangelogListener(*this));
 	
 	igdeUIHelper::sColumnHeader headers[3] = {
 		igdeUIHelper::sColumnHeader("Sector", nullptr, igdeApplication::app().DisplayScaled(50)),

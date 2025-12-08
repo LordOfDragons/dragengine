@@ -68,7 +68,7 @@ pSucceeded(false)
 	// are small files only defining where to get the resources from, namely images. these
 	// are loaded later on in an asynchronous way
 	try{
-		pInternalTask.TakeOverWithengine, resourceLoader, vfs, path);
+		pInternalTask.TakeOver(new deRLTaskReadSkinInternal(engine, resourceLoader, vfs, path));
 		
 		switch(pInternalTask->GetState()){
 		case esPending:

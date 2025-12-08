@@ -76,7 +76,7 @@ pDirtyInstance(true),
 pDirtyTypes(true)
 {
 	try{
-		pRInstance.TakeOverWithogl.GetRenderThread());
+		pRInstance.TakeOver(new deoglRParticleEmitterInstance(ogl.GetRenderThread()));
 		EmitterChanged();
 		
 	}catch(const deException &){

@@ -1746,7 +1746,7 @@ pConversation(NULL)
 	igdeContainer::Ref content, groupBox, groupBox2, form, formLine;
 	igdeActionContextMenu *actionContextMenu;
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new ceWPViewListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);

@@ -1450,7 +1450,7 @@ pPreventUpdate(false)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new meWPSObjectListener(*this));
 	
 	
 	pActionMenuClass.TakeOver(new cActionMenuClass(*this));

@@ -127,7 +127,7 @@ pRequiresUpdateEverySync(false),
 pLLSyncWorld(this)
 {
 	try{
-		pRLight.TakeOverWithogl.GetRenderThread());
+		pRLight.TakeOver(new deoglRLight(ogl.GetRenderThread()));
 		
 	}catch(const deException &){
 		pCleanUp();

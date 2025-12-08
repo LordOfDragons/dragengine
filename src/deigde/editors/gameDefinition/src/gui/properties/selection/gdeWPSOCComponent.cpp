@@ -958,7 +958,7 @@ pDirtyEngModelTexNames(true)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, frameLine;
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new gdeWPSOCComponentListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);

@@ -163,7 +163,7 @@ pSAnimation(NULL)
 	igdeContainer::Ref content, groupBox;
 	igdeAction::Ref action;
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new saeWPViewListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);

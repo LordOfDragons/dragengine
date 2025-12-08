@@ -123,7 +123,7 @@ pRig(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new reWindowMainListener(*this));
 	pLoadSaveSystem = new reLoadSaveSystem(*this);
 	pConfiguration = new reConfiguration(*this);
 	pClipboard = new reClipboard;
@@ -138,10 +138,10 @@ pRig(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	AddChild(splitted);
 	
-	pWindowProperties.TakeOverWith*this);
+	pWindowProperties.TakeOver(new reWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pView3D.TakeOverWith*this);
+	pView3D.TakeOver(new reView3D(*this));
 	splitted->AddChild(pView3D, igdeContainerSplitted::eaCenter);
 	
 	CreateNewRig();
@@ -1291,8 +1291,8 @@ void reWindowMain::pCreateActions(){
 	pActionFileSave.TakeOver(new cActionFileSave(*this));
 	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
 	
-	pActionEditUndo.TakeOverWithGetEnvironment());
-	pActionEditRedo.TakeOverWithGetEnvironment());
+	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
+	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
 	pActionEditCut.TakeOver(new cActionEditCut(*this));
 	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
 	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
@@ -1432,7 +1432,7 @@ void reWindowMain::pCreateActions(){
 void reWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOverWithGetEnvironment());
+	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -1444,7 +1444,7 @@ void reWindowMain::pCreateToolBarFile(){
 void reWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOverWithGetEnvironment());
+	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -1480,27 +1480,27 @@ void reWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOverWithenv, "File", deInputEvent::ekcF);
+	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Edit", deInputEvent::ekcE);
+	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Rig", deInputEvent::ekcR);
+	cascade.TakeOver(new igdeMenuCascade(env, "Rig", deInputEvent::ekcR));
 	pCreateMenuRig(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Bone", deInputEvent::ekcB);
+	cascade.TakeOver(new igdeMenuCascade(env, "Bone", deInputEvent::ekcB));
 	pCreateMenuBone(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "View", deInputEvent::ekcV);
+	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcV));
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Simulation", deInputEvent::ekcS);
+	cascade.TakeOver(new igdeMenuCascade(env, "Simulation", deInputEvent::ekcS));
 	pCreateMenuSimulation(cascade);
 	AddSharedMenu(cascade);
 }

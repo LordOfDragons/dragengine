@@ -132,7 +132,7 @@ pSky(NULL)
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new seWindowCurvesListener(*this));
 	
 	helper.ListBox(5, "Link to edit", pListLinks, new cListLinks(*this));
 	pListLinks->SetDefaultSorter();

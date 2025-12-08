@@ -204,7 +204,7 @@ pWorld(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new meWPAddListener(*this));
 	
 	pActionClassAdd.TakeOver(new cActionClassAdd(*this, pComboObjClass));
 	pActionClassRemove.TakeOver(new cActionClassRemove(*this, pListObjClasses));

@@ -180,7 +180,7 @@ pRecentFilesLangPack(*this)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new ceWindowMainListener(*this));
 	pLoadSaveSystem = new ceLoadSaveSystem(*this);
 	pConfiguration = new ceConfiguration(*this);
 	
@@ -194,17 +194,17 @@ pRecentFilesLangPack(*this)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild(splitted);
 	
-	pWindowProperties.TakeOverWith*this);
+	pWindowProperties.TakeOver(new ceWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
 	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(
 		env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5));
 	splitted->AddChild(panel, igdeContainerSplitted::eaCenter);
 	
-	pViewConversation.TakeOverWith*this);
+	pViewConversation.TakeOver(new ceViewConversation(*this));
 	panel->AddChild(pViewConversation);
 	
-	pWindowDopeSheet.TakeOverWith*this);
+	pWindowDopeSheet.TakeOver(new ceWindowDopeSheet(*this));
 	panel->AddChild(pWindowDopeSheet);
 	
 	CreateNewConversation();
@@ -923,8 +923,8 @@ void ceWindowMain::pCreateActions(){
 	pActionFileSave.TakeOver(new cActionFileSave(*this));
 	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
 	
-	pActionEditUndo.TakeOverWithenvironment);
-	pActionEditRedo.TakeOverWithenvironment);
+	pActionEditUndo.TakeOver(new igdeActionUndo(environment));
+	pActionEditRedo.TakeOver(new igdeActionRedo(environment));
 	
 	pActionEditCut.TakeOver(new cActionEditCut(*this));
 	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
@@ -970,7 +970,7 @@ void ceWindowMain::pCreateActions(){
 void ceWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOverWithGetEnvironment());
+	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -982,7 +982,7 @@ void ceWindowMain::pCreateToolBarFile(){
 void ceWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOverWithGetEnvironment());
+	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -999,15 +999,15 @@ void ceWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOverWithenv, "File", deInputEvent::ekcF);
+	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Edit", deInputEvent::ekcE);
+	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "View", deInputEvent::ekcV);
+	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcV));
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

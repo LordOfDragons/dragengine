@@ -70,20 +70,20 @@ pWPSynthesizer(NULL)
 	igdeContainerBox::Ref panels(igdeContainerBox::Ref::NewWith(env, igdeContainerBox::eaX, 10));
 	AddChild(panels, eaCenter);
 	
-	pWPController.TakeOverWith*this);
+	pWPController.TakeOver(new seWPController(*this));
 	panels->AddChild(pWPController);
 	helper.Separator(panels, false);
 	
-	pWPLink.TakeOverWith*this);
+	pWPLink.TakeOver(new seWPLink(*this));
 	panels->AddChild(pWPLink);
 	helper.Separator(panels, false);
 	
-	pWPSource.TakeOverWith*this);
+	pWPSource.TakeOver(new seWPSource(*this));
 	panels->AddChild(pWPSource);
 	helper.Separator(panels, false);
 	
 	// right
-	pWPSynthesizer.TakeOverWith*this);
+	pWPSynthesizer.TakeOver(new seWPSynthesizer(*this));
 	AddChild(pWPSynthesizer, eaRight);
 }
 

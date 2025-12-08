@@ -550,7 +550,7 @@ pPreventUpdateCamera(false)
 	igdeContainer::Ref content, groupBox, form, formLine;
 	igdeActionContextMenu::Ref actionMenu;
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new meWPViewListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);

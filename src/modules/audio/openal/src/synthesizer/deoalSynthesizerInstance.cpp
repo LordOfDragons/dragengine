@@ -51,7 +51,7 @@ pAInstance(NULL),
 pUpdateTracker(1),
 pDirtyParameters(false)
 {
-	pAInstance.TakeOverWithoal.GetAudioThread(), instance);
+	pAInstance.TakeOver(new deoalASynthesizerInstance(oal.GetAudioThread(), instance));
 }
 
 deoalSynthesizerInstance::~deoalSynthesizerInstance(){

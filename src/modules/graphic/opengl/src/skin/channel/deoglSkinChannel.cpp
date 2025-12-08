@@ -1331,10 +1331,10 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 			return;
 		}
 		
-		pCacheConstrDefSource2.TakeOverWith"");
+		pCacheConstrDefSource2.TakeOver(new decMemoryFile(""));
 		memoryFileDef = pCacheConstrDefSource2;
 		
-		pCacheConstrVerifySource2.TakeOverWith"");
+		pCacheConstrVerifySource2.TakeOver(new decMemoryFile(""));
 		memoryFileVerify = pCacheConstrVerifySource2;
 		
 	}else{
@@ -1343,10 +1343,10 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 			return;
 		}
 		
-		pCacheConstrDefSource1.TakeOverWith"");
+		pCacheConstrDefSource1.TakeOver(new decMemoryFile(""));
 		memoryFileDef = pCacheConstrDefSource1;
 		
-		pCacheConstrVerifySource1.TakeOverWith"");
+		pCacheConstrVerifySource1.TakeOver(new decMemoryFile(""));
 		memoryFileVerify = pCacheConstrVerifySource1;
 	}
 	
@@ -1785,7 +1785,7 @@ void deoglSkinChannel::pBuildCacheVerify(){
 	}
 	
 	if(!pCacheVerify){
-		pCacheVerify.TakeOverWith"");
+		pCacheVerify.TakeOver(new decMemoryFile(""));
 	}
 	
 	decMemoryFileWriter *writer = NULL;

@@ -174,7 +174,7 @@ pPreventUpdate(false)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, form, formLine;
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new meWPSObjectShapeListener(*this));
 	
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
@@ -574,7 +574,7 @@ void meWPSObjectShape::pCreateShapePanels(){
 	igdeContainer::Ref groupBox;
 	
 	
-	pSwitcherShapeType.TakeOverWithenv);
+	pSwitcherShapeType.TakeOver(new igdeSwitcher(env));
 	
 	
 	// none

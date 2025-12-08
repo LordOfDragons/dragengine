@@ -48,7 +48,7 @@ gdeDefaultPropertyValue::gdeDefaultPropertyValue(igdeUIHelper &helper) :
 igdeEditPropertyValue(helper),
 pGDProperty(NULL)
 {
-	pGDProperty.TakeOverWith"Property");
+	pGDProperty.TakeOver(new igdeGDProperty("Property"));
 }
 
 gdeDefaultPropertyValue::~gdeDefaultPropertyValue(){

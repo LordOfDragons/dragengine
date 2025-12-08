@@ -1121,7 +1121,7 @@ pGameDefinition(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, form, frameLine;
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new gdeWPSObjectClassListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);

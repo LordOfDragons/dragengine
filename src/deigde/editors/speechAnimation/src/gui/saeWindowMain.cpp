@@ -98,7 +98,7 @@ pSAnimation(NULL)
 	pCreateActions();
 	pCreateMenu();
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new saeWindowMainListener(*this));
 	pLoadSaveSystem = new saeLoadSaveSystem(*this);
 	pConfiguration = new saeConfiguration(*this);
 	
@@ -112,10 +112,10 @@ pSAnimation(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	AddChild(splitted);
 	
-	pWindowProperties.TakeOverWith*this);
+	pWindowProperties.TakeOver(new saeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewSAnimation.TakeOverWith*this);
+	pViewSAnimation.TakeOver(new saeViewSAnimation(*this));
 	splitted->AddChild(pViewSAnimation, igdeContainerSplitted::eaCenter);
 	
 	CreateNewSAnimation();
@@ -676,8 +676,8 @@ void saeWindowMain::pCreateActions(){
 	pActionFileSave.TakeOver(new cActionFileSave(*this));
 	pActionFileSaveAs.TakeOver(new cActionFileSaveAs(*this));
 	
-	pActionEditUndo.TakeOverWithGetEnvironment());
-	pActionEditRedo.TakeOverWithGetEnvironment());
+	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
+	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
 	pActionEditCut.TakeOver(new cActionEditCut(*this));
 	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
 	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
@@ -725,7 +725,7 @@ void saeWindowMain::pCreateActions(){
 void saeWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOverWithGetEnvironment());
+	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBFile, pActionFileNew);
 	helper.ToolBarButton(pTBFile, pActionFileOpen);
@@ -737,7 +737,7 @@ void saeWindowMain::pCreateToolBarFile(){
 void saeWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOverWithGetEnvironment());
+	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -754,23 +754,23 @@ void saeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOverWithenv, "File", deInputEvent::ekcF);
+	cascade.TakeOver(new igdeMenuCascade(env, "File", deInputEvent::ekcF));
 	pCreateMenuFile(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Edit", deInputEvent::ekcE);
+	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Phoneme", deInputEvent::ekcP);
+	cascade.TakeOver(new igdeMenuCascade(env, "Phoneme", deInputEvent::ekcP));
 	pCreateMenuPhoneme(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Word", deInputEvent::ekcW);
+	cascade.TakeOver(new igdeMenuCascade(env, "Word", deInputEvent::ekcW));
 	pCreateMenuWord(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "View", deInputEvent::ekcI);
+	cascade.TakeOver(new igdeMenuCascade(env, "View", deInputEvent::ekcI));
 	pCreateMenuView(cascade);
 	AddSharedMenu(cascade);
 }

@@ -140,7 +140,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionSourceAddSynthesizer());
 		menu.AddChild(submenu);
 		
-		submenu.TakeOverWithmenu.GetEnvironment(), "Add Into Group");
+		submenu.TakeOver(new igdeMenuCascade(menu.GetEnvironment(), "Add Into Group"));
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddWave());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddSound());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddChain());
@@ -148,7 +148,7 @@ public:
 		helper.MenuCommand(submenu, windowMain.GetActionSourceGroupAddSynthesizer());
 		menu.AddChild(submenu);
 		
-		submenu.TakeOverWithmenu.GetEnvironment(), "Insert");
+		submenu.TakeOver(new igdeMenuCascade(menu.GetEnvironment(), "Insert"));
 		helper.MenuCommand(submenu, windowMain.GetActionSourceInsertWave());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceInsertSound());
 		helper.MenuCommand(submenu, windowMain.GetActionSourceInsertChain());
@@ -327,7 +327,7 @@ pActivePanel(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox;
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new seWPSourceListener(*this));
 	
 	
 	pActionSourceCopy.TakeOver(new cActionSourceCopy(*this));
@@ -344,7 +344,7 @@ pActivePanel(NULL)
 	helper.TreeList(groupBox, pTreeSource, 10, "Sources", new cTreeSources(*this));
 	
 	
-	pSwitcher.TakeOverWithenv);
+	pSwitcher.TakeOver(new igdeSwitcher(env));
 	content->AddChild(pSwitcher);
 	
 	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));

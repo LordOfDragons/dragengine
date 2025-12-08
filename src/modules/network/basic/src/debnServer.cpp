@@ -154,7 +154,7 @@ bool debnServer::ListenOn(const char *address){
 	pNetBasic->LogInfoFormat("debnServer.ListenOn: Listening on '%s'", useAddress.GetString());
 	
 	try{
-		pSocket.TakeOverWith*pNetBasic);
+		pSocket.TakeOver(new debnSocket(*pNetBasic));
 		
 		pSocket->GetAddress().SetFromString(useAddress);
 		pSocket->Bind();

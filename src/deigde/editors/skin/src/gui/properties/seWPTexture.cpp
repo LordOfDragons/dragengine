@@ -599,7 +599,7 @@ pPreventUpdateMappedTarget(false)
 	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new seWPTextureListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
@@ -654,7 +654,7 @@ pPreventUpdateMappedTarget(false)
 	
 	
 	// property panel switcher
-	pSwitcher.TakeOverWithenv);
+	pSwitcher.TakeOver(new igdeSwitcher(env));
 	content->AddChild(pSwitcher);
 	
 	

@@ -108,10 +108,10 @@ pLangPack(NULL)
 		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(320)));
 	AddChild(splitted);
 	
-	pWindowProperties.TakeOverWith*this);
+	pWindowProperties.TakeOver(new lpeWindowProperties(*this));
 	splitted->AddChild(pWindowProperties, igdeContainerSplitted::eaSide);
 	
-	pViewLangPack.TakeOverWith*this);
+	pViewLangPack.TakeOver(new lpeViewLangPack(*this));
 	splitted->AddChild(pViewLangPack, igdeContainerSplitted::eaCenter);
 	
 	CreateNewLangPack();
@@ -577,8 +577,8 @@ void lpeWindowMain::pCreateActions(){
 	pActionLangPackSave.TakeOver(new cActionLangPackSave(*this));
 	pActionLangPackSaveAs.TakeOver(new cActionLangPackSaveAs(*this));
 	pActionLangPackOpenRef.TakeOver(new cActionLangPackOpenRef(*this));
-	pActionEditUndo.TakeOverWithGetEnvironment());
-	pActionEditRedo.TakeOverWithGetEnvironment());
+	pActionEditUndo.TakeOver(new igdeActionUndo(GetEnvironment()));
+	pActionEditRedo.TakeOver(new igdeActionRedo(GetEnvironment()));
 	pActionEditCut.TakeOver(new cActionEditCut(*this));
 	pActionEditCopy.TakeOver(new cActionEditCopy(*this));
 	pActionEditPaste.TakeOver(new cActionEditPaste(*this));
@@ -606,7 +606,7 @@ void lpeWindowMain::pCreateActions(){
 void lpeWindowMain::pCreateToolBarFile(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBFile.TakeOverWithGetEnvironment());
+	pTBFile.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBFile, pActionLangPackNew);
 	helper.ToolBarButton(pTBFile, pActionLangPackOpen);
@@ -626,7 +626,7 @@ void lpeWindowMain::pCreateToolBarFile(){
 void lpeWindowMain::pCreateToolBarEdit(){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	pTBEdit.TakeOverWithGetEnvironment());
+	pTBEdit.TakeOver(new igdeToolBar(GetEnvironment()));
 	
 	helper.ToolBarButton(pTBEdit, pActionEditUndo);
 	helper.ToolBarButton(pTBEdit, pActionEditRedo);
@@ -643,15 +643,15 @@ void lpeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeMenuCascade::Ref cascade;
 	
-	cascade.TakeOverWithenv, "Language Pack", deInputEvent::ekcL);
+	cascade.TakeOver(new igdeMenuCascade(env, "Language Pack", deInputEvent::ekcL));
 	pCreateMenuLangPack(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Edit", deInputEvent::ekcE);
+	cascade.TakeOver(new igdeMenuCascade(env, "Edit", deInputEvent::ekcE));
 	pCreateMenuEdit(cascade);
 	AddSharedMenu(cascade);
 	
-	cascade.TakeOverWithenv, "Entry", deInputEvent::ekcN);
+	cascade.TakeOver(new igdeMenuCascade(env, "Entry", deInputEvent::ekcN));
 	pCreateMenuEntry(cascade);
 	AddSharedMenu(cascade);
 }

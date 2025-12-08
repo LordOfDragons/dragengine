@@ -127,7 +127,7 @@ void deoglRCanvas::PrepareForRender(const deoglRenderPlanMasked *renderPlanMask)
 		pMaskRenderTarget->SetSize(decPoint(width, height));
 		
 	}else{
-		pMaskRenderTarget.TakeOverWithGetRenderThread(), decPoint(width, height), 1, 8);
+		pMaskRenderTarget.TakeOver(new deoglRenderTarget(GetRenderThread(), decPoint(width, height), 1, 8));
 	}
 }
 

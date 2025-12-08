@@ -764,7 +764,7 @@ pPanelCTrigger(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref groupBox, formLine;
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new ceWPTopicListener(*this));
 	
 	
 	// conversation
@@ -793,7 +793,7 @@ pPanelCTrigger(NULL)
 	helper.TreeList(10, "Topic Actions", pTreeActions, new cTreeActionsListener(*this));
 	groupActions->AddChild(pTreeActions, igdeContainerBorder::eaCenter);
 	
-	pSwitcher.TakeOverWithenv);
+	pSwitcher.TakeOver(new igdeSwitcher(env));
 	groupActions->AddChild(pSwitcher, igdeContainerBorder::eaBottom);
 	
 	helper.Label(pSwitcher, ""); // empty panel

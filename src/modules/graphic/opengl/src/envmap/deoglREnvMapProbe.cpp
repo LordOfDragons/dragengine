@@ -141,7 +141,7 @@ pEnvMap(NULL),
 pWorldMarkedRemove(false)
 {
 	try{
-		pEnvMap.TakeOverWithrenderThread);
+		pEnvMap.TakeOver(new deoglEnvironmentMap(renderThread));
 		pEnvMap->SetSize(renderThread.GetConfiguration().GetEnvMapSize());
 		pEnvMap->SetIsFloat(true);
 		pEnvMap->SetSkyOnly(false);

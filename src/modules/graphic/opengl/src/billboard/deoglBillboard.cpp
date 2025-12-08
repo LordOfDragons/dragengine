@@ -78,7 +78,7 @@ pRequiresUpdateEverySync(false),
 pLLSyncWorld(this)
 {
 	try{
-		pRBillboard.TakeOverWithogl.GetRenderThread());
+		pRBillboard.TakeOver(new deoglRBillboard(ogl.GetRenderThread()));
 		pSkinStateController = new deoglSkinStateController;
 		
 	}catch(const deException &){

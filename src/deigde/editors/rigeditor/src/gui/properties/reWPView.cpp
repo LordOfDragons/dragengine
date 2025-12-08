@@ -557,7 +557,7 @@ pRig(NULL)
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeAction::Ref action;
 	
-	pListener.TakeOverWith*this);
+	pListener.TakeOver(new reWPViewListener(*this));
 	
 	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
 	AddChild(content);
