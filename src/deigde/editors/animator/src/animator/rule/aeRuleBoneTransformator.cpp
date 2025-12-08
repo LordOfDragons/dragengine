@@ -396,7 +396,7 @@ void aeRuleBoneTransformator::RemoveLinksFromAllTargets(){
 
 
 
-deAnimatorRule *aeRuleBoneTransformator::CreateEngineRule(){
+deAnimatorRule::Ref aeRuleBoneTransformator::CreateEngineRule(){
 	deAnimatorRuleBoneTransformator::Ref engRule = NULL;
 	
 	try{

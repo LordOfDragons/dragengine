@@ -184,7 +184,7 @@ void delLauncher::Prepare(){
 
 
 delGame::Ref delLauncher::CreateGame(){
-	return new delGame(*this);
+	return delGame::Ref::New(new delGame(*this));
 }
 
 delGameProfile *delLauncher::CreateGameProfile(const delGameProfile *copyFrom){

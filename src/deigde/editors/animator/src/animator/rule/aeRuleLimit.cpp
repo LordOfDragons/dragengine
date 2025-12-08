@@ -463,7 +463,7 @@ void aeRuleLimit::SetTargetBone(const char *boneName){
 
 
 
-deAnimatorRule *aeRuleLimit::CreateEngineRule(){
+deAnimatorRule::Ref aeRuleLimit::CreateEngineRule(){
 	deAnimatorRuleLimit::Ref engRule = NULL;
 	
 	try{

@@ -326,7 +326,7 @@ void aeRuleGroup::RemoveLinksFromAllTargets(){
 
 
 
-deAnimatorRule *aeRuleGroup::CreateEngineRule(){
+deAnimatorRule::Ref aeRuleGroup::CreateEngineRule(){
 	deAnimatorRuleGroup::Ref engRule = NULL;
 	deAnimatorRule::Ref subEngRule = NULL;
 	const int count = pRules.GetCount();

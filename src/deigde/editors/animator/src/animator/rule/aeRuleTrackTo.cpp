@@ -213,7 +213,7 @@ void aeRuleTrackTo::RemoveLinksFromAllTargets(){
 
 
 
-deAnimatorRule *aeRuleTrackTo::CreateEngineRule(){
+deAnimatorRule::Ref aeRuleTrackTo::CreateEngineRule(){
 	deAnimatorRuleTrackTo::Ref engRule = NULL;
 	aeAnimator *animator = GetAnimator();
 	

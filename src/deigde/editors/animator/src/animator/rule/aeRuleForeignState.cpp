@@ -253,7 +253,7 @@ void aeRuleForeignState::RemoveLinksFromAllTargets(){
 
 
 
-deAnimatorRule *aeRuleForeignState::CreateEngineRule(){
+deAnimatorRule::Ref aeRuleForeignState::CreateEngineRule(){
 	deAnimatorRuleForeignState::Ref engRule = NULL;
 	
 	try{

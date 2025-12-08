@@ -316,7 +316,7 @@ void aeRuleStateManipulator::RemoveLinksFromAllTargets(){
 
 
 
-deAnimatorRule *aeRuleStateManipulator::CreateEngineRule(){
+deAnimatorRule::Ref aeRuleStateManipulator::CreateEngineRule(){
 	deAnimatorRuleStateManipulator::Ref engRule = NULL;
 	
 	try{

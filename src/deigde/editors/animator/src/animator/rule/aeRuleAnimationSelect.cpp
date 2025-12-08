@@ -179,7 +179,7 @@ void aeRuleAnimationSelect::RemoveLinksFromAllTargets(){
 
 
 
-deAnimatorRule *aeRuleAnimationSelect::CreateEngineRule(){
+deAnimatorRule::Ref aeRuleAnimationSelect::CreateEngineRule(){
 	deAnimatorRuleAnimationSelect::Ref engRule = NULL;
 	
 	try{

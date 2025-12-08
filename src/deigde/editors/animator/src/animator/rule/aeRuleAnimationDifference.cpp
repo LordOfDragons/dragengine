@@ -216,7 +216,7 @@ void aeRuleAnimationDifference::RemoveLinksFromAllTargets(){
 
 
 
-deAnimatorRule *aeRuleAnimationDifference::CreateEngineRule(){
+deAnimatorRule::Ref aeRuleAnimationDifference::CreateEngineRule(){
 	deAnimatorRuleAnimationDifference::Ref engRule = NULL;
 	
 	try{

@@ -311,7 +311,7 @@ void aeRuleInverseKinematic::RemoveLinksFromAllTargets(){
 
 
 
-deAnimatorRule *aeRuleInverseKinematic::CreateEngineRule(){
+deAnimatorRule::Ref aeRuleInverseKinematic::CreateEngineRule(){
 	deAnimatorRuleInverseKinematic::Ref engRule = NULL;
 	aeAnimator *animator = GetAnimator();
 	

@@ -311,7 +311,7 @@ void aeRuleSubAnimator::SetEnableVertexPositionSet(bool enabled){
 
 
 
-deAnimatorRule *aeRuleSubAnimator::CreateEngineRule(){
+deAnimatorRule::Ref aeRuleSubAnimator::CreateEngineRule(){
 	deAnimatorRuleSubAnimator *engRule = NULL;
 	
 	try{

@@ -143,7 +143,7 @@ void aeRuleStateSnapshot::SetEnableVertexPositionSet(bool enabled){
 
 
 
-deAnimatorRule *aeRuleStateSnapshot::CreateEngineRule(){
+deAnimatorRule::Ref aeRuleStateSnapshot::CreateEngineRule(){
 	deAnimatorRuleStateSnapshot::Ref engRule = NULL;
 	
 	try{

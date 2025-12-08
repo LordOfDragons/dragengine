@@ -212,7 +212,7 @@ void aeRuleMirror::RemoveAllMatchNames(){
 
 
 
-deAnimatorRule *aeRuleMirror::CreateEngineRule(){
+deAnimatorRule::Ref aeRuleMirror::CreateEngineRule(){
 	const deAnimatorRuleMirror::Ref engRule(deAnimatorRuleMirror::Ref::NewWith());
 	
 	InitEngineRule(engRule);
