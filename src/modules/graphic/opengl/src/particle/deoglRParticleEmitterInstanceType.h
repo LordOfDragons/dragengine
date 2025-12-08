@@ -30,9 +30,9 @@
 
 #include <dragengine/deObject.h>
 
-class deoglRDynamicSkin;
+#include "../skin/dynamic/deoglRDynamicSkin.h"
 class deoglRParticleEmitterInstance;
-class deoglRSkin;
+#include "../skin/deoglRSkin.h"
 class deoglSkinShader;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;

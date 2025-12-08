@@ -29,7 +29,7 @@
 
 
 class dealWidgetTaskStatus;
-class dealWidgetButton;
+#include "../widgets/dealWidgetButton.h"
 
 
 /**

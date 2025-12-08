@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include "dragengine/common/math/decMath.h"
 
-class reRigShapeSphere;
+#include "../../../rig/shape/reRigShapeSphere.h"
 
 
 

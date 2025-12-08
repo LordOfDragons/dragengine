@@ -34,7 +34,7 @@
 #include <dragengine/systems/modules/audio/deBaseAudioSoundLevelMeter.h>
 
 class deAudioOpenAL;
-class deoalASoundLevelMeter;
+#include "deoalASoundLevelMeter.h"
 class deoalWorld;
 
 class deSoundLevelMeter;

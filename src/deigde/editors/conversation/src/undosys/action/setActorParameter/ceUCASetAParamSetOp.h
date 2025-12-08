@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 

@@ -34,9 +34,9 @@
 
 class deoglPFClusterGenerator;
 class deoglPropFieldCluster;
-class deoglRModel;
+#include "../model/deoglRModel.h"
 class deoglRPropField;
-class deoglRSkin;
+#include "../skin/deoglRSkin.h"
 class deoglSkinShader;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;

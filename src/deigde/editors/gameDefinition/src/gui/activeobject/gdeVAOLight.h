@@ -30,7 +30,7 @@
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/light/deLight.h>
 
-class gdeOCLight;
+#include "../../gamedef/objectClass/light/gdeOCLight.h"
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 

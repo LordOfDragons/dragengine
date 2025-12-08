@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCCamera;
+#include "../gamedef/objectClass/camera/gdeOCCamera.h"
 
 
 

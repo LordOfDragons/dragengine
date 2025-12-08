@@ -31,7 +31,7 @@
 
 // predefinitions
 class meUndoDataDecal;
-class meWorld;
+#include "../../../world/meWorld.h"
 
 
 

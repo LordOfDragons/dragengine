@@ -39,10 +39,10 @@
 class deoglRenderThread;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
-class deoglRPTSkyLightFindContent;
-class deoglRPTSkyLightBuildRT;
-class deoglRPTSkyLightGIFindContent;
-class deoglRPTSkyLightGIUpdateRT;
+#include "parallel/deoglRPTSkyLightFindContent.h"
+#include "parallel/deoglRPTSkyLightBuildRT.h"
+#include "parallel/deoglRPTSkyLightGIFindContent.h"
+#include "parallel/deoglRPTSkyLightGIUpdateRT.h"
 class deoglRenderPlan;
 class deoglOcclusionTest;
 

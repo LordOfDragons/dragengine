@@ -31,7 +31,7 @@
 
 // predefinitions
 class feFont;
-class feFontGlyph;
+#include "feFontGlyph.h"
 
 
 

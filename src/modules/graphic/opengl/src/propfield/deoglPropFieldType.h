@@ -29,7 +29,7 @@
 
 class deoglPropField;
 class deoglPropFieldCluster;
-class deoglRPropFieldType;
+#include "deoglRPropFieldType.h"
 
 class dePropFieldType;
 

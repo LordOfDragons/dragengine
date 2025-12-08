@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
-class lpeLangPackEntry;
+#include "../../langpack/entry/lpeLangPackEntry.h"
 
 
 

@@ -30,7 +30,7 @@
 #include "dedsStyledTextNode.h"
 
 // predefinitions
-class deImage;
+#include <dragengine/resources/image/deImage.h>
 
 
 

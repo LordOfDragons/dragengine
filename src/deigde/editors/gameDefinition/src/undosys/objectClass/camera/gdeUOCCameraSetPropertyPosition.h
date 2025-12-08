@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCCamera;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/camera/gdeOCCamera.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 /**

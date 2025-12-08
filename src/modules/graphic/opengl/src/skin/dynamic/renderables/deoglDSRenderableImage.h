@@ -29,7 +29,7 @@
 
 class deoglImage;
 class deDSRenderableImage;
-class deoglRDSRenderableImage;
+#include "render/deoglRDSRenderableImage.h"
 
 
 

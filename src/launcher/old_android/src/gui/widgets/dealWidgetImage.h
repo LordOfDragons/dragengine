@@ -27,7 +27,7 @@
 
 #include "dealWidget.h"
 
-class dealImage;
+#include "../dealImage.h"
 
 
 /**

@@ -36,11 +36,11 @@ class igdeGameDefinition;
 class igdeEnvironment;
 class feFontNotifier;
 class feUndoSystem;
-class feFontImage;
+#include "image/feFontImage.h"
 class feFontGlyph;
 
 class deEngine;
-class deFont;
+#include <dragengine/resources/font/deFont.h>
 class deLogger;
 
 

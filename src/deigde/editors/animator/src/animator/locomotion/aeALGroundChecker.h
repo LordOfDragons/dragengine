@@ -30,7 +30,7 @@
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
 
 // predefinitions
-class deCollisionInfo;
+#include <dragengine/resources/collider/deCollisionInfo.h>
 
 
 

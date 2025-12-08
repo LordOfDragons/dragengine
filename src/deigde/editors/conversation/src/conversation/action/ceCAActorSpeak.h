@@ -35,7 +35,7 @@
 class ceConversation;
 
 class deEngine;
-class deSound;
+#include <dragengine/resources/sound/deSound.h>
 
 
 

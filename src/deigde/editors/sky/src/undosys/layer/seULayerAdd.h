@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLayer;
-class seSky;
+#include "../../sky/layer/seLayer.h"
+#include "../../sky/seSky.h"
 
 
 /**

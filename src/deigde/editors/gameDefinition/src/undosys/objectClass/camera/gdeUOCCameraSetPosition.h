@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeOCCamera;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/camera/gdeOCCamera.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 

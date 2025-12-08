@@ -32,7 +32,7 @@
 
 class deoglParticleEmitter;
 class deoglParticleEmitterInstanceType;
-class deoglRParticleEmitterInstance;
+#include "deoglRParticleEmitterInstance.h"
 
 class deGraphicOpenGl;
 class deParticleEmitterInstance;

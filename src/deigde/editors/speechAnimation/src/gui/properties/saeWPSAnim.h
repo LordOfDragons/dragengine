@@ -35,8 +35,8 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class saeWindowProperties;
-class saeWPSAnimListener;
-class saeSAnimation;
+#include "saeWPSAnimListener.h"
+#include "../../sanimation/saeSAnimation.h"
 class saePhoneme;
 class saeWord;
 

@@ -29,7 +29,7 @@
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/audio/deBaseAudioComponent.h>
 
-class deoalAComponent;
+#include "deoalAComponent.h"
 class deoalComponentDebug;
 class deoalComponentTexture;
 class deoalModel;

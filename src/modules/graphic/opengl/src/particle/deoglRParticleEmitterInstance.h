@@ -34,8 +34,8 @@
 #include "../world/deoglWorldComputeElement.h"
 
 class deoglRenderThread;
-class deoglEnvironmentMap;
-class deoglRParticleEmitter;
+#include "../envmap/deoglEnvironmentMap.h"
+#include "deoglRParticleEmitter.h"
 class deoglRParticleEmitterInstanceType;
 class deoglVAO;
 class deoglRWorld;

@@ -35,10 +35,10 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeWindowProperties;
-class gdeWPSOCForceFieldListener;
+#include "gdeWPSOCForceFieldListener.h"
 
 
 

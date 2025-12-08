@@ -30,7 +30,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class projProfile;
+#include "../../project/profile/projProfile.h"
 
 
 

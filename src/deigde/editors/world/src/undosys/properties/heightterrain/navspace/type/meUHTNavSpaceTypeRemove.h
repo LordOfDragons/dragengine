@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meHeightTerrainNavSpace;
-class meHeightTerrainNavSpaceType;
+#include "../../../../../world/terrain/meHeightTerrainNavSpace.h"
+#include "../../../../../world/terrain/meHeightTerrainNavSpaceType.h"
 
 
 

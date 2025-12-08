@@ -32,13 +32,13 @@
 #include <dragengine/common/math/decMath.h>
 
 class debpColliderConstraint;
-class debpBulletShape;
+#include "../debpBulletShape.h"
 class debpPhysicsBody;
 
 class btGhostObject;
 class btCollisionObject;
 
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deDebugDrawerShape;
 class deRigBone;
 

@@ -36,7 +36,7 @@ class deoglRenderThread;
 class deoglRSkin;
 class deoglSPBlockUBO;
 class deoglSkinShaderConfig;
-class deoglSharedSPBElement;
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 class deoglShaderParameterBlock;
 
 class deSkinTexture;

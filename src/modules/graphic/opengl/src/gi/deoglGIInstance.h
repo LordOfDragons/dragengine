@@ -39,8 +39,8 @@ class deoglRDecal;
 class deoglGIBVHLocal;
 class deoglGIBVHDynamic;
 class deoglTexUnitsConfig;
-class deoglDynamicTBOFloat16;
-class deoglDynamicTBOUInt32;
+#include "../tbo/deoglDynamicTBOFloat16.h"
+#include "../tbo/deoglDynamicTBOUInt32.h"
 class decLayerMask;
 
 

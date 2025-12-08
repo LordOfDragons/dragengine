@@ -34,11 +34,11 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeSkin;
 class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSSkinListener;
+#include "gdeWPSSkinListener.h"
 
 
 

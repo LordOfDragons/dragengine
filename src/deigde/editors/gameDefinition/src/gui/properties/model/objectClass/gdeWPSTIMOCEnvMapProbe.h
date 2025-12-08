@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCEnvMapProbe;
+#include "../../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 
 
 /**

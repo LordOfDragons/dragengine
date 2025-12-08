@@ -30,10 +30,10 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class feFont;
-class feFontGlyph;
+#include "../../font/feFont.h"
+#include "../../font/glyph/feFontGlyph.h"
 class feWindowProperties;
-class feWPGlyphListener;
+#include "feWPGlyphListener.h"
 
 
 

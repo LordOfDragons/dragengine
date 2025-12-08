@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeGameDefinition;
-class gdeObjectClass;
+#include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 
 

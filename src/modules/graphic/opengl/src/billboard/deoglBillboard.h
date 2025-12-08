@@ -31,7 +31,7 @@
 #include <dragengine/systems/modules/graphic/deBaseGraphicBillboard.h>
 
 class deGraphicOpenGl;
-class deoglRBillboard;
+#include "deoglRBillboard.h"
 class deoglDynamicSkin;
 class deoglSkinStateController;
 class deoglWorld;

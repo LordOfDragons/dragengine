@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeSky;
+#include "../../gamedef/sky/gdeSky.h"
 
 
 

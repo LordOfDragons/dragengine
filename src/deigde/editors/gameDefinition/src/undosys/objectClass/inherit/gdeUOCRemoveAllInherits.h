@@ -29,7 +29,7 @@
 #include "../../../gamedef/objectClass/inherit/gdeOCInheritList.h"
 #include <deigde/undo/igdeUndo.h>
 
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 

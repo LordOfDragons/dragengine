@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeOCSpeaker;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 

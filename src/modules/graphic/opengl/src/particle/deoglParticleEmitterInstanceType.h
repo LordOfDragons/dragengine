@@ -25,7 +25,7 @@
 #ifndef _DEOGLPARTICLEEMITTERINSTANCETYPE_H_
 #define _DEOGLPARTICLEEMITTERINSTANCETYPE_H_
 
-class deoglRParticleEmitterInstanceType;
+#include "deoglRParticleEmitterInstanceType.h"
 class deParticleEmitterInstanceType;
 
 class deoglParticleEmitterInstance;

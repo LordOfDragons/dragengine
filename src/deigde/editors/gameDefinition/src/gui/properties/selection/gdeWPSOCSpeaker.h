@@ -35,11 +35,11 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeOCSpeaker;
 class gdeWindowProperties;
-class gdeWPSOCSpeakerListener;
+#include "gdeWPSOCSpeakerListener.h"
 
 
 

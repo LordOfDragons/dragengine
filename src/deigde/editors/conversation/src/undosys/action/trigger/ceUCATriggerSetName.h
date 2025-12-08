@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCATrigger;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCATrigger.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 

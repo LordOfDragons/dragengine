@@ -31,7 +31,7 @@
 #include "../../synthesizer/link/seLinkList.h"
 #include "../../synthesizer/controller/seControllerList.h"
 
-class seSynthesizer;
+#include "../../synthesizer/seSynthesizer.h"
 
 
 

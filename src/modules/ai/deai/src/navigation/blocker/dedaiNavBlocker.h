@@ -33,7 +33,7 @@ class deDEAIModule;
 class dedaiLayer;
 class dedaiWorld;
 
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deDebugDrawerShape;
 class deNavigationBlocker;
 

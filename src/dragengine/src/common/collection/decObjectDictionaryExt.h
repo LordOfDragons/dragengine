@@ -27,7 +27,7 @@
 
 #include "../../dragengine_export.h"
 
-class deObject;
+#include <dragengine/deObject.h>
 class decObjectList;
 class decPointerList;
 

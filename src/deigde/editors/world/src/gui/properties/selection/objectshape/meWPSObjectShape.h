@@ -35,9 +35,9 @@
 
 class meObject;
 class meWindowProperties;
-class meWorld;
+#include "../../../../world/meWorld.h"
 class meWPSelection;
-class meWPSObjectShapeListener;
+#include "meWPSObjectShapeListener.h"
 
 class igdeGDProperty;
 

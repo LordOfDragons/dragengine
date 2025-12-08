@@ -31,8 +31,8 @@
 
 // predefinitions
 class aeAnimator;
-class deColliderVolume;
-class deComponent;
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/component/deComponent.h>
 
 
 

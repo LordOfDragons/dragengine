@@ -34,7 +34,7 @@
 class deConnection;
 class deNetworkBasic;
 class debnMessageManager;
-class debnSocket;
+#include "debnSocket.h"
 class debnState;
 class debnStateLinkManager;
 class debnStateLinkList;

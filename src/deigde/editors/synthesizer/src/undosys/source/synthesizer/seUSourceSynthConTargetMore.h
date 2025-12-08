@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSourceSynthesizer;
+#include "../../../synthesizer/source/seSourceSynthesizer.h"
 
 
 

@@ -39,8 +39,8 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class meWindowProperties;
-class meWPWorldListener;
-class meWorld;
+#include "meWPWorldListener.h"
+#include "../../world/meWorld.h"
 class mePathFindTestType;
 
 

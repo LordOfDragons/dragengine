@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCACoordSystemRemove;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCACoordSystemRemove.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 

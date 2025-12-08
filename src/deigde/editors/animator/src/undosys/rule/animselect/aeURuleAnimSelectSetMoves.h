@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringList.h>
 
-class aeRuleAnimationSelect;
+#include "../../../animator/rule/aeRuleAnimationSelect.h"
 
 
 

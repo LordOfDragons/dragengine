@@ -41,7 +41,7 @@ class meHeightTerrainPropField;
 class meHeightTerrainTexture;
 class meHTVegetationLayer;
 
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deDebugDrawerShape;
 class deEngine;
 class deHeightTerrainSector;

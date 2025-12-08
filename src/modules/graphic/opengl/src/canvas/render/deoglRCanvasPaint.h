@@ -29,7 +29,7 @@
 
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 
-class deoglSharedVBOBlock;
+#include "../../vbo/deoglSharedVBOBlock.h"
 
 
 /**

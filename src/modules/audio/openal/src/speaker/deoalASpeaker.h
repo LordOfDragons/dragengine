@@ -36,9 +36,9 @@
 
 class deoalAudioThread;
 class deoalAMicrophone;
-class deoalASound;
-class deoalASynthesizerInstance;
-class deoalAVideoPlayer;
+#include "../sound/deoalASound.h"
+#include "../synthesizer/deoalASynthesizerInstance.h"
+#include "../video/deoalAVideoPlayer.h"
 class deoalSource;
 class deoalAWorld;
 class deoalWorldOctree;

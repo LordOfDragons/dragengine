@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversation;
-class ceGesture;
+#include "../../conversation/ceConversation.h"
+#include "../../conversation/gesture/ceGesture.h"
 
 
 

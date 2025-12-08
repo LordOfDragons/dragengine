@@ -35,11 +35,11 @@
 class aeLoadSaveSystem;
 
 class deEngine;
-class deAnimator;
+#include <dragengine/resources/animator/deAnimator.h>
 class deTouchSensor;
 class deComponent;
 class deAnimation;
-class deAnimatorInstance;
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 class deCollider;
 class decCurveBezier;
 

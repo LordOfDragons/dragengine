@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class feFont;
-class feWPUndoHistoryListener;
+#include "../../font/feFont.h"
+#include "feWPUndoHistoryListener.h"
 
 
 

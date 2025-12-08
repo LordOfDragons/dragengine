@@ -32,10 +32,10 @@
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/undo/igdeUndo.h>
 
-class peeEmitter;
+#include "../../emitter/peeEmitter.h"
 class peeParameter;
 class peeType;
-class peeWindowCurvesListener;
+#include "peeWindowCurvesListener.h"
 class peeWindowMain;
 
 

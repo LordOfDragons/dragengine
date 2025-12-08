@@ -32,9 +32,9 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class reWindowProperties;
-class reRig;
-class reRigConstraint;
-class reWPConstraintListener;
+#include "../../rig/reRig.h"
+#include "../../rig/constraint/reRigConstraint.h"
+#include "reWPConstraintListener.h"
 
 
 

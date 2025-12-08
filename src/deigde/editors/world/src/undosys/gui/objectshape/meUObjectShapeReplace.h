@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class decShape;
-class meObject;
+#include "../../../world/object/meObject.h"
 
 
 /**

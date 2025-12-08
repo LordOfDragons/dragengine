@@ -29,7 +29,7 @@
 #include <dragengine/common/math/decMath.h>
 
 class deSkinPropertyConstructed;
-class decMemoryFileWriter;
+#include <dragengine/common/file/decMemoryFileWriter.h>
 class decMemoryFile;
 class deEngine;
 

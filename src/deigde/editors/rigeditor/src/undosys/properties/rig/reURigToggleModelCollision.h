@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
+#include "../../../rig/reRig.h"
 
 
 

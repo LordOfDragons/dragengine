@@ -44,9 +44,9 @@
 class seIGDEModule;
 class seSource;
 class seEffect;
-class seSynthesizer;
+#include "../synthesizer/seSynthesizer.h"
 class seViewSynthesizer;
-class seWindowMainListener;
+#include "seWindowMainListener.h"
 
 
 

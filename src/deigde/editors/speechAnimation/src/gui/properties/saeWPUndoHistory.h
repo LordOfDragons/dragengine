@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class saeSAnimation;
-class saeWPUndoHistoryListener;
+#include "../../sanimation/saeSAnimation.h"
+#include "saeWPUndoHistoryListener.h"
 
 
 

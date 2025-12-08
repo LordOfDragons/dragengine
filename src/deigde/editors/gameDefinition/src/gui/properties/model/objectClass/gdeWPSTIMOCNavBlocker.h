@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCNavigationBlocker;
+#include "../../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 
 
 /**

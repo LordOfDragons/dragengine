@@ -33,7 +33,7 @@
 class deoglDynamicSkin;
 class deoglComponentLOD;
 class deoglComponentTexture;
-class deoglRComponent;
+#include "deoglRComponent.h"
 class deoglSkinStateController;
 class deoglWorld;
 

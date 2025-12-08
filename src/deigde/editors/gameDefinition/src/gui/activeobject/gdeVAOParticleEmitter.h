@@ -31,7 +31,7 @@
 #include <dragengine/resources/particle/deParticleEmitter.h>
 #include <dragengine/resources/particle/deParticleEmitterInstance.h>
 
-class gdeOCParticleEmitter;
+#include "../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 

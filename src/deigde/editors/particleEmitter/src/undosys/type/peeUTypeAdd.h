@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class peeType;
-class peeEmitter;
+#include "../../emitter/peeType.h"
+#include "../../emitter/peeEmitter.h"
 
 
 

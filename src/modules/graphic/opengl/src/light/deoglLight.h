@@ -32,7 +32,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicLight.h>
 
-class deoglRLight;
+#include "deoglRLight.h"
 class deoglSkinStateController;
 class deoglWorld;
 class deoglDynamicSkin;

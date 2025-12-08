@@ -29,7 +29,7 @@
 
 #include <dragengine/common/curve/decCurveBezier.h>
 
-class ceCameraShot;
+#include "../../conversation/camerashot/ceCameraShot.h"
 
 
 

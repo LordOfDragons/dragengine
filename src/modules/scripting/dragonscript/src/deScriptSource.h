@@ -32,7 +32,7 @@
 
 // predefinitions
 class deVirtualFileSystem;
-class decBaseFileReader;
+#include "dragengine/common/file/decBaseFileReader.h"
 class decPath;
 
 

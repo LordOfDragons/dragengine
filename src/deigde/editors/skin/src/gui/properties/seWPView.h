@@ -36,9 +36,9 @@
 #include <deigde/gui/properties/igdeWPSky.h>
 #include <deigde/gui/properties/igdeWPWObject.h>
 
-class seSkin;
+#include "../../skin/seSkin.h"
 class seWindowProperties;
-class seWPViewListener;
+#include "seWPViewListener.h"
 
 
 

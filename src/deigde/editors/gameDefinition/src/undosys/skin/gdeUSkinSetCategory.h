@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class gdeOCSpeaker;
-class gdeSkin;
+#include "../../gamedef/skin/gdeSkin.h"
 
 
 

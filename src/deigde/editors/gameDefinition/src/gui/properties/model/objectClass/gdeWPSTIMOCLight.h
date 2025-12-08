@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCLight;
+#include "../../../../gamedef/objectClass/light/gdeOCLight.h"
 
 
 /**

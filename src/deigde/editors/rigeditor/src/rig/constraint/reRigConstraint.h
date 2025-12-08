@@ -29,13 +29,13 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
 
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class reRig;
-class reRigBone;
+#include "../bone/reRigBone.h"
 class deRigConstraint;
 class reRigConstraintDof;
 class deCollider;
-class deColliderVolume;
+#include <dragengine/resources/collider/deColliderVolume.h>
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 class igdeWAngleRange;

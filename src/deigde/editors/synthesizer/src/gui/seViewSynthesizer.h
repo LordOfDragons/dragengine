@@ -27,12 +27,12 @@
 
 #include <deigde/gui/layout/igdeContainerBorder.h>
 
-class seWPSource;
-class seWPLink;
-class seWPController;
-class seWPSynthesizer;
+#include "properties/seWPSource.h"
+#include "properties/seWPLink.h"
+#include "properties/seWPController.h"
+#include "properties/seWPSynthesizer.h"
 class seWindowMain;
-class seSynthesizer;
+#include "../synthesizer/seSynthesizer.h"
 
 
 

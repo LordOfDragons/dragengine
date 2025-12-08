@@ -28,7 +28,7 @@
 #include <dragengine/systems/modules/graphic/deBaseGraphicCaptureCanvas.h>
 #include <dragengine/common/math/decMath.h>
 
-class deoglRCaptureCanvas;
+#include "deoglRCaptureCanvas.h"
 class deCaptureCanvas;
 class deGraphicOpenGl;
 

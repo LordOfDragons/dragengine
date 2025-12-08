@@ -30,7 +30,7 @@
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeShape.h>
 
-class deoglSharedVBOBlock;
+#include "../../../vbo/deoglSharedVBOBlock.h"
 
 
 /**

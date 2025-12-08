@@ -31,7 +31,7 @@
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
 
-class deCanvasView;
+#include <dragengine/resources/canvas/deCanvasView.h>
 class deGraphicContext;
 class ceConversation;
 

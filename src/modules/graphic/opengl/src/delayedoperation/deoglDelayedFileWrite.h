@@ -27,7 +27,7 @@
 
 #include <dragengine/common/file/decPath.h>
 
-class decMemoryFile;
+#include <dragengine/common/file/decMemoryFile.h>
 class deVirtualFileSystem;
 class decBaseFileWriter;
 

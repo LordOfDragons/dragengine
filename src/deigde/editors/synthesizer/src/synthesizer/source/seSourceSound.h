@@ -30,7 +30,7 @@
 #include <dragengine/common/string/decString.h>
 
 class deEngine;
-class deSound;
+#include <dragengine/resources/sound/deSound.h>
 
 
 

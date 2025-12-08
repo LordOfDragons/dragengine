@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLink;
-class seController;
+#include "../../sky/link/seLink.h"
+#include "../../sky/controller/seController.h"
 
 
 /**

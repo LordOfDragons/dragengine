@@ -29,7 +29,7 @@
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/probe/deEnvMapProbe.h>
 
-class gdeOCEnvMapProbe;
+#include "../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 class igdeWDebugDrawerShape;
 
 

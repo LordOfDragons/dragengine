@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class gdeOCSpeaker;
-class gdeParticleEmitter;
+#include "../../gamedef/particleemitter/gdeParticleEmitter.h"
 
 
 

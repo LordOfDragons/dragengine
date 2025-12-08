@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seBody;
+#include "../../sky/body/seBody.h"
 
 
 /**

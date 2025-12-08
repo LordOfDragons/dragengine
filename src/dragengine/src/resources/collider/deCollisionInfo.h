@@ -29,8 +29,8 @@
 #include "../../common/math/decMath.h"
 #include "../../deObject.h"
 
-class deCollider;
-class deHeightTerrain;
+#include <dragengine/resources/collider/deCollider.h>
+#include "../terrain/heightmap/deHeightTerrain.h"
 class deHeightTerrainSector;
 
 

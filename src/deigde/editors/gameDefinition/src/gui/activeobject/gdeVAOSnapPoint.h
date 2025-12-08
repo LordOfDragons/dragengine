@@ -29,7 +29,7 @@
 
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
-class gdeOCSnapPoint;
+#include "../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 

@@ -30,7 +30,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeObjectClass;
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 
 

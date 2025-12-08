@@ -38,7 +38,7 @@ class meObject;
 class meWorld;
 
 class deDebugDrawer;
-class deHeightTerrain;
+#include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 
 class igdeEnvironment;
 

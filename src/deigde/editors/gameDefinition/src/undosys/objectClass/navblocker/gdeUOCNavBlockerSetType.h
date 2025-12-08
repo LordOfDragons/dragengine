@@ -30,8 +30,8 @@
 
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
 
-class gdeOCNavigationBlocker;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 

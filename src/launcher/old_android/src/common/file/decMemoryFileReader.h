@@ -27,7 +27,7 @@
 
 #include "decBaseFileReader.h"
 
-class decMemoryFile;
+#include "decMemoryFile.h"
 
 
 /**

@@ -38,7 +38,7 @@
 class deOSAndroid;
 class deainpOverlaySystem;
 class deainpDeviceManager;
-class deFont;
+#include <dragengine/resources/font/deFont.h>
 
 
 

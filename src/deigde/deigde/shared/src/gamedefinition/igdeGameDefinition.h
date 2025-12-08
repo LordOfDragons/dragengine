@@ -37,8 +37,8 @@ class igdeGDClassManager;
 class igdeGDSkyManager;
 class igdeEnvironment;
 
-class deModel;
-class deSkin;
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/skin/deSkin.h>
 class deVirtualFileSystem;
 
 

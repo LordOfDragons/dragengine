@@ -39,8 +39,8 @@
 #include <deigde/gui/properties/igdeWPTriggerTable.h>
 
 class meWindowProperties;
-class meWPViewListener;
-class meWorld;
+#include "meWPViewListener.h"
+#include "../../world/meWorld.h"
 class meCamera;
 
 

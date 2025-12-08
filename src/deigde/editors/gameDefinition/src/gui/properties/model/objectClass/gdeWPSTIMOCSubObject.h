@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeObjectClass;
+#include "../../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 /**

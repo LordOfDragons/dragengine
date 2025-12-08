@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringDictionary.h>
 
-class meObjectTexture;
+#include "../../../../../world/object/texture/meObjectTexture.h"
 
 
 

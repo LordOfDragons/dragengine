@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seController;
-class seSynthesizer;
+#include "../../synthesizer/controller/seController.h"
+#include "../../synthesizer/seSynthesizer.h"
 
 
 

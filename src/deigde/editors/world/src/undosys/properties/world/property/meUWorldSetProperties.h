@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringDictionary.h>
 
-class meWorld;
+#include "../../../../world/meWorld.h"
 
 
 

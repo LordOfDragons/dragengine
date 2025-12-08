@@ -31,7 +31,7 @@
 #include <dragengine/common/math/decMath.h>
 
 class deoglRComponent;
-class deoglROcclusionMesh;
+#include "deoglROcclusionMesh.h"
 class deoglSharedVBOBlock;
 class deoglRenderThread;
 class deoglVAO;

@@ -30,7 +30,7 @@
 #include <dragengine/systems/modules/graphic/deBaseGraphicDecal.h>
 
 class deoglDynamicSkin;
-class deoglRDecal;
+#include "deoglRDecal.h"
 class deoglComponent;
 
 class deGraphicOpenGl;

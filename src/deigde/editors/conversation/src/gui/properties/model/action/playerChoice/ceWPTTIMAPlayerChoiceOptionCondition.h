@@ -28,7 +28,7 @@
 #include "../../condition/ceWPTTIMConditionContainer.h"
 
 class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
+#include "../../../../../conversation/action/ceCAPlayerChoiceOption.h"
 class ceWPTTIMAPlayerChoice;
 class ceWPTTIMAPlayerChoiceOption;
 

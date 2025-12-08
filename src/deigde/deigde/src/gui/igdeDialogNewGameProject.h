@@ -36,7 +36,7 @@
 #include <dragengine/common/file/decPath.h>
 
 
-class igdeGameProject;
+#include <deigde/gameproject/igdeGameProject.h>
 class igdeWindowMain;
 class igdeTemplate;
 

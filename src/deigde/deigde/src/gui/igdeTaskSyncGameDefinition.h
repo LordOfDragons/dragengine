@@ -31,7 +31,7 @@
 #include <dragengine/common/string/decStringList.h>
 
 class igdeWindowMain;
-class igdeGameDefinition;
+#include <deigde/gamedefinition/igdeGameDefinition.h>
 
 
 

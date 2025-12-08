@@ -31,9 +31,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 class seWindowMain;
-class seSky;
+#include "../../sky/seSky.h"
 class seLink;
-class seWindowCurvesListener;
+#include "seWindowCurvesListener.h"
 
 
 /**

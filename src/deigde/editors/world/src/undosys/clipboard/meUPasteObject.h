@@ -33,7 +33,7 @@
 #include <dragengine/common/collection/decIntList.h>
 
 class meClipboardDataObject;
-class meWorld;
+#include "../../world/meWorld.h"
 
 
 

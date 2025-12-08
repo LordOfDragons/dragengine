@@ -42,10 +42,10 @@
 #include <dragengine/resources/sound/deSound.h>
 
 
-class ceWindowDopeSheetListener;
+#include "ceWindowDopeSheetListener.h"
 class ceViewDopeSheet;
 class ceWindowMain;
-class ceConversation;
+#include "../../conversation/ceConversation.h"
 class ceCameraShot;
 class ceConversationFile;
 class ceConversationTopic;

@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeCategory;
+#include "../../../../gamedef/category/gdeCategory.h"
 
 
 /**

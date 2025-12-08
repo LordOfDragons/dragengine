@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleTrackTo;
+#include "../../../animator/rule/aeRuleTrackTo.h"
 
 
 

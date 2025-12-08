@@ -28,9 +28,9 @@
 #include <deigde/undo/igdeUndo.h>
 #include "../../../conversation/action/ceConversationActionList.h"
 
-class ceConversationTopic;
-class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAPlayerChoice.h"
+#include "../../../conversation/action/ceCAPlayerChoiceOption.h"
 
 
 

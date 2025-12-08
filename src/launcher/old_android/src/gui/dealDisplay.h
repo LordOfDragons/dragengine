@@ -31,12 +31,12 @@
 #include "common/string/decString.h"
 
 class dealLauncher;
-class dealFont;
+#include "dealFont.h"
 class dealWidget;
-class dealWidgetLayout;
-class dealShader;
-class dealDialog;
-class dealGuiTheme;
+#include "widgets/dealWidgetLayout.h"
+#include "dealShader.h"
+#include "dealDialog.h"
+#include "widgets/dealGuiTheme.h"
 
 
 /**

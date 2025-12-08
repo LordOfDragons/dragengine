@@ -27,7 +27,7 @@
 
 #include "../deBaseModule.h"
 
-class decBaseFileReader;
+#include "../../../common/file/decBaseFileReader.h"
 
 
 /**

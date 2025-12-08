@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleAnimation;
+#include "../../../animator/rule/aeRuleAnimation.h"
 
 
 

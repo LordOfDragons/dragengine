@@ -34,12 +34,12 @@
 #include <deigde/gui/resources/igdeIcon.h>
 
 class decStringList;
-class seWindowMainListener;
-class seViewSky;
+#include "seWindowMainListener.h"
+#include "seViewSky.h"
 class seConfiguration;
-class seSky;
-class seWindowProperties;
-class seWindowCurves;
+#include "../sky/seSky.h"
+#include "properties/seWindowProperties.h"
+#include "curves/seWindowCurves.h"
 class seEngineController;
 class seLoadSaveSystem;
 class seIGDEModule;

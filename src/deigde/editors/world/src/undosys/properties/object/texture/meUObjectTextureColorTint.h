@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meObjectTexture;
+#include "../../../../world/object/texture/meObjectTexture.h"
 
 
 

@@ -30,7 +30,7 @@
 #include "dragengine/common/math/decMath.h"
 
 // predefinitions
-class debpBulletShape;
+#include "../../debpBulletShape.h"
 class debpHeightTerrain;
 class debpHeightTerrainShape;
 class debpPhysicsBody;

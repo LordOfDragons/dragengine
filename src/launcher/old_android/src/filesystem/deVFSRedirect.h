@@ -27,7 +27,7 @@
 
 #include "deVFSContainer.h"
 
-class deVirtualFileSystem;
+#include "deVirtualFileSystem.h"
 
 
 /**

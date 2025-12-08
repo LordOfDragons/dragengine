@@ -33,8 +33,8 @@
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
 class deEngine;
-class deAnimator;
-class deAnimatorInstance;
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 
 
 

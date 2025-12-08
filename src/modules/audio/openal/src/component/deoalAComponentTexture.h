@@ -28,7 +28,7 @@
 #include <dragengine/deObject.h>
 
 class deoalAComponent;
-class deoalASkin;
+#include "../skin/deoalASkin.h"
 class deoalSkinTexture;
 
 

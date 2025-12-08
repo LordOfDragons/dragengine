@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seEffect;
+#include "../../../synthesizer/effect/seEffect.h"
 
 
 

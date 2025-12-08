@@ -36,8 +36,8 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 
-class meWorld;
-class meWPBrowserListener;
+#include "../../world/meWorld.h"
+#include "meWPBrowserListener.h"
 class meWindowProperties;
 
 class igdeGDCategory;

@@ -33,10 +33,10 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class peeEmitter;
+#include "../../emitter/peeEmitter.h"
 class peeController;
 class peeWindowProperties;
-class peeWPControllerListener;
+#include "peeWPControllerListener.h"
 
 
 /**

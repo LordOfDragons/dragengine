@@ -28,7 +28,7 @@
 #include <dragengine/systems/modules/audio/deBaseAudioSound.h>
 
 class deAudioOpenAL;
-class deoalASound;
+#include "deoalASound.h"
 
 class deSound;
 

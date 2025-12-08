@@ -27,7 +27,7 @@
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicOcclusionMesh.h>
 
-class deoglROcclusionMesh;
+#include "deoglROcclusionMesh.h"
 
 class deOcclusionMesh;
 class deGraphicOpenGl;

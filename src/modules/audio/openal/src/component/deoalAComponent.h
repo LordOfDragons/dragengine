@@ -34,8 +34,8 @@
 
 class deoalAComponentBone;
 class deoalAComponentTexture;
-class deoalAModel;
-class deoalASkin;
+#include "../model/deoalAModel.h"
+#include "../skin/deoalASkin.h"
 class deoalAudioThread;
 class deoalAWorld;
 class deoalComponentOctree;

@@ -28,7 +28,7 @@
 #include <dragengine/systems/modules/graphic/deBaseGraphicSkin.h>
 
 class deGraphicOpenGl;
-class deoglRSkin;
+#include "deoglRSkin.h"
 class deSkin;
 
 

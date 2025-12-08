@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/synthesizer/source/deSynthesizerSource.h>
 
-class seSource;
+#include "../../synthesizer/source/seSource.h"
 
 
 

@@ -31,7 +31,7 @@
 
 // predefinitions
 class reRig;
-class reRigBone;
+#include "bone/reRigBone.h"
 
 
 

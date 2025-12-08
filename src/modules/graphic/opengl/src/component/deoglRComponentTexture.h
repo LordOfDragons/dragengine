@@ -32,11 +32,11 @@
 #include "../skin/pipeline/deoglSkinTexturePipelines.h"
 
 class deoglRComponent;
-class deoglRDynamicSkin;
-class deoglRSkin;
+#include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../skin/deoglRSkin.h"
 class deoglShaderParameterBlock;
 class deoglShaderProgram;
-class deoglSharedSPBElement;
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 class deoglSharedSPBRTIGroup;
 class deoglSharedVideoPlayerList;
 class deoglSkinShader;

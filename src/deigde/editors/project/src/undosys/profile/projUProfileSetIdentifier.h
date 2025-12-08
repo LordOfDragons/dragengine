@@ -30,7 +30,7 @@
 
 #include <dragengine/common/utils/decUuid.h>
 
-class projProfile;
+#include "../../project/profile/projProfile.h"
 
 
 

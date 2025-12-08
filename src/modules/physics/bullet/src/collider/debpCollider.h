@@ -41,7 +41,7 @@ class debpWorld;
 
 class deCollider;
 class deColliderCollisionTest;
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deDebugDrawerShape;
 class dePhysicsBullet;
 

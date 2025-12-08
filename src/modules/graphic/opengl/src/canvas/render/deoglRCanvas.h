@@ -33,7 +33,7 @@
 
 class deoglRenderCanvasContext;
 class deoglRenderThread;
-class deoglRenderTarget;
+#include "../../target/deoglRenderTarget.h"
 class deoglRenderPlanMasked;
 
 

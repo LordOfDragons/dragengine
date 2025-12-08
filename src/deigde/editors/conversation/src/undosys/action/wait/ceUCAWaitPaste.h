@@ -27,7 +27,7 @@
 
 #include "../ceUCActionPaste.h"
 
-class ceCAWait;
+#include "../../../conversation/action/ceCAWait.h"
 
 
 

@@ -29,7 +29,7 @@
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicPropField.h>
 
-class deoglRPropField;
+#include "deoglRPropField.h"
 class deoglPropFieldType;
 
 class deGraphicOpenGl;

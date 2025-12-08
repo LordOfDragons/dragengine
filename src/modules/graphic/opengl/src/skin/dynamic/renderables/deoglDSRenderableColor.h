@@ -30,7 +30,7 @@
 #include <dragengine/common/math/decMath.h>
 
 class deDSRenderableColor;
-class deoglRDSRenderableColor;
+#include "render/deoglRDSRenderableColor.h"
 
 
 

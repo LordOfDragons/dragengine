@@ -29,7 +29,7 @@
 
 class decStringList;
 class igdeEnvironment;
-class igdeEditorWindow;
+#include "../gui/igdeEditorWindow.h"
 class igdeStepableTask;
 class deEngine;
 class deLogger;

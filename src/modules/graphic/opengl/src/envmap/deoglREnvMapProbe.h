@@ -33,7 +33,7 @@ class decShapeList;
 class deoglRenderThread;
 class deoglRWorld;
 class deoglWorldOctree;
-class deoglEnvironmentMap;
+#include "deoglEnvironmentMap.h"
 
 
 /**

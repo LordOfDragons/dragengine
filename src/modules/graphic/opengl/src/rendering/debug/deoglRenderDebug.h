@@ -33,8 +33,8 @@ class deoglRComponent;
 class deoglRenderPlan;
 class deoglTexture;
 class deoglDebugFont;
-class deoglDynamicTBOFloat32;
-class deoglDynamicTBOFloat8;
+#include "../../tbo/deoglDynamicTBOFloat32.h"
+#include "../../tbo/deoglDynamicTBOFloat8.h"
 
 
 

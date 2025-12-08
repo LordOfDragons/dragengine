@@ -33,7 +33,7 @@
 
 #include "cePCBOptionList.h"
 
-class deCanvasView;
+#include <dragengine/resources/canvas/deCanvasView.h>
 class deGraphicContext;
 class ceConversation;
 

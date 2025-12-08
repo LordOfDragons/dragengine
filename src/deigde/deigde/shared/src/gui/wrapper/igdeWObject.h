@@ -47,7 +47,7 @@ class igdeWOSubObject;
 class igdeWOSOVisitor;
 
 class deComponent;
-class deCollider;
+#include <dragengine/resources/collider/deCollider.h>
 class deColliderVolume;
 class deColliderComponent;
 class deBaseScriptingCollider;

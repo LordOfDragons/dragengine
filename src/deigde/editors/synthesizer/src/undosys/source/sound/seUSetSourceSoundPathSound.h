@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSourceSound;
+#include "../../../synthesizer/source/seSourceSound.h"
 
 
 

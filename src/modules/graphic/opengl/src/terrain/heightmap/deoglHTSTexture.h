@@ -30,7 +30,7 @@
 #include <dragengine/common/math/decMath.h>
 
 class deoglRHTSector;
-class deoglRSkin;
+#include "../../skin/deoglRSkin.h"
 class deoglSkinShader;
 class deoglTexUnitsConfig;
 

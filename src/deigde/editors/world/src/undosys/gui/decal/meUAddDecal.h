@@ -32,8 +32,8 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meWorld;
-class meDecal;
+#include "../../../world/meWorld.h"
+#include "../../../world/decal/meDecal.h"
 
 
 

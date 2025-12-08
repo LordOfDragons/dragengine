@@ -37,11 +37,11 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 class aeController;
 class aeWindowProperties;
 class aeAnimatorLocomotionLeg;
-class aeWPPlaygroundListener;
+#include "aeWPPlaygroundListener.h"
 
 
 

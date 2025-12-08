@@ -27,7 +27,7 @@
 
 #include "../../filesystem/deVFSContainer.h"
 
-class deArchive;
+#include "deArchive.h"
 
 
 /**

@@ -32,7 +32,7 @@
 // predefinitions
 class reRig;
 class reRigBone;
-class deColliderComponent;
+#include <dragengine/resources/collider/deColliderComponent.h>
 class deColliderConstraint;
 class deEngine;
 

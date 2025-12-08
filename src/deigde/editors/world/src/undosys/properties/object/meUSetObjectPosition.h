@@ -31,7 +31,7 @@
 #include "dragengine/common/math/decMath.h"
 
 // predefinitions
-class meObject;
+#include "../../../world/object/meObject.h"
 
 
 

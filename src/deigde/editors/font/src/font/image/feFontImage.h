@@ -35,7 +35,7 @@
 class feFont;
 
 class deEngine;
-class deImage;
+#include <dragengine/resources/image/deImage.h>
 
 
 

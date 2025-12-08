@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class seSky;
-class seWPUndoHistoryListener;
+#include "../../sky/seSky.h"
+#include "seWPUndoHistoryListener.h"
 
 
 

@@ -32,7 +32,7 @@
 class aeController;
 class aeLoadSaveSystem;
 
-class deAnimator;
+#include <dragengine/resources/animator/deAnimator.h>
 class deAnimatorRuleSubAnimator;
 
 

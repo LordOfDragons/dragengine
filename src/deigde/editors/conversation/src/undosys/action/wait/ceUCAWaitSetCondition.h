@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceCAWait;
-class ceConversationCondition;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAWait.h"
+#include "../../../conversation/condition/ceConversationCondition.h"
 
 
 

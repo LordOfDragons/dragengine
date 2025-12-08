@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCNavigationSpace;
+#include "../../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
 
 
 /**

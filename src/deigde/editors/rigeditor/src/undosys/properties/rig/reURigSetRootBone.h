@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
-class reRigBone;
+#include "../../../rig/reRig.h"
+#include "../../../rig/bone/reRigBone.h"
 
 
 

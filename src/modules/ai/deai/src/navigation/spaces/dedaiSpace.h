@@ -33,7 +33,7 @@
 class dedaiLayer;
 class dedaiHeightTerrainNavSpace;
 class dedaiNavSpace;
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deDebugDrawerShape;
 class dedaiWorld;
 class dedaiSpaceMesh;

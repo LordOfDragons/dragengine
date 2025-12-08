@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class lpeLangPack;
-class lpeWPUndoHistoryListener;
+#include "../../langpack/lpeLangPack.h"
+#include "lpeWPUndoHistoryListener.h"
 
 
 

@@ -38,13 +38,13 @@ class deoglGIBVHLocal;
 class deoglGIBVHDynamic;
 class deoglRenderPlan;
 class deoglRComponent;
-class deoglRDynamicSkin;
+#include "../skin/dynamic/deoglRDynamicSkin.h"
 class deoglRenderThread;
-class deoglRSkin;
+#include "../skin/deoglRSkin.h"
 class deoglSPBlockUBO;
 class deoglShaderProgram;
-class deoglSharedVBOBlock;
-class deoglSharedSPBElement;
+#include "../vbo/deoglSharedVBOBlock.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
 class deoglShaderParameterBlock;
 class deoglSkinShader;
 class deoglSkinState;

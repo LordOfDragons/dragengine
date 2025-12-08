@@ -42,11 +42,11 @@ class seSkyListener;
 
 class igdeCamera;
 
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deLogger;
-class deSky;
-class deSkyInstance;
-class deWorld;
+#include <dragengine/resources/sky/deSky.h>
+#include <dragengine/resources/sky/deSkyInstance.h>
+#include <dragengine/resources/world/deWorld.h>
 
 
 

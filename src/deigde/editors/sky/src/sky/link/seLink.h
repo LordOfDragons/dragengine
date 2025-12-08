@@ -31,7 +31,7 @@
 #include <dragengine/common/string/decString.h>
 
 class seSky;
-class seController;
+#include "../controller/seController.h"
 
 
 

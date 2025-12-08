@@ -60,7 +60,7 @@
 class igdeEditorModuleManager;
 class igdeEnvironmentIGDE;
 class igdeGDPreviewManager;
-class igdeGameProject;
+#include <deigde/gameproject/igdeGameProject.h>
 class igdeLoadSaveSystem;
 class igdeTaskSyncGameDefinition;
 class igdeTemplateList;
@@ -70,7 +70,7 @@ class igdeUIHelper;
 
 class deException;
 class decTimer;
-class igdeGameDefinition;
+#include <deigde/gamedefinition/igdeGameDefinition.h>
 class igdeGameDefinitionList;
 class decUnicodeStringList;
 

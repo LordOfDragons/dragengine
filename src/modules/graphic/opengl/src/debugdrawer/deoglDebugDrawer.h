@@ -27,7 +27,7 @@
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicDebugDrawer.h>
 
-class deoglRDebugDrawer;
+#include "deoglRDebugDrawer.h"
 
 class deGraphicOpenGl;
 class deDebugDrawer;

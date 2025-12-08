@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seBody;
+#include "../../sky/body/seBody.h"
 
 
 

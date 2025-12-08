@@ -29,7 +29,7 @@
 #include "../../../../../conversation/action/ceCAPlayerChoice.h"
 
 class ceWPTTIMAPlayerChoiceOption;
-class ceWPTTIMAPlayerChoiceActions;
+#include "ceWPTTIMAPlayerChoiceActions.h"
 
 
 /**

@@ -30,7 +30,7 @@
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/forcefield/deForceField.h>
 
-class gdeOCForceField;
+#include "../../gamedef/objectClass/forceField/gdeOCForceField.h"
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 

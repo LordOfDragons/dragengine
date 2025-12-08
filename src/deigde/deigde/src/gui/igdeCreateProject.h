@@ -29,12 +29,12 @@
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 
-class igdeGameProject;
+#include <deigde/gameproject/igdeGameProject.h>
 class igdeTemplate;
 class igdeTemplateFile;
 class igdeTemplateReplace;
 class igdeWindowMain;
-class igdeGameDefinition;
+#include <deigde/gamedefinition/igdeGameDefinition.h>
 
 
 

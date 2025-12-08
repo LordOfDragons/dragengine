@@ -27,7 +27,7 @@
 
 #include "deoglDSRenderable.h"
 
-class deoglRDSRenderableCamera;
+#include "render/deoglRDSRenderableCamera.h"
 class deoglCamera;
 
 class deDSRenderableCamera;

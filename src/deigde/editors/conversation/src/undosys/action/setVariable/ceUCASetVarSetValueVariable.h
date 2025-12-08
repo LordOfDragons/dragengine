@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCASetVariable;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCASetVariable.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 

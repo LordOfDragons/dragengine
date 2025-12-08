@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saeSAnimation;
+#include "../../sanimation/saeSAnimation.h"
 
 
 

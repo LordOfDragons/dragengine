@@ -33,12 +33,12 @@
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/resources/igdeIcon.h>
 
-class feWindowMainListener;
+#include "feWindowMainListener.h"
 class feConfiguration;
-class feViewFontImage;
-class feFont;
+#include "fontimage/feViewFontImage.h"
+#include "../font/feFont.h"
 class feClipboard;
-class feWindowProperties;
+#include "properties/feWindowProperties.h"
 class feLoadSaveSystem;
 
 

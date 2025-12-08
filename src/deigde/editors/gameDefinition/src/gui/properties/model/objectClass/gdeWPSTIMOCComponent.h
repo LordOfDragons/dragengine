@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCComponent;
+#include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
 
 
 /**

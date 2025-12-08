@@ -27,8 +27,8 @@
 
 #include "../ceUCActionPaste.h"
 
-class ceCAIfElseCase;
-class ceCAIfElse;
+#include "../../../conversation/action/ceCAIfElseCase.h"
+#include "../../../conversation/action/ceCAIfElse.h"
 
 
 

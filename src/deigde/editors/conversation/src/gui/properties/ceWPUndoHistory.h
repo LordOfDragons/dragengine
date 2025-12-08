@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class ceConversation;
-class ceWPUndoHistoryListener;
+#include "../../conversation/ceConversation.h"
+#include "ceWPUndoHistoryListener.h"
 
 
 

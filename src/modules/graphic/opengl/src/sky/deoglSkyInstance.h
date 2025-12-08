@@ -27,7 +27,7 @@
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicSkyInstance.h>
 
-class deoglRSkyInstance;
+#include "deoglRSkyInstance.h"
 class deoglSky;
 
 class deGraphicOpenGl;

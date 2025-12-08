@@ -32,7 +32,7 @@
 #include <dragengine/resources/font/deFont.h>
 
 class saeWindowMain;
-class saeSAnimation;
+#include "../sanimation/saeSAnimation.h"
 
 
 

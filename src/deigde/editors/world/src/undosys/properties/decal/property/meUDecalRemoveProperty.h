@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meDecal;
+#include "../../../../world/decal/meDecal.h"
 
 
 

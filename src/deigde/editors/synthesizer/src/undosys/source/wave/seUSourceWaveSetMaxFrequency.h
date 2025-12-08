@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSourceWave;
+#include "../../../synthesizer/source/seSourceWave.h"
 
 
 /**

@@ -27,7 +27,7 @@
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicModel.h>
 
-class deoglRModel;
+#include "deoglRModel.h"
 
 class deGraphicOpenGl;
 class deModel;

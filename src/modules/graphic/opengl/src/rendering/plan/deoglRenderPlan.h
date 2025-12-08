@@ -57,7 +57,7 @@ class deoglTexture;
 class deoglRWorld;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
-class deoglRPTFindContent;
+#include "parallel/deoglRPTFindContent.h"
 
 
 

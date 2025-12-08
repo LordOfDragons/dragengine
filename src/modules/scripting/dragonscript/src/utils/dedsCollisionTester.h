@@ -33,11 +33,11 @@
 
 class deScriptingDragonScript;
 
-class deCollider;
+#include <dragengine/resources/collider/deCollider.h>
 class deColliderVolume;
 class decShapeList;
-class deTouchSensor;
-class deWorld;
+#include <dragengine/resources/sensor/deTouchSensor.h>
+#include <dragengine/resources/world/deWorld.h>
 
 class dsValue;
 class dsRealObject;

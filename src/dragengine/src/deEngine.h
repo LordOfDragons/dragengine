@@ -60,7 +60,7 @@ class deImageManager;
 class deInputSystem;
 class deLanguagePackManager;
 class deLightManager;
-class deLogger;
+#include <dragengine/logger/deLogger.h>
 class deLumimeterManager;
 class deMicrophoneManager;
 class deModelManager;

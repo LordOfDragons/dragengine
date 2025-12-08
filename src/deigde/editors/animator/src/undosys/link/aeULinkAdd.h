@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeLink;
-class aeAnimator;
+#include "../../animator/link/aeLink.h"
+#include "../../animator/aeAnimator.h"
 
 
 

@@ -29,8 +29,8 @@
 
 class deBeOSInput;
 class debiDevice;
-class debiDeviceMouse;
-class debiDeviceKeyboard;
+#include "debiDeviceMouse.h"
+#include "debiDeviceKeyboard.h"
 
 
 

@@ -28,7 +28,7 @@
 #include "../deoglBasics.h"
 
 class deoglRenderThread;
-class deoglSharedVBOBlock;
+#include "../vbo/deoglSharedVBOBlock.h"
 class deoglVAO;
 class deoglRenderPlan;
 

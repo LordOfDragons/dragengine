@@ -37,9 +37,9 @@ class meWorld;
 
 class igdeWDebugDrawerShape;
 
-class deNavigator;
+#include <dragengine/resources/navigation/navigator/deNavigator.h>
 class deEngine;
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 
 

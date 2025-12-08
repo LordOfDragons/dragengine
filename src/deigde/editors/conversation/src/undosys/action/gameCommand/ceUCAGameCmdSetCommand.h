@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAGameCommand;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAGameCommand.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 

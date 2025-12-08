@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCForceField;
+#include "../../../../gamedef/objectClass/forceField/gdeOCForceField.h"
 
 
 /**

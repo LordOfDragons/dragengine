@@ -30,7 +30,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meHTVegetationLayer;
+#include "../../../../../world/heightterrain/meHTVegetationLayer.h"
 class meHTVRLink;
 
 

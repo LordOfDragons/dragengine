@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
-class saeWord;
+#include "../../../sanimation/dictionary/saeWord.h"
 
 
 

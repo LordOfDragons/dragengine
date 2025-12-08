@@ -29,7 +29,7 @@
 #include "../common/string/decString.h"
 
 class dealDisplay;
-class dealWidgetLayoutFlow;
+#include "widgets/dealWidgetLayoutFlow.h"
 
 
 /**

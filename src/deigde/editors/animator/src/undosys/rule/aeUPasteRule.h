@@ -31,7 +31,7 @@
 #include "../../animator/link/aeLinkList.h"
 #include "../../animator/controller/aeControllerList.h"
 
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 
 
 

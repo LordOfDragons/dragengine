@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class meWVNodeSlot;
-class meHTVRule;
+#include "../../../world/heightterrain/rules/meHTVRule.h"
 class meWindowVegetation;
 
 

@@ -46,7 +46,7 @@ class deBasePhysicsComponent;
 class deComponentBone;
 class deComponentManager;
 class deComponentTexture;
-class deDecal;
+#include "../decal/deDecal.h"
 class deDecalList;
 class deWorld;
 class decShape;

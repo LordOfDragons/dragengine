@@ -33,8 +33,8 @@ class meObject;
 
 class igdeEnvironment;
 
-class deDynamicSkin;
-class deSkin;
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 
 

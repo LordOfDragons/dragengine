@@ -34,7 +34,7 @@
 class seSkin;
 
 class deEngine;
-class deSkin;
+#include <dragengine/resources/skin/deSkin.h>
 
 
 

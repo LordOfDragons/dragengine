@@ -29,7 +29,7 @@
 #include "../dearMapAnimationBones.h"
 #include "../dearMapAnimationVPS.h"
 
-class dearAnimationMove;
+#include "../animation/dearAnimationMove.h"
 class deAnimatorRuleAnimation;
 
 

@@ -39,8 +39,8 @@ class meWorld;
 class igdeWDebugDrawerShape;
 class igdeEnvironment;
 
-class deColliderVolume;
-class deDebugDrawer;
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deEngine;
 class decShape;
 

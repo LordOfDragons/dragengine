@@ -29,10 +29,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCConditionLogic;
+#include "../../../conversation/condition/ceCConditionLogic.h"
 class ceConversationCondition;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 

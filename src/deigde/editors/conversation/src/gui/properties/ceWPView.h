@@ -52,8 +52,8 @@ class ceConversationFile;
 class ceConversationTopic;
 
 class saeGameDefinition;
-class ceWPViewListener;
-class ceConversation;
+#include "ceWPViewListener.h"
+#include "../../conversation/ceConversation.h"
 
 
 

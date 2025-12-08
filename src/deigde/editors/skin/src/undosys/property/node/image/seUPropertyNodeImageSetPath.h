@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class sePropertyNodeImage;
+#include "../../../../skin/property/node/sePropertyNodeImage.h"
 
 
 

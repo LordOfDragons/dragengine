@@ -33,8 +33,8 @@ class decXmlContainer;
 class decXmlElement;
 class decXmlVisitor;
 class decXmlAttValue;
-class decBaseFileReader;
-class deLogger;
+#include "../file/decBaseFileReader.h"
+#include <dragengine/logger/deLogger.h>
 
 
 

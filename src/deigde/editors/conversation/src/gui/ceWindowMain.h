@@ -37,12 +37,12 @@
 
 class decStringList;
 class decStringSet;
-class ceWindowMainListener;
-class ceViewConversation;
+#include "ceWindowMainListener.h"
+#include "ceViewConversation.h"
 class ceConfiguration;
-class ceConversation;
-class ceWindowProperties;
-class ceWindowDopeSheet;
+#include "../conversation/ceConversation.h"
+#include "properties/ceWindowProperties.h"
+#include "dopesheet/ceWindowDopeSheet.h"
 class ceLoadSaveSystem;
 class ceIGDEModule;
 class igdeStepableTask;

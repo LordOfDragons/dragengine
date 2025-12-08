@@ -31,7 +31,7 @@
 #include <dragengine/resources/canvas/deCanvasImage.h>
 
 class feWindowMain;
-class feFont;
+#include "../../font/feFont.h"
 
 
 

@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class seSkin;
-class seWPUndoHistoryListener;
+#include "../../skin/seSkin.h"
+#include "seWPUndoHistoryListener.h"
 
 
 

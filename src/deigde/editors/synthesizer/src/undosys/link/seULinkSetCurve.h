@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 
-class seLink;
+#include "../../synthesizer/link/seLink.h"
 
 
 

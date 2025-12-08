@@ -32,8 +32,8 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/event/igdeAction.h>
 
-class meWorld;
-class meWPAddListener;
+#include "../../world/meWorld.h"
+#include "meWPAddListener.h"
 class meWindowProperties;
 
 

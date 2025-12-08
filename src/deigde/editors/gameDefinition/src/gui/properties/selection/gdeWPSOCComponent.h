@@ -46,12 +46,12 @@
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeOCComponent;
 class gdeOCComponentTexture;
 class gdeWindowProperties;
-class gdeWPSOCComponentListener;
+#include "gdeWPSOCComponentListener.h"
 
 
 

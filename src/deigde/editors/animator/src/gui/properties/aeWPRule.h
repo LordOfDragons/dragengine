@@ -30,7 +30,7 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class aeWPAPanelRuleLimit;
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 class aeRule;
 class aeWPAPanelRule;
 class aeWPAPanelRuleAnimation;
@@ -46,7 +46,7 @@ class aeWPAPanelRuleSubAnimator;
 class aeWPAPanelRuleTrackTo;
 class aeWPAPanelRuleMirror;
 class aeWindowProperties;
-class aeWPRuleListener;
+#include "aeWPRuleListener.h"
 
 class igdeTreeItem;
 

@@ -31,8 +31,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeController;
-class aeAnimator;
+#include "../../animator/controller/aeController.h"
+#include "../../animator/aeAnimator.h"
 
 
 

@@ -30,14 +30,14 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
 
-class meObject;
+#include "meObject.h"
 class meWorld;
 
 class igdeEnvironment;
 class igdeWConnection;
 
 class deEngine;
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deDebugDrawerShape;
 
 

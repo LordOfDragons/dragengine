@@ -30,8 +30,8 @@
 
 #include <dragengine/resources/collider/deCollider.h>
 
-class gdeOCComponent;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/component/gdeOCComponent.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 

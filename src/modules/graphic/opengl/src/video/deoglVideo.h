@@ -31,7 +31,7 @@
 #include <dragengine/common/math/decMath.h>
 
 class deGraphicOpenGl;
-class deoglRVideo;
+#include "deoglRVideo.h"
 class deoglTexture;
 
 class deVideo;

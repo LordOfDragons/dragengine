@@ -53,7 +53,7 @@ class deglIntList;
 class igdeGDClassInherit;
 class igdeGDCamera;
 class igdeGDClassManager;
-class deImage;
+#include <dragengine/resources/image/deImage.h>
 
 
 

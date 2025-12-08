@@ -34,7 +34,7 @@
 class debpConfiguration;
 class debpCommandExecuter;
 class debpParameterList;
-class deCollisionInfo;
+#include <dragengine/resources/collider/deCollisionInfo.h>
 class debpCollisionDetection;
 
 

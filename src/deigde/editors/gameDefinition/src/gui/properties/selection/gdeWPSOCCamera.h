@@ -30,11 +30,11 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeOCCamera;
 class gdeWindowProperties;
-class gdeWPSOCCameraListener;
+#include "gdeWPSOCCameraListener.h"
 
 
 

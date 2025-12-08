@@ -42,13 +42,13 @@ class deoglLightShaderConfig;
 class deoglLightVolume;
 class deoglOcclusionTest;
 class deoglOptimizerLight;
-class deoglRCanvasView;
+#include "../canvas/render/deoglRCanvasView.h"
 class deoglRComponent;
-class deoglRDynamicSkin;
+#include "../skin/dynamic/deoglRDynamicSkin.h"
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
 class deoglRenderThread;
-class deoglRSkin;
+#include "../skin/deoglRSkin.h"
 class deoglRWorld;
 class deoglShadowCaster;
 class deoglSkinState;

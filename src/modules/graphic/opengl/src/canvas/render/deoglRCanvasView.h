@@ -29,7 +29,7 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 
-class deoglRenderTarget;
+#include "../../target/deoglRenderTarget.h"
 class deoglRenderPlanMasked;
 
 

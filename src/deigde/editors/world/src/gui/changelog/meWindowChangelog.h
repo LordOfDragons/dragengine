@@ -29,9 +29,9 @@
 #include <deigde/gui/igdeIconListBox.h>
 
 class meWindowMain;
-class meWindowChangelogListener;
+#include "meWindowChangelogListener.h"
 class meWCEntry;
-class meWorld;
+#include "../../world/meWorld.h"
 
 
 

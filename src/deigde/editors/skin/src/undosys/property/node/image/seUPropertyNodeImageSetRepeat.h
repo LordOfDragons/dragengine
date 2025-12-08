@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class sePropertyNodeImage;
+#include "../../../../skin/property/node/sePropertyNodeImage.h"
 
 
 

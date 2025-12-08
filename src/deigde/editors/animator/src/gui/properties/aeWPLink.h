@@ -35,10 +35,10 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 class aeLink;
 class aeWindowProperties;
-class aeWPLinkListener;
+#include "aeWPLinkListener.h"
 class aeEditLinkMapping;
 
 

@@ -36,7 +36,7 @@ class deTouchSensor;
 class debpWorld;
 class dePhysicsBullet;
 class debpGhostObject;
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deDebugDrawerShape;
 
 

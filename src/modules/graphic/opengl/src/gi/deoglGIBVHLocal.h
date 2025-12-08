@@ -32,9 +32,9 @@
 
 class deoglModelFace;
 class deoglRenderThread;
-class deoglDynamicTBOFloat32;
-class deoglDynamicTBOUInt16;
-class deoglDynamicTBOFloat16;
+#include "../tbo/deoglDynamicTBOFloat32.h"
+#include "../tbo/deoglDynamicTBOUInt16.h"
+#include "../tbo/deoglDynamicTBOFloat16.h"
 
 struct oglModelPosition;
 struct oglModelVertex;

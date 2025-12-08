@@ -27,7 +27,7 @@
 
 #include "sePropertyNode.h"
 
-class deImage;
+#include <dragengine/resources/image/deImage.h>
 
 
 /**

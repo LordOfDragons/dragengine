@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCCamera;
+#include "../../../../gamedef/objectClass/camera/gdeOCCamera.h"
 
 
 /**

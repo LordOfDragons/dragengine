@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringDictionary.h>
 
-class meDecal;
+#include "../../../../world/decal/meDecal.h"
 
 
 

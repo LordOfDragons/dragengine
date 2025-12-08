@@ -30,7 +30,7 @@
 #include <dragengine/deObject.h>
 
 // predefinitions
-class dedsStyledTextNode;
+#include "nodes/dedsStyledTextNode.h"
 
 
 

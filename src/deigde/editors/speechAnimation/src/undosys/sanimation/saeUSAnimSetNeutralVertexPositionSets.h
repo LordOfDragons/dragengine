@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringSet.h>
 
-class saeSAnimation;
+#include "../../sanimation/saeSAnimation.h"
 
 
 /**

@@ -30,7 +30,7 @@
 #include <dragengine/common/math/decMath.h>
 
 class decString;
-class decBaseFileReader;
+#include <dragengine/common/file/decBaseFileReader.h>
 class deVideoApng;
 
 

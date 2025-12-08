@@ -32,7 +32,7 @@
 
 class deoglBVHNode;
 class deoglGIBVHLocal;
-class deoglDynamicTBOFloat32;
+#include "../tbo/deoglDynamicTBOFloat32.h"
 
 struct oglModelPosition;
 struct oglModelVertex;

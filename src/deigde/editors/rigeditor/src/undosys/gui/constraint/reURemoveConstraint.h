@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRig;
-class reRigConstraint;
-class reRigBone;
+#include "../../../rig/reRig.h"
+#include "../../../rig/constraint/reRigConstraint.h"
+#include "../../../rig/bone/reRigBone.h"
 class reRigConstraintList;
 
 

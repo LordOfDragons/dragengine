@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCParticleEmitter;
+#include "../../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
 
 
 /**

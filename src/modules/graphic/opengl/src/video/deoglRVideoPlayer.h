@@ -29,7 +29,7 @@
 
 #include <dragengine/deObject.h>
 
-class deoglRVideo;
+#include "deoglRVideo.h"
 class deoglRenderThread;
 class deoglTexture;
 

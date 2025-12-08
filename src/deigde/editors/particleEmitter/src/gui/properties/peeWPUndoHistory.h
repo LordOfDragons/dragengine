@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class peeEmitter;
-class peeWPUndoHistoryListener;
+#include "../../emitter/peeEmitter.h"
+#include "peeWPUndoHistoryListener.h"
 
 
 

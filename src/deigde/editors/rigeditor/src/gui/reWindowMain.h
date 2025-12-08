@@ -34,12 +34,12 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class reWindowMainListener;
+#include "reWindowMainListener.h"
 class reConfiguration;
-class reView3D;
-class reRig;
+#include "reView3D.h"
+#include "../rig/reRig.h"
 class reClipboard;
-class reWindowProperties;
+#include "properties/reWindowProperties.h"
 class reEngineController;
 class reLoadSaveSystem;
 class reIGDEModule;

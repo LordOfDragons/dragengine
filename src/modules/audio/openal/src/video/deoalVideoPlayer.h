@@ -30,7 +30,7 @@
 #include <dragengine/systems/modules/audio/deBaseAudioVideoPlayer.h>
 
 class deAudioOpenAL;
-class deoalAVideoPlayer;
+#include "deoalAVideoPlayer.h"
 class deoalSpeaker;
 
 class deVideoPlayer;

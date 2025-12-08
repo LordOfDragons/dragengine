@@ -31,7 +31,7 @@
 class deBaseAudioModule;
 class deComponent;
 class deDecal;
-class deMicrophone;
+#include "../resources/sound/deMicrophone.h"
 class deModel;
 class deSkin;
 class deSound;

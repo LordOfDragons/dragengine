@@ -54,7 +54,7 @@ class deSkinPropertyConstructed;
 class deSkinPropertyMapped;
 class deSkinTexture;
 class deVideo;
-class decMemoryFile;
+#include <dragengine/common/file/decMemoryFile.h>
 
 
 

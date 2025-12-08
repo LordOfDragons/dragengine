@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversationTopic;
-class ceCAIfElseCase;
-class ceCAIfElse;
+#include "../../../conversation/topic/ceConversationTopic.h"
+#include "../../../conversation/action/ceCAIfElseCase.h"
+#include "../../../conversation/action/ceCAIfElse.h"
 
 
 

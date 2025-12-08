@@ -30,8 +30,8 @@
 #include "../../common/utils/decCollisionFilter.h"
 
 class deSmokeEmitterManager;
-class deComponent;
-class deSkin;
+#include "../component/deComponent.h"
+#include <dragengine/resources/skin/deSkin.h>
 class deWorld;
 
 class deBaseGraphicSmokeEmitter;

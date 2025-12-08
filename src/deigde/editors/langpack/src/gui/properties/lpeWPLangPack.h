@@ -29,9 +29,9 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class lpeLangPack;
+#include "../../langpack/lpeLangPack.h"
 class lpeWindowProperties;
-class lpeWPLangPackListener;
+#include "lpeWPLangPackListener.h"
 
 
 

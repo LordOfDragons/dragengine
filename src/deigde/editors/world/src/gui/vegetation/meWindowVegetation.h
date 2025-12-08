@@ -28,12 +28,12 @@
 #include <deigde/gui/nodeview/igdeNVBoard.h>
 
 class meWindowMain;
-class meWindowVegetationListener;
+#include "meWindowVegetationListener.h"
 class meHTVRule;
 class meWVNode;
 
-class meHTVegetationLayer;
-class meWorld;
+#include "../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../world/meWorld.h"
 
 
 

@@ -33,7 +33,7 @@
 #include <dragengine/common/math/decMath.h>
 
 class reWindowMain;
-class reRig;
+#include "../rig/reRig.h"
 class reCamera;
 class deColliderVolume;
 class deBaseScriptingCollider;

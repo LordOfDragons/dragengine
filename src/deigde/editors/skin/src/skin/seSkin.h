@@ -45,16 +45,16 @@ class seSkinListener;
 class igdeWSky;
 class igdeCamera;
 
-class deAnimator;
-class deAnimatorInstance;
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 class deAnimatorRuleAnimation;
 class deAnimatorRuleStateManipulator;
-class deComponent;
+#include <dragengine/resources/component/deComponent.h>
 class deDebugDrawer;
 class deLogger;
 class deParticleEmitter;
-class deSkin;
-class deWorld;
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/world/deWorld.h>
 
 
 

@@ -32,9 +32,9 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 class aeWindowProperties;
-class aeWPAnimatorListener;
+#include "aeWPAnimatorListener.h"
 
 
 

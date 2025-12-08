@@ -47,9 +47,9 @@ class deoglRWorld;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;
-class deoglDynamicTBOFloat32;
-class deoglDynamicTBOUInt32;
-class deoglDynamicTBOUInt16;
+#include "../tbo/deoglDynamicTBOFloat32.h"
+#include "../tbo/deoglDynamicTBOUInt32.h"
+#include "../tbo/deoglDynamicTBOUInt16.h"
 
 
 /**

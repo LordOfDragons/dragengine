@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversation;
-class ceFacePose;
+#include "../../conversation/ceConversation.h"
+#include "../../conversation/facepose/ceFacePose.h"
 
 
 

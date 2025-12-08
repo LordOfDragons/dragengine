@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCBillboard;
+#include "../../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 
 
 /**

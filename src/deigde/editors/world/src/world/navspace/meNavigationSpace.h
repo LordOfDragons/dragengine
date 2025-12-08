@@ -34,15 +34,15 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/collection/decIntList.h>
 
-class deRig;
-class deDebugDrawer;
+#include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deEngine;
 class igdeEnvironment;
 class meWorld;
 class igdeWDebugDrawerShape;
-class deNavigationSpace;
-class deColliderComponent;
-class deComponent;
+#include <dragengine/resources/navigation/space/deNavigationSpace.h>
+#include <dragengine/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/component/deComponent.h>
 
 
 

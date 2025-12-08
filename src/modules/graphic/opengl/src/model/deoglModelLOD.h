@@ -36,7 +36,7 @@ class deoglModelTexture;
 class deoglModelOctree;
 class deoglModelLODTexCoordSet;
 class deoglModelLODVertPosSet;
-class deoglSharedVBOBlock;
+#include "../vbo/deoglSharedVBOBlock.h"
 class deoglSharedSPB;
 class deoglSharedSPBRTIGroupList;
 class deoglGIBVHLocal;

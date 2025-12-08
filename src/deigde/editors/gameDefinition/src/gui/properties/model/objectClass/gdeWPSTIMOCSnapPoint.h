@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCSnapPoint;
+#include "../../../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 
 
 /**

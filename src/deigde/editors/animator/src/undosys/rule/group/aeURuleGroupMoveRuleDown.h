@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class aeRule;
-class aeRuleGroup;
+#include "../../../animator/rule/aeRuleGroup.h"
 
 
 

@@ -32,7 +32,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 
 
 

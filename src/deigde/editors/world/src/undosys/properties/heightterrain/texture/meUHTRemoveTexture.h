@@ -30,9 +30,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meWorld;
+#include "../../../../world/meWorld.h"
 class meHeightTerrainSector;
-class meHeightTerrainTexture;
+#include "../../../../world/terrain/meHeightTerrainTexture.h"
 
 
 

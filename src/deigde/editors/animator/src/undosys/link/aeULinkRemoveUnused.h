@@ -29,7 +29,7 @@
 #include "../../animator/link/aeLinkList.h"
 
 class aeRule;
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 
 
 

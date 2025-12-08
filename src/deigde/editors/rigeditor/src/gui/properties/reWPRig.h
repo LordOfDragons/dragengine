@@ -31,9 +31,9 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class reRig;
+#include "../../rig/reRig.h"
 class reWindowProperties;
-class reWPRigListener;
+#include "reWPRigListener.h"
 
 
 

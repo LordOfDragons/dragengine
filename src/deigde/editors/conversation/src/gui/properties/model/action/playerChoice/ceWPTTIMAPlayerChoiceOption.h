@@ -28,11 +28,11 @@
 #include "../../ceWPTTreeItemModel.h"
 
 class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
+#include "../../../../../conversation/action/ceCAPlayerChoiceOption.h"
 class ceWPTTIMAPlayerChoice;
 class ceWPTTIMAPlayerChoiceOption;
-class ceWPTTIMAPlayerChoiceOptionCondition;
-class ceWPTTIMAPlayerChoiceOptionActions;
+#include "ceWPTTIMAPlayerChoiceOptionCondition.h"
+#include "ceWPTTIMAPlayerChoiceOptionActions.h"
 
 
 /**

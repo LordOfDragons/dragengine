@@ -31,7 +31,7 @@
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/animator/deAnimatorInstance.h>
 
-class gdeOCComponent;
+#include "../../gamedef/objectClass/component/gdeOCComponent.h"
 class gdeOCComponentTexture;
 
 class deComponentTexture;

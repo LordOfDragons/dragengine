@@ -29,8 +29,8 @@
 
 #include <dragengine/resources/sky/deSkyLayer.h>
 
-class seLayer;
-class seLink;
+#include "../../sky/layer/seLayer.h"
+#include "../../sky/link/seLink.h"
 
 
 /**

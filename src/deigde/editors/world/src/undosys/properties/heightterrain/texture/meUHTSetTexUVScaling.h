@@ -32,9 +32,9 @@
 #include <dragengine/common/math/decMath.h>
 
 // predefinitions
-class meWorld;
+#include "../../../../world/meWorld.h"
 class meHeightTerrainSector;
-class meHeightTerrainTexture;
+#include "../../../../world/terrain/meHeightTerrainTexture.h"
 
 
 

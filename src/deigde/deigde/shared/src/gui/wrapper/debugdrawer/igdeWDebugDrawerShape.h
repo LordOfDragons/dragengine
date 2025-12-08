@@ -30,7 +30,7 @@
 #include <dragengine/common/collection/decPointerList.h>
 
 class deNavigationSpace;
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deDebugDrawerShape;
 class deDebugDrawerShapeFace;
 class deOcclusionMesh;

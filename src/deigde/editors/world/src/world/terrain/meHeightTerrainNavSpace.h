@@ -36,7 +36,7 @@ class meHeightTerrainNavSpaceType;
 class meHeightTerrainSector;
 
 class deEngine;
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deHeightTerrainNavSpace;
 
 

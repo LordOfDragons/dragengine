@@ -28,7 +28,7 @@
 #include <dragengine/resources/decal/deDecal.h>
 
 class meDecal;
-class meObject;
+#include "../object/meObject.h"
 
 class deEngine;
 class deSkin;

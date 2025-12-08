@@ -37,10 +37,10 @@
 #include <deigde/triggersystem/igdeTriggerTargetList.h>
 
 class ceConversation;
-class ceConversationTopic;
+#include "../topic/ceConversationTopic.h"
 class ceCameraShot;
 class cePlaybackActor;
-class ceTextBoxText;
+#include "../textbox/ceTextBoxText.h"
 class cePlaybackCamera;
 
 

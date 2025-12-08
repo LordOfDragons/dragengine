@@ -27,7 +27,7 @@
 
 #include "../deoglBasics.h"
 
-class deoglEnvironmentMap;
+#include "../envmap/deoglEnvironmentMap.h"
 
 
 /**

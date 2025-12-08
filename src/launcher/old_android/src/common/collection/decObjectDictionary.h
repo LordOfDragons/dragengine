@@ -28,7 +28,7 @@
 #include "../string/decString.h"
 
 class decObjectList;
-class deObject;
+#include <dragengine/deObject.h>
 
 
 

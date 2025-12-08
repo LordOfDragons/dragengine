@@ -29,7 +29,7 @@
 
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
-class gdeOCSpeaker;
+#include "../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 

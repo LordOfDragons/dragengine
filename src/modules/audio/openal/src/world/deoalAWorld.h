@@ -30,10 +30,10 @@
 #include <dragengine/common/utils/decLayerMask.h>
 
 class deoalAudioThread;
-class deoalAComponent;
-class deoalAMicrophone;
-class deoalASpeaker;
-class deoalASoundLevelMeter;
+#include "../component/deoalAComponent.h"
+#include "../microphone/deoalAMicrophone.h"
+#include "../speaker/deoalASpeaker.h"
+#include "../soundLevelMeter/deoalASoundLevelMeter.h"
 class deoalWorldOctree;
 class deoalWorldOctreeVisitor;
 

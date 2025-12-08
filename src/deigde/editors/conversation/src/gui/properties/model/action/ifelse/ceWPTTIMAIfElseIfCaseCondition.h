@@ -28,7 +28,7 @@
 #include "../../condition/ceWPTTIMConditionContainer.h"
 
 class ceCAIfElse;
-class ceCAIfElseCase;
+#include "../../../../../conversation/action/ceCAIfElseCase.h"
 class ceWPTTIMAIfElse;
 class ceWPTTIMAIfElseIfCase;
 

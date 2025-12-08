@@ -33,7 +33,7 @@
 class deoglREffect;
 class deoglRenderPlan;
 class deoglRenderThread;
-class deoglRWorld;
+#include "deoglRWorld.h"
 class deoglTexture;
 class deoglVR;
 

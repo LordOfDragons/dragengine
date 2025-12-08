@@ -30,7 +30,7 @@
 #include <dragengine/deObject.h>
 
 class deoglRRenderWindow;
-class deoglRCanvasView;
+#include "../render/deoglRCanvasView.h"
 class deoglRenderThread;
 
 

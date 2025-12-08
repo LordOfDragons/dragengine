@@ -45,12 +45,12 @@
 class aeRule;
 class decStringList;
 class aeConfiguration;
-class aeView3D;
-class aeAnimator;
-class aeWindowProperties;
+#include "aeView3D.h"
+#include "../animator/aeAnimator.h"
+#include "properties/aeWindowProperties.h"
 class deCmdLineArgs;
 class aeLoadSaveSystem;
-class aeWindowMainListener;
+#include "aeWindowMainListener.h"
 class aeIGDEModule;
 class igdeGameDefinition;
 class igdeEnvironment;

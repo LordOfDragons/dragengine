@@ -28,7 +28,7 @@
 #include "deoglRCanvas.h"
 
 class deoglRWorld;
-class deoglRCamera;
+#include "../../world/deoglRCamera.h"
 
 
 /**

@@ -29,7 +29,7 @@
 #include "../../../canvas/deoglCanvasViewListener.h"
 
 class deoglCanvasView;
-class deoglRDSRenderableCanvas;
+#include "render/deoglRDSRenderableCanvas.h"
 
 class deDSRenderableCanvas;
 

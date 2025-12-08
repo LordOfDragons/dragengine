@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCASetActorParameter;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCASetActorParameter.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 

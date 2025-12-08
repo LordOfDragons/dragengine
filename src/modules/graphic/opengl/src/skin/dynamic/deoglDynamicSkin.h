@@ -30,7 +30,7 @@
 #include <dragengine/common/collection/decPointerSet.h>
 
 class deoglDSRenderable;
-class deoglRDynamicSkin;
+#include "deoglRDynamicSkin.h"
 class deoglDynamicSkinListener;
 
 class deGraphicOpenGl;

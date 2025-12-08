@@ -34,8 +34,8 @@
 class peeEmitter;
 class peeParameter;
 class deComponent;
-class deModel;
-class deSkin;
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/skin/deSkin.h>
 class deEngine;
 
 

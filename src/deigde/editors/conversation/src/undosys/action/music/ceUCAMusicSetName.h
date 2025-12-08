@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCAMusic;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCAMusic.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 

@@ -34,9 +34,9 @@
 
 class deEngine;
 class deOSAndroid;
-class deLogger;
-class dealVFSZipArchive;
-class deVirtualFileSystem;
+#include <dragengine/logger/deLogger.h>
+#include "dealVFSZipArchive.h"
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 struct android_app;
 
 

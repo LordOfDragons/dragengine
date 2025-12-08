@@ -35,11 +35,11 @@
 #include <deigde/gui/resources/igdeIcon.h>
 
 class lpeLangPackEntry;
-class lpeWindowMainListener;
-class lpeWindowProperties;
-class lpeViewLangPack;
+#include "lpeWindowMainListener.h"
+#include "properties/lpeWindowProperties.h"
+#include "lpeViewLangPack.h"
 class lpeConfiguration;
-class lpeLangPack;
+#include "../langpack/lpeLangPack.h"
 class lpeLoadSaveSystem;
 class lpeIGDEModule;
 

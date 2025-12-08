@@ -29,7 +29,7 @@
 #include "../../../../../conversation/action/ceCAIfElse.h"
 
 class ceWPTTIMAIfElseIfCase;
-class ceWPTTIMAIfElseElse;
+#include "ceWPTTIMAIfElseElse.h"
 
 
 /**

@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeSky;
+#include "../../../../gamedef/sky/gdeSky.h"
 
 
 /**

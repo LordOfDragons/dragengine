@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceCACameraShot;
-class ceConversationTopic;
+#include "../../../conversation/action/ceCACameraShot.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 

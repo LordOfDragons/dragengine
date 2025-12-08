@@ -30,7 +30,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 
-class seController;
+#include "../controller/seController.h"
 class seLinkMapping;
 class seSynthesizer;
 class deSynthesizerLink;

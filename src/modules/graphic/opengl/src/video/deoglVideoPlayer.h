@@ -31,7 +31,7 @@
 
 class deoglVideo;
 class deoglVideoDecodeThread;
-class deoglRVideoPlayer;
+#include "deoglRVideoPlayer.h"
 
 class deVideoPlayer;
 class deGraphicOpenGl;

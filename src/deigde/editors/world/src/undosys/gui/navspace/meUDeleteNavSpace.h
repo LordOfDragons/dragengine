@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class meUndoDataNavSpace;
-class meWorld;
+#include "../../../world/meWorld.h"
 
 
 

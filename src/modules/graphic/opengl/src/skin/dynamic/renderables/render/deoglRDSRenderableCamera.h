@@ -29,7 +29,7 @@
 
 #include "deoglRDSRenderable.h"
 
-class deoglRCamera;
+#include "../../../../world/deoglRCamera.h"
 
 
 

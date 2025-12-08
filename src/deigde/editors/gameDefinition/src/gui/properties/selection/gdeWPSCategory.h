@@ -36,9 +36,9 @@
 #include "../../../undosys/category/gdeUCategoryBase.h"
 
 class gdeWindowProperties;
-class gdeWPSCategoryListener;
+#include "gdeWPSCategoryListener.h"
 class gdeCategory;
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 
 
 

@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class reRigBone;
+#include "../../../rig/bone/reRigBone.h"
 
 
 

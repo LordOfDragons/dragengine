@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/collection/decObjectList.h>
 
-class aeRuleSubAnimator;
+#include "../../../animator/rule/aeRuleSubAnimator.h"
 class aeController;
 
 

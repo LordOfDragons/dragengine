@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 
-class meWorld;
+#include "../../../world/meWorld.h"
 
 
 

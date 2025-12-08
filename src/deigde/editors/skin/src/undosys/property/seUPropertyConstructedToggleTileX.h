@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seProperty;
+#include "../../skin/property/seProperty.h"
 
 
 

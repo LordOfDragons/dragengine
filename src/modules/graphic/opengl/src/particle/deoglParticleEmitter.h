@@ -28,7 +28,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicParticleEmitter.h>
 
-class deoglRParticleEmitter;
+#include "deoglRParticleEmitter.h"
 class deoglParticleEmitterType;
 
 class deGraphicOpenGl;

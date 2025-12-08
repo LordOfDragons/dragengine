@@ -30,8 +30,8 @@
 
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
-class deoglRPTBuildRTsDepth;
-class deoglRPTBuildRTsGeometry;
+#include "parallel/deoglRPTBuildRTsDepth.h"
+#include "parallel/deoglRPTBuildRTsGeometry.h"
 
 
 /**

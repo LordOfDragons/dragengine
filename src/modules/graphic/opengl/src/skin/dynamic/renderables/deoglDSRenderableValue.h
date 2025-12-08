@@ -28,7 +28,7 @@
 #include "deoglDSRenderable.h"
 
 class deDSRenderableValue;
-class deoglRDSRenderableValue;
+#include "render/deoglRDSRenderableValue.h"
 
 
 

@@ -32,10 +32,10 @@
 #include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
-class gdeWPSelectionListener;
+#include "gdeWPSelectionListener.h"
 class gdeWPSObjectClass;
 class gdeWindowProperties;
-class gdeGameDefinition;
+#include "../../gamedef/gdeGameDefinition.h"
 
 class gdeWPSTreeModel;
 

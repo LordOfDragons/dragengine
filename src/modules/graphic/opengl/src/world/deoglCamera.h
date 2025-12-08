@@ -28,7 +28,7 @@
 #include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicCamera.h>
 
-class deoglRCamera;
+#include "deoglRCamera.h"
 class deoglWorld;
 
 class deGraphicOpenGl;

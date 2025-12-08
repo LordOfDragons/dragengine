@@ -27,7 +27,7 @@
 
 #include "deoglRCanvas.h"
 
-class deoglRVideoPlayer;
+#include "../../video/deoglRVideoPlayer.h"
 
 
 /**

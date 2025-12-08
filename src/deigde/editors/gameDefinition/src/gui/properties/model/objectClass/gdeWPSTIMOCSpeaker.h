@@ -27,7 +27,7 @@
 
 #include "gdeWPSTIMOCSubObject.h"
 
-class gdeOCSpeaker;
+#include "../../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
 
 
 /**

@@ -36,8 +36,8 @@
 class meHTVegetationLayer;
 
 class deEngine;
-class deSkin;
-class deModel;
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/model/deModel.h>
 
 
 

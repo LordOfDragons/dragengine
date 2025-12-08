@@ -31,7 +31,7 @@
 
 class seController;
 
-class deSynthesizer;
+#include <dragengine/resources/synthesizer/deSynthesizer.h>
 class deSynthesizerSourceSynthesizer;
 
 

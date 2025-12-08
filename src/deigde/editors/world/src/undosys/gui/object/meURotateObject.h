@@ -29,7 +29,7 @@
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 
 class meObjectList;
-class meWorld;
+#include "../../../world/meWorld.h"
 
 
 

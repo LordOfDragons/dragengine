@@ -32,7 +32,7 @@
 #include "dragengine/common/math/decMath.h"
 
 // predefinitions
-class aeRuleInverseKinematic;
+#include "../../../animator/rule/aeRuleInverseKinematic.h"
 
 
 

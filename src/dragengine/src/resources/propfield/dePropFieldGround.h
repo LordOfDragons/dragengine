@@ -29,7 +29,7 @@
 
 
 class deComponent;
-class deHeightTerrain;
+#include "../terrain/heightmap/deHeightTerrain.h"
 
 
 /**

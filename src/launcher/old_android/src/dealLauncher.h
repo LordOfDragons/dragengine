@@ -39,16 +39,16 @@ struct android_app;
 struct AInputEvent;
 
 class dealAssetUnpacker;
-class dealDialogMain;
-class dealGame;
-class dealGameProfile;
+#include "gui/dialogs/dealDialogMain.h"
+#include "game/dealGame.h"
+#include "game/profile/dealGameProfile.h"
 class dealGPModuleList;
 
 class deLogger;
 class decBaseFileReader;
 class decBaseFileWriter;
 class decMemoryFile;
-class dealGameData;
+#include "dealGameData.h"
 
 
 

@@ -40,11 +40,11 @@ class seSynthesizerNotifier;
 
 class igdeEnvironment;
 
-class deWorld;
-class deSynthesizer;
-class deSynthesizerInstance;
-class deSpeaker;
-class deMicrophone;
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/synthesizer/deSynthesizer.h>
+#include <dragengine/resources/synthesizer/deSynthesizerInstance.h>
+#include <dragengine/resources/sound/deSpeaker.h>
+#include <dragengine/resources/sound/deMicrophone.h>
 
 
 

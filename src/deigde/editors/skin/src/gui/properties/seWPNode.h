@@ -41,11 +41,11 @@
 
 #include "../../skin/property/node/sePropertyNode.h"
 
-class seSkin;
+#include "../../skin/seSkin.h"
 class seTexture;
 class seProperty;
 class seWindowProperties;
-class seWPNodeListener;
+#include "seWPNodeListener.h"
 class igdeTreeItem;
 
 

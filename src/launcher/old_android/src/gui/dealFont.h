@@ -31,7 +31,7 @@
 #include "../deObject.h"
 
 class dealDisplay;
-class dealImage;
+#include "dealImage.h"
 class decXmlElementTag;
 
 

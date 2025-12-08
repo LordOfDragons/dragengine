@@ -31,9 +31,9 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/composed/igdeEditPoint.h>
 
-class feFont;
+#include "../../font/feFont.h"
 class feWindowProperties;
-class feWPFontListener;
+#include "feWPFontListener.h"
 
 
 

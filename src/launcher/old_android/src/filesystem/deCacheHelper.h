@@ -31,7 +31,7 @@
 class deLogger;
 class decBaseFileWriter;
 class decBaseFileReader;
-class deVirtualFileSystem;
+#include "deVirtualFileSystem.h"
 
 
 /**

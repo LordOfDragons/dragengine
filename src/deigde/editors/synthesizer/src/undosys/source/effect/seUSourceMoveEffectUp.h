@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seEffect;
-class seSource;
+#include "../../../synthesizer/effect/seEffect.h"
+#include "../../../synthesizer/source/seSource.h"
 
 
 

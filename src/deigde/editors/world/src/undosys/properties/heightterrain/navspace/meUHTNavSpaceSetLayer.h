@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meHeightTerrainNavSpace;
+#include "../../../../world/terrain/meHeightTerrainNavSpace.h"
 
 
 

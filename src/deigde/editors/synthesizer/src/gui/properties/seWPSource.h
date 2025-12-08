@@ -32,10 +32,10 @@
 
 
 
-class seSynthesizer;
+#include "../../synthesizer/seSynthesizer.h"
 class seSource;
 class seViewSynthesizer;
-class seWPSourceListener;
+#include "seWPSourceListener.h"
 class seWPAPanelSourceSound;
 class seWPAPanelSourceWave;
 class seWPAPanelSourceChain;

@@ -29,7 +29,7 @@
 #include "../../common/string/decString.h"
 
 
-class dealFont;
+#include "../dealFont.h"
 
 
 /**

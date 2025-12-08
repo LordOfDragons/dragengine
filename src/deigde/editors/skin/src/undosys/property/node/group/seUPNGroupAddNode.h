@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class sePropertyNode;
-class sePropertyNodeGroup;
+#include "../../../../skin/property/node/sePropertyNodeGroup.h"
 
 
 

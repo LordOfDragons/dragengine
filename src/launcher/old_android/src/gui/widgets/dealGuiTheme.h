@@ -28,8 +28,8 @@
 #include "../../deObject.h"
 #include "../../common/math/decMath.h"
 
-class dealFont;
-class dealImage;
+#include "../dealFont.h"
+#include "../dealImage.h"
 class dealDisplay;
 
 

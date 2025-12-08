@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saeWord;
-class saeSAnimation;
+#include "../../../sanimation/dictionary/saeWord.h"
+#include "../../../sanimation/saeSAnimation.h"
 
 
 

@@ -27,9 +27,9 @@
 
 #include "../../common/math/decMath.h"
 
-class deSkin;
+#include <dragengine/resources/skin/deSkin.h>
 class deImage;
-class deDynamicSkin;
+#include "../skin/dynamic/deDynamicSkin.h"
 
 
 /**

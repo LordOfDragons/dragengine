@@ -32,7 +32,7 @@
 class debpMotionState;
 class debpColliderConstraint;
 class debpCollisionWorld;
-class debpBulletShape;
+#include "debpBulletShape.h"
 class btRigidBody;
 
 

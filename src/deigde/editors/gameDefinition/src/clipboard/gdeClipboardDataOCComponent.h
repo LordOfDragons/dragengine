@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCComponent;
+#include "../gamedef/objectClass/component/gdeOCComponent.h"
 
 
 

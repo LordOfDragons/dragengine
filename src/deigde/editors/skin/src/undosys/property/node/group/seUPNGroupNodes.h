@@ -31,7 +31,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class sePropertyNodeGroup;
+#include "../../../../skin/property/node/sePropertyNodeGroup.h"
 
 
 

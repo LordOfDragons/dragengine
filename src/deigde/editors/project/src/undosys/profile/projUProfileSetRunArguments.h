@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class projProfile;
+#include "../../project/profile/projProfile.h"
 
 
 

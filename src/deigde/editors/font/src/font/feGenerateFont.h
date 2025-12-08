@@ -32,7 +32,7 @@
 
 class feFontImage;
 class feFontGlyph;
-class feFont;
+#include "feFont.h"
 
 class igdeEnvironment;
 

@@ -31,7 +31,7 @@
 
 class deoglRWorld;
 class deoglRenderThread;
-class deoglRSky;
+#include "deoglRSky.h"
 class deoglRSkyInstanceLayer;
 class deoglGIState;
 class deoglRComponent;

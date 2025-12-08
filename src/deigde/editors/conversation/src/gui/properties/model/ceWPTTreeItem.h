@@ -27,7 +27,7 @@
 
 #include <deigde/gui/model/igdeTreeItem.h>
 
-class ceWPTTreeItemModel;
+#include "ceWPTTreeItemModel.h"
 class igdeTreeList;
 class igdeMenuCascade;
 

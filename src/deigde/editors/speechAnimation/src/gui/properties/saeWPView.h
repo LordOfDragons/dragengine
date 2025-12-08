@@ -32,8 +32,8 @@
 
 class saeWindowProperties;
 class saeGameDefinition;
-class saeWPViewListener;
-class saeSAnimation;
+#include "saeWPViewListener.h"
+#include "../../sanimation/saeSAnimation.h"
 
 
 

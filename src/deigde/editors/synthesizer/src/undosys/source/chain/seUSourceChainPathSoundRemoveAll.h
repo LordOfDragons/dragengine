@@ -30,7 +30,7 @@
 
 #include <dragengine/common/string/decStringList.h>
 
-class seSourceChain;
+#include "../../../synthesizer/source/seSourceChain.h"
 
 
 

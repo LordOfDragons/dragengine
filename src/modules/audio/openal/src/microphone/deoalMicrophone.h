@@ -32,7 +32,7 @@
 #include <dragengine/systems/modules/audio/deBaseAudioMicrophone.h>
 
 class deAudioOpenAL;
-class deoalAMicrophone;
+#include "deoalAMicrophone.h"
 class deoalSpeaker;
 class deoalWorld;
 

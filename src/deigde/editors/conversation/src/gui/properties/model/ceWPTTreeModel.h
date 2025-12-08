@@ -27,7 +27,7 @@
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 
-class ceConversation;
+#include "../../../conversation/ceConversation.h"
 class ceConversationAction;
 class ceConversationCondition;
 class ceWPTTIMAction;

@@ -31,7 +31,7 @@
 
 #include "ceConversationActionList.h"
 
-class ceConversationCondition;
+#include "../condition/ceConversationCondition.h"
 
 
 /**

@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCBillboard;
+#include "../gamedef/objectClass/billboard/gdeOCBillboard.h"
 
 
 

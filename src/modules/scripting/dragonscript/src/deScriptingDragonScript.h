@@ -222,7 +222,7 @@ class deClassService;
 class deClassServiceListener;
 class deClassServiceObject;
 
-class deCollisionInfo;
+#include <dragengine/resources/collider/deCollisionInfo.h>
 class dedsColliderListenerClosest;
 class dedsColliderListenerAdaptor;
 

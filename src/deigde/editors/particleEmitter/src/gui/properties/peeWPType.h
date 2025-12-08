@@ -36,11 +36,11 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/resources/igdeIcon.h>
 
-class peeEmitter;
+#include "../../emitter/peeEmitter.h"
 class peeType;
 class peeParameter;
 class peeWindowProperties;
-class peeWPTypeListener;
+#include "peeWPTypeListener.h"
 
 
 

@@ -30,8 +30,8 @@
 class ceCAIfElse;
 class ceWPTTIMAIfElse;
 class ceWPTTIMAIfElseIfCase;
-class ceWPTTIMAIfElseIfCaseCondition;
-class ceWPTTIMAIfElseIfCaseActions;
+#include "ceWPTTIMAIfElseIfCaseCondition.h"
+#include "ceWPTTIMAIfElseIfCaseActions.h"
 
 
 /**

@@ -33,7 +33,7 @@
 
 #include "ceTextBoxTextList.h"
 
-class deCanvasView;
+#include <dragengine/resources/canvas/deCanvasView.h>
 class deEngine;
 class deLogger;
 class deGraphicContext;

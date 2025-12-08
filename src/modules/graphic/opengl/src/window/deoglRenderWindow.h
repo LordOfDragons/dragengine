@@ -28,7 +28,7 @@
 #include <dragengine/systems/modules/graphic/deBaseGraphicRenderWindow.h>
 
 class deoglCanvasView;
-class deoglRRenderWindow;
+#include "deoglRRenderWindow.h"
 
 class deRenderWindow;
 class deGraphicOpenGl;

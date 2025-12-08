@@ -41,8 +41,8 @@
 
 class aeWindowProperties;
 class aeGameDefinition;
-class aeWPViewListener;
-class aeAnimator;
+#include "aeWPViewListener.h"
+#include "../../animator/aeAnimator.h"
 class aeAttachment;
 
 

@@ -32,10 +32,10 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class reRig;
-class reRigBone;
+#include "../../rig/reRig.h"
+#include "../../rig/bone/reRigBone.h"
 class reWindowProperties;
-class reWPBoneListener;
+#include "reWPBoneListener.h"
 
 
 

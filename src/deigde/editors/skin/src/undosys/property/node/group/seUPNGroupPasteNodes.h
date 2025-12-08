@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class sePropertyNodeGroup;
+#include "../../../../skin/property/node/sePropertyNodeGroup.h"
 class seClipboardDataPropertyNode;
 
 

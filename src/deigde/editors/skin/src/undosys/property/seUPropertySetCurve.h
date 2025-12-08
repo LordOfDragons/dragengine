@@ -33,7 +33,7 @@
 #include <dragengine/common/curve/decCurveBezier.h>
 
 // predefinitions
-class seSkyLayer;
+#include "../../sky/layer/seSkyLayer.h"
 class seProperty;
 
 

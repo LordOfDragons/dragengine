@@ -28,8 +28,8 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
-class meIDGroup;
-class igdeGDProperty;
+#include "meIDGroup.h"
+#include <deigde/gamedefinition/property/igdeGDProperty.h>
 
 
 /**

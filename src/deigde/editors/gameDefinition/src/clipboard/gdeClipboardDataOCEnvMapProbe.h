@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCEnvMapProbe;
+#include "../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 
 
 

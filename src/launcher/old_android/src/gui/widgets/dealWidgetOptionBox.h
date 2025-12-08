@@ -31,7 +31,7 @@
 class dealWidgetLabel;
 class dealWidgetImage;
 class dealImage;
-class dealWidgetOptionGroup;
+#include "dealWidgetOptionGroup.h"
 
 
 

@@ -27,7 +27,7 @@
 
 #include "deoglDSRenderable.h"
 
-class deoglRDSRenderableVideoFrame;
+#include "render/deoglRDSRenderableVideoFrame.h"
 class deoglVideoPlayer;
 
 class deDSRenderableVideoFrame;

@@ -34,10 +34,10 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 class aeController;
 class aeWindowProperties;
-class aeWPControllerListener;
+#include "aeWPControllerListener.h"
 
 
 /**

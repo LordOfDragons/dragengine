@@ -36,11 +36,11 @@
 #include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeOCBillboard;
 class gdeWindowProperties;
-class gdeWPSOCBillboardListener;
+#include "gdeWPSOCBillboardListener.h"
 
 
 

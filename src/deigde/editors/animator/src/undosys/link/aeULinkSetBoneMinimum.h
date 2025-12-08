@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeLink;
+#include "../../animator/link/aeLink.h"
 
 
 

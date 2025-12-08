@@ -28,7 +28,7 @@
 #include "deResourceLoader.h"
 #include "../../common/string/decString.h"
 
-class deFileResource;
+#include "../deFileResource.h"
 
 
 /**

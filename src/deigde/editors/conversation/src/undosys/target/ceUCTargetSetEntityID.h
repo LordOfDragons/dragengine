@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceTarget;
+#include "../../conversation/target/ceTarget.h"
 
 
 

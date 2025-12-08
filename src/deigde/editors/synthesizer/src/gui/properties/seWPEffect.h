@@ -32,11 +32,11 @@
 
 class seEffect;
 class seSource;
-class seSynthesizer;
+#include "../../synthesizer/seSynthesizer.h"
 class seWPAPanelEffect;
 class seWPAPanelEffectStretch;
 class seViewSynthesizer;
-class seWPEffectListener;
+#include "seWPEffectListener.h"
 
 
 

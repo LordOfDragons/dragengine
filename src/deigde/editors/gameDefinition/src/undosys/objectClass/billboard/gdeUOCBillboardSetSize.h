@@ -30,8 +30,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class gdeOCBillboard;
-class gdeObjectClass;
+#include "../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
+#include "../../../gamedef/objectClass/gdeObjectClass.h"
 
 
 

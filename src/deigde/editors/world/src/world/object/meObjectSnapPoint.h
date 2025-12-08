@@ -38,7 +38,7 @@ class meColliderOwner;
 class igdeGDCSnapPoint;
 class igdeWDebugDrawerShape;
 
-class deColliderVolume;
+#include <dragengine/resources/collider/deColliderVolume.h>
 
 
 

@@ -34,11 +34,11 @@
 #include <deigde/gui/resources/igdeIcon.h>
 
 class decStringList;
-class saeWindowMainListener;
-class saeViewSAnimation;
+#include "saeWindowMainListener.h"
+#include "saeViewSAnimation.h"
 class saeConfiguration;
-class saeSAnimation;
-class saeWindowProperties;
+#include "../sanimation/saeSAnimation.h"
+#include "properties/saeWindowProperties.h"
 class saeLoadSaveSystem;
 class saeIGDEModule;
 class igdeStepableTask;

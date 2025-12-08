@@ -30,7 +30,7 @@
 
 class deWorld;
 class deAudioOpenAL;
-class deoalAWorld;
+#include "deoalAWorld.h"
 class deoalComponent;
 class deoalSpeaker;
 class deoalMicrophone;

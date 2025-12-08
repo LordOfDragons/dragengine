@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 class ceCConditionLogic;
-class ceConversationAction;
-class ceConversationTopic;
+#include "../../../conversation/action/ceConversationAction.h"
+#include "../../../conversation/topic/ceConversationTopic.h"
 
 
 

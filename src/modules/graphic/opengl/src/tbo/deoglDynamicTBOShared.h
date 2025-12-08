@@ -31,7 +31,7 @@
 #include "../tbo/deoglDynamicTBO.h"
 
 class deoglDynamicTBO;
-class deoglDynamicTBOBlock;
+#include "deoglDynamicTBOBlock.h"
 class deoglRTLogger;
 
 

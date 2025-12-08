@@ -32,7 +32,7 @@
 
 // predefinitions
 class meWorld;
-class meDecal;
+#include "../../../world/decal/meDecal.h"
 
 
 

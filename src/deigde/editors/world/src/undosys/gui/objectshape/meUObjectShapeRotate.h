@@ -28,7 +28,7 @@
 #include "../meBaseUndoRotate.h"
 #include <dragengine/common/collection/decIntList.h>
 
-class meObject;
+#include "../../../world/object/meObject.h"
 class meObjectShapeList;
 
 

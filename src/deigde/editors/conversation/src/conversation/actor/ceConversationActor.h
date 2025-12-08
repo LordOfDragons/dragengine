@@ -39,15 +39,15 @@ class cePlayback;
 class ceConversation;
 class ceSpeechAnimation;
 class ceGesture;
-class ceFacePose;
-class ceTarget;
+#include "../facepose/ceFacePose.h"
+#include "../target/ceTarget.h"
 
 class igdeEnvironment;
-class deComponent;
-class deAnimator;
-class deAnimatorInstance;
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 class deLogger;
-class deSpeaker;
+#include <dragengine/resources/sound/deSpeaker.h>
 class deSound;
 
 

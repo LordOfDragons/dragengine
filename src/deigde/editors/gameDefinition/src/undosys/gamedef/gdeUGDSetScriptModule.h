@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class gdeGameDefinition;
+#include "../../gamedef/gdeGameDefinition.h"
 
 
 

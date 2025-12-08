@@ -30,7 +30,7 @@
 #include <dragengine/systems/modules/physics/deBasePhysicsWorld.h>
 
 class deWorld;
-class deCollisionInfo;
+#include <dragengine/resources/collider/deCollisionInfo.h>
 
 class dePhysicsBullet;
 class debpHeightTerrain;

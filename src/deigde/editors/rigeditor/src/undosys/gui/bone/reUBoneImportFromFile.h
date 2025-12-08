@@ -29,8 +29,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class reRig;
-class reRigBone;
+#include "../../../rig/reRig.h"
+#include "../../../rig/bone/reRigBone.h"
 class reRigShapeList;
 class reRigConstraintList;
 

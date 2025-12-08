@@ -30,7 +30,7 @@
 class deEngine;
 class deLoadableModule;
 class igdeMainWindow;
-class deRenderWindow;
+#include <dragengine/resources/rendering/deRenderWindow.h>
 class igdeGameProject;
 class deInternalModule;
 class igdeWidget;

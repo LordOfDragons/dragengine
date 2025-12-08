@@ -34,7 +34,7 @@
 
 
 class aeWindowMain;
-class aeAnimator;
+#include "../animator/aeAnimator.h"
 
 
 

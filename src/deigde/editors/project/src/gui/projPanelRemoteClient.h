@@ -37,7 +37,7 @@
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
 class projPanelTestRun;
-class projPanelRemoteClientListener;
+#include "projPanelRemoteClientListener.h"
 
 
 /**

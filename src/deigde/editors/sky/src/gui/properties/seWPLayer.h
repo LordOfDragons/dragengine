@@ -39,11 +39,11 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/event/igdeAction.h>
 
-class seSky;
+#include "../../sky/seSky.h"
 class seLayer;
 class seBody;
 class seWindowProperties;
-class seWPLayerListener;
+#include "seWPLayerListener.h"
 
 
 

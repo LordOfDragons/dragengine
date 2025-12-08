@@ -30,8 +30,8 @@
 #include <dragengine/common/math/decMath.h>
 
 class meWorld;
-class meDecal;
-class meObject;
+#include "../../../world/decal/meDecal.h"
+#include "../../../world/object/meObject.h"
 
 
 

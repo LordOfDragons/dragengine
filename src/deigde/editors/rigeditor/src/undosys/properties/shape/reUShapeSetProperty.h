@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class reRigShape;
+#include "../../../rig/shape/reRigShape.h"
 
 
 

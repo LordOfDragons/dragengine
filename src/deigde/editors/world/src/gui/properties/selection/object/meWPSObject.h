@@ -49,9 +49,9 @@
 class meObject;
 class meObjectTexture;
 class meWindowProperties;
-class meWorld;
+#include "../../../../world/meWorld.h"
 class meWPSelection;
-class meWPSObjectListener;
+#include "meWPSObjectListener.h"
 
 
 

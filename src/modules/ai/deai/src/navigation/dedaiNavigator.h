@@ -34,7 +34,7 @@ class dedaiLayer;
 class dedaiPathFinderNavMesh;
 class dedaiWorld;
 
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deDebugDrawerShape;
 class deNavigator;
 class deNavigatorType;

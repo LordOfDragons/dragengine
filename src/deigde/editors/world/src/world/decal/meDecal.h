@@ -41,11 +41,11 @@ class meAttachedDecal;
 class igdeWDebugDrawerShape;
 
 class igdeEnvironment;
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deDecal;
-class deDynamicSkin;
-class deColliderVolume;
-class deSkin;
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 
 

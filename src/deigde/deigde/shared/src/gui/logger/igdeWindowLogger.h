@@ -28,9 +28,9 @@
 #include "../igdeWindow.h"
 #include "../igdeTextArea.h"
 
-class igdeLoggerHistory;
+#include "../../logger/igdeLoggerHistory.h"
 class igdeLoggerHistoryEntry;
-class igdeWindowLoggerListener;
+#include "igdeWindowLoggerListener.h"
 
 
 

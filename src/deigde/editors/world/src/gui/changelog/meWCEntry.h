@@ -29,10 +29,10 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meHeightTerrainNavSpace;
-class meHeightTerrainTexture;
+#include "../../world/terrain/meHeightTerrainNavSpace.h"
+#include "../../world/terrain/meHeightTerrainTexture.h"
 class meWindowChangelog;
-class meWorld;
+#include "../../world/meWorld.h"
 
 
 

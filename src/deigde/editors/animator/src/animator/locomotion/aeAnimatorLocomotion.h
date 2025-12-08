@@ -41,9 +41,9 @@
 class aeAnimator;
 class aeAnimatorLocomotionLeg;
 
-class deColliderVolume;
-class deTouchSensor;
-class deDebugDrawer;
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/sensor/deTouchSensor.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deLogger;
 
 

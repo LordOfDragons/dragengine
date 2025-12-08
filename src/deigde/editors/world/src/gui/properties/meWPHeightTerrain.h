@@ -48,12 +48,12 @@ class meHeightTerrainNavSpaceType;
 class meHeightTerrain;
 class meHeightTerrainNavSpace;
 class meHeightTerrainSector;
-class meHeightTerrainTexture;
-class meHTVegetationLayer;
-class meHTVVariation;
+#include "../../world/terrain/meHeightTerrainTexture.h"
+#include "../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../world/heightterrain/meHTVVariation.h"
 class meWindowProperties;
-class meWorld;
-class meWPHeightTerrainListener;
+#include "../../world/meWorld.h"
+#include "meWPHeightTerrainListener.h"
 
 
 /**

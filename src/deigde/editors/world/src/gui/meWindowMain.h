@@ -39,12 +39,12 @@ class meIGDEModule;
 class meLoadSaveSystem;
 class meSaveSupport;
 class meView3D;
-class meView3D;
-class meWindowChangelog;
-class meWindowMainListener;
-class meWindowProperties;
-class meWindowVegetation;
-class meWorld;
+#include "meView3D.h"
+#include "changelog/meWindowChangelog.h"
+#include "meWindowMainListener.h"
+#include "properties/meWindowProperties.h"
+#include "vegetation/meWindowVegetation.h"
+#include "../world/meWorld.h"
 
 class igdeEngineController;
 class igdeGameDefinition;

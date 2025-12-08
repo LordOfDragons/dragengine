@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceConversation;
-class ceConversationFile;
+#include "../../conversation/ceConversation.h"
+#include "../../conversation/file/ceConversationFile.h"
 
 
 

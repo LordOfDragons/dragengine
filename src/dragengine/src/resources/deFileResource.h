@@ -29,7 +29,7 @@
 #include "../common/string/decString.h"
 #include "../common/utils/decDateTime.h"
 
-class deVirtualFileSystem;
+#include "../filesystem/deVirtualFileSystem.h"
 class deFileResourceManager;
 
 

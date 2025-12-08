@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class saePhoneme;
-class saeSAnimation;
+#include "../../sanimation/phoneme/saePhoneme.h"
+#include "../../sanimation/saeSAnimation.h"
 
 
 

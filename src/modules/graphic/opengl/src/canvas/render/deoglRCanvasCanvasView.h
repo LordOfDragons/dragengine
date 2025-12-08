@@ -27,7 +27,7 @@
 
 #include "deoglRCanvas.h"
 
-class deoglRCanvasView;
+#include "deoglRCanvasView.h"
 
 
 /**

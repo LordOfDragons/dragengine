@@ -39,11 +39,11 @@
 #include <deigde/gui/resources/igdeIcon.h>
 
 class projIGDEModule;
-class projProject;
-class projPanelProfiles;
-class projPanelTestRun;
-class projPanelUndoHistory;
-class projWindowMainListener;
+#include "../project/projProject.h"
+#include "projPanelProfiles.h"
+#include "projPanelTestRun.h"
+#include "projPanelUndoHistory.h"
+#include "projWindowMainListener.h"
 class decUnicodeStringList;
 class projConfiguration;
 

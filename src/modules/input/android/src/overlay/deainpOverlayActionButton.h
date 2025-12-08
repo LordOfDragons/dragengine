@@ -28,8 +28,8 @@
 #include "deainpInputBinding.h"
 #include "deainpOverlay.h"
 
-class deCanvasImage;
-class deCanvasText;
+#include <dragengine/resources/canvas/deCanvasImage.h>
+#include <dragengine/resources/canvas/deCanvasText.h>
 class deFont;
 
 

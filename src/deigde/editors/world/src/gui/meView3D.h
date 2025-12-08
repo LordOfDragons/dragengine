@@ -34,10 +34,10 @@
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
 
-class meView3DListener;
+#include "meView3DListener.h"
 class meViewEditor;
 
-class meWorld;
+#include "../world/meWorld.h"
 class meWindowMain;
 
 

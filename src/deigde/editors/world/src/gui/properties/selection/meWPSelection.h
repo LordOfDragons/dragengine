@@ -28,9 +28,9 @@
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeWidget.h>
 
-class meWPSelectionListener;
+#include "meWPSelectionListener.h"
 class meWindowProperties;
-class meWorld;
+#include "../../../world/meWorld.h"
 
 
 

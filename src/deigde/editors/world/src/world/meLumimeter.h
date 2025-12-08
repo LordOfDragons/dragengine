@@ -31,9 +31,9 @@
 #include <dragengine/deObject.h>
 
 // predefinitions
-class meObject;
+#include "object/meObject.h"
 class meWorld;
-class deLumimeter;
+#include "dragengine/resources/sensor/deLumimeter.h"
 class deEngine;
 class deDebugDrawerVolume;
 

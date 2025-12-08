@@ -27,7 +27,7 @@
 
 #include "deResourceLoaderTask.h"
 
-class deRLTaskReadSkinInternal;
+#include "deRLTaskReadSkinInternal.h"
 class deSkin;
 
 

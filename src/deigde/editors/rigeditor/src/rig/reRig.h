@@ -39,7 +39,7 @@ class igdeEnvironment;
 class igdeWSky;
 class reCamera;
 class reRigPush;
-class reRigBone;
+#include "bone/reRigBone.h"
 class reRigShape;
 class reRigConstraint;
 class reSelectionBones;
@@ -50,13 +50,13 @@ class reRigNotifier;
 class reRigTexture;
 
 class deEngine;
-class deWorld;
-class deLight;
-class deRig;
-class deColliderComponent;
-class deComponent;
-class deAnimator;
-class deAnimatorInstance;
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/light/deLight.h>
+#include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 class deAnimatorRuleAnimation;
 class deAnimatorRuleStateManipulator;
 class deCollider;

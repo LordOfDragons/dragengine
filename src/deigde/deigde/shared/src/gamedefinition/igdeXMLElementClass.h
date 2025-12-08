@@ -31,7 +31,7 @@
 #include <dragengine/common/collection/decObjectDictionary.h>
 
 class igdeGameDefinition;
-class igdeGDClass;
+#include "class/igdeGDClass.h"
 class igdeGDClassManager;
 class igdeGDCComponent;
 

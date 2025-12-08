@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceGesture;
+#include "../../conversation/gesture/ceGesture.h"
 class ceConversationActionList;
 class ceConversationTopic;
 

@@ -32,10 +32,10 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSynthesizer;
+#include "../../synthesizer/seSynthesizer.h"
 class seController;
 class seViewSynthesizer;
-class seWPControllerListener;
+#include "seWPControllerListener.h"
 
 
 

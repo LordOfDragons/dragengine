@@ -29,7 +29,7 @@
 #include <dragengine/systems/modules/graphic/deBaseGraphicWorld.h>
 
 class deoglHeightTerrain;
-class deoglRWorld;
+#include "deoglRWorld.h"
 class deoglSharedVideoPlayerList;
 class deoglSkyInstance;
 class deoglComponent;

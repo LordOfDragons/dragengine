@@ -29,7 +29,7 @@
 
 class seSkin;
 
-class deDynamicSkin;
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 
 
 

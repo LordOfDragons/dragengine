@@ -28,8 +28,8 @@
 #include "../ceWPTTIMAction.h"
 #include "../../../../../conversation/action/ceCAWait.h"
 
-class ceWPTTIMAWaitCondition;
-class ceWPTTIMAWaitActions;
+#include "ceWPTTIMAWaitCondition.h"
+#include "ceWPTTIMAWaitActions.h"
 
 
 /**

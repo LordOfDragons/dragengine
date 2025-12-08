@@ -38,10 +38,10 @@
 #include <deigde/gui/properties/igdeWPWObject.h>
 
 class igdeWPWObject;
-class reRig;
+#include "../../rig/reRig.h"
 class reRigTexture;
 class reWindowProperties;
-class reWPViewListener;
+#include "reWPViewListener.h"
 class igdeGameDefinition;
 class igdeWPWObject;
 

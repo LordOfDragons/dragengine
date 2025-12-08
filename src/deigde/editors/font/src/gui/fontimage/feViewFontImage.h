@@ -30,9 +30,9 @@
 #include <deigde/gui/layout/igdeContainerBorder.h>
 
 class feWindowMain;
-class feViewFIImage;
-class feViewFontImageListener;
-class feFont;
+#include "feViewFIImage.h"
+#include "feViewFontImageListener.h"
+#include "../../font/feFont.h"
 
 
 

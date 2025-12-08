@@ -32,8 +32,8 @@
 #include <dragengine/common/string/decString.h>
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleClosestProp;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleClosestProp.h"
 
 
 

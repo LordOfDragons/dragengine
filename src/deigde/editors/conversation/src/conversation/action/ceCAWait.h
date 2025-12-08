@@ -30,7 +30,7 @@
 
 #include <dragengine/common/string/decString.h>
 
-class ceConversationCondition;
+#include "../condition/ceConversationCondition.h"
 
 
 

@@ -31,8 +31,8 @@
 
 // predefinitions
 class meWorld;
-class meObject;
-class meObjectTexture;
+#include "../../../../world/object/meObject.h"
+#include "../../../../world/object/texture/meObjectTexture.h"
 
 
 

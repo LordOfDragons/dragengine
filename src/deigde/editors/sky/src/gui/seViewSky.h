@@ -29,7 +29,7 @@
 #include <deigde/gui/event/igdeMouseCameraListener.h>
 
 class seWindowMain;
-class seSky;
+#include "../sky/seSky.h"
 
 
 

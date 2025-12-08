@@ -30,7 +30,7 @@
 class deServer;
 class debnAddress;
 class deNetworkBasic;
-class debnSocket;
+#include "debnSocket.h"
 class decBaseFileReader;
 
 

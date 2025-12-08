@@ -49,7 +49,7 @@ class debpSharedCollisionFiltering;
 class debpContactResultCallback;
 
 class deBaseScriptingCollider;
-class deCollisionInfo;
+#include <dragengine/resources/collider/deCollisionInfo.h>
 class debpDCollisionBox;
 
 class btSphereShape;

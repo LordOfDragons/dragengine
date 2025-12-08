@@ -34,7 +34,7 @@
 
 class deOcclusionMesh;
 class deoglRenderThread;
-class deoglSharedVBOBlock;
+#include "../../vbo/deoglSharedVBOBlock.h"
 class deoglSharedSPBListUBO;
 class deoglBVH;
 class deoglRayTraceField;

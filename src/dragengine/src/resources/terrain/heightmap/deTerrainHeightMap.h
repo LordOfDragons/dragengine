@@ -28,7 +28,7 @@
 #include "../../../common/math/decMath.h"
 #include "../../../common/string/decString.h"
 
-class deImage;
+#include <dragengine/resources/image/deImage.h>
 
 // definitions
 /** 8-bit image value corresponding to 0 level. */

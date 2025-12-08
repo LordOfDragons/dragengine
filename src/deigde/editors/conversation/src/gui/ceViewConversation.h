@@ -32,10 +32,10 @@
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 
 
-class ceViewConversationListener;
+#include "ceViewConversationListener.h"
 class ceCanvasRuleOfThirdsAid;
 class ceWindowMain;
-class ceConversation;
+#include "../conversation/ceConversation.h"
 class decBoundary;
 
 

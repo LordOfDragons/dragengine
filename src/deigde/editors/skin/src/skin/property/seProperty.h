@@ -38,7 +38,7 @@
 class seTexture;
 
 class deEngine;
-class sePropertyNodeGroup;
+#include "node/sePropertyNodeGroup.h"
 class deSkinPropertyNodeGroup;
 
 class igdeTexturePropertyList;

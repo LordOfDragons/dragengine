@@ -30,7 +30,7 @@
 #include <dragengine/systems/modules/audio/deBaseAudioSpeaker.h>
 
 class deAudioOpenAL;
-class deoalASpeaker;
+#include "deoalASpeaker.h"
 class deoalSound;
 class deoalSynthesizerInstance;
 class deoalVideoPlayer;

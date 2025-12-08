@@ -29,7 +29,7 @@
 
 #include <dragengine/common/curve/decCurveBezier.h>
 
-class seLink;
+#include "../../sky/link/seLink.h"
 
 
 /**

@@ -33,10 +33,10 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSky;
+#include "../../sky/seSky.h"
 class seController;
 class seWindowProperties;
-class seWPControllerListener;
+#include "seWPControllerListener.h"
 
 
 /**

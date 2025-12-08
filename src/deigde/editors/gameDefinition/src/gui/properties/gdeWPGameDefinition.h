@@ -33,10 +33,10 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../gamedef/gdeGameDefinition.h"
 class gdeWindowProperties;
 class gdeWindowMain;
-class gdeWPGameDefinitionListener;
+#include "gdeWPGameDefinitionListener.h"
 class gdeWPPropertyList;
 class gdeProperty;
 

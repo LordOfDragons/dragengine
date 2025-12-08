@@ -51,12 +51,12 @@ class gdeMAOCSpeaker;
 class gdeMAOCWorld;
 
 class gdeConfiguration;
-class gdeGameDefinition;
+#include "../gamedef/gdeGameDefinition.h"
 class gdeIGDEModule;
 class gdeLoadSaveSystem;
-class gdeViewActiveObject;
-class gdeWindowMainListener;
-class gdeWindowProperties;
+#include "activeobject/gdeViewActiveObject.h"
+#include "gdeWindowMainListener.h"
+#include "properties/gdeWindowProperties.h"
 
 class igdeStepableTask;
 class decStringList;

@@ -37,7 +37,7 @@ class meObject;
 class meObjectTexture;
 class meWorld;
 
-class decBaseFileReader;
+#include <dragengine/common/file/decBaseFileReader.h>
 class decXmlElementTag;
 
 

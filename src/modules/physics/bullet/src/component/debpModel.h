@@ -33,7 +33,7 @@ class deModel;
 class deModelWeight;
 class debpModelOctree;
 class dePhysicsBullet;
-class debpBulletShapeModel;
+#include "debpBulletShapeModel.h"
 
 
 /**

@@ -28,8 +28,8 @@
 #include "../action/ceConversationAction.h"
 
 class ceConversationActionList;
-class ceConversationTopic;
-class ceConversationCondition;
+#include "../topic/ceConversationTopic.h"
+#include "../condition/ceConversationCondition.h"
 
 
 

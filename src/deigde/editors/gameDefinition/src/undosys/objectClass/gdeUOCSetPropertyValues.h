@@ -30,7 +30,7 @@
 
 #include <dragengine/common/string/decStringDictionary.h>
 
-class gdeObjectClass;
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 
 

@@ -33,10 +33,10 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/event/igdeAction.h>
 
-class seSky;
+#include "../../sky/seSky.h"
 class seLink;
 class seWindowProperties;
-class seWPLinkListener;
+#include "seWPLinkListener.h"
 
 class igdeViewCurveBezier;
 

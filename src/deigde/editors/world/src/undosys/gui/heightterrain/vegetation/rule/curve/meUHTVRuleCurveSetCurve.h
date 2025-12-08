@@ -30,8 +30,8 @@
 #include <dragengine/common/curve/decCurveBezier.h>
 
 
-class meHTVegetationLayer;
-class meHTVRuleCurve;
+#include "../../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../../world/heightterrain/rules/meHTVRuleCurve.h"
 
 
 

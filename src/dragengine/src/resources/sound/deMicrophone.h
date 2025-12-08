@@ -30,7 +30,7 @@
 #include "../../common/utils/decLayerMask.h"
 
 class deWorld;
-class deSpeaker;
+#include "deSpeaker.h"
 class deMicrophone;
 class deMicrophoneManager;
 class deBaseAudioMicrophone;

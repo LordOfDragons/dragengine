@@ -31,7 +31,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
-class aeController;
+#include "../controller/aeController.h"
 class aeAnimator;
 class deAnimatorLink;
 

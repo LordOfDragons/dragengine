@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCForceField;
+#include "../gamedef/objectClass/forceField/gdeOCForceField.h"
 
 
 

@@ -28,9 +28,9 @@
 #include <deigde/gui/igdeColorBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSky;
+#include "../../sky/seSky.h"
 class seWindowProperties;
-class seWPSkyListener;
+#include "seWPSkyListener.h"
 
 
 /**

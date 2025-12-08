@@ -45,26 +45,26 @@
 class gdeGameDefinitionListener;
 class gdeLoadSaveSystem;
 class gdeOCInherit;
-class gdeOCBillboard;
-class gdeOCCamera;
-class gdeOCComponent;
+#include "objectClass/billboard/gdeOCBillboard.h"
+#include "objectClass/camera/gdeOCCamera.h"
+#include "objectClass/component/gdeOCComponent.h"
 class gdeOCComponentTexture;
-class gdeOCEnvMapProbe;
-class gdeOCLight;
-class gdeOCNavigationBlocker;
-class gdeOCNavigationSpace;
-class gdeOCParticleEmitter;
-class gdeOCForceField;
-class gdeOCSnapPoint;
-class gdeOCSpeaker;
+#include "objectClass/envmapprobe/gdeOCEnvMapProbe.h"
+#include "objectClass/light/gdeOCLight.h"
+#include "objectClass/navblocker/gdeOCNavigationBlocker.h"
+#include "objectClass/navspace/gdeOCNavigationSpace.h"
+#include "objectClass/particleemitter/gdeOCParticleEmitter.h"
+#include "objectClass/forceField/gdeOCForceField.h"
+#include "objectClass/snappoint/gdeOCSnapPoint.h"
+#include "objectClass/speaker/gdeOCSpeaker.h"
 class gdeOCWorld;
 class gdeSkyController;
 
 class igdeWSky;
 class igdeCamera;
 
-class deWorld;
-class deVirtualFileSystem;
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 
 
 

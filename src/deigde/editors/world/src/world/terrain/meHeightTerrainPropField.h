@@ -32,7 +32,7 @@ class meUpdateHeightTerrainPropField;
 class meHTVInstance;
 
 class deEngine;
-class dePropField;
+#include <dragengine/resources/propfield/dePropField.h>
 class dePropFieldType;
 class dePropFieldInstance;
 

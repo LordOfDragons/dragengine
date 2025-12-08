@@ -29,9 +29,9 @@
 #include <deigde/gui/properties/igdeWPCamera.h>
 #include <deigde/gui/properties/igdeWPWObject.h>
 
-class seSky;
+#include "../../sky/seSky.h"
 class seWindowProperties;
-class seWPViewListener;
+#include "seWPViewListener.h"
 
 
 

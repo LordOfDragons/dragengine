@@ -26,7 +26,7 @@
 #define _DEOGLPARTICLEEMITTERTYPE_H_
 
 class deoglParticleEmitter;
-class deoglRParticleEmitterType;
+#include "deoglRParticleEmitterType.h"
 
 class deParticleEmitterParameter;
 class deParticleEmitterType;

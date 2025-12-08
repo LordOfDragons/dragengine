@@ -34,13 +34,13 @@
 #include <deigde/gui/resources/igdeIcon.h>
 
 
-class peeWindowMainListener;
+#include "peeWindowMainListener.h"
 class peeConfiguration;
 class peeLoadSaveSystem;
-class peeViewEmitter;
-class peeWindowProperties;
-class peeWindowCurves;
-class peeEmitter;
+#include "peeViewEmitter.h"
+#include "properties/peeWindowProperties.h"
+#include "curves/peeWindowCurves.h"
+#include "../emitter/peeEmitter.h"
 
 
 /**

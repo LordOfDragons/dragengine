@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class seSky;
+#include "../../sky/seSky.h"
 
 
 

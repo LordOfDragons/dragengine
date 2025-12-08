@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class reRig;
-class reWPUndoHistoryListener;
+#include "../../rig/reRig.h"
+#include "reWPUndoHistoryListener.h"
 
 
 

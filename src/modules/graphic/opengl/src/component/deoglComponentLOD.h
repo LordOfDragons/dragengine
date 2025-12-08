@@ -25,7 +25,7 @@
 #ifndef _DEOGLCOMPONENTLOD_H_
 #define _DEOGLCOMPONENTLOD_H_
 
-class deoglRComponentLOD;
+#include "deoglRComponentLOD.h"
 class deoglComponent;
 
 

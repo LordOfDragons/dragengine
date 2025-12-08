@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeParticleEmitter;
+#include "../../../../gamedef/particleemitter/gdeParticleEmitter.h"
 
 
 /**

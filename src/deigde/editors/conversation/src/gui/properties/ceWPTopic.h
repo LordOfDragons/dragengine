@@ -39,8 +39,8 @@ class ceWPAActorAdd;
 class ceWPCTrigger;
 class ceWPATrigger;
 class ceWindowProperties;
-class ceWPTopicListener;
-class ceConversation;
+#include "ceWPTopicListener.h"
+#include "../../conversation/ceConversation.h"
 class ceConversationFile;
 class ceConversationTopic;
 class ceConversationAction;

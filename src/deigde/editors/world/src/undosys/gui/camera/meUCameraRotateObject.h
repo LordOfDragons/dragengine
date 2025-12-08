@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meObject;
+#include "../../../world/object/meObject.h"
 
 
 

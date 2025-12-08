@@ -32,7 +32,7 @@
 class deHeightTerrain;
 class deHeightTerrainNavSpace;
 class deHeightTerrainTexture;
-class deDecal;
+#include "../../decal/deDecal.h"
 class deDecalList;
 
 

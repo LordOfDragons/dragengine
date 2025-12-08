@@ -37,7 +37,7 @@ class debpSweepCollisionTest;
 class deColliderVolume;
 class debpMotionState;
 class debpPhysicsBody;
-class debpBulletShape;
+#include "../debpBulletShape.h"
 class deCollisionInfo;
 
 

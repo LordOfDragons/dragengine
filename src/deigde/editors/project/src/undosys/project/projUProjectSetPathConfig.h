@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class projProject;
+#include "../../project/projProject.h"
 
 
 

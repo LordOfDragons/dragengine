@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class feFontImage;
+#include "../../font/image/feFontImage.h"
 class deImage;
 
 

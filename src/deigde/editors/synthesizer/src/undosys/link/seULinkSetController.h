@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLink;
-class seController;
+#include "../../synthesizer/link/seLink.h"
+#include "../../synthesizer/controller/seController.h"
 
 
 

@@ -28,7 +28,7 @@
 #include <dragengine/systems/modules/graphic/deBaseGraphicLumimeter.h>
 #include <dragengine/common/math/decMath.h>
 
-class deoglRLumimeter;
+#include "deoglRLumimeter.h"
 
 class deGraphicOpenGl;
 class deLumimeter;

@@ -31,7 +31,7 @@
 
 #include <dragengine/resources/skin/property/deSkinPropertyMapped.h>
 
-class seProperty;
+#include "../../skin/property/seProperty.h"
 
 
 /**

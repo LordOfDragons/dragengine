@@ -29,8 +29,8 @@
 
 class deAndroidInput;
 class deainpDevice;
-class deainpDeviceMouse;
-class deainpDeviceKeyboard;
+#include "deainpDeviceMouse.h"
+#include "deainpDeviceKeyboard.h"
 
 
 

@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class projProject;
-class projProfile;
+#include "../../project/projProject.h"
+#include "../../project/profile/projProfile.h"
 
 
 

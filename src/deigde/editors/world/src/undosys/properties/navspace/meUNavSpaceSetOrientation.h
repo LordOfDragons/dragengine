@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meNavigationSpace;
+#include "../../../world/navspace/meNavigationSpace.h"
 
 
 

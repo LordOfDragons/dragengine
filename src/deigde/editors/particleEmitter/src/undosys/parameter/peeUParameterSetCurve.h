@@ -29,7 +29,7 @@
 
 #include <dragengine/common/curve/decCurveBezier.h>
 
-class peeType;
+#include "../../emitter/peeType.h"
 class peeParameter;
 
 

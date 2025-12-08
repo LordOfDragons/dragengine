@@ -29,7 +29,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class ceFacePose;
+#include "../../conversation/facepose/ceFacePose.h"
 class ceConversationActionList;
 class ceConversationTopic;
 

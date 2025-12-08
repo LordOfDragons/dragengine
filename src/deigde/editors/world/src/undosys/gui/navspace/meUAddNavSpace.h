@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class meWorld;
-class meNavigationSpace;
+#include "../../../world/meWorld.h"
+#include "../../../world/navspace/meNavigationSpace.h"
 
 
 

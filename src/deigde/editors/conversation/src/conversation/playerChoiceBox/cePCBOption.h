@@ -29,11 +29,11 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
-class deCanvasView;
+#include <dragengine/resources/canvas/deCanvasView.h>
 class cePlayerChoiceBox;
 class deGraphicContext;
-class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
+#include "../action/ceCAPlayerChoice.h"
+#include "../action/ceCAPlayerChoiceOption.h"
 
 
 

@@ -33,10 +33,10 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSynthesizer;
+#include "../../synthesizer/seSynthesizer.h"
 class seLink;
 class seViewSynthesizer;
-class seWPLinkListener;
+#include "seWPLinkListener.h"
 
 
 

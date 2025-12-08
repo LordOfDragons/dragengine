@@ -27,7 +27,7 @@
 
 #include "../common/string/decString.h"
 
-class dealGameProfile;
+#include "profile/dealGameProfile.h"
 
 
 

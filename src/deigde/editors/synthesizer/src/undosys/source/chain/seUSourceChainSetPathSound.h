@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seSourceChain;
+#include "../../../synthesizer/source/seSourceChain.h"
 
 
 

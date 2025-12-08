@@ -40,8 +40,8 @@
 class gdeWindowMain;
 class gdeViewActiveObjectListener;
 
-class gdeGameDefinition;
-class gdeObjectClass;
+#include "../../gamedef/gdeGameDefinition.h"
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 class gdeOCBillboard;
 class gdeOCComponent;
 class gdeOCComponentTexture;

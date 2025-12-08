@@ -40,9 +40,9 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class meWPSelection;
-class meWPSDecalListener;
+#include "meWPSDecalListener.h"
 class meDecal;
-class meWorld;
+#include "../../../../world/meWorld.h"
 
 
 

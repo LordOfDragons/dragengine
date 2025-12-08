@@ -31,7 +31,7 @@
 #include <dragengine/common/string/decStringSet.h>
 
 class gdeOCSpeaker;
-class gdeObjectClass;
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 
 
 

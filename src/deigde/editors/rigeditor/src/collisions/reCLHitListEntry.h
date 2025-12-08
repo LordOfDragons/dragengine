@@ -30,10 +30,10 @@
 #include "dragengine/common/math/decMath.h"
 
 // predefinitions
-class reRigBone;
-class reRigShape;
-class reRigConstraint;
-class reRigPush;
+#include "../rig/bone/reRigBone.h"
+#include "../rig/shape/reRigShape.h"
+#include "../rig/constraint/reRigConstraint.h"
+#include "../rig/push/reRigPush.h"
 
 
 

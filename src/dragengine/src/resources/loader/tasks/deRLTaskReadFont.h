@@ -27,7 +27,7 @@
 
 #include "deResourceLoaderTask.h"
 
-class deRLTaskReadFontInternal;
+#include "deRLTaskReadFontInternal.h"
 class deFont;
 
 

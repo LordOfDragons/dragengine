@@ -38,13 +38,13 @@ class seConfiguration;
 class seEngineController;
 class seIGDEModule;
 class seLoadSaveSystem;
-class seSkin;
+#include "../skin/seSkin.h"
 class seTexture;
 class seMapped;
-class seViewConstructed;
-class seViewSkin;
-class seWindowMainListener;
-class seWindowProperties;
+#include "constructed/seViewConstructed.h"
+#include "seViewSkin.h"
+#include "seWindowMainListener.h"
+#include "properties/seWindowProperties.h"
 class igdeStepableTask;
 
 class decStringList;

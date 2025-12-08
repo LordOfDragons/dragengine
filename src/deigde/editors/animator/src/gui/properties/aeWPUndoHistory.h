@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class aeAnimator;
-class aeWPUndoHistoryListener;
+#include "../../animator/aeAnimator.h"
+#include "aeWPUndoHistoryListener.h"
 
 
 

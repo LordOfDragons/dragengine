@@ -29,7 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class meWorld;
+#include "../../../world/meWorld.h"
 class meDecal;
 class meUndoDataDecal;
 

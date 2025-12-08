@@ -31,7 +31,7 @@
 #include "../../../synthesizer/link/seLinkList.h"
 #include "../../../synthesizer/controller/seControllerList.h"
 
-class seSourceGroup;
+#include "../../../synthesizer/source/seSourceGroup.h"
 
 
 

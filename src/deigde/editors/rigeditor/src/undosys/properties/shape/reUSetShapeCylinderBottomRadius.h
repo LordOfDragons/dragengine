@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include "dragengine/common/math/decMath.h"
 
-class reRigShapeCylinder;
+#include "../../../rig/shape/reRigShapeCylinder.h"
 
 
 

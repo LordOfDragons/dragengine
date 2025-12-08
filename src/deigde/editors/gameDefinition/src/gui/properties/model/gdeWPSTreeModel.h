@@ -27,7 +27,7 @@
 
 #include <deigde/gui/igdeTreeList.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeWPSTIMCategories;
 class gdeWPSTIMObjectClasses;
 class gdeWPSTIMParticleEmitters;

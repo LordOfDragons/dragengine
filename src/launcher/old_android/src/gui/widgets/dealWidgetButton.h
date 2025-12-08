@@ -30,7 +30,7 @@
 
 class dealWidgetLabel;
 class dealWidgetImage;
-class dealWidgetBorderImage;
+#include "dealWidgetBorderImage.h"
 class dealImage;
 
 

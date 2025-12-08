@@ -32,7 +32,7 @@
 
 
 class seWindowMain;
-class seSkin;
+#include "../skin/seSkin.h"
 
 
 /**

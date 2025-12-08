@@ -33,9 +33,9 @@
 #include <deigde/gui/properties/igdeWPWObject.h>
 #include <deigde/gui/properties/igdeWPSky.h>
 
-class peeEmitter;
+#include "../../emitter/peeEmitter.h"
 class peeWindowProperties;
-class peeWPViewListener;
+#include "peeWPViewListener.h"
 
 
 

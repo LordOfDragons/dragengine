@@ -27,7 +27,7 @@
 
 #include "../../condition/ceWPTTIMConditionContainer.h"
 
-class ceCAWait;
+#include "../../../../../conversation/action/ceCAWait.h"
 class ceWPTTIMAWait;
 
 

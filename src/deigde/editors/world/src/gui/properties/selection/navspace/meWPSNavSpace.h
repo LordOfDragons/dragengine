@@ -33,9 +33,9 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class meWPSNavSpaceListener;
+#include "meWPSNavSpaceListener.h"
 class meWPSelection;
-class meWorld;
+#include "../../../../world/meWorld.h"
 class meNavigationSpace;
 
 

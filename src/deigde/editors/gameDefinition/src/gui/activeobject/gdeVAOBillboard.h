@@ -29,7 +29,7 @@
 #include <dragengine/resources/billboard/deBillboard.h>
 #include <dragengine/resources/collider/deCollider.h>
 
-class gdeOCBillboard;
+#include "../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 
 
 

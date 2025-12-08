@@ -36,13 +36,13 @@
 #include <dragengine/threading/deMutex.h>
 
 class deAudioOpenAL;
-class deoalAMicrophone;
+#include "../microphone/deoalAMicrophone.h"
 class deoalATContext;
 class deoalATDebug;
 class deoalATDelayed;
 class deoalATLogger;
 class deoalATRayTracing;
-class deoalAWorld;
+#include "../world/deoalAWorld.h"
 class deoalCaches;
 class deoalCapabilities;
 class deoalConfiguration;

@@ -30,7 +30,7 @@
 
 #include <dragengine/common/string/decStringList.h>
 
-class meObject;
+#include "../../../../world/object/meObject.h"
 
 
 

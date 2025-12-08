@@ -32,9 +32,9 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSynthesizer;
+#include "../../synthesizer/seSynthesizer.h"
 class seViewSynthesizer;
-class seWPSynthesizerListener;
+#include "seWPSynthesizerListener.h"
 
 
 

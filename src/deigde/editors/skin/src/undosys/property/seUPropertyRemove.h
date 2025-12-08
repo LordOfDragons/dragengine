@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seTexture;
-class seProperty;
+#include "../../skin/texture/seTexture.h"
+#include "../../skin/property/seProperty.h"
 
 
 

@@ -30,7 +30,7 @@
 #include <deigde/gui/event/igdeMouseCameraListener.h>
 
 class peeWindowMain;
-class peeEmitter;
+#include "../emitter/peeEmitter.h"
 
 
 

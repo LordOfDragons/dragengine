@@ -38,8 +38,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class projProject;
-class projPanelProfilesListener;
+#include "../project/projProject.h"
+#include "projPanelProfilesListener.h"
 class projProfile;
 class projWindowMain;
 

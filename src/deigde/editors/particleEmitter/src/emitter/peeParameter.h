@@ -29,7 +29,7 @@
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 
 class peeType;
-class peeController;
+#include "peeController.h"
 class deParticleEmitterParameter;
 
 

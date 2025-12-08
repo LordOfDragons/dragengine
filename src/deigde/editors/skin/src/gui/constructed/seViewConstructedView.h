@@ -38,7 +38,7 @@
 class seProperty;
 class sePropertyNode;
 class sePropertyNodeGroup;
-class seSkin;
+#include "../../skin/seSkin.h"
 class seViewConstructedViewListener;
 class seWindowMain;
 class sePropertyNodeList;

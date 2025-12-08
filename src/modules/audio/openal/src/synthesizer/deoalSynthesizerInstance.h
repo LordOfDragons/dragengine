@@ -29,7 +29,7 @@
 #include <dragengine/systems/modules/audio/deBaseAudioSynthesizerInstance.h>
 
 class deAudioOpenAL;
-class deoalASynthesizerInstance;
+#include "deoalASynthesizerInstance.h"
 
 class deSynthesizerInstance;
 

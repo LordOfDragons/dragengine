@@ -27,7 +27,7 @@
 
 #include "../../common/string/decString.h"
 
-class deVirtualFileSystem;
+#include "../../filesystem/deVirtualFileSystem.h"
 class deEngine;
 class deOS;
 class deModuleParameter;

@@ -29,7 +29,7 @@
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNode.h>
 
-class sePropertyNode;
+#include "../../../skin/property/node/sePropertyNode.h"
 
 
 

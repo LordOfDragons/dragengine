@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/string/decStringList.h>
 
-class aeRule;
+#include "../../animator/rule/aeRule.h"
 
 
 

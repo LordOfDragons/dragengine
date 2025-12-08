@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class meWorld;
+#include "../../../../world/meWorld.h"
 
 
 

@@ -27,7 +27,7 @@
 
 #include "../../../common/math/decMath.h"
 
-class deImage;
+#include <dragengine/resources/image/deImage.h>
 
 
 /**

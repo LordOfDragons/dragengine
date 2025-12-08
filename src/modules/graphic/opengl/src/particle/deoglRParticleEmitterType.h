@@ -35,7 +35,7 @@
 
 class deoglLightShaderConfig;
 class deoglRParticleEmitter;
-class deoglRSkin;
+#include "../skin/deoglRSkin.h"
 class deoglTexture;
 
 

@@ -35,10 +35,10 @@
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class seSkin;
+#include "../../../skin/seSkin.h"
 class seDynamicSkinRenderable;
 class seWindowProperties;
-class seWPDynamicSkinListener;
+#include "seWPDynamicSkinListener.h"
 
 
 

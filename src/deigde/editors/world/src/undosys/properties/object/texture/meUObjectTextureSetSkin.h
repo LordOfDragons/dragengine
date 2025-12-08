@@ -30,7 +30,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class meObjectTexture;
+#include "../../../../world/object/texture/meObjectTexture.h"
 class meObjectTextureList;
 
 

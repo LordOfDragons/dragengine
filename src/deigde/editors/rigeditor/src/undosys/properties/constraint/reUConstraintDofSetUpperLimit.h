@@ -29,7 +29,7 @@
 
 #include <dragengine/resources/collider/deColliderConstraint.h>
 
-class reRigConstraint;
+#include "../../../rig/constraint/reRigConstraint.h"
 
 
 

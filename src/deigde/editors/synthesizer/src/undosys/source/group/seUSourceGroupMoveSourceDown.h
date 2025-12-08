@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class seSource;
-class seSourceGroup;
+#include "../../../synthesizer/source/seSourceGroup.h"
 
 
 

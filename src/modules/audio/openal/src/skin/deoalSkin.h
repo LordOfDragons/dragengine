@@ -28,7 +28,7 @@
 #include <dragengine/systems/modules/audio/deBaseAudioSkin.h>
 
 class deAudioOpenAL;
-class deoalASkin;
+#include "deoalASkin.h"
 
 class deSkin;
 

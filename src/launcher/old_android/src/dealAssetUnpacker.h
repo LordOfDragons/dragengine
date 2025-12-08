@@ -34,7 +34,7 @@
 #include "common/string/decString.h"
 #include "common/string/decStringList.h"
 
-class deLogger;
+#include <dragengine/logger/deLogger.h>
 class decBaseFileWriter;
 
 

@@ -29,7 +29,7 @@
 #include "../../font/deFont.h"
 
 class deRLTaskReadFont;
-class deRLTaskReadFontInternal2;
+#include "deRLTaskReadFontInternal2.h"
 
 
 /**

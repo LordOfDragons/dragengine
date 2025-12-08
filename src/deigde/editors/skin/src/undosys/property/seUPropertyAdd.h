@@ -30,7 +30,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seTexture;
+#include "../../skin/texture/seTexture.h"
 
 
 

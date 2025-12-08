@@ -33,7 +33,7 @@
 #include <dragengine/common/string/decStringSet.h>
 
 // predefinitions
-class meObject;
+#include "../world/object/meObject.h"
 
 
 

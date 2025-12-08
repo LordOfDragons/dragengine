@@ -30,8 +30,8 @@
 #include <deigde/gui/properties/igdeWPSky.h>
 
 class gdeWindowProperties;
-class gdeWPViewListener;
-class gdeGameDefinition;
+#include "gdeWPViewListener.h"
+#include "../../gamedef/gdeGameDefinition.h"
 
 
 

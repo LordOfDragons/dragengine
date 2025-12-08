@@ -35,7 +35,7 @@ class mePropFieldType;
 class meWorld;
 
 class deEngine;
-class dePropField;
+#include <dragengine/resources/propfield/dePropField.h>
 
 
 

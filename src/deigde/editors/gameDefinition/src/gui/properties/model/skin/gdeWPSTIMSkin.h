@@ -27,7 +27,7 @@
 
 #include "../gdeWPSTreeItemModel.h"
 
-class gdeSkin;
+#include "../../../../gamedef/skin/gdeSkin.h"
 
 
 /**

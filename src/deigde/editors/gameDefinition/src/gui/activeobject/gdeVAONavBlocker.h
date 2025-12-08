@@ -29,7 +29,7 @@
 
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
-class gdeOCNavigationBlocker;
+#include "../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 
 class igdeWDebugDrawerShape;
 

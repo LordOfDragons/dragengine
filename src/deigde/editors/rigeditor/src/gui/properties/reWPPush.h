@@ -31,9 +31,9 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class reWindowProperties;
-class reRig;
-class reRigPush;
-class reWPPushListener;
+#include "../../rig/reRig.h"
+#include "../../rig/push/reRigPush.h"
+#include "reWPPushListener.h"
 
 
 

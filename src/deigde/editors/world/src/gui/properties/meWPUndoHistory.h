@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class meWorld;
-class meWPUndoHistoryListener;
+#include "../../world/meWorld.h"
+#include "meWPUndoHistoryListener.h"
 
 
 

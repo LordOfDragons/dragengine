@@ -55,12 +55,12 @@ class igdeWDebugDrawerShape;
 class igdeGameDefinition;
 
 class deCollider;
-class deColliderVolume;
-class deComponent;
+#include <dragengine/resources/collider/deColliderVolume.h>
+#include <dragengine/resources/component/deComponent.h>
 class deComponentTexture;
 class decShape;
 class decStringList;
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class deDecalList;
 class deEngine;
 

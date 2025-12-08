@@ -34,8 +34,8 @@
 // predefinitions
 class mePropField;
 
-class deSkin;
-class deModel;
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/model/deModel.h>
 class deEngine;
 class dePropFieldType;
 class dePropFieldInstance;

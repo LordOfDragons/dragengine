@@ -32,7 +32,7 @@
 
 class btGhostObject;
 class btCollisionObject;
-class debpBulletShape;
+#include "../debpBulletShape.h"
 class debpColliderBone;
 class debpColliderBones;
 class debpComponent;

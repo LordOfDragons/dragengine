@@ -41,13 +41,13 @@ class peeLoadSaveSystem;
 
 class igdeWSky;
 
-class deParticleEmitter;
-class deParticleEmitterInstance;
+#include <dragengine/resources/particle/deParticleEmitter.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
 class deSkin;
 class deComponent;
-class deDebugDrawer;
+#include <dragengine/resources/debug/deDebugDrawer.h>
 class igdeCamera;
-class deWorld;
+#include <dragengine/resources/world/deWorld.h>
 class deLogger;
 
 

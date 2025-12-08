@@ -27,7 +27,7 @@
 
 #include <deigde/clipboard/igdeClipboardData.h>
 
-class gdeOCSpeaker;
+#include "../gamedef/objectClass/speaker/gdeOCSpeaker.h"
 
 
 

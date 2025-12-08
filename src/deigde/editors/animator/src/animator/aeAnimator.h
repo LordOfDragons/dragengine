@@ -55,14 +55,14 @@ class igdeWSky;
 class igdeWCoordSysArrows;
 
 class deEngine;
-class deWorld;
-class deLight;
-class deComponent;
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/light/deLight.h>
+#include <dragengine/resources/component/deComponent.h>
 class deColliderVolume;
-class deColliderComponent;
-class deDebugDrawer;
-class deAnimator;
-class deAnimatorInstance;
+#include <dragengine/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 class deAnimatorRule;
 class deLogger;
 

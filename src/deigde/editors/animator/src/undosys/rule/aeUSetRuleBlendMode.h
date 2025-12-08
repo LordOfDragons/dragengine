@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
-class aeRule;
+#include "../../animator/rule/aeRule.h"
 
 
 

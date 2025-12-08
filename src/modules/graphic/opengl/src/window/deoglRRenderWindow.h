@@ -54,7 +54,7 @@ class NSView;
 #endif
 
 class deoglRenderThread;
-class deoglRCanvasView;
+#include "../canvas/render/deoglRCanvasView.h"
 
 
 /**

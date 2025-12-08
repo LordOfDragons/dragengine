@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class seLink;
-class seSynthesizer;
+#include "../../synthesizer/link/seLink.h"
+#include "../../synthesizer/seSynthesizer.h"
 
 
 

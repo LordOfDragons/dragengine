@@ -27,8 +27,8 @@
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
 
-class gdeGameDefinition;
-class gdeWPUndoHistoryListener;
+#include "../../gamedef/gdeGameDefinition.h"
+#include "gdeWPUndoHistoryListener.h"
 
 
 

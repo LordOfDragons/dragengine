@@ -30,8 +30,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeController;
-class aeAnimator;
+#include "../../animator/controller/aeController.h"
+#include "../../animator/aeAnimator.h"
 
 
 

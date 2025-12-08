@@ -29,7 +29,7 @@
 
 #include <dragengine/resources/debug/deDebugDrawer.h>
 
-class gdeOCNavigationSpace;
+#include "../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
 
 class igdeWDebugDrawerShape;
 

@@ -30,7 +30,7 @@
 #include "deModuleSystem.h"
 
 class deEngine;
-class deLoadableModule;
+#include "modules/deLoadableModule.h"
 class deException;
 
 

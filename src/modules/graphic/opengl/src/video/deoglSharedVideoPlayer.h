@@ -25,7 +25,7 @@
 #ifndef _DEOGLSHAREDVIDEOPLAYER_H_
 #define _DEOGLSHAREDVIDEOPLAYER_H_
 
-class deVideoPlayer;
+#include <dragengine/resources/video/deVideoPlayer.h>
 class deGraphicOpenGl;
 class deoglSharedVideoPlayerList;
 

@@ -42,14 +42,14 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeFilePattern;
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeObjectClass;
 class gdeProperty;
 class gdeOCComponentTexture;
 class gdeOCInherit;
 class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSObjectClassListener;
+#include "gdeWPSObjectClassListener.h"
 
 
 /**

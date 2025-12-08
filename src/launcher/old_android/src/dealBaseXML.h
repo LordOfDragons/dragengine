@@ -29,7 +29,7 @@
 
 class decXmlWriter;
 class decXmlElementTag;
-class deLogger;
+#include <dragengine/logger/deLogger.h>
 
 
 

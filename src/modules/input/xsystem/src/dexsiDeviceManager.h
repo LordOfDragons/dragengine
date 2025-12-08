@@ -35,7 +35,7 @@
 #include <dragengine/common/utils/decTimer.h>
 
 class deXSystemInput;
-class dexsiDevice;
+#include "dexsiDevice.h"
 
 
 

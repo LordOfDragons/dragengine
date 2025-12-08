@@ -33,11 +33,11 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
-class gdeGameDefinition;
+#include "../../../gamedef/gdeGameDefinition.h"
 class gdeParticleEmitter;
 class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSParticleEmitterListener;
+#include "gdeWPSParticleEmitterListener.h"
 
 
 

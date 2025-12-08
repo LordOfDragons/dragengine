@@ -36,8 +36,8 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class ceWindowProperties;
-class ceWPConversationListener;
-class ceConversation;
+#include "ceWPConversationListener.h"
+#include "../../conversation/ceConversation.h"
 class ceGesture;
 class ceFacePose;
 class ceCameraShot;

@@ -55,7 +55,7 @@ class deoglExtensions;
 class deoglGI;
 class deoglLightBoundaryMap;
 class deoglOcclusionQueryManager;
-class deoglRCanvasView;
+#include "../canvas/render/deoglRCanvasView.h"
 class deoglRRenderWindow;
 class deoglShadowMapper;
 class deoglTriangleSorter;

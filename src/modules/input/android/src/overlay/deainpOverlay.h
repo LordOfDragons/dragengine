@@ -32,7 +32,7 @@
 
 
 class deAndroidInput;
-class deCanvasView;
+#include <dragengine/resources/canvas/deCanvasView.h>
 
 
 /**
