@@ -30,6 +30,7 @@
 
 #include <delauncher/delLauncher.h>
 #include <delauncher/game/delGame.h>
+#include <delauncher/game/icon/delGameIcon.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 
@@ -104,7 +105,7 @@ public:
 	
 	
 	/** Create game icon instance. */
-	virtual delGameIcon *CreateGameIcon(int size, const char *path);
+	delGameIcon::Ref CreateGameIcon(int size, const char *path) override;
 	/*@}*/
 	
 	

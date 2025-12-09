@@ -39,18 +39,18 @@ bool FDVFSContainer::CanDeleteFile(const decPath &path) {
     return false;
 }
 
-decBaseFileReader *FDVFSContainer::OpenFileForReading(const decPath &path) {
+decBaseFileReader::Ref FDVFSContainer::OpenFileForReading(const decPath &path) {
     const MapEntries::const_iterator iter(pEntries.find(path.GetPathUnix().GetString()));
     DEASSERT_TRUE(iter != pEntries.cend())
 
     const FDProducer::Ref &producer = iter->second->GetProducer();
-    return new FDFileReader(iter->first.c_str(),
-                            producer->CreateFileDescriptor(),
-                            iter->second->GetOffset(),
-                            iter->second->GetSize(), producer);
+    return decBaseFileReader::Ref::New(new FDFileReader(iter->first.c_str(),
+                                       producer->CreateFileDescriptor(),
+                                       iter->second->GetOffset(),
+                                       iter->second->GetSize(), producer));
 }
 
-decBaseFileWriter *FDVFSContainer::OpenFileForWriting(const decPath &path) {
+decBaseFileWriter::Ref FDVFSContainer::OpenFileForWriting(const decPath &path) {
     DETHROW(deeInvalidAction);
 }
 

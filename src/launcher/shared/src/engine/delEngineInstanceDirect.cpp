@@ -610,10 +610,10 @@ const char *archivePath, const decStringSet &hiddenPath){
 	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
 	deArchiveManager &amgr = *pEngine->GetArchiveManager();
 	
-	const deArchiveContainer::Ref container(deArchiveContainer::Ref::New(amgr.CreateContainer(
+	const deArchiveContainer::Ref container(amgr.CreateContainer(
 		decPath::CreatePathUnix("/"),
 		deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/")),
-		decPath::CreatePathUnix(archivePath))));
+		decPath::CreatePathUnix(archivePath)));
 	
 	const int count = hiddenPath.GetCount();
 	int i;
@@ -890,7 +890,7 @@ void delEngineInstanceDirect::ReadDelgaGameDefs(const char *delgaFile, decString
 	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/")));
 	
 	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
-	vfs->AddContainer(deArchiveContainer::Ref::New(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot)));
+	vfs->AddContainer(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot));
 	
 	deCollectFileSearchVisitor collect("*.degame", true);
 	vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
@@ -932,7 +932,7 @@ void delEngineInstanceDirect::ReadDelgaPatchDefs(const char *delgaFile, decStrin
 	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/")));
 	
 	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
-	vfs->AddContainer(deArchiveContainer::Ref::New(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot)));
+	vfs->AddContainer(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot));
 	
 	deCollectFileSearchVisitor collect("*.depatch", true);
 	vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
@@ -982,7 +982,7 @@ const decStringList &filenames, decObjectOrderedSet &filesContent){
 	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/")));
 	
 	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
-	vfs->AddContainer(deArchiveContainer::Ref::New(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot)));
+	vfs->AddContainer(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot));
 	
 	// read files
 	decBaseFileReader::Ref reader;

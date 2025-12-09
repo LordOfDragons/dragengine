@@ -183,16 +183,16 @@ void delLauncher::Prepare(){
 
 
 
-delGame * delLauncher::CreateGame(){
-	return new delGame(*this);
+delGame::Ref delLauncher::CreateGame(){
+	return delGame::Ref::NewWith(*this);
 }
 
-delGameProfile *delLauncher::CreateGameProfile(const delGameProfile *copyFrom){
-	return copyFrom ? new delGameProfile(*copyFrom) : new delGameProfile;
+delGameProfile::Ref delLauncher::CreateGameProfile(const delGameProfile *copyFrom){
+	return copyFrom ? delGameProfile::Ref::NewWith(*copyFrom) : delGameProfile::Ref::NewWith();
 }
 
-delGameIcon *delLauncher::CreateGameIcon(int size, const char *path){
-	return new delGameIcon(size, path);
+delGameIcon::Ref delLauncher::CreateGameIcon(int size, const char *path){
+	return delGameIcon::Ref::NewWith(size, path);
 }
 
 
