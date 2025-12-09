@@ -87,7 +87,7 @@ const char *filename, deAnimationBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	deAnimation::Ref anim=NULL, *findAnim;
+	deAnimation::Ref anim;
 	
 	try{
 		// check if animation with filename already exists. check is only done if

@@ -26,8 +26,7 @@
 #define _DESYNTHESIZERSOURCESYNTHESIZER_H_
 
 #include "deSynthesizerSource.h"
-
-class deSound;
+#include "../deSynthesizer.h"
 
 
 /**
