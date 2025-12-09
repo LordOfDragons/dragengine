@@ -65,24 +65,10 @@ deDynamicSkin *deDynamicSkinManager::GetRootDynamicSkin() const{
 	return (deDynamicSkin*)pSkins.GetRoot();
 }
 
-deDynamicSkin *deDynamicSkinManager::CreateDynamicSkin(){
-	deDynamicSkin *dynamicSkin = NULL;
-	
-	try{
-		dynamicSkin = new deDynamicSkin(this);
-		if(!dynamicSkin) DETHROW(deeOutOfMemory);
-		
-		GetGraphicSystem()->LoadDynamicSkin(dynamicSkin);
-		
-		pSkins.Add(dynamicSkin);
-		
-	}catch(const deException &){
-		if(dynamicSkin){
-			dynamicSkin->FreeReference();
-		}
-		throw;
-	}
-	
+deDynamicSkin::Ref deDynamicSkinManager::CreateDynamicSkin(){
+	const deDynamicSkin::Ref dynamicSkin(deDynamicSkin::Ref::NewWith(this));
+	GetGraphicSystem()->LoadDynamicSkin(dynamicSkin);
+	pSkins.Add(dynamicSkin);
 	return dynamicSkin;
 }
 

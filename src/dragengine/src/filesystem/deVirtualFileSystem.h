@@ -28,9 +28,9 @@
 #include "deVFSContainer.h"
 #include "../deObject.h"
 #include "../common/collection/decObjectOrderedSet.h"
+#include "../common/file/decBaseFileReader.h"
+#include "../common/file/decBaseFileWriter.h"
 
-class decBaseFileReader;
-class decBaseFileWriter;
 class decPath;
 class dePatternList;
 class dePathList;
@@ -108,7 +108,7 @@ public:
 	 * 
 	 * \warning File reader has reference counted added. Use decBaseFileReader::Ref::TakeOver().
 	 */
-	decBaseFileReader *OpenFileForReading(const decPath &path) const;
+	decBaseFileReader::Ref OpenFileForReading(const decPath &path) const;
 	
 	/**
 	 * \brief Open file for writing.
@@ -117,7 +117,7 @@ public:
 	 * 
 	 * \warning File reader has reference counted added. Use decBaseFileWriter::Ref::TakeOver().
 	 */
-	decBaseFileWriter *OpenFileForWriting(const decPath &path) const;
+	decBaseFileWriter::Ref OpenFileForWriting(const decPath &path) const;
 	
 	/**
 	 * \brief Delete specified file.

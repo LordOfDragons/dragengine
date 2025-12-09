@@ -62,7 +62,6 @@ extern const int *vResourcePeerCreationOrder;
 
 deAudioSystem::deAudioSystem(deEngine *engine) : deBaseSystem(engine, "Audio", deModuleSystem::emtAudio){
 	pActiveModule = NULL;
-	pActiveMic = NULL;
 }
 
 deAudioSystem::~deAudioSystem(){
@@ -126,17 +125,7 @@ void deAudioSystem::SetActiveMicrophone(deMicrophone *microphone){
 	if(microphone == pActiveMic){
 		return;
 	}
-	
-	if(pActiveMic){
-		pActiveMic->FreeReference();
-	}
-	
 	pActiveMic = microphone;
-	
-	if(microphone){
-		microphone->AddReference();
-	}
-	
 	if(GetIsRunning()){
 		pActiveModule->SetActiveMicrophone(microphone);
 	}
@@ -349,7 +338,4 @@ void deAudioSystem::LoadHeightTerrain(deHeightTerrain &heightTerrain){
 //////////////////////
 
 void deAudioSystem::pCleanUp(){
-	if(pActiveMic){
-		pActiveMic->FreeReference();
-	}
 }

@@ -53,21 +53,10 @@ deLight *deLightManager::GetRootLight() const{
 	return (deLight*)pLights.GetRoot();
 }
 
-deLight *deLightManager::CreateLight(){
-	deLight *light = NULL;
-	// create and add light
-	try{
-		light = new deLight(this);
-		if(!light) DETHROW(deeOutOfMemory);
-		GetGraphicSystem()->LoadLight(light);
-		pLights.Add(light);
-	}catch(const deException &){
-		if(light){
-			light->FreeReference();
-		}
-		throw;
-	}
-	// finished
+deLight::Ref deLightManager::CreateLight(){
+	const deLight::Ref light(deLight::Ref::NewWith(this));
+	GetGraphicSystem()->LoadLight(light);
+	pLights.Add(light);
 	return light;
 }
 

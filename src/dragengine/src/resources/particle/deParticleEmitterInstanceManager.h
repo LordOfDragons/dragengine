@@ -25,11 +25,11 @@
 #ifndef _DEPARTICLEEMITTERINSTANCEMANAGER_H_
 #define _DEPARTICLEEMITTERINSTANCEMANAGER_H_
 
+#include "deParticleEmitterInstance.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deParticleEmitterInstance;
 
 
 /**
@@ -62,7 +62,7 @@ public:
 	deParticleEmitterInstance *GetRootInstance() const;
 	
 	/** \brief Create new instance. */
-	deParticleEmitterInstance *CreateInstance();
+	deParticleEmitterInstance::Ref CreateInstance();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

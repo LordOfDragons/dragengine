@@ -60,21 +60,10 @@ deDebugDrawer *deDebugDrawerManager::GetRootDebugDrawer() const{
 	return (deDebugDrawer*)pDebugDrawers.GetRoot();
 }
 
-deDebugDrawer *deDebugDrawerManager::CreateDebugDrawer(){
-	deDebugDrawer *debugDrawer = NULL;
-	// create and add debug drawer
-	try{
-		debugDrawer = new deDebugDrawer(this);
-		if(!debugDrawer) DETHROW(deeOutOfMemory);
-		GetGraphicSystem()->LoadDebugDrawer(debugDrawer);
-		pDebugDrawers.Add(debugDrawer);
-	}catch(const deException &){
-		if(debugDrawer){
-			debugDrawer->FreeReference();
-		}
-		throw;
-	}
-	// finished
+deDebugDrawer::Ref deDebugDrawerManager::CreateDebugDrawer(){
+	const deDebugDrawer::Ref debugDrawer(deDebugDrawer::Ref::NewWith(this));
+	GetGraphicSystem()->LoadDebugDrawer(debugDrawer);
+	pDebugDrawers.Add(debugDrawer);
 	return debugDrawer;
 }
 

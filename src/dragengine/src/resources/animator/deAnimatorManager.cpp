@@ -66,23 +66,10 @@ deAnimator *deAnimatorManager::GetRootAnimator() const{
 	return (deAnimator*)pAnimators.GetRoot();
 }
 
-deAnimator *deAnimatorManager::CreateAnimator(){
-	deAnimator *animator = NULL;
-	// load skin
-	try{
-		// create and add animator
-		animator = new deAnimator(this);
-		if(!animator) DETHROW(deeOutOfMemory);
-		GetAnimatorSystem()->LoadAnimator(animator);
-		// add animator
-		pAnimators.Add(animator);
-	}catch(const deException &){
-		if(animator){
-			animator->FreeReference();
-		}
-		throw;
-	}
-	// finished
+deAnimator::Ref deAnimatorManager::CreateAnimator(){
+	const deAnimator::Ref animator(deAnimator::Ref::NewWith(this));
+	GetAnimatorSystem()->LoadAnimator(animator);
+	pAnimators.Add(animator);
 	return animator;
 }
 

@@ -64,22 +64,10 @@ deSkyInstance *deSkyInstanceManager::GetRootSkyInstance() const{
 	return (deSkyInstance*)pInstances.GetRoot();
 }
 
-deSkyInstance *deSkyInstanceManager::CreateSkyInstance(){
-	deSkyInstance *instance = NULL;
-	
-	try{
-		instance = new deSkyInstance(this);
-		GetGraphicSystem()->LoadSkyInstance(instance);
-		pInstances.Add(instance);
-		
-	}catch(const deException &){
-		if(instance){
-			instance->FreeReference();
-		}
-		
-		throw;
-	}
-	
+deSkyInstance::Ref deSkyInstanceManager::CreateSkyInstance(){
+	const deSkyInstance::Ref instance(deSkyInstance::Ref::NewWith(this));
+	GetGraphicSystem()->LoadSkyInstance(instance);
+	pInstances.Add(instance);
 	return instance;
 }
 

@@ -163,7 +163,7 @@ public:
 	void SetLayerMask(const decLayerMask &layerMask);
 	
 	/** \brief Explicit environment map image to use or NULL to auto-generate. */
-	inline deImage *GetImage() const{ return pImage; }
+	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
 	/** \brief Set explicit environment map image to use or NULL to auto-generate. */
 	void SetImage(deImage *image);

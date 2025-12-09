@@ -25,17 +25,16 @@
 #ifndef _DECANVASMANAGER_H_
 #define _DECANVASMANAGER_H_
 
+#include "deCanvasImage.h"
+#include "deCanvasPaint.h"
+#include "deCanvasCanvasView.h"
+#include "deCanvasRenderWorld.h"
+#include "deCanvasText.h"
+#include "deCanvasVideoPlayer.h"
+#include "deCanvasView.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
-class deCanvas;
-class deCanvasImage;
-class deCanvasPaint;
-class deCanvasCanvasView;
-class deCanvasRenderWorld;
-class deCanvasText;
-class deCanvasVideoPlayer;
-class deCanvasView;
 class deEngine;
 
 
@@ -69,7 +68,7 @@ public:
 	deCanvas *GetRootCanvas() const;
 	
 	/** \brief Create image canvas. */
-	deCanvasImage *CreateCanvasImage();
+	deCanvasImage::Ref CreateCanvasImage();
 	
 	/** \brief Create paint canvas. */
 	deCanvasPaint *CreateCanvasPaint();

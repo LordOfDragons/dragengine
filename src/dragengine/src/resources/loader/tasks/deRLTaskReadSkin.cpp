@@ -49,7 +49,6 @@
 deRLTaskReadSkin::deRLTaskReadSkin(deEngine &engine, deResourceLoader &resourceLoader,
 deVirtualFileSystem *vfs, const char *path, deSkin *skin) :
 deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertSkin),
-pInternalTask(NULL),
 pSucceeded(false)
 {
 	LogCreateEnter();
@@ -68,7 +67,7 @@ pSucceeded(false)
 	// are small files only defining where to get the resources from, namely images. these
 	// are loaded later on in an asynchronous way
 	try{
-		pInternalTask = new deRLTaskReadSkinInternal(engine, resourceLoader, vfs, path);
+		pInternalTask.TakeOverWith(engine, resourceLoader, vfs, path);
 		
 		switch(pInternalTask->GetState()){
 		case esPending:
@@ -176,7 +175,4 @@ decString deRLTaskReadSkin::GetDebugName() const{
 //////////////////////
 
 void deRLTaskReadSkin::pCleanUp(){
-	if(pInternalTask){
-		pInternalTask->FreeReference();
-	}
 }

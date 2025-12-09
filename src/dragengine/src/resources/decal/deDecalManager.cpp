@@ -64,25 +64,12 @@ deDecal *deDecalManager::GetRootDecal() const{
 	return (deDecal*)pDecals.GetRoot();
 }
 
-deDecal *deDecalManager::CreateDecal(){
-	deDecal *decal = NULL;
-	
-	try{
-		decal = new deDecal(this);
-		
-		GetGraphicSystem()->LoadDecal(decal);
-		GetPhysicsSystem()->LoadDecal(decal);
-		GetAudioSystem()->LoadDecal(decal);
-		
-		pDecals.Add(decal);
-		
-	}catch(const deException &){
-		if(decal){
-			decal->FreeReference();
-		}
-		throw;
-	}
-	
+deDecal::Ref deDecalManager::CreateDecal(){
+	const deDecal::Ref decal(deDecal::Ref::NewWith(this));
+	GetGraphicSystem()->LoadDecal(decal);
+	GetPhysicsSystem()->LoadDecal(decal);
+	GetAudioSystem()->LoadDecal(decal);
+	pDecals.Add(decal);
 	return decal;
 }
 

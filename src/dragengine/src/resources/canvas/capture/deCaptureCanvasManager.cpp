@@ -59,21 +59,10 @@ deCaptureCanvas *deCaptureCanvasManager::GetRootCaptureCanvas() const{
 	return (deCaptureCanvas*)pCaptureCanvas.GetRoot();
 }
 
-deCaptureCanvas *deCaptureCanvasManager::CreateCaptureCanvas(){
-	deCaptureCanvas *captureCanvas = NULL;
-	
-	try{
-		captureCanvas = new deCaptureCanvas(this);
-		GetGraphicSystem()->LoadCaptureCanvas(captureCanvas);
-		pCaptureCanvas.Add(captureCanvas);
-		
-	}catch(const deException &){
-		if(captureCanvas){
-			captureCanvas->FreeReference();
-		}
-		throw;
-	}
-	
+deCaptureCanvas::Ref deCaptureCanvasManager::CreateCaptureCanvas(){
+	const deCaptureCanvas::Ref captureCanvas(deCaptureCanvas::Ref::NewWith(this));
+	GetGraphicSystem()->LoadCaptureCanvas(captureCanvas);
+	pCaptureCanvas.Add(captureCanvas);
 	return captureCanvas;
 }
 

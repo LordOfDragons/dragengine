@@ -26,8 +26,8 @@
 #define _DEBASEMODULE_H_
 
 #include "../../common/string/decString.h"
+#include "../../filesystem/deVirtualFileSystem.h"
 
-class deVirtualFileSystem;
 class deEngine;
 class deOS;
 class deModuleParameter;
@@ -55,7 +55,7 @@ class decUnicodeArgumentList;
 class DE_DLL_EXPORT deBaseModule{
 private:
 	deLoadableModule &pLoadableModule; // loadable module hosting us
-	deVirtualFileSystem *pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	
 	
 	

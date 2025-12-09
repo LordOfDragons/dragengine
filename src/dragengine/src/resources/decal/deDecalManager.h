@@ -25,11 +25,11 @@
 #ifndef _DEDECALMANAGER_H_
 #define _DEDECALMANAGER_H_
 
+#include "deDecal.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deDecal;
 
 
 /**
@@ -63,7 +63,7 @@ public:
 	deDecal *GetRootDecal() const;
 	
 	/** \brief Create new and empty decal. */
-	deDecal *CreateDecal();
+	deDecal::Ref CreateDecal();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

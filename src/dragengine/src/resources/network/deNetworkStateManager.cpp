@@ -68,24 +68,11 @@ deNetworkState *deNetworkStateManager::GetRootNetworkState() const{
 	return (deNetworkState*)pStates.GetRoot();
 }
 
-deNetworkState *deNetworkStateManager::CreateState(bool readOnly){
-	deNetworkState *state = NULL;
-	
-	try{
-		state = new deNetworkState(this, readOnly);
-		
-		GetNetworkSystem()->LoadState(state);
-		GetScriptingSystem()->LoadNetworkState(state);
-		
-		pStates.Add(state);
-		
-	}catch(const deException &){
-		if(state){
-			state->FreeReference();
-		}
-		throw;
-	}
-	
+deNetworkState::Ref deNetworkStateManager::CreateState(bool readOnly){
+	const deNetworkState::Ref state(deNetworkState::Ref::NewWith(this, readOnly));
+	GetNetworkSystem()->LoadState(state);
+	GetScriptingSystem()->LoadNetworkState(state);
+	pStates.Add(state);
 	return state;
 }
 

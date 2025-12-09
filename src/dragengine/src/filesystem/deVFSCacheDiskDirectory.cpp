@@ -417,7 +417,7 @@ void deVFSCacheDiskDirectory::UpdateCache(){
 
 
 
-decBaseFileWriter *deVFSCacheDiskDirectory::OpenFileForWriting(const decPath &path){
+decBaseFileWriter::Ref deVFSCacheDiskDirectory::OpenFileForWriting(const decPath &path){
 	UpdateCache();
 	return deVFSDiskDirectory::OpenFileForWriting(path);
 }

@@ -384,20 +384,11 @@ void deCamera::RemoveEffect(deEffect *effect){
 	if(index == -1){
 		DETHROW(deeInvalidParam);
 	}
+	pEffects->RemoveEffect(effect);
 	
-	effect->AddReference();
-	try{
-		pEffects->RemoveEffect(effect);
-		
-		if(pPeerGraphic){
-			pPeerGraphic->EffectRemoved(index, effect);
-		}
-		
-	}catch(const deException &){
-		effect->FreeReference();
-		throw;
+	if(pPeerGraphic){
+		pPeerGraphic->EffectRemoved(index, effect);
 	}
-	effect->FreeReference();
 }
 
 void deCamera::RemoveAllEffects(){

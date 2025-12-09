@@ -25,11 +25,11 @@
 #ifndef _DEDEBUGDRAWERMANAGER_H_
 #define  _DEDEBUGDRAWERMANAGER_H_
 
+#include "deDebugDrawer.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deDebugDrawer;
 
 
 /**
@@ -63,7 +63,7 @@ public:
 	deDebugDrawer *GetRootDebugDrawer() const;
 	
 	/** \brief Create new debug drawer. */
-	deDebugDrawer *CreateDebugDrawer();
+	deDebugDrawer::Ref CreateDebugDrawer();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

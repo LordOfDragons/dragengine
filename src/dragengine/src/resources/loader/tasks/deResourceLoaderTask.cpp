@@ -206,5 +206,5 @@ void deResourceLoaderTask::LogFinished(){
 	}
 	
 	pEngine.GetLogger()->LogInfoFormat(LOGSOURCE, "Task(%s)[%s] Finished: res=%p state=%s",
-		debugName.GetString(), pPath.GetString(), (deResource*)pResource, stateName);
+		debugName.GetString(), pPath.GetString(), pResource.Pointer(), stateName);
 }

@@ -62,7 +62,7 @@ public:
 	deSynthesizer *GetRootSynthesizer() const;
 	
 	/** \brief Create new synthesizer object. */
-	deSynthesizer *CreateSynthesizer();
+	deSynthesizer::Ref CreateSynthesizer();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

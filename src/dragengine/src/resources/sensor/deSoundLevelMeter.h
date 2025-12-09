@@ -85,7 +85,7 @@ public:
 		cAudibleSpeaker(deSpeaker *speaker, float volume);
 		
 		/** \brief Speaker. */
-		inline deSpeaker *GetSpeaker() const{ return pSpeaker; }
+		inline const deSpeaker::Ref &GetSpeaker() const{ return pSpeaker; }
 		
 		/** \brief Set speaker. */
 		void SetSpeaker(deSpeaker *speaker);

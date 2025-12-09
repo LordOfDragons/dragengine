@@ -25,11 +25,11 @@
 #ifndef _DELUMIMETERMANAGER_H_
 #define _DELUMIMETERMANAGER_H_
 
+#include "deLumimeter.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deLumimeter;
 
 
 /**
@@ -62,7 +62,7 @@ public:
 	deLumimeter *GetRootLumimeter() const;
 	
 	/** \brief Create new and empty lumimeter. */
-	deLumimeter *CreateLumimeter();
+	deLumimeter::Ref CreateLumimeter();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

@@ -36,18 +36,10 @@
 /////////////////////////////////
 
 deBaseArchiveContainer::deBaseArchiveContainer(decBaseFileReader *reader) :
-pReader(NULL)
+pReader(reader)
 {
-	if(!reader){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pReader = reader;
-	reader->AddReference();
+	DEASSERT_NOTNULL(reader)
 }
 
 deBaseArchiveContainer::~deBaseArchiveContainer(){
-	if(pReader){
-		pReader->FreeReference();
-	}
 }

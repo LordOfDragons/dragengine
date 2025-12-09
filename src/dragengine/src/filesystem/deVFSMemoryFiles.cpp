@@ -71,16 +71,16 @@ bool deVFSMemoryFiles::CanDeleteFile(const decPath &path){
 	return false; // deleting memory files is not allowed
 }
 
-decBaseFileReader *deVFSMemoryFiles::OpenFileForReading(const decPath &path){
+decBaseFileReader::Ref deVFSMemoryFiles::OpenFileForReading(const decPath &path){
 	const int index = IndexOfMemoryFileWith(path.GetPathUnix());
 	if(index == -1){
 		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
-	return new decMemoryFileReader((decMemoryFile*)pFiles.GetAt(index));
+	return decBaseFileReader::Ref::New(new decMemoryFileReader((decMemoryFile*)pFiles.GetAt(index)));
 }
 
-decBaseFileWriter *deVFSMemoryFiles::OpenFileForWriting(const decPath &path){
+decBaseFileWriter::Ref deVFSMemoryFiles::OpenFileForWriting(const decPath &path){
 	DETHROW(deeInvalidAction);
 }
 

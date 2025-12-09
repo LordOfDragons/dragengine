@@ -61,24 +61,10 @@ deLumimeter *deLumimeterManager::GetRootLumimeter() const{
 	return (deLumimeter*)pLumimeters.GetRoot();
 }
 
-deLumimeter *deLumimeterManager::CreateLumimeter(){
-	deLumimeter *lumimeter = NULL;
-	
-	try{
-		lumimeter = new deLumimeter(this);
-		if(!lumimeter) DETHROW(deeOutOfMemory);
-		
-		GetGraphicSystem()->LoadLumimeter(lumimeter);
-		
-		pLumimeters.Add(lumimeter);
-		
-	}catch(const deException &){
-		if(lumimeter){
-			lumimeter->FreeReference();
-		}
-		throw;
-	}
-	
+deLumimeter::Ref deLumimeterManager::CreateLumimeter(){
+	const deLumimeter::Ref lumimeter(deLumimeter::Ref::NewWith(this));
+	GetGraphicSystem()->LoadLumimeter(lumimeter);
+	pLumimeters.Add(lumimeter);
 	return lumimeter;
 }
 

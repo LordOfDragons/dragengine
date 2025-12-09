@@ -25,11 +25,11 @@
 #ifndef _DESKYMANAGER_H_
 #define _DESKYMANAGER_H_ 
 
+#include "deSky.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deSky;
 
 
 /**
@@ -63,7 +63,7 @@ public:
 	deSky *GetRootSky() const;
 	
 	/** \brief Create new scene sky. */
-	deSky *CreateSky();
+	deSky::Ref CreateSky();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

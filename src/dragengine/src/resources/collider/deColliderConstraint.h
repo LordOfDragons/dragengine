@@ -139,7 +139,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Target collider or NULL to constraint to the world. */
-	inline deCollider *GetTargetCollider() const{ return pTargetCollider; }
+	inline const deCollider::Ref &GetTargetCollider() const{ return pTargetCollider; }
 	
 	/** \brief Set target collider or NULL to constraint to the world. */
 	void SetTargetCollider(deCollider *collider);

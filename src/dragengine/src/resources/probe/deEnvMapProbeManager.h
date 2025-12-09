@@ -25,11 +25,11 @@
 #ifndef _DEENVMAPPROBEMANAGER_H_
 #define _DEENVMAPPROBEMANAGER_H_
 
+#include "deEnvMapProbe.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deEnvMapProbe;
 
 
 /**
@@ -62,7 +62,7 @@ public:
 	deEnvMapProbe *GetRootEnvMapProbe() const;
 	
 	/** \brief Create new environment map probe. */
-	deEnvMapProbe *CreateEnvMapProbe();
+	deEnvMapProbe::Ref CreateEnvMapProbe();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

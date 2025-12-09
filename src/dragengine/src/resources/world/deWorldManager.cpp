@@ -64,30 +64,14 @@ deWorld *deWorldManager::GetRootWorld() const{
 	return (deWorld*)pWorlds.GetRoot();
 }
 
-deWorld *deWorldManager::CreateWorld(){
-	deWorld *world = NULL;
-	
-	try{
-		world = new deWorld(this);
-		if(!world){
-			DETHROW(deeOutOfMemory);
-		}
-		
-		GetGraphicSystem()->LoadWorld(world);
-		GetPhysicsSystem()->LoadWorld(world);
-		GetAudioSystem()->LoadWorld(world);
-		GetNetworkSystem()->LoadWorld(world);
-		GetAISystem()->LoadWorld(world);
-		
-		pWorlds.Add(world);
-		
-	}catch(const deException &){
-		if(world){
-			world->FreeReference();
-		}
-		throw;
-	}
-	
+deWorld::Ref deWorldManager::CreateWorld(){
+	const deWorld::Ref world(deWorld::Ref::NewWith(this));
+	GetGraphicSystem()->LoadWorld(world);
+	GetPhysicsSystem()->LoadWorld(world);
+	GetAudioSystem()->LoadWorld(world);
+	GetNetworkSystem()->LoadWorld(world);
+	GetAISystem()->LoadWorld(world);
+	pWorlds.Add(world);
 	return world;
 }
 

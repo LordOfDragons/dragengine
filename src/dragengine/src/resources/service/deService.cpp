@@ -71,37 +71,25 @@ void deService::CancelRequest(const decUniqueID &id){
 	pPeerService->CancelRequest(id);
 }
 
-void deService::RequestResponse(const decUniqueID &id,
-const deServiceObject::Ref &response, bool finished){
+void deService::RequestResponse(const decUniqueID &id, const deServiceObject::Ref &response,
+bool finished){
 	DEASSERT_NOTNULL(response)
-	
 	if(pPeerScripting){
 		pPeerScripting->RequestResponse(id, response, finished);
-		
-	}else{
-		response->FreeReference();
 	}
 }
 
 void deService::RequestFailed(const decUniqueID &id, const deServiceObject::Ref &error){
 	DEASSERT_NOTNULL(error)
-	
 	if(pPeerScripting){
 		pPeerScripting->RequestFailed(id, error);
-		
-	}else{
-		error->FreeReference();
 	}
 }
 
 void deService::EventReceived(const deServiceObject::Ref &event){
 	DEASSERT_NOTNULL(event)
-	
 	if(pPeerScripting){
 		pPeerScripting->EventReceived(event);
-		
-	}else{
-		event->FreeReference();
 	}
 }
 

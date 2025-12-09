@@ -26,7 +26,7 @@
 #define _DERESOURCELOADERTASK_X_H_
 
 #include "../deResourceLoader.h"
-#include "../../deResource.h"
+#include "../../deFileResource.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../parallel/deParallelTask.h"
 #include "../../../common/utils/decTimer.h"
@@ -77,7 +77,7 @@ private:
 	decString pPath;
 	deResourceLoader::eResourceType pResourceType;
 	
-	deResource::Ref pResource;
+	deFileResource::Ref pResource;
 	eStates pState;
 	eTypes pType;
 	
@@ -104,7 +104,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Virtual file system. */
-	inline deVirtualFileSystem *GetVFS() const{ return pVFS; }
+	inline const deVirtualFileSystem::Ref &GetVFS() const{ return pVFS; }
 	
 	/** \brief Path. */
 	inline const decString &GetPath() const{ return pPath; }
@@ -119,7 +119,7 @@ public:
 	
 	
 	/** \brief Resource or NULL. */
-	inline deFileResource *GetResource() const{ return (deFileResource*)(deResource*)pResource; }
+	inline const deFileResource::Ref &GetResource() const{ return pResource; }
 	
 	/** \brief State. */
 	inline eStates GetState() const{ return pState; }

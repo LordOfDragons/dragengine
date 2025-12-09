@@ -95,7 +95,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Video or NULL if not set. */
-	inline deVideo *GetVideo() const{ return pVideo; }
+	inline const deVideo::Ref &GetVideo() const{ return pVideo; }
 	
 	/** \brief Set video or NULL if not set. */
 	void SetVideo(deVideo *video);

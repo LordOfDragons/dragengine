@@ -52,9 +52,7 @@ deSmokeEmitter::deSmokeEmitter(deSmokeEmitterManager *manager) : deResource(mana
 	pCastDensityMax = 0.1f;
 	pEnableCasting = false;
 	
-	pComponent = NULL;
 	pCastTexture = 0;
-	pSkin = NULL;
 	
 	pUseLocalGravity = false;
 	
@@ -78,9 +76,6 @@ deSmokeEmitter::~deSmokeEmitter(){
 		delete pPeerGraphic;
 		pPeerGraphic = NULL;
 	}
-	
-	if(pSkin) pSkin->FreeReference();
-	if(pComponent) pComponent->FreeReference();
 }
 
 
@@ -176,12 +171,7 @@ void deSmokeEmitter::SetEnableCasting(bool enable){
 
 void deSmokeEmitter::SetComponent(deComponent *component){
 	if(component != pComponent){
-		if(pComponent) pComponent->FreeReference();
-		
 		pComponent = component;
-		
-		if(component) component->AddReference();
-		
 		if(pPeerPhysics) pPeerPhysics->ComponentChanged();
 	}
 }
@@ -189,19 +179,13 @@ void deSmokeEmitter::SetComponent(deComponent *component){
 void deSmokeEmitter::SetCastTexture(int texture){
 	if(texture != pCastTexture){
 		pCastTexture = texture;
-		
 		if(pPeerPhysics) pPeerPhysics->CastTextureChanged();
 	}
 }
 
 void deSmokeEmitter::SetSkin(deSkin *skin){
 	if(skin != pSkin){
-		if(pSkin) pSkin->FreeReference();
-		
 		pSkin = skin;
-		
-		if(skin) skin->AddReference();
-		
 		if(pPeerGraphic) pPeerGraphic->SkinChanged();
 		if(pPeerPhysics) pPeerPhysics->SkinChanged();
 	}

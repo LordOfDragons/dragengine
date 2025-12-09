@@ -68,25 +68,11 @@ deVideoPlayer *deVideoPlayerManager::GetRootVideoPlayer() const{
 	return (deVideoPlayer*)pVideoPlayers.GetRoot();
 }
 
-deVideoPlayer *deVideoPlayerManager::CreateVideoPlayer(){
-	deVideoPlayer *videoPlayer = NULL;
-	
-	try{
-		videoPlayer = new deVideoPlayer(this);
-		if(!videoPlayer) DETHROW(deeOutOfMemory);
-		
-		GetGraphicSystem()->LoadVideoPlayer(videoPlayer);
-		GetAudioSystem()->LoadVideoPlayer(videoPlayer);
-		
-		pVideoPlayers.Add(videoPlayer);
-		
-	}catch(const deException &){
-		if(videoPlayer){
-			videoPlayer->FreeReference();
-		}
-		throw;
-	}
-	
+deVideoPlayer::Ref deVideoPlayerManager::CreateVideoPlayer(){
+	const deVideoPlayer::Ref videoPlayer(deVideoPlayer::Ref::NewWith(this));
+	GetGraphicSystem()->LoadVideoPlayer(videoPlayer);
+	GetAudioSystem()->LoadVideoPlayer(videoPlayer);
+	pVideoPlayers.Add(videoPlayer);
 	return videoPlayer;
 }
 

@@ -25,15 +25,14 @@
 #ifndef _DEEFFECTMANAGER_H_
 #define _DEEFFECTMANAGER_H_ 
 
+#include "deEffectFilterKernel.h"
+#include "deEffectOverlayImage.h"
+#include "deEffectColorMatrix.h"
+#include "deEffectDistortImage.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deEffect;
-class deEffectFilterKernel;
-class deEffectOverlayImage;
-class deEffectColorMatrix;
-class deEffectDistortImage;
 
 
 /**
@@ -67,16 +66,16 @@ public:
 	deEffect *GetRootEffect() const;
 	
 	/** \brief Create new effect filter kernel. */
-	deEffectFilterKernel *CreateEffectFilterKernel();
+	deEffectFilterKernel::Ref CreateEffectFilterKernel();
 	
 	/** \brief Create new effect overlay image. */
-	deEffectOverlayImage *CreateEffectOverlayImage();
+	deEffectOverlayImage::Ref CreateEffectOverlayImage();
 	
 	/** \brief Create new color matrix effect. */
-	deEffectColorMatrix *CreateEffectColorMatrix();
+	deEffectColorMatrix::Ref CreateEffectColorMatrix();
 	
 	/** \brief Create new distort image effect. */
-	deEffectDistortImage *CreateEffectDistortImage();
+	deEffectDistortImage::Ref CreateEffectDistortImage();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

@@ -26,10 +26,10 @@
 #define _DEPROPFIELDGROUND_H_
 
 #include "../../dragengine_export.h"
+#include "../terrain/heightmap/deHeightTerrain.h"
 
 
 class deComponent;
-class deHeightTerrain;
 
 
 /**
@@ -47,7 +47,7 @@ class deHeightTerrain;
  */
 class DE_DLL_EXPORT dePropFieldGround{
 private:
-	deHeightTerrain *pHeightTerrain;
+	deHeightTerrain::Ref pHeightTerrain;
 	
 	deComponent **pComponents;
 	int pComponentCount;
@@ -73,7 +73,7 @@ public:
 	void Clear();
 	
 	/** \brief Height terrain or NULL if not set. */
-	inline deHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
+	inline const deHeightTerrain::Ref &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** \brief Set height terrain or NULL if not set. */
 	void SetHeightTerrain(deHeightTerrain *heightTerrain);

@@ -25,11 +25,11 @@
 #ifndef _DECONNECTIONMANAGER_H_
 #define _DECONNECTIONMANAGER_H_ 
 
+#include "deConnection.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deConnection;
 
 
 /**
@@ -62,7 +62,7 @@ public:
 	deConnection *GetRootConnection() const;
 	
 	/** \brief Create connection. */
-	deConnection *CreateConnection();
+	deConnection::Ref CreateConnection();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

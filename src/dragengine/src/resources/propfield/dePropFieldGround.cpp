@@ -40,8 +40,6 @@
 ////////////////////////////
 
 dePropFieldGround::dePropFieldGround(){
-	pHeightTerrain = NULL;
-	
 	pComponents = NULL;
 	pComponentCount = 0;
 	pComponentSize = 0;
@@ -50,8 +48,6 @@ dePropFieldGround::dePropFieldGround(){
 dePropFieldGround::~dePropFieldGround(){
 	RemoveAllComponents();
 	if(pComponents) delete [] pComponents;
-	
-	if(pHeightTerrain) pHeightTerrain->FreeReference();
 }
 
 
@@ -61,19 +57,11 @@ dePropFieldGround::~dePropFieldGround(){
 
 void dePropFieldGround::Clear(){
 	RemoveAllComponents();
-	
-	if(pHeightTerrain){
-		pHeightTerrain->FreeReference();
-		pHeightTerrain = NULL;
-	}
+	pHeightTerrain = nullptr;
 }
 
 void dePropFieldGround::SetHeightTerrain(deHeightTerrain *heightTerrain){
-	if(heightTerrain != pHeightTerrain){
-		if(pHeightTerrain) pHeightTerrain->FreeReference();
-		pHeightTerrain = heightTerrain;
-		if(heightTerrain) heightTerrain->AddReference();
-	}
+	pHeightTerrain = heightTerrain;
 }
 
 

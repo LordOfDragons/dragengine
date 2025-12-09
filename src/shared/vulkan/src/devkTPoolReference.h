@@ -47,6 +47,11 @@ public:
 		*this = slot;
 	}
 	
+	/** Move reference. */
+	devkTPoolReference(devkTPoolReference<T> &slot) : pSlot(slot.pSlot){
+		slot.pSlot = nullptr;
+	}
+	
 	~devkTPoolReference(){
 		*this = nullptr;
 	}
@@ -93,6 +98,13 @@ public:
 			pSlot->ReturnToPool();
 		}
 		pSlot = slot;
+		return *this;
+	}
+	
+	/** Move reference. */
+	devkTPoolReference &operator=(devkTPoolReference<T> &slot){
+		*this = slot.pSlot;
+		slot.pSlot = nullptr;
 		return *this;
 	}
 	

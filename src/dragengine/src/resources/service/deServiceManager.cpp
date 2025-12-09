@@ -126,7 +126,7 @@ decStringSet deServiceManager::GetAllSupportedSerices() const{
 	return names;
 }
 
-deService *deServiceManager::CreateService(const char *name, const deServiceObject::Ref &data){
+deService::Ref deServiceManager::CreateService(const char *name, const deServiceObject::Ref &data){
 	DEASSERT_NOTNULL(name)
 	
 	deEngine * const engine = GetEngine();
@@ -158,7 +158,6 @@ deService *deServiceManager::CreateService(const char *name, const deServiceObje
 		engine->GetScriptingSystem()->CreateService(service);
 		pServices.Add(service);
 		pDirtyModules = true;
-		service->AddReference(); // caller takes over reference
 		return service;
 	}
 	

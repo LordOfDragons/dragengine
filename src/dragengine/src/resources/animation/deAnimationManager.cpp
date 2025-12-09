@@ -78,29 +78,29 @@ deAnimation *deAnimationManager::GetAnimationWith(deVirtualFileSystem *vfs, cons
 	return animation && !animation->GetOutdated() ? animation : NULL;
 }
 
-deAnimation *deAnimationManager::CreateAnimation(const char *filename, deAnimationBuilder &builder){
+deAnimation::Ref deAnimationManager::CreateAnimation(const char *filename, deAnimationBuilder &builder){
 	return CreateAnimation(GetEngine()->GetVirtualFileSystem(), filename, builder);
 }
 
-deAnimation *deAnimationManager::CreateAnimation(deVirtualFileSystem *vfs,
+deAnimation::Ref deAnimationManager::CreateAnimation(deVirtualFileSystem *vfs,
 const char *filename, deAnimationBuilder &builder){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	deAnimation *anim=NULL, *findAnim;
+	deAnimation::Ref anim=NULL, *findAnim;
 	
 	try{
 		// check if animation with filename already exists. check is only done if
 		// filename is not empty in which case an unnamed animation is created
 		if(filename[0] != '\0'){
-			findAnim = (deAnimation*)pAnimations.GetWithFilename(vfs, filename);
+			deAnimation * const findAnim = (deAnimation*)pAnimations.GetWithFilename(vfs, filename);
 			if(findAnim && !findAnim->GetOutdated()){
 				DETHROW(deeInvalidParam);
 			}
 		}
 		
 		// create animation using the builder
-		anim = new deAnimation(this, vfs, filename, decDateTime::GetSystemTime());
+		anim.TakeOver(new deAnimation(this, vfs, filename, decDateTime::GetSystemTime()));
 		builder.BuildAnimation(anim);
 		
 		// load system peers
@@ -111,24 +111,20 @@ const char *filename, deAnimationBuilder &builder){
 		
 	}catch(const deException &){
 		LogErrorFormat("Creating of animation '%s' failed", filename);
-		if(anim){
-			anim->FreeReference();
-		}
 		throw;
 	}
 	
 	return anim;
 }
 
-deAnimation *deAnimationManager::LoadAnimation(const char *filename, const char *basePath){
+deAnimation::Ref deAnimationManager::LoadAnimation(const char *filename, const char *basePath){
 	return LoadAnimation(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deAnimation *deAnimationManager::LoadAnimation(deVirtualFileSystem *vfs,
+deAnimation::Ref deAnimationManager::LoadAnimation(deVirtualFileSystem *vfs,
 const char *filename, const char *basePath){
-	decBaseFileReader *fileReader=NULL;
 	deBaseAnimationModule *module;
-	deAnimation *anim=NULL, *findAnim;
+	deAnimation::Ref anim;
 	decPath path;
 	try{
 		// locate file
@@ -138,7 +134,7 @@ const char *filename, const char *basePath){
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
 		// check if the animation with this filename already exists and is not outdated
-		findAnim = (deAnimation*)pAnimations.GetWithFilename(vfs, path.GetPathUnix());
+		deAnimation *findAnim = (deAnimation*)pAnimations.GetWithFilename(vfs, path.GetPathUnix());
 		
 		if(findAnim && findAnim->GetModificationTime() != modificationTime){
 			LogInfoFormat("Animation '%s' (base path '%s') changed on VFS: Outdating and Reloading",
@@ -148,7 +144,6 @@ const char *filename, const char *basePath){
 		}
 		
 		if(findAnim){
-			findAnim->AddReference();
 			anim = findAnim;
 			
 		}else{
@@ -156,11 +151,9 @@ const char *filename, const char *basePath){
 			module = (deBaseAnimationModule*)GetModuleSystem()->GetModuleAbleToLoad(
 				deModuleSystem::emtAnimation, path.GetPathUnix());
 			// load the file with it
-			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
-			anim = new deAnimation(this, vfs, path.GetPathUnix(), modificationTime);
+			anim.TakeOver(new deAnimation(this, vfs, path.GetPathUnix(), modificationTime));
 			anim->SetAsynchron(false);
-			module->LoadAnimation(*fileReader, *anim);
-			fileReader->FreeReference(); fileReader = NULL;
+			module->LoadAnimation(OpenFileForReading(*vfs, path.GetPathUnix()), *anim);
 			
 			// load system peers
 			GetAnimatorSystem()->LoadAnimation(anim);
@@ -172,12 +165,6 @@ const char *filename, const char *basePath){
 		
 	}catch(const deException &){
 		LogErrorFormat("Loading animation '%s' (base path '%s') failed", filename, basePath ? basePath : "");
-		if(fileReader){
-			fileReader->FreeReference();
-		}
-		if(anim){
-			anim->FreeReference();
-		}
 		throw;
 	}
 	

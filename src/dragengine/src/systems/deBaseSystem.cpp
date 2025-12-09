@@ -52,7 +52,6 @@
 deBaseSystem::deBaseSystem(deEngine *engine, const char *systemName, int requiredModuleType) :
 pSystemName(systemName),
 pEngine(engine),
-pActiveLoadableModule(nullptr),
 pRequiredModuleType(requiredModuleType),
 pRunning(false),
 pFailed(false)
@@ -68,11 +67,6 @@ deBaseSystem::~deBaseSystem(){
 	}
 	
 	ClearPermanents();
-	
-	if(pActiveLoadableModule){
-		pActiveLoadableModule->FreeReference();
-		pActiveLoadableModule = NULL;
-	}
 }
 
 
@@ -93,7 +87,8 @@ void deBaseSystem::Start(){
 		DETHROW(deeInvalidAction);
 	}
 	
-	LogInfoFormat("Starting %s module %s", GetSystemName().GetString(), pActiveLoadableModule->GetName().GetString());
+	LogInfoFormat("Starting %s module %s", GetSystemName().GetString(),
+		pActiveLoadableModule->GetName().GetString());
 	
 	deParallelProcessing &parallelProcessing = pEngine->GetParallelProcessing();
 	const bool resumeParallelProcessing = !parallelProcessing.GetPaused();
@@ -128,7 +123,8 @@ void deBaseSystem::Stop(){
 		return;
 	}
 	
-	LogInfoFormat("Stopping %s module %s", GetSystemName().GetString(), pActiveLoadableModule->GetName().GetString());
+	LogInfoFormat("Stopping %s module %s", GetSystemName().GetString(),
+		pActiveLoadableModule->GetName().GetString());
 	
 	deParallelProcessing &parallelProcessing = pEngine->GetParallelProcessing();
 	const bool resumeParallelProcessing = !parallelProcessing.GetPaused();
@@ -193,16 +189,7 @@ void deBaseSystem::SetActiveModule(deLoadableModule *module){
 	LogInfoFormat("Activating %s module %s %s", GetSystemName().GetString(),
 		module->GetName().GetString(), module->GetVersion().GetString());
 	
-	// set new module
-	if(pActiveLoadableModule){
-		pActiveLoadableModule->FreeReference();
-	}
-	
 	pActiveLoadableModule = module;
-	
-	if(pActiveLoadableModule){
-		pActiveLoadableModule->AddReference();
-	}
 }
 
 

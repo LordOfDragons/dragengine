@@ -107,108 +107,97 @@ deResourceLoaderTask *deResourceLoader::AddLoadRequest(deVirtualFileSystem *vfs,
 const char *path, eResourceType resourceType){
 	// if a tasks exists already use this one. tasks stick around only as long as
 	// the script module has not collected them
-	deResourceLoaderTask *task = pGetTaskWith(vfs, path, resourceType);
-	if(task){
-		return task;
+	deResourceLoaderTask * const findTask = pGetTaskWith(vfs, path, resourceType);
+	if(findTask){
+		return findTask;
 	}
 	
 	// create and add task
-	deFileResource *freeResource = NULL;
+	deResourceLoaderTask::Ref task;
 	
 	try{
 		// create task
 		switch(resourceType){
 		case ertAnimation:{
-			deAnimation *animation = pEngine.GetAnimationManager()->GetAnimationWith(vfs, path);
+			deAnimation::Ref animation(pEngine.GetAnimationManager()->GetAnimationWith(vfs, path));
 			if(!animation && !pLoadAsynchron){
 				animation = pEngine.GetAnimationManager()->LoadAnimation(vfs, path, "/");
-				freeResource = animation;
 			}
-			task = new deRLTaskReadAnimation(pEngine, *this, vfs, path, animation);
+			task.TakeOver(new deRLTaskReadAnimation(pEngine, *this, vfs, path, animation));
 			}break;
 			
 		case ertFont:{
-			deFont *font = pEngine.GetFontManager()->GetFontWith(vfs, path);
+			deFont::Ref font(pEngine.GetFontManager()->GetFontWith(vfs, path));
 			if(!font && !pLoadAsynchron){
 				font = pEngine.GetFontManager()->LoadFont(vfs, path, "/");
-				freeResource = font;
 			}
-			task = new deRLTaskReadFont(pEngine, *this, vfs, path, font);
+			task.TakeOver(new deRLTaskReadFont(pEngine, *this, vfs, path, font));
 			}break;
 			
 		case ertImage:{
-			deImage *image = pEngine.GetImageManager()->GetImageWith(vfs, path);
+			deImage::Ref image(pEngine.GetImageManager()->GetImageWith(vfs, path));
 			if(!image && !pLoadAsynchron){
 				image = pEngine.GetImageManager()->LoadImage(vfs, path, "/");
-				freeResource = image;
 			}
-			task = new deRLTaskReadImage(pEngine, *this, vfs, path, image);
+			task.TakeOver(new deRLTaskReadImage(pEngine, *this, vfs, path, image));
 			}break;
 			
 		case ertModel:{
-			deModel *model = pEngine.GetModelManager()->GetModelWith(vfs, path);
+			deModel::Ref model(pEngine.GetModelManager()->GetModelWith(vfs, path));
 			if(!model && !pLoadAsynchron){
 				model = pEngine.GetModelManager()->LoadModel(vfs, path, "/");
-				freeResource = model;
 			}
-			task = new deRLTaskReadModel(pEngine, *this, vfs, path, model);
+			task.TakeOver(new deRLTaskReadModel(pEngine, *this, vfs, path, model));
 			}break;
 			
 		case ertOcclusionMesh:{
-			deOcclusionMesh *occlusionMesh = pEngine.GetOcclusionMeshManager()
-				->GetOcclusionMeshWith(vfs, path);
+			deOcclusionMesh::Ref occlusionMesh(pEngine.GetOcclusionMeshManager()->
+				GetOcclusionMeshWith(vfs, path));
 			if(!occlusionMesh && !pLoadAsynchron){
-				occlusionMesh = pEngine.GetOcclusionMeshManager()->LoadOcclusionMesh(
-					vfs, path, "/");
-				freeResource = occlusionMesh;
+				occlusionMesh = pEngine.GetOcclusionMeshManager()->LoadOcclusionMesh(vfs, path, "/");
 			}
-			task = new deRLTaskReadOcclusionMesh(pEngine, *this, vfs, path, occlusionMesh);
+			task.TakeOver(new deRLTaskReadOcclusionMesh(pEngine, *this, vfs, path, occlusionMesh));
 			}break;
 			
 		case ertRig:{
-			deRig *rig = pEngine.GetRigManager()->GetRigWith(vfs, path);
+			deRig::Ref rig(pEngine.GetRigManager()->GetRigWith(vfs, path));
 			if(!rig && !pLoadAsynchron){
 				rig = pEngine.GetRigManager()->LoadRig(vfs, path, "/");
-				freeResource = rig;
 			}
-			task = new deRLTaskReadRig(pEngine, *this, vfs, path, rig);
+			task.TakeOver(new deRLTaskReadRig(pEngine, *this, vfs, path, rig));
 			}break;
 			
 		case ertSkin:{
-			deSkin *skin = pEngine.GetSkinManager()->GetSkinWith(vfs, path);
+			deSkin::Ref skin(pEngine.GetSkinManager()->GetSkinWith(vfs, path));
 			if(!skin && !pLoadAsynchron){
 				skin = pEngine.GetSkinManager()->LoadSkin(vfs, path, "/");
-				freeResource = skin;
 			}
-			task = new deRLTaskReadSkin(pEngine, *this, vfs, path, skin);
+			task.TakeOver(new deRLTaskReadSkin(pEngine, *this, vfs, path, skin));
 			}break;
 			
 		case ertSound:{
-			deSound *sound = pEngine.GetSoundManager()->GetSoundWith(vfs, path);
+			deSound::Ref sound(pEngine.GetSoundManager()->GetSoundWith(vfs, path));
 			if(!sound && !pLoadAsynchron){
 				sound = pEngine.GetSoundManager()->LoadSound(path, "/", false);
-				freeResource = sound;
 			}
-			task = new deRLTaskReadSound(pEngine, *this, vfs, path, sound);
+			task.TakeOver(new deRLTaskReadSound(pEngine, *this, vfs, path, sound));
 			}break;
 			
 		case ertLanguagePack:{
-			deLanguagePack *langPack = pEngine.GetLanguagePackManager()->
-				GetLanguagePackWith(vfs, path);
+			deLanguagePack::Ref langPack(pEngine.GetLanguagePackManager()->
+				GetLanguagePackWith(vfs, path));
 			if(!langPack && !pLoadAsynchron){
 				langPack = pEngine.GetLanguagePackManager()->LoadLanguagePack(vfs, path, "/");
-				freeResource = langPack;
 			}
-			task = new deRLTaskReadLanguagePack(pEngine, *this, vfs, path, langPack);
+			task.TakeOver(new deRLTaskReadLanguagePack(pEngine, *this, vfs, path, langPack));
 			}break;
 			
 		case ertVideo:{
-			deVideo *video = pEngine.GetVideoManager()->GetVideoWith(vfs, path);
+			deVideo::Ref video(pEngine.GetVideoManager()->GetVideoWith(vfs, path));
 			if(!video && !pLoadAsynchron){
 				video = pEngine.GetVideoManager()->LoadVideo(path, "/", false);
-				freeResource = video;
 			}
-			task = new deRLTaskReadVideo(pEngine, *this, vfs, path, video);
+			task.TakeOver(new deRLTaskReadVideo(pEngine, *this, vfs, path, video));
 			}break;
 			
 		default:
@@ -216,15 +205,8 @@ const char *path, eResourceType resourceType){
 		}
 		
 	}catch(const deException &e){
-		if(freeResource){
-			freeResource->FreeReference();
-		}
 		pEngine.GetLogger()->LogException(LOGSOURCE, e);
 		throw;
-	}
-	
-	if(freeResource){
-		freeResource->FreeReference(); // direct loading adds a reference
 	}
 	
 	// add task to the appropriate list
@@ -245,8 +227,6 @@ const char *path, eResourceType resourceType){
 		}
 		pFinishedTasks.Add(task);
 	}
-	
-	task->FreeReference();
 	return task;
 }
 
@@ -258,12 +238,11 @@ const char *path, deFileResource *resource){
 }
 
 bool deResourceLoader::NextFinishedRequest(deResourceLoaderInfo &info){
-	deResourceLoaderTask *task = NULL;
+	deResourceLoaderTask::Ref task;
 	
 	while(true){
 		if(pFinishedTasks.GetCount() > 0){
-			task = (deResourceLoaderTask *)pFinishedTasks.GetAt(0);
-			task->AddReference();
+			task = (deResourceLoaderTask*)pFinishedTasks.GetAt(0);
 			pFinishedTasks.Remove(task);
 		}
 		
@@ -292,8 +271,6 @@ bool deResourceLoader::NextFinishedRequest(deResourceLoaderInfo &info){
 				DETHROW(deeInvalidParam);
 				}
 			}
-			
-			task->FreeReference();
 			return true;
 		}
 		

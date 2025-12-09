@@ -65,12 +65,11 @@ devkDescriptorPoolPool::~devkDescriptorPoolPool(){
 // Management
 ///////////////
 
-devkDescriptorPoolSlot * devkDescriptorPoolPool::Get(){
+devkDescriptorPoolSlot::Ref devkDescriptorPoolPool::Get(){
 	// return next free slot if present
 	if(pFreeSlots.GetCount() > 0){
 		const int index = pFreeSlots.GetCount() - 1;
-		devkDescriptorPoolSlot * const slot = (devkDescriptorPoolSlot*)pFreeSlots.GetAt(index);
-		slot->AddReference(); // caller holds reference
+		devkDescriptorPoolSlot::Ref slot((devkDescriptorPoolSlot*)pFreeSlots.GetAt(index));
 		pFreeSlots.RemoveFrom(index);
 		return slot;
 	}
@@ -111,7 +110,7 @@ devkDescriptorPoolSlot * devkDescriptorPoolPool::Get(){
 	}
 	
 	// create slot for set and return it. caller holds reference
-	return new devkDescriptorPoolSlot(*this, set);
+	return devkDescriptorPoolSlot::Ref(new devkDescriptorPoolSlot(*this, set));
 }
 
 void devkDescriptorPoolPool::Return(devkDescriptorPoolSlot *slot){

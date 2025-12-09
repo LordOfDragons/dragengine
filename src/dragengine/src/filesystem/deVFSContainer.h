@@ -30,11 +30,11 @@
 #include "dePathList.h"
 #include "../deObject.h"
 #include "../common/file/decPath.h"
+#include "../common/file/decBaseFileReader.h"
+#include "../common/file/decBaseFileWriter.h"
 #include "../common/utils/decDateTime.h"
 
 class deContainerFileSearch;
-class decBaseFileReader;
-class decBaseFileWriter;
 
 
 /**
@@ -207,7 +207,7 @@ public:
 	 * found an exception is raised. Use the CanReadFile function to
 	 * test if a file can be opened for reading.
 	 */
-	virtual decBaseFileReader *OpenFileForReading(const decPath &path) = 0;
+	virtual decBaseFileReader::Ref OpenFileForReading(const decPath &path) = 0;
 	
 	/**
 	 * \brief Open file for writing.
@@ -218,7 +218,7 @@ public:
 	 * directories have to be created if the CanWriteFile function
 	 * returns true for a file whose parent directory does not exist yet.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting(const decPath &path) = 0;
+	virtual decBaseFileWriter::Ref OpenFileForWriting(const decPath &path) = 0;
 	
 	/**
 	 * \brief Delete file.

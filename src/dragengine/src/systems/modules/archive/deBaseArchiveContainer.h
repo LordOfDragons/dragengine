@@ -35,7 +35,7 @@
  */
 class DE_DLL_EXPORT deBaseArchiveContainer{
 private:
-	decBaseFileReader *pReader;
+	decBaseFileReader::Ref pReader;
 	
 	
 	
@@ -54,7 +54,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Reader. */
-	inline decBaseFileReader *GetReader() const{ return pReader; }
+	inline const decBaseFileReader::Ref &GetReader() const{ return pReader; }
 	
 	
 	
@@ -100,7 +100,7 @@ public:
 	 * found an exception is raised. Use the CanReadFile function to
 	 * test if a file can be opened for reading.
 	 */
-	virtual decBaseFileReader *OpenFileForReading(const decPath &path) = 0;
+	virtual decBaseFileReader::Ref OpenFileForReading(const decPath &path) = 0;
 	
 	/**
 	 * \brief Open file for writing.
@@ -111,7 +111,7 @@ public:
 	 * directories have to be created if the CanWriteFile function
 	 * returns true for a file whose parent directory does not exist yet.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting(const decPath &path) = 0;
+	virtual decBaseFileWriter::Ref OpenFileForWriting(const decPath &path) = 0;
 	
 	/**
 	 * \brief Delete file.

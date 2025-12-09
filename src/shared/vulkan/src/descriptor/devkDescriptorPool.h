@@ -27,13 +27,13 @@
 
 #include "devkDescriptorPoolPool.h"
 #include "devkDescriptorSetLayout.h"
+#include "devkDescriptorPoolSlot.h"
 #include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
 
 class devkDevice;
-class devkDescriptorPoolSlot;
 
 
 /**
@@ -80,10 +80,10 @@ public:
 	inline devkDevice &GetDevice() const{ return pDevice; }
 	
 	/** Layout. */
-	inline devkDescriptorSetLayout *GetLayout() const{ return pLayout; }
+	inline const devkDescriptorSetLayout::Ref &GetLayout() const{ return pLayout; }
 	
 	/** Get next free slot. */
-	devkDescriptorPoolSlot *Get();
+	devkDescriptorPoolSlot::Ref Get();
 	/*@}*/
 };
 

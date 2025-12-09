@@ -42,15 +42,12 @@
 ////////////////////////////
 
 deSynthesizerSourceSynthesizer::deSynthesizerSourceSynthesizer() :
-pSynthesizer(NULL),
+
 pConnections(NULL),
 pConnectionCount(0){
 }
 
 deSynthesizerSourceSynthesizer::~deSynthesizerSourceSynthesizer(){
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 	if(pConnections){
 		delete [] pConnections;
 	}
@@ -66,16 +63,7 @@ void deSynthesizerSourceSynthesizer::SetSynthesizer(deSynthesizer *synthesizer){
 		return;
 	}
 	
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
-	
 	pSynthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
-	
 	UpdateConnectionCount();
 }
 

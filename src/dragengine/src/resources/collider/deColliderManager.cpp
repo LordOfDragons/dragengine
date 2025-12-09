@@ -64,60 +64,27 @@ deCollider *deColliderManager::GetRootCollider() const{
 	return (deCollider*)pColliders.GetRoot();
 }
 
-deColliderVolume *deColliderManager::CreateColliderVolume(){
-	deColliderVolume *collider = NULL;
-	// create and add collider
-	try{
-		collider = new deColliderVolume(this);
-		if(!collider) DETHROW(deeOutOfMemory);
-		GetPhysicsSystem()->LoadCollider(collider);
-		GetScriptingSystem()->LoadCollider(collider);
-		pColliders.Add(collider);
-	}catch(const deException &){
-		if(collider){
-			collider->FreeReference();
-		}
-		throw;
-	}
-	// finished
+deColliderVolume::Ref deColliderManager::CreateColliderVolume(){
+	const deColliderVolume::Ref collider(deColliderVolume::Ref::NewWith(this));
+	GetPhysicsSystem()->LoadCollider(collider);
+	GetScriptingSystem()->LoadCollider(collider);
+	pColliders.Add(collider);
 	return collider;
 }
 
-deColliderRig *deColliderManager::CreateColliderRig(){
-	deColliderRig *collider = NULL;
-	// create and add collider
-	try{
-		collider = new deColliderRig(this);
-		if(!collider) DETHROW(deeOutOfMemory);
-		GetPhysicsSystem()->LoadCollider(collider);
-		GetScriptingSystem()->LoadCollider(collider);
-		pColliders.Add(collider);
-	}catch(const deException &){
-		if(collider){
-			collider->FreeReference();
-		}
-		throw;
-	}
-	// finished
+deColliderRig::Ref deColliderManager::CreateColliderRig(){
+	const deColliderRig::Ref collider(deColliderRig::Ref::NewWith(this));
+	GetPhysicsSystem()->LoadCollider(collider);
+	GetScriptingSystem()->LoadCollider(collider);
+	pColliders.Add(collider);
 	return collider;
 }
 
-deColliderComponent *deColliderManager::CreateColliderComponent(){
-	deColliderComponent *collider = NULL;
-	// create and add collider
-	try{
-		collider = new deColliderComponent(this);
-		if(!collider) DETHROW(deeOutOfMemory);
-		GetPhysicsSystem()->LoadCollider(collider);
-		GetScriptingSystem()->LoadCollider(collider);
-		pColliders.Add(collider);
-	}catch(const deException &){
-		if(collider){
-			collider->FreeReference();
-		}
-		throw;
-	}
-	// finished
+deColliderComponent::Ref deColliderManager::CreateColliderComponent(){
+	const deColliderComponent::Ref collider(deColliderComponent::Ref::NewWith(this));
+	GetPhysicsSystem()->LoadCollider(collider);
+	GetScriptingSystem()->LoadCollider(collider);
+	pColliders.Add(collider);
 	return collider;
 }
 

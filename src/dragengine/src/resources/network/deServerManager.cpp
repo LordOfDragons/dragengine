@@ -67,24 +67,11 @@ deServer *deServerManager::GetRootServer() const{
 	return (deServer*)pServers.GetRoot();
 }
 
-deServer *deServerManager::CreateServer(){
-	deServer *server = NULL;
-	
-	try{
-		server = new deServer(this);
-		
-		GetNetworkSystem()->LoadServer(server);
-		GetScriptingSystem()->LoadServer(server);
-		
-		pServers.Add(server);
-		
-	}catch(const deException &){
-		if(server){
-			server->FreeReference();
-		}
-		throw;
-	}
-	
+deServer::Ref deServerManager::CreateServer(){
+	const deServer::Ref server(deServer::Ref::NewWith(this));
+	GetNetworkSystem()->LoadServer(server);
+	GetScriptingSystem()->LoadServer(server);
+	pServers.Add(server);
 	return server;
 }
 

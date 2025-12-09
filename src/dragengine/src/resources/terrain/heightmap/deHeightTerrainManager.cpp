@@ -71,29 +71,17 @@ deHeightTerrain *deHeightTerrainManager::GetRootHeightTerrain() const{
 	return (deHeightTerrain*)pTerrains.GetRoot();
 }
 
-deHeightTerrain *deHeightTerrainManager::CreateHeightTerrain(float sectorSize, int heightImageSize){
+deHeightTerrain::Ref deHeightTerrainManager::CreateHeightTerrain(float sectorSize, int heightImageSize){
 	if(sectorSize < 0.001f || heightImageSize < 2){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deHeightTerrain *heightTerrain = NULL;
-	
-	try{
-		heightTerrain = new deHeightTerrain(this, sectorSize, heightImageSize);
-		
-		GetGraphicSystem()->LoadHeightTerrain(heightTerrain);
-		GetPhysicsSystem()->LoadHeightTerrain(heightTerrain);
-		GetAISystem()->LoadHeightTerrain(*heightTerrain);
-		
-		pTerrains.Add(heightTerrain);
-		
-	}catch(const deException &){
-		if(heightTerrain){
-			heightTerrain->FreeReference();
-		}
-		throw;
-	}
-	
+	const deHeightTerrain::Ref heightTerrain(deHeightTerrain::Ref::NewWith(
+		this, sectorSize, heightImageSize));
+	GetGraphicSystem()->LoadHeightTerrain(heightTerrain);
+	GetPhysicsSystem()->LoadHeightTerrain(heightTerrain);
+	GetAISystem()->LoadHeightTerrain(*heightTerrain);
+	pTerrains.Add(heightTerrain);
 	return heightTerrain;
 }
 

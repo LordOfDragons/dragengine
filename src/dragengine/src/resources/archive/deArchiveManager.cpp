@@ -77,19 +77,17 @@ deArchive *deArchiveManager::GetRootArchive() const{
 	return (deArchive*)pArchives.GetRoot();
 }
 
-deArchive *deArchiveManager::OpenArchive(const char *filename, const char *basePath){
+deArchive::Ref deArchiveManager::OpenArchive(const char *filename, const char *basePath){
 	return OpenArchive(GetEngine()->GetVirtualFileSystem(), filename, basePath);
 }
 
-deArchive *deArchiveManager::OpenArchive(deVirtualFileSystem *vfs, const char *filename,
+deArchive::Ref deArchiveManager::OpenArchive(deVirtualFileSystem *vfs, const char *filename,
 const char *basePath){
 	if(!vfs || !filename){
 		DETHROW(deeInvalidParam);
 	}
-	decBaseFileReader *fileReader = NULL;
 	deBaseArchiveContainer *peer = NULL;
-	deArchive *findArchive;
-	deArchive *archive = NULL;
+	deArchive::Ref archive;
 	decPath path;
 	
 	try{
@@ -98,30 +96,25 @@ const char *basePath){
 		}
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
-		findArchive = (deArchive*)pArchives.GetWithFilename(vfs, path.GetPathUnix());
+		deArchive *findArchive = (deArchive*)pArchives.GetWithFilename(vfs, path.GetPathUnix());
 		
 		if(findArchive && findArchive->GetModificationTime() != modificationTime){
 			LogInfoFormat("Archive '%s' (base path '%s') changed on VFS: Outdating and Reloading",
 				filename, basePath ? basePath : "");
 			findArchive->MarkOutdated();
-			findArchive = NULL;
+			findArchive = nullptr;
 		}
 		
 		if(findArchive){
-			findArchive->AddReference();
 			archive = findArchive;
 			
 		}else{
 			deBaseArchiveModule * const module = (deBaseArchiveModule*)GetModuleSystem()->
 				GetModuleAbleToLoad(deModuleSystem::emtArchive, path.GetPathUnix());
 			
-			fileReader = OpenFileForReading(*vfs, path.GetPathUnix());
+			peer = module->CreateContainer(OpenFileForReading(*vfs, path.GetPathUnix()));
 			
-			peer = module->CreateContainer(fileReader);
-			fileReader->FreeReference();
-			fileReader = NULL;
-			
-			archive = new deArchive(this, vfs, path.GetPathUnix(), modificationTime);
+			archive.TakeOver(new deArchive(this, vfs, path.GetPathUnix(), modificationTime));
 			archive->SetPeerContainer(peer);
 			peer = NULL;
 			
@@ -131,14 +124,8 @@ const char *basePath){
 	}catch(const deException &){
 		LogErrorFormat("Open archive '%s' (base path '%s') failed", filename,
 			basePath ? basePath : "");
-		if(archive){
-			archive->FreeReference();
-		}
 		if(peer){
 			delete peer;
-		}
-		if(fileReader){
-			fileReader->FreeReference();
 		}
 		throw;
 	}
@@ -146,13 +133,13 @@ const char *basePath){
 	return archive;
 }
 
-deArchiveContainer *deArchiveManager::CreateContainer(const decPath &rootPath,
+deArchiveContainer::Ref deArchiveManager::CreateContainer(const decPath &rootPath,
 deArchive *archive, const decPath &archivePath){
 	if(!archive){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deArchiveContainer *container = new deArchiveContainer(rootPath, archive, archivePath);
+	const deArchiveContainer::Ref container(new deArchiveContainer(rootPath, archive, archivePath));
 	
 	if(pContainerTail){
 		pContainerTail->SetLLManagerNext(container);

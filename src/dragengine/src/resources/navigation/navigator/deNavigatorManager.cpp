@@ -65,26 +65,10 @@ deNavigator *deNavigatorManager::GetRootNavigator() const{
 	return (deNavigator*)pNavigators.GetRoot();
 }
 
-deNavigator *deNavigatorManager::CreateNavigator(){
-	deNavigator *navigator = NULL;
-	
-	try{
-		navigator = new deNavigator(this);
-		if(!navigator){
-			DETHROW(deeOutOfMemory);
-		}
-		
-		GetAISystem()->LoadNavigator(navigator);
-		
-		pNavigators.Add(navigator);
-		
-	}catch(const deException &){
-		if(navigator){
-			navigator->FreeReference();
-		}
-		throw;
-	}
-	
+deNavigator::Ref deNavigatorManager::CreateNavigator(){
+	const deNavigator::Ref navigator(deNavigator::Ref::NewWith(this));
+	GetAISystem()->LoadNavigator(navigator);
+	pNavigators.Add(navigator);
 	return navigator;
 }
 

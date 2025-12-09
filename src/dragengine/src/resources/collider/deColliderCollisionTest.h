@@ -101,7 +101,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Touch sensor to use for testing or NULL to use the parent collider world. */
-	inline deTouchSensor *GetTouchSensor() const{ return pTouchSensor; }
+	inline const deTouchSensor::Ref &GetTouchSensor() const{ return pTouchSensor; }
 	
 	/** \brief Set touch sensor to use for testing or NULL to use the parent collider world. */
 	void SetTouchSensor(deTouchSensor *touchSensor);
@@ -109,7 +109,7 @@ public:
 	
 	
 	/** \brief Collider or NULL to test using a ray. */
-	inline deCollider *GetCollider() const{ return pCollider; }
+	inline const deCollider::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Set collider or NULL to test using a ray. */
 	void SetCollider(deCollider *collider);
@@ -123,7 +123,7 @@ public:
 	
 	
 	/** \brief Component to use to retrieve bone position from or NULL if not used. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
 	
 	/** \brief Set component to use to retrieve bone position from or NULL if not used. */
 	void SetComponent(deComponent *component);

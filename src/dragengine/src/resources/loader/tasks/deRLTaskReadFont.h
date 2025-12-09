@@ -26,8 +26,8 @@
 #define _DERLTASKREADFONT_H_
 
 #include "deResourceLoaderTask.h"
+#include "deRLTaskReadFontInternal.h"
 
-class deRLTaskReadFontInternal;
 class deFont;
 
 
@@ -36,7 +36,7 @@ class deFont;
  */
 class DE_DLL_EXPORT deRLTaskReadFont : public deResourceLoaderTask {
 private:
-	deRLTaskReadFontInternal *pInternalTask;
+	deRLTaskReadFontInternal::Ref pInternalTask;
 	bool pSucceeded;
 	
 	

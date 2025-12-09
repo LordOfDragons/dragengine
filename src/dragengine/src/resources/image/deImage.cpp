@@ -236,14 +236,14 @@ void deImage::RetainImageData(){
 	if(!pData){
 		deImageManager &manager = *((deImageManager*)GetResourceManager());
 // 		manager.LogInfoFormat( "Retain image '%s'", GetFilename().GetString() );
-		decBaseFileReader::Ref fileReader;
 		deBaseImageInfo *info = NULL;
 		
 		try{
 			deBaseImageModule * const module = (deBaseImageModule*)manager.GetModuleSystem()->
 				GetModuleAbleToLoad(deModuleSystem::emtImage, GetFilename());
 			
-			fileReader.TakeOver(manager.OpenFileForReading(*GetVirtualFileSystem(), GetFilename()));
+			const decBaseFileReader::Ref fileReader(
+				manager.OpenFileForReading(*GetVirtualFileSystem(), GetFilename()));
 			
 			info = module->InitLoadImage(fileReader);
 			if(!info){

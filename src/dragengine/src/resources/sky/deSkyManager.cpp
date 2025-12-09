@@ -53,21 +53,10 @@ deSky *deSkyManager::GetRootSky() const{
 	return (deSky*)pSkies.GetRoot();
 }
 
-deSky *deSkyManager::CreateSky(){
-	deSky *sky = NULL;
-	// create and add sky
-	try{
-		sky = new deSky(this);
-		if(!sky) DETHROW(deeOutOfMemory);
-		GetGraphicSystem()->LoadSky(sky);
-		pSkies.Add(sky);
-	}catch(const deException &){
-		if(sky){
-			sky->FreeReference();
-		}
-		throw;
-	}
-	// finished
+deSky::Ref deSkyManager::CreateSky(){
+	const deSky::Ref sky(deSky::Ref::NewWith(this));
+	GetGraphicSystem()->LoadSky(sky);
+	pSkies.Add(sky);
 	return sky;
 }
 

@@ -28,8 +28,8 @@
 #include "deResource.h"
 #include "../common/string/decString.h"
 #include "../common/utils/decDateTime.h"
+#include "../filesystem/deVirtualFileSystem.h"
 
-class deVirtualFileSystem;
 class deFileResourceManager;
 
 
@@ -43,7 +43,7 @@ class deFileResourceManager;
  */
 class DE_DLL_EXPORT deFileResource : public deResource{
 private:
-	deVirtualFileSystem *pVirtualFileSystem;
+	deVirtualFileSystem::Ref pVirtualFileSystem;
 	decString pFilename;
 	TIME_SYSTEM pModificationTime;
 	bool pAsynchron;
@@ -78,7 +78,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Virtual file system or NULL if build from memory. */
-	inline deVirtualFileSystem *GetVirtualFileSystem() const{ return pVirtualFileSystem; }
+	inline const deVirtualFileSystem::Ref &GetVirtualFileSystem() const{ return pVirtualFileSystem; }
 	
 	/** \brief Filename or empty string if build from memory. */
 	inline const decString &GetFilename() const{ return pFilename; }

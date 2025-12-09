@@ -65,22 +65,10 @@ deNavigationBlocker *deNavigationBlockerManager::GetRootNavigationBlocker() cons
 	return (deNavigationBlocker*)pBlockers.GetRoot();
 }
 
-deNavigationBlocker *deNavigationBlockerManager::CreateNavigationBlocker(){
-	deNavigationBlocker *blocker = NULL;
-	
-	try{
-		blocker = new deNavigationBlocker(this);
-		GetAISystem()->LoadNavigationBlocker(blocker);
-		
-		pBlockers.Add(blocker);
-		
-	}catch(const deException &){
-		if(blocker){
-			blocker->FreeReference();
-		}
-		throw;
-	}
-	
+deNavigationBlocker::Ref deNavigationBlockerManager::CreateNavigationBlocker(){
+	const deNavigationBlocker::Ref blocker(deNavigationBlocker::Ref::NewWith(this));
+	GetAISystem()->LoadNavigationBlocker(blocker);
+	pBlockers.Add(blocker);
 	return blocker;
 }
 

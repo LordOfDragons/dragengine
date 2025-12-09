@@ -43,20 +43,12 @@
 ////////////////////////////
 
 deLoggerFile::deLoggerFile(decBaseFileWriter *writer) :
-pWriter(NULL)
+pWriter(writer)
 {
-	if(!writer){
-		DETHROW(deeInvalidParam);
-	}
-	
-	pWriter = writer;
-	writer->AddReference();
+	DEASSERT_NOTNULL(writer)
 }
 
 deLoggerFile::~deLoggerFile(){
-	if(pWriter){
-		pWriter->FreeReference();
-	}
 }
 
 

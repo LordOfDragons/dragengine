@@ -25,10 +25,10 @@
 #ifndef _DECAPTURECANVASMANAGER_H_
 #define _DECAPTURECANVASMANAGER_H_
 
+#include "deCaptureCanvas.h"
 #include "../../deResourceManager.h"
 #include "../../deResourceList.h"
 
-class deCaptureCanvas;
 class deEngine;
 
 
@@ -62,7 +62,7 @@ public:
 	deCaptureCanvas *GetRootCaptureCanvas() const;
 	
 	/** \brief Create capture canvas. */
-	deCaptureCanvas *CreateCaptureCanvas();
+	deCaptureCanvas::Ref CreateCaptureCanvas();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

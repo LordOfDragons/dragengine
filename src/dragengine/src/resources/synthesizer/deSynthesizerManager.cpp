@@ -68,22 +68,10 @@ deSynthesizer *deSynthesizerManager::GetRootSynthesizer() const{
 	return (deSynthesizer*)pSynthesizers.GetRoot();
 }
 
-deSynthesizer *deSynthesizerManager::CreateSynthesizer(){
-	deSynthesizer *synthesizer = NULL;
-	
-	try{
-		synthesizer = new deSynthesizer(this);
-		GetSynthesizerSystem()->LoadSynthesizer(synthesizer);
-		
-		pSynthesizers.Add(synthesizer);
-		
-	}catch(const deException &){
-		if(synthesizer){
-			synthesizer->FreeReference();
-		}
-		throw;
-	}
-	
+deSynthesizer::Ref deSynthesizerManager::CreateSynthesizer(){
+	const deSynthesizer::Ref synthesizer(deSynthesizer::Ref::NewWith(this));
+	GetSynthesizerSystem()->LoadSynthesizer(synthesizer);
+	pSynthesizers.Add(synthesizer);
 	return synthesizer;
 }
 

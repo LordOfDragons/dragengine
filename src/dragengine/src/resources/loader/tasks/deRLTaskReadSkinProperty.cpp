@@ -94,21 +94,8 @@ void deRLTaskReadSkinProperty::VisitImage(deSkinPropertyImage &property){
 		path = resourcePath.GetPathUnix();
 	}
 	
-	deResourceLoaderTask * const task = pResourceLoader.AddLoadRequest(
-		pVirtualFileSystem, path, deResourceLoader::ertImage);
-	deRLTaskReadSkinInternal::cInternalTask *internalTask = NULL;
-	
-	try{
-		internalTask = new deRLTaskReadSkinInternal::cInternalTask(&property, task);
-		pTask.AddInternalTask(internalTask);
-		internalTask->FreeReference();
-		
-	}catch(const deException &){
-		if(internalTask){
-			internalTask->FreeReference();
-		}
-		throw;
-	}
+	pTask.AddInternalTask(deRLTaskReadSkinInternal::cInternalTask::Ref::NewWith(&property,
+		pResourceLoader.AddLoadRequest(pVirtualFileSystem, path, deResourceLoader::ertImage)));
 }
 
 void deRLTaskReadSkinProperty::VisitVideo(deSkinPropertyVideo &property){

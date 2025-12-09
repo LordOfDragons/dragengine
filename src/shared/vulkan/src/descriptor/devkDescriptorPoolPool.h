@@ -25,13 +25,13 @@
 #ifndef _DEVKDESCRIPTORPOOLPOOL_H_
 #define _DEVKDESCRIPTORPOOLPOOL_H_
 
+#include "devkDescriptorPoolSlot.h"
 #include "../devkBasics.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
 
 class devkDescriptorPool;
-class devkDescriptorPoolSlot;
 
 
 /**
@@ -73,7 +73,7 @@ public:
 	inline devkDescriptorPool &GetOwner() const{ return pOwner; }
 	
 	/** Get next free slot or nullptr if pool is full. */
-	devkDescriptorPoolSlot *Get();
+	devkDescriptorPoolSlot::Ref Get();
 	
 	/** Return slot to pool. */
 	void Return(devkDescriptorPoolSlot *slot);

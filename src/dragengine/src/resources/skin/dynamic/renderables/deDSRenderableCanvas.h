@@ -82,7 +82,7 @@ public:
 	void SetBitCount(int bitCount);
 	
 	/** \brief Canvas view or NULL if not set. */
-	inline deCanvasView *GetCanvas() const{ return pCanvas; }
+	inline const deCanvasView::Ref &GetCanvas() const{ return pCanvas; }
 	
 	/** \brief Set canvas view or NULL if not set. */
 	void SetCanvas(deCanvasView *canvas);

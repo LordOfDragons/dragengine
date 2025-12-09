@@ -26,10 +26,10 @@
 #define _DERLTASKREADFONTINTERNAL_H_
 
 #include "deResourceLoaderTask.h"
+#include "deRLTaskReadFontInternal2.h"
 #include "../../font/deFont.h"
 
 class deRLTaskReadFont;
-class deRLTaskReadFontInternal2;
 
 
 /**
@@ -38,13 +38,18 @@ class deRLTaskReadFontInternal2;
  * \warning For internal use only.
  */
 class DE_DLL_EXPORT deRLTaskReadFontInternal : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deRLTaskReadFontInternal> Ref;
+	
+	
 private:
 	deFont::Ref pFont;
 	bool pSucceeded;
 	bool pAlreadyLoaded;
 	
 	deRLTaskReadFont *pParentTask;
-	deRLTaskReadFontInternal2 *pInternalTask;
+	deRLTaskReadFontInternal2::Ref pInternalTask;
 	
 	
 	
@@ -70,13 +75,13 @@ public:
 	void Finished() override;
 	
 	/** \brief Font. */
-	inline deFont *GetFont() const{ return pFont; }
+	inline const deFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Font has been already loaded. */
 	inline bool GetAlreadyLoaded() const{ return pAlreadyLoaded; }
 	
 	/** \brief Second task or NULL. */
-	inline deRLTaskReadFontInternal2 *GetInternalTask() const{ return pInternalTask; }
+	inline const deRLTaskReadFontInternal2::Ref &GetInternalTask() const{ return pInternalTask; }
 	/*@}*/
 	
 	

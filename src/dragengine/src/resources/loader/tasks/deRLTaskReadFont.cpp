@@ -53,7 +53,6 @@
 deRLTaskReadFont::deRLTaskReadFont(deEngine &engine, deResourceLoader &resourceLoader,
 deVirtualFileSystem *vfs, const char *path, deFont *font) :
 deResourceLoaderTask(engine, resourceLoader, vfs, path, deResourceLoader::ertFont),
-pInternalTask(NULL),
 pSucceeded(false)
 {
 	LogCreateEnter();
@@ -72,7 +71,7 @@ pSucceeded(false)
 	// the loaded resources, creating font peers and finalize the font. creating the
 	// peers can be done asynchronous
 	try{
-		pInternalTask = new deRLTaskReadFontInternal(engine, resourceLoader, vfs, path, this);
+		pInternalTask.TakeOverWith(engine, resourceLoader, vfs, path, this);
 		
 		switch(pInternalTask->GetState()){
 		case esPending:
@@ -98,9 +97,6 @@ pSucceeded(false)
 }
 
 deRLTaskReadFont::~deRLTaskReadFont(){
-	if(pInternalTask){
-		pInternalTask->FreeReference();
-	}
 }
 
 

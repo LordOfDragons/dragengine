@@ -64,24 +64,11 @@ deSoundLevelMeter *deSoundLevelMeterManager::GetRootSoundLevelMeter() const{
 	return (deSoundLevelMeter*)pSoundLevelMeters.GetRoot();
 }
 
-deSoundLevelMeter *deSoundLevelMeterManager::CreateSoundLevelMeter(){
-	deSoundLevelMeter *soundLevelMeter = NULL;
-	
-	try{
-		soundLevelMeter = new deSoundLevelMeter(this);
-		
-		GetAudioSystem()->LoadSoundLevelMeter(soundLevelMeter);
-		GetScriptingSystem()->LoadSoundLevelMeter(soundLevelMeter);
-		
-		pSoundLevelMeters.Add(soundLevelMeter);
-		
-	}catch(const deException &){
-		if(soundLevelMeter){
-			soundLevelMeter->FreeReference();
-		}
-		throw;
-	}
-	
+deSoundLevelMeter::Ref deSoundLevelMeterManager::CreateSoundLevelMeter(){
+	const deSoundLevelMeter::Ref soundLevelMeter(deSoundLevelMeter::Ref::NewWith(this));
+	GetAudioSystem()->LoadSoundLevelMeter(soundLevelMeter);
+	GetScriptingSystem()->LoadSoundLevelMeter(soundLevelMeter);
+	pSoundLevelMeters.Add(soundLevelMeter);
 	return soundLevelMeter;
 }
 

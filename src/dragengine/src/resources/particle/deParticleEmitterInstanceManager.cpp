@@ -69,25 +69,12 @@ deParticleEmitterInstance *deParticleEmitterInstanceManager::GetRootInstance() c
 	return (deParticleEmitterInstance*)pInstances.GetRoot();
 }
 
-deParticleEmitterInstance *deParticleEmitterInstanceManager::CreateInstance(){
-	deParticleEmitterInstance *instance = NULL;
-	
-	try{
-		instance = new deParticleEmitterInstance(this);
-		
-		GetGraphicSystem()->LoadParticleEmitterInstance(instance);
-		GetPhysicsSystem()->LoadParticleEmitterInstance(instance);
-		GetScriptingSystem()->LoadParticleEmitterInstance(instance);
-		
-		pInstances.Add(instance);
-		
-	}catch(const deException &){
-		if(instance){
-			instance->FreeReference();
-		}
-		throw;
-	}
-	
+deParticleEmitterInstance::Ref deParticleEmitterInstanceManager::CreateInstance(){
+	const deParticleEmitterInstance::Ref instance(deParticleEmitterInstance::Ref::NewWith(this));
+	GetGraphicSystem()->LoadParticleEmitterInstance(instance);
+	GetPhysicsSystem()->LoadParticleEmitterInstance(instance);
+	GetScriptingSystem()->LoadParticleEmitterInstance(instance);
+	pInstances.Add(instance);
 	return instance;
 }
 

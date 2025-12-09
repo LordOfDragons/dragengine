@@ -64,25 +64,10 @@ deAnimatorInstance *deAnimatorInstanceManager::GetRootAnimatorInstance() const{
 	return (deAnimatorInstance*)pInstances.GetRoot();
 }
 
-deAnimatorInstance *deAnimatorInstanceManager::CreateAnimatorInstance(){
-	deAnimatorInstance *instance = NULL;
-	
-	try{
-		instance = new deAnimatorInstance(this);
-		if(!instance) DETHROW(deeOutOfMemory);
-		
-		GetAnimatorSystem()->LoadAnimatorInstance(instance);
-		
-		pInstances.Add(instance);
-		
-	}catch(const deException &){
-		if(instance){
-			instance->FreeReference();
-		}
-		
-		throw;
-	}
-	
+deAnimatorInstance::Ref deAnimatorInstanceManager::CreateAnimatorInstance(){
+	const deAnimatorInstance::Ref instance(deAnimatorInstance::Ref::NewWith(this));
+	GetAnimatorSystem()->LoadAnimatorInstance(instance);
+	pInstances.Add(instance);
 	return instance;
 }
 

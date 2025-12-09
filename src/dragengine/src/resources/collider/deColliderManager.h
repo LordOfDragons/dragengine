@@ -25,14 +25,13 @@
 #ifndef _DECOLLIDERMANAGER_H_
 #define _DECOLLIDERMANAGER_H_ 
 
+#include "deColliderVolume.h"
+#include "deColliderRig.h"
+#include "deColliderComponent.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deCollider;
-class deColliderVolume;
-class deColliderRig;
-class deColliderComponent;
 
 
 /**
@@ -66,13 +65,13 @@ public:
 	deCollider *GetRootCollider() const;
 	
 	/** \brief Create new world collider volume. */
-	deColliderVolume *CreateColliderVolume();
+	deColliderVolume::Ref CreateColliderVolume();
 	
 	/** \brief Create new world collider rigged. */
-	deColliderRig *CreateColliderRig();
+	deColliderRig::Ref CreateColliderRig();
 	
 	/** \brief Create new world collider component. */
-	deColliderComponent *CreateColliderComponent();
+	deColliderComponent::Ref CreateColliderComponent();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

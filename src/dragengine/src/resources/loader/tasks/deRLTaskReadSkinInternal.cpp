@@ -71,7 +71,6 @@ pTask(task)
 	if(!task || !propertyImage){
 		DETHROW(deeInvalidParam);
 	}
-	task->AddReference();
 }
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
@@ -84,7 +83,6 @@ pTask(task)
 	if(!task || !nodeImage){
 		DETHROW(deeInvalidParam);
 	}
-	task->AddReference();
 }
 
 deRLTaskReadSkinInternal::cInternalTask::cInternalTask(
@@ -97,13 +95,9 @@ pTask(task)
 	if(!task || !nodeText){
 		DETHROW(deeInvalidParam);
 	}
-	task->AddReference();
 }
 
 deRLTaskReadSkinInternal::cInternalTask::~cInternalTask(){
-	if(pTask){
-		pTask->FreeReference();
-	}
 }
 
 
@@ -308,20 +302,15 @@ bool deRLTaskReadSkinInternal::pApplyInternal(){
 			deSkinPropertyImage &property = *internalTask.GetPropertyImage();
 			
 			if(task.GetResource()){
-				property.SetImage((deImage*)task.GetResource());
+				property.SetImage((deImage*)task.GetResource().Pointer());
 				
 			}else{
-				deImage *fallbackImage = NULL;
+				deImage::Ref fallbackImage = NULL;
 				
 				try{
 					fallbackImage = GetEngine().GetImageManager()->LoadDefault();
 					property.SetImage(fallbackImage);
-					fallbackImage->FreeReference();
-					
 				}catch(const deException &){
-					if(fallbackImage){
-						fallbackImage->FreeReference();
-					}
 					return false;
 				}
 			}
@@ -330,20 +319,15 @@ bool deRLTaskReadSkinInternal::pApplyInternal(){
 			deSkinPropertyNodeImage &node = *internalTask.GetNodeImage();
 			
 			if(task.GetResource()){
-				node.SetImage((deImage*)task.GetResource());
+				node.SetImage((deImage*)task.GetResource().Pointer());
 				
 			}else{
-				deImage *fallbackImage = NULL;
+				deImage::Ref fallbackImage = NULL;
 				
 				try{
 					fallbackImage = GetEngine().GetImageManager()->LoadDefault();
 					node.SetImage(fallbackImage);
-					fallbackImage->FreeReference();
-					
 				}catch(const deException &){
-					if(fallbackImage){
-						fallbackImage->FreeReference();
-					}
 					return false;
 				}
 			}
@@ -352,7 +336,7 @@ bool deRLTaskReadSkinInternal::pApplyInternal(){
 			deSkinPropertyNodeText &node = *internalTask.GetNodeText();
 			
 			if(task.GetResource()){
-				node.SetFont((deFont*)task.GetResource());
+				node.SetFont((deFont*)task.GetResource().Pointer());
 				
 			}else{
 				return false;

@@ -61,23 +61,10 @@ deEnvMapProbe *deEnvMapProbeManager::GetRootEnvMapProbe() const{
 	return (deEnvMapProbe*)pEnvMapProbes.GetRoot();
 }
 
-deEnvMapProbe *deEnvMapProbeManager::CreateEnvMapProbe(){
-	deEnvMapProbe *envMapProbe = NULL;
-	
-	try{
-		envMapProbe = new deEnvMapProbe(this);
-		
-		GetGraphicSystem()->LoadEnvMapProbe(envMapProbe);
-		
-		pEnvMapProbes.Add(envMapProbe);
-		
-	}catch(const deException &){
-		if(envMapProbe){
-			envMapProbe->FreeReference();
-		}
-		throw;
-	}
-	
+deEnvMapProbe::Ref deEnvMapProbeManager::CreateEnvMapProbe(){
+	const deEnvMapProbe::Ref envMapProbe(deEnvMapProbe::Ref::NewWith(this));
+	GetGraphicSystem()->LoadEnvMapProbe(envMapProbe);
+	pEnvMapProbes.Add(envMapProbe);
 	return envMapProbe;
 }
 

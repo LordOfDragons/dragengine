@@ -67,24 +67,11 @@ deConnection *deConnectionManager::GetRootConnection() const{
 	return (deConnection*)pConnections.GetRoot();
 }
 
-deConnection *deConnectionManager::CreateConnection(){
-	deConnection *connection = NULL;
-	
-	try{
-		connection = new deConnection(this);
-		
-		GetNetworkSystem()->LoadConnection(connection);
-		GetScriptingSystem()->LoadConnection(connection);
-		
-		pConnections.Add(connection);
-		
-	}catch(const deException &){
-		if(connection){
-			connection->FreeReference();
-		}
-		throw;
-	}
-	
+deConnection::Ref deConnectionManager::CreateConnection(){
+	const deConnection::Ref connection(deConnection::Ref::NewWith(this));
+	GetNetworkSystem()->LoadConnection(connection);
+	GetScriptingSystem()->LoadConnection(connection);
+	pConnections.Add(connection);
 	return connection;
 }
 

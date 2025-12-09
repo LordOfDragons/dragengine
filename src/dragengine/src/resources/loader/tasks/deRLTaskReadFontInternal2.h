@@ -35,11 +35,16 @@
  * \warning For internal use only.
  */
 class DE_DLL_EXPORT deRLTaskReadFontInternal2 : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deRLTaskReadFontInternal2> Ref;
+	
+	
 private:
 	deFont::Ref pFont;
 	bool pAlreadyLoaded;
 	
-	deResourceLoaderTask *pTaskImage;
+	deResourceLoaderTask::Ref pTaskImage;
 	
 	
 	

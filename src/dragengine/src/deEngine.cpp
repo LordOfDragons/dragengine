@@ -283,7 +283,6 @@ pOSFileSystem(deVirtualFileSystem::Ref::New(fileSystem)),
 pErrorTrace(nullptr),
 pScriptFailed(false),
 pSystemFailed(false),
-pLogger(nullptr),
 
 pModSys(nullptr),
 pSystems(nullptr),
@@ -342,15 +341,8 @@ void deEngine::ResetFailureFlags(){
 }
 
 void deEngine::SetLogger(deLogger *logger){
-	if(!logger){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(logger != pLogger){
-		pLogger->FreeReference();
-		pLogger = logger;
-		logger->AddReference();
-	}
+	DEASSERT_NOTNULL(logger)
+	pLogger = logger;
 }
 
 
@@ -1139,7 +1131,7 @@ DEBUG_PRINT_TIMER("Run: Process VR events");
 //////////////////////
 
 void deEngine::pInit(){
-	pLogger = new deLoggerConsoleColor;
+	pLogger.TakeOver(new deLoggerConsoleColor);
 	pErrorTrace = new deErrorTrace;
 	pArgs = new deCmdLineArgs;
 	
@@ -1376,10 +1368,6 @@ void deEngine::pCleanUp(){
 	}
 	
 	// free logger
-	if(pLogger){
-		pLogger->FreeReference();
-	}
-	
 	// free os file system if present
 	pOSFileSystem = nullptr;
 }

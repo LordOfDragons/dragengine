@@ -25,11 +25,11 @@
 #ifndef _DEFORCEFIELDMANAGER_H_
 #define _DEFORCEFIELDMANAGER_H_
 
+#include "deForceField.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deForceField;
 
 
 /**
@@ -64,7 +64,7 @@ public:
 	deForceField *GetRootForceField() const;
 	
 	/** \brief Create new force field. */
-	deForceField *CreateForceField();
+	deForceField::Ref CreateForceField();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

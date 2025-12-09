@@ -25,11 +25,11 @@
 #ifndef _DEFONTMANAGER_H_
 #define _DEFONTMANAGER_H_
 
+#include "deFont.h"
 #include "../deFileResourceManager.h"
 #include "../deFileResourceList.h"
 
 class deEngine;
-class deFont;
 class deFontSize;
 class deFontBuilder;
 
@@ -70,19 +70,19 @@ public:
 	deFont *GetFontWith(deVirtualFileSystem *vfs, const char *filename) const;
 	
 	/** \brief Create new font. */
-	deFont *CreateFont(const char *filename, deFontBuilder &builder);
+	deFont::Ref CreateFont(const char *filename, deFontBuilder &builder);
 	
 	/** \brief Create new font. */
-	deFont *CreateFont(deVirtualFileSystem *vfs, const char *filename, deFontBuilder &builder);
+	deFont::Ref CreateFont(deVirtualFileSystem *vfs, const char *filename, deFontBuilder &builder);
 	
 	/** \brief Load font from file relative to base path. */
-	deFont *LoadFont(const char *filename, const char *basePath);
+	deFont::Ref LoadFont(const char *filename, const char *basePath);
 	
 	/** \brief Load font from file relative to base path. */
-	deFont *LoadFont(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
+	deFont::Ref LoadFont(deVirtualFileSystem *vfs, const char *filename, const char *basePath);
 	
 	/** \brief Load debug font. */
-	deFont *LoadDebugFont();
+	deFont::Ref LoadDebugFont();
 	
 	/**
 	 * \brief Add loaded and prepared font.

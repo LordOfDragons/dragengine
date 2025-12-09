@@ -68,8 +68,6 @@
 
 deWorld::deWorld(deWorldManager *manager) :
 deResource(manager),
-
-pHeightTerrain(nullptr),
 pSize(1000.0, 1000.0, 1000.0),
 
 pDisableLights(false),
@@ -334,22 +332,20 @@ void deWorld::SetSpeakerGain(float gain){
 
 
 void deWorld::SetHeightTerrain(deHeightTerrain *heightTerrain){
-	if(heightTerrain != pHeightTerrain){
-		if(pHeightTerrain) pHeightTerrain->FreeReference();
-		
-		pHeightTerrain = heightTerrain;
-		
-		if(pHeightTerrain) pHeightTerrain->AddReference();
-		
-		if(pPeerGraphic){
-			pPeerGraphic->HeightTerrainChanged();
-		}
-		if(pPeerPhysics){
-			pPeerPhysics->HeightTerrainChanged();
-		}
-		if(pPeerAI){
-			pPeerAI->HeightTerrainChanged();
-		}
+	if(heightTerrain == pHeightTerrain){
+		return;
+	}
+	
+	pHeightTerrain = heightTerrain;
+	
+	if(pPeerGraphic){
+		pPeerGraphic->HeightTerrainChanged();
+	}
+	if(pPeerPhysics){
+		pPeerPhysics->HeightTerrainChanged();
+	}
+	if(pPeerAI){
+		pPeerAI->HeightTerrainChanged();
 	}
 }
 
@@ -2060,10 +2056,6 @@ void deWorld::pCleanUp(){
 	}
 	
 	Clear();
-	
-	if(pHeightTerrain){
-		pHeightTerrain->FreeReference();
-	}
 }
 
 

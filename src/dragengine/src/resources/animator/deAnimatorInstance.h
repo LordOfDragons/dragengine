@@ -113,7 +113,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Animator or NULL if none is set. */
-	inline deAnimator *GetAnimator() const{ return pAnimator; }
+	inline const deAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/**
 	 * \brief Set animator or NULL to unset it.
@@ -124,13 +124,13 @@ public:
 	void SetAnimator(deAnimator *animator, bool keepValues = false);
 	
 	/** \brief Component or NULL if none is set. */
-	inline deComponent *GetComponent() const{ return pComponent; }
+	inline const deComponent::Ref &GetComponent() const{ return pComponent; }
 	
 	/** \brief Set component or NULL to unset it. */
 	void SetComponent(deComponent *component);
 	
 	/** \brief Animation or NULL if none is set. */
-	inline deAnimation *GetAnimation() const{ return pAnimation; }
+	inline const deAnimation::Ref &GetAnimation() const{ return pAnimation; }
 	
 	/** \brief Set animation or NULL to unset it. */
 	void SetAnimation(deAnimation *animation);
