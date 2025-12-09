@@ -197,20 +197,9 @@ int deXSystemInput::GetDeviceCount(){
 	return pDevices->GetCount();
 }
 
-deInputDevice *deXSystemInput::GetDeviceAt(int index){
-	deInputDevice *device = NULL;
-	
-	try{
-		device = new deInputDevice;
-		pDevices->GetAt(index)->GetInfo(*device);
-		
-	}catch(const deException &){
-		if(device){
-			device->FreeReference();
-		}
-		throw;
-	}
-	
+deInputDevice::Ref deXSystemInput::GetDeviceAt(int index){
+	const deInputDevice::Ref device(deInputDevice::Ref::NewWith());
+	pDevices->GetAt(index)->GetInfo(device);
 	return device;
 }
 

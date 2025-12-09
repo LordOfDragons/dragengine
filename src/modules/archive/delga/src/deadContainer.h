@@ -126,7 +126,7 @@ public:
 	 * found an exception is raised. Use the CanReadFile function to
 	 * test if a file can be opened for reading.
 	 */
-	virtual decBaseFileReader *OpenFileForReading(const decPath &path);
+	virtual decBaseFileReader::Ref OpenFileForReading(const decPath &path);
 	
 	/**
 	 * \brief Open file for writing.
@@ -137,7 +137,7 @@ public:
 	 * directories have to be created if the CanWriteFile function
 	 * returns true for a file whose parent directory does not exist yet.
 	 */
-	virtual decBaseFileWriter *OpenFileForWriting(const decPath &path);
+	virtual decBaseFileWriter::Ref OpenFileForWriting(const decPath &path);
 	
 	/**
 	 * \brief Delete file.

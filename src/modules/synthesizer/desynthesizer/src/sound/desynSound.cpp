@@ -141,24 +141,11 @@ void desynSound::LoadEntireSound(){
 		return;
 	}
 	
-	deSoundDecoder *decoder = NULL;
+	pStreamData = new char[bufferSize];
+	pStreamDataSize = bufferSize;
 	
-	try{
-		decoder = pModule.GetGameEngine()->GetSoundManager()->CreateDecoder(&pSound);
-		
-		pStreamData = new char[bufferSize];
-		pStreamDataSize = bufferSize;
-		
-		decoder->ReadSamples(pStreamData, bufferSize);
-		
-		decoder->FreeReference();
-		
-	}catch(const deException &){
-		if(decoder){
-			decoder->FreeReference();
-		}
-		throw;
-	}
+	pModule.GetGameEngine()->GetSoundManager()->CreateDecoder(&pSound)->
+		ReadSamples(pStreamData, bufferSize);
 }
 
 void desynSound::Prepare(){

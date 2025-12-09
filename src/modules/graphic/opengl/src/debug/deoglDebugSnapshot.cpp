@@ -284,7 +284,7 @@ void deoglDebugSnapshot::TakeSnapshot() const{
 
 void deoglDebugSnapshot::pTakeSnapshotStates() const{
 	deoglDelayedFileWrite *file = NULL;
-	decBaseFileWriter *writer = NULL;
+	decBaseFileWriter::Ref writer;
 	
 	decPath path;
 	path.SetFromUnix(pRenderThread.GetDebug().GetDebugSaveTexture().GetBasePath());
@@ -494,18 +494,11 @@ void deoglDebugSnapshot::pTakeSnapshotStates() const{
 		pWriteState(*writer, "GL_POLYGON_OFFSET_UNITS", text);
 		
 		//pWriteLine( *writer, "");
-		
-		
-		
-		writer->FreeReference();
-		writer = NULL;
+		writer = nullptr;
 		
 		pRenderThread.GetDelayedOperations().AddFileWrite(file);
 		
 	}catch(const deException &e){
-		if(writer){
-			writer->FreeReference();
-		}
 		if(file){
 			delete file;
 		}

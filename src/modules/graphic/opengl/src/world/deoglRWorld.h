@@ -26,7 +26,9 @@
 #define _DEOGLRWORLD_H_
 
 #include "deoglWorldCompute.h"
+#include "../envmap/deoglEnvironmentMap.h"
 #include "../envmap/deoglEnvironmentMapList.h"
+#include "../terrain/heightmap/deoglRHeightTerrain.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -41,7 +43,6 @@ class deoglRDebugDrawer;
 class deoglRenderPlan;
 class deoglRenderThread;
 class deoglREnvMapProbe;
-class deoglRHeightTerrain;
 class deoglRLight;
 class deoglRLumimeter;
 class deoglRParticleEmitterInstance;
@@ -49,7 +50,6 @@ class deoglRPropField;
 class deoglRSkyInstance;
 class deoglWorldOctree;
 class deoglWorldOctreeVisitor;
-class deoglEnvironmentMap;
 class deoglRenderPlanMasked;
 class deoglGIState;
 
@@ -73,9 +73,9 @@ private:
 	
 	bool pDirtyNotifySkyChanged;
 	bool pDirtySkyOrder;
-	deoglEnvironmentMap *pSkyEnvMap;
+	deoglEnvironmentMap::Ref pSkyEnvMap;
 	
-	deoglRHeightTerrain *pHeightTerrain;
+	deoglRHeightTerrain::Ref pHeightTerrain;
 	
 	deoglRComponent *pRootComponent;
 	deoglRComponent *pTailComponent;
@@ -152,12 +152,12 @@ public:
 	void MarkSkyOrderDirty();
 	
 	/** Sky environment map or \em NULL if not existing. */
-	inline deoglEnvironmentMap *GetSkyEnvironmentMap() const{ return pSkyEnvMap; }
+	inline const deoglEnvironmentMap::Ref &GetSkyEnvironmentMap() const{ return pSkyEnvMap; }
 	
 	
 	
 	/** Height terrain or \em NULL if not set. */
-	inline deoglRHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
+	inline const deoglRHeightTerrain::Ref &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** Set height terrain or \em NULL if not set. */
 	void SetHeightTerrain(deoglRHeightTerrain *heightTerrain);

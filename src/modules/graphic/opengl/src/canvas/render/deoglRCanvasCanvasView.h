@@ -26,8 +26,7 @@
 #define _DEOGLRCANVASCANVASVIEW_H_
 
 #include "deoglRCanvas.h"
-
-class deoglRCanvasView;
+#include "deoglRCanvasView.h"
 
 
 /**
@@ -35,7 +34,7 @@ class deoglRCanvasView;
  */
 class deoglRCanvasCanvasView : public deoglRCanvas{
 private:
-	deoglRCanvasView *pCanvasView;
+	deoglRCanvasView::Ref pCanvasView;
 	decTexMatrix2 pTCTransform;
 	decVector2 pTCClampMin;
 	decVector2 pTCClampMax;
@@ -55,7 +54,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Canvas view or \em NULL if not set. */
-	inline deoglRCanvasView *GetCanvasView() const{ return pCanvasView; }
+	inline const deoglRCanvasView::Ref &GetCanvasView() const{ return pCanvasView; }
 	
 	/** Set canvas view or \em NULL if not set. */
 	void SetCanvasView(deoglRCanvasView *canvasView);

@@ -26,9 +26,9 @@
 #define _DEOGLDSRENDERABLEVALUE_H_
 
 #include "deoglDSRenderable.h"
+#include "render/deoglRDSRenderableValue.h"
 
 class deDSRenderableValue;
-class deoglRDSRenderableValue;
 
 
 
@@ -38,7 +38,7 @@ class deoglRDSRenderableValue;
 class deoglDSRenderableValue : public deoglDSRenderable{
 public:
 	const deDSRenderableValue &pRenderableValue;
-	deoglRDSRenderableValue *pRRenderableValue;
+	deoglRDSRenderableValue::Ref pRRenderableValue;
 	float pValue;
 	bool pDirty;
 	

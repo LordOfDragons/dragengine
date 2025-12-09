@@ -25,6 +25,7 @@
 #ifndef _DEBPPHYSICSBODY_H_
 #define _DEBPPHYSICSBODY_H_
 
+#include "debpBulletShape.h"
 #include "debpCollisionObject.h"
 
 #include <dragengine/common/math/decMath.h>
@@ -32,7 +33,6 @@
 class debpMotionState;
 class debpColliderConstraint;
 class debpCollisionWorld;
-class debpBulletShape;
 class btRigidBody;
 
 
@@ -65,7 +65,7 @@ private:
 	debpCollisionWorld *pDynWorld;
 	btRigidBody *pRigidBody;
 	debpMotionState *pMotionState;
-	debpBulletShape *pShape;
+	debpBulletShape::Ref pShape;
 	float pShapeSurface;
 	
 	decDVector pPosition;
@@ -117,7 +117,7 @@ public:
 	void SetDynamicsWorld(debpCollisionWorld *dynWorld);
 	
 	/** \brief Collision shape or \em NULL. */
-	inline debpBulletShape *GetShape() const{ return pShape; }
+	inline const debpBulletShape::Ref &GetShape() const{ return pShape; }
 	
 	/** \brief Set collision shape or \em NULL. */
 	void SetShape(debpBulletShape *shape);

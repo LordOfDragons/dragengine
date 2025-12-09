@@ -305,8 +305,8 @@ deBaseAudioSynthesizerInstance *deAudioOpenAL::CreateSynthesizerInstance(deSynth
 	return new deoalSynthesizerInstance(*this, *instance);
 }
 
-deBaseAudioHeightTerrain * deAudioOpenAL::CreateHeightTerrain(deHeightTerrain &heightTerrain){
-	return NULL;
+deBaseAudioHeightTerrain *deAudioOpenAL::CreateHeightTerrain(deHeightTerrain &heightTerrain){
+	return nullptr;
 }
 
 

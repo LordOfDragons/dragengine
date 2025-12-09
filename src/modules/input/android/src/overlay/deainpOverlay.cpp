@@ -42,23 +42,17 @@
 
 deainpOverlay::deainpOverlay(deAndroidInput &androidInput) :
 pAndroidInput(androidInput),
-
-pCanvas(NULL),
+pCanvas(androidInput.GetGameEngine()->GetCanvasManager()->CreateCanvasView()),
 pPointer(-1),
 
 pLayoutHorizontal(decPoint(), decPoint(256, 256)),
 pLayoutVertical(decPoint(), decPoint(256, 256))
 {
-	deCanvasManager &canvasManager = *androidInput.GetGameEngine()->GetCanvasManager();
-	pCanvas = canvasManager.CreateCanvasView();
 	pCanvas->SetSize(decPoint(256, 256));
 	pCanvas->SetTransparency(0.35f); // 35% coverage
 }
 
 deainpOverlay::~deainpOverlay(){
-	if(pCanvas){
-		pCanvas->FreeReference();
-	}
 }
 
 

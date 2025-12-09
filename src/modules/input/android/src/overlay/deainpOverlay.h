@@ -27,12 +27,12 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
 #include "../deainpLayout.h"
 
 
 class deAndroidInput;
-class deCanvasView;
 
 
 /**
@@ -46,7 +46,7 @@ public:
 private:
 	deAndroidInput &pAndroidInput;
 	
-	deCanvasView *pCanvas;
+	deCanvasView::Ref pCanvas;
 	
 	int pPointer;
 	decPoint pPointerPosition;
@@ -75,7 +75,7 @@ public:
 	inline deAndroidInput &GetAndroidInput() const{ return pAndroidInput; }
 	
 	/** \brief Canvas for this overlay. */
-	inline deCanvasView *GetCanvas() const{ return pCanvas; }
+	inline const deCanvasView::Ref &GetCanvas() const{ return pCanvas; }
 	
 	
 	

@@ -25,13 +25,14 @@
 #ifndef _DEOGLRSKYINSTANCE_H_
 #define _DEOGLRSKYINSTANCE_H_
 
+#include "deoglRSky.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 
 class deoglRWorld;
 class deoglRenderThread;
-class deoglRSky;
 class deoglRSkyInstanceLayer;
 class deoglGIState;
 class deoglRComponent;
@@ -48,7 +49,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	deoglRWorld *pParentWorld;
 	
-	deoglRSky *pRSky;
+	deoglRSky::Ref pRSky;
 	
 	int pOrder;
 	decLayerMask pLayerMask;
@@ -101,7 +102,7 @@ public:
 	
 	
 	/** Render sky or \em NULL. */
-	inline deoglRSky *GetRSky() const{ return pRSky; }
+	inline const deoglRSky::Ref &GetRSky() const{ return pRSky; }
 	
 	/**
 	 * Set render sky or \em NULL.

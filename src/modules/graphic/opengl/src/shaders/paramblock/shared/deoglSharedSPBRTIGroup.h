@@ -25,8 +25,6 @@
 #ifndef _DEOGLSHAREDSPBRTIGROUP_H_
 #define _DEOGLSHAREDSPBRTIGROUP_H_
 
-#include "deoglSharedSPBRTIGroupList.h"
-
 #include <dragengine/deObject.h>
 
 class deoglSharedSPB;
@@ -49,7 +47,7 @@ public:
 	
 	
 private:
-	const deoglSharedSPBRTIGroupList::Ref pParent;
+	deoglSharedSPBRTIGroupList * const pParent;
 	deoglSharedSPB &pSharedSPB;
 	int pTextureCount;
 	deoglRenderTaskSharedInstance *pRTSInstance;
@@ -75,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Parent list. */
-	inline deoglSharedSPBRTIGroupList &GetParent() const{ return pParent; }
+	inline deoglSharedSPBRTIGroupList &GetParent() const{ return *pParent; }
 	
 	/** Shared SPB. */
 	inline deoglSharedSPB &GetSharedSPB() const{ return pSharedSPB; }

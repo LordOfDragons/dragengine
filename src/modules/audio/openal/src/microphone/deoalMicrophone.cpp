@@ -296,10 +296,7 @@ void deoalMicrophone::pCleanUp(){
 		pOal.SetActiveMicrophone(NULL);
 	}
 	
-	if(pAMicrophone){
-		pAMicrophone->FreeReference();
-		pAMicrophone = NULL;
-	}
+	pAMicrophone = nullptr;
 	
 	AllSpeakersRemoved();
 }

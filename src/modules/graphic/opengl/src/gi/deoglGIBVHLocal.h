@@ -27,14 +27,14 @@
 
 #include "../utils/bvh/deoglBVH.h"
 #include "../tbo/deoglDynamicTBOBlock.h"
+#include "../tbo/deoglDynamicTBOFloat32.h"
+#include "../tbo/deoglDynamicTBOUInt16.h"
+#include "../tbo/deoglDynamicTBOFloat16.h"
 
 #include <dragengine/common/math/decMath.h>
 
 class deoglModelFace;
 class deoglRenderThread;
-class deoglDynamicTBOFloat32;
-class deoglDynamicTBOUInt16;
-class deoglDynamicTBOFloat16;
 
 struct oglModelPosition;
 struct oglModelVertex;
@@ -49,11 +49,11 @@ protected:
 	deoglRenderThread &pRenderThread;
 	deoglBVH pBVH;
 	
-	deoglDynamicTBOFloat32 *pTBONodeBox;
-	deoglDynamicTBOUInt16 *pTBOIndex;
-	deoglDynamicTBOUInt16 *pTBOFace;
-	deoglDynamicTBOFloat32 *pTBOVertex;
-	deoglDynamicTBOFloat16 *pTBOTexCoord;
+	deoglDynamicTBOFloat32::Ref pTBONodeBox;
+	deoglDynamicTBOUInt16::Ref pTBOIndex;
+	deoglDynamicTBOUInt16::Ref pTBOFace;
+	deoglDynamicTBOFloat32::Ref pTBOVertex;
+	deoglDynamicTBOFloat16::Ref pTBOTexCoord;
 	
 	deoglDynamicTBOBlock::Ref pBlockNode;
 	deoglDynamicTBOBlock::Ref pBlockFace;
@@ -82,19 +82,19 @@ public:
 	inline const deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** TBO for BVH node boundaries. */
-	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{ return pTBONodeBox; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBONodeBox() const{ return pTBONodeBox; }
 	
 	/** TBO for BVH node indices. */
-	inline deoglDynamicTBOUInt16 *GetTBOIndex() const{ return pTBOIndex; }
+	inline const deoglDynamicTBOUInt16::Ref &GetTBOIndex() const{ return pTBOIndex; }
 	
 	/** TBO for mesh faces. */
-	inline deoglDynamicTBOUInt16 *GetTBOFace() const{ return pTBOFace; }
+	inline const deoglDynamicTBOUInt16::Ref &GetTBOFace() const{ return pTBOFace; }
 	
 	/** TBO for mesh vertices. */
-	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{ return pTBOVertex; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBOVertex() const{ return pTBOVertex; }
 	
 	/** TBO for mesh texture coordinates. */
-	inline deoglDynamicTBOFloat16 *GetTBOTexCoord() const{ return pTBOTexCoord; }
+	inline const deoglDynamicTBOFloat16::Ref &GetTBOTexCoord() const{ return pTBOTexCoord; }
 	
 	/** BVH. */
 	inline deoglBVH &GetBVH(){ return pBVH; }

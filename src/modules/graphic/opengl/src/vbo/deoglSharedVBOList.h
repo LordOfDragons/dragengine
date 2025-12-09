@@ -25,14 +25,14 @@
 #ifndef _DEOGLSHAREDVBOLIST_H_
 #define _DEOGLSHAREDVBOLIST_H_
 
-#include <dragengine/common/collection/decObjectList.h>
-
 #include "../deoglBasics.h"
 #include "deoglVBOLayout.h"
+#include "deoglSharedVBOBlock.h"
+
+#include <dragengine/common/collection/decObjectList.h>
 
 class deoglRenderThread;
 class deoglSharedVBO;
-class deoglSharedVBOBlock;
 
 
 
@@ -99,7 +99,7 @@ public:
 	deoglSharedVBO *GetAt(int index) const;
 	
 	/** Add block of data to a matching VBO returning the resulting block. */
-	deoglSharedVBOBlock *AddData(int size, int indexCount = 0);
+	deoglSharedVBOBlock::Ref AddData(int size, int indexCount = 0);
 	
 	/** Prepare all VBOs not yet prepared. */
 	void PrepareVBOs();

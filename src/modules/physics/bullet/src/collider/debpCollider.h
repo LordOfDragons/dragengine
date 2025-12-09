@@ -28,6 +28,7 @@
 #include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsCollider.h>
 
 class debpColliderAttachment;
@@ -41,7 +42,6 @@ class debpWorld;
 
 class deCollider;
 class deColliderCollisionTest;
-class deDebugDrawer;
 class deDebugDrawerShape;
 class dePhysicsBullet;
 
@@ -103,7 +103,7 @@ private:
 	int pPPCTColliderIndex;
 	int pUpdateOctreeIndex;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSShape;
 	
 	
@@ -356,7 +356,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** Debug drawer or \em NULL if not activated .*/
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	inline const deDebugDrawer::Ref &GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	/** Debug drawer shape or \em NULL if not ativated. */
 	inline deDebugDrawerShape *GetDDSShape() const{ return pDDSShape; }

@@ -35,6 +35,11 @@
  * Render dynamic skin color renderable.
  */
 class deoglRDSRenderableColor : public deoglRDSRenderable{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDSRenderableColor> Ref;
+	
+	
 private:
 	deoglTexture *pTexture;
 	decColor pColor;

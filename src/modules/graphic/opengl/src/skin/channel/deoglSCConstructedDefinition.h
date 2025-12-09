@@ -25,11 +25,11 @@
 #ifndef _DEOGLSCCONSTRUCTEDDEFINITION_H_
 #define _DEOGLSCCONSTRUCTEDDEFINITION_H_
 
-#include <dragengine/resources/skin/property/node/deSkinPropertyNodeVisitor.h>
+#include <dragengine/common/file/decMemoryFileWriter.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/skin/property/node/deSkinPropertyNodeVisitor.h>
 
 class deSkinPropertyConstructed;
-class decMemoryFileWriter;
 class decMemoryFile;
 class deEngine;
 
@@ -40,8 +40,8 @@ class deEngine;
 class deoglSCConstructedDefinition : public deSkinPropertyNodeVisitor{
 private:
 	const deEngine &pEngine;
-	decMemoryFileWriter *pDefinition;
-	decMemoryFileWriter *pVerify;
+	decMemoryFileWriter::Ref pDefinition;
+	decMemoryFileWriter::Ref pVerify;
 	bool pCacheValid;
 	
 	

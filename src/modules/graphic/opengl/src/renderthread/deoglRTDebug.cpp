@@ -363,8 +363,8 @@ deoglRTDebug::~deoglRTDebug(){
 // Management
 ///////////////
 
-decBaseFileWriter *deoglRTDebug::OpenFileForWriting(const decPath &path){
-	deoglDelayedFileWrite *fileWrite = NULL;
+decBaseFileWriter::Ref deoglRTDebug::OpenFileForWriting(const decPath &path){
+	deoglDelayedFileWrite *fileWrite = nullptr;
 	
 	try{
 		fileWrite = new deoglDelayedFileWrite(path);

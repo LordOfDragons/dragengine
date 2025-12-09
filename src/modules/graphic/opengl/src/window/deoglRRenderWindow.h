@@ -25,9 +25,10 @@
 #ifndef _DEOGLRRENDERWINDOW_H_
 #define _DEOGLRRENDERWINDOW_H_
 
-#include "../texture/pixelbuffer/deoglPixelBuffer.h"
-#include "../target/deoglRenderTarget.h"
 #include "../configuration/deoglConfiguration.h"
+#include "../canvas/render/deoglRCanvasView.h"
+#include "../target/deoglRenderTarget.h"
+#include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -54,13 +55,17 @@ class NSView;
 #endif
 
 class deoglRenderThread;
-class deoglRCanvasView;
 
 
 /**
  * Render window target.
  */
 class deoglRRenderWindow : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRRenderWindow> Ref;
+	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -137,7 +142,7 @@ private:
 	bool pPaint;
 	deoglPixelBuffer::Ref pIcon;
 	
-	deoglRCanvasView *pRCanvasView;
+	deoglRCanvasView::Ref pRCanvasView;
 	
 	bool pSwapBuffers;
 	bool pNotifyPositionChanged;
@@ -248,7 +253,7 @@ public:
 	
 	
 	/** Render canvas view or \em NULL if not set. */
-	inline deoglRCanvasView *GetRCanvasView() const{ return pRCanvasView; }
+	inline const deoglRCanvasView::Ref &GetRCanvasView() const{ return pRCanvasView; }
 	
 	/** Set render canvas view or \em NULL if not set. */
 	void SetRCanvasView(deoglRCanvasView *rcanvasView);

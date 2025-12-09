@@ -49,16 +49,10 @@ pList(list),
 pVideoPlayer(videoPlayer),
 pUsageCount(1)
 {
-	if(!pVideoPlayer){
-		DETHROW(deeInvalidParam);
-	}
-	pVideoPlayer->AddReference();
+	DEASSERT_NOTNULL(pVideoPlayer)
 }
 
 deoglSharedVideoPlayer::~deoglSharedVideoPlayer(){
-	if(pVideoPlayer){
-		pVideoPlayer->FreeReference();
-	}
 }
 
 

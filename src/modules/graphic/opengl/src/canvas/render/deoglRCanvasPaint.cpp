@@ -62,8 +62,6 @@ pEndAngle(0.0f),
 
 pPoints(NULL),
 pPointCount(0),
-
-pVBOBlock(NULL),
 pDirtyVBOBlock(true),
 pVBOBlockPointCount(0)
 {
@@ -176,7 +174,6 @@ void deoglRCanvasPaint::pCleanUp(){
 	}
 	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
-		pVBOBlock->FreeReference();
 	}
 }
 

@@ -669,9 +669,7 @@ void debpCollider::UpdateDebugDrawer(){
 			}
 			
 			pDDSShape = NULL;
-			
-			pDebugDrawer->FreeReference();
-			pDebugDrawer = NULL;
+			pDebugDrawer = nullptr;
 		}
 	}
 }
@@ -888,10 +886,6 @@ void debpCollider::pCleanUp(){
 	if(pAttachments){
 		AllAttachmentsRemoved();
 		delete [] pAttachments;
-	}
-	
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

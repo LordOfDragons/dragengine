@@ -184,19 +184,9 @@ int deWindowsInput::GetDeviceCount(){
 	return pDevices->GetCount();
 }
 
-deInputDevice *deWindowsInput::GetDeviceAt(int index){
-	deInputDevice * const device = new deInputDevice;
-	
-	try{
-		pDevices->GetAt(index)->GetInfo(*device);
-		
-	}catch(const deException &){
-		if(device){
-			device->FreeReference();
-		}
-		throw;
-	}
-	
+deInputDevice::Ref deWindowsInput::GetDeviceAt(int index){
+	const deInputDevice::Ref device(deInputDevice::Ref::NewWith());
+	pDevices->GetAt(index)->GetInfo(device);
 	return device;
 }
 

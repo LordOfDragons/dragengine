@@ -192,20 +192,9 @@ int deBeOSInput::GetDeviceCount(){
 	return pDevices->GetCount();
 }
 
-deInputDevice *deBeOSInput::GetDeviceAt(int index){
-	deInputDevice *device = NULL;
-	
-	try{
-		device = new deInputDevice;
-		pDevices->GetAt(index)->GetInfo(*device);
-		
-	}catch(const deException &){
-		if(device){
-			device->FreeReference();
-		}
-		throw;
-	}
-	
+deInputDevice::Ref deBeOSInput::GetDeviceAt(int index){
+	const deInputDevice::Ref device(deInputDevice::Ref::NewWith());
+	pDevices->GetAt(index)->GetInfo(device);
 	return device;
 }
 

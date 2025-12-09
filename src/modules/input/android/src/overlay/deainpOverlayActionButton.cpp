@@ -61,15 +61,8 @@ pCenter(64, 64),
 
 pPressed(false),
 
-pCImage(NULL),
-pCLabel(NULL),
-
 pDirtyLabelSize(true)
 {
-	deCanvasManager &canvasManager = *androidInput.GetGameEngine()->GetCanvasManager();
-	deImageManager &imageManager = *androidInput.GetGameEngine()->GetImageManager();
-	deImage *image = NULL;
-	
 	const decPoint size(pRadius * 2, pRadius * 2);
 	
 	SetLayoutHorizontal(deainpLayout(decPoint(), size));
@@ -78,13 +71,13 @@ pDirtyLabelSize(true)
 	try{
 		GetCanvas()->SetSize(size);
 		
+		deCanvasManager &canvasManager = *androidInput.GetGameEngine()->GetCanvasManager();
+		deImageManager &imageManager = *androidInput.GetGameEngine()->GetImageManager();
+		
 		pCImage = canvasManager.CreateCanvasImage();
 		pCImage->SetSize(size);
-		image = imageManager.LoadImage(&androidInput.GetVFS(),
-			"/share/images/actionbutton.png", "/");
-		pCImage->SetImage(image);
-		image->FreeReference();
-		image = NULL;
+		pCImage->SetImage(imageManager.LoadImage(&androidInput.GetVFS(),
+			"/share/images/actionbutton.png", "/"));
 		GetCanvas()->AddCanvas(pCImage);
 		
 		pCLabel = canvasManager.CreateCanvasText();
@@ -94,9 +87,6 @@ pDirtyLabelSize(true)
 		GetCanvas()->AddCanvas(pCLabel);
 		
 	}catch(const deException &){
-		if(image){
-			image->FreeReference();
-		}
 		pCleanUp();
 		throw;
 	}
@@ -224,12 +214,6 @@ void deainpOverlayActionButton::OnRelease(){
 //////////////////////
 
 void deainpOverlayActionButton::pCleanUp(){
-	if(pCLabel){
-		pCLabel->FreeReference();
-	}
-	if(pCImage){
-		pCImage->FreeReference();
-	}
 }
 
 void deainpOverlayActionButton::pUpdateLabelSize(){

@@ -48,6 +48,9 @@ public:
 	/*@{*/
 	/** \brief Create new matrix initialized to identity. */
 	decTexMatrix();
+	
+	/** \brief Create new matrix as copy of another one. */
+	decTexMatrix(const decTexMatrix &copy);
 	/*@}*/
 	
 	

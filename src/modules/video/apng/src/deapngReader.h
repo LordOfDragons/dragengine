@@ -28,9 +28,9 @@
 #include <png.h>
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 
 class decString;
-class decBaseFileReader;
 class deVideoApng;
 
 
@@ -42,7 +42,7 @@ class deapngReader{
 private:
 	deVideoApng &pModule;
 	
-	decBaseFileReader *pReader;
+	decBaseFileReader::Ref pReader;
 	
 	png_structp pReadStruct;
 	png_infop pInfoStruct;
@@ -93,7 +93,7 @@ public:
 	inline deVideoApng &GetModule() const{ return pModule; }
 	
 	/** File reader. */
-	inline decBaseFileReader *GetReader() const{ return pReader; }
+	inline const decBaseFileReader::Ref &GetReader() const{ return pReader; }
 	
 	/** Width in pixels. */
 	inline int GetWidth() const{ return pWidth; }

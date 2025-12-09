@@ -31,7 +31,7 @@
 #include "../tbo/deoglDynamicTBO.h"
 
 class deoglDynamicTBO;
-class deoglDynamicTBOBlock;
+#include "deoglDynamicTBOBlock.h"
 class deoglRTLogger;
 
 
@@ -39,11 +39,11 @@ class deoglRTLogger;
  * Shared TBO containing one or more blocks.
  */
 class deoglDynamicTBOShared : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deoglDynamicTBOShared> Ref;
-
-
-public:
+	
+	
 	const deoglDynamicTBO::Ref pTBO;
 	const deoglDynamicTBO::Ref pTBO2;
 	const int pStride;
@@ -117,7 +117,7 @@ public:
 	
 	
 private:
-	deoglDynamicTBOBlock *pAddEmptyBlock();
+	deoglDynamicTBOBlock::Ref pAddEmptyBlock();
 	void pEnsureTBOSize();
 };
 

@@ -369,7 +369,7 @@ mode is XIModeRelative, this device sends relative coordinates.
 #if 0
 	Display * const display = pModule.GetOSUnix()->GetDisplay();
 	XDeviceInfo *xdevices = NULL;
-	dexsiDevice *device = NULL;
+	dexsiDevice::Ref device;
 	int i, countDevices;
 	
 	try{
@@ -391,14 +391,10 @@ mode is XIModeRelative, this device sends relative coordinates.
 			// device can only be added if it is core or extension device. all other uses
 			// are not useful since we can not open the device
 			
-			device = new dexsiDevice(pModule, xdevices[i]);
-			device->FreeReference();
+			device.TakeOverWith(pModule, xdevices[i]);
 		}
 		
 	}catch(const deException &){
-		if(device){
-			device->FreeReference();
-		}
 		if(xdevices){
 			XFreeDeviceList(xdevices);
 		}

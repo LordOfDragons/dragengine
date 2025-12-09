@@ -25,18 +25,18 @@
 #ifndef _DEOGLRCOMPONENTCOMPONENT_H_
 #define _DEOGLRCOMPONENTCOMPONENT_H_
 
+#include "../skin/deoglRSkin.h"
+#include "../skin/deoglSkinTexture.h"
+#include "../skin/pipeline/deoglSkinTexturePipelines.h"
+#include "../skin/dynamic/deoglRDynamicSkin.h"
+#include "../shaders/paramblock/shared/deoglSharedSPBElement.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
 
-#include "../skin/deoglSkinTexture.h"
-#include "../skin/pipeline/deoglSkinTexturePipelines.h"
-
 class deoglRComponent;
-class deoglRDynamicSkin;
-class deoglRSkin;
 class deoglShaderParameterBlock;
 class deoglShaderProgram;
-class deoglSharedSPBElement;
 class deoglSharedSPBRTIGroup;
 class deoglSharedVideoPlayerList;
 class deoglSkinShader;
@@ -58,8 +58,8 @@ private:
 	
 	decTexMatrix2 pTransform;
 	
-	deoglRSkin *pSkin;
-	deoglRDynamicSkin *pDynamicSkin;
+	deoglRSkin::Ref pSkin;
+	deoglRDynamicSkin::Ref pDynamicSkin;
 	deoglSkinState *pSkinState;
 	
 	deoglRSkin *pUseSkin;
@@ -72,7 +72,7 @@ private:
 	bool pIsRendered;
 	int pRenderTaskFilters;
 	
-	deoglSharedSPBElement *pSharedSPBElement;
+	deoglSharedSPBElement::Ref pSharedSPBElement;
 	decObjectList pSharedSPBRTIGroup;
 	decObjectList pSharedSPBRTIGroupShadow;
 	
@@ -131,13 +131,13 @@ public:
 	
 	
 	/** Skin or NULL if there is none. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL if there is none. */
 	void SetSkin(deoglRSkin *skin);
 	
 	/** Dynamic skin or NULL if there is none. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or NULL if there is none. */
 	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
@@ -196,7 +196,7 @@ public:
 	void PrepareParamBlocks();
 	
 	/** Shared shader parameter block element. */
-	inline deoglSharedSPBElement *GetSharedSPBElement() const{ return pSharedSPBElement; }
+	inline const deoglSharedSPBElement::Ref &GetSharedSPBElement() const{ return pSharedSPBElement; }
 	
 	/** Shared SPB render task instance group. */
 	deoglSharedSPBRTIGroup &GetSharedSPBRTIGroup(int lodLevel) const;

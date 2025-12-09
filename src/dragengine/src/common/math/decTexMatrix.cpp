@@ -42,6 +42,17 @@ decTexMatrix::decTexMatrix(){
 	SetIdentity();
 }
 
+decTexMatrix::decTexMatrix(const decTexMatrix &copy) :
+a11(copy.a11),
+a12(copy.a12),
+a13(copy.a13),
+a21(copy.a21),
+a22(copy.a22),
+a23(copy.a23),
+a31(copy.a31),
+a32(copy.a32),
+a33(copy.a33){
+}
 
 
 // Creation

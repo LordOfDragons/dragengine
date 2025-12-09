@@ -1388,9 +1388,6 @@ void debpColliderVolume::pCleanUp(){
 	if(pSweepCollisionTest){
 		delete pSweepCollisionTest;
 	}
-	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
-	}
 }
 
 
@@ -1448,10 +1445,7 @@ void debpColliderVolume::pUpdateStaticCollisionTest(){
 		return;
 	}
 	
-	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
-		pStaticCollisionTestShape = NULL;
-	}
+	pStaticCollisionTestShape = nullptr;
 	
 	try{
 		if(pColliderVolume.GetShapes().GetCount() > 0){
@@ -1466,10 +1460,7 @@ void debpColliderVolume::pUpdateStaticCollisionTest(){
 		}
 		
 	}catch(const deException &){
-		if(pStaticCollisionTestShape){
-			pStaticCollisionTestShape->FreeReference();
-			pStaticCollisionTestShape = NULL;
-		}
+		pStaticCollisionTestShape = nullptr;
 		throw;
 	}
 	
@@ -1491,10 +1482,10 @@ void debpColliderVolume::pUpdateUseFakeDynamics(){
 		// volume but not using the one in the shape to avoid lots of calculations. for this
 		// though we have to check which shape type we have. hard coded stuff like this is
 		// bad but since it's just a temporary hack it will be tolerated for the time being.
-		debpShape *shape = pShapes.GetShapeAt(0);
+		const debpShape * const shape = pShapes.GetShapeAt(0);
 		
 		if(shape->GetType() == debpShape::estSphere){
-			const decShapeSphere &sphere = *((debpShapeSphere*)shape)->GetShapeSphere();
+			const decShapeSphere &sphere = *((const debpShapeSphere*)shape)->GetShapeSphere();
 			debpDCollisionSphere colvol(decDVector(sphere.GetPosition()), (double)sphere.GetRadius());
 			colvol.GetEnclosingBox(&boundingBox);
 			
@@ -1502,7 +1493,7 @@ void debpColliderVolume::pUpdateUseFakeDynamics(){
 			useFakeDynamics = (halfSize.x < 0.05) || (halfSize.y < 0.05) || (halfSize.z < 0.05);
 			
 		}else if(shape->GetType() == debpShape::estBox){
-			const decShapeBox &box = *((debpShapeBox*)shape)->GetShapeBox();
+			const decShapeBox &box = *((const debpShapeBox*)shape)->GetShapeBox();
 			debpDCollisionBox colvol(decDVector(box.GetPosition()), decDVector(box.GetHalfExtends()), box.GetOrientation());
 			colvol.GetEnclosingBox(&boundingBox);
 			
@@ -1532,27 +1523,16 @@ void debpColliderVolume::pUpdateBPShape(){
 		return;
 	}
 	
-	debpBulletShape *shape = NULL;
-	try{
-		if(pColliderVolume.GetShapes().GetCount() > 0){
-			shape = pCreateBPShape(); // take over reference
-		}
-		pPhyBody->SetShape(shape);
-		if(shape){
-			shape->FreeReference();
-		}
-		
-	}catch(const deException &){
-		if(shape){
-			shape->FreeReference();
-		}
-		throw;
+	debpBulletShape::Ref shape;
+	if(pColliderVolume.GetShapes().GetCount() > 0){
+		shape = pCreateBPShape();
 	}
+	pPhyBody->SetShape(shape);
 	
 	pDirtyBPShape = false;
 }
 
-debpBulletShape *debpColliderVolume::pCreateBPShape(){
+debpBulletShape::Ref debpColliderVolume::pCreateBPShape(){
 	const decShapeList &shapes = pColliderVolume.GetShapes();
 	const int count = shapes.GetCount();
 
@@ -1575,11 +1555,7 @@ debpBulletShape *debpColliderVolume::pCreateBPShape(){
 	
 	//pPhyBody->SetCcdParameters( visCreateBody.GetCcdThreshold(), visCreateBody.GetCcdRadius() );
 	
-	debpBulletShape * const bulletShape = createBulletShape.GetBulletShape();
-	if(bulletShape){
-		bulletShape->AddReference(); // otherwise visitor destructor frees created shape
-	}
-	return bulletShape;
+	return createBulletShape.GetBulletShape();
 }
 
 void debpColliderVolume::pUpdateAttachments(bool force){

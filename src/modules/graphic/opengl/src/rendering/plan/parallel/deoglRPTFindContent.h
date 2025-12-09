@@ -35,6 +35,11 @@ class deoglRenderPlan;
  * Parallel task finding content.
  */
 class deoglRPTFindContent : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deoglRPTFindContent> Ref;
+	
+	
 private:
 	deoglRenderPlan &pPlan;
 	float pElapsedTime;

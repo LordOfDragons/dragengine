@@ -35,7 +35,7 @@
 class deoglLoaderThreadTask : public deThreadSafeObject{
 public:
 	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglLoaderThreadTask> Ref;
+	typedef deTThreadSafeObjectReference<deoglLoaderThreadTask> Ref;
 	
 	
 public:
@@ -46,7 +46,7 @@ public:
 	
 protected:
 	/** Clean up loader thread task. */
-	virtual ~deoglLoaderThreadTask();
+	~deoglLoaderThreadTask() override;
 	/*@}*/
 	
 	

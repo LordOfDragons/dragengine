@@ -25,12 +25,12 @@
 #ifndef _DEOGLHTSTEXTURE_H_
 #define _DEOGLHTSTEXTURE_H_
 
+#include "../../skin/deoglRSkin.h"
 #include "../../skin/deoglSkinTexture.h"
 
 #include <dragengine/common/math/decMath.h>
 
 class deoglRHTSector;
-class deoglRSkin;
 class deoglSkinShader;
 class deoglTexUnitsConfig;
 
@@ -45,7 +45,7 @@ private:
 	
 	decTexMatrix pMatrix;
 	
-	deoglRSkin *pSkin;
+	deoglRSkin::Ref pSkin;
 	
 	deoglSkinTexture *pUseSkinTexture;
 	
@@ -91,7 +91,7 @@ public:
 	void SetMatrix(const decTexMatrix &matrix);
 	
 	/** Skin or NULL. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin or NULL. */
 	void SetSkin(deoglRSkin *skin);

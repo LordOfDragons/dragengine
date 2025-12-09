@@ -27,6 +27,7 @@
 
 #include "deNetworkBasic.h"
 #include "debnAddress.h"
+#include "debnSocket.h"
 
 #include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/systems/modules/network/deBaseNetworkConnection.h>
@@ -34,7 +35,6 @@
 class deConnection;
 class deNetworkBasic;
 class debnMessageManager;
-class debnSocket;
 class debnState;
 class debnStateLinkManager;
 class debnStateLinkList;
@@ -67,7 +67,7 @@ private:
 	deNetworkBasic *pNetBasic;
 	deConnection *pConnection;
 	
-	debnSocket *pSocket;
+	debnSocket::Ref pSocket;
 	debnAddress pRemoteAddress;
 	int pConnectionState;
 	int pIdentifier;
@@ -114,7 +114,7 @@ public:
 	inline deConnection *GetConnection() const{ return pConnection; }
 	
 	/** \brief Socket. */
-	inline debnSocket *GetSocket() const{ return pSocket; }
+	inline const debnSocket::Ref &GetSocket() const{ return pSocket; }
 	
 	/** \brief Remote address. */
 	inline const debnAddress &GetRemoteAddress() const{ return pRemoteAddress; }

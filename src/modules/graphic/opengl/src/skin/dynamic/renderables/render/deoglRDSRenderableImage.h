@@ -35,6 +35,11 @@
  * Render dynamic skin image renderable.
  */
 class deoglRDSRenderableImage : public deoglRDSRenderable{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDSRenderableImage> Ref;
+	
+	
 private:
 	deoglRImage::Ref pImage;
 	

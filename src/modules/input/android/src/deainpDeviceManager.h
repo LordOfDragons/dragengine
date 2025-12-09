@@ -25,12 +25,13 @@
 #ifndef _DEAINPDEVICEMANAGER_H_
 #define _DEAINPDEVICEMANAGER_H_
 
+#include "deainpDeviceMouse.h"
+#include "deainpDeviceKeyboard.h"
+
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 
 class deAndroidInput;
 class deainpDevice;
-class deainpDeviceMouse;
-class deainpDeviceKeyboard;
 
 
 
@@ -43,8 +44,8 @@ private:
 	
 	decObjectOrderedSet pDevices;
 	
-	deainpDeviceMouse *pMouse;
-	deainpDeviceKeyboard *pKeyboard;
+	deainpDeviceMouse::Ref pMouse;
+	deainpDeviceKeyboard::Ref pKeyboard;
 	
 	
 	
@@ -82,10 +83,10 @@ public:
 	
 	
 	/** \brief  mouse device. */
-	inline deainpDeviceMouse *GetMouse() const{ return pMouse; }
+	inline const deainpDeviceMouse::Ref &GetMouse() const{ return pMouse; }
 	
 	/** \brief  keyboard device. */
-	inline deainpDeviceKeyboard *GetKeyboard() const{ return pKeyboard; }
+	inline const deainpDeviceKeyboard::Ref &GetKeyboard() const{ return pKeyboard; }
 	
 	
 	

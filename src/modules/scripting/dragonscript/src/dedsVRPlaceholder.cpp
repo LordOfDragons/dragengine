@@ -212,7 +212,7 @@ void dedsVRPlaceholder::pFindHmdDevice(){
 	pDeviceIndexHmd = -1;
 	
 	for(i=0; i<count; i++){
-		const deInputDevice::Ref device(deInputDevice::Ref::New(module.GetDeviceAt(i)));
+		const deInputDevice::Ref device(module.GetDeviceAt(i));
 		if(device->GetType() == deInputDevice::eDeviceTypes::edtVRHMD){
 			pDeviceIndexHmd = i;
 			return;

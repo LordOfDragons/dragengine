@@ -27,18 +27,18 @@
 
 #include "../shape/debpShapeList.h"
 #include "../debpCollisionObject.h"
+#include "../debpBulletShape.h"
 
 #include <dragengine/common/collection/decPointerOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class debpColliderConstraint;
-class debpBulletShape;
 class debpPhysicsBody;
 
 class btGhostObject;
 class btCollisionObject;
 
-class deDebugDrawer;
 class deDebugDrawerShape;
 class deRigBone;
 
@@ -85,11 +85,11 @@ private:
 	debpShapeList pShapes;
 	
 	btGhostObject *pStaticCollisionTest;
-	debpBulletShape *pStaticCollisionTestShape;
+	debpBulletShape::Ref pStaticCollisionTestShape;
 	debpCollisionObject pStaticCollisionTestObject;
 	bool pDirtyStaticTest;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSShape;
 	
 	
@@ -203,7 +203,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** Debug drawer or \em NULL if not activated .*/
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	inline const deDebugDrawer::Ref &GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	/** Set debug drawer or \em NULL if not activated. */
 	void SetDebugDrawer(deDebugDrawer *debugDrawer);
@@ -220,7 +220,7 @@ public:
 private:
 	void pCleanUp();
 	void pUpdateStaticCollisionTest();
-	debpBulletShape *pCreateBPShape();
+	debpBulletShape::Ref pCreateBPShape();
 };
 
 #endif

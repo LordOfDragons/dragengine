@@ -84,13 +84,13 @@ deoglSharedVBO *deoglSharedVBOList::GetAt(int index) const{
 	return (deoglSharedVBO*)pVBOs.GetAt(index);
 }
 
-deoglSharedVBOBlock *deoglSharedVBOList::AddData(int size, int indexCount){
+deoglSharedVBOBlock::Ref deoglSharedVBOList::AddData(int size, int indexCount){
 	if(size < 1 || indexCount < 0){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const int count = pVBOs.GetCount();
-	deoglSharedVBOBlock *block;
+	deoglSharedVBOBlock::Ref block;
 	int i;
 	
 	// if there is a vbo able to host the data add it there

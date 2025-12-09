@@ -26,13 +26,13 @@
 #define _DEOGLSHAREDVBO_H_
 
 #include "deoglVBOLayout.h"
+#include "deoglSharedVBOBlock.h"
 #include "../deoglBasics.h"
 #include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/deObject.h>
 
-class deoglSharedVBOBlock;
 class deoglSharedVBOList;
 class deoglVAO;
 
@@ -114,7 +114,7 @@ public:
 	 * Tries to add a block of data to the VBO. Returns the block representing this data if a suitable
 	 * location has been found or NULL if there is not enough space left in the VBO.
 	 */
-	deoglSharedVBOBlock *AddBlock(int size, int indexCount = 0);
+	deoglSharedVBOBlock::Ref AddBlock(int size, int indexCount = 0);
 	/** Removes a block of data returning the space to the pool of free space. */
 	void RemoveBlock(deoglSharedVBOBlock *block);
 	

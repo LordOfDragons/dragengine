@@ -133,14 +133,14 @@ deoglRSkin *deoglSkinState::GetOwnerSkin() const{
 		return pOwnerLight->GetLightSkin();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
 deoglRDynamicSkin *deoglSkinState::GetOwnerDynamicSkin() const{
 	if(pOwnerComponent){
 		if(pOwnerComponentTexture != -1){
-			deoglRDynamicSkin * const dynamicSkin =
+			const deoglRDynamicSkin::Ref &dynamicSkin =
 				pOwnerComponent->GetTextureAt(pOwnerComponentTexture).GetDynamicSkin();
 			return dynamicSkin ? dynamicSkin : pOwnerComponent->GetDynamicSkin();
 			
@@ -158,7 +158,7 @@ deoglRDynamicSkin *deoglSkinState::GetOwnerDynamicSkin() const{
 		return pOwnerLight->GetDynamicSkin();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

@@ -57,9 +57,7 @@ pColBoneDynamic(false),
 pIndex(index),
 pParent(-1),
 pStaticCollisionTest(NULL),
-pStaticCollisionTestShape(NULL),
 pDirtyStaticTest(true),
-pDebugDrawer(NULL),
 pDDSShape(NULL)
 {
 	pStaticCollisionTestObject.SetOwnerCollider(collider, index);
@@ -225,19 +223,7 @@ btCollisionObject *debpColliderBone::GetStaticCollisionTestPrepare(){
 //////////////
 
 void debpColliderBone::SetDebugDrawer(deDebugDrawer *debugDrawer){
-	if(debugDrawer == pDebugDrawer){
-		return;
-	}
-	
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
-	
 	pDebugDrawer = debugDrawer;
-	
-	if(debugDrawer){
-		debugDrawer->AddReference();
-	}
 }
 
 void debpColliderBone::SetDDSShape(deDebugDrawerShape *shape){
@@ -250,10 +236,6 @@ void debpColliderBone::SetDDSShape(deDebugDrawerShape *shape){
 //////////////////////
 
 void debpColliderBone::pCleanUp(){
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
-	
 	RemoveAllConstraints();
 	
 	if(pPhyBody){
@@ -262,9 +244,6 @@ void debpColliderBone::pCleanUp(){
 	
 	if(pStaticCollisionTest){
 		delete pStaticCollisionTest;
-	}
-	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
 	}
 }
 
@@ -279,16 +258,12 @@ void debpColliderBone::pUpdateStaticCollisionTest(){
 		return;
 	}
 	
-	if(pStaticCollisionTestShape){
-		pStaticCollisionTestShape->FreeReference();
-		pStaticCollisionTestShape = NULL;
-	}
+	pStaticCollisionTestShape = nullptr;
 	
 	try{
 		pStaticCollisionTestShape = pCreateBPShape();
 		
 		if(pStaticCollisionTestShape){
-			pStaticCollisionTestShape->AddReference();
 			pStaticCollisionTest->setCollisionShape(pStaticCollisionTestShape->GetShape());
 			
 		}else{
@@ -296,20 +271,17 @@ void debpColliderBone::pUpdateStaticCollisionTest(){
 		}
 		
 	}catch(const deException &){
-		if(pStaticCollisionTestShape){
-			pStaticCollisionTestShape->FreeReference();
-			pStaticCollisionTestShape = NULL;
-		}
+		pStaticCollisionTestShape = nullptr;
 		throw;
 	}
 	
 	pDirtyStaticTest = false;
 }
 
-debpBulletShape *debpColliderBone::pCreateBPShape(){
+debpBulletShape::Ref debpColliderBone::pCreateBPShape(){
 	const int count = pShapes.GetShapeCount();
 	if(count == 0){
-		return NULL;
+		return nullptr;
 	}
 	
 	debpCreateBulletShape createBulletShape;
@@ -323,9 +295,5 @@ debpBulletShape *debpColliderBone::pCreateBPShape(){
 	}
 	createBulletShape.Finish();
 	
-	debpBulletShape * const bulletShape = createBulletShape.GetBulletShape();
-	if(bulletShape){
-		bulletShape->AddReference(); // otherwise visitor destructor frees created shape
-	}
-	return bulletShape;
+	return createBulletShape.GetBulletShape();
 }

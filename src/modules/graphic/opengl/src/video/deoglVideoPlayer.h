@@ -25,13 +25,14 @@
 #ifndef _DEOGLVIDEOPLAYER_H_
 #define _DEOGLVIDEOPLAYER_H_
 
+#include "deoglRVideoPlayer.h"
+
 #include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/resources/video/deVideoDecoder.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicVideoPlayer.h>
 
 class deoglVideo;
 class deoglVideoDecodeThread;
-class deoglRVideoPlayer;
 
 class deVideoPlayer;
 class deGraphicOpenGl;
@@ -57,7 +58,7 @@ public:
 	deVideoDecoder::Ref pVideoDecoder;
 	deoglVideoDecodeThread *pDecodeThread;
 	
-	deoglRVideoPlayer *pRVideoPlayer;
+	deoglRVideoPlayer::Ref pRVideoPlayer;
 	
 	decPointerSet pNotifyRenderables;
 	decPointerSet pNotifyCanvas;
@@ -89,7 +90,7 @@ public:
 	inline int GetCurrentFrame() const{ return pCurFrame; }
 	
 	/** Render video player or \em NULL if not existing. */
-	inline deoglRVideoPlayer *GetRVideoPlayer() const{ return pRVideoPlayer; }
+	inline const deoglRVideoPlayer::Ref &GetRVideoPlayer() const{ return pRVideoPlayer; }
 	
 	/** Set current frame. */
 	void SetCurrentFrame(int frame);

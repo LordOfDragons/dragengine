@@ -25,10 +25,11 @@
 #ifndef _DEOALSOUND_H_
 #define _DEOALSOUND_H_
 
+#include "deoalASound.h"
+
 #include <dragengine/systems/modules/audio/deBaseAudioSound.h>
 
 class deAudioOpenAL;
-class deoalASound;
 
 class deSound;
 
@@ -41,7 +42,7 @@ class deoalSound : public deBaseAudioSound{
 private:
 	deAudioOpenAL &pOal;
 	deSound &pSound;
-	deoalASound *pASound;
+	deoalASound::Ref pASound;
 	
 	
 	
@@ -66,7 +67,7 @@ public:
 	inline deSound &GetSound() const{ return pSound; }
 	
 	/** \brief Audio sound. */
-	inline deoalASound *GetASound() const{ return pASound; }
+	inline const deoalASound::Ref &GetASound() const{ return pASound; }
 	
 	
 	

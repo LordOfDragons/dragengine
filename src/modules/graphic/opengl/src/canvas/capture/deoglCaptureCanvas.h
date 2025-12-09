@@ -25,10 +25,11 @@
 #ifndef _DEOGLCAPTURECANVAS_H_
 #define _DEOGLCAPTURECANVAS_H_
 
+#include "deoglRCaptureCanvas.h"
+
 #include <dragengine/systems/modules/graphic/deBaseGraphicCaptureCanvas.h>
 #include <dragengine/common/math/decMath.h>
 
-class deoglRCaptureCanvas;
 class deCaptureCanvas;
 class deGraphicOpenGl;
 
@@ -42,7 +43,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	deCaptureCanvas &pCaptureCanvas;
 	
-	deoglRCaptureCanvas *pRCaptureCanvas;
+	deoglRCaptureCanvas::Ref pRCaptureCanvas;
 	
 	bool pDirtyCanvasView;
 	bool pCapturePending;
@@ -70,7 +71,7 @@ public:
 	inline const deCaptureCanvas &GetCaptureCanvas() const{ return pCaptureCanvas; }
 	
 	/** Render capture canvas or \em NULL if not set. */
-	inline deoglRCaptureCanvas *GetRCaptureCanvas() const{ return pRCaptureCanvas; }
+	inline const deoglRCaptureCanvas::Ref &GetRCaptureCanvas() const{ return pRCaptureCanvas; }
 	
 	
 	

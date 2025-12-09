@@ -68,6 +68,8 @@ private:
 	deoglRSkin &pSkin;
 	
 public:
+	typedef deTThreadSafeObjectReference<cTaskPrepareTexturePipelines> Ref;
+	
 	cTaskPrepareTexturePipelines(deoglRSkin &skin) : pSkin(skin){}
 	
 	void Run() override{
@@ -379,10 +381,7 @@ int deoglRSkin::AddRenderable(const char *name){
 	
 	if(index == -1){
 		index = pRenderables.GetCount();
-		
-		deoglSkinRenderable * const renderable = new deoglSkinRenderable(name);
-		pRenderables.Add(renderable);
-		renderable->FreeReference();
+		pRenderables.Add(deoglSkinRenderable::Ref::NewWith(name));
 	}
 	
 	return index;

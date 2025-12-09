@@ -77,9 +77,6 @@ pFirstParticle(0),
 pParticleCount(0),
 pFirstIndex(0),
 pIndexCount(0),
-
-pDynamicSkin(NULL),
-pUseSkin(NULL),
 pUseTextureNumber(0),
 pUseSkinTexture(NULL),
 
@@ -108,13 +105,6 @@ deoglRParticleEmitterInstanceType::~deoglRParticleEmitterInstanceType(){
 	
 	if(pRTSInstance){
 		pRTSInstance->ReturnToPool();
-	}
-	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pUseSkin){
-		pUseSkin->FreeReference();
 	}
 	if(pTUCGeometryDepthTest){
 		pTUCGeometryDepthTest->RemoveUsage();
@@ -157,17 +147,7 @@ void deoglRParticleEmitterInstanceType::SetDynamicSkin(deoglRDynamicSkin *dynami
 	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
-	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
-	
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
 }
@@ -176,17 +156,7 @@ void deoglRParticleEmitterInstanceType::SetUseSkin(deoglRSkin *skin){
 	if(skin == pUseSkin){
 		return;
 	}
-	
-	if(pUseSkin){
-		pUseSkin->FreeReference();
-	}
-	
 	pUseSkin = skin;
-	
-	if(skin){
-		skin->AddReference();
-	}
-	
 	// update texture
 	if(pUseSkin && pUseSkin->GetTextureCount() > 0){
 		pUseTextureNumber = 0;

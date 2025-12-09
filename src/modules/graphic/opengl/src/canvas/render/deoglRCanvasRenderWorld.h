@@ -26,9 +26,9 @@
 #define _DEOGLRCANVASRENDERWORLD_H_
 
 #include "deoglRCanvas.h"
+#include "../../world/deoglRCamera.h"
 
 class deoglRWorld;
-class deoglRCamera;
 
 
 /**
@@ -36,7 +36,7 @@ class deoglRCamera;
  */
 class deoglRCanvasRenderWorld : public deoglRCanvas{
 private:
-	deoglRCamera *pCamera;
+	deoglRCamera::Ref pCamera;
 	bool pForceToneMapAdaption;
 	
 	
@@ -56,7 +56,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Camera or \em NULL if not set. */
-	inline deoglRCamera *GetCamera() const{ return pCamera; }
+	inline const deoglRCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** Set camera or \em NULL if not set. */
 	void SetCamera(deoglRCamera *camera);

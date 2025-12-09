@@ -26,6 +26,8 @@
 #define _DEOGLRENDERDEBUG_H_
 
 #include "../deoglRenderBase.h"
+#include "../../tbo/deoglDynamicTBOFloat32.h"
+#include "../../tbo/deoglDynamicTBOFloat8.h"
 
 class deoglArrayTexture;
 class deoglDebugFont;
@@ -33,8 +35,6 @@ class deoglRComponent;
 class deoglRenderPlan;
 class deoglTexture;
 class deoglDebugFont;
-class deoglDynamicTBOFloat32;
-class deoglDynamicTBOFloat8;
 
 
 
@@ -59,11 +59,11 @@ private:
 	
 	deoglDebugFont *pDebugFont;
 	
-	deoglDynamicTBOFloat32 *pTBORenderText1;
-	deoglDynamicTBOFloat8 *pTBORenderText2;
+	deoglDynamicTBOFloat32::Ref pTBORenderText1;
+	deoglDynamicTBOFloat8::Ref pTBORenderText2;
 	
-	deoglDynamicTBOFloat32 *pTBORenderRectangle1;
-	deoglDynamicTBOFloat8 *pTBORenderRectangle2;
+	deoglDynamicTBOFloat32::Ref pTBORenderRectangle1;
+	deoglDynamicTBOFloat8::Ref pTBORenderRectangle2;
 	
 	
 	

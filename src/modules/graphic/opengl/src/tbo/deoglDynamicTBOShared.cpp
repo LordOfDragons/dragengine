@@ -165,7 +165,7 @@ deoglDynamicTBOBlock *deoglDynamicTBOShared::AddBlock(deoglDynamicTBO *tbo, deog
 	// find block
 	const int tboSize = tbo->GetPixelCount() / pStride;
 	int index = FirstMatchingBlock(tbo);
-	deoglDynamicTBOBlock *block = NULL;
+	deoglDynamicTBOBlock::Ref block;
 	
 	if(index != -1){
 		block = (deoglDynamicTBOBlock*)pBlocks.GetAt(index);
@@ -198,7 +198,6 @@ deoglDynamicTBOBlock *deoglDynamicTBOShared::AddBlock(deoglDynamicTBO *tbo, deog
 	pDirty = true;
 	
 	// return block. caller takes over reference
-	block->AddReference();
 	return block;
 }
 
@@ -278,7 +277,7 @@ void deoglDynamicTBOShared::DebugPrint(deoglRTLogger &logger) const{
 // Private Functions
 //////////////////////
 
-deoglDynamicTBOBlock *deoglDynamicTBOShared::pAddEmptyBlock(){
+deoglDynamicTBOBlock::Ref deoglDynamicTBOShared::pAddEmptyBlock(){
 	const int count = pBlocks.GetCount();
 	int offset = 0;
 	
@@ -290,7 +289,7 @@ deoglDynamicTBOBlock *deoglDynamicTBOShared::pAddEmptyBlock(){
 	const deoglDynamicTBOBlock::Ref block(deoglDynamicTBOBlock::Ref::NewWith(this, offset, 0));
 	pBlocks.Add(block);
 	
-	return block; // valid because pBlocks holds reference
+	return block;
 }
 
 void deoglDynamicTBOShared::pEnsureTBOSize(){

@@ -126,10 +126,7 @@ pRenderThread(renderThread),
 pParentWorld(NULL),
 pOctreeNode(NULL),
 pWorldComputeElement(deoglWorldComputeElement::Ref::New(new WorldComputeElement(*this))),
-
-pSkin(NULL),
 pUseSkinTexture(NULL),
-pDynamicSkin(NULL),
 pLocked(true),
 pSpherical(false),
 pSizeFixedToScreen(false),
@@ -142,14 +139,9 @@ pSortDistance(0.0f),
 pOccluded(false),
 pDirtyPrepareSkinStateRenderables(true),
 pDirtyRenderSkinStateRenderables(true),
-
-pRenderEnvMap(nullptr),
-pRenderEnvMapFade(nullptr),
 pRenderEnvMapFadePerTime(1.0f),
 pRenderEnvMapFadeFactor(1.0f),
 pDirtyRenderEnvMap(true),
-
-pSharedSPBElement(NULL),
 
 pTUCDepth(NULL),
 pTUCGeometry(NULL),
@@ -250,18 +242,8 @@ void deoglRBillboard::SetSkin(deoglRSkin *skin){
 	if(skin == pSkin){
 		return;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	pSkin = skin;
 	pUseSkinTexture = skin && skin->GetTextureCount() > 0 ? &skin->GetTextureAt(0) : NULL;
-	
-	if(skin){
-		skin->AddReference();
-	}
-	
 	pDirtySharedSPBElement = true;
 	pRequiresPrepareForRender();
 	
@@ -275,17 +257,7 @@ void deoglRBillboard::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
-	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	
 	pDynamicSkin = dynamicSkin;
-	
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
-	
 	pSkinRendered.SetDirty();
 }
 
@@ -478,7 +450,7 @@ deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor(deoglSkinTexturePipelines::e
 	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 		GetAt(deoglSkinTexturePipelinesList::eptBillboard).GetWithRef(type).GetShader();
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
-	deoglRDynamicSkin *dynamicSkin = NULL;
+	deoglRDynamicSkin::Ref dynamicSkin = NULL;
 	deoglSkinState *skinState = NULL;
 	deoglTexUnitsConfig *tuc = NULL;
 	
@@ -754,13 +726,11 @@ void deoglRBillboard::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	
 	if(pRenderEnvMap){
 		pRenderEnvMap->GetBillboardList().RemoveIfExisting(this);
-		pRenderEnvMap->FreeReference();
 	}
 	
 	pRenderEnvMap = envmap;
 	
 	if(envmap){
-		envmap->AddReference();
 		envmap->GetBillboardList().Add(this);
 	}
 	
@@ -780,13 +750,11 @@ void deoglRBillboard::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
 	
 	if(pRenderEnvMapFade){
 		pRenderEnvMapFade->GetBillboardList().RemoveIfExisting(this);
-		pRenderEnvMapFade->FreeReference();
 	}
 	
 	pRenderEnvMapFade = envmap;
 	
 	if(envmap){
-		envmap->AddReference();
 		envmap->GetBillboardList().Add(this);
 	}
 	
@@ -935,23 +903,6 @@ void deoglRBillboard::PrepareQuickDispose(){
 
 void deoglRBillboard::pCleanUp(){
 	SetParentWorld(NULL);
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pRenderEnvMap){
-		pRenderEnvMap->FreeReference();
-	}
-	if(pRenderEnvMapFade){
-		pRenderEnvMapFade->FreeReference();
-	}
-	
-	if(pSharedSPBElement){
-		pSharedSPBElement->FreeReference();
-	}
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
 	}
@@ -1081,7 +1032,7 @@ void deoglRBillboard::pPrepareParamBlocks(){
 	if(!pSharedSPBRTIGroup && pSharedSPBElement){
 		deoglSharedSPBRTIGroupList &list = pRenderThread.GetBufferObject().GetBillboardRTIGroups();
 		deoglSharedSPB &spb = pSharedSPBElement->GetSPB();
-		pSharedSPBRTIGroup.TakeOver(list.GetWith(spb));
+		pSharedSPBRTIGroup = list.GetWith(spb);
 		
 		if(!pSharedSPBRTIGroup){
 			pSharedSPBRTIGroup.TakeOver(list.AddWith(spb));

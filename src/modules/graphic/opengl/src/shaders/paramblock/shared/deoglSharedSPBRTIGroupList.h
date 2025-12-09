@@ -25,12 +25,13 @@
 #ifndef _DEOGLSHAREDSPBRTIGROUPLIST_H_
 #define _DEOGLSHAREDSPBRTIGROUPLIST_H_
 
+#include "deoglSharedSPBRTIGroup.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerList.h>
 
 class deoglRenderThread;
 class deoglSharedSPB;
-class deoglSharedSPBRTIGroup;
 
 
 
@@ -78,21 +79,21 @@ public:
 	 * Release reference if not used anymore. Group is removed from this list once all
 	 * references are released.
 	 */
-	deoglSharedSPBRTIGroup *GetWith(deoglSharedSPB &sharedSPB, int textureCount = 1) const;
+	deoglSharedSPBRTIGroup::Ref GetWith(deoglSharedSPB &sharedSPB, int textureCount = 1) const;
 	
 	/**
 	 * Group group with shared SPB. If group does not exist creates it first. Caller obtains
 	 * reference to the group. Release reference if not used anymore. Group is removed from
 	 * this list once all references are released.
 	 */
-	deoglSharedSPBRTIGroup *GetOrAddWith(deoglSharedSPB &sharedSPB, int textureCount = 1);
+	deoglSharedSPBRTIGroup::Ref GetOrAddWith(deoglSharedSPB &sharedSPB, int textureCount = 1);
 	
 	/**
 	 * Add group with shared SPB. Call only after GetWith returned NULL. If group does not
 	 * exist creates it first. Caller obtains reference to the group. Release reference if
 	 * not used anymore. Group is removed from this list once all references are released.
 	 */
-	deoglSharedSPBRTIGroup *AddWith(deoglSharedSPB &sharedSPB, int textureCount = 1);
+	deoglSharedSPBRTIGroup::Ref AddWith(deoglSharedSPB &sharedSPB, int textureCount = 1);
 	
 	
 	

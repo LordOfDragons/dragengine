@@ -25,9 +25,9 @@
 #ifndef _DEOGLMODEL_H_
 #define _DEOGLMODEL_H_
 
-#include <dragengine/systems/modules/graphic/deBaseGraphicModel.h>
+#include "deoglRModel.h"
 
-class deoglRModel;
+#include <dragengine/systems/modules/graphic/deBaseGraphicModel.h>
 
 class deGraphicOpenGl;
 class deModel;
@@ -41,7 +41,7 @@ class deoglModel : public deBaseGraphicModel{
 public:
 	deGraphicOpenGl &pOgl;
 	const deModel &pModel;
-	deoglRModel *pRModel;
+	deoglRModel::Ref pRModel;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -64,7 +64,7 @@ public:
 	inline const deModel &GetModel() const{ return pModel; }
 	
 	/** Render model. */
-	inline deoglRModel *GetRModel() const{ return pRModel; }
+	inline const deoglRModel::Ref &GetRModel() const{ return pRModel; }
 	/*@}*/
 	
 private:

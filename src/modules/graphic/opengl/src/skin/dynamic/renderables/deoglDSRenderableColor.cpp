@@ -40,12 +40,11 @@
 deoglDSRenderableColor::deoglDSRenderableColor(deoglDynamicSkin &dynamicSkin, const deDSRenderableColor &renderable) :
 deoglDSRenderable(dynamicSkin, renderable),
 pRenderableColor(renderable),
-pRRenderableColor(NULL),
 pColor(renderable.GetColor()),
 pDirty(true)
 {
 	try{
-		pRRenderableColor = new deoglRDSRenderableColor(*dynamicSkin.GetRDynamicSkin());
+		pRRenderableColor.TakeOver(new deoglRDSRenderableColor(*dynamicSkin.GetRDynamicSkin()));
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -95,7 +94,4 @@ void deoglDSRenderableColor::SyncToRender(){
 //////////////////////
 
 void deoglDSRenderableColor::pCleanUp(){
-	if(pRRenderableColor){
-		pRRenderableColor->FreeReference();
-	}
 }

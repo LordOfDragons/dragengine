@@ -26,10 +26,9 @@
 #define _DEOGLRCANVASPAINT_H_
 
 #include "deoglRCanvas.h"
+#include "../../vbo/deoglSharedVBOBlock.h"
 
 #include <dragengine/resources/canvas/deCanvasPaint.h>
-
-class deoglSharedVBOBlock;
 
 
 /**
@@ -50,7 +49,7 @@ private:
 	decVector2 *pPoints;
 	int pPointCount;
 	
-	deoglSharedVBOBlock *pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlock;
 	bool pDirtyVBOBlock;
 	int pVBOBlockPointCount;
 	
@@ -193,7 +192,7 @@ public:
 	
 	
 	/** VBO block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	inline const deoglSharedVBOBlock::Ref &GetVBOBlock() const{ return pVBOBlock; }
 	
 	
 	

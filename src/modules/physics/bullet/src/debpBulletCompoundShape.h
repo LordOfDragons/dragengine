@@ -39,6 +39,11 @@ class btCompoundShape;
  * All child shapes are also stored in addition to the root shape.
  */
 class debpBulletCompoundShape : public debpBulletShape {
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debpBulletCompoundShape> Ref;
+	
+	
 private:
 	decObjectList pChildShapes;
 	

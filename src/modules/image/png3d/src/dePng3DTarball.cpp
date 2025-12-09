@@ -335,7 +335,7 @@ void dePng3DTarball::Load3DImage(dePng3DImageInfo &infos, decBaseFileReader &fil
 
 void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 	char *imageData = (char*)image.GetData();
-	decMemoryFile *memoryFile = NULL;
+	decMemoryFile::Ref memoryFile;
 	unsigned char *headerBytes;
 	char paddingBytes[512];
 	struct timeval curtime;
@@ -435,10 +435,10 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 	memset(&paddingBytes[0], '\0', 512);
 	
 	// save the file
-	decMemoryFileWriter *memoryFileWriter = NULL;
+	decMemoryFileWriter::Ref memoryFileWriter = NULL;
 	
 	try{
-		memoryFile = new decMemoryFile("");
+		memoryFile.TakeOver(new decMemoryFile(""));
 		
 		// create the rows array
 		rows = new png_bytep[image.GetHeight()];
@@ -448,7 +448,7 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 		for(z=0; z<image.GetDepth(); z++){
 // 			pModule->LogInfoFormat( "%s: writing %i", file.GetFilename(), z );
 			// create memory file containing the file content
-			memoryFileWriter = new decMemoryFileWriter(memoryFile, false);
+			memoryFileWriter.TakeOver(new decMemoryFileWriter(memoryFile, false));
 			
 			sliceImageData = imageData + (strideImage * z);
 			
@@ -457,9 +457,7 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 			}
 			
 			Save2DImage(image.GetWidth(), image.GetHeight(), *memoryFileWriter, rows, pngColorType, pngBitCount);
-			
-			memoryFileWriter->FreeReference();
-			memoryFileWriter = NULL;
+			memoryFileWriter = nullptr;
 			
 			// determine the file size and padding. tar requires files to be
 			// aligned in chunks so determine the amount of padding 0 bytes
@@ -519,13 +517,7 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 		
 		// free rows array
 		delete [] rows;
-		
-		memoryFile->FreeReference();
-		
 	}catch(const deException &){
-		if(memoryFileWriter){
-			memoryFileWriter->FreeReference();
-		}
 		if(rows) delete [] rows;
 		throw;
 	}

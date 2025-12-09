@@ -28,6 +28,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/input/deInputEvent.h>
+#include <dragengine/resources/font/deFont.h>
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
 
 #include <android/configuration.h>
@@ -38,7 +39,6 @@
 class deOSAndroid;
 class deainpOverlaySystem;
 class deainpDeviceManager;
-class deFont;
 
 
 
@@ -64,7 +64,7 @@ private:
 	
 	deainpOverlaySystem *pOverlaySystem;
 	
-	deFont *pFontDefault;
+	deFont::Ref pFontDefault;
 	
 	decTimer pInputTimer;
 	float pElapsedTime;
@@ -102,7 +102,7 @@ public:
 	inline deainpOverlaySystem *GetOverlaySystem() const{ return pOverlaySystem; }
 	
 	/** \brief Default font. */
-	inline deFont *GetDefaultFont() const{ return pFontDefault; }
+	inline const deFont::Ref &GetDefaultFont() const{ return pFontDefault; }
 	
 	/** \brief Elapsed time since the last event processing. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }
@@ -119,7 +119,7 @@ public:
 	int GetDeviceCount() override;
 	
 	/** \brief Information for input device at index. */
-	deInputDevice *GetDeviceAt(int index) override;
+	deInputDevice::Ref GetDeviceAt(int index) override;
 	
 	/** \brief Index of device with identifier or -1 if absent. */
 	int IndexOfDeviceWithID(const char *id) override;

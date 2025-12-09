@@ -25,14 +25,14 @@
 #ifndef _DEOGLRPARTICLEEMITTERINSTANCETYPE_H_
 #define _DEOGLRPARTICLEEMITTERINSTANCETYPE_H_
 
+#include "../skin/deoglRSkin.h"
 #include "../skin/deoglSkinTexture.h"
+#include "../skin/dynamic/deoglRDynamicSkin.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 
 #include <dragengine/deObject.h>
 
-class deoglRDynamicSkin;
 class deoglRParticleEmitterInstance;
-class deoglRSkin;
 class deoglSkinShader;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;
@@ -52,9 +52,9 @@ private:
 	int pFirstIndex;
 	int pIndexCount;
 	
-	deoglRDynamicSkin *pDynamicSkin;
+	deoglRDynamicSkin::Ref pDynamicSkin;
 	
-	deoglRSkin *pUseSkin;
+	deoglRSkin::Ref pUseSkin;
 	int pUseTextureNumber;
 	deoglSkinTexture *pUseSkinTexture;
 	
@@ -130,13 +130,13 @@ public:
 	
 	
 	/** Dynamic skin or NULL if there is none. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or NULL if there is none. */
 	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);
 	
 	/** Skin to use. */
-	inline deoglRSkin *GetUseSkin() const{ return pUseSkin; }
+	inline const deoglRSkin::Ref &GetUseSkin() const{ return pUseSkin; }
 	
 	/** Set skin to use. */
 	void SetUseSkin(deoglRSkin *skin);

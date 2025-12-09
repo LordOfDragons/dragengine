@@ -28,6 +28,7 @@
 #include <libdscript/libdscript.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/filesystem/deVFSContainer.h>
+#include <dragengine/resources/collider/deCollisionInfo.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
 
 #include "dedsLoadingScreen.h"
@@ -222,7 +223,6 @@ class deClassService;
 class deClassServiceListener;
 class deClassServiceObject;
 
-class deCollisionInfo;
 class dedsColliderListenerClosest;
 class dedsColliderListenerAdaptor;
 
@@ -486,7 +486,7 @@ private:
 	dedsResourceLoader *pResourceLoader;
 //	dedsLockManager *pLockManager;
 	
-	deCollisionInfo *pColInfo;
+	deCollisionInfo::Ref pColInfo;
 	dedsColliderListenerClosest *pColliderListenerClosest;
 	dedsColliderListenerAdaptor *pColliderListenerAdaptor;
 	
@@ -645,7 +645,7 @@ public:
 	inline dedsResourceLoader *GetResourceLoader() const{ return pResourceLoader; }
 	
 	/** Retrieves the shared collision info. */
-	inline deCollisionInfo *GetCollisionInfo() const{ return pColInfo; }
+	inline const deCollisionInfo::Ref &GetCollisionInfo() const{ return pColInfo; }
 	
 	/** Shared collider listener closest. */
 	inline dedsColliderListenerClosest &GetColliderListenerClosest() const{ return *pColliderListenerClosest; }

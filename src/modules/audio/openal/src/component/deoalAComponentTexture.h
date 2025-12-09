@@ -25,10 +25,11 @@
 #ifndef _DEOALACOMPONENTTEXTURE_H_
 #define _DEOALACOMPONENTTEXTURE_H_
 
+#include "../skin/deoalASkin.h"
+
 #include <dragengine/deObject.h>
 
 class deoalAComponent;
-class deoalASkin;
 class deoalSkinTexture;
 
 
@@ -41,7 +42,7 @@ private:
 	deoalAComponent &pComponent;
 	const int pIndex;
 	
-	deoalASkin *pSkin;
+	deoalASkin::Ref pSkin;
 	
 	const deoalASkin *pUseSkin;
 	const deoalSkinTexture *pUseTexture;
@@ -85,7 +86,7 @@ public:
 	
 	
 	/** \brief Skin. */
-	inline deoalASkin *GetSkin() const{ return pSkin; }
+	inline const deoalASkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(deoalASkin *skin);

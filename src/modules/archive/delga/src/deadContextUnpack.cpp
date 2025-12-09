@@ -177,7 +177,7 @@ deadArchiveFileReader::Ref deadContextUnpack::OpenFileForReading(const deadArchi
 	}
 }
 
-decWeakFileWriter *deadContextUnpack::OpenFileForWriting(const deadArchiveFile &){
+decWeakFileWriter::Ref deadContextUnpack::OpenFileForWriting(const deadArchiveFile &){
 	// not supported for the time being
 	DETHROW(deeInvalidParam);
 }

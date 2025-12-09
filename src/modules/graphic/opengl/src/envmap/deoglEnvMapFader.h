@@ -26,8 +26,7 @@
 #define _DEOGLENVMAPFADER_H_
 
 #include "../deoglBasics.h"
-
-class deoglEnvironmentMap;
+#include "../envmap/deoglEnvironmentMap.h"
 
 
 /**
@@ -42,9 +41,9 @@ class deoglEnvironmentMap;
  */
 class deoglEnvMapFader{
 public:
-	deoglEnvironmentMap *pEnvMapActive;
-	deoglEnvironmentMap *pEnvMapFading;
-	deoglEnvironmentMap *pEnvMapDelayed;
+	deoglEnvironmentMap::Ref pEnvMapActive;
+	deoglEnvironmentMap::Ref pEnvMapFading;
+	deoglEnvironmentMap::Ref pEnvMapDelayed;
 	float pFadePerTime;
 	float pBlendFactor;
 	
@@ -60,11 +59,11 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the active environment map or NULL if not existing. */
-	inline deoglEnvironmentMap *GetActiveEnvMap() const{ return pEnvMapActive; }
+	inline const deoglEnvironmentMap::Ref &GetActiveEnvMap() const{ return pEnvMapActive; }
 	/** Retrieves the fading environment map or NULL if not fading. */
-	inline deoglEnvironmentMap *GetFadingEnvMap() const{ return pEnvMapFading; }
+	inline const deoglEnvironmentMap::Ref &GetFadingEnvMap() const{ return pEnvMapFading; }
 	/** Retrieves the delayed environment map or NULL if not fading. */
-	inline deoglEnvironmentMap *GetDelayedEnvMap() const{ return pEnvMapDelayed; }
+	inline const deoglEnvironmentMap::Ref &GetDelayedEnvMap() const{ return pEnvMapDelayed; }
 	/**
 	 * Retrieves the blend factor for the active environment map. The blend factor for the
 	 * fading environment map is 1 minus blend factor.

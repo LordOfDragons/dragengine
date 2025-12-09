@@ -281,7 +281,7 @@ void deClassSynthesizerController::nfSetCurveTime::RunFunction(dsRunTime*, dsVal
 		? *nd.synthesizer->GetControllerAt(nd.index)
 		: *nd.instance->GetControllerAt(nd.index);
 	
-	const deSynthesizer * const synthesizer = nd.synthesizer ? nd.synthesizer : nd.instance->GetSynthesizer();
+	const deSynthesizer * const synthesizer = nd.synthesizer ? nd.synthesizer : nd.instance->GetSynthesizer().Pointer();
 	const int sampleCount = nd.synthesizer ? nd.synthesizer->GetSampleCount() : nd.instance->GetSampleCount();
 	decCurveBezier curve;
 	

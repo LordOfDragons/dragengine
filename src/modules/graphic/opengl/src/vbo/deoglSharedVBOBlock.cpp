@@ -80,17 +80,15 @@ void deoglSharedVBOBlock::DropVBO(){
 void deoglSharedVBOBlock::DelayedRemove(){
 	class cDelayedRemove : public deObject{
 	private:
-		deoglSharedVBOBlock * const pVBOBlock;
+		const deoglSharedVBOBlock::Ref pVBOBlock;
 		
 	public:
 		cDelayedRemove(deoglSharedVBOBlock *vboBlock) : pVBOBlock(vboBlock){
-			vboBlock->AddReference();
 		}
 		
 	protected:
 		~cDelayedRemove(){
 			pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
-			pVBOBlock->FreeReference();
 		}
 	};
 	

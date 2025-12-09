@@ -77,7 +77,7 @@ public:
 	inline vr::TextureID_t GetID() const{ return pID; }
 	
 	/** Skin. */
-	inline deSkin *GetSkin() const{ return pSkin; }
+	inline const deSkin::Ref &GetSkin() const{ return pSkin; }
 	/*@}*/
 	
 	

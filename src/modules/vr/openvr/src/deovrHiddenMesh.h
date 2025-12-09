@@ -73,7 +73,7 @@ public:
 	inline vr::Hmd_Eye GetEye() const{ return pEye; }
 	
 	/** Model. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	/*@}*/
 	
 	

@@ -81,9 +81,6 @@ pBackLink(NULL),
 pParentWorld(NULL),
 pParentMicrophone(NULL),
 pOctreeNode(NULL),
-pSound(NULL),
-pSynthesizer(NULL),
-pVideoPlayer(NULL),
 pSourceUpdateTracker(0),
 pSpeakerType(deSpeaker::estPoint),
 pPositionless(true),
@@ -172,20 +169,11 @@ deoalAVideoPlayer *videoPlayer){
 		return;
 	}
 	// drop old source and decoder if present
-	pSoundDecoder = NULL;
+	pSoundDecoder = nullptr;
 	
-	if(pVideoPlayer){
-		pVideoPlayer->FreeReference();
-		pVideoPlayer = NULL;
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-		pSynthesizer = NULL;
-	}
-	if(pSound){
-		pSound->FreeReference();
-		pSound = NULL;
-	}
+	pVideoPlayer = nullptr;
+	pSynthesizer = nullptr;
+	pSound = nullptr;
 	pSourceUpdateTracker = 0;
 	
 	pDirtyPlayState = true;
@@ -193,20 +181,8 @@ deoalAVideoPlayer *videoPlayer){
 	
 	// store new source
 	pSound = sound;
-	if(sound){
-		sound->AddReference();
-	}
-	
 	pSynthesizer = synthesizer;
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
-	
 	pVideoPlayer = videoPlayer;
-	if(videoPlayer){
-		videoPlayer->AddReference();
-	}
-	
 	// update play position since speaker updates it from new source if present
 	pUpdatePlayRange();
 }
@@ -827,18 +803,9 @@ void deoalASpeaker::pCleanUp(){
 		delete pEnvironment;
 		pEnvironment = nullptr;
 	}
-	if(pSound){
-		pSound->FreeReference();
-		pSound = nullptr;
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-		pSynthesizer = nullptr;
-	}
-	if(pVideoPlayer){
-		pVideoPlayer->FreeReference();
-		pVideoPlayer = nullptr;
-	}
+	pSound = nullptr;
+	pSynthesizer = nullptr;
+	pVideoPlayer = nullptr;
 	
 	// delayed deletion
 	pCheckStillSourceOwner();

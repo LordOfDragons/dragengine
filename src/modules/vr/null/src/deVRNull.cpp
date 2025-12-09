@@ -115,7 +115,7 @@ int deVRNull::GetDeviceCount(){
 	return 0;
 }
 
-deInputDevice *deVRNull::GetDeviceAt(int){
+deInputDevice::Ref deVRNull::GetDeviceAt(int){
 	DETHROW(deeInvalidParam);
 }
 

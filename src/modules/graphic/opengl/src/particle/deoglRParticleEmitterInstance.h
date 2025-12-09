@@ -25,17 +25,17 @@
 #ifndef _DEOGLRPARTICLEEMITTERINSTANCE_H_
 #define _DEOGLRPARTICLEEMITTERINSTANCE_H_
 
+#include "deoglRParticleEmitter.h"
+#include "../deoglBasics.h"
+#include "../envmap/deoglEnvironmentMap.h"
+#include "../world/deoglWorldComputeElement.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 
-#include "../deoglBasics.h"
-#include "../world/deoglWorldComputeElement.h"
-
 class deoglRenderThread;
-class deoglEnvironmentMap;
-class deoglRParticleEmitter;
 class deoglRParticleEmitterInstanceType;
 class deoglVAO;
 class deoglRWorld;
@@ -48,11 +48,11 @@ class deParticleEmitterInstance;
  * Particle Emitter Instance Peer.
  */
 class deoglRParticleEmitterInstance : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deoglRParticleEmitterInstance> Ref;
-
-
-public:
+	
+	
 	/** Particle data. */
 	struct sParticle{
 		deoglRParticleEmitterInstance *emitterInstance;
@@ -82,7 +82,7 @@ private:
 	
 	deoglRenderThread &pRenderThread;
 	
-	deoglRParticleEmitter *pEmitter;
+	deoglRParticleEmitter::Ref pEmitter;
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
@@ -111,7 +111,7 @@ private:
 	decDVector pMinExtend;
 	decDVector pMaxExtend;
 	
-	deoglEnvironmentMap *pRenderEnvMap;
+	deoglEnvironmentMap::Ref pRenderEnvMap;
 	bool pDirtyRenderEnvMap;
 	
 	GLuint pVBOShared;
@@ -145,7 +145,7 @@ public:
 	
 	
 	/** Emitter or \em NULL if not set. */
-	inline deoglRParticleEmitter *GetEmitter() const{ return pEmitter; }
+	inline const deoglRParticleEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** Set emitter or \em NULL if not set. */
 	void SetEmitter(deoglRParticleEmitter *emitter);
@@ -219,7 +219,7 @@ public:
 	
 	
 	/** Render environment map or \em NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
+	inline const deoglEnvironmentMap::Ref &GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
 	/** Set render environment map or \em NULL if not assigned yet. */
 	void SetRenderEnvMap(deoglEnvironmentMap *envmap);

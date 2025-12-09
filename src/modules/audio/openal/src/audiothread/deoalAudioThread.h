@@ -27,6 +27,8 @@
 
 #include "deoalATLeakTracker.h"
 #include "../configuration/deoalConfiguration.h"
+#include "../microphone/deoalAMicrophone.h"
+#include "../world/deoalAWorld.h"
 
 #include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/utils/decTimer.h>
@@ -36,13 +38,11 @@
 #include <dragengine/threading/deMutex.h>
 
 class deAudioOpenAL;
-class deoalAMicrophone;
 class deoalATContext;
 class deoalATDebug;
 class deoalATDelayed;
 class deoalATLogger;
 class deoalATRayTracing;
-class deoalAWorld;
 class deoalCaches;
 class deoalCapabilities;
 class deoalConfiguration;
@@ -113,8 +113,8 @@ private:
 	deoalWOVCollectElements *pWOVCollectElements;
 	
 	deoalAMicrophone *pActiveMicrophone;
-	deoalAMicrophone *pDeactiveMicrophone;
-	deoalAWorld *pActiveWorld;
+	deoalAMicrophone::Ref pDeactiveMicrophone;
+	deoalAWorld::Ref pActiveWorld;
 	
 	decObjectSet pProcessOnceWorld; // audio thread
 	
@@ -180,7 +180,7 @@ public:
 	void SetActiveMicrophone(deoalAMicrophone *microphone);
 	
 	/** Active world if a microphone is active and has a parent world. */
-	inline deoalAWorld *GetActiveWorld() const{ return pActiveWorld; }
+	inline const deoalAWorld::Ref &GetActiveWorld() const{ return pActiveWorld; }
 	
 	
 	

@@ -73,12 +73,15 @@ pDebugLogParsing(false)
 #endif
 {
 	pSources = (char*)malloc(pSourcesSize);
+	DEASSERT_NOTNULL(pSources)
 	pSources[0] = '\0';
 	
 	pResolveBuffer = (char*)malloc(pResolveBufferSize);
+	DEASSERT_NOTNULL(pResolveBuffer)
 	pResolveBuffer[0] = '\0';
 	
 	pResolveSymbolName = (char*)malloc(pResolveSymbolNameSize);
+	DEASSERT_NOTNULL(pResolveSymbolName)
 	pResolveSymbolName[0] = '\0';
 }
 
@@ -190,19 +193,8 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 		pLastMappedOutputLine = pOutputLine;
 		
 		if(mapLines && pInputFile){
-			deoglShaderSourceLocation *location = NULL;
-			
-			try{
-				location = new deoglShaderSourceLocation(pInputFile, pInputLine, pOutputLine);
-				pSourceLocations.Add(location);
-				location->FreeReference();
-				
-			}catch(const deException &){
-				if(location){
-					location->FreeReference();
-				}
-				throw;
-			}
+			pSourceLocations.Add(deoglShaderSourceLocation::Ref::NewWith(
+				pInputFile, pInputLine, pOutputLine));
 		}
 	}
 	
@@ -213,19 +205,8 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 				pLastMappedOutputLine = pOutputLine;
 				
 				if(mapLines && pInputFile){
-					deoglShaderSourceLocation *location = NULL;
-					
-					try{
-						location = new deoglShaderSourceLocation(pInputFile, pInputLine, pOutputLine);
-						pSourceLocations.Add(location);
-						location->FreeReference();
-						
-					}catch(const deException &){
-						if(location){
-							location->FreeReference();
-						}
-						throw;
-					}
+					pSourceLocations.Add(deoglShaderSourceLocation::Ref::NewWith(
+						pInputFile, pInputLine, pOutputLine));
 				}
 			}
 			
@@ -308,21 +289,9 @@ void deoglShaderPreprocessor::SetSymbol(deoglShaderPreprocessorSymbol *symbol){
 }
 
 void deoglShaderPreprocessor::SetSymbol(const char *name, const char *value){
-	deoglShaderPreprocessorSymbol *symbol = NULL;
-	
 	pResolveString(value, (int)strlen(value));
 	
-	try{
-		symbol = new deoglShaderPreprocessorSymbol(name, pResolveBuffer);
-		pSymbolTable.SetAt(name, symbol);
-		symbol->FreeReference();
-		
-	}catch(const deException &){
-		if(symbol){
-			symbol->FreeReference();
-		}
-		throw;
-	}
+	pSymbolTable.SetAt(name, deoglShaderPreprocessorSymbol::Ref::NewWith(name, pResolveBuffer));
 	
 	// HACK HACK HACK
 	SourcesAppend(decString("#define ") + name + " " + pResolveBuffer + "\n", false);

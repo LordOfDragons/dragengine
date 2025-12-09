@@ -25,13 +25,13 @@
 #ifndef _DEOGLVIDEO_H_
 #define _DEOGLVIDEO_H_
 
+#include "deoglRVideo.h"
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicVideo.h>
 #include <dragengine/common/math/decMath.h>
 
 class deGraphicOpenGl;
-class deoglRVideo;
 class deoglTexture;
 
 class deVideo;
@@ -46,7 +46,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	deVideo &pVideo;
 	
-	deoglRVideo *pRVideo;
+	deoglRVideo::Ref pRVideo;
 	
 	int pCachedFrameCount;
 	bool pCacheFrames;
@@ -74,7 +74,7 @@ public:
 	inline deVideo &GetVideo() const{ return pVideo; }
 	
 	/** Render video or \em NULL if not existing. */
-	inline deoglRVideo *GetRVideo() const{ return pRVideo; }
+	inline const deoglRVideo::Ref &GetRVideo() const{ return pRVideo; }
 	
 	
 	

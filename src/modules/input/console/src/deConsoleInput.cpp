@@ -196,7 +196,7 @@ int deConsoleInput::GetDeviceCount(){
 	return 0;
 }
 
-deInputDevice *deConsoleInput::GetDeviceAt(int index){
+deInputDevice::Ref deConsoleInput::GetDeviceAt(int index){
 	DETHROW(deeInvalidParam);
 }
 

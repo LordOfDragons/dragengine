@@ -34,6 +34,10 @@
  */
 class debiDeviceMouse : public debiDevice{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debiDeviceMouse> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */

@@ -25,11 +25,11 @@
 #ifndef _DEVIDEOPLAYERMANAGER_H_
 #define _DEVIDEOPLAYERMANAGER_H_
 
+#include "deVideoPlayer.h"
 #include "../deResourceManager.h"
 #include "../deResourceList.h"
 
 class deEngine;
-class deVideoPlayer;
 
 
 /**

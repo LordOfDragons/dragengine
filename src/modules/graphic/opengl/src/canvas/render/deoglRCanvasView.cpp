@@ -49,7 +49,6 @@
 deoglRCanvasView::deoglRCanvasView(deoglRenderThread &renderThread) :
 deoglRCanvas(renderThread),
 pPaintTracker(0),
-pRenderTarget(NULL),
 pResizeRenderTarget(false)
 {
 	LEAK_CHECK_CREATE(renderThread, CanvasView);
@@ -58,9 +57,6 @@ pResizeRenderTarget(false)
 deoglRCanvasView::~deoglRCanvasView(){
 	LEAK_CHECK_FREE(GetRenderThread(), CanvasView);
 	RemoveAllChildren();
-	if(pRenderTarget){
-		pRenderTarget->FreeReference();
-	}
 }
 
 
@@ -128,12 +124,11 @@ int componentCount, int bitCount){
 		
 	}else{
 		if(pRenderTarget){
-			pRenderTarget->FreeReference();
 			pRenderTarget = nullptr;
 		}
 		
-		pRenderTarget = new deoglRenderTarget(GetRenderThread(),
-			decVector2(GetSize()).Round(), componentCount, bitCount);
+		pRenderTarget.TakeOver(new deoglRenderTarget(GetRenderThread(),
+			decVector2(GetSize()).Round(), componentCount, bitCount));
 		pRenderTarget->PrepareTexture();
 		pResizeRenderTarget = false;
 	}

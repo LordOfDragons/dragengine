@@ -293,7 +293,7 @@ public:
 	virtual bool IsRuntimeRunning();
 	
 	/** Camera or nullptr. */
-	inline deCamera *GetCamera() const{ return pCamera; }
+	inline const deCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** Set camera to render on head mounted display. */
 	virtual void SetCamera(deCamera *camera);
@@ -326,7 +326,7 @@ public:
 	virtual int GetDeviceCount();
 	
 	/** Information for input device at index. */
-	virtual deInputDevice *GetDeviceAt(int index);
+	virtual deInputDevice::Ref GetDeviceAt(int index);
 	
 	/** Index of device with identifier or -1 if absent. */
 	virtual int IndexOfDeviceWithID(const char *id);

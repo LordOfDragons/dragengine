@@ -98,8 +98,6 @@ pPointerMouse(-1),
 
 pOverlaySystem(NULL),
 
-pFontDefault(NULL),
-
 pElapsedTime(0.0f),
 
 pDevices(NULL){
@@ -156,11 +154,6 @@ void deAndroidInput::CleanUp(){
 		pOverlaySystem = NULL;
 	}
 	
-	if(pFontDefault){
-		pFontDefault->FreeReference();
-		pFontDefault = NULL;
-	}
-	
 	if(pDevices){
 		delete pDevices;
 		pDevices = NULL;
@@ -198,20 +191,9 @@ int deAndroidInput::GetDeviceCount(){
 	return pDevices->GetCount();
 }
 
-deInputDevice *deAndroidInput::GetDeviceAt(int index){
-	deInputDevice *device = NULL;
-	
-	try{
-		device = new deInputDevice;
-		pDevices->GetAt(index)->GetInfo(*device);
-		
-	}catch(const deException &){
-		if(device){
-			device->FreeReference();
-		}
-		throw;
-	}
-	
+deInputDevice::Ref deAndroidInput::GetDeviceAt(int index){
+	const deInputDevice::Ref device(deInputDevice::Ref::NewWith());
+	pDevices->GetAt(index)->GetInfo(device);
 	return device;
 }
 

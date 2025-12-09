@@ -62,7 +62,7 @@ public:
 	/** Retrieves the type. */
 	inline int GetType() const{ return pType; }
 	/** \brief Message. */
-	inline deNetworkMessage *GetMessage() const{ return pMessage; }
+	inline const deNetworkMessage::Ref &GetMessage() const{ return pMessage; }
 	/*@}*/
 	
 	/** @name Visiting */

@@ -25,11 +25,8 @@
 #ifndef _DEOGLSHAREDSPB_H_
 #define _DEOGLSHAREDSPB_H_
 
+#include "deoglSharedSPBElement.h"
 #include "../deoglShaderParameterBlock.h"
-
-class deoglSharedSPBElement;
-class deoglShaderParameterBlock;
-
 
 
 /**
@@ -99,7 +96,7 @@ public:
 	 * 
 	 * \returns element or \em NULL if the shared parameter block is full.
 	 */
-	deoglSharedSPBElement *AddElement();
+	deoglSharedSPBElement::Ref AddElement();
 	
 	/**
 	 * Remove element.

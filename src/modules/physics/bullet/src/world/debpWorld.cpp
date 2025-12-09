@@ -105,7 +105,6 @@
 debpWorld::debpWorld(dePhysicsBullet &bullet, deWorld &world) :
 pBullet(bullet),
 pWorld(world),
-pColInfo(NULL),
 pUnstuckCollider(NULL),
 
 pHeightTerrain(NULL),
@@ -159,7 +158,7 @@ pProcessingPhysics(false)
 {
 	// init
 	try{
-		pColInfo = new deCollisionInfo;
+		pColInfo.TakeOverWith();
 		pUnstuckCollider = new debpUnstuckCollider(*this);
 		
 		pSharedCollisionFiltering = new debpSharedCollisionFiltering;
@@ -1003,10 +1002,6 @@ void debpWorld::pCleanUp(){
 	if(pUnstuckCollider){
 		delete pUnstuckCollider;
 	}
-	if(pColInfo){
-		pColInfo->FreeReference();
-	}
-	
 	if(pUpdateOctreeColliders){
 		delete [] pUpdateOctreeColliders;
 	}

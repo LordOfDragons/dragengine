@@ -50,8 +50,6 @@
 deoglRSkyLayer::deoglRSkyLayer(const deSkyLayer &layer) :
 pLayerType(eltUnknown),
 
-pSkin(NULL),
-
 pBodies(NULL),
 pBodyCount(0),
 
@@ -81,7 +79,6 @@ pMulBySkyColor(layer.GetMuliplyBySkyColor())
 	
 	if(layer.GetSkin()){
 		pSkin = ((deoglSkin*)layer.GetSkin()->GetPeerGraphic())->GetRSkin();
-		pSkin->AddReference();
 	}
 	
 	pUpdateSkins();
@@ -98,17 +95,7 @@ pMulBySkyColor(layer.GetMuliplyBySkyColor())
 
 deoglRSkyLayer::~deoglRSkyLayer(){
 	int i;
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	if(pBodies){
-		for(i=0; i<pBodyCount; i++){
-			if(pBodies[i].skin){
-				pBodies[i].skin->FreeReference();
-			}
-		}
 		delete [] pBodies;
 	}
 	
@@ -207,10 +194,9 @@ void deoglRSkyLayer::pInitBodies(const deSkyLayer &layer){
 		body.size = engBody.GetSize();
 		body.orientation = engBody.GetOrientation();
 		
-		body.skin = NULL;
+		body.skin = nullptr;
 		if(engBody.GetSkin()){
 			body.skin = ((deoglSkin*)engBody.GetSkin()->GetPeerGraphic())->GetRSkin();
-			body.skin->AddReference();
 		}
 		
 		float scaleU = 1.0f;

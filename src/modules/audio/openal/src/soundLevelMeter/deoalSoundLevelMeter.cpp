@@ -52,7 +52,7 @@
 deoalSoundLevelMeter::deoalSoundLevelMeter(deAudioOpenAL &oal, deSoundLevelMeter &soundLevelMeter) :
 pOal(oal),
 pSoundLevelMeter(soundLevelMeter),
-pASoundLevelMeter(new deoalASoundLevelMeter(oal.GetAudioThread())),
+pASoundLevelMeter(deoalASoundLevelMeter::Ref::NewWith(oal.GetAudioThread())),
 
 pParentWorld(NULL),
 
@@ -69,10 +69,6 @@ pLLSyncWorld(this){
 }
 
 deoalSoundLevelMeter::~deoalSoundLevelMeter(){
-	if(pASoundLevelMeter){
-		pASoundLevelMeter->FreeReference();
-	}
-	
 	if(pSpeakers){
 		delete [] pSpeakers;
 	}

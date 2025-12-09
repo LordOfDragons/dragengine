@@ -171,7 +171,7 @@ public:
 	void SetName(const char *name);
 	
 	/** Display image. */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** Display icons (deImage*). */
 	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }
@@ -192,13 +192,13 @@ public:
 	void SetBoneConfiguration(deInputDevice::eBoneConfigurations config);
 	
 	/** Render model. */
-	inline deovrRenderModel *GetRenderModel() const{ return pRenderModel; }
+	inline const deovrRenderModel::Ref &GetRenderModel() const{ return pRenderModel; }
 	
 	/** Set render model. */
 	void SetRenderModel(deovrRenderModel *renderModel);
 	
 	/** Texture map. */
-	inline deovrTextureMap *GetTextureMap() const{ return pTextureMap; }
+	inline const deovrTextureMap::Ref &GetTextureMap() const{ return pTextureMap; }
 	
 	/** Set texture map. */
 	void SetTextureMap(deovrTextureMap *textureMap);

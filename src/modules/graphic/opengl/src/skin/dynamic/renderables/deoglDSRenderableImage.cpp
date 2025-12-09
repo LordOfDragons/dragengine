@@ -46,12 +46,11 @@
 deoglDSRenderableImage::deoglDSRenderableImage(deoglDynamicSkin &dynamicSkin, const deDSRenderableImage &renderable) :
 deoglDSRenderable(dynamicSkin, renderable),
 pRenderableImage(renderable),
-pRRenderableImage(NULL),
 pImage(NULL),
 pDirty(true)
 {
 	try{
-		pRRenderableImage = new deoglRDSRenderableImage(*dynamicSkin.GetRDynamicSkin());
+		pRRenderableImage.TakeOver(new deoglRDSRenderableImage(*dynamicSkin.GetRDynamicSkin()));
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -111,7 +110,4 @@ void deoglDSRenderableImage::SyncToRender(){
 //////////////////////
 
 void deoglDSRenderableImage::pCleanUp(){
-	if(pRRenderableImage){
-		pRRenderableImage->FreeReference();
-	}
 }

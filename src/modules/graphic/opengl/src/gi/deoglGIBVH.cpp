@@ -85,19 +85,15 @@ pPrimitiveSize(0),
 pRecalcNodes(NULL),
 pRecalcNodeSize(0),
 pIndexRootNode(0),
-pTBOInstance(NULL),
-pTBOMatrix(NULL),
-pBVHTBONodeBox(NULL),
-pBVHTBOIndex(NULL),
 pRenderTaskMaterial(renderThread),
 pDirty(true)
 {
 	try{
-		pTBOInstance = new deoglDynamicTBOUInt32(renderThread, 4);
-		pTBOMatrix = new deoglDynamicTBOFloat32(renderThread, 4);
+		pTBOInstance.TakeOver(new deoglDynamicTBOUInt32(renderThread, 4));
+		pTBOMatrix.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
 		
-		pBVHTBONodeBox = new deoglDynamicTBOFloat32(renderThread, 4);
-		pBVHTBOIndex = new deoglDynamicTBOUInt16(renderThread, 2);
+		pBVHTBONodeBox.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
+		pBVHTBOIndex.TakeOver(new deoglDynamicTBOUInt16(renderThread, 2));
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -414,20 +410,6 @@ void deoglGIBVH::DebugPrint(const decDVector &position){
 //////////////////////
 
 void deoglGIBVH::pCleanUp(){
-	if(pBVHTBONodeBox){
-		pBVHTBONodeBox->FreeReference();
-	}
-	if(pBVHTBOIndex){
-		pBVHTBOIndex->FreeReference();
-	}
-	
-	if(pTBOInstance){
-		pTBOInstance->FreeReference();
-	}
-	if(pTBOMatrix){
-		pTBOMatrix->FreeReference();
-	}
-	
 	if(pRecalcNodes){
 		delete [] pRecalcNodes;
 	}

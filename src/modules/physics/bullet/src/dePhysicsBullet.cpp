@@ -157,7 +157,6 @@ pConfiguration(NULL),
 pDeveloperMode(*this),
 pCommandExecuter(NULL),
 pParameters(NULL),
-pColInfo(NULL),
 pCollisionDetection(NULL),
 pDebug(*this)
 {
@@ -186,7 +185,7 @@ dePhysicsBullet::~dePhysicsBullet(){
 
 bool dePhysicsBullet::Init(){
 	pCollisionDetection = new debpCollisionDetection(*this);
-	pColInfo = new deCollisionInfo;
+	pColInfo.TakeOverWith();
 	
 	pConfiguration->LoadConfig();
 	
@@ -203,13 +202,12 @@ void dePhysicsBullet::CleanUp(){
 	
 	if(pColInfo){
 		pColInfo->Clear(); // just to be safe in case somebody still holds a reference
-		pColInfo->FreeReference();
-		pColInfo = NULL;
+		pColInfo = nullptr;
 	}
 	
 	if(pCollisionDetection){
 		delete pCollisionDetection;
-		pCollisionDetection = NULL;
+		pCollisionDetection = nullptr;
 	}
 }
 

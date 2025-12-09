@@ -27,10 +27,10 @@
 
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/utils/decLayerMask.h>
+#include <dragengine/resources/collider/deCollisionInfo.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsWorld.h>
 
 class deWorld;
-class deCollisionInfo;
 
 class dePhysicsBullet;
 class debpHeightTerrain;
@@ -58,7 +58,7 @@ class debpWorld : public deBasePhysicsWorld{
 private:
 	dePhysicsBullet &pBullet;
 	deWorld &pWorld;
-	deCollisionInfo *pColInfo;
+	deCollisionInfo::Ref pColInfo;
 	debpUnstuckCollider *pUnstuckCollider;
 	
 	debpHeightTerrain *pHeightTerrain;
@@ -134,7 +134,7 @@ public:
 	inline deWorld &GetWorld() const{ return pWorld; }
 	
 	/** Shared collision information. */
-	inline deCollisionInfo *GetCollisionInfo() const{ return pColInfo; }
+	inline const deCollisionInfo::Ref &GetCollisionInfo() const{ return pColInfo; }
 	
 	/** Unstuck collider. */
 	inline debpUnstuckCollider *GetUnstuckCollider() const{ return pUnstuckCollider; }

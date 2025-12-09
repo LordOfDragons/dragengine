@@ -68,9 +68,6 @@ pDirtyPrepareForRender(true),
 
 pDirtyNotifySkyChanged(false),
 pDirtySkyOrder(false),
-pSkyEnvMap(NULL),
-
-pHeightTerrain(NULL),
 
 pRootComponent(NULL),
 pTailComponent(NULL),
@@ -198,13 +195,11 @@ void deoglRWorld::SetHeightTerrain(deoglRHeightTerrain *heightTerrain){
 	
 	if(pHeightTerrain){
 		pHeightTerrain->SetParentWorld(NULL);
-		pHeightTerrain->FreeReference();
 	}
 	
 	pHeightTerrain = heightTerrain;
 	
 	if(heightTerrain){
-		heightTerrain->AddReference();
 		heightTerrain->SetParentWorld(this);
 	}
 }
@@ -1574,7 +1569,7 @@ void deoglRWorld::pCreateSkyEnvMap(){
 	// 256-float: size=6*256*256*3*2 = 4718592 = 2.4MB
 	// 128-int: size=6*128*128*3*1 = 294912 = 0.3MB
 	// 256-int: size=6*256*256*3*1 = 1179648 = 1.2MB
-	pSkyEnvMap = new deoglEnvironmentMap(pRenderThread);
+	pSkyEnvMap.TakeOver(new deoglEnvironmentMap(pRenderThread));
 	pSkyEnvMap->SetSize(pRenderThread.GetConfiguration().GetEnvMapSize());
 	pSkyEnvMap->SetIsFloat(true);
 	pSkyEnvMap->SetSkyOnly(true);
@@ -1587,8 +1582,6 @@ void deoglRWorld::pCreateSkyEnvMap(){
 void deoglRWorld::pFreeSkyEnvMap(){
 	if(pSkyEnvMap){
 		RemoveEnvMap(pSkyEnvMap);
-		
-		pSkyEnvMap->FreeReference();
-		pSkyEnvMap = NULL;
+		pSkyEnvMap = nullptr;
 	}
 }

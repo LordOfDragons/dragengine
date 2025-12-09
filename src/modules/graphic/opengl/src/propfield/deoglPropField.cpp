@@ -56,8 +56,6 @@ deoglPropField::deoglPropField(deGraphicOpenGl &ogl, dePropField &propField) :
 pOgl(ogl),
 pPropField(propField),
 
-pRPropField(NULL),
-
 pLODLevel(0),
 pBestLOD(0),
 pCheckLOD(false),
@@ -71,7 +69,7 @@ pDirtyInstances(true)
 	int t;
 	
 	try{
-		pRPropField = new deoglRPropField(ogl.GetRenderThread());
+		pRPropField.TakeOver(new deoglRPropField(ogl.GetRenderThread()));
 		
 		for(t=0; t<typeCount; t++){
 			TypeAdded(t, propField.GetTypeAt(t));
@@ -311,10 +309,5 @@ void deoglPropField::BendStatesChanged(int index, dePropFieldType *type){
 //////////////////////
 
 void deoglPropField::pCleanUp(){
-	if(pRPropField){
-		pRPropField->FreeReference();
-		pRPropField = NULL;
-	}
-	
 	AllTypesRemoved();
 }

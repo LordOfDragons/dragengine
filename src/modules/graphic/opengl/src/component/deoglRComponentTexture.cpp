@@ -77,9 +77,6 @@
 deoglRComponentTexture::deoglRComponentTexture(deoglRComponent &component, int index) :
 pComponent(component),
 pIndex(index),
-
-pSkin(NULL),
-pDynamicSkin(NULL),
 pSkinState(NULL),
 
 pUseSkin(NULL),
@@ -91,8 +88,6 @@ pUseDoubleSided(false),
 pUseDecal(false),
 pIsRendered(false),
 pRenderTaskFilters(0),
-
-pSharedSPBElement(NULL),
 
 pTUCDepth(NULL),
 pTUCGeometry(NULL),
@@ -117,19 +112,8 @@ pDirtyTUCsEnvMapUse(true)
 
 deoglRComponentTexture::~deoglRComponentTexture(){
 	LEAK_CHECK_FREE(pComponent.GetRenderThread(), ComponentTexture);
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	
 	pSharedSPBRTIGroup.RemoveAll();
 	pSharedSPBRTIGroupShadow.RemoveAll();
-	if(pSharedSPBElement){
-		pSharedSPBElement->FreeReference();
-	}
-	
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
 	}
@@ -188,15 +172,7 @@ void deoglRComponentTexture::SetSkin(deoglRSkin *skin){
 	if(skin == pSkin){
 		return;
 	}
-	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	pSkin = skin;
-	if(skin){
-		skin->AddReference();
-	}
-	
 	pIsRendered = false;
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
@@ -208,15 +184,7 @@ void deoglRComponentTexture::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 	if(dynamicSkin == pDynamicSkin){
 		return;
 	}
-	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
 	pDynamicSkin = dynamicSkin;
-	if(dynamicSkin){
-		dynamicSkin->AddReference();
-	}
-	
 	pIsRendered = false;
 	InvalidateParamBlocks();
 	MarkTUCsDirty();
@@ -383,7 +351,6 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 	if(!pValidParamBlocks){
 		// shared spb
 		if(pSharedSPBElement){
-			pSharedSPBElement->FreeReference();
 			pSharedSPBElement = NULL;
 		}
 		
@@ -419,7 +386,7 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 			for(i=0; i<count; i++){
 				deoglModelLOD &modelLod = model.GetLODAt(i);
 				deoglSharedSPBRTIGroupList &list = modelLod.GetSharedSPBRTIGroupListAt(pIndex);
-				group.TakeOver(list.GetWith(spb));
+				group = list.GetWith(spb);
 				
 				if(!group){
 					group.TakeOver(list.AddWith(spb));
@@ -445,7 +412,7 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 					}
 					
 					deoglSharedSPBRTIGroupList &list = modelLod.GetSharedSPBRTIGroupListAt(pIndex);
-					group.TakeOver(list.GetWith(spb, combineCount));
+					group = list.GetWith(spb, combineCount);
 					
 					if(!group){
 						group.TakeOver(list.AddWith(spb, combineCount));

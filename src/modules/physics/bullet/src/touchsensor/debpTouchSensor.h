@@ -29,6 +29,7 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decPointerOrderedSet.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsTouchSensor.h>
 
 class debpCollider;
@@ -36,7 +37,6 @@ class deTouchSensor;
 class debpWorld;
 class dePhysicsBullet;
 class debpGhostObject;
-class deDebugDrawer;
 class deDebugDrawerShape;
 
 
@@ -66,7 +66,7 @@ private:
 	decPointerOrderedSet pLeavingColliders;
 	debpGhostObject *pGhostObject;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSShape;
 	
 	
@@ -254,7 +254,7 @@ public:
 	/** \name Debugging */
 	/*@{*/
 	/** Debug drawer or \em NULL if not activated .*/
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	inline const deDebugDrawer::Ref &GetDebugDrawer() const{ return pDebugDrawer; }
 	
 	/** Debug drawer shape or \em NULL if not ativated. */
 	inline deDebugDrawerShape *GetDDSShape() const{ return pDDSShape; }

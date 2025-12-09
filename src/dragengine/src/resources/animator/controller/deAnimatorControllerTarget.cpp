@@ -88,7 +88,7 @@ void deAnimatorControllerTarget::RemoveLink(int link){
 	
 	int *newArray = NULL;
 	if(pLinkCount > 0){
-		new int[pLinkCount - 1];
+		newArray = new int[pLinkCount - 1];
 		if(!newArray) DETHROW(deeOutOfMemory);
 	}
 	

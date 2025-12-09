@@ -25,9 +25,9 @@
 #ifndef _DEOGLOCCLUSIONMESH_H_
 #define _DEOGLOCCLUSIONMESH_H_
 
-#include <dragengine/systems/modules/graphic/deBaseGraphicOcclusionMesh.h>
+#include "deoglROcclusionMesh.h"
 
-class deoglROcclusionMesh;
+#include <dragengine/systems/modules/graphic/deBaseGraphicOcclusionMesh.h>
 
 class deOcclusionMesh;
 class deGraphicOpenGl;
@@ -41,7 +41,7 @@ class deoglOcclusionMesh : public deBaseGraphicOcclusionMesh{
 public:
 	deGraphicOpenGl &pOgl;
 	const deOcclusionMesh &pOcclusionMesh;
-	deoglROcclusionMesh *pROcclusionMesh;
+	deoglROcclusionMesh::Ref pROcclusionMesh;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -64,7 +64,7 @@ public:
 	inline const deOcclusionMesh &GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	/** Render occlusion mesh. */
-	inline deoglROcclusionMesh *GetROcclusionMesh() const{ return pROcclusionMesh; }
+	inline const deoglROcclusionMesh::Ref &GetROcclusionMesh() const{ return pROcclusionMesh; }
 	/*@}*/
 	
 private:

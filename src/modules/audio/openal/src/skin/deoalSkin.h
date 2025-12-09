@@ -25,10 +25,11 @@
 #ifndef _DEOALSKIN_H_
 #define _DEOALSKIN_H_
 
+#include "deoalASkin.h"
+
 #include <dragengine/systems/modules/audio/deBaseAudioSkin.h>
 
 class deAudioOpenAL;
-class deoalASkin;
 
 class deSkin;
 
@@ -41,7 +42,7 @@ class deoalSkin : public deBaseAudioSkin{
 private:
 	deAudioOpenAL &pOal;
 	const deSkin &pSkin;
-	deoalASkin *pASkin;
+	deoalASkin::Ref pASkin;
 	
 	
 	
@@ -66,7 +67,7 @@ public:
 	inline const deSkin &GetSkin() const{ return pSkin; }
 	
 	/** \brief Audio skin. */
-	inline deoalASkin *GetASkin() const{ return pASkin; }
+	inline const deoalASkin::Ref &GetASkin() const{ return pASkin; }
 	/*@}*/
 };
 

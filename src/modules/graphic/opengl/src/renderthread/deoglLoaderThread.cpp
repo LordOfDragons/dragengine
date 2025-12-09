@@ -36,6 +36,10 @@
 ////////////////////////
 
 class cWaitableTask : public deoglLoaderThreadTask{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<cWaitableTask> Ref;
+	
 private:
 	deoglRenderThread &pRenderThread;
 	const deoglLoaderThreadTask::Ref pTask;
@@ -83,11 +87,6 @@ pContextEnabled(false)
 }
 
 deoglLoaderThread::~deoglLoaderThread(){
-	const int count = pTasks.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		((deoglLoaderThreadTask*)pTasks.GetAt(i))->FreeReference();
-	}
 }
 
 
@@ -108,7 +107,7 @@ void deoglLoaderThread::Run(){
 		pShutdown = true;
 	}
 	
-	deoglLoaderThreadTask *task = nullptr;
+	deoglLoaderThreadTask::Ref task;
 	
 	while(!pShutdown){
 		{
@@ -134,8 +133,6 @@ void deoglLoaderThread::Run(){
 			#ifdef DO_DEBUG_LOG
 			pRenderThread.GetLogger().LogInfoFormat("LoaderThread: Run: Done task %p", task);
 			#endif
-			
-			task->FreeReference();
 			task = nullptr;
 			
 		}else{
@@ -202,7 +199,7 @@ void deoglLoaderThread::EnableContext(bool enable){
 	}
 }
 
-bool deoglLoaderThread::AddTask(deoglLoaderThreadTask *task){
+bool deoglLoaderThread::AddTask(const deoglLoaderThreadTask::Ref &task){
 	DEASSERT_NOTNULL(task);
 	
 	const deMutexGuard guard(pMutex);
@@ -215,30 +212,27 @@ bool deoglLoaderThread::AddTask(deoglLoaderThreadTask *task){
 	#endif
 	
 	pTasks.Add(task);
-	task->AddReference();
 	pSemaphore.Signal();
 	return true;
 }
 
-bool deoglLoaderThread::AwaitTask(deoglLoaderThreadTask *task){
+bool deoglLoaderThread::AwaitTask(const deoglLoaderThreadTask::Ref &task){
 	DEASSERT_NOTNULL(task)
 	
-	const deTObjectReference<cWaitableTask> waitableTask(deTObjectReference<cWaitableTask>::New(
-		new cWaitableTask(pRenderThread, task)));
+	const cWaitableTask::Ref waitableTask(cWaitableTask::Ref::NewWith(pRenderThread, task));
 	
 	#ifdef DO_DEBUG_LOG
 	pRenderThread.GetLogger().LogInfoFormat("LoaderThread: AwaitTask: Add task %p", task);
 	#endif
 	
-	deSemaphore &semaphore = waitableTask->Semaphore();
-	if(!AddTask(waitableTask)){
+	if(!AddTask(waitableTask.Pointer())){
 		return false;
 	}
 	
 	#ifdef DO_DEBUG_LOG
 	pRenderThread.GetLogger().LogInfoFormat("LoaderThread: AwaitTask: Finished task %p", task);
 	#endif
-	semaphore.Wait();
+	waitableTask->Semaphore().Wait();
 	
 	DEASSERT_TRUE(waitableTask->GetSuccess())
 	return true;

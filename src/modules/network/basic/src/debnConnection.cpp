@@ -153,8 +153,6 @@ void debnConnection::AcceptConnection(debnSocket *bnSocket, const debnAddress &a
 	if(!bnSocket) DETHROW(deeInvalidParam);
 	
 	pSocket = bnSocket;
-	bnSocket->AddReference();
-	
 	pRemoteAddress = address;
 	pConnection->SetRemoteAddress(address.ToString());
 	
@@ -561,7 +559,7 @@ bool debnConnection::ConnectTo(const char *address){
 	remoteAddress.SetFromString(address);
 	
 	// create connect socket
-	pSocket = new debnSocket(*pNetBasic);
+	pSocket.TakeOver(new debnSocket(*pNetBasic));
 	
 	if(remoteAddress.GetType() == debnAddress::eatIPv6){
 		pSocket->GetAddress().SetIPv6Any();
@@ -846,10 +844,6 @@ void debnConnection::pCleanUp(){
 	if(pModifiedStateLinks){
 		delete pModifiedStateLinks;
 	}
-	if(pSocket){
-		pSocket->FreeReference();
-	}
-	
 	if(pReliableMessagesRecv){
 		delete pReliableMessagesRecv;
 	}
@@ -884,10 +878,7 @@ void debnConnection::pDisconnect(){
 	
 	// free the socket
 	pConnectionState = ecsDisconnected;
-	if(pSocket){
-		pSocket->FreeReference();
-		pSocket = NULL;
-	}
+	pSocket = nullptr;
 	
 	// switch to disconnected state
 	pConnectionState = ecsDisconnected;

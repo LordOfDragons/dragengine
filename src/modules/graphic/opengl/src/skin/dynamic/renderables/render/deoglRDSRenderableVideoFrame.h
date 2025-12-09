@@ -25,11 +25,10 @@
 #ifndef _DEOGLRRDSRENDERABLEVIDEOFRAME_H_
 #define _DEOGLRRDSRENDERABLEVIDEOFRAME_H_
 
-#include <dragengine/deObject.h>
-
 #include "deoglRDSRenderable.h"
+#include "../../../../video/deoglRVideoPlayer.h"
 
-class deoglRVideoPlayer;
+#include <dragengine/deObject.h>
 
 
 
@@ -37,8 +36,13 @@ class deoglRVideoPlayer;
  * Render dynamic skin image renderable.
  */
 class deoglRDSRenderableVideoFrame : public deoglRDSRenderable{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDSRenderableVideoFrame> Ref;
+	
+	
 private:
-	deoglRVideoPlayer *pVideoPlayer;
+	deoglRVideoPlayer::Ref pVideoPlayer;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -55,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Video player. */
-	inline deoglRVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline const deoglRVideoPlayer::Ref &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Set video player. */
 	void SetVideoPlayer(deoglRVideoPlayer *videoPlayer);

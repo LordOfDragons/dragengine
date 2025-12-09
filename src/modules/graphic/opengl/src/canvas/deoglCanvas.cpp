@@ -46,8 +46,6 @@
 deoglCanvas::deoglCanvas(deGraphicOpenGl &ogl, deCanvas &canvas) :
 pOgl(ogl),
 pCanvas(canvas),
-
-pRCanvas(NULL),
 pDirtyGeometry(true),
 pDirtyTransform(true),
 pDirtyColorTransform(true),
@@ -59,9 +57,6 @@ pDirtyMaskContent(false)
 }
 
 deoglCanvas::~deoglCanvas(){
-	if(pRCanvas){
-		pRCanvas->FreeReference();
-	}
 }
 
 
@@ -71,7 +66,6 @@ deoglCanvas::~deoglCanvas(){
 
 void deoglCanvas::DropRCanvas(){
 	if(pRCanvas){
-		pRCanvas->FreeReference();
 		pRCanvas = NULL;
 	}
 }

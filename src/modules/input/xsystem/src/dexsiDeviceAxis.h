@@ -124,7 +124,7 @@ public:
 	
 	
 	/** \brief Display image. */
-	inline deImage *GetDisplayImage() const{ return pDisplayImage; }
+	inline const deImage::Ref &GetDisplayImage() const{ return pDisplayImage; }
 	
 	/** \brief Display icons (deImage*). */
 	inline const decObjectOrderedSet &GetDisplayIcons() const{ return pDisplayIcons; }

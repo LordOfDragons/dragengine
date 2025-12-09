@@ -29,6 +29,7 @@
 #include "../../texture/deoglRImage.h"
 #include "../../texture/pixelbuffer/deoglPixelBufferMipMap.h"
 
+#include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -54,7 +55,6 @@ class deSkinPropertyConstructed;
 class deSkinPropertyMapped;
 class deSkinTexture;
 class deVideo;
-class decMemoryFile;
 
 
 
@@ -171,13 +171,13 @@ private:
 	decString pCacheID;
 	bool pIsCached;
 	bool pCanBeCached;
-	decMemoryFile *pCacheVerify;
+	decMemoryFile::Ref pCacheVerify;
 	decString pCacheIDSource1;
 	decString pCacheIDSource2;
-	decMemoryFile *pCacheConstrDefSource1;
-	decMemoryFile *pCacheConstrDefSource2;
-	decMemoryFile *pCacheConstrVerifySource1;
-	decMemoryFile *pCacheConstrVerifySource2;
+	decMemoryFile::Ref pCacheConstrDefSource1;
+	decMemoryFile::Ref pCacheConstrDefSource2;
+	decMemoryFile::Ref pCacheConstrVerifySource1;
+	decMemoryFile::Ref pCacheConstrVerifySource2;
 	
 	decColor pUniformColor;
 	bool pUniformColorMask[4];

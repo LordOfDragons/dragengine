@@ -1391,67 +1391,58 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision(sParticle &particle,
 		// create an emitter instance if one is set for this particle type and the preconditions are met
 		if(doEmitParticles){
 			deParticleEmitter * const emitEmitter = engType.GetCollisionEmitter();
-			deEngine &engine = *pInstance->GetBullet()->GetGameEngine();
-			deParticleEmitterInstance *emitInstance = NULL;
+			const deEngine &engine = *pInstance->GetBullet()->GetGameEngine();
 			
-			try{
-				// create instance
-				emitInstance = engine.GetParticleEmitterInstanceManager()->CreateInstance();
-				emitInstance->SetEmitter(emitEmitter);
-				emitInstance->SetCollisionFilter(pInstance->GetInstance()->GetCollisionFilter());
-				emitInstance->SetTimeScale(1.0f);
-				emitInstance->SetRemoveAfterLastParticleDied(true);
-				emitInstance->SetEnableCasting(true);
+			// create instance
+			const deParticleEmitterInstance::Ref emitInstance(
+				engine.GetParticleEmitterInstanceManager()->CreateInstance());
+			emitInstance->SetEmitter(emitEmitter);
+			emitInstance->SetCollisionFilter(pInstance->GetInstance()->GetCollisionFilter());
+			emitInstance->SetTimeScale(1.0f);
+			emitInstance->SetRemoveAfterLastParticleDied(true);
+			emitInstance->SetEnableCasting(true);
+			
+			// set position and orientation
+			const btVector3 emitPosition = rayResult.m_hitPointWorld + rayResult.m_hitNormalWorld * (btScalar)0.001;
+			emitInstance->SetPosition(decDVector(emitPosition.getX(), emitPosition.getY(), emitPosition.getZ()));
+			emitInstance->SetReferencePosition(emitInstance->GetPosition());
+			btVector3 emitNormal;
+			
+			const debpParticleEmitterType &type = pInstance->GetParticleEmitter()->GetTypeAt(pType);
+			const float emitDirection = particle.castEmitDirection * type.EvaluateProgressParameter(
+				debpParticleEmitterType::escEmitDirection, particle.lifetime);
+			
+			if(emitDirection < FLOAT_SAFE_EPSILON){
+				emitNormal = rayResult.m_hitNormalWorld;
 				
-				// set position and orientation
-				const btVector3 emitPosition = rayResult.m_hitPointWorld + rayResult.m_hitNormalWorld * (btScalar)0.001;
-				emitInstance->SetPosition(decDVector(emitPosition.getX(), emitPosition.getY(), emitPosition.getZ()));
-				emitInstance->SetReferencePosition(emitInstance->GetPosition());
-				btVector3 emitNormal;
+			}else if(emitDirection > 1.0f - FLOAT_SAFE_EPSILON){
+				emitNormal = displacement.normalized();
 				
-				const debpParticleEmitterType &type = pInstance->GetParticleEmitter()->GetTypeAt(pType);
-				const float emitDirection = particle.castEmitDirection * type.EvaluateProgressParameter(
-					debpParticleEmitterType::escEmitDirection, particle.lifetime);
-				
-				if(emitDirection < FLOAT_SAFE_EPSILON){
-					emitNormal = rayResult.m_hitNormalWorld;
-					
-				}else if(emitDirection > 1.0f - FLOAT_SAFE_EPSILON){
-					emitNormal = displacement.normalized();
-					
-				}else{
-					emitNormal = displacement.normalized() * (btScalar)emitDirection
-						+ rayResult.m_hitNormalWorld * (btScalar)(1.0f - emitDirection);
-				}
-				
-				if(emitNormal.getY() > 1.0 - DVECTOR_THRESHOLD){
-					//emitInstance->SetOrientation( decMatrix::CreateRotationX( HALF_PI ).ToQuaternion() );
-					emitInstance->SetOrientation(decQuaternion(-0.707107f, 0.0f, 0.0f, 0.707107f));
-					
-				}else if(emitNormal.getY() < DVECTOR_THRESHOLD - 1.0){
-					//emitInstance->SetOrientation( decMatrix::CreateRotationX( -HALF_PI ).ToQuaternion() );
-					emitInstance->SetOrientation(decQuaternion(0.707107f, 0.0f, 0.0f, 0.707107f));
-					
-				}else{
-					emitInstance->SetOrientation(decMatrix::CreateVU(decVector((float)emitNormal.getX(),
-						(float)emitNormal.getY(), (float)emitNormal.getZ()), decVector(0.0f, 1.0f, 0.0f)).ToQuaternion());
-				}
-				
-				// set controller values
-				ParticleSetEmitterControllers(particle, *emitInstance, particleLinearVelocity);
-				
-				// add to the world. this has to come before casting just to be safe
-				pInstance->GetParentWorld()->GetWorld().AddParticleEmitter(emitInstance);
-				
-				// cast a burst of particles
-				emitInstance->FreeReference();
-				
-			}catch(const deException &){
-				if(emitInstance){
-					emitInstance->FreeReference();
-				}
-				throw;
+			}else{
+				emitNormal = displacement.normalized() * (btScalar)emitDirection
+					+ rayResult.m_hitNormalWorld * (btScalar)(1.0f - emitDirection);
 			}
+			
+			if(emitNormal.getY() > 1.0 - DVECTOR_THRESHOLD){
+				//emitInstance->SetOrientation( decMatrix::CreateRotationX( HALF_PI ).ToQuaternion() );
+				emitInstance->SetOrientation(decQuaternion(-0.707107f, 0.0f, 0.0f, 0.707107f));
+				
+			}else if(emitNormal.getY() < DVECTOR_THRESHOLD - 1.0){
+				//emitInstance->SetOrientation( decMatrix::CreateRotationX( -HALF_PI ).ToQuaternion() );
+				emitInstance->SetOrientation(decQuaternion(0.707107f, 0.0f, 0.0f, 0.707107f));
+				
+			}else{
+				emitInstance->SetOrientation(decMatrix::CreateVU(decVector((float)emitNormal.getX(),
+					(float)emitNormal.getY(), (float)emitNormal.getZ()), decVector(0.0f, 1.0f, 0.0f)).ToQuaternion());
+			}
+			
+			// set controller values
+			ParticleSetEmitterControllers(particle, *emitInstance, particleLinearVelocity);
+			
+			// add to the world. this has to come before casting just to be safe
+			pInstance->GetParentWorld()->GetWorld().AddParticleEmitter(emitInstance);
+			
+			// cast a burst of particles
 		}
 		
 		// apply collision response

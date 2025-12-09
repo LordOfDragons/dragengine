@@ -86,7 +86,7 @@ public:
 	void SetFov(XrFovf fov);
 	
 	/** Model. */
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	
 	/** Update model. */
 	void UpdateModel();
