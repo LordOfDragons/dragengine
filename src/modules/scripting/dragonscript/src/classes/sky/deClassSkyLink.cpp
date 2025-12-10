@@ -276,8 +276,8 @@ void deClassSkyLink::PushLink(dsRunTime *rt, deSky *sky, int index){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSkyLinkNatDat &nd = *static_cast<sSkyLinkNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.sky = sky;
+	sSkyLinkNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkyLinkNatDat;
+	nd->sky = sky;
 	sky->AddReference();
-	nd.index = index;
+	nd->index = index;
 }

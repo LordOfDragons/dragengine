@@ -492,11 +492,11 @@ void deClassSkyController::PushController(dsRunTime *rt, deSky *sky, int index){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSkyCtrlNatDat &nd = *static_cast<sSkyCtrlNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.sky = sky;
+	sSkyCtrlNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkyCtrlNatDat;
+	nd->sky = sky;
 	sky->AddReference();
-	nd.instance = nullptr;
-	nd.index = index;
+	nd->instance = nullptr;
+	nd->index = index;
 }
 
 void deClassSkyController::PushController(dsRunTime *rt, deSkyInstance *instance, int index){
@@ -505,9 +505,9 @@ void deClassSkyController::PushController(dsRunTime *rt, deSkyInstance *instance
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSkyCtrlNatDat &nd = *static_cast<sSkyCtrlNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.sky = nullptr;
-	nd.instance = instance;
+	sSkyCtrlNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkyCtrlNatDat;
+	nd->sky = nullptr;
+	nd->instance = instance;
 	instance->AddReference();
-	nd.index = index;
+	nd->index = index;
 }

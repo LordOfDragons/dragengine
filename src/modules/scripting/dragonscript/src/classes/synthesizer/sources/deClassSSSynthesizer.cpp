@@ -308,19 +308,19 @@ void deClassSSSynthesizer::PushSource(dsRunTime *rt, deSynthesizer *synthesizer,
 	
 	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sSSSynNatDat &nd = *static_cast<sSSSynNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.synthesizer = NULL;
-	nd.source = NULL;
+	sSSSynNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSSSynNatDat;
+	nd->synthesizer = NULL;
+	nd->source = NULL;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
-		nd.synthesizer = synthesizer;
+		nd->synthesizer = synthesizer;
 		if(synthesizer){
 			synthesizer->AddReference();
 		}
 		
-		nd.source = source;
+		nd->source = source;
 		source->AddReference();
 		
 		baseClass->AssignSource(rt->GetValue(0)->GetRealObject(), source);

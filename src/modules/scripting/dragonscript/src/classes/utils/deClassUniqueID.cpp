@@ -508,11 +508,11 @@ void deClassUniqueID::PushUniqueID(dsRunTime *rt, const decUniqueID &id){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sUIDNatDat &nd = *static_cast<sUIDNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.id = nullptr;
+	sUIDNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sUIDNatDat;
+	nd->id = nullptr;
 	
 	try{
-		nd.id = new decUniqueID(id);
+		nd->id = new decUniqueID(id);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object
@@ -526,16 +526,16 @@ void deClassUniqueID::PushUniqueID(dsRunTime *rt, int byteCount, unsigned char *
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sUIDNatDat &nd = *static_cast<sUIDNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.id = nullptr;
+	sUIDNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sUIDNatDat;
+	nd->id = nullptr;
 	
 	try{
-		nd.id = new decUniqueID;
+		nd->id = new decUniqueID;
 		
-		nd.id->SetBitCount(byteCount * 8);
+		nd->id->SetBitCount(byteCount * 8);
 		int b;
 		for(b=0; b<byteCount; b++){
-			nd.id->SetByteAt(b, bytes[b]);
+			nd->id->SetByteAt(b, bytes[b]);
 		}
 		
 	}catch(...){

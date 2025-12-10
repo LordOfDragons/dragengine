@@ -548,13 +548,13 @@ void deClassCurveBezier3D::PushCurve(dsRunTime *rt, const decCurveBezier3D &curv
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sCBezier3DNatDat &nd = *static_cast<sCBezier3DNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.curve = nullptr;
-	nd.evaluator = nullptr;
+	sCBezier3DNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCBezier3DNatDat;
+	nd->curve = nullptr;
+	nd->evaluator = nullptr;
 	
 	try{
-		nd.curve = new decCurveBezier3D(curve);
-		nd.evaluator = new decCurveBezier3DEvaluator(*nd.curve);
+		nd->curve = new decCurveBezier3D(curve);
+		nd->evaluator = new decCurveBezier3DEvaluator(*nd->curve);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

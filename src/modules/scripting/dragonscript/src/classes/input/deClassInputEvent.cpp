@@ -296,11 +296,11 @@ void deClassInputEvent::PushInputEvent(dsRunTime *rt, const deInputEvent &event)
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sInpEvNatDat &nd = *static_cast<sInpEvNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.event = nullptr;
+	sInpEvNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sInpEvNatDat;
+	nd->event = nullptr;
 	
 	try{
-		nd.event = new deInputEvent(event);
+		nd->event = new deInputEvent(event);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

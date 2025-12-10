@@ -267,9 +267,9 @@ deSkyLayer::eTargets target){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSkyTargetNatDat &nd = *static_cast<sSkyTargetNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.sky = sky;
+	sSkyTargetNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkyTargetNatDat;
+	nd->sky = sky;
 	sky->AddReference();
-	nd.layer = layer;
-	nd.target = target;
+	nd->layer = layer;
+	nd->target = target;
 }

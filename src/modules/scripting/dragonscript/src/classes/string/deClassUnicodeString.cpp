@@ -603,11 +603,11 @@ const decString deClassUnicodeString::GetUTF8(dsRealObject *myself) const{
 
 void deClassUnicodeString::PushUnicodeString(dsRunTime *rt, const decUnicodeString &string){
 	rt->CreateObjectNakedOnStack(this);
-	sUSNatDat &nd = *static_cast<sUSNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.string = nullptr;
+	sUSNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sUSNatDat;
+	nd->string = nullptr;
 	
 	try{
-		nd.string = new decUnicodeString(string);
+		nd->string = new decUnicodeString(string);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

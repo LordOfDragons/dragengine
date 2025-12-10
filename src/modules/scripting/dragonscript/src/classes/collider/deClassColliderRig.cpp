@@ -685,14 +685,7 @@ void deClassColliderRig::PushCollider(dsRunTime *rt, deColliderRig *collider){
 	
 	deClassCollider * const baseClass = static_cast<deClassCollider*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sColRigNatDat &nd = *static_cast<sColRigNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.collider = nullptr;
-	
-	try{
-		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		nd.collider = collider;
-		collider->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sColRigNatDat)->collider = collider;
 		
 		baseClass->AssignCollider(rt->GetValue(0)->GetRealObject(), collider);
 		

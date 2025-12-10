@@ -1522,11 +1522,11 @@ void deClassShapeList::PushShapeList(dsRunTime *rt, const decShapeList &shapeLis
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sShaListNatDat &nd = *static_cast<sShaListNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.shapeList = nullptr;
+	sShaListNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sShaListNatDat;
+	nd->shapeList = nullptr;
 	
 	try{
-		nd.shapeList = new decShapeList(shapeList);
+		nd->shapeList = new decShapeList(shapeList);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

@@ -967,11 +967,11 @@ void deClassColliderConstraint::PushConstraint(dsRunTime *rt, deColliderConstrai
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sCConNatDat &nd = *static_cast<sCConNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.constraint = NULL;
+	sCConNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCConNatDat;
+	nd->constraint = NULL;
 	
 	try{
-		nd.constraint = new deColliderConstraint(*constraint);
+		nd->constraint = new deColliderConstraint(*constraint);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

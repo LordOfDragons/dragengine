@@ -886,12 +886,12 @@ deColliderCollisionTest *collisionTest, deCollider *parentCollider){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sCCTNatDat &nd = *static_cast<sCCTNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	sCCTNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCCTNatDat;
 	
-	nd.collisionTest = collisionTest;
+	nd->collisionTest = collisionTest;
 	collisionTest->AddReference();
 	
-	nd.parentCollider = parentCollider;
+	nd->parentCollider = parentCollider;
 	if(parentCollider){
 		parentCollider->AddReference();
 	}

@@ -404,11 +404,11 @@ void deClassSmoothDouble::PushSmoothDouble(dsRunTime *rt, const decSmoothDouble 
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSmDblNatDat &nd = *static_cast<sSmDblNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.smoothDouble = nullptr;
+	sSmDblNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSmDblNatDat;
+	nd->smoothDouble = nullptr;
 	
 	try{
-		nd.smoothDouble = new decSmoothDouble(smoothDouble);
+		nd->smoothDouble = new decSmoothDouble(smoothDouble);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

@@ -609,8 +609,8 @@ void deClassSkyLayer::PushLayer(dsRunTime *rt, deSky *sky, int index){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSkyLayerNatDat &nd = *static_cast<sSkyLayerNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.sky = sky;
+	sSkyLayerNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkyLayerNatDat;
+	nd->sky = sky;
 	sky->AddReference();
-	nd.index = index;
+	nd->index = index;
 }

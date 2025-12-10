@@ -535,11 +535,11 @@ void deClassLayerMask::PushLayerMask(dsRunTime *rt, const decLayerMask &layermas
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sCFNatDat &nd = *static_cast<sCFNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.layerMask = nullptr;
+	sCFNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCFNatDat;
+	nd->layerMask = nullptr;
 	
 	try{
-		nd.layerMask = new decLayerMask(layermask);
+		nd->layerMask = new decLayerMask(layermask);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

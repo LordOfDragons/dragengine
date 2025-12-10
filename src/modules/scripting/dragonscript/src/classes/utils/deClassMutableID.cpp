@@ -610,11 +610,11 @@ void deClassMutableID::PushMutableID(dsRunTime *rt, const decUniqueID &id){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sMUIDNatDat &nd = *static_cast<sMUIDNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.id = nullptr;
+	sMUIDNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sMUIDNatDat;
+	nd->id = nullptr;
 	
 	try{
-		nd.id = new decUniqueID(id);
+		nd->id = new decUniqueID(id);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

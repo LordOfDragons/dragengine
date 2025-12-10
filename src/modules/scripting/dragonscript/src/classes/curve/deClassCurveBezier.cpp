@@ -601,11 +601,11 @@ void deClassCurveBezier::PushCurve(dsRunTime *rt, const decCurveBezier &curve){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sCBeNatDat &nd = *static_cast<sCBeNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.curve = nullptr;
+	sCBeNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCBeNatDat;
+	nd->curve = nullptr;
 	
 	try{
-		nd.curve = new decCurveBezier(curve);
+		nd->curve = new decCurveBezier(curve);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

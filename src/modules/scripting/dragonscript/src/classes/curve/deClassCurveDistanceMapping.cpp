@@ -279,11 +279,11 @@ void deClassCurveDistanceMapping::PushMapping(dsRunTime *rt, const decCurveDista
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sDistMapNatDat &nd = *static_cast<sDistMapNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.mapping = nullptr;
+	sDistMapNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sDistMapNatDat;
+	nd->mapping = nullptr;
 	
 	try{
-		nd.mapping = new decCurveDistanceMapping(mapping);
+		nd->mapping = new decCurveDistanceMapping(mapping);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

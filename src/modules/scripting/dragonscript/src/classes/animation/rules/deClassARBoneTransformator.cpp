@@ -604,19 +604,19 @@ void deClassARBoneTransformator::PushRule(dsRunTime *rt, deAnimator *animator, d
 	
 	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sARBoneTransNatDat &nd = *static_cast<sARBoneTransNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.animator = NULL;
-	nd.rule = NULL;
+	sARBoneTransNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sARBoneTransNatDat;
+	nd->animator = NULL;
+	nd->rule = NULL;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
-		nd.animator = animator;
+		nd->animator = animator;
 		if(animator){
 			animator->AddReference();
 		}
 		
-		nd.rule = rule;
+		nd->rule = rule;
 		rule->AddReference();
 		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);

@@ -160,12 +160,12 @@ const deSoundLevelMeter::cAudibleSpeaker &speaker){
 	
 	rt->CreateObjectNakedOnStack(this);
 	
-	sSLMSNatDat &nd = *static_cast<sSLMSNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	sSLMSNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSLMSNatDat;
 	
-	nd.speaker = speaker.GetSpeaker();
-	if(nd.speaker){
-		nd.speaker->AddReference();
+	nd->speaker = speaker.GetSpeaker();
+	if(nd->speaker){
+		nd->speaker->AddReference();
 	}
 	
-	nd.volume = speaker.GetVolume();
+	nd->volume = speaker.GetVolume();
 }

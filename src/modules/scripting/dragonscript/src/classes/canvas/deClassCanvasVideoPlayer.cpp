@@ -259,14 +259,7 @@ void deClassCanvasVideoPlayer::PushCanvas(dsRunTime *rt, deCanvasVideoPlayer *ca
 	
 	deClassCanvas * const baseClass = static_cast<deClassCanvas*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sCVidPNatDat &nd = *static_cast<sCVidPNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.canvas = nullptr;
-	
-	try{
-		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		nd.canvas = canvas;
-		canvas->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCVidPNatDat)->canvas = canvas;
 		
 		baseClass->AssignCanvas(rt->GetValue(0)->GetRealObject(), canvas);
 		

@@ -430,18 +430,18 @@ void deClassFont::PushFont(dsRunTime *rt, deFont *font, int size){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sFntNatDat &nd = *static_cast<sFntNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.font = font;
+	sFntNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sFntNatDat;
+	nd->font = font;
 	font->AddReference();
-	nd.fontSize = font->PrepareSize(size);
-	nd.size = size;
+	nd->fontSize = font->PrepareSize(size);
+	nd->size = size;
 	
-	if(nd.fontSize){
-		nd.fontSize->AddReference();
-		nd.scale = (float)size / (float)nd.fontSize->GetLineHeight();
+	if(nd->fontSize){
+		nd->fontSize->AddReference();
+		nd->scale = (float)size / (float)nd->fontSize->GetLineHeight();
 		
 	}else{
-		nd.scale = (float)size / (float)font->GetLineHeight();
+		nd->scale = (float)size / (float)font->GetLineHeight();
 	}
 }
 

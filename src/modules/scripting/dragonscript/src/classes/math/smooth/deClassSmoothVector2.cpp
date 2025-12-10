@@ -412,11 +412,11 @@ void deClassSmoothVector2::PushSmoothVector2(dsRunTime *rt, const decSmoothVecto
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSmVecNatDat &nd = *static_cast<sSmVecNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.smoothVector2 = nullptr;
+	sSmVecNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSmVecNatDat;
+	nd->smoothVector2 = nullptr;
 	
 	try{
-		nd.smoothVector2 = new decSmoothVector2(smoothFloat);
+		nd->smoothVector2 = new decSmoothVector2(smoothFloat);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

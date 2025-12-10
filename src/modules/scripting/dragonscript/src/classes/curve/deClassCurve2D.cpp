@@ -367,11 +367,11 @@ void deClassCurve2D::PushCurve(dsRunTime *rt, const decCurve2D &curve){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sCurve2DNatDat &nd = *static_cast<sCurve2DNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.curve = nullptr;
+	sCurve2DNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCurve2DNatDat;
+	nd->curve = nullptr;
 	
 	try{
-		nd.curve = new decCurve2D(curve);
+		nd->curve = new decCurve2D(curve);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

@@ -404,11 +404,11 @@ void deClassSmoothFloat::PushSmoothFloat(dsRunTime *rt, const decSmoothFloat &sm
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSmFltNatDat &nd = *static_cast<sSmFltNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.smoothFloat = nullptr;
+	sSmFltNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSmFltNatDat;
+	nd->smoothFloat = nullptr;
 	
 	try{
-		nd.smoothFloat = new decSmoothFloat(smoothFloat);
+		nd->smoothFloat = new decSmoothFloat(smoothFloat);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object
