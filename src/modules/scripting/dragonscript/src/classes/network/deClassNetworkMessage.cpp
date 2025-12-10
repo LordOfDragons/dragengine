@@ -93,7 +93,7 @@ dsFunction(init.clsNetworkMessage, "getDataLength", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassNetworkMessage::nfGetDataLength::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deNetworkMessage &message = *(static_cast<sNMNatDat*>(p_GetNativeData(myself))->message);
+	const deNetworkMessage &message = static_cast<sNMNatDat*>(p_GetNativeData(myself))->message;
 	rt->PushInt(message.GetDataLength());
 }
 
@@ -103,7 +103,7 @@ dsFunction(init.clsNetworkMessage, "clear", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassNetworkMessage::nfClear::RunFunction(dsRunTime*, dsValue *myself){
-	deNetworkMessage &message = *(static_cast<sNMNatDat*>(p_GetNativeData(myself))->message);
+	deNetworkMessage &message = static_cast<sNMNatDat*>(p_GetNativeData(myself))->message;
 	message.Clear();
 }
 
@@ -116,7 +116,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFileReader){
 }
 void deClassNetworkMessage::nfGetReader::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNetworkMessage * const message = static_cast<sNMNatDat*>(p_GetNativeData(myself))->message;
-	deScriptingDragonScript &ds = ((deClassNetworkMessage*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassNetworkMessage*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassFileReader()->PushFileReader(rt, deNetworkMessageReader::Ref::NewWith(message));
 }
@@ -129,7 +129,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFileWrite){
 }
 void deClassNetworkMessage::nfGetWriter::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNetworkMessage * const message = static_cast<sNMNatDat*>(p_GetNativeData(myself))->message;
-	deScriptingDragonScript &ds = ((deClassNetworkMessage*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassNetworkMessage*>(GetOwnerClass()))->GetDS();
 	
 	const bool append = rt->GetValue(0)->GetBool();
 	ds.GetClassFileWriter()->PushFileWriter(rt, deNetworkMessageWriter::Ref::NewWith(message, append));
@@ -159,7 +159,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassNetworkMessage::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNetworkMessage * const message = static_cast<sNMNatDat*>(p_GetNativeData(myself))->message;
-	deClassNetworkMessage *clsNetworkMessage = (deClassNetworkMessage*)GetOwnerClass();
+	deClassNetworkMessage *clsNetworkMessage = static_cast<deClassNetworkMessage*>(GetOwnerClass());
 	dsValue * const object = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(object, clsNetworkMessage)){
@@ -227,7 +227,7 @@ void deClassNetworkMessage::CreateClassMembers(dsEngine *engine){
 
 deNetworkMessage *deClassNetworkMessage::GetNetworkMessage(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return static_cast<sNMNatDat*>(p_GetNativeData(myself->GetBuffer()))->message;

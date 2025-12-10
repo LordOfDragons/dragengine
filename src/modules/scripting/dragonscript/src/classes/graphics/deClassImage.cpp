@@ -57,7 +57,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassImage::nfNew::RunFunction(dsRunTime *RT, dsValue *This){
 	sImgNatDat *nd = static_cast<sImgNatDat*>(p_GetNativeData(This);
-	deClassImage *clsImg = (deClassImage*)GetOwnerClass();
+	deClassImage *clsImg = static_cast<deClassImage*>(GetOwnerClass());
 	deImageManager *imgMgr = clsImg->GetGameEngine()->GetImageManager();
 	// reset all
 	// load image
@@ -73,7 +73,7 @@ deClassImage::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsRN); // listener
 }
 void deClassImage::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassImage *clsImg = (deClassImage*)GetOwnerClass();
+	deClassImage *clsImg = static_cast<deClassImage*>(GetOwnerClass());
 	
 	const char *filename = rt->GetValue(0)->GetString();
 	dsRealObject *listener = rt->GetValue(1)->GetRealObject();
@@ -158,7 +158,7 @@ deClassImage::nfGetSize::nfGetSize(const sInitData &init) : dsFunction(init.clsI
 }
 void deClassImage::nfGetSize::RunFunction(dsRunTime *RT, dsValue *This){
 	deImage *image = static_cast<sImgNatDat*>(p_GetNativeData(This))->image;
-	deClassImage *clsImg = (deClassImage*)GetOwnerClass();
+	deClassImage *clsImg = static_cast<deClassImage*>(GetOwnerClass());
 	clsImg->GetScriptModule()->PushPoint(RT, 
 		decPoint(image->GetWidth(), image->GetHeight()));
 }
@@ -170,7 +170,7 @@ deClassImage::nfSaveToFile::nfSaveToFile(const sInitData &init) : dsFunction(ini
 }
 void deClassImage::nfSaveToFile::RunFunction(dsRunTime *RT, dsValue *This){
 	sImgNatDat *nd = static_cast<sImgNatDat*>(p_GetNativeData(This);
-	deClassImage *clsImg = (deClassImage*)GetOwnerClass();
+	deClassImage *clsImg = static_cast<deClassImage*>(GetOwnerClass());
 	deImageManager *imgMgr = clsImg->GetGameEngine()->GetImageManager();
 	deScriptingDragonScript &ds = *clsImg->GetScriptModule();
 	
@@ -206,7 +206,7 @@ dsFunction(init.clsImg, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 }
 void deClassImage::nfEquals::RunFunction(dsRunTime *RT, dsValue *This){
 	sImgNatDat *nd = static_cast<sImgNatDat*>(p_GetNativeData(This);
-	deClassImage *clsImg = (deClassImage*)GetOwnerClass();
+	deClassImage *clsImg = static_cast<deClassImage*>(GetOwnerClass());
 	dsValue *obj = RT->GetValue(0);
 	// check if the object is a map and not null
 	if(!p_IsObjOfType(obj, clsImg)){
@@ -226,7 +226,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
 	p_AddParameter(init.clsImg); // image2
 }
 void deClassImage::nfEquals2::RunFunction(dsRunTime *rt, dsValue*){
-	const deClassImage &clsImage = *((deClassImage*)GetOwnerClass());
+	const deClassImage &clsImage = *(static_cast<deClassImage*>(GetOwnerClass()));
 	const deImage * const image1 = clsImage.GetImage(rt->GetValue(0)->GetRealObject());
 	const deImage * const image2 = clsImage.GetImage(rt->GetValue(1)->GetRealObject());
 	
@@ -286,7 +286,7 @@ void deClassImage::CreateClassMembers(dsEngine *engine){
 
 deImage *deClassImage::GetImage(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return static_cast<sImgNatDat*>(p_GetNativeData(myself->GetBuffer()))->image;

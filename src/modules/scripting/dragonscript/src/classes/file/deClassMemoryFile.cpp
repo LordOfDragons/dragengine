@@ -79,7 +79,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassMemoryFile::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	sMemFileNatDat * const nd = new (p_GetNativeData(myself)) sMemFileNatDat;
-	const deClassMemoryFile &clsMemFile = *((deClassMemoryFile*)GetOwnerClass());
+	const deClassMemoryFile &clsMemFile = *(static_cast<deClassMemoryFile*>(GetOwnerClass()));
 	
 	// check arguments
 	const decMemoryFile * const copyMemoryFile = clsMemFile.GetMemoryFile(rt->GetValue(0)->GetRealObject());
@@ -119,7 +119,7 @@ deClassMemoryFile::nfGetFilename::nfGetFilename(const sInitData &init) : dsFunct
 "getFilename", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassMemoryFile::nfGetFilename::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decMemoryFile &memoryFile = *(static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile);
+	const decMemoryFile &memoryFile = static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile;
 	rt->PushString(memoryFile.GetFilename());
 }
 
@@ -128,7 +128,7 @@ deClassMemoryFile::nfGetSize::nfGetSize(const sInitData &init) : dsFunction(init
 "getSize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassMemoryFile::nfGetSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decMemoryFile &memoryFile = *(static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile);
+	const decMemoryFile &memoryFile = static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile;
 	rt->PushInt(memoryFile.GetLength());
 }
 
@@ -138,7 +138,7 @@ deClassMemoryFile::nfSetSize::nfSetSize(const sInitData &init) : dsFunction(init
 	p_AddParameter(init.clsInt); // size
 }
 void deClassMemoryFile::nfSetSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	decMemoryFile &memoryFile = *(static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile);
+	decMemoryFile &memoryFile = static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile;
 	memoryFile.Resize(rt->GetValue(0)->GetInt(), false);
 }
 
@@ -150,7 +150,7 @@ deClassMemoryFile::nfGetReader::nfGetReader(const sInitData &init) : dsFunction(
 }
 void deClassMemoryFile::nfGetReader::RunFunction(dsRunTime *rt, dsValue *myself){
 	decMemoryFile * const memoryFile = static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile;
-	deScriptingDragonScript &ds = ((deClassMemoryFile*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassMemoryFile*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassFileReader()->PushFileReader(rt, decMemoryFileReader::Ref::NewWith(memoryFile));
 }
@@ -162,7 +162,7 @@ deClassMemoryFile::nfGetWriter::nfGetWriter(const sInitData &init) : dsFunction(
 }
 void deClassMemoryFile::nfGetWriter::RunFunction(dsRunTime *rt, dsValue *myself){
 	decMemoryFile * const memoryFile = static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile;
-	deScriptingDragonScript &ds = ((deClassMemoryFile*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassMemoryFile*>(GetOwnerClass()))->GetDS();
 	
 	const bool append = rt->GetValue(0)->GetBool();
 	
@@ -176,7 +176,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFRead){
 }
 void deClassMemoryFile::nfGetReaderZCompressed::RunFunction(dsRunTime *rt, dsValue *myself){
 	decMemoryFile * const memoryFile = static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile;
-	deScriptingDragonScript &ds = ((deClassMemoryFile*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassMemoryFile*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassFileReader()->PushFileReader(rt, decZFileReader::Ref::New(new decZFileReader(
 		decMemoryFileReader::Ref::NewWith(memoryFile))));
@@ -189,7 +189,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFWrite){
 }
 void deClassMemoryFile::nfGetWriterZCompressed::RunFunction(dsRunTime *rt, dsValue *myself){
 	decMemoryFile * const memoryFile = static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile;
-	deScriptingDragonScript &ds = ((deClassMemoryFile*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassMemoryFile*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassFileWriter()->PushFileWriter(rt, decZFileWriter::Ref::New(new decZFileWriter(
 		decMemoryFileWriter::Ref::NewWith(memoryFile, false))));
@@ -254,7 +254,7 @@ void deClassMemoryFile::CreateClassMembers(dsEngine *engine){
 
 decMemoryFile *deClassMemoryFile::GetMemoryFile(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	return static_cast<const sMemFileNatDat*>(p_GetNativeData(myself->GetBuffer()))->memoryFile;
 }

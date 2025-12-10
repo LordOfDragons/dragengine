@@ -69,7 +69,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCurveDistanceMapping::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	sDistMapNatDat * const nd = new (p_GetNativeData(myself)) sDistMapNatDat;
-	deClassCurveDistanceMapping &clsCDistMap = *((deClassCurveDistanceMapping*)GetOwnerClass());
+	deClassCurveDistanceMapping &clsCDistMap = *(static_cast<deClassCurveDistanceMapping*>(GetOwnerClass()));
 	
 	const decCurveDistanceMapping &copy = clsCDistMap.GetMapping(rt->GetValue(0)->GetRealObject());
 	
@@ -147,7 +147,7 @@ deClassCurveDistanceMapping::nfInit::nfInit(const sInitData &init) : dsFunction(
 }
 void deClassCurveDistanceMapping::nfInit::RunFunction(dsRunTime *rt, dsValue *myself){
 	decCurveDistanceMapping &mapping = *static_cast<sDistMapNatDat*>(p_GetNativeData(myself))->mapping;
-	deScriptingDragonScript &ds = ((deClassCurveDistanceMapping*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassCurveDistanceMapping*>(GetOwnerClass()))->GetDS();
 	
 	const decCurveBezier3D &curve = ds.GetClassCurveBezier3D()->GetCurve(rt->GetValue(0)->GetRealObject());
 	
@@ -163,7 +163,7 @@ deClassCurveDistanceMapping::nfInit2::nfInit2(const sInitData &init) : dsFunctio
 }
 void deClassCurveDistanceMapping::nfInit2::RunFunction(dsRunTime *rt, dsValue *myself){
 	decCurveDistanceMapping &mapping = *static_cast<sDistMapNatDat*>(p_GetNativeData(myself))->mapping;
-	deScriptingDragonScript &ds = ((deClassCurveDistanceMapping*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassCurveDistanceMapping*>(GetOwnerClass()))->GetDS();
 	
 	const decCurveBezier3D &curve = ds.GetClassCurveBezier3D()->GetCurve(rt->GetValue(0)->GetRealObject());
 	const float resolution = rt->GetValue(1)->GetFloat();
@@ -192,7 +192,7 @@ dsFunction(init.clsCDistMap, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 }
 void deClassCurveDistanceMapping::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decCurveDistanceMapping &curve = *static_cast<sDistMapNatDat*>(p_GetNativeData(myself))->mapping;
-	deClassCurveDistanceMapping *clsCDistMap = (deClassCurveDistanceMapping*)GetOwnerClass();
+	deClassCurveDistanceMapping *clsCDistMap = static_cast<deClassCurveDistanceMapping*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsCDistMap)){
@@ -280,7 +280,7 @@ void deClassCurveDistanceMapping::PushMapping(dsRunTime *rt, const decCurveDista
 	
 	rt->CreateObjectNakedOnStack(this);
 	sDistMapNatDat &nd = *static_cast<sDistMapNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.mapping = NULL;
+	nd.mapping = nullptr;
 	
 	try{
 		nd.mapping = new decCurveDistanceMapping(mapping);

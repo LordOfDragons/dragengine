@@ -159,7 +159,7 @@ dsFunction(init.clsU8D, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 }
 void deClassUTF8Decoder::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	decUTF8Decoder *decoder = static_cast<sU8DNatDat*>(p_GetNativeData(myself))->decoder;
-	deClassUTF8Decoder *clsU8D = (deClassUTF8Decoder*)GetOwnerClass();
+	deClassUTF8Decoder *clsU8D = static_cast<deClassUTF8Decoder*>(GetOwnerClass());
 	dsValue *object = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(object, clsU8D)){

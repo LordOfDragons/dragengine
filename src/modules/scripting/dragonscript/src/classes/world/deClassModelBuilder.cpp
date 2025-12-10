@@ -69,17 +69,17 @@ public:
 			pRT->RunFunction(pMyself, "buildModel", 0);
 			
 		}catch(const duException &e){
-			pModel = NULL;
+			pModel = nullptr;
 			pRT->PrintExceptionTrace();
 			e.PrintError();
 			DETHROW(deeInvalidParam);
 			
 		}catch(...){
-			pModel = NULL;
+			pModel = nullptr;
 			throw;
 		}
 		
-		pModel = NULL;
+		pModel = nullptr;
 	}
 	
 	inline deModel *GetModel() const{ return pModel; }
@@ -101,7 +101,7 @@ dsFunction(init.clsModelBuilder, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModelBuilder::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder = NULL;
+	static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder = nullptr;
 }
 
 // public destructor Destructor()
@@ -131,7 +131,7 @@ void deClassModelBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassModelBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	const char * const filename = rt->GetValue(0)->GetString();
 	deClassModelBuilder_Builder builder(rt, myself);
 	deModel::Ref model;
@@ -142,11 +142,11 @@ void deClassModelBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
 		model = ds.GetGameEngine()->GetModelManager()->CreateModel(filename, builder);
 		
 	}catch(...){
-		nd.builder = NULL;
+		nd.builder = nullptr;
 		throw;
 	}
 	
-	nd.builder = NULL;
+	nd.builder = nullptr;
 	ds.GetClassModel()->PushModel(rt, model);
 }
 
@@ -177,7 +177,7 @@ void deClassModelBuilder::nfAddBone::RunFunction(dsRunTime *rt, dsValue *myself)
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassModelBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	const char * const name = rt->GetValue(0)->GetString();
 	const int parent = rt->GetValue(1)->GetInt();
 	const decVector &position = ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject());
@@ -212,7 +212,7 @@ void deClassModelBuilder::nfAddTexture::RunFunction(dsRunTime *rt, dsValue *myse
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassModelBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	const char * const name = rt->GetValue(0)->GetString();
 	const decPoint &size = ds.GetClassPoint()->GetPoint(rt->GetValue(1)->GetRealObject());
 	const bool doubleSided = rt->GetValue(2)->GetBool();
@@ -391,7 +391,7 @@ void deClassModelBuilder::nfSetVertexAt::RunFunction(dsRunTime *rt, dsValue *mys
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassModelBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	deModelLOD &lod = *builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
 	deModelVertex &vertex = lod.GetVertexAt(rt->GetValue(1)->GetInt());
 	vertex.SetPosition(ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject()));
@@ -480,7 +480,7 @@ void deClassModelBuilder::nfSetFaceAt::RunFunction(dsRunTime *rt, dsValue *mysel
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassModelBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	deModelLOD &lod = *builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
 	deModelFace &face = lod.GetFaceAt(rt->GetValue(1)->GetInt());
 	face.SetTexture(rt->GetValue(2)->GetInt());
@@ -551,7 +551,7 @@ void deClassModelBuilder::nfSetTextureCoordinateSetAtSetAt::RunFunction(dsRunTim
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassModelBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassModelBuilder*>(GetOwnerClass()))->GetDS();
 	deModelLOD &lod = *builder->GetModel()->GetLODAt(rt->GetValue(0)->GetInt());
 	deModelTextureCoordinatesSet &tcs = lod.GetTextureCoordinatesSetAt(rt->GetValue(1)->GetInt());
 	tcs.SetTextureCoordinatesAt(rt->GetValue(2)->GetInt(),

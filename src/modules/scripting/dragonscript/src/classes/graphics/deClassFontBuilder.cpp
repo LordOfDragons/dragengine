@@ -59,17 +59,17 @@ public:
 			pRT->RunFunction(pMyself, "buildFont", 0);
 			
 		}catch(const duException &e){
-			pFont = NULL;
+			pFont = nullptr;
 			pRT->PrintExceptionTrace();
 			e.PrintError();
 			DETHROW(deeInvalidParam);
 			
 		}catch(...){
-			pFont = NULL;
+			pFont = nullptr;
 			throw;
 		}
 		
-		pFont = NULL;
+		pFont = nullptr;
 	}
 	
 	inline deFont *GetFont() const{ return pFont; }
@@ -91,7 +91,7 @@ dsFunction(init.clsFontBuilder, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassFontBuilder::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder = NULL;
+	static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder = nullptr;
 }
 
 // public destructor Destructor()
@@ -122,7 +122,7 @@ void deClassFontBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassFontBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassFontBuilder*>(GetOwnerClass()))->GetDS();
 	const char * const filename = rt->GetValue(0)->GetString();
 	deClassFontBuilder_Builder builder(rt, myself);
 	const int fontSize = rt->GetValue(1)->GetInt();
@@ -134,11 +134,11 @@ void deClassFontBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
 		font = ds.GetGameEngine()->GetFontManager()->CreateFont(filename, builder);
 		
 	}catch(...){
-		nd.builder = NULL;
+		nd.builder = nullptr;
 		throw;
 	}
 	
-	nd.builder = NULL;
+	nd.builder = nullptr;
 	ds.GetClassFont()->PushFont(rt, font, fontSize);
 }
 

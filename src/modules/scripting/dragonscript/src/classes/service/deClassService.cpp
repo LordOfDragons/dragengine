@@ -65,7 +65,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassService::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	deScriptingDragonScript &ds = ((deClassService*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassService*>(GetOwnerClass()))->GetDS();
 	sServiceNatDat * const nd = new (p_GetNativeData(myself)) sServiceNatDat;
 	nd->service = nullptr;
 	
@@ -85,7 +85,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassService::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deScriptingDragonScript &ds = ((deClassService*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassService*>(GetOwnerClass()))->GetDS();
 	sServiceNatDat * const nd = new (p_GetNativeData(myself)) sServiceNatDat;
 	nd->service = nullptr;
 	
@@ -146,7 +146,7 @@ void deClassService::nfGetListener::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	deScriptingDragonScript &ds = ((deClassService*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassService*>(GetOwnerClass()))->GetDS();
 	dedsService * const peer = (dedsService*)nd.service->GetPeerScripting();
 	
 	if(peer){
@@ -185,7 +185,7 @@ DSTM_STATIC | DSTM_PUBLIC | DSTM_NATIVE, init.clsUniqueID){
 }
 
 void deClassService::nfNextId::RunFunction(dsRunTime *rt, dsValue*){
-	deClassService &clsService = *((deClassService*)GetOwnerClass());
+	deClassService &clsService = *(static_cast<deClassService*>(GetOwnerClass()));
 	clsService.GetDS().GetClassUniqueID()->PushUniqueID(rt, clsService.NextId());
 }
 
@@ -203,7 +203,7 @@ void deClassService::nfStartRequest::RunFunction(dsRunTime *rt, dsValue *myself)
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassService &clsService = *((deClassService*)GetOwnerClass());
+	deClassService &clsService = *(static_cast<deClassService*>(GetOwnerClass()));
 	const deServiceObject * const request = clsService.GetDS().GetClassServiceObject()->
 		GetServiceObject(rt->GetValue(0)->GetRealObject());
 	
@@ -231,7 +231,7 @@ void deClassService::nfStartRequest2::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	
-	deScriptingDragonScript &ds = ((deClassService*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassService*>(GetOwnerClass()))->GetDS();
 	const decUniqueID &id = ds.GetClassUniqueID()->GetUniqueID(
 		rt->GetValue(0)->GetRealObject());
 	const deServiceObject * const request = ds.GetClassServiceObject()->GetServiceObject(
@@ -260,7 +260,7 @@ void deClassService::nfCancelRequest::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	
-	deScriptingDragonScript &ds = ((deClassService*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassService*>(GetOwnerClass()))->GetDS();
 	const decUniqueID &id = ds.GetClassUniqueID()->GetUniqueID(
 		rt->GetValue(0)->GetRealObject());
 	
@@ -283,7 +283,7 @@ void deClassService::nfRunAction::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassService &clsService = *((deClassService*)GetOwnerClass());
+	deClassService &clsService = *(static_cast<deClassService*>(GetOwnerClass()));
 	deClassServiceObject &clsServiceObject = *clsService.GetDS().GetClassServiceObject();
 	const deServiceObject * const action = clsServiceObject.GetServiceObject(
 		rt->GetValue(0)->GetRealObject());
@@ -327,7 +327,7 @@ void deClassService::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassService * const clsService = (deClassService*)GetOwnerClass();
+	deClassService * const clsService = static_cast<deClassService*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsService)){

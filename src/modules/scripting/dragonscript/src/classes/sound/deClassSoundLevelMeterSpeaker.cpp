@@ -84,7 +84,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSpeaker){
 }
 void deClassSoundLevelMeterSpeaker::nfGetSpeaker::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSLMSNatDat &nd = *static_cast<sSLMSNatDat*>(p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassSoundLevelMeterSpeaker*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSoundLevelMeterSpeaker*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSpeaker()->PushSpeaker(rt, nd.speaker);
 }

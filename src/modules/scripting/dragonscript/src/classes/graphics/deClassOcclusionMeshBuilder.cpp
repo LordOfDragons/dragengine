@@ -65,17 +65,17 @@ public:
 			pRT->RunFunction(pMyself, "buildOcclusionMesh", 0);
 			
 		}catch(const duException &e){
-			pOcclusionMesh = NULL;
+			pOcclusionMesh = nullptr;
 			pRT->PrintExceptionTrace();
 			e.PrintError();
 			DETHROW(deeInvalidParam);
 			
 		}catch(...){
-			pOcclusionMesh = NULL;
+			pOcclusionMesh = nullptr;
 			throw;
 		}
 		
-		pOcclusionMesh = NULL;
+		pOcclusionMesh = nullptr;
 	}
 	
 	inline deOcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
@@ -97,7 +97,7 @@ dsFunction(init.clsOcclusionMeshBuilder, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassOcclusionMeshBuilder::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder = NULL;
+	static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder = nullptr;
 }
 
 // public destructor Destructor()
@@ -127,7 +127,7 @@ void deClassOcclusionMeshBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassOcclusionMeshBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassOcclusionMeshBuilder*>(GetOwnerClass()))->GetDS();
 	const char * const filename = rt->GetValue(0)->GetString();
 	deClassOcclusionMeshBuilder_Builder builder(rt, myself);
 	deOcclusionMesh::Ref occlusionMesh;
@@ -138,11 +138,11 @@ void deClassOcclusionMeshBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *m
 		occlusionMesh = ds.GetGameEngine()->GetOcclusionMeshManager()->CreateOcclusionMesh(filename, builder);
 		
 	}catch(...){
-		nd.builder = NULL;
+		nd.builder = nullptr;
 		throw;
 	}
 	
-	nd.builder = NULL;
+	nd.builder = nullptr;
 	ds.GetClassOcclusionMesh()->PushOcclusionMesh(rt, occlusionMesh);
 }
 
@@ -189,7 +189,7 @@ void deClassOcclusionMeshBuilder::nfSetBoneAt::RunFunction(dsRunTime *rt, dsValu
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassOcclusionMeshBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassOcclusionMeshBuilder*>(GetOwnerClass()))->GetDS();
 	deOcclusionMeshBone &bone = builder->GetOcclusionMesh()->GetBoneAt(rt->GetValue(0)->GetInt());
 	bone.SetName(rt->GetValue(1)->GetString());
 	bone.SetParent(rt->GetValue(2)->GetInt());
@@ -291,7 +291,7 @@ void deClassOcclusionMeshBuilder::nfSetVertexAt::RunFunction(dsRunTime *rt, dsVa
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassOcclusionMeshBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassOcclusionMeshBuilder*>(GetOwnerClass()))->GetDS();
 	deOcclusionMeshVertex &vertex = builder->GetOcclusionMesh()->GetVertexAt(rt->GetValue(0)->GetInt());
 	vertex.SetPosition(ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject()));
 	vertex.SetWeightSet(rt->GetValue(2)->GetInt());

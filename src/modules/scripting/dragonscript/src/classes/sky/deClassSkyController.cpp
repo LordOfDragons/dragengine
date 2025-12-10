@@ -90,7 +90,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSky){
 }
 void deClassSkyController::nfGetSky::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyCtrlNatDat &nd = *static_cast<const sSkyCtrlNatDat*>(p_GetNativeData(myself));
-	deScriptingDragonScript &ds = ((deClassSkyController*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassSkyController*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSky()->PushSky(rt, nd.sky);
 }
@@ -102,7 +102,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSkyInst){
 }
 void deClassSkyController::nfGetSkyInstance::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyCtrlNatDat &nd = *static_cast<const sSkyCtrlNatDat*>(p_GetNativeData(myself));
-	deScriptingDragonScript &ds = ((deClassSkyController*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassSkyController*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSkyInstance()->PushInstance(rt, nd.instance);
 }
@@ -401,7 +401,7 @@ dsFunction(init.clsSkyCtrl, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassSkyController::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkyController * const clsSkyCtrl = (deClassSkyController*)GetOwnerClass();
+	deClassSkyController * const clsSkyCtrl = static_cast<deClassSkyController*>(GetOwnerClass());
 	const sSkyCtrlNatDat &nd = *static_cast<const sSkyCtrlNatDat*>(p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -495,7 +495,7 @@ void deClassSkyController::PushController(dsRunTime *rt, deSky *sky, int index){
 	sSkyCtrlNatDat &nd = *static_cast<sSkyCtrlNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.sky = sky;
 	sky->AddReference();
-	nd.instance = NULL;
+	nd.instance = nullptr;
 	nd.index = index;
 }
 
@@ -506,7 +506,7 @@ void deClassSkyController::PushController(dsRunTime *rt, deSkyInstance *instance
 	
 	rt->CreateObjectNakedOnStack(this);
 	sSkyCtrlNatDat &nd = *static_cast<sSkyCtrlNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.sky = NULL;
+	nd.sky = nullptr;
 	nd.instance = instance;
 	instance->AddReference();
 	nd.index = index;

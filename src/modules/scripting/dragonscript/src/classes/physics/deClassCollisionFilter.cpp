@@ -71,7 +71,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollisionFilter::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	sCFNatDat * const nd = new (p_GetNativeData(myself)) sCFNatDat;
-	deClassCollisionFilter &clsCF = *((deClassCollisionFilter*)GetOwnerClass());
+	deClassCollisionFilter &clsCF = *(static_cast<deClassCollisionFilter*>(GetOwnerClass()));
 	
 	// create layer mask
 	const decCollisionFilter &collisionFilter = clsCF.GetCollisionFilter(rt->GetValue(0)->GetRealObject());
@@ -85,7 +85,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollisionFilter::nfNewMask::RunFunction(dsRunTime *rt, dsValue *myself){
 	sCFNatDat * const nd = new (p_GetNativeData(myself)) sCFNatDat;
-	deClassLayerMask &clsLyM = *(((deClassCollisionFilter*)GetOwnerClass())->GetDS()->GetClassLayerMask());
+	deClassLayerMask &clsLyM = *((static_cast<deClassCollisionFilter*>(GetOwnerClass()))->GetDS()->GetClassLayerMask());
 	
 	// create layer mask
 	const decLayerMask &layerMask = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
@@ -100,7 +100,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollisionFilter::nfNewCategoryFilter::RunFunction(dsRunTime *rt, dsValue *myself){
 	sCFNatDat * const nd = new (p_GetNativeData(myself)) sCFNatDat;
-	deClassLayerMask &clsLyM = *(((deClassCollisionFilter*)GetOwnerClass())->GetDS()->GetClassLayerMask());
+	deClassLayerMask &clsLyM = *((static_cast<deClassCollisionFilter*>(GetOwnerClass()))->GetDS()->GetClassLayerMask());
 	
 	// create layer mask
 	const decLayerMask &category = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
@@ -130,8 +130,8 @@ deClassCollisionFilter::nfGetCategory::nfGetCategory(const sInitData &init) : ds
 "getCategory", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsLyM){
 }
 void deClassCollisionFilter::nfGetCategory::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCollisionFilter &collisionFilter = *(static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask);
-	deClassLayerMask &clsLyM = *(((deClassCollisionFilter*)GetOwnerClass())->GetDS()->GetClassLayerMask());
+	const decCollisionFilter &collisionFilter = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	deClassLayerMask &clsLyM = *((static_cast<deClassCollisionFilter*>(GetOwnerClass()))->GetDS()->GetClassLayerMask());
 	
 	clsLyM.PushLayerMask(rt, collisionFilter.GetCategory());
 }
@@ -141,8 +141,8 @@ deClassCollisionFilter::nfGetFilter::nfGetFilter(const sInitData &init) : dsFunc
 "getFilter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsLyM){
 }
 void deClassCollisionFilter::nfGetFilter::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCollisionFilter &collisionFilter = *(static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask);
-	deClassLayerMask &clsLyM = *(((deClassCollisionFilter*)GetOwnerClass())->GetDS()->GetClassLayerMask());
+	const decCollisionFilter &collisionFilter = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	deClassLayerMask &clsLyM = *((static_cast<deClassCollisionFilter*>(GetOwnerClass()))->GetDS()->GetClassLayerMask());
 	
 	clsLyM.PushLayerMask(rt, collisionFilter.GetFilter());
 }
@@ -153,8 +153,8 @@ deClassCollisionFilter::nfCollides::nfCollides(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsCF); // collisionFilter
 }
 void deClassCollisionFilter::nfCollides::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCollisionFilter &collisionFilter = *(static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask);
-	deClassCollisionFilter &clsCF = *((deClassCollisionFilter*)GetOwnerClass());
+	const decCollisionFilter &collisionFilter = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	deClassCollisionFilter &clsCF = *(static_cast<deClassCollisionFilter*>(GetOwnerClass()));
 	
 	const decCollisionFilter &other = clsCF.GetCollisionFilter(rt->GetValue(0)->GetRealObject());
 	rt->PushBool(collisionFilter.Collides(other));
@@ -166,8 +166,8 @@ deClassCollisionFilter::nfCollidesNot::nfCollidesNot(const sInitData &init) : ds
 	p_AddParameter(init.clsCF); // collisionFilter
 }
 void deClassCollisionFilter::nfCollidesNot::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCollisionFilter &collisionFilter = *(static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask);
-	deClassCollisionFilter &clsCF = *((deClassCollisionFilter*)GetOwnerClass());
+	const decCollisionFilter &collisionFilter = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	deClassCollisionFilter &clsCF = *(static_cast<deClassCollisionFilter*>(GetOwnerClass()));
 	
 	const decCollisionFilter &other = clsCF.GetCollisionFilter(rt->GetValue(0)->GetRealObject());
 	rt->PushBool(collisionFilter.CollidesNot(other));
@@ -184,7 +184,7 @@ deClassCollisionFilter::nfReadFromFile::nfReadFromFile(const sInitData &init) : 
 	p_AddParameter(init.clsFileReader); // reader
 }
 void deClassCollisionFilter::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassCollisionFilter &clsCF = *((deClassCollisionFilter*)GetOwnerClass());
+	deClassCollisionFilter &clsCF = *(static_cast<deClassCollisionFilter*>(GetOwnerClass()));
 	const deClassFileReader &clsFileReader = *clsCF.GetDS()->GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	
@@ -205,8 +205,8 @@ deClassCollisionFilter::nfWriteToFile::nfWriteToFile(const sInitData &init) : ds
 	p_AddParameter(init.clsFileWriter); // writer
 }
 void deClassCollisionFilter::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCollisionFilter &collisionFilter = *(static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask);
-	deClassCollisionFilter &clsCF = *((deClassCollisionFilter*)GetOwnerClass());
+	const decCollisionFilter &collisionFilter = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	deClassCollisionFilter &clsCF = *(static_cast<deClassCollisionFilter*>(GetOwnerClass()));
 	const deClassFileWriter &clsFileWriter = *clsCF.GetDS()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
@@ -239,15 +239,15 @@ dsFunction(init.clsCF, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.
 	p_AddParameter(init.clsObj); // object
 }
 void deClassCollisionFilter::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassCollisionFilter * const clsCF = (deClassCollisionFilter*)GetOwnerClass();
+	deClassCollisionFilter * const clsCF = static_cast<deClassCollisionFilter*>(GetOwnerClass());
 	dsValue * const object = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(object, clsCF)){
 		rt->PushBool(false);
 		
 	}else{
-		const decCollisionFilter &collisionFilter = *(static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask);
-		const decCollisionFilter &other = *(static_cast<sCFNatDat*>(p_GetNativeData(object))->layerMask);
+		const decCollisionFilter &collisionFilter = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+		const decCollisionFilter &other = static_cast<sCFNatDat*>(p_GetNativeData(object))->layerMask;
 		rt->PushBool(collisionFilter == other);
 	}
 }
@@ -257,7 +257,7 @@ deClassCollisionFilter::nfToString::nfToString(const sInitData &init) : dsFuncti
 "toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassCollisionFilter::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCollisionFilter &collisionFilter = *(static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask);
+	const decCollisionFilter &collisionFilter = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
 	
 	decString text;
 	text += "[";
@@ -352,7 +352,7 @@ void deClassCollisionFilter::PushCollisionFilter(dsRunTime *rt, const decCollisi
 	
 	rt->CreateObjectNakedOnStack(this);
 	sCFNatDat &nd = *static_cast<sCFNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.layerMask = NULL;
+	nd.layerMask = nullptr;
 	
 	try{
 		nd.layerMask = new decCollisionFilter(collisionFilter);

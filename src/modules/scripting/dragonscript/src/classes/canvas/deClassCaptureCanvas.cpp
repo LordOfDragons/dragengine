@@ -63,7 +63,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCaptureCanvas::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sCapCanNatDat * const nd = new (p_GetNativeData(myself)) sCapCanNatDat;
-	const deScriptingDragonScript &ds = ((deClassCaptureCanvas*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassCaptureCanvas*>(GetOwnerClass()))->GetDS();
 	deCaptureCanvasManager &manager = *ds.GetGameEngine()->GetCaptureCanvasManager();
 	
 	// create capture canvas
@@ -92,8 +92,8 @@ deClassCaptureCanvas::nfGetCanvasView::nfGetCanvasView(const sInitData &init) : 
 "getCanvasView", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCView){
 }
 void deClassCaptureCanvas::nfGetCanvasView::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCaptureCanvas &captureCanvas = *(static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas);
-	const deScriptingDragonScript &ds = ((deClassCaptureCanvas*)GetOwnerClass())->GetDS();
+	const deCaptureCanvas &captureCanvas = static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas;
+	const deScriptingDragonScript &ds = (static_cast<deClassCaptureCanvas*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassCanvasView()->PushCanvas(rt, captureCanvas.GetCanvasView());
 }
@@ -104,8 +104,8 @@ deClassCaptureCanvas::nfSetCanvasView::nfSetCanvasView(const sInitData &init) : 
 	p_AddParameter(init.clsCView); // canvasView
 }
 void deClassCaptureCanvas::nfSetCanvasView::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCaptureCanvas &captureCanvas = *(static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas);
-	const deScriptingDragonScript &ds = ((deClassCaptureCanvas*)GetOwnerClass())->GetDS();
+	deCaptureCanvas &captureCanvas = static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas;
+	const deScriptingDragonScript &ds = (static_cast<deClassCaptureCanvas*>(GetOwnerClass()))->GetDS();
 	
 	deCanvasView * const canvasView = ds.GetClassCanvasView()->GetCanvas(rt->GetValue(0)->GetRealObject());
 	
@@ -117,8 +117,8 @@ deClassCaptureCanvas::nfGetImage::nfGetImage(const sInitData &init) : dsFunction
 "getImage", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 }
 void deClassCaptureCanvas::nfGetImage::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCaptureCanvas &captureCanvas = *(static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas);
-	const deScriptingDragonScript &ds = ((deClassCaptureCanvas*)GetOwnerClass())->GetDS();
+	const deCaptureCanvas &captureCanvas = static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas;
+	const deScriptingDragonScript &ds = (static_cast<deClassCaptureCanvas*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassImage()->PushImage(rt, captureCanvas.GetImage());
 }
@@ -132,8 +132,8 @@ deClassCaptureCanvas::nfSetImage::nfSetImage(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsInt); // bitCount
 }
 void deClassCaptureCanvas::nfSetImage::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCaptureCanvas &captureCanvas = *(static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas);
-	const deScriptingDragonScript &ds = ((deClassCaptureCanvas*)GetOwnerClass())->GetDS();
+	deCaptureCanvas &captureCanvas = static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas;
+	const deScriptingDragonScript &ds = (static_cast<deClassCaptureCanvas*>(GetOwnerClass()))->GetDS();
 	deImageManager &imageManager = *ds.GetGameEngine()->GetImageManager();
 	
 	const int width = rt->GetValue(0)->GetInt();
@@ -141,7 +141,7 @@ void deClassCaptureCanvas::nfSetImage::RunFunction(dsRunTime *rt, dsValue *mysel
 	const int componentCount = rt->GetValue(2)->GetInt();
 	const int bitCount = rt->GetValue(3)->GetInt();
 	
-	deImage *image = NULL;
+	deImage *image = nullptr;
 	
 	try{
 		image = imageManager.CreateImage(width, height, 1, componentCount, bitCount);
@@ -161,7 +161,7 @@ deClassCaptureCanvas::nfDropImage::nfDropImage(const sInitData &init) : dsFuncti
 "dropImage", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCaptureCanvas::nfDropImage::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCaptureCanvas &captureCanvas = *(static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas);
+	deCaptureCanvas &captureCanvas = static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas;
 	
 	captureCanvas.SetImage(NULL);
 }
@@ -171,7 +171,7 @@ deClassCaptureCanvas::nfGetCapture::nfGetCapture(const sInitData &init) : dsFunc
 "getCapture", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassCaptureCanvas::nfGetCapture::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCaptureCanvas &captureCanvas = *(static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas);
+	const deCaptureCanvas &captureCanvas = static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas;
 	
 	rt->PushBool(captureCanvas.GetCapture());
 }
@@ -182,7 +182,7 @@ deClassCaptureCanvas::nfSetCapture::nfSetCapture(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsBool); // capture
 }
 void deClassCaptureCanvas::nfSetCapture::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCaptureCanvas &captureCanvas = *(static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas);
+	deCaptureCanvas &captureCanvas = static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas;
 	
 	captureCanvas.SetCapture(rt->GetValue(0)->GetBool());
 }
@@ -207,7 +207,7 @@ dsFunction(init.clsCapCan, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 }
 void deClassCaptureCanvas::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deCaptureCanvas * const captureCanvas = static_cast<sCapCanNatDat*>(p_GetNativeData(myself))->captureCanvas;
-	deClassCaptureCanvas * const clsCapCan = (deClassCaptureCanvas*)GetOwnerClass();
+	deClassCaptureCanvas * const clsCapCan = static_cast<deClassCaptureCanvas*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsCapCan)){
@@ -281,7 +281,7 @@ void deClassCaptureCanvas::CreateClassMembers(dsEngine *engine){
 
 deCaptureCanvas *deClassCaptureCanvas::GetCaptureCanvas(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return static_cast<sCapCanNatDat*>(p_GetNativeData(myself->GetBuffer()))->captureCanvas;

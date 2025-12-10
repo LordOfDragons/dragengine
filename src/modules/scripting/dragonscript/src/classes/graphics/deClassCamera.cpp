@@ -71,7 +71,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCamera::nfNew::RunFunction(dsRunTime*, dsValue *myself){
 	sCamNatDat * const nd = new (p_GetNativeData(myself)) sCamNatDat;
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	
 	// create camera
 	nd->camera = ds.GetGameEngine()->GetCameraManager()->CreateCamera();
@@ -99,8 +99,8 @@ dsFunction(init.clsCamera, "getPosition", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsDVector){
 }
 void deClassCamera::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassDVector()->PushDVector(rt, camera.GetPosition());
 }
@@ -112,8 +112,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsDVector); // position
 }
 void deClassCamera::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	dsRealObject * const obj = rt->GetValue(0)->GetRealObject();
 	
 	camera.SetPosition(ds.GetClassDVector()->GetDVector(obj));
@@ -125,8 +125,8 @@ dsFunction(init.clsCamera, "getOrientation", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
 }
 void deClassCamera::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassQuaternion()->PushQuaternion(rt, camera.GetOrientation());
 }
@@ -138,8 +138,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsQuaternion); // orientation
 }
 void deClassCamera::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	dsRealObject * const obj = rt->GetValue(0)->GetRealObject();
 	
 	camera.SetOrientation(ds.GetClassQuaternion()->GetQuaternion(obj));
@@ -151,7 +151,7 @@ dsFunction(init.clsCamera, "getFov", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassCamera::nfGetFov::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushFloat(camera.GetFov() * RAD2DEG);
 }
 
@@ -162,7 +162,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // fov
 }
 void deClassCamera::nfSetFov::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetFov(rt->GetValue(0)->GetFloat() * DEG2RAD);
 }
@@ -173,7 +173,7 @@ dsFunction(init.clsCamera, "getFovRatio", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassCamera::nfGetFovRatio::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushFloat(camera.GetFovRatio());
 }
 
@@ -184,7 +184,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // fovRatio
 }
 void deClassCamera::nfSetFovRatio::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetFovRatio(rt->GetValue(0)->GetFloat());
 }
@@ -195,7 +195,7 @@ dsFunction(init.clsCamera, "getImageDistance", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassCamera::nfGetImageDistance::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushFloat(camera.GetImageDistance());
 }
 
@@ -206,7 +206,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // distance
 }
 void deClassCamera::nfSetImageDistance::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetImageDistance(rt->GetValue(0)->GetFloat());
 }
@@ -217,7 +217,7 @@ dsFunction(init.clsCamera, "getViewDistance", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassCamera::nfGetViewDistance::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushFloat(camera.GetViewDistance());
 }
 
@@ -228,7 +228,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // distance
 }
 void deClassCamera::nfSetViewDistance::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetViewDistance(rt->GetValue(0)->GetFloat());
 }
@@ -241,7 +241,7 @@ dsFunction(init.clsCamera, "getEnableHDRR", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBoolean){
 }
 void deClassCamera::nfGetEnableHDRR::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushBool(camera.GetEnableHDRR());
 }
 
@@ -252,7 +252,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBoolean); // enable
 }
 void deClassCamera::nfSetEnableHDRR::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetEnableHDRR(rt->GetValue(0)->GetBool());
 }
@@ -263,7 +263,7 @@ dsFunction(init.clsCamera, "getExposure", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassCamera::nfGetExposure::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushFloat(camera.GetExposure());
 }
 
@@ -274,7 +274,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // exposure
 }
 void deClassCamera::nfSetExposure::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetExposure(rt->GetValue(0)->GetFloat());
 }
@@ -285,7 +285,7 @@ dsFunction(init.clsCamera, "getLowestIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassCamera::nfGetLowestIntensity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushFloat(camera.GetLowestIntensity());
 }
 
@@ -296,7 +296,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // lowestIntensity
 }
 void deClassCamera::nfSetLowestIntensity::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetLowestIntensity(rt->GetValue(0)->GetFloat());
 }
@@ -307,7 +307,7 @@ dsFunction(init.clsCamera, "getHighestIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassCamera::nfGetHighestIntensity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushFloat(camera.GetHighestIntensity());
 }
 
@@ -318,7 +318,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // highestIntensity
 }
 void deClassCamera::nfSetHighestIntensity::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetHighestIntensity(rt->GetValue(0)->GetFloat());
 }
@@ -329,7 +329,7 @@ dsFunction(init.clsCamera, "getAdaptionTime", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassCamera::nfGetAdaptionTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushFloat(camera.GetAdaptionTime());
 }
 
@@ -340,7 +340,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // adaptionTime
 }
 void deClassCamera::nfSetAdaptionTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetAdaptionTime(rt->GetValue(0)->GetFloat());
 }
@@ -351,7 +351,7 @@ dsFunction(init.clsCamera, "resetAdaptedIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCamera::nfResetAdaptedIntensity::RunFunction(dsRunTime*, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	camera.ResetAdaptedIntensity();
 }
 
@@ -363,7 +363,7 @@ dsFunction(init.clsCamera, "getEnableGI", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBoolean){
 }
 void deClassCamera::nfGetEnableGI::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushBool(camera.GetEnableGI());
 }
 
@@ -374,7 +374,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBoolean); // enable
 }
 void deClassCamera::nfSetEnableGI::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetEnableGI(rt->GetValue(0)->GetBool());
 }
@@ -387,7 +387,7 @@ dsFunction(init.clsCamera, "getWhiteIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassCamera::nfGetWhiteIntensity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushFloat(camera.GetWhiteIntensity());
 }
 
@@ -398,7 +398,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // intensity
 }
 void deClassCamera::nfSetWhiteIntensity::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetWhiteIntensity(rt->GetValue(0)->GetFloat());
 }
@@ -409,7 +409,7 @@ dsFunction(init.clsCamera, "getBloomIntensity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassCamera::nfGetBloomIntensity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushFloat(camera.GetBloomIntensity());
 }
 
@@ -420,7 +420,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // intensity
 }
 void deClassCamera::nfSetBloomIntensity::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetBloomIntensity(rt->GetValue(0)->GetFloat());
 }
@@ -431,7 +431,7 @@ dsFunction(init.clsCamera, "getBloomStrength", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassCamera::nfGetBloomStrength::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushFloat(camera.GetBloomStrength());
 }
 
@@ -442,7 +442,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // strength
 }
 void deClassCamera::nfSetBloomStrength::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetBloomStrength(rt->GetValue(0)->GetFloat());
 }
@@ -453,7 +453,7 @@ dsFunction(init.clsCamera, "getBloomSize", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassCamera::nfGetBloomSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushFloat(camera.GetBloomSize());
 }
 
@@ -464,7 +464,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // size
 }
 void deClassCamera::nfSetBloomSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetBloomSize(rt->GetValue(0)->GetFloat());
 }
@@ -475,7 +475,7 @@ dsFunction(init.clsCamera, "getBloomBlend", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassCamera::nfGetBloomBlend::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	rt->PushFloat(camera.GetBloomBlend());
 }
 
@@ -486,7 +486,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // blend
 }
 void deClassCamera::nfSetBloomBlend::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.SetBloomBlend(rt->GetValue(0)->GetFloat());
 }
@@ -497,8 +497,8 @@ dsFunction(init.clsCamera, "getToneMapCurve", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsCurveBezier){
 }
 void deClassCamera::nfGetToneMapCurve::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	ds.GetClassCurveBezier()->PushCurve(rt, camera.GetToneMapCurve());
 }
 
@@ -509,8 +509,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCurveBezier); // curve
 }
 void deClassCamera::nfSetToneMapCurve::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	
 	camera.SetToneMapCurve(ds.GetClassCurveBezier()->GetCurve(rt->GetValue(0)->GetRealObject()));
 }
@@ -525,8 +525,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsPoint){
 	p_AddParameter(init.clsDVector); // position
 }
 void deClassCamera::nfProject::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	const decPoint &viewportSize = ds.GetClassPoint()->GetPoint(rt->GetValue(0)->GetRealObject());
 	const decDVector &position = ds.GetClassDVector()->GetDVector(rt->GetValue(1)->GetRealObject());
 	
@@ -560,8 +560,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 	p_AddParameter(init.clsPoint); // position
 }
 void deClassCamera::nfBackProject::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	const decPoint &viewportSize = ds.GetClassPoint()->GetPoint(rt->GetValue(0)->GetRealObject());
 	const decPoint &position = ds.GetClassPoint()->GetPoint(rt->GetValue(1)->GetRealObject());
 	
@@ -589,8 +589,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 	p_AddParameter(init.clsInteger); // y
 }
 void deClassCamera::nfBackProject2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	const int width = rt->GetValue(0)->GetInt();
 	const int height = rt->GetValue(1)->GetInt();
 	const int x = rt->GetValue(2)->GetInt();
@@ -618,8 +618,8 @@ dsFunction(init.clsCamera, "getLayerMask", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsLayerMask){
 }
 void deClassCamera::nfGetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassLayerMask()->PushLayerMask(rt, camera.GetLayerMask());
 }
@@ -631,8 +631,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsLayerMask); // layerMask
 }
 void deClassCamera::nfSetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	
 	camera.GetLayerMask() = ds.GetClassLayerMask()->GetLayerMask(rt->GetValue(0)->GetRealObject());
 	camera.NotifyLayerMaskChanged();
@@ -644,8 +644,8 @@ dsFunction(init.clsCamera, "getParentWorld", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
 }
 void deClassCamera::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassWorld()->PushWorld(rt, camera.GetParentWorld());
 }
@@ -658,8 +658,8 @@ dsFunction(init.clsCamera, "getMatrix", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsDMatrix){
 }
 void deClassCamera::nfGetMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassDMatrix()->PushDMatrix(rt, decDMatrix::CreateWorld(
 		camera.GetPosition(), camera.GetOrientation()));
@@ -671,8 +671,8 @@ dsFunction(init.clsCamera, "getInverseMatrix", DSFT_FUNCTION,
 	DSTM_PUBLIC | DSTM_NATIVE, init.clsDMatrix){
 }
 void deClassCamera::nfGetInverseMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassDMatrix()->PushDMatrix(rt, decDMatrix::CreateWorld(
 		camera.GetPosition(), camera.GetOrientation()).QuickInvert());
@@ -689,7 +689,7 @@ dsFunction(init.clsCamera, "getEffectCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassCamera::nfGetEffectCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	rt->PushInt(camera.GetEffectCount());
 }
@@ -701,8 +701,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsEffect){
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassCamera::nfGetEffectAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	int index = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassEffect()->PushEffect(rt, camera.GetEffectAt(index));
@@ -715,8 +715,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsEffect); // effect
 }
 void deClassCamera::nfAddEffect::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	if(!obj) DSTHROW(dueNullPointer);
 	
@@ -730,8 +730,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsEffect); // effect
 }
 void deClassCamera::nfRemoveEffect::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
-	const deScriptingDragonScript &ds = ((deClassCamera*)GetOwnerClass())->GetDS();
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	if(!obj) DSTHROW(dueNullPointer);
 	
@@ -744,7 +744,7 @@ dsFunction(init.clsCamera, "removeAllEffects", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCamera::nfRemoveAllEffects::RunFunction(dsRunTime*, dsValue *myself){
-	deCamera &camera = *(static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera);
+	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	
 	camera.RemoveAllEffects();
 }
@@ -775,7 +775,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBoolean){
 }
 void deClassCamera::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deCamera * const camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
-	deClassCamera * const clsCamera = (deClassCamera*)GetOwnerClass();
+	deClassCamera * const clsCamera = static_cast<deClassCamera*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsCamera)){
@@ -905,7 +905,7 @@ void deClassCamera::CreateClassMembers(dsEngine *engine){
 
 deCamera *deClassCamera::GetCamera(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return static_cast<sCamNatDat*>(p_GetNativeData(myself->GetBuffer()))->camera;

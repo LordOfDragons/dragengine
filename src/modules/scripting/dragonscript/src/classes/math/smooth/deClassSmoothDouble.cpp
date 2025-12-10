@@ -75,7 +75,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSmoothDouble::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSmDblNatDat * const nd = new (p_GetNativeData(myself)) sSmDblNatDat;
-	deClassSmoothDouble &clsSmoothDouble = *((deClassSmoothDouble*)GetOwnerClass());
+	deClassSmoothDouble &clsSmoothDouble = *(static_cast<deClassSmoothDouble*>(GetOwnerClass()));
 	
 	const decSmoothDouble &copy = clsSmoothDouble.GetSmoothDouble(rt->GetValue(0)->GetRealObject());
 	nd->smoothDouble = new decSmoothDouble(copy);
@@ -238,7 +238,7 @@ deClassSmoothDouble::nfReadFromFile::nfReadFromFile(const sInitData &init) : dsF
 	p_AddParameter(init.clsFileReader); // reader
 }
 void deClassSmoothDouble::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSmoothDouble &clsSmoothDouble = *((deClassSmoothDouble*)GetOwnerClass());
+	deClassSmoothDouble &clsSmoothDouble = *(static_cast<deClassSmoothDouble*>(GetOwnerClass()));
 	const deClassFileReader &clsFileReader = *clsSmoothDouble.GetDS().GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	
@@ -272,7 +272,7 @@ deClassSmoothDouble::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFun
 }
 void deClassSmoothDouble::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decSmoothDouble &smoothDouble = *static_cast<sSmDblNatDat*>(p_GetNativeData(myself))->smoothDouble;
-	const deClassSmoothDouble &clsSmoothDouble = *((deClassSmoothDouble*)GetOwnerClass());
+	const deClassSmoothDouble &clsSmoothDouble = *(static_cast<deClassSmoothDouble*>(GetOwnerClass()));
 	const deClassFileWriter &clsFileWriter = *clsSmoothDouble.GetDS().GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
@@ -300,7 +300,7 @@ deClassSmoothDouble::nfEquals::nfEquals(const sInitData &init) : dsFunction(init
 }
 void deClassSmoothDouble::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decSmoothDouble &smoothDouble = *static_cast<sSmDblNatDat*>(p_GetNativeData(myself))->smoothDouble;
-	deClassSmoothDouble * const clsSmoothDouble = (deClassSmoothDouble*)GetOwnerClass();
+	deClassSmoothDouble * const clsSmoothDouble = static_cast<deClassSmoothDouble*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsSmoothDouble)){
@@ -405,7 +405,7 @@ void deClassSmoothDouble::PushSmoothDouble(dsRunTime *rt, const decSmoothDouble 
 	
 	rt->CreateObjectNakedOnStack(this);
 	sSmDblNatDat &nd = *static_cast<sSmDblNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.smoothDouble = NULL;
+	nd.smoothDouble = nullptr;
 	
 	try{
 		nd.smoothDouble = new decSmoothDouble(smoothDouble);

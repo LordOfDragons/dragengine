@@ -63,11 +63,11 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModel::nfLoad::RunFunction(dsRunTime *rt, dsValue *myself){
 	sMdlNatDat &nd = *static_cast<sMdlNatDat*>(p_GetNativeData(myself));
-	deScriptingDragonScript &ds = *((deClassModel*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
 	deModelManager &mdlMgr = *ds.GetGameEngine()->GetModelManager();
 	
 	// prepare
-	nd.model = NULL;
+	nd.model = nullptr;
 	
 	// load model
 	const char * const filename = rt->GetValue(0)->GetString();
@@ -84,7 +84,7 @@ deClassModel::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsRN); // listener
 }
 void deClassModel::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
-	deScriptingDragonScript &ds = *((deClassModel*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
@@ -184,7 +184,7 @@ dsFunction(init.clsMdl, "getMinimumExtend", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NA
 }
 void deClassModel::nfGetMinimumExtend::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deModel &model = *static_cast<sMdlNatDat*>(p_GetNativeData(myself))->model;
-	deScriptingDragonScript &ds = *((deClassModel*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
 	const deModelLOD &lod = *model.GetLODAt(0);
 	
 	const int count = lod.GetVertexCount();
@@ -210,7 +210,7 @@ dsFunction(init.clsMdl, "getMaximumExtend", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NA
 }
 void deClassModel::nfGetMaximumExtend::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deModel &model = *static_cast<sMdlNatDat*>(p_GetNativeData(myself))->model;
-	deScriptingDragonScript &ds = *((deClassModel*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
 	const deModelLOD &lod = *model.GetLODAt(0);
 	
 	const int count = lod.GetVertexCount();
@@ -251,7 +251,7 @@ dsFunction(init.clsMdl, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 }
 void deClassModel::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sMdlNatDat &nd = *static_cast<sMdlNatDat*>(p_GetNativeData(myself));
-	deClassModel * const clsModel = (deClassModel*)GetOwnerClass();
+	deClassModel * const clsModel = static_cast<deClassModel*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(obj->GetType()->GetPrimitiveType() != DSPT_OBJECT || !obj->GetRealObject()
@@ -329,7 +329,7 @@ void deClassModel::CreateClassMembers(dsEngine *engine){
 
 deModel *deClassModel::GetModel(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return static_cast<sMdlNatDat*>(p_GetNativeData(myself->GetBuffer()))->model;

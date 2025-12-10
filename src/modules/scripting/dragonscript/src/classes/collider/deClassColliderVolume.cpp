@@ -65,11 +65,11 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassColliderVolume::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sColVolNatDat * const nd = new (p_GetNativeData(myself)) sColVolNatDat;
-	const deScriptingDragonScript &ds = ((deClassColliderVolume*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderVolume*>(GetOwnerClass()))->GetDS();
 	deColliderManager &colMgr = *ds.GetGameEngine()->GetColliderManager();
 	
 	// super call
-	deClassCollider * const baseClass = (deClassCollider*)GetOwnerClass()->GetBaseClass();
+	deClassCollider * const baseClass = static_cast<deClassCollider*>(GetOwnerClass())->GetBaseClass();
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create collider
@@ -99,8 +99,8 @@ deClassColliderVolume::nfGetShape::nfGetShape(const sInitData &init) : dsFunctio
 "getShape", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsShapeList){
 }
 void deClassColliderVolume::nfGetShape::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderVolume &collider = *(static_cast<sColVolNatDat*>(p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderVolume*)GetOwnerClass())->GetDS();
+	deColliderVolume &collider = static_cast<sColVolNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderVolume*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassShapeList()->PushShapeList(rt, collider.GetShapes());
 }
@@ -111,8 +111,8 @@ deClassColliderVolume::nfSetShape::nfSetShape(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsShapeList); // shape
 }
 void deClassColliderVolume::nfSetShape::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderVolume &collider = *(static_cast<sColVolNatDat*>(p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderVolume*)GetOwnerClass())->GetDS();
+	deColliderVolume &collider = static_cast<sColVolNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderVolume*>(GetOwnerClass()))->GetDS();
 	
 	const decShapeList &shapeList = ds.GetClassShapeList()->GetShapeList(rt->GetValue(0)->GetRealObject());
 	collider.SetShapes(shapeList);
@@ -138,7 +138,7 @@ dsFunction(init.clsColVol, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 }
 void deClassColliderVolume::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deColliderVolume * const collider = static_cast<sColVolNatDat*>(p_GetNativeData(myself))->collider;
-	deClassColliderVolume * const clsColVol = (deClassColliderVolume*)GetOwnerClass();
+	deClassColliderVolume * const clsColVol = static_cast<deClassColliderVolume*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsColVol)){
@@ -157,7 +157,7 @@ dsFunction(init.clsColVol, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | 
 	p_AddParameter(init.clsColVol); // collider2
 }
 void deClassColliderVolume::nfEquals2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassColliderVolume &clsColVol = *((deClassColliderVolume*)GetOwnerClass());
+	const deClassColliderVolume &clsColVol = *(static_cast<deClassColliderVolume*>(GetOwnerClass()));
 	deColliderVolume * const collider1 = clsColVol.GetCollider(rt->GetValue(0)->GetRealObject());
 	deColliderVolume * const collider2 = clsColVol.GetCollider(rt->GetValue(1)->GetRealObject());
 	
@@ -225,7 +225,7 @@ void deClassColliderVolume::CreateClassMembers(dsEngine *engine){
 
 deColliderVolume *deClassColliderVolume::GetCollider(dsRealObject *myself) const {
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return static_cast<sColVolNatDat*>(p_GetNativeData(myself->GetBuffer()))->collider;
@@ -244,7 +244,7 @@ void deClassColliderVolume::PushCollider(dsRunTime *rt, deColliderVolume *collid
 	deClassCollider * const baseClass = (deClassCollider*)GetBaseClass();
 	rt->CreateObjectNakedOnStack(this);
 	sColVolNatDat &nd = *static_cast<sColVolNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.collider = NULL;
+	nd.collider = nullptr;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);

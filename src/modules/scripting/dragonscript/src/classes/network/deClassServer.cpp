@@ -63,7 +63,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassServer::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSvrNatDat *nd = static_cast<sSvrNatDat*>(p_GetNativeData(myself);
-	deClassServer *clsSvr = (deClassServer*)GetOwnerClass();
+	deClassServer *clsSvr = static_cast<deClassServer*>(GetOwnerClass());
 	deServerManager *svrMgr = clsSvr->GetGameEngine()->GetServerManager();
 	
 	// create server
@@ -131,7 +131,7 @@ deClassServer::nfGetServerListener::nfGetServerListener(const sInitData &init) :
 void deClassServer::nfGetServerListener::RunFunction(dsRunTime *rt, dsValue *myself){
 	deServer *server = static_cast<sSvrNatDat*>(p_GetNativeData(myself))->server;
 	dedsServer *scrServer = (dedsServer*)server->GetPeerScripting();
-	deClassServer *clsServer = (deClassServer*)GetOwnerClass();
+	deClassServer *clsServer = static_cast<deClassServer*>(GetOwnerClass());
 	
 	if(scrServer){
 		rt->PushObject(scrServer->GetCallback(), clsServer->GetClassServerListener());
@@ -177,7 +177,7 @@ dsFunction(init.clsSvr, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 }
 void deClassServer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deServer *server = static_cast<sSvrNatDat*>(p_GetNativeData(myself))->server;
-	deClassServer *clsSvr = (deClassServer*)GetOwnerClass();
+	deClassServer *clsSvr = static_cast<deClassServer*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsSvr)){
@@ -255,7 +255,7 @@ void deClassServer::CreateClassMembers(dsEngine *engine){
 
 deServer *deClassServer::GetServer(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return static_cast<sSvrNatDat*>(p_GetNativeData(myself->GetBuffer()))->server;

@@ -79,7 +79,7 @@ deClassParticleEmitterInstance::nfNew::nfNew(const sInitData &init) : dsFunction
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassParticleEmitterInstance::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	deParticleEmitterInstanceManager &peimgr = *ds.GetGameEngine()->GetParticleEmitterInstanceManager();
 	sPEINatDat *nd = static_cast<sPEINatDat*>(p_GetNativeData(myself);
 	
@@ -109,8 +109,8 @@ deClassParticleEmitterInstance::nfGetEmitter::nfGetEmitter(const sInitData &init
 "getEmitter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsPE){
 }
 void deClassParticleEmitterInstance::nfGetEmitter::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	const deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassParticleEmitter()->PushParticleEmitter(rt, instance.GetEmitter());
 }
@@ -121,8 +121,8 @@ deClassParticleEmitterInstance::nfSetEmitter::nfSetEmitter(const sInitData &init
 	p_AddParameter(init.clsPE); // emitter
 }
 void deClassParticleEmitterInstance::nfSetEmitter::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	instance.SetEmitter(ds.GetClassParticleEmitter()->GetParticleEmitter(rt->GetValue(0)->GetRealObject()));
 }
@@ -134,8 +134,8 @@ deClassParticleEmitterInstance::nfGetPosition::nfGetPosition(const sInitData &in
 "getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
 void deClassParticleEmitterInstance::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	const deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassDVector()->PushDVector(rt, instance.GetPosition());
 }
@@ -146,8 +146,8 @@ deClassParticleEmitterInstance::nfSetPosition::nfSetPosition(const sInitData &in
 	p_AddParameter(init.clsDVec); // position
 }
 void deClassParticleEmitterInstance::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	instance.SetPosition(ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject()));
 }
@@ -157,8 +157,8 @@ deClassParticleEmitterInstance::nfGetOrientation::nfGetOrientation(const sInitDa
 "getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
 void deClassParticleEmitterInstance::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	const deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassQuaternion()->PushQuaternion(rt, instance.GetOrientation());
 }
@@ -169,8 +169,8 @@ deClassParticleEmitterInstance::nfSetOrientation::nfSetOrientation(const sInitDa
 	p_AddParameter(init.clsQuat); // orientation
 }
 void deClassParticleEmitterInstance::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	instance.SetOrientation(ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(0)->GetRealObject()));
 }
@@ -180,7 +180,7 @@ deClassParticleEmitterInstance::nfGetEnableCasting::nfGetEnableCasting(const sIn
 "getEnableCasting", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassParticleEmitterInstance::nfGetEnableCasting::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
+	const deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	
 	rt->PushBool(instance.GetEnableCasting());
 }
@@ -191,7 +191,7 @@ deClassParticleEmitterInstance::nfSetEnableCasting::nfSetEnableCasting(const sIn
 	p_AddParameter(init.clsBool); // enable
 }
 void deClassParticleEmitterInstance::nfSetEnableCasting::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	
 	instance.SetEnableCasting(rt->GetValue(0)->GetBool());
 }
@@ -201,7 +201,7 @@ deClassParticleEmitterInstance::nfGetRemoveAfterLastParticleDied::nfGetRemoveAft
 "getRemoveAfterLastParticleDied", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassParticleEmitterInstance::nfGetRemoveAfterLastParticleDied::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
+	const deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	
 	rt->PushBool(instance.GetRemoveAfterLastParticleDied());
 }
@@ -212,7 +212,7 @@ deClassParticleEmitterInstance::nfSetRemoveAfterLastParticleDied::nfSetRemoveAft
 	p_AddParameter(init.clsBool); // remove
 }
 void deClassParticleEmitterInstance::nfSetRemoveAfterLastParticleDied::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	
 	instance.SetRemoveAfterLastParticleDied(rt->GetValue(0)->GetBool());
 }
@@ -222,7 +222,7 @@ deClassParticleEmitterInstance::nfGetTimeScale::nfGetTimeScale(const sInitData &
 "getTimeScale", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassParticleEmitterInstance::nfGetTimeScale::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
+	const deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	
 	rt->PushFloat(instance.GetTimeScale());
 }
@@ -233,7 +233,7 @@ deClassParticleEmitterInstance::nfSetTimeScale::nfSetTimeScale(const sInitData &
 	p_AddParameter(init.clsFloat); // scale
 }
 void deClassParticleEmitterInstance::nfSetTimeScale::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	
 	instance.SetTimeScale(rt->GetValue(0)->GetFloat());
 }
@@ -243,7 +243,7 @@ deClassParticleEmitterInstance::nfGetWarmUpTime::nfGetWarmUpTime(const sInitData
 "getWarmUpTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassParticleEmitterInstance::nfGetWarmUpTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
+	const deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	
 	rt->PushFloat(instance.GetWarmUpTime());
 }
@@ -254,7 +254,7 @@ deClassParticleEmitterInstance::nfSetWarmUpTime::nfSetWarmUpTime(const sInitData
 	p_AddParameter(init.clsFloat); // warmUpTime
 }
 void deClassParticleEmitterInstance::nfSetWarmUpTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	
 	instance.SetWarmUpTime(rt->GetValue(0)->GetFloat());
 }
@@ -264,7 +264,7 @@ deClassParticleEmitterInstance::nfGetBurstTime::nfGetBurstTime(const sInitData &
 "getBurstTime", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassParticleEmitterInstance::nfGetBurstTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
+	const deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	
 	rt->PushFloat(instance.GetBurstTime());
 }
@@ -275,7 +275,7 @@ deClassParticleEmitterInstance::nfSetBurstTime::nfSetBurstTime(const sInitData &
 	p_AddParameter(init.clsFloat); // burstTime
 }
 void deClassParticleEmitterInstance::nfSetBurstTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	
 	instance.SetBurstTime(rt->GetValue(0)->GetFloat());
 }
@@ -287,7 +287,7 @@ dsFunction(init.clsPEI, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATI
 
 void deClassParticleEmitterInstance::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deParticleEmitterInstance &instance = *static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
-	deScriptingDragonScript &ds = *((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = *(static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS();
 	ds.GetClassWorld()->PushWorld(rt, instance.GetParentWorld());
 }
 
@@ -297,7 +297,7 @@ dsFunction(init.clsPEI, "getControllerCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassParticleEmitterInstance::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
+	const deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	
 	rt->PushInt(instance.GetControllerCount());
 }
@@ -310,7 +310,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsPEController){
 }
 void deClassParticleEmitterInstance::nfGetControllerAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitterInstance * const instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
-	const deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	const deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	const int index = rt->GetValue(0)->GetInt();
 	
 	if(index < 0){
@@ -330,7 +330,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsPEController){
 }
 void deClassParticleEmitterInstance::nfGetControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitterInstance * const instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
-	const deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	const deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	const int index = instance->IndexOfControllerNamed(rt->GetValue(0)->GetString());
 	
 	if(index == -1){
@@ -360,8 +360,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // count
 }
 void deClassParticleEmitterInstance::nfCopyControllerStates::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	const deClassParticleEmitterInstance &clsPEI = *((deClassParticleEmitterInstance*)GetOwnerClass());
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	const deClassParticleEmitterInstance &clsPEI = *(static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()));
 	
 	const deParticleEmitterInstance * const sourceInstance = clsPEI.GetInstance(rt->GetValue(0)->GetRealObject());
 	int count = rt->GetValue(1)->GetInt();
@@ -402,8 +402,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // count
 }
 void deClassParticleEmitterInstance::nfCopyControllerStates2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	const deClassParticleEmitterInstance &clsPEI = *((deClassParticleEmitterInstance*)GetOwnerClass());
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	const deClassParticleEmitterInstance &clsPEI = *(static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()));
 	
 	const deParticleEmitterInstance * const sourceInstance = clsPEI.GetInstance(rt->GetValue(0)->GetRealObject());
 	const int offset = rt->GetValue(1)->GetInt();
@@ -446,8 +446,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsPEI); // instance
 }
 void deClassParticleEmitterInstance::nfCopyNamedControllerStates::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	const deClassParticleEmitterInstance &clsPEI = *((deClassParticleEmitterInstance*)GetOwnerClass());
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	const deClassParticleEmitterInstance &clsPEI = *(static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()));
 	
 	const deParticleEmitterInstance * const sourceInstance = clsPEI.GetInstance(rt->GetValue(0)->GetRealObject());
 	if(!sourceInstance){
@@ -480,8 +480,8 @@ dsFunction(init.clsPEI, "getLayerMask", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsLayerMask){
 }
 void deClassParticleEmitterInstance::nfGetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	const deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassLayerMask()->PushLayerMask(rt, instance.GetLayerMask());
 }
@@ -493,8 +493,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsLayerMask); // layerMask
 }
 void deClassParticleEmitterInstance::nfSetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	const decLayerMask &layerMask = ds.GetClassLayerMask()->GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
@@ -506,8 +506,8 @@ deClassParticleEmitterInstance::nfGetCollisionFilter::nfGetCollisionFilter(const
 "getCollisionFilter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCF){
 }
 void deClassParticleEmitterInstance::nfGetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	const deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	ds.GetClassCollisionFilter()->PushCollisionFilter(rt, instance.GetCollisionFilter());
 }
@@ -518,8 +518,8 @@ deClassParticleEmitterInstance::nfSetCollisionFilter::nfSetCollisionFilter(const
 	p_AddParameter(init.clsCF); // collisionFilter
 }
 void deClassParticleEmitterInstance::nfSetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	const decCollisionFilter &collisionFilter = ds.GetClassCollisionFilter()->GetCollisionFilter(rt->GetValue(0)->GetRealObject());
 	
@@ -534,8 +534,8 @@ deClassParticleEmitterInstance::nfGetTypeComponent::nfGetTypeComponent(const sIn
 	p_AddParameter(init.clsInt); // type
 }
 void deClassParticleEmitterInstance::nfGetTypeComponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	const deParticleEmitterInstanceType &type = instance.GetTypeAt(rt->GetValue(0)->GetInt());
 	
@@ -549,8 +549,8 @@ deClassParticleEmitterInstance::nfSetTypeComponent::nfSetTypeComponent(const sIn
 	p_AddParameter(init.clsComp); // component
 }
 void deClassParticleEmitterInstance::nfSetTypeComponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
 	deParticleEmitterInstanceType &type = instance.GetTypeAt(index);
@@ -565,8 +565,8 @@ deClassParticleEmitterInstance::nfGetTypeDynamicSkin::nfGetTypeDynamicSkin(const
 	p_AddParameter(init.clsInt); // type
 }
 void deClassParticleEmitterInstance::nfGetTypeDynamicSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	const deParticleEmitterInstanceType &type = instance.GetTypeAt(rt->GetValue(0)->GetInt());
 	
@@ -580,8 +580,8 @@ deClassParticleEmitterInstance::nfSetTypeDynamicSkin::nfSetTypeDynamicSkin(const
 	p_AddParameter(init.clsDynSkin); // dynamicSkin
 }
 void deClassParticleEmitterInstance::nfSetTypeDynamicSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
 	deParticleEmitterInstanceType &type = instance.GetTypeAt(index);
@@ -597,7 +597,7 @@ deClassParticleEmitterInstance::nfResetBurst::nfResetBurst(const sInitData &init
 "resetBurst", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassParticleEmitterInstance::nfResetBurst::RunFunction(dsRunTime*, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	
 	instance.ResetBurst();
 }
@@ -607,7 +607,7 @@ deClassParticleEmitterInstance::nfKillAllParticles::nfKillAllParticles(const sIn
 "killAllParticles", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassParticleEmitterInstance::nfKillAllParticles::RunFunction(dsRunTime*, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	
 	instance.KillAllParticles();
 }
@@ -622,8 +622,8 @@ deClassParticleEmitterInstance::nfGetListener::nfGetListener(const sInitData &in
 "getListener", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsPEIL){
 }
 void deClassParticleEmitterInstance::nfGetListener::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	const deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	dedsParticleEmitter *peer = (dedsParticleEmitter*)instance.GetPeerScripting();
 	
 	if(peer){
@@ -640,7 +640,7 @@ deClassParticleEmitterInstance::nfSetListener::nfSetListener(const sInitData &in
 	p_AddParameter(init.clsPEIL); // listener
 }
 void deClassParticleEmitterInstance::nfSetListener::RunFunction(dsRunTime *rt, dsValue *myself){
-	deParticleEmitterInstance &instance = *(static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance);
+	deParticleEmitterInstance &instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
 	dedsParticleEmitter *peer = (dedsParticleEmitter*)instance.GetPeerScripting();
 	if(peer){
 		peer->SetCallback(rt->GetValue(0)->GetRealObject());
@@ -676,7 +676,7 @@ void deClassParticleEmitterInstance::nfGetIgnoreColliderAt::RunFunction(dsRunTim
 		DSTHROW(dueNullPointer);
 	}
 	
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	const int index = rt->GetValue(0)->GetInt();
 	ds.GetClassCollider()->PushCollider(rt, nd.instance->GetIgnoreColliderAt(index));
 }
@@ -692,7 +692,7 @@ void deClassParticleEmitterInstance::nfHasIgnoreCollider::RunFunction(dsRunTime 
 		DSTHROW(dueNullPointer);
 	}
 	
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	
 	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
 	rt->PushBool(nd.instance->HasIgnoreCollider(collider));
@@ -709,7 +709,7 @@ void deClassParticleEmitterInstance::nfAddIgnoreCollider::RunFunction(dsRunTime 
 		DSTHROW(dueNullPointer);
 	}
 	
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
 	nd.instance->AddIgnoreCollider(collider);
 }
@@ -725,7 +725,7 @@ void deClassParticleEmitterInstance::nfRemoveIgnoreCollider::RunFunction(dsRunTi
 		DSTHROW(dueNullPointer);
 	}
 	
-	deScriptingDragonScript &ds = *(((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS());
+	deScriptingDragonScript &ds = *((static_cast<deClassParticleEmitterInstance*>(GetOwnerClass()))->GetDS());
 	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
 	nd.instance->RemoveIgnoreCollider(collider);
 }
@@ -763,7 +763,7 @@ dsFunction(init.clsPEI, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 }
 void deClassParticleEmitterInstance::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deParticleEmitterInstance *instance = static_cast<sPEINatDat*>(p_GetNativeData(myself))->instance;
-	deClassParticleEmitterInstance *clsPEI = (deClassParticleEmitterInstance*)GetOwnerClass();
+	deClassParticleEmitterInstance *clsPEI = static_cast<deClassParticleEmitterInstance*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsPEI)){
@@ -893,7 +893,7 @@ void deClassParticleEmitterInstance::CreateClassMembers(dsEngine *engine){
 
 deParticleEmitterInstance *deClassParticleEmitterInstance::GetInstance(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return static_cast<sPEINatDat*>(p_GetNativeData(myself->GetBuffer()))->instance;

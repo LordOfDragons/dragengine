@@ -100,9 +100,9 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassRuntimeMeter::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sRuntimeMeterNatDat * const nd = static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself);
 	
-	nd->meters = NULL;
+	nd->meters = nullptr;
 	nd->meterCount = 0;
-	nd->counters = NULL;
+	nd->counters = nullptr;
 	nd->counterCount = 0;
 }
 

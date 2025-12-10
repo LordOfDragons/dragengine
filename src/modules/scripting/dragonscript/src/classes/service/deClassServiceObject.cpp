@@ -97,7 +97,7 @@ DSTM_STATIC | DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject){
 }
 
 void deClassServiceObject::nfNewBool::RunFunction(dsRunTime *rt, dsValue*){
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	
 	const bool value = rt->GetValue(0)->GetBool();
 	clsServiceObject.PushServiceObject(rt, deServiceObject::NewBool(value));
@@ -112,7 +112,7 @@ DSTM_STATIC | DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject){
 }
 
 void deClassServiceObject::nfNewInteger::RunFunction(dsRunTime *rt, dsValue*){
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	
 	const int value = rt->GetValue(0)->GetInt();
 	clsServiceObject.PushServiceObject(rt, deServiceObject::NewInt(value));
@@ -127,7 +127,7 @@ DSTM_STATIC | DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject){
 }
 
 void deClassServiceObject::nfNewFloat::RunFunction(dsRunTime *rt, dsValue*){
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	
 	const float value = rt->GetValue(0)->GetFloat();
 	clsServiceObject.PushServiceObject(rt, deServiceObject::NewFloat(value));
@@ -142,7 +142,7 @@ DSTM_STATIC | DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject){
 }
 
 void deClassServiceObject::nfNewString::RunFunction(dsRunTime *rt, dsValue*){
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	
 	const char * const value = rt->GetValue(0)->GetString();
 	clsServiceObject.PushServiceObject(rt, deServiceObject::NewString(value));
@@ -157,7 +157,7 @@ DSTM_STATIC | DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject){
 }
 
 void deClassServiceObject::nfNewResource::RunFunction(dsRunTime *rt, dsValue*){
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	
 	deResource * const value = clsServiceObject.GetResource(*rt->GetValue(0));
 	if(!value){
@@ -176,7 +176,7 @@ DSTM_STATIC | DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject){
 }
 
 void deClassServiceObject::nfNewData::RunFunction(dsRunTime *rt, dsValue*){
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	deScriptingDragonScript &ds = clsServiceObject.GetDS();
 	
 	decMemoryFile * const value = ds.GetClassMemoryFile()->
@@ -196,7 +196,7 @@ DSTM_STATIC | DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject){
 }
 
 void deClassServiceObject::nfNewList::RunFunction(dsRunTime *rt, dsValue*){
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	clsServiceObject.PushServiceObject(rt, deServiceObject::NewList());
 }
 
@@ -210,7 +210,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassServiceObject::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	sServiceObjectNatDat * const nd = new (p_GetNativeData(myself)) sServiceObjectNatDat;
 	nd->object = nullptr;
 	
@@ -256,7 +256,7 @@ void deClassServiceObject::nfGetValueType::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueNullPointer);
 	}
 	
-	rt->PushValue(((deClassServiceObject*)GetOwnerClass())->GetClassServiceObjectType()
+	rt->PushValue((static_cast<deClassServiceObject*>(GetOwnerClass()))->GetClassServiceObjectType()
 		->GetVariable(nd.object->GetValueType())->GetStaticValue());
 }
 
@@ -422,7 +422,7 @@ void deClassServiceObject::nfGetResource::RunFunction(dsRunTime *rt, dsValue *my
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	clsServiceObject.PushResource(*rt, nd.object->GetResource());
 }
 
@@ -456,7 +456,7 @@ void deClassServiceObject::nfGetData::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	
-	deScriptingDragonScript &ds = ((deClassServiceObject*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassServiceObject*>(GetOwnerClass()))->GetDS();
 	ds.GetClassMemoryFile()->PushMemoryFile(rt, nd.object->GetData());
 }
 
@@ -522,7 +522,7 @@ void deClassServiceObject::nfGetChildrenKeys::RunFunction(dsRunTime *rt, dsValue
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassServiceObject*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassServiceObject*>(GetOwnerClass()))->GetDS();
 	const decStringList keys(nd.object->GetChildrenKeys());
 	const dsEngine &sengine = *ds.GetScriptEngine();
 	const int count = keys.GetCount();
@@ -563,7 +563,7 @@ void deClassServiceObject::nfGetChildAt::RunFunction(dsRunTime *rt, dsValue *mys
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	const int index = rt->GetValue(0)->GetInt();
 	
 	clsServiceObject.PushServiceObject(rt, nd.object->GetChildAt(index));
@@ -583,7 +583,7 @@ void deClassServiceObject::nfGetChildAt2::RunFunction(dsRunTime *rt, dsValue *my
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	const char * const key = rt->GetValue(0)->GetString();
 	
 	clsServiceObject.PushServiceObject(rt, nd.object->GetChildAt(key));
@@ -603,7 +603,7 @@ void deClassServiceObject::nfAddChild::RunFunction(dsRunTime *rt, dsValue *mysel
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	
 	nd.object->AddChild(deServiceObject::Ref(clsServiceObject.GetServiceObject(
 		rt->GetValue(0)->GetRealObject())));
@@ -624,7 +624,7 @@ void deClassServiceObject::nfSetChildAt::RunFunction(dsRunTime *rt, dsValue *mys
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	const char * const key = rt->GetValue(0)->GetString();
 	deServiceObject * const value = clsServiceObject.GetServiceObject(rt->GetValue(1)->GetRealObject());
 	
@@ -797,7 +797,7 @@ void deClassServiceObject::nfAddResourceChild::RunFunction(dsRunTime *rt, dsValu
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	
 	nd.object->AddResourceChild(clsServiceObject.GetResource(*rt->GetValue(0)));
 }
@@ -819,7 +819,7 @@ void deClassServiceObject::nfSetResourceChildAt::RunFunction(dsRunTime *rt, dsVa
 	
 	const char * const key = rt->GetValue(0)->GetString();
 	
-	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
+	deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	deResource * const value = clsServiceObject.GetResource(*rt->GetValue(1));
 	
 	nd.object->SetResourceChildAt(key, value);
@@ -839,7 +839,7 @@ void deClassServiceObject::nfAddDataChild::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueNullPointer);
 	}
 	
-	deScriptingDragonScript &ds = ((deClassServiceObject*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassServiceObject*>(GetOwnerClass()))->GetDS();
 	
 	nd.object->AddDataChild(decMemoryFile::Ref(ds.GetClassMemoryFile()->GetMemoryFile(
 		rt->GetValue(0)->GetRealObject())));
@@ -862,7 +862,7 @@ void deClassServiceObject::nfSetDataChildAt::RunFunction(dsRunTime *rt, dsValue 
 	
 	const char * const key = rt->GetValue(0)->GetString();
 	
-	deScriptingDragonScript &ds = ((deClassServiceObject*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassServiceObject*>(GetOwnerClass()))->GetDS();
 	decMemoryFile * const value = ds.GetClassMemoryFile()->GetMemoryFile(
 		rt->GetValue(1)->GetRealObject());
 	
@@ -950,7 +950,7 @@ void deClassServiceObject::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself)
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassServiceObject * const clsServiceObject = (deClassServiceObject*)GetOwnerClass();
+	deClassServiceObject * const clsServiceObject = static_cast<deClassServiceObject*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsServiceObject)){

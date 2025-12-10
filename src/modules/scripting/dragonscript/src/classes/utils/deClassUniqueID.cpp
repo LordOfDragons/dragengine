@@ -101,7 +101,7 @@ deClassUniqueID::nfGetBitCount::nfGetBitCount(const sInitData &init) : dsFunctio
 "getBitCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassUniqueID::nfGetBitCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
 	
 	rt->PushInt(id.GetBitCount());
 }
@@ -112,7 +112,7 @@ deClassUniqueID::nfGetByteAt::nfGetByteAt(const sInitData &init) : dsFunction(in
 	p_AddParameter(init.clsInt); // position
 }
 void deClassUniqueID::nfGetByteAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
 	
 	rt->PushInt(id.GetByteAt(rt->GetValue(0)->GetInt()));
 }
@@ -124,7 +124,7 @@ deClassUniqueID::nfToHexString::nfToHexString(const sInitData &init) : dsFunctio
 "toHexString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassUniqueID::nfToHexString::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
 	rt->PushString(id.ToHexString());
 }
 
@@ -134,7 +134,7 @@ deClassUniqueID::nfNewFromHexString::nfNewFromHexString(const sInitData &init) :
 	p_AddParameter(init.clsStr); // string
 }
 void deClassUniqueID::nfNewFromHexString::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassUniqueID &clsUID = *((deClassUniqueID*)GetOwnerClass());
+	deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	clsUID.PushUniqueID(rt, decUniqueID(rt->GetValue(0)->GetString()));
 }
 
@@ -143,7 +143,7 @@ deClassUniqueID::nfZero::nfZero(const sInitData &init) :
 dsFunction(init.clsUID, "zero", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassUniqueID::nfZero::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
 	rt->PushBool(id.IsZero());
 }
 
@@ -152,7 +152,7 @@ deClassUniqueID::nfNotZero::nfNotZero(const sInitData &init) :
 dsFunction(init.clsUID, "notZero", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassUniqueID::nfNotZero::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
 	rt->PushBool(!id.IsZero());
 }
 
@@ -167,7 +167,7 @@ deClassUniqueID::nfReadFromFile::nfReadFromFile(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsFileReader); // reader
 }
 void deClassUniqueID::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassUniqueID &clsUID = *((deClassUniqueID*)GetOwnerClass());
+	deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	const deClassFileReader &clsFileReader = *clsUID.GetDS().GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	
@@ -193,8 +193,8 @@ deClassUniqueID::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsFileWriter); // writer
 }
 void deClassUniqueID::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
-	const deClassUniqueID &clsUID = *((deClassUniqueID*)GetOwnerClass());
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
+	const deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	const deClassFileWriter &clsFileWriter = *clsUID.GetDS().GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
@@ -219,8 +219,8 @@ deClassUniqueID::nfOpAddInt::nfOpAddInt(const sInitData &init) : dsFunction(init
 	p_AddParameter(init.clsInt); // value
 }
 void deClassUniqueID::nfOpAddInt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
-	deClassUniqueID &clsUID = *((deClassUniqueID*)GetOwnerClass());
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
+	deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	
 	decUniqueID newID(id);
 	newID.IncrementBy(rt->GetValue(0)->GetInt());
@@ -233,8 +233,8 @@ deClassUniqueID::nfOpAddID::nfOpAddID(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsUID); // id
 }
 void deClassUniqueID::nfOpAddID::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
-	deClassUniqueID &clsUID = *((deClassUniqueID*)GetOwnerClass());
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
+	deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	
 	decUniqueID newID(id);
 	newID.IncrementBy(clsUID.GetUniqueID(rt->GetValue(0)->GetRealObject()));
@@ -247,8 +247,8 @@ deClassUniqueID::nfOpSubInt::nfOpSubInt(const sInitData &init) : dsFunction(init
 	p_AddParameter(init.clsInt); // value
 }
 void deClassUniqueID::nfOpSubInt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
-	deClassUniqueID &clsUID = *((deClassUniqueID*)GetOwnerClass());
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
+	deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	
 	decUniqueID newID(id);
 	newID.DecrementBy(rt->GetValue(0)->GetInt());
@@ -261,8 +261,8 @@ deClassUniqueID::nfOpSubID::nfOpSubID(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsUID); // id
 }
 void deClassUniqueID::nfOpSubID::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
-	deClassUniqueID &clsUID = *((deClassUniqueID*)GetOwnerClass());
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
+	deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	
 	decUniqueID newID(id);
 	newID.DecrementBy(clsUID.GetUniqueID(rt->GetValue(0)->GetRealObject()));
@@ -275,8 +275,8 @@ deClassUniqueID::nfOpLess::nfOpLess(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsUID); // id
 }
 void deClassUniqueID::nfOpLess::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
-	deClassUniqueID &clsUID = *((deClassUniqueID*)GetOwnerClass());
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
+	deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	rt->PushBool(id < clsUID.GetUniqueID(rt->GetValue(0)->GetRealObject()));
 }
 
@@ -286,8 +286,8 @@ deClassUniqueID::nfOpLessEqual::nfOpLessEqual(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsUID); // id
 }
 void deClassUniqueID::nfOpLessEqual::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
-	deClassUniqueID &clsUID = *((deClassUniqueID*)GetOwnerClass());
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
+	deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	rt->PushBool(id <= clsUID.GetUniqueID(rt->GetValue(0)->GetRealObject()));
 }
 
@@ -297,8 +297,8 @@ deClassUniqueID::nfOpGreater::nfOpGreater(const sInitData &init) : dsFunction(in
 	p_AddParameter(init.clsUID); // id
 }
 void deClassUniqueID::nfOpGreater::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
-	deClassUniqueID &clsUID = *((deClassUniqueID*)GetOwnerClass());
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
+	deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	rt->PushBool(id > clsUID.GetUniqueID(rt->GetValue(0)->GetRealObject()));
 }
 
@@ -308,8 +308,8 @@ deClassUniqueID::nfOpGreaterEqual::nfOpGreaterEqual(const sInitData &init) : dsF
 	p_AddParameter(init.clsUID); // id
 }
 void deClassUniqueID::nfOpGreaterEqual::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
-	deClassUniqueID &clsUID = *((deClassUniqueID*)GetOwnerClass());
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
+	deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	rt->PushBool(id >= clsUID.GetUniqueID(rt->GetValue(0)->GetRealObject()));
 }
 
@@ -324,7 +324,7 @@ dsFunction(init.clsUID, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassUniqueID::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
 	
 	const int count = decMath::min(id.GetBitCount() / 8, 3);
 	int i, hash = 0;
@@ -341,15 +341,15 @@ dsFunction(init.clsUID, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // object
 }
 void deClassUniqueID::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
-	deClassUniqueID * const clsUID = (deClassUniqueID*)GetOwnerClass();
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
+	deClassUniqueID * const clsUID = static_cast<deClassUniqueID*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsUID)){
 		rt->PushBool(false);
 		
 	}else{
-		const decUniqueID &otherUniqueID = *(static_cast<sUIDNatDat*>(p_GetNativeData(obj))->id);
+		const decUniqueID &otherUniqueID = static_cast<sUIDNatDat*>(p_GetNativeData(obj))->id;
 		rt->PushBool(id == otherUniqueID);
 	}
 }
@@ -360,15 +360,15 @@ dsFunction(init.clsUID, "compare", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, ini
 	p_AddParameter(init.clsObj); // object
 }
 void deClassUniqueID::nfCompare::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
-	deClassUniqueID * const clsUID = (deClassUniqueID*)GetOwnerClass();
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
+	deClassUniqueID * const clsUID = static_cast<deClassUniqueID*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsUID)){
 		rt->PushInt(0);
 		
 	}else{
-		const decUniqueID &otherUniqueID = *(static_cast<sUIDNatDat*>(p_GetNativeData(obj))->id);
+		const decUniqueID &otherUniqueID = static_cast<sUIDNatDat*>(p_GetNativeData(obj))->id;
 		
 		if(id == otherUniqueID){
 			rt->PushInt(0);
@@ -387,7 +387,7 @@ deClassUniqueID::nfToString::nfToString(const sInitData &init) : dsFunction(init
 "toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassUniqueID::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id);
+	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
 	int b, offset, value, byteCount = id.GetBitCount() / 8;
 	char buffer[100];
 	
@@ -509,7 +509,7 @@ void deClassUniqueID::PushUniqueID(dsRunTime *rt, const decUniqueID &id){
 	
 	rt->CreateObjectNakedOnStack(this);
 	sUIDNatDat &nd = *static_cast<sUIDNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.id = NULL;
+	nd.id = nullptr;
 	
 	try{
 		nd.id = new decUniqueID(id);
@@ -527,7 +527,7 @@ void deClassUniqueID::PushUniqueID(dsRunTime *rt, int byteCount, unsigned char *
 	
 	rt->CreateObjectNakedOnStack(this);
 	sUIDNatDat &nd = *static_cast<sUIDNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.id = NULL;
+	nd.id = nullptr;
 	
 	try{
 		nd.id = new decUniqueID;

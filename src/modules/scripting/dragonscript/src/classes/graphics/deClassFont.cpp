@@ -75,7 +75,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassFont::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sFntNatDat * const nd = new (p_GetNativeData(myself)) sFntNatDat;
-	const deScriptingDragonScript &ds = ((deClassFont*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassFont*>(GetOwnerClass()))->GetDS();
 	deFontManager &fontMgr = *ds.GetGameEngine()->GetFontManager();
 	nd->font = nullptr;
 	nd->fontSize = nullptr;
@@ -110,7 +110,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassFont::nfNewSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	sFntNatDat * const nd = new (p_GetNativeData(myself)) sFntNatDat;
-	deClassFont &clsFont = *((deClassFont*)GetOwnerClass());
+	deClassFont &clsFont = *(static_cast<deClassFont*>(GetOwnerClass()));
 	nd->font = nullptr;
 	nd->fontSize = nullptr;
 	nd.size = 0;
@@ -148,7 +148,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsResourceListener); // listener
 }
 void deClassFont::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deScriptingDragonScript &ds = ((deClassFont*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassFont*>(GetOwnerClass()))->GetDS();
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
@@ -211,7 +211,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsPoint){
 	p_AddParameter(init.clsString); // text
 }
 void deClassFont::nfGetTextSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deScriptingDragonScript &ds = ((deClassFont*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassFont*>(GetOwnerClass()))->GetDS();
 	const sFntNatDat &nd = *static_cast<sFntNatDat*>(p_GetNativeData(myself));
 	
 	decUTF8Decoder utf8Decoder;
@@ -338,7 +338,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassFont::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sFntNatDat &nd = *static_cast<sFntNatDat*>(p_GetNativeData(myself));
-	deClassFont * const clsFont = (deClassFont*)GetOwnerClass();
+	deClassFont * const clsFont = static_cast<deClassFont*>(GetOwnerClass());
 	
 	dsValue * const object = rt->GetValue(0);
 	

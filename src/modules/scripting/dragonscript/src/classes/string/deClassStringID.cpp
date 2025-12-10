@@ -77,7 +77,7 @@ DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassStringID::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
 	sStrIDNatDat * const nd = new (p_GetNativeData(myself)) sStrIDNatDat;
-	deClassStringID &sclass = *((deClassStringID*)GetOwnerClass());
+	deClassStringID &sclass = *(static_cast<deClassStringID*>(GetOwnerClass()));
 	
 	nd.index = sclass.InsertString(rt->GetValue(0)->GetString());
 }
@@ -107,7 +107,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
 void deClassStringID::nfGetString::RunFunction(dsRunTime *rt, dsValue *myself){
 	const int index = static_cast<sStrIDNatDat*>(p_GetNativeData(myself))->index;
-	const deClassStringID &clsStringID = *((deClassStringID*)GetOwnerClass());
+	const deClassStringID &clsStringID = *(static_cast<deClassStringID*>(GetOwnerClass()));
 	
 	rt->PushString(clsStringID.GetStringAt(index));
 }
@@ -124,7 +124,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsStringID){
 	p_AddParameter(init.clsFileReader); // reader
 }
 void deClassStringID::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassStringID &sclass = *((deClassStringID*)GetOwnerClass());
+	deClassStringID &sclass = *(static_cast<deClassStringID*>(GetOwnerClass()));
 	const deClassFileReader &clsFileReader = *sclass.GetDS().GetClassFileReader();
 	
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(
@@ -144,7 +144,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassStringID::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	const int index = static_cast<sStrIDNatDat*>(p_GetNativeData(myself))->index;
-	const deClassStringID &sclass = *((deClassStringID*)GetOwnerClass());
+	const deClassStringID &sclass = *(static_cast<deClassStringID*>(GetOwnerClass()));
 	const deClassFileWriter &clsFileWriter = *sclass.GetDS().GetClassFileWriter();
 	
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(
@@ -181,7 +181,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassStringID::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const int index = static_cast<sStrIDNatDat*>(p_GetNativeData(myself))->index;
-	deClassStringID * const sclass = (deClassStringID*)GetOwnerClass();
+	deClassStringID * const sclass = static_cast<deClassStringID*>(GetOwnerClass());
 	dsClass * const scString = rt->GetEngine()->GetClassString();
 	dsValue * const object = rt->GetValue(0);
 	
@@ -209,7 +209,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
 void deClassStringID::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
 	const int index = static_cast<sStrIDNatDat*>(p_GetNativeData(myself))->index;
-	const deClassStringID &sclass = *((deClassStringID*)GetOwnerClass());
+	const deClassStringID &sclass = *(static_cast<deClassStringID*>(GetOwnerClass()));
 	
 	rt->PushString(sclass.GetStringAt(index));
 }

@@ -70,11 +70,11 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkin::nfLoad::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSkinNatDat &nd = *static_cast<sSkinNatDat*>(p_GetNativeData(myself));
-	deScriptingDragonScript &ds = ((deClassSkin*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassSkin*>(GetOwnerClass()))->GetDS();
 	deSkinManager &skinMgr = *ds.GetGameEngine()->GetSkinManager();
 	
 	// reset all
-	nd.skin = NULL;
+	nd.skin = nullptr;
 	
 	// load skin
 	nd.skin = skinMgr.LoadSkin(rt->GetValue(0)->GetString(), "/");
@@ -88,7 +88,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsResourceListener); // listener
 }
 void deClassSkin::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
-	deScriptingDragonScript &ds = ((deClassSkin*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassSkin*>(GetOwnerClass()))->GetDS();
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
@@ -246,7 +246,7 @@ void deClassSkin::nfPropertyGetType::RunFunction(dsRunTime *rt, dsValue *myself)
 	
 	deSkinPropertyVisitorIdentify visitor;
 	property.Visit(visitor);
-	rt->PushValue(((deClassSkin*)GetOwnerClass())->GetClassSkinPropertyType()
+	rt->PushValue((static_cast<deClassSkin*>(GetOwnerClass()))->GetClassSkinPropertyType()
 		->GetVariable(visitor.GetType())->GetStaticValue());
 }
 
@@ -278,7 +278,7 @@ void deClassSkin::nfPropertyGetColor::RunFunction(dsRunTime *rt, dsValue *myself
 	const deSkin &skin = *static_cast<sSkinNatDat*>(p_GetNativeData(myself))->skin;
 	const deSkinTexture &texture = *skin.GetTextureAt(rt->GetValue(0)->GetInt());
 	deSkinProperty &property = *texture.GetPropertyAt(rt->GetValue(1)->GetInt());
-	deScriptingDragonScript &ds = ((deClassSkin*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassSkin*>(GetOwnerClass()))->GetDS();
 	
 	deSkinPropertyVisitorIdentify visitor;
 	property.Visit(visitor);
@@ -296,7 +296,7 @@ void deClassSkin::nfPropertyGetImage::RunFunction(dsRunTime *rt, dsValue *myself
 	const deSkin &skin = *static_cast<sSkinNatDat*>(p_GetNativeData(myself))->skin;
 	const deSkinTexture &texture = *skin.GetTextureAt(rt->GetValue(0)->GetInt());
 	deSkinProperty &property = *texture.GetPropertyAt(rt->GetValue(1)->GetInt());
-	deScriptingDragonScript &ds = ((deClassSkin*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassSkin*>(GetOwnerClass()))->GetDS();
 	
 	deSkinPropertyVisitorIdentify visitor;
 	property.Visit(visitor);
@@ -314,7 +314,7 @@ void deClassSkin::nfPropertyGetVideo::RunFunction(dsRunTime *rt, dsValue *myself
 	const deSkin &skin = *static_cast<sSkinNatDat*>(p_GetNativeData(myself))->skin;
 	const deSkinTexture &texture = *skin.GetTextureAt(rt->GetValue(0)->GetInt());
 	deSkinProperty &property = *texture.GetPropertyAt(rt->GetValue(1)->GetInt());
-	deScriptingDragonScript &ds = ((deClassSkin*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassSkin*>(GetOwnerClass()))->GetDS();
 	
 	deSkinPropertyVisitorIdentify visitor;
 	property.Visit(visitor);
@@ -344,7 +344,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassSkin::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkinNatDat &nd = *static_cast<sSkinNatDat*>(p_GetNativeData(myself));
-	deClassSkin * const clsSkin = (deClassSkin*)GetOwnerClass();
+	deClassSkin * const clsSkin = static_cast<deClassSkin*>(GetOwnerClass());
 	dsValue * const object = rt->GetValue(0);
 	
 	if(object->GetType()->GetPrimitiveType() != DSPT_OBJECT || !object->GetRealObject()
@@ -430,7 +430,7 @@ void deClassSkin::CreateClassMembers(dsEngine *engine){
 
 deSkin *deClassSkin::GetSkin(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	return static_cast<sSkinNatDat*>(p_GetNativeData(myself->GetBuffer()))->skin;
 }

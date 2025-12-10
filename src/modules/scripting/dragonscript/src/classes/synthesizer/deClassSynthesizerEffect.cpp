@@ -175,7 +175,7 @@ void deClassSynthesizerEffect::CreateClassMembers(dsEngine *engine){
 
 deSynthesizerEffect *deClassSynthesizerEffect::GetEffect(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return static_cast<sSynSNatDat*>(p_GetNativeData(myself->GetBuffer()))->effect;

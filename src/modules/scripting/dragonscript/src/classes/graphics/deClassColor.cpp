@@ -95,7 +95,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassColor::nfNew3::RunFunction(dsRunTime *RT, dsValue *This){
 	decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
-	deClassColor &clsColor = *((deClassColor*)GetOwnerClass());
+	deClassColor &clsColor = *(static_cast<deClassColor*>(GetOwnerClass()));
 	
 	const decColor &copyColor = clsColor.GetColor(RT->GetValue(0)->GetRealObject());
 	const float alpha = RT->GetValue(1)->GetFloat();
@@ -111,7 +111,7 @@ deClassColor::nfNewRGB::nfNewRGB(const sInitData &init) : dsFunction(init.clsClr
 	p_AddParameter(init.clsInt); // blue
 }
 void deClassColor::nfNewRGB::RunFunction(dsRunTime *RT, dsValue *This){
-	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
+	deClassColor *clsColor = static_cast<deClassColor*>(GetOwnerClass());
 	float r = (float)RT->GetValue(0)->GetInt() / (float)255;
 	float g = (float)RT->GetValue(1)->GetInt() / (float)255;
 	float b = (float)RT->GetValue(2)->GetInt() / (float)255;
@@ -127,7 +127,7 @@ deClassColor::nfNewRGBA::nfNewRGBA(const sInitData &init) : dsFunction(init.clsC
 	p_AddParameter(init.clsInt); // alpha
 }
 void deClassColor::nfNewRGBA::RunFunction(dsRunTime *RT, dsValue *This){
-	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
+	deClassColor *clsColor = static_cast<deClassColor*>(GetOwnerClass());
 	float r = (float)RT->GetValue(0)->GetInt() / (float)255;
 	float g = (float)RT->GetValue(1)->GetInt() / (float)255;
 	float b = (float)RT->GetValue(2)->GetInt() / (float)255;
@@ -143,7 +143,7 @@ dsFunction(init.clsClr, "newHSV", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DST
 	p_AddParameter(init.clsFlt); // value
 }
 void deClassColor::nfNewHSV::RunFunction(dsRunTime *rt, dsValue*){
-	deClassColor &clsColor = *((deClassColor*)GetOwnerClass());
+	deClassColor &clsColor = *(static_cast<deClassColor*>(GetOwnerClass()));
 	const float hue = rt->GetValue(0)->GetFloat();
 	const float saturation = rt->GetValue(1)->GetFloat();
 	const float value = rt->GetValue(2)->GetFloat();
@@ -158,7 +158,7 @@ dsFunction(init.clsClr, "newHSL", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DST
 	p_AddParameter(init.clsFlt); // lightness
 }
 void deClassColor::nfNewHSL::RunFunction(dsRunTime *rt, dsValue*){
-	deClassColor &clsColor = *((deClassColor*)GetOwnerClass());
+	deClassColor &clsColor = *(static_cast<deClassColor*>(GetOwnerClass()));
 	const float hue = rt->GetValue(0)->GetFloat();
 	const float saturation = rt->GetValue(1)->GetFloat();
 	const float lightness = rt->GetValue(2)->GetFloat();
@@ -174,7 +174,7 @@ dsFunction(init.clsClr, "newCMYK", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DS
 	p_AddParameter(init.clsFlt); // black
 }
 void deClassColor::nfNewCMYK::RunFunction(dsRunTime *rt, dsValue*){
-	deClassColor &clsColor = *((deClassColor*)GetOwnerClass());
+	deClassColor &clsColor = *(static_cast<deClassColor*>(GetOwnerClass()));
 	const float cyan = rt->GetValue(0)->GetFloat();
 	const float magenty = rt->GetValue(1)->GetFloat();
 	const float yellow = rt->GetValue(2)->GetFloat();
@@ -243,7 +243,7 @@ deClassColor::nfClamp::nfClamp(const sInitData &init) : dsFunction(init.clsClr,
 }
 void deClassColor::nfClamp::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
-	deClassColor * const clsColor = (deClassColor*)GetOwnerClass();
+	deClassColor * const clsColor = static_cast<deClassColor*>(GetOwnerClass());
 	clsColor->PushColor(RT, color.Normalized());
 }
 
@@ -253,7 +253,7 @@ deClassColor::nfInvert::nfInvert(const sInitData &init) : dsFunction(init.clsClr
 }
 void deClassColor::nfInvert::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
-	deClassColor * const clsColor = (deClassColor*)GetOwnerClass();
+	deClassColor * const clsColor = static_cast<deClassColor*>(GetOwnerClass());
 	clsColor->PushColor(RT, color.Inverted());
 }
 
@@ -269,7 +269,7 @@ deClassColor::nfIsEqual::nfIsEqual(const sInitData &init) : dsFunction(init.clsC
 }
 void deClassColor::nfIsEqual::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
-	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
+	deClassColor *clsColor = static_cast<deClassColor*>(GetOwnerClass());
 	dsRealObject *objClr = RT->GetValue(0)->GetRealObject();
 	if(!objClr) DSTHROW(dueNullPointer);
 	RT->PushBool(color.IsEqualTo(clsColor->GetColor(objClr)));
@@ -283,7 +283,7 @@ deClassColor::nfIsEqual2::nfIsEqual2(const sInitData &init) : dsFunction(init.cl
 }
 void deClassColor::nfIsEqual2::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
-	const deClassColor &clsColor = *((deClassColor*)GetOwnerClass());
+	const deClassColor &clsColor = *(static_cast<deClassColor*>(GetOwnerClass()));
 	dsRealObject *objClr = RT->GetValue(0)->GetRealObject();
 	const float threshold = RT->GetValue(1)->GetFloat();
 	RT->PushBool(color.IsEqualTo(clsColor.GetColor(objClr), threshold));
@@ -300,7 +300,7 @@ deClassColor::nfReadFromFile::nfReadFromFile(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsFileReader); // reader
 }
 void deClassColor::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassColor &clsColor = *((deClassColor*)GetOwnerClass());
+	deClassColor &clsColor = *(static_cast<deClassColor*>(GetOwnerClass()));
 	const deClassFileReader &clsFileReader = *clsColor.GetScriptModule()->GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	decColor color;
@@ -319,7 +319,7 @@ deClassColor::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFunction(i
 }
 void deClassColor::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(myself))->color;
-	const deClassColor &clsColor = *((deClassColor*)GetOwnerClass());
+	const deClassColor &clsColor = *(static_cast<deClassColor*>(GetOwnerClass()));
 	const deClassFileWriter &clsFileWriter = *clsColor.GetScriptModule()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
@@ -342,7 +342,7 @@ deClassColor::nfOpAdd::nfOpAdd(const sInitData &init) : dsFunction(init.clsClr,
 }
 void deClassColor::nfOpAdd::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
-	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
+	deClassColor *clsColor = static_cast<deClassColor*>(GetOwnerClass());
 	dsRealObject *objClr = RT->GetValue(0)->GetRealObject();
 	if(!objClr) DSTHROW(dueNullPointer);
 	clsColor->PushColor(RT, color + clsColor->GetColor(objClr));
@@ -355,7 +355,7 @@ deClassColor::nfOpSubtract::nfOpSubtract(const sInitData &init) : dsFunction(ini
 }
 void deClassColor::nfOpSubtract::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
-	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
+	deClassColor *clsColor = static_cast<deClassColor*>(GetOwnerClass());
 	dsRealObject *objClr = RT->GetValue(0)->GetRealObject();
 	if(!objClr) DSTHROW(dueNullPointer);
 	clsColor->PushColor(RT, color - clsColor->GetColor(objClr));
@@ -368,7 +368,7 @@ deClassColor::nfOpScale::nfOpScale(const sInitData &init) : dsFunction(init.clsC
 }
 void deClassColor::nfOpScale::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
-	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
+	deClassColor *clsColor = static_cast<deClassColor*>(GetOwnerClass());
 	clsColor->PushColor(RT, color * RT->GetValue(0)->GetFloat());
 }
 
@@ -379,7 +379,7 @@ deClassColor::nfOpDivide::nfOpDivide(const sInitData &init) : dsFunction(init.cl
 }
 void deClassColor::nfOpDivide::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
-	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
+	deClassColor *clsColor = static_cast<deClassColor*>(GetOwnerClass());
 	clsColor->PushColor(RT, color / RT->GetValue(0)->GetFloat());
 }
 	
@@ -390,7 +390,7 @@ deClassColor::nfOpMultiply::nfOpMultiply(const sInitData &init) : dsFunction(ini
 }
 void deClassColor::nfOpMultiply::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
-	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
+	deClassColor *clsColor = static_cast<deClassColor*>(GetOwnerClass());
 	dsRealObject *objClr = RT->GetValue(0)->GetRealObject();
 	if(!objClr) DSTHROW(dueNullPointer);
 	clsColor->PushColor(RT, color * clsColor->GetColor(objClr));
@@ -408,7 +408,7 @@ deClassColor::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.clsClr
 }
 void deClassColor::nfEquals::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
-	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
+	deClassColor *clsColor = static_cast<deClassColor*>(GetOwnerClass());
 	dsValue *obj = RT->GetValue(0);
 	if(!p_IsObjOfType(obj, clsColor)){
 		RT->PushBool(false);
@@ -475,7 +475,7 @@ void deClassColor::nfToHSV::RunFunction(dsRunTime *rt, dsValue *myself){
 	float hue, saturation, value;
 	color.ToHSV(hue, saturation, value);
 	
-	const deScriptingDragonScript &ds = *((deClassColor*)GetOwnerClass())->GetScriptModule();
+	const deScriptingDragonScript &ds = *(static_cast<deClassColor*>(GetOwnerClass()))->GetScriptModule();
 	dsValue * const valueHsv = rt->CreateValue(ds.GetScriptEngine()->GetClassArray());
 	
 	try{
@@ -510,7 +510,7 @@ void deClassColor::nfToHSL::RunFunction(dsRunTime *rt, dsValue *myself){
 	float hue, saturation, lightness;
 	color.ToHSL(hue, saturation, lightness);
 	
-	const deScriptingDragonScript &ds = *((deClassColor*)GetOwnerClass())->GetScriptModule();
+	const deScriptingDragonScript &ds = *(static_cast<deClassColor*>(GetOwnerClass()))->GetScriptModule();
 	dsValue * const valueHsv = rt->CreateValue(ds.GetScriptEngine()->GetClassArray());
 	
 	try{
@@ -545,7 +545,7 @@ void deClassColor::nfToCMYK::RunFunction(dsRunTime *rt, dsValue *myself){
 	float cyan, magenta, yellow, black;
 	color.ToCMYK(cyan, magenta, yellow, black);
 	
-	const deScriptingDragonScript &ds = *((deClassColor*)GetOwnerClass())->GetScriptModule();
+	const deScriptingDragonScript &ds = *(static_cast<deClassColor*>(GetOwnerClass()))->GetScriptModule();
 	dsValue * const valueHsv = rt->CreateValue(ds.GetScriptEngine()->GetClassArray());
 	
 	try{

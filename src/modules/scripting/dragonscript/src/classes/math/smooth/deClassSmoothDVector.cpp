@@ -76,7 +76,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSmoothDVector::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSmDVecNatDat * const nd = new (p_GetNativeData(myself)) sSmDVecNatDat;
-	deClassSmoothDVector &clsSmoothDVector = *((deClassSmoothDVector*)GetOwnerClass());
+	deClassSmoothDVector &clsSmoothDVector = *(static_cast<deClassSmoothDVector*>(GetOwnerClass()));
 	
 	const decSmoothDVector &copy = clsSmoothDVector.GetSmoothDVector(rt->GetValue(0)->GetRealObject());
 	nd->smoothDVector = new decSmoothDVector(copy);
@@ -106,7 +106,7 @@ deClassSmoothDVector::nfGetValue::nfGetValue(const sInitData &init) : dsFunction
 }
 void deClassSmoothDVector::nfGetValue::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decSmoothDVector &smoothFloat = *static_cast<sSmDVecNatDat*>(p_GetNativeData(myself))->smoothDVector;
-	const deScriptingDragonScript &ds = ((deClassSmoothDVector*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSmoothDVector*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassDVector()->PushDVector(rt, smoothFloat.GetValue());
 }
@@ -118,7 +118,7 @@ deClassSmoothDVector::nfSetValue::nfSetValue(const sInitData &init) : dsFunction
 }
 void deClassSmoothDVector::nfSetValue::RunFunction(dsRunTime *rt, dsValue *myself){
 	decSmoothDVector &smoothFloat = *static_cast<sSmDVecNatDat*>(p_GetNativeData(myself))->smoothDVector;
-	const deScriptingDragonScript &ds = ((deClassSmoothDVector*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSmoothDVector*>(GetOwnerClass()))->GetDS();
 	
 	const decDVector &value = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	smoothFloat.SetValue(value);
@@ -130,7 +130,7 @@ deClassSmoothDVector::nfGetGoal::nfGetGoal(const sInitData &init) : dsFunction(i
 }
 void deClassSmoothDVector::nfGetGoal::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decSmoothDVector &smoothFloat = *static_cast<sSmDVecNatDat*>(p_GetNativeData(myself))->smoothDVector;
-	const deScriptingDragonScript &ds = ((deClassSmoothDVector*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSmoothDVector*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassDVector()->PushDVector(rt, smoothFloat.GetGoal());
 }
@@ -142,7 +142,7 @@ deClassSmoothDVector::nfSetGoal::nfSetGoal(const sInitData &init) : dsFunction(i
 }
 void deClassSmoothDVector::nfSetGoal::RunFunction(dsRunTime *rt, dsValue *myself){
 	decSmoothDVector &smoothFloat = *static_cast<sSmDVecNatDat*>(p_GetNativeData(myself))->smoothDVector;
-	const deScriptingDragonScript &ds = ((deClassSmoothDVector*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSmoothDVector*>(GetOwnerClass()))->GetDS();
 	
 	const decDVector &value = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	smoothFloat.SetGoal(value);
@@ -245,7 +245,7 @@ deClassSmoothDVector::nfReadFromFile::nfReadFromFile(const sInitData &init) : ds
 	p_AddParameter(init.clsFileReader); // reader
 }
 void deClassSmoothDVector::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSmoothDVector &clsSmoothDVector = *((deClassSmoothDVector*)GetOwnerClass());
+	deClassSmoothDVector &clsSmoothDVector = *(static_cast<deClassSmoothDVector*>(GetOwnerClass()));
 	const deClassFileReader &clsFileReader = *clsSmoothDVector.GetDS().GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	
@@ -279,7 +279,7 @@ deClassSmoothDVector::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFu
 }
 void deClassSmoothDVector::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decSmoothDVector &smoothDVector = *static_cast<sSmDVecNatDat*>(p_GetNativeData(myself))->smoothDVector;
-	const deClassSmoothDVector &clsSmoothDVector = *((deClassSmoothDVector*)GetOwnerClass());
+	const deClassSmoothDVector &clsSmoothDVector = *(static_cast<deClassSmoothDVector*>(GetOwnerClass()));
 	const deClassFileWriter &clsFileWriter = *clsSmoothDVector.GetDS().GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
@@ -307,7 +307,7 @@ deClassSmoothDVector::nfEquals::nfEquals(const sInitData &init) : dsFunction(ini
 }
 void deClassSmoothDVector::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decSmoothDVector &smoothFloat = *static_cast<sSmDVecNatDat*>(p_GetNativeData(myself))->smoothDVector;
-	deClassSmoothDVector * const clsSmoothDVector = (deClassSmoothDVector*)GetOwnerClass();
+	deClassSmoothDVector * const clsSmoothDVector = static_cast<deClassSmoothDVector*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsSmoothDVector)){
@@ -413,7 +413,7 @@ void deClassSmoothDVector::PushSmoothDVector(dsRunTime *rt, const decSmoothDVect
 	
 	rt->CreateObjectNakedOnStack(this);
 	sSmDVecNatDat &nd = *static_cast<sSmDVecNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.smoothDVector = NULL;
+	nd.smoothDVector = nullptr;
 	
 	try{
 		nd.smoothDVector = new decSmoothDVector(smoothFloat);

@@ -87,7 +87,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSky){
 }
 void deClassSkyTarget::nfGetSky::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
-	deScriptingDragonScript &ds = ((deClassSkyTarget*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassSkyTarget*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSky()->PushSky(rt, nd.sky);
 }
@@ -187,7 +187,7 @@ dsFunction(init.clsSkyTarget, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassSkyTarget::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkyTarget * const clsSkyTarget = (deClassSkyTarget*)GetOwnerClass();
+	deClassSkyTarget * const clsSkyTarget = static_cast<deClassSkyTarget*>(GetOwnerClass());
 	const sSkyTargetNatDat &nd = *static_cast<const sSkyTargetNatDat*>(p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	

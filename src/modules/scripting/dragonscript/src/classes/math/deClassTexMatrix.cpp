@@ -76,7 +76,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassTexMatrix::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
 	decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	const deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	const deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	
 	dsRealObject * const objMat = rt->GetValue(0)->GetRealObject();
 	if(!objMat){
@@ -92,7 +92,7 @@ deClassTexMatrix::nfNewTranslation::nfNewTranslation(const sInitData &init) : ds
 	p_AddParameter(init.clsVec2); // translation
 }
 void deClassTexMatrix::nfNewTranslation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const deClassVector2 &clsVector2 = *clsTexMatrix.GetDS()->GetClassVector2();
 	
 	dsRealObject * const objTranslation = rt->GetValue(0)->GetRealObject();
@@ -112,7 +112,7 @@ deClassTexMatrix::nfNewTranslation2::nfNewTranslation2(const sInitData &init) : 
 	p_AddParameter(init.clsFlt); // v
 }
 void deClassTexMatrix::nfNewTranslation2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const float u = rt->GetValue(0)->GetFloat();
 	const float v = rt->GetValue(1)->GetFloat();
 	
@@ -125,7 +125,7 @@ deClassTexMatrix::nfNewScaling::nfNewScaling(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsVec2); // scaling
 }
 void deClassTexMatrix::nfNewScaling::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const deClassVector2 &clsVec2 = *clsTexMatrix.GetDS()->GetClassVector2();
 	
 	dsRealObject * const objScaling = rt->GetValue(0)->GetRealObject();
@@ -145,7 +145,7 @@ deClassTexMatrix::nfNewScaling2::nfNewScaling2(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFlt); // v
 }
 void deClassTexMatrix::nfNewScaling2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const float u = rt->GetValue(0)->GetFloat();
 	const float v = rt->GetValue(1)->GetFloat();
 	
@@ -158,7 +158,7 @@ deClassTexMatrix::nfNewRotation::nfNewRotation(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFlt); // rotation
 }
 void deClassTexMatrix::nfNewRotation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const float rotation = rt->GetValue(0)->GetFloat();
 	
 	clsTexMatrix.PushTexMatrix(rt, decTexMatrix::CreateRotation(rotation * DEG2RAD));
@@ -171,7 +171,7 @@ DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat){
 	p_AddParameter(init.clsVec2); // shear
 }
 void deClassTexMatrix::nfNewShear::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const deClassVector2 &clsVec2 = *clsTexMatrix.GetDS()->GetClassVector2();
 	
 	const decVector2 &shear = clsVec2.GetVector2(rt->GetValue(0)->GetRealObject());
@@ -187,7 +187,7 @@ DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat){
 	p_AddParameter(init.clsFlt); // v
 }
 void deClassTexMatrix::nfNewShear2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const float u = rt->GetValue(0)->GetFloat();
 	const float v = rt->GetValue(1)->GetFloat();
 	
@@ -202,7 +202,7 @@ DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat){
 	p_AddParameter(init.clsVec2); // translation
 }
 void deClassTexMatrix::nfNewST::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const deClassVector2 &clsVector2 = *clsTexMatrix.GetDS()->GetClassVector2();
 	
 	const decVector2 &scaling = clsVector2.GetVector2(rt->GetValue(0)->GetRealObject());
@@ -221,7 +221,7 @@ DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat){
 	p_AddParameter(init.clsFlt); // translationV
 }
 void deClassTexMatrix::nfNewST2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const float scalingU = rt->GetValue(0)->GetFloat();
 	const float scalingV = rt->GetValue(1)->GetFloat();
 	const float translationU = rt->GetValue(2)->GetFloat();
@@ -239,7 +239,7 @@ DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat){
 	p_AddParameter(init.clsVec2); // translation
 }
 void deClassTexMatrix::nfNewSRT::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const deClassVector2 &clsVector2 = *clsTexMatrix.GetDS()->GetClassVector2();
 	
 	const decVector2 &scaling = clsVector2.GetVector2(rt->GetValue(0)->GetRealObject());
@@ -260,7 +260,7 @@ DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat){
 	p_AddParameter(init.clsFlt); // translationV
 }
 void deClassTexMatrix::nfNewSRT2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const float scalingU = rt->GetValue(0)->GetFloat();
 	const float scalingV = rt->GetValue(1)->GetFloat();
 	const float rotation = rt->GetValue(2)->GetFloat();
@@ -279,7 +279,7 @@ DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat){
 	p_AddParameter(init.clsVec2); // translation
 }
 void deClassTexMatrix::nfNewRT::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const deClassVector2 &clsVector2 = *clsTexMatrix.GetDS()->GetClassVector2();
 	
 	const float rotation = rt->GetValue(0)->GetFloat();
@@ -297,7 +297,7 @@ DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat){
 	p_AddParameter(init.clsFlt); // translationV
 }
 void deClassTexMatrix::nfNewRT2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const float rotation = rt->GetValue(0)->GetFloat();
 	const float translationU = rt->GetValue(1)->GetFloat();
 	const float translationV = rt->GetValue(2)->GetFloat();
@@ -315,7 +315,7 @@ DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat){
 	p_AddParameter(init.clsVec2); // translation
 }
 void deClassTexMatrix::nfNewCenterSRT::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const deClassVector2 &clsVector2 = *clsTexMatrix.GetDS()->GetClassVector2();
 	
 	const decVector2 &scaling = clsVector2.GetVector2(rt->GetValue(0)->GetRealObject());
@@ -336,7 +336,7 @@ DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat){
 	p_AddParameter(init.clsFlt); // translationV
 }
 void deClassTexMatrix::nfNewCenterSRT2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const float scalingU = rt->GetValue(0)->GetFloat();
 	const float scalingV = rt->GetValue(1)->GetFloat();
 	const float rotation = rt->GetValue(2)->GetFloat();
@@ -354,7 +354,7 @@ DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat){
 	p_AddParameter(init.clsFlt); // rotation
 }
 void deClassTexMatrix::nfNewCenterRotation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const float rotation = rt->GetValue(0)->GetFloat();
 	
 	clsTexMatrix.PushTexMatrix(rt, decTexMatrix::CreateCenterRotation(rotation * DEG2RAD));
@@ -493,7 +493,7 @@ dsFunction(init.clsTexMat, "transformNormal", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_
 }
 void deClassTexMatrix::nfTransformNormal::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsTexMatrix.GetDS();
 	deClassVector2 &clsVec2 = *ds.GetClassVector2();
 	dsRealObject * const objNormal = rt->GetValue(0)->GetRealObject();
@@ -509,7 +509,7 @@ dsFunction(init.clsTexMat, "getRightVector", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_N
 }
 void deClassTexMatrix::nfGetRightVector::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsTexMatrix.GetDS();
 	deClassVector2 &clsVec2 = *ds.GetClassVector2();
 	
@@ -522,7 +522,7 @@ dsFunction(init.clsTexMat, "getUpVector", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATI
 }
 void deClassTexMatrix::nfGetUpVector::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsTexMatrix.GetDS();
 	deClassVector2 &clsVec2 = *ds.GetClassVector2();
 	
@@ -535,7 +535,7 @@ dsFunction(init.clsTexMat, "getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATI
 }
 void deClassTexMatrix::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsTexMatrix.GetDS();
 	deClassVector2 &clsVec2 = *ds.GetClassVector2();
 	
@@ -558,7 +558,7 @@ dsFunction(init.clsTexMat, "getScaling", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 }
 void deClassTexMatrix::nfGetScaling::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsTexMatrix.GetDS();
 	deClassVector2 &clsVec2 = *ds.GetClassVector2();
 	
@@ -571,7 +571,7 @@ dsFunction(init.clsTexMat, "getInverse", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 }
 void deClassTexMatrix::nfGetInverse::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	
 	clsTexMatrix.PushTexMatrix(rt, matrix.Invert());
 }
@@ -582,7 +582,7 @@ dsFunction(init.clsTexMat, "getRotation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATI
 }
 void deClassTexMatrix::nfGetRotation::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	
 	clsTexMatrix.PushTexMatrix(rt, matrix.GetRotationMatrix());
 }
@@ -593,7 +593,7 @@ dsFunction(init.clsTexMat, "normalize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 }
 void deClassTexMatrix::nfNormalize::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	clsTexMatrix.PushTexMatrix(rt, matrix.Normalized());
 }
 
@@ -604,7 +604,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsTexMatrix2){
 }
 void deClassTexMatrix::nfToTexMatrix2::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	const deScriptingDragonScript &ds = *((deClassTexMatrix*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = *(static_cast<deClassTexMatrix*>(GetOwnerClass()))->GetDS();
 	deClassTexMatrix2 &clsTexMatrix2 = *ds.GetClassTexMatrix2();
 	
 	clsTexMatrix2.PushTexMatrix(rt, matrix.ToTexMatrix2());
@@ -618,7 +618,7 @@ deClassTexMatrix::nfReadFromFile::nfReadFromFile(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsFileReader); // reader
 }
 void deClassTexMatrix::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const deClassFileReader &clsFileReader = *clsTexMatrix.GetDS()->GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	decTexMatrix matrix;
@@ -643,7 +643,7 @@ deClassTexMatrix::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFuncti
 }
 void deClassTexMatrix::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	const deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	const deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const deClassFileWriter &clsFileWriter = *clsTexMatrix.GetDS()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
@@ -670,7 +670,7 @@ deClassTexMatrix::nfOpAdd::nfOpAdd(const sInitData &init) : dsFunction(init.clsT
 }
 void deClassTexMatrix::nfOpAdd::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	
 	dsRealObject * const objMat = rt->GetValue(0)->GetRealObject();
 	if(!objMat){
@@ -689,7 +689,7 @@ deClassTexMatrix::nfOpSubtract::nfOpSubtract(const sInitData &init) : dsFunction
 }
 void deClassTexMatrix::nfOpSubtract::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	
 	dsRealObject * const objMat = rt->GetValue(0)->GetRealObject();
 	if(!objMat){
@@ -708,7 +708,7 @@ deClassTexMatrix::nfOpScale::nfOpScale(const sInitData &init) : dsFunction(init.
 }
 void deClassTexMatrix::nfOpScale::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const float k = rt->GetValue(0)->GetFloat();
 	
 	clsTexMatrix.PushTexMatrix(rt, matrix * k);
@@ -721,7 +721,7 @@ deClassTexMatrix::nfOpDivide::nfOpDivide(const sInitData &init) : dsFunction(ini
 }
 void deClassTexMatrix::nfOpDivide::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	const float k = rt->GetValue(0)->GetFloat();
 	
 	clsTexMatrix.PushTexMatrix(rt, matrix / k);
@@ -734,7 +734,7 @@ deClassTexMatrix::nfOpMultiply::nfOpMultiply(const sInitData &init) : dsFunction
 }
 void deClassTexMatrix::nfOpMultiply::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	
 	dsRealObject * const objMat = rt->GetValue(0)->GetRealObject();
 	if(!objMat){
@@ -753,7 +753,7 @@ deClassTexMatrix::nfOpMultiply2::nfOpMultiply2(const sInitData &init) : dsFuncti
 }
 void deClassTexMatrix::nfOpMultiply2::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	const deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	const deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	deClassVector2 &clsVec2 = *clsTexMatrix.GetDS()->GetClassVector2();
 	
 	dsRealObject * const objTexCoord = rt->GetValue(0)->GetRealObject();
@@ -774,7 +774,7 @@ deClassTexMatrix::nfOpMultiply3::nfOpMultiply3(const sInitData &init) : dsFuncti
 }
 void deClassTexMatrix::nfOpMultiply3::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	const deClassTexMatrix &clsTexMatrix = *((deClassTexMatrix*)GetOwnerClass());
+	const deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	deClassVector2 &clsVec2 = *clsTexMatrix.GetDS()->GetClassVector2();
 	const float u = rt->GetValue(0)->GetFloat();
 	const float v = rt->GetValue(0)->GetFloat();
@@ -791,7 +791,7 @@ deClassTexMatrix::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.cl
 }
 void deClassTexMatrix::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassTexMatrix * const clsTexMatrix = (deClassTexMatrix*)GetOwnerClass();
+	deClassTexMatrix * const clsTexMatrix = static_cast<deClassTexMatrix*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsTexMatrix)){

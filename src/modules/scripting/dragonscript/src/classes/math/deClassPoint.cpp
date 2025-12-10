@@ -84,7 +84,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassPoint::nfNew3::RunFunction(dsRunTime *RT, dsValue *This){
 	decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(This))->point;
-	deClassPoint *clsPoint = (deClassPoint*)GetOwnerClass();
+	deClassPoint *clsPoint = static_cast<deClassPoint*>(GetOwnerClass());
 	point = clsPoint->GetPoint(RT->GetValue(0)->GetRealObject());
 }
 
@@ -130,7 +130,7 @@ deClassPoint::nfSmallest::nfSmallest(const sInitData &init) : dsFunction(init.cl
 }
 void deClassPoint::nfSmallest::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint &clsPoint = *((deClassPoint*)GetOwnerClass());
+	deClassPoint &clsPoint = *(static_cast<deClassPoint*>(GetOwnerClass()));
 	
 	const decPoint &p = clsPoint.GetPoint(rt->GetValue(0)->GetRealObject());
 	
@@ -145,7 +145,7 @@ deClassPoint::nfSmallest2::nfSmallest2(const sInitData &init) : dsFunction(init.
 }
 void deClassPoint::nfSmallest2::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint &clsPoint = *((deClassPoint*)GetOwnerClass());
+	deClassPoint &clsPoint = *(static_cast<deClassPoint*>(GetOwnerClass()));
 	const int x = rt->GetValue(0)->GetInt();
 	const int y = rt->GetValue(1)->GetInt();
 	
@@ -159,7 +159,7 @@ deClassPoint::nfLargest::nfLargest(const sInitData &init) : dsFunction(init.clsP
 }
 void deClassPoint::nfLargest::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint &clsPoint = *((deClassPoint*)GetOwnerClass());
+	deClassPoint &clsPoint = *(static_cast<deClassPoint*>(GetOwnerClass()));
 	const decPoint &p = clsPoint.GetPoint(rt->GetValue(0)->GetRealObject());
 	clsPoint.PushPoint(rt, decPoint(decMath::max(point.x, p.x), decMath::max(point.y, p.y)));
 }
@@ -172,7 +172,7 @@ deClassPoint::nfLargest2::nfLargest2(const sInitData &init) : dsFunction(init.cl
 }
 void deClassPoint::nfLargest2::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint &clsPoint = *((deClassPoint*)GetOwnerClass());
+	deClassPoint &clsPoint = *(static_cast<deClassPoint*>(GetOwnerClass()));
 	const int x = rt->GetValue(0)->GetInt();
 	const int y = rt->GetValue(1)->GetInt();
 	
@@ -185,7 +185,7 @@ deClassPoint::nfAbsolute::nfAbsolute(const sInitData &init) : dsFunction(init.cl
 }
 void deClassPoint::nfAbsolute::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint &clsPoint = *((deClassPoint*)GetOwnerClass());
+	deClassPoint &clsPoint = *(static_cast<deClassPoint*>(GetOwnerClass()));
 	clsPoint.PushPoint(rt, point.Absolute());
 }
 
@@ -201,7 +201,7 @@ deClassPoint::nfIsEqualTo::nfIsEqualTo(const sInitData &init) : dsFunction(init.
 }
 void deClassPoint::nfIsEqualTo::RunFunction(dsRunTime *RT, dsValue *This){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(This))->point;
-	deClassPoint *clsPoint = (deClassPoint*)GetOwnerClass();
+	deClassPoint *clsPoint = static_cast<deClassPoint*>(GetOwnerClass());
 	const decPoint &p = clsPoint->GetPoint(RT->GetValue(0)->GetRealObject());
 	RT->PushBool(point == p);
 }
@@ -247,7 +247,7 @@ deClassPoint::nfCompMultiply::nfCompMultiply(const sInitData &init) : dsFunction
 }
 void deClassPoint::nfCompMultiply::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint &clsPoint = *((deClassPoint*)GetOwnerClass());
+	deClassPoint &clsPoint = *(static_cast<deClassPoint*>(GetOwnerClass()));
 	
 	const decPoint &argPoint = clsPoint.GetPoint(rt->GetValue(0)->GetRealObject());
 	
@@ -261,7 +261,7 @@ deClassPoint::nfCompDivide::nfCompDivide(const sInitData &init) : dsFunction(ini
 }
 void deClassPoint::nfCompDivide::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint &clsPoint = *((deClassPoint*)GetOwnerClass());
+	deClassPoint &clsPoint = *(static_cast<deClassPoint*>(GetOwnerClass()));
 	
 	const decPoint &argPoint = clsPoint.GetPoint(rt->GetValue(0)->GetRealObject());
 	if(argPoint.x == 0 || argPoint.y == 0){
@@ -282,7 +282,7 @@ deClassPoint::nfReadFromFile::nfReadFromFile(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsFileReader); // reader
 }
 void deClassPoint::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassPoint &clsPoint = *((deClassPoint*)GetOwnerClass());
+	deClassPoint &clsPoint = *(static_cast<deClassPoint*>(GetOwnerClass()));
 	const deClassFileReader &clsFileReader = *clsPoint.GetScriptModule()->GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	decPoint point;
@@ -301,7 +301,7 @@ deClassPoint::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFunction(i
 }
 void deClassPoint::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(myself))->point;
-	const deClassPoint &clsPoint = *((deClassPoint*)GetOwnerClass());
+	const deClassPoint &clsPoint = *(static_cast<deClassPoint*>(GetOwnerClass()));
 	const deClassFileWriter &clsFileWriter = *clsPoint.GetScriptModule()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
@@ -323,7 +323,7 @@ deClassPoint::nfOpMinus::nfOpMinus(const sInitData &init) : dsFunction(init.clsP
 }
 void deClassPoint::nfOpMinus::RunFunction(dsRunTime *RT, dsValue *This){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(This))->point;
-	deClassPoint *clsPoint = (deClassPoint*)GetOwnerClass();
+	deClassPoint *clsPoint = static_cast<deClassPoint*>(GetOwnerClass());
 	clsPoint->PushPoint(RT, -point);
 }
 
@@ -334,7 +334,7 @@ deClassPoint::nfOpAdd::nfOpAdd(const sInitData &init) : dsFunction(init.clsPt,
 }
 void deClassPoint::nfOpAdd::RunFunction(dsRunTime *RT, dsValue *This){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(This))->point;
-	deClassPoint *clsPoint = (deClassPoint*)GetOwnerClass();
+	deClassPoint *clsPoint = static_cast<deClassPoint*>(GetOwnerClass());
 	const decPoint &p = clsPoint->GetPoint(RT->GetValue(0)->GetRealObject());
 	clsPoint->PushPoint(RT, point + p);
 }
@@ -346,7 +346,7 @@ deClassPoint::nfOpSubtract::nfOpSubtract(const sInitData &init) : dsFunction(ini
 }
 void deClassPoint::nfOpSubtract::RunFunction(dsRunTime *RT, dsValue *This){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(This))->point;
-	deClassPoint *clsPoint = (deClassPoint*)GetOwnerClass();
+	deClassPoint *clsPoint = static_cast<deClassPoint*>(GetOwnerClass());
 	const decPoint &p = clsPoint->GetPoint(RT->GetValue(0)->GetRealObject());
 	clsPoint->PushPoint(RT, point - p);
 }
@@ -358,7 +358,7 @@ deClassPoint::nfOpScale::nfOpScale(const sInitData &init) : dsFunction(init.clsP
 }
 void deClassPoint::nfOpScale::RunFunction(dsRunTime *RT, dsValue *This){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(This))->point;
-	deClassPoint *clsPoint = (deClassPoint*)GetOwnerClass();
+	deClassPoint *clsPoint = static_cast<deClassPoint*>(GetOwnerClass());
 	clsPoint->PushPoint(RT, point * RT->GetValue(0)->GetInt());
 }
 
@@ -369,7 +369,7 @@ deClassPoint::nfOpDivide::nfOpDivide(const sInitData &init) : dsFunction(init.cl
 }
 void deClassPoint::nfOpDivide::RunFunction(dsRunTime *RT, dsValue *This){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(This))->point;
-	deClassPoint *clsPoint = (deClassPoint*)GetOwnerClass();
+	deClassPoint *clsPoint = static_cast<deClassPoint*>(GetOwnerClass());
 	clsPoint->PushPoint(RT, point / RT->GetValue(0)->GetInt());
 }
 
@@ -380,7 +380,7 @@ deClassPoint::nfOpMultiply::nfOpMultiply(const sInitData &init) : dsFunction(ini
 }
 void deClassPoint::nfOpMultiply::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint &clsPoint = *((deClassPoint*)GetOwnerClass());
+	deClassPoint &clsPoint = *(static_cast<deClassPoint*>(GetOwnerClass()));
 	
 	const decPoint &argPoint = clsPoint.GetPoint(rt->GetValue(0)->GetRealObject());
 	
@@ -394,7 +394,7 @@ deClassPoint::nfOpLess::nfOpLess(const sInitData &init) : dsFunction(init.clsPt,
 }
 void deClassPoint::nfOpLess::RunFunction(dsRunTime *RT, dsValue *This){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(This))->point;
-	deClassPoint *clsPoint = (deClassPoint*)GetOwnerClass();
+	deClassPoint *clsPoint = static_cast<deClassPoint*>(GetOwnerClass());
 	const decPoint &p = clsPoint->GetPoint(RT->GetValue(0)->GetRealObject());
 	RT->PushBool(point < p);
 }
@@ -406,7 +406,7 @@ deClassPoint::nfOpLessEqual::nfOpLessEqual(const sInitData &init) : dsFunction(i
 }
 void deClassPoint::nfOpLessEqual::RunFunction(dsRunTime *RT, dsValue *This){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(This))->point;
-	deClassPoint *clsPoint = (deClassPoint*)GetOwnerClass();
+	deClassPoint *clsPoint = static_cast<deClassPoint*>(GetOwnerClass());
 	const decPoint &p = clsPoint->GetPoint(RT->GetValue(0)->GetRealObject());
 	RT->PushBool(point <= p);
 }
@@ -418,7 +418,7 @@ deClassPoint::nfOpGreater::nfOpGreater(const sInitData &init) : dsFunction(init.
 }
 void deClassPoint::nfOpGreater::RunFunction(dsRunTime *RT, dsValue *This){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(This))->point;
-	deClassPoint *clsPoint = (deClassPoint*)GetOwnerClass();
+	deClassPoint *clsPoint = static_cast<deClassPoint*>(GetOwnerClass());
 	const decPoint &p = clsPoint->GetPoint(RT->GetValue(0)->GetRealObject());
 	RT->PushBool(point > p);
 }
@@ -430,7 +430,7 @@ deClassPoint::nfOpGreaterEqual::nfOpGreaterEqual(const sInitData &init) : dsFunc
 }
 void deClassPoint::nfOpGreaterEqual::RunFunction(dsRunTime *RT, dsValue *This){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(This))->point;
-	deClassPoint *clsPoint = (deClassPoint*)GetOwnerClass();
+	deClassPoint *clsPoint = static_cast<deClassPoint*>(GetOwnerClass());
 	const decPoint &p = clsPoint->GetPoint(RT->GetValue(0)->GetRealObject());
 	RT->PushBool(point >= p);
 }
@@ -447,7 +447,7 @@ deClassPoint::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.clsPt,
 }
 void deClassPoint::nfEquals::RunFunction(dsRunTime *RT, dsValue *This){
 	const decPoint &point = static_cast<sPtNatDat*>(p_GetNativeData(This))->point;
-	deClassPoint *clsPoint = (deClassPoint*)GetOwnerClass();
+	deClassPoint *clsPoint = static_cast<deClassPoint*>(GetOwnerClass());
 	dsValue *obj = RT->GetValue(0);
 	if(!p_IsObjOfType(obj, clsPoint)){
 		RT->PushBool(false);

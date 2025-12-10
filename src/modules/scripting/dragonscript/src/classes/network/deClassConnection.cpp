@@ -67,7 +67,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassConnection::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sConNatDat *nd = static_cast<sConNatDat*>(p_GetNativeData(myself);
-	deClassConnection *clsCon = (deClassConnection*)GetOwnerClass();
+	deClassConnection *clsCon = static_cast<deClassConnection*>(GetOwnerClass());
 	deConnectionManager *connectionMgr = clsCon->GetGameEngine()->GetConnectionManager();
 	
 	// create connection
@@ -153,7 +153,7 @@ deClassConnection::nfSendMessage::nfSendMessage(const sInitData &init) : dsFunct
 }
 void deClassConnection::nfSendMessage::RunFunction(dsRunTime *rt, dsValue *myself){
 	deConnection *connection = static_cast<sConNatDat*>(p_GetNativeData(myself))->connection;
-	deClassNetworkMessage *clsNM = ((deClassConnection*)GetOwnerClass())->GetClassNetworkMessage();
+	deClassNetworkMessage *clsNM = (static_cast<deClassConnection*>(GetOwnerClass()))->GetClassNetworkMessage();
 	
 	dsRealObject *objMessage = rt->GetValue(0)->GetRealObject();
 	if(!objMessage) DSTHROW(dueInvalidParam);
@@ -171,7 +171,7 @@ deClassConnection::nfSendReliableMessage::nfSendReliableMessage(const sInitData 
 }
 void deClassConnection::nfSendReliableMessage::RunFunction(dsRunTime *rt, dsValue *myself){
 	deConnection *connection = static_cast<sConNatDat*>(p_GetNativeData(myself))->connection;
-	deClassNetworkMessage *clsNM = ((deClassConnection*)GetOwnerClass())->GetClassNetworkMessage();
+	deClassNetworkMessage *clsNM = (static_cast<deClassConnection*>(GetOwnerClass()))->GetClassNetworkMessage();
 	
 	dsRealObject *objMessage = rt->GetValue(0)->GetRealObject();
 	if(!objMessage) DSTHROW(dueInvalidParam);
@@ -188,8 +188,8 @@ deClassConnection::nfLinkState::nfLinkState(const sInitData &init) : dsFunction(
 }
 void deClassConnection::nfLinkState::RunFunction(dsRunTime *rt, dsValue *myself){
 	deConnection *connection = static_cast<sConNatDat*>(p_GetNativeData(myself))->connection;
-	deClassNetworkMessage *clsNM = ((deClassConnection*)GetOwnerClass())->GetClassNetworkMessage();
-	deClassNetworkState *clsNS = ((deClassConnection*)GetOwnerClass())->GetClassNetworkState();
+	deClassNetworkMessage *clsNM = (static_cast<deClassConnection*>(GetOwnerClass()))->GetClassNetworkMessage();
+	deClassNetworkState *clsNS = (static_cast<deClassConnection*>(GetOwnerClass()))->GetClassNetworkState();
 	
 	dsRealObject *objMessage = rt->GetValue(0)->GetRealObject();
 	dsRealObject *objState = rt->GetValue(1)->GetRealObject();
@@ -214,7 +214,7 @@ deClassConnection::nfGetConnectionListener::nfGetConnectionListener(const sInitD
 void deClassConnection::nfGetConnectionListener::RunFunction(dsRunTime *rt, dsValue *myself){
 	deConnection *connection = static_cast<sConNatDat*>(p_GetNativeData(myself))->connection;
 	dedsConnection *scrConnection = (dedsConnection*)connection->GetPeerScripting();
-	deClassConnection *clsConnection = (deClassConnection*)GetOwnerClass();
+	deClassConnection *clsConnection = static_cast<deClassConnection*>(GetOwnerClass());
 	
 	if(scrConnection){
 		rt->PushObject(scrConnection->GetCallback(), clsConnection->GetClassConnectionListener());
@@ -260,7 +260,7 @@ dsFunction(init.clsCon, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 }
 void deClassConnection::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deConnection *connection = static_cast<sConNatDat*>(p_GetNativeData(myself))->connection;
-	deClassConnection *clsCon = (deClassConnection*)GetOwnerClass();
+	deClassConnection *clsCon = static_cast<deClassConnection*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsCon)){
@@ -347,7 +347,7 @@ void deClassConnection::CreateClassMembers(dsEngine *engine){
 
 deConnection *deClassConnection::GetConnection(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return static_cast<sConNatDat*>(p_GetNativeData(myself->GetBuffer()))->connection;

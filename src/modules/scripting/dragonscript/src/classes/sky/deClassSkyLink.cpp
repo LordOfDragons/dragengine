@@ -88,7 +88,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSky){
 }
 void deClassSkyLink::nfGetSky::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyLinkNatDat &nd = *static_cast<sSkyLinkNatDat*>(p_GetNativeData(myself));
-	deScriptingDragonScript &ds = ((deClassSkyLink*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassSkyLink*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSky()->PushSky(rt, nd.sky);
 }
@@ -139,7 +139,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 void deClassSkyLink::nfGetCurve::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyLinkNatDat &nd = *static_cast<sSkyLinkNatDat*>(p_GetNativeData(myself));
 	const deSkyLink &link = nd.sky->GetLinkAt(nd.index);
-	deScriptingDragonScript &ds = ((deClassSkyLink*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassSkyLink*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassCurveBezier()->PushCurve(rt, link.GetCurve());
 }
@@ -153,7 +153,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassSkyLink::nfSetCurve::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSkyLinkNatDat &nd = *static_cast<sSkyLinkNatDat*>(p_GetNativeData(myself));
 	deSkyLink &link = nd.sky->GetLinkAt(nd.index);
-	deScriptingDragonScript &ds = ((deClassSkyLink*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassSkyLink*>(GetOwnerClass()))->GetDS();
 	
 	dsRealObject * const objCurve = rt->GetValue(0)->GetRealObject();
 	
@@ -198,7 +198,7 @@ dsFunction(init.clsSkyCtrl, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassSkyLink::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkyLink * const clsSkyCtrl = (deClassSkyLink*)GetOwnerClass();
+	deClassSkyLink * const clsSkyCtrl = static_cast<deClassSkyLink*>(GetOwnerClass());
 	const sSkyLinkNatDat &nd = *static_cast<sSkyLinkNatDat*>(p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	

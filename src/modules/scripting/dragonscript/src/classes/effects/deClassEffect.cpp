@@ -131,7 +131,7 @@ dsFunction(init.clsEffect, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 }
 void deClassEffect::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	deEffect * const effect = static_cast<sEffNatDat*>(p_GetNativeData(myself))->effect;
-	deClassEffect * const clsEffect = (deClassEffect*)GetOwnerClass();
+	deClassEffect * const clsEffect = static_cast<deClassEffect*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsEffect)){
@@ -221,7 +221,7 @@ void deClassEffect::AssignEffect(dsRealObject *myself, deEffect *effect){
 
 deEffect *deClassEffect::GetEffect(dsRealObject *myself) const {
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
 	return static_cast<sEffNatDat*>(p_GetNativeData(myself->GetBuffer()))->effect;

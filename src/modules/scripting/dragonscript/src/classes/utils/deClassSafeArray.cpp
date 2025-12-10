@@ -108,8 +108,8 @@ void deClassSafeArray::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	sSafeArrayNatDat &nd = *((sSafeArrayNatDat*)p_GetNativeData(myself));
 	
-	nd.array = NULL;
-	nd.iterators = NULL;
+	nd.array = nullptr;
+	nd.iterators = nullptr;
 	
 	try{
 		nd.array = new decPointerList;
@@ -118,11 +118,11 @@ void deClassSafeArray::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	}catch(...){
 		if(nd.iterators){
 			delete nd.iterators;
-			nd.iterators = NULL;
+			nd.iterators = nullptr;
 		}
 		if(nd.array){
 			delete nd.array;
-			nd.array = NULL;
+			nd.array = nullptr;
 		}
 		throw;
 	}
@@ -231,7 +231,7 @@ void deClassSafeArray::nfAdd::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	dsValue *value = NULL;
+	dsValue *value = nullptr;
 	
 	try{
 		value = rt->CreateValue(rt->GetEngine()->GetClassObject());
@@ -260,7 +260,7 @@ void deClassSafeArray::nfAddIfAbsent::RunFunction(dsRunTime *rt, dsValue *myself
 		return;
 	}
 	
-	dsValue *value = NULL;
+	dsValue *value = nullptr;
 	
 	try{
 		value = rt->CreateValue(rt->GetEngine()->GetClassObject());
@@ -460,7 +460,7 @@ void deClassSafeArray::nfFind::RunFunction(dsRunTime *rt, dsValue *myself){
 	const int funcIndexRun = ((dsClassBlock*)rt->GetEngine()->GetClassBlock())->GetFuncIndexRun1();
 	
 	dsClass * const clsBool = rt->GetEngine()->GetClassBool();
-	dsValue *tempValue = NULL;
+	dsValue *tempValue = nullptr;
 	bool found = false;
 	
 	nd.iterators->Add(&iterator);

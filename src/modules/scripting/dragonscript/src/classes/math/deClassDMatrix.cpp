@@ -119,7 +119,7 @@ deClassDMatrix::nfNewTranslation::nfNewTranslation(const sInitData &init) : dsFu
 	p_AddParameter(init.clsDVec); // translation
 }
 void deClassDMatrix::nfNewTranslation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	const deClassDVector &clsDVec = *ds.GetClassDVector();
 	dsRealObject * const objTranslation = rt->GetValue(0)->GetRealObject();
@@ -137,7 +137,7 @@ deClassDMatrix::nfNewTranslation2::nfNewTranslation2(const sInitData &init) : ds
 	p_AddParameter(init.clsFlt); // tz
 }
 void deClassDMatrix::nfNewTranslation2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const double tx = (double)rt->GetValue(0)->GetFloat();
 	const double ty = (double)rt->GetValue(1)->GetFloat();
 	const double tz = (double)rt->GetValue(2)->GetFloat();
@@ -151,7 +151,7 @@ deClassDMatrix::nfNewScaling::nfNewScaling(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsDVec); // scaling
 }
 void deClassDMatrix::nfNewScaling::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	const deClassDVector &clsDVec = *ds.GetClassDVector();
 	dsRealObject * const objScaling = rt->GetValue(0)->GetRealObject();
@@ -169,7 +169,7 @@ deClassDMatrix::nfNewScaling2::nfNewScaling2(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsFlt); // sz
 }
 void deClassDMatrix::nfNewScaling2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const double sx = (double)rt->GetValue(0)->GetFloat();
 	const double sy = (double)rt->GetValue(1)->GetFloat();
 	const double sz = (double)rt->GetValue(2)->GetFloat();
@@ -183,7 +183,7 @@ deClassDMatrix::nfNewRotationX::nfNewRotationX(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFlt); // rotation
 }
 void deClassDMatrix::nfNewRotationX::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const double rotation = (double)(rt->GetValue(0)->GetFloat() * DEG2RAD);
 	
 	clsDMatrix.PushDMatrix(rt, decDMatrix::CreateRotationX(rotation));
@@ -195,7 +195,7 @@ deClassDMatrix::nfNewRotationY::nfNewRotationY(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFlt); // rotation
 }
 void deClassDMatrix::nfNewRotationY::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const double rotation = (double)(rt->GetValue(0)->GetFloat() * DEG2RAD);
 	
 	clsDMatrix.PushDMatrix(rt, decDMatrix::CreateRotationY(rotation));
@@ -207,7 +207,7 @@ deClassDMatrix::nfNewRotationZ::nfNewRotationZ(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFlt); // rotation
 }
 void deClassDMatrix::nfNewRotationZ::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const double rotation = (double)(rt->GetValue(0)->GetFloat() * DEG2RAD);
 	
 	clsDMatrix.PushDMatrix(rt, decDMatrix::CreateRotationZ(rotation));
@@ -219,7 +219,7 @@ deClassDMatrix::nfNewRotation::nfNewRotation(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsDVec); // rotation
 }
 void deClassDMatrix::nfNewRotation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	const deClassDVector &clsDVec = *ds.GetClassDVector();
 	dsRealObject * const objRotation = rt->GetValue(0)->GetRealObject();
@@ -237,7 +237,7 @@ deClassDMatrix::nfNewRotation2::nfNewRotation2(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFlt); // rz
 }
 void deClassDMatrix::nfNewRotation2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const double rx = (double)(rt->GetValue(0)->GetFloat() * DEG2RAD);
 	const double ry = (double)(rt->GetValue(1)->GetFloat() * DEG2RAD);
 	const double rz = (double)(rt->GetValue(2)->GetFloat() * DEG2RAD);
@@ -252,7 +252,7 @@ deClassDMatrix::nfNewRotationAxis::nfNewRotationAxis(const sInitData &init) : ds
 	p_AddParameter(init.clsFlt); // rotation
 }
 void deClassDMatrix::nfNewRotationAxis::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsMatrix.GetDS();
 	const deClassDVector &clsDVec = *ds.GetClassDVector();
 	
@@ -270,7 +270,7 @@ deClassDMatrix::nfNewSRT::nfNewSRT(const sInitData &init) : dsFunction(init.clsD
 	p_AddParameter(init.clsDVec); // translation
 }
 void deClassDMatrix::nfNewSRT::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	const deClassDVector &clsDVec = *ds.GetClassDVector();
 	dsRealObject * const objScaling = rt->GetValue(0)->GetRealObject();
@@ -291,7 +291,7 @@ deClassDMatrix::nfNewRT::nfNewRT(const sInitData &init) : dsFunction(init.clsDMa
 	p_AddParameter(init.clsDVec); // translation
 }
 void deClassDMatrix::nfNewRT::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	const deClassDVector &clsDVec = *ds.GetClassDVector();
 	dsRealObject * const objRotation = rt->GetValue(0)->GetRealObject();
@@ -312,7 +312,7 @@ deClassDMatrix::nfNewSVUT::nfNewSVUT(const sInitData &init) : dsFunction(init.cl
 	p_AddParameter(init.clsDVec); // translation
 }
 void deClassDMatrix::nfNewSVUT::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	const deClassDVector &clsDVec = *ds.GetClassDVector();
 	dsRealObject * const objScaling = rt->GetValue(0)->GetRealObject();
@@ -335,7 +335,7 @@ deClassDMatrix::nfNewVU::nfNewVU(const sInitData &init) : dsFunction(init.clsDMa
 	p_AddParameter(init.clsDVec); // up
 }
 void deClassDMatrix::nfNewVU::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	const deClassDVector &clsDVec = *ds.GetClassDVector();
 	dsRealObject * const objView = rt->GetValue(0)->GetRealObject();
@@ -355,7 +355,7 @@ deClassDMatrix::nfNewCamera::nfNewCamera(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsDVec); // up
 }
 void deClassDMatrix::nfNewCamera::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	const deClassDVector &clsDVec = *ds.GetClassDVector();
 	dsRealObject * const objPosition = rt->GetValue(0)->GetRealObject();
@@ -377,7 +377,7 @@ deClassDMatrix::nfNewWorld::nfNewWorld(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsDVec); // up
 }
 void deClassDMatrix::nfNewWorld::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	const deClassDVector &clsDVec = *ds.GetClassDVector();
 	dsRealObject * const objPosition = rt->GetValue(0)->GetRealObject();
@@ -398,7 +398,7 @@ deClassDMatrix::nfNewWorld2::nfNewWorld2(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsQuat); // orientation
 }
 void deClassDMatrix::nfNewWorld2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	const deClassDVector &clsDVec = *ds.GetClassDVector();
 	const deClassQuaternion &clsQuat = *ds.GetClassQuaternion();
@@ -422,7 +422,7 @@ deClassDMatrix::nfNewProjection::nfNewProjection(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsFlt); // zfar
 }
 void deClassDMatrix::nfNewProjection::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const int width = rt->GetValue(0)->GetInt();
 	const int height = rt->GetValue(1)->GetInt();
 	const double fov = (double)(rt->GetValue(2)->GetFloat() * DEG2RAD);
@@ -444,7 +444,7 @@ deClassDMatrix::nfNewOrtho::nfNewOrtho(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsInt); // zfar
 }
 void deClassDMatrix::nfNewOrtho::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const int left = rt->GetValue(0)->GetInt();
 	const int right = rt->GetValue(1)->GetInt();
 	const int top = rt->GetValue(2)->GetInt();
@@ -461,7 +461,7 @@ deClassDMatrix::nfNewFromQuaternion::nfNewFromQuaternion(const sInitData &init) 
 	p_AddParameter(init.clsQuat); // quaternion
 }
 void deClassDMatrix::nfNewFromQuaternion::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	const deClassQuaternion &clsQuat = *ds.GetClassQuaternion();
 	dsRealObject * const objQuaternion = rt->GetValue(0)->GetRealObject();
@@ -738,7 +738,7 @@ deClassDMatrix::nfGetViewVector::nfGetViewVector(const sInitData &init) : dsFunc
 }
 void deClassDMatrix::nfGetViewVector::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	deClassDVector &clsDVec = *ds.GetClassDVector();
 	
@@ -751,7 +751,7 @@ deClassDMatrix::nfGetUpVector::nfGetUpVector(const sInitData &init) : dsFunction
 }
 void deClassDMatrix::nfGetUpVector::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	deClassDVector &clsDVec = *ds.GetClassDVector();
 	
@@ -764,7 +764,7 @@ deClassDMatrix::nfGetRightVector::nfGetRightVector(const sInitData &init) : dsFu
 }
 void deClassDMatrix::nfGetRightVector::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	deClassDVector &clsDVec = *ds.GetClassDVector();
 	
@@ -777,7 +777,7 @@ deClassDMatrix::nfGetPosition::nfGetPosition(const sInitData &init) : dsFunction
 }
 void deClassDMatrix::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	deClassDVector &clsDVec = *ds.GetClassDVector();
 	
@@ -791,7 +791,7 @@ deClassDMatrix::nfTransformNormal::nfTransformNormal(const sInitData &init) : ds
 }
 void deClassDMatrix::nfTransformNormal::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	deClassDVector &clsDVec = *ds.GetClassDVector();
 	dsRealObject * const objNormal = rt->GetValue(0)->GetRealObject();
@@ -807,7 +807,7 @@ deClassDMatrix::nfGetEulerAngles::nfGetEulerAngles(const sInitData &init) : dsFu
 }
 void deClassDMatrix::nfGetEulerAngles::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	deClassDVector &clsDVec = *ds.GetClassDVector();
 	
@@ -820,7 +820,7 @@ init.clsDMatrix, "getScaling", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.cl
 }
 void deClassDMatrix::nfGetScaling::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	deClassDVector &clsDVec = *ds.GetClassDVector();
 	
@@ -833,7 +833,7 @@ deClassDMatrix::nfGetInverse::nfGetInverse(const sInitData &init) : dsFunction(i
 }
 void deClassDMatrix::nfGetInverse::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	
 	clsDMatrix.PushDMatrix(rt, matrix.Invert());
 }
@@ -844,7 +844,7 @@ deClassDMatrix::nfGetRotation::nfGetRotation(const sInitData &init) : dsFunction
 }
 void deClassDMatrix::nfGetRotation::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	
 	clsDMatrix.PushDMatrix(rt, matrix.GetRotationMatrix());
 }
@@ -856,7 +856,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsDMatrix){
 }
 void deClassDMatrix::nfNormalize::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	clsDMatrix.PushDMatrix(rt, matrix.Normalized());
 }
 
@@ -866,7 +866,7 @@ deClassDMatrix::nfToQuaternion::nfToQuaternion(const sInitData &init) : dsFuncti
 }
 void deClassDMatrix::nfToQuaternion::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	deClassQuaternion &clsQuat = *ds.GetClassQuaternion();
 	
@@ -879,7 +879,7 @@ deClassDMatrix::nfToDMatrix4::nfToDMatrix4(const sInitData &init) : dsFunction(i
 }
 void deClassDMatrix::nfToDMatrix4::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	const deScriptingDragonScript &ds = *((deClassDMatrix*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = *(static_cast<deClassDMatrix*>(GetOwnerClass()))->GetDS();
 	deClassDMatrix4 &clsDMatrix4 = *ds.GetClassDMatrix4();
 	
 	clsDMatrix4.PushDMatrix4(rt, matrix);
@@ -891,7 +891,7 @@ deClassDMatrix::nfToMatrix4::nfToMatrix4(const sInitData &init) : dsFunction(ini
 }
 void deClassDMatrix::nfToMatrix4::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	const deScriptingDragonScript &ds = *((deClassDMatrix*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = *(static_cast<deClassDMatrix*>(GetOwnerClass()))->GetDS();
 	deClassMatrix4 &clsMatrix4 = *ds.GetClassMatrix4();
 	
 	clsMatrix4.PushMatrix4(rt, matrix.ToMatrix());
@@ -903,7 +903,7 @@ deClassDMatrix::nfToMatrix::nfToMatrix(const sInitData &init) : dsFunction(init.
 }
 void deClassDMatrix::nfToMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	const deScriptingDragonScript &ds = *((deClassDMatrix*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = *(static_cast<deClassDMatrix*>(GetOwnerClass()))->GetDS();
 	deClassMatrix &clsMatrix = *ds.GetClassMatrix();
 	
 	clsMatrix.PushMatrix(rt, matrix.ToMatrix());
@@ -920,7 +920,7 @@ deClassDMatrix::nfReadFromFile::nfReadFromFile(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFileReader); // reader
 }
 void deClassDMatrix::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deClassFileReader &clsFileReader = *clsDMatrix.GetDS()->GetClassFileReader();
 	decBaseFileReader * const reader = clsFileReader.GetFileReader(rt->GetValue(0)->GetRealObject());
 	decDMatrix matrix;
@@ -945,7 +945,7 @@ deClassDMatrix::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFunction
 }
 void deClassDMatrix::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	const deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	const deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deClassFileWriter &clsFileWriter = *clsDMatrix.GetDS()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
 	
@@ -972,7 +972,7 @@ deClassDMatrix::nfOpAdd::nfOpAdd(const sInitData &init) : dsFunction(init.clsDMa
 }
 void deClassDMatrix::nfOpAdd::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	dsRealObject * const objMatrix = rt->GetValue(0)->GetRealObject();
 	
 	const decDMatrix &otherMatrix = clsDMatrix.GetDMatrix(objMatrix);
@@ -987,7 +987,7 @@ deClassDMatrix::nfOpSubtract::nfOpSubtract(const sInitData &init) : dsFunction(i
 }
 void deClassDMatrix::nfOpSubtract::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	dsRealObject * const objMatrix = rt->GetValue(0)->GetRealObject();
 	
 	const decDMatrix &otherMatrix = clsDMatrix.GetDMatrix(objMatrix);
@@ -1002,7 +1002,7 @@ deClassDMatrix::nfOpScale::nfOpScale(const sInitData &init) : dsFunction(init.cl
 }
 void deClassDMatrix::nfOpScale::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const double k = (double)rt->GetValue(0)->GetFloat();
 	
 	clsDMatrix.PushDMatrix(rt, matrix * k);
@@ -1015,7 +1015,7 @@ deClassDMatrix::nfOpDivide::nfOpDivide(const sInitData &init) : dsFunction(init.
 }
 void deClassDMatrix::nfOpDivide::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const double k = (double)rt->GetValue(0)->GetFloat();
 	
 	clsDMatrix.PushDMatrix(rt, matrix / k);
@@ -1028,7 +1028,7 @@ deClassDMatrix::nfOpMultiply::nfOpMultiply(const sInitData &init) : dsFunction(i
 }
 void deClassDMatrix::nfOpMultiply::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	dsRealObject * const objMatrix = rt->GetValue(0)->GetRealObject();
 	
 	const decDMatrix &otherMatrix = clsDMatrix.GetDMatrix(objMatrix);
@@ -1043,7 +1043,7 @@ deClassDMatrix::nfOpMultiply2::nfOpMultiply2(const sInitData &init) : dsFunction
 }
 void deClassDMatrix::nfOpMultiply2::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix &clsDMatrix = *((deClassDMatrix*)GetOwnerClass());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassDMatrix*>(GetOwnerClass()));
 	const deScriptingDragonScript &ds = *clsDMatrix.GetDS();
 	deClassDVector &clsDVec = *ds.GetClassDVector();
 	dsRealObject * const objVector = rt->GetValue(0)->GetRealObject();
@@ -1065,7 +1065,7 @@ deClassDMatrix::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.clsD
 }
 void deClassDMatrix::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassDMatrix * const clsDMatrix = (deClassDMatrix*)GetOwnerClass();
+	deClassDMatrix * const clsDMatrix = static_cast<deClassDMatrix*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsDMatrix)){
