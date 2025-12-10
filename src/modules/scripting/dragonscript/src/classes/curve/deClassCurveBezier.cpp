@@ -93,7 +93,7 @@ void deClassCurveBezier::nfNewDefaultLinear::RunFunction(dsRunTime *rt, dsValue 
 	}
 	
 	rt->CreateObjectNakedOnStack(GetOwnerClass());
-	const sCBeNatDat &nd = *static_cast<sCBeNatDat*>(p_GetNativeData(rt->GetValue(0)));
+	sCBeNatDat * const nd = static_cast<sCBeNatDat*>(p_GetNativeData(rt->GetValue(0)));
 	
 	try{
 		nd->curve = new decCurveBezier();
@@ -116,7 +116,7 @@ void deClassCurveBezier::nfNewDefaultBezier::RunFunction(dsRunTime *rt, dsValue 
 	}
 	
 	rt->CreateObjectNakedOnStack(GetOwnerClass());
-	const sCBeNatDat &nd = *static_cast<sCBeNatDat*>(p_GetNativeData(rt->GetValue(0)));
+	sCBeNatDat * const nd = static_cast<sCBeNatDat*>(p_GetNativeData(rt->GetValue(0)));
 	
 	try{
 		nd->curve = new decCurveBezier();
