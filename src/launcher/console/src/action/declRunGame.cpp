@@ -502,7 +502,7 @@ void declRunGame::ApplyCustomModuleParameters(){
 	delGameProfile::Ref profile = pGame->GetCustomProfile();
 	
 	if(!profile){
-		profile.TakeOver(pLauncher.CreateGameProfile());
+		profile = pLauncher.CreateGameProfile();
 		*profile = *pRunParams.GetGameProfile(); // copy content not pointer
 		pGame->SetCustomProfile(profile);
 	}

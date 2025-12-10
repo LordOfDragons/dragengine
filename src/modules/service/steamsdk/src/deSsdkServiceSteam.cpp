@@ -153,7 +153,7 @@ const decUniqueID &id){
 		}
 	}
 	
-	return nullptr;
+	return {};
 }
 
 deSsdkPendingRequest::Ref deSsdkServiceSteam::RemoveFirstPendingRequestWithFunction(
@@ -170,7 +170,7 @@ const char *function){
 		}
 	}
 	
-	return nullptr;
+	return {};
 }
 
 deSsdkPendingRequest::Ref deSsdkServiceSteam::NewPendingRequest(
@@ -294,12 +294,12 @@ void deSsdkServiceSteam::LoadUserResource(const decUniqueID &id, const deService
 
 deServiceObject::Ref deSsdkServiceSteam::GetUserFeatures(){
 	if(!pAuthProviderIcon){
-		pAuthProviderIcon.TakeOver(pModule.GetGameEngine()->GetImageManager()->LoadImage(
-			&pModule.GetVFS(), "/share/image/authProviderIcon.webp", "/"));
+		pAuthProviderIcon = pModule.GetGameEngine()->GetImageManager()->LoadImage(
+			&pModule.GetVFS(), "/share/image/authProviderIcon.webp", "/");
 	}
 	if(!pAuthProviderImage){
-		pAuthProviderImage.TakeOver(pModule.GetGameEngine()->GetImageManager()->LoadImage(
-			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/"));
+		pAuthProviderImage = pModule.GetGameEngine()->GetImageManager()->LoadImage(
+			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/");
 	}
 	
 	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
@@ -574,8 +574,8 @@ void deSsdkServiceSteam::pCreateImage(int handle, deServiceObject &so, const cha
 	uint32 width, height;
 	DEASSERT_TRUE(SteamUtils()->GetImageSize(handle, &width, &height))
 	
-	const deImage::Ref image(deImage::Ref::New(pModule.GetGameEngine()->
-		GetImageManager()->CreateImage(width, height, 1, 4, 8)));
+	const deImage::Ref image(pModule.GetGameEngine()->GetImageManager()->
+		CreateImage(width, height, 1, 4, 8));
 	DEASSERT_TRUE(SteamUtils()->GetImageRGBA(handle,
 		(uint8*)image->GetData(), width * height * 4))
 	

@@ -170,8 +170,7 @@ void deoglShaderManager::ValidateCaches(){
 	if(vfs.ExistsFile(pathValidationString)){
 		decString oldValidationString;
 		try{
-			const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-					vfs.OpenFileForReading(pathValidationString)));
+			const decBaseFileReader::Ref reader(vfs.OpenFileForReading(pathValidationString));
 			const int size = reader->GetLength();
 			oldValidationString.Set(' ', size);
 			reader->Read((void*)oldValidationString.GetString(), size);
@@ -196,8 +195,7 @@ void deoglShaderManager::ValidateCaches(){
 	
 	// write validation string
 	try{
-		decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(pathValidationString))
-			->WriteString(validationString);
+		vfs.OpenFileForWriting(pathValidationString)->WriteString(validationString);
 		
 	}catch(const deException &){
 		logger.LogInfo("ShaderManager Cache: Writing validation failed");
@@ -364,8 +362,7 @@ const deoglShaderDefines &defines, cGetProgramListener *listener){
 	}
 	
 	try{
-		compiling = new cCompileProgram(*this, deoglShaderProgram::Ref::New(
-			pCreateProgram(sources, defines)));
+		compiling = new cCompileProgram(*this, pCreateProgram(sources, defines));
 		compiling->AddListener(listener);
 		
 	}catch(const deException &e){
@@ -712,7 +709,7 @@ void deoglShaderManager::pLoadIncludableSourcesIn(const char *directory){
 				pRenderThread.GetLogger().LogInfoFormat("Loading includable source %s...", filename);
 			}*/
 			
-			reader.TakeOver(vfs.OpenFileForReading(path));
+			reader = vfs.OpenFileForReading(path);
 			const int length = reader->GetLength();
 			source.Set(' ', length);
 			reader->Read((char*)source.GetString(), length);
@@ -756,8 +753,7 @@ void deoglShaderManager::pLoadSourcesIn(const char *directory){
 				pRenderThread.GetLogger().LogInfoFormat("Loading shader %s...", filename);
 			}*/
 			
-			const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-					vfs.OpenFileForReading(path)));
+			const decBaseFileReader::Ref reader(vfs.OpenFileForReading(path));
 			
 			const deoglShaderSources::Ref sources(deoglShaderSources::Ref::New(
 				new deoglShaderSources(logger, reader)));

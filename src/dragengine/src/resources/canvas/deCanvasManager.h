@@ -71,22 +71,22 @@ public:
 	deCanvasImage::Ref CreateCanvasImage();
 	
 	/** \brief Create paint canvas. */
-	deCanvasPaint *CreateCanvasPaint();
+	deCanvasPaint::Ref CreateCanvasPaint();
 	
 	/** \brief Create canvas view canvas. */
-	deCanvasCanvasView *CreateCanvasCanvasView();
+	deCanvasCanvasView::Ref CreateCanvasCanvasView();
 	
 	/** \brief Create render world canvas. */
-	deCanvasRenderWorld *CreateCanvasRenderWorld();
+	deCanvasRenderWorld::Ref CreateCanvasRenderWorld();
 	
 	/** \brief Create text canvas. */
-	deCanvasText *CreateCanvasText();
+	deCanvasText::Ref CreateCanvasText();
 	
 	/** \brief Create video player canvas. */
-	deCanvasVideoPlayer *CreateCanvasVideoPlayer();
+	deCanvasVideoPlayer::Ref CreateCanvasVideoPlayer();
 	
 	/** \brief Create view canvas. */
-	deCanvasView *CreateCanvasView();
+	deCanvasView::Ref CreateCanvasView();
 	
 	/** \brief Release leaking resources and report them. */
 	void ReleaseLeakingResources() override;

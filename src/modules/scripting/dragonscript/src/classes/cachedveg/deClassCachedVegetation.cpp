@@ -358,10 +358,10 @@ public:
 		
 		for(t=0; t<typeCount; t++){
 			// model path { string8 }
-			deModel::Ref model(deModel::Ref::New(mdlmgr->LoadModel(reader.ReadString8(), "/")));
+			deModel::Ref model(mdlmgr->LoadModel(reader.ReadString8(), "/"));
 			
 			// skin path { string8 }
-			deSkin::Ref skin(deSkin::Ref::New(skinmgr->LoadSkin(reader.ReadString8(), "/")));
+			deSkin::Ref skin(skinmgr->LoadSkin(reader.ReadString8(), "/"));
 			
 			rotPerForce = reader.ReadFloat() * DEG2RAD; // rotation per force {float}
 			restitution = reader.ReadFloat(); // restitution {float}
@@ -516,7 +516,7 @@ public:
 		try{
 			path.SetFromUnix(cacheFile);
 			
-			sector->LoadCacheFile(pEngine, decBaseFileReader::Ref::New(vfs->OpenFileForReading(path)));
+			sector->LoadCacheFile(pEngine, vfs->OpenFileForReading(path));
 			
 		}catch(...){
 			sector->Clear();

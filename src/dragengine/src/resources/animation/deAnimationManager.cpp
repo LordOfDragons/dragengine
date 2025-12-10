@@ -189,8 +189,7 @@ deVirtualFileSystem &vfs, const char *filename){
 	deBaseAnimationModule &module = *((deBaseAnimationModule*)
 		GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtAnimation, filename));
 	
-	module.SaveAnimation(decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(
-		decPath::CreatePathUnix(filename))), animation);
+	module.SaveAnimation(vfs.OpenFileForWriting(decPath::CreatePathUnix(filename)), animation);
 }
 
 

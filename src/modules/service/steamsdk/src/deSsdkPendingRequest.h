@@ -47,7 +47,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deSsdkPendingRequest(const deServiceObject::Ref &data = nullptr);
+	deSsdkPendingRequest(const deServiceObject::Ref &data = {});
 	
 	/** Delete module. */
 	~deSsdkPendingRequest() override;

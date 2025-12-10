@@ -91,8 +91,7 @@ void deRLTaskReadLanguagePack::Run(){
 	
 	pLanguagePack->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
 	pLanguagePack->SetAsynchron(true);
-	module->LoadLanguagePack(decBaseFileReader::Ref::New(
-		GetVFS()->OpenFileForReading(vfsPath)), pLanguagePack);
+	module->LoadLanguagePack(GetVFS()->OpenFileForReading(vfsPath), pLanguagePack);
 	
 	if(!pLanguagePack->Verify()){
 		DETHROW(deeInvalidParam);

@@ -69,7 +69,7 @@ void deoalLSConfiguration::LoadConfig(){
 		return;
 	}
 	
-	pLoadConfig(decBaseFileReader::Ref::New(vfs.OpenFileForReading(path)));
+	pLoadConfig(vfs.OpenFileForReading(path));
 }
 
 void deoalLSConfiguration::SaveConfig(){

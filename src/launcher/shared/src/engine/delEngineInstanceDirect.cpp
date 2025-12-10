@@ -225,8 +225,7 @@ bool delEngineInstanceDirect::StartEngine(){
 			const deVFSDiskDirectory::Ref diskDir(
 				deVFSDiskDirectory::Ref::NewWith(diskPath));
 			
-			engineLogger.TakeOver(new deLoggerFile(decBaseFileWriter::Ref::New(
-				diskDir->OpenFileForWriting(filePath))));
+			engineLogger.TakeOver(new deLoggerFile(diskDir->OpenFileForWriting(filePath)));
 		}
 		
 		// create os
@@ -612,7 +611,7 @@ const char *archivePath, const decStringSet &hiddenPath){
 	
 	const deArchiveContainer::Ref container(amgr.CreateContainer(
 		decPath::CreatePathUnix("/"),
-		deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/")),
+		amgr.OpenArchive(delgaVfs, delgaFileTitle, "/"),
 		decPath::CreatePathUnix(archivePath)));
 	
 	const int count = hiddenPath.GetCount();
@@ -661,7 +660,7 @@ const char *windowTitle, const char *iconPath){
 	deImage::Ref icon;
 	if(strlen(iconPath) > 0){
 		try{
-			icon.TakeOver(pEngine->GetImageManager()->LoadImage(iconPath, "/"));
+			icon = pEngine->GetImageManager()->LoadImage(iconPath, "/");
 			
 		}catch(const deException &e){
 			pLogger->LogException(GetLauncher().GetLogSource(), e);
@@ -887,7 +886,7 @@ void delEngineInstanceDirect::ReadDelgaGameDefs(const char *delgaFile, decString
 	pathDelgaDir.RemoveLastComponent();
 	delgaVfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathDelgaDir));
 	
-	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/")));
+	const deArchive::Ref delgaArchive(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/"));
 	
 	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	vfs->AddContainer(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot));
@@ -896,14 +895,13 @@ void delEngineInstanceDirect::ReadDelgaGameDefs(const char *delgaFile, decString
 	vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
 	const dePathList &files = collect.GetFiles();
 	const int fileCount = files.GetCount();
-	decBaseFileReader::Ref reader;
 	decString gameDef;
 	int i;
 	
 	for(i=0; i<fileCount; i++){
 		const decPath &path = files.GetAt(i);
 		
-		reader.TakeOver(vfs->OpenFileForReading(path));
+		const decBaseFileReader::Ref reader(vfs->OpenFileForReading(path));
 		const int size = reader->GetLength();
 		gameDef.Set(' ', size);
 		reader->Read((void*)gameDef.GetString(), size);
@@ -929,7 +927,7 @@ void delEngineInstanceDirect::ReadDelgaPatchDefs(const char *delgaFile, decStrin
 	pathDelgaDir.RemoveLastComponent();
 	delgaVfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathDelgaDir));
 	
-	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/")));
+	const deArchive::Ref delgaArchive(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/"));
 	
 	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	vfs->AddContainer(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot));
@@ -938,14 +936,13 @@ void delEngineInstanceDirect::ReadDelgaPatchDefs(const char *delgaFile, decStrin
 	vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
 	const dePathList &files = collect.GetFiles();
 	const int fileCount = files.GetCount();
-	decBaseFileReader::Ref reader;
 	decString patchDef;
 	int i;
 	
 	for(i=0; i<fileCount; i++){
 		const decPath &path = files.GetAt(i);
 		
-		reader.TakeOver(vfs->OpenFileForReading(path));
+		const decBaseFileReader::Ref reader(vfs->OpenFileForReading(path));
 		const int size = reader->GetLength();
 		patchDef.Set(' ', size);
 		reader->Read((void*)patchDef.GetString(), size);
@@ -979,18 +976,17 @@ const decStringList &filenames, decObjectOrderedSet &filesContent){
 	pathDelgaDir.RemoveLastComponent();
 	delgaVfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathDelgaDir));
 	
-	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/")));
+	const deArchive::Ref delgaArchive(amgr.OpenArchive(delgaVfs, delgaFileTitle, "/"));
 	
 	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	vfs->AddContainer(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot));
 	
 	// read files
-	decBaseFileReader::Ref reader;
 	int i;
 	
 	for(i=0; i<fileCount; i++){
 		const decString &filename = filenames.GetAt(i);
-		reader.TakeOver(vfs->OpenFileForReading(decPath::CreatePathUnix(filename)));
+		const decBaseFileReader::Ref reader(vfs->OpenFileForReading(decPath::CreatePathUnix(filename)));
 		const int size = reader->GetLength();
 		
 		const decMemoryFile::Ref content(decMemoryFile::Ref::NewWith(filename));

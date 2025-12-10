@@ -100,11 +100,7 @@ void deClassServiceObject::nfNewBool::RunFunction(dsRunTime *rt, dsValue*){
 	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
 	
 	const bool value = rt->GetValue(0)->GetBool();
-	
-	const deServiceObject::Ref object(deServiceObject::Ref::New(
-		deServiceObject::NewBool(value)));
-	
-	clsServiceObject.PushServiceObject(rt, object);
+	clsServiceObject.PushServiceObject(rt, deServiceObject::NewBool(value));
 }
 
 
@@ -119,11 +115,7 @@ void deClassServiceObject::nfNewInteger::RunFunction(dsRunTime *rt, dsValue*){
 	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
 	
 	const int value = rt->GetValue(0)->GetInt();
-	
-	const deServiceObject::Ref object(deServiceObject::Ref::New(
-		deServiceObject::NewInt(value)));
-	
-	clsServiceObject.PushServiceObject(rt, object);
+	clsServiceObject.PushServiceObject(rt, deServiceObject::NewInt(value));
 }
 
 
@@ -138,10 +130,7 @@ void deClassServiceObject::nfNewFloat::RunFunction(dsRunTime *rt, dsValue*){
 	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
 	
 	const float value = rt->GetValue(0)->GetFloat();
-	
-	const deServiceObject::Ref object(deServiceObject::Ref::New(deServiceObject::NewFloat(value)));
-	
-	clsServiceObject.PushServiceObject(rt, object);
+	clsServiceObject.PushServiceObject(rt, deServiceObject::NewFloat(value));
 }
 
 
@@ -156,11 +145,7 @@ void deClassServiceObject::nfNewString::RunFunction(dsRunTime *rt, dsValue*){
 	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
 	
 	const char * const value = rt->GetValue(0)->GetString();
-	
-	const deServiceObject::Ref object(deServiceObject::Ref::New(
-		deServiceObject::NewString(value)));
-	
-	clsServiceObject.PushServiceObject(rt, object);
+	clsServiceObject.PushServiceObject(rt, deServiceObject::NewString(value));
 }
 
 
@@ -179,10 +164,7 @@ void deClassServiceObject::nfNewResource::RunFunction(dsRunTime *rt, dsValue*){
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deServiceObject::Ref object(deServiceObject::Ref::New(
-		deServiceObject::NewResource(deResource::Ref(value))));
-	
-	clsServiceObject.PushServiceObject(rt, object);
+	clsServiceObject.PushServiceObject(rt, deServiceObject::NewResource(deResource::Ref(value)));
 }
 
 
@@ -203,10 +185,7 @@ void deClassServiceObject::nfNewData::RunFunction(dsRunTime *rt, dsValue*){
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deServiceObject::Ref object(deServiceObject::Ref::New(
-		deServiceObject::NewData(decMemoryFile::Ref(value))));
-	
-	clsServiceObject.PushServiceObject(rt, object);
+	clsServiceObject.PushServiceObject(rt, deServiceObject::NewData(decMemoryFile::Ref(value)));
 }
 
 
@@ -218,7 +197,7 @@ DSTM_STATIC | DSTM_PUBLIC | DSTM_NATIVE, init.clsServiceObject){
 
 void deClassServiceObject::nfNewList::RunFunction(dsRunTime *rt, dsValue*){
 	deClassServiceObject &clsServiceObject = *((deClassServiceObject*)GetOwnerClass());
-	clsServiceObject.PushServiceObject(rt, deServiceObject::Ref::New(deServiceObject::NewList()));
+	clsServiceObject.PushServiceObject(rt, deServiceObject::NewList());
 }
 
 

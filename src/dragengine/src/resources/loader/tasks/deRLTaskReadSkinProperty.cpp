@@ -76,11 +76,8 @@ void deRLTaskReadSkinProperty::VisitImage(deSkinPropertyImage &property){
 	
 	if(path.IsEmpty()){
 		// TODO has to be done by the graphic module not here
-		deImage::Ref image;
-		
 		try{
-			image.TakeOver(pEngine.GetImageManager()->LoadDefault());
-			property.SetImage(image);
+			property.SetImage(pEngine.GetImageManager()->LoadDefault());
 			
 		}catch(const deException &){
 		}
@@ -116,10 +113,8 @@ void deRLTaskReadSkinProperty::VisitVideo(deSkinPropertyVideo &property){
 	}
 	
 	// loaded directly since video uses decoders the responsible module create later on
-	deVideo::Ref video;
 	try{
-		video.TakeOver(pEngine.GetVideoManager()->LoadVideo(pVirtualFileSystem, path, pBasePath, false));
-		property.SetVideo(video);
+		property.SetVideo(pEngine.GetVideoManager()->LoadVideo(pVirtualFileSystem, path, pBasePath, false));
 		
 	}catch(const deException &){
 	}

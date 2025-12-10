@@ -88,7 +88,7 @@ void delGameManager::LoadGames(delEngineInstance &instance){
 	int i;
 	
 	for(i=0; i<count; i++){
-		game.TakeOver(pLauncher.CreateGame());
+		game = pLauncher.CreateGame();
 		game->SetIdentifier(decUuid(directories.GetAt(i).GetLastComponent(), false));
 		game->LoadConfig();
 		
@@ -193,7 +193,7 @@ void delGameManager::LoadGameFromDisk(delEngineInstance &instance, const decStri
 		
 	}else{
 		try{
-			const delGame::Ref game(delGame::Ref::New(pLauncher.CreateGame()));
+			const delGame::Ref game(pLauncher.CreateGame());
 			gameXML.ReadFromFile(decDiskFileReader::Ref::NewWith(path), game);
 			
 			if(!decPath::IsNativePathAbsolute(game->GetGameDirectory())){
@@ -252,7 +252,7 @@ void delGameManager::CreateDefaultProfile(){
 	delEngineModule *module;
 	
 	if(!pDefaultProfile){
-		pDefaultProfile.TakeOver(pLauncher.CreateGameProfile());
+		pDefaultProfile = pLauncher.CreateGameProfile();
 	}
 	
 	module = engine.GetBestModuleForType(deModuleSystem::emtGraphic);

@@ -2998,7 +2998,7 @@ debpBulletShape::Ref debpColliderComponent::pCreateBPShape(){
 	}
 	
 	if(count == 0){
-		return nullptr;
+		return {};
 	}
 	
 	debpCreateBulletShape createBulletShape;

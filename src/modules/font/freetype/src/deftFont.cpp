@@ -91,7 +91,7 @@ void deftFont::LoadFont(deFont &font){
 	pModule.AssertFT(FT_Set_Pixel_Sizes(pFace, 0, 16), "FT_Set_Pixel_Sizes");
 	
 	font.SetImagePath("");
-	font.SetImage(deImage::Ref::New(pModule.GetGameEngine()->GetImageManager()->LoadDefault()));
+	font.SetImage(pModule.GetGameEngine()->GetImageManager()->LoadDefault());
 	
 	font.SetLineHeight(16);
 	font.SetBaseLine(16 * 3 / 4);
@@ -161,8 +161,8 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 	// pDebugPrintGlyphs(font, size);
 	
 	decTimer timer;
-	const deImage::Ref image(deImage::Ref::New(pModule.GetGameEngine()->GetImageManager()->
-		CreateImage(imageSize.x, imageSize.y, imageSize.z, pComponentCount, 8)));
+	const deImage::Ref image(pModule.GetGameEngine()->GetImageManager()->
+		CreateImage(imageSize.x, imageSize.y, imageSize.z, pComponentCount, 8));
 	pRenderGlyphs(size, image);
 	image->NotifyImageDataChanged();
 	size->SetImage(image);

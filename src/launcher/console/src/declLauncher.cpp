@@ -230,9 +230,8 @@ void declLauncher::pInitLogger(){
 	loggerEngineDebug->AddLogger(loggerConsole);
 	
 	// file
-	const deLoggerFile::Ref loggerFile(deLoggerFile::Ref::New(new deLoggerFile(
-		decBaseFileWriter::Ref::New(GetVFS()->OpenFileForWriting(
-			decPath::CreatePathUnix("/logs/delauncher-console.log"))))));
+	const deLoggerFile::Ref loggerFile(deLoggerFile::Ref::NewWith(
+		GetVFS()->OpenFileForWriting(decPath::CreatePathUnix("/logs/delauncher-console.log"))));
 	
 	loggerLauncherError->AddLogger(loggerFile);
 	loggerLauncherWarn->AddLogger(loggerFile);

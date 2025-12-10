@@ -132,7 +132,7 @@ void deClassModelBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.builder = &builder;
 	
 	try{
-		model.TakeOver(ds.GetGameEngine()->GetModelManager()->CreateModel(filename, builder));
+		model = ds.GetGameEngine()->GetModelManager()->CreateModel(filename, builder);
 		
 	}catch(...){
 		nd.builder = NULL;

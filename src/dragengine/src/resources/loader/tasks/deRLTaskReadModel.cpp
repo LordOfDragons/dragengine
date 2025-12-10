@@ -90,7 +90,7 @@ void deRLTaskReadModel::Run(){
 	
 	pModel->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
 	pModel->SetAsynchron(true);
-	module->LoadModel(decBaseFileReader::Ref::New(GetVFS()->OpenFileForReading(vfsPath)), pModel);
+	module->LoadModel(GetVFS()->OpenFileForReading(vfsPath), pModel);
 	
 	if(!pModel->Verify()){
 		DETHROW(deeInvalidParam);

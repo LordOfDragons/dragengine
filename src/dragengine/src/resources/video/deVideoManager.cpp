@@ -115,7 +115,7 @@ const char *basePath, bool asynchron){
 		}
 		const TIME_SYSTEM modificationTime = vfs->GetFileModificationTime(path);
 		
-		deVideo::Ref findVideo = (deVideo*)pVideos.GetWithFilename(vfs, path.GetPathUnix());
+		deVideo::Ref findVideo((deVideo*)pVideos.GetWithFilename(vfs, path.GetPathUnix()));
 		
 		if(findVideo && findVideo->GetModificationTime() != modificationTime){
 			LogInfoFormat("Video '%s' (base path '%s') changed on VFS: Outdating and Reloading",
@@ -265,7 +265,7 @@ deVideoAudioDecoder::Ref deVideoManager::CreateAudioDecoder(deVideo *video){
 		peer = module->CreateAudioDecoder(OpenFileForReading(
 			*video->GetVirtualFileSystem(), video->GetFilename()));
 		if(!peer){
-			return nullptr; // no audio or not supported
+			return deVideoAudioDecoder::Ref(); // no audio or not supported
 		}
 		
 		audioDecoder.TakeOver(new deVideoAudioDecoder(*this, video));

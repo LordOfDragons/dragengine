@@ -214,8 +214,7 @@ void deModio::StoreFailureStateIfFailed(){
 	
 	LogInfo("Store failure state: Failed");
 	try{
-		decBaseFileWriter::Ref::New(GetVFS().OpenFileForWriting(
-			pPathFailureState))->WriteByte('1');
+		GetVFS().OpenFileForWriting(pPathFailureState)->WriteByte('1');
 		
 	}catch(const deException &e){
 		LogException(e);
@@ -225,8 +224,7 @@ void deModio::StoreFailureStateIfFailed(){
 void deModio::ClearFailureState(){
 	LogInfo("Clear failure state");
 	try{
-		decBaseFileWriter::Ref::New(GetVFS().OpenFileForWriting(
-			pPathFailureState))->WriteByte('0');
+		GetVFS().OpenFileForWriting(pPathFailureState)->WriteByte('0');
 		
 	}catch(const deException &e){
 		LogException(e);
@@ -417,8 +415,7 @@ bool deModio::pReadFailureState(){
 	}
 	
 	try{
-		return decBaseFileReader::Ref::New(vfs.OpenFileForReading(
-			pPathFailureState))->ReadByte() == '1';
+		return vfs.OpenFileForReading(pPathFailureState)->ReadByte() == '1';
 		
 	}catch(const deException &e){
 		LogException(e);

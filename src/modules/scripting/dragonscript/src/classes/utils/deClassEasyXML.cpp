@@ -127,12 +127,9 @@ void deClassEasyXML::nfNewFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	dedsXmlParser parser(ds.GetGameEngine()->GetLogger());
 	
 	try{
-		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-			 vfs.OpenFileForReading(decPath::CreatePathUnix(filename))));
-		
 		nd.document = new dedsXmlDocument(filename);
 		
-		if(parser.ParseXml(reader, nd.document)){
+		if(parser.ParseXml(vfs.OpenFileForReading(decPath::CreatePathUnix(filename)), nd.document)){
 			nd.document->StripComments();
 			nd.document->CleanCharData();
 			
@@ -187,12 +184,9 @@ void deClassEasyXML::nfNewFile2::RunFunction(dsRunTime *rt, dsValue *myself){
 	dedsXmlParser parser(ds.GetGameEngine()->GetLogger());
 	
 	try{
-		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-			 vfs.OpenFileForReading(decPath::CreatePathUnix(filename))));
-		
 		nd.document = new dedsXmlDocument(filename);
 		
-		if(parser.ParseXml(reader, nd.document)){
+		if(parser.ParseXml(vfs.OpenFileForReading(decPath::CreatePathUnix(filename)), nd.document)){
 			if(stripComments){
 				nd.document->StripComments();
 			}

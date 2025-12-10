@@ -87,7 +87,7 @@ void deRLTaskReadRig::Run(){
 	
 	pRig->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
 	pRig->SetAsynchron(true);
-	module->LoadRig(decBaseFileReader::Ref::New(GetVFS()->OpenFileForReading(vfsPath)), pRig);
+	module->LoadRig(GetVFS()->OpenFileForReading(vfsPath), pRig);
 	
 	if(!pRig->Verify()){
 		DETHROW(deeInvalidParam);

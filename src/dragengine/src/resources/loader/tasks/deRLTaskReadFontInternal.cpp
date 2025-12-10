@@ -96,7 +96,7 @@ void deRLTaskReadFontInternal::Run(){
 	
 	pFont->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
 	pFont->SetAsynchron(true);
-	module->LoadFont(decBaseFileReader::Ref::New(GetVFS()->OpenFileForReading(vfsPath)), pFont);
+	module->LoadFont(GetVFS()->OpenFileForReading(vfsPath), pFont);
 	
 	pSucceeded = true;
 	LogRunExit();

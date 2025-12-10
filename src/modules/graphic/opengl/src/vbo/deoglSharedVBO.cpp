@@ -261,7 +261,7 @@ deoglSharedVBOBlock *deoglSharedVBO::GetBlockAt(int index) const{
 
 deoglSharedVBOBlock::Ref deoglSharedVBO::AddBlock(int size, int indexCount){
 	if(size < 1 || size > pSize || indexCount < 0 || indexCount > pIndexSize){
-		return NULL;
+		return {};
 	}
 	
 	const int index = IndexOfEmptyBlockWithMinSize(size, indexCount);

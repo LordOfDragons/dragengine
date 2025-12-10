@@ -66,11 +66,11 @@ deoglSharedSPBRTIGroup::Ref deoglSharedSPBRTIGroupList::GetWith(deoglSharedSPB &
 	for(i=0; i<count; i++){
 		deoglSharedSPBRTIGroup * const group = (deoglSharedSPBRTIGroup*)pGroups.GetAt(i);
 		if(&group->GetSharedSPB() == &sharedSPB && group->GetTextureCount() == textureCount){
-			return group;
+			return deoglSharedSPBRTIGroup::Ref(group);
 		}
 	}
 	
-	return nullptr;
+	return {};
 }
 
 deoglSharedSPBRTIGroup::Ref deoglSharedSPBRTIGroupList::GetOrAddWith(deoglSharedSPB &sharedSPB, int textureCount){

@@ -51,7 +51,7 @@ deglGameIcon::~deglGameIcon(){
 
 deglSharedIcon::Ref deglGameIcon::GetScaledFoxIcon(int size) const{
 	if(!pFoxIcon){
-		return nullptr;
+		return {};
 	}
 	
 	if(GetSize() == size){

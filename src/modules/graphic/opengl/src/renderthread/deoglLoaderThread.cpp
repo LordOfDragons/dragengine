@@ -225,7 +225,7 @@ bool deoglLoaderThread::AwaitTask(const deoglLoaderThreadTask::Ref &task){
 	pRenderThread.GetLogger().LogInfoFormat("LoaderThread: AwaitTask: Add task %p", task);
 	#endif
 	
-	if(!AddTask(waitableTask.Pointer())){
+	if(!AddTask(waitableTask)){
 		return false;
 	}
 	

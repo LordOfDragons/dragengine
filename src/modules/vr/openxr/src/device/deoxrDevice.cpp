@@ -124,14 +124,14 @@ void deoxrDevice::SetDisplayImages(const char *name){
 	decString filename;
 	
 	filename.Format("%s/%s/image.png", basePath, name);
-	pDisplayImage.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
+	pDisplayImage = imageManager.LoadImage(vfs, filename, "/");
 	
 	const int sizes[4] = {128, 64, 32, 16};
 	int i;
 	
 	for(i=0; i<4; i++){
 		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
-		pDisplayIcons.Add(deImage::Ref::New(imageManager.LoadImage(vfs, filename, "/")));
+		pDisplayIcons.Add(imageManager.LoadImage(vfs, filename, "/"));
 	}
 }
 
@@ -267,7 +267,7 @@ deVROpenXR::eInputActions actionAnalog, const char *name, const char *id, const 
 	int i;
 	
 	for(i=0; i<2; i++){
-		axis.TakeOver(deoxrDeviceAxis::Ref::NewWith(*this));
+		axis.TakeOverWith(*this);
 		axis->SetActionAnalog(pOxr.GetAction(actionAnalog));
 		axis->SetType(deInputDeviceAxis::eatStick);
 		axis->SetComponent(i);
@@ -292,7 +292,7 @@ deVROpenXR::eInputActions actionAnalog, const char *name, const char *id, const 
 	int i;
 	
 	for(i=0; i<2; i++){
-		axis.TakeOver(deoxrDeviceAxis::Ref::NewWith(*this));
+		axis.TakeOverWith(*this);
 		axis->SetActionAnalog(pOxr.GetAction(actionAnalog));
 		axis->SetType(deInputDeviceAxis::eatTouchPad);
 		axis->SetComponent(i);

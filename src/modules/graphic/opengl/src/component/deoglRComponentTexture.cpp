@@ -389,7 +389,7 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 				group = list.GetWith(spb);
 				
 				if(!group){
-					group.TakeOver(list.AddWith(spb));
+					group = list.AddWith(spb);
 					group->GetRTSInstance()->SetSubInstanceSPB(&spb);
 				}
 				
@@ -415,7 +415,7 @@ void deoglRComponentTexture::PrepareParamBlocks(){
 					group = list.GetWith(spb, combineCount);
 					
 					if(!group){
-						group.TakeOver(list.AddWith(spb, combineCount));
+						group = list.AddWith(spb, combineCount);
 						group->GetRTSInstance()->SetSubInstanceSPB(&spb);
 					}
 					

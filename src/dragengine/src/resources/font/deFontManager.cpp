@@ -206,7 +206,7 @@ deFont::Ref deFontManager::LoadDebugFont(){
 		if(!findFont->GetPeerGraphic()){
 			GetGraphicSystem()->LoadFont(findFont);
 		}
-		return findFont;
+		return deFont::Ref(findFont);
 	}
 	
 	struct sTempGlyph{
@@ -409,8 +409,8 @@ deFont::Ref deFontManager::LoadDebugFont(){
 	int i;
 	
 	try{
-		const deImage::Ref image(deImage::Ref::New(GetImageManager()->CreateImage(
-			gimp_debugfont.width, gimp_debugfont.height, 1, 4, 8)));
+		const deImage::Ref image(GetImageManager()->CreateImage(
+			gimp_debugfont.width, gimp_debugfont.height, 1, 4, 8));
 		
 		GIMP_DEBUGFONT_RUN_LENGTH_DECODE((unsigned char *)image->GetDataRGBA8(),
 			gimp_debugfont.rle_pixel_data, gimp_debugfont.width * gimp_debugfont.height,
@@ -490,9 +490,8 @@ deFontSize *deFontManager::LoadFontSize(deFont &font, int size){
 			return found;
 		}
 		
-		return font.AddSize(size, module->LoadFontSize(
-			decBaseFileReader::Ref::New(OpenFileForReading(
-				*font.GetVirtualFileSystem(), font.GetFilename())),
+		return font.AddSize(size, module->LoadFontSize(OpenFileForReading(
+				*font.GetVirtualFileSystem(), font.GetFilename()),
 			deFont::Ref(&font), size));
 		
 	}catch(const deException &e){
@@ -556,6 +555,6 @@ void deFontManager::pLoadFontSources(deFont *font){
 	decPath basePath(decPath::CreatePathUnix(font->GetFilename()));
 	basePath.RemoveLastComponent();
 	
-	font->SetImage(deImage::Ref::New(GetImageManager()->LoadImage(
-		font->GetVirtualFileSystem(), font->GetImagePath(), basePath.GetPathUnix())));
+	font->SetImage(GetImageManager()->LoadImage(font->GetVirtualFileSystem(),
+		font->GetImagePath(), basePath.GetPathUnix()));
 }

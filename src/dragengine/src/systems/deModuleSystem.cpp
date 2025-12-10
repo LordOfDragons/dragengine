@@ -941,7 +941,6 @@ void deModuleSystem::pInitAssetLibrary(){
 			pathAsset.GetLastComponent().GetString());
 		
 		pVFSAssetLibraries->AddContainer(arcMgr.CreateContainer(rootPath,
-			deArchive::Ref::New(arcMgr.OpenArchive(pVFSAssetLibraries, pathAsset.GetPathNative(), "/")),
-			rootPath));
+			arcMgr.OpenArchive(pVFSAssetLibraries, pathAsset.GetPathNative(), "/"), rootPath));
 	}
 }

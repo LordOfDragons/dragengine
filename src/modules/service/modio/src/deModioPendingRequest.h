@@ -46,7 +46,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create module. */
-	deModioPendingRequest(const deServiceObject::Ref &data = nullptr);
+	deModioPendingRequest(const deServiceObject::Ref &data = {});
 	
 	/** Delete module. */
 	~deModioPendingRequest() override;

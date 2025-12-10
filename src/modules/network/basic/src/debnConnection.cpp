@@ -1096,7 +1096,7 @@ void debnConnection::pProcessLinkState(int number, decBaseFileReader &reader){
 	
 	deNetworkState::Ref state;
 	if(scrCon){
-		state.TakeOver(pNetBasic->GetGameEngine()->GetNetworkStateManager()->CreateState(readOnly));
+		state = pNetBasic->GetGameEngine()->GetNetworkStateManager()->CreateState(readOnly);
 		if(!scrCon->LinkState(state, message)){
 			state = NULL;
 		}
@@ -1235,7 +1235,7 @@ void debnConnection::pProcessLinkStateLong(int number, decBaseFileReader &reader
 	deBaseScriptingConnection * const scrCon = pConnection->GetPeerScripting();
 	deNetworkState::Ref state;
 	if(scrCon){
-		state.TakeOver(pNetBasic->GetGameEngine()->GetNetworkStateManager()->CreateState(readOnly));
+		state = pNetBasic->GetGameEngine()->GetNetworkStateManager()->CreateState(readOnly);
 		if(!scrCon->LinkState(state, message)){
 			state = nullptr;
 		}

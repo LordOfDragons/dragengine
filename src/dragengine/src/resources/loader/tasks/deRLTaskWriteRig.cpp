@@ -79,7 +79,7 @@ void deRLTaskWriteRig::Run(){
 	decPath path;
 	path.SetFromUnix(GetPath());
 	
-	module->SaveRig(decBaseFileWriter::Ref::New(GetVFS()->OpenFileForWriting(path)), pRig);
+	module->SaveRig(GetVFS()->OpenFileForWriting(path), pRig);
 	
 	pSucceeded = true;
 	LogRunExit();

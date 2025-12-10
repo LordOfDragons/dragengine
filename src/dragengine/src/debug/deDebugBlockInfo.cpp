@@ -51,10 +51,10 @@ pEngine(engine),
 pPadding(1),
 pSpacing(10)
 {
-	pView.TakeOver(engine.GetCanvasManager()->CreateCanvasView());
-	pFont.TakeOver(engine.GetFontManager()->LoadDebugFont());
+	pView = engine.GetCanvasManager()->CreateCanvasView();
+	pFont = engine.GetFontManager()->LoadDebugFont();
 	
-	pViewTitleBg.TakeOver(engine.GetCanvasManager()->CreateCanvasPaint());
+	pViewTitleBg = engine.GetCanvasManager()->CreateCanvasPaint();
 	pViewTitleBg->SetShapeType(deCanvasPaint::estRectangle);
 	pViewTitleBg->SetThickness(0.0f);
 	pViewTitleBg->SetFillColor(decColor(0.5f, 0.25f, 0.25f, 0.5f));
@@ -62,7 +62,7 @@ pSpacing(10)
 	pViewTitleBg->SetOrder(0.0f);
 	pView->AddCanvas(pViewTitleBg);
 	
-	pViewTitle.TakeOver(engine.GetCanvasManager()->CreateCanvasText());
+	pViewTitle = engine.GetCanvasManager()->CreateCanvasText();
 	pViewTitle->SetFont(pFont);
 	pViewTitle->SetColor(decColor(1.0f, 1.0f, 1.0f));
 	pViewTitle->SetFontSize((float)pFont->GetLineHeight());
@@ -185,9 +185,9 @@ const decColor &color, const decColor &bgColor){
 		entry->color = color;
 		entry->bgColor = bgColor;
 		
-		entry->view.TakeOver(canvasManager.CreateCanvasView());
+		entry->view = canvasManager.CreateCanvasView();
 		
-		entry->viewBg.TakeOver(canvasManager.CreateCanvasPaint());
+		entry->viewBg = canvasManager.CreateCanvasPaint();
 		entry->viewBg->SetShapeType(deCanvasPaint::estRectangle);
 		entry->viewBg->SetThickness(0.0f);
 		entry->viewBg->SetFillColor(bgColor);
@@ -195,7 +195,7 @@ const decColor &color, const decColor &bgColor){
 		entry->viewBg->SetOrder(0.0f);
 		entry->view->AddCanvas(entry->viewBg);
 		
-		entry->viewLabel.TakeOver(canvasManager.CreateCanvasText());
+		entry->viewLabel = canvasManager.CreateCanvasText();
 		entry->viewLabel->SetFont(pFont);
 		entry->viewLabel->SetColor(color);
 		entry->viewLabel->SetFontSize((float)pFont->GetLineHeight());
@@ -204,7 +204,7 @@ const decColor &color, const decColor &bgColor){
 		entry->viewLabel->SetSize(pTextSize(pFont, label));
 		entry->view->AddCanvas(entry->viewLabel);
 		
-		entry->viewText.TakeOver(canvasManager.CreateCanvasText());
+		entry->viewText = canvasManager.CreateCanvasText();
 		entry->viewText->SetFont(pFont);
 		entry->viewText->SetColor(color);
 		entry->viewText->SetFontSize((float)pFont->GetLineHeight());

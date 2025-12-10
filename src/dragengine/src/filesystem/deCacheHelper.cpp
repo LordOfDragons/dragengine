@@ -85,7 +85,7 @@ void deCacheHelper::SetCompressionMethod(eCompressionMethods compressionMethod){
 decBaseFileReader::Ref deCacheHelper::Read(const char *id){
 	const int slot = pMapping.IndexOf(id);
 	if(slot == -1){
-		return nullptr;
+		return {};
 	}
 	
 	decPath path(pCachePath);
@@ -107,7 +107,7 @@ decBaseFileReader::Ref deCacheHelper::Read(const char *id){
 		reader->ReadString16Into(testID);
 		if(testID != id){
 			pMapping.SetAt(slot, "");
-			return nullptr;
+			return {};
 		}
 		
 		const int compression = reader->ReadByte();
@@ -147,7 +147,7 @@ decBaseFileWriter::Ref deCacheHelper::Write(const char *id){
 	
 	path.AddComponent(fileTitle);
 	
-	decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(pVFS->OpenFileForWriting(path)));
+	decBaseFileWriter::Ref writer(pVFS->OpenFileForWriting(path));
 	writer->WriteString16(id);
 	
 	if(pCompressionMethod == ecmZCompression){
@@ -233,9 +233,7 @@ void deCacheHelper::BuildMapping(){
 		const decPath &file = files.GetAt(i);
 		const int slot = decString(file.GetLastComponent()).GetMiddle(1).ToInt();
 		
-		const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-			pVFS->OpenFileForReading(file)));
-		reader->ReadString16Into(id);
+		pVFS->OpenFileForReading(file)->ReadString16Into(id);
 		
 		pMapping.SetAt(slot, id);
 	}

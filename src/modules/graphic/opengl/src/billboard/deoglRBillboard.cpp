@@ -450,7 +450,7 @@ deoglTexUnitsConfig *deoglRBillboard::BareGetTUCFor(deoglSkinTexturePipelines::e
 	deoglSkinShader &skinShader = *pUseSkinTexture->GetPipelines().
 		GetAt(deoglSkinTexturePipelinesList::eptBillboard).GetWithRef(type).GetShader();
 	deoglTexUnitConfig units[deoglSkinShader::ETT_COUNT];
-	deoglRDynamicSkin::Ref dynamicSkin = NULL;
+	deoglRDynamicSkin::Ref dynamicSkin;
 	deoglSkinState *skinState = NULL;
 	deoglTexUnitsConfig *tuc = NULL;
 	
@@ -1035,7 +1035,7 @@ void deoglRBillboard::pPrepareParamBlocks(){
 		pSharedSPBRTIGroup = list.GetWith(spb);
 		
 		if(!pSharedSPBRTIGroup){
-			pSharedSPBRTIGroup.TakeOver(list.AddWith(spb));
+			pSharedSPBRTIGroup = list.AddWith(spb);
 			
 			deoglRenderTaskSharedInstance &rtsi = *pSharedSPBRTIGroup->GetRTSInstance();
 			rtsi.SetSubInstanceSPB(&spb);

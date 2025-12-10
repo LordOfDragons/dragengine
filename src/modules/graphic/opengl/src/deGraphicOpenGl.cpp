@@ -262,8 +262,8 @@ bool deGraphicOpenGl::Init(deRenderWindow *renderWindow){
 		pRenderThread = new deoglRenderThread(*this); // make this a permanently existing object just with Init/CleanUp
 		pRenderThread->Init(renderWindow);
 		
-		pOverlay.TakeOver(GetGameEngine()->GetCanvasManager()->CreateCanvasView());
-		pShaderCompilingInfo.TakeOver(new deoglShaderCompilingInfo(*this));
+		pOverlay = GetGameEngine()->GetCanvasManager()->CreateCanvasView();
+		pShaderCompilingInfo.TakeOverWith(*this);
 		
 	}catch(const deException &e){
 		e.PrintError();

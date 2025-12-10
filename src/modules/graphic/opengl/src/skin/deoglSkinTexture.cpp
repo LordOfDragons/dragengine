@@ -980,7 +980,7 @@ void deoglSkinTexture::pLoadCached(deoglRSkin &skin){
 			decBaseFileReader::Ref reader;
 			{
 			const deMutexGuard guard(caches.GetMutex());
-			reader.TakeOver(cacheTextures.Read(pChannels[i]->GetCacheID()));
+			reader = cacheTextures.Read(pChannels[i]->GetCacheID());
 			}
 			if(!reader){
 				if(enableCacheLogging){
@@ -1413,7 +1413,7 @@ void deoglSkinTexture::pWriteCached(deoglRSkin &skin){
 			decBaseFileWriter::Ref writer;
 			{
 			const deMutexGuard guard(caches.GetMutex());
-			writer.TakeOver(cacheTextures.Write(pChannels[i]->GetCacheID()));
+			writer = cacheTextures.Write(pChannels[i]->GetCacheID());
 			}
 			
 			// write cache version

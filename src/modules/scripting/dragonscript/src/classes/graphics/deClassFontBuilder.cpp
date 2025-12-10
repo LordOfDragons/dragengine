@@ -124,7 +124,7 @@ void deClassFontBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.builder = &builder;
 	
 	try{
-		font.TakeOver(ds.GetGameEngine()->GetFontManager()->CreateFont(filename, builder));
+		font = ds.GetGameEngine()->GetFontManager()->CreateFont(filename, builder);
 		
 	}catch(...){
 		nd.builder = NULL;

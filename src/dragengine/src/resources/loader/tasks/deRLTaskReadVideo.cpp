@@ -91,8 +91,7 @@ void deRLTaskReadVideo::Run(){
 	const decPath vfsPath(decPath::CreatePathUnix(GetPath()));
 	
 	deBaseVideoInfo videoInfo;
-	module->InitLoadVideo(decBaseFileReader::Ref::New(
-		GetVFS()->OpenFileForReading(vfsPath)), videoInfo);
+	module->InitLoadVideo(GetVFS()->OpenFileForReading(vfsPath), videoInfo);
 	
 	pVideo->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
 	pVideo->SetAsynchron(true);

@@ -128,7 +128,7 @@ void deClassAnimationBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *mysel
 	nd.builder = &builder;
 	
 	try{
-		animation.TakeOver(ds.GetGameEngine()->GetAnimationManager()->CreateAnimation(filename, builder));
+		animation = ds.GetGameEngine()->GetAnimationManager()->CreateAnimation(filename, builder);
 		
 	}catch(...){
 		nd.builder = NULL;

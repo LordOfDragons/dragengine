@@ -281,7 +281,7 @@ void debpColliderBone::pUpdateStaticCollisionTest(){
 debpBulletShape::Ref debpColliderBone::pCreateBPShape(){
 	const int count = pShapes.GetShapeCount();
 	if(count == 0){
-		return nullptr;
+		return {};
 	}
 	
 	debpCreateBulletShape createBulletShape;

@@ -59,7 +59,7 @@ private:
 		const deoxrPath path;
 		const deoxrAction::Ref action;
 		
-		RoleAction(const deoxrPath &path, const deoxrAction::Ref &action);
+		RoleAction(const deoxrPath &path, deoxrAction *action);
 		virtual ~RoleAction();
 	};
 	

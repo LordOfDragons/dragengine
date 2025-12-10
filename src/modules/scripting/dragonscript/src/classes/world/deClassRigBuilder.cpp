@@ -129,7 +129,7 @@ void deClassRigBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.builder = &builder;
 	
 	try{
-		rig.TakeOver(ds.GetGameEngine()->GetRigManager()->CreateRig(filename, builder));
+		rig = ds.GetGameEngine()->GetRigManager()->CreateRig(filename, builder);
 		
 	}catch(...){
 		nd.builder = NULL;

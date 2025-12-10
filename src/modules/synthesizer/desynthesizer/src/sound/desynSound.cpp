@@ -211,7 +211,7 @@ void desynSound::pLoadFromCache(){
 	caches.Lock();
 	
 	try{
-		reader.TakeOver(cacheSound.Read(filename));
+		reader = cacheSound.Read(filename);
 		if(!reader){
 			// cache file absent
 			caches.Unlock();
@@ -341,7 +341,7 @@ void desynSound::pWriteToCache(){
 	caches.Lock();
 	
 	try{
-		writer.TakeOver(cacheSound.Write(filename));
+		writer = cacheSound.Write(filename);
 		writer->Write(&header, sizeof(header));
 		if(pStreamDataSize > 0){
 			writer->Write(pStreamData, pStreamDataSize);

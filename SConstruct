@@ -1023,6 +1023,7 @@ buildAll = []
 installAll = []
 installAllRuntime = []
 installEngineRuntime = []
+installLauncherRuntime = []
 installIgdeRuntime = []
 doxygenAll = []
 clocAll = []
@@ -1041,6 +1042,9 @@ for key in parent_targets:
 	
 	if 'install-engine-runtime' in parent_targets[key]:
 		installEngineRuntime.append(parent_targets[key]['install-engine-runtime'])
+	
+	if 'install-launcher-runtime' in parent_targets[key]:
+		installLauncherRuntime.append(parent_targets[key]['install-launcher-runtime'])
 	
 	if 'install-igde-runtime' in parent_targets[key]:
 		installIgdeRuntime.append(parent_targets[key]['install-igde-runtime'])
@@ -1071,6 +1075,11 @@ targetInstallEngineRuntime = parent_env.Alias('install_engine_runtime', installE
 parent_targets['install_engine_runtime'] = {
 	'name' : 'Install Engine Runtime (no development files)',
 	'target' : targetInstallEngineRuntime}
+
+targetInstallLauncherRuntime = parent_env.Alias('install_launcher_runtime', installLauncherRuntime)
+parent_targets['install_launcher_runtime'] = {
+	'name' : 'Install Launcher Runtime (no development files)',
+	'target' : targetInstallLauncherRuntime}
 
 targetInstallIgdeRuntime = parent_env.Alias('install_igde_runtime', installIgdeRuntime)
 parent_targets['install_igde_runtime'] = {

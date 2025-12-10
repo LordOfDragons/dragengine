@@ -114,14 +114,14 @@ void deoxrDeviceAxis::SetDisplayImages(const char *name){
 	decString filename;
 	
 	filename.Format("%s/%s/image.png", basePath, name);
-	pDisplayImage.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
+	pDisplayImage = imageManager.LoadImage(vfs, filename, "/");
 	
 	const int sizes[4] = {128, 64, 32, 16};
 	int i;
 	
 	for(i=0; i<4; i++){
 		filename.Format("%s/%s/icon%d.png", basePath, name, sizes[i]);
-		pDisplayIcons.Add(deImage::Ref::New(imageManager.LoadImage(vfs, filename, "/")));
+		pDisplayIcons.Add(imageManager.LoadImage(vfs, filename, "/"));
 	}
 }
 

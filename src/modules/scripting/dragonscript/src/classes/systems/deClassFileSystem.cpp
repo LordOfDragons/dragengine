@@ -291,7 +291,7 @@ void deClassFileSystem::nfBrowseOverlay::RunFunction(dsRunTime *rt, dsValue *mys
 	ensurePath.AddComponent("__ds_overlay_delete_me__");
 	
 	if(!vfs.ExistsFile(ensurePath) && vfs.CanWriteFile(ensurePath)){
-		decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(ensurePath));
+		vfs.OpenFileForWriting(ensurePath);
 		vfs.DeleteFile(ensurePath);
 	}
 	
@@ -329,7 +329,7 @@ void deClassFileSystem::nfBrowseCapture::RunFunction(dsRunTime *rt, dsValue *mys
 	ensurePath.AddComponent("__ds_capture_delete_me__");
 	
 	if(!vfs.ExistsFile(ensurePath) && vfs.CanWriteFile(ensurePath)){
-		decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(ensurePath));
+		vfs.OpenFileForWriting(ensurePath);
 		vfs.DeleteFile(ensurePath);
 	}
 	
@@ -367,7 +367,7 @@ void deClassFileSystem::nfBrowseConfig::RunFunction(dsRunTime *rt, dsValue *myse
 	ensurePath.AddComponent("__ds_config_delete_me__");
 	
 	if(!vfs.ExistsFile(ensurePath) && vfs.CanWriteFile(ensurePath)){
-		decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(ensurePath));
+		vfs.OpenFileForWriting(ensurePath);
 		vfs.DeleteFile(ensurePath);
 	}
 	

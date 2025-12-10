@@ -2227,14 +2227,14 @@ void deoglRComponent::pPrepareParamBlocks(){
 			deoglSharedSPBRTIGroupList &listDouble = pOcclusionMesh->GetRTIGroupDouble();
 			pOccMeshSharedSPBDoubleSided = listDouble.GetWith(pOccMeshSharedSPBElement->GetSPB());
 			if(!pOccMeshSharedSPBDoubleSided){
-				pOccMeshSharedSPBDoubleSided.TakeOver(listDouble.AddWith(pOccMeshSharedSPBElement->GetSPB()));
+				pOccMeshSharedSPBDoubleSided = listDouble.AddWith(pOccMeshSharedSPBElement->GetSPB());
 				pOccMeshSharedSPBDoubleSided->GetRTSInstance()->SetSubInstanceSPB(&pOccMeshSharedSPBElement->GetSPB());
 			}
 			
 			deoglSharedSPBRTIGroupList &listSingle = pOcclusionMesh->GetRTIGroupsSingle();
 			pOccMeshSharedSPBSingleSided = listSingle.GetWith(pOccMeshSharedSPBElement->GetSPB());
 			if(!pOccMeshSharedSPBSingleSided){
-				pOccMeshSharedSPBSingleSided.TakeOver(listSingle.AddWith(pOccMeshSharedSPBElement->GetSPB()));
+				pOccMeshSharedSPBSingleSided = listSingle.AddWith(pOccMeshSharedSPBElement->GetSPB());
 				pOccMeshSharedSPBSingleSided->GetRTSInstance()->SetSubInstanceSPB(&pOccMeshSharedSPBElement->GetSPB());
 			}
 			

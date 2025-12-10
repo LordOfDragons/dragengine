@@ -246,8 +246,8 @@ void deoglVideoPlayer::SourceChanged(){
 	
 	if(pVideo && !pVideo->AllFramesAreCached()){
 		try{
-			pVideoDecoder.TakeOver(pOgl.GetGameEngine()->GetVideoManager()
-				->CreateDecoder(pVideoPlayer.GetVideo()));
+			pVideoDecoder = pOgl.GetGameEngine()->GetVideoManager()->
+				CreateDecoder(pVideoPlayer.GetVideo());
 			
 		}catch(const deException &e){
 			pBrokenVideoDecoder = true;

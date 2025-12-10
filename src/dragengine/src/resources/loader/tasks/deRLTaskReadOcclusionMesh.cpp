@@ -89,8 +89,7 @@ void deRLTaskReadOcclusionMesh::Run(){
 	
 	pOcclusionMesh->SetModificationTime(GetVFS()->GetFileModificationTime(vfsPath));
 	pOcclusionMesh->SetAsynchron(true);
-	module->LoadOcclusionMesh(decBaseFileReader::Ref::New(
-		GetVFS()->OpenFileForReading(vfsPath)), pOcclusionMesh);
+	module->LoadOcclusionMesh(GetVFS()->OpenFileForReading(vfsPath), pOcclusionMesh);
 	
 	if(!pOcclusionMesh->Verify()){
 		DETHROW(deeInvalidParam);

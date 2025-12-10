@@ -76,15 +76,15 @@ void deInputDevice::SetType(eDeviceTypes type){
 	pType = type;
 }
 
-void deInputDevice::SetDisplayModel(const deModel::Ref &model){
+void deInputDevice::SetDisplayModel(deModel *model){
 	pDisplayModel = model;
 }
 
-void deInputDevice::SetDisplaySkin(const deSkin::Ref &skin){
+void deInputDevice::SetDisplaySkin(deSkin *skin){
 	pDisplaySkin = skin;
 }
 
-void deInputDevice::SetDisplayImage(const deImage::Ref &image){
+void deInputDevice::SetDisplayImage(deImage *image){
 	pDisplayImage = image;
 }
 
@@ -93,10 +93,10 @@ int deInputDevice::GetDisplayIconCount() const{
 }
 
 deImage::Ref deInputDevice::GetDisplayIconAt(int index) const{
-	return (deImage*)pDisplayIcons.GetAt(index);
+	return deImage::Ref((deImage*)pDisplayIcons.GetAt(index));
 }
 
-void deInputDevice::AddDisplayIcon(const deImage::Ref &image){
+void deInputDevice::AddDisplayIcon(deImage *image){
 	DEASSERT_NOTNULL(image)
 	pDisplayIcons.Add(image);
 }
@@ -121,7 +121,7 @@ void deInputDevice::SetFingerTipOffset(int index, const decVector &offset){
 	pFingerTipOffset[index] = offset;
 }
 
-void deInputDevice::SetHandRig(const deRig::Ref &rig){
+void deInputDevice::SetHandRig(deRig *rig){
 	pHandRig = rig;
 }
 
@@ -137,11 +137,11 @@ void deInputDevice::SetUsingHandInteraction(bool usingHandInteraction){
 	pUsingHandInteraction = usingHandInteraction;
 }
 
-void deInputDevice::SetVRModel(const deModel::Ref &model){
+void deInputDevice::SetVRModel(deModel *model){
 	pVRModel = model;
 }
 
-void deInputDevice::SetVRSkin(const deSkin::Ref &skin){
+void deInputDevice::SetVRSkin(deSkin *skin){
 	pVRSkin = skin;
 }
 

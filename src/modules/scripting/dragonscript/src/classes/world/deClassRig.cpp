@@ -537,8 +537,8 @@ void deClassRig::nfSave::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW_INFO(dueInvalidParam, "no module found to handle filename");
 	}
 	
-	module->SaveRig(decBaseFileWriter::Ref::New(engine.GetRigManager()->OpenFileForWriting(
-		*engine.GetVirtualFileSystem(), filename)), rig);
+	module->SaveRig(engine.GetRigManager()->OpenFileForWriting(
+		*engine.GetVirtualFileSystem(), filename), rig);
 }
 
 

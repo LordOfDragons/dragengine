@@ -55,7 +55,7 @@ pStage(0)
 	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	deVirtualFileSystem &vfs = ogl.GetVFS();
-	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(vfs.OpenFileForReading(path)));
+	decBaseFileReader::Ref reader(vfs.OpenFileForReading(path));
 	decXmlParser(ogl.GetGameEngine()->GetLogger()).ParseXml(reader, xmlDoc);
 	const uint64_t modTime = (uint64_t)reader->GetModificationTime();
 	
@@ -85,8 +85,8 @@ pStage(0)
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
 			DEASSERT_NOTNULL(cdata)
 			
-			reader.TakeOver(vfs.OpenFileForReading(decPath::AbsolutePathUnix(
-				cdata->GetData(), path.GetParent().GetPathUnix())));
+			reader = vfs.OpenFileForReading(decPath::AbsolutePathUnix(
+				cdata->GetData(), path.GetParent().GetPathUnix()));
 			
 			const int length = reader->GetLength();
 			pSourceCode.Set(' ', length);

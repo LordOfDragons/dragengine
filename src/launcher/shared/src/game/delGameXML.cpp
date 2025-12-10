@@ -114,8 +114,8 @@ void delGameXML::pReadGame(const decXmlElementTag &root, delGame &game){
 			game.SetDescription(decUnicodeString::NewFromUTF8(GetCDataString(*tag)));
 			
 		}else if(tag->GetName() == "icon"){
-			game.GetIcons().Add(delGameIcon::Ref::New(game.GetLauncher().CreateGameIcon(
-				GetAttributeInt(*tag, "size"), GetCDataString(*tag))));
+			game.GetIcons().Add(game.GetLauncher().CreateGameIcon(
+				GetAttributeInt(*tag, "size"), GetCDataString(*tag)));
 			
 		}else if(tag->GetName() == "creator"){
 			game.SetCreator(decUnicodeString::NewFromUTF8(GetCDataString(*tag)));

@@ -25,6 +25,8 @@
 #ifndef _DETOBJECTREFERENCE_H_
 #define _DETOBJECTREFERENCE_H_
 
+#include <type_traits>
+
 #include "common/exceptions.h"
 
 /**
@@ -58,7 +60,7 @@ public:
 	 * 
 	 * Reference is added if object is not nullptr.
 	 */
-	deTObjectReference(T *object) : pObject(object){
+	explicit deTObjectReference(T *object) : pObject(object){
 		if(pObject){
 			pObject->AddReference();
 		}
@@ -73,6 +75,11 @@ public:
 		if(pObject){
 			pObject->AddReference();
 		}
+	}
+	
+	/** \brief Move constructor. */
+	deTObjectReference(deTObjectReference &&reference) : pObject(reference.pObject){
+		reference.pObject = nullptr;
 	}
 	
 	/**
@@ -117,6 +124,7 @@ public:
 		pObject = object;
 	}
 	
+private:
 	/** \brief Move reference. */
 	void TakeOver(deTObjectReference &reference){
 		if(pObject){
@@ -132,6 +140,7 @@ public:
 		*this = reference;
 	}
 	
+public:
 	/**
 	 * \brief Create instance taking over reference.
 	 * 
@@ -173,13 +182,7 @@ public:
 		return reference;
 	}
 	
-	/**
-	 * \brief Returns reference to protect against problems.
-	 */
-	static deTObjectReference New(const deTObjectReference &reference){
-		return reference;
-	}
-	
+private:
 	/**
 	 * \brief Returns reference to protect against problems.
 	 */
@@ -187,6 +190,14 @@ public:
 		return reference;
 	}
 	
+	/**
+	 * \brief Returns reference to protect against problems.
+	 */
+	static deTObjectReference New(const deTObjectReference &reference){
+		return reference;
+	}
+	
+public:
 	/**
 	 * \brief Create instance taking over reference.
 	 * 
@@ -263,14 +274,36 @@ public:
 		return operator=(reference.pObject);
 	}
 	
+	/**
+	 * \brief Store object.
+	 * 
+	 * If an object is already held its reference is release and the new object
+	 * stored. If the new object is not nullptr a reference is added.
+	 */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	inline deTObjectReference &operator=(const deTObjectReference<U> &reference){
+		return operator=(static_cast<T*>(reference.Pointer()));
+	}
+	
 	/** \brief Test if object is held by this holder. */
 	inline bool operator==(T *object) const{
 		return pObject == object;
 	}
 	
 	/** \brief Test if object is held by this holder. */
+	inline bool operator==(const T *object) const{
+		return pObject == object;
+	}
+	
+	/** \brief Test if object is held by this holder. */
 	inline bool operator==(const deTObjectReference &reference) const{
 		return pObject == reference.pObject;
+	}
+	
+	/** \brief Test if object is held by this holder. */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	inline bool operator==(const deTObjectReference<U> &reference) const{
+		return pObject == static_cast<T*>(reference.Pointer());
 	}
 	
 	/** \brief Test if object is not held by this holder. */
@@ -281,6 +314,32 @@ public:
 	/** \brief Test if object is not held by this holder. */
 	inline bool operator!=(const deTObjectReference &reference) const{
 		return pObject != reference.pObject;
+	}
+	
+	/** \brief Test if object is not held by this holder. */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	inline bool operator!=(const deTObjectReference<U> &reference) const{
+		return pObject != static_cast<T*>(reference.Pointer());
+	}
+	
+	/** \brief Auto-cast to super class (static cast). */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<U, T>::value>::type>
+	operator deTObjectReference<U>() const{
+		return deTObjectReference<U>(static_cast<U*>(pObject));
+	}
+	
+	/** \brief Static cast to super class. */
+	template<typename U> deTObjectReference<U> StaticCast() const{
+		return deTObjectReference<U>(static_cast<U*>(pObject));
+	}
+	
+	/**
+	 * \brief Dynamic cast to sub class.
+	 * 
+	 * Can be nullptr if target class is not a sub class.
+	 */
+	template<typename U> deTObjectReference<U> DynamicCast() const{
+		return deTObjectReference<U>(dynamic_cast<U*>(pObject));
 	}
 	/*@}*/
 };

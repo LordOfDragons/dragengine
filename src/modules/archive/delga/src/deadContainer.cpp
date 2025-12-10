@@ -139,7 +139,7 @@ decBaseFileReader::Ref deadContainer::OpenFileForReading(const decPath &path){
 	deadContextUnpack * const context = AcquireContextUnpack();
 	
 	try{
-		return decBaseFileReader::Ref::New(context->OpenFileForReading(*file).Pointer());
+		return context->OpenFileForReading(*file);
 		
 	}catch(const deException &){
 		ReleaseContextUnpack(context);

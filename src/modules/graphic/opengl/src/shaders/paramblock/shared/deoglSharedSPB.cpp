@@ -70,7 +70,7 @@ deoglSharedSPBElement *deoglSharedSPB::GetElementAt(int index) const{
 
 deoglSharedSPBElement::Ref deoglSharedSPB::AddElement(){
 	if(pCount == pSize){
-		return nullptr;
+		return {};
 	}
 	
 	int i;

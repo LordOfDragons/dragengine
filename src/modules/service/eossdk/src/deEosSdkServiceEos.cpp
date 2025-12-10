@@ -281,7 +281,7 @@ const decUniqueID &id){
 		}
 	}
 	
-	return nullptr;
+	return {};
 }
 
 deEosSdkPendingRequest::Ref deEosSdkServiceEos::RemoveFirstPendingRequestWithFunction(
@@ -298,7 +298,7 @@ const char *function){
 		}
 	}
 	
-	return nullptr;
+	return {};
 }
 
 deEosSdkPendingRequest::Ref deEosSdkServiceEos::NewPendingRequest(
@@ -371,12 +371,12 @@ deServiceObject::Ref deEosSdkServiceEos::IsUserLoggedIn(const deServiceObject &a
 
 deServiceObject::Ref deEosSdkServiceEos::GetUserFeatures(){
 	if(!pAuthProviderIcon){
-		pAuthProviderIcon.TakeOver(pModule.GetGameEngine()->GetImageManager()->LoadImage(
-			&pModule.GetVFS(), "/share/image/authProviderIcon.webp", "/"));
+		pAuthProviderIcon = pModule.GetGameEngine()->GetImageManager()->LoadImage(
+			&pModule.GetVFS(), "/share/image/authProviderIcon.webp", "/");
 	}
 	if(!pAuthProviderImage){
-		pAuthProviderImage.TakeOver(pModule.GetGameEngine()->GetImageManager()->LoadImage(
-			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/"));
+		pAuthProviderImage = pModule.GetGameEngine()->GetImageManager()->LoadImage(
+			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/");
 	}
 	
 	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());

@@ -137,8 +137,8 @@ void delLauncher::AddFileLogger(const char *filetitle){
 	decString filename;
 	filename.Format("/logs/%s.log", filetitle);
 	
-	pLogger->AddLogger(deLoggerFile::Ref::New(new deLoggerFile(decBaseFileWriter::Ref::New(
-		pVFS->OpenFileForWriting(decPath::CreatePathUnix(filename))))));
+	pLogger->AddLogger(deLoggerFile::Ref::NewWith(
+		pVFS->OpenFileForWriting(decPath::CreatePathUnix(filename))));
 }
 
 void delLauncher::SetEngineInstanceFactory(delEngineInstance::Factory *factory){

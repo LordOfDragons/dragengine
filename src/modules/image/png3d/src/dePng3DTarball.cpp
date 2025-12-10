@@ -435,7 +435,7 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 	memset(&paddingBytes[0], '\0', 512);
 	
 	// save the file
-	decMemoryFileWriter::Ref memoryFileWriter = NULL;
+	decMemoryFileWriter::Ref memoryFileWriter;
 	
 	try{
 		memoryFile.TakeOver(new decMemoryFile(""));

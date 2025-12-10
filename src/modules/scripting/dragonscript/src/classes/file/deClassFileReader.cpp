@@ -91,8 +91,7 @@ void deClassFileReader::nfNewZCompressed::RunFunction(dsRunTime *rt, dsValue *my
 	const char * const filename = rt->GetValue(0)->GetString();
 	
 	clsFRead.PushFileReader(rt, decZFileReader::Ref::New(
-		new decZFileReader(decBaseFileReader::Ref::New(
-			vfs.OpenFileForReading(decPath::CreatePathUnix(filename))))));
+		new decZFileReader(vfs.OpenFileForReading(decPath::CreatePathUnix(filename)))));
 }
 
 // public func destructor()

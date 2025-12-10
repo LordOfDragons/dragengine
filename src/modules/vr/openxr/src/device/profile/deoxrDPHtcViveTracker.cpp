@@ -65,7 +65,7 @@ deoxrDPHtcViveTracker::Tracker::~Tracker(){
 // Class deoxrDPHtcViveTracker::RoleAction
 ////////////////////////////////////////////
 
-deoxrDPHtcViveTracker::RoleAction::RoleAction(const deoxrPath &ppath, const deoxrAction::Ref &paction) :
+deoxrDPHtcViveTracker::RoleAction::RoleAction(const deoxrPath &ppath, deoxrAction *paction) :
 path(ppath),
 action(paction){
 }

@@ -106,7 +106,7 @@ void declActionDelgaHelper::Install(){
 	
 	decPath target(decPath::CreatePathUnix("/"));
 	target.AddComponent(decPath::CreatePathNative(pFilename).GetLastComponent());
-	const decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(container->OpenFileForWriting(target)));
+	const decBaseFileWriter::Ref writer(container->OpenFileForWriting(target));
 	
 	printf("Installing");
 	

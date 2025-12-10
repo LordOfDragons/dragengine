@@ -67,8 +67,8 @@ FXDialogBox(powner, "Game Problems", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE |
 	0, 0, 600, 450, 10, 10, 10, 5),
 pWindowMain(windowMain),
 
-pProfileOrg(delGameProfile::Ref::New(windowMain->GetLauncher()->CreateGameProfile(profile))),
-pProfileWork(delGameProfile::Ref::New(windowMain->GetLauncher()->CreateGameProfile(profile))),
+pProfileOrg(windowMain->GetLauncher()->CreateGameProfile(profile)),
+pProfileWork(windowMain->GetLauncher()->CreateGameProfile(profile)),
 
 pGame(game),
 

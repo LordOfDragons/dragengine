@@ -252,7 +252,7 @@ void deRLTaskReadSkinInternal::pPrepare(){
 			GetVFS()->GetFileModificationTime(path)));
 		pSkin->SetAsynchron(true);
 		
-		module->LoadSkin(decBaseFileReader::Ref::New(GetVFS()->OpenFileForReading(path)), pSkin);
+		module->LoadSkin(GetVFS()->OpenFileForReading(path), pSkin);
 		
 	}catch(const deException &){
 		SetState(esFailed);
@@ -305,7 +305,7 @@ bool deRLTaskReadSkinInternal::pApplyInternal(){
 				property.SetImage((deImage*)task.GetResource().Pointer());
 				
 			}else{
-				deImage::Ref fallbackImage = NULL;
+				deImage::Ref fallbackImage;
 				
 				try{
 					fallbackImage = GetEngine().GetImageManager()->LoadDefault();
@@ -322,7 +322,7 @@ bool deRLTaskReadSkinInternal::pApplyInternal(){
 				node.SetImage((deImage*)task.GetResource().Pointer());
 				
 			}else{
-				deImage::Ref fallbackImage = NULL;
+				deImage::Ref fallbackImage;
 				
 				try{
 					fallbackImage = GetEngine().GetImageManager()->LoadDefault();

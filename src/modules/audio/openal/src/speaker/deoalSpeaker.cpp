@@ -137,8 +137,7 @@ void deoalSpeaker::Synchronize(){
 		if(pDirtySoundDecoder){
 			deSoundDecoder::Ref soundDecoder;
 			if(pSound && pSound->GetASound()->GetStreaming()){
-				soundDecoder.TakeOver(pOal.GetGameEngine()->GetSoundManager()
-					->CreateDecoder(&pSound->GetSound()));
+				soundDecoder = pOal.GetGameEngine()->GetSoundManager()->CreateDecoder(&pSound->GetSound());
 			}
 			pASpeaker->SetSoundDecoder(soundDecoder);
 			pDirtySoundDecoder = false;

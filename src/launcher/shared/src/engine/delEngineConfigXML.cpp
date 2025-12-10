@@ -172,7 +172,7 @@ void delEngineConfigXML::pReadProfiles(const decXmlElementTag &root, delLauncher
 		}
 		
 		if(tag->GetName() == "profile"){
-			delGameProfile::Ref profile(delGameProfile::Ref::New(launcher.CreateGameProfile()));
+			delGameProfile::Ref profile(launcher.CreateGameProfile());
 			ReadProfile(*tag, profile);
 			
 			if(!profile->GetName().IsEmpty()

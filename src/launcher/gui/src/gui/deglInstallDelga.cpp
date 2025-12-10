@@ -94,8 +94,7 @@ public:
 			decPath target(decPath::CreatePathUnix("/"));
 			target.AddComponent(decPath::CreatePathNative(pFilename).GetLastComponent());
 			
-			decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(
-				container->OpenFileForWriting(target)));
+			decBaseFileWriter::Ref writer(container->OpenFileForWriting(target));
 			
 			const int totalSize = reader->GetLength();
 			const double percentageFactor = 100.0 / (double)totalSize;

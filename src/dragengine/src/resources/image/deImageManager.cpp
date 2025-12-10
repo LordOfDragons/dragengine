@@ -215,7 +215,7 @@ void deImageManager::SaveImage(deVirtualFileSystem *vfs, deImage *image, const c
 			GetModuleAbleToLoad(deModuleSystem::emtImage, filename);
 		DEASSERT_NOTNULL(module)
 		
-		module->SaveImage(decBaseFileWriter::Ref::New(OpenFileForWriting(*vfs, filename)), *image);
+		module->SaveImage(OpenFileForWriting(*vfs, filename), *image);
 		
 	}catch(const deException &e){
 		LogErrorFormat("Saving image '%s' failed", filename);

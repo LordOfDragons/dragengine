@@ -123,7 +123,7 @@ void deClassLanguagePackBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *my
 	nd.builder = &builder;
 	
 	try{
-		languagePack.TakeOver(ds.GetGameEngine()->GetLanguagePackManager()->CreateLanguagePack(filename, builder));
+		languagePack = ds.GetGameEngine()->GetLanguagePackManager()->CreateLanguagePack(filename, builder);
 		
 	}catch(...){
 		nd.builder = NULL;

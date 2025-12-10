@@ -326,14 +326,14 @@ pAddToRenderTask(NULL)
 		ubo->GetParameterAt(4).SetAll(deoglSPBParameter::evtFloat, 4, 1, 2); // vec4 pClipPlane[2]
 		ubo->MapToStd140();
 		ubo->SetBindingPoint(deoglSkinShader::eubRenderParameters);
-		pRenderParamBlockSingleUse.TakeOver(deoglSPBSingleUse::Ref::NewWith(renderThread, ubo));
+		pRenderParamBlockSingleUse.TakeOverWith(renderThread, ubo);
 		
 		ubo.TakeOver(new deoglSPBlockUBO(renderThread));
 		ubo->SetParameterCount(1);
 		ubo->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 4, 3, 1); // mat4x3 pMatrixModel
 		ubo->MapToStd140();
 		ubo->SetBindingPoint(deoglSkinShader::eubInstanceParameters);
-		pOccMapFrustumParamBlockSingleUse.TakeOver(deoglSPBSingleUse::Ref::NewWith(renderThread, ubo));
+		pOccMapFrustumParamBlockSingleUse.TakeOverWith(renderThread, ubo);
 		
 		pRenderTask = new deoglRenderTask(renderThread);
 		pAddToRenderTask = new deoglAddToRenderTask(renderThread, *pRenderTask);

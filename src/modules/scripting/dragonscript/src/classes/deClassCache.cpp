@@ -129,7 +129,7 @@ void deClassCache::nfRead::RunFunction(dsRunTime *rt, dsValue *myself){
 	deScriptingDragonScript &ds = ((deClassCache*)GetOwnerClass())->GetDS();
 	decBaseFileReader::Ref reader;
 	
-	reader.TakeOver(cacheHelper.Read(rt->GetValue(0)->GetString()));
+	reader = cacheHelper.Read(rt->GetValue(0)->GetString());
 	ds.GetClassFileReader()->PushFileReader(rt, reader);
 }
 
@@ -144,7 +144,7 @@ void deClassCache::nfWrite::RunFunction(dsRunTime *rt, dsValue *myself){
 	deScriptingDragonScript &ds = ((deClassCache*)GetOwnerClass())->GetDS();
 	decBaseFileWriter::Ref writer;
 	
-	writer.TakeOver(cacheHelper.Write(rt->GetValue(0)->GetString()));
+	writer = cacheHelper.Write(rt->GetValue(0)->GetString());
 	ds.GetClassFileWriter()->PushFileWriter(rt, writer);
 }
 

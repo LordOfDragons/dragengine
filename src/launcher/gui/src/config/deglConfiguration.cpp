@@ -79,7 +79,7 @@ void deglConfiguration::LoadConfiguration(){
 	if(vfs.ExistsFile(pathFile)){
 		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
 			logger.LogInfo(logSource, "Reading system configuration file");
-			configXML.ReadFromFile(decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
+			configXML.ReadFromFile(vfs.OpenFileForReading(pathFile), *this);
 			
 		}else{
 			logger.LogError(logSource, "System configuration file is not a regular file");
@@ -96,7 +96,7 @@ void deglConfiguration::LoadConfiguration(){
 	if(vfs.ExistsFile(pathFile)){
 		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
 			logger.LogInfo(logSource, "Reading user configuration file");
-			configXML.ReadFromFile(decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
+			configXML.ReadFromFile(vfs.OpenFileForReading(pathFile), *this);
 			
 		}else{
 			logger.LogError(logSource, "User configuration file is not a regular file");
@@ -130,7 +130,7 @@ void deglConfiguration::SaveConfiguration(){
 		logger.LogInfo(logSource, "Writing user configuration file");
 		
 		try{
-			configXML.WriteToFile(decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(pathFile)), *this);
+			configXML.WriteToFile(vfs.OpenFileForWriting(pathFile), *this);
 			
 		}catch(const deException &){
 			logger.LogError(logSource, "Failed to write user configuration file (file permission problem)");

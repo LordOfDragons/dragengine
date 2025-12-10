@@ -249,7 +249,7 @@ deServiceObject::Ref deModioService::RunAction(const deServiceObject &action){
 	
 	if(function == "activateMods"){
 		ActivateMods();
-		return nullptr;
+		return {};
 		
 	}else if(function == "isAuthenticated"){
 		return IsAuthenticated();
@@ -268,7 +268,7 @@ deServiceObject::Ref deModioService::RunAction(const deServiceObject &action){
 		
 	}else if(function == "setModDisabled"){
 		SetModDisabled(action);
-		return nullptr;
+		return {};
 		
 	}else if(function == "modHasMatchingFiles"){
 		return ModHasMatchingFiles(action);
@@ -323,7 +323,7 @@ const decUniqueID &id){
 		}
 	}
 	
-	return nullptr;
+	return {};
 }
 
 deModioPendingRequest::Ref deModioService::RemoveFirstPendingRequestWithFunction(
@@ -340,7 +340,7 @@ const char *function){
 		}
 	}
 	
-	return nullptr;
+	return {};
 }
 
 deModioPendingRequest::Ref deModioService::NewPendingRequest(
@@ -801,7 +801,7 @@ deServiceObject::Ref deModioService::IsAuthenticated(){
 
 deServiceObject::Ref deModioService::QueryCurrentModUpdate(){
 	const Modio::Optional<Modio::ModProgressInfo> result(Modio::QueryCurrentModUpdate());
-	return result.has_value() ? deMCCommon::ModProgressInfo(*result) : nullptr;
+	return result.has_value() ? deMCCommon::ModProgressInfo(*result) : deServiceObject::Ref();
 }
 
 deServiceObject::Ref deModioService::QueryUserSubscriptions(){
@@ -838,7 +838,7 @@ deServiceObject::Ref deModioService::QuerySystemInstallations(){
 
 deServiceObject::Ref deModioService::QueryUserProfile(){
 	const Modio::Optional<Modio::User> result(Modio::QueryUserProfile());
-	return result.has_value() ? deMCUser::User(*result) : nullptr;
+	return result.has_value() ? deMCUser::User(*result) : deServiceObject::Ref();
 }
 
 void deModioService::SetModDisabled(const deServiceObject &action){
@@ -1673,11 +1673,11 @@ deModioPendingRequest::Ref deModioService::pOnBaseResponseInit(const decUniqueID
 Modio::ErrorCode ec, bool peekPendingRequest){
 	if(ec){
 		FailRequest(id, ec);
-		return nullptr;
+		return {};
 	}
 	
 	if(peekPendingRequest){
-		return GetPendingRequestWithId(id);
+		return deModioPendingRequest::Ref(GetPendingRequestWithId(id));
 		
 	}else{
 		return RemoveFirstPendingRequestWithId(id);

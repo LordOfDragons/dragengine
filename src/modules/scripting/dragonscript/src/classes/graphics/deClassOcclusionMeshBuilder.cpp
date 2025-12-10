@@ -128,7 +128,7 @@ void deClassOcclusionMeshBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *m
 	nd.builder = &builder;
 	
 	try{
-		occlusionMesh.TakeOver(ds.GetGameEngine()->GetOcclusionMeshManager()->CreateOcclusionMesh(filename, builder));
+		occlusionMesh = ds.GetGameEngine()->GetOcclusionMeshManager()->CreateOcclusionMesh(filename, builder);
 		
 	}catch(...){
 		nd.builder = NULL;

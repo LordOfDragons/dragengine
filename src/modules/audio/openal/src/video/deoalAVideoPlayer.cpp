@@ -100,7 +100,7 @@ void deoalAVideoPlayer::SetVideo(deVideo *video){
 		return;
 	}
 	
-	pDecoder.TakeOver(pAudioThread.GetOal().GetGameEngine()->GetVideoManager()->CreateAudioDecoder(video));
+	pDecoder = pAudioThread.GetOal().GetGameEngine()->GetVideoManager()->CreateAudioDecoder(video);
 	pBytesPerSample = video->GetBytesPerSample();
 	pChannelCount = video->GetChannelCount();
 	pSampleRate = video->GetSampleRate();

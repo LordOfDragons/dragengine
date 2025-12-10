@@ -125,7 +125,7 @@ public:
 	inline const deoxrDeviceAxis::Ref &GetFakeFromAxis() const{ return pFakeFromAxis; }
 
 	/** Set button state is faked from axis state. */
-	void SetFakeFromAxis(const deoxrDeviceAxis::Ref &axis);
+	void SetFakeFromAxis(deoxrDeviceAxis *axis);
 
 	
 	

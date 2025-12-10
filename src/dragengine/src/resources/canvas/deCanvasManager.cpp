@@ -73,42 +73,42 @@ deCanvasImage::Ref deCanvasManager::CreateCanvasImage(){
 	return canvas;
 }
 
-deCanvasPaint *deCanvasManager::CreateCanvasPaint(){
+deCanvasPaint::Ref deCanvasManager::CreateCanvasPaint(){
 	const deCanvasPaint::Ref canvas(deCanvasPaint::Ref::NewWith(this));
 	GetGraphicSystem()->LoadCanvas(canvas);
 	pCanvas.Add(canvas);
 	return canvas;
 }
 
-deCanvasCanvasView *deCanvasManager::CreateCanvasCanvasView(){
+deCanvasCanvasView::Ref deCanvasManager::CreateCanvasCanvasView(){
 	const deCanvasCanvasView::Ref canvas(deCanvasCanvasView::Ref::NewWith(this));
 	GetGraphicSystem()->LoadCanvas(canvas);
 	pCanvas.Add(canvas);
 	return canvas;
 }
 
-deCanvasRenderWorld *deCanvasManager::CreateCanvasRenderWorld(){
+deCanvasRenderWorld::Ref deCanvasManager::CreateCanvasRenderWorld(){
 	const deCanvasRenderWorld::Ref canvas(deCanvasRenderWorld::Ref::NewWith(this));
 	GetGraphicSystem()->LoadCanvas(canvas);
 	pCanvas.Add(canvas);
 	return canvas;
 }
 
-deCanvasText *deCanvasManager::CreateCanvasText(){
+deCanvasText::Ref deCanvasManager::CreateCanvasText(){
 	const deCanvasText::Ref canvas(deCanvasText::Ref::NewWith(this));
 	GetGraphicSystem()->LoadCanvas(canvas);
 	pCanvas.Add(canvas);
 	return canvas;
 }
 
-deCanvasVideoPlayer *deCanvasManager::CreateCanvasVideoPlayer(){
+deCanvasVideoPlayer::Ref deCanvasManager::CreateCanvasVideoPlayer(){
 	const deCanvasVideoPlayer::Ref canvas(deCanvasVideoPlayer::Ref::NewWith(this));
 	GetGraphicSystem()->LoadCanvas(canvas);
 	pCanvas.Add(canvas);
 	return canvas;
 }
 
-deCanvasView *deCanvasManager::CreateCanvasView(){
+deCanvasView::Ref deCanvasManager::CreateCanvasView(){
 	const deCanvasView::Ref canvas(deCanvasView::Ref::NewWith(this));
 	GetGraphicSystem()->LoadCanvas(canvas);
 	pCanvas.Add(canvas);

@@ -72,7 +72,7 @@ void deClassService::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	// create object
 	const char * const name = rt->GetValue(0)->GetString();
 	DS_WITH_ENGEX(ds,
-		nd.service = ds.GetGameEngine()->GetServiceManager()->CreateService(name, nullptr);
+		nd.service = ds.GetGameEngine()->GetServiceManager()->CreateService(name, {});
 )
 }
 

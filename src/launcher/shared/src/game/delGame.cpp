@@ -330,7 +330,7 @@ void delGame::StartGame(const delGameRunParams &runParams, delEngineInstance::Fa
 		// deleting while the file is open in an application (windows for example)
 		filePath.SetFromUnix("/logs");
 		filePath.AddUnixPath(logfile);
-		decBaseFileWriter::Ref::New(pLauncher.GetVFS()->OpenFileForWriting(filePath));
+		pLauncher.GetVFS()->OpenFileForWriting(filePath);
 	}
 	
 	// start the game
@@ -432,7 +432,7 @@ void delGame::StartGame(const delGameRunParams &runParams, delEngineInstance::Fa
 		
 		// store information for handling parameter changes during runtime
 		pCollectChangedParams.RemoveAll();
-		pCollectChangedParamsProfile.TakeOver(pLauncher.CreateGameProfile(runParams.GetGameProfile()));
+		pCollectChangedParamsProfile = pLauncher.CreateGameProfile(runParams.GetGameProfile());
 		
 		// start game
 		pEngineInstance->StartGame(pScriptDirectory, pScriptModuleVersion,
@@ -524,7 +524,7 @@ void delGame::LoadConfig(){
 		if(vfs.GetFileType(pathFile) == deVFSContainer::eftRegularFile){
 			logger.LogInfoFormat(pLauncher.GetLogSource(),
 				"Reading game configuration file for '%s'", pTitle.ToUTF8().GetString());
-			configXML.ReadFromFile(decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
+			configXML.ReadFromFile(vfs.OpenFileForReading(pathFile), *this);
 			
 		}else{
 			logger.LogErrorFormat(pLauncher.GetLogSource(),
@@ -560,7 +560,7 @@ void delGame::SaveConfig(){
 			"Writing game configuration file for '%s'", pTitle.ToUTF8().GetString());
 		
 		try{
-			configXML.WriteToFile(decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(pathFile)), *this);
+			configXML.WriteToFile(vfs.OpenFileForWriting(pathFile), *this);
 			
 		}catch(const deException &){
 			logger.LogError(pLauncher.GetLogSource(),
@@ -664,7 +664,7 @@ void delGame::pStoreCustomConfig(){
 	// ensure custom profile exists and is initialized with profile used to run the game
 	// unless this had been already the custom profile
 	if(!pCustomProfile){
-		pCustomProfile.TakeOver(pLauncher.CreateGameProfile());
+		pCustomProfile = pLauncher.CreateGameProfile();
 	}
 	
 	if(pCollectChangedParamsProfile != pCustomProfile){

@@ -201,7 +201,7 @@ void deClassSkinBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
 	nd.builder = &builder;
 	
 	try{
-		skin.TakeOver(ds.GetGameEngine()->GetSkinManager()->CreateSkin(filename, builder));
+		skin = ds.GetGameEngine()->GetSkinManager()->CreateSkin(filename, builder);
 		
 	}catch(...){
 		nd.builder = NULL;

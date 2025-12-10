@@ -166,7 +166,7 @@ void deoxrHiddenMesh::UpdateModel(){
 		path.Format("/openxr/hiddenMesh/config%d_view%d.demodel", pViewConfig, pViewIndex);
 		
 		deoxrHiddenMesh_BuildModel builder(mask);
-		pModel.TakeOver(oxr.GetGameEngine()->GetModelManager()->CreateModel(path, builder));
+		pModel = oxr.GetGameEngine()->GetModelManager()->CreateModel(path, builder);
 		
 		delete [] mask.vertices;
 		delete [] mask.indices;

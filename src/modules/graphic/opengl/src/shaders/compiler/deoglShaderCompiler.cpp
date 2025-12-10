@@ -275,7 +275,7 @@ void deoglShaderCompiler::cCacheShader::Run(){
 	decBaseFileWriter::Ref writer;
 	{
 	const deMutexGuard guard(caches.GetMutex());
-	writer.TakeOver(cacheShaders.Write(pCacheId));
+	writer = cacheShaders.Write(pCacheId);
 	}
 	
 	writer->WriteByte(SHADER_CACHE_REVISION);
@@ -805,7 +805,7 @@ void deoglShaderCompiler::pCacheLoadShader(deoglShaderProgram &program){
 		decBaseFileReader::Ref reader;
 		{
 		const deMutexGuard guard(caches.GetMutex());
-		reader.TakeOver(cacheShaders.Read(program.GetCacheId()));
+		reader = cacheShaders.Read(program.GetCacheId());
 		}
 		
 		// read parameters

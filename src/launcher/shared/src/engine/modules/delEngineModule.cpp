@@ -184,7 +184,7 @@ void delEngineModule::CalcSizeAndHashes(delLauncher &launcher){
 			path.AddUnixPath(pDirName);
 			path.AddComponent(pVersion);
 			path.AddUnixPath(pLibFileName);
-			reader.TakeOver(launcher.GetVFS()->OpenFileForReading(path));
+			reader = launcher.GetVFS()->OpenFileForReading(path);
 		}
 		
 		pLibFileSizeIs = reader->GetLength();

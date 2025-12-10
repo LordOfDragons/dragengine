@@ -187,7 +187,7 @@ void deLanguagePackManager::ReleaseLeakingResources(){
 	const int count = GetLanguagePackCount();
 	
 	if(count > 0){
-		deLanguagePack::Ref langPack = (deLanguagePack*)pLangPacks.GetRoot();
+		deLanguagePack::Ref langPack((deLanguagePack*)pLangPacks.GetRoot());
 		
 		LogWarnFormat("%i leaking language packs", count);
 		

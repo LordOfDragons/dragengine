@@ -156,7 +156,7 @@ deoglPixelBuffer::Ref deoglVideoDecodeThread::GetTexturePixelBuffer(){
 		
 	}else{
 		//printf( "DecodeThread(%p) GetTexturePixelBuffer not decoding.\n", this );
-		return nullptr;
+		return deoglPixelBuffer::Ref();
 	}
 }
 
