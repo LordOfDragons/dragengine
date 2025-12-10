@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -57,8 +59,8 @@
 /////////////////////
 
 struct sARSubANatDat{
-	deAnimator *animator;
-	deAnimatorRuleSubAnimator *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleSubAnimator::Ref rule;
 };
 
 
@@ -71,19 +73,15 @@ deClassARSubAnimator::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsA
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassARSubAnimator::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSubANatDat &nd = *((sARSubANatDat*)p_GetNativeData(myself));
-	
-	// clear ( important )
-	nd.animator = NULL;
-	nd.rule = NULL;
+	sARSubANatDat * const nd = new (p_GetNativeData(myself)) sARSubANatDat;
 	
 	// super call
 	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleSubAnimator;
-	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
+	nd->rule = new deAnimatorRuleSubAnimator;
+	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 
 // public func destructor()
@@ -95,17 +93,7 @@ void deClassARSubAnimator::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mys
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sARSubANatDat &nd = *((sARSubANatDat*)p_GetNativeData(myself));
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-		nd.animator = NULL;
-	}
-	
-	if(nd.rule){
-		nd.rule->FreeReference();
-		nd.rule = NULL;
-	}
+	static_cast<sARSubANatDat*>(p_GetNativeData(myself))->~sARSubANatDat();
 }
 
 
@@ -117,7 +105,7 @@ deClassARSubAnimator::nfSetEnablePosition::nfSetEnablePosition(const sInitData &
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARSubAnimator::nfSetEnablePosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSubANatDat &nd = *((sARSubANatDat*)p_GetNativeData(myself));
+	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnablePosition(rt->GetValue(0)->GetBool());
 	
@@ -132,7 +120,7 @@ deClassARSubAnimator::nfSetEnableOrientation::nfSetEnableOrientation(const sInit
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARSubAnimator::nfSetEnableOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSubANatDat &nd = *((sARSubANatDat*)p_GetNativeData(myself));
+	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableOrientation(rt->GetValue(0)->GetBool());
 	
@@ -147,7 +135,7 @@ deClassARSubAnimator::nfSetEnableSize::nfSetEnableSize(const sInitData &init) : 
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARSubAnimator::nfSetEnableSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSubANatDat &nd = *((sARSubANatDat*)p_GetNativeData(myself));
+	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableSize(rt->GetValue(0)->GetBool());
 	
@@ -162,7 +150,7 @@ dsFunction(init.clsARSubA, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUB
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARSubAnimator::nfSetEnableVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSubANatDat &nd = *((sARSubANatDat*)p_GetNativeData(myself));
+	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableVertexPositionSet(rt->GetValue(0)->GetBool());
 	
@@ -184,7 +172,7 @@ void deClassARSubAnimator::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARSubANatDat &nd = *((sARSubANatDat*)p_GetNativeData(myself));
+	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself));
 	const deClassARSubAnimator::eTargets target = (deClassARSubAnimator::eTargets)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -214,7 +202,7 @@ void deClassARSubAnimator::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, ds
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARSubANatDat &nd = *((sARSubANatDat*)p_GetNativeData(myself));
+	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself));
 	const deClassARSubAnimator::eTargets target = (deClassARSubAnimator::eTargets)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -241,7 +229,7 @@ deClassARSubAnimator::nfSetSubAnimator::nfSetSubAnimator(const sInitData &init) 
 	p_AddParameter(init.clsAr); // animator
 }
 void deClassARSubAnimator::nfSetSubAnimator::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSubANatDat &nd = *((sARSubANatDat*)p_GetNativeData(myself));
+	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself));
 	deClassARSubAnimator *clsARSubA = (deClassARSubAnimator*)GetOwnerClass();
 	deClassAnimator *clsAr = clsARSubA->GetDS().GetClassAnimator();
 	
@@ -261,7 +249,7 @@ deClassARSubAnimator::nfSetConnectionAt::nfSetConnectionAt(const sInitData &init
 	p_AddParameter(init.clsInt); // controller
 }
 void deClassARSubAnimator::nfSetConnectionAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSubANatDat &nd = *((sARSubANatDat*)p_GetNativeData(myself));
+	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself));
 	
 	const int target = rt->GetValue(0)->GetInt();
 	const int controller = rt->GetValue(1)->GetInt();
@@ -282,7 +270,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsAr);
 }
 void deClassARSubAnimator::nfSetMatchingConnections::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSubANatDat &nd = *((sARSubANatDat*)p_GetNativeData(myself));
+	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself));
 	deScriptingDragonScript &ds = ((deClassARSubAnimator*)GetOwnerClass())->GetDS();
 	
 	deAnimator * const animator = ds.GetClassAnimator()->GetAnimator(rt->GetValue(0)->GetRealObject());
@@ -303,7 +291,7 @@ dsFunction(init.clsARSubA, "clearConnections", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassARSubAnimator::nfClearConnections::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARSubANatDat &nd = *((sARSubANatDat*)p_GetNativeData(myself));
+	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->ClearConnections();
 	
@@ -381,7 +369,7 @@ deAnimatorRuleSubAnimator *deClassARSubAnimator::GetRule(dsRealObject *myself) c
 		return NULL;
 	}
 	
-	return ((sARSubANatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
+	return static_cast<sARSubANatDat*>(p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
 void deClassARSubAnimator::AssignAnimator(dsRealObject *myself, deAnimator *animator){
@@ -391,7 +379,7 @@ void deClassARSubAnimator::AssignAnimator(dsRealObject *myself, deAnimator *anim
 	
 	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
 	
-	sARSubANatDat &nd = *((sARSubANatDat*)p_GetNativeData(myself->GetBuffer()));
+	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself->GetBuffer()));
 	
 	if(animator == nd.animator){
 		return;
@@ -420,7 +408,7 @@ void deClassARSubAnimator::PushRule(dsRunTime *rt, deAnimator *animator, deAnima
 	
 	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
 	rt->CreateObjectNakedOnStack(this);
-	sARSubANatDat &nd = *((sARSubANatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.animator = NULL;
 	nd.rule = NULL;
 	

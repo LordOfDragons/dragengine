@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -60,13 +62,10 @@ deClassMutableID::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsMUID,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassMutableID::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sMUIDNatDat &nd = *((sMUIDNatDat*)p_GetNativeData(myself));
-	
-	// clear ( important )
-	nd.id = NULL;
+	sMUIDNatDat * const nd = new (p_GetNativeData(myself)) sMUIDNatDat;
 	
 	// create id
-	nd.id = new decUniqueID;
+	nd->id = new decUniqueID;
 }
 
 // public func new( int value )
@@ -75,13 +74,10 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // value
 }
 void deClassMutableID::nfNewValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	sMUIDNatDat &nd = *((sMUIDNatDat*)p_GetNativeData(myself));
-	
-	// clear ( important )
-	nd.id = NULL;
+	sMUIDNatDat * const nd = new (p_GetNativeData(myself)) sMUIDNatDat;
 	
 	// create id
-	nd.id = new decUniqueID(rt->GetValue(0)->GetInt());
+	nd->id = new decUniqueID(rt->GetValue(0)->GetInt());
 }
 
 // public func new( UniqueID id )
@@ -90,15 +86,12 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsUID); // id
 }
 void deClassMutableID::nfNewUniqueID::RunFunction(dsRunTime *rt, dsValue *myself){
-	sMUIDNatDat &nd = *((sMUIDNatDat*)p_GetNativeData(myself));
+	sMUIDNatDat * const nd = new (p_GetNativeData(myself)) sMUIDNatDat;
 	deScriptingDragonScript &ds = ((deClassMutableID*)GetOwnerClass())->GetDS();
-	
-	// clear ( important )
-	nd.id = NULL;
 	
 	// create id
 	const decUniqueID &uid = ds.GetClassUniqueID()->GetUniqueID(rt->GetValue(0)->GetRealObject());
-	nd.id = new decUniqueID(uid);
+	nd->id = new decUniqueID(uid);
 }
 
 // public func new( MutableID copy )
@@ -107,15 +100,12 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsMUID); // copy
 }
 void deClassMutableID::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
-	sMUIDNatDat &nd = *((sMUIDNatDat*)p_GetNativeData(myself));
+	sMUIDNatDat * const nd = new (p_GetNativeData(myself)) sMUIDNatDat;
 	deClassMutableID &clsMUID = *((deClassMutableID*)GetOwnerClass());
-	
-	// clear ( important )
-	nd.id = NULL;
 	
 	// create id
 	const decUniqueID &uid = clsMUID.GetMutableID(rt->GetValue(0)->GetRealObject());
-	nd.id = new decUniqueID(uid);
+	nd->id = new decUniqueID(uid);
 }
 
 // public func destructor()
@@ -127,12 +117,7 @@ void deClassMutableID::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself)
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sMUIDNatDat &nd = *((sMUIDNatDat*)p_GetNativeData(myself));
-	
-	if(nd.id){
-		delete nd.id;
-		nd.id = NULL;
-	}
+	static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->~sMUIDNatDat();
 }
 
 
@@ -145,7 +130,7 @@ deClassMutableID::nfGetBitCount::nfGetBitCount(const sInitData &init) : dsFuncti
 "getBitCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassMutableID::nfGetBitCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	const decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	
 	rt->PushInt(id.GetBitCount());
 }
@@ -156,7 +141,7 @@ deClassMutableID::nfSetBitCount::nfSetBitCount(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsInt); // bitCount
 }
 void deClassMutableID::nfSetBitCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	
 	id.SetBitCount(rt->GetValue(0)->GetInt());
 }
@@ -167,7 +152,7 @@ deClassMutableID::nfGetByteAt::nfGetByteAt(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsInt); // position
 }
 void deClassMutableID::nfGetByteAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	const decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	
 	rt->PushInt(id.GetByteAt(rt->GetValue(0)->GetInt()));
 }
@@ -179,7 +164,7 @@ deClassMutableID::nfSetByteAt::nfSetByteAt(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsInt); // value
 }
 void deClassMutableID::nfSetByteAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	const int position = rt->GetValue(0)->GetInt();
 	const int value = rt->GetValue(1)->GetInt();
 	
@@ -191,7 +176,7 @@ deClassMutableID::nfIncrement::nfIncrement(const sInitData &init) : dsFunction(i
 "increment", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassMutableID::nfIncrement::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	
 	id.Increment();
 }
@@ -202,7 +187,7 @@ deClassMutableID::nfIncrementByInt::nfIncrementByInt(const sInitData &init) : ds
 	p_AddParameter(init.clsInt); // amount
 }
 void deClassMutableID::nfIncrementByInt::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	id.IncrementBy(rt->GetValue(0)->GetInt());
 }
 
@@ -212,7 +197,7 @@ deClassMutableID::nfIncrementByUniqueID::nfIncrementByUniqueID(const sInitData &
 	p_AddParameter(init.clsUID); // amount
 }
 void deClassMutableID::nfIncrementByUniqueID::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	deScriptingDragonScript &ds = ((deClassMutableID*)GetOwnerClass())->GetDS();
 	id.IncrementBy(ds.GetClassUniqueID()->GetUniqueID(rt->GetValue(0)->GetRealObject()));
 }
@@ -223,7 +208,7 @@ deClassMutableID::nfIncrementByMutableID::nfIncrementByMutableID(const sInitData
 	p_AddParameter(init.clsMUID); // amount
 }
 void deClassMutableID::nfIncrementByMutableID::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	deClassMutableID &clsMutableID = *((deClassMutableID*)GetOwnerClass());
 	id.IncrementBy(clsMutableID.GetMutableID(rt->GetValue(0)->GetRealObject()));
 }
@@ -233,7 +218,7 @@ deClassMutableID::nfDecrement::nfDecrement(const sInitData &init) : dsFunction(i
 "decrement", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassMutableID::nfDecrement::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	
 	id.Decrement();
 }
@@ -244,7 +229,7 @@ deClassMutableID::nfDecrementByInt::nfDecrementByInt(const sInitData &init) : ds
 	p_AddParameter(init.clsInt); // amount
 }
 void deClassMutableID::nfDecrementByInt::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	id.DecrementBy(rt->GetValue(0)->GetInt());
 }
 
@@ -254,7 +239,7 @@ deClassMutableID::nfDecrementByUniqueID::nfDecrementByUniqueID(const sInitData &
 	p_AddParameter(init.clsUID); // amount
 }
 void deClassMutableID::nfDecrementByUniqueID::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	deScriptingDragonScript &ds = ((deClassMutableID*)GetOwnerClass())->GetDS();
 	id.DecrementBy(ds.GetClassUniqueID()->GetUniqueID(rt->GetValue(0)->GetRealObject()));
 }
@@ -265,7 +250,7 @@ deClassMutableID::nfDecrementByMutableID::nfDecrementByMutableID(const sInitData
 	p_AddParameter(init.clsMUID); // amount
 }
 void deClassMutableID::nfDecrementByMutableID::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	deClassMutableID &clsMutableID = *((deClassMutableID*)GetOwnerClass());
 	id.DecrementBy(clsMutableID.GetMutableID(rt->GetValue(0)->GetRealObject()));
 }
@@ -275,7 +260,7 @@ deClassMutableID::nfReset::nfReset(const sInitData &init) : dsFunction(init.clsM
 "reset", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassMutableID::nfReset::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	
 	id.Reset();
 }
@@ -286,7 +271,7 @@ deClassMutableID::nfSetFrom::nfSetFrom(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsUID); // id
 }
 void deClassMutableID::nfSetFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	deScriptingDragonScript &ds = ((deClassMutableID*)GetOwnerClass())->GetDS();
 	
 	const decUniqueID &uid = ds.GetClassUniqueID()->GetUniqueID(rt->GetValue(0)->GetRealObject());
@@ -300,7 +285,7 @@ deClassMutableID::nfSetFromMutable::nfSetFromMutable(const sInitData &init) : ds
 	p_AddParameter(init.clsMUID); // id
 }
 void deClassMutableID::nfSetFromMutable::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	deClassMutableID &clsMUID = *((deClassMutableID*)GetOwnerClass());
 	
 	const decUniqueID &uid = clsMUID.GetMutableID(rt->GetValue(0)->GetRealObject());
@@ -313,7 +298,7 @@ deClassMutableID::nfToUniqueID::nfToUniqueID(const sInitData &init) : dsFunction
 "toUniqueID", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsUID){
 }
 void deClassMutableID::nfToUniqueID::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	const decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	deScriptingDragonScript &ds = ((deClassMutableID*)GetOwnerClass())->GetDS();
 	
 	ds.GetClassUniqueID()->PushUniqueID(rt, id);
@@ -324,7 +309,7 @@ deClassMutableID::nfNextID::nfNextID(const sInitData &init) : dsFunction(init.cl
 "nextID", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsUID){
 }
 void deClassMutableID::nfNextID::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	deScriptingDragonScript &ds = ((deClassMutableID*)GetOwnerClass())->GetDS();
 	
 	ds.GetClassUniqueID()->PushUniqueID(rt, id);
@@ -338,7 +323,7 @@ deClassMutableID::nfToHexString::nfToHexString(const sInitData &init) : dsFuncti
 "toHexString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassMutableID::nfToHexString::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	const decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	rt->PushString(id.ToHexString());
 }
 
@@ -348,7 +333,7 @@ deClassMutableID::nfSetFromHexString::nfSetFromHexString(const sInitData &init) 
 	p_AddParameter(init.clsStr); // string
 }
 void deClassMutableID::nfSetFromHexString::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	id = decUniqueID(rt->GetValue(0)->GetString());
 }
 
@@ -363,7 +348,7 @@ deClassMutableID::nfReadFromFile::nfReadFromFile(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsFileReader); // reader
 }
 void deClassMutableID::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	deClassMutableID &clsMUID = *((deClassMutableID*)GetOwnerClass());
 	const deClassFileReader &clsFileReader = *clsMUID.GetDS().GetClassFileReader();
 	
@@ -387,7 +372,7 @@ deClassMutableID::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFileWriter); // writer
 }
 void deClassMutableID::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	const decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	const deClassMutableID &clsMUID = *((deClassMutableID*)GetOwnerClass());
 	const deClassFileWriter &clsFileWriter = *clsMUID.GetDS().GetClassFileWriter();
 	
@@ -413,7 +398,7 @@ deClassMutableID::nfOpLess::nfOpLess(const sInitData &init) : dsFunction(init.cl
 	p_AddParameter(init.clsMUID); // id
 }
 void deClassMutableID::nfOpLess::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	const decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	deClassMutableID &clsMUID = *((deClassMutableID*)GetOwnerClass());
 	rt->PushBool(id < clsMUID.GetMutableID(rt->GetValue(0)->GetRealObject()));
 }
@@ -424,7 +409,7 @@ deClassMutableID::nfOpLessEqual::nfOpLessEqual(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsMUID); // id
 }
 void deClassMutableID::nfOpLessEqual::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	const decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	deClassMutableID &clsMUID = *((deClassMutableID*)GetOwnerClass());
 	rt->PushBool(id <= clsMUID.GetMutableID(rt->GetValue(0)->GetRealObject()));
 }
@@ -435,7 +420,7 @@ deClassMutableID::nfOpGreater::nfOpGreater(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsMUID); // id
 }
 void deClassMutableID::nfOpGreater::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	const decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	deClassMutableID &clsMUID = *((deClassMutableID*)GetOwnerClass());
 	rt->PushBool(id > clsMUID.GetMutableID(rt->GetValue(0)->GetRealObject()));
 }
@@ -446,7 +431,7 @@ deClassMutableID::nfOpGreaterEqual::nfOpGreaterEqual(const sInitData &init) : ds
 	p_AddParameter(init.clsMUID); // id
 }
 void deClassMutableID::nfOpGreaterEqual::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	const decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	deClassMutableID &clsMUID = *((deClassMutableID*)GetOwnerClass());
 	rt->PushBool(id >= clsMUID.GetMutableID(rt->GetValue(0)->GetRealObject()));
 }
@@ -462,7 +447,7 @@ dsFunction(init.clsMUID, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 }
 
 void deClassMutableID::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID * const id = ((sMUIDNatDat*)p_GetNativeData(myself))->id;
+	const decUniqueID * const id = static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id;
 	
 	rt->PushInt((int)(intptr_t)id);
 }
@@ -473,7 +458,7 @@ dsFunction(init.clsMUID, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, ini
 	p_AddParameter(init.clsObj); // object
 }
 void deClassMutableID::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	const decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	deClassUniqueID * const clsMUID = (deClassUniqueID*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -481,7 +466,7 @@ void deClassMutableID::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const decUniqueID &otherUniqueID = *(((sMUIDNatDat*)p_GetNativeData(obj))->id);
+		const decUniqueID &otherUniqueID = *(static_cast<sMUIDNatDat*>(p_GetNativeData(obj))->id);
 		rt->PushBool(id == otherUniqueID);
 	}
 }
@@ -491,7 +476,7 @@ deClassMutableID::nfToString::nfToString(const sInitData &init) : dsFunction(ini
 "toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassMutableID::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID &id = *(((sMUIDNatDat*)p_GetNativeData(myself))->id);
+	const decUniqueID &id = *(static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id);
 	int b, offset, value, byteCount = id.GetBitCount() / 8;
 	char buffer[100];
 	
@@ -616,7 +601,7 @@ decUniqueID &deClassMutableID::GetMutableID(dsRealObject *myself) const{
 		DSTHROW(dueNullPointer);
 	}
 	
-	return *((sMUIDNatDat*)p_GetNativeData(myself->GetBuffer()))->id;
+	return *static_cast<sMUIDNatDat*>(p_GetNativeData(myself->GetBuffer()))->id;
 }
 
 void deClassMutableID::PushMutableID(dsRunTime *rt, const decUniqueID &id){
@@ -625,7 +610,7 @@ void deClassMutableID::PushMutableID(dsRunTime *rt, const decUniqueID &id){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sMUIDNatDat &nd = *((sMUIDNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	sMUIDNatDat &nd = *static_cast<sMUIDNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.id = NULL;
 	
 	try{

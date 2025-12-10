@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -57,8 +59,8 @@
 /////////////////////
 
 struct sARMirrorNatDat{
-	deAnimator *animator;
-	deAnimatorRuleMirror *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleMirror::Ref rule;
 };
 
 
@@ -71,19 +73,15 @@ deClassARMirror::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsARMirr
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassARMirror::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(myself));
-	
-	// clear ( important )
-	nd.animator = NULL;
-	nd.rule = NULL;
+	sARMirrorNatDat * const nd = new (p_GetNativeData(myself)) sARMirrorNatDat;
 	
 	// super call
 	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleMirror;
-	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
+	nd->rule = new deAnimatorRuleMirror;
+	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 
 // public func destructor()
@@ -95,17 +93,7 @@ void deClassARMirror::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(myself));
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-		nd.animator = NULL;
-	}
-	
-	if(nd.rule){
-		nd.rule->FreeReference();
-		nd.rule = NULL;
-	}
+	static_cast<sARMirrorNatDat*>(p_GetNativeData(myself))->~sARMirrorNatDat();
 }
 
 
@@ -116,7 +104,7 @@ deClassARMirror::nfSetEnablePosition::nfSetEnablePosition(const sInitData &init)
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARMirror::nfSetEnablePosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(myself));
+	sARMirrorNatDat &nd = *static_cast<sARMirrorNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnablePosition(rt->GetValue(0)->GetBool());
 	
@@ -131,7 +119,7 @@ deClassARMirror::nfSetEnableOrientation::nfSetEnableOrientation(const sInitData 
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARMirror::nfSetEnableOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(myself));
+	sARMirrorNatDat &nd = *static_cast<sARMirrorNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableOrientation(rt->GetValue(0)->GetBool());
 	
@@ -146,7 +134,7 @@ deClassARMirror::nfSetEnableSize::nfSetEnableSize(const sInitData &init) : dsFun
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARMirror::nfSetEnableSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(myself));
+	sARMirrorNatDat &nd = *static_cast<sARMirrorNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableSize(rt->GetValue(0)->GetBool());
 	
@@ -161,7 +149,7 @@ dsFunction(init.clsARMirror, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_P
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARMirror::nfSetEnableVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(myself));
+	sARMirrorNatDat &nd = *static_cast<sARMirrorNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableVertexPositionSet(rt->GetValue(0)->GetBool());
 	
@@ -179,7 +167,7 @@ deClassARMirror::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : dsFun
 	p_AddParameter(init.clsInt); // link
 }
 void deClassARMirror::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(myself));
+	sARMirrorNatDat &nd = *static_cast<sARMirrorNatDat*>(p_GetNativeData(myself));
 	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
@@ -213,7 +201,7 @@ void deClassARMirror::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(myself));
+	sARMirrorNatDat &nd = *static_cast<sARMirrorNatDat*>(p_GetNativeData(myself));
 	const deClassARMirror::eTargets target = (deClassARMirror::eTargets)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -240,7 +228,7 @@ dsFunction(init.clsARMirror, "setMirrorAxis", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_
 	p_AddParameter(init.clsARMirrorMirrorAxis); // axis
 }
 void deClassARMirror::nfSetMirrorMirrorAxis::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(myself));
+	sARMirrorNatDat &nd = *static_cast<sARMirrorNatDat*>(p_GetNativeData(myself));
 	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
@@ -260,7 +248,7 @@ dsFunction(init.clsARMirror, "setMirrorBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_
 	p_AddParameter(init.clsStr); // boneName
 }
 void deClassARMirror::nfSetMirrorBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(myself));
+	sARMirrorNatDat &nd = *static_cast<sARMirrorNatDat*>(p_GetNativeData(myself));
 	const char * const boneName = rt->GetValue(0)->GetString();
 	
 	nd.rule->SetMirrorBone(boneName);
@@ -278,7 +266,7 @@ dsFunction(init.clsARMirror, "addMatchName", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_N
 	p_AddParameter(init.clsARMirrorMatchNameType); // type
 }
 void deClassARMirror::nfAddMatchName::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(myself));
+	sARMirrorNatDat &nd = *static_cast<sARMirrorNatDat*>(p_GetNativeData(myself));
 	
 	const char * const first = rt->GetValue(0)->GetString();
 	const char * const second = rt->GetValue(1)->GetString();
@@ -369,7 +357,7 @@ deAnimatorRuleMirror *deClassARMirror::GetRule(dsRealObject *myself) const{
 		return nullptr;
 	}
 	
-	return ((sARMirrorNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
+	return static_cast<sARMirrorNatDat*>(p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
 void deClassARMirror::AssignAnimator(dsRealObject *myself, deAnimator *animator){
@@ -379,7 +367,7 @@ void deClassARMirror::AssignAnimator(dsRealObject *myself, deAnimator *animator)
 	
 	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
 	
-	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(myself->GetBuffer()));
+	sARMirrorNatDat &nd = *static_cast<sARMirrorNatDat*>(p_GetNativeData(myself->GetBuffer()));
 	
 	if(animator == nd.animator){
 		return;
@@ -408,7 +396,7 @@ void deClassARMirror::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRu
 	
 	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
 	rt->CreateObjectNakedOnStack(this);
-	sARMirrorNatDat &nd = *((sARMirrorNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	sARMirrorNatDat &nd = *static_cast<sARMirrorNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.animator = nullptr;
 	nd.rule = nullptr;
 	

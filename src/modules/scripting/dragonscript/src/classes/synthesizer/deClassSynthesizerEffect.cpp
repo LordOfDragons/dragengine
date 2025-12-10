@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -46,8 +48,8 @@
 
 
 struct sSynSNatDat{
-	deSynthesizerSource *source;
-	deSynthesizerEffect *effect;
+	deSynthesizerSource::Ref source;
+	deSynthesizerEffect::Ref effect;
 };
 
 
@@ -60,9 +62,7 @@ deClassSynthesizerEffect::nfNew::nfNew(const sInitData &init) : dsFunction(init.
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSynthesizerEffect::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
-	nd.source = NULL;
-	nd.effect = NULL;
+	sSynSNatDat * const nd = new (p_GetNativeData(myself)) sSynSNatDat;
 }
 
 // public func destructor()
@@ -74,17 +74,7 @@ void deClassSynthesizerEffect::nfDestructor::RunFunction(dsRunTime *rt, dsValue 
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
-	
-	if(nd.source){
-		nd.source->FreeReference();
-		nd.source = NULL;
-	}
-	
-	if(nd.effect){
-		nd.effect->FreeReference();
-		nd.effect = NULL;
-	}
+	static_cast<sSynSNatDat*>(p_GetNativeData(myself))->~sSynSNatDat();
 }
 
 
@@ -95,7 +85,7 @@ deClassSynthesizerEffect::nfSetEnabled::nfSetEnabled(const sInitData &init) : ds
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassSynthesizerEffect::nfSetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
+	sSynSNatDat &nd = *static_cast<sSynSNatDat*>(p_GetNativeData(myself));
 	const bool enabled = rt->GetValue(0)->GetBool();
 	
 	if(!nd.effect){
@@ -119,7 +109,7 @@ deClassSynthesizerEffect::nfSetStrength::nfSetStrength(const sInitData &init) : 
 	p_AddParameter(init.clsFloat); // strength
 }
 void deClassSynthesizerEffect::nfSetStrength::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself));
+	sSynSNatDat &nd = *static_cast<sSynSNatDat*>(p_GetNativeData(myself));
 	
 	if(!nd.effect){
 		DSTHROW(dueNullPointer);
@@ -188,7 +178,7 @@ deSynthesizerEffect *deClassSynthesizerEffect::GetEffect(dsRealObject *myself) c
 		return NULL;
 	}
 	
-	return ((sSynSNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
+	return static_cast<sSynSNatDat*>(p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
 void deClassSynthesizerEffect::AssignEffect(dsRealObject *myself, deSynthesizerEffect *effect){
@@ -196,7 +186,7 @@ void deClassSynthesizerEffect::AssignEffect(dsRealObject *myself, deSynthesizerE
 		DSTHROW(dueInvalidParam);
 	}
 	
-	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself->GetBuffer()));
+	sSynSNatDat &nd = *static_cast<sSynSNatDat*>(p_GetNativeData(myself->GetBuffer()));
 	
 	if(effect == nd.effect){
 		return;
@@ -218,7 +208,7 @@ void deClassSynthesizerEffect::AssignSource(dsRealObject *myself, deSynthesizerS
 		DSTHROW(dueInvalidParam);
 	}
 	
-	sSynSNatDat &nd = *((sSynSNatDat*)p_GetNativeData(myself->GetBuffer()));
+	sSynSNatDat &nd = *static_cast<sSynSNatDat*>(p_GetNativeData(myself->GetBuffer()));
 	
 	if(source == nd.source){
 		return;

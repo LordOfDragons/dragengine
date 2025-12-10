@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,7 +58,7 @@ deClassColorMatrix::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsClr
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassColorMatrix::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	matrix = decColorMatrix::CreateIdentity();
 }
@@ -67,7 +69,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsClrMat); // matrix
 }
 void deClassColorMatrix::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
-	decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	deClassColorMatrix *clsClrMatrix = (deClassColorMatrix*)GetOwnerClass();
 	
 	matrix = clsClrMatrix->GetColorMatrix(rt->GetValue(0)->GetRealObject());
@@ -83,7 +85,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsClr); // white
 }
 void deClassColorMatrix::nfNew3::RunFunction(dsRunTime *rt, dsValue *myself){
-	decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	const deScriptingDragonScript &ds = ((deClassColorMatrix*)GetOwnerClass())->GetDS();
 	deClassColor &clsClr = *ds.GetClassColor();
 	
@@ -324,6 +326,11 @@ deClassColorMatrix::nfDestructor::nfDestructor(const sInitData &init) : dsFuncti
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassColorMatrix::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+	if(myself->GetRealObject()->GetRefCount() != 1){
+		return; // protected against GC cleaning up leaking
+	}
+	
+	static_cast<sCMNatDat*>(p_GetNativeData(myself))->~sCMNatDat();
 }
 
 
@@ -338,7 +345,7 @@ deClassColorMatrix::nfGetAt::nfGetAt(const sInitData &init) : dsFunction(init.cl
 	p_AddParameter(init.clsInt); // col
 }
 void deClassColorMatrix::nfGetAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	const int row = rt->GetValue(0)->GetInt();
 	const int col = rt->GetValue(1)->GetInt();
@@ -357,7 +364,7 @@ deClassColorMatrix::nfGet11::nfGet11(const sInitData &init) : dsFunction(init.cl
 "get11", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet11::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a11);
 }
@@ -367,7 +374,7 @@ deClassColorMatrix::nfGet12::nfGet12(const sInitData &init) : dsFunction(init.cl
 "get12", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet12::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a12);
 }
@@ -377,7 +384,7 @@ deClassColorMatrix::nfGet13::nfGet13(const sInitData &init) : dsFunction(init.cl
 "get13", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet13::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a13);
 }
@@ -387,7 +394,7 @@ deClassColorMatrix::nfGet14::nfGet14(const sInitData &init) : dsFunction(init.cl
 "get14", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet14::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a14);
 }
@@ -397,7 +404,7 @@ deClassColorMatrix::nfGet15::nfGet15(const sInitData &init) : dsFunction(init.cl
 "get15", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet15::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a15);
 }
@@ -407,7 +414,7 @@ deClassColorMatrix::nfGet21::nfGet21(const sInitData &init) : dsFunction(init.cl
 "get21", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet21::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a21);
 }
@@ -417,7 +424,7 @@ deClassColorMatrix::nfGet22::nfGet22(const sInitData &init) : dsFunction(init.cl
 "get22", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet22::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a22);
 }
@@ -427,7 +434,7 @@ deClassColorMatrix::nfGet23::nfGet23(const sInitData &init) : dsFunction(init.cl
 "get23", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet23::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a23);
 }
@@ -437,7 +444,7 @@ deClassColorMatrix::nfGet24::nfGet24(const sInitData &init) : dsFunction(init.cl
 "get24", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet24::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a24);
 }
@@ -447,7 +454,7 @@ deClassColorMatrix::nfGet25::nfGet25(const sInitData &init) : dsFunction(init.cl
 "get25", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet25::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a25);
 }
@@ -457,7 +464,7 @@ deClassColorMatrix::nfGet31::nfGet31(const sInitData &init) : dsFunction(init.cl
 "get31", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet31::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a31);
 }
@@ -467,7 +474,7 @@ deClassColorMatrix::nfGet32::nfGet32(const sInitData &init) : dsFunction(init.cl
 "get32", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet32::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a32);
 }
@@ -477,7 +484,7 @@ deClassColorMatrix::nfGet33::nfGet33(const sInitData &init) : dsFunction(init.cl
 "get33", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet33::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a33);
 }
@@ -487,7 +494,7 @@ deClassColorMatrix::nfGet34::nfGet34(const sInitData &init) : dsFunction(init.cl
 "get34", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet34::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a34);
 }
@@ -497,7 +504,7 @@ deClassColorMatrix::nfGet35::nfGet35(const sInitData &init) : dsFunction(init.cl
 "get35", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet35::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a35);
 }
@@ -507,7 +514,7 @@ deClassColorMatrix::nfGet41::nfGet41(const sInitData &init) : dsFunction(init.cl
 "get41", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet41::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a41);
 }
@@ -517,7 +524,7 @@ deClassColorMatrix::nfGet42::nfGet42(const sInitData &init) : dsFunction(init.cl
 "get42", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet42::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a42);
 }
@@ -527,7 +534,7 @@ deClassColorMatrix::nfGet43::nfGet43(const sInitData &init) : dsFunction(init.cl
 "get43", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet43::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a43);
 }
@@ -537,7 +544,7 @@ deClassColorMatrix::nfGet44::nfGet44(const sInitData &init) : dsFunction(init.cl
 "get44", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet44::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a44);
 }
@@ -547,7 +554,7 @@ deClassColorMatrix::nfGet45::nfGet45(const sInitData &init) : dsFunction(init.cl
 "get45", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColorMatrix::nfGet45::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	rt->PushFloat(matrix.a45);
 }
@@ -557,7 +564,7 @@ deClassColorMatrix::nfGetRedBase::nfGetRedBase(const sInitData &init) : dsFuncti
 "getRedBase", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsClr){
 }
 void deClassColorMatrix::nfGetRedBase::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	deClassColorMatrix &clsClrMatrix = *((deClassColorMatrix*)GetOwnerClass());
 	deClassColor &clsClr = *clsClrMatrix.GetDS().GetClassColor();
 	
@@ -569,7 +576,7 @@ deClassColorMatrix::nfGetGreenBase::nfGetGreenBase(const sInitData &init) : dsFu
 "getGreenBase", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsClr){
 }
 void deClassColorMatrix::nfGetGreenBase::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	deClassColorMatrix &clsClrMatrix = *((deClassColorMatrix*)GetOwnerClass());
 	deClassColor &clsClr = *clsClrMatrix.GetDS().GetClassColor();
 	
@@ -581,7 +588,7 @@ deClassColorMatrix::nfGetBlueBase::nfGetBlueBase(const sInitData &init) : dsFunc
 "getBlueBase", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsClr){
 }
 void deClassColorMatrix::nfGetBlueBase::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	deClassColorMatrix &clsClrMatrix = *((deClassColorMatrix*)GetOwnerClass());
 	deClassColor &clsClr = *clsClrMatrix.GetDS().GetClassColor();
 	
@@ -593,7 +600,7 @@ deClassColorMatrix::nfGetAlphaBase::nfGetAlphaBase(const sInitData &init) : dsFu
 "getAlphaBase", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsClr){
 }
 void deClassColorMatrix::nfGetAlphaBase::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	deClassColorMatrix &clsClrMatrix = *((deClassColorMatrix*)GetOwnerClass());
 	deClassColor &clsClr = *clsClrMatrix.GetDS().GetClassColor();
 	
@@ -605,7 +612,7 @@ deClassColorMatrix::nfGetWhiteBase::nfGetWhiteBase(const sInitData &init) : dsFu
 "getWhiteBase", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsClr){
 }
 void deClassColorMatrix::nfGetWhiteBase::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	deClassColorMatrix &clsClrMatrix = *((deClassColorMatrix*)GetOwnerClass());
 	deClassColor &clsClr = *clsClrMatrix.GetDS().GetClassColor();
 	
@@ -647,7 +654,7 @@ deClassColorMatrix::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsFileWriter); // writer
 }
 void deClassColorMatrix::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	const deClassColorMatrix &clsColorMatrix = *((deClassColorMatrix*)GetOwnerClass());
 	const deClassFileWriter &clsFileWriter = *clsColorMatrix.GetDS().GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
@@ -674,7 +681,7 @@ deClassColorMatrix::nfOpAdd::nfOpAdd(const sInitData &init) : dsFunction(init.cl
 	p_AddParameter(init.clsClrMat); // matrix
 }
 void deClassColorMatrix::nfOpAdd::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	deClassColorMatrix &clsClrMatrix = *((deClassColorMatrix*)GetOwnerClass());
 	
 	const decColorMatrix &otherMatrix = clsClrMatrix.GetColorMatrix(rt->GetValue(0)->GetRealObject());
@@ -687,7 +694,7 @@ deClassColorMatrix::nfOpSubtract::nfOpSubtract(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsClrMat); // matrix
 }
 void deClassColorMatrix::nfOpSubtract::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	deClassColorMatrix &clsClrMatrix = *((deClassColorMatrix*)GetOwnerClass());
 	
 	const decColorMatrix &otherMatrix = clsClrMatrix.GetColorMatrix(rt->GetValue(0)->GetRealObject());
@@ -700,7 +707,7 @@ deClassColorMatrix::nfOpScale::nfOpScale(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsFlt); // scalar
 }
 void deClassColorMatrix::nfOpScale::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	deClassColorMatrix &clsClrMatrix = *((deClassColorMatrix*)GetOwnerClass());
 	
 	const float scalar = rt->GetValue(0)->GetFloat();
@@ -714,7 +721,7 @@ deClassColorMatrix::nfOpDivide::nfOpDivide(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsFlt); // k
 }
 void deClassColorMatrix::nfOpDivide::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	deClassColorMatrix &clsClrMatrix = *((deClassColorMatrix*)GetOwnerClass());
 	
 	float scalar = rt->GetValue(0)->GetFloat();
@@ -728,7 +735,7 @@ deClassColorMatrix::nfOpMultiply::nfOpMultiply(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsClrMat); // matrix
 }
 void deClassColorMatrix::nfOpMultiply::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	deClassColorMatrix &clsClrMatrix = *((deClassColorMatrix*)GetOwnerClass());
 	
 	const decColorMatrix &otherMatrix = clsClrMatrix.GetColorMatrix(rt->GetValue(0)->GetRealObject());
@@ -742,7 +749,7 @@ deClassColorMatrix::nfOpMultiply2::nfOpMultiply2(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsClr); // color
 }
 void deClassColorMatrix::nfOpMultiply2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	deClassColorMatrix &clsClrMatrix = *((deClassColorMatrix*)GetOwnerClass());
 	deClassColor &clsClr = *clsClrMatrix.GetDS().GetClassColor();
 	
@@ -762,7 +769,7 @@ deClassColorMatrix::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsObj); // other
 }
 void deClassColorMatrix::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	deClassColorMatrix *clsClrMatrix = (deClassColorMatrix*)GetOwnerClass();
 	
 	dsValue *obj = rt->GetValue(0);
@@ -771,7 +778,7 @@ void deClassColorMatrix::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const decColorMatrix &otherMatrix = ((sCMNatDat*)p_GetNativeData(obj))->matrix;
+		const decColorMatrix &otherMatrix = static_cast<sCMNatDat*>(p_GetNativeData(obj))->matrix;
 		rt->PushBool(matrix.IsEqualTo(otherMatrix));
 	}
 }
@@ -781,7 +788,7 @@ deClassColorMatrix::nfHashCode::nfHashCode(const sInitData &init) : dsFunction(i
 "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassColorMatrix::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	
 	int hash = (int)(matrix.a11 * 0x0001)
 		+ (int)(matrix.a12 * 0x0002)
@@ -808,7 +815,7 @@ deClassColorMatrix::nfToString::nfToString(const sInitData &init) : dsFunction(i
 "toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassColorMatrix::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	decString str;
 	
 	str.Format("[[%g,%g,%g,%g,%g],[%g,%g,%g,%g,%g],[%g,%g,%g,%g,%g],[%g,%g,%g,%g,%g]]",
@@ -843,7 +850,7 @@ void deClassColorMatrix::nfToStringPrecision::RunFunction(dsRunTime *rt, dsValue
 		"[%%.%huf,%%.%huf,%%.%huf,%%.%huf,%%.%huf]]",
 		p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p, p);
 	
-	const decColorMatrix &matrix = ((sCMNatDat*)p_GetNativeData(myself))->matrix;
+	const decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
 	decString str;
 	
 	str.Format(format,
@@ -966,7 +973,7 @@ const decColorMatrix &deClassColorMatrix::GetColorMatrix(dsRealObject *myself) c
 		DSTHROW(dueNullPointer);
 	}
 	
-	return (const decColorMatrix &)((sCMNatDat*)p_GetNativeData(myself->GetBuffer()))->matrix;
+	return (const decColorMatrix &)static_cast<sCMNatDat*>(p_GetNativeData(myself->GetBuffer()))->matrix;
 }
 
 void deClassColorMatrix::PushColorMatrix(dsRunTime *rt, const decColorMatrix &matrix){
@@ -975,5 +982,5 @@ void deClassColorMatrix::PushColorMatrix(dsRunTime *rt, const decColorMatrix &ma
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	((sCMNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->matrix = matrix;
+	static_cast<sCMNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->matrix = matrix;
 }

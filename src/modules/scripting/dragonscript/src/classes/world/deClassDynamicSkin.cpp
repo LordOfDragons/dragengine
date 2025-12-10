@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -61,7 +63,7 @@
 
 // native structure
 struct sDSkinNatDat{
-	deDynamicSkin *dynamicSkin;
+	deDynamicSkin::Ref dynamicSkin;
 };
 
 
@@ -77,16 +79,13 @@ deClassDynamicSkin::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsDSk
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassDynamicSkin::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	sDSkinNatDat &nd = *((sDSkinNatDat*)p_GetNativeData(myself));
+	sDSkinNatDat * const nd = new (p_GetNativeData(myself)) sDSkinNatDat;
 	deClassDynamicSkin &clsDSkin = *((deClassDynamicSkin*)GetOwnerClass());
 	deDynamicSkinManager &dskinmgr = *clsDSkin.GetDS()->GetGameEngine()->GetDynamicSkinManager();
 	
-	// clear (important)
-	nd.dynamicSkin = NULL;
-	
 	// create dynamic skin
-	nd.dynamicSkin = dskinmgr.CreateDynamicSkin();
-	if(!nd.dynamicSkin) DSTHROW(dueOutOfMemory);
+	nd->dynamicSkin = dskinmgr.CreateDynamicSkin();
+	if(!nd->dynamicSkin) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -98,12 +97,7 @@ void deClassDynamicSkin::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sDSkinNatDat &nd = *((sDSkinNatDat*)p_GetNativeData(myself));
-	
-	if(nd.dynamicSkin){
-		nd.dynamicSkin->FreeReference();
-		nd.dynamicSkin = NULL;
-	}
+	static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->~sDSkinNatDat();
 }
 
 
@@ -113,7 +107,7 @@ deClassDynamicSkin::nfGetRenderableCount::nfGetRenderableCount(const sInitData &
 "getRenderableCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassDynamicSkin::nfGetRenderableCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	const deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	
 	rt->PushInt(dynamicSkin.GetRenderableCount());
 }
@@ -124,7 +118,7 @@ deClassDynamicSkin::nfHasRenderable::nfHasRenderable(const sInitData &init) : ds
 	p_AddParameter(init.clsStr); // name
 }
 void deClassDynamicSkin::nfHasRenderable::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	const deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	const char * const name = rt->GetValue(0)->GetString();
 	
 	rt->PushBool(dynamicSkin.HasRenderableNamed(name));
@@ -136,7 +130,7 @@ deClassDynamicSkin::nfIndexOfRenderable::nfIndexOfRenderable(const sInitData &in
 	p_AddParameter(init.clsStr); // name
 }
 void deClassDynamicSkin::nfIndexOfRenderable::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	const deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	const char * const name = rt->GetValue(0)->GetString();
 	
 	rt->PushInt(dynamicSkin.IndexOfRenderableNamed(name));
@@ -149,7 +143,7 @@ deClassDynamicSkin::nfAddRenderable::nfAddRenderable(const sInitData &init) : ds
 	p_AddParameter(init.clsDynamicSkinRenderableType); // type
 }
 void deClassDynamicSkin::nfAddRenderable::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	const char *name = rt->GetValue(0)->GetString();
 	deDSRenderable *renderable = NULL;
 	
@@ -209,7 +203,7 @@ deClassDynamicSkin::nfRemoveRenderable::nfRemoveRenderable(const sInitData &init
 	p_AddParameter(init.clsStr); // name
 }
 void deClassDynamicSkin::nfRemoveRenderable::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	const char * const name = rt->GetValue(0)->GetString();
 	
 	dynamicSkin.RemoveRenderableNamed(name);
@@ -220,7 +214,7 @@ deClassDynamicSkin::nfRemoveAllRenderables::nfRemoveAllRenderables(const sInitDa
 "removeAllRenderables", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassDynamicSkin::nfRemoveAllRenderables::RunFunction(dsRunTime*, dsValue *myself){
-	deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	
 	dynamicSkin.RemoveAllRenderables();
 }
@@ -233,7 +227,7 @@ deClassDynamicSkin::nfGetTypeAt::nfGetTypeAt(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsInt); // renderable
 }
 void deClassDynamicSkin::nfGetTypeAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	int renderable = rt->GetValue(0)->GetInt();
 	deDSRenderableVisitorIdentify identify;
 	
@@ -251,7 +245,7 @@ deClassDynamicSkin::nfGetValueAt::nfGetValueAt(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsInt); // renderable
 }
 void deClassDynamicSkin::nfGetValueAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	const deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	const int renderable = rt->GetValue(0)->GetInt();
 	
 	deDSRenderableVisitorIdentify identify;
@@ -271,7 +265,7 @@ deClassDynamicSkin::nfSetValueAt::nfSetValueAt(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFlt); // value
 }
 void deClassDynamicSkin::nfSetValueAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	int renderable = rt->GetValue(0)->GetInt();
 	float value = rt->GetValue(1)->GetFloat();
 	
@@ -290,7 +284,7 @@ deClassDynamicSkin::nfGetColorAt::nfGetColorAt(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsInt); // renderable
 }
 void deClassDynamicSkin::nfGetColorAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	const deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	const deScriptingDragonScript &ds = *(((deClassDynamicSkin*)GetOwnerClass())->GetDS());
 	const int renderable = rt->GetValue(0)->GetInt();
 	
@@ -311,7 +305,7 @@ deClassDynamicSkin::nfSetColorAt::nfSetColorAt(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsClr); // color
 }
 void deClassDynamicSkin::nfSetColorAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	deClassDynamicSkin &clsDSkin = *((deClassDynamicSkin*)GetOwnerClass());
 	deClassColor &clsClr = *clsDSkin.GetDS()->GetClassColor();
 	int renderable = rt->GetValue(0)->GetInt();
@@ -334,7 +328,7 @@ deClassDynamicSkin::nfGetImageAt::nfGetImageAt(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsInt); // renderable
 }
 void deClassDynamicSkin::nfGetImageAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	const deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	const deScriptingDragonScript &ds = *(((deClassDynamicSkin*)GetOwnerClass())->GetDS());
 	const int renderable = rt->GetValue(0)->GetInt();
 	
@@ -355,7 +349,7 @@ deClassDynamicSkin::nfSetImageAt::nfSetImageAt(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsImg); // image
 }
 void deClassDynamicSkin::nfSetImageAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	deClassDynamicSkin &clsDSkin = *((deClassDynamicSkin*)GetOwnerClass());
 	deClassImage &clsImg = *clsDSkin.GetDS()->GetClassImage();
 	int renderable = rt->GetValue(0)->GetInt();
@@ -376,7 +370,7 @@ deClassDynamicSkin::nfGetCanvasAt::nfGetCanvasAt(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsInt); // renderable
 }
 void deClassDynamicSkin::nfGetCanvasAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	const deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	const deScriptingDragonScript &ds = *(((deClassDynamicSkin*)GetOwnerClass())->GetDS());
 	const int renderable = rt->GetValue(0)->GetInt();
 	
@@ -397,7 +391,7 @@ deClassDynamicSkin::nfSetCanvasAt::nfSetCanvasAt(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsCView); // canvas
 }
 void deClassDynamicSkin::nfSetCanvasAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	const deScriptingDragonScript &ds = *(((deClassDynamicSkin*)GetOwnerClass())->GetDS());
 	const int renderable = rt->GetValue(0)->GetInt();
 	deCanvasView * const canvas = ds.GetClassCanvasView()->GetCanvas(rt->GetValue(1)->GetRealObject());
@@ -422,7 +416,7 @@ dsFunction(init.clsDSkin, "setCanvasAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 	p_AddParameter(init.clsInt); // componentCount
 }
 void deClassDynamicSkin::nfSetCanvasAt2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	const deScriptingDragonScript &ds = *(((deClassDynamicSkin*)GetOwnerClass())->GetDS());
 	const int renderable = rt->GetValue(0)->GetInt();
 	deCanvasView * const canvas = ds.GetClassCanvasView()->GetCanvas(rt->GetValue(1)->GetRealObject());
@@ -451,7 +445,7 @@ dsFunction(init.clsDSkin, "setCanvasAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 	p_AddParameter(init.clsInt); // bitCount
 }
 void deClassDynamicSkin::nfSetCanvasAt3::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	const deScriptingDragonScript &ds = *(((deClassDynamicSkin*)GetOwnerClass())->GetDS());
 	const int renderable = rt->GetValue(0)->GetInt();
 	deCanvasView * const canvas = ds.GetClassCanvasView()->GetCanvas(rt->GetValue(1)->GetRealObject());
@@ -479,7 +473,7 @@ deClassDynamicSkin::nfGetCameraAt::nfGetCameraAt(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsInt); // renderable
 }
 void deClassDynamicSkin::nfGetCameraAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	const deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	const deScriptingDragonScript &ds = *(((deClassDynamicSkin*)GetOwnerClass())->GetDS());
 	const int renderable = rt->GetValue(0)->GetInt();
 	
@@ -500,7 +494,7 @@ deClassDynamicSkin::nfSetCameraAt::nfSetCameraAt(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsCam); // camera
 }
 void deClassDynamicSkin::nfSetCameraAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	deClassDynamicSkin &clsDSkin = *((deClassDynamicSkin*)GetOwnerClass());
 	deClassCamera &clsCam = *clsDSkin.GetDS()->GetClassCamera();
 	int renderable = rt->GetValue(0)->GetInt();
@@ -521,7 +515,7 @@ deClassDynamicSkin::nfGetVideoPlayerAt::nfGetVideoPlayerAt(const sInitData &init
 	p_AddParameter(init.clsInt); // renderable
 }
 void deClassDynamicSkin::nfGetVideoPlayerAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	const deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	const deScriptingDragonScript &ds = *(((deClassDynamicSkin*)GetOwnerClass())->GetDS());
 	const int renderable = rt->GetValue(0)->GetInt();
 	
@@ -542,7 +536,7 @@ deClassDynamicSkin::nfSetVideoPlayerAt::nfSetVideoPlayerAt(const sInitData &init
 	p_AddParameter(init.clsVP); // videoPlayer
 }
 void deClassDynamicSkin::nfSetVideoPlayerAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin &dynamicSkin = *(((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin);
+	deDynamicSkin &dynamicSkin = *(static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin);
 	deClassDynamicSkin &clsDSkin = *((deClassDynamicSkin*)GetOwnerClass());
 	deClassVideoPlayer &clsVP = *clsDSkin.GetDS()->GetClassVideoPlayer();
 	int renderable = rt->GetValue(0)->GetInt();
@@ -565,7 +559,7 @@ deClassDynamicSkin::nfHashCode::nfHashCode(const sInitData &init) : dsFunction(i
 }
 
 void deClassDynamicSkin::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin *dynamicSkin = ((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin;
+	deDynamicSkin *dynamicSkin = static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin;
 	
 	rt->PushInt((int)(intptr_t)dynamicSkin);
 }
@@ -576,7 +570,7 @@ deClassDynamicSkin::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassDynamicSkin::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin *dynamicSkin = ((sDSkinNatDat*)p_GetNativeData(myself))->dynamicSkin;
+	deDynamicSkin *dynamicSkin = static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin;
 	deClassDynamicSkin *clsDSkin = (deClassDynamicSkin*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
@@ -584,7 +578,7 @@ void deClassDynamicSkin::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		deDynamicSkin *otherDSkin = ((sDSkinNatDat*)p_GetNativeData(obj))->dynamicSkin;
+		deDynamicSkin *otherDSkin = static_cast<sDSkinNatDat*>(p_GetNativeData(obj))->dynamicSkin;
 		
 		rt->PushBool(dynamicSkin == otherDSkin);
 	}
@@ -678,7 +672,7 @@ deDynamicSkin *deClassDynamicSkin::GetDynamicSkin(dsRealObject *myself) const{
 		return NULL;
 	}
 	
-	return ((sDSkinNatDat*)p_GetNativeData(myself->GetBuffer()))->dynamicSkin;
+	return static_cast<sDSkinNatDat*>(p_GetNativeData(myself->GetBuffer()))->dynamicSkin;
 }
 
 void deClassDynamicSkin::PushDynamicSkin(dsRunTime *rt, deDynamicSkin *dynamicSkin){
@@ -692,6 +686,6 @@ void deClassDynamicSkin::PushDynamicSkin(dsRunTime *rt, deDynamicSkin *dynamicSk
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	((sDSkinNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->dynamicSkin = dynamicSkin;
+	static_cast<sDSkinNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->dynamicSkin = dynamicSkin;
 	dynamicSkin->AddReference();
 }

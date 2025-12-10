@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -131,23 +133,11 @@ deClassSafeArray::nfDestructor::nfDestructor(const sInitData &init) : dsFunction
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSafeArray::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSafeArrayNatDat &nd = *((sSafeArrayNatDat*)p_GetNativeData(myself));
-	
-	if(nd.iterators){
-		delete nd.iterators;
-		nd.iterators = NULL;
+	if(myself->GetRealObject()->GetRefCount() != 1){
+		return; // protected against GC cleaning up leaking
 	}
 	
-	if(nd.array){
-		int count = nd.array->GetCount();
-		while(count > 0){
-			count--;
-			rt->FreeValue((dsValue*)nd.array->GetAt(count));
-			nd.array->RemoveFrom(count);
-		}
-		delete nd.array;
-		nd.array = NULL;
-	}
+	static_cast<sSafeArrayIterator*>(p_GetNativeData(myself))->~sSafeArrayIterator();
 }
 
 

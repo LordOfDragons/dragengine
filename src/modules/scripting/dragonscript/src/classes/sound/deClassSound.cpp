@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -46,7 +48,7 @@
 /////////////////////
 
 struct sSndNatDat{
-	deSound *sound;
+	deSound::Ref sound;
 };
 
 
@@ -61,10 +63,9 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsString); // filename
 }
 void deClassSound::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSndNatDat &nd = *((sSndNatDat*)p_GetNativeData(myself));
+	sSndNatDat * const nd = new (p_GetNativeData(myself)) sSndNatDat;
 	
 	// prepare
-	nd.sound = NULL;
 	
 	// load sound
 	deScriptingDragonScript &ds = ((deClassSound*)GetOwnerClass())->GetDS();
@@ -72,7 +73,7 @@ void deClassSound::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	
-	nd.sound = sndMgr.LoadSound(filename, "/", false);
+	nd->sound = sndMgr.LoadSound(filename, "/", false);
 }
 
 // static public func void loadAsynchron( String filename, ResourceListener listener )
@@ -105,12 +106,7 @@ void deClassSound::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSndNatDat &nd = *((sSndNatDat*)p_GetNativeData(myself));
-	
-	if(nd.sound){
-		nd.sound->FreeReference();
-		nd.sound = NULL;
-	}
+	static_cast<sSndNatDat*>(p_GetNativeData(myself))->~sSndNatDat();
 }
 
 
@@ -124,7 +120,7 @@ dsFunction(init.clsSound, "getFilename", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
 void deClassSound::nfGetFilename::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSound &sound = *(((sSndNatDat*)p_GetNativeData(myself))->sound);
+	const deSound &sound = *(static_cast<sSndNatDat*>(p_GetNativeData(myself))->sound);
 	
 	rt->PushString(sound.GetFilename());
 }
@@ -135,7 +131,7 @@ dsFunction(init.clsSound, "getBytesPerSample", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassSound::nfGetBytesPerSample::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSound &sound = *(((sSndNatDat*)p_GetNativeData(myself))->sound);
+	const deSound &sound = *(static_cast<sSndNatDat*>(p_GetNativeData(myself))->sound);
 	
 	rt->PushInt(sound.GetBytesPerSample());
 }
@@ -146,7 +142,7 @@ dsFunction(init.clsSound, "getSampleCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassSound::nfGetSampleCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSound &sound = *(((sSndNatDat*)p_GetNativeData(myself))->sound);
+	const deSound &sound = *(static_cast<sSndNatDat*>(p_GetNativeData(myself))->sound);
 	
 	rt->PushInt(sound.GetSampleCount());
 }
@@ -157,7 +153,7 @@ dsFunction(init.clsSound, "getChannelCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassSound::nfGetChannelCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSound &sound = *(((sSndNatDat*)p_GetNativeData(myself))->sound);
+	const deSound &sound = *(static_cast<sSndNatDat*>(p_GetNativeData(myself))->sound);
 	
 	rt->PushInt(sound.GetChannelCount());
 }
@@ -168,7 +164,7 @@ dsFunction(init.clsSound, "getSampleRate", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassSound::nfGetSampleRate::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSound &sound = *(((sSndNatDat*)p_GetNativeData(myself))->sound);
+	const deSound &sound = *(static_cast<sSndNatDat*>(p_GetNativeData(myself))->sound);
 	
 	rt->PushInt(sound.GetSampleRate());
 }
@@ -179,7 +175,7 @@ dsFunction(init.clsSound, "getPlayTime", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassSound::nfGetPlayTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSound &sound = *(((sSndNatDat*)p_GetNativeData(myself))->sound);
+	const deSound &sound = *(static_cast<sSndNatDat*>(p_GetNativeData(myself))->sound);
 	
 	rt->PushFloat(sound.GetPlayTime());
 }
@@ -196,7 +192,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 
 void deClassSound::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSound * const sound = ((sSndNatDat*)p_GetNativeData(myself))->sound;
+	const deSound * const sound = static_cast<sSndNatDat*>(p_GetNativeData(myself))->sound;
 	
 	rt->PushInt((int)(intptr_t)sound);
 }
@@ -208,7 +204,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObject); // object
 }
 void deClassSound::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSound * const sound = ((sSndNatDat*)p_GetNativeData(myself))->sound;
+	const deSound * const sound = static_cast<sSndNatDat*>(p_GetNativeData(myself))->sound;
 	deClassSound * const clsSound = (deClassSound*)GetOwnerClass();
 	dsValue * const object = rt->GetValue(0);
 	
@@ -216,7 +212,7 @@ void deClassSound::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		deSound * const otherSound = ((sSndNatDat*)p_GetNativeData(object))->sound;
+		deSound * const otherSound = static_cast<sSndNatDat*>(p_GetNativeData(object))->sound;
 		
 		rt->PushBool(sound == otherSound);
 	}
@@ -282,7 +278,7 @@ deSound *deClassSound::GetSound(dsRealObject *myself) const{
 		return NULL;
 	}
 	
-	return ((sSndNatDat*)p_GetNativeData(myself->GetBuffer()))->sound;
+	return static_cast<sSndNatDat*>(p_GetNativeData(myself->GetBuffer()))->sound;
 }
 
 void deClassSound::PushSound(dsRunTime *rt, deSound *sound){
@@ -296,6 +292,6 @@ void deClassSound::PushSound(dsRunTime *rt, deSound *sound){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	((sSndNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->sound = sound;
+	static_cast<sSndNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->sound = sound;
 	sound->AddReference();
 }

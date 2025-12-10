@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -591,8 +593,6 @@ void deClassCachedVegetation::nfNew::RunFunction(dsRunTime *rt, dsValue *myself)
 	deEngine *engine = clsCVeg->GetDS()->GetGameEngine();
 	float sectorDim = rt->GetValue(0)->GetFloat();
 	int propfieldCellCount = rt->GetValue(1)->GetInt();
-	
-	// clear ( important )
 	nd->cveg = NULL;
 	
 	// create cached vegetation worker object
@@ -609,12 +609,7 @@ void deClassCachedVegetation::nfDestructor::RunFunction(dsRunTime *rt, dsValue *
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sCVegNatDat *nd = (sCVegNatDat*)p_GetNativeData(myself);
-	
-	if(nd->cveg){
-		delete nd->cveg;
-		nd->cveg = NULL;
-	}
+	static_cast<dedsCachedVegetationInstance*>(p_GetNativeData(myself))->~dedsCachedVegetationInstance();
 }
 
 

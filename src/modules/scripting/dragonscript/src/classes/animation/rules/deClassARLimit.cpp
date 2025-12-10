@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -57,8 +59,8 @@
 /////////////////////
 
 struct sARLimitNatDat{
-	deAnimator *animator;
-	deAnimatorRuleLimit *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleLimit::Ref rule;
 };
 
 
@@ -71,19 +73,15 @@ deClassARLimit::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsARLimit
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassARLimit::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
-	
-	// clear ( important )
-	nd.animator = NULL;
-	nd.rule = NULL;
+	sARLimitNatDat * const nd = new (p_GetNativeData(myself)) sARLimitNatDat;
 	
 	// super call
 	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleLimit;
-	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
+	nd->rule = new deAnimatorRuleLimit;
+	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 
 // public func destructor()
@@ -95,17 +93,7 @@ void deClassARLimit::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-		nd.animator = NULL;
-	}
-	
-	if(nd.rule){
-		nd.rule->FreeReference();
-		nd.rule = NULL;
-	}
+	static_cast<sARLimitNatDat*>(p_GetNativeData(myself))->~sARLimitNatDat();
 }
 
 
@@ -118,7 +106,7 @@ deClassARLimit::nfSetEnablePosMin::nfSetEnablePosMin(const sInitData &init) : ds
 	p_AddParameter(init.clsBool); // enabledZ
 }
 void deClassARLimit::nfSetEnablePosMin::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnablePositionXMin(rt->GetValue(0)->GetBool());
 	nd.rule->SetEnablePositionYMin(rt->GetValue(1)->GetBool());
@@ -137,7 +125,7 @@ deClassARLimit::nfSetEnablePosMax::nfSetEnablePosMax(const sInitData &init) : ds
 	p_AddParameter(init.clsBool); // enabledZ
 }
 void deClassARLimit::nfSetEnablePosMax::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnablePositionXMax(rt->GetValue(0)->GetBool());
 	nd.rule->SetEnablePositionYMax(rt->GetValue(1)->GetBool());
@@ -156,7 +144,7 @@ deClassARLimit::nfSetEnableRotMin::nfSetEnableRotMin(const sInitData &init) : ds
 	p_AddParameter(init.clsBool); // enabledZ
 }
 void deClassARLimit::nfSetEnableRotMin::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableRotationXMin(rt->GetValue(0)->GetBool());
 	nd.rule->SetEnableRotationYMin(rt->GetValue(1)->GetBool());
@@ -175,7 +163,7 @@ deClassARLimit::nfSetEnableRotMax::nfSetEnableRotMax(const sInitData &init) : ds
 	p_AddParameter(init.clsBool); // enabledZ
 }
 void deClassARLimit::nfSetEnableRotMax::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableRotationXMax(rt->GetValue(0)->GetBool());
 	nd.rule->SetEnableRotationYMax(rt->GetValue(1)->GetBool());
@@ -194,7 +182,7 @@ deClassARLimit::nfSetEnableScaleMin::nfSetEnableScaleMin(const sInitData &init) 
 	p_AddParameter(init.clsBool); // enabledZ
 }
 void deClassARLimit::nfSetEnableScaleMin::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableScalingXMin(rt->GetValue(0)->GetBool());
 	nd.rule->SetEnableScalingYMin(rt->GetValue(1)->GetBool());
@@ -213,7 +201,7 @@ deClassARLimit::nfSetEnableScaleMax::nfSetEnableScaleMax(const sInitData &init) 
 	p_AddParameter(init.clsBool); // enabledZ
 }
 void deClassARLimit::nfSetEnableScaleMax::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableScalingXMax(rt->GetValue(0)->GetBool());
 	nd.rule->SetEnableScalingYMax(rt->GetValue(1)->GetBool());
@@ -230,7 +218,7 @@ dsFunction(init.clsARLimit, "setEnableVertexPositionSetMin", DSFT_FUNCTION, DSTM
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARLimit::nfSetEnableVertexPositionSetMin::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableVertexPositionSetMin(rt->GetValue(0)->GetBool());
 	
@@ -245,7 +233,7 @@ dsFunction(init.clsARLimit, "setEnableVertexPositionSetMax", DSFT_FUNCTION, DSTM
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARLimit::nfSetEnableVertexPositionSetMax::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableVertexPositionSetMax(rt->GetValue(0)->GetBool());
 	
@@ -262,7 +250,7 @@ deClassARLimit::nfSetMinimumPosition::nfSetMinimumPosition(const sInitData &init
 	p_AddParameter(init.clsVec); // translation
 }
 void deClassARLimit::nfSetMinimumPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	const deClassARLimit &clsARLimit = *((deClassARLimit*)GetOwnerClass());
 	const deClassVector &clsVec = *clsARLimit.GetDS().GetClassVector();
 	
@@ -281,7 +269,7 @@ deClassARLimit::nfSetMaximumPosition::nfSetMaximumPosition(const sInitData &init
 	p_AddParameter(init.clsVec); // translation
 }
 void deClassARLimit::nfSetMaximumPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	const deClassARLimit &clsARLimit = *((deClassARLimit*)GetOwnerClass());
 	const deClassVector &clsVec = *clsARLimit.GetDS().GetClassVector();
 	
@@ -300,7 +288,7 @@ deClassARLimit::nfSetMinimumRotation::nfSetMinimumRotation(const sInitData &init
 	p_AddParameter(init.clsVec); // rotation
 }
 void deClassARLimit::nfSetMinimumRotation::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	const deClassARLimit &clsARLimit = *((deClassARLimit*)GetOwnerClass());
 	const deClassVector &clsVec = *clsARLimit.GetDS().GetClassVector();
 	
@@ -319,7 +307,7 @@ deClassARLimit::nfSetMaximumRotation::nfSetMaximumRotation(const sInitData &init
 	p_AddParameter(init.clsVec); // rotation
 }
 void deClassARLimit::nfSetMaximumRotation::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	const deClassARLimit &clsARLimit = *((deClassARLimit*)GetOwnerClass());
 	const deClassVector &clsVec = *clsARLimit.GetDS().GetClassVector();
 	
@@ -338,7 +326,7 @@ deClassARLimit::nfSetMinimumScaling::nfSetMinimumScaling(const sInitData &init) 
 	p_AddParameter(init.clsVec); // scaling
 }
 void deClassARLimit::nfSetMinimumScaling::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	const deClassARLimit &clsARLimit = *((deClassARLimit*)GetOwnerClass());
 	const deClassVector &clsVec = *clsARLimit.GetDS().GetClassVector();
 	
@@ -357,7 +345,7 @@ deClassARLimit::nfSetMaximumScaling::nfSetMaximumScaling(const sInitData &init) 
 	p_AddParameter(init.clsVec); // scaling
 }
 void deClassARLimit::nfSetMaximumScaling::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	const deClassARLimit &clsARLimit = *((deClassARLimit*)GetOwnerClass());
 	const deClassVector &clsVec = *clsARLimit.GetDS().GetClassVector();
 	
@@ -376,7 +364,7 @@ dsFunction(init.clsARLimit, "setMinimumVertexPositionSet", DSFT_FUNCTION, DSTM_P
 	p_AddParameter(init.clsFlt); // scale
 }
 void deClassARLimit::nfSetMinimumVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetMinimumVertexPositionSet(rt->GetValue(0)->GetFloat());
 	
@@ -391,7 +379,7 @@ dsFunction(init.clsARLimit, "setMaximumVertexPositionSet", DSFT_FUNCTION, DSTM_P
 	p_AddParameter(init.clsFlt); // scale
 }
 void deClassARLimit::nfSetMaximumVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetMaximumVertexPositionSet(rt->GetValue(0)->GetFloat());
 	
@@ -410,7 +398,7 @@ void deClassARLimit::nfSetCoordinateFrame::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetCoordinateFrame((deAnimatorRuleLimit::eCoordinateFrames)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
@@ -427,7 +415,7 @@ deClassARLimit::nfSetTargetBone::nfSetTargetBone(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsStr); // boneName
 }
 void deClassARLimit::nfSetTargetBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetTargetBone(rt->GetValue(0)->GetString());
 	
@@ -449,7 +437,7 @@ void deClassARLimit::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	const deClassARLimit::eTargets target = (deClassARLimit::eTargets)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -475,7 +463,7 @@ deClassARLimit::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInitData &
 	p_AddParameter(init.clsARLimitTarget); // target
 }
 void deClassARLimit::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself));
 	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
@@ -579,7 +567,7 @@ deAnimatorRuleLimit *deClassARLimit::GetRule(dsRealObject *myself) const{
 		return NULL;
 	}
 	
-	return ((sARLimitNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
+	return static_cast<sARLimitNatDat*>(p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
 void deClassARLimit::AssignAnimator(dsRealObject *myself, deAnimator *animator){
@@ -589,7 +577,7 @@ void deClassARLimit::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	
 	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
 	
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(myself->GetBuffer()));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(myself->GetBuffer()));
 	
 	if(animator == nd.animator){
 		return;
@@ -618,7 +606,7 @@ void deClassARLimit::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRul
 	
 	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
 	rt->CreateObjectNakedOnStack(this);
-	sARLimitNatDat &nd = *((sARLimitNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	sARLimitNatDat &nd = *static_cast<sARLimitNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.animator = NULL;
 	nd.rule = NULL;
 	

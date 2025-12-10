@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -61,12 +63,10 @@ deClassCurveBezier::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsCBe
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCurveBezier::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCBeNatDat &nd = *((sCBeNatDat*)p_GetNativeData(myself));
+	sCBeNatDat * const nd = new (p_GetNativeData(myself)) sCBeNatDat;
 	
-	nd.curve = NULL;
-	
-	nd.curve = new decCurveBezier;
-	if(!nd.curve) DSTHROW(dueOutOfMemory);
+	nd->curve = new decCurveBezier;
+	if(!nd->curve) DSTHROW(dueOutOfMemory);
 }
 
 // public func new(CurveBezier curve)
@@ -76,12 +76,10 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCBe);
 }
 void deClassCurveBezier::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCBeNatDat &nd = *((sCBeNatDat*)p_GetNativeData(myself));
+	sCBeNatDat * const nd = new (p_GetNativeData(myself)) sCBeNatDat;
 	const deClassCurveBezier &clsCBe = *((deClassCurveBezier*)GetOwnerClass());
 	
-	nd.curve = NULL;
-	
-	nd.curve = new decCurveBezier(clsCBe.GetCurve(rt->GetValue(0)->GetRealObject()));
+	nd->curve = new decCurveBezier(clsCBe.GetCurve(rt->GetValue(0)->GetRealObject()));
 }
 
 // public static func newDefaultLinear()
@@ -95,12 +93,11 @@ void deClassCurveBezier::nfNewDefaultLinear::RunFunction(dsRunTime *rt, dsValue 
 	}
 	
 	rt->CreateObjectNakedOnStack(GetOwnerClass());
-	sCBeNatDat &nd = *((sCBeNatDat*)p_GetNativeData(rt->GetValue(0)));
-	nd.curve = NULL;
+	sCBeNatDat &nd = *static_cast<sCBeNatDat*>(p_GetNativeData(rt->GetValue(0)));
 	
 	try{
-		nd.curve = new decCurveBezier();
-		nd.curve->SetDefaultLinear();
+		nd->curve = new decCurveBezier();
+		nd->curve->SetDefaultLinear();
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object
@@ -119,12 +116,11 @@ void deClassCurveBezier::nfNewDefaultBezier::RunFunction(dsRunTime *rt, dsValue 
 	}
 	
 	rt->CreateObjectNakedOnStack(GetOwnerClass());
-	sCBeNatDat &nd = *((sCBeNatDat*)p_GetNativeData(rt->GetValue(0)));
-	nd.curve = NULL;
+	sCBeNatDat &nd = *static_cast<sCBeNatDat*>(p_GetNativeData(rt->GetValue(0)));
 	
 	try{
-		nd.curve = new decCurveBezier();
-		nd.curve->SetDefaultBezier();
+		nd->curve = new decCurveBezier();
+		nd->curve->SetDefaultBezier();
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object
@@ -141,12 +137,7 @@ void deClassCurveBezier::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mysel
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sCBeNatDat &nd = *((sCBeNatDat*)p_GetNativeData(myself));
-	
-	if(nd.curve){
-		delete nd.curve;
-		nd.curve = NULL;
-	}
+	static_cast<sCBeNatDat*>(p_GetNativeData(myself))->~sCBeNatDat();
 }
 
 
@@ -159,7 +150,7 @@ deClassCurveBezier::nfGetPointCount::nfGetPointCount(const sInitData &init) : ds
 "getPointCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCurveBezier::nfGetPointCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	const decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	
 	rt->PushInt(curve.GetPointCount());
 }
@@ -170,7 +161,7 @@ deClassCurveBezier::nfGetPointAt::nfGetPointAt(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsInt); // position
 }
 void deClassCurveBezier::nfGetPointAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	const decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	deScriptingDragonScript *ds = ((deClassCurveBezier*)GetOwnerClass())->GetDS();
 	
 	int position = rt->GetValue(0)->GetInt();
@@ -184,7 +175,7 @@ dsFunction(init.clsCBe, "getHandle1At", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 	p_AddParameter(init.clsInt); // position
 }
 void deClassCurveBezier::nfGetHandle1At::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	const decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	const deScriptingDragonScript &ds = *(((deClassCurveBezier*)GetOwnerClass())->GetDS());
 	
 	int position = rt->GetValue(0)->GetInt();
@@ -198,7 +189,7 @@ dsFunction(init.clsCBe, "getHandle2At", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 	p_AddParameter(init.clsInt); // position
 }
 void deClassCurveBezier::nfGetHandle2At::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	const decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	const deScriptingDragonScript &ds = *(((deClassCurveBezier*)GetOwnerClass())->GetDS());
 	
 	int position = rt->GetValue(0)->GetInt();
@@ -212,7 +203,7 @@ deClassCurveBezier::nfFindPointPriorTo::nfFindPointPriorTo(const sInitData &init
 	p_AddParameter(init.clsFlt); // coordinate
 }
 void deClassCurveBezier::nfFindPointPriorTo::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	const decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	
 	rt->PushInt(curve.FindPointPriorTo(rt->GetValue(0)->GetFloat()));
 }
@@ -225,7 +216,7 @@ deClassCurveBezier::nfAddPoint::nfAddPoint(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsVec2); // handle2
 }
 void deClassCurveBezier::nfAddPoint::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	deScriptingDragonScript *ds = ((deClassCurveBezier*)GetOwnerClass())->GetDS();
 	const deClassVector2 &clsVec2 = *ds->GetClassVector2();
 	
@@ -252,7 +243,7 @@ deClassCurveBezier::nfAddPoint2::nfAddPoint2(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsFlt); // handle2Y
 }
 void deClassCurveBezier::nfAddPoint2::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	
 	float pointX = rt->GetValue(0)->GetFloat();
 	float pointY = rt->GetValue(1)->GetFloat();
@@ -271,7 +262,7 @@ deClassCurveBezier::nfAddPoint3::nfAddPoint3(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsVec2); // point
 }
 void deClassCurveBezier::nfAddPoint3::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	const deScriptingDragonScript &ds = *(((deClassCurveBezier*)GetOwnerClass())->GetDS());
 	
 	const decVector2 &point = ds.GetClassVector2()->GetVector2(rt->GetValue(0)->GetRealObject());
@@ -286,7 +277,7 @@ deClassCurveBezier::nfAddPoint4::nfAddPoint4(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsFlt); // pointY
 }
 void deClassCurveBezier::nfAddPoint4::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	
 	const float pointX = rt->GetValue(0)->GetFloat();
 	const float pointY = rt->GetValue(1)->GetFloat();
@@ -301,7 +292,7 @@ deClassCurveBezier::nfRemovePointFrom::nfRemovePointFrom(const sInitData &init) 
 	p_AddParameter(init.clsInt); // position
 }
 void deClassCurveBezier::nfRemovePointFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	
 	curve.RemovePointFrom(rt->GetValue(0)->GetInt());
 }
@@ -311,7 +302,7 @@ deClassCurveBezier::nfRemoveAllPoints::nfRemoveAllPoints(const sInitData &init) 
 "removeAllPoints", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCurveBezier::nfRemoveAllPoints::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	
 	curve.RemoveAllPoints();
 }
@@ -321,7 +312,7 @@ deClassCurveBezier::nfGetInterpolationMode::nfGetInterpolationMode(const sInitDa
 "getInterpolationMode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCurveBezierInterpolation){
 }
 void deClassCurveBezier::nfGetInterpolationMode::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	
 	rt->PushValue(((deClassCurveBezier*)GetOwnerClass())->GetClassCurveBezierInterpolation()
 		->GetVariable(curve.GetInterpolationMode())->GetStaticValue());
@@ -337,7 +328,7 @@ void deClassCurveBezier::nfSetInterpolationMode::RunFunction(dsRunTime *rt, dsVa
 		DSTHROW(dueNullPointer);
 	}
 	
-	decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	
 	curve.SetInterpolationMode((decCurveBezier::eInterpolationModes)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
@@ -350,7 +341,7 @@ dsFunction(init.clsCBe, "setDefaultLinear", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCurveBezier::nfSetDefaultLinear::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	curve.SetDefaultLinear();
 }
 
@@ -360,7 +351,7 @@ dsFunction(init.clsCBe, "setDefaultBezier", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCurveBezier::nfSetDefaultBezier::RunFunction(dsRunTime *rt, dsValue *myself){
-	decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	curve.SetDefaultBezier();
 }
 
@@ -372,7 +363,7 @@ deClassCurveBezier::nfEvaluateAt::nfEvaluateAt(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsFlt); // coordinate
 }
 void deClassCurveBezier::nfEvaluateAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurveBezier *curve = ((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	const decCurveBezier *curve = static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	decCurveBezierEvaluator evaluator(*curve);
 	
 	rt->PushFloat(evaluator.EvaluateAt(rt->GetValue(0)->GetFloat()));
@@ -424,7 +415,7 @@ dsFunction(init.clsCBe, "writeToFile", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE,
 	p_AddParameter(init.clsFileWriter); // writer
 }
 void deClassCurveBezier::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	const decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	const deClassCurveBezier &clsCurveBezier = *((deClassCurveBezier*)GetOwnerClass());
 	const deClassFileWriter &clsFileWriter = *clsCurveBezier.GetDS()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
@@ -456,7 +447,7 @@ dsFunction(init.clsCBe, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassCurveBezier::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	const decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	
 	rt->PushInt(curve.GetPointCount());
 }
@@ -467,7 +458,7 @@ dsFunction(init.clsCBe, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassCurveBezier::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCurveBezier &curve = *((sCBeNatDat*)p_GetNativeData(myself))->curve;
+	const decCurveBezier &curve = *static_cast<sCBeNatDat*>(p_GetNativeData(myself))->curve;
 	deClassCurveBezier *clsCBe = (deClassCurveBezier*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
@@ -475,7 +466,7 @@ void deClassCurveBezier::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		const decCurveBezier &other = *((sCBeNatDat*)p_GetNativeData(obj))->curve;
+		const decCurveBezier &other = *static_cast<sCBeNatDat*>(p_GetNativeData(obj))->curve;
 		
 		if(curve.GetPointCount() == other.GetPointCount()){
 			
@@ -601,7 +592,7 @@ const decCurveBezier &deClassCurveBezier::GetCurve(dsRealObject *myself) const{
 		DSTHROW(dueNullPointer);
 	}
 	
-	return *((sCBeNatDat*)p_GetNativeData(myself->GetBuffer()))->curve;
+	return *static_cast<sCBeNatDat*>(p_GetNativeData(myself->GetBuffer()))->curve;
 }
 
 void deClassCurveBezier::PushCurve(dsRunTime *rt, const decCurveBezier &curve){
@@ -610,7 +601,7 @@ void deClassCurveBezier::PushCurve(dsRunTime *rt, const decCurveBezier &curve){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sCBeNatDat &nd = *((sCBeNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	sCBeNatDat &nd = *static_cast<sCBeNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.curve = nullptr;
 	
 	try{

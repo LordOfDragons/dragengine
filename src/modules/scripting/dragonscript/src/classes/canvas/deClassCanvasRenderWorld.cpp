@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -47,7 +49,7 @@
 
 // Native Structure
 struct sCRenWNatDat{
-	deCanvasRenderWorld *canvas;
+	deCanvasRenderWorld::Ref canvas;
 };
 
 
@@ -60,19 +62,16 @@ deClassCanvasRenderWorld::nfNew::nfNew(const sInitData &init) : dsFunction(init.
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCanvasRenderWorld::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCRenWNatDat &nd = *((sCRenWNatDat*)p_GetNativeData(myself));
+	sCRenWNatDat * const nd = new (p_GetNativeData(myself)) sCRenWNatDat;
 	const deScriptingDragonScript &ds = ((deClassCanvasRenderWorld*)GetOwnerClass())->GetDS();
-	
-	// clear ( important )
-	nd.canvas = NULL;
 	
 	// super call
 	deClassCanvas * const baseClass = (deClassCanvas*)GetOwnerClass()->GetBaseClass();
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create canvas
-	nd.canvas = ds.GetGameEngine()->GetCanvasManager()->CreateCanvasRenderWorld();
-	baseClass->AssignCanvas(myself->GetRealObject(), nd.canvas);
+	nd->canvas = ds.GetGameEngine()->GetCanvasManager()->CreateCanvasRenderWorld();
+	baseClass->AssignCanvas(myself->GetRealObject(), nd->canvas);
 }
 
 // public func destructor()
@@ -84,12 +83,7 @@ void deClassCanvasRenderWorld::nfDestructor::RunFunction(dsRunTime *rt, dsValue 
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sCRenWNatDat &nd = *((sCRenWNatDat*)p_GetNativeData(myself));
-	
-	if(nd.canvas){
-		nd.canvas->FreeReference();
-		nd.canvas = NULL;
-	}
+	static_cast<sCRenWNatDat*>(p_GetNativeData(myself))->~sCRenWNatDat();
 }
 
 
@@ -102,7 +96,7 @@ deClassCanvasRenderWorld::nfGetCamera::nfGetCamera(const sInitData &init) : dsFu
 "getCamera", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCamera){
 }
 void deClassCanvasRenderWorld::nfGetCamera::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCRenWNatDat &nd = *((sCRenWNatDat*)p_GetNativeData(myself));
+	const sCRenWNatDat &nd = *static_cast<sCRenWNatDat*>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((deClassCanvasRenderWorld*)GetOwnerClass())->GetDS();
 	
 	ds.GetClassCamera()->PushCamera(rt, nd.canvas->GetCamera());
@@ -114,7 +108,7 @@ deClassCanvasRenderWorld::nfSetCamera::nfSetCamera(const sInitData &init) : dsFu
 	p_AddParameter(init.clsCamera); // camera
 }
 void deClassCanvasRenderWorld::nfSetCamera::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCRenWNatDat &nd = *((sCRenWNatDat*)p_GetNativeData(myself));
+	const sCRenWNatDat &nd = *static_cast<sCRenWNatDat*>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((deClassCanvasRenderWorld*)GetOwnerClass())->GetDS();
 	
 	nd.canvas->SetCamera(ds.GetClassCamera()->GetCamera(rt->GetValue(0)->GetRealObject()));
@@ -128,7 +122,7 @@ deClassCanvasRenderWorld::nfProject::nfProject(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsDVector); // position
 }
 void deClassCanvasRenderWorld::nfProject::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCRenWNatDat &nd = *((sCRenWNatDat*)p_GetNativeData(myself));
+	const sCRenWNatDat &nd = *static_cast<sCRenWNatDat*>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((deClassCanvasRenderWorld*)GetOwnerClass())->GetDS();
 	const deCamera * const camera = nd.canvas->GetCamera();
 	if(!camera){
@@ -172,7 +166,7 @@ deClassCanvasRenderWorld::nfBackProject::nfBackProject(const sInitData &init) : 
 	p_AddParameter(init.clsPoint); // position
 }
 void deClassCanvasRenderWorld::nfBackProject::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCRenWNatDat &nd = *((sCRenWNatDat*)p_GetNativeData(myself));
+	const sCRenWNatDat &nd = *static_cast<sCRenWNatDat*>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((deClassCanvasRenderWorld*)GetOwnerClass())->GetDS();
 	const deCamera * const camera = nd.canvas->GetCamera();
 	if(!camera){
@@ -208,7 +202,7 @@ dsFunction(init.clsCRenW, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 }
 
 void deClassCanvasRenderWorld::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCanvasRenderWorld * const canvas = ((sCRenWNatDat*)p_GetNativeData(myself))->canvas;
+	deCanvasRenderWorld * const canvas = static_cast<sCRenWNatDat*>(p_GetNativeData(myself))->canvas;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)canvas);
 }
@@ -219,7 +213,7 @@ dsFunction(init.clsCRenW, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassCanvasRenderWorld::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCanvasRenderWorld * const canvas = ((sCRenWNatDat*)p_GetNativeData(myself))->canvas;
+	deCanvasRenderWorld * const canvas = static_cast<sCRenWNatDat*>(p_GetNativeData(myself))->canvas;
 	deClassCanvasRenderWorld * const clsCRenW = (deClassCanvasRenderWorld*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -227,7 +221,7 @@ void deClassCanvasRenderWorld::nfEquals::RunFunction(dsRunTime *rt, dsValue *mys
 		rt->PushBool(false);
 		
 	}else{
-		deCanvasRenderWorld * const otherCanvas = ((sCRenWNatDat*)p_GetNativeData(obj))->canvas;
+		deCanvasRenderWorld * const otherCanvas = static_cast<sCRenWNatDat*>(p_GetNativeData(obj))->canvas;
 		rt->PushBool(canvas == otherCanvas);
 	}
 }
@@ -297,7 +291,7 @@ deCanvasRenderWorld *deClassCanvasRenderWorld::GetCanvas(dsRealObject *myself) c
 		return NULL;
 	}
 	
-	return ((sCRenWNatDat*)p_GetNativeData(myself->GetBuffer()))->canvas;
+	return static_cast<sCRenWNatDat*>(p_GetNativeData(myself->GetBuffer()))->canvas;
 }
 
 void deClassCanvasRenderWorld::PushCanvas(dsRunTime *rt, deCanvasRenderWorld *canvas){
@@ -312,7 +306,7 @@ void deClassCanvasRenderWorld::PushCanvas(dsRunTime *rt, deCanvasRenderWorld *ca
 	
 	deClassCanvas * const baseClass = (deClassCanvas*)GetBaseClass();
 	rt->CreateObjectNakedOnStack(this);
-	sCRenWNatDat &nd = *((sCRenWNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	sCRenWNatDat &nd = *static_cast<sCRenWNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.canvas = NULL;
 	
 	try{

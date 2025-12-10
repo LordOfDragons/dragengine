@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -57,8 +59,8 @@
 /////////////////////
 
 struct sARGroupNatDat{
-	deAnimator *animator;
-	deAnimatorRuleGroup *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleGroup::Ref rule;
 };
 
 
@@ -71,19 +73,15 @@ deClassARGroup::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsARGroup
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassARGroup::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
-	
-	// clear ( important )
-	nd.animator = NULL;
-	nd.rule = NULL;
+	sARGroupNatDat * const nd = new (p_GetNativeData(myself)) sARGroupNatDat;
 	
 	// super call
 	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleGroup;
-	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
+	nd->rule = new deAnimatorRuleGroup;
+	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 
 // public func destructor()
@@ -95,17 +93,7 @@ void deClassARGroup::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-		nd.animator = NULL;
-	}
-	
-	if(nd.rule){
-		nd.rule->FreeReference();
-		nd.rule = NULL;
-	}
+	static_cast<sARGroupNatDat*>(p_GetNativeData(myself))->~sARGroupNatDat();
 }
 
 
@@ -117,7 +105,7 @@ deClassARGroup::nfSetEnablePosition::nfSetEnablePosition(const sInitData &init) 
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARGroup::nfSetEnablePosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
+	sARGroupNatDat &nd = *static_cast<sARGroupNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnablePosition(rt->GetValue(0)->GetBool());
 	
@@ -132,7 +120,7 @@ deClassARGroup::nfSetEnableOrientation::nfSetEnableOrientation(const sInitData &
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARGroup::nfSetEnableOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
+	sARGroupNatDat &nd = *static_cast<sARGroupNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableOrientation(rt->GetValue(0)->GetBool());
 	
@@ -147,7 +135,7 @@ deClassARGroup::nfSetEnableSize::nfSetEnableSize(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARGroup::nfSetEnableSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
+	sARGroupNatDat &nd = *static_cast<sARGroupNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableSize(rt->GetValue(0)->GetBool());
 	
@@ -162,7 +150,7 @@ dsFunction(init.clsARGroup, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PU
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARGroup::nfSetEnableVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
+	sARGroupNatDat &nd = *static_cast<sARGroupNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableVertexPositionSet(rt->GetValue(0)->GetBool());
 	
@@ -178,7 +166,7 @@ deClassARGroup::nfTargetAddLink::nfTargetAddLink(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsInt); // link
 }
 void deClassARGroup::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
+	sARGroupNatDat &nd = *static_cast<sARGroupNatDat*>(p_GetNativeData(myself));
 	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
@@ -212,7 +200,7 @@ deClassARGroup::nfTargetRemoveAllLinks::nfTargetRemoveAllLinks(const sInitData &
 	p_AddParameter(init.clsARGroupTarget); // target
 }
 void deClassARGroup::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
+	sARGroupNatDat &nd = *static_cast<sARGroupNatDat*>(p_GetNativeData(myself));
 	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
@@ -247,7 +235,7 @@ deClassARGroup::nfSetUseCurrentState::nfSetUseCurrentState(const sInitData &init
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARGroup::nfSetUseCurrentState::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
+	sARGroupNatDat &nd = *static_cast<sARGroupNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetUseCurrentState(rt->GetValue(0)->GetBool());
 	
@@ -266,7 +254,7 @@ void deClassARGroup::nfSetApplicationType::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
+	sARGroupNatDat &nd = *static_cast<sARGroupNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetApplicationType((deAnimatorRuleGroup::eApplicationTypes)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
@@ -286,7 +274,7 @@ deClassARGroup::nfAddRule::nfAddRule(const sInitData &init) : dsFunction(init.cl
 }
 void deClassARGroup::nfAddRule::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassARGroup &clsRule = * ((deClassARGroup*)GetOwnerClass());
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
+	sARGroupNatDat &nd = *static_cast<sARGroupNatDat*>(p_GetNativeData(myself));
 	
 	deAnimatorRule * const rule = clsRule.GetRule(rt->GetValue(0)->GetRealObject());
 	if(!rule){
@@ -306,7 +294,7 @@ deClassARGroup::nfRemoveRule::nfRemoveRule(const sInitData &init) : dsFunction(i
 }
 void deClassARGroup::nfRemoveRule::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassARGroup &clsRule = * ((deClassARGroup*)GetOwnerClass());
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
+	sARGroupNatDat &nd = *static_cast<sARGroupNatDat*>(p_GetNativeData(myself));
 	
 	deAnimatorRule * const rule = clsRule.GetRule(rt->GetValue(0)->GetRealObject());
 	if(!rule){
@@ -324,7 +312,7 @@ deClassARGroup::nfRemoveAllRules::nfRemoveAllRules(const sInitData &init) : dsFu
 "removeAllRules", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassARGroup::nfRemoveAllRules::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself));
+	sARGroupNatDat &nd = *static_cast<sARGroupNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->RemoveAllRules();
 	
@@ -406,7 +394,7 @@ deAnimatorRuleGroup *deClassARGroup::GetRule(dsRealObject *myself) const{
 		return NULL;
 	}
 	
-	return ((sARGroupNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
+	return static_cast<sARGroupNatDat*>(p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
 void deClassARGroup::AssignAnimator(dsRealObject *myself, deAnimator *animator){
@@ -416,7 +404,7 @@ void deClassARGroup::AssignAnimator(dsRealObject *myself, deAnimator *animator){
 	
 	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
 	
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(myself->GetBuffer()));
+	sARGroupNatDat &nd = *static_cast<sARGroupNatDat*>(p_GetNativeData(myself->GetBuffer()));
 	
 	if(animator == nd.animator){
 		return;
@@ -445,7 +433,7 @@ void deClassARGroup::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRul
 	
 	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
 	rt->CreateObjectNakedOnStack(this);
-	sARGroupNatDat &nd = *((sARGroupNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	sARGroupNatDat &nd = *static_cast<sARGroupNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.animator = NULL;
 	nd.rule = NULL;
 	

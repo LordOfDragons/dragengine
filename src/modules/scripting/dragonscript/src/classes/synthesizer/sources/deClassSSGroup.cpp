@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -47,8 +49,8 @@
 /////////////////////
 
 struct sSSGroupNatDat{
-	deSynthesizer *synthesizer;
-	deSynthesizerSourceGroup *source;
+	deSynthesizer::Ref synthesizer;
+	deSynthesizerSourceGroup::Ref source;
 };
 
 
@@ -61,19 +63,15 @@ deClassSSGroup::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsSSGroup
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSSGroup::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSSGroupNatDat &nd = *((sSSGroupNatDat*)p_GetNativeData(myself));
-	
-	// clear ( important )
-	nd.synthesizer = NULL;
-	nd.source = NULL;
+	sSSGroupNatDat * const nd = new (p_GetNativeData(myself)) sSSGroupNatDat;
 	
 	// super call
 	deClassSynthesizerSource * const baseClass = (deClassSynthesizerSource*)GetOwnerClass()->GetBaseClass();
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create synthesizer source
-	nd.source = new deSynthesizerSourceGroup;
-	baseClass->AssignSource(myself->GetRealObject(), nd.source);
+	nd->source = new deSynthesizerSourceGroup;
+	baseClass->AssignSource(myself->GetRealObject(), nd->source);
 }
 
 // public func destructor()
@@ -85,17 +83,7 @@ void deClassSSGroup::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSSGroupNatDat &nd = *((sSSGroupNatDat*)p_GetNativeData(myself));
-	
-	if(nd.synthesizer){
-		nd.synthesizer->FreeReference();
-		nd.synthesizer = NULL;
-	}
-	
-	if(nd.source){
-		nd.source->FreeReference();
-		nd.source = NULL;
-	}
+	static_cast<sSSGroupNatDat*>(p_GetNativeData(myself))->~sSSGroupNatDat();
 }
 
 
@@ -111,7 +99,7 @@ void deClassSSGroup::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	
-	sSSGroupNatDat &nd = *((sSSGroupNatDat*)p_GetNativeData(myself));
+	sSSGroupNatDat &nd = *static_cast<sSSGroupNatDat*>(p_GetNativeData(myself));
 	const deClassSSGroup::eTargets target = (deClassSSGroup::eTargets)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -153,7 +141,7 @@ void deClassSSGroup::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue 
 		DSTHROW(dueNullPointer);
 	}
 	
-	sSSGroupNatDat &nd = *((sSSGroupNatDat*)p_GetNativeData(myself));
+	sSSGroupNatDat &nd = *static_cast<sSSGroupNatDat*>(p_GetNativeData(myself));
 	const deClassSSGroup::eTargets target = (deClassSSGroup::eTargets)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -196,7 +184,7 @@ void deClassSSGroup::nfSetApplicationType::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueNullPointer);
 	}
 	
-	sSSGroupNatDat &nd = *((sSSGroupNatDat*)p_GetNativeData(myself));
+	sSSGroupNatDat &nd = *static_cast<sSSGroupNatDat*>(p_GetNativeData(myself));
 	
 	const deSynthesizerSourceGroup::eApplicationTypes type = (deSynthesizerSourceGroup::eApplicationTypes)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
@@ -222,7 +210,7 @@ deClassSSGroup::nfAddSource::nfAddSource(const sInitData &init) : dsFunction(ini
 }
 void deClassSSGroup::nfAddSource::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSSGroup &clsSource = * ((deClassSSGroup*)GetOwnerClass());
-	sSSGroupNatDat &nd = *((sSSGroupNatDat*)p_GetNativeData(myself));
+	sSSGroupNatDat &nd = *static_cast<sSSGroupNatDat*>(p_GetNativeData(myself));
 	
 	deSynthesizerSource * const source = clsSource.GetSource(rt->GetValue(0)->GetRealObject());
 	if(!source){
@@ -242,7 +230,7 @@ deClassSSGroup::nfRemoveSource::nfRemoveSource(const sInitData &init) : dsFuncti
 }
 void deClassSSGroup::nfRemoveSource::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSSGroup &clsSource = * ((deClassSSGroup*)GetOwnerClass());
-	sSSGroupNatDat &nd = *((sSSGroupNatDat*)p_GetNativeData(myself));
+	sSSGroupNatDat &nd = *static_cast<sSSGroupNatDat*>(p_GetNativeData(myself));
 	
 	deSynthesizerSource * const source = clsSource.GetSource(rt->GetValue(0)->GetRealObject());
 	if(!source){
@@ -260,7 +248,7 @@ deClassSSGroup::nfRemoveAllSources::nfRemoveAllSources(const sInitData &init) : 
 "removeAllSources", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSSGroup::nfRemoveAllSources::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSSGroupNatDat &nd = *((sSSGroupNatDat*)p_GetNativeData(myself));
+	sSSGroupNatDat &nd = *static_cast<sSSGroupNatDat*>(p_GetNativeData(myself));
 	
 	if(nd.source->GetSourceCount() == 0){
 		return;
@@ -337,7 +325,7 @@ deSynthesizerSourceGroup *deClassSSGroup::GetSource(dsRealObject *myself) const{
 		return NULL;
 	}
 	
-	return ((sSSGroupNatDat*)p_GetNativeData(myself->GetBuffer()))->source;
+	return static_cast<sSSGroupNatDat*>(p_GetNativeData(myself->GetBuffer()))->source;
 }
 
 void deClassSSGroup::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synthesizer){
@@ -347,7 +335,7 @@ void deClassSSGroup::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synt
 	
 	pDS.GetClassSynthesizerSource()->AssignSynthesizer(myself, synthesizer);
 	
-	sSSGroupNatDat &nd = *((sSSGroupNatDat*)p_GetNativeData(myself->GetBuffer()));
+	sSSGroupNatDat &nd = *static_cast<sSSGroupNatDat*>(p_GetNativeData(myself->GetBuffer()));
 	
 	if(synthesizer == nd.synthesizer){
 		return;
@@ -376,7 +364,7 @@ void deClassSSGroup::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSyn
 	
 	deClassSynthesizerSource * const baseClass = (deClassSynthesizerSource*)GetBaseClass();
 	rt->CreateObjectNakedOnStack(this);
-	sSSGroupNatDat &nd = *((sSSGroupNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	sSSGroupNatDat &nd = *static_cast<sSSGroupNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.synthesizer = NULL;
 	nd.source = NULL;
 	

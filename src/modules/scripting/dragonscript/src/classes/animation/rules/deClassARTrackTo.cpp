@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -57,8 +59,8 @@
 /////////////////////
 
 struct sARTrackNatDat{
-	deAnimator *animator;
-	deAnimatorRuleTrackTo *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleTrackTo::Ref rule;
 };
 
 
@@ -71,19 +73,15 @@ deClassARTrackTo::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsARTra
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassARTrackTo::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARTrackNatDat &nd = *((sARTrackNatDat*)p_GetNativeData(myself));
-	
-	// clear ( important )
-	nd.animator = NULL;
-	nd.rule = NULL;
+	sARTrackNatDat * const nd = new (p_GetNativeData(myself)) sARTrackNatDat;
 	
 	// super call
 	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleTrackTo;
-	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
+	nd->rule = new deAnimatorRuleTrackTo;
+	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 
 // public func destructor()
@@ -95,17 +93,7 @@ void deClassARTrackTo::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself)
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sARTrackNatDat &nd = *((sARTrackNatDat*)p_GetNativeData(myself));
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-		nd.animator = NULL;
-	}
-	
-	if(nd.rule){
-		nd.rule->FreeReference();
-		nd.rule = NULL;
-	}
+	static_cast<sARTrackNatDat*>(p_GetNativeData(myself))->~sARTrackNatDat();
 }
 
 
@@ -116,7 +104,7 @@ deClassARTrackTo::nfSetTrackBone::nfSetTrackBone(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsStr); // bone
 }
 void deClassARTrackTo::nfSetTrackBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARTrackNatDat &nd = *((sARTrackNatDat*)p_GetNativeData(myself));
+	sARTrackNatDat &nd = *static_cast<sARTrackNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetTrackBone(rt->GetValue(0)->GetString());
 	
@@ -135,7 +123,7 @@ void deClassARTrackTo::nfSetTrackAxis::RunFunction(dsRunTime *rt, dsValue *mysel
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARTrackNatDat &nd = *((sARTrackNatDat*)p_GetNativeData(myself));
+	sARTrackNatDat &nd = *static_cast<sARTrackNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetTrackAxis((deAnimatorRuleTrackTo::eTrackAxis)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
@@ -156,7 +144,7 @@ void deClassARTrackTo::nfSetUpAxis::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARTrackNatDat &nd = *((sARTrackNatDat*)p_GetNativeData(myself));
+	sARTrackNatDat &nd = *static_cast<sARTrackNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetUpAxis((deAnimatorRuleTrackTo::eTrackAxis)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
@@ -177,7 +165,7 @@ void deClassARTrackTo::nfSetUpTarget::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARTrackNatDat &nd = *((sARTrackNatDat*)p_GetNativeData(myself));
+	sARTrackNatDat &nd = *static_cast<sARTrackNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetUpTarget((deAnimatorRuleTrackTo::eUpTarget)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
@@ -194,7 +182,7 @@ deClassARTrackTo::nfSetLockedAxis::nfSetLockedAxis(const sInitData &init) : dsFu
 	p_AddParameter(init.clsARTrackToLocked); // axis
 }
 void deClassARTrackTo::nfSetLockedAxis::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARTrackNatDat &nd = *((sARTrackNatDat*)p_GetNativeData(myself));
+	sARTrackNatDat &nd = *static_cast<sARTrackNatDat*>(p_GetNativeData(myself));
 	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
@@ -222,7 +210,7 @@ void deClassARTrackTo::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myse
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARTrackNatDat &nd = *((sARTrackNatDat*)p_GetNativeData(myself));
+	sARTrackNatDat &nd = *static_cast<sARTrackNatDat*>(p_GetNativeData(myself));
 	const deClassARTrackTo::eTargets target = (deClassARTrackTo::eTargets)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -260,7 +248,7 @@ void deClassARTrackTo::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValu
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARTrackNatDat &nd = *((sARTrackNatDat*)p_GetNativeData(myself));
+	sARTrackNatDat &nd = *static_cast<sARTrackNatDat*>(p_GetNativeData(myself));
 	const deClassARTrackTo::eTargets target = (deClassARTrackTo::eTargets)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -358,7 +346,7 @@ deAnimatorRuleTrackTo *deClassARTrackTo::GetRule(dsRealObject *myself) const{
 		return NULL;
 	}
 	
-	return ((sARTrackNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
+	return static_cast<sARTrackNatDat*>(p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
 void deClassARTrackTo::AssignAnimator(dsRealObject *myself, deAnimator *animator){
@@ -368,7 +356,7 @@ void deClassARTrackTo::AssignAnimator(dsRealObject *myself, deAnimator *animator
 	
 	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
 	
-	sARTrackNatDat &nd = *((sARTrackNatDat*)p_GetNativeData(myself->GetBuffer()));
+	sARTrackNatDat &nd = *static_cast<sARTrackNatDat*>(p_GetNativeData(myself->GetBuffer()));
 	
 	if(animator == nd.animator){
 		return;
@@ -397,7 +385,7 @@ void deClassARTrackTo::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorR
 	
 	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
 	rt->CreateObjectNakedOnStack(this);
-	sARTrackNatDat &nd = *((sARTrackNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	sARTrackNatDat &nd = *static_cast<sARTrackNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.animator = NULL;
 	nd.rule = NULL;
 	

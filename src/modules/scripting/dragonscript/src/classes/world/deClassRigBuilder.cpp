@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -96,7 +98,7 @@ dsFunction(init.clsRigBuilder, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassRigBuilder::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	((sMdlBldNatDat*)p_GetNativeData(myself))->builder = NULL;
+	static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder = NULL;
 }
 
 // public destructor Destructor()
@@ -105,6 +107,11 @@ dsFunction(init.clsRigBuilder, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassRigBuilder::nfDestructor::RunFunction(dsRunTime*, dsValue*){
+	if(myself->GetRealObject()->GetRefCount() != 1){
+		return; // protected against GC cleaning up leaking
+	}
+	
+	static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->~sMdlBldNatDat();
 }
 
 
@@ -116,7 +123,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsRig){
 	p_AddParameter(init.clsString); // filename
 }
 void deClassRigBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
-	sMdlBldNatDat &nd = *((sMdlBldNatDat*)p_GetNativeData(myself));
+	sMdlBldNatDat &nd = *static_cast<sMdlBldNatDat*>(p_GetNativeData(myself));
 	if(nd.builder){
 		DSTHROW(dueInvalidAction);
 	}
@@ -159,7 +166,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector); // cmp
 }
 void deClassRigBuilder::nfSetCentralMassPoint::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -175,7 +182,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBoolean); // modelCollision
 }
 void deClassRigBuilder::nfSetModelCollision::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -205,7 +212,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsShapeList); // shapes
 }
 void deClassRigBuilder::nfAddBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -256,7 +263,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsArray); // properties
 }
 void deClassRigBuilder::nfSetBoneShapeProperties::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -300,7 +307,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // parentBone
 }
 void deClassRigBuilder::nfAddBoneConstraint::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -351,7 +358,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // springStiffness
 }
 void deClassRigBuilder::nfSetBoneConstraintDof::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -394,7 +401,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // bone
 }
 void deClassRigBuilder::nfSetRootBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -409,7 +416,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsShapeList); // shapes
 }
 void deClassRigBuilder::nfSetShapes::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -425,7 +432,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsArray); // properties
 }
 void deClassRigBuilder::nfSetShapeProperties::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}

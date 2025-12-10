@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -59,7 +61,7 @@ deClassVector::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsVec,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassVector::nfNew::RunFunction(dsRunTime *RT, dsValue *This){
-	decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	vector.Set(0, 0, 0);
 }
 
@@ -71,7 +73,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // z
 }
 void deClassVector::nfNew2::RunFunction(dsRunTime *RT, dsValue *This){
-	decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	vector.x = RT->GetValue(0)->GetFloat();
 	vector.y = RT->GetValue(1)->GetFloat();
 	vector.z = RT->GetValue(2)->GetFloat();
@@ -83,7 +85,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // v
 }
 void deClassVector::nfNew3::RunFunction(dsRunTime *RT, dsValue *This){
-	decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -95,6 +97,11 @@ deClassVector::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(in
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassVector::nfDestructor::RunFunction(dsRunTime *RT, dsValue *This){
+	if(myself->GetRealObject()->GetRefCount() != 1){
+		return; // protected against GC cleaning up leaking
+	}
+	
+	static_cast<sVecNatDat*>(p_GetNativeData(myself))->~sVecNatDat();
 }
 
 
@@ -107,7 +114,7 @@ deClassVector::nfGetX::nfGetX(const sInitData &init) : dsFunction(init.clsVec,
 "getX", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassVector::nfGetX::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	RT->PushFloat(vector.x);
 }
 
@@ -116,7 +123,7 @@ deClassVector::nfGetY::nfGetY(const sInitData &init) : dsFunction(init.clsVec,
 "getY", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassVector::nfGetY::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	RT->PushFloat(vector.y);
 }
 
@@ -125,7 +132,7 @@ deClassVector::nfGetZ::nfGetZ(const sInitData &init) : dsFunction(init.clsVec,
 "getZ", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassVector::nfGetZ::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	RT->PushFloat(vector.z);
 }
 
@@ -135,7 +142,7 @@ deClassVector::nfGet::nfGet(const sInitData &init) : dsFunction(init.clsVec,
 	p_AddParameter(init.clsInt); // component
 }
 void deClassVector::nfGet::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	int component = RT->GetValue(0)->GetInt();
 	if(component == 0){
 		RT->PushFloat(vector.x);
@@ -153,7 +160,7 @@ deClassVector::nfGetLength::nfGetLength(const sInitData &init) : dsFunction(init
 "getLength", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassVector::nfGetLength::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	RT->PushFloat(vector.Length());
 }
 
@@ -162,7 +169,7 @@ deClassVector::nfGetLengthSquared::nfGetLengthSquared(const sInitData &init) : d
 "getLengthSquared", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassVector::nfGetLengthSquared::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	RT->PushFloat(vector.LengthSquared());
 }
 
@@ -171,7 +178,7 @@ deClassVector::nfNormalize::nfNormalize(const sInitData &init) : dsFunction(init
 "normalize", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassVector::nfNormalize::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector &clsVector = *((deClassVector*)GetOwnerClass());
 	const float len = vector.Length();
 	
@@ -187,7 +194,7 @@ deClassVector::nfAbsolute::nfAbsolute(const sInitData &init) : dsFunction(init.c
 "absolute", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassVector::nfAbsolute::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector &clsVector = *((deClassVector*)GetOwnerClass());
 	clsVector.PushVector(RT, vector.Absolute());
 }
@@ -198,7 +205,7 @@ deClassVector::nfCompMultiply::nfCompMultiply(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsVec); // v
 }
 void deClassVector::nfCompMultiply::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -212,7 +219,7 @@ deClassVector::nfCompDivide::nfCompDivide(const sInitData &init) : dsFunction(in
 	p_AddParameter(init.clsVec); // v
 }
 void deClassVector::nfCompDivide::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -228,7 +235,7 @@ deClassVector::nfCompSelect::nfCompSelect(const sInitData &init) : dsFunction(in
 	p_AddParameter(init.clsBool); // z
 }
 void deClassVector::nfCompSelect::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(myself))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(myself))->vector;
 	deClassVector &clsVector = *((deClassVector*)GetOwnerClass());
 	
 	decVector result;
@@ -255,7 +262,7 @@ deClassVector::nfCombine::nfCombine(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsBool); // z
 }
 void deClassVector::nfCombine::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(myself))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(myself))->vector;
 	deClassVector &clsVector = *((deClassVector*)GetOwnerClass());
 	
 	const decVector &otherVector = clsVector.GetVector(rt->GetValue(0)->GetRealObject());
@@ -276,7 +283,7 @@ deClassVector::nfSmallest::nfSmallest(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsVec); // v
 }
 void deClassVector::nfSmallest::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(myself))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(myself))->vector;
 	deClassVector &clsVector = *((deClassVector*)GetOwnerClass());
 	const decVector &otherVector = clsVector.GetVector(rt->GetValue(0)->GetRealObject());
 	
@@ -289,7 +296,7 @@ deClassVector::nfLargest::nfLargest(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsVec); // v
 }
 void deClassVector::nfLargest::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(myself))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(myself))->vector;
 	deClassVector &clsVector = *((deClassVector*)GetOwnerClass());
 	const decVector &otherVector = clsVector.GetVector(rt->GetValue(0)->GetRealObject());
 	
@@ -303,7 +310,7 @@ deClassVector::nfClamped::nfClamped(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsVec); // max
 }
 void deClassVector::nfClamped::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(myself))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(myself))->vector;
 	deClassVector &clsVector = *((deClassVector*)GetOwnerClass());
 	const decVector &min = clsVector.GetVector(rt->GetValue(0)->GetRealObject());
 	const decVector &max = clsVector.GetVector(rt->GetValue(1)->GetRealObject());
@@ -316,7 +323,7 @@ deClassVector::nfRound::nfRound(const sInitData &init) :
 dsFunction(init.clsVec, "round", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsPoint3){
 }
 void deClassVector::nfRound::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(myself))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(myself))->vector;
 	
 	((deClassVector*)GetOwnerClass())->GetScriptModule()->
 		GetClassPoint3()->PushPoint(rt, vector.Round());
@@ -328,7 +335,7 @@ dsFunction(init.clsVec, "round", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.
 	p_AddParameter(init.clsFlt); // unit
 }
 void deClassVector::nfRound2::RunFunction(dsRunTime *rt, dsValue *myself){
-	decVector vector(((sVecNatDat*)p_GetNativeData(myself))->vector);
+	decVector vector(static_cast<sVecNatDat*>(p_GetNativeData(myself))->vector);
 	deClassVector &clsVector = *((deClassVector*)GetOwnerClass());
 	const float unit = rt->GetValue(0)->GetFloat();
 	
@@ -347,7 +354,7 @@ dsFunction(init.clsVec, "mix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.cl
 	p_AddParameter(init.clsFlt); // factor
 }
 void deClassVector::nfMix::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(myself))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(myself))->vector;
 	deClassVector &clsVector = *((deClassVector*)GetOwnerClass());
 	const decVector &other = clsVector.GetVector(rt->GetValue(0)->GetRealObject());
 	const float factor = rt->GetValue(1)->GetFloat();
@@ -367,7 +374,7 @@ deClassVector::nfIsEqualTo::nfIsEqualTo(const sInitData &init) : dsFunction(init
 	p_AddParameter(init.clsFlt); // delta
 }
 void deClassVector::nfIsEqualTo::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -381,7 +388,7 @@ deClassVector::nfIsAtLeast::nfIsAtLeast(const sInitData &init) : dsFunction(init
 	p_AddParameter(init.clsFlt); // value
 }
 void deClassVector::nfIsAtLeast::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	float value = RT->GetValue(0)->GetFloat();
 	RT->PushBool(vector.x >= value && vector.y >= value && vector.z >= value);
 }
@@ -392,7 +399,7 @@ deClassVector::nfIsAtMost::nfIsAtMost(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsFlt); // value
 }
 void deClassVector::nfIsAtMost::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	float value = RT->GetValue(0)->GetFloat();
 	RT->PushBool(vector.x <= value && vector.y <= value && vector.z <= value);
 }
@@ -403,7 +410,7 @@ dsFunction(init.clsVec, "isZero", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassVector::nfIsZero::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	RT->PushBool(vector.IsZero());
 }
 
@@ -436,7 +443,7 @@ deClassVector::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFunction(
 	p_AddParameter(init.clsFileWriter); // writer
 }
 void deClassVector::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(myself))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(myself))->vector;
 	const deClassVector &clsVector = *((deClassVector*)GetOwnerClass());
 	const deClassFileWriter &clsFileWriter = *clsVector.GetScriptModule()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
@@ -458,7 +465,7 @@ deClassVector::nfOpMinus::nfOpMinus(const sInitData &init) : dsFunction(init.cls
 "-", DSFT_OPERATOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassVector::nfOpMinus::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	clsVector->PushVector(RT, -vector);
 }
@@ -469,7 +476,7 @@ deClassVector::nfOpAdd::nfOpAdd(const sInitData &init) : dsFunction(init.clsVec,
 	p_AddParameter(init.clsVec); // v
 }
 void deClassVector::nfOpAdd::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -482,7 +489,7 @@ deClassVector::nfOpSubtract::nfOpSubtract(const sInitData &init) : dsFunction(in
 	p_AddParameter(init.clsVec); // v
 }
 void deClassVector::nfOpSubtract::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -495,7 +502,7 @@ deClassVector::nfOpScale::nfOpScale(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsFlt); // k
 }
 void deClassVector::nfOpScale::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	clsVector->PushVector(RT, vector * RT->GetValue(0)->GetFloat());
 }
@@ -506,7 +513,7 @@ deClassVector::nfOpDivide::nfOpDivide(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsFlt); // k
 }
 void deClassVector::nfOpDivide::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	clsVector->PushVector(RT, vector / RT->GetValue(0)->GetFloat());
 }
@@ -517,7 +524,7 @@ deClassVector::nfOpDot::nfOpDot(const sInitData &init) : dsFunction(init.clsVec,
 	p_AddParameter(init.clsVec); // v
 }
 void deClassVector::nfOpDot::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -530,7 +537,7 @@ deClassVector::nfOpCross::nfOpCross(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsVec); // v
 }
 void deClassVector::nfOpCross::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -543,7 +550,7 @@ deClassVector::nfOpLess::nfOpLess(const sInitData &init) : dsFunction(init.clsVe
 	p_AddParameter(init.clsVec); // v
 }
 void deClassVector::nfOpLess::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -556,7 +563,7 @@ deClassVector::nfOpLessEqual::nfOpLessEqual(const sInitData &init) : dsFunction(
 	p_AddParameter(init.clsVec); // v
 }
 void deClassVector::nfOpLessEqual::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -569,7 +576,7 @@ deClassVector::nfOpGreater::nfOpGreater(const sInitData &init) : dsFunction(init
 	p_AddParameter(init.clsVec); // v
 }
 void deClassVector::nfOpGreater::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -582,7 +589,7 @@ deClassVector::nfOpGreaterEqual::nfOpGreaterEqual(const sInitData &init) : dsFun
 	p_AddParameter(init.clsVec); // v
 }
 void deClassVector::nfOpGreaterEqual::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -600,13 +607,13 @@ deClassVector::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.clsVe
 	p_AddParameter(init.clsObj); // other
 }
 void deClassVector::nfEquals::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	deClassVector *clsVector = (deClassVector*)GetOwnerClass();
 	dsValue *obj = RT->GetValue(0);
 	if(!p_IsObjOfType(obj, clsVector)){
 		RT->PushBool(false);
 	}else{
-		const decVector &otherVector = ((sVecNatDat*)p_GetNativeData(obj))->vector;
+		const decVector &otherVector = static_cast<sVecNatDat*>(p_GetNativeData(obj))->vector;
 		RT->PushBool(vector.IsEqualTo(otherVector));
 	}
 }
@@ -616,7 +623,7 @@ deClassVector::nfHashCode::nfHashCode(const sInitData &init) : dsFunction(init.c
 "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassVector::nfHashCode::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	RT->PushInt((int)(vector.x * 1000000)
 		+ (int)(vector.y * 10000)
 		+ (int)(vector.z * 100));
@@ -627,7 +634,7 @@ deClassVector::nfToString::nfToString(const sInitData &init) : dsFunction(init.c
 "toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassVector::nfToString::RunFunction(dsRunTime *RT, dsValue *This){
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(This))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
 	decString string;
 	string.Format("(%f,%f,%f)", vector.x, vector.y, vector.z);
 	RT->PushString(string);
@@ -652,7 +659,7 @@ void deClassVector::nfToStringPrecision::RunFunction(dsRunTime *rt, dsValue *mys
 	char format[17];
 	snprintf(format, sizeof(format), "(%%.%huf,%%.%huf,%%.%huf)", p, p, p);
 	
-	const decVector &vector = ((sVecNatDat*)p_GetNativeData(myself))->vector;
+	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(myself))->vector;
 	decString string;
 	string.Format(format, vector.x, vector.y, vector.z);
 	rt->PushString(string);
@@ -749,7 +756,7 @@ const decVector &deClassVector::GetVector(dsRealObject *myself) const{
 		DSTHROW(dueNullPointer);
 	}
 	
-	return (const decVector &)((sVecNatDat*)p_GetNativeData(myself->GetBuffer()))->vector;
+	return (const decVector &)static_cast<sVecNatDat*>(p_GetNativeData(myself->GetBuffer()))->vector;
 }
 
 void deClassVector::PushVector(dsRunTime *rt, const decVector &vector){
@@ -759,12 +766,12 @@ void deClassVector::PushVector(dsRunTime *rt, const decVector &vector){
 	
 	// TODO spread this code version to all script classes
 	rt->CreateObjectNakedOnStack(this);
-	((sVecNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->vector = vector;
+	static_cast<sVecNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->vector = vector;
 	
 	/*
 	rt->CreateObjectNakedOnStack(this);
 	try{
-		((sVecNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->vector = vector;
+		static_cast<sVecNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->vector = vector;
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

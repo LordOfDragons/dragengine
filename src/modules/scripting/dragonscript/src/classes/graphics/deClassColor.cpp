@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -62,7 +64,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // blue
 }
 void deClassColor::nfNew::RunFunction(dsRunTime *RT, dsValue *This){
-	decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	color.r = RT->GetValue(0)->GetFloat();
 	color.g = RT->GetValue(1)->GetFloat();
 	color.b = RT->GetValue(2)->GetFloat();
@@ -78,7 +80,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // alpha
 }
 void deClassColor::nfNew2::RunFunction(dsRunTime *RT, dsValue *This){
-	decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	color.r = RT->GetValue(0)->GetFloat();
 	color.g = RT->GetValue(1)->GetFloat();
 	color.b = RT->GetValue(2)->GetFloat();
@@ -92,7 +94,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // alpha
 }
 void deClassColor::nfNew3::RunFunction(dsRunTime *RT, dsValue *This){
-	decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	deClassColor &clsColor = *((deClassColor*)GetOwnerClass());
 	
 	const decColor &copyColor = clsColor.GetColor(RT->GetValue(0)->GetRealObject());
@@ -187,6 +189,11 @@ deClassColor::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(ini
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassColor::nfDestructor::RunFunction(dsRunTime *RT, dsValue *This){
+	if(myself->GetRealObject()->GetRefCount() != 1){
+		return; // protected against GC cleaning up leaking
+	}
+	
+	static_cast<sClrNatDat*>(p_GetNativeData(myself))->~sClrNatDat();
 }
 
 
@@ -199,7 +206,7 @@ deClassColor::nfGetRed::nfGetRed(const sInitData &init) : dsFunction(init.clsClr
 "getRed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColor::nfGetRed::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	RT->PushFloat(color.r);
 }
 	
@@ -208,7 +215,7 @@ deClassColor::nfGetGreen::nfGetGreen(const sInitData &init) : dsFunction(init.cl
 "getGreen", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColor::nfGetGreen::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	RT->PushFloat(color.g);
 }
 	
@@ -217,7 +224,7 @@ deClassColor::nfGetBlue::nfGetBlue(const sInitData &init) : dsFunction(init.clsC
 "getBlue", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColor::nfGetBlue::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	RT->PushFloat(color.b);
 }
 
@@ -226,7 +233,7 @@ deClassColor::nfGetAlpha::nfGetAlpha(const sInitData &init) : dsFunction(init.cl
 "getAlpha", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassColor::nfGetAlpha::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	RT->PushFloat(color.a);
 }
 
@@ -235,7 +242,7 @@ deClassColor::nfClamp::nfClamp(const sInitData &init) : dsFunction(init.clsClr,
 "clamp", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsClr){
 }
 void deClassColor::nfClamp::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	deClassColor * const clsColor = (deClassColor*)GetOwnerClass();
 	clsColor->PushColor(RT, color.Normalized());
 }
@@ -245,7 +252,7 @@ deClassColor::nfInvert::nfInvert(const sInitData &init) : dsFunction(init.clsClr
 "invert", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsClr){
 }
 void deClassColor::nfInvert::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	deClassColor * const clsColor = (deClassColor*)GetOwnerClass();
 	clsColor->PushColor(RT, color.Inverted());
 }
@@ -261,7 +268,7 @@ deClassColor::nfIsEqual::nfIsEqual(const sInitData &init) : dsFunction(init.clsC
 	p_AddParameter(init.clsClr); // v
 }
 void deClassColor::nfIsEqual::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
 	dsRealObject *objClr = RT->GetValue(0)->GetRealObject();
 	if(!objClr) DSTHROW(dueNullPointer);
@@ -275,7 +282,7 @@ deClassColor::nfIsEqual2::nfIsEqual2(const sInitData &init) : dsFunction(init.cl
 	p_AddParameter(init.clsFlt); // threshold
 }
 void deClassColor::nfIsEqual2::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	const deClassColor &clsColor = *((deClassColor*)GetOwnerClass());
 	dsRealObject *objClr = RT->GetValue(0)->GetRealObject();
 	const float threshold = RT->GetValue(1)->GetFloat();
@@ -311,7 +318,7 @@ deClassColor::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFunction(i
 	p_AddParameter(init.clsFileWriter); // writer
 }
 void deClassColor::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(myself))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(myself))->color;
 	const deClassColor &clsColor = *((deClassColor*)GetOwnerClass());
 	const deClassFileWriter &clsFileWriter = *clsColor.GetScriptModule()->GetClassFileWriter();
 	decBaseFileWriter * const writer = clsFileWriter.GetFileWriter(rt->GetValue(0)->GetRealObject());
@@ -334,7 +341,7 @@ deClassColor::nfOpAdd::nfOpAdd(const sInitData &init) : dsFunction(init.clsClr,
 	p_AddParameter(init.clsClr); // v
 }
 void deClassColor::nfOpAdd::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
 	dsRealObject *objClr = RT->GetValue(0)->GetRealObject();
 	if(!objClr) DSTHROW(dueNullPointer);
@@ -347,7 +354,7 @@ deClassColor::nfOpSubtract::nfOpSubtract(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsClr); // v
 }
 void deClassColor::nfOpSubtract::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
 	dsRealObject *objClr = RT->GetValue(0)->GetRealObject();
 	if(!objClr) DSTHROW(dueNullPointer);
@@ -360,7 +367,7 @@ deClassColor::nfOpScale::nfOpScale(const sInitData &init) : dsFunction(init.clsC
 	p_AddParameter(init.clsFlt); // k
 }
 void deClassColor::nfOpScale::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
 	clsColor->PushColor(RT, color * RT->GetValue(0)->GetFloat());
 }
@@ -371,7 +378,7 @@ deClassColor::nfOpDivide::nfOpDivide(const sInitData &init) : dsFunction(init.cl
 	p_AddParameter(init.clsFlt); // k
 }
 void deClassColor::nfOpDivide::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
 	clsColor->PushColor(RT, color / RT->GetValue(0)->GetFloat());
 }
@@ -382,7 +389,7 @@ deClassColor::nfOpMultiply::nfOpMultiply(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsClr); // v
 }
 void deClassColor::nfOpMultiply::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
 	dsRealObject *objClr = RT->GetValue(0)->GetRealObject();
 	if(!objClr) DSTHROW(dueNullPointer);
@@ -400,13 +407,13 @@ deClassColor::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.clsClr
 	p_AddParameter(init.clsObj); // other
 }
 void deClassColor::nfEquals::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	deClassColor *clsColor = (deClassColor*)GetOwnerClass();
 	dsValue *obj = RT->GetValue(0);
 	if(!p_IsObjOfType(obj, clsColor)){
 		RT->PushBool(false);
 	}else{
-		const decColor &otherColor = ((sClrNatDat*)p_GetNativeData(obj))->color;
+		const decColor &otherColor = static_cast<sClrNatDat*>(p_GetNativeData(obj))->color;
 		RT->PushBool(color.IsEqualTo(otherColor));
 	}
 }
@@ -416,7 +423,7 @@ deClassColor::nfHashCode::nfHashCode(const sInitData &init) : dsFunction(init.cl
 "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassColor::nfHashCode::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	RT->PushInt((int)(color.r * 1000000)
 		+ (int)(color.g * 1000000)
 		+ (int)(color.b * 1000000)
@@ -428,7 +435,7 @@ deClassColor::nfToString::nfToString(const sInitData &init) : dsFunction(init.cl
 "toString", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassColor::nfToString::RunFunction(dsRunTime *RT, dsValue *This){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(This))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	char buffer[50];
 	snprintf((char*)&buffer, sizeof(buffer), "(%f,%f,%f,%f)", color.r, color.g, color.b, color.a);
 	RT->PushString(buffer);
@@ -453,7 +460,7 @@ void deClassColor::nfToStringPrecision::RunFunction(dsRunTime *rt, dsValue *myse
 	char format[22];
 	snprintf(format, sizeof(format), "(%%.%huf,%%.%huf,%%.%huf,%%.%huf)", p, p, p, p);
 	
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(myself))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(myself))->color;
 	decString str;
 	str.Format(str, color.r, color.g, color.b, color.a);
 	rt->PushString(str);
@@ -464,7 +471,7 @@ deClassColor::nfToHSV::nfToHSV(const sInitData &init) :
 dsFunction(init.clsClr, "toHSV", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsArray){
 }
 void deClassColor::nfToHSV::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(myself))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(myself))->color;
 	float hue, saturation, value;
 	color.ToHSV(hue, saturation, value);
 	
@@ -499,7 +506,7 @@ deClassColor::nfToHSL::nfToHSL(const sInitData &init) :
 dsFunction(init.clsClr, "toHSL", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsArray){
 }
 void deClassColor::nfToHSL::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(myself))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(myself))->color;
 	float hue, saturation, lightness;
 	color.ToHSL(hue, saturation, lightness);
 	
@@ -534,7 +541,7 @@ deClassColor::nfToCMYK::nfToCMYK(const sInitData &init) :
 dsFunction(init.clsClr, "toCMYK", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsArray){
 }
 void deClassColor::nfToCMYK::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decColor &color = ((sClrNatDat*)p_GetNativeData(myself))->color;
+	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(myself))->color;
 	float cyan, magenta, yellow, black;
 	color.ToCMYK(cyan, magenta, yellow, black);
 	
@@ -675,7 +682,7 @@ const decColor &deClassColor::GetColor(dsRealObject *This) const{
 		DSTHROW(dueNullPointer);
 	}
 	
-	return (const decColor &)((sClrNatDat*)p_GetNativeData(This->GetBuffer()))->color;
+	return (const decColor &)static_cast<sClrNatDat*>(p_GetNativeData(This->GetBuffer()))->color;
 }
 void deClassColor::PushColor(dsRunTime *rt, const decColor &color){
 	if(!rt){
@@ -683,7 +690,7 @@ void deClassColor::PushColor(dsRunTime *rt, const decColor &color){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	((sClrNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->color = color;
+	static_cast<sClrNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->color = color;
 }
 void deClassColor::AddColorConstant(dsRunTime *rt, const char *name, const decColor &color){
 	dsVariable * const variable = FindVariable(name);
@@ -693,5 +700,5 @@ void deClassColor::AddColorConstant(dsRunTime *rt, const char *name, const decCo
 	
 	dsValue * const value = variable->GetStaticValue();
 	rt->CreateObjectNaked(value, this);
-	((sClrNatDat*)p_GetNativeData(value->GetRealObject()->GetBuffer()))->color = color;
+	static_cast<sClrNatDat*>(p_GetNativeData(value->GetRealObject()->GetBuffer()))->color = color;
 }

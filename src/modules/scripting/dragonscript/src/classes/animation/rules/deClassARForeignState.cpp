@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -57,8 +59,8 @@
 /////////////////////
 
 struct sARFStaNatDat{
-	deAnimator *animator;
-	deAnimatorRuleForeignState *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleForeignState::Ref rule;
 };
 
 
@@ -71,19 +73,15 @@ deClassARForeignState::nfNew::nfNew(const sInitData &init) : dsFunction(init.cls
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassARForeignState::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
-	
-	// clear ( important )
-	nd.animator = NULL;
-	nd.rule = NULL;
+	sARFStaNatDat * const nd = new (p_GetNativeData(myself)) sARFStaNatDat;
 	
 	// super call
 	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleForeignState;
-	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
+	nd->rule = new deAnimatorRuleForeignState;
+	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 
 // public func destructor()
@@ -95,17 +93,7 @@ void deClassARForeignState::nfDestructor::RunFunction(dsRunTime *rt, dsValue *my
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-		nd.animator = NULL;
-	}
-	
-	if(nd.rule){
-		nd.rule->FreeReference();
-		nd.rule = NULL;
-	}
+	static_cast<sARFStaNatDat*>(p_GetNativeData(myself))->~sARFStaNatDat();
 }
 
 // public func void setModifyX( bool modify )
@@ -114,7 +102,7 @@ deClassARForeignState::nfSetModifyX::nfSetModifyX(const sInitData &init) : dsFun
 	p_AddParameter(init.clsBool); // modify
 }
 void deClassARForeignState::nfSetModifyX::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetModifyX(rt->GetValue(0)->GetBool());
 	
@@ -129,7 +117,7 @@ deClassARForeignState::nfSetModifyY::nfSetModifyY(const sInitData &init) : dsFun
 	p_AddParameter(init.clsBool); // modify
 }
 void deClassARForeignState::nfSetModifyY::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetModifyY(rt->GetValue(0)->GetBool());
 	
@@ -144,7 +132,7 @@ deClassARForeignState::nfSetModifyZ::nfSetModifyZ(const sInitData &init) : dsFun
 	p_AddParameter(init.clsBool); // modify
 }
 void deClassARForeignState::nfSetModifyZ::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetModifyZ(rt->GetValue(0)->GetBool());
 	
@@ -162,7 +150,7 @@ deClassARForeignState::nfSetEnablePosition::nfSetEnablePosition(const sInitData 
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARForeignState::nfSetEnablePosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnablePosition(rt->GetValue(0)->GetBool());
 	
@@ -177,7 +165,7 @@ deClassARForeignState::nfSetEnableOrientation::nfSetEnableOrientation(const sIni
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARForeignState::nfSetEnableOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableOrientation(rt->GetValue(0)->GetBool());
 	
@@ -192,7 +180,7 @@ deClassARForeignState::nfSetEnableSize::nfSetEnableSize(const sInitData &init) :
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARForeignState::nfSetEnableSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableSize(rt->GetValue(0)->GetBool());
 	
@@ -207,7 +195,7 @@ dsFunction(init.clsARFSta, "setEnableVertexPositionSet", DSFT_FUNCTION, DSTM_PUB
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassARForeignState::nfSetEnableVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetEnableVertexPositionSet(rt->GetValue(0)->GetBool());
 	
@@ -225,7 +213,7 @@ deClassARForeignState::nfTargetAddLink::nfTargetAddLink(const sInitData &init) :
 	p_AddParameter(init.clsInt); // link
 }
 void deClassARForeignState::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
@@ -275,7 +263,7 @@ void deClassARForeignState::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, d
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	const deClassARForeignState::eTargets target = (deClassARForeignState::eTargets)
 		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
@@ -318,7 +306,7 @@ deClassARForeignState::nfSetScalePosition::nfSetScalePosition(const sInitData &i
 	p_AddParameter(init.clsFlt); // scalePosition
 }
 void deClassARForeignState::nfSetScalePosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetScalePosition(rt->GetValue(0)->GetFloat());
 	
@@ -333,7 +321,7 @@ deClassARForeignState::nfSetScaleOrientation::nfSetScaleOrientation(const sInitD
 	p_AddParameter(init.clsFlt); // scaleOrientation
 }
 void deClassARForeignState::nfSetScaleOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetScaleOrientation(rt->GetValue(0)->GetFloat());
 	
@@ -348,7 +336,7 @@ deClassARForeignState::nfSetScaleSize::nfSetScaleSize(const sInitData &init) : d
 	p_AddParameter(init.clsFlt); // scaleSize
 }
 void deClassARForeignState::nfSetScaleSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetScaleSize(rt->GetValue(0)->GetFloat());
 	
@@ -363,7 +351,7 @@ dsFunction(init.clsARFSta, "setScaleVertexPositionSet", DSFT_FUNCTION, DSTM_PUBL
 	p_AddParameter(init.clsFlt); // scaleVertexPositionSet
 }
 void deClassARForeignState::nfSetScaleVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetScaleVertexPositionSet(rt->GetValue(0)->GetFloat());
 	
@@ -378,7 +366,7 @@ deClassARForeignState::nfSetForeignBone::nfSetForeignBone(const sInitData &init)
 	p_AddParameter(init.clsStr); // boneName
 }
 void deClassARForeignState::nfSetForeignBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	const char * const boneName = rt->GetValue(0)->GetString();
 	
 	nd.rule->SetForeignBone(boneName);
@@ -394,7 +382,7 @@ dsFunction(init.clsARFSta, "setForeignVertexPositionSet", DSFT_FUNCTION, DSTM_PU
 	p_AddParameter(init.clsStr); // name
 }
 void deClassARForeignState::nfSetForeignVertexPositionSet::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetForeignVertexPositionSet(rt->GetValue(0)->GetString());
 	
@@ -409,7 +397,7 @@ deClassARForeignState::nfSetSourceCoordinateFrame::nfSetSourceCoordinateFrame(co
 	p_AddParameter(init.clsARForeignStateCFrame); // coordinateFrame
 }
 void deClassARForeignState::nfSetSourceCoordinateFrame::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
@@ -429,7 +417,7 @@ deClassARForeignState::nfSetDestinationCoordinateFrame::nfSetDestinationCoordina
 	p_AddParameter(init.clsARForeignStateCFrame); // coordinateFrame
 }
 void deClassARForeignState::nfSetDestinationCoordinateFrame::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself));
 	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
@@ -521,7 +509,7 @@ deAnimatorRuleForeignState *deClassARForeignState::GetRule(dsRealObject *myself)
 		return NULL;
 	}
 	
-	return ((sARFStaNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
+	return static_cast<sARFStaNatDat*>(p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
 void deClassARForeignState::AssignAnimator(dsRealObject *myself, deAnimator *animator){
@@ -531,7 +519,7 @@ void deClassARForeignState::AssignAnimator(dsRealObject *myself, deAnimator *ani
 	
 	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
 	
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(myself->GetBuffer()));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(myself->GetBuffer()));
 	
 	if(animator == nd.animator){
 		return;
@@ -560,7 +548,7 @@ void deClassARForeignState::PushRule(dsRunTime *rt, deAnimator *animator, deAnim
 	
 	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
 	rt->CreateObjectNakedOnStack(this);
-	sARFStaNatDat &nd = *((sARFStaNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
+	sARFStaNatDat &nd = *static_cast<sARFStaNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.animator = NULL;
 	nd.rule = NULL;
 	

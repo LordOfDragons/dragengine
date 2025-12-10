@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -44,7 +46,7 @@
 
 // Native Structure
 struct sEffClrMatMatrixNatDat{
-	deEffectColorMatrix *effect;
+	deEffectColorMatrix::Ref effect;
 };
 
 
@@ -57,19 +59,16 @@ deClassEffectColorMatrix::nfNew::nfNew(const sInitData &init) : dsFunction(init.
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassEffectColorMatrix::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sEffClrMatMatrixNatDat &nd = *((sEffClrMatMatrixNatDat*)p_GetNativeData(myself));
+	sEffClrMatMatrixNatDat * const nd = new (p_GetNativeData(myself)) sEffClrMatMatrixNatDat;
 	const deScriptingDragonScript &ds = ((deClassEffectColorMatrix*)GetOwnerClass())->GetDS();
-	
-	// clear ( important )
-	nd.effect = NULL;
 	
 	// super call
 	deClassEffect * const baseClass = (deClassEffect*)GetOwnerClass()->GetBaseClass();
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create effect
-	nd.effect = ds.GetGameEngine()->GetEffectManager()->CreateEffectColorMatrix();
-	baseClass->AssignEffect(myself->GetRealObject(), nd.effect);
+	nd->effect = ds.GetGameEngine()->GetEffectManager()->CreateEffectColorMatrix();
+	baseClass->AssignEffect(myself->GetRealObject(), nd->effect);
 }
 
 // public func destructor()
@@ -81,12 +80,7 @@ void deClassEffectColorMatrix::nfDestructor::RunFunction(dsRunTime *rt, dsValue 
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sEffClrMatMatrixNatDat &nd = *((sEffClrMatMatrixNatDat*)p_GetNativeData(myself));
-	
-	if(nd.effect){
-		nd.effect->FreeReference();
-		nd.effect = NULL;
-	}
+	static_cast<sEffClrMatMatrixNatDat*>(p_GetNativeData(myself))->~sEffClrMatMatrixNatDat();
 }
 
 
@@ -99,7 +93,7 @@ deClassEffectColorMatrix::nfGetColorMatrix::nfGetColorMatrix(const sInitData &in
 "getColorMatrix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsClrMat){
 }
 void deClassEffectColorMatrix::nfGetColorMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sEffClrMatMatrixNatDat &nd = *((sEffClrMatMatrixNatDat*)p_GetNativeData(myself));
+	const sEffClrMatMatrixNatDat &nd = *static_cast<sEffClrMatMatrixNatDat*>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((deClassEffectColorMatrix*)GetOwnerClass())->GetDS();
 	
 	ds.GetClassColorMatrix()->PushColorMatrix(rt, nd.effect->GetColorMatrix());
@@ -111,7 +105,7 @@ deClassEffectColorMatrix::nfSetColorMatrix::nfSetColorMatrix(const sInitData &in
 	p_AddParameter(init.clsClrMat); // matrix
 }
 void deClassEffectColorMatrix::nfSetColorMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sEffClrMatMatrixNatDat &nd = *((sEffClrMatMatrixNatDat*)p_GetNativeData(myself));
+	const sEffClrMatMatrixNatDat &nd = *static_cast<sEffClrMatMatrixNatDat*>(p_GetNativeData(myself));
 	const deScriptingDragonScript &ds = ((deClassEffectColorMatrix*)GetOwnerClass())->GetDS();
 	
 	const decColorMatrix &colorMatrix = ds.GetClassColorMatrix()->GetColorMatrix(rt->GetValue(0)->GetRealObject());
@@ -126,7 +120,7 @@ dsFunction(init.clsEffClrMat, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATI
 }
 
 void deClassEffectColorMatrix::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEffectColorMatrix * const effect = ((sEffClrMatMatrixNatDat*)p_GetNativeData(myself))->effect;
+	deEffectColorMatrix * const effect = static_cast<sEffClrMatMatrixNatDat*>(p_GetNativeData(myself))->effect;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)effect);
 }
@@ -137,7 +131,7 @@ dsFunction(init.clsEffClrMat, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassEffectColorMatrix::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEffectColorMatrix * const effect = ((sEffClrMatMatrixNatDat*)p_GetNativeData(myself))->effect;
+	deEffectColorMatrix * const effect = static_cast<sEffClrMatMatrixNatDat*>(p_GetNativeData(myself))->effect;
 	deClassEffectColorMatrix * const clsEffClrMat = (deClassEffectColorMatrix*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -145,7 +139,7 @@ void deClassEffectColorMatrix::nfEquals::RunFunction(dsRunTime *rt, dsValue *mys
 		rt->PushBool(false);
 		
 	}else{
-		deEffectColorMatrix * const otherEffect = ((sEffClrMatMatrixNatDat*)p_GetNativeData(obj))->effect;
+		deEffectColorMatrix * const otherEffect = static_cast<sEffClrMatMatrixNatDat*>(p_GetNativeData(obj))->effect;
 		rt->PushBool(effect == otherEffect);
 	}
 }
@@ -209,7 +203,7 @@ deEffectColorMatrix *deClassEffectColorMatrix::GetEffect(dsRealObject *myself) c
 		return NULL;
 	}
 	
-	return ((sEffClrMatMatrixNatDat*)p_GetNativeData(myself->GetBuffer()))->effect;
+	return static_cast<sEffClrMatMatrixNatDat*>(p_GetNativeData(myself->GetBuffer()))->effect;
 }
 
 void deClassEffectColorMatrix::PushEffect(dsRunTime *rt, deEffectColorMatrix *effect){
@@ -224,7 +218,7 @@ void deClassEffectColorMatrix::PushEffect(dsRunTime *rt, deEffectColorMatrix *ef
 	
 	deClassEffect * const baseClass = (deClassEffect*)GetBaseClass();
 	rt->CreateObjectNakedOnStack(this);
-	sEffClrMatMatrixNatDat &nd = *((sEffClrMatMatrixNatDat*)p_GetNativeData(
+	sEffClrMatMatrixNatDat &nd = *static_cast<sEffClrMatMatrixNatDat*>(p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.effect = NULL;
 	

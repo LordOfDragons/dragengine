@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -116,7 +118,7 @@
 
 // native structure
 struct sColNatDat{
-	deCollider *collider;
+	deCollider::Ref collider;
 };
 
 
@@ -129,8 +131,7 @@ deClassCollider::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsCol,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollider::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
-	nd.collider = NULL;
+	sColNatDat * const nd = new (p_GetNativeData(myself)) sColNatDat;
 }
 
 // public func destructor()
@@ -142,12 +143,7 @@ void deClassCollider::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
-	
-	if(nd.collider){
-		nd.collider->FreeReference();
-		nd.collider = NULL;
-	}
+	static_cast<sColNatDat*>(p_GetNativeData(myself))->~sColNatDat();
 }
 
 
@@ -160,7 +156,7 @@ deClassCollider::nfGetPosition::nfGetPosition(const sInitData &init) : dsFunctio
 "getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
 void deClassCollider::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -176,7 +172,7 @@ deClassCollider::nfSetPosition::nfSetPosition(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsDVec); // position
 }
 void deClassCollider::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -191,7 +187,7 @@ deClassCollider::nfGetOrientation::nfGetOrientation(const sInitData &init) : dsF
 "getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
 void deClassCollider::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -206,7 +202,7 @@ deClassCollider::nfSetOrientation::nfSetOrientation(const sInitData &init) : dsF
 	p_AddParameter(init.clsQuat); // orientation
 }
 void deClassCollider::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -223,7 +219,7 @@ deClassCollider::nfSetGeometry::nfSetGeometry(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsQuat); // orientation
 }
 void deClassCollider::nfSetGeometry::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -246,7 +242,7 @@ deClassCollider::nfSetGeometry2::nfSetGeometry2(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsVec); // scale
 }
 void deClassCollider::nfSetGeometry2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -268,7 +264,7 @@ deClassCollider::nfGetScale::nfGetScale(const sInitData &init) : dsFunction(init
 "getScale", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassCollider::nfGetScale::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -283,7 +279,7 @@ deClassCollider::nfSetScale::nfSetScale(const sInitData &init) : dsFunction(init
 	p_AddParameter(init.clsVec); // scale
 }
 void deClassCollider::nfSetScale::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -298,7 +294,7 @@ deClassCollider::nfGetView::nfGetView(const sInitData &init) : dsFunction(init.c
 "getView", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassCollider::nfGetView::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -312,7 +308,7 @@ deClassCollider::nfGetUp::nfGetUp(const sInitData &init) : dsFunction(init.clsCo
 "getUp", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassCollider::nfGetUp::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -326,7 +322,7 @@ deClassCollider::nfGetRight::nfGetRight(const sInitData &init) : dsFunction(init
 "getRight", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassCollider::nfGetRight::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -340,7 +336,7 @@ deClassCollider::nfGetMatrix::nfGetMatrix(const sInitData &init) : dsFunction(in
 "getMatrix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDMat){
 }
 void deClassCollider::nfGetMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -356,7 +352,7 @@ deClassCollider::nfGetInverseMatrix::nfGetInverseMatrix(const sInitData &init) :
 "getInverseMatrix", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDMat){
 }
 void deClassCollider::nfGetInverseMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -372,7 +368,7 @@ deClassCollider::nfGetLinearVelocity::nfGetLinearVelocity(const sInitData &init)
 "getLinearVelocity", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassCollider::nfGetLinearVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -387,7 +383,7 @@ deClassCollider::nfSetLinearVelocity::nfSetLinearVelocity(const sInitData &init)
 	p_AddParameter(init.clsVec); // linVelo
 }
 void deClassCollider::nfSetLinearVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -402,7 +398,7 @@ deClassCollider::nfGetAngularVelocity::nfGetAngularVelocity(const sInitData &ini
 "getAngularVelocity", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassCollider::nfGetAngularVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -417,7 +413,7 @@ deClassCollider::nfSetAngularVelocity::nfSetAngularVelocity(const sInitData &ini
 	p_AddParameter(init.clsVec); // angVelo
 }
 void deClassCollider::nfSetAngularVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -432,7 +428,7 @@ deClassCollider::nfGetMass::nfGetMass(const sInitData &init) : dsFunction(init.c
 "getMass", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassCollider::nfGetMass::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -446,7 +442,7 @@ deClassCollider::nfSetMass::nfSetMass(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsFlt); // mass
 }
 void deClassCollider::nfSetMass::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -459,7 +455,7 @@ deClassCollider::nfGetGravity::nfGetGravity(const sInitData &init) : dsFunction(
 "getGravity", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassCollider::nfGetGravity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -474,7 +470,7 @@ deClassCollider::nfSetGravity::nfSetGravity(const sInitData &init) : dsFunction(
 	p_AddParameter(init.clsVec); // gravity
 }
 void deClassCollider::nfSetGravity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -489,7 +485,7 @@ deClassCollider::nfGetEnabled::nfGetEnabled(const sInitData &init) : dsFunction(
 "getEnabled", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassCollider::nfGetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -503,7 +499,7 @@ deClassCollider::nfSetEnabled::nfSetEnabled(const sInitData &init) : dsFunction(
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassCollider::nfSetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -517,7 +513,7 @@ dsFunction(init.clsCol, "getResponseType", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsCollisionResponse){
 }
 void deClassCollider::nfGetResponseType::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -533,7 +529,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCollisionResponse); // responseType
 }
 void deClassCollider::nfSetResponseType::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider || !rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
@@ -548,7 +544,7 @@ deClassCollider::nfGetUseLocalGravity::nfGetUseLocalGravity(const sInitData &ini
 "getUseLocalGravity", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassCollider::nfGetUseLocalGravity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -562,7 +558,7 @@ deClassCollider::nfSetUseLocalGravity::nfSetUseLocalGravity(const sInitData &ini
 	p_AddParameter(init.clsBool); // canHit
 }
 void deClassCollider::nfSetUseLocalGravity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -576,7 +572,7 @@ dsFunction(init.clsCol, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATI
 }
 
 void deClassCollider::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself) {
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -591,7 +587,7 @@ deClassCollider::nfGetOwner::nfGetOwner(const sInitData &init) : dsFunction(init
 "getOwner", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsObj){
 }
 void deClassCollider::nfGetOwner::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -612,7 +608,7 @@ deClassCollider::nfSetOwner::nfSetOwner(const sInitData &init) : dsFunction(init
 	p_AddParameter(init.clsObj); // owner
 }
 void deClassCollider::nfSetOwner::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -630,7 +626,7 @@ deClassCollider::nfGetForceFieldDirect::nfGetForceFieldDirect(const sInitData &i
 "getForceFieldDirect", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassCollider::nfGetForceFieldDirect::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -644,7 +640,7 @@ deClassCollider::nfSetForceFieldDirect::nfSetForceFieldDirect(const sInitData &i
 	p_AddParameter(init.clsFlt); // factor
 }
 void deClassCollider::nfSetForceFieldDirect::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -657,7 +653,7 @@ deClassCollider::nfGetForceFieldSurface::nfGetForceFieldSurface(const sInitData 
 "getForceFieldSurface", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassCollider::nfGetForceFieldSurface::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -671,7 +667,7 @@ deClassCollider::nfSetForceFieldSurface::nfSetForceFieldSurface(const sInitData 
 	p_AddParameter(init.clsFlt); // factor
 }
 void deClassCollider::nfSetForceFieldSurface::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -684,7 +680,7 @@ deClassCollider::nfGetForceFieldMass::nfGetForceFieldMass(const sInitData &init)
 "getForceFieldMass", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassCollider::nfGetForceFieldMass::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -698,7 +694,7 @@ deClassCollider::nfSetForceFieldMass::nfSetForceFieldMass(const sInitData &init)
 	p_AddParameter(init.clsFlt); // factor
 }
 void deClassCollider::nfSetForceFieldMass::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -711,7 +707,7 @@ deClassCollider::nfGetForceFieldSpeed::nfGetForceFieldSpeed(const sInitData &ini
 "getForceFieldSpeed", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassCollider::nfGetForceFieldSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -725,7 +721,7 @@ deClassCollider::nfSetForceFieldSpeed::nfSetForceFieldSpeed(const sInitData &ini
 	p_AddParameter(init.clsFlt); // factor
 }
 void deClassCollider::nfSetForceFieldSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -740,7 +736,7 @@ deClassCollider::nfGetCollisionFilter::nfGetCollisionFilter(const sInitData &ini
 "getCollisionFilter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCF){
 }
 void deClassCollider::nfGetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -755,7 +751,7 @@ deClassCollider::nfSetCollisionFilter::nfSetCollisionFilter(const sInitData &ini
 	p_AddParameter(init.clsCF); // collisionFilter
 }
 void deClassCollider::nfSetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -776,7 +772,7 @@ deClassCollider::nfGetAttachmentCount::nfGetAttachmentCount(const sInitData &ini
 "getAttachmentCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCollider::nfGetAttachmentCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -790,7 +786,7 @@ deClassCollider::nfGetAttachedResource::nfGetAttachedResource(const sInitData &i
 	p_AddParameter(init.clsInt); // index
 }
 void deClassCollider::nfGetAttachedResource::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -806,7 +802,7 @@ deClassCollider::nfAttachStatic::nfAttachStatic(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsObj); // resource
 }
 void deClassCollider::nfAttachStatic::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -829,7 +825,7 @@ deClassCollider::nfAttachStatic2::nfAttachStatic2(const sInitData &init) : dsFun
 	p_AddParameter(init.clsQuat); // orientation
 }
 void deClassCollider::nfAttachStatic2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -853,7 +849,7 @@ deClassCollider::nfAttachRelativeMovement::nfAttachRelativeMovement(const sInitD
 	p_AddParameter(init.clsObj); // resource
 }
 void deClassCollider::nfAttachRelativeMovement::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -874,7 +870,7 @@ deClassCollider::nfDetach::nfDetach(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsObj); // resource
 }
 void deClassCollider::nfDetach::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -897,7 +893,7 @@ deClassCollider::nfDetachAll::nfDetachAll(const sInitData &init) : dsFunction(in
 "detachAll", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollider::nfDetachAll::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -910,7 +906,7 @@ deClassCollider::nfAttachmentsForceUpdate::nfAttachmentsForceUpdate(const sInitD
 "attachmentsForceUpdate", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollider::nfAttachmentsForceUpdate::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -928,7 +924,7 @@ deClassCollider::nfGetConstraintCount::nfGetConstraintCount(const sInitData &ini
 "getConstraintCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCollider::nfGetConstraintCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deCollider &collider = *(((sColNatDat*)p_GetNativeData(myself))->collider);
+	const deCollider &collider = *(static_cast<sColNatDat*>(p_GetNativeData(myself))->collider);
 	rt->PushInt(collider.GetConstraintCount());
 }
 
@@ -938,7 +934,7 @@ deClassCollider::nfAddConstraint::nfAddConstraint(const sInitData &init) : dsFun
 	p_AddParameter(init.clsCCon); // constraint
 }
 void deClassCollider::nfAddConstraint::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -974,7 +970,7 @@ dsFunction(init.clsCol, "hasConstraint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 	p_AddParameter(init.clsCCon); // constraint
 }
 void deClassCollider::nfHasConstraint::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -993,7 +989,7 @@ dsFunction(init.clsCol, "indexOfConstraint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_N
 	p_AddParameter(init.clsCCon); // constraint
 }
 void deClassCollider::nfIndexOfConstraint::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1020,7 +1016,7 @@ dsFunction(init.clsCol, "getConstraintAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NAT
 	p_AddParameter(init.clsInt); // index
 }
 void deClassCollider::nfGetConstraintAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1050,7 +1046,7 @@ deClassCollider::nfSetConstraintAt::nfSetConstraintAt(const sInitData &init) : d
 	p_AddParameter(init.clsCCon); // constraint
 }
 void deClassCollider::nfSetConstraintAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1083,7 +1079,7 @@ dsFunction(init.clsCol, "removeConstraint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NA
 	p_AddParameter(init.clsCCon); // constraint
 }
 void deClassCollider::nfRemoveConstraint::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1111,7 +1107,7 @@ deClassCollider::nfRemoveConstraintFrom::nfRemoveConstraintFrom(const sInitData 
 	p_AddParameter(init.clsInt); // index
 }
 void deClassCollider::nfRemoveConstraintFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1124,7 +1120,7 @@ deClassCollider::nfRemoveAllConstraints::nfRemoveAllConstraints(const sInitData 
 "removeAllConstraints", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollider::nfRemoveAllConstraints::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1142,7 +1138,7 @@ deClassCollider::nfGetIgnoreColliderCount::nfGetIgnoreColliderCount(const sInitD
 "getIgnoreColliderCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCollider::nfGetIgnoreColliderCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1156,7 +1152,7 @@ deClassCollider::nfGetIgnoreColliderAt::nfGetIgnoreColliderAt(const sInitData &i
 	p_AddParameter(init.clsInt); // index
 }
 void deClassCollider::nfGetIgnoreColliderAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1173,7 +1169,7 @@ deClassCollider::nfHasIgnoreCollider::nfHasIgnoreCollider(const sInitData &init)
 	p_AddParameter(init.clsCol); // collider
 }
 void deClassCollider::nfHasIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1190,7 +1186,7 @@ deClassCollider::nfAddIgnoreCollider::nfAddIgnoreCollider(const sInitData &init)
 	p_AddParameter(init.clsCol); // collider
 }
 void deClassCollider::nfAddIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1206,7 +1202,7 @@ deClassCollider::nfRemoveIgnoreCollider::nfRemoveIgnoreCollider(const sInitData 
 	p_AddParameter(init.clsCol); // collider
 }
 void deClassCollider::nfRemoveIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1221,7 +1217,7 @@ deClassCollider::nfRemoveAllIgnoreColliders::nfRemoveAllIgnoreColliders(const sI
 "removeAllIgnoreColliders", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollider::nfRemoveAllIgnoreColliders::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1240,7 +1236,7 @@ dsFunction(init.clsCol, "getCollisionTestCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCollider::nfGetCollisionTestCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1255,7 +1251,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsCCT){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassCollider::nfGetCollisionTestAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1274,7 +1270,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCCT); // collisionTest
 }
 void deClassCollider::nfAddCollisionTest::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1294,7 +1290,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCCT); // collisionTest
 }
 void deClassCollider::nfRemoveCollisionTest::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1311,7 +1307,7 @@ dsFunction(init.clsCol, "removeAllCollisionTests", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollider::nfRemoveAllCollisionTests::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1330,7 +1326,7 @@ deClassCollider::nfApplyImpuls::nfApplyImpuls(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsVec); // impuls
 }
 void deClassCollider::nfApplyImpuls::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1347,7 +1343,7 @@ deClassCollider::nfApplyImpulsAt::nfApplyImpulsAt(const sInitData &init) : dsFun
 	p_AddParameter(init.clsVec); // position
 }
 void deClassCollider::nfApplyImpulsAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1365,7 +1361,7 @@ deClassCollider::nfApplyTorqueImpuls::nfApplyTorqueImpuls(const sInitData &init)
 	p_AddParameter(init.clsVec); // torqueImpuls
 }
 void deClassCollider::nfApplyTorqueImpuls::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1381,7 +1377,7 @@ deClassCollider::nfApplyForce::nfApplyForce(const sInitData &init) : dsFunction(
 	p_AddParameter(init.clsVec); // force
 }
 void deClassCollider::nfApplyForce::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1398,7 +1394,7 @@ deClassCollider::nfApplyForceAt::nfApplyForceAt(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsVec); // position
 }
 void deClassCollider::nfApplyForceAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1416,7 +1412,7 @@ deClassCollider::nfApplyTorque::nfApplyTorque(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsVec); // torque
 }
 void deClassCollider::nfApplyTorque::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1436,7 +1432,7 @@ deClassCollider::nfGetColliderListener::nfGetColliderListener(const sInitData &i
 "getColliderListener", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCLL){
 }
 void deClassCollider::nfGetColliderListener::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1458,7 +1454,7 @@ deClassCollider::nfSetColliderListener::nfSetColliderListener(const sInitData &i
 	p_AddParameter(init.clsCLL); // listener
 }
 void deClassCollider::nfSetColliderListener::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1474,7 +1470,7 @@ deClassCollider::nfColliderListenerGetCustomCanHit::nfColliderListenerGetCustomC
 "colliderListenerGetCustomCanHit", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassCollider::nfColliderListenerGetCustomCanHit::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1495,7 +1491,7 @@ deClassCollider::nfColliderListenerSetCustomCanHit::nfColliderListenerSetCustomC
 	p_AddParameter(init.clsBool); // customCanHit
 }
 void deClassCollider::nfColliderListenerSetCustomCanHit::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1513,7 +1509,7 @@ deClassCollider::nfGetBreakingListener::nfGetBreakingListener(const sInitData &i
 "getBreakingListener", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCBL){
 }
 void deClassCollider::nfGetBreakingListener::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1535,7 +1531,7 @@ deClassCollider::nfSetBreakingListener::nfSetBreakingListener(const sInitData &i
 	p_AddParameter(init.clsCBL); // listener
 }
 void deClassCollider::nfSetBreakingListener::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1557,7 +1553,7 @@ deClassCollider::nfPointInside::nfPointInside(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsDVec); // point
 }
 void deClassCollider::nfPointInside::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1578,7 +1574,7 @@ deClassCollider::nfRayHits::nfRayHits(const sInitData &init) : dsFunction(init.c
 	p_AddParameter(init.clsCLL); // listener
 }
 void deClassCollider::nfRayHits::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1608,7 +1604,7 @@ deClassCollider::nfRayHitsClosest::nfRayHitsClosest(const sInitData &init) : dsF
 	p_AddParameter(init.clsCLL); // listener
 }
 void deClassCollider::nfRayHitsClosest::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1638,7 +1634,7 @@ deClassCollider::nfColliderHits::nfColliderHits(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsCLL); // listener
 }
 void deClassCollider::nfColliderHits::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1670,7 +1666,7 @@ deClassCollider::nfColliderMoveHits::nfColliderMoveHits(const sInitData &init) :
 	p_AddParameter(init.clsCLL); // listener
 }
 void deClassCollider::nfColliderMoveHits::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1705,7 +1701,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCLL); // listener
 }
 void deClassCollider::nfColliderMoveHitsClosest::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1740,7 +1736,7 @@ deClassCollider::nfColliderRotateHits::nfColliderRotateHits(const sInitData &ini
 	p_AddParameter(init.clsCLL); // listener
 }
 void deClassCollider::nfColliderRotateHits::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1775,7 +1771,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCLL); // listener
 }
 void deClassCollider::nfColliderRotateHitsClosest::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1811,7 +1807,7 @@ deClassCollider::nfColliderMoveRotateHits::nfColliderMoveRotateHits(const sInitD
 	p_AddParameter(init.clsCLL); // listener
 }
 void deClassCollider::nfColliderMoveRotateHits::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1848,7 +1844,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCLL); // listener
 }
 void deClassCollider::nfColliderMoveRotateHitsClosest::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	const sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself));
 	if(!nd.collider){
 		DSTHROW(dueNullPointer);
 	}
@@ -1884,7 +1880,7 @@ dsFunction(init.clsCol, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassCollider::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCollider *collider = ((sColNatDat*)p_GetNativeData(myself))->collider;
+	deCollider *collider = static_cast<sColNatDat*>(p_GetNativeData(myself))->collider;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)collider);
 }
@@ -1895,7 +1891,7 @@ dsFunction(init.clsCol, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassCollider::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCollider * const collider = ((sColNatDat*)p_GetNativeData(myself))->collider;
+	deCollider * const collider = static_cast<sColNatDat*>(p_GetNativeData(myself))->collider;
 	deClassCollider * const clsCol = (deClassCollider*)GetOwnerClass();
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -1903,7 +1899,7 @@ void deClassCollider::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		deCollider * const otherCol = ((sColNatDat*)p_GetNativeData(obj))->collider;
+		deCollider * const otherCol = static_cast<sColNatDat*>(p_GetNativeData(obj))->collider;
 		rt->PushBool(collider == otherCol);
 	}
 }
@@ -2094,7 +2090,7 @@ deCollider *deClassCollider::GetCollider(dsRealObject *myself) const {
 		return NULL;
 	}
 	
-	return ((sColNatDat*)p_GetNativeData(myself->GetBuffer()))->collider;
+	return static_cast<sColNatDat*>(p_GetNativeData(myself->GetBuffer()))->collider;
 }
 
 void deClassCollider::AssignCollider(dsRealObject *myself, deCollider *collider){
@@ -2102,7 +2098,7 @@ void deClassCollider::AssignCollider(dsRealObject *myself, deCollider *collider)
 		DSTHROW(dueInvalidParam);
 	}
 	
-	sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself->GetBuffer()));
+	sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself->GetBuffer()));
 	
 	if(collider == nd.collider){
 		return;
