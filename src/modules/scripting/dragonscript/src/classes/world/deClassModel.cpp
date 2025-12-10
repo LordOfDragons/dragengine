@@ -63,7 +63,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassModel::nfLoad::RunFunction(dsRunTime *rt, dsValue *myself){
 	sMdlNatDat &nd = *static_cast<sMdlNatDat*>(p_GetNativeData(myself));
-	deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
+	deScriptingDragonScript &ds = *static_cast<deClassModel*>(GetOwnerClass())->GetDS();
 	deModelManager &mdlMgr = *ds.GetGameEngine()->GetModelManager();
 	
 	// prepare
