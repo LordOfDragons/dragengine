@@ -63,7 +63,7 @@ void deClassCanvasVideoPlayer::nfNew::RunFunction(dsRunTime *rt, dsValue *myself
 	const deScriptingDragonScript &ds = (static_cast<deClassCanvasVideoPlayer*>(GetOwnerClass()))->GetDS();
 	
 	// super call
-	deClassCanvas * const baseClass = static_cast<deClassCanvas*>(GetOwnerClass())->GetBaseClass();
+	deClassCanvas * const baseClass = static_cast<deClassCanvas*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create canvas
@@ -257,7 +257,7 @@ void deClassCanvasVideoPlayer::PushCanvas(dsRunTime *rt, deCanvasVideoPlayer *ca
 		return;
 	}
 	
-	deClassCanvas * const baseClass = (deClassCanvas*)GetBaseClass();
+	deClassCanvas * const baseClass = static_cast<deClassCanvas*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
 	sCVidPNatDat &nd = *static_cast<sCVidPNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.canvas = nullptr;

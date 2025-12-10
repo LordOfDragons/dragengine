@@ -62,7 +62,7 @@ void deClassCanvasView::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deScriptingDragonScript &ds = (static_cast<deClassCanvasView*>(GetOwnerClass()))->GetDS();
 	
 	// super call
-	deClassCanvas * const baseClass = static_cast<deClassCanvas*>(GetOwnerClass())->GetBaseClass();
+	deClassCanvas * const baseClass = static_cast<deClassCanvas*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create canvas

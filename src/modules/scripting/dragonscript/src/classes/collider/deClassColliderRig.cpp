@@ -72,7 +72,7 @@ void deClassColliderRig::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	deColliderManager &colMgr = *ds.GetGameEngine()->GetColliderManager();
 	
 	// super call
-	deClassCollider * const baseClass = static_cast<deClassCollider*>(GetOwnerClass())->GetBaseClass();
+	deClassCollider * const baseClass = static_cast<deClassCollider*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create collider

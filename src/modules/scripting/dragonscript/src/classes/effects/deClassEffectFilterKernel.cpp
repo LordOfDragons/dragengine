@@ -62,7 +62,7 @@ void deClassEffectFilterKernel::nfNew::RunFunction(dsRunTime *rt, dsValue *mysel
 	const deScriptingDragonScript &ds = (static_cast<deClassEffectFilterKernel*>(GetOwnerClass()))->GetDS();
 	
 	// super call
-	deClassEffect * const baseClass = static_cast<deClassEffect*>(GetOwnerClass())->GetBaseClass();
+	deClassEffect * const baseClass = static_cast<deClassEffect*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create effect
