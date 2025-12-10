@@ -90,7 +90,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsParticleEmitter){
 }
 void deClassParticleEmitterController::nfGetParticleEmitter::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
-	deScriptingDragonScript &ds = (static_cast<deClassParticleEmitterController*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassParticleEmitterController*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassParticleEmitter()->PushParticleEmitter(rt, nd.emitter);
 }
@@ -102,7 +102,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsParticleEmitterInst){
 }
 void deClassParticleEmitterController::nfGetParticleEmitterInstance::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sParticleEmitterCtrlNatDat &nd = *static_cast<const sParticleEmitterCtrlNatDat*>(p_GetNativeData(myself));
-	deScriptingDragonScript &ds = (static_cast<deClassParticleEmitterController*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassParticleEmitterController*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassParticleEmitterInstance()->PushInstance(rt, nd.instance);
 }

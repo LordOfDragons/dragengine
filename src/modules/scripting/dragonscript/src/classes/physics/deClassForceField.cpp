@@ -558,6 +558,5 @@ void deClassForceField::PushForceField(dsRunTime *rt, deForceField *forcefield){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sFFNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->forcefield = forcefield;
-	forcefield->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sFFNatDat)->forcefield = forcefield;
 }

@@ -578,6 +578,5 @@ void deClassFileWriter::PushFileWriter(dsRunTime *rt, decBaseFileWriter *fileWri
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sFileWriterNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->fileWriter = fileWriter;
-	fileWriter->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sFileWriterNatDat)->fileWriter = fileWriter;
 }

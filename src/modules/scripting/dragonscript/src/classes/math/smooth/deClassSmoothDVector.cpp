@@ -76,7 +76,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSmoothDVector::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSmDVecNatDat * const nd = new (p_GetNativeData(myself)) sSmDVecNatDat;
-	deClassSmoothDVector &clsSmoothDVector = *(static_cast<deClassSmoothDVector*>(GetOwnerClass()));
+	const deClassSmoothDVector &clsSmoothDVector = *(static_cast<deClassSmoothDVector*>(GetOwnerClass()));
 	
 	const decSmoothDVector &copy = clsSmoothDVector.GetSmoothDVector(rt->GetValue(0)->GetRealObject());
 	nd->smoothDVector = new decSmoothDVector(copy);

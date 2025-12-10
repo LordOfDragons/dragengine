@@ -92,7 +92,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSynthesizer){
 }
 void deClassSynthesizerController::nfGetSynthesizer::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
-	deScriptingDragonScript &ds = (static_cast<deClassSynthesizerController*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSynthesizerController*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSynthesizer()->PushSynthesizer(rt, nd.synthesizer);
 }
@@ -104,7 +104,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSynthesizerInst){
 }
 void deClassSynthesizerController::nfGetSynthesizerInstance::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
-	deScriptingDragonScript &ds = (static_cast<deClassSynthesizerController*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSynthesizerController*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSynthesizerInstance()->PushSynthesizerInstance(rt, nd.instance);
 }

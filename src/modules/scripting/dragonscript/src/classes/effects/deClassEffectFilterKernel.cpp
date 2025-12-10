@@ -243,7 +243,7 @@ void deClassEffectFilterKernel::PushEffect(dsRunTime *rt, deEffectFilterKernel *
 		return;
 	}
 	
-	deClassEffect * const baseClass = (deClassEffect*)GetBaseClass();
+	deClassEffect * const baseClass = static_cast<deClassEffect*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
 	sEffFilKerMatrixNatDat &nd = *static_cast<sEffFilKerMatrixNatDat*>(p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));

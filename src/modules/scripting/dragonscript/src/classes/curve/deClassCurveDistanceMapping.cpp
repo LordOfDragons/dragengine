@@ -69,7 +69,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCurveDistanceMapping::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	sDistMapNatDat * const nd = new (p_GetNativeData(myself)) sDistMapNatDat;
-	deClassCurveDistanceMapping &clsCDistMap = *(static_cast<deClassCurveDistanceMapping*>(GetOwnerClass()));
+	const deClassCurveDistanceMapping &clsCDistMap = *(static_cast<deClassCurveDistanceMapping*>(GetOwnerClass()));
 	
 	const decCurveDistanceMapping &copy = clsCDistMap.GetMapping(rt->GetValue(0)->GetRealObject());
 	

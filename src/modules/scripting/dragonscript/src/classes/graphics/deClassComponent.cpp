@@ -127,7 +127,7 @@ deClassComponent::nfGetModel::nfGetModel(const sInitData &init) : dsFunction(ini
 }
 void deClassComponent::nfGetModel::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
+	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
 	clsComp->GetClassModel()->PushModel(rt, component->GetModel());
 }
 
@@ -137,7 +137,7 @@ deClassComponent::nfGetRig::nfGetRig(const sInitData &init) : dsFunction(init.cl
 }
 void deClassComponent::nfGetRig::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
+	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
 	if(component->GetRig()){
 		clsComp->GetClassRig()->PushRig(rt, component->GetRig());
 	}else{
@@ -151,7 +151,7 @@ deClassComponent::nfGetSkin::nfGetSkin(const sInitData &init) : dsFunction(init.
 }
 void deClassComponent::nfGetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
+	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
 	clsComp->GetClassSkin()->PushSkin(rt, component->GetSkin());
 }
 
@@ -161,7 +161,7 @@ deClassComponent::nfGetPosition::nfGetPosition(const sInitData &init) : dsFuncti
 }
 void deClassComponent::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
+	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
 	
 	clsComp->GetClassDVector()->PushDVector(rt, component->GetPosition());
 }
@@ -172,7 +172,7 @@ deClassComponent::nfGetOrientation::nfGetOrientation(const sInitData &init) : ds
 }
 void deClassComponent::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
+	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
 	
 	clsComp->GetClassQuaternion()->PushQuaternion(rt, component->GetOrientation());
 }
@@ -183,7 +183,7 @@ deClassComponent::nfGetScaling::nfGetScaling(const sInitData &init) : dsFunction
 }
 void deClassComponent::nfGetScaling::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
+	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
 	clsComp->GetScriptModule()->PushVector(rt, component->GetScaling());
 }
 
@@ -277,7 +277,7 @@ deClassComponent::nfSetModel::nfSetModel(const sInitData &init) : dsFunction(ini
 }
 void deClassComponent::nfSetModel::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
+	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
 	
 	component->SetModel(clsComp->GetClassModel()->GetModel(rt->GetValue(0)->GetRealObject()));
 }
@@ -301,7 +301,7 @@ deClassComponent::nfSetSkin::nfSetSkin(const sInitData &init) : dsFunction(init.
 }
 void deClassComponent::nfSetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
+	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
 	
 	component->SetSkin(clsComp->GetClassSkin()->GetSkin(rt->GetValue(0)->GetRealObject()));
 }
@@ -313,7 +313,7 @@ deClassComponent::nfSetRig::nfSetRig(const sInitData &init) : dsFunction(init.cl
 }
 void deClassComponent::nfSetRig::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
+	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
 	
 	component->SetRig(clsComp->GetClassRig()->GetRig(rt->GetValue(0)->GetRealObject()));
 }
@@ -326,7 +326,7 @@ deClassComponent::nfSetModelAndSkin::nfSetModelAndSkin(const sInitData &init) : 
 }
 void deClassComponent::nfSetModelAndSkin::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
+	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
 	
 	deModel * const model = clsComp->GetClassModel()->GetModel(rt->GetValue(0)->GetRealObject());
 	deSkin * const skin = clsComp->GetClassSkin()->GetSkin(rt->GetValue(1)->GetRealObject());
@@ -340,7 +340,7 @@ deClassComponent::nfSetPosition::nfSetPosition(const sInitData &init) : dsFuncti
 }
 void deClassComponent::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
+	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	if(!obj) DSTHROW(dueNullPointer);
@@ -355,7 +355,7 @@ deClassComponent::nfSetOrientation::nfSetOrientation(const sInitData &init) : ds
 }
 void deClassComponent::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
+	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	if(!obj) DSTHROW(dueNullPointer);
@@ -370,7 +370,7 @@ deClassComponent::nfSetScaling::nfSetScaling(const sInitData &init) : dsFunction
 }
 void deClassComponent::nfSetScaling::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
+	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	if(!obj) DSTHROW(dueNullPointer);
 	component->SetScaling(clsComp->GetScriptModule()->GetVector(obj));
@@ -1205,13 +1205,13 @@ dsFunction(init.clsCom, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassComponent::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
+	deComponent * const component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
 	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	if(!p_IsObjOfType(obj, clsComp)){
 		rt->PushBool(false);
 	}else{
-		deComponent *otherComp = static_cast<sCompNatDat*>(p_GetNativeData(obj))->component;
+		deComponent * const otherComp = static_cast<sCompNatDat*>(p_GetNativeData(obj))->component;
 		rt->PushBool(component == otherComp);
 	}
 }
@@ -1482,6 +1482,5 @@ void deClassComponent::PushComponent(dsRunTime *rt, deComponent *component){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sCompNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->component = component;
-	component->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCompNatDat)->component = component;
 }

@@ -504,6 +504,5 @@ void deClassMicrophone::PushMicrophone(dsRunTime *rt, deMicrophone *microphone){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sMicNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->microphone = microphone;
-	microphone->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sMicNatDat)->microphone = microphone;
 }

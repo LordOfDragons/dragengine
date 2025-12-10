@@ -1324,6 +1324,5 @@ void deClassHeightTerrain::PushHeightTerrain(dsRunTime *rt, deHeightTerrain *hte
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sHTNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->hterrain = hterrain;
-	hterrain->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sHTNatDat)->hterrain = hterrain;
 }

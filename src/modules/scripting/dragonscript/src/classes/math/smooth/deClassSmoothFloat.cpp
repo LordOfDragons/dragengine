@@ -75,7 +75,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSmoothFloat::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSmFltNatDat * const nd = new (p_GetNativeData(myself)) sSmFltNatDat;
-	deClassSmoothFloat &clsSmoothFloat = *(static_cast<deClassSmoothFloat*>(GetOwnerClass()));
+	const deClassSmoothFloat &clsSmoothFloat = *(static_cast<deClassSmoothFloat*>(GetOwnerClass()));
 	
 	const decSmoothFloat &copy = clsSmoothFloat.GetSmoothFloat(rt->GetValue(0)->GetRealObject());
 	nd->smoothFloat = new decSmoothFloat(copy);

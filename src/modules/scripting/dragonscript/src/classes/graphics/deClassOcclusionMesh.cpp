@@ -81,7 +81,7 @@ deClassOcclusionMesh::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) : 
 	p_AddParameter(init.clsRN); // listener
 }
 void deClassOcclusionMesh::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMesh &clsOccM = *(static_cast<deClassOcclusionMesh*>(GetOwnerClass()));
+	const deClassOcclusionMesh &clsOccM = *(static_cast<deClassOcclusionMesh*>(GetOwnerClass()));
 	
 	const char *filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
@@ -160,7 +160,7 @@ dsFunction(init.clsOccM, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DS
 	p_AddParameter(init.clsOccM); // occlusionMesh2
 }
 void deClassOcclusionMesh::nfEquals2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMesh &clsOccM = *(static_cast<deClassOcclusionMesh*>(GetOwnerClass()));
+	const deClassOcclusionMesh &clsOccM = *(static_cast<deClassOcclusionMesh*>(GetOwnerClass()));
 	
 	const deOcclusionMesh * const occlusionMesh1 = clsOccM.GetOcclusionMesh(rt->GetValue(0)->GetRealObject());
 	const deOcclusionMesh * const occlusionMesh2 = clsOccM.GetOcclusionMesh(rt->GetValue(1)->GetRealObject());
@@ -244,6 +244,5 @@ void deClassOcclusionMesh::PushOcclusionMesh(dsRunTime *rt, deOcclusionMesh *occ
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sOccMNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->occlusionMesh = occlusionMesh;
-	occlusionMesh->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sOccMNatDat)->occlusionMesh = occlusionMesh;
 }

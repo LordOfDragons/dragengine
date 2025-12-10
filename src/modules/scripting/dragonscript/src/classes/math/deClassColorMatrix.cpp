@@ -70,7 +70,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassColorMatrix::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
 	decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassColorMatrix *clsClrMatrix = static_cast<deClassColorMatrix*>(GetOwnerClass());
+	deClassColorMatrix * const clsClrMatrix = static_cast<deClassColorMatrix*>(GetOwnerClass());
 	
 	matrix = clsClrMatrix->GetColorMatrix(rt->GetValue(0)->GetRealObject());
 }

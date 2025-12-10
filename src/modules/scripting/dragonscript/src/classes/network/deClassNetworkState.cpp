@@ -957,6 +957,5 @@ void deClassNetworkState::PushNetworkState(dsRunTime *rt, deNetworkState *state)
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sNSNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->state = state;
-	state->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sNSNatDat)->state = state;
 }

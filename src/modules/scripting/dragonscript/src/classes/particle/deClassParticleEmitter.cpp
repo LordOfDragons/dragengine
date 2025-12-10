@@ -1043,6 +1043,5 @@ void deClassParticleEmitter::PushParticleEmitter(dsRunTime *rt, deParticleEmitte
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sPENatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->emitter = emitter;
-	emitter->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sPENatDat)->emitter = emitter;
 }

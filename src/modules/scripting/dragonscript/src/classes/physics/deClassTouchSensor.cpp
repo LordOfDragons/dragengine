@@ -854,6 +854,5 @@ void deClassTouchSensor::PushTouchSensor(dsRunTime *rt, deTouchSensor *touchSens
 	
 	// create new value
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sTSNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->touchSensor = touchSensor;
-	touchSensor->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sTSNatDat)->touchSensor = touchSensor;
 }

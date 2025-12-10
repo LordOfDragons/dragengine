@@ -514,6 +514,5 @@ void deClassFileReader::PushFileReader(dsRunTime *rt, decBaseFileReader *fileRea
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sFReadNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->fileReader = fileReader;
-	fileReader->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sFReadNatDat)->fileReader = fileReader;
 }

@@ -371,7 +371,7 @@ dsFunction(init.clsEmp, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DST
 	p_AddParameter(init.clsEmp); // envMapProbe2
 }
 void deClassEnvMapProbe::nfEquals2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassEnvMapProbe &clsEmp = *(static_cast<deClassEnvMapProbe*>(GetOwnerClass()));
+	const deClassEnvMapProbe &clsEmp = *(static_cast<deClassEnvMapProbe*>(GetOwnerClass()));
 	
 	const deEnvMapProbe * const envMapProbe1 = clsEmp.GetEnvMapProbe(rt->GetValue(0)->GetRealObject());
 	const deEnvMapProbe * const envMapProbe2 = clsEmp.GetEnvMapProbe(rt->GetValue(1)->GetRealObject());
@@ -484,6 +484,5 @@ void deClassEnvMapProbe::PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe *envMapPro
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sEmpNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->envMapProbe = envMapProbe;
-	envMapProbe->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sEmpNatDat)->envMapProbe = envMapProbe;
 }

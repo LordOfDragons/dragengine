@@ -303,6 +303,5 @@ void deClassImage::PushImage(dsRunTime *rt, deImage *image){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sImgNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->image = image;
-	image->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sImgNatDat)->image = image;
 }

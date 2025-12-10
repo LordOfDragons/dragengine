@@ -110,7 +110,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassFont::nfNewSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	sFntNatDat * const nd = new (p_GetNativeData(myself)) sFntNatDat;
-	deClassFont &clsFont = *(static_cast<deClassFont*>(GetOwnerClass()));
+	const deClassFont &clsFont = *(static_cast<deClassFont*>(GetOwnerClass()));
 	nd->font = nullptr;
 	nd->fontSize = nullptr;
 	nd.size = 0;

@@ -589,7 +589,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassCachedVegetation::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sCVegNatDat * const nd = new (p_GetNativeData(myself)) sCVegNatDat;
 	
-	deClassCachedVegetation *clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
+	deClassCachedVegetation * const clsCVeg = static_cast<deClassCachedVegetation*>(GetOwnerClass());
 	
 	deEngine *engine = clsCVeg->GetDS()->GetGameEngine();
 	float sectorDim = rt->GetValue(0)->GetFloat();

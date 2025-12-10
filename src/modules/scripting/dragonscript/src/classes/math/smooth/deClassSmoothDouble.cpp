@@ -75,7 +75,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSmoothDouble::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSmDblNatDat * const nd = new (p_GetNativeData(myself)) sSmDblNatDat;
-	deClassSmoothDouble &clsSmoothDouble = *(static_cast<deClassSmoothDouble*>(GetOwnerClass()));
+	const deClassSmoothDouble &clsSmoothDouble = *(static_cast<deClassSmoothDouble*>(GetOwnerClass()));
 	
 	const decSmoothDouble &copy = clsSmoothDouble.GetSmoothDouble(rt->GetValue(0)->GetRealObject());
 	nd->smoothDouble = new decSmoothDouble(copy);

@@ -602,7 +602,7 @@ void deClassARBoneTransformator::PushRule(dsRunTime *rt, deAnimator *animator, d
 		return;
 	}
 	
-	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
+	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
 	sARBoneTransNatDat &nd = *static_cast<sARBoneTransNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.animator = NULL;

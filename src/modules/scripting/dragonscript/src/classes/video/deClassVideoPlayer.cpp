@@ -306,7 +306,7 @@ dsFunction(init.clsVP, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.
 	p_AddParameter(init.clsObj); // object
 }
 void deClassVideoPlayer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deVideoPlayer *videoPlayer = static_cast<sVPNatDat*>(p_GetNativeData(myself))->videoPlayer;
+	deVideoPlayer * const videoPlayer = static_cast<sVPNatDat*>(p_GetNativeData(myself))->videoPlayer;
 	deClassVideoPlayer *clsVP = static_cast<deClassVideoPlayer*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	
@@ -314,7 +314,7 @@ void deClassVideoPlayer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		deVideoPlayer *otherVideoPlayer = static_cast<sVPNatDat*>(p_GetNativeData(obj))->videoPlayer;
+		deVideoPlayer * const otherVideoPlayer = static_cast<sVPNatDat*>(p_GetNativeData(obj))->videoPlayer;
 		
 		rt->PushBool(videoPlayer == otherVideoPlayer);
 	}
@@ -415,6 +415,5 @@ void deClassVideoPlayer::PushVideoPlayer(dsRunTime *rt, deVideoPlayer *videoPlay
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sVPNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->videoPlayer = videoPlayer;
-	videoPlayer->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sVPNatDat)->videoPlayer = videoPlayer;
 }

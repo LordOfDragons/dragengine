@@ -277,7 +277,7 @@ void deClassCanvasView::PushCanvas(dsRunTime *rt, deCanvasView *canvas){
 		return;
 	}
 	
-	deClassCanvas * const baseClass = (deClassCanvas*)GetBaseClass();
+	deClassCanvas * const baseClass = static_cast<deClassCanvas*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
 	sCViewNatDat &nd = *static_cast<sCViewNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.canvas = nullptr;

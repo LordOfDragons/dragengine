@@ -84,7 +84,7 @@ deClassModel::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsRN); // listener
 }
 void deClassModel::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
-	deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
@@ -184,7 +184,7 @@ dsFunction(init.clsMdl, "getMinimumExtend", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NA
 }
 void deClassModel::nfGetMinimumExtend::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deModel &model = *static_cast<sMdlNatDat*>(p_GetNativeData(myself))->model;
-	deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
 	const deModelLOD &lod = *model.GetLODAt(0);
 	
 	const int count = lod.GetVertexCount();
@@ -210,7 +210,7 @@ dsFunction(init.clsMdl, "getMaximumExtend", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NA
 }
 void deClassModel::nfGetMaximumExtend::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deModel &model = *static_cast<sMdlNatDat*>(p_GetNativeData(myself))->model;
-	deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = *(static_cast<deClassModel*>(GetOwnerClass()))->GetDS();
 	const deModelLOD &lod = *model.GetLODAt(0);
 	
 	const int count = lod.GetVertexCount();
@@ -346,6 +346,5 @@ void deClassModel::PushModel(dsRunTime *rt, deModel *model){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sMdlNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->model = model;
-	model->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sMdlNatDat)->model = model;
 }

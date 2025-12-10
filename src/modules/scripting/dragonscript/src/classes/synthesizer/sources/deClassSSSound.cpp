@@ -361,7 +361,7 @@ void deClassSSSound::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSyn
 		return;
 	}
 	
-	deClassSynthesizerSource * const baseClass = (deClassSynthesizerSource*)GetBaseClass();
+	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
 	sSSSoundNatDat &nd = *static_cast<sSSSoundNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.synthesizer = NULL;

@@ -88,7 +88,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsResourceListener); // listener
 }
 void deClassSkin::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
-	deScriptingDragonScript &ds = (static_cast<deClassSkin*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSkin*>(GetOwnerClass()))->GetDS();
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
@@ -446,6 +446,5 @@ void deClassSkin::PushSkin(dsRunTime *rt, deSkin *skin){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sSkinNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->skin = skin;
-	skin->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkinNatDat)->skin = skin;
 }

@@ -504,6 +504,5 @@ void deClassCollisionInfo::PushInfo(dsRunTime *rt, deCollisionInfo *info){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sCINatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->info = info;
-	info->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCINatDat)->info = info;
 }

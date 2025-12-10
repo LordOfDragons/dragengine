@@ -272,6 +272,5 @@ void deClassServer::PushServer(dsRunTime *rt, deServer *server){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sSvrNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->server = server;
-	server->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSvrNatDat)->server = server;
 }

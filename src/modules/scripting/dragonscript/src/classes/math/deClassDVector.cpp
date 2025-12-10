@@ -88,7 +88,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassDVector::nfNew3::RunFunction(dsRunTime *rt, dsValue *myself){
 	decDVector &vector = static_cast<sDVecNatDat*>(p_GetNativeData(myself))->vector;
-	deClassDVector *clsDVector = static_cast<deClassDVector*>(GetOwnerClass());
+	deClassDVector * const clsDVector = static_cast<deClassDVector*>(GetOwnerClass());
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -612,7 +612,7 @@ deClassDVector::nfOpLess::nfOpLess(const sInitData &init) : dsFunction(init.clsD
 }
 void deClassDVector::nfOpLess::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDVector &vector = static_cast<sDVecNatDat*>(p_GetNativeData(myself))->vector;
-	deClassDVector *clsDVector = static_cast<deClassDVector*>(GetOwnerClass());
+	deClassDVector * const clsDVector = static_cast<deClassDVector*>(GetOwnerClass());
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -627,7 +627,7 @@ deClassDVector::nfOpLessEqual::nfOpLessEqual(const sInitData &init) : dsFunction
 }
 void deClassDVector::nfOpLessEqual::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDVector &vector = static_cast<sDVecNatDat*>(p_GetNativeData(myself))->vector;
-	deClassDVector *clsDVector = static_cast<deClassDVector*>(GetOwnerClass());
+	deClassDVector * const clsDVector = static_cast<deClassDVector*>(GetOwnerClass());
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -642,7 +642,7 @@ deClassDVector::nfOpGreater::nfOpGreater(const sInitData &init) : dsFunction(ini
 }
 void deClassDVector::nfOpGreater::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDVector &vector = static_cast<sDVecNatDat*>(p_GetNativeData(myself))->vector;
-	deClassDVector *clsDVector = static_cast<deClassDVector*>(GetOwnerClass());
+	deClassDVector * const clsDVector = static_cast<deClassDVector*>(GetOwnerClass());
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -657,7 +657,7 @@ deClassDVector::nfOpGreaterEqual::nfOpGreaterEqual(const sInitData &init) : dsFu
 }
 void deClassDVector::nfOpGreaterEqual::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decDVector &vector = static_cast<sDVecNatDat*>(p_GetNativeData(myself))->vector;
-	deClassDVector *clsDVector = static_cast<deClassDVector*>(GetOwnerClass());
+	deClassDVector * const clsDVector = static_cast<deClassDVector*>(GetOwnerClass());
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);

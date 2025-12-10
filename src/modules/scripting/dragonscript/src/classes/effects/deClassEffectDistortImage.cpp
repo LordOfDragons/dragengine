@@ -220,7 +220,7 @@ void deClassEffectDistortImage::PushEffect(dsRunTime *rt, deEffectDistortImage *
 		return;
 	}
 	
-	deClassEffect * const baseClass = (deClassEffect*)GetBaseClass();
+	deClassEffect * const baseClass = static_cast<deClassEffect*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
 	sEffDistImgMatrixNatDat &nd = *static_cast<sEffDistImgMatrixNatDat*>(p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));

@@ -216,7 +216,7 @@ void deClassEffectColorMatrix::PushEffect(dsRunTime *rt, deEffectColorMatrix *ef
 		return;
 	}
 	
-	deClassEffect * const baseClass = (deClassEffect*)GetBaseClass();
+	deClassEffect * const baseClass = static_cast<deClassEffect*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
 	sEffClrMatMatrixNatDat &nd = *static_cast<sEffClrMatMatrixNatDat*>(p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));

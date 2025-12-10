@@ -89,7 +89,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDevice){
 }
 void deClassInputDeviceAxis::nfGetInputDevice::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDAxisNatDat &nd = *static_cast<const sIDAxisNatDat*>(p_GetNativeData(myself));
-	deScriptingDragonScript &ds = (static_cast<deClassInputDeviceAxis*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassInputDeviceAxis*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassInputDevice()->PushInputDevice(rt, nd.device);
 }
@@ -164,7 +164,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 void deClassInputDeviceAxis::nfGetDisplayImage::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDAxisNatDat &nd = *static_cast<const sIDAxisNatDat*>(p_GetNativeData(myself));
 	const deInputDeviceAxis &axis = nd.device->GetDevice()->GetAxisAt(nd.axisIndex);
-	deScriptingDragonScript &ds = (static_cast<deClassInputDeviceAxis*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassInputDeviceAxis*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassImage()->PushImage(rt, axis.GetDisplayImage());
 }
@@ -189,7 +189,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 void deClassInputDeviceAxis::nfGetDisplayIconAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDAxisNatDat &nd = *static_cast<const sIDAxisNatDat*>(p_GetNativeData(myself));
 	const deInputDeviceAxis &axis = nd.device->GetDevice()->GetAxisAt(nd.axisIndex);
-	deScriptingDragonScript &ds = (static_cast<deClassInputDeviceAxis*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassInputDeviceAxis*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassImage()->PushImage(rt, axis.GetDisplayIconAt(rt->GetValue(0)->GetInt()));
 }
@@ -203,7 +203,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 void deClassInputDeviceAxis::nfGetLargestDisplayIconX::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDAxisNatDat &nd = *static_cast<const sIDAxisNatDat*>(p_GetNativeData(myself));
 	const deInputDeviceAxis &axis = nd.device->GetDevice()->GetAxisAt(nd.axisIndex);
-	deScriptingDragonScript &ds = (static_cast<deClassInputDeviceAxis*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassInputDeviceAxis*>(GetOwnerClass()))->GetDS();
 	const int count = axis.GetDisplayIconCount();
 	const int maxWidth = rt->GetValue(0)->GetInt();
 	deImage *bestIcon = nullptr;
@@ -230,7 +230,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 void deClassInputDeviceAxis::nfGetLargestDisplayIconY::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sIDAxisNatDat &nd = *static_cast<const sIDAxisNatDat*>(p_GetNativeData(myself));
 	const deInputDeviceAxis &axis = nd.device->GetDevice()->GetAxisAt(nd.axisIndex);
-	deScriptingDragonScript &ds = (static_cast<deClassInputDeviceAxis*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassInputDeviceAxis*>(GetOwnerClass()))->GetDS();
 	const int count = axis.GetDisplayIconCount();
 	const int maxHeight = rt->GetValue(0)->GetInt();
 	deImage *bestIcon = nullptr;

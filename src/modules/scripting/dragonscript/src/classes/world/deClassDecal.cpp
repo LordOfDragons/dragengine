@@ -451,6 +451,5 @@ void deClassDecal::PushDecal(dsRunTime *rt, deDecal *decal){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sDecalNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->decal = decal;
-	decal->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sDecalNatDat)->decal = decal;
 }

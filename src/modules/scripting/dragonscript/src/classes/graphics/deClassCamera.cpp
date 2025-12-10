@@ -922,6 +922,5 @@ void deClassCamera::PushCamera(dsRunTime *rt, deCamera *camera){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sCamNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->camera = camera;
-	camera->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCamNatDat)->camera = camera;
 }

@@ -268,7 +268,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsXmlElement){
 }
 void deClassEasyXML::nfGetRootElement::RunFunction(dsRunTime *rt, dsValue *myself){
 	const dedsXmlDocument &document = *(static_cast<sXMLNatDat*>(p_GetNativeData(myself))->document);
-	deScriptingDragonScript &ds = ((deClassEasyXML*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = ((deClassEasyXML*)GetOwnerClass())->GetDS();
 	
 	ds.GetClassEasyXMLElement()->PushElement(rt, document.GetRoot());
 }
@@ -426,6 +426,5 @@ void deClassEasyXML::PushDocument(dsRunTime *rt, dedsXmlDocument *document){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sXMLNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->document = document;
-	document->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sXMLNatDat)->document = document;
 }

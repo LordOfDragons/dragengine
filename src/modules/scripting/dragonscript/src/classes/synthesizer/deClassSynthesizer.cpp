@@ -435,7 +435,7 @@ dsFunction(init.clsSyn, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DST
 	p_AddParameter(init.clsSyn); // synthesizer2
 }
 void deClassSynthesizer::nfEquals2::RunFunction(dsRunTime *rt, dsValue*){
-	deClassSynthesizer &clsSyn = *(static_cast<deClassSynthesizer*>(GetOwnerClass()));
+	const deClassSynthesizer &clsSyn = *(static_cast<deClassSynthesizer*>(GetOwnerClass()));
 	deSynthesizer * const synthesizer1 = clsSyn.GetSynthesizer(rt->GetValue(0)->GetRealObject());
 	deSynthesizer * const synthesizer2 = clsSyn.GetSynthesizer(rt->GetValue(1)->GetRealObject());
 	
@@ -544,6 +544,5 @@ void deClassSynthesizer::PushSynthesizer(dsRunTime *rt, deSynthesizer *synthesiz
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sSynNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->synthesizer = synthesizer;
-	synthesizer->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSynNatDat)->synthesizer = synthesizer;
 }

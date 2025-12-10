@@ -658,6 +658,5 @@ void deClassDebugDrawer::PushDebugDrawer(dsRunTime *rt, deDebugDrawer *debugDraw
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sDDNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->ddrawer = debugDrawer;
-	debugDrawer->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sDDNatDat)->ddrawer = debugDrawer;
 }

@@ -77,7 +77,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCurveBezier3D::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	sCBezier3DNatDat * const nd = new (p_GetNativeData(myself)) sCBezier3DNatDat;
-	deClassCurveBezier3D &clsCBezier3D = *((deClassCurveBezier3D*)GetOwnerClass());
+	const deClassCurveBezier3D &clsCBezier3D = *((deClassCurveBezier3D*)GetOwnerClass());
 	
 	const decCurveBezier3D &copy = clsCBezier3D.GetCurve(rt->GetValue(0)->GetRealObject());
 	
@@ -321,7 +321,7 @@ deClassCurveBezier3D::nfEvaluateAt::nfEvaluateAt(const sInitData &init) : dsFunc
 }
 void deClassCurveBezier3D::nfEvaluateAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decCurveBezier3DEvaluator &evaluator = *static_cast<sCBezier3DNatDat*>(p_GetNativeData(myself))->evaluator;
-	deScriptingDragonScript &ds = ((deClassCurveBezier3D*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = ((deClassCurveBezier3D*)GetOwnerClass())->GetDS();
 	
 	const int segment = rt->GetValue(0)->GetInt();
 	const float blend = rt->GetValue(1)->GetFloat();
@@ -336,7 +336,7 @@ deClassCurveBezier3D::nfEvaluateAt2::nfEvaluateAt2(const sInitData &init) : dsFu
 }
 void deClassCurveBezier3D::nfEvaluateAt2::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decCurveBezier3DEvaluator &evaluator = *static_cast<sCBezier3DNatDat*>(p_GetNativeData(myself))->evaluator;
-	deScriptingDragonScript &ds = ((deClassCurveBezier3D*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = ((deClassCurveBezier3D*)GetOwnerClass())->GetDS();
 	
 	const float curveValue = rt->GetValue(0)->GetFloat();
 	float segment;

@@ -364,6 +364,5 @@ void deClassConnection::PushConnection(dsRunTime *rt, deConnection *connection){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sConNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->connection = connection;
-	connection->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sConNatDat)->connection = connection;
 }

@@ -84,7 +84,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsResNot); // listener
 }
 void deClassSound::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
-	deScriptingDragonScript &ds = (static_cast<deClassSound*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSound*>(GetOwnerClass()))->GetDS();
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
@@ -292,6 +292,5 @@ void deClassSound::PushSound(dsRunTime *rt, deSound *sound){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sSndNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->sound = sound;
-	sound->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSndNatDat)->sound = sound;
 }

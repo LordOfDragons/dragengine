@@ -92,7 +92,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSky){
 }
 void deClassSkyBody::nfGetSky::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyBodyNatDat &nd = *static_cast<const sSkyBodyNatDat*>(p_GetNativeData(myself));
-	deScriptingDragonScript &ds = (static_cast<deClassSkyBody*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSkyBody*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSky()->PushSky(rt, nd.sky);
 }
@@ -129,7 +129,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
 void deClassSkyBody::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyBodyNatDat &nd = *static_cast<const sSkyBodyNatDat*>(p_GetNativeData(myself));
 	const deSkyLayerBody &body = nd.sky->GetLayerAt(nd.layer).GetBodyAt(nd.index);
-	deScriptingDragonScript &ds = (static_cast<deClassSkyBody*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSkyBody*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassQuaternion()->PushQuaternion(rt, body.GetOrientation());
 }
@@ -157,7 +157,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVector2){
 void deClassSkyBody::nfGetSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyBodyNatDat &nd = *static_cast<const sSkyBodyNatDat*>(p_GetNativeData(myself));
 	const deSkyLayerBody &body = nd.sky->GetLayerAt(nd.layer).GetBodyAt(nd.index);
-	deScriptingDragonScript &ds = (static_cast<deClassSkyBody*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSkyBody*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassVector2()->PushVector2(rt, body.GetSize());
 }
@@ -185,7 +185,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
 void deClassSkyBody::nfGetColor::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyBodyNatDat &nd = *static_cast<const sSkyBodyNatDat*>(p_GetNativeData(myself));
 	const deSkyLayerBody &body = nd.sky->GetLayerAt(nd.layer).GetBodyAt(nd.index);
-	deScriptingDragonScript &ds = (static_cast<deClassSkyBody*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSkyBody*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassColor()->PushColor(rt, body.GetColor());
 }
@@ -212,7 +212,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSkin){
 void deClassSkyBody::nfGetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkyBodyNatDat &nd = *static_cast<const sSkyBodyNatDat*>(p_GetNativeData(myself));
 	const deSkyLayerBody &body = nd.sky->GetLayerAt(nd.layer).GetBodyAt(nd.index);
-	deScriptingDragonScript &ds = (static_cast<deClassSkyBody*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSkyBody*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSkin()->PushSkin(rt, body.GetSkin());
 }

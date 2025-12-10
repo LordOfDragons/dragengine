@@ -517,6 +517,5 @@ void deClassBillboard::PushBillboard(dsRunTime *rt, deBillboard *billboard){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sBillboardNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->billboard = billboard;
-	billboard->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sBillboardNatDat)->billboard = billboard;
 }

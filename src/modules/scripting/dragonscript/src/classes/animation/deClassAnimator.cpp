@@ -72,7 +72,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassAnimator::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sArNatDat * const nd = new (p_GetNativeData(myself)) sArNatDat;
 	
-	deClassAnimator *clsAr = static_cast<deClassAnimator*>(GetOwnerClass());
+	deClassAnimator * const clsAr = static_cast<deClassAnimator*>(GetOwnerClass());
 	deAnimatorManager *aniMgr = clsAr->GetDS()->GetGameEngine()->GetAnimatorManager();
 	nd->animator = aniMgr->CreateAnimator();
 }

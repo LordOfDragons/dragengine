@@ -342,7 +342,7 @@ void deClassSEStretch::PushEffect(dsRunTime *rt, deSynthesizerSource *source, de
 		return;
 	}
 	
-	deClassSynthesizerEffect * const baseClass = (deClassSynthesizerEffect*)GetBaseClass();
+	deClassSynthesizerEffect * const baseClass = static_cast<deClassSynthesizerEffect*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
 	sSEStretchNatDat &nd = *static_cast<sSEStretchNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.source = NULL;

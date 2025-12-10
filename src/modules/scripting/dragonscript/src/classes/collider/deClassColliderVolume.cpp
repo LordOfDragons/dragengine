@@ -241,7 +241,7 @@ void deClassColliderVolume::PushCollider(dsRunTime *rt, deColliderVolume *collid
 		return;
 	}
 	
-	deClassCollider * const baseClass = (deClassCollider*)GetBaseClass();
+	deClassCollider * const baseClass = static_cast<deClassCollider*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
 	sColVolNatDat &nd = *static_cast<sColVolNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.collider = nullptr;

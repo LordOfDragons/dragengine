@@ -570,7 +570,7 @@ deClassDynamicSkin::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassDynamicSkin::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDynamicSkin *dynamicSkin = static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin;
+	deDynamicSkin * const dynamicSkin = static_cast<sDSkinNatDat*>(p_GetNativeData(myself))->dynamicSkin;
 	deClassDynamicSkin *clsDSkin = (deClassDynamicSkin*)GetOwnerClass();
 	dsValue *obj = rt->GetValue(0);
 	
@@ -578,7 +578,7 @@ void deClassDynamicSkin::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		deDynamicSkin *otherDSkin = static_cast<sDSkinNatDat*>(p_GetNativeData(obj))->dynamicSkin;
+		deDynamicSkin * const otherDSkin = static_cast<sDSkinNatDat*>(p_GetNativeData(obj))->dynamicSkin;
 		
 		rt->PushBool(dynamicSkin == otherDSkin);
 	}
@@ -686,6 +686,5 @@ void deClassDynamicSkin::PushDynamicSkin(dsRunTime *rt, deDynamicSkin *dynamicSk
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sDSkinNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->dynamicSkin = dynamicSkin;
-	dynamicSkin->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sDSkinNatDat)->dynamicSkin = dynamicSkin;
 }

@@ -116,7 +116,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFileReader){
 }
 void deClassNetworkMessage::nfGetReader::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNetworkMessage * const message = static_cast<sNMNatDat*>(p_GetNativeData(myself))->message;
-	deScriptingDragonScript &ds = (static_cast<deClassNetworkMessage*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkMessage*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassFileReader()->PushFileReader(rt, deNetworkMessageReader::Ref::NewWith(message));
 }
@@ -129,7 +129,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFileWrite){
 }
 void deClassNetworkMessage::nfGetWriter::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNetworkMessage * const message = static_cast<sNMNatDat*>(p_GetNativeData(myself))->message;
-	deScriptingDragonScript &ds = (static_cast<deClassNetworkMessage*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkMessage*>(GetOwnerClass()))->GetDS();
 	
 	const bool append = rt->GetValue(0)->GetBool();
 	ds.GetClassFileWriter()->PushFileWriter(rt, deNetworkMessageWriter::Ref::NewWith(message, append));
@@ -244,6 +244,5 @@ void deClassNetworkMessage::PushNetworkMessage(dsRunTime *rt, deNetworkMessage *
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sNMNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->message = message;
-	message->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sNMNatDat)->message = message;
 }

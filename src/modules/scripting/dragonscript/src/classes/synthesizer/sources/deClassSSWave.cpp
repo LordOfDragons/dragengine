@@ -337,7 +337,7 @@ void deClassSSWave::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynt
 		return;
 	}
 	
-	deClassSynthesizerSource * const baseClass = (deClassSynthesizerSource*)GetBaseClass();
+	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
 	sSSWaveNatDat &nd = *static_cast<sSSWaveNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.synthesizer = NULL;

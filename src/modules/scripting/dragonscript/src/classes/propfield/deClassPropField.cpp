@@ -370,6 +370,5 @@ void deClassPropField::PushPropField(dsRunTime *rt, dePropField *propfield){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sPFNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->propfield = propfield;
-	propfield->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sPFNatDat)->propfield = propfield;
 }

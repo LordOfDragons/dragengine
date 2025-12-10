@@ -85,7 +85,7 @@ deClassRig::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsRN); // listener
 }
 void deClassRig::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue*){
-	deClassRig &clsRig = *(static_cast<deClassRig*>(GetOwnerClass()));
+	const deClassRig &clsRig = *(static_cast<deClassRig*>(GetOwnerClass()));
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
@@ -679,6 +679,5 @@ void deClassRig::PushRig(dsRunTime *rt, deRig *rig){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sRigNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->rig = rig;
-	rig->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sRigNatDat)->rig = rig;
 }

@@ -986,6 +986,5 @@ void deClassLight::PushLight(dsRunTime *rt, deLight *light){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sLigNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->light = light;
-	light->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sLigNatDat)->light = light;
 }

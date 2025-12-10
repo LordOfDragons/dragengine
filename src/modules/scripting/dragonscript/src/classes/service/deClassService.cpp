@@ -146,7 +146,7 @@ void deClassService::nfGetListener::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	deScriptingDragonScript &ds = (static_cast<deClassService*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassService*>(GetOwnerClass()))->GetDS();
 	dedsService * const peer = (dedsService*)nd.service->GetPeerScripting();
 	
 	if(peer){

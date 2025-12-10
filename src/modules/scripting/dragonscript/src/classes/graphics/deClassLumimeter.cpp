@@ -364,6 +364,5 @@ void deClassLumimeter::PushLumimeter(dsRunTime *rt, deLumimeter *lumimeter){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sLumimeterNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->lumimeter = lumimeter;
-	lumimeter->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sLumimeterNatDat)->lumimeter = lumimeter;
 }

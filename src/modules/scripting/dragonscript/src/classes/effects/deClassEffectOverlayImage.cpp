@@ -215,7 +215,7 @@ void deClassEffectOverlayImage::PushEffect(dsRunTime *rt, deEffectOverlayImage *
 		return;
 	}
 	
-	deClassEffect * const baseClass = (deClassEffect*)GetBaseClass();
+	deClassEffect * const baseClass = static_cast<deClassEffect*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
 	sEffOverImgMatrixNatDat &nd = *static_cast<sEffOverImgMatrixNatDat*>(p_GetNativeData(
 		rt->GetValue(0)->GetRealObject()->GetBuffer()));

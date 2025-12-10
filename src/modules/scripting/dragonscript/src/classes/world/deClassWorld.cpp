@@ -2030,6 +2030,5 @@ void deClassWorld::PushWorld(dsRunTime *rt, deWorld *world){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sWorldNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->world = world;
-	world->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sWorldNatDat)->world = world;
 }

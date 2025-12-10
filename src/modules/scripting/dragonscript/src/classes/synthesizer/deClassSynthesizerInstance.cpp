@@ -413,6 +413,5 @@ void deClassSynthesizerInstance::PushSynthesizerInstance(dsRunTime *rt, deSynthe
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sSynINatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->instance = instance;
-	instance->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSynINatDat)->instance = instance;
 }

@@ -276,7 +276,7 @@ deClassUniqueID::nfOpLess::nfOpLess(const sInitData &init) : dsFunction(init.cls
 }
 void deClassUniqueID::nfOpLess::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
-	deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
+	const deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	rt->PushBool(id < clsUID.GetUniqueID(rt->GetValue(0)->GetRealObject()));
 }
 
@@ -287,7 +287,7 @@ deClassUniqueID::nfOpLessEqual::nfOpLessEqual(const sInitData &init) : dsFunctio
 }
 void deClassUniqueID::nfOpLessEqual::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
-	deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
+	const deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	rt->PushBool(id <= clsUID.GetUniqueID(rt->GetValue(0)->GetRealObject()));
 }
 
@@ -298,7 +298,7 @@ deClassUniqueID::nfOpGreater::nfOpGreater(const sInitData &init) : dsFunction(in
 }
 void deClassUniqueID::nfOpGreater::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
-	deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
+	const deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	rt->PushBool(id > clsUID.GetUniqueID(rt->GetValue(0)->GetRealObject()));
 }
 
@@ -309,7 +309,7 @@ deClassUniqueID::nfOpGreaterEqual::nfOpGreaterEqual(const sInitData &init) : dsF
 }
 void deClassUniqueID::nfOpGreaterEqual::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
-	deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
+	const deClassUniqueID &clsUID = *(static_cast<deClassUniqueID*>(GetOwnerClass()));
 	rt->PushBool(id >= clsUID.GetUniqueID(rt->GetValue(0)->GetRealObject()));
 }
 

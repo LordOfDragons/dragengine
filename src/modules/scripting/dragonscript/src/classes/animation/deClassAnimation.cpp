@@ -57,7 +57,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassAnimation::nfLoad::RunFunction(dsRunTime *RT, dsValue *This){
 	sAnimNatDat * const nd = new (p_GetNativeData(This)) sAnimNatDat;
 	
-	deClassAnimation *clsAnim = static_cast<deClassAnimation*>(GetOwnerClass());
+	deClassAnimation * const clsAnim = static_cast<deClassAnimation*>(GetOwnerClass());
 	deAnimationManager *animMgr = clsAnim->GetGameEngine().GetAnimationManager();
 	
 	nd->anim = animMgr->LoadAnimation(RT->GetValue(0)->GetString(), "/");

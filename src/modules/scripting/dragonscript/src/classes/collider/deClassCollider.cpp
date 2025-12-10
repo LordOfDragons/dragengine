@@ -1174,7 +1174,7 @@ void deClassCollider::nfHasIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
 	
 	deCollider * const collider = clsCol.GetCollider(rt->GetValue(0)->GetRealObject());
 	rt->PushBool(nd.collider->HasIgnoreCollider(collider));
@@ -1191,7 +1191,7 @@ void deClassCollider::nfAddIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
 	deCollider * const collider = clsCol.GetCollider(rt->GetValue(0)->GetRealObject());
 	nd.collider->AddIgnoreCollider(collider);
 }
@@ -1207,7 +1207,7 @@ void deClassCollider::nfRemoveIgnoreCollider::RunFunction(dsRunTime *rt, dsValue
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
 	deCollider * const collider = clsCol.GetCollider(rt->GetValue(0)->GetRealObject());
 	nd.collider->RemoveIgnoreCollider(collider);
 }
@@ -1296,7 +1296,7 @@ void deClassCollider::nfRemoveCollisionTest::RunFunction(dsRunTime *rt, dsValue 
 	}
 	
 	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
-	deClassColliderCollisionTest &clsCCT = *ds.GetClassColliderCollisionTest();
+	const deClassColliderCollisionTest &clsCCT = *ds.GetClassColliderCollisionTest();
 	
 	nd.collider->RemoveCollisionTest(clsCCT.GetCollisionTest(rt->GetValue(0)->GetRealObject()));
 }
@@ -1559,7 +1559,7 @@ void deClassCollider::nfPointInside::RunFunction(dsRunTime *rt, dsValue *myself)
 	}
 	
 	deClassCollider * const clsCol = (deClassCollider*)GetOwnerClass();
-	deScriptingDragonScript &ds = clsCol->GetDS();
+	const deScriptingDragonScript &ds = clsCol->GetDS();
 	
 	const decDVector &point = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	

@@ -96,7 +96,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSky){
 }
 void deClassSkyInstance::nfGetSky::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deSkyInstance &instance = static_cast<sSkyInstNatDat*>(p_GetNativeData(myself))->instance;
-	deScriptingDragonScript &ds = (static_cast<deClassSkyInstance*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSkyInstance*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSky()->PushSky(rt, instance.GetSky());
 }
@@ -141,7 +141,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsLayerMask){
 }
 void deClassSkyInstance::nfGetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deSkyInstance &instance = static_cast<sSkyInstNatDat*>(p_GetNativeData(myself))->instance;
-	deScriptingDragonScript &ds = (static_cast<deClassSkyInstance*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSkyInstance*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassLayerMask()->PushLayerMask(rt, instance.GetLayerMask());
 }
@@ -200,7 +200,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSkyCtrl){
 }
 void deClassSkyInstance::nfGetControllerAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deSkyInstance * const instance = static_cast<sSkyInstNatDat*>(p_GetNativeData(myself))->instance;
-	deScriptingDragonScript &ds = (static_cast<deClassSkyInstance*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSkyInstance*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	
 	if(index < 0){
@@ -358,6 +358,5 @@ void deClassSkyInstance::PushInstance(dsRunTime *rt, deSkyInstance *instance){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sSkyInstNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->instance = instance;
-	instance->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkyInstNatDat)->instance = instance;
 }

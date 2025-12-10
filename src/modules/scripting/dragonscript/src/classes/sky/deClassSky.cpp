@@ -100,7 +100,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
 }
 void deClassSky::nfGetBgColor::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deSky &sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
-	deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassColor()->PushColor(rt, sky.GetBgColor());
 }
@@ -150,7 +150,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSkyCtrl){
 }
 void deClassSky::nfGetControllerAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deSky * const sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
-	deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	
 	if(index < 0){
@@ -224,7 +224,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSkyLink){
 }
 void deClassSky::nfGetLinkAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deSky * const sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
-	deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
 	
 	const int index = rt->GetValue(0)->GetInt();
 	ds.GetClassSkyLink()->PushLink(rt, sky, index);
@@ -263,7 +263,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSkyLayer){
 }
 void deClassSky::nfGetLayerAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deSky * const sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
-	deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
 	
 	const int index = rt->GetValue(0)->GetInt();
 	ds.GetClassSkyLayer()->PushLayer(rt, sky, index);
@@ -404,6 +404,5 @@ void deClassSky::PushSky(dsRunTime *rt, deSky *sky){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sSkyNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->sky = sky;
-	sky->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkyNatDat)->sky = sky;
 }

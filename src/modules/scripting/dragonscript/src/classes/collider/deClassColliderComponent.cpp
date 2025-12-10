@@ -289,7 +289,7 @@ void deClassColliderComponent::PushCollider(dsRunTime *rt, deColliderComponent *
 		return;
 	}
 	
-	deClassColliderRig * const baseClass = (deClassColliderRig*)GetBaseClass();
+	deClassColliderRig * const baseClass = static_cast<deClassColliderRig*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
 	sColCompNatDat &nd = *static_cast<sColCompNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
 	nd.collider = nullptr;
