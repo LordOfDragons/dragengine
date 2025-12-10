@@ -337,9 +337,8 @@ void deClassInputDeviceComponent::PushComponent(dsRunTime *rt, dedsInputDevice *
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sIDComponentNatDat &nd = *static_cast<sIDComponentNatDat*>(p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.device = device;
+	sIDComponentNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sIDComponentNatDat;
+	nd->device = device;
 	device->AddReference();
-	nd.componentIndex = index;
+	nd->componentIndex = index;
 }

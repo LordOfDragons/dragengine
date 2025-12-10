@@ -621,12 +621,11 @@ void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleE
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sParticleEmitterCtrlNatDat &nd = *static_cast<sParticleEmitterCtrlNatDat*>(p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.emitter = emitter;
+	sParticleEmitterCtrlNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sParticleEmitterCtrlNatDat;
+	nd->emitter = emitter;
 	emitter->AddReference();
-	nd.instance = nullptr;
-	nd.index = index;
+	nd->instance = nullptr;
+	nd->index = index;
 }
 
 void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleEmitterInstance *instance, int index){
@@ -635,10 +634,9 @@ void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleE
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sParticleEmitterCtrlNatDat &nd = *static_cast<sParticleEmitterCtrlNatDat*>(p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.emitter = nullptr;
-	nd.instance = instance;
+	sParticleEmitterCtrlNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sParticleEmitterCtrlNatDat;
+	nd->emitter = nullptr;
+	nd->instance = instance;
 	instance->AddReference();
-	nd.index = index;
+	nd->index = index;
 }

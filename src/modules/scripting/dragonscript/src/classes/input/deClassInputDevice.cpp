@@ -884,8 +884,7 @@ void deClassInputDevice::PushInputDevice(dsRunTime *rt, dedsInputDevice *device)
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sInputDeviceNatDat &nd = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.device = device;
+	sInputDeviceNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sInputDeviceNatDat;
+	nd->device = device;
 	device->AddReference();
 }

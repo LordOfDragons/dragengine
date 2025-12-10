@@ -427,9 +427,8 @@ void deClassInputDeviceFeedback::PushFeedback(dsRunTime *rt, dedsInputDevice *de
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sIDFeedbackNatDat &nd = *static_cast<sIDFeedbackNatDat*>(p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.device = device;
+	sIDFeedbackNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sIDFeedbackNatDat;
+	nd->device = device;
 	device->AddReference();
-	nd.feedbackIndex = index;
+	nd->feedbackIndex = index;
 }

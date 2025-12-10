@@ -390,9 +390,8 @@ void deClassInputDeviceAxis::PushAxis(dsRunTime *rt, dedsInputDevice *device, in
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sIDAxisNatDat &nd = *static_cast<sIDAxisNatDat*>(p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.device = device;
+	sIDAxisNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sIDAxisNatDat;
+	nd->device = device;
 	device->AddReference();
-	nd.axisIndex = index;
+	nd->axisIndex = index;
 }

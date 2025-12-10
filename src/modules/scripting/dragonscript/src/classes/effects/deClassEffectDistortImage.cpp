@@ -222,14 +222,13 @@ void deClassEffectDistortImage::PushEffect(dsRunTime *rt, deEffectDistortImage *
 	
 	deClassEffect * const baseClass = static_cast<deClassEffect*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sEffDistImgMatrixNatDat &nd = *static_cast<sEffDistImgMatrixNatDat*>(p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.effect = nullptr;
+	sEffDistImgMatrixNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sEffDistImgMatrixNatDat;
+	nd->effect = nullptr;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
-		nd.effect = effect;
+		nd->effect = effect;
 		effect->AddReference();
 		
 		baseClass->AssignEffect(rt->GetValue(0)->GetRealObject(), effect);

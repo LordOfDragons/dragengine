@@ -498,12 +498,11 @@ void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizer *
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSynthesizerCtrlNatDat &nd = *static_cast<sSynthesizerCtrlNatDat*>(p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.synthesizer = synthesizer;
+	sSynthesizerCtrlNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSynthesizerCtrlNatDat;
+	nd->synthesizer = synthesizer;
 	synthesizer->AddReference();
-	nd.instance = nullptr;
-	nd.index = index;
+	nd->instance = nullptr;
+	nd->index = index;
 }
 
 void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizerInstance *instance, int index){
@@ -512,10 +511,9 @@ void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizerIn
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSynthesizerCtrlNatDat &nd = *static_cast<sSynthesizerCtrlNatDat*>(p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.synthesizer = nullptr;
-	nd.instance = instance;
+	sSynthesizerCtrlNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSynthesizerCtrlNatDat;
+	nd->synthesizer = nullptr;
+	nd->instance = instance;
 	instance->AddReference();
-	nd.index = index;
+	nd->index = index;
 }

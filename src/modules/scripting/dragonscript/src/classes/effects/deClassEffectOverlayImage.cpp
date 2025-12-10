@@ -217,14 +217,13 @@ void deClassEffectOverlayImage::PushEffect(dsRunTime *rt, deEffectOverlayImage *
 	
 	deClassEffect * const baseClass = static_cast<deClassEffect*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sEffOverImgMatrixNatDat &nd = *static_cast<sEffOverImgMatrixNatDat*>(p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.effect = nullptr;
+	sEffOverImgMatrixNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sEffOverImgMatrixNatDat;
+	nd->effect = nullptr;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
 		
-		nd.effect = effect;
+		nd->effect = effect;
 		effect->AddReference();
 		
 		baseClass->AssignEffect(rt->GetValue(0)->GetRealObject(), effect);

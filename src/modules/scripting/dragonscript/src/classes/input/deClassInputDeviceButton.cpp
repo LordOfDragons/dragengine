@@ -461,9 +461,8 @@ void deClassInputDeviceButton::PushButton(dsRunTime *rt, dedsInputDevice *device
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sIDButtonNatDat &nd = *static_cast<sIDButtonNatDat*>(p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.device = device;
+	sIDButtonNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sIDButtonNatDat;
+	nd->device = device;
 	device->AddReference();
-	nd.buttonIndex = index;
+	nd->buttonIndex = index;
 }
