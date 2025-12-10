@@ -535,7 +535,7 @@ void deClassCollider::nfSetResponseType::RunFunction(dsRunTime *rt, dsValue *mys
 	}
 	
 	nd.collider->SetResponseType((deCollider::eResponseType)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 

@@ -49,7 +49,7 @@
 
 
 struct sLocoNatDat{
-	dedsLocomotion *locomotion;
+	dedsLocomotion::Ref locomotion;
 };
 
 
@@ -62,10 +62,7 @@ deClassLocomotion::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsLoco
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLocomotion::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sLocoNatDat * const nd = new (p_GetNativeData(myself)) sLocoNatDat;
-	
-	// create locomotion
-	nd->locomotion = new dedsLocomotion;
+	(new (p_GetNativeData(myself)) sLocoNatDat)->locomotion.TakeOverWith();
 }
 
 // public func destructor()
@@ -91,7 +88,7 @@ deClassLocomotion::nfGetCanTurn::nfGetCanTurn(const sInitData &init) : dsFunctio
 }
 
 void deClassLocomotion::nfGetCanTurn::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushBool(locomotion.GetCanTurn());
 }
@@ -103,7 +100,7 @@ deClassLocomotion::nfSetCanTurn::nfSetCanTurn(const sInitData &init) : dsFunctio
 }
 
 void deClassLocomotion::nfSetCanTurn::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetCanTurn(rt->GetValue(0)->GetBool());
 }
@@ -114,7 +111,7 @@ dsFunction(init.clsLoco, "getAlwaysLimitLeftRight", DSFT_FUNCTION, DSTM_PUBLIC |
 }
 
 void deClassLocomotion::nfGetAlwaysLimitLeftRight::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushBool(locomotion.GetAlwaysLimitLeftRight());
 }
@@ -126,7 +123,7 @@ dsFunction(init.clsLoco, "setAlwaysLimitLeftRight", DSFT_FUNCTION, DSTM_PUBLIC |
 }
 
 void deClassLocomotion::nfSetAlwaysLimitLeftRight::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetAlwaysLimitLeftRight(rt->GetValue(0)->GetBool());
 }
@@ -139,7 +136,7 @@ deClassLocomotion::nfGetLimitLookUp::nfGetLimitLookUp(const sInitData &init) : d
 }
 
 void deClassLocomotion::nfGetLimitLookUp::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLimitLookUp());
 }
@@ -151,7 +148,7 @@ deClassLocomotion::nfSetLimitLookUp::nfSetLimitLookUp(const sInitData &init) : d
 }
 
 void deClassLocomotion::nfSetLimitLookUp::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetLimitLookUp(rt->GetValue(0)->GetFloat());
 }
@@ -162,7 +159,7 @@ deClassLocomotion::nfGetLimitLookDown::nfGetLimitLookDown(const sInitData &init)
 }
 
 void deClassLocomotion::nfGetLimitLookDown::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLimitLookDown());
 }
@@ -174,7 +171,7 @@ deClassLocomotion::nfSetLimitLookDown::nfSetLimitLookDown(const sInitData &init)
 }
 
 void deClassLocomotion::nfSetLimitLookDown::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetLimitLookDown(rt->GetValue(0)->GetFloat());
 }
@@ -185,7 +182,7 @@ deClassLocomotion::nfGetAdjustTimeVertical::nfGetAdjustTimeVertical(const sInitD
 }
 
 void deClassLocomotion::nfGetAdjustTimeVertical::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLookVertical().GetAdjustTime());
 }
@@ -197,7 +194,7 @@ deClassLocomotion::nfSetAdjustTimeVertical::nfSetAdjustTimeVertical(const sInitD
 }
 
 void deClassLocomotion::nfSetAdjustTimeVertical::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetLookVertical().SetAdjustTime(rt->GetValue(0)->GetFloat());
 }
@@ -208,7 +205,7 @@ deClassLocomotion::nfGetAdjustRangeVertical::nfGetAdjustRangeVertical(const sIni
 }
 
 void deClassLocomotion::nfGetAdjustRangeVertical::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLookVertical().GetAdjustRange());
 }
@@ -220,7 +217,7 @@ deClassLocomotion::nfSetAdjustRangeVertical::nfSetAdjustRangeVertical(const sIni
 }
 
 void deClassLocomotion::nfSetAdjustRangeVertical::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetLookVertical().SetAdjustRange(rt->GetValue(0)->GetFloat());
 }
@@ -231,7 +228,7 @@ deClassLocomotion::nfGetLookVerticalGoal::nfGetLookVerticalGoal(const sInitData 
 }
 
 void deClassLocomotion::nfGetLookVerticalGoal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLookVertical().GetGoal());
 }
@@ -243,7 +240,7 @@ deClassLocomotion::nfSetLookVerticalGoal::nfSetLookVerticalGoal(const sInitData 
 }
 
 void deClassLocomotion::nfSetLookVerticalGoal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetLookVerticalGoal(rt->GetValue(0)->GetFloat());
 }
@@ -254,7 +251,7 @@ deClassLocomotion::nfGetLookVertical::nfGetLookVertical(const sInitData &init) :
 }
 
 void deClassLocomotion::nfGetLookVertical::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLookVertical().GetValue());
 }
@@ -266,7 +263,7 @@ deClassLocomotion::nfSetLookVertical::nfSetLookVertical(const sInitData &init) :
 }
 
 void deClassLocomotion::nfSetLookVertical::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetLookVertical(rt->GetValue(0)->GetFloat());
 }
@@ -279,7 +276,7 @@ deClassLocomotion::nfGetLimitLookLeft::nfGetLimitLookLeft(const sInitData &init)
 }
 
 void deClassLocomotion::nfGetLimitLookLeft::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLimitLookLeft());
 }
@@ -291,7 +288,7 @@ deClassLocomotion::nfSetLimitLookLeft::nfSetLimitLookLeft(const sInitData &init)
 }
 
 void deClassLocomotion::nfSetLimitLookLeft::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetLimitLookLeft(rt->GetValue(0)->GetFloat());
 }
@@ -302,7 +299,7 @@ deClassLocomotion::nfGetLimitLookRight::nfGetLimitLookRight(const sInitData &ini
 }
 
 void deClassLocomotion::nfGetLimitLookRight::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLimitLookRight());
 }
@@ -314,7 +311,7 @@ deClassLocomotion::nfSetLimitLookRight::nfSetLimitLookRight(const sInitData &ini
 }
 
 void deClassLocomotion::nfSetLimitLookRight::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetLimitLookRight(rt->GetValue(0)->GetFloat());
 }
@@ -325,7 +322,7 @@ deClassLocomotion::nfGetAdjustTimeHorizontal::nfGetAdjustTimeHorizontal(const sI
 }
 
 void deClassLocomotion::nfGetAdjustTimeHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLookHorizontal().GetAdjustTime());
 }
@@ -337,7 +334,7 @@ deClassLocomotion::nfSetAdjustTimeHorizontal::nfSetAdjustTimeHorizontal(const sI
 }
 
 void deClassLocomotion::nfSetAdjustTimeHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetLookHorizontal().SetAdjustTime(rt->GetValue(0)->GetFloat());
 }
@@ -348,7 +345,7 @@ deClassLocomotion::nfGetAdjustRangeHorizontal::nfGetAdjustRangeHorizontal(const 
 }
 
 void deClassLocomotion::nfGetAdjustRangeHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLookHorizontal().GetAdjustRange());
 }
@@ -360,7 +357,7 @@ deClassLocomotion::nfSetAdjustRangeHorizontal::nfSetAdjustRangeHorizontal(const 
 }
 
 void deClassLocomotion::nfSetAdjustRangeHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetLookHorizontal().SetAdjustRange(rt->GetValue(0)->GetFloat());
 }
@@ -371,7 +368,7 @@ deClassLocomotion::nfGetLookHorizontalGoal::nfGetLookHorizontalGoal(const sInitD
 }
 
 void deClassLocomotion::nfGetLookHorizontalGoal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLookHorizontal().GetGoal());
 }
@@ -383,7 +380,7 @@ deClassLocomotion::nfSetLookHorizontalGoal::nfSetLookHorizontalGoal(const sInitD
 }
 
 void deClassLocomotion::nfSetLookHorizontalGoal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetLookHorizontal().SetGoal(rt->GetValue(0)->GetFloat());
 }
@@ -394,7 +391,7 @@ deClassLocomotion::nfGetLookHorizontal::nfGetLookHorizontal(const sInitData &ini
 }
 
 void deClassLocomotion::nfGetLookHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLookHorizontal().GetValue());
 }
@@ -406,7 +403,7 @@ deClassLocomotion::nfSetLookHorizontal::nfSetLookHorizontal(const sInitData &ini
 }
 
 void deClassLocomotion::nfSetLookHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetLookHorizontal().SetValue(rt->GetValue(0)->GetFloat());
 }
@@ -417,7 +414,7 @@ deClassLocomotion::nfGetTurnAdjustLookHorizontal::nfGetTurnAdjustLookHorizontal(
 }
 
 void deClassLocomotion::nfGetTurnAdjustLookHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushBool(locomotion.GetTurnAdjustLookHorizontal());
 }
@@ -429,7 +426,7 @@ deClassLocomotion::nfSetTurnAdjustLookHorizontal::nfSetTurnAdjustLookHorizontal(
 }
 
 void deClassLocomotion::nfSetTurnAdjustLookHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetTurnAdjustLookHorizontal(rt->GetValue(0)->GetBool());
 }
@@ -442,7 +439,7 @@ deClassLocomotion::nfGetAdjustTimeAnalogMovingHorizontal::nfGetAdjustTimeAnalogM
 }
 
 void deClassLocomotion::nfGetAdjustTimeAnalogMovingHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetAnalogMovingHorizontal().GetAdjustTime());
 }
@@ -454,7 +451,7 @@ deClassLocomotion::nfSetAdjustTimeAnalogMovingHorizontal::nfSetAdjustTimeAnalogM
 }
 
 void deClassLocomotion::nfSetAdjustTimeAnalogMovingHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetAnalogMovingHorizontal().SetAdjustTime(rt->GetValue(0)->GetFloat());
 }
@@ -465,7 +462,7 @@ deClassLocomotion::nfGetAdjustRangeAnalogMovingHorizontal::nfGetAdjustRangeAnalo
 }
 
 void deClassLocomotion::nfGetAdjustRangeAnalogMovingHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetAnalogMovingHorizontal().GetAdjustRange());
 }
@@ -477,7 +474,7 @@ deClassLocomotion::nfSetAdjustRangeAnalogMovingHorizontal::nfSetAdjustRangeAnalo
 }
 
 void deClassLocomotion::nfSetAdjustRangeAnalogMovingHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetAnalogMovingHorizontal().SetAdjustRange(rt->GetValue(0)->GetFloat());
 }
@@ -488,7 +485,7 @@ deClassLocomotion::nfGetAnalogMovingHorizontalGoal::nfGetAnalogMovingHorizontalG
 }
 
 void deClassLocomotion::nfGetAnalogMovingHorizontalGoal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetAnalogMovingHorizontal().GetGoal());
 }
@@ -500,7 +497,7 @@ deClassLocomotion::nfSetAnalogMovingHorizontalGoal::nfSetAnalogMovingHorizontalG
 }
 
 void deClassLocomotion::nfSetAnalogMovingHorizontalGoal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetAnalogMovingHorizontal().SetGoal(rt->GetValue(0)->GetFloat());
 }
@@ -511,7 +508,7 @@ deClassLocomotion::nfGetAnalogMovingHorizontal::nfGetAnalogMovingHorizontal(cons
 }
 
 void deClassLocomotion::nfGetAnalogMovingHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetAnalogMovingHorizontal().GetValue());
 }
@@ -523,7 +520,7 @@ deClassLocomotion::nfSetAnalogMovingHorizontal::nfSetAnalogMovingHorizontal(cons
 }
 
 void deClassLocomotion::nfSetAnalogMovingHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetAnalogMovingHorizontal().SetValue(rt->GetValue(0)->GetFloat());
 }
@@ -534,7 +531,7 @@ deClassLocomotion::nfGetAnalogMovingVertical::nfGetAnalogMovingVertical(const sI
 }
 
 void deClassLocomotion::nfGetAnalogMovingVertical::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetAnalogMovingVertical());
 }
@@ -546,7 +543,7 @@ deClassLocomotion::nfSetAnalogMovingVertical::nfSetAnalogMovingVertical(const sI
 }
 
 void deClassLocomotion::nfSetAnalogMovingVertical::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetAnalogMovingVertical(rt->GetValue(0)->GetFloat());
 }
@@ -557,7 +554,7 @@ deClassLocomotion::nfGetTurnHorizontal::nfGetTurnHorizontal(const sInitData &ini
 }
 
 void deClassLocomotion::nfGetTurnHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetTurnHorizontal());
 }
@@ -569,7 +566,7 @@ deClassLocomotion::nfSetTurnHorizontal::nfSetTurnHorizontal(const sInitData &ini
 }
 
 void deClassLocomotion::nfSetTurnHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetTurnHorizontal(rt->GetValue(0)->GetFloat());
 }
@@ -582,7 +579,7 @@ deClassLocomotion::nfGetAnalogMovingSpeed::nfGetAnalogMovingSpeed(const sInitDat
 }
 
 void deClassLocomotion::nfGetAnalogMovingSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetAnalogMovingSpeed());
 }
@@ -594,7 +591,7 @@ deClassLocomotion::nfSetAnalogMovingSpeed::nfSetAnalogMovingSpeed(const sInitDat
 }
 
 void deClassLocomotion::nfSetAnalogMovingSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetAnalogMovingSpeed(rt->GetValue(0)->GetFloat());
 }
@@ -607,7 +604,7 @@ deClassLocomotion::nfGetAdjustTimeOrientation::nfGetAdjustTimeOrientation(const 
 }
 
 void deClassLocomotion::nfGetAdjustTimeOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetAdjustTimeOrientation());
 }
@@ -619,7 +616,7 @@ deClassLocomotion::nfSetAdjustTimeOrientation::nfSetAdjustTimeOrientation(const 
 }
 
 void deClassLocomotion::nfSetAdjustTimeOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetAdjustTimeOrientation(rt->GetValue(0)->GetFloat());
 }
@@ -630,7 +627,7 @@ deClassLocomotion::nfGetOrientation::nfGetOrientation(const sInitData &init) : d
 }
 
 void deClassLocomotion::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetOrientation());
 }
@@ -642,7 +639,7 @@ deClassLocomotion::nfSetOrientation::nfSetOrientation(const sInitData &init) : d
 }
 
 void deClassLocomotion::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetOrientation(rt->GetValue(0)->GetFloat());
 }
@@ -653,8 +650,8 @@ deClassLocomotion::nfGetOrientationQuaternion::nfGetOrientationQuaternion(const 
 }
 
 void deClassLocomotion::nfGetOrientationQuaternion::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassQuaternion()->PushQuaternion(rt, locomotion.GetOrientationQuaternion());
 }
@@ -666,8 +663,8 @@ deClassLocomotion::nfSetOrientationQuaternion::nfSetOrientationQuaternion(const 
 }
 
 void deClassLocomotion::nfSetOrientationQuaternion::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(0)->GetRealObject());
 	
@@ -680,7 +677,7 @@ deClassLocomotion::nfGetTurningSpeed::nfGetTurningSpeed(const sInitData &init) :
 }
 
 void deClassLocomotion::nfGetTurningSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetTurningSpeed());
 }
@@ -692,7 +689,7 @@ deClassLocomotion::nfSetTurningSpeed::nfSetTurningSpeed(const sInitData &init) :
 }
 
 void deClassLocomotion::nfSetTurningSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetTurningSpeed(rt->GetValue(0)->GetFloat());
 }
@@ -703,8 +700,8 @@ deClassLocomotion::nfGetAngularVelocity::nfGetAngularVelocity(const sInitData &i
 }
 
 void deClassLocomotion::nfGetAngularVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassVector()->PushVector(rt, locomotion.GetAngularVelocity());
 }
@@ -716,8 +713,8 @@ deClassLocomotion::nfSetAngularVelocity::nfSetAngularVelocity(const sInitData &i
 }
 
 void deClassLocomotion::nfSetAngularVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	const decVector &velocity = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	
@@ -732,7 +729,7 @@ deClassLocomotion::nfGetIsMoving::nfGetIsMoving(const sInitData &init) : dsFunct
 }
 
 void deClassLocomotion::nfGetIsMoving::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushBool(locomotion.GetIsMoving());
 }
@@ -744,7 +741,7 @@ deClassLocomotion::nfSetIsMoving::nfSetIsMoving(const sInitData &init) : dsFunct
 }
 
 void deClassLocomotion::nfSetIsMoving::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetIsMoving(rt->GetValue(0)->GetBool());
 }
@@ -755,7 +752,7 @@ deClassLocomotion::nfGetMovingSpeed::nfGetMovingSpeed(const sInitData &init) : d
 }
 
 void deClassLocomotion::nfGetMovingSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	if(fabsf(locomotion.GetMovingDirection()) > 90.0f){
 		rt->PushFloat(-locomotion.GetMovingSpeed());
@@ -771,7 +768,7 @@ deClassLocomotion::nfGetAbsMovingSpeed::nfGetAbsMovingSpeed(const sInitData &ini
 }
 
 void deClassLocomotion::nfGetAbsMovingSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetMovingSpeed());
 }
@@ -783,7 +780,7 @@ deClassLocomotion::nfSetMovingSpeed::nfSetMovingSpeed(const sInitData &init) : d
 }
 
 void deClassLocomotion::nfSetMovingSpeed::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetMovingSpeed(rt->GetValue(0)->GetFloat());
 }
@@ -794,7 +791,7 @@ deClassLocomotion::nfGetMovingOrientation::nfGetMovingOrientation(const sInitDat
 }
 
 void deClassLocomotion::nfGetMovingOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetMovingOrientation());
 }
@@ -806,7 +803,7 @@ deClassLocomotion::nfSetMovingOrientation::nfSetMovingOrientation(const sInitDat
 }
 
 void deClassLocomotion::nfSetMovingOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetMovingOrientation(rt->GetValue(0)->GetFloat());
 }
@@ -817,7 +814,7 @@ deClassLocomotion::nfGetMovingDirection::nfGetMovingDirection(const sInitData &i
 }
 
 void deClassLocomotion::nfGetMovingDirection::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetMovingDirection());
 }
@@ -829,8 +826,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 }
 
 void deClassLocomotion::nfGetMovingDirectionVector::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	const float direction = locomotion.GetMovingDirection();
 	ds.GetClassVector()->PushVector(rt, decVector(sinf(direction), 0.0f, cosf(direction)));
@@ -843,7 +840,7 @@ deClassLocomotion::nfSetMovingDirection::nfSetMovingDirection(const sInitData &i
 }
 
 void deClassLocomotion::nfSetMovingDirection::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetMovingDirection(rt->GetValue(0)->GetFloat());
 }
@@ -856,8 +853,8 @@ deClassLocomotion::nfGetLinearVelocity::nfGetLinearVelocity(const sInitData &ini
 }
 
 void deClassLocomotion::nfGetLinearVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassVector()->PushVector(rt, locomotion.GetLinearVelocity().GetValue());
 }
@@ -869,8 +866,8 @@ deClassLocomotion::nfSetLinearVelocity::nfSetLinearVelocity(const sInitData &ini
 }
 
 void deClassLocomotion::nfSetLinearVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	const decVector &velocity = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	
@@ -884,7 +881,7 @@ deClassLocomotion::nfGetAdjustTimeLinearVelocity::nfGetAdjustTimeLinearVelocity(
 }
 
 void deClassLocomotion::nfGetAdjustTimeLinearVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLinearVelocity().GetAdjustTime());
 }
@@ -896,7 +893,7 @@ deClassLocomotion::nfSetAdjustTimeLinearVelocity::nfSetAdjustTimeLinearVelocity(
 }
 
 void deClassLocomotion::nfSetAdjustTimeLinearVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetLinearVelocity().SetAdjustTime(rt->GetValue(0)->GetFloat());
 }
@@ -907,7 +904,7 @@ deClassLocomotion::nfGetAdjustRangeLinearVelocity::nfGetAdjustRangeLinearVelocit
 }
 
 void deClassLocomotion::nfGetAdjustRangeLinearVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLinearVelocity().GetAdjustRange());
 }
@@ -919,7 +916,7 @@ deClassLocomotion::nfSetAdjustRangeLinearVelocity::nfSetAdjustRangeLinearVelocit
 }
 
 void deClassLocomotion::nfSetAdjustRangeLinearVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetLinearVelocity().SetAdjustRange(rt->GetValue(0)->GetFloat());
 }
@@ -932,7 +929,7 @@ deClassLocomotion::nfGetAdjustTimeStance::nfGetAdjustTimeStance(const sInitData 
 }
 
 void deClassLocomotion::nfGetAdjustTimeStance::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetStance().GetAdjustTime());
 }
@@ -944,7 +941,7 @@ deClassLocomotion::nfSetAdjustTimeStance::nfSetAdjustTimeStance(const sInitData 
 }
 
 void deClassLocomotion::nfSetAdjustTimeStance::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetStance().SetAdjustTime(rt->GetValue(0)->GetFloat());
 }
@@ -955,7 +952,7 @@ deClassLocomotion::nfGetAdjustRangeStance::nfGetAdjustRangeStance(const sInitDat
 }
 
 void deClassLocomotion::nfGetAdjustRangeStance::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetStance().GetAdjustRange());
 }
@@ -967,7 +964,7 @@ deClassLocomotion::nfSetAdjustRangeStance::nfSetAdjustRangeStance(const sInitDat
 }
 
 void deClassLocomotion::nfSetAdjustRangeStance::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetStance().SetAdjustRange(rt->GetValue(0)->GetFloat());
 }
@@ -978,7 +975,7 @@ deClassLocomotion::nfGetStance::nfGetStance(const sInitData &init) : dsFunction(
 }
 
 void deClassLocomotion::nfGetStance::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetStance().GetValue());
 }
@@ -990,7 +987,7 @@ deClassLocomotion::nfSetStance::nfSetStance(const sInitData &init) : dsFunction(
 }
 
 void deClassLocomotion::nfSetStance::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetStance().SetValue(rt->GetValue(0)->GetFloat());
 }
@@ -1001,7 +998,7 @@ deClassLocomotion::nfGetStanceGoal::nfGetStanceGoal(const sInitData &init) : dsF
 }
 
 void deClassLocomotion::nfGetStanceGoal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetStance().GetGoal());
 }
@@ -1013,7 +1010,7 @@ deClassLocomotion::nfSetStanceGoal::nfSetStanceGoal(const sInitData &init) : dsF
 }
 
 void deClassLocomotion::nfSetStanceGoal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetStance().SetGoal(rt->GetValue(0)->GetFloat());
 }
@@ -1026,7 +1023,7 @@ deClassLocomotion::nfGetIsTurningIP::nfGetIsTurningIP(const sInitData &init) : d
 }
 
 void deClassLocomotion::nfGetIsTurningIP::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushBool(locomotion.GetIsTurningIP());
 }
@@ -1038,7 +1035,7 @@ deClassLocomotion::nfSetIsTurningIP::nfSetIsTurningIP(const sInitData &init) : d
 }
 
 void deClassLocomotion::nfSetIsTurningIP::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetIsTurningIP(rt->GetValue(0)->GetBool());
 }
@@ -1049,7 +1046,7 @@ deClassLocomotion::nfGetAdjustTimeTurnIP::nfGetAdjustTimeTurnIP(const sInitData 
 }
 
 void deClassLocomotion::nfGetAdjustTimeTurnIP::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetAdjustTimeTurnIP());
 }
@@ -1061,7 +1058,7 @@ deClassLocomotion::nfSetAdjustTimeTurnIP::nfSetAdjustTimeTurnIP(const sInitData 
 }
 
 void deClassLocomotion::nfSetAdjustTimeTurnIP::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetAdjustTimeTurnIP(rt->GetValue(0)->GetFloat());
 }
@@ -1072,7 +1069,7 @@ deClassLocomotion::nfGetTurnIP::nfGetTurnIP(const sInitData &init) : dsFunction(
 }
 
 void deClassLocomotion::nfGetTurnIP::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetTurnIP());
 }
@@ -1084,7 +1081,7 @@ deClassLocomotion::nfSetTurnIP::nfSetTurnIP(const sInitData &init) : dsFunction(
 }
 
 void deClassLocomotion::nfSetTurnIP::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetTurnIP(rt->GetValue(0)->GetFloat());
 }
@@ -1095,7 +1092,7 @@ deClassLocomotion::nfGetResetTimeTurnIP::nfGetResetTimeTurnIP(const sInitData &i
 }
 
 void deClassLocomotion::nfGetResetTimeTurnIP::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushBool(locomotion.GetResetTimeTurnIP());
 }
@@ -1107,7 +1104,7 @@ deClassLocomotion::nfSetResetTimeTurnIP::nfSetResetTimeTurnIP(const sInitData &i
 }
 
 void deClassLocomotion::nfSetResetTimeTurnIP::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetResetTimeTurnIP(rt->GetValue(0)->GetBool());
 }
@@ -1118,7 +1115,7 @@ deClassLocomotion::nfGetReverseTimeTurnIP::nfGetReverseTimeTurnIP(const sInitDat
 }
 
 void deClassLocomotion::nfGetReverseTimeTurnIP::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushBool(locomotion.GetReverseTimeTurnIP());
 }
@@ -1130,7 +1127,7 @@ deClassLocomotion::nfSetReverseTimeTurnIP::nfSetReverseTimeTurnIP(const sInitDat
 }
 
 void deClassLocomotion::nfSetReverseTimeTurnIP::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetReverseTimeTurnIP(rt->GetValue(0)->GetBool());
 }
@@ -1143,7 +1140,7 @@ deClassLocomotion::nfGetCanTurnInPlace::nfGetCanTurnInPlace(const sInitData &ini
 }
 
 void deClassLocomotion::nfGetCanTurnInPlace::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	rt->PushBool(locomotion.GetCanTurnInPlace());
 }
 
@@ -1154,7 +1151,7 @@ deClassLocomotion::nfSetCanTurnInPlace::nfSetCanTurnInPlace(const sInitData &ini
 }
 
 void deClassLocomotion::nfSetCanTurnInPlace::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	locomotion.SetCanTurnInPlace(rt->GetValue(0)->GetBool());
 }
 
@@ -1164,7 +1161,7 @@ deClassLocomotion::nfGetLimitTurnInPlaceLeft::nfGetLimitTurnInPlaceLeft(const sI
 }
 
 void deClassLocomotion::nfGetLimitTurnInPlaceLeft::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	rt->PushFloat(locomotion.GetLimitTurnInPlaceLeft());
 }
 
@@ -1175,7 +1172,7 @@ deClassLocomotion::nfSetLimitTurnInPlaceLeft::nfSetLimitTurnInPlaceLeft(const sI
 }
 
 void deClassLocomotion::nfSetLimitTurnInPlaceLeft::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	locomotion.SetLimitTurnInPlaceLeft(rt->GetValue(0)->GetFloat());
 }
 
@@ -1185,7 +1182,7 @@ deClassLocomotion::nfGetLimitTurnInPlaceRight::nfGetLimitTurnInPlaceRight(const 
 }
 
 void deClassLocomotion::nfGetLimitTurnInPlaceRight::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	rt->PushFloat(locomotion.GetLimitTurnInPlaceRight());
 }
 
@@ -1196,7 +1193,7 @@ deClassLocomotion::nfSetLimitTurnInPlaceRight::nfSetLimitTurnInPlaceRight(const 
 }
 
 void deClassLocomotion::nfSetLimitTurnInPlaceRight::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	locomotion.SetLimitTurnInPlaceRight(rt->GetValue(0)->GetFloat());
 }
 
@@ -1208,7 +1205,7 @@ deClassLocomotion::nfGetResetTimeWalk::nfGetResetTimeWalk(const sInitData &init)
 }
 
 void deClassLocomotion::nfGetResetTimeWalk::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushBool(locomotion.GetResetTimeWalk());
 }
@@ -1220,7 +1217,7 @@ deClassLocomotion::nfSetResetTimeWalk::nfSetResetTimeWalk(const sInitData &init)
 }
 
 void deClassLocomotion::nfSetResetTimeWalk::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetResetTimeWalk(rt->GetValue(0)->GetBool());
 }
@@ -1233,7 +1230,7 @@ deClassLocomotion::nfGetCanTilt::nfGetCanTilt(const sInitData &init) : dsFunctio
 }
 
 void deClassLocomotion::nfGetCanTilt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushBool(locomotion.GetCanTilt());
 }
@@ -1245,7 +1242,7 @@ deClassLocomotion::nfSetCanTilt::nfSetCanTilt(const sInitData &init) : dsFunctio
 }
 
 void deClassLocomotion::nfSetCanTilt::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetCanTilt(rt->GetValue(0)->GetBool());
 }
@@ -1256,9 +1253,9 @@ deClassLocomotion::nfGetTiltMode::nfGetTiltMode(const sInitData &init) : dsFunct
 }
 
 void deClassLocomotion::nfGetTiltMode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
-	rt->PushValue(((deClassLocomotion*)GetOwnerClass())->GetClassLocomotionTilt()
+	rt->PushValue(static_cast<deClassLocomotion*>(GetOwnerClass())->GetClassLocomotionTilt()
 		->GetVariable(locomotion.GetTiltMode())->GetStaticValue());
 }
 
@@ -1273,11 +1270,11 @@ void deClassLocomotion::nfSetTiltMode::RunFunction(dsRunTime *rt, dsValue *mysel
 		DSTHROW(dueNullPointer);
 	}
 	
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetTiltMode((dedsLocomotion::eTiltModes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
-			*rt->GetValue( 0 )->GetRealObject() ) );
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->
+			GetConstantOrder(*rt->GetValue( 0 )->GetRealObject() ) );
 }
 
 // public func void setCCTTiltSingle( ColliderCollisionTest collisionTest )
@@ -1287,8 +1284,8 @@ deClassLocomotion::nfSetCCTTiltSingle::nfSetCCTTiltSingle(const sInitData &init)
 }
 
 void deClassLocomotion::nfSetCCTTiltSingle::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	deColliderCollisionTest * const collisionTest = ds.GetClassColliderCollisionTest()->GetCollisionTest(rt->GetValue(0)->GetRealObject());
 	locomotion.SetCCTTiltSingle(collisionTest);
@@ -1301,8 +1298,8 @@ deClassLocomotion::nfSetCCTTiltFrontLeft::nfSetCCTTiltFrontLeft(const sInitData 
 }
 
 void deClassLocomotion::nfSetCCTTiltFrontLeft::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	deColliderCollisionTest * const collisionTest = ds.GetClassColliderCollisionTest()->GetCollisionTest(rt->GetValue(0)->GetRealObject());
 	locomotion.SetCCTTiltFrontLeft(collisionTest);
@@ -1315,8 +1312,8 @@ deClassLocomotion::nfSetCCTTiltFrontRight::nfSetCCTTiltFrontRight(const sInitDat
 }
 
 void deClassLocomotion::nfSetCCTTiltFrontRight::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	deColliderCollisionTest * const collisionTest = ds.GetClassColliderCollisionTest()->GetCollisionTest(rt->GetValue(0)->GetRealObject());
 	locomotion.SetCCTTiltFrontRight(collisionTest);
@@ -1329,8 +1326,8 @@ deClassLocomotion::nfSetCCTTiltBackLeft::nfSetCCTTiltBackLeft(const sInitData &i
 }
 
 void deClassLocomotion::nfSetCCTTiltBackLeft::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	deColliderCollisionTest * const collisionTest = ds.GetClassColliderCollisionTest()->GetCollisionTest(rt->GetValue(0)->GetRealObject());
 	locomotion.SetCCTTiltBackLeft(collisionTest);
@@ -1343,8 +1340,8 @@ deClassLocomotion::nfSetCCTTiltBackRight::nfSetCCTTiltBackRight(const sInitData 
 }
 
 void deClassLocomotion::nfSetCCTTiltBackRight::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	deColliderCollisionTest * const collisionTest = ds.GetClassColliderCollisionTest()->GetCollisionTest(rt->GetValue(0)->GetRealObject());
 	locomotion.SetCCTTiltBackRight(collisionTest);
@@ -1358,7 +1355,7 @@ deClassLocomotion::nfGetLimitTiltUp::nfGetLimitTiltUp(const sInitData &init) : d
 }
 
 void deClassLocomotion::nfGetLimitTiltUp::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLimitTiltUp());
 }
@@ -1370,7 +1367,7 @@ deClassLocomotion::nfSetLimitTiltUp::nfSetLimitTiltUp(const sInitData &init) : d
 }
 
 void deClassLocomotion::nfSetLimitTiltUp::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetLimitTiltUp(rt->GetValue(0)->GetFloat());
 }
@@ -1381,7 +1378,7 @@ deClassLocomotion::nfGetLimitTiltDown::nfGetLimitTiltDown(const sInitData &init)
 }
 
 void deClassLocomotion::nfGetLimitTiltDown::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLimitTiltDown());
 }
@@ -1393,7 +1390,7 @@ deClassLocomotion::nfSetLimitTiltDown::nfSetLimitTiltDown(const sInitData &init)
 }
 
 void deClassLocomotion::nfSetLimitTiltDown::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetLimitTiltDown(rt->GetValue(0)->GetFloat());
 }
@@ -1404,7 +1401,7 @@ deClassLocomotion::nfGetTiltVertical::nfGetTiltVertical(const sInitData &init) :
 }
 
 void deClassLocomotion::nfGetTiltVertical::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetTiltVertical().GetValue());
 }
@@ -1416,7 +1413,7 @@ deClassLocomotion::nfSetTiltVertical::nfSetTiltVertical(const sInitData &init) :
 }
 
 void deClassLocomotion::nfSetTiltVertical::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetTiltVertical(rt->GetValue(0)->GetFloat());
 }
@@ -1427,7 +1424,7 @@ deClassLocomotion::nfGetTiltVerticalGoal::nfGetTiltVerticalGoal(const sInitData 
 }
 
 void deClassLocomotion::nfGetTiltVerticalGoal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetTiltVertical().GetGoal());
 }
@@ -1439,7 +1436,7 @@ deClassLocomotion::nfSetTiltVerticalGoal::nfSetTiltVerticalGoal(const sInitData 
 }
 
 void deClassLocomotion::nfSetTiltVerticalGoal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetTiltVerticalGoal(rt->GetValue(0)->GetFloat());
 }
@@ -1450,7 +1447,7 @@ deClassLocomotion::nfGetAdjustTimeTiltVertical::nfGetAdjustTimeTiltVertical(cons
 }
 
 void deClassLocomotion::nfGetAdjustTimeTiltVertical::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetTiltVertical().GetAdjustTime());
 }
@@ -1462,7 +1459,7 @@ deClassLocomotion::nfSetAdjustTimeTiltVertical::nfSetAdjustTimeTiltVertical(cons
 }
 
 void deClassLocomotion::nfSetAdjustTimeTiltVertical::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetTiltVertical().SetAdjustTime(rt->GetValue(0)->GetFloat());
 }
@@ -1473,7 +1470,7 @@ deClassLocomotion::nfGetAdjustRangeTiltVertical::nfGetAdjustRangeTiltVertical(co
 }
 
 void deClassLocomotion::nfGetAdjustRangeTiltVertical::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetTiltVertical().GetAdjustRange());
 }
@@ -1485,7 +1482,7 @@ deClassLocomotion::nfSetAdjustRangeTiltVertical::nfSetAdjustRangeTiltVertical(co
 }
 
 void deClassLocomotion::nfSetAdjustRangeTiltVertical::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetTiltVertical().SetAdjustRange(rt->GetValue(0)->GetFloat());
 }
@@ -1498,7 +1495,7 @@ deClassLocomotion::nfGetLimitTiltLeft::nfGetLimitTiltLeft(const sInitData &init)
 }
 
 void deClassLocomotion::nfGetLimitTiltLeft::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLimitTiltLeft());
 }
@@ -1510,7 +1507,7 @@ deClassLocomotion::nfSetLimitTiltLeft::nfSetLimitTiltLeft(const sInitData &init)
 }
 
 void deClassLocomotion::nfSetLimitTiltLeft::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetLimitTiltLeft(rt->GetValue(0)->GetFloat());
 }
@@ -1521,7 +1518,7 @@ deClassLocomotion::nfGetLimitTiltRight::nfGetLimitTiltRight(const sInitData &ini
 }
 
 void deClassLocomotion::nfGetLimitTiltRight::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetLimitTiltRight());
 }
@@ -1533,7 +1530,7 @@ deClassLocomotion::nfSetLimitTiltRight::nfSetLimitTiltRight(const sInitData &ini
 }
 
 void deClassLocomotion::nfSetLimitTiltRight::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetLimitTiltRight(rt->GetValue(0)->GetFloat());
 }
@@ -1544,7 +1541,7 @@ deClassLocomotion::nfGetTiltHorizontal::nfGetTiltHorizontal(const sInitData &ini
 }
 
 void deClassLocomotion::nfGetTiltHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetTiltHorizontal().GetValue());
 }
@@ -1556,7 +1553,7 @@ deClassLocomotion::nfSetTiltHorizontal::nfSetTiltHorizontal(const sInitData &ini
 }
 
 void deClassLocomotion::nfSetTiltHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetTiltHorizontal(rt->GetValue(0)->GetFloat());
 }
@@ -1567,7 +1564,7 @@ deClassLocomotion::nfGetTiltHorizontalGoal::nfGetTiltHorizontalGoal(const sInitD
 }
 
 void deClassLocomotion::nfGetTiltHorizontalGoal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetTiltHorizontal().GetGoal());
 }
@@ -1579,7 +1576,7 @@ deClassLocomotion::nfSetTiltHorizontalGoal::nfSetTiltHorizontalGoal(const sInitD
 }
 
 void deClassLocomotion::nfSetTiltHorizontalGoal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetTiltHorizontalGoal(rt->GetValue(0)->GetFloat());
 }
@@ -1590,7 +1587,7 @@ deClassLocomotion::nfGetAdjustTimeTiltHorizontal::nfGetAdjustTimeTiltHorizontal(
 }
 
 void deClassLocomotion::nfGetAdjustTimeTiltHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetTiltHorizontal().GetAdjustTime());
 }
@@ -1602,7 +1599,7 @@ deClassLocomotion::nfSetAdjustTimeTiltHorizontal::nfSetAdjustTimeTiltHorizontal(
 }
 
 void deClassLocomotion::nfSetAdjustTimeTiltHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetTiltHorizontal().SetAdjustTime(rt->GetValue(0)->GetFloat());
 }
@@ -1613,7 +1610,7 @@ deClassLocomotion::nfGetAdjustRangeTiltHorizontal::nfGetAdjustRangeTiltHorizonta
 }
 
 void deClassLocomotion::nfGetAdjustRangeTiltHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushFloat(locomotion.GetTiltHorizontal().GetAdjustRange());
 }
@@ -1625,7 +1622,7 @@ deClassLocomotion::nfSetAdjustRangeTiltHorizontal::nfSetAdjustRangeTiltHorizonta
 }
 
 void deClassLocomotion::nfSetAdjustRangeTiltHorizontal::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.GetTiltHorizontal().SetAdjustRange(rt->GetValue(0)->GetFloat());
 }
@@ -1638,7 +1635,7 @@ deClassLocomotion::nfGetTiltOffset::nfGetTiltOffset(const sInitData &init) : dsF
 }
 
 void deClassLocomotion::nfGetTiltOffset::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	rt->PushFloat(locomotion.GetTiltOffset());
 }
 
@@ -1649,7 +1646,7 @@ deClassLocomotion::nfSetTiltOffset::nfSetTiltOffset(const sInitData &init) : dsF
 }
 
 void deClassLocomotion::nfSetTiltOffset::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	locomotion.SetTiltOffset(rt->GetValue(0)->GetFloat());
 }
 
@@ -1663,8 +1660,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassLocomotion::nfAddControllerMapping::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	deAnimator *acAnimator = NULL;
 	deAnimatorInstance *acInstance = NULL;
@@ -1680,7 +1677,7 @@ void deClassLocomotion::nfAddControllerMapping::RunFunction(dsRunTime *rt, dsVal
 	}
 	
 	const dedsLControllerMapping::eAttributes attribute = (dedsLControllerMapping::eAttributes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() );
 	
 	locomotion.AddControllerMapping(acInstance, acController, attribute);
@@ -1694,8 +1691,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassLocomotion::nfRemoveControllerMapping::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	deAnimator *acAnimator = NULL;
 	deAnimatorInstance *acInstance = NULL;
@@ -1717,7 +1714,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassLocomotion::nfRemoveAllControllerMappings::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.RemoveAllControllerMappings();
 }
@@ -1730,8 +1727,8 @@ deClassLocomotion::nfGetAICollider::nfGetAICollider(const sInitData &init) : dsF
 }
 
 void deClassLocomotion::nfGetAICollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassCollider()->PushCollider(rt, locomotion.GetAICollider());
 }
@@ -1743,8 +1740,8 @@ deClassLocomotion::nfSetAICollider::nfSetAICollider(const sInitData &init) : dsF
 }
 
 void deClassLocomotion::nfSetAICollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	deCollider * const collider = ds.GetClassCollider()->GetCollider(rt->GetValue(0)->GetRealObject());
 	
@@ -1757,7 +1754,7 @@ deClassLocomotion::nfGetUpdateAIColliderAngularVelocity::nfGetUpdateAIColliderAn
 }
 
 void deClassLocomotion::nfGetUpdateAIColliderAngularVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushBool(locomotion.GetUpdateAIColliderAngularVelocity());
 }
@@ -1769,7 +1766,7 @@ deClassLocomotion::nfSetUpdateAIColliderAngularVelocity::nfSetUpdateAIColliderAn
 }
 
 void deClassLocomotion::nfSetUpdateAIColliderAngularVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.SetUpdateAIColliderAngularVelocity(rt->GetValue(0)->GetBool());
 }
@@ -1782,7 +1779,7 @@ deClassLocomotion::nfCancelMovement::nfCancelMovement(const sInitData &init) : d
 }
 
 void deClassLocomotion::nfCancelMovement::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.CancelMovement();
 }
@@ -1793,7 +1790,7 @@ deClassLocomotion::nfCancelInput::nfCancelInput(const sInitData &init) : dsFunct
 }
 
 void deClassLocomotion::nfCancelInput::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.CancelInput();
 }
@@ -1804,7 +1801,7 @@ deClassLocomotion::nfCancelMotion::nfCancelMotion(const sInitData &init) : dsFun
 }
 
 void deClassLocomotion::nfCancelMotion::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.CancelMotion();
 }
@@ -1815,7 +1812,7 @@ deClassLocomotion::nfCancelTurnInPlace::nfCancelTurnInPlace(const sInitData &ini
 }
 
 void deClassLocomotion::nfCancelTurnInPlace::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.CancelTurnInPlace();
 }
@@ -1826,7 +1823,7 @@ deClassLocomotion::nfForceBodyAdjustment::nfForceBodyAdjustment(const sInitData 
 }
 
 void deClassLocomotion::nfForceBodyAdjustment::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.ForceBodyAdjustment();
 }
@@ -1840,7 +1837,7 @@ deClassLocomotion::nfUpdateLooking::nfUpdateLooking(const sInitData &init) : dsF
 }
 
 void deClassLocomotion::nfUpdateLooking::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.UpdateLooking(rt->GetValue(0)->GetFloat());
 }
@@ -1851,7 +1848,7 @@ deClassLocomotion::nfApplyStates::nfApplyStates(const sInitData &init) : dsFunct
 }
 
 void deClassLocomotion::nfApplyStates::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.ApplyStates();
 }
@@ -1863,7 +1860,7 @@ deClassLocomotion::nfUpdateLocomotion::nfUpdateLocomotion(const sInitData &init)
 }
 
 void deClassLocomotion::nfUpdateLocomotion::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.UpdateLocomotion(rt->GetValue(0)->GetFloat());
 }
@@ -1874,7 +1871,7 @@ deClassLocomotion::nfUpdateIsMoving::nfUpdateIsMoving(const sInitData &init) : d
 }
 
 void deClassLocomotion::nfUpdateIsMoving::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.UpdateIsMoving();
 }
@@ -1886,7 +1883,7 @@ deClassLocomotion::nfUpdateOrientation::nfUpdateOrientation(const sInitData &ini
 }
 
 void deClassLocomotion::nfUpdateOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.UpdateOrientation(rt->GetValue(0)->GetFloat());
 }
@@ -1898,7 +1895,7 @@ deClassLocomotion::nfUpdateLinearVelocity::nfUpdateLinearVelocity(const sInitDat
 }
 
 void deClassLocomotion::nfUpdateLinearVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.UpdateLinearVelocity(rt->GetValue(0)->GetFloat());
 }
@@ -1910,7 +1907,7 @@ deClassLocomotion::nfUpdateStance::nfUpdateStance(const sInitData &init) : dsFun
 }
 
 void deClassLocomotion::nfUpdateStance::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.UpdateStance(rt->GetValue(0)->GetFloat());
 }
@@ -1922,7 +1919,7 @@ deClassLocomotion::nfUpdatePostLocomotion::nfUpdatePostLocomotion(const sInitDat
 }
 
 void deClassLocomotion::nfUpdatePostLocomotion::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.UpdatePostLocomotion(rt->GetValue(0)->GetFloat());
 }
@@ -1934,7 +1931,7 @@ deClassLocomotion::nfUpdateTilt::nfUpdateTilt(const sInitData &init) : dsFunctio
 }
 
 void deClassLocomotion::nfUpdateTilt::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.UpdateTilt(rt->GetValue(0)->GetFloat());
 }
@@ -1946,7 +1943,7 @@ deClassLocomotion::nfUpdateAnimatorInstance::nfUpdateAnimatorInstance(const sIni
 }
 
 void deClassLocomotion::nfUpdateAnimatorInstance::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.UpdateAnimatorInstance(rt->GetValue(0)->GetFloat());
 }
@@ -1957,7 +1954,7 @@ deClassLocomotion::nfUpdateAICollider::nfUpdateAICollider(const sInitData &init)
 }
 
 void deClassLocomotion::nfUpdateAICollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	locomotion.UpdateAICollider();
 }
@@ -1969,7 +1966,7 @@ dsFunction(init.clsLoco, "adjustOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_
 }
 
 void deClassLocomotion::nfAdjustOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	locomotion.AdjustOrientation(rt->GetValue(0)->GetFloat());
 }
 
@@ -1984,8 +1981,8 @@ deClassLocomotion::nfReadFromFile::nfReadFromFile(const sInitData &init) : dsFun
 	p_AddParameter(init.clsFileReader); // reader
 }
 void deClassLocomotion::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	decBaseFileReader * const reader = ds.GetClassFileReader()->GetFileReader(rt->GetValue(0)->GetRealObject());
 	if(!reader){
@@ -2001,8 +1998,8 @@ deClassLocomotion::nfWriteToFile::nfWriteToFile(const sInitData &init) : dsFunct
 	p_AddParameter(init.clsFileWriter); // writer
 }
 void deClassLocomotion::nfWriteToFile::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion &locomotion = *(static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion);
-	const deScriptingDragonScript &ds = ((deClassLocomotion*)GetOwnerClass())->GetDS();
+	const dedsLocomotion &locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const deScriptingDragonScript &ds = static_cast<deClassLocomotion*>(GetOwnerClass())->GetDS();
 	
 	decBaseFileWriter * const writer = ds.GetClassFileWriter()->GetFileWriter(rt->GetValue(0)->GetRealObject());
 	if(!writer){
@@ -2020,7 +2017,7 @@ dsFunction(init.clsLoco, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 }
 
 void deClassLocomotion::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion * const locomotion = static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	const dedsLocomotion * const locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
 	
 	rt->PushInt((int)(intptr_t)locomotion);
 }
@@ -2031,15 +2028,15 @@ dsFunction(init.clsLoco, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, ini
 	p_AddParameter(init.clsObject); // object
 }
 void deClassLocomotion::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsLocomotion * const locomotion = static_cast<const sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
-	deClassLocomotion * const clsLoco = (deClassLocomotion*)GetOwnerClass();
+	const dedsLocomotion * const locomotion = static_cast<sLocoNatDat*>(p_GetNativeData(myself))->locomotion;
+	deClassLocomotion * const clsLoco = static_cast<deClassLocomotion*>(GetOwnerClass());
 	dsValue * const object = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(object, clsLoco)){
 		rt->PushBool(false);
 		
 	}else{
-		const dedsLocomotion * const otherLocomotion = static_cast<const sLocoNatDat*>(p_GetNativeData(object))->locomotion;
+		const dedsLocomotion * const otherLocomotion = static_cast<sLocoNatDat*>(p_GetNativeData(object))->locomotion;
 		rt->PushBool(locomotion == otherLocomotion);
 	}
 }
@@ -2054,7 +2051,10 @@ void deClassLocomotion::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassLocomotion::deClassLocomotion(deScriptingDragonScript &ds) :
 dsClass("Locomotion", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
-pDS(ds){
+pDS(ds),
+pClsLocomotionAttribute(nullptr),
+pClsLocomotionTilt(nullptr)
+{
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
 	
@@ -2289,10 +2289,10 @@ void deClassLocomotion::CreateClassMembers(dsEngine *engine){
 
 dedsLocomotion *deClassLocomotion::GetLocomotion(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
-	return static_cast<const sLocoNatDat*>(p_GetNativeData(myself->GetBuffer()))->locomotion;
+	return static_cast<sLocoNatDat*>(p_GetNativeData(myself->GetBuffer()))->locomotion;
 }
 
 void deClassLocomotion::PushLocomotion(dsRunTime *rt, dedsLocomotion *locomotion){
@@ -2301,11 +2301,10 @@ void deClassLocomotion::PushLocomotion(dsRunTime *rt, dedsLocomotion *locomotion
 	}
 	
 	if(!locomotion){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sLocoNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->locomotion = locomotion;
-	locomotion->AddReference();
+	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sLocoNatDat())->locomotion = locomotion;
 }

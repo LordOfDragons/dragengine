@@ -102,7 +102,7 @@ void deClassSSChain::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	sSSSoundNatDat &nd = *static_cast<sSSSoundNatDat*>(p_GetNativeData(myself));
 	const deClassSSChain::eTargets target = (deClassSSChain::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	const int link = rt->GetValue(1)->GetInt();
 	
@@ -152,7 +152,7 @@ void deClassSSChain::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue 
 	
 	sSSSoundNatDat &nd = *static_cast<sSSSoundNatDat*>(p_GetNativeData(myself));
 	const deClassSSChain::eTargets target = (deClassSSChain::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(target){

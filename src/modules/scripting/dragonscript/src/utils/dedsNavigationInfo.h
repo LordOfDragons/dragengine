@@ -51,12 +51,12 @@ private:
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<dedsNavigationInfo> Ref;
-
-
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new navigation information. */
-	dedsNavigationInfo(deScriptingDragonScript &ds);
+	explicit dedsNavigationInfo(deScriptingDragonScript &ds);
 	
 	/** \brief Create copy of a navigation information. */
 	dedsNavigationInfo(const dedsNavigationInfo &info);

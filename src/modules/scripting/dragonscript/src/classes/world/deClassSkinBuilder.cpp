@@ -256,7 +256,7 @@ void deClassSkinBuilder::nfAddMapped::RunFunction(dsRunTime *rt, dsValue *myself
 	const deScriptingDragonScript &ds = ((deClassSkinBuilder*)GetOwnerClass())->GetDS();
 	deClassCurveBezier &clsCurveBezier = *ds.GetClassCurveBezier();
 	deClassVector2 &clsVector2 = *ds.GetClassVector2();
-	dsClassEnumeration &clsEnum = *((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration());
+	dsClassEnumeration &clsEnum = *static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration());
 	
 	const deSkinMapped::Ref mapped(deSkinMapped::Ref::NewWith(rt->GetValue(0)->GetString()));
 	mapped->GetCurve() = clsCurveBezier.GetCurve(rt->GetValue(1)->GetRealObject());
@@ -505,7 +505,7 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 	const deScriptingDragonScript &ds = ((deClassSkinBuilder*)GetOwnerClass())->GetDS();
 	deClassCurveBezier &clsCurveBezier = *ds.GetClassCurveBezier();
 	deClassVector2 &clsVector2 = *ds.GetClassVector2();
-	dsClassEnumeration &clsEnum = *((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration());
+	dsClassEnumeration &clsEnum = *static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration());
 	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
 	const char * const type = rt->GetValue(1)->GetString();
 	const char * const texCoordSet = rt->GetValue(2)->GetString();
@@ -794,7 +794,7 @@ void deClassSkinBuilder::nfAddNodeImage::RunFunction(dsRunTime *rt, dsValue *mys
 	const decColor &colorize = ds.GetClassColor()->GetColor(rt->GetValue(7)->GetRealObject());
 	const float transparency = rt->GetValue(8)->GetFloat();
 	const deSkinPropertyNode::eCombineModes &combineMode = (deSkinPropertyNode::eCombineModes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 9 )->GetRealObject() );
 	const char * const path = rt->GetValue(10)->GetString();
 	deImage * const image = ds.GetClassImage()->GetImage(rt->GetValue(11)->GetRealObject());
@@ -870,7 +870,7 @@ void deClassSkinBuilder::nfAddNodeText::RunFunction(dsRunTime *rt, dsValue *myse
 	const decColor &colorize = ds.GetClassColor()->GetColor(rt->GetValue(7)->GetRealObject());
 	const float transparency = rt->GetValue(8)->GetFloat();
 	const deSkinPropertyNode::eCombineModes &combineMode = (deSkinPropertyNode::eCombineModes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 9 )->GetRealObject() );
 	const char * const path = rt->GetValue(10)->GetString();
 	deFont * const font = ds.GetClassFont()->GetFont(rt->GetValue(11)->GetRealObject());
@@ -949,7 +949,7 @@ void deClassSkinBuilder::nfAddNodeShape::RunFunction(dsRunTime *rt, dsValue *mys
 	const decColor &colorize = ds.GetClassColor()->GetColor(rt->GetValue(7)->GetRealObject());
 	const float transparency = rt->GetValue(8)->GetFloat();
 	const deSkinPropertyNode::eCombineModes &combineMode = (deSkinPropertyNode::eCombineModes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 9 )->GetRealObject() );
 	const deSkinPropertyNodeShape::eShapeTypes shapeType =
 		(deSkinPropertyNodeShape::eShapeTypes)rt->GetValue(10)->GetInt();
@@ -1022,7 +1022,7 @@ void deClassSkinBuilder::nfAddNodeGroup::RunFunction(dsRunTime *rt, dsValue *mys
 	const decColor &colorize = ds.GetClassColor()->GetColor(rt->GetValue(7)->GetRealObject());
 	const float transparency = rt->GetValue(8)->GetFloat();
 	const deSkinPropertyNode::eCombineModes &combineMode = (deSkinPropertyNode::eCombineModes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 9 )->GetRealObject() );
 	
 	deSkinPropertyNodeGroup * const node = new deSkinPropertyNodeGroup;

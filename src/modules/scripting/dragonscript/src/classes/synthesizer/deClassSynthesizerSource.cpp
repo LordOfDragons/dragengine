@@ -122,7 +122,7 @@ void deClassSynthesizerSource::nfSetMixMode::RunFunction(dsRunTime *rt, dsValue 
 	}
 	
 	nd.source->SetMixMode((deSynthesizerSource::eMixModes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 	
 	if(nd.synthesizer){

@@ -74,7 +74,7 @@ void deClassEasyXMLElement::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 	
 	const dedsXmlDocument::eElementTypes type = (dedsXmlDocument::eElementTypes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(type){

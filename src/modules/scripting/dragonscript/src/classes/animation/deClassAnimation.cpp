@@ -55,15 +55,12 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // name
 }
 void deClassAnimation::nfLoad::RunFunction(dsRunTime *RT, dsValue *This){
-	sAnimNatDat *nd = static_cast<sAnimNatDat*>(p_GetNativeData(This);
-	deClassAnimation *clsAnim = (deClassAnimation*)GetOwnerClass();
+	sAnimNatDat * const nd = new (p_GetNativeData(This)) sAnimNatDat;
+	
+	deClassAnimation *clsAnim = static_cast<deClassAnimation*>(GetOwnerClass());
 	deAnimationManager *animMgr = clsAnim->GetGameEngine().GetAnimationManager();
-	// reset all
-	nd->anim = NULL;
-	// load animation
-	const char *filename = RT->GetValue(0)->GetString();
-	nd->anim = animMgr->LoadAnimation(filename, "/");
-	if(!nd->anim) DSTHROW(dueInvalidParam);
+	
+	nd->anim = animMgr->LoadAnimation(RT->GetValue(0)->GetString(), "/");
 }
 
 // static public func void loadAsynchron( String filename, ResourceListener listener )
@@ -73,7 +70,7 @@ deClassAnimation::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) : dsFu
 	p_AddParameter(init.clsRN); // listener
 }
 void deClassAnimation::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassAnimation *clsAnim = (deClassAnimation*)GetOwnerClass();
+	const deClassAnimation *clsAnim = static_cast<deClassAnimation*>(GetOwnerClass());
 	
 	const char *filename = rt->GetValue(0)->GetString();
 	dsRealObject *listener = rt->GetValue(1)->GetRealObject();
@@ -91,7 +88,7 @@ dsFunction(init.clsAnim, "save", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.
 }
 void deClassAnimation::nfSave::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sAnimNatDat &nd = *static_cast<sAnimNatDat*>(p_GetNativeData(myself));
-	deClassAnimation &clsAnim = *((deClassAnimation*)GetOwnerClass());
+	const deClassAnimation &clsAnim = *(static_cast<deClassAnimation*>(GetOwnerClass()));
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	clsAnim.GetGameEngine().GetAnimationManager()->SaveAnimation(*nd.anim, filename);
@@ -116,7 +113,7 @@ deClassAnimation::nfGetFilename::nfGetFilename(const sInitData &init) : dsFuncti
 "getFilename", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassAnimation::nfGetFilename::RunFunction(dsRunTime *RT, dsValue *This){
-	deAnimation *anim = static_cast<sAnimNatDat*>(p_GetNativeData(This))->anim;
+	const deAnimation *anim = static_cast<sAnimNatDat*>(p_GetNativeData(This))->anim;
 	RT->PushString(anim->GetFilename());
 }
 
@@ -126,7 +123,7 @@ deClassAnimation::nfGetMovePlaytime::nfGetMovePlaytime(const sInitData &init) : 
 	p_AddParameter(init.clsStr); // moveName
 }
 void deClassAnimation::nfGetMovePlaytime::RunFunction(dsRunTime *RT, dsValue *This){
-	deAnimation *anim = static_cast<sAnimNatDat*>(p_GetNativeData(This))->anim;
+	const deAnimation *anim = static_cast<sAnimNatDat*>(p_GetNativeData(This))->anim;
 	const char *moveName = RT->GetValue(0)->GetString();
 	int moveIndex = anim->FindMove(moveName);
 	if(moveIndex == -1){
@@ -254,11 +251,11 @@ DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCurveBezier){
 }
 void deClassAnimation::nfGetKeyframeCurve::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAnimation &animation = *(static_cast<sAnimNatDat*>(p_GetNativeData(myself))->anim);
-	const deScriptingDragonScript &ds = ((deClassAnimation*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassAnimation*>(GetOwnerClass()))->GetDS();
 	const int move = rt->GetValue(0)->GetInt();
 	const int bone = rt->GetValue(1)->GetInt();
 	const deAnimationMove::BoneParameter parameter = (deAnimationMove::BoneParameter)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue(2)->GetRealObject());
 	
 	decCurveBezier curve;
@@ -275,7 +272,7 @@ DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCurveBezier){
 }
 void deClassAnimation::nfGetVertexPositionSetKeyframeCurve::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAnimation &animation = *(static_cast<sAnimNatDat*>(p_GetNativeData(myself))->anim);
-	const deScriptingDragonScript &ds = ((deClassAnimation*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassAnimation*>(GetOwnerClass()))->GetDS();
 	const int move = rt->GetValue(0)->GetInt();
 	const int vps = rt->GetValue(1)->GetInt();
 	
@@ -292,7 +289,7 @@ dsFunction(init.clsAnim, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 }
 
 void deClassAnimation::nfHashCode::RunFunction(dsRunTime *RT, dsValue *This){
-	sAnimNatDat *nd = static_cast<sAnimNatDat*>(p_GetNativeData(This);
+	const sAnimNatDat * const nd = static_cast<sAnimNatDat*>(p_GetNativeData(This));
 	// hash code = memory location
 	RT->PushInt((int)(intptr_t)nd->anim);
 }
@@ -303,13 +300,13 @@ dsFunction(init.clsAnim, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, ini
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassAnimation::nfEquals::RunFunction(dsRunTime *RT, dsValue *This){
-	sAnimNatDat *nd = static_cast<sAnimNatDat*>(p_GetNativeData(This);
-	deClassAnimation *clsAnim = (deClassAnimation*)GetOwnerClass();
+	const sAnimNatDat * const nd = static_cast<sAnimNatDat*>(p_GetNativeData(This));
+	deClassAnimation *clsAnim = static_cast<deClassAnimation*>(GetOwnerClass());
 	dsValue *obj = RT->GetValue(0);
 	if(!p_IsObjOfType(obj, clsAnim)){
 		RT->PushBool(false);
 	}else{
-		sAnimNatDat *other = static_cast<sAnimNatDat*>(p_GetNativeData(obj);
+		const sAnimNatDat *other = static_cast<sAnimNatDat*>(p_GetNativeData(obj));
 		RT->PushBool(nd->anim == other->anim);
 	}
 }
@@ -392,6 +389,5 @@ void deClassAnimation::PushAnimation(dsRunTime *rt, deAnimation *anim){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sAnimNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->anim = anim;
-	anim->AddReference();
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sAnimNatDat)->anim = anim;
 }

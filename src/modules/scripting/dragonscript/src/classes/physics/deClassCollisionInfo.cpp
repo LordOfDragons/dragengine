@@ -307,7 +307,7 @@ void deClassCollisionInfo::nfSetParticleResponse::RunFunction(dsRunTime *rt, dsV
 	
 	deCollisionInfo &info = *(static_cast<sCINatDat*>(p_GetNativeData(myself))->info);
 	info.SetParticleResponse((deParticleEmitterType::eCollisionResponses)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 

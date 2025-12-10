@@ -389,7 +389,7 @@ void deClassFileSystem::nfGetFileExtensions::RunFunction(dsRunTime *rt, dsValue 
 	
 	// determine module type to enumerate
 	const deResourceLoader::eResourceType type = (deResourceLoader::eResourceType)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	deModuleSystem::eModuleTypes moduleType = deModuleSystem::emtUnknown;

@@ -70,7 +70,7 @@ dsFunction(init.clsAnimatorInstance, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorInstance::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassAnimatorInstance &clsAr = *((deClassAnimatorInstance*)GetOwnerClass());
+	const deClassAnimatorInstance &clsAr = *static_cast<deClassAnimatorInstance*>(GetOwnerClass());
 	deAnimatorInstanceManager &aniInstMgr = *clsAr.GetDS().GetGameEngine()->GetAnimatorInstanceManager();
 	sArINatDat * const nd = new (p_GetNativeData(myself)) sArINatDat;
 	
@@ -100,7 +100,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsAr){
 }
 void deClassAnimatorInstance::nfGetAnimator::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAnimatorInstance &instance = *(static_cast<sArINatDat*>(p_GetNativeData(myself))->instance);
-	const deScriptingDragonScript &ds = ((deClassAnimatorInstance*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassAnimatorInstance*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassAnimator()->PushAnimator(rt, instance.GetAnimator());
 }
@@ -113,7 +113,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorInstance::nfSetAnimator::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimatorInstance &instance = *(static_cast<sArINatDat*>(p_GetNativeData(myself))->instance);
-	const deScriptingDragonScript &ds = ((deClassAnimatorInstance*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassAnimatorInstance*>(GetOwnerClass())->GetDS();
 	dsRealObject * const objAnimator = rt->GetValue(0)->GetRealObject();
 	
 	instance.SetAnimator(ds.GetClassAnimator()->GetAnimator(objAnimator));
@@ -128,7 +128,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorInstance::nfSetAnimator2::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimatorInstance &instance = *(static_cast<sArINatDat*>(p_GetNativeData(myself))->instance);
-	const deScriptingDragonScript &ds = ((deClassAnimatorInstance*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassAnimatorInstance*>(GetOwnerClass())->GetDS();
 	deAnimator * const animator = ds.GetClassAnimator()->GetAnimator(rt->GetValue(0)->GetRealObject());
 	const bool keepValues = rt->GetValue(1)->GetBool();
 	
@@ -142,7 +142,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsComp){
 }
 void deClassAnimatorInstance::nfGetComponent::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAnimatorInstance &instance = *(static_cast<sArINatDat*>(p_GetNativeData(myself))->instance);
-	const deScriptingDragonScript &ds = ((deClassAnimatorInstance*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassAnimatorInstance*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassComponent()->PushComponent(rt, instance.GetComponent());
 }
@@ -155,7 +155,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorInstance::nfSetComponent::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimatorInstance &instance = *(static_cast<sArINatDat*>(p_GetNativeData(myself))->instance);
-	const deScriptingDragonScript &ds = ((deClassAnimatorInstance*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassAnimatorInstance*>(GetOwnerClass())->GetDS();
 	dsRealObject * const objComponent = rt->GetValue(0)->GetRealObject();
 	
 	instance.SetComponent(ds.GetClassComponent()->GetComponent(objComponent));
@@ -168,7 +168,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsAnimator){
 }
 void deClassAnimatorInstance::nfGetAnimation::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAnimatorInstance &instance = *(static_cast<sArINatDat*>(p_GetNativeData(myself))->instance);
-	const deScriptingDragonScript &ds = ((deClassAnimatorInstance*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassAnimatorInstance*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassAnimation()->PushAnimation(rt, instance.GetAnimation());
 }
@@ -181,7 +181,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorInstance::nfSetAnimation::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimatorInstance &instance = *(static_cast<sArINatDat*>(p_GetNativeData(myself))->instance);
-	const deScriptingDragonScript &ds = ((deClassAnimatorInstance*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassAnimatorInstance*>(GetOwnerClass())->GetDS();
 	dsRealObject * const objAnimation = rt->GetValue(0)->GetRealObject();
 	
 	instance.SetAnimation(ds.GetClassAnimation()->GetAnimation(objAnimation));
@@ -197,7 +197,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsAnimatorRuleBlendMode){
 void deClassAnimatorInstance::nfGetBlendMode::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deAnimatorInstance &instance = *(static_cast<sArINatDat*>(p_GetNativeData(myself))->instance);
 	
-	rt->PushValue(((deClassAnimatorInstance*)GetOwnerClass())->GetClassAnimatorRuleBlendMode()
+	rt->PushValue(static_cast<deClassAnimatorInstance*>(GetOwnerClass())->GetClassAnimatorRuleBlendMode()
 		->GetVariable(instance.GetBlendMode())->GetStaticValue());
 }
 
@@ -215,7 +215,7 @@ void deClassAnimatorInstance::nfSetBlendMode::RunFunction(dsRunTime *rt, dsValue
 	deAnimatorInstance &instance = *(static_cast<sArINatDat*>(p_GetNativeData(myself))->instance);
 	
 	instance.SetBlendMode((deAnimatorRule::eBlendModes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 
@@ -309,7 +309,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsAnimatorCtrl){
 }
 void deClassAnimatorInstance::nfGetControllerAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimatorInstance * const instance = static_cast<sArINatDat*>(p_GetNativeData(myself))->instance;
-	const deScriptingDragonScript &ds = ((deClassAnimatorInstance*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassAnimatorInstance*>(GetOwnerClass())->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	
 	if(index < 0){
@@ -329,7 +329,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsAnimatorCtrl){
 }
 void deClassAnimatorInstance::nfGetControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimatorInstance * const instance = static_cast<sArINatDat*>(p_GetNativeData(myself))->instance;
-	const deScriptingDragonScript &ds = ((deClassAnimatorInstance*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassAnimatorInstance*>(GetOwnerClass())->GetDS();
 	const int index = instance->IndexOfControllerNamed(rt->GetValue(0)->GetString());
 	
 	if(index == -1){
@@ -347,7 +347,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsStr); // name
 }
 void deClassAnimatorInstance::nfIndexOfControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimatorInstance * const instance = static_cast<sArINatDat*>(p_GetNativeData(myself))->instance;
+	const deAnimatorInstance * const instance = static_cast<sArINatDat*>(p_GetNativeData(myself))->instance;
 	rt->PushInt(instance->IndexOfControllerNamed(rt->GetValue(0)->GetString()));
 }
 
@@ -360,7 +360,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorInstance::nfCopyControllerStates::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimatorInstance &instance = *(static_cast<sArINatDat*>(p_GetNativeData(myself))->instance);
-	const deClassAnimatorInstance &clsAr = *((deClassAnimatorInstance*)GetOwnerClass());
+	const deClassAnimatorInstance &clsAr = *static_cast<deClassAnimatorInstance*>(GetOwnerClass());
 	
 	const deAnimatorInstance * const sourceInstance = clsAr.GetAnimatorInstance(rt->GetValue(0)->GetRealObject());
 	int count = rt->GetValue(1)->GetInt();
@@ -403,7 +403,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorInstance::nfCopyControllerStates2::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimatorInstance &instance = *(static_cast<sArINatDat*>(p_GetNativeData(myself))->instance);
-	const deClassAnimatorInstance &clsAr = *((deClassAnimatorInstance*)GetOwnerClass());
+	const deClassAnimatorInstance &clsAr = *static_cast<deClassAnimatorInstance*>(GetOwnerClass());
 	
 	const deAnimatorInstance * const sourceInstance = clsAr.GetAnimatorInstance(rt->GetValue(0)->GetRealObject());
 	const int offset = rt->GetValue(1)->GetInt();
@@ -448,7 +448,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimatorInstance::nfCopyNamedControllerStates::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimatorInstance &instance = *(static_cast<sArINatDat*>(p_GetNativeData(myself))->instance);
-	const deClassAnimatorInstance &clsAr = *((deClassAnimatorInstance*)GetOwnerClass());
+	const deClassAnimatorInstance &clsAr = *static_cast<deClassAnimatorInstance*>(GetOwnerClass());
 	
 	const deAnimatorInstance * const sourceInstance = clsAr.GetAnimatorInstance(rt->GetValue(0)->GetRealObject());
 	if(!sourceInstance){
@@ -545,15 +545,15 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassAnimatorInstance::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimatorInstance *instance = static_cast<sArINatDat*>(p_GetNativeData(myself))->instance;
-	deClassAnimatorInstance *clsAr = (deClassAnimatorInstance*)GetOwnerClass();
+	const deAnimatorInstance *instance = static_cast<sArINatDat*>(p_GetNativeData(myself))->instance;
+	deClassAnimatorInstance *clsAr = static_cast<deClassAnimatorInstance*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsAr)){
 		rt->PushBool(false);
 		
 	}else{
-		deAnimatorInstance *otherInstance = static_cast<sArINatDat*>(p_GetNativeData(obj))->instance;
+		const deAnimatorInstance *otherInstance = static_cast<sArINatDat*>(p_GetNativeData(obj))->instance;
 		
 		rt->PushBool(instance == otherInstance);
 	}
@@ -661,6 +661,5 @@ void deClassAnimatorInstance::PushAnimatorInstance(dsRunTime *rt, deAnimatorInst
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sArINatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->instance = instance;
-	instance->AddReference();
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sArINatDat)->instance = instance;
 }

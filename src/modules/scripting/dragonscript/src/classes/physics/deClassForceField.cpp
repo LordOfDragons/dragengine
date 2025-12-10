@@ -238,7 +238,7 @@ void deClassForceField::nfSetFieldType::RunFunction(dsRunTime *rt, dsValue *myse
 	}
 	
 	forcefield.SetFieldType((deForceField::eFieldTypes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 
@@ -264,7 +264,7 @@ void deClassForceField::nfSetApplicationType::RunFunction(dsRunTime *rt, dsValue
 	}
 	
 	forcefield.SetApplicationType((deForceField::eApplicationTypes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 

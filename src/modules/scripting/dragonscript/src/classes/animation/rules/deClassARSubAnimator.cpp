@@ -76,11 +76,11 @@ void deClassARSubAnimator::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARSubANatDat * const nd = new (p_GetNativeData(myself)) sARSubANatDat;
 	
 	// super call
-	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
+	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd->rule = new deAnimatorRuleSubAnimator;
+	nd->rule.TakeOverWith();
 	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 
@@ -174,7 +174,7 @@ void deClassARSubAnimator::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *
 	
 	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself));
 	const deClassARSubAnimator::eTargets target = (deClassARSubAnimator::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	const int link = rt->GetValue(1)->GetInt();
 	
@@ -204,7 +204,7 @@ void deClassARSubAnimator::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, ds
 	
 	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself));
 	const deClassARSubAnimator::eTargets target = (deClassARSubAnimator::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(target){
@@ -230,7 +230,7 @@ deClassARSubAnimator::nfSetSubAnimator::nfSetSubAnimator(const sInitData &init) 
 }
 void deClassARSubAnimator::nfSetSubAnimator::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself));
-	deClassARSubAnimator *clsARSubA = (deClassARSubAnimator*)GetOwnerClass();
+	deClassARSubAnimator *clsARSubA = static_cast<deClassARSubAnimator*>(GetOwnerClass());
 	deClassAnimator *clsAr = clsARSubA->GetDS().GetClassAnimator();
 	
 	dsRealObject *objAnimator = rt->GetValue(0)->GetRealObject();
@@ -271,7 +271,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassARSubAnimator::nfSetMatchingConnections::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself));
-	deScriptingDragonScript &ds = ((deClassARSubAnimator*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = (static_cast<deClassARSubAnimator*>(GetOwnerClass()))->GetDS();
 	
 	deAnimator * const animator = ds.GetClassAnimator()->GetAnimator(rt->GetValue(0)->GetRealObject());
 	if(!animator){
@@ -378,22 +378,7 @@ void deClassARSubAnimator::AssignAnimator(dsRealObject *myself, deAnimator *anim
 	}
 	
 	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
-	
-	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(myself->GetBuffer()));
-	
-	if(animator == nd.animator){
-		return;
-	}
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-	}
-	
-	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
+	static_cast<sARSubANatDat*>(p_GetNativeData(myself->GetBuffer()))->animator = animator;
 }
 
 void deClassARSubAnimator::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleSubAnimator *rule){
@@ -406,22 +391,14 @@ void deClassARSubAnimator::PushRule(dsRunTime *rt, deAnimator *animator, deAnima
 		return;
 	}
 	
-	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
+	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sARSubANatDat &nd = *static_cast<sARSubANatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.animator = NULL;
-	nd.rule = NULL;
+	sARSubANatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sARSubANatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
-		nd.rule = rule;
-		rule->AddReference();
+		nd->animator = animator;
+		nd->rule = rule;
 		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);

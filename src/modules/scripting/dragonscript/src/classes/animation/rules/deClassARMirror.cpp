@@ -76,11 +76,11 @@ void deClassARMirror::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARMirrorNatDat * const nd = new (p_GetNativeData(myself)) sARMirrorNatDat;
 	
 	// super call
-	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
+	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd->rule = new deAnimatorRuleMirror;
+	nd->rule.TakeOverWith();
 	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 
@@ -173,7 +173,7 @@ void deClassARMirror::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *mysel
 	}
 	
 	const deClassARMirror::eTargets target = (deClassARMirror::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	const int link = rt->GetValue(1)->GetInt();
 	
@@ -203,7 +203,7 @@ void deClassARMirror::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue
 	
 	sARMirrorNatDat &nd = *static_cast<sARMirrorNatDat*>(p_GetNativeData(myself));
 	const deClassARMirror::eTargets target = (deClassARMirror::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(target){
@@ -234,7 +234,7 @@ void deClassARMirror::nfSetMirrorMirrorAxis::RunFunction(dsRunTime *rt, dsValue 
 	}
 	
 	nd.rule->SetMirrorAxis((deAnimatorRuleMirror::eMirrorAxis)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 	
 	if(nd.animator){
@@ -275,7 +275,7 @@ void deClassARMirror::nfAddMatchName::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	const deAnimatorRuleMirror::eMatchNameType type = (deAnimatorRuleMirror::eMatchNameType)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 2 )->GetRealObject() );
 	
 	nd.rule->AddMatchName(first, second, type);
@@ -366,22 +366,7 @@ void deClassARMirror::AssignAnimator(dsRealObject *myself, deAnimator *animator)
 	}
 	
 	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
-	
-	sARMirrorNatDat &nd = *static_cast<sARMirrorNatDat*>(p_GetNativeData(myself->GetBuffer()));
-	
-	if(animator == nd.animator){
-		return;
-	}
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-	}
-	
-	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
+	static_cast<sARMirrorNatDat*>(p_GetNativeData(myself->GetBuffer()))->animator = animator;
 }
 
 void deClassARMirror::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleMirror *rule){
@@ -394,22 +379,14 @@ void deClassARMirror::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRu
 		return;
 	}
 	
-	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
+	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sARMirrorNatDat &nd = *static_cast<sARMirrorNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.animator = nullptr;
-	nd.rule = nullptr;
+	sARMirrorNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sARMirrorNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
-		nd.rule = rule;
-		rule->AddReference();
+		nd->animator = animator;
+		nd->rule = rule;
 		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);

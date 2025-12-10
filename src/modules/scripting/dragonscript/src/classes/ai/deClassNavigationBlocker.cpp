@@ -61,7 +61,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassNavigationBlocker::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sNavBlockerNatDat * const nd = new (p_GetNativeData(myself)) sNavBlockerNatDat;
-	const deClassNavigationBlocker &clsNavBlocker = *((deClassNavigationBlocker*)GetOwnerClass());
+	const deClassNavigationBlocker &clsNavBlocker = *(static_cast<deClassNavigationBlocker*>(GetOwnerClass()));
 	deNavigationBlockerManager &navBlockerMgr = *clsNavBlocker.GetDS()->GetGameEngine()->GetNavigationBlockerManager();
 	
 	// create navigation blocker
@@ -90,8 +90,8 @@ deClassNavigationBlocker::nfGetPosition::nfGetPosition(const sInitData &init) : 
 "getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
 void deClassNavigationBlocker::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigationBlocker &blocker = *(static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker);
-	const deScriptingDragonScript &ds = *(((deClassNavigationBlocker*)GetOwnerClass())->GetDS());
+	const deNavigationBlocker &blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
+	const deScriptingDragonScript &ds = *(static_cast<deClassNavigationBlocker*>(GetOwnerClass())->GetDS());
 	
 	ds.GetClassDVector()->PushDVector(rt, blocker.GetPosition());
 }
@@ -102,8 +102,8 @@ deClassNavigationBlocker::nfSetPosition::nfSetPosition(const sInitData &init) : 
 	p_AddParameter(init.clsDVec); // position
 }
 void deClassNavigationBlocker::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigationBlocker &blocker = *(static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker);
-	const deScriptingDragonScript &ds = *(((deClassNavigationBlocker*)GetOwnerClass())->GetDS());
+	deNavigationBlocker &blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
+	const deScriptingDragonScript &ds = *(static_cast<deClassNavigationBlocker*>(GetOwnerClass())->GetDS());
 	
 	dsRealObject * const objPosition = rt->GetValue(0)->GetRealObject();
 	
@@ -119,8 +119,8 @@ deClassNavigationBlocker::nfGetOrientation::nfGetOrientation(const sInitData &in
 "getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
 void deClassNavigationBlocker::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigationBlocker &blocker = *(static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker);
-	const deScriptingDragonScript &ds = *(((deClassNavigationBlocker*)GetOwnerClass())->GetDS());
+	const deNavigationBlocker &blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
+	const deScriptingDragonScript &ds = *(static_cast<deClassNavigationBlocker*>(GetOwnerClass())->GetDS());
 	
 	ds.GetClassQuaternion()->PushQuaternion(rt, blocker.GetOrientation());
 }
@@ -131,8 +131,8 @@ deClassNavigationBlocker::nfSetOrientation::nfSetOrientation(const sInitData &in
 	p_AddParameter(init.clsQuat); // orientation
 }
 void deClassNavigationBlocker::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigationBlocker &blocker = *(static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker);
-	const deScriptingDragonScript &ds = *(((deClassNavigationBlocker*)GetOwnerClass())->GetDS());
+	deNavigationBlocker &blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
+	const deScriptingDragonScript &ds = *(static_cast<deClassNavigationBlocker*>(GetOwnerClass())->GetDS());
 	
 	dsRealObject * const objOrientation = rt->GetValue(0)->GetRealObject();
 	
@@ -148,7 +148,7 @@ deClassNavigationBlocker::nfGetLayer::nfGetLayer(const sInitData &init) : dsFunc
 "getLayer", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassNavigationBlocker::nfGetLayer::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigationBlocker &blocker = *(static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker);
+	const deNavigationBlocker &blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
 	
 	rt->PushInt(blocker.GetLayer());
 }
@@ -159,7 +159,7 @@ deClassNavigationBlocker::nfSetLayer::nfSetLayer(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsInt); // layer
 }
 void deClassNavigationBlocker::nfSetLayer::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigationBlocker &blocker = *(static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker);
+	deNavigationBlocker &blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
 	
 	blocker.SetLayer(rt->GetValue(0)->GetInt());
 }
@@ -169,10 +169,10 @@ deClassNavigationBlocker::nfGetSpaceType::nfGetSpaceType(const sInitData &init) 
 "getSpaceType", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsNavigationSpaceType){
 }
 void deClassNavigationBlocker::nfGetSpaceType::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigationBlocker &blocker = *(static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker);
+	const deNavigationBlocker &blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
 	
-	rt->PushValue(((deClassNavigationBlocker*)GetOwnerClass())->GetClassNavigationSpaceType()
-		->GetVariable(blocker.GetSpaceType())->GetStaticValue());
+	rt->PushValue((static_cast<deClassNavigationBlocker*>(GetOwnerClass()))->
+		GetClassNavigationSpaceType()->GetVariable(blocker.GetSpaceType())->GetStaticValue());
 }
 
 // public func void setSpaceType( NavigationSpaceType spaceType )
@@ -185,11 +185,11 @@ void deClassNavigationBlocker::nfSetSpaceType::RunFunction(dsRunTime *rt, dsValu
 		DSTHROW(dueNullPointer);
 	}
 	
-	deNavigationBlocker &blocker = *(static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker);
+	deNavigationBlocker &blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
 	
 	blocker.SetSpaceType((deNavigationSpace::eSpaceTypes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
-			*rt->GetValue( 0 )->GetRealObject() ) );
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->
+			GetConstantOrder(*rt->GetValue( 0 )->GetRealObject() ) );
 }
 
 // public func int getBlockingPriority()
@@ -197,7 +197,7 @@ deClassNavigationBlocker::nfGetBlockingPriority::nfGetBlockingPriority(const sIn
 "getBlockingPriority", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassNavigationBlocker::nfGetBlockingPriority::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigationBlocker &blocker = *(static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker);
+	const deNavigationBlocker &blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
 	
 	rt->PushInt(blocker.GetBlockingPriority());
 }
@@ -208,7 +208,7 @@ deClassNavigationBlocker::nfSetBlockingPriority::nfSetBlockingPriority(const sIn
 	p_AddParameter(init.clsInt); // priority
 }
 void deClassNavigationBlocker::nfSetBlockingPriority::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigationBlocker &blocker = *(static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker);
+	deNavigationBlocker &blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
 	
 	blocker.SetBlockingPriority(rt->GetValue(0)->GetInt());
 }
@@ -219,7 +219,7 @@ dsFunction(init.clsNavBlocker, "getEnabled", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassNavigationBlocker::nfGetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deNavigationBlocker &blocker = *(static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker);
+	const deNavigationBlocker &blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
 	rt->PushBool(blocker.GetEnabled());
 }
 
@@ -230,7 +230,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassNavigationBlocker::nfSetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigationBlocker &blocker = *(static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker);
+	deNavigationBlocker &blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
 	blocker.SetEnabled(rt->GetValue(0)->GetBool());
 }
 
@@ -242,7 +242,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
 
 void deClassNavigationBlocker::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationBlocker &blocker = *static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
-	const deScriptingDragonScript &ds = *((deClassNavigationBlocker*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = *(static_cast<deClassNavigationBlocker*>(GetOwnerClass()))->GetDS();
 	ds.GetClassWorld()->PushWorld(rt, blocker.GetParentWorld());
 }
 
@@ -251,8 +251,8 @@ deClassNavigationBlocker::nfGetShapeList::nfGetShapeList(const sInitData &init) 
 "getShapeList", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsShaList){
 }
 void deClassNavigationBlocker::nfGetShapeList::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deNavigationBlocker &blocker = *(static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker);
-	const deScriptingDragonScript &ds = *(((deClassNavigationBlocker*)GetOwnerClass())->GetDS());
+	const deNavigationBlocker &blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
+	const deScriptingDragonScript &ds = *(static_cast<deClassNavigationBlocker*>(GetOwnerClass())->GetDS());
 	
 	ds.GetClassShapeList()->PushShapeList(rt, blocker.GetShapeList());
 }
@@ -263,8 +263,8 @@ deClassNavigationBlocker::nfSetShapeList::nfSetShapeList(const sInitData &init) 
 	p_AddParameter(init.clsShaList); // shapeList
 }
 void deClassNavigationBlocker::nfSetShapeList::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNavigationBlocker &blocker = *(static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker);
-	const deScriptingDragonScript &ds = *(((deClassNavigationBlocker*)GetOwnerClass())->GetDS());
+	deNavigationBlocker &blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
+	const deScriptingDragonScript &ds = *(static_cast<deClassNavigationBlocker*>(GetOwnerClass())->GetDS());
 	dsRealObject * const objShapeList = rt->GetValue(0)->GetRealObject();
 	
 	blocker.GetShapeList() = ds.GetClassShapeList()->GetShapeList(objShapeList);
@@ -291,7 +291,7 @@ dsFunction(init.clsNavBlocker, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 }
 void deClassNavigationBlocker::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNavigationBlocker * const blocker = static_cast<const sNavBlockerNatDat*>(p_GetNativeData(myself))->blocker;
-	deClassNavigationBlocker * const clsNavBlocker = (deClassNavigationBlocker*)GetOwnerClass();
+	deClassNavigationBlocker * const clsNavBlocker = static_cast<deClassNavigationBlocker*>(GetOwnerClass());
 	dsValue * const object = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(object, clsNavBlocker)){
@@ -395,5 +395,4 @@ void deClassNavigationBlocker::PushNavigationBlocker(dsRunTime *rt, deNavigation
 	
 	rt->CreateObjectNakedOnStack(this);
 	static_cast<sNavBlockerNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->blocker = blocker;
-	blocker->AddReference();
 }

@@ -63,10 +63,10 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCanvasRenderWorld::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sCRenWNatDat * const nd = new (p_GetNativeData(myself)) sCRenWNatDat;
-	const deScriptingDragonScript &ds = ((deClassCanvasRenderWorld*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCanvasRenderWorld*>(GetOwnerClass())->GetDS();
 	
 	// super call
-	deClassCanvas * const baseClass = (deClassCanvas*)GetOwnerClass()->GetBaseClass();
+	deClassCanvas * const baseClass = static_cast<deClassCanvas*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create canvas
@@ -97,7 +97,7 @@ deClassCanvasRenderWorld::nfGetCamera::nfGetCamera(const sInitData &init) : dsFu
 }
 void deClassCanvasRenderWorld::nfGetCamera::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCRenWNatDat &nd = *static_cast<sCRenWNatDat*>(p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassCanvasRenderWorld*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCanvasRenderWorld*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassCamera()->PushCamera(rt, nd.canvas->GetCamera());
 }
@@ -109,7 +109,7 @@ deClassCanvasRenderWorld::nfSetCamera::nfSetCamera(const sInitData &init) : dsFu
 }
 void deClassCanvasRenderWorld::nfSetCamera::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCRenWNatDat &nd = *static_cast<sCRenWNatDat*>(p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassCanvasRenderWorld*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCanvasRenderWorld*>(GetOwnerClass())->GetDS();
 	
 	nd.canvas->SetCamera(ds.GetClassCamera()->GetCamera(rt->GetValue(0)->GetRealObject()));
 }
@@ -123,7 +123,7 @@ deClassCanvasRenderWorld::nfProject::nfProject(const sInitData &init) : dsFuncti
 }
 void deClassCanvasRenderWorld::nfProject::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCRenWNatDat &nd = *static_cast<sCRenWNatDat*>(p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassCanvasRenderWorld*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCanvasRenderWorld*>(GetOwnerClass())->GetDS();
 	const deCamera * const camera = nd.canvas->GetCamera();
 	if(!camera){
 		DSTHROW(dueInvalidParam);
@@ -167,7 +167,7 @@ deClassCanvasRenderWorld::nfBackProject::nfBackProject(const sInitData &init) : 
 }
 void deClassCanvasRenderWorld::nfBackProject::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sCRenWNatDat &nd = *static_cast<sCRenWNatDat*>(p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassCanvasRenderWorld*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCanvasRenderWorld*>(GetOwnerClass())->GetDS();
 	const deCamera * const camera = nd.canvas->GetCamera();
 	if(!camera){
 		DSTHROW(dueInvalidParam);
@@ -213,15 +213,15 @@ dsFunction(init.clsCRenW, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassCanvasRenderWorld::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCanvasRenderWorld * const canvas = static_cast<sCRenWNatDat*>(p_GetNativeData(myself))->canvas;
-	deClassCanvasRenderWorld * const clsCRenW = (deClassCanvasRenderWorld*)GetOwnerClass();
+	const deCanvasRenderWorld * const canvas = static_cast<sCRenWNatDat*>(p_GetNativeData(myself))->canvas;
+	deClassCanvasRenderWorld * const clsCRenW = static_cast<deClassCanvasRenderWorld*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsCRenW)){
 		rt->PushBool(false);
 		
 	}else{
-		deCanvasRenderWorld * const otherCanvas = static_cast<sCRenWNatDat*>(p_GetNativeData(obj))->canvas;
+		const deCanvasRenderWorld * const otherCanvas = static_cast<sCRenWNatDat*>(p_GetNativeData(obj))->canvas;
 		rt->PushBool(canvas == otherCanvas);
 	}
 }
@@ -304,16 +304,13 @@ void deClassCanvasRenderWorld::PushCanvas(dsRunTime *rt, deCanvasRenderWorld *ca
 		return;
 	}
 	
-	deClassCanvas * const baseClass = (deClassCanvas*)GetBaseClass();
+	deClassCanvas * const baseClass = static_cast<deClassCanvas*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sCRenWNatDat &nd = *static_cast<sCRenWNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.canvas = NULL;
+	sCRenWNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCRenWNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		nd.canvas = canvas;
-		canvas->AddReference();
+		nd->canvas = canvas;
 		
 		baseClass->AssignCanvas(rt->GetValue(0)->GetRealObject(), canvas);
 		

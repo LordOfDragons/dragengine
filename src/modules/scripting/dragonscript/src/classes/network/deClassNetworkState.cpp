@@ -147,7 +147,7 @@ void deClassNetworkState::nfAddValue::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
 	const deNetworkValueVisitorIdentify::eNetworkValues type = (deNetworkValueVisitorIdentify::eNetworkValues)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	deNetworkValue::Ref property;
@@ -165,7 +165,7 @@ void deClassNetworkState::nfAddValue::RunFunction(dsRunTime *rt, dsValue *myself
 		}
 		
 		const deNetworkValue::eValueFormats format = (deNetworkValue::eValueFormats)
-			((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+			static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 				*rt->GetValue( 1 )->GetRealObject() );
 		
 		switch(type){

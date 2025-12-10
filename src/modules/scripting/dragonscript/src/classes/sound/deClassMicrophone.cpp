@@ -113,7 +113,7 @@ void deClassMicrophone::nfSetType::RunFunction(dsRunTime *rt, dsValue *myself){
 	deMicrophone *microphone = static_cast<sMicNatDat*>(p_GetNativeData(myself))->microphone;
 	
 	microphone->SetType((deMicrophone::eMicrophoneType)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 

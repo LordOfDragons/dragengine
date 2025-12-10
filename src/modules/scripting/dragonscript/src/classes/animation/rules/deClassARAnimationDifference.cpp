@@ -76,11 +76,11 @@ void deClassARAnimationDifference::nfNew::RunFunction(dsRunTime *rt, dsValue *my
 	sARAnimDiffNatDat * const nd = new (p_GetNativeData(myself)) sARAnimDiffNatDat;
 	
 	// super call
-	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
+	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd->rule = new deAnimatorRuleAnimationDifference;
+	nd->rule.TakeOverWith();
 	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 
@@ -172,7 +172,7 @@ void deClassARAnimationDifference::nfTargetAddLink::RunFunction(dsRunTime *rt, d
 	
 	sARAnimDiffNatDat &nd = *static_cast<sARAnimDiffNatDat*>(p_GetNativeData(myself));
 	const deClassARAnimationDifference::eTargets target = (deClassARAnimationDifference::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	const int link = rt->GetValue(1)->GetInt();
 	
@@ -210,7 +210,7 @@ void deClassARAnimationDifference::nfTargetRemoveAllLinks::RunFunction(dsRunTime
 	
 	sARAnimDiffNatDat &nd = *static_cast<sARAnimDiffNatDat*>(p_GetNativeData(myself));
 	const deClassARAnimationDifference::eTargets target = (deClassARAnimationDifference::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(target){
@@ -308,7 +308,9 @@ void deClassARAnimationDifference::nfSetReferenceMoveTime::RunFunction(dsRunTime
 
 deClassARAnimationDifference::deClassARAnimationDifference(deScriptingDragonScript &ds) :
 dsClass("ARAnimationDifference", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE),
-pDS(ds){
+pDS(ds),
+pClsARAnimationDifferenceTarget(nullptr)
+{
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("AnimatorRule");
 	
@@ -376,22 +378,7 @@ void deClassARAnimationDifference::AssignAnimator(dsRealObject *myself, deAnimat
 	}
 	
 	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
-	
-	sARAnimDiffNatDat &nd = *static_cast<sARAnimDiffNatDat*>(p_GetNativeData(myself->GetBuffer()));
-	
-	if(animator == nd.animator){
-		return;
-	}
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-	}
-	
-	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
+	static_cast<sARAnimDiffNatDat*>(p_GetNativeData(myself->GetBuffer()))->animator = animator;
 }
 
 void deClassARAnimationDifference::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleAnimationDifference *rule){
@@ -404,22 +391,14 @@ void deClassARAnimationDifference::PushRule(dsRunTime *rt, deAnimator *animator,
 		return;
 	}
 	
-	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
+	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sARAnimDiffNatDat &nd = *static_cast<sARAnimDiffNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.animator = NULL;
-	nd.rule = NULL;
+	sARAnimDiffNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sARAnimDiffNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
-		nd.rule = rule;
-		rule->AddReference();
+		nd->animator = animator;
+		nd->rule = rule;
 		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);

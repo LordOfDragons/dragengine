@@ -746,7 +746,7 @@ void deClassHeightTerrain::nfNavSpaceSetType::RunFunction(dsRunTime *rt, dsValue
 	}
 	
 	navspace.SetType((deNavigationSpace::eSpaceTypes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 2 )->GetRealObject() ) );
 	sector.NotifyNavSpaceTypeChanged(index);
 }

@@ -76,11 +76,11 @@ void deClassARBoneTransformator::nfNew::RunFunction(dsRunTime *rt, dsValue *myse
 	sARBoneTransNatDat * const nd = new (p_GetNativeData(myself)) sARBoneTransNatDat;
 	
 	// super call
-	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
+	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd->rule = new deAnimatorRuleBoneTransformator;
+	nd->rule.TakeOverWith();
 	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 
@@ -153,7 +153,7 @@ deClassARBoneTransformator::nfSetMinimumTranslation::nfSetMinimumTranslation(con
 }
 void deClassARBoneTransformator::nfSetMinimumTranslation::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARBoneTransNatDat &nd = *static_cast<sARBoneTransNatDat*>(p_GetNativeData(myself));
-	const deClassARBoneTransformator &clsARBoneTrans = *((deClassARBoneTransformator*)GetOwnerClass());
+	const deClassARBoneTransformator &clsARBoneTrans = *static_cast<deClassARBoneTransformator*>(GetOwnerClass());
 	const deClassVector &clsVec = *clsARBoneTrans.GetDS().GetClassVector();
 	
 	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
@@ -172,7 +172,7 @@ deClassARBoneTransformator::nfSetMaximumTranslation::nfSetMaximumTranslation(con
 }
 void deClassARBoneTransformator::nfSetMaximumTranslation::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARBoneTransNatDat &nd = *static_cast<sARBoneTransNatDat*>(p_GetNativeData(myself));
-	const deClassARBoneTransformator &clsARBoneTrans = *((deClassARBoneTransformator*)GetOwnerClass());
+	const deClassARBoneTransformator &clsARBoneTrans = *static_cast<deClassARBoneTransformator*>(GetOwnerClass());
 	const deClassVector &clsVec = *clsARBoneTrans.GetDS().GetClassVector();
 	
 	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
@@ -191,7 +191,7 @@ deClassARBoneTransformator::nfSetMinimumRotation::nfSetMinimumRotation(const sIn
 }
 void deClassARBoneTransformator::nfSetMinimumRotation::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARBoneTransNatDat &nd = *static_cast<sARBoneTransNatDat*>(p_GetNativeData(myself));
-	const deClassARBoneTransformator &clsARBoneTrans = *((deClassARBoneTransformator*)GetOwnerClass());
+	const deClassARBoneTransformator &clsARBoneTrans = *static_cast<deClassARBoneTransformator*>(GetOwnerClass());
 	const deClassVector &clsVec = *clsARBoneTrans.GetDS().GetClassVector();
 	
 	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
@@ -210,7 +210,7 @@ deClassARBoneTransformator::nfSetMaximumRotation::nfSetMaximumRotation(const sIn
 }
 void deClassARBoneTransformator::nfSetMaximumRotation::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARBoneTransNatDat &nd = *static_cast<sARBoneTransNatDat*>(p_GetNativeData(myself));
-	const deClassARBoneTransformator &clsARBoneTrans = *((deClassARBoneTransformator*)GetOwnerClass());
+	const deClassARBoneTransformator &clsARBoneTrans = *static_cast<deClassARBoneTransformator*>(GetOwnerClass());
 	const deClassVector &clsVec = *clsARBoneTrans.GetDS().GetClassVector();
 	
 	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
@@ -229,7 +229,7 @@ deClassARBoneTransformator::nfSetMinimumScaling::nfSetMinimumScaling(const sInit
 }
 void deClassARBoneTransformator::nfSetMinimumScaling::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARBoneTransNatDat &nd = *static_cast<sARBoneTransNatDat*>(p_GetNativeData(myself));
-	const deClassARBoneTransformator &clsARBoneTrans = *((deClassARBoneTransformator*)GetOwnerClass());
+	const deClassARBoneTransformator &clsARBoneTrans = *static_cast<deClassARBoneTransformator*>(GetOwnerClass());
 	const deClassVector &clsVec = *clsARBoneTrans.GetDS().GetClassVector();
 	
 	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
@@ -248,7 +248,7 @@ deClassARBoneTransformator::nfSetMaximumScaling::nfSetMaximumScaling(const sInit
 }
 void deClassARBoneTransformator::nfSetMaximumScaling::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARBoneTransNatDat &nd = *static_cast<sARBoneTransNatDat*>(p_GetNativeData(myself));
-	const deClassARBoneTransformator &clsARBoneTrans = *((deClassARBoneTransformator*)GetOwnerClass());
+	const deClassARBoneTransformator &clsARBoneTrans = *static_cast<deClassARBoneTransformator*>(GetOwnerClass());
 	const deClassVector &clsVec = *clsARBoneTrans.GetDS().GetClassVector();
 	
 	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
@@ -267,7 +267,7 @@ dsFunction(init.clsARBoneTrans, "setAxis", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NAT
 }
 void deClassARBoneTransformator::nfSetAxis::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARBoneTransNatDat &nd = *static_cast<sARBoneTransNatDat*>(p_GetNativeData(myself));
-	const deClassARBoneTransformator &clsARBoneTrans = *((deClassARBoneTransformator*)GetOwnerClass());
+	const deClassARBoneTransformator &clsARBoneTrans = *static_cast<deClassARBoneTransformator*>(GetOwnerClass());
 	const deClassVector &clsVec = *clsARBoneTrans.GetDS().GetClassVector();
 	
 	const decVector &vector = clsVec.GetVector(rt->GetValue(0)->GetRealObject());
@@ -337,7 +337,7 @@ void deClassARBoneTransformator::nfSetCoordinateFrame::RunFunction(dsRunTime *rt
 	sARBoneTransNatDat &nd = *static_cast<sARBoneTransNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetCoordinateFrame((deAnimatorRuleBoneTransformator::eCoordinateFrames)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 	
 	if(nd.animator){
@@ -390,7 +390,7 @@ void deClassARBoneTransformator::nfSetInputSource::RunFunction(dsRunTime *rt, ds
 	sARBoneTransNatDat &nd = *static_cast<sARBoneTransNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetInputSource((deAnimatorRuleBoneTransformator::eInputSources)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue(0)->GetRealObject()));
 	
 	if(nd.animator){
@@ -413,7 +413,7 @@ void deClassARBoneTransformator::nfTargetAddLink::RunFunction(dsRunTime *rt, dsV
 	
 	sARBoneTransNatDat &nd = *static_cast<sARBoneTransNatDat*>(p_GetNativeData(myself));
 	const deClassARBoneTransformator::eTargets target = (deClassARBoneTransformator::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	const int link = rt->GetValue(1)->GetInt();
 	
@@ -455,7 +455,7 @@ void deClassARBoneTransformator::nfTargetRemoveAllLinks::RunFunction(dsRunTime *
 	
 	sARBoneTransNatDat &nd = *static_cast<sARBoneTransNatDat*>(p_GetNativeData(myself));
 	const deClassARBoneTransformator::eTargets target = (deClassARBoneTransformator::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(target){

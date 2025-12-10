@@ -1245,7 +1245,7 @@ void deClassComponent::nfSetHintMovement::RunFunction(dsRunTime *rt, dsValue *my
 	
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
 	component.SetHintMovement((deComponent::eMovementHints)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 

@@ -101,7 +101,7 @@ void deClassSSWave::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself)
 	
 	sSSWaveNatDat &nd = *static_cast<sSSWaveNatDat*>(p_GetNativeData(myself));
 	const deClassSSWave::eTargets target = (deClassSSWave::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	const int link = rt->GetValue(1)->GetInt();
 	
@@ -143,7 +143,7 @@ void deClassSSWave::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue *
 	
 	sSSWaveNatDat &nd = *static_cast<sSSWaveNatDat*>(p_GetNativeData(myself));
 	const deClassSSWave::eTargets target = (deClassSSWave::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(target){
@@ -186,7 +186,7 @@ void deClassSSWave::nfSetType::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	sSSWaveNatDat &nd = *static_cast<sSSWaveNatDat*>(p_GetNativeData(myself));
 	const deSynthesizerSourceWave::eWaveType type = (deSynthesizerSourceWave::eWaveType)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	if(type == nd.source->GetType()){

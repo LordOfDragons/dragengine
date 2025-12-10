@@ -53,7 +53,7 @@ public:
 	pRT(rt), pMyself(myself), pLanguagePack(NULL){
 	}
 	
-	virtual void BuildLanguagePack(deLanguagePack &languagePack){
+	void BuildLanguagePack(deLanguagePack &languagePack) override{
 		pLanguagePack = &languagePack;
 		
 		try{
@@ -78,7 +78,7 @@ public:
 
 
 struct sFntBldNatDat{
-	deClassLanguagePackBuilder_Builder *builder;
+	deClassLanguagePackBuilder_Builder *builder = nullptr;
 };
 
 
@@ -92,7 +92,7 @@ dsFunction(init.clsLanguagePackBuilder, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLanguagePackBuilder::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder = NULL;
+	static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder = nullptr;
 }
 
 // public destructor Destructor()
@@ -101,11 +101,6 @@ dsFunction(init.clsLanguagePackBuilder, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLanguagePackBuilder::nfDestructor::RunFunction(dsRunTime*, dsValue*){
-	if(myself->GetRealObject()->GetRefCount() != 1){
-		return; // protected against GC cleaning up leaking
-	}
-	
-	static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->~sFntBldNatDat();
 }
 
 
@@ -122,7 +117,7 @@ void deClassLanguagePackBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *my
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassLanguagePackBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLanguagePackBuilder*>(GetOwnerClass())->GetDS();
 	const char * const filename = rt->GetValue(0)->GetString();
 	deClassLanguagePackBuilder_Builder builder(rt, myself);
 	deLanguagePack::Ref languagePack;
@@ -160,12 +155,12 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsUnicodeString); // name
 }
 void deClassLanguagePackBuilder::nfSetName::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassLanguagePackBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassLanguagePackBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetLanguagePack()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassLanguagePackBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLanguagePackBuilder*>(GetOwnerClass())->GetDS();
 	builder->GetLanguagePack()->SetName(ds.GetClassUnicodeString()->GetUnicodeString(
 		rt->GetValue(0)->GetRealObject()));
 }
@@ -177,12 +172,12 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsUnicodeString); // description
 }
 void deClassLanguagePackBuilder::nfSetDescription::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassLanguagePackBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassLanguagePackBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetLanguagePack()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassLanguagePackBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLanguagePackBuilder*>(GetOwnerClass())->GetDS();
 	builder->GetLanguagePack()->SetDescription(ds.GetClassUnicodeString()->GetUnicodeString(
 		rt->GetValue(0)->GetRealObject()));
 }
@@ -194,12 +189,12 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsUnicodeString); // missingText
 }
 void deClassLanguagePackBuilder::nfSetMissingText::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassLanguagePackBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassLanguagePackBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetLanguagePack()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassLanguagePackBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLanguagePackBuilder*>(GetOwnerClass())->GetDS();
 	builder->GetLanguagePack()->SetMissingText(ds.GetClassUnicodeString()->GetUnicodeString(
 		rt->GetValue(0)->GetRealObject()));
 }
@@ -211,7 +206,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassLanguagePackBuilder::nfSetEntryCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassLanguagePackBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassLanguagePackBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetLanguagePack()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -233,7 +228,7 @@ void deClassLanguagePackBuilder::nfSetEntryAt::RunFunction(dsRunTime *rt, dsValu
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassLanguagePackBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLanguagePackBuilder*>(GetOwnerClass())->GetDS();
 	deLanguagePackEntry &entry = builder->GetLanguagePack()->GetEntryAt(rt->GetValue(0)->GetInt());
 	entry.SetName(rt->GetValue(1)->GetString());
 	entry.SetText(ds.GetClassUnicodeString()->GetUnicodeString(rt->GetValue(2)->GetRealObject()));

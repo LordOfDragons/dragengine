@@ -113,7 +113,7 @@ void deClassSoundLevelMeter::nfSetType::RunFunction(dsRunTime *rt, dsValue *myse
 	
 	deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
 	soundLevelMeter.SetType((deSoundLevelMeter::eMeterTypes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 

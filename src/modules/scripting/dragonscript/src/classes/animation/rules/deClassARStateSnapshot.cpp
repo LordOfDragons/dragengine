@@ -76,11 +76,11 @@ void deClassARStateSnapshot::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sARSnapNatDat * const nd = new (p_GetNativeData(myself)) sARSnapNatDat;
 	
 	// super call
-	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
+	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd->rule = new deAnimatorRuleStateSnapshot;
+	nd->rule.TakeOverWith();
 	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 
@@ -206,7 +206,7 @@ void deClassARStateSnapshot::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue
 	
 	sARSnapNatDat &nd = *static_cast<sARSnapNatDat*>(p_GetNativeData(myself));
 	const deClassARStateSnapshot::eTargets target = (deClassARStateSnapshot::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	const int link = rt->GetValue(1)->GetInt();
 	
@@ -236,7 +236,7 @@ void deClassARStateSnapshot::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, 
 	
 	sARSnapNatDat &nd = *static_cast<sARSnapNatDat*>(p_GetNativeData(myself));
 	const deClassARStateSnapshot::eTargets target = (deClassARStateSnapshot::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(target){
@@ -329,22 +329,7 @@ void deClassARStateSnapshot::AssignAnimator(dsRealObject *myself, deAnimator *an
 	}
 	
 	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
-	
-	sARSnapNatDat &nd = *static_cast<sARSnapNatDat*>(p_GetNativeData(myself->GetBuffer()));
-	
-	if(animator == nd.animator){
-		return;
-	}
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-	}
-	
-	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
+	static_cast<sARSnapNatDat*>(p_GetNativeData(myself->GetBuffer()))->animator = animator;
 }
 
 void deClassARStateSnapshot::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleStateSnapshot *rule){
@@ -357,22 +342,14 @@ void deClassARStateSnapshot::PushRule(dsRunTime *rt, deAnimator *animator, deAni
 		return;
 	}
 	
-	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
+	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sARSnapNatDat &nd = *static_cast<sARSnapNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.animator = NULL;
-	nd.rule = NULL;
+	sARSnapNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sARSnapNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
-		nd.rule = rule;
-		rule->AddReference();
+		nd->animator = animator;
+		nd->rule = rule;
 		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);

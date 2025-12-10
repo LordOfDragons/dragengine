@@ -155,7 +155,7 @@ void deClassDynamicSkin::nfAddRenderable::RunFunction(dsRunTime *rt, dsValue *my
 	}
 	
 	const deDSRenderableVisitorIdentify::eRenderableTypes type = (deDSRenderableVisitorIdentify::eRenderableTypes)
-		(((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		(static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() ) );
 	
 	switch(type){

@@ -119,7 +119,7 @@ void deClassSpeaker::nfSetType::RunFunction(dsRunTime *rt, dsValue *myself){
 	deSpeaker *speaker = static_cast<sSpkNatDat*>(p_GetNativeData(myself))->speaker;
 	
 	speaker->SetType((deSpeaker::eSpeakerType)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 

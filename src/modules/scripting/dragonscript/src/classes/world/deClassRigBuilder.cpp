@@ -369,7 +369,7 @@ void deClassRigBuilder::nfSetBoneConstraintDof::RunFunction(dsRunTime *rt, dsVal
 	deRigBone &bone = builder->GetRig()->GetBoneAt(rt->GetValue(0)->GetInt());
 	deRigConstraint &constraint = bone.GetConstraintAt(rt->GetValue(1)->GetInt());
 	const deColliderConstraint::eDegreesOfFreedom dofEnum = (deColliderConstraint::eDegreesOfFreedom)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 2 )->GetRealObject() );
 	deColliderConstraintDof &dof = constraint.GetDof(dofEnum);
 	

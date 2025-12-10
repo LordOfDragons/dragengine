@@ -253,7 +253,7 @@ void deClassColliderConstraint::nfGetLowerLimitFor::RunFunction(dsRunTime *rt, d
 	
 	deColliderConstraint *constraint = static_cast<sCConNatDat*>(p_GetNativeData(myself))->constraint;
 	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(dof){
@@ -286,7 +286,7 @@ void deClassColliderConstraint::nfGetUpperLimitFor::RunFunction(dsRunTime *rt, d
 	
 	deColliderConstraint *constraint = static_cast<sCConNatDat*>(p_GetNativeData(myself))->constraint;
 	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(dof){
@@ -321,7 +321,7 @@ void deClassColliderConstraint::nfSetLimitsFor::RunFunction(dsRunTime *rt, dsVal
 	
 	deColliderConstraint *constraint = static_cast<sCConNatDat*>(p_GetNativeData(myself))->constraint;
 	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	float lowerLimit = rt->GetValue(1)->GetFloat();
 	float upperLimit = rt->GetValue(2)->GetFloat();
@@ -496,7 +496,7 @@ void deClassColliderConstraint::nfGetStaticFrictionFor::RunFunction(dsRunTime *r
 	
 	deColliderConstraint *constraint = static_cast<sCConNatDat*>(p_GetNativeData(myself))->constraint;
 	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	rt->PushFloat(constraint->GetDof(dof).GetStaticFriction());
@@ -515,7 +515,7 @@ void deClassColliderConstraint::nfSetStaticFrictionFor::RunFunction(dsRunTime *r
 	
 	deColliderConstraint *constraint = static_cast<sCConNatDat*>(p_GetNativeData(myself))->constraint;
 	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	constraint->GetDof(dof).SetStaticFriction(rt->GetValue(1)->GetFloat());
@@ -533,7 +533,7 @@ void deClassColliderConstraint::nfGetKinematicFrictionFor::RunFunction(dsRunTime
 	
 	deColliderConstraint *constraint = static_cast<sCConNatDat*>(p_GetNativeData(myself))->constraint;
 	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	rt->PushFloat(constraint->GetDof(dof).GetKinematicFriction());
@@ -552,7 +552,7 @@ void deClassColliderConstraint::nfSetKinematicFrictionFor::RunFunction(dsRunTime
 	
 	deColliderConstraint *constraint = static_cast<sCConNatDat*>(p_GetNativeData(myself))->constraint;
 	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	constraint->GetDof(dof).SetKinematicFriction(rt->GetValue(1)->GetFloat());
@@ -570,7 +570,7 @@ void deClassColliderConstraint::nfGetSpringStiffnessFor::RunFunction(dsRunTime *
 	
 	deColliderConstraint *constraint = static_cast<sCConNatDat*>(p_GetNativeData(myself))->constraint;
 	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	rt->PushFloat(constraint->GetDof(dof).GetSpringStiffness());
@@ -589,7 +589,7 @@ void deClassColliderConstraint::nfSetSpringStiffnessFor::RunFunction(dsRunTime *
 	
 	deColliderConstraint *constraint = static_cast<sCConNatDat*>(p_GetNativeData(myself))->constraint;
 	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	constraint->GetDof(dof).SetSpringStiffness(rt->GetValue(1)->GetFloat());
@@ -696,7 +696,7 @@ void deClassColliderConstraint::nfSetToHingeJoint::RunFunction(dsRunTime *rt, ds
 	
 	deColliderConstraint *constraint = static_cast<sCConNatDat*>(p_GetNativeData(myself))->constraint;
 	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	float lowerLimit = rt->GetValue(1)->GetFloat();
 	float upperLimit = rt->GetValue(2)->GetFloat();
@@ -718,7 +718,7 @@ void deClassColliderConstraint::nfSetToPistonJoint::RunFunction(dsRunTime *rt, d
 	
 	deColliderConstraint *constraint = static_cast<sCConNatDat*>(p_GetNativeData(myself))->constraint;
 	const deColliderConstraint::eDegreesOfFreedom dof = (deColliderConstraint::eDegreesOfFreedom)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	float lowerLimit = rt->GetValue(1)->GetFloat();
 	float upperLimit = rt->GetValue(2)->GetFloat();

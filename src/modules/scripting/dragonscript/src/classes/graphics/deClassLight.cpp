@@ -125,7 +125,7 @@ void deClassLight::nfSetType::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 	
 	light.SetType((deLight::eLightTypes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 
@@ -671,7 +671,7 @@ void deClassLight::nfSetHintMovement::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
 	light.SetHintMovement((deLight::eMovementHints)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 
@@ -699,7 +699,7 @@ void deClassLight::nfSetHintParameter::RunFunction(dsRunTime *rt, dsValue *mysel
 	}
 	
 	light.SetHintParameter((deLight::eParameterHints)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 

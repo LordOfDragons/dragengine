@@ -101,7 +101,7 @@ void deClassSSSynthesizer::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *
 	
 	sSSSynNatDat &nd = *static_cast<sSSSynNatDat*>(p_GetNativeData(myself));
 	const deClassSSSynthesizer::eTargets target = (deClassSSSynthesizer::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	const int link = rt->GetValue(1)->GetInt();
 	
@@ -139,7 +139,7 @@ void deClassSSSynthesizer::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, ds
 	
 	sSSSynNatDat &nd = *static_cast<sSSSynNatDat*>(p_GetNativeData(myself));
 	const deClassSSSynthesizer::eTargets target = (deClassSSSynthesizer::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(target){

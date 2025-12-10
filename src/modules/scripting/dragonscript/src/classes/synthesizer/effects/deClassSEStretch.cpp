@@ -102,7 +102,7 @@ void deClassSEStretch::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myse
 	
 	sSEStretchNatDat &nd = *static_cast<sSEStretchNatDat*>(p_GetNativeData(myself));
 	const deClassSEStretch::eTargets target = (deClassSEStretch::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	const int link = rt->GetValue(1)->GetInt();
 	
@@ -140,7 +140,7 @@ void deClassSEStretch::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValu
 	
 	sSEStretchNatDat &nd = *static_cast<sSEStretchNatDat*>(p_GetNativeData(myself));
 	const deClassSEStretch::eTargets target = (deClassSEStretch::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(target){

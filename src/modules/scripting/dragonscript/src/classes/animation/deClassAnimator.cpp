@@ -70,12 +70,11 @@ deClassAnimator::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsAr,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimator::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sArNatDat *nd = static_cast<sArNatDat*>(p_GetNativeData(myself);
-	deClassAnimator *clsAr = (deClassAnimator*)GetOwnerClass();
+	sArNatDat * const nd = new (p_GetNativeData(myself)) sArNatDat;
+	
+	deClassAnimator *clsAr = static_cast<deClassAnimator*>(GetOwnerClass());
 	deAnimatorManager *aniMgr = clsAr->GetDS()->GetGameEngine()->GetAnimatorManager();
-	// create animator
 	nd->animator = aniMgr->CreateAnimator();
-	if(!nd->animator) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -97,8 +96,8 @@ deClassAnimator::nfGetRig::nfGetRig(const sInitData &init) : dsFunction(init.cls
 "getRig", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsRig){
 }
 void deClassAnimator::nfGetRig::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
-	deClassAnimator *clsAr = (deClassAnimator*)GetOwnerClass();
+	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	const deClassAnimator *clsAr = static_cast<deClassAnimator*>(GetOwnerClass());
 	clsAr->GetDS()->GetClassRig()->PushRig(rt, animator->GetRig());
 }
 
@@ -109,7 +108,7 @@ deClassAnimator::nfSetRig::nfSetRig(const sInitData &init) : dsFunction(init.cls
 }
 void deClassAnimator::nfSetRig::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
-	deClassAnimator *clsAr = (deClassAnimator*)GetOwnerClass();
+	const deClassAnimator *clsAr = static_cast<deClassAnimator*>(GetOwnerClass());
 	dsRealObject *objRig = rt->GetValue(0)->GetRealObject();
 	
 	animator->SetRig(clsAr->GetDS()->GetClassRig()->GetRig(objRig));
@@ -120,8 +119,8 @@ deClassAnimator::nfGetAnimation::nfGetAnimation(const sInitData &init) : dsFunct
 "getAnimation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsAni){
 }
 void deClassAnimator::nfGetAnimation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
-	deClassAnimator *clsAr = (deClassAnimator*)GetOwnerClass();
+	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	const deClassAnimator *clsAr = static_cast<deClassAnimator*>(GetOwnerClass());
 	clsAr->GetDS()->GetClassAnimation()->PushAnimation(rt, animator->GetAnimation());
 }
 
@@ -132,7 +131,7 @@ deClassAnimator::nfSetAnimation::nfSetAnimation(const sInitData &init) : dsFunct
 }
 void deClassAnimator::nfSetAnimation::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
-	deClassAnimator *clsAr = (deClassAnimator*)GetOwnerClass();
+	const deClassAnimator *clsAr = static_cast<deClassAnimator*>(GetOwnerClass());
 	dsRealObject *objAnimation = rt->GetValue(0)->GetRealObject();
 	
 	animator->SetAnimation(clsAr->GetDS()->GetClassAnimation()->GetAnimation(objAnimation));
@@ -145,7 +144,7 @@ deClassAnimator::nfGetControllerCount::nfGetControllerCount(const sInitData &ini
 "getControllerCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassAnimator::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
 	rt->PushInt(animator->GetControllerCount());
 }
 
@@ -185,7 +184,7 @@ deClassAnimator::nfGetControllerAt::nfGetControllerAt(const sInitData &init) : d
 }
 void deClassAnimator::nfGetControllerAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimator * const animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
-	const deScriptingDragonScript &ds = *(((deClassAnimator*)GetOwnerClass())->GetDS());
+	const deScriptingDragonScript &ds = *((static_cast<deClassAnimator*>(GetOwnerClass()))->GetDS());
 	const int index = rt->GetValue(0)->GetInt();
 	
 	if(index < 0){
@@ -204,7 +203,7 @@ deClassAnimator::nfGetControllerNamed::nfGetControllerNamed(const sInitData &ini
 }
 void deClassAnimator::nfGetControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimator * const animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
-	const deScriptingDragonScript &ds = *(((deClassAnimator*)GetOwnerClass())->GetDS());
+	const deScriptingDragonScript &ds = *((static_cast<deClassAnimator*>(GetOwnerClass()))->GetDS());
 	const int index = animator->IndexOfControllerNamed(rt->GetValue(0)->GetString());
 	
 	if(index == -1){
@@ -221,7 +220,7 @@ deClassAnimator::nfIndexOfControllerNamed::nfIndexOfControllerNamed(const sInitD
 	p_AddParameter(init.clsStr); // name
 }
 void deClassAnimator::nfIndexOfControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator * const animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	const deAnimator * const animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
 	rt->PushInt(animator->IndexOfControllerNamed(rt->GetValue(0)->GetString()));
 }
 
@@ -232,7 +231,7 @@ deClassAnimator::nfGetLinkCount::nfGetLinkCount(const sInitData &init) : dsFunct
 "getLinkCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassAnimator::nfGetLinkCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
 	
 	rt->PushInt(animator->GetLinkCount());
 }
@@ -299,7 +298,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassAnimator::nfSetLinkCurve::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimator &animator = *(static_cast<sArNatDat*>(p_GetNativeData(myself))->animator);
-	deScriptingDragonScript &ds = *(((deClassAnimator*)GetOwnerClass())->GetDS());
+	deScriptingDragonScript &ds = *((static_cast<deClassAnimator*>(GetOwnerClass()))->GetDS());
 	
 	const int index = rt->GetValue(0)->GetInt();
 	const decCurveBezier &curve = ds.GetClassCurveBezier()->GetCurve(rt->GetValue(1)->GetRealObject());
@@ -356,7 +355,7 @@ void deClassAnimator::nfSetLinkBoneParameter::RunFunction(dsRunTime *rt, dsValue
 	deAnimatorLink &link = *animator.GetLinkAt(index);
 	
 	link.SetBoneParameter((deAnimatorLink::eBoneParameter)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() ) );
 	
 	animator.NotifyLinkChangedAt(index);
@@ -455,7 +454,7 @@ deClassAnimator::nfGetRuleCount::nfGetRuleCount(const sInitData &init) : dsFunct
 "getRuleCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassAnimator::nfGetRuleCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
 	rt->PushInt(animator->GetRuleCount());
 }
 
@@ -466,7 +465,7 @@ deClassAnimator::nfAddRule::nfAddRule(const sInitData &init) : dsFunction(init.c
 }
 void deClassAnimator::nfAddRule::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
-	deClassAnimator &clsAr = *((deClassAnimator*)GetOwnerClass());
+	deClassAnimator &clsAr = *(static_cast<deClassAnimator*>(GetOwnerClass()));
 	deClassAnimatorRule &clsArR = *clsAr.GetDS()->GetClassAnimatorRule();
 	
 	dsRealObject *objRule = rt->GetValue(0)->GetRealObject();
@@ -486,7 +485,7 @@ deClassAnimator::nfGetRuleAt::nfGetRuleAt(const sInitData &init) : dsFunction(in
 }
 void deClassAnimator::nfGetRuleAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
-	deClassAnimator &clsAr = *((deClassAnimator*)GetOwnerClass());
+	deClassAnimator &clsAr = *(static_cast<deClassAnimator*>(GetOwnerClass()));
 	deClassAnimatorRule &clsArR = *clsAr.GetDS()->GetClassAnimatorRule();
 	
 	const int position = rt->GetValue(0)->GetInt();
@@ -586,13 +585,13 @@ deClassAnimator::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.cls
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassAnimator::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
-	deClassAnimator *clsAr = (deClassAnimator*)GetOwnerClass();
+	const deAnimator *animator = static_cast<sArNatDat*>(p_GetNativeData(myself))->animator;
+	deClassAnimator *clsAr = static_cast<deClassAnimator*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	if(!p_IsObjOfType(obj, clsAr)){
 		rt->PushBool(false);
 	}else{
-		deAnimator *otherAnimator = static_cast<sArNatDat*>(p_GetNativeData(obj))->animator;
+		const deAnimator *otherAnimator = static_cast<sArNatDat*>(p_GetNativeData(obj))->animator;
 		rt->PushBool(animator == otherAnimator);
 	}
 }
@@ -604,9 +603,9 @@ dsFunction(init.clsAr, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DSTM
 	p_AddParameter(init.clsAr); // animator2
 }
 void deClassAnimator::nfEquals2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassAnimator &clsAr = *((deClassAnimator*)GetOwnerClass());
-	deAnimator *animator1 = clsAr.GetAnimator(rt->GetValue(0)->GetRealObject());
-	deAnimator *animator2 = clsAr.GetAnimator(rt->GetValue(1)->GetRealObject());
+	const deClassAnimator &clsAr = *(static_cast<deClassAnimator*>(GetOwnerClass()));
+	const deAnimator *animator1 = clsAr.GetAnimator(rt->GetValue(0)->GetRealObject());
+	const deAnimator *animator2 = clsAr.GetAnimator(rt->GetValue(1)->GetRealObject());
 	
 	rt->PushBool(animator1 == animator2);
 }
@@ -730,6 +729,5 @@ void deClassAnimator::PushAnimator(dsRunTime *rt, deAnimator *animator){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sArNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->animator = animator;
-	animator->AddReference();
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sArNatDat)->animator = animator;
 }

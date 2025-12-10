@@ -101,7 +101,7 @@ void deClassSSGroup::nfTargetAddLink::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	sSSGroupNatDat &nd = *static_cast<sSSGroupNatDat*>(p_GetNativeData(myself));
 	const deClassSSGroup::eTargets target = (deClassSSGroup::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	const int link = rt->GetValue(1)->GetInt();
 	
@@ -143,7 +143,7 @@ void deClassSSGroup::nfTargetRemoveAllLinks::RunFunction(dsRunTime *rt, dsValue 
 	
 	sSSGroupNatDat &nd = *static_cast<sSSGroupNatDat*>(p_GetNativeData(myself));
 	const deClassSSGroup::eTargets target = (deClassSSGroup::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(target){
@@ -187,7 +187,7 @@ void deClassSSGroup::nfSetApplicationType::RunFunction(dsRunTime *rt, dsValue *m
 	sSSGroupNatDat &nd = *static_cast<sSSGroupNatDat*>(p_GetNativeData(myself));
 	
 	const deSynthesizerSourceGroup::eApplicationTypes type = (deSynthesizerSourceGroup::eApplicationTypes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	if(type == nd.source->GetApplicationType()){

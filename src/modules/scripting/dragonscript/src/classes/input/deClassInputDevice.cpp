@@ -426,7 +426,7 @@ void deClassInputDevice::nfButtonMatchingKeyCode2::RunFunction(dsRunTime *rt, ds
 	const deInputEvent::eKeyCodes keyCode = (deInputEvent::eKeyCodes)rt->GetValue(0)->GetInt();
 	
 	const deInputEvent::eKeyLocation location = (deInputEvent::eKeyLocation)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() );
 	
 	rt->PushInt(module.ButtonMatchingKeyCode(
@@ -448,7 +448,7 @@ void deClassInputDevice::nfButtonMatchingKeyChar2::RunFunction(dsRunTime *rt, ds
 	const int keyChar = rt->GetValue(0)->GetInt();
 	
 	const deInputEvent::eKeyLocation location = (deInputEvent::eKeyLocation)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() );
 	
 	rt->PushInt(module.ButtonMatchingKeyChar(

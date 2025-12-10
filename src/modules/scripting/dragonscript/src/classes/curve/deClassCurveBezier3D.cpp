@@ -307,7 +307,7 @@ void deClassCurveBezier3D::nfSetInterpolationMode::RunFunction(dsRunTime *rt, ds
 	decCurveBezier3D &curve = *static_cast<sCBezier3DNatDat*>(p_GetNativeData(myself))->curve;
 	
 	curve.SetInterpolationMode((decCurveBezier3D::eInterpolationModes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue(0)->GetRealObject()));
 }
 
