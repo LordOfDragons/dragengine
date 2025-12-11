@@ -130,7 +130,7 @@ dsFunction(init.clsEffOverImg, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassEffectOverlayImage::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEffectOverlayImage * const effect = static_cast<sEffOverImgMatrixNatDat*>(p_GetNativeData(myself))->effect;
+	const deEffectOverlayImage * const effect = static_cast<sEffOverImgMatrixNatDat*>(p_GetNativeData(myself))->effect;
 	deClassEffectOverlayImage * const clsEffOverImg = static_cast<deClassEffectOverlayImage*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -138,7 +138,7 @@ void deClassEffectOverlayImage::nfEquals::RunFunction(dsRunTime *rt, dsValue *my
 		rt->PushBool(false);
 		
 	}else{
-		deEffectOverlayImage * const otherEffect = static_cast<sEffOverImgMatrixNatDat*>(p_GetNativeData(obj))->effect;
+		const deEffectOverlayImage * const otherEffect = static_cast<sEffOverImgMatrixNatDat*>(p_GetNativeData(obj))->effect;
 		rt->PushBool(effect == otherEffect);
 	}
 }
@@ -217,14 +217,11 @@ void deClassEffectOverlayImage::PushEffect(dsRunTime *rt, deEffectOverlayImage *
 	
 	deClassEffect * const baseClass = static_cast<deClassEffect*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sEffOverImgMatrixNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sEffOverImgMatrixNatDat;
-	nd->effect = nullptr;
+	sEffOverImgMatrixNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sEffOverImgMatrixNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
 		nd->effect = effect;
-		effect->AddReference();
 		
 		baseClass->AssignEffect(rt->GetValue(0)->GetRealObject(), effect);
 		

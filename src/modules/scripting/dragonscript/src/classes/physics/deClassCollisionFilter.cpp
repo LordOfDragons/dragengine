@@ -45,7 +45,7 @@
 
 
 struct sCFNatDat{
-	decCollisionFilter *layerMask;
+	decCollisionFilter layerMask;
 };
 
 
@@ -58,10 +58,7 @@ deClassCollisionFilter::nfNew::nfNew(const sInitData &init) : dsFunction(init.cl
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollisionFilter::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCFNatDat * const nd = new (p_GetNativeData(myself)) sCFNatDat;
-	
-	// create layer mask
-	nd->layerMask = new decCollisionFilter;
+	new (p_GetNativeData(myself)) sCFNatDat;
 }
 
 // public func new( CollisionFilter collisionFilter )
@@ -74,8 +71,7 @@ void deClassCollisionFilter::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myse
 	const deClassCollisionFilter &clsCF = *(static_cast<deClassCollisionFilter*>(GetOwnerClass()));
 	
 	// create layer mask
-	const decCollisionFilter &collisionFilter = clsCF.GetCollisionFilter(rt->GetValue(0)->GetRealObject());
-	nd->layerMask = new decCollisionFilter(collisionFilter);
+	nd->layerMask = clsCF.GetCollisionFilter(rt->GetValue(0)->GetRealObject());
 }
 
 // public func new( LayerMask layerMask )
@@ -88,8 +84,7 @@ void deClassCollisionFilter::nfNewMask::RunFunction(dsRunTime *rt, dsValue *myse
 	const deClassLayerMask &clsLyM = *((static_cast<deClassCollisionFilter*>(GetOwnerClass()))->GetDS()->GetClassLayerMask());
 	
 	// create layer mask
-	const decLayerMask &layerMask = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
-	nd->layerMask = new decCollisionFilter(layerMask);
+	nd->layerMask = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 }
 
 // public func new( LayerMask category, LayerMask filter )
@@ -105,7 +100,7 @@ void deClassCollisionFilter::nfNewCategoryFilter::RunFunction(dsRunTime *rt, dsV
 	// create layer mask
 	const decLayerMask &category = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	const decLayerMask &filter = clsLyM.GetLayerMask(rt->GetValue(1)->GetRealObject());
-	nd->layerMask = new decCollisionFilter(category, filter);
+	nd->layerMask = decCollisionFilter(category, filter);
 }
 
 // public func destructor()
@@ -229,8 +224,8 @@ dsFunction(init.clsCF, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, ini
 }
 
 void deClassCollisionFilter::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decCollisionFilter * const collisionFilter = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
-	rt->PushInt((int)(intptr_t)collisionFilter);
+	const decCollisionFilter &collisionFilter = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	rt->PushInt((int)(intptr_t)&collisionFilter);
 }
 
 // public func bool equals( Object object )
@@ -342,7 +337,7 @@ const decCollisionFilter &deClassCollisionFilter::GetCollisionFilter(dsRealObjec
 		DSTHROW(dueNullPointer);
 	}
 	
-	return *(static_cast<sCFNatDat*>(p_GetNativeData(myself->GetBuffer()))->layerMask);
+	return static_cast<sCFNatDat*>(p_GetNativeData(myself->GetBuffer()))->layerMask;
 }
 
 void deClassCollisionFilter::PushCollisionFilter(dsRunTime *rt, const decCollisionFilter &collisionFilter){
@@ -351,11 +346,10 @@ void deClassCollisionFilter::PushCollisionFilter(dsRunTime *rt, const decCollisi
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sCFNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCFNatDat;
-	nd->layerMask = nullptr;
+	sCFNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCFNatDat;
 	
 	try{
-		nd->layerMask = new decCollisionFilter(collisionFilter);
+		nd->layerMask = collisionFilter;
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

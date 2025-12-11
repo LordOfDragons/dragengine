@@ -64,7 +64,7 @@ deClassEffect::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsEffect,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassEffect::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sEffNatDat * const nd = new (p_GetNativeData(myself)) sEffNatDat;
+	new (p_GetNativeData(myself)) sEffNatDat;
 }
 
 // public func destructor()
@@ -130,7 +130,7 @@ dsFunction(init.clsEffect, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassEffect::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEffect * const effect = static_cast<sEffNatDat*>(p_GetNativeData(myself))->effect;
+	const deEffect * const effect = static_cast<sEffNatDat*>(p_GetNativeData(myself))->effect;
 	deClassEffect * const clsEffect = static_cast<deClassEffect*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -138,7 +138,7 @@ void deClassEffect::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		deEffect * const otherEffect = static_cast<sEffNatDat*>(p_GetNativeData(obj))->effect;
+		const deEffect * const otherEffect = static_cast<sEffNatDat*>(p_GetNativeData(obj))->effect;
 		rt->PushBool(effect == otherEffect);
 	}
 }
@@ -200,21 +200,7 @@ void deClassEffect::AssignEffect(dsRealObject *myself, deEffect *effect){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	sEffNatDat &nd = *static_cast<sEffNatDat*>(p_GetNativeData(myself->GetBuffer()));
-	
-	if(effect == nd.effect){
-		return;
-	}
-	
-	if(nd.effect){
-		nd.effect->FreeReference();
-	}
-	
-	nd.effect = effect;
-	
-	if(effect){
-		effect->AddReference();
-	}
+	static_cast<sEffNatDat*>(p_GetNativeData(myself->GetBuffer()))->effect = effect;
 }
 
 

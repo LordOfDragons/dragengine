@@ -97,7 +97,7 @@ public:
 	deoglDynamicTBOBlock *GetBlockAt(int index) const;
 	
 	/** Add block. Returns block or NULL if not enough space. */
-	deoglDynamicTBOBlock *AddBlock(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = NULL);
+	deoglDynamicTBOBlock::Ref AddBlock(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = NULL);
 	
 	/** Remove block returning the space to the pool of free space. */
 	void RemoveBlock(deoglDynamicTBOBlock *block);

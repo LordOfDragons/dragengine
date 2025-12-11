@@ -47,7 +47,14 @@
 /////////////////////
 
 struct sSmDblNatDat{
-	decSmoothDouble *smoothDouble;
+	decSmoothDouble *smoothDouble = nullptr;
+	
+	~sSmDblNatDat(){
+		if(smoothDouble){
+			delete smoothDouble;
+			smoothDouble = nullptr;
+		}
+	}
 };
 
 
@@ -404,8 +411,7 @@ void deClassSmoothDouble::PushSmoothDouble(dsRunTime *rt, const decSmoothDouble 
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSmDblNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSmDblNatDat;
-	nd->smoothDouble = nullptr;
+	sSmDblNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSmDblNatDat;
 	
 	try{
 		nd->smoothDouble = new decSmoothDouble(smoothDouble);

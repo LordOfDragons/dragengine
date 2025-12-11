@@ -46,7 +46,7 @@
 
 // native structure
 struct sMUIDNatDat{
-	decUniqueID *id;
+	decUniqueID id;
 };
 
 
@@ -62,10 +62,7 @@ deClassMutableID::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsMUID,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassMutableID::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sMUIDNatDat * const nd = new (p_GetNativeData(myself)) sMUIDNatDat;
-	
-	// create id
-	nd->id = new decUniqueID;
+	new (p_GetNativeData(myself)) sMUIDNatDat;
 }
 
 // public func new( int value )
@@ -76,8 +73,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassMutableID::nfNewValue::RunFunction(dsRunTime *rt, dsValue *myself){
 	sMUIDNatDat * const nd = new (p_GetNativeData(myself)) sMUIDNatDat;
 	
-	// create id
-	nd->id = new decUniqueID(rt->GetValue(0)->GetInt());
+	nd->id = decUniqueID(rt->GetValue(0)->GetInt());
 }
 
 // public func new( UniqueID id )
@@ -90,8 +86,7 @@ void deClassMutableID::nfNewUniqueID::RunFunction(dsRunTime *rt, dsValue *myself
 	const deScriptingDragonScript &ds = (static_cast<deClassMutableID*>(GetOwnerClass()))->GetDS();
 	
 	// create id
-	const decUniqueID &uid = ds.GetClassUniqueID()->GetUniqueID(rt->GetValue(0)->GetRealObject());
-	nd->id = new decUniqueID(uid);
+	nd->id = ds.GetClassUniqueID()->GetUniqueID(rt->GetValue(0)->GetRealObject());
 }
 
 // public func new( MutableID copy )
@@ -104,8 +99,7 @@ void deClassMutableID::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deClassMutableID &clsMUID = *(static_cast<deClassMutableID*>(GetOwnerClass()));
 	
 	// create id
-	const decUniqueID &uid = clsMUID.GetMutableID(rt->GetValue(0)->GetRealObject());
-	nd->id = new decUniqueID(uid);
+	nd->id = clsMUID.GetMutableID(rt->GetValue(0)->GetRealObject());
 }
 
 // public func destructor()
@@ -447,9 +441,9 @@ dsFunction(init.clsMUID, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, i
 }
 
 void deClassMutableID::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const decUniqueID * const id = static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id;
+	const decUniqueID &id = static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id;
 	
-	rt->PushInt((int)(intptr_t)id);
+	rt->PushInt((int)(intptr_t)&id);
 }
 
 // public func bool equals( Object object )
@@ -477,7 +471,7 @@ deClassMutableID::nfToString::nfToString(const sInitData &init) : dsFunction(ini
 }
 void deClassMutableID::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decUniqueID &id = static_cast<sMUIDNatDat*>(p_GetNativeData(myself))->id;
-	int b, offset, value, byteCount = id.GetBitCount() / 8;
+	int b, offset, byteCount = id.GetBitCount() / 8;
 	char buffer[100];
 	
 	offset = 0;
@@ -488,7 +482,7 @@ void deClassMutableID::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
 	for(b=byteCount-1; b>=0; b--){
 		const int vbyte = id.GetByteAt(b);
 		
-		value = (vbyte & 0xf0) >> 4;
+		int value = (vbyte & 0xf0) >> 4;
 		if(value < 10){
 			buffer[offset++] = '0' + value;
 			
@@ -601,7 +595,7 @@ decUniqueID &deClassMutableID::GetMutableID(dsRealObject *myself) const{
 		DSTHROW(dueNullPointer);
 	}
 	
-	return *static_cast<sMUIDNatDat*>(p_GetNativeData(myself->GetBuffer()))->id;
+	return static_cast<sMUIDNatDat*>(p_GetNativeData(myself->GetBuffer()))->id;
 }
 
 void deClassMutableID::PushMutableID(dsRunTime *rt, const decUniqueID &id){
@@ -610,14 +604,5 @@ void deClassMutableID::PushMutableID(dsRunTime *rt, const decUniqueID &id){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sMUIDNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sMUIDNatDat;
-	nd->id = nullptr;
-	
-	try{
-		nd->id = new decUniqueID(id);
-		
-	}catch(...){
-		rt->RemoveValues(1); // remove pushed object
-		throw;
-	}
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sMUIDNatDat)->id = id;
 }

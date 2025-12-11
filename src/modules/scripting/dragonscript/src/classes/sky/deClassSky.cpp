@@ -68,11 +68,11 @@ deClassSky::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsSky,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSky::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
-	deSkyManager &skyMgr = *ds.GetGameEngine()->GetSkyManager();
 	sSkyNatDat * const nd = new (p_GetNativeData(myself)) sSkyNatDat;
 	
-	// create sky
+	deScriptingDragonScript &ds = (static_cast<deClassSky*>(GetOwnerClass()))->GetDS();
+	deSkyManager &skyMgr = *ds.GetGameEngine()->GetSkyManager();
+	
 	nd->sky = skyMgr.CreateSky();
 }
 
@@ -187,7 +187,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsStr); // name
 }
 void deClassSky::nfIndexOfControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSky * const sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	const deSky * const sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
 	rt->PushInt(sky->IndexOfControllerNamed(rt->GetValue(0)->GetString()));
 }
 
@@ -301,7 +301,7 @@ dsFunction(init.clsSky, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassSky::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSky * const sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
+	const deSky * const sky = static_cast<sSkyNatDat*>(p_GetNativeData(myself))->sky;
 	deClassSky * const clsSky = static_cast<deClassSky*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -309,7 +309,7 @@ void deClassSky::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		deSky * const other = static_cast<sSkyNatDat*>(p_GetNativeData(obj))->sky;
+		const deSky * const other = static_cast<sSkyNatDat*>(p_GetNativeData(obj))->sky;
 		rt->PushBool(sky == other);
 	}
 }
@@ -404,5 +404,5 @@ void deClassSky::PushSky(dsRunTime *rt, deSky *sky){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkyNatDat)->sky = sky;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSkyNatDat)->sky = sky;
 }

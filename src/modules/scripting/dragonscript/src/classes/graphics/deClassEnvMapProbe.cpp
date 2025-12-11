@@ -484,5 +484,5 @@ void deClassEnvMapProbe::PushEnvMapProbe(dsRunTime *rt, deEnvMapProbe *envMapPro
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sEmpNatDat)->envMapProbe = envMapProbe;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sEmpNatDat)->envMapProbe = envMapProbe;
 }

@@ -87,7 +87,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassComponent::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sCompNatDat * const nd = new (p_GetNativeData(myself)) sCompNatDat;
-	deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	// create component
 	nd->component = ds.GetGameEngine()->GetComponentManager()->CreateComponent();
@@ -101,7 +101,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassComponent::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
 	sCompNatDat * const nd = new (p_GetNativeData(myself)) sCompNatDat;
-	deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	// create component
 	deModel * const model = ds.GetClassModel()->GetModel(rt->GetValue(0)->GetRealObject());
@@ -126,8 +126,8 @@ deClassComponent::nfGetModel::nfGetModel(const sInitData &init) : dsFunction(ini
 "getModel", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsMdl){
 }
 void deClassComponent::nfGetModel::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
+	const deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
+	const deClassComponent * const clsComp = static_cast<deClassComponent*>(GetOwnerClass());
 	clsComp->GetClassModel()->PushModel(rt, component->GetModel());
 }
 
@@ -136,8 +136,8 @@ deClassComponent::nfGetRig::nfGetRig(const sInitData &init) : dsFunction(init.cl
 "getRig", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsRig){
 }
 void deClassComponent::nfGetRig::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
+	const deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
+	const deClassComponent * const clsComp = static_cast<deClassComponent*>(GetOwnerClass());
 	if(component->GetRig()){
 		clsComp->GetClassRig()->PushRig(rt, component->GetRig());
 	}else{
@@ -150,8 +150,8 @@ deClassComponent::nfGetSkin::nfGetSkin(const sInitData &init) : dsFunction(init.
 "getSkin", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsSkin){
 }
 void deClassComponent::nfGetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
+	const deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
+	const deClassComponent * const clsComp = static_cast<deClassComponent*>(GetOwnerClass());
 	clsComp->GetClassSkin()->PushSkin(rt, component->GetSkin());
 }
 
@@ -160,8 +160,8 @@ deClassComponent::nfGetPosition::nfGetPosition(const sInitData &init) : dsFuncti
 "getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
 void deClassComponent::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
+	const deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
+	const deClassComponent * const clsComp = static_cast<deClassComponent*>(GetOwnerClass());
 	
 	clsComp->GetClassDVector()->PushDVector(rt, component->GetPosition());
 }
@@ -171,8 +171,8 @@ deClassComponent::nfGetOrientation::nfGetOrientation(const sInitData &init) : ds
 "getOrientation", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
 void deClassComponent::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
+	const deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
+	const deClassComponent * const clsComp = static_cast<deClassComponent*>(GetOwnerClass());
 	
 	clsComp->GetClassQuaternion()->PushQuaternion(rt, component->GetOrientation());
 }
@@ -182,8 +182,8 @@ deClassComponent::nfGetScaling::nfGetScaling(const sInitData &init) : dsFunction
 "getScaling", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassComponent::nfGetScaling::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
+	const deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
+	const deClassComponent * const clsComp = static_cast<deClassComponent*>(GetOwnerClass());
 	clsComp->GetScriptModule()->PushVector(rt, component->GetScaling());
 }
 
@@ -193,7 +193,7 @@ deClassComponent::nfGetMatrix::nfGetMatrix(const sInitData &init) : dsFunction(i
 }
 void deClassComponent::nfGetMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	deClassDMatrix &clsDMatrix = *(((deClassComponent*)GetOwnerClass())->GetScriptModule()->GetClassDMatrix());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule()->GetClassDMatrix());
 	clsDMatrix.PushDMatrix(rt, component.GetMatrix());
 }
 
@@ -203,7 +203,7 @@ deClassComponent::nfGetInverseMatrix::nfGetInverseMatrix(const sInitData &init) 
 }
 void deClassComponent::nfGetInverseMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	deClassDMatrix &clsDMatrix = *(((deClassComponent*)GetOwnerClass())->GetScriptModule()->GetClassDMatrix());
+	deClassDMatrix &clsDMatrix = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule()->GetClassDMatrix());
 	clsDMatrix.PushDMatrix(rt, component.GetInverseMatrix());
 }
 
@@ -212,7 +212,7 @@ deClassComponent::nfGetVisible::nfGetVisible(const sInitData &init) : dsFunction
 "getVisible", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassComponent::nfGetVisible::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
+	const deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
 	rt->PushBool(component->GetVisible());
 }
 
@@ -224,7 +224,7 @@ deClassComponent::nfGetOcclusionMesh::nfGetOcclusionMesh(const sInitData &init) 
 }
 void deClassComponent::nfGetOcclusionMesh::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	deClassOcclusionMesh &clsOccM = *(((deClassComponent*)GetOwnerClass())->GetScriptModule()->GetClassOcclusionMesh());
+	deClassOcclusionMesh &clsOccM = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule()->GetClassOcclusionMesh());
 	
 	clsOccM.PushOcclusionMesh(rt, component.GetOcclusionMesh());
 }
@@ -236,7 +236,7 @@ deClassComponent::nfSetOcclusionMesh::nfSetOcclusionMesh(const sInitData &init) 
 }
 void deClassComponent::nfSetOcclusionMesh::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	deClassOcclusionMesh &clsOccM = *(((deClassComponent*)GetOwnerClass())->GetScriptModule()->GetClassOcclusionMesh());
+	deClassOcclusionMesh &clsOccM = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule()->GetClassOcclusionMesh());
 	
 	component.SetOcclusionMesh(clsOccM.GetOcclusionMesh(rt->GetValue(0)->GetRealObject()));
 }
@@ -250,7 +250,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsMdl){
 }
 void deClassComponent::nfGetAudioModel::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	deClassModel &clsModel = *(((deClassComponent*)GetOwnerClass())->GetScriptModule()->GetClassModel());
+	deClassModel &clsModel = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule()->GetClassModel());
 	
 	clsModel.PushModel(rt, component.GetAudioModel());
 }
@@ -263,7 +263,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassComponent::nfSetAudioModel::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	deClassModel &clsModel = *(((deClassComponent*)GetOwnerClass())->GetScriptModule()->GetClassModel());
+	deClassModel &clsModel = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule()->GetClassModel());
 	
 	component.SetAudioModel(clsModel.GetModel(rt->GetValue(0)->GetRealObject()));
 }
@@ -277,7 +277,7 @@ deClassComponent::nfSetModel::nfSetModel(const sInitData &init) : dsFunction(ini
 }
 void deClassComponent::nfSetModel::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
+	const deClassComponent * const clsComp = static_cast<deClassComponent*>(GetOwnerClass());
 	
 	component->SetModel(clsComp->GetClassModel()->GetModel(rt->GetValue(0)->GetRealObject()));
 }
@@ -289,7 +289,7 @@ deClassComponent::nfSetModelKeepTextures::nfSetModelKeepTextures(const sInitData
 }
 void deClassComponent::nfSetModelKeepTextures::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	component.SetModelKeepTextures(ds.GetClassModel()->GetModel(rt->GetValue(0)->GetRealObject()));
 }
@@ -301,7 +301,7 @@ deClassComponent::nfSetSkin::nfSetSkin(const sInitData &init) : dsFunction(init.
 }
 void deClassComponent::nfSetSkin::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
+	const deClassComponent * const clsComp = static_cast<deClassComponent*>(GetOwnerClass());
 	
 	component->SetSkin(clsComp->GetClassSkin()->GetSkin(rt->GetValue(0)->GetRealObject()));
 }
@@ -313,7 +313,7 @@ deClassComponent::nfSetRig::nfSetRig(const sInitData &init) : dsFunction(init.cl
 }
 void deClassComponent::nfSetRig::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
+	const deClassComponent * const clsComp = static_cast<deClassComponent*>(GetOwnerClass());
 	
 	component->SetRig(clsComp->GetClassRig()->GetRig(rt->GetValue(0)->GetRealObject()));
 }
@@ -326,7 +326,7 @@ deClassComponent::nfSetModelAndSkin::nfSetModelAndSkin(const sInitData &init) : 
 }
 void deClassComponent::nfSetModelAndSkin::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
+	const deClassComponent * const clsComp = static_cast<deClassComponent*>(GetOwnerClass());
 	
 	deModel * const model = clsComp->GetClassModel()->GetModel(rt->GetValue(0)->GetRealObject());
 	deSkin * const skin = clsComp->GetClassSkin()->GetSkin(rt->GetValue(1)->GetRealObject());
@@ -340,7 +340,7 @@ deClassComponent::nfSetPosition::nfSetPosition(const sInitData &init) : dsFuncti
 }
 void deClassComponent::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
+	const deClassComponent * const clsComp = static_cast<deClassComponent*>(GetOwnerClass());
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	if(!obj) DSTHROW(dueNullPointer);
@@ -355,7 +355,7 @@ deClassComponent::nfSetOrientation::nfSetOrientation(const sInitData &init) : ds
 }
 void deClassComponent::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
+	const deClassComponent * const clsComp = static_cast<deClassComponent*>(GetOwnerClass());
 	
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	if(!obj) DSTHROW(dueNullPointer);
@@ -370,7 +370,7 @@ deClassComponent::nfSetScaling::nfSetScaling(const sInitData &init) : dsFunction
 }
 void deClassComponent::nfSetScaling::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent *component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent * const clsComp = (deClassComponent*)GetOwnerClass();
+	const deClassComponent * const clsComp = static_cast<deClassComponent*>(GetOwnerClass());
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	if(!obj) DSTHROW(dueNullPointer);
 	component->SetScaling(clsComp->GetScriptModule()->GetVector(obj));
@@ -393,7 +393,7 @@ dsFunction(init.clsCom, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATI
 
 void deClassComponent::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	deClassComponent &clsComp = *((deClassComponent*)GetOwnerClass());
+	deClassComponent &clsComp = *static_cast<deClassComponent*>(GetOwnerClass());
 	deClassWorld &clsWorld = *clsComp.GetScriptModule()->GetClassWorld();
 	clsWorld.PushWorld(rt, component.GetParentWorld());
 }
@@ -405,7 +405,7 @@ deClassComponent::nfGetLayerMask::nfGetLayerMask(const sInitData &init) : dsFunc
 }
 void deClassComponent::nfGetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *((deClassComponent*)GetOwnerClass())->GetScriptModule();
+	const deScriptingDragonScript &ds = *static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule();
 	
 	ds.GetClassLayerMask()->PushLayerMask(rt, component.GetLayerMask());
 }
@@ -417,7 +417,7 @@ deClassComponent::nfSetLayerMask::nfSetLayerMask(const sInitData &init) : dsFunc
 }
 void deClassComponent::nfSetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *((deClassComponent*)GetOwnerClass())->GetScriptModule();
+	const deScriptingDragonScript &ds = *static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule();
 	
 	component.SetLayerMask(ds.GetClassLayerMask()->GetLayerMask(rt->GetValue(0)->GetRealObject()));
 }
@@ -430,7 +430,7 @@ deClassComponent::nfGetDynamicSkin::nfGetDynamicSkin(const sInitData &init) : ds
 }
 void deClassComponent::nfGetDynamicSkin::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	deClassComponent &clsComp = *((deClassComponent*)GetOwnerClass());
+	deClassComponent &clsComp = *static_cast<deClassComponent*>(GetOwnerClass());
 	deClassDynamicSkin &clsDSkin = *clsComp.GetScriptModule()->GetClassDynamicSkin();
 	
 	clsDSkin.PushDynamicSkin(rt, component.GetDynamicSkin());
@@ -444,7 +444,7 @@ deClassComponent::nfSetDynamicSkin::nfSetDynamicSkin(const sInitData &init) : ds
 void deClassComponent::nfSetDynamicSkin::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
 	dsRealObject *objDSkin = rt->GetValue(0)->GetRealObject();
-	deClassComponent &clsComp = *((deClassComponent*)GetOwnerClass());
+	deClassComponent &clsComp = *static_cast<deClassComponent*>(GetOwnerClass());
 	deClassDynamicSkin &clsDSkin = *clsComp.GetScriptModule()->GetClassDynamicSkin();
 	
 	component.SetDynamicSkin(clsDSkin.GetDynamicSkin(objDSkin));
@@ -503,7 +503,7 @@ deClassComponent::nfBoneGetPosition::nfBoneGetPosition(const sInitData &init) : 
 }
 void deClassComponent::nfBoneGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	component.PrepareBones();
 	
@@ -519,7 +519,7 @@ deClassComponent::nfBoneSetPosition::nfBoneSetPosition(const sInitData &init) : 
 }
 void deClassComponent::nfBoneSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	deComponentBone &bone = component.GetBoneAt(rt->GetValue(0)->GetInt());
 	const decVector &position = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
@@ -536,7 +536,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
 void deClassComponent::nfBoneGetRotation::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	component.PrepareBones();
 	
@@ -553,7 +553,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassComponent::nfBoneSetRotation::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	deComponentBone &bone = component.GetBoneAt(rt->GetValue(0)->GetInt());
 	const decQuaternion &rotation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(1)->GetRealObject());
@@ -569,7 +569,7 @@ dsFunction(init.clsCom, "boneGetScale", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 }
 void deClassComponent::nfBoneGetScale::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	component.PrepareBones();
 	
@@ -585,7 +585,7 @@ dsFunction(init.clsCom, "boneSetScale", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 }
 void deClassComponent::nfBoneSetScale::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	deComponentBone &bone = component.GetBoneAt(rt->GetValue(0)->GetInt());
 	const decVector &scale = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
@@ -601,7 +601,7 @@ deClassComponent::nfBoneGetMatrix::nfBoneGetMatrix(const sInitData &init) : dsFu
 }
 void deClassComponent::nfBoneGetMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	component.PrepareBones();
 	
@@ -616,7 +616,7 @@ deClassComponent::nfBoneGetInverseMatrix::nfBoneGetInverseMatrix(const sInitData
 }
 void deClassComponent::nfBoneGetInverseMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	component.PrepareBones();
 	
@@ -631,7 +631,7 @@ deClassComponent::nfGetBoneOriginMatrix::nfGetBoneOriginMatrix(const sInitData &
 }
 void deClassComponent::nfGetBoneOriginMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	component.PrepareBones();
 	
@@ -653,7 +653,7 @@ deClassComponent::nfGetBoneOriginInverseMatrix::nfGetBoneOriginInverseMatrix(con
 }
 void deClassComponent::nfGetBoneOriginInverseMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	component.PrepareBones();
 	
@@ -676,7 +676,7 @@ deClassComponent::nfGetBonePosition::nfGetBonePosition(const sInitData &init) : 
 }
 void deClassComponent::nfGetBonePosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	deClassComponent &clsComp = *((deClassComponent*)GetOwnerClass());
+	deClassComponent &clsComp = *static_cast<deClassComponent*>(GetOwnerClass());
 	const deRig * const rig = component.GetRig();
 	
 	if(rig){
@@ -700,7 +700,7 @@ deClassComponent::nfGetBoneRotation::nfGetBoneRotation(const sInitData &init) : 
 }
 void deClassComponent::nfGetBoneRotation::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	const deRig * const rig = component.GetRig();
 	
 	if(rig){
@@ -724,7 +724,7 @@ deClassComponent::nfGetBoneMatrix::nfGetBoneMatrix(const sInitData &init) : dsFu
 }
 void deClassComponent::nfGetBoneMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	deClassMatrix &clsMatrix = *(((deClassComponent*)GetOwnerClass())->GetScriptModule()->GetClassMatrix());
+	deClassMatrix &clsMatrix = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule()->GetClassMatrix());
 	const deRig * const rig = component.GetRig();
 	
 	if(rig){
@@ -748,7 +748,7 @@ deClassComponent::nfGetBoneInverseMatrix::nfGetBoneInverseMatrix(const sInitData
 }
 void deClassComponent::nfGetBoneInverseMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	deClassMatrix &clsMatrix = *(((deClassComponent*)GetOwnerClass())->GetScriptModule()->GetClassMatrix());
+	deClassMatrix &clsMatrix = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule()->GetClassMatrix());
 	const deRig * const rig = component.GetRig();
 	
 	if(rig){
@@ -774,7 +774,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassComponent::nfSetBonePosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	const decVector &position = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
 	const char *boneName = rt->GetValue(0)->GetString();
@@ -798,7 +798,7 @@ deClassComponent::nfSetBoneRotation::nfSetBoneRotation(const sInitData &init) : 
 }
 void deClassComponent::nfSetBoneRotation::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	const decQuaternion &rotation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(1)->GetRealObject());
 	const char *boneName = rt->GetValue(0)->GetString();
@@ -861,7 +861,7 @@ dsFunction(init.clsCom, "vertexPositionSetGetWeightAt", DSFT_FUNCTION, DSTM_PUBL
 	p_AddParameter(init.clsInt); // index
 }
 void deClassComponent::nfVertexPositionSetGetWeightAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
+	const deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
 	rt->PushFloat(component.GetVertexPositionSetWeightAt(rt->GetValue(0)->GetInt()));
 }
 
@@ -871,7 +871,7 @@ dsFunction(init.clsCom, "vertexPositionSetGetWeightNamed", DSFT_FUNCTION, DSTM_P
 	p_AddParameter(init.clsStr); // name
 }
 void deClassComponent::nfVertexPositionSetGetWeightNamed::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
+	const deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
 	if(!component.GetModel()){
 		DSTHROW(dueNullPointer);
 	}
@@ -926,7 +926,7 @@ deClassComponent::nfCopyBonesToComponent::nfCopyBonesToComponent(const sInitData
 }
 void deClassComponent::nfCopyBonesToComponent::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deClassComponent &clsComp = *((deClassComponent*)GetOwnerClass());
+	const deClassComponent &clsComp = *static_cast<deClassComponent*>(GetOwnerClass());
 	
 	deComponent * const otherComponent = clsComp.GetComponent(rt->GetValue(0)->GetRealObject());
 	if(!otherComponent){
@@ -961,7 +961,7 @@ deClassComponent::nfIndexOfTextureClosedTo::nfIndexOfTextureClosedTo(const sInit
 }
 void deClassComponent::nfIndexOfTextureClosedTo::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	const decVector &vector = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	const float radius = rt->GetValue(1)->GetFloat();
 	
@@ -1001,7 +1001,7 @@ deClassComponent::nfGetTextureSkinAt::nfGetTextureSkinAt(const sInitData &init) 
 }
 void deClassComponent::nfGetTextureSkinAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	const int index = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassSkin()->PushSkin(rt, component.GetTextureAt(index).GetSkin());
@@ -1016,7 +1016,7 @@ deClassComponent::nfSetTextureSkinAt::nfSetTextureSkinAt(const sInitData &init) 
 }
 void deClassComponent::nfSetTextureSkinAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	int index = rt->GetValue(0)->GetInt();
 	deSkin *skin = ds.GetClassSkin()->GetSkin(rt->GetValue(1)->GetRealObject());
@@ -1049,7 +1049,7 @@ deClassComponent::nfGetTextureTransformAt::nfGetTextureTransformAt(const sInitDa
 }
 void deClassComponent::nfGetTextureTransformAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	const int index = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassTexMatrix2()->PushTexMatrix(rt, component.GetTextureAt(index).GetTransform());
@@ -1062,8 +1062,8 @@ deClassComponent::nfSetTextureTransformAt::nfSetTextureTransformAt(const sInitDa
 	p_AddParameter(init.clsTexMat2); // transform
 }
 void deClassComponent::nfSetTextureTransformAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	const int index = rt->GetValue(0)->GetInt();
 	const decTexMatrix2 &transform = ds.GetClassTexMatrix2()->GetTexMatrix(rt->GetValue(1)->GetRealObject());
@@ -1080,7 +1080,7 @@ deClassComponent::nfGetTextureDynamicSkinAt::nfGetTextureDynamicSkinAt(const sIn
 }
 void deClassComponent::nfGetTextureDynamicSkinAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	const int index = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassDynamicSkin()->PushDynamicSkin(rt, component.GetTextureAt(index).GetDynamicSkin());
@@ -1093,8 +1093,8 @@ deClassComponent::nfSetTextureDynamicSkinAt::nfSetTextureDynamicSkinAt(const sIn
 	p_AddParameter(init.clsDSkin); // dynamicSkin
 }
 void deClassComponent::nfSetTextureDynamicSkinAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	const deScriptingDragonScript &ds = *(((deClassComponent*)GetOwnerClass())->GetScriptModule());
+	const deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
+	const deScriptingDragonScript &ds = *(static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule());
 	
 	int index = rt->GetValue(0)->GetInt();
 	deDynamicSkin *dynamicSkin = ds.GetClassDynamicSkin()->GetDynamicSkin(rt->GetValue(1)->GetRealObject());
@@ -1117,7 +1117,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassComponent::nfAddDecal::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	deScriptingDragonScript &ds = *((deClassComponent*)GetOwnerClass())->GetScriptModule();
+	deScriptingDragonScript &ds = *static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule();
 	
 	deDecal * const decal = ds.GetClassDecal()->GetDecal(rt->GetValue(0)->GetRealObject());
 	component.AddDecal(decal);
@@ -1131,7 +1131,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassComponent::nfRemoveDecal::RunFunction(dsRunTime *rt, dsValue *myself){
 	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	deScriptingDragonScript &ds = *((deClassComponent*)GetOwnerClass())->GetScriptModule();
+	deScriptingDragonScript &ds = *static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule();
 	
 	deDecal * const decal = ds.GetClassDecal()->GetDecal(rt->GetValue(0)->GetRealObject());
 	component.RemoveDecal(decal);
@@ -1153,7 +1153,7 @@ dsFunction(init.clsCom, "getDecalCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassComponent::nfGetDecalCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
+	const deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
 	rt->PushInt(component.GetDecalCount());
 }
 
@@ -1175,8 +1175,8 @@ void deClassComponent::nfForEachDecal::RunFunction(dsRunTime *rt, dsValue *mysel
 		return;
 	}
 	
-	const int funcIndexRun = ((dsClassBlock*)rt->GetEngine()->GetClassBlock())->GetFuncIndexRun1();
-	deScriptingDragonScript &ds = *((deClassComponent*)GetOwnerClass())->GetScriptModule();
+	const int funcIndexRun = static_cast<dsClassBlock*>(rt->GetEngine()->GetClassBlock())->GetFuncIndexRun1();
+	deScriptingDragonScript &ds = *static_cast<deClassComponent*>(GetOwnerClass())->GetScriptModule();
 	deClassDecal &clsDecal = *ds.GetClassDecal();
 	
 	while(decal){
@@ -1205,13 +1205,13 @@ dsFunction(init.clsCom, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassComponent::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deComponent * const component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
-	deClassComponent *clsComp = (deClassComponent*)GetOwnerClass();
+	const deComponent * const component = static_cast<sCompNatDat*>(p_GetNativeData(myself))->component;
+	deClassComponent *clsComp = static_cast<deClassComponent*>(GetOwnerClass());
 	dsValue *obj = rt->GetValue(0);
 	if(!p_IsObjOfType(obj, clsComp)){
 		rt->PushBool(false);
 	}else{
-		deComponent * const otherComp = static_cast<sCompNatDat*>(p_GetNativeData(obj))->component;
+		const deComponent * const otherComp = static_cast<sCompNatDat*>(p_GetNativeData(obj))->component;
 		rt->PushBool(component == otherComp);
 	}
 }
@@ -1228,7 +1228,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsComponentHintMovement){
 }
 void deClassComponent::nfGetHintMovement::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deComponent &component = *(static_cast<sCompNatDat*>(p_GetNativeData(myself))->component);
-	rt->PushValue(((deClassComponent*)GetOwnerClass())->GetClassComponentHintMovement()
+	rt->PushValue(static_cast<deClassComponent*>(GetOwnerClass())->GetClassComponentHintMovement()
 		->GetVariable(component.GetHintMovement())->GetStaticValue());
 }
 
@@ -1300,7 +1300,22 @@ void deClassComponent::nfSetHintGIImportance::RunFunction(dsRunTime *rt, dsValue
 ////////////////////////////
 
 deClassComponent::deClassComponent(deEngine *GameEngine, deScriptingDragonScript *ScrMgr) :
-dsClass("Component", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
+dsClass("Component", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pGameEngine(NULL),
+pScrMgr(NULL),
+pClsMdl(NULL),
+pClsRig(NULL),
+pClsSkin(NULL),
+pClsImg(NULL),
+pClsDec(NULL),
+pClsClr(NULL),
+pClsCam(NULL),
+pClsVec(NULL),
+pClsDVec(NULL),
+pClsQuat(NULL),
+pClsComponentHintMovement(NULL)
+{
+	// check parameters
 	if(!GameEngine || !ScrMgr) DSTHROW(dueInvalidParam);
 	// prepare
 	pGameEngine = GameEngine;
@@ -1482,5 +1497,5 @@ void deClassComponent::PushComponent(dsRunTime *rt, deComponent *component){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCompNatDat)->component = component;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCompNatDat)->component = component;
 }

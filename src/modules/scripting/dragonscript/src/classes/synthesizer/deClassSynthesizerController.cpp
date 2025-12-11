@@ -51,6 +51,7 @@
 struct sSynthesizerCtrlNatDat{
 	deSynthesizer::Ref synthesizer;
 	deSynthesizerInstance::Ref instance;
+	int index = -1;
 };
 
 
@@ -498,10 +499,8 @@ void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizer *
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSynthesizerCtrlNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSynthesizerCtrlNatDat;
+	sSynthesizerCtrlNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSynthesizerCtrlNatDat;
 	nd->synthesizer = synthesizer;
-	synthesizer->AddReference();
-	nd->instance = nullptr;
 	nd->index = index;
 }
 
@@ -511,9 +510,7 @@ void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizerIn
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSynthesizerCtrlNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSynthesizerCtrlNatDat;
-	nd->synthesizer = nullptr;
+	sSynthesizerCtrlNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSynthesizerCtrlNatDat;
 	nd->instance = instance;
-	instance->AddReference();
 	nd->index = index;
 }

@@ -65,9 +65,6 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassSound::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSndNatDat * const nd = new (p_GetNativeData(myself)) sSndNatDat;
 	
-	// prepare
-	
-	// load sound
 	deScriptingDragonScript &ds = (static_cast<deClassSound*>(GetOwnerClass()))->GetDS();
 	deSoundManager &sndMgr = *ds.GetGameEngine()->GetSoundManager();
 	
@@ -212,7 +209,7 @@ void deClassSound::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		deSound * const otherSound = static_cast<sSndNatDat*>(p_GetNativeData(object))->sound;
+		const deSound * const otherSound = static_cast<sSndNatDat*>(p_GetNativeData(object))->sound;
 		
 		rt->PushBool(sound == otherSound);
 	}
@@ -292,5 +289,5 @@ void deClassSound::PushSound(dsRunTime *rt, deSound *sound){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSndNatDat)->sound = sound;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSndNatDat)->sound = sound;
 }

@@ -141,19 +141,7 @@ void deClassCaptureCanvas::nfSetImage::RunFunction(dsRunTime *rt, dsValue *mysel
 	const int componentCount = rt->GetValue(2)->GetInt();
 	const int bitCount = rt->GetValue(3)->GetInt();
 	
-	deImage *image = nullptr;
-	
-	try{
-		image = imageManager.CreateImage(width, height, 1, componentCount, bitCount);
-		captureCanvas.SetImage(image);
-		image->FreeReference();
-		
-	}catch(...){
-		if(image){
-			image->FreeReference();
-		}
-		throw;
-	}
+	captureCanvas.SetImage(imageManager.CreateImage(width, height, 1, componentCount, bitCount));
 }
 
 // public func void dropImage()
@@ -298,5 +286,5 @@ void deClassCaptureCanvas::PushCaptureCanvas(dsRunTime *rt, deCaptureCanvas *cap
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCapCanNatDat)->captureCanvas = captureCanvas;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCapCanNatDat)->captureCanvas = captureCanvas;
 }

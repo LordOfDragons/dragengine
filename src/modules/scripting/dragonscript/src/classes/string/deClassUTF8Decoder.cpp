@@ -41,7 +41,14 @@
 
 // native structure
 struct sU8DNatDat{
-	decUTF8Decoder *decoder;
+	decUTF8Decoder *decoder = nullptr;
+	
+	~sU8DNatDat(){
+		if(decoder){
+			delete decoder;
+			decoder = nullptr;
+		}
+	}
 };
 
 
@@ -61,9 +68,8 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // position
 }
 void deClassUTF8Decoder::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sU8DNatDat *nd = static_cast<sU8DNatDat*>(p_GetNativeData(myself);
+	sU8DNatDat * const nd = new (p_GetNativeData(myself)) sU8DNatDat;
 	nd->decoder = new decUTF8Decoder;
-	if(!nd->decoder) DSTHROW(dueOutOfMemory);
 	nd->decoder->SetString(rt->GetValue(0)->GetString());
 	nd->decoder->SetPosition(rt->GetValue(1)->GetInt());
 }
@@ -233,6 +239,5 @@ void deClassUTF8Decoder::CreateClassMembers(dsEngine *engine){
 }
 
 decUTF8Decoder &deClassUTF8Decoder::GetUTF8Decoder(dsRealObject *myself) const{
-	sU8DNatDat *nd = static_cast<sU8DNatDat*>(p_GetNativeData(myself->GetBuffer());
-	return *nd->decoder;
+	return *(static_cast<sU8DNatDat*>(p_GetNativeData(myself->GetBuffer()))->decoder);
 }

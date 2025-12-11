@@ -55,7 +55,7 @@
 /////////////////////
 
 struct sIDFeedbackNatDat{
-	dedsInputDevice *device;
+	dedsInputDevice::Ref device;
 	int feedbackIndex;
 };
 
@@ -427,8 +427,7 @@ void deClassInputDeviceFeedback::PushFeedback(dsRunTime *rt, dedsInputDevice *de
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sIDFeedbackNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sIDFeedbackNatDat;
+	sIDFeedbackNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sIDFeedbackNatDat;
 	nd->device = device;
-	device->AddReference();
 	nd->feedbackIndex = index;
 }

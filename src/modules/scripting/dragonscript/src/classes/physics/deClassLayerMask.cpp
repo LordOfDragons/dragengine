@@ -39,7 +39,7 @@
 
 
 struct sCFNatDat{
-	decLayerMask *layerMask;
+	decLayerMask layerMask;
 };
 
 
@@ -52,10 +52,7 @@ deClassLayerMask::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsLyM,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLayerMask::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCFNatDat *nd = static_cast<sCFNatDat*>(p_GetNativeData(myself);
-	
-	// create layer mask
-	nd->layerMask = new decLayerMask;
+	new (p_GetNativeData(myself)) sCFNatDat;
 }
 
 // public func new( LayerMask layerMask )
@@ -65,11 +62,11 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLayerMask::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
 	sCFNatDat * const nd = new (p_GetNativeData(myself)) sCFNatDat;
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	
+	const deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	dsRealObject *obj = rt->GetValue(0)->GetRealObject();
 	
-	// create layer mask
-	nd->layerMask = new decLayerMask(clsLyM.GetLayerMask(obj));
+	nd->layerMask = clsLyM.GetLayerMask(obj);
 }
 
 // static public func LayerMask newWith( int bit )
@@ -78,7 +75,7 @@ deClassLayerMask::nfNewWith::nfNewWith(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsInt); // bit
 }
 void deClassLayerMask::nfNewWith::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const int bit = rt->GetValue(0)->GetInt();
 	
 	decLayerMask layerMask;
@@ -94,7 +91,7 @@ deClassLayerMask::nfNewWith2::nfNewWith2(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsInt); // bit2
 }
 void deClassLayerMask::nfNewWith2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const int bit1 = rt->GetValue(0)->GetInt();
 	const int bit2 = rt->GetValue(1)->GetInt();
 	
@@ -113,7 +110,7 @@ deClassLayerMask::nfNewWith3::nfNewWith3(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsInt); // bit3
 }
 void deClassLayerMask::nfNewWith3::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const int bit1 = rt->GetValue(0)->GetInt();
 	const int bit2 = rt->GetValue(1)->GetInt();
 	const int bit3 = rt->GetValue(2)->GetInt();
@@ -135,7 +132,7 @@ deClassLayerMask::nfNewWith4::nfNewWith4(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsInt); // bit4
 }
 void deClassLayerMask::nfNewWith4::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const int bit1 = rt->GetValue(0)->GetInt();
 	const int bit2 = rt->GetValue(1)->GetInt();
 	const int bit3 = rt->GetValue(2)->GetInt();
@@ -155,7 +152,7 @@ deClassLayerMask::nfNewAll::nfNewAll(const sInitData &init) : dsFunction(init.cl
 "newAll", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsLyM){
 }
 void deClassLayerMask::nfNewAll::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	clsLyM.PushLayerMask(rt, ~decLayerMask());
 }
 
@@ -243,7 +240,7 @@ deClassLayerMask::nfMatches::nfMatches(const sInitData &init) : dsFunction(init.
 }
 void deClassLayerMask::nfMatches::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	const deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
 	rt->PushBool(layermask.Matches(layermask2));
@@ -256,7 +253,7 @@ deClassLayerMask::nfMatchesNot::nfMatchesNot(const sInitData &init) : dsFunction
 }
 void deClassLayerMask::nfMatchesNot::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	const deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
 	rt->PushBool(layermask.MatchesNot(layermask2));
@@ -313,7 +310,7 @@ deClassLayerMask::nfOpInverse::nfOpInverse(const sInitData &init) : dsFunction(i
 }
 void deClassLayerMask::nfOpInverse::RunFunction(dsRunTime *rt, dsValue *myself){
 	decLayerMask layermask(static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask);
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	
 	clsLyM.PushLayerMask(rt, ~layermask);
 }
@@ -325,7 +322,7 @@ deClassLayerMask::nfOpAnd::nfOpAnd(const sInitData &init) : dsFunction(init.clsL
 }
 void deClassLayerMask::nfOpAnd::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
 	clsLyM.PushLayerMask(rt, layermask & layermask2);
@@ -338,7 +335,7 @@ deClassLayerMask::nfOpOr::nfOpOr(const sInitData &init) : dsFunction(init.clsLyM
 }
 void deClassLayerMask::nfOpOr::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
 	clsLyM.PushLayerMask(rt, layermask | layermask2);
@@ -351,7 +348,7 @@ deClassLayerMask::nfOpXor::nfOpXor(const sInitData &init) : dsFunction(init.clsL
 }
 void deClassLayerMask::nfOpXor::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
 	clsLyM.PushLayerMask(rt, layermask ^ layermask2);
@@ -364,7 +361,7 @@ deClassLayerMask::nfOpAndAssign::nfOpAndAssign(const sInitData &init) : dsFuncti
 }
 void deClassLayerMask::nfOpAndAssign::RunFunction(dsRunTime *rt, dsValue *myself){
 	decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
 	clsLyM.PushLayerMask(rt, layermask &= layermask2);
@@ -377,7 +374,7 @@ deClassLayerMask::nfOpOrAssign::nfOpOrAssign(const sInitData &init) : dsFunction
 }
 void deClassLayerMask::nfOpOrAssign::RunFunction(dsRunTime *rt, dsValue *myself){
 	decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
 	clsLyM.PushLayerMask(rt, layermask |= layermask2);
@@ -390,7 +387,7 @@ deClassLayerMask::nfOpXorAssign::nfOpXorAssign(const sInitData &init) : dsFuncti
 }
 void deClassLayerMask::nfOpXorAssign::RunFunction(dsRunTime *rt, dsValue *myself){
 	decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
-	deClassLayerMask &clsLyM = *(static_cast<deClassLayerMask*>(GetOwnerClass()));
+	deClassLayerMask &clsLyM = *static_cast<deClassLayerMask*>(GetOwnerClass());
 	const decLayerMask &layermask2 = clsLyM.GetLayerMask(rt->GetValue(0)->GetRealObject());
 	
 	clsLyM.PushLayerMask(rt, layermask ^= layermask2);
@@ -407,8 +404,8 @@ dsFunction(init.clsLyM, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassLayerMask::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	decLayerMask *layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
-	rt->PushInt((int)(intptr_t)layermask);
+	const decLayerMask &layermask = static_cast<sCFNatDat*>(p_GetNativeData(myself))->layerMask;
+	rt->PushInt((int)(intptr_t)&layermask);
 }
 
 // public func bool equals( Object object )
@@ -526,7 +523,7 @@ const decLayerMask &deClassLayerMask::GetLayerMask(dsRealObject *myself) const{
 		DSTHROW(dueNullPointer);
 	}
 	
-	return *(static_cast<sCFNatDat*>(p_GetNativeData(myself->GetBuffer()))->layerMask);
+	return static_cast<sCFNatDat*>(p_GetNativeData(myself->GetBuffer()))->layerMask;
 }
 
 void deClassLayerMask::PushLayerMask(dsRunTime *rt, const decLayerMask &layermask){
@@ -535,14 +532,5 @@ void deClassLayerMask::PushLayerMask(dsRunTime *rt, const decLayerMask &layermas
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sCFNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCFNatDat;
-	nd->layerMask = nullptr;
-	
-	try{
-		nd->layerMask = new decLayerMask(layermask);
-		
-	}catch(...){
-		rt->RemoveValues(1); // remove pushed object
-		throw;
-	}
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCFNatDat)->layerMask = layermask;
 }

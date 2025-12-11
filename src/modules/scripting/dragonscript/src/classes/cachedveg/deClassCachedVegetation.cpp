@@ -72,14 +72,13 @@ struct dedsCachedVegetationInstance{
 class dedsCachedVegetationPropField : public deBaseScriptingPropField{
 private:
 	float pHeight;
-	dePropField *pEngPF;
+	dePropField::Ref pEngPF;
 	dedsCachedVegetationInstance *pInstances;
 	int pInstanceCount;
 	decVector pScalePosition;
 	
 public:
 	dedsCachedVegetationPropField(){
-		pEngPF = NULL;
 		pHeight = 0.0f;
 		pInstances = NULL;
 		pInstanceCount = 0;
@@ -90,21 +89,17 @@ public:
 		if(pEngPF){
 			dedsPropField * const peer = static_cast<dedsPropField*>(pEngPF->GetPeerScripting());
 			if(peer){
-				peer->SetDelegee(NULL);
+				peer->SetDelegee(nullptr);
 			}
-			pEngPF->FreeReference();
 		}
 	}
 	
-	inline dePropField *GetEnginePF() const{ return pEngPF; }
+	inline const dePropField::Ref &GetEnginePF() const{ return pEngPF; }
 	
 	void CreatePF(const deEngine *engine){
 		if(!pEngPF){
 			pEngPF = engine->GetPropFieldManager()->CreatePropField();
-			if(!pEngPF) DSTHROW(dueOutOfMemory);
-			
-			dedsPropField *peer = static_cast<dedsPropField*>(pEngPF->GetPeerScripting());
-			peer->SetDelegee(this);
+			static_cast<dedsPropField*>(pEngPF->GetPeerScripting())->SetDelegee(this);
 		}
 	}
 	
@@ -215,7 +210,7 @@ private:
 	int pPFCount;
 	int pPFCellCount;
 	float pSectorDim;
-	deWorld *pWorld;
+	deWorld::Ref pWorld;
 	decPoint pCoordinates;
 	decCollisionFilter pCollisionFilter;
 	
@@ -231,10 +226,8 @@ public:
 		pPFCellCount = pfCellCount;
 		pSectorDim = sectorDim;
 		pCoordinates = coordinates;
-		pWorld = NULL;
 		
 		pPFs = new dedsCachedVegetationPropField[pfCount];
-		if(!pPFs) DSTHROW(dueOutOfMemory);
 		pPFCount = pfCount;
 		
 		for(p=0; p<pfCount; p++){
@@ -250,25 +243,22 @@ public:
 	}
 	
 	void SetWorld(deWorld *world){
-		if(world != pWorld){
-			int p;
-			
-			if(pWorld){
-				pWorld->FreeReference();
-				
-				for(p=0; p<pPFCount; p++){
-					pWorld->RemovePropField(pPFs[p].GetEnginePF());
-				}
+		if(world == pWorld){
+			return;
+		}
+		
+		int i;
+		if(pWorld){
+			for(i=0; i<pPFCount; i++){
+				pWorld->RemovePropField(pPFs[i].GetEnginePF());
 			}
-			
-			pWorld = world;
-			
-			if(world){
-				world->AddReference();
-				
-				for(p=0; p<pPFCount; p++){
-					world->AddPropField(pPFs[p].GetEnginePF());
-				}
+		}
+		
+		pWorld = world;
+		
+		if(world){
+			for(i=0; i<pPFCount; i++){
+				world->AddPropField(pPFs[i].GetEnginePF());
 			}
 		}
 	}
@@ -422,7 +412,7 @@ private:
 	int pSectorSize;
 	float pSectorDim;
 	int pPFCellCount;
-	deWorld *pWorld;
+	deWorld::Ref pWorld;
 	decCollisionFilter pCollisionFilter;
 	
 public:
@@ -435,7 +425,6 @@ public:
 		pSectorSize = 0;
 		pSectorDim = sectorDim;
 		pPFCellCount = pfCellCount;
-		pWorld = NULL;
 	}
 	
 protected:
@@ -446,25 +435,22 @@ protected:
 	
 public:
 	void SetWorld(deWorld *world){
-		if(world != pWorld){
-			int s;
-			
-			if(pWorld){
-				pWorld->FreeReference();
-				
-				for(s=0; s<pSectorCount; s++){
-					pSectors[s]->SetWorld(NULL);
-				}
+		if(world == pWorld){
+			return;
+		}
+		
+		int i;
+		if(pWorld){
+			for(i=0; i<pSectorCount; i++){
+				pSectors[i]->SetWorld(nullptr);
 			}
-			
-			pWorld = world;
-			
-			if(world){
-				world->AddReference();
-				
-				for(s=0; s<pSectorCount; s++){
-					pSectors[s]->SetWorld(world);
-				}
+		}
+		
+		pWorld = world;
+		
+		if(world){
+			for(i=0; i<pSectorCount; i++){
+				pSectors[i]->SetWorld(world);
 			}
 		}
 	}

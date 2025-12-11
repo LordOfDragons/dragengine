@@ -51,6 +51,8 @@
 
 struct sSkyBodyNatDat{
 	deSky::Ref sky;
+	int layer = -1;
+	int index = -1;
 };
 
 
@@ -328,9 +330,8 @@ void deClassSkyBody::PushBody(dsRunTime *rt, deSky *sky, int layer, int index){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSkyBodyNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkyBodyNatDat;
+	sSkyBodyNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSkyBodyNatDat;
 	nd->sky = sky;
-	sky->AddReference();
 	nd->layer = layer;
 	nd->index = index;
 }

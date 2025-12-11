@@ -575,21 +575,7 @@ void deClassARBoneTransformator::AssignAnimator(dsRealObject *myself, deAnimator
 	
 	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
 	
-	sARBoneTransNatDat &nd = *static_cast<sARBoneTransNatDat*>(p_GetNativeData(myself->GetBuffer()));
-	
-	if(animator == nd.animator){
-		return;
-	}
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-	}
-	
-	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
+	static_cast<sARBoneTransNatDat*>(p_GetNativeData(myself->GetBuffer()))->animator = animator;
 }
 
 void deClassARBoneTransformator::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleBoneTransformator *rule){
@@ -604,20 +590,12 @@ void deClassARBoneTransformator::PushRule(dsRunTime *rt, deAnimator *animator, d
 	
 	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sARBoneTransNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sARBoneTransNatDat;
-	nd->animator = NULL;
-	nd->rule = NULL;
+	sARBoneTransNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sARBoneTransNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
 		nd->animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
 		nd->rule = rule;
-		rule->AddReference();
 		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);

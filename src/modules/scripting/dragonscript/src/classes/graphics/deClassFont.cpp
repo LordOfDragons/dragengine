@@ -59,6 +59,8 @@
 struct sFntNatDat{
 	deFont::Ref font;
 	deFontSize::Ref fontSize;
+	int size = 0;
+	float scale = 1.0f;
 };
 
 
@@ -77,11 +79,6 @@ void deClassFont::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sFntNatDat * const nd = new (p_GetNativeData(myself)) sFntNatDat;
 	const deScriptingDragonScript &ds = (static_cast<deClassFont*>(GetOwnerClass()))->GetDS();
 	deFontManager &fontMgr = *ds.GetGameEngine()->GetFontManager();
-	nd->font = nullptr;
-	nd->fontSize = nullptr;
-	nd.size = 0;
-	nd.scale = 1.0f;
-	
 	// load font
 	const char * const filename = rt->GetValue(0)->GetString();
 	const int size = rt->GetValue(1)->GetInt();
@@ -91,13 +88,13 @@ void deClassFont::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	nd->font = fontMgr.LoadFont(filename, "/");
 	nd->fontSize = nd->font->PrepareSize(size);
-	nd.size = size;
+	nd->size = size;
 	
 	if(nd->fontSize){
-		nd.scale = (float)size / (float)nd->fontSize->GetLineHeight();
+		nd->scale = (float)size / (float)nd->fontSize->GetLineHeight();
 		
 	}else{
-		nd.scale = (float)size / (float)nd->font->GetLineHeight();
+		nd->scale = (float)size / (float)nd->font->GetLineHeight();
 	}
 }
 
@@ -111,11 +108,6 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassFont::nfNewSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	sFntNatDat * const nd = new (p_GetNativeData(myself)) sFntNatDat;
 	const deClassFont &clsFont = *(static_cast<deClassFont*>(GetOwnerClass()));
-	nd->font = nullptr;
-	nd->fontSize = nullptr;
-	nd.size = 0;
-	nd.scale = 1.0f;
-	
 	// store font
 	deFont * font = clsFont.GetFont(rt->GetValue(0)->GetRealObject());
 	if(!font){
@@ -128,15 +120,14 @@ void deClassFont::nfNewSize::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 	
 	nd->font = font;
-	font->AddReference();
 	nd->fontSize = font->PrepareSize(size);
-	nd.size = size;
+	nd->size = size;
 	
 	if(nd->fontSize){
-		nd.scale = (float)size / (float)nd->fontSize->GetLineHeight();
+		nd->scale = (float)size / (float)nd->fontSize->GetLineHeight();
 		
 	}else{
-		nd.scale = (float)size / (float)nd->font->GetLineHeight();
+		nd->scale = (float)size / (float)nd->font->GetLineHeight();
 	}
 }
 
@@ -338,7 +329,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassFont::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sFntNatDat &nd = *static_cast<sFntNatDat*>(p_GetNativeData(myself));
-	deClassFont * const clsFont = static_cast<deClassFont*>(GetOwnerClass());
+	const deClassFont * const clsFont = static_cast<deClassFont*>(GetOwnerClass());
 	
 	dsValue * const object = rt->GetValue(0);
 	
@@ -430,14 +421,12 @@ void deClassFont::PushFont(dsRunTime *rt, deFont *font, int size){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sFntNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sFntNatDat;
+	sFntNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sFntNatDat;
 	nd->font = font;
-	font->AddReference();
-	nd->fontSize = font->PrepareSize(size);
 	nd->size = size;
 	
+	nd->fontSize = font->PrepareSize(size);
 	if(nd->fontSize){
-		nd->fontSize->AddReference();
 		nd->scale = (float)size / (float)nd->fontSize->GetLineHeight();
 		
 	}else{

@@ -50,11 +50,11 @@ pRenderThread(renderThread),
 pBlockUsageCount(0)
 {
 	try{
-		pTBONodeBox.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
-		pTBOIndex.TakeOver(new deoglDynamicTBOUInt16(renderThread, 2));
-		pTBOFace.TakeOver(new deoglDynamicTBOUInt16(renderThread, 4));
-		pTBOVertex.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
-		pTBOTexCoord.TakeOver(new deoglDynamicTBOFloat16(renderThread, 2));
+		pTBONodeBox.TakeOverWith(renderThread, 4);
+		pTBOIndex.TakeOverWith(renderThread, 2);
+		pTBOFace.TakeOverWith(renderThread, 4);
+		pTBOVertex.TakeOverWith(renderThread, 4);
+		pTBOTexCoord.TakeOverWith(renderThread, 2);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -168,24 +168,21 @@ void deoglGIBVHLocal::TBOBVHUpdateNodeExtends(){
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockNode(){
 	if(!pBlockNode){
-		pBlockNode.TakeOver(pRenderThread.GetGI().GetBVHShared().GetSharedTBONode()
-			->AddBlock(pTBOIndex, pTBONodeBox));
+		pBlockNode = pRenderThread.GetGI().GetBVHShared().GetSharedTBONode()->AddBlock(pTBOIndex, pTBONodeBox);
 	}
 	return pBlockNode;
 }
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockFace(){
 	if(!pBlockFace){
-		pBlockFace.TakeOver(pRenderThread.GetGI().GetBVHShared().GetSharedTBOFace()
-			->AddBlock(pTBOFace, pTBOTexCoord));
+		pBlockFace = pRenderThread.GetGI().GetBVHShared().GetSharedTBOFace()->AddBlock(pTBOFace, pTBOTexCoord);
 	}
 	return pBlockFace;
 }
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockVertex(){
 	if(!pBlockVertex){
-		pBlockVertex.TakeOver(pRenderThread.GetGI().GetBVHShared().GetSharedTBOVertex()
-			->AddBlock(pTBOVertex));
+		pBlockVertex = pRenderThread.GetGI().GetBVHShared().GetSharedTBOVertex()->AddBlock(pTBOVertex);
 	}
 	return pBlockVertex;
 }

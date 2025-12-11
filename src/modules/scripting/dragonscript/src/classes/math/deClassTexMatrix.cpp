@@ -64,9 +64,7 @@ deClassTexMatrix::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsTexMa
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassTexMatrix::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
-	
-	matrix.SetIdentity();
+	new (p_GetNativeData(myself)) sTMatNatDat;
 }
 
 // public func new( TexMatrix matrix )
@@ -75,7 +73,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsTexMat); // matrix
 }
 void deClassTexMatrix::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
-	decTexMatrix &matrix = static_cast<sTMatNatDat*>(p_GetNativeData(myself))->matrix;
+	decTexMatrix &matrix = (new (p_GetNativeData(myself)) sTMatNatDat)->matrix;
 	const deClassTexMatrix &clsTexMatrix = *(static_cast<deClassTexMatrix*>(GetOwnerClass()));
 	
 	dsRealObject * const objMat = rt->GetValue(0)->GetRealObject();
@@ -989,5 +987,5 @@ void deClassTexMatrix::PushTexMatrix(dsRunTime *rt, const decTexMatrix &matrix){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sTMatNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->matrix = matrix;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sTMatNatDat)->matrix = matrix;
 }

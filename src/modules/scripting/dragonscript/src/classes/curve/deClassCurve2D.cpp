@@ -42,7 +42,14 @@
 /////////////////////
 
 struct sCurve2DNatDat{
-	decCurve2D *curve;
+	decCurve2D *curve = nullptr;
+	
+	~sCurve2DNatDat(){
+		if(curve){
+			delete curve;
+			curve = nullptr;
+		}
+	}
 };
 
 
@@ -55,11 +62,7 @@ deClassCurve2D::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsCurve2D
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCurve2D::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCurve2DNatDat *nd = static_cast<sCurve2DNatDat*>(p_GetNativeData(myself);
-	
-	// create curve
-	nd->curve = new decCurve2D;
-	if(!nd->curve) DSTHROW(dueOutOfMemory);
+	(new (p_GetNativeData(myself)) sCurve2DNatDat())->curve = new decCurve2D();
 }
 
 // public func destructor()
@@ -96,7 +99,7 @@ deClassCurve2D::nfGetPointAt::nfGetPointAt(const sInitData &init) : dsFunction(i
 }
 void deClassCurve2D::nfGetPointAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decCurve2D &curve = *static_cast<sCurve2DNatDat*>(p_GetNativeData(myself))->curve;
-	deScriptingDragonScript *ds = (static_cast<deClassCurve2D*>(GetOwnerClass()))->GetDS();
+	const deScriptingDragonScript *ds = (static_cast<deClassCurve2D*>(GetOwnerClass()))->GetDS();
 	
 	int position = rt->GetValue(0)->GetInt();
 	
@@ -367,11 +370,8 @@ void deClassCurve2D::PushCurve(dsRunTime *rt, const decCurve2D &curve){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sCurve2DNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCurve2DNatDat;
-	nd->curve = nullptr;
-	
 	try{
-		nd->curve = new decCurve2D(curve);
+		(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCurve2DNatDat)->curve = new decCurve2D(curve);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

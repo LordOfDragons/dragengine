@@ -583,7 +583,6 @@ void debpCreateBulletShape::pAddCollisionShape(debpBulletShape *collisionShape){
 		transform.setIdentity(); // required, constructor does not initialize anything
 		pBulletCompoundShape->GetCompoundShape()->addChildShape(transform, collisionShape->GetShape());
 		pBulletCompoundShape->AddChildShape(collisionShape);
-		collisionShape->FreeReference(); // since we steal the reference
 		
 	}else{
 		#ifdef DEBUGGING
@@ -609,7 +608,6 @@ void debpCreateBulletShape::pAddTransformedCollisionShape(debpBulletShape *colli
 	#endif
 	pBulletCompoundShape->GetCompoundShape()->addChildShape(transform, collisionShape->GetShape());
 	pBulletCompoundShape->AddChildShape(collisionShape);
-	collisionShape->FreeReference(); // since we steal the reference
 }
 
 void debpCreateBulletShape::pDebugPrintShape(dePhysicsBullet &bullet,

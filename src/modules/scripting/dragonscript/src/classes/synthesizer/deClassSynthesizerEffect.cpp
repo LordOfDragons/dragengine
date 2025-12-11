@@ -62,7 +62,7 @@ deClassSynthesizerEffect::nfNew::nfNew(const sInitData &init) : dsFunction(init.
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSynthesizerEffect::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSynSNatDat * const nd = new (p_GetNativeData(myself)) sSynSNatDat;
+	new (p_GetNativeData(myself)) sSynSNatDat;
 }
 
 // public func destructor()
@@ -186,21 +186,7 @@ void deClassSynthesizerEffect::AssignEffect(dsRealObject *myself, deSynthesizerE
 		DSTHROW(dueInvalidParam);
 	}
 	
-	sSynSNatDat &nd = *static_cast<sSynSNatDat*>(p_GetNativeData(myself->GetBuffer()));
-	
-	if(effect == nd.effect){
-		return;
-	}
-	
-	if(nd.effect){
-		nd.effect->FreeReference();
-	}
-	
-	nd.effect = effect;
-	
-	if(effect){
-		effect->AddReference();
-	}
+	static_cast<sSynSNatDat*>(p_GetNativeData(myself->GetBuffer()))->effect = effect;
 }
 
 void deClassSynthesizerEffect::AssignSource(dsRealObject *myself, deSynthesizerSource *source){
@@ -208,21 +194,7 @@ void deClassSynthesizerEffect::AssignSource(dsRealObject *myself, deSynthesizerS
 		DSTHROW(dueInvalidParam);
 	}
 	
-	sSynSNatDat &nd = *static_cast<sSynSNatDat*>(p_GetNativeData(myself->GetBuffer()));
-	
-	if(source == nd.source){
-		return;
-	}
-	
-	if(nd.source){
-		nd.source->FreeReference();
-	}
-	
-	nd.source = source;
-	
-	if(source){
-		source->AddReference();
-	}
+	static_cast<sSynSNatDat*>(p_GetNativeData(myself->GetBuffer()))->source = source;
 }
 
 void deClassSynthesizerEffect::PushEffect(dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffect *effect){

@@ -63,11 +63,11 @@ dsFunction(init.clsSkyInst, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkyInstance::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	deScriptingDragonScript &ds = (static_cast<deClassSkyInstance*>(GetOwnerClass()))->GetDS();
-	deSkyInstanceManager &skyInstMgr = *ds.GetGameEngine()->GetSkyInstanceManager();
 	sSkyInstNatDat * const nd = new (p_GetNativeData(myself)) sSkyInstNatDat;
 	
-	// create sky
+	deScriptingDragonScript &ds = (static_cast<deClassSkyInstance*>(GetOwnerClass()))->GetDS();
+	deSkyInstanceManager &skyInstMgr = *ds.GetGameEngine()->GetSkyInstanceManager();
+	
 	nd->instance = skyInstMgr.CreateSkyInstance();
 }
 
@@ -238,7 +238,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsStr); // name
 }
 void deClassSkyInstance::nfIndexOfControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSkyInstance * const instance = static_cast<sSkyInstNatDat*>(p_GetNativeData(myself))->instance;
+	const deSkyInstance * const instance = static_cast<sSkyInstNatDat*>(p_GetNativeData(myself))->instance;
 	rt->PushInt(instance->IndexOfControllerNamed(rt->GetValue(0)->GetString()));
 }
 
@@ -261,7 +261,7 @@ dsFunction(init.clsSkyInst, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassSkyInstance::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSkyInstance * const instance = static_cast<sSkyInstNatDat*>(p_GetNativeData(myself))->instance;
+	const deSkyInstance * const instance = static_cast<sSkyInstNatDat*>(p_GetNativeData(myself))->instance;
 	deClassSkyInstance * const clsSkyInst = static_cast<deClassSkyInstance*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -269,7 +269,7 @@ void deClassSkyInstance::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		deSkyInstance * const other = static_cast<sSkyInstNatDat*>(p_GetNativeData(obj))->instance;
+		const deSkyInstance * const other = static_cast<sSkyInstNatDat*>(p_GetNativeData(obj))->instance;
 		rt->PushBool(instance == other);
 	}
 }
@@ -358,5 +358,5 @@ void deClassSkyInstance::PushInstance(dsRunTime *rt, deSkyInstance *instance){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkyInstNatDat)->instance = instance;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSkyInstNatDat)->instance = instance;
 }

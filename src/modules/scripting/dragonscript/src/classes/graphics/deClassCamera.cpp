@@ -701,7 +701,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsEffect){
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassCamera::nfGetEffectAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
+	const deCamera &camera = static_cast<sCamNatDat*>(p_GetNativeData(myself))->camera;
 	const deScriptingDragonScript &ds = (static_cast<deClassCamera*>(GetOwnerClass()))->GetDS();
 	int index = rt->GetValue(0)->GetInt();
 	
@@ -922,5 +922,5 @@ void deClassCamera::PushCamera(dsRunTime *rt, deCamera *camera){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCamNatDat)->camera = camera;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCamNatDat)->camera = camera;
 }

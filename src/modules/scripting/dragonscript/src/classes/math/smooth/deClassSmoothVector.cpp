@@ -48,7 +48,14 @@
 /////////////////////
 
 struct sSmVecNatDat{
-	decSmoothVector *smoothVector;
+	decSmoothVector *smoothVector = nullptr;
+	
+	~sSmVecNatDat(){
+		if(smoothVector){
+			delete smoothVector;
+			smoothVector = nullptr;
+		}
+	}
 };
 
 
@@ -412,8 +419,7 @@ void deClassSmoothVector::PushSmoothVector(dsRunTime *rt, const decSmoothVector 
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSmVecNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSmVecNatDat;
-	nd->smoothVector = nullptr;
+	sSmVecNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSmVecNatDat;
 	
 	try{
 		nd->smoothVector = new decSmoothVector(smoothFloat);

@@ -62,19 +62,12 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // filename
 }
 void deClassModel::nfLoad::RunFunction(dsRunTime *rt, dsValue *myself){
-	sMdlNatDat &nd = *static_cast<sMdlNatDat*>(p_GetNativeData(myself));
+	sMdlNatDat * const nd = new (p_GetNativeData(myself)) sMdlNatDat;
+	
 	deScriptingDragonScript &ds = *static_cast<deClassModel*>(GetOwnerClass())->GetDS();
 	deModelManager &mdlMgr = *ds.GetGameEngine()->GetModelManager();
 	
-	// prepare
-	nd.model = nullptr;
-	
-	// load model
-	const char * const filename = rt->GetValue(0)->GetString();
-	nd.model = mdlMgr.LoadModel(filename, "/");
-	if(!nd.model){
-		DSTHROW(dueInvalidParam);
-	}
+	nd->model = mdlMgr.LoadModel(rt->GetValue(0)->GetString(), "/");
 }
 
 // static public func void loadAsynchron( String filename, ResourceListener listener )
@@ -238,7 +231,7 @@ dsFunction(init.clsMdl, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassModel::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	sMdlNatDat &nd = *static_cast<sMdlNatDat*>(p_GetNativeData(myself));
+	const sMdlNatDat &nd = *static_cast<sMdlNatDat*>(p_GetNativeData(myself));
 	
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)nd.model);
@@ -251,7 +244,7 @@ dsFunction(init.clsMdl, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 }
 void deClassModel::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sMdlNatDat &nd = *static_cast<sMdlNatDat*>(p_GetNativeData(myself));
-	deClassModel * const clsModel = static_cast<deClassModel*>(GetOwnerClass());
+	const deClassModel * const clsModel = static_cast<deClassModel*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(obj->GetType()->GetPrimitiveType() != DSPT_OBJECT || !obj->GetRealObject()
@@ -346,5 +339,5 @@ void deClassModel::PushModel(dsRunTime *rt, deModel *model){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sMdlNatDat)->model = model;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sMdlNatDat)->model = model;
 }

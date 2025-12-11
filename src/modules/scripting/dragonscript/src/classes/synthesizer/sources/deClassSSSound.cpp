@@ -66,12 +66,10 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassSSSound::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSSSoundNatDat * const nd = new (p_GetNativeData(myself)) sSSSoundNatDat;
 	
-	// super call
-	deClassSynthesizerSource * const baseClass = (deClassSynthesizerSource*)GetOwnerClass()->GetBaseClass();
+	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
-	// create synthesizer source
-	nd->source = new deSynthesizerSourceSound;
+	nd->source.TakeOverWith();
 	baseClass->AssignSource(myself->GetRealObject(), nd->source);
 }
 
@@ -190,7 +188,7 @@ deClassSSSound::nfSetSound::nfSetSound(const sInitData &init) : dsFunction(init.
 }
 void deClassSSSound::nfSetSound::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSSSoundNatDat &nd = *static_cast<sSSSoundNatDat*>(p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassSSSound*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassSSSound*>(GetOwnerClass())->GetDS();
 	deSound * const sound = ds.GetClassSound()->GetSound(rt->GetValue(0)->GetRealObject());
 	
 	if(sound == nd.source->GetSound()){
@@ -334,21 +332,7 @@ void deClassSSSound::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synt
 	
 	pDS.GetClassSynthesizerSource()->AssignSynthesizer(myself, synthesizer);
 	
-	sSSSoundNatDat &nd = *static_cast<sSSSoundNatDat*>(p_GetNativeData(myself->GetBuffer()));
-	
-	if(synthesizer == nd.synthesizer){
-		return;
-	}
-	
-	if(nd.synthesizer){
-		nd.synthesizer->FreeReference();
-	}
-	
-	nd.synthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
+	static_cast<sSSSoundNatDat*>(p_GetNativeData(myself->GetBuffer()))->synthesizer = synthesizer;
 }
 
 void deClassSSSound::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceSound *source){
@@ -363,20 +347,12 @@ void deClassSSSound::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSyn
 	
 	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sSSSoundNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSSSoundNatDat;
-	nd->synthesizer = NULL;
-	nd->source = NULL;
+	sSSSoundNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSSSoundNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
 		nd->synthesizer = synthesizer;
-		if(synthesizer){
-			synthesizer->AddReference();
-		}
-		
 		nd->source = source;
-		source->AddReference();
 		
 		baseClass->AssignSource(rt->GetValue(0)->GetRealObject(), source);
 		baseClass->AssignSynthesizer(rt->GetValue(0)->GetRealObject(), synthesizer);

@@ -47,7 +47,14 @@
 /////////////////////
 
 struct sSmFltNatDat{
-	decSmoothFloat *smoothFloat;
+	decSmoothFloat *smoothFloat = nullptr;
+	
+	~sSmFltNatDat(){
+		if(smoothFloat){
+			delete smoothFloat;
+			smoothFloat = nullptr;
+		}
+	}
 };
 
 
@@ -404,8 +411,7 @@ void deClassSmoothFloat::PushSmoothFloat(dsRunTime *rt, const decSmoothFloat &sm
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSmFltNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSmFltNatDat;
-	nd->smoothFloat = nullptr;
+	sSmFltNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSmFltNatDat;
 	
 	try{
 		nd->smoothFloat = new decSmoothFloat(smoothFloat);

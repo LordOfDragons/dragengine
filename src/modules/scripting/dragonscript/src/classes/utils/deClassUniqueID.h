@@ -44,10 +44,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create class. */
-	deClassUniqueID(deScriptingDragonScript &ds);
+	explicit deClassUniqueID(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassUniqueID();
+	~deClassUniqueID() override;
 	/*@}*/
 	
 	
@@ -58,7 +58,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Unique id from real object. */
 	decUniqueID &GetUniqueID(dsRealObject *myself) const;
@@ -67,7 +67,7 @@ public:
 	void PushUniqueID(dsRunTime *rt, const decUniqueID &id);
 	
 	/** \brief Push unique id onto stack. */
-	void PushUniqueID(dsRunTime *rt, int byteCount, unsigned char *bytes);
+	void PushUniqueID(dsRunTime *rt, int byteCount, const unsigned char *bytes);
 	/*@}*/
 	
 private:
@@ -78,7 +78,7 @@ private:
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{\
 	public: \
-		name(const sInitData &init); \
+		explicit name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	

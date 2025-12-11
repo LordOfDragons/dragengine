@@ -78,7 +78,7 @@ public:
 
 
 struct sFntBldNatDat{
-	deClassLanguagePackBuilder_Builder *builder = nullptr;
+	deClassLanguagePackBuilder_Builder *builder;
 };
 
 

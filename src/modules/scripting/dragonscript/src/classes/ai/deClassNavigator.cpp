@@ -374,22 +374,10 @@ void deClassNavigator::nfNearestPoint::RunFunction(dsRunTime *rt, dsValue *mysel
 		return;
 	}
 	
-	dedsNavigationInfo *navinfo = NULL;
-	
-	try{
-		navinfo = new dedsNavigationInfo(ds);
-		navinfo->SetPosition(nearestPoint);
-		navinfo->SetCostType(nearestType);
-		
-		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
-		navinfo->FreeReference();
-		
-	}catch(const duException &){
-		if(navinfo){
-			navinfo->FreeReference();
-		}
-		throw;
-	}
+	const dedsNavigationInfo::Ref navinfo(dedsNavigationInfo::Ref::NewWith(ds));
+	navinfo->SetPosition(nearestPoint);
+	navinfo->SetCostType(nearestType);
+	ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
 }
 
 // public func NavigationInfo lineCollide( DVector origin, Vector direction )
@@ -413,22 +401,10 @@ void deClassNavigator::nfLineCollide::RunFunction(dsRunTime *rt, dsValue *myself
 		return;
 	}
 	
-	dedsNavigationInfo *navinfo = NULL;
-	
-	try{
-		navinfo = new dedsNavigationInfo(ds);
-		navinfo->SetPosition(origin + decDVector(direction * distance));
-		navinfo->SetPathFactor(distance);
-		
-		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
-		navinfo->FreeReference();
-		
-	}catch(const duException &){
-		if(navinfo){
-			navinfo->FreeReference();
-		}
-		throw;
-	}
+	const dedsNavigationInfo::Ref navinfo(dedsNavigationInfo::Ref::NewWith(ds));
+	navinfo->SetPosition(origin + decDVector(direction * distance));
+	navinfo->SetPathFactor(distance);
+	ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
 }
 
 
@@ -453,25 +429,13 @@ void deClassNavigator::nfPathCollideRay::RunFunction(dsRunTime *rt, dsValue *mys
 	int hitAfterPoint;
 	float hitDistance;
 	if(navigator.PathCollideRay(path, *collider, hitAfterPoint, hitDistance)){
-		dedsNavigationInfo *navinfo = NULL;
-		
-		try{
-			navinfo = new dedsNavigationInfo(ds);
-			navinfo->SetPathIndex(hitAfterPoint);
-			navinfo->SetPathFactor(hitDistance);
-			
-			ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
-			navinfo->FreeReference();
-			
-		}catch(const duException &){
-			if(navinfo){
-				navinfo->FreeReference();
-			}
-			throw;
-		}
+		const dedsNavigationInfo::Ref navinfo(dedsNavigationInfo::Ref::NewWith(ds));
+		navinfo->SetPathIndex(hitAfterPoint);
+		navinfo->SetPathFactor(hitDistance);
+		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
 		
 	}else{
-		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, NULL);
+		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, nullptr);
 	}
 }
 
@@ -501,22 +465,10 @@ void deClassNavigator::nfPathCollideRay2::RunFunction(dsRunTime *rt, dsValue *my
 	int hitAfterPoint;
 	float hitDistance;
 	if(navigator.PathCollideRay(path, *collider, startPosition, nextPoint, maxDistance, hitAfterPoint, hitDistance)){
-		dedsNavigationInfo *navinfo = NULL;
-		
-		try{
-			navinfo = new dedsNavigationInfo(ds);
-			navinfo->SetPathIndex(hitAfterPoint);
-			navinfo->SetPathFactor(hitDistance);
-			
-			ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
-			navinfo->FreeReference();
-			
-		}catch(const duException &){
-			if(navinfo){
-				navinfo->FreeReference();
-			}
-			throw;
-		}
+		const dedsNavigationInfo::Ref navinfo(dedsNavigationInfo::Ref::NewWith(ds));
+		navinfo->SetPathIndex(hitAfterPoint);
+		navinfo->SetPathFactor(hitDistance);
+		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
 		
 	}else{
 		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, NULL);
@@ -544,22 +496,10 @@ void deClassNavigator::nfPathCollideShape::RunFunction(dsRunTime *rt, dsValue *m
 	int hitAfterPoint;
 	float hitDistance;
 	if(navigator.PathCollideShape(path, *collider,  *agent, hitAfterPoint, hitDistance)){
-		dedsNavigationInfo *navinfo = NULL;
-		
-		try{
-			navinfo = new dedsNavigationInfo(ds);
-			navinfo->SetPathIndex(hitAfterPoint);
-			navinfo->SetPathFactor(hitDistance);
-			
-			ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
-			navinfo->FreeReference();
-			
-		}catch(const duException &){
-			if(navinfo){
-				navinfo->FreeReference();
-			}
-			throw;
-		}
+		const dedsNavigationInfo::Ref navinfo(dedsNavigationInfo::Ref::NewWith(ds));
+		navinfo->SetPathIndex(hitAfterPoint);
+		navinfo->SetPathFactor(hitDistance);
+		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
 		
 	}else{
 		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, NULL);
@@ -595,22 +535,10 @@ void deClassNavigator::nfPathCollideShape2::RunFunction(dsRunTime *rt, dsValue *
 	float hitDistance;
 	if(navigator.PathCollideShape(path, *collider, *agent, startPosition,
 	nextPoint, maxDistance, hitAfterPoint, hitDistance)){
-		dedsNavigationInfo *navinfo = NULL;
-		
-		try{
-			navinfo = new dedsNavigationInfo(ds);
-			navinfo->SetPathIndex(hitAfterPoint);
-			navinfo->SetPathFactor(hitDistance);
-			
-			ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
-			navinfo->FreeReference();
-			
-		}catch(const duException &){
-			if(navinfo){
-				navinfo->FreeReference();
-			}
-			throw;
-		}
+		const dedsNavigationInfo::Ref navinfo(dedsNavigationInfo::Ref::NewWith(ds));
+		navinfo->SetPathIndex(hitAfterPoint);
+		navinfo->SetPathFactor(hitDistance);
+		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, navinfo);
 		
 	}else{
 		ds.GetClassNavigationInfo()->PushNavigationInfo(rt, NULL);
@@ -757,5 +685,5 @@ void deClassNavigator::PushNavigator(dsRunTime *rt, deNavigator *navigator){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sNavNatDat)->navigator = navigator;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sNavNatDat)->navigator = navigator;
 }

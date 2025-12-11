@@ -55,7 +55,7 @@
 /////////////////////
 
 struct sIDAxisNatDat{
-	dedsInputDevice *device;
+	dedsInputDevice::Ref device;
 	int axisIndex;
 };
 
@@ -390,8 +390,7 @@ void deClassInputDeviceAxis::PushAxis(dsRunTime *rt, dedsInputDevice *device, in
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sIDAxisNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sIDAxisNatDat;
+	sIDAxisNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sIDAxisNatDat;
 	nd->device = device;
-	device->AddReference();
 	nd->axisIndex = index;
 }

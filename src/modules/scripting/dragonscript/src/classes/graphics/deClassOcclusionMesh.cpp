@@ -67,11 +67,7 @@ void deClassOcclusionMesh::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	const char *filename = rt->GetValue(0)->GetString();
 	
-	// load occlusion mesh
 	nd->occlusionMesh = occmgr.LoadOcclusionMesh(filename, "/");
-	if(!nd->occlusionMesh){
-		DSTHROW(dueOutOfMemory);
-	}
 }
 
 // static public func void loadAsynchron( String filename, ResourceListener listener )
@@ -244,5 +240,5 @@ void deClassOcclusionMesh::PushOcclusionMesh(dsRunTime *rt, deOcclusionMesh *occ
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sOccMNatDat)->occlusionMesh = occlusionMesh;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sOccMNatDat)->occlusionMesh = occlusionMesh;
 }

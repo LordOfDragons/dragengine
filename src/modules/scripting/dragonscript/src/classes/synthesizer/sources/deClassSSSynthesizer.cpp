@@ -65,12 +65,10 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassSSSynthesizer::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSSSynNatDat * const nd = new (p_GetNativeData(myself)) sSSSynNatDat;
 	
-	// super call
-	deClassSynthesizerSource * const baseClass = (deClassSynthesizerSource*)GetOwnerClass()->GetBaseClass();
+	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
-	// create synthesizer source
-	nd->source = new deSynthesizerSourceSynthesizer;
+	nd->source.TakeOverWith();
 	baseClass->AssignSource(myself->GetRealObject(), nd->source);
 }
 
@@ -173,7 +171,7 @@ deClassSSSynthesizer::nfSetSynthesizer::nfSetSynthesizer(const sInitData &init) 
 }
 void deClassSSSynthesizer::nfSetSynthesizer::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSSSynNatDat &nd = *static_cast<sSSSynNatDat*>(p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassSSSynthesizer*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassSSSynthesizer*>(GetOwnerClass())->GetDS();
 	deSynthesizer * const synthesizer = ds.GetClassSynthesizer()->GetSynthesizer(rt->GetValue(0)->GetRealObject());
 	
 	if(synthesizer == nd.source->GetSynthesizer()){
@@ -279,21 +277,7 @@ void deClassSSSynthesizer::AssignSynthesizer(dsRealObject *myself, deSynthesizer
 	
 	pDS.GetClassSynthesizerSource()->AssignSynthesizer(myself, synthesizer);
 	
-	sSSSynNatDat &nd = *static_cast<sSSSynNatDat*>(p_GetNativeData(myself->GetBuffer()));
-	
-	if(synthesizer == nd.synthesizer){
-		return;
-	}
-	
-	if(nd.synthesizer){
-		nd.synthesizer->FreeReference();
-	}
-	
-	nd.synthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
+	static_cast<sSSSynNatDat*>(p_GetNativeData(myself->GetBuffer()))->synthesizer = synthesizer;
 }
 
 void deClassSSSynthesizer::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceSynthesizer *source){
@@ -308,20 +292,12 @@ void deClassSSSynthesizer::PushSource(dsRunTime *rt, deSynthesizer *synthesizer,
 	
 	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sSSSynNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSSSynNatDat;
-	nd->synthesizer = NULL;
-	nd->source = NULL;
+	sSSSynNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSSSynNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
 		nd->synthesizer = synthesizer;
-		if(synthesizer){
-			synthesizer->AddReference();
-		}
-		
 		nd->source = source;
-		source->AddReference();
 		
 		baseClass->AssignSource(rt->GetValue(0)->GetRealObject(), source);
 		baseClass->AssignSynthesizer(rt->GetValue(0)->GetRealObject(), synthesizer);

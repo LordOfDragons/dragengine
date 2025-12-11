@@ -77,7 +77,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sLigNatDat * const nd = new (p_GetNativeData(myself)) sLigNatDat;
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	// create light
 	nd->light = ds.GetGameEngine()->GetLightManager()->CreateLight();
@@ -108,7 +108,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsLightType){
 }
 void deClassLight::nfGetType::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	rt->PushValue(((deClassLight*)GetOwnerClass())->GetClassLightType()
+	rt->PushValue(static_cast<deClassLight*>(GetOwnerClass())->GetClassLightType()
 		->GetVariable(light.GetType())->GetStaticValue());
 }
 
@@ -136,7 +136,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
 }
 void deClassLight::nfGetColor::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	ds.GetClassColor()->PushColor(rt, light.GetColor());
 }
 
@@ -148,7 +148,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfSetColor::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	const decColor &color = ds.GetClassColor()->GetColor(rt->GetValue(0)->GetRealObject());
 	light.SetColor(color);
@@ -182,7 +182,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
 }
 void deClassLight::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *static_cast<sLigNatDat*>(p_GetNativeData(myself))->light;
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	ds.GetClassWorld()->PushWorld(rt, light.GetParentWorld());
 }
 
@@ -256,7 +256,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsShapeList){
 }
 void deClassLight::nfGetShape::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	ds.GetClassShapeList()->PushShapeList(rt, light.GetShape());
 }
 
@@ -268,7 +268,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfSetShape::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	const decShapeList &shape = ds.GetClassShapeList()->GetShapeList(
 		rt->GetValue(0)->GetRealObject());
@@ -282,7 +282,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsLayerMask){
 }
 void deClassLight::nfGetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	ds.GetClassLayerMask()->PushLayerMask(rt, light.GetLayerMask());
 }
 
@@ -294,7 +294,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfSetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	const decLayerMask &layerMask = ds.GetClassLayerMask()->GetLayerMask(
 		rt->GetValue(0)->GetRealObject());
@@ -310,7 +310,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsDVector){
 }
 void deClassLight::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	ds.GetClassDVector()->PushDVector(rt, light.GetPosition());
 }
 
@@ -322,7 +322,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector(
 		rt->GetValue(0)->GetRealObject());
@@ -336,7 +336,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
 }
 void deClassLight::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	ds.GetClassQuaternion()->PushQuaternion(rt, light.GetOrientation());
 }
 
@@ -348,7 +348,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion(
 		rt->GetValue(0)->GetRealObject());
@@ -469,7 +469,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsLayerMask){
 }
 void deClassLight::nfGetLayerMaskShadow::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	ds.GetClassLayerMask()->PushLayerMask(rt, light.GetLayerMaskShadow());
 }
 
@@ -481,7 +481,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfSetLayerMaskShadow::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	const decLayerMask &layerMask = ds.GetClassLayerMask()->GetLayerMask(
 		rt->GetValue(0)->GetRealObject());
@@ -506,7 +506,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsComponent){
 }
 void deClassLight::nfGetShadowIgnoreComponentAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	const int index = rt->GetValue(0)->GetInt();
 	
@@ -521,7 +521,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassLight::nfHasShadowIgnoreComponent::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	deComponent * const component = ds.GetClassComponent()->GetComponent(
 		rt->GetValue(0)->GetRealObject());
@@ -540,7 +540,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfAddShadowIgnoreComponent::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	deComponent * const component = ds.GetClassComponent()->GetComponent(
 		rt->GetValue(0)->GetRealObject());
@@ -559,7 +559,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfRemoveShadowIgnoreComponent::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	deComponent * const component = ds.GetClassComponent()->GetComponent(
 		rt->GetValue(0)->GetRealObject());
@@ -654,7 +654,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsLightHintMovement){
 }
 void deClassLight::nfGetHintMovement::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	rt->PushValue(((deClassLight*)GetOwnerClass())->GetClassLightHintMovement()
+	rt->PushValue(static_cast<deClassLight*>(GetOwnerClass())->GetClassLightHintMovement()
 		->GetVariable(light.GetHintMovement())->GetStaticValue());
 }
 
@@ -682,7 +682,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsLightHintParameter){
 }
 void deClassLight::nfGetHintParameter::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	rt->PushValue(((deClassLight*)GetOwnerClass())->GetClassLightHintParameter()
+	rt->PushValue(static_cast<deClassLight*>(GetOwnerClass())->GetClassLightHintParameter()
 		->GetVariable(light.GetHintParameter())->GetStaticValue());
 }
 
@@ -712,7 +712,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSkin){
 }
 void deClassLight::nfGetLightSkin::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	ds.GetClassSkin()->PushSkin(rt, light.GetLightSkin());
 }
 
@@ -724,7 +724,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfSetLightSkin::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	deSkin * const skin = ds.GetClassSkin()->GetSkin(rt->GetValue(0)->GetRealObject());
 	light.SetLightSkin(skin);
@@ -737,7 +737,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsCanvasView){
 }
 void deClassLight::nfGetLightCanvas::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	ds.GetClassCanvasView()->PushCanvas(rt, light.GetLightCanvas());
 }
 
@@ -749,7 +749,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfSetLightCanvas::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	deCanvasView * const canvasView = ds.GetClassCanvasView()->GetCanvas(
 		rt->GetValue(0)->GetRealObject());
@@ -763,7 +763,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsDynamicSkin){
 }
 void deClassLight::nfGetDynamicSkin::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	ds.GetClassDynamicSkin()->PushDynamicSkin(rt, light.GetDynamicSkin());
 }
 
@@ -775,7 +775,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfSetDynamicSkin::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	deDynamicSkin * const dynamicSkin = ds.GetClassDynamicSkin()->GetDynamicSkin(rt->GetValue(0)->GetRealObject());
 	light.SetDynamicSkin(dynamicSkin);
@@ -788,7 +788,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsTexMatrix2){
 }
 void deClassLight::nfGetTransform::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	ds.GetClassTexMatrix2()->PushTexMatrix(rt, light.GetTransform());
 }
 
@@ -800,7 +800,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLight::nfSetTransform::RunFunction(dsRunTime *rt, dsValue *myself){
 	deLight &light = *(static_cast<sLigNatDat*>(p_GetNativeData(myself))->light);
-	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassLight*>(GetOwnerClass())->GetDS();
 	
 	const decTexMatrix2 &matrix = ds.GetClassTexMatrix2()->GetTexMatrix(
 		rt->GetValue(0)->GetRealObject());
@@ -828,7 +828,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassLight::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deLight * const light = static_cast<sLigNatDat*>(p_GetNativeData(myself))->light;
-	deClassLight * const clsLight = (deClassLight*)GetOwnerClass();
+	deClassLight * const clsLight = static_cast<deClassLight*>(GetOwnerClass());
 	
 	dsValue * const obj = rt->GetValue(0) ;
 	if(!p_IsObjOfType(obj, clsLight)){
@@ -986,5 +986,5 @@ void deClassLight::PushLight(dsRunTime *rt, deLight *light){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sLigNatDat)->light = light;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sLigNatDat)->light = light;
 }

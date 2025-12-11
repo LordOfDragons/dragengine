@@ -49,6 +49,7 @@
 
 struct sFileWriterNatDat{
 	decBaseFileWriter::Ref fileWriter;
+	int streamVersion = 0;
 };
 
 
@@ -64,13 +65,12 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassFileWriter::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sFileWriterNatDat * const nd = new (p_GetNativeData(myself)) sFileWriterNatDat;
 	const deClassFileWriter &clsFileWriter = *(static_cast<deClassFileWriter*>(GetOwnerClass()));
-	deVirtualFileSystem &vfs = *clsFileWriter.GetDS()->GetGameEngine()->GetVirtualFileSystem();
-	decPath path;
-	nd.streamVersion = clsFileWriter.GetDS()->GetStreamingVersion();
+	const deVirtualFileSystem &vfs = *clsFileWriter.GetDS()->GetGameEngine()->GetVirtualFileSystem();
+	nd->streamVersion = clsFileWriter.GetDS()->GetStreamingVersion();
 	
-	// create file writer
-	path.SetFromUnix(rt->GetValue(0)->GetString());
-	nd->fileWriter = vfs.OpenFileForWriting(path);
+	const char * filename = rt->GetValue(0)->GetString();
+	
+	nd->fileWriter = vfs.OpenFileForWriting(decPath::CreatePathUnix(filename));
 }
 
 // public static func FileWriter newZCompresed(String filename)
@@ -85,8 +85,8 @@ void deClassFileWriter::nfNewZCompressed::RunFunction(dsRunTime *rt, dsValue *my
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	
-	clsFileWriter.PushFileWriter(rt, decZFileWriter::Ref::New(
-		new decZFileWriter(vfs.OpenFileForWriting(decPath::CreatePathUnix(filename)))));
+	clsFileWriter.PushFileWriter(rt, decZFileWriter::Ref::NewWith(
+		vfs.OpenFileForWriting(decPath::CreatePathUnix(filename))));
 }
 
 // public func destructor()
@@ -288,10 +288,9 @@ dsFunction(init.clsFileWriter, "writeString8", DSFT_FUNCTION, DSTM_PUBLIC | DSTM
 	p_AddParameter(init.clsString); // data
 }
 void deClassFileWriter::nfWriteString8::RunFunction(dsRunTime *rt, dsValue *myself){
-	decBaseFileWriter &fileWriter = static_cast<const sFileWriterNatDat*>(p_GetNativeData(myself))->fileWriter;
 	const char * const data = rt->GetValue(0)->GetString();
 	try{
-		fileWriter.WriteString8(data);
+		static_cast<const sFileWriterNatDat*>(p_GetNativeData(myself))->fileWriter->WriteString8(data);
 		
 	}catch(const deException &e){
 		DSTHROW_INFO(dueInvalidParam, e.GetDescription());
@@ -304,10 +303,9 @@ dsFunction(init.clsFileWriter, "writeString16", DSFT_FUNCTION, DSTM_PUBLIC | DST
 	p_AddParameter(init.clsString); // data
 }
 void deClassFileWriter::nfWriteString16::RunFunction(dsRunTime *rt, dsValue *myself){
-	decBaseFileWriter &fileWriter = static_cast<const sFileWriterNatDat*>(p_GetNativeData(myself))->fileWriter;
 	const char * const data = rt->GetValue(0)->GetString();
 	try{
-		fileWriter.WriteString16(data);
+		static_cast<const sFileWriterNatDat*>(p_GetNativeData(myself))->fileWriter->WriteString16(data);
 		
 	}catch(const deException &e){
 		DSTHROW_INFO(dueInvalidParam, e.GetDescription());
@@ -320,10 +318,9 @@ dsFunction(init.clsFileWriter, "writeString32", DSFT_FUNCTION, DSTM_PUBLIC | DST
 	p_AddParameter(init.clsString); // data
 }
 void deClassFileWriter::nfWriteString32::RunFunction(dsRunTime *rt, dsValue *myself){
-	decBaseFileWriter &fileWriter = static_cast<const sFileWriterNatDat*>(p_GetNativeData(myself))->fileWriter;
 	const char * const data = rt->GetValue(0)->GetString();
 	try{
-		fileWriter.WriteString32(data);
+		static_cast<const sFileWriterNatDat*>(p_GetNativeData(myself))->fileWriter->WriteString32(data);
 		
 	}catch(const deException &e){
 		DSTHROW_INFO(dueInvalidParam, e.GetDescription());
@@ -336,10 +333,9 @@ dsFunction(init.clsFileWriter, "writeVarString", DSFT_FUNCTION, DSTM_PUBLIC | DS
 	p_AddParameter(init.clsString); // data
 }
 void deClassFileWriter::nfWriteVarString::RunFunction(dsRunTime *rt, dsValue *myself){
-	decBaseFileWriter &fileWriter = static_cast<const sFileWriterNatDat*>(p_GetNativeData(myself))->fileWriter;
 	const char * const data = rt->GetValue(0)->GetString();
 	try{
-		fileWriter.WriteVarString(data);
+		static_cast<const sFileWriterNatDat*>(p_GetNativeData(myself))->fileWriter->WriteVarString(data);
 		
 	}catch(const deException &e){
 		DSTHROW_INFO(dueInvalidParam, e.GetDescription());
@@ -364,7 +360,6 @@ deClassFileWriter::nfWriteData::nfWriteData(const sInitData &init) : dsFunction(
 	p_AddParameter(init.clsFileReader); // reader
 }
 void deClassFileWriter::nfWriteData::RunFunction(dsRunTime *rt, dsValue *myself){
-	decBaseFileWriter &fileWriter = static_cast<const sFileWriterNatDat*>(p_GetNativeData(myself))->fileWriter;
 	deScriptingDragonScript &ds = *(static_cast<deClassFileWriter*>(GetOwnerClass()))->GetDS();
 	
 	decBaseFileReader * const fileReader = ds.GetClassFileReader()->GetFileReader(rt->GetValue(0)->GetRealObject());
@@ -381,6 +376,7 @@ void deClassFileWriter::nfWriteData::RunFunction(dsRunTime *rt, dsValue *myself)
 	char *buffer = nullptr;
 	
 	try{
+		decBaseFileWriter &fileWriter = static_cast<const sFileWriterNatDat*>(p_GetNativeData(myself))->fileWriter;
 		buffer = new char[bufferSize];
 		
 		while(size > 0){
@@ -407,7 +403,6 @@ deClassFileWriter::nfWriteData2::nfWriteData2(const sInitData &init) : dsFunctio
 	p_AddParameter(init.clsInt); // size
 }
 void deClassFileWriter::nfWriteData2::RunFunction(dsRunTime *rt, dsValue *myself){
-	decBaseFileWriter &fileWriter = static_cast<const sFileWriterNatDat*>(p_GetNativeData(myself))->fileWriter;
 	deScriptingDragonScript &ds = *(static_cast<deClassFileWriter*>(GetOwnerClass()))->GetDS();
 	
 	int size = rt->GetValue(1)->GetInt();
@@ -427,6 +422,7 @@ void deClassFileWriter::nfWriteData2::RunFunction(dsRunTime *rt, dsValue *myself
 	char *buffer = nullptr;
 	
 	try{
+		decBaseFileWriter &fileWriter = static_cast<const sFileWriterNatDat*>(p_GetNativeData(myself))->fileWriter;
 		buffer = new char[bufferSize];
 		
 		while(size > 0){
@@ -455,7 +451,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassFileWriter::nfWriteTimeDate::RunFunction(dsRunTime *rt, dsValue *myself){
 	decBaseFileWriter &fileWriter = static_cast<const sFileWriterNatDat*>(p_GetNativeData(myself))->fileWriter;
 	deScriptingDragonScript &ds = *(static_cast<deClassFileWriter*>(GetOwnerClass()))->GetDS();
-	dsClassTimeDate &clsTimeDate = *((dsClassTimeDate*)ds.GetScriptEngine()->GetClassTimeDate());
+	dsClassTimeDate &clsTimeDate = *static_cast<dsClassTimeDate*>(ds.GetScriptEngine()->GetClassTimeDate());
 	
 	const dsClassTimeDate::sTimeDate timeDate(clsTimeDate.GetTimeDate(rt->GetValue(0)->GetRealObject()));
 	
@@ -578,5 +574,5 @@ void deClassFileWriter::PushFileWriter(dsRunTime *rt, decBaseFileWriter *fileWri
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sFileWriterNatDat)->fileWriter = fileWriter;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sFileWriterNatDat)->fileWriter = fileWriter;
 }

@@ -404,7 +404,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObject); // obj
 }
 void deClassBillboard::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deBillboard * const billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
+	const deBillboard * const billboard = static_cast<sBillboardNatDat*>(p_GetNativeData(myself))->billboard;
 	deClassBillboard * const clsBillboard = static_cast<deClassBillboard*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -412,7 +412,7 @@ void deClassBillboard::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		deBillboard * const otherBillboard = static_cast<sBillboardNatDat*>(p_GetNativeData(obj))->billboard;
+		const deBillboard * const otherBillboard = static_cast<sBillboardNatDat*>(p_GetNativeData(obj))->billboard;
 		rt->PushBool(billboard == otherBillboard);
 	}
 }
@@ -517,5 +517,5 @@ void deClassBillboard::PushBillboard(dsRunTime *rt, deBillboard *billboard){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sBillboardNatDat)->billboard = billboard;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sBillboardNatDat)->billboard = billboard;
 }

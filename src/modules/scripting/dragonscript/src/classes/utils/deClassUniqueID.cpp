@@ -45,7 +45,7 @@
 
 // native structure
 struct sUIDNatDat{
-	decUniqueID *id;
+	decUniqueID id;
 };
 
 
@@ -61,10 +61,7 @@ deClassUniqueID::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsUID,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassUniqueID::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sUIDNatDat * const nd = new (p_GetNativeData(myself)) sUIDNatDat;
-	
-	// create id
-	nd->id = new decUniqueID;
+	new (p_GetNativeData(myself)) sUIDNatDat;
 }
 
 // public func new( int value )
@@ -75,8 +72,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassUniqueID::nfNewInt::RunFunction(dsRunTime *rt, dsValue *myself){
 	sUIDNatDat * const nd = new (p_GetNativeData(myself)) sUIDNatDat;
 	
-	// create id
-	nd->id = new decUniqueID(rt->GetValue(0)->GetInt());
+	nd->id = decUniqueID(rt->GetValue(0)->GetInt());
 }
 
 // public func destructor()
@@ -388,7 +384,7 @@ deClassUniqueID::nfToString::nfToString(const sInitData &init) : dsFunction(init
 }
 void deClassUniqueID::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decUniqueID &id = static_cast<sUIDNatDat*>(p_GetNativeData(myself))->id;
-	int b, offset, value, byteCount = id.GetBitCount() / 8;
+	int b, offset, byteCount = id.GetBitCount() / 8;
 	char buffer[100];
 	
 	offset = 0;
@@ -399,7 +395,7 @@ void deClassUniqueID::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
 	for(b=byteCount-1; b>=0; b--){
 		const int vbyte = id.GetByteAt(b);
 		
-		value = (vbyte & 0xf0) >> 4;
+		int value = (vbyte & 0xf0) >> 4;
 		if(value < 10){
 			buffer[offset++] = '0' + value;
 			
@@ -499,7 +495,7 @@ decUniqueID &deClassUniqueID::GetUniqueID(dsRealObject *myself) const{
 		DSTHROW(dueNullPointer);
 	}
 	
-	return *static_cast<sUIDNatDat*>(p_GetNativeData(myself->GetBuffer()))->id;
+	return static_cast<sUIDNatDat*>(p_GetNativeData(myself->GetBuffer()))->id;
 }
 
 void deClassUniqueID::PushUniqueID(dsRunTime *rt, const decUniqueID &id){
@@ -508,34 +504,22 @@ void deClassUniqueID::PushUniqueID(dsRunTime *rt, const decUniqueID &id){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sUIDNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sUIDNatDat;
-	nd->id = nullptr;
-	
-	try{
-		nd->id = new decUniqueID(id);
-		
-	}catch(...){
-		rt->RemoveValues(1); // remove pushed object
-		throw;
-	}
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sUIDNatDat)->id = id;
 }
 
-void deClassUniqueID::PushUniqueID(dsRunTime *rt, int byteCount, unsigned char *bytes){
+void deClassUniqueID::PushUniqueID(dsRunTime *rt, int byteCount, const unsigned char *bytes){
 	if(!rt || byteCount < 1 || !bytes){
 		DSTHROW(dueInvalidParam);
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sUIDNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sUIDNatDat;
-	nd->id = nullptr;
+	sUIDNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sUIDNatDat;
 	
 	try{
-		nd->id = new decUniqueID;
-		
-		nd->id->SetBitCount(byteCount * 8);
+		nd->id.SetBitCount(byteCount * 8);
 		int b;
 		for(b=0; b<byteCount; b++){
-			nd->id->SetByteAt(b, bytes[b]);
+			nd->id.SetByteAt(b, bytes[b]);
 		}
 		
 	}catch(...){

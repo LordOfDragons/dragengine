@@ -83,9 +83,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassNetworkState::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sNSNatDat * const nd = new (p_GetNativeData(myself)) sNSNatDat;
-	deClassNetworkState * const clsNS = (deClassNetworkState*)GetOwnerClass();
+	const deClassNetworkState * const clsNS = static_cast<deClassNetworkState*>(GetOwnerClass());
 	
-	// create state
 	nd->state = clsNS->GetDS().GetGameEngine()->GetNetworkStateManager()->CreateState(false);
 }
 
@@ -262,7 +261,7 @@ void deClassNetworkState::nfGetValueFormatAt::RunFunction(dsRunTime *rt, dsValue
 		DSTHROW(dueInvalidParam);
 	}
 	
-	rt->PushValue(((deClassNetworkState*)GetOwnerClass())->GetClassNetworkStateValueType()
+	rt->PushValue((static_cast<deClassNetworkState*>(GetOwnerClass()))->GetClassNetworkStateValueType()
 		->GetVariable(format)->GetStaticValue());
 }
 
@@ -331,7 +330,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsPt){
 }
 void deClassNetworkState::nfGetValuePoint2At::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	deNetworkValueVisitorIdentify identify;
 	
@@ -351,7 +350,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsPt3){
 }
 void deClassNetworkState::nfGetValuePoint3At::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	deNetworkValueVisitorIdentify identify;
 	
@@ -371,7 +370,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVector2){
 }
 void deClassNetworkState::nfGetValueVector2At::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	int index = rt->GetValue(0)->GetInt();
 	deNetworkValueVisitorIdentify identify;
 	
@@ -391,7 +390,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassNetworkState::nfGetValueVector3At::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	deNetworkValueVisitorIdentify identify;
 	
@@ -411,7 +410,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsDVec){
 }
 void deClassNetworkState::nfGetValueDVector3At::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	deNetworkValueVisitorIdentify identify;
 	
@@ -431,7 +430,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsQuat){
 }
 void deClassNetworkState::nfGetValueQuaternionAt::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	deNetworkValueVisitorIdentify identify;
 	
@@ -451,7 +450,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // value
 }
 void deClassNetworkState::nfSetValueIntAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
+	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
 	const int index = rt->GetValue(0)->GetInt();
 	deNetworkValueVisitorIdentify identify;
 	
@@ -472,7 +471,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // value
 }
 void deClassNetworkState::nfSetValueFloatAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
+	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
 	const int index = rt->GetValue(0)->GetInt();
 	deNetworkValueVisitorIdentify identify;
 	
@@ -493,7 +492,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // value
 }
 void deClassNetworkState::nfSetValueStringAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
+	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
 	const int index = rt->GetValue(0)->GetInt();
 	deNetworkValueVisitorIdentify identify;
 	
@@ -514,8 +513,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsPt); // value
 }
 void deClassNetworkState::nfSetValuePoint2At::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	const decPoint &value = ds.GetClassPoint()->GetPoint(rt->GetValue(1)->GetRealObject());
 	
@@ -537,8 +536,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsPt3); // value
 }
 void deClassNetworkState::nfSetValuePoint3At::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	const decPoint3 &value = ds.GetClassPoint3()->GetPoint(rt->GetValue(1)->GetRealObject());
 	
@@ -560,8 +559,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector2); // value
 }
 void deClassNetworkState::nfSetValueVector2At::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	const decVector2 &value = ds.GetClassVector2()->GetVector2(rt->GetValue(1)->GetRealObject());
 	
@@ -583,8 +582,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // value
 }
 void deClassNetworkState::nfSetValueVector3At::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	const decVector &value = ds.GetVector(rt->GetValue(1)->GetRealObject());
 	
@@ -606,8 +605,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsDVec); // value
 }
 void deClassNetworkState::nfSetValueDVector3At::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	const decDVector &value = ds.GetClassDVector()->GetDVector(rt->GetValue(1)->GetRealObject());
 	
@@ -629,8 +628,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsQuat); // value
 }
 void deClassNetworkState::nfSetValueQuaternionAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	const decQuaternion &value = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(1)->GetRealObject());
 	
@@ -682,7 +681,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // precision
 }
 void deClassNetworkState::nfSetValuePrecisionAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
+	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
 	const int index = rt->GetValue(0)->GetInt();
 	const float precision = rt->GetValue(1)->GetFloat();
 	deNetworkValueVisitorIdentify identify;
@@ -715,7 +714,7 @@ dsFunction(init.clsNS, "getValueDataAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 	p_AddParameter(init.clsMemoryFile); // data
 }
 void deClassNetworkState::nfGetValueDataAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
 	const int index = rt->GetValue(0)->GetInt();
 	deNetworkValueVisitorIdentify identify;
@@ -748,7 +747,7 @@ dsFunction(init.clsNS, "setValueDataAt", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 	p_AddParameter(init.clsMemoryFile); // data
 }
 void deClassNetworkState::nfSetValueDataAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
 	const int index = rt->GetValue(0)->GetInt();
 	deNetworkValueVisitorIdentify identify;
@@ -786,8 +785,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsNSL){
 }
 void deClassNetworkState::nfGetStateListener::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
-	dedsNetworkState * const scrState = (dedsNetworkState*)state.GetPeerScripting();
-	const deScriptingDragonScript &ds = ((deClassNetworkState*)GetOwnerClass())->GetDS();
+	const dedsNetworkState * const scrState = static_cast<dedsNetworkState*>(state.GetPeerScripting());
+	const deScriptingDragonScript &ds = (static_cast<deClassNetworkState*>(GetOwnerClass()))->GetDS();
 	
 	if(scrState){
 		rt->PushObject(scrState->GetCallback(), ds.GetClassNetworkStateListener());
@@ -805,7 +804,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassNetworkState::nfSetStateListener::RunFunction(dsRunTime *rt, dsValue *myself){
 	deNetworkState &state = *(static_cast<sNSNatDat*>(p_GetNativeData(myself))->state);
-	dedsNetworkState * const scrState = (dedsNetworkState*)state.GetPeerScripting();
+	dedsNetworkState * const scrState = static_cast<dedsNetworkState*>(state.GetPeerScripting());
 	if(scrState){
 		scrState->SetCallback(rt->GetValue(0)->GetRealObject());
 	}
@@ -835,7 +834,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassNetworkState::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deNetworkState * const state = static_cast<sNSNatDat*>(p_GetNativeData(myself))->state;
-	deClassNetworkState * const clsNS = (deClassNetworkState*)GetOwnerClass();
+	deClassNetworkState * const clsNS = static_cast<deClassNetworkState*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsNS)){
@@ -957,5 +956,5 @@ void deClassNetworkState::PushNetworkState(dsRunTime *rt, deNetworkState *state)
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sNSNatDat)->state = state;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sNSNatDat)->state = state;
 }

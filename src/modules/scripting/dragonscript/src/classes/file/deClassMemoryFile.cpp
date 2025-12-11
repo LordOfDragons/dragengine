@@ -65,11 +65,9 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassMemoryFile::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sMemFileNatDat * const nd = new (p_GetNativeData(myself)) sMemFileNatDat;
 	
-	// check arguments
 	const char * const filename = rt->GetValue(0)->GetString();
 	
-	// create memory file
-	nd->memoryFile = new decMemoryFile(filename);
+	nd->memoryFile.TakeOverWith(filename);
 }
 
 // public func new( MemoryFile memoryFile )
@@ -88,7 +86,7 @@ void deClassMemoryFile::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 	
 	// create memory file
-	nd->memoryFile = new decMemoryFile(copyMemoryFile->GetFilename());
+	nd->memoryFile.TakeOverWith(copyMemoryFile->GetFilename());
 	
 	const int size = copyMemoryFile->GetLength();
 	if(size > 0){
@@ -270,5 +268,5 @@ void deClassMemoryFile::PushMemoryFile(dsRunTime *rt, decMemoryFile *memoryFile)
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sMemFileNatDat)->memoryFile = memoryFile;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sMemFileNatDat)->memoryFile = memoryFile;
 }

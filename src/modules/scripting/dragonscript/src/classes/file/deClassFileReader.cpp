@@ -46,6 +46,7 @@
 
 struct sFReadNatDat{
 	decBaseFileReader::Ref fileReader;
+	int streamVersion = 0;
 };
 
 
@@ -60,20 +61,14 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassFileReader::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sFReadNatDat * const nd = new (p_GetNativeData(myself)) sFReadNatDat;
-	const deClassFileReader &clsFRead = *(static_cast<deClassFileReader*>(GetOwnerClass()));
-	deVirtualFileSystem &vfs = *clsFRead.GetDS()->GetGameEngine()->GetVirtualFileSystem();
-	decPath path;
-	nd.streamVersion = clsFRead.GetDS()->GetStreamingVersion();
 	
-	// check arguments
+	const deClassFileReader &clsFRead = *(static_cast<deClassFileReader*>(GetOwnerClass()));
+	const deVirtualFileSystem &vfs = *clsFRead.GetDS()->GetGameEngine()->GetVirtualFileSystem();
+	nd->streamVersion = clsFRead.GetDS()->GetStreamingVersion();
+	
 	const char *filename = rt->GetValue(0)->GetString();
 	
-	// create file reader
-	path.SetFromUnix(filename);
-	nd->fileReader = vfs.OpenFileForReading(path);
-	if(!nd->fileReader){
-		DSTHROW(dueOutOfMemory);
-	}
+	nd->fileReader = vfs.OpenFileForReading(decPath::CreatePathUnix(filename));
 }
 
 // public static func FileReader newZCompressed(String filename)
@@ -88,8 +83,8 @@ void deClassFileReader::nfNewZCompressed::RunFunction(dsRunTime *rt, dsValue *my
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	
-	clsFRead.PushFileReader(rt, decZFileReader::Ref::New(
-		new decZFileReader(vfs.OpenFileForReading(decPath::CreatePathUnix(filename)))));
+	clsFRead.PushFileReader(rt, decZFileReader::Ref::NewWith(
+		vfs.OpenFileForReading(decPath::CreatePathUnix(filename))));
 }
 
 // public func destructor()
@@ -338,7 +333,7 @@ void deClassFileReader::nfReadString::RunFunction(dsRunTime *rt, dsValue *myself
 	const int size = rt->GetValue(0)->GetInt();
 	decString string;
 	string.Set(' ', size);
-	fileReader.Read((char*)string.GetString(), size);
+	fileReader.Read(const_cast<char*>(string.GetString()), size);
 	rt->PushString(string.GetString());
 }
 
@@ -407,7 +402,7 @@ void deClassFileReader::nfReadTimeDate::RunFunction(dsRunTime *rt, dsValue *myse
 		DETHROW_INFO(deeInvalidFormat, "unsupported version");
 	}
 	
-	((dsClassTimeDate*)ds.GetScriptEngine()->GetClassTimeDate())->PushTimeDate(rt, timeDate);
+	static_cast<dsClassTimeDate*>(ds.GetScriptEngine()->GetClassTimeDate())->PushTimeDate(rt, timeDate);
 }
 
 
@@ -514,5 +509,5 @@ void deClassFileReader::PushFileReader(dsRunTime *rt, decBaseFileReader *fileRea
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sFReadNatDat)->fileReader = fileReader;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sFReadNatDat)->fileReader = fileReader;
 }

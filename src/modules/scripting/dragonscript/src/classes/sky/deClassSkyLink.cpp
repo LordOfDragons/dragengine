@@ -47,6 +47,7 @@
 
 struct sSkyLinkNatDat{
 	deSky::Ref sky;
+	int index = -1;
 };
 
 
@@ -276,8 +277,7 @@ void deClassSkyLink::PushLink(dsRunTime *rt, deSky *sky, int index){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSkyLinkNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkyLinkNatDat;
+	sSkyLinkNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSkyLinkNatDat;
 	nd->sky = sky;
-	sky->AddReference();
 	nd->index = index;
 }

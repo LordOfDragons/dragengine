@@ -298,5 +298,5 @@ void deClassLanguagePack::PushLanguagePack(dsRunTime *rt, deLanguagePack *langPa
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sLPNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->langPack = langPack;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sLPNatDat)->langPack = langPack;
 }

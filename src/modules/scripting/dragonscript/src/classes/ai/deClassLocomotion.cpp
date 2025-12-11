@@ -2306,5 +2306,5 @@ void deClassLocomotion::PushLocomotion(dsRunTime *rt, dedsLocomotion *locomotion
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sLocoNatDat())->locomotion = locomotion;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sLocoNatDat())->locomotion = locomotion;
 }

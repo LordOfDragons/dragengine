@@ -45,11 +45,22 @@ struct sRuntimeMeterNatDat{
 		int updates;
 	};
 	
-	decTimer *meters;
-	int meterCount;
+	decTimer *meters = nullptr;
+	int meterCount = 0;
 	
-	sCounter *counters;
-	int counterCount;
+	sCounter *counters = nullptr;
+	int counterCount = 0;
+	
+	~sRuntimeMeterNatDat(){
+		if(meters){
+			delete [] meters;
+			meters = nullptr;
+		}
+		if(counters){
+			delete [] counters;
+			counters = nullptr;
+		}
+	}
 	
 	decTimer &GetMeterAt(int index){
 		if(index < 0){
@@ -97,20 +108,15 @@ struct sRuntimeMeterNatDat{
 deClassRuntimeMeter::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsRTM,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassRuntimeMeter::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRuntimeMeterNatDat * const nd = static_cast<sRuntimeMeterNatDat*>(p_GetNativeData(myself);
-	
-	nd->meters = nullptr;
-	nd->meterCount = 0;
-	nd->counters = nullptr;
-	nd->counterCount = 0;
+void deClassRuntimeMeter::nfNew::RunFunction(dsRunTime*, dsValue *myself){
+	new (p_GetNativeData(myself)) sRuntimeMeterNatDat;
 }
 
 // public func destructor()
 deClassRuntimeMeter::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsRTM,
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassRuntimeMeter::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
+void deClassRuntimeMeter::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
 	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}

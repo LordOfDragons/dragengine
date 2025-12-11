@@ -42,7 +42,7 @@
 
 // native structure
 struct sMPNatDat{
-	deModuleParameter *param;
+	deModuleParameter param;
 };
 
 // native functions
@@ -69,7 +69,7 @@ dsFunction(init.clsMP, "getName", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassModuleParameter::nfGetName::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModuleParameter &param = *(static_cast<sMPNatDat*>(p_GetNativeData(myself))->param);
+	const deModuleParameter &param = static_cast<sMPNatDat*>(p_GetNativeData(myself))->param;
 	rt->PushString(param.GetName());
 }
 
@@ -79,7 +79,7 @@ dsFunction(init.clsMP, "getDescription", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassModuleParameter::nfGetDescription::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModuleParameter &param = *(static_cast<sMPNatDat*>(p_GetNativeData(myself))->param);
+	const deModuleParameter &param = static_cast<sMPNatDat*>(p_GetNativeData(myself))->param;
 	rt->PushString(param.GetDescription());
 }
 
@@ -89,8 +89,8 @@ dsFunction(init.clsMP, "getType", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsModuleParameterType){
 }
 void deClassModuleParameter::nfGetType::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModuleParameter &param = *(static_cast<sMPNatDat*>(p_GetNativeData(myself))->param);
-	rt->PushValue(((deClassModuleParameter*)GetOwnerClass())->GetClassModuleParameterType()
+	const deModuleParameter &param = static_cast<sMPNatDat*>(p_GetNativeData(myself))->param;
+	rt->PushValue(static_cast<deClassModuleParameter*>(GetOwnerClass())->GetClassModuleParameterType()
 		->GetVariable(param.GetType())->GetStaticValue());
 }
 
@@ -100,7 +100,7 @@ dsFunction(init.clsMP, "getMinimumValue", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassModuleParameter::nfGetMinimumValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModuleParameter &param = *(static_cast<sMPNatDat*>(p_GetNativeData(myself))->param);
+	const deModuleParameter &param = static_cast<sMPNatDat*>(p_GetNativeData(myself))->param;
 	rt->PushFloat(param.GetMinimumValue());
 }
 
@@ -110,7 +110,7 @@ dsFunction(init.clsMP, "getMaximumValue", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassModuleParameter::nfGetMaximumValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModuleParameter &param = *(static_cast<sMPNatDat*>(p_GetNativeData(myself))->param);
+	const deModuleParameter &param = static_cast<sMPNatDat*>(p_GetNativeData(myself))->param;
 	rt->PushFloat(param.GetMaximumValue());
 }
 
@@ -120,7 +120,7 @@ dsFunction(init.clsMP, "getValueStepSize", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassModuleParameter::nfGetValueStepSize::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModuleParameter &param = *(static_cast<sMPNatDat*>(p_GetNativeData(myself))->param);
+	const deModuleParameter &param = static_cast<sMPNatDat*>(p_GetNativeData(myself))->param;
 	rt->PushFloat(param.GetValueStepSize());
 }
 
@@ -130,7 +130,7 @@ dsFunction(init.clsMP, "getSelectionEntryCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassModuleParameter::nfGetSelectionEntryCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModuleParameter &param = *(static_cast<sMPNatDat*>(p_GetNativeData(myself))->param);
+	const deModuleParameter &param = static_cast<sMPNatDat*>(p_GetNativeData(myself))->param;
 	rt->PushInt(param.GetSelectionEntryCount());
 }
 
@@ -141,7 +141,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassModuleParameter::nfGetSelectionEntryValueAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModuleParameter &param = *(static_cast<sMPNatDat*>(p_GetNativeData(myself))->param);
+	const deModuleParameter &param = static_cast<sMPNatDat*>(p_GetNativeData(myself))->param;
 	int index = rt->GetValue(0)->GetInt();
 	rt->PushString(param.GetSelectionEntryAt(index).value);
 }
@@ -153,7 +153,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassModuleParameter::nfGetSelectionEntryDisplayNameAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModuleParameter &param = *(static_cast<sMPNatDat*>(p_GetNativeData(myself))->param);
+	const deModuleParameter &param = static_cast<sMPNatDat*>(p_GetNativeData(myself))->param;
 	int index = rt->GetValue(0)->GetInt();
 	rt->PushString(param.GetSelectionEntryAt(index).displayName);
 }
@@ -165,7 +165,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 	p_AddParameter(init.clsInt); // index
 }
 void deClassModuleParameter::nfGetSelectionEntryDescriptionAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModuleParameter &param = *(static_cast<sMPNatDat*>(p_GetNativeData(myself))->param);
+	const deModuleParameter &param = static_cast<sMPNatDat*>(p_GetNativeData(myself))->param;
 	int index = rt->GetValue(0)->GetInt();
 	rt->PushString(param.GetSelectionEntryAt(index).description);
 }
@@ -176,8 +176,8 @@ dsFunction(init.clsMP, "getCategory", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsModuleParameterCategory){
 }
 void deClassModuleParameter::nfGetCategory::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModuleParameter &param = *(static_cast<sMPNatDat*>(p_GetNativeData(myself))->param);
-	rt->PushValue(((deClassModuleParameter*)GetOwnerClass())->GetClassModuleParameterCategory()
+	const deModuleParameter &param = static_cast<sMPNatDat*>(p_GetNativeData(myself))->param;
+	rt->PushValue(static_cast<deClassModuleParameter*>(GetOwnerClass())->GetClassModuleParameterCategory()
 		->GetVariable(param.GetCategory())->GetStaticValue());
 }
 
@@ -187,7 +187,7 @@ dsFunction(init.clsMP, "getDisplayName", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassModuleParameter::nfGetDisplayName::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModuleParameter &param = *(static_cast<sMPNatDat*>(p_GetNativeData(myself))->param);
+	const deModuleParameter &param = static_cast<sMPNatDat*>(p_GetNativeData(myself))->param;
 	rt->PushString(param.GetDisplayName());
 }
 
@@ -197,7 +197,7 @@ dsFunction(init.clsMP, "getDefaultValue", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassModuleParameter::nfGetDefaultValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deModuleParameter &param = *(static_cast<sMPNatDat*>(p_GetNativeData(myself))->param);
+	const deModuleParameter &param = static_cast<sMPNatDat*>(p_GetNativeData(myself))->param;
 	rt->PushString(param.GetDefaultValue());
 }
 
@@ -209,14 +209,18 @@ void deClassModuleParameter::nfGetDefaultValue::RunFunction(dsRunTime *rt, dsVal
 // Constructor, Destructor
 ////////////////////////////
 
-deClassModuleParameter::deClassModuleParameter(deEngine *GameEngine, deScriptingDragonScript *ScrMgr) :
-dsClass("ModuleParameter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED){
-	if(!GameEngine || !ScrMgr){
+deClassModuleParameter::deClassModuleParameter(deEngine *gameEngine, deScriptingDragonScript &ds) :
+dsClass("ModuleParameter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
+pGameEngine(nullptr),
+pDS(ds),
+pClsModuleParameterType(nullptr),
+pClsModuleParameterCategory(nullptr)
+{
+	if(!gameEngine){
 		DSTHROW(dueInvalidParam);
 	}
 	
-	p_gameEngine = GameEngine;
-	p_scrMgr = ScrMgr;
+	pGameEngine = gameEngine;
 	
 	GetParserInfo()->SetParent(DENS_DRAGENGINE);
 	GetParserInfo()->SetBase("Object");
@@ -266,18 +270,16 @@ void deClassModuleParameter::CreateClassMembers(dsEngine *engine){
 	CalcMemberOffsets();
 }
 
-void deClassModuleParameter::PushParameter(dsRunTime *rt, deBaseModule *module, int index){
+void deClassModuleParameter::PushParameter(dsRunTime *rt, const deBaseModule *module, int index){
 	if(!rt || !module){
 		DSTHROW(dueInvalidParam);
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sMPNatDat &nd = *static_cast<sMPNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.param = NULL;
+	sMPNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sMPNatDat;
 	
 	try{
-		nd.param = new deModuleParameter;
-		module->GetParameterInfo(index, *nd.param);
+		module->GetParameterInfo(index, nd->param);
 		
 	}catch(const duException &){
 		rt->RemoveValues(1); // remove pushed object

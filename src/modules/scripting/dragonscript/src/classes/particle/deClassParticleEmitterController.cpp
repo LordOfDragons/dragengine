@@ -49,6 +49,7 @@
 struct sParticleEmitterCtrlNatDat{
 	deParticleEmitter::Ref emitter;
 	deParticleEmitterInstance::Ref instance;
+	int index = 0;
 };
 
 
@@ -621,9 +622,8 @@ void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleE
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sParticleEmitterCtrlNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sParticleEmitterCtrlNatDat;
+	sParticleEmitterCtrlNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sParticleEmitterCtrlNatDat;
 	nd->emitter = emitter;
-	emitter->AddReference();
 	nd->instance = nullptr;
 	nd->index = index;
 }
@@ -634,9 +634,8 @@ void deClassParticleEmitterController::PushController(dsRunTime *rt, deParticleE
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sParticleEmitterCtrlNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sParticleEmitterCtrlNatDat;
+	sParticleEmitterCtrlNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sParticleEmitterCtrlNatDat;
 	nd->emitter = nullptr;
 	nd->instance = instance;
-	instance->AddReference();
 	nd->index = index;
 }

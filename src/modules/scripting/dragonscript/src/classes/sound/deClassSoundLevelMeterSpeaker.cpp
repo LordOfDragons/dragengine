@@ -43,6 +43,7 @@
 
 struct sSLMSNatDat{
 	deSpeaker::Ref speaker;
+	float volume = 1.0f;
 };
 
 
@@ -160,12 +161,8 @@ const deSoundLevelMeter::cAudibleSpeaker &speaker){
 	
 	rt->CreateObjectNakedOnStack(this);
 	
-	sSLMSNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSLMSNatDat;
+	sSLMSNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSLMSNatDat;
 	
 	nd->speaker = speaker.GetSpeaker();
-	if(nd->speaker){
-		nd->speaker->AddReference();
-	}
-	
 	nd->volume = speaker.GetVolume();
 }

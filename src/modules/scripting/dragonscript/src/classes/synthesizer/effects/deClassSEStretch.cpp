@@ -66,11 +66,9 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassSEStretch::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSEStretchNatDat * const nd = new (p_GetNativeData(myself)) sSEStretchNatDat;
 	
-	// super call
-	deClassSynthesizerEffect * const baseClass = (deClassSynthesizerEffect*)GetOwnerClass()->GetBaseClass();
+	deClassSynthesizerEffect * const baseClass = static_cast<deClassSynthesizerEffect*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
-	// create synthesizer effect
 	nd->effect = new deSynthesizerEffectStretch;
 	baseClass->AssignEffect(myself->GetRealObject(), nd->effect);
 }
@@ -315,21 +313,7 @@ void deClassSEStretch::AssignSynthesizer(dsRealObject *myself, deSynthesizerSour
 	
 	pDS.GetClassSynthesizerEffect()->AssignSource(myself, source);
 	
-	sSEStretchNatDat &nd = *static_cast<sSEStretchNatDat*>(p_GetNativeData(myself->GetBuffer()));
-	
-	if(source == nd.source){
-		return;
-	}
-	
-	if(nd.source){
-		nd.source->FreeReference();
-	}
-	
-	nd.source = source;
-	
-	if(source){
-		source->AddReference();
-	}
+	static_cast<sSEStretchNatDat*>(p_GetNativeData(myself->GetBuffer()))->source = source;
 }
 
 void deClassSEStretch::PushEffect(dsRunTime *rt, deSynthesizerSource *source, deSynthesizerEffectStretch *effect){
@@ -344,20 +328,12 @@ void deClassSEStretch::PushEffect(dsRunTime *rt, deSynthesizerSource *source, de
 	
 	deClassSynthesizerEffect * const baseClass = static_cast<deClassSynthesizerEffect*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sSEStretchNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSEStretchNatDat;
-	nd->source = NULL;
-	nd->effect = NULL;
+	sSEStretchNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSEStretchNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
 		nd->source = source;
-		if(source){
-			source->AddReference();
-		}
-		
 		nd->effect = effect;
-		effect->AddReference();
 		
 		baseClass->AssignEffect(rt->GetValue(0)->GetRealObject(), effect);
 		baseClass->AssignSource(rt->GetValue(0)->GetRealObject(), source);

@@ -58,7 +58,7 @@ deClassColorMatrix::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsClr
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassColorMatrix::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
+	decColorMatrix &matrix = (new (p_GetNativeData(myself)) sCMNatDat)->matrix;
 	
 	matrix = decColorMatrix::CreateIdentity();
 }
@@ -69,8 +69,9 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsClrMat); // matrix
 }
 void deClassColorMatrix::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
-	decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
-	deClassColorMatrix * const clsClrMatrix = static_cast<deClassColorMatrix*>(GetOwnerClass());
+	decColorMatrix &matrix = (new (p_GetNativeData(myself)) sCMNatDat)->matrix;
+	
+	const deClassColorMatrix * const clsClrMatrix = static_cast<deClassColorMatrix*>(GetOwnerClass());
 	
 	matrix = clsClrMatrix->GetColorMatrix(rt->GetValue(0)->GetRealObject());
 }
@@ -85,7 +86,8 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsClr); // white
 }
 void deClassColorMatrix::nfNew3::RunFunction(dsRunTime *rt, dsValue *myself){
-	decColorMatrix &matrix = static_cast<sCMNatDat*>(p_GetNativeData(myself))->matrix;
+	decColorMatrix &matrix = (new (p_GetNativeData(myself)) sCMNatDat)->matrix;
+	
 	const deScriptingDragonScript &ds = (static_cast<deClassColorMatrix*>(GetOwnerClass()))->GetDS();
 	deClassColor &clsClr = *ds.GetClassColor();
 	
@@ -982,5 +984,5 @@ void deClassColorMatrix::PushColorMatrix(dsRunTime *rt, const decColorMatrix &ma
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sCMNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->matrix = matrix;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCMNatDat)->matrix = matrix;
 }

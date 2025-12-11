@@ -49,6 +49,7 @@
 struct sSkyCtrlNatDat{
 	deSky::Ref sky;
 	deSkyInstance::Ref instance;
+	int index = -1;
 };
 
 
@@ -492,10 +493,8 @@ void deClassSkyController::PushController(dsRunTime *rt, deSky *sky, int index){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSkyCtrlNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkyCtrlNatDat;
+	sSkyCtrlNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSkyCtrlNatDat;
 	nd->sky = sky;
-	sky->AddReference();
-	nd->instance = nullptr;
 	nd->index = index;
 }
 
@@ -505,9 +504,7 @@ void deClassSkyController::PushController(dsRunTime *rt, deSkyInstance *instance
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSkyCtrlNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkyCtrlNatDat;
-	nd->sky = nullptr;
+	sSkyCtrlNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSkyCtrlNatDat;
 	nd->instance = instance;
-	instance->AddReference();
 	nd->index = index;
 }

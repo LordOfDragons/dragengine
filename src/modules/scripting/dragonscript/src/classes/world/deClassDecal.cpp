@@ -64,14 +64,11 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassDecal::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sDecalNatDat * const nd = new (p_GetNativeData(myself)) sDecalNatDat;
+	
 	const deClassDecal &clsDecal = *(static_cast<deClassDecal*>(GetOwnerClass()));
 	deDecalManager &decalMgr = *clsDecal.GetDS().GetGameEngine()->GetDecalManager();
 	
-	// create decal
 	nd->decal = decalMgr.CreateDecal();
-	if(!nd->decal){
-		DSTHROW(dueOutOfMemory);
-	}
 }
 
 // public func destructor()
@@ -342,7 +339,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObject); // obj
 }
 void deClassDecal::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deDecal * const decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
+	const deDecal * const decal = static_cast<sDecalNatDat*>(p_GetNativeData(myself))->decal;
 	deClassDecal * const clsDecal = static_cast<deClassDecal*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -350,7 +347,7 @@ void deClassDecal::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		deDecal * const otherDecal = static_cast<sDecalNatDat*>(p_GetNativeData(obj))->decal;
+		const deDecal * const otherDecal = static_cast<sDecalNatDat*>(p_GetNativeData(obj))->decal;
 		rt->PushBool(decal == otherDecal);
 	}
 }
@@ -451,5 +448,5 @@ void deClassDecal::PushDecal(dsRunTime *rt, deDecal *decal){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sDecalNatDat)->decal = decal;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sDecalNatDat)->decal = decal;
 }

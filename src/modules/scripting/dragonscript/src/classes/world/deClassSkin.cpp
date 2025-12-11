@@ -69,15 +69,12 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsString); // name
 }
 void deClassSkin::nfLoad::RunFunction(dsRunTime *rt, dsValue *myself){
-	sSkinNatDat &nd = *static_cast<sSkinNatDat*>(p_GetNativeData(myself));
+	sSkinNatDat * const nd = new (p_GetNativeData(myself)) sSkinNatDat();
+	
 	deScriptingDragonScript &ds = (static_cast<deClassSkin*>(GetOwnerClass()))->GetDS();
 	deSkinManager &skinMgr = *ds.GetGameEngine()->GetSkinManager();
 	
-	// reset all
-	nd.skin = nullptr;
-	
-	// load skin
-	nd.skin = skinMgr.LoadSkin(rt->GetValue(0)->GetString(), "/");
+	nd->skin = skinMgr.LoadSkin(rt->GetValue(0)->GetString(), "/");
 }
 
 // static public func void loadAsynchron( String filename, ResourceListener listener )
@@ -344,7 +341,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassSkin::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const sSkinNatDat &nd = *static_cast<sSkinNatDat*>(p_GetNativeData(myself));
-	deClassSkin * const clsSkin = static_cast<deClassSkin*>(GetOwnerClass());
+	const deClassSkin * const clsSkin = static_cast<deClassSkin*>(GetOwnerClass());
 	dsValue * const object = rt->GetValue(0);
 	
 	if(object->GetType()->GetPrimitiveType() != DSPT_OBJECT || !object->GetRealObject()
@@ -446,5 +443,5 @@ void deClassSkin::PushSkin(dsRunTime *rt, deSkin *skin){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSkinNatDat)->skin = skin;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSkinNatDat)->skin = skin;
 }

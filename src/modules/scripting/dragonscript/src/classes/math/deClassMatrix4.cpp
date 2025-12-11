@@ -66,9 +66,7 @@ deClassMatrix4::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsMatrix4
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassMatrix4::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	decMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
-	
-	matrix.SetIdentity();
+	new (p_GetNativeData(myself)) sMatNatDat;
 }
 
 // public func new( float a11, float a12, float a13, float a14, float a21, float a22, float a23, float a24,
@@ -93,7 +91,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // a44
 }
 void deClassMatrix4::nfNewValues::RunFunction(dsRunTime *rt, dsValue *myself){
-	decMatrix &matrix = static_cast<sMatNatDat*>(p_GetNativeData(myself))->matrix;
+	decMatrix &matrix = (new (p_GetNativeData(myself)) sMatNatDat)->matrix;
 	
 	matrix.a11 = rt->GetValue(0)->GetFloat();
 	matrix.a12 = rt->GetValue(1)->GetFloat();
@@ -1279,5 +1277,5 @@ void deClassMatrix4::PushMatrix4(dsRunTime *rt, const decMatrix &matrix){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sMatNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->matrix = matrix;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sMatNatDat)->matrix = matrix;
 }

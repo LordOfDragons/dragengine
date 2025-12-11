@@ -54,7 +54,7 @@
 /////////////////////
 
 struct sIDButtonNatDat{
-	dedsInputDevice *device;
+	dedsInputDevice::Ref device;
 	int buttonIndex;
 };
 
@@ -461,8 +461,7 @@ void deClassInputDeviceButton::PushButton(dsRunTime *rt, dedsInputDevice *device
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sIDButtonNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sIDButtonNatDat;
+	sIDButtonNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sIDButtonNatDat;
 	nd->device = device;
-	device->AddReference();
 	nd->buttonIndex = index;
 }

@@ -394,5 +394,5 @@ void deClassNavigationBlocker::PushNavigationBlocker(dsRunTime *rt, deNavigation
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sNavBlockerNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->blocker = blocker;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sNavBlockerNatDat)->blocker = blocker;
 }

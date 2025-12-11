@@ -79,7 +79,7 @@ public:
 	pRT(rt), pMyself(myself), pSkin(NULL), pOpenConstructed(NULL), pNextNodeAsMask(false){
 	}
 	
-	virtual void BuildSkin(deSkin *skin){
+	void BuildSkin(deSkin *skin) override{
 		pSkin = skin;
 		pOpenConstructed = NULL;
 		pOpenNodes.RemoveAll();
@@ -179,11 +179,6 @@ dsFunction(init.clsSkinBuilder, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfDestructor::RunFunction(dsRunTime*, dsValue*){
-	if(myself->GetRealObject()->GetRefCount() != 1){
-		return; // protected against GC cleaning up leaking
-	}
-	
-	static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->~sMdlBldNatDat();
 }
 
 
@@ -200,7 +195,7 @@ void deClassSkinBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassSkinBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
 	const char * const filename = rt->GetValue(0)->GetString();
 	deClassSkinBuilder_Builder builder(rt, myself);
 	deSkin::Ref skin;
@@ -248,15 +243,16 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSkinMappedRenderableComponent); // renderableComponent
 }
 void deClassSkinBuilder::nfAddMapped::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassSkinBuilder*)GetOwnerClass())->GetDS();
-	deClassCurveBezier &clsCurveBezier = *ds.GetClassCurveBezier();
-	deClassVector2 &clsVector2 = *ds.GetClassVector2();
-	dsClassEnumeration &clsEnum = *static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration());
+	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
+	const deClassCurveBezier &clsCurveBezier = *ds.GetClassCurveBezier();
+	const deClassVector2 &clsVector2 = *ds.GetClassVector2();
+	const dsClassEnumeration &clsEnum = *static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration());
 	
 	const deSkinMapped::Ref mapped(deSkinMapped::Ref::NewWith(rt->GetValue(0)->GetString()));
 	mapped->GetCurve() = clsCurveBezier.GetCurve(rt->GetValue(1)->GetRealObject());
@@ -289,7 +285,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsString); // name
 }
 void deClassSkinBuilder::nfAddTexture::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -354,12 +351,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsColor); // color
 }
 void deClassSkinBuilder::nfAddPropertyColor::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassSkinBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
 	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
 	const char * const type = rt->GetValue(1)->GetString();
 	const char * const texCoordSet = rt->GetValue(2)->GetString();
@@ -392,12 +390,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsImage); // image
 }
 void deClassSkinBuilder::nfAddPropertyImage::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassSkinBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
 	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
 	const char * const type = rt->GetValue(1)->GetString();
 	const char * const texCoordSet = rt->GetValue(2)->GetString();
@@ -433,12 +432,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBoolean); // sharedTime
 }
 void deClassSkinBuilder::nfAddPropertyVideo::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassSkinBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
 	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
 	const char * const type = rt->GetValue(1)->GetString();
 	const char * const texCoordSet = rt->GetValue(2)->GetString();
@@ -497,12 +497,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsString); // alphaBone
 }
 void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassSkinBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
 	deClassCurveBezier &clsCurveBezier = *ds.GetClassCurveBezier();
 	deClassVector2 &clsVector2 = *ds.GetClassVector2();
 	dsClassEnumeration &clsEnum = *static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration());
@@ -543,14 +544,13 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 	deSkinPropertyMapped * const property = new deSkinPropertyMapped(type);
 	deSkinMapped::Ref mapped;
 	decString name;
-	int index;
 	
 	try{
 		property->SetTexCoordSet(texCoordSet);
 		property->SetRenderable(renderable);
 		
 		if(redCurve.GetPointCount() > 0){
-			index = builder->GetSkin()->GetMappedCount();
+			const int index = builder->GetSkin()->GetMappedCount();
 			name.Format("#generated%d", index);
 			mapped.TakeOver(new deSkinMapped(name));
 			mapped->GetCurve() = redCurve;
@@ -563,7 +563,7 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 		}
 		
 		if(greenCurve.GetPointCount() > 0){
-			index = builder->GetSkin()->GetMappedCount();
+			const int index = builder->GetSkin()->GetMappedCount();
 			name.Format("#generated%d", index);
 			mapped.TakeOver(new deSkinMapped(name));
 			mapped->GetCurve() = greenCurve;
@@ -576,7 +576,7 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 		}
 		
 		if(blueCurve.GetPointCount() > 0){
-			index = builder->GetSkin()->GetMappedCount();
+			const int index = builder->GetSkin()->GetMappedCount();
 			name.Format("#generated%d", index);
 			mapped.TakeOver(new deSkinMapped(name));
 			mapped->GetCurve() = blueCurve;
@@ -589,7 +589,7 @@ void deClassSkinBuilder::nfAddPropertyMapped::RunFunction(dsRunTime *rt, dsValue
 		}
 		
 		if(alphaCurve.GetPointCount() > 0){
-			index = builder->GetSkin()->GetMappedCount();
+			const int index = builder->GetSkin()->GetMappedCount();
 			name.Format("#generated%d", index);
 			mapped.TakeOver(new deSkinMapped(name));
 			mapped->GetCurve() = alphaCurve;
@@ -624,7 +624,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // alpha
 }
 void deClassSkinBuilder::nfAddPropertyMapped2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -687,12 +688,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsPoint3); // size
 }
 void deClassSkinBuilder::nfAddPropertyConstructed::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassSkinBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
 	deSkinTexture &texture = *builder->GetSkin()->GetTextureAt(rt->GetValue(0)->GetInt());
 	const char * const type = rt->GetValue(1)->GetString();
 	const char * const texCoordSet = rt->GetValue(2)->GetString();
@@ -727,7 +729,8 @@ DSFT_FUNCTION, DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsString); // bone
 }
 void deClassSkinBuilder::nfSetPropertyBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -747,7 +750,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsColor); // backgroundColor
 }
 void deClassSkinBuilder::nfConstructedOpenContent::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -777,12 +781,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsPoint); // repeat
 }
 void deClassSkinBuilder::nfAddNodeImage::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassSkinBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
 	deSkinPropertyNodeGroup * const group = builder->GetOpenNode();
 	const decPoint3 &position = ds.GetClassPoint3()->GetPoint(rt->GetValue(0)->GetRealObject());
 	const decPoint3 &size = ds.GetClassPoint3()->GetPoint(rt->GetValue(1)->GetRealObject());
@@ -853,12 +858,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsColor); // color
 }
 void deClassSkinBuilder::nfAddNodeText::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassSkinBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
 	deSkinPropertyNodeGroup * const group = builder->GetOpenNode();
 	const decPoint3 &position = ds.GetClassPoint3()->GetPoint(rt->GetValue(0)->GetRealObject());
 	const decPoint3 &size = ds.GetClassPoint3()->GetPoint(rt->GetValue(1)->GetRealObject());
@@ -932,12 +938,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // thickness
 }
 void deClassSkinBuilder::nfAddNodeShape::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassSkinBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
 	deSkinPropertyNodeGroup * const group = builder->GetOpenNode();
 	const decPoint3 &position = ds.GetClassPoint3()->GetPoint(rt->GetValue(0)->GetRealObject());
 	const decPoint3 &size = ds.GetClassPoint3()->GetPoint(rt->GetValue(1)->GetRealObject());
@@ -1005,12 +1012,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSkinPropertyNodeCombineMode); // combineMode
 }
 void deClassSkinBuilder::nfAddNodeGroup::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassSkinBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassSkinBuilder*>(GetOwnerClass())->GetDS();
 	deSkinPropertyNodeGroup * const group = builder->GetOpenNode();
 	const decPoint3 &position = ds.GetClassPoint3()->GetPoint(rt->GetValue(0)->GetRealObject());
 	const decPoint3 &size = ds.GetClassPoint3()->GetPoint(rt->GetValue(1)->GetRealObject());
@@ -1059,7 +1067,8 @@ dsFunction(init.clsSkinBuilder, "nextNodeAsMask", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfNextNodeAsMask::RunFunction(dsRunTime*, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -1073,7 +1082,8 @@ dsFunction(init.clsSkinBuilder, "closeNode", DSFT_FUNCTION,
 DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSkinBuilder::nfCloseNode::RunFunction(dsRunTime*, dsValue *myself){
-	deClassSkinBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassSkinBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetSkin()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -1091,7 +1101,11 @@ void deClassSkinBuilder::nfCloseNode::RunFunction(dsRunTime*, dsValue *myself){
 
 deClassSkinBuilder::deClassSkinBuilder(deScriptingDragonScript &ds) :
 dsClass("SkinBuilder", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT),
-pDS(ds)
+pDS(ds),
+pClsSkinPropertyNodeCombineMode(nullptr),
+pClsSkinPropertyMappedInputType(nullptr),
+pClsSkinMappedInputType(nullptr),
+pClsSkinMappedRenderableComponent(nullptr)
 {
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");

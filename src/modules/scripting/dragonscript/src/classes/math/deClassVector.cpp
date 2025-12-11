@@ -61,8 +61,7 @@ deClassVector::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsVec,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassVector::nfNew::RunFunction(dsRunTime *RT, dsValue *This){
-	decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
-	vector.Set(0, 0, 0);
+	new (p_GetNativeData(This)) sVecNatDat;
 }
 
 // public func new( float x, float y, float z )
@@ -73,7 +72,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFlt); // z
 }
 void deClassVector::nfNew2::RunFunction(dsRunTime *RT, dsValue *This){
-	decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
+	decVector &vector = (new (p_GetNativeData(This)) sVecNatDat)->vector;
 	vector.x = RT->GetValue(0)->GetFloat();
 	vector.y = RT->GetValue(1)->GetFloat();
 	vector.z = RT->GetValue(2)->GetFloat();
@@ -85,7 +84,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVec); // v
 }
 void deClassVector::nfNew3::RunFunction(dsRunTime *RT, dsValue *This){
-	decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
+	decVector &vector = (new (p_GetNativeData(This)) sVecNatDat)->vector;
 	deClassVector * const clsVector = static_cast<deClassVector*>(GetOwnerClass());
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
@@ -96,7 +95,7 @@ void deClassVector::nfNew3::RunFunction(dsRunTime *RT, dsValue *This){
 deClassVector::nfDestructor::nfDestructor(const sInitData &init) : dsFunction(init.clsVec,
 DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
-void deClassVector::nfDestructor::RunFunction(dsRunTime *RT, dsValue *This){
+void deClassVector::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
 	if(myself->GetRealObject()->GetRefCount() != 1){
 		return; // protected against GC cleaning up leaking
 	}
@@ -375,7 +374,7 @@ deClassVector::nfIsEqualTo::nfIsEqualTo(const sInitData &init) : dsFunction(init
 }
 void deClassVector::nfIsEqualTo::RunFunction(dsRunTime *RT, dsValue *This){
 	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
-	deClassVector *clsVector = static_cast<deClassVector*>(GetOwnerClass());
+	const deClassVector *clsVector = static_cast<deClassVector*>(GetOwnerClass());
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
 	float delta = RT->GetValue(1)->GetFloat();
@@ -525,7 +524,7 @@ deClassVector::nfOpDot::nfOpDot(const sInitData &init) : dsFunction(init.clsVec,
 }
 void deClassVector::nfOpDot::RunFunction(dsRunTime *RT, dsValue *This){
 	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
-	deClassVector *clsVector = static_cast<deClassVector*>(GetOwnerClass());
+	const deClassVector *clsVector = static_cast<deClassVector*>(GetOwnerClass());
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
 	RT->PushFloat(vector * clsVector->GetVector(objVec));
@@ -551,7 +550,7 @@ deClassVector::nfOpLess::nfOpLess(const sInitData &init) : dsFunction(init.clsVe
 }
 void deClassVector::nfOpLess::RunFunction(dsRunTime *RT, dsValue *This){
 	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
-	deClassVector * const clsVector = static_cast<deClassVector*>(GetOwnerClass());
+	const deClassVector * const clsVector = static_cast<deClassVector*>(GetOwnerClass());
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
 	RT->PushBool(vector < clsVector->GetVector(objVec));
@@ -564,7 +563,7 @@ deClassVector::nfOpLessEqual::nfOpLessEqual(const sInitData &init) : dsFunction(
 }
 void deClassVector::nfOpLessEqual::RunFunction(dsRunTime *RT, dsValue *This){
 	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
-	deClassVector * const clsVector = static_cast<deClassVector*>(GetOwnerClass());
+	const deClassVector * const clsVector = static_cast<deClassVector*>(GetOwnerClass());
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
 	RT->PushBool(vector <= clsVector->GetVector(objVec));
@@ -577,7 +576,7 @@ deClassVector::nfOpGreater::nfOpGreater(const sInitData &init) : dsFunction(init
 }
 void deClassVector::nfOpGreater::RunFunction(dsRunTime *RT, dsValue *This){
 	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
-	deClassVector * const clsVector = static_cast<deClassVector*>(GetOwnerClass());
+	const deClassVector * const clsVector = static_cast<deClassVector*>(GetOwnerClass());
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
 	RT->PushBool(vector > clsVector->GetVector(objVec));
@@ -590,7 +589,7 @@ deClassVector::nfOpGreaterEqual::nfOpGreaterEqual(const sInitData &init) : dsFun
 }
 void deClassVector::nfOpGreaterEqual::RunFunction(dsRunTime *RT, dsValue *This){
 	const decVector &vector = static_cast<sVecNatDat*>(p_GetNativeData(This))->vector;
-	deClassVector * const clsVector = static_cast<deClassVector*>(GetOwnerClass());
+	const deClassVector * const clsVector = static_cast<deClassVector*>(GetOwnerClass());
 	dsRealObject *objVec = RT->GetValue(0)->GetRealObject();
 	if(!objVec) DSTHROW(dueNullPointer);
 	RT->PushBool(vector >= clsVector->GetVector(objVec));
@@ -766,16 +765,5 @@ void deClassVector::PushVector(dsRunTime *rt, const decVector &vector){
 	
 	// TODO spread this code version to all script classes
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sVecNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->vector = vector;
-	
-	/*
-	rt->CreateObjectNakedOnStack(this);
-	try{
-		static_cast<sVecNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->vector = vector;
-		
-	}catch(...){
-		rt->RemoveValues(1); // remove pushed object
-		throw;
-	}
-	*/
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sVecNatDat)->vector = vector;
 }

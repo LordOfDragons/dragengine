@@ -131,7 +131,7 @@ deClassCollider::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsCol,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollider::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sColNatDat * const nd = new (p_GetNativeData(myself)) sColNatDat;
+	new (p_GetNativeData(myself)) sColNatDat;
 }
 
 // public func destructor()
@@ -161,7 +161,7 @@ void deClassCollider::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself)
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassDVector()->PushDVector(rt, nd.collider->GetPosition());
 }
@@ -177,7 +177,7 @@ void deClassCollider::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself)
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	const decDVector &position = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	nd.collider->SetPosition(position);
 }
@@ -192,7 +192,7 @@ void deClassCollider::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myse
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	ds.GetClassQuaternion()->PushQuaternion(rt, nd.collider->GetOrientation());
 }
 
@@ -207,7 +207,7 @@ void deClassCollider::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myse
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(0)->GetRealObject());
 	nd.collider->SetOrientation(orientation);
 }
@@ -224,7 +224,7 @@ void deClassCollider::nfSetGeometry::RunFunction(dsRunTime *rt, dsValue *myself)
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector(
 		rt->GetValue(0)->GetRealObject());
@@ -247,7 +247,7 @@ void deClassCollider::nfSetGeometry2::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector(
 		rt->GetValue(0)->GetRealObject());
@@ -269,7 +269,7 @@ void deClassCollider::nfGetScale::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	ds.GetClassVector()->PushVector(rt, nd.collider->GetScale());
 }
 
@@ -284,7 +284,7 @@ void deClassCollider::nfSetScale::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	const decVector &scale = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	nd.collider->SetScale(scale);
 }
@@ -299,7 +299,7 @@ void deClassCollider::nfGetView::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	ds.GetClassVector()->PushVector(rt, decMatrix::CreateFromQuaternion(nd.collider->GetOrientation()).TransformView());
 }
 
@@ -313,7 +313,7 @@ void deClassCollider::nfGetUp::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	ds.GetClassVector()->PushVector(rt, decMatrix::CreateFromQuaternion(nd.collider->GetOrientation()).TransformUp());
 }
 
@@ -327,7 +327,7 @@ void deClassCollider::nfGetRight::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	ds.GetClassVector()->PushVector(rt, decMatrix::CreateFromQuaternion(nd.collider->GetOrientation()).TransformRight());
 }
 
@@ -341,7 +341,7 @@ void deClassCollider::nfGetMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassDMatrix()->PushDMatrix(rt, decDMatrix::CreateWorld(nd.collider->GetPosition(),
 		nd.collider->GetOrientation(), nd.collider->GetScale()));
@@ -357,7 +357,7 @@ void deClassCollider::nfGetInverseMatrix::RunFunction(dsRunTime *rt, dsValue *my
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassDMatrix()->PushDMatrix(rt, decDMatrix::CreateWorld(nd.collider->GetPosition(),
 		nd.collider->GetOrientation(), nd.collider->GetScale()).QuickInvert());
@@ -373,7 +373,7 @@ void deClassCollider::nfGetLinearVelocity::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	ds.GetClassVector()->PushVector(rt, nd.collider->GetLinearVelocity());
 }
 
@@ -388,7 +388,7 @@ void deClassCollider::nfSetLinearVelocity::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	const decVector &linearVelocity = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	nd.collider->SetLinearVelocity(linearVelocity);
 }
@@ -403,7 +403,7 @@ void deClassCollider::nfGetAngularVelocity::RunFunction(dsRunTime *rt, dsValue *
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	ds.GetClassVector()->PushVector(rt, nd.collider->GetAngularVelocity() * RAD2DEG);
 }
 
@@ -418,7 +418,7 @@ void deClassCollider::nfSetAngularVelocity::RunFunction(dsRunTime *rt, dsValue *
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	const decVector &angularVelocity = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	nd.collider->SetAngularVelocity(angularVelocity * DEG2RAD);
 }
@@ -460,7 +460,7 @@ void deClassCollider::nfGetGravity::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	ds.GetClassVector()->PushVector(rt, nd.collider->GetGravity());
 }
 
@@ -475,7 +475,7 @@ void deClassCollider::nfSetGravity::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	const decVector &gravity = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	nd.collider->SetGravity(gravity);
 }
@@ -518,7 +518,7 @@ void deClassCollider::nfGetResponseType::RunFunction(dsRunTime *rt, dsValue *mys
 		DSTHROW(dueNullPointer);
 	}
 	
-	rt->PushValue(((deClassCollider*)GetOwnerClass())->GetClassCollisionResponse()
+	rt->PushValue(static_cast<deClassCollider*>(GetOwnerClass())->GetClassCollisionResponse()
 		->GetVariable(nd.collider->GetResponseType())->GetStaticValue());
 }
 
@@ -577,7 +577,7 @@ void deClassCollider::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myse
 		DSTHROW(dueNullPointer);
 	}
 	
-	((deClassCollider*)GetOwnerClass())->GetDS().GetClassWorld()->
+	static_cast<deClassCollider*>(GetOwnerClass())->GetDS().GetClassWorld()->
 		PushWorld(rt, nd.collider->GetParentWorld());
 }
 
@@ -592,7 +592,7 @@ void deClassCollider::nfGetOwner::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	dedsCollider * const scrCol = (dedsCollider*)nd.collider->GetPeerScripting();
+	const dedsCollider * const scrCol = static_cast<dedsCollider*>(nd.collider->GetPeerScripting());
 	
 	if(scrCol){
 		rt->PushObject(scrCol->GetOwner());
@@ -613,7 +613,7 @@ void deClassCollider::nfSetOwner::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	dedsCollider * const scrCol = (dedsCollider*)nd.collider->GetPeerScripting();
+	dedsCollider * const scrCol = static_cast<dedsCollider*>(nd.collider->GetPeerScripting());
 	if(scrCol){
 		scrCol->SetOwner(rt->GetValue(0)->GetRealObject());
 	}
@@ -741,7 +741,7 @@ void deClassCollider::nfGetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	ds.GetClassCollisionFilter()->PushCollisionFilter(rt, nd.collider->GetCollisionFilter());
 }
 
@@ -756,7 +756,7 @@ void deClassCollider::nfSetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	const decCollisionFilter &collisionFilter = ds.GetClassCollisionFilter()->GetCollisionFilter(rt->GetValue(0)->GetRealObject());
 	
 	nd.collider->SetCollisionFilter(collisionFilter);
@@ -791,7 +791,7 @@ void deClassCollider::nfGetAttachedResource::RunFunction(dsRunTime *rt, dsValue 
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
+	deClassCollider &clsCol = *static_cast<deClassCollider*>(GetOwnerClass());
 	const int index = rt->GetValue(0)->GetInt();
 	clsCol.PushResource(*rt, nd.collider->GetAttachmentAt(index)->GetResource());
 }
@@ -807,7 +807,7 @@ void deClassCollider::nfAttachStatic::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCol = *static_cast<deClassCollider*>(GetOwnerClass());
 	
 	deResource * const resource = clsCol.GetResource(*rt->GetValue(0));
 	if(!resource){
@@ -830,7 +830,7 @@ void deClassCollider::nfAttachStatic2::RunFunction(dsRunTime *rt, dsValue *mysel
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCol = *static_cast<deClassCollider*>(GetOwnerClass());
 	
 	deResource * const resource = clsCol.GetResource(*rt->GetValue(0));
 	const decVector &position = clsCol.GetDS().GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
@@ -854,7 +854,7 @@ void deClassCollider::nfAttachRelativeMovement::RunFunction(dsRunTime *rt, dsVal
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCol = *static_cast<deClassCollider*>(GetOwnerClass());
 	
 	deResource * const resource = clsCol.GetResource(*rt->GetValue(0));
 	if(!resource){
@@ -875,7 +875,7 @@ void deClassCollider::nfDetach::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCol = *static_cast<deClassCollider*>(GetOwnerClass());
 	
 	deResource * const resource = clsCol.GetResource(*rt->GetValue(0));
 	if(!resource){
@@ -939,7 +939,7 @@ void deClassCollider::nfAddConstraint::RunFunction(dsRunTime *rt, dsValue *mysel
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deClassCollider &clsCollider = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCollider = *static_cast<deClassCollider*>(GetOwnerClass());
 	const deScriptingDragonScript &ds = clsCollider.GetDS();
 	
 	const deColliderConstraint * const workConstraint = 
@@ -951,17 +951,7 @@ void deClassCollider::nfAddConstraint::RunFunction(dsRunTime *rt, dsValue *mysel
 		DSTHROW_INFO(dueInvalidParam, "constraint with same target exists already");
 	}
 	
-	deColliderConstraint *constraint = nullptr;
-	try{
-		constraint = new deColliderConstraint(*workConstraint);
-		nd.collider->AddConstraint(constraint);
-		
-	}catch(...){
-		if(constraint){
-			delete constraint;
-		}
-		throw;
-	}
+	nd.collider->AddConstraint(deColliderConstraint::Ref::NewWith(*workConstraint));
 }
 
 // public func bool hasConstraint(ColliderConstraint constraint)
@@ -975,7 +965,7 @@ void deClassCollider::nfHasConstraint::RunFunction(dsRunTime *rt, dsValue *mysel
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deClassCollider &clsCollider = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCollider = *static_cast<deClassCollider*>(GetOwnerClass());
 	const deScriptingDragonScript &ds = clsCollider.GetDS();
 	
 	const deColliderConstraint * const constraint = 
@@ -994,7 +984,7 @@ void deClassCollider::nfIndexOfConstraint::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deClassCollider &clsCollider = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCollider = *static_cast<deClassCollider*>(GetOwnerClass());
 	const deScriptingDragonScript &ds = clsCollider.GetDS();
 	int index = -1;
 	
@@ -1021,20 +1011,15 @@ void deClassCollider::nfGetConstraintAt::RunFunction(dsRunTime *rt, dsValue *mys
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	
 	const deColliderConstraint * const workConstraint =
 		nd.collider->GetConstraintAt(rt->GetValue(0)->GetInt());
 	
-	deColliderConstraint *constraint = nullptr;
 	try{
-		constraint = new deColliderConstraint(*workConstraint);
-		ds.GetClassColliderConstraint()->PushConstraint(rt, constraint);
+		ds.GetClassColliderConstraint()->PushConstraint(rt, deColliderConstraint::Ref::NewWith(*workConstraint));
 		
 	}catch(...){
-		if(constraint){
-			delete constraint;
-		}
 		throw;
 	}
 }
@@ -1051,7 +1036,7 @@ void deClassCollider::nfSetConstraintAt::RunFunction(dsRunTime *rt, dsValue *mys
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deClassCollider &clsCollider = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCollider = *static_cast<deClassCollider*>(GetOwnerClass());
 	const deScriptingDragonScript &ds = clsCollider.GetDS();
 	
 	const int index = rt->GetValue(0)->GetInt();
@@ -1084,7 +1069,7 @@ void deClassCollider::nfRemoveConstraint::RunFunction(dsRunTime *rt, dsValue *my
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deClassCollider &clsCollider = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCollider = *static_cast<deClassCollider*>(GetOwnerClass());
 	const deScriptingDragonScript &ds = clsCollider.GetDS();
 	
 	const deColliderConstraint * const workConstraint =
@@ -1157,7 +1142,7 @@ void deClassCollider::nfGetIgnoreColliderAt::RunFunction(dsRunTime *rt, dsValue 
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
+	deClassCollider &clsCol = *static_cast<deClassCollider*>(GetOwnerClass());
 	
 	const int index = rt->GetValue(0)->GetInt();
 	clsCol.PushCollider(rt, nd.collider->GetIgnoreColliderAt(index));
@@ -1174,7 +1159,7 @@ void deClassCollider::nfHasIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCol = *static_cast<deClassCollider*>(GetOwnerClass());
 	
 	deCollider * const collider = clsCol.GetCollider(rt->GetValue(0)->GetRealObject());
 	rt->PushBool(nd.collider->HasIgnoreCollider(collider));
@@ -1191,7 +1176,7 @@ void deClassCollider::nfAddIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCol = *static_cast<deClassCollider*>(GetOwnerClass());
 	deCollider * const collider = clsCol.GetCollider(rt->GetValue(0)->GetRealObject());
 	nd.collider->AddIgnoreCollider(collider);
 }
@@ -1207,7 +1192,7 @@ void deClassCollider::nfRemoveIgnoreCollider::RunFunction(dsRunTime *rt, dsValue
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
+	const deClassCollider &clsCol = *static_cast<deClassCollider*>(GetOwnerClass());
 	deCollider * const collider = clsCol.GetCollider(rt->GetValue(0)->GetRealObject());
 	nd.collider->RemoveIgnoreCollider(collider);
 }
@@ -1256,7 +1241,7 @@ void deClassCollider::nfGetCollisionTestAt::RunFunction(dsRunTime *rt, dsValue *
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	
 	const int index = rt->GetValue(0)->GetInt();
 	ds.GetClassColliderCollisionTest()->PushCollisionTest(rt,
@@ -1275,7 +1260,7 @@ void deClassCollider::nfAddCollisionTest::RunFunction(dsRunTime *rt, dsValue *my
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	deClassColliderCollisionTest &clsCCT = *ds.GetClassColliderCollisionTest();
 	
 	dsRealObject * const objCCT = rt->GetValue(0)->GetRealObject();
@@ -1295,7 +1280,7 @@ void deClassCollider::nfRemoveCollisionTest::RunFunction(dsRunTime *rt, dsValue 
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	const deClassColliderCollisionTest &clsCCT = *ds.GetClassColliderCollisionTest();
 	
 	nd.collider->RemoveCollisionTest(clsCCT.GetCollisionTest(rt->GetValue(0)->GetRealObject()));
@@ -1331,7 +1316,7 @@ void deClassCollider::nfApplyImpuls::RunFunction(dsRunTime *rt, dsValue *myself)
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	const decVector &impuls = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	nd.collider->ApplyImpuls(impuls);
 }
@@ -1348,7 +1333,7 @@ void deClassCollider::nfApplyImpulsAt::RunFunction(dsRunTime *rt, dsValue *mysel
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	const decVector &impuls = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	const decVector &position = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
 	
@@ -1366,7 +1351,7 @@ void deClassCollider::nfApplyTorqueImpuls::RunFunction(dsRunTime *rt, dsValue *m
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	const decVector &torqueImpuls = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	nd.collider->ApplyTorqueImpuls(torqueImpuls);
 }
@@ -1382,7 +1367,7 @@ void deClassCollider::nfApplyForce::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	const decVector &force = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	nd.collider->ApplyForce(force);
 }
@@ -1399,7 +1384,7 @@ void deClassCollider::nfApplyForceAt::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	const decVector &force = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	const decVector &position = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
 	
@@ -1417,7 +1402,7 @@ void deClassCollider::nfApplyTorque::RunFunction(dsRunTime *rt, dsValue *myself)
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
 	const decVector &torque = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	nd.collider->ApplyTorque(torque);
 }
@@ -1437,8 +1422,8 @@ void deClassCollider::nfGetColliderListener::RunFunction(dsRunTime *rt, dsValue 
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
-	dedsCollider * const scrCol = (dedsCollider*)nd.collider->GetPeerScripting();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
+	const dedsCollider * const scrCol = static_cast<dedsCollider*>(nd.collider->GetPeerScripting());
 	
 	if(scrCol){
 		rt->PushObject(scrCol->GetCallback(), ds.GetClassColliderListener());
@@ -1459,7 +1444,7 @@ void deClassCollider::nfSetColliderListener::RunFunction(dsRunTime *rt, dsValue 
 		DSTHROW(dueNullPointer);
 	}
 	
-	dedsCollider * const scrCol = (dedsCollider*)nd.collider->GetPeerScripting();
+	dedsCollider * const scrCol = static_cast<dedsCollider*>(nd.collider->GetPeerScripting());
 	if(scrCol){
 		scrCol->SetCallback(rt->GetValue(0)->GetRealObject());
 	}
@@ -1475,7 +1460,7 @@ void deClassCollider::nfColliderListenerGetCustomCanHit::RunFunction(dsRunTime *
 		DSTHROW(dueNullPointer);
 	}
 	
-	const dedsCollider * const scrCol = (dedsCollider*)nd.collider->GetPeerScripting();
+	const dedsCollider * const scrCol = static_cast<dedsCollider*>(nd.collider->GetPeerScripting());
 	
 	if(scrCol){
 		rt->PushBool(scrCol->GetEnableCanHitCallback());
@@ -1496,7 +1481,7 @@ void deClassCollider::nfColliderListenerSetCustomCanHit::RunFunction(dsRunTime *
 		DSTHROW(dueNullPointer);
 	}
 	
-	dedsCollider * const scrCol = (dedsCollider*)nd.collider->GetPeerScripting();
+	dedsCollider * const scrCol = static_cast<dedsCollider*>(nd.collider->GetPeerScripting());
 	if(scrCol){
 		scrCol->SetEnableCanHitCallback(rt->GetValue(0)->GetBool());
 	}
@@ -1514,8 +1499,8 @@ void deClassCollider::nfGetBreakingListener::RunFunction(dsRunTime *rt, dsValue 
 		DSTHROW(dueNullPointer);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassCollider*)GetOwnerClass())->GetDS();
-	dedsCollider * const scrCol = (dedsCollider*)nd.collider->GetPeerScripting();
+	const deScriptingDragonScript &ds = static_cast<deClassCollider*>(GetOwnerClass())->GetDS();
+	const dedsCollider * const scrCol = static_cast<dedsCollider*>(nd.collider->GetPeerScripting());
 	
 	if(scrCol){
 		rt->PushObject(scrCol->GetCallbackBreaking(), ds.GetClassColliderBreakingListener());
@@ -1536,7 +1521,7 @@ void deClassCollider::nfSetBreakingListener::RunFunction(dsRunTime *rt, dsValue 
 		DSTHROW(dueNullPointer);
 	}
 	
-	dedsCollider * const scrCol = (dedsCollider*)nd.collider->GetPeerScripting();
+	dedsCollider * const scrCol = static_cast<dedsCollider*>(nd.collider->GetPeerScripting());
 	if(scrCol){
 		scrCol->SetCallbackBreaking(rt->GetValue(0)->GetRealObject());
 	}
@@ -1558,7 +1543,7 @@ void deClassCollider::nfPointInside::RunFunction(dsRunTime *rt, dsValue *myself)
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider * const clsCol = (deClassCollider*)GetOwnerClass();
+	const deClassCollider * const clsCol = static_cast<deClassCollider*>(GetOwnerClass());
 	const deScriptingDragonScript &ds = clsCol->GetDS();
 	
 	const decDVector &point = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
@@ -1579,7 +1564,7 @@ void deClassCollider::nfRayHits::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider * const clsCol = (deClassCollider*)GetOwnerClass();
+	deClassCollider * const clsCol = static_cast<deClassCollider*>(GetOwnerClass());
 	deScriptingDragonScript &ds = clsCol->GetDS();
 	
 	const decDVector &rayOrigin = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
@@ -1609,7 +1594,7 @@ void deClassCollider::nfRayHitsClosest::RunFunction(dsRunTime *rt, dsValue *myse
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider * const clsCol = (deClassCollider*)GetOwnerClass();
+	deClassCollider * const clsCol = static_cast<deClassCollider*>(GetOwnerClass());
 	deScriptingDragonScript &ds = clsCol->GetDS();
 	
 	const decDVector &rayOrigin = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
@@ -1639,7 +1624,7 @@ void deClassCollider::nfColliderHits::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider * const clsCol = (deClassCollider*)GetOwnerClass();
+	deClassCollider * const clsCol = static_cast<deClassCollider*>(GetOwnerClass());
 	deScriptingDragonScript &ds = clsCol->GetDS();
 	
 	deCollider * const collider = clsCol->GetCollider(rt->GetValue(0)->GetRealObject());
@@ -1671,7 +1656,7 @@ void deClassCollider::nfColliderMoveHits::RunFunction(dsRunTime *rt, dsValue *my
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider * const clsCol = (deClassCollider*)GetOwnerClass();
+	deClassCollider * const clsCol = static_cast<deClassCollider*>(GetOwnerClass());
 	deScriptingDragonScript &ds = clsCol->GetDS();
 	
 	deCollider * const collider = clsCol->GetCollider(rt->GetValue(0)->GetRealObject());
@@ -1706,7 +1691,7 @@ void deClassCollider::nfColliderMoveHitsClosest::RunFunction(dsRunTime *rt, dsVa
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider * const clsCol = (deClassCollider*)GetOwnerClass();
+	deClassCollider * const clsCol = static_cast<deClassCollider*>(GetOwnerClass());
 	deScriptingDragonScript &ds = clsCol->GetDS();
 	
 	deCollider * const collider = clsCol->GetCollider(rt->GetValue(0)->GetRealObject());
@@ -1741,7 +1726,7 @@ void deClassCollider::nfColliderRotateHits::RunFunction(dsRunTime *rt, dsValue *
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider * const clsCol = (deClassCollider*)GetOwnerClass();
+	deClassCollider * const clsCol = static_cast<deClassCollider*>(GetOwnerClass());
 	deScriptingDragonScript &ds = clsCol->GetDS();
 	
 	deCollider * const collider = clsCol->GetCollider(rt->GetValue(0)->GetRealObject());
@@ -1776,7 +1761,7 @@ void deClassCollider::nfColliderRotateHitsClosest::RunFunction(dsRunTime *rt, ds
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider * const clsCol = (deClassCollider*)GetOwnerClass();
+	deClassCollider * const clsCol = static_cast<deClassCollider*>(GetOwnerClass());
 	deScriptingDragonScript &ds = clsCol->GetDS();
 	
 	deCollider * const collider = clsCol->GetCollider(rt->GetValue(0)->GetRealObject());
@@ -1812,7 +1797,7 @@ void deClassCollider::nfColliderMoveRotateHits::RunFunction(dsRunTime *rt, dsVal
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider * const clsCol = (deClassCollider*)GetOwnerClass();
+	deClassCollider * const clsCol = static_cast<deClassCollider*>(GetOwnerClass());
 	deScriptingDragonScript &ds = clsCol->GetDS();
 	
 	deCollider * const collider = clsCol->GetCollider(rt->GetValue(0)->GetRealObject());
@@ -1849,7 +1834,7 @@ void deClassCollider::nfColliderMoveRotateHitsClosest::RunFunction(dsRunTime *rt
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCollider * const clsCol = (deClassCollider*)GetOwnerClass();
+	deClassCollider * const clsCol = static_cast<deClassCollider*>(GetOwnerClass());
 	deScriptingDragonScript &ds = clsCol->GetDS();
 	
 	deCollider * const collider = clsCol->GetCollider(rt->GetValue(0)->GetRealObject());
@@ -1891,15 +1876,15 @@ dsFunction(init.clsCol, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassCollider::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCollider * const collider = static_cast<sColNatDat*>(p_GetNativeData(myself))->collider;
-	deClassCollider * const clsCol = (deClassCollider*)GetOwnerClass();
+	const deCollider * const collider = static_cast<sColNatDat*>(p_GetNativeData(myself))->collider;
+	deClassCollider * const clsCol = static_cast<deClassCollider*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsCol)){
 		rt->PushBool(false);
 		
 	}else{
-		deCollider * const otherCol = static_cast<sColNatDat*>(p_GetNativeData(obj))->collider;
+		const deCollider * const otherCol = static_cast<sColNatDat*>(p_GetNativeData(obj))->collider;
 		rt->PushBool(collider == otherCol);
 	}
 }
@@ -1911,9 +1896,9 @@ dsFunction(init.clsCol, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DST
 	p_AddParameter(init.clsCol); // collider2
 }
 void deClassCollider::nfEquals2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassCollider &clsCol = *((deClassCollider*)GetOwnerClass());
-	deCollider * const collider1 = clsCol.GetCollider(rt->GetValue(0)->GetRealObject());
-	deCollider * const collider2 = clsCol.GetCollider(rt->GetValue(1)->GetRealObject());
+	const deClassCollider &clsCol = *static_cast<deClassCollider*>(GetOwnerClass());
+	const deCollider * const collider1 = clsCol.GetCollider(rt->GetValue(0)->GetRealObject());
+	const deCollider * const collider2 = clsCol.GetCollider(rt->GetValue(1)->GetRealObject());
 	
 	rt->PushBool(collider1 == collider2);
 }
@@ -2098,21 +2083,7 @@ void deClassCollider::AssignCollider(dsRealObject *myself, deCollider *collider)
 		DSTHROW(dueInvalidParam);
 	}
 	
-	sColNatDat &nd = *static_cast<sColNatDat*>(p_GetNativeData(myself->GetBuffer()));
-	
-	if(collider == nd.collider){
-		return;
-	}
-	
-	if(nd.collider){
-		nd.collider->FreeReference();
-	}
-	
-	nd.collider = collider;
-	
-	if(collider){
-		collider->AddReference();
-	}
+	static_cast<sColNatDat*>(p_GetNativeData(myself->GetBuffer()))->collider = collider;
 }
 
 void deClassCollider::PushCollider(dsRunTime *rt, deCollider *collider){
@@ -2161,7 +2132,7 @@ deResource *deClassCollider::GetResource(dsValue &myself) const{
 		return NULL;
 	}
 	
-	dsClass * const sclass = realObject->GetType();
+	const dsClass * const sclass = realObject->GetType();
 	
 	if(sclass == pDS.GetClassCollider()){
 		return pDS.GetClassCollider()->GetCollider(realObject);
@@ -2238,144 +2209,143 @@ void deClassCollider::PushResource(dsRunTime &rt, deResource *resource){
 	
 	switch(resource->GetResourceManager()->GetResourceType()){
 	case deResourceManager::ertCollider:
-		PushCollider(&rt, (deCollider*)resource);
+		PushCollider(&rt, static_cast<deCollider*>(resource));
 		break;
 		
 	case deResourceManager::ertBillboard:
-		pDS.GetClassBillboard()->PushBillboard(&rt, (deBillboard*)resource);
+		pDS.GetClassBillboard()->PushBillboard(&rt, static_cast<deBillboard*>(resource));
 		break;
 		
 	case deResourceManager::ertCamera:
-		pDS.GetClassCamera()->PushCamera(&rt, (deCamera*)resource);
+		pDS.GetClassCamera()->PushCamera(&rt, static_cast<deCamera*>(resource));
 		break;
 		
 	case deResourceManager::ertComponent:
-		pDS.GetClassComponent()->PushComponent(&rt, (deComponent*)resource);
+		pDS.GetClassComponent()->PushComponent(&rt, static_cast<deComponent*>(resource));
 		break;
 		
 	case deResourceManager::ertDebugDrawer:
-		pDS.GetClassDebugDrawer()->PushDebugDrawer(&rt, (deDebugDrawer*)resource);
+		pDS.GetClassDebugDrawer()->PushDebugDrawer(&rt, static_cast<deDebugDrawer*>(resource));
 		break;
 		
 	case deResourceManager::ertEnvMapProbe:
-		pDS.GetClassEnvMapProbe()->PushEnvMapProbe(&rt, (deEnvMapProbe*)resource);
+		pDS.GetClassEnvMapProbe()->PushEnvMapProbe(&rt, static_cast<deEnvMapProbe*>(resource));
 		break;
 		
 	case deResourceManager::ertForceField:
-		pDS.GetClassForceField()->PushForceField(&rt, (deForceField*)resource);
+		pDS.GetClassForceField()->PushForceField(&rt, static_cast<deForceField*>(resource));
 		break;
 		
 	case deResourceManager::ertLight:
-		pDS.GetClassLight()->PushLight(&rt, (deLight*)resource);
+		pDS.GetClassLight()->PushLight(&rt, static_cast<deLight*>(resource));
 		break;
 		
 	case deResourceManager::ertLumimeter:
-		pDS.GetClassLumimeter()->PushLumimeter(&rt, (deLumimeter*)resource);
+		pDS.GetClassLumimeter()->PushLumimeter(&rt, static_cast<deLumimeter*>(resource));
 		break;
 		
 	case deResourceManager::ertMicrophone:
-		pDS.GetClassMicrophone()->PushMicrophone(&rt, (deMicrophone*)resource);
+		pDS.GetClassMicrophone()->PushMicrophone(&rt, static_cast<deMicrophone*>(resource));
 		break;
 		
 	case deResourceManager::ertNavigationSpace:
-		pDS.GetClassNavigationSpace()->PushNavigationSpace(&rt, (deNavigationSpace*)resource);
+		pDS.GetClassNavigationSpace()->PushNavigationSpace(&rt, static_cast<deNavigationSpace*>(resource));
 		break;
 		
 	case deResourceManager::ertNavigationBlocker:
-		pDS.GetClassNavigationBlocker()->PushNavigationBlocker(&rt, (deNavigationBlocker*)resource);
+		pDS.GetClassNavigationBlocker()->PushNavigationBlocker(&rt, static_cast<deNavigationBlocker*>(resource));
 		break;
 		
 	case deResourceManager::ertNavigator:
-		pDS.GetClassNavigator()->PushNavigator(&rt, (deNavigator*)resource);
+		pDS.GetClassNavigator()->PushNavigator(&rt, static_cast<deNavigator*>(resource));
 		break;
 		
 	case deResourceManager::ertParticleEmitterInstance:
-		pDS.GetClassParticleEmitterInstance()->PushInstance(&rt, (deParticleEmitterInstance*)resource);
+		pDS.GetClassParticleEmitterInstance()->PushInstance(&rt, static_cast<deParticleEmitterInstance*>(resource));
 		break;
 		
 	case deResourceManager::ertPropField:
-		pDS.GetClassPropField()->PushPropField(&rt, (dePropField*)resource);
+		pDS.GetClassPropField()->PushPropField(&rt, static_cast<dePropField*>(resource));
 		break;
 		
 	case deResourceManager::ertSpeaker:
-		pDS.GetClassSpeaker()->PushSpeaker(&rt, (deSpeaker*)resource);
+		pDS.GetClassSpeaker()->PushSpeaker(&rt, static_cast<deSpeaker*>(resource));
 		break;
 		
 	case deResourceManager::ertTouchSensor:
-		pDS.GetClassTouchSensor()->PushTouchSensor(&rt, (deTouchSensor*)resource);
+		pDS.GetClassTouchSensor()->PushTouchSensor(&rt, static_cast<deTouchSensor*>(resource));
 		break;
 		
 	case deResourceManager::ertSoundLevelMeter:
-		pDS.GetClassSoundLevelMeter()->PushSoundLevelMeter(&rt, (deSoundLevelMeter*)resource);
+		pDS.GetClassSoundLevelMeter()->PushSoundLevelMeter(&rt, static_cast<deSoundLevelMeter*>(resource));
 		break;
 		
 	default:
 		rt.PushObject(NULL, pDS.GetScriptEngine()->GetClassObject());
 	}
 }
-
 decDMatrix deClassCollider::GetResourceMatrix(const deResource &resource){
 	switch(resource.GetResourceManager()->GetResourceType()){
 	case deResourceManager::ertCollider:{
-		const deCollider &collider = (const deCollider &)resource;
+		const deCollider &collider = static_cast<const deCollider&>(resource);
 		return decDMatrix::CreateWorld(collider.GetPosition(),
 			collider.GetOrientation(), collider.GetScale());
 		};
 		
 	case deResourceManager::ertBillboard:{
-		const deBillboard &billboard = (const deBillboard &)resource;
+		const deBillboard &billboard = static_cast<const deBillboard&>(resource);
 		return decDMatrix::CreateTranslation(billboard.GetPosition());
 		};
 		
 	case deResourceManager::ertCamera:{
-		const deCamera &camera = (const deCamera &)resource;
+		const deCamera &camera = static_cast<const deCamera&>(resource);
 		return decDMatrix::CreateWorld(camera.GetPosition(), camera.GetOrientation());
 		};
 		
 	case deResourceManager::ertComponent:{
-		const deComponent &component = (const deComponent &)resource;
+		const deComponent &component = static_cast<const deComponent&>(resource);
 		return decDMatrix::CreateWorld(component.GetPosition(),
 			component.GetOrientation(), component.GetScaling());
 		};
 		
 	case deResourceManager::ertDebugDrawer:{
-		const deDebugDrawer &debugDrawer = (const deDebugDrawer &)resource;
+		const deDebugDrawer &debugDrawer = static_cast<const deDebugDrawer&>(resource);
 		return decDMatrix::CreateWorld(debugDrawer.GetPosition(),
 			debugDrawer.GetOrientation(), debugDrawer.GetScale());
 		};
 		
 	case deResourceManager::ertEnvMapProbe:{
-		const deEnvMapProbe &envMapProbe = (const deEnvMapProbe &)resource;
+		const deEnvMapProbe &envMapProbe = static_cast<const deEnvMapProbe&>(resource);
 		return decDMatrix::CreateWorld(envMapProbe.GetPosition(), envMapProbe.GetOrientation());
 		};
 		
 	case deResourceManager::ertForceField:{
-		const deForceField &forceField = (const deForceField &)resource;
+		const deForceField &forceField = static_cast<const deForceField&>(resource);
 		return decDMatrix::CreateWorld(forceField.GetPosition(), forceField.GetOrientation());
 		};
 		
 	case deResourceManager::ertLight:{
-		const deLight &light = (const deLight &)resource;
+		const deLight &light = static_cast<const deLight&>(resource);
 		return decDMatrix::CreateWorld(light.GetPosition(), light.GetOrientation());
 		};
 		
 	case deResourceManager::ertLumimeter:{
-		const deLumimeter &lumimeter = (const deLumimeter &)resource;
+		const deLumimeter &lumimeter = static_cast<const deLumimeter&>(resource);
 		return decDMatrix::CreateTranslation(lumimeter.GetPosition());
 		};
 		
 	case deResourceManager::ertMicrophone:{
-		const deMicrophone &microphone = (const deMicrophone &)resource;
+		const deMicrophone &microphone = static_cast<const deMicrophone&>(resource);
 		return decDMatrix::CreateWorld(microphone.GetPosition(), microphone.GetOrientation());
 		};
 		
 	case deResourceManager::ertNavigationSpace:{
-		const deNavigationSpace &navigationSpace = (const deNavigationSpace &)resource;
+		const deNavigationSpace &navigationSpace = static_cast<const deNavigationSpace&>(resource);
 		return decDMatrix::CreateWorld(navigationSpace.GetPosition(), navigationSpace.GetOrientation());
 		};
 		
 	case deResourceManager::ertNavigationBlocker:{
-		const deNavigationBlocker &navigationBlocker = (const deNavigationBlocker &)resource;
+		const deNavigationBlocker &navigationBlocker = static_cast<const deNavigationBlocker&>(resource);
 		return decDMatrix::CreateWorld(navigationBlocker.GetPosition(),
 			navigationBlocker.GetOrientation(), navigationBlocker.GetScaling());
 		};
@@ -2385,27 +2355,27 @@ decDMatrix deClassCollider::GetResourceMatrix(const deResource &resource){
 		};
 		
 	case deResourceManager::ertParticleEmitterInstance:{
-		const deParticleEmitterInstance &instance = (const deParticleEmitterInstance &)resource;
+		const deParticleEmitterInstance &instance = static_cast<const deParticleEmitterInstance&>(resource);
 		return decDMatrix::CreateWorld(instance.GetPosition(), instance.GetOrientation());
 		};
 		
 	case deResourceManager::ertPropField:{
-		const dePropField &propField = (const dePropField &)resource;
+		const dePropField &propField = static_cast<const dePropField&>(resource);
 		return decDMatrix::CreateTranslation(propField.GetPosition());
 		};
 		
 	case deResourceManager::ertSpeaker:{
-		const deSpeaker &speaker = (const deSpeaker &)resource;
+		const deSpeaker &speaker = static_cast<const deSpeaker&>(resource);
 		return decDMatrix::CreateWorld(speaker.GetPosition(), speaker.GetOrientation());
 		};
 		
 	case deResourceManager::ertTouchSensor:{
-		const deTouchSensor &touchSensor = (const deTouchSensor &)resource;
+		const deTouchSensor &touchSensor = static_cast<const deTouchSensor&>(resource);
 		return decDMatrix::CreateWorld(touchSensor.GetPosition(), touchSensor.GetOrientation());
 		};
 		
 	case deResourceManager::ertSoundLevelMeter:{
-		const deSoundLevelMeter &soundLevelMeter = (const deSoundLevelMeter &)resource;
+		const deSoundLevelMeter &soundLevelMeter = static_cast<const deSoundLevelMeter&>(resource);
 		return decDMatrix::CreateWorld(soundLevelMeter.GetPosition(), soundLevelMeter.GetOrientation());
 		};
 		
@@ -2417,22 +2387,22 @@ decDMatrix deClassCollider::GetResourceMatrix(const deResource &resource){
 decVector deClassCollider::GetResourceScale(const deResource &resource){
 	switch(resource.GetResourceManager()->GetResourceType()){
 	case deResourceManager::ertCollider:{
-		const deCollider &collider = (const deCollider &)resource;
+		const deCollider &collider = static_cast<const deCollider&>(resource);
 		return collider.GetScale();
 		};
 		
 	case deResourceManager::ertComponent:{
-		const deComponent &component = (const deComponent &)resource;
+		const deComponent &component = static_cast<const deComponent&>(resource);
 		return component.GetScaling();
 		};
 		
 	case deResourceManager::ertDebugDrawer:{
-		const deDebugDrawer &debugDrawer = (const deDebugDrawer &)resource;
+		const deDebugDrawer &debugDrawer = static_cast<const deDebugDrawer&>(resource);
 		return debugDrawer.GetScale();
 		};
 		
 	case deResourceManager::ertNavigationBlocker:{
-		const deNavigationBlocker &navigationBlocker = (const deNavigationBlocker &)resource;
+		const deNavigationBlocker &navigationBlocker = static_cast<const deNavigationBlocker&>(resource);
 		return navigationBlocker.GetScaling();
 		};
 		
@@ -2546,7 +2516,7 @@ void deClassCollider::AttachWeight(deCollider &collider, deResource *resource, c
 		return;
 	}
 	
-	deCollider * const attachCollider = (deCollider*)resource;
+	deCollider * const attachCollider = static_cast<deCollider*>(resource);
 	
 	deColliderAttachment *attachment = NULL;
 	deColliderVisitorIdentify identify;
@@ -2654,7 +2624,7 @@ void deClassCollider::AttachRelativeMovement(deCollider &collider, deResource *r
 	}
 }
 
-deColliderConstraint *deClassCollider::FindConstraint(deCollider &collider,
+deColliderConstraint *deClassCollider::FindConstraint(const deCollider &collider,
 const deColliderConstraint &constraint) const{
 	const int count = collider.GetConstraintCount();
 	int i;

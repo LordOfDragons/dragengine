@@ -65,11 +65,10 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassService::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	deScriptingDragonScript &ds = (static_cast<deClassService*>(GetOwnerClass()))->GetDS();
 	sServiceNatDat * const nd = new (p_GetNativeData(myself)) sServiceNatDat;
-	nd->service = nullptr;
 	
-	// create object
+	deScriptingDragonScript &ds = (static_cast<deClassService*>(GetOwnerClass()))->GetDS();
+	
 	const char * const name = rt->GetValue(0)->GetString();
 	DS_WITH_ENGEX(ds,
 		nd->service = ds.GetGameEngine()->GetServiceManager()->CreateService(name, {});
@@ -85,11 +84,10 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassService::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deScriptingDragonScript &ds = (static_cast<deClassService*>(GetOwnerClass()))->GetDS();
 	sServiceNatDat * const nd = new (p_GetNativeData(myself)) sServiceNatDat;
-	nd->service = nullptr;
 	
-	// create object
+	deScriptingDragonScript &ds = (static_cast<deClassService*>(GetOwnerClass()))->GetDS();
+	
 	const char * const name = rt->GetValue(0)->GetString();
 	const deServiceObject::Ref data(ds.GetClassServiceObject()->GetServiceObject(
 		rt->GetValue(1)->GetRealObject()));
@@ -147,7 +145,7 @@ void deClassService::nfGetListener::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 	
 	const deScriptingDragonScript &ds = (static_cast<deClassService*>(GetOwnerClass()))->GetDS();
-	dedsService * const peer = (dedsService*)nd.service->GetPeerScripting();
+	const dedsService * const peer = static_cast<dedsService*>(nd.service->GetPeerScripting());
 	
 	if(peer){
 		rt->PushObject(peer->GetCallback(), ds.GetClassServiceListener());
@@ -171,7 +169,7 @@ void deClassService::nfSetListener::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	dedsService * const peer = (dedsService*)nd.service->GetPeerScripting();
+	dedsService * const peer = static_cast<dedsService*>(nd.service->GetPeerScripting());
 	if(peer){
 		peer->SetCallback(rt->GetValue(0)->GetRealObject());
 	}
@@ -334,7 +332,7 @@ void deClassService::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		deService * const other = static_cast<sServiceNatDat*>(p_GetNativeData(obj))->service;
+		const deService * const other = static_cast<sServiceNatDat*>(p_GetNativeData(obj))->service;
 		rt->PushBool(nd.service == other);
 	}
 }
@@ -417,9 +415,7 @@ void deClassService::PushService(dsRunTime *rt, deService *service){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sServiceNatDat*>(p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()))->service = service;
-	service->AddReference();
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sServiceNatDat)->service = service;
 }
 
 decUniqueID deClassService::NextId(){

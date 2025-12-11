@@ -48,8 +48,15 @@
 
 
 struct sCacheNatDat{
-	deCacheHelper *cacheHelper;
-	decString *directory;
+	deCacheHelper *cacheHelper = nullptr;
+	decString directory;
+	
+	~sCacheNatDat(){
+		if(cacheHelper){
+			delete cacheHelper;
+			cacheHelper = nullptr;
+		}
+	}
 };
 
 
@@ -72,7 +79,7 @@ void deClassCache::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueNullPointer);
 	}
 	
-	deClassCache &clsCache = *((deClassCache*)GetOwnerClass());
+	deClassCache &clsCache = *static_cast<deClassCache*>(GetOwnerClass());
 	if(clsCache.GetDirectories().Has(directory)){
 		DSTHROW_INFO(dueInvalidParam, "Cache directory already in use");
 	}
@@ -83,7 +90,7 @@ void deClassCache::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create cache
 	nd->cacheHelper = new deCacheHelper(&clsCache.GetDS().GetVFS(), path);
-	nd->directory = new decString(directory);
+	nd->directory = directory;
 	clsCache.GetDirectories().Add(directory);
 }
 
@@ -96,7 +103,11 @@ void deClassCache::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	static_cast<sCacheNatDat*>(p_GetNativeData(myself))->~sCacheNatDat();
+	sCacheNatDat * const nd = static_cast<sCacheNatDat*>(p_GetNativeData(myself));
+	
+	static_cast<deClassCache*>(GetOwnerClass())->GetDirectories().Remove(nd->directory);
+	
+	nd->~sCacheNatDat();
 }
 
 
@@ -112,7 +123,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFileReader){
 }
 void deClassCache::nfRead::RunFunction(dsRunTime *rt, dsValue *myself){
 	deCacheHelper &cacheHelper = *(static_cast<const sCacheNatDat*>(p_GetNativeData(myself))->cacheHelper);
-	deScriptingDragonScript &ds = ((deClassCache*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = static_cast<deClassCache*>(GetOwnerClass())->GetDS();
 	decBaseFileReader::Ref reader;
 	
 	reader = cacheHelper.Read(rt->GetValue(0)->GetString());
@@ -127,7 +138,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFileWriter){
 }
 void deClassCache::nfWrite::RunFunction(dsRunTime *rt, dsValue *myself){
 	deCacheHelper &cacheHelper = *(static_cast<const sCacheNatDat*>(p_GetNativeData(myself))->cacheHelper);
-	deScriptingDragonScript &ds = ((deClassCache*)GetOwnerClass())->GetDS();
+	deScriptingDragonScript &ds = static_cast<deClassCache*>(GetOwnerClass())->GetDS();
 	decBaseFileWriter::Ref writer;
 	
 	writer = cacheHelper.Write(rt->GetValue(0)->GetString());

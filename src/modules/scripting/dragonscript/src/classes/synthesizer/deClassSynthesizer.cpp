@@ -67,7 +67,6 @@ void deClassSynthesizer::nfNew::RunFunction(dsRunTime*, dsValue *myself){
 	const deScriptingDragonScript &ds = (static_cast<deClassSynthesizer*>(GetOwnerClass()))->GetDS();
 	deSynthesizerManager &synmgr = *ds.GetGameEngine()->GetSynthesizerManager();
 	
-	// create synthesizer
 	nd->synthesizer = synmgr.CreateSynthesizer();
 }
 
@@ -168,7 +167,7 @@ deClassSynthesizer::nfGetControllerCount::nfGetControllerCount(const sInitData &
 "getControllerCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSynthesizer::nfGetControllerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizer *synthesizer = static_cast<sSynNatDat*>(p_GetNativeData(myself))->synthesizer;
+	const deSynthesizer *synthesizer = static_cast<sSynNatDat*>(p_GetNativeData(myself))->synthesizer;
 	rt->PushInt(synthesizer->GetControllerCount());
 }
 
@@ -237,7 +236,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsString); // name
 }
 void deClassSynthesizer::nfIndexOfControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizer * const synthesizer = static_cast<sSynNatDat*>(p_GetNativeData(myself))->synthesizer;
+	const deSynthesizer * const synthesizer = static_cast<sSynNatDat*>(p_GetNativeData(myself))->synthesizer;
 	rt->PushInt(synthesizer->IndexOfControllerNamed(rt->GetValue(0)->GetString()));
 }
 
@@ -260,20 +259,9 @@ deClassSynthesizer::nfAddLink::nfAddLink(const sInitData &init) : dsFunction(ini
 void deClassSynthesizer::nfAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
 	deSynthesizer &synthesizer = static_cast<sSynNatDat*>(p_GetNativeData(myself))->synthesizer;
 	
-	deSynthesizerLink *link = nullptr;
-	
-	try{
-		link = new deSynthesizerLink;
-		link->SetController(rt->GetValue(0)->GetInt());
-		synthesizer.AddLink(link);
-		link->FreeReference();
-		
-	}catch(...){
-		if(link){
-			link->FreeReference();
-		}
-		throw;
-	}
+	const deSynthesizerLink::Ref link(deSynthesizerLink::Ref::NewWith());
+	link->SetController(rt->GetValue(0)->GetInt());
+	synthesizer.AddLink(link);
 	
 	rt->PushInt(synthesizer.GetLinkCount() - 1);
 }
@@ -415,7 +403,7 @@ deClassSynthesizer::nfEquals::nfEquals(const sInitData &init) : dsFunction(init.
 	p_AddParameter(init.clsObject); // obj
 }
 void deClassSynthesizer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizer * const synthesizer = static_cast<sSynNatDat*>(p_GetNativeData(myself))->synthesizer;
+	const deSynthesizer * const synthesizer = static_cast<sSynNatDat*>(p_GetNativeData(myself))->synthesizer;
 	deClassSynthesizer * const clsSyn = static_cast<deClassSynthesizer*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -423,7 +411,7 @@ void deClassSynthesizer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 		rt->PushBool(false);
 		
 	}else{
-		deSynthesizer * const otherSynthesizer = static_cast<sSynNatDat*>(p_GetNativeData(obj))->synthesizer;
+		const deSynthesizer * const otherSynthesizer = static_cast<sSynNatDat*>(p_GetNativeData(obj))->synthesizer;
 		rt->PushBool(synthesizer == otherSynthesizer);
 	}
 }
@@ -436,8 +424,8 @@ dsFunction(init.clsSyn, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE | DST
 }
 void deClassSynthesizer::nfEquals2::RunFunction(dsRunTime *rt, dsValue*){
 	const deClassSynthesizer &clsSyn = *(static_cast<deClassSynthesizer*>(GetOwnerClass()));
-	deSynthesizer * const synthesizer1 = clsSyn.GetSynthesizer(rt->GetValue(0)->GetRealObject());
-	deSynthesizer * const synthesizer2 = clsSyn.GetSynthesizer(rt->GetValue(1)->GetRealObject());
+	const deSynthesizer * const synthesizer1 = clsSyn.GetSynthesizer(rt->GetValue(0)->GetRealObject());
+	const deSynthesizer * const synthesizer2 = clsSyn.GetSynthesizer(rt->GetValue(1)->GetRealObject());
 	
 	rt->PushBool(synthesizer1 == synthesizer2);
 }
@@ -544,5 +532,5 @@ void deClassSynthesizer::PushSynthesizer(dsRunTime *rt, deSynthesizer *synthesiz
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSynNatDat)->synthesizer = synthesizer;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSynNatDat)->synthesizer = synthesizer;
 }

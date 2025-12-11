@@ -66,16 +66,11 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassRig::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sRigNatDat * const nd = new (p_GetNativeData(myself)) sRigNatDat;
+	
 	deClassRig &clsRig = *(static_cast<deClassRig*>(GetOwnerClass()));
 	deRigManager &rigMgr = *clsRig.GetDS()->GetGameEngine()->GetRigManager();
 	
-	// prepare
-	
-	// load rig
 	nd->rig = rigMgr.LoadRig(rt->GetValue(0)->GetString(), "/");
-	if(!nd->rig){
-		DSTHROW(dueInvalidParam);
-	}
 }
 
 // static public func void loadAsynchron( String filename, ResourceListener listener )
@@ -346,43 +341,34 @@ void deClassRig::nfBoneGetConstraintAt::RunFunction(dsRunTime *rt, dsValue *myse
 	const deRigConstraint &rigConstraint = rigBone.GetConstraintAt(constraint);
 	decMatrix bcMatrix, bcRotMatrix;
 	
-	deColliderConstraint *bc = nullptr;
-	try{
-		bc = new deColliderConstraint;
-		
-		bcRotMatrix.SetFromQuaternion(rigConstraint.GetReferenceOrientation());
-		bc->SetPosition1(rigConstraint.GetReferencePosition() + bcRotMatrix * rigConstraint.GetBoneOffset());
-		bc->SetOrientation1(decQuaternion()/*rigConstraint.GetReferenceOrientation()*/);
-		
-		bcMatrix.SetRT(rigBone.GetRotation(), rigBone.GetPosition());
-		
-		bc->SetPosition2(bcMatrix * rigConstraint.GetReferencePosition());
-		bc->SetOrientation2((bcRotMatrix * bcMatrix).ToQuaternion());
-		
-		bc->GetDofLinearX() = rigConstraint.GetDofLinearX();
-		bc->GetDofLinearY() = rigConstraint.GetDofLinearY();
-		bc->GetDofLinearZ() = rigConstraint.GetDofLinearZ();
-		bc->GetDofAngularX() = rigConstraint.GetDofAngularX();
-		bc->GetDofAngularY() = rigConstraint.GetDofAngularY();
-		bc->GetDofAngularZ() = rigConstraint.GetDofAngularZ();
-		
-		bc->SetLinearDamping(rigConstraint.GetLinearDamping());
-		bc->SetAngularDamping(rigConstraint.GetAngularDamping());
-		bc->SetSpringDamping(rigConstraint.GetSpringDamping());
-		
-		bc->SetIsRope(rigConstraint.GetIsRope());
-		bc->SetBreakingThreshold(rigConstraint.GetBreakingThreshold());
-		
-		bc->SetBone(rigConstraint.GetParentBone());
-		
-		ds.GetClassColliderConstraint()->PushConstraint(rt, bc);
-		
-	}catch(...){
-		if(bc){
-			delete bc;
-		}
-		throw;
-	}
+	const deColliderConstraint::Ref bc(deColliderConstraint::Ref::NewWith());
+	
+	bcRotMatrix.SetFromQuaternion(rigConstraint.GetReferenceOrientation());
+	bc->SetPosition1(rigConstraint.GetReferencePosition() + bcRotMatrix * rigConstraint.GetBoneOffset());
+	bc->SetOrientation1(decQuaternion()/*rigConstraint.GetReferenceOrientation()*/);
+	
+	bcMatrix.SetRT(rigBone.GetRotation(), rigBone.GetPosition());
+	
+	bc->SetPosition2(bcMatrix * rigConstraint.GetReferencePosition());
+	bc->SetOrientation2((bcRotMatrix * bcMatrix).ToQuaternion());
+	
+	bc->GetDofLinearX() = rigConstraint.GetDofLinearX();
+	bc->GetDofLinearY() = rigConstraint.GetDofLinearY();
+	bc->GetDofLinearZ() = rigConstraint.GetDofLinearZ();
+	bc->GetDofAngularX() = rigConstraint.GetDofAngularX();
+	bc->GetDofAngularY() = rigConstraint.GetDofAngularY();
+	bc->GetDofAngularZ() = rigConstraint.GetDofAngularZ();
+	
+	bc->SetLinearDamping(rigConstraint.GetLinearDamping());
+	bc->SetAngularDamping(rigConstraint.GetAngularDamping());
+	bc->SetSpringDamping(rigConstraint.GetSpringDamping());
+	
+	bc->SetIsRope(rigConstraint.GetIsRope());
+	bc->SetBreakingThreshold(rigConstraint.GetBreakingThreshold());
+	
+	bc->SetBone(rigConstraint.GetParentBone());
+	
+	ds.GetClassColliderConstraint()->PushConstraint(rt, bc);
 }
 
 // public func Vector boneConstraintGetReferencePosition(int bone, int constraint)
@@ -523,12 +509,12 @@ deClassRig::nfSave::nfSave(const sInitData &init) : dsFunction(init.clsRig,
 }
 void deClassRig::nfSave::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
-	deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const char * const filename = rt->GetValue(0)->GetString();
 	const deEngine &engine = *ds.GetGameEngine();
 	
-	deBaseRigModule * const module = (deBaseRigModule*)engine.GetModuleSystem()->
-		GetModuleAbleToLoad(deModuleSystem::emtRig, filename);
+	deBaseRigModule * const module = static_cast<deBaseRigModule*>(engine.GetModuleSystem()->
+		GetModuleAbleToLoad(deModuleSystem::emtRig, filename));
 	if(!module){
 		DSTHROW_INFO(dueInvalidParam, "no module found to handle filename");
 	}
@@ -679,5 +665,5 @@ void deClassRig::PushRig(dsRunTime *rt, deRig *rig){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sRigNatDat)->rig = rig;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sRigNatDat)->rig = rig;
 }

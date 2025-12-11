@@ -59,7 +59,7 @@ public:
 	pRT(rt), pMyself(myself), pRig(NULL){
 	}
 	
-	virtual void BuildRig(deRig *rig){
+	void BuildRig(deRig *rig) override{
 		pRig = rig;
 		
 		try{
@@ -107,11 +107,6 @@ dsFunction(init.clsRigBuilder, DSFUNC_DESTRUCTOR, DSFT_DESTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassRigBuilder::nfDestructor::RunFunction(dsRunTime*, dsValue*){
-	if(myself->GetRealObject()->GetRefCount() != 1){
-		return; // protected against GC cleaning up leaking
-	}
-	
-	static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->~sMdlBldNatDat();
 }
 
 
@@ -128,7 +123,7 @@ void deClassRigBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassRigBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassRigBuilder*>(GetOwnerClass())->GetDS();
 	const char * const filename = rt->GetValue(0)->GetString();
 	deClassRigBuilder_Builder builder(rt, myself);
 	deRig::Ref rig;
@@ -166,12 +161,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsVector); // cmp
 }
 void deClassRigBuilder::nfSetCentralMassPoint::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassRigBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassRigBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassRigBuilder*>(GetOwnerClass())->GetDS();
 	builder->GetRig()->SetCentralMassPoint(ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject()));
 }
 
@@ -182,7 +178,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBoolean); // modelCollision
 }
 void deClassRigBuilder::nfSetModelCollision::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassRigBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -212,12 +209,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsShapeList); // shapes
 }
 void deClassRigBuilder::nfAddBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassRigBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassRigBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassRigBuilder*>(GetOwnerClass())->GetDS();
 	const char * const name = rt->GetValue(0)->GetString();
 	const int parent = rt->GetValue(1)->GetInt();
 	const decVector &position = ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject());
@@ -263,15 +261,16 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsArray); // properties
 }
 void deClassRigBuilder::nfSetBoneShapeProperties::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassRigBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
 	
 	deRigBone &bone = builder->GetRig()->GetBoneAt(rt->GetValue(0)->GetInt());
 	
-	const deScriptingDragonScript &ds = ((deClassRigBuilder*)GetOwnerClass())->GetDS();
-	dsClassArray &clsArray = *((dsClassArray*)ds.GetScriptEngine()->GetClassArray());
+	const deScriptingDragonScript &ds = static_cast<deClassRigBuilder*>(GetOwnerClass())->GetDS();
+	dsClassArray &clsArray = *static_cast<dsClassArray*>(ds.GetScriptEngine()->GetClassArray());
 	dsRealObject * const objProperties = rt->GetValue(1)->GetRealObject();
 	const int count = clsArray.GetObjectCount(rt, objProperties);
 	if(count != bone.GetShapeProperties().GetCount()){
@@ -307,12 +306,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // parentBone
 }
 void deClassRigBuilder::nfAddBoneConstraint::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassRigBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassRigBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassRigBuilder*>(GetOwnerClass())->GetDS();
 	deRigBone &bone = builder->GetRig()->GetBoneAt(rt->GetValue(0)->GetInt());
 	const decVector &referencePosition = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
 	const decQuaternion &referenceOrientation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(2)->GetRealObject());
@@ -358,7 +358,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // springStiffness
 }
 void deClassRigBuilder::nfSetBoneConstraintDof::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	deClassRigBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -401,7 +402,8 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // bone
 }
 void deClassRigBuilder::nfSetRootBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassRigBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -416,12 +418,13 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsShapeList); // shapes
 }
 void deClassRigBuilder::nfSetShapes::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassRigBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassRigBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassRigBuilder*>(GetOwnerClass())->GetDS();
 	builder->GetRig()->SetShapes(ds.GetClassShapeList()->GetShapeList(rt->GetValue(0)->GetRealObject()));
 }
 
@@ -432,13 +435,14 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsArray); // properties
 }
 void deClassRigBuilder::nfSetShapeProperties::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassRigBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
+	const deClassRigBuilder_Builder * const builder =
+		static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetRig()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassRigBuilder*)GetOwnerClass())->GetDS();
-	dsClassArray &clsArray = *((dsClassArray*)ds.GetScriptEngine()->GetClassArray());
+	const deScriptingDragonScript &ds = static_cast<deClassRigBuilder*>(GetOwnerClass())->GetDS();
+	dsClassArray &clsArray = *static_cast<dsClassArray*>(ds.GetScriptEngine()->GetClassArray());
 	dsRealObject * const objProperties = rt->GetValue(0)->GetRealObject();
 	const int count = clsArray.GetObjectCount(rt, objProperties);
 	if(count != builder->GetRig()->GetShapeProperties().GetCount()){
@@ -465,7 +469,8 @@ void deClassRigBuilder::nfSetShapeProperties::RunFunction(dsRunTime *rt, dsValue
 
 deClassRigBuilder::deClassRigBuilder(deScriptingDragonScript &ds) :
 dsClass("RigBuilder", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_ABSTRACT),
-pDS(ds)
+pDS(ds),
+pClsColliderConstraintDof(NULL)
 {
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");

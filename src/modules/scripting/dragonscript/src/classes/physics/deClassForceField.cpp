@@ -66,10 +66,9 @@ deClassForceField::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsFF,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassForceField::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sFFNatDat *nd = static_cast<sFFNatDat*>(p_GetNativeData(myself);
-	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	sFFNatDat * const nd = new (p_GetNativeData(myself)) sFFNatDat;
+	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	
-	// create forcefield
 	nd->forcefield = ds.GetGameEngine()->GetForceFieldManager()->CreateForceField();
 }
 
@@ -96,7 +95,7 @@ deClassForceField::nfGetPosition::nfGetPosition(const sInitData &init) : dsFunct
 }
 void deClassForceField::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deForceField &forcefield = *(static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield);
-	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassDVector()->PushDVector(rt, forcefield.GetPosition());
 }
@@ -108,7 +107,7 @@ deClassForceField::nfSetPosition::nfSetPosition(const sInitData &init) : dsFunct
 }
 void deClassForceField::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
 	deForceField &forcefield = *(static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield);
-	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	forcefield.SetPosition(position);
@@ -120,7 +119,7 @@ deClassForceField::nfGetOrientation::nfGetOrientation(const sInitData &init) : d
 }
 void deClassForceField::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deForceField &forcefield = *(static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield);
-	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassQuaternion()->PushQuaternion(rt, forcefield.GetOrientation());
 }
@@ -132,7 +131,7 @@ deClassForceField::nfSetOrientation::nfSetOrientation(const sInitData &init) : d
 }
 void deClassForceField::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
 	deForceField &forcefield = *(static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield);
-	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	
 	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(0)->GetRealObject());
 	forcefield.SetOrientation(orientation);
@@ -145,7 +144,7 @@ dsFunction(init.clsFF, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 
 void deClassForceField::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deForceField &forcefield = *static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield;
-	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassWorld()->PushWorld(rt, forcefield.GetParentWorld());
 }
@@ -156,7 +155,7 @@ deClassForceField::nfGetInfluenceArea::nfGetInfluenceArea(const sInitData &init)
 }
 void deClassForceField::nfGetInfluenceArea::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deForceField &forcefield = *(static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield);
-	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassShapeList()->PushShapeList(rt, forcefield.GetInfluenceArea());
 }
@@ -168,7 +167,7 @@ deClassForceField::nfSetInfluenceArea::nfSetInfluenceArea(const sInitData &init)
 }
 void deClassForceField::nfSetInfluenceArea::RunFunction(dsRunTime *rt, dsValue *myself){
 	deForceField &forcefield = *(static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield);
-	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	
 	const decShapeList &area = ds.GetClassShapeList()->GetShapeList(rt->GetValue(0)->GetRealObject());
 	forcefield.SetInfluenceArea(area);
@@ -222,7 +221,7 @@ deClassForceField::nfGetFieldType::nfGetFieldType(const sInitData &init) : dsFun
 }
 void deClassForceField::nfGetFieldType::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deForceField &forcefield = *(static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield);
-	rt->PushValue(((deClassForceField*)GetOwnerClass())->GetClassForceFieldType()
+	rt->PushValue(static_cast<deClassForceField*>(GetOwnerClass())->GetClassForceFieldType()
 		->GetVariable(forcefield.GetFieldType())->GetStaticValue());
 }
 
@@ -248,7 +247,7 @@ deClassForceField::nfGetApplicationType::nfGetApplicationType(const sInitData &i
 }
 void deClassForceField::nfGetApplicationType::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deForceField &forcefield = *(static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield);
-	rt->PushValue(((deClassForceField*)GetOwnerClass())->GetClassForceFieldApplication()
+	rt->PushValue(static_cast<deClassForceField*>(GetOwnerClass())->GetClassForceFieldApplication()
 		->GetVariable(forcefield.GetApplicationType())->GetStaticValue());
 }
 
@@ -274,7 +273,7 @@ deClassForceField::nfGetDirection::nfGetDirection(const sInitData &init) : dsFun
 }
 void deClassForceField::nfGetDirection::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deForceField &forcefield = *(static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield);
-	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassVector()->PushVector(rt, forcefield.GetDirection());
 }
@@ -286,7 +285,7 @@ deClassForceField::nfSetDirection::nfSetDirection(const sInitData &init) : dsFun
 }
 void deClassForceField::nfSetDirection::RunFunction(dsRunTime *rt, dsValue *myself){
 	deForceField &forcefield = *(static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield);
-	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	
 	const decVector &direction = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	forcefield.SetDirection(direction);
@@ -358,7 +357,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsShapeList){
 }
 void deClassForceField::nfGetShape::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deForceField &forcefield = *(static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield);
-	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	ds.GetClassShapeList()->PushShapeList(rt, forcefield.GetShape());
 }
 
@@ -370,7 +369,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassForceField::nfSetShape::RunFunction(dsRunTime *rt, dsValue *myself){
 	deForceField &forcefield = *(static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield);
-	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	forcefield.SetShape(ds.GetClassShapeList()->GetShapeList(rt->GetValue(0)->GetRealObject()));
 }
 
@@ -380,7 +379,7 @@ deClassForceField::nfGetCollisionFilter::nfGetCollisionFilter(const sInitData &i
 }
 void deClassForceField::nfGetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deForceField &forcefield = *(static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield);
-	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassCollisionFilter()->PushCollisionFilter(rt, forcefield.GetCollisionFilter());
 }
@@ -392,7 +391,7 @@ deClassForceField::nfSetCollisionFilter::nfSetCollisionFilter(const sInitData &i
 }
 void deClassForceField::nfSetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
 	deForceField &forcefield = *(static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield);
-	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassForceField*>(GetOwnerClass())->GetDS();
 	
 	const decCollisionFilter &collisionFilter = ds.GetClassCollisionFilter()->GetCollisionFilter(rt->GetValue(0)->GetRealObject());
 	forcefield.SetCollisionFilter(collisionFilter);
@@ -436,7 +435,7 @@ dsFunction(init.clsFF, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.
 }
 void deClassForceField::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 	const deForceField * const forcefield = static_cast<sFFNatDat*>(p_GetNativeData(myself))->forcefield;
-	deClassForceField * const clsFF = (deClassForceField*)GetOwnerClass();
+	deClassForceField * const clsFF = static_cast<deClassForceField*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsFF)){
@@ -558,5 +557,5 @@ void deClassForceField::PushForceField(dsRunTime *rt, deForceField *forcefield){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sFFNatDat)->forcefield = forcefield;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sFFNatDat)->forcefield = forcefield;
 }

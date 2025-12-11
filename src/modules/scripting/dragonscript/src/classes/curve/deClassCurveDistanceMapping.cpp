@@ -44,7 +44,14 @@
 /////////////////////
 
 struct sDistMapNatDat{
-	decCurveDistanceMapping *mapping;
+	decCurveDistanceMapping *mapping = nullptr;
+	
+	~sDistMapNatDat(){
+		if(mapping){
+			delete mapping;
+			mapping = nullptr;
+		}
+	}
 };
 
 
@@ -279,8 +286,7 @@ void deClassCurveDistanceMapping::PushMapping(dsRunTime *rt, const decCurveDista
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sDistMapNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sDistMapNatDat;
-	nd->mapping = nullptr;
+	sDistMapNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sDistMapNatDat;
 	
 	try{
 		nd->mapping = new decCurveDistanceMapping(mapping);

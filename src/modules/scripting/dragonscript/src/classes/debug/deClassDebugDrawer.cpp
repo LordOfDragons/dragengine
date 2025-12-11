@@ -71,13 +71,13 @@ deClassDebugDrawer::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsDD,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassDebugDrawer::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sDDNatDat *nd = static_cast<sDDNatDat*>(p_GetNativeData(myself);
+	sDDNatDat * const nd = new (p_GetNativeData(myself)) sDDNatDat;
+	
 	deClassDebugDrawer &clsDD = *(static_cast<deClassDebugDrawer*>(GetOwnerClass()));
 	deDebugDrawerManager &ddmgr = *clsDD.GetDS()->GetGameEngine()->GetDebugDrawerManager();
 	
 	// create debug drawer
 	nd->ddrawer = ddmgr.CreateDebugDrawer();
-	if(!nd->ddrawer) DSTHROW(dueOutOfMemory);
 }
 
 // public func destructor()
@@ -658,5 +658,5 @@ void deClassDebugDrawer::PushDebugDrawer(dsRunTime *rt, deDebugDrawer *debugDraw
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sDDNatDat)->ddrawer = debugDrawer;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sDDNatDat)->ddrawer = debugDrawer;
 }

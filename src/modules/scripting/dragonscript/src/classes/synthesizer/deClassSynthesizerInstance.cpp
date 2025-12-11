@@ -63,7 +63,6 @@ void deClassSynthesizerInstance::nfNew::RunFunction(dsRunTime*, dsValue *myself)
 	deSynthesizerInstanceManager &syninstmgr = *clsSyn.GetDS().GetGameEngine()->GetSynthesizerInstanceManager();
 	sSynINatDat * const nd = new (p_GetNativeData(myself)) sSynINatDat;
 	
-	// create synthesizer
 	nd->instance = syninstmgr.CreateSynthesizerInstance();
 }
 
@@ -183,7 +182,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 	p_AddParameter(init.clsString); // name
 }
 void deClassSynthesizerInstance::nfIndexOfControllerNamed::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizerInstance * const instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	const deSynthesizerInstance * const instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
 	rt->PushInt(instance->IndexOfControllerNamed(rt->GetValue(0)->GetString()));
 }
 
@@ -316,7 +315,7 @@ deClassSynthesizerInstance::nfEquals::nfEquals(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsObject); // obj
 }
 void deClassSynthesizerInstance::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSynthesizerInstance * const instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
+	const deSynthesizerInstance * const instance = static_cast<sSynINatDat*>(p_GetNativeData(myself))->instance;
 	deClassSynthesizerInstance * const clsSyn = static_cast<deClassSynthesizerInstance*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -324,7 +323,7 @@ void deClassSynthesizerInstance::nfEquals::RunFunction(dsRunTime *rt, dsValue *m
 		rt->PushBool(false);
 		
 	}else{
-		deSynthesizerInstance * const otherInstance = static_cast<sSynINatDat*>(p_GetNativeData(obj))->instance;
+		const deSynthesizerInstance * const otherInstance = static_cast<sSynINatDat*>(p_GetNativeData(obj))->instance;
 		
 		rt->PushBool(instance == otherInstance);
 	}
@@ -413,5 +412,5 @@ void deClassSynthesizerInstance::PushSynthesizerInstance(dsRunTime *rt, deSynthe
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSynINatDat)->instance = instance;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSynINatDat)->instance = instance;
 }

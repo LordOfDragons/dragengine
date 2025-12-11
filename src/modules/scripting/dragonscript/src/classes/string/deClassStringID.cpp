@@ -47,7 +47,7 @@
 ////////////////
 
 struct sStrIDNatDat{
-	int index;
+	int index = 0; // empty string id
 };
 
 
@@ -64,9 +64,7 @@ dsFunction(init.clsStringID, DSFUNC_CONSTRUCTOR,
 DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassStringID::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sStrIDNatDat * const nd = new (p_GetNativeData(myself)) sStrIDNatDat;
-	
-	nd.index = 0; // 0 is the empty string inserted first in the table
+	new (p_GetNativeData(myself)) sStrIDNatDat;
 }
 
 // public func new( String string )
@@ -77,9 +75,10 @@ DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassStringID::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
 	sStrIDNatDat * const nd = new (p_GetNativeData(myself)) sStrIDNatDat;
+	
 	deClassStringID &sclass = *(static_cast<deClassStringID*>(GetOwnerClass()));
 	
-	nd.index = sclass.InsertString(rt->GetValue(0)->GetString());
+	nd->index = sclass.InsertString(rt->GetValue(0)->GetString());
 }
 
 // public func destructor()
@@ -294,7 +293,7 @@ void deClassStringID::PushStringID(dsRunTime *rt, int index){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sStrIDNatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->index = index;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sStrIDNatDat)->index = index;
 }
 
 int deClassStringID::InsertString(const char *string){
@@ -309,7 +308,7 @@ int deClassStringID::InsertString(const char *string){
 	
 	const int index = pStrings.GetCount();
 	pStrings.Add(string);
-	pLookUpTable.SetAt(string, (void*)(intptr_t)index);
+	pLookUpTable.SetAt(string, reinterpret_cast<void*>(static_cast<intptr_t>(index)));
 	return index;
 }
 

@@ -65,8 +65,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassNetworkMessage::nfNew::RunFunction(dsRunTime*, dsValue *myself){
 	sNMNatDat * const nd = new (p_GetNativeData(myself)) sNMNatDat;
 	
-	// create message
-	nd->message = new deNetworkMessage;
+	nd->message.TakeOverWith();
 }
 
 // public func destructor()
@@ -158,7 +157,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObject); // object
 }
 void deClassNetworkMessage::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deNetworkMessage * const message = static_cast<sNMNatDat*>(p_GetNativeData(myself))->message;
+	const deNetworkMessage * const message = static_cast<sNMNatDat*>(p_GetNativeData(myself))->message;
 	deClassNetworkMessage *clsNetworkMessage = static_cast<deClassNetworkMessage*>(GetOwnerClass());
 	dsValue * const object = rt->GetValue(0);
 	
@@ -166,7 +165,7 @@ void deClassNetworkMessage::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself
 		rt->PushBool(false);
 		
 	}else{
-		deNetworkMessage * const otherMessage = static_cast<sNMNatDat*>(p_GetNativeData(object))->message;
+		const deNetworkMessage * const otherMessage = static_cast<sNMNatDat*>(p_GetNativeData(object))->message;
 		rt->PushBool(message == otherMessage);
 	}
 }
@@ -244,5 +243,5 @@ void deClassNetworkMessage::PushNetworkMessage(dsRunTime *rt, deNetworkMessage *
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sNMNatDat)->message = message;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sNMNatDat)->message = message;
 }

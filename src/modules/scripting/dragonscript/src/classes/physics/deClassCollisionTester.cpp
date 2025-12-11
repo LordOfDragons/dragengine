@@ -50,7 +50,7 @@
 
 
 struct sCTNatDat{
-	dedsCollisionTester *collisionTester;
+	dedsCollisionTester::Ref collisionTester;
 };
 
 
@@ -66,8 +66,7 @@ void deClassCollisionTester::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sCTNatDat * const nd = new (p_GetNativeData(myself)) sCTNatDat;
 	const deClassCollisionTester &clsCT = *(static_cast<deClassCollisionTester*>(GetOwnerClass()));
 	
-	// create layer mask
-	nd->collisionTester = new dedsCollisionTester(clsCT.GetDS());
+	nd->collisionTester.TakeOverWith(clsCT.GetDS());
 }
 
 // public func new( CollisionTester collisionTester )
@@ -82,8 +81,7 @@ void deClassCollisionTester::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myse
 	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
-	const dedsCollisionTester &other = *(static_cast<sCTNatDat*>(p_GetNativeData(rt->GetValue(0)))->collisionTester);
-	nd->collisionTester = new dedsCollisionTester(other);
+	nd->collisionTester.TakeOverWith(static_cast<sCTNatDat*>(p_GetNativeData(rt->GetValue(0)))->collisionTester);
 }
 
 // public func destructor()
@@ -593,5 +591,5 @@ void deClassCollisionTester::PushCollisionTester(dsRunTime *rt, dedsCollisionTes
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sCTNatDat)->collisionTester = collisionTester;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCTNatDat)->collisionTester = collisionTester;
 }

@@ -957,5 +957,5 @@ void deClassNavigationSpace::PushNavigationSpace(dsRunTime *rt, deNavigationSpac
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sNavSpaceNatDat)->navspace = navspace;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sNavSpaceNatDat)->navspace = navspace;
 }

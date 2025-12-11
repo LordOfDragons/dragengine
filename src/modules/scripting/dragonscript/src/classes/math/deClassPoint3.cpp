@@ -63,8 +63,7 @@ deClassPoint3::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsPt3,
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassPoint3::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	decPoint3 &point = static_cast<sPt3NatDat*>(p_GetNativeData(myself))->point;
-	point.Set(0, 0, 0);
+	new (p_GetNativeData(myself)) sPt3NatDat;
 }
 
 // public func new( int x, int y, int z )
@@ -75,7 +74,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInt); // z
 }
 void deClassPoint3::nfNew2::RunFunction(dsRunTime *rt, dsValue *myself){
-	decPoint3 &point = static_cast<sPt3NatDat*>(p_GetNativeData(myself))->point;
+	decPoint3 &point = (new (p_GetNativeData(myself)) sPt3NatDat)->point;
 	point.x = rt->GetValue(0)->GetInt();
 	point.y = rt->GetValue(1)->GetInt();
 	point.z = rt->GetValue(2)->GetInt();
@@ -87,8 +86,8 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsPt3); // v
 }
 void deClassPoint3::nfNew3::RunFunction(dsRunTime *rt, dsValue *myself){
-	decPoint3 &point = static_cast<sPt3NatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint3 * const clsPt3 = static_cast<deClassPoint3*>(GetOwnerClass());
+	decPoint3 &point = (new (p_GetNativeData(myself)) sPt3NatDat)->point;
+	const deClassPoint3 * const clsPt3 = static_cast<deClassPoint3*>(GetOwnerClass());
 	dsRealObject *objPt = rt->GetValue(0)->GetRealObject();
 	if(!objPt) DSTHROW(dueNullPointer);
 	point = clsPt3->GetPoint(objPt);
@@ -326,7 +325,7 @@ deClassPoint3::nfIsEqualTo::nfIsEqualTo(const sInitData &init) : dsFunction(init
 }
 void deClassPoint3::nfIsEqualTo::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint3 &point = static_cast<sPt3NatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint3 * const clsPt3 = static_cast<deClassPoint3*>(GetOwnerClass());
+	const deClassPoint3 * const clsPt3 = static_cast<deClassPoint3*>(GetOwnerClass());
 	dsRealObject *objPt = rt->GetValue(0)->GetRealObject();
 	if(!objPt) DSTHROW(dueNullPointer);
 	rt->PushBool(point == clsPt3->GetPoint(objPt));
@@ -497,7 +496,7 @@ deClassPoint3::nfOpDot::nfOpDot(const sInitData &init) : dsFunction(init.clsPt3,
 }
 void deClassPoint3::nfOpDot::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint3 &point = static_cast<sPt3NatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint3 *clsPt3 = static_cast<deClassPoint3*>(GetOwnerClass());
+	const deClassPoint3 *clsPt3 = static_cast<deClassPoint3*>(GetOwnerClass());
 	dsRealObject *objPt = rt->GetValue(0)->GetRealObject();
 	if(!objPt) DSTHROW(dueNullPointer);
 	rt->PushInt(point * clsPt3->GetPoint(objPt));
@@ -510,7 +509,7 @@ deClassPoint3::nfOpLess::nfOpLess(const sInitData &init) : dsFunction(init.clsPt
 }
 void deClassPoint3::nfOpLess::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint3 &point = static_cast<sPt3NatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint3 * const clsPt3 = static_cast<deClassPoint3*>(GetOwnerClass());
+	const deClassPoint3 * const clsPt3 = static_cast<deClassPoint3*>(GetOwnerClass());
 	dsRealObject *objPt = rt->GetValue(0)->GetRealObject();
 	if(!objPt) DSTHROW(dueNullPointer);
 	rt->PushBool(point < clsPt3->GetPoint(objPt));
@@ -523,7 +522,7 @@ deClassPoint3::nfOpLessEqual::nfOpLessEqual(const sInitData &init) : dsFunction(
 }
 void deClassPoint3::nfOpLessEqual::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint3 &point = static_cast<sPt3NatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint3 * const clsPt3 = static_cast<deClassPoint3*>(GetOwnerClass());
+	const deClassPoint3 * const clsPt3 = static_cast<deClassPoint3*>(GetOwnerClass());
 	dsRealObject *objPt = rt->GetValue(0)->GetRealObject();
 	if(!objPt) DSTHROW(dueNullPointer);
 	rt->PushBool(point <= clsPt3->GetPoint(objPt));
@@ -536,7 +535,7 @@ deClassPoint3::nfOpGreater::nfOpGreater(const sInitData &init) : dsFunction(init
 }
 void deClassPoint3::nfOpGreater::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint3 &point = static_cast<sPt3NatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint3 * const clsPt3 = static_cast<deClassPoint3*>(GetOwnerClass());
+	const deClassPoint3 * const clsPt3 = static_cast<deClassPoint3*>(GetOwnerClass());
 	dsRealObject *objPt = rt->GetValue(0)->GetRealObject();
 	if(!objPt) DSTHROW(dueNullPointer);
 	rt->PushBool(point > clsPt3->GetPoint(objPt));
@@ -549,7 +548,7 @@ deClassPoint3::nfOpGreaterEqual::nfOpGreaterEqual(const sInitData &init) : dsFun
 }
 void deClassPoint3::nfOpGreaterEqual::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint3 &point = static_cast<sPt3NatDat*>(p_GetNativeData(myself))->point;
-	deClassPoint3 * const clsPt3 = static_cast<deClassPoint3*>(GetOwnerClass());
+	const deClassPoint3 * const clsPt3 = static_cast<deClassPoint3*>(GetOwnerClass());
 	dsRealObject *objPt = rt->GetValue(0)->GetRealObject();
 	if(!objPt) DSTHROW(dueNullPointer);
 	rt->PushBool(point >= clsPt3->GetPoint(objPt));
@@ -689,5 +688,5 @@ void deClassPoint3::PushPoint(dsRunTime *rt, const decPoint3 &point){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sPt3NatDat*>(p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->point = point;
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sPt3NatDat)->point = point;
 }

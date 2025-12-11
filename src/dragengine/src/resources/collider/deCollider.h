@@ -120,9 +120,7 @@ private:
 	int pAttachmentCount;
 	int pAttachmentSize;
 	
-	deColliderConstraint **pConstraints;
-	int pConstraintCount;
-	int pConstraintSize;
+	decObjectOrderedSet pConstraints;
 	
 	decObjectOrderedSet pCollisionTests;
 	
@@ -395,7 +393,7 @@ public:
 	/** \name Constraints */
 	/*@{*/
 	/** \brief Number of constraints. */
-	inline int GetConstraintCount() const{ return pConstraintCount; }
+	int GetConstraintCount() const;
 	
 	/**
 	 * \brief Constraint at index.

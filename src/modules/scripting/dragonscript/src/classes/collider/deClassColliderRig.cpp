@@ -685,7 +685,11 @@ void deClassColliderRig::PushCollider(dsRunTime *rt, deColliderRig *collider){
 	
 	deClassCollider * const baseClass = static_cast<deClassCollider*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	(new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sColRigNatDat)->collider = collider;
+	sColRigNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sColRigNatDat;
+	
+	try{
+		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
+		nd->collider = collider;
 		
 		baseClass->AssignCollider(rt->GetValue(0)->GetRealObject(), collider);
 		
@@ -700,21 +704,6 @@ void deClassColliderRig::AssignCollider(dsRealObject *myself, deColliderRig *col
 		DSTHROW(dueInvalidParam);
 	}
 	
-	sColRigNatDat &nd = *static_cast<sColRigNatDat*>(p_GetNativeData(myself->GetBuffer()));
-	
-	if(collider == nd.collider){
-		return;
-	}
-	
-	if(nd.collider){
-		nd.collider->FreeReference();
-	}
-	
-	nd.collider = collider;
-	
-	if(collider){
-		collider->AddReference();
-	}
-	
+	static_cast<sColRigNatDat*>(p_GetNativeData(myself->GetBuffer()))->collider = collider;
 	(static_cast<deClassCollider*>(GetBaseClass()))->AssignCollider(myself, collider);
 }

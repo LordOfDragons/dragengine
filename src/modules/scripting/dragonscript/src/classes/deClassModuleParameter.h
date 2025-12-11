@@ -37,20 +37,20 @@ class deScriptingDragonScript;
 // module parameter script class
 class deClassModuleParameter : public dsClass{
 private:
-	deEngine *p_gameEngine;
-	deScriptingDragonScript *p_scrMgr;
+	deEngine *pGameEngine;
+	deScriptingDragonScript &pDS;
 	dsClass *pClsModuleParameterType;
 	dsClass *pClsModuleParameterCategory;
 	
 public:
 	// constructor
-	deClassModuleParameter(deEngine *GameEngine, deScriptingDragonScript *ScrMgr);
-	~deClassModuleParameter();
+	deClassModuleParameter(deEngine *gameEngine, deScriptingDragonScript &ds);
+	~deClassModuleParameter() override;
 	// internal functions
-	inline deScriptingDragonScript *GetScriptModule() const{ return p_scrMgr; }
-	void CreateClassMembers(dsEngine *engine);
-	void PushParameter(dsRunTime *RT, deBaseModule *module, int index);
-	inline deEngine *GetGameEngine() const{ return p_gameEngine; }
+	inline deScriptingDragonScript &GetScriptModule() const{ return pDS; }
+	void CreateClassMembers(dsEngine *engine) override;
+	void PushParameter(dsRunTime *RT, const deBaseModule *module, int index);
+	inline deEngine *GetGameEngine() const{ return pGameEngine; }
 	inline dsClass *GetClassModuleParameterType() const{ return pClsModuleParameterType; }
 	inline dsClass *GetClassModuleParameterCategory() const{ return pClsModuleParameterCategory; }
 
@@ -64,7 +64,7 @@ private:
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{\
 	public: \
-		name(const sInitData &init); \
+		explicit name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	DEF_NATFUNC(nfDestructor);

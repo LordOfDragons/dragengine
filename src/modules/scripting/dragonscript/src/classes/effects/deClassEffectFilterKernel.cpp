@@ -157,7 +157,7 @@ dsFunction(init.clsEffFilKer, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassEffectFilterKernel::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deEffectFilterKernel * const effect = static_cast<sEffFilKerMatrixNatDat*>(p_GetNativeData(myself))->effect;
+	const deEffectFilterKernel * const effect = static_cast<sEffFilKerMatrixNatDat*>(p_GetNativeData(myself))->effect;
 	deClassEffectFilterKernel * const clsEffFilKer = static_cast<deClassEffectFilterKernel*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
@@ -165,7 +165,7 @@ void deClassEffectFilterKernel::nfEquals::RunFunction(dsRunTime *rt, dsValue *my
 		rt->PushBool(false);
 		
 	}else{
-		deEffectFilterKernel * const otherEffect = static_cast<sEffFilKerMatrixNatDat*>(p_GetNativeData(obj))->effect;
+		const deEffectFilterKernel * const otherEffect = static_cast<sEffFilKerMatrixNatDat*>(p_GetNativeData(obj))->effect;
 		rt->PushBool(effect == otherEffect);
 	}
 }
@@ -245,14 +245,11 @@ void deClassEffectFilterKernel::PushEffect(dsRunTime *rt, deEffectFilterKernel *
 	
 	deClassEffect * const baseClass = static_cast<deClassEffect*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sEffFilKerMatrixNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sEffFilKerMatrixNatDat;
-	nd->effect = nullptr;
+	sEffFilKerMatrixNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sEffFilKerMatrixNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
 		nd->effect = effect;
-		effect->AddReference();
 		
 		baseClass->AssignEffect(rt->GetValue(0)->GetRealObject(), effect);
 		

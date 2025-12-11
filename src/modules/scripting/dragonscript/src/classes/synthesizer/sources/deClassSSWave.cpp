@@ -65,12 +65,10 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassSSWave::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sSSWaveNatDat * const nd = new (p_GetNativeData(myself)) sSSWaveNatDat;
 	
-	// super call
-	deClassSynthesizerSource * const baseClass = (deClassSynthesizerSource*)GetOwnerClass()->GetBaseClass();
+	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
-	// create synthesizer source
-	nd->source = new deSynthesizerSourceWave;
+	nd->source.TakeOverWith();
 	baseClass->AssignSource(myself->GetRealObject(), nd->source);
 }
 
@@ -310,21 +308,7 @@ void deClassSSWave::AssignSynthesizer(dsRealObject *myself, deSynthesizer *synth
 	
 	pDS.GetClassSynthesizerSource()->AssignSynthesizer(myself, synthesizer);
 	
-	sSSWaveNatDat &nd = *static_cast<sSSWaveNatDat*>(p_GetNativeData(myself->GetBuffer()));
-	
-	if(synthesizer == nd.synthesizer){
-		return;
-	}
-	
-	if(nd.synthesizer){
-		nd.synthesizer->FreeReference();
-	}
-	
-	nd.synthesizer = synthesizer;
-	
-	if(synthesizer){
-		synthesizer->AddReference();
-	}
+	static_cast<sSSWaveNatDat*>(p_GetNativeData(myself->GetBuffer()))->synthesizer = synthesizer;
 }
 
 void deClassSSWave::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynthesizerSourceWave *source){
@@ -339,20 +323,12 @@ void deClassSSWave::PushSource(dsRunTime *rt, deSynthesizer *synthesizer, deSynt
 	
 	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sSSWaveNatDat * const nd = new (rt->GetValue(0)->GetRealObject()->GetBuffer()) sSSWaveNatDat;
-	nd->synthesizer = NULL;
-	nd->source = NULL;
+	sSSWaveNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSSWaveNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
 		nd->synthesizer = synthesizer;
-		if(synthesizer){
-			synthesizer->AddReference();
-		}
-		
 		nd->source = source;
-		source->AddReference();
 		
 		baseClass->AssignSource(rt->GetValue(0)->GetRealObject(), source);
 		baseClass->AssignSynthesizer(rt->GetValue(0)->GetRealObject(), synthesizer);

@@ -82,10 +82,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 
 void deClassServiceObject::nfNew::RunFunction(dsRunTime*, dsValue *myself){
 	sServiceObjectNatDat * const nd = new (p_GetNativeData(myself)) sServiceObjectNatDat;
-	nd->object = nullptr;
-	
-	// create object
-	nd->object = new deServiceObject;
+	nd->object.TakeOverWith();
 }
 
 
@@ -210,18 +207,17 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 
 void deClassServiceObject::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
 	sServiceObjectNatDat * const nd = new (p_GetNativeData(myself)) sServiceObjectNatDat;
-	nd->object = nullptr;
 	
-	// create object
-	deServiceObject * const copy = clsServiceObject.GetServiceObject(rt->GetValue(0)->GetRealObject());
+	const deClassServiceObject &clsServiceObject = *(static_cast<deClassServiceObject*>(GetOwnerClass()));
+	
+	const deServiceObject * const copy = clsServiceObject.GetServiceObject(rt->GetValue(0)->GetRealObject());
 	const bool deep = rt->GetValue(1)->GetBool();
 	if(!copy){
 		DSTHROW(dueNullPointer);
 	}
 	
-	nd->object = new deServiceObject(*copy, deep);
+	nd->object.TakeOverWith(*copy, deep);
 }
 
 
@@ -526,13 +522,13 @@ void deClassServiceObject::nfGetChildrenKeys::RunFunction(dsRunTime *rt, dsValue
 	const decStringList keys(nd.object->GetChildrenKeys());
 	const dsEngine &sengine = *ds.GetScriptEngine();
 	const int count = keys.GetCount();
-	int i;
 	
 	dsValue * const valueKeys = rt->CreateValue(sengine.GetClassArray());
 	
 	try{
 		rt->CreateObject(valueKeys, sengine.GetClassArray(), 0);
 		
+		int i;
 		for(i=0; i<count; i++){
 			rt->PushString(keys.GetAt(i));
 			rt->RunFunction(valueKeys, "add", 1);
@@ -957,7 +953,7 @@ void deClassServiceObject::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself)
 		rt->PushBool(false);
 		
 	}else{
-		deServiceObject * const other = static_cast<sServiceObjectNatDat*>(p_GetNativeData(obj))->object;
+		const deServiceObject * const other = static_cast<sServiceObjectNatDat*>(p_GetNativeData(obj))->object;
 		rt->PushBool(nd.object == other);
 	}
 }
@@ -1082,9 +1078,7 @@ void deClassServiceObject::PushServiceObject(dsRunTime *rt, const deServiceObjec
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	static_cast<sServiceObjectNatDat*>(p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()))->object = object;
-	object->AddReference();
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sServiceObjectNatDat)->object = object;
 }
 
 deResource *deClassServiceObject::GetResource(dsValue &myself) const{
@@ -1097,7 +1091,7 @@ deResource *deClassServiceObject::GetResource(dsValue &myself) const{
 		return nullptr;
 	}
 	
-	dsClass * const sclass = realObject->GetType();
+	const dsClass * const sclass = realObject->GetType();
 	
 	if(sclass == pDS.GetClassAnimation()){
 		return pDS.GetClassAnimation()->GetAnimation(realObject);
@@ -1144,47 +1138,47 @@ void deClassServiceObject::PushResource(dsRunTime &rt, deResource *resource){
 	
 	switch(resource->GetResourceManager()->GetResourceType()){
 	case deResourceManager::ertAnimation:
-		pDS.GetClassAnimation()->PushAnimation(&rt, (deAnimation*)resource);
+		pDS.GetClassAnimation()->PushAnimation(&rt, static_cast<deAnimation*>(resource));
 		break;
 		
 	case deResourceManager::ertImage:
-		pDS.GetClassImage()->PushImage(&rt, (deImage*)resource);
+		pDS.GetClassImage()->PushImage(&rt, static_cast<deImage*>(resource));
 		break;
 		
 	case deResourceManager::ertLanguagePack:
-		pDS.GetClassLanguagePack()->PushLanguagePack(&rt, (deLanguagePack*)resource);
+		pDS.GetClassLanguagePack()->PushLanguagePack(&rt, static_cast<deLanguagePack*>(resource));
 		break;
 		
 	case deResourceManager::ertModel:
-		pDS.GetClassModel()->PushModel(&rt, (deModel*)resource);
+		pDS.GetClassModel()->PushModel(&rt, static_cast<deModel*>(resource));
 		break;
 		
 	case deResourceManager::ertOcclusionMesh:
-		pDS.GetClassOcclusionMesh()->PushOcclusionMesh(&rt, (deOcclusionMesh*)resource);
+		pDS.GetClassOcclusionMesh()->PushOcclusionMesh(&rt, static_cast<deOcclusionMesh*>(resource));
 		break;
 		
 	case deResourceManager::ertParticleEmitter:
-		pDS.GetClassParticleEmitter()->PushParticleEmitter(&rt, (deParticleEmitter*)resource);
+		pDS.GetClassParticleEmitter()->PushParticleEmitter(&rt, static_cast<deParticleEmitter*>(resource));
 		break;
 		
 	case deResourceManager::ertRig:
-		pDS.GetClassRig()->PushRig(&rt, (deRig*)resource);
+		pDS.GetClassRig()->PushRig(&rt, static_cast<deRig*>(resource));
 		break;
 		
 	case deResourceManager::ertSkin:
-		pDS.GetClassSkin()->PushSkin(&rt, (deSkin*)resource);
+		pDS.GetClassSkin()->PushSkin(&rt, static_cast<deSkin*>(resource));
 		break;
 		
 	case deResourceManager::ertSound:
-		pDS.GetClassSound()->PushSound(&rt, (deSound*)resource);
+		pDS.GetClassSound()->PushSound(&rt, static_cast<deSound*>(resource));
 		break;
 		
 	case deResourceManager::ertVideo:
-		pDS.GetClassVideo()->PushVideo(&rt, (deVideo*)resource);
+		pDS.GetClassVideo()->PushVideo(&rt, static_cast<deVideo*>(resource));
 		break;
 		
 	case deResourceManager::ertService:
-		pDS.GetClassService()->PushService(&rt, (deService*)resource);
+		pDS.GetClassService()->PushService(&rt, static_cast<deService*>(resource));
 		break;
 		
 	default:
