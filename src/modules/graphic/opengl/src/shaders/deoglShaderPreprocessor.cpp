@@ -72,15 +72,15 @@ pDebugLogParsing(false)
 pDebugLogParsing(false)
 #endif
 {
-	pSources = (char*)malloc(pSourcesSize);
+	pSources = reinterpret_cast<char*>(malloc(pSourcesSize));
 	DEASSERT_NOTNULL(pSources)
 	pSources[0] = '\0';
 	
-	pResolveBuffer = (char*)malloc(pResolveBufferSize);
+	pResolveBuffer = reinterpret_cast<char*>(malloc(pResolveBufferSize));
 	DEASSERT_NOTNULL(pResolveBuffer)
 	pResolveBuffer[0] = '\0';
 	
-	pResolveSymbolName = (char*)malloc(pResolveSymbolNameSize);
+	pResolveSymbolName = reinterpret_cast<char*>(malloc(pResolveSymbolNameSize));
 	DEASSERT_NOTNULL(pResolveSymbolName)
 	pResolveSymbolName[0] = '\0';
 }
@@ -181,7 +181,7 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 	}
 	if(pSourcesLen + length > pSourcesSize){
 		const int newSize = pSourcesLen + length + 1024;  // increment by steps of 1k
-		char * const newSources = (char*)realloc(pSources, newSize + 1);
+		char * const newSources = reinterpret_cast<char*>(realloc(pSources, newSize + 1));
 		if(!newSources){
 			DETHROW(deeOutOfMemory);
 		}
@@ -597,7 +597,7 @@ void deoglShaderPreprocessor::pProcessDirectiveDefine(const char *beginLine){
 		const int inputLine = pInputLine;
 		decString value;
 		value.Set(' ', (int)(pInputNext - beginLine));
-		memcpy((char*)value.GetString(), beginLine, (int)(pInputNext - beginLine));
+		memcpy(value.GetMutableString(), beginLine, (int)(pInputNext - beginLine));
 		
 		while(true){
 			if(pParseDirectiveAnything(token)){
@@ -1505,9 +1505,9 @@ decString deoglShaderPreprocessor::pDirectiveTokenString(const sToken &token) co
 	decString string;
 	string.Set(' ', token.length);
 	#ifdef OS_W32_VS
-		strncpy_s((char*)string.GetString(), token.length + 1, token.begin, token.length);
+		strncpy_s(string.GetMutableString(), token.length + 1, token.begin, token.length);
 	#else
-		strncpy((char*)string.GetString(), token.begin, token.length);
+		strncpy(string.GetMutableString(), token.begin, token.length);
 	#endif
 	return string;
 }
@@ -1602,7 +1602,7 @@ void deoglShaderPreprocessor::pResolveBufferAppend(const char *text, int length)
 	
 	if(pResolveBufferLen + length > pResolveBufferSize){
 		const int newSize = pResolveBufferLen + length + 1024;  // increment by steps of 1k
-		char * const newResolveBuffer = (char*)realloc(pResolveBuffer, newSize + 1);
+		char * const newResolveBuffer = reinterpret_cast<char*>(realloc(pResolveBuffer, newSize + 1));
 		if(!newResolveBuffer){
 			DETHROW(deeOutOfMemory);
 		}
@@ -1623,7 +1623,7 @@ void deoglShaderPreprocessor::pResolveBufferAppend(const char *text, int length)
 void deoglShaderPreprocessor::pSetResolveSymbolName(const char *name, int length){
 	if(pResolveSymbolNameLen + length > pResolveSymbolNameSize){
 		const int newSize = pResolveSymbolNameLen + length + 50;
-		char * const newName = (char*)realloc(pResolveSymbolName, newSize + 1);
+		char * const newName = reinterpret_cast<char*>(realloc(pResolveSymbolName, newSize + 1));
 		if(!newName){
 			DETHROW(deeOutOfMemory);
 		}

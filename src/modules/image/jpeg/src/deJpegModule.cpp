@@ -185,7 +185,7 @@ deBaseImageInfo *deJpegModule::InitLoadImage(decBaseFileReader &file){
 void deJpegModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImageInfo &infos){
 	deJpegImageInfo &info = (deJpegImageInfo&)infos;
 	int componentCount = info.GetComponentCount();
-	char *imageData = (char*)image.GetData();
+	char *imageData = reinterpret_cast<char*>(image.GetData());
 	int bitCount = info.GetBitCount();
 	int height = info.GetHeight();
 	int width = info.GetWidth();
@@ -241,7 +241,7 @@ void deJpegModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImag
 }
 
 void deJpegModule::SaveImage(decBaseFileWriter &file, const deImage &image){
-	char * const imageData = (char*)image.GetData();
+	char * const imageData = reinterpret_cast<char*>(image.GetData());
 	const int componentCount = image.GetComponentCount();
 	const int bitCount = image.GetBitCount();
 	const int height = image.GetHeight();

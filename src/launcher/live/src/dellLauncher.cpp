@@ -178,7 +178,7 @@ void dellLauncher::pUpdateEnvironment(){
 			DETHROW(deeInvalidParam);
 		}
 #else
-		if(putenv((char*)envParam.GetString())){
+		if(putenv(envParam.GetMutableString())){
 			DETHROW(deeInvalidParam);
 		}
 #endif

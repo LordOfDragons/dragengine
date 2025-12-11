@@ -712,7 +712,7 @@ void deoglShaderManager::pLoadIncludableSourcesIn(const char *directory){
 			reader = vfs.OpenFileForReading(path);
 			const int length = reader->GetLength();
 			source.Set(' ', length);
-			reader->Read((char*)source.GetString(), length);
+			reader->Read(source.GetMutableString(), length);
 			pIncludableSources.SetAt(filename, source);
 		}
 		

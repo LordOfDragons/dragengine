@@ -240,7 +240,7 @@ void dePng3DTarball::Get3DImageInfos(dePng3DImageInfo &infos, decBaseFileReader 
 }
 
 void dePng3DTarball::Load3DImage(dePng3DImageInfo &infos, decBaseFileReader &file, deImage &image){
-	char *imageData = (char*)image.GetData();
+	char *imageData = reinterpret_cast<char*>(image.GetData());
 	png_bytep *rows = NULL;
 	sTarballHeader header;
 	char *sliceImageData;
@@ -334,7 +334,7 @@ void dePng3DTarball::Load3DImage(dePng3DImageInfo &infos, decBaseFileReader &fil
 }
 
 void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
-	char *imageData = (char*)image.GetData();
+	char *imageData = reinterpret_cast<char*>(image.GetData());
 	decMemoryFile::Ref memoryFile;
 	unsigned char *headerBytes;
 	char paddingBytes[512];

@@ -439,7 +439,8 @@ deClassColor::nfToString::nfToString(const sInitData &init) : dsFunction(init.cl
 void deClassColor::nfToString::RunFunction(dsRunTime *RT, dsValue *This){
 	const decColor &color = static_cast<sClrNatDat*>(p_GetNativeData(This))->color;
 	char buffer[50];
-	snprintf((char*)&buffer, sizeof(buffer), "(%f,%f,%f,%f)", color.r, color.g, color.b, color.a);
+	snprintf(reinterpret_cast<char*>(&buffer), sizeof(buffer),
+		"(%f,%f,%f,%f)", color.r, color.g, color.b, color.a);
 	RT->PushString(buffer);
 }
 

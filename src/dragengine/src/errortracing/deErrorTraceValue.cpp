@@ -129,9 +129,9 @@ deErrorTraceValue *deErrorTraceValue::AddSubValueInt(const char *name, int value
 	deErrorTraceValue *newSubValue = NULL;
 	char buffer[20];
 	#ifdef _MSC_VER
-		sprintf_s((char*)&buffer, 20, "%i", value);
+		sprintf_s(reinterpret_cast<char*>(&buffer), 20, "%i", value);
 	#else
-		sprintf((char*)&buffer, "%i", value);
+		sprintf(reinterpret_cast<char*>(&buffer), "%i", value);
 	#endif
 	try{
 		newSubValue = new deErrorTraceValue(name, buffer);
@@ -148,9 +148,9 @@ deErrorTraceValue *deErrorTraceValue::AddSubValueFloat(const char *name, float v
 	deErrorTraceValue *newSubValue = NULL;
 	char buffer[20];
 	#ifdef _MSC_VER
-		sprintf_s((char*)&buffer, 20, "%g", value);
+		sprintf_s(reinterpret_cast<char*>(&buffer), 20, "%g", value);
 	#else
-		sprintf((char*)&buffer, "%g", value);
+		sprintf(reinterpret_cast<char*>(&buffer), "%g", value);
 	#endif
 	try{
 		newSubValue = new deErrorTraceValue(name, buffer);

@@ -53,7 +53,7 @@ fbxProperty(etString)
 	const int count = reader.ReadUInt();
 	if(count > 0){
 		pValue.Set(0, count);
-		reader.Read((char*)pValue.GetString(), count);
+		reader.Read(pValue.GetMutableString(), count);
 	}
 }
 

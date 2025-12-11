@@ -203,7 +203,7 @@ void deWebp3DTarball::Load3DImage(deWebp3DImageInfo &infos, decBaseFileReader &f
 	
 	const int strideLine = image.GetWidth() * image.GetComponentCount();
 	const int strideImage = strideLine * image.GetHeight();
-	char * const imageData = (char*)image.GetData();
+	char * const imageData = reinterpret_cast<char*>(image.GetData());
 	sTarballHeader header;
 	unsigned short z;
 	int i;
@@ -265,7 +265,7 @@ void deWebp3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image)
 	DEASSERT_TRUE(image.GetBitCount() == 8)
 	DEASSERT_TRUE(image.GetComponentCount() >= 3)
 	
-	const char * const imageData = (char*)image.GetData();
+	const char * const imageData = reinterpret_cast<char*>(image.GetData());
 	const int strideLine = image.GetWidth() * image.GetComponentCount();
 	const int strideImage = strideLine * image.GetHeight();
 	const bool hasAlpha = image.GetComponentCount() == 4;

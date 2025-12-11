@@ -151,7 +151,7 @@ decString decBaseFileReader::ReadString8(){
 void decBaseFileReader::ReadString8Into(decString &string){
 	const int len = ReadByte();
 	string.Set(' ', len);
-	Read((char*)string.GetString(), len);
+	Read(string.GetMutableString(), len);
 }
 
 decString decBaseFileReader::ReadString16(){
@@ -163,7 +163,7 @@ decString decBaseFileReader::ReadString16(){
 void decBaseFileReader::ReadString16Into(decString &string){
 	const int len = ReadUShort();
 	string.Set(' ', len);
-	Read((char*)string.GetString(), len);
+	Read(string.GetMutableString(), len);
 }
 
 decString decBaseFileReader::ReadString32(){
@@ -175,7 +175,7 @@ decString decBaseFileReader::ReadString32(){
 void decBaseFileReader::ReadString32Into(decString &string){
 	const int len = ReadUInt();
 	string.Set(' ', len);
-	Read((char*)string.GetString(), len);
+	Read(string.GetMutableString(), len);
 }
 
 decString decBaseFileReader::ReadVarString(){
@@ -187,7 +187,7 @@ decString decBaseFileReader::ReadVarString(){
 void decBaseFileReader::ReadVarStringInto(decString &string){
 	const int len = ReadVarUInt();
 	string.Set(' ', len);
-	Read((char*)string.GetString(), len);
+	Read(string.GetMutableString(), len);
 }
 
 decVector decBaseFileReader::ReadVector(){

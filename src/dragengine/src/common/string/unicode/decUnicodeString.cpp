@@ -185,9 +185,9 @@ void decUnicodeString::SetValue(char value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		strcpy_s(reinterpret_cast<char*>(pString), length + 1, temp.GetString());
 	#else
-		strcpy((char*)pString, temp.GetString());
+		strcpy(reinterpret_cast<char*>(pString), temp.GetString());
 	#endif
 }
 
@@ -197,9 +197,9 @@ void decUnicodeString::SetValue(unsigned char value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		strcpy_s(reinterpret_cast<char*>(pString), length + 1, temp.GetString());
 	#else
-		strcpy((char*)pString, temp.GetString());
+		strcpy(reinterpret_cast<char*>(pString), temp.GetString());
 	#endif
 }
 
@@ -209,9 +209,9 @@ void decUnicodeString::SetValue(short value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		strcpy_s(reinterpret_cast<char*>(pString), length + 1, temp.GetString());
 	#else
-		strcpy((char*)pString, temp.GetString());
+		strcpy(reinterpret_cast<char*>(pString), temp.GetString());
 	#endif
 }
 
@@ -221,9 +221,9 @@ void decUnicodeString::SetValue(unsigned short value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		strcpy_s(reinterpret_cast<char*>(pString), length + 1, temp.GetString());
 	#else
-		strcpy((char*)pString, temp.GetString());
+		strcpy(reinterpret_cast<char*>(pString), temp.GetString());
 	#endif
 }
 
@@ -233,9 +233,9 @@ void decUnicodeString::SetValue(int value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		strcpy_s(reinterpret_cast<char*>(pString), length + 1, temp.GetString());
 	#else
-		strcpy((char*)pString, temp.GetString());
+		strcpy(reinterpret_cast<char*>(pString), temp.GetString());
 	#endif
 }
 
@@ -245,9 +245,9 @@ void decUnicodeString::SetValue(unsigned int value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		strcpy_s(reinterpret_cast<char*>(pString), length + 1, temp.GetString());
 	#else
-		strcpy((char*)pString, temp.GetString());
+		strcpy(reinterpret_cast<char*>(pString), temp.GetString());
 	#endif
 }
 
@@ -257,9 +257,9 @@ void decUnicodeString::SetValue(float value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		strcpy_s(reinterpret_cast<char*>(pString), length + 1, temp.GetString());
 	#else
-		strcpy((char*)pString, temp.GetString());
+		strcpy(reinterpret_cast<char*>(pString), temp.GetString());
 	#endif
 }
 
@@ -269,9 +269,9 @@ void decUnicodeString::SetValue(double value){
 	const int length = temp.GetLength();
 	pCreateString(1, length);
 	#ifdef OS_W32_VS
-		strcpy_s((char*)pString, length + 1, temp.GetString());
+		strcpy_s(reinterpret_cast<char*>(pString), length + 1, temp.GetString());
 	#else
-		strcpy((char*)pString, temp.GetString());
+		strcpy(reinterpret_cast<char*>(pString), temp.GetString());
 	#endif
 }
 
@@ -1144,7 +1144,7 @@ decString decUnicodeString::ToUTF8() const{
 	// create string with the required size
 	decString string;
 	string.Set(' ', utflen);
-	char *buffer = (char*)string.GetString();
+	char *buffer = string.GetMutableString();
 	
 	for(i=0; i<pLength; i++){
 		const int character = pGetAt(i);

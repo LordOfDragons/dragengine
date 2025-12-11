@@ -137,9 +137,9 @@ deErrorTraceValue *deErrorTracePoint::AddValueInt(const char *name, int value){
 	deErrorTraceValue *newValue = NULL;
 	char buffer[20];
 	#ifdef _MSC_VER
-		sprintf_s((char*)&buffer, 20, "%i", value);
+		sprintf_s(reinterpret_cast<char*>(&buffer), 20, "%i", value);
 	#else
-		sprintf((char*)&buffer, "%i", value);
+		sprintf(reinterpret_cast<char*>(&buffer), "%i", value);
 	#endif
 	try{
 		newValue = new deErrorTraceValue(name, buffer);
@@ -156,9 +156,9 @@ deErrorTraceValue *deErrorTracePoint::AddValueFloat(const char *name, float valu
 	deErrorTraceValue *newValue = NULL;
 	char buffer[20];
 	#ifdef _MSC_VER
-		sprintf_s((char*)&buffer, 20, "%g", value);
+		sprintf_s(reinterpret_cast<char*>(&buffer), 20, "%g", value);
 	#else
-		sprintf((char*)&buffer, "%g", value);
+		sprintf(reinterpret_cast<char*>(&buffer), "%g", value);
 	#endif
 	try{
 		newValue = new deErrorTraceValue(name, buffer);

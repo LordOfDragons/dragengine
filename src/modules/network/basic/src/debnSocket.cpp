@@ -176,7 +176,7 @@ bool debnSocket::ReceiveDatagram(deNetworkMessage &stream, debnAddress &address)
 			socklen_t slen = sizeof(sa);
 			
 			#ifdef OS_W32
-			dataLen = recvfrom(pSocket, (char*)stream.GetBuffer(), dataLen, 0, (sockaddr*)&sa, &slen);
+			dataLen = recvfrom(pSocket, reinterpret_cast<char*>(stream.GetBuffer()), dataLen, 0, (sockaddr*)&sa, &slen);
 			#else
 			dataLen = recvfrom(pSocket, stream.GetBuffer(), dataLen, 0, (sockaddr*)&sa, &slen);
 			#endif
@@ -190,7 +190,7 @@ bool debnSocket::ReceiveDatagram(deNetworkMessage &stream, debnAddress &address)
 			socklen_t slen = sizeof(sa);
 			
 			#ifdef OS_W32
-			dataLen = recvfrom(pSocket, (char*)stream.GetBuffer(), dataLen, 0, (sockaddr*)&sa, &slen);
+			dataLen = recvfrom(pSocket, reinterpret_cast<char*>(stream.GetBuffer()), dataLen, 0, (sockaddr*)&sa, &slen);
 			#else
 			dataLen = recvfrom(pSocket, stream.GetBuffer(), dataLen, 0, (sockaddr*)&sa, &slen);
 			#endif
@@ -226,7 +226,7 @@ void debnSocket::SendDatagram(const deNetworkMessage &stream, const debnAddress 
 		address.SetSocketIPv6(sa);
 		
 		#ifdef OS_W32
-		sendto(pSocket, (char*)stream.GetBuffer(), stream.GetDataLength(), 0, (sockaddr*)&sa, sizeof(sa));
+		sendto(pSocket, reinterpret_cast<char*>(stream.GetBuffer()), stream.GetDataLength(), 0, (sockaddr*)&sa, sizeof(sa));
 		#else
 		sendto(pSocket, stream.GetBuffer(), stream.GetDataLength(), 0, (sockaddr*)&sa, sizeof(sa));
 		#endif
@@ -237,7 +237,7 @@ void debnSocket::SendDatagram(const deNetworkMessage &stream, const debnAddress 
 		address.SetSocketIPv4(sa);
 		
 		#ifdef OS_W32
-		sendto(pSocket, (char*)stream.GetBuffer(), stream.GetDataLength(), 0, (sockaddr*)&sa, sizeof(sa));
+		sendto(pSocket, reinterpret_cast<char*>(stream.GetBuffer()), stream.GetDataLength(), 0, (sockaddr*)&sa, sizeof(sa));
 		#else
 		sendto(pSocket, stream.GetBuffer(), stream.GetDataLength(), 0, (sockaddr*)&sa, sizeof(sa));
 		#endif

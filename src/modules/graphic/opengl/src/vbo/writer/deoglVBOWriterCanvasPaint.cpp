@@ -54,7 +54,7 @@ deoglVBOWriterCanvasPaint::~deoglVBOWriterCanvasPaint(){
 
 void deoglVBOWriterCanvasPaint::Reset(deoglSharedVBOBlock *vboBlock){
 	if(vboBlock){
-		pDataPoints = (char*)vboBlock->GetData();
+		pDataPoints = reinterpret_cast<char*>(vboBlock->GetData());
 		
 	}else{
 		pDataPoints = NULL;

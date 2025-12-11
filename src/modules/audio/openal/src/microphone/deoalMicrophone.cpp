@@ -57,7 +57,7 @@
 deoalMicrophone::deoalMicrophone(deAudioOpenAL &oal, const deMicrophone &microphone) :
 pOal(oal),
 pMicrophone(microphone),
-pAMicrophone(new deoalAMicrophone(oal.GetAudioThread())),
+pAMicrophone(deoalAMicrophone::Ref::NewWith(oal.GetAudioThread())),
 
 pParentWorld(NULL),
 pActive(false),
@@ -293,7 +293,7 @@ void deoalMicrophone::AllSpeakersRemoved(){
 
 void deoalMicrophone::pCleanUp(){
 	if(pActive){
-		pOal.SetActiveMicrophone(NULL);
+		pOal.SetActiveMicrophone(nullptr);
 	}
 	
 	pAMicrophone = nullptr;

@@ -98,14 +98,15 @@ pSaveCache(false)
 				cacheInfo.initialDataSize = reader->GetLength();
 				if(cacheInfo.initialDataSize > 0){
 					cacheInfo.pInitialData = new char[cacheInfo.initialDataSize];
-					reader->Read((char*)cacheInfo.pInitialData, (int)cacheInfo.initialDataSize);
+					reader->Read(reinterpret_cast<char*>(const_cast<void*>(cacheInfo.pInitialData)),
+						(int)cacheInfo.initialDataSize);
 				}
 			}
 			
 		}catch(const deException &e){
 			baseModule.LogException(e);
 			if(cacheInfo.pInitialData){
-				delete [] (char*)cacheInfo.pInitialData;
+				delete [] reinterpret_cast<char*>(const_cast<void*>(cacheInfo.pInitialData));
 			}
 			pDropCache();
 		}

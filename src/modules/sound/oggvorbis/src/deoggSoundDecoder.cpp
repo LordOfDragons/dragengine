@@ -173,7 +173,7 @@ int deoggSoundDecoder::ReadSamples(void *buffer, int size){
 		return 0;
 	}
 	
-	char *samples = (char*)buffer;
+	char *samples = reinterpret_cast<char*>(buffer);
 	int totalReadBytes = 0;
 	
 	// read the file

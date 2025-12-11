@@ -77,9 +77,30 @@ public:
 		}
 	}
 	
+	/**
+	 * \brief Create object reference holder with object from another holder.
+	 * 
+	 * Reference is added if object in holder is not nullptr.
+	 */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	explicit deTObjectReference(const deTObjectReference<U> &reference) : pObject(static_cast<T*>(reference.Pointer())){
+		if(pObject){
+			pObject->AddReference();
+		}
+	}
+	
 	/** \brief Move constructor. */
 	deTObjectReference(deTObjectReference &&reference) : pObject(reference.pObject){
 		reference.pObject = nullptr;
+	}
+	
+	/** \brief Move constructor. */
+	template<typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+	explicit deTObjectReference(deTObjectReference<U> &&reference) : pObject(static_cast<T*>(reference.Pointer())){
+		if(pObject){
+			pObject->AddReference();
+		}
+		reference = nullptr;
 	}
 	
 	/**

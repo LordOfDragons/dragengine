@@ -90,7 +90,7 @@ decXpmImage::decXpmImage(const char *xpmData[], bool flip){
 		}
 		// read pixels
 		if(!(destData = new rgba[pWidth*pHeight])) DETHROW(deeOutOfMemory);
-		pData = (char*)destData;
+		pData = reinterpret_cast<char*>(destData);
 		for(y=0; y<pHeight; y++){
 			lineData = xpmData[line++];
 			destLine = destData + pWidth * (flip ? pHeight - 1 - y : y);

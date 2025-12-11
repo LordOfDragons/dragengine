@@ -347,8 +347,11 @@ public:
 	/** \brief Double value throwing exception if not valid. */
 	double ToDoubleValid() const;
 	
-	/** \brief Pointer to the text. */
+	/** \brief Const pointer to string. */
 	const char *GetString() const;
+	
+	/** \brief Mutable pointer to string. */
+	char *GetMutableString() const;
 	
 	/** \brief String equals another string case sensitive. */
 	bool Equals(const decString &string) const;

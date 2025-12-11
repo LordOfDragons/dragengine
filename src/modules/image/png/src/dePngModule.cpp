@@ -233,7 +233,7 @@ deBaseImageInfo *dePngModule::InitLoadImage(decBaseFileReader &file){
 void dePngModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImageInfo &infos){
 	dePngImageInfo &pngInfos = (dePngImageInfo&)infos;
 	int componentCount = pngInfos.componentCount;
-	char *imageData = (char*)image.GetData();
+	char *imageData = reinterpret_cast<char*>(image.GetData());
 	int bitCount = pngInfos.bitCount;
 	int height = pngInfos.height;
 	int width = pngInfos.width;
@@ -279,7 +279,7 @@ void dePngModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImage
 void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 	png_structp writeStruct = NULL;
 	png_infop infoStruct = NULL;
-	char *imageData = (char*)image.GetData();
+	char *imageData = reinterpret_cast<char*>(image.GetData());
 	int componentCount = image.GetComponentCount();
 	int bitCount = image.GetBitCount();
 	dePngImageInfo::sFeedback feedback;

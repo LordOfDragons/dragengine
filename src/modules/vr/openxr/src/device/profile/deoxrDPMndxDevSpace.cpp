@@ -219,7 +219,7 @@ decString deoxrDPMndxDevSpace::pSanitizedSerial(const decString &serial) const{
 	
 	sanitized.Set(0, len);
 	const char * const a = serial.GetString();
-	char * const b = (char*)sanitized.GetString();
+	char * const b = sanitized.GetMutableString();
 	
 	for(i=0; i<len; i++){
 		const char c = a[i];

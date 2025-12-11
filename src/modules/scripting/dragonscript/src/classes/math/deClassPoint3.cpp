@@ -594,7 +594,7 @@ deClassPoint3::nfToString::nfToString(const sInitData &init) : dsFunction(init.c
 void deClassPoint3::nfToString::RunFunction(dsRunTime *rt, dsValue *myself){
 	const decPoint3 &point = static_cast<sPt3NatDat*>(p_GetNativeData(myself))->point;
 	char buffer[50];
-	snprintf((char*)&buffer, sizeof(buffer), "(%i,%i,%i)", point.x, point.y, point.z);
+	snprintf(reinterpret_cast<char*>(&buffer), sizeof(buffer), "(%i,%i,%i)", point.x, point.y, point.z);
 	rt->PushString(buffer);
 }
 

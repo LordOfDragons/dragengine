@@ -1529,6 +1529,9 @@ const char *decString::GetString() const{
 	return (const char *)pString;
 }
 
+char *decString::GetMutableString() const{
+	return pString;
+}
 
 
 bool decString::Equals(const decString &string) const{

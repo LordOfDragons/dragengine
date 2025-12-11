@@ -135,7 +135,7 @@ void deoalAVideoPlayer::SetLooping(bool looping){
 
 
 void deoalAVideoPlayer::ReadSamples(void *buffer, int bufferSize, int offset, int samples){
-	char *dataBuffer = (char*)buffer;
+	char *dataBuffer = reinterpret_cast<char*>(buffer);
 	
 	if(pSeekNextRead){
 		pSeekNextRead = false;

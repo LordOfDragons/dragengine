@@ -280,7 +280,7 @@ deadArchiveDirectory::Ref deadContextUnpack::ReadFileTable(){
 		}
 		
 		filename.Set(' ', info.size_filename);
-		if(unzGetCurrentFileInfo(pZipFile, &info, (char*)filename.GetString(),
+		if(unzGetCurrentFileInfo(pZipFile, &info, filename.GetMutableString(),
 		info.size_filename, NULL, 0, NULL, 0) != UNZ_OK){
 			DETHROW_INFO(deeReadFile, filename);
 		}

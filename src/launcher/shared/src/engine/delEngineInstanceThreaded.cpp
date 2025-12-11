@@ -553,7 +553,7 @@ void delEngineInstanceThreaded::ReadString16FromPipe(decString &string){
 	const int length = ReadUShortFromPipe();
 	string.Set(' ', length);
 	if(length > 0){
-		ReadFromPipe((char*)string.GetString(), length);
+		ReadFromPipe(string.GetMutableString(), length);
 	}
 }
 

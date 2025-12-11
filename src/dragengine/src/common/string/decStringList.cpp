@@ -330,7 +330,7 @@ decString decStringList::Join(const char *separator) const{
 	
 	joined.Set(' ', requiredLength);
 	
-	char *next = (char*)joined.GetString();
+	char *next = joined.GetMutableString();
 	for(i=0; i<pStringCount; i++){
 		if(i > 0 && separatorLength > 0){
 			#ifdef OS_W32_VS

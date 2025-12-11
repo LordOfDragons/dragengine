@@ -139,12 +139,12 @@ void deoglSPBlockUBO::MapBuffer(){
 			char *data;
 			
 			if(pglMapBuffer){
-				OGL_CHECK(GetRenderThread(), data = (char*)pglMapBuffer(
-					GL_UNIFORM_BUFFER, GL_WRITE_ONLY));
+				OGL_CHECK(GetRenderThread(), data = reinterpret_cast<char*>(pglMapBuffer(
+					GL_UNIFORM_BUFFER, GL_WRITE_ONLY)));
 				
 			}else{
-				OGL_CHECK(GetRenderThread(), data = (char*)pglMapBufferRange(GL_UNIFORM_BUFFER,
-					0, GetBufferSize(), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT));
+				OGL_CHECK(GetRenderThread(), data = reinterpret_cast<char*>(pglMapBufferRange(
+					GL_UNIFORM_BUFFER, 0, GetBufferSize(), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT)));
 			}
 			
 			if(!data){
@@ -195,9 +195,9 @@ void deoglSPBlockUBO::MapBuffer(int element, int count){
 		try{
 			char *data;
 			
-			OGL_CHECK(GetRenderThread(), data = (char*)pglMapBufferRange(GL_UNIFORM_BUFFER,
-				GetElementStride() * element, GetElementStride() * count,
-				GL_WRITE_ONLY | GL_MAP_INVALIDATE_RANGE_BIT));
+			OGL_CHECK(GetRenderThread(), data = reinterpret_cast<char*>(pglMapBufferRange(
+				GL_UNIFORM_BUFFER, GetElementStride() * element, GetElementStride() * count,
+				GL_WRITE_ONLY | GL_MAP_INVALIDATE_RANGE_BIT)));
 			
 			if(!data){
 				DETHROW(deeInvalidParam);

@@ -633,7 +633,6 @@ void deoalAudioThread::SetActiveMicrophone(deoalAMicrophone *microphone){
 		pActiveWorld = world;
 		
 		if(world){
-			world->AddReference();
 			pProcessOnceWorld.RemoveIfPresent(world);
 		}
 	}

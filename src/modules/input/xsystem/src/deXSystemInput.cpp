@@ -863,7 +863,7 @@ bool deXSystemInput::pLookUpKey(XKeyEvent &event, deXSystemInput::sKey &key){
 	key.character = 0;
 	
 	char utf8[4];
-	const int count = XLookupString(&event, (char*)&utf8, 4, &key.keySym, nullptr);
+	const int count = XLookupString(&event, reinterpret_cast<char*>(&utf8), 4, &key.keySym, nullptr);
 // 	LogInfoFormat("lookUpKey: %d %d %d %d %d\n", count, utf8[0], utf8[1], utf8[2], utf8[3]);
 	
 	switch(count){

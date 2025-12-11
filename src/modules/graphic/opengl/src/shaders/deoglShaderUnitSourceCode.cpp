@@ -90,7 +90,7 @@ pStage(0)
 			
 			const int length = reader->GetLength();
 			pSourceCode.Set(' ', length);
-			reader->Read((char*)pSourceCode.GetString(), length);
+			reader->Read(pSourceCode.GetMutableString(), length);
 			
 		}else if(tagName == "define"){
 			const decXmlCharacterData * const cdata = tag->GetFirstData();
