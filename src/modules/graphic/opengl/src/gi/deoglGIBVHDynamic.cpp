@@ -127,16 +127,16 @@ void deoglGIBVHDynamic::UpdateVertices(const oglVector3 *positions, int count){
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHDynamic::GetBlockNode(){
 	if(!pBlockNode){
-		pBlockNode.TakeOver(pGIBVHLocal.GetRenderThread().GetGI().GetBVHShared().GetSharedTBONode()
-			->AddBlock(pGIBVHLocal.GetTBOIndex(), pTBONodeBox));
+		pBlockNode = pGIBVHLocal.GetRenderThread().GetGI().GetBVHShared().
+			GetSharedTBONode()->AddBlock(pGIBVHLocal.GetTBOIndex(), pTBONodeBox);
 	}
 	return pBlockNode;
 }
 
 const deoglDynamicTBOBlock::Ref &deoglGIBVHDynamic::GetBlockVertex(){
 	if(!pBlockVertex){
-		pBlockVertex.TakeOver(pGIBVHLocal.GetRenderThread().GetGI().GetBVHShared().GetSharedTBOVertex()
-			->AddBlock(pTBOVertex));
+		pBlockVertex = pGIBVHLocal.GetRenderThread().GetGI().GetBVHShared().
+			GetSharedTBOVertex()->AddBlock(pTBOVertex);
 	}
 	return pBlockVertex;
 }

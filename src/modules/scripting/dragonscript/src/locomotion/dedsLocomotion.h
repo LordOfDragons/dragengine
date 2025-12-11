@@ -43,11 +43,11 @@ class decBaseFileWriter;
  * \brief Locomotion implementation similar to animator editor.
  */
 class dedsLocomotion : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<dedsLocomotion> Ref;
-
-
-public:
+	
+	
 	/** \brief Tilt modes. */
 	enum eTiltModes{
 		/** \brief No tilt calculation. */
@@ -150,10 +150,12 @@ public:
 	/** \brief Create a new locomotion. */
 	dedsLocomotion();
 	
+protected:
 	/** \brief Clean up the locomotion. */
-	virtual ~dedsLocomotion();
+	~dedsLocomotion() override;
 	/*@}*/
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Actor can turn. */

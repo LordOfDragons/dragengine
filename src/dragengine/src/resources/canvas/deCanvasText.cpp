@@ -46,6 +46,7 @@ pFontSize(10.0f){
 }
 
 deCanvasText::~deCanvasText(){
+	SetPeerGraphic(nullptr);
 }
 
 

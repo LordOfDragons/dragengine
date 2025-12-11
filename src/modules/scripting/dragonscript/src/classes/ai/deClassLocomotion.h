@@ -46,10 +46,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new class. */
-	deClassLocomotion(deScriptingDragonScript &ds);
+	explicit deClassLocomotion(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up the class. */
-	virtual ~deClassLocomotion();
+	~deClassLocomotion() override;
 	/*@}*/
 	
 	/** \name Management */
@@ -59,7 +59,7 @@ public:
 	inline const deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Locomotion from script object or NULL if myself is NULL. */
 	dedsLocomotion *GetLocomotion(dsRealObject *myself) const;
@@ -84,7 +84,7 @@ private:
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{\
 	public: \
-		name(const sInitData &init); \
+		explicit name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	DEF_NATFUNC(nfNew);

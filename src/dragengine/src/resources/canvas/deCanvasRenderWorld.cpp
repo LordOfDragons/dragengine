@@ -45,7 +45,8 @@ deCanvas(manager){
 }
 
 deCanvasRenderWorld::~deCanvasRenderWorld(){
-	SetCamera(NULL);
+	SetPeerGraphic(nullptr);
+	SetCamera(nullptr);
 }
 
 

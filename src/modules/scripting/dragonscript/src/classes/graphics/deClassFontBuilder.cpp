@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -50,24 +52,24 @@ public:
 	pRT(rt), pMyself(myself), pFont(NULL){
 	}
 	
-	virtual void BuildFont(deFont *font){
+	void BuildFont(deFont *font) override{
 		pFont = font;
 		
 		try{
 			pRT->RunFunction(pMyself, "buildFont", 0);
 			
 		}catch(const duException &e){
-			pFont = NULL;
+			pFont = nullptr;
 			pRT->PrintExceptionTrace();
 			e.PrintError();
 			DETHROW(deeInvalidParam);
 			
 		}catch(...){
-			pFont = NULL;
+			pFont = nullptr;
 			throw;
 		}
 		
-		pFont = NULL;
+		pFont = nullptr;
 	}
 	
 	inline deFont *GetFont() const{ return pFont; }
@@ -89,7 +91,7 @@ dsFunction(init.clsFontBuilder, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassFontBuilder::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	((sFntBldNatDat*)p_GetNativeData(myself))->builder = NULL;
+	static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder = nullptr;
 }
 
 // public destructor Destructor()
@@ -110,12 +112,12 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFont){
 	p_AddParameter(init.clsInteger); // fontSize
 }
 void deClassFontBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
-	sFntBldNatDat &nd = *((sFntBldNatDat*)p_GetNativeData(myself));
+	sFntBldNatDat &nd = *static_cast<sFntBldNatDat*>(p_GetNativeData(myself));
 	if(nd.builder){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassFontBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassFontBuilder*>(GetOwnerClass()))->GetDS();
 	const char * const filename = rt->GetValue(0)->GetString();
 	deClassFontBuilder_Builder builder(rt, myself);
 	const int fontSize = rt->GetValue(1)->GetInt();
@@ -127,11 +129,11 @@ void deClassFontBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
 		font = ds.GetGameEngine()->GetFontManager()->CreateFont(filename, builder);
 		
 	}catch(...){
-		nd.builder = NULL;
+		nd.builder = nullptr;
 		throw;
 	}
 	
-	nd.builder = NULL;
+	nd.builder = nullptr;
 	ds.GetClassFont()->PushFont(rt, font, fontSize);
 }
 
@@ -154,7 +156,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // height
 }
 void deClassFontBuilder::nfSetLineHeight::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassFontBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassFontBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetFont()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -169,7 +171,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // baseLine
 }
 void deClassFontBuilder::nfSetBaseLine::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassFontBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassFontBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetFont()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -184,7 +186,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBoolean); // isColorFont
 }
 void deClassFontBuilder::nfSetIsColorFont::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassFontBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassFontBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetFont()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -204,7 +206,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // advance
 }
 void deClassFontBuilder::nfSetUndefinedGlyph::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassFontBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassFontBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetFont()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -225,7 +227,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassFontBuilder::nfSetGlyphCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassFontBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassFontBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetFont()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -247,7 +249,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // advance
 }
 void deClassFontBuilder::nfSetGlyphAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassFontBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassFontBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetFont()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -280,7 +282,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // advance
 }
 void deClassFontBuilder::nfSetGlyphAt2::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassFontBuilder_Builder * const builder = ((sFntBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassFontBuilder_Builder * const builder = static_cast<sFntBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetFont()){
 		DSTHROW(dueInvalidAction);
 	}

@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -43,7 +45,14 @@
 /////////////////////
 
 struct sInpEvNatDat{
-	deInputEvent *event;
+	deInputEvent *event = nullptr;
+	
+	~sInpEvNatDat(){
+		if(event){
+			delete event;
+			event = nullptr;
+		}
+	}
 };
 
 
@@ -65,13 +74,7 @@ void deClassInputEvent::nfDestructor::RunFunction(dsRunTime *rt, dsValue *myself
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sInpEvNatDat &nd = *((sInpEvNatDat*)p_GetNativeData(myself));
-	if(!nd.event){
-		return;
-	}
-	
-	delete nd.event;
-	nd.event = NULL;
+	static_cast<sInpEvNatDat*>(p_GetNativeData(myself))->~sInpEvNatDat();
 }
 
 
@@ -85,9 +88,9 @@ dsFunction(init.clsInputEvent, "getType", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInputEventType){
 }
 void deClassInputEvent::nfGetType::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deInputEvent &event = *(((sInpEvNatDat*)p_GetNativeData(myself))->event);
+	const deInputEvent &event = *(static_cast<sInpEvNatDat*>(p_GetNativeData(myself))->event);
 	
-	rt->PushValue(((deClassInputEvent*)GetOwnerClass())->GetClassInputEventType()
+	rt->PushValue((static_cast<deClassInputEvent*>(GetOwnerClass()))->GetClassInputEventType()
 		->GetVariable(event.GetType())->GetStaticValue());
 }
 
@@ -97,7 +100,7 @@ dsFunction(init.clsInputEvent, "getDevice", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputEvent::nfGetDevice::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deInputEvent &event = *(((sInpEvNatDat*)p_GetNativeData(myself))->event);
+	const deInputEvent &event = *(static_cast<sInpEvNatDat*>(p_GetNativeData(myself))->event);
 	rt->PushInt(event.GetDevice());
 }
 
@@ -107,7 +110,7 @@ dsFunction(init.clsInputEvent, "getCode", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputEvent::nfGetCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deInputEvent &event = *(((sInpEvNatDat*)p_GetNativeData(myself))->event);
+	const deInputEvent &event = *(static_cast<sInpEvNatDat*>(p_GetNativeData(myself))->event);
 	rt->PushInt(event.GetCode());
 }
 
@@ -117,7 +120,7 @@ dsFunction(init.clsInputEvent, "getState", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputEvent::nfGetState::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deInputEvent &event = *(((sInpEvNatDat*)p_GetNativeData(myself))->event);
+	const deInputEvent &event = *(static_cast<sInpEvNatDat*>(p_GetNativeData(myself))->event);
 	rt->PushInt(event.GetState());
 }
 
@@ -127,7 +130,7 @@ dsFunction(init.clsInputEvent, "getKeyCode", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputEvent::nfGetKeyCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deInputEvent &event = *(((sInpEvNatDat*)p_GetNativeData(myself))->event);
+	const deInputEvent &event = *(static_cast<sInpEvNatDat*>(p_GetNativeData(myself))->event);
 	rt->PushInt(event.GetKeyCode());
 }
 
@@ -137,7 +140,7 @@ dsFunction(init.clsInputEvent, "getKeyChar", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputEvent::nfGetKeyChar::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deInputEvent &event = *(((sInpEvNatDat*)p_GetNativeData(myself))->event);
+	const deInputEvent &event = *(static_cast<sInpEvNatDat*>(p_GetNativeData(myself))->event);
 	rt->PushInt(event.GetKeyChar());
 }
 
@@ -147,7 +150,7 @@ dsFunction(init.clsInputEvent, "getX", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputEvent::nfGetX::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deInputEvent &event = *(((sInpEvNatDat*)p_GetNativeData(myself))->event);
+	const deInputEvent &event = *(static_cast<sInpEvNatDat*>(p_GetNativeData(myself))->event);
 	rt->PushInt(event.GetX());
 }
 
@@ -157,7 +160,7 @@ dsFunction(init.clsInputEvent, "getY", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputEvent::nfGetY::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deInputEvent &event = *(((sInpEvNatDat*)p_GetNativeData(myself))->event);
+	const deInputEvent &event = *(static_cast<sInpEvNatDat*>(p_GetNativeData(myself))->event);
 	rt->PushInt(event.GetY());
 }
 
@@ -167,7 +170,7 @@ dsFunction(init.clsInputEvent, "getValue", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassInputEvent::nfGetValue::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deInputEvent &event = *(((sInpEvNatDat*)p_GetNativeData(myself))->event);
+	const deInputEvent &event = *(static_cast<sInpEvNatDat*>(p_GetNativeData(myself))->event);
 	rt->PushFloat(event.GetValue());
 }
 
@@ -177,7 +180,7 @@ dsFunction(init.clsInputEvent, "getTime", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputEvent::nfGetTime::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deInputEvent &event = *(((sInpEvNatDat*)p_GetNativeData(myself))->event);
+	const deInputEvent &event = *(static_cast<sInpEvNatDat*>(p_GetNativeData(myself))->event);
 	rt->PushInt(event.GetTime().tv_sec * 1000 + event.GetTime().tv_usec / 1000);  // temp hack
 }
 
@@ -187,9 +190,9 @@ dsFunction(init.clsInputEvent, "getSource", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInputEventSource){
 }
 void deClassInputEvent::nfGetSource::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deInputEvent &event = *(((sInpEvNatDat*)p_GetNativeData(myself))->event);
+	const deInputEvent &event = *(static_cast<sInpEvNatDat*>(p_GetNativeData(myself))->event);
 	
-	rt->PushValue(((deClassInputEvent*)GetOwnerClass())->GetClassInputEventSource()
+	rt->PushValue((static_cast<deClassInputEvent*>(GetOwnerClass()))->GetClassInputEventSource()
 		->GetVariable(event.GetSource())->GetStaticValue());
 }
 
@@ -201,7 +204,7 @@ dsFunction(init.clsInputEvent, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NAT
 }
 
 void deClassInputEvent::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deInputEvent * const event = ((sInpEvNatDat*)p_GetNativeData(myself))->event;
+	const deInputEvent * const event = static_cast<sInpEvNatDat*>(p_GetNativeData(myself))->event;
 	
 	rt->PushInt((int)(intptr_t)event);
 }
@@ -212,15 +215,15 @@ dsFunction(init.clsInputEvent, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIV
 	p_AddParameter(init.clsObject); // obj
 }
 void deClassInputEvent::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deInputEvent &event = *(((sInpEvNatDat*)p_GetNativeData(myself))->event);
-	deClassInputEvent * const clsInputEvent = (deClassInputEvent*)GetOwnerClass();
+	const deInputEvent &event = *(static_cast<sInpEvNatDat*>(p_GetNativeData(myself))->event);
+	deClassInputEvent * const clsInputEvent = static_cast<deClassInputEvent*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsInputEvent)){
 		rt->PushBool(false);
 		
 	}else{
-		const deInputEvent &other = *(((sInpEvNatDat*)p_GetNativeData(obj))->event);
+		const deInputEvent &other = *(static_cast<sInpEvNatDat*>(p_GetNativeData(obj))->event);
 		rt->PushBool(event == other);
 	}
 }
@@ -235,7 +238,9 @@ void deClassInputEvent::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassInputEvent::deClassInputEvent(deScriptingDragonScript &ds) :
 dsClass("InputEvent", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
-pDS(ds)
+pDS(ds),
+pClsInputEventType(nullptr),
+pClsInputEventSource(nullptr)
 {
 	GetParserInfo()->SetParent(DENS_DRAGENGINE);
 	GetParserInfo()->SetBase("Object");
@@ -291,7 +296,7 @@ const deInputEvent &deClassInputEvent::GetInputEvent(dsRealObject *myself) const
 		DSTHROW(dueInvalidParam);
 	}
 	
-	return *(((sInpEvNatDat*)p_GetNativeData(myself->GetBuffer()))->event);
+	return *(static_cast<sInpEvNatDat*>(p_GetNativeData(myself->GetBuffer()))->event);
 }
 
 void deClassInputEvent::PushInputEvent(dsRunTime *rt, const deInputEvent &event){
@@ -300,11 +305,10 @@ void deClassInputEvent::PushInputEvent(dsRunTime *rt, const deInputEvent &event)
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sInpEvNatDat &nd = *((sInpEvNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.event = NULL;
+	sInpEvNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sInpEvNatDat;
 	
 	try{
-		nd.event = new deInputEvent(event);
+		nd->event = new deInputEvent(event);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

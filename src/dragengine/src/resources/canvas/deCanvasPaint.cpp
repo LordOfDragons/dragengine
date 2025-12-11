@@ -54,6 +54,7 @@ pPointCount(0){
 }
 
 deCanvasPaint::~deCanvasPaint(){
+	SetPeerGraphic(nullptr);
 	if(pPoints){
 		delete [] pPoints;
 	}

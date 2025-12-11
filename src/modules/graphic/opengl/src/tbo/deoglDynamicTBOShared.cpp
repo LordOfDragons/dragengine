@@ -154,7 +154,7 @@ deoglDynamicTBOBlock *deoglDynamicTBOShared::GetBlockAt(int index) const{
 	return (deoglDynamicTBOBlock*)pBlocks.GetAt(index);
 }
 
-deoglDynamicTBOBlock *deoglDynamicTBOShared::AddBlock(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2){
+deoglDynamicTBOBlock::Ref deoglDynamicTBOShared::AddBlock(deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2){
 	if(!tbo){
 		DETHROW(deeInvalidParam);
 	}

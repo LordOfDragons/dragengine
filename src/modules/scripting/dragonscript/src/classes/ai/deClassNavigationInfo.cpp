@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -38,7 +40,7 @@
 
 
 struct sNavInfoNatDat{
-	dedsNavigationInfo *navinfo;
+	dedsNavigationInfo::Ref navinfo;
 };
 
 
@@ -51,14 +53,10 @@ deClassNavigationInfo::nfNew::nfNew(const sInitData &init) : dsFunction(init.cls
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassNavigationInfo::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sNavInfoNatDat &nd = *((sNavInfoNatDat*)p_GetNativeData(myself));
-	const deClassNavigationInfo &clsNavInfo = *((deClassNavigationInfo*)GetOwnerClass());
+	sNavInfoNatDat * const nd = new (p_GetNativeData(myself)) sNavInfoNatDat;
+	const deClassNavigationInfo &clsNavInfo = *static_cast<deClassNavigationInfo*>(GetOwnerClass());
 	
-	// clear ( important )
-	nd.navinfo = NULL;
-	
-	// create navigation information
-	nd.navinfo = new dedsNavigationInfo(clsNavInfo.GetDS());
+	nd->navinfo.TakeOverWith(clsNavInfo.GetDS());
 }
 
 // public func new( NavigationInfo copy )
@@ -67,19 +65,15 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsNavInfo); // copy
 }
 void deClassNavigationInfo::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
-	sNavInfoNatDat &nd = *((sNavInfoNatDat*)p_GetNativeData(myself));
-	deClassNavigationInfo &clsNavInfo = *((deClassNavigationInfo*)GetOwnerClass());
+	sNavInfoNatDat * const nd = new (p_GetNativeData(myself)) sNavInfoNatDat;
+	const deClassNavigationInfo &clsNavInfo = *static_cast<deClassNavigationInfo*>(GetOwnerClass());
 	
-	// clear ( important )
-	nd.navinfo = NULL;
-	
-	// create navigation information
 	const dedsNavigationInfo * const copy = clsNavInfo.GetNavigationInfo(rt->GetValue(0)->GetRealObject());
 	if(!copy){
 		DSTHROW(dueNullPointer);
 	}
 	
-	nd.navinfo = new dedsNavigationInfo(*copy);
+	nd->navinfo.TakeOverWith(*copy);
 }
 
 // public func destructor()
@@ -91,12 +85,7 @@ void deClassNavigationInfo::nfDestructor::RunFunction(dsRunTime *rt, dsValue *my
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sNavInfoNatDat &nd = *((sNavInfoNatDat*)p_GetNativeData(myself));
-	
-	if(nd.navinfo){
-		nd.navinfo->FreeReference();
-		nd.navinfo = NULL;
-	}
+	static_cast<sNavInfoNatDat*>(p_GetNativeData(myself))->~sNavInfoNatDat();
 }
 
 
@@ -109,8 +98,8 @@ deClassNavigationInfo::nfGetPosition::nfGetPosition(const sInitData &init) : dsF
 "getPosition", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsDVector){
 }
 void deClassNavigationInfo::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsNavigationInfo &navinfo = *(((const sNavInfoNatDat *)p_GetNativeData(myself))->navinfo);
-	const deScriptingDragonScript &ds = ((deClassNavigationInfo*)GetOwnerClass())->GetDS();
+	const dedsNavigationInfo &navinfo = static_cast<const sNavInfoNatDat*>(p_GetNativeData(myself))->navinfo;
+	const deScriptingDragonScript &ds = static_cast<deClassNavigationInfo*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassDVector()->PushDVector(rt, navinfo.GetPosition());
 }
@@ -121,8 +110,8 @@ deClassNavigationInfo::nfSetPosition::nfSetPosition(const sInitData &init) : dsF
 	p_AddParameter(init.clsDVector); // position
 }
 void deClassNavigationInfo::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsNavigationInfo &navinfo = *(((const sNavInfoNatDat *)p_GetNativeData(myself))->navinfo);
-	const deScriptingDragonScript &ds = ((deClassNavigationInfo*)GetOwnerClass())->GetDS();
+	dedsNavigationInfo &navinfo = static_cast<const sNavInfoNatDat*>(p_GetNativeData(myself))->navinfo;
+	const deScriptingDragonScript &ds = static_cast<deClassNavigationInfo*>(GetOwnerClass())->GetDS();
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	navinfo.SetPosition(position);
@@ -133,7 +122,7 @@ deClassNavigationInfo::nfGetCostType::nfGetCostType(const sInitData &init) : dsF
 "getCostType", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassNavigationInfo::nfGetCostType::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsNavigationInfo &navinfo = *(((const sNavInfoNatDat *)p_GetNativeData(myself))->navinfo);
+	const dedsNavigationInfo &navinfo = static_cast<const sNavInfoNatDat*>(p_GetNativeData(myself))->navinfo;
 	
 	rt->PushInt(navinfo.GetCostType());
 }
@@ -144,7 +133,7 @@ deClassNavigationInfo::nfSetCostType::nfSetCostType(const sInitData &init) : dsF
 	p_AddParameter(init.clsInteger); // costType
 }
 void deClassNavigationInfo::nfSetCostType::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsNavigationInfo &navinfo = *(((const sNavInfoNatDat *)p_GetNativeData(myself))->navinfo);
+	dedsNavigationInfo &navinfo = static_cast<const sNavInfoNatDat*>(p_GetNativeData(myself))->navinfo;
 	
 	navinfo.SetCostType(rt->GetValue(0)->GetInt());
 }
@@ -156,7 +145,7 @@ deClassNavigationInfo::nfGetPathIndex::nfGetPathIndex(const sInitData &init) : d
 "getPathIndex", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassNavigationInfo::nfGetPathIndex::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsNavigationInfo &navinfo = *(((const sNavInfoNatDat *)p_GetNativeData(myself))->navinfo);
+	const dedsNavigationInfo &navinfo = static_cast<const sNavInfoNatDat*>(p_GetNativeData(myself))->navinfo;
 	
 	rt->PushInt(navinfo.GetPathIndex());
 }
@@ -167,7 +156,7 @@ deClassNavigationInfo::nfSetPathIndex::nfSetPathIndex(const sInitData &init) : d
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassNavigationInfo::nfSetPathIndex::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsNavigationInfo &navinfo = *(((const sNavInfoNatDat *)p_GetNativeData(myself))->navinfo);
+	dedsNavigationInfo &navinfo = static_cast<const sNavInfoNatDat*>(p_GetNativeData(myself))->navinfo;
 	
 	navinfo.SetPathIndex(rt->GetValue(0)->GetInt());
 }
@@ -177,7 +166,7 @@ deClassNavigationInfo::nfGetPathFactor::nfGetPathFactor(const sInitData &init) :
 "getPathFactor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassNavigationInfo::nfGetPathFactor::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsNavigationInfo &navinfo = *(((const sNavInfoNatDat *)p_GetNativeData(myself))->navinfo);
+	const dedsNavigationInfo &navinfo = static_cast<const sNavInfoNatDat*>(p_GetNativeData(myself))->navinfo;
 	
 	rt->PushFloat(navinfo.GetPathFactor());
 }
@@ -188,7 +177,7 @@ deClassNavigationInfo::nfSetPathFactor::nfSetPathFactor(const sInitData &init) :
 	p_AddParameter(init.clsFloat); // factor
 }
 void deClassNavigationInfo::nfSetPathFactor::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsNavigationInfo &navinfo = *(((const sNavInfoNatDat *)p_GetNativeData(myself))->navinfo);
+	dedsNavigationInfo &navinfo = static_cast<const sNavInfoNatDat*>(p_GetNativeData(myself))->navinfo;
 	
 	navinfo.SetPathFactor(rt->GetValue(0)->GetFloat());
 }
@@ -201,7 +190,7 @@ dsFunction(init.clsNavInfo, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 }
 
 void deClassNavigationInfo::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsNavigationInfo * const navinfo = ((const sNavInfoNatDat *)p_GetNativeData(myself))->navinfo;
+	const dedsNavigationInfo * const navinfo = static_cast<const sNavInfoNatDat*>(p_GetNativeData(myself))->navinfo;
 	
 	rt->PushInt((int)(intptr_t)navinfo);
 }
@@ -212,15 +201,15 @@ dsFunction(init.clsNavInfo, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 	p_AddParameter(init.clsObject); // object
 }
 void deClassNavigationInfo::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsNavigationInfo * const navinfo = ((const sNavInfoNatDat *)p_GetNativeData(myself))->navinfo;
-	deClassNavigationInfo * const clsNavInfo = (deClassNavigationInfo*)GetOwnerClass();
+	const dedsNavigationInfo * const navinfo = static_cast<const sNavInfoNatDat*>(p_GetNativeData(myself))->navinfo;
+	deClassNavigationInfo * const clsNavInfo = static_cast<deClassNavigationInfo*>(GetOwnerClass());
 	dsValue * const object = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(object, clsNavInfo)){
 		rt->PushBool(false);
 		
 	}else{
-		const dedsNavigationInfo * const otherNavInfo = ((const sNavInfoNatDat *)p_GetNativeData(object))->navinfo;
+		const dedsNavigationInfo * const otherNavInfo = static_cast<const sNavInfoNatDat*>(p_GetNativeData(object))->navinfo;
 		rt->PushBool(navinfo == otherNavInfo);
 	}
 }
@@ -285,10 +274,10 @@ void deClassNavigationInfo::CreateClassMembers(dsEngine *engine){
 
 dedsNavigationInfo *deClassNavigationInfo::GetNavigationInfo(dsRealObject *myself) const{
 	if(myself){
-		return ((const sNavInfoNatDat *)p_GetNativeData(myself->GetBuffer()))->navinfo;
+		return static_cast<const sNavInfoNatDat*>(p_GetNativeData(myself->GetBuffer()))->navinfo;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -298,11 +287,10 @@ void deClassNavigationInfo::PushNavigationInfo(dsRunTime *rt, dedsNavigationInfo
 	}
 	
 	if(!info){
-		rt->PushObject(NULL, this);
+		rt->PushObject(nullptr, this);
 		return;
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	((sNavInfoNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->navinfo = info;
-	info->AddReference();
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sNavInfoNatDat)->navinfo = info;
 }

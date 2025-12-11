@@ -54,7 +54,7 @@ dsFunction(init.clsVRSystem, "runtimeUsable", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
 }
 void deClassVRSystem::nfRuntimeUsable::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	rt->PushBool(ds.GetGameEngine()->GetVRSystem()->RuntimeUsable());
 }
 
@@ -65,10 +65,10 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsVRFeatureSupportLevel); // level
 }
 void deClassVRSystem::nfRequestFeatureEyeGazeTracking::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	
 	const deBaseVRModule::eFeatureSupportLevel level = (deBaseVRModule::eFeatureSupportLevel)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	ds.GetGameEngine()->GetVRSystem()->RequestFeatureEyeGazeTracking(level);
@@ -81,10 +81,10 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsVRFeatureSupportLevel); // level
 }
 void deClassVRSystem::nfRequestFeatureFacialTracking::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	
 	const deBaseVRModule::eFeatureSupportLevel level = (deBaseVRModule::eFeatureSupportLevel)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	ds.GetGameEngine()->GetVRSystem()->RequestFeatureFacialTracking(level);
@@ -96,7 +96,7 @@ dsFunction(init.clsVRSystem, "startRuntime", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 }
 void deClassVRSystem::nfStartRuntime::RunFunction(dsRunTime*, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	dedsVRPlaceholder * const vrplaceholder = ds.GetVRPlaceholder();
 	
 	if(vrplaceholder){
@@ -113,7 +113,7 @@ dsFunction(init.clsVRSystem, "stopRuntime", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 }
 void deClassVRSystem::nfStopRuntime::RunFunction(dsRunTime*, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	dedsVRPlaceholder * const vrplaceholder = ds.GetVRPlaceholder();
 	
 	if(vrplaceholder){
@@ -130,8 +130,8 @@ dsFunction(init.clsVRSystem, "isRuntimeRunning", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
 }
 void deClassVRSystem::nfIsRuntimeRunning::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
-	dedsVRPlaceholder * const vrplaceholder = ds.GetVRPlaceholder();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
+	const dedsVRPlaceholder * const vrplaceholder = ds.GetVRPlaceholder();
 	
 	if(vrplaceholder && vrplaceholder->GetEnabled()){
 		rt->PushBool(false);
@@ -147,8 +147,8 @@ dsFunction(init.clsVRSystem, "getCamera", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsCamera){
 }
 void deClassVRSystem::nfGetCamera::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
-	dedsVRPlaceholder * const vrplaceholder = ds.GetVRPlaceholder();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
+	const dedsVRPlaceholder * const vrplaceholder = ds.GetVRPlaceholder();
 	
 	if(vrplaceholder){
 		ds.GetClassCamera()->PushCamera(rt, vrplaceholder->GetCameCamera());
@@ -165,7 +165,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsCamera); // camera
 }
 void deClassVRSystem::nfSetCamera::RunFunction(dsRunTime *rt, dsValue*){
-	deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	dedsVRPlaceholder * const vrplaceholder = ds.GetVRPlaceholder();
 	
 	deCamera * const camera = ds.GetClassCamera()->GetCamera(rt->GetValue(0)->GetRealObject());
@@ -184,7 +184,7 @@ dsFunction(init.clsVRSystem, "supportsPassthrough", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
 }
 void deClassVRSystem::nfSupportsPassthrough::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	rt->PushBool(ds.GetGameEngine()->GetVRSystem()->SupportsPassthrough());
 }
 
@@ -194,7 +194,7 @@ dsFunction(init.clsVRSystem, "getEnablePassthrough", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
 }
 void deClassVRSystem::nfGetEnablePassthrough::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	rt->PushBool(ds.GetGameEngine()->GetVRSystem()->GetEnablePassthrough());
 }
 
@@ -205,7 +205,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsBool); // enable
 }
 void deClassVRSystem::nfSetEnablePassthrough::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	ds.GetGameEngine()->GetVRSystem()->SetEnablePassthrough(rt->GetValue(0)->GetBool());
 }
 
@@ -215,7 +215,7 @@ dsFunction(init.clsVRSystem, "getPassthroughTransparency", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFloat){
 }
 void deClassVRSystem::nfGetPassthroughTransparency::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	rt->PushFloat(ds.GetGameEngine()->GetVRSystem()->GetPassthroughTransparency());
 }
 
@@ -226,7 +226,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsFloat); // transparency
 }
 void deClassVRSystem::nfSetPassthroughTransparency::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	ds.GetGameEngine()->GetVRSystem()->SetPassthroughTransparency(rt->GetValue(0)->GetFloat());
 }
 
@@ -236,7 +236,7 @@ dsFunction(init.clsVRSystem, "centerPlayspace", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 }
 void deClassVRSystem::nfCenterPlayspace::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	ds.GetGameEngine()->GetVRSystem()->CenterPlayspace();
 }
 
@@ -248,7 +248,7 @@ dsFunction(init.clsVRSystem, "getDeviceCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
 }
 void deClassVRSystem::nfGetDeviceCount::RunFunction(dsRunTime *rt, dsValue*){
-	deClassVRSystem &clsVRSystem = *((deClassVRSystem*)GetOwnerClass());
+	deClassVRSystem &clsVRSystem = *static_cast<deClassVRSystem*>(GetOwnerClass());
 	rt->PushInt(clsVRSystem.GetCachedDeviceCount());
 }
 
@@ -259,7 +259,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInputDevice){
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassVRSystem::nfGetDeviceAt::RunFunction(dsRunTime *rt, dsValue*){
-	deClassVRSystem &clsVRSystem = *((deClassVRSystem*)GetOwnerClass());
+	deClassVRSystem &clsVRSystem = *static_cast<deClassVRSystem*>(GetOwnerClass());
 	const int index = rt->GetValue(0)->GetInt();
 	
 	clsVRSystem.GetDS().GetClassInputDevice()->PushInputDevice(rt, clsVRSystem.GetCachedDeviceAt(index));
@@ -272,7 +272,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
 	p_AddParameter(init.clsString); // id
 }
 void deClassVRSystem::nfIndexOfDeviceWithID::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
 	
 	const char * const id = rt->GetValue(0)->GetString();
@@ -287,7 +287,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
 	p_AddParameter(init.clsString); // id
 }
 void deClassVRSystem::nfIndexOfButtonWithID::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
 	
 	const int device = rt->GetValue(0)->GetInt();
@@ -303,7 +303,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
 	p_AddParameter(init.clsString); // id
 }
 void deClassVRSystem::nfIndexOfAxisWithID::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
 	
 	const int device = rt->GetValue(0)->GetInt();
@@ -319,7 +319,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
 	p_AddParameter(init.clsString); // id
 }
 void deClassVRSystem::nfIndexOfFeedbackWithID::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
 	
 	const int device = rt->GetValue(0)->GetInt();
@@ -335,7 +335,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
 	p_AddParameter(init.clsInteger); // button
 }
 void deClassVRSystem::nfGetButtonPressed::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
 	
 	const int device = rt->GetValue(0)->GetInt();
@@ -351,7 +351,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
 	p_AddParameter(init.clsInteger); // button
 }
 void deClassVRSystem::nfGetButtonTouched::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
 	
 	const int device = rt->GetValue(0)->GetInt();
@@ -367,7 +367,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsBool){
 	p_AddParameter(init.clsInteger); // button
 }
 void deClassVRSystem::nfGetButtonNear::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
 	
 	const int device = rt->GetValue(0)->GetInt();
@@ -383,7 +383,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsFloat){
 	p_AddParameter(init.clsInteger); // axis
 }
 void deClassVRSystem::nfGetAxisValue::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
 	
 	const int device = rt->GetValue(0)->GetInt();
@@ -399,7 +399,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
 	p_AddParameter(init.clsFloat); // feedback
 }
 void deClassVRSystem::nfGetFeedbackValue::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
 	
 	const int device = rt->GetValue(0)->GetInt();
@@ -416,7 +416,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsFloat); // value
 }
 void deClassVRSystem::nfSetFeedbackValue::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	deBaseVRModule &module = *ds.GetGameEngine()->GetVRSystem()->GetActiveModule();
 	
 	const int device = rt->GetValue(0)->GetInt();
@@ -433,7 +433,7 @@ dsFunction(init.clsVRSystem, "getParameterCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsInteger){
 }
 void deClassVRSystem::nfGetParameterCount::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	const deVRSystem &vrsys = *ds.GetGameEngine()->GetVRSystem();
 	rt->PushInt(vrsys.GetActiveModule()->GetParameterCount());
 }
@@ -445,7 +445,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar){
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassVRSystem::nfGetParameterInfo::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	const deVRSystem &vrsys = *ds.GetGameEngine()->GetVRSystem();
 	deBaseVRModule * const module = vrsys.GetActiveModule();
 	
@@ -464,8 +464,8 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsModPar){
 	p_AddParameter(init.clsString); // name
 }
 void deClassVRSystem::nfGetParameterInfo2::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
-	deVRSystem &inpSys = *ds.GetGameEngine()->GetVRSystem();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
+	const deVRSystem &inpSys = *ds.GetGameEngine()->GetVRSystem();
 	deBaseVRModule * const module = inpSys.GetActiveModule();
 	
 	ds.GetClassModuleParameter()->PushParameter(rt, module,
@@ -479,7 +479,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString){
 	p_AddParameter(init.clsString); // name
 }
 void deClassVRSystem::nfGetParameterValue::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	const deVRSystem &vrsys = *ds.GetGameEngine()->GetVRSystem();
 	const deBaseVRModule &module = *vrsys.GetActiveModule();
 	
@@ -494,7 +494,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsVoid){
 	p_AddParameter(init.clsString); // value
 }
 void deClassVRSystem::nfSetParameterValue::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	const deVRSystem &vrsys = *ds.GetGameEngine()->GetVRSystem();
 	deBaseVRModule &module = *vrsys.GetActiveModule();
 	
@@ -510,7 +510,7 @@ DSTM_PUBLIC | DSTM_NATIVE | DSTM_STATIC, init.clsString){
 	p_AddParameter(init.clsString); // command
 }
 void deClassVRSystem::nfSendCommand::RunFunction(dsRunTime *rt, dsValue*){
-	const deScriptingDragonScript &ds = ((deClassVRSystem*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = static_cast<deClassVRSystem*>(GetOwnerClass())->GetDS();
 	const deVRSystem &vrsys = *ds.GetGameEngine()->GetVRSystem();
 	deBaseVRModule &module = *vrsys.GetActiveModule();
 	decUnicodeArgumentList argList;
@@ -625,7 +625,7 @@ void deClassVRSystem::OnFrameUpdate(){
 	const int count = pCachedDevices.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((dedsInputDevice*)pCachedDevices.GetAt(i))->OnFrameUpdate();
+		static_cast<dedsInputDevice*>(pCachedDevices.GetAt(i))->OnFrameUpdate();
 	}
 }
 
@@ -653,7 +653,7 @@ void deClassVRSystem::pUpdateCachedDevices(){
 		
 		dedsInputDevice *reuseDevice = nullptr;
 		for(j=0; j<oldDeviceCount; j++){
-			dedsInputDevice * const oldDevice = (dedsInputDevice*)oldDevices.GetAt(j);
+			dedsInputDevice * const oldDevice = static_cast<dedsInputDevice*>(oldDevices.GetAt(j));
 			if(oldDevice->GetDevice()->GetID() == device->GetDevice()->GetID()){
 				reuseDevice = oldDevice;
 				break;

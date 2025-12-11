@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -47,9 +49,9 @@
 /////////////////////
 
 struct sSynthesizerCtrlNatDat{
-	deSynthesizer *synthesizer;
-	deSynthesizerInstance *instance;
-	int index;
+	deSynthesizer::Ref synthesizer;
+	deSynthesizerInstance::Ref instance;
+	int index = -1;
 };
 
 
@@ -76,16 +78,7 @@ void deClassSynthesizerController::nfDestructor::RunFunction(dsRunTime*, dsValue
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSynthesizerCtrlNatDat &nd = *((sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
-	if(nd.synthesizer){
-		nd.synthesizer->FreeReference();
-		nd.synthesizer = NULL;
-	}
-	if(nd.instance){
-		nd.instance->FreeReference();
-		nd.instance = NULL;
-	}
-	nd.index = -1;
+	static_cast<sSynthesizerCtrlNatDat*>(p_GetNativeData(myself))->~sSynthesizerCtrlNatDat();
 }
 
 
@@ -99,8 +92,8 @@ dsFunction(init.clsSynthesizerCtrl, "getSynthesizer", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsSynthesizer){
 }
 void deClassSynthesizerController::nfGetSynthesizer::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
-	deScriptingDragonScript &ds = ((deClassSynthesizerController*)GetOwnerClass())->GetDS();
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = (static_cast<deClassSynthesizerController*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSynthesizer()->PushSynthesizer(rt, nd.synthesizer);
 }
@@ -111,8 +104,8 @@ dsFunction(init.clsSynthesizerCtrl, "getSynthesizerInstance", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsSynthesizerInst){
 }
 void deClassSynthesizerController::nfGetSynthesizerInstance::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
-	deScriptingDragonScript &ds = ((deClassSynthesizerController*)GetOwnerClass())->GetDS();
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = (static_cast<deClassSynthesizerController*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassSynthesizerInstance()->PushSynthesizerInstance(rt, nd.instance);
 }
@@ -123,7 +116,7 @@ dsFunction(init.clsSynthesizerCtrl, "getControllerIndex", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassSynthesizerController::nfGetControllerIndex::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
 	
 	rt->PushInt(nd.index);
 }
@@ -136,7 +129,7 @@ dsFunction(init.clsSynthesizerCtrl, "getName", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassSynthesizerController::nfGetName::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
 	const deSynthesizerController &controller = nd.synthesizer
 		? *nd.synthesizer->GetControllerAt(nd.index)
 		: *nd.instance->GetControllerAt(nd.index);
@@ -151,7 +144,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // name
 }
 void deClassSynthesizerController::nfSetName::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
 	deSynthesizerController &controller = nd.synthesizer
 		? *nd.synthesizer->GetControllerAt(nd.index)
 		: *nd.instance->GetControllerAt(nd.index);
@@ -169,7 +162,7 @@ dsFunction(init.clsSynthesizerCtrl, "getLower", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassSynthesizerController::nfGetLower::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
 	const deSynthesizerController &controller = nd.synthesizer
 		? *nd.synthesizer->GetControllerAt(nd.index)
 		: *nd.instance->GetControllerAt(nd.index);
@@ -183,7 +176,7 @@ dsFunction(init.clsSynthesizerCtrl, "getUpper", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassSynthesizerController::nfGetUpper::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
 	const deSynthesizerController &controller = nd.synthesizer
 		? *nd.synthesizer->GetControllerAt(nd.index)
 		: *nd.instance->GetControllerAt(nd.index);
@@ -199,7 +192,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // upper
 }
 void deClassSynthesizerController::nfSetRange::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
 	deSynthesizerController &controller = nd.synthesizer
 		? *nd.synthesizer->GetControllerAt(nd.index)
 		: *nd.instance->GetControllerAt(nd.index);
@@ -219,8 +212,8 @@ dsFunction(init.clsSynthesizerCtrl, "getCurve", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsCurveBezier){
 }
 void deClassSynthesizerController::nfGetCurve::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
-	const deClassSynthesizerController &clsAC = *((deClassSynthesizerController*)GetOwnerClass());
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
+	const deClassSynthesizerController &clsAC = *(static_cast<deClassSynthesizerController*>(GetOwnerClass()));
 	const deSynthesizerController &controller = nd.synthesizer
 		? *nd.synthesizer->GetControllerAt(nd.index)
 		: *nd.instance->GetControllerAt(nd.index);
@@ -235,8 +228,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCurveBezier); // curve
 }
 void deClassSynthesizerController::nfSetCurve::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
-	const deClassSynthesizerController &clsAC = *((deClassSynthesizerController*)GetOwnerClass());
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
+	const deClassSynthesizerController &clsAC = *(static_cast<deClassSynthesizerController*>(GetOwnerClass()));
 	deSynthesizerController &controller = nd.synthesizer
 		? *nd.synthesizer->GetControllerAt(nd.index)
 		: *nd.instance->GetControllerAt(nd.index);
@@ -254,7 +247,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // value
 }
 void deClassSynthesizerController::nfSetCurveConstant::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
 	deSynthesizerController &controller = nd.synthesizer
 		? *nd.synthesizer->GetControllerAt(nd.index)
 		: *nd.instance->GetControllerAt(nd.index);
@@ -276,7 +269,7 @@ dsFunction(init.clsSynthesizerCtrl, "setCurveTime", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSynthesizerController::nfSetCurveTime::RunFunction(dsRunTime*, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
 	deSynthesizerController &controller = nd.synthesizer
 		? *nd.synthesizer->GetControllerAt(nd.index)
 		: *nd.instance->GetControllerAt(nd.index);
@@ -308,7 +301,7 @@ dsFunction(init.clsSynthesizerCtrl, "getClamp", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassSynthesizerController::nfGetClamp::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
 	const deSynthesizerController &controller = nd.synthesizer
 		? *nd.synthesizer->GetControllerAt(nd.index)
 		: *nd.instance->GetControllerAt(nd.index);
@@ -323,7 +316,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // clamp
 }
 void deClassSynthesizerController::nfSetClamp::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
 	deSynthesizerController &controller = nd.synthesizer
 		? *nd.synthesizer->GetControllerAt(nd.index)
 		: *nd.instance->GetControllerAt(nd.index);
@@ -345,7 +338,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSynthesizerCtrl); // controller
 }
 void deClassSynthesizerController::nfSetCurveFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
 	deSynthesizerController &controller = nd.synthesizer
 		? *nd.synthesizer->GetControllerAt(nd.index)
 		: *nd.instance->GetControllerAt(nd.index);
@@ -355,7 +348,7 @@ void deClassSynthesizerController::nfSetCurveFrom::RunFunction(dsRunTime *rt, ds
 		DSTHROW(dueNullPointer);
 	}
 	
-	const sSynthesizerCtrlNatDat &ndFrom = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(controllerFrom));
+	const sSynthesizerCtrlNatDat &ndFrom = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(controllerFrom));
 	deSynthesizerController &realControllerFrom = ndFrom.synthesizer
 		? *nd.synthesizer->GetControllerAt(ndFrom.index)
 		: *nd.instance->GetControllerAt(ndFrom.index);
@@ -374,7 +367,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSynthesizerCtrl); // controller
 }
 void deClassSynthesizerController::nfSetAllFrom::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
 	deSynthesizerController &controller = nd.synthesizer
 		? *nd.synthesizer->GetControllerAt(nd.index)
 		: *nd.instance->GetControllerAt(nd.index);
@@ -384,7 +377,7 @@ void deClassSynthesizerController::nfSetAllFrom::RunFunction(dsRunTime *rt, dsVa
 		DSTHROW(dueNullPointer);
 	}
 	
-	const sSynthesizerCtrlNatDat &ndFrom = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(controllerFrom));
+	const sSynthesizerCtrlNatDat &ndFrom = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(controllerFrom));
 	deSynthesizerController &realControllerFrom = ndFrom.synthesizer
 		? *nd.synthesizer->GetControllerAt(ndFrom.index)
 		: *nd.instance->GetControllerAt(ndFrom.index);
@@ -405,15 +398,15 @@ dsFunction(init.clsSynthesizerCtrl, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassSynthesizerController::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassSynthesizerController * const clsSynthesizerCtrl = (deClassSynthesizerController*)GetOwnerClass();
-	const sSynthesizerCtrlNatDat &nd = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(myself));
+	deClassSynthesizerController * const clsSynthesizerCtrl = static_cast<deClassSynthesizerController*>(GetOwnerClass());
+	const sSynthesizerCtrlNatDat &nd = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(myself));
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsSynthesizerCtrl)){
 		rt->PushBool(false);
 		
 	}else{
-		const sSynthesizerCtrlNatDat &other = *((const sSynthesizerCtrlNatDat*)p_GetNativeData(obj));
+		const sSynthesizerCtrlNatDat &other = *static_cast<const sSynthesizerCtrlNatDat*>(p_GetNativeData(obj));
 		rt->PushBool(nd.synthesizer == other.synthesizer && nd.instance == other.instance
 			&& nd.index == other.index);
 	}
@@ -494,7 +487,7 @@ deSynthesizerInstance *&instance, int &index) const{
 		DSTHROW(dueNullPointer);
 	}
 	
-	const sSynthesizerCtrlNatDat &nd = *((sSynthesizerCtrlNatDat*)p_GetNativeData(myself->GetBuffer()));
+	const sSynthesizerCtrlNatDat &nd = *static_cast<sSynthesizerCtrlNatDat*>(p_GetNativeData(myself->GetBuffer()));
 	synthesizer = nd.synthesizer;
 	instance = nd.instance;
 	index = nd.index;
@@ -506,12 +499,9 @@ void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizer *
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSynthesizerCtrlNatDat &nd = *((sSynthesizerCtrlNatDat*)p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.synthesizer = synthesizer;
-	synthesizer->AddReference();
-	nd.instance = NULL;
-	nd.index = index;
+	sSynthesizerCtrlNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSynthesizerCtrlNatDat;
+	nd->synthesizer = synthesizer;
+	nd->index = index;
 }
 
 void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizerInstance *instance, int index){
@@ -520,10 +510,7 @@ void deClassSynthesizerController::PushController(dsRunTime *rt, deSynthesizerIn
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sSynthesizerCtrlNatDat &nd = *((sSynthesizerCtrlNatDat*)p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.synthesizer = NULL;
-	nd.instance = instance;
-	instance->AddReference();
-	nd.index = index;
+	sSynthesizerCtrlNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSynthesizerCtrlNatDat;
+	nd->instance = instance;
+	nd->index = index;
 }

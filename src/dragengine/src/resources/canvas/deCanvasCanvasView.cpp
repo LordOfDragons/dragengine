@@ -46,6 +46,7 @@ pRepeatY(1){
 }
 
 deCanvasCanvasView::~deCanvasCanvasView(){
+	SetPeerGraphic(nullptr);
 }
 
 

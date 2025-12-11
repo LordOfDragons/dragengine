@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -63,7 +65,7 @@
 /////////////////////
 
 struct sInputDeviceNatDat{
-	dedsInputDevice *device;
+	dedsInputDevice::Ref device;
 };
 
 
@@ -85,13 +87,7 @@ void deClassInputDevice::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sInputDeviceNatDat &nd = *((sInputDeviceNatDat*)p_GetNativeData(myself));
-	if(!nd.device){
-		return;
-	}
-	
-	nd.device->FreeReference();
-	nd.device = NULL;
+	static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->~sInputDeviceNatDat();
 }
 
 
@@ -105,8 +101,8 @@ dsFunction(init.clsInputDevice, "getSource", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInputEventSource){
 }
 void deClassInputDevice::nfGetSource::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	rt->PushValue(((deClassInputDevice*)GetOwnerClass())->GetClassInputEventSource()
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	rt->PushValue(static_cast<deClassInputDevice*>(GetOwnerClass())->GetClassInputEventSource()
 		->GetVariable(device.GetDeviceSource())->GetStaticValue());
 }
 
@@ -116,7 +112,7 @@ dsFunction(init.clsInputDevice, "getIndex", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputDevice::nfGetIndex::RunFunction(dsRunTime *rt, dsValue *myself){
-	rt->PushInt(((sInputDeviceNatDat*)p_GetNativeData(myself))->device->GetDeviceIndex());
+	rt->PushInt(static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device->GetDeviceIndex());
 }
 
 // public func String getID()
@@ -125,7 +121,7 @@ dsFunction(init.clsInputDevice, "getID", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
 void deClassInputDevice::nfGetID::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	rt->PushString(device.GetDevice()->GetID());
 }
 
@@ -135,7 +131,7 @@ dsFunction(init.clsInputDevice, "getName", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
 void deClassInputDevice::nfGetName::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	rt->PushString(device.GetDevice()->GetName());
 }
 
@@ -145,8 +141,8 @@ dsFunction(init.clsInputDevice, "getType", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDeviceType){
 }
 void deClassInputDevice::nfGetType::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	rt->PushValue(((deClassInputDevice*)GetOwnerClass())->GetClassInputDeviceType()
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	rt->PushValue(static_cast<deClassInputDevice*>(GetOwnerClass())->GetClassInputDeviceType()
 		->GetVariable(device.GetDevice()->GetType())->GetStaticValue());
 }
 
@@ -156,8 +152,8 @@ dsFunction(init.clsInputDevice, "getDisplayModel", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsModel){
 }
 void deClassInputDevice::nfGetDisplayModel::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassModel()->PushModel(rt, device.GetDevice()->GetDisplayModel());
 }
@@ -168,8 +164,8 @@ dsFunction(init.clsInputDevice, "getDisplaySkin", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsSkin){
 }
 void deClassInputDevice::nfGetDisplaySkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassSkin()->PushSkin(rt, device.GetDevice()->GetDisplaySkin());
 }
@@ -180,8 +176,8 @@ dsFunction(init.clsInputDevice, "getDisplayImage", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 }
 void deClassInputDevice::nfGetDisplayImage::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassImage()->PushImage(rt, device.GetDevice()->GetDisplayImage());
 }
@@ -192,7 +188,7 @@ dsFunction(init.clsInputDevice, "getDisplayIconCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputDevice::nfGetDisplayIconCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	rt->PushInt(device.GetDevice()->GetDisplayIconCount());
 }
 
@@ -203,8 +199,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassInputDevice::nfGetDisplayIconAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassImage()->PushImage(rt, device.GetDevice()->GetDisplayIconAt(rt->GetValue(0)->GetInt()));
 }
@@ -216,8 +212,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 	p_AddParameter(init.clsInteger); // maxWidth
 }
 void deClassInputDevice::nfGetLargestDisplayIconX::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	const int count = device.GetDevice()->GetDisplayIconCount();
 	const int maxWidth = rt->GetValue(0)->GetInt();
 	deImage *bestIcon = NULL;
@@ -242,8 +238,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 	p_AddParameter(init.clsInteger); // maxHeight
 }
 void deClassInputDevice::nfGetLargestDisplayIconY::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	const int count = device.GetDevice()->GetDisplayIconCount();
 	const int maxHeight = rt->GetValue(0)->GetInt();
 	deImage *bestIcon = NULL;
@@ -267,7 +263,7 @@ dsFunction(init.clsInputDevice, "getDisplayText", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsString){
 }
 void deClassInputDevice::nfGetDisplayText::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	
 	rt->PushString(device.GetDevice()->GetDisplayText());
 }
@@ -280,7 +276,7 @@ dsFunction(init.clsInputDevice, "getAxisCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputDevice::nfGetAxisCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	rt->PushInt(device.GetDevice()->GetAxisCount());
 }
 
@@ -291,8 +287,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsIDAxis){
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassInputDevice::nfGetAxisAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sInputDeviceNatDat &nd = *((sInputDeviceNatDat*)p_GetNativeData(myself));
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const sInputDeviceNatDat &nd = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	const int axisIndex = rt->GetValue(0)->GetInt();
 	ds.GetClassInputDeviceAxis()->PushAxis(rt, nd.device, axisIndex);
@@ -306,7 +302,7 @@ dsFunction(init.clsInputDevice, "getButtonCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputDevice::nfGetButtonCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	rt->PushInt(device.GetDevice()->GetButtonCount());
 }
 
@@ -317,8 +313,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsIDButton){
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassInputDevice::nfGetButtonAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sInputDeviceNatDat &nd = *((sInputDeviceNatDat*)p_GetNativeData(myself));
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const sInputDeviceNatDat &nd = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	const int buttonIndex = rt->GetValue(0)->GetInt();
 	ds.GetClassInputDeviceButton()->PushButton(rt, nd.device, buttonIndex);
@@ -332,7 +328,7 @@ dsFunction(init.clsInputDevice, "getFeedbackCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputDevice::nfGetFeedbackCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	
 	rt->PushInt(device.GetDevice()->GetFeedbackCount());
 }
@@ -344,8 +340,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsIDFeedback){
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassInputDevice::nfGetFeedbackAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sInputDeviceNatDat &nd = *((sInputDeviceNatDat*)p_GetNativeData(myself));
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const sInputDeviceNatDat &nd = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	const int feedbackIndex = rt->GetValue(0)->GetInt();
 	ds.GetClassInputDeviceFeedback()->PushFeedback(rt, nd.device, feedbackIndex);
@@ -359,7 +355,7 @@ dsFunction(init.clsInputDevice, "getComponentCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputDevice::nfGetComponentCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	
 	rt->PushInt(device.GetDevice()->GetComponentCount());
 }
@@ -371,8 +367,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsIDComponent){
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassInputDevice::nfGetComponentAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sInputDeviceNatDat &nd = *((sInputDeviceNatDat*)p_GetNativeData(myself));
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const sInputDeviceNatDat &nd = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	const int componentIndex = rt->GetValue(0)->GetInt();
 	ds.GetClassInputDeviceComponent()->PushComponent(rt, nd.device, componentIndex);
@@ -387,8 +383,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 	p_AddParameter(init.clsInteger); // keyCode
 }
 void deClassInputDevice::nfButtonMatchingKeyCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	const deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
 	
 	const deInputEvent::eKeyCodes keyCode =
@@ -405,8 +401,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 	p_AddParameter(init.clsInteger); // keyChar
 }
 void deClassInputDevice::nfButtonMatchingKeyChar::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	const deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
 	
 	int keyChar = rt->GetValue(0)->GetInt();
@@ -423,14 +419,14 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 	p_AddParameter(init.clsInputEventKeyLocation); // location
 }
 void deClassInputDevice::nfButtonMatchingKeyCode2::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	const deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
 	
 	const deInputEvent::eKeyCodes keyCode = (deInputEvent::eKeyCodes)rt->GetValue(0)->GetInt();
 	
 	const deInputEvent::eKeyLocation location = (deInputEvent::eKeyLocation)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() );
 	
 	rt->PushInt(module.ButtonMatchingKeyCode(
@@ -445,14 +441,14 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 	p_AddParameter(init.clsInputEventKeyLocation); // location
 }
 void deClassInputDevice::nfButtonMatchingKeyChar2::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	const deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
 	
 	const int keyChar = rt->GetValue(0)->GetInt();
 	
 	const deInputEvent::eKeyLocation location = (deInputEvent::eKeyLocation)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 1 )->GetRealObject() );
 	
 	rt->PushInt(module.ButtonMatchingKeyChar(
@@ -467,8 +463,8 @@ dsFunction(init.clsInputDevice, "getBoneConfiguration", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInputDeviceBoneConfiguration){
 }
 void deClassInputDevice::nfGetBoneConfiguration::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	rt->PushValue(((deClassInputDevice*)GetOwnerClass())->GetClassInputDeviceBoneConfiguration()
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	rt->PushValue(static_cast<deClassInputDevice*>(GetOwnerClass())->GetClassInputDeviceBoneConfiguration()
 		->GetVariable(device.GetDevice()->GetBoneConfiguration())->GetStaticValue());
 }
 
@@ -479,8 +475,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassInputDevice::nfGetFingerTipOffset::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	const int index = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassVector()->PushVector(rt, device.GetDevice()->GetFingerTipOffset(index));
@@ -492,8 +488,8 @@ dsFunction(init.clsInputDevice, "getHandRig", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsRig){
 }
 void deClassInputDevice::nfGetHandRig::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassRig()->PushRig(rt, device.GetDevice()->GetHandRig());
 }
@@ -504,7 +500,7 @@ dsFunction(init.clsInputDevice, "getSupportsFaceEyeExpressions", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassInputDevice::nfGetSupportsFaceEyeExpressions::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	rt->PushBool(device.GetDevice()->GetSupportsFaceEyeExpressions());
 }
 
@@ -514,7 +510,7 @@ dsFunction(init.clsInputDevice, "getSupportsFaceMouthExpressions", DSFT_FUNCTION
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassInputDevice::nfGetSupportsFaceMouthExpressions::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	rt->PushBool(device.GetDevice()->GetSupportsFaceMouthExpressions());
 }
 
@@ -524,7 +520,7 @@ dsFunction(init.clsInputDevice, "getUsingHandInteraction", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassInputDevice::nfGetUsingHandInteraction::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	rt->PushBool(device.GetDevice()->GetUsingHandInteraction());
 }
 
@@ -534,8 +530,8 @@ dsFunction(init.clsInputDevice, "getVRModel", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsModel){
 }
 void deClassInputDevice::nfGetVRModel::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassModel()->PushModel(rt, device.GetDevice()->GetVRModel());
 }
@@ -546,8 +542,8 @@ dsFunction(init.clsInputDevice, "getVRSkin", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsSkin){
 }
 void deClassInputDevice::nfGetVRSkin::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassSkin()->PushSkin(rt, device.GetDevice()->GetVRSkin());
 }
@@ -560,8 +556,8 @@ dsFunction(init.clsInputDevice, "isPresent", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassInputDevice::nfIsPresent::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	deBaseInputModule &module = *ds.GetGameEngine()->GetInputSystem()->GetActiveModule();
 	
 	rt->PushBool(module.IndexOfDeviceWithID(device.GetDevice()->GetID()) != -1);
@@ -575,8 +571,8 @@ dsFunction(init.clsInputDevice, "getDevicePosePosition", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 }
 void deClassInputDevice::nfGetDevicePosePosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	const deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassVector()->PushVector(rt, device.GetDevicePose().GetPosition());
 }
@@ -587,8 +583,8 @@ dsFunction(init.clsInputDevice, "getDevicePoseOrientation", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
 }
 void deClassInputDevice::nfGetDevicePoseOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	const deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassQuaternion()->PushQuaternion(rt, device.GetDevicePose().GetOrientation());
 }
@@ -599,8 +595,8 @@ dsFunction(init.clsInputDevice, "getDevicePoseLinearVelocity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 }
 void deClassInputDevice::nfGetDevicePoseLinearVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	const deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassVector()->PushVector(rt, device.GetDevicePose().GetLinearVelocity());
 }
@@ -611,8 +607,8 @@ dsFunction(init.clsInputDevice, "getDevicePoseAngularVelocity", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 }
 void deClassInputDevice::nfGetDevicePoseAngularVelocity::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	const deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassVector()->PushVector(rt, device.GetDevicePose().GetAngularVelocity() * RAD2DEG);
 }
@@ -623,8 +619,8 @@ dsFunction(init.clsInputDevice, "getDevicePoseMatrix", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsMatrix){
 }
 void deClassInputDevice::nfGetDevicePoseMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	const deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassMatrix()->PushMatrix(rt, decMatrix::CreateWorld(
 		device.GetDevicePose().GetPosition(), device.GetDevicePose().GetOrientation()));
@@ -638,7 +634,7 @@ dsFunction(init.clsInputDevice, "getDeviceBonePoseCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputDevice::nfGetDeviceBonePoseCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	
 	rt->PushInt(device.GetBonePoseCount());
 }
@@ -651,8 +647,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVector){
 	p_AddParameter(init.clsBool); // withController
 }
 void deClassInputDevice::nfGetDeviceBonePosePosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	const deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	const bool withController = rt->GetValue(1)->GetBool();
 	
@@ -667,8 +663,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
 	p_AddParameter(init.clsBool); // withController
 }
 void deClassInputDevice::nfGetDeviceBonePoseOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	const deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	const bool withController = rt->GetValue(1)->GetBool();
 	
@@ -683,8 +679,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsMatrix){
 	p_AddParameter(init.clsBool); // withController
 }
 void deClassInputDevice::nfGetDeviceBonePoseMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	const deScriptingDragonScript &ds = ((deClassInputDevice*)GetOwnerClass())->GetDS();
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	const deScriptingDragonScript &ds = static_cast<deClassInputDevice*>(GetOwnerClass())->GetDS();
 	const int bone = rt->GetValue(0)->GetInt();
 	const bool withController = rt->GetValue(1)->GetBool();
 	const deInputDevicePose &pose = device.GetBonePoseAt(bone, withController);
@@ -700,7 +696,7 @@ dsFunction(init.clsInputDevice, "getDeviceFaceExpressionCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassInputDevice::nfGetDeviceFaceExpressionCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	
 	rt->PushInt(device.GetFaceExpressionCount());
 }
@@ -712,7 +708,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassInputDevice::nfGetDeviceFaceExpressionAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice &device = *((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice &device = *static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	
 	rt->PushFloat(device.GetFaceExpressionAt(rt->GetValue(0)->GetInt()));
 }
@@ -725,7 +721,7 @@ dsFunction(init.clsInputDevice, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NA
 }
 
 void deClassInputDevice::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsInputDevice * const device = ((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
+	const dedsInputDevice * const device = static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
 	
 	rt->PushInt((int)(intptr_t)device);
 }
@@ -736,15 +732,15 @@ dsFunction(init.clsInputDevice, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATI
 	p_AddParameter(init.clsObject); // obj
 }
 void deClassInputDevice::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsInputDevice * const device = ((sInputDeviceNatDat*)p_GetNativeData(myself))->device;
-	deClassInputDevice * const clsInputDevice = (deClassInputDevice*)GetOwnerClass();
+	const dedsInputDevice * const device = static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself))->device;
+	deClassInputDevice * const clsInputDevice = static_cast<deClassInputDevice*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsInputDevice)){
 		rt->PushBool(false);
 		
 	}else{
-		dedsInputDevice * const other = ((sInputDeviceNatDat*)p_GetNativeData(obj))->device;
+		const dedsInputDevice * const other = static_cast<sInputDeviceNatDat*>(p_GetNativeData(obj))->device;
 		rt->PushBool(device == other);
 	}
 }
@@ -759,7 +755,11 @@ void deClassInputDevice::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
 
 deClassInputDevice::deClassInputDevice(deScriptingDragonScript &ds) :
 dsClass("InputDevice", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
-pDS(ds)
+pDS(ds),
+pClsInputDeviceType(NULL),
+pClsInputDeviceBoneConfiguration(NULL),
+pClsInputEventSource(NULL),
+pClsInputEventKeyLocation(NULL)
 {
 	GetParserInfo()->SetParent(DENS_DRAGENGINE);
 	GetParserInfo()->SetBase("Object");
@@ -874,7 +874,7 @@ dedsInputDevice *deClassInputDevice::GetInputDevice(dsRealObject *myself) const{
 		return NULL;
 	}
 	
-	return ((sInputDeviceNatDat*)p_GetNativeData(myself->GetBuffer()))->device;
+	return static_cast<sInputDeviceNatDat*>(p_GetNativeData(myself->GetBuffer()))->device;
 }
 
 void deClassInputDevice::PushInputDevice(dsRunTime *rt, dedsInputDevice *device){
@@ -888,8 +888,5 @@ void deClassInputDevice::PushInputDevice(dsRunTime *rt, dedsInputDevice *device)
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	sInputDeviceNatDat &nd = *((sInputDeviceNatDat*)p_GetNativeData(
-		rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.device = device;
-	device->AddReference();
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sInputDeviceNatDat)->device = device;
 }

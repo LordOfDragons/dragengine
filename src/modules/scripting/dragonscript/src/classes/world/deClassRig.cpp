@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -51,7 +53,7 @@
 
 // native structure
 struct sRigNatDat{
-	deRig *rig;
+	deRig::Ref rig;
 };
 
 // Native Functions
@@ -63,18 +65,12 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsStr); // filename
 }
 void deClassRig::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sRigNatDat &nd = *((sRigNatDat*)p_GetNativeData(myself));
-	deClassRig &clsRig = *((deClassRig*)GetOwnerClass());
+	sRigNatDat * const nd = new (p_GetNativeData(myself)) sRigNatDat;
+	
+	deClassRig &clsRig = *(static_cast<deClassRig*>(GetOwnerClass()));
 	deRigManager &rigMgr = *clsRig.GetDS()->GetGameEngine()->GetRigManager();
 	
-	// prepare
-	nd.rig = NULL;
-	
-	// load rig
-	nd.rig = rigMgr.LoadRig(rt->GetValue(0)->GetString(), "/");
-	if(!nd.rig){
-		DSTHROW(dueInvalidParam);
-	}
+	nd->rig = rigMgr.LoadRig(rt->GetValue(0)->GetString(), "/");
 }
 
 // static public func void loadAsynchron( String filename, ResourceListener listener )
@@ -84,7 +80,7 @@ deClassRig::nfLoadAsynchron::nfLoadAsynchron(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsRN); // listener
 }
 void deClassRig::nfLoadAsynchron::RunFunction(dsRunTime *rt, dsValue*){
-	deClassRig &clsRig = *((deClassRig*)GetOwnerClass());
+	const deClassRig &clsRig = *(static_cast<deClassRig*>(GetOwnerClass()));
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	dsRealObject * const listener = rt->GetValue(1)->GetRealObject();
@@ -104,12 +100,7 @@ void deClassRig::nfDestructor::RunFunction(dsRunTime*, dsValue *myself){
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sRigNatDat &nd = *((sRigNatDat*)p_GetNativeData(myself));
-	
-	if(nd.rig){
-		nd.rig->FreeReference();
-		nd.rig = NULL;
-	}
+	static_cast<sRigNatDat*>(p_GetNativeData(myself))->~sRigNatDat();
 }
 
 
@@ -119,7 +110,7 @@ deClassRig::nfGetFilename::nfGetFilename(const sInitData &init) : dsFunction(ini
 "getFilename", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsStr){
 }
 void deClassRig::nfGetFilename::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	rt->PushString(rig.GetFilename());
 }
 
@@ -130,7 +121,7 @@ deClassRig::nfGetBoneCount::nfGetBoneCount(const sInitData &init) : dsFunction(i
 "getBoneCount", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassRig::nfGetBoneCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	rt->PushInt(rig.GetBoneCount());
 }
 
@@ -140,7 +131,7 @@ deClassRig::nfIndexOfBoneNamed::nfIndexOfBoneNamed(const sInitData &init) : dsFu
 	p_AddParameter(init.clsStr); // name
 }
 void deClassRig::nfIndexOfBoneNamed::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	rt->PushInt(rig.IndexOfBoneNamed(rt->GetValue(0)->GetString()));
 }
 
@@ -150,7 +141,7 @@ deClassRig::nfBoneGetName::nfBoneGetName(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetName::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	rt->PushString(rig.GetBoneAt(bone).GetName());
@@ -162,8 +153,8 @@ deClassRig::nfBoneGetPosition::nfBoneGetPosition(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone).GetPosition());
@@ -175,8 +166,8 @@ deClassRig::nfBoneGetOrientation::nfBoneGetOrientation(const sInitData &init) : 
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassQuaternion()->PushQuaternion(rt, decQuaternion::CreateFromEuler(rig.GetBoneAt(bone).GetRotation()));
@@ -188,8 +179,8 @@ deClassRig::nfBoneGetRotation::nfBoneGetRotation(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetRotation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone).GetRotation() * RAD2DEG);
@@ -201,8 +192,8 @@ deClassRig::nfBoneGetMatrix::nfBoneGetMatrix(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassMatrix()->PushMatrix(rt, rig.GetBoneAt(bone).GetMatrix());
@@ -214,8 +205,8 @@ deClassRig::nfBoneGetInverseMatrix::nfBoneGetInverseMatrix(const sInitData &init
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetInverseMatrix::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassMatrix()->PushMatrix(rt, rig.GetBoneAt(bone).GetInverseMatrix());
@@ -227,8 +218,8 @@ deClassRig::nfBoneGetCentralMassPoint::nfBoneGetCentralMassPoint(const sInitData
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetCentralMassPoint::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone).GetCentralMassPoint());
@@ -240,7 +231,7 @@ deClassRig::nfBoneGetMass::nfBoneGetMass(const sInitData &init) : dsFunction(ini
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetMass::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	rt->PushFloat(rig.GetBoneAt(bone).GetMass());
@@ -252,7 +243,7 @@ deClassRig::nfBoneGetDynamic::nfBoneGetDynamic(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetDynamic::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	rt->PushBool(rig.GetBoneAt(bone).GetDynamic());
@@ -264,8 +255,8 @@ deClassRig::nfBoneGetIKLimitsLower::nfBoneGetIKLimitsLower(const sInitData &init
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetIKLimitsLower::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone).GetIKLimitsLower() * RAD2DEG);
@@ -277,8 +268,8 @@ deClassRig::nfBoneGetIKLimitsUpper::nfBoneGetIKLimitsUpper(const sInitData &init
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetIKLimitsUpper::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone).GetIKLimitsUpper() * RAD2DEG);
@@ -290,8 +281,8 @@ deClassRig::nfBoneGetIKResistance::nfBoneGetIKResistance(const sInitData &init) 
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetIKResistance::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassVector()->PushVector(rt, rig.GetBoneAt(bone).GetIKResistance());
@@ -304,7 +295,7 @@ deClassRig::nfBoneGetIKLocked::nfBoneGetIKLocked(const sInitData &init) : dsFunc
 	p_AddParameter(init.clsInt); // axis
 }
 void deClassRig::nfBoneGetIKLocked::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	const int bone = rt->GetValue(0)->GetInt();
 	const int axis = rt->GetValue(1)->GetInt();
 	
@@ -328,7 +319,7 @@ deClassRig::nfBoneGetConstraintCount::nfBoneGetConstraintCount(const sInitData &
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetConstraintCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	rt->PushInt(rig.GetBoneAt(bone).GetConstraintCount());
@@ -341,8 +332,8 @@ deClassRig::nfBoneGetConstraintAt::nfBoneGetConstraintAt(const sInitData &init) 
 	p_AddParameter(init.clsInt); // constraint
 }
 void deClassRig::nfBoneGetConstraintAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	const int constraint = rt->GetValue(1)->GetInt();
 	
@@ -350,43 +341,34 @@ void deClassRig::nfBoneGetConstraintAt::RunFunction(dsRunTime *rt, dsValue *myse
 	const deRigConstraint &rigConstraint = rigBone.GetConstraintAt(constraint);
 	decMatrix bcMatrix, bcRotMatrix;
 	
-	deColliderConstraint *bc = NULL;
-	try{
-		bc = new deColliderConstraint;
-		
-		bcRotMatrix.SetFromQuaternion(rigConstraint.GetReferenceOrientation());
-		bc->SetPosition1(rigConstraint.GetReferencePosition() + bcRotMatrix * rigConstraint.GetBoneOffset());
-		bc->SetOrientation1(decQuaternion()/*rigConstraint.GetReferenceOrientation()*/);
-		
-		bcMatrix.SetRT(rigBone.GetRotation(), rigBone.GetPosition());
-		
-		bc->SetPosition2(bcMatrix * rigConstraint.GetReferencePosition());
-		bc->SetOrientation2((bcRotMatrix * bcMatrix).ToQuaternion());
-		
-		bc->GetDofLinearX() = rigConstraint.GetDofLinearX();
-		bc->GetDofLinearY() = rigConstraint.GetDofLinearY();
-		bc->GetDofLinearZ() = rigConstraint.GetDofLinearZ();
-		bc->GetDofAngularX() = rigConstraint.GetDofAngularX();
-		bc->GetDofAngularY() = rigConstraint.GetDofAngularY();
-		bc->GetDofAngularZ() = rigConstraint.GetDofAngularZ();
-		
-		bc->SetLinearDamping(rigConstraint.GetLinearDamping());
-		bc->SetAngularDamping(rigConstraint.GetAngularDamping());
-		bc->SetSpringDamping(rigConstraint.GetSpringDamping());
-		
-		bc->SetIsRope(rigConstraint.GetIsRope());
-		bc->SetBreakingThreshold(rigConstraint.GetBreakingThreshold());
-		
-		bc->SetBone(rigConstraint.GetParentBone());
-		
-		ds.GetClassColliderConstraint()->PushConstraint(rt, bc);
-		
-	}catch(...){
-		if(bc){
-			delete bc;
-		}
-		throw;
-	}
+	const deColliderConstraint::Ref bc(deColliderConstraint::Ref::NewWith());
+	
+	bcRotMatrix.SetFromQuaternion(rigConstraint.GetReferenceOrientation());
+	bc->SetPosition1(rigConstraint.GetReferencePosition() + bcRotMatrix * rigConstraint.GetBoneOffset());
+	bc->SetOrientation1(decQuaternion()/*rigConstraint.GetReferenceOrientation()*/);
+	
+	bcMatrix.SetRT(rigBone.GetRotation(), rigBone.GetPosition());
+	
+	bc->SetPosition2(bcMatrix * rigConstraint.GetReferencePosition());
+	bc->SetOrientation2((bcRotMatrix * bcMatrix).ToQuaternion());
+	
+	bc->GetDofLinearX() = rigConstraint.GetDofLinearX();
+	bc->GetDofLinearY() = rigConstraint.GetDofLinearY();
+	bc->GetDofLinearZ() = rigConstraint.GetDofLinearZ();
+	bc->GetDofAngularX() = rigConstraint.GetDofAngularX();
+	bc->GetDofAngularY() = rigConstraint.GetDofAngularY();
+	bc->GetDofAngularZ() = rigConstraint.GetDofAngularZ();
+	
+	bc->SetLinearDamping(rigConstraint.GetLinearDamping());
+	bc->SetAngularDamping(rigConstraint.GetAngularDamping());
+	bc->SetSpringDamping(rigConstraint.GetSpringDamping());
+	
+	bc->SetIsRope(rigConstraint.GetIsRope());
+	bc->SetBreakingThreshold(rigConstraint.GetBreakingThreshold());
+	
+	bc->SetBone(rigConstraint.GetParentBone());
+	
+	ds.GetClassColliderConstraint()->PushConstraint(rt, bc);
 }
 
 // public func Vector boneConstraintGetReferencePosition(int bone, int constraint)
@@ -396,8 +378,8 @@ dsFunction(init.clsRig, "boneConstraintGetReferencePosition", DSFT_FUNCTION, DST
 	p_AddParameter(init.clsInt); // constraint
 }
 void deClassRig::nfBoneConstraintGetReferencePosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	const int constraint = rt->GetValue(1)->GetInt();
 	
@@ -411,8 +393,8 @@ dsFunction(init.clsRig, "boneConstraintGetReferenceOrientation", DSFT_FUNCTION, 
 	p_AddParameter(init.clsInt); // constraint
 }
 void deClassRig::nfBoneConstraintGetReferenceOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	const int constraint = rt->GetValue(1)->GetInt();
 	
@@ -426,8 +408,8 @@ dsFunction(init.clsRig, "boneConstraintGetBoneOffset", DSFT_FUNCTION, DSTM_PUBLI
 	p_AddParameter(init.clsInt); // constraint
 }
 void deClassRig::nfBoneConstraintGetBoneOffset::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const int bone = rt->GetValue(0)->GetInt();
 	const int constraint = rt->GetValue(1)->GetInt();
 	
@@ -440,8 +422,8 @@ deClassRig::nfBoneGetShapes::nfBoneGetShapes(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetShapes::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	ds.GetClassShapeList()->PushShapeList(rt, rig.GetBoneAt(bone).GetShapes());
@@ -454,7 +436,7 @@ deClassRig::nfBoneShapeGetProperty::nfBoneShapeGetProperty(const sInitData &init
 	p_AddParameter(init.clsInt); // shape
 }
 void deClassRig::nfBoneShapeGetProperty::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	const int shape = rt->GetValue(1)->GetInt();
 	const int bone = rt->GetValue(0)->GetInt();
 	
@@ -467,7 +449,7 @@ deClassRig::nfBoneGetParent::nfBoneGetParent(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassRig::nfBoneGetParent::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	const int bone = rt->GetValue(0)->GetInt();
 	
 	rt->PushInt(rig.GetBoneAt(bone).GetParent());
@@ -478,7 +460,7 @@ deClassRig::nfGetRootBone::nfGetRootBone(const sInitData &init) : dsFunction(ini
 "getRootBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassRig::nfGetRootBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	rt->PushInt(rig.GetRootBone());
 }
 
@@ -489,8 +471,8 @@ deClassRig::nfGetShapes::nfGetShapes(const sInitData &init) : dsFunction(init.cl
 "getShapes", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsShapeList){
 }
 void deClassRig::nfGetShapes::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	
 	ds.GetClassShapeList()->PushShapeList(rt, rig.GetShapes());
 }
@@ -501,7 +483,7 @@ deClassRig::nfShapeGetProperty::nfShapeGetProperty(const sInitData &init) : dsFu
 	p_AddParameter(init.clsInt); // shape
 }
 void deClassRig::nfShapeGetProperty::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	const int shape = rt->GetValue(0)->GetInt();
 	
 	rt->PushString(rig.GetShapeProperties().GetAt(shape));
@@ -512,8 +494,8 @@ deClassRig::nfGetCentralMassPoint::nfGetCentralMassPoint(const sInitData &init) 
 dsFunction(init.clsRig, "getCentralMassPoint", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVec){
 }
 void deClassRig::nfGetCentralMassPoint::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	
 	ds.GetClassVector()->PushVector(rt, rig.GetCentralMassPoint());
 }
@@ -526,13 +508,13 @@ deClassRig::nfSave::nfSave(const sInitData &init) : dsFunction(init.clsRig,
 	p_AddParameter(init.clsStr); // filename
 }
 void deClassRig::nfSave::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig &rig = *(((sRigNatDat*)p_GetNativeData(myself))->rig);
-	deScriptingDragonScript &ds = *(((deClassRig*)GetOwnerClass())->GetDS());
+	const deRig &rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	const deScriptingDragonScript &ds = *((static_cast<deClassRig*>(GetOwnerClass()))->GetDS());
 	const char * const filename = rt->GetValue(0)->GetString();
 	const deEngine &engine = *ds.GetGameEngine();
 	
-	deBaseRigModule * const module = (deBaseRigModule*)engine.GetModuleSystem()->
-		GetModuleAbleToLoad(deModuleSystem::emtRig, filename);
+	deBaseRigModule * const module = static_cast<deBaseRigModule*>(engine.GetModuleSystem()->
+		GetModuleAbleToLoad(deModuleSystem::emtRig, filename));
 	if(!module){
 		DSTHROW_INFO(dueInvalidParam, "no module found to handle filename");
 	}
@@ -549,7 +531,7 @@ dsFunction(init.clsRig, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 }
 
 void deClassRig::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig * const rig = ((sRigNatDat*)p_GetNativeData(myself))->rig;
+	const deRig * const rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
 	
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)rig);
@@ -561,15 +543,15 @@ dsFunction(init.clsRig, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassRig::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deRig * const rig = ((sRigNatDat*)p_GetNativeData(myself))->rig;
-	deClassRig * const clsRig = (deClassRig*)GetOwnerClass();
+	const deRig * const rig = static_cast<sRigNatDat*>(p_GetNativeData(myself))->rig;
+	deClassRig * const clsRig = static_cast<deClassRig*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsRig)){
 		rt->PushBool(false);
 		
 	}else{
-		const deRig * const rigOther = ((sRigNatDat*)p_GetNativeData(obj))->rig;
+		const deRig * const rigOther = static_cast<sRigNatDat*>(p_GetNativeData(obj))->rig;
 		rt->PushBool(rig == rigOther);
 	}
 }
@@ -666,10 +648,10 @@ void deClassRig::CreateClassMembers(dsEngine *engine){
 
 deRig *deClassRig::GetRig(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
-	return ((sRigNatDat*)p_GetNativeData(myself->GetBuffer()))->rig;
+	return static_cast<sRigNatDat*>(p_GetNativeData(myself->GetBuffer()))->rig;
 }
 
 void deClassRig::PushRig(dsRunTime *rt, deRig *rig){
@@ -683,6 +665,5 @@ void deClassRig::PushRig(dsRunTime *rt, deRig *rig){
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	((sRigNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->rig = rig;
-	rig->AddReference();
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sRigNatDat)->rig = rig;
 }

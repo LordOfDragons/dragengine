@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -49,7 +51,7 @@
 
 // native structure
 struct sColCompNatDat{
-	deColliderComponent *collider;
+	deColliderComponent::Ref collider;
 };
 
 
@@ -62,20 +64,17 @@ deClassColliderComponent::nfNew::nfNew(const sInitData &init) : dsFunction(init.
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassColliderComponent::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sColCompNatDat &nd = *((sColCompNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassColliderComponent*)GetOwnerClass())->GetDS();
+	sColCompNatDat * const nd = new (p_GetNativeData(myself)) sColCompNatDat;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderComponent*>(GetOwnerClass()))->GetDS();
 	deColliderManager &colMgr = *ds.GetGameEngine()->GetColliderManager();
 	
-	// clear ( important )
-	nd.collider = NULL;
-	
 	// super call
-	deClassColliderRig * const baseClass = (deClassColliderRig*)GetOwnerClass()->GetBaseClass();
+	deClassColliderRig * const baseClass = static_cast<deClassColliderRig*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create collider
-	nd.collider = colMgr.CreateColliderComponent();
-	baseClass->AssignCollider(myself->GetRealObject(), nd.collider);
+	nd->collider = colMgr.CreateColliderComponent();
+	baseClass->AssignCollider(myself->GetRealObject(), nd->collider);
 }
 
 // public func destructor()
@@ -87,12 +86,7 @@ void deClassColliderComponent::nfDestructor::RunFunction(dsRunTime *rt, dsValue 
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sColCompNatDat &nd = *((sColCompNatDat*)p_GetNativeData(myself));
-	
-	if(nd.collider){
-		nd.collider->FreeReference();
-		nd.collider = NULL;
-	}
+	static_cast<sColCompNatDat*>(p_GetNativeData(myself))->~sColCompNatDat();
 }
 
 
@@ -105,8 +99,8 @@ deClassColliderComponent::nfGetComponent::nfGetComponent(const sInitData &init) 
 "getComponent", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsComp){
 }
 void deClassColliderComponent::nfGetComponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderComponent &collider = *(((sColCompNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderComponent*)GetOwnerClass())->GetDS();
+	deColliderComponent &collider = static_cast<sColCompNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderComponent*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassComponent()->PushComponent(rt, collider.GetComponent());
 }
@@ -118,8 +112,8 @@ deClassColliderComponent::nfSetComponent::nfSetComponent(const sInitData &init) 
 }
 #include <dragengine/common/exceptions.h>
 void deClassColliderComponent::nfSetComponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderComponent &collider = *(((sColCompNatDat*)p_GetNativeData(myself))->collider);
-	const deScriptingDragonScript &ds = ((deClassColliderComponent*)GetOwnerClass())->GetDS();
+	deColliderComponent &collider = static_cast<sColCompNatDat*>(p_GetNativeData(myself))->collider;
+	const deScriptingDragonScript &ds = (static_cast<deClassColliderComponent*>(GetOwnerClass()))->GetDS();
 	
 	deComponent * const component = ds.GetClassComponent()->GetComponent(rt->GetValue(0)->GetRealObject());
 	try{
@@ -135,7 +129,7 @@ deClassColliderComponent::nfCopyStatesFromComponent::nfCopyStatesFromComponent(c
 "copyStatesFromComponent", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassColliderComponent::nfCopyStatesFromComponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderComponent &collider = *(((sColCompNatDat*)p_GetNativeData(myself))->collider);
+	deColliderComponent &collider = static_cast<sColCompNatDat*>(p_GetNativeData(myself))->collider;
 	collider.CopyStatesFromComponent();
 }
 
@@ -145,7 +139,7 @@ deClassColliderComponent::nfCopyStateFromComponent::nfCopyStateFromComponent(con
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassColliderComponent::nfCopyStateFromComponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderComponent &collider = *(((sColCompNatDat*)p_GetNativeData(myself))->collider);
+	deColliderComponent &collider = static_cast<sColCompNatDat*>(p_GetNativeData(myself))->collider;
 	const int bone = rt->GetValue(0)->GetInt();
 	collider.CopyStateFromComponent(bone);
 }
@@ -155,7 +149,7 @@ deClassColliderComponent::nfCopyStatesToComponent::nfCopyStatesToComponent(const
 "copyStatesToComponent", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassColliderComponent::nfCopyStatesToComponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderComponent &collider = *(((sColCompNatDat*)p_GetNativeData(myself))->collider);
+	deColliderComponent &collider = static_cast<sColCompNatDat*>(p_GetNativeData(myself))->collider;
 	collider.CopyStatesToComponent();
 }
 
@@ -165,7 +159,7 @@ deClassColliderComponent::nfCopyStateToComponent::nfCopyStateToComponent(const s
 	p_AddParameter(init.clsInt); // bone
 }
 void deClassColliderComponent::nfCopyStateToComponent::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderComponent &collider = *(((sColCompNatDat*)p_GetNativeData(myself))->collider);
+	deColliderComponent &collider = static_cast<sColCompNatDat*>(p_GetNativeData(myself))->collider;
 	const int bone = rt->GetValue(0)->GetInt();
 	collider.CopyStateToComponent(bone);
 }
@@ -178,7 +172,7 @@ dsFunction(init.clsColComp, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE
 }
 
 void deClassColliderComponent::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderComponent *collider = ((sColCompNatDat*)p_GetNativeData(myself))->collider;
+	deColliderComponent *collider = static_cast<sColCompNatDat*>(p_GetNativeData(myself))->collider;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)collider);
 }
@@ -189,15 +183,15 @@ dsFunction(init.clsColComp, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassColliderComponent::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deColliderComponent * const collider = ((sColCompNatDat*)p_GetNativeData(myself))->collider;
-	deClassColliderComponent * const clsColComp = (deClassColliderComponent*)GetOwnerClass();
+	deColliderComponent * const collider = static_cast<sColCompNatDat*>(p_GetNativeData(myself))->collider;
+	deClassColliderComponent * const clsColComp = static_cast<deClassColliderComponent*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsColComp)){
 		rt->PushBool(false);
 		
 	}else{
-		deColliderComponent * const otherCol = ((sColCompNatDat*)p_GetNativeData(obj))->collider;
+		deColliderComponent * const otherCol = static_cast<sColCompNatDat*>(p_GetNativeData(obj))->collider;
 		rt->PushBool(collider == otherCol);
 	}
 }
@@ -209,7 +203,7 @@ dsFunction(init.clsColComp, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE |
 	p_AddParameter(init.clsColComp); // collider2
 }
 void deClassColliderComponent::nfEquals2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deClassColliderComponent &clsColComp = *((deClassColliderComponent*)GetOwnerClass());
+	const deClassColliderComponent &clsColComp = *(static_cast<deClassColliderComponent*>(GetOwnerClass()));
 	deColliderComponent * const collider1 = clsColComp.GetCollider(rt->GetValue(0)->GetRealObject());
 	deColliderComponent * const collider2 = clsColComp.GetCollider(rt->GetValue(1)->GetRealObject());
 	
@@ -278,10 +272,10 @@ void deClassColliderComponent::CreateClassMembers(dsEngine *engine){
 
 deColliderComponent *deClassColliderComponent::GetCollider(dsRealObject *myself) const {
 	if(myself){
-		return ((sColCompNatDat*)p_GetNativeData(myself->GetBuffer()))->collider;
+		return static_cast<sColCompNatDat*>(p_GetNativeData(myself->GetBuffer()))->collider;
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -295,16 +289,13 @@ void deClassColliderComponent::PushCollider(dsRunTime *rt, deColliderComponent *
 		return;
 	}
 	
-	deClassColliderRig * const baseClass = (deClassColliderRig*)GetBaseClass();
+	deClassColliderRig * const baseClass = static_cast<deClassColliderRig*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sColCompNatDat &nd = *((sColCompNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.collider = NULL;
+	sColCompNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sColCompNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		nd.collider = collider;
-		collider->AddReference();
+		nd->collider = collider;
 		
 		baseClass->AssignCollider(rt->GetValue(0)->GetRealObject(), collider);
 		

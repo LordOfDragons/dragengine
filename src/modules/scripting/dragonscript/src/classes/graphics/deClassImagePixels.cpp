@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -62,8 +64,11 @@ struct sImgPixNatDat{
 		const float pFactor;
 		
 	public:
-		GetterGrayscale8(deImage &image) : pData(image.GetDataGrayscale8()), pFactor(1.0f / 255.0f){}
-		virtual decColor GetAt(int index) const{
+		explicit GetterGrayscale8(deImage &image) :
+		pData(image.GetDataGrayscale8()), pFactor(1.0f / 255.0f){
+		}
+		
+		decColor GetAt(int index) const override{
 			const float value = pFactor * pData[index].value;
 			return decColor(value, value, value);
 		}
@@ -75,8 +80,12 @@ struct sImgPixNatDat{
 		const float pFactor;
 		
 	public:
-		GetterGrayscale16(deImage &image) : pData(image.GetDataGrayscale16()), pFactor(1.0f / 65535.0f){}
-		virtual decColor GetAt(int index) const{
+		explicit GetterGrayscale16(deImage &image) :
+		pData(image.GetDataGrayscale16()),
+		pFactor(1.0f / 65535.0f){
+		}
+		
+		decColor GetAt(int index) const override{
 			const float value = pFactor * pData[index].value;
 			return decColor(value, value, value);
 		}
@@ -87,8 +96,11 @@ struct sImgPixNatDat{
 		const sGrayscale32 *pData;
 		
 	public:
-		GetterGrayscale32(deImage &image) : pData(image.GetDataGrayscale32()){}
-		virtual decColor GetAt(int index) const{
+		explicit GetterGrayscale32(deImage &image) :
+		pData(image.GetDataGrayscale32()){
+		}
+		
+		decColor GetAt(int index) const override{
 			const float &value = pData[index].value;
 			return decColor(value, value, value);
 		}
@@ -101,8 +113,12 @@ struct sImgPixNatDat{
 		const float pFactor;
 		
 	public:
-		GetterGrayscaleAlpha8(deImage &image) : pData(image.GetDataGrayscaleAlpha8()), pFactor(1.0f / 255.0f){}
-		virtual decColor GetAt(int index) const{
+		explicit GetterGrayscaleAlpha8(deImage &image) :
+		pData(image.GetDataGrayscaleAlpha8()),
+		pFactor(1.0f / 255.0f){
+		}
+		
+		decColor GetAt(int index) const override{
 			const float value = pFactor * pData[index].value;
 			return decColor(value, value, value, pFactor * pData[index].alpha);
 		}
@@ -114,8 +130,12 @@ struct sImgPixNatDat{
 		const float pFactor;
 		
 	public:
-		GetterGrayscaleAlpha16(deImage &image) : pData(image.GetDataGrayscaleAlpha16()), pFactor(1.0f / 65535.0f){}
-		virtual decColor GetAt(int index) const{
+		explicit GetterGrayscaleAlpha16(deImage &image) :
+		pData(image.GetDataGrayscaleAlpha16()),
+		pFactor(1.0f / 65535.0f){
+		}
+		
+		decColor GetAt(int index) const override{
 			const float value = pFactor * pData[index].value;
 			return decColor(value, value, value, pFactor * pData[index].alpha);
 		}
@@ -126,8 +146,11 @@ struct sImgPixNatDat{
 		const sGrayscaleAlpha32 *pData;
 		
 	public:
-		GetterGrayscaleAlpha32(deImage &image) : pData(image.GetDataGrayscaleAlpha32()){}
-		virtual decColor GetAt(int index) const{
+		explicit GetterGrayscaleAlpha32(deImage &image) :
+		pData(image.GetDataGrayscaleAlpha32()){
+		}
+		
+		decColor GetAt(int index) const override{
 			const float &value = pData[index].value;
 			return decColor(value, value, value, pData[index].alpha);
 		}
@@ -140,8 +163,12 @@ struct sImgPixNatDat{
 		const float pFactor;
 		
 	public:
-		GetterRGB8(deImage &image) : pData(image.GetDataRGB8()), pFactor(1.0f / 255.0f){}
-		virtual decColor GetAt(int index) const{
+		explicit GetterRGB8(deImage &image) :
+		pData(image.GetDataRGB8()),
+		pFactor(1.0f / 255.0f){
+		}
+		
+		decColor GetAt(int index) const override{
 			return decColor(pFactor * pData[index].red,
 				pFactor * pData[index].green,
 				pFactor * pData[index].blue);
@@ -154,8 +181,12 @@ struct sImgPixNatDat{
 		const float pFactor;
 		
 	public:
-		GetterRGB16(deImage &image) : pData(image.GetDataRGB16()), pFactor(1.0f / 65535.0f){}
-		virtual decColor GetAt(int index) const{
+		explicit GetterRGB16(deImage &image) :
+		pData(image.GetDataRGB16()),
+		pFactor(1.0f / 65535.0f){
+		}
+		
+		decColor GetAt(int index) const override{
 			return decColor(pFactor * pData[index].red,
 				pFactor * pData[index].green,
 				pFactor * pData[index].blue);
@@ -167,8 +198,11 @@ struct sImgPixNatDat{
 		const sRGB32 *pData;
 		
 	public:
-		GetterRGB32(deImage &image) : pData(image.GetDataRGB32()){}
-		virtual decColor GetAt(int index) const{
+		explicit GetterRGB32(deImage &image) :
+		pData(image.GetDataRGB32()){
+		}
+		
+		decColor GetAt(int index) const override{
 			return decColor(pData[index].red, pData[index].green, pData[index].blue);
 		}
 	};
@@ -180,8 +214,12 @@ struct sImgPixNatDat{
 		const float pFactor;
 		
 	public:
-		GetterRGBA8(deImage &image) : pData(image.GetDataRGBA8()), pFactor(1.0f / 255.0f){}
-		virtual decColor GetAt(int index) const{
+		explicit GetterRGBA8(deImage &image) :
+		pData(image.GetDataRGBA8()),
+		pFactor(1.0f / 255.0f){
+		}
+		
+		decColor GetAt(int index) const override{
 			return decColor(pFactor * pData[index].red,
 				pFactor * pData[index].green,
 				pFactor * pData[index].blue,
@@ -195,8 +233,12 @@ struct sImgPixNatDat{
 		const float pFactor;
 		
 	public:
-		GetterRGBA16(deImage &image) : pData(image.GetDataRGBA16()), pFactor(1.0f / 65535.0f){}
-		virtual decColor GetAt(int index) const{
+		explicit GetterRGBA16(deImage &image) :
+		pData(image.GetDataRGBA16()),
+		pFactor(1.0f / 65535.0f){
+		}
+		
+		decColor GetAt(int index) const override{
 			return decColor(pFactor * pData[index].red,
 				pFactor * pData[index].green,
 				pFactor * pData[index].blue,
@@ -209,17 +251,33 @@ struct sImgPixNatDat{
 		const sRGBA32 *pData;
 		
 	public:
-		GetterRGBA32(deImage &image) : pData(image.GetDataRGBA32()){}
-		virtual decColor GetAt(int index) const{
+		explicit GetterRGBA32(deImage &image) :
+		pData(image.GetDataRGBA32()){
+		}
+		
+		decColor GetAt(int index) const override{
 			return decColor(pData[index].red, pData[index].green, pData[index].blue, pData[index].alpha);
 		}
 	};
 	
 	
-	deImage *image;
-	Getter *getter;
-	int strideZ;
-	int strideY;
+	deImage::Ref image;
+	Getter *getter = nullptr;
+	int strideZ = 0;
+	int strideY = 0;
+	
+	~sImgPixNatDat(){
+		if(getter){
+			delete getter;
+			getter = nullptr;
+		}
+		
+		if(image){
+			try{
+				image->ReleaseImageData();
+			}catch(...){}
+		}
+	}
 };
 
 
@@ -234,14 +292,9 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsImage); // image
 }
 void deClassImagePixels::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sImgPixNatDat &nd = *((sImgPixNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassImagePixels*)GetOwnerClass())->GetDS();
+	sImgPixNatDat * const nd = new (p_GetNativeData(myself)) sImgPixNatDat;
 	
-	// clear ( important )
-	nd.image = NULL;
-	nd.getter = NULL;
-	nd.strideZ = 0;
-	nd.strideY = 0;
+	const deScriptingDragonScript &ds = static_cast<deClassImagePixels*>(GetOwnerClass())->GetDS();
 	
 	// check parameters
 	deImage * const image = ds.GetClassImage()->GetImage(rt->GetValue(0)->GetRealObject());
@@ -257,15 +310,15 @@ void deClassImagePixels::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	case 1:
 		switch(image->GetBitCount()){
 		case 8:
-			nd.getter = new sImgPixNatDat::GetterGrayscale8(*image);
+			nd->getter = new sImgPixNatDat::GetterGrayscale8(*image);
 			break;
 			
 		case 16:
-			nd.getter = new sImgPixNatDat::GetterGrayscale16(*image);
+			nd->getter = new sImgPixNatDat::GetterGrayscale16(*image);
 			break;
 			
 		case 32:
-			nd.getter = new sImgPixNatDat::GetterGrayscale32(*image);
+			nd->getter = new sImgPixNatDat::GetterGrayscale32(*image);
 			break;
 			
 		default:
@@ -276,15 +329,15 @@ void deClassImagePixels::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	case 2:
 		switch(image->GetBitCount()){
 		case 8:
-			nd.getter = new sImgPixNatDat::GetterGrayscaleAlpha8(*image);
+			nd->getter = new sImgPixNatDat::GetterGrayscaleAlpha8(*image);
 			break;
 			
 		case 16:
-			nd.getter = new sImgPixNatDat::GetterGrayscaleAlpha16(*image);
+			nd->getter = new sImgPixNatDat::GetterGrayscaleAlpha16(*image);
 			break;
 			
 		case 32:
-			nd.getter = new sImgPixNatDat::GetterGrayscaleAlpha32(*image);
+			nd->getter = new sImgPixNatDat::GetterGrayscaleAlpha32(*image);
 			break;
 			
 		default:
@@ -295,15 +348,15 @@ void deClassImagePixels::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	case 3:
 		switch(image->GetBitCount()){
 		case 8:
-			nd.getter = new sImgPixNatDat::GetterRGB8(*image);
+			nd->getter = new sImgPixNatDat::GetterRGB8(*image);
 			break;
 			
 		case 16:
-			nd.getter = new sImgPixNatDat::GetterRGB16(*image);
+			nd->getter = new sImgPixNatDat::GetterRGB16(*image);
 			break;
 			
 		case 32:
-			nd.getter = new sImgPixNatDat::GetterRGB32(*image);
+			nd->getter = new sImgPixNatDat::GetterRGB32(*image);
 			break;
 			
 		default:
@@ -314,15 +367,15 @@ void deClassImagePixels::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	case 4:
 		switch(image->GetBitCount()){
 		case 8:
-			nd.getter = new sImgPixNatDat::GetterRGBA8(*image);
+			nd->getter = new sImgPixNatDat::GetterRGBA8(*image);
 			break;
 			
 		case 16:
-			nd.getter = new sImgPixNatDat::GetterRGBA16(*image);
+			nd->getter = new sImgPixNatDat::GetterRGBA16(*image);
 			break;
 			
 		case 32:
-			nd.getter = new sImgPixNatDat::GetterRGBA32(*image);
+			nd->getter = new sImgPixNatDat::GetterRGBA32(*image);
 			break;
 			
 		default:
@@ -335,11 +388,9 @@ void deClassImagePixels::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 	
 	// store
-	nd.image = image;
-	image->AddReference();
-	
-	nd.strideZ = image->GetWidth() * image->GetHeight();
-	nd.strideY = image->GetWidth();
+	nd->image = image;
+	nd->strideZ = image->GetWidth() * image->GetHeight();
+	nd->strideY = image->GetWidth();
 }
 
 // public func destructor()
@@ -351,24 +402,7 @@ void deClassImagePixels::nfDestructor::RunFunction(dsRunTime *rt, dsValue *mysel
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sImgPixNatDat &nd = *((sImgPixNatDat*)p_GetNativeData(myself));
-	
-	if(nd.getter){
-		delete nd.getter;
-		nd.getter = NULL;
-	}
-	
-	if(nd.image){
-		try{
-			nd.image->ReleaseImageData();
-			
-		}catch(...){
-			// no exception allowed here
-		}
-		
-		nd.image->FreeReference();
-		nd.image = NULL;
-	}
+	static_cast<sImgPixNatDat*>(p_GetNativeData(myself))->~sImgPixNatDat();
 }
 
 
@@ -379,8 +413,8 @@ dsFunction(init.clsImagePixels, "getImage", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsImage){
 }
 void deClassImagePixels::nfGetImage::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *((sImgPixNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassImagePixels*)GetOwnerClass())->GetDS();
+	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = static_cast<deClassImagePixels*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassImage()->PushImage(rt, nd.image);
 }
@@ -391,7 +425,7 @@ dsFunction(init.clsImagePixels, "getWidth", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassImagePixels::nfGetWidth::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *((sImgPixNatDat*)p_GetNativeData(myself));
+	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
 	
 	rt->PushInt(nd.image->GetWidth());
 }
@@ -402,7 +436,7 @@ dsFunction(init.clsImagePixels, "getHeight", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassImagePixels::nfGetHeight::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *((sImgPixNatDat*)p_GetNativeData(myself));
+	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
 	
 	rt->PushInt(nd.image->GetHeight());
 }
@@ -413,7 +447,7 @@ dsFunction(init.clsImagePixels, "getDepth", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassImagePixels::nfGetDepth::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *((sImgPixNatDat*)p_GetNativeData(myself));
+	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
 	
 	rt->PushInt(nd.image->GetDepth());
 }
@@ -426,8 +460,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
 	p_AddParameter(init.clsInteger); // y
 }
 void deClassImagePixels::nfGetAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *((sImgPixNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassImagePixels*)GetOwnerClass())->GetDS();
+	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = static_cast<deClassImagePixels*>(GetOwnerClass())->GetDS();
 	
 	const int x = rt->GetValue(0)->GetInt();
 	const int y = rt->GetValue(1)->GetInt();
@@ -457,8 +491,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsColor){
 	p_AddParameter(init.clsInteger); // z
 }
 void deClassImagePixels::nfGetAt2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *((sImgPixNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassImagePixels*)GetOwnerClass())->GetDS();
+	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = static_cast<deClassImagePixels*>(GetOwnerClass())->GetDS();
 	
 	const int x = rt->GetValue(0)->GetInt();
 	const int y = rt->GetValue(1)->GetInt();
@@ -497,9 +531,9 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // height
 }
 void deClassImagePixels::nfGetRange::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *((sImgPixNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassImagePixels*)GetOwnerClass())->GetDS();
-	dsClassArray &clsArray = *((dsClassArray*)ds.GetScriptEngine()->GetClassArray());
+	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = static_cast<deClassImagePixels*>(GetOwnerClass())->GetDS();
+	dsClassArray &clsArray = *static_cast<dsClassArray*>(ds.GetScriptEngine()->GetClassArray());
 	deClassColor &clsColor = *ds.GetClassColor();
 	
 	dsRealObject * const pixels = rt->GetValue(0)->GetRealObject();
@@ -564,9 +598,9 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // depth
 }
 void deClassImagePixels::nfGetRange2::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sImgPixNatDat &nd = *((sImgPixNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassImagePixels*)GetOwnerClass())->GetDS();
-	dsClassArray &clsArray = *((dsClassArray*)ds.GetScriptEngine()->GetClassArray());
+	const sImgPixNatDat &nd = *static_cast<sImgPixNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = static_cast<deClassImagePixels*>(GetOwnerClass())->GetDS();
+	dsClassArray &clsArray = *static_cast<dsClassArray*>(ds.GetScriptEngine()->GetClassArray());
 	deClassColor &clsColor = *ds.GetClassColor();
 	
 	dsRealObject * const pixels = rt->GetValue(0)->GetRealObject();

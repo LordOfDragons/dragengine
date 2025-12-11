@@ -145,7 +145,7 @@ public:
 	void AttachRelativeMovement(deCollider &collider, deResource *resource) const;
 	
 	/** \brief Index of matching constraint (same target collider and bone). */
-	deColliderConstraint *FindConstraint(deCollider &collider, const deColliderConstraint &constraint) const;
+	deColliderConstraint *FindConstraint(const deCollider &collider, const deColliderConstraint &constraint) const;
 	/*@}*/
 	
 	

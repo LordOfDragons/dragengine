@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -48,7 +50,7 @@
 
 
 struct sCTNatDat{
-	dedsCollisionTester *collisionTester;
+	dedsCollisionTester::Ref collisionTester;
 };
 
 
@@ -61,14 +63,10 @@ deClassCollisionTester::nfNew::nfNew(const sInitData &init) : dsFunction(init.cl
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollisionTester::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCTNatDat &nd = *((sCTNatDat*)p_GetNativeData(myself));
-	deClassCollisionTester &clsCT = *((deClassCollisionTester*)GetOwnerClass());
+	sCTNatDat * const nd = new (p_GetNativeData(myself)) sCTNatDat;
+	const deClassCollisionTester &clsCT = *(static_cast<deClassCollisionTester*>(GetOwnerClass()));
 	
-	// clear ( important )
-	nd.collisionTester = NULL;
-	
-	// create layer mask
-	nd.collisionTester = new dedsCollisionTester(clsCT.GetDS());
+	nd->collisionTester.TakeOverWith(clsCT.GetDS());
 }
 
 // public func new( CollisionTester collisionTester )
@@ -77,17 +75,13 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsCT); // collisionTester
 }
 void deClassCollisionTester::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCTNatDat &nd = *((sCTNatDat*)p_GetNativeData(myself));
-	
-	// clear ( important )
-	nd.collisionTester = NULL;
+	sCTNatDat * const nd = new (p_GetNativeData(myself)) sCTNatDat;
 	
 	// create layer mask
 	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
-	const dedsCollisionTester &other = *(((sCTNatDat*)p_GetNativeData(rt->GetValue(0)))->collisionTester);
-	nd.collisionTester = new dedsCollisionTester(other);
+	nd->collisionTester.TakeOverWith(static_cast<sCTNatDat*>(p_GetNativeData(rt->GetValue(0)))->collisionTester);
 }
 
 // public func destructor()
@@ -99,12 +93,7 @@ void deClassCollisionTester::nfDestructor::RunFunction(dsRunTime *rt, dsValue *m
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sCTNatDat &nd = *((sCTNatDat*)p_GetNativeData(myself));
-	
-	if(nd.collisionTester){
-		nd.collisionTester->FreeReference();
-		nd.collisionTester = NULL;
-	}
+	static_cast<sCTNatDat*>(p_GetNativeData(myself))->~sCTNatDat();
 }
 
 
@@ -117,8 +106,8 @@ deClassCollisionTester::nfGetWorld::nfGetWorld(const sInitData &init) : dsFuncti
 "getWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
 }
 void deClassCollisionTester::nfGetWorld::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	deClassWorld &clsWorld = *(((deClassCollisionTester*)GetOwnerClass())->GetDS().GetClassWorld());
+	const dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	deClassWorld &clsWorld = *((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS().GetClassWorld());
 	
 	clsWorld.PushWorld(rt, collisionTester.GetWorld());
 }
@@ -129,8 +118,8 @@ deClassCollisionTester::nfSetWorld::nfSetWorld(const sInitData &init) : dsFuncti
 	p_AddParameter(init.clsWorld); // world
 }
 void deClassCollisionTester::nfSetWorld::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	deClassWorld &clsWorld = *(((deClassCollisionTester*)GetOwnerClass())->GetDS().GetClassWorld());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	deClassWorld &clsWorld = *((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS().GetClassWorld());
 	
 	collisionTester.SetWorld(clsWorld.GetWorld(rt->GetValue(0)->GetRealObject()));
 }
@@ -140,8 +129,8 @@ deClassCollisionTester::nfGetTouchSensor::nfGetTouchSensor(const sInitData &init
 "getTouchSensor", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsTS){
 }
 void deClassCollisionTester::nfGetTouchSensor::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	deClassTouchSensor &clsTS = *(((deClassCollisionTester*)GetOwnerClass())->GetDS().GetClassTouchSensor());
+	const dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	deClassTouchSensor &clsTS = *((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS().GetClassTouchSensor());
 	
 	clsTS.PushTouchSensor(rt, collisionTester.GetTouchSensor());
 }
@@ -152,8 +141,8 @@ deClassCollisionTester::nfSetTouchSensor::nfSetTouchSensor(const sInitData &init
 	p_AddParameter(init.clsTS); // touchSensor
 }
 void deClassCollisionTester::nfSetTouchSensor::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	deClassTouchSensor &clsTS = *(((deClassCollisionTester*)GetOwnerClass())->GetDS().GetClassTouchSensor());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	deClassTouchSensor &clsTS = *((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS().GetClassTouchSensor());
 	
 	collisionTester.SetTouchSensor(clsTS.GetTouchSensor(rt->GetValue(0)->GetRealObject()));
 }
@@ -165,7 +154,7 @@ deClassCollisionTester::nfSetCollisionRay::nfSetCollisionRay(const sInitData &in
 "setCollisionRay", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollisionTester::nfSetCollisionRay::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
 	collisionTester.SetCollisionRay();
 }
 
@@ -175,8 +164,8 @@ deClassCollisionTester::nfSetCollisionShape::nfSetCollisionShape(const sInitData
 	p_AddParameter(init.clsShapeList); // shape
 }
 void deClassCollisionTester::nfSetCollisionShape::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	deClassShapeList &clsShapeList = *(((deClassCollisionTester*)GetOwnerClass())->GetDS().GetClassShapeList());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	deClassShapeList &clsShapeList = *((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS().GetClassShapeList());
 	
 	collisionTester.SetCollisionShape(clsShapeList.GetShapeList(rt->GetValue(0)->GetRealObject()));
 }
@@ -186,8 +175,8 @@ deClassCollisionTester::nfGetCollisionFilter::nfGetCollisionFilter(const sInitDa
 "getCollisionFilter", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCF){
 }
 void deClassCollisionTester::nfGetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	deClassCollisionFilter &clsCF = *(((deClassCollisionTester*)GetOwnerClass())->GetDS().GetClassCollisionFilter());
+	const dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	deClassCollisionFilter &clsCF = *((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS().GetClassCollisionFilter());
 	
 	clsCF.PushCollisionFilter(rt, collisionTester.GetCollisionFilter());
 }
@@ -198,8 +187,8 @@ deClassCollisionTester::nfSetCollisionFilter::nfSetCollisionFilter(const sInitDa
 	p_AddParameter(init.clsCF); // collisionFilter
 }
 void deClassCollisionTester::nfSetCollisionFilter::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	deClassCollisionFilter &clsCF = *(((deClassCollisionTester*)GetOwnerClass())->GetDS().GetClassCollisionFilter());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	deClassCollisionFilter &clsCF = *((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS().GetClassCollisionFilter());
 	
 	const decCollisionFilter &collisionFilter = clsCF.GetCollisionFilter(rt->GetValue(0)->GetRealObject());
 	collisionTester.SetCollisionFilter(collisionFilter);
@@ -210,8 +199,8 @@ deClassCollisionTester::nfGetColliderListener::nfGetColliderListener(const sInit
 "getColliderListener", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCLL){
 }
 void deClassCollisionTester::nfGetColliderListener::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	deScriptingDragonScript &ds = (((deClassCollisionTester*)GetOwnerClass())->GetDS());
+	const dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	const deScriptingDragonScript &ds = ((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS());
 	
 	rt->PushObject(collisionTester.GetColliderListener(), ds.GetClassColliderListener());
 }
@@ -222,7 +211,7 @@ deClassCollisionTester::nfSetColliderListener::nfSetColliderListener(const sInit
 	p_AddParameter(init.clsCLL); // listener
 }
 void deClassCollisionTester::nfSetColliderListener::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
 	collisionTester.SetColliderListener(rt->GetValue(0)->GetRealObject());
 }
 
@@ -234,8 +223,8 @@ deClassCollisionTester::nfAddIgnoreCollider::nfAddIgnoreCollider(const sInitData
 	p_AddParameter(init.clsCol); // collider
 }
 void deClassCollisionTester::nfAddIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	deClassCollider &clsCol = *(((deClassCollisionTester*)GetOwnerClass())->GetDS().GetClassCollider());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	deClassCollider &clsCol = *((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS().GetClassCollider());
 	
 	deCollider * const collider = clsCol.GetCollider(rt->GetValue(0)->GetRealObject());
 	if(!collider){
@@ -251,8 +240,8 @@ deClassCollisionTester::nfRemoveIgnoreCollider::nfRemoveIgnoreCollider(const sIn
 	p_AddParameter(init.clsCol); // collider
 }
 void deClassCollisionTester::nfRemoveIgnoreCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	deClassCollider &clsCol = *(((deClassCollisionTester*)GetOwnerClass())->GetDS().GetClassCollider());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	deClassCollider &clsCol = *((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS().GetClassCollider());
 	
 	deCollider * const collider = clsCol.GetCollider(rt->GetValue(0)->GetRealObject());
 	if(!collider){
@@ -267,7 +256,7 @@ deClassCollisionTester::nfRemoveAllIgnoreColliders::nfRemoveAllIgnoreColliders(c
 "removeAllIgnoreColliders", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollisionTester::nfRemoveAllIgnoreColliders::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
 	collisionTester.GetListIgnoreColliders().RemoveAll();
 }
 
@@ -278,7 +267,7 @@ deClassCollisionTester::nfHasCollision::nfHasCollision(const sInitData &init) : 
 "hasCollision", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassCollisionTester::nfHasCollision::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
+	const dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
 	rt->PushBool(collisionTester.HasCollision());
 }
 
@@ -287,7 +276,7 @@ deClassCollisionTester::nfGetHitDistance::nfGetHitDistance(const sInitData &init
 "getHitDistance", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsFlt){
 }
 void deClassCollisionTester::nfGetHitDistance::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
+	const dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
 	rt->PushFloat(collisionTester.GetHitDistance());
 }
 
@@ -296,8 +285,8 @@ deClassCollisionTester::nfGetHitCollider::nfGetHitCollider(const sInitData &init
 "getHitCollider", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsCol){
 }
 void deClassCollisionTester::nfGetHitCollider::RunFunction(dsRunTime *rt, dsValue *myself){
-	const dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	deClassCollider &clsCol = *(((deClassCollisionTester*)GetOwnerClass())->GetDS().GetClassCollider());
+	const dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	deClassCollider &clsCol = *((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS().GetClassCollider());
 	
 	clsCol.PushCollider(rt, collisionTester.GetHitCollider());
 }
@@ -307,7 +296,7 @@ deClassCollisionTester::nfGetHitBone::nfGetHitBone(const sInitData &init) : dsFu
 "getHitBone", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCollisionTester::nfGetHitBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
+	const dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
 	rt->PushInt(collisionTester.GetHitBone());
 }
 
@@ -318,7 +307,7 @@ deClassCollisionTester::nfReset::nfReset(const sInitData &init) : dsFunction(ini
 "reset", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCollisionTester::nfReset::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
 	collisionTester.Reset();
 }
 
@@ -329,8 +318,8 @@ deClassCollisionTester::nfRayHits::nfRayHits(const sInitData &init) : dsFunction
 	p_AddParameter(init.clsVec); // direction
 }
 void deClassCollisionTester::nfRayHits::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	const deScriptingDragonScript &ds = (((deClassCollisionTester*)GetOwnerClass())->GetDS());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	const deScriptingDragonScript &ds = ((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS());
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	const decVector &direction = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
@@ -346,8 +335,8 @@ deClassCollisionTester::nfColliderHits::nfColliderHits(const sInitData &init) : 
 	p_AddParameter(init.clsDVec); // position
 }
 void deClassCollisionTester::nfColliderHits::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	const deScriptingDragonScript &ds = (((deClassCollisionTester*)GetOwnerClass())->GetDS());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	const deScriptingDragonScript &ds = ((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS());
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	
@@ -363,8 +352,8 @@ deClassCollisionTester::nfColliderHits2::nfColliderHits2(const sInitData &init) 
 	p_AddParameter(init.clsQuat); // orientation
 }
 void deClassCollisionTester::nfColliderHits2::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	const deScriptingDragonScript &ds = (((deClassCollisionTester*)GetOwnerClass())->GetDS());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	const deScriptingDragonScript &ds = ((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS());
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(1)->GetRealObject());
@@ -381,8 +370,8 @@ deClassCollisionTester::nfColliderMoveHits::nfColliderMoveHits(const sInitData &
 	p_AddParameter(init.clsVec); // direction
 }
 void deClassCollisionTester::nfColliderMoveHits::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	const deScriptingDragonScript &ds = (((deClassCollisionTester*)GetOwnerClass())->GetDS());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	const deScriptingDragonScript &ds = ((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS());
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	const decVector &direction = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
@@ -400,8 +389,8 @@ deClassCollisionTester::nfColliderMoveHits2::nfColliderMoveHits2(const sInitData
 	p_AddParameter(init.clsVec); // direction
 }
 void deClassCollisionTester::nfColliderMoveHits2::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	const deScriptingDragonScript &ds = (((deClassCollisionTester*)GetOwnerClass())->GetDS());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	const deScriptingDragonScript &ds = ((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS());
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(1)->GetRealObject());
@@ -419,8 +408,8 @@ deClassCollisionTester::nfColliderRotateHits::nfColliderRotateHits(const sInitDa
 	p_AddParameter(init.clsVec); // rotation
 }
 void deClassCollisionTester::nfColliderRotateHits::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	const deScriptingDragonScript &ds = (((deClassCollisionTester*)GetOwnerClass())->GetDS());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	const deScriptingDragonScript &ds = ((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS());
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	const decVector &rotation = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
@@ -438,8 +427,8 @@ deClassCollisionTester::nfColliderRotateHits2::nfColliderRotateHits2(const sInit
 	p_AddParameter(init.clsVec); // rotation
 }
 void deClassCollisionTester::nfColliderRotateHits2::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	const deScriptingDragonScript &ds = (((deClassCollisionTester*)GetOwnerClass())->GetDS());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	const deScriptingDragonScript &ds = ((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS());
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(1)->GetRealObject());
@@ -458,8 +447,8 @@ deClassCollisionTester::nfColliderMoveRotateHits::nfColliderMoveRotateHits(const
 	p_AddParameter(init.clsVec); // rotation
 }
 void deClassCollisionTester::nfColliderMoveRotateHits::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	const deScriptingDragonScript &ds = (((deClassCollisionTester*)GetOwnerClass())->GetDS());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	const deScriptingDragonScript &ds = ((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS());
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	const decVector &direction = ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject());
@@ -479,8 +468,8 @@ deClassCollisionTester::nfColliderMoveRotateHits2::nfColliderMoveRotateHits2(con
 	p_AddParameter(init.clsVec); // rotation
 }
 void deClassCollisionTester::nfColliderMoveRotateHits2::RunFunction(dsRunTime *rt, dsValue *myself){
-	dedsCollisionTester &collisionTester = *(((sCTNatDat*)p_GetNativeData(myself))->collisionTester);
-	const deScriptingDragonScript &ds = (((deClassCollisionTester*)GetOwnerClass())->GetDS());
+	dedsCollisionTester &collisionTester = static_cast<sCTNatDat*>(p_GetNativeData(myself))->collisionTester;
+	const deScriptingDragonScript &ds = ((static_cast<deClassCollisionTester*>(GetOwnerClass()))->GetDS());
 	
 	const decDVector &position = ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject());
 	const decQuaternion &orientation = ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(1)->GetRealObject());
@@ -585,10 +574,10 @@ void deClassCollisionTester::CreateClassMembers(dsEngine *engine){
 
 dedsCollisionTester *deClassCollisionTester::GetCollisionTester(dsRealObject *myself) const{
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
-	return ((sCTNatDat*)p_GetNativeData(myself->GetBuffer()))->collisionTester;
+	return static_cast<sCTNatDat*>(p_GetNativeData(myself->GetBuffer()))->collisionTester;
 }
 
 void deClassCollisionTester::PushCollisionTester(dsRunTime *rt, dedsCollisionTester *collisionTester){
@@ -602,6 +591,5 @@ void deClassCollisionTester::PushCollisionTester(dsRunTime *rt, dedsCollisionTes
 	}
 	
 	rt->CreateObjectNakedOnStack(this);
-	((sCTNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))->collisionTester = collisionTester;
-	collisionTester->AddReference();
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCTNatDat)->collisionTester = collisionTester;
 }

@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -57,8 +59,8 @@
 /////////////////////
 
 struct sARIKNatDat{
-	deAnimator *animator;
-	deAnimatorRuleInverseKinematic *rule;
+	deAnimator::Ref animator;
+	deAnimatorRuleInverseKinematic::Ref rule;
 };
 
 
@@ -71,19 +73,15 @@ deClassARInverseKinematic::nfNew::nfNew(const sInitData &init) : dsFunction(init
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassARInverseKinematic::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
-	
-	// clear ( important )
-	nd.animator = NULL;
-	nd.rule = NULL;
+	sARIKNatDat * const nd = new (p_GetNativeData(myself)) sARIKNatDat;
 	
 	// super call
-	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetOwnerClass()->GetBaseClass();
+	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd.rule = new deAnimatorRuleInverseKinematic;
-	baseClass->AssignRule(myself->GetRealObject(), nd.rule);
+	nd->rule.TakeOverWith();
+	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 
 // public func destructor()
@@ -95,17 +93,7 @@ void deClassARInverseKinematic::nfDestructor::RunFunction(dsRunTime *rt, dsValue
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-		nd.animator = NULL;
-	}
-	
-	if(nd.rule){
-		nd.rule->FreeReference();
-		nd.rule = NULL;
-	}
+	static_cast<sARIKNatDat*>(p_GetNativeData(myself))->~sARIKNatDat();
 }
 
 
@@ -121,9 +109,9 @@ void deClassARInverseKinematic::nfTargetAddLink::RunFunction(dsRunTime *rt, dsVa
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
+	sARIKNatDat &nd = *static_cast<sARIKNatDat*>(p_GetNativeData(myself));
 	const deClassARInverseKinematic::eTargets target = (deClassARInverseKinematic::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	const int link = rt->GetValue(1)->GetInt();
 	
@@ -175,9 +163,9 @@ void deClassARInverseKinematic::nfTargetRemoveAllLinks::RunFunction(dsRunTime *r
 		DSTHROW(dueNullPointer);
 	}
 	
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
+	sARIKNatDat &nd = *static_cast<sARIKNatDat*>(p_GetNativeData(myself));
 	const deClassARInverseKinematic::eTargets target = (deClassARInverseKinematic::eTargets)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() );
 	
 	switch(target){
@@ -226,8 +214,8 @@ deClassARInverseKinematic::nfSetGoalPosition::nfSetGoalPosition(const sInitData 
 	p_AddParameter(init.clsVec); // position
 }
 void deClassARInverseKinematic::nfSetGoalPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
-	deClassARInverseKinematic *clsARIK = (deClassARInverseKinematic*)GetOwnerClass();
+	sARIKNatDat &nd = *static_cast<sARIKNatDat*>(p_GetNativeData(myself));
+	deClassARInverseKinematic *clsARIK = static_cast<deClassARInverseKinematic*>(GetOwnerClass());
 	deClassVector *clsVec = clsARIK->GetDS().GetClassVector();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
@@ -248,8 +236,8 @@ deClassARInverseKinematic::nfSetGoalOrientation::nfSetGoalOrientation(const sIni
 	p_AddParameter(init.clsVec); // orientation
 }
 void deClassARInverseKinematic::nfSetGoalOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
-	deClassARInverseKinematic *clsARIK = (deClassARInverseKinematic*)GetOwnerClass();
+	sARIKNatDat &nd = *static_cast<sARIKNatDat*>(p_GetNativeData(myself));
+	deClassARInverseKinematic *clsARIK = static_cast<deClassARInverseKinematic*>(GetOwnerClass());
 	deClassVector *clsVec = clsARIK->GetDS().GetClassVector();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
@@ -270,8 +258,8 @@ deClassARInverseKinematic::nfSetLocalPosition::nfSetLocalPosition(const sInitDat
 	p_AddParameter(init.clsVec); // position
 }
 void deClassARInverseKinematic::nfSetLocalPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
-	deClassARInverseKinematic *clsARIK = (deClassARInverseKinematic*)GetOwnerClass();
+	sARIKNatDat &nd = *static_cast<sARIKNatDat*>(p_GetNativeData(myself));
+	deClassARInverseKinematic *clsARIK = static_cast<deClassARInverseKinematic*>(GetOwnerClass());
 	deClassVector *clsVec = clsARIK->GetDS().GetClassVector();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
@@ -292,8 +280,8 @@ deClassARInverseKinematic::nfSetLocalOrientation::nfSetLocalOrientation(const sI
 	p_AddParameter(init.clsVec); // orientation
 }
 void deClassARInverseKinematic::nfSetLocalOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
-	deClassARInverseKinematic *clsARIK = (deClassARInverseKinematic*)GetOwnerClass();
+	sARIKNatDat &nd = *static_cast<sARIKNatDat*>(p_GetNativeData(myself));
+	deClassARInverseKinematic *clsARIK = static_cast<deClassARInverseKinematic*>(GetOwnerClass());
 	deClassVector *clsVec = clsARIK->GetDS().GetClassVector();
 	
 	dsRealObject *objVec = rt->GetValue(0)->GetRealObject();
@@ -314,7 +302,7 @@ deClassARInverseKinematic::nfSetAdjustPosition::nfSetAdjustPosition(const sInitD
 	p_AddParameter(init.clsBool); // adjust
 }
 void deClassARInverseKinematic::nfSetAdjustPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
+	sARIKNatDat &nd = *static_cast<sARIKNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetAdjustPosition(rt->GetValue(0)->GetBool());
 	
@@ -329,7 +317,7 @@ deClassARInverseKinematic::nfSetAdjustOrientation::nfSetAdjustOrientation(const 
 	p_AddParameter(init.clsBool); // adjust
 }
 void deClassARInverseKinematic::nfSetAdjustOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
+	sARIKNatDat &nd = *static_cast<sARIKNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetAdjustOrientation(rt->GetValue(0)->GetBool());
 	
@@ -344,7 +332,7 @@ deClassARInverseKinematic::nfSetSolverBone::nfSetSolverBone(const sInitData &ini
 	p_AddParameter(init.clsStr); // bone
 }
 void deClassARInverseKinematic::nfSetSolverBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
+	sARIKNatDat &nd = *static_cast<sARIKNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetSolverBone(rt->GetValue(0)->GetString());
 	
@@ -359,7 +347,7 @@ deClassARInverseKinematic::nfSetUseSolverBone::nfSetUseSolverBone(const sInitDat
 	p_AddParameter(init.clsBool); // useSolverBone
 }
 void deClassARInverseKinematic::nfSetUseSolverBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
+	sARIKNatDat &nd = *static_cast<sARIKNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetUseSolverBone(rt->GetValue(0)->GetBool());
 	
@@ -374,7 +362,7 @@ deClassARInverseKinematic::nfSetReachRange::nfSetReachRange(const sInitData &ini
 	p_AddParameter(init.clsFlt); // range
 }
 void deClassARInverseKinematic::nfSetReachRange::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
+	sARIKNatDat &nd = *static_cast<sARIKNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetReachRange(rt->GetValue(0)->GetFloat());
 	
@@ -389,7 +377,7 @@ deClassARInverseKinematic::nfSetReachBone::nfSetReachBone(const sInitData &init)
 	p_AddParameter(init.clsStr); // bone
 }
 void deClassARInverseKinematic::nfSetReachBone::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
+	sARIKNatDat &nd = *static_cast<sARIKNatDat*>(p_GetNativeData(myself));
 	
 	nd.rule->SetReachBone(rt->GetValue(0)->GetString());
 	
@@ -404,8 +392,8 @@ deClassARInverseKinematic::nfSetReachCenter::nfSetReachCenter(const sInitData &i
 	p_AddParameter(init.clsVec); // center
 }
 void deClassARInverseKinematic::nfSetReachCenter::RunFunction(dsRunTime *rt, dsValue *myself){
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself));
-	deScriptingDragonScript &ds = ((deClassARInverseKinematic*)GetOwnerClass())->GetDS();
+	sARIKNatDat &nd = *static_cast<sARIKNatDat*>(p_GetNativeData(myself));
+	deScriptingDragonScript &ds = (static_cast<deClassARInverseKinematic*>(GetOwnerClass()))->GetDS();
 	
 	const decVector &center = ds.GetClassVector()->GetVector(rt->GetValue(0)->GetRealObject());
 	
@@ -487,7 +475,7 @@ deAnimatorRuleInverseKinematic *deClassARInverseKinematic::GetRule(dsRealObject 
 		return NULL;
 	}
 	
-	return ((sARIKNatDat*)p_GetNativeData(myself->GetBuffer()))->rule;
+	return static_cast<sARIKNatDat*>(p_GetNativeData(myself->GetBuffer()))->rule;
 }
 
 void deClassARInverseKinematic::AssignAnimator(dsRealObject *myself, deAnimator *animator){
@@ -496,22 +484,7 @@ void deClassARInverseKinematic::AssignAnimator(dsRealObject *myself, deAnimator 
 	}
 	
 	pDS.GetClassAnimatorRule()->AssignAnimator(myself, animator);
-	
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(myself->GetBuffer()));
-	
-	if(animator == nd.animator){
-		return;
-	}
-	
-	if(nd.animator){
-		nd.animator->FreeReference();
-	}
-	
-	nd.animator = animator;
-	
-	if(animator){
-		animator->AddReference();
-	}
+	static_cast<sARIKNatDat*>(p_GetNativeData(myself->GetBuffer()))->animator = animator;
 }
 
 void deClassARInverseKinematic::PushRule(dsRunTime *rt, deAnimator *animator, deAnimatorRuleInverseKinematic *rule){
@@ -524,22 +497,14 @@ void deClassARInverseKinematic::PushRule(dsRunTime *rt, deAnimator *animator, de
 		return;
 	}
 	
-	deClassAnimatorRule * const baseClass = (deClassAnimatorRule*)GetBaseClass();
+	deClassAnimatorRule * const baseClass = static_cast<deClassAnimatorRule*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sARIKNatDat &nd = *((sARIKNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.animator = NULL;
-	nd.rule = NULL;
+	sARIKNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sARIKNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		nd.animator = animator;
-		if(animator){
-			animator->AddReference();
-		}
-		
-		nd.rule = rule;
-		rule->AddReference();
+		nd->animator = animator;
+		nd->rule = rule;
 		
 		baseClass->AssignRule(rt->GetValue(0)->GetRealObject(), rule);
 		baseClass->AssignAnimator(rt->GetValue(0)->GetRealObject(), animator);

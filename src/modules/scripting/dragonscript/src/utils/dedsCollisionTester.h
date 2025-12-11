@@ -48,6 +48,9 @@ class dsRealObject;
  * \brief Collision tester.
  */
 class dedsCollisionTester : public deBaseScriptingCollider, public deObject{
+public:
+	typedef deTObjectReference<dedsCollisionTester> Ref;
+	
 private:
 	deScriptingDragonScript &pDS;
 	

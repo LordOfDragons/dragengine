@@ -62,10 +62,6 @@ pAttachments(NULL),
 pAttachmentCount(0),
 pAttachmentSize(0),
 
-pConstraints(NULL),
-pConstraintCount(0),
-pConstraintSize(0),
-
 pPeerPhysics(NULL),
 pPeerScripting(NULL),
 
@@ -455,105 +451,60 @@ void deCollider::ApplyTorque(const decVector &torque){
 // Constraints
 ////////////////
 
+int deCollider::GetConstraintCount() const{
+	return pConstraints.GetCount();
+}
+
 deColliderConstraint *deCollider::GetConstraintAt(int index) const{
-	if(index < 0 || index >= pConstraintCount){
-		DETHROW(deeInvalidParam);
-	}
-	
-	return pConstraints[index];
+	return (deColliderConstraint*)pConstraints.GetAt(index);
 }
 
 int deCollider::IndexOfConstraint(deColliderConstraint *constraint) const{
-	if(!constraint){
-		DETHROW(deeInvalidParam);
-	}
-	int i;
-	
-	for(i=0; i<pConstraintCount; i++){
-		if(constraint == pConstraints[i]){
-			return i;
-		}
-	}
-	
-	return -1;
+	return pConstraints.IndexOf(constraint);
 }
 
 bool deCollider::HasConstraint(deColliderConstraint *constraint) const{
-	if(!constraint){
-		DETHROW(deeInvalidParam);
-	}
-	int i;
-	
-	for(i=0; i<pConstraintCount; i++){
-		if(constraint == pConstraints[i]){
-			return true;
-		}
-	}
-	
-	return false;
+	DEASSERT_NOTNULL(constraint)
+	return pConstraints.Has(constraint);
 }
 
 void deCollider::AddConstraint(deColliderConstraint *constraint){
-	if(HasConstraint(constraint)){
-		DETHROW(deeInvalidParam);
-	}
-	
-	if(pConstraintCount == pConstraintSize){
-		int newSize = pConstraintSize * 3 / 2 + 1;
-		deColliderConstraint **newArray = new deColliderConstraint*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
-		if(pConstraints){
-			memcpy(newArray, pConstraints, sizeof(deColliderConstraint*) * pConstraintSize);
-			delete [] pConstraints;
-		}
-		pConstraints = newArray;
-		pConstraintSize = newSize;
-	}
-	
-	pConstraints[pConstraintCount] = constraint;
-	pConstraintCount++;
+	pConstraints.Add(constraint);
 	
 	if(pPeerPhysics){
-		pPeerPhysics->ConstraintAdded(pConstraintCount - 1, constraint);
+		pPeerPhysics->ConstraintAdded(pConstraints.GetCount() - 1, constraint);
 	}
 }
 
 void deCollider::RemoveConstraint(deColliderConstraint *constraint){
-	int i, index = IndexOfConstraint(constraint);
-	if(index == -1){
-		DETHROW(deeInvalidParam);
-	}
-	
-	for(i=index+1; i<pConstraintCount; i++){
-		pConstraints[i - 1] = pConstraints[i];
-	}
-	pConstraintCount--;
+	int index = pConstraints.IndexOf(constraint);
+	DEASSERT_FALSE(index == -1)
 	
 	if(pPeerPhysics){
 		pPeerPhysics->ConstraintRemoved(index, constraint);
 	}
 	
-	delete constraint;
+	pConstraints.RemoveFrom(index);
 }
 
 void deCollider::RemoveAllConstraints(){
+	if(pConstraints.GetCount() == 0){
+		return;
+	}
+	
 	if(pPeerPhysics){
 		pPeerPhysics->AllConstraintsRemoved();
 	}
 	
-	while(pConstraintCount > 0){
-		delete pConstraints[pConstraintCount - 1];
-		pConstraintCount--;
-	}
+	pConstraints.RemoveAll();
 }
 
 void deCollider::NotifyConstraintChanged(int index){
-	if(index < 0 || index >= pConstraintCount){
-		DETHROW(deeInvalidParam);
-	}
+	deColliderConstraint * const constraint =
+		static_cast<deColliderConstraint*>(pConstraints.GetAt(index));
 	
 	if(pPeerPhysics){
-		pPeerPhysics->ConstraintChanged(index, pConstraints[index]);
+		pPeerPhysics->ConstraintChanged(index, constraint);
 	}
 }
 
@@ -785,11 +736,7 @@ void deCollider::pCleanUp(){
 	}
 	
 	RemoveAllCollisionTests();
-	
 	RemoveAllConstraints();
-	if(pConstraints){
-		delete [] pConstraints;
-	}
 	
 	RemoveAllAttachments();
 	if(pAttachments){

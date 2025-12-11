@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -44,7 +46,7 @@
 
 // Native Structure
 struct sCVidPNatDat{
-	deCanvasVideoPlayer *canvas;
+	deCanvasVideoPlayer::Ref canvas;
 };
 
 
@@ -57,19 +59,16 @@ deClassCanvasVideoPlayer::nfNew::nfNew(const sInitData &init) : dsFunction(init.
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassCanvasVideoPlayer::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	sCVidPNatDat &nd = *((sCVidPNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassCanvasVideoPlayer*)GetOwnerClass())->GetDS();
-	
-	// clear ( important )
-	nd.canvas = NULL;
+	sCVidPNatDat * const nd = new (p_GetNativeData(myself)) sCVidPNatDat;
+	const deScriptingDragonScript &ds = (static_cast<deClassCanvasVideoPlayer*>(GetOwnerClass()))->GetDS();
 	
 	// super call
-	deClassCanvas * const baseClass = (deClassCanvas*)GetOwnerClass()->GetBaseClass();
+	deClassCanvas * const baseClass = static_cast<deClassCanvas*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create canvas
-	nd.canvas = ds.GetGameEngine()->GetCanvasManager()->CreateCanvasVideoPlayer();
-	baseClass->AssignCanvas(myself->GetRealObject(), nd.canvas);
+	nd->canvas = ds.GetGameEngine()->GetCanvasManager()->CreateCanvasVideoPlayer();
+	baseClass->AssignCanvas(myself->GetRealObject(), nd->canvas);
 }
 
 // public func destructor()
@@ -81,12 +80,7 @@ void deClassCanvasVideoPlayer::nfDestructor::RunFunction(dsRunTime *rt, dsValue 
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sCVidPNatDat &nd = *((sCVidPNatDat*)p_GetNativeData(myself));
-	
-	if(nd.canvas){
-		nd.canvas->FreeReference();
-		nd.canvas = NULL;
-	}
+	static_cast<sCVidPNatDat*>(p_GetNativeData(myself))->~sCVidPNatDat();
 }
 
 
@@ -99,8 +93,8 @@ deClassCanvasVideoPlayer::nfGetVideoPlayer::nfGetVideoPlayer(const sInitData &in
 "getVideoPlayer", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsVidPlay){
 }
 void deClassCanvasVideoPlayer::nfGetVideoPlayer::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCVidPNatDat &nd = *((sCVidPNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassCanvasVideoPlayer*)GetOwnerClass())->GetDS();
+	const sCVidPNatDat &nd = *static_cast<sCVidPNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = (static_cast<deClassCanvasVideoPlayer*>(GetOwnerClass()))->GetDS();
 	
 	ds.GetClassVideoPlayer()->PushVideoPlayer(rt, nd.canvas->GetVideoPlayer());
 }
@@ -111,8 +105,8 @@ deClassCanvasVideoPlayer::nfSetVideoPlayer::nfSetVideoPlayer(const sInitData &in
 	p_AddParameter(init.clsVidPlay); // videoPlayer
 }
 void deClassCanvasVideoPlayer::nfSetVideoPlayer::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCVidPNatDat &nd = *((sCVidPNatDat*)p_GetNativeData(myself));
-	const deScriptingDragonScript &ds = ((deClassCanvasVideoPlayer*)GetOwnerClass())->GetDS();
+	const sCVidPNatDat &nd = *static_cast<sCVidPNatDat*>(p_GetNativeData(myself));
+	const deScriptingDragonScript &ds = (static_cast<deClassCanvasVideoPlayer*>(GetOwnerClass()))->GetDS();
 	
 	nd.canvas->SetVideoPlayer(ds.GetClassVideoPlayer()->GetVideoPlayer(rt->GetValue(0)->GetRealObject()));
 }
@@ -122,7 +116,7 @@ deClassCanvasVideoPlayer::nfGetRepeatX::nfGetRepeatX(const sInitData &init) : ds
 "getRepeatX", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCanvasVideoPlayer::nfGetRepeatX::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCVidPNatDat &nd = *((sCVidPNatDat*)p_GetNativeData(myself));
+	const sCVidPNatDat &nd = *static_cast<sCVidPNatDat*>(p_GetNativeData(myself));
 	rt->PushInt(nd.canvas->GetRepeatX());
 }
 
@@ -132,7 +126,7 @@ deClassCanvasVideoPlayer::nfSetRepeatX::nfSetRepeatX(const sInitData &init) : ds
 	p_AddParameter(init.clsInt); // count
 }
 void deClassCanvasVideoPlayer::nfSetRepeatX::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCVidPNatDat &nd = *((sCVidPNatDat*)p_GetNativeData(myself));
+	const sCVidPNatDat &nd = *static_cast<sCVidPNatDat*>(p_GetNativeData(myself));
 	nd.canvas->SetRepeatX(rt->GetValue(0)->GetInt());
 }
 
@@ -141,7 +135,7 @@ deClassCanvasVideoPlayer::nfGetRepeatY::nfGetRepeatY(const sInitData &init) : ds
 "getRepeatY", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt){
 }
 void deClassCanvasVideoPlayer::nfGetRepeatY::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCVidPNatDat &nd = *((sCVidPNatDat*)p_GetNativeData(myself));
+	const sCVidPNatDat &nd = *static_cast<sCVidPNatDat*>(p_GetNativeData(myself));
 	rt->PushInt(nd.canvas->GetRepeatY());
 }
 
@@ -151,7 +145,7 @@ deClassCanvasVideoPlayer::nfSetRepeatY::nfSetRepeatY(const sInitData &init) : ds
 	p_AddParameter(init.clsInt); // count
 }
 void deClassCanvasVideoPlayer::nfSetRepeatY::RunFunction(dsRunTime *rt, dsValue *myself){
-	const sCVidPNatDat &nd = *((sCVidPNatDat*)p_GetNativeData(myself));
+	const sCVidPNatDat &nd = *static_cast<sCVidPNatDat*>(p_GetNativeData(myself));
 	nd.canvas->SetRepeatY(rt->GetValue(0)->GetInt());
 }
 
@@ -163,7 +157,7 @@ dsFunction(init.clsCVidP, "hashCode", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, 
 }
 
 void deClassCanvasVideoPlayer::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCanvasVideoPlayer * const canvas = ((sCVidPNatDat*)p_GetNativeData(myself))->canvas;
+	deCanvasVideoPlayer * const canvas = static_cast<sCVidPNatDat*>(p_GetNativeData(myself))->canvas;
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)canvas);
 }
@@ -174,15 +168,15 @@ dsFunction(init.clsCVidP, "equals", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, in
 	p_AddParameter(init.clsObj); // obj
 }
 void deClassCanvasVideoPlayer::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	deCanvasVideoPlayer * const canvas = ((sCVidPNatDat*)p_GetNativeData(myself))->canvas;
-	deClassCanvasVideoPlayer * const clsCVidP = (deClassCanvasVideoPlayer*)GetOwnerClass();
+	deCanvasVideoPlayer * const canvas = static_cast<sCVidPNatDat*>(p_GetNativeData(myself))->canvas;
+	deClassCanvasVideoPlayer * const clsCVidP = static_cast<deClassCanvasVideoPlayer*>(GetOwnerClass());
 	dsValue * const obj = rt->GetValue(0);
 	
 	if(!p_IsObjOfType(obj, clsCVidP)){
 		rt->PushBool(false);
 		
 	}else{
-		deCanvasVideoPlayer * const otherCanvas = ((sCVidPNatDat*)p_GetNativeData(obj))->canvas;
+		deCanvasVideoPlayer * const otherCanvas = static_cast<sCVidPNatDat*>(p_GetNativeData(obj))->canvas;
 		rt->PushBool(canvas == otherCanvas);
 	}
 }
@@ -247,10 +241,10 @@ void deClassCanvasVideoPlayer::CreateClassMembers(dsEngine *engine){
 
 deCanvasVideoPlayer *deClassCanvasVideoPlayer::GetCanvas(dsRealObject *myself) const {
 	if(!myself){
-		return NULL;
+		return nullptr;
 	}
 	
-	return ((sCVidPNatDat*)p_GetNativeData(myself->GetBuffer()))->canvas;
+	return static_cast<sCVidPNatDat*>(p_GetNativeData(myself->GetBuffer()))->canvas;
 }
 
 void deClassCanvasVideoPlayer::PushCanvas(dsRunTime *rt, deCanvasVideoPlayer *canvas){
@@ -263,16 +257,13 @@ void deClassCanvasVideoPlayer::PushCanvas(dsRunTime *rt, deCanvasVideoPlayer *ca
 		return;
 	}
 	
-	deClassCanvas * const baseClass = (deClassCanvas*)GetBaseClass();
+	deClassCanvas * const baseClass = static_cast<deClassCanvas*>(GetBaseClass());
 	rt->CreateObjectNakedOnStack(this);
-	sCVidPNatDat &nd = *((sCVidPNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()));
-	nd.canvas = NULL;
+	sCVidPNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sCVidPNatDat;
 	
 	try{
 		baseClass->CallBaseClassConstructor(rt, rt->GetValue(0), baseClass->GetFirstConstructor(), 0);
-		
-		nd.canvas = canvas;
-		canvas->AddReference();
+		nd->canvas = canvas;
 		
 		baseClass->AssignCanvas(rt->GetValue(0)->GetRealObject(), canvas);
 		

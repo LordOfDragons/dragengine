@@ -325,7 +325,7 @@ void deoglGIBVH::BuildBVH(){
 			pBVHTBOIndex->AddVec2(node.GetFirstIndex(), node.GetPrimitiveCount());
 		}
 		
-		pBlockBVH.TakeOver(shared.GetSharedTBONode()->AddBlock(pBVHTBOIndex, pBVHTBONodeBox));
+		pBlockBVH = shared.GetSharedTBONode()->AddBlock(pBVHTBOIndex, pBVHTBONodeBox);
 		
 		pIndexRootNode = ((deoglDynamicTBOBlock*)(deObject*)pBlockBVH)->GetOffset();
 	}

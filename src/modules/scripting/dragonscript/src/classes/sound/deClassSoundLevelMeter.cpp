@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -47,7 +49,7 @@
 
 
 struct sSLMNatDat{
-	deSoundLevelMeter *soundLevelMeter;
+	deSoundLevelMeter::Ref soundLevelMeter;
 };
 
 
@@ -61,15 +63,12 @@ dsFunction(init.clsSoundLevelMeter, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassSoundLevelMeter::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	sSLMNatDat &nd = *((sSLMNatDat*)p_GetNativeData(myself));
-	deSoundLevelMeterManager *tsMgr = ((deClassSoundLevelMeter*)GetOwnerClass())
+	sSLMNatDat * const nd = new (p_GetNativeData(myself)) sSLMNatDat;
+	
+	deSoundLevelMeterManager *tsMgr = static_cast<deClassSoundLevelMeter*>(GetOwnerClass())
 		->GetDS().GetGameEngine()->GetSoundLevelMeterManager();
 	
-	// clear ( important )
-	nd.soundLevelMeter = NULL;
-	
-	// create soundLevelMeter
-	nd.soundLevelMeter = tsMgr->CreateSoundLevelMeter();
+	nd->soundLevelMeter = tsMgr->CreateSoundLevelMeter();
 }
 
 // public func destructor()
@@ -82,12 +81,7 @@ void deClassSoundLevelMeter::nfDestructor::RunFunction(dsRunTime*, dsValue *myse
 		return; // protected against GC cleaning up leaking
 	}
 	
-	sSLMNatDat &nd = *((sSLMNatDat*)p_GetNativeData(myself));
-	
-	if(nd.soundLevelMeter){
-		nd.soundLevelMeter->FreeReference();
-		nd.soundLevelMeter = NULL;
-	}
+	static_cast<sSLMNatDat*>(p_GetNativeData(myself))->~sSLMNatDat();
 }
 
 
@@ -101,8 +95,8 @@ dsFunction(init.clsSoundLevelMeter, "getType", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsSoundLevelMeterType){
 }
 void deClassSoundLevelMeter::nfGetType::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
-	rt->PushValue(((deClassSoundLevelMeter*)GetOwnerClass())->GetClassSoundLevelMeterType()
+	const deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
+	rt->PushValue(static_cast<deClassSoundLevelMeter*>(GetOwnerClass())->GetClassSoundLevelMeterType()
 		->GetVariable(soundLevelMeter.GetType())->GetStaticValue());
 }
 
@@ -117,9 +111,9 @@ void deClassSoundLevelMeter::nfSetType::RunFunction(dsRunTime *rt, dsValue *myse
 		DSTHROW(dueNullPointer);
 	}
 	
-	deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
 	soundLevelMeter.SetType((deSoundLevelMeter::eMeterTypes)
-		((dsClassEnumeration*)rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
+		static_cast<dsClassEnumeration*>(rt->GetEngine()->GetClassEnumeration())->GetConstantOrder(
 			*rt->GetValue( 0 )->GetRealObject() ) );
 }
 
@@ -129,8 +123,8 @@ dsFunction(init.clsSoundLevelMeter, "getPosition", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsDVector){
 }
 void deClassSoundLevelMeter::nfGetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
-	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
+	const deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = static_cast<deClassSoundLevelMeter*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassDVector()->PushDVector(rt, soundLevelMeter.GetPosition());
 }
@@ -142,8 +136,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsDVector); // position
 }
 void deClassSoundLevelMeter::nfSetPosition::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
-	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
+	deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = static_cast<deClassSoundLevelMeter*>(GetOwnerClass())->GetDS();
 	
 	soundLevelMeter.SetPosition(ds.GetClassDVector()->GetDVector(rt->GetValue(0)->GetRealObject()));
 }
@@ -154,8 +148,8 @@ dsFunction(init.clsSoundLevelMeter, "getOrientation", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsQuaternion){
 }
 void deClassSoundLevelMeter::nfGetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
-	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
+	const deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = static_cast<deClassSoundLevelMeter*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassQuaternion()->PushQuaternion(rt, soundLevelMeter.GetOrientation());
 }
@@ -167,8 +161,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsQuaternion); // orientation
 }
 void deClassSoundLevelMeter::nfSetOrientation::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
-	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
+	deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = static_cast<deClassSoundLevelMeter*>(GetOwnerClass())->GetDS();
 	
 	soundLevelMeter.SetOrientation(ds.GetClassQuaternion()->GetQuaternion(rt->GetValue(0)->GetRealObject()));
 }
@@ -179,7 +173,7 @@ dsFunction(init.clsSoundLevelMeter, "getConeAngle", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassSoundLevelMeter::nfGetConeAngle::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	const deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
 	rt->PushFloat(soundLevelMeter.GetConeAngle() * RAD2DEG);
 }
 
@@ -190,7 +184,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // angle
 }
 void deClassSoundLevelMeter::nfSetConeAngle::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
 	soundLevelMeter.SetConeAngle(rt->GetValue(0)->GetFloat() * DEG2RAD);
 }
 
@@ -200,7 +194,7 @@ dsFunction(init.clsSoundLevelMeter, "getAudibleDistance", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
 }
 void deClassSoundLevelMeter::nfGetAudibleDistance::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	const deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
 	rt->PushFloat(soundLevelMeter.GetAudibleDistance());
 }
 
@@ -211,7 +205,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // audibleDistance
 }
 void deClassSoundLevelMeter::nfSetAudibleDistance::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
 	soundLevelMeter.SetAudibleDistance(rt->GetValue(0)->GetFloat());
 }
 
@@ -221,8 +215,8 @@ dsFunction(init.clsSoundLevelMeter, "getLayerMask", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsLayerMask){
 }
 void deClassSoundLevelMeter::nfGetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
-	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
+	const deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = static_cast<deClassSoundLevelMeter*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassLayerMask()->PushLayerMask(rt, soundLevelMeter.GetLayerMask());
 }
@@ -234,8 +228,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsLayerMask); // layerMask
 }
 void deClassSoundLevelMeter::nfSetLayerMask::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
-	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
+	deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = static_cast<deClassSoundLevelMeter*>(GetOwnerClass())->GetDS();
 	
 	soundLevelMeter.SetLayerMask(ds.GetClassLayerMask()->GetLayerMask(rt->GetValue(0)->GetRealObject()));
 }
@@ -246,7 +240,7 @@ dsFunction(init.clsSoundLevelMeter, "getEnabled", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 }
 void deClassSoundLevelMeter::nfGetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	const deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
 	
 	rt->PushBool(soundLevelMeter.GetEnabled());
 }
@@ -258,7 +252,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsBool); // enabled
 }
 void deClassSoundLevelMeter::nfSetEnabled::RunFunction(dsRunTime *rt, dsValue *myself){
-	deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
 	
 	soundLevelMeter.SetEnabled(rt->GetValue(0)->GetBool());
 }
@@ -271,7 +265,7 @@ dsFunction(init.clsSoundLevelMeter, "getAudibleSpeakerCount", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 void deClassSoundLevelMeter::nfGetAudibleSpeakerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
+	const deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
 	
 	rt->PushInt(soundLevelMeter.GetAudibleSpeakerCount());
 }
@@ -283,8 +277,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsSoundLevelMeterSpeaker){
 	p_AddParameter(init.clsInteger); // index
 }
 void deClassSoundLevelMeter::nfGetAudibleSpeakerAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
-	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
+	const deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = static_cast<deClassSoundLevelMeter*>(GetOwnerClass())->GetDS();
 	
 	ds.GetClassSoundLevelMeterSpeaker()->PushSoundLevelMeterSpeaker(rt,
 		soundLevelMeter.GetAudibleSpeakerAt(rt->GetValue(0)->GetInt()));
@@ -298,9 +292,9 @@ dsFunction(init.clsSoundLevelMeter, "getListener", DSFT_FUNCTION,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsSoundLevelMeterListener){
 }
 void deClassSoundLevelMeter::nfGetListener::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
-	const deScriptingDragonScript &ds = ((deClassSoundLevelMeter*)GetOwnerClass())->GetDS();
-	const dedsSoundLevelMeter * const peer = (dedsSoundLevelMeter*)soundLevelMeter.GetPeerScripting();
+	const deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
+	const deScriptingDragonScript &ds = static_cast<deClassSoundLevelMeter*>(GetOwnerClass())->GetDS();
+	const dedsSoundLevelMeter * const peer = static_cast<dedsSoundLevelMeter*>(soundLevelMeter.GetPeerScripting());
 	
 	if(peer){
 		rt->PushObject(peer->GetCallback(), ds.GetClassSoundLevelMeterListener());
@@ -317,8 +311,8 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsSoundLevelMeterListener); // listener
 }
 void deClassSoundLevelMeter::nfSetListener::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSoundLevelMeter &soundLevelMeter = *(((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter);
-	dedsSoundLevelMeter * const peer = (dedsSoundLevelMeter*)soundLevelMeter.GetPeerScripting();
+	const deSoundLevelMeter &soundLevelMeter = *(static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter);
+	dedsSoundLevelMeter * const peer = static_cast<dedsSoundLevelMeter*>(soundLevelMeter.GetPeerScripting());
 	if(peer){
 		peer->SetCallback(rt->GetValue(0)->GetRealObject());
 	}
@@ -333,7 +327,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsInteger){
 }
 
 void deClassSoundLevelMeter::nfHashCode::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSoundLevelMeter * const soundLevelMeter = ((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter;
+	const deSoundLevelMeter * const soundLevelMeter = static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter;
 	
 	// hash code = memory location
 	rt->PushInt((int)(intptr_t)soundLevelMeter);
@@ -346,15 +340,15 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsBool){
 	p_AddParameter(init.clsObject); // obj
 }
 void deClassSoundLevelMeter::nfEquals::RunFunction(dsRunTime *rt, dsValue *myself){
-	const deSoundLevelMeter * const soundLevelMeter = ((sSLMNatDat*)p_GetNativeData(myself))->soundLevelMeter;
-	deClassSoundLevelMeter * const clsSoundLevelMeter = (deClassSoundLevelMeter*)GetOwnerClass();
+	const deSoundLevelMeter * const soundLevelMeter = static_cast<sSLMNatDat*>(p_GetNativeData(myself))->soundLevelMeter;
+	deClassSoundLevelMeter * const clsSoundLevelMeter = static_cast<deClassSoundLevelMeter*>(GetOwnerClass());
 	
 	dsValue * const object = rt->GetValue(0);
 	if(!p_IsObjOfType(object, clsSoundLevelMeter)){
 		rt->PushBool(false);
 		
 	}else{
-		rt->PushBool(soundLevelMeter == ((sSLMNatDat*)p_GetNativeData(object))->soundLevelMeter);
+		rt->PushBool(soundLevelMeter == static_cast<sSLMNatDat*>(p_GetNativeData(object))->soundLevelMeter);
 	}
 }
 
@@ -368,7 +362,8 @@ void deClassSoundLevelMeter::nfEquals::RunFunction(dsRunTime *rt, dsValue *mysel
 
 deClassSoundLevelMeter::deClassSoundLevelMeter(deScriptingDragonScript &ds) :
 dsClass("SoundLevelMeter", DSCT_CLASS, DSTM_PUBLIC | DSTM_NATIVE | DSTM_FIXED),
-pDS(ds)
+pDS(ds),
+pClsSoundLevelMeterType(NULL)
 {
 	GetParserInfo()->SetParent(DENS_SCENERY);
 	GetParserInfo()->SetBase("Object");
@@ -438,7 +433,7 @@ deSoundLevelMeter *deClassSoundLevelMeter::GetSoundLevelMeter(dsRealObject *myse
 	if(!myself){
 		return NULL;
 	}
-	return ((sSLMNatDat*)p_GetNativeData(myself->GetBuffer()))->soundLevelMeter;
+	return static_cast<sSLMNatDat*>(p_GetNativeData(myself->GetBuffer()))->soundLevelMeter;
 }
 
 void deClassSoundLevelMeter::PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMeter *soundLevelMeter){
@@ -453,7 +448,5 @@ void deClassSoundLevelMeter::PushSoundLevelMeter(dsRunTime *rt, deSoundLevelMete
 	
 	// create new value
 	rt->CreateObjectNakedOnStack(this);
-	((sSLMNatDat*)p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer()))
-		->soundLevelMeter = soundLevelMeter;
-	soundLevelMeter->AddReference();
+	(new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sSLMNatDat)->soundLevelMeter = soundLevelMeter;
 }

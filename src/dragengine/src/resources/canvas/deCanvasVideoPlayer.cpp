@@ -47,6 +47,7 @@ pRepeatY(1){
 }
 
 deCanvasVideoPlayer::~deCanvasVideoPlayer(){
+	SetPeerGraphic(nullptr);
 }
 
 

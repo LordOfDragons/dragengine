@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -56,24 +58,24 @@ public:
 	pRT(rt), pMyself(myself), pOcclusionMesh(NULL){
 	}
 	
-	virtual void BuildOcclusionMesh(deOcclusionMesh *occlusionMesh){
+	void BuildOcclusionMesh(deOcclusionMesh *occlusionMesh) override{
 		pOcclusionMesh = occlusionMesh;
 		
 		try{
 			pRT->RunFunction(pMyself, "buildOcclusionMesh", 0);
 			
 		}catch(const duException &e){
-			pOcclusionMesh = NULL;
+			pOcclusionMesh = nullptr;
 			pRT->PrintExceptionTrace();
 			e.PrintError();
 			DETHROW(deeInvalidParam);
 			
 		}catch(...){
-			pOcclusionMesh = NULL;
+			pOcclusionMesh = nullptr;
 			throw;
 		}
 		
-		pOcclusionMesh = NULL;
+		pOcclusionMesh = nullptr;
 	}
 	
 	inline deOcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
@@ -95,7 +97,7 @@ dsFunction(init.clsOcclusionMeshBuilder, DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR,
 DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassOcclusionMeshBuilder::nfNew::RunFunction(dsRunTime*, dsValue *myself){
-	((sMdlBldNatDat*)p_GetNativeData(myself))->builder = NULL;
+	static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder = nullptr;
 }
 
 // public destructor Destructor()
@@ -115,12 +117,12 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsOcclusionMesh){
 	p_AddParameter(init.clsString); // filename
 }
 void deClassOcclusionMeshBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *myself){
-	sMdlBldNatDat &nd = *((sMdlBldNatDat*)p_GetNativeData(myself));
+	sMdlBldNatDat &nd = *static_cast<sMdlBldNatDat*>(p_GetNativeData(myself));
 	if(nd.builder){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassOcclusionMeshBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassOcclusionMeshBuilder*>(GetOwnerClass()))->GetDS();
 	const char * const filename = rt->GetValue(0)->GetString();
 	deClassOcclusionMeshBuilder_Builder builder(rt, myself);
 	deOcclusionMesh::Ref occlusionMesh;
@@ -131,11 +133,11 @@ void deClassOcclusionMeshBuilder::nfBuild::RunFunction(dsRunTime *rt, dsValue *m
 		occlusionMesh = ds.GetGameEngine()->GetOcclusionMeshManager()->CreateOcclusionMesh(filename, builder);
 		
 	}catch(...){
-		nd.builder = NULL;
+		nd.builder = nullptr;
 		throw;
 	}
 	
-	nd.builder = NULL;
+	nd.builder = nullptr;
 	ds.GetClassOcclusionMesh()->PushOcclusionMesh(rt, occlusionMesh);
 }
 
@@ -158,7 +160,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassOcclusionMeshBuilder::nfSetBoneCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMeshBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassOcclusionMeshBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetOcclusionMesh()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -177,12 +179,12 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsQuaternion); // orientation
 }
 void deClassOcclusionMeshBuilder::nfSetBoneAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMeshBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassOcclusionMeshBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetOcclusionMesh()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassOcclusionMeshBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassOcclusionMeshBuilder*>(GetOwnerClass()))->GetDS();
 	deOcclusionMeshBone &bone = builder->GetOcclusionMesh()->GetBoneAt(rt->GetValue(0)->GetInt());
 	bone.SetName(rt->GetValue(1)->GetString());
 	bone.SetParent(rt->GetValue(2)->GetInt());
@@ -197,7 +199,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassOcclusionMeshBuilder::nfSetWeightCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMeshBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassOcclusionMeshBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetOcclusionMesh()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -214,7 +216,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsFloat); // weight
 }
 void deClassOcclusionMeshBuilder::nfSetWeightAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMeshBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassOcclusionMeshBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetOcclusionMesh()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -231,7 +233,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassOcclusionMeshBuilder::nfSetWeightGroupCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMeshBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassOcclusionMeshBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetOcclusionMesh()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -247,7 +249,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassOcclusionMeshBuilder::nfSetWeightGroupAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMeshBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassOcclusionMeshBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetOcclusionMesh()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -262,7 +264,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassOcclusionMeshBuilder::nfSetVertexCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMeshBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassOcclusionMeshBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetOcclusionMesh()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -279,12 +281,12 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // weightSet
 }
 void deClassOcclusionMeshBuilder::nfSetVertexAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMeshBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	deClassOcclusionMeshBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetOcclusionMesh()){
 		DSTHROW(dueInvalidAction);
 	}
 	
-	const deScriptingDragonScript &ds = ((deClassOcclusionMeshBuilder*)GetOwnerClass())->GetDS();
+	const deScriptingDragonScript &ds = (static_cast<deClassOcclusionMeshBuilder*>(GetOwnerClass()))->GetDS();
 	deOcclusionMeshVertex &vertex = builder->GetOcclusionMesh()->GetVertexAt(rt->GetValue(0)->GetInt());
 	vertex.SetPosition(ds.GetClassVector()->GetVector(rt->GetValue(1)->GetRealObject()));
 	vertex.SetWeightSet(rt->GetValue(2)->GetInt());
@@ -297,7 +299,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassOcclusionMeshBuilder::nfSetCornerCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMeshBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassOcclusionMeshBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetOcclusionMesh()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -313,7 +315,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // vertex
 }
 void deClassOcclusionMeshBuilder::nfSetCornerAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMeshBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassOcclusionMeshBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetOcclusionMesh()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -328,7 +330,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // count
 }
 void deClassOcclusionMeshBuilder::nfSetFaceCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMeshBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassOcclusionMeshBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetOcclusionMesh()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -344,7 +346,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // cornerCount
 }
 void deClassOcclusionMeshBuilder::nfSetFaceAt::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMeshBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassOcclusionMeshBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetOcclusionMesh()){
 		DSTHROW(dueInvalidAction);
 	}
@@ -359,7 +361,7 @@ DSTM_PROTECTED | DSTM_NATIVE, init.clsVoid){
 	p_AddParameter(init.clsInteger); // doubleSidedFaceCount
 }
 void deClassOcclusionMeshBuilder::nfSetDoubleSidedFaceCount::RunFunction(dsRunTime *rt, dsValue *myself){
-	deClassOcclusionMeshBuilder_Builder * const builder = ((sMdlBldNatDat*)p_GetNativeData(myself))->builder;
+	const deClassOcclusionMeshBuilder_Builder * const builder = static_cast<sMdlBldNatDat*>(p_GetNativeData(myself))->builder;
 	if(!builder || !builder->GetOcclusionMesh()){
 		DSTHROW(dueInvalidAction);
 	}

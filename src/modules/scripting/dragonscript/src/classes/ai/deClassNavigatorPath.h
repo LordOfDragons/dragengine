@@ -46,10 +46,10 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create script class. */
-	deClassNavigatorPath(deScriptingDragonScript &ds);
+	explicit deClassNavigatorPath(deScriptingDragonScript &ds);
 	
 	/** \brief Clean up class. */
-	virtual ~deClassNavigatorPath();
+	~deClassNavigatorPath() override;
 	/*@}*/
 	
 	
@@ -60,7 +60,7 @@ public:
 	inline deScriptingDragonScript &GetDS() const{ return pDS; }
 	
 	/** \brief Create class members. */
-	void CreateClassMembers(dsEngine *engine);
+	void CreateClassMembers(dsEngine *engine) override;
 	
 	/** \brief Navigator path or throws exception if myself is \em NULL. */
 	deNavigatorPath &GetNavigatorPath(dsRealObject *myself) const;
@@ -91,7 +91,7 @@ private:
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{\
 	public: \
-		name(const sInitData &init); \
+		explicit name(const sInitData &init); \
 		void RunFunction(dsRunTime *RT, dsValue *This); \
 	}
 	DEF_NATFUNC(nfNew);

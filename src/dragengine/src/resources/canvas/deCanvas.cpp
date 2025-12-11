@@ -58,7 +58,8 @@ pLLViewNext(NULL){
 }
 
 deCanvas::~deCanvas(){
-	SetPeerGraphic(NULL);
+	SetPeerGraphic(nullptr);
+	SetMask(nullptr);
 }
 
 

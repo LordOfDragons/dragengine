@@ -1361,7 +1361,7 @@ void deScriptingDragonScript::pLoadBasicPackage(){
 		package->AddHostClass(pClsGame = new deClassGame(*this));
 		package->AddHostClass(pClsEngine = new deClassEngine(*this));
 		package->AddHostClass(pClsMath = new deClassMath(this));
-		package->AddHostClass(pClsModPar = new deClassModuleParameter(engine, this));
+		package->AddHostClass(pClsModPar = new deClassModuleParameter(engine, *this));
 		package->AddHostClass(pClsScrSys = new deClassScriptSystem(*this));
 		package->AddHostClass(pClsCRSys = new deClassCrashRecoverySystem(*this));
 		package->AddHostClass(pClsAISys = new deClassAISystem(*this));
