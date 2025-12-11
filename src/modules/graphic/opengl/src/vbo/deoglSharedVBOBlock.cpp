@@ -83,8 +83,8 @@ void deoglSharedVBOBlock::DelayedRemove(){
 		const deoglSharedVBOBlock::Ref pVBOBlock;
 		
 	public:
-		cDelayedRemove(deoglSharedVBOBlock *vboBlock) : pVBOBlock(vboBlock){
-		}
+		typedef deTObjectReference<cDelayedRemove> Ref;
+		explicit cDelayedRemove(deoglSharedVBOBlock *vboBlock) : pVBOBlock(vboBlock){}
 		
 	protected:
 		~cDelayedRemove(){
@@ -92,8 +92,8 @@ void deoglSharedVBOBlock::DelayedRemove(){
 		}
 	};
 	
-	pVBO->GetParentList()->GetRenderThread().GetDelayedOperations().AddReleaseObject(
-		deObject::Ref::New(new cDelayedRemove(this)));
+	pVBO->GetParentList()->GetRenderThread().GetDelayedOperations().
+		AddReleaseObject(cDelayedRemove::Ref::NewWith(this));
 }
 
 void deoglSharedVBOBlock::SetSize(int size){

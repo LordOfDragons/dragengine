@@ -38,6 +38,10 @@
  * in which case this node is an empty node of 0 size.
  */
 class dedsSTNImage : public dedsStyledTextNode{
+public:
+	typedef deTObjectReference<dedsSTNImage> Ref;
+	
+	
 private:
 	deImage::Ref pImage;
 	

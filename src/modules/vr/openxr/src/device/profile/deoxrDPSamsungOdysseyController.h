@@ -33,6 +33,8 @@
  */
 class deoxrDPSamsungOdysseyController : public deoxrDPMicrosoftMixedRealityMotionController{
 public:
+	typedef deTObjectReference<deoxrDPSamsungOdysseyController> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */

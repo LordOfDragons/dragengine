@@ -70,7 +70,7 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRDecal &pDecal;
 	public:
-		typedef deTObjectReference<deoglRDecal> Ref;
+		typedef deTObjectReference<WorldComputeElement> Ref;
 		WorldComputeElement(deoglRDecal &decal);
 		void UpdateData(sDataElement &data) const override;
 		void UpdateDataGeometries(sDataElementGeometry *data) const override;
@@ -107,7 +107,7 @@ private:
 	
 	deoglRComponent *pParentComponent;
 	bool pComponentMarkedRemove;
-	deoglWorldComputeElement::Ref pWorldComputeElement;
+	WorldComputeElement::Ref pWorldComputeElement;
 	
 	deoglSharedSPBElement::Ref pSharedSPBElement;
 	deoglRenderTaskSharedInstance *pRTSInstance;

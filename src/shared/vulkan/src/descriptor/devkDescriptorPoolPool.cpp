@@ -69,14 +69,14 @@ devkDescriptorPoolSlot::Ref devkDescriptorPoolPool::Get(){
 	// return next free slot if present
 	if(pFreeSlots.GetCount() > 0){
 		const int index = pFreeSlots.GetCount() - 1;
-		devkDescriptorPoolSlot::Ref slot((devkDescriptorPoolSlot*)pFreeSlots.GetAt(index));
+		devkDescriptorPoolSlot::Ref slot(static_cast<devkDescriptorPoolSlot*>(pFreeSlots.GetAt(index)));
 		pFreeSlots.RemoveFrom(index);
 		return slot;
 	}
 	
 	// if the pool ran out of memory do not try allocating new sets
 	if(pOutOfMemory){
-		return nullptr;
+		return {};
 	}
 	
 	// no free slots present. try allocate a new descriptor set. this can fail if
@@ -100,7 +100,7 @@ devkDescriptorPoolSlot::Ref devkDescriptorPoolPool::Get(){
 	case VK_ERROR_OUT_OF_POOL_MEMORY:
 	case VK_ERROR_FRAGMENTED_POOL:
 		pOutOfMemory = true;
-		return nullptr;
+		return {};
 		
 	default:
 		#ifdef VK_CHECKCOMMANDS
@@ -122,7 +122,6 @@ void devkDescriptorPoolPool::Return(devkDescriptorPoolSlot *slot){
 	}
 	
 	pFreeSlots.Add(slot);
-	slot->FreeReference(); // caller held reference
 }
 
 

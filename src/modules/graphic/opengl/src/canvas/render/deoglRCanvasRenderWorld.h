@@ -35,6 +35,11 @@ class deoglRWorld;
  * Render canvas render world.
  */
 class deoglRCanvasRenderWorld : public deoglRCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRCanvasRenderWorld> Ref;
+	
+	
 private:
 	deoglRCamera::Ref pCamera;
 	bool pForceToneMapAdaption;

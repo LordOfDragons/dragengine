@@ -26,8 +26,8 @@
 #define _DEOGLEFFECTDISTORTIMAGE_H_
 
 #include "deoglEffect.h"
+#include "render/deoglREffectDistortImage.h"
 
-class deoglREffectDistortImage;
 class deEffectDistortImage;
 
 
@@ -39,7 +39,7 @@ class deoglEffectDistortImage : public deoglEffect{
 private:
 	const deEffectDistortImage &pEffectDistortImage;
 	
-	deoglREffectDistortImage *pREffectDistortImage;
+	deoglREffectDistortImage::Ref pREffectDistortImage;
 	
 	bool pDirtyStrength;
 	bool pDirtyImage;

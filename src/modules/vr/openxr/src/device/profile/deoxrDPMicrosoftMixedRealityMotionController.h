@@ -33,6 +33,8 @@
  */
 class deoxrDPMicrosoftMixedRealityMotionController : public deoxrDPBaseTwoHandController{
 public:
+	typedef deTObjectReference<deoxrDPMicrosoftMixedRealityMotionController> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */

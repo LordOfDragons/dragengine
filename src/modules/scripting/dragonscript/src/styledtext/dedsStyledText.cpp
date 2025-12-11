@@ -36,7 +36,7 @@
 ////////////////////////////
 
 dedsStyledText::dedsStyledText() :
-pRootNode(dedsStyledTextNode::Ref::New(new dedsSTNParagraph)){
+pRootNode(dedsSTNParagraph::Ref::NewWith()){
 }
 
 

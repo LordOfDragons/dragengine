@@ -25,6 +25,7 @@
 #ifndef _DEOGLRCOMPONENT_H_
 #define _DEOGLRCOMPONENT_H_
 
+#include "deoglRComponentWCElement.h"
 #include "../deoglBasics.h"
 #include "../envmap/deoglEnvironmentMap.h"
 #include "../light/deoglLightList.h"
@@ -91,7 +92,7 @@ private:
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
-	deoglWorldComputeElement::Ref pWorldComputeElement;
+	deoglRComponentWCElement::Ref pWorldComputeElement;
 	bool pHasEnteredWorld;
 	
 	

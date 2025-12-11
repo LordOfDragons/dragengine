@@ -77,7 +77,7 @@ decBaseFileReader::Ref deVFSMemoryFiles::OpenFileForReading(const decPath &path)
 		DETHROW_INFO(deeFileNotFound, path.GetPathUnix());
 	}
 	
-	return decBaseFileReader::Ref::New(new decMemoryFileReader((decMemoryFile*)pFiles.GetAt(index)));
+	return decMemoryFileReader::Ref::NewWith(static_cast<decMemoryFile*>(pFiles.GetAt(index)));
 }
 
 decBaseFileWriter::Ref deVFSMemoryFiles::OpenFileForWriting(const decPath &path){

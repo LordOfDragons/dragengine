@@ -35,6 +35,10 @@
  * Paragraph node in a styled text object storing a list of child nodes.
  */
 class dedsSTNParagraph : public dedsStyledTextNode{
+public:
+	typedef deTObjectReference<dedsSTNParagraph> Ref;
+	
+	
 private:
 	decObjectOrderedSet pNodes;
 	

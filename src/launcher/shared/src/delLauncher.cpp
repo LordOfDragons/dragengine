@@ -104,7 +104,7 @@ pLogSource(loggerSource),
 pEngine(*this, engineLogFileTitle),
 pGameManager(*this),
 pPatchManager(*this),
-pEngineInstanceFactory(delEngineInstance::Factory::Ref::New(new delEngineInstanceThreaded::Factory))
+pEngineInstanceFactory(delEngineInstanceThreaded::Factory::Ref::NewWith())
 {
 	try{
 		pLogger.TakeOver(new deLoggerChain);

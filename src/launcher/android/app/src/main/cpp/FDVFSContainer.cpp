@@ -44,10 +44,10 @@ decBaseFileReader::Ref FDVFSContainer::OpenFileForReading(const decPath &path) {
     DEASSERT_TRUE(iter != pEntries.cend())
 
     const FDProducer::Ref &producer = iter->second->GetProducer();
-    return decBaseFileReader::Ref::New(new FDFileReader(iter->first.c_str(),
-                                       producer->CreateFileDescriptor(),
-                                       iter->second->GetOffset(),
-                                       iter->second->GetSize(), producer));
+    return FDFileReader::Ref::NewWith(iter->first.c_str(),
+                                      producer->CreateFileDescriptor(),
+                                      iter->second->GetOffset(),
+                                      iter->second->GetSize(), producer);
 }
 
 decBaseFileWriter::Ref FDVFSContainer::OpenFileForWriting(const decPath &path) {

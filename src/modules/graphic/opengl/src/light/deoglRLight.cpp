@@ -119,7 +119,7 @@ pRenderThread(renderThread),
 
 pParentWorld(NULL),
 pOctreeNode(NULL),
-pWorldComputeElement(deoglWorldComputeElement::Ref::New(new WorldComputeElement(*this))),
+pWorldComputeElement(WorldComputeElement::Ref::NewWith(*this)),
 
 pActive(false),
 pLightType(deLight::eltPoint),

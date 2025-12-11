@@ -51,12 +51,11 @@ deoglEffect(ogl, effect),
 
 pEffectDistortImage(effect),
 
-pREffectDistortImage(NULL),
+pREffectDistortImage(deoglREffectDistortImage::Ref::NewWith(ogl.GetRenderThread())),
 
 pDirtyStrength(true),
 pDirtyImage(true)
 {
-	pREffectDistortImage = new deoglREffectDistortImage(ogl.GetRenderThread());
 	InitREffect(pREffectDistortImage);
 }
 

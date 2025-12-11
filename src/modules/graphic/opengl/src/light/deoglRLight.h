@@ -75,11 +75,8 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRLight &pLight;
 	public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRLight> Ref;
-
-
-		WorldComputeElement(deoglRLight &light);
+		typedef deTObjectReference<WorldComputeElement> Ref;
+		explicit WorldComputeElement(deoglRLight &light);
 		void UpdateData(sDataElement &data) const override;
 	};
 	
@@ -89,7 +86,7 @@ private:
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
-	deoglWorldComputeElement::Ref pWorldComputeElement;
+	WorldComputeElement::Ref pWorldComputeElement;
 	
 	bool pActive;
 	deLight::eLightTypes pLightType;

@@ -256,7 +256,7 @@ void RunGameHandler::ProcessCustomEvent(BaseGameActivityAdapter &adapter, const 
 
 void RunGameHandler::pCreateEngineLogger() {
     pEngineLogger.TakeOver(new deLoggerChain);
-    pEngineLogger->AddLogger(deLogger::Ref::New(new deLoggerConsole));
+    pEngineLogger->AddLogger(deLoggerConsole::Ref::NewWith());
 
     decPath diskPath(decPath::CreatePathNative(pLauncher->GetPathLogs()));
     diskPath.AddUnixPath(pGame->GetLogFile());
@@ -268,9 +268,7 @@ void RunGameHandler::pCreateEngineLogger() {
 
     const deVFSDiskDirectory::Ref diskDir(deVFSDiskDirectory::Ref::NewWith(diskPath));
 
-    pEngineLogger->AddLogger(deLogger::Ref::New(
-            new deLoggerFile(decBaseFileWriter::Ref::New(
-                    diskDir->OpenFileForWriting(filePath)))));
+    pEngineLogger->AddLogger(deLoggerFile::Ref::NewWith(diskDir->OpenFileForWriting(filePath)));
 }
 
 

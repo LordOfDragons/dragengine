@@ -49,11 +49,10 @@ deoglEffect(ogl, effect),
 
 pEffectFilterKernel(effect),
 
-pREffectFilterKernel(NULL),
+pREffectFilterKernel(deoglREffectFilterKernel::Ref::NewWith(ogl.GetRenderThread())),
 
 pDirtyKernel(true)
 {
-	pREffectFilterKernel = new deoglREffectFilterKernel(ogl.GetRenderThread());
 	InitREffect(pREffectFilterKernel);
 }
 

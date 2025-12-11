@@ -33,6 +33,8 @@
  */
 class dexsiPRawMouseInput : public dexsiParameterBool{
 public:
+	typedef deTObjectReference<dexsiPRawMouseInput> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create parameter. */

@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include "devkCommandBuffer.h"
+#include "devkCommandPool.h"
 #include "../devkDevice.h"
 #include "../devkInstance.h"
 #include "../buffer/devkBuffer.h"

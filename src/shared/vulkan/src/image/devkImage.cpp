@@ -31,6 +31,7 @@
 #include "../deSharedVulkan.h"
 #include "../buffer/devkGuardUnmapBuffer.h"
 #include "../queue/devkCommandBuffer.h"
+#include "../queue/devkCommandPool.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>

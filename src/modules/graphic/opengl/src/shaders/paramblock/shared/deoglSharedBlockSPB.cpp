@@ -80,7 +80,7 @@ deoglSharedBlockSPBElement *deoglSharedBlockSPB::GetElement(int count){
 	// remaining empty space right after this block
 	if(element->GetCount() > count){
 		const deObject::Ref emptyElement(deObject::Ref::New(new deoglSharedBlockSPBElement(
-			*this, element->GetIndex() + count, element->GetCount() - count ) ) );
+			*this, element->GetIndex() + count, element->GetCount() - count)));
 		
 		if(index + 1 < pElements.GetCount()){
 			// not the last element filling up to the available space

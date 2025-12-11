@@ -438,8 +438,8 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 	case deoglPixelBuffer::epfByte1:
 	case deoglPixelBuffer::epfByte2:
 	case deoglPixelBuffer::epfByte3:{
-		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(deoglPixelBuffer::epfByte4, width, height, 1)));
+		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::NewWith(
+			deoglPixelBuffer::epfByte4, width, height, 1));
 		const deoglPixelBuffer::sByte4 *dataSrc = tempPixBuf->GetPointerByte4();
 		const int count = width * height;
 		int i;
@@ -479,8 +479,8 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 	case deoglPixelBuffer::epfFloat1:
 	case deoglPixelBuffer::epfFloat2:
 	case deoglPixelBuffer::epfFloat3:{
-		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, width, height, 1)));
+		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::NewWith(
+			deoglPixelBuffer::epfFloat4, width, height, 1));
 		const deoglPixelBuffer::sFloat4 *dataSrc = tempPixBuf->GetPointerFloat4();
 		const int count = width * height;
 		int i;

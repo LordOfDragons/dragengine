@@ -26,9 +26,9 @@
 #define _DEAERRORTRACEPOINT_H_
 
 #include "../common/string/decString.h"
+#include "../systems/modules/deLoadableModule.h"
 
 class deErrorTraceValue;
-class deLoadableModule;
 
 
 /**
@@ -39,7 +39,7 @@ class deLoadableModule;
  */
 class DE_DLL_EXPORT deErrorTracePoint{
 private:
-	deLoadableModule * const pSourceModule;
+	const deLoadableModule::Ref pSourceModule;
 	const decString pSourceFunc;
 	const int pSourceLine;
 	deErrorTraceValue **pValues;
@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Source module or NULL if the error occurred in the engine itself. */
-	inline deLoadableModule *GetSourceModule() const{ return pSourceModule; }
+	inline const deLoadableModule::Ref &GetSourceModule() const{ return pSourceModule; }
 	
 	/** \brief Source function. */
 	inline const decString &GetSourceFunction() const{ return pSourceFunc; }

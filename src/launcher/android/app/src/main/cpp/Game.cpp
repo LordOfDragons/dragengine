@@ -268,14 +268,12 @@ JNIEnv *env, jobject thiz, jlong pgame, jstring pconfig, jlong plauncher){
         delGame &game = *((delGame*)pgame);
 
         {
-            const decMemoryFile::Ref fileGameConfig(decMemoryFile::Ref::New(
-                    new decMemoryFile("game.degame")));
+            const decMemoryFile::Ref fileGameConfig(decMemoryFile::Ref::NewWith("game.degame"));
             fileGameConfig->Resize(config.GetLength());
             memcpy(fileGameConfig->GetPointer(), config.GetString(), config.GetLength());
 
             delGameXML gameXml(launcher.GetLogger(), "DELauncher");
-            gameXml.ReadFromFile(decMemoryFileReader::Ref::New(
-                new decMemoryFileReader(fileGameConfig)), game);
+            gameXml.ReadFromFile(decMemoryFileReader::Ref::NewWith(fileGameConfig), game);
 
             game.SetDefaultLogFile();
         }

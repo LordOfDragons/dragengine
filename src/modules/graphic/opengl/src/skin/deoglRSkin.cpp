@@ -276,8 +276,7 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 			// prepare texture pipelines using the loader thread and wait for the task to
 			// finish. if the loader thread is disabled do nothing. in this case delayed
 			// operations will prepare the texture pipelines which is less optimal
-			pRenderThread.GetLoaderThread().AwaitTask(deoglLoaderThreadTask::Ref::New(
-				new cTaskPrepareTexturePipelines(*this)));
+			pRenderThread.GetLoaderThread().AwaitTask(cTaskPrepareTexturePipelines::Ref::NewWith(*this));
 			
 			// register for delayed async res initialize. we do not call AddInitSkin here since
 			// it is possible (albeit highly unlikely) for the render thread to run before the

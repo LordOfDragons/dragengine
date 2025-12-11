@@ -60,7 +60,8 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglPropFieldCluster &pCluster;
 	public:
-		WorldComputeElement(deoglPropFieldCluster &cluster);
+		typedef deTObjectReference<WorldComputeElement> Ref;
+		explicit WorldComputeElement(deoglPropFieldCluster &cluster);
 		void UpdateData(sDataElement &data) const override;
 		void UpdateDataGeometries(sDataElementGeometry *data) const override;
 	};
@@ -70,7 +71,7 @@ private:
 	deoglRPropFieldType &pPropFieldType;
 	deoglRenderThread &pRenderThread; // to avoid segfault during destructor
 	
-	deoglWorldComputeElement::Ref pWorldComputeElement;
+	WorldComputeElement::Ref pWorldComputeElement;
 	
 	decVector pMinExtend;
 	decVector pMaxExtend;

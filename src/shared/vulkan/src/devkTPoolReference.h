@@ -36,19 +36,23 @@ private:
 	T *pSlot;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	devkTPoolReference() : pSlot(nullptr){
 	}
 	
-	devkTPoolReference(T *slot) : pSlot(nullptr){
+	explicit devkTPoolReference(T *slot) : pSlot(nullptr){
 		*this = slot;
 	}
 	
 	/** Move reference. */
 	devkTPoolReference(devkTPoolReference<T> &slot) : pSlot(slot.pSlot){
+		slot.pSlot = nullptr;
+	}
+	
+	/** Move reference. */
+	devkTPoolReference(devkTPoolReference<T> &&slot) : pSlot(slot.pSlot){
 		slot.pSlot = nullptr;
 	}
 	
@@ -108,7 +112,7 @@ public:
 		return *this;
 	}
 	
-	inline bool operator==(T *slot) const{
+	inline bool operator==(const T *slot) const{
 		return pSlot == slot;
 	}
 	
@@ -120,11 +124,7 @@ public:
 	
 	
 private:
-	devkTPoolReference(const devkTPoolReference &){
-		DETHROW(deeInvalidAction);
-	}
-	
-	devkTPoolReference &operator=(const devkTPoolReference &){
+	devkTPoolReference(const devkTPoolReference &) : pSlot(nullptr){
 		DETHROW(deeInvalidAction);
 	}
 };

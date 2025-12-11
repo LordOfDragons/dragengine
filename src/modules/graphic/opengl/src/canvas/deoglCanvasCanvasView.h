@@ -27,8 +27,8 @@
 
 #include "deoglCanvas.h"
 #include "deoglCanvasViewListener.h"
+#include "render/deoglRCanvasCanvasView.h"
 
-class deoglRCanvasCanvasView;
 
 class deCanvasCanvasView;
 
@@ -39,7 +39,7 @@ class deCanvasCanvasView;
 class deoglCanvasCanvasView : public deoglCanvas, deoglCanvasViewListener{
 private:
 	deCanvasCanvasView &pCanvasCanvasView;
-	deoglRCanvasCanvasView *pRCanvasCanvasView;
+	deoglRCanvasCanvasView::Ref pRCanvasCanvasView;
 	deoglCanvasView *pCanvasView;
 	
 	

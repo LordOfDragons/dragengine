@@ -35,6 +35,11 @@
  * Render canvas paint.
  */
 class deoglRCanvasPaint : public deoglRCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRCanvasPaint> Ref;
+	
+	
 private:
 	deCanvasPaint::eShapeTypes pShapeType;
 	decColor pLineColor;

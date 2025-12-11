@@ -26,12 +26,12 @@
 #define _DEVKCOMMANDPOOL_H_
 
 #include "devkQueue.h"
+#include "devkCommandBuffer.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectLinkedList.h>
 
 class devkDevice;
-class devkCommandBuffer;
 
 
 /**
@@ -74,7 +74,7 @@ public:
 	inline operator VkCommandPool() const{ return pPool; }
 	
 	/** Get next free command buffer. */
-	devkCommandBuffer *GetCommandBuffer();
+	devkCommandBuffer::Ref GetCommandBuffer();
 	
 	/** Return command buffer to pool. */
 	void ReturnCommandBuffer(devkCommandBuffer *commandBuffer);

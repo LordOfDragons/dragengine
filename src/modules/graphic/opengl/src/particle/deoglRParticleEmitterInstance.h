@@ -73,7 +73,8 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRParticleEmitterInstance &pEmitter;
 	public:
-		WorldComputeElement(deoglRParticleEmitterInstance &emitter);
+		typedef deTObjectReference<WorldComputeElement> Ref;
+		explicit WorldComputeElement(deoglRParticleEmitterInstance &emitter);
 		void UpdateData(sDataElement &data) const override;
 		void UpdateDataGeometries(sDataElementGeometry *data) const override;
 	};
@@ -86,7 +87,7 @@ private:
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
-	deoglWorldComputeElement::Ref pWorldComputeElement;
+	WorldComputeElement::Ref pWorldComputeElement;
 	
 	float pBurstTime;
 	decDVector pPosition;

@@ -42,7 +42,6 @@
 /////////////////////////////////
 
 deErrorTracePoint::deErrorTracePoint(const char *sourceFunc, int sourceLine) :
-pSourceModule(nullptr),
 pSourceFunc(sourceFunc),
 pSourceLine(sourceLine),
 pValues(nullptr),
@@ -65,13 +64,11 @@ pValueSize(0)
 	if(pSourceFunc.IsEmpty()){
 		DETHROW(deeInvalidParam);
 	}
-	if(pSourceModule) pSourceModule->AddReference();
 }
 
 deErrorTracePoint::~deErrorTracePoint(){
 	RemoveAllValues();
 	if(pValues) delete [] pValues;
-	if(pSourceModule) pSourceModule->FreeReference();
 }
 
 

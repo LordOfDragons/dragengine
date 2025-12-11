@@ -891,8 +891,8 @@ void deoglShaderCompiler::pCacheSaveShader(const deoglShaderProgram &program){
 		// is not much of difference. for these reasons parallel cache writing is disabled
 		
 		/*
-		const cCacheShaderTask::Ref task(cCacheShaderTask::Ref::New(
-			new cCacheShaderTask(renderThread, pContextIndex, program, compiled)));
+		const cCacheShaderTask::Ref task(cCacheShaderTask::Ref::NewWith(
+			renderThread, pContextIndex, program, compiled));
 		renderThread.GetOgl().GetGameEngine()->GetParallelProcessing().AddTask(task);
 		*/
 		

@@ -176,8 +176,8 @@ void deClassMemoryFile::nfGetReaderZCompressed::RunFunction(dsRunTime *rt, dsVal
 	decMemoryFile * const memoryFile = static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile;
 	const deScriptingDragonScript &ds = (static_cast<deClassMemoryFile*>(GetOwnerClass()))->GetDS();
 	
-	ds.GetClassFileReader()->PushFileReader(rt, decZFileReader::Ref::New(new decZFileReader(
-		decMemoryFileReader::Ref::NewWith(memoryFile))));
+	ds.GetClassFileReader()->PushFileReader(rt, decZFileReader::Ref::NewWith(
+		decMemoryFileReader::Ref::NewWith(memoryFile)));
 }
 
 // public func FileWriter getWriterZCompressed()
@@ -189,8 +189,8 @@ void deClassMemoryFile::nfGetWriterZCompressed::RunFunction(dsRunTime *rt, dsVal
 	decMemoryFile * const memoryFile = static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile;
 	const deScriptingDragonScript &ds = (static_cast<deClassMemoryFile*>(GetOwnerClass()))->GetDS();
 	
-	ds.GetClassFileWriter()->PushFileWriter(rt, decZFileWriter::Ref::New(new decZFileWriter(
-		decMemoryFileWriter::Ref::NewWith(memoryFile, false))));
+	ds.GetClassFileWriter()->PushFileWriter(rt, decZFileWriter::Ref::NewWith(
+		decMemoryFileWriter::Ref::NewWith(memoryFile, false)));
 }
 
 

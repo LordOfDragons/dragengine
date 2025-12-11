@@ -33,6 +33,8 @@
  */
 class deoxrDPHUAWEIControllerInteraction : public deoxrDPBaseTwoHandController{
 public:
+	typedef deTObjectReference<deoxrDPHUAWEIControllerInteraction> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */

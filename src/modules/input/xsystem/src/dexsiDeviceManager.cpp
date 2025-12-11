@@ -422,8 +422,8 @@ void dexsiDeviceManager::pCreateEvdevDevices(){
 			pathDevice.Format(basePath[bp], i);
 			
 			try{
-				const dexsiDeviceLibEvent::Ref device(dexsiDeviceLibEvent::Ref::New(
-						new dexsiDeviceLibEvent(pModule, pathDevice)));
+				const dexsiDeviceLibEvent::Ref device(
+					dexsiDeviceLibEvent::Ref::NewWith(pModule, pathDevice));
 				
 				// devices without buttons and axes are not interesting to us. this weeds out
 				// non-input devices like audio devices
@@ -642,8 +642,7 @@ bool dexsiDeviceManager::pProbeDevice(const decString &path){
 	pModule.LogInfoFormat("Probing event device file: %s", path.GetString());
 	
 	try{
-		const dexsiDeviceLibEvent::Ref device(dexsiDeviceLibEvent::Ref::New(
-			new dexsiDeviceLibEvent(pModule, path)));
+		const dexsiDeviceLibEvent::Ref device(dexsiDeviceLibEvent::Ref::NewWith(pModule, path));
 		
 		switch(device->GetType()){
 		case deInputDevice::edtGamepad:

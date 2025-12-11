@@ -33,6 +33,8 @@
  */
 class deoxrDPMSFTHandInteraction : public deoxrDPBaseTwoHandController{
 public:
+	typedef deTObjectReference<deoxrDPMSFTHandInteraction> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */

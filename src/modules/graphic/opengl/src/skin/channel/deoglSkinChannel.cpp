@@ -1341,8 +1341,8 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 	
 	// dynamic constructed
 	if(deoglSCConstructedDynamic::IsDynamic(property.GetContent())){
-		pDynamicConstructed = skin.AddConstructedProperty(deoglSkinConstructedProperty::Ref::New(
-			new deoglSkinConstructedProperty(property)));
+		pDynamicConstructed = skin.AddConstructedProperty(
+			deoglSkinConstructedProperty::Ref::NewWith(property));
 		texture.SetConstructedProperties(true);
 		pCanBeCached = false;
 		return;

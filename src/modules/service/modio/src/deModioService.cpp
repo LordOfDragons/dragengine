@@ -909,9 +909,9 @@ deServiceObject::Ref deModioService::ModHasMatchingFiles(const deServiceObject &
 	}
 	
 	try{
-		const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
-			new deVFSDiskDirectory(decPath::CreatePathUnix("/"),
-				decPath::CreatePathNative(iter->second.GetPath().c_str()), true)));
+		const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(
+			decPath::CreatePathUnix("/"),
+			decPath::CreatePathNative(iter->second.GetPath().c_str()), true));
 		
 		const int count = soPatterns->GetChildCount();
 		if(count == 0){

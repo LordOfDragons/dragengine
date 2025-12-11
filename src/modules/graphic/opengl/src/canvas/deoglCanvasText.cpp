@@ -47,8 +47,7 @@
 
 deoglCanvasText::deoglCanvasText(deGraphicOpenGl &ogl, deCanvasText &canvas) :
 deoglCanvas(ogl, canvas),
-pCanvasText(canvas),
-pRCanvasText(NULL){
+pCanvasText(canvas){
 }
 
 deoglCanvasText::~deoglCanvasText(){
@@ -60,7 +59,7 @@ deoglCanvasText::~deoglCanvasText(){
 ///////////////
 
 void deoglCanvasText::DropRCanvas(){
-	pRCanvasText = NULL;
+	pRCanvasText = nullptr;
 	deoglCanvas::DropRCanvas();
 }
 
@@ -90,6 +89,6 @@ void deoglCanvasText::SyncContentToRender(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasText::CreateRCanvas(){
-	pRCanvasText = new deoglRCanvasText(GetOgl().GetRenderThread());
+	pRCanvasText.TakeOverWith(GetOgl().GetRenderThread());
 	return pRCanvasText;
 }

@@ -33,6 +33,8 @@
  */
 class deoxrDPValveIndexController : public deoxrDPBaseTwoHandController{
 public:
+	typedef deTObjectReference<deoxrDPValveIndexController> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */

@@ -52,6 +52,16 @@ class deoglShaderCompilerThread;
  */
 class deoglShaderLanguage{
 private:
+	struct sCompileTotals{
+		int units = 0;
+		int stage[6] = {0};
+		int shaders = 0;
+		
+		bool operator==(const sCompileTotals &other) const;
+		sCompileTotals &operator=(const sCompileTotals &other);
+	};
+	
+	
 	deoglRenderThread &pRenderThread;
 	
 	decString pGLSLVersion;
@@ -77,7 +87,7 @@ private:
 	deMutex pMutexTasks;
 	deSemaphore pSemaphoreNewTasks, pSemaphoreTasksFinished;
 	
-	int pTotalCompiledUnits, pTotalCompiledStage[6], pTotalCompiledShaders;
+	sCompileTotals pCompileTotals, pLastCompileTotals;
 	
 	
 public:

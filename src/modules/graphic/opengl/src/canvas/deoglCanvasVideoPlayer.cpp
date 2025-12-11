@@ -49,7 +49,6 @@
 deoglCanvasVideoPlayer::deoglCanvasVideoPlayer(deGraphicOpenGl &ogl, deCanvasVideoPlayer &canvas) :
 deoglCanvas(ogl, canvas),
 pCanvasVideoPlayer(canvas),
-pRCanvasVideoPlayer(NULL),
 pVideoPlayer(NULL),
 pDirty(true){
 }
@@ -66,7 +65,7 @@ deoglCanvasVideoPlayer::~deoglCanvasVideoPlayer(){
 ///////////////
 
 void deoglCanvasVideoPlayer::DropRCanvas(){
-	pRCanvasVideoPlayer = NULL;
+	pRCanvasVideoPlayer = nullptr;
 	deoglCanvas::DropRCanvas();
 }
 
@@ -126,6 +125,6 @@ void deoglCanvasVideoPlayer::ContentChanged(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasVideoPlayer::CreateRCanvas(){
-	pRCanvasVideoPlayer = new deoglRCanvasVideoPlayer(GetOgl().GetRenderThread());
+	pRCanvasVideoPlayer.TakeOverWith(GetOgl().GetRenderThread());
 	return pRCanvasVideoPlayer;
 }

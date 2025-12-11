@@ -53,7 +53,9 @@ public:
 	 */
 	decMemoryFileWriter(decMemoryFile *memoryFile, bool append);
 	
-private:
+	/**
+	 * \brief Create memory file writer with same file and position
+	 */
 	decMemoryFileWriter(const decMemoryFileWriter &writer);
 	
 protected:

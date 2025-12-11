@@ -985,9 +985,9 @@ void deXSystemInput::pUpdateRawMouseInput(){
 }
 
 void deXSystemInput::pCreateParameters(){
-	pParameters.AddParameter(dexsiParameter::Ref::New(new dexsiPRawMouseInput(*this)));
-	pParameters.AddParameter(dexsiParameter::Ref::New(new dexsiPRawMouseInputSensivity(*this)));
-	pParameters.AddParameter(dexsiParameter::Ref::New(new dexsiPLogLevel(*this)));
+	pParameters.AddParameter(dexsiPRawMouseInput::Ref::NewWith(*this));
+	pParameters.AddParameter(dexsiPRawMouseInputSensivity::Ref::NewWith(*this));
+	pParameters.AddParameter(dexsiPLogLevel::Ref::NewWith(*this));
 }
 
 

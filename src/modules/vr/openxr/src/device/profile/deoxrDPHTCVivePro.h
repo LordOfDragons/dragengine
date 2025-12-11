@@ -33,6 +33,8 @@
  */
 class deoxrDPHTCVivePro : public deoxrDeviceProfile{
 public:
+	typedef deTObjectReference<deoxrDPHTCVivePro> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */

@@ -156,8 +156,8 @@ const delGPDisableModuleVersionList &other){
 	pList.RemoveAll();
 	
 	for(i=0; i<count; i++){
-		pList.Add(delGPDisableModuleVersion::Ref::New(new delGPDisableModuleVersion(
-			*( ( delGPDisableModuleVersion* )otherList.GetAt( i ) ) ) ) );
+		pList.Add(delGPDisableModuleVersion::Ref::NewWith(
+			*((delGPDisableModuleVersion*)otherList.GetAt(i))));
 	}
 	
 	return *this;

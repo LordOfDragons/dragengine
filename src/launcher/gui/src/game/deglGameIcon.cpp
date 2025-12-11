@@ -63,8 +63,7 @@ deglSharedIcon::Ref deglGameIcon::GetScaledFoxIcon(int size) const{
 		// quality 1: slower box filtered scale
 		// quality 2: slow gamma corrected scale
 	
-	deglSharedIcon::Ref icon(deglSharedIcon::Ref::New(
-		new deglSharedIcon(new FXPNGIcon(FXApp::instance()))));
+	deglSharedIcon::Ref icon(deglSharedIcon::Ref::NewWith(new FXPNGIcon(FXApp::instance())));
 	
 	FXMemoryStream stream(FXStreamLoad, (FXuchar*)GetContent()->GetPointer(), GetContent()->GetLength());
 	stream.position(0);

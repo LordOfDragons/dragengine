@@ -128,9 +128,8 @@ void decDiskFileWriter::Write(const void *buffer, int size){
 }
 
 decBaseFileWriter::Ref decDiskFileWriter::Duplicate(){
-	const decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(
-		new decDiskFileWriter(pFilename, true)));
-	if(fseek(((decDiskFileWriter&)(decBaseFileWriter&)writer).pFile, ftell(pFile), SEEK_SET)){
+	const decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::NewWith(pFilename, true));
+	if(fseek(writer->pFile, ftell(pFile), SEEK_SET)){
 		DETHROW_INFO(deeReadFile, pFilename);
 	}
 	return writer;

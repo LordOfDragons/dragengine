@@ -66,7 +66,8 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglHTSCluster &pCluster;
 	public:
-		WorldComputeElement(deoglHTSCluster &cluster);
+		typedef deTObjectReference<WorldComputeElement> Ref;
+		explicit WorldComputeElement(deoglHTSCluster &cluster);
 		void UpdateData(sDataElement &data) const override;
 		void UpdateDataGeometries(sDataElementGeometry *data) const override;
 	};
@@ -77,7 +78,7 @@ private:
 	decPoint pCoordinates;
 	int pIndex;
 	
-	deoglWorldComputeElement::Ref pWorldComputeElement;
+	WorldComputeElement::Ref pWorldComputeElement;
 	
 	int pFirstPointX;
 	int pFirstPointZ;

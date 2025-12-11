@@ -157,7 +157,7 @@ pVisible(true),
 
 pParentComponent(NULL),
 pComponentMarkedRemove(false),
-pWorldComputeElement(deoglWorldComputeElement::Ref::New(new WorldComputeElement(*this))),
+pWorldComputeElement(WorldComputeElement::Ref::NewWith(*this)),
 
 pRTSInstance(NULL),
 pDirtySharedSPBElement(true),

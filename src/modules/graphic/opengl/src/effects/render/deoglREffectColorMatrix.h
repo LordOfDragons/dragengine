@@ -35,6 +35,10 @@
  * Render effect color matrix.
  */
 class deoglREffectColorMatrix : public deoglREffect{
+public:
+	typedef deTObjectReference<deoglREffectColorMatrix> Ref;
+	
+	
 private:
 	decColorMatrix pColorMatrix;
 	

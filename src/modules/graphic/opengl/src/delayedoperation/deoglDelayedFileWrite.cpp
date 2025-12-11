@@ -63,7 +63,7 @@ deoglDelayedFileWrite::~deoglDelayedFileWrite(){
 ///////////////
 
 decBaseFileWriter::Ref deoglDelayedFileWrite::GetFileWriter() const{
-	return decBaseFileWriter::Ref::New(new decMemoryFileWriter(pMemoryFile, false));
+	return decMemoryFileWriter::Ref::NewWith(pMemoryFile, false);
 }
 
 void deoglDelayedFileWrite::SaveFile(deVirtualFileSystem &vfs){

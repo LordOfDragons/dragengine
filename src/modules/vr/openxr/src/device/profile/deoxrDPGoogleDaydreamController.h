@@ -33,6 +33,8 @@
  */
 class deoxrDPGoogleDaydreamController : public deoxrDPBaseTwoHandController{
 public:
+	typedef deTObjectReference<deoxrDPGoogleDaydreamController> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device profile. */

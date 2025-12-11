@@ -100,8 +100,8 @@ pData(object.pData)
 		pDictionary.RemoveAll();
 		for(i=0; i<count; i++){
 			const decString &key = keys.GetAt(i);
-			const deServiceObject::Ref copy(deServiceObject::Ref::New(new deServiceObject(
-				*( ( deServiceObject* )object.pDictionary.GetAt( key ) ), true ) ) );
+			const deServiceObject::Ref copy(deServiceObject::Ref::NewWith(
+				*static_cast<deServiceObject*>(object.pDictionary.GetAt(key)), true));
 			pDictionary.SetAt(key, copy);
 		}
 		

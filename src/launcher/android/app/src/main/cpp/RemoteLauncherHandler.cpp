@@ -42,12 +42,9 @@ void RemoteLauncherHandler::pCreateEngineLogger(){
 
     diskPath.RemoveLastComponent();
 
-    const deVFSDiskDirectory::Ref diskDir(deVFSDiskDirectory::Ref::New(
-        new deVFSDiskDirectory(diskPath)));
+    const deVFSDiskDirectory::Ref diskDir(deVFSDiskDirectory::Ref::NewWith(diskPath));
 
-    pEngineLogger->AddLogger(deLogger::Ref::New(
-        new deLoggerFile(decBaseFileWriter::Ref::New(
-            diskDir->OpenFileForWriting(filePath)))));
+    pEngineLogger->AddLogger(deLoggerFile::Ref::NewWith(diskDir->OpenFileForWriting(filePath)));
 }
 
 

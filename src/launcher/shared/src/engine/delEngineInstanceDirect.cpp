@@ -387,8 +387,8 @@ void delEngineInstanceDirect::GetModuleParams(delEngineModule &module){
 		deModuleParameter parameter;
 		baseModule->GetParameterInfo(i, parameter);
 		
-		parameters.Add(delEMParameter::Ref::New(new delEMParameter(i, parameter,
-			baseModule->GetParameterValue(parameter.GetName()))));
+		parameters.Add(delEMParameter::Ref::NewWith(i, parameter,
+			baseModule->GetParameterValue(parameter.GetName())));
 	}
 }
 
@@ -694,48 +694,48 @@ const char *gameObject, delGPModuleList *collectChangedParams){
 	// store single type module parameters to compare after engine exits if user changed them
 	pModuleParamStates.RemoveAll();
 	if(pEngine->GetAISystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetAISystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::NewWith(
+			&pEngine->GetAISystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetAnimatorSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetAnimatorSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::NewWith(
+			&pEngine->GetAnimatorSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetAudioSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetAudioSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::NewWith(
+			&pEngine->GetAudioSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetCrashRecoverySystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetCrashRecoverySystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::NewWith(
+			&pEngine->GetCrashRecoverySystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetGraphicSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetGraphicSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::NewWith(
+			&pEngine->GetGraphicSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetInputSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetInputSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::NewWith(
+			&pEngine->GetInputSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetNetworkSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetNetworkSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::NewWith(
+			&pEngine->GetNetworkSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetPhysicsSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetPhysicsSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::NewWith(
+			&pEngine->GetPhysicsSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetScriptingSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetScriptingSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::NewWith(
+			&pEngine->GetScriptingSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetSynthesizerSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetSynthesizerSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::NewWith(
+			&pEngine->GetSynthesizerSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	if(pEngine->GetVRSystem()->GetActiveModule()){
-		pModuleParamStates.Add(deObject::Ref::New(new cModuleParamState(
-			&pEngine->GetVRSystem()->GetActiveModule()->GetLoadableModule())));
+		pModuleParamStates.Add(cModuleParamState::Ref::NewWith(
+			&pEngine->GetVRSystem()->GetActiveModule()->GetLoadableModule()));
 	}
 	deModuleParameter moduleParameter;
 	int i, j;

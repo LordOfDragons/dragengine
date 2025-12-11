@@ -26,8 +26,8 @@
 #define _DEOGLEFFECTCOLORMATRIX_H_
 
 #include "deoglEffect.h"
+#include "render/deoglREffectColorMatrix.h"
 
-class deoglREffectColorMatrix;
 class deEffectColorMatrix;
 
 
@@ -39,7 +39,7 @@ class deoglEffectColorMatrix : public deoglEffect{
 private:
 	const deEffectColorMatrix &pEffectColorMatrix;
 	
-	deoglREffectColorMatrix *pREffectColorMatrix;
+	deoglREffectColorMatrix::Ref pREffectColorMatrix;
 	
 	bool pDirtyColorMatrix;
 	

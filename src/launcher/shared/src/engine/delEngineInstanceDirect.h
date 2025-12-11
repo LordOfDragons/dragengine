@@ -63,8 +63,8 @@ public:
 	public:
 		/** \brief Type holding strong reference. */
 		typedef deTObjectReference<Factory> Ref;
-	
-	
+		
+		
 		/** \brief Factory constructor. */
 		Factory(deLogger *engineLogger = nullptr);
 		
@@ -115,14 +115,13 @@ private:
 	deLogger::Ref pEngineLogger;
 	
 	class cModuleParamState : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<cModuleParamState> Ref;
-
-
 	public:
+		/** \brief Type holding strong reference. */
+		typedef deTObjectReference<cModuleParamState> Ref;
+		
 		deLoadableModule *module;
 		decStringDictionary parameters;
-		cModuleParamState(deLoadableModule *amodule);
+		explicit cModuleParamState(deLoadableModule *amodule);
 	};
 	decObjectList pModuleParamStates;
 	

@@ -99,10 +99,10 @@ bool declActionDelgaHelper::HasContent() const{
 }
 
 void declActionDelgaHelper::Install(){
-	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
-		new deVFSDiskDirectory(decPath::CreatePathNative(pLauncher.GetPathGames()))));
+	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(
+		decPath::CreatePathNative(pLauncher.GetPathGames())));
 	
-	const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(new decDiskFileReader(pFilename)));
+	const decDiskFileReader::Ref reader(decDiskFileReader::Ref::NewWith(pFilename));
 	
 	decPath target(decPath::CreatePathUnix("/"));
 	target.AddComponent(decPath::CreatePathNative(pFilename).GetLastComponent());
@@ -156,9 +156,8 @@ void declActionDelgaHelper::Install(){
 void declActionDelgaHelper::Uninstall(){
 	printf("Uninstalling...\n");
 	
-	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
-		new deVFSDiskDirectory(decPath::CreatePathUnix("/"),
-			decPath::CreatePathNative(pLauncher.GetPathGames()))));
+	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(
+		decPath::CreatePathUnix("/"), decPath::CreatePathNative(pLauncher.GetPathGames())));
 	
 	decPath target(decPath::CreatePathUnix("/"));
 	target.AddComponent(decPath::CreatePathNative(pFilename).GetLastComponent());

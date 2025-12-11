@@ -26,8 +26,8 @@
 #define _DEOGLEFFECTFILTERKERNEL_H_
 
 #include "deoglEffect.h"
+#include "render/deoglREffectFilterKernel.h"
 
-class deoglREffectFilterKernel;
 class deEffectFilterKernel;
 
 
@@ -39,7 +39,7 @@ class deoglEffectFilterKernel : public deoglEffect{
 private:
 	const deEffectFilterKernel &pEffectFilterKernel;
 	
-	deoglREffectFilterKernel *pREffectFilterKernel;
+	deoglREffectFilterKernel::Ref pREffectFilterKernel;
 	
 	bool pDirtyKernel;
 	

@@ -14,6 +14,8 @@ private:
     FDProducer::Ref pProducer;
 
 public:
+    typedef deTObjectReference<FDFileReader> Ref;
+    
     FDFileReader(const char *filename, int fileDescriptor, long offset, long length,
                  const FDProducer::Ref &producer);
 

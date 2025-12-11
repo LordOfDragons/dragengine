@@ -1229,11 +1229,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 			0x0000001e,0x0003003e,0x00000024,0x00000023,0x000100fd,0x00010038
 		};
 		decMemoryFile::Ref mfshader(decMemoryFile::Ref::NewWith("/shaders/vulkantest.spv"));
-		decBaseFileWriter::Ref::New(new decMemoryFileWriter(mfshader, false))->Write(test1_spv_data, sizeof(test1_spv_data));
+		decMemoryFileWriter::Ref::NewWith(mfshader, false)->Write(test1_spv_data, sizeof(test1_spv_data));
 		
 		devkShaderModule::Ref shader;
 		VKTLOG(shader.TakeOver(new devkShaderModule(pVulkanDevice, "/shaders/vulkantest.spv",
-			decBaseFileReader::Ref::New(new decMemoryFileReader(mfshader)))), "LoadShader");
+			decMemoryFileReader::Ref::NewWith(mfshader))), "LoadShader");
 		
 		devkPipelineConfiguration pipelineConfig;
 		pipelineConfig.SetDescriptorSetLayout(dslSSBO);
@@ -1365,11 +1365,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 		};
 		
 		mfshader.TakeOver(decMemoryFile::Ref::NewWith("/shaders/vulkantest2_vert.spv"));
-		decBaseFileWriter::Ref::New(new decMemoryFileWriter(mfshader, false))->Write(test2_vert_spv_data, sizeof(test2_vert_spv_data));
+		decMemoryFileWriter::Ref::NewWith(mfshader, false)->Write(test2_vert_spv_data, sizeof(test2_vert_spv_data));
 		
 		devkShaderModule::Ref shaderVert;
 		VKTLOG(shaderVert.TakeOver(new devkShaderModule(pVulkanDevice, "/shaders/vulkantest2_vert.spv",
-			decBaseFileReader::Ref::New(new decMemoryFileReader(mfshader)))), "LoadShader");
+			decMemoryFileReader::Ref::NewWith(mfshader))), "LoadShader");
 		
 		const uint32_t test2_frag_spv_data[] = {
 			0x07230203,0x00010000,0x0008000a,0x00000014,0x00000000,0x00020011,0x00000001,0x0006000b,
@@ -1408,11 +1408,11 @@ void deoglRenderThread::pInitThreadPhase4(){
 		};
 		
 		mfshader.TakeOver(decMemoryFile::Ref::NewWith("/shaders/vulkantest2_frag.spv"));
-		decBaseFileWriter::Ref::New(new decMemoryFileWriter(mfshader, false))->Write(test2_frag_spv_data, sizeof(test2_frag_spv_data));
+		decMemoryFileWriter::Ref::NewWith(mfshader, false)->Write(test2_frag_spv_data, sizeof(test2_frag_spv_data));
 		
 		devkShaderModule::Ref shaderFrag;
 		VKTLOG(shaderFrag.TakeOver(new devkShaderModule(pVulkanDevice, "/shaders/vulkantest2_frag.spv",
-			decBaseFileReader::Ref::New(new decMemoryFileReader(mfshader)))), "LoadShader");
+			decMemoryFileReader::Ref::NewWith(mfshader))), "LoadShader");
 		
 		struct sVertex{
 			struct{
@@ -2017,10 +2017,10 @@ void deoglRenderThread::DebugMemoryUsage(const char *prefix){
 	FILE *minfoFile = open_memstream(&minfoString, &minfoSize);
 	if(minfoFile){
 		if(malloc_info(0, minfoFile) == 0){
-			decMemoryFile::Ref memFile.TakeOver(new decMemoryFile("malloc_info"));
+			decMemoryFile::Ref memFile.TakeOverWith("malloc_info");
 			memFile->Resize(minfoSize);
 			memcpy(memFile->GetPointer(), minfoString, minfoSize);
-			decMemoryFileReader::Ref memFileReader.TakeOver(new decMemoryFileReader(memFile));
+			decMemoryFileReader::Ref memFileReader(decMemoryFileReader::Ref::NewWith(memFile));
 			decXmlDocument xmlDoc;
 			decXmlParser xmlParser(pLogger);
 			xmlParser.ParseXml(memFileReader, &xmlDoc);
@@ -2431,13 +2431,10 @@ void deoglRenderThread::pCleanUpThread(){
 	
 	// guard a reference to the active render window. this is allowed in this call.
 	// the context does steal the reference during cleanup so keep this in mind
-// 	deoglRRenderWindow::Ref cleanUpWindow = NULL;
+// 	deoglRRenderWindow::Ref cleanUpWindow;
 	
 // 	if( pContext ){
 // 		cleanUpWindow = pContext->GetActiveRRenderWindow();
-// 		if( cleanUpWindow ){
-// 			cleanUpWindow->AddReference();
-// 		}
 // 	}
 	
 	#ifdef TIME_CLEANUP
@@ -2445,271 +2442,262 @@ void deoglRenderThread::pCleanUpThread(){
 	cleanUpTimer.Reset();
 	#endif
 	
-	try{
-		// remove all capture canvas and render windows
-		pRCaptureCanvasList.RemoveAll();
-		pRRenderWindowList.RemoveAll();
-		
+	// remove all capture canvas and render windows
+	pRCaptureCanvasList.RemoveAll();
+	pRRenderWindowList.RemoveAll();
+	
 // 		if( pContext && cleanUpWindow ){
 // 			// required for the leak checks to not report wrong leaks
 // 			cleanUpWindow->DropRCanvasView();
 // 		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: render windows (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		// remove canvas if present
-		pCanvasOverlay = nullptr;
-		pCanvasDebugOverlay = nullptr;
-		pCanvasInputOverlay = nullptr;
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: canvas overlay (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		// synchronize to break reference loops in leak checked objects
-		pLogger->Synchronize();
-		if(pDelayedOperations){
-			pDelayedOperations->ProcessSynchronizeOperations();
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: delayed operations synchronize (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		// process free operations to remove remaining objects included in the leak report.
-		// force deleting all objects to get a clean slate for the leak report.
-		if(pDelayedOperations){
-			pDelayedOperations->ProcessFreeOperations(true);
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: delayed operations free (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		// report leaks
-		pReportLeaks(); // only if enabled
-		
-		// clean up objects
-		if(pRenderers){
-			delete pRenderers;
-			pRenderers = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy renderers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		if(pLightBoundarybox){
-			delete pLightBoundarybox;
-			pLightBoundarybox = NULL;
-		}
-		if(pOcclusionTestPool){
-			delete pOcclusionTestPool;
-			pOcclusionTestPool = NULL;
-		}
-		if(pPersistentRenderTaskPool){
-			delete pPersistentRenderTaskPool;
-			pPersistentRenderTaskPool = NULL;
-		}
-		if(pTriangleSorter){
-			delete pTriangleSorter;
-			pTriangleSorter = NULL;
-		}
-		
-		if(pOccQueryMgr){
-			delete pOccQueryMgr;
-			pOccQueryMgr = NULL;
-		}
-		if(pGI){
-			delete pGI;
-			pGI = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy occlusion managers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		if(pDelayedOperations){
-			pDelayedOperations->Clear(); // first stage clear
-		}
-		
-		if(pDeferredRendering){
-			delete pDeferredRendering;
-			pDeferredRendering = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy deferred rendering (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		if(pShadowMapper){
-			delete pShadowMapper;
-			pShadowMapper = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy shadow mapper (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		if(pEnvMapSlotManager){
-			delete pEnvMapSlotManager;
-			pEnvMapSlotManager = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy env-map slot manager (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		if(pBufferObject){
-			delete pBufferObject;
-			pBufferObject = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy buffer objects (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		if(pFramebuffer){
-			delete pFramebuffer;
-			pFramebuffer = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy framebuffers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		pPipelineManager = nullptr;
-		if(pTexture){
-			delete pTexture;
-			pTexture = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-#ifdef BACKEND_OPENGL
-		pVulkanDevice = nullptr;
-		pVulkan = nullptr;
-#endif
-		
-		if(pDebug){
-			deoglDebugInformationList &dilist = pDebug->GetDebugInformationList();
-			dilist.RemoveIfPresent(pDebugInfoModule);
-			dilist.RemoveIfPresent(pDebugInfoFrameLimiter);
-		}
-		
-		pDebugInfoModule = nullptr;
-		pDebugInfoThreadMain = nullptr;
-		pDebugInfoThreadMainWaitFinish = nullptr;
-		pDebugInfoThreadMainSynchronize = nullptr;
-		pDebugInfoThreadRender = nullptr;
-		pDebugInfoThreadRenderSyncGpu = nullptr;
-		pDebugInfoThreadRenderBegin = nullptr;
-		pDebugInfoThreadRenderWindows = nullptr;
-		pDebugInfoThreadRenderWindowsPrepare = nullptr;
-		pDebugInfoThreadRenderWindowsRender = nullptr;
-		pDebugInfoThreadRenderCapture = nullptr;
-		pDebugInfoThreadRenderEnd = nullptr;
-		pDebugInfoThreadRenderSwap = nullptr;
-		pDebugInfoVRRender = nullptr;
-		pDebugInfoFrameLimiter = nullptr;
-		pDebugInfoFLEstimMain = nullptr;
-		pDebugInfoFLEstimRender = nullptr;
-		pDebugInfoFLFrameRateMain = nullptr;
-		pDebugInfoFLFrameRateRender = nullptr;
-		
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy debug-info (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		if(pDebug){
-			delete pDebug;
-			pDebug = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy debug (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		if(pCapabilities){
-			delete pCapabilities;
-			pCapabilities = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy capabilities (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		if(pExtensions){
-			delete pExtensions;
-			pExtensions = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy extensions (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		if(pDefaultTextures){
-			delete pDefaultTextures;
-			pDefaultTextures = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy default textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		if(pShader){
-			delete pShader;
-			pShader = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy shaders (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		if(pChoices){
-			delete pChoices;
-			pChoices = NULL;
-		}
-		
-		// deprecated
-		if(pOptimizerManager){
-			delete pOptimizerManager;
-			pOptimizerManager = NULL;
-		}
-		if(pQuickSorter){
-			delete pQuickSorter;
-			pQuickSorter = NULL;
-		}
-		// deprecated
-		
-		// has to come last
-		if(pRenderTaskSharedPool){
-			delete pRenderTaskSharedPool;
-			pRenderTaskSharedPool = NULL;
-		}
-		if(pUniqueKey){
-			delete pUniqueKey;
-			pUniqueKey = NULL;
-		}
-		
-		if(pDelayedOperations){
-			delete pDelayedOperations;
-			pDelayedOperations = NULL;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy delayed operations (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		// free context
-// 		cleanUpWindow->FreeReference();
-// 		cleanUpWindow = NULL;
-		
-		if(pContext){
-			pContext->CleanUp();
-			
-			delete pContext;
-			pContext = nullptr;
-		}
-		if(pLoaderThread){
-			delete pLoaderThread;
-			pLoaderThread = nullptr;
-		}
-		#ifdef TIME_CLEANUP
-		pLogger->LogInfoFormat("RT-CleanUp: destroy context (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
-		#endif
-		
-		// synchronize again to process log messages build up during cleaning up
-		pLogger->Synchronize();
-		
-	}catch(const deException &){
-// 		if( cleanUpWindow ){
-// 			cleanUpWindow->FreeReference();
-// 		}
-		throw;
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: render windows (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	// remove canvas if present
+	pCanvasOverlay = nullptr;
+	pCanvasDebugOverlay = nullptr;
+	pCanvasInputOverlay = nullptr;
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: canvas overlay (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	// synchronize to break reference loops in leak checked objects
+	pLogger->Synchronize();
+	if(pDelayedOperations){
+		pDelayedOperations->ProcessSynchronizeOperations();
 	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: delayed operations synchronize (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	// process free operations to remove remaining objects included in the leak report.
+	// force deleting all objects to get a clean slate for the leak report.
+	if(pDelayedOperations){
+		pDelayedOperations->ProcessFreeOperations(true);
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: delayed operations free (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	// report leaks
+	pReportLeaks(); // only if enabled
+	
+	// clean up objects
+	if(pRenderers){
+		delete pRenderers;
+		pRenderers = NULL;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy renderers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	if(pLightBoundarybox){
+		delete pLightBoundarybox;
+		pLightBoundarybox = NULL;
+	}
+	if(pOcclusionTestPool){
+		delete pOcclusionTestPool;
+		pOcclusionTestPool = NULL;
+	}
+	if(pPersistentRenderTaskPool){
+		delete pPersistentRenderTaskPool;
+		pPersistentRenderTaskPool = NULL;
+	}
+	if(pTriangleSorter){
+		delete pTriangleSorter;
+		pTriangleSorter = NULL;
+	}
+	
+	if(pOccQueryMgr){
+		delete pOccQueryMgr;
+		pOccQueryMgr = NULL;
+	}
+	if(pGI){
+		delete pGI;
+		pGI = NULL;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy occlusion managers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	if(pDelayedOperations){
+		pDelayedOperations->Clear(); // first stage clear
+	}
+	
+	if(pDeferredRendering){
+		delete pDeferredRendering;
+		pDeferredRendering = NULL;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy deferred rendering (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	if(pShadowMapper){
+		delete pShadowMapper;
+		pShadowMapper = NULL;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy shadow mapper (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	if(pEnvMapSlotManager){
+		delete pEnvMapSlotManager;
+		pEnvMapSlotManager = NULL;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy env-map slot manager (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	if(pBufferObject){
+		delete pBufferObject;
+		pBufferObject = NULL;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy buffer objects (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	if(pFramebuffer){
+		delete pFramebuffer;
+		pFramebuffer = NULL;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy framebuffers (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	pPipelineManager = nullptr;
+	if(pTexture){
+		delete pTexture;
+		pTexture = NULL;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+#ifdef BACKEND_OPENGL
+	pVulkanDevice = nullptr;
+	pVulkan = nullptr;
+#endif
+	
+	if(pDebug){
+		deoglDebugInformationList &dilist = pDebug->GetDebugInformationList();
+		dilist.RemoveIfPresent(pDebugInfoModule);
+		dilist.RemoveIfPresent(pDebugInfoFrameLimiter);
+	}
+	
+	pDebugInfoModule = nullptr;
+	pDebugInfoThreadMain = nullptr;
+	pDebugInfoThreadMainWaitFinish = nullptr;
+	pDebugInfoThreadMainSynchronize = nullptr;
+	pDebugInfoThreadRender = nullptr;
+	pDebugInfoThreadRenderSyncGpu = nullptr;
+	pDebugInfoThreadRenderBegin = nullptr;
+	pDebugInfoThreadRenderWindows = nullptr;
+	pDebugInfoThreadRenderWindowsPrepare = nullptr;
+	pDebugInfoThreadRenderWindowsRender = nullptr;
+	pDebugInfoThreadRenderCapture = nullptr;
+	pDebugInfoThreadRenderEnd = nullptr;
+	pDebugInfoThreadRenderSwap = nullptr;
+	pDebugInfoVRRender = nullptr;
+	pDebugInfoFrameLimiter = nullptr;
+	pDebugInfoFLEstimMain = nullptr;
+	pDebugInfoFLEstimRender = nullptr;
+	pDebugInfoFLFrameRateMain = nullptr;
+	pDebugInfoFLFrameRateRender = nullptr;
+	
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy debug-info (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	if(pDebug){
+		delete pDebug;
+		pDebug = NULL;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy debug (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	if(pCapabilities){
+		delete pCapabilities;
+		pCapabilities = NULL;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy capabilities (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	if(pExtensions){
+		delete pExtensions;
+		pExtensions = NULL;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy extensions (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	if(pDefaultTextures){
+		delete pDefaultTextures;
+		pDefaultTextures = NULL;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy default textures (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	if(pShader){
+		delete pShader;
+		pShader = NULL;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy shaders (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	if(pChoices){
+		delete pChoices;
+		pChoices = NULL;
+	}
+	
+	// deprecated
+	if(pOptimizerManager){
+		delete pOptimizerManager;
+		pOptimizerManager = NULL;
+	}
+	if(pQuickSorter){
+		delete pQuickSorter;
+		pQuickSorter = NULL;
+	}
+	// deprecated
+	
+	// has to come last
+	if(pRenderTaskSharedPool){
+		delete pRenderTaskSharedPool;
+		pRenderTaskSharedPool = NULL;
+	}
+	if(pUniqueKey){
+		delete pUniqueKey;
+		pUniqueKey = NULL;
+	}
+	
+	if(pDelayedOperations){
+		delete pDelayedOperations;
+		pDelayedOperations = NULL;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy delayed operations (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	// free context
+// 		cleanUpWindow = nullptr;
+	
+	if(pContext){
+		pContext->CleanUp();
+		
+		delete pContext;
+		pContext = nullptr;
+	}
+	if(pLoaderThread){
+		delete pLoaderThread;
+		pLoaderThread = nullptr;
+	}
+	#ifdef TIME_CLEANUP
+	pLogger->LogInfoFormat("RT-CleanUp: destroy context (%iys)", (int)(cleanUpTimer.GetElapsedTime() * 1e6f));
+	#endif
+	
+	// synchronize again to process log messages build up during cleaning up
+	pLogger->Synchronize();
 }
 
 

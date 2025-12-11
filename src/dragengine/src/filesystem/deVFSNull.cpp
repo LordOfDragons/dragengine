@@ -72,7 +72,7 @@ decBaseFileReader::Ref deVFSNull::OpenFileForReading(const decPath &path){
 }
 
 decBaseFileWriter::Ref deVFSNull::OpenFileForWriting(const decPath &path){
-	return decBaseFileWriter::Ref::New(new decNullFileWriter(path.GetPathUnix()));
+	return decNullFileWriter::Ref::NewWith(path.GetPathUnix());
 }
 
 void deVFSNull::DeleteFile(const decPath &){

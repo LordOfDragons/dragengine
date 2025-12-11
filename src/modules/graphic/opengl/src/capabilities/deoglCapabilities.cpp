@@ -436,8 +436,8 @@ void deoglCapabilities::pAndroidTest(deoglFramebuffer *framebuffer){
 	// 
 	
 	deoglShaderManager &shaderManager = pRenderThread.GetShader().GetShaderManager();
-	const deoglPixelBuffer::Ref pixelBuffer(deoglPixelBuffer::Ref::New(
-		new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, 1, 1, 1)));
+	const deoglPixelBuffer::Ref pixelBuffer(deoglPixelBuffer::Ref::NewWith(
+		deoglPixelBuffer::epfFloat4, 1, 1, 1));
 	deoglPixelBuffer::sFloat4 * const pixels = pixelBuffer->GetPointerFloat4();
 	deoglTexture *texture = NULL;
 	const deoglShaderSources *sources;

@@ -920,12 +920,12 @@ void deModuleSystem::pInitAssetLibrary(){
 	const decPath rootPath(decPath::CreatePathUnix("/"));
 	
 	if(pEngine->GetOSFileSystem()){
-		pVFSAssetLibraries->AddContainer(deVFSContainer::Ref::New(new deVFSRedirect(
-			rootPath, decPath::CreatePathUnix("/share"), pEngine->GetOSFileSystem(), true)));
+		pVFSAssetLibraries->AddContainer(deVFSRedirect::Ref::NewWith(
+			rootPath, decPath::CreatePathUnix("/share"), pEngine->GetOSFileSystem(), true));
 		
 	}else{
-		pVFSAssetLibraries->AddContainer(deVFSContainer::Ref::New(new deVFSDiskDirectory(
-			decPath::CreatePathNative(pEngine->GetOS()->GetPathShare()))));
+		pVFSAssetLibraries->AddContainer(deVFSDiskDirectory::Ref::NewWith(
+			decPath::CreatePathNative(pEngine->GetOS()->GetPathShare())));
 	}
 	
 	deCollectFileSearchVisitor collect("dragengine-*.deal");

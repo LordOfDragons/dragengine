@@ -36,6 +36,10 @@
  * XR_MNDX_xdev_space profile.
  */
 class deoxrDPMndxDevSpace : public deoxrDeviceProfile{
+public:
+	typedef deTObjectReference<deoxrDPMndxDevSpace> Ref;
+	
+	
 private:
 	class Device : public deObject{
 	public:

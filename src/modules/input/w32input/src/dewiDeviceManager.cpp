@@ -285,8 +285,8 @@ void dewiDeviceManager::pCreateControllers(){
 			continue;
 		}
 		
-		const dewiDeviceWinRTController::Ref device(dewiDeviceWinRTController::Ref::New(
-			new dewiDeviceWinRTController(pModule, controller)));
+		const dewiDeviceWinRTController::Ref device(
+			dewiDeviceWinRTController::Ref::NewWith(pModule, controller));
 
 		if(device->GetType() != deInputDevice::edtGeneric){
 			device->SetIndex(pDevices.GetCount());
@@ -324,8 +324,8 @@ void dewiDeviceManager::pProcessAddRemoveDevices(){
 			continue;
 		}
 
-		const dewiDeviceWinRTController::Ref device(dewiDeviceWinRTController::Ref::New(
-			new dewiDeviceWinRTController(pModule, controller)));
+		const dewiDeviceWinRTController::Ref device(
+			dewiDeviceWinRTController::Ref::NewWith(pModule, controller));
 
 		if(device->GetType() == deInputDevice::edtGeneric){
 			continue;

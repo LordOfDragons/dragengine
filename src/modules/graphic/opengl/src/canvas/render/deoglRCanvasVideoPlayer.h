@@ -33,6 +33,11 @@
  * Render canvas video player.
  */
 class deoglRCanvasVideoPlayer : public deoglRCanvas{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRCanvasVideoPlayer> Ref;
+	
+	
 private:
 	deoglRVideoPlayer::Ref pVideoPlayer;
 	decTexMatrix2 pTCTransform;

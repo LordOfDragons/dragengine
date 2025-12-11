@@ -36,6 +36,10 @@
  * Render effect distort image.
  */
 class deoglREffectDistortImage : public deoglREffect{
+public:
+	typedef deTObjectReference<deoglREffectDistortImage> Ref;
+	
+	
 private:
 	decVector2 pStrength;
 	deoglRImage::Ref pImage;

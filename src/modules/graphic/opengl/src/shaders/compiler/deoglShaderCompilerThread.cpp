@@ -75,15 +75,6 @@ pState(State::prepare)
 	
 	language.GetRenderThread().GetLogger().LogInfoFormat(
 		"Create shader compiler thread: %d (%s)", contextIndex, typeName);
-	
-	try{
-		pCompiler = new deoglShaderCompiler(language, contextIndex);
-		
-	}catch(const deException &e){
-		language.GetRenderThread().GetLogger().LogException(e);
-		pExitThread = false;
-		pState = State::failed;
-	}
 }
 
 deoglShaderCompilerThread::~deoglShaderCompilerThread(){
@@ -98,6 +89,7 @@ deoglShaderCompilerThread::~deoglShaderCompilerThread(){
 void deoglShaderCompilerThread::Run(){
 	try{
 		pActivateContext();
+		pCompiler = new deoglShaderCompiler(pLanguage, pContextIndex);
 		
 	}catch(const deException &e){
 		pLanguage.GetRenderThread().GetLogger().LogException(e);
@@ -167,7 +159,7 @@ void deoglShaderCompilerThread::pCleanUp(){
 void deoglShaderCompilerThread::pActivateContext(){
 	if(pContextIndex > -1){
 #ifndef OS_BEOS
-		deoglRTContext &context = pLanguage.GetRenderThread().GetContext();
+		const deoglRTContext &context = pLanguage.GetRenderThread().GetContext();
 #endif
 		
 #ifdef OS_ANDROID
@@ -248,8 +240,6 @@ void deoglShaderCompilerThread::pActivateContext(){
 	}
 	SetName(threadName);
 #endif
-	
-	pCompiler = new deoglShaderCompiler(pLanguage, pContextIndex);
 }
 
 bool deoglShaderCompilerThread::pExitThreadRequested(){

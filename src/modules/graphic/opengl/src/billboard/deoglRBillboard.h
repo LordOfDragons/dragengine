@@ -66,9 +66,10 @@ public:
 	
 private:
 	/** World compute element. */
-	class WorldComputeElement: public deoglWorldComputeElement{
+	class WorldComputeElement : public deoglWorldComputeElement{
 		deoglRBillboard &pBillboard;
 	public:
+		typedef deTObjectReference<WorldComputeElement> Ref;
 		WorldComputeElement(deoglRBillboard &billboard);
 		void UpdateData(sDataElement &data) const override;
 		void UpdateDataGeometries(sDataElementGeometry *data) const override;
@@ -79,7 +80,7 @@ private:
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
-	deoglWorldComputeElement::Ref pWorldComputeElement;
+	WorldComputeElement::Ref pWorldComputeElement;
 	
 	deoglRSkin::Ref pSkin;
 	deoglSkinTexture *pUseSkinTexture;

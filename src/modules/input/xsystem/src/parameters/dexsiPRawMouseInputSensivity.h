@@ -32,6 +32,10 @@
  * Raw mouse input sensivity parameter.
  */
 class dexsiPRawMouseInputSensivity : public dexsiParameterFloat{
+public:
+	typedef deTObjectReference<dexsiPRawMouseInputSensivity> Ref;
+	
+	
 private:
 	const float pMinVal, pMaxVal, pMinSensivity, pMaxSensivity;
 	

@@ -45,6 +45,9 @@ public:
 	/** \brief Factory creating engine instances. */
 	class DE_DLL_EXPORT Factory : public delEngineInstance::Factory{
 	public:
+		/** \brief Type holding strong reference. */
+		typedef deTObjectReference<Factory> Ref;
+		
 		/** \brief Factory constructor. */
 		Factory();
 		

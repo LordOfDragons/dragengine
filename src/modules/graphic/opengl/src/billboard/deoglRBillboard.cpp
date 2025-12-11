@@ -125,7 +125,7 @@ pRenderThread(renderThread),
 
 pParentWorld(NULL),
 pOctreeNode(NULL),
-pWorldComputeElement(deoglWorldComputeElement::Ref::New(new WorldComputeElement(*this))),
+pWorldComputeElement(WorldComputeElement::Ref::NewWith(*this)),
 pUseSkinTexture(NULL),
 pLocked(true),
 pSpherical(false),

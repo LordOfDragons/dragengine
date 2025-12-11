@@ -753,9 +753,9 @@ void deglDialogProfileList::UpdateMPParameterList(){
 	
 	delGameProfile &profile = *pGetSelectedProfile()->GetEdit();
 	for(i=0; i<count; i++){
-		pMPParameters.Add(deglDialogProfileListParameter::Ref::New(new deglDialogProfileListParameter(
-			*list.GetNamed( names.GetAt( i ) ), profile, moduleName.text(),
-			pFrameMPParameters, this, ID_MPPARAM_LABEL, ID_MPPARAM_VALUE)));
+		pMPParameters.Add(deglDialogProfileListParameter::Ref::NewWith(
+			*list.GetNamed(names.GetAt(i)), profile, moduleName.text(),
+			pFrameMPParameters, this, ID_MPPARAM_LABEL, ID_MPPARAM_VALUE));
 	}
 	
 	pUpdateMPParamVisiblity();

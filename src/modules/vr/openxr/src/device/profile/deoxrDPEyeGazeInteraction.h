@@ -32,6 +32,10 @@
  * Eye gaze interaction profile.
  */
 class deoxrDPEyeGazeInteraction : public deoxrDeviceProfile{
+public:
+	typedef deTObjectReference<deoxrDPEyeGazeInteraction> Ref;
+	
+	
 private:
 	deoxrDevice::Ref pDevice;
 	

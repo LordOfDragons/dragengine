@@ -33,6 +33,10 @@
  * Render effect filter kernel.
  */
 class deoglREffectFilterKernel : public deoglREffect{
+public:
+	typedef deTObjectReference<deoglREffectFilterKernel> Ref;
+	
+	
 private:
 	float *pKernel;
 	int pKernelRows;
