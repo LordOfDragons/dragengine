@@ -136,10 +136,10 @@ pEnvironment(helper.pEnvironment){
 
 void igdeUIHelper::SidePanel(igdeContainerScroll::Ref &scroll, igdeContainer::Ref &panel,
 bool stretchLast, int spacing){
-	scroll.TakeOver(new igdeContainerScroll(pEnvironment, false, true));
+	scroll = igdeContainerScroll::Ref::New(pEnvironment, false, true);
 	
-	panel.TakeOver(new igdeContainerFlow(pEnvironment, igdeContainerFlow::eaY,
-		stretchLast ? igdeContainerFlow::esLast : igdeContainerFlow::esNone, spacing));
+	panel = igdeContainerFlow::Ref::New(pEnvironment, igdeContainerFlow::eaY,
+		stretchLast ? igdeContainerFlow::esLast : igdeContainerFlow::esNone, spacing);
 	scroll->AddChild(panel);
 	panel->SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 }
@@ -158,7 +158,7 @@ const char *title, bool collapsed) const{
 	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New(pEnvironment, title, collapsed));
 	parent.AddChild(frame);
 	
-	groupBox.TakeOver(new igdeContainerForm(pEnvironment));
+	groupBox = igdeContainerForm::Ref::New(pEnvironment);
 	frame->AddChild(groupBox);
 }
 
@@ -167,7 +167,7 @@ igdeContainer::Ref &groupBox, const char *title) const{
 	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New(pEnvironment, title));
 	parent.AddChild(frame);
 	
-	groupBox.TakeOver(new igdeContainerForm(pEnvironment));
+	groupBox = igdeContainerForm::Ref::New(pEnvironment);
 	frame->AddChild(groupBox);
 }
 
@@ -176,8 +176,8 @@ const char *title, bool stretchLast, bool collapsed) const{
 	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New(pEnvironment, title, collapsed));
 	parent.AddChild(frame);
 	
-	groupBox.TakeOver(new igdeContainerFlow(pEnvironment, igdeContainerFlow::eaY,
-		stretchLast ? igdeContainerFlow::esLast : igdeContainerFlow::esNone));
+	groupBox = igdeContainerFlow::Ref::New(pEnvironment, igdeContainerFlow::eaY,
+		stretchLast ? igdeContainerFlow::esLast : igdeContainerFlow::esNone);
 	frame->AddChild(groupBox);
 }
 
@@ -186,7 +186,7 @@ const char *title, bool collapsed) const{
 	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New(pEnvironment, title, collapsed));
 	parent.AddChild(frame);
 	
-	groupBox.TakeOver(new igdeContainerBorder(pEnvironment));
+	groupBox = igdeContainerBorder::Ref::New(pEnvironment);
 	frame->AddChild(groupBox);
 }
 
@@ -198,8 +198,8 @@ const char *title, bool stretchLast) const{
 	}
 	parent.AddChild(frame);
 	
-	groupBox.TakeOver(new igdeContainerFlow(pEnvironment, igdeContainerFlow::eaY,
-		stretchLast ? igdeContainerFlow::esLast : igdeContainerFlow::esNone));
+	groupBox = igdeContainerFlow::Ref::New(pEnvironment, igdeContainerFlow::eaY,
+		stretchLast ? igdeContainerFlow::esLast : igdeContainerFlow::esNone);
 	frame->AddChild(groupBox);
 }
 
@@ -211,7 +211,7 @@ igdeContainerBorder::Ref &groupBox, const char *title, bool stretch) const{
 	}
 	parent.AddChild(frame);
 	
-	groupBox.TakeOver(new igdeContainerBorder(pEnvironment));
+	groupBox = igdeContainerBorder::Ref::New(pEnvironment);
 	frame->AddChild(groupBox);
 }
 
@@ -238,7 +238,7 @@ void igdeUIHelper::FormLine(igdeContainer &form, const char *label, const char *
 igdeContainer::Ref &line, int labelAlignment){
 	igdeLabel::Ref wlabel(igdeLabel::Ref::New(pEnvironment, label, description, labelAlignment));
 	form.AddChild(wlabel);
-	line.TakeOver(new igdeContainerBox(pEnvironment, igdeContainerBox::eaX));
+	line = igdeContainerBox::Ref::New(pEnvironment, igdeContainerBox::eaX);
 	form.AddChild(line);
 }
 
@@ -251,7 +251,7 @@ void igdeUIHelper::FormLineStretchFirst(igdeContainer &form, const char *label,
 const char *description, igdeContainer::Ref &line, int labelAlignment){
 	igdeLabel::Ref wlabel(igdeLabel::Ref::New(pEnvironment, label, description, labelAlignment));
 	form.AddChild(wlabel);
-	line.TakeOver(new igdeContainerFlow(pEnvironment, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
+	line = igdeContainerFlow::Ref::New(pEnvironment, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	form.AddChild(line);
 }
 
@@ -264,7 +264,7 @@ void igdeUIHelper::FormLineDownFlow(igdeContainer &form, const char *label,
 const char *description, igdeContainer::Ref &line, int labelAlignment){
 	igdeLabel::Ref wlabel(igdeLabel::Ref::New(pEnvironment, label, description, labelAlignment));
 	form.AddChild(wlabel);
-	line.TakeOver(new igdeContainerFlow(pEnvironment, igdeContainerFlow::eaY));
+	line = igdeContainerFlow::Ref::New(pEnvironment, igdeContainerFlow::eaY);
 	form.AddChild(line);
 }
 
@@ -300,7 +300,7 @@ igdeTextFieldListener *listener){
 
 void igdeUIHelper::EditString(const char *description, int rows,
 igdeTextField::Ref &textField, igdeTextFieldListener *listener){
-	textField.TakeOver(new igdeTextField(pEnvironment, rows, description));
+	textField = igdeTextField::Ref::New(pEnvironment, rows, description);
 	if(listener){
 		textField->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -338,7 +338,7 @@ igdeTextArea::Ref &textArea, igdeTextAreaListener *listener){
 
 void igdeUIHelper::EditString(const char *description, int columns, int rows,
 igdeTextArea::Ref &textArea, igdeTextAreaListener *listener){
-	textArea.TakeOver(new igdeTextArea(pEnvironment, columns, rows, description));
+	textArea = igdeTextArea::Ref::New(pEnvironment, columns, rows, description);
 	if(listener){
 		textArea->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -376,7 +376,7 @@ igdeTextFieldListener *listener){
 
 void igdeUIHelper::EditFloat(const char *description, int columns, int precision,
 igdeTextField::Ref &textField, igdeTextFieldListener *listener){
-	textField.TakeOver(new igdeTextField(pEnvironment, columns, description));
+	textField = igdeTextField::Ref::New(pEnvironment, columns, description);
 	textField->SetPrecision(precision);
 	if(listener){
 		textField->AddListener(listener);
@@ -415,7 +415,7 @@ igdeTextFieldListener *listener){
 
 void igdeUIHelper::EditInteger(const char *description, int columns,
 igdeTextField::Ref &textField, igdeTextFieldListener *listener){
-	textField.TakeOver(new igdeTextField(pEnvironment, columns, description));
+	textField = igdeTextField::Ref::New(pEnvironment, columns, description);
 	if(listener){
 		textField->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -433,7 +433,7 @@ igdeSpinTextFieldListener *listener){
 
 void igdeUIHelper::EditSpinInteger(igdeContainer &parent, const char *description,
 int lower, int upper, igdeSpinTextField::Ref &spinTextField, igdeSpinTextFieldListener *listener){
-	spinTextField.TakeOver(new igdeSpinTextField(pEnvironment, lower, upper, 6, description));
+	spinTextField = igdeSpinTextField::Ref::New(pEnvironment, lower, upper, 6, description);
 	if(listener){
 		spinTextField->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -443,7 +443,7 @@ int lower, int upper, igdeSpinTextField::Ref &spinTextField, igdeSpinTextFieldLi
 
 void igdeUIHelper::EditSpinInteger(const char *description, int lower, int upper,
 igdeSpinTextField::Ref &spinTextField, igdeSpinTextFieldListener *listener){
-	spinTextField.TakeOver(new igdeSpinTextField(pEnvironment, lower, upper, 6, description));
+	spinTextField = igdeSpinTextField::Ref::New(pEnvironment, lower, upper, 6, description);
 	if(listener){
 		spinTextField->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -466,8 +466,8 @@ int lower, int upper, bool horizontal, igdeProgressBar::Ref &progressBar){
 
 void igdeUIHelper::ProgressBar(const char *description, int lower, int upper,
 bool horizontal, igdeProgressBar::Ref &progressBar){
-	progressBar.TakeOver(new igdeProgressBar(pEnvironment, lower, upper,
-		horizontal ? igdeProgressBar::eoHorizontal : igdeProgressBar::eoVertical, description));
+	progressBar = igdeProgressBar::Ref::New(pEnvironment, lower, upper,
+		horizontal ? igdeProgressBar::eoHorizontal : igdeProgressBar::eoVertical, description);
 }
 
 
@@ -518,7 +518,7 @@ const char *description, igdeComboBox::Ref &comboBox, igdeComboBoxListener *list
 
 void igdeUIHelper::ComboBox(int columns, int rows, bool editable, const char* description,
 igdeComboBox::Ref& comboBox, igdeComboBoxListener* listener){
-	comboBox.TakeOver(new igdeComboBox(pEnvironment, columns, rows, editable, description));
+	comboBox = igdeComboBox::Ref::New(pEnvironment, columns, rows, editable, description);
 	if(listener){
 		comboBox->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -574,7 +574,7 @@ const char *description, igdeComboBoxFilter::Ref &comboBox, igdeComboBoxListener
 
 void igdeUIHelper::ComboBoxFilter(int columns, int rows, bool editable, const char *description,
 igdeComboBoxFilter::Ref &comboBox, igdeComboBoxListener *listener){
-	comboBox.TakeOver(new igdeComboBoxFilter(pEnvironment, columns, rows, editable, description));
+	comboBox = igdeComboBoxFilter::Ref::New(pEnvironment, columns, rows, editable, description);
 	if(listener){
 		comboBox->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -596,7 +596,7 @@ igdeCheckBox::Ref &checkBox){
 }
 
 void igdeUIHelper::CheckBox(igdeCheckBox::Ref &checkBox, igdeAction *action, bool takeOverAction){
-	checkBox.TakeOver(new igdeCheckBox(pEnvironment, action));
+	checkBox = igdeCheckBox::Ref::New(pEnvironment, action);
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
@@ -604,12 +604,12 @@ void igdeUIHelper::CheckBox(igdeCheckBox::Ref &checkBox, igdeAction *action, boo
 
 void igdeUIHelper::CheckBox(const char *text, const char *description,
 igdeCheckBox::Ref &checkBox){
-	checkBox.TakeOver(new igdeCheckBox(pEnvironment, text, description, NULL));
+	checkBox = igdeCheckBox::Ref::New(pEnvironment, text, description, nullptr);
 }
 
 void igdeUIHelper::CheckBoxOnly(igdeContainer &parent, igdeCheckBox::Ref &checkBox,
 igdeAction *action, bool takeOverAction){
-	checkBox.TakeOver(new igdeCheckBox(pEnvironment, action));
+	checkBox = igdeCheckBox::Ref::New(pEnvironment, action);
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
@@ -618,7 +618,7 @@ igdeAction *action, bool takeOverAction){
 
 void igdeUIHelper::CheckBoxOnly(igdeContainer &parent, const char *text, const char *description,
 igdeCheckBox::Ref &checkBox){
-	checkBox.TakeOver(new igdeCheckBox(pEnvironment, text, description, NULL));
+	checkBox = igdeCheckBox::Ref::New(pEnvironment, text, description, nullptr);
 	parent.AddChild(checkBox);
 }
 
@@ -644,8 +644,8 @@ int lower, int upper, int tickSpacing, igdeSlider::Ref &slider, igdeSliderListen
 void igdeUIHelper::Slider(igdeContainer &parent, const char *description,
 float lower, float upper, int precision, float tickSpacing, igdeSlider::Ref &slider,
 igdeSliderListener *listener){
-	slider.TakeOver(new igdeSlider(pEnvironment, igdeSlider::eoHorizontal,
-		lower, upper, precision, tickSpacing, description));
+	slider = igdeSlider::Ref::New(pEnvironment, igdeSlider::eoHorizontal,
+		lower, upper, precision, tickSpacing, description);
 	if(listener){
 		slider->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -655,8 +655,8 @@ igdeSliderListener *listener){
 
 void igdeUIHelper::Slider(igdeContainer &parent, const char *description, int lower,
 int upper, int tickSpacing, igdeSlider::Ref &slider, igdeSliderListener *listener){
-	slider.TakeOver(new igdeSlider(pEnvironment, igdeSlider::eoHorizontal,
-		(float)lower, (float)upper, 0, (float)tickSpacing, description));
+	slider = igdeSlider::Ref::New(pEnvironment, igdeSlider::eoHorizontal,
+		(float)lower, (float)upper, 0, (float)tickSpacing, description);
 	if(listener){
 		slider->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -666,8 +666,8 @@ int upper, int tickSpacing, igdeSlider::Ref &slider, igdeSliderListener *listene
 
 void igdeUIHelper::Slider(const char *description, float lower, float upper, int precision,
 float tickSpacing, igdeSlider::Ref &slider, igdeSliderListener *listener){
-	slider.TakeOver(new igdeSlider(pEnvironment, igdeSlider::eoHorizontal,
-		lower, upper, precision, tickSpacing, description));
+	slider = igdeSlider::Ref::New(pEnvironment, igdeSlider::eoHorizontal,
+		lower, upper, precision, tickSpacing, description);
 	if(listener){
 		slider->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -676,8 +676,8 @@ float tickSpacing, igdeSlider::Ref &slider, igdeSliderListener *listener){
 
 void igdeUIHelper::Slider(const char *description, int lower, int upper, int tickSpacing,
 igdeSlider::Ref &slider, igdeSliderListener *listener){
-	slider.TakeOver(new igdeSlider(pEnvironment, igdeSlider::eoHorizontal,
-		(float)lower, (float)upper, 0, (float)tickSpacing, description));
+	slider = igdeSlider::Ref::New(pEnvironment, igdeSlider::eoHorizontal,
+		(float)lower, (float)upper, 0, (float)tickSpacing, description);
 	if(listener){
 		slider->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -700,7 +700,7 @@ igdeColorBox::Ref &colorBox, igdeColorBoxListener *listener){
 
 void igdeUIHelper::ColorBox(const char *description, igdeColorBox::Ref &colorBox,
 igdeColorBoxListener *listener){
-	colorBox.TakeOver(new igdeColorBox(pEnvironment, description));
+	colorBox = igdeColorBox::Ref::New(pEnvironment, description);
 	if(listener){
 		colorBox->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -723,7 +723,7 @@ igdeEditPoint::Ref &editPoint, igdeEditPointListener *listener){
 
 void igdeUIHelper::EditPoint(const char *description, igdeEditPoint::Ref &editPoint,
 igdeEditPointListener *listener){
-	editPoint.TakeOver(new igdeEditPoint(*this, 6, description));
+	editPoint = igdeEditPoint::Ref::New(*this, 6, description);
 	if(listener){
 		editPoint->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -746,7 +746,7 @@ igdeEditPoint3::Ref &editPoint, igdeEditPoint3Listener *listener){
 
 void igdeUIHelper::EditPoint3(const char *description, igdeEditPoint3::Ref &editPoint,
 igdeEditPoint3Listener *listener){
-	editPoint.TakeOver(new igdeEditPoint3(*this, 6, description));
+	editPoint = igdeEditPoint3::Ref::New(*this, 6, description);
 	if(listener){
 		editPoint->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -785,7 +785,7 @@ igdeEditPathListener *listener, bool useGameVFS){
 
 void igdeUIHelper::EditPath(const char *description, igdeEnvironment::eFilePatternListTypes resourceType,
 igdeEditPath::Ref &editPath, igdeEditPathListener *listener, bool useGameVFS){
-	editPath.TakeOver(new igdeEditPath(*this, resourceType, description, useGameVFS));
+	editPath = igdeEditPath::Ref::New(*this, resourceType, description, useGameVFS);
 	if(listener){
 		editPath->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -794,7 +794,7 @@ igdeEditPath::Ref &editPath, igdeEditPathListener *listener, bool useGameVFS){
 
 void igdeUIHelper::EditPath(const char *description, const igdeFilePatternList &customFilePatterns,
 igdeEditPath::Ref &editPath, igdeEditPathListener *listener, bool useGameVFS){
-	editPath.TakeOver(new igdeEditPath(*this, customFilePatterns, description, useGameVFS));
+	editPath = igdeEditPath::Ref::New(*this, customFilePatterns, description, useGameVFS);
 	if(listener){
 		editPath->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -818,7 +818,7 @@ igdeEditDirectory::Ref &editDirectory, igdeEditDirectoryListener *listener, bool
 
 void igdeUIHelper::EditDirectory(const char *description, igdeEditDirectory::Ref &editDirectory,
 igdeEditDirectoryListener *listener, bool useGameVFS){
-	editDirectory.TakeOver(new igdeEditDirectory(*this, description, useGameVFS));
+	editDirectory = igdeEditDirectory::Ref::New(*this, description, useGameVFS);
 	if(listener){
 		editDirectory->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -856,7 +856,7 @@ igdeEditDVectorListener *listener){
 
 void igdeUIHelper::EditDVector(const char *description, int columns, int precision,
 igdeEditDVector::Ref &editDVector, igdeEditDVectorListener *listener){
-	editDVector.TakeOver(new igdeEditDVector(*this, columns, precision, description));
+	editDVector = igdeEditDVector::Ref::New(*this, columns, precision, description);
 	if(listener){
 		editDVector->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -894,7 +894,7 @@ igdeEditVectorListener *listener){
 
 void igdeUIHelper::EditVector(const char *description, int columns, int precision,
 igdeEditVector::Ref &editVector, igdeEditVectorListener *listener){
-	editVector.TakeOver(new igdeEditVector(*this, columns, precision, description));
+	editVector = igdeEditVector::Ref::New(*this, columns, precision, description);
 	if(listener){
 		editVector->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -932,7 +932,7 @@ igdeEditVector2Listener *listener){
 
 void igdeUIHelper::EditVector2(const char *description, int columns, int precision,
 igdeEditVector2::Ref &editVector2, igdeEditVector2Listener *listener){
-	editVector2.TakeOver(new igdeEditVector2(*this, columns, precision, description));
+	editVector2 = igdeEditVector2::Ref::New(*this, columns, precision, description);
 	if(listener){
 		editVector2->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -972,8 +972,8 @@ igdeEditSliderTextListener *listener){
 void igdeUIHelper::EditSliderText(const char *description, float lower, float upper,
 int columns, int precision, float tickSpacing, igdeEditSliderText::Ref &slider,
 igdeEditSliderTextListener *listener){
-	slider.TakeOver(new igdeEditSliderText(*this, lower, upper, columns, precision,
-		tickSpacing, description));
+	slider = igdeEditSliderText::Ref::New(*this, lower, upper, columns, precision,
+		tickSpacing, description);
 	if(listener){
 		slider->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -982,8 +982,8 @@ igdeEditSliderTextListener *listener){
 
 void igdeUIHelper::EditSliderText(const char *description, int lower, int upper, int columns,
 int tickSpacing, igdeEditSliderText::Ref &slider, igdeEditSliderTextListener *listener){
-	slider.TakeOver(new igdeEditSliderText(*this, (float)lower,
-		(float)upper, columns, 0, (float)tickSpacing, description));
+	slider = igdeEditSliderText::Ref::New(*this, (float)lower,
+		(float)upper, columns, 0, (float)tickSpacing, description);
 	if(listener){
 		slider->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -1041,7 +1041,7 @@ igdeAction *action, bool takeOverAction){
 }
 
 void igdeUIHelper::ToggleButton(igdeToggleButton::Ref &button, igdeAction *action, bool takeOverAction){
-	button.TakeOver(new igdeToggleButton(pEnvironment, action));
+	button = igdeToggleButton::Ref::New(pEnvironment, action);
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
@@ -1063,7 +1063,7 @@ igdeListBox::Ref &listBox, igdeListBoxListener *listener){
 
 void igdeUIHelper::ListBox(int rows, const char *description, igdeListBox::Ref &listBox,
 igdeListBoxListener *listener){
-	listBox.TakeOver(new igdeListBox(pEnvironment, rows, description));
+	listBox = igdeListBox::Ref::New(pEnvironment, rows, description);
 	if(listener){
 		listBox->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -1092,8 +1092,8 @@ const igdeUIHelper::sColumnHeader *headers, int headerCount, igdeIconListBoxList
 	
 	int i;
 	for(i=0; i<headerCount; i++){
-		realHeader.TakeOver(new igdeListHeader(headers[i].title,
-			headers[i].icon, headers[i].size));
+		realHeader = igdeListHeader::Ref::New(headers[i].title,
+			headers[i].icon, headers[i].size);
 		listBox.AddHeader(realHeader);
 	}
 	
@@ -1109,7 +1109,7 @@ const char *description, igdeIconListBox::Ref &listBox, igdeIconListBoxListener 
 		DETHROW(deeInvalidParam);
 	}
 	
-	listBox.TakeOver(new igdeIconListBox(pEnvironment, description));
+	listBox = igdeIconListBox::Ref::New(pEnvironment, description);
 	igdeUIHelperIconListBoxShared(listBox, headers, headerCount, listener);
 }
 
@@ -1119,7 +1119,7 @@ const char *description, igdeIconListBox::Ref &listBox, igdeIconListBoxListener 
 		DETHROW(deeInvalidParam);
 	}
 	
-	listBox.TakeOver(new igdeIconListBox(pEnvironment, minimumSize, description));
+	listBox = igdeIconListBox::Ref::New(pEnvironment, minimumSize, description);
 	igdeUIHelperIconListBoxShared(listBox, headers, headerCount, listener);
 }
 
@@ -1133,7 +1133,7 @@ int rows, const char *description, igdeTreeListListener *listener){
 
 void igdeUIHelper::TreeList(int rows, const char *description, igdeTreeList::Ref &treeList,
 igdeTreeListListener *listener){
-	treeList.TakeOver(new igdeTreeList(pEnvironment, rows, description));
+	treeList = igdeTreeList::Ref::New(pEnvironment, rows, description);
 	if(listener){
 		treeList->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -1156,23 +1156,23 @@ const char *description, int alignment){
 }
 
 void igdeUIHelper::Label(igdeContainer &parent, igdeLabel::Ref &label, const char *text){
-	label.TakeOver(new igdeLabel(pEnvironment, text));
+	label = igdeLabel::Ref::New(pEnvironment, text);
 	parent.AddChild(label);
 }
 
 void igdeUIHelper::Label(igdeContainer &parent, igdeLabel::Ref &label,
 const char *text, const char *description, int alignment){
-	label.TakeOver(new igdeLabel(pEnvironment, text, description, alignment));
+	label = igdeLabel::Ref::New(pEnvironment, text, description, alignment);
 	parent.AddChild(label);
 }
 
 void igdeUIHelper::Label(igdeLabel::Ref &label, const char *text){
-	label.TakeOver(new igdeLabel(pEnvironment, text));
+	label = igdeLabel::Ref::New(pEnvironment, text);
 }
 
 void igdeUIHelper::Label(igdeLabel::Ref &label, const char *text,
 const char *description, int alignment){
-	label.TakeOver(new igdeLabel(pEnvironment, text, description, alignment));
+	label = igdeLabel::Ref::New(pEnvironment, text, description, alignment);
 }
 
 
@@ -1185,9 +1185,9 @@ int pageSize, int value, igdeScrollBar::Ref &scrollBar, igdeScrollBarListener *l
 
 void igdeUIHelper::ScrollBar(bool horizontal, int lower, int upper, int pageSize, int value,
 igdeScrollBar::Ref &scrollBar, igdeScrollBarListener *listener){
-	scrollBar.TakeOver(new igdeScrollBar(pEnvironment,
+	scrollBar = igdeScrollBar::Ref::New(pEnvironment,
 		horizontal ? igdeScrollBar::eoHorizontal : igdeScrollBar::eoVertical,
-		lower, upper, pageSize, value));
+		lower, upper, pageSize, value);
 	if(listener){
 		scrollBar->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -1204,7 +1204,7 @@ igdeViewCurveBezier::Ref &viewCurveBezier, igdeViewCurveBezierListener *listener
 
 void igdeUIHelper::ViewCurveBezier(igdeViewCurveBezier::Ref &viewCurveBezier,
 igdeViewCurveBezierListener *listener){
-	viewCurveBezier.TakeOver(new igdeViewCurveBezier(pEnvironment));
+	viewCurveBezier = igdeViewCurveBezier::Ref::New(pEnvironment);
 	if(listener){
 		viewCurveBezier->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -1226,7 +1226,7 @@ void igdeUIHelper::Spacer(igdeContainer &parent, const decPoint &size){
 }
 
 void igdeUIHelper::Spacer(igdeContainer &parent, const decPoint &size, igdeSpacer::Ref &spacer){
-	spacer.TakeOver(new igdeSpacer(pEnvironment, size));
+	spacer = igdeSpacer::Ref::New(pEnvironment, size);
 	parent.AddChild(spacer);
 }
 
@@ -1247,7 +1247,7 @@ igdeAction *action, const char *title, bool stretchLast, bool collapsed, bool ta
 }
 
 void igdeUIHelper::WPSky(igdeWPSky::Ref &panel, igdeAction *action, bool takeOverAction){
-	panel.TakeOver(new igdeWPSky(pEnvironment, action));
+	panel = igdeWPSky::Ref::New(pEnvironment, action);
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
@@ -1270,7 +1270,7 @@ igdeAction *action, const char *title, bool stretchLast, bool collapsed, bool ta
 }
 
 void igdeUIHelper::WPCamera(igdeWPCamera::Ref &panel, igdeAction *action, bool takeOverAction){
-	panel.TakeOver(new igdeWPCamera(pEnvironment, action));
+	panel = igdeWPCamera::Ref::New(pEnvironment, action);
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
@@ -1293,7 +1293,7 @@ igdeAction *action, const char *title, bool stretchLast, bool collapsed, bool ta
 }
 
 void igdeUIHelper::WPWObject(igdeWPWObject::Ref &panel, igdeAction *action, bool takeOverAction){
-	panel.TakeOver(new igdeWPWObject(pEnvironment, action));
+	panel = igdeWPWObject::Ref::New(pEnvironment, action);
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
@@ -1308,7 +1308,7 @@ igdeAction *action, bool takeOverAction){
 }
 
 void igdeUIHelper::EditTags(igdeEditTags::Ref &editTags, igdeAction *action, bool takeOverAction){
-	editTags.TakeOver(new igdeEditTags(*this, 5, action));
+	editTags = igdeEditTags::Ref::New(*this, 5, action);
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
@@ -1324,7 +1324,7 @@ igdeAction *action, bool takeOverAction){
 
 void igdeUIHelper::ToggleTags(igdeToggleTags::Ref &toggleTags, igdeAction *action,
 bool takeOverAction){
-	toggleTags.TakeOver(new igdeToggleTags(*this, 5, action));
+	toggleTags = igdeToggleTags::Ref::New(*this, 5, action);
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
@@ -1334,7 +1334,7 @@ bool takeOverAction){
 
 void igdeUIHelper::EditPropertyValue(igdeEditPropertyValue::Ref &widget,
 igdeEditPropertyValueListener *listener){
-	widget.TakeOver(new igdeEditPropertyValue(*this));
+	widget = igdeEditPropertyValue::Ref::New(*this);
 	if(listener){
 		widget->AddListener(listener);
 		listener->FreeReference(); // we take over the reference
@@ -1365,7 +1365,7 @@ igdeAction *action, const char *title, bool stretchLast, bool collapsed, bool ta
 
 void igdeUIHelper::WPTriggerTable(igdeWPTriggerTable::Ref &panel, igdeAction *action,
 bool takeOverAction){
-	panel.TakeOver(new igdeWPTriggerTable(pEnvironment, action));
+	panel = igdeWPTriggerTable::Ref::New(pEnvironment, action);
 	if(takeOverAction && action){
 		action->FreeReference();
 	}

@@ -43,7 +43,7 @@ deInternalModule(system)
 {
 	SetName("NullCrashRecovery");
 	SetType(deModuleSystem::emtCrashRecovery);
-	SetDescription("Null CrashRecovery Module");
+	SetDescription("nullptr CrashRecovery Module");
 	SetAuthor("Plüss Roland");
 	SetVersion("1.0");
 	SetDirectoryName("NullCrashRecovery");

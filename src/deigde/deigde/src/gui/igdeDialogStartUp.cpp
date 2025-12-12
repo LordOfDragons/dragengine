@@ -68,6 +68,8 @@ public:
 class igdeDialogStartUp_ActionLoadRecent : public igdeAction{
 	igdeDialogStartUp &pDialog;
 public:
+	typedef deTObjectReference<igdeDialogStartUp_ActionLoadRecent> Ref;
+	
 	igdeDialogStartUp_ActionLoadRecent(igdeDialogStartUp &dialog) :
 	igdeAction("Load Recent", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Load selected recent game project"), pDialog(dialog){}
@@ -85,6 +87,8 @@ public:
 class igdeDialogStartUp_ActionLoadFile : public igdeAction{
 	igdeDialogStartUp &pDialog;
 public:
+	typedef deTObjectReference<igdeDialogStartUp_ActionLoadFile> Ref;
+	
 	igdeDialogStartUp_ActionLoadFile(igdeDialogStartUp &dialog) :
 	igdeAction("Load Project", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Load game project from file"), pDialog(dialog){}
@@ -97,6 +101,8 @@ public:
 class igdeDialogStartUp_ActionNewProject : public igdeAction{
 	igdeDialogStartUp &pDialog;
 public:
+	typedef deTObjectReference<igdeDialogStartUp_ActionNewProject> Ref;
+	
 	igdeDialogStartUp_ActionNewProject(igdeDialogStartUp &dialog) :
 	igdeAction("New Project", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
 		"Create new game project"), pDialog(dialog){}
@@ -113,6 +119,8 @@ public:
 class igdeDialogStartUp_ActionQuit : public igdeAction{
 	igdeDialogStartUp &pDialog;
 public:
+	typedef deTObjectReference<igdeDialogStartUp_ActionQuit> Ref;
+	
 	igdeDialogStartUp_ActionQuit(igdeDialogStartUp &dialog) :
 	igdeAction("Quit IGDE", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiQuit),
 		"Quit the IGDE application"), pDialog(dialog){}
@@ -143,10 +151,10 @@ pWindowMain(windowMain)
 		new igdeDialogStartUp_ListRecentProjects(*this));
 	
 	
-	pActionLoadRecent.TakeOver(new igdeDialogStartUp_ActionLoadRecent(*this));
-	pActionLoadFile.TakeOver(new igdeDialogStartUp_ActionLoadFile(*this));
-	pActionNewProject.TakeOver(new igdeDialogStartUp_ActionNewProject(*this));
-	pActionQuit.TakeOver(new igdeDialogStartUp_ActionQuit(*this));
+	pActionLoadRecent = igdeDialogStartUp_ActionLoadRecent::Ref::New(*this);
+	pActionLoadFile = igdeDialogStartUp_ActionLoadFile::Ref::New(*this);
+	pActionNewProject = igdeDialogStartUp_ActionNewProject::Ref::New(*this);
+	pActionQuit = igdeDialogStartUp_ActionQuit::Ref::New(*this);
 	
 	igdeAction *actions[4] = {pActionLoadRecent, pActionLoadFile, pActionNewProject, pActionQuit};
 	igdeContainer::Ref buttonBar;

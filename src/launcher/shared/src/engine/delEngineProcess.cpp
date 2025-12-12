@@ -1652,7 +1652,7 @@ void delEngineProcess::CommandDelgaReadFiles(){
 
 void delEngineProcess::pCreateLogger(const char *logfile){
 	if(strlen(logfile) == 0){
-		pLogger.TakeOver(new deLoggerConsoleColor);
+		pLogger = deLoggerConsoleColor::Ref::New();
 		return;
 	}
 	
@@ -1663,7 +1663,6 @@ void delEngineProcess::pCreateLogger(const char *logfile){
 	
 	diskPath.RemoveLastComponent();
 	
-	pLogger.TakeOver(new deLoggerFile(
-		deVFSDiskDirectory::Ref::New(diskPath)->
-			OpenFileForWriting(filePath)));
+	pLogger = deLoggerFile::Ref::New(deVFSDiskDirectory::Ref::New(diskPath)->
+		OpenFileForWriting(filePath));
 }

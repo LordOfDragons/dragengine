@@ -69,6 +69,8 @@ private:
 	bool pSuccess;
 	
 public:
+	typedef deTObjectReference<igdeWOSOLightResLoadComponent> Ref;
+	
 	igdeWOSOLightResLoadComponent(igdeWOSOLight &owner) :
 	pOwner(&owner), pCounter(0), pSuccess(true){
 	}
@@ -77,7 +79,7 @@ public:
 	}
 	
 	void Drop(){
-		pOwner = NULL;
+		pOwner = nullptr;
 	}
 	
 	void LoadLightSkin(const char *path){
@@ -160,7 +162,7 @@ igdeWOSOLight::igdeWOSOLight(igdeWObject &wrapper,
 igdeWOSubObject(wrapper, prefix),
 pGDLight(gdLight),
 pAddedToWorld(false),
-pAttachment(NULL)
+pAttachment(nullptr)
 {
 	pLoadResources();
 }
@@ -168,7 +170,7 @@ pAttachment(NULL)
 igdeWOSOLight::~igdeWOSOLight(){
 	if(pResLoad){
 		((igdeWOSOLightResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
-		pResLoad = NULL;
+		pResLoad = nullptr;
 	}
 	pDestroyLight();
 	pClearTrigger(pTriggerActivate);
@@ -250,10 +252,10 @@ void igdeWOSOLight::AsyncLoadFinished(bool success){
 void igdeWOSOLight::pLoadResources(){
 	if(pResLoad){
 		((igdeWOSOLightResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
-		pResLoad = NULL;
+		pResLoad = nullptr;
 	}
 	
-	pResLoad.TakeOver(new igdeWOSOLightResLoadComponent(*this));
+	pResLoad = igdeWOSOLightResLoadComponent::Ref::New(*this);
 	igdeWOSOLightResLoadComponent &rl =
 		(igdeWOSOLightResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
 	
@@ -349,7 +351,7 @@ void igdeWOSOLight::pUpdateLight(){
 		AttachToCollider();
 	}
 	
-	pResLoad = NULL;
+	pResLoad = nullptr;
 }
 
 void igdeWOSOLight::pDestroyLight(){
@@ -363,7 +365,7 @@ void igdeWOSOLight::pDestroyLight(){
 		GetWrapper().GetWorld()->RemoveLight(pLight);
 	}
 	
-	pLight = NULL;
+	pLight = nullptr;
 	pAddedToWorld = false;
 }
 
@@ -376,7 +378,7 @@ void igdeWOSOLight::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	
 	try{
 		attachment = new deColliderAttachment(pLight);
@@ -417,8 +419,8 @@ void igdeWOSOLight::DetachFromCollider(){
 	}
 	
 	pAttachedToCollider->RemoveAttachment(pAttachment);
-	pAttachment = NULL;
-	pAttachedToCollider = NULL;
+	pAttachment = nullptr;
+	pAttachedToCollider = nullptr;
 }
 
 void igdeWOSOLight::pAddShadowIgnoreComponents(){

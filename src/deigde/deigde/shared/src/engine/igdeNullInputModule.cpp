@@ -39,7 +39,7 @@
 igdeNullInputModule::cModule::cModule(deModuleSystem *system) : deInternalModule(system){
 	SetName("NullInput");
 	SetType(deModuleSystem::emtInput);
-	SetDescription("Null Input Module");
+	SetDescription("nullptr Input Module");
 	SetAuthor("Plüss Roland");
 	SetVersion("1.0");
 	SetDirectoryName("NullInput");

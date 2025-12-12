@@ -60,10 +60,10 @@ public:
 	/** \brief Sky by index. */
 	igdeGDSky *GetAt(int index) const;
 	
-	/** \brief Sky with path or NULL if absent. */
+	/** \brief Sky with path or nullptr if absent. */
 	igdeGDSky *GetWithPath(const char *path) const;
 	
-	/** \brief Sky with name or NULL if absent. */
+	/** \brief Sky with name or nullptr if absent. */
 	igdeGDSky *GetWithName(const char *name) const;
 	
 	/** \brief Index of sky or -1 if absent. */

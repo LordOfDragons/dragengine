@@ -63,7 +63,7 @@ public:
 	/** \brief Property at position. */
 	igdeGDProperty *GetAt(int index) const;
 	
-	/** \brief Named property or NULL if absent. */
+	/** \brief Named property or nullptr if absent. */
 	igdeGDProperty *GetNamed(const char *name) const;
 	
 	/** \brief Index of named property or -1 if absent. */

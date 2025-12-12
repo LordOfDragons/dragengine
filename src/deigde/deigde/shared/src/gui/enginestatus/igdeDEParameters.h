@@ -43,6 +43,10 @@ class deLoadableModule;
  * \brief Panel showing the parameters of modules allowing the user to also change them.
  */
 class DE_DLL_EXPORT igdeDEParameters : public igdeContainerFlow{
+public:
+	typedef deTObjectReference<igdeDEParameters> Ref;
+	
+	
 private:
 	igdeDialogEngine &pDialogEngine;
 	deModuleParameter pParameterInfo;

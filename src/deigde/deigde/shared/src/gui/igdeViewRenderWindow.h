@@ -84,7 +84,7 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Render window or NULL if absent. */
+	/** \brief Render window or nullptr if absent. */
 	inline const deRenderWindow::Ref &GetRenderWindow() const{ return pRenderWindow; }
 	
 	/** \brief Rendering is enabled. */

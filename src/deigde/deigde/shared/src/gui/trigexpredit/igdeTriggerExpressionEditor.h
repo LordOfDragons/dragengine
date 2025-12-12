@@ -48,6 +48,11 @@ class igdeTreeItem;
  * \brief Trigger Expression Editor.
  */
 class DE_DLL_EXPORT igdeTriggerExpressionEditor : public igdeContainerFlow, igdeActionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTriggerExpressionEditor> Ref;
+	
+	
 private:
 	igdeTriggerExpressionParser *pParser;
 	const igdeTriggerTargetList *pTargetList;
@@ -115,10 +120,10 @@ public:
 	/** \brief Set expression. */
 	void SetExpression(const char *expression);
 	
-	/** \brief Action or NULL. */
+	/** \brief Action or nullptr. */
 	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
+	/** \brief Set action or nullptr. */
 	void SetAction(igdeAction *action);
 	
 	
@@ -147,7 +152,7 @@ public:
 	/** \brief Selected tree item. */
 	igdeTreeItem *GetSelectedTreeItem() const;
 	
-	/** \brief Selected component in the tree or NULL if there is no valid selection. */
+	/** \brief Selected component in the tree or nullptr if there is no valid selection. */
 	igdeTriggerExpressionComponent *GetSelectedComponent() const;
 	
 	/** \brief Update from target list. */

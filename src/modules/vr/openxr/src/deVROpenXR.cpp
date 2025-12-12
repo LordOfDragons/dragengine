@@ -343,10 +343,10 @@ void deVROpenXR::StartRuntime(){
 	pDeviceProfiles.RemoveAll();
 	
 	try{
-		pInstance.TakeOver(new deoxrInstance(*this, enableDebug));
+		pInstance = deoxrInstance::Ref::New(*this, enableDebug);
 		pCreateDeviceProfiles();
 		
-		pSystem.TakeOver(new deoxrSystem(pInstance));
+		pSystem = deoxrSystem::Ref::New(pInstance);
 		pLastDetectedSystem = pSystem->GetSystem();
 		
 		if(!pThreadSync){
@@ -978,7 +978,7 @@ void deVROpenXR::pRealShutdown(){
 }
 
 void deVROpenXR::pCreateActionSet(){
-	pActionSet.TakeOver(new deoxrActionSet(pInstance));
+	pActionSet = deoxrActionSet::Ref::New(pInstance);
 	
 	pActionSet->AddBoolAction("trigger_press", "Press Trigger");
 	pActionSet->AddFloatAction("trigger_force", "Force Trigger");
@@ -1140,7 +1140,7 @@ bool deVROpenXR::pBeginFrame(){
 	LogInfo("BeginFrame: Create Session");
 	pRestartSession = false;
 	try{
-		pSession.TakeOver(new deoxrSession(pSystem));
+		pSession = deoxrSession::Ref::New(pSystem);
 		
 		// required before CheckAllAttached since this could add devices which in turn
 		// accesses actions. creating actions does access device profiles but this is
@@ -1156,7 +1156,7 @@ bool deVROpenXR::pBeginFrame(){
 		pSession->AttachActionSet(pActionSet);
 		
 		if(pSystem->GetSupportsPassthrough()){
-			pPassthrough.TakeOver(new deoxrPassthrough(pSession));
+			pPassthrough = deoxrPassthrough::Ref::New(pSession);
 		}
 		return true;
 		

@@ -94,7 +94,7 @@ public:
 	/** \brief Game class at the given index. */
 	igdeGDClass *GetAt(int index) const;
 	
-	/** \brief Game class with the given name or NULL if not found. */
+	/** \brief Game class with the given name or nullptr if not found. */
 	igdeGDClass *GetNamed(const char *name) const;
 	
 	/** \brief Adds a new game class. */

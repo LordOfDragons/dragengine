@@ -115,11 +115,11 @@ public:
 	/** \brief Set color indicating slot type. */
 	void SetColor(const decColor &color);
 	
-	/** \brief Owner node or NULL. */
+	/** \brief Owner node or nullptr. */
 	inline igdeNVNode *GetOwnerNode() const{ return pOwnerNode; }
 	
 	/**
-	 * \brief Set owner node or NULL.
+	 * \brief Set owner node or nullptr.
 	 * \warning For use by \em igdeNVNode only!
 	 */
 	void SetOwnerNode(igdeNVNode *node);

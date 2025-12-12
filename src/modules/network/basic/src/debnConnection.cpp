@@ -559,7 +559,7 @@ bool debnConnection::ConnectTo(const char *address){
 	remoteAddress.SetFromString(address);
 	
 	// create connect socket
-	pSocket.TakeOver(new debnSocket(*pNetBasic));
+	pSocket = debnSocket::Ref::New(*pNetBasic);
 	
 	if(remoteAddress.GetType() == debnAddress::eatIPv6){
 		pSocket->GetAddress().SetIPv6Any();
@@ -1158,7 +1158,7 @@ void debnConnection::pProcessLinkState(int number, decBaseFileReader &reader){
 void debnConnection::pProcessReliableMessageLong(int number, decBaseFileReader &reader){
 	const uint8_t flags = reader.ReadByte();
 	if((flags & (uint8_t)elmfFirst) != 0) {
-		pLongMessage.TakeOver(new deNetworkMessage);
+		pLongMessage = deNetworkMessage::Ref::New();
 	}
 	if(!pLongMessage){
 		return;
@@ -1198,8 +1198,8 @@ void debnConnection::pProcessLinkStateLong(int number, decBaseFileReader &reader
 	}
 	
 	if((flags & (uint8_t)ellsfFirst) != 0){
-		pLongLinkStateMessage.TakeOver(new deNetworkMessage);
-		pLongLinkStateValues.TakeOver(new deNetworkMessage);
+		pLongLinkStateMessage = deNetworkMessage::Ref::New();
+		pLongLinkStateValues = deNetworkMessage::Ref::New();
 	}
 	
 	if(!pLongLinkStateMessage || !pLongLinkStateValues){

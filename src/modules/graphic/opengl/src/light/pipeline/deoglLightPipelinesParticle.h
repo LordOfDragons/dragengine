@@ -35,6 +35,10 @@ class deoglLightShaderConfig;
  * Light source specific light pipelines.
  */
 class deoglLightPipelinesParticle : public deoglLightPipelines{
+public:
+	typedef deTObjectReference<deoglLightPipelinesParticle> Ref;
+	
+	
 private:
 	const deoglRParticleEmitterType &pEmitter;
 	

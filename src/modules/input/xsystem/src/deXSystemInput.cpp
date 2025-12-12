@@ -164,7 +164,7 @@ bool deXSystemInput::Init(){
 			pKeyStates[i] = false;
 		}
 		
-		pDevices.TakeOver(new dexsiDeviceManager(*this));
+		pDevices = dexsiDeviceManager::Ref::New(*this);
 		pDevices->UpdateDeviceList();
 		pDevices->LogDevices();
 		

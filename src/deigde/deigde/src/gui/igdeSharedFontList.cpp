@@ -34,9 +34,8 @@
 ///////////////////
 
 igdeSharedFontList::cFont::cFont(const igdeFont::sConfiguration &config, igdeFont *font) :
-pConfig(config)
-{
-	pFont.TakeOver(font);
+pConfig(config),
+pFont(font){
 }
 
 igdeSharedFontList::cFont::~cFont(){
@@ -70,7 +69,7 @@ igdeFont *igdeSharedFontList::GetFontWith(const igdeFont::sConfiguration &config
 		}
 	}
 	
-	const cFont::Ref cfont(cFont::Ref::New(configuration, new igdeFont(pEnvironment, configuration)));
+	const cFont::Ref cfont(cFont::Ref::New(configuration, igdeFont::Ref::New(pEnvironment, configuration)));
 	pFonts.Add(cfont);
 	
 	return cfont->GetFont();

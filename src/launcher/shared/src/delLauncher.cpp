@@ -107,7 +107,7 @@ pPatchManager(*this),
 pEngineInstanceFactory(delEngineInstanceThreaded::Factory::Ref::New())
 {
 	try{
-		pLogger.TakeOver(new deLoggerChain);
+		pLogger = deLoggerChain::Ref::New();
 		pLogger->AddLogger(deLoggerConsoleColor::Ref::New());
 		pLogger->AddLogger(pLoggerHistory);
 		
@@ -395,7 +395,7 @@ void delLauncher::pLocatePath(){
 }
 
 void delLauncher::pInitVFS(){
-	pVFS.TakeOver(new deVirtualFileSystem);
+	pVFS = deVirtualFileSystem::Ref::New();
 	
 	// add the found path to the virtual file system. this makes it easier to find the
 	// files later on without having to deal with file system specific quirks

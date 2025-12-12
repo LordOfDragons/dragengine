@@ -112,10 +112,10 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Sky wrapper or NULL if not set. */
+	/** \brief Sky wrapper or nullptr if not set. */
 	inline igdeWSky *GetSky() const{ return pSky; }
 	
-	/** \brief Set sky wrapper or NULL if not set. */
+	/** \brief Set sky wrapper or nullptr if not set. */
 	void SetSky(igdeWSky *sky);
 	
 	/** \brief Update widget after sky changed outside. */
@@ -132,10 +132,10 @@ public:
 	
 	
 	
-	/** \brief Action or NULL. */
+	/** \brief Action or nullptr. */
 	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
+	/** \brief Set action or nullptr. */
 	void SetAction(igdeAction *action);
 	
 	/**

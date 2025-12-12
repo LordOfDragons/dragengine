@@ -111,16 +111,16 @@ public:
 	/** \brief Set target name. */
 	void SetTargetName(const char *name);
 	
-	/** \brief Trigger target or NULL. */
+	/** \brief Trigger target or nullptr. */
 	inline const igdeTriggerTarget::Ref &GetTarget() const{ return pTarget; }
 	
-	/** \brief Set trigger target or NULL. */
+	/** \brief Set trigger target or nullptr. */
 	void SetTarget(igdeTriggerTarget *target);
 	
-	/** \brief Target listener or NULL. */
+	/** \brief Target listener or nullptr. */
 	inline const igdeTriggerListener::Ref &GetTargetListener() const{ return pTargetListener; }
 	
-	/** \brief Set target listener or NULL. */
+	/** \brief Set target listener or nullptr. */
 	void SetTargetListener(igdeTriggerListener *listener);
 	
 	/** \brief Link trigger targets using the given trigger table. */

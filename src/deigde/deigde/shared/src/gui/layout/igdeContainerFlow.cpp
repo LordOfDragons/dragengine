@@ -93,7 +93,7 @@ void igdeContainerFlow::DestroyNativeWidget(){
 
 void *igdeContainerFlow::GetNativeContainer() const{
 	if(!GetNativeWidget()){
-		return NULL;
+		return nullptr;
 	}
 	return igdeNativeContainerFlow::GetNativeContainer(*this, GetNativeWidget());
 }

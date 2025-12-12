@@ -68,6 +68,11 @@
 /////////////////////////////
 
 class DE_DLL_EXPORT igdeGDPCSkinResLoader : public igdeResourceLoaderListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDPCSkinResLoader> Ref;
+	
+	
 private:
 	igdeGDPCSkin *pOwner;
 	decString pPathModel;
@@ -91,7 +96,7 @@ public:
 	}
 	
 	void Drop(){
-		pOwner = NULL;
+		pOwner = nullptr;
 	}
 	
 	void LoadModel(const char *path){
@@ -208,7 +213,7 @@ public:
 igdeGDPCSkin::igdeGDPCSkin(igdeEnvironment &environment, igdeGDSkin *gdskin, const decPoint &size) :
 igdeGDPreviewCreator(environment, size),
 pGDSkin(gdskin),
-pSky(NULL),
+pSky(nullptr),
 pResLoadFinished(false)
 {
 	if(!gdskin){
@@ -219,7 +224,7 @@ pResLoadFinished(false)
 igdeGDPCSkin::~igdeGDPCSkin(){
 	if(pResLoader){
 		((igdeGDPCSkinResLoader&)(igdeResourceLoaderListener&)pResLoader).Drop();
-		pResLoader = NULL;
+		pResLoader = nullptr;
 	}
 	if(pSky){
 		delete pSky;
@@ -287,10 +292,10 @@ void igdeGDPCSkin::PrepareCanvasForRender(){
 	// need to show the skin using light preview
 	if(pResLoader){
 		((igdeGDPCSkinResLoader&)(igdeResourceLoaderListener&)pResLoader).Drop();
-		pResLoader = NULL;
+		pResLoader = nullptr;
 	}
 	pResLoadFinished = false;
-	pResLoader.TakeOver(new igdeGDPCSkinResLoader(*this, pResLoadFinished));
+	pResLoader = igdeGDPCSkinResLoader::Ref::New(*this, pResLoadFinished);
 	igdeGDPCSkinResLoader &rl = (igdeGDPCSkinResLoader&)(igdeResourceLoaderListener&)pResLoader;
 	
 	rl.LoadModel("/igde/models/previewBuilder/skin.demodel");
@@ -357,7 +362,7 @@ bool igdeGDPCSkin::IsCanvasReadyForRender(){
 				pCamera->SetLowestIntensity(20.0f);
 				pCamera->SetHighestIntensity(20.0f);
 				
-				pSky->SetGDSky(NULL);
+				pSky->SetGDSky(nullptr);
 			}
 			
 		}else{
@@ -377,7 +382,7 @@ bool igdeGDPCSkin::IsCanvasReadyForRender(){
 	}
 	
 	rl.Drop();
-	pResLoader = NULL;
+	pResLoader = nullptr;
 	
 	// update once
 	const float initialUpdate = 0.1f;

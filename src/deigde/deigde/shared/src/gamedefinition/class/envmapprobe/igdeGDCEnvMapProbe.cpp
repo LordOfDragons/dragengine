@@ -41,7 +41,7 @@
 
 igdeGDCEnvMapProbe::igdeGDCEnvMapProbe(){
 	pScaling.Set(1.0f, 1.0f, 1.0f);
-	pShapeReflection = NULL;
+	pShapeReflection = nullptr;
 	pInfluenceBorderSize = 0.1f;
 	pInfluencePriority = 0;
 }
@@ -49,7 +49,7 @@ igdeGDCEnvMapProbe::igdeGDCEnvMapProbe(){
 igdeGDCEnvMapProbe::igdeGDCEnvMapProbe(const igdeGDCEnvMapProbe &probe){
 	int i;
 	
-	pShapeReflection = NULL;
+	pShapeReflection = nullptr;
 	
 	try{
 		pPosition = probe.GetPosition();

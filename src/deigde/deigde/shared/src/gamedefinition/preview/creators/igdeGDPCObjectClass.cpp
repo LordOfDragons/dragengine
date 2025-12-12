@@ -77,8 +77,8 @@ igdeGDPCObjectClass::igdeGDPCObjectClass(igdeEnvironment &environment,
 igdeGDClass *gdclass, const decPoint &size) :
 igdeGDPreviewCreator(environment, size),
 pGDClass(gdclass),
-pObject(NULL),
-pSky(NULL)
+pObject(nullptr),
+pSky(nullptr)
 {
 	if(!gdclass){
 		DETHROW(deeInvalidParam);
@@ -130,7 +130,7 @@ void igdeGDPCObjectClass::PrepareCanvasForRender(){
 	pCamera->SetHighestIntensity(pSky->GetMaxLightIntensity());
 	
 	// create the object class wrapper
-	pObject.TakeOver(new igdeWObject(environment));
+	pObject = igdeWObject::Ref::New(environment);
 	pObject->SetWorld(pWorld);
 	pObject->SetAsyncLoadFinished(&pAsyncFinished);
 	DebugLog("set gdclass");

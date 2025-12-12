@@ -61,8 +61,8 @@ int igdeGuiTheme::GetPropertyCount() const{
 }
 
 igdeGuiThemeProperty *igdeGuiTheme::GetProperty(const char *name) const{
-	deObject *property = NULL;
-	return pProperties.GetAt(name, &property) ? (igdeGuiThemeProperty*)property : NULL;
+	deObject *property = nullptr;
+	return pProperties.GetAt(name, &property) ? (igdeGuiThemeProperty*)property : nullptr;
 }
 
 bool igdeGuiTheme::HasProperty(const char *property) const{

@@ -65,7 +65,7 @@ igdeWOSONavigationSpace::igdeWOSONavigationSpace(igdeWObject &wrapper,
 igdeWOSubObject(wrapper, prefix),
 pGDNavigationSpace(gdNavigationSpace),
 pAddedToWorld(false),
-pAttachment(NULL)
+pAttachment(nullptr)
 {
 	wrapper.SubObjectFinishedLoading(*this, true);
 }
@@ -188,7 +188,7 @@ void igdeWOSONavigationSpace::pDestroyNavigationSpace(){
 		GetWrapper().GetWorld()->RemoveNavigationSpace(pNavigationSpace);
 	}
 	
-	pNavigationSpace = NULL;
+	pNavigationSpace = nullptr;
 	pPathNavigationSpace.Empty();
 	pAddedToWorld = false;
 }
@@ -202,7 +202,7 @@ void igdeWOSONavigationSpace::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	
 	try{
 		attachment = new deColliderAttachment(pNavigationSpace);
@@ -243,6 +243,6 @@ void igdeWOSONavigationSpace::DetachFromCollider(){
 	}
 	
 	pAttachedToCollider->RemoveAttachment(pAttachment);
-	pAttachment = NULL;
-	pAttachedToCollider = NULL;
+	pAttachment = nullptr;
+	pAttachedToCollider = nullptr;
 }

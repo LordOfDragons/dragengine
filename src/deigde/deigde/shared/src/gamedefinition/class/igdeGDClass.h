@@ -243,10 +243,10 @@ public:
 	/** \brief Checks the class for errors. */
 	void Check();
 	
-	/** \brief Preview image or NULL if not created yet. */
+	/** \brief Preview image or nullptr if not created yet. */
 	inline const deImage::Ref &GetPreviewImage() const{ return pPreviewImage; }
 	
-	/** \brief Set preview image or NULL if not created yet. */
+	/** \brief Set preview image or nullptr if not created yet. */
 	void SetPreviewImage(deImage *image);
 	
 	/** \brief Default inherit property prefix. */
@@ -291,7 +291,7 @@ public:
 	/** \brief Set property values. */
 	void SetPropertyValues(const decStringDictionary &values);
 	
-	/** \brief First named property in class and inherited or NULL if not found. */
+	/** \brief First named property in class and inherited or nullptr if not found. */
 	igdeGDProperty *GetPropertyNamed(const char *name) const;
 	
 	/**
@@ -346,7 +346,7 @@ public:
 	/** \brief Remove all texture properties. */
 	void RemoveAllTextureProperties();
 	
-	/** \brief First named texture property in class and inherited or NULL if not found. */
+	/** \brief First named texture property in class and inherited or nullptr if not found. */
 	igdeGDProperty *GetTexturePropertyNamed(const char *name) const;
 	
 	/**

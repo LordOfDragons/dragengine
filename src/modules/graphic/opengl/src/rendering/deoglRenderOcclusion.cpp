@@ -328,7 +328,7 @@ pAddToRenderTask(NULL)
 		ubo->SetBindingPoint(deoglSkinShader::eubRenderParameters);
 		pRenderParamBlockSingleUse.TakeOverWith(renderThread, ubo);
 		
-		ubo.TakeOver(new deoglSPBlockUBO(renderThread));
+		ubo = deoglSPBlockUBO::Ref::New(renderThread);
 		ubo->SetParameterCount(1);
 		ubo->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 4, 3, 1); // mat4x3 pMatrixModel
 		ubo->MapToStd140();

@@ -61,7 +61,7 @@ igdeDialogBrowserSkin::~igdeDialogBrowserSkin(){
 
 igdeGDSkin *igdeDialogBrowserSkin::GetSelectedSkin() const{
 	const igdeListItem * const selection = GetSelectedListItem();
-	return selection ? (igdeGDSkin*)selection->GetData() : NULL;
+	return selection ? (igdeGDSkin*)selection->GetData() : nullptr;
 }
 
 void igdeDialogBrowserSkin::SetSelectedSkin(igdeGDSkin *gdSkin){

@@ -110,12 +110,12 @@ public:
 	/** \brief Base game definitions. */
 	inline decStringList &GetBaseGameDefs(){ return pBaseGameDefs; }
 	
-	/** \brief Set project template or \em NULL. */
+	/** \brief Set project template or \em nullptr. */
 	void SetTemplate(const igdeTemplate *atemplate);
 	
 	
 	
-	/** \brief Created project or \em NULL. */
+	/** \brief Created project or \em nullptr. */
 	inline const igdeGameProject::Ref &GetProject() const{ return pProject; }
 	
 	

@@ -97,7 +97,7 @@ void igdeTabBook::SetActivePanel(int index){
 
 
 void igdeTabBook::AddChild(igdeWidget *child, const char *text){
-	AddChild(child, text, NULL, "");
+	AddChild(child, text, nullptr, "");
 }
 
 void igdeTabBook::AddChild(igdeWidget *child, const char *text, igdeIcon *icon){
@@ -189,7 +189,7 @@ void igdeTabBook::DestroyNativeWidget(){
 
 void *igdeTabBook::GetNativeContainer() const{
 	if(!GetNativeWidget()){
-		return NULL;
+		return nullptr;
 	}
 	return ((igdeNativeTabBook*)GetNativeWidget())->GetNativeContainer();
 }

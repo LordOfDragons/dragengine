@@ -40,6 +40,10 @@ class igdeDialogEngine;
  * \brief Panel allowing to send commands directly to the module using the module console ability of the engine.
  */
 class DE_DLL_EXPORT igdeDEConsole : public igdeContainerFlow{
+public:
+	typedef deTObjectReference<igdeDEConsole> Ref;
+	
+	
 private:
 	igdeDialogEngine &pDialogEngine;
 	decUnicodeLineBuffer pLog;

@@ -61,7 +61,7 @@ igdeDialogBrowserParticleEmitter::~igdeDialogBrowserParticleEmitter(){
 
 igdeGDParticleEmitter *igdeDialogBrowserParticleEmitter::GetSelectedParticleEmitter() const{
 	const igdeListItem * const selection = GetSelectedListItem();
-	return selection ? (igdeGDParticleEmitter*)selection->GetData() : NULL;
+	return selection ? (igdeGDParticleEmitter*)selection->GetData() : nullptr;
 }
 
 void igdeDialogBrowserParticleEmitter::SetSelectedParticleEmitter(igdeGDParticleEmitter *gdParticleEmitter){

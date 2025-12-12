@@ -82,7 +82,7 @@ igdeClipboardData *igdeClipboard::GetWithTypeName(const char *typeName) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void igdeClipboard::Set(igdeClipboardData *data){

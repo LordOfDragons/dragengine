@@ -210,7 +210,7 @@ const char *text, decString &value){
 	
 	igdeDialogMultilineValue::Ref dialog;
 	
-	dialog.TakeOver(new igdeDialogMultilineValue(owner->GetEnvironment(), title, text));
+	dialog = igdeDialogMultilineValue::Ref::New(owner->GetEnvironment(), title, text);
 	dialog->SetValue(value);
 	if(dialog->Run(owner)){
 		value = dialog->GetValue();
@@ -236,7 +236,7 @@ const char *text, decString &value, const decStringList &proposals){
 	
 	igdeComboBoxFilter::Ref comboBox;
 	helper.Label(content, text);
-	helper.ComboBoxFilter(content, 50, 10, true, "Enter value or select from list", comboBox, NULL);
+	helper.ComboBoxFilter(content, 50, 10, true, "Enter value or select from list", comboBox, nullptr);
 	const int count = proposals.GetCount();
 	int i;
 	for(i=0; i<count; i++){

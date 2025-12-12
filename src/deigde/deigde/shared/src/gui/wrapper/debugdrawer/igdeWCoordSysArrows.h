@@ -71,7 +71,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Set parent debug drawer or NULL. */
+	/** \brief Set parent debug drawer or nullptr. */
 	void SetParentDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** \brief Position. */

@@ -42,7 +42,7 @@
 igdeNVLink::igdeNVLink(igdeNVSlot *source, igdeNVSlot *target) :
 pSource(source),
 pTarget(target),
-pOwnerBoard(NULL){
+pOwnerBoard(nullptr){
 }
 
 igdeNVLink::~igdeNVLink(){

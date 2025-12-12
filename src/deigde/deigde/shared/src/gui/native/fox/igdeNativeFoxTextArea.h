@@ -85,7 +85,7 @@ public:
 	/** \brief Text area. */
 	inline FXText &GetTextArea() const{ return *pTextArea; }
 	
-	/** \brief Resizer or \em NULL. */
+	/** \brief Resizer or \em nullptr. */
 	inline igdeNativeFoxResizer *GetResizser() const{ return pResizer; }
 	
 	void UpdateStyles();

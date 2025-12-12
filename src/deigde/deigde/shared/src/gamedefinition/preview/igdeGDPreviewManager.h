@@ -48,7 +48,7 @@ class decPath;
  * Creating preview versions of images is done asynchronous. Once
  * created it is stored on disc for later retrieval. Calling the
  * GetImage method returns the image if already preloaded. If the
- * image does not yet exist NULL is returned. In this case the
+ * image does not yet exist nullptr is returned. In this case the
  * caller has to set the create image placeholder image and call
  * CreateImage method using a listener. Once the image is loaded
  * and ready the listener is called with the created image. The
@@ -140,7 +140,7 @@ public:
 	
 	/**
 	 * \brief Get preview image for object class loading it from cache if required.
-	 * \returns NULL if preview image needs to be created.
+	 * \returns nullptr if preview image needs to be created.
 	 */
 	deImage *GetPreviewObjectClass(igdeGDClass *gdclass) const;
 	
@@ -154,7 +154,7 @@ public:
 	
 	/**
 	 * \brief Get preview image for skin loading it from cache if required.
-	 * \returns NULL if preview image needs to be created.
+	 * \returns nullptr if preview image needs to be created.
 	 */
 	deImage *GetPreviewSkin(igdeGDSkin *gdskin) const;
 	
@@ -168,7 +168,7 @@ public:
 	
 	/**
 	 * \brief Get preview image for sky loading it from cache if required.
-	 * \returns NULL if preview image needs to be created.
+	 * \returns nullptr if preview image needs to be created.
 	 */
 	deImage *GetPreviewSky(igdeGDSky *gdsky) const;
 	

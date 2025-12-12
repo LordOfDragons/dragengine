@@ -103,7 +103,7 @@ pUseGameVFS(useGameVFS)
 {
 	helper.EditString(*this, description, pText, new cListenerTextField(*this));
 	
-	pActionButton.TakeOver(new cActionButton(*this, pText, description));
+	pActionButton = cActionButton::Ref::New(*this, pText, description);
 	helper.Button(*this, pButton, pActionButton);
 }
 

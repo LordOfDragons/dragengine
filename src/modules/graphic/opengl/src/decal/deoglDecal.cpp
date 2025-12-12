@@ -72,7 +72,7 @@ pNotifyTUCChanged(false),
 pParentComponent(NULL)
 {
 	try{
-		pRDecal.TakeOver(new deoglRDecal(ogl.GetRenderThread()));
+		pRDecal = deoglRDecal::Ref::New(ogl.GetRenderThread());
 		
 	}catch(const deException &){
 		pCleanUp();

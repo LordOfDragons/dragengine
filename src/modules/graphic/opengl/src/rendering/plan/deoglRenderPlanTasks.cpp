@@ -89,11 +89,11 @@ pSolidDecalsXRayTask(nullptr)
 	pSolidGeometryOutlineXRayTask = new deoglRenderTask(renderthread);
 	pSolidDecalsXRayTask = new deoglRenderTask(renderthread);
 	
-	pCRTSolidDepth.TakeOver(new deoglComputeRenderTask(renderthread));
-	pCRTSolidGeometry.TakeOver(new deoglComputeRenderTask(renderthread));
+	pCRTSolidDepth = deoglComputeRenderTask::Ref::New(renderthread);
+	pCRTSolidGeometry = deoglComputeRenderTask::Ref::New(renderthread);
 	
-	pCRTSolidDepthXRay.TakeOver(new deoglComputeRenderTask(renderthread));
-	pCRTSolidGeometryXRay.TakeOver(new deoglComputeRenderTask(renderthread));
+	pCRTSolidDepthXRay = deoglComputeRenderTask::Ref::New(renderthread);
+	pCRTSolidGeometryXRay = deoglComputeRenderTask::Ref::New(renderthread);
 }
 
 deoglRenderPlanTasks::~deoglRenderPlanTasks(){

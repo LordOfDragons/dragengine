@@ -110,10 +110,10 @@ public:
 	/** \brief Set influence shape list. */
 	void SetShapeListInfluence(const decShapeList &shapeList);
 	
-	/** \brief Reflection shape or NULL if the environment map is global. */
+	/** \brief Reflection shape or nullptr if the environment map is global. */
 	inline decShape *GetShapeReflection() const{ return pShapeReflection; }
 	
-	/** \brief Set reflection shape or NULL if the environment map is global. */
+	/** \brief Set reflection shape or nullptr if the environment map is global. */
 	void SetShapeReflection(decShape *shape);
 	
 	/** \brief Reflection mask shape list. */

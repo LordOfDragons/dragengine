@@ -122,7 +122,7 @@ FXIcon *igdeNativeFoxLabel::LabelIcon(const igdeLabel &powner){
 		return (FXIcon*) powner.GetIcon()->GetNativeIcon();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

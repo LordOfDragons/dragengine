@@ -57,7 +57,7 @@
 igdeGDPCSky::igdeGDPCSky(igdeEnvironment &environment, igdeGDSky *gdsky, const decPoint &size) :
 igdeGDPreviewCreator(environment, size),
 pGDSky(gdsky),
-pSky(NULL)
+pSky(nullptr)
 {
 	if(!gdsky){
 		DETHROW(deeInvalidParam);

@@ -77,6 +77,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
+		typedef deTObjectReference<cActionButton> Ref;
 		cActionButton(igdeEditPath &editPath, const char *description);
 		virtual ~cActionButton();
 		virtual void OnAction();
@@ -89,6 +90,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
+		typedef deTObjectReference<cActionButtonMenu> Ref;
 		cActionButtonMenu(igdeEditPath &editPath, const char *description);
 		virtual ~cActionButtonMenu();
 		virtual void AddContextMenuEntries(igdeMenuCascade &contextMenu);
@@ -102,6 +104,7 @@ protected:
 		bool pUseRelativePath;
 		
 	public:
+		typedef deTObjectReference<cActionSelectFileDialog> Ref;
 		cActionSelectFileDialog(igdeEditPath &editPath, igdeTextField &textField);
 		virtual ~cActionSelectFileDialog();
 		virtual void PrepareFile(decString &path);
@@ -115,6 +118,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
+		typedef deTObjectReference<cActionSkinSelectDialog> Ref;
 		cActionSkinSelectDialog(igdeEditPath &editPath);
 		virtual ~cActionSkinSelectDialog();
 		virtual void OnAction();
@@ -126,6 +130,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
+		typedef deTObjectReference<cActionBrowseFile> Ref;
 		cActionBrowseFile(igdeEditPath &editPath);
 		virtual ~cActionBrowseFile();
 		virtual void OnAction();
@@ -138,6 +143,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
+		typedef deTObjectReference<cActionConvertAbsolute> Ref;
 		cActionConvertAbsolute(igdeEditPath &editPath);
 		virtual ~cActionConvertAbsolute();
 		virtual void OnAction();
@@ -150,6 +156,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
+		typedef deTObjectReference<cActionConvertRelative> Ref;
 		cActionConvertRelative(igdeEditPath &editPath);
 		virtual ~cActionConvertRelative();
 		virtual void OnAction();

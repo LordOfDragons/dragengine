@@ -75,7 +75,7 @@ igdeGDParticleEmitter *igdeGDParticleEmitterList::GetWithPath(const char *path) 
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 igdeGDParticleEmitter *igdeGDParticleEmitterList::GetWithName(const char *name) const{
@@ -95,7 +95,7 @@ igdeGDParticleEmitter *igdeGDParticleEmitterList::GetWithName(const char *name) 
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 int igdeGDParticleEmitterList::IndexOf(igdeGDParticleEmitter *emitter) const{

@@ -104,7 +104,7 @@ public:
 	inline bool GetNormalSizeSet() const{ return pNormalSizeSet; }
 	
 	
-	/** \brief Get engine controller or NULL if not present. */
+	/** \brief Get engine controller or nullptr if not present. */
 	inline igdeEngineController *GetMainWindowEngineController() const{ return pEngineController; }
 	
 	/** \brief Start engine. */

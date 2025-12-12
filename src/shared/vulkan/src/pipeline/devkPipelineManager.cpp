@@ -72,11 +72,11 @@ devkPipeline *devkPipelineManager::GetWith(const devkPipelineConfiguration &conf
 	
 	switch(configuration.GetType()){
 	case devkPipelineConfiguration::etGraphics:
-		layout.TakeOver(new devkPipelineGraphic(pDevice, configuration));
+		layout = devkPipelineGraphic::Ref::New(pDevice, configuration);
 		break;
 		
 	case devkPipelineConfiguration::etCompute:
-		layout.TakeOver(new devkPipelineCompute(pDevice, configuration));
+		layout = devkPipelineCompute::Ref::New(pDevice, configuration);
 		break;
 		
 	case devkPipelineConfiguration::etRaytracing:

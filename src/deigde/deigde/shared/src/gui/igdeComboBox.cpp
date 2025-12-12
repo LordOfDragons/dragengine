@@ -355,7 +355,7 @@ void igdeComboBox::SetSorter(igdeListItemSorter *sorter){
 }
 
 void igdeComboBox::SetDefaultSorter(){
-	pSorter.TakeOver(new igdeListItemSorter);
+	pSorter = igdeListItemSorter::Ref::New();
 }
 
 static void igdeComboBox_Sort(decObjectList &items, igdeListItemSorter &sorter, int left, int right){
@@ -399,7 +399,7 @@ void igdeComboBox::SortItems(){
 		return;
 	}
 	
-	deObject *selection = NULL;
+	deObject *selection = nullptr;
 	if(pSelection != -1){
 		selection = pItems.GetAt(pSelection);
 	}

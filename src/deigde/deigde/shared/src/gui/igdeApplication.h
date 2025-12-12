@@ -132,7 +132,7 @@ protected:
 	virtual bool Initialize(const decUnicodeStringList &arguments) = 0;
 	
 	/** \brief Set main window. */
-	void SetMainWindow(igdeMainWindow *mainWindow, bool takeOver);
+	void SetMainWindow(igdeMainWindow *mainWindow);
 	
 	/** \brief Clean up application. */
 	virtual void CleanUp();

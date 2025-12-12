@@ -97,7 +97,7 @@ void igdeContainer::RemoveChild(igdeWidget *child){
 	}
 	
 	child->DestroyNativeWidget();
-	child->SetParent(NULL);
+	child->SetParent(nullptr);
 	pChildren.Remove(child);
 }
 
@@ -107,7 +107,7 @@ void igdeContainer::RemoveAllChildren(){
 		igdeWidget &child = *((igdeWidget*)pChildren.GetAt(index));
 		
 		child.DestroyNativeWidget();
-		child.SetParent(NULL);
+		child.SetParent(nullptr);
 		
 		pChildren.RemoveFrom(index);
 	}

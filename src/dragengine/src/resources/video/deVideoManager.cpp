@@ -134,11 +134,11 @@ const char *basePath, bool asynchron){
 				deBaseVideoInfo videoInfo;
 			module->InitLoadVideo(OpenFileForReading(*vfs, path.GetPathUnix()), videoInfo);
 			
-			video.TakeOver(new deVideo(this, vfs, path.GetPathUnix(), modificationTime,
+			video = deVideo::Ref::New(this, vfs, path.GetPathUnix(), modificationTime,
 				videoInfo.GetWidth(), videoInfo.GetHeight(), videoInfo.GetComponentCount(),
 				videoInfo.GetBitCount(), videoInfo.GetFrameRate(), videoInfo.GetFrameCount(),
 				videoInfo.GetColorConversionMatrix(), videoInfo.GetBytesPerSample(),
-				videoInfo.GetSampleCount(), videoInfo.GetSampleRate(), videoInfo.GetChannelCount()));
+				videoInfo.GetSampleCount(), videoInfo.GetSampleRate(), videoInfo.GetChannelCount());
 			video->SetAsynchron(asynchron);
 			
 			GetGraphicSystem()->LoadVideo(video);
@@ -197,7 +197,7 @@ deVideoDecoder::Ref deVideoManager::CreateDecoder(deVideo *video){
 	deBaseVideoDecoder *peer = NULL;
 	
 	try{
-		videoDecoder.TakeOver(new deVideoDecoder(*this, video));
+		videoDecoder = deVideoDecoder::Ref::New(*this, video);
 		
 		module = (deBaseVideoModule*)GetModuleSystem()->GetModuleAbleToLoad(
 			deModuleSystem::emtVideo, video->GetFilename());
@@ -268,7 +268,7 @@ deVideoAudioDecoder::Ref deVideoManager::CreateAudioDecoder(deVideo *video){
 			return deVideoAudioDecoder::Ref(); // no audio or not supported
 		}
 		
-		audioDecoder.TakeOver(new deVideoAudioDecoder(*this, video));
+		audioDecoder = deVideoAudioDecoder::Ref::New(*this, video);
 		audioDecoder->SetPeerVideo(peer);
 		
 	}catch(const deException &e){

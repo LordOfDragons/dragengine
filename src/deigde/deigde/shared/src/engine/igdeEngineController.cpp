@@ -88,13 +88,13 @@
 
 igdeEngineController::igdeEngineController(igdeMainWindow &mainWindow) :
 pMainWindow(mainWindow),
-pEngine(NULL),
+pEngine(nullptr),
 pReadyForUse(false),
 pRunning(false),
 pRenderCounter(0)
 {
 	deLogger *logger = mainWindow.GetLogger();
-	deOS *os = NULL;
+	deOS *os = nullptr;
 	
 	
 	// create the engine and initialize as far as possible
@@ -115,7 +115,7 @@ pRenderCounter(0)
 		// create game engine
 		logger->LogInfo(LOGSOURCE, "Creating Game Engine.");
 		pEngine = new deEngine(os);
-		os = NULL;
+		os = nullptr;
 		
 		pEngine->SetLogger(logger);
 		pEngine->SetCacheAppID("4e25ac01-0b95-406f-8234-d921a32ae832");
@@ -173,7 +173,7 @@ void igdeEngineController::CloseEngine(){
 	// free the engine
 	logger.LogInfo(LOGSOURCE, "Releasing engine.");
 	delete pEngine;
-	pEngine = NULL;
+	pEngine = nullptr;
 	logger.LogInfo(LOGSOURCE, "Engine released.");
 }
 
@@ -242,7 +242,7 @@ const char *pathIGDEData, const char *pathIGDEModuleData){
 		vfs.AddContainer(deVFSDiskDirectory::Ref::New(rootPath, diskPath));
 		
 	}else{
-		logger.LogInfoFormat(LOGSOURCE, "- Adding data directory '%s' (null)",
+		logger.LogInfoFormat(LOGSOURCE, "- Adding data directory '%s' (nullptr)",
 			rootPath.GetPathUnix().GetString());
 		vfs.AddContainer(deVFSNull::Ref::New(rootPath));
 	}
@@ -262,7 +262,7 @@ const char *pathIGDEData, const char *pathIGDEModuleData){
 		vfs.AddContainer(deVFSDiskDirectory::Ref::New(rootPath, diskPath));
 		
 	}else{
-		logger.LogInfoFormat(LOGSOURCE, "- Adding cache directory '%s' (null)",
+		logger.LogInfoFormat(LOGSOURCE, "- Adding cache directory '%s' (nullptr)",
 			rootPath.GetPathUnix().GetString());
 		vfs.AddContainer(deVFSNull::Ref::New(rootPath));
 	}
@@ -288,7 +288,7 @@ const char *pathIGDEData, const char *pathIGDEModuleData){
 		container = deVFSDiskDirectory::Ref::New(rootPath, diskPath);
 		
 	}else{
-		logger.LogInfoFormat(LOGSOURCE, "- Adding local directory '%s' (null)",
+		logger.LogInfoFormat(LOGSOURCE, "- Adding local directory '%s' (nullptr)",
 			rootPath.GetPathUnix().GetString());
 		container = deVFSNull::Ref::New(rootPath);
 	}
@@ -483,7 +483,7 @@ void igdeEngineController::UnparentMainRenderWindow(){
 	
 	#ifdef OS_W32
 	if(pMainRenderWindow->GetWindow()){
-		SetParent((HWND)pMainRenderWindow->GetWindow(), NULL);
+		SetParent((HWND)pMainRenderWindow->GetWindow(), nullptr);
 	}
 	#endif
 }

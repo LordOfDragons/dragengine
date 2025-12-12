@@ -63,7 +63,7 @@ pEnabled(true)
 
 igdeMenuCommand::~igdeMenuCommand(){
 	igdeMenuCommand::DestroyNativeWidget();
-	SetAction(NULL);
+	SetAction(nullptr);
 }
 
 
@@ -161,7 +161,7 @@ void igdeMenuCommand::OnParameterChanged(igdeAction *action){
 void igdeMenuCommand::OnDestroyed(igdeAction *action){
 	GetLogger()->LogWarnFormat("IGDE", "igdeMenuCommand::OnDestroyed: "
 		"Action(%s) destroyed while still listening on it", action->GetText().GetString());
-	pAction = NULL;
+	pAction = nullptr;
 }
 
 

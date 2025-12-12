@@ -95,10 +95,10 @@ public:
 	/** \brief Set cathegory. */
 	void SetCategory(const char *category);
 	
-	/** \brief Preview image or NULL if not loaded yet. */
+	/** \brief Preview image or nullptr if not loaded yet. */
 	deImage *GetPreviewImage(int size) const;
 	
-	/** \brief Set preview image or NULL if not loaded yet. */
+	/** \brief Set preview image or nullptr if not loaded yet. */
 	void SetPreviewImage(int size, deImage *image);
 	/*@}*/
 };

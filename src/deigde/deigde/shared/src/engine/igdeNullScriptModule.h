@@ -33,7 +33,7 @@
 
 
 /**
- * \brief Null Script Module.
+ * \brief nullptr Script Module.
  */
 class DE_DLL_EXPORT igdeNullScriptModule : public deBaseScriptingModule{
 public:
@@ -65,14 +65,14 @@ public:
 	/**
 	 * \brief Directory relative to the module share directory where shared module data is located.
 	 * 
-	 * \returns NULL if no such directory is used.
+	 * \returns nullptr if no such directory is used.
 	 */
 	virtual const char *GetSharedDataDir() const;
 	
 	/**
 	 * \brief VFS directory where the module share directory is shown at.
 	 * 
-	 * \returns NULL if no such directory is used.
+	 * \returns nullptr if no such directory is used.
 	 */
 	virtual const char *GetVFSSharedDataDir() const;
 	
@@ -113,7 +113,7 @@ public:
 	/** \brief Create peer for the given prop field object. */
 	virtual deBaseScriptingPropField *CreatePropField(dePropField *propField);
 	
-	/** \brief Create peer for the given particle emitter instance object or NULL if not used. */
+	/** \brief Create peer for the given particle emitter instance object or nullptr if not used. */
 	virtual deBaseScriptingParticleEmitterInstance *CreateParticleEmitterInstance(
 		deParticleEmitterInstance *instance);
 	

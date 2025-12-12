@@ -109,7 +109,7 @@ void deglGameIcon::pCreatePNGFoxIcon(){
 	try{
 		FXMemoryStream stream(FXStreamLoad, (FXuchar*)GetContent()->GetPointer(), GetContent()->GetLength());
 		stream.position(0);
-		pFoxIcon.TakeOver(new deglSharedIcon(new FXPNGIcon(FXApp::instance())));
+		pFoxIcon = deglSharedIcon::Ref::New(new FXPNGIcon(FXApp::instance()));
 		FXIcon &icon = *pFoxIcon->GetIcon();
 		icon.loadPixels(stream);
 		icon.create();

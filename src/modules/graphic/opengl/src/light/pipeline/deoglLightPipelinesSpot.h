@@ -33,6 +33,9 @@
  */
 class deoglLightPipelinesSpot : public deoglLightPipelinesRanged{
 public:
+	typedef deTObjectReference<deoglLightPipelinesSpot> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create light pipeline. */

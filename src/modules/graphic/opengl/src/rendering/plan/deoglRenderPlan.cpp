@@ -341,10 +341,10 @@ void deoglRenderPlan::pBarePrepareRender(const deoglRenderPlanMasked *mask){
 	// we can not create these objects during construction time since they can create OpenGL
 	// objects and render plan objects are potentially created from inside main thread
 	if(!pCompute){
-		pCompute.TakeOver(new deoglRenderPlanCompute(*this));
+		pCompute = deoglRenderPlanCompute::Ref::New(*this);
 	}
 	if(!pTasks){
-		pTasks.TakeOver(new deoglRenderPlanTasks(*this));
+		pTasks = deoglRenderPlanTasks::Ref::New(*this);
 	}
 	
 	// the rest is safe
@@ -2251,7 +2251,7 @@ void deoglRenderPlan::pUpdateHTView(){
 	pHTView = nullptr;
 	
 	if(pWorld && pWorld->GetHeightTerrain()){
-		pHTView.TakeOver(new deoglHTView(pWorld->GetHeightTerrain()));
+		pHTView = deoglHTView::Ref::New(pWorld->GetHeightTerrain());
 		pHTView->Prepare();
 	}
 }

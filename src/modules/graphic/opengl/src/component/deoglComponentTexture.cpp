@@ -63,7 +63,7 @@ pDynamicSkinRenderablesChanged(true),
 pDirtyRenderableMapping(true)
 {
 	try{
-		pRTexture.TakeOver(new deoglRComponentTexture(*component.GetRComponent(), index));
+		pRTexture = deoglRComponentTexture::Ref::New(component.GetRComponent(), index);
 		pSkinStateController = new deoglSkinStateController;
 		
 		TextureChanged(component.GetComponent().GetTextureAt(index));

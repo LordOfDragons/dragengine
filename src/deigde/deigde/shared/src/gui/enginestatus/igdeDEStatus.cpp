@@ -63,7 +63,7 @@ class igdeDEStatus_ActionStart : public igdeAction{
 	
 public:
 	igdeDEStatus_ActionStart(igdeDEStatus &panel) :
-		igdeAction("Start Engine", NULL, "Start game engine"), pPanel(panel){}
+		igdeAction("Start Engine", nullptr, "Start game engine"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		pPanel.StartEngine();
@@ -79,7 +79,7 @@ class igdeDEStatus_ActionStop : public igdeAction{
 	
 public:
 	igdeDEStatus_ActionStop(igdeDEStatus &panel) :
-		igdeAction("Stop Engine", NULL, "Stop game engine"), pPanel(panel){}
+		igdeAction("Stop Engine", nullptr, "Stop game engine"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		pPanel.StopEngine();
@@ -108,9 +108,9 @@ pDialogEngine(dialogEngine)
 	
 	
 	helper.GroupBoxStaticFlow(*this, groupBox, "Engine Status:");
-	helper.EditString(groupBox, "Engine status", pTextStatus, 3, NULL);
+	helper.EditString(groupBox, "Engine status", pTextStatus, 3, nullptr);
 	
-	panel.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaX));
+	panel = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX);
 	groupBox->AddChild(panel);
 	helper.Button(panel, pBtnStart, new igdeDEStatus_ActionStart(*this), true);
 	helper.Button(panel, pBtnStop, new igdeDEStatus_ActionStop(*this), true);
@@ -248,5 +248,5 @@ void igdeDEStatus::pAddSystem(deBaseSystem *system){
 	decStringList details;
 	details.Add("-");
 	details.Add("-");
-	pListSystems->AddItem(system->GetSystemName(), details, NULL, system);
+	pListSystems->AddItem(system->GetSystemName(), details, nullptr, system);
 }

@@ -40,8 +40,8 @@
 ////////////////////////////
 
 igdeSMCollider::igdeSMCollider() :
-pDelegee(NULL),
-pUserPointer(NULL){
+pDelegee(nullptr),
+pUserPointer(nullptr){
 }
 
 igdeSMCollider::~igdeSMCollider(){

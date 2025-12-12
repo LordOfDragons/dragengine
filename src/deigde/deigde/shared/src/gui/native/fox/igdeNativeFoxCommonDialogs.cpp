@@ -152,7 +152,7 @@ const char *text, int &value){
 	
 	FXWindow * const foxOwner = (FXWindow*)owner->GetNativeWidget();
 	
-	FXInputDialog dialog(foxOwner, title, text, NULL, INPUTDIALOG_INTEGER);
+	FXInputDialog dialog(foxOwner, title, text, nullptr, INPUTDIALOG_INTEGER);
 	
 	decString initialValue;
 	initialValue.Format("%d", value);
@@ -175,7 +175,7 @@ const char *text, float &value){
 	
 	FXWindow * const foxOwner = (FXWindow*)owner->GetNativeWidget();
 	
-	FXInputDialog dialog(foxOwner, title, text, NULL, INPUTDIALOG_REAL);
+	FXInputDialog dialog(foxOwner, title, text, nullptr, INPUTDIALOG_REAL);
 	
 	decString initialValue;
 	initialValue.Format("%g", value);
@@ -198,7 +198,7 @@ const char *text, decString &value){
 	
 	FXWindow * const foxOwner = (FXWindow*)owner->GetNativeWidget();
 	
-	FXInputDialog dialog(foxOwner, title, text, NULL, INPUTDIALOG_STRING);
+	FXInputDialog dialog(foxOwner, title, text, nullptr, INPUTDIALOG_STRING);
 	
 	dialog.setText(value.GetString());
 	
@@ -219,7 +219,7 @@ const char *text, const decStringList &list, int &selection){
 	
 	FXWindow * const foxOwner = (FXWindow*)owner->GetNativeWidget();
 	
-	FXChoiceBox dialog(foxOwner, title, text, NULL, list.Join("\n").GetString());
+	FXChoiceBox dialog(foxOwner, title, text, nullptr, list.Join("\n").GetString());
 	
 	//dialog.setCurrentItem( selection );
 	// TODO fox does not expose "list" member to set selection. create an own dialog anyways

@@ -77,7 +77,7 @@ const char *caption, deImage &image, void *userPointer){
 	
 	/*
 	const int maxCharPerLine = pSize / 4;
-	const char *lastBlank = NULL;
+	const char *lastBlank = nullptr;
 	const char *line = caption;
 	decString text;
 	
@@ -127,13 +127,13 @@ const char *caption, deImage &image, void *userPointer){
 	
 	igdeIcon::Ref icon;
 	if(image.GetWidth() > image.GetHeight()){
-		icon.TakeOver(new igdeIcon(image, pSize, pSize * image.GetHeight() / image.GetWidth()));
+		icon = igdeIcon::Ref::New(image, pSize, pSize * image.GetHeight() / image.GetWidth());
 		
 	}else{
-		icon.TakeOver(new igdeIcon(image, pSize * image.GetWidth() / image.GetHeight(), pSize));
+		icon = igdeIcon::Ref::New(image, pSize * image.GetWidth() / image.GetHeight(), pSize);
 	}
 	
-	item.TakeOver(new igdeListItem(text, icon, userPointer));
+	item = igdeListItem::Ref::New(text, icon, userPointer);
 	pIconListBox->AddItem(item);
 }
 

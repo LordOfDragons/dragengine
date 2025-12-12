@@ -172,14 +172,14 @@ public:
 
 igdeWPSky::igdeWPSky(igdeEnvironment &environment) :
 igdeContainerFlow(environment, igdeContainerFlow::eaY),
-pSky(NULL)
+pSky(nullptr)
 {
 	pCreateContent();
 }
 
 igdeWPSky::igdeWPSky(igdeEnvironment &environment, igdeAction *action) :
 igdeContainerFlow(environment, igdeContainerFlow::eaY),
-pSky(NULL)
+pSky(nullptr)
 {
 	pCreateContent();
 	SetAction(action);
@@ -187,7 +187,7 @@ pSky(NULL)
 
 igdeWPSky::~igdeWPSky(){
 	DestroyNativeWidget();
-	SetAction(NULL);
+	SetAction(nullptr);
 }
 
 
@@ -212,7 +212,7 @@ void igdeWPSky::UpdateSky(){
 		pEditSkyPath->ClearText();
 	}
 	
-	pEditSkyPath->SetEnabled(pSky != NULL);
+	pEditSkyPath->SetEnabled(pSky != nullptr);
 	
 	RebuildControllers();
 }
@@ -333,7 +333,7 @@ void igdeWPSky::OnParameterChanged(igdeAction *action){
 void igdeWPSky::OnDestroyed(igdeAction *action){
 	GetLogger()->LogWarnFormat("IGDE", "igdeWPSky::OnDestroyed: "
 		"Action(%s) destroyed while still listening on it", action->GetText().GetString());
-	pAction = NULL;
+	pAction = nullptr;
 }
 
 
@@ -346,7 +346,7 @@ void igdeWPSky::pCreateContent(){
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref form, frameLine;
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	AddChild(form);
 	
 	helper.FormLineStretchFirst(form, "Sky Path:", "", frameLine);

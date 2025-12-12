@@ -90,8 +90,8 @@ void igdeTriggerExpressionComponent::LinkTargets(igdeTriggerTargetList &triggerT
 		pTarget->RemoveListener(pTargetListener);
 	}
 	
-	SetTarget(NULL);
-	SetTargetListener(NULL);
+	SetTarget(nullptr);
+	SetTargetListener(nullptr);
 	
 	if(pType == ectTarget && !pTargetName.IsEmpty()){
 		SetTarget(triggerTable.GetNamedAddIfMissing(pTargetName.GetString()));
@@ -115,8 +115,8 @@ void igdeTriggerExpressionComponent::UnlinkTargets(){
 		pTarget->RemoveListener(pTargetListener);
 	}
 	
-	SetTarget(NULL);
-	SetTargetListener(NULL);
+	SetTarget(nullptr);
+	SetTargetListener(nullptr);
 	
 	const int count = pChildred.GetCount();
 	int i;

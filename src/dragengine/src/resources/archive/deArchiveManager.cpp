@@ -114,7 +114,7 @@ const char *basePath){
 			
 			peer = module->CreateContainer(OpenFileForReading(*vfs, path.GetPathUnix()));
 			
-			archive.TakeOver(new deArchive(this, vfs, path.GetPathUnix(), modificationTime));
+			archive = deArchive::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			archive->SetPeerContainer(peer);
 			peer = NULL;
 			

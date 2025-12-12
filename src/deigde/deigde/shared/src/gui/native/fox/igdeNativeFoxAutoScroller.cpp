@@ -68,7 +68,7 @@ igdeNativeFoxAutoScroller::~igdeNativeFoxAutoScroller(){
 ///////////////
 
 FXWindow *igdeNativeFoxAutoScroller::GetContentWindow() const{
-	return numChildren() > 0 ? childAtIndex(0) : NULL;
+	return numChildren() > 0 ? childAtIndex(0) : nullptr;
 }
 
 decPoint igdeNativeFoxAutoScroller::GetContentSize() const{

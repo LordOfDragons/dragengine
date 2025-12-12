@@ -114,7 +114,7 @@ public:
 	/** \brief Remove all children. */
 	virtual void RemoveAllChildren();
 	
-	/** \brief Widget in area or NULL. */
+	/** \brief Widget in area or nullptr. */
 	igdeWidget *GetWidgetIn(eArea area) const;
 	/*@}*/
 	

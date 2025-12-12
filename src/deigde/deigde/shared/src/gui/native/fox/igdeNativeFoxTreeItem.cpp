@@ -39,7 +39,7 @@
 
 
 
-FXIMPLEMENT(igdeNativeFoxTreeItem, FXTreeItem, NULL, 0)
+FXIMPLEMENT(igdeNativeFoxTreeItem, FXTreeItem, nullptr, 0)
 
 
 // class igdeNativeFoxTreeItem

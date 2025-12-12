@@ -143,11 +143,11 @@ pDebugFont(nullptr)
 		
 		
 		// TBOs
-		pTBORenderText1.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
-		pTBORenderText2.TakeOver(new deoglDynamicTBOFloat8(renderThread, 4));
+		pTBORenderText1 = deoglDynamicTBOFloat32::Ref::New(renderThread, 4);
+		pTBORenderText2 = deoglDynamicTBOFloat8::Ref::New(renderThread, 4);
 		
-		pTBORenderRectangle1.TakeOver(new deoglDynamicTBOFloat32(renderThread, 4));
-		pTBORenderRectangle2.TakeOver(new deoglDynamicTBOFloat8(renderThread, 4));
+		pTBORenderRectangle1 = deoglDynamicTBOFloat32::Ref::New(renderThread, 4);
+		pTBORenderRectangle2 = deoglDynamicTBOFloat8::Ref::New(renderThread, 4);
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -117,7 +117,7 @@ void igdeNativeFoxDialog::UpdatePosition(){
 }
 
 void igdeNativeFoxDialog::UpdateIcon(){
-	FXIcon * const iicon = pOwner->GetIcon() ? (FXIcon*)pOwner->GetIcon()->GetNativeIcon() : NULL;
+	FXIcon * const iicon = pOwner->GetIcon() ? (FXIcon*)pOwner->GetIcon()->GetNativeIcon() : nullptr;
 	setIcon(iicon);
 	setMiniIcon(iicon);
 }
@@ -136,10 +136,10 @@ void igdeNativeFoxDialog::ShowDialog(){
 
 void igdeNativeFoxDialog::CloseDialog(bool accepted){
 	if(accepted){
-		tryHandle(this, FXSEL(SEL_COMMAND, FXDialogBox::ID_ACCEPT), NULL);
+		tryHandle(this, FXSEL(SEL_COMMAND, FXDialogBox::ID_ACCEPT), nullptr);
 		
 	}else{
-		tryHandle(this, FXSEL(SEL_COMMAND, FXDialogBox::ID_CANCEL), NULL);
+		tryHandle(this, FXSEL(SEL_COMMAND, FXDialogBox::ID_CANCEL), nullptr);
 	}
 }
 

@@ -138,7 +138,7 @@ bool igdeTaskSyncGameDefinition::Step(){
 		}
 		
 		delete (igdeStepableTask*)pEditorTasks.GetAt(pTaskIndex);
-		pEditorTasks.SetAt(pTaskIndex, NULL);
+		pEditorTasks.SetAt(pTaskIndex, nullptr);
 		
 		pTaskIndex++;
 		if(pTaskIndex == taskCount){
@@ -228,7 +228,7 @@ void igdeTaskSyncGameDefinition::pCreateEditorTasks(){
 			}
 			
 			pEditorTasks.Add(editorTask);
-			editorTask = NULL;
+			editorTask = nullptr;
 		}
 		
 	}catch(const deException &){

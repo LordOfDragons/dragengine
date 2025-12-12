@@ -50,7 +50,7 @@ pImage(NULL),
 pDirty(true)
 {
 	try{
-		pRRenderableImage.TakeOver(new deoglRDSRenderableImage(*dynamicSkin.GetRDynamicSkin()));
+		pRRenderableImage = deoglRDSRenderableImage::Ref::New(*dynamicSkin.GetRDynamicSkin());
 		
 	}catch(const deException &){
 		pCleanUp();

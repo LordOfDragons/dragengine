@@ -71,7 +71,7 @@ pParentTask(parentTask)
 	}
 	
 	LogCreateEnter();
-	pFont.TakeOver(new deFont(engine.GetFontManager(), vfs, path, 0));
+	pFont = deFont::Ref::New(engine.GetFontManager(), vfs, path, 0);
 	LogCreateExit();
 }
 

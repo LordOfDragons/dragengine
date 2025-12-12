@@ -60,7 +60,7 @@ pBgColor(150.0f / 255.0f, 150.0f / 255.0f, 150.0f / 255.0f),
 pBorderColor(60.0f / 255.0f, 60.0f / 255.0f, 60.0f / 255.0f),
 pActiveTitleBgColor(165.0f / 255.0f, 200.0f / 255.0f, 200.0f / 255.0f),
 pInactiveTitleBgColor(150.0f / 255.0f, 150.0f / 255.0f, 185.0f / 255.0f),
-pOwnerBoard(NULL){
+pOwnerBoard(nullptr){
 }
 
 igdeNVNode::~igdeNVNode(){
@@ -217,7 +217,7 @@ void igdeNVNode::RemoveSlot(igdeNVSlot *slot){
 	}
 	
 	igdeContainer::RemoveChild(slot);
-	slot->SetOwnerNode(NULL);
+	slot->SetOwnerNode(nullptr);
 	pSlots.Remove(slot);
 	OnSlotsChanged();
 }
@@ -230,7 +230,7 @@ void igdeNVNode::RemoveAllSlots(){
 	while(pSlots.GetCount() > 0){
 		const int index = pSlots.GetCount() - 1;
 		igdeNVSlot * const slot = (igdeNVSlot*)pSlots.GetAt(index);
-		slot->SetOwnerNode(NULL);
+		slot->SetOwnerNode(nullptr);
 		igdeContainer::RemoveChild(slot);
 		pSlots.RemoveFrom(index);
 	}

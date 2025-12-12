@@ -82,7 +82,7 @@ pText(text),
 pEnabled(true),
 pIsInput(isInput),
 pColor(0.0f, 0.0f, 0.0f),
-pOwnerNode(NULL){
+pOwnerNode(nullptr){
 }
 
 igdeNVSlot::igdeNVSlot(igdeEnvironment &environment, const char *text, const char *description, bool isInput) :
@@ -92,7 +92,7 @@ pDescription(description),
 pEnabled(true),
 pIsInput(isInput),
 pColor(0.0f, 0.0f, 0.0f),
-pOwnerNode(NULL){
+pOwnerNode(nullptr){
 }
 
 igdeNVSlot::~igdeNVSlot(){

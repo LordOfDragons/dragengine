@@ -104,7 +104,7 @@ const char *filename, deOcclusionMeshBuilder &builder){
 		}
 		
 		// create occlusion mesh using the builder
-		occmesh.TakeOver(new deOcclusionMesh(this, vfs, filename, decDateTime::GetSystemTime()));
+		occmesh = deOcclusionMesh::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
 		builder.BuildOcclusionMesh(occmesh);
 		
 		// prepare and check occlusion mesh
@@ -168,7 +168,7 @@ const char *filename, const char *basePath){
 				deModuleSystem::emtOcclusionMesh, path.GetPathUnix());
 			
 			// load the file with it
-			occmesh.TakeOver(new deOcclusionMesh(this, vfs, path.GetPathUnix(), modificationTime));
+			occmesh = deOcclusionMesh::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			if(!occmesh){
 				DETHROW(deeOutOfMemory);
 			}

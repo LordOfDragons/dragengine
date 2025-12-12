@@ -66,7 +66,7 @@ igdeWOSOForceField::igdeWOSOForceField(igdeWObject &wrapper,
 igdeWOSubObject(wrapper, prefix),
 pGDForceField(gdForceField),
 pAddedToWorld(false),
-pAttachment(NULL)
+pAttachment(nullptr)
 {
 	AsyncLoadFinished(true); // important since we load nothing
 }
@@ -255,7 +255,7 @@ void igdeWOSOForceField::pDestroyForceField(){
 		GetWrapper().GetWorld()->RemoveForceField(pForceField);
 	}
 	
-	pForceField = NULL;
+	pForceField = nullptr;
 	pAddedToWorld = false;
 }
 
@@ -268,7 +268,7 @@ void igdeWOSOForceField::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	
 	try{
 		attachment = new deColliderAttachment(pForceField);
@@ -309,6 +309,6 @@ void igdeWOSOForceField::DetachFromCollider(){
 	}
 	
 	pAttachedToCollider->RemoveAttachment(pAttachment);
-	pAttachment = NULL;
-	pAttachedToCollider = NULL;
+	pAttachment = nullptr;
+	pAttachedToCollider = nullptr;
 }

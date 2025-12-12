@@ -59,7 +59,7 @@ igdeNativeFoxProgressBar::igdeNativeFoxProgressBar(){}
 
 igdeNativeFoxProgressBar::igdeNativeFoxProgressBar(igdeProgressBar &powner, FXComposite *pparent,
 	const igdeUIFoxHelper::sChildLayoutFlags &layoutFlags, const igdeGuiTheme &guitheme) :
-FXProgressBar(pparent, NULL, 0, layoutFlags.flags | ProgressBarFlags(powner), 0, 0, 0, 0,
+FXProgressBar(pparent, nullptr, 0, layoutFlags.flags | ProgressBarFlags(powner), 0, 0, 0, 0,
 	ProgressBarPadLeft(guitheme), ProgressBarPadRight(guitheme),
 	ProgressBarPadTop(guitheme), ProgressBarPadBottom(guitheme)),
 pOwner(&powner)

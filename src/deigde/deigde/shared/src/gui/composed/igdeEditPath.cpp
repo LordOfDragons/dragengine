@@ -310,8 +310,8 @@ pResourceType(resourceType),
 pAutoValidatePath(true),
 pUseGameVFS(useGameVFS)
 {
-	pActionButton.TakeOver(new cActionButton(*this, description));
-	pActionButtonMenu.TakeOver(new cActionButtonMenu(*this, description));
+	pActionButton = cActionButton::Ref::New(*this, description);
+	pActionButtonMenu = cActionButtonMenu::Ref::New(*this, description);
 	
 	helper.EditString(*this, description, pText, new cListenerTextField(*this));
 	helper.Button(*this, pButton, pActionButton);
@@ -330,8 +330,8 @@ pCustomPatternList(customFilePatterns),
 pAutoValidatePath(true),
 pUseGameVFS(useGameVFS)
 {
-	pActionButton.TakeOver(new cActionButton(*this, description));
-	pActionButtonMenu.TakeOver(new cActionButtonMenu(*this, description));
+	pActionButton = cActionButton::Ref::New(*this, description);
+	pActionButtonMenu = cActionButtonMenu::Ref::New(*this, description);
 	
 	helper.EditString(*this, description, pText, new cListenerTextField(*this));
 	helper.Button(*this, pButton, pActionButton);
@@ -591,7 +591,7 @@ void igdeEditPath::SetSelectPathActions(){
 	
 	switch(pResourceType){
 	case igdeEnvironment::efpltSkin:
-		action.TakeOver(new cActionSkinSelectDialog(*this));
+		action = cActionSkinSelectDialog::Ref::New(*this);
 		AddSelectPathAction(action);
 		break;
 		
@@ -599,7 +599,7 @@ void igdeEditPath::SetSelectPathActions(){
 		break;
 	}
 	
-	action.TakeOver(new cActionSelectFileDialog(*this, pText));
+	action = cActionSelectFileDialog::Ref::New(*this, pText);
 	AddSelectPathAction(action);
 }
 

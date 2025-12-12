@@ -86,10 +86,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Parent debug drawer or NULL. */
+	/** \brief Parent debug drawer or nullptr. */
 	inline const deDebugDrawer::Ref &GetParentDebugDrawer() const{ return pEngDebugDrawer; }
 	
-	/** \brief Set parent debug drawer or NULL. */
+	/** \brief Set parent debug drawer or nullptr. */
 	void SetParentDebugDrawer(deDebugDrawer *debugDrawer);
 	
 	/** \brief Position. */

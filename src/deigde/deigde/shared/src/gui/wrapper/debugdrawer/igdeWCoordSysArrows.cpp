@@ -61,7 +61,7 @@ igdeWCoordSysArrows::igdeWCoordSysArrows(){
 }
 
 igdeWCoordSysArrows::~igdeWCoordSysArrows(){
-	SetParentDebugDrawer(NULL);
+	SetParentDebugDrawer(nullptr);
 }
 
 

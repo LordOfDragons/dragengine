@@ -112,6 +112,8 @@ private:
 	bool pSuccess;
 	
 public:
+	typedef deTObjectReference<igdeWOSOComponentResLoadComponent> Ref;
+	
 	igdeWOSOComponentResLoadComponent(igdeWOSOComponent &owner) :
 	pOwner(&owner), pCounter(0), pSuccess(true){
 	}
@@ -120,7 +122,7 @@ public:
 	}
 	
 	void Drop(){
-		pOwner = NULL;
+		pOwner = nullptr;
 	}
 	
 	void LoadAudioModel(const char *path){
@@ -170,13 +172,13 @@ public:
 		if(pTextureSkins.Has(path)){
 			return;
 		}
-		pTextureSkins.SetAt(path, NULL);
+		pTextureSkins.SetAt(path, nullptr);
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertSkin, this);
 		pCounter++;
 	}
 	deSkin *GetTextureSkinFor(const char *path) const{
-		deObject *skin = NULL;
-		return pTextureSkins.GetAt(path, &skin) ? (deSkin*)skin : NULL;
+		deObject *skin = nullptr;
+		return pTextureSkins.GetAt(path, &skin) ? (deSkin*)skin : nullptr;
 	}
 	inline const decObjectDictionary &GetTextureSkins() const{ return pTextureSkins; }
 	
@@ -285,7 +287,7 @@ igdeWOSOComponent::igdeWOSOComponent(igdeWObject &wrapper,
 igdeWOSubObject(wrapper, prefix),
 pGDComponent(gdComponent),
 pAddedToWorld(false),
-pAttachment(NULL),
+pAttachment(nullptr),
 pPlaybackControllerIndex(-1),
 pRenderEnvMap(false),
 pAffectsAudio(false),
@@ -330,7 +332,7 @@ pColliderAddedToWorld(false)
 igdeWOSOComponent::~igdeWOSOComponent(){
 	if(pResLoad){
 		((igdeWOSOComponentResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
-		pResLoad = NULL;
+		pResLoad = nullptr;
 	}
 	pReleaseOutlineComponent();
 	pDestroyComponent();
@@ -558,10 +560,10 @@ bool igdeWOSOComponent::IsContentVisible(){
 void igdeWOSOComponent::pLoadResources(){
 	if(pResLoad){
 		((igdeWOSOComponentResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
-		pResLoad = NULL;
+		pResLoad = nullptr;
 	}
 	
-	pResLoad.TakeOver(new igdeWOSOComponentResLoadComponent(*this));
+	pResLoad = igdeWOSOComponentResLoadComponent::Ref::New(*this);
 	igdeWOSOComponentResLoadComponent &rl =
 		(igdeWOSOComponentResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
 	
@@ -637,7 +639,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 	}
 	
 	if(!model || model->GetLODAt(0)->GetFaceCount() == 0){
-		pResLoad = NULL;
+		pResLoad = nullptr;
 		pReleaseOutlineComponent();
 		pDestroyComponent();
 		return;
@@ -947,7 +949,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 		AttachToCollider();
 	}
 	
-	pResLoad = NULL;
+	pResLoad = nullptr;
 }
 
 void igdeWOSOComponent::pUpdateTextures(){
@@ -975,9 +977,9 @@ void igdeWOSOComponent::pUpdateTextures(){
 		}
 		
 		deDynamicSkin::Ref gdctDynamicSkin;
-		deSkin *useSkin = NULL;
+		deSkin *useSkin = nullptr;
 		int useTexture = 0;
-		deDynamicSkin *useDynamicSkin = NULL;
+		deDynamicSkin *useDynamicSkin = nullptr;
 		decVector2 texCoordOffset(0.0f, 0.0f);
 		decVector2 texCoordScale(1.0f, 1.0f);
 		float texCoordRotation = 0.0f;
@@ -1058,7 +1060,7 @@ void igdeWOSOComponent::pDestroyComponent(){
 		ClearBoxExtends();
 		DetachFromCollider();
 		pPlaybackControllerIndex = -1;
-		pAnimator = NULL;
+		pAnimator = nullptr;
 		pPathAnimator.Empty();
 		pMove.Empty();
 		
@@ -1086,7 +1088,7 @@ void igdeWOSOComponent::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	
 	try{
 		attachment = new deColliderAttachment(/*pComponent*/ pCollider);
@@ -1128,8 +1130,8 @@ void igdeWOSOComponent::DetachFromCollider(){
 	}
 	
 	pAttachedToCollider->RemoveAttachment(pAttachment);
-	pAttachment = NULL;
-	pAttachedToCollider = NULL;
+	pAttachment = nullptr;
+	pAttachedToCollider = nullptr;
 }
 
 bool igdeWOSOComponent::pIsVisible() const{
@@ -1222,5 +1224,5 @@ void igdeWOSOComponent::pReleaseOutlineComponent(){
 	if(pOutlineComponent->GetParentWorld()){
 		pOutlineComponent->GetParentWorld()->RemoveComponent(pOutlineComponent);
 	}
-	pOutlineComponent = NULL;
+	pOutlineComponent = nullptr;
 }

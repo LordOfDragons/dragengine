@@ -68,10 +68,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Undo system or NULL. */
+	/** \brief Undo system or nullptr. */
 	inline igdeUndoSystem *GetUndoSystem() const{ return pUndoSystem; }
 	
-	/** \brief Set undo system or NULL. */
+	/** \brief Set undo system or nullptr. */
 	void SetUndoSystem(igdeUndoSystem *undoSystem);
 	
 	

@@ -137,9 +137,9 @@ const char *basePath, bool asynchron){
 			module->InitLoadSound(*fileReader, soundInfo);
 			
 			// create sound file using the infos
-			sound.TakeOver(new deSound(this, vfs, path.GetPathUnix(), modificationTime,
+			sound = deSound::Ref::New(this, vfs, path.GetPathUnix(), modificationTime,
 				soundInfo.GetBytesPerSample(), soundInfo.GetSampleRate(),
-				soundInfo.GetSampleCount(), soundInfo.GetChannelCount()));
+				soundInfo.GetSampleCount(), soundInfo.GetChannelCount());
 			sound->SetAsynchron(asynchron);
 			
 			// load into systems. modules can request to load the data if small enough
@@ -199,7 +199,7 @@ deSoundDecoder::Ref deSoundManager::CreateDecoder(deSound *sound){
 	
 	try{
 		// sound decoder is what the user actually gets
-		soundDecoder.TakeOver(new deSoundDecoder(*this, sound));
+		soundDecoder = deSoundDecoder::Ref::New(*this, sound);
 		
 		// find module which handles the sound file. it is not so nice to check using
 		// the file name again for the right module to choose but the result is correct

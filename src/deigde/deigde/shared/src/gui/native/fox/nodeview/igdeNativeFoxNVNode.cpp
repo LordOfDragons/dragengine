@@ -74,9 +74,9 @@ igdeNativeFoxNVNode::igdeNativeFoxNVNode(igdeNVNode &powner, FXComposite *pparen
 FXVerticalFrame(pparent, NVNodeFlags(powner), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
 pOwner(&powner),
 pFont(NVNodeFont(powner, guitheme)),
-pLabTitle(NULL),
-pFrameTitle(NULL),
-pFrameSlots(NULL),
+pLabTitle(nullptr),
+pFrameTitle(nullptr),
+pFrameSlots(nullptr),
 
 pTitleIsDraging(false),
 

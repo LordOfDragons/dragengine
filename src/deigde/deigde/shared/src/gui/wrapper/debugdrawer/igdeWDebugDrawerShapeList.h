@@ -72,7 +72,7 @@ public:
 	/** \brief Removes all wrappers. */
 	void RemoveAll();
 	
-	/** \brief Set parent debug drawer or NULL for all wrappers. */
+	/** \brief Set parent debug drawer or nullptr for all wrappers. */
 	void SetParentDebugDrawerAll(deDebugDrawer *debugDrawer);
 	
 	/** \brief Set visible for all wrappers. */

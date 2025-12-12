@@ -155,7 +155,7 @@ bool deoxrDeviceProfile::pMatchesProfile(const deoxrPath &path) const{
 void deoxrDeviceProfile::pCreateDevice(deoxrDevice::Ref &device, bool leftHand,
 const char *idPrefix, bool withOrientationAction){
 	deVROpenXR &oxr = GetInstance().GetOxr();
-	device.TakeOver(new deoxrDevice(oxr, *this));
+	device = deoxrDevice::Ref::New(oxr, *this);
 	
 	decString id;
 	

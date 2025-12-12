@@ -1131,7 +1131,7 @@ DEBUG_PRINT_TIMER("Run: Process VR events");
 //////////////////////
 
 void deEngine::pInit(){
-	pLogger.TakeOver(new deLoggerConsoleColor);
+	pLogger = deLoggerConsoleColor::Ref::New();
 	pErrorTrace = new deErrorTrace;
 	pArgs = new deCmdLineArgs;
 	

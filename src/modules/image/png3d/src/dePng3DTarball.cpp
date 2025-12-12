@@ -438,7 +438,7 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 	decMemoryFileWriter::Ref memoryFileWriter;
 	
 	try{
-		memoryFile.TakeOver(new decMemoryFile(""));
+		memoryFile = decMemoryFile::Ref::New("");
 		
 		// create the rows array
 		rows = new png_bytep[image.GetHeight()];
@@ -448,7 +448,7 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 		for(z=0; z<image.GetDepth(); z++){
 // 			pModule->LogInfoFormat( "%s: writing %i", file.GetFilename(), z );
 			// create memory file containing the file content
-			memoryFileWriter.TakeOver(new decMemoryFileWriter(memoryFile, false));
+			memoryFileWriter = decMemoryFileWriter::Ref::New(memoryFile, false);
 			
 			sliceImageData = imageData + (strideImage * z);
 			

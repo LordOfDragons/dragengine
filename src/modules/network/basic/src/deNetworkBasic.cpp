@@ -165,13 +165,13 @@ bool deNetworkBasic::Init(){
 		#endif
 		
 		// create shared datagram
-		pDatagram.TakeOver(new deNetworkMessage);
+		pDatagram = deNetworkMessage::Ref::New();
 		pDatagram->SetDataLength(1024);
 		
 		// create receive address
-		pSharedSendDatagram.TakeOver(new deNetworkMessage);
+		pSharedSendDatagram = deNetworkMessage::Ref::New();
 		pSharedSendDatagram->SetDataLength(50);
-		pSharedSendDatagramWriter.TakeOver(new deNetworkMessageWriter(pSharedSendDatagram, false));
+		pSharedSendDatagramWriter = deNetworkMessageWriter::Ref::New(pSharedSendDatagram, false);
 		
 		// create send and receive message queues
 		//pMessagesSend = new debnMessageQueue;

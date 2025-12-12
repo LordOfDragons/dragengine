@@ -45,34 +45,34 @@ debpDebug::debpDebug(dePhysicsBullet &bullet) :
 pBullet(bullet),
 pEnabled(false)
 {
-	pDIColliderPrepareDetection.TakeOver(new debpDebugInformation("Collider PrepareDetection:"));
+	pDIColliderPrepareDetection = debpDebugInformation::Ref::New("Collider PrepareDetection:");
 	pDebugInfoList.Add(pDIColliderPrepareDetection);
 	
-	pDIColliderDetectCustomCollision.TakeOver(new debpDebugInformation("Collider DetectCustomCollision:"));
+	pDIColliderDetectCustomCollision = debpDebugInformation::Ref::New("Collider DetectCustomCollision:");
 	pDebugInfoList.Add(pDIColliderDetectCustomCollision);
 	
-	pDIColliderUpdateFromBody.TakeOver(new debpDebugInformation("Collider UpdateFromBody:"));
+	pDIColliderUpdateFromBody = debpDebugInformation::Ref::New("Collider UpdateFromBody:");
 	pDebugInfoList.Add(pDIColliderUpdateFromBody);
 	
-	pDIColliderFinishDetection.TakeOver(new debpDebugInformation("Collider FinishDetection:"));
+	pDIColliderFinishDetection = debpDebugInformation::Ref::New("Collider FinishDetection:");
 	pDebugInfoList.Add(pDIColliderFinishDetection);
 	
-	pDIColliderCollisionTests.TakeOver(new debpDebugInformation("Collider CollisionTests:"));
+	pDIColliderCollisionTests = debpDebugInformation::Ref::New("Collider CollisionTests:");
 	pDebugInfoList.Add(pDIColliderCollisionTests);
 	
-	pDIColliderUpdateOctree.TakeOver(new debpDebugInformation("Collider UpdateOctreePosition:"));
+	pDIColliderUpdateOctree = debpDebugInformation::Ref::New("Collider UpdateOctreePosition:");
 	pDebugInfoList.Add(pDIColliderUpdateOctree);
 	
-	pDITouchSensorApplyChanges.TakeOver(new debpDebugInformation("TouchSensor ApplyChanges:"));
+	pDITouchSensorApplyChanges = debpDebugInformation::Ref::New("TouchSensor ApplyChanges:");
 	pDebugInfoList.Add(pDITouchSensorApplyChanges);
 	
-	pDIWorldStepSimulation.TakeOver(new debpDebugInformation("World StepSimulation:"));
+	pDIWorldStepSimulation = debpDebugInformation::Ref::New("World StepSimulation:");
 	pDebugInfoList.Add(pDIWorldStepSimulation);
 	
-	pDIWorldUpdateOctrees.TakeOver(new debpDebugInformation("World UpdateOctrees:"));
+	pDIWorldUpdateOctrees = debpDebugInformation::Ref::New("World UpdateOctrees:");
 	pDebugInfoList.Add(pDIWorldUpdateOctrees);
 	
-	pDIWorldCheckDynamicCollisions.TakeOver(new debpDebugInformation("World CheckDynamicCollisions:"));
+	pDIWorldCheckDynamicCollisions = debpDebugInformation::Ref::New("World CheckDynamicCollisions:");
 	pDebugInfoList.Add(pDIWorldCheckDynamicCollisions);
 }
 

@@ -113,7 +113,7 @@ void igdeColorBox::cActionPasteHex::OnAction(){
 
 
 igdeColorBox::cActionEditValues::cActionEditValues(igdeColorBox &colorBox) :
-igdeAction("Edit Values", NULL, "Edit values directly"),
+igdeAction("Edit Values", nullptr, "Edit values directly"),
 pColorBox(colorBox){
 }
 
@@ -141,7 +141,7 @@ void igdeColorBox::cActionEditValues::OnAction(){
 
 
 igdeColorBox::cActionEditHex::cActionEditHex(igdeColorBox &colorBox) :
-igdeAction("Edit Hex", NULL, "Edit hex directly"),
+igdeAction("Edit Hex", nullptr, "Edit hex directly"),
 pColorBox(colorBox){
 }
 
@@ -168,16 +168,16 @@ void igdeColorBox::cActionEditHex::OnAction(){
 	const int length = value.GetLength();
 	color.SetZero();
 	if(length >= 2){
-		color.r = (float)strtol(value.GetMiddle(0, 2), NULL, 16) / 255.0f;
+		color.r = (float)strtol(value.GetMiddle(0, 2), nullptr, 16) / 255.0f;
 	}
 	if(length >= 4){
-		color.g = (float)strtol(value.GetMiddle(2, 2), NULL, 16) / 255.0f;
+		color.g = (float)strtol(value.GetMiddle(2, 2), nullptr, 16) / 255.0f;
 	}
 	if(length >= 6){
-		color.b = (float)strtol(value.GetMiddle(4, 6), NULL, 16) / 255.0f;
+		color.b = (float)strtol(value.GetMiddle(4, 6), nullptr, 16) / 255.0f;
 	}
 	if(length >= 8){
-		color.a = (float)strtol(value.GetMiddle(6, 8), NULL, 16) / 255.0f;
+		color.a = (float)strtol(value.GetMiddle(6, 8), nullptr, 16) / 255.0f;
 	}
 	
 	if(color.IsEqualTo(pColorBox.GetColor())){

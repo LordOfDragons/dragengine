@@ -179,7 +179,7 @@ void igdeLoadAnimator::pReadAnimator(const decXmlElementTag &root, const char *b
 
 void igdeLoadAnimator::pReadController(const decXmlElementTag &root, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
-	deAnimatorController *controller = NULL;
+	deAnimatorController *controller = nullptr;
 	int e;
 	
 	try{
@@ -225,7 +225,7 @@ void igdeLoadAnimator::pReadController(const decXmlElementTag &root, deAnimator 
 
 void igdeLoadAnimator::pReadLink(const decXmlElementTag &root, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
-	deAnimatorLink *link = NULL;
+	deAnimatorLink *link = nullptr;
 	int e;
 	
 	try{

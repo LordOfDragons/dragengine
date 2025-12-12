@@ -131,10 +131,10 @@ public:
 	/** \brief Remove all nodes. */
 	void RemoveAllNodes();
 	
-	/** \brief Active node. or NULL */
+	/** \brief Active node. or nullptr */
 	inline igdeNVNode *GetActiveNode() const{ return (igdeNVNode*)(deObject*)pActiveNode; }
 	
-	/** \brief Set active node or NULL. */
+	/** \brief Set active node or nullptr. */
 	void SetActiveNode(igdeNVNode *node);
 	
 	
@@ -145,7 +145,7 @@ public:
 	/** \brief Link at index. */
 	igdeNVLink *GetLinkAt(int index) const;
 	
-	/** \brief Link between source and target or NULL if not linked. */
+	/** \brief Link between source and target or nullptr if not linked. */
 	igdeNVLink *GetLinkBetween(igdeNVSlot *source, igdeNVSlot *target) const;
 	
 	/** \brief Has link. */
@@ -169,7 +169,7 @@ public:
 	/** \brief Remove all links with sockets belonging to node. */
 	void RemoveAllNodeLinks(igdeNVNode *node);
 	
-	/** \brief Link closest to position inside range in board coordinate system or NULL. */
+	/** \brief Link closest to position inside range in board coordinate system or nullptr. */
 	igdeNVLink *ClosestLinkNear(const decPoint &position, float range = 6.0f) const;
 	
 	/** \brief Show context menu at position. */

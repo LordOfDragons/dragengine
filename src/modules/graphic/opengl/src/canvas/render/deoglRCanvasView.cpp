@@ -127,8 +127,8 @@ int componentCount, int bitCount){
 			pRenderTarget = nullptr;
 		}
 		
-		pRenderTarget.TakeOver(new deoglRenderTarget(GetRenderThread(),
-			decVector2(GetSize()).Round(), componentCount, bitCount));
+		pRenderTarget = deoglRenderTarget::Ref::New(GetRenderThread(),
+			decVector2(GetSize()).Round(), componentCount, bitCount);
 		pRenderTarget->PrepareTexture();
 		pResizeRenderTarget = false;
 	}

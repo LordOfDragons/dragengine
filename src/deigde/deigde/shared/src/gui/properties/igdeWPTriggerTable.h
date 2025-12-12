@@ -91,13 +91,13 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Trigger target list or NULL if not set. */
+	/** \brief Trigger target list or nullptr if not set. */
 	inline igdeTriggerTargetList *GetTriggerTargetList() const{ return pTriggerTargetList; }
 	
-	/** \brief Set trigger target list or NULL if not set. */
+	/** \brief Set trigger target list or nullptr if not set. */
 	void SetTriggerTargetList(igdeTriggerTargetList *triggerTargetList);
 	
-	/** \brief Selected target or NULL. */
+	/** \brief Selected target or nullptr. */
 	igdeTriggerTarget *GetSelectedTarget() const;
 	
 	/** \brief Select target if possible. */
@@ -117,10 +117,10 @@ public:
 	
 	
 	
-	/** \brief Action or NULL. */
+	/** \brief Action or nullptr. */
 	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
+	/** \brief Set action or nullptr. */
 	void SetAction(igdeAction *action);
 	
 	/**

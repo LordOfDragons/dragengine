@@ -100,7 +100,7 @@ const char *filename, deAnimationBuilder &builder){
 		}
 		
 		// create animation using the builder
-		anim.TakeOver(new deAnimation(this, vfs, filename, decDateTime::GetSystemTime()));
+		anim = deAnimation::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
 		builder.BuildAnimation(anim);
 		
 		// load system peers
@@ -151,7 +151,7 @@ const char *filename, const char *basePath){
 			module = (deBaseAnimationModule*)GetModuleSystem()->GetModuleAbleToLoad(
 				deModuleSystem::emtAnimation, path.GetPathUnix());
 			// load the file with it
-			anim.TakeOver(new deAnimation(this, vfs, path.GetPathUnix(), modificationTime));
+			anim = deAnimation::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			anim->SetAsynchron(false);
 			module->LoadAnimation(OpenFileForReading(*vfs, path.GetPathUnix()), *anim);
 			

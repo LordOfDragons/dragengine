@@ -93,7 +93,7 @@ void igdeEditorModule::Start(){
 }
 
 void igdeEditorModule::Stop(){
-	SetEditorWindow(NULL);
+	SetEditorWindow(nullptr);
 }
 
 void igdeEditorModule::OnBeforeEngineStart(){
@@ -170,7 +170,7 @@ igdeStepableTask *igdeEditorModule::OnGameDefinitionChanged(){
 		return pEditorWindow->OnGameDefinitionChanged();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

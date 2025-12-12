@@ -176,7 +176,7 @@ void delEngineModule::CalcSizeAndHashes(delLauncher &launcher){
 	
 	try{
 		if(decPath::IsNativePathAbsolute(pLibFileName)){
-			reader.TakeOver(new decDiskFileReader(pLibFileName));
+			reader = decDiskFileReader::Ref::New(pLibFileName);
 			
 		}else{
 			path.SetFromUnix("/engine/lib/modules");

@@ -134,7 +134,7 @@ void deoglGI::pCreateUBOParameter(){
 	ubo->MapToStd140();
 	ubo->SetBindingPoint(1);
 	
-	pUBOParameterSingleUse.TakeOver(new deoglSPBSingleUse(pRenderThread, ubo));
+	pUBOParameterSingleUse = deoglSPBSingleUse::Ref::New(pRenderThread, ubo);
 }
 
 void deoglGI::pCreateUBOProbeIndex(){
@@ -148,7 +148,7 @@ void deoglGI::pCreateUBOProbeIndex(){
 	ubo->MapToStd140();
 	ubo->SetBindingPoint(2);
 	
-	pUBOProbeIndexSingleUse.TakeOver(new deoglSPBSingleUse(pRenderThread, ubo));
+	pUBOProbeIndexSingleUse = deoglSPBSingleUse::Ref::New(pRenderThread, ubo);
 }
 
 void deoglGI::pCreateUBOProbePosition(){
@@ -162,7 +162,7 @@ void deoglGI::pCreateUBOProbePosition(){
 	ubo->MapToStd140();
 	ubo->SetBindingPoint(3);
 	
-	pUBOProbePositionSingleUse.TakeOver(new deoglSPBSingleUse(pRenderThread, ubo));
+	pUBOProbePositionSingleUse = deoglSPBSingleUse::Ref::New(pRenderThread, ubo);
 }
 
 void deoglGI::pCreateUBORayDirection(){
@@ -176,5 +176,5 @@ void deoglGI::pCreateUBORayDirection(){
 	ubo->MapToStd140();
 	ubo->SetBindingPoint(4);
 	
-	pUBORayDirectionSingleUse.TakeOver(new deoglSPBSingleUse(pRenderThread, ubo));
+	pUBORayDirectionSingleUse = deoglSPBSingleUse::Ref::New(pRenderThread, ubo);
 }

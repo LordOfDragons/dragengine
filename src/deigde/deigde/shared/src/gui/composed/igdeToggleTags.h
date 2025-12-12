@@ -57,6 +57,7 @@ protected:
 		igdeToggleTags &pWidget;
 		
 	public:
+		typedef deTObjectReference<cActionEnableAll> Ref;
 		cActionEnableAll(igdeToggleTags &widget);
 		virtual void OnAction();
 	};
@@ -67,6 +68,7 @@ protected:
 		igdeToggleTags &pWidget;
 		
 	public:
+		typedef deTObjectReference<cActionDisableAll> Ref;
 		cActionDisableAll(igdeToggleTags &widget);
 		virtual void OnAction();
 	};
@@ -171,10 +173,10 @@ public:
 	
 	
 	
-	/** \brief Action or NULL. */
+	/** \brief Action or nullptr. */
 	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
+	/** \brief Set action or nullptr. */
 	void SetAction(igdeAction *action);
 	
 	/**

@@ -104,7 +104,7 @@ deModelBuilder &builder){
 		}
 		
 		// create model using the builder
-		model.TakeOver(new deModel(this, vfs, filename, decDateTime::GetSystemTime()));
+		model = deModel::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
 		builder.BuildModel(model);
 		
 		// prepare and check model
@@ -169,7 +169,7 @@ deModel::Ref deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *fil
 				deModuleSystem::emtModel, path.GetPathUnix());
 			
 			// load the file with it
-			model.TakeOver(new deModel(this, vfs, path.GetPathUnix(), modificationTime));
+			model = deModel::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			if(!model){
 				DETHROW(deeOutOfMemory);
 			}

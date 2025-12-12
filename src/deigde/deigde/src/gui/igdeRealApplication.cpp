@@ -60,7 +60,7 @@ igdeWindowMain &igdeRealApplication::GetWindowMain() const{
 
 bool igdeRealApplication::Initialize(const decUnicodeStringList &arguments){
 	try{
-		SetMainWindow(new igdeWindowMain(pEnvironment), true);
+		SetMainWindow(igdeWindowMain::Ref::New(pEnvironment));
 		GetWindowMain().CreateNativeWidget();
 		
 	// 	if( updateWithTimer ){

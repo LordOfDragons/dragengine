@@ -107,11 +107,11 @@ igdeNativeFoxTabBook::igdeNativeFoxTabBook(igdeTabBook &powner, FXComposite *ppa
 	FXComposite *windowParent, int layoutFlags, const igdeGuiTheme &guitheme) :
 FXVerticalFrame(pparent, layoutFlags, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
 pOwner(&powner),
-pAutoScroller(NULL),
-// pBtnScrollHeadersLeft( NULL ),
-// pBtnScrollHeadersRight( NULL ),
-pHeaders(NULL),
-pSwitcher(NULL),
+pAutoScroller(nullptr),
+// pBtnScrollHeadersLeft( nullptr ),
+// pBtnScrollHeadersRight( nullptr ),
+pHeaders(nullptr),
+pSwitcher(nullptr),
 pFont(TabBookFont(powner, guitheme)),
 pPadLeft(TabBookPadLeft(guitheme)),
 pPadRight(TabBookPadRight(guitheme)),
@@ -280,7 +280,7 @@ long igdeNativeFoxTabBook::onHeaderUpdate(FXObject *sender, FXSelector, void*){
 	const int switcherIndex = pSwitcher->getCurrent();
 	
 	return sender->handle(this, FXSEL(SEL_COMMAND,
-		headerIndex == switcherIndex ? ID_CHECK : ID_UNCHECK), NULL);
+		headerIndex == switcherIndex ? ID_CHECK : ID_UNCHECK), nullptr);
 }
 
 long igdeNativeFoxTabBook::onHeaderMouseWheel(FXObject*, FXSelector, void *pdata){

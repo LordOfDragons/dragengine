@@ -229,7 +229,7 @@ void delEngine::AddModulesFrom(const char *directory, deModuleSystem::eModuleTyp
 				"Reading module definition from '%s'", pattern.GetPathUnix().GetString());
 			
 			try{
-				module.TakeOver(new delEngineModule);
+				module = delEngineModule::Ref::New();
 				moduleXML.ReadFromFile(pattern.GetPathUnix(), vfs.OpenFileForReading(pattern), module);
 				pModules.Add (module);
 				
@@ -600,7 +600,7 @@ void delEngine::ReadDelgaPatchDefs(delEngineInstance &instance, const char *file
 		memoryFile->Resize(lenContent, false);
 		memcpy(memoryFile->GetPointer(), fileContent.GetString(), lenContent);
 		
-		patch.TakeOver(new delPatch);
+		patch = delPatch::Ref::New();
 		patchXML.ReadFromFile(decMemoryFileReader::Ref::New(memoryFile), patch);
 		
 		patch->SetDelgaFile(filename);

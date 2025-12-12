@@ -438,7 +438,7 @@ void igdeWPWObject::OnParameterChanged(igdeAction *action){
 void igdeWPWObject::OnDestroyed(igdeAction *action){
 	GetLogger()->LogWarnFormat("IGDE", "igdeWPWObject::OnDestroyed: "
 		"Action(%s) destroyed while still listening on it", action->GetText().GetString());
-	pAction = NULL;
+	pAction = nullptr;
 }
 
 
@@ -451,7 +451,7 @@ void igdeWPWObject::pCreateContent(){
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref form, frameLine;
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	AddChild(form);
 	
 	helper.FormLineStretchFirst(form, "Class:",

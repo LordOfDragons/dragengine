@@ -45,7 +45,7 @@
 // Static
 ///////////
 
-igdeApplication *igdeApplication::pApp = NULL;
+igdeApplication *igdeApplication::pApp = nullptr;
 
 
 
@@ -56,7 +56,7 @@ igdeApplication *igdeApplication::pApp = NULL;
 ////////////////////////////
 
 igdeApplication::igdeApplication() :
-pNativeApplication(NULL)
+pNativeApplication(nullptr)
 {
 	DEASSERT_NULL(pApp)
 	
@@ -70,7 +70,7 @@ igdeApplication::~igdeApplication(){
 	}
 	
 	if(pApp == this){
-		pApp = NULL;
+		pApp = nullptr;
 	}
 }
 
@@ -163,13 +163,8 @@ decVector2 igdeApplication::DisplayScaled(const decVector2 &point){
 // Protected Functions
 ////////////////////////
 
-void igdeApplication::SetMainWindow(igdeMainWindow *mainWindow, bool takeOver){
-	if(takeOver){
-		pMainWindow.TakeOver(mainWindow);
-		
-	}else{
-		pMainWindow = mainWindow;
-	}
+void igdeApplication::SetMainWindow(igdeMainWindow *mainWindow){
+	pMainWindow = mainWindow;
 }
 
 void igdeApplication::CleanUp(){
@@ -193,7 +188,7 @@ void igdeApplication::pSharedRun(decUnicodeStringList &arguments){
 		
 		try{
 			CleanUp();
-			pMainWindow = NULL;
+			pMainWindow = nullptr;
 			
 		}catch(const deException &e2){
 			e2.PrintError();
@@ -205,7 +200,7 @@ void igdeApplication::pSharedRun(decUnicodeStringList &arguments){
 	}
 	
 	CleanUp();
-	pMainWindow = NULL;
+	pMainWindow = nullptr;
 	
 	((igdeNativeApplication*)pNativeApplication)->Quit();
 }

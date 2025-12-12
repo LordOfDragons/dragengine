@@ -65,7 +65,7 @@ igdeBaseXML::~igdeBaseXML(){
 ///////////////
 
 bool igdeBaseXML::HasAttribute(const decXmlElementTag &tag, const char *name) const{
-	return tag.FindAttribute(name) != NULL;
+	return tag.FindAttribute(name) != nullptr;
 }
 
 const decString &igdeBaseXML::GetAttributeString(const decXmlElementTag &tag, const char *name) const{

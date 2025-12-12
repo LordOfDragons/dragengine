@@ -45,6 +45,10 @@ class decShapeSphere;
  * a visitor.
  */
 class debpShapeSphere : public debpShape{
+public:
+	typedef deTObjectReference<debpShapeSphere> Ref;
+	
+	
 private:
 	decShapeSphere *pSSphere;
 	debpDCollisionSphere pCSphere;

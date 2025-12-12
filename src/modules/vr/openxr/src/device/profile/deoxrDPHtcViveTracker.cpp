@@ -756,7 +756,7 @@ void deoxrDPHtcViveTracker::pAddDevice(Tracker &tracker){
 	}
 	
 	deVROpenXR &oxr = GetInstance().GetOxr();
-	tracker.device.TakeOver(new deoxrDevice(oxr, *this));
+	tracker.device = deoxrDevice::Ref::New(oxr, *this);
 	
 	decString id;
 	id.Format("%str_%s", OXR_DEVID_PREFIX, pSerialFromPath(tracker.path).GetString());

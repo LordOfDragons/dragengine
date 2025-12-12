@@ -696,7 +696,7 @@ void igdeWPCamera::pCreateContent(){
 	igdeContainer::Ref form, frameLine, group;
 	
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	AddChild(form);
 	
 	helper.EditVector(form, "Position:", "Position of the camera",
@@ -745,7 +745,7 @@ void igdeWPCamera::pCreateContent(){
 	
 	
 	helper.GroupBoxFlow(*this, group, "Tone mapping:", true, true);
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	group->AddChild(form);
 	
 	helper.EditFloat(form, "White intensity:",

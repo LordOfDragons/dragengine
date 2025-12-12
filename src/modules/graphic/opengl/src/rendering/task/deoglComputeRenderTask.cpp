@@ -86,7 +86,7 @@ pSkipSubInstanceGroups(false)
 {
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
-	pUBOConfig.TakeOver(new deoglSPBlockUBO(renderThread));
+	pUBOConfig = deoglSPBlockUBO::Ref::New(renderThread);
 	pUBOConfig->SetRowMajor(rowMajor);
 	pUBOConfig->SetParameterCount(9);
 	pUBOConfig->GetParameterAt(ecpElementGeometryCount).SetAll(deoglSPBParameter::evtInt, 1, 1, 1);
@@ -105,7 +105,7 @@ pSkipSubInstanceGroups(false)
 		//    element count is set to the maximum possible count
 	pUBOConfig->MapToStd140();
 	
-	pSSBOSteps.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etRead));
+	pSSBOSteps = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etRead);
 	pSSBOSteps->SetRowMajor(rowMajor);
 	pSSBOSteps->SetParameterCount(8);
 	pSSBOSteps->GetParameterAt(etpPass).SetAll(deoglSPBParameter::evtInt, 1, 1, 1);
@@ -119,8 +119,8 @@ pSkipSubInstanceGroups(false)
 	pSSBOSteps->MapToStd140();
 	pSSBOSteps->EnsureBuffer();
 	
-	pSSBOCounters.TakeOver(new deoglSPBlockSSBO(renderThread.GetRenderers().
-		GetCompute().GetSSBOCounters(), deoglSPBlockSSBO::etRead));
+	pSSBOCounters = deoglSPBlockSSBO::Ref::New(renderThread.GetRenderers().
+		GetCompute().GetSSBOCounters(), deoglSPBlockSSBO::etRead);
 	pSSBOCounters->SetElementCount(1);
 	
 	Clear();

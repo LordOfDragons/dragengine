@@ -119,7 +119,7 @@ igdeContainerFlow(helper.GetEnvironment(), igdeContainerFlow::eaY, igdeContainer
 
 igdeToggleTags::~igdeToggleTags(){
 	DestroyNativeWidget();
-	SetAction(NULL);
+	SetAction(nullptr);
 }
 
 
@@ -204,7 +204,7 @@ decStringSet igdeToggleTags::GetDisabledTags() const{
 }
 
 const decString &igdeToggleTags::GetSelectedTag() const{
-	if(pListBox->GetSelectedItem() != NULL){
+	if(pListBox->GetSelectedItem() != nullptr){
 		return pListBox->GetSelectedItem()->GetText();
 		
 	}else{
@@ -335,7 +335,7 @@ void igdeToggleTags::OnParameterChanged(igdeAction *action){
 void igdeToggleTags::OnDestroyed(igdeAction *action){
 	GetLogger()->LogWarnFormat("IGDE", "igdeToggleTags::OnDestroyed: "
 		"Action(%s) destroyed while still listening on it", action->GetText().GetString());
-	pAction = NULL;
+	pAction = nullptr;
 }
 
 
@@ -356,8 +356,8 @@ void igdeToggleTags::pCreateContent(igdeUIHelper &helper, int rows){
 	pIconEnabled = helper.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus);
 	pIconDisabled = helper.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus);
 	
-	pActionEnableAll.TakeOver(new cActionEnableAll(*this));
-	pActionDisableAll.TakeOver(new cActionDisableAll(*this));
+	pActionEnableAll = cActionEnableAll::Ref::New(*this);
+	pActionDisableAll = cActionDisableAll::Ref::New(*this);
 	
 	helper.ListBox(*this, rows, "", pListBox, new igdeToggleTags_ListTags(*this));
 	pListBox->SetDefaultSorter();

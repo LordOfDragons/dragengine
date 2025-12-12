@@ -94,7 +94,7 @@ deoglRenderBase(renderThread)
 	
 	
 	// SSBOs
-	pSSBOCounters.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etRead));
+	pSSBOCounters = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etRead);
 	pSSBOCounters->SetRowMajor(rowMajor);
 	pSSBOCounters->SetParameterCount(2);
 	pSSBOCounters->GetParameterAt(0).SetAll(deoglSPBParameter::evtInt, 3, 1, 1); // uvec3
@@ -102,7 +102,7 @@ deoglRenderBase(renderThread)
 	pSSBOCounters->SetElementCount(3);
 	pSSBOCounters->MapToStd140();
 	
-	pSSBOUpdateElements.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etStream));
+	pSSBOUpdateElements = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etStream);
 	pSSBOUpdateElements->SetRowMajor(rowMajor);
 	pSSBOUpdateElements->SetParameterCount(11);
 	pSSBOUpdateElements->GetParameterAt(deoglWorldCompute::espeMinExtend).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1);
@@ -118,7 +118,7 @@ deoglRenderBase(renderThread)
 	pSSBOUpdateElements->GetParameterAt(deoglWorldCompute::espeLodIndex).SetAll(deoglSPBParameter::evtInt, 1, 1, 1);
 	pSSBOUpdateElements->MapToStd140();
 	
-	pSSBOUpdateElementGeometries.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etStream));
+	pSSBOUpdateElementGeometries = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etStream);
 	pSSBOUpdateElementGeometries->SetRowMajor(rowMajor);
 	pSSBOUpdateElementGeometries->SetParameterCount(9);
 	pSSBOUpdateElementGeometries->GetParameterAt(deoglWorldCompute::espegElement).SetAll(deoglSPBParameter::evtInt, 1, 1, 1);
@@ -132,32 +132,32 @@ deoglRenderBase(renderThread)
 	pSSBOUpdateElementGeometries->GetParameterAt(deoglWorldCompute::espegTUCs).SetAll(deoglSPBParameter::evtInt, 4, 1, 1);
 	pSSBOUpdateElementGeometries->MapToStd140();
 	
-	pSSBOUpdateIndices.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etStream));
+	pSSBOUpdateIndices = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etStream);
 	pSSBOUpdateIndices->SetRowMajor(rowMajor);
 	pSSBOUpdateIndices->SetParameterCount(1);
 	pSSBOUpdateIndices->GetParameterAt(0).SetAll(deoglSPBParameter::evtInt, 4, 1, 1);
 	pSSBOUpdateIndices->MapToStd140();
 	
-	pSSBOClearGeometries.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etStream));
+	pSSBOClearGeometries = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etStream);
 	pSSBOClearGeometries->SetRowMajor(rowMajor);
 	pSSBOClearGeometries->SetParameterCount(1);
 	pSSBOClearGeometries->GetParameterAt(0).SetAll(deoglSPBParameter::evtInt, 1, 1, 1);
 	pSSBOClearGeometries->MapToStd430();
 	
-	pSSBOElementCullResult.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etGpu));
+	pSSBOElementCullResult = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etGpu);
 	pSSBOElementCullResult->SetRowMajor(rowMajor);
 	pSSBOElementCullResult->SetParameterCount(1);
 	pSSBOElementCullResult->GetParameterAt(0).SetAll(deoglSPBParameter::evtInt, 4, 1, 1);
 	pSSBOElementCullResult->MapToStd140();
 	
-	pSSBOVisibleGeometries.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etGpu));
+	pSSBOVisibleGeometries = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etGpu);
 	pSSBOVisibleGeometries->SetRowMajor(rowMajor);
 	pSSBOVisibleGeometries->SetParameterCount(1);
 	pSSBOVisibleGeometries->GetParameterAt(0).SetAll(deoglSPBParameter::evtInt, 4, 1, 1);
 	pSSBOVisibleGeometries->MapToStd140();
 	pSSBOVisibleGeometries->EnsureBuffer();
 	
-	pSSBORenderTaskSubInstGroups.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etGpu));
+	pSSBORenderTaskSubInstGroups = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etGpu);
 	pSSBORenderTaskSubInstGroups->SetRowMajor(rowMajor);
 	pSSBORenderTaskSubInstGroups->SetParameterCount(1);
 	pSSBORenderTaskSubInstGroups->GetParameterAt(0).SetAll(deoglSPBParameter::evtInt, 4, 1, 1);

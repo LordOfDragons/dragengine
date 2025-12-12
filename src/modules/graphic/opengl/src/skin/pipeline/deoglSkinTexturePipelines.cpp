@@ -109,8 +109,8 @@ void deoglSkinTexturePipelines::cPipelineGetShaderListener::GetShaderFinished(de
 		pConfig.SetSPBInstanceIndexBase(shader->GetTargetSPBInstanceIndexBase());
 		pConfig.SetDrawIDOffset(shader->GetTargetDrawIDOffset());
 		
-		pPipeline.TakeOver(new deoglSkinTexturePipeline(pBatched.GetRenderThread().
-			GetPipelineManager().GetWith(pConfig, true), shader));
+		pPipeline = deoglSkinTexturePipeline::Ref::New(pBatched.GetRenderThread().
+			GetPipelineManager().GetWith(pConfig, true), shader);
 		
 	}else{
 		pBatched.GetRenderThread().GetLogger().LogErrorFormat(
@@ -1072,8 +1072,8 @@ deoglBatchedShaderLoading &batched){
 			pipconf.SetSPBInstanceIndexBase(shader->GetTargetSPBInstanceIndexBase());
 			pipconf.SetDrawIDOffset(shader->GetTargetDrawIDOffset());
 			
-			pPipelines[type][modifier].TakeOver(new deoglSkinTexturePipeline(
-				pipelineManager.GetWith(pipconf, true), shader));
+			pPipelines[type][modifier] = deoglSkinTexturePipeline::Ref::New(
+				pipelineManager.GetWith(pipconf, true), shader);
 			
 			batched.Loaded();
 		}

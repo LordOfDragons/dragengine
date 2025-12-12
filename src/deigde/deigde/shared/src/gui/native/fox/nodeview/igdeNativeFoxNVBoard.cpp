@@ -70,9 +70,9 @@ igdeNativeFoxNVBoard::igdeNativeFoxNVBoard(){}
 igdeNativeFoxNVBoard::igdeNativeFoxNVBoard(igdeNVBoard &powner, FXComposite *pparent, const igdeGuiTheme &) :
 FXPacker(pparent, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
 pOwner(&powner),
-pDoubleBuffer(NULL),
-pCreateLinkSource(NULL),
-pCreateLinkTarget(NULL),
+pDoubleBuffer(nullptr),
+pCreateLinkSource(nullptr),
+pCreateLinkTarget(nullptr),
 pIsDragBoard(false)
 {
 	enable();
@@ -153,9 +153,9 @@ decPoint igdeNativeFoxNVBoard::GetSize(){
 
 
 void igdeNativeFoxNVBoard::BeginCreateLink(igdeNativeFoxNVSlot *source){
-	SetHoverLink(NULL);
+	SetHoverLink(nullptr);
 	pCreateLinkSource = source;
-	pCreateLinkTarget = NULL;
+	pCreateLinkTarget = nullptr;
 	pCreateLinkPosition = source->GetCenterBoard();
 	update();
 }
@@ -174,22 +174,22 @@ void igdeNativeFoxNVBoard::FinishCreateLink(){
 	if(pCreateLinkSource && pCreateLinkTarget
 	&& pOwner->CanLink(&pCreateLinkSource->GetOwner(), &pCreateLinkTarget->GetOwner())){
 		igdeNVLink * const link = pOwner->AddLink(&pCreateLinkSource->GetOwner(), &pCreateLinkTarget->GetOwner());
-		pCreateLinkSource = NULL;
-		pCreateLinkTarget = NULL;
+		pCreateLinkSource = nullptr;
+		pCreateLinkTarget = nullptr;
 		update();
 		
 		pOwner->NotifyLinkAdded(link);
 		
 	}else{
-		pCreateLinkSource = NULL;
-		pCreateLinkTarget = NULL;
+		pCreateLinkSource = nullptr;
+		pCreateLinkTarget = nullptr;
 		update();
 	}
 }
 
 igdeNVLink *igdeNativeFoxNVBoard::ClosestLinkNear(const decPoint &position, float range) const{
 	const int count = pOwner->GetLinkCount();
-	igdeNVLink *bestLink = NULL;
+	igdeNVLink *bestLink = nullptr;
 	float bestDistance = 0.0f;
 	int i;
 	
@@ -263,7 +263,7 @@ long igdeNativeFoxNVBoard::onResize(FXObject*, FXSelector, void*){
 		pDoubleBuffer->resize(getWidth(), getHeight());
 		
 	}else{
-		pDoubleBuffer = new FXImage(getApp(), NULL, 0, getWidth(), getHeight());
+		pDoubleBuffer = new FXImage(getApp(), nullptr, 0, getWidth(), getHeight());
 		pDoubleBuffer->create();
 	}
 	
@@ -290,7 +290,7 @@ long igdeNativeFoxNVBoard::onLeftMousePress(FXObject*, FXSelector, void *pdata){
 	const bool control = (event.state & CONTROLMASK) == CONTROLMASK;
 	
 	if(shift && !control){
-		SetHoverLink(NULL);
+		SetHoverLink(nullptr);
 		pDragBoard.Set(event.win_x, event.win_y);
 		pIsDragBoard = true;
 		setDragCursor(getApp()->getDefaultCursor(DEF_MOVE_CURSOR));

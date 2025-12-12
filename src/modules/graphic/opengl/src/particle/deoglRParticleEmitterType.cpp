@@ -125,7 +125,7 @@ void deoglRParticleEmitterType::UpdateParameterSamples(const deParticleEmitterTy
 	const float * const samplesTranspBeam = pParameterSamples + escTransparencyBeam * 256;
 	const float * const samplesEmissiveBeam = pParameterSamples + escEmissivityBeam * 256;
 	
-	pPixelBufferSamples.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat3, 256, 4, 1));
+	pPixelBufferSamples = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat3, 256, 4, 1);
 	deoglPixelBuffer::sFloat3 *pbdata = pPixelBufferSamples->GetPointerFloat3();
 	int i;
 	
@@ -285,7 +285,7 @@ deoglLightPipelines &deoglRParticleEmitterType::GetPipelines(){
 		return pPipelines;
 	}
 	
-	pPipelines.TakeOver(new deoglLightPipelinesParticle(*this));
+	pPipelines = deoglLightPipelinesParticle::Ref::New(*this);
 	
 	deoglBatchedShaderLoading batched(pEmitter.GetRenderThread(), 1000.0f, true);
 	try{

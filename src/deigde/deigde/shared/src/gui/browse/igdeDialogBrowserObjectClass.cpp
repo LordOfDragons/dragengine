@@ -61,7 +61,7 @@ igdeDialogBrowserObjectClass::~igdeDialogBrowserObjectClass(){
 
 igdeGDClass *igdeDialogBrowserObjectClass::GetSelectedObjectClass() const{
 	const igdeListItem * const selection = GetSelectedListItem();
-	return selection ? (igdeGDClass*)selection->GetData() : NULL;
+	return selection ? (igdeGDClass*)selection->GetData() : nullptr;
 }
 
 void igdeDialogBrowserObjectClass::SetSelectedObjectClass(igdeGDClass *gdClass){

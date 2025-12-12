@@ -60,9 +60,9 @@ pPathData("data"),
 pPathCache("cache"),
 pPathLocal("local")
 {
-	pGameDefinition.TakeOver(new igdeGameDefinition(environment));
-	pXMLEClassGameDefinition.TakeOver(new igdeGameDefinition(environment));
-	pFoundGameDefinition.TakeOver(new igdeGameDefinition(environment));
+	pGameDefinition = igdeGameDefinition::Ref::New(environment);
+	pXMLEClassGameDefinition = igdeGameDefinition::Ref::New(environment);
+	pFoundGameDefinition = igdeGameDefinition::Ref::New(environment);
 }
 
 igdeGameProject::~igdeGameProject(){

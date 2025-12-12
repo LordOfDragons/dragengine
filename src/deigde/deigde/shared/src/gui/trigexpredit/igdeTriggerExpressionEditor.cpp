@@ -62,7 +62,7 @@ class igdeTriggerExpressionEditor_ActionNegate : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
 	igdeTriggerExpressionEditor_ActionNegate(igdeTriggerExpressionEditor &editor) :
-	igdeAction("Not", NULL, "Negate Result"), pEditor(editor){}
+	igdeAction("Not", nullptr, "Negate Result"), pEditor(editor){}
 	
 	virtual void OnAction(){
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
@@ -84,7 +84,7 @@ class igdeTriggerExpressionEditor_ActionCurState : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
 	igdeTriggerExpressionEditor_ActionCurState(igdeTriggerExpressionEditor &editor) :
-	igdeAction("Now", NULL, "Check if target is triggered now or ever"), pEditor(editor){}
+	igdeAction("Now", nullptr, "Check if target is triggered now or ever"), pEditor(editor){}
 	
 	virtual void OnAction(){
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
@@ -107,7 +107,7 @@ class igdeTriggerExpressionEditor_ActionAnd : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
 	igdeTriggerExpressionEditor_ActionAnd(igdeTriggerExpressionEditor &editor) :
-	igdeAction("And", NULL, "All children have to evaluate to true"), pEditor(editor){}
+	igdeAction("And", nullptr, "All children have to evaluate to true"), pEditor(editor){}
 	
 	virtual void OnAction(){
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
@@ -129,7 +129,7 @@ class igdeTriggerExpressionEditor_ActionOr : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
 	igdeTriggerExpressionEditor_ActionOr(igdeTriggerExpressionEditor &editor) :
-	igdeAction("Or", NULL, "One or more children have to evaluate to true"), pEditor(editor){}
+	igdeAction("Or", nullptr, "One or more children have to evaluate to true"), pEditor(editor){}
 	
 	virtual void OnAction(){
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
@@ -151,7 +151,7 @@ class igdeTriggerExpressionEditor_ActionTarget : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
 	igdeTriggerExpressionEditor_ActionTarget(igdeTriggerExpressionEditor &editor) :
-	igdeAction("Target", NULL, "Target to evaluate"), pEditor(editor){}
+	igdeAction("Target", nullptr, "Target to evaluate"), pEditor(editor){}
 	
 	virtual void OnAction(){
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
@@ -208,7 +208,7 @@ public:
 		}
 		
 		igdeTriggerExpressionComponent * const parent = selection->GetParent()
-			? (igdeTriggerExpressionComponent*)selection->GetParent()->GetData() : NULL;
+			? (igdeTriggerExpressionComponent*)selection->GetParent()->GetData() : nullptr;
 		if(parent && parent->GetType() != igdeTriggerExpressionComponent::ectTarget){
 			parent->RemoveChild(component);
 			pEditor.UpdateExpressionFromTree();
@@ -219,7 +219,7 @@ public:
 	virtual void Update(){
 		const igdeTreeItem * const selection = pEditor.GetSelectedTreeItem();
 		const igdeTriggerExpressionComponent * const parent = selection && selection->GetParent()
-			? (igdeTriggerExpressionComponent*)selection->GetParent()->GetData() : NULL;
+			? (igdeTriggerExpressionComponent*)selection->GetParent()->GetData() : nullptr;
 		SetEnabled(parent && parent->GetType() != igdeTriggerExpressionComponent::ectTarget);
 	}
 };
@@ -317,8 +317,8 @@ public:
 
 igdeTriggerExpressionEditor::igdeTriggerExpressionEditor(igdeEnvironment &environment) :
 igdeContainerFlow(environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast),
-pParser(NULL),
-pTargetList(NULL)
+pParser(nullptr),
+pTargetList(nullptr)
 {
 	pCreateContent();
 	RebuildTree(); // otherwise an initial SetExpression("") has no effect since the string equals
@@ -326,8 +326,8 @@ pTargetList(NULL)
 
 igdeTriggerExpressionEditor::igdeTriggerExpressionEditor(igdeEnvironment &environment, igdeAction *action) :
 igdeContainerFlow(environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast),
-pParser(NULL),
-pTargetList(NULL)
+pParser(nullptr),
+pTargetList(nullptr)
 {
 	pCreateContent();
 	RebuildTree(); // otherwise an initial SetExpression("") has no effect since the string equals
@@ -490,7 +490,7 @@ void igdeTriggerExpressionEditor::AddComponentToTree(igdeTreeItem *parent, igdeT
 		text += "<empty>";
 	}
 	
-	igdeTreeItem * const item = pTreeExpression->AppendItem(parent, text, NULL, component);
+	igdeTreeItem * const item = pTreeExpression->AppendItem(parent, text, nullptr, component);
 	item->SetExpanded(true);
 	pTreeExpression->ItemChanged(item);
 	
@@ -609,7 +609,7 @@ igdeTreeItem *igdeTriggerExpressionEditor::GetSelectedTreeItem() const{
 
 igdeTriggerExpressionComponent *igdeTriggerExpressionEditor::GetSelectedComponent() const{
 	return pTreeExpression->GetSelection() ?
-		(igdeTriggerExpressionComponent*)pTreeExpression->GetSelection()->GetData() : NULL;
+		(igdeTriggerExpressionComponent*)pTreeExpression->GetSelection()->GetData() : nullptr;
 }
 
 void igdeTriggerExpressionEditor::UpdateFromTargetList(){
@@ -654,7 +654,7 @@ void igdeTriggerExpressionEditor::OnAction(){
 void igdeTriggerExpressionEditor::OnDestroyed(igdeAction *action){
 	GetLogger()->LogWarnFormat("IGDE", "igdeButton::OnDestroyed: "
 		"Action(%s) destroyed while still listening on it", action->GetText().GetString());
-	pAction = NULL;
+	pAction = nullptr;
 }
 
 void igdeTriggerExpressionEditor::OnParameterChanged(igdeAction*){
@@ -672,7 +672,7 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	igdeContainerBorder::Ref groupBorder;
 	
 	// expression string
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	helper.EditString(form, "Expression:", "Trigger expression", 50,
 		pEditExpression, new igdeTriggerExpressionEditor_TextExpression(*this));
 	AddChild(form);
@@ -683,7 +683,7 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	AddChild(panelContent);
 	
 	// expression tree
-	panel.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaY));
+	panel = igdeContainerBox::Ref::New(env, igdeContainerBox::eaY);
 	panelContent->AddChild(panel, igdeContainerSplitted::eaCenter);
 	
 	helper.GroupBoxStaticFlow(panel, groupBox, "Structure:", true);
@@ -691,11 +691,11 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 		new igdeTriggerExpressionEditor_TreeExpression(*this));
 	
 	// target list
-	panel.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast));
+	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast);
 	panelContent->AddChild(panel, igdeContainerSplitted::eaSide);
 	
 	helper.GroupBoxStaticFlow(panel, groupBox, "Component Control:", false);
-	panel2.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaX));
+	panel2 = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX);
 	groupBox->AddChild(panel2);
 	helper.ToggleButton(panel2, pBtnNegate, new igdeTriggerExpressionEditor_ActionNegate(*this), true);
 	helper.ToggleButton(panel2, pBtnCurState, new igdeTriggerExpressionEditor_ActionCurState(*this), true);
@@ -717,7 +717,7 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	pListTargetName->SetDefaultSorter();
 	groupBorder->AddChild(pListTargetName, igdeContainerBorder::eaCenter);
 	
-	form.TakeOver(new igdeContainerForm(env));
+	form = igdeContainerForm::Ref::New(env);
 	helper.EditString(form, "Filter:", "Filter for list of found target names", 20,
 		pEditFilterTargetName, new igdeTriggerExpressionEditor_TextFilterTargetName(*this));
 	groupBorder->AddChild(form, igdeContainerBorder::eaBottom);

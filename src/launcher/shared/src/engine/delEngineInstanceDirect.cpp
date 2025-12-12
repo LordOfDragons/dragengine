@@ -222,10 +222,8 @@ bool delEngineInstanceDirect::StartEngine(){
 			
 			diskPath.RemoveLastComponent();
 			
-			const deVFSDiskDirectory::Ref diskDir(
-				deVFSDiskDirectory::Ref::New(diskPath));
-			
-			engineLogger.TakeOver(new deLoggerFile(diskDir->OpenFileForWriting(filePath)));
+			engineLogger = deLoggerFile::Ref::New(
+				deVFSDiskDirectory::Ref::New(diskPath)->OpenFileForWriting(filePath));
 		}
 		
 		// create os
@@ -802,7 +800,7 @@ const char *gameObject, delGPModuleList *collectChangedParams){
 				
 				delGPModule::Ref gpmodule(collectChangedParams->GetNamed(moduleName));
 				if(!gpmodule){
-					gpmodule.TakeOver(new delGPModule(moduleName));
+					gpmodule = delGPModule::Ref::New(moduleName);
 					collectChangedParams->Add(gpmodule);
 				}
 				

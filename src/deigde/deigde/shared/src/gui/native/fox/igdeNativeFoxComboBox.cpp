@@ -149,7 +149,7 @@ void igdeNativeFoxComboBox::UpdateItem(int index){
 		list->setItemIcon(index, (FXIcon*)item.GetIcon()->GetNativeIcon());
 		
 	}else{
-		list->setItemIcon(index, NULL);
+		list->setItemIcon(index, nullptr);
 	}
 }
 
@@ -187,7 +187,7 @@ void igdeNativeFoxComboBox::InsertItem(int index, const igdeListItem &item){
 		list->setItemIcon(index, (FXIcon*)item.GetIcon()->GetNativeIcon());
 		
 	}else{
-		list->setItemIcon(index, NULL);
+		list->setItemIcon(index, nullptr);
 	}
 }
 

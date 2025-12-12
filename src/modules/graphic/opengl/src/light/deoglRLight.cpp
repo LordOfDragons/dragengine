@@ -704,10 +704,10 @@ deoglLightPipelines &deoglRLight::GetPipelines(){
 	}
 	
 	if(pLightType == deLight::eltPoint){
-		pPipelines.TakeOver(new deoglLightPipelinesPoint(*this));
+		pPipelines = deoglLightPipelinesPoint::Ref::New(*this);
 		
 	}else{
-		pPipelines.TakeOver(new deoglLightPipelinesSpot(*this));
+		pPipelines = deoglLightPipelinesSpot::Ref::New(*this);
 	}
 	
 	deoglBatchedShaderLoading batched(pRenderThread, 1000.0f, true);

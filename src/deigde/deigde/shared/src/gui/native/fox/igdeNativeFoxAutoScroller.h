@@ -70,7 +70,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Content window or NULL. */
+	/** \brief Content window or nullptr. */
 	FXWindow *GetContentWindow() const;
 	
 	/** \brief Content size. */

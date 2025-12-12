@@ -78,7 +78,7 @@ class igdeDEParameters_ActionSet : public igdeAction{
 	
 public:
 	igdeDEParameters_ActionSet(igdeDEParameters &panel) :
-		igdeAction("Set", NULL, "Set parameter value"), pPanel(panel){}
+		igdeAction("Set", nullptr, "Set parameter value"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		pPanel.ParameterSetValue();
@@ -94,7 +94,7 @@ class igdeDEParameters_ActionReset : public igdeAction{
 	
 public:
 	igdeDEParameters_ActionReset(igdeDEParameters &panel) :
-		igdeAction("Reset", NULL, "Reset parameter value"), pPanel(panel){}
+		igdeAction("Reset", nullptr, "Reset parameter value"), pPanel(panel){}
 	
 	virtual void OnAction(){
 		pPanel.ParameterResetValue();
@@ -122,7 +122,7 @@ pDialogEngine(dialogEngine)
 	igdeContainer::Ref groupBox, line;
 	
 	
-	line.TakeOver(new igdeContainerForm(env));
+	line = igdeContainerForm::Ref::New(env);
 	AddChild(line);
 	
 	helper.ComboBox(line, "Module:", "Module to show parameters for",
@@ -137,17 +137,17 @@ pDialogEngine(dialogEngine)
 	// parameter information
 	helper.GroupBoxStatic(*this, groupBox, "Parameter:");
 	
-	helper.EditString(groupBox, "Description:", "Parameter description", pEditDescription, 3, NULL);
+	helper.EditString(groupBox, "Description:", "Parameter description", pEditDescription, 3, nullptr);
 	pEditDescription->SetEditable(false);
 	
-	helper.EditString(groupBox, "Type:", "Parameter type", pEditType, NULL);
+	helper.EditString(groupBox, "Type:", "Parameter type", pEditType, nullptr);
 	pEditType->SetEditable(false);
 	
-	helper.EditString(groupBox, "Allowed Values:", "Allowed Values", pEditAllowedValues, 5, NULL);
+	helper.EditString(groupBox, "Allowed Values:", "Allowed Values", pEditAllowedValues, 5, nullptr);
 	pEditAllowedValues->SetEditable(false);
 	
 	helper.FormLineStretchFirst(groupBox, "Value:", "Parameter value", line);
-	helper.EditString(line, "Parameter value", pEditValue, NULL);
+	helper.EditString(line, "Parameter value", pEditValue, nullptr);
 	helper.Button(line, pBtnSet, new igdeDEParameters_ActionSet(*this), true);
 	helper.Button(line, pBtnReset, new igdeDEParameters_ActionReset(*this), true);
 	
@@ -268,7 +268,7 @@ void igdeDEParameters::UpdateModulesList(){
 
 deLoadableModule *igdeDEParameters::GetSelectedModule() const{
 	return pCBModule->GetSelectedItem() ? GetEngine()->GetModuleSystem()->
-		GetModuleNamed(pCBModule->GetSelectedItem()->GetText()) : NULL;
+		GetModuleNamed(pCBModule->GetSelectedItem()->GetText()) : nullptr;
 }
 
 const decString &igdeDEParameters::GetSelectedParameter() const{

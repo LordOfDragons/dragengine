@@ -98,10 +98,10 @@ public:
 	
 	
 	
-	/** \brief Image or NULL if not created. */
+	/** \brief Image or nullptr if not created. */
 	inline const deImage::Ref &GetImage() const{ return pImage; }
 	
-	/** \brief Set image or NULL if not created. */
+	/** \brief Set image or nullptr if not created. */
 	void SetImage(deImage *image);
 	
 	

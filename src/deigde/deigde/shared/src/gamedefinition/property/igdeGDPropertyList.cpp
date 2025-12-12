@@ -73,7 +73,7 @@ igdeGDProperty *igdeGDPropertyList::GetNamed(const char *name) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 int igdeGDPropertyList::IndexOf(igdeGDProperty *property) const{
@@ -131,7 +131,7 @@ void igdeGDPropertyList::SetToDeepCopyFrom(const igdeGDPropertyList &list){
 	int i;
 	
 	for(i=0; i<count; i++){
-		property.TakeOver(new igdeGDProperty(*list.GetAt(i)));
+		property = igdeGDProperty::Ref::New(*list.GetAt(i));
 		Add(property);
 	}
 }

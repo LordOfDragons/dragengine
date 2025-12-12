@@ -270,7 +270,7 @@ void igdeGDPreviewManager::ClearPreviewObjectClass(igdeGDClass *gdclass){
 		DETHROW(deeInvalidParam);
 	}
 	
-	gdclass->SetPreviewImage(NULL);
+	gdclass->SetPreviewImage(nullptr);
 	
 	pDeleteFile(pDirObjectClass, gdclass->GetName());
 }
@@ -321,7 +321,7 @@ void igdeGDPreviewManager::ClearPreviewSkin(igdeGDSkin *gdskin){
 		DETHROW(deeInvalidParam);
 	}
 	
-	gdskin->SetPreviewImage(NULL);
+	gdskin->SetPreviewImage(nullptr);
 	
 	pDeleteFile(pDirSkin, gdskin->GetName());
 }
@@ -372,7 +372,7 @@ void igdeGDPreviewManager::ClearPreviewSky(igdeGDSky *gdsky){
 		DETHROW(deeInvalidParam);
 	}
 	
-	gdsky->SetPreviewImage(NULL);
+	gdsky->SetPreviewImage(nullptr);
 	
 	pDeleteFile(pDirSky, gdsky->GetName());
 }

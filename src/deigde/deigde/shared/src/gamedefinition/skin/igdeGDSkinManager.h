@@ -101,10 +101,10 @@ public:
 	/** \brief Game skin at the given index. */
 	igdeGDSkin *GetSkinAt(int index) const;
 	
-	/** \brief Game skin with path or NULL if absent. */
+	/** \brief Game skin with path or nullptr if absent. */
 	igdeGDSkin *GetSkinWithPath(const char *path) const;
 	
-	/** \brief Game skin with name or NULL if absent. */
+	/** \brief Game skin with name or nullptr if absent. */
 	igdeGDSkin *GetSkinWithName(const char *name) const;
 	
 	/** \brief Add game skin. */

@@ -64,7 +64,7 @@ pPlan(plan)
 {
 	const bool rowMajor = plan.GetRenderThread().GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
-	pUBOFindConfig.TakeOver(new deoglSPBlockUBO(plan.GetRenderThread()));
+	pUBOFindConfig = deoglSPBlockUBO::Ref::New(plan.GetRenderThread());
 	pUBOFindConfig->SetRowMajor(rowMajor);
 	pUBOFindConfig->SetParameterCount(25);
 	pUBOFindConfig->GetParameterAt(efcpNodeCount).SetAll(deoglSPBParameter::evtInt, 1, 1, 1); // uint
@@ -94,21 +94,21 @@ pPlan(plan)
 	pUBOFindConfig->GetParameterAt(efcpLodMethod).SetAll(deoglSPBParameter::evtInt, 1, 1, 1); // uint
 	pUBOFindConfig->MapToStd140();
 	
-	pSSBOCounters.TakeOver(new deoglSPBlockSSBO(plan.GetRenderThread().GetRenderers().
-		GetCompute().GetSSBOCounters(), deoglSPBlockSSBO::etRead));
+	pSSBOCounters = deoglSPBlockSSBO::Ref::New(plan.GetRenderThread().GetRenderers().
+		GetCompute().GetSSBOCounters(), deoglSPBlockSSBO::etRead);
 	pSSBOCounters->SetElementCount(1);
 	
-	pSSBOVisibleElements.TakeOver(new deoglSPBlockSSBO(plan.GetRenderThread(), deoglSPBlockSSBO::etRead));
+	pSSBOVisibleElements = deoglSPBlockSSBO::Ref::New(plan.GetRenderThread(), deoglSPBlockSSBO::etRead);
 	pSSBOVisibleElements->SetRowMajor(rowMajor);
 	pSSBOVisibleElements->SetParameterCount(1);
 	pSSBOVisibleElements->GetParameterAt(0).SetAll(deoglSPBParameter::evtInt, 4, 1, 1); // uvec4
 	pSSBOVisibleElements->MapToStd140();
 	pSSBOVisibleElements->EnsureBuffer();
 	
-	pSSBOVisibleElements2.TakeOver(new deoglSPBlockSSBO(pSSBOVisibleElements));
+	pSSBOVisibleElements2 = deoglSPBlockSSBO::Ref::New(pSSBOVisibleElements);
 	pSSBOVisibleElements2->EnsureBuffer();
 	
-	pRTOcclusion.TakeOver(new deoglComputeRenderTask(plan.GetRenderThread()));
+	pRTOcclusion = deoglComputeRenderTask::Ref::New(plan.GetRenderThread());
 	pRTOcclusion->SetFilterSolid(false);
 	pRTOcclusion->SetOcclusion(true);
 	pRTOcclusion->EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptComponent);

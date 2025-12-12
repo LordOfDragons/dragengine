@@ -1254,7 +1254,7 @@ void igdeXMLGameDefinition::pParseClassEnvMapProbe(const decXmlElementTag &root,
 			codec.DecodeShapeList(GetCDataString(*tag), shapeList);
 			
 			if(shapeList.GetCount() == 0){
-				envMapProbe->SetShapeReflection(NULL);
+				envMapProbe->SetShapeReflection(nullptr);
 				
 			}else{
 				envMapProbe->SetShapeReflection(shapeList.GetAt(0)->Copy());
@@ -1874,7 +1874,7 @@ void igdeXMLGameDefinition::pParseProperty(const decXmlElementTag &root, igdeGDP
 }
 
 void igdeXMLGameDefinition::pParseCustomFilePatternList(const decXmlElementTag &root, igdeFilePatternList &list){
-	igdeFilePattern *pattern = NULL;
+	igdeFilePattern *pattern = nullptr;
 	int e;
 	
 	for(e=0; e<root.GetElementCount(); e++){
@@ -1890,13 +1890,13 @@ void igdeXMLGameDefinition::pParseCustomFilePatternList(const decXmlElementTag &
 					GetAttributeString(*tag, "pattern"), GetAttributeString(*tag, "default"));
 				
 				list.AddFilePattern(pattern);
-				pattern = NULL;
+				pattern = nullptr;
 				
 			}catch(const deException &){
 				if(pattern){
 					delete pattern;
 				}
-				pattern = NULL;
+				pattern = nullptr;
 				throw;
 			}
 			
@@ -1956,8 +1956,8 @@ void igdeXMLGameDefinition::pParseCamera(const decXmlElementTag &root, igdeGDCam
 void igdeXMLGameDefinition::pParseParticleEmitter(const decXmlElementTag &root, igdeGameDefinition &gamedef){
 	igdeGDParticleEmitterManager &manager = gamedef.GetParticleEmitterManager();
 	const int elementCount = root.GetElementCount();
-	const char *path = NULL;
-	const char *name = NULL;
+	const char *path = nullptr;
+	const char *name = nullptr;
 	int e;
 	
 	for(e=0; e<elementCount; e++){
@@ -2019,9 +2019,9 @@ void igdeXMLGameDefinition::pParseParticleEmitter(const decXmlElementTag &root, 
 
 void igdeXMLGameDefinition::pParseSkin(const decXmlElementTag &root, igdeGameDefinition &gamedef){
 	igdeGDSkinManager &skinManager = *gamedef.GetSkinManager();
-	const char *strPath = NULL;
-	const char *strName = NULL;
-	igdeGDSkin *skin = NULL;
+	const char *strPath = nullptr;
+	const char *strName = nullptr;
+	igdeGDSkin *skin = nullptr;
 	int e;
 	
 	// first we have to look for the important tags which are required to construct a new skin.
@@ -2087,8 +2087,8 @@ void igdeXMLGameDefinition::pParseSkin(const decXmlElementTag &root, igdeGameDef
 
 void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefinition &gamedef){
 	igdeGDSkyManager &skyManager = *gamedef.GetSkyManager();
-	const char *strPath = NULL;
-	const char *strName = NULL;
+	const char *strPath = nullptr;
+	const char *strName = nullptr;
 	int e;
 	
 	// first we have to look for the important tags which are required to construct a new sky.

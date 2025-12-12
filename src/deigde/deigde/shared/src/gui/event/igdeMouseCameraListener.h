@@ -95,7 +95,7 @@ public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */
-	igdeMouseCameraListener(igdeCamera *camera = NULL);
+	igdeMouseCameraListener(igdeCamera *camera = nullptr);
 	
 	
 	
@@ -114,10 +114,10 @@ protected:
 public:
 	/** \text Management */
 	/*@{*/
-	/** \brief Camera or NULL. */
+	/** \brief Camera or nullptr. */
 	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
-	/** \brief Set camera or NULL. */
+	/** \brief Set camera or nullptr. */
 	void SetCamera(igdeCamera *camera);
 	
 	

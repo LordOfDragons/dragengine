@@ -193,13 +193,13 @@ void igdeNVBoard::RemoveNode(igdeNVNode *node){
 	}
 	
 	if(GetActiveNode() == node){
-		SetActiveNode(NULL);
+		SetActiveNode(nullptr);
 	}
 	
 	RemoveAllNodeLinks(node);
 	
 	igdeContainer::RemoveChild(node);
-	node->SetOwnerBoard(NULL);
+	node->SetOwnerBoard(nullptr);
 	pNodes.Remove(node);
 	OnNodesChanged();
 }
@@ -209,14 +209,14 @@ void igdeNVBoard::RemoveAllNodes(){
 		return;
 	}
 	
-	SetActiveNode(NULL);
+	SetActiveNode(nullptr);
 	
 	RemoveAllLinks();
 	
 	while(pNodes.GetCount() > 0){
 		const int index = pNodes.GetCount() - 1;
 		igdeNVNode * const node = (igdeNVNode*)pNodes.GetAt(index);
-		node->SetOwnerBoard(NULL);
+		node->SetOwnerBoard(nullptr);
 		igdeContainer::RemoveChild(node);
 		pNodes.RemoveFrom(index);
 	}
@@ -267,7 +267,7 @@ igdeNVLink *igdeNVBoard::GetLinkBetween(igdeNVSlot *source, igdeNVSlot *target) 
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 bool igdeNVBoard::HasLink(igdeNVLink *link) const{
@@ -275,7 +275,7 @@ bool igdeNVBoard::HasLink(igdeNVLink *link) const{
 }
 
 bool igdeNVBoard::HasLinkBetween(igdeNVSlot *source, igdeNVSlot *target) const{
-	return GetLinkBetween(source, target) != NULL;
+	return GetLinkBetween(source, target) != nullptr;
 }
 
 bool igdeNVBoard::CanLink(igdeNVSlot *source, igdeNVSlot *target){
@@ -327,7 +327,7 @@ void igdeNVBoard::RemoveLink(igdeNVLink *link){
 	link->GetTarget()->RemoveLink(link);
 	link->GetSource()->RemoveLink(link);
 	
-	link->SetOwnerBoard(NULL);
+	link->SetOwnerBoard(nullptr);
 	pLinks.Remove(link);
 	OnLinksChanged();
 }
@@ -341,7 +341,7 @@ void igdeNVBoard::RemoveAllLinks(){
 	int i;
 	for(i=0; i<count; i++){
 		igdeNVLink * const link = (igdeNVLink*)pLinks.GetAt(i);
-		link->SetOwnerBoard(NULL);
+		link->SetOwnerBoard(nullptr);
 		link->GetSource()->RemoveLink(link);
 		link->GetTarget()->RemoveLink(link);
 	}
@@ -365,7 +365,7 @@ void igdeNVBoard::RemoveAllNodeLinks(igdeNVNode *node){
 
 igdeNVLink *igdeNVBoard::ClosestLinkNear(const decPoint &position, float range) const{
 	if(!GetNativeWidget()){
-		return NULL;
+		return nullptr;
 	}
 	
 	return ((igdeNativeNVBoard*)GetNativeWidget())->ClosestLinkNear(position, range);

@@ -48,7 +48,7 @@ igdeDialog(environment, title)
 {
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 500)));
 	
-	pEditor.TakeOver(new igdeTriggerExpressionEditor(environment));
+	pEditor = igdeTriggerExpressionEditor::Ref::New(environment);
 	igdeTriggerExpressionEditor &editor = (igdeTriggerExpressionEditor&)(igdeWidget&)pEditor;
 	editor.SetParser(&parser);
 	editor.SetTargetList(&targetList);

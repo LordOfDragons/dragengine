@@ -82,11 +82,11 @@ public:
 	
 	
 	
-	/** \brief Owner board or NULL. */
+	/** \brief Owner board or nullptr. */
 	inline igdeNVBoard *GetOwnerBoard() const{ return pOwnerBoard; }
 	
 	/**
-	 * \brief Set owner board or NULL.
+	 * \brief Set owner board or nullptr.
 	 * \warning For use by \em igdeNVBoard only!
 	 */
 	void SetOwnerBoard(igdeNVBoard *board);

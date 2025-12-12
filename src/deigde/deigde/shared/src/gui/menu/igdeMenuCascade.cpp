@@ -228,7 +228,7 @@ void igdeMenuCascade::DestroyNativeWidget(){
 
 void *igdeMenuCascade::GetNativeContainer() const{
 	if(!GetNativeWidget()){
-		return NULL;
+		return nullptr;
 	}
 	return igdeNativeMenuCascade::GetNativeContainer(*this, GetNativeWidget());
 }

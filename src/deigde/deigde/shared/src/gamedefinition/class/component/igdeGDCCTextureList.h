@@ -63,7 +63,7 @@ public:
 	/** \brief Texture by index. */
 	igdeGDCCTexture *GetAt(int index) const;
 	
-	/** \brief Texture by name or NULL if not found. */
+	/** \brief Texture by name or nullptr if not found. */
 	igdeGDCCTexture *GetNamed(const char *name) const;
 	
 	/** \brief Index of an texture or -1 if not found. */

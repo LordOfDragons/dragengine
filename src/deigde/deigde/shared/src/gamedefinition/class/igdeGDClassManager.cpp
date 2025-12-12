@@ -52,7 +52,7 @@
 ////////////////////////////
 
 igdeGDClassManager::igdeGDClassManager(){
-	pCategories.TakeOver(new igdeGDCategory("Classes"));
+	pCategories = igdeGDCategory::Ref::New("Classes");
 }
 
 igdeGDClassManager::~igdeGDClassManager(){
@@ -102,7 +102,7 @@ igdeGDClass *igdeGDClassManager::GetNamed(const char *name) const{
 		return (igdeGDClass*)pClasses.GetAt(index);
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -197,7 +197,7 @@ void igdeGDClassManager::UpdateWith(const igdeGDClassManager &classManager){
 	int i;
 	
 	for(i=0; i<count; i++){
-		gdClass.TakeOver(new igdeGDClass(*classManager.GetAt(i)));
+		gdClass = igdeGDClass::Ref::New(*classManager.GetAt(i));
 		igdeGDClass * const gdclassCheck = GetNamed(gdClass->GetName());
 		if(gdclassCheck){
 			Remove(gdclassCheck);
@@ -278,7 +278,7 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 				reused = true;
 				
 			}else{
-				gdclass.TakeOver(new igdeGDClass(*eclass));
+				gdclass = igdeGDClass::Ref::New(*eclass);
 				gdclass->ResolveInheritClasses(*this);
 				
 				if(detectRetry){
@@ -309,7 +309,7 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 				
 				Add(gdclass);
 				
-				const igdeGDClass *firstInheritClass = NULL;
+				const igdeGDClass *firstInheritClass = nullptr;
 				inheritClassCount = gdclass->GetInheritClassCount();
 				for(j=0; j<inheritClassCount; j++){
 					firstInheritClass = gdclass->GetInheritClassAt(j)->GetClass();
@@ -373,7 +373,7 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 					}
 					
 					// link components
-					igdeGDCComponent *inheritClassComponent = NULL;
+					igdeGDCComponent *inheritClassComponent = nullptr;
 					decString inheritComponentPrefix;
 					fFindFirstComponent(*inheritClass, inheritComponentPrefix, inheritClassComponent);
 					

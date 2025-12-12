@@ -66,7 +66,7 @@ igdeGDClass::igdeGDClass(const char *name){
 	pName = name;
 	pScaleMode = esmUniform;
 	
-	pCamera = NULL;
+	pCamera = nullptr;
 	pHasCamera = false;
 	pIsGhost = false;
 	pCanInstantiate = true;
@@ -83,7 +83,7 @@ igdeGDClass::igdeGDClass(const char *name){
 }
 
 igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
-	pCamera = NULL;
+	pCamera = nullptr;
 	
 	try{
 		int i, count;
@@ -323,7 +323,7 @@ igdeGDProperty *igdeGDClass::GetPropertyNamed(const char *name) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 bool igdeGDClass::GetDefaultPropertyValue(const char *name, decString &value) const{
@@ -442,7 +442,7 @@ igdeGDProperty *igdeGDClass::GetTexturePropertyNamed(const char *name) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 bool igdeGDClass::GetDefaultTexturePropertyValue(const char *name, decString &value) const{

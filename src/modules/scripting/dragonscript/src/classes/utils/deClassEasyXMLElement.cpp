@@ -79,15 +79,15 @@ void deClassEasyXMLElement::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	switch(type){
 	case dedsXmlDocument::eetCData:
-		nd->element.TakeOver(new decXmlCharacterData(""));
+		nd->element = decXmlCharacterData::Ref::New("");
 		break;
 		
 	case dedsXmlDocument::eetTag:
-		nd->element.TakeOver(new decXmlElementTag(""));
+		nd->element = decXmlElementTag::Ref::New("");
 		break;
 		
 	case dedsXmlDocument::eetComment:
-		nd->element.TakeOver(new decXmlComment(""));
+		nd->element = decXmlComment::Ref::New("");
 		break;
 		
 	case dedsXmlDocument::eetElement:

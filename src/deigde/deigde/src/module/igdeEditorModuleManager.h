@@ -69,7 +69,7 @@ public:
 	/** \brief Module path. */
 	inline const decString &GetPathModules() const{ return pPathModules; }
 	
-	/** \brief Activate module or NULL if none is active. */
+	/** \brief Activate module or nullptr if none is active. */
 	inline igdeEditorModuleDefinition *GetActiveModule() const{ return pActiveModule; }
 	
 	/** \brief Set active module. */
@@ -92,7 +92,7 @@ public:
 	/** \brief Module at index. */
 	igdeEditorModuleDefinition *GetModuleAt(int index) const;
 	
-	/** \brief Module with ID or NULL if not found. */
+	/** \brief Module with ID or nullptr if not found. */
 	igdeEditorModuleDefinition *GetModuleWithID (const char *id) const;
 	
 	/** \brief Remove all modules. */

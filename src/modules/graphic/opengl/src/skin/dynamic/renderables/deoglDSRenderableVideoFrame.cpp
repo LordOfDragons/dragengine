@@ -51,7 +51,7 @@ pVideoPlayer(NULL),
 pDirty(true)
 {
 	try{
-		pRRenderableVideoFrame.TakeOver(new deoglRDSRenderableVideoFrame(*dynamicSkin.GetRDynamicSkin()));
+		pRRenderableVideoFrame = deoglRDSRenderableVideoFrame::Ref::New(*dynamicSkin.GetRDynamicSkin());
 		
 		if(renderable.GetVideoPlayer()){
 			pVideoPlayer = (deoglVideoPlayer*)renderable.GetVideoPlayer()->GetPeerGraphic();

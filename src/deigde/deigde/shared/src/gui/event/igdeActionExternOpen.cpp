@@ -94,7 +94,7 @@ void igdeActionExternOpen::OnAction(){
 	#ifdef OS_W32
 	wchar_t widePath[MAX_PATH];
 	deOSWindows::Utf8ToWide(pPath, widePath, MAX_PATH);
-	ShellExecute(NULL, L"open", widePath, NULL, NULL, SW_SHOWDEFAULT);
+	ShellExecute(nullptr, L"open", widePath, nullptr, nullptr, SW_SHOWDEFAULT);
 		
 	#else
 	const char * const appname = "xdg-open";

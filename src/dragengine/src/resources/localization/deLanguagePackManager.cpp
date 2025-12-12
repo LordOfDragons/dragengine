@@ -98,7 +98,7 @@ const char *filename, deLanguagePackBuilder &builder){
 			DETHROW(deeInvalidParam);
 		}
 		
-		langPack.TakeOver(new deLanguagePack(this, vfs, filename, decDateTime::GetSystemTime()));
+		langPack = deLanguagePack::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
 		builder.BuildLanguagePack(*langPack);
 		
 		if(!langPack->Verify()){
@@ -154,7 +154,7 @@ const char *filename, const char *basePath){
 				GetModuleSystem()->GetModuleAbleToLoad(deModuleSystem::emtLanguagePack,
 					path.GetPathUnix());
 			
-			langPack.TakeOver(new deLanguagePack(this, vfs, path.GetPathUnix(), modificationTime));
+			langPack = deLanguagePack::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			module->LoadLanguagePack(OpenFileForReading(*vfs, path.GetPathUnix()), *langPack);
 			
 			if(!langPack->Verify()){

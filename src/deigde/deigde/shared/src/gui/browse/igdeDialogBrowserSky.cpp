@@ -61,7 +61,7 @@ igdeDialogBrowserSky::~igdeDialogBrowserSky(){
 
 igdeGDSky *igdeDialogBrowserSky::GetSelectedSky() const{
 	const igdeListItem * const selection = GetSelectedListItem();
-	return selection ? (igdeGDSky*)selection->GetData() : NULL;
+	return selection ? (igdeGDSky*)selection->GetData() : nullptr;
 }
 
 void igdeDialogBrowserSky::SetSelectedSky(igdeGDSky *gdSky){

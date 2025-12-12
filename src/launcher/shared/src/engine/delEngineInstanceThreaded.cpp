@@ -1186,7 +1186,7 @@ int delEngineInstanceThreaded::IsGameRunning(){
 				
 				module = pGameCollectChangedParams->GetNamed(moduleName);
 				if(!module){
-					module.TakeOver(new delGPModule(moduleName));
+					module = delGPModule::Ref::New(moduleName);
 					pGameCollectChangedParams->Add(module);
 				}
 				
@@ -1358,7 +1358,7 @@ const decStringList &filenames, decObjectOrderedSet &filesContent){
 	
 	for(i=0; i<count; i++){
 		const int size = ReadIntFromPipe();
-		content.TakeOver(new decMemoryFile(filenames.GetAt(i)));
+		content = decMemoryFile::Ref::New(filenames.GetAt(i));
 		content->Resize(size);
 		ReadFromPipe(content->GetPointer(), size);
 		filesContent.Add(content);

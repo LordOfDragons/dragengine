@@ -78,7 +78,7 @@
 
 igdeCreateProject::igdeCreateProject(igdeWindowMain &windowMain) :
 pWindowMain(windowMain),
-pTemplate(NULL),
+pTemplate(nullptr),
 pGameId(decUuid::Random().ToHexString(false)){
 }
 
@@ -202,7 +202,7 @@ void igdeCreateProject::pCreateDirectories(){
 	
 	// create data directory if absent
 	path.SetFromNative(pNativePathData);
-	diskDirectory.TakeOver(new deVFSDiskDirectory(path));
+	diskDirectory = deVFSDiskDirectory::Ref::New(path);
 	
 	if(!diskDirectory->ExistsFile(pathDeleteMe)){
 		diskDirectory->TouchFile(pathDeleteMe);
@@ -213,7 +213,7 @@ void igdeCreateProject::pCreateDirectories(){
 	path = pNativePathProject;
 	path.AddUnixPath(pPathCache);
 	
-	diskDirectory.TakeOver(new deVFSDiskDirectory(path));
+	diskDirectory = deVFSDiskDirectory::Ref::New(path);
 	
 	if(!diskDirectory->ExistsFile(pathDeleteMe)){
 		diskDirectory->TouchFile(pathDeleteMe);
@@ -224,7 +224,7 @@ void igdeCreateProject::pCreateDirectories(){
 	path = pNativePathProject;
 	path.AddUnixPath(pProject->GetPathLocal());
 	
-	diskDirectory.TakeOver(new deVFSDiskDirectory(path));
+	diskDirectory = deVFSDiskDirectory::Ref::New(path);
 	
 	if(!diskDirectory->ExistsFile(pathDeleteMe)){
 		diskDirectory->TouchFile(pathDeleteMe);
@@ -250,7 +250,7 @@ void igdeCreateProject::pCopyDefaultFiles(){
 	path = pNativePathProject;
 	path.AddComponent(".gitattributes");
 	
-	writer.TakeOver(new decDiskFileWriter(path.GetPathNative(), false));
+	writer = decDiskFileWriter::Ref::New(path.GetPathNative(), false);
 	
 	const char * const extensions[] = {
 		// images
@@ -484,7 +484,7 @@ void igdeCreateProject::pTemplateCreateFile(const igdeTemplateFile &file){
 		}
 		
 		writer->Write(content.GetString(), contentLen);
-		writer = NULL;
+		writer = nullptr;
 	}
 }
 

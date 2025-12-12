@@ -135,7 +135,7 @@ cNativeIgdeTabBook::~cNativeIgdeTabBook(){
 }
 
 void cNativeIgdeTabBook::AddHeader( const igdeTabBook::cHeader &header ){
-	FXIcon * const icon = header.icon ? ( FXIcon* )header.icon->GetNativeIcon() : NULL;
+	FXIcon * const icon = header.icon ? ( FXIcon* )header.icon->GetNativeIcon() : nullptr;
 	
 	cNativeIgdeTabBookHeader * const widget = new cNativeIgdeTabBookHeader( this,
 		header.text, icon, this, ID_HEADER, pPadLeft, pPadRight, pPadTop, pPadBottom );
@@ -295,7 +295,7 @@ void igdeTabBook::SetActivePanel( int index ){
 
 
 void igdeTabBook::AddChild( igdeWidget *child, const char *text ){
-	AddChild( child, text, NULL, "" );
+	AddChild( child, text, nullptr, "" );
 }
 
 void igdeTabBook::AddChild( igdeWidget *child, const char *text, igdeIcon *icon ){

@@ -533,7 +533,7 @@ void deoglRHTSector::pSyncMaskTextures(const deHeightTerrainSector &sector){
 	
 	const int pixelCount = maskWidth * maskHeight;
 	for(m=0; m<maskCount; m++){
-		pPixBufMasks[m].TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, maskWidth, maskHeight, 1));
+		pPixBufMasks[m] = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat4, maskWidth, maskHeight, 1);
 		deoglPixelBuffer::sFloat4 * const pbdata = pPixBufMasks[m]->GetPointerFloat4();
 		
 		for(t=m*4; t<textureCount; t++){

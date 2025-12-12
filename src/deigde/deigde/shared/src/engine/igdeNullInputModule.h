@@ -32,7 +32,7 @@
 
 
 /**
- * \brief Null Input Module.
+ * \brief nullptr Input Module.
  * 
  * Provides an input module which does nothing as the input is handled by the map editor already.
  */

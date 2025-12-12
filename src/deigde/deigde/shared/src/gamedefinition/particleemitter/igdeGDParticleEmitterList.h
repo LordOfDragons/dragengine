@@ -60,10 +60,10 @@ public:
 	/** \brief Emitter by index. */
 	igdeGDParticleEmitter *GetAt(int index) const;
 	
-	/** \brief Emitter with the given path or NULL if not found. */
+	/** \brief Emitter with the given path or nullptr if not found. */
 	igdeGDParticleEmitter *GetWithPath(const char *path) const;
 	
-	/** \brief Emitter with the given name or NULL if not found. */
+	/** \brief Emitter with the given name or nullptr if not found. */
 	igdeGDParticleEmitter *GetWithName(const char *name) const;
 	
 	/** \brief Index of an emitter or -1 if not found. */

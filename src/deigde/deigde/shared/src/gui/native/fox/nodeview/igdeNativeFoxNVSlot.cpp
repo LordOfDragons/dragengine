@@ -78,15 +78,15 @@ FXHorizontalFrame(pparent, layoutFlags.flags | NVSlotFlags(powner), 0, 0, 0, 0,
 	NVSlotPadTop(guitheme), NVSlotPadBottom(guitheme)),
 pOwner(&powner),
 pFont(NVSlotFont(powner, guitheme)),
-pSocket(NULL),
-pLabel(NULL),
+pSocket(nullptr),
+pLabel(nullptr),
 pDragTypeSocket(pparent->getApp()->registerDragType("application/deigde_nodesystem_socket")),
 pIsDnd(false)
 {
 	pSocket = new igdeNativeFoxNVSocket(this, this, ID_SOCKET, LAYOUT_FILL_Y | (powner.GetIsInput()
 		? LAYOUT_SIDE_LEFT | LAYOUT_LEFT : LAYOUT_SIDE_RIGHT | LAYOUT_RIGHT), guitheme);
 	
-	pLabel = new FXLabel(this, powner.GetText().GetString(), NULL, LAYOUT_FILL_Y | (powner.GetIsInput()
+	pLabel = new FXLabel(this, powner.GetText().GetString(), nullptr, LAYOUT_FILL_Y | (powner.GetIsInput()
 			? JUSTIFY_LEFT | JUSTIFY_CENTER_Y | ICON_BEFORE_TEXT | LAYOUT_SIDE_RIGHT | LAYOUT_LEFT
 			: JUSTIFY_RIGHT | JUSTIFY_CENTER_Y | ICON_AFTER_TEXT | LAYOUT_SIDE_LEFT | LAYOUT_RIGHT
 ), 0, 0, 0, 0, 0, 0, 0, 0);
@@ -407,7 +407,7 @@ long igdeNativeFoxNVSlot::onSocketDndLeave(FXObject*, FXSelector, void*){
 	
 	igdeNativeFoxNVBoard &nativeBoard = *((igdeNativeFoxNVBoard*)
 		pOwner->GetOwnerNode()->GetOwnerBoard()->GetNativeWidget());
-	nativeBoard.SetCreateLinkTarget(NULL);
+	nativeBoard.SetCreateLinkTarget(nullptr);
 	pSocket->acceptDrop(DRAG_REJECT);
 	return 1;
 }
@@ -455,7 +455,7 @@ long igdeNativeFoxNVSlot::onSocketDndMotion(FXObject*, FXSelector, void *pdata){
 		}
 		
 	}else{
-		nativeBoard.SetCreateLinkTarget(NULL);
+		nativeBoard.SetCreateLinkTarget(nullptr);
 		pSocket->acceptDrop(DRAG_REJECT);
 	}
 	

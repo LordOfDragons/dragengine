@@ -373,27 +373,27 @@ pDebugRayLightIndex(-1)
 		const decColor colorBg(0.0f, 0.0f, 0.25f, 0.75f);
 		const decColor colorBgSub(0.05f, 0.05f, 0.05f, 0.75f);
 		
-		pDebugInfoGI.TakeOver(new deoglDebugInformation("GI", colorText, colorBg));
+		pDebugInfoGI = deoglDebugInformation::Ref::New("GI", colorText, colorBg);
 		
-		pDebugInfoGITraceRays.TakeOver(new deoglDebugInformation("Trace Rays", colorText, colorBgSub));
+		pDebugInfoGITraceRays = deoglDebugInformation::Ref::New("Trace Rays", colorText, colorBgSub);
 		pDebugInfoGI->GetChildren().Add(pDebugInfoGITraceRays);
 		
-		pDebugInfoGIRenderMaterials.TakeOver(new deoglDebugInformation("Render Materials", colorText, colorBgSub));
+		pDebugInfoGIRenderMaterials = deoglDebugInformation::Ref::New("Render Materials", colorText, colorBgSub);
 		pDebugInfoGI->GetChildren().Add(pDebugInfoGIRenderMaterials);
 		
-		pDebugInfoGIClearProbes.TakeOver(new deoglDebugInformation("Clear Probes", colorText, colorBgSub));
+		pDebugInfoGIClearProbes = deoglDebugInformation::Ref::New("Clear Probes", colorText, colorBgSub);
 		pDebugInfoGI->GetChildren().Add(pDebugInfoGIClearProbes);
 		
-		pDebugInfoGIUpdateProbes.TakeOver(new deoglDebugInformation("Update Probes", colorText, colorBgSub));
+		pDebugInfoGIUpdateProbes = deoglDebugInformation::Ref::New("Update Probes", colorText, colorBgSub);
 		pDebugInfoGI->GetChildren().Add(pDebugInfoGIUpdateProbes);
 		
-		pDebugInfoGIMoveProbes.TakeOver(new deoglDebugInformation("Move Probes", colorText, colorBgSub));
+		pDebugInfoGIMoveProbes = deoglDebugInformation::Ref::New("Move Probes", colorText, colorBgSub);
 		pDebugInfoGI->GetChildren().Add(pDebugInfoGIMoveProbes);
 		
-		pDebugInfoGIRenderLightGIRay.TakeOver(new deoglDebugInformation("Light Rays", colorText, colorBgSub));
+		pDebugInfoGIRenderLightGIRay = deoglDebugInformation::Ref::New("Light Rays", colorText, colorBgSub);
 		pDebugInfoGI->GetChildren().Add(pDebugInfoGIRenderLightGIRay);
 		
-		pDebugInfoGIRenderLight.TakeOver(new deoglDebugInformation("Light Geometry", colorText, colorBgSub));
+		pDebugInfoGIRenderLight = deoglDebugInformation::Ref::New("Light Geometry", colorText, colorBgSub);
 		pDebugInfoGI->GetChildren().Add(pDebugInfoGIRenderLight);
 		
 		

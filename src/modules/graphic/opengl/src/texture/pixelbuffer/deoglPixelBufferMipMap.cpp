@@ -62,7 +62,7 @@ int width, int height, int depth, int maxLevel){
 		pPixelBuffers = new deoglPixelBuffer::Ref[count];
 		
 		for(pPixelBufferCount=0; pPixelBufferCount<count; pPixelBufferCount++){
-			pPixelBuffers[pPixelBufferCount].TakeOver(new deoglPixelBuffer(format, levelWidth, levelHeight, depth));
+			pPixelBuffers[pPixelBufferCount] = deoglPixelBuffer::Ref::New(format, levelWidth, levelHeight, depth);
 			
 			levelWidth >>= 1;
 			if(levelWidth < 1){

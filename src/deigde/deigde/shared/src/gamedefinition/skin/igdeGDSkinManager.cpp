@@ -46,7 +46,7 @@
 ////////////////////////////
 
 igdeGDSkinManager::igdeGDSkinManager(){
-	pCategories.TakeOver(new igdeGDCategory("Skins"));
+	pCategories = igdeGDCategory::Ref::New("Skins");
 }
 
 igdeGDSkinManager::~igdeGDSkinManager(){
@@ -148,7 +148,7 @@ igdeGDSkin *igdeGDSkinManager::GetSkinWithPath(const char *path) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 igdeGDSkin *igdeGDSkinManager::GetSkinWithName(const char *name) const{
@@ -165,7 +165,7 @@ igdeGDSkin *igdeGDSkinManager::GetSkinWithName(const char *name) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void igdeGDSkinManager::AddSkin(igdeGDSkin *skin){

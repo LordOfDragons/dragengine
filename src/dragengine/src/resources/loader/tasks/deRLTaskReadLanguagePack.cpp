@@ -65,7 +65,7 @@ pSucceeded(false)
 		return;
 	}
 	
-	pLanguagePack.TakeOver(new deLanguagePack(engine.GetLanguagePackManager(), vfs, path, 0));
+	pLanguagePack = deLanguagePack::Ref::New(engine.GetLanguagePackManager(), vfs, path, 0);
 	
 	LogCreateExit();
 }

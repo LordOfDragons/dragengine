@@ -92,8 +92,8 @@ pFont(TextAreaFont(powner, guitheme)),
 pTextArea(new FXText(this, this, ID_SELF, TextAreaFlags(powner), 0, 0, 0, 0,
 	TextAreaPadLeft(guitheme), TextAreaPadRight(guitheme),
 	TextAreaPadTop(guitheme), TextAreaPadBottom(guitheme))),
-pStyles(NULL),
-pResizer(NULL)
+pStyles(nullptr),
+pResizer(nullptr)
 {
 	if(!pOwner->GetVisible()){
 		hide();
@@ -121,7 +121,7 @@ igdeNativeFoxTextArea::~igdeNativeFoxTextArea(){
 		// is potentially destroyed in the super-class destructor we need to make sure
 		// FXText does not access anymore the styles array we are going to delete
 		pTextArea->clearText();
-		pTextArea->setHiliteStyles(NULL);
+		pTextArea->setHiliteStyles(nullptr);
 		pTextArea->setStyled(false);
 	}
 	
@@ -162,11 +162,11 @@ void igdeNativeFoxTextArea::DestroyNativeWidget(){
 
 void igdeNativeFoxTextArea::UpdateStyles(){
 	if(pStyles){
-		pTextArea->setHiliteStyles(NULL);
+		pTextArea->setHiliteStyles(nullptr);
 		pTextArea->setStyled(false);
 		
 		delete [] pStyles;
-		pStyles = NULL;
+		pStyles = nullptr;
 	}
 	
 	pBuildStylesArray();

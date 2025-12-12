@@ -457,11 +457,11 @@ void dexsiDeviceManager::pCreateEvdevDevices(){
 
 
 void dexsiDeviceManager::pCreateDevices(){
-	pX11CoreMouse.TakeOver(new dexsiDeviceCoreMouse(pModule));
+	pX11CoreMouse = dexsiDeviceCoreMouse::Ref::New(pModule);
 	pX11CoreMouse->SetIndex(pDevices.GetCount());
 	pDevices.Add(pX11CoreMouse);
 	
-	pX11CoreKeyboard.TakeOver(new dexsiDeviceCoreKeyboard(pModule));
+	pX11CoreKeyboard = dexsiDeviceCoreKeyboard::Ref::New(pModule);
 	pX11CoreKeyboard->SetIndex(pDevices.GetCount());
 	pDevices.Add(pX11CoreKeyboard);
 	

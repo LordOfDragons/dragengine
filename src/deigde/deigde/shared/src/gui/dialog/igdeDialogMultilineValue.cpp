@@ -49,7 +49,7 @@ igdeDialog(environment, title)
 		environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10));
 	
 	helper.Label(content, message);
-	helper.EditString(content, "", pEditValue, columns, rows, NULL);
+	helper.EditString(content, "", pEditValue, columns, rows, nullptr);
 	
 	igdeContainer::Ref buttonBar;
 	CreateButtonBar(buttonBar, "Accept", "Discard");

@@ -80,6 +80,10 @@ class decUnicodeStringList;
  * IGDE Main Window.
  */
 class igdeWindowMain : public igdeMainWindow{
+public:
+	typedef deTObjectReference<igdeWindowMain> Ref;
+	
+	
 private:
 	igdeEnvironmentIGDE &pEnvironmentIGDE;
 	igdeConfiguration pConfiguration;
@@ -227,7 +231,7 @@ public:
 	/** Retrieves the igde game definition. */
 	inline const igdeGameDefinition::Ref &GetIGDEGameDefinition() const{ return pIGDEGameDefinition; }
 	
-	/** Logger window or NULL if not visible. */
+	/** Logger window or nullptr if not visible. */
 	inline const igdeWindowLogger::Ref &GetWindowLogger() const{ return pWindowLogger; }
 	
 	/** Named GuiTheme or default if not found. */
@@ -424,7 +428,7 @@ public:
 	 * 
 	 * \param[in] title Title of the unsaved documents dialog if shown.
 	 * \param[in] message Message of the unsaved documents dialog if shown.
-	 *                    Message is optional and can be \em NULL.
+	 *                    Message is optional and can be \em nullptr.
 	 * \returns \em true if user wants to continue the action or \em false to abort.
 	 */
 	bool RequestSaveDocuments(const char *title, const char* message);

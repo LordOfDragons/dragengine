@@ -66,7 +66,7 @@ pSucceeded(false)
 		return;
 	}
 	
-	pSound.TakeOver(new deSound(engine.GetSoundManager(), vfs, path, 0));
+	pSound = deSound::Ref::New(engine.GetSoundManager(), vfs, path, 0);
 	LogCreateExit();
 }
 

@@ -141,6 +141,8 @@ protected:
 	}
 	
 public:
+	typedef deTObjectReference<igdeWObjectTriggerListener> Ref;
+	
 	igdeWObjectTriggerListener(igdeWObject &wrapper) : pWrapper(wrapper){
 	}
 	
@@ -184,18 +186,18 @@ pAudioLayerMask(0x4),
 pDynamicCollider(false),
 pVisible(true),
 pPartiallyHidden(false),
-pListenerCollider(NULL),
-pTriggerTable(NULL),
+pListenerCollider(nullptr),
+pTriggerTable(nullptr),
 pHasBoxExtends(false),
 pDirtyExtends(false),
 pDirtyFallbackColliderShape(false),
 pOutlineColor(1.0f, 0.0f, 0.0f),
-pAsyncLoadFinished(NULL),
+pAsyncLoadFinished(nullptr),
 pAsyncLoadCounter(0),
 pAnyContentVisible(false)
 {
 	try{
-		pTriggerListener.TakeOver(new igdeWObjectTriggerListener(*this));
+		pTriggerListener = igdeWObjectTriggerListener::Ref::New(*this);
 		
 		// create collider
 		pColliderFallback = environment.GetEngineController()->GetEngine()
@@ -622,13 +624,13 @@ void igdeWObject::AttachColliderRig(deColliderComponent *parentCollider){
 	
 	DetachCollider();
 	
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	try{
 		if(pColliderComponent){
 			attachment = new deColliderAttachment(pColliderComponent);
 			attachment->SetAttachType(deColliderAttachment::eatRig);
 			parentCollider->AddAttachment(attachment);
-			attachment = NULL;
+			attachment = nullptr;
 		}
 		
 		attachment = new deColliderAttachment(pColliderFallback);
@@ -654,7 +656,7 @@ const decVector &position, const decQuaternion &orientation){
 	DetachCollider();
 	
 	if(strlen(bone) > 0){
-		deColliderAttachment *attachment = NULL;
+		deColliderAttachment *attachment = nullptr;
 		try{
 			if(pColliderComponent){
 				attachment = new deColliderAttachment(pColliderComponent);
@@ -663,7 +665,7 @@ const decVector &position, const decQuaternion &orientation){
 				attachment->SetPosition(position);
 				attachment->SetOrientation(orientation);
 				parentCollider->AddAttachment(attachment);
-				attachment = NULL;
+				attachment = nullptr;
 			}
 			
 			attachment = new deColliderAttachment(pColliderFallback);
@@ -703,7 +705,7 @@ void igdeWObject::DetachCollider(){
 		}
 	}
 	
-	pParentCollider = NULL;
+	pParentCollider = nullptr;
 	pAttachToBone.Empty();
 	
 	// reset position and orientation otherwise our state and the collider state are out of sync

@@ -92,10 +92,10 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief World or NULL. */
+	/** \brief World or nullptr. */
 	inline const deWorld::Ref &GetWorld() const{ return pEngWorld; }
 	
-	/** \brief Set world or NULL. */
+	/** \brief Set world or nullptr. */
 	void SetWorld(deWorld *world);
 	
 	/** \brief Maximum light intensity found in the sky. */
@@ -110,13 +110,13 @@ public:
 	/** \brief Set controller value. */
 	void SetControllerValue(int index, float value);
 	
-	/** \brief Get sky or NULL. */
+	/** \brief Get sky or nullptr. */
 	const deSky *GetSky() const;
 	
-	/** \brief Game definition sky or NULL if sky is set manually. */
+	/** \brief Game definition sky or nullptr if sky is set manually. */
 	inline const igdeGDSky::Ref &GetGDSky() const{ return pGDSky; }
 	
-	/** \brief Sky path or NULL if sky is set manually. */
+	/** \brief Sky path or nullptr if sky is set manually. */
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set sky to use. */
@@ -137,11 +137,11 @@ public:
 	
 	
 	
-	/** \brief Asynchronous load finished listener or NULL. */
+	/** \brief Asynchronous load finished listener or nullptr. */
 	inline cAsyncLoadFinished *GetAsyncLoadFinished() const{ return pAsyncLoadFinished; }
 	
 	/**
-	 * \brief Set asynchronous load finished listener or NULL.
+	 * \brief Set asynchronous load finished listener or nullptr.
 	 * 
 	 * Caller is responsible to keep the listener alive. Wrapper does not hold reference.
 	 */

@@ -47,8 +47,8 @@ igdeContainer(environment),
 pSidePlacement(sidePlacement),
 pSplitPosition(-1),
 pSplitPositionRelative(0.5f),
-pWidgetSide(NULL),
-pWidgetCenter(NULL){
+pWidgetSide(nullptr),
+pWidgetCenter(nullptr){
 }
 
 igdeContainerSplitted::igdeContainerSplitted(igdeEnvironment &environment,
@@ -57,8 +57,8 @@ igdeContainer(environment),
 pSidePlacement(sidePlacement),
 pSplitPosition(splitPosition),
 pSplitPositionRelative(0.0f),
-pWidgetSide(NULL),
-pWidgetCenter(NULL){
+pWidgetSide(nullptr),
+pWidgetCenter(nullptr){
 }
 
 igdeContainerSplitted::igdeContainerSplitted(igdeEnvironment &environment,
@@ -67,8 +67,8 @@ igdeContainer(environment),
 pSidePlacement(sidePlacement),
 pSplitPosition(-1),
 pSplitPositionRelative(decMath::clamp(splitPosition, 0.0f, 1.0f)),
-pWidgetSide(NULL),
-pWidgetCenter(NULL){
+pWidgetSide(nullptr),
+pWidgetCenter(nullptr){
 }
 
 igdeContainerSplitted::~igdeContainerSplitted(){
@@ -126,7 +126,7 @@ void igdeContainerSplitted::AddChild(igdeWidget *child, eArea area){
 			igdeContainer::AddChild(child);
 			
 		}catch(const deException &){
-			pWidgetSide = NULL;
+			pWidgetSide = nullptr;
 			throw;
 		}
 		break;
@@ -141,7 +141,7 @@ void igdeContainerSplitted::AddChild(igdeWidget *child, eArea area){
 			igdeContainer::AddChild(child);
 			
 		}catch(const deException &){
-			pWidgetCenter = NULL;
+			pWidgetCenter = nullptr;
 			throw;
 		}
 		break;
@@ -163,18 +163,18 @@ void igdeContainerSplitted::RemoveChild(igdeWidget *child){
 	igdeContainer::RemoveChild(child);
 	
 	if(child == pWidgetSide){
-		pWidgetSide = NULL;
+		pWidgetSide = nullptr;
 		
 	}else if(child == pWidgetCenter){
-		pWidgetCenter = NULL;
+		pWidgetCenter = nullptr;
 	}
 }
 
 void igdeContainerSplitted::RemoveAllChildren(){
 	igdeContainer::RemoveAllChildren();
 	
-	pWidgetSide = NULL;
-	pWidgetCenter = NULL;
+	pWidgetSide = nullptr;
+	pWidgetCenter = nullptr;
 }
 
 igdeWidget *igdeContainerSplitted::GetWidgetIn(eArea area) const{

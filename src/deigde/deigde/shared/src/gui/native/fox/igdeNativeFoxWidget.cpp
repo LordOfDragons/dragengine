@@ -109,7 +109,7 @@ void igdeNativeFoxWidget::UpdateVisible(const igdeWidget &widget){
 
 bool igdeNativeFoxWidget::HasNativeParent(const igdeWidget &widget){
 	FXWindow * const native = (FXWindow*)widget.GetNativeWidget();
-	return native && native->getParent() != NULL;
+	return native && native->getParent() != nullptr;
 }
 
 #ifdef OS_UNIX
@@ -125,7 +125,7 @@ Window igdeNativeFoxWidget::NativeWidgetID(const igdeWidget &widget){
 HWND igdeNativeFoxWidget::NativeWidgetID(const igdeWidget &widget){
 	FXWindow * const native = (FXWindow*)widget.GetNativeWidget();
 	if(!native){
-		return NULL;
+		return nullptr;
 	}
 	return (HWND)native->id();
 }
@@ -144,7 +144,7 @@ Window igdeNativeFoxWidget::NativeWidgetParentID(const igdeWidget &widget){
 HWND igdeNativeFoxWidget::NativeWidgetParentID(const igdeWidget &widget){
 	FXWindow * const native = (FXWindow*)widget.GetNativeWidget();
 	if(!native || !native->getParent()){
-		return NULL;
+		return nullptr;
 	}
 	return (HWND)native->getParent()->id();
 }

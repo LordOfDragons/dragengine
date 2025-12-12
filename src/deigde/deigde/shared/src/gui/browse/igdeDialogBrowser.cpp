@@ -96,6 +96,8 @@ class igdeDialogBrowser_ActionPreviewSize : public igdeAction{
 	const igdeDialogBrowser::ePreviewSize pSize;
 	
 public:
+	typedef deTObjectReference<igdeDialogBrowser_ActionPreviewSize> Ref;
+	
 	igdeDialogBrowser_ActionPreviewSize(igdeDialogBrowser &dialog, igdeDialogBrowser::ePreviewSize size,
 	const char *text, igdeIcon *icon, const char *description) :
 		igdeAction(text, icon, description), pDialog(dialog), pSize(size){}
@@ -114,6 +116,8 @@ class igdeDialogBrowser_ActionViewMode : public igdeAction{
 	const igdeDialogBrowser::eViewModes pMode;
 	
 public:
+	typedef deTObjectReference<igdeDialogBrowser_ActionViewMode> Ref;
+	
 	igdeDialogBrowser_ActionViewMode(igdeDialogBrowser &dialog, igdeDialogBrowser::eViewModes mode,
 	const char *text, igdeIcon *icon, const char *description) :
 		igdeAction(text, icon, description), pDialog(dialog), pMode(mode){}
@@ -131,8 +135,10 @@ class igdeDialogBrowser_ActionPIRebuild : public igdeAction{
 	igdeDialogBrowser &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogBrowser_ActionPIRebuild> Ref;
+	
 	igdeDialogBrowser_ActionPIRebuild(igdeDialogBrowser &dialog) : igdeAction(
-		"Rebuild Preview", NULL, "Rebuild Preview"), pDialog(dialog){}
+		"Rebuild Preview", nullptr, "Rebuild Preview"), pDialog(dialog){}
 	
 	virtual void OnAction(){
 		pDialog.RebuildPISelectedItem();
@@ -183,7 +189,7 @@ public:
 ////////////////////////////
 
 igdeDialogBrowser::igdeDialogBrowser(igdeEnvironment &environment, const char *title, bool canResize) :
-igdeDialog(environment, title, NULL, canResize),
+igdeDialog(environment, title, nullptr, canResize),
 pPreviewSize(epsLarge),
 pViewMode(evmPreview)
 {
@@ -191,17 +197,17 @@ pViewMode(evmPreview)
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(1000, 600)));
 	
-	pActionPISizeSmall.TakeOver(new igdeDialogBrowser_ActionPreviewSize(*this, epsSmall,
-		"Small Preview Image", NULL, "Small Preview Image"));
-	pActionPISizeMedium.TakeOver(new igdeDialogBrowser_ActionPreviewSize(*this, epsMedium,
-		"Medium Preview Image", NULL, "Medium Preview Image"));
-	pActionPISizeLarge.TakeOver(new igdeDialogBrowser_ActionPreviewSize(*this, epsLarge,
-		"Large Preview Image", NULL, "Large Preview Image"));
+	pActionPISizeSmall = igdeDialogBrowser_ActionPreviewSize::Ref::New(*this, epsSmall,
+		"Small Preview Image", nullptr, "Small Preview Image");
+	pActionPISizeMedium = igdeDialogBrowser_ActionPreviewSize::Ref::New(*this, epsMedium,
+		"Medium Preview Image", nullptr, "Medium Preview Image");
+	pActionPISizeLarge = igdeDialogBrowser_ActionPreviewSize::Ref::New(*this, epsLarge,
+		"Large Preview Image", nullptr, "Large Preview Image");
 	
-	pActionPIViewList.TakeOver(new igdeDialogBrowser_ActionViewMode(*this, evmList,
-		"List Mode", NULL, "List Mode"));
-	pActionPIViewPreview.TakeOver(new igdeDialogBrowser_ActionViewMode(*this, evmPreview,
-		"Preview Mode", NULL, "Preview Mode"));
+	pActionPIViewList = igdeDialogBrowser_ActionViewMode::Ref::New(*this, evmList,
+		"List Mode", nullptr, "List Mode");
+	pActionPIViewPreview = igdeDialogBrowser_ActionViewMode::Ref::New(*this, evmPreview,
+		"Preview Mode", nullptr, "Preview Mode");
 	
 	
 	igdeContainerSplitted::Ref content(igdeContainerSplitted::Ref::New(
@@ -234,7 +240,7 @@ pViewMode(evmPreview)
 	pListItems->SetDefaultSorter();
 	pListItems->SetViewMode(igdeIconListBox::evmIconVertical);
 	
-	helper.EditString(panelItems, "Item information", pEditInfos, 50, 5, NULL);
+	helper.EditString(panelItems, "Item information", pEditInfos, 50, 5, nullptr);
 	pEditInfos->SetEditable(false);
 	
 	content->AddChild(panelItems, igdeContainerSplitted::eaCenter);
@@ -273,12 +279,12 @@ void igdeDialogBrowser::UpdateCategoryListWith(igdeGDCategory *category){
 	const int categoryCount = category->GetCategoryCount();
 	int i;
 	
-	pTreeCategories->AppendItem(NULL, "< No Category >");
+	pTreeCategories->AppendItem(nullptr, "< No Category >");
 	
 	for(i=0; i<categoryCount; i++){
 		igdeGDCategory * const child = category->GetCategoryAt(i);
 		if(!child->GetHidden()){
-			AddCategoryToList(child, NULL);
+			AddCategoryToList(child, nullptr);
 		}
 	}
 }
@@ -303,7 +309,7 @@ void igdeDialogBrowser::AddCategoryToList(igdeGDCategory *category, igdeTreeItem
 }
 
 void igdeDialogBrowser::UpdateItemList(){
-	void * const selection = pListItems->GetSelectedItem() ? pListItems->GetSelectedItem()->GetData() : NULL;
+	void * const selection = pListItems->GetSelectedItem() ? pListItems->GetSelectedItem()->GetData() : nullptr;
 	
 	pListItems->RemoveAllItems();
 	
@@ -327,7 +333,7 @@ void igdeDialogBrowser::RebuildPISelectedItem(){
 	
 	igdeIcon::Ref icon;
 	const int iconSize = GetPreviewIconSize();
-	icon.TakeOver(new igdeIcon(*pvmgr.GetImageCreating(), iconSize, iconSize));
+	icon = igdeIcon::Ref::New(*pvmgr.GetImageCreating(), iconSize, iconSize);
 	
 	const igdeBrowseItemGDPreviewListener::Ref listener(
 		igdeBrowseItemGDPreviewListener::Ref::New(pListItems, item, iconSize));
@@ -345,7 +351,7 @@ void igdeDialogBrowser::CurrentItemChanged(){
 
 igdeGDCategory *igdeDialogBrowser::GetSelectedCategory() const{
 	const igdeTreeItem * const selection = pTreeCategories->GetSelection();
-	return selection ? (igdeGDCategory*)selection->GetData() : NULL;
+	return selection ? (igdeGDCategory*)selection->GetData() : nullptr;
 }
 
 void igdeDialogBrowser::SelectCategory(igdeGDCategory *category){

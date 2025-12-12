@@ -52,7 +52,7 @@ pDirtyLumimeter(true),
 pDirtyOctree(true)
 {
 	try{
-		pRLumimeter.TakeOver(new deoglRLumimeter(ogl.GetRenderThread()));
+		pRLumimeter = deoglRLumimeter::Ref::New(ogl.GetRenderThread());
 		
 	}catch(const deException &){
 		pCleanUp();

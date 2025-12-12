@@ -183,7 +183,7 @@ void deModio::AddVFSContainers(deVirtualFileSystem &vfs, const char *stage){
 		LogInfo("Add VFS containers for stage 'VFSStageMods'");
 		
 		if(!pVFSMods){
-			pVFSMods.TakeOver(new deVirtualFileSystem);
+			pVFSMods = deVirtualFileSystem::Ref::New();
 		}
 		
 		const decPath rootDir(decPath::CreatePathUnix("/"));
@@ -322,7 +322,7 @@ void deModio::pLoadConfigV0(decBaseFileReader &reader){
 	deModioUserConfig::Ref userConfig;
 	count = reader.ReadInt();
 	for(i=0; i<count; i++){
-		userConfig.TakeOver(new deModioUserConfig(*this, reader));
+		userConfig = deModioUserConfig::Ref::New(*this, reader);
 		pUserConfigs.SetAt(userConfig->GetId(), userConfig);
 	}
 	
@@ -450,8 +450,8 @@ void deModio::pUpdateVFS(){
 		try{
 			LogInfoFormat("- %s: Add mod using path '%s' version '%s'", config.id.GetString(),
 				config.path.GetString(), config.releaseVersion.GetString());
-			vfsContainer.TakeOver(new deVFSDiskDirectory(rootPath,
-				decPath::CreatePathNative(config.path), true));
+			vfsContainer = deVFSDiskDirectory::Ref::New(rootPath,
+				decPath::CreatePathNative(config.path), true);
 			pVFSMods->AddContainer(vfsContainer);
 			
 			pActivateConfigs.Add(pModConfigs.GetAt(i));

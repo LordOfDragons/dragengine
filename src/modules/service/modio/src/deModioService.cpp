@@ -1651,7 +1651,7 @@ void deModioService::pActivateMods(){
 		switch(mod.GetModState()){
 		case Modio::ModState::Installed:
 		case Modio::ModState::UpdatePending:
-			config.TakeOver(new deModioModConfig);
+			config = deModioModConfig::Ref::New();
 			config->id = deMCCommon::IDToString(mod.GetID());
 			config->path = mod.GetPath().c_str();
 			if(mod.GetModProfile().FileInfo.has_value()){

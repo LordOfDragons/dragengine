@@ -87,7 +87,7 @@ public:
 	/** \brief Number of properties. */
 	int GetPropertyCount() const;
 	
-	/** \brief Property or NULL if absent. */
+	/** \brief Property or nullptr if absent. */
 	igdeGuiThemeProperty *GetProperty(const char *name) const;
 	
 	/** \brief Property is present. */

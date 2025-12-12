@@ -68,7 +68,7 @@ pClearGeometryCount(0)
 	deoglRenderThread &renderThread = world.GetRenderThread();
 	const bool rowMajor = renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working();
 	
-	pSSBOElements.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etStream));
+	pSSBOElements = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etStream);
 	pSSBOElements->SetRowMajor(rowMajor);
 	pSSBOElements->SetParameterCount(11);
 	pSSBOElements->GetParameterAt(espeMinExtend).SetAll(deoglSPBParameter::evtFloat, 3, 1, 1);
@@ -84,7 +84,7 @@ pClearGeometryCount(0)
 	pSSBOElements->GetParameterAt(espeLodIndex).SetAll(deoglSPBParameter::evtInt, 1, 1, 1);
 	pSSBOElements->MapToStd140();
 	
-	pSSBOElementGeometries.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etStream));
+	pSSBOElementGeometries = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etStream);
 	pSSBOElementGeometries->SetRowMajor(rowMajor);
 	pSSBOElementGeometries->SetParameterCount(9);
 	pSSBOElementGeometries->GetParameterAt(espegElement).SetAll(deoglSPBParameter::evtInt, 1, 1, 1);
@@ -98,7 +98,7 @@ pClearGeometryCount(0)
 	pSSBOElementGeometries->GetParameterAt(espegTUCs).SetAll(deoglSPBParameter::evtInt, 4, 1, 1);
 	pSSBOElementGeometries->MapToStd140();
 	
-	pSharedSPBGeometries.TakeOver(new deoglSharedBlockSPB(pSSBOElementGeometries));
+	pSharedSPBGeometries = deoglSharedBlockSPB::Ref::New(pSSBOElementGeometries);
 }
 
 deoglWorldCompute::~deoglWorldCompute(){

@@ -75,7 +75,7 @@ pLog(1000)
 	igdeUIHelper &helper = env.GetUIHelper();
 	
 	
-	helper.EditString(*this, "Console Logs", pEditLogs, 10, NULL);
+	helper.EditString(*this, "Console Logs", pEditLogs, 10, nullptr);
 	
 	igdeContainerFlow::Ref line(igdeContainerFlow::Ref::New(
 		env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
@@ -83,7 +83,7 @@ pLog(1000)
 	
 	helper.EditString(line, "Command to send", pEditCommand, new igdeDEConsole_TextCommand(*this));
 	
-	helper.ComboBox(line, "Module to send command to", pCBModule, NULL);
+	helper.ComboBox(line, "Module to send command to", pCBModule, nullptr);
 	pCBModule->SetDefaultSorter();
 	
 	

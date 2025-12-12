@@ -288,11 +288,11 @@ pProjectGameDefPathChanged(false)
 	igdeUIHelper &helper = env.GetUIHelper();
 	igdeContainer::Ref content, panel;
 	
-	content.TakeOver(new igdeContainerForm(env));
+	content = igdeContainerForm::Ref::New(env);
 	
 	helper.EditString(content, "Name:", "Name of the game project.", 80, pEditName,
 		new igdeDialogNewGameProject_TextName(*this));
-	helper.EditString(content, "Description:", "Description of the game project.", pEditDescription, 5, NULL);
+	helper.EditString(content, "Description:", "Description of the game project.", pEditDescription, 5, nullptr);
 	
 	helper.EditDirectory(content, "Project Directory:",
 		"Project directory to store the project files in.", pEditPathProject,
@@ -302,19 +302,19 @@ pProjectGameDefPathChanged(false)
 		"Filename of project game definition file relative to project directory.", pEditPathGameDefProject,
 		 new igdeDialogNewGameProject_TextPathGameDefProject(*this));
 	helper.EditString(content, "Data Directory:",
-		"Data directory relative to project directory.", pEditPathData, NULL);
+		"Data directory relative to project directory.", pEditPathData, nullptr);
 	helper.EditString(content, "Cache Directory:",
-		"Cache directory relative to project directory.", pEditPathCache, NULL);
+		"Cache directory relative to project directory.", pEditPathCache, nullptr);
 	
 	helper.ComboBox(content, "Project Template:",
 		"Project template to use. Enforces script module and some base game definitions.",
 		pCBTemplate, new igdeDialogNewGameProject_ComboTemplate(*this));
 	pCBTemplate->SetDefaultSorter();
-	helper.EditString(content, "", "Template description.", pEditTemplateInfo, 30, 5, NULL);
+	helper.EditString(content, "", "Template description.", pEditTemplateInfo, 30, 5, nullptr);
 	pEditTemplateInfo->SetEditable(false);
 	
 	helper.ListBox(content, "Base Game Definitions:", 3,
-		"Game definitions to use as base for the project.", pListPathGameDefBase, NULL);
+		"Game definitions to use as base for the project.", pListPathGameDefBase, nullptr);
 	
 	helper.FormLineStretchFirst(content, "", "Available game definitions to add to project", panel);
 	
@@ -331,7 +331,7 @@ pProjectGameDefPathChanged(false)
 	helper.Button(panel, pBtnPathGameDefBaseDown,
 		new igdeDialogNewGameProject_ActionGameDefBaseDown(*this, pListPathGameDefBase), true);
 	
-	helper.EditString(content, "", "Shared game definition information", pEditSharedGameDefInfo, 5, NULL);
+	helper.EditString(content, "", "Shared game definition information", pEditSharedGameDefInfo, 5, nullptr);
 	
 	helper.ComboBox(content, "Scripting Module:", "Scripting module to use.", pCBScriptModule,
 		new igdeDialogNewGameProject_ComboScriptModule(*this));
@@ -507,7 +507,7 @@ void igdeDialogNewGameProject::UpdateSharedGameDefs(){
 	for(i=0; i<count; i++){
 		igdeGameDefinition * const gameDefinition = list.GetAt(i);
 		if(gameDefinition->GetScriptModule() == scriptModule){
-			pCBSharedGameDefs->AddItem(gameDefinition->GetID(), NULL, gameDefinition);
+			pCBSharedGameDefs->AddItem(gameDefinition->GetID(), nullptr, gameDefinition);
 		}
 	}
 	
@@ -602,13 +602,13 @@ void igdeDialogNewGameProject::pInitTemplates(){
 	for(i=0; i<count; i++){
 		igdeTemplate * const atemplate = templates.GetAt(i);
 		if(!pCBScriptModule->HasItemWithData(atemplate)){
-			pCBTemplate->AddItem(atemplate->GetName(), NULL, atemplate);
+			pCBTemplate->AddItem(atemplate->GetName(), nullptr, atemplate);
 		}
 	}
 	
 	pCBTemplate->SortItems();
 	
-	pCBTemplate->SetSelectionWithData(NULL);
+	pCBTemplate->SetSelectionWithData(nullptr);
 	
 	UpdateTemplate();
 }

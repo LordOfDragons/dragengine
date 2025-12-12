@@ -56,7 +56,7 @@ igdeWAngleRange::igdeWAngleRange(){
 }
 
 igdeWAngleRange::~igdeWAngleRange(){
-	SetParentDebugDrawer(NULL);
+	SetParentDebugDrawer(nullptr);
 }
 
 
@@ -143,7 +143,7 @@ void igdeWAngleRange::SetVisible(bool visible){
 //////////////////////
 
 void igdeWAngleRange::pRebuildShape(){
-	deDebugDrawerShapeFace *ddFace = NULL;
+	deDebugDrawerShapeFace *ddFace = nullptr;
 	float meterPerPoint = 0.1f;
 	float angle, angleDiff;
 	float circumfence;
@@ -184,7 +184,7 @@ void igdeWAngleRange::pRebuildShape(){
 		}
 		
 		pDDSDisk.AddFace(ddFace);
-		ddFace = NULL;
+		ddFace = nullptr;
 		
 	}catch(const deException &){
 		if(ddFace){

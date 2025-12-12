@@ -327,7 +327,7 @@ deSkyLayer &layer, const char *basePath){
 
 void igdeLoadSky::pReadTarget(const decXmlElementTag &root, deSkyLayer &layer){
 	const decString &type = GetAttributeString(root, "type");
-	deSkyControllerTarget *target = NULL;
+	deSkyControllerTarget *target = nullptr;
 	
 	if(type == "offsetX"){
 		target = &layer.GetTarget(deSkyLayer::etOffsetX);

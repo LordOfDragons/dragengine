@@ -43,7 +43,7 @@
 
 igdeTimer::igdeTimer(igdeEnvironment &environment) :
 pEnvironment(environment),
-pNativeTimer(NULL),
+pNativeTimer(nullptr),
 pTimeout(0),
 pRepeating(false),
 pRunning(false)

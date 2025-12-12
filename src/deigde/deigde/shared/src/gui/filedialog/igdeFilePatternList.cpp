@@ -37,13 +37,13 @@
 ////////////////////////////
 
 igdeFilePatternList::igdeFilePatternList(){
-	pFilePatterns = NULL;
+	pFilePatterns = nullptr;
 	pFilePatternCount = 0;
 	pFilePatternSize = 0;
 }
 
 igdeFilePatternList::igdeFilePatternList(const igdeFilePatternList &list){
-	pFilePatterns = NULL;
+	pFilePatterns = nullptr;
 	pFilePatternCount = 0;
 	pFilePatternSize = 0;
 	*this = list;
@@ -138,7 +138,7 @@ void igdeFilePatternList::RemoveAllFilePatterns(){
 
 igdeFilePatternList &igdeFilePatternList::operator=(const igdeFilePatternList &list){
 	const int count = list.GetFilePatternCount();
-	igdeFilePattern *filePattern = NULL;
+	igdeFilePattern *filePattern = nullptr;
 	int i;
 	
 	RemoveAllFilePatterns();
@@ -147,7 +147,7 @@ igdeFilePatternList &igdeFilePatternList::operator=(const igdeFilePatternList &l
 		try{
 			filePattern = new igdeFilePattern(*list.GetFilePatternAt(i));
 			AddFilePattern(filePattern);
-			filePattern = NULL;
+			filePattern = nullptr;
 			
 		}catch(const deException &){
 			if(filePattern){

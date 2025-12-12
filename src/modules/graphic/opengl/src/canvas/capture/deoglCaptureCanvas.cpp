@@ -68,7 +68,7 @@ deoglCaptureCanvas::~deoglCaptureCanvas(){
 
 void deoglCaptureCanvas::SyncToRender(){
 	if(!pRCaptureCanvas){
-		pRCaptureCanvas.TakeOver(new deoglRCaptureCanvas(GetOgl().GetRenderThread()));
+		pRCaptureCanvas = deoglRCaptureCanvas::Ref::New(GetOgl().GetRenderThread());
 	}
 	
 	if(pDirtyCanvasView){

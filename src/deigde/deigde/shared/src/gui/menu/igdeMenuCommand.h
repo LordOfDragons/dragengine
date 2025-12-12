@@ -104,10 +104,10 @@ public:
 	/** \brief Set mnemonic key or ekcUndefined if not used. */
 	void SetMnemonic(deInputEvent::eKeyCodes mnemonic);
 	
-	/** \brief Icon or NULL. */
+	/** \brief Icon or nullptr. */
 	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
+	/** \brief Set icon or nullptr. */
 	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Menu entry is enabled. */
@@ -116,10 +116,10 @@ public:
 	/** \brief Set if menu entry is enabled. */
 	void SetEnabled(bool enabled);
 	
-	/** \brief Action or NULL. */
+	/** \brief Action or nullptr. */
 	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
+	/** \brief Set action or nullptr. */
 	void SetAction(igdeAction *action);
 	
 	

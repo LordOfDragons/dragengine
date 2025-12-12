@@ -53,7 +53,7 @@
 
 igdeWPUndoHistory::igdeWPUndoHistory(igdeEnvironment &environment) :
 igdeContainerBox(environment, igdeContainerBox::eaY),
-pUndoSystem(NULL)
+pUndoSystem(nullptr)
 {
 	igdeUIHelper &helper = environment.GetUIHelperProperties();
 	
@@ -74,21 +74,21 @@ pUndoSystem(NULL)
 		environment, igdeContainerBox::eaX));
 	buttons->AddChild(buttonLine);
 	
-	pActionUndo.TakeOver(new igdeActionUndo(environment));
+	pActionUndo = igdeActionUndo::Ref::New(environment);
 	helper.Button(buttonLine, pActionUndo);
 	
-	pActionRedo.TakeOver(new igdeActionRedo(environment));
+	pActionRedo = igdeActionRedo::Ref::New(environment);
 	helper.Button(buttonLine, pActionRedo);
 	
 	// button row 2
-	buttonLine.TakeOver(new igdeContainerBox(environment, igdeContainerBox::eaX));
+	buttonLine = igdeContainerBox::Ref::New(environment, igdeContainerBox::eaX);
 	buttons->AddChild(buttonLine);
 	
-	pActionClear.TakeOver(new igdeActionClearUndo(environment));
+	pActionClear = igdeActionClearUndo::Ref::New(environment);
 	helper.Button(buttonLine, pActionClear);
 	
 	// undo action list
-	pListUndo.TakeOver(new igdeListBox(environment, 10));
+	pListUndo = igdeListBox::Ref::New(environment, 10);
 	groupBox->AddChild(pListUndo, igdeContainerBorder::eaCenter);
 }
 

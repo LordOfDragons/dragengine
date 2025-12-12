@@ -170,7 +170,7 @@ FXIcon *igdeNativeFoxButton::ButtonIcon(const igdeButton &powner){
 		return (FXIcon*) powner.GetIcon()->GetNativeIcon();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

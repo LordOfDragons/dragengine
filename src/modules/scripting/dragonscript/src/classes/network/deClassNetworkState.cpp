@@ -169,31 +169,31 @@ void deClassNetworkState::nfAddValue::RunFunction(dsRunTime *rt, dsValue *myself
 		
 		switch(type){
 		case deNetworkValueVisitorIdentify::envtInteger:
-			property.TakeOver(new deNetworkValueInteger(format, 0));
+			property = deNetworkValueInteger::Ref::New(format, 0);
 			break;
 			
 		case deNetworkValueVisitorIdentify::envtFloat:
-			property.TakeOver(new deNetworkValueFloat(format, 0.0));
+			property = deNetworkValueFloat::Ref::New(format, 0.0);
 			break;
 			
 		case deNetworkValueVisitorIdentify::envtPoint2:
-			property.TakeOver(new deNetworkValuePoint2(format, decPoint()));
+			property = deNetworkValuePoint2::Ref::New(format, decPoint());
 			break;
 			
 		case deNetworkValueVisitorIdentify::envtPoint3:
-			property.TakeOver(new deNetworkValuePoint3(format, decPoint3()));
+			property = deNetworkValuePoint3::Ref::New(format, decPoint3());
 			break;
 			
 		case deNetworkValueVisitorIdentify::envtVector2:
-			property.TakeOver(new deNetworkValueVector2(format, decVector2()));
+			property = deNetworkValueVector2::Ref::New(format, decVector2());
 			break;
 			
 		case deNetworkValueVisitorIdentify::envtVector3:
-			property.TakeOver(new deNetworkValueVector3(format, decDVector()));
+			property = deNetworkValueVector3::Ref::New(format, decDVector());
 			break;
 			
 		case deNetworkValueVisitorIdentify::envtQuaternion:
-			property.TakeOver(new deNetworkValueQuaternion(format, decQuaternion()));
+			property = deNetworkValueQuaternion::Ref::New(format, decQuaternion());
 			break;
 			
 		default:
@@ -202,11 +202,11 @@ void deClassNetworkState::nfAddValue::RunFunction(dsRunTime *rt, dsValue *myself
 		}break;
 		
 	case deNetworkValueVisitorIdentify::envtString:
-		property.TakeOver(new deNetworkValueString);
+		property = deNetworkValueString::Ref::New();
 		break;
 		
 	case deNetworkValueVisitorIdentify::envtData:
-		property.TakeOver(new deNetworkValueData(0));
+		property = deNetworkValueData::Ref::New(0);
 		break;
 		
 	default:

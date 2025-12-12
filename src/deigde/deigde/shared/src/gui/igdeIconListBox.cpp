@@ -212,13 +212,13 @@ igdeIcon *icon, void *data){
 
 void igdeIconListBox::AddItem(igdeListItem::Ref &item, const char *text,
 igdeIcon *icon, void *data){
-	item.TakeOver(new igdeListItem(text, icon, data));
+	item = igdeListItem::Ref::New(text, icon, data);
 	AddItem(item);
 }
 
 void igdeIconListBox::AddItem(igdeListItem::Ref &item, const char *text,
 const decStringList &details, igdeIcon *icon, void *data){
-	item.TakeOver(new igdeListItem(text, icon, data));
+	item = igdeListItem::Ref::New(text, icon, data);
 	item->GetDetails() = details;
 	AddItem(item);
 }
@@ -256,13 +256,13 @@ const decStringList &details, igdeIcon *icon, void *data){
 
 void igdeIconListBox::InsertItem(igdeListItem::Ref &item, int index, const char *text,
 igdeIcon *icon, void *data){
-	item.TakeOver(new igdeListItem(text, icon, data));
+	item = igdeListItem::Ref::New(text, icon, data);
 	InsertItem(index, item);
 }
 
 void igdeIconListBox::InsertItem(igdeListItem::Ref &item, int index, const char *text,
 const decStringList &details, igdeIcon *icon, void *data){
-	item.TakeOver(new igdeListItem(text, icon, data));
+	item = igdeListItem::Ref::New(text, icon, data);
 	item->GetDetails() = details;
 	InsertItem(index, item);
 }
@@ -319,7 +319,7 @@ void igdeIconListBox::SetSorter(igdeListItemSorter *sorter){
 }
 
 void igdeIconListBox::SetDefaultSorter(){
-	pSorter.TakeOver(new igdeListItemSorter);
+	pSorter = igdeListItemSorter::Ref::New();
 }
 
 static void igdeIconListBox_Sort(decObjectList &items, igdeListItemSorter &sorter, int left, int right){
@@ -390,7 +390,7 @@ igdeListItem *igdeIconListBox::GetSelectedItem() const{
 		return (igdeListItem*)pItems.GetAt(pSelection);
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

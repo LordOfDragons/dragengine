@@ -70,7 +70,7 @@ FXToggleButton(pparent, ButtonText(powner), ButtonText(powner),
 	ButtonPadTop(guitheme), ButtonPadBottom(guitheme)),
 pOwner(&powner),
 pFont(ButtonFont(powner, guitheme)),
-pDeleted(NULL)
+pDeleted(nullptr)
 {
 	setFont((FXFont*)pFont->GetNativeFont());
 	setState(powner.GetToggled());
@@ -177,11 +177,11 @@ const char *igdeNativeFoxToggleButton::ButtonText(const igdeToggleButton &powner
 }
 
 FXIcon *igdeNativeFoxToggleButton::ButtonIconOn(const igdeToggleButton &powner){
-	return powner.GetIcon() ? (FXIcon*) powner.GetIcon()->GetNativeIcon() : NULL;
+	return powner.GetIcon() ? (FXIcon*) powner.GetIcon()->GetNativeIcon() : nullptr;
 }
 
 FXIcon *igdeNativeFoxToggleButton::ButtonIconOff(const igdeToggleButton &powner){
-	return powner.GetIcon() ? (FXIcon*) powner.GetIcon()->GetNativeIcon() : NULL;
+	return powner.GetIcon() ? (FXIcon*) powner.GetIcon()->GetNativeIcon() : nullptr;
 }
 
 int igdeNativeFoxToggleButton::ButtonFlags(const igdeToggleButton &powner){
@@ -255,13 +255,13 @@ long igdeNativeFoxToggleButton::onCommand(FXObject*, FXSelector, void*){
 		pOwner->OnAction();
 		
 	}catch(const deException &e){
-		pDeleted = NULL;
+		pDeleted = nullptr;
 		pOwner->GetLogger()->LogException("IGDE", e);
 		igdeCommonDialogs::Exception(pOwner, e);
 		return 0;
 	}
 	
-	pDeleted = NULL;
+	pDeleted = nullptr;
 	if(deleted){
 		return 1;
 	}

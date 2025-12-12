@@ -122,7 +122,7 @@ void igdeEditorWindow::OnGameProjectChanged(){
 }
 
 igdeStepableTask *igdeEditorWindow::OnGameDefinitionChanged(){
-	return NULL;
+	return nullptr;
 }
 
 void igdeEditorWindow::DisplayException(const deException &exception){

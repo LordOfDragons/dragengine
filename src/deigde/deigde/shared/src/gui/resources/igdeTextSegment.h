@@ -92,7 +92,7 @@ public:
 	/** \brief Style. */
 	inline const decString &GetStyle() const{ return pStyle; }
 	
-	/** \brief Action or NULL if not used. */
+	/** \brief Action or nullptr if not used. */
 	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	/*@}*/
 };

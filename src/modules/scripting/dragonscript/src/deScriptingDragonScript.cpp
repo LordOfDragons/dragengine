@@ -640,10 +640,10 @@ bool deScriptingDragonScript::Init(const char *scriptDirectory, const char *game
 		pScriptEngine->SetEngineManager(dsmanager);
 		dsmanager = nullptr;
 		
-		pLoadingScreen.TakeOver(new dedsLoadingScreen(*this));
+		pLoadingScreen = dedsLoadingScreen::Ref::New(*this);
 		
 #ifdef OS_ANDROID_QUEST
-		pVRPlaceholder.TakeOver(new dedsVRPlaceholder(*this));
+		pVRPlaceholder = dedsVRPlaceholder::Ref::New(*this;
 #endif
 		
 		pState = esSkipOneFrame;
@@ -981,7 +981,7 @@ bool deScriptingDragonScript::OnFrameUpdate(){
 			pAddVFSContainerHideScriptDirectory();
 			
 			pResourceLoader = new dedsResourceLoader(this);
-			pColInfo.TakeOver(new deCollisionInfo);
+			pColInfo = deCollisionInfo::Ref::New();
 			pColliderListenerClosest = new dedsColliderListenerClosest(*this);
 			pColliderListenerAdaptor = new dedsColliderListenerAdaptor(*this);
 			

@@ -230,7 +230,7 @@ void dewlLauncher::pInitLogger(){
 	
 	AddFileLogger("delauncher-web");
 	
-	pLoggerJS.TakeOver(new dewlLoggerJS);
+	pLoggerJS = dewlLoggerJS::Ref::New();
 	GetLogger()->AddLogger(pLoggerJS);
 }
 

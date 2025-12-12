@@ -52,9 +52,9 @@ public:
 	
 	/** @name Management */
 	/*@{*/
-	/** Retrieves the delegee or NULL. */
+	/** Retrieves the delegee or nullptr. */
 	inline deBaseScriptingPropField *GetDelegee() const{ return pDelegee; }
-	/** Sets the delegee or NULL. */
+	/** Sets the delegee or nullptr. */
 	void SetDelegee(deBaseScriptingPropField *delegee);
 	/*@}*/
 	

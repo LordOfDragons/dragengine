@@ -64,7 +64,7 @@ pSucceeded(false)
 		return;
 	}
 	
-	pAnimation.TakeOver(new deAnimation(engine.GetAnimationManager(), vfs, path, 0));
+	pAnimation = deAnimation::Ref::New(engine.GetAnimationManager(), vfs, path, 0);
 	LogCreateExit();
 }
 

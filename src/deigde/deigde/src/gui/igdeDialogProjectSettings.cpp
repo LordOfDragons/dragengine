@@ -227,18 +227,18 @@ pBaseGameDefsChanged(false)
 	igdeUIHelper &helper = env.GetUIHelper();
 	igdeContainer::Ref content, panel;
 	
-	content.TakeOver(new igdeContainerForm(env));
+	content = igdeContainerForm::Ref::New(env);
 	
-	helper.EditString(content, "Name:", "Name of the game project.", 60, pEditName, NULL);
+	helper.EditString(content, "Name:", "Name of the game project.", 60, pEditName, nullptr);
 	helper.EditString(content, "Description:",
-		"Description of the game project.", pEditDescription, 5, NULL);
+		"Description of the game project.", pEditDescription, 5, nullptr);
 	helper.EditString(content, "Data Directory:",
-		"Data directory relative to project directory.", pEditPathData, NULL);
+		"Data directory relative to project directory.", pEditPathData, nullptr);
 	helper.EditString(content, "Cache Directory:",
-		"Cache directory relative to project directory.", pEditPathCache, NULL);
+		"Cache directory relative to project directory.", pEditPathCache, nullptr);
 	
 	helper.ListBox(content, "Base Game Definitions:", 3,
-		"Game definitions to use as base for the project.", pListPathGameDefBase, NULL);
+		"Game definitions to use as base for the project.", pListPathGameDefBase, nullptr);
 	
 	helper.FormLineStretchFirst(content, "", "Available game definitions to add to project", panel);
 	
@@ -255,13 +255,13 @@ pBaseGameDefsChanged(false)
 	helper.Button(panel, pBtnPathGameDefBaseDown,
 		new igdeDialogProjectSettings_ActionGameDefBaseDown(*this, pListPathGameDefBase), true);
 	
-	helper.EditString(content, "", "Shared game definition information", pEditSharedGameDefInfo, 3, NULL);
+	helper.EditString(content, "", "Shared game definition information", pEditSharedGameDefInfo, 3, nullptr);
 	
 	helper.ComboBox(content, "Scripting Module:", "Scripting module to use.", pCBScriptModule,
 		new igdeDialogProjectSettings_ComboScriptModule(*this));
 	pCBScriptModule->SetDefaultSorter();
 	
-	helper.EditString(content, "Version:", "Scripting module version to use.", 6, pEditScriptModuleVersion, NULL);
+	helper.EditString(content, "Version:", "Scripting module version to use.", 6, pEditScriptModuleVersion, nullptr);
 	
 	
 	igdeContainer::Ref buttonBar;
@@ -382,7 +382,7 @@ void igdeDialogProjectSettings::UpdateSharedGameDefs(){
 	for(i=0; i<count; i++){
 		igdeGameDefinition * const gameDefinition = list.GetAt(i);
 		if(gameDefinition->GetScriptModule() == scriptModule){
-			pCBSharedGameDefs->AddItem(gameDefinition->GetID(), NULL, gameDefinition);
+			pCBSharedGameDefs->AddItem(gameDefinition->GetID(), nullptr, gameDefinition);
 		}
 	}
 	

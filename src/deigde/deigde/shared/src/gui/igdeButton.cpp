@@ -80,7 +80,7 @@ pDefault(false)
 
 igdeButton::~igdeButton(){
 	DestroyNativeWidget();
-	SetAction(NULL);
+	SetAction(nullptr);
 }
 
 
@@ -184,7 +184,7 @@ void igdeButton::OnParameterChanged(igdeAction *action){
 void igdeButton::OnDestroyed(igdeAction *action){
 	GetLogger()->LogWarnFormat("IGDE", "igdeButton::OnDestroyed: "
 		"Action(%s) destroyed while still listening on it", action->GetText().GetString());
-	pAction = NULL;
+	pAction = nullptr;
 }
 
 

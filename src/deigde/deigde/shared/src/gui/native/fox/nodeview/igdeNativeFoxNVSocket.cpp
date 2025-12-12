@@ -64,7 +64,7 @@ pRadius(6),
 pColorFrame(FXRGB(0, 0, 0)),
 pColorFillChecked(FXRGB(0, 0, 255)),
 pColorFillUnchecked(pparent->getApp()->getBackColor()),
-pWindowShape(NULL)
+pWindowShape(nullptr)
 {
 	this->flags |= FLAG_ENABLED | FLAG_DROPTARGET;
 	this->target = ttarget;

@@ -113,10 +113,10 @@ public:
 	/** \brief Set description shown in tool tips. */
 	void SetDescription(const char *description);
 	
-	/** \brief Icon or NULL. */
+	/** \brief Icon or nullptr. */
 	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
+	/** \brief Set icon or nullptr. */
 	void SetIcon(igdeIcon *icon);
 	
 	/** \brief User data pointer. */

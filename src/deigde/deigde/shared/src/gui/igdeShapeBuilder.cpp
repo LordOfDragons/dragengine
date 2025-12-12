@@ -58,7 +58,7 @@ igdeShapeBuilder::~igdeShapeBuilder(){
 void igdeShapeBuilder::CreateSphere(decConvexVolumeList &list, const decVector &center, float radius) const{
 	if(radius < 1e-5f) DETHROW(deeInvalidParam);
 	float offset = (sqrtf(2.0f) - 1.0f) * radius;
-	decConvexVolume *volume = NULL;
+	decConvexVolume *volume = nullptr;
 	
 	list.RemoveAllVolumes();
 	
@@ -148,7 +148,7 @@ void igdeShapeBuilder::CreateFrustum(decConvexVolumeList &list, const decVector 
 	float cosY = cosf(angleY);
 	decMatrix matrix = decMatrix::CreateFromQuaternion(orientation)
 		* decMatrix::CreateTranslation( position );
-	decConvexVolume *volume = NULL;
+	decConvexVolume *volume = nullptr;
 	
 	list.RemoveAllVolumes();
 	
@@ -187,7 +187,7 @@ void igdeShapeBuilder::CreateFrustum(decConvexVolumeList &list, const decVector 
 void igdeShapeBuilder::CreateArrow(decConvexVolumeList &list, const decVector &from, const decVector &to, float headRadius, float headLength, float tailRadius) const{
 	if(headRadius <= 0.0f || headLength <= 0.0f || tailRadius < 0.0f) DETHROW(deeInvalidParam);
 	decVector direction, up, right, base;
-	decConvexVolume *volume = NULL;
+	decConvexVolume *volume = nullptr;
 	float length, factor;
 	bool hasTail;
 	
@@ -281,7 +281,7 @@ void igdeShapeBuilder::CreateArrowHead(decConvexVolumeList &list, const decVecto
 	}
 	
 	decVector direction, up, right, base;
-	decConvexVolume *volume = NULL;
+	decConvexVolume *volume = nullptr;
 	float length;
 	
 	// clear the volume
@@ -336,7 +336,7 @@ void igdeShapeBuilder::CreateArrowHead(decConvexVolumeList &list, const decVecto
 
 
 void igdeShapeBuilder::Convert(decConvexVolumeList &cvList, deDebugDrawerShape &ddVolume) const{
-	deDebugDrawerShapeFace *ddFace = NULL;
+	deDebugDrawerShapeFace *ddFace = nullptr;
 	decConvexVolumeFace *cvVolumeFace;
 	decConvexVolume *cvVolume;
 	int v, volumeCount;
@@ -366,7 +366,7 @@ void igdeShapeBuilder::Convert(decConvexVolumeList &cvList, deDebugDrawerShape &
 				}
 				
 				ddVolume.AddFace(ddFace);
-				ddFace = NULL;
+				ddFace = nullptr;
 			}
 		}
 		
@@ -377,7 +377,7 @@ void igdeShapeBuilder::Convert(decConvexVolumeList &cvList, deDebugDrawerShape &
 }
 
 void igdeShapeBuilder::Convert(decConvexVolumeList &cvList, igdeWDebugDrawerShape &ddShape) const{
-	deDebugDrawerShapeFace *ddFace = NULL;
+	deDebugDrawerShapeFace *ddFace = nullptr;
 	decConvexVolumeFace *cvVolumeFace;
 	decConvexVolume *cvVolume;
 	int v, volumeCount;
@@ -407,7 +407,7 @@ void igdeShapeBuilder::Convert(decConvexVolumeList &cvList, igdeWDebugDrawerShap
 				}
 				
 				ddShape.AddFace(ddFace);
-				ddFace = NULL;
+				ddFace = nullptr;
 			}
 		}
 		
@@ -521,7 +521,7 @@ const decVector &p2, const decVector &p3) const{
 
 void igdeShapeBuilder::AddTriToShape(igdeWDebugDrawerShape &ddShape, const decVector &p1,
 const decVector &p2, const decVector &p3, const decVector &normal) const{
-	deDebugDrawerShapeFace *ddFace = NULL;
+	deDebugDrawerShapeFace *ddFace = nullptr;
 	
 	try{
 		ddFace = new deDebugDrawerShapeFace;
@@ -534,7 +534,7 @@ const decVector &p2, const decVector &p3, const decVector &normal) const{
 		ddFace->AddVertex(p3);
 		
 		ddShape.AddFace(ddFace);
-		ddFace = NULL;
+		ddFace = nullptr;
 		
 	}catch(const deException &){
 		if(ddFace) delete ddFace;
@@ -553,7 +553,7 @@ const decVector &p2, const decVector &p3, const decVector &p4) const{
 
 void igdeShapeBuilder::AddQuadToShape(igdeWDebugDrawerShape &ddShape, const decVector &p1,
 const decVector &p2, const decVector &p3, const decVector &p4, const decVector &normal) const{
-	deDebugDrawerShapeFace *ddFace = NULL;
+	deDebugDrawerShapeFace *ddFace = nullptr;
 	
 	try{
 		ddFace = new deDebugDrawerShapeFace;
@@ -567,7 +567,7 @@ const decVector &p2, const decVector &p3, const decVector &p4, const decVector &
 		ddFace->AddVertex(p4);
 		
 		ddShape.AddFace(ddFace);
-		ddFace = NULL;
+		ddFace = nullptr;
 		
 	}catch(const deException &){
 		if(ddFace) delete ddFace;
@@ -581,7 +581,7 @@ const decVector &p2, const decVector &p3, const decVector &p4, const decVector &
 //////////////////////
 
 void igdeShapeBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, const decVector &normal) const{
-	decConvexVolumeFace *face = NULL;
+	decConvexVolumeFace *face = nullptr;
 	decVector faceNormal;
 	
 	try{
@@ -605,7 +605,7 @@ void igdeShapeBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, i
 }
 
 void igdeShapeBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3, int p4, const decVector &normal) const{
-	decConvexVolumeFace *face = NULL;
+	decConvexVolumeFace *face = nullptr;
 	decVector faceNormal;
 	
 	try{
@@ -630,7 +630,7 @@ void igdeShapeBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, i
 }
 
 void igdeShapeBuilder::pVolumeAddFace(decConvexVolume *volume, int p1, int p2, int p3) const{
-	decConvexVolumeFace *face = NULL;
+	decConvexVolumeFace *face = nullptr;
 	decVector faceNormal;
 	
 	try{

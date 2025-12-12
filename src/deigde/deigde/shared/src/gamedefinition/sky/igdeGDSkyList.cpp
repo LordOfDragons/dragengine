@@ -73,7 +73,7 @@ igdeGDSky *igdeGDSkyList::GetWithPath(const char *path) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 igdeGDSky *igdeGDSkyList::GetWithName(const char *name) const{
@@ -91,7 +91,7 @@ igdeGDSky *igdeGDSkyList::GetWithName(const char *name) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 int igdeGDSkyList::IndexOf(igdeGDSky *sky) const{

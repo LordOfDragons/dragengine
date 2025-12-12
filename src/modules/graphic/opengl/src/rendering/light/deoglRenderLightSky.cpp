@@ -210,48 +210,48 @@ pSolidShadowMap(NULL)
 		const decColor colorBgSub2(0.1f, 0.1f, 0.1f, 0.75f);
 		const decColor colorBgSub3(0.15f, 0.15f, 0.15f, 0.75f);
 		
-		pDebugInfoSolid.TakeOver(new deoglDebugInformation("Sky", colorText, colorBgUp));
-		pDebugInfoTransparent.TakeOver(new deoglDebugInformation("Sky", colorText, colorBgUp));
+		pDebugInfoSolid = deoglDebugInformation::Ref::New("Sky", colorText, colorBgUp);
+		pDebugInfoTransparent = deoglDebugInformation::Ref::New("Sky", colorText, colorBgUp);
 		
 		
 		
-		pDebugInfoSolidDetail.TakeOver(new deoglDebugInformation("Light Sky Solid", colorText, colorBg));
+		pDebugInfoSolidDetail = deoglDebugInformation::Ref::New("Light Sky Solid", colorText, colorBg);
 		
-		pDebugInfoSolidShadow.TakeOver(new deoglDebugInformation("Shadow", colorText, colorBgSub));
+		pDebugInfoSolidShadow = deoglDebugInformation::Ref::New("Shadow", colorText, colorBgSub);
 		pDebugInfoSolidDetail->GetChildren().Add(pDebugInfoSolidShadow);
 		
-		pDebugInfoSolidShadowOcclusion.TakeOver(new deoglDebugInformation("Occlusion", colorText, colorBgSub2));
+		pDebugInfoSolidShadowOcclusion = deoglDebugInformation::Ref::New("Occlusion", colorText, colorBgSub2);
 		pDebugInfoSolidShadow->GetChildren().Add(pDebugInfoSolidShadowOcclusion);
 		
-		pDebugInfoSolidShadowSplit.TakeOver(new deoglDebugInformation("Splits", colorText, colorBgSub2));
+		pDebugInfoSolidShadowSplit = deoglDebugInformation::Ref::New("Splits", colorText, colorBgSub2);
 		pDebugInfoSolidShadow->GetChildren().Add(pDebugInfoSolidShadowSplit);
 		
-		pDebugInfoSolidShadowSplitContent.TakeOver(new deoglDebugInformation("Add Elements", colorText, colorBgSub3));
+		pDebugInfoSolidShadowSplitContent = deoglDebugInformation::Ref::New("Add Elements", colorText, colorBgSub3);
 		pDebugInfoSolidShadowSplit->GetChildren().Add(pDebugInfoSolidShadowSplitContent);
 		
-		pDebugInfoSolidShadowSplitLODLevels.TakeOver(new deoglDebugInformation("LOD Levels", colorText, colorBgSub3));
+		pDebugInfoSolidShadowSplitLODLevels = deoglDebugInformation::Ref::New("LOD Levels", colorText, colorBgSub3);
 		pDebugInfoSolidShadowSplit->GetChildren().Add(pDebugInfoSolidShadowSplitLODLevels);
 		
-		pDebugInfoSolidShadowSplitClear.TakeOver(new deoglDebugInformation("Clear", colorText, colorBgSub3));
+		pDebugInfoSolidShadowSplitClear = deoglDebugInformation::Ref::New("Clear", colorText, colorBgSub3);
 		pDebugInfoSolidShadowSplit->GetChildren().Add(pDebugInfoSolidShadowSplitClear);
 		
-		pDebugInfoSolidShadowSplitTask.TakeOver(new deoglDebugInformation("Task", colorText, colorBgSub3));
+		pDebugInfoSolidShadowSplitTask = deoglDebugInformation::Ref::New("Task", colorText, colorBgSub3);
 		pDebugInfoSolidShadowSplit->GetChildren().Add(pDebugInfoSolidShadowSplitTask);
 		
-		pDebugInfoSolidShadowSplitRender.TakeOver(new deoglDebugInformation("Render", colorText, colorBgSub3));
+		pDebugInfoSolidShadowSplitRender = deoglDebugInformation::Ref::New("Render", colorText, colorBgSub3);
 		pDebugInfoSolidShadowSplit->GetChildren().Add(pDebugInfoSolidShadowSplitRender);
 		
-		pDebugInfoSolidShadowGI.TakeOver(new deoglDebugInformation("Shadow GI", colorText, colorBgSub));
+		pDebugInfoSolidShadowGI = deoglDebugInformation::Ref::New("Shadow GI", colorText, colorBgSub);
 		pDebugInfoSolidDetail->GetChildren().Add(pDebugInfoSolidShadowGI);
 		
-		pDebugInfoSolidLight.TakeOver(new deoglDebugInformation("Light", colorText, colorBgSub));
+		pDebugInfoSolidLight = deoglDebugInformation::Ref::New("Light", colorText, colorBgSub);
 		pDebugInfoSolidDetail->GetChildren().Add(pDebugInfoSolidLight);
 		
 		
 		
-		pDebugInfoTransparentDetail.TakeOver(new deoglDebugInformation("Light Sky Transp", colorText, colorBg));
+		pDebugInfoTransparentDetail = deoglDebugInformation::Ref::New("Light Sky Transp", colorText, colorBg);
 		
-		pDebugInfoTransparentLight.TakeOver(new deoglDebugInformation("Light", colorText, colorBgSub));
+		pDebugInfoTransparentLight = deoglDebugInformation::Ref::New("Light", colorText, colorBgSub);
 		pDebugInfoTransparentDetail->GetChildren().Add(pDebugInfoTransparentLight);
 		
 	}catch(const deException &){

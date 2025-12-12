@@ -82,7 +82,7 @@ void deoglImage::SyncToRender(){
 	if(!pPixelBufferRImageTexture){
 		if(pPixelBuffer){
 			// if there is a pixel buffer held already copy this one which is faster
-			pPixelBufferRImageTexture.TakeOver(new deoglPixelBuffer(pPixelBuffer));
+			pPixelBufferRImageTexture = deoglPixelBuffer::Ref::New(pPixelBuffer);
 			
 		}else{
 			// if there is no pixel buffer held create a new one which can cause retaining
@@ -201,7 +201,7 @@ void deoglImage::pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer){
 	
 	if(componentCount == 1){
 		if(bitCount == 8){
-			pixelBuffer.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfByte1, width, height, depth));
+			pixelBuffer = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfByte1, width, height, depth);
 			const sGrayscale8 * const srcData = pImage.GetDataGrayscale8();
 			
 			if(srcData){
@@ -227,7 +227,7 @@ void deoglImage::pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer){
 			}
 			
 		}else if(bitCount == 16){
-			pixelBuffer.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat1, width, height, depth));
+			pixelBuffer = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat1, width, height, depth);
 			const sGrayscale16 * const srcData = pImage.GetDataGrayscale16();
 			
 			if(srcData){
@@ -254,7 +254,7 @@ void deoglImage::pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer){
 			}
 			
 		}else{
-			pixelBuffer.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat1, width, height, depth));
+			pixelBuffer = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat1, width, height, depth);
 			const sGrayscale32 * const srcData = pImage.GetDataGrayscale32();
 			
 			if(srcData){
@@ -282,7 +282,7 @@ void deoglImage::pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer){
 		
 	}else if(componentCount == 2){
 		if(bitCount == 8){
-			pixelBuffer.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfByte2, width, height, depth));
+			pixelBuffer = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfByte2, width, height, depth);
 			const sGrayscaleAlpha8 * const srcData = pImage.GetDataGrayscaleAlpha8();
 			
 			if(srcData){
@@ -309,7 +309,7 @@ void deoglImage::pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer){
 			}
 			
 		}else if(bitCount == 16){
-			pixelBuffer.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat2, width, height, depth));
+			pixelBuffer = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat2, width, height, depth);
 			const sGrayscaleAlpha16 * const srcData = pImage.GetDataGrayscaleAlpha16();
 			
 			if(srcData){
@@ -337,7 +337,7 @@ void deoglImage::pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer){
 			}
 			
 		}else{
-			pixelBuffer.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat2, width, height, depth));
+			pixelBuffer = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat2, width, height, depth);
 			const sGrayscaleAlpha32 * const srcData = pImage.GetDataGrayscaleAlpha32();
 			
 			if(srcData){
@@ -366,7 +366,7 @@ void deoglImage::pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer){
 		
 	}else if(componentCount == 3){
 		if(bitCount == 8){
-			pixelBuffer.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfByte3, width, height, depth));
+			pixelBuffer = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfByte3, width, height, depth);
 			const sRGB8 * const srcData = pImage.GetDataRGB8();
 			
 			if(srcData){
@@ -394,7 +394,7 @@ void deoglImage::pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer){
 			}
 			
 		}else if(bitCount == 16){
-			pixelBuffer.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat3, width, height, depth));
+			pixelBuffer = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat3, width, height, depth);
 			const sRGB16 * const srcData = pImage.GetDataRGB16();
 			
 			if(srcData){
@@ -423,7 +423,7 @@ void deoglImage::pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer){
 			}
 			
 		}else{
-			pixelBuffer.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat3, width, height, depth));
+			pixelBuffer = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat3, width, height, depth);
 			const sRGB32 * const srcData = pImage.GetDataRGB32();
 			
 			if(srcData){
@@ -453,7 +453,7 @@ void deoglImage::pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer){
 		
 	}else{ // componentCount == 4
 		if(bitCount == 8){
-			pixelBuffer.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfByte4, width, height, depth));
+			pixelBuffer = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfByte4, width, height, depth);
 			const sRGBA8 * const srcData = pImage.GetDataRGBA8();
 			
 			if(srcData){
@@ -482,7 +482,7 @@ void deoglImage::pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer){
 			}
 			
 		}else if(bitCount == 16){
-			pixelBuffer.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, width, height, depth));
+			pixelBuffer = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat4, width, height, depth);
 			const sRGBA16 * const srcData = pImage.GetDataRGBA16();
 			
 			if(srcData){
@@ -512,7 +512,7 @@ void deoglImage::pCreatePixelBufferSafe(deoglPixelBuffer::Ref &pixelBuffer){
 			}
 			
 		}else{
-			pixelBuffer.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, width, height, depth));
+			pixelBuffer = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat4, width, height, depth);
 			const sRGBA32 * const srcData = pImage.GetDataRGBA32();
 			
 			if(srcData){

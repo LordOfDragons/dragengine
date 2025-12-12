@@ -204,7 +204,7 @@ void deSsdkServiceSteam::GetStats(const decUniqueID &id, const deServiceObject& 
 	response->SetStringChildAt("function", "getStats");
 	
 	// stats
-	soResp.TakeOver(new deServiceObject);
+	soResp = deServiceObject::Ref::New();
 	response->SetChildAt("stats", soResp);
 	
 	soIn = request.GetChildAt("stats");
@@ -224,7 +224,7 @@ void deSsdkServiceSteam::GetStats(const decUniqueID &id, const deServiceObject& 
 	}
 	
 	// achievements
-	soResp.TakeOver(new deServiceObject);
+	soResp = deServiceObject::Ref::New();
 	response->SetChildAt("achievements", soResp);
 	
 	soIn = request.GetChildAt("achievements");
@@ -337,7 +337,7 @@ void deSsdkServiceSteam::SetStats(const decUniqueID &id, const deServiceObject &
 	int i, count;
 	
 	// stats
-	soResp.TakeOver(new deServiceObject);
+	soResp = deServiceObject::Ref::New();
 	response->SetChildAt("stats", soResp);
 	
 	soIn = request.GetChildAt("stats");
@@ -365,7 +365,7 @@ void deSsdkServiceSteam::SetStats(const decUniqueID &id, const deServiceObject &
 	}
 	
 	// achievements
-	soResp.TakeOver(new deServiceObject);
+	soResp = deServiceObject::Ref::New();
 	response->SetChildAt("achievements", soResp);
 	
 	soIn = request.GetChildAt("achievements");

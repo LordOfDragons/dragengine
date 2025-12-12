@@ -63,9 +63,9 @@ pEnvironment(environment),
 
 pVFSPath("/"),
 
-pSkinManager(NULL),
-pClassManager(NULL),
-pSkyManager(NULL)
+pSkinManager(nullptr),
+pClassManager(nullptr),
+pSkyManager(nullptr)
 {
 	try{
 		pSkinManager = new igdeGDSkinManager;
@@ -164,10 +164,10 @@ void igdeGameDefinition::SetDefaultSkin(deSkin *skin){
 void igdeGameDefinition::UpdateEngineObjects(){
 	// free old engine objects
 	if(pDefaultModel){
-		pDefaultModel = NULL;
+		pDefaultModel = nullptr;
 	}
 	if(pDefaultSkin){
-		pDefaultSkin = NULL;
+		pDefaultSkin = nullptr;
 	}
 	
 	// load default engine objects

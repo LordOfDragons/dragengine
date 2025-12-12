@@ -107,29 +107,29 @@ pGIRenderTaskAddDynamic(plan.GetRenderThread(), pGIRenderTaskDynamic)
 	for(i=0; i<4; i++){
 		pShadowLayers[i].renderTask = new deoglRenderTask(renderThread);
 		pShadowLayers[i].addToRenderTask = new deoglAddToRenderTask(renderThread, *pShadowLayers[i].renderTask);
-		pShadowLayers[i].computeRenderTask.TakeOver(new deoglComputeRenderTask(renderThread));
+		pShadowLayers[i].computeRenderTask = deoglComputeRenderTask::Ref::New(renderThread);
 	}
 	
 	const deoglRenderPlanCompute &compute = plan.GetCompute();
 	
-	pUBOFindConfig.TakeOver(new deoglSPBlockUBO(compute.GetUBOFindConfig()));
-	pSSBOCounters.TakeOver(new deoglSPBlockSSBO(compute.GetSSBOCounters(), deoglSPBlockSSBO::etGpu));
-	pSSBOVisibleElements.TakeOver(new deoglSPBlockSSBO(compute.GetSSBOVisibleElements(), deoglSPBlockSSBO::etGpu));
+	pUBOFindConfig = deoglSPBlockUBO::Ref::New(compute.GetUBOFindConfig());
+	pSSBOCounters = deoglSPBlockSSBO::Ref::New(compute.GetSSBOCounters(), deoglSPBlockSSBO::etGpu);
+	pSSBOVisibleElements = deoglSPBlockSSBO::Ref::New(compute.GetSSBOVisibleElements(), deoglSPBlockSSBO::etGpu);
 	pSSBOVisibleElements->EnsureBuffer();
-	pSSBOVisibleElements2.TakeOver(new deoglSPBlockSSBO(pSSBOVisibleElements, deoglSPBlockSSBO::etGpu));
+	pSSBOVisibleElements2 = deoglSPBlockSSBO::Ref::New(pSSBOVisibleElements, deoglSPBlockSSBO::etGpu);
 	pSSBOVisibleElements2->EnsureBuffer();
 	
-	pUBOFindConfigGIStatic.TakeOver(new deoglSPBlockUBO(compute.GetUBOFindConfig()));
-	pSSBOCountersGIStatic.TakeOver(new deoglSPBlockSSBO(compute.GetSSBOCounters()));
-	pSSBOVisibleElementsGIStatic.TakeOver(new deoglSPBlockSSBO(compute.GetSSBOVisibleElements()));
+	pUBOFindConfigGIStatic = deoglSPBlockUBO::Ref::New(compute.GetUBOFindConfig());
+	pSSBOCountersGIStatic = deoglSPBlockSSBO::Ref::New(compute.GetSSBOCounters());
+	pSSBOVisibleElementsGIStatic = deoglSPBlockSSBO::Ref::New(compute.GetSSBOVisibleElements());
 	pSSBOVisibleElementsGIStatic->EnsureBuffer();
-	pCRTShadowGIStatic.TakeOver(new deoglComputeRenderTask(renderThread));
+	pCRTShadowGIStatic = deoglComputeRenderTask::Ref::New(renderThread);
 	
-	pUBOFindConfigGIDynamic.TakeOver(new deoglSPBlockUBO(compute.GetUBOFindConfig()));
-	pSSBOCountersGIDynamic.TakeOver(new deoglSPBlockSSBO(compute.GetSSBOCounters()));
-	pSSBOVisibleElementsGIDynamic.TakeOver(new deoglSPBlockSSBO(compute.GetSSBOVisibleElements()));
+	pUBOFindConfigGIDynamic = deoglSPBlockUBO::Ref::New(compute.GetUBOFindConfig());
+	pSSBOCountersGIDynamic = deoglSPBlockSSBO::Ref::New(compute.GetSSBOCounters());
+	pSSBOVisibleElementsGIDynamic = deoglSPBlockSSBO::Ref::New(compute.GetSSBOVisibleElements());
 	pSSBOVisibleElementsGIDynamic->EnsureBuffer();
-	pCRTShadowGIDynamic.TakeOver(new deoglComputeRenderTask(renderThread));
+	pCRTShadowGIDynamic = deoglComputeRenderTask::Ref::New(renderThread);
 }
 
 deoglRenderPlanSkyLight::~deoglRenderPlanSkyLight(){

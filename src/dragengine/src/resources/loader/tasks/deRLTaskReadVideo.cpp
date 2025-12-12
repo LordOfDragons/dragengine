@@ -66,7 +66,7 @@ pSucceeded(false)
 		return;
 	}
 	
-	pVideo.TakeOver(new deVideo(engine.GetVideoManager(), vfs, path, 0));
+	pVideo = deVideo::Ref::New(engine.GetVideoManager(), vfs, path, 0);
 	
 	LogCreateExit();
 }

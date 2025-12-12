@@ -139,7 +139,7 @@ pInfluenceBorderSize(0.0f),
 pWorldMarkedRemove(false)
 {
 	try{
-		pEnvMap.TakeOver(new deoglEnvironmentMap(renderThread));
+		pEnvMap = deoglEnvironmentMap::Ref::New(renderThread);
 		pEnvMap->SetSize(renderThread.GetConfiguration().GetEnvMapSize());
 		pEnvMap->SetIsFloat(true);
 		pEnvMap->SetSkyOnly(false);

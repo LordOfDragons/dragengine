@@ -46,7 +46,7 @@ deoglModel::deoglModel(deGraphicOpenGl &ogl, const deModel &model) :
 pOgl(ogl),
 pModel(model){
 	try{
-		pRModel.TakeOver(new deoglRModel(ogl.GetRenderThread(), model));
+		pRModel = deoglRModel::Ref::New(ogl.GetRenderThread(), model);
 		
 	}catch(const deException &){
 		pCleanUp();

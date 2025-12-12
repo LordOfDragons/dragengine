@@ -135,7 +135,7 @@ public:
 	/** \brief Get style at index. */
 	igdeTextStyle *GetStyleAt(int index) const;
 	
-	/** \brief Get named style or NULL if absent. */
+	/** \brief Get named style or nullptr if absent. */
 	igdeTextStyle *GetStyleNamed(const char *name) const;
 	
 	/** \brief Index of named style or -1 if absent. */
@@ -223,7 +223,7 @@ public:
 	/** \brief Get segment at index. */
 	const igdeTextSegment &GetSegmentAt(int index) const;
 	
-	/** \brief Segment containing position or NULL if not found. */
+	/** \brief Segment containing position or nullptr if not found. */
 	const igdeTextSegment *GetSegmentWith(int offset) const;
 	
 	/**
@@ -235,7 +235,7 @@ public:
 	 * \param[in] begin Offset to first character.
 	 * \param[in] end Offset to last character.
 	 * \param[in] style Name of style.
-	 * \param[in] action Action to use on clicking or NULL.
+	 * \param[in] action Action to use on clicking or nullptr.
 	 */
 	void SetTextSegment(int begin, int end, const char *style, igdeAction *action);
 	

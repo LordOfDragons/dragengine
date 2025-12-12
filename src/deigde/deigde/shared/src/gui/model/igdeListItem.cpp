@@ -40,21 +40,21 @@
 
 igdeListItem::igdeListItem(const char *text) :
 pText(text),
-pData(NULL),
+pData(nullptr),
 pSelected(false){
 }
 
 igdeListItem::igdeListItem(const char *text, igdeIcon *icon) :
 pText(text),
 pIcon(icon),
-pData(NULL){
+pData(nullptr){
 }
 
 igdeListItem::igdeListItem(const char *text, igdeIcon *icon, const char *description) :
 pText(text),
 pDescription(description),
 pIcon(icon),
-pData(NULL),
+pData(nullptr),
 pSelected(false){
 }
 

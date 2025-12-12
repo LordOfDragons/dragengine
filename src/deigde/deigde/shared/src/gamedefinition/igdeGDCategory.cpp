@@ -42,7 +42,7 @@
 igdeGDCategory::igdeGDCategory(const char *name) :
 pName(name),
 pHidden(false),
-pParent(NULL)
+pParent(nullptr)
 {
 	if(pName.IsEmpty()){
 		DETHROW(deeInvalidParam);
@@ -91,7 +91,7 @@ void igdeGDCategory::SetAutoCategorizePattern(const decStringSet &patternList){
 }
 
 igdeGDCategory *igdeGDCategory::AutoCategorize(const decString &path) const{
-	igdeGDCategory *category = NULL;
+	igdeGDCategory *category = nullptr;
 	int longestMatch = 0;
 	pAutoCategorize(path, longestMatch, category);
 	return category;
@@ -152,12 +152,12 @@ igdeGDCategory *igdeGDCategory::GetCategoryNamed(const char *name) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 igdeGDCategory *igdeGDCategory::GetCategoryWithPath(const decPath &path) const{
 	const int count = path.GetComponentCount();
-	igdeGDCategory *category = NULL;
+	igdeGDCategory *category = nullptr;
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -189,14 +189,14 @@ void igdeGDCategory::RemoveCategory(igdeGDCategory *category){
 	if(index == -1){
 		DETHROW(deeInvalidParam);
 	}
-	category->SetParent(NULL);
+	category->SetParent(nullptr);
 	pCategories.RemoveFrom(index);
 }
 
 void igdeGDCategory::RemoveAllCategories(){
 	while(pCategories.GetCount() > 0){
 		const int index = pCategories.GetCount() - 1;
-		((igdeGDCategory*)pCategories.GetAt(index))->SetParent(NULL);
+		((igdeGDCategory*)pCategories.GetAt(index))->SetParent(nullptr);
 		pCategories.RemoveFrom(index);
 	}
 }

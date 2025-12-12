@@ -111,7 +111,7 @@ void deoxrDPNoControllerHands::pAddDevice(bool left){
 		return;
 	}
 	
-	device.TakeOver(new deoxrDevice(GetInstance().GetOxr(), *this));
+	device = deoxrDevice::Ref::New(GetInstance().GetOxr(), *this);
 	
 	decString id;
 	

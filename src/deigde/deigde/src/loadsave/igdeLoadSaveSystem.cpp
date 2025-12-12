@@ -85,7 +85,7 @@ igdeLoadSaveSystem::igdeLoadSaveSystem(igdeWindowMain *windowMain){
 	}
 	
 	pWindowMain = windowMain;
-	pLSGameProject = NULL;
+	pLSGameProject = nullptr;
 	
 	try{
 		pLSGameProject = new igdeLSGameProject(this);
@@ -271,7 +271,7 @@ void igdeLoadSaveSystem::pCleanUp(){
 void igdeLoadSaveSystem::pAddPattern(igdeFilePatternList &fpl, const deLoadableModule &module){
 	const decStringList &patternList = module.GetPatternList();
 	const int patternCount = patternList.GetCount();
-	igdeFilePattern *filePattern = NULL;
+	igdeFilePattern *filePattern = nullptr;
 	decString patterns;
 	int i;
 	
@@ -296,7 +296,7 @@ void igdeLoadSaveSystem::pAddPattern(igdeFilePatternList &fpl, const deLoadableM
 }
 
 void igdeLoadSaveSystem::pAddPattern(igdeFilePatternList &fpl, const char *name, const char *pattern, const char *defaultExtension){
-	igdeFilePattern *filePattern = NULL;
+	igdeFilePattern *filePattern = nullptr;
 	
 	try{
 		filePattern = new igdeFilePattern(name, pattern, defaultExtension);

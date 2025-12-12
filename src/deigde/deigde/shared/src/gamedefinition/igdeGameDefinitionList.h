@@ -63,7 +63,7 @@ public:
 	/** \brief Game definition at index. */
 	igdeGameDefinition *GetAt(int index) const;
 	
-	/** \brief Game definition with identifier or NULL if absent. */
+	/** \brief Game definition with identifier or nullptr if absent. */
 	igdeGameDefinition *GetWithID(const char *id) const;
 	
 	/** \brief Index of game definition or -1 if absent. */

@@ -68,6 +68,8 @@ private:
 	bool pSuccess;
 	
 public:
+	typedef deTObjectReference<igdeWOSOSpeakerResLoadComponent> Ref;
+	
 	igdeWOSOSpeakerResLoadComponent(igdeWOSOSpeaker &owner) :
 	pOwner(&owner), pCounter(0), pSuccess(true){
 	}
@@ -76,7 +78,7 @@ public:
 	}
 	
 	void Drop(){
-		pOwner = NULL;
+		pOwner = nullptr;
 	}
 	
 	void LoadSound(const char *path){
@@ -137,7 +139,7 @@ igdeWOSOSpeaker::igdeWOSOSpeaker(igdeWObject &wrapper,
 igdeWOSubObject(wrapper, prefix),
 pGDSpeaker(gdSpeaker),
 pAddedToWorld(false),
-pAttachment(NULL)
+pAttachment(nullptr)
 {
 	pLoadResources();
 }
@@ -145,7 +147,7 @@ pAttachment(NULL)
 igdeWOSOSpeaker::~igdeWOSOSpeaker(){
 	if(pResLoad){
 		((igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
-		pResLoad = NULL;
+		pResLoad = nullptr;
 	}
 	pDestroySpeaker();
 	pClearTrigger(pTriggerPlaying);
@@ -242,10 +244,10 @@ void igdeWOSOSpeaker::AsyncLoadFinished(bool success){
 void igdeWOSOSpeaker::pLoadResources(){
 	if(pResLoad){
 		((igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad).Drop();
-		pResLoad = NULL;
+		pResLoad = nullptr;
 	}
 	
-	pResLoad.TakeOver(new igdeWOSOSpeakerResLoadComponent(*this));
+	pResLoad = igdeWOSOSpeakerResLoadComponent::Ref::New(*this);
 	igdeWOSOSpeakerResLoadComponent &rl =
 		(igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
 	

@@ -86,10 +86,10 @@ protected:
 public:
 	/** \text Management */
 	/*@{*/
-	/** \brief Widget to show context menu below or NULL if not present. */
+	/** \brief Widget to show context menu below or nullptr if not present. */
 	inline const igdeWidget::Ref &GetWidget() const{ return pWidget; }
 	
-	/** \brief Set widget to show context menu below or NULL if not present. */
+	/** \brief Set widget to show context menu below or nullptr if not present. */
 	void SetWidget(igdeWidget *widget);
 	
 	
@@ -98,7 +98,7 @@ public:
 	 * \brief Run action.
 	 * 
 	 * Calls AddContextMenuEntries() to fill the context menu then shows it. If the widget
-	 * is NULL, the widget is invisible or the context menu is empty this action is a no-op.
+	 * is nullptr, the widget is invisible or the context menu is empty this action is a no-op.
 	 */
 	virtual void OnAction();
 	

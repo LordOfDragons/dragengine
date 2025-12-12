@@ -125,7 +125,7 @@ public:
 	/** \brief Item at index. */
 	igdeListItem *GetItemAt(int index) const;
 	
-	/** \brief Item with data or NULL if not found. */
+	/** \brief Item with data or nullptr if not found. */
 	igdeListItem *GetItemWithData(void *data) const;
 	
 	/** \brief Item is present. */
@@ -150,18 +150,18 @@ public:
 	void AddItem(igdeListItem *item);
 	
 	/** \brief Add item of type igdeListItem with text. */
-	void AddItem(const char *text, igdeIcon *icon = NULL, void *data = NULL);
+	void AddItem(const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
 	
-	void AddItem(igdeListItem::Ref &item, const char *text, igdeIcon *icon = NULL, void *data = NULL);
+	void AddItem(igdeListItem::Ref &item, const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	/** \brief Insert item at index. */
 	void InsertItem(int index, igdeListItem *item);
 	
 	/** \brief Insert item of type igdeListItem with text at index. */
-	void InsertItem(int index, const char *text, igdeIcon *icon = NULL, void *data = NULL);
+	void InsertItem(int index, const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	void InsertItem(igdeListItem::Ref &item, int index, const char *text,
-		igdeIcon *icon = NULL, void *data = NULL);
+		igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	/** \brief Move item. */
 	void MoveItem(int fromIndex, int toIndex);
@@ -177,10 +177,10 @@ public:
 	
 	
 	
-	/** \brief Sorter or NULL. */
+	/** \brief Sorter or nullptr. */
 	inline const igdeListItemSorter::Ref &GetSorter() const{ return pSorter; }
 	
-	/** \brief Set sorter or NULL. */
+	/** \brief Set sorter or nullptr. */
 	void SetSorter(igdeListItemSorter *sorter);
 	
 	/** \brief Set default sorter sorting items ascending lexicographically by their text. */

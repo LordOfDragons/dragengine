@@ -547,7 +547,7 @@ void deClassInputSystem::pUpdateCachedDevices(){
 	pCachedDevices.RemoveAll();
 	
 	for(i=0; i<count; i++){
-		device.TakeOver(new dedsInputDevice(pDS, module, i));
+		device = dedsInputDevice::Ref::New(pDS, module, i);
 		
 		dedsInputDevice *reuseDevice = nullptr;
 		for(j=0; j<oldDeviceCount; j++){

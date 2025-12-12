@@ -277,7 +277,7 @@ bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requi
 	if(requiredName && requiredName[0] && strcmp(requiredName, pCleanString) != 0){
 		RaiseFatalError();
 	}
-	tag.TakeOver(new decXmlElementTag(pCleanString));
+	tag = decXmlElementTag::Ref::New(pCleanString);
 	tag->SetLineNumber(lineNumber);
 	tag->SetPositionNumber(posNumber);
 	
@@ -442,7 +442,7 @@ bool decXmlParser::ParseReference(decXmlContainer *container){
 				pAddCharacterData(container, '\'', lineNumber, posNumber);
 				
 			} else {
-				entRef.TakeOver(new decXmlEntityReference(name));
+				entRef = decXmlEntityReference::Ref::New(name);
 				entRef->SetLineNumber(lineNumber);
 				entRef->SetPositionNumber(posNumber);
 				container->AddElement(entRef);
@@ -473,7 +473,7 @@ bool decXmlParser::ParseCDSect(decXmlContainer *container){
 		count++;
 	}
 	SetCleanString(count);
-	cdsect.TakeOver(new decXmlCDSect(pCleanString));
+	cdsect = decXmlCDSect::Ref::New(pCleanString);
 	cdsect->SetLineNumber(lineNumber);
 	cdsect->SetPositionNumber(posNumber);
 	RemoveFromToken(count);
@@ -490,14 +490,14 @@ void decXmlParser::ParseAttribute(decXmlContainer *container){
 	// Attribute ::= Name Eq AttValue
 	// (ADDITION): if Name begins with 'xmlns:' make a namespace out of it
 	ParseName(0, true);
-	attValue.TakeOver(new decXmlAttValue(pCleanString));
+	attValue = decXmlAttValue::Ref::New(pCleanString);
 	attValue->SetLineNumber(lineNumber);
 	attValue->SetPositionNumber(posNumber);
 	ParseEquals();
 	ParseAttValue(attValue);
 	// check if this is a namespace
 	if(strncmp(attValue->GetName(), "xmlns:", 6) == 0){
-		ns.TakeOver(new decXmlNamespace(attValue->GetName() + 6, attValue->GetValue()));
+		ns = decXmlNamespace::Ref::New(attValue->GetName() + 6, attValue->GetValue());
 		if(!ns) DETHROW(deeOutOfMemory);
 		ns->SetLineNumber(lineNumber);
 		ns->SetPositionNumber(posNumber);
@@ -697,7 +697,7 @@ bool decXmlParser::ParseComment(decXmlContainer *container){
 	}
 	// add comment
 	SetCleanString(count);
-	comment.TakeOver(new decXmlComment(pCleanString));
+	comment = decXmlComment::Ref::New(pCleanString);
 	comment->SetLineNumber(lineNumber);
 	comment->SetPositionNumber(posNumber);
 	container->AddElement(comment);
@@ -721,7 +721,7 @@ bool decXmlParser::ParsePI(decXmlContainer *container){
 			RaiseFatalError();
 		}
 	}
-	pi.TakeOver(new decXmlPI(pCleanString));
+	pi = decXmlPI::Ref::New(pCleanString);
 	pi->SetLineNumber(lineNumber);
 	pi->SetPositionNumber(posNumber);
 	if(ParseSpaces() > 0){

@@ -56,8 +56,8 @@
 
 debnVisitorValueType::debnVisitorValueType(){
 	pType = 0;
-	pMessage.TakeOver(new deNetworkMessage());
-	pWriter.TakeOver(new deNetworkMessageWriter(pMessage, false));
+	pMessage = deNetworkMessage::Ref::New();
+	pWriter = deNetworkMessageWriter::Ref::New(pMessage, false);
 }
 
 debnVisitorValueType::~debnVisitorValueType(){

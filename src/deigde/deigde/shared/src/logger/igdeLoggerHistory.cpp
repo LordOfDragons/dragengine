@@ -41,7 +41,7 @@
 
 igdeLoggerHistory::igdeLoggerHistory(){
 	pHistorySize = 0;
-	pEntries = NULL;
+	pEntries = nullptr;
 	pEntryPointer = 0;
 	pEntryCount = 0;
 	
@@ -69,7 +69,7 @@ void igdeLoggerHistory::SetHistorySize(int size){
 	
 	pMutex.Lock();
 	
-	igdeLoggerHistoryEntry *newArray = NULL;
+	igdeLoggerHistoryEntry *newArray = nullptr;
 	
 	try{
 		if(size > 0){

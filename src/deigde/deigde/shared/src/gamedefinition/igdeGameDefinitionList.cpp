@@ -77,7 +77,7 @@ igdeGameDefinition *igdeGameDefinitionList::GetWithID(const char *id) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 int igdeGameDefinitionList::IndexOf(igdeGameDefinition *gameDefinition) const{

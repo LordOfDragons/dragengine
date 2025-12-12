@@ -100,7 +100,7 @@ void igdeNativeFoxIconListBoxItem::UpdateFromItem(){
 	text.Add(pListItem->GetText());
 	text += pListItem->GetDetails();
 	
-	FXIcon * const iicon = pListItem->GetIcon() ? (FXIcon*)pListItem->GetIcon()->GetNativeIcon() : NULL;
+	FXIcon * const iicon = pListItem->GetIcon() ? (FXIcon*)pListItem->GetIcon()->GetNativeIcon() : nullptr;
 	
 	setText(text.Join("\t").GetString());
 	setBigIcon(iicon);
@@ -161,7 +161,7 @@ FXVerticalFrame(pparent, layoutFlags.flags | IconListBoxFlagsBorder(powner), 0, 
 pOwner(&powner),
 pFont(IconListBoxFont(powner, guitheme)),
 pListBox(new FXIconList(this, this, ID_LISTBOX, IconListBoxFlags(powner))),
-pResizer(NULL)
+pResizer(nullptr)
 {
 	#ifndef OS_W32_VS
 	(void)IconListBoxPadLeft;
@@ -317,7 +317,7 @@ void igdeNativeFoxIconListBox::UpdateHeader(){
 		const igdeListHeader &header = *pOwner->GetHeaderAt(i);
 		
 		nativeHeader.appendItem(header.GetTitle().GetString(),
-			header.GetIcon() ? (FXIcon*)header.GetIcon()->GetNativeIcon() : NULL,
+			header.GetIcon() ? (FXIcon*)header.GetIcon()->GetNativeIcon() : nullptr,
 			header.GetSize());
 	}
 }

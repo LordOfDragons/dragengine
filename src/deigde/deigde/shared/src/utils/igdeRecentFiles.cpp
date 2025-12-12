@@ -107,7 +107,7 @@ public:
 
 igdeRecentFiles::igdeRecentFiles(igdeEnvironment &environment, bool unixPath, int size) :
 pEnvironment(environment),
-pEditorWindow(NULL),
+pEditorWindow(nullptr),
 pSize(0),
 pUnixPath(unixPath)
 {

@@ -63,7 +63,7 @@
 
 igdeEditorModuleManager::igdeEditorModuleManager(igdeWindowMain &windowMain) :
 pWindowMain(windowMain),
-pActiveModule(NULL)
+pActiveModule(nullptr)
 {
 	try{
 		decPath pathModules(decPath::CreatePathNative(windowMain.GetConfiguration().GetPathLib()));
@@ -161,11 +161,11 @@ igdeEditorModuleDefinition *igdeEditorModuleManager::GetModuleWithID(const char 
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void igdeEditorModuleManager::RemoveAllModules(){
-	SetActiveModule(NULL);
+	SetActiveModule(nullptr);
 	
 	pRecentlyUsed.RemoveAll();
 	
@@ -231,7 +231,7 @@ void igdeEditorModuleManager::StartModules(){
 		}
 	}
 	
-	pActiveModule = NULL;
+	pActiveModule = nullptr;
 	ActivateMostRecentModule();
 }
 
@@ -240,7 +240,7 @@ void igdeEditorModuleManager::StopModules(){
 	const int count = pModules.GetCount();
 	int i;
 	
-	SetActiveModule(NULL);
+	SetActiveModule(nullptr);
 	
 	for(i=0; i<count; i++){
 		igdeEditorModuleDefinition * const module = (igdeEditorModuleDefinition*)pModules.GetAt(i);

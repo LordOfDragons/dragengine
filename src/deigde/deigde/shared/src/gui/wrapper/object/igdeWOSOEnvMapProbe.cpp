@@ -63,7 +63,7 @@ igdeWOSOEnvMapProbe::igdeWOSOEnvMapProbe(igdeWObject &wrapper,
 igdeWOSubObject(wrapper, prefix),
 pGDEnvMapProbe(gdEnvMapProbe),
 pAddedToWorld(false),
-pAttachment(NULL)
+pAttachment(nullptr)
 {
 	wrapper.SubObjectFinishedLoading(*this, true);
 }
@@ -134,7 +134,7 @@ void igdeWOSOEnvMapProbe::pUpdateEnvMapProbe(){
 		codec.DecodeShapeList(value, shapeList);
 		
 		if(shapeList.GetCount() == 0){
-			pEnvMapProbe->SetShapeReflection(NULL);
+			pEnvMapProbe->SetShapeReflection(nullptr);
 			
 		}else{
 			pEnvMapProbe->SetShapeReflection(shapeList.GetAt(0)->Copy());
@@ -145,7 +145,7 @@ void igdeWOSOEnvMapProbe::pUpdateEnvMapProbe(){
 			pEnvMapProbe->SetShapeReflection(pGDEnvMapProbe.GetShapeReflection()->Copy());
 			
 		}else{
-			pEnvMapProbe->SetShapeReflection(NULL);
+			pEnvMapProbe->SetShapeReflection(nullptr);
 		}
 	}
 	
@@ -178,7 +178,7 @@ void igdeWOSOEnvMapProbe::pDestroyEnvMapProbe(){
 		GetWrapper().GetWorld()->RemoveEnvMapProbe(pEnvMapProbe);
 	}
 	
-	pEnvMapProbe = NULL;
+	pEnvMapProbe = nullptr;
 	pAddedToWorld = false;
 }
 
@@ -191,7 +191,7 @@ void igdeWOSOEnvMapProbe::AttachToCollider(){
 	
 	deColliderComponent * const colliderComponent = GetAttachableColliderComponent();
 	deColliderVolume * const colliderFallback = GetWrapper().GetColliderFallback();
-	deColliderAttachment *attachment = NULL;
+	deColliderAttachment *attachment = nullptr;
 	
 	try{
 		attachment = new deColliderAttachment(pEnvMapProbe);
@@ -228,6 +228,6 @@ void igdeWOSOEnvMapProbe::DetachFromCollider(){
 	}
 	
 	pAttachedToCollider->RemoveAttachment(pAttachment);
-	pAttachment = NULL;
-	pAttachedToCollider = NULL;
+	pAttachment = nullptr;
+	pAttachedToCollider = nullptr;
 }

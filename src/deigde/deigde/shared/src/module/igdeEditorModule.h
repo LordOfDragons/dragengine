@@ -184,10 +184,10 @@ public:
 	 * far is replaced by a new game definition. The module has to update everything
 	 * using the old game definition. This process can be potentially lengthy. For this
 	 * reason the module has to return a steppable task to do the processing. If the module
-	 * does not need any update NULL can be returned. The caller delets the task once
+	 * does not need any update nullptr can be returned. The caller delets the task once
 	 * finished processing.
 	 * 
-	 * The default implementation returns NULL.
+	 * The default implementation returns nullptr.
 	 */
 	virtual igdeStepableTask *OnGameDefinitionChanged();
 	

@@ -109,7 +109,7 @@ deFontBuilder &builder){
 		}
 		
 		// create animation using the builder
-		font.TakeOver(new deFont(this, vfs, filename, decDateTime::GetSystemTime()));
+		font = deFont::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
 		builder.BuildFont(font);
 		
 		// check and init
@@ -166,7 +166,7 @@ const char *basePath){
 				->GetModuleAbleToLoad(deModuleSystem::emtFont, path.GetPathUnix());
 			
 			// load the file with it
-			font.TakeOver(new deFont(this, vfs, path.GetPathUnix(), modificationTime));
+			font = deFont::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			font->SetAsynchron(false);
 			
 			module->LoadFont(OpenFileForReading(*vfs, path.GetPathUnix()), *font);
@@ -417,8 +417,8 @@ deFont::Ref deFontManager::LoadDebugFont(){
 			gimp_debugfont.bytes_per_pixel);
 		image->NotifyImageDataChanged();
 		
-		font.TakeOver(new deFont(this, GetEngine()->GetVirtualFileSystem(),
-			FONT_DEBUG, decDateTime::GetSystemTime()));
+		font = deFont::Ref::New(this, GetEngine()->GetVirtualFileSystem(),
+			FONT_DEBUG, decDateTime::GetSystemTime());
 		font->SetImage(image);
 		font->SetImagePath(FONT_DEBUG_IMAGE);
 		font->SetIsColorFont(false);

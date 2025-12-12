@@ -129,7 +129,7 @@ void igdeGDPreviewCreator::AbortCreation(){
 	DebugLog("abort creation");
 	pState = esCaptureFinished;
 	pCaptureCanvas->SetCapture(false);
-	NotifyImageCreated(NULL);
+	NotifyImageCreated(nullptr);
 }
 
 

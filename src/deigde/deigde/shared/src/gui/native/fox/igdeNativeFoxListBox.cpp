@@ -90,7 +90,7 @@ FXVerticalFrame(pparent, layoutFlags.flags | FRAME_SUNKEN, 0, 0, 0, 0, 0, 0, 0, 
 pOwner(&powner),
 pFont(ListBoxFont(powner, guitheme)),
 pListBox(new FXList(this, this, ID_LISTBOX, LAYOUT_FILL | ListBoxFlags(powner))),
-pResizer(NULL)
+pResizer(nullptr)
 {
 	#ifndef OS_W32_VS
 	(void)ListBoxPadLeft;
@@ -162,7 +162,7 @@ void igdeNativeFoxListBox::BuildList(){
 	for(i=0; i<count; i++){
 		const igdeListItem &item = *pOwner->GetItemAt(i);
 		pListBox->appendItem(item.GetText().GetString(),
-			item.GetIcon() ? (FXIcon*)item.GetIcon()->GetNativeIcon() : NULL);
+			item.GetIcon() ? (FXIcon*)item.GetIcon()->GetNativeIcon() : nullptr);
 	}
 	
 	UpdateSelection();
@@ -176,7 +176,7 @@ void igdeNativeFoxListBox::UpdateItem(int index){
 		pListBox->setItemIcon(index, (FXIcon*)item.GetIcon()->GetNativeIcon());
 		
 	}else{
-		pListBox->setItemIcon(index, NULL);
+		pListBox->setItemIcon(index, nullptr);
 	}
 	
 	if(item.GetSelected()){
@@ -230,7 +230,7 @@ void igdeNativeFoxListBox::MakeItemVisible(int index){
 void igdeNativeFoxListBox::InsertItem(int index){
 	const igdeListItem &item = *pOwner->GetItemAt(index);
 	pListBox->insertItem(index, item.GetText().GetString(),
-		item.GetIcon() ? (FXIcon*)item.GetIcon()->GetNativeIcon() : NULL);
+		item.GetIcon() ? (FXIcon*)item.GetIcon()->GetNativeIcon() : nullptr);
 }
 
 void igdeNativeFoxListBox::RemoveItem(int index){

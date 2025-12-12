@@ -94,7 +94,7 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Created game project or NULL if cancelled. */
+	/** \brief Created game project or nullptr if cancelled. */
 	inline const igdeGameProject::Ref &GetNewProject() const{ return pNewProject; }
 	
 	void OnProjectDirChanged();

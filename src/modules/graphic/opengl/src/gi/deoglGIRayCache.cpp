@@ -188,20 +188,20 @@ void deoglGIRayCache::pCreateFBO(){
 		
 		if(pRenderThread.GetCapabilities().GetRestrictedImageBufferFormats()){
 			/*
-			pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfInt1, width, height, pLayerCount));
+			pixbuf = deoglPixelBuffer(deoglPixelBuffer::epfInt1, width, height, pLayerCount));
 			const HALF_FLOAT hfvalue = convertFloatToHalf(10000.0f);
 			pixbuf->SetToUIntColor(hfvalue, 0, 0, 0);
 			*/
-			pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, width, height, pLayerCount));
+			pixbuf = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat4, width, height, pLayerCount);
 			pixbuf->SetToFloatColor(10000.0f, 10000.0f, 10000.0f, 10000.0f);
 			
 		}else{
-			pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat1, width, height, pLayerCount));
+			pixbuf = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat1, width, height, pLayerCount);
 			pixbuf->SetToFloatColor(10000.0f, 10000.0f, 10000.0f, 10000.0f);
 		}
 		pTexDistance.SetPixels(pixbuf);
 		
-		pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfByte4, width, height, pLayerCount));
+		pixbuf = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfByte4, width, height, pLayerCount);
 		pixbuf->SetToFloatColor(0.0f, 0.0f, 1.0f, 0.0f);
 		pTexNormal.SetPixels(pixbuf);
 		
@@ -211,7 +211,7 @@ void deoglGIRayCache::pCreateFBO(){
 		pixbuf->SetToFloatColor(0.0f, 0.0f, 0.0f, 1.0f);
 		pTexReflectivity.SetPixels(pixbuf);
 		
-		pixbuf.TakeOver(new deoglPixelBuffer(deoglPixelBuffer::epfFloat4, width, height, pLayerCount));
+		pixbuf = deoglPixelBuffer::Ref::New(deoglPixelBuffer::epfFloat4, width, height, pLayerCount);
 		pixbuf->SetToFloatColor(0.0f, 0.0f, 0.0f, 0.0f);
 		pTexLight.SetPixels(pixbuf);
 	#endif

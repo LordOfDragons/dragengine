@@ -27,8 +27,9 @@
 
 #include "../foxtoolkit.h"
 
+#include <dragengine/resources/font/deFont.h>
+
 class igdeFont;
-class deFont;
 
 
 /**
@@ -63,7 +64,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	virtual deFont *CreateEngineFont();
+	virtual deFont::Ref CreateEngineFont();
 	
 	/** \brief Text size. */
 	virtual decPoint TextSize(const char *text) const;

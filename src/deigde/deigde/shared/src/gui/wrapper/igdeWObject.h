@@ -172,28 +172,28 @@ public:
 	/** \brief Environment. */
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
-	/** \brief World or NULL. */
+	/** \brief World or nullptr. */
 	inline const deWorld::Ref &GetWorld() const{ return pWorld; }
 	
-	/** \brief Set world or NULL. */
+	/** \brief Set world or nullptr. */
 	void SetWorld(deWorld *world);
 	
-	/** \brief Camera to calculate screen related properties or NULL. */
+	/** \brief Camera to calculate screen related properties or nullptr. */
 	inline const deCamera::Ref &GetCamera() const{ return pCamera; }
 	
-	/** \brief Set camera to calculate screen related properties or NULL. */
+	/** \brief Set camera to calculate screen related properties or nullptr. */
 	void SetCamera(deCamera *camera);
 	
-	/** \brief Trigger table or NULL if not used. */
+	/** \brief Trigger table or nullptr if not used. */
 	inline igdeTriggerTargetList *GetTriggerTable() const{ return pTriggerTable; }
 	
-	/** \brief Set trigger table or NULL if not used. */
+	/** \brief Set trigger table or nullptr if not used. */
 	void SetTriggerTable(igdeTriggerTargetList *triggerTable);
 	
-	/** \brief Game definition object class or NULL. */
+	/** \brief Game definition object class or nullptr. */
 	inline const igdeGDClass::Ref &GetGDClass() const{ return pGDClass; }
 	
-	/** \brief Set game definition object class or NULL. */
+	/** \brief Set game definition object class or nullptr. */
 	void SetGDClass(igdeGDClass *gdClass);
 	
 	/** \brief Set game definition object class by name if found. */
@@ -302,7 +302,7 @@ public:
 	/** \brief Sets if the collider is allowed to be dynamic or always kinematic. */
 	void SetDynamicCollider(bool dynamic);
 	
-	/** \brief Parent collider or NULL if there is none. */
+	/** \brief Parent collider or nullptr if there is none. */
 	inline const deCollider::Ref &GetParentCollider() const{ return pParentCollider; }
 	
 	/** \brief Determines if the object is attached to a parent collider. */
@@ -382,10 +382,10 @@ public:
 	
 	
 	
-	/** \brief Outline skin or NULL. */
+	/** \brief Outline skin or nullptr. */
 	inline const deSkin::Ref &GetOutlineSkin() const{ return pOutlineSkin; }
 	
-	/** \brief Set outline skin or NULL. */
+	/** \brief Set outline skin or nullptr. */
 	void SetOutlineSkin(deSkin *skin);
 	
 	/** \brief Set outline skin to shared editing outline skin. */
@@ -399,11 +399,11 @@ public:
 	
 	
 	
-	/** \brief Asynchronous load finished listener or NULL. */
+	/** \brief Asynchronous load finished listener or nullptr. */
 	inline cAsyncLoadFinished *GetAsyncLoadFinished() const{ return pAsyncLoadFinished; }
 	
 	/**
-	 * \brief Set asynchronous load finished listener or NULL.
+	 * \brief Set asynchronous load finished listener or nullptr.
 	 * 
 	 * Caller is responsible to keep the listener alive. Wrapper does not hold reference.
 	 */

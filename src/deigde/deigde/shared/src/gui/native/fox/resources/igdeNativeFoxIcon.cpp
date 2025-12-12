@@ -52,8 +52,8 @@ void *igdeNativeFoxIcon::CreateNativeIcon(deImage &image){
 	
 	const int hheight = image.GetHeight();
 	const int wwidth = image.GetWidth();
-	FXColor *nativeImageData = NULL;
-	FXIcon *nativeIcon = NULL;
+	FXColor *nativeImageData = nullptr;
+	FXIcon *nativeIcon = nullptr;
 	
 	try{
 		// we have to create the pixel buffer the image is going to take ownership of.
@@ -65,7 +65,7 @@ void *igdeNativeFoxIcon::CreateNativeIcon(deImage &image){
 		// copy pixel data from image to the allocated fox pixel buffer
 		CopyPixelData(image, nativeImageData);
 		
-		// create icon. using pixelData=NULL the constructor creates the pixel data.
+		// create icon. using pixelData=nullptr the constructor creates the pixel data.
 		// see the table in the comment below for the possible combinations of
 		// parameters and the resulting behavior.
 		// 
@@ -83,20 +83,20 @@ void *igdeNativeFoxIcon::CreateNativeIcon(deImage &image){
 		// the diffrent parameter used in the constructor affect the behavior like this:
 		// | pixelBuffer | IMAGE_OWNED | IMAGE_KEEP | constructor |  after create   | destructor |
 		// | ----------- | ----------- | ---------- | ----------- | --------------- | ---------- |
-		// |     NULL    |     false   |    false   |   create    | delete set null |   nothing  |
-		// |     NULL    |     true    |    false   |   create    | delete set null |   nothing  |
-		// |     NULL    |     false   |    true    |   create    |     nothing     |   delete   |
-		// |     NULL    |     true    |    true    |   create    |     nothing     |   delete   |
-		// |   provided  |     false   |    false   |   nothing   |     set null    |   nothing  |
-		// |   provided  |     true    |    false   |   nothing   | delete set null |   nothing  |
+		// |     nullptr    |     false   |    false   |   create    | delete set nullptr |   nothing  |
+		// |     nullptr    |     true    |    false   |   create    | delete set nullptr |   nothing  |
+		// |     nullptr    |     false   |    true    |   create    |     nothing     |   delete   |
+		// |     nullptr    |     true    |    true    |   create    |     nothing     |   delete   |
+		// |   provided  |     false   |    false   |   nothing   |     set nullptr    |   nothing  |
+		// |   provided  |     true    |    false   |   nothing   | delete set nullptr |   nothing  |
 		// |   provided  |     false   |    true    |   nothing   |     nothing     |   nothing  |
 		// |   provided  |     true    |    true    |   nothing   |     nothing     |   delete   |
 		// 
-		// we use pixelBuffer=NULL, IMAGE_OWNED=true and IMAGE_KEEP=false. this way the pixel
+		// we use pixelBuffer=nullptr, IMAGE_OWNED=true and IMAGE_KEEP=false. this way the pixel
 		// buffer is created by the icon resource and deleted after creating the server side
 		// resources.
 		// 
-		// if we plan to modify the image we need to use pixelBuffer=NULL, IMAGE_OWNED=true
+		// if we plan to modify the image we need to use pixelBuffer=nullptr, IMAGE_OWNED=true
 		// and IMAGE_KEEP=false. then we can call render again after changing the content
 		nativeIcon->create();
 		
@@ -114,8 +114,8 @@ void *igdeNativeFoxIcon::CreateNativeIcon(deImage &image){
 }
 
 void *igdeNativeFoxIcon::CreateNativeIconPNG(decBaseFileReader &reader){
-	FXPNGIcon *nativeIcon = NULL;
-	char *imageData = NULL;
+	FXPNGIcon *nativeIcon = nullptr;
+	char *imageData = nullptr;
 	FXMemoryStream stream;
 	int imageSize = 0;
 	
@@ -141,7 +141,7 @@ void *igdeNativeFoxIcon::CreateNativeIconPNG(decBaseFileReader &reader){
 		}
 		
 		delete [] imageData;
-		imageData = NULL;
+		imageData = nullptr;
 		
 		nativeIcon->create();
 		
@@ -164,7 +164,7 @@ void *igdeNativeFoxIcon::DuplicateNativeIcon(void *native){
 	const int wwidth = sourceIcon->getWidth();
 	const int pixelCount = wwidth * hheight;
 	
-	FXColor *imageData = NULL;
+	FXColor *imageData = nullptr;
 	if(!FXCALLOC(&imageData, FXColor, pixelCount)){
 		DETHROW(deeOutOfMemory);
 	}

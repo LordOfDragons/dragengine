@@ -65,16 +65,16 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Root expression component or null if not set. */
+	/** \brief Root expression component or nullptr if not set. */
 	inline const igdeTriggerExpressionComponent::Ref &GetRootComponent() const{ return pRootComponent; }
 	
-	/** \brief Set root expression component or null if not set. */
+	/** \brief Set root expression component or nullptr if not set. */
 	void SetRootComponent(igdeTriggerExpressionComponent *component);
 	
-	/** \brief Determines if the expression is empty hence root component is null. */
+	/** \brief Determines if the expression is empty hence root component is nullptr. */
 	bool IsEmpty() const;
 	
-	/** \brief Determines if the expression is not empty hence root component is not null. */
+	/** \brief Determines if the expression is not empty hence root component is not nullptr. */
 	bool IsNotEmpty() const;
 	
 	/** \brief Result of the expression. */

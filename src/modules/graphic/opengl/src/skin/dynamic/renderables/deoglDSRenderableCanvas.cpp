@@ -52,7 +52,7 @@ pCanvasView(NULL),
 pDirty(true)
 {
 	try{
-		pRRenderableCanvas.TakeOver(new deoglRDSRenderableCanvas(*dynamicSkin.GetRDynamicSkin(), renderable));
+		pRRenderableCanvas = deoglRDSRenderableCanvas::Ref::New(*dynamicSkin.GetRDynamicSkin(), renderable);
 		
 		if(renderable.GetCanvas()){
 			pCanvasView = (deoglCanvasView*)renderable.GetCanvas()->GetPeerGraphic();

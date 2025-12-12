@@ -156,13 +156,15 @@ public:
 
 class cActionGameNew : public cActionBase{
 public:
+	typedef deTObjectReference<cActionGameNew> Ref;
+	
 	explicit cActionGameNew(igdeWindowMain &window) : cActionBase(window,
 		"New...", window.GetIconGameNew(), "Creates a new game", deInputEvent::ekcN){}
 	
 	virtual void OnAction(){
 		// RequestSaveDocuments returns true if user wants to continue creating a new project.
 		// this can mean to save the documents first or to not save them first.
-		if(pWindow.RequestSaveDocuments("New Game Project", NULL)){
+		if(pWindow.RequestSaveDocuments("New Game Project", nullptr)){
 			pWindow.CreateNewGameProject();
 		}
 	}
@@ -171,13 +173,15 @@ public:
 
 class cActionGameOpen : public cActionBase{
 public:
+	typedef deTObjectReference<cActionGameOpen> Ref;
+	
 	explicit cActionGameOpen(igdeWindowMain &window) : cActionBase(window,
 		"Open...", window.GetIconGameOpen(), "Opens a game", deInputEvent::ekcO){}
 	
 	virtual void OnAction(){
 		// RequestSaveDocuments returns true if user wants to continue creating open a project.
 		// this can mean to save the documents first or to not save them first.
-		if(!pWindow.RequestSaveDocuments("Open Game Project", NULL)){
+		if(!pWindow.RequestSaveDocuments("Open Game Project", nullptr)){
 			return;
 		}
 		
@@ -207,14 +211,16 @@ private:
 	}
 	
 public:
+	typedef deTObjectReference<cActionGameOpenRecent> Ref;
+	
 	cActionGameOpenRecent(igdeWindowMain &window, const char *filename) :
-	cActionBase(window, BuildText(filename), NULL, "Open game project"),
+	cActionBase(window, BuildText(filename), nullptr, "Open game project"),
 	pFilename(filename){}
 	
 	virtual void OnAction(){
 		// RequestSaveDocuments returns true if user wants to continue creating open a project.
 		// this can mean to save the documents first or to not save them first.
-		if(pWindow.RequestSaveDocuments("Open Game Project", NULL)){
+		if(pWindow.RequestSaveDocuments("Open Game Project", nullptr)){
 			// WARNING loading a game does change the recent games menu. to avoid troubles
 			//         the filename is safe-guarded locally to not cause trashed memory
 			const decString filename(pFilename);
@@ -226,6 +232,8 @@ public:
 
 class cActionGameSaveAs : public cActionBase{
 public:
+	typedef deTObjectReference<cActionGameSaveAs> Ref;
+	
 	explicit cActionGameSaveAs(igdeWindowMain &window) : cActionBase(window,
 		"Save As...", window.GetIconGameSaveAs(), "Saves game under a differen file",
 		deInputEvent::ekcA){}
@@ -243,13 +251,15 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(pWindow.GetGameProject() != NULL);
+		SetEnabled(pWindow.GetGameProject() != nullptr);
 	}
 };
 
 
 class cActionGameSave : public cActionGameSaveAs{
 public:
+	typedef deTObjectReference<cActionGameSave> Ref;
+	
 	explicit cActionGameSave(igdeWindowMain &window) : cActionGameSaveAs(window){
 		SetText("Save");
 		SetDescription("Saves game");
@@ -273,8 +283,10 @@ public:
 
 class cActionGameSettings : public cActionBase{
 public:
+	typedef deTObjectReference<cActionGameSettings> Ref;
+	
 	explicit cActionGameSettings(igdeWindowMain &window) : cActionBase(window,
-		"Settings...", NULL, "Game project settings", deInputEvent::ekcT){}
+		"Settings...", nullptr, "Game project settings", deInputEvent::ekcT){}
 	
 	virtual void OnAction(){
 		igdeDialogProjectSettings::Ref dialog(igdeDialogProjectSettings::Ref::New(pWindow));
@@ -285,13 +297,15 @@ public:
 	}
 	
 	virtual void Update(){
-		SetEnabled(pWindow.GetGameProject() != NULL);
+		SetEnabled(pWindow.GetGameProject() != nullptr);
 	}
 };
 
 
 class cActionGameReloadXMLElementClasses : public cActionBase{
 public:
+	typedef deTObjectReference<cActionGameReloadXMLElementClasses> Ref;
+	
 	explicit cActionGameReloadXMLElementClasses(igdeWindowMain &window) : cActionBase(window,
 		"Reload XML Element Classes", window.GetIconGameReloadXMLElementClasses(),
 		"Reload XML Element Classes"){}
@@ -310,6 +324,8 @@ public:
 
 class cActionGameQuit : public cActionBase{
 public:
+	typedef deTObjectReference<cActionGameQuit> Ref;
+	
 	explicit cActionGameQuit(igdeWindowMain &window) : cActionBase(window,
 		"Quit", window.GetIconGameExit(), "Quit IGDE", deInputEvent::ekcQ){}
 	
@@ -323,6 +339,8 @@ public:
 
 class cActionSettingsEngine : public cActionBase{
 public:
+	typedef deTObjectReference<cActionSettingsEngine> Ref;
+	
 	explicit cActionSettingsEngine(igdeWindowMain &window) : cActionBase(window,
 		"Engine Control Center...", window.GetIconSettingsEngine(),
 		"Shows the engine control system window", deInputEvent::ekcE){}
@@ -335,6 +353,8 @@ public:
 
 class cActionSettingsIgde: public cActionBase{
 public:
+	typedef deTObjectReference<cActionSettingsIgde> Ref;
+	
 	explicit cActionSettingsIgde(igdeWindowMain &window) : cActionBase(window,
 		"IGDE Settings...", window.GetIconSettingsTexPropList(),
 		"Change IGDE Settings", deInputEvent::ekcI){}
@@ -347,6 +367,8 @@ public:
 
 class cActionSettingsTexPropList : public cActionBase{
 public:
+	typedef deTObjectReference<cActionSettingsTexPropList> Ref;
+	
 	explicit cActionSettingsTexPropList(igdeWindowMain &window) : cActionBase(window,
 		"Texture Property List...", window.GetIconSettingsTexPropList(),
 		"Shows the list of texture properties", deInputEvent::ekcT){}
@@ -359,6 +381,8 @@ public:
 
 class cActionSettingsLogging : public cActionBase{
 public:
+	typedef deTObjectReference<cActionSettingsLogging> Ref;
+	
 	explicit cActionSettingsLogging(igdeWindowMain &window) : cActionBase(window,
 		"Logging Window...", window.GetIconSettingsEngine(),
 		"Displays the logging window", deInputEvent::ekcL){}
@@ -380,8 +404,10 @@ private:
 	}
 	
 public:
+	typedef deTObjectReference<cActionWindowEditor> Ref;
+	
 	cActionWindowEditor(igdeWindowMain &window, igdeEditorModuleDefinition &module, bool smallIcon = true) :
-	cActionBase(window, module.GetName(), NULL, BuildDescription(module)),
+	cActionBase(window, module.GetName(), nullptr, BuildDescription(module)),
 	pModule(module){
 		igdeIcon::Ref icon;
 		const decString &path = smallIcon || module.GetIconLarge().IsEmpty() ? module.GetIconSmall() : module.GetIconLarge();
@@ -389,7 +415,7 @@ public:
 			try{
 				icon = igdeIcon::LoadPNG(*module.GetModule(), path);
 			}catch(const deException &e){
-				icon = NULL;
+				icon = nullptr;
 				window.GetEnvironment().GetLogger()->LogException(LOGSOURCE, e);
 			}
 		}
@@ -413,6 +439,8 @@ class cTimerFrameUpdate : public igdeTimer{
 	igdeWindowMain &pWindow;
 	
 public:
+	typedef deTObjectReference<cTimerFrameUpdate> Ref;
+	
 	explicit cTimerFrameUpdate(igdeWindowMain &window) :
 	igdeTimer(window.GetEnvironment()), pWindow(window){}
 	
@@ -425,6 +453,8 @@ class cTimerSyncProject : public igdeTimer{
 	igdeWindowMain &pWindow;
 	
 public:
+	typedef deTObjectReference<cTimerSyncProject> Ref;
+	
 	explicit cTimerSyncProject(igdeWindowMain &window) :
 	igdeTimer(window.GetEnvironment()), pWindow(window){}
 	
@@ -448,23 +478,23 @@ pEnvironmentIGDE(environment),
 
 pConfiguration(*this),
 pConfigurationLocal(*this),
-pModuleManager(NULL),
-pLoadSaveSystem(NULL),
-pGDPreviewManager(NULL),
-pTexturePropertyList(NULL),
-pTemplates(NULL),
-pSharedGameDefinitions(NULL),
-pSharedFontList(NULL),
-pResourceLoader(NULL),
-pUIHelper(NULL),
-pUIHelperProperties(NULL),
+pModuleManager(nullptr),
+pLoadSaveSystem(nullptr),
+pGDPreviewManager(nullptr),
+pTexturePropertyList(nullptr),
+pTemplates(nullptr),
+pSharedGameDefinitions(nullptr),
+pSharedFontList(nullptr),
+pResourceLoader(nullptr),
+pUIHelper(nullptr),
+pUIHelperProperties(nullptr),
 
-pStatusBar(NULL),
-pSBProgress(NULL),
+pStatusBar(nullptr),
+pSBProgress(nullptr),
 
 pElapsedTime(0.0f),
 pMinUpdateTime(0.01f), //0.0f;//0.00001f;
-pTimer(NULL),
+pTimer(nullptr),
 
 pDisplayFPSInfo(false),
 pFPSAccum(0),
@@ -474,7 +504,7 @@ pFPSRate(1),
 pPauseUpdating(false),
 pFirstEngineRun(true),
 
-pTaskSyncGameDefinition(NULL)
+pTaskSyncGameDefinition(nullptr)
 {
 	pEnvironmentIGDE.SetWindowMain(this);
 	
@@ -483,7 +513,7 @@ pTaskSyncGameDefinition(NULL)
 	try{
 		pConfiguration.LocatePath();
 		
-		pVFS.TakeOver(new deVirtualFileSystem);
+		pVFS = deVirtualFileSystem::Ref::New();
 		pConfiguration.InitVirtualFileSystem();
 		
 		pInitLogger(); // log file depends on VFS to be ready
@@ -526,7 +556,7 @@ pTaskSyncGameDefinition(NULL)
 		if(pConfiguration.GetGameDefinitionManager()->GetDefinitionCount() == 0){
 			igdeGameDefinition::Ref gamedef = CreateNewGameDefinition();
 			pConfiguration.GetGameDefinitionManager()->AddDefinition(gamedef);
-			gamedef = NULL;
+			gamedef = nullptr;
 			
 // 			igdeCommonDialogs::Error( this, "Error", "No Game Definitions found!" );
 // 			DETHROW( deeInvalidParam );
@@ -576,21 +606,21 @@ pTaskSyncGameDefinition(NULL)
 			pEnvironmentIGDE, igdeContainerFlow::eaY));
 		content->AddChild(panel, igdeContainerBorder::eaTop);
 		
-		pMenuBar.TakeOver(new igdeMenuBar(pEnvironmentIGDE));
+		pMenuBar = igdeMenuBar::Ref::New(pEnvironmentIGDE);
 		panel->AddChild(pMenuBar);
 		
-		pToolBarDockTop.TakeOver(new igdeToolBarDock(pEnvironmentIGDE, igdeToolBarDock::esTop));
+		pToolBarDockTop = igdeToolBarDock::Ref::New(pEnvironmentIGDE, igdeToolBarDock::esTop);
 		panel->AddChild(pToolBarDockTop);
 		
 		
 		// bottom side
-		panel.TakeOver(new igdeContainerFlow(pEnvironmentIGDE, igdeContainerFlow::eaY));
+		panel = igdeContainerFlow::Ref::New(pEnvironmentIGDE, igdeContainerFlow::eaY);
 		content->AddChild(panel, igdeContainerBorder::eaBottom);
 		
-		pToolBarDockBottom.TakeOver(new igdeToolBarDock(pEnvironmentIGDE, igdeToolBarDock::esBottom));
+		pToolBarDockBottom = igdeToolBarDock::Ref::New(pEnvironmentIGDE, igdeToolBarDock::esBottom);
 		panel->AddChild(pToolBarDockBottom);
 		
-		pStatusBar.TakeOver(new igdeStatusBar(environment));
+		pStatusBar = igdeStatusBar::Ref::New(environment);
 		pStatusBar->SetText("Ready");
 		panel->AddChild(pStatusBar);
 		
@@ -599,26 +629,26 @@ pTaskSyncGameDefinition(NULL)
 		
 		
 		// left side
-		panel.TakeOver(new igdeContainerFlow(pEnvironmentIGDE, igdeContainerFlow::eaX));
+		panel = igdeContainerFlow::Ref::New(pEnvironmentIGDE, igdeContainerFlow::eaX);
 		content->AddChild(panel, igdeContainerBorder::eaLeft);
 		
-		pToolBarDockLeft.TakeOver(new igdeToolBarDock(pEnvironmentIGDE, igdeToolBarDock::esLeft));
+		pToolBarDockLeft = igdeToolBarDock::Ref::New(pEnvironmentIGDE, igdeToolBarDock::esLeft);
 		panel->AddChild(pToolBarDockLeft);
 		
 		
 		// right side
-		panel.TakeOver(new igdeContainerFlow(pEnvironmentIGDE, igdeContainerFlow::eaX));
+		panel = igdeContainerFlow::Ref::New(pEnvironmentIGDE, igdeContainerFlow::eaX);
 		content->AddChild(panel, igdeContainerBorder::eaRight);
 		
-		pFraEditors.TakeOver(new igdeContainerFlow(pEnvironmentIGDE, igdeContainerFlow::eaY));
+		pFraEditors = igdeContainerFlow::Ref::New(pEnvironmentIGDE, igdeContainerFlow::eaY);
 		panel->AddChild(pFraEditors);
 		
-		pToolBarDockRight.TakeOver(new igdeToolBarDock(pEnvironmentIGDE, igdeToolBarDock::esRight));
+		pToolBarDockRight = igdeToolBarDock::Ref::New(pEnvironmentIGDE, igdeToolBarDock::esRight);
 		panel->AddChild(pToolBarDockRight);
 		
 		
 		// center
-		pSwiContent.TakeOver(new igdeSwitcher(pEnvironmentIGDE));
+		pSwiContent = igdeSwitcher::Ref::New(pEnvironmentIGDE);
 		
 		igdeContainerBorder::Ref emptyContainer(igdeContainerBorder::Ref::New(pEnvironmentIGDE));
 		pSwiContent->AddChild(emptyContainer);
@@ -652,7 +682,7 @@ igdeGuiTheme *igdeWindowMain::GetGuiThemeNamed(const char *name){
 
 void igdeWindowMain::ShowWindowLogger(){
 	if(!pWindowLogger){
-		pWindowLogger.TakeOver(new igdeWindowLogger(pEnvironmentIGDE));
+		pWindowLogger = igdeWindowLogger::Ref::New(pEnvironmentIGDE);
 		pWindowLogger->SetHistoryLogger(GetLoggerHistory());
 	}
 	
@@ -897,7 +927,7 @@ void igdeWindowMain::RebuildMenu(){
 	// add menus
 	pMenuBar->AddChild(pMenuGame);
 	
-	igdeEditorWindow * editorWindow = NULL;
+	igdeEditorWindow * editorWindow = nullptr;
 	igdeEditorModuleDefinition * const editorModuleDef = pModuleManager->GetActiveModule();
 	if(editorModuleDef){
 		igdeEditorModule * const editorModule = editorModuleDef->GetModule();
@@ -934,7 +964,7 @@ void igdeWindowMain::RebuildToolBars(){
 // 	pToolBarDockRight->AddChild( pTBEditors );
 	
 	// add active editor module toolbars
-	igdeEditorWindow * editorWindow = NULL;
+	igdeEditorWindow * editorWindow = nullptr;
 	igdeEditorModuleDefinition * const editorModuleDef = pModuleManager->GetActiveModule();
 	if(editorModuleDef){
 		igdeEditorModule * const editorModule = editorModuleDef->GetModule();
@@ -981,7 +1011,7 @@ void igdeWindowMain::UpdateRecentProjectMenu(){
 }
 
 bool igdeWindowMain::IsSyncGameDefTaskRunning() const{
-	return pTaskSyncGameDefinition != NULL;
+	return pTaskSyncGameDefinition != nullptr;
 }
 
 
@@ -1001,14 +1031,14 @@ void igdeWindowMain::ReloadXMLElementClasses(){
 	
 	if(pTaskSyncGameDefinition){
 		delete pTaskSyncGameDefinition;
-		pTaskSyncGameDefinition = NULL;
+		pTaskSyncGameDefinition = nullptr;
 	}
 	
 	pTaskSyncGameDefinition = new igdeTaskSyncGameDefinition(*this);
 	pTaskSyncGameDefinition->SetReloadXMLElementClasses(true);
 	
 	if(!pTimerSyncProject){
-		pTimerSyncProject.TakeOver(new cTimerSyncProject(*this));
+		pTimerSyncProject = cTimerSyncProject::Ref::New(*this);
 		pTimerSyncProject->Start(10, true);
 	}
 	
@@ -1146,7 +1176,7 @@ void igdeWindowMain::OnAfterEngineStop(){
 bool igdeWindowMain::QuitRequest(){
 	// RequestSaveDocuments returns true if user wants to continue closing the application.
 	// this can mean to save the documents first or to not save them first.
-	return RequestSaveDocuments("Quit", NULL);
+	return RequestSaveDocuments("Quit", nullptr);
 }
 
 
@@ -1229,7 +1259,7 @@ void igdeWindowMain::OnFrameUpdate(){
 	
 	// check for errors. if something went wrong shut down the engine
 	if(engine.GetScriptFailed() || engine.GetSystemFailed()){
-		engine.GetErrorTrace()->AddPoint(NULL, "igdeWindowMain::OnFrameUpdate", __LINE__);
+		engine.GetErrorTrace()->AddPoint(nullptr, "igdeWindowMain::OnFrameUpdate", __LINE__);
 		StopEngine();
 	}
 	
@@ -1285,13 +1315,13 @@ void igdeWindowMain::OnFrameUpdate(){
 void igdeWindowMain::OnProjectGameDefinitionChanged(){
 	if(pTaskSyncGameDefinition){
 		delete pTaskSyncGameDefinition;
-		pTaskSyncGameDefinition = NULL;
+		pTaskSyncGameDefinition = nullptr;
 	}
 	
 	pTaskSyncGameDefinition = new igdeTaskSyncGameDefinition(*this);
 	
 	if(!pTimerSyncProject){
-		pTimerSyncProject.TakeOver(new cTimerSyncProject(*this));
+		pTimerSyncProject = cTimerSyncProject::Ref::New(*this);
 		pTimerSyncProject->Start(10, true);
 	}
 	
@@ -1300,7 +1330,7 @@ void igdeWindowMain::OnProjectGameDefinitionChanged(){
 
 void igdeWindowMain::ArmUpdateTimer(){
 	if(!pTimerFrameUpdate){
-		pTimerFrameUpdate.TakeOver(new cTimerFrameUpdate(*this));
+		pTimerFrameUpdate = cTimerFrameUpdate::Ref::New(*this);
 		pTimerFrameUpdate->Start(1, true); // 5
 	}
 }
@@ -1339,7 +1369,7 @@ void igdeWindowMain::UpdateSyncProject(){
 	if(!pTaskSyncGameDefinition){
 		if(pTimerSyncProject){
 			pTimerSyncProject->Stop();
-			pTimerSyncProject = NULL;
+			pTimerSyncProject = nullptr;
 		}
 		return;
 	}
@@ -1351,21 +1381,21 @@ void igdeWindowMain::UpdateSyncProject(){
 		
 		if(pTimerSyncProject){
 			pTimerSyncProject->Stop();
-			pTimerSyncProject = NULL;
+			pTimerSyncProject = nullptr;
 		}
 		
 		delete pTaskSyncGameDefinition;
-		pTaskSyncGameDefinition = NULL;
+		pTaskSyncGameDefinition = nullptr;
 		pActionGameReloadXMLElementClasses->Update();
 		
 	}catch(const deException &e){
 		if(pTimerSyncProject){
 			pTimerSyncProject->Stop();
-			pTimerSyncProject = NULL;
+			pTimerSyncProject = nullptr;
 		}
 		if(pTaskSyncGameDefinition){
 			delete pTaskSyncGameDefinition;
-			pTaskSyncGameDefinition = NULL;
+			pTaskSyncGameDefinition = nullptr;
 		}
 		
 		DisplayException(e);
@@ -1415,7 +1445,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 		more then one string from a list of strings returning decIntList as result.
 		
 		const int selection = FXChoiceBox::ask(this, MBOX_OK_CANCEL,
-			title, "Changed Documents", NULL, choices);
+			title, "Changed Documents", nullptr, choices);
 		
 		if(selection == -1){
 			return false;
@@ -1553,16 +1583,16 @@ void igdeWindowMain::DestroyNativeWidget(){
 void igdeWindowMain::pCleanUp(){
 	if(pTimerSyncProject){
 		pTimerSyncProject->Stop();
-		pTimerSyncProject = NULL;
+		pTimerSyncProject = nullptr;
 	}
 	if(pTimerFrameUpdate){
 		pTimerFrameUpdate->Stop();
-		pTimerFrameUpdate = NULL;
+		pTimerFrameUpdate = nullptr;
 	}
 	
 	if(pTaskSyncGameDefinition){
 		delete pTaskSyncGameDefinition;
-		pTaskSyncGameDefinition = NULL;
+		pTaskSyncGameDefinition = nullptr;
 	}
 	
 	// save configuration. we do this first in case something goes wrong
@@ -1616,7 +1646,7 @@ void igdeWindowMain::pCleanUp(){
 	// continue cleaning up. now everything can be simply cleaned up
 	if(pModuleManager){
 		delete pModuleManager;
-		pModuleManager = NULL;
+		pModuleManager = nullptr;
 	}
 	
 	pGameProject = nullptr;
@@ -1624,46 +1654,46 @@ void igdeWindowMain::pCleanUp(){
 	
 	if(pSharedGameDefinitions){
 		delete pSharedGameDefinitions;
-		pSharedGameDefinitions = NULL;
+		pSharedGameDefinitions = nullptr;
 	}
 	if(pTemplates){
 		delete pTemplates;
-		pTemplates = NULL;
+		pTemplates = nullptr;
 	}
 	
 	if(pSharedFontList){
 		delete pSharedFontList;
-		pSharedFontList = NULL;
+		pSharedFontList = nullptr;
 	}
 	if(pUIHelperProperties){
 		delete pUIHelperProperties;
-		pUIHelperProperties = NULL;
+		pUIHelperProperties = nullptr;
 	}
 	if(pUIHelper){
 		delete pUIHelper;
-		pUIHelper = NULL;
+		pUIHelper = nullptr;
 	}
 	
 	if(pTexturePropertyList){
 		delete pTexturePropertyList;
-		pTexturePropertyList = NULL;
+		pTexturePropertyList = nullptr;
 	}
 	if(pGDPreviewManager){
 		delete pGDPreviewManager;
-		pGDPreviewManager = NULL;
+		pGDPreviewManager = nullptr;
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-		pLoadSaveSystem = NULL;
+		pLoadSaveSystem = nullptr;
 	}
 	if(pResourceLoader){
 		delete pResourceLoader;
-		pResourceLoader = NULL;
+		pResourceLoader = nullptr;
 	}
 	
 	if(pTimer){
 		delete pTimer;
-		pTimer = NULL;
+		pTimer = nullptr;
 	}
 	
 	pWindowLogger = nullptr;
@@ -1672,7 +1702,7 @@ void igdeWindowMain::pCleanUp(){
 
 void igdeWindowMain::pInitLogger(){
 	if(!pLoggerHistory){
-		pLoggerHistory.TakeOver(new igdeLoggerHistory);
+		pLoggerHistory = igdeLoggerHistory::Ref::New();
 		pLoggerHistory->SetHistorySize(250);
 	}
 	
@@ -1964,7 +1994,7 @@ void igdeWindowMain::pLoadTemplates(){
 			path.GetLastComponent().GetString());
 		
 		try{
-			reader.TakeOver(new decDiskFileReader(pathXml));
+			reader = decDiskFileReader::Ref::New(pathXml);
 			
 			atemplate.TakeOverWith();
 			atemplate->SetBasePath(pathTemplate);
@@ -2017,7 +2047,7 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 			pathList.GetAt(i).GetLastComponent().GetString());
 			
 		try{
-			reader.TakeOver(new decDiskFileReader(path.GetPathNative()));
+			reader = decDiskFileReader::Ref::New(path.GetPathNative());
 			
 			gameDefinition.TakeOverWith(pEnvironmentIGDE);
 			gameDefinition->SetFilename(path.GetPathNative());
@@ -2041,7 +2071,7 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 		logger.LogInfoFormat("IGDE", "Shared game definition find content in %s",
 			gameDefinition->GetBasePath().GetString());
 		
-		vfs.TakeOver(new deVirtualFileSystem);
+		vfs = deVirtualFileSystem::Ref::New();
 		
 		const decPath diskPath(decPath::CreatePathNative(gameDefinition->GetBasePath()));
 		const decPath rootPath(decPath::CreatePathUnix(gameDefinition->GetVFSPath()));
@@ -2070,18 +2100,18 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 }
 
 void igdeWindowMain::pCreateActions(){
-	pActionGameNew.TakeOver(new cActionGameNew(*this));
-	pActionGameOpen.TakeOver(new cActionGameOpen(*this));
-	pActionGameSave.TakeOver(new cActionGameSave(*this));
-	pActionGameSaveAs.TakeOver(new cActionGameSaveAs(*this));
-	pActionGameSettings.TakeOver(new cActionGameSettings(*this));
-	pActionGameQuit.TakeOver(new cActionGameQuit(*this));
-	pActionGameReloadXMLElementClasses.TakeOver(new cActionGameReloadXMLElementClasses(*this));
+	pActionGameNew = cActionGameNew::Ref::New(*this);
+	pActionGameOpen = cActionGameOpen::Ref::New(*this);
+	pActionGameSave = cActionGameSave::Ref::New(*this);
+	pActionGameSaveAs = cActionGameSaveAs::Ref::New(*this);
+	pActionGameSettings = cActionGameSettings::Ref::New(*this);
+	pActionGameQuit = cActionGameQuit::Ref::New(*this);
+	pActionGameReloadXMLElementClasses = cActionGameReloadXMLElementClasses::Ref::New(*this);
 	
-	pActionSettingsEngine.TakeOver(new cActionSettingsEngine(*this));
-	pActionSettingsIgde.TakeOver(new cActionSettingsIgde(*this));
-	pActionSettingsTexPropList.TakeOver(new cActionSettingsTexPropList(*this));
-	pActionSettingsLogging.TakeOver(new cActionSettingsLogging(*this));
+	pActionSettingsEngine = cActionSettingsEngine::Ref::New(*this);
+	pActionSettingsIgde = cActionSettingsIgde::Ref::New(*this);
+	pActionSettingsTexPropList = cActionSettingsTexPropList::Ref::New(*this);
+	pActionSettingsLogging = cActionSettingsLogging::Ref::New(*this);
 }
 
 void igdeWindowMain::pCreateSharedModelCollisionRig(){
@@ -2098,7 +2128,7 @@ void igdeWindowMain::pCreateSharedModelCollisionRig(){
 
 
 void igdeWindowMain::pCreateToolBarGame(){
-	pTBGame.TakeOver(new igdeToolBar(pEnvironmentIGDE));
+	pTBGame = igdeToolBar::Ref::New(pEnvironmentIGDE);
 	pUIHelper->ToolBarButton(pTBGame, pActionGameNew);
 	pUIHelper->ToolBarButton(pTBGame, pActionGameOpen);
 	pUIHelper->ToolBarButton(pTBGame, pActionGameSave);
@@ -2145,7 +2175,7 @@ void igdeWindowMain::pRebuildToolBarEditors(){
 		
 		//pUIHelper->ToolBarToggleButton( pTBEditors, new cActionWindowEditor( *this, moduleDef, true/*false*/ ), true );
 		
-		action.TakeOver(new cActionWindowEditor(*this, moduleDef, true/*false*/));
+		action = cActionWindowEditor::Ref::New(*this, moduleDef, true/*false*/);
 		action->SetText("");
 		
 		pUIHelper->ToggleButton(button, action);
@@ -2157,56 +2187,56 @@ void igdeWindowMain::pRebuildToolBarEditors(){
 
 
 void igdeWindowMain::pCreateMenu(){
-	pMenuGame.TakeOver(new igdeMenuCascade(pEnvironmentIGDE, "Game", deInputEvent::ekcG));
+	pMenuGame = igdeMenuCascade::Ref::New(pEnvironmentIGDE, "Game", deInputEvent::ekcG);
 	pCreateMenuGame(pMenuGame);
 	
-	pMenuSettings.TakeOver(new igdeMenuCascade(pEnvironmentIGDE, "Settings", deInputEvent::ekcS));
+	pMenuSettings = igdeMenuCascade::Ref::New(pEnvironmentIGDE, "Settings", deInputEvent::ekcS);
 	pCreateMenuSettings(pMenuSettings);
 	
-	pMenuWindow.TakeOver(new igdeMenuCascade(pEnvironmentIGDE, "Window", deInputEvent::ekcW));
+	pMenuWindow = igdeMenuCascade::Ref::New(pEnvironmentIGDE, "Window", deInputEvent::ekcW);
 }
 
 void igdeWindowMain::pCreateMenuGame(igdeMenuCascade &menu){
 	igdeWidget::Ref entry;
 	
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionGameNew));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameNew);
 	menu.AddChild(entry);
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionGameOpen));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameOpen);
 	menu.AddChild(entry);
-	pMenuRecentProjects.TakeOver(new igdeMenuCascade(pEnvironmentIGDE,
-		"Open recent project", pIconGameOpen));
+	pMenuRecentProjects = igdeMenuCascade::Ref::New(pEnvironmentIGDE,
+		"Open recent project", pIconGameOpen);
 	menu.AddChild(pMenuRecentProjects);
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionGameSave));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameSave);
 	menu.AddChild(entry);
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionGameSaveAs));
-	menu.AddChild(entry);
-	
-	entry.TakeOver(new igdeMenuSeparator(pEnvironmentIGDE));
-	menu.AddChild(entry);
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionGameSettings));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameSaveAs);
 	menu.AddChild(entry);
 	
-	entry.TakeOver(new igdeMenuSeparator(pEnvironmentIGDE));
+	entry = igdeMenuSeparator::Ref::New(pEnvironmentIGDE);
 	menu.AddChild(entry);
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionGameReloadXMLElementClasses));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameSettings);
 	menu.AddChild(entry);
 	
-	entry.TakeOver(new igdeMenuSeparator(pEnvironmentIGDE));
+	entry = igdeMenuSeparator::Ref::New(pEnvironmentIGDE);
 	menu.AddChild(entry);
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionGameQuit));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameReloadXMLElementClasses);
+	menu.AddChild(entry);
+	
+	entry = igdeMenuSeparator::Ref::New(pEnvironmentIGDE);
+	menu.AddChild(entry);
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionGameQuit);
 	menu.AddChild(entry);
 }
 
 void igdeWindowMain::pCreateMenuSettings(igdeMenuCascade &menu){
 	igdeWidget::Ref entry;
 	
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionSettingsEngine));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsEngine);
 	menu.AddChild(entry);
 // 	entry.TakeOver( new igdeMenuCommand( pEnvironmentIGDE, pActionSettingsIgde ) );
 // 	menu.AddChild( entry );
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionSettingsTexPropList));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsTexPropList);
 	menu.AddChild(entry);
-	entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, pActionSettingsLogging));
+	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsLogging);
 	menu.AddChild(entry);
 }
 
@@ -2220,8 +2250,8 @@ void igdeWindowMain::pUpdateMenuRecentProjects(igdeMenuCascade &menu){
 	menu.RemoveAllChildren();
 	
 	for(i=0; i<count; i++){
-		action.TakeOver(new cActionGameOpenRecent(*this, list.GetAt(i)));
-		entry.TakeOver(new igdeMenuCommand(pEnvironmentIGDE, action));
+		action = cActionGameOpenRecent::Ref::New(*this, list.GetAt(i));
+		entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, action);
 		menu.AddChild(entry);
 	}
 }
@@ -2249,9 +2279,9 @@ void igdeWindowMain::pUpdateMenuWindow(igdeMenuCascade &menu){
 	igdeWidget::Ref entry;
 	
 	for(i=0; i<addModuleCount; i++){
-		action.TakeOver(new cActionWindowEditor(*this,
-			*pModuleManager->GetModuleWithID( addModules.GetAt( i ) ), true ) );
-		entry.TakeOver(new igdeMenuOption(pEnvironmentIGDE, action));
+		action = cActionWindowEditor::Ref::New(*this,
+			*pModuleManager->GetModuleWithID(addModules.GetAt(i)), true);
+		entry = igdeMenuOption::Ref::New(pEnvironmentIGDE, action);
 		menu.AddChild(entry);
 	}
 }
@@ -2272,7 +2302,7 @@ void igdeWindowMain::pLoadXMLElementClasses(igdeGameProject &gameProject){
 	deVFSContainer::Ref container;
 	decPath pathData(decPath::CreatePathNative(gameProject.GetDirectoryPath()));
 	pathData.AddUnixPath(gameProject.GetPathData());
-	container.TakeOver(new deVFSDiskDirectory(pathData));
+	container = deVFSDiskDirectory::Ref::New(pathData);
 	vfs->AddContainer(container);
 	
 	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetClassManager()->GetAutoFindPath();
@@ -2314,7 +2344,7 @@ void igdeWindowMain::pFindAndAddSkins(igdeGameProject &gameProject){
 	deVFSContainer::Ref container;
 	decPath pathData(decPath::CreatePathNative(gameProject.GetDirectoryPath()));
 	pathData.AddUnixPath(gameProject.GetPathData());
-	container.TakeOver(new deVFSDiskDirectory(pathData));
+	container = deVFSDiskDirectory::Ref::New(pathData);
 	vfs->AddContainer(container);
 	
 	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetSkinManager()->GetAutoFindPath();
@@ -2350,7 +2380,7 @@ void igdeWindowMain::pFindAndAddSkies(igdeGameProject &gameProject){
 	deVFSContainer::Ref container;
 	decPath pathData(decPath::CreatePathNative(gameProject.GetDirectoryPath()));
 	pathData.AddUnixPath(gameProject.GetPathData());
-	container.TakeOver(new deVFSDiskDirectory(pathData));
+	container = deVFSDiskDirectory::Ref::New(pathData);
 	vfs->AddContainer(container);
 	
 	const decStringList &pathList = gameProject.GetProjectGameDefinition()->GetSkyManager()->GetAutoFindPath();

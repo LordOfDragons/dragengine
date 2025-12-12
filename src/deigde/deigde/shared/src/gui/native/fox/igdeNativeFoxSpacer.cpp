@@ -61,7 +61,7 @@ pHeight(height){
 }
 
 igdeNativeFoxSpacer::~igdeNativeFoxSpacer(){
-	pOwner = NULL;
+	pOwner = nullptr;
 }
 
 igdeNativeFoxSpacer *igdeNativeFoxSpacer::CreateNativeWidget(igdeSpacer &powner){

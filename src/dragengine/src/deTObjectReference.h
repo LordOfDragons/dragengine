@@ -205,8 +205,6 @@ public:
 	
 	/**
 	 * \brief Create instance taking over reference.
-	 * 
-	 * Same as calling New() but using provided arguments with a 'new' call.
 	 */
 	template<typename... A> static deTObjectReference New(A&&... args){
 		deTObjectReference reference;

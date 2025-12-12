@@ -427,7 +427,7 @@ void igdeCamera::AdaptionChanged(){
 //////////////////////
 
 void igdeCamera::pCleanUp(){
-	SetEngineWorld(NULL);
+	SetEngineWorld(nullptr);
 }
 
 void igdeCamera::pUpdateCameraPosition(){

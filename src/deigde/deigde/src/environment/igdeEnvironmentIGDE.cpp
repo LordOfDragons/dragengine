@@ -60,9 +60,9 @@
 ////////////////////////////
 
 igdeEnvironmentIGDE::igdeEnvironmentIGDE() :
-pWindowMain(NULL)
+pWindowMain(nullptr)
 {
-	pLogger.TakeOver(new deLoggerConsoleColor);
+	pLogger = deLoggerConsoleColor::Ref::New();
 }
 
 igdeEnvironmentIGDE::~igdeEnvironmentIGDE(){

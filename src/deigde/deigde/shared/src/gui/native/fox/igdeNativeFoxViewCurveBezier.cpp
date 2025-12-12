@@ -1010,7 +1010,7 @@ long igdeNativeFoxViewCurveBezierView::onMouseMove(FXObject*, FXSelector, void *
 			}
 			
 			if(target){
-				target->tryHandle(this, FXSEL(SEL_CHANGED, message), NULL);
+				target->tryHandle(this, FXSEL(SEL_CHANGED, message), nullptr);
 			}
 			
 			update();
@@ -1076,7 +1076,7 @@ long igdeNativeFoxViewCurveBezierView::onLeftMouseUp(FXObject*, FXSelector, void
 		}
 		
 		if(target){
-			target->tryHandle(this, FXSEL(SEL_COMMAND, message), NULL);
+			target->tryHandle(this, FXSEL(SEL_COMMAND, message), nullptr);
 		}
 		
 		// we have to send a curve change notification since the last mouse move causes
@@ -1253,7 +1253,7 @@ igdeNativeFoxViewCurveBezier::igdeNativeFoxViewCurveBezier(
 FXVerticalFrame(pparent, layoutFlags.flags, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
 pView(new igdeNativeFoxViewCurveBezierView(powner, this, LAYOUT_FILL
 	| igdeNativeFoxViewCurveBezierView::ViewCurveBezierFlags(powner), guitheme)),
-pResizer(NULL)
+pResizer(nullptr)
 {
 	if(layoutFlags.canResizeVertical || (layoutFlags.flags & LAYOUT_FILL_Y) == 0){
 		pResizer = new igdeNativeFoxResizer(this, this, ID_RESIZER);

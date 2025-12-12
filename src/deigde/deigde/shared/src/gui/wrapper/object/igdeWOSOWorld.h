@@ -61,7 +61,7 @@ public:
 		/** \brief Path to skin to use or empty string. */
 		decString pathSkin;
 		
-		/** \brief Skin to use or null if not used or not loaded. */
+		/** \brief Skin to use or nullptr if not used or not loaded. */
 		deSkin::Ref skin;
 		
 		/** \brief Index of texture in skin to use. */

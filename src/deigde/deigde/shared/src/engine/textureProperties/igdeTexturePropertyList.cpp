@@ -71,7 +71,7 @@ const igdeTextureProperty *igdeTexturePropertyList::GetNamed(const char *name) c
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 int igdeTexturePropertyList::IndexOf(const igdeTextureProperty * texture) const{

@@ -87,7 +87,7 @@ public:
 	/*@{*/
 	/** \brief Creates a new virtual file system list. */
 	igdeNativeFoxVFSList(igdeEnvironment &environment, deVirtualFileSystem *vfs,
-		FXComposite *p, FXObject* tgt=NULL, FXSelector sel=0, FXuint opts=0,
+		FXComposite *p, FXObject* tgt=nullptr, FXSelector sel=0, FXuint opts=0,
 		FXint x=0, FXint y=0, FXint w=0, FXint h=0);
 	
 	/** \brief Cleans up the virtual file system list. */
@@ -117,7 +117,7 @@ public:
 	/** \brief Sets the sorting. */
 	void SetSorting(eSorting sorting);
 	
-	/** \brief Retrieves the selected item or NULL. */
+	/** \brief Retrieves the selected item or nullptr. */
 	igdeNativeFoxVFSListItem *GetSelectedItem() const;
 	
 	/** \brief Create server-side resources. */

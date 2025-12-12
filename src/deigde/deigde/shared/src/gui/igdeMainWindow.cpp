@@ -46,8 +46,8 @@
 ////////////////////////////
 
 igdeMainWindow::igdeMainWindow(igdeEnvironment &environment, const char *title) :
-igdeWindow(environment, title, NULL, true),
-pEngineController(NULL),
+igdeWindow(environment, title, nullptr, true),
+pEngineController(nullptr),
 pWindowState(ewsNormal),
 pNormalPosition(GetPosition()),
 pNormalSize(GetSize()),

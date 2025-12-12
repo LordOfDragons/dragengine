@@ -151,10 +151,10 @@ pAddToRenderTask(NULL)
 	
 	renderThread.GetShader().SetCommonDefines(commonDefines);
 	
-	pShadowPBSingleUse.TakeOver(new deoglSPBSingleUse(renderThread,
-		deoglSkinShader::CreateSPBRender(renderThread)));
-	pOccMapPBSingleUse.TakeOver(new deoglSPBSingleUse(renderThread,
-		deoglSkinShader::CreateSPBOccMap(renderThread)));
+	pShadowPBSingleUse = deoglSPBSingleUse::Ref::New(renderThread,
+		deoglSkinShader::CreateSPBRender(renderThread));
+	pOccMapPBSingleUse = deoglSPBSingleUse::Ref::New(renderThread,
+		deoglSkinShader::CreateSPBOccMap(renderThread));
 	
 	pRenderTask = new deoglRenderTask(renderThread);
 	pAddToRenderTask = new deoglAddToRenderTask(renderThread, *pRenderTask);
@@ -341,33 +341,33 @@ pAddToRenderTask(NULL)
 	const decColor colorBg(0.0f, 0.0f, 0.25f, 0.75f);
 	const decColor colorBgSub(0.05f, 0.05f, 0.05f, 0.75f);
 	
-	pDebugInfoSolid.TakeOver(new deoglDebugInformation("Lights Solid", colorText, colorBg));
+	pDebugInfoSolid = deoglDebugInformation::Ref::New("Lights Solid", colorText, colorBg);
 	
-	pDebugInfoSolidCopyDepth.TakeOver(new deoglDebugInformation("Copy Depth", colorText, colorBgSub));
+	pDebugInfoSolidCopyDepth = deoglDebugInformation::Ref::New("Copy Depth", colorText, colorBgSub);
 	pDebugInfoSolid->GetChildren().Add(pDebugInfoSolidCopyDepth);
 	
 	pDebugInfoSolid->GetChildren().Add(pRenderLightSky->GetDebugInfoSolid());
 	pDebugInfoSolid->GetChildren().Add(pRenderLightPoint->GetDebugInfoSolid());
 	pDebugInfoSolid->GetChildren().Add(pRenderLightSpot->GetDebugInfoSolid());
 	
-	pDebugInfoSolidParticle.TakeOver(new deoglDebugInformation("Particle", colorText, colorBgSub));
+	pDebugInfoSolidParticle = deoglDebugInformation::Ref::New("Particle", colorText, colorBgSub);
 	pDebugInfoSolid->GetChildren().Add(pDebugInfoSolidParticle);
 	
-	pDebugInfoSolidSSSSS.TakeOver(new deoglDebugInformation("SSSSS", colorText, colorBgSub));
+	pDebugInfoSolidSSSSS = deoglDebugInformation::Ref::New("SSSSS", colorText, colorBgSub);
 	pDebugInfoSolid->GetChildren().Add(pDebugInfoSolidSSSSS);
 	
 	
 	
-	pDebugInfoTransparent.TakeOver(new deoglDebugInformation("Lights Transp", colorText, colorBg));
+	pDebugInfoTransparent = deoglDebugInformation::Ref::New("Lights Transp", colorText, colorBg);
 	
-	pDebugInfoTransparentCopyDepth.TakeOver(new deoglDebugInformation("Copy Depth", colorText, colorBgSub));
+	pDebugInfoTransparentCopyDepth = deoglDebugInformation::Ref::New("Copy Depth", colorText, colorBgSub);
 	pDebugInfoTransparent->GetChildren().Add(pDebugInfoTransparentCopyDepth);
 	
 	pDebugInfoTransparent->GetChildren().Add(pRenderLightSky->GetDebugInfoTransparent());
 	pDebugInfoTransparent->GetChildren().Add(pRenderLightPoint->GetDebugInfoTransparent());
 	pDebugInfoTransparent->GetChildren().Add(pRenderLightSpot->GetDebugInfoTransparent());
 	
-	pDebugInfoTransparentSSSSS.TakeOver(new deoglDebugInformation("SSSSS", colorText, colorBgSub));
+	pDebugInfoTransparentSSSSS = deoglDebugInformation::Ref::New("SSSSS", colorText, colorBgSub);
 	pDebugInfoTransparent->GetChildren().Add(pDebugInfoTransparentSSSSS);
 	
 	

@@ -43,11 +43,11 @@
 igdeContainerBorder::igdeContainerBorder(igdeEnvironment &environment, int spacing) :
 igdeContainer(environment),
 pSpacing (spacing),
-pWidgetTop(NULL),
-pWidgetBottom(NULL),
-pWidgetLeft(NULL),
-pWidgetRight(NULL),
-pWidgetCenter(NULL)
+pWidgetTop(nullptr),
+pWidgetBottom(nullptr),
+pWidgetLeft(nullptr),
+pWidgetRight(nullptr),
+pWidgetCenter(nullptr)
 {
 	if(spacing < 0){
 		DETHROW(deeInvalidParam);
@@ -83,7 +83,7 @@ void igdeContainerBorder::AddChild(igdeWidget *child, eArea area){
 			igdeContainer::AddChild(child);
 			
 		}catch(const deException &){
-			pWidgetTop = NULL;
+			pWidgetTop = nullptr;
 			throw;
 		}
 		break;
@@ -98,7 +98,7 @@ void igdeContainerBorder::AddChild(igdeWidget *child, eArea area){
 			igdeContainer::AddChild(child);
 			
 		}catch(const deException &){
-			pWidgetBottom = NULL;
+			pWidgetBottom = nullptr;
 			throw;
 		}
 		break;
@@ -113,7 +113,7 @@ void igdeContainerBorder::AddChild(igdeWidget *child, eArea area){
 			igdeContainer::AddChild(child);
 			
 		}catch(const deException &){
-			pWidgetLeft = NULL;
+			pWidgetLeft = nullptr;
 			throw;
 		}
 		break;
@@ -128,7 +128,7 @@ void igdeContainerBorder::AddChild(igdeWidget *child, eArea area){
 			igdeContainer::AddChild(child);
 			
 		}catch(const deException &){
-			pWidgetRight = NULL;
+			pWidgetRight = nullptr;
 			throw;
 		}
 		break;
@@ -143,7 +143,7 @@ void igdeContainerBorder::AddChild(igdeWidget *child, eArea area){
 			igdeContainer::AddChild(child);
 			
 		}catch(const deException &){
-			pWidgetCenter = NULL;
+			pWidgetCenter = nullptr;
 			throw;
 		}
 		break;
@@ -161,30 +161,30 @@ void igdeContainerBorder::RemoveChild(igdeWidget *child){
 	igdeContainer::RemoveChild(child);
 	
 	if(child == pWidgetTop){
-		pWidgetTop = NULL;
+		pWidgetTop = nullptr;
 		
 	}else if(child == pWidgetBottom){
-		pWidgetBottom = NULL;
+		pWidgetBottom = nullptr;
 		
 	}else if(child == pWidgetLeft){
-		pWidgetLeft = NULL;
+		pWidgetLeft = nullptr;
 		
 	}else if(child == pWidgetRight){
-		pWidgetRight = NULL;
+		pWidgetRight = nullptr;
 		
 	}else if(child == pWidgetCenter){
-		pWidgetCenter = NULL;
+		pWidgetCenter = nullptr;
 	}
 }
 
 void igdeContainerBorder::RemoveAllChildren(){
 	igdeContainer::RemoveAllChildren();
 	
-	pWidgetTop = NULL;
-	pWidgetBottom = NULL;
-	pWidgetLeft = NULL;
-	pWidgetRight = NULL;
-	pWidgetCenter = NULL;
+	pWidgetTop = nullptr;
+	pWidgetBottom = nullptr;
+	pWidgetLeft = nullptr;
+	pWidgetRight = nullptr;
+	pWidgetCenter = nullptr;
 }
 
 igdeWidget *igdeContainerBorder::GetWidgetIn(eArea area) const{

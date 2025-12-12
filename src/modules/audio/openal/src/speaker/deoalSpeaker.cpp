@@ -90,7 +90,7 @@ pLLSyncWorld(this),
 pLLSyncMic(this)
 {
 	try{
-		pASpeaker.TakeOver(new deoalASpeaker(oal.GetAudioThread()));
+		pASpeaker = deoalASpeaker::Ref::New(oal.GetAudioThread());
 		pASpeaker->SetBackLink(this);
 		
 		SourceChanged();

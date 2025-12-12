@@ -178,7 +178,7 @@ void igdeWConnection::SetVisible(bool visible){
 //////////////////////
 
 void igdeWConnection::pCleanUp(){
-	SetParentDebugDrawer(NULL);
+	SetParentDebugDrawer(nullptr);
 }
 
 void igdeWConnection::pRebuildArrow(){

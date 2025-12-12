@@ -44,7 +44,7 @@ pColor(renderable.GetColor()),
 pDirty(true)
 {
 	try{
-		pRRenderableColor.TakeOver(new deoglRDSRenderableColor(*dynamicSkin.GetRDynamicSkin()));
+		pRRenderableColor = deoglRDSRenderableColor::Ref::New(*dynamicSkin.GetRDynamicSkin());
 		
 	}catch(const deException &){
 		pCleanUp();

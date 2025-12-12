@@ -66,7 +66,7 @@ igdeNativeFoxResizer::igdeNativeFoxResizer(){
 igdeNativeFoxResizer::igdeNativeFoxResizer(FXComposite *pparent, FXObject *ttarget, FXSelector selector) :
 FXWindow(pparent, LAYOUT_FILL_X),
 pIsDragging(false),
-pCursor(NULL),
+pCursor(nullptr),
 pGripSize(6),
 pGripWidth(50),
 pActiveColor(FXRGB(0, 0, 255))

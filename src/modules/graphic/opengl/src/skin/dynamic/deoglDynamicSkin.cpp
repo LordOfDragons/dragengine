@@ -65,7 +65,7 @@ pDirtyRenderables(true)
 	int i;
 	
 	try{
-		pRDynamicSkin.TakeOver(new deoglRDynamicSkin(ogl.GetRenderThread()));
+		pRDynamicSkin = deoglRDynamicSkin::Ref::New(ogl.GetRenderThread());
 		
 		for(i=0; i<renderableCount; i++){
 			RenderableAdded(i, dynamicSkin.GetRenderableAt(i));

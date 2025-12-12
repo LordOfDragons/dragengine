@@ -84,7 +84,7 @@ void igdeEditTags::cActionRemove::OnAction(){
 
 
 igdeEditTags::cActionClear::cActionClear(igdeEditTags &widget) :
-igdeAction("Clear", NULL, "Clear tag"),
+igdeAction("Clear", nullptr, "Clear tag"),
 pWidget(widget){
 }
 
@@ -135,7 +135,7 @@ igdeContainerFlow(helper.GetEnvironment(), igdeContainerFlow::eaY, igdeContainer
 
 igdeEditTags::~igdeEditTags(){
 	DestroyNativeWidget();
-	SetAction(NULL);
+	SetAction(nullptr);
 }
 
 
@@ -154,7 +154,7 @@ void igdeEditTags::SetTags(const decStringSet &tags){
 }
 
 const decString &igdeEditTags::GetSelectedTag() const{
-	if(pListBox->GetSelectedItem() != NULL){
+	if(pListBox->GetSelectedItem() != nullptr){
 		return pListBox->GetSelectedItem()->GetText();
 		
 	}else{
@@ -240,7 +240,7 @@ void igdeEditTags::OnParameterChanged(igdeAction *action){
 void igdeEditTags::OnDestroyed(igdeAction *action){
 	GetLogger()->LogWarnFormat("IGDE", "igdeEditTags::OnDestroyed: "
 		"Action(%s) destroyed while still listening on it", action->GetText().GetString());
-	pAction = NULL;
+	pAction = nullptr;
 }
 
 
@@ -249,13 +249,13 @@ void igdeEditTags::OnDestroyed(igdeAction *action){
 //////////////////////
 
 void igdeEditTags::pCreateContent(igdeUIHelper &helper, int rows){
-	pActionAdd.TakeOver(new cActionAdd(*this));
-	pActionRemove.TakeOver(new cActionRemove(*this));
-	pActionClear.TakeOver(new cActionClear(*this));
+	pActionAdd = cActionAdd::Ref::New(*this);
+	pActionRemove = cActionRemove::Ref::New(*this);
+	pActionClear = cActionClear::Ref::New(*this);
 	
 	igdeContainerFlow::Ref comboLine(igdeContainerFlow::Ref::New(
 		GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
-	helper.ComboBoxFilter(comboLine, true, "", pComboBox, NULL);
+	helper.ComboBoxFilter(comboLine, true, "", pComboBox, nullptr);
 	pComboBox->SetDefaultSorter();
 	pComboBox->SetFilterCaseInsentive(true);
 	helper.Button(comboLine, pActionAdd);

@@ -120,25 +120,25 @@ public:
 	/** \brief Begin create link drag and drop. */
 	void BeginCreateLink(igdeNativeFoxNVSlot *source);
 	
-	/** \brief Link drag and drop source or NULL. */
+	/** \brief Link drag and drop source or nullptr. */
 	inline igdeNativeFoxNVSlot *GetCreateLinkSource() const{ return pCreateLinkSource; }
 	
 	/** \brief Set create link drag and drop position. */
 	void SetCreateLinkPosition(const decPoint &position);
 	
-	/** \brief Create link drag and drop target or NULL. */
+	/** \brief Create link drag and drop target or nullptr. */
 	inline igdeNativeFoxNVSlot *GetCreateLinkTarget() const{ return pCreateLinkTarget; }
 	
-	/** \brief Set create link drag and drop target or NULL. */
+	/** \brief Set create link drag and drop target or nullptr. */
 	void SetCreateLinkTarget(igdeNativeFoxNVSlot *target);
 	
 	/** \brief Finish create link drag and drop. */
 	void FinishCreateLink();
 	
-	/** \brief Link closest to position inside range in board coordinate system or NULL. */
+	/** \brief Link closest to position inside range in board coordinate system or nullptr. */
 	igdeNVLink *ClosestLinkNear(const decPoint &position, float range) const;
 	
-	/** \brief Hover link or NULL. */
+	/** \brief Hover link or nullptr. */
 	inline const igdeNVLink::Ref &GetHoverLink() const{ return pHoverLink; }
 	
 	/** \brief Set hover link. */

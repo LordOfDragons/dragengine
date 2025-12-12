@@ -123,7 +123,7 @@ deFontSize::Ref deftFont::LoadFontSize(deFont &font, int lineHeight){
 		lineHeight = pLineHeightLimit;
 	}
 	
-	size.TakeOver(new deFontSize(lineHeight, font.GetGlyphCount()));
+	size = deFontSize::Ref::New(lineHeight, font.GetGlyphCount());
 	
 	pRealFontSize = pFindBestSize(font, size);
 	

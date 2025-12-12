@@ -147,6 +147,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
+	typedef deTObjectReference<igdeEditPropertyValue_ActionBoolean> Ref;
 	igdeEditPropertyValue_ActionBoolean(igdeEditPropertyValue &widget) : 
 	igdeAction("Value", "Boolean property value"), pWidget(widget){}
 	
@@ -206,6 +207,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
+	typedef deTObjectReference<igdeEditPropertyValue_ActionEditRawValue> Ref;
 	igdeEditPropertyValue_ActionEditRawValue(igdeEditPropertyValue &widget) : 
 	igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiConfig),
 		"Edit raw property value"), pWidget(widget){}
@@ -230,6 +232,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
+	typedef deTObjectReference<igdeEditPropertyValue_ActionEditList> Ref;
 	igdeEditPropertyValue_ActionEditList(igdeEditPropertyValue &widget) :
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
 			"Edit list"), pWidget(widget){}
@@ -248,6 +251,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
+	typedef deTObjectReference<igdeEditPropertyValue_ActionEditTriggerExpression> Ref;
 	igdeEditPropertyValue_ActionEditTriggerExpression(igdeEditPropertyValue &widget) :
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
 			"Edit trigger expression"), pWidget(widget){}
@@ -282,6 +286,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
+	typedef deTObjectReference<igdeEditPropertyValue_ActionEditShape> Ref;
 	igdeEditPropertyValue_ActionEditShape(igdeEditPropertyValue &widget) :
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
 			"Edit shape"), pWidget(widget){}
@@ -300,6 +305,7 @@ protected:
 	igdeEditPropertyValue &pWidget;
 	
 public:
+	typedef deTObjectReference<igdeEditPropertyValue_ActionEditShapeList> Ref;
 	igdeEditPropertyValue_ActionEditShapeList(igdeEditPropertyValue &widget) :
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
 			"Edit shape list"), pWidget(widget){}
@@ -323,10 +329,10 @@ public:
 
 igdeEditPropertyValue::igdeEditPropertyValue(igdeUIHelper &helper) :
 igdeContainerFlow(helper.GetEnvironment(), eaX, esFirst),
-pGDProperty(NULL),
+pGDProperty(nullptr),
 pEnabled(true),
 pPreventEditing(false),
-pTriggerTargets(NULL)
+pTriggerTargets(nullptr)
 {
 	pCreateContent(helper);
 }
@@ -356,7 +362,7 @@ void igdeEditPropertyValue::ClearValue(){
 	}
 	
 	pValue.Empty();
-	pGDProperty = NULL;
+	pGDProperty = nullptr;
 	pUpdateEditWidgets();
 }
 
@@ -668,14 +674,14 @@ void igdeEditPropertyValue::pCreateContent(igdeUIHelper &helper){
 	igdeEnvironment &env = helper.GetEnvironment();
 	igdeContainer::Ref frameLine;
 	
-	pActionEditRawValue.TakeOver(new igdeEditPropertyValue_ActionEditRawValue(*this));
-	pActionBooleanValue.TakeOver(new igdeEditPropertyValue_ActionBoolean(*this));
-	pActionEditList.TakeOver(new igdeEditPropertyValue_ActionEditList(*this));
-	pActionEditTriggerExpression.TakeOver(new igdeEditPropertyValue_ActionEditTriggerExpression(*this));
-	pActionEditShape.TakeOver(new igdeEditPropertyValue_ActionEditShape(*this));
-	pActionEditShapeList.TakeOver(new igdeEditPropertyValue_ActionEditShapeList(*this));
+	pActionEditRawValue = igdeEditPropertyValue_ActionEditRawValue::Ref::New(*this);
+	pActionBooleanValue = igdeEditPropertyValue_ActionBoolean::Ref::New(*this);
+	pActionEditList = igdeEditPropertyValue_ActionEditList::Ref::New(*this);
+	pActionEditTriggerExpression = igdeEditPropertyValue_ActionEditTriggerExpression::Ref::New(*this);
+	pActionEditShape = igdeEditPropertyValue_ActionEditShape::Ref::New(*this);
+	pActionEditShapeList = igdeEditPropertyValue_ActionEditShapeList::Ref::New(*this);
 	
-	pSwitcher.TakeOver(new igdeSwitcher(env));
+	pSwitcher = igdeSwitcher::Ref::New(env);
 	AddChild(pSwitcher);
 	helper.Button(*this, pActionEditRawValue);
 	
@@ -714,13 +720,13 @@ void igdeEditPropertyValue::pCreateContent(igdeUIHelper &helper){
 	helper.ComboBox(pSwitcher, "Selection property value", pSelect,
 		new igdeEditPropertyValue_ComboBox(*this));
 	
-	frameLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
+	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	helper.EditString(frameLine, "List property value", pList,
 		new igdeEditPropertyValue_TextField(*this));
 	helper.Button(frameLine, pActionEditList);
 	pSwitcher->AddChild(frameLine);
 	
-	frameLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
+	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	helper.EditString(frameLine, "Trigger expression property value", pTriggerExpression,
 		new igdeEditPropertyValue_TextField(*this));
 	helper.Button(frameLine, pActionEditTriggerExpression);
@@ -730,13 +736,13 @@ void igdeEditPropertyValue::pCreateContent(igdeUIHelper &helper){
 		new igdeEditPropertyValue_ComboBox(*this));
 	pTriggerTarget->SetDefaultSorter();
 	
-	frameLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
+	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	helper.EditString(frameLine, "Shape property value", pShape,
 		new igdeEditPropertyValue_TextField(*this));
 	helper.Button(frameLine, pActionEditShape);
 	pSwitcher->AddChild(frameLine);
 	
-	frameLine.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
+	frameLine = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst);
 	helper.EditString(frameLine, "Shape list property value", pShapeList,
 		new igdeEditPropertyValue_TextField(*this));
 	helper.Button(frameLine, pActionEditShapeList);

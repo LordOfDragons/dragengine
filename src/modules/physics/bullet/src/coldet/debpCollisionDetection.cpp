@@ -107,7 +107,7 @@ pDynWorld(nullptr)
 {
 	(void)pBullet;
 	
-	pColInfo.TakeOver(new deCollisionInfo);
+	pColInfo = deCollisionInfo::Ref::New();
 	
 	decShapeSphere hackSphere(0.001f);
 	pRayHackShape.AddShape(hackSphere, decVector(1.0f, 1.0f, 1.0f));

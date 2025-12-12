@@ -75,7 +75,7 @@ pDialogEngine(dialogEngine)
 	igdeContainer::Ref groupBox, line;
 	
 	
-	line.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast));
+	line = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast);
 	AddChild(line);
 	helper.ComboBox(line, "Module:", "Module to show information for",
 		pCBModule, new igdeDEModuleStatus_ComboModule(*this));
@@ -85,16 +85,16 @@ pDialogEngine(dialogEngine)
 	// module information
 	helper.GroupBoxStatic(*this, groupBox, "Module Information:");
 	
-	helper.EditString(groupBox, "Description:", "Module description", pEditDescription, 3, NULL);
+	helper.EditString(groupBox, "Description:", "Module description", pEditDescription, 3, nullptr);
 	pEditDescription->SetEditable(false);
 	
-	helper.EditString(groupBox, "Type:", "Module type", pEditType, NULL);
+	helper.EditString(groupBox, "Type:", "Module type", pEditType, nullptr);
 	pEditType->SetEditable(false);
 	
-	helper.EditString(groupBox, "Author:", "Module author", pEditAuthor, NULL);
+	helper.EditString(groupBox, "Author:", "Module author", pEditAuthor, nullptr);
 	pEditAuthor->SetEditable(false);
 	
-	helper.EditString(groupBox, "Version:", "Module version", pEditVersion, NULL);
+	helper.EditString(groupBox, "Version:", "Module version", pEditVersion, nullptr);
 	pEditVersion->SetEditable(false);
 	
 	helper.CheckBox(groupBox, "Fallback Module",
@@ -105,33 +105,33 @@ pDialogEngine(dialogEngine)
 	// file handling information
 	helper.GroupBoxStatic(*this, groupBox, "File Handling Information:");
 	
-	helper.EditString(groupBox, "Recognized File Pattern:", "Recognized File Pattern", pEditPattern, NULL);
+	helper.EditString(groupBox, "Recognized File Pattern:", "Recognized File Pattern", pEditPattern, nullptr);
 	pEditPattern->SetEditable(false);
 	
-	helper.EditString(groupBox, "Default Extension:", "Default Extension", pEditDefaultExtension, NULL);
+	helper.EditString(groupBox, "Default Extension:", "Default Extension", pEditDefaultExtension, nullptr);
 	pEditDefaultExtension->SetEditable(false);
 	
-	helper.EditString(groupBox, "Module Directory Name:", "Module Directory Name", pEditDirName, NULL);
+	helper.EditString(groupBox, "Module Directory Name:", "Module Directory Name", pEditDirName, nullptr);
 	pEditDirName->SetEditable(false);
 	
 	
 	// library information
 	helper.GroupBoxStatic(*this, groupBox, "Library Module Information:");
 	
-	helper.EditString(groupBox, "Library Filename:", "Library Filename", pEditLibName, NULL);
+	helper.EditString(groupBox, "Library Filename:", "Library Filename", pEditLibName, nullptr);
 	pEditLibName->SetEditable(false);
 	
-	helper.EditString(groupBox, "Library File Size:", "Library File Size", pEditLibSize, NULL);
+	helper.EditString(groupBox, "Library File Size:", "Library File Size", pEditLibSize, nullptr);
 	pEditLibSize->SetEditable(false);
 	
-	helper.EditString(groupBox, "Library Check Sum (SHA):", "Library Check Sum (SHA)", pEditLibHash, NULL);
+	helper.EditString(groupBox, "Library Check Sum (SHA):", "Library Check Sum (SHA)", pEditLibHash, nullptr);
 	pEditLibHash->SetEditable(false);
 	
 	
 	// library information
 	helper.GroupBoxStaticFlow(*this, groupBox, "Module Status:", true);
 	
-	helper.EditString(groupBox, "Module description", pEditStatus, 3, NULL);
+	helper.EditString(groupBox, "Module description", pEditStatus, 3, nullptr);
 	pEditStatus->SetEditable(false);
 	
 	
@@ -150,7 +150,7 @@ igdeDEModuleStatus::~igdeDEModuleStatus(){
 
 void igdeDEModuleStatus::UpdateModuleStatus(){
 	deLoadableModule * const loadedModule = pCBModule->GetSelectedItem()
-		? (deLoadableModule*)pCBModule->GetSelectedItem()->GetData() : NULL;
+		? (deLoadableModule*)pCBModule->GetSelectedItem()->GetData() : nullptr;
 	
 	if(!loadedModule){
 		pEditType->SetText("");
@@ -369,7 +369,7 @@ void igdeDEModuleStatus::UpdateModulesList(){
 	for(i=0; i<count; i++){
 		deLoadableModule * const loadedModule = moduleSystem.GetModuleAt(i);
 		text.Format("%s %s", loadedModule->GetName().GetString(), loadedModule->GetVersion().GetString());
-		pCBModule->AddItem(text.GetString(), NULL, loadedModule);
+		pCBModule->AddItem(text.GetString(), nullptr, loadedModule);
 	}
 	pCBModule->SortItems();
 }

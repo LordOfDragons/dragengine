@@ -98,7 +98,7 @@ bool igdeGDCCTextureList::Has(igdeGDCCTexture *texture) const{
 }
 
 bool igdeGDCCTextureList::HasNamed(const char *name) const{
-	return GetNamed(name) != NULL;
+	return GetNamed(name) != nullptr;
 }
 
 void igdeGDCCTextureList::Add(igdeGDCCTexture *texture){

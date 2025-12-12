@@ -31,7 +31,7 @@
 
 
 /**
- * \brief Null CrashRecovery Module.
+ * \brief nullptr CrashRecovery Module.
  */
 class DE_DLL_EXPORT igdeNullCrashRecoveryModule : public deBaseCrashRecoveryModule{
 public:

@@ -113,7 +113,7 @@ void igdeTreeList::Focus(){
 
 igdeTreeItem *igdeTreeList::GetLastChild() const{
 	igdeTreeItem *item = pFirstChild;
-	igdeTreeItem *lastChild = NULL;
+	igdeTreeItem *lastChild = nullptr;
 	while(item){
 		lastChild = item;
 		item = item->GetNext();
@@ -132,7 +132,7 @@ int igdeTreeList::GetChildrenCount() const{
 }
 
 igdeTreeItem *igdeTreeList::GetItemWithData(void *data) const{
-	return pGetItemWithData(NULL, data);
+	return pGetItemWithData(nullptr, data);
 }
 
 igdeTreeItem *igdeTreeList::GetItemWithData(igdeTreeItem *parent, void *data) const{
@@ -140,15 +140,15 @@ igdeTreeItem *igdeTreeList::GetItemWithData(igdeTreeItem *parent, void *data) co
 }
 
 bool igdeTreeList::HasItem(igdeTreeItem *item) const{
-	return pHasItem(NULL, item);
+	return pHasItem(nullptr, item);
 }
 
 bool igdeTreeList::HasItem(const char *text) const{
-	return pHasItem(NULL, text);
+	return pHasItem(nullptr, text);
 }
 
 bool igdeTreeList::HasItemWithData(void *data) const{
-	return pHasItem(NULL, data);
+	return pHasItem(nullptr, data);
 }
 
 void igdeTreeList::AppendItem(igdeTreeItem *parent, igdeTreeItem *item){
@@ -172,7 +172,7 @@ igdeTreeItem *igdeTreeList::AppendItem(igdeTreeItem *parent, const char *text, i
 
 void igdeTreeList::AppendItem(igdeTreeItem *parent, igdeTreeItem::Ref &item,
 const char *text, igdeIcon *icon, void *data){
-	item.TakeOver(new igdeTreeItem(text, icon, data));
+	item = igdeTreeItem::Ref::New(text, icon, data);
 	AppendItem(parent, item);
 }
 
@@ -198,7 +198,7 @@ igdeIcon *icon, void *data){
 
 void igdeTreeList::InsertItemBefore(igdeTreeItem *beforeItem, igdeTreeItem::Ref &item,
 const char *text, igdeIcon *icon, void *data){
-	item.TakeOver(new igdeTreeItem(text, icon, data));
+	item = igdeTreeItem::Ref::New(text, icon, data);
 	InsertItemBefore(beforeItem, item);
 }
 
@@ -224,7 +224,7 @@ igdeIcon *icon, void *data){
 
 void igdeTreeList::InsertItemAfter(igdeTreeItem *afterItem, igdeTreeItem::Ref &item,
 const char *text, igdeIcon *icon, void *data){
-	item.TakeOver(new igdeTreeItem(text, icon, data));
+	item = igdeTreeItem::Ref::New(text, icon, data);
 	InsertItemAfter(afterItem, item);
 }
 
@@ -265,9 +265,9 @@ void igdeTreeList::RemoveItem(igdeTreeItem *item){
 			if(check == item){
 				// there are two possible solutions for handling this. the first is to clear
 				// the selection. the second is to move the selection to the next child if
-				// there are any children or the parent which can be NULL. most of the time
+				// there are any children or the parent which can be nullptr. most of the time
 				// the second behavior is the more desired behavior
-				//pSelection = NULL;
+				//pSelection = nullptr;
 				if(item->GetNext()){
 					pSelection = item->GetNext();
 					
@@ -285,7 +285,7 @@ void igdeTreeList::RemoveItem(igdeTreeItem *item){
 	}
 	
 	pRemoveItem(item);
-	item->SetParent(NULL);
+	item->SetParent(nullptr);
 	OnItemRemoved(item);
 	
 	if(selectionChanged){
@@ -299,11 +299,11 @@ void igdeTreeList::RemoveAllItems(){
 	}
 	
 	const bool selectionChanged = pSelection;
-	pSelection = NULL;
+	pSelection = nullptr;
 	
-	pRemoveAllItems(NULL);
+	pRemoveAllItems(nullptr);
 	
-	OnAllItemsRemoved(NULL);
+	OnAllItemsRemoved(nullptr);
 	
 	if(selectionChanged){
 		NotifySelectionChanged();
@@ -324,7 +324,7 @@ void igdeTreeList::RemoveAllItems(igdeTreeItem *parent){
 		igdeTreeItem *check = pSelection;
 		while(check){
 			if(check->GetParent() == parent){
-				pSelection = NULL;
+				pSelection = nullptr;
 				selectionChanged = true;
 				break;
 			}
@@ -356,7 +356,7 @@ void igdeTreeList::SetSorter(igdeTreeItemSorter *sorter){
 }
 
 void igdeTreeList::SetDefaultSorter(){
-	pSorter.TakeOver(new igdeTreeItemSorter);
+	pSorter = igdeTreeItemSorter::Ref::New();
 }
 
 static void igdeTreeList_Sort(decObjectList &items, igdeTreeItemSorter &sorter, int left, int right){
@@ -410,7 +410,7 @@ void igdeTreeList::SortItems(igdeTreeItem *item){
 	igdeTreeList_Sort(items, pSorter, 0, count - 1);
 	
 	igdeTreeItem *prevItem = (igdeTreeItem*)items.GetAt(0);
-	prevItem->SetPrevious(NULL);
+	prevItem->SetPrevious(nullptr);
 	
 	if(item){
 		item->SetFirstChild(prevItem);
@@ -427,7 +427,7 @@ void igdeTreeList::SortItems(igdeTreeItem *item){
 		prevItem = nextItem;
 	}
 	
-	prevItem->SetNext(NULL);
+	prevItem->SetNext(nullptr);
 	
 	OnItemsSorted(item);
 }
@@ -437,7 +437,7 @@ void igdeTreeList::SortAllItems(){
 		return;
 	}
 	
-	SortItems(NULL);
+	SortItems(nullptr);
 	
 	igdeTreeItem *child = pFirstChild;
 	while(child){
@@ -460,7 +460,7 @@ void igdeTreeList::SetSelection(igdeTreeItem *selection){
 }
 
 void igdeTreeList::SetSelectionWithData(void *data){
-	SetSelection(pGetItemWithData(NULL, data));
+	SetSelection(pGetItemWithData(nullptr, data));
 }
 
 void igdeTreeList::MakeItemVisible(igdeTreeItem *item){
@@ -643,7 +643,7 @@ igdeTreeItem *igdeTreeList::pGetItemWithData(igdeTreeItem *parent, void *data) c
 		child = child->GetNext();
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 bool igdeTreeList::pHasItem(igdeTreeItem *parent, igdeTreeItem *item) const{
@@ -695,15 +695,15 @@ void igdeTreeList::pRemoveItem(igdeTreeItem *item){
 		item->GetParent()->SetFirstChild(item->GetNext());
 		
 	}else{
-		pFirstChild = NULL;
+		pFirstChild = nullptr;
 	}
 	
 	if(item->GetNext()){
 		item->GetNext()->SetPrevious(item->GetPrevious());
 	}
 	
-	item->SetPrevious(NULL);
-	item->SetNext(NULL);
+	item->SetPrevious(nullptr);
+	item->SetNext(nullptr);
 }
 
 void igdeTreeList::pAppendItem(igdeTreeItem *parent, igdeTreeItem *item){
@@ -760,15 +760,15 @@ void igdeTreeList::pRemoveAllItems(igdeTreeItem *item){
 		child = child->GetPrevious();
 		
 		pRemoveAllItems(&clearChild);
-		clearChild.SetNext(NULL);
-		clearChild.SetPrevious(NULL);
-		clearChild.SetParent(NULL);
+		clearChild.SetNext(nullptr);
+		clearChild.SetPrevious(nullptr);
+		clearChild.SetParent(nullptr);
 	}
 	
 	if(item){
-		item->SetFirstChild(NULL);
+		item->SetFirstChild(nullptr);
 		
 	}else{
-		pFirstChild = NULL;
+		pFirstChild = nullptr;
 	}
 }

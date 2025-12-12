@@ -106,7 +106,7 @@ igdeTexturePropertyList &list){
 
 void igdeXMLLoadTexturePropertyList::pReadProperty(const decXmlElementTag &root, igdeTexturePropertyList &list){
 	const int elementCount = root.GetElementCount();
-	igdeTextureProperty *property = NULL;
+	igdeTextureProperty *property = nullptr;
 	int i;
 	
 	try{

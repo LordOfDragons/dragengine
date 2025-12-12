@@ -289,7 +289,7 @@ void fbxProperty::pGetValueReader(decBaseFileReader &reader, decBaseFileReader::
 		
 	case 1: // z-lib encoded
 		(void)compressedLength;
-		valueReader.TakeOver(new decZFileReader(&reader, true, compressedLength));
+		valueReader = decZFileReader::Ref::New(&reader, true, compressedLength);
 		break;
 		
 	default:{

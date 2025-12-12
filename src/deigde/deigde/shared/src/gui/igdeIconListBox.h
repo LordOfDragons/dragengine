@@ -171,31 +171,31 @@ public:
 	void AddItem(igdeListItem *item);
 	
 	/** \brief Add item of type igdeListItem with text. */
-	void AddItem(const char *text, igdeIcon *icon = NULL, void *data = NULL);
+	void AddItem(const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	void AddItem(const char *text, const decStringList &details,
-		igdeIcon *icon = NULL, void *data = NULL);
+		igdeIcon *icon = nullptr, void *data = nullptr);
 	
-	void AddItem(igdeListItem::Ref &item, const char *text, igdeIcon *icon = NULL,
-		void *data = NULL);
+	void AddItem(igdeListItem::Ref &item, const char *text, igdeIcon *icon = nullptr,
+		void *data = nullptr);
 	
 	void AddItem(igdeListItem::Ref &item, const char *text, const decStringList &details,
-		igdeIcon *icon = NULL, void *data = NULL);
+		igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	/** \brief Insert item at index. */
 	void InsertItem(int index, igdeListItem *item);
 	
 	/** \brief Insert item of type igdeListItem with text at index. */
-	void InsertItem(int index, const char *text, igdeIcon *icon = NULL, void *data = NULL);
+	void InsertItem(int index, const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	void InsertItem(int index, const char *text, const decStringList &details,
-		igdeIcon *icon = NULL, void *data = NULL);
+		igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	void InsertItem(igdeListItem::Ref &item, int index, const char *text,
-		igdeIcon *icon = NULL, void *data = NULL);
+		igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	void InsertItem(igdeListItem::Ref &item, int index, const char *text,
-		const decStringList &details, igdeIcon *icon = NULL, void *data = NULL);
+		const decStringList &details, igdeIcon *icon = nullptr, void *data = nullptr);
 	
 	/** \brief Move item. */
 	void MoveItem(int fromIndex, int toIndex);
@@ -211,10 +211,10 @@ public:
 	
 	
 	
-	/** \brief Sorter or NULL. */
+	/** \brief Sorter or nullptr. */
 	inline const igdeListItemSorter::Ref &GetSorter() const{ return pSorter; }
 	
-	/** \brief Set sorter or NULL. */
+	/** \brief Set sorter or nullptr. */
 	void SetSorter(igdeListItemSorter *sorter);
 	
 	/** \brief Set default sorter sorting items ascending lexicographically by their text. */
@@ -234,7 +234,7 @@ public:
 	/** \brief Index of selected item or -1. */
 	inline int GetSelection() const{ return pSelection; }
 	
-	/** \brief Selected item or NULL. */
+	/** \brief Selected item or nullptr. */
 	igdeListItem *GetSelectedItem() const;
 	
 	/** \brief Selected item is not -1. */

@@ -144,7 +144,7 @@ void deoxrDPHandInteraction::pAddDevice(bool left){
 	axis->SetInputDeviceComponent(gesture);
 	device->AddAxis(axis);
 	
-	axis.TakeOver(new deoxrDeviceAxis(device));
+	axis = deoxrDeviceAxis::Ref::New(device);
 	axis->SetActionAnalog(oxr.GetAction(deVROpenXR::eiaGestureAim));
 	axis->SetType(deInputDeviceAxis::eatGesture);
 	axis->SetRange(0.0f, 1.0f);
@@ -157,7 +157,7 @@ void deoxrDPHandInteraction::pAddDevice(bool left){
 	axis->SetInputDeviceComponent(gesture);
 	device->AddAxis(axis);
 	
-	axis.TakeOver(new deoxrDeviceAxis(device));
+	axis = deoxrDeviceAxis::Ref::New(device);
 	axis->SetActionAnalog(oxr.GetAction(deVROpenXR::eiaGestureGrasp));
 	axis->SetType(deInputDeviceAxis::eatGesture);
 	axis->SetRange(0.0f, 1.0f);

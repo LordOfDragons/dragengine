@@ -169,7 +169,7 @@ FXIcon *igdeNativeFoxCheckBox::CheckBoxIcon(const igdeCheckBox &powner){
 		return (FXIcon*) powner.GetIcon()->GetNativeIcon();
 		
 	}else{
-		return NULL;
+		return nullptr;
 	}
 }
 

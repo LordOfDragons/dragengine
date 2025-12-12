@@ -60,7 +60,7 @@ public:
 	/** \brief Target at index. */
 	igdeTriggerTarget *GetAt(int position) const;
 	
-	/** \brief Named target or NULL if absent. */
+	/** \brief Named target or nullptr if absent. */
 	igdeTriggerTarget *GetNamed(const char *name) const;
 	
 	/** \brief Named target adding it if absent. */

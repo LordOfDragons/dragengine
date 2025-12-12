@@ -53,7 +53,7 @@ deoglParticleEmitterType::deoglParticleEmitterType(
 deoglParticleEmitter &emitter, const deParticleEmitterType &type) :
 pType(type),
 pDirtyType(true){
-	pRType.TakeOver(new deoglRParticleEmitterType(*emitter.GetREmitter()));
+	pRType = deoglRParticleEmitterType::Ref::New(*emitter.GetREmitter());
 }
 
 deoglParticleEmitterType::~deoglParticleEmitterType(){

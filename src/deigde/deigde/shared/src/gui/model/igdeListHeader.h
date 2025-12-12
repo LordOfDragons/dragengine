@@ -86,10 +86,10 @@ public:
 	/** \brief Set title. */
 	void SetTitle(const char *title);
 	
-	/** \brief Icon or NULL. */
+	/** \brief Icon or nullptr. */
 	inline const igdeIcon::Ref &GetIcon() const{ return pIcon; }
 	
-	/** \brief Set icon or NULL. */
+	/** \brief Set icon or nullptr. */
 	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Size in pixels. */

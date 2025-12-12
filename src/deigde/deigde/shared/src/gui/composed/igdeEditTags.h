@@ -54,6 +54,7 @@ protected:
 		igdeEditTags &pWidget;
 		
 	public:
+		typedef deTObjectReference<cActionAdd> Ref;
 		cActionAdd(igdeEditTags &widget);
 		virtual void OnAction();
 	};
@@ -64,6 +65,7 @@ protected:
 		igdeEditTags &pWidget;
 		
 	public:
+		typedef deTObjectReference<cActionRemove> Ref;
 		cActionRemove(igdeEditTags &widget);
 		virtual void OnAction();
 	};
@@ -74,6 +76,7 @@ protected:
 		igdeEditTags &pWidget;
 		
 	public:
+		typedef deTObjectReference<cActionClear> Ref;
 		cActionClear(igdeEditTags &widget);
 		virtual void OnAction();
 	};
@@ -140,10 +143,10 @@ public:
 	
 	
 	
-	/** \brief Action or NULL. */
+	/** \brief Action or nullptr. */
 	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
-	/** \brief Set action or NULL. */
+	/** \brief Set action or nullptr. */
 	void SetAction(igdeAction *action);
 	
 	/**

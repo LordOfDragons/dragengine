@@ -100,7 +100,7 @@ pDirtyPropFields(true),
 pSyncing(false)
 {
 	try{
-		pRWorld.TakeOver(new deoglRWorld(ogl.GetRenderThread(), world.GetSize()));
+		pRWorld = deoglRWorld::Ref::New(ogl.GetRenderThread(), world.GetSize());
 		
 		pSharedVideoPlayerList = new deoglSharedVideoPlayerList(ogl);
 		

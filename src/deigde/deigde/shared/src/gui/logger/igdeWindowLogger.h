@@ -74,10 +74,10 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief History logger or NULL. */
+	/** \brief History logger or nullptr. */
 	inline const igdeLoggerHistory::Ref &GetHistoryLogger() const{ return pHistoryLogger; }
 	
-	/** \brief Set logger or NULL. */
+	/** \brief Set logger or nullptr. */
 	void SetHistoryLogger(igdeLoggerHistory *logger);
 	
 	

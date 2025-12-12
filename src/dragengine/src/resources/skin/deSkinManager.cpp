@@ -116,7 +116,7 @@ deSkin::Ref deSkinManager::CreateSkin(deVirtualFileSystem *vfs, const char *file
 		}
 		
 		// create skin using the builder
-		skin.TakeOver(new deSkin(this, vfs, filename, decDateTime::GetSystemTime()));
+		skin = deSkin::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
 		builder.BuildSkin(skin);
 		
 		// load into graphic system
@@ -174,7 +174,7 @@ deSkin::Ref deSkinManager::LoadSkin(deVirtualFileSystem *vfs, const char *filena
 				deModuleSystem::emtSkin, path.GetPathUnix());
 			
 			// load the file with it
-			skin.TakeOver(new deSkin(this, vfs, path.GetPathUnix(), modificationTime));
+			skin = deSkin::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			skin->SetAsynchron(false);
 			
 			module->LoadSkin(OpenFileForReading(*vfs, path.GetPathUnix()), *skin);
@@ -219,8 +219,8 @@ deSkin::Ref deSkinManager::LoadDefault(){
 			skin = findSkin;
 			
 		}else{
-			skin.TakeOver(new deSkin(this, GetEngine()->GetVirtualFileSystem(),
-				SKIN_NO_SKIN, decDateTime::GetSystemTime()));
+			skin = deSkin::Ref::New(this, GetEngine()->GetVirtualFileSystem(),
+				SKIN_NO_SKIN, decDateTime::GetSystemTime());
 			skinTex = new deSkinTexture("skin");
 			propDiff = new deSkinPropertyImage("color");
 			

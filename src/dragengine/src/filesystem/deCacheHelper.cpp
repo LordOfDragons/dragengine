@@ -112,7 +112,7 @@ decBaseFileReader::Ref deCacheHelper::Read(const char *id){
 		
 		const int compression = reader->ReadByte();
 		if(compression == 'z'){
-			reader.TakeOver(new decZFileReader(reader));
+			reader = decZFileReader::Ref::New(reader);
 		}
 		
 	}else{
@@ -152,7 +152,7 @@ decBaseFileWriter::Ref deCacheHelper::Write(const char *id){
 	
 	if(pCompressionMethod == ecmZCompression){
 		writer->WriteByte('z'); // z-compressed
-		writer.TakeOver(new decZFileWriter(writer));
+		writer = decZFileWriter::Ref::New(writer);
 		
 	}else{ // no compression
 		writer->WriteByte('-'); // no compression

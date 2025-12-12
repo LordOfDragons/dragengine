@@ -161,7 +161,7 @@ igdeTextStyle *igdeTextArea::GetStyleNamed(const char *name) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 int igdeTextArea::IndexOfStyleNamed(const char *name) const{
@@ -217,7 +217,7 @@ void igdeTextArea::AppendText(const char *text){
 }
 
 void igdeTextArea::AppendText(const char *text, const char *style){
-	AppendText(text, style, NULL);
+	AppendText(text, style, nullptr);
 }
 
 void igdeTextArea::AppendText(const char *text, const char *style, igdeAction *action){
@@ -260,23 +260,23 @@ void igdeTextArea::DeleteText(int begin, int end){
 			pSegments.RemoveFrom(i);
 			
 		}else if(segment.GetBegin() < begin && segment.GetEnd() >= end){
-			newSegment.TakeOver(new igdeTextSegment(segment.GetBegin(),
-				segment.GetEnd() - length, segment.GetStyle(), segment.GetAction()));
+			newSegment = igdeTextSegment::Ref::New(segment.GetBegin(),
+				segment.GetEnd() - length, segment.GetStyle(), segment.GetAction());
 			pSegments.SetAt(i, newSegment.operator->());
 			
 		}else if(segment.GetBegin() < begin && segment.GetEnd() >= begin){
-			newSegment.TakeOver(new igdeTextSegment(segment.GetBegin(), begin - 1,
-				segment.GetStyle(), segment.GetAction()));
+			newSegment = igdeTextSegment::Ref::New(segment.GetBegin(), begin - 1,
+				segment.GetStyle(), segment.GetAction());
 			pSegments.SetAt(i, newSegment.operator->());
 			
 		}else if(segment.GetEnd() >= end && segment.GetBegin() < end){
-			newSegment.TakeOver(new igdeTextSegment(end, segment.GetEnd(),
-				segment.GetStyle(), segment.GetAction()));
+			newSegment = igdeTextSegment::Ref::New(end, segment.GetEnd(),
+				segment.GetStyle(), segment.GetAction());
 			pSegments.SetAt(i, newSegment.operator->());
 			
 		}else if(segment.GetBegin() >= end){
-			newSegment.TakeOver(new igdeTextSegment(segment.GetBegin() - length,
-				segment.GetEnd() - length, segment.GetStyle(), segment.GetAction()));
+			newSegment = igdeTextSegment::Ref::New(segment.GetBegin() - length,
+				segment.GetEnd() - length, segment.GetStyle(), segment.GetAction());
 			pSegments.SetAt(i, newSegment.operator->());
 		}
 	}
@@ -405,7 +405,7 @@ const igdeTextSegment *igdeTextArea::GetSegmentWith(int offset) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 void igdeTextArea::SetTextSegment(int begin, int end, const char *style, igdeAction *action){
@@ -541,25 +541,25 @@ bool igdeTextArea::pClearSegment(int begin, int end){
 			changed = true;
 			
 		}else if(segment.GetBegin() < begin && segment.GetEnd() > end){
-			newSegment.TakeOver(new igdeTextSegment(end + 1, segment.GetEnd(),
-				segment.GetStyle(), segment.GetAction()));
+			newSegment = igdeTextSegment::Ref::New(end + 1, segment.GetEnd(),
+				segment.GetStyle(), segment.GetAction());
 			pSegments.Add(newSegment.operator->());
 			
-			newSegment.TakeOver(new igdeTextSegment(segment.GetBegin(), begin - 1,
-				segment.GetStyle(), segment.GetAction()));
+			newSegment = igdeTextSegment::Ref::New(segment.GetBegin(), begin - 1,
+				segment.GetStyle(), segment.GetAction());
 			pSegments.SetAt(i, newSegment.operator->());
 			
 			changed = true;
 			
 		}else if(segment.GetBegin() < begin && segment.GetEnd() >= begin){
-			newSegment.TakeOver(new igdeTextSegment(segment.GetBegin(), begin - 1,
-				segment.GetStyle(), segment.GetAction()));
+			newSegment = igdeTextSegment::Ref::New(segment.GetBegin(), begin - 1,
+				segment.GetStyle(), segment.GetAction());
 			pSegments.SetAt(i, newSegment.operator->());
 			changed = true;
 			
 		}else if(segment.GetBegin() <= end && segment.GetEnd() > end){
-			newSegment.TakeOver(new igdeTextSegment(end + 1, segment.GetEnd(),
-				segment.GetStyle(), segment.GetAction()));
+			newSegment = igdeTextSegment::Ref::New(end + 1, segment.GetEnd(),
+				segment.GetStyle(), segment.GetAction());
 			pSegments.SetAt(i, newSegment.operator->());
 			changed = true;
 		}

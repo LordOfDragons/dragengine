@@ -60,7 +60,7 @@ public:
 	/** \brief Texture property at the given position. */
 	const igdeTextureProperty *GetAt(int index) const;
 	
-	/** \brief Texture property with the given name or NULL if not found. */
+	/** \brief Texture property with the given name or nullptr if not found. */
 	const igdeTextureProperty *GetNamed(const char *name) const;
 	
 	/** \brief Index of the given texture property or -1 if not found. */

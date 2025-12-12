@@ -65,7 +65,7 @@ pSucceeded(false)
 		return;
 	}
 	
-	pOcclusionMesh.TakeOver(new deOcclusionMesh(engine.GetOcclusionMeshManager(), vfs, path, 0));
+	pOcclusionMesh = deOcclusionMesh::Ref::New(engine.GetOcclusionMeshManager(), vfs, path, 0);
 	LogCreateExit();
 }
 

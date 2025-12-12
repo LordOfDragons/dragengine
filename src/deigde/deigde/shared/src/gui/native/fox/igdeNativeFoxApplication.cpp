@@ -67,9 +67,9 @@ igdeNativeFoxApplication::igdeNativeFoxApplication(){
 igdeNativeFoxApplication::igdeNativeFoxApplication(igdeApplication &powner) :
 FXApp("DEIGDE", "Drag[en]gine"),
 pOwner(&powner),
-pToolTip(NULL),
+pToolTip(nullptr),
 pDisableModalUpdating(false),
-pFoxArgs(NULL),
+pFoxArgs(nullptr),
 pFoxArgCount(0),
 pDisplayScaleFactor(100){
 }
@@ -227,11 +227,11 @@ void igdeNativeFoxApplication::Run(){
 void igdeNativeFoxApplication::Quit(){
 	if(pToolTip){
 		delete pToolTip;
-		pToolTip = NULL;
+		pToolTip = nullptr;
 	}
 	
 	// leak check
-	const int widgetCount = igdeUIFoxHelper::DebugCountWindows(NULL);
+	const int widgetCount = igdeUIFoxHelper::DebugCountWindows(nullptr);
 	if(widgetCount > 1){
 		printf("igdeNativeFoxApplication: %d leaking widgets\n", widgetCount);
 		dumpWidgets();

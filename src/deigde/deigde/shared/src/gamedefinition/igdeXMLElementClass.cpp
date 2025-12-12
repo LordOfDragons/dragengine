@@ -446,7 +446,7 @@ const char *filename){
 		}
 		
 		decString propertyValue;
-		if(pReadPropertyValue(*tag, propertyValue, NULL, filename)){
+		if(pReadPropertyValue(*tag, propertyValue, nullptr, filename)){
 			list.Add(propertyValue);
 		}
 	}
@@ -476,13 +476,13 @@ const char *filename){
 		const decString &hexValue = GetAttributeString(root, "hex");
 		
 		const char bufferR[3] = {hexValue[0], hexValue[1], '\0'};
-		color.r = (float)strtol(bufferR, NULL, 16) / 255.0f;
+		color.r = (float)strtol(bufferR, nullptr, 16) / 255.0f;
 		
 		const char bufferG[3] = {hexValue[2], hexValue[3], '\0'};
-		color.g = (float)strtol(bufferG, NULL, 16) / 255.0f;
+		color.g = (float)strtol(bufferG, nullptr, 16) / 255.0f;
 		
 		const char bufferB[3] = {hexValue[4], hexValue[5], '\0'};
-		color.b = (float)strtol(bufferB, NULL, 16) / 255.0f;
+		color.b = (float)strtol(bufferB, nullptr, 16) / 255.0f;
 		
 	}else{
 		if(HasAttribute(root, "r")){

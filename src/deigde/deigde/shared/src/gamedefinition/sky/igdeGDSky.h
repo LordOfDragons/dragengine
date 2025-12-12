@@ -99,10 +99,10 @@ public:
 	/** \brief Set category. */
 	void SetCategory(const char *category);
 	
-	/** \brief Preview image or NULL if not loaded yet. */
+	/** \brief Preview image or nullptr if not loaded yet. */
 	inline const deImage::Ref &GetPreviewImage() const{ return pPreviewImage; }
 	
-	/** \brief Set preview image or NULL if not loaded yet. */
+	/** \brief Set preview image or nullptr if not loaded yet. */
 	void SetPreviewImage(deImage *image);
 	/*@}*/
 	

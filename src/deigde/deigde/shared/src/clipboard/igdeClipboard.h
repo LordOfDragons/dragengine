@@ -67,7 +67,7 @@ public:
 	/** \brief Data object at index. */
 	igdeClipboardData *GetAt(int index) const;
 	
-	/** \brief Data matching type name or NULL if absent. */
+	/** \brief Data matching type name or nullptr if absent. */
 	igdeClipboardData *GetWithTypeName(const char *typeName) const;
 	
 	/** \brief Set data replacing data with the same type name if present. */

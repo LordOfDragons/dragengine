@@ -90,7 +90,7 @@ void deovrDeviceManager::InitDevices(){
 			continue;
 		}
 		
-		device.TakeOver(new deovrDevice(pOvr, index));
+		device = deovrDevice::Ref::New(pOvr, index);
 		if(device->GetType() == deInputDevice::edtGeneric){
 			continue;
 		}

@@ -95,7 +95,7 @@ deRig::Ref deRigManager::CreateRig(deVirtualFileSystem *vfs, const char *filenam
 		}
 		
 		// create rigation using the builder
-		rig.TakeOver(new deRig(this, vfs, filename, decDateTime::GetSystemTime()));
+		rig = deRig::Ref::New(this, vfs, filename, decDateTime::GetSystemTime());
 		builder.BuildRig(rig);
 		
 		// check rig
@@ -159,7 +159,7 @@ deRig::Ref deRigManager::LoadRig(deVirtualFileSystem *vfs, const char *filename,
 			module = (deBaseRigModule*)GetModuleSystem()->GetModuleAbleToLoad(
 				deModuleSystem::emtRig, path.GetPathUnix());
 			// load the file with it
-			rig.TakeOver(new deRig(this, vfs, path.GetPathUnix(), modificationTime));
+			rig = deRig::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
 			rig->SetAsynchron(false);
 			module->LoadRig(OpenFileForReading(*vfs, path.GetPathUnix()), *rig);
 			// check rig
