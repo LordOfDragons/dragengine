@@ -341,7 +341,7 @@ void deClassRig::nfBoneGetConstraintAt::RunFunction(dsRunTime *rt, dsValue *myse
 	const deRigConstraint &rigConstraint = rigBone.GetConstraintAt(constraint);
 	decMatrix bcMatrix, bcRotMatrix;
 	
-	const deColliderConstraint::Ref bc(deColliderConstraint::Ref::NewWith());
+	const deColliderConstraint::Ref bc(deColliderConstraint::Ref::New());
 	
 	bcRotMatrix.SetFromQuaternion(rigConstraint.GetReferenceOrientation());
 	bc->SetPosition1(rigConstraint.GetReferencePosition() + bcRotMatrix * rigConstraint.GetBoneOffset());

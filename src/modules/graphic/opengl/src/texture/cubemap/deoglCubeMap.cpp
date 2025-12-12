@@ -329,7 +329,7 @@ void deoglCubeMap::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 	case deoglPixelBuffer::epfByte1:
 	case deoglPixelBuffer::epfByte2:
 	case deoglPixelBuffer::epfByte3:{
-		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::NewWith(
+		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::New(
 			deoglPixelBuffer::epfByte4, size, size, 6));
 		const int count = size * size;
 		int i, j;
@@ -378,7 +378,7 @@ void deoglCubeMap::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 	case deoglPixelBuffer::epfFloat1:
 	case deoglPixelBuffer::epfFloat2:
 	case deoglPixelBuffer::epfFloat3:{
-		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::NewWith(
+		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::New(
 			deoglPixelBuffer::epfFloat4, size, size, 6));
 		const int count = size * size;
 		int i, j;

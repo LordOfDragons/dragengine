@@ -65,7 +65,7 @@ deForceField *deForceFieldManager::GetRootForceField() const{
 }
 
 deForceField::Ref deForceFieldManager::CreateForceField(){
-	const deForceField::Ref field(deForceField::Ref::NewWith(this));
+	const deForceField::Ref field(deForceField::Ref::New(this));
 	GetPhysicsSystem()->LoadForceField(field);
 	pFields.Add(field);
 	return field;

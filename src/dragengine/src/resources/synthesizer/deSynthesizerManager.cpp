@@ -69,7 +69,7 @@ deSynthesizer *deSynthesizerManager::GetRootSynthesizer() const{
 }
 
 deSynthesizer::Ref deSynthesizerManager::CreateSynthesizer(){
-	const deSynthesizer::Ref synthesizer(deSynthesizer::Ref::NewWith(this));
+	const deSynthesizer::Ref synthesizer(deSynthesizer::Ref::New(this));
 	GetSynthesizerSystem()->LoadSynthesizer(synthesizer);
 	pSynthesizers.Add(synthesizer);
 	return synthesizer;

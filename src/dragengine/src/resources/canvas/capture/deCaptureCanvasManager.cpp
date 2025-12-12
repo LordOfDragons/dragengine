@@ -60,7 +60,7 @@ deCaptureCanvas *deCaptureCanvasManager::GetRootCaptureCanvas() const{
 }
 
 deCaptureCanvas::Ref deCaptureCanvasManager::CreateCaptureCanvas(){
-	const deCaptureCanvas::Ref captureCanvas(deCaptureCanvas::Ref::NewWith(this));
+	const deCaptureCanvas::Ref captureCanvas(deCaptureCanvas::Ref::New(this));
 	GetGraphicSystem()->LoadCaptureCanvas(captureCanvas);
 	pCaptureCanvas.Add(captureCanvas);
 	return captureCanvas;

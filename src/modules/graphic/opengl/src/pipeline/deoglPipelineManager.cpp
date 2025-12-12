@@ -70,7 +70,7 @@ const deoglPipelineConfiguration &configuration, bool assignRTSIndex){
 		}
 	}
 	
-	const deoglPipeline::Ref pipeline(deoglPipeline::Ref::NewWith(pRenderThread, configuration));
+	const deoglPipeline::Ref pipeline(deoglPipeline::Ref::New(pRenderThread, configuration));
 	pPipelines.Add(pipeline);
 	
 	if(assignRTSIndex){

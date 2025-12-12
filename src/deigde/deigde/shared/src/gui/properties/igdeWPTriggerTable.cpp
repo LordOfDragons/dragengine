@@ -170,7 +170,7 @@ public:
 				continue;
 			}
 			
-			const igdeTriggerTarget::Ref target(igdeTriggerTarget::Ref::NewWith(name));
+			const igdeTriggerTarget::Ref target(igdeTriggerTarget::Ref::New(name));
 			list->Add(target);
 			
 			pPanel.SelectTarget(target);
@@ -423,7 +423,7 @@ void igdeWPTriggerTable::pCreateContent(){
 	helper.ListBox(*this, 8, "List of targets in the table", pListTriggerTable, new cListTable(*this));
 	pListTriggerTable->SetDefaultSorter();
 	
-	igdeContainerFlow::Ref frameLine(igdeContainerFlow::Ref::NewWith(env, eaX, esLast));
+	igdeContainerFlow::Ref frameLine(igdeContainerFlow::Ref::New(env, eaX, esLast));
 	helper.Label(frameLine, "Filter:");
 	helper.EditString(frameLine, "Filter targets in the list case insensitive",
 		pEditTriggerTableFilter, new cTextFilter(*this));

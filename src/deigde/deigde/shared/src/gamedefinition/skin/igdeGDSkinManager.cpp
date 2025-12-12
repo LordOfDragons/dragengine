@@ -241,7 +241,7 @@ void igdeGDSkinManager::UpdateWith(const igdeGDSkinManager &skinManager){
 			skinCheck = GetSkinWithName(otherSkin.GetName());
 		}
 		
-		const igdeGDSkin::Ref skin(igdeGDSkin::Ref::NewWith(otherSkin));
+		const igdeGDSkin::Ref skin(igdeGDSkin::Ref::New(otherSkin));
 		if(skinCheck){
 			RemoveSkin(skinCheck);
 		}
@@ -268,7 +268,7 @@ void igdeGDSkinManager::UpdateWithFound(const igdeGDSkinManager &skinManager){
 			continue;
 		}
 		
-		const igdeGDSkin::Ref skin(igdeGDSkin::Ref::NewWith(foundSkin));
+		const igdeGDSkin::Ref skin(igdeGDSkin::Ref::New(foundSkin));
 		
 		igdeGDCategory * const autoCategory = pCategories->AutoCategorize(skin->GetPath());
 		if(autoCategory){

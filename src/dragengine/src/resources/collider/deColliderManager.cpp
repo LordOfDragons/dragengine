@@ -65,7 +65,7 @@ deCollider *deColliderManager::GetRootCollider() const{
 }
 
 deColliderVolume::Ref deColliderManager::CreateColliderVolume(){
-	const deColliderVolume::Ref collider(deColliderVolume::Ref::NewWith(this));
+	const deColliderVolume::Ref collider(deColliderVolume::Ref::New(this));
 	GetPhysicsSystem()->LoadCollider(collider);
 	GetScriptingSystem()->LoadCollider(collider);
 	pColliders.Add(collider);
@@ -73,7 +73,7 @@ deColliderVolume::Ref deColliderManager::CreateColliderVolume(){
 }
 
 deColliderRig::Ref deColliderManager::CreateColliderRig(){
-	const deColliderRig::Ref collider(deColliderRig::Ref::NewWith(this));
+	const deColliderRig::Ref collider(deColliderRig::Ref::New(this));
 	GetPhysicsSystem()->LoadCollider(collider);
 	GetScriptingSystem()->LoadCollider(collider);
 	pColliders.Add(collider);
@@ -81,7 +81,7 @@ deColliderRig::Ref deColliderManager::CreateColliderRig(){
 }
 
 deColliderComponent::Ref deColliderManager::CreateColliderComponent(){
-	const deColliderComponent::Ref collider(deColliderComponent::Ref::NewWith(this));
+	const deColliderComponent::Ref collider(deColliderComponent::Ref::New(this));
 	GetPhysicsSystem()->LoadCollider(collider);
 	GetScriptingSystem()->LoadCollider(collider);
 	pColliders.Add(collider);

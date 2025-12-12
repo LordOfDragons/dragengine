@@ -57,7 +57,7 @@ pScene(scene)
 	int i;
 	
 	for(i=0; i<nodeStackCount; i++){
-		pMoves.Add(fbxAnimationMove::Ref::NewWith(*this, *((fbxNode*)nodeStacks.GetAt(i))));
+		pMoves.Add(fbxAnimationMove::Ref::New(*this, *((fbxNode*)nodeStacks.GetAt(i))));
 	}
 	
 	const int moveCount = pMoves.GetCount();

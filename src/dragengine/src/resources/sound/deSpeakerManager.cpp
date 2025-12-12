@@ -69,7 +69,7 @@ deSpeaker *deSpeakerManager::GetRootSpeaker() const{
 }
 
 deSpeaker::Ref deSpeakerManager::CreateSpeaker(){
-	const deSpeaker::Ref speaker(deSpeaker::Ref::NewWith(this));
+	const deSpeaker::Ref speaker(deSpeaker::Ref::New(this));
 	GetAudioSystem()->LoadSpeaker(speaker);
 	GetScriptingSystem()->LoadSpeaker(speaker);
 	pSpeakers.Add(speaker);

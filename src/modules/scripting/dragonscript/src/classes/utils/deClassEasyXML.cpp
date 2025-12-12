@@ -74,7 +74,7 @@ void deClassEasyXML::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	// create document
 	try{
 		nd->document.TakeOverWith("");
-		nd->document->AddElement(decXmlElementTag::Ref::NewWith("root"));
+		nd->document->AddElement(decXmlElementTag::Ref::New("root"));
 		
 	}catch(const deException &e){
 		static_cast<deClassEasyXML*>(GetOwnerClass())->GetDS().LogException(e);

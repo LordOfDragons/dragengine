@@ -317,14 +317,14 @@ dewiDevice(module, esWindows)
 	}
 #endif
 	
-	dewiDeviceButton::Ref sharedButton(dewiDeviceButton::Ref::NewWith(module));
+	dewiDeviceButton::Ref sharedButton(dewiDeviceButton::Ref::New(module));
 	sharedButton->SetDisplayImages("key");
 	
 	int buttonIndex = 0;
 	const sKeyTableEntry *iterentry = &vKeyTable[0];
 	
 	while(iterentry->virtkey){
-		const dewiDeviceButton::Ref button(dewiDeviceButton::Ref::NewWith(module));
+		const dewiDeviceButton::Ref button(dewiDeviceButton::Ref::New(module));
 		AddButton(button);
 		
 		string.Format("sc%d", buttonIndex);

@@ -85,7 +85,7 @@ void deClassFileWriter::nfNewZCompressed::RunFunction(dsRunTime *rt, dsValue *my
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	
-	clsFileWriter.PushFileWriter(rt, decZFileWriter::Ref::NewWith(
+	clsFileWriter.PushFileWriter(rt, decZFileWriter::Ref::New(
 		vfs.OpenFileForWriting(decPath::CreatePathUnix(filename))));
 }
 

@@ -62,7 +62,7 @@ deLumimeter *deLumimeterManager::GetRootLumimeter() const{
 }
 
 deLumimeter::Ref deLumimeterManager::CreateLumimeter(){
-	const deLumimeter::Ref lumimeter(deLumimeter::Ref::NewWith(this));
+	const deLumimeter::Ref lumimeter(deLumimeter::Ref::New(this));
 	GetGraphicSystem()->LoadLumimeter(lumimeter);
 	pLumimeters.Add(lumimeter);
 	return lumimeter;

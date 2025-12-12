@@ -62,7 +62,7 @@ igdeXMLLoadTexturePropertyList::~igdeXMLLoadTexturePropertyList(){
 
 void igdeXMLLoadTexturePropertyList::ReadFromFile(igdeTexturePropertyList &list,
 decBaseFileReader &file){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser parser(GetLogger());
 	parser.ParseXml(&file, xmlDoc);

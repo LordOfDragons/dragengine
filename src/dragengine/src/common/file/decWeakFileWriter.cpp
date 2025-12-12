@@ -85,5 +85,5 @@ void decWeakFileWriter::Write(const void *buffer, int size){
 }
 
 decBaseFileWriter::Ref decWeakFileWriter::Duplicate(){
-	return decWeakFileWriter::Ref::NewWith(pWriter);
+	return decWeakFileWriter::Ref::New(pWriter);
 }

@@ -67,7 +67,7 @@ deSynthesizerInstance *deSynthesizerInstanceManager::GetRootSynthesizerInstance(
 }
 
 deSynthesizerInstance::Ref deSynthesizerInstanceManager::CreateSynthesizerInstance(){
-	const deSynthesizerInstance::Ref instance(deSynthesizerInstance::Ref::NewWith(this));
+	const deSynthesizerInstance::Ref instance(deSynthesizerInstance::Ref::New(this));
 	GetSynthesizerSystem()->LoadSynthesizerInstance(instance);
 	GetAudioSystem()->LoadSynthesizerInstance(instance);
 	pInstances.Add(instance);

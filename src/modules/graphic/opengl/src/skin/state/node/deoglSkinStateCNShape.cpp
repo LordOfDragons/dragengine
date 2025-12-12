@@ -163,7 +163,7 @@ void deoglSkinStateCNShape::Render(deoglSkinState &state, const deoglRenderCanva
 }
 
 deoglSkinStateConstructedNode::Ref deoglSkinStateCNShape::Copy() const{
-	return deoglSkinStateCNShape::Ref::NewWith(*this);
+	return deoglSkinStateCNShape::Ref::New(*this);
 }
 
 

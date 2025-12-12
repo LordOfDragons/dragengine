@@ -84,7 +84,7 @@ pBatteryReport({})
 	int i, count = controller.AxisCount();
 
 	for(i=0; i<count; i++){
-		const dewiDeviceAxis::Ref axis(dewiDeviceAxis::Ref::NewWith(module));
+		const dewiDeviceAxis::Ref axis(dewiDeviceAxis::Ref::New(module));
 		axis->SetIndex(GetAxisCount());
 		axis->SetAbsolute(true);
 		axis->SetMinimum(-1000);
@@ -180,7 +180,7 @@ pBatteryReport({})
 	}
 
 	// add arrow keys as first switch
-	dewiDeviceAxis::Ref axisDPadX(dewiDeviceAxis::Ref::NewWith(module));
+	dewiDeviceAxis::Ref axisDPadX(dewiDeviceAxis::Ref::New(module));
 	axisDPadX->SetIndex(GetAxisCount());
 	axisDPadX->SetAbsolute(true);
 	axisDPadX->SetMinimum(-1);
@@ -190,7 +190,7 @@ pBatteryReport({})
 	axisDPadX->SetID("dpadx");
 	axisDPadX->SetName("DPad X");
 
-	dewiDeviceAxis::Ref axisDPadY(dewiDeviceAxis::Ref::NewWith(module));
+	dewiDeviceAxis::Ref axisDPadY(dewiDeviceAxis::Ref::New(module));
 	axisDPadY->SetIndex(GetAxisCount() + 1);
 	axisDPadY->SetAbsolute(true);
 	axisDPadY->SetMinimum(-1);
@@ -247,7 +247,7 @@ pBatteryReport({})
 	count = controller.SwitchCount();
 
 	for(i=0; i<count; i++){
-		const dewiDeviceAxis::Ref axis(dewiDeviceAxis::Ref::NewWith(module));
+		const dewiDeviceAxis::Ref axis(dewiDeviceAxis::Ref::New(module));
 		axis->SetIndex(GetAxisCount());
 		axis->SetAbsolute(true);
 		axis->SetMinimum(-1);
@@ -282,7 +282,7 @@ pBatteryReport({})
 	count = controller.ButtonCount();
 
 	for(i=0; i<count; i++){
-		const dewiDeviceButton::Ref button(dewiDeviceButton::Ref::NewWith(module));
+		const dewiDeviceButton::Ref button(dewiDeviceButton::Ref::New(module));
 		
 		button->SetWinRTReadingIndex(i);
 
@@ -711,7 +711,7 @@ pBatteryReport({})
 	const wrdp::BatteryReport batteryReport = controller.TryGetBatteryReport();
 	if(batteryReport){
 		if(batteryReport.RemainingCapacityInMilliwattHours() && batteryReport.FullChargeCapacityInMilliwattHours()){
-			const dewiDeviceAxis::Ref axis(dewiDeviceAxis::Ref::NewWith(module));
+			const dewiDeviceAxis::Ref axis(dewiDeviceAxis::Ref::New(module));
 			axis->SetIndex(GetAxisCount());
 			axis->SetType(deInputDeviceAxis::eatBatteryLevel);
 			axis->SetID("batlvl");
@@ -726,7 +726,7 @@ pBatteryReport({})
 		}
 
 		if(batteryReport.Status() != wrsp::BatteryStatus::NotPresent){
-			const dewiDeviceButton::Ref button(dewiDeviceButton::Ref::NewWith(module));
+			const dewiDeviceButton::Ref button(dewiDeviceButton::Ref::New(module));
 			button->SetType(deInputDeviceButton::ebtBatteryCharging);
 			button->SetID("batcha");
 			button->SetName("Battery Charging");

@@ -91,7 +91,7 @@ void deoglLSConfiguration::SaveConfig(const deoglConfiguration &){
 //////////////////////
 
 void deoglLSConfiguration::pLoadConfigOpenGL(deoglConfiguration &configuration, decBaseFileReader &file){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	const char *name;
 	int i;

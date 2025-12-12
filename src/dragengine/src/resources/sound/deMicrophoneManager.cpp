@@ -67,7 +67,7 @@ deMicrophone *deMicrophoneManager::GetRootMicrophone() const{
 }
 
 deMicrophone::Ref deMicrophoneManager::CreateMicrophone(){
-	const deMicrophone::Ref microphone(deMicrophone::Ref::NewWith(this));
+	const deMicrophone::Ref microphone(deMicrophone::Ref::New(this));
 	GetAudioSystem()->LoadMicrophone(microphone);
 	pMicrophones.Add(microphone);
 	return microphone;

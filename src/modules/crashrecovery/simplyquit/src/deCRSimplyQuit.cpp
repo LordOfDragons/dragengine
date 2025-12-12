@@ -188,6 +188,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deCRRegisterInternalModule(deModuleSystem *system){
-	return deCRModuleInternal::Ref::NewWith(system);
+	return deCRModuleInternal::Ref::New(system);
 }
 #endif

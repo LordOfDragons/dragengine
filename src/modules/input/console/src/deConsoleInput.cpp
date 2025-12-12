@@ -385,6 +385,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deciRegisterInternalModule(deModuleSystem *system){
-	return deciModuleInternal::Ref::NewWith(system);
+	return deciModuleInternal::Ref::New(system);
 }
 #endif

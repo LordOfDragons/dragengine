@@ -313,7 +313,7 @@ void deoglArrayTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer)
 	case deoglPixelBuffer::epfByte1:
 	case deoglPixelBuffer::epfByte2:
 	case deoglPixelBuffer::epfByte3:{
-		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::NewWith(
+		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::New(
 			deoglPixelBuffer::epfByte4, width, height, pSize.z));
 		const int count = width * height;
 		int i, j;
@@ -362,7 +362,7 @@ void deoglArrayTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer)
 	case deoglPixelBuffer::epfFloat1:
 	case deoglPixelBuffer::epfFloat2:
 	case deoglPixelBuffer::epfFloat3:{
-		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::NewWith(
+		const deoglPixelBuffer::Ref tempPixBuf(deoglPixelBuffer::Ref::New(
 			deoglPixelBuffer::epfFloat4, width, height, pSize.z));
 		const int count = width * height;
 		int i, j;

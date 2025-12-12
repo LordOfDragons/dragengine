@@ -1342,7 +1342,7 @@ deoglRSkin &skin, deoglSkinTexture &texture, const deSkinPropertyConstructed &pr
 	// dynamic constructed
 	if(deoglSCConstructedDynamic::IsDynamic(property.GetContent())){
 		pDynamicConstructed = skin.AddConstructedProperty(
-			deoglSkinConstructedProperty::Ref::NewWith(property));
+			deoglSkinConstructedProperty::Ref::New(property));
 		texture.SetConstructedProperties(true);
 		pCanBeCached = false;
 		return;
@@ -1777,7 +1777,7 @@ void deoglSkinChannel::pBuildCacheVerify(){
 		pCacheVerify.TakeOver(new decMemoryFile(""));
 	}
 	
-	const decMemoryFileWriter::Ref writer(decMemoryFileWriter::Ref::NewWith(pCacheVerify, false));
+	const decMemoryFileWriter::Ref writer(decMemoryFileWriter::Ref::New(pCacheVerify, false));
 	
 	// source 1 verify
 	if(pDelayedCombineImage1){

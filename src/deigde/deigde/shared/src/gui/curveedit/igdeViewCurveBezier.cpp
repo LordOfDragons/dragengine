@@ -82,7 +82,7 @@ void igdeViewCurveBezier::cActionEditSelectedPoint::OnAction(){
 		return;
 	}
 	
-	igdeDialogCurveBezierCoord::Ref dialog(igdeDialogCurveBezierCoord::Ref::NewWith(
+	igdeDialogCurveBezierCoord::Ref dialog(igdeDialogCurveBezierCoord::Ref::New(
 		pView.GetEnvironment(), pView.GetCurve().GetPointAt(selectedPoint)));
 	if(!dialog->Run(&pView)){
 		return;
@@ -282,7 +282,7 @@ pView(view){
 }
 
 void igdeViewCurveBezier::cActionEditClamp::OnAction(){
-	igdeDialogCurveBezierClamp::Ref dialog(igdeDialogCurveBezierClamp::Ref::NewWith(
+	igdeDialogCurveBezierClamp::Ref dialog(igdeDialogCurveBezierClamp::Ref::New(
 		pView.GetEnvironment(), pView.GetClamp(), pView.GetClampMin(), pView.GetClampMax()));
 	if(!dialog->Run(&pView)){
 		return;
@@ -575,7 +575,7 @@ void igdeViewCurveBezier::ShowContextMenu(const decPoint &position){
 		return;
 	}
 	
-	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::NewWith(GetEnvironment()));
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(GetEnvironment()));
 	
 	// view supported menu entries
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();

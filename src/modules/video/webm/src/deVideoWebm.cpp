@@ -153,6 +153,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> dewebmRegisterInternalModule(deModuleSystem *system){
-	return dewebmModuleInternal::Ref::NewWith(system);
+	return dewebmModuleInternal::Ref::New(system);
 }
 #endif

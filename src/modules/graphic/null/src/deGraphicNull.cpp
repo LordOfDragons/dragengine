@@ -253,6 +253,6 @@ for testing purpose or servers without a graphic system.");
 };
 
 deTObjectReference<deInternalModule> degnRegisterInternalModule(deModuleSystem *system){
-	return degnModuleInternal::Ref::NewWith(system);
+	return degnModuleInternal::Ref::New(system);
 }
 #endif

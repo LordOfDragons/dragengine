@@ -65,7 +65,7 @@ deSoundLevelMeter *deSoundLevelMeterManager::GetRootSoundLevelMeter() const{
 }
 
 deSoundLevelMeter::Ref deSoundLevelMeterManager::CreateSoundLevelMeter(){
-	const deSoundLevelMeter::Ref soundLevelMeter(deSoundLevelMeter::Ref::NewWith(this));
+	const deSoundLevelMeter::Ref soundLevelMeter(deSoundLevelMeter::Ref::New(this));
 	GetAudioSystem()->LoadSoundLevelMeter(soundLevelMeter);
 	GetScriptingSystem()->LoadSoundLevelMeter(soundLevelMeter);
 	pSoundLevelMeters.Add(soundLevelMeter);

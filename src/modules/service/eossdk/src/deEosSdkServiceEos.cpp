@@ -227,7 +227,7 @@ void deEosSdkServiceEos::CancelRequest(const decUniqueID &id){
 	
 	pPendingRequests.RemoveFrom(pPendingRequests.IndexOf(pr));
 	
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	so->SetStringChildAt("error", "Cancelled");
 	so->SetStringChildAt("message", "Request cancelled");
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(pService, id, so);
@@ -303,7 +303,7 @@ const char *function){
 
 deEosSdkPendingRequest::Ref deEosSdkServiceEos::NewPendingRequest(
 const decUniqueID &id, const decString &function, const deServiceObject::Ref &data){
-	const deEosSdkPendingRequest::Ref pr(deEosSdkPendingRequest::Ref::NewWith(data));
+	const deEosSdkPendingRequest::Ref pr(deEosSdkPendingRequest::Ref::New(data));
 	pr->id = id;
 	pr->function = function;
 	pr->data->SetStringChildAt("function", function);
@@ -379,12 +379,12 @@ deServiceObject::Ref deEosSdkServiceEos::GetUserFeatures(){
 			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/");
 	}
 	
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	so->SetBoolChildAt("canManualLogin", true);
 	so->SetBoolChildAt("canAutomaticLogin", true);
 	so->SetBoolChildAt("canLogout", true);
 	
-	const deServiceObject::Ref soAtp(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref soAtp(deServiceObject::Ref::New());
 	soAtp->SetStringChildAt("id", "epic");
 	soAtp->SetResourceChildAt("icon", pAuthProviderIcon);
 	soAtp->SetResourceChildAt("image", pAuthProviderImage);

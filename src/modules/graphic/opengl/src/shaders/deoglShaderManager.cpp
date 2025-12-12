@@ -570,7 +570,7 @@ const char *name, const deoglShaderDefines &defines){
 		return foundUnit;
 	}
 	
-	const deoglShaderProgramUnit::Ref unit(deoglShaderProgramUnit::Ref::NewWith(
+	const deoglShaderProgramUnit::Ref unit(deoglShaderProgramUnit::Ref::New(
 		pRenderThread, sources, defines));
 	pProgramUnits.Add(unit);
 	return unit;
@@ -609,7 +609,7 @@ const deoglShaderSources *sources, const deoglShaderDefines &defines) const{
 
 deoglShaderProgram::Ref deoglShaderManager::pCreateProgram(
 const deoglShaderSources *sources, const deoglShaderDefines &defines){
-	const deoglShaderProgram::Ref program(deoglShaderProgram::Ref::NewWith(
+	const deoglShaderProgram::Ref program(deoglShaderProgram::Ref::New(
 		pRenderThread, sources, defines));
 	
 	pResolveProgramUnitsLocked(program);
@@ -666,7 +666,7 @@ void deoglShaderManager::pLoadUnitSourceCodesIn(const char *directory){
 			}*/
 			
 			const deoglShaderUnitSourceCode::Ref sources(
-				deoglShaderUnitSourceCode::Ref::NewWith(ogl, path));
+				deoglShaderUnitSourceCode::Ref::New(ogl, path));
 			
 			DEASSERT_FALSE(pUnitSourceCodes.Has(sources->GetName()))
 			
@@ -755,7 +755,7 @@ void deoglShaderManager::pLoadSourcesIn(const char *directory){
 			
 			const decBaseFileReader::Ref reader(vfs.OpenFileForReading(path));
 			
-			const deoglShaderSources::Ref sources(deoglShaderSources::Ref::NewWith(logger, reader));
+			const deoglShaderSources::Ref sources(deoglShaderSources::Ref::New(logger, reader));
 			
 			if(pSources.Has(sources->GetName())){
 				ogl.LogErrorFormat("Shader file '%s' defines a shader named '%s' but"

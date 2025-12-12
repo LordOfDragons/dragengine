@@ -122,5 +122,5 @@ void deNetworkMessageReader::Read(void *buffer, int size){
 }
 
 decBaseFileReader::Ref deNetworkMessageReader::Duplicate(){
-	return deNetworkMessageReader::Ref::NewWith(*this);
+	return deNetworkMessageReader::Ref::New(*this);
 }

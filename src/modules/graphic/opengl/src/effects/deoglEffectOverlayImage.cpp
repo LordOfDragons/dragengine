@@ -51,7 +51,7 @@ deoglEffect(ogl, effect),
 
 pEffectOverlayImage(effect),
 
-pREffectOverlayImage(deoglREffectOverlayImage::Ref::NewWith(ogl.GetRenderThread())),
+pREffectOverlayImage(deoglREffectOverlayImage::Ref::New(ogl.GetRenderThread())),
 
 pDirtyTransparency(true),
 pDirtyImage(true)

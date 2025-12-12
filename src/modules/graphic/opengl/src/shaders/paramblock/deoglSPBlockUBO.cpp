@@ -269,7 +269,7 @@ int deoglSPBlockUBO::GetAlignmentRequirements() const{
 }
 
 deoglShaderParameterBlock::Ref deoglSPBlockUBO::Copy() const{
-	return Ref::NewWith(*this);
+	return Ref::New(*this);
 }
 
 

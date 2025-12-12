@@ -76,7 +76,7 @@ void igdeWOSOWorld::LoadObjectResources::Drop(){
 
 void igdeWOSOWorld::LoadObjectResources::LoadTexture(ChildObject &object, ChildObjectTexture &texture){
 	const decString &path = texture.pathSkin;
-	pTextures.Add(Texture::Ref::NewWith(object, texture));
+	pTextures.Add(Texture::Ref::New(object, texture));
 	if(!pSkins.Has(path)){
 		pSkins.Add(path);
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertSkin, this);
@@ -133,7 +133,7 @@ hasTCTransform(false){
 ////////////////
 
 igdeWOSOWorld::ChildObject::ChildObject(igdeEnvironment &environment) :
-pWrapper(igdeWObject::Ref::NewWith(environment)){
+pWrapper(igdeWObject::Ref::New(environment)){
 }
 
 int igdeWOSOWorld::ChildObject::GetTextureCount() const{
@@ -173,7 +173,7 @@ pEnvironment(owner.GetEnvironment()){
 }
 
 void igdeWOSOWorld::LoadXmlWorld::LoadWorld(const decString &path){
-	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(pEnvironment.GetFileSystemGame()->OpenFileForReading(
 		decPath::CreatePathUnix(path)), xmlDoc);
@@ -199,7 +199,7 @@ void igdeWOSOWorld::LoadXmlWorld::pReadWorld(const decXmlElementTag &root){
 		
 		const decString &tagName = tag->GetName();
 		if(tagName == "object"){
-			const ChildObject::Ref object(ChildObject::Ref::NewWith(pEnvironment));
+			const ChildObject::Ref object(ChildObject::Ref::New(pEnvironment));
 			pReadObject(*tag, object);
 			pOwner.AddChildObject(object);
 		}
@@ -240,7 +240,7 @@ void igdeWOSOWorld::LoadXmlWorld::pReadObject(const decXmlElementTag &root, Chil
 			wo.SetProperty(GetAttributeString(*tag, "key"), ReadMultilineString(*tag));
 			
 		}else if(tagName == "texture"){
-			ChildObjectTexture::Ref texture(ChildObjectTexture::Ref::NewWith(
+			ChildObjectTexture::Ref texture(ChildObjectTexture::Ref::New(
 				GetAttributeString(*tag, "name")));
 			pReadObjectTexture(*tag, object, texture);
 			object.AddTexture(texture);
@@ -372,7 +372,7 @@ igdeWOSOWorld::igdeWOSOWorld(igdeWObject &wrapper, const igdeGDCWorld &gdcWorld,
 igdeWOSubObject(wrapper, prefix),
 pGDWorld(gdcWorld),
 pChildAsyncFinished(*this),
-pLoadObjectResources(LoadObjectResources::Ref::NewWith(*this)),
+pLoadObjectResources(LoadObjectResources::Ref::New(*this)),
 pNoUpdateAnyContentVisibile(false)
 {
 	wrapper.SubObjectFinishedLoading(*this, true);

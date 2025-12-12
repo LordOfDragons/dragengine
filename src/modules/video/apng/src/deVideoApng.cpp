@@ -140,6 +140,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deapngRegisterInternalModule(deModuleSystem *system){
-	return deapngModuleInternal::Ref::NewWith(system);
+	return deapngModuleInternal::Ref::New(system);
 }
 #endif

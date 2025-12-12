@@ -62,7 +62,7 @@ igdeConfigurationXML::~igdeConfigurationXML(){
 ///////////////
 
 void igdeConfigurationXML::ReadFromFile(decBaseFileReader &reader, igdeConfiguration &config){
-	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser parser(GetLogger());
 	parser.ParseXml(&reader, xmlDoc);

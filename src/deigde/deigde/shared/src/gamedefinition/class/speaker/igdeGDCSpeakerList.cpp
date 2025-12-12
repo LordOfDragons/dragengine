@@ -105,7 +105,7 @@ void igdeGDCSpeakerList::SetToDeepCopyFrom(const igdeGDCSpeakerList &list){
 	int i;
 	
 	for(i=0; i<count; i++){
-		Add(igdeGDCSpeaker::Ref::NewWith(*list.GetAt(i)));
+		Add(igdeGDCSpeaker::Ref::New(*list.GetAt(i)));
 	}
 }
 

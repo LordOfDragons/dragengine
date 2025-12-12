@@ -67,7 +67,7 @@ delGameXML::~delGameXML(){
 ///////////////
 
 void delGameXML::ReadFromFile(decBaseFileReader &reader, delGame &game){
-	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
@@ -161,7 +161,7 @@ void delGameXML::pReadGame(const decXmlElementTag &root, delGame &game){
 				DETHROW_INFO(deeInvalidParam, "invalid tag value");
 			}
 			
-			fileFormats.Add (delFileFormat::Ref::NewWith(formatType, GetCDataString(*tag)));
+			fileFormats.Add (delFileFormat::Ref::New(formatType, GetCDataString(*tag)));
 			
 		}else{
 			ErrorUnknownTag(root, *tag);

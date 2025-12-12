@@ -57,7 +57,7 @@
 deoalMicrophone::deoalMicrophone(deAudioOpenAL &oal, const deMicrophone &microphone) :
 pOal(oal),
 pMicrophone(microphone),
-pAMicrophone(deoalAMicrophone::Ref::NewWith(oal.GetAudioThread())),
+pAMicrophone(deoalAMicrophone::Ref::New(oal.GetAudioThread())),
 
 pParentWorld(NULL),
 pActive(false),

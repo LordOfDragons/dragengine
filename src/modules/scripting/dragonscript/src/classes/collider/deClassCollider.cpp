@@ -951,7 +951,7 @@ void deClassCollider::nfAddConstraint::RunFunction(dsRunTime *rt, dsValue *mysel
 		DSTHROW_INFO(dueInvalidParam, "constraint with same target exists already");
 	}
 	
-	nd.collider->AddConstraint(deColliderConstraint::Ref::NewWith(*workConstraint));
+	nd.collider->AddConstraint(deColliderConstraint::Ref::New(*workConstraint));
 }
 
 // public func bool hasConstraint(ColliderConstraint constraint)
@@ -1017,7 +1017,7 @@ void deClassCollider::nfGetConstraintAt::RunFunction(dsRunTime *rt, dsValue *mys
 		nd.collider->GetConstraintAt(rt->GetValue(0)->GetInt());
 	
 	try{
-		ds.GetClassColliderConstraint()->PushConstraint(rt, deColliderConstraint::Ref::NewWith(*workConstraint));
+		ds.GetClassColliderConstraint()->PushConstraint(rt, deColliderConstraint::Ref::New(*workConstraint));
 		
 	}catch(...){
 		throw;

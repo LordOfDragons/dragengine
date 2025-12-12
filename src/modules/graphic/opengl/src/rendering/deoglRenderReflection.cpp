@@ -461,7 +461,7 @@ deoglRenderBase(renderThread)
 		
 		
 		
-		deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::NewWith(renderThread));
+		deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::New(renderThread));
 		ubo->SetRowMajor(matrixAccessWorking);
 		ubo->SetParameterCount(4);
 		ubo->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 2, 1, 1); // vec2 pBlendFactors

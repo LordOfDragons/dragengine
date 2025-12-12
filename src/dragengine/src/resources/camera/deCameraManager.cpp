@@ -61,7 +61,7 @@ deCamera *deCameraManager::GetRootCamera() const{
 }
 
 deCamera::Ref deCameraManager::CreateCamera(){
-	const deCamera::Ref camera(deCamera::Ref::NewWith(this));
+	const deCamera::Ref camera(deCamera::Ref::New(this));
 	GetGraphicSystem()->LoadCamera(camera);
 	pCameras.Add(camera);
 	return camera;

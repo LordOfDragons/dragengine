@@ -603,7 +603,7 @@ int deoglSPBlockSSBO::GetAlignmentRequirements() const{
 }
 
 deoglShaderParameterBlock::Ref deoglSPBlockSSBO::Copy() const{
-	return Ref::NewWith(*this);
+	return Ref::New(*this);
 }
 
 void deoglSPBlockSSBO::MapToStd430(){

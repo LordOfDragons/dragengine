@@ -104,7 +104,7 @@ void igdeLoadAnimator::Load(const decString &pathAnimator, deAnimator &animator,
 		basePath.SetFromUnix("/");
 	}
 	
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -360,7 +360,7 @@ const decXmlElementTag &root, deAnimator &animator){
 	int e;
 	
 	
-	const deAnimatorRuleAnimation::Ref rule(deAnimatorRuleAnimation::Ref::NewWith());
+	const deAnimatorRuleAnimation::Ref rule(deAnimatorRuleAnimation::Ref::New());
 	
 	for(e=0; e<elementCount; e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -414,7 +414,7 @@ const decXmlElementTag &root, deAnimator &animator){
 	int e;
 	
 	const deAnimatorRuleAnimationDifference::Ref rule(
-		deAnimatorRuleAnimationDifference::Ref::NewWith());
+		deAnimatorRuleAnimationDifference::Ref::New());
 	
 	for(e=0; e<elementCount; e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -476,7 +476,7 @@ const decXmlElementTag &root, deAnimator &animator){
 	const char *name;
 	int e;
 	
-	const deAnimatorRuleAnimationSelect::Ref rule(deAnimatorRuleAnimationSelect::Ref::NewWith());
+	const deAnimatorRuleAnimationSelect::Ref rule(deAnimatorRuleAnimationSelect::Ref::New());
 	
 	for(e=0; e<elementCount; e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -530,7 +530,7 @@ const decXmlElementTag &root, deAnimator &animator){
 	const char *name;
 	int e;
 	
-	const deAnimatorRuleBoneTransformator::Ref rule(deAnimatorRuleBoneTransformator::Ref::NewWith());
+	const deAnimatorRuleBoneTransformator::Ref rule(deAnimatorRuleBoneTransformator::Ref::New());
 	
 	for(e=0; e<elementCount; e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -666,7 +666,7 @@ const decXmlElementTag &root, deAnimator &animator){
 	const char *name;
 	int e;
 	
-	const deAnimatorRuleStateManipulator::Ref rule(deAnimatorRuleStateManipulator::Ref::NewWith());
+	const deAnimatorRuleStateManipulator::Ref rule(deAnimatorRuleStateManipulator::Ref::New());
 	
 	for(e=0; e<elementCount; e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -758,7 +758,7 @@ const decXmlElementTag &root, deAnimator &animator){
 	const char *name;
 	int e;
 	
-	const deAnimatorRuleStateSnapshot::Ref rule(deAnimatorRuleStateSnapshot::Ref::NewWith());
+	const deAnimatorRuleStateSnapshot::Ref rule(deAnimatorRuleStateSnapshot::Ref::New());
 	
 	for(e=0; e<elementCount; e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -808,7 +808,7 @@ const decXmlElementTag &root, deAnimator &animator){
 	decVector vector;
 	int e;
 	
-	const deAnimatorRuleInverseKinematic::Ref rule(deAnimatorRuleInverseKinematic::Ref::NewWith());
+	const deAnimatorRuleInverseKinematic::Ref rule(deAnimatorRuleInverseKinematic::Ref::New());
 	
 	for(e=0; e<elementCount; e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -900,7 +900,7 @@ const decXmlElementTag &root, deAnimator &animator){
 	const char *name;
 	int e;
 	
-	const deAnimatorRuleForeignState::Ref rule(deAnimatorRuleForeignState::Ref::NewWith());
+	const deAnimatorRuleForeignState::Ref rule(deAnimatorRuleForeignState::Ref::New());
 	
 	for(e=0; e<elementCount; e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -996,7 +996,7 @@ const decXmlElementTag &root, deAnimator &animator){
 
 deAnimatorRule::Ref igdeLoadAnimator::pReadRuleMirror(const decXmlElementTag &root,
 deAnimator &animator){
-	const deAnimatorRuleMirror::Ref rule(deAnimatorRuleMirror::Ref::NewWith());
+	const deAnimatorRuleMirror::Ref rule(deAnimatorRuleMirror::Ref::New());
 	const int elementCount = root.GetElementCount();
 	decVector vector;
 	int i;
@@ -1083,7 +1083,7 @@ const char *basePath, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	const deAnimatorRuleGroup::Ref rule(deAnimatorRuleGroup::Ref::NewWith());
+	const deAnimatorRuleGroup::Ref rule(deAnimatorRuleGroup::Ref::New());
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -1158,7 +1158,7 @@ const decXmlElementTag &root, const char *basePath, deAnimator &animator){
 	const char *name;
 	int e, target;
 	
-	const deAnimatorRuleSubAnimator::Ref rule(deAnimatorRuleSubAnimator::Ref::NewWith());
+	const deAnimatorRuleSubAnimator::Ref rule(deAnimatorRuleSubAnimator::Ref::New());
 	
 	for(e=0; e<elementCount; e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
@@ -1229,7 +1229,7 @@ deAnimator &animator){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	const deAnimatorRuleLimit::Ref rule(deAnimatorRuleLimit::Ref::NewWith());
+	const deAnimatorRuleLimit::Ref rule(deAnimatorRuleLimit::Ref::New());
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -1351,7 +1351,7 @@ const decXmlElementTag &root, deAnimator &animator){
 	const int elementCount = root.GetElementCount();
 	int i;
 	
-	const deAnimatorRuleTrackTo::Ref rule(deAnimatorRuleTrackTo::Ref::NewWith());
+	const deAnimatorRuleTrackTo::Ref rule(deAnimatorRuleTrackTo::Ref::New());
 	
 	for(i=0; i<elementCount; i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);

@@ -79,7 +79,7 @@ deoglSharedSPBElement::Ref deoglSharedSPB::AddElement(){
 			continue;
 		}
 		
-		const deoglSharedSPBElement::Ref element(deoglSharedSPBElement::Ref::NewWith(*this, i));
+		const deoglSharedSPBElement::Ref element(deoglSharedSPBElement::Ref::New(*this, i));
 		pElements[i] = element;
 		pCount++;
 		return element;

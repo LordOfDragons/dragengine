@@ -69,7 +69,7 @@ deVideoPlayer *deVideoPlayerManager::GetRootVideoPlayer() const{
 }
 
 deVideoPlayer::Ref deVideoPlayerManager::CreateVideoPlayer(){
-	const deVideoPlayer::Ref videoPlayer(deVideoPlayer::Ref::NewWith(this));
+	const deVideoPlayer::Ref videoPlayer(deVideoPlayer::Ref::New(this));
 	GetGraphicSystem()->LoadVideoPlayer(videoPlayer);
 	GetAudioSystem()->LoadVideoPlayer(videoPlayer);
 	pVideoPlayers.Add(videoPlayer);

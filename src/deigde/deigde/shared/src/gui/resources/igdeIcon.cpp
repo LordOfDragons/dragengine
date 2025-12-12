@@ -71,7 +71,7 @@ igdeIcon::Ref igdeIcon::LoadPNG(igdeEnvironment &environment, const char *filena
 		environment.GetFileSystemIGDE()->OpenFileForReading(decPath::CreatePathUnix(filename)));
 	
 	try{
-		return igdeIcon::Ref::NewWith(native, igdeNativeIcon::GetSize(native));
+		return igdeIcon::Ref::New(native, igdeNativeIcon::GetSize(native));
 		
 	}catch(const deException &){
 		igdeNativeIcon::DestroyNativeIcon(native);
@@ -93,7 +93,7 @@ igdeIcon::Ref igdeIcon::LoadPNG(const igdeEditorModule &editor, const char *file
 		editor.GetEnvironment().GetFileSystemIGDE()->OpenFileForReading(path));
 	
 	try{
-		return igdeIcon::Ref::NewWith(native, igdeNativeIcon::GetSize(native));
+		return igdeIcon::Ref::New(native, igdeNativeIcon::GetSize(native));
 		
 	}catch(const deException &){
 		igdeNativeIcon::DestroyNativeIcon(native);
@@ -110,7 +110,7 @@ igdeIcon::Ref igdeIcon::LoadImage(igdeEnvironment &environment, const char *file
 		environment.GetEngineController()->GetEngine()->GetImageManager()->LoadImage(filename, "/"));
 	
 	try{
-		return igdeIcon::Ref::NewWith(native, igdeNativeIcon::GetSize(native));
+		return igdeIcon::Ref::New(native, igdeNativeIcon::GetSize(native));
 		
 	}catch(const deException &){
 		igdeNativeIcon::DestroyNativeIcon(native);

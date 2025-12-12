@@ -70,7 +70,7 @@ dePropField *dePropFieldManager::GetRootPropField() const{
 }
 
 dePropField::Ref dePropFieldManager::CreatePropField(){
-	const dePropField::Ref field(dePropField::Ref::NewWith(this));
+	const dePropField::Ref field(dePropField::Ref::New(this));
 	GetGraphicSystem()->LoadPropField(field);
 	GetPhysicsSystem()->LoadPropField(field);
 	GetScriptingSystem()->LoadPropField(field);

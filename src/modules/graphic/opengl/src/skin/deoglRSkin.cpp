@@ -122,7 +122,7 @@ pMemUse(renderThread.GetMemoryManager().GetConsumption().skin)
 		// created mapped
 		for(i=0; i<mappedCount; i++){
 			const deSkinMapped &mapped = *skin.GetMappedAt(i);
-			const deoglSkinMapped::Ref oglMapped(deoglSkinMapped::Ref::NewWith(mapped));
+			const deoglSkinMapped::Ref oglMapped(deoglSkinMapped::Ref::New(mapped));
 			
 			if(mapped.GetInputType() == deSkinMapped::eitRenderable && !mapped.GetRenderable().IsEmpty()){
 				oglMapped->SetRenderable(AddRenderable(mapped.GetRenderable()));
@@ -380,7 +380,7 @@ int deoglRSkin::AddRenderable(const char *name){
 	
 	if(index == -1){
 		index = pRenderables.GetCount();
-		pRenderables.Add(deoglSkinRenderable::Ref::NewWith(name));
+		pRenderables.Add(deoglSkinRenderable::Ref::New(name));
 	}
 	
 	return index;
@@ -483,7 +483,7 @@ deoglSkinBone *deoglRSkin::GetBoneAt(int index) const{
 int deoglRSkin::AddBone(const char *name){
 	DEASSERT_NOTNULL(name)
 	
-	pBones.Add(deoglSkinBone::Ref::NewWith(name));
+	pBones.Add(deoglSkinBone::Ref::New(name));
 	return pBones.GetCount() - 1;
 }
 

@@ -52,7 +52,7 @@
 deoalSoundLevelMeter::deoalSoundLevelMeter(deAudioOpenAL &oal, deSoundLevelMeter &soundLevelMeter) :
 pOal(oal),
 pSoundLevelMeter(soundLevelMeter),
-pASoundLevelMeter(deoalASoundLevelMeter::Ref::NewWith(oal.GetAudioThread())),
+pASoundLevelMeter(deoalASoundLevelMeter::Ref::New(oal.GetAudioThread())),
 
 pParentWorld(NULL),
 

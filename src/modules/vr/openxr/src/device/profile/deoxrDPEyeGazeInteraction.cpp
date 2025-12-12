@@ -109,7 +109,7 @@ void deoxrDPEyeGazeInteraction::pAddDevice() {
 	pDevice->SetActionPose(oxr.GetAction(deVROpenXR::eiaPose));
 	pDevice->SetID(id);
 	
-	pDevice->SetSpacePose(deoxrSpace::Ref::NewWith(*pGetSession(),
+	pDevice->SetSpacePose(deoxrSpace::Ref::New(*pGetSession(),
 		pDevice->GetActionPose(), pDevice->GetSubactionPath(), GetDeviceRotation()));
 	
 	GetInstance().GetOxr().GetDevices().Add(pDevice);

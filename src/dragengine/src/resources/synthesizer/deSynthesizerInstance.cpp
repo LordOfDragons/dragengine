@@ -210,6 +210,6 @@ void deSynthesizerInstance::pUpdateControllers(){
 	int i;
 	
 	for(i=0; i<controllerCount; i++){
-		pControllers.Add(deSynthesizerController::Ref::NewWith(*pSynthesizer->GetControllerAt(i)));
+		pControllers.Add(deSynthesizerController::Ref::New(*pSynthesizer->GetControllerAt(i)));
 	}
 }

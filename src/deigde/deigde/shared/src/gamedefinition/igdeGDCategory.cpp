@@ -216,7 +216,7 @@ void igdeGDCategory::UpdateWith(const igdeGDCategory &category){
 		igdeGDCategory *matchingCategory = GetCategoryNamed(childCategory.GetName());
 		
 		if(!matchingCategory){
-			const igdeGDCategory::Ref newCategory(igdeGDCategory::Ref::NewWith(
+			const igdeGDCategory::Ref newCategory(igdeGDCategory::Ref::New(
 				childCategory.GetName()));
 			pCategories.Add(newCategory);
 			matchingCategory = newCategory;

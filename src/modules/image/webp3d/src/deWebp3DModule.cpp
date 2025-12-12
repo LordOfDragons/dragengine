@@ -145,6 +145,6 @@ Files inside the tarball are named zX.webp where X is the z coordinate without l
 };
 
 deTObjectReference<deInternalModule> deWebp3DRegisterInternalModule(deModuleSystem *system){
-	return deWebp3DModuleInternal::Ref::NewWith(system);
+	return deWebp3DModuleInternal::Ref::New(system);
 }
 #endif

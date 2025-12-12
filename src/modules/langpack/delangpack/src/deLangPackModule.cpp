@@ -91,7 +91,7 @@ deLangPackModule::~deLangPackModule(){
 ///////////////
 
 void deLangPackModule::LoadLanguagePack(decBaseFileReader &file, deLanguagePack &languagePack){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetGameEngine()->GetLogger()).ParseXml(&file, xmlDoc);
 	
@@ -277,6 +277,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> delpRegisterInternalModule(deModuleSystem *system){
-	return delpModuleInternal::Ref::NewWith(system);
+	return delpModuleInternal::Ref::New(system);
 }
 #endif

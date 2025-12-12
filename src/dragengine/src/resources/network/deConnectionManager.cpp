@@ -68,7 +68,7 @@ deConnection *deConnectionManager::GetRootConnection() const{
 }
 
 deConnection::Ref deConnectionManager::CreateConnection(){
-	const deConnection::Ref connection(deConnection::Ref::NewWith(this));
+	const deConnection::Ref connection(deConnection::Ref::New(this));
 	GetNetworkSystem()->LoadConnection(connection);
 	GetScriptingSystem()->LoadConnection(connection);
 	pConnections.Add(connection);

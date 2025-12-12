@@ -316,7 +316,7 @@ pAddToRenderTask(NULL)
 		
 		
 		
-		deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::NewWith(renderThread));
+		deoglSPBlockUBO::Ref ubo(deoglSPBlockUBO::Ref::New(renderThread));
 		ubo->SetRowMajor(indirectMatrixAccess);
 		ubo->SetParameterCount(5);
 		ubo->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 4, 4, 6); // mat4 pMatrixVP[6]

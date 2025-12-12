@@ -115,7 +115,7 @@ pConnectionMap(NULL)
 			break;
 		}
 		
-		pNode->AddNode(fbxNode::Ref::NewWith(*this, reader, checkEndOffset));
+		pNode->AddNode(fbxNode::Ref::New(*this, reader, checkEndOffset));
 	}
 	
 	// footer

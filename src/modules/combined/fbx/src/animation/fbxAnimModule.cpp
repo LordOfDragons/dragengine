@@ -123,10 +123,10 @@ void fbxAnimModule::SaveAnimation(decBaseFileWriter &writer, const deAnimation &
 //////////////////////
 
 void fbxAnimModule::pLoadAnimation(deAnimation &animation, fbxScene &scene){
-	fbxAnimation::Ref loadAnimation(fbxAnimation::Ref::NewWith(scene));
+	fbxAnimation::Ref loadAnimation(fbxAnimation::Ref::New(scene));
 	
 	fbxNode * const nodePose = scene.FirstNodeNamedOrNull("Pose");
-	fbxRig::Ref loadRig(fbxRig::Ref::NewWith(scene, nodePose));
+	fbxRig::Ref loadRig(fbxRig::Ref::New(scene, nodePose));
 	// loadRig->DebugPrintStructure( *this, "LoadAnimation ", true );
 	loadAnimation->MatchRig(*loadRig);
 	
@@ -301,6 +301,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> fbxAnimRegisterInternalModule(deModuleSystem *system){
-	return fbxAnimModuleInternal::Ref::NewWith(system);
+	return fbxAnimModuleInternal::Ref::New(system);
 }
 #endif

@@ -253,7 +253,7 @@ void igdeEditTags::pCreateContent(igdeUIHelper &helper, int rows){
 	pActionRemove.TakeOver(new cActionRemove(*this));
 	pActionClear.TakeOver(new cActionClear(*this));
 	
-	igdeContainerFlow::Ref comboLine(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref comboLine(igdeContainerFlow::Ref::New(
 		GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
 	helper.ComboBoxFilter(comboLine, true, "", pComboBox, NULL);
 	pComboBox->SetDefaultSorter();

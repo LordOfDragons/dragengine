@@ -70,7 +70,7 @@ igdeFont *igdeSharedFontList::GetFontWith(const igdeFont::sConfiguration &config
 		}
 	}
 	
-	const cFont::Ref cfont(cFont::Ref::NewWith(configuration, new igdeFont(pEnvironment, configuration)));
+	const cFont::Ref cfont(cFont::Ref::New(configuration, new igdeFont(pEnvironment, configuration)));
 	pFonts.Add(cfont);
 	
 	return cfont->GetFont();

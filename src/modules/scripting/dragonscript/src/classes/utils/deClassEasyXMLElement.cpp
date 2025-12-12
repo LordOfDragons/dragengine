@@ -474,7 +474,7 @@ void deClassEasyXMLElement::nfSetAttributeString::RunFunction(dsRunTime *rt, dsV
 		}
 	}
 	
-	const decXmlAttValue::Ref attribute(decXmlAttValue::Ref::NewWith(name));
+	const decXmlAttValue::Ref attribute(decXmlAttValue::Ref::New(name));
 	attribute->SetValue(value);
 	container.AddElement(attribute);
 }
@@ -512,7 +512,7 @@ void deClassEasyXMLElement::nfSetAttributeInteger::RunFunction(dsRunTime *rt, ds
 		}
 	}
 	
-	const decXmlAttValue::Ref attribute(decXmlAttValue::Ref::NewWith(name));
+	const decXmlAttValue::Ref attribute(decXmlAttValue::Ref::New(name));
 	attribute->SetValue(string);
 	container.AddElement(attribute);
 }
@@ -550,7 +550,7 @@ void deClassEasyXMLElement::nfSetAttributeFloat::RunFunction(dsRunTime *rt, dsVa
 		}
 	}
 	
-	const decXmlAttValue::Ref attribute(decXmlAttValue::Ref::NewWith(name));
+	const decXmlAttValue::Ref attribute(decXmlAttValue::Ref::New(name));
 	attribute->SetValue(string);
 	container.AddElement(attribute);
 }
@@ -585,7 +585,7 @@ void deClassEasyXMLElement::nfSetAttributeBool::RunFunction(dsRunTime *rt, dsVal
 		}
 	}
 	
-	const decXmlAttValue::Ref attribute(decXmlAttValue::Ref::NewWith(name));
+	const decXmlAttValue::Ref attribute(decXmlAttValue::Ref::New(name));
 	attribute->SetValue(value ? "true" : "false");
 	container.AddElement(attribute);
 }
@@ -891,7 +891,7 @@ void deClassEasyXMLElement::nfAddTag::RunFunction(dsRunTime *rt, dsValue *myself
 	
 	const char * const name = rt->GetValue(0)->GetString();
 	
-	const decXmlElementTag::Ref tag(decXmlElementTag::Ref::NewWith(name));
+	const decXmlElementTag::Ref tag(decXmlElementTag::Ref::New(name));
 	element.CastToContainer()->AddElement(tag);
 	clsXmlElement->PushElement(rt, tag);
 }
@@ -910,8 +910,8 @@ void deClassEasyXMLElement::nfAddDataTagString::RunFunction(dsRunTime *rt, dsVal
 	const char * const name = rt->GetValue(0)->GetString();
 	const char * const value = rt->GetValue(1)->GetString();
 	
-	const decXmlElementTag::Ref tag(decXmlElementTag::Ref::NewWith(name));
-	tag->AddElement(decXmlCharacterData::Ref::NewWith(value));
+	const decXmlElementTag::Ref tag(decXmlElementTag::Ref::New(name));
+	tag->AddElement(decXmlCharacterData::Ref::New(value));
 	element.CastToContainer()->AddElement(tag);
 	clsXmlElement->PushElement(rt, tag);
 }
@@ -933,8 +933,8 @@ void deClassEasyXMLElement::nfAddDataTagInteger::RunFunction(dsRunTime *rt, dsVa
 	decString text;
 	text.Format("%d", value);
 	
-	const decXmlElementTag::Ref tag(decXmlElementTag::Ref::NewWith(name));
-	tag->AddElement(decXmlCharacterData::Ref::NewWith(text));
+	const decXmlElementTag::Ref tag(decXmlElementTag::Ref::New(name));
+	tag->AddElement(decXmlCharacterData::Ref::New(text));
 	element.CastToContainer()->AddElement(tag);
 	clsXmlElement->PushElement(rt, tag);
 }
@@ -956,8 +956,8 @@ void deClassEasyXMLElement::nfAddDataTagFloat::RunFunction(dsRunTime *rt, dsValu
 	decString text;
 	text.Format("%.5g", value);
 	
-	const decXmlElementTag::Ref tag(decXmlElementTag::Ref::NewWith(name));
-	tag->AddElement(decXmlCharacterData::Ref::NewWith(text));
+	const decXmlElementTag::Ref tag(decXmlElementTag::Ref::New(name));
+	tag->AddElement(decXmlCharacterData::Ref::New(text));
 	element.CastToContainer()->AddElement(tag);
 	clsXmlElement->PushElement(rt, tag);
 }
@@ -976,8 +976,8 @@ void deClassEasyXMLElement::nfAddDataTagBool::RunFunction(dsRunTime *rt, dsValue
 	const char * const name = rt->GetValue(0)->GetString();
 	const bool value = rt->GetValue(1)->GetBool();
 	
-	const decXmlElementTag::Ref tag(decXmlElementTag::Ref::NewWith(name));
-	tag->AddElement(decXmlCharacterData::Ref::NewWith(value ? "true" : "false"));
+	const decXmlElementTag::Ref tag(decXmlElementTag::Ref::New(name));
+	tag->AddElement(decXmlCharacterData::Ref::New(value ? "true" : "false"));
 	element.CastToContainer()->AddElement(tag);
 	clsXmlElement->PushElement(rt, tag);
 }
@@ -994,7 +994,7 @@ void deClassEasyXMLElement::nfAddCData::RunFunction(dsRunTime *rt, dsValue *myse
 	
 	const char * const value = rt->GetValue(0)->GetString();
 	
-	const decXmlCharacterData::Ref cdata(decXmlCharacterData::Ref::NewWith(value));
+	const decXmlCharacterData::Ref cdata(decXmlCharacterData::Ref::New(value));
 	element.CastToContainer()->AddElement(cdata);
 	clsXmlElement->PushElement(rt, cdata);
 }
@@ -1010,7 +1010,7 @@ void deClassEasyXMLElement::nfAddComment::RunFunction(dsRunTime *rt, dsValue *my
 	
 	const char * const text = rt->GetValue(0)->GetString();
 	
-	element.CastToContainer()->AddElement(decXmlComment::Ref::NewWith(text));
+	element.CastToContainer()->AddElement(decXmlComment::Ref::New(text));
 }
 
 

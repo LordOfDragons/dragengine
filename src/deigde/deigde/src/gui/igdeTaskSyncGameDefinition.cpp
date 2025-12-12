@@ -195,11 +195,11 @@ void igdeTaskSyncGameDefinition::pLoadProjectGameDefinition(){
 	path.SetFromNative(project.GetDirectoryPath());
 	path.AddUnixPath(project.GetPathProjectGameDefinition());
 	
-	const igdeGameDefinition::Ref gamedef(igdeGameDefinition::Ref::NewWith(pWindowMain.GetEnvironment()));
+	const igdeGameDefinition::Ref gamedef(igdeGameDefinition::Ref::New(pWindowMain.GetEnvironment()));
 	gamedef->SetFilename(path.GetPathNative());
 	
 	igdeXMLGameDefinition(pWindowMain.GetEnvironment(), pWindowMain.GetLogger()).Load(
-		decDiskFileReader::Ref::NewWith(path.GetPathNative()), gamedef);
+		decDiskFileReader::Ref::New(path.GetPathNative()), gamedef);
 	
 	project.SetProjectGameDefinition(gamedef);
 }

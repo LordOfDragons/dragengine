@@ -62,7 +62,7 @@ deRenderWindow *deRenderWindowManager::GetRootRenderWindow() const{
 }
 
 deRenderWindow::Ref deRenderWindowManager::CreateRenderWindow(){
-	const deRenderWindow::Ref renderWindow(deRenderWindow::Ref::NewWith(this));
+	const deRenderWindow::Ref renderWindow(deRenderWindow::Ref::New(this));
 	GetGraphicSystem()->LoadRenderWindow(renderWindow);
 	pRenderWindows.Add(renderWindow);
 	return renderWindow;
@@ -91,7 +91,7 @@ deRenderWindow::Ref deRenderWindowManager::CreateRenderWindowInside(HWND window)
 
 #ifdef IMPLEMENT_CREATERENDERWINDOWINSIDE
 {
-	const deRenderWindow::Ref renderWindow(deRenderWindow::Ref::NewWith(this));
+	const deRenderWindow::Ref renderWindow(deRenderWindow::Ref::New(this));
 	renderWindow->SetHostWindow(window); // tells graphic module to created hosted window
 	GetGraphicSystem()->LoadRenderWindow(renderWindow);
 	pRenderWindows.Add(renderWindow);

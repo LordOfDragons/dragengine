@@ -272,7 +272,7 @@ bool declRunGame::ParseArguments(){
 	// if console mode is requested modify the engine instance factory
 	if(pUseConsole){
 		const delEngineInstanceDirect::Factory::Ref factory(
-			delEngineInstanceDirect::Factory::Ref::NewWith());
+			delEngineInstanceDirect::Factory::Ref::New());
 		factory->SetUseConsole(true);
 		pLauncher.SetEngineInstanceFactory(factory);
 	}
@@ -650,7 +650,7 @@ void declRunGame::Run(){
 	}
 	
 	const delEngineInstanceDirect::Factory::Ref factory(
-		delEngineInstanceDirect::Factory::Ref::NewWith(engineLogger));
+		delEngineInstanceDirect::Factory::Ref::New(engineLogger));
 	factory->SetUseConsole(pUseConsole);
 	
 	// run game. blocks until finished since we use a direct engine instance. this method

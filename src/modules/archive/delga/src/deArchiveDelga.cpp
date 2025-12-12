@@ -122,6 +122,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deadRegisterInternalModule(deModuleSystem *system){
-	return deadModuleInternal::Ref::NewWith(system);
+	return deadModuleInternal::Ref::New(system);
 }
 #endif

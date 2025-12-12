@@ -302,10 +302,10 @@ void igdeEditorModuleManager::pScanForModules(){
 	int i;
 	
 	try{
-		deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
+		deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
 		
 		const decPath searchPath(decPath::CreatePathNative(pPathModules));
-		vfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(searchPath));
+		vfs->AddContainer(deVFSDiskDirectory::Ref::New(searchPath));
 		
 		deCollectDirectorySearchVisitor collectDirectories;
 		vfs->SearchFiles(decPath::CreatePathUnix("/"), collectDirectories);
@@ -332,7 +332,7 @@ void igdeEditorModuleManager::pScanForModules(){
 			
 			// try loading module
 			const igdeEditorModuleDefinition::Ref module(
-				igdeEditorModuleDefinition::Ref::NewWith(*this, modulePath.GetPathNative()));
+				igdeEditorModuleDefinition::Ref::New(*this, modulePath.GetPathNative()));
 			
 			if(module->GetErrorCode() != igdeEditorModuleDefinition::eecSuccess){
 				switch(module->GetErrorCode()){

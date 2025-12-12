@@ -58,7 +58,7 @@ igdeBaseXML(logger, "IGDEProjectTemplate"){
 ///////////////
 
 void igdeLoadTemplate::Load(decBaseFileReader &reader, igdeTemplate &atemplate){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -101,7 +101,7 @@ void igdeLoadTemplate::pReadTemplate(const decXmlElementTag &root, igdeTemplate 
 			atemplate.GetBaseGameDefinitions().Add(GetCDataString(*tag));
 			
 		}else if(tag->GetName() == "file"){
-			const igdeTemplateFile::Ref file(igdeTemplateFile::Ref::NewWith());
+			const igdeTemplateFile::Ref file(igdeTemplateFile::Ref::New());
 			pReadFile(*tag, file);
 			atemplate.GetFiles().Add(file);
 			
@@ -144,7 +144,7 @@ void igdeLoadTemplate::pReadFile(const decXmlElementTag &root, igdeTemplateFile 
 			}
 			
 		}else if(tag->GetName() == "replace"){
-			const igdeTemplateReplace::Ref replace(igdeTemplateReplace::Ref::NewWith());
+			const igdeTemplateReplace::Ref replace(igdeTemplateReplace::Ref::New());
 			pReadReplace(*tag, replace);
 			file.GetReplacements().Add(replace);
 			

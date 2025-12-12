@@ -145,7 +145,7 @@ void deoxrDPMndxDevSpace::CheckAttached(){
 				continue;
 			}
 			
-			const Device::Ref device(Device::Ref::NewWith(*this, props, xdevs[i]));
+			const Device::Ref device(Device::Ref::New(*this, props, xdevs[i]));
 			const decString serialLower(device->serial.GetLower());
 			const decString nameLower(device->name.GetLower());
 			
@@ -255,7 +255,7 @@ void deoxrDPMndxDevSpace::pAddDeviceTracker(XrXDevListMNDX list, const Device::R
 	
 	XrSpace space = XR_NULL_HANDLE;
 	OXR_CHECK(instance.xrCreateXDevSpaceMNDX(session.GetSession(), &createSpaceInfo, &space));
-	device->device->SetSpacePose(deoxrSpace::Ref::NewWith(session, space));
+	device->device->SetSpacePose(deoxrSpace::Ref::New(session, space));
 	
 	oxr.GetDevices().Add(device->device);
 	pDevices.Add(device);

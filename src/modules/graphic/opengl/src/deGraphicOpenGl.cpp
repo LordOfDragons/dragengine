@@ -803,6 +803,6 @@ SetModule(VulkanCreateModule(this));
 };
 
 deTObjectReference<deInternalModule> deoglRegisterInternalModule(deModuleSystem *system){
-	return deoglModuleInternal::Ref::NewWith(system);
+	return deoglModuleInternal::Ref::New(system);
 }
 #endif

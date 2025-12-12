@@ -54,7 +54,7 @@ deEosSdkFlowSetStatsAndAchievements::deEosSdkFlowSetStatsAndAchievements(deEosSd
 deEosSdkFlow(service, id),
 pStatsCompleted(false),
 pAchievementsCompleted(false),
-pResultData(deServiceObject::Ref::NewWith())
+pResultData(deServiceObject::Ref::New())
 {
 	service.NewPendingRequest(id, "setStatsAndAchievements", pResultData);
 	
@@ -86,7 +86,7 @@ pResultData(deServiceObject::Ref::NewWith())
 ///////////////
 
 void deEosSdkFlowSetStatsAndAchievements::IngestStat(const deServiceObject &request){
-	const deServiceObject::Ref soResp(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref soResp(deServiceObject::Ref::New());
 	pResultData->SetChildAt("stats", soResp);
 	
 	const deServiceObject::Ref soIn(request.GetChildAt("stats"));
@@ -145,7 +145,7 @@ void deEosSdkFlowSetStatsAndAchievements::IngestStat(const deServiceObject &requ
 }
 
 void deEosSdkFlowSetStatsAndAchievements::UnlockAchievements(const deServiceObject &request){
-	const deServiceObject::Ref soResp(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref soResp(deServiceObject::Ref::New());
 	pResultData->SetChildAt("achievements", soResp);
 	
 	const deServiceObject::Ref soIn(request.GetChildAt("achievements"));

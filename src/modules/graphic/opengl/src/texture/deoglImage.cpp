@@ -48,7 +48,7 @@
 deoglImage::deoglImage(deGraphicOpenGl &ogl, deImage &image) :
 pOgl(ogl),
 pImage(image),
-pRImage(deoglRImage::Ref::NewWith(ogl.GetRenderThread(), image)),
+pRImage(deoglRImage::Ref::New(ogl.GetRenderThread(), image)),
 pPixelBufferUseCount(0),
 pPixelBufferRImageTexture(pCreatePixelBuffer()),
 pDirtyTexture(true){

@@ -926,7 +926,7 @@ void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &
 		for(i=0; i<componentCount; i++){
 			pAsyncLoadCounter++;
 			try{
-				pSubObjects.Add(igdeWOSOComponent::Ref::NewWith(*this, *components.GetAt(i), prefix));
+				pSubObjects.Add(igdeWOSOComponent::Ref::New(*this, *components.GetAt(i), prefix));
 				
 			}catch(const deException &e){
 				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
@@ -942,7 +942,7 @@ void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &
 		for(i=0; i<billboardCount; i++){
 			pAsyncLoadCounter++;
 			try{
-				pSubObjects.Add(igdeWOSOBillboard::Ref::NewWith(*this, *billboards.GetAt(i), prefix));
+				pSubObjects.Add(igdeWOSOBillboard::Ref::New(*this, *billboards.GetAt(i), prefix));
 				
 			}catch(const deException &e){
 				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
@@ -958,7 +958,7 @@ void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &
 		for(i=0; i<lightCount; i++){
 			pAsyncLoadCounter++;
 			try{
-				pSubObjects.Add(igdeWOSOLight::Ref::NewWith(*this, *lights.GetAt(i), prefix));
+				pSubObjects.Add(igdeWOSOLight::Ref::New(*this, *lights.GetAt(i), prefix));
 				
 			}catch(const deException &e){
 				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
@@ -974,7 +974,7 @@ void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &
 		for(i=0; i<speakerCount; i++){
 			pAsyncLoadCounter++;
 			try{
-				pSubObjects.Add(igdeWOSOSpeaker::Ref::NewWith(*this, *speakers.GetAt(i), prefix));
+				pSubObjects.Add(igdeWOSOSpeaker::Ref::New(*this, *speakers.GetAt(i), prefix));
 				
 			}catch(const deException &e){
 				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
@@ -990,7 +990,7 @@ void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &
 		for(i=0; i<particleEmitterCount; i++){
 			pAsyncLoadCounter++;
 			try{
-				pSubObjects.Add(igdeWOSOParticleEmitter::Ref::NewWith(*this, *particleEmitters.GetAt(i), prefix));
+				pSubObjects.Add(igdeWOSOParticleEmitter::Ref::New(*this, *particleEmitters.GetAt(i), prefix));
 				
 			}catch(const deException &e){
 				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
@@ -1006,7 +1006,7 @@ void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &
 		for(i=0; i<forceFieldCount; i++){
 			pAsyncLoadCounter++;
 			try{
-				pSubObjects.Add(igdeWOSOForceField::Ref::NewWith(*this, *forceFields.GetAt(i), prefix));
+				pSubObjects.Add(igdeWOSOForceField::Ref::New(*this, *forceFields.GetAt(i), prefix));
 				
 			}catch(const deException &e){
 				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
@@ -1022,7 +1022,7 @@ void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &
 		for(i=0; i<envMapProbeCount; i++){
 			pAsyncLoadCounter++;
 			try{
-				pSubObjects.Add(igdeWOSOEnvMapProbe::Ref::NewWith(*this, *envMapProbes.GetAt(i), prefix));
+				pSubObjects.Add(igdeWOSOEnvMapProbe::Ref::New(*this, *envMapProbes.GetAt(i), prefix));
 				
 			}catch(const deException &e){
 				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
@@ -1038,7 +1038,7 @@ void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &
 		for(i=0; i<navigationSpaceCount; i++){
 			pAsyncLoadCounter++;
 			try{
-				pSubObjects.Add(igdeWOSONavigationSpace::Ref::NewWith(*this, *navigationSpaces.GetAt(i), prefix));
+				pSubObjects.Add(igdeWOSONavigationSpace::Ref::New(*this, *navigationSpaces.GetAt(i), prefix));
 				
 			}catch(const deException &e){
 				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
@@ -1054,7 +1054,7 @@ void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &
 		for(i=0; i<navigationBlockerCount; i++){
 			pAsyncLoadCounter++;
 			try{
-				pSubObjects.Add(igdeWOSONavigationBlocker::Ref::NewWith(*this, *navigationBlockers.GetAt(i), prefix));
+				pSubObjects.Add(igdeWOSONavigationBlocker::Ref::New(*this, *navigationBlockers.GetAt(i), prefix));
 				
 			}catch(const deException &e){
 				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
@@ -1070,7 +1070,7 @@ void igdeWObject::pCreateSubObjects(const decString &prefix, const igdeGDClass &
 		for(i=0; i<worldCount; i++){
 			pAsyncLoadCounter++;
 			try{
-				pSubObjects.Add(igdeWOSOWorld::Ref::NewWith(*this, *worlds.GetAt(i), prefix));
+				pSubObjects.Add(igdeWOSOWorld::Ref::New(*this, *worlds.GetAt(i), prefix));
 				
 			}catch(const deException &e){
 				pEnvironment.GetLogger()->LogException(LOGSOURCE, e);

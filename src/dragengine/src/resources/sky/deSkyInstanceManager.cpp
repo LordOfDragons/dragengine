@@ -65,7 +65,7 @@ deSkyInstance *deSkyInstanceManager::GetRootSkyInstance() const{
 }
 
 deSkyInstance::Ref deSkyInstanceManager::CreateSkyInstance(){
-	const deSkyInstance::Ref instance(deSkyInstance::Ref::NewWith(this));
+	const deSkyInstance::Ref instance(deSkyInstance::Ref::New(this));
 	GetGraphicSystem()->LoadSkyInstance(instance);
 	pInstances.Add(instance);
 	return instance;

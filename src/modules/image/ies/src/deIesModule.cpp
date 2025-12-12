@@ -139,6 +139,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deIesRegisterInternalModule(deModuleSystem *system){
-	return deIesModuleInternal::Ref::NewWith(system);
+	return deIesModuleInternal::Ref::New(system);
 }
 #endif

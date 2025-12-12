@@ -62,7 +62,7 @@ deEnvMapProbe *deEnvMapProbeManager::GetRootEnvMapProbe() const{
 }
 
 deEnvMapProbe::Ref deEnvMapProbeManager::CreateEnvMapProbe(){
-	const deEnvMapProbe::Ref envMapProbe(deEnvMapProbe::Ref::NewWith(this));
+	const deEnvMapProbe::Ref envMapProbe(deEnvMapProbe::Ref::New(this));
 	GetGraphicSystem()->LoadEnvMapProbe(envMapProbe);
 	pEnvMapProbes.Add(envMapProbe);
 	return envMapProbe;

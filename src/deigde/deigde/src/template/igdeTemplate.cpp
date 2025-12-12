@@ -54,7 +54,7 @@ pBaseGameDefinitions(atemplate.pBaseGameDefinitions)
 	int i;
 	
 	for(i=0; i<fileCount; i++){
-		pFiles.Add(igdeTemplateFile::Ref::NewWith(*atemplate.pFiles.GetAt(i)));
+		pFiles.Add(igdeTemplateFile::Ref::New(*atemplate.pFiles.GetAt(i)));
 	}
 }
 

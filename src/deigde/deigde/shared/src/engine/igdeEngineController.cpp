@@ -223,12 +223,12 @@ const char *pathIGDEData, const char *pathIGDEModuleData){
 			rootPath.SetFromUnix(baseGameDef.GetVFSPath());
 			logger.LogInfoFormat(LOGSOURCE, "- Adding base game definition '%s' as '%s' (read-only)",
 				diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
-			vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath, true));
+			vfs.AddContainer(deVFSDiskDirectory::Ref::New(rootPath, diskPath, true));
 			
 			if(sharePath.IsParentOf(diskPath) && vfsAssetLibraries->GetContainerCount() > 0){
 				decPath relPath(diskPath.RelativePath(sharePath, true));
 				relPath.SetPrefix("/");
-				vfs.AddContainer(deVFSRedirect::Ref::NewWith(rootPath, relPath, vfsAssetLibraries, true));
+				vfs.AddContainer(deVFSRedirect::Ref::New(rootPath, relPath, vfsAssetLibraries, true));
 			}
 		}
 	}
@@ -239,19 +239,19 @@ const char *pathIGDEData, const char *pathIGDEModuleData){
 		diskPath.AddUnixPath(gameProject->GetPathData());
 		logger.LogInfoFormat(LOGSOURCE, "- Adding data directory '%s' as '%s' (read-write)",
 			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
-		vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath));
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(rootPath, diskPath));
 		
 	}else{
 		logger.LogInfoFormat(LOGSOURCE, "- Adding data directory '%s' (null)",
 			rootPath.GetPathUnix().GetString());
-		vfs.AddContainer(deVFSNull::Ref::NewWith(rootPath));
+		vfs.AddContainer(deVFSNull::Ref::New(rootPath));
 	}
 	
 	diskPath.SetFromNative(pathIGDEData);
 	rootPath.SetFromUnix("/igde");
 	logger.LogInfoFormat(LOGSOURCE, "- Adding igde data directory '%s' as '%s' (read-only)",
 		diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
-	vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath, true));
+	vfs.AddContainer(deVFSDiskDirectory::Ref::New(rootPath, diskPath, true));
 	
 	rootPath.SetFromUnix("/igde/cache");
 	if(notEmptyPathData){
@@ -259,12 +259,12 @@ const char *pathIGDEData, const char *pathIGDEModuleData){
 		diskPath.AddUnixPath(gameProject->GetPathCache());
 		logger.LogInfoFormat(LOGSOURCE, "- Adding cache directory '%s' as '%s' (read-write)",
 			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
-		vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath));
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(rootPath, diskPath));
 		
 	}else{
 		logger.LogInfoFormat(LOGSOURCE, "- Adding cache directory '%s' (null)",
 			rootPath.GetPathUnix().GetString());
-		vfs.AddContainer(deVFSNull::Ref::NewWith(rootPath));
+		vfs.AddContainer(deVFSNull::Ref::New(rootPath));
 	}
 	
 	diskPath.SetFromNative(pathIGDEModuleData);
@@ -272,7 +272,7 @@ const char *pathIGDEData, const char *pathIGDEModuleData){
 	logger.LogInfoFormat(LOGSOURCE, "- Adding igde editors data directory '%s' as '%s' (read-only)",
 		diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
 	{
-	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath, true));
+	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(rootPath, diskPath, true));
 	container->SetHidden(true);
 	vfs.AddContainer(container);
 	}
@@ -285,12 +285,12 @@ const char *pathIGDEData, const char *pathIGDEModuleData){
 		diskPath.AddUnixPath(gameProject->GetPathLocal());
 		logger.LogInfoFormat(LOGSOURCE, "- Adding local directory '%s' as '%s' (read-write)",
 			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
-		container = deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath);
+		container = deVFSDiskDirectory::Ref::New(rootPath, diskPath);
 		
 	}else{
 		logger.LogInfoFormat(LOGSOURCE, "- Adding local directory '%s' (null)",
 			rootPath.GetPathUnix().GetString());
-		container = deVFSNull::Ref::NewWith(rootPath);
+		container = deVFSNull::Ref::New(rootPath);
 	}
 	container->SetHidden(true);
 	vfs.AddContainer(container);

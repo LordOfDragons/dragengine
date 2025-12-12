@@ -65,7 +65,7 @@ deDecal *deDecalManager::GetRootDecal() const{
 }
 
 deDecal::Ref deDecalManager::CreateDecal(){
-	const deDecal::Ref decal(deDecal::Ref::NewWith(this));
+	const deDecal::Ref decal(deDecal::Ref::New(this));
 	GetGraphicSystem()->LoadDecal(decal);
 	GetPhysicsSystem()->LoadDecal(decal);
 	GetAudioSystem()->LoadDecal(decal);

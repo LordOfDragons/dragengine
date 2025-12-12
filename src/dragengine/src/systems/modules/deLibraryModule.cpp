@@ -300,7 +300,7 @@ bool deLibraryModule::pLoadLibrary(const char *filename){
 }
 
 void deLibraryModule::pLoadXML(const char* filename){
-	pParseXML(filename, decDiskFileReader::Ref::NewWith(filename));
+	pParseXML(filename, decDiskFileReader::Ref::New(filename));
 	
 	pVerifyModule();
 }
@@ -329,7 +329,7 @@ void deLibraryModule::pParseXML(const char *filename, decBaseFileReader &reader)
 	SetDefaultExtension("");
 	
 	// parse xml
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	parser.ParseXml(&reader, xmlDoc);
 	

@@ -117,7 +117,7 @@ void deClassNetworkMessage::nfGetReader::RunFunction(dsRunTime *rt, dsValue *mys
 	deNetworkMessage * const message = static_cast<sNMNatDat*>(p_GetNativeData(myself))->message;
 	const deScriptingDragonScript &ds = (static_cast<deClassNetworkMessage*>(GetOwnerClass()))->GetDS();
 	
-	ds.GetClassFileReader()->PushFileReader(rt, deNetworkMessageReader::Ref::NewWith(message));
+	ds.GetClassFileReader()->PushFileReader(rt, deNetworkMessageReader::Ref::New(message));
 }
 
 // public func FileWriter getWriter( bool append )
@@ -131,7 +131,7 @@ void deClassNetworkMessage::nfGetWriter::RunFunction(dsRunTime *rt, dsValue *mys
 	const deScriptingDragonScript &ds = (static_cast<deClassNetworkMessage*>(GetOwnerClass()))->GetDS();
 	
 	const bool append = rt->GetValue(0)->GetBool();
-	ds.GetClassFileWriter()->PushFileWriter(rt, deNetworkMessageWriter::Ref::NewWith(message, append));
+	ds.GetClassFileWriter()->PushFileWriter(rt, deNetworkMessageWriter::Ref::New(message, append));
 }
 
 

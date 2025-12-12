@@ -144,11 +144,11 @@ void igdeLSGameProject::Load(const char *filename, igdeGameProject *project, dec
 	path.SetFromNative(project->GetDirectoryPath());
 	path.AddUnixPath(project->GetPathProjectGameDefinition());
 	
-	const igdeGameDefinition::Ref gameDef(igdeGameDefinition::Ref::NewWith(environment));
+	const igdeGameDefinition::Ref gameDef(igdeGameDefinition::Ref::New(environment));
 	gameDef->SetFilename(path.GetPathNative());
 	
 	igdeXMLGameDefinition(environment, logger).Load(
-		decDiskFileReader::Ref::NewWith(path.GetPathNative()), gameDef);
+		decDiskFileReader::Ref::New(path.GetPathNative()), gameDef);
 	
 	project->SetProjectGameDefinition(gameDef);
 }

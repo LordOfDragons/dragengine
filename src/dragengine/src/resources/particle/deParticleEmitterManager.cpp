@@ -68,7 +68,7 @@ deParticleEmitter *deParticleEmitterManager::GetRootParticleEmitter() const{
 }
 
 deParticleEmitter::Ref deParticleEmitterManager::CreateParticleEmitter(){
-	const deParticleEmitter::Ref psys(deParticleEmitter::Ref::NewWith(this));
+	const deParticleEmitter::Ref psys(deParticleEmitter::Ref::New(this));
 	GetGraphicSystem()->LoadParticleEmitter(psys);
 	GetPhysicsSystem()->LoadParticleEmitter(psys);
 	pParticleEmitters.Add(psys);

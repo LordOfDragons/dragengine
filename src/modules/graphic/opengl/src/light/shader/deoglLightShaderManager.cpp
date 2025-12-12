@@ -149,7 +149,7 @@ deoglLightShader *deoglLightShaderManager::GetShaderWith(deoglLightShaderConfig 
 		return foundShader;
 	}
 	
-	const deoglLightShader::Ref shader(deoglLightShader::Ref::NewWith(pRenderThread, configuration));
+	const deoglLightShader::Ref shader(deoglLightShader::Ref::New(pRenderThread, configuration));
 	shader->PrepareShader(nullptr);
 	pShaderList.Add(shader);
 	return shader;
@@ -185,7 +185,7 @@ cGetShaderListener *listener){
 	
 	try{
 		preparing = new cPrepareShader(*this,
-			deoglLightShader::Ref::NewWith(pRenderThread, configuration));
+			deoglLightShader::Ref::New(pRenderThread, configuration));
 		preparing->AddListener(listener);
 		
 	}catch(const deException &e){

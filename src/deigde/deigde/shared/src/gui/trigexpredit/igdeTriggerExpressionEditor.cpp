@@ -181,7 +181,7 @@ public:
 	virtual void OnAction(){
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		if(component && component->GetType() != igdeTriggerExpressionComponent::ectTarget){
-			component->AddChild(igdeTriggerExpressionComponent::Ref::NewWith());
+			component->AddChild(igdeTriggerExpressionComponent::Ref::New());
 			pEditor.UpdateExpressionFromTree();
 			pEditor.UpdateTree();
 		}
@@ -419,7 +419,7 @@ void igdeTriggerExpressionEditor::RebuildTree(){
 		
 		try{
 			const igdeTriggerExpressionComponent::Ref component(
-				igdeTriggerExpressionComponent::Ref::NewWith());
+				igdeTriggerExpressionComponent::Ref::New());
 			component->SetNegate(false);
 			component->SetCurState(false);
 			component->SetType(igdeTriggerExpressionComponent::ectTarget);
@@ -678,7 +678,7 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	AddChild(form);
 	
 	// content
-	igdeContainerSplitted::Ref panelContent(igdeContainerSplitted::Ref::NewWith(
+	igdeContainerSplitted::Ref panelContent(igdeContainerSplitted::Ref::New(
 		env, igdeContainerSplitted::espRight, igdeApplication::app().DisplayScaled(200)));
 	AddChild(panelContent);
 	

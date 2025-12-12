@@ -119,7 +119,7 @@ void deoglDebugSaveTexture::SaveTextureLevelConversion(deoglTexture &texture, in
 	pathFile.AddUnixPath(fileTitle.GetString());
 	
 	try{
-		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::NewWith(
+		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
 			deoglPixelBuffer::epfFloat4, width, height, 1));
 		
 		texture.GetPixelsLevel(level, pixbuf);
@@ -184,7 +184,7 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel(deoglTexture &texture, int lev
 	pathFile.AddUnixPath(fileTitle.GetString());
 	
 	try{
-		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::NewWith(
+		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
 			deoglPixelBuffer::epfFloat1, width, height, 1));
 		deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		
@@ -477,7 +477,7 @@ void deoglDebugSaveTexture::SaveCubeMapLevelConversion(deoglCubeMap &cubemap, in
 	pathFile.AddUnixPath(fileTitle.GetString());
 	
 	try{
-		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::NewWith(
+		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
 			deoglPixelBuffer::epfFloat4, size, size, 6));
 		deoglPixelBuffer::sFloat4 * const pbdata = pixbuf->GetPointerFloat4();
 		const int faceStride = size * size;
@@ -532,7 +532,7 @@ void deoglDebugSaveTexture::SaveDepthCubeMapLevel(deoglCubeMap &cubemap, int lev
 	pathFile.AddUnixPath(fileTitle.GetString());
 	
 	try{
-		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::NewWith(
+		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
 			deoglPixelBuffer::epfFloat1, size, size, 6));
 		const deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		const int faceStride = size * size;
@@ -617,7 +617,7 @@ int level, const char *name, eConvertions conversion){
 	pathFile.AddUnixPath(fileTitle.GetString());
 	
 	try{
-		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::NewWith(
+		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
 			deoglPixelBuffer::epfFloat4, width, height, layerCount));
 		const deoglPixelBuffer::sFloat4 * const pbdata = pixbuf->GetPointerFloat4();
 		const int stride = width * height;
@@ -674,7 +674,7 @@ void deoglDebugSaveTexture::SaveDepthArrayTextureLevel(deoglArrayTexture &arrayT
 	pathFile.AddUnixPath(fileTitle.GetString());
 	
 	try{
-		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::NewWith(
+		const deoglPixelBuffer::Ref pixbuf(deoglPixelBuffer::Ref::New(
 			deoglPixelBuffer::epfFloat1, width, height, layerCount));
 		const deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		

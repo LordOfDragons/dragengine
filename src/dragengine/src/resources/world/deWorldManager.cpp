@@ -65,7 +65,7 @@ deWorld *deWorldManager::GetRootWorld() const{
 }
 
 deWorld::Ref deWorldManager::CreateWorld(){
-	const deWorld::Ref world(deWorld::Ref::NewWith(this));
+	const deWorld::Ref world(deWorld::Ref::New(this));
 	GetGraphicSystem()->LoadWorld(world);
 	GetPhysicsSystem()->LoadWorld(world);
 	GetAudioSystem()->LoadWorld(world);

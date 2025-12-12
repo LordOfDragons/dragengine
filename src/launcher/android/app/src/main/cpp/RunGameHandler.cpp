@@ -104,7 +104,7 @@ void RunGameHandler::Command(BaseGameActivityAdapter &adapter, int32_t cmd){
 
         if(size > 0 && data){
             pSavedState.TakeOver(new decMemoryFile("savedState"));
-            decMemoryFileWriter::Ref::NewWith(pSavedState, false)
+            decMemoryFileWriter::Ref::New(pSavedState, false)
                     ->Write(data, (int)size);
         }
         }break;
@@ -181,7 +181,7 @@ void RunGameHandler::StartGame(BaseGameActivityAdapter &adapter){
     pSetState(State::gameRunning);
 
     const delEngineInstanceDirect::Factory::Ref factory(
-        delEngineInstanceDirect::Factory::Ref::NewWith());
+        delEngineInstanceDirect::Factory::Ref::New());
     pInitEngineInstanceFactory(factory);
 
     deOSAndroid::sConfig osConfig(pLauncher->GetConfig().osConfig);
@@ -256,7 +256,7 @@ void RunGameHandler::ProcessCustomEvent(BaseGameActivityAdapter &adapter, const 
 
 void RunGameHandler::pCreateEngineLogger() {
     pEngineLogger.TakeOver(new deLoggerChain);
-    pEngineLogger->AddLogger(deLoggerConsole::Ref::NewWith());
+    pEngineLogger->AddLogger(deLoggerConsole::Ref::New());
 
     decPath diskPath(decPath::CreatePathNative(pLauncher->GetPathLogs()));
     diskPath.AddUnixPath(pGame->GetLogFile());
@@ -266,9 +266,9 @@ void RunGameHandler::pCreateEngineLogger() {
 
     diskPath.RemoveLastComponent();
 
-    const deVFSDiskDirectory::Ref diskDir(deVFSDiskDirectory::Ref::NewWith(diskPath));
+    const deVFSDiskDirectory::Ref diskDir(deVFSDiskDirectory::Ref::New(diskPath));
 
-    pEngineLogger->AddLogger(deLoggerFile::Ref::NewWith(diskDir->OpenFileForWriting(filePath)));
+    pEngineLogger->AddLogger(deLoggerFile::Ref::New(diskDir->OpenFileForWriting(filePath)));
 }
 
 

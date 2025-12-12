@@ -350,6 +350,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deoccmRegisterInternalModule(deModuleSystem *system){
-	return deoccmModuleInternal::Ref::NewWith(system);
+	return deoccmModuleInternal::Ref::New(system);
 }
 #endif

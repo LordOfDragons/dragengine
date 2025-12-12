@@ -229,9 +229,9 @@ const char *text, decString &value, const decStringList &proposals){
 	
 	igdeEnvironment &environment = owner->GetEnvironment();
 	igdeUIHelper &helper = environment.GetUIHelper();
-	igdeDialog::Ref dialog(igdeDialog::Ref::NewWith(environment, title));
+	igdeDialog::Ref dialog(igdeDialog::Ref::New(environment, title));
 	
-	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::New(
 		environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10));
 	
 	igdeComboBoxFilter::Ref comboBox;

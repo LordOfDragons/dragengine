@@ -105,7 +105,7 @@ void igdeGDCBillboardList::SetToDeepCopyFrom(const igdeGDCBillboardList &list){
 	int i;
 	
 	for(i=0; i<count; i++){
-		Add(igdeGDCBillboard::Ref::NewWith(*list.GetAt(i)));
+		Add(igdeGDCBillboard::Ref::New(*list.GetAt(i)));
 	}
 }
 

@@ -335,7 +335,7 @@ deFontSize *deFont::AddSize(int lineHeight, const deFontSize::Ref &size){
 		return found;
 	}
 	
-	pSizes.Add(cFontSize::Ref::NewWith(*this, lineHeight, size));
+	pSizes.Add(cFontSize::Ref::New(*this, lineHeight, size));
 	
 	if(pPeerGraphic){
 		pPeerGraphic->FontSizeAdded(lineHeight, size);

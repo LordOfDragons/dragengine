@@ -54,7 +54,7 @@ deLight *deLightManager::GetRootLight() const{
 }
 
 deLight::Ref deLightManager::CreateLight(){
-	const deLight::Ref light(deLight::Ref::NewWith(this));
+	const deLight::Ref light(deLight::Ref::New(this));
 	GetGraphicSystem()->LoadLight(light);
 	pLights.Add(light);
 	return light;

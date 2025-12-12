@@ -232,7 +232,7 @@ void igdeWPSky::RebuildControllers(){
 	
 	// add new widgets
 	while(pControllers.GetCount() < controllerCount){
-		Controller::Ref controller(Controller::Ref::NewWith());
+		Controller::Ref controller(Controller::Ref::New());
 		
 		controller->controller = pControllers.GetCount();
 		

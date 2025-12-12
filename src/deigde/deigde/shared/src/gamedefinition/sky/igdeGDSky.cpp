@@ -55,7 +55,7 @@ pCategory(sky.pCategory)
 	int i;
 	
 	for(i=0; i<controllerCount; i++){
-		pControllers.Add(igdeGDSkyController::Ref::NewWith(*sky.GetControllerAt(i)));
+		pControllers.Add(igdeGDSkyController::Ref::New(*sky.GetControllerAt(i)));
 	}
 }
 

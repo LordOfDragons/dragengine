@@ -536,7 +536,7 @@ void fbxNode::pRead(fbxScene &scene, decBaseFileReader &reader, int endOffset){
 			break;
 		}
 		
-		pNodes.Add(fbxNode::Ref::NewWith(scene, reader, checkEndOffset));
+		pNodes.Add(fbxNode::Ref::New(scene, reader, checkEndOffset));
 	}
 }
 

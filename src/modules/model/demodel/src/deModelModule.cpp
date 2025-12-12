@@ -2313,6 +2313,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> demdlRegisterInternalModule(deModuleSystem *system){
-	return demdlModuleInternal::Ref::NewWith(system);
+	return demdlModuleInternal::Ref::New(system);
 }
 #endif

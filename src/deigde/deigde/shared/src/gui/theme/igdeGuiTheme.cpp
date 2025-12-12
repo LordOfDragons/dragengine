@@ -122,23 +122,23 @@ const decString &igdeGuiTheme::GetStringProperty(const char *name, const decStri
 
 
 void igdeGuiTheme::SetIntProperty(const char *name, int value){
-	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::NewWith(name, value));
+	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::New(name, value));
 }
 
 void igdeGuiTheme::SetFloatProperty(const char *name, float value){
-	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::NewWith(name, value));
+	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::New(name, value));
 }
 
 void igdeGuiTheme::SetPointProperty(const char *name, const decPoint &value){
-	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::NewWith(name, value));
+	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::New(name, value));
 }
 
 void igdeGuiTheme::SetColorProperty(const char *name, const decColor &value){
-	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::NewWith(name, value));
+	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::New(name, value));
 }
 
 void igdeGuiTheme::SetStringProperty(const char *name, const decString &value){
-	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::NewWith(name, value));
+	pProperties.SetAt(name, igdeGuiThemeProperty::Ref::New(name, value));
 }
 
 

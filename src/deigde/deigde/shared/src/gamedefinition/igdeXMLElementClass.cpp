@@ -79,7 +79,7 @@ igdeXMLElementClass::~igdeXMLElementClass(){
 igdeGDClass::Ref igdeXMLElementClass::LoadElementClass(decBaseFileReader &reader,
 const char *filename){
 	try{
-		decXmlDocument::Ref document(decXmlDocument::Ref::NewWith());
+		decXmlDocument::Ref document(decXmlDocument::Ref::New());
 		
 		decXmlParser(GetLogger()).ParseXml(&reader, document);
 		
@@ -259,15 +259,15 @@ igdeGDClass::Ref igdeXMLElementClass::pReadElementClass(const decXmlElementTag &
 	decStringDictionary properties;
 	int i;
 	
-	const igdeGDClass::Ref gdClass(igdeGDClass::Ref::NewWith(GetAttributeString(root, "name")));
-	gdClass->AddInheritClass(igdeGDClassInherit::Ref::NewWith(GetAttributeString(root, "class")));
+	const igdeGDClass::Ref gdClass(igdeGDClass::Ref::New(GetAttributeString(root, "name")));
+	gdClass->AddInheritClass(igdeGDClassInherit::Ref::New(GetAttributeString(root, "class")));
 	gdClass->SetPathEClass(filename);
 	
 	decPath basePath(decPath::CreatePathUnix(filename));
 	basePath.RemoveLastComponent();
 	const decString basePathStr(basePath.GetPathUnix());
 	
-	const cMap::Ref map(cMap::Ref::NewWith());
+	const cMap::Ref map(cMap::Ref::New());
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -305,7 +305,7 @@ igdeGDClass::Ref igdeXMLElementClass::pReadElementClass(const decXmlElementTag &
 
 void igdeXMLElementClass::pReadBehavior(const decXmlElementTag &root,
 igdeGDClass &gdClass, const char *filename, const decString &basePathStr){
-	const igdeGDClassInherit::Ref inherit(igdeGDClassInherit::Ref::NewWith(
+	const igdeGDClassInherit::Ref inherit(igdeGDClassInherit::Ref::New(
 		GetAttributeString(root, "type")));
 	inherit->SetUseAutoPropertyPrefixId(true);
 	if(HasAttribute(root, "id")){
@@ -313,7 +313,7 @@ igdeGDClass &gdClass, const char *filename, const decString &basePathStr){
 	}
 	
 	decStringDictionary &properties = inherit->GetAutoPrefixProperties();
-	const cMap::Ref map(cMap::Ref::NewWith());
+	const cMap::Ref map(cMap::Ref::New());
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -462,7 +462,7 @@ void igdeXMLElementClass::pReadMap(const decXmlElementTag &root, cMap &map, cons
 		}
 		
 		const char * const key = GetAttributeString(*tag, "key");
-		const cMap::Ref child(cMap::Ref::NewWith());
+		const cMap::Ref child(cMap::Ref::New());
 		
 		if(pReadPropertyValue(*tag, child->value, child, filename)){
 			map.map.SetAt(key, child);
@@ -573,7 +573,7 @@ igdeGDClass &gdClass, const char *basePath){
 		const decString &key = keys.GetAt(i);
 		const cMap &child = *((cMap*)map.map.GetAt(key));
 		
-		const igdeGDCCTexture::Ref texture(igdeGDCCTexture::Ref::NewWith());
+		const igdeGDCCTexture::Ref texture(igdeGDCCTexture::Ref::New());
 		texture->SetName(key);
 		
 		if(child.map.GetAt("skin", &object)){
@@ -619,7 +619,7 @@ igdeGDCComponent &igdeXMLElementClass::pGetLoadedComponent(igdeGDClass &gdClass)
 		return *gdClass.GetComponentList().GetAt(0);
 	}
 	
-	const igdeGDCComponent::Ref component(igdeGDCComponent::Ref::NewWith());
+	const igdeGDCComponent::Ref component(igdeGDCComponent::Ref::New());
 	gdClass.AddComponent(component);
 	return component;
 }

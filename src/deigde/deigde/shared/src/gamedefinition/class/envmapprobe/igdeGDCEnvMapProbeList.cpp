@@ -105,7 +105,7 @@ void igdeGDCEnvMapProbeList::SetToDeepCopyFrom(const igdeGDCEnvMapProbeList &lis
 	int i;
 	
 	for(i=0; i<count; i++){
-		Add(igdeGDCEnvMapProbe::Ref::NewWith(*list.GetAt(i)));
+		Add(igdeGDCEnvMapProbe::Ref::New(*list.GetAt(i)));
 	}
 }
 

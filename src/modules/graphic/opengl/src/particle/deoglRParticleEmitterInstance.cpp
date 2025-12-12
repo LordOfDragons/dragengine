@@ -90,7 +90,7 @@ deoglRParticleEmitterInstance::deoglRParticleEmitterInstance(deoglRenderThread &
 pRenderThread(renderThread),
 pParentWorld(NULL),
 pOctreeNode(NULL),
-pWorldComputeElement(WorldComputeElement::Ref::NewWith(*this)),
+pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
 
 pBurstTime(0.0f),
 

@@ -155,7 +155,7 @@ bool stretchLast, int spacing){
 
 void igdeUIHelper::GroupBox(igdeContainer &parent, igdeContainer::Ref &groupBox,
 const char *title, bool collapsed) const{
-	igdeGroupBox::Ref frame(igdeGroupBox::Ref::NewWith(pEnvironment, title, collapsed));
+	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New(pEnvironment, title, collapsed));
 	parent.AddChild(frame);
 	
 	groupBox.TakeOver(new igdeContainerForm(pEnvironment));
@@ -164,7 +164,7 @@ const char *title, bool collapsed) const{
 
 void igdeUIHelper::GroupBoxStatic(igdeContainer &parent,
 igdeContainer::Ref &groupBox, const char *title) const{
-	igdeGroupBox::Ref frame(igdeGroupBox::Ref::NewWith(pEnvironment, title));
+	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New(pEnvironment, title));
 	parent.AddChild(frame);
 	
 	groupBox.TakeOver(new igdeContainerForm(pEnvironment));
@@ -173,7 +173,7 @@ igdeContainer::Ref &groupBox, const char *title) const{
 
 void igdeUIHelper::GroupBoxFlow(igdeContainer &parent, igdeContainer::Ref &groupBox,
 const char *title, bool stretchLast, bool collapsed) const{
-	igdeGroupBox::Ref frame(igdeGroupBox::Ref::NewWith(pEnvironment, title, collapsed));
+	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New(pEnvironment, title, collapsed));
 	parent.AddChild(frame);
 	
 	groupBox.TakeOver(new igdeContainerFlow(pEnvironment, igdeContainerFlow::eaY,
@@ -183,7 +183,7 @@ const char *title, bool stretchLast, bool collapsed) const{
 
 void igdeUIHelper::GroupBoxBorder(igdeContainer &parent, igdeContainerBorder::Ref &groupBox,
 const char *title, bool collapsed) const{
-	igdeGroupBox::Ref frame(igdeGroupBox::Ref::NewWith(pEnvironment, title, collapsed));
+	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New(pEnvironment, title, collapsed));
 	parent.AddChild(frame);
 	
 	groupBox.TakeOver(new igdeContainerBorder(pEnvironment));
@@ -192,7 +192,7 @@ const char *title, bool collapsed) const{
 
 void igdeUIHelper::GroupBoxStaticFlow(igdeContainer &parent, igdeContainer::Ref &groupBox,
 const char *title, bool stretchLast) const{
-	igdeGroupBox::Ref frame(igdeGroupBox::Ref::NewWith(pEnvironment, title));
+	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New(pEnvironment, title));
 	if(stretchLast){
 		frame->SetStretchLast(stretchLast);
 	}
@@ -205,7 +205,7 @@ const char *title, bool stretchLast) const{
 
 void igdeUIHelper::GroupBoxStaticBorder(igdeContainer &parent,
 igdeContainerBorder::Ref &groupBox, const char *title, bool stretch) const{
-	igdeGroupBox::Ref frame(igdeGroupBox::Ref::NewWith(pEnvironment, title));
+	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New(pEnvironment, title));
 	if(stretch){
 		frame->SetStretchLast(stretch);
 	}
@@ -224,7 +224,7 @@ igdeWidget *widget){
 
 void igdeUIHelper::FormLine(igdeContainer &form, const char *label, const char *description,
 igdeWidget *widget, int labelAlignment){
-	igdeLabel::Ref wlabel(igdeLabel::Ref::NewWith(pEnvironment, label, description, labelAlignment));
+	igdeLabel::Ref wlabel(igdeLabel::Ref::New(pEnvironment, label, description, labelAlignment));
 	form.AddChild(wlabel);
 	form.AddChild(widget);
 }
@@ -236,7 +236,7 @@ igdeContainer::Ref &line){
 
 void igdeUIHelper::FormLine(igdeContainer &form, const char *label, const char *description,
 igdeContainer::Ref &line, int labelAlignment){
-	igdeLabel::Ref wlabel(igdeLabel::Ref::NewWith(pEnvironment, label, description, labelAlignment));
+	igdeLabel::Ref wlabel(igdeLabel::Ref::New(pEnvironment, label, description, labelAlignment));
 	form.AddChild(wlabel);
 	line.TakeOver(new igdeContainerBox(pEnvironment, igdeContainerBox::eaX));
 	form.AddChild(line);
@@ -249,7 +249,7 @@ const char *description, igdeContainer::Ref &line){
 
 void igdeUIHelper::FormLineStretchFirst(igdeContainer &form, const char *label,
 const char *description, igdeContainer::Ref &line, int labelAlignment){
-	igdeLabel::Ref wlabel(igdeLabel::Ref::NewWith(pEnvironment, label, description, labelAlignment));
+	igdeLabel::Ref wlabel(igdeLabel::Ref::New(pEnvironment, label, description, labelAlignment));
 	form.AddChild(wlabel);
 	line.TakeOver(new igdeContainerFlow(pEnvironment, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
 	form.AddChild(line);
@@ -262,7 +262,7 @@ const char *description, igdeContainer::Ref &line){
 
 void igdeUIHelper::FormLineDownFlow(igdeContainer &form, const char *label,
 const char *description, igdeContainer::Ref &line, int labelAlignment){
-	igdeLabel::Ref wlabel(igdeLabel::Ref::NewWith(pEnvironment, label, description, labelAlignment));
+	igdeLabel::Ref wlabel(igdeLabel::Ref::New(pEnvironment, label, description, labelAlignment));
 	form.AddChild(wlabel);
 	line.TakeOver(new igdeContainerFlow(pEnvironment, igdeContainerFlow::eaY));
 	form.AddChild(line);
@@ -1143,16 +1143,16 @@ igdeTreeListListener *listener){
 
 
 void igdeUIHelper::Label(igdeContainer &parent, const char *text){
-	parent.AddChild(igdeLabel::Ref::NewWith(pEnvironment, text));
+	parent.AddChild(igdeLabel::Ref::New(pEnvironment, text));
 }
 
 void igdeUIHelper::Label(igdeContainer &parent, const char *text, const char *description){
-	parent.AddChild(igdeLabel::Ref::NewWith(pEnvironment, text, description));
+	parent.AddChild(igdeLabel::Ref::New(pEnvironment, text, description));
 }
 
 void igdeUIHelper::Label(igdeContainer &parent, const char *text,
 const char *description, int alignment){
-	parent.AddChild(igdeLabel::Ref::NewWith(pEnvironment, text, description, alignment));
+	parent.AddChild(igdeLabel::Ref::New(pEnvironment, text, description, alignment));
 }
 
 void igdeUIHelper::Label(igdeContainer &parent, igdeLabel::Ref &label, const char *text){
@@ -1214,7 +1214,7 @@ igdeViewCurveBezierListener *listener){
 
 
 void igdeUIHelper::Separator(igdeContainer &parent, bool horizontal){
-	parent.AddChild(igdeSeparator::Ref::NewWith(pEnvironment,
+	parent.AddChild(igdeSeparator::Ref::New(pEnvironment,
 		horizontal ? igdeSeparator::eoHorizontal : igdeSeparator::eoVertical));
 }
 
@@ -1374,7 +1374,7 @@ bool takeOverAction){
 
 
 void igdeUIHelper::MenuCommand(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction){
-	igdeMenuCommand::Ref entry(igdeMenuCommand::Ref::NewWith(pEnvironment, action));
+	igdeMenuCommand::Ref entry(igdeMenuCommand::Ref::New(pEnvironment, action));
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
@@ -1382,11 +1382,11 @@ void igdeUIHelper::MenuCommand(igdeMenuCascade &menu, igdeAction *action, bool t
 }
 
 void igdeUIHelper::MenuCommand(igdeMenuCascade &menu, const igdeAction::Ref &action){
-	menu.AddChild(igdeMenuCommand::Ref::NewWith(pEnvironment, action));
+	menu.AddChild(igdeMenuCommand::Ref::New(pEnvironment, action));
 }
 
 void igdeUIHelper::MenuCheck(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction){
-	igdeMenuCheck::Ref entry(igdeMenuCheck::Ref::NewWith(pEnvironment, action));
+	igdeMenuCheck::Ref entry(igdeMenuCheck::Ref::New(pEnvironment, action));
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
@@ -1394,11 +1394,11 @@ void igdeUIHelper::MenuCheck(igdeMenuCascade &menu, igdeAction *action, bool tak
 }
 
 void igdeUIHelper::MenuCheck(igdeMenuCascade &menu, const igdeAction::Ref &action){
-	menu.AddChild(igdeMenuCheck::Ref::NewWith(pEnvironment, action));
+	menu.AddChild(igdeMenuCheck::Ref::New(pEnvironment, action));
 }
 
 void igdeUIHelper::MenuOption(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction){
-	igdeMenuOption::Ref entry(igdeMenuOption::Ref::NewWith(pEnvironment, action));
+	igdeMenuOption::Ref entry(igdeMenuOption::Ref::New(pEnvironment, action));
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
@@ -1406,15 +1406,15 @@ void igdeUIHelper::MenuOption(igdeMenuCascade &menu, igdeAction *action, bool ta
 }
 
 void igdeUIHelper::MenuOption(igdeMenuCascade &menu, const igdeAction::Ref &action){
-	menu.AddChild(igdeMenuOption::Ref::NewWith(pEnvironment, action));
+	menu.AddChild(igdeMenuOption::Ref::New(pEnvironment, action));
 }
 
 void igdeUIHelper::MenuSeparator(igdeMenuCascade &menu){
-	menu.AddChild(igdeMenuSeparator::Ref::NewWith(pEnvironment));
+	menu.AddChild(igdeMenuSeparator::Ref::New(pEnvironment));
 }
 
 void igdeUIHelper::MenuRecentFiles(igdeMenuCascade &menu, igdeRecentFiles &recentFiles, const char *text){
-	const igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(pEnvironment,
+	const igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(pEnvironment,
 		text, pEnvironment.GetStockIcon(igdeEnvironment::esiOpen), text));
 	recentFiles.SetMenu(subMenu);
 	menu.AddChild(subMenu);
@@ -1423,7 +1423,7 @@ void igdeUIHelper::MenuRecentFiles(igdeMenuCascade &menu, igdeRecentFiles &recen
 
 
 void igdeUIHelper::ToolBarButton(igdeToolBar &toolBar, igdeAction *action, bool takeOverAction){
-	igdeButton::Ref widget(igdeButton::Ref::NewWith(pEnvironment, action, igdeButton::ebsToolBar));
+	igdeButton::Ref widget(igdeButton::Ref::New(pEnvironment, action, igdeButton::ebsToolBar));
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
@@ -1431,7 +1431,7 @@ void igdeUIHelper::ToolBarButton(igdeToolBar &toolBar, igdeAction *action, bool 
 }
 
 void igdeUIHelper::ToolBarToggleButton(igdeToolBar &toolBar, igdeAction *action, bool takeOverAction){
-	igdeToggleButton::Ref widget(igdeToggleButton::Ref::NewWith(
+	igdeToggleButton::Ref widget(igdeToggleButton::Ref::New(
 		pEnvironment, action, igdeToggleButton::ebsToolBar));
 	if(takeOverAction && action){
 		action->FreeReference();
@@ -1440,7 +1440,7 @@ void igdeUIHelper::ToolBarToggleButton(igdeToolBar &toolBar, igdeAction *action,
 }
 
 void igdeUIHelper::ToolBarSeparator(igdeToolBar &toolBar){
-	toolBar.AddChild(igdeToolBarSeparator::Ref::NewWith(pEnvironment));
+	toolBar.AddChild(igdeToolBarSeparator::Ref::New(pEnvironment));
 }
 
 

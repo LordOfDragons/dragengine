@@ -94,7 +94,7 @@ void deoxrDPHMD::pAddDevice(){
 		deoxrSession &session = oxr.GetSession();
 		if(session.GetSystem().GetSupportsFaceEyeTracking()
 		|| session.GetSystem().GetSupportsFaceLipTracking()){
-			pDevice->SetFaceTracker(deoxrFaceTracker::Ref::NewWith(session));
+			pDevice->SetFaceTracker(deoxrFaceTracker::Ref::New(session));
 		}
 	}
 	

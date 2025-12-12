@@ -146,7 +146,7 @@ void fbxModelModule::pLoadModel(deModel &model, fbxScene &scene){
 	fbxNode &nodeGeometry = *scene.FirstNodeNamed("Geometry");
 	fbxNode * const nodePose = scene.FirstNodeNamedOrNull("Pose");
 	
-	const fbxModel::Ref loadModel(fbxModel::Ref::NewWith(scene, nodeGeometry));
+	const fbxModel::Ref loadModel(fbxModel::Ref::New(scene, nodeGeometry));
 	
 	fbxRig::Ref loadRig;
 	if(nodePose){
@@ -581,6 +581,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> fbxModelRegisterInternalModule(deModuleSystem *system){
-	return fbxModelModuleInternal::Ref::NewWith(system);
+	return fbxModelModuleInternal::Ref::New(system);
 }
 #endif

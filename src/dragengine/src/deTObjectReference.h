@@ -197,35 +197,21 @@ public:
 	 * 
 	 * Same as calling TakeOver() on a new instance but allows for inline use.
 	 */
-	static deTObjectReference New(T *object){
+	static deTObjectReference NewDeprecated(T *object){
 		deTObjectReference reference;
 		reference.TakeOver(object);
 		return reference;
 	}
 	
-private:
-	/**
-	 * \brief Returns reference to protect against problems.
-	 */
-	static deTObjectReference New(deTObjectReference &reference){
-		return reference;
-	}
-	
-	/**
-	 * \brief Returns reference to protect against problems.
-	 */
-	static deTObjectReference New(const deTObjectReference &reference){
-		return reference;
-	}
-	
-public:
 	/**
 	 * \brief Create instance taking over reference.
 	 * 
 	 * Same as calling New() but using provided arguments with a 'new' call.
 	 */
-	template<typename... A> static deTObjectReference NewWith(A&&... args){
-		return New(new T(static_cast<A>(args)...));
+	template<typename... A> static deTObjectReference New(A&&... args){
+		deTObjectReference reference;
+		reference.pObject = new T(static_cast<A>(args)...);
+		return reference;
 	}
 	
 	/** \brief Object is nullptr. */

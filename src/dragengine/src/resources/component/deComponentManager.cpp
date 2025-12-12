@@ -68,7 +68,7 @@ deComponent *deComponentManager::GetRootComponent() const{
 }
 
 deComponent::Ref deComponentManager::CreateComponent(deModel *model, deSkin *skin){
-	const deComponent::Ref component(deComponent::Ref::NewWith(this, model, skin));
+	const deComponent::Ref component(deComponent::Ref::New(this, model, skin));
 	GetGraphicSystem()->LoadComponent(component);
 	GetPhysicsSystem()->LoadComponent(component);
 	GetAudioSystem()->LoadComponent(component);

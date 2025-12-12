@@ -116,7 +116,7 @@ deModioUserConfig &deModio::GetUserConfig(const decString &id){
 		return *user;
 	}
 	
-	const deModioUserConfig::Ref newUser(deModioUserConfig::Ref::NewWith(*this, id));
+	const deModioUserConfig::Ref newUser(deModioUserConfig::Ref::New(*this, id));
 	pUserConfigs.SetAt(id, newUser);
 	
 	pSaveConfig();
@@ -132,7 +132,7 @@ void deModio::SetCurUserId(const decString &id){
 	pCurUserId = id;
 	
 	if(!pUserConfigs.Has(id)){
-		pUserConfigs.SetAt(id, deModioUserConfig::Ref::NewWith(*this, id));
+		pUserConfigs.SetAt(id, deModioUserConfig::Ref::New(*this, id));
 	}
 	
 	pSaveConfig();
@@ -187,7 +187,7 @@ void deModio::AddVFSContainers(deVirtualFileSystem &vfs, const char *stage){
 		}
 		
 		const decPath rootDir(decPath::CreatePathUnix("/"));
-		vfs.AddContainer(deVFSRedirect::Ref::NewWith(rootDir, rootDir, pVFSMods, true));
+		vfs.AddContainer(deVFSRedirect::Ref::New(rootDir, rootDir, pVFSMods, true));
 		
 		pUpdateVFS();
 	}
@@ -316,7 +316,7 @@ void deModio::pLoadConfigV0(decBaseFileReader &reader){
 	
 	count = reader.ReadInt();
 	for(i=0; i<count; i++){
-		pModConfigs.Add(deModioModConfig::Ref::NewWith(reader));
+		pModConfigs.Add(deModioModConfig::Ref::New(reader));
 	}
 	
 	deModioUserConfig::Ref userConfig;
@@ -500,6 +500,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deModioRegisterInternalModule(deModuleSystem *system){
-	return deModioModuleInternal::Ref::NewWith(system);
+	return deModioModuleInternal::Ref::New(system);
 }
 #endif

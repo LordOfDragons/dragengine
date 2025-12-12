@@ -106,7 +106,7 @@ void igdeGDCComponentList::SetToDeepCopyFrom(const igdeGDCComponentList &list){
 	int i;
 	
 	for(i=0; i<count; i++){
-		Add(igdeGDCComponent::Ref::NewWith(*list.GetAt(i)));
+		Add(igdeGDCComponent::Ref::New(*list.GetAt(i)));
 	}
 }
 

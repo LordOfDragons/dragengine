@@ -68,7 +68,7 @@ deSmokeEmitter *deSmokeEmitterManager::GetRootSmokeEmitter() const{
 }
 
 deSmokeEmitter::Ref deSmokeEmitterManager::CreateSmokeEmitter(){
-	const deSmokeEmitter::Ref smokeEmitter(deSmokeEmitter::Ref::NewWith(this));
+	const deSmokeEmitter::Ref smokeEmitter(deSmokeEmitter::Ref::New(this));
 	GetGraphicSystem()->LoadSmokeEmitter(smokeEmitter);
 	GetPhysicsSystem()->LoadSmokeEmitter(smokeEmitter);
 	pSmokeEmitters.Add(smokeEmitter);

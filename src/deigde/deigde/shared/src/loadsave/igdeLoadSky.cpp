@@ -104,7 +104,7 @@ void igdeLoadSky::Load(const decString &pathSky, deSky &sky, decBaseFileReader &
 		basePath.SetFromUnix("/");
 	}
 	
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	

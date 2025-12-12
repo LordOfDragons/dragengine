@@ -156,6 +156,6 @@ inside the tarball are named zX.png where X is the z coordinate without leading 
 };
 
 deTObjectReference<deInternalModule> depng3DRegisterInternalModule(deModuleSystem *system){
-	return dePng3DModuleInternal::Ref::NewWith(system);
+	return dePng3DModuleInternal::Ref::New(system);
 }
 #endif

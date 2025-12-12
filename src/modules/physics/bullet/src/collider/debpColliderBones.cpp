@@ -1337,7 +1337,7 @@ void debpColliderBones::pCreateConstraints(const deRig &rig){
 				}
 				
 				// add a new temporary bone constraint
-				const deColliderConstraint::Ref bc(deColliderConstraint::Ref::NewWith());
+				const deColliderConstraint::Ref bc(deColliderConstraint::Ref::New());
 				pConstraints.Add(bc);
 				
 				// set the temporary bone constraint from the rig constraint

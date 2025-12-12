@@ -43,7 +43,7 @@ pFaceCount(0),
 pDoubleSided(false),
 pDecal(false),
 pDecalOffset(0),
-pRTIGroups(deoglSharedSPBRTIGroupList::Ref::NewWith(renderThread)){
+pRTIGroups(deoglSharedSPBRTIGroupList::Ref::New(renderThread)){
 }
 
 deoglModelTexture::~deoglModelTexture(){

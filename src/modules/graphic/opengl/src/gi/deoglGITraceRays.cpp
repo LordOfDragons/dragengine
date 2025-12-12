@@ -53,7 +53,7 @@ pTexNormal(renderThread),
 pTexDiffuse(renderThread),
 pTexReflectivity(renderThread),
 pTexLight(renderThread),
-pFBOLight(deoglFramebuffer::Ref::NewWith(renderThread, false))
+pFBOLight(deoglFramebuffer::Ref::New(renderThread, false))
 {
 	try{
 		pCreateFBORay();

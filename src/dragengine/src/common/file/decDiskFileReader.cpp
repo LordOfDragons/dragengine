@@ -194,7 +194,7 @@ void decDiskFileReader::Read(void *buffer, int size){
 }
 
 decBaseFileReader::Ref decDiskFileReader::Duplicate(){
-	const decDiskFileReader::Ref reader(decDiskFileReader::Ref::NewWith(pFilename));
+	const decDiskFileReader::Ref reader(decDiskFileReader::Ref::New(pFilename));
 	if(fseek(reader->pFile, ftell(pFile), SEEK_SET)){
 		DETHROW_INFO(deeReadFile, pFilename);
 	}

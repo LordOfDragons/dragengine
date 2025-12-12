@@ -112,7 +112,7 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 		
 		count = gdclass.pSnapPoints.GetCount();
 		for(i=0; i<count; i++){
-			pSnapPoints.Add(igdeGDCSnapPoint::Ref::NewWith(*gdclass.pSnapPoints.GetAt(i)));
+			pSnapPoints.Add(igdeGDCSnapPoint::Ref::New(*gdclass.pSnapPoints.GetAt(i)));
 		}
 		
 		pListParticleEmitters.SetToDeepCopyFrom(gdclass.pListParticleEmitters);
@@ -128,7 +128,7 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 		
 		count = gdclass.pInheritClasses.GetCount();
 		for(i=0; i<count; i++){
-			pInheritClasses.Add(igdeGDClassInherit::Ref::NewWith(
+			pInheritClasses.Add(igdeGDClassInherit::Ref::New(
 				*static_cast<igdeGDClassInherit*>(gdclass.pInheritClasses.GetAt(i))));
 		}
 		

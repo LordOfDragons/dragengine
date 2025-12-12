@@ -81,7 +81,7 @@ void igdeGDParticleEmitterManager::UpdateWith(const igdeGDParticleEmitterManager
 	int i;
 	
 	for(i=0; i<count; i++){
-		const igdeGDParticleEmitter::Ref emitter(igdeGDParticleEmitter::Ref::NewWith(
+		const igdeGDParticleEmitter::Ref emitter(igdeGDParticleEmitter::Ref::New(
 			*particleEmitterManager.GetEmitterList().GetAt(i)));
 		igdeGDParticleEmitter * const check = pEmitterList.GetWithPath(emitter->GetPath().GetString());
 		if(check){

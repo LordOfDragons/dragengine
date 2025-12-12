@@ -89,7 +89,7 @@ pFrameRate(25)
 		
 		fbxNode &node = *animation.GetScene().NodeWithID(connection.GetSource());
 		if(node.GetName() == "AnimationCurveNode"){
-			pCurveNodes.Add(fbxAnimationMoveCurves::Ref::NewWith(*this, node));
+			pCurveNodes.Add(fbxAnimationMoveCurves::Ref::New(*this, node));
 		}
 	}
 }

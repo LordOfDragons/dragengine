@@ -143,6 +143,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> dearRegisterInternalModule(deModuleSystem *system){
-	return dearModuleInternal::Ref::NewWith(system);
+	return dearModuleInternal::Ref::New(system);
 }
 #endif

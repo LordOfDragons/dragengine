@@ -249,6 +249,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> desynRegisterInternalModule(deModuleSystem *system){
-	return desynModuleInternal::Ref::NewWith(system);
+	return desynModuleInternal::Ref::New(system);
 }
 #endif

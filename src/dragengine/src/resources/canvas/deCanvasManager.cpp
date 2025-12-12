@@ -67,49 +67,49 @@ deCanvas *deCanvasManager::GetRootCanvas() const{
 }
 
 deCanvasImage::Ref deCanvasManager::CreateCanvasImage(){
-	const deCanvasImage::Ref canvas(deCanvasImage::Ref::NewWith(this));
+	const deCanvasImage::Ref canvas(deCanvasImage::Ref::New(this));
 	GetGraphicSystem()->LoadCanvas(canvas);
 	pCanvas.Add(canvas);
 	return canvas;
 }
 
 deCanvasPaint::Ref deCanvasManager::CreateCanvasPaint(){
-	const deCanvasPaint::Ref canvas(deCanvasPaint::Ref::NewWith(this));
+	const deCanvasPaint::Ref canvas(deCanvasPaint::Ref::New(this));
 	GetGraphicSystem()->LoadCanvas(canvas);
 	pCanvas.Add(canvas);
 	return canvas;
 }
 
 deCanvasCanvasView::Ref deCanvasManager::CreateCanvasCanvasView(){
-	const deCanvasCanvasView::Ref canvas(deCanvasCanvasView::Ref::NewWith(this));
+	const deCanvasCanvasView::Ref canvas(deCanvasCanvasView::Ref::New(this));
 	GetGraphicSystem()->LoadCanvas(canvas);
 	pCanvas.Add(canvas);
 	return canvas;
 }
 
 deCanvasRenderWorld::Ref deCanvasManager::CreateCanvasRenderWorld(){
-	const deCanvasRenderWorld::Ref canvas(deCanvasRenderWorld::Ref::NewWith(this));
+	const deCanvasRenderWorld::Ref canvas(deCanvasRenderWorld::Ref::New(this));
 	GetGraphicSystem()->LoadCanvas(canvas);
 	pCanvas.Add(canvas);
 	return canvas;
 }
 
 deCanvasText::Ref deCanvasManager::CreateCanvasText(){
-	const deCanvasText::Ref canvas(deCanvasText::Ref::NewWith(this));
+	const deCanvasText::Ref canvas(deCanvasText::Ref::New(this));
 	GetGraphicSystem()->LoadCanvas(canvas);
 	pCanvas.Add(canvas);
 	return canvas;
 }
 
 deCanvasVideoPlayer::Ref deCanvasManager::CreateCanvasVideoPlayer(){
-	const deCanvasVideoPlayer::Ref canvas(deCanvasVideoPlayer::Ref::NewWith(this));
+	const deCanvasVideoPlayer::Ref canvas(deCanvasVideoPlayer::Ref::New(this));
 	GetGraphicSystem()->LoadCanvas(canvas);
 	pCanvas.Add(canvas);
 	return canvas;
 }
 
 deCanvasView::Ref deCanvasManager::CreateCanvasView(){
-	const deCanvasView::Ref canvas(deCanvasView::Ref::NewWith(this));
+	const deCanvasView::Ref canvas(deCanvasView::Ref::New(this));
 	GetGraphicSystem()->LoadCanvas(canvas);
 	pCanvas.Add(canvas);
 	return canvas;

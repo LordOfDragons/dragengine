@@ -229,6 +229,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deoggRegisterInternalModule(deModuleSystem *system){
-	return deoggModuleInternal::Ref::NewWith(system);
+	return deoggModuleInternal::Ref::New(system);
 }
 #endif

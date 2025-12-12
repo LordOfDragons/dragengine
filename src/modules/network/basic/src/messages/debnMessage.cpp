@@ -34,7 +34,7 @@
 ////////////////////////////
 
 debnMessage::debnMessage() :
-pMessage(deNetworkMessage::Ref::NewWith()),
+pMessage(deNetworkMessage::Ref::New()),
 pNumber(-1),
 pState(emsPending),
 pType(0),

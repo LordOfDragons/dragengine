@@ -76,7 +76,7 @@ void igdeLoadSaveCamera::SetDefaultExtension(const char *extension){
 ///////////////////////
 
 void igdeLoadSaveCamera::Load(const decString &path, igdeCamera &camera, decBaseFileReader &reader){
-	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();

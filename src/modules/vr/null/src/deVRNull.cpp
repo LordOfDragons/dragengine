@@ -243,6 +243,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> denvrRegisterInternalModule(deModuleSystem *system){
-	return denvrModuleInternal::Ref::NewWith(system);
+	return denvrModuleInternal::Ref::New(system);
 }
 #endif

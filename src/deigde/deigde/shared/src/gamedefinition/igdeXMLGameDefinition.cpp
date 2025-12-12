@@ -109,7 +109,7 @@ igdeXMLGameDefinition::~igdeXMLGameDefinition(){
 ////////////
 
 void igdeXMLGameDefinition::Load(decBaseFileReader &file, igdeGameDefinition &gamedef){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	// parse xml
 	decXmlParser(GetLogger()).ParseXml(&file, xmlDoc);
@@ -222,7 +222,7 @@ void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, i
 			
 		}else if(tagName == "decalProperty"){
 			try{
-				const igdeGDProperty::Ref property(igdeGDProperty::Ref::NewWith(
+				const igdeGDProperty::Ref property(igdeGDProperty::Ref::New(
 					GetAttributeString(*tag, "name")));
 				pParseProperty(*tag, property);
 				
@@ -233,7 +233,7 @@ void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, i
 			
 		}else if(tagName == "property"){
 			try{
-				const igdeGDProperty::Ref property(igdeGDProperty::Ref::NewWith(
+				const igdeGDProperty::Ref property(igdeGDProperty::Ref::New(
 					GetAttributeString(*tag, "name")));
 				pParseProperty(*tag, property);
 				
@@ -249,7 +249,7 @@ void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, i
 }
 
 void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDefinition &gamedef){
-	const igdeGDClass::Ref gdClass(igdeGDClass::Ref::NewWith(GetAttributeString(root, "name")));
+	const igdeGDClass::Ref gdClass(igdeGDClass::Ref::New(GetAttributeString(root, "name")));
 	decStringDictionary propertyValues;
 	const char *scaleMode;
 	int i;
@@ -272,7 +272,7 @@ void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDe
 			
 		}else if(tagName == "property"){
 			try{
-				const igdeGDProperty::Ref property(igdeGDProperty::Ref::NewWith(
+				const igdeGDProperty::Ref property(igdeGDProperty::Ref::New(
 					GetAttributeString(*tag, "name")));
 				pParseProperty(*tag, property);
 				
@@ -287,7 +287,7 @@ void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDe
 			
 		}else if(tagName == "textureProperty"){
 			try{
-				const igdeGDProperty::Ref property(igdeGDProperty::Ref::NewWith(
+				const igdeGDProperty::Ref property(igdeGDProperty::Ref::New(
 					GetAttributeString(*tag, "name")));
 				pParseProperty(*tag, property);
 				
@@ -435,7 +435,7 @@ void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDe
 
 void igdeXMLGameDefinition::pParseClassComponent(const decXmlElementTag &root, igdeGDClass &gdclass){
 	const int elementCount = root.GetElementCount();
-	const igdeGDCComponent::Ref component(igdeGDCComponent::Ref::NewWith());
+	const igdeGDCComponent::Ref component(igdeGDCComponent::Ref::New());
 	const char *value;
 	int e;
 	
@@ -578,7 +578,7 @@ void igdeXMLGameDefinition::pParseClassComponent(const decXmlElementTag &root, i
 }
 
 void igdeXMLGameDefinition::pParseClassBillboard(const decXmlElementTag &root, igdeGDClass &gdclass){
-	const igdeGDCBillboard::Ref billboard(igdeGDCBillboard::Ref::NewWith());
+	const igdeGDCBillboard::Ref billboard(igdeGDCBillboard::Ref::New());
 	const int elementCount = root.GetElementCount();
 	const char *value;
 	int i;
@@ -671,7 +671,7 @@ void igdeXMLGameDefinition::pParseClassBillboard(const decXmlElementTag &root, i
 }
 
 void igdeXMLGameDefinition::pParseClassInherit(const decXmlElementTag &root, igdeGDClass &gdclass){
-	const igdeGDClassInherit::Ref inherit(igdeGDClassInherit::Ref::NewWith(
+	const igdeGDClassInherit::Ref inherit(igdeGDClassInherit::Ref::New(
 		GetAttributeString(root, "name")));
 	
 	const int count = root.GetElementCount();
@@ -697,7 +697,7 @@ void igdeXMLGameDefinition::pParseClassInherit(const decXmlElementTag &root, igd
 
 void igdeXMLGameDefinition::pParseClassComponentTexture(const decXmlElementTag &root,
 igdeGDClass&, igdeGDCComponent &gdccomponent){
-	const igdeGDCCTexture::Ref texture(igdeGDCCTexture::Ref::NewWith());
+	const igdeGDCCTexture::Ref texture(igdeGDCCTexture::Ref::New());
 	const int elementCount = root.GetElementCount();
 	decStringDictionary properties;
 	int e;
@@ -750,7 +750,7 @@ igdeGDClass&, igdeGDCComponent &gdccomponent){
 }
 
 void igdeXMLGameDefinition::pParseClassLight(const decXmlElementTag &root, igdeGDClass &gdclass){
-	const igdeGDCLight::Ref gdcLight(igdeGDCLight::Ref::NewWith());
+	const igdeGDCLight::Ref gdcLight(igdeGDCLight::Ref::New());
 	const char *value;
 	int i;
 	
@@ -948,7 +948,7 @@ void igdeXMLGameDefinition::pParseClassLight(const decXmlElementTag &root, igdeG
 
 void igdeXMLGameDefinition::pParseClassSnapPoint(const decXmlElementTag &root,
 igdeGDClass &gdclass){
-	const igdeGDCSnapPoint::Ref snappoint(igdeGDCSnapPoint::Ref::NewWith());
+	const igdeGDCSnapPoint::Ref snappoint(igdeGDCSnapPoint::Ref::New());
 	const int count = root.GetElementCount();
 	int i;
 	
@@ -987,7 +987,7 @@ igdeGDClass &gdclass){
 }
 
 void igdeXMLGameDefinition::pParseClassParticleEmitter(const decXmlElementTag &root, igdeGDClass &gdclass){
-	const igdeGDCParticleEmitter::Ref emitter(igdeGDCParticleEmitter::Ref::NewWith());
+	const igdeGDCParticleEmitter::Ref emitter(igdeGDCParticleEmitter::Ref::New());
 	const int elementCount = root.GetElementCount();
 	int e;
 	
@@ -1055,7 +1055,7 @@ void igdeXMLGameDefinition::pParseClassParticleEmitter(const decXmlElementTag &r
 }
 
 void igdeXMLGameDefinition::pParseClassForceField(const decXmlElementTag &root, igdeGDClass &gdclass){
-	const igdeGDCForceField::Ref field(igdeGDCForceField::Ref::NewWith());
+	const igdeGDCForceField::Ref field(igdeGDCForceField::Ref::New());
 	const int elementCount = root.GetElementCount();
 	igdeCodecPropertyString codec;
 	int e;
@@ -1216,7 +1216,7 @@ void igdeXMLGameDefinition::pParseClassForceField(const decXmlElementTag &root, 
 }
 
 void igdeXMLGameDefinition::pParseClassEnvMapProbe(const decXmlElementTag &root, igdeGDClass &gdclass){
-	const igdeGDCEnvMapProbe::Ref envMapProbe(igdeGDCEnvMapProbe::Ref::NewWith());
+	const igdeGDCEnvMapProbe::Ref envMapProbe(igdeGDCEnvMapProbe::Ref::New());
 	const int elementCount = root.GetElementCount();
 	igdeCodecPropertyString codec;
 	decShapeList shapeList;
@@ -1310,7 +1310,7 @@ void igdeXMLGameDefinition::pParseClassEnvMapProbe(const decXmlElementTag &root,
 }
 
 void igdeXMLGameDefinition::pParseClassSpeaker(const decXmlElementTag &root, igdeGDClass &gdclass){
-	const igdeGDCSpeaker::Ref gdcSpeaker(igdeGDCSpeaker::Ref::NewWith());
+	const igdeGDCSpeaker::Ref gdcSpeaker(igdeGDCSpeaker::Ref::New());
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -1416,7 +1416,7 @@ void igdeXMLGameDefinition::pParseClassSpeaker(const decXmlElementTag &root, igd
 }
 
 void igdeXMLGameDefinition::pParseClassNavigationSpace(const decXmlElementTag &root, igdeGDClass &gdclass){
-	const igdeGDCNavigationSpace::Ref gdcNavSpace(igdeGDCNavigationSpace::Ref::NewWith());
+	const igdeGDCNavigationSpace::Ref gdcNavSpace(igdeGDCNavigationSpace::Ref::New());
 	igdeCodecPropertyString codec;
 	decShapeList shapeList;
 	int i;
@@ -1517,7 +1517,7 @@ void igdeXMLGameDefinition::pParseClassNavigationSpace(const decXmlElementTag &r
 }
 
 void igdeXMLGameDefinition::pParseClassNavigationBlocker(const decXmlElementTag &root, igdeGDClass &gdclass){
-	const igdeGDCNavigationBlocker::Ref gdcNavBlocker(igdeGDCNavigationBlocker::Ref::NewWith());
+	const igdeGDCNavigationBlocker::Ref gdcNavBlocker(igdeGDCNavigationBlocker::Ref::New());
 	igdeCodecPropertyString codec;
 	decShapeList shapeList;
 	int i;
@@ -1611,7 +1611,7 @@ void igdeXMLGameDefinition::pParseClassNavigationBlocker(const decXmlElementTag 
 }
 
 void igdeXMLGameDefinition::pParseClassWorld(const decXmlElementTag &root, igdeGDClass &gdclass){
-	const igdeGDCWorld::Ref gdcWorld(igdeGDCWorld::Ref::NewWith());
+	const igdeGDCWorld::Ref gdcWorld(igdeGDCWorld::Ref::New());
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -1659,7 +1659,7 @@ void igdeXMLGameDefinition::pParseClassWorld(const decXmlElementTag &root, igdeG
 }
 
 void igdeXMLGameDefinition::pParseClassTexture(const decXmlElementTag &root, igdeGDClass &gdclass){
-	const igdeGDCCTexture::Ref texture(igdeGDCCTexture::Ref::NewWith());
+	const igdeGDCCTexture::Ref texture(igdeGDCCTexture::Ref::New());
 	const int elementCount = root.GetElementCount();
 	decStringDictionary properties;
 	int i;
@@ -1989,7 +1989,7 @@ void igdeXMLGameDefinition::pParseParticleEmitter(const decXmlElementTag &root, 
 		LogErrorGenericProblemValue(root, name, "A particle emitter with this name exists already.");
 	}
 	
-	const igdeGDParticleEmitter::Ref emitter(igdeGDParticleEmitter::Ref::NewWith(path, name));
+	const igdeGDParticleEmitter::Ref emitter(igdeGDParticleEmitter::Ref::New(path, name));
 	for(e=0; e<elementCount; e++){
 		const decXmlElementTag * const tag = root.GetElementIfTag(e);
 		if(!tag){
@@ -2121,7 +2121,7 @@ void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefi
 		LogErrorGenericProblemValue(root, strName, "A sky with this name exists already.");
 	}
 	
-	const igdeGDSky::Ref sky(igdeGDSky::Ref::NewWith(strPath, strName));
+	const igdeGDSky::Ref sky(igdeGDSky::Ref::New(strPath, strName));
 	skyManager.AddSky(sky);
 	
 	// now we read all the other tags.
@@ -2145,7 +2145,7 @@ void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefi
 			sky->SetCategory(GetCDataString(*tag));
 			
 		}else if(tagName == "controller"){
-			sky->AddController(igdeGDSkyController::Ref::NewWith(
+			sky->AddController(igdeGDSkyController::Ref::New(
 				GetAttributeString(*tag, "name"), GetCDataFloat(*tag)));
 			
 		}else{

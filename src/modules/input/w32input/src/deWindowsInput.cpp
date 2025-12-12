@@ -185,7 +185,7 @@ int deWindowsInput::GetDeviceCount(){
 }
 
 deInputDevice::Ref deWindowsInput::GetDeviceAt(int index){
-	const deInputDevice::Ref device(deInputDevice::Ref::NewWith());
+	const deInputDevice::Ref device(deInputDevice::Ref::New());
 	pDevices->GetAt(index)->GetInfo(device);
 	return device;
 }
@@ -846,6 +846,6 @@ Supports Mouse and Keyboard for the time beeing.");
 };
 
 deTObjectReference<deInternalModule> dewiRegisterInternalModule(deModuleSystem *system){
-	return dewiModuleInternal::Ref::NewWith(system);
+	return dewiModuleInternal::Ref::New(system);
 }
 #endif

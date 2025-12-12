@@ -43,7 +43,7 @@
 deoalSound::deoalSound(deAudioOpenAL &oal, deSound &sound) :
 pOal(oal),
 pSound(sound),
-pASound(deoalASound::Ref::NewWith(oal.GetAudioThread(), sound)){
+pASound(deoalASound::Ref::New(oal.GetAudioThread(), sound)){
 }
 
 deoalSound::~deoalSound(){

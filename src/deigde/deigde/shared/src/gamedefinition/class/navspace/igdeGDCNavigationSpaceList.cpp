@@ -105,7 +105,7 @@ void igdeGDCNavigationSpaceList::SetToDeepCopyFrom(const igdeGDCNavigationSpaceL
 	int i;
 	
 	for(i=0; i<count; i++){
-		Add(igdeGDCNavigationSpace::Ref::NewWith(*list.GetAt(i)));
+		Add(igdeGDCNavigationSpace::Ref::New(*list.GetAt(i)));
 	}
 }
 

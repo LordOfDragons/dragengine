@@ -117,10 +117,7 @@ scons -h
    - Use `A::Ref` typedef smart pointers for storing references
       - If class is missing public Ref typedef add it
    - For functions creating new objects, return `A::Ref` smart pointers
-   - Create objects of type `A` for variable with type `A::Ref` using `A::Ref::NewWith(...)`
-   - Create objects of type `A` for variable with type `B::Ref` using `B::Ref(new A(...))`
-   - Assigning directly created objects of type `A` to variable of type `A::Ref` using `TakeOverNew(...)`
-   - Assigning directly created objects of type `A` to variable of type `B::Ref` using `TakeOver(new A(...))`
+   - Create objects of type `A` using `A::Ref::New(...)`
 
 9. **Member Ordering**:
    - First public declarations like typedefs, enums, inner classes or constants

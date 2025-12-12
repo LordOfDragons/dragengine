@@ -910,6 +910,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deanimRegisterInternalModule(deModuleSystem *system){
-	return deanimModuleInternal::Ref::NewWith(system);
+	return deanimModuleInternal::Ref::New(system);
 }
 #endif

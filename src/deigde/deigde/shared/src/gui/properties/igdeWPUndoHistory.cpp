@@ -58,19 +58,19 @@ pUndoSystem(NULL)
 	igdeUIHelper &helper = environment.GetUIHelperProperties();
 	
 	// group box
-	igdeGroupBox::Ref groupBoxFrame(igdeGroupBox::Ref::NewWith(environment, "Undo History:"));
+	igdeGroupBox::Ref groupBoxFrame(igdeGroupBox::Ref::New(environment, "Undo History:"));
 	groupBoxFrame->SetStretchLast(true);
 	AddChild(groupBoxFrame);
 	
-	igdeContainerBorder::Ref groupBox(igdeContainerBorder::Ref::NewWith(environment));
+	igdeContainerBorder::Ref groupBox(igdeContainerBorder::Ref::New(environment));
 	groupBoxFrame->AddChild(groupBox);
 	
 	// buttons
-	igdeContainerBox::Ref buttons(igdeContainerBox::Ref::NewWith(environment, igdeContainerBox::eaY));
+	igdeContainerBox::Ref buttons(igdeContainerBox::Ref::New(environment, igdeContainerBox::eaY));
 	groupBox->AddChild(buttons, igdeContainerBorder::eaTop);
 	
 	// button row 1
-	igdeContainerBox::Ref buttonLine(igdeContainerBox::Ref::NewWith(
+	igdeContainerBox::Ref buttonLine(igdeContainerBox::Ref::New(
 		environment, igdeContainerBox::eaX));
 	buttons->AddChild(buttonLine);
 	

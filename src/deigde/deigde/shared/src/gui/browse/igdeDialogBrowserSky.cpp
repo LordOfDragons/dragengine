@@ -79,7 +79,7 @@ void igdeDialogBrowserSky::SetSelectedSky(igdeGDSky *gdSky){
 
 
 bool igdeDialogBrowserSky::SelectSky(igdeWidget *owner, igdeGDSky* &sky, const char *title){
-	igdeDialogBrowserSky::Ref dialog(igdeDialogBrowserSky::Ref::NewWith(
+	igdeDialogBrowserSky::Ref dialog(igdeDialogBrowserSky::Ref::New(
 		owner->GetEnvironment(), title));
 	if(sky){
 		dialog->SetSelectedSky(sky);

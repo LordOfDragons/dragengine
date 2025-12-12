@@ -169,11 +169,11 @@ void igdeEditorModuleDefinition::UnloadModule(){
 //////////////////////
 
 void igdeEditorModuleDefinition::pLoadFile(){
-	pParseFile(decDiskFileReader::Ref::NewWith(pFilePath));
+	pParseFile(decDiskFileReader::Ref::New(pFilePath));
 }
 
 void igdeEditorModuleDefinition::pParseFile(decBaseFileReader& reader){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	int i, j;
 	

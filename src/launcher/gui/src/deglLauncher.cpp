@@ -296,7 +296,7 @@ void deglLauncher::PulseChecking(){
 
 
 delGameIcon::Ref deglLauncher::CreateGameIcon(int size, const char* path){
-	return deglGameIcon::Ref::NewWith(size, path);
+	return deglGameIcon::Ref::New(size, path);
 }
 
 

@@ -204,14 +204,14 @@ pViewMode(evmPreview)
 		"Preview Mode", NULL, "Preview Mode"));
 	
 	
-	igdeContainerSplitted::Ref content(igdeContainerSplitted::Ref::NewWith(
+	igdeContainerSplitted::Ref content(igdeContainerSplitted::Ref::New(
 		environment, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(250)));
 	
 	// left side: category list with filter
-	igdeContainerFlow::Ref panelCategory(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref panelCategory(igdeContainerFlow::Ref::New(
 		environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 3));
 	
-	igdeContainerForm::Ref filterLine(igdeContainerForm::Ref::NewWith(environment));
+	igdeContainerForm::Ref filterLine(igdeContainerForm::Ref::New(environment));
 	helper.EditString(filterLine, "Filter:", "Show items containing filter case insensitive",
 		pEditFilter, new igdeDialogBrowser_TextFilter(*this));
 	panelCategory->AddChild(filterLine);
@@ -222,7 +222,7 @@ pViewMode(evmPreview)
 	content->AddChild(panelCategory, igdeContainerSplitted::eaSide);
 	
 	// right side: item list with information
-	igdeContainerFlow::Ref panelItems(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref panelItems(igdeContainerFlow::Ref::New(
 		environment, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 3));
 	
 	const igdeUIHelper::sColumnHeader headers[] = {
@@ -291,7 +291,7 @@ void igdeDialogBrowser::AddCategoryToList(igdeGDCategory *category, igdeTreeItem
 	const int categoryCount = category->GetCategoryCount();
 	int i;
 	
-	igdeTreeItem::Ref item(igdeTreeItem::Ref::NewWith(category->GetName(), category));
+	igdeTreeItem::Ref item(igdeTreeItem::Ref::New(category->GetName(), category));
 	pTreeCategories->AppendItem(parent, item);
 	
 	for(i=0; i<categoryCount; i++){
@@ -330,7 +330,7 @@ void igdeDialogBrowser::RebuildPISelectedItem(){
 	icon.TakeOver(new igdeIcon(*pvmgr.GetImageCreating(), iconSize, iconSize));
 	
 	const igdeBrowseItemGDPreviewListener::Ref listener(
-		igdeBrowseItemGDPreviewListener::Ref::NewWith(pListItems, item, iconSize));
+		igdeBrowseItemGDPreviewListener::Ref::New(pListItems, item, iconSize));
 	
 	item->SetIcon(icon);
 	pListItems->ItemChangedAt(pListItems->GetSelection());

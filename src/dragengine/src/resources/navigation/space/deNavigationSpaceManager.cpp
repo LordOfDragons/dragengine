@@ -66,7 +66,7 @@ deNavigationSpace *deNavigationSpaceManager::GetRootNavigationSpace() const{
 }
 
 deNavigationSpace::Ref deNavigationSpaceManager::CreateNavigationSpace(){
-	const deNavigationSpace::Ref navspace(deNavigationSpace::Ref::NewWith(this));
+	const deNavigationSpace::Ref navspace(deNavigationSpace::Ref::New(this));
 	GetAISystem()->LoadNavigationSpace(navspace);
 	pNavSpaces.Add(navspace);
 	return navspace;

@@ -67,7 +67,7 @@ deAnimator *deAnimatorManager::GetRootAnimator() const{
 }
 
 deAnimator::Ref deAnimatorManager::CreateAnimator(){
-	const deAnimator::Ref animator(deAnimator::Ref::NewWith(this));
+	const deAnimator::Ref animator(deAnimator::Ref::New(this));
 	GetAnimatorSystem()->LoadAnimator(animator);
 	pAnimators.Add(animator);
 	return animator;

@@ -93,7 +93,7 @@ deadArchiveDirectory *deadArchiveDirectory::GetOrAddDirectoryNamed(const char *f
 		return findDirectory;
 	}
 	
-	const deadArchiveDirectory::Ref directory(deadArchiveDirectory::Ref::NewWith(pModule, filename));
+	const deadArchiveDirectory::Ref directory(deadArchiveDirectory::Ref::New(pModule, filename));
 	pDirectories.Add(directory);
 	return directory;
 }

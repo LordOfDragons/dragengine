@@ -174,6 +174,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deaiRegisterInternalModule(deModuleSystem *system){
-	return deaiModuleInternal::Ref::NewWith(system);
+	return deaiModuleInternal::Ref::New(system);
 }
 #endif

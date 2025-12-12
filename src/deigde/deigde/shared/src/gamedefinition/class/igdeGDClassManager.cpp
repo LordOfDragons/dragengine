@@ -257,7 +257,7 @@ void igdeGDClassManager::UpdateWithElementClasses(const igdeGDClassManager &clas
 				gdclassExisting->RemoveAllInheritClasses();
 				inheritClassCount = eclass->GetInheritClassCount();
 				for(j=0; j<inheritClassCount; j++){
-					gdclassExisting->AddInheritClass(igdeGDClassInherit::Ref::NewWith(
+					gdclassExisting->AddInheritClass(igdeGDClassInherit::Ref::New(
 						*eclass->GetInheritClassAt(j)));
 				}
 				gdclassExisting->ResolveInheritClasses(*this);

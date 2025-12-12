@@ -58,7 +58,7 @@ pMaxMaterialCount(pMaxMaterialsPerRow * pMaxRowsPerImage),
 pTexDiffuse(NULL),
 pTexReflectivity(NULL),
 pTexEmissivity(NULL),
-pFBOMaterial(deoglFramebuffer::Ref::NewWith(renderThread, false))
+pFBOMaterial(deoglFramebuffer::Ref::New(renderThread, false))
 {
 	try{
 		pTUCs.Add(NULL); // index 0 is fallback

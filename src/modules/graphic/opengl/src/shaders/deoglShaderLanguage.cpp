@@ -267,7 +267,7 @@ deoglShaderCompileListener *listener){
 	if(pCompilerThreadCount > 0 /*|| pglMaxShaderCompilerThreads*/){
 		{
 		const deMutexGuard guard(pMutexTasks);
-		pLoadTasksPending.Add(deoglShaderLoadTask::Ref::NewWith(program, listener));
+		pLoadTasksPending.Add(deoglShaderLoadTask::Ref::New(program, listener));
 		}
 		pSemaphoreNewTasks.Signal();
 		
@@ -476,7 +476,7 @@ void deoglShaderLanguage::FinishTask(deoglShaderLoadTask::Ref &task){
 			pCompileTotals.units++;
 			pCompileTotals.stage[i]++;
 			
-			pUnitTasksPending.Add(deoglShaderCompileUnitTask::Ref::NewWith(u));
+			pUnitTasksPending.Add(deoglShaderCompileUnitTask::Ref::New(u));
 			
 			// this method can be called from the resource loader thread instead of the render
 			// thread. for this reason CompileShaderUnit() can not be called here. the task
@@ -489,7 +489,7 @@ void deoglShaderLanguage::FinishTask(deoglShaderLoadTask::Ref &task){
 		}
 		
 		pCompileTotals.shaders++;
-		pTasksPending.Add(deoglShaderCompileTask::Ref::NewWith(program, task->TakeOutListener()));
+		pTasksPending.Add(deoglShaderCompileTask::Ref::New(program, task->TakeOutListener()));
 	}
 	
 	DEASSERT_TRUE(pCompilingTaskCount > 0)
@@ -598,11 +598,11 @@ void deoglShaderLanguage::Update(){
 					pCompileTotals.units++;
 					pCompileTotals.stage[j]++;
 					
-					pUnitTasksPending.Add(deoglShaderCompileUnitTask::Ref::NewWith(u));
+					pUnitTasksPending.Add(deoglShaderCompileUnitTask::Ref::New(u));
 				}
 				
 				pCompileTotals.shaders++;
-				pTasksPending.Add(deoglShaderCompileTask::Ref::NewWith(program, task.TakeOutListener()));
+				pTasksPending.Add(deoglShaderCompileTask::Ref::New(program, task.TakeOutListener()));
 			}
 			
 		}catch(const deException &e){

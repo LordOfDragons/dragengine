@@ -71,7 +71,7 @@ const char *igdeWindowLogger::styleError = "error";
 
 igdeWindowLogger::igdeWindowLogger(igdeEnvironment &environment) :
 igdeWindow(environment, "Logging History"),
-pListener(igdeWindowLoggerListener::Ref::NewWith(*this)),
+pListener(igdeWindowLoggerListener::Ref::New(*this)),
 pPendingAddedLogs(0),
 pPendingClearLogs(false)
 {
@@ -81,7 +81,7 @@ pPendingClearLogs(false)
 	
 	pEditLogs.TakeOver(new igdeTextArea(environment, 60, 10, false));
 	
-	igdeTextStyle::Ref style(igdeTextStyle::Ref::NewWith(styleWarning));
+	igdeTextStyle::Ref style(igdeTextStyle::Ref::New(styleWarning));
 	style->SetColor(decColor(0.0f, 0.0f, 0.0f));
 	style->SetBgColor(decColor(1.0f, 0.815f, 0.0f));
 	pEditLogs->AddStyle(style);

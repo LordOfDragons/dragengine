@@ -79,7 +79,7 @@ deoglSharedSPBRTIGroup::Ref deoglSharedSPBRTIGroupList::GetOrAddWith(deoglShared
 }
 
 deoglSharedSPBRTIGroup::Ref deoglSharedSPBRTIGroupList::AddWith(deoglSharedSPB &sharedSPB, int textureCount){
-	const deoglSharedSPBRTIGroup::Ref group(deoglSharedSPBRTIGroup::Ref::NewWith(this, sharedSPB, textureCount));
+	const deoglSharedSPBRTIGroup::Ref group(deoglSharedSPBRTIGroup::Ref::New(this, sharedSPB, textureCount));
 	pGroups.Add(group);
 	return group;
 }

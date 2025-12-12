@@ -487,7 +487,7 @@ void deNetworkBasic::pReceiveDatagrams(){
 	
 	while(bnSocket){
 		while(bnSocket->ReceiveDatagram(*pDatagram, pAddressReceive)){
-			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::NewWith(pDatagram));
+			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::New(pDatagram));
 			
 			debnConnection * const connection = pFindConnection(bnSocket, pAddressReceive);
 			const eCommandCodes command = (eCommandCodes)reader->ReadByte();
@@ -595,6 +595,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> denbRegisterInternalModule(deModuleSystem *system){
-	return denbModuleInternal::Ref::NewWith(system);
+	return denbModuleInternal::Ref::New(system);
 }
 #endif

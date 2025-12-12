@@ -256,7 +256,7 @@ void igdeGDPreviewManager::CreatePreviewObjectClass(igdeGDClass *gdclass, igdeGD
 		}
 	}
 	
-	const igdeGDPCObjectClass::Ref creator(igdeGDPCObjectClass::Ref::NewWith(
+	const igdeGDPCObjectClass::Ref creator(igdeGDPCObjectClass::Ref::New(
 		pEnvironment, gdclass, decPoint(pImageSize, pImageSize)));
 	creator->AddListener(listener);
 	creator->BeginCreation();
@@ -307,7 +307,7 @@ void igdeGDPreviewManager::CreatePreviewSkin(igdeGDSkin *gdskin, igdeGDPreviewLi
 		}
 	}
 	
-	const igdeGDPCSkin::Ref creator(igdeGDPCSkin::Ref::NewWith(
+	const igdeGDPCSkin::Ref creator(igdeGDPCSkin::Ref::New(
 		pEnvironment, gdskin, decPoint(pImageSize, pImageSize)));
 	creator->AddListener(listener);
 	creator->BeginCreation();
@@ -358,7 +358,7 @@ void igdeGDPreviewManager::CreatePreviewSky(igdeGDSky *gdsky, igdeGDPreviewListe
 		}
 	}
 	
-	const igdeGDPCSky::Ref creator(igdeGDPCSky::Ref::NewWith(
+	const igdeGDPCSky::Ref creator(igdeGDPCSky::Ref::New(
 		pEnvironment, gdsky, decPoint(pImageSize, pImageSize)));
 	creator->AddListener(listener);
 	creator->BeginCreation();

@@ -46,7 +46,7 @@
 deoglSky::deoglSky(deGraphicOpenGl &ogl, const deSky &sky) :
 pOgl(ogl),
 pSky(sky),
-pRSky(deoglRSky::Ref::NewWith(pOgl.GetRenderThread())),
+pRSky(deoglRSky::Ref::New(pOgl.GetRenderThread())),
 pDirtyParameters(true),
 pUpdateTracker(0){
 }

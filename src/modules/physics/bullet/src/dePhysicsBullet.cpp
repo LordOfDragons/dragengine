@@ -351,6 +351,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> depbRegisterInternalModule(deModuleSystem *system){
-	return depbModuleInternal::Ref::NewWith(system);
+	return depbModuleInternal::Ref::New(system);
 }
 #endif

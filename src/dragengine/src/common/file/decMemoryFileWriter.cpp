@@ -128,5 +128,5 @@ void decMemoryFileWriter::Write(const void *buffer, int size){
 }
 
 decBaseFileWriter::Ref decMemoryFileWriter::Duplicate(){
-	return decMemoryFileWriter::Ref::NewWith(*this);
+	return decMemoryFileWriter::Ref::New(*this);
 }

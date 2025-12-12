@@ -122,7 +122,7 @@ void fbxSkinModule::SaveSkin(decBaseFileWriter&, const deSkin &){
 
 void fbxSkinModule::pLoadSkin(deSkin &skin, fbxScene &scene){
 	fbxNode &nodeGeometry = *scene.FirstNodeNamed("Geometry");
-	const fbxModel::Ref model(fbxModel::Ref::NewWith(scene, nodeGeometry));
+	const fbxModel::Ref model(fbxModel::Ref::New(scene, nodeGeometry));
 	
 	// find connections involving model node
 	const int64_t idModel = model->GetModelID();
@@ -141,7 +141,7 @@ void fbxSkinModule::pLoadSkin(deSkin &skin, fbxScene &scene){
 		
 		fbxNode &node = *scene.NodeWithID(connection.OtherID(idModel));
 		if(node.GetName() == "Material"){
-			pLoadMaterial(skin, scene, fbxMaterial::Ref::NewWith(scene, node));
+			pLoadMaterial(skin, scene, fbxMaterial::Ref::New(scene, node));
 		}
 	}
 }
@@ -412,6 +412,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> fbxSkinRegisterInternalModule(deModuleSystem *system){
-	return fbxSkinModuleInternal::Ref::NewWith(system);
+	return fbxSkinModuleInternal::Ref::New(system);
 }
 #endif

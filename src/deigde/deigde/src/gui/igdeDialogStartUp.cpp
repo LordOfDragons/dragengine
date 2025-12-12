@@ -155,7 +155,7 @@ pWindowMain(windowMain)
 	
 	pUpdateRecentProjectList();
 	
-	AddContent(pListRecentProjects, igdeLabel::Ref::NewWith(env, "Recently used Game Projects"), buttonBar);
+	AddContent(pListRecentProjects, igdeLabel::Ref::New(env, "Recently used Game Projects"), buttonBar);
 }
 
 igdeDialogStartUp::~igdeDialogStartUp(){
@@ -198,7 +198,7 @@ void igdeDialogStartUp::LoadProjectFromFile(){
 }
 
 void igdeDialogStartUp::NewGameProject(){
-	igdeDialogNewGameProject::Ref dialog(igdeDialogNewGameProject::Ref::NewWith(pWindowMain));
+	igdeDialogNewGameProject::Ref dialog(igdeDialogNewGameProject::Ref::New(pWindowMain));
 	if(!dialog->Run(this)){
 		return;
 	}

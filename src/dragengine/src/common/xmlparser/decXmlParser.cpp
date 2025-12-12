@@ -1054,7 +1054,7 @@ void decXmlParser::pAddCharacterData(decXmlContainer *container, const char *tex
 		}
 	}
 	
-	const decXmlCharacterData::Ref cdata(decXmlCharacterData::Ref::NewWith(text));
+	const decXmlCharacterData::Ref cdata(decXmlCharacterData::Ref::New(text));
 	cdata->SetLineNumber(line);
 	cdata->SetPositionNumber(pos);
 	container->AddElement(cdata);
@@ -1072,7 +1072,7 @@ void decXmlParser::pAddCharacterData(decXmlContainer *container, char character,
 	}
 	
 	char buffer[2] = {character, '\0'};
-	const decXmlCharacterData::Ref cdata(decXmlCharacterData::Ref::NewWith((const char *)&buffer));
+	const decXmlCharacterData::Ref cdata(decXmlCharacterData::Ref::New((const char *)&buffer));
 	cdata->SetLineNumber(line);
 	cdata->SetPositionNumber(pos);
 	container->AddElement(cdata);

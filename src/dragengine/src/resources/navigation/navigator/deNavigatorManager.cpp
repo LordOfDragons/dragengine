@@ -66,7 +66,7 @@ deNavigator *deNavigatorManager::GetRootNavigator() const{
 }
 
 deNavigator::Ref deNavigatorManager::CreateNavigator(){
-	const deNavigator::Ref navigator(deNavigator::Ref::NewWith(this));
+	const deNavigator::Ref navigator(deNavigator::Ref::New(this));
 	GetAISystem()->LoadNavigator(navigator);
 	pNavigators.Add(navigator);
 	return navigator;

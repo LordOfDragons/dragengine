@@ -187,7 +187,7 @@ const decPoint &fromCoordinates, const decPoint &toSector, const decPoint &toCoo
 
 
 void deoglHeightTerrain::SectorAdded(deHeightTerrainSector *sector){
-	pSectors.Add(deoglHTSector::Ref::NewWith(*this, *sector));
+	pSectors.Add(deoglHTSector::Ref::New(*this, *sector));
 	pDirtySectors = true;
 }
 

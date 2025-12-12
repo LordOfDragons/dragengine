@@ -192,7 +192,7 @@ int deAndroidInput::GetDeviceCount(){
 }
 
 deInputDevice::Ref deAndroidInput::GetDeviceAt(int index){
-	const deInputDevice::Ref device(deInputDevice::Ref::NewWith());
+	const deInputDevice::Ref device(deInputDevice::Ref::New());
 	pDevices->GetAt(index)->GetInfo(device);
 	return device;
 }
@@ -799,6 +799,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deainpRegisterInternalModule(deModuleSystem *system){
-	return deainpModuleInternal::Ref::NewWith(system);
+	return deainpModuleInternal::Ref::New(system);
 }
 #endif

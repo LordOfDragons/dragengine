@@ -237,6 +237,6 @@ Allows the user to restart failed systems and to change modules.");
 };
 
 deTObjectReference<deInternalModule> decrbRegisterInternalModule(deModuleSystem *system){
-	return decrbModuleInternal::Ref::NewWith(system);
+	return decrbModuleInternal::Ref::New(system);
 }
 #endif

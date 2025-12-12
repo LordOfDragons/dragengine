@@ -87,7 +87,7 @@ void igdeActionExternOpen::OnAction(){
 	}
 	
 	if(pEnsureExists){
-		deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/"),
+		deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/"),
 			decPath::CreatePathNative(pPath))->EnsureDiskDirectoryExists();
 	}
 	

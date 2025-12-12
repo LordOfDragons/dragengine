@@ -108,7 +108,7 @@ deSynthesizer &synthesizer, decBaseFileReader &reader){
 		basePath.SetFromUnix("/");
 	}
 	
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -167,7 +167,7 @@ const char *basePath, deSynthesizer &synthesizer){
 }
 
 void igdeLoadSynthesizer::pReadController(const decXmlElementTag &root, deSynthesizer &synthesizer){
-	deSynthesizerController::Ref controller(deSynthesizerController::Ref::NewWith());
+	deSynthesizerController::Ref controller(deSynthesizerController::Ref::New());
 	
 	int i;
 	for(i=0; i<root.GetElementCount(); i++){
@@ -193,7 +193,7 @@ void igdeLoadSynthesizer::pReadController(const decXmlElementTag &root, deSynthe
 }
 
 void igdeLoadSynthesizer::pReadLink(const decXmlElementTag &root, deSynthesizer &synthesizer){
-	const deSynthesizerLink::Ref link(deSynthesizerLink::Ref::NewWith());
+	const deSynthesizerLink::Ref link(deSynthesizerLink::Ref::New());
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -243,7 +243,7 @@ const char *basePath, deSynthesizer &synthesizer){
 
 deSynthesizerSource::Ref igdeLoadSynthesizer::pReadSourceSound(const decXmlElementTag &root,
 const char *basePath, deSynthesizer &synthesizer){
-	const deSynthesizerSourceSound::Ref source(deSynthesizerSourceSound::Ref::NewWith());
+	const deSynthesizerSourceSound::Ref source(deSynthesizerSourceSound::Ref::New());
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -309,7 +309,7 @@ const char *basePath, deSynthesizer &synthesizer){
 
 deSynthesizerSource::Ref igdeLoadSynthesizer::pReadSourceWave(const decXmlElementTag &root,
 deSynthesizer &synthesizer){
-	const deSynthesizerSourceWave::Ref source(deSynthesizerSourceWave::Ref::NewWith());
+	const deSynthesizerSourceWave::Ref source(deSynthesizerSourceWave::Ref::New());
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -375,7 +375,7 @@ deSynthesizer &synthesizer){
 
 deSynthesizerSource::Ref igdeLoadSynthesizer::pReadSourceChain(const decXmlElementTag &root,
 const char *basePath, deSynthesizer &synthesizer){
-	const deSynthesizerSourceChain::Ref source(deSynthesizerSourceChain::Ref::NewWith());
+	const deSynthesizerSourceChain::Ref source(deSynthesizerSourceChain::Ref::New());
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -441,7 +441,7 @@ const char *basePath, deSynthesizer &synthesizer){
 
 deSynthesizerSource::Ref igdeLoadSynthesizer::pReadSourceGroup(const decXmlElementTag &root,
 const char *basePath, deSynthesizer &synthesizer){
-	const deSynthesizerSourceGroup::Ref source(deSynthesizerSourceGroup::Ref::NewWith());
+	const deSynthesizerSourceGroup::Ref source(deSynthesizerSourceGroup::Ref::New());
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -505,7 +505,7 @@ const char *basePath, deSynthesizer &synthesizer){
 
 deSynthesizerSource::Ref igdeLoadSynthesizer::pReadSourceSynthesizer(const decXmlElementTag &root,
 const char *basePath, deSynthesizer &synthesizer){
-	const deSynthesizerSourceSynthesizer::Ref source(deSynthesizerSourceSynthesizer::Ref::NewWith());
+	const deSynthesizerSourceSynthesizer::Ref source(deSynthesizerSourceSynthesizer::Ref::New());
 	const deEngine &engine = *synthesizer.GetEngine();
 	const deVirtualFileSystem &vfs = engine.GetVirtualFileSystem();
 	int i;
@@ -652,7 +652,7 @@ deSynthesizer &synthesizer){
 
 deSynthesizerEffect::Ref igdeLoadSynthesizer::pReadEffectStretch(const decXmlElementTag &root,
 deSynthesizer &synthesizer){
-	const deSynthesizerEffectStretch::Ref effect(deSynthesizerEffectStretch::Ref::NewWith());
+	const deSynthesizerEffectStretch::Ref effect(deSynthesizerEffectStretch::Ref::New());
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){

@@ -370,6 +370,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deJpegRegisterInternalModule(deModuleSystem *system){
-	return deJpegModuleInternal::Ref::NewWith(system);
+	return deJpegModuleInternal::Ref::New(system);
 }
 #endif

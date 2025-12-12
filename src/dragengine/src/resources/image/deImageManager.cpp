@@ -86,7 +86,7 @@ deImage *deImageManager::GetImageWith(deVirtualFileSystem *vfs, const char *file
 }
 
 deImage::Ref deImageManager::CreateImage(int width, int height, int depth, int componentCount, int bitCount){
-	const deImage::Ref image(deImage::Ref::NewWith(this, GetEngine()->GetVirtualFileSystem(),
+	const deImage::Ref image(deImage::Ref::New(this, GetEngine()->GetVirtualFileSystem(),
 		"", decDateTime::GetSystemTime(), width, height, depth, componentCount, bitCount));
 	GetGraphicSystem()->LoadImage(image);
 	pImages.Add(image);

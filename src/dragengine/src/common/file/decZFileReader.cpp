@@ -172,7 +172,7 @@ void decZFileReader::Read(void *buffer, int size){
 }
 
 decBaseFileReader::Ref decZFileReader::Duplicate(){
-	const decZFileReader::Ref reader(decZFileReader::Ref::NewWith(pReader, pPureMode, pPureLength));
+	const decZFileReader::Ref reader(decZFileReader::Ref::New(pReader, pPureMode, pPureLength));
 	reader->SetPosition(GetPosition());
 	return reader;
 }

@@ -68,7 +68,7 @@ deServer *deServerManager::GetRootServer() const{
 }
 
 deServer::Ref deServerManager::CreateServer(){
-	const deServer::Ref server(deServer::Ref::NewWith(this));
+	const deServer::Ref server(deServer::Ref::New(this));
 	GetNetworkSystem()->LoadServer(server);
 	GetScriptingSystem()->LoadServer(server);
 	pServers.Add(server);

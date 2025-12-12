@@ -70,7 +70,7 @@ deParticleEmitterInstance *deParticleEmitterInstanceManager::GetRootInstance() c
 }
 
 deParticleEmitterInstance::Ref deParticleEmitterInstanceManager::CreateInstance(){
-	const deParticleEmitterInstance::Ref instance(deParticleEmitterInstance::Ref::NewWith(this));
+	const deParticleEmitterInstance::Ref instance(deParticleEmitterInstance::Ref::New(this));
 	GetGraphicSystem()->LoadParticleEmitterInstance(instance);
 	GetPhysicsSystem()->LoadParticleEmitterInstance(instance);
 	GetScriptingSystem()->LoadParticleEmitterInstance(instance);

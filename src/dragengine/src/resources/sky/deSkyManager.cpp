@@ -54,7 +54,7 @@ deSky *deSkyManager::GetRootSky() const{
 }
 
 deSky::Ref deSkyManager::CreateSky(){
-	const deSky::Ref sky(deSky::Ref::NewWith(this));
+	const deSky::Ref sky(deSky::Ref::New(this));
 	GetGraphicSystem()->LoadSky(sky);
 	pSkies.Add(sky);
 	return sky;

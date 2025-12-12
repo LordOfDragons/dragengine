@@ -184,43 +184,43 @@ fbxProperty::Ref fbxProperty::Read(decBaseFileReader &reader){
 	
 	switch(typeCode){
 	case 'C':
-		return fbxPropertyBool::Ref::NewWith(reader);
+		return fbxPropertyBool::Ref::New(reader);
 		
 	case 'Y':
-		return fbxPropertyShort::Ref::NewWith(reader);
+		return fbxPropertyShort::Ref::New(reader);
 		
 	case 'I':
-		return fbxPropertyInteger::Ref::NewWith(reader);
+		return fbxPropertyInteger::Ref::New(reader);
 		
 	case 'L':
-		return fbxPropertyLong::Ref::NewWith(reader);
+		return fbxPropertyLong::Ref::New(reader);
 		
 	case 'F':
-		return fbxPropertyFloat::Ref::NewWith(reader);
+		return fbxPropertyFloat::Ref::New(reader);
 		
 	case 'D':
-		return fbxPropertyDouble::Ref::NewWith(reader);
+		return fbxPropertyDouble::Ref::New(reader);
 		
 	case 'b':
-		return fbxPropertyArrayBool::Ref::NewWith(reader);
+		return fbxPropertyArrayBool::Ref::New(reader);
 		
 	case 'i':
-		return fbxPropertyArrayInteger::Ref::NewWith(reader);
+		return fbxPropertyArrayInteger::Ref::New(reader);
 		
 	case 'l':
-		return fbxPropertyArrayLong::Ref::NewWith(reader);
+		return fbxPropertyArrayLong::Ref::New(reader);
 		
 	case 'f':
-		return fbxPropertyArrayFloat::Ref::NewWith(reader);
+		return fbxPropertyArrayFloat::Ref::New(reader);
 		
 	case 'd':
-		return fbxPropertyArrayDouble::Ref::NewWith(reader);
+		return fbxPropertyArrayDouble::Ref::New(reader);
 		
 	case 'S':
-		return fbxPropertyString::Ref::NewWith(reader);
+		return fbxPropertyString::Ref::New(reader);
 		
 	case 'R':
-		return fbxPropertyBinary::Ref::NewWith(reader);
+		return fbxPropertyBinary::Ref::New(reader);
 		
 	default:
 		DETHROW_INFO(deeInvalidFileFormat, "unknown property type code");

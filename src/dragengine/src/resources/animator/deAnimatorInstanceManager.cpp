@@ -65,7 +65,7 @@ deAnimatorInstance *deAnimatorInstanceManager::GetRootAnimatorInstance() const{
 }
 
 deAnimatorInstance::Ref deAnimatorInstanceManager::CreateAnimatorInstance(){
-	const deAnimatorInstance::Ref instance(deAnimatorInstance::Ref::NewWith(this));
+	const deAnimatorInstance::Ref instance(deAnimatorInstance::Ref::New(this));
 	GetAnimatorSystem()->LoadAnimatorInstance(instance);
 	pInstances.Add(instance);
 	return instance;

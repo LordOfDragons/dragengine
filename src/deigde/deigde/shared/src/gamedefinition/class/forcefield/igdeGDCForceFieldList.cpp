@@ -103,7 +103,7 @@ void igdeGDCForceFieldList::SetToDeepCopyFrom(const igdeGDCForceFieldList &list)
 	int i;
 	
 	for(i=0; i<count; i++){
-		Add(igdeGDCForceField::Ref::NewWith(*list.GetAt(i)));
+		Add(igdeGDCForceField::Ref::New(*list.GetAt(i)));
 	}
 }
 

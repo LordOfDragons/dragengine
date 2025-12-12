@@ -103,7 +103,7 @@ void igdeGDCNavigationBlockerList::SetToDeepCopyFrom(const igdeGDCNavigationBloc
 	int i;
 	
 	for(i=0; i<count; i++){
-		Add(igdeGDCNavigationBlocker::Ref::NewWith(*list.GetAt(i)));
+		Add(igdeGDCNavigationBlocker::Ref::New(*list.GetAt(i)));
 	}
 }
 

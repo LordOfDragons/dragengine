@@ -104,7 +104,7 @@ deRigModule::~deRigModule(){
 ///////////////////////
 
 void deRigModule::LoadRig(decBaseFileReader &file, deRig &rig){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetGameEngine()->GetLogger()).ParseXml(&file, xmlDoc);
 	
@@ -1587,6 +1587,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> dermRegisterInternalModule(deModuleSystem *system){
-	return dermModuleInternal::Ref::NewWith(system);
+	return dermModuleInternal::Ref::New(system);
 }
 #endif

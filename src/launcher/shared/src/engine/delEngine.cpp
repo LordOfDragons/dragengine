@@ -298,22 +298,22 @@ void delEngine::PutEngineIntoVFS(delEngineInstance &instance){
 		deVirtualFileSystem &vfs = *pLauncher.GetVFS();
 		
 		if(!pPathConfig.IsEmpty()){
-			vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/engine/config"),
+			vfs.AddContainer(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/engine/config"),
 				decPath::CreatePathNative(pPathConfig), false));
 		}
 		
 		if(!pPathShare.IsEmpty()){
-			vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/engine/share"),
+			vfs.AddContainer(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/engine/share"),
 				decPath::CreatePathNative(pPathShare), false));
 		}
 		
 		if(!pPathLib.IsEmpty()){
-			vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/engine/lib"),
+			vfs.AddContainer(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/engine/lib"),
 				decPath::CreatePathNative(pPathLib), false));
 		}
 		
 		if(!pPathCache.IsEmpty()){
-			vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/engine/cache"),
+			vfs.AddContainer(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/engine/cache"),
 				decPath::CreatePathNative(pPathCache), false));
 		}
 		
@@ -518,7 +518,7 @@ void delEngine::ReadDelgaGameDefs(delEngineInstance &instance, const char *filen
 	}
 	
 	delGameXML gameXML(pLauncher.GetLogger(), pLauncher.GetLogSource());
-	const decMemoryFile::Ref memoryFile(decMemoryFile::Ref::NewWith("DelgaGameDefinition"));
+	const decMemoryFile::Ref memoryFile(decMemoryFile::Ref::New("DelgaGameDefinition"));
 	delGame::Ref game;
 	int i;
 	
@@ -530,7 +530,7 @@ void delEngine::ReadDelgaGameDefs(delEngineInstance &instance, const char *filen
 		memcpy(memoryFile->GetPointer(), fileContent.GetString(), lenContent);
 		
 		game = pLauncher.CreateGame();
-		gameXML.ReadFromFile(decMemoryFileReader::Ref::NewWith(memoryFile), game);
+		gameXML.ReadFromFile(decMemoryFileReader::Ref::New(memoryFile), game);
 		
 		game->SetDefaultLogFile();
 		game->SetDelgaFile(filename);
@@ -589,7 +589,7 @@ void delEngine::ReadDelgaPatchDefs(delEngineInstance &instance, const char *file
 	}
 	
 	delPatchXML patchXML(pLauncher.GetLogger(), pLauncher.GetLogSource());
-	decMemoryFile::Ref memoryFile(decMemoryFile::Ref::NewWith("DelgaPatchDefinition"));
+	decMemoryFile::Ref memoryFile(decMemoryFile::Ref::New("DelgaPatchDefinition"));
 	delPatch::Ref patch;
 	int i;
 	
@@ -601,7 +601,7 @@ void delEngine::ReadDelgaPatchDefs(delEngineInstance &instance, const char *file
 		memcpy(memoryFile->GetPointer(), fileContent.GetString(), lenContent);
 		
 		patch.TakeOver(new delPatch);
-		patchXML.ReadFromFile(decMemoryFileReader::Ref::NewWith(memoryFile), patch);
+		patchXML.ReadFromFile(decMemoryFileReader::Ref::New(memoryFile), patch);
 		
 		patch->SetDelgaFile(filename);
 		
@@ -633,7 +633,7 @@ const deVFSContainer::Ref &container, const char *filename, delGameList &list){
 	}
 	
 	delGameXML gameXML(pLauncher.GetLogger(), pLauncher.GetLogSource());
-	const decMemoryFile::Ref memoryFile(decMemoryFile::Ref::NewWith("DelgaGameDefinition"));
+	const decMemoryFile::Ref memoryFile(decMemoryFile::Ref::New("DelgaGameDefinition"));
 	int i;
 	
 	for(i=0; i<count; i++){
@@ -643,8 +643,8 @@ const deVFSContainer::Ref &container, const char *filename, delGameList &list){
 		memoryFile->Resize(lenContent, false);
 		memcpy(memoryFile->GetPointer(), fileContent.GetString(), lenContent);
 		
-		const delGame::Ref game(delGame::Ref::New(pLauncher.CreateGame()));
-		gameXML.ReadFromFile(decMemoryFileReader::Ref::NewWith(memoryFile), game);
+		const delGame::Ref game(pLauncher.CreateGame());
+		gameXML.ReadFromFile(decMemoryFileReader::Ref::New(memoryFile), game);
 		
 		game->SetDefaultLogFile();
 		game->SetDelgaFile(filename);

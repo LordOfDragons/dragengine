@@ -65,7 +65,7 @@ deEffect *deEffectManager::GetRootEffect() const{
 }
 
 deEffectFilterKernel::Ref deEffectManager::CreateEffectFilterKernel(){
-	const deEffectFilterKernel::Ref effect(deEffectFilterKernel::Ref::NewWith(this));
+	const deEffectFilterKernel::Ref effect(deEffectFilterKernel::Ref::New(this));
 	GetGraphicSystem()->LoadEffect(effect);
 	//GetPhysicsSystem()->LoadEffect( effect );
 	pEffects.Add(effect);
@@ -73,21 +73,21 @@ deEffectFilterKernel::Ref deEffectManager::CreateEffectFilterKernel(){
 }
 
 deEffectOverlayImage::Ref deEffectManager::CreateEffectOverlayImage(){
-	const deEffectOverlayImage::Ref effect(deEffectOverlayImage::Ref::NewWith(this));
+	const deEffectOverlayImage::Ref effect(deEffectOverlayImage::Ref::New(this));
 	GetGraphicSystem()->LoadEffect(effect);
 	pEffects.Add(effect);
 	return effect;
 }
 
 deEffectColorMatrix::Ref deEffectManager::CreateEffectColorMatrix(){
-	const deEffectColorMatrix::Ref effect(deEffectColorMatrix::Ref::NewWith(this));
+	const deEffectColorMatrix::Ref effect(deEffectColorMatrix::Ref::New(this));
 	GetGraphicSystem()->LoadEffect(effect);
 	pEffects.Add(effect);
 	return effect;
 }
 
 deEffectDistortImage::Ref deEffectManager::CreateEffectDistortImage(){
-	const deEffectDistortImage::Ref effect(deEffectDistortImage::Ref::NewWith(this));
+	const deEffectDistortImage::Ref effect(deEffectDistortImage::Ref::New(this));
 	GetGraphicSystem()->LoadEffect(effect);
 	pEffects.Add(effect);
 	return effect;

@@ -198,7 +198,7 @@ int deXSystemInput::GetDeviceCount(){
 }
 
 deInputDevice::Ref deXSystemInput::GetDeviceAt(int index){
-	const deInputDevice::Ref device(deInputDevice::Ref::NewWith());
+	const deInputDevice::Ref device(deInputDevice::Ref::New());
 	pDevices->GetAt(index)->GetInfo(device);
 	return device;
 }
@@ -985,9 +985,9 @@ void deXSystemInput::pUpdateRawMouseInput(){
 }
 
 void deXSystemInput::pCreateParameters(){
-	pParameters.AddParameter(dexsiPRawMouseInput::Ref::NewWith(*this));
-	pParameters.AddParameter(dexsiPRawMouseInputSensivity::Ref::NewWith(*this));
-	pParameters.AddParameter(dexsiPLogLevel::Ref::NewWith(*this));
+	pParameters.AddParameter(dexsiPRawMouseInput::Ref::New(*this));
+	pParameters.AddParameter(dexsiPRawMouseInputSensivity::Ref::New(*this));
+	pParameters.AddParameter(dexsiPLogLevel::Ref::New(*this));
 }
 
 
@@ -1020,6 +1020,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> dexsiRegisterInternalModule(deModuleSystem *system){
-	return dexsiModuleInternal::Ref::NewWith(system);
+	return dexsiModuleInternal::Ref::New(system);
 }
 #endif

@@ -140,7 +140,7 @@ deArchive *archive, const decPath &archivePath){
 	}
 	
 	const deArchiveContainer::Ref container(
-		deArchiveContainer::Ref::NewWith(rootPath, archive, archivePath));
+		deArchiveContainer::Ref::New(rootPath, archive, archivePath));
 	
 	if(pContainerTail){
 		pContainerTail->SetLLManagerNext(container);

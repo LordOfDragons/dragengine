@@ -72,7 +72,7 @@ delEngineInstanceThreaded::Factory::~Factory(){}
 
 delEngineInstance::Ref delEngineInstanceThreaded::Factory::CreateEngineInstance(
 delLauncher &launcher, const char *logfile){
-	return delEngineInstanceThreaded::Ref::NewWith(launcher, logfile);
+	return delEngineInstanceThreaded::Ref::New(launcher, logfile);
 }
 
 
@@ -684,7 +684,7 @@ void delEngineInstanceThreaded::GetInternalModules(delEngineModuleList &list){
 	int i;
 	
 	for(i=0; i<count; i++){
-		const delEngineModule::Ref emod(delEngineModule::Ref::NewWith());
+		const delEngineModule::Ref emod(delEngineModule::Ref::New());
 		emod->SetType((deModuleSystem::eModuleTypes)ReadUCharFromPipe());
 		ReadString16FromPipe(string);
 		emod->SetName(string);
@@ -776,7 +776,7 @@ void delEngineInstanceThreaded::GetModuleParams(delEngineModule &module){
 			
 			ReadString16FromPipe(string);
 			
-			parameters.Add(delEMParameter::Ref::NewWith(i, info, string));
+			parameters.Add(delEMParameter::Ref::New(i, info, string));
 			
 		}catch(const deException &e){
 			GetLauncher().GetLogger()->LogError(GetLauncher().GetLogSource(),
@@ -1193,7 +1193,7 @@ int delEngineInstanceThreaded::IsGameRunning(){
 				ReadString16FromPipe(paramName);
 				ReadString16FromPipe(paramValue);
 				
-				module->GetParameters().Add(delGPMParameter::Ref::NewWith(paramName, paramValue));
+				module->GetParameters().Add(delGPMParameter::Ref::New(paramName, paramValue));
 			}
 			
 			// write any byte to pipe to signal process can exit now

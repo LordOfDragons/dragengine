@@ -432,7 +432,7 @@ int deVROpenXR::GetDeviceCount(){
 }
 
 deInputDevice::Ref deVROpenXR::GetDeviceAt(int index){
-	deInputDevice::Ref device(deInputDevice::Ref::NewWith());
+	deInputDevice::Ref device(deInputDevice::Ref::New());
 	pDevices.GetAt(index)->GetInfo(device);
 	return device;
 }
@@ -1050,36 +1050,36 @@ void deVROpenXR::pDestroyActionSet(){
 }
 
 void deVROpenXR::pCreateDeviceProfiles(){
-	pDeviceProfiles.Add(deoxrDPHMD::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPHTCVivePro::Ref::NewWith(pInstance));
+	pDeviceProfiles.Add(deoxrDPHMD::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPHTCVivePro::Ref::New(pInstance));
 	
-	pDeviceProfiles.Add(deoxrDPSimpleController::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPGoogleDaydreamController::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPHPMixedRealityController::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPHTCViveController::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPHTCViveCosmosControllerInteraction::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPHTCViveFocus3ControllerInteraction::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPHUAWEIControllerInteraction::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPMicrosoftMixedRealityMotionController::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPMicrosoftXboxController::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPMetaTouchControllerPlus::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPMetaQuestTouchProController::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPOculusGoController::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPOculusTouchController::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPSamsungOdysseyController::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPValveIndexController::Ref::NewWith(pInstance));
+	pDeviceProfiles.Add(deoxrDPSimpleController::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPGoogleDaydreamController::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPHPMixedRealityController::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPHTCViveController::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPHTCViveCosmosControllerInteraction::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPHTCViveFocus3ControllerInteraction::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPHUAWEIControllerInteraction::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPMicrosoftMixedRealityMotionController::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPMicrosoftXboxController::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPMetaTouchControllerPlus::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPMetaQuestTouchProController::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPOculusGoController::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPOculusTouchController::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPSamsungOdysseyController::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPValveIndexController::Ref::New(pInstance));
 	
-	pDeviceProfiles.Add(deoxrDPHandInteraction::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPHTCHandInteraction::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPMSFTHandInteraction::Ref::NewWith(pInstance));
+	pDeviceProfiles.Add(deoxrDPHandInteraction::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPHTCHandInteraction::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPMSFTHandInteraction::Ref::New(pInstance));
 	
-	pDeviceProfiles.Add(deoxrDPHtcViveTracker::Ref::NewWith(pInstance));
-	pDeviceProfiles.Add(deoxrDPEyeGazeInteraction::Ref::NewWith(pInstance));
+	pDeviceProfiles.Add(deoxrDPHtcViveTracker::Ref::New(pInstance));
+	pDeviceProfiles.Add(deoxrDPEyeGazeInteraction::Ref::New(pInstance));
 	
-	pDeviceProfiles.Add(deoxrDPMndxDevSpace::Ref::NewWith(pInstance));
+	pDeviceProfiles.Add(deoxrDPMndxDevSpace::Ref::New(pInstance));
 	
 	// has to come last since it adds a device only if no other controller provides hand tracking
-	pDeviceProfiles.Add(deoxrDPNoControllerHands::Ref::NewWith(pInstance));
+	pDeviceProfiles.Add(deoxrDPNoControllerHands::Ref::New(pInstance));
 }
 
 void deVROpenXR::pSuggestBindings(){
@@ -1175,7 +1175,7 @@ bool deVROpenXR::pBeginFrame(){
 }
 
 void deVROpenXR::pCreateParameters(){
-	pParameters.AddParameter(deoxrPLogLevel::Ref::NewWith(*this));
+	pParameters.AddParameter(deoxrPLogLevel::Ref::New(*this));
 }
 
 
@@ -1206,6 +1206,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deoxrRegisterInternalModule(deModuleSystem *system){
-	return deoxrModuleInternal::Ref::NewWith(system);
+	return deoxrModuleInternal::Ref::New(system);
 }
 #endif

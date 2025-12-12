@@ -78,7 +78,7 @@ void igdeTriggerExpressionParser::SetExceptionOnErrors(bool exceptionsOnErrors){
 
 
 igdeTriggerExpression::Ref igdeTriggerExpressionParser::StringToExpression(const char *string) const{
-	const igdeTriggerExpression::Ref expression(igdeTriggerExpression::Ref::NewWith());
+	const igdeTriggerExpression::Ref expression(igdeTriggerExpression::Ref::New());
 	
 	igdeTriggerExpressionParserState state(string);
 	expression->SetRootComponent(ParseExpressionComponent(state, false, false, false));
@@ -101,7 +101,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	int mode = 0;
 	
 	igdeTriggerExpressionComponent::Ref child, component(
-		igdeTriggerExpressionComponent::Ref::NewWith());
+		igdeTriggerExpressionComponent::Ref::New());
 	
 	while(mode != 4 && mode != 5 && state.HasMoreCharacters()){
 		const int character = state.GetNextCharacter();

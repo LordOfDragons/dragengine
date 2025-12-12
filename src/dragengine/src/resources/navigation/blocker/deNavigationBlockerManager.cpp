@@ -66,7 +66,7 @@ deNavigationBlocker *deNavigationBlockerManager::GetRootNavigationBlocker() cons
 }
 
 deNavigationBlocker::Ref deNavigationBlockerManager::CreateNavigationBlocker(){
-	const deNavigationBlocker::Ref blocker(deNavigationBlocker::Ref::NewWith(this));
+	const deNavigationBlocker::Ref blocker(deNavigationBlocker::Ref::New(this));
 	GetAISystem()->LoadNavigationBlocker(blocker);
 	pBlockers.Add(blocker);
 	return blocker;

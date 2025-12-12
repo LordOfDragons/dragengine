@@ -138,7 +138,7 @@ void deoglHTSCluster::WorldComputeElement::UpdateDataGeometries(sDataElementGeom
 deoglHTSCluster::deoglHTSCluster() :
 pIndex(-1),
 
-pWorldComputeElement(WorldComputeElement::Ref::NewWith(*this))
+pWorldComputeElement(WorldComputeElement::Ref::New(*this))
 {
 	pHTSector = NULL;
 	

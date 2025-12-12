@@ -1394,7 +1394,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 		
 		for(i=0; i<fboMipMapCount; i++){
 			try{
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				fbo->AttachDepthArrayTextureLevel(pTextureDepth1, i + 1);
 				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
@@ -1412,7 +1412,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 			}
 			
 			try{
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				fbo->AttachDepthArrayTextureLevel(pTextureDepth2, i + 1);
 				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
@@ -1440,7 +1440,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 		
 		for(i=0; i<fboMipMapCount; i++){
 			try{
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				fbo->AttachColorArrayTextureLevel(0, pTextureTemporary1, i + 1);
 				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
@@ -1458,7 +1458,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 			}
 			
 			try{
-				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 				pRenderThread.GetFramebuffer().Activate(fbo);
 				fbo->AttachColorArrayTextureLevel(0, pTextureTemporary2, i + 1);
 				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));

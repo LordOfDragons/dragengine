@@ -276,7 +276,7 @@ void igdeColorBox::ShowContextMenu(const decPoint &position){
 		return;
 	}
 	
-	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::NewWith(GetEnvironment()));
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(GetEnvironment()));
 	
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	helper.MenuCommand(menu, new cActionCopy(*this), true);

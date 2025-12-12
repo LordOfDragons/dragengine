@@ -77,7 +77,7 @@ pLog(1000)
 	
 	helper.EditString(*this, "Console Logs", pEditLogs, 10, NULL);
 	
-	igdeContainerFlow::Ref line(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref line(igdeContainerFlow::Ref::New(
 		env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
 	AddChild(line);
 	

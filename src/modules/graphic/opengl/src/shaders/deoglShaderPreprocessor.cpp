@@ -193,7 +193,7 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 		pLastMappedOutputLine = pOutputLine;
 		
 		if(mapLines && pInputFile){
-			pSourceLocations.Add(deoglShaderSourceLocation::Ref::NewWith(
+			pSourceLocations.Add(deoglShaderSourceLocation::Ref::New(
 				pInputFile, pInputLine, pOutputLine));
 		}
 	}
@@ -205,7 +205,7 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 				pLastMappedOutputLine = pOutputLine;
 				
 				if(mapLines && pInputFile){
-					pSourceLocations.Add(deoglShaderSourceLocation::Ref::NewWith(
+					pSourceLocations.Add(deoglShaderSourceLocation::Ref::New(
 						pInputFile, pInputLine, pOutputLine));
 				}
 			}
@@ -291,7 +291,7 @@ void deoglShaderPreprocessor::SetSymbol(deoglShaderPreprocessorSymbol *symbol){
 void deoglShaderPreprocessor::SetSymbol(const char *name, const char *value){
 	pResolveString(value, (int)strlen(value));
 	
-	pSymbolTable.SetAt(name, deoglShaderPreprocessorSymbol::Ref::NewWith(name, pResolveBuffer));
+	pSymbolTable.SetAt(name, deoglShaderPreprocessorSymbol::Ref::New(name, pResolveBuffer));
 	
 	// HACK HACK HACK
 	SourcesAppend(decString("#define ") + name + " " + pResolveBuffer + "\n", false);

@@ -132,7 +132,7 @@ void igdeDialogCurveBezierCoord::SetPoint(const decCurveBezierPoint &point){
 void igdeDialogCurveBezierCoord::pCreateContent(igdeEnvironment &environment){
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerForm::Ref content(igdeContainerForm::Ref::NewWith(environment));
+	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(environment));
 	
 	helper.EditVector2(content, "Point:", "Point coordinates",
 		pEditPoint, new igdeDialogCurveBezierCoordEditPoint(*this));

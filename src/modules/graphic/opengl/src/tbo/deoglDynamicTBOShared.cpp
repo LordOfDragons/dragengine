@@ -173,7 +173,7 @@ deoglDynamicTBOBlock::Ref deoglDynamicTBOShared::AddBlock(deoglDynamicTBO *tbo, 
 		// if the empty block is larger than the requested size add a new empty block with the
 		// remaining empty space right after this block
 		if(block->GetSize() > tboSize){
-			const deoglDynamicTBOBlock::Ref emptyBlock(deoglDynamicTBOBlock::Ref::NewWith(this,
+			const deoglDynamicTBOBlock::Ref emptyBlock(deoglDynamicTBOBlock::Ref::New(this,
 				block->GetOffset() + tboSize, block->GetSize() - tboSize));
 			pBlocks.Insert(emptyBlock, index + 1);
 		}
@@ -286,7 +286,7 @@ deoglDynamicTBOBlock::Ref deoglDynamicTBOShared::pAddEmptyBlock(){
 		offset = block.GetOffset() + block.GetSize();
 	}
 	
-	const deoglDynamicTBOBlock::Ref block(deoglDynamicTBOBlock::Ref::NewWith(this, offset, 0));
+	const deoglDynamicTBOBlock::Ref block(deoglDynamicTBOBlock::Ref::New(this, offset, 0));
 	pBlocks.Add(block);
 	
 	return block;

@@ -140,7 +140,7 @@ void deoglPropFieldCluster::WorldComputeElement::UpdateDataGeometries(sDataEleme
 deoglPropFieldCluster::deoglPropFieldCluster(deoglRPropFieldType &propFieldType) :
 pPropFieldType(propFieldType),
 pRenderThread(propFieldType.GetPropField().GetRenderThread()),
-pWorldComputeElement(WorldComputeElement::Ref::NewWith(*this)),
+pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
 
 pInstances(NULL),
 pInstanceCount(0),

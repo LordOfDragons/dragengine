@@ -98,7 +98,7 @@ void debpConfiguration::SetSimulatePropFields(bool simulatePropFields){
 void debpConfiguration::LoadConfig(){
 	deVirtualFileSystem &vfs = pBullet->GetVFS();
 	
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	// read the configuration file if it exists
 	decPath path;

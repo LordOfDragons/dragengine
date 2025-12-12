@@ -34,7 +34,7 @@
 ////////////////////////////
 
 deoglSkinConstructedProperty::deoglSkinConstructedProperty(const deSkinPropertyConstructed &constructed) :
-pContent(deoglSkinStateCNGroup::Ref::NewWith(constructed.GetContent())),
+pContent(deoglSkinStateCNGroup::Ref::New(constructed.GetContent())),
 pBitCount(constructed.GetBitCount()),
 pColor(constructed.GetColor()){
 }

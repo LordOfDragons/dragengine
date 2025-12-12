@@ -43,7 +43,7 @@
 deoalModel::deoalModel(deAudioOpenAL &oal, const deModel &model) :
 pOal(oal),
 pModel(model),
-pAModel(deoalAModel::Ref::NewWith(oal.GetAudioThread(), model)){
+pAModel(deoalAModel::Ref::New(oal.GetAudioThread(), model)){
 }
 
 deoalModel::~deoalModel(){

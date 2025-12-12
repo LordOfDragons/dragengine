@@ -67,7 +67,7 @@
 deModuleSystem::deModuleSystem(deEngine *engine) :
 pEngine(engine),
 pInternalModulesLibrary(nullptr),
-pVFSAssetLibraries(deVirtualFileSystem::Ref::NewWith())
+pVFSAssetLibraries(deVirtualFileSystem::Ref::New())
 {
 	DEASSERT_NOTNULL(engine)
 }
@@ -813,11 +813,11 @@ void deModuleSystem::pDetectModulesIn(const char *basePath, const char *director
 	
 	try{
 		// find directories
-		const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
+		const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
 		
 		searchPath.SetFromNative(basePath);
 		searchPath.AddUnixPath(directory);
-		vfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(searchPath));
+		vfs->AddContainer(deVFSDiskDirectory::Ref::New(searchPath));
 		
 		deCollectDirectorySearchVisitor collect;
 		vfs->SearchFiles(decPath::CreatePathUnix("/"), collect);
@@ -853,7 +853,7 @@ void deModuleSystem::pDetectModulesIn(const char *basePath, const char *director
 				
 				// try loading module. use an own try-catch to continue loading other modules in case this one fails badly
 				try{
-					const deLibraryModule::Ref module(deLibraryModule::Ref::NewWith(
+					const deLibraryModule::Ref module(deLibraryModule::Ref::New(
 						this, modulePath.GetPathNative()));
 					
 					// load module
@@ -920,11 +920,11 @@ void deModuleSystem::pInitAssetLibrary(){
 	const decPath rootPath(decPath::CreatePathUnix("/"));
 	
 	if(pEngine->GetOSFileSystem()){
-		pVFSAssetLibraries->AddContainer(deVFSRedirect::Ref::NewWith(
+		pVFSAssetLibraries->AddContainer(deVFSRedirect::Ref::New(
 			rootPath, decPath::CreatePathUnix("/share"), pEngine->GetOSFileSystem(), true));
 		
 	}else{
-		pVFSAssetLibraries->AddContainer(deVFSDiskDirectory::Ref::NewWith(
+		pVFSAssetLibraries->AddContainer(deVFSDiskDirectory::Ref::New(
 			decPath::CreatePathNative(pEngine->GetOS()->GetPathShare())));
 	}
 	

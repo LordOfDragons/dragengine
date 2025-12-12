@@ -95,7 +95,7 @@ deFontModule::~deFontModule() {
 ///////////////////////
 
 void deFontModule::LoadFont(decBaseFileReader &file, deFont &font) {
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetGameEngine()->GetLogger()).ParseXml(&file, xmlDoc);
 	
@@ -351,6 +351,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deFontRegisterInternalModule(deModuleSystem *system){
-	return deFontModuleInternal::Ref::NewWith(system);
+	return deFontModuleInternal::Ref::New(system);
 }
 #endif

@@ -204,6 +204,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deanRegisterInternalModule(deModuleSystem *system){
-	return deanModuleInternal::Ref::NewWith(system);
+	return deanModuleInternal::Ref::New(system);
 }
 #endif

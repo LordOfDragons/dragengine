@@ -162,7 +162,7 @@ void igdeGDAddToListVisitor::VisitObjectClass(igdeGDClass *gdclass){
 	
 	AddItemToList(item,  gdclass->GetName(), *pEnvironment.GetGDPreviewManager()->GetImageCreating(), gdclass);
 	
-	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pIconListBox, item, pSize));
+	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::New(pIconListBox, item, pSize));
 	pEnvironment.GetGDPreviewManager()->CreatePreviewObjectClass(
 		gdclass, listener);
 }
@@ -183,7 +183,7 @@ void igdeGDAddToListVisitor::VisitSkin(igdeGDSkin *gdskin){
 	
 	AddItemToList(item,  gdskin->GetName(), *pEnvironment.GetGDPreviewManager()->GetImageCreating(), gdskin);
 	
-	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pIconListBox, item, pSize));
+	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::New(pIconListBox, item, pSize));
 	pEnvironment.GetGDPreviewManager()->CreatePreviewSkin(
 		gdskin, listener);
 }
@@ -204,7 +204,7 @@ void igdeGDAddToListVisitor::VisitSky(igdeGDSky *gdsky){
 	
 	AddItemToList(item,  gdsky->GetName(), *pEnvironment.GetGDPreviewManager()->GetImageCreating(), gdsky);
 	
-	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pIconListBox, item, pSize));
+	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::New(pIconListBox, item, pSize));
 	pEnvironment.GetGDPreviewManager()->CreatePreviewSky(
 		gdsky, listener);
 }

@@ -85,10 +85,10 @@ public:
 		char *buffer = nullptr;
 		
 		try{
-			const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(
+			const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
 				decPath::CreatePathNative(pLauncher.GetPathGames())));
 			
-			const decDiskFileReader::Ref reader(decDiskFileReader::Ref::NewWith(pFilename));
+			const decDiskFileReader::Ref reader(decDiskFileReader::Ref::New(pFilename));
 			
 			decPath target(decPath::CreatePathUnix("/"));
 			target.AddComponent(decPath::CreatePathNative(pFilename).GetLastComponent());
@@ -155,7 +155,7 @@ public:
 private:
 	void pDeleteTarget(){
 		try{
-			deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(
+			deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
 				decPath::CreatePathNative(pLauncher.GetPathGames())));
 			
 			decPath target(decPath::CreatePathUnix("/"));

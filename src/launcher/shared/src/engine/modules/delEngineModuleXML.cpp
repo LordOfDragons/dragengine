@@ -64,7 +64,7 @@ delEngineModuleXML::~delEngineModuleXML(){
 ///////////////
 
 void delEngineModuleXML::ReadFromFile(const char *filename, decBaseFileReader &reader, delEngineModule &module){
-	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();

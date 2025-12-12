@@ -76,7 +76,7 @@ deHeightTerrain::Ref deHeightTerrainManager::CreateHeightTerrain(float sectorSiz
 		DETHROW(deeInvalidParam);
 	}
 	
-	const deHeightTerrain::Ref heightTerrain(deHeightTerrain::Ref::NewWith(
+	const deHeightTerrain::Ref heightTerrain(deHeightTerrain::Ref::New(
 		this, sectorSize, heightImageSize));
 	GetGraphicSystem()->LoadHeightTerrain(heightTerrain);
 	GetPhysicsSystem()->LoadHeightTerrain(heightTerrain);

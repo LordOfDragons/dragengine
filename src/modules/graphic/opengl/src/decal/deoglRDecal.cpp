@@ -157,7 +157,7 @@ pVisible(true),
 
 pParentComponent(NULL),
 pComponentMarkedRemove(false),
-pWorldComputeElement(WorldComputeElement::Ref::NewWith(*this)),
+pWorldComputeElement(WorldComputeElement::Ref::New(*this)),
 
 pRTSInstance(NULL),
 pDirtySharedSPBElement(true),

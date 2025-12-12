@@ -786,7 +786,7 @@ void deoglDelayedOperations::pGenerateConeMap(deoglRSkin &skin, const deoglSkinT
 		return; // should not happen
 	}
 	
-	const deoglPixelBuffer::Ref pbConeMap(deoglPixelBuffer::Ref::NewWith(
+	const deoglPixelBuffer::Ref pbConeMap(deoglPixelBuffer::Ref::New(
 		deoglPixelBuffer::epfByte1, size.x, size.y, size.z));
 	pbConeMap->SetToIntColor(255, 255, 255, 255);
 	

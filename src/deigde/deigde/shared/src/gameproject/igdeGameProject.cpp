@@ -137,7 +137,7 @@ void igdeGameProject::MergeGameDefinitions(){
 	const int baseGameDefCount = pBaseGameDefinitionList.GetCount();
 	int i;
 	
-	const igdeGameDefinition::Ref merged(igdeGameDefinition::Ref::NewWith(pEnvironment));
+	const igdeGameDefinition::Ref merged(igdeGameDefinition::Ref::New(pEnvironment));
 	merged->UpdateWith(*pEnvironment.GetGameDefinition());
 	for(i=0; i<baseGameDefCount; i++){
 		merged->UpdateWith(*pBaseGameDefinitionList.GetAt(i));

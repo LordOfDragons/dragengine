@@ -43,7 +43,7 @@
 deoalSkin::deoalSkin(deAudioOpenAL &oal, const deSkin &skin) :
 pOal(oal),
 pSkin(skin),
-pASkin(deoalASkin::Ref::NewWith(oal.GetAudioThread(), skin)){
+pASkin(deoalASkin::Ref::New(oal.GetAudioThread(), skin)){
 }
 
 deoalSkin::~deoalSkin(){

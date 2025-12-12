@@ -32,7 +32,7 @@
 ////////////////////////////
 
 deEosSdkPendingRequest::deEosSdkPendingRequest(const deServiceObject::Ref &ndata) :
-data(ndata ? ndata : deServiceObject::Ref::NewWith()){
+data(ndata ? ndata : deServiceObject::Ref::New()){
 }
 
 deEosSdkPendingRequest::~deEosSdkPendingRequest(){

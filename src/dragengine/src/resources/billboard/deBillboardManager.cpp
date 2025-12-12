@@ -62,7 +62,7 @@ deBillboard *deBillboardManager::GetRootBillboard() const{
 }
 
 deBillboard::Ref deBillboardManager::CreateBillboard(){
-	const deBillboard::Ref billboard(deBillboard::Ref::NewWith(this));
+	const deBillboard::Ref billboard(deBillboard::Ref::New(this));
 	GetGraphicSystem()->LoadBillboard(billboard);
 	pBillboards.Add(billboard);
 	return billboard;

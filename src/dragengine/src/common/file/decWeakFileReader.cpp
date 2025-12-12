@@ -93,5 +93,5 @@ void decWeakFileReader::Read(void *buffer, int size){
 }
 
 decBaseFileReader::Ref decWeakFileReader::Duplicate(){
-	return decWeakFileReader::Ref::NewWith(pReader);
+	return decWeakFileReader::Ref::New(pReader);
 }

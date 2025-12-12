@@ -403,7 +403,7 @@ void igdeNativeFoxMenuCascade::PostCreateNativePopup(igdeMenuCascade&, void *nat
 
 void igdeNativeFoxMenuCascade::ShowPopupWindow(igdeMenuCascade &powner,
 igdeWidget &widgetOwner, const decPoint &position){
-	igdeNativeFoxMenuCascade_PopupWindow::Ref::NewWith(powner)->Popup(position);
+	igdeNativeFoxMenuCascade_PopupWindow::Ref::New(powner)->Popup(position);
 }
 
 void igdeNativeFoxMenuCascade::DestroyNativePopup(igdeMenuCascade&, void *native){

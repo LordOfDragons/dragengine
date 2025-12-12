@@ -63,7 +63,7 @@ deglWindowLogger::deglWindowLogger(){}
 
 deglWindowLogger::deglWindowLogger(FXApp *papp) :
 FXTopWindow(papp, "Logging History", nullptr, nullptr, DECOR_ALL, 0, 0, 600, 450, 0, 0, 0, 0, 0, 0),
-pListener(deglWindowLoggerListener::Ref::NewWith(*this)),
+pListener(deglWindowLoggerListener::Ref::New(*this)),
 pFontNormal(nullptr),
 pFontBold(nullptr),
 pTableLogs(nullptr)

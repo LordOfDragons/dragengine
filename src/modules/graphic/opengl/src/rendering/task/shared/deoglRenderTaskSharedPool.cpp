@@ -66,7 +66,7 @@ deoglRenderTaskSharedTexture *deoglRenderTaskSharedPool::GetTexture(){
 		
 	}else{
 		const deoglRenderTaskSharedTexture::Ref newTexture(
-			deoglRenderTaskSharedTexture::Ref::NewWith(*this, pTextures.GetCount()));
+			deoglRenderTaskSharedTexture::Ref::New(*this, pTextures.GetCount()));
 		pTextures.Add(newTexture);
 		texture = newTexture;
 		
@@ -89,7 +89,7 @@ deoglRenderTaskSharedVAO *deoglRenderTaskSharedPool::GetVAO(){
 		
 	}else{
 		const deoglRenderTaskSharedVAO::Ref newVao(
-			deoglRenderTaskSharedVAO::Ref::NewWith(*this, pVAOs.GetCount()));
+			deoglRenderTaskSharedVAO::Ref::New(*this, pVAOs.GetCount()));
 		pVAOs.Add(newVao);
 		vao = newVao;
 		
@@ -112,7 +112,7 @@ deoglRenderTaskSharedInstance *deoglRenderTaskSharedPool::GetInstance(){
 		
 	}else{
 		const deoglRenderTaskSharedInstance::Ref newInstance(
-			deoglRenderTaskSharedInstance::Ref::NewWith(*this, pInstances.GetCount()));
+			deoglRenderTaskSharedInstance::Ref::New(*this, pInstances.GetCount()));
 		pInstances.Add(newInstance);
 		instance = newInstance;
 		

@@ -69,7 +69,7 @@ deNetworkState *deNetworkStateManager::GetRootNetworkState() const{
 }
 
 deNetworkState::Ref deNetworkStateManager::CreateState(bool readOnly){
-	const deNetworkState::Ref state(deNetworkState::Ref::NewWith(this, readOnly));
+	const deNetworkState::Ref state(deNetworkState::Ref::New(this, readOnly));
 	GetNetworkSystem()->LoadState(state);
 	GetScriptingSystem()->LoadNetworkState(state);
 	pStates.Add(state);

@@ -105,7 +105,7 @@ void igdeGDCLightList::SetToDeepCopyFrom(const igdeGDCLightList &list){
 	int i;
 	
 	for(i=0; i<count; i++){
-		Add(igdeGDCLight::Ref::NewWith(*list.GetAt(i)));
+		Add(igdeGDCLight::Ref::New(*list.GetAt(i)));
 	}
 }
 

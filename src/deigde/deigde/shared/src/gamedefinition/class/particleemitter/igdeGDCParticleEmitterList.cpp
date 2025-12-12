@@ -105,7 +105,7 @@ void igdeGDCParticleEmitterList::SetToDeepCopyFrom(const igdeGDCParticleEmitterL
 	int i;
 	
 	for(i=0; i<count; i++){
-		Add(igdeGDCParticleEmitter::Ref::NewWith(*list.GetAt(i)));
+		Add(igdeGDCParticleEmitter::Ref::New(*list.GetAt(i)));
 	}
 }
 

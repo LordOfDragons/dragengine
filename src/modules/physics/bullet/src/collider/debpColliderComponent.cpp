@@ -2500,7 +2500,7 @@ void debpColliderComponent::pUpdateBones(){
 					// setLocalScaling has to come last or scaling does not propagate
 				
 				const debpBulletCompoundShape::Ref bulletShape(
-					debpBulletCompoundShape::Ref::NewWith(compoundShape));
+					debpBulletCompoundShape::Ref::New(compoundShape));
 				bulletShape->AddChildShape(model->GetShape());
 				
 				pSimplePhyBody->SetShape(bulletShape);

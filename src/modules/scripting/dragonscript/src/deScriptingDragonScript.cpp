@@ -1290,8 +1290,8 @@ void deScriptingDragonScript::LogExceptionDS(const duException &exception){
 
 // private functions
 void deScriptingDragonScript::pCreateParameters(){
-	pParameters.AddParameter(dedsPForceDpiAware::Ref::NewWith(*this));
-	pParameters.AddParameter(dedsPLogLevel::Ref::NewWith(*this));
+	pParameters.AddParameter(dedsPForceDpiAware::Ref::New(*this));
+	pParameters.AddParameter(dedsPLogLevel::Ref::New(*this));
 }
 
 void deScriptingDragonScript::pLoadBasicPackage(){
@@ -1919,7 +1919,7 @@ decString deScriptingDragonScript::BuildFullName(const dsClass *theClass) const{
 void deScriptingDragonScript::pAddVFSContainerHideScriptDirectory(){
 	pRemoveVFSContainerHideScriptDirectory();
 	
-	const deVFSNull::Ref container(deVFSNull::Ref::NewWith(decPath::CreatePathUnix(pInitScriptDirectory)));
+	const deVFSNull::Ref container(deVFSNull::Ref::New(decPath::CreatePathUnix(pInitScriptDirectory)));
 	container->SetHidden(true);
 	container->AddHiddenPath(decPath::CreatePathUnix("/"));
 	pVFSContainerHideScriptDirectory = container;
@@ -2007,6 +2007,6 @@ if you need time critical calculations using another language might be better.")
 };
 
 deTObjectReference<deInternalModule> dedsRegisterInternalModule(deModuleSystem *system){
-	return dedsModuleInternal::Ref::NewWith(system);
+	return dedsModuleInternal::Ref::New(system);
 }
 #endif

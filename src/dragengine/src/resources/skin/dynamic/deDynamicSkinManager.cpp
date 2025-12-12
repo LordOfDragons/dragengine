@@ -66,7 +66,7 @@ deDynamicSkin *deDynamicSkinManager::GetRootDynamicSkin() const{
 }
 
 deDynamicSkin::Ref deDynamicSkinManager::CreateDynamicSkin(){
-	const deDynamicSkin::Ref dynamicSkin(deDynamicSkin::Ref::NewWith(this));
+	const deDynamicSkin::Ref dynamicSkin(deDynamicSkin::Ref::New(this));
 	GetGraphicSystem()->LoadDynamicSkin(dynamicSkin);
 	pSkins.Add(dynamicSkin);
 	return dynamicSkin;

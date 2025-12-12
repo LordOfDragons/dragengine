@@ -79,7 +79,7 @@ void igdeDialogBrowserObjectClass::SetSelectedObjectClass(igdeGDClass *gdClass){
 
 
 bool igdeDialogBrowserObjectClass::SelectObjectClass(igdeWidget *owner, igdeGDClass* &objectClass, const char *title){
-	igdeDialogBrowserObjectClass::Ref dialog(igdeDialogBrowserObjectClass::Ref::NewWith(
+	igdeDialogBrowserObjectClass::Ref dialog(igdeDialogBrowserObjectClass::Ref::New(
 		owner->GetEnvironment(), title));
 	if(objectClass){
 		dialog->SetSelectedObjectClass(objectClass);

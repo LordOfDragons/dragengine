@@ -137,7 +137,7 @@ void deoglRCaptureCanvas::CaptureRenderWindow(deoglRRenderWindow &renderWindow){
 	
 	if(width == renderWindow.GetWidth() && height == renderWindow.GetHeight()){
 		// extract image into memory
-		const deoglPixelBuffer::Ref tempData(deoglPixelBuffer::Ref::NewWith(
+		const deoglPixelBuffer::Ref tempData(deoglPixelBuffer::Ref::New(
 			pPixelBuffer->GetFormat(), width, height, 1));
 		
 		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));

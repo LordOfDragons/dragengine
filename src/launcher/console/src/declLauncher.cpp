@@ -71,7 +71,7 @@ pConfiguration(NULL){
 	AddFileLogger("delauncher-console");
 	
 	// set launcher to use direct engine instance
-	SetEngineInstanceFactory(delEngineInstanceDirect::Factory::Ref::NewWith());
+	SetEngineInstanceFactory(delEngineInstanceDirect::Factory::Ref::New());
 }
 
 declLauncher::~declLauncher(){
@@ -204,33 +204,33 @@ void declLauncher::pInitLogger(){
 	// clear logger chain set up by the shared launcher. we want a custom one
 	GetLogger()->RemoveAllLoggers();
 	
-	const declLoggerFiltered::Ref loggerLauncher(declLoggerFiltered::Ref::NewWith());
+	const declLoggerFiltered::Ref loggerLauncher(declLoggerFiltered::Ref::New());
 	GetLogger()->AddLogger(loggerLauncher);
 	
-	const deLoggerChain::Ref loggerLauncherError(deLoggerChain::Ref::NewWith());
+	const deLoggerChain::Ref loggerLauncherError(deLoggerChain::Ref::New());
 	loggerLauncher->SetLoggerError(loggerLauncherError);
 	
-	const deLoggerChain::Ref loggerLauncherWarn(deLoggerChain::Ref::NewWith());
+	const deLoggerChain::Ref loggerLauncherWarn(deLoggerChain::Ref::New());
 	loggerLauncher->SetLoggerWarning(loggerLauncherWarn);
 	
-	const deLoggerChain::Ref loggerLauncherInfo(deLoggerChain::Ref::NewWith());
+	const deLoggerChain::Ref loggerLauncherInfo(deLoggerChain::Ref::New());
 	loggerLauncher->SetLoggerInfo(loggerLauncherInfo);
 	
-	declLoggerFiltered::Ref loggerEngine(declLoggerFiltered::Ref::NewWith());
+	declLoggerFiltered::Ref loggerEngine(declLoggerFiltered::Ref::New());
 	loggerEngine->SetLoggerError(loggerLauncherError);
 	loggerEngine->SetLoggerWarning(loggerLauncherWarn);
 	pEngineLogger = loggerEngine;
 	
-	const deLoggerChain::Ref loggerEngineDebug(deLoggerChain::Ref::NewWith());
+	const deLoggerChain::Ref loggerEngineDebug(deLoggerChain::Ref::New());
 	pEngineLoggerDebug = loggerEngineDebug;
 	
 	// console
-	const deLoggerConsoleColor::Ref loggerConsole(deLoggerConsoleColor::Ref::NewWith());
+	const deLoggerConsoleColor::Ref loggerConsole(deLoggerConsoleColor::Ref::New());
 	loggerLauncherError->AddLogger(loggerConsole);
 	loggerEngineDebug->AddLogger(loggerConsole);
 	
 	// file
-	const deLoggerFile::Ref loggerFile(deLoggerFile::Ref::NewWith(
+	const deLoggerFile::Ref loggerFile(deLoggerFile::Ref::New(
 		GetVFS()->OpenFileForWriting(decPath::CreatePathUnix("/logs/delauncher-console.log"))));
 	
 	loggerLauncherError->AddLogger(loggerFile);

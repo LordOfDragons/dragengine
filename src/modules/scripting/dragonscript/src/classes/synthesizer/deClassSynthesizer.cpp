@@ -187,7 +187,7 @@ void deClassSynthesizer::nfSetControllerCount::RunFunction(dsRunTime *rt, dsValu
 	}
 	
 	while(synthesizer->GetControllerCount() < count){
-		synthesizer->AddController(deSynthesizerController::Ref::NewWith());
+		synthesizer->AddController(deSynthesizerController::Ref::New());
 	}
 }
 
@@ -259,7 +259,7 @@ deClassSynthesizer::nfAddLink::nfAddLink(const sInitData &init) : dsFunction(ini
 void deClassSynthesizer::nfAddLink::RunFunction(dsRunTime *rt, dsValue *myself){
 	deSynthesizer &synthesizer = static_cast<sSynNatDat*>(p_GetNativeData(myself))->synthesizer;
 	
-	const deSynthesizerLink::Ref link(deSynthesizerLink::Ref::NewWith());
+	const deSynthesizerLink::Ref link(deSynthesizerLink::Ref::New());
 	link->SetController(rt->GetValue(0)->GetInt());
 	synthesizer.AddLink(link);
 	

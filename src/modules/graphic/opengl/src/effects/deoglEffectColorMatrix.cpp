@@ -48,7 +48,7 @@ deoglEffect(ogl, effect),
 
 pEffectColorMatrix(effect),
 
-pREffectColorMatrix(deoglREffectColorMatrix::Ref::NewWith(ogl.GetRenderThread())),
+pREffectColorMatrix(deoglREffectColorMatrix::Ref::New(ogl.GetRenderThread())),
 
 pDirtyColorMatrix(true)
 {

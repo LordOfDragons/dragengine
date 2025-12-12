@@ -235,6 +235,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deTgaRegisterInternalModule(deModuleSystem *system){
-	return deTgaModuleInternal::Ref::NewWith(system);
+	return deTgaModuleInternal::Ref::New(system);
 }
 #endif

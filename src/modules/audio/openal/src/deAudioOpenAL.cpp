@@ -382,6 +382,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> deoalRegisterInternalModule(deModuleSystem *system){
-	return deoalModuleInternal::Ref::NewWith(system);
+	return deoalModuleInternal::Ref::New(system);
 }
 #endif

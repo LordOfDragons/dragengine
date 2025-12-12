@@ -117,7 +117,7 @@ void deoglSPBlockMemory::UnmapBuffer(){
 }
 
 deoglShaderParameterBlock::Ref deoglSPBlockMemory::Copy() const{
-	return Ref::NewWith(*this);
+	return Ref::New(*this);
 }
 
 

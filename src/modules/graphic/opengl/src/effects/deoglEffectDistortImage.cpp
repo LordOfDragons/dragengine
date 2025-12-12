@@ -51,7 +51,7 @@ deoglEffect(ogl, effect),
 
 pEffectDistortImage(effect),
 
-pREffectDistortImage(deoglREffectDistortImage::Ref::NewWith(ogl.GetRenderThread())),
+pREffectDistortImage(deoglREffectDistortImage::Ref::New(ogl.GetRenderThread())),
 
 pDirtyStrength(true),
 pDirtyImage(true)

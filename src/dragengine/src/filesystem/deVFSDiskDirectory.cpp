@@ -273,7 +273,7 @@ bool deVFSDiskDirectory::CanDeleteFile(const decPath &path){
 }
 
 decBaseFileReader::Ref deVFSDiskDirectory::OpenFileForReading(const decPath &path){
-	return decDiskFileReader::Ref::NewWith((pDiskPath + path).GetPathNative());
+	return decDiskFileReader::Ref::New((pDiskPath + path).GetPathNative());
 }
 
 decBaseFileWriter::Ref deVFSDiskDirectory::OpenFileForWriting(const decPath &path){
@@ -285,7 +285,7 @@ decBaseFileWriter::Ref deVFSDiskDirectory::OpenFileForWriting(const decPath &pat
 	diskPath.RemoveLastComponent();
 	pEnsureDirectoryExists(diskPath);
 	
-	return decDiskFileWriter::Ref::NewWith((pDiskPath + path).GetPathNative(), false);
+	return decDiskFileWriter::Ref::New((pDiskPath + path).GetPathNative(), false);
 }
 
 void deVFSDiskDirectory::DeleteFile(const decPath &path){
@@ -387,7 +387,7 @@ void deVFSDiskDirectory::TouchFile(const decPath &path){
 	diskPath.RemoveLastComponent();
 	pEnsureDirectoryExists(diskPath);
 	
-	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::NewWith(npath, false));
+	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::New(npath, false));
 }
 
 void deVFSDiskDirectory::SearchFiles(const decPath &directory, deContainerFileSearch &searcher){

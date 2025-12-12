@@ -234,7 +234,7 @@ void igdeTextArea::AppendText(const char *text, const char *style, igdeAction *a
 	pText += text;
 	const int end = pText.GetLength() - 1;
 	
-	pSegments.Add(igdeTextSegment::Ref::NewWith(begin, end, style, action));
+	pSegments.Add(igdeTextSegment::Ref::New(begin, end, style, action));
 	
 	OnTextChanged();
 }
@@ -412,7 +412,7 @@ void igdeTextArea::SetTextSegment(int begin, int end, const char *style, igdeAct
 	bool changed = pClearSegment(begin, end);
 	
 	if(style[0] || action){
-		pSegments.Add(igdeTextSegment::Ref::NewWith(begin, end, style, action));
+		pSegments.Add(igdeTextSegment::Ref::New(begin, end, style, action));
 		changed = true;
 	}
 	

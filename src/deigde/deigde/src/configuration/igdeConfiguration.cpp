@@ -508,13 +508,13 @@ void igdeConfiguration::InitVirtualFileSystem(){
 	if(!pPathConfigSystem.IsEmpty()){
 		pathRootDir.SetFromUnix("/config/system");
 		pathDiskDir.SetFromNative(pPathConfigSystem);
-		vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRootDir, pathDiskDir, true));
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir, true));
 	}
 	
 	if(!pPathConfigUser.IsEmpty()){
 		pathRootDir.SetFromUnix("/config/user");
 		pathDiskDir.SetFromNative(pPathConfigUser);
-		vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRootDir, pathDiskDir, false));
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir, false));
 	}
 	
 	// add the data directory. currently there exists only one which
@@ -525,14 +525,14 @@ void igdeConfiguration::InitVirtualFileSystem(){
 	if(!pPathShares.IsEmpty()){
 		pathRootDir.SetFromUnix("/data");
 		pathDiskDir.SetFromNative(pPathShares);
-		vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRootDir, pathDiskDir, false));
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir, false));
 	}
 	
 	// add the logs directory. this is read-write
 	if(!pPathLogs.IsEmpty()){
 		pathRootDir.SetFromUnix("/logs");
 		pathDiskDir.SetFromNative(pPathLogs);
-		vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRootDir, pathDiskDir, false));
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir, false));
 	}
 }
 

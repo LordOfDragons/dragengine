@@ -82,7 +82,7 @@ igdeTriggerTarget *igdeTriggerTargetList::GetNamedAddIfMissing(const char *name)
 		return findTarget;
 	}
 	
-	const igdeTriggerTarget::Ref target(igdeTriggerTarget::Ref::NewWith(name));
+	const igdeTriggerTarget::Ref target(igdeTriggerTarget::Ref::New(name));
 	pTargets.Add(target);
 	return target;
 }

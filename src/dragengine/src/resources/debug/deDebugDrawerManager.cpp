@@ -61,7 +61,7 @@ deDebugDrawer *deDebugDrawerManager::GetRootDebugDrawer() const{
 }
 
 deDebugDrawer::Ref deDebugDrawerManager::CreateDebugDrawer(){
-	const deDebugDrawer::Ref debugDrawer(deDebugDrawer::Ref::NewWith(this));
+	const deDebugDrawer::Ref debugDrawer(deDebugDrawer::Ref::New(this));
 	GetGraphicSystem()->LoadDebugDrawer(debugDrawer);
 	pDebugDrawers.Add(debugDrawer);
 	return debugDrawer;

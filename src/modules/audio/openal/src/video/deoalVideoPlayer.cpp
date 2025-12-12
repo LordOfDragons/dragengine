@@ -50,7 +50,7 @@
 deoalVideoPlayer::deoalVideoPlayer(deAudioOpenAL &oal, deVideoPlayer &videoPlayer) :
 pOal(oal),
 pVideoPlayer(videoPlayer),
-pAVideoPlayer(deoalAVideoPlayer::Ref::NewWith(oal.GetAudioThread())),
+pAVideoPlayer(deoalAVideoPlayer::Ref::New(oal.GetAudioThread())),
 pDirtyVideo(true),
 pDirtyParameters(true),
 pDirtyPlayPosition(true),

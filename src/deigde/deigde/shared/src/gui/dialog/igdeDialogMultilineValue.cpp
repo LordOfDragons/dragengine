@@ -45,7 +45,7 @@ igdeDialog(environment, title)
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::New(
 		environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10));
 	
 	helper.Label(content, message);

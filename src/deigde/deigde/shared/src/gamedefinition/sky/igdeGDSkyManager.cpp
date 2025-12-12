@@ -124,7 +124,7 @@ void igdeGDSkyManager::UpdateWith(const igdeGDSkyManager &manager){
 	int i;
 	
 	for(i=0; i<count; i++){
-		const igdeGDSky::Ref sky(igdeGDSky::Ref::NewWith(*manager.GetSkyList().GetAt(i)));
+		const igdeGDSky::Ref sky(igdeGDSky::Ref::New(*manager.GetSkyList().GetAt(i)));
 		igdeGDSky * const check = pSkyList.GetWithPath(sky->GetPath());
 		if(check){
 			RemoveSky(check);
@@ -152,7 +152,7 @@ void igdeGDSkyManager::UpdateWithFound(const igdeGDSkyManager &skyManager){
 			continue;
 		}
 		
-		const igdeGDSky::Ref sky(igdeGDSky::Ref::NewWith(foundSky));
+		const igdeGDSky::Ref sky(igdeGDSky::Ref::New(foundSky));
 		
 		igdeGDCategory * const autoCategory = pCategories->AutoCategorize(sky->GetPath());
 		if(autoCategory){

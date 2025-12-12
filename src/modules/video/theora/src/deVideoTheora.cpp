@@ -169,6 +169,6 @@ public:
 };
 
 deTObjectReference<deInternalModule> dethRegisterInternalModule(deModuleSystem *system){
-	return dethModuleInternal::Ref::NewWith(system);
+	return dethModuleInternal::Ref::New(system);
 }
 #endif

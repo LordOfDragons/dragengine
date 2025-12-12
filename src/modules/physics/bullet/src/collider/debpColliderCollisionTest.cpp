@@ -351,7 +351,7 @@ void debpColliderCollisionTest::CollisionResponse(deCollider *owner, deCollision
 	// create new collision info if list is not large enough. only done if we do not update
 	// an already existing info
 	if(moveFromIndex == pCollisionInfoCount && pCollisionInfoCount == pCollisionInfo.GetCount()){
-		pCollisionInfo.Add(deCollisionInfo::Ref::NewWith());
+		pCollisionInfo.Add(deCollisionInfo::Ref::New());
 	}
 	
 	// move collision info to the right index if required

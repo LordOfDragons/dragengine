@@ -71,7 +71,7 @@ delGameConfigXML::~delGameConfigXML(){
 ///////////////
 
 void delGameConfigXML::ReadFromFile(decBaseFileReader &reader, delGame &game){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -247,7 +247,7 @@ void delGameConfigXML::pReadConfig(const decXmlElementTag &root, delGame &game){
 				
 				const delGameIcon::Ref icon(pLauncher.CreateGameIcon(size, filenameIcon));
 				
-				const decMemoryFile::Ref content(decMemoryFile::Ref::NewWith(filenameIcon));
+				const decMemoryFile::Ref content(decMemoryFile::Ref::New(filenameIcon));
 				
 				decPath pathIcon;
 				pathIcon.SetFromUnix("/config/user/games");

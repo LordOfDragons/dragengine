@@ -114,7 +114,7 @@ void deoglOcclusionMap::pCreateFBOs(){
 	int i;
 	
 	for(i=0; i<pLevelCount; i++){
-		const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+		const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::New(pRenderThread, false));
 		pRenderThread.GetFramebuffer().Activate(fbo);
 		
 		fbo->AttachDepthArrayTextureLevel(pTexture, i);

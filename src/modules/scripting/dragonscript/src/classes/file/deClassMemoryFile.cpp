@@ -150,7 +150,7 @@ void deClassMemoryFile::nfGetReader::RunFunction(dsRunTime *rt, dsValue *myself)
 	decMemoryFile * const memoryFile = static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile;
 	const deScriptingDragonScript &ds = (static_cast<deClassMemoryFile*>(GetOwnerClass()))->GetDS();
 	
-	ds.GetClassFileReader()->PushFileReader(rt, decMemoryFileReader::Ref::NewWith(memoryFile));
+	ds.GetClassFileReader()->PushFileReader(rt, decMemoryFileReader::Ref::New(memoryFile));
 }
 
 // public func FileWriter getWriter( bool append )
@@ -164,7 +164,7 @@ void deClassMemoryFile::nfGetWriter::RunFunction(dsRunTime *rt, dsValue *myself)
 	
 	const bool append = rt->GetValue(0)->GetBool();
 	
-	ds.GetClassFileWriter()->PushFileWriter(rt, decMemoryFileWriter::Ref::NewWith(memoryFile, append));
+	ds.GetClassFileWriter()->PushFileWriter(rt, decMemoryFileWriter::Ref::New(memoryFile, append));
 }
 
 // public func FileReader getReaderZCompressed()
@@ -176,8 +176,8 @@ void deClassMemoryFile::nfGetReaderZCompressed::RunFunction(dsRunTime *rt, dsVal
 	decMemoryFile * const memoryFile = static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile;
 	const deScriptingDragonScript &ds = (static_cast<deClassMemoryFile*>(GetOwnerClass()))->GetDS();
 	
-	ds.GetClassFileReader()->PushFileReader(rt, decZFileReader::Ref::NewWith(
-		decMemoryFileReader::Ref::NewWith(memoryFile)));
+	ds.GetClassFileReader()->PushFileReader(rt, decZFileReader::Ref::New(
+		decMemoryFileReader::Ref::New(memoryFile)));
 }
 
 // public func FileWriter getWriterZCompressed()
@@ -189,8 +189,8 @@ void deClassMemoryFile::nfGetWriterZCompressed::RunFunction(dsRunTime *rt, dsVal
 	decMemoryFile * const memoryFile = static_cast<const sMemFileNatDat*>(p_GetNativeData(myself))->memoryFile;
 	const deScriptingDragonScript &ds = (static_cast<deClassMemoryFile*>(GetOwnerClass()))->GetDS();
 	
-	ds.GetClassFileWriter()->PushFileWriter(rt, decZFileWriter::Ref::NewWith(
-		decMemoryFileWriter::Ref::NewWith(memoryFile, false)));
+	ds.GetClassFileWriter()->PushFileWriter(rt, decZFileWriter::Ref::New(
+		decMemoryFileWriter::Ref::New(memoryFile, false)));
 }
 
 

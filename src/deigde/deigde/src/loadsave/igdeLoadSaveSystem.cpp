@@ -108,10 +108,10 @@ igdeLoadSaveSystem::~igdeLoadSaveSystem(){
 igdeGameProject::Ref igdeLoadSaveSystem::LoadGameProject(const char *filename){
 	DEASSERT_NOTNULL(filename)
 	
-	const igdeGameProject::Ref project(igdeGameProject::Ref::NewWith(pWindowMain->GetEnvironment()));
+	const igdeGameProject::Ref project(igdeGameProject::Ref::New(pWindowMain->GetEnvironment()));
 	project->SetFilePath(filename);
 	
-	pLSGameProject->Load(filename, project, decDiskFileReader::Ref::NewWith(filename));
+	pLSGameProject->Load(filename, project, decDiskFileReader::Ref::New(filename));
 	
 	return project;
 }
@@ -120,7 +120,7 @@ void igdeLoadSaveSystem::SaveGameProject(igdeGameProject *project, const char *f
 	DEASSERT_NOTNULL(project)
 	DEASSERT_NOTNULL(filename)
 	
-	pLSGameProject->Save(project, decDiskFileWriter::Ref::NewWith(filename, false));
+	pLSGameProject->Save(project, decDiskFileWriter::Ref::New(filename, false));
 }
 
 

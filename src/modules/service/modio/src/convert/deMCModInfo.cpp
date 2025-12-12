@@ -61,7 +61,7 @@ deServiceObject::Ref deMCModInfo::ModServerSideStatus(Modio::ModServerSideStatus
 }
 
 deServiceObject::Ref deMCModInfo::ModInfo(const Modio::ModInfo &info, const deModioUserConfig &config){
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	const decString strModId(deMCCommon::IDToString(info.ModId));
 	so->SetChildAt("modId", deServiceObject::NewString(strModId));
 	
@@ -155,7 +155,7 @@ deServiceObject::Ref deMCModInfo::ModInfo(const Modio::ModInfo &info, const deMo
 }
 
 deServiceObject::Ref deMCModInfo::ModStats(const Modio::ModStats &stats){
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	
 	so->SetFloatChildAt("popularityRankPosition", (float)stats.PopularityRankPosition);
 	so->SetFloatChildAt("popularityRankTotalMods", (float)stats.PopularityRankTotalMods);
@@ -173,7 +173,7 @@ deServiceObject::Ref deMCModInfo::ModStats(const Modio::ModStats &stats){
 
 deServiceObject::Ref deMCModInfo::ModCollectionEntry(
 const Modio::ModCollectionEntry &status, const deModioUserConfig &config){
-	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
+	const deServiceObject::Ref so(deServiceObject::Ref::New());
 	
 	so->SetChildAt("id", deMCCommon::ID(status.GetID()));
 	so->SetChildAt("state", ModState(status.GetModState()));

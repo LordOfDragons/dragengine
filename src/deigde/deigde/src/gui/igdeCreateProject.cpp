@@ -237,7 +237,7 @@ void igdeCreateProject::pCopyDefaultFiles(){
 	decPath path(pNativePathProject);
 	path.AddComponent(".gitignore");
 	
-	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::NewWith(path.GetPathNative(), false));
+	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::New(path.GetPathNative(), false));
 	writer->WriteString(pProject->GetPathLocal() + "\n");
 	writer->WriteString(pPathCache + "\n");
 	writer->WriteString("distribute\n");
@@ -307,7 +307,7 @@ void igdeCreateProject::pCreateGameDefinition(){
 	decPath path(pNativePathProject);
 	path.AddUnixPath(pPathGameDefProject);
 	
-	decDiskFileWriter::Ref::NewWith(path.GetPathNative(), false)->Write(
+	decDiskFileWriter::Ref::New(path.GetPathNative(), false)->Write(
 		pSharedGameDefContent, pSharedGameDefContent.GetLength());
 }
 
@@ -315,7 +315,7 @@ void igdeCreateProject::pLoadSharedGameDefContent(){
 	decPath path;
 	path.SetFromNative(pWindowMain.GetConfiguration().GetPathShares());
 	path.AddComponent("newproject.degd");
-	const decDiskFileReader::Ref reader(decDiskFileReader::Ref::NewWith(path.GetPathNative()));
+	const decDiskFileReader::Ref reader(decDiskFileReader::Ref::New(path.GetPathNative()));
 	
 	const int contentLen = reader->GetLength();
 	pSharedGameDefContent.Set(' ', contentLen);
@@ -394,13 +394,13 @@ void igdeCreateProject::pApplyTemplate(){
 	// create vfs directories to work with
 	pVFS.TakeOverWith();
 	
-	pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(
+	pVFS->AddContainer(deVFSDiskDirectory::Ref::New(
 		decPath::CreatePathUnix(VFS_DIR_DATA), decPath::CreatePathNative(pNativePathData)));
 	
-	pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(
+	pVFS->AddContainer(deVFSDiskDirectory::Ref::New(
 		decPath::CreatePathUnix(VFS_DIR_PROJECT), pNativePathProject));
 	
-	pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(
+	pVFS->AddContainer(deVFSDiskDirectory::Ref::New(
 		decPath::CreatePathUnix(VFS_DIR_TEMPLATE),
 		decPath::CreatePathNative(pTemplate->GetBasePath()), true));
 	
@@ -428,7 +428,7 @@ void igdeCreateProject::pTemplateCreateFile(const igdeTemplateFile &file){
 	
 	// find files
 	if(!file.GetPattern().IsEmpty()){
-		deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
+		deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New());
 		
 		deCollectFileSearchVisitor collect(file.GetPattern());
 		pVFS->SearchFiles(decPath::CreatePathUnix(VFS_DIR_TEMPLATE), collect);

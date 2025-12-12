@@ -136,7 +136,7 @@ void igdeGDCCTextureList::SetToDeepCopyFrom(const igdeGDCCTextureList &list){
 	int i;
 	
 	for(i=0; i<count; i++){
-		Add(igdeGDCCTexture::Ref::NewWith(*list.GetAt(i)));
+		Add(igdeGDCCTexture::Ref::New(*list.GetAt(i)));
 	}
 }
 

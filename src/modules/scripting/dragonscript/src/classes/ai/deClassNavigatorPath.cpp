@@ -209,7 +209,7 @@ void deClassNavigatorPath::nfTransformed::RunFunction(dsRunTime *rt, dsValue *my
 	
 	const decDMatrix &matrix = clsNavPath.GetDS().GetClassDMatrix()->GetDMatrix(rt->GetValue(0)->GetRealObject());
 	const int count = path.GetCount();
-	deNavigatorPath::Ref transformedPath(deNavigatorPath::Ref::NewWith());;
+	deNavigatorPath::Ref transformedPath(deNavigatorPath::Ref::New());;
 	int i;
 	for(i=0; i<count; i++){
 		transformedPath->Add(matrix * path.GetAt(i));
@@ -341,7 +341,7 @@ void deClassNavigatorPath::nfReadFromFile::RunFunction(dsRunTime *rt, dsValue *m
 	}
 	
 	const int version = reader->ReadByte();
-	deNavigatorPath::Ref path(deNavigatorPath::Ref::NewWith());
+	deNavigatorPath::Ref path(deNavigatorPath::Ref::New());
 	decDVector point;
 	int i, count;
 	

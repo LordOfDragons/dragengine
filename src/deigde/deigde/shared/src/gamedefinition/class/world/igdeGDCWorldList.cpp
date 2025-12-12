@@ -91,7 +91,7 @@ void igdeGDCWorldList::SetToDeepCopyFrom(const igdeGDCWorldList &list){
 	const int count = list.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		Add(igdeGDCWorld::Ref::NewWith(*list.GetAt(i)));
+		Add(igdeGDCWorld::Ref::New(*list.GetAt(i)));
 	}
 }
 

@@ -63,7 +63,7 @@ deTouchSensor *deTouchSensorManager::GetRootTouchSensor() const{
 }
 
 deTouchSensor::Ref deTouchSensorManager::CreateTouchSensor(){
-	const deTouchSensor::Ref touchSensor(deTouchSensor::Ref::NewWith(this));
+	const deTouchSensor::Ref touchSensor(deTouchSensor::Ref::New(this));
 	GetPhysicsSystem()->LoadTouchSensor(touchSensor);
 	GetScriptingSystem()->LoadTouchSensor(touchSensor);
 	pTouchSensors.Add(touchSensor);

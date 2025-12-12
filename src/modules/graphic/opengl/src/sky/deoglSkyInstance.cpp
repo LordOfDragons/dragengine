@@ -48,7 +48,7 @@
 deoglSkyInstance::deoglSkyInstance(deGraphicOpenGl &ogl, const deSkyInstance &instance) :
 pOgl(ogl),
 pInstance(instance),
-pRInstance(deoglRSkyInstance::Ref::NewWith(pOgl.GetRenderThread())),
+pRInstance(deoglRSkyInstance::Ref::New(pOgl.GetRenderThread())),
 pParentWorld(NULL),
 pOglSky(NULL),
 pEnvMapTimer(0.0f),
