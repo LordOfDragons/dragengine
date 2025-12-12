@@ -127,7 +127,7 @@ public:
 	int GetAlignmentRequirements() const override;
 	
 	/** Create copy of shader parameter block. */
-	deoglShaderParameterBlock *Copy() const override;
+	deoglShaderParameterBlock::Ref Copy() const override;
 	
 	/** Debug print configuration. */
 	void DebugPrintConfig(const char *name);

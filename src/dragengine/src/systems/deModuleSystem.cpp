@@ -776,7 +776,7 @@ void deModuleSystem::pAddInternalModules(const FPRegisterInternalModule *functio
 	int i = 0;
 	
 	while(functions[i]){
-		const deInternalModule::Ref module(deInternalModule::Ref::New(functions[i++](this)));
+		const deInternalModule::Ref module(functions[i++](this));
 		
 		if(!module){
 			continue;

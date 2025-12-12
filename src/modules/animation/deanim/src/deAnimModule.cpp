@@ -886,7 +886,9 @@ void deAnimModule::pWriteKeyframeWeight(decBaseFileWriter &writer, const sConfig
 
 class deanimModuleInternal : public deInternalModule{
 public:
-deanimModuleInternal(deModuleSystem *system) : deInternalModule(system){
+	typedef deTObjectReference<deanimModuleInternal> Ref;
+	
+	deanimModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEAnim");
 		SetDescription("Handles animations in the binary Drag[en]gine animation format.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
@@ -907,7 +909,7 @@ deanimModuleInternal(deModuleSystem *system) : deInternalModule(system){
 	}
 };
 
-deInternalModule *deanimRegisterInternalModule(deModuleSystem *system){
-	return new deanimModuleInternal(system);
+deTObjectReference<deInternalModule> deanimRegisterInternalModule(deModuleSystem *system){
+	return deanimModuleInternal::Ref::NewWith(system);
 }
 #endif

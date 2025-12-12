@@ -70,9 +70,9 @@
 delEngineInstanceThreaded::Factory::Factory(){}
 delEngineInstanceThreaded::Factory::~Factory(){}
 
-delEngineInstance *delEngineInstanceThreaded::Factory::CreateEngineInstance(
+delEngineInstance::Ref delEngineInstanceThreaded::Factory::CreateEngineInstance(
 delLauncher &launcher, const char *logfile){
-	return new delEngineInstanceThreaded(launcher, logfile);
+	return delEngineInstanceThreaded::Ref::NewWith(launcher, logfile);
 }
 
 

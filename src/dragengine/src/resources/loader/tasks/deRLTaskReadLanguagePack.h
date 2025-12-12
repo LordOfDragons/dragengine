@@ -33,6 +33,11 @@
  * \brief Read languagePack resource loader task.
  */
 class DE_DLL_EXPORT deRLTaskReadLanguagePack : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deRLTaskReadLanguagePack> Ref;
+	
+	
 private:
 	deLanguagePack::Ref pLanguagePack;
 	bool pSucceeded;

@@ -195,9 +195,8 @@ bool deglInstallDelga::Run(const char *forceFilename){
 	delGameList games;
 	
 	try{
-		const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-			launcher.GetEngineInstanceFactory().CreateEngineInstance(
-				launcher, launcher.GetEngine().GetLogFile())));
+		const delEngineInstance::Ref instance(launcher.GetEngineInstanceFactory().
+			CreateEngineInstance(launcher, launcher.GetEngine().GetLogFile()));
 		instance->StartEngine();
 		instance->LoadModules();
 		

@@ -345,6 +345,8 @@ void deJpegModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 
 class deJpegModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deJpegModuleInternal> Ref;
+	
 	deJpegModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("JPEG");
 		SetDescription("Handles images saved in the JPEG format (lossy compression).");
@@ -367,7 +369,7 @@ public:
 	}
 };
 
-deInternalModule *deJpegRegisterInternalModule(deModuleSystem *system){
-	return new deJpegModuleInternal(system);
+deTObjectReference<deInternalModule> deJpegRegisterInternalModule(deModuleSystem *system){
+	return deJpegModuleInternal::Ref::NewWith(system);
 }
 #endif

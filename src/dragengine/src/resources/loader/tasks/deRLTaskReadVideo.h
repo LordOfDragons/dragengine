@@ -33,6 +33,11 @@
  * \brief Read video resource loader task.
  */
 class DE_DLL_EXPORT deRLTaskReadVideo : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deRLTaskReadVideo> Ref;
+	
+	
 private:
 	deVideo::Ref pVideo;
 	bool pSucceeded;

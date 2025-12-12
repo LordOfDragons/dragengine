@@ -2289,6 +2289,8 @@ void deModelModule::pSaveTriangles(decBaseFileWriter &writer, const deModelLOD &
 
 class demdlModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<demdlModuleInternal> Ref;
+	
 	demdlModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEModel");
 		SetDescription("Handles models in the binary Drag[en]gine model format.");
@@ -2310,7 +2312,7 @@ public:
 	}
 };
 
-deInternalModule *demdlRegisterInternalModule(deModuleSystem *system){
-	return new demdlModuleInternal(system);
+deTObjectReference<deInternalModule> demdlRegisterInternalModule(deModuleSystem *system){
+	return demdlModuleInternal::Ref::NewWith(system);
 }
 #endif

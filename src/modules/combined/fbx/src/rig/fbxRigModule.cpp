@@ -166,6 +166,8 @@ void fbxRigModule::pLoadRig(deRig &rig, fbxScene &scene){
 
 class fbxRigModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<fbxRigModuleInternal> Ref;
+	
 	fbxRigModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("FBXRig");
 		SetDescription("Handles rigs in the binary FBX format.");
@@ -188,7 +190,7 @@ public:
 	}
 };
 
-deInternalModule *fbxRigRegisterInternalModule(deModuleSystem *system){
-	return new fbxRigModuleInternal(system);
+deTObjectReference<deInternalModule> fbxRigRegisterInternalModule(deModuleSystem *system){
+	return fbxRigModuleInternal::Ref::NewWith(system);
 }
 #endif

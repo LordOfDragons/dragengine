@@ -179,48 +179,48 @@ decMatrix fbxProperty::GetValueAtAsMatrix(int index) const{
 
 
 
-fbxProperty *fbxProperty::Read(decBaseFileReader &reader){
+fbxProperty::Ref fbxProperty::Read(decBaseFileReader &reader){
 	const char typeCode = reader.ReadChar();
 	
 	switch(typeCode){
 	case 'C':
-		return new fbxPropertyBool(reader);
+		return fbxPropertyBool::Ref::NewWith(reader);
 		
 	case 'Y':
-		return new fbxPropertyShort(reader);
+		return fbxPropertyShort::Ref::NewWith(reader);
 		
 	case 'I':
-		return new fbxPropertyInteger(reader);
+		return fbxPropertyInteger::Ref::NewWith(reader);
 		
 	case 'L':
-		return new fbxPropertyLong(reader);
+		return fbxPropertyLong::Ref::NewWith(reader);
 		
 	case 'F':
-		return new fbxPropertyFloat(reader);
+		return fbxPropertyFloat::Ref::NewWith(reader);
 		
 	case 'D':
-		return new fbxPropertyDouble(reader);
+		return fbxPropertyDouble::Ref::NewWith(reader);
 		
 	case 'b':
-		return new fbxPropertyArrayBool(reader);
+		return fbxPropertyArrayBool::Ref::NewWith(reader);
 		
 	case 'i':
-		return new fbxPropertyArrayInteger(reader);
+		return fbxPropertyArrayInteger::Ref::NewWith(reader);
 		
 	case 'l':
-		return new fbxPropertyArrayLong(reader);
+		return fbxPropertyArrayLong::Ref::NewWith(reader);
 		
 	case 'f':
-		return new fbxPropertyArrayFloat(reader);
+		return fbxPropertyArrayFloat::Ref::NewWith(reader);
 		
 	case 'd':
-		return new fbxPropertyArrayDouble(reader);
+		return fbxPropertyArrayDouble::Ref::NewWith(reader);
 		
 	case 'S':
-		return new fbxPropertyString(reader);
+		return fbxPropertyString::Ref::NewWith(reader);
 		
 	case 'R':
-		return new fbxPropertyBinary(reader);
+		return fbxPropertyBinary::Ref::NewWith(reader);
 		
 	default:
 		DETHROW_INFO(deeInvalidFileFormat, "unknown property type code");

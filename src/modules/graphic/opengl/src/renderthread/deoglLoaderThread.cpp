@@ -219,7 +219,7 @@ bool deoglLoaderThread::AddTask(const deoglLoaderThreadTask::Ref &task){
 bool deoglLoaderThread::AwaitTask(const deoglLoaderThreadTask::Ref &task){
 	DEASSERT_NOTNULL(task)
 	
-	const cWaitableTask::Ref waitableTask(cWaitableTask::Ref::NewWith(pRenderThread, task));
+	const cWaitableTask::Ref waitableTask(cWaitableTask::Ref::New(pRenderThread, task));
 	
 	#ifdef DO_DEBUG_LOG
 	pRenderThread.GetLogger().LogInfoFormat("LoaderThread: AwaitTask: Add task %p", task);

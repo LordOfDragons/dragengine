@@ -338,7 +338,7 @@ void delGame::StartGame(const delGameRunParams &runParams, delEngineInstance::Fa
 	
 	try{
 		// create engine instance and start engine
-		pEngineInstance.TakeOver(factory.CreateEngineInstance(pLauncher, logfile));
+		pEngineInstance = factory.CreateEngineInstance(pLauncher, logfile);
 		pEngineInstance->StartEngine();
 		pEngineInstance->SetCacheAppID(pIdentifier.ToHexString(false));
 		pEngineInstance->LoadModules();

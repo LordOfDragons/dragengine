@@ -1662,6 +1662,8 @@ void deSkinModule::pWriteProperty(decXmlWriter &writer, const deSkin &skin, deSk
 
 class desmModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<desmModuleInternal> Ref;
+	
 	desmModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DESkin");
 		SetDescription("Handles skins in the XML Drag[en]gine skin format.");
@@ -1683,7 +1685,7 @@ public:
 	}
 };
 
-deInternalModule *desmRegisterInternalModule(deModuleSystem *system){
-	return new desmModuleInternal(system);
+deTObjectReference<deInternalModule> desmRegisterInternalModule(deModuleSystem *system){
+	return desmModuleInternal::Ref::NewWith(system);
 }
 #endif

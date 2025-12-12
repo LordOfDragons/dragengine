@@ -102,7 +102,7 @@ void deRLTaskReadSkinPropertyNode::VisitImage(deSkinPropertyNodeImage &node){
 		path = resourcePath.GetPathUnix();
 	}
 	
-	pTask.AddInternalTask(deRLTaskReadSkinInternal::cInternalTask::Ref::NewWith(&node,
+	pTask.AddInternalTask(deRLTaskReadSkinInternal::cInternalTask::Ref::New(&node,
 		pResourceLoader.AddLoadRequest(pVirtualFileSystem, path, deResourceLoader::ertImage)));
 }
 
@@ -124,6 +124,6 @@ void deRLTaskReadSkinPropertyNode::VisitText(deSkinPropertyNodeText &node){
 		path = resourcePath.GetPathUnix();
 	}
 	
-	pTask.AddInternalTask(deRLTaskReadSkinInternal::cInternalTask::Ref::NewWith(&node, 
+	pTask.AddInternalTask(deRLTaskReadSkinInternal::cInternalTask::Ref::New(&node, 
 		pResourceLoader.AddLoadRequest(pVirtualFileSystem, path, deResourceLoader::ertFont)));
 }

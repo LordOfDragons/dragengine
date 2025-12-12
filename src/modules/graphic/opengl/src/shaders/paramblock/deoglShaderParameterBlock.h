@@ -171,7 +171,7 @@ public:
 	virtual void EnsureBuffer();
 	
 	/** Create copy of shader parameter block. */
-	virtual deoglShaderParameterBlock *Copy() const = 0;
+	virtual Ref Copy() const = 0;
 	
 	
 	

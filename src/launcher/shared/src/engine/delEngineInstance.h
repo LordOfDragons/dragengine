@@ -72,11 +72,11 @@ public:
 		
 	protected:
 		/** \brief Factory destructor. */
-		virtual ~Factory();
+		~Factory() override;
 		
 	public:
 		/** \brief Create engine instance. */
-		virtual delEngineInstance *CreateEngineInstance(delLauncher &launcher, const char *logfile) = 0;
+		virtual delEngineInstance::Ref CreateEngineInstance(delLauncher &launcher, const char *logfile) = 0;
 	};
 	
 	

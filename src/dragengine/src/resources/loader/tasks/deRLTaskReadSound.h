@@ -33,6 +33,11 @@
  * \brief Read sound resource loader task.
  */
 class DE_DLL_EXPORT deRLTaskReadSound : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deRLTaskReadSound> Ref;
+	
+	
 private:
 	deSound::Ref pSound;
 	bool pSucceeded;

@@ -33,6 +33,11 @@
  * \brief Read occlusionMesh resource loader task.
  */
 class DE_DLL_EXPORT deRLTaskReadOcclusionMesh : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deRLTaskReadOcclusionMesh> Ref;
+	
+	
 private:
 	deOcclusionMesh::Ref pOcclusionMesh;
 	bool pSucceeded;

@@ -33,6 +33,11 @@
  * \brief Read model resource loader task.
  */
 class DE_DLL_EXPORT deRLTaskReadModel : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deRLTaskReadModel> Ref;
+	
+	
 private:
 	deModel::Ref pModel;
 	bool pSucceeded;

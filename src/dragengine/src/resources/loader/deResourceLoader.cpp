@@ -123,7 +123,7 @@ const char *path, eResourceType resourceType){
 			if(!animation && !pLoadAsynchron){
 				animation = pEngine.GetAnimationManager()->LoadAnimation(vfs, path, "/");
 			}
-			task.TakeOver(new deRLTaskReadAnimation(pEngine, *this, vfs, path, animation));
+			task = deRLTaskReadAnimation::Ref::New(pEngine, *this, vfs, path, animation);
 			}break;
 			
 		case ertFont:{
@@ -131,7 +131,7 @@ const char *path, eResourceType resourceType){
 			if(!font && !pLoadAsynchron){
 				font = pEngine.GetFontManager()->LoadFont(vfs, path, "/");
 			}
-			task.TakeOver(new deRLTaskReadFont(pEngine, *this, vfs, path, font));
+			task = deRLTaskReadFont::Ref::New(pEngine, *this, vfs, path, font);
 			}break;
 			
 		case ertImage:{
@@ -139,7 +139,7 @@ const char *path, eResourceType resourceType){
 			if(!image && !pLoadAsynchron){
 				image = pEngine.GetImageManager()->LoadImage(vfs, path, "/");
 			}
-			task.TakeOver(new deRLTaskReadImage(pEngine, *this, vfs, path, image));
+			task = deRLTaskReadImage::Ref::New(pEngine, *this, vfs, path, image);
 			}break;
 			
 		case ertModel:{
@@ -147,7 +147,7 @@ const char *path, eResourceType resourceType){
 			if(!model && !pLoadAsynchron){
 				model = pEngine.GetModelManager()->LoadModel(vfs, path, "/");
 			}
-			task.TakeOver(new deRLTaskReadModel(pEngine, *this, vfs, path, model));
+			task = deRLTaskReadModel::Ref::New(pEngine, *this, vfs, path, model);
 			}break;
 			
 		case ertOcclusionMesh:{
@@ -156,7 +156,7 @@ const char *path, eResourceType resourceType){
 			if(!occlusionMesh && !pLoadAsynchron){
 				occlusionMesh = pEngine.GetOcclusionMeshManager()->LoadOcclusionMesh(vfs, path, "/");
 			}
-			task.TakeOver(new deRLTaskReadOcclusionMesh(pEngine, *this, vfs, path, occlusionMesh));
+			task = deRLTaskReadOcclusionMesh::Ref::New(pEngine, *this, vfs, path, occlusionMesh);
 			}break;
 			
 		case ertRig:{
@@ -164,7 +164,7 @@ const char *path, eResourceType resourceType){
 			if(!rig && !pLoadAsynchron){
 				rig = pEngine.GetRigManager()->LoadRig(vfs, path, "/");
 			}
-			task.TakeOver(new deRLTaskReadRig(pEngine, *this, vfs, path, rig));
+			task = deRLTaskReadRig::Ref::New(pEngine, *this, vfs, path, rig);
 			}break;
 			
 		case ertSkin:{
@@ -172,7 +172,7 @@ const char *path, eResourceType resourceType){
 			if(!skin && !pLoadAsynchron){
 				skin = pEngine.GetSkinManager()->LoadSkin(vfs, path, "/");
 			}
-			task.TakeOver(new deRLTaskReadSkin(pEngine, *this, vfs, path, skin));
+			task = deRLTaskReadSkin::Ref::New(pEngine, *this, vfs, path, skin);
 			}break;
 			
 		case ertSound:{
@@ -180,7 +180,7 @@ const char *path, eResourceType resourceType){
 			if(!sound && !pLoadAsynchron){
 				sound = pEngine.GetSoundManager()->LoadSound(path, "/", false);
 			}
-			task.TakeOver(new deRLTaskReadSound(pEngine, *this, vfs, path, sound));
+			task = deRLTaskReadSound::Ref::New(pEngine, *this, vfs, path, sound);
 			}break;
 			
 		case ertLanguagePack:{
@@ -189,7 +189,7 @@ const char *path, eResourceType resourceType){
 			if(!langPack && !pLoadAsynchron){
 				langPack = pEngine.GetLanguagePackManager()->LoadLanguagePack(vfs, path, "/");
 			}
-			task.TakeOver(new deRLTaskReadLanguagePack(pEngine, *this, vfs, path, langPack));
+			task = deRLTaskReadLanguagePack::Ref::New(pEngine, *this, vfs, path, langPack);
 			}break;
 			
 		case ertVideo:{
@@ -197,7 +197,7 @@ const char *path, eResourceType resourceType){
 			if(!video && !pLoadAsynchron){
 				video = pEngine.GetVideoManager()->LoadVideo(path, "/", false);
 			}
-			task.TakeOver(new deRLTaskReadVideo(pEngine, *this, vfs, path, video));
+			task = deRLTaskReadVideo::Ref::New(pEngine, *this, vfs, path, video);
 			}break;
 			
 		default:

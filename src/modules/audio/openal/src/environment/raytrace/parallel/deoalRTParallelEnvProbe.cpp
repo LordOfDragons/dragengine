@@ -617,7 +617,7 @@ const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &con
 	
 	if(taskCount > pTasksReadyTraceSoundRays.GetCount()){
 		while(pTasksReadyTraceSoundRays.GetCount() < taskCount){
-			const deoalRTPTTraceSoundRays::Ref task(deoalRTPTTraceSoundRays::Ref::NewWith(*this));
+			const deoalRTPTTraceSoundRays::Ref task(deoalRTPTTraceSoundRays::Ref::New(*this));
 			pTasksTraceSoundRays.Add(task);
 			pTasksReadyTraceSoundRays.Add(task);
 		}
@@ -667,7 +667,7 @@ const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &con
 	
 	// prepare finish task
 	if(pTasksReadyTraceSoundRaysFinish.GetCount() == 0){
-		const deoalRTPTTraceSoundRaysFinish::Ref task(deoalRTPTTraceSoundRaysFinish::Ref::NewWith(*this));
+		const deoalRTPTTraceSoundRaysFinish::Ref task(deoalRTPTTraceSoundRaysFinish::Ref::New(*this));
 		pTasksTraceSoundRaysFinish.Add(task);
 		pTasksReadyTraceSoundRaysFinish.Add(task);
 	}
@@ -726,7 +726,7 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	
 	if(taskCount > pTasksReadyListen.GetCount()){
 		while(pTasksReadyListen.GetCount() < taskCount){
-			const deoalRTPTListen::Ref task(deoalRTPTListen::Ref::NewWith(*this));
+			const deoalRTPTListen::Ref task(deoalRTPTListen::Ref::New(*this));
 			pTasksListen.Add(task);
 			pTasksReadyListen.Add(task);
 		}
@@ -768,7 +768,7 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	
 	// prepare finish task
 	if(pTasksReadyListenFinish.GetCount() == 0){
-		const deoalRTPTListenFinish::Ref task(deoalRTPTListenFinish::Ref::NewWith(*this));
+		const deoalRTPTListenFinish::Ref task(deoalRTPTListenFinish::Ref::New(*this));
 		pTasksListenFinish.Add(task);
 		pTasksReadyListenFinish.Add(task);
 	}
@@ -922,7 +922,7 @@ const deoalRayTraceConfig &probeConfig){
 	
 	if(taskCount > pTasksReadyRoomEstimate.GetCount()){
 		while(pTasksReadyRoomEstimate.GetCount() < taskCount){
-			const deoalRTPTRoomEstimate::Ref task(deoalRTPTRoomEstimate::Ref::NewWith(*this));
+			const deoalRTPTRoomEstimate::Ref task(deoalRTPTRoomEstimate::Ref::New(*this));
 			pTasksRoomEstimate.Add(task);
 			pTasksReadyRoomEstimate.Add(task);
 		}
@@ -965,7 +965,7 @@ const deoalRayTraceConfig &probeConfig){
 	
 	// prepare finish task
 	if(pTasksReadyRoomEstimateFinish.GetCount() == 0){
-		const deoalRTPTRoomEstimateFinish::Ref task(deoalRTPTRoomEstimateFinish::Ref::NewWith(*this));
+		const deoalRTPTRoomEstimateFinish::Ref task(deoalRTPTRoomEstimateFinish::Ref::New(*this));
 		pTasksRoomEstimateFinish.Add(task);
 		pTasksReadyRoomEstimateFinish.Add(task);
 	}

@@ -128,7 +128,8 @@ void deRLTaskReadFontInternal::Finished(){
 		SetState(esSucceeded);
 		
 		try{
-			pInternalTask.TakeOverWith(engine, GetResourceLoader(), GetVFS(), GetPath(), pFont);
+			pInternalTask = deRLTaskReadFontInternal2::Ref::New(
+				engine, GetResourceLoader(), GetVFS(), GetPath(), pFont);
 			
 			switch(pInternalTask->GetState()){
 			case esPending:

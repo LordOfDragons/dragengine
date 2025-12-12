@@ -227,6 +227,8 @@ void deDESynthesizer::SendCommand(const decUnicodeArgumentList &command, decUnic
 
 class desynModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<desynModuleInternal> Ref;
+	
 	desynModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DESynthesizer");
 		SetDescription("Generate sound using synthesizers.");
@@ -246,7 +248,7 @@ public:
 	}
 };
 
-deInternalModule *desynRegisterInternalModule(deModuleSystem *system){
-	return new desynModuleInternal(system);
+deTObjectReference<deInternalModule> desynRegisterInternalModule(deModuleSystem *system){
+	return desynModuleInternal::Ref::NewWith(system);
 }
 #endif

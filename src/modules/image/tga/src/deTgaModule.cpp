@@ -211,6 +211,8 @@ void deTgaModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 
 class deTgaModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deTgaModuleInternal> Ref;
+	
 	deTgaModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("Targa");
 		SetDescription("Handles images in uncompressed Targe format.");
@@ -232,7 +234,7 @@ public:
 	}
 };
 
-deInternalModule *deTgaRegisterInternalModule(deModuleSystem *system){
-	return new deTgaModuleInternal(system);
+deTObjectReference<deInternalModule> deTgaRegisterInternalModule(deModuleSystem *system){
+	return deTgaModuleInternal::Ref::NewWith(system);
 }
 #endif

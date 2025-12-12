@@ -362,6 +362,8 @@ decTimer debugTimer;
 
 class deciModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deciModuleInternal> Ref;
+	
 	deciModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("ConsoleInput");
 		SetDescription("Processes input from a console. Supports only keyboard input.");
@@ -382,7 +384,7 @@ public:
 	}
 };
 
-deInternalModule *deciRegisterInternalModule(deModuleSystem *system){
-	return new deciModuleInternal(system);
+deTObjectReference<deInternalModule> deciRegisterInternalModule(deModuleSystem *system){
+	return deciModuleInternal::Ref::NewWith(system);
 }
 #endif

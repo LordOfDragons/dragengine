@@ -824,7 +824,7 @@ dearTaskApplyRules *dearAnimatorInstance::pNewTaskApplyRules(){
 	}
 	
 	// no such task exists. create a new one and add it to the list
-	const dearTaskApplyRules::Ref task(dearTaskApplyRules::Ref::NewWith(*this));
+	const dearTaskApplyRules::Ref task(dearTaskApplyRules::Ref::New(*this));
 	pTaskApplyRules.Add(task);
 	return task;
 }

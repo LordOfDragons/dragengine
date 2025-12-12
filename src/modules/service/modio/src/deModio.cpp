@@ -478,6 +478,8 @@ void deModio::pUpdateVFS(){
 
 class deModioModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deModioModuleInternal> Ref;
+	
 	deModioModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("Modio");
 		SetDescription("Provides access to services provided by Mod.io.");
@@ -497,7 +499,7 @@ public:
 	}
 };
 
-deInternalModule *deModioRegisterInternalModule(deModuleSystem *system){
-	return new deModioModuleInternal(system);
+deTObjectReference<deInternalModule> deModioRegisterInternalModule(deModuleSystem *system){
+	return deModioModuleInternal::Ref::NewWith(system);
 }
 #endif

@@ -225,10 +225,10 @@ void deoglRenderPlanTasks::StartBuildTasks(const deoglRenderPlanMasked *mask){
 	
 	deParallelProcessing &pp = pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing();
 	
-	pTaskDepth.TakeOver(new deoglRPTBuildRTsDepth(*this, mask));
+	pTaskDepth = deoglRPTBuildRTsDepth::Ref::New(*this, mask);
 	pp.AddTaskAsync(pTaskDepth);
 	
-	pTaskGeometry.TakeOver(new deoglRPTBuildRTsGeometry(*this, mask));
+	pTaskGeometry = deoglRPTBuildRTsGeometry::Ref::New(*this, mask);
 	pp.AddTaskAsync(pTaskGeometry);
 }
 

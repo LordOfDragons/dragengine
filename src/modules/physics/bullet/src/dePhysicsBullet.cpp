@@ -329,6 +329,8 @@ deBasePhysicsSmokeEmitter *dePhysicsBullet::CreateSmokeEmitter(deSmokeEmitter *s
 
 class depbModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<depbModuleInternal> Ref;
+	
 	depbModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("Bullet");
 		SetDescription("Provides physical simulation using the free-software Bullet physics library.");
@@ -348,7 +350,7 @@ public:
 	}
 };
 
-deInternalModule *depbRegisterInternalModule(deModuleSystem *system){
-	return new depbModuleInternal(system);
+deTObjectReference<deInternalModule> depbRegisterInternalModule(deModuleSystem *system){
+	return depbModuleInternal::Ref::NewWith(system);
 }
 #endif

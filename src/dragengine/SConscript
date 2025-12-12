@@ -238,9 +238,9 @@ if envDragengine['with_static_internalmodules']:
 		with open(target[0].abspath, 'w') as f:
 			f.write('/* Generated File. Do not edit */\n')
 			for cf in env['InternalModuleCreateFunctionsPriority']:
-				f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
+				f.write('extern deTObjectReference<deInternalModule> {}(deModuleSystem*);\n'.format(cf))
 			for cf in env['InternalModuleCreateFunctions']:
-				f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
+				f.write('extern deTObjectReference<deInternalModule> {}(deModuleSystem*);\n'.format(cf))
 			f.write('\n')
 			f.write('static deModuleSystem::FPRegisterInternalModule vInternalModuleFunctionsPriority[]{\n')
 			for cf in env['InternalModuleCreateFunctionsPriority']:
@@ -417,9 +417,9 @@ if not envDragengine['with_static_internalmodules']:
 			f.write('#include <dragengine/systems/deModuleSystem.h>\n')
 			f.write('\n')
 			for cf in env['InternalModuleCreateFunctionsPriority']:
-				f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
+				f.write('extern deTObjectReference<deInternalModule> {}(deModuleSystem*);\n'.format(cf))
 			for cf in env['InternalModuleCreateFunctions']:
-				f.write('extern deInternalModule *{}(deModuleSystem*);\n'.format(cf))
+				f.write('extern deTObjectReference<deInternalModule> {}(deModuleSystem*);\n'.format(cf))
 			f.write('\n')
 			f.write('static const deModuleSystem::FPRegisterInternalModule vInternalModuleFunctionsPriority[]{\n')
 			for cf in env['InternalModuleCreateFunctionsPriority']:

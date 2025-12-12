@@ -996,6 +996,8 @@ void deXSystemInput::pCreateParameters(){
 
 class dexsiModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<dexsiModuleInternal> Ref;
+	
 	dexsiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("XSystemInput");
 		SetDescription(
@@ -1017,7 +1019,7 @@ public:
 	}
 };
 
-deInternalModule *dexsiRegisterInternalModule(deModuleSystem *system){
-	return new dexsiModuleInternal(system);
+deTObjectReference<deInternalModule> dexsiRegisterInternalModule(deModuleSystem *system){
+	return dexsiModuleInternal::Ref::NewWith(system);
 }
 #endif

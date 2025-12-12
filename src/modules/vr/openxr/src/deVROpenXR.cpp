@@ -1184,6 +1184,8 @@ void deVROpenXR::pCreateParameters(){
 
 class deoxrModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deoxrModuleInternal> Ref;
+	
 	deoxrModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("OpenXR");
 		SetDescription("OpenXR Support.");
@@ -1203,7 +1205,7 @@ public:
 	}
 };
 
-deInternalModule *deoxrRegisterInternalModule(deModuleSystem *system){
-	return new deoxrModuleInternal(system);
+deTObjectReference<deInternalModule> deoxrRegisterInternalModule(deModuleSystem *system){
+	return deoxrModuleInternal::Ref::NewWith(system);
 }
 #endif

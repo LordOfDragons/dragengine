@@ -762,6 +762,8 @@ vr::Hmd_Eye deVROpenVR::ConvertEye(eEye eye) const{
 
 class deovrModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deovrModuleInternal> Ref;
+	
 	deovrModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("OpenVR");
 		SetDescription("OpenVR Support.");
@@ -781,7 +783,7 @@ public:
 	}
 };
 
-deInternalModule *deovrRegisterInternalModule(deModuleSystem *system){
-	return new deovrModuleInternal(system);
+deTObjectReference<deInternalModule> deovrRegisterInternalModule(deModuleSystem *system){
+	return deovrModuleInternal::Ref::NewWith(system);
 }
 #endif

@@ -129,6 +129,8 @@ void dePng3DModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 
 class dePng3DModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<dePng3DModuleInternal> Ref;
+	
 	dePng3DModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("PNG-3D");
 		SetDescription("Handles images saved in the PNG-3D format (lossless compression). PNG-3D files \
@@ -153,7 +155,7 @@ inside the tarball are named zX.png where X is the z coordinate without leading 
 	}
 };
 
-deInternalModule *depng3DRegisterInternalModule(deModuleSystem *system){
-	return new dePng3DModuleInternal(system);
+deTObjectReference<deInternalModule> depng3DRegisterInternalModule(deModuleSystem *system){
+	return dePng3DModuleInternal::Ref::NewWith(system);
 }
 #endif

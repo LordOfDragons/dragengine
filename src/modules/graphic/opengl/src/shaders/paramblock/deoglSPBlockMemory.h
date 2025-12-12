@@ -37,6 +37,10 @@
  * mapping the memory is grown if not large enough but not shrunk.
  */
 class deoglSPBlockMemory : public deoglShaderParameterBlock{
+public:
+	typedef deTObjectReference<deoglSPBlockMemory> Ref;
+	
+	
 private:
 	char *pBuffer;
 	int pBufferCapacity;
@@ -100,7 +104,7 @@ public:
 	void UnmapBuffer() override;
 	
 	/** Create copy of shader parameter block. */
-	deoglShaderParameterBlock *Copy() const override;
+	deoglShaderParameterBlock::Ref Copy() const override;
 	/*@}*/
 	
 	

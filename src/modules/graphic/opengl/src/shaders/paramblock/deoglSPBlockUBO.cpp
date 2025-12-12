@@ -268,8 +268,8 @@ int deoglSPBlockUBO::GetAlignmentRequirements() const{
 	return pCompact ? 0 : GetRenderThread().GetCapabilities().GetUBOOffsetAlignment();
 }
 
-deoglShaderParameterBlock *deoglSPBlockUBO::Copy() const{
-	return new deoglSPBlockUBO(*this);
+deoglShaderParameterBlock::Ref deoglSPBlockUBO::Copy() const{
+	return Ref::NewWith(*this);
 }
 
 

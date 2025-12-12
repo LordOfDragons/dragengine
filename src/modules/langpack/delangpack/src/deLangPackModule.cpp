@@ -253,6 +253,8 @@ void deLangPackModule::pWriteLangPackEntry(decXmlWriter &writer, const deLanguag
 
 class delpModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<delpModuleInternal> Ref;
+	
 	delpModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DELangPack");
 		SetDescription("Handles language packs in the XML Drag[en]gine language pack format.");
@@ -274,7 +276,7 @@ public:
 	}
 };
 
-deInternalModule *delpRegisterInternalModule(deModuleSystem *system){
-	return new delpModuleInternal(system);
+deTObjectReference<deInternalModule> delpRegisterInternalModule(deModuleSystem *system){
+	return delpModuleInternal::Ref::NewWith(system);
 }
 #endif

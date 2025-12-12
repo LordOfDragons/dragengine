@@ -152,7 +152,9 @@ void deDEAIModule::SendCommand(const decUnicodeArgumentList &command, decUnicode
 
 class deaiModuleInternal : public deInternalModule{
 public:
-deaiModuleInternal(deModuleSystem *system) : deInternalModule(system){
+	typedef deTObjectReference<deaiModuleInternal> Ref;
+	
+	deaiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEAI");
 		SetDescription("Provides AI support to the engine.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
@@ -171,7 +173,7 @@ deaiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 	}
 };
 
-deInternalModule *deaiRegisterInternalModule(deModuleSystem *system){
-	return new deaiModuleInternal(system);
+deTObjectReference<deInternalModule> deaiRegisterInternalModule(deModuleSystem *system){
+	return deaiModuleInternal::Ref::NewWith(system);
 }
 #endif

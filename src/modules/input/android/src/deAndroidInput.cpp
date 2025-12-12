@@ -777,6 +777,8 @@ int deAndroidInput::pModifiersFromMetaState(int32_t metaState) const{
 
 class deainpModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deainpModuleInternal> Ref;
+	
 	deainpModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("AndroidInput");
 		SetDescription("Processes input of Android Operating systems.");
@@ -796,7 +798,7 @@ public:
 	}
 };
 
-deInternalModule *deainpRegisterInternalModule(deModuleSystem *system){
-	return new deainpModuleInternal(system);
+deTObjectReference<deInternalModule> deainpRegisterInternalModule(deModuleSystem *system){
+	return deainpModuleInternal::Ref::NewWith(system);
 }
 #endif

@@ -61,7 +61,7 @@ deoglShaderParameterBlock *deoglSPBSingleUse::Next(){
 	
 	if(frameCounter == pFrameCounter){
 		if(pNextIndex == pStartIndex){
-			pBlocks.Insert(deoglShaderParameterBlock::Ref::New(pInitialBlock->Copy()), pNextIndex);
+			pBlocks.Insert(pInitialBlock->Copy(), pNextIndex);
 			pStartIndex++;
 		}
 		
@@ -70,7 +70,8 @@ deoglShaderParameterBlock *deoglSPBSingleUse::Next(){
 		pStartIndex = pNextIndex;
 	}
 	
-	deoglShaderParameterBlock * const block = (deoglShaderParameterBlock*)pBlocks.GetAt(pNextIndex);
+	deoglShaderParameterBlock * const block =
+		static_cast<deoglShaderParameterBlock*>(pBlocks.GetAt(pNextIndex));
 	pNextIndex = (pNextIndex + 1) % pBlocks.GetCount();
 	return block;
 }

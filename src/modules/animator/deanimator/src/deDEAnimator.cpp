@@ -121,6 +121,8 @@ deBaseAnimatorComponent *deDEAnimator::CreateComponent(deComponent *component){
 
 class dearModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<dearModuleInternal> Ref;
+	
 	dearModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEAnimator");
 		SetDescription("Animates components using animator rules.");
@@ -140,7 +142,7 @@ public:
 	}
 };
 
-deInternalModule *dearRegisterInternalModule(deModuleSystem *system){
-	return new dearModuleInternal(system);
+deTObjectReference<deInternalModule> dearRegisterInternalModule(deModuleSystem *system){
+	return dearModuleInternal::Ref::NewWith(system);
 }
 #endif

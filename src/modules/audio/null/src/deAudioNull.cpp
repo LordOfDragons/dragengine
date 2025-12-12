@@ -181,6 +181,8 @@ deBaseAudioHeightTerrain *deAudioNull::CreateHeightTerrain(deHeightTerrain&){
 
 class deanModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deanModuleInternal> Ref;
+	
 	deanModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("NullAudio");
 		SetDescription("Outputs no audio.");
@@ -201,7 +203,7 @@ public:
 	}
 };
 
-deInternalModule *deanRegisterInternalModule(deModuleSystem *system){
-	return new deanModuleInternal(system);
+deTObjectReference<deInternalModule> deanRegisterInternalModule(deModuleSystem *system){
+	return deanModuleInternal::Ref::NewWith(system);
 }
 #endif

@@ -371,9 +371,8 @@ bool declRunGame::LocateGame(){
 		delGameList list;
 		
 		{
-		const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-			pLauncher.GetEngineInstanceFactory().CreateEngineInstance(
-				pLauncher, pLauncher.GetEngine().GetLogFile())));
+		const delEngineInstance::Ref instance(pLauncher.GetEngineInstanceFactory().
+			CreateEngineInstance(pLauncher, pLauncher.GetEngine().GetLogFile()));
 		
 		instance->StartEngine();
 		instance->LoadModules();

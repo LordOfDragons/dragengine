@@ -1323,7 +1323,7 @@ Modio::Optional<std::string> filename){
 		}
 		
 		pModule.GetGameEngine()->GetParallelProcessing().AddTaskAsync(
-			cLoadResourceTask::Ref::NewWith(*this, id, path.GetPathUnix(), deResourceLoader::ertImage));
+			cLoadResourceTask::Ref::New(*this, id, path.GetPathUnix(), deResourceLoader::ertImage));
 		
 	}catch(const deException &e){
 		FailRequest(id, e);

@@ -35,6 +35,11 @@ class deSkin;
  * \brief Read skin resource loader task.
  */
 class DE_DLL_EXPORT deRLTaskReadSkin : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deRLTaskReadSkin> Ref;
+	
+	
 private:
 	deRLTaskReadSkinInternal::Ref pInternalTask;
 	bool pSucceeded;

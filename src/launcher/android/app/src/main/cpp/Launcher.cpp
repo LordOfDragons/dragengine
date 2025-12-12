@@ -32,9 +32,8 @@ Launcher::~Launcher(){
 
 delGameList Launcher::ReadDelgaGames(const decString &path){
     delGameList games;
-    const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-            GetEngineInstanceFactory().CreateEngineInstance(
-                    *this, GetEngine().GetLogFile())));
+    const delEngineInstance::Ref instance(GetEngineInstanceFactory().
+        CreateEngineInstance(*this, GetEngine().GetLogFile()));
     instance->StartEngine();
     instance->LoadModules();
 

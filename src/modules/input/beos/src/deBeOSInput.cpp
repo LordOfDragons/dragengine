@@ -859,6 +859,8 @@ void deBeOSInput::pSetAutoRepeatEnabled(bool enabled){
 
 class debiModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<debiModuleInternal> Ref;
+	
 	debiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("BeOSInput");
 		SetDescription("Processes input on BeOS type operating systems.");
@@ -878,7 +880,7 @@ public:
 	}
 };
 
-deInternalModule *debiRegisterInternalModule(deModuleSystem *system){
-	return new debiModuleInternal(system);
+deTObjectReference<deInternalModule> debiRegisterInternalModule(deModuleSystem *system){
+	return debiModuleInternal::Ref::NewWith(system);
 }
 #endif

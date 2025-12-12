@@ -33,6 +33,11 @@
  * \brief Read animation resource loader task.
  */
 class DE_DLL_EXPORT deRLTaskReadImage : public deResourceLoaderTask {
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deRLTaskReadImage> Ref;
+	
+	
 private:
 	deImage::Ref pImage;
 	bool pSucceeded;

@@ -60,6 +60,7 @@ public:
 		operator bool() const;
 	};
 	
+	typedef deTObjectReference<deoglSharedBlockSPBElement> ObjRef;
 	
 	
 private:

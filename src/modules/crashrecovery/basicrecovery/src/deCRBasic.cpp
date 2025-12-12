@@ -214,6 +214,8 @@ void deCRBasic::LogTraceSubValues(const deErrorTraceValue &traceValue, const cha
 
 class decrbModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<decrbModuleInternal> Ref;
+	
 	decrbModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("BasicRecovery");
 		SetDescription("Provides basic crash recovery support using the FOX Toolkit. \
@@ -234,7 +236,7 @@ Allows the user to restart failed systems and to change modules.");
 	}
 };
 
-deInternalModule *decrbRegisterInternalModule(deModuleSystem *system){
-	return new decrbModuleInternal(system);
+deTObjectReference<deInternalModule> decrbRegisterInternalModule(deModuleSystem *system){
+	return decrbModuleInternal::Ref::NewWith(system);
 }
 #endif

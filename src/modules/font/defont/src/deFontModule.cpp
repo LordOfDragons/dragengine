@@ -327,6 +327,8 @@ void deFontModule::pWriteFont(decXmlWriter& writer, const deFont& font) {
 
 class deFontModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deFontModuleInternal> Ref;
+	
 	deFontModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEFont");
 		SetDescription("Handles fonts in the XML Drag[en]gine font format.");
@@ -348,7 +350,7 @@ public:
 	}
 };
 
-deInternalModule *deFontRegisterInternalModule(deModuleSystem *system){
-	return new deFontModuleInternal(system);
+deTObjectReference<deInternalModule> deFontRegisterInternalModule(deModuleSystem *system){
+	return deFontModuleInternal::Ref::NewWith(system);
 }
 #endif

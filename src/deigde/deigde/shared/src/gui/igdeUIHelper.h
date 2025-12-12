@@ -133,7 +133,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create UI Helper. */
-	igdeUIHelper(igdeEnvironment &environment);
+	explicit igdeUIHelper(igdeEnvironment &environment);
 	
 	/** \brief Create copy of UI Helper. */
 	igdeUIHelper(const igdeUIHelper &helper);

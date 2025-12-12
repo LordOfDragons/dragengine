@@ -91,7 +91,7 @@ void deRLTaskReadSkinProperty::VisitImage(deSkinPropertyImage &property){
 		path = resourcePath.GetPathUnix();
 	}
 	
-	pTask.AddInternalTask(deRLTaskReadSkinInternal::cInternalTask::Ref::NewWith(&property,
+	pTask.AddInternalTask(deRLTaskReadSkinInternal::cInternalTask::Ref::New(&property,
 		pResourceLoader.AddLoadRequest(pVirtualFileSystem, path, deResourceLoader::ertImage)));
 }
 

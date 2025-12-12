@@ -602,8 +602,8 @@ int deoglSPBlockSSBO::GetAlignmentRequirements() const{
 	return pCompact ? 0 : GetRenderThread().GetCapabilities().GetUBOOffsetAlignment();
 }
 
-deoglShaderParameterBlock *deoglSPBlockSSBO::Copy() const{
-	return new deoglSPBlockSSBO(*this);
+deoglShaderParameterBlock::Ref deoglSPBlockSSBO::Copy() const{
+	return Ref::NewWith(*this);
 }
 
 void deoglSPBlockSSBO::MapToStd430(){

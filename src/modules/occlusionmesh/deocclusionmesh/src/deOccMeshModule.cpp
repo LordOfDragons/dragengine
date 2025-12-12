@@ -326,6 +326,8 @@ void deOccMeshModule::pLoadFaces(decBaseFileReader &reader, deOcclusionMesh &mes
 
 class deoccmModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deoccmModuleInternal> Ref;
+	
 	deoccmModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DEOcclusionMesh");
 		SetDescription("Handles occlusion meshes in the Drag[en]gine occlusion mesh format.");
@@ -347,7 +349,7 @@ public:
 	}
 };
 
-deInternalModule *deoccmRegisterInternalModule(deModuleSystem *system){
-	return new deoccmModuleInternal(system);
+deTObjectReference<deInternalModule> deoccmRegisterInternalModule(deModuleSystem *system){
+	return deoccmModuleInternal::Ref::NewWith(system);
 }
 #endif

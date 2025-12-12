@@ -551,8 +551,8 @@ void dewlLauncher::pLocateGame(){
 	delGameList list;
 	
 	{
-	const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-		GetEngineInstanceFactory().CreateEngineInstance(*this, GetEngine().GetLogFile())));
+	const delEngineInstance::Ref instance(GetEngineInstanceFactory().
+		CreateEngineInstance(*this, GetEngine().GetLogFile()));
 	
 	instance->StartEngine();
 	instance->LoadModules();

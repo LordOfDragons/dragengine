@@ -134,9 +134,9 @@ void delEngineInstanceDirect::Factory::SetConfig(const deOSWebWasm::sConfig &con
 }
 #endif
 
-delEngineInstance *delEngineInstanceDirect::Factory::CreateEngineInstance(
+delEngineInstance::Ref delEngineInstanceDirect::Factory::CreateEngineInstance(
 delLauncher &launcher, const char *logfile){
-	delEngineInstanceDirect * const instance = new delEngineInstanceDirect(launcher, logfile);
+	const delEngineInstanceDirect::Ref instance(delEngineInstanceDirect::Ref::NewWith(launcher, logfile));
 	instance->SetEngineLogger(pEngineLogger);
 	instance->SetUseConsole(pUseConsole);
 #if defined OS_ANDROID || defined OS_WEBWASM

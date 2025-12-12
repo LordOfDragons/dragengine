@@ -278,7 +278,7 @@ const int *vResourcePeerCreationOrder = &vLocalResourcePeerCreationOrder[0];
 deEngine::deEngine(deOS *os, deVirtualFileSystem *fileSystem) :
 pArgs(nullptr),
 pOS(os),
-pOSFileSystem(deVirtualFileSystem::Ref::New(fileSystem)),
+pOSFileSystem(fileSystem),
 
 pErrorTrace(nullptr),
 pScriptFailed(false),

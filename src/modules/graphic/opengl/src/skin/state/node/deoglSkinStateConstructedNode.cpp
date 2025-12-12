@@ -199,16 +199,16 @@ deoglSkinStateConstructedNode::Ref deoglSkinStateConstructedNode::CreateNode(deS
 	
 	switch(identify.GetType()){
 	case deSkinPropertyNodeVisitorIdentify::entGroup:
-		return Ref::New(new deoglSkinStateCNGroup(identify.CastToGroup()));
+		return deoglSkinStateCNGroup::Ref::NewWith(identify.CastToGroup());
 		
 	case deSkinPropertyNodeVisitorIdentify::entImage:
-		return Ref::New(new deoglSkinStateCNImage(identify.CastToImage()));
+		return deoglSkinStateCNImage::Ref::NewWith(identify.CastToImage());
 		
 	case deSkinPropertyNodeVisitorIdentify::entShape:
-		return Ref::New(new deoglSkinStateCNShape(identify.CastToShape()));
+		return deoglSkinStateCNShape::Ref::NewWith(identify.CastToShape());
 		
 	case deSkinPropertyNodeVisitorIdentify::entText:
-		return Ref::New(new deoglSkinStateCNText(identify.CastToText()));
+		return deoglSkinStateCNText::Ref::NewWith(identify.CastToText());
 		
 	default:
 		DETHROW(deeInvalidParam);

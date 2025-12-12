@@ -165,6 +165,8 @@ void deCRSimplyQuit::pPrintTraceValue(int level, deErrorTraceValue *value){
 
 class deCRModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deCRModuleInternal> Ref;
+	
 	deCRModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("SimplyQuit");
 		SetDescription("Simply quits the engine gracefully on system failures.");
@@ -185,7 +187,7 @@ public:
 	}
 };
 
-deInternalModule *deCRRegisterInternalModule(deModuleSystem *system){
-	return new deCRModuleInternal(system);
+deTObjectReference<deInternalModule> deCRRegisterInternalModule(deModuleSystem *system){
+	return deCRModuleInternal::Ref::NewWith(system);
 }
 #endif

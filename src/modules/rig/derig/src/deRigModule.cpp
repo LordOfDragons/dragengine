@@ -1563,6 +1563,8 @@ const char *tagName, bool linearConstraint){
 
 class dermModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<dermModuleInternal> Ref;
+	
 	dermModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DERig");
 		SetDescription("Handles rigs in the XML Drag[en]gine rig format.");
@@ -1584,7 +1586,7 @@ public:
 	}
 };
 
-deInternalModule *dermRegisterInternalModule(deModuleSystem *system){
-	return new dermModuleInternal(system);
+deTObjectReference<deInternalModule> dermRegisterInternalModule(deModuleSystem *system){
+	return dermModuleInternal::Ref::NewWith(system);
 }
 #endif

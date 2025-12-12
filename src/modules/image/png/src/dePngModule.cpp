@@ -422,6 +422,8 @@ void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 
 class dePngModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<dePngModuleInternal> Ref;
+	
 	dePngModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("PNG");
 		SetDescription("Handles images saved in the PNG format (lossless compression).");
@@ -444,7 +446,7 @@ public:
 	}
 };
 
-deInternalModule *depngRegisterInternalModule(deModuleSystem *system){
-	return new dePngModuleInternal(system);
+deTObjectReference<deInternalModule> depngRegisterInternalModule(deModuleSystem *system){
+	return dePngModuleInternal::Ref::NewWith(system);
 }
 #endif

@@ -154,8 +154,8 @@ void delLauncher::Prepare(){
 	pLogger->LogInfoFormat(pLogSource, "Logs path: %s", pPathLogs.GetString());
 	
 	{
-	const delEngineInstance::Ref instance(delEngineInstance::Ref::New(
-		pEngineInstanceFactory->CreateEngineInstance(*this, pEngine.GetLogFile())));
+	const delEngineInstance::Ref instance(pEngineInstanceFactory->
+		CreateEngineInstance(*this, pEngine.GetLogFile()));
 	instance->StartEngine();
 	instance->LoadModules();
 	

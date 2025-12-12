@@ -229,6 +229,8 @@ deBaseGraphicVideoPlayer *deGraphicNull::CreateVideoPlayer(deVideoPlayer*){
 
 class degnModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<degnModuleInternal> Ref;
+	
 	degnModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("NullGraphic");
 		SetDescription("Renders nothing at all. Null modules are useful \
@@ -250,7 +252,7 @@ for testing purpose or servers without a graphic system.");
 	}
 };
 
-deInternalModule *degnRegisterInternalModule(deModuleSystem *system){
-	return new degnModuleInternal(system);
+deTObjectReference<deInternalModule> degnRegisterInternalModule(deModuleSystem *system){
+	return degnModuleInternal::Ref::NewWith(system);
 }
 #endif

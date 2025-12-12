@@ -104,6 +104,15 @@ public:
 	}
 	
 	/**
+	 * \brief Create instance taking over reference.
+	 */
+	template<typename... A> static deTThreadSafeObjectReference New(A&&... args){
+		deTThreadSafeObjectReference reference;
+		reference.pObject = new T(static_cast<A>(args)...);
+		return reference;
+	}
+	
+	/**
 	 * \brief Clean up object reference holder.
 	 * 
 	 * Releases reference if object is not nullptr.
@@ -118,59 +127,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/**
-	 * \brief Set object without adding reference.
-	 * 
-	 * Use this method if the object to hold has been added a reference already. This is
-	 * the case with created objects as well as certain methods returning newly created
-	 * objects. In all these cases the object has to be held without adding a reference.
-	 * For all other situations use the constructor or assignment operator.
-	 * 
-	 * It is allowed for object to be a nullptr object.
-	 */
-	void TakeOver(T *object){
-		if(object == pObject){
-			if(object){
-				// this is required since we are asked to take over the reference. since we
-				// have the same reference already we refuse to take over the reference and
-				// thus without releasing it this reference would be dangling
-				object->FreeReference();
-			}
-			return;
-		}
-		
-		if(pObject){
-			pObject->FreeReference();
-		}
-		pObject = object;
-	}
-	
-private:
-	/** \brief Move reference. */
-	void TakeOver(deTThreadSafeObjectReference &reference){
-		if(pObject){
-			pObject->FreeReference();
-		}
-		
-		pObject = reference.pObject;
-		reference.pObject = nullptr;
-	}
-	
-	/** \brief Take over reference. */
-	void TakeOver(const deTThreadSafeObjectReference &reference){
-		*this = reference;
-	}
-	
-public:
-	/**
-	 * \brief Create instance taking over reference.
-	 * 
-	 * Same as calling TakeOver() but using provided arguments with a 'new' call.
-	 */
-	template<typename... A> void TakeOverWith(A&&... args){
-		TakeOver(new T(static_cast<A>(args)...));
-	}
-	
 	/** \brief Pointer to object. */
 	inline T* Pointer() const{
 		return pObject;
@@ -190,42 +146,6 @@ public:
 	/** \brief Object is not nullptr. */
 	inline bool IsNotNull() const{
 		return pObject != nullptr;
-	}
-	
-	/**
-	 * \brief Create instance taking over reference.
-	 * 
-	 * Same as calling TakeOver() on a new instance but allows for inline use.
-	 */
-	static deTThreadSafeObjectReference New(T *object){
-		deTThreadSafeObjectReference reference;
-		reference.TakeOver(object);
-		return reference;
-	}
-	
-private:
-	/**
-	 * \brief Returns reference to protect against problems.
-	 */
-	static deTThreadSafeObjectReference New(deTThreadSafeObjectReference &reference){
-		return reference;
-	}
-	
-	/**
-	 * \brief Returns reference to protect against problems.
-	 */
-	static deTThreadSafeObjectReference New(const deTThreadSafeObjectReference &reference){
-		return reference;
-	}
-	
-public:
-	/**
-	 * \brief Create instance taking over reference.
-	 * 
-	 * Same as calling New() but using provided arguments with a 'new' call.
-	 */
-	template<typename... A> static deTThreadSafeObjectReference NewWith(A&&... args){
-		return New(new T(static_cast<A>(args)...));
 	}
 	
 	/** \brief Object is nullptr. */

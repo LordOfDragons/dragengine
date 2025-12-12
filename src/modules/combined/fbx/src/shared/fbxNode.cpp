@@ -493,7 +493,7 @@ void fbxNode::pRead(fbxScene &scene, decBaseFileReader &reader, int endOffset){
 	
 	int i;
 	for(i=0; i<countProperties; i++){
-		pProperties.Add(fbxProperty::Ref::New(fbxProperty::Read(reader)));
+		pProperties.Add(fbxProperty::Read(reader));
 	}
 	
 	const int position = reader.GetPosition();

@@ -777,6 +777,8 @@ void deGraphicOpenGl::pCreateParameters() {
 
 class deoglModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deoglModuleInternal> Ref;
+	
 	deoglModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("OpenGL");
 		SetDescription("Render using OpenGL. Requires OpenGL 3.2 or higher.");
@@ -800,7 +802,7 @@ SetModule(VulkanCreateModule(this));
 	}
 };
 
-deInternalModule *deoglRegisterInternalModule(deModuleSystem *system){
-	return new deoglModuleInternal(system);
+deTObjectReference<deInternalModule> deoglRegisterInternalModule(deModuleSystem *system){
+	return deoglModuleInternal::Ref::NewWith(system);
 }
 #endif

@@ -1981,6 +1981,8 @@ void deScriptingDragonScript::pPreprocessMouseMoveDpiAware(deInputEvent &event){
 
 class dedsModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<dedsModuleInternal> Ref;
+	
 	dedsModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DragonScript");
 		SetDescription("Provides access to the Drag[en]gine using the DragonScript \
@@ -2004,7 +2006,7 @@ if you need time critical calculations using another language might be better.")
 	}
 };
 
-deInternalModule *dedsRegisterInternalModule(deModuleSystem *system){
-	return new dedsModuleInternal(system);
+deTObjectReference<deInternalModule> dedsRegisterInternalModule(deModuleSystem *system){
+	return dedsModuleInternal::Ref::NewWith(system);
 }
 #endif

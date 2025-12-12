@@ -96,6 +96,8 @@ deBaseArchiveContainer *deArchiveDelga::CreateContainer(decBaseFileReader *reade
 
 class deadModuleInternal : public deInternalModule{
 public:
+	typedef deTObjectReference<deadModuleInternal> Ref;
+	
 	deadModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("DELGA");
 		SetDescription("Handles archive in the DELGA format.");
@@ -119,7 +121,7 @@ public:
 	}
 };
 
-deInternalModule *deadRegisterInternalModule(deModuleSystem *system){
-	return new deadModuleInternal(system);
+deTObjectReference<deInternalModule> deadRegisterInternalModule(deModuleSystem *system){
+	return deadModuleInternal::Ref::NewWith(system);
 }
 #endif

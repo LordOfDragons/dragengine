@@ -266,11 +266,11 @@ void deoglRenderPlanSkyLight::StartFindContent(){
 	}else{
 		deParallelProcessing &pp = pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing();
 		
-		pTaskFindContent.TakeOver(new deoglRPTSkyLightFindContent(*this));
+		pTaskFindContent = deoglRPTSkyLightFindContent::Ref::New(*this);
 		pp.AddTaskAsync(pTaskFindContent);
 		
 		if(pPlan.GetUpdateGIState()){
-			pTaskGIFindContent.TakeOver(new deoglRPTSkyLightGIFindContent(*this));
+			pTaskGIFindContent = deoglRPTSkyLightGIFindContent::Ref::New(*this);
 			pp.AddTaskAsync(pTaskGIFindContent);
 		}
 	}
@@ -293,7 +293,7 @@ void deoglRenderPlanSkyLight::RenderOcclusionTests(){
 	pWaitFinishedGIFindContent();
 	
 	if(pPlan.GetUpdateGIState()){
-		pTaskGIUpdateRT.TakeOver(new deoglRPTSkyLightGIUpdateRT(*this));
+		pTaskGIUpdateRT = deoglRPTSkyLightGIUpdateRT::Ref::New(*this);
 		pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskGIUpdateRT);
 	}
 	
@@ -326,10 +326,10 @@ void deoglRenderPlanSkyLight::StartBuildRT(){
 	// small amount of content so they can be process sequentially. the 4th cascade on the
 	// other hand usually has large amount of content. for this reason the 4th cascade
 	// render task is build in a separate task
-	pTaskBuildRT1.TakeOver(new deoglRPTSkyLightBuildRT(*this, pSLCollideList1, 0, 2));
+	pTaskBuildRT1 = deoglRPTSkyLightBuildRT::Ref::New(*this, pSLCollideList1, 0, 2);
 	pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskBuildRT1);
 	
-	pTaskBuildRT2.TakeOver(new deoglRPTSkyLightBuildRT(*this, pSLCollideList2, 3, 3));
+	pTaskBuildRT2 = deoglRPTSkyLightBuildRT::Ref::New(*this, pSLCollideList2, 3, 3);
 	pPlan.GetRenderThread().GetOgl().GetGameEngine()->GetParallelProcessing().AddTaskAsync(pTaskBuildRT2);
 }
 
