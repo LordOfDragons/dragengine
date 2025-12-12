@@ -100,7 +100,7 @@ public:
 	inline const deColliderComponent::Ref &GetColliderInteraction() const{ return pColliderInteraction; }
 	
 	/** \brief Animator. */
-	inline deAnimatorInstance *GetAnimator() const{ return pAnimator; }
+	inline const deAnimatorInstance::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** \brief Playback controller index. */
 	inline int GetPlaybackControllerIndex() const{ return pPlaybackControllerIndex; }

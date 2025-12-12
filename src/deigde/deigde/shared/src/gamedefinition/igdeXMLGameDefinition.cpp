@@ -143,7 +143,6 @@ void igdeXMLGameDefinition::Load(decBaseFileReader &file, igdeGameDefinition &ga
 //////////////////////
 
 void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, igdeGameDefinition &gamedef){
-	igdeGDProperty *property = NULL;
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){
@@ -222,36 +221,24 @@ void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, i
 			pParseGDCategories(*tag, gamedef);
 			
 		}else if(tagName == "decalProperty"){
-			property = NULL;
-			
 			try{
-				property = new igdeGDProperty(GetAttributeString(*tag, "name"));
-				pParseProperty(*tag, *property);
+				const igdeGDProperty::Ref property(igdeGDProperty::Ref::NewWith(
+					GetAttributeString(*tag, "name")));
+				pParseProperty(*tag, property);
 				
 				gamedef.GetListDecalProperties().Add(property);
-				property->FreeReference();
-				
 			}catch(const deException &e){
-				if(property){
-					property->FreeReference();
-				}
 				LogErrorExceptionTag(*tag, e);
 			}
 			
 		}else if(tagName == "property"){
-			property = NULL;
-			
 			try{
-				property = new igdeGDProperty(GetAttributeString(*tag, "name"));
-				pParseProperty(*tag, *property);
+				const igdeGDProperty::Ref property(igdeGDProperty::Ref::NewWith(
+					GetAttributeString(*tag, "name")));
+				pParseProperty(*tag, property);
 				
 				gamedef.GetListWorldProperties().Add(property);
-				property->FreeReference();
-				
 			}catch(const deException &e){
-				if(property){
-					property->FreeReference();
-				}
 				LogErrorExceptionTag(*tag, e);
 			}
 			
@@ -262,13 +249,10 @@ void igdeXMLGameDefinition::pParseGameDefinition(const decXmlElementTag &root, i
 }
 
 void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDefinition &gamedef){
+	const igdeGDClass::Ref gdClass(igdeGDClass::Ref::NewWith(GetAttributeString(root, "name")));
 	decStringDictionary propertyValues;
-	igdeGDProperty *property = NULL;
-	igdeGDClass::Ref gdClass;
 	const char *scaleMode;
 	int i;
-	
-	gdClass.TakeOver(new igdeGDClass(GetAttributeString(root, "name")));
 	
 	for(i=0; i<root.GetElementCount(); i++){
 		decXmlElementTag * const tag = root.GetElementIfTag(i);
@@ -287,19 +271,13 @@ void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDe
 			// deprecated
 			
 		}else if(tagName == "property"){
-			property = NULL;
-			
 			try{
-				property = new igdeGDProperty(GetAttributeString(*tag, "name"));
-				pParseProperty(*tag, *property);
+				const igdeGDProperty::Ref property(igdeGDProperty::Ref::NewWith(
+					GetAttributeString(*tag, "name")));
+				pParseProperty(*tag, property);
 				
 				gdClass->AddProperty(property);
-				property->FreeReference();
-				
 			}catch(const deException &){
-				if(property){
-					property->FreeReference();
-				}
 				throw;
 			}
 			
@@ -308,19 +286,13 @@ void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDe
 				ReadMultilineString(*tag));
 			
 		}else if(tagName == "textureProperty"){
-			property = NULL;
-			
 			try{
-				property = new igdeGDProperty(GetAttributeString(*tag, "name"));
-				pParseProperty(*tag, *property);
+				const igdeGDProperty::Ref property(igdeGDProperty::Ref::NewWith(
+					GetAttributeString(*tag, "name")));
+				pParseProperty(*tag, property);
 				
 				gdClass->AddTextureProperty(property);
-				property->FreeReference();
-				
 			}catch(const deException &e){
-				if(property){
-					property->FreeReference();
-				}
 				LogErrorExceptionTag(*tag, e);
 			}
 			
@@ -463,263 +435,239 @@ void igdeXMLGameDefinition::pParseClass(const decXmlElementTag &root, igdeGameDe
 
 void igdeXMLGameDefinition::pParseClassComponent(const decXmlElementTag &root, igdeGDClass &gdclass){
 	const int elementCount = root.GetElementCount();
-	igdeGDCComponent *component = NULL;
+	const igdeGDCComponent::Ref component(igdeGDCComponent::Ref::NewWith());
 	const char *value;
 	int e;
 	
-	try{
-		component = new igdeGDCComponent;
+	for(e=0; e<elementCount; e++){
+		const decXmlElementTag * const  tag = root.GetElementIfTag(e);
+		if(!tag){
+			continue;
+		}
 		
-		for(e=0; e<elementCount; e++){
-			const decXmlElementTag * const  tag = root.GetElementIfTag(e);
-			if(!tag){
-				continue;
-			}
+		const decString &tagName = tag->GetName();
+		if(tagName == "model"){
+			component->SetModelPath(GetCDataString(*tag));
 			
-			const decString &tagName = tag->GetName();
-			if(tagName == "model"){
-				component->SetModelPath(GetCDataString(*tag));
+		}else if(tagName == "skin"){
+			component->SetSkinPath(GetCDataString(*tag));
+			
+		}else if(tagName == "rig"){
+			component->SetRigPath(GetCDataString(*tag));
+			
+		}else if(tagName == "animator"){
+			component->SetAnimatorPath(GetCDataString(*tag));
+			
+		}else if(tagName == "occlusionMesh"){
+			component->SetOcclusionMeshPath(GetCDataString(*tag));
+			
+		}else if(tagName == "audioModel"){
+			component->SetAudioModelPath(GetCDataString(*tag));
+			
+		}else if(tagName == "playbackController"){
+			component->SetPlaybackController(GetCDataString(*tag));
+			
+		}else if(tagName == "noScaling"){
+			component->SetDoNotScale(GetCDataBool(*tag));
+			
+		}else if(tagName == "static"){
+			component->SetStatic(GetCDataBool(*tag));
+			
+		}else if(tagName == "partialHide"){
+			component->SetPartialHide(GetCDataBool(*tag));
+			
+		}else if(tagName == "attachTarget"){
+			component->SetAttachTarget(GetCDataBool(*tag));
+			
+		}else if(tagName == "colliderResponseType"){
+			value = GetCDataString(*tag);
+			
+			if(strcmp(value, "static") == 0){
+				component->SetColliderResponseType(deCollider::ertStatic);
 				
-			}else if(tagName == "skin"){
-				component->SetSkinPath(GetCDataString(*tag));
+			}else if(strcmp(value, "kinematic") == 0){
+				component->SetColliderResponseType(deCollider::ertKinematic);
 				
-			}else if(tagName == "rig"){
-				component->SetRigPath(GetCDataString(*tag));
-				
-			}else if(tagName == "animator"){
-				component->SetAnimatorPath(GetCDataString(*tag));
-				
-			}else if(tagName == "occlusionMesh"){
-				component->SetOcclusionMeshPath(GetCDataString(*tag));
-				
-			}else if(tagName == "audioModel"){
-				component->SetAudioModelPath(GetCDataString(*tag));
-				
-			}else if(tagName == "playbackController"){
-				component->SetPlaybackController(GetCDataString(*tag));
-				
-			}else if(tagName == "noScaling"){
-				component->SetDoNotScale(GetCDataBool(*tag));
-				
-			}else if(tagName == "static"){
-				component->SetStatic(GetCDataBool(*tag));
-				
-			}else if(tagName == "partialHide"){
-				component->SetPartialHide(GetCDataBool(*tag));
-				
-			}else if(tagName == "attachTarget"){
-				component->SetAttachTarget(GetCDataBool(*tag));
-				
-			}else if(tagName == "colliderResponseType"){
-				value = GetCDataString(*tag);
-				
-				if(strcmp(value, "static") == 0){
-					component->SetColliderResponseType(deCollider::ertStatic);
-					
-				}else if(strcmp(value, "kinematic") == 0){
-					component->SetColliderResponseType(deCollider::ertKinematic);
-					
-				}else if(strcmp(value, "dynamic") == 0){
-					component->SetColliderResponseType(deCollider::ertDynamic);
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
-				
-			}else if(tagName == "renderEnvMap"){
-				component->SetRenderEnvMap(GetCDataBool(*tag));
-				
-			}else if(tagName == "affectsAudio"){
-				component->SetAffectsAudio(GetCDataBool(*tag));
-				
-			}else if(tagName == "lightShadowIgnore"){
-				component->SetLightShadowIgnore(GetCDataBool(*tag));
-				
-			}else if(tagName == "position"){
-				decVector position;
-				ReadVector(*tag, position);
-				component->SetPosition(position);
-				
-			}else if(tagName == "orientation"){
-				decVector rotation;
-				ReadVector(*tag, rotation);
-				component->SetOrientation(decQuaternion::CreateFromEuler(rotation * DEG2RAD));
-				
-			}else if(tagName == "bone"){
-				component->SetBoneName(GetCDataString(*tag));
-				
-			}else if(tagName == "texture"){
-				pParseClassComponentTexture(*tag, gdclass, *component);
-				
-			}else if(tagName == "link"){
-				value = GetAttributeString(*tag, "target");
-				
-				if(strcmp(value, "model") == 0){
-					component->SetPropertyName(igdeGDCComponent::epModel, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "skin") == 0){
-					component->SetPropertyName(igdeGDCComponent::epSkin, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "rig") == 0){
-					component->SetPropertyName(igdeGDCComponent::epRig, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "animator") == 0){
-					component->SetPropertyName(igdeGDCComponent::epAnimator, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "playbackController") == 0){
-					component->SetPropertyName(igdeGDCComponent::epPlaybackController, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "occlusionMesh") == 0){
-					component->SetPropertyName(igdeGDCComponent::epOcclusionMesh, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "audioModel") == 0){
-					component->SetPropertyName(igdeGDCComponent::epAudioModel, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "renderEnvMap") == 0){
-					component->SetPropertyName(igdeGDCComponent::epRenderEnvMap, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "affectsAudio") == 0){
-					component->SetPropertyName(igdeGDCComponent::epAffectsAudio, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachPosition") == 0){
-					component->SetPropertyName(igdeGDCComponent::epAttachPosition, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachRotation") == 0){
-					component->SetPropertyName(igdeGDCComponent::epAttachRotation, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "lightShadowIgnore") == 0){
-					component->SetPropertyName(igdeGDCComponent::epLightShadowIgnore, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "animation") == 0){
-					component->SetPropertyName(igdeGDCComponent::epAnimation, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "move") == 0){
-					component->SetPropertyName(igdeGDCComponent::epMove, GetAttributeString(*tag, "property"));
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
+			}else if(strcmp(value, "dynamic") == 0){
+				component->SetColliderResponseType(deCollider::ertDynamic);
 				
 			}else{
-				LogWarnUnknownTag(root, *tag);
+				LogWarnUnknownValue(*tag, value);
 			}
+			
+		}else if(tagName == "renderEnvMap"){
+			component->SetRenderEnvMap(GetCDataBool(*tag));
+			
+		}else if(tagName == "affectsAudio"){
+			component->SetAffectsAudio(GetCDataBool(*tag));
+			
+		}else if(tagName == "lightShadowIgnore"){
+			component->SetLightShadowIgnore(GetCDataBool(*tag));
+			
+		}else if(tagName == "position"){
+			decVector position;
+			ReadVector(*tag, position);
+			component->SetPosition(position);
+			
+		}else if(tagName == "orientation"){
+			decVector rotation;
+			ReadVector(*tag, rotation);
+			component->SetOrientation(decQuaternion::CreateFromEuler(rotation * DEG2RAD));
+			
+		}else if(tagName == "bone"){
+			component->SetBoneName(GetCDataString(*tag));
+			
+		}else if(tagName == "texture"){
+			pParseClassComponentTexture(*tag, gdclass, *component);
+			
+		}else if(tagName == "link"){
+			value = GetAttributeString(*tag, "target");
+			
+			if(strcmp(value, "model") == 0){
+				component->SetPropertyName(igdeGDCComponent::epModel, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "skin") == 0){
+				component->SetPropertyName(igdeGDCComponent::epSkin, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "rig") == 0){
+				component->SetPropertyName(igdeGDCComponent::epRig, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "animator") == 0){
+				component->SetPropertyName(igdeGDCComponent::epAnimator, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "playbackController") == 0){
+				component->SetPropertyName(igdeGDCComponent::epPlaybackController, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "occlusionMesh") == 0){
+				component->SetPropertyName(igdeGDCComponent::epOcclusionMesh, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "audioModel") == 0){
+				component->SetPropertyName(igdeGDCComponent::epAudioModel, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "renderEnvMap") == 0){
+				component->SetPropertyName(igdeGDCComponent::epRenderEnvMap, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "affectsAudio") == 0){
+				component->SetPropertyName(igdeGDCComponent::epAffectsAudio, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "attachPosition") == 0){
+				component->SetPropertyName(igdeGDCComponent::epAttachPosition, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "attachRotation") == 0){
+				component->SetPropertyName(igdeGDCComponent::epAttachRotation, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "lightShadowIgnore") == 0){
+				component->SetPropertyName(igdeGDCComponent::epLightShadowIgnore, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "animation") == 0){
+				component->SetPropertyName(igdeGDCComponent::epAnimation, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "move") == 0){
+				component->SetPropertyName(igdeGDCComponent::epMove, GetAttributeString(*tag, "property"));
+				
+			}else{
+				LogWarnUnknownValue(*tag, value);
+			}
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		
-		gdclass.AddComponent(component);
-		component->FreeReference();
-		
-	}catch(const deException &){
-		if(component){
-			component->FreeReference();
-		}
-		
-		throw;
 	}
+	
+	gdclass.AddComponent(component);
 }
 
 void igdeXMLGameDefinition::pParseClassBillboard(const decXmlElementTag &root, igdeGDClass &gdclass){
+	const igdeGDCBillboard::Ref billboard(igdeGDCBillboard::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	igdeGDCBillboard *billboard = NULL;
 	const char *value;
 	int i;
 	
-	try{
-		billboard = new igdeGDCBillboard;
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
 		
-		for(i=0; i<elementCount; i++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
+		const decString &tagName = tag->GetName();
+		if(tagName == "skin"){
+			billboard->SetSkinPath(GetCDataString(*tag));
 			
-			const decString &tagName = tag->GetName();
-			if(tagName == "skin"){
-				billboard->SetSkinPath(GetCDataString(*tag));
+		}else if(tagName == "axis"){
+			decVector axis(0.0f, 1.0f, 0.0f);
+			ReadVector(*tag, axis);
+			billboard->SetAxis(axis);
+			
+		}else if(tagName == "size"){
+			decVector2 size(1.0f, 1.0f);
+			ReadVector2(*tag, size);
+			billboard->SetSize(size);
+			
+		}else if(tagName == "offset"){
+			decVector2 offset;
+			ReadVector2(*tag, offset);
+			billboard->SetOffset(offset);
+			
+		}else if(tagName == "locked"){
+			billboard->SetLocked(GetCDataBool(*tag));
+			
+		}else if(tagName == "spherical"){
+			billboard->SetSpherical(GetCDataBool(*tag));
+			
+		}else if(tagName == "sizeFixedToScreen"){
+			billboard->SetSizeFixedToScreen(GetCDataBool(*tag));
+			
+		}else if(tagName == "noScaling"){
+			billboard->SetDoNotScale(GetCDataBool(*tag));
+			
+		}else if(tagName == "partialHide"){
+			billboard->SetPartialHide(GetCDataBool(*tag));
+			
+		}else if(tagName == "renderEnvMap"){
+			billboard->SetRenderEnvMap(GetCDataBool(*tag));
+			
+		}else if(tagName == "position"){
+			decVector position;
+			ReadVector(*tag, position);
+			billboard->SetPosition(position);
+			
+		}else if(tagName == "bone"){
+			billboard->SetBoneName(GetCDataString(*tag));
+			
+		}else if(tagName == "link"){
+			value = GetAttributeString(*tag, "target");
+			
+			if(strcmp(value, "skin") == 0){
+				billboard->SetPropertyName(igdeGDCBillboard::epSkin, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "axis"){
-				decVector axis(0.0f, 1.0f, 0.0f);
-				ReadVector(*tag, axis);
-				billboard->SetAxis(axis);
+			}else if(strcmp(value, "axis") == 0){
+				billboard->SetPropertyName(igdeGDCBillboard::epAxis, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "size"){
-				decVector2 size(1.0f, 1.0f);
-				ReadVector2(*tag, size);
-				billboard->SetSize(size);
+			}else if(strcmp(value, "offset") == 0){
+				billboard->SetPropertyName(igdeGDCBillboard::epOffset, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "offset"){
-				decVector2 offset;
-				ReadVector2(*tag, offset);
-				billboard->SetOffset(offset);
+			}else if(strcmp(value, "locked") == 0){
+				billboard->SetPropertyName(igdeGDCBillboard::epLocked, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "locked"){
-				billboard->SetLocked(GetCDataBool(*tag));
+			}else if(strcmp(value, "spherical") == 0){
+				billboard->SetPropertyName(igdeGDCBillboard::epSpherical, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "spherical"){
-				billboard->SetSpherical(GetCDataBool(*tag));
+			}else if(strcmp(value, "renderEnvMap") == 0){
+				billboard->SetPropertyName(igdeGDCBillboard::epRenderEnvMap, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "sizeFixedToScreen"){
-				billboard->SetSizeFixedToScreen(GetCDataBool(*tag));
-				
-			}else if(tagName == "noScaling"){
-				billboard->SetDoNotScale(GetCDataBool(*tag));
-				
-			}else if(tagName == "partialHide"){
-				billboard->SetPartialHide(GetCDataBool(*tag));
-				
-			}else if(tagName == "renderEnvMap"){
-				billboard->SetRenderEnvMap(GetCDataBool(*tag));
-				
-			}else if(tagName == "position"){
-				decVector position;
-				ReadVector(*tag, position);
-				billboard->SetPosition(position);
-				
-			}else if(tagName == "bone"){
-				billboard->SetBoneName(GetCDataString(*tag));
-				
-			}else if(tagName == "link"){
-				value = GetAttributeString(*tag, "target");
-				
-				if(strcmp(value, "skin") == 0){
-					billboard->SetPropertyName(igdeGDCBillboard::epSkin, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "axis") == 0){
-					billboard->SetPropertyName(igdeGDCBillboard::epAxis, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "offset") == 0){
-					billboard->SetPropertyName(igdeGDCBillboard::epOffset, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "locked") == 0){
-					billboard->SetPropertyName(igdeGDCBillboard::epLocked, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "spherical") == 0){
-					billboard->SetPropertyName(igdeGDCBillboard::epSpherical, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "renderEnvMap") == 0){
-					billboard->SetPropertyName(igdeGDCBillboard::epRenderEnvMap, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachPosition") == 0){
-					billboard->SetPropertyName(igdeGDCBillboard::epAttachPosition, GetAttributeString(*tag, "property"));
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
+			}else if(strcmp(value, "attachPosition") == 0){
+				billboard->SetPropertyName(igdeGDCBillboard::epAttachPosition, GetAttributeString(*tag, "property"));
 				
 			}else{
-				LogWarnUnknownTag(root, *tag);
+				LogWarnUnknownValue(*tag, value);
 			}
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		
-		gdclass.AddBillboard(billboard);
-		billboard->FreeReference();
-		
-	}catch(const deException &){
-		if(billboard){
-			billboard->FreeReference();
-		}
-		
-		throw;
 	}
+	
+	gdclass.AddBillboard(billboard);
 }
 
 void igdeXMLGameDefinition::pParseClassInherit(const decXmlElementTag &root, igdeGDClass &gdclass){
@@ -749,1019 +697,917 @@ void igdeXMLGameDefinition::pParseClassInherit(const decXmlElementTag &root, igd
 
 void igdeXMLGameDefinition::pParseClassComponentTexture(const decXmlElementTag &root,
 igdeGDClass&, igdeGDCComponent &gdccomponent){
+	const igdeGDCCTexture::Ref texture(igdeGDCCTexture::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
 	decStringDictionary properties;
-	igdeGDCCTexture *texture = NULL;
 	int e;
 	
-	try{
-		texture = new igdeGDCCTexture;
-		
-		texture->SetName(GetAttributeString(root, "name"));
-		if(gdccomponent.GetTextureList().HasNamed(texture->GetName().GetString())){
-			LogWarnGenericProblemValue(root, texture->GetName().GetString(), "A texture with this name exists already.");
-		}
-		
-		for(e=0; e<elementCount; e++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(!tag){
-				continue;
-			}
-			
-			const decString &tagName = tag->GetName();
-			if(tagName == "skin"){
-				texture->SetPathSkin(GetCDataString(*tag));
-				
-			}else if(tagName == "offset"){
-				decVector2 offset;
-				ReadVector2(*tag, offset);
-				texture->SetOffset(offset);
-				
-			}else if(tagName == "scale"){
-				decVector2 scale(1.0f, 1.0f);
-				ReadVector2(*tag, scale);
-				texture->SetScale(scale);
-				
-			}else if(tagName == "rotate"){
-				texture->SetRotation(GetCDataFloat(*tag) * DEG2RAD);
-				
-			}else if(tagName == "tint"){
-				decColor color;
-				ReadColor(*tag, color);
-				texture->SetColorTint(color);
-				
-			}else if(tagName == "property"){
-				properties.SetAt(GetAttributeString(*tag, "name"),
-					ReadMultilineString(*tag));
-				
-			}else{
-				LogWarnUnknownTag(root, *tag);
-			}
-		}
-		
-		texture->SetProperties(properties);
-		
-		gdccomponent.GetTextureList().Add(texture);
-		texture->FreeReference();
-		
-	}catch(const deException &){
-		if(texture){
-			texture->FreeReference();
-		}
-		
-		throw;
+	texture->SetName(GetAttributeString(root, "name"));
+	if(gdccomponent.GetTextureList().HasNamed(texture->GetName().GetString())){
+		LogWarnGenericProblemValue(root, texture->GetName().GetString(), "A texture with this name exists already.");
 	}
+	
+	for(e=0; e<elementCount; e++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(e);
+		if(!tag){
+			continue;
+		}
+		
+		const decString &tagName = tag->GetName();
+		if(tagName == "skin"){
+			texture->SetPathSkin(GetCDataString(*tag));
+			
+		}else if(tagName == "offset"){
+			decVector2 offset;
+			ReadVector2(*tag, offset);
+			texture->SetOffset(offset);
+			
+		}else if(tagName == "scale"){
+			decVector2 scale(1.0f, 1.0f);
+			ReadVector2(*tag, scale);
+			texture->SetScale(scale);
+			
+		}else if(tagName == "rotate"){
+			texture->SetRotation(GetCDataFloat(*tag) * DEG2RAD);
+			
+		}else if(tagName == "tint"){
+			decColor color;
+			ReadColor(*tag, color);
+			texture->SetColorTint(color);
+			
+		}else if(tagName == "property"){
+			properties.SetAt(GetAttributeString(*tag, "name"),
+				ReadMultilineString(*tag));
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
+		}
+	}
+	
+	texture->SetProperties(properties);
+	
+	gdccomponent.GetTextureList().Add(texture);
 }
 
 void igdeXMLGameDefinition::pParseClassLight(const decXmlElementTag &root, igdeGDClass &gdclass){
-	igdeGDCLight *gdcLight = NULL;
+	const igdeGDCLight::Ref gdcLight(igdeGDCLight::Ref::NewWith());
 	const char *value;
 	int i;
 	
-	try{
-		gdcLight = new igdeGDCLight;
+	for(i=0; i<root.GetElementCount(); i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
 		
-		for(i=0; i<root.GetElementCount(); i++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
+		const decString &tagName = tag->GetName();
+		if(tagName == "position"){
+			decVector position;
+			ReadVector(*tag, position);
+			gdcLight->SetPosition(position);
 			
-			const decString &tagName = tag->GetName();
-			if(tagName == "position"){
-				decVector position;
-				ReadVector(*tag, position);
-				gdcLight->SetPosition(position);
+		}else if(tagName == "orientation"){
+			decVector rotation;
+			ReadVector(*tag, rotation);
+			gdcLight->SetOrientation(decQuaternion::CreateFromEuler(rotation * DEG2RAD));
+			
+		}else if(tagName == "bone"){
+			gdcLight->SetBoneName(GetCDataString(*tag));
+			
+		}else if(tagName == "color"){
+			gdcLight->SetColor(decColor(
+				GetAttributeFloat(*tag, "r"),
+				GetAttributeFloat(*tag, "g"),
+				GetAttributeFloat(*tag, "b")));
+			
+		}else if(tagName == "type"){
+			value = GetCDataString(*tag);
+			
+			if(strcmp(value, "point") == 0){
+				gdcLight->SetType(deLight::eltPoint);
 				
-			}else if(tagName == "orientation"){
-				decVector rotation;
-				ReadVector(*tag, rotation);
-				gdcLight->SetOrientation(decQuaternion::CreateFromEuler(rotation * DEG2RAD));
+			}else if(strcmp(value, "spot") == 0){
+				gdcLight->SetType(deLight::eltSpot);
 				
-			}else if(tagName == "bone"){
-				gdcLight->SetBoneName(GetCDataString(*tag));
-				
-			}else if(tagName == "color"){
-				gdcLight->SetColor(decColor(
-					GetAttributeFloat(*tag, "r"),
-					GetAttributeFloat(*tag, "g"),
-					GetAttributeFloat(*tag, "b")));
-				
-			}else if(tagName == "type"){
-				value = GetCDataString(*tag);
-				
-				if(strcmp(value, "point") == 0){
-					gdcLight->SetType(deLight::eltPoint);
-					
-				}else if(strcmp(value, "spot") == 0){
-					gdcLight->SetType(deLight::eltSpot);
-					
-				}else if(strcmp(value, "projector") == 0){
-					gdcLight->SetType(deLight::eltProjector);
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
-				
-			}else if(tagName == "intensity"){
-				gdcLight->SetIntensity(GetCDataFloat(*tag));
-				
-			}else if(tagName == "range"){
-				gdcLight->SetRange(GetCDataFloat(*tag));
-				
-			}else if(tagName == "ambientRatio"){
-				gdcLight->SetAmbientRatio(GetCDataFloat(*tag));
-				
-			}else if(tagName == "halfIntensityDistance"){
-				gdcLight->SetHalfIntensityDistance(GetCDataFloat(*tag));
-				
-			}else if(tagName == "spotAngle"){
-				gdcLight->SetSpotAngle(GetCDataFloat(*tag));
-				
-			}else if(tagName == "spotRatio"){
-				gdcLight->SetSpotRatio(GetCDataFloat(*tag));
-				
-			}else if(tagName == "spotSmoothness"){
-				gdcLight->SetSpotSmoothness(GetCDataFloat(*tag));
-				
-			}else if(tagName == "spotExponent"){
-				gdcLight->SetSpotExponent(GetCDataFloat(*tag));
-				
-			}else if(tagName == "activated"){
-				gdcLight->SetActivated(GetCDataBool(*tag));
-				
-			}else if(tagName == "castShadows"){
-				gdcLight->SetCastShadows(GetCDataBool(*tag));
-				
-			}else if(tagName == "lightSkin"){
-				gdcLight->SetLightSkinPath(GetCDataString(*tag));
-				
-			}else if(tagName == "hintLightImportance"){
-				gdcLight->SetHintLightImportance(GetCDataInt(*tag));
-				
-			}else if(tagName == "hintShadowImportance"){
-				gdcLight->SetHintShadowImportance(GetCDataInt(*tag));
-				
-			}else if(tagName == "hintMovement"){
-				value = GetCDataString(*tag);
-				
-				if(strcmp(value, "static") == 0){
-					gdcLight->SetHintMovement(deLight::emhStationary);
-					
-				}else if(strcmp(value, "jittering") == 0){
-					gdcLight->SetHintMovement(deLight::emhJittering);
-					
-				}else if(strcmp(value, "dynamic") == 0){
-					gdcLight->SetHintMovement(deLight::emhDynamic);
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
-				
-			}else if(tagName == "hintParameter"){
-				value = GetCDataString(*tag);
-				
-				if(strcmp(value, "static") == 0){
-					gdcLight->SetHintParameter(deLight::ephStatic);
-					
-				}else if(strcmp(value, "activation") == 0){
-					gdcLight->SetHintParameter(deLight::ephActivation);
-					
-				}else if(strcmp(value, "flicker") == 0){
-					gdcLight->SetHintParameter(deLight::ephFlicker);
-					
-				}else if(strcmp(value, "dynamic") == 0){
-					gdcLight->SetHintParameter(deLight::ephDynamic);
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
-				
-			}else if(tagName == "link"){
-				value = GetAttributeString(*tag, "target");
-				
-				if(strcmp(value, "type") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epType, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "color") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epColor, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "intensity") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epIntensity, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "range") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epRange, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "ambientRatio") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epAmbientRatio, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "halfIntensityDistance") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epHalfIntDist, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "spotAngle") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epSpotAngle, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "spotRatio") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epSpotRatio, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "spotSmoothness") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epSpotSmoothness, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "spotExponent") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epSpotExponent, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "lightSkin") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epLightSkin, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "activated") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epActivated, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "castShadows") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epCastShadows, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "hintLightImportance") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epHintLightImportance, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "hintShadowImportance") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epHintShadowImportance, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachPosition") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epAttachPosition, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachRotation") == 0){
-					gdcLight->SetPropertyName(igdeGDCLight::epAttachRotation, GetAttributeString(*tag, "property"));
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
-				
-			}else if(tagName == "trigger"){
-				value = GetAttributeString(*tag, "target");
-				
-				if(strcmp(value, "activated") == 0){
-					gdcLight->SetTriggerName(igdeGDCLight::etActivated, GetAttributeString(*tag, "property"));
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
+			}else if(strcmp(value, "projector") == 0){
+				gdcLight->SetType(deLight::eltProjector);
 				
 			}else{
-				LogWarnUnknownTag(root, *tag);
+				LogWarnUnknownValue(*tag, value);
 			}
+			
+		}else if(tagName == "intensity"){
+			gdcLight->SetIntensity(GetCDataFloat(*tag));
+			
+		}else if(tagName == "range"){
+			gdcLight->SetRange(GetCDataFloat(*tag));
+			
+		}else if(tagName == "ambientRatio"){
+			gdcLight->SetAmbientRatio(GetCDataFloat(*tag));
+			
+		}else if(tagName == "halfIntensityDistance"){
+			gdcLight->SetHalfIntensityDistance(GetCDataFloat(*tag));
+			
+		}else if(tagName == "spotAngle"){
+			gdcLight->SetSpotAngle(GetCDataFloat(*tag));
+			
+		}else if(tagName == "spotRatio"){
+			gdcLight->SetSpotRatio(GetCDataFloat(*tag));
+			
+		}else if(tagName == "spotSmoothness"){
+			gdcLight->SetSpotSmoothness(GetCDataFloat(*tag));
+			
+		}else if(tagName == "spotExponent"){
+			gdcLight->SetSpotExponent(GetCDataFloat(*tag));
+			
+		}else if(tagName == "activated"){
+			gdcLight->SetActivated(GetCDataBool(*tag));
+			
+		}else if(tagName == "castShadows"){
+			gdcLight->SetCastShadows(GetCDataBool(*tag));
+			
+		}else if(tagName == "lightSkin"){
+			gdcLight->SetLightSkinPath(GetCDataString(*tag));
+			
+		}else if(tagName == "hintLightImportance"){
+			gdcLight->SetHintLightImportance(GetCDataInt(*tag));
+			
+		}else if(tagName == "hintShadowImportance"){
+			gdcLight->SetHintShadowImportance(GetCDataInt(*tag));
+			
+		}else if(tagName == "hintMovement"){
+			value = GetCDataString(*tag);
+			
+			if(strcmp(value, "static") == 0){
+				gdcLight->SetHintMovement(deLight::emhStationary);
+				
+			}else if(strcmp(value, "jittering") == 0){
+				gdcLight->SetHintMovement(deLight::emhJittering);
+				
+			}else if(strcmp(value, "dynamic") == 0){
+				gdcLight->SetHintMovement(deLight::emhDynamic);
+				
+			}else{
+				LogWarnUnknownValue(*tag, value);
+			}
+			
+		}else if(tagName == "hintParameter"){
+			value = GetCDataString(*tag);
+			
+			if(strcmp(value, "static") == 0){
+				gdcLight->SetHintParameter(deLight::ephStatic);
+				
+			}else if(strcmp(value, "activation") == 0){
+				gdcLight->SetHintParameter(deLight::ephActivation);
+				
+			}else if(strcmp(value, "flicker") == 0){
+				gdcLight->SetHintParameter(deLight::ephFlicker);
+				
+			}else if(strcmp(value, "dynamic") == 0){
+				gdcLight->SetHintParameter(deLight::ephDynamic);
+				
+			}else{
+				LogWarnUnknownValue(*tag, value);
+			}
+			
+		}else if(tagName == "link"){
+			value = GetAttributeString(*tag, "target");
+			
+			if(strcmp(value, "type") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epType, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "color") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epColor, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "intensity") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epIntensity, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "range") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epRange, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "ambientRatio") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epAmbientRatio, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "halfIntensityDistance") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epHalfIntDist, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "spotAngle") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epSpotAngle, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "spotRatio") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epSpotRatio, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "spotSmoothness") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epSpotSmoothness, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "spotExponent") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epSpotExponent, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "lightSkin") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epLightSkin, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "activated") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epActivated, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "castShadows") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epCastShadows, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "hintLightImportance") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epHintLightImportance, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "hintShadowImportance") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epHintShadowImportance, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "attachPosition") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epAttachPosition, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "attachRotation") == 0){
+				gdcLight->SetPropertyName(igdeGDCLight::epAttachRotation, GetAttributeString(*tag, "property"));
+				
+			}else{
+				LogWarnUnknownValue(*tag, value);
+			}
+			
+		}else if(tagName == "trigger"){
+			value = GetAttributeString(*tag, "target");
+			
+			if(strcmp(value, "activated") == 0){
+				gdcLight->SetTriggerName(igdeGDCLight::etActivated, GetAttributeString(*tag, "property"));
+				
+			}else{
+				LogWarnUnknownValue(*tag, value);
+			}
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		
-		gdclass.AddLight(gdcLight);
-		gdcLight->FreeReference();
-		
-	}catch(const deException &){
-		if(gdcLight){
-			gdcLight->FreeReference();
-		}
-		throw;
 	}
+	
+	gdclass.AddLight(gdcLight);
 }
 
 void igdeXMLGameDefinition::pParseClassSnapPoint(const decXmlElementTag &root,
 igdeGDClass &gdclass){
+	const igdeGDCSnapPoint::Ref snappoint(igdeGDCSnapPoint::Ref::NewWith());
 	const int count = root.GetElementCount();
-	igdeGDCSnapPoint *snappoint = NULL;
 	int i;
 	
-	try{
-		snappoint = new igdeGDCSnapPoint;
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
 		
-		for(i=0; i<count; i++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
+		const decString &tagName = tag->GetName();
+		if(tagName == "name"){
+			snappoint->SetName(GetCDataString(*tag));
 			
-			const decString &tagName = tag->GetName();
-			if(tagName == "name"){
-				snappoint->SetName(GetCDataString(*tag));
-				
-			}else if(tagName == "position"){
-				decVector position;
-				ReadVector(*tag, position);
-				snappoint->SetPosition(position);
-				
-			}else if(tagName == "orientation"){
-				decVector rotation;
-				ReadVector(*tag, rotation);
-				snappoint->SetRotation(rotation);
-				
-			}else if(tagName == "snapDistance"){
-				snappoint->SetSnapDistance(GetCDataFloat(*tag));
-				
-			}else if(tagName == "snapToRotation"){
-				snappoint->SetSnapToRotation(GetCDataBool(*tag));
-				
-			}else{
-				LogWarnUnknownTag(root, *tag);
-			}
+		}else if(tagName == "position"){
+			decVector position;
+			ReadVector(*tag, position);
+			snappoint->SetPosition(position);
+			
+		}else if(tagName == "orientation"){
+			decVector rotation;
+			ReadVector(*tag, rotation);
+			snappoint->SetRotation(rotation);
+			
+		}else if(tagName == "snapDistance"){
+			snappoint->SetSnapDistance(GetCDataFloat(*tag));
+			
+		}else if(tagName == "snapToRotation"){
+			snappoint->SetSnapToRotation(GetCDataBool(*tag));
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		
-		gdclass.AddSnapPoint(snappoint);
-		snappoint->FreeReference();
-		
-	}catch(const deException &){
-		if(snappoint){
-			snappoint->FreeReference();
-		}
-		throw;
 	}
+	
+	gdclass.AddSnapPoint(snappoint);
 }
 
 void igdeXMLGameDefinition::pParseClassParticleEmitter(const decXmlElementTag &root, igdeGDClass &gdclass){
+	const igdeGDCParticleEmitter::Ref emitter(igdeGDCParticleEmitter::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	igdeGDCParticleEmitter *emitter = NULL;
 	int e;
 	
-	try{
-		emitter = new igdeGDCParticleEmitter;
+	for(e=0; e<elementCount; e++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(e);
+		if(!tag){
+			continue;
+		}
 		
-		for(e=0; e<elementCount; e++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(!tag){
-				continue;
-			}
+		const decString &tagName = tag->GetName();
+		if(tagName == "path"){
+			emitter->SetPath(GetCDataString(*tag));
 			
-			const decString &tagName = tag->GetName();
-			if(tagName == "path"){
-				emitter->SetPath(GetCDataString(*tag));
+		}else if(tagName == "position"){
+			decVector position;
+			ReadVector(*tag, position);
+			emitter->SetPosition(position);
+			
+		}else if(tagName == "orientation"){
+			decVector orientation;
+			ReadVector(*tag, orientation);
+			emitter->SetOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
+			
+		}else if(tagName == "bone"){
+			emitter->SetBoneName(GetCDataString(*tag));
+			
+		}else if(tagName == "casting"){
+			emitter->SetCasting(GetCDataBool(*tag));
+			
+		}else if(tagName == "link"){
+			const char * const value = GetAttributeString(*tag, "target");
+			
+			if(strcmp(value, "path") == 0){
+				emitter->SetPropertyName(igdeGDCParticleEmitter::epPath, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "position"){
-				decVector position;
-				ReadVector(*tag, position);
-				emitter->SetPosition(position);
+			}else if(strcmp(value, "casting") == 0){
+				emitter->SetPropertyName(igdeGDCParticleEmitter::epCasting, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "orientation"){
-				decVector orientation;
-				ReadVector(*tag, orientation);
-				emitter->SetOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
+			}else if(strcmp(value, "attachPosition") == 0){
+				emitter->SetPropertyName(igdeGDCParticleEmitter::epAttachPosition, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "bone"){
-				emitter->SetBoneName(GetCDataString(*tag));
-				
-			}else if(tagName == "casting"){
-				emitter->SetCasting(GetCDataBool(*tag));
-				
-			}else if(tagName == "link"){
-				const char * const value = GetAttributeString(*tag, "target");
-				
-				if(strcmp(value, "path") == 0){
-					emitter->SetPropertyName(igdeGDCParticleEmitter::epPath, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "casting") == 0){
-					emitter->SetPropertyName(igdeGDCParticleEmitter::epCasting, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachPosition") == 0){
-					emitter->SetPropertyName(igdeGDCParticleEmitter::epAttachPosition, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachRotation") == 0){
-					emitter->SetPropertyName(igdeGDCParticleEmitter::epAttachRotation, GetAttributeString(*tag, "property"));
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
-				
-			}else if(tagName == "trigger"){
-				const char * const value = GetAttributeString(*tag, "target");
-				
-				if(strcmp(value, "casting") == 0){
-					emitter->SetTriggerName(igdeGDCParticleEmitter::etCasting, GetAttributeString(*tag, "property"));
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
+			}else if(strcmp(value, "attachRotation") == 0){
+				emitter->SetPropertyName(igdeGDCParticleEmitter::epAttachRotation, GetAttributeString(*tag, "property"));
 				
 			}else{
-				LogWarnUnknownTag(root, *tag);
+				LogWarnUnknownValue(*tag, value);
 			}
+			
+		}else if(tagName == "trigger"){
+			const char * const value = GetAttributeString(*tag, "target");
+			
+			if(strcmp(value, "casting") == 0){
+				emitter->SetTriggerName(igdeGDCParticleEmitter::etCasting, GetAttributeString(*tag, "property"));
+				
+			}else{
+				LogWarnUnknownValue(*tag, value);
+			}
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		
-		gdclass.AddParticleEmitter(emitter);
-		emitter->FreeReference();
-		
-	}catch(const deException &){
-		if(emitter){
-			emitter->FreeReference();
-		}
-		
-		throw;
 	}
+	
+	gdclass.AddParticleEmitter(emitter);
 }
 
 void igdeXMLGameDefinition::pParseClassForceField(const decXmlElementTag &root, igdeGDClass &gdclass){
+	const igdeGDCForceField::Ref field(igdeGDCForceField::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	igdeGDCForceField *field = NULL;
 	igdeCodecPropertyString codec;
 	int e;
 	
-	try{
-		field = new igdeGDCForceField;
+	for(e=0; e<elementCount; e++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(e);
+		if(!tag){
+			continue;
+		}
 		
-		for(e=0; e<elementCount; e++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(!tag){
-				continue;
-			}
+		const decString tagName(tag->GetName());
+		
+		if(tagName == "position"){
+			decVector position;
+			ReadVector(*tag, position);
+			field->SetPosition(position);
 			
-			const decString tagName(tag->GetName());
+		}else if(tagName == "orientation"){
+			decVector orientation;
+			ReadVector(*tag, orientation);
+			field->SetOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
 			
-			if(tagName == "position"){
-				decVector position;
-				ReadVector(*tag, position);
-				field->SetPosition(position);
+		}else if(tagName == "bone"){
+			field->SetBoneName(GetCDataString(*tag));
+			
+		}else if(tagName == "influenceArea"){
+			decShapeList list;
+			codec.DecodeShapeList(GetCDataString(*tag), list);
+			field->SetInfluenceArea(list);
+			
+		}else if(tagName == "radius"){
+			field->SetRadius(GetCDataFloat(*tag));
+			
+		}else if(tagName == "exponent"){
+			field->SetExponent(GetCDataFloat(*tag));
+			
+		}else if(tagName == "fieldType"){
+			const decString cdata(GetCDataString(*tag));
+			
+			if(cdata == "radial"){
+				field->SetFieldType(deForceField::eftRadial);
 				
-			}else if(tagName == "orientation"){
-				decVector orientation;
-				ReadVector(*tag, orientation);
-				field->SetOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
+			}else if(cdata == "linear"){
+				field->SetFieldType(deForceField::eftLinear);
 				
-			}else if(tagName == "bone"){
-				field->SetBoneName(GetCDataString(*tag));
-				
-			}else if(tagName == "influenceArea"){
-				decShapeList list;
-				codec.DecodeShapeList(GetCDataString(*tag), list);
-				field->SetInfluenceArea(list);
-				
-			}else if(tagName == "radius"){
-				field->SetRadius(GetCDataFloat(*tag));
-				
-			}else if(tagName == "exponent"){
-				field->SetExponent(GetCDataFloat(*tag));
-				
-			}else if(tagName == "fieldType"){
-				const decString cdata(GetCDataString(*tag));
-				
-				if(cdata == "radial"){
-					field->SetFieldType(deForceField::eftRadial);
-					
-				}else if(cdata == "linear"){
-					field->SetFieldType(deForceField::eftLinear);
-					
-				}else if(cdata == "vortex"){
-					field->SetFieldType(deForceField::eftVortex);
-					
-				}else{
-					LogWarnUnknownValue(*tag, cdata);
-				}
-				
-			}else if(tagName == "applicationType"){
-				const decString cdata(GetCDataString(*tag));
-				
-				if(cdata == "direct"){
-					field->SetApplicationType(deForceField::eatDirect);
-					
-				}else if(cdata == "surface"){
-					field->SetApplicationType(deForceField::eatSurface);
-					
-				}else if(cdata == "mass"){
-					field->SetApplicationType(deForceField::eatMass);
-					
-				}else if(cdata == "speed"){
-					field->SetApplicationType(deForceField::eatSpeed);
-					
-				}else{
-					LogWarnUnknownValue(*tag, cdata);
-				}
-				
-			}else if(tagName == "direction"){
-				decVector direction;
-				ReadVector(*tag, direction);
-				field->SetDirection(direction);
-				
-			}else if(tagName == "force"){
-				field->SetForce(GetCDataFloat(*tag));
-				
-			}else if(tagName == "fluctuationDirection"){
-				field->SetFluctuationDirection(GetCDataFloat(*tag));
-				
-			}else if(tagName == "fluctuationForce"){
-				field->SetFluctuationForce(GetCDataFloat(*tag));
-				
-			}else if(tagName == "shape"){
-				decShapeList list;
-				codec.DecodeShapeList(GetCDataString(*tag), list);
-				field->SetShape(list);
-				
-			}else if(tagName == "enabled"){
-				field->SetEnabled(GetCDataBool(*tag));
-				
-			}else if(tagName == "link"){
-				const char * const property = GetAttributeString(*tag, "property");
-				const decString value(GetAttributeString(*tag, "target"));
-				
-				if(value == "influenceArea"){
-					field->SetPropertyName(igdeGDCForceField::epInfluenceArea, property);
-					
-				}else if(value == "radius"){
-					field->SetPropertyName(igdeGDCForceField::epRadius, property);
-					
-				}else if(value == "exponent"){
-					field->SetPropertyName(igdeGDCForceField::epExponent, property);
-					
-				}else if(value == "fieldType"){
-					field->SetPropertyName(igdeGDCForceField::epFieldType, property);
-					
-				}else if(value == "applicationType"){
-					field->SetPropertyName(igdeGDCForceField::epApplicationType, property);
-					
-				}else if(value == "direction"){
-					field->SetPropertyName(igdeGDCForceField::epDirection, property);
-					
-				}else if(value == "force"){
-					field->SetPropertyName(igdeGDCForceField::epForce, property);
-					
-				}else if(value == "fluctuationDirection"){
-					field->SetPropertyName(igdeGDCForceField::epFluctuationDirection, property);
-					
-				}else if(value == "fluctuationForce"){
-					field->SetPropertyName(igdeGDCForceField::epFluctuationForce, property);
-					
-				}else if(value == "shape"){
-					field->SetPropertyName(igdeGDCForceField::epShape, property);
-					
-				}else if(value == "enabled"){
-					field->SetPropertyName(igdeGDCForceField::epEnabled, property);
-					
-				}else if(value == "attachPosition"){
-					field->SetPropertyName(igdeGDCForceField::epAttachPosition, property);
-					
-				}else if(value == "attachRotation"){
-					field->SetPropertyName(igdeGDCForceField::epAttachRotation, property);
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
-				
-			}else if(tagName == "trigger"){
-				const char * const property = GetAttributeString(*tag, "property");
-				const decString value(GetAttributeString(*tag, "target"));
-				
-				if(value == "enabled"){
-					field->SetTriggerName(igdeGDCForceField::etEnabled, property);
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
+			}else if(cdata == "vortex"){
+				field->SetFieldType(deForceField::eftVortex);
 				
 			}else{
-				LogWarnUnknownTag(root, *tag);
+				LogWarnUnknownValue(*tag, cdata);
 			}
+			
+		}else if(tagName == "applicationType"){
+			const decString cdata(GetCDataString(*tag));
+			
+			if(cdata == "direct"){
+				field->SetApplicationType(deForceField::eatDirect);
+				
+			}else if(cdata == "surface"){
+				field->SetApplicationType(deForceField::eatSurface);
+				
+			}else if(cdata == "mass"){
+				field->SetApplicationType(deForceField::eatMass);
+				
+			}else if(cdata == "speed"){
+				field->SetApplicationType(deForceField::eatSpeed);
+				
+			}else{
+				LogWarnUnknownValue(*tag, cdata);
+			}
+			
+		}else if(tagName == "direction"){
+			decVector direction;
+			ReadVector(*tag, direction);
+			field->SetDirection(direction);
+			
+		}else if(tagName == "force"){
+			field->SetForce(GetCDataFloat(*tag));
+			
+		}else if(tagName == "fluctuationDirection"){
+			field->SetFluctuationDirection(GetCDataFloat(*tag));
+			
+		}else if(tagName == "fluctuationForce"){
+			field->SetFluctuationForce(GetCDataFloat(*tag));
+			
+		}else if(tagName == "shape"){
+			decShapeList list;
+			codec.DecodeShapeList(GetCDataString(*tag), list);
+			field->SetShape(list);
+			
+		}else if(tagName == "enabled"){
+			field->SetEnabled(GetCDataBool(*tag));
+			
+		}else if(tagName == "link"){
+			const char * const property = GetAttributeString(*tag, "property");
+			const decString value(GetAttributeString(*tag, "target"));
+			
+			if(value == "influenceArea"){
+				field->SetPropertyName(igdeGDCForceField::epInfluenceArea, property);
+				
+			}else if(value == "radius"){
+				field->SetPropertyName(igdeGDCForceField::epRadius, property);
+				
+			}else if(value == "exponent"){
+				field->SetPropertyName(igdeGDCForceField::epExponent, property);
+				
+			}else if(value == "fieldType"){
+				field->SetPropertyName(igdeGDCForceField::epFieldType, property);
+				
+			}else if(value == "applicationType"){
+				field->SetPropertyName(igdeGDCForceField::epApplicationType, property);
+				
+			}else if(value == "direction"){
+				field->SetPropertyName(igdeGDCForceField::epDirection, property);
+				
+			}else if(value == "force"){
+				field->SetPropertyName(igdeGDCForceField::epForce, property);
+				
+			}else if(value == "fluctuationDirection"){
+				field->SetPropertyName(igdeGDCForceField::epFluctuationDirection, property);
+				
+			}else if(value == "fluctuationForce"){
+				field->SetPropertyName(igdeGDCForceField::epFluctuationForce, property);
+				
+			}else if(value == "shape"){
+				field->SetPropertyName(igdeGDCForceField::epShape, property);
+				
+			}else if(value == "enabled"){
+				field->SetPropertyName(igdeGDCForceField::epEnabled, property);
+				
+			}else if(value == "attachPosition"){
+				field->SetPropertyName(igdeGDCForceField::epAttachPosition, property);
+				
+			}else if(value == "attachRotation"){
+				field->SetPropertyName(igdeGDCForceField::epAttachRotation, property);
+				
+			}else{
+				LogWarnUnknownValue(*tag, value);
+			}
+			
+		}else if(tagName == "trigger"){
+			const char * const property = GetAttributeString(*tag, "property");
+			const decString value(GetAttributeString(*tag, "target"));
+			
+			if(value == "enabled"){
+				field->SetTriggerName(igdeGDCForceField::etEnabled, property);
+				
+			}else{
+				LogWarnUnknownValue(*tag, value);
+			}
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		
-		gdclass.AddForceField(field);
-		field->FreeReference();
-		
-	}catch(const deException &){
-		if(field){
-			field->FreeReference();
-		}
-		throw;
 	}
+	
+	gdclass.AddForceField(field);
 }
 
 void igdeXMLGameDefinition::pParseClassEnvMapProbe(const decXmlElementTag &root, igdeGDClass &gdclass){
+	const igdeGDCEnvMapProbe::Ref envMapProbe(igdeGDCEnvMapProbe::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	igdeGDCEnvMapProbe *envMapProbe = NULL;
 	igdeCodecPropertyString codec;
 	decShapeList shapeList;
 	const char *value;
 	int e;
 	
-	try{
-		envMapProbe = new igdeGDCEnvMapProbe;
+	for(e=0; e<elementCount; e++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(e);
+		if(!tag){
+			continue;
+		}
 		
-		for(e=0; e<elementCount; e++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(!tag){
-				continue;
-			}
+		const decString &tagName = tag->GetName();
+		if(tagName == "position"){
+			decVector position;
+			ReadVector(*tag, position);
+			envMapProbe->SetPosition(position);
 			
-			const decString &tagName = tag->GetName();
-			if(tagName == "position"){
-				decVector position;
-				ReadVector(*tag, position);
-				envMapProbe->SetPosition(position);
-				
-			}else if(tagName == "orientation"){
-				decVector orientation;
-				ReadVector(*tag, orientation);
-				envMapProbe->SetOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
-				
-			}else if(tagName == "scaling"){
-				decVector scaling(1.0f, 1.0f, 1.0f);
-				ReadVector(*tag, scaling);
-				envMapProbe->SetScaling(scaling);
-				
-			}else if(tagName == "influenceArea"){
-				codec.DecodeShapeList(GetCDataString(*tag), shapeList);
-				envMapProbe->SetShapeListInfluence(shapeList);
-				shapeList.RemoveAll();
-				
-			}else if(tagName == "reflectionShape"){
-				codec.DecodeShapeList(GetCDataString(*tag), shapeList);
-				
-				if(shapeList.GetCount() == 0){
-					envMapProbe->SetShapeReflection(NULL);
-					
-				}else{
-					envMapProbe->SetShapeReflection(shapeList.GetAt(0)->Copy());
-				}
-				
-				shapeList.RemoveAll();
-				
-			}else if(tagName == "reflectionMask"){
-				codec.DecodeShapeList(GetCDataString(*tag), shapeList);
-				envMapProbe->SetShapeListReflectionMask(shapeList);
-				shapeList.RemoveAll();
-				
-			}else if(tagName == "influenceBorderSize"){
-				envMapProbe->SetInfluenceBorderSize(GetCDataFloat(*tag));
-				
-			}else if(tagName == "influencePriority"){
-				envMapProbe->SetInfluencePriority(GetCDataInt(*tag));
-				
-			}else if(tagName == "link"){
-				value = GetAttributeString(*tag, "target");
-				
-				if(strcmp(value, "influenceArea") == 0){
-					envMapProbe->SetPropertyName(igdeGDCEnvMapProbe::epInfluenceArea, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "influenceBorderSize") == 0){
-					envMapProbe->SetPropertyName(igdeGDCEnvMapProbe::epInfluenceBorderSize, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "influencePriority") == 0){
-					envMapProbe->SetPropertyName(igdeGDCEnvMapProbe::epInfluencePriority, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "reflectionShape") == 0){
-					envMapProbe->SetPropertyName(igdeGDCEnvMapProbe::epReflectionShape, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "reflectionMask") == 0){
-					envMapProbe->SetPropertyName(igdeGDCEnvMapProbe::epReflectionMask, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachPosition") == 0){
-					envMapProbe->SetPropertyName(igdeGDCEnvMapProbe::epAttachPosition, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachRotation") == 0){
-					envMapProbe->SetPropertyName(igdeGDCEnvMapProbe::epAttachRotation, GetAttributeString(*tag, "property"));
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
+		}else if(tagName == "orientation"){
+			decVector orientation;
+			ReadVector(*tag, orientation);
+			envMapProbe->SetOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
+			
+		}else if(tagName == "scaling"){
+			decVector scaling(1.0f, 1.0f, 1.0f);
+			ReadVector(*tag, scaling);
+			envMapProbe->SetScaling(scaling);
+			
+		}else if(tagName == "influenceArea"){
+			codec.DecodeShapeList(GetCDataString(*tag), shapeList);
+			envMapProbe->SetShapeListInfluence(shapeList);
+			shapeList.RemoveAll();
+			
+		}else if(tagName == "reflectionShape"){
+			codec.DecodeShapeList(GetCDataString(*tag), shapeList);
+			
+			if(shapeList.GetCount() == 0){
+				envMapProbe->SetShapeReflection(NULL);
 				
 			}else{
-				LogWarnUnknownTag(root, *tag);
+				envMapProbe->SetShapeReflection(shapeList.GetAt(0)->Copy());
 			}
+			
+			shapeList.RemoveAll();
+			
+		}else if(tagName == "reflectionMask"){
+			codec.DecodeShapeList(GetCDataString(*tag), shapeList);
+			envMapProbe->SetShapeListReflectionMask(shapeList);
+			shapeList.RemoveAll();
+			
+		}else if(tagName == "influenceBorderSize"){
+			envMapProbe->SetInfluenceBorderSize(GetCDataFloat(*tag));
+			
+		}else if(tagName == "influencePriority"){
+			envMapProbe->SetInfluencePriority(GetCDataInt(*tag));
+			
+		}else if(tagName == "link"){
+			value = GetAttributeString(*tag, "target");
+			
+			if(strcmp(value, "influenceArea") == 0){
+				envMapProbe->SetPropertyName(igdeGDCEnvMapProbe::epInfluenceArea, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "influenceBorderSize") == 0){
+				envMapProbe->SetPropertyName(igdeGDCEnvMapProbe::epInfluenceBorderSize, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "influencePriority") == 0){
+				envMapProbe->SetPropertyName(igdeGDCEnvMapProbe::epInfluencePriority, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "reflectionShape") == 0){
+				envMapProbe->SetPropertyName(igdeGDCEnvMapProbe::epReflectionShape, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "reflectionMask") == 0){
+				envMapProbe->SetPropertyName(igdeGDCEnvMapProbe::epReflectionMask, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "attachPosition") == 0){
+				envMapProbe->SetPropertyName(igdeGDCEnvMapProbe::epAttachPosition, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "attachRotation") == 0){
+				envMapProbe->SetPropertyName(igdeGDCEnvMapProbe::epAttachRotation, GetAttributeString(*tag, "property"));
+				
+			}else{
+				LogWarnUnknownValue(*tag, value);
+			}
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		
-		gdclass.AddEnvironmentMapProbe(envMapProbe);
-		envMapProbe->FreeReference();
-		
-	}catch(const deException &){
-		if(envMapProbe){
-			envMapProbe->FreeReference();
-		}
-		
-		throw;
 	}
+	
+	gdclass.AddEnvironmentMapProbe(envMapProbe);
 }
 
 void igdeXMLGameDefinition::pParseClassSpeaker(const decXmlElementTag &root, igdeGDClass &gdclass){
-	igdeGDCSpeaker *gdcSpeaker = NULL;
+	const igdeGDCSpeaker::Ref gdcSpeaker(igdeGDCSpeaker::Ref::NewWith());
 	int i;
 	
-	try{
-		gdcSpeaker = new igdeGDCSpeaker;
+	for(i=0; i<root.GetElementCount(); i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
 		
-		for(i=0; i<root.GetElementCount(); i++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
+		const decString &tagName = tag->GetName();
+		if(tagName == "sound"){
+			gdcSpeaker->SetPathSound(GetCDataString(*tag));
 			
-			const decString &tagName = tag->GetName();
-			if(tagName == "sound"){
-				gdcSpeaker->SetPathSound(GetCDataString(*tag));
+		}else if(tagName == "position"){
+			decVector position;
+			ReadVector(*tag, position);
+			gdcSpeaker->SetPosition(position);
+			
+		}else if(tagName == "orientation"){
+			decVector orientation;
+			ReadVector(*tag, orientation);
+			gdcSpeaker->SetOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
+			
+		}else if(tagName == "bone"){
+			gdcSpeaker->SetBoneName(GetCDataString(*tag));
+			
+		}else if(tagName == "looping"){
+			gdcSpeaker->SetLooping(GetCDataBool(*tag));
+			
+		}else if(tagName == "playing"){
+			gdcSpeaker->SetPlaying(GetCDataBool(*tag));
+			
+		}else if(tagName == "volume"){
+			gdcSpeaker->SetVolume(GetCDataFloat(*tag));
+			
+		}else if(tagName == "range"){
+			gdcSpeaker->SetRange(GetCDataFloat(*tag));
+			
+		}else if(tagName == "rollOff"){
+			gdcSpeaker->SetRollOff(GetCDataFloat(*tag));
+			
+		}else if(tagName == "distanceOffset"){
+			gdcSpeaker->SetDistanceOffset(GetCDataFloat(*tag));
+			
+		}else if(tagName == "playSpeed"){
+			gdcSpeaker->SetPlaySpeed(GetCDataFloat(*tag));
+			
+		}else if(tagName == "link"){
+			const char * const value = GetAttributeString(*tag, "target");
+			
+			if(strcmp(value, "sound") == 0){
+				gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epSound, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "position"){
-				decVector position;
-				ReadVector(*tag, position);
-				gdcSpeaker->SetPosition(position);
+			}else if(strcmp(value, "looping") == 0){
+				gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epLooping, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "orientation"){
-				decVector orientation;
-				ReadVector(*tag, orientation);
-				gdcSpeaker->SetOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
+			}else if(strcmp(value, "playing") == 0){
+				gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epPlaying, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "bone"){
-				gdcSpeaker->SetBoneName(GetCDataString(*tag));
+			}else if(strcmp(value, "volume") == 0){
+				gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epVolume, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "looping"){
-				gdcSpeaker->SetLooping(GetCDataBool(*tag));
+			}else if(strcmp(value, "range") == 0){
+				gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epRange, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "playing"){
-				gdcSpeaker->SetPlaying(GetCDataBool(*tag));
+			}else if(strcmp(value, "rollOff") == 0){
+				gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epRollOff, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "volume"){
-				gdcSpeaker->SetVolume(GetCDataFloat(*tag));
+			}else if(strcmp(value, "distanceOffset") == 0){
+				gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epDistanceOffset, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "range"){
-				gdcSpeaker->SetRange(GetCDataFloat(*tag));
+			}else if(strcmp(value, "playSpeed") == 0){
+				gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epPlaySpeed, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "rollOff"){
-				gdcSpeaker->SetRollOff(GetCDataFloat(*tag));
+			}else if(strcmp(value, "attachPosition") == 0){
+				gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epAttachPosition, GetAttributeString(*tag, "property"));
 				
-			}else if(tagName == "distanceOffset"){
-				gdcSpeaker->SetDistanceOffset(GetCDataFloat(*tag));
-				
-			}else if(tagName == "playSpeed"){
-				gdcSpeaker->SetPlaySpeed(GetCDataFloat(*tag));
-				
-			}else if(tagName == "link"){
-				const char * const value = GetAttributeString(*tag, "target");
-				
-				if(strcmp(value, "sound") == 0){
-					gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epSound, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "looping") == 0){
-					gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epLooping, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "playing") == 0){
-					gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epPlaying, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "volume") == 0){
-					gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epVolume, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "range") == 0){
-					gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epRange, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "rollOff") == 0){
-					gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epRollOff, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "distanceOffset") == 0){
-					gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epDistanceOffset, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "playSpeed") == 0){
-					gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epPlaySpeed, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachPosition") == 0){
-					gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epAttachPosition, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachRotation") == 0){
-					gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epAttachRotation, GetAttributeString(*tag, "property"));
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
-				
-			}else if(tagName == "trigger"){
-				const char * const value = GetAttributeString(*tag, "target");
-				
-				if(strcmp(value, "playing") == 0){
-					gdcSpeaker->SetTriggerName(igdeGDCSpeaker::etPlaying, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "muted") == 0){
-					gdcSpeaker->SetTriggerName(igdeGDCSpeaker::etMuted, GetAttributeString(*tag, "property"));
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
+			}else if(strcmp(value, "attachRotation") == 0){
+				gdcSpeaker->SetPropertyName(igdeGDCSpeaker::epAttachRotation, GetAttributeString(*tag, "property"));
 				
 			}else{
-				LogWarnUnknownTag(root, *tag);
+				LogWarnUnknownValue(*tag, value);
 			}
+			
+		}else if(tagName == "trigger"){
+			const char * const value = GetAttributeString(*tag, "target");
+			
+			if(strcmp(value, "playing") == 0){
+				gdcSpeaker->SetTriggerName(igdeGDCSpeaker::etPlaying, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "muted") == 0){
+				gdcSpeaker->SetTriggerName(igdeGDCSpeaker::etMuted, GetAttributeString(*tag, "property"));
+				
+			}else{
+				LogWarnUnknownValue(*tag, value);
+			}
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		
-		gdclass.AddSpeaker(gdcSpeaker);
-		gdcSpeaker->FreeReference();
-		
-	}catch(const deException &){
-		if(gdcSpeaker){
-			gdcSpeaker->FreeReference();
-		}
-		throw;
 	}
+	
+	gdclass.AddSpeaker(gdcSpeaker);
 }
 
 void igdeXMLGameDefinition::pParseClassNavigationSpace(const decXmlElementTag &root, igdeGDClass &gdclass){
-	igdeGDCNavigationSpace *gdcNavSpace = NULL;
+	const igdeGDCNavigationSpace::Ref gdcNavSpace(igdeGDCNavigationSpace::Ref::NewWith());
 	igdeCodecPropertyString codec;
 	decShapeList shapeList;
 	int i;
 	
-	try{
-		gdcNavSpace = new igdeGDCNavigationSpace;
+	for(i=0; i<root.GetElementCount(); i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
 		
-		for(i=0; i<root.GetElementCount(); i++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
+		const decString &tagName = tag->GetName();
+		if(tagName == "path"){
+			gdcNavSpace->SetPath(GetCDataString(*tag));
 			
-			const decString &tagName = tag->GetName();
-			if(tagName == "path"){
-				gdcNavSpace->SetPath(GetCDataString(*tag));
+		}else if(tagName == "position"){
+			decVector position;
+			ReadVector(*tag, position);
+			gdcNavSpace->SetPosition(position);
+			
+		}else if(tagName == "orientation"){
+			decVector orientation;
+			ReadVector(*tag, orientation);
+			gdcNavSpace->SetOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
+			
+		}else if(tagName == "bone"){
+			gdcNavSpace->SetBoneName(GetCDataString(*tag));
+			
+		}else if(tagName == "layer"){
+			gdcNavSpace->SetLayer(GetCDataInt(*tag));
+			
+		}else if(tagName == "type"){
+			const char * const value = GetCDataString(*tag);
+			
+			if(strcmp(value, "grid") == 0){
+				gdcNavSpace->SetType(deNavigationSpace::estGrid);
 				
-			}else if(tagName == "position"){
-				decVector position;
-				ReadVector(*tag, position);
-				gdcNavSpace->SetPosition(position);
+			}else if(strcmp(value, "mesh") == 0){
+				gdcNavSpace->SetType(deNavigationSpace::estMesh);
 				
-			}else if(tagName == "orientation"){
-				decVector orientation;
-				ReadVector(*tag, orientation);
-				gdcNavSpace->SetOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
-				
-			}else if(tagName == "bone"){
-				gdcNavSpace->SetBoneName(GetCDataString(*tag));
-				
-			}else if(tagName == "layer"){
-				gdcNavSpace->SetLayer(GetCDataInt(*tag));
-				
-			}else if(tagName == "type"){
-				const char * const value = GetCDataString(*tag);
-				
-				if(strcmp(value, "grid") == 0){
-					gdcNavSpace->SetType(deNavigationSpace::estGrid);
-					
-				}else if(strcmp(value, "mesh") == 0){
-					gdcNavSpace->SetType(deNavigationSpace::estMesh);
-					
-				}else if(strcmp(value, "volume") == 0){
-					gdcNavSpace->SetType(deNavigationSpace::estVolume);
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
-				
-			}else if(tagName == "blockingPriority"){
-				gdcNavSpace->SetBlockingPriority(GetCDataInt(*tag));
-				
-			}else if(tagName == "blockerShape"){
-				codec.DecodeShapeList(GetCDataString(*tag), shapeList);
-				gdcNavSpace->SetBlockerShapeList(shapeList);
-				shapeList.RemoveAll();
-				
-			}else if(tagName == "snapDistance"){
-				gdcNavSpace->SetSnapDistance(GetCDataFloat(*tag));
-				
-			}else if(tagName == "snapAngle"){
-				gdcNavSpace->SetSnapAngle(GetCDataFloat(*tag));
-				
-			}else if(tagName == "link"){
-				const char * const value = GetAttributeString(*tag, "target");
-				
-				if(strcmp(value, "path") == 0){
-					gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epPath, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "blockerShape") == 0){
-					gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epBlockerShape, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "layer") == 0){
-					gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epLayer, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "blockingPriority") == 0){
-					gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epBlockingPriority, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "snapDistance") == 0){
-					gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epSnapDistance, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "snapAngle") == 0){
-					gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epSnapAngle, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachPosition") == 0){
-					gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epAttachPosition, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachRotation") == 0){
-					gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epAttachRotation, GetAttributeString(*tag, "property"));
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
+			}else if(strcmp(value, "volume") == 0){
+				gdcNavSpace->SetType(deNavigationSpace::estVolume);
 				
 			}else{
-				LogWarnUnknownTag(root, *tag);
+				LogWarnUnknownValue(*tag, value);
 			}
+			
+		}else if(tagName == "blockingPriority"){
+			gdcNavSpace->SetBlockingPriority(GetCDataInt(*tag));
+			
+		}else if(tagName == "blockerShape"){
+			codec.DecodeShapeList(GetCDataString(*tag), shapeList);
+			gdcNavSpace->SetBlockerShapeList(shapeList);
+			shapeList.RemoveAll();
+			
+		}else if(tagName == "snapDistance"){
+			gdcNavSpace->SetSnapDistance(GetCDataFloat(*tag));
+			
+		}else if(tagName == "snapAngle"){
+			gdcNavSpace->SetSnapAngle(GetCDataFloat(*tag));
+			
+		}else if(tagName == "link"){
+			const char * const value = GetAttributeString(*tag, "target");
+			
+			if(strcmp(value, "path") == 0){
+				gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epPath, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "blockerShape") == 0){
+				gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epBlockerShape, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "layer") == 0){
+				gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epLayer, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "blockingPriority") == 0){
+				gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epBlockingPriority, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "snapDistance") == 0){
+				gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epSnapDistance, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "snapAngle") == 0){
+				gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epSnapAngle, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "attachPosition") == 0){
+				gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epAttachPosition, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "attachRotation") == 0){
+				gdcNavSpace->SetPropertyName(igdeGDCNavigationSpace::epAttachRotation, GetAttributeString(*tag, "property"));
+				
+			}else{
+				LogWarnUnknownValue(*tag, value);
+			}
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		
-		gdclass.AddNavigationSpace(gdcNavSpace);
-		gdcNavSpace->FreeReference();
-		
-	}catch(const deException &){
-		if(gdcNavSpace){
-			gdcNavSpace->FreeReference();
-		}
-		throw;
 	}
+	
+	gdclass.AddNavigationSpace(gdcNavSpace);
 }
 
 void igdeXMLGameDefinition::pParseClassNavigationBlocker(const decXmlElementTag &root, igdeGDClass &gdclass){
-	igdeGDCNavigationBlocker *gdcNavBlocker = NULL;
+	const igdeGDCNavigationBlocker::Ref gdcNavBlocker(igdeGDCNavigationBlocker::Ref::NewWith());
 	igdeCodecPropertyString codec;
 	decShapeList shapeList;
 	int i;
 	
-	try{
-		gdcNavBlocker = new igdeGDCNavigationBlocker;
+	for(i=0; i<root.GetElementCount(); i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
 		
-		for(i=0; i<root.GetElementCount(); i++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
+		const decString &tagName = tag->GetName();
+		if(tagName == "position"){
+			decVector position;
+			ReadVector(*tag, position);
+			gdcNavBlocker->SetPosition(position);
 			
-			const decString &tagName = tag->GetName();
-			if(tagName == "position"){
-				decVector position;
-				ReadVector(*tag, position);
-				gdcNavBlocker->SetPosition(position);
+		}else if(tagName == "orientation"){
+			decVector orientation;
+			ReadVector(*tag, orientation);
+			gdcNavBlocker->SetOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
+			
+		}else if(tagName == "scaling"){
+			decVector scaling(1.0f, 1.0f, 1.0f);
+			ReadVector(*tag, scaling);
+			gdcNavBlocker->SetScaling(scaling);
+			
+		}else if(tagName == "bone"){
+			gdcNavBlocker->SetBoneName(GetCDataString(*tag));
+			
+		}else if(tagName == "enabled"){
+			gdcNavBlocker->SetEnabled(GetCDataBool(*tag));
+			
+		}else if(tagName == "layer"){
+			gdcNavBlocker->SetLayer(GetCDataInt(*tag));
+			
+		}else if(tagName == "type"){
+			const char * const value = GetCDataString(*tag);
+			
+			if(strcmp(value, "grid") == 0){
+				gdcNavBlocker->SetType(deNavigationSpace::estGrid);
 				
-			}else if(tagName == "orientation"){
-				decVector orientation;
-				ReadVector(*tag, orientation);
-				gdcNavBlocker->SetOrientation(decQuaternion::CreateFromEuler(orientation * DEG2RAD));
+			}else if(strcmp(value, "mesh") == 0){
+				gdcNavBlocker->SetType(deNavigationSpace::estMesh);
 				
-			}else if(tagName == "scaling"){
-				decVector scaling(1.0f, 1.0f, 1.0f);
-				ReadVector(*tag, scaling);
-				gdcNavBlocker->SetScaling(scaling);
-				
-			}else if(tagName == "bone"){
-				gdcNavBlocker->SetBoneName(GetCDataString(*tag));
-				
-			}else if(tagName == "enabled"){
-				gdcNavBlocker->SetEnabled(GetCDataBool(*tag));
-				
-			}else if(tagName == "layer"){
-				gdcNavBlocker->SetLayer(GetCDataInt(*tag));
-				
-			}else if(tagName == "type"){
-				const char * const value = GetCDataString(*tag);
-				
-				if(strcmp(value, "grid") == 0){
-					gdcNavBlocker->SetType(deNavigationSpace::estGrid);
-					
-				}else if(strcmp(value, "mesh") == 0){
-					gdcNavBlocker->SetType(deNavigationSpace::estMesh);
-					
-				}else if(strcmp(value, "volume") == 0){
-					gdcNavBlocker->SetType(deNavigationSpace::estVolume);
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
-				
-			}else if(tagName == "blockingPriority"){
-				gdcNavBlocker->SetBlockingPriority(GetCDataInt(*tag));
-				
-			}else if(tagName == "shape"){
-				codec.DecodeShapeList(GetCDataString(*tag), shapeList);
-				gdcNavBlocker->SetShapeList(shapeList);
-				shapeList.RemoveAll();
-				
-			}else if(tagName == "link"){
-				const char * const value = GetAttributeString(*tag, "target");
-				
-				if(strcmp(value, "enabled") == 0){
-					gdcNavBlocker->SetPropertyName(igdeGDCNavigationBlocker::epEnabled, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "shape") == 0){
-					gdcNavBlocker->SetPropertyName(igdeGDCNavigationBlocker::epShape, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "layer") == 0){
-					gdcNavBlocker->SetPropertyName(igdeGDCNavigationBlocker::epLayer, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "blockingPriority") == 0){
-					gdcNavBlocker->SetPropertyName(igdeGDCNavigationBlocker::epBlockingPriority, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachPosition") == 0){
-					gdcNavBlocker->SetPropertyName(igdeGDCNavigationBlocker::epAttachPosition, GetAttributeString(*tag, "property"));
-					
-				}else if(strcmp(value, "attachRotation") == 0){
-					gdcNavBlocker->SetPropertyName(igdeGDCNavigationBlocker::epAttachRotation, GetAttributeString(*tag, "property"));
-					
-				}else{
-					LogWarnUnknownValue(*tag, value);
-				}
+			}else if(strcmp(value, "volume") == 0){
+				gdcNavBlocker->SetType(deNavigationSpace::estVolume);
 				
 			}else{
-				LogWarnUnknownTag(root, *tag);
+				LogWarnUnknownValue(*tag, value);
 			}
+			
+		}else if(tagName == "blockingPriority"){
+			gdcNavBlocker->SetBlockingPriority(GetCDataInt(*tag));
+			
+		}else if(tagName == "shape"){
+			codec.DecodeShapeList(GetCDataString(*tag), shapeList);
+			gdcNavBlocker->SetShapeList(shapeList);
+			shapeList.RemoveAll();
+			
+		}else if(tagName == "link"){
+			const char * const value = GetAttributeString(*tag, "target");
+			
+			if(strcmp(value, "enabled") == 0){
+				gdcNavBlocker->SetPropertyName(igdeGDCNavigationBlocker::epEnabled, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "shape") == 0){
+				gdcNavBlocker->SetPropertyName(igdeGDCNavigationBlocker::epShape, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "layer") == 0){
+				gdcNavBlocker->SetPropertyName(igdeGDCNavigationBlocker::epLayer, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "blockingPriority") == 0){
+				gdcNavBlocker->SetPropertyName(igdeGDCNavigationBlocker::epBlockingPriority, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "attachPosition") == 0){
+				gdcNavBlocker->SetPropertyName(igdeGDCNavigationBlocker::epAttachPosition, GetAttributeString(*tag, "property"));
+				
+			}else if(strcmp(value, "attachRotation") == 0){
+				gdcNavBlocker->SetPropertyName(igdeGDCNavigationBlocker::epAttachRotation, GetAttributeString(*tag, "property"));
+				
+			}else{
+				LogWarnUnknownValue(*tag, value);
+			}
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		
-		gdclass.AddNavigationBlocker(gdcNavBlocker);
-		gdcNavBlocker->FreeReference();
-		
-	}catch(const deException &){
-		if(gdcNavBlocker){
-			gdcNavBlocker->FreeReference();
-		}
-		throw;
 	}
+	
+	gdclass.AddNavigationBlocker(gdcNavBlocker);
 }
 
 void igdeXMLGameDefinition::pParseClassWorld(const decXmlElementTag &root, igdeGDClass &gdclass){
@@ -1813,64 +1659,52 @@ void igdeXMLGameDefinition::pParseClassWorld(const decXmlElementTag &root, igdeG
 }
 
 void igdeXMLGameDefinition::pParseClassTexture(const decXmlElementTag &root, igdeGDClass &gdclass){
+	const igdeGDCCTexture::Ref texture(igdeGDCCTexture::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
 	decStringDictionary properties;
-	igdeGDCCTexture *texture = NULL;
 	int i;
 	
-	try{
-		texture = new igdeGDCCTexture;
-		
-		texture->SetName(GetAttributeString(root, "name"));
-		if(gdclass.GetComponentTextures().HasNamed(texture->GetName())){
-			LogWarnGenericProblemValue(root, texture->GetName().GetString(), "A texture with this name exists already.");
-		}
-		
-		for(i=0; i<elementCount; i++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
-			
-			const decString &tagName = tag->GetName();
-			if(tagName == "skin"){
-				texture->SetPathSkin(GetCDataString(*tag));
-				
-			}else if(tagName == "offset"){
-				decVector2 offset;
-				ReadVector2(*tag, offset);
-				texture->SetOffset(offset);
-				
-			}else if(tagName == "scale"){
-				decVector2 scale(1.0f, 1.0f);
-				ReadVector2(*tag, scale);
-				texture->SetScale(scale);
-				
-			}else if(tagName == "rotate"){
-				texture->SetRotation(GetCDataFloat(*tag) * DEG2RAD);
-				
-			}else if(tagName == "tint"){
-				decColor color;
-				ReadColor(*tag, color);
-				texture->SetColorTint(color);
-				
-			}else{
-				LogWarnUnknownTag(root, *tag);
-			}
-		}
-		
-		texture->SetProperties(properties);
-		
-		gdclass.GetComponentTextures().Add(texture);
-		texture->FreeReference();
-		
-	}catch(const deException &){
-		if(texture){
-			texture->FreeReference();
-		}
-		
-		throw;
+	texture->SetName(GetAttributeString(root, "name"));
+	if(gdclass.GetComponentTextures().HasNamed(texture->GetName())){
+		LogWarnGenericProblemValue(root, texture->GetName().GetString(), "A texture with this name exists already.");
 	}
+	
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
+		
+		const decString &tagName = tag->GetName();
+		if(tagName == "skin"){
+			texture->SetPathSkin(GetCDataString(*tag));
+			
+		}else if(tagName == "offset"){
+			decVector2 offset;
+			ReadVector2(*tag, offset);
+			texture->SetOffset(offset);
+			
+		}else if(tagName == "scale"){
+			decVector2 scale(1.0f, 1.0f);
+			ReadVector2(*tag, scale);
+			texture->SetScale(scale);
+			
+		}else if(tagName == "rotate"){
+			texture->SetRotation(GetCDataFloat(*tag) * DEG2RAD);
+			
+		}else if(tagName == "tint"){
+			decColor color;
+			ReadColor(*tag, color);
+			texture->SetColorTint(color);
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
+		}
+	}
+	
+	texture->SetProperties(properties);
+	
+	gdclass.GetComponentTextures().Add(texture);
 }
 
 void igdeXMLGameDefinition::pParseProperty(const decXmlElementTag &root, igdeGDProperty &property){
@@ -2122,7 +1956,6 @@ void igdeXMLGameDefinition::pParseCamera(const decXmlElementTag &root, igdeGDCam
 void igdeXMLGameDefinition::pParseParticleEmitter(const decXmlElementTag &root, igdeGameDefinition &gamedef){
 	igdeGDParticleEmitterManager &manager = gamedef.GetParticleEmitterManager();
 	const int elementCount = root.GetElementCount();
-	igdeGDParticleEmitter *emitter = NULL;
 	const char *path = NULL;
 	const char *name = NULL;
 	int e;
@@ -2156,43 +1989,32 @@ void igdeXMLGameDefinition::pParseParticleEmitter(const decXmlElementTag &root, 
 		LogErrorGenericProblemValue(root, name, "A particle emitter with this name exists already.");
 	}
 	
-	try{
-		emitter = new igdeGDParticleEmitter(path, name);
+	const igdeGDParticleEmitter::Ref emitter(igdeGDParticleEmitter::Ref::NewWith(path, name));
+	for(e=0; e<elementCount; e++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(e);
+		if(!tag){
+			continue;
+		}
 		
-		for(e=0; e<elementCount; e++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(e);
-			if(!tag){
-				continue;
-			}
+		const decString &tagName = tag->GetName();
+		if(tagName == "path"){
+			// done before: skip it
 			
-			const decString &tagName = tag->GetName();
-			if(tagName == "path"){
-				// done before: skip it
-				
-			}else if(tagName == "name"){
-				// done before: skip it
-				
-			}else if(tagName == "description"){
-				emitter->SetDescription(ReadMultilineString(*tag));
-				
-			}else if(tagName == "category"){
-				emitter->SetCategory(GetCDataString(*tag));
-				
-			}else{
-				LogWarnUnknownTag(root, *tag);
-			}
+		}else if(tagName == "name"){
+			// done before: skip it
+			
+		}else if(tagName == "description"){
+			emitter->SetDescription(ReadMultilineString(*tag));
+			
+		}else if(tagName == "category"){
+			emitter->SetCategory(GetCDataString(*tag));
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		
-		manager.AddEmitter(emitter);
-		emitter->FreeReference();
-		
-	}catch(const deException &){
-		if(emitter){
-			emitter->FreeReference();
-		}
-		
-		throw;
 	}
+	
+	manager.AddEmitter(emitter);
 }
 
 void igdeXMLGameDefinition::pParseSkin(const decXmlElementTag &root, igdeGameDefinition &gamedef){
@@ -2267,7 +2089,6 @@ void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefi
 	igdeGDSkyManager &skyManager = *gamedef.GetSkyManager();
 	const char *strPath = NULL;
 	const char *strName = NULL;
-	igdeGDSky *sky = NULL;
 	int e;
 	
 	// first we have to look for the important tags which are required to construct a new sky.
@@ -2300,9 +2121,8 @@ void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefi
 		LogErrorGenericProblemValue(root, strName, "A sky with this name exists already.");
 	}
 	
-	sky = new igdeGDSky(strPath, strName);
+	const igdeGDSky::Ref sky(igdeGDSky::Ref::NewWith(strPath, strName));
 	skyManager.AddSky(sky);
-	sky->FreeReference(); // held by sky manager
 	
 	// now we read all the other tags.
 	for(e=0; e<root.GetElementCount(); e++){
@@ -2325,19 +2145,8 @@ void igdeXMLGameDefinition::pParseSky(const decXmlElementTag &root, igdeGameDefi
 			sky->SetCategory(GetCDataString(*tag));
 			
 		}else if(tagName == "controller"){
-			igdeGDSkyController *controller = NULL;
-			try{
-				controller = new igdeGDSkyController(
-					GetAttributeString(*tag, "name"), GetCDataFloat(*tag));
-				sky->AddController(controller);
-				controller->FreeReference();
-				
-			}catch(const deException &){
-				if(controller){
-					controller->FreeReference();
-				}
-				throw;
-			}
+			sky->AddController(igdeGDSkyController::Ref::NewWith(
+				GetAttributeString(*tag, "name"), GetCDataFloat(*tag)));
 			
 		}else{
 			LogWarnUnknownTag(root, *tag);

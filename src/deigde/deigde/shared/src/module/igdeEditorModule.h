@@ -25,11 +25,12 @@
 #ifndef _IGDEEDITORMODULE_H_
 #define _IGDEEDITORMODULE_H_
 
+#include "../gui/igdeEditorWindow.h"
+
 #include <dragengine/common/string/decString.h>
 
 class decStringList;
 class igdeEnvironment;
-class igdeEditorWindow;
 class igdeStepableTask;
 class deEngine;
 class deLogger;
@@ -49,7 +50,7 @@ private:
 	decString pLoggingName;
 	decString pEditorDirectory;
 	decString pEditorPathLib;
-	igdeEditorWindow *pEditorWindow;
+	igdeEditorWindow::Ref pEditorWindow;
 	
 	
 	
@@ -94,7 +95,7 @@ public:
 	void SetEditorPathLib(const char *path);
 	
 	/** \brief Editor window used by module. */
-	inline igdeEditorWindow *GetEditorWindow() const{ return pEditorWindow; }
+	inline const igdeEditorWindow::Ref &GetEditorWindow() const{ return pEditorWindow; }
 	
 	/**
 	 * \brief Set editor window used by module.

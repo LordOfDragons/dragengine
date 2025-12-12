@@ -105,8 +105,8 @@ void igdeGDPreviewManager::OnAfterEngineStart(){
 	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemIGDE();
 	
 	try{
-		pImageCreating.TakeOver(imgmgr.LoadImage(vfs, "/data/data/models/previewBuilder/rendering.png", "/"));
-		pImageFailed.TakeOver(imgmgr.LoadImage(vfs, "/data/data/models/previewBuilder/failed.png", "/"));
+		pImageCreating = imgmgr.LoadImage(vfs, "/data/data/models/previewBuilder/rendering.png", "/");
+		pImageFailed = imgmgr.LoadImage(vfs, "/data/data/models/previewBuilder/failed.png", "/");
 		
 	}catch(const deException &){
 		OnBeforeEngineStop();
@@ -383,7 +383,7 @@ void igdeGDPreviewManager::ClearPreviewSky(igdeGDSky *gdsky){
 //////////////////////
 
 void igdeGDPreviewManager::pLoadFromFile(deImage::Ref &image, const decString &typedir, const decString &filename) const{
-	image = NULL;
+	image = nullptr;
 	
 	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemGame();
 	decPath path;
@@ -397,9 +397,9 @@ void igdeGDPreviewManager::pLoadFromFile(deImage::Ref &image, const decString &t
 	}
 	
 	try{
-		image.TakeOver(engine.GetImageManager()->LoadImage(vfs, path.GetPathUnix(), "/"));
+		image = engine.GetImageManager()->LoadImage(vfs, path.GetPathUnix(), "/");
 		if(image->GetBitCount() != 8){
-			image = NULL;
+			image = nullptr;
 		}
 		
 	}catch(const deException &e){

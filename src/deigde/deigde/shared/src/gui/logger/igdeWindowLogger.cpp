@@ -71,12 +71,10 @@ const char *igdeWindowLogger::styleError = "error";
 
 igdeWindowLogger::igdeWindowLogger(igdeEnvironment &environment) :
 igdeWindow(environment, "Logging History"),
-pListener(NULL),
-pLogger(NULL),
+pListener(igdeWindowLoggerListener::Ref::NewWith(*this)),
 pPendingAddedLogs(0),
 pPendingClearLogs(false)
 {
-	pListener = new igdeWindowLoggerListener(*this);
 	
 	SetPosition(decPoint(10, 50));
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));
@@ -98,10 +96,6 @@ pPendingClearLogs(false)
 }
 
 igdeWindowLogger::~igdeWindowLogger(){
-	SetLogger(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -109,20 +103,18 @@ igdeWindowLogger::~igdeWindowLogger(){
 // Management
 ///////////////
 
-void igdeWindowLogger::SetLogger(igdeLoggerHistory *logger){
-	if(logger == pLogger){
+void igdeWindowLogger::SetHistoryLogger(igdeLoggerHistory *logger){
+	if(logger == pHistoryLogger){
 		return;
 	}
 	
-	if(pLogger){
-		pLogger->RemoveListener(pListener);
-		pLogger->FreeReference();
+	if(pHistoryLogger){
+		pHistoryLogger->RemoveListener(pListener);
 	}
 	
-	pLogger = logger;
+	pHistoryLogger = logger;
 	
 	if(logger){
-		logger->AddReference();
 		logger->AddListener(pListener);
 	}
 	
@@ -134,14 +126,14 @@ void igdeWindowLogger::SetLogger(igdeLoggerHistory *logger){
 
 
 void igdeWindowLogger::OnFrameUpdate(){
-	if(!pLogger){
+	if(!pHistoryLogger){
 		return;
 	}
 	
-	pLogger->GetMutex().Lock();
+	pHistoryLogger->GetMutex().Lock();
 	
 	try{
-		if(pPendingAddedLogs >= pLogger->GetHistorySize()){
+		if(pPendingAddedLogs >= pHistoryLogger->GetHistorySize()){
 			pPendingAddedLogs = 0;
 			pPendingClearLogs = true;
 		}
@@ -149,20 +141,20 @@ void igdeWindowLogger::OnFrameUpdate(){
 		if(pPendingClearLogs){
 			pPendingClearLogs = false;
 			pClearLogs();
-			pPendingAddedLogs = pLogger->GetEntryCount();
+			pPendingAddedLogs = pHistoryLogger->GetEntryCount();
 		}
 		
 		while(pPendingAddedLogs > 0){
-			const igdeLoggerHistoryEntry &entry = pLogger->GetEntryAt(
-				pLogger->GetEntryCount() - pPendingAddedLogs);
+			const igdeLoggerHistoryEntry &entry = pHistoryLogger->GetEntryAt(
+				pHistoryLogger->GetEntryCount() - pPendingAddedLogs);
 			pPendingAddedLogs--;
 			pAddLog(entry);
 		}
 		
-		pLogger->GetMutex().Unlock();
+		pHistoryLogger->GetMutex().Unlock();
 		
 	}catch(const deException &e){
-		pLogger->GetMutex().Unlock();
+		pHistoryLogger->GetMutex().Unlock();
 		e.PrintError();
 	}
 }
@@ -207,7 +199,7 @@ void igdeWindowLogger::OnLogsCleared(){
 void igdeWindowLogger::pRemoveOldLines(){
 	const char * const logs = pEditLogs->GetText();
 	const int length = (int)strlen(logs);
-	int count = pLogger->GetHistorySize();
+	int count = pHistoryLogger->GetHistorySize();
 	int i;
 	
 	for(i=length-1; i>=0; i--){

@@ -140,37 +140,17 @@ void igdeLSGameProject::Load(const char *filename, igdeGameProject *project, dec
 	}
 	
 	// load the project game definition specified
-	decDiskFileReader *gameDefReader = NULL;
-	igdeGameDefinition *gameDef = NULL;
 	decPath path;
+	path.SetFromNative(project->GetDirectoryPath());
+	path.AddUnixPath(project->GetPathProjectGameDefinition());
 	
-	try{
-		path.SetFromNative(project->GetDirectoryPath());
-		path.AddUnixPath(project->GetPathProjectGameDefinition());
-		gameDefReader = new decDiskFileReader(path.GetPathNative());
-		
-		gameDef = new igdeGameDefinition(environment);
-		gameDef->SetFilename(path.GetPathNative());
-		
-		igdeXMLGameDefinition(environment, logger).Load(*gameDefReader, *gameDef);
-		
-		project->SetProjectGameDefinition(gameDef);
-		
-		gameDefReader->FreeReference();
-		gameDefReader = NULL;
-		
-		gameDef->FreeReference();
-		gameDef = NULL;
-		
-	}catch(const deException &){
-		if(gameDefReader){
-			gameDefReader->FreeReference();
-		}
-		if(gameDef){
-			gameDef->FreeReference();
-		}
-		throw;
-	}
+	const igdeGameDefinition::Ref gameDef(igdeGameDefinition::Ref::NewWith(environment));
+	gameDef->SetFilename(path.GetPathNative());
+	
+	igdeXMLGameDefinition(environment, logger).Load(
+		decDiskFileReader::Ref::NewWith(path.GetPathNative()), gameDef);
+	
+	project->SetProjectGameDefinition(gameDef);
 }
 
 void igdeLSGameProject::Save(igdeGameProject *project, decBaseFileWriter *file){

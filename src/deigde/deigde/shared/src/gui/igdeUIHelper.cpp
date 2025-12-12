@@ -998,22 +998,32 @@ void igdeUIHelper::Button(igdeContainer &parent, igdeAction *action, bool takeOv
 	parent.AddChild(button);
 }
 
-void igdeUIHelper::Button(igdeContainer &parent, igdeButton::Ref &button,
-igdeAction *action, bool takeOverAction){
+void igdeUIHelper::Button(igdeContainer &parent, igdeButton::Ref &button, igdeAction *action,
+bool takeOverAction){
 	Button(button, action, takeOverAction);
 	parent.AddChild(button);
 }
 
 void igdeUIHelper::Button(igdeButton::Ref &button, igdeAction *action, bool takeOverAction){
-	button.TakeOver(new igdeButton(pEnvironment, action));
+	button.TakeOverWith(pEnvironment, action);
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
 }
 
+void igdeUIHelper::Button(igdeContainer &parent, const igdeAction::Ref &action){
+	igdeButton::Ref button;
+	Button(button, action);
+	parent.AddChild(button);
+}
+
 void igdeUIHelper::Button(igdeContainer &parent, igdeButton::Ref &button, const igdeAction::Ref &action){
 	button.TakeOverWith(pEnvironment, action);
 	parent.AddChild(button);
+}
+
+void igdeUIHelper::Button(igdeButton::Ref &button, const igdeAction::Ref &action){
+	button.TakeOverWith(pEnvironment, action);
 }
 
 
@@ -1500,7 +1510,7 @@ decString igdeUIHelper::FormatSizeTousand(uint64_t size){
 	
 	int i;
 	scratch = size;
-	char *tp = (char*)text.GetString() + (digitCount + separatorCount - 1);
+	char *tp = text.GetMutableString() + (digitCount + separatorCount - 1);
 	for(i=1; i<=digitCount; i++){
 		*(tp--) = '0' + ( scratch % 10 );
 		scratch /= 10;

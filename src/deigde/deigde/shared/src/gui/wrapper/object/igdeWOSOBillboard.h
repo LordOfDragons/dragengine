@@ -72,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Billboard resource. */
-	inline deBillboard *GetBillboard() const{ return pBillboard; }
+	inline const deBillboard::Ref &GetBillboard() const{ return pBillboard; }
 	
 	/** \brief Update parameters. */
 	void UpdateParameters() override;

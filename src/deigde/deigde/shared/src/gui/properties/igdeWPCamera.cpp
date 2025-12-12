@@ -448,9 +448,9 @@ public:
 		}
 		
 		igdeLoadSaveCamera lscamera(pPanel.GetEnvironment(), pPanel.GetLogger(), "IGDE");
-		lscamera.Load(igdeWPCamera::lastCameraFile, camera, decBaseFileReader::Ref::New(
+		lscamera.Load(igdeWPCamera::lastCameraFile, camera,
 			pPanel.GetEnvironment().GetFileSystemGame()->OpenFileForReading(
-			decPath::CreatePathUnix(igdeWPCamera::lastCameraFile))));
+				decPath::CreatePathUnix(igdeWPCamera::lastCameraFile)));
 	}
 };
 
@@ -467,9 +467,8 @@ public:
 		}
 		
 		igdeLoadSaveCamera lscamera(pPanel.GetEnvironment(), pPanel.GetLogger(), "IGDE");
-		lscamera.Save(camera, decBaseFileWriter::Ref::New(
-			pPanel.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
-			decPath::CreatePathUnix(igdeWPCamera::lastCameraFile))));
+		lscamera.Save(camera, pPanel.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
+			decPath::CreatePathUnix(igdeWPCamera::lastCameraFile)));
 	}
 };
 

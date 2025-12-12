@@ -105,49 +105,22 @@ igdeLoadSaveSystem::~igdeLoadSaveSystem(){
 // Management
 ///////////////
 
-igdeGameProject *igdeLoadSaveSystem::LoadGameProject(const char *filename){
-	if(!filename){
-		DETHROW(deeInvalidParam);
-	}
+igdeGameProject::Ref igdeLoadSaveSystem::LoadGameProject(const char *filename){
+	DEASSERT_NOTNULL(filename)
 	
-	decBaseFileReader::Ref fileReader;
-	igdeGameProject *project = NULL;
+	const igdeGameProject::Ref project(igdeGameProject::Ref::NewWith(pWindowMain->GetEnvironment()));
+	project->SetFilePath(filename);
 	
-	try{
-		project = new igdeGameProject(pWindowMain->GetEnvironment());
-		project->SetFilePath(filename);
-		
-		fileReader.TakeOver(new decDiskFileReader(filename));
-		pLSGameProject->Load(filename, project, fileReader);
-		
-	}catch(const deException &){
-		if(project){
-			project->FreeReference();
-		}
-		throw;
-	}
+	pLSGameProject->Load(filename, project, decDiskFileReader::Ref::NewWith(filename));
 	
 	return project;
 }
 
 void igdeLoadSaveSystem::SaveGameProject(igdeGameProject *project, const char *filename){
-	if(!project || !filename){
-		DETHROW(deeInvalidParam);
-	}
+	DEASSERT_NOTNULL(project)
+	DEASSERT_NOTNULL(filename)
 	
-	decDiskFileWriter *fileWriter = NULL;
-	
-	try{
-		fileWriter = new decDiskFileWriter(filename, false);
-		pLSGameProject->Save(project, fileWriter);
-		fileWriter->FreeReference();
-		
-	}catch(const deException &){
-		if(fileWriter){
-			fileWriter->FreeReference();
-		}
-		throw;
-	}
+	pLSGameProject->Save(project, decDiskFileWriter::Ref::NewWith(filename, false));
 }
 
 

@@ -84,10 +84,10 @@ void igdeGDPCSky::PrepareCanvasForRender(){
 	deEngine &engine = *environment.GetEngineController()->GetEngine();
 	
 	// create world
-	pWorld.TakeOver(engine.GetWorldManager()->CreateWorld());
+	pWorld = engine.GetWorldManager()->CreateWorld();
 	
 	// create camera
-	pCamera.TakeOver(engine.GetCameraManager()->CreateCamera());
+	pCamera = engine.GetCameraManager()->CreateCamera();
 	pCamera->SetFov(45.0f * DEG2RAD);
 	pCamera->SetFovRatio(1.0f);
 	pCamera->SetImageDistance(0.01f);
@@ -107,7 +107,7 @@ void igdeGDPCSky::PrepareCanvasForRender(){
 	
 	// create render world canvas
 	deCanvasView &container = *GetCanvas();
-	pCanvasRenderWorld.TakeOver(engine.GetCanvasManager()->CreateCanvasRenderWorld());
+	pCanvasRenderWorld = engine.GetCanvasManager()->CreateCanvasRenderWorld();
 	pCanvasRenderWorld->SetCamera(pCamera);
 	pCanvasRenderWorld->SetSize(container.GetSize());
 	container.AddCanvas(pCanvasRenderWorld);

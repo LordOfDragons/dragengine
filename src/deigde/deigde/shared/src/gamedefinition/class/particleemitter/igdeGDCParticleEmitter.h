@@ -35,11 +35,11 @@
  * \brief Game Definition Class Particle Emitter.
  */
 class DE_DLL_EXPORT igdeGDCParticleEmitter : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCParticleEmitter> Ref;
-
-
-public:
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		epPath,

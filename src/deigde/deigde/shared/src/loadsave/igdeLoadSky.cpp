@@ -292,17 +292,9 @@ deSkyLayer &layer, const char *basePath){
 			const decString path(GetCDataString(*tag));
 			
 			if(!path.IsEmpty()){
-				deSkin *skin = NULL;
-				
 				try{
-					skin = sky.GetEngine()->GetSkinManager()->LoadSkin(path, basePath);
-					layer.SetSkin(skin);
-					skin->FreeReference();
-					
+					layer.SetSkin(sky.GetEngine()->GetSkinManager()->LoadSkin(path, basePath));
 				}catch(const deException &){
-					if(skin){
-						skin->FreeReference();
-					}
 					LogWarnGenericProblemTag(*tag, tag->GetName(),
 						"Failed loading resource file");
 				}
@@ -448,17 +440,9 @@ deSkyLayerBody &body, const char *basePath){
 			const decString path(GetCDataString(*tag));
 			
 			if(!path.IsEmpty()){
-				deSkin *skin = NULL;
-				
 				try{
-					skin = sky.GetEngine()->GetSkinManager()->LoadSkin(path, basePath);
-					body.SetSkin(skin);
-					skin->FreeReference();
-					
+					body.SetSkin(sky.GetEngine()->GetSkinManager()->LoadSkin(path, basePath));
 				}catch(const deException &){
-					if(skin){
-						skin->FreeReference();
-					}
 					LogWarnGenericProblemTag(*tag, tag->GetName(),
 						"Failed loading resource file");
 				}

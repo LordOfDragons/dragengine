@@ -93,7 +93,7 @@ public:
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief World or NULL. */
-	inline deWorld *GetWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetWorld() const{ return pEngWorld; }
 	
 	/** \brief Set world or NULL. */
 	void SetWorld(deWorld *world);
@@ -114,7 +114,7 @@ public:
 	const deSky *GetSky() const;
 	
 	/** \brief Game definition sky or NULL if sky is set manually. */
-	inline igdeGDSky *GetGDSky() const{ return pGDSky; }
+	inline const igdeGDSky::Ref &GetGDSky() const{ return pGDSky; }
 	
 	/** \brief Sky path or NULL if sky is set manually. */
 	inline const decString &GetPath() const{ return pPath; }

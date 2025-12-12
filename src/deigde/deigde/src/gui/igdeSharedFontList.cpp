@@ -64,15 +64,14 @@ igdeFont *igdeSharedFontList::GetFontWith(const igdeFont::sConfiguration &config
 	int i;
 	
 	for(i=0; i<count; i++){
-		cFont * const cfont = (cFont*)pFonts.GetAt(i);
+		cFont * const cfont = static_cast<cFont*>(pFonts.GetAt(i));
 		if(configuration == cfont->GetConfig()){
 			return cfont->GetFont();
 		}
 	}
 	
-	cFont * const cfont = new cFont(configuration, new igdeFont(pEnvironment, configuration));
+	const cFont::Ref cfont(cFont::Ref::NewWith(configuration, new igdeFont(pEnvironment, configuration)));
 	pFonts.Add(cfont);
-	cfont->FreeReference();
 	
 	return cfont->GetFont();
 }

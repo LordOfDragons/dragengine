@@ -67,8 +67,7 @@ private:
 	class cShapeColor : public deObject {
 	public:
 		typedef deTObjectReference<cShapeColor> Ref;
-	
-	
+		
 		decString name;
 		decColor color;
 		int ddshapeIndex;

@@ -281,7 +281,7 @@ void igdeWOSOBillboard::pUpdateBillboard(){
 	}
 	
 	if(!pBillboard){
-		pBillboard.TakeOver(GetEngine().GetBillboardManager()->CreateBillboard());
+		pBillboard = GetEngine().GetBillboardManager()->CreateBillboard();
 		
 		pBillboard->SetSizeFixedToScreen(pGDBillboard.GetSizeFixedToScreen());
 		

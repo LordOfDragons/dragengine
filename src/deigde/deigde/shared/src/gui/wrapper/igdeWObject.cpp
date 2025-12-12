@@ -198,8 +198,8 @@ pAnyContentVisible(false)
 		pTriggerListener.TakeOver(new igdeWObjectTriggerListener(*this));
 		
 		// create collider
-		pColliderFallback.TakeOver(environment.GetEngineController()->GetEngine()
-			->GetColliderManager()->CreateColliderVolume());
+		pColliderFallback = environment.GetEngineController()->GetEngine()
+			->GetColliderManager()->CreateColliderVolume();
 		pColliderFallback->SetEnabled(true);
 		pColliderFallback->SetResponseType(deCollider::ertStatic);
 		pColliderFallback->SetUseLocalGravity(true);
@@ -542,8 +542,8 @@ void igdeWObject::SetOutlineSkin(deSkin *skin){
 	pOutlineSkin = skin;
 	
 	if(skin && !pOutlineDynamicSkin){
-		pOutlineDynamicSkin.TakeOver(pEnvironment.GetEngineController()->GetEngine()->
-			GetDynamicSkinManager()->CreateDynamicSkin());
+		pOutlineDynamicSkin = pEnvironment.GetEngineController()->GetEngine()->
+			GetDynamicSkinManager()->CreateDynamicSkin();
 		
 		deDSRenderableColor * const renderableColor = new deDSRenderableColor("color");
 		renderableColor->SetColor(pOutlineColor);

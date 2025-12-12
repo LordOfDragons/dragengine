@@ -102,7 +102,7 @@ void igdeWOSOEnvMapProbe::Visit(igdeWOSOVisitor &visitor){
 
 void igdeWOSOEnvMapProbe::pUpdateEnvMapProbe(){
 	if(!pEnvMapProbe){
-		pEnvMapProbe.TakeOver(GetEngine().GetEnvMapProbeManager()->CreateEnvMapProbe());
+		pEnvMapProbe = GetEngine().GetEnvMapProbeManager()->CreateEnvMapProbe();
 		
 		pEnvMapProbe->SetScaling(pGDEnvMapProbe.GetScaling());
 		

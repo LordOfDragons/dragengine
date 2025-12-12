@@ -224,7 +224,7 @@ void igdeWOSOParticleEmitter::pUpdateParticleEmitter(){
 	(void)rl;
 	
 	if(!pParticleEmitter){
-		pParticleEmitter.TakeOver(GetEngine().GetParticleEmitterInstanceManager()->CreateInstance());
+		pParticleEmitter = GetEngine().GetParticleEmitterInstanceManager()->CreateInstance();
 		
 		UpdateLayerMasks();
 		UpdateCollisionFilter();
@@ -247,10 +247,9 @@ void igdeWOSOParticleEmitter::pUpdateParticleEmitter(){
 			
 			if(engine.GetVirtualFileSystem()->ExistsFile(vfsPath)){
 				try{
-					decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-						 engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath)));
-					emitter.TakeOver(engine.GetParticleEmitterManager()->CreateParticleEmitter());
-					loadEmitter.Load(pathEmitter, emitter, reader);
+					emitter = engine.GetParticleEmitterManager()->CreateParticleEmitter();
+					loadEmitter.Load(pathEmitter, emitter,
+						engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath));
 					
 				}catch(const deException &e){
 					emitter = NULL;

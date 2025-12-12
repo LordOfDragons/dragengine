@@ -42,17 +42,12 @@
 ////////////////////////////
 
 igdeTriggerExpression::igdeTriggerExpression(){
-	pRootComponent = NULL;
 	pResult = false;
 	pEnabled = true;
 }
 
 igdeTriggerExpression::~igdeTriggerExpression(){
 	UnlinkTriggerTargets();
-	
-	if(pRootComponent){
-		pRootComponent->FreeReference();
-	}
 }
 
 
@@ -61,27 +56,20 @@ igdeTriggerExpression::~igdeTriggerExpression(){
 ///////////////
 
 void igdeTriggerExpression::SetRootComponent(igdeTriggerExpressionComponent *component){
-	if(component != pRootComponent){
-		if(pRootComponent){
-			pRootComponent->FreeReference();
-		}
-		
-		pRootComponent = component;
-		
-		if(component){
-			component->AddReference();
-		}
+	if(component == pRootComponent){
+		return;
 	}
 	
+	pRootComponent = component;
 	pResult = false;
 }
 
 bool igdeTriggerExpression::IsEmpty() const{
-	return pRootComponent == NULL;
+	return pRootComponent.IsNull();
 }
 
 bool igdeTriggerExpression::IsNotEmpty() const{
-	return pRootComponent != NULL;
+	return pRootComponent.IsNotNull();
 }
 
 void igdeTriggerExpression::SetResult(bool result){

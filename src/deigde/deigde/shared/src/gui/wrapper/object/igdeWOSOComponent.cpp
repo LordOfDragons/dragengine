@@ -293,11 +293,11 @@ pLightShadowIgnore(false),
 pColliderCanInteract(false),
 pColliderAddedToWorld(false)
 {
-	pCollider.TakeOver(GetEngine().GetColliderManager()->CreateColliderComponent());
+	pCollider = GetEngine().GetColliderManager()->CreateColliderComponent();
 	pCollider->SetEnabled(false);
 	pCollider->SetMass(wrapper.GetColliderFallback()->GetMass());
 	
-	pColliderInteraction.TakeOver(GetEngine().GetColliderManager()->CreateColliderComponent());
+	pColliderInteraction = GetEngine().GetColliderManager()->CreateColliderComponent();
 	pColliderInteraction->SetEnabled(false);
 	pColliderInteraction->SetResponseType(deCollider::ertKinematic);
 	pColliderInteraction->SetUseLocalGravity(true);
@@ -699,7 +699,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 		currentRig = pComponent->GetRig();
 		
 	}else{
-		pComponent.TakeOver(GetEngine().GetComponentManager()->CreateComponent());
+		pComponent = GetEngine().GetComponentManager()->CreateComponent();
 		
 		pComponent->SetHintMovement(pGDComponent.GetStatic()
 			? deComponent::emhStationary : deComponent::emhDynamic);
@@ -713,7 +713,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 	}
 	
 	if(!pComponentInteraction){
-		pComponentInteraction.TakeOver(GetEngine().GetComponentManager()->CreateComponent());
+		pComponentInteraction = GetEngine().GetComponentManager()->CreateComponent();
 		pComponentInteraction->SetHintMovement(pComponent->GetHintMovement());
 		pComponentInteraction->SetRig(GetEnvironment().GetStockRig(igdeEnvironment::esrModelCollision));
 		pComponentInteraction->SetVisible(false);
@@ -825,10 +825,9 @@ void igdeWOSOComponent::pUpdateComponent(){
 			
 			if(engine.GetVirtualFileSystem()->ExistsFile(vfsPath)){
 				try{
-					const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-						engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath)));
-					animator.TakeOver(engine.GetAnimatorManager()->CreateAnimator());
-					loadAnimator.Load(pathAnimator, animator, reader);
+					animator = engine.GetAnimatorManager()->CreateAnimator();
+					loadAnimator.Load(pathAnimator, animator,
+						engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath));
 					if(animation){
 						animator->SetAnimation(animation);
 					}
@@ -844,7 +843,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 			const int moveIndex = animation->FindMove(move);
 			
 			if(moveIndex != -1){
-				animator.TakeOver(engine.GetAnimatorManager()->CreateAnimator());
+				animator = engine.GetAnimatorManager()->CreateAnimator();
 				animator->SetAnimation(animation);
 				animator->SetRig(rig);
 				
@@ -904,7 +903,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 		
 		if(animator){
 			if(!pAnimator){
-				pAnimator.TakeOver(engine.GetAnimatorInstanceManager()->CreateAnimatorInstance());
+				pAnimator = engine.GetAnimatorInstanceManager()->CreateAnimatorInstance();
 				pAnimator->SetComponent(pComponent);
 			}
 			pAnimator->SetAnimator(animator);
@@ -1010,7 +1009,7 @@ void igdeWOSOComponent::pUpdateTextures(){
 			}
 			
 			if(gdctRequiresDynamicSkin){
-				gdctDynamicSkin.TakeOver(engine.GetDynamicSkinManager()->CreateDynamicSkin());
+				gdctDynamicSkin = engine.GetDynamicSkinManager()->CreateDynamicSkin();
 				if(gdctHasTint){
 					deDSRenderableColor * const renderable = new deDSRenderableColor("tint");
 					renderable->SetColor(gdctColorTint);
@@ -1157,7 +1156,7 @@ void igdeWOSOComponent::pUpdateOutlineComponent(){
 	// create outline component
 	deEngine &engine = *GetWrapper().GetEnvironment().GetEngineController()->GetEngine();
 	
-	pOutlineComponent.TakeOver(engine.GetComponentManager()->CreateComponent(pComponent->GetModel(), nullptr));
+	pOutlineComponent = engine.GetComponentManager()->CreateComponent(pComponent->GetModel(), nullptr);
 	pOutlineComponent->SetRig(pComponent->GetRig());
 	pOutlineComponent->SetDynamicSkin(GetWrapper().GetOutlineDynamicSkin());
 	

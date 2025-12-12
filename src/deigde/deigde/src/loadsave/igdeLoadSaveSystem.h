@@ -25,11 +25,11 @@
 #ifndef _IGDELOADSAVESYSTEM_H_
 #define _IGDELOADSAVESYSTEM_H_
 
+#include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/gui/filedialog/igdeFilePatternList.h>
 #include <dragengine/common/string/decString.h>
 
 class igdeLSGameProject;
-class igdeGameProject;
 class igdeWindowMain;
 
 class deEngine;
@@ -104,7 +104,7 @@ public:
 	inline igdeLSGameProject *GetLSGameProject() const{ return pLSGameProject; }
 	
 	/** \brief Loads a game project. */
-	igdeGameProject *LoadGameProject(const char *filename);
+	igdeGameProject::Ref LoadGameProject(const char *filename);
 	/** \brief Saves a game project. */
 	void SaveGameProject(igdeGameProject *project, const char *filename);
 	

@@ -76,7 +76,7 @@ void igdeWOSOWorld::LoadObjectResources::Drop(){
 
 void igdeWOSOWorld::LoadObjectResources::LoadTexture(ChildObject &object, ChildObjectTexture &texture){
 	const decString &path = texture.pathSkin;
-	pTextures.Add(deObject::Ref::New(new Texture(object, texture)));
+	pTextures.Add(Texture::Ref::NewWith(object, texture));
 	if(!pSkins.Has(path)){
 		pSkins.Add(path);
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertSkin, this);
@@ -175,8 +175,8 @@ pEnvironment(owner.GetEnvironment()){
 void igdeWOSOWorld::LoadXmlWorld::LoadWorld(const decString &path){
 	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser(GetLogger()).ParseXml(decBaseFileReader::Ref::New(pEnvironment.
-		GetFileSystemGame()->OpenFileForReading(decPath::CreatePathUnix(path))), xmlDoc);
+	decXmlParser(GetLogger()).ParseXml(pEnvironment.GetFileSystemGame()->OpenFileForReading(
+		decPath::CreatePathUnix(path)), xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
@@ -278,8 +278,8 @@ ChildObject &object, ChildObjectTexture &texture){
 			decColor color;
 			ReadColor(*tag, color);
 			
-			texture.dynamicSkin.TakeOver(pOwner.GetEnvironment().GetEngineController()->
-				GetEngine()->GetDynamicSkinManager()->CreateDynamicSkin());
+			texture.dynamicSkin = pOwner.GetEnvironment().GetEngineController()->
+				GetEngine()->GetDynamicSkinManager()->CreateDynamicSkin();
 			
 			deDSRenderableColor * const renderable = new deDSRenderableColor("tint");
 			renderable->SetColor(color);

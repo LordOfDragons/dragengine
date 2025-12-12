@@ -281,7 +281,6 @@ public:
 igdeDialogNewGameProject::igdeDialogNewGameProject(igdeWindowMain &windowMain) :
 igdeDialog(windowMain.GetEnvironment(), "New Game Project", windowMain.GetIconApplication()),
 pWindowMain(windowMain),
-pNewProject(NULL),
 pProjectPathChanged(false),
 pProjectGameDefPathChanged(false)
 {
@@ -369,9 +368,6 @@ pProjectGameDefPathChanged(false)
 }
 
 igdeDialogNewGameProject::~igdeDialogNewGameProject(){
-	if(pNewProject){
-		pNewProject->FreeReference();
-	}
 }
 
 
@@ -389,12 +385,12 @@ void igdeDialogNewGameProject::OnProjectGameDefPathChanged(){
 
 igdeGameDefinition *igdeDialogNewGameProject::GetSelectedSharedGameDef() const{
 	return pCBSharedGameDefs->GetSelectedItem()
-		? (igdeGameDefinition*)pCBSharedGameDefs->GetSelectedItem()->GetData() : NULL;
+		? static_cast<igdeGameDefinition*>(pCBSharedGameDefs->GetSelectedItem()->GetData()) : nullptr;
 }
 
 igdeTemplate *igdeDialogNewGameProject::GetSelectedTemplate() const{
 	return pCBTemplate->GetSelectedItem()
-		? (igdeTemplate*)pCBTemplate->GetSelectedItem()->GetData() : NULL;
+		? static_cast<igdeTemplate*>(pCBTemplate->GetSelectedItem()->GetData()) : nullptr;
 }
 
 bool igdeDialogNewGameProject::CheckValidInput(){
@@ -440,7 +436,7 @@ bool igdeDialogNewGameProject::Accept(){
 	createProject.SetPathData(pEditPathData->GetText());
 	createProject.SetPathCache(pEditPathCache->GetText());
 	createProject.SetScriptModule(pCBScriptModule->GetText());
-	createProject.SetTemplate((const igdeTemplate*)pCBTemplate->GetSelectedItem()->GetData());
+	createProject.SetTemplate(static_cast<const igdeTemplate*>(pCBTemplate->GetSelectedItem()->GetData()));
 	
 	const int baseGameDefCount = pListPathGameDefBase->GetItemCount();
 	int i;
@@ -458,8 +454,6 @@ bool igdeDialogNewGameProject::Accept(){
 	}
 	
 	pNewProject = createProject.GetProject();
-	pNewProject->AddReference();
-	
 	pWindowMain.AddRecentGameProject(pNewProject->GetFilePath());
 	
 	return igdeDialog::Accept();

@@ -161,9 +161,6 @@ public:
 ////////////////////////////
 
 igdeWDebugDrawerShape::igdeWDebugDrawerShape(){
-	pEngDebugDrawer = NULL;
-	pEngDDShape = NULL;
-	
 	pScale.Set(1.0f, 1.0f, 1.0f);
 	
 	pColorEdge.Set(0.0f, 0.0f, 0.0f, 1.0f);
@@ -172,7 +169,7 @@ igdeWDebugDrawerShape::igdeWDebugDrawerShape(){
 }
 
 igdeWDebugDrawerShape::~igdeWDebugDrawerShape(){
-	SetParentDebugDrawer(NULL);
+	SetParentDebugDrawer(nullptr);
 	RemoveAllFaces();
 }
 
@@ -190,17 +187,7 @@ void igdeWDebugDrawerShape::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
 		pEngDebugDrawer->RemoveShape(pEngDDShape);
 		pEngDDShape = NULL;
 	}
-	
-	if(pEngDebugDrawer){
-		pEngDebugDrawer->FreeReference();
-	}
-	
 	pEngDebugDrawer = debugDrawer;
-	
-	if(debugDrawer){
-		debugDrawer->AddReference();
-	}
-	
 	pUpdateDDShape();
 }
 

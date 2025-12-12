@@ -35,11 +35,11 @@
  * \brief Game Definition Billboard.
  */
 class DE_DLL_EXPORT igdeGDCBillboard : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCBillboard> Ref;
-
-
-public:
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		epSkin,

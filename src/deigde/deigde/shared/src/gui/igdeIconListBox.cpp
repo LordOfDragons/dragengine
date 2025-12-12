@@ -323,19 +323,19 @@ void igdeIconListBox::SetDefaultSorter(){
 }
 
 static void igdeIconListBox_Sort(decObjectList &items, igdeListItemSorter &sorter, int left, int right){
-	igdeListItem::Ref pivot = (igdeListItem*)items.GetAt(left);
+	const igdeListItem::Ref pivot(static_cast<igdeListItem*>(items.GetAt(left)));
 	const int r_hold = right;
 	const int l_hold = left;
 	
 	while(left < right){
-		while(left < right && sorter.Precedes(pivot, *((igdeListItem*)items.GetAt(right)))){
+		while(left < right && sorter.Precedes(pivot, *static_cast<igdeListItem*>(items.GetAt(right)))){
 			right--;
 		}
 		if(left != right){
 			items.SetAt(left, items.GetAt(right));
 			left++;
 		}
-		while(left < right && sorter.Precedes(*((igdeListItem*)items.GetAt(left)), pivot)){
+		while(left < right && sorter.Precedes(*static_cast<igdeListItem*>(items.GetAt(left)), pivot)){
 			left++;
 		}
 		if(left != right){
@@ -344,7 +344,7 @@ static void igdeIconListBox_Sort(decObjectList &items, igdeListItemSorter &sorte
 		}
 	}
 	
-	items.SetAt(left, (igdeListItem*)pivot);
+	items.SetAt(left, pivot);
 	if(l_hold < left){
 		igdeIconListBox_Sort(items, sorter, l_hold, left - 1);
 	}

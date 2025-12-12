@@ -36,11 +36,11 @@
  * \brief Game definition class light.
  */
 class DE_DLL_EXPORT igdeGDCLight : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCLight> Ref;
-
-
-public:
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		epType,

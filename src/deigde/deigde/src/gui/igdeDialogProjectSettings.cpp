@@ -66,9 +66,10 @@ class igdeDialogProjectSettings_ListPathGameDefBase : public igdeListBoxListener
 	igdeDialogProjectSettings &pDialog;
 	
 public:
-	igdeDialogProjectSettings_ListPathGameDefBase(igdeDialogProjectSettings& dialog) : pDialog(dialog){}
+	explicit igdeDialogProjectSettings_ListPathGameDefBase(igdeDialogProjectSettings& dialog) :
+	pDialog(dialog){}
 	
-	virtual void OnSelectionChanged(igdeListBox*){
+	void OnSelectionChanged(igdeListBox*) override{
 		pDialog.UpdateBaseGameDefButtons();
 	}
 };
@@ -77,9 +78,10 @@ class igdeDialogProjectSettings_ComboSharedGameDef : public igdeComboBoxListener
 	igdeDialogProjectSettings &pDialog;
 	
 public:
-	igdeDialogProjectSettings_ComboSharedGameDef(igdeDialogProjectSettings& dialog) : pDialog(dialog){}
+	explicit igdeDialogProjectSettings_ComboSharedGameDef(igdeDialogProjectSettings& dialog) :
+	pDialog(dialog){}
 	
-	virtual void OnTextChanged(igdeComboBox*){
+	void OnTextChanged(igdeComboBox*) override{
 		pDialog.UpdateSharedGameDef();
 	}
 };
@@ -200,9 +202,10 @@ class igdeDialogProjectSettings_ComboScriptModule : public igdeComboBoxListener 
 	igdeDialogProjectSettings &pDialog;
 	
 public:
-	igdeDialogProjectSettings_ComboScriptModule(igdeDialogProjectSettings& dialog) : pDialog(dialog){}
+	explicit igdeDialogProjectSettings_ComboScriptModule(igdeDialogProjectSettings& dialog) :
+	pDialog(dialog){}
 	
-	virtual void OnTextChanged(igdeComboBox*){
+	void OnTextChanged(igdeComboBox*) override{
 		pDialog.UpdateSharedGameDefs();
 	}
 };
@@ -314,9 +317,10 @@ bool igdeDialogProjectSettings::Accept(){
 	}
 	
 	const igdeGameDefinitionList &sharedGameDefList = pWindowMain.GetSharedGameDefinitions();
-	igdeGameProject &project = *GetEnvironment().GetGameProject();
 	
 	try{
+		igdeGameProject &project = *GetEnvironment().GetGameProject();
+		
 		project.SetName(pEditName->GetText());
 		project.SetDescription(pEditDescription->GetText());
 		project.SetPathData(pEditPathData->GetText());
@@ -351,7 +355,7 @@ bool igdeDialogProjectSettings::Accept(){
 
 igdeGameDefinition *igdeDialogProjectSettings::GetSelectedSharedGameDef() const{
 	return pCBSharedGameDefs->GetSelectedItem()
-		? (igdeGameDefinition*)pCBSharedGameDefs->GetSelectedItem()->GetData() : NULL;
+		? static_cast<igdeGameDefinition*>(pCBSharedGameDefs->GetSelectedItem()->GetData()) : nullptr;
 }
 
 void igdeDialogProjectSettings::UpdateBaseGameDefButtons(){

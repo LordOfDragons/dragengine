@@ -56,23 +56,23 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create icon from image. */
-	igdeIcon(deImage &image);
+	explicit igdeIcon(deImage &image);
 	
 	/** \brief Create icon from image using scaling if required. */
 	igdeIcon(deImage &image, int with, int height);
 	
 	/** \brief Create icon from PNG image in IGDE virtual file system. */
-	static igdeIcon *LoadPNG(igdeEnvironment &environment, const char *filename);
+	static Ref LoadPNG(igdeEnvironment &environment, const char *filename);
 	
 	/** \brief Create icon from PNG image in Module Data Directory. */
-	static igdeIcon *LoadPNG(const igdeEditorModule &editor, const char *filename);
+	static Ref LoadPNG(const igdeEditorModule &editor, const char *filename);
 	
 	/** \brief Create icon from game engine image. */
-	static igdeIcon *LoadImage(igdeEnvironment &environment, const char *filename);
+	static Ref LoadImage(igdeEnvironment &environment, const char *filename);
 	
 	
 	
-private:
+	/** \brief Internal use only. */
 	igdeIcon(void *nativeIcon, const decPoint &size);
 	
 	

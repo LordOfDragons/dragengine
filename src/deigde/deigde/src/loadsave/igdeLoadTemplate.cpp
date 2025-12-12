@@ -101,20 +101,9 @@ void igdeLoadTemplate::pReadTemplate(const decXmlElementTag &root, igdeTemplate 
 			atemplate.GetBaseGameDefinitions().Add(GetCDataString(*tag));
 			
 		}else if(tag->GetName() == "file"){
-			igdeTemplateFile *file = NULL;
-			
-			try{
-				file = new igdeTemplateFile;
-				pReadFile(*tag, *file);
-				atemplate.GetFiles().Add(file);
-				file->FreeReference();
-				
-			}catch(const deException &){
-				if(file){
-					file->FreeReference();
-				}
-				throw;
-			}
+			const igdeTemplateFile::Ref file(igdeTemplateFile::Ref::NewWith());
+			pReadFile(*tag, file);
+			atemplate.GetFiles().Add(file);
 			
 		}else{
 			LogWarnUnknownTag(root, *tag);
@@ -155,20 +144,9 @@ void igdeLoadTemplate::pReadFile(const decXmlElementTag &root, igdeTemplateFile 
 			}
 			
 		}else if(tag->GetName() == "replace"){
-			igdeTemplateReplace *replace = NULL;
-			
-			try{
-				replace = new igdeTemplateReplace;
-				pReadReplace(*tag, *replace);
-				file.GetReplacements().Add(replace);
-				replace->FreeReference();
-				
-			}catch(const deException &){
-				if(replace){
-					replace->FreeReference();
-				}
-				throw;
-			}
+			const igdeTemplateReplace::Ref replace(igdeTemplateReplace::Ref::NewWith());
+			pReadReplace(*tag, replace);
+			file.GetReplacements().Add(replace);
 			
 		}else{
 			LogWarnUnknownTag(root, *tag);

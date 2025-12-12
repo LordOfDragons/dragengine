@@ -78,26 +78,16 @@ void igdeGDParticleEmitterManager::SetDefaultPath(const char *path){
 
 void igdeGDParticleEmitterManager::UpdateWith(const igdeGDParticleEmitterManager &particleEmitterManager){
 	const int count = particleEmitterManager.GetEmitterList().GetCount();
-	igdeGDParticleEmitter *emitter = NULL;
-	igdeGDParticleEmitter *emitterCheck;
 	int i;
 	
-	try{
-		for(i=0; i<count; i++){
-			emitter = new igdeGDParticleEmitter(*particleEmitterManager.GetEmitterList().GetAt(i));
-			emitterCheck = pEmitterList.GetWithPath(emitter->GetPath().GetString());
-			if(emitterCheck){
-				RemoveEmitter(emitterCheck);
-			}
-			AddEmitter(emitter);
-			emitter = NULL;
+	for(i=0; i<count; i++){
+		const igdeGDParticleEmitter::Ref emitter(igdeGDParticleEmitter::Ref::NewWith(
+			*particleEmitterManager.GetEmitterList().GetAt(i)));
+		igdeGDParticleEmitter * const check = pEmitterList.GetWithPath(emitter->GetPath().GetString());
+		if(check){
+			RemoveEmitter(check);
 		}
-		
-	}catch(const deException &){
-		if(emitter){
-			emitter->FreeReference();
-		}
-		throw;
+		AddEmitter(emitter);
 	}
 	
 	pCategories->UpdateWith(particleEmitterManager.pCategories);

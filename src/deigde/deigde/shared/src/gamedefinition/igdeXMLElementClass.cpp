@@ -76,7 +76,7 @@ igdeXMLElementClass::~igdeXMLElementClass(){
 // Loading
 ////////////
 
-igdeGDClass *igdeXMLElementClass::LoadElementClass(decBaseFileReader &reader,
+igdeGDClass::Ref igdeXMLElementClass::LoadElementClass(decBaseFileReader &reader,
 const char *filename){
 	try{
 		decXmlDocument::Ref document(decXmlDocument::Ref::NewWith());
@@ -123,14 +123,14 @@ public:
 		}
 		
 		try{
-			pReader.TakeOver(vfs.OpenFileForReading(path));
+			pReader = vfs.OpenFileForReading(path);
 			
 		}catch(const deException &e){
 			pLogger.LogException(pLoggerSource, e);
 			return true;
 		}
 		
-		pClass.TakeOver(pOwner.LoadElementClass(pReader, path.GetPathUnix()));
+		pClass = pOwner.LoadElementClass(pReader, path.GetPathUnix());
 		
 		if(pClasses.HasNamed(pClass->GetName())){
 			pLogger.LogInfoFormat(pLoggerSource, "Ignore duplicate element class '%s'",
@@ -255,14 +255,12 @@ decVector4 igdeXMLElementClass::ReadFloatRectArea(const decXmlElementTag &root){
 igdeXMLElementClass::cMap::cMap(){}
 igdeXMLElementClass::cMap::~cMap(){}
 
-igdeGDClass *igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root, const char *filename){
+igdeGDClass::Ref igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root, const char *filename){
 	decStringDictionary properties;
 	int i;
 	
-	const igdeGDClass::Ref gdClass(igdeGDClass::Ref::New(
-		new igdeGDClass(GetAttributeString(root, "name"))));
-	gdClass->AddInheritClass(igdeGDClassInherit::Ref::New(
-		new igdeGDClassInherit(GetAttributeString(root, "class"))));
+	const igdeGDClass::Ref gdClass(igdeGDClass::Ref::NewWith(GetAttributeString(root, "name")));
+	gdClass->AddInheritClass(igdeGDClassInherit::Ref::NewWith(GetAttributeString(root, "class")));
 	gdClass->SetPathEClass(filename);
 	
 	decPath basePath(decPath::CreatePathUnix(filename));
@@ -302,14 +300,13 @@ igdeGDClass *igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root
 	
 	gdClass->SetPropertyValues(properties);
 	
-	gdClass->AddReference(); // caller takes over reference
 	return gdClass;
 }
 
 void igdeXMLElementClass::pReadBehavior(const decXmlElementTag &root,
 igdeGDClass &gdClass, const char *filename, const decString &basePathStr){
-	const igdeGDClassInherit::Ref inherit(igdeGDClassInherit::Ref::New(
-		new igdeGDClassInherit(GetAttributeString(root, "type"))));
+	const igdeGDClassInherit::Ref inherit(igdeGDClassInherit::Ref::NewWith(
+		GetAttributeString(root, "type")));
 	inherit->SetUseAutoPropertyPrefixId(true);
 	if(HasAttribute(root, "id")){
 		inherit->SetAutoPropertyPrefixId(GetAttributeString(root, "id"));

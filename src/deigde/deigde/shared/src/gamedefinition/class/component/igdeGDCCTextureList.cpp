@@ -64,18 +64,16 @@ igdeGDCCTexture *igdeGDCCTextureList::GetAt(int index) const{
 
 igdeGDCCTexture *igdeGDCCTextureList::GetNamed(const char *name) const{
 	const int count = pTextures.GetCount();
-	igdeGDCCTexture *texture;
 	int i;
 	
 	for(i=0; i<count; i++){
-		texture = (igdeGDCCTexture*)pTextures.GetAt(i);
-		
+		igdeGDCCTexture * const texture = static_cast<igdeGDCCTexture*>(pTextures.GetAt(i));
 		if(texture->GetName().Equals(name)){
 			return texture;
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 int igdeGDCCTextureList::IndexOf(igdeGDCCTexture *texture) const{
@@ -135,23 +133,10 @@ void igdeGDCCTextureList::RemoveAll(){
 
 void igdeGDCCTextureList::SetToDeepCopyFrom(const igdeGDCCTextureList &list){
 	const int count = list.GetCount();
-	igdeGDCCTexture *texture = NULL;
-	
 	int i;
 	
-	try{
-		for(i=0; i<count; i++){
-			texture = new igdeGDCCTexture(*list.GetAt(i));
-			Add(texture);
-			texture->FreeReference();
-			texture = NULL;
-		}
-		
-	}catch(const deException &){
-		if(texture){
-			texture->FreeReference();
-		}
-		throw;
+	for(i=0; i<count; i++){
+		Add(igdeGDCCTexture::Ref::NewWith(*list.GetAt(i)));
 	}
 }
 

@@ -40,6 +40,7 @@
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 #include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 class igdeTriggerTargetList;
 class igdeEnvironment;
@@ -47,7 +48,6 @@ class igdeWOSubObject;
 class igdeWOSOVisitor;
 
 class deComponent;
-class deCollider;
 class deColliderVolume;
 class deColliderComponent;
 class deBaseScriptingCollider;
@@ -173,13 +173,13 @@ public:
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** \brief World or NULL. */
-	inline deWorld *GetWorld() const{ return pWorld; }
+	inline const deWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world or NULL. */
 	void SetWorld(deWorld *world);
 	
 	/** \brief Camera to calculate screen related properties or NULL. */
-	inline deCamera *GetCamera() const{ return pCamera; }
+	inline const deCamera::Ref &GetCamera() const{ return pCamera; }
 	
 	/** \brief Set camera to calculate screen related properties or NULL. */
 	void SetCamera(deCamera *camera);
@@ -191,7 +191,7 @@ public:
 	void SetTriggerTable(igdeTriggerTargetList *triggerTable);
 	
 	/** \brief Game definition object class or NULL. */
-	inline igdeGDClass *GetGDClass() const{ return pGDClass; }
+	inline const igdeGDClass::Ref &GetGDClass() const{ return pGDClass; }
 	
 	/** \brief Set game definition object class or NULL. */
 	void SetGDClass(igdeGDClass *gdClass);
@@ -303,7 +303,7 @@ public:
 	void SetDynamicCollider(bool dynamic);
 	
 	/** \brief Parent collider or NULL if there is none. */
-	inline deCollider *GetParentCollider() const{ return pParentCollider; }
+	inline const deCollider::Ref &GetParentCollider() const{ return pParentCollider; }
 	
 	/** \brief Determines if the object is attached to a parent collider. */
 	bool IsAttachedCollider() const;
@@ -383,7 +383,7 @@ public:
 	
 	
 	/** \brief Outline skin or NULL. */
-	inline deSkin *GetOutlineSkin() const{ return pOutlineSkin; }
+	inline const deSkin::Ref &GetOutlineSkin() const{ return pOutlineSkin; }
 	
 	/** \brief Set outline skin or NULL. */
 	void SetOutlineSkin(deSkin *skin);
@@ -410,7 +410,7 @@ public:
 	void SetAsyncLoadFinished(cAsyncLoadFinished *listener);
 	
 	/** \brief Trigger listener for internal use only. */
-	inline igdeTriggerListener *GetTriggerListener() const{ return pTriggerListener; }
+	inline const igdeTriggerListener::Ref &GetTriggerListener() const{ return pTriggerListener; }
 	
 	/**
 	 * \brief Determine if all sub objects (direct or indirect) finished loading.
@@ -463,7 +463,7 @@ public:
 	void SubObjectFinishedLoading(igdeWOSubObject &subObject, bool success);
 	void SubObjectExtendsDirty();
 	void SetInteractCollider(deColliderComponent *collider);
-	inline deDynamicSkin *GetOutlineDynamicSkin() const{ return pOutlineDynamicSkin; }
+	inline const deDynamicSkin::Ref &GetOutlineDynamicSkin() const{ return pOutlineDynamicSkin; }
 	void AddInteractionCollider(deCollider *collider);
 	void RemoveInteractionCollider(deCollider *collider);
 	void UpdateAnyContentVisibile();

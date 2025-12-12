@@ -315,7 +315,7 @@ bool igdeEditorModuleDefinition::pLoadLibrary(){
 			(LPTSTR) &lpMsgBuf, 0, NULL);
 		
 		// Display the string.
-		logger.LogErrorFormat(LOGSOURCE, "LoadLibrary(%i): %s.", err, (char*)lpMsgBuf);
+		logger.LogErrorFormat(LOGSOURCE, "LoadLibrary(%i): %s.", err, reinterpret_cast<char*>(lpMsgBuf));
 		
 		// Free the buffer.
 		LocalFree(lpMsgBuf);

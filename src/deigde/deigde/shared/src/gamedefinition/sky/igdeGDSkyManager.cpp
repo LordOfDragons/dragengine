@@ -121,27 +121,15 @@ void igdeGDSkyManager::VisitMatchingFilter(igdeGDVisitor &visitor, const decStri
 
 void igdeGDSkyManager::UpdateWith(const igdeGDSkyManager &manager){
 	const int count = manager.GetSkyList().GetCount();
-	igdeGDSky *sky = NULL;
-	igdeGDSky *skyCheck;
 	int i;
 	
-	try{
-		for(i=0; i<count; i++){
-			sky = new igdeGDSky(*manager.GetSkyList().GetAt(i));
-			skyCheck = pSkyList.GetWithPath(sky->GetPath());
-			if(skyCheck){
-				RemoveSky(skyCheck);
-			}
-			AddSky(sky);
-			sky->FreeReference();
-			sky = NULL;
+	for(i=0; i<count; i++){
+		const igdeGDSky::Ref sky(igdeGDSky::Ref::NewWith(*manager.GetSkyList().GetAt(i)));
+		igdeGDSky * const check = pSkyList.GetWithPath(sky->GetPath());
+		if(check){
+			RemoveSky(check);
 		}
-		
-	}catch(const deException &){
-		if(sky){
-			sky->FreeReference();
-		}
-		throw;
+		AddSky(sky);
 	}
 	
 	pCategories->UpdateWith(manager.pCategories);

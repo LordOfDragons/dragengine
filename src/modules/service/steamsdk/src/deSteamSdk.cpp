@@ -229,7 +229,7 @@ void deSteamSdk::InitSdk(const deServiceObject::Ref &data){
 	DETHROW_INFO(deeInvalidAction, errorMsg);
 }
 
-deBaseServiceService* deSteamSdk::CreateService(deService *service,
+deBaseServiceService *deSteamSdk::CreateService(deService *service,
 const char *name, const deServiceObject::Ref &data){
 	DEASSERT_NOTNULL(service)
 	

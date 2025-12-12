@@ -62,18 +62,16 @@ pSize(width, height)
 	igdeNativeIcon::Scale(pSize, pNativeIcon);
 }
 
-igdeIcon *igdeIcon::LoadPNG(igdeEnvironment &environment, const char *filename){
+igdeIcon::Ref igdeIcon::LoadPNG(igdeEnvironment &environment, const char *filename){
 	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
-	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(environment.GetFileSystemIGDE()->
-		OpenFileForReading(decPath::CreatePathUnix(filename))));
-	
-	void * const native = igdeNativeIcon::CreateNativeIconPNG(reader);
+	void * const native = igdeNativeIcon::CreateNativeIconPNG(
+		environment.GetFileSystemIGDE()->OpenFileForReading(decPath::CreatePathUnix(filename)));
 	
 	try{
-		return new igdeIcon(native, igdeNativeIcon::GetSize(native));
+		return igdeIcon::Ref::NewWith(native, igdeNativeIcon::GetSize(native));
 		
 	}catch(const deException &){
 		igdeNativeIcon::DestroyNativeIcon(native);
@@ -81,7 +79,7 @@ igdeIcon *igdeIcon::LoadPNG(igdeEnvironment &environment, const char *filename){
 	}
 }
 
-igdeIcon *igdeIcon::LoadPNG(const igdeEditorModule &editor, const char *filename){
+igdeIcon::Ref igdeIcon::LoadPNG(const igdeEditorModule &editor, const char *filename){
 	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
@@ -91,12 +89,11 @@ igdeIcon *igdeIcon::LoadPNG(const igdeEditorModule &editor, const char *filename
 	path.AddComponent(editor.GetEditorDirectory());
 	path.AddUnixPath(filename);
 	
-	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-		 editor.GetEnvironment().GetFileSystemIGDE()->OpenFileForReading(path)));
-	void * const native = igdeNativeIcon::CreateNativeIconPNG(reader);
+	void * const native = igdeNativeIcon::CreateNativeIconPNG(
+		editor.GetEnvironment().GetFileSystemIGDE()->OpenFileForReading(path));
 	
 	try{
-		return new igdeIcon(native, igdeNativeIcon::GetSize(native));
+		return igdeIcon::Ref::NewWith(native, igdeNativeIcon::GetSize(native));
 		
 	}catch(const deException &){
 		igdeNativeIcon::DestroyNativeIcon(native);
@@ -104,17 +101,16 @@ igdeIcon *igdeIcon::LoadPNG(const igdeEditorModule &editor, const char *filename
 	}
 }
 
-igdeIcon *igdeIcon::LoadImage(igdeEnvironment &environment, const char *filename){
+igdeIcon::Ref igdeIcon::LoadImage(igdeEnvironment &environment, const char *filename){
 	if(!filename){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deImage::Ref image(deImage::Ref::New(environment.GetEngineController()->GetEngine()->
-		GetImageManager()->LoadImage(filename, "/")));
-	void * const native = igdeNativeIcon::CreateNativeIcon(image);
+	void * const native = igdeNativeIcon::CreateNativeIcon(
+		environment.GetEngineController()->GetEngine()->GetImageManager()->LoadImage(filename, "/"));
 	
 	try{
-		return new igdeIcon(native, igdeNativeIcon::GetSize(native));
+		return igdeIcon::Ref::NewWith(native, igdeNativeIcon::GetSize(native));
 		
 	}catch(const deException &){
 		igdeNativeIcon::DestroyNativeIcon(native);

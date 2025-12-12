@@ -25,16 +25,17 @@
 #ifndef _IGDECREATEPROJECT_H_
 #define _IGDECREATEPROJECT_H_
 
+#include <deigde/gameproject/igdeGameProject.h>
+#include <deigde/gamedefinition/igdeGameDefinition.h>
+
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 
-class igdeGameProject;
 class igdeTemplate;
 class igdeTemplateFile;
 class igdeTemplateReplace;
 class igdeWindowMain;
-class igdeGameDefinition;
 
 
 
@@ -55,14 +56,14 @@ private:
 	decStringList pBaseGameDefs;
 	const igdeTemplate *pTemplate;
 	
-	igdeGameProject *pProject;
+	igdeGameProject::Ref pProject;
 	
 	decPath pNativePathProject;
 	decString pNativePathData;
 	decString pGameId;
 	decString pGameAliasId;
 	
-	igdeGameDefinition *pGameDef;
+	igdeGameDefinition::Ref pGameDef;
 	decString pSharedGameDefContent;
 	deVirtualFileSystem::Ref pVFS;
 	
@@ -115,7 +116,7 @@ public:
 	
 	
 	/** \brief Created project or \em NULL. */
-	inline igdeGameProject *GetProject() const{ return pProject; }
+	inline const igdeGameProject::Ref &GetProject() const{ return pProject; }
 	
 	
 	

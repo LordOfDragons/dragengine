@@ -152,7 +152,7 @@ void deModio::ActivateMods(const decString &userId){
 	pSaveConfig();
 }
 
-deBaseServiceService* deModio::CreateService(deService *service,
+deBaseServiceService *deModio::CreateService(deService *service,
 const char *name, const deServiceObject::Ref &data){
 	DEASSERT_NOTNULL(service)
 	

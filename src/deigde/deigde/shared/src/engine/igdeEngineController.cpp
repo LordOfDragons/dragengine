@@ -89,7 +89,6 @@
 igdeEngineController::igdeEngineController(igdeMainWindow &mainWindow) :
 pMainWindow(mainWindow),
 pEngine(NULL),
-pMainRenderWindow(NULL),
 pReadyForUse(false),
 pRunning(false),
 pRenderCounter(0)
@@ -190,7 +189,6 @@ const char *pathIGDEData, const char *pathIGDEModuleData){
 	const bool notEmptyPathData = pathData.GetComponentCount() > 0;
 	deLogger &logger = *pMainWindow.GetLogger();
 	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
-	deVFSContainer::Ref container;
 	decPath diskPath, rootPath;
 	
 	// set engine specific parameters
@@ -241,22 +239,19 @@ const char *pathIGDEData, const char *pathIGDEModuleData){
 		diskPath.AddUnixPath(gameProject->GetPathData());
 		logger.LogInfoFormat(LOGSOURCE, "- Adding data directory '%s' as '%s' (read-write)",
 			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
-		container.TakeOver(new deVFSDiskDirectory(rootPath, diskPath));
+		vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath));
 		
 	}else{
 		logger.LogInfoFormat(LOGSOURCE, "- Adding data directory '%s' (null)",
 			rootPath.GetPathUnix().GetString());
-		container.TakeOver(new deVFSNull(rootPath));
+		vfs.AddContainer(deVFSNull::Ref::NewWith(rootPath));
 	}
-	vfs.AddContainer(container);
 	
 	diskPath.SetFromNative(pathIGDEData);
 	rootPath.SetFromUnix("/igde");
 	logger.LogInfoFormat(LOGSOURCE, "- Adding igde data directory '%s' as '%s' (read-only)",
 		diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
-	container.TakeOver(new deVFSDiskDirectory(rootPath, diskPath));
-	((deVFSDiskDirectory&)(deVFSContainer&)container).SetReadOnly(true);
-	vfs.AddContainer(container);
+	vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath, true));
 	
 	rootPath.SetFromUnix("/igde/cache");
 	if(notEmptyPathData){
@@ -264,39 +259,42 @@ const char *pathIGDEData, const char *pathIGDEModuleData){
 		diskPath.AddUnixPath(gameProject->GetPathCache());
 		logger.LogInfoFormat(LOGSOURCE, "- Adding cache directory '%s' as '%s' (read-write)",
 			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
-		container.TakeOver(new deVFSDiskDirectory(rootPath, diskPath));
+		vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath));
 		
 	}else{
 		logger.LogInfoFormat(LOGSOURCE, "- Adding cache directory '%s' (null)",
 			rootPath.GetPathUnix().GetString());
-		container.TakeOver(new deVFSNull(rootPath));
+		vfs.AddContainer(deVFSNull::Ref::NewWith(rootPath));
 	}
-	vfs.AddContainer(container);
 	
 	diskPath.SetFromNative(pathIGDEModuleData);
 	rootPath.SetFromUnix("/igde/editors");
 	logger.LogInfoFormat(LOGSOURCE, "- Adding igde editors data directory '%s' as '%s' (read-only)",
 		diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
-	container.TakeOver(new deVFSDiskDirectory(rootPath, diskPath));
-	((deVFSDiskDirectory&)(deVFSContainer&)container).SetReadOnly(true);
+	{
+	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath, true));
 	container->SetHidden(true);
 	vfs.AddContainer(container);
+	}
 	
 	rootPath.SetFromUnix("/igde/local");
+	{
+	deVFSContainer::Ref container;
 	if(notEmptyPathData){
 		diskPath = pathData;
 		diskPath.AddUnixPath(gameProject->GetPathLocal());
 		logger.LogInfoFormat(LOGSOURCE, "- Adding local directory '%s' as '%s' (read-write)",
 			diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
-		container.TakeOver(new deVFSDiskDirectory(rootPath, diskPath));
+		container = deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath);
 		
 	}else{
 		logger.LogInfoFormat(LOGSOURCE, "- Adding local directory '%s' (null)",
 			rootPath.GetPathUnix().GetString());
-		container.TakeOver(new deVFSNull(rootPath));
+		container = deVFSNull::Ref::NewWith(rootPath);
 	}
 	container->SetHidden(true);
 	vfs.AddContainer(container);
+	}
 }
 
 
@@ -444,11 +442,11 @@ void igdeEngineController::StopEngine(){
 
 
 
-deRenderWindow *igdeEngineController::CreateRenderWindow(){
+deRenderWindow::Ref igdeEngineController::CreateRenderWindow(){
 	return pEngine->GetRenderWindowManager()->CreateRenderWindow();
 }
 
-deRenderWindow *igdeEngineController::CreateRenderWindow(igdeWidget &hostWindow){
+deRenderWindow::Ref igdeEngineController::CreateRenderWindow(igdeWidget &hostWindow){
 	if(!igdeNativeWidget::HasNativeParent(hostWindow)){
 		DETHROW(deeNullPointer);
 	}
@@ -623,12 +621,7 @@ void igdeEngineController::pCreateMainRenderWindow(){
 }
 
 void igdeEngineController::pDestroyMainRenderWindow(){
-	if(!pMainRenderWindow){
-		return;
-	}
-	
-	pMainRenderWindow->FreeReference();
-	pMainRenderWindow = NULL;
+	pMainRenderWindow = nullptr;
 }
 
 deLoadableModule *igdeEngineController::GetBestModuleForType(deModuleSystem::eModuleTypes moduleType) const{

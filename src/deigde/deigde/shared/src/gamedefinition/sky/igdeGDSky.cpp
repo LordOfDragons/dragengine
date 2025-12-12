@@ -52,22 +52,10 @@ pDescription(sky.pDescription),
 pCategory(sky.pCategory)
 {
 	const int controllerCount = sky.GetControllerCount();
-	igdeGDSkyController *controller = NULL;
 	int i;
 	
-	try{
-		for(i=0; i<controllerCount; i++){
-			controller = new igdeGDSkyController(*sky.GetControllerAt(i));
-			pControllers.Add(controller);
-			controller->FreeReference();
-			controller = NULL;
-		}
-		
-	}catch(const deException &){
-		if(controller){
-			controller->FreeReference();
-		}
-		throw;
+	for(i=0; i<controllerCount; i++){
+		pControllers.Add(igdeGDSkyController::Ref::NewWith(*sky.GetControllerAt(i)));
 	}
 }
 

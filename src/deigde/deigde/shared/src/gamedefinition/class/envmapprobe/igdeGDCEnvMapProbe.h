@@ -36,11 +36,11 @@
  * \brief Game Definition Class Environment Map Probe.
  */
 class DE_DLL_EXPORT igdeGDCEnvMapProbe : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCEnvMapProbe> Ref;
-
-
-public:
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		epInfluenceArea,

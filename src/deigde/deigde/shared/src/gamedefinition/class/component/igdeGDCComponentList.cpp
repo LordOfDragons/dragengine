@@ -102,23 +102,11 @@ void igdeGDCComponentList::RemoveAll(){
 
 void igdeGDCComponentList::SetToDeepCopyFrom(const igdeGDCComponentList &list){
 	const int count = list.GetCount();
-	igdeGDCComponent *component = NULL;
 	
 	int i;
 	
-	try{
-		for(i=0; i<count; i++){
-			component = new igdeGDCComponent(*list.GetAt(i));
-			Add(component);
-			component->FreeReference();
-			component = NULL;
-		}
-		
-	}catch(const deException &){
-		if(component){
-			component->FreeReference();
-		}
-		throw;
+	for(i=0; i<count; i++){
+		Add(igdeGDCComponent::Ref::NewWith(*list.GetAt(i)));
 	}
 }
 

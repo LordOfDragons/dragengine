@@ -263,7 +263,7 @@ void igdeWOSOSpeaker::pUpdateSpeaker(){
 		(igdeWOSOSpeakerResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
 	
 	if(!pSpeaker){
-		pSpeaker.TakeOver(GetEngine().GetSpeakerManager()->CreateSpeaker());
+		pSpeaker = GetEngine().GetSpeakerManager()->CreateSpeaker();
 		
 		UpdateLayerMasks();
 		UpdateVisibility();

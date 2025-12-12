@@ -407,31 +407,25 @@ void igdeTriggerExpressionEditor::RebuildTree(){
 			pWorkExpression = pParser->StringToExpression(pExpression);
 			
 		}catch(const deException &){
-			pTreeExpression->AppendItem(NULL, "error", GetEnvironment().GetStockIcon(igdeEnvironment::esiWarning));
+			pTreeExpression->AppendItem(nullptr, "error",
+				GetEnvironment().GetStockIcon(igdeEnvironment::esiWarning));
 		}
 	}
 	
 	if(!pWorkExpression || !pWorkExpression->GetRootComponent()){
-		igdeTriggerExpressionComponent *component = NULL;
-		
 		if(!pWorkExpression){
 			pWorkExpression.TakeOverWith();
 		}
 		
 		try{
-			component = new igdeTriggerExpressionComponent;
+			const igdeTriggerExpressionComponent::Ref component(
+				igdeTriggerExpressionComponent::Ref::NewWith());
 			component->SetNegate(false);
 			component->SetCurState(false);
 			component->SetType(igdeTriggerExpressionComponent::ectTarget);
 			component->SetTargetName("");
-			
 			pWorkExpression->SetRootComponent(component);
-			component->FreeReference();
-			
 		}catch(const deException &){
-			if(component){
-				component->FreeReference();
-			}
 			pWorkExpression = nullptr;
 			throw;
 		}

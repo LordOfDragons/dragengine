@@ -75,10 +75,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Source. */
-	inline igdeNVSlot *GetSource() const{ return pSource; }
+	inline const igdeNVSlot::Ref &GetSource() const{ return pSource; }
 	
 	/** \brief Target. */
-	inline igdeNVSlot *GetTarget() const{ return pTarget; }
+	inline const igdeNVSlot::Ref &GetTarget() const{ return pTarget; }
 	
 	
 	

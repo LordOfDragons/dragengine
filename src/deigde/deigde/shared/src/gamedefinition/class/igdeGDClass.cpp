@@ -73,8 +73,6 @@ igdeGDClass::igdeGDClass(const char *name){
 	pIsAttachableBehavior = false;
 	pInheritSubObjects = FilterSubObjectsAll;
 	
-	pPreviewImage = NULL;
-	
 	try{
 		pCamera = new igdeGDCamera;
 		
@@ -85,14 +83,11 @@ igdeGDClass::igdeGDClass(const char *name){
 }
 
 igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
-	igdeGDCSnapPoint *snappoint = NULL;
-	int i, count;
-	
 	pCamera = NULL;
 	
-	pPreviewImage = NULL;
-	
 	try{
+		int i, count;
+		
 		pName = gdclass.pName;
 		pDescription = gdclass.pDescription;
 		pScaleMode = gdclass.pScaleMode;
@@ -117,10 +112,7 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 		
 		count = gdclass.pSnapPoints.GetCount();
 		for(i=0; i<count; i++){
-			snappoint = new igdeGDCSnapPoint(*gdclass.pSnapPoints.GetAt(i));
-			pSnapPoints.Add(snappoint);
-			snappoint->FreeReference();
-			snappoint = NULL;
+			pSnapPoints.Add(igdeGDCSnapPoint::Ref::NewWith(*gdclass.pSnapPoints.GetAt(i)));
 		}
 		
 		pListParticleEmitters.SetToDeepCopyFrom(gdclass.pListParticleEmitters);
@@ -137,7 +129,7 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 		count = gdclass.pInheritClasses.GetCount();
 		for(i=0; i<count; i++){
 			pInheritClasses.Add(igdeGDClassInherit::Ref::NewWith(
-				*( ( igdeGDClassInherit* )gdclass.pInheritClasses.GetAt( i ) ) ) );
+				*static_cast<igdeGDClassInherit*>(gdclass.pInheritClasses.GetAt(i))));
 		}
 		
 		pDefaultInheritPropertyPrefix = gdclass.pDefaultInheritPropertyPrefix;
@@ -145,10 +137,6 @@ igdeGDClass::igdeGDClass(const igdeGDClass &gdclass){
 		pComponentTextures.SetToDeepCopyFrom(gdclass.pComponentTextures);
 		
 	}catch(const deException &){
-		if(snappoint){
-			snappoint->FreeReference();
-		}
-		
 		pCleanUp();
 		throw;
 	}
@@ -255,19 +243,7 @@ void igdeGDClass::Check(){
 
 
 void igdeGDClass::SetPreviewImage(deImage *image){
-	if(image == pPreviewImage){
-		return;
-	}
-	
-	if(pPreviewImage){
-		pPreviewImage->FreeReference();
-	}
-	
 	pPreviewImage = image;
-	
-	if(image){
-		image->AddReference();
-	}
 }
 
 void igdeGDClass::SetDefaultInheritPropertyPrefix(const decString &prefix){
@@ -1061,10 +1037,6 @@ const decIntList igdeGDClass::GetEnvMapProbesIndicesWithLinkedProperty(const cha
 //////////////////////
 
 void igdeGDClass::pCleanUp(){
-	if(pPreviewImage){
-		pPreviewImage->FreeReference();
-	}
-	
 	RemoveAllSpeakers();
 	RemoveAllNavigationBlockers();
 	RemoveAllNavigationSpaces();

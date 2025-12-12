@@ -60,12 +60,12 @@ pEnableDebug(false)
 	
 	deEngine &engine = *environment.GetEngineController()->GetEngine();
 	
-	pCanvas.TakeOver(engine.GetCanvasManager()->CreateCanvasView());
+	pCanvas = engine.GetCanvasManager()->CreateCanvasView();
 	pCanvas->SetSize(size);
 	
-	pImage.TakeOver(engine.GetImageManager()->CreateImage(size.x, size.y, 1, 3, 8));
+	pImage = engine.GetImageManager()->CreateImage(size.x, size.y, 1, 3, 8);
 	
-	pCaptureCanvas.TakeOver(engine.GetCaptureCanvasManager()->CreateCaptureCanvas());
+	pCaptureCanvas = engine.GetCaptureCanvasManager()->CreateCaptureCanvas();
 	pCaptureCanvas->SetCanvasView(pCanvas);
 	pCaptureCanvas->SetImage(pImage);
 }

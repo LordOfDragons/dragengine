@@ -141,7 +141,7 @@ public:
 	
 	
 	/** \brief Action or NULL. */
-	inline igdeAction *GetAction() const{ return pAction; }
+	inline const igdeAction::Ref &GetAction() const{ return pAction; }
 	
 	/** \brief Set action or NULL. */
 	void SetAction(igdeAction *action);
@@ -162,9 +162,9 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionAdd() const{ return pActionAdd; }
-	inline igdeAction *GetActionRemove() const{ return pActionRemove; }
-	inline igdeAction *GetActionClear() const{ return pActionClear; }
+	inline const igdeAction::Ref &GetActionAdd() const{ return pActionAdd; }
+	inline const igdeAction::Ref &GetActionRemove() const{ return pActionRemove; }
+	inline const igdeAction::Ref &GetActionClear() const{ return pActionClear; }
 	/*@}*/
 	
 	

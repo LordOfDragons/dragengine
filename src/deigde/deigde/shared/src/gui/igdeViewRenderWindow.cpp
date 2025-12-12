@@ -152,22 +152,21 @@ void igdeViewRenderWindow::RemoveCanvas(deCanvas *canvas){
 }
 
 deCanvasView *igdeViewRenderWindow::GetRenderWindowCanvas() const{
-	return pRenderWindow ? pRenderWindow->GetCanvasView() : NULL;
+	return pRenderWindow ? pRenderWindow->GetCanvasView() : nullptr;
 }
 
 deCanvasRenderWorld *igdeViewRenderWindow::GetCanvasRenderWorld() const{
-	return (deCanvasRenderWorld*)(deCanvas*)pCanvasRenderWorld;
+	return static_cast<deCanvasRenderWorld*>(pCanvasRenderWorld.Pointer());
 }
 
 deCanvasPaint *igdeViewRenderWindow::GetCanvasBackground() const{
-	return (deCanvasPaint*)(deCanvas*)pCanvasBackground;
+	return static_cast<deCanvasPaint*>(pCanvasBackground.Pointer());
 }
 
 void igdeViewRenderWindow::CreateCanvas(){
 	if(!pCanvasBackground){
-		pCanvasBackground.TakeOver(GetEngineController().GetEngine()->
-			GetCanvasManager()->CreateCanvasPaint());
-		deCanvasPaint &background = (deCanvasPaint&)(deCanvas&)pCanvasBackground;
+		pCanvasBackground = GetEngineController().GetEngine()->GetCanvasManager()->CreateCanvasPaint();
+		deCanvasPaint &background = static_cast<deCanvasPaint&>(pCanvasBackground.Reference());
 		background.SetOrder(0.0f);
 		background.SetShapeType(deCanvasPaint::estRectangle);
 		background.SetThickness(0.0f);
@@ -175,22 +174,21 @@ void igdeViewRenderWindow::CreateCanvas(){
 		AddCanvas(pCanvasBackground);
 	}
 	if(!pCanvasRenderWorld){
-		pCanvasRenderWorld.TakeOver(GetEngineController().GetEngine()->
-			GetCanvasManager()->CreateCanvasRenderWorld());
+		pCanvasRenderWorld = GetEngineController().GetEngine()->GetCanvasManager()->CreateCanvasRenderWorld();
 		pCanvasRenderWorld->SetOrder(1.0f);
 		AddCanvas(pCanvasRenderWorld);
 	}
 }
 
 void igdeViewRenderWindow::GrabInput(){
-	igdeNativeRenderView * const native = (igdeNativeRenderView*)GetNativeWidget();
+	igdeNativeRenderView * const native = static_cast<igdeNativeRenderView*>(GetNativeWidget());
 	if(native){
 		native->GrabInput();
 	}
 }
 
 void igdeViewRenderWindow::ReleaseInput(){
-	igdeNativeRenderView * const native = (igdeNativeRenderView*)GetNativeWidget();
+	igdeNativeRenderView * const native = static_cast<igdeNativeRenderView*>(GetNativeWidget());
 	if(native){
 		native->ReleaseInput();
 	}
@@ -337,7 +335,7 @@ void igdeViewRenderWindow::CreateAndAttachRenderWindow(){
 	}
 	
 	if(!pRenderWindow){
-		pRenderWindow.TakeOver(GetEngineController().CreateRenderWindow(*this));
+		pRenderWindow = GetEngineController().CreateRenderWindow(*this);
 		pRenderWindow->SetPaint(pEnableRendering);
 		CreateCanvas();
 	}

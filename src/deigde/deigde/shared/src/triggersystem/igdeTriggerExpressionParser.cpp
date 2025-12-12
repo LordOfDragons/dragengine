@@ -335,7 +335,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	}
 	
 	if(mode == 0){
-		return nullptr;
+		return {};
 	}
 	
 	if(mode != 5){
@@ -368,13 +368,12 @@ void igdeTriggerExpressionParser::ParseTargetName(decString &name, igdeTriggerEx
 	// modes
 	// 0 => parse first character
 	// 1 => parse other characters
-	char character;
 	int mode = 0;
 	
 	name = "";
 	
 	while(state.HasMoreCharacters()){
-		character = state.GetNextCharacter();
+		const char character = state.GetNextCharacter();
 		
 		if(quoted){
 			if(character == '\\'){

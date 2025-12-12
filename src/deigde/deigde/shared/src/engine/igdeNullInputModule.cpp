@@ -90,7 +90,7 @@ int igdeNullInputModule::GetDeviceCount(){
 	return 0;
 }
 
-deInputDevice *igdeNullInputModule::GetDeviceAt(int index){
+deInputDevice::Ref igdeNullInputModule::GetDeviceAt(int index){
 	DETHROW(deeInvalidParam);
 }
 

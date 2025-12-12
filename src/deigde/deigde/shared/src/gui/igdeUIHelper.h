@@ -766,14 +766,16 @@ public:
 	/**
 	 * \brief Add button.
 	 */
-	void Button(igdeContainer &parent, igdeAction *action, bool takeOverAction = false);
+	void Button(igdeContainer &parent, igdeAction *action, bool takeOverAction);
 	
 	void Button(igdeContainer &parent, igdeButton::Ref &button, igdeAction *action,
-		bool takeOverAction = false);
+		bool takeOverAction);
 	
-	void Button(igdeButton::Ref &button, igdeAction *action, bool takeOverAction = false);
+	void Button(igdeButton::Ref &button, igdeAction *action, bool takeOverAction);
 	
+	void Button(igdeContainer &parent, const igdeAction::Ref &action);
 	void Button(igdeContainer &parent, igdeButton::Ref &button, const igdeAction::Ref &action);
+	void Button(igdeButton::Ref &button, const igdeAction::Ref &action);
 	
 	
 	

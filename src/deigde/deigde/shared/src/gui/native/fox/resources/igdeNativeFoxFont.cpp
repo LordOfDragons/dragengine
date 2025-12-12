@@ -340,8 +340,8 @@ private:
 		const int ascent = nativeFont->getFontAscent();
 		
 		try{
-			pImage.TakeOver(pFont.GetEnvironment().GetEngineController()->GetEngine()
-				->GetImageManager()->CreateImage(pImageWidth, pImageHeight, 1, 4, 8));
+			pImage = pFont.GetEnvironment().GetEngineController()->GetEngine()
+				->GetImageManager()->CreateImage(pImageWidth, pImageHeight, 1, 4, 8);
 			
 			// create image data in memory cleared to black. we can not clear
 			// to transparent since fox does not properly support images with

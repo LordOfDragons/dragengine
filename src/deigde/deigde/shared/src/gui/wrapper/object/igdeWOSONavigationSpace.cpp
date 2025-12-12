@@ -98,7 +98,7 @@ void igdeWOSONavigationSpace::Visit(igdeWOSOVisitor &visitor){
 
 void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 	if(!pNavigationSpace){
-		pNavigationSpace.TakeOver(GetEngine().GetNavigationSpaceManager()->CreateNavigationSpace());
+		pNavigationSpace = GetEngine().GetNavigationSpaceManager()->CreateNavigationSpace();
 		pNavigationSpace->SetType(pGDNavigationSpace.GetType());
 	}
 	
@@ -122,9 +122,8 @@ void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 			
 			if(engine.GetVirtualFileSystem()->ExistsFile(vfsPath)){
 				try{
-					decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-						 engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath)));
-					loadNavSpace.Load(pNavigationSpace, reader);
+					loadNavSpace.Load(pNavigationSpace,
+						engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath));
 					
 				}catch(const deException &e){
 					pNavigationSpace->SetRoomCount(0);

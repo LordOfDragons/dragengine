@@ -240,10 +240,10 @@ void igdeGDPCSkin::PrepareCanvasForRender(){
 	deEngine &engine = *environment.GetEngineController()->GetEngine();
 	
 	// create world
-	pWorld.TakeOver(engine.GetWorldManager()->CreateWorld());
+	pWorld = engine.GetWorldManager()->CreateWorld();
 	
 	// create camera
-	pCamera.TakeOver(engine.GetCameraManager()->CreateCamera());
+	pCamera = engine.GetCameraManager()->CreateCamera();
 	pCamera->SetFov(90.0f * DEG2RAD);
 	pCamera->SetFovRatio(1.0f);
 	pCamera->SetImageDistance(0.01f);
@@ -302,7 +302,7 @@ void igdeGDPCSkin::PrepareCanvasForRender(){
 	
 	// create render world canvas
 	deCanvasView &container = *GetCanvas();
-	pCanvasRenderWorld.TakeOver(engine.GetCanvasManager()->CreateCanvasRenderWorld());
+	pCanvasRenderWorld = engine.GetCanvasManager()->CreateCanvasRenderWorld();
 	pCanvasRenderWorld->SetCamera(pCamera);
 	pCanvasRenderWorld->SetSize(container.GetSize());
 	container.AddCanvas(pCanvasRenderWorld);
@@ -340,10 +340,10 @@ bool igdeGDPCSkin::IsCanvasReadyForRender(){
 			// create light preview
 			if(pLightBoxModel && pLightBoxSkin){
 				deEngine &engine = *GetEnvironment().GetEngineController()->GetEngine();
-				pComponent.TakeOver(engine.GetComponentManager()->CreateComponent(pLightBoxModel, pLightBoxSkin));
+				pComponent = engine.GetComponentManager()->CreateComponent(pLightBoxModel, pLightBoxSkin);
 				pWorld->AddComponent(pComponent);
 				
-				pLight.TakeOver(engine.GetLightManager()->CreateLight());
+				pLight = engine.GetLightManager()->CreateLight();
 				pLight->SetType(deLight::eltPoint);
 				pLight->SetAmbientRatio(0.0f);
 				pLight->SetHalfIntensityDistance(0.25f);
@@ -364,7 +364,7 @@ bool igdeGDPCSkin::IsCanvasReadyForRender(){
 			// create component
 			if(pModel){
 				deEngine &engine = *GetEnvironment().GetEngineController()->GetEngine();
-				pComponent.TakeOver(engine.GetComponentManager()->CreateComponent(pModel, pSkin));
+				pComponent = engine.GetComponentManager()->CreateComponent(pModel, pSkin);
 				
 				if(pComponent->GetTextureCount() == 1){
 					pComponent->GetTextureAt(0).SetSkin(pSkin);

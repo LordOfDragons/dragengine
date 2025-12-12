@@ -102,23 +102,10 @@ void igdeGDCLightList::RemoveAll(){
 
 void igdeGDCLightList::SetToDeepCopyFrom(const igdeGDCLightList &list){
 	const int count = list.GetCount();
-	igdeGDCLight *light = NULL;
-	
 	int i;
 	
-	try{
-		for(i=0; i<count; i++){
-			light = new igdeGDCLight(*list.GetAt(i));
-			Add(light);
-			light->FreeReference();
-			light = NULL;
-		}
-		
-	}catch(const deException &){
-		if(light){
-			light->FreeReference();
-		}
-		throw;
+	for(i=0; i<count; i++){
+		Add(igdeGDCLight::Ref::NewWith(*list.GetAt(i)));
 	}
 }
 

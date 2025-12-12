@@ -74,8 +74,8 @@ pEnvironment(environment),
 pAsyncLoadFinished(NULL),
 pAsyncLoadCounter(0)
 {
-	pEngSkyInstance.TakeOver(environment.GetEngineController()->GetEngine()
-		->GetSkyInstanceManager()->CreateSkyInstance());
+	pEngSkyInstance = environment.GetEngineController()->GetEngine()
+		->GetSkyInstanceManager()->CreateSkyInstance();
 }
 
 igdeWSky::~igdeWSky(){
@@ -255,15 +255,10 @@ void igdeWSky::pLoadSky(const char *path){
 	}
 	
 	igdeLoadSky loadsky(pEnvironment, pEnvironment.GetLogger(), "igdeWSky");
-	decBaseFileReader::Ref reader;
-	deSky::Ref sky;
 	
 	try{
-		sky.TakeOver(engine.GetSkyManager()->CreateSky());
-		
-		reader.TakeOver(engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath));
-		loadsky.Load(path, sky, reader);
-		
+		const deSky::Ref sky(engine.GetSkyManager()->CreateSky());
+		loadsky.Load(path, sky, engine.GetVirtualFileSystem()->OpenFileForReading(vfsPath));
 		SetSky(sky);
 		
 	}catch(const deException &){

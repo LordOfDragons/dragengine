@@ -102,23 +102,10 @@ void igdeGDCBillboardList::RemoveAll(){
 
 void igdeGDCBillboardList::SetToDeepCopyFrom(const igdeGDCBillboardList &list){
 	const int count = list.GetCount();
-	igdeGDCBillboard *billboard = NULL;
-	
 	int i;
 	
-	try{
-		for(i=0; i<count; i++){
-			billboard = new igdeGDCBillboard(*list.GetAt(i));
-			Add(billboard);
-			billboard->FreeReference();
-			billboard = NULL;
-		}
-		
-	}catch(const deException &){
-		if(billboard){
-			billboard->FreeReference();
-		}
-		throw;
+	for(i=0; i<count; i++){
+		Add(igdeGDCBillboard::Ref::NewWith(*list.GetAt(i)));
 	}
 }
 

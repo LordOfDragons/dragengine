@@ -40,10 +40,10 @@ class igdeEnvironment;
 class igdeSharedFontList{
 private:
 	class cFont : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<cFont> Ref;
-
-
+	public:
+		typedef deTObjectReference<cFont> Ref;
+		
+		
 	private:
 		igdeFont::sConfiguration pConfig;
 		igdeFont::Ref pFont;
@@ -52,7 +52,7 @@ private:
 		cFont(const igdeFont::sConfiguration &config, igdeFont *font);
 		virtual ~cFont();
 		
-		inline igdeFont *GetFont() const{ return pFont; }
+		inline const igdeFont::Ref &GetFont() const{ return pFont; }
 		inline const igdeFont::sConfiguration &GetConfig() const{ return pConfig; }
 	};
 	

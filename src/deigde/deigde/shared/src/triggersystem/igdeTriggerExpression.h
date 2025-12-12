@@ -25,9 +25,10 @@
 #ifndef _IGDETRIGGEREXPRESSION_H_
 #define _IGDETRIGGEREXPRESSION_H_
 
+#include "igdeTriggerExpressionComponent.h"
+
 #include <dragengine/deObject.h>
 
-class igdeTriggerExpressionComponent;
 class igdeTriggerTargetList;
 class igdeTriggerListener;
 
@@ -44,7 +45,7 @@ public:
 	
 	
 private:
-	igdeTriggerExpressionComponent *pRootComponent;
+	igdeTriggerExpressionComponent::Ref pRootComponent;
 	bool pResult;
 	bool pEnabled;
 	
@@ -57,7 +58,7 @@ public:
 	igdeTriggerExpression();
 	
 	/** \brief Clean up trigger expression. */
-	virtual ~igdeTriggerExpression();
+	~igdeTriggerExpression() override;
 	/*@}*/
 	
 	
@@ -65,7 +66,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Root expression component or null if not set. */
-	inline igdeTriggerExpressionComponent *GetRootComponent() const{ return pRootComponent; }
+	inline const igdeTriggerExpressionComponent::Ref &GetRootComponent() const{ return pRootComponent; }
 	
 	/** \brief Set root expression component or null if not set. */
 	void SetRootComponent(igdeTriggerExpressionComponent *component);

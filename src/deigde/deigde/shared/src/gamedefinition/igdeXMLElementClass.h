@@ -25,13 +25,13 @@
 #ifndef _IGDEXMLELEMENTCLASS_H_
 #define _IGDEXMLELEMENTCLASS_H_
 
+#include "class/igdeGDClass.h"
 #include "../utils/igdeBaseXML.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectDictionary.h>
 
 class igdeGameDefinition;
-class igdeGDClass;
 class igdeGDClassManager;
 class igdeGDCComponent;
 
@@ -66,7 +66,7 @@ public:
 	/** \name Loading */
 	/*@{*/
 	/** \brief Load XML Element Class. */
-	igdeGDClass *LoadElementClass(decBaseFileReader &reader, const char *filename);
+	igdeGDClass::Ref LoadElementClass(decBaseFileReader &reader, const char *filename);
 	
 	/** \brief Load XML Element Classes from directory and add them to game definition. */
 	void LoadElementClasses(igdeGDClassManager &classes, deVirtualFileSystem &vfs,
@@ -96,7 +96,7 @@ protected:
 	
 	
 private:
-	igdeGDClass *pReadElementClass(const decXmlElementTag &root, const char *filename);
+	igdeGDClass::Ref pReadElementClass(const decXmlElementTag &root, const char *filename);
 	void pReadBehavior(const decXmlElementTag &root, igdeGDClass &gdClass,
 		const char *filename, const decString &basePathStr);
 	bool pReadPropertyValue(const decXmlElementTag &root, decString &value,

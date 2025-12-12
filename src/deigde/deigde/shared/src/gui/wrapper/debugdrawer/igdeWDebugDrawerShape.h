@@ -28,9 +28,9 @@
 #include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class deNavigationSpace;
-class deDebugDrawer;
 class deDebugDrawerShape;
 class deDebugDrawerShapeFace;
 class deOcclusionMesh;
@@ -54,7 +54,7 @@ class deOcclusionMesh;
  */
 class DE_DLL_EXPORT igdeWDebugDrawerShape{
 private:
-	deDebugDrawer *pEngDebugDrawer;
+	deDebugDrawer::Ref pEngDebugDrawer;
 	deDebugDrawerShape *pEngDDShape;
 	
 	decVector pPosition;
@@ -87,7 +87,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Parent debug drawer or NULL. */
-	inline deDebugDrawer *GetParentDebugDrawer() const{ return pEngDebugDrawer; }
+	inline const deDebugDrawer::Ref &GetParentDebugDrawer() const{ return pEngDebugDrawer; }
 	
 	/** \brief Set parent debug drawer or NULL. */
 	void SetParentDebugDrawer(deDebugDrawer *debugDrawer);

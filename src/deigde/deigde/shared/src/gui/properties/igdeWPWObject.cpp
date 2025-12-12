@@ -112,8 +112,8 @@ public:
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::NewWith(pPanel.GetObject()));
 			undo->SetGDClassNew(newGDClass);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -145,8 +145,8 @@ public:
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::NewWith(pPanel.GetObject()));
 			undo->SetGDClassNew(gdClass);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -168,8 +168,8 @@ public:
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::NewWith(pPanel.GetObject()));
 			undo->SetPositionNew(vector);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -191,8 +191,8 @@ public:
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::NewWith(pPanel.GetObject()));
 			undo->SetOrientationNew(orientation);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -213,8 +213,8 @@ public:
 		}
 		
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::NewWith(pPanel.GetObject()));
 			undo->SetScalingNew(vector);
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -232,8 +232,8 @@ public:
 	
 	void OnAction(igdeWObject &object) override{
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::NewWith(pPanel.GetObject()));
 			undo->SetVisibleNew(!object.GetVisible());
 			pPanel.GetUndoSystem()->Add(undo);
 			
@@ -251,8 +251,8 @@ public:
 	
 	void OnAction(igdeWObject &object) override{
 		if(pPanel.GetUndoSystem()){
-			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
-				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			const igdeWPWObject::UndoChanges::Ref undo(
+				igdeWPWObject::UndoChanges::Ref::NewWith(pPanel.GetObject()));
 			undo->SetDynamicColliderNew(!object.GetDynamicCollider());
 			pPanel.GetUndoSystem()->Add(undo);
 			

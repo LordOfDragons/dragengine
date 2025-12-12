@@ -64,28 +64,26 @@ igdeTriggerTarget *igdeTriggerTargetList::GetNamed(const char *name) const{
 	}
 	
 	const int count = pTargets.GetCount();
-	igdeTriggerTarget *target;
 	int i;
 	
 	for(i=0; i<count; i++){
-		target = (igdeTriggerTarget*)pTargets.GetAt(i);
+		igdeTriggerTarget * const target = static_cast<igdeTriggerTarget*>(pTargets.GetAt(i));
 		if(target->GetName().Equals(name)){
 			return target;
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 igdeTriggerTarget *igdeTriggerTargetList::GetNamedAddIfMissing(const char *name){
-	igdeTriggerTarget *target = GetNamed(name);
-	
-	if(!target){
-		target = new igdeTriggerTarget(name);
-		pTargets.Add(target);
-		target->FreeReference();
+	igdeTriggerTarget * const findTarget = GetNamed(name);
+	if(findTarget){
+		return findTarget;
 	}
 	
+	const igdeTriggerTarget::Ref target(igdeTriggerTarget::Ref::NewWith(name));
+	pTargets.Add(target);
 	return target;
 }
 
@@ -106,7 +104,7 @@ bool igdeTriggerTargetList::HasNamed(const char *name) const{
 	int i;
 	
 	for(i=0; i<count; i++){
-		if(((igdeTriggerTarget*)pTargets.GetAt(i))->GetName().Equals(name)){
+		if(static_cast<igdeTriggerTarget*>(pTargets.GetAt(i))->GetName() == name){
 			return true;
 		}
 	}
@@ -139,7 +137,7 @@ void igdeTriggerTargetList::RemoveUnused(){
 	int i;
 	
 	for(i=count-1; i>=0; i--){
-		igdeTriggerTarget * const target = (igdeTriggerTarget*)pTargets.GetAt(i);
+		igdeTriggerTarget * const target = static_cast<igdeTriggerTarget*>(pTargets.GetAt(i));
 		if(target->GetRefCount() == 1){
 			pTargets.Remove(target);
 		}

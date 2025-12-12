@@ -144,7 +144,7 @@ void igdeWOSOForceField::AsyncLoadFinished(bool success){
 
 void igdeWOSOForceField::pUpdateForceField(){
 	if(!pForceField){
-		pForceField.TakeOver(GetEngine().GetForceFieldManager()->CreateForceField());
+		pForceField = GetEngine().GetForceFieldManager()->CreateForceField();
 		
 		UpdateLayerMasks();
 		UpdateCollisionFilter();

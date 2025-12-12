@@ -271,8 +271,7 @@ void igdeWOSOLight::pUpdateLight(){
 		(igdeWOSOLightResLoadComponent&)(igdeResourceLoaderListener&)pResLoad;
 	
 	if(!pLight){
-		pLight.TakeOver(GetEngine().GetLightManager()->CreateLight());
-		
+		pLight = GetEngine().GetLightManager()->CreateLight();
 		pLight->SetHintMovement(pGDLight.GetHintMovement());
 		pLight->SetHintParameter(pGDLight.GetHintParameter());
 		UpdateLayerMasks();

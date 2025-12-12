@@ -25,12 +25,12 @@
 #ifndef _IGDEWINDOWLOGGER_H_
 #define _IGDEWINDOWLOGGER_H_
 
+#include "igdeWindowLoggerListener.h"
 #include "../igdeWindow.h"
 #include "../igdeTextArea.h"
+#include "../../logger/igdeLoggerHistory.h"
 
-class igdeLoggerHistory;
 class igdeLoggerHistoryEntry;
-class igdeWindowLoggerListener;
 
 
 
@@ -52,8 +52,8 @@ public:
 	
 	
 private:
-	igdeWindowLoggerListener *pListener;
-	igdeLoggerHistory *pLogger;
+	igdeWindowLoggerListener::Ref pListener;
+	igdeLoggerHistory::Ref pHistoryLogger;
 	igdeTextArea::Ref pEditLogs;
 	int pPendingAddedLogs;
 	bool pPendingClearLogs;
@@ -74,11 +74,11 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Logger or NULL. */
-	inline igdeLoggerHistory *GetLogger() const{ return pLogger; }
+	/** \brief History logger or NULL. */
+	inline const igdeLoggerHistory::Ref &GetHistoryLogger() const{ return pHistoryLogger; }
 	
 	/** \brief Set logger or NULL. */
-	void SetLogger(igdeLoggerHistory *logger);
+	void SetHistoryLogger(igdeLoggerHistory *logger);
 	
 	
 	

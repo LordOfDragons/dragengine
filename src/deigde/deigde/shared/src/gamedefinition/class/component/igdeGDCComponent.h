@@ -40,11 +40,11 @@
  * inside the editor.
  */
 class DE_DLL_EXPORT igdeGDCComponent : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDCComponent> Ref;
-
-
-public:
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		epModel,
