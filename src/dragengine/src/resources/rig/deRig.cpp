@@ -123,7 +123,6 @@ void deRig::Prepare(){
 	try{
 		// create a temporary array to hold the calculated status
 		calculated = new bool[pBoneCount];
-		if(!calculated) DETHROW(deeOutOfMemory);
 		for(i=0; i<pBoneCount; i++) calculated[i] = false;
 		
 		// keeps track of the count of bones in need of calculation

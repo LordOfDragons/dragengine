@@ -177,9 +177,6 @@ void deoglRDebugDrawer::UpdateVBO(){
 	// create vbo if not existing
 	if(!pVBO){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBO));
-		if(!pVBO){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	
 	// write vbo data to vbo

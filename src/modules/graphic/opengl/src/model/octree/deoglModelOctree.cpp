@@ -84,7 +84,6 @@ deoglOctree *deoglModelOctree::CreateOctree(int octant) const{
 	
 	// create child node
 	node = new deoglModelOctree(nc, halfExtend);
-	if(!node) DETHROW(deeOutOfMemory);
 	
 	return node;
 }

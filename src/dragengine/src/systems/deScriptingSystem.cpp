@@ -251,7 +251,6 @@ void deScriptingSystem::LoadCollider(deCollider *collider){
 	if(collider->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
 	collider->SetPeerScripting(pActiveModule->CreateCollider(collider));
-	if(!collider->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
 void deScriptingSystem::LoadServer(deServer *server){
@@ -259,7 +258,6 @@ void deScriptingSystem::LoadServer(deServer *server){
 	if(server->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
 	server->SetPeerScripting(pActiveModule->CreateServer(server));
-	if(!server->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
 void deScriptingSystem::LoadConnection(deConnection *connection){
@@ -267,7 +265,6 @@ void deScriptingSystem::LoadConnection(deConnection *connection){
 	if(connection->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
 	connection->SetPeerScripting(pActiveModule->CreateConnection(connection));
-	if(!connection->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
 void deScriptingSystem::LoadNetworkState(deNetworkState *state){
@@ -275,7 +272,6 @@ void deScriptingSystem::LoadNetworkState(deNetworkState *state){
 	if(state->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
 	state->SetPeerScripting(pActiveModule->CreateNetworkState(state));
-	if(!state->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
 void deScriptingSystem::LoadTouchSensor(deTouchSensor *touchSensor){
@@ -284,7 +280,6 @@ void deScriptingSystem::LoadTouchSensor(deTouchSensor *touchSensor){
 	if(touchSensor->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
 	touchSensor->SetPeerScripting(pActiveModule->CreateTouchSensor(touchSensor));
-	if(!touchSensor->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
 void deScriptingSystem::LoadPropField(dePropField *propField){
@@ -293,7 +288,6 @@ void deScriptingSystem::LoadPropField(dePropField *propField){
 	if(propField->GetPeerScripting()) DETHROW(deeInvalidParam);
 	
 	propField->SetPeerScripting(pActiveModule->CreatePropField(propField));
-	if(!propField->GetPeerScripting()) DETHROW(deeOutOfMemory);
 }
 
 void deScriptingSystem::LoadParticleEmitterInstance(deParticleEmitterInstance *instance){

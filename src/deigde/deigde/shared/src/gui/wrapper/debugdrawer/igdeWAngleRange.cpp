@@ -165,7 +165,6 @@ void igdeWAngleRange::pRebuildShape(){
 	
 	try{
 		ddFace = new deDebugDrawerShapeFace;
-		if(!ddFace) DETHROW(deeOutOfMemory);
 		
 		ddFace->SetNormal(decVector(0.0f, 0.0f, 1.0f));
 		

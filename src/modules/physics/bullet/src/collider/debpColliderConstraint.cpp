@@ -586,9 +586,6 @@ void debpColliderConstraint::pCreateBallSocketConstraint(){
 			btVector3(position1.x, position1.y, position1.z),
 			btVector3(position2.x, position2.y, position2.z));
 	}
-	if(!p2p){
-		DETHROW(deeOutOfMemory);
-	}
 	
 	if(pConstraint.GetBreakingThreshold() > 0.001f){
 		p2p->setBreakingImpulseThreshold(pConstraint.GetBreakingThreshold());
@@ -675,9 +672,6 @@ void debpColliderConstraint::pCreateHingeConstraint(){
 			btTransform(
 				btQuaternion(orientation2.x, orientation2.y, orientation2.z, orientation2.w),
 				btVector3(position2.x, position2.y, position2.z)));
-	}
-	if(!hinge){
-		DETHROW(deeOutOfMemory);
 	}
 	pBpConstraint = hinge;
 	
@@ -805,9 +799,6 @@ void debpColliderConstraint::pCreateConeTwistConstraint(){
 				btQuaternion(orientation2.x, orientation2.y, orientation2.z, orientation2.w),
 				btVector3(position2.x, position2.y, position2.z)));
 	}
-	if(!coneTwist){
-		DETHROW(deeOutOfMemory);
-	}
 	pBpConstraint = coneTwist;
 	
 	// set the limits using the realligned swing spans
@@ -909,9 +900,6 @@ void debpColliderConstraint::pCreateSliderConstraint(){
 				btQuaternion(orientation2.x, orientation2.y, orientation2.z, orientation2.w),
 				btVector3(position2.x, position2.y, position2.z)));
 	}
-	if(!slider){
-		DETHROW(deeOutOfMemory);
-	}
 	pBpConstraint = slider;
 	
 	// set the limits
@@ -1009,9 +997,6 @@ void debpColliderConstraint::pCreateGenericConstraint(){
 			btTransform(
 				btQuaternion(orientation2.x, orientation2.y, orientation2.z, orientation2.w),
 				btVector3(position2.x, position2.y, position2.z)));
-	}
-	if(!generic6Dof){
-		DETHROW(deeOutOfMemory);
 	}
 	pBpConstraint = generic6Dof;
 	

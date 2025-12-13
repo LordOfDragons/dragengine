@@ -730,9 +730,6 @@ void deoglRHTSector::pCreateVBODataPoints1(){
 	for(v=0, c=0; c<clusterCount; c++){
 		if(!pVBODataPoints1[v]){
 			OGL_CHECK(renderThread, pglGenBuffers(1, &pVBODataPoints1[v]));
-			if(!pVBODataPoints1[v]){
-				DETHROW(deeOutOfMemory);
-			}
 			
 			pVBODataPoints1Count++;
 		}
@@ -791,9 +788,6 @@ void deoglRHTSector::pCreateVBODataFaces(){
 	for(v=0, c=0; c<clusterCount; c++){
 		if(!pVBODataFaces[v]){
 			OGL_CHECK(renderThread, pglGenBuffers(1, &pVBODataFaces[v]));
-			if(!pVBODataFaces[v]){
-				DETHROW(deeOutOfMemory);
-			}
 			
 			pVBODataFacesCount++;
 		}
@@ -858,7 +852,6 @@ void deoglRHTSector::pUpdateHeightMap(){
 		
 		if(vboCount > 0){
 			pVBODataPoints2 = new GLuint[vboCount];
-			if(!pVBODataPoints2) DETHROW(deeOutOfMemory);
 			
 			for(v=0; v<vboCount; v++){
 				pVBODataPoints2[v] = 0;
@@ -867,7 +860,6 @@ void deoglRHTSector::pUpdateHeightMap(){
 			for(v=0, c=0; c<clusterCount; c++){
 				if(!pVBODataPoints2[v]){
 					OGL_CHECK(renderThread, pglGenBuffers(1, &pVBODataPoints2[v]));
-					if(!pVBODataPoints2[v]) DETHROW(deeOutOfMemory);
 					
 					pVBODataPoints2Count++;
 				}

@@ -181,7 +181,6 @@ FXScrollWindow *deglGuiBuilder::CreateScrollWindow(FXComposite *container) const
 	FXScrollWindow *scrollWindow = new FXScrollWindow(container, LAYOUT_FILL_X | LAYOUT_FILL_Y
 		| SCROLLERS_NORMAL | HSCROLLING_OFF | SCROLLERS_TRACK);
 	
-	if(!scrollWindow) DETHROW(deeOutOfMemory);
 	
 	return scrollWindow;
 }
@@ -192,7 +191,6 @@ FXVerticalFrame *deglGuiBuilder::CreateScrollContainer(FXComposite *container) c
 	FXVerticalFrame *verticalFrame = new FXVerticalFrame(scrollWindow, LAYOUT_FILL_X
 		| LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_LEFT, 0, 0, 0, 0, 0, 0, 0, 0);
 	
-	if(!verticalFrame) DETHROW(deeOutOfMemory);
 	
 	return verticalFrame;
 }
@@ -207,7 +205,6 @@ FXVerticalFrame *deglGuiBuilder::CreateGroupBox(FXComposite *container, const ch
 	
 	FXGroupBox *groupBox = new FXGroupBox(container, caption, GROUPBOX_TITLE_LEFT | FRAME_RIDGE | fillStyle,
 		0, 0, 0, 0, pPaddingGroupBox, pPaddingGroupBox, pPaddingGroupBox, pPaddingGroupBox);
-	if(!groupBox) DETHROW(deeOutOfMemory);
 	
 	if(pFont){
 		groupBox->setFont(pFont);
@@ -216,7 +213,6 @@ FXVerticalFrame *deglGuiBuilder::CreateGroupBox(FXComposite *container, const ch
 	FXVerticalFrame *frameBox = new FXVerticalFrame(groupBox, LAYOUT_SIDE_TOP | fillStyle,
 		0, 0, 0, 0, 0, 0, 0, 0, pSpacingGroupBox, pSpacingGroupBox);
 	
-	if(!frameBox) DETHROW(deeOutOfMemory);
 	
 	return frameBox;
 }
@@ -231,7 +227,6 @@ FXMatrix *deglGuiBuilder::CreateMatrixPacker(FXComposite *container, int padding
 	FXMatrix *packer = new FXMatrix(container, 2, MATRIX_BY_COLUMNS | LAYOUT_SIDE_BOTTOM
 		| LAYOUT_FILL_X , 0, 0, 0, 0, 0, 0, 0, 0, 0, paddingRow);
 	
-	if(!packer) DETHROW(deeOutOfMemory);
 	
 	return packer;
 }
@@ -246,7 +241,6 @@ FXHorizontalFrame *deglGuiBuilder::CreateHFrame(FXComposite *container, int gap)
 	FXHorizontalFrame *hframe = new FXHorizontalFrame(container, LAYOUT_SIDE_TOP | LAYOUT_FILL_X
 		| LAYOUT_FILL_COLUMN, 0, 0, 0, 0, 0, 0, 0, 0, gap, 1);
 	
-	if(!hframe) DETHROW(deeOutOfMemory);
 	
 	return hframe;
 }
@@ -261,7 +255,6 @@ FXVerticalFrame *deglGuiBuilder::CreateVFrame(FXComposite *container, int gap) c
 	FXVerticalFrame *vframe = new FXVerticalFrame(container, LAYOUT_SIDE_TOP | LAYOUT_FILL_Y
 		| LAYOUT_FILL_ROW, 0, 0, 0, 0, 0, 0, 0, 0, gap, 1);
 	
-	if(!vframe) DETHROW(deeOutOfMemory);
 	
 	return vframe;
 }
@@ -274,7 +267,6 @@ FXLabel *deglGuiBuilder::CreateLabel(FXComposite *container, const char *text, c
 	if(!container || !text || !toolTip || padding < 0) DETHROW(deeInvalidParam);
 	
 	FXLabel *label = new FXLabel(container, text, nullptr, LABEL_NORMAL, 0, 0, 0, 0, 0, padding, 0, 0);
-	if(!label) DETHROW(deeOutOfMemory);
 	
 	if(pFont){
 		label->setFont(pFont);
@@ -299,7 +291,6 @@ const char *toolTip, bool fixedSizeX, bool fixedSizeY) const{
 	
 	textArea = new FXText(frame, target, selector, TEXT_WORDWRAP | options, 0, 0, 0, 0,
 		pPaddingTextHorz, pPaddingTextHorz, pPaddingTextVert, pPaddingTextVert);
-	if(!textArea) DETHROW(deeOutOfMemory);
 	
 	if(pFont){
 		textArea->setFont(pFont);
@@ -329,7 +320,6 @@ const char *toolTip, int colons, bool fixedSize) const{
 		| LAYOUT_FILL_COLUMN, 0, 0, 0, 0, pPaddingTextHorz, pPaddingTextHorz, pPaddingTextVert, pPaddingTextVert);
 	}
 	
-	if(!textField) DETHROW(deeOutOfMemory);
 	
 	if(pFont){
 		textField->setFont(pFont);
@@ -354,7 +344,6 @@ const char *toolTip, int colons, bool fixedSize) const{
 			| LAYOUT_FILL_X | LAYOUT_FILL_COLUMN, 0, 0, 0, 0,
 			pPaddingTextHorz, pPaddingTextHorz, pPaddingTextVert, pPaddingTextVert);
 	}
-	if(!textField) DETHROW(deeOutOfMemory);
 	
 	if(pFont){
 		textField->setFont(pFont);
@@ -378,7 +367,6 @@ FXSelector selector, const char *toolTip) const{
 		| JUSTIFY_NORMAL | ICON_BEFORE_TEXT, 0, 0, 0, 0, pPaddingButtonHorz, pPaddingButtonHorz,
 		pPaddingButtonVert, pPaddingButtonVert);
 	
-	if(!button) DETHROW(deeOutOfMemory);
 	
 	if(pFont){
 		button->setFont(pFont);
@@ -406,7 +394,6 @@ const char *toolTip, bool editable, int colons, int rows, bool fixedSize) const{
 		combobox = new FXComboBox(container, colons, target, selector, FRAME_SUNKEN | LAYOUT_FILL_X
 			| LAYOUT_FILL_COLUMN, 0, 0, 0, 0, pPaddingTextHorz, pPaddingTextHorz, pPaddingTextVert, pPaddingTextVert);
 	}
-	if(!combobox) DETHROW(deeOutOfMemory);
 	
 	if(editable){
 		combobox->setEditable(true);
@@ -428,7 +415,6 @@ const char *toolTip) const{
 	if(!container || !text || !toolTip) DETHROW(deeInvalidParam);
 	
 	FXCheckButton *checkbox = new FXCheckButton(container, text, target, selector, CHECKBUTTON_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0);
-	if(!checkbox) DETHROW(deeOutOfMemory);
 	
 	if(pFont){
 		checkbox->setFont(pFont);
@@ -444,7 +430,6 @@ FXSlider *deglGuiBuilder::CreateSlider(FXComposite *container, FXObject *target,
 	FXSlider *slider = new FXSlider(container, target, selector, SLIDER_HORIZONTAL | SLIDER_ARROW_DOWN
 		| SLIDER_TICKS_BOTTOM | LAYOUT_FILL_X | LAYOUT_FILL_COLUMN);
 	
-	if(!slider) DETHROW(deeOutOfMemory);
 	
 	slider->setTipText(toolTip);
 	
@@ -455,7 +440,6 @@ FXIconList *deglGuiBuilder::CreateIconList(FXComposite *container, FXObject *tar
 	if(!container) DETHROW(deeInvalidParam);
 	
 	FXIconList *iconList = new FXIconList(container, target, selector, FOLDINGLIST_BROWSESELECT | LAYOUT_FILL_X | LAYOUT_FILL_Y | FRAME_SUNKEN);
-	if(!iconList) DETHROW(deeOutOfMemory);
 	
 	if(pFont){
 		iconList->setFont(pFont);

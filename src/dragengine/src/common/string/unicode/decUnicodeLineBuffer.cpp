@@ -71,12 +71,10 @@ void decUnicodeLineBuffer::SetBufferSize(int bufferSize){
 	
 	try{
 		newArray = new decUnicodeString*[realBufferSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		for(i=0; i<realBufferSize; i++) newArray[i] = NULL;
 		
 		for(i=pBufferSize; i<realBufferSize; i++){
 			newArray[i] = new decUnicodeString;
-			if(!newArray[i]) DETHROW(deeOutOfMemory);
 		}
 		
 		if(realBufferSize < pLineCount){

@@ -441,9 +441,6 @@ void debpSweepCollisionTest::VisitShapeCapsule(decShapeCapsule &capsule){
 	
 	try{
 		capsuleShape = new btMultiSphereShape((const btVector3 *)&positions[0], (const btScalar *)&radi[0], 2);
-		if(!capsuleShape){
-			DETHROW(deeOutOfMemory);
-		}
 		
 		transform.setOrigin(btVector3((btScalar)position.x, (btScalar)position.y, (btScalar)position.z));
 		transform.setRotation(btQuaternion((btScalar)orientation.x, (btScalar)orientation.y,

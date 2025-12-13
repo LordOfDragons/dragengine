@@ -96,13 +96,10 @@ deoglOptimizerLight::deoglOptimizerLight(deoglRLight *light, deoglWorld *world){
 	
 	try{
 		pTriangleSorter = new deoglTriangleSorter;
-		if(!pTriangleSorter) DETHROW(deeOutOfMemory);
 		
 		pCollideList = new deoglCollideList;
-		if(!pCollideList) DETHROW(deeOutOfMemory);
 		
 		pFinalCollideList = new deoglCollideList;
-		if(!pFinalCollideList) DETHROW(deeOutOfMemory);
 		
 	}catch(const deException &){
 		pCleanUp();
@@ -288,7 +285,6 @@ void deoglOptimizerLight::pPrepareCroping(){
 		try{
 			// create convex volume
 			volume = new decConvexVolume;
-			if(!volume) DETHROW(deeOutOfMemory);
 			
 			// add vertices
 			volume->AddVertex(lightPosition + decVector(-offset, range, -offset));
@@ -372,7 +368,6 @@ void deoglOptimizerLight::pPrepareCroping(){
 		try{
 			// create convex volume
 			volume = new decConvexVolume;
-			if(!volume) DETHROW(deeOutOfMemory);
 			
 			// add vertices
 			volume->AddVertex(matrix * decVector(-xn, yn, 0.0f));
@@ -546,7 +541,6 @@ void deoglOptimizerLight::pSCBuildShadowCaster(){
 		pShadowCaster->Clear();
 	}else{
 		pShadowCaster = new deoglShadowCaster(pLight->GetRenderThread());
-		if(!pShadowCaster) DETHROW(deeOutOfMemory);
 	}
 	
 	// build shadow caster
@@ -572,7 +566,6 @@ void deoglOptimizerLight::pVolumeAddFace(decConvexVolume *volume, int p1, int p2
 	
 	try{
 		face = new decConvexVolumeFace;
-		if(!face) DETHROW(deeOutOfMemory);
 		
 		faceNormal = normal;
 		faceNormal.Normalize();
@@ -596,7 +589,6 @@ void deoglOptimizerLight::pVolumeAddFace(decConvexVolume *volume, int p1, int p2
 	
 	try{
 		face = new decConvexVolumeFace;
-		if(!face) DETHROW(deeOutOfMemory);
 		
 		faceNormal = normal;
 		faceNormal.Normalize();

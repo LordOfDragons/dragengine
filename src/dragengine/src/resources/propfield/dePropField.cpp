@@ -116,7 +116,6 @@ void dePropField::AddType(dePropFieldType *type){
 	if(pTypeCount == pTypeSize){
 		int newSize = pTypeSize * 3 / 2 + 1;
 		dePropFieldType **newArray = new dePropFieldType*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pTypes){
 			memcpy(newArray, pTypes, sizeof(dePropFieldType*) * pTypeSize);
 			delete [] pTypes;

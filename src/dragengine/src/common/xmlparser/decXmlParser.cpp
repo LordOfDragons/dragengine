@@ -498,7 +498,6 @@ void decXmlParser::ParseAttribute(decXmlContainer *container){
 	// check if this is a namespace
 	if(strncmp(attValue->GetName(), "xmlns:", 6) == 0){
 		ns = decXmlNamespace::Ref::New(attValue->GetName() + 6, attValue->GetValue());
-		if(!ns) DETHROW(deeOutOfMemory);
 		ns->SetLineNumber(lineNumber);
 		ns->SetPositionNumber(posNumber);
 		container->AddElement(ns);
@@ -977,7 +976,6 @@ void decXmlParser::SetCleanString(int length){
 	if(length > pTokenLen) DETHROW(deeInvalidParam);
 	if(length > pCleanStringSize){
 		char *newStr = new char[length + 1];
-		if(!newStr) DETHROW(deeOutOfMemory);
 		if(pCleanString) delete [] pCleanString;
 		pCleanString = newStr;
 		pCleanStringSize = length;
@@ -1027,7 +1025,6 @@ void decXmlParser::pGetNextCharAndAdd(){
 void decXmlParser::pGrowToken(){
 	int newSize = pTokenSize * 3 / 2 + 1;
 	char *newToken = new char[newSize + 1];
-	if(!newToken) DETHROW(deeOutOfMemory);
 	if(pToken){
 		if(pTokenLen > 0){
 			#ifdef OS_W32_VS

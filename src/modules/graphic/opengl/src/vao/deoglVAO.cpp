@@ -52,9 +52,6 @@ pIndexGLType(GL_NONE),
 pRTSVAO(NULL)
 {
 	OGL_CHECK(renderThread, pglGenVertexArrays(1, &pVAO));
-	if(!pVAO){
-		DETHROW(deeOutOfMemory);
-	}
 	
 	pUniqueKey = renderThread.GetUniqueKey().Get();
 }

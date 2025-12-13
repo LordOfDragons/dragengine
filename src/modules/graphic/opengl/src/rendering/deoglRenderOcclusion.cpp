@@ -369,15 +369,9 @@ pAddToRenderTask(NULL)
 		};
 		
 		OGL_CHECK(renderThread, pglGenVertexArrays(1, &pVAOFrustumPlanes));
-		if(!pVAOFrustumPlanes){
-			DETHROW(deeOutOfMemory);
-		}
 		OGL_CHECK(renderThread, pglBindVertexArray(pVAOFrustumPlanes));
 		
 		OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOFrustumPlanes));
-		if(!pVBOFrustumPlanes){
-			DETHROW(deeOutOfMemory);
-		}
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOFrustumPlanes));
 		OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(pointsFrustumPlanes), (const GLvoid *)&pointsFrustumPlanes, GL_STATIC_DRAW));
 		

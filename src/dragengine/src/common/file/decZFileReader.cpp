@@ -263,9 +263,6 @@ void decZFileReader::pSetContentPosition(int position){
 				}
 				
 				void * const content = realloc(pContent, newCapacity);
-				if(!content){
-					DETHROW(deeOutOfMemory);
-				}
 				pContent = content;
 				pContentCapacity = newCapacity;
 				
@@ -277,9 +274,6 @@ void decZFileReader::pSetContentPosition(int position){
 			const int newCapacity = pContentCapacity - (int)zstream->avail_out;
 			
 			void * const content = realloc(pContent, newCapacity); // reduce to used size
-			if(!content){
-				DETHROW(deeOutOfMemory);
-			}
 			
 			pContent = content;
 			pContentSize = newCapacity;

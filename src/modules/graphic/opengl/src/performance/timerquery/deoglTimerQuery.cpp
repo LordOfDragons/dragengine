@@ -45,9 +45,6 @@ pRenderThread(renderThread),
 pQuery(0)
 {
 	OGL_CHECK(renderThread, pglGenQueries(1, &pQuery));
-	if(!pQuery){
-		DETHROW(deeOutOfMemory);
-	}
 }
 
 deoglTimerQuery::~deoglTimerQuery(){

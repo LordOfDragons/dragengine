@@ -513,9 +513,6 @@ void deoglPropFieldCluster::pUpdateTBOInstances(){
 	}
 	
 	OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOInstances));
-	if(!pVBOInstances){
-		DETHROW(deeOutOfMemory);
-	}
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, pVBOInstances));
 	OGL_CHECK(pRenderThread, pglBufferData(GL_TEXTURE_BUFFER, vboDataSize, vboData, GL_STATIC_DRAW));
 	
@@ -537,9 +534,6 @@ void deoglPropFieldCluster::pUpdateTBOBendStates(){
 	
 	if(!pVBOBendStates){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOBendStates));
-		if(!pVBOBendStates){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_TEXTURE_BUFFER, pVBOBendStates));

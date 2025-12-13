@@ -296,7 +296,6 @@ bool delEngineInstanceThreaded::StartEngine(){
 		// connect logger
 		/*
 		pReadLog = new delEngineInstanceThreadedReadLog(this, pLogger);
-		if(!pReadLog) DETHROW(deeOutOfMemory);
 		
 		pReadLog->Start();
 		*/

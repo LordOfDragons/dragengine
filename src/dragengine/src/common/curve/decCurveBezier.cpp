@@ -195,7 +195,6 @@ decCurveBezier &decCurveBezier::operator=(const decCurveBezier &curve){
 	
 	if(pointCount > 0){
 		newArray = new decCurveBezierPoint[pointCount];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		for(p=0; p<pointCount; p++){
 			newArray[p] = curve.pPoints[p];

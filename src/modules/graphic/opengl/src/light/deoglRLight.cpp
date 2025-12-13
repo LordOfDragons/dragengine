@@ -1395,7 +1395,6 @@ void deoglRLight::pUpdateLightVolume(){
 	if(!pOptimizer){
 		try{
 			pOptimizer = new deoglOptimizerLight(this, oglWorld);
-			if(!pOptimizer) DETHROW(deeOutOfMemory);
 			
 			if(lightType == deLight::eltPoint){
 				pOptimizer->SetOptimizeShadowCaster(false);

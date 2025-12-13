@@ -74,7 +74,6 @@ FXVerticalFrame(container, LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_TOP | LAYOUT_L
 	// prepare
 	pWndMain = windowMain;
 	pParameterInfo = new deModuleParameter;
-	if(!pParameterInfo) DETHROW(deeOutOfMemory);
 	
 	// module selection
 	FXHorizontalFrame *frameLine = new FXHorizontalFrame(this, LAYOUT_SIDE_TOP | LAYOUT_FILL_X,

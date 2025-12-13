@@ -55,7 +55,6 @@ deoglSPTree::deoglSPTree(const decVector &minExtend, const decVector &maxExtend,
 	pStride = nodeCount.x * nodeCount.y;
 	
 	pNodes = new deoglSPTreeNode*[pTotalNodeCount];
-	if(!pNodes) DETHROW(deeOutOfMemory);
 	for(i=0; i<pTotalNodeCount; i++) pNodes[i] = NULL;
 }
 

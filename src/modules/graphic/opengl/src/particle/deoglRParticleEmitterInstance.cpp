@@ -496,9 +496,6 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 	
 	if(!pVBOShared){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOShared));
-		if(!pVBOShared){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOShared));
@@ -512,9 +509,6 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 	
 	if(!pVBOLocal){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBOLocal));
-		if(!pVBOLocal){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOLocal));
@@ -533,9 +527,6 @@ void deoglRParticleEmitterInstance::UpdateParticlesVBO(){
 	// ibo
 	if(!pIBO){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pIBO));
-		if(!pIBO){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	
 	// vao

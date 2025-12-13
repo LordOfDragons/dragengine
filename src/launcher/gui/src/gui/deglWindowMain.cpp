@@ -266,7 +266,6 @@ void deglWindowMain::DisplayException(const deException &exception){
 void deglWindowMain::ShowWindowLogger(){
 	if(!pWindowLogger){
 		pWindowLogger = new deglWindowLogger(getApp());
-		if(!pWindowLogger) DETHROW(deeOutOfMemory);
 		
 		pWindowLogger->SetLogger(pLauncher->GetLoggerHistory());
 	}

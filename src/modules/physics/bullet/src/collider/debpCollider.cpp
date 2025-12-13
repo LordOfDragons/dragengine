@@ -795,7 +795,6 @@ void debpCollider::ConstraintAdded(int index, deColliderConstraint *constraint){
 	if(pConstraintCount == pConstraintSize){
 		int newSize = pConstraintSize * 3 / 2 + 1;
 		debpColliderConstraint **newArray = new debpColliderConstraint*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pConstraints){
 			memcpy(newArray, pConstraints, sizeof(debpColliderConstraint*) * pConstraintSize);
 			delete [] pConstraints;
@@ -805,7 +804,6 @@ void debpCollider::ConstraintAdded(int index, deColliderConstraint *constraint){
 	}
 	
 	pConstraints[pConstraintCount] = new debpColliderConstraint(*pBullet, *constraint);
-	if(!pConstraints[pConstraintCount]) DETHROW(deeOutOfMemory);
 	pConstraintCount++;
 	
 	// see CheckColliderConstraintsBroke() for the reason to register

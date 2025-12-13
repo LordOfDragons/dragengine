@@ -82,9 +82,6 @@ void decMemoryFile::Resize(int size, bool compact){
 	if(size > pCapacity){
 		const int newCapacity = compact ? size : size * 5 / 4; // 25% larger to avoid re-allocating quickly
 		char * const newData = reinterpret_cast<char*>(realloc(pData, newCapacity));
-		if(!newData){
-			DETHROW(deeOutOfMemory);
-		}
 		pData = newData;
 		pCapacity = newCapacity;
 	}

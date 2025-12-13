@@ -621,7 +621,6 @@ void deoglCollideList::AddBillboard(deoglRBillboard *billboard){
 	if(pBillboardCount == pBillboardSize){
 		int i, newSize = pBillboardCount * 3 / 2 + 1;
 		deoglRBillboard **newArray = new deoglRBillboard*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pBillboards){
 			for(i=0; i<pBillboardCount; i++) newArray[i] = pBillboards[i];
 			delete [] pBillboards;

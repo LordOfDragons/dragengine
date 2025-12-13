@@ -92,7 +92,6 @@ void dePropFieldType::SetInstanceCount(int count){
 	
 	if(count > 0){
 		instances = new dePropFieldInstance[count];
-		if(!instances) DETHROW(deeOutOfMemory);
 	}
 	
 	if(pInstances) delete [] pInstances;

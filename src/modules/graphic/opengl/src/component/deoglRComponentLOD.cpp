@@ -951,9 +951,6 @@ void deoglRComponentLOD::pCalculateWeights(const deoglModelLOD &modelLOD){
 		
 		if(!pVBOWeightMatrices){
 			OGL_CHECK(ogl, pglGenBuffers(1, &pVBOWeightMatrices));
-			if(!pVBOWeightMatrices){
-				DETHROW(deeOutOfMemory);
-			}
 			OGL_CHECK(ogl, pglBindBuffer(GL_ARRAY_BUFFER, pVBOWeightMatrices));
 			OGL_CHECK(ogl, pglBufferData(GL_ARRAY_BUFFER, sizeof(oglMatrix3x4) * weightsCount, pWeights, GL_STATIC_DRAW));
 		}

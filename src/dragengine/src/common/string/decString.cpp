@@ -133,7 +133,6 @@ bool decString::IsEmpty() const{
 void decString::Empty(){
 	if(pString[0] != '\0'){
 		char *newString = new char[1];
-		if(!newString) DETHROW(deeOutOfMemory);
 		newString[0] = '\0';
 		
 		delete [] pString;
@@ -233,7 +232,6 @@ void decString::SetValue(char value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 #ifdef OS_W32
 	snprintf(newString, length + 1, "%hi", value);
 #else
@@ -254,7 +252,6 @@ void decString::SetValue(unsigned char value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 #ifdef OS_W32
 	snprintf(newString, length + 1, "%hu", value);
 #else
@@ -271,7 +268,6 @@ void decString::SetValue(short value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%hi", value);
 	newString[length] = '\0';
 	
@@ -284,7 +280,6 @@ void decString::SetValue(unsigned short value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%hu", value);
 	newString[length] = '\0';
 	
@@ -297,7 +292,6 @@ void decString::SetValue(int value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%i", value);
 	newString[length] = '\0';
 	
@@ -310,7 +304,6 @@ void decString::SetValue(unsigned int value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%u", value);
 	newString[length] = '\0';
 	
@@ -323,7 +316,6 @@ void decString::SetValue(float value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%g", value);
 	newString[length] = '\0';
 	
@@ -336,7 +328,6 @@ void decString::SetValue(double value){
 	if(length < 0) DETHROW(deeInvalidParam); // broken snprintf implementation
 	
 	char *newString = new char[length + 1];
-	if(!newString) DETHROW(deeOutOfMemory);
 	snprintf(newString, length + 1, "%g", value);
 	newString[length] = '\0';
 	

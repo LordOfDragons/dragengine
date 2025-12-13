@@ -2043,7 +2043,6 @@ deoglRenderPlanMasked *deoglRenderPlan::AddMaskedPlanFor(deoglRenderPlan *plan){
 	if(pMaskedPlanCount == pMaskedPlanSize){
 		int newSize = pMaskedPlanSize * 3 / 2 + 1;
 		deoglRenderPlanMasked **newArray = new deoglRenderPlanMasked*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		
 		memset(newArray, '\0', sizeof(deoglRenderPlanMasked*) * newSize);
 		if(pMaskedPlans){

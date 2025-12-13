@@ -182,9 +182,6 @@ void deoglShaderPreprocessor::SourcesAppend(const char *text, int length, bool m
 	if(pSourcesLen + length > pSourcesSize){
 		const int newSize = pSourcesLen + length + 1024;  // increment by steps of 1k
 		char * const newSources = reinterpret_cast<char*>(realloc(pSources, newSize + 1));
-		if(!newSources){
-			DETHROW(deeOutOfMemory);
-		}
 		pSources = newSources;
 		pSourcesSize = newSize;
 	}
@@ -1603,9 +1600,6 @@ void deoglShaderPreprocessor::pResolveBufferAppend(const char *text, int length)
 	if(pResolveBufferLen + length > pResolveBufferSize){
 		const int newSize = pResolveBufferLen + length + 1024;  // increment by steps of 1k
 		char * const newResolveBuffer = reinterpret_cast<char*>(realloc(pResolveBuffer, newSize + 1));
-		if(!newResolveBuffer){
-			DETHROW(deeOutOfMemory);
-		}
 		pResolveBuffer = newResolveBuffer;
 		pResolveBufferSize = newSize;
 	}
@@ -1624,9 +1618,6 @@ void deoglShaderPreprocessor::pSetResolveSymbolName(const char *name, int length
 	if(pResolveSymbolNameLen + length > pResolveSymbolNameSize){
 		const int newSize = pResolveSymbolNameLen + length + 50;
 		char * const newName = reinterpret_cast<char*>(realloc(pResolveSymbolName, newSize + 1));
-		if(!newName){
-			DETHROW(deeOutOfMemory);
-		}
 		pResolveSymbolName = newName;
 		pResolveSymbolNameSize = newSize;
 	}

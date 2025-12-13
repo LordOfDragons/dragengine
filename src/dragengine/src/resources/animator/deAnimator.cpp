@@ -159,7 +159,6 @@ void deAnimator::AddController(deAnimatorController *controller){
 	if(pControllerCount == pControllerSize){
 		int i, newSize = pControllerSize * 3 / 2 + 1;
 		deAnimatorController **newArray = new deAnimatorController*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pControllers){
 			for(i=0; i<pControllerSize; i++) newArray[i] = pControllers[i];
 			delete [] pControllers;
@@ -251,7 +250,6 @@ void deAnimator::AddLink(deAnimatorLink *link){
 	if(pLinkCount == pLinkSize){
 		int i, newSize = pLinkSize * 3 / 2 + 1;
 		deAnimatorLink **newArray = new deAnimatorLink*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pLinks){
 			for(i=0; i<pLinkSize; i++) newArray[i] = pLinks[i];
 			delete [] pLinks;

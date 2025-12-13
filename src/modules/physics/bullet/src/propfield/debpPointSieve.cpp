@@ -55,7 +55,6 @@ debpPointSieve::debpPointSieve(int bucketCountX, int bucketCountZ, float sieveSi
 	pBucketCount = bucketCountX * bucketCountZ;
 	
 	pBuckets = new debpPointSieveBucket[pBucketCount];
-	if(!pBuckets) DETHROW(deeOutOfMemory);
 }
 
 debpPointSieve::~debpPointSieve(){

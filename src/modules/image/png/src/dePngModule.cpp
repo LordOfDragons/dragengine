@@ -124,7 +124,6 @@ deBaseImageInfo *dePngModule::InitLoadImage(decBaseFileReader &file){
 	try{
 		// create infos object
 		infos = new dePngImageInfo(file.GetFilename());
-		if(!infos) DETHROW(deeOutOfMemory);
 		
 		infos->feedback.module = this;
 		infos->feedback.filename = file.GetFilename();
@@ -255,7 +254,6 @@ void dePngModule::LoadImage(decBaseFileReader &file, deImage &image, deBaseImage
 	try{
 		// build rows array
 		rows = new png_bytep[height];
-		if(!rows) DETHROW(deeOutOfMemory);
 		
 		for(r=0; r<height; r++){
 			rows[r] = (png_bytep)(imageData + rowLength * r);
@@ -376,7 +374,6 @@ void dePngModule::SaveImage(decBaseFileWriter &file, const deImage &image){
 		
 		// build rows array
 		rows = new png_bytep[height];
-		if(!rows) DETHROW(deeOutOfMemory);
 		
 		for(r=0; r<height; r++){
 			rows[r] = (png_bytep)(imageData + rowLength * r);

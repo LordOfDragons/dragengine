@@ -80,7 +80,6 @@ deBaseImageInfo *deTgaModule::InitLoadImage(decBaseFileReader &file){
 	try{
 		// create infos object
 		infos = new deTgaImageInfo;
-		if(!infos) DETHROW(deeOutOfMemory);
 		// read tgaInfos.header
 		file.Read(&infos->header, sizeof(tgaHdr));
 		if(infos->header.imageType!=3 && infos->header.imageType!=2 &&

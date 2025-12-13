@@ -94,7 +94,6 @@ deBaseImageInfo *dePng3DModule::InitLoadImage(decBaseFileReader &file){
 	
 	try{
 		infos = new dePng3DImageInfo(file.GetFilename());
-		if(!infos) DETHROW(deeOutOfMemory);
 		
 		tarball.Get3DImageInfos(*infos, file);
 		

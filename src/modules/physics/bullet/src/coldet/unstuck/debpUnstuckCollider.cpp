@@ -115,7 +115,6 @@ void debpUnstuckCollider::AddNearbyCollider(debpCollider *collider){
 	
 	if(pNearbyColliderCount == pNearbyColliderSize){
 		debpCollider **newArray = new debpCollider*[pNearbyColliderSize + 1];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pNearbyColliders){
 			memcpy(newArray, pNearbyColliders, sizeof(debpCollider*) * pNearbyColliderSize);
 			delete [] pNearbyColliders;
@@ -142,7 +141,6 @@ const decDVector& debpUnstuckCollider::GetBlockerNormalAt(int index) const{
 void debpUnstuckCollider::AddBlockerNormal(const decDVector &normal){
 	if(pBlockerNormalCount == pBlockerNormalSize){
 		decDVector *newArray = new decDVector[pBlockerNormalSize + 1];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pBlockerNormals){
 			memcpy(newArray, pBlockerNormals, sizeof(decDVector) * pBlockerNormalSize);
 			delete [] pBlockerNormals;

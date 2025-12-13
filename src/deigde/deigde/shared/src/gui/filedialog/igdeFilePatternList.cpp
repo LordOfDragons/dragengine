@@ -99,7 +99,6 @@ void igdeFilePatternList::AddFilePattern(igdeFilePattern *filePattern){
 	if(pFilePatternCount == pFilePatternSize){
 		int newSize = pFilePatternSize * 3 / 2 + 1;
 		igdeFilePattern **newArray = new igdeFilePattern*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pFilePatterns){
 			memcpy(newArray, pFilePatterns, sizeof(igdeFilePattern*) * pFilePatternSize);
 			delete [] pFilePatterns;

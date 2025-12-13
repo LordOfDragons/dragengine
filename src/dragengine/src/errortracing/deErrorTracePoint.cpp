@@ -95,7 +95,6 @@ void deErrorTracePoint::AddValue(deErrorTraceValue *value){
 	if(pValueCount == pValueSize){
 		int i, newSize = pValueSize * 3 / 2 + 1;
 		deErrorTraceValue **newArray = new deErrorTraceValue*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pValues){
 			for(i=0; i<pValueCount; i++) newArray[i] = pValues[i];
 			delete [] pValues;
@@ -124,7 +123,6 @@ deErrorTraceValue *deErrorTracePoint::AddValue(const char *name, const char *val
 	deErrorTraceValue *newValue = NULL;
 	try{
 		newValue = new deErrorTraceValue(name, value);
-		if(!newValue) DETHROW(deeOutOfMemory);
 		AddValue(newValue);
 	}catch(const deException &){
 		if(newValue) delete newValue;
@@ -143,7 +141,6 @@ deErrorTraceValue *deErrorTracePoint::AddValueInt(const char *name, int value){
 	#endif
 	try{
 		newValue = new deErrorTraceValue(name, buffer);
-		if(!newValue) DETHROW(deeOutOfMemory);
 		AddValue(newValue);
 	}catch(const deException &){
 		if(newValue) delete newValue;
@@ -162,7 +159,6 @@ deErrorTraceValue *deErrorTracePoint::AddValueFloat(const char *name, float valu
 	#endif
 	try{
 		newValue = new deErrorTraceValue(name, buffer);
-		if(!newValue) DETHROW(deeOutOfMemory);
 		AddValue(newValue);
 	}catch(const deException &){
 		if(newValue) delete newValue;
@@ -179,7 +175,6 @@ deErrorTraceValue *deErrorTracePoint::AddValueBool(const char *name, bool value)
 		}else{
 			newValue = new deErrorTraceValue(name, "False");
 		}		
-		if(!newValue) DETHROW(deeOutOfMemory);
 		AddValue(newValue);
 	}catch(const deException &){
 		if(newValue) delete newValue;

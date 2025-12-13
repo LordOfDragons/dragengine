@@ -72,7 +72,6 @@ void decUnicodeArgumentList::AddArgument(const decUnicodeString &argument){
 	if(pArgumentCount == pArgumentSize){
 		int i, newSize = pArgumentSize * 3 / 2 + 1;
 		decUnicodeString **newArray = new decUnicodeString*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pArguments){
 			for(i=0; i<pArgumentSize; i++) newArray[i] = pArguments[i];
 			delete [] pArguments;
@@ -81,7 +80,6 @@ void decUnicodeArgumentList::AddArgument(const decUnicodeString &argument){
 		pArgumentSize = newSize;
 	}
 	pArguments[pArgumentCount] = new decUnicodeString(argument);
-	if(!pArguments[pArgumentCount]) DETHROW(deeOutOfMemory);
 	pArgumentCount++;
 }
 

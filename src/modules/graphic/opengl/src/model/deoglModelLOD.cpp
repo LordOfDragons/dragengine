@@ -400,9 +400,6 @@ GLuint deoglModelLOD::GetIBO(){
 	
 	try{
 		OGL_CHECK(renderThread, pglGenBuffers(1, &pIBO));
-		if(!pIBO){
-			DETHROW(deeOutOfMemory);
-		}
 		
 		const int bufferSize = (pFaceCount * 3) * sizeof(GLuint);
 		

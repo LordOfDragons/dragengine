@@ -149,9 +149,6 @@ void deoglLightVolume::UpdateVBO(){
 		// update vbo
 		if(!pVBO){
 			OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBO));
-			if(!pVBO){
-				DETHROW(deeOutOfMemory);
-			}
 		}
 		
 		OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBO));
@@ -173,9 +170,6 @@ void deoglLightVolume::UpdateVBO(){
 			layout.GetAttributeAt(0).SetOffset(0);
 			
 			OGL_CHECK(pRenderThread, pglGenVertexArrays(1, &pVAO));
-			if(!pVAO){
-				DETHROW(deeOutOfMemory);
-			}
 			
 			OGL_CHECK(pRenderThread, pglBindVertexArray(pVAO));
 			

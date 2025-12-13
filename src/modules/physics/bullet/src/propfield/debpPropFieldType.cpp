@@ -81,7 +81,6 @@ void debpPropFieldType::SetBendStateSize(int size){
 		
 		if(size > 0){
 			newArray = new debpPropFieldBendState[size];
-			if(!newArray) DETHROW(deeOutOfMemory);
 		}
 		
 		if(pBendStates) delete [] pBendStates;

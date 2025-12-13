@@ -88,7 +88,6 @@ void deoglOptimizerManager::AddOptimizer(deoglOptimizer *optimizer){
 	if(pOptimizerCount == pOptimizerSize){
 		int newSize = pOptimizerSize * 3 / 2 + 1;
 		deoglOptimizer **newArray = new deoglOptimizer*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pOptimizers){
 			memcpy(newArray, pOptimizers, sizeof(deoglOptimizer*) * pOptimizerSize);
 			delete [] pOptimizers;

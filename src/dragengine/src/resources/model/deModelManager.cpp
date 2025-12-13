@@ -170,9 +170,6 @@ deModel::Ref deModelManager::LoadModel(deVirtualFileSystem *vfs, const char *fil
 			
 			// load the file with it
 			model = deModel::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
-			if(!model){
-				DETHROW(deeOutOfMemory);
-			}
 			
 			model->SetAsynchron(false);
 			module->LoadModel(OpenFileForReading(*vfs, path.GetPathUnix()), *model);

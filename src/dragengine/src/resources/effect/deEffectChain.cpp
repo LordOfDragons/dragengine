@@ -83,7 +83,6 @@ void deEffectChain::InsertEffect(deEffect *effect, int position){
 	if(pEffectCount == pEffectSize){
 		int newSize = pEffectSize * 3 / 2 + 1;
 		deEffect **newArray = new deEffect*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pEffects){
 			for(i=0; i<pEffectSize; i++){
 				newArray[i] = pEffects[i];

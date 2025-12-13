@@ -622,7 +622,6 @@ void deoglDeveloperMode::pCmdOpenGLCaps(const decUnicodeArgumentList &, decUnico
 	if(formatCount > 0){
 		try{
 			formats = new GLint[formatCount];
-			if(!formats) DETHROW(deeOutOfMemory);
 			
 			OGL_CHECK(pRenderThread, glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS, formats));
 			for(f=0; f<formatCount; f++){

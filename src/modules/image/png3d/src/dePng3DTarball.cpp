@@ -259,7 +259,6 @@ void dePng3DTarball::Load3DImage(dePng3DImageInfo &infos, decBaseFileReader &fil
 	try{
 		// create the rows array
 		rows = new png_bytep[image.GetHeight()];
-		if(!rows) DETHROW(deeOutOfMemory);
 		
 		// read the archive with all files filling the images one by one
 		while(true){
@@ -442,7 +441,6 @@ void dePng3DTarball::Save3DImage(decBaseFileWriter &file, const deImage &image){
 		
 		// create the rows array
 		rows = new png_bytep[image.GetHeight()];
-		if(!rows) DETHROW(deeOutOfMemory);
 		
 		// write file by creating an archive with an image for each z coordinate
 		for(z=0; z<image.GetDepth(); z++){

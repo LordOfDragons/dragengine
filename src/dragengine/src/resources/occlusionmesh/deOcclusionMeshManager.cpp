@@ -169,9 +169,6 @@ const char *filename, const char *basePath){
 			
 			// load the file with it
 			occmesh = deOcclusionMesh::Ref::New(this, vfs, path.GetPathUnix(), modificationTime);
-			if(!occmesh){
-				DETHROW(deeOutOfMemory);
-			}
 			
 			occmesh->SetAsynchron(false);
 			module->LoadOcclusionMesh(OpenFileForReading(*vfs, path.GetPathUnix()), *occmesh);

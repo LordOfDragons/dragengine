@@ -87,7 +87,6 @@ void debnStateLinkList::AddLink(debnStateLink *link){
 	if(pLinkCount == pLinkSize){
 		int newSize = pLinkSize * 3 / 2 + 1;
 		debnStateLink **newArray = new debnStateLink*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pLinks){
 			memcpy(newArray, pLinks, sizeof(debnStateLink*) * pLinkSize);
 			delete pLinks;

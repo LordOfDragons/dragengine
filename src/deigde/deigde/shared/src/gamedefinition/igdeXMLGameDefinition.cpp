@@ -2055,7 +2055,6 @@ void igdeXMLGameDefinition::pParseSkin(const decXmlElementTag &root, igdeGameDef
 	}
 	
 	skin = new igdeGDSkin(strPath, strName);
-	if(!skin) DETHROW(deeOutOfMemory);
 	
 	skinManager.AddSkin(skin);
 	

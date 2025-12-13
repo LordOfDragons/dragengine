@@ -109,7 +109,6 @@ void dePropFieldGround::AddComponent(deComponent *component){
 	if(pComponentCount == pComponentSize){
 		int newSize = pComponentSize * 3 / 2 + 1;
 		deComponent **newArray = new deComponent*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pComponents){
 			memcpy(newArray, pComponents, sizeof(deComponent*) * pComponentSize);
 			delete [] pComponents;

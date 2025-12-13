@@ -434,9 +434,6 @@ void deoglDynamicOcclusionMesh::pBuildVBO(){
 	
 	if(!pVBO){
 		OGL_CHECK(pRenderThread, pglGenBuffers(1, &pVBO));
-		if(!pVBO){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	
 	OGL_CHECK(pRenderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBO));

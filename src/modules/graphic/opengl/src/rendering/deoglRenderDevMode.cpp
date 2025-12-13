@@ -1975,11 +1975,9 @@ void deoglRenderDevMode::pCreateShapesVAO(){
 	
 	// create vbo and vao
 	OGL_CHECK(renderThread, pglGenVertexArrays(1, &pVAOShapes));
-	if(!pVAOShapes) DETHROW(deeOutOfMemory);
 	OGL_CHECK(renderThread, pglBindVertexArray(pVAOShapes));
 	
 	OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOShapes));
-	if(!pVBOShapes) DETHROW(deeOutOfMemory);
 	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOShapes));
 	OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(vbodata), (const GLvoid *)&vbodata, GL_STATIC_DRAW));
 	

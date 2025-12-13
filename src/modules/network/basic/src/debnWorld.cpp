@@ -60,9 +60,6 @@ debnWorld::debnWorld(deNetworkBasic *netBasic, deWorld *world){
 	
 	try{
 		pStateSlots = new debnState*[1000];
-		if(!pStateSlots){
-			DETHROW(deeOutOfMemory);
-		}
 		
 		pStateSlotCount = 1000;
 		

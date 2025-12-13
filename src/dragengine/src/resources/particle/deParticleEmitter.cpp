@@ -241,7 +241,6 @@ void deParticleEmitter::AddController(deParticleEmitterController *controller){
 	if(pControllerCount == pControllerSize){
 		int i, newSize = pControllerSize * 3 / 2 + 1;
 		deParticleEmitterController **newArray = new deParticleEmitterController*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pControllers){
 			for(i=0; i<pControllerSize; i++) newArray[i] = pControllers[i];
 			delete [] pControllers;

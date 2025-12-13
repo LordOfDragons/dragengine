@@ -353,7 +353,6 @@ void deRigModule::pParseBone(decXmlElementTag *root, deRig &rig, dermNameList &b
 	
 	try{
 		bone = new deRigBone(name);
-		if(!bone) DETHROW(deeOutOfMemory);
 		
 		for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
@@ -582,7 +581,6 @@ void deRigModule::pParseCylinder(decXmlElementTag *root, decShapeList &shapes, d
 	
 	try{
 		cylinder = new decShapeCylinder(1.0f, 1.0f);
-		if(!cylinder) DETHROW(deeOutOfMemory);
 		
 		for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
@@ -685,7 +683,6 @@ void deRigModule::pParseCapsule(decXmlElementTag *root, decShapeList &shapes, de
 	
 	try{
 		capsule = new decShapeCapsule(1.0f, 1.0f);
-		if(!capsule) DETHROW(deeOutOfMemory);
 		
 		for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
@@ -781,7 +778,6 @@ void deRigModule::pParseBox(decXmlElementTag *root, decShapeList &shapes, decStr
 	
 	try{
 		box = new decShapeBox(decVector(1.0f, 1.0f, 1.0f));
-		if(!box) DETHROW(deeOutOfMemory);
 		
 		for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);
@@ -919,7 +915,6 @@ void deRigModule::pParseConstraint(decXmlElementTag *root, deRig &rig, deRigBone
 	
 	try{
 		constraint = new deRigConstraint;
-		if(!constraint) DETHROW(deeOutOfMemory);
 		
 		for(i=0; i<root->GetElementCount(); i++){
 			tag = pGetTagAt(root, i);

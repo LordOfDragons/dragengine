@@ -72,7 +72,6 @@ deoglCollideList *deoglCollideListManager::GetList(){
 		if(pListCount == pListSize){
 			int i, newSize = pListSize * 3 / 2 + 1;
 			sList *newArray = new sList[newSize];
-			if(!newArray) DETHROW(deeOutOfMemory);
 			for(i=pListSize; i<newSize; i++){
 				newArray[i].list = NULL;
 				newArray[i].inUse = false;
@@ -88,7 +87,6 @@ deoglCollideList *deoglCollideListManager::GetList(){
 			pListSize = newSize;
 		}
 		pLists[pListCount].list = new deoglCollideList;
-		if(!pLists[pListCount].list) DETHROW(deeOutOfMemory);
 		index = pListCount;
 		pListCount++;
 	}

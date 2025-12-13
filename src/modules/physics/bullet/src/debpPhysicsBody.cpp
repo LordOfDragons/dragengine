@@ -514,7 +514,6 @@ void debpPhysicsBody::AddConstraint(debpColliderConstraint *constraint){
 	if(pConstraintCount == pConstraintSize){
 		int newSize = pConstraintSize * 3 / 2 + 1;
 		debpColliderConstraint **newArray = new debpColliderConstraint*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pConstraints){
 			memcpy(newArray, pConstraints, sizeof(debpColliderConstraint*) * pConstraintSize);
 			delete [] pConstraints;

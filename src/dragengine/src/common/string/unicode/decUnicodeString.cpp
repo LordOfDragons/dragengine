@@ -1371,9 +1371,6 @@ void decUnicodeString::pCreateString(int size, int length){
 	
 	if(length > 0){
 		pString = new char[length * size];
-		if(!pString){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	pSize = size;
 	pLength = length;

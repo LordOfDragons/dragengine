@@ -85,7 +85,6 @@ deoglRenderableColorCubeMap *deoglRenderableColorCubeMapManager::GetCubeMapWith(
 		if(pCubeMapCount == pCubeMapSize){
 			int newSize = pCubeMapSize * 3 / 2 + 1;
 			deoglRenderableColorCubeMap **newArray = new deoglRenderableColorCubeMap*[newSize];
-			if(!newArray) DETHROW(deeOutOfMemory);
 			if(pCubeMaps){
 				memcpy(newArray, pCubeMaps, sizeof(deoglRenderableColorCubeMap*) * pCubeMapSize);
 				delete [] pCubeMaps;
@@ -95,7 +94,6 @@ deoglRenderableColorCubeMap *deoglRenderableColorCubeMapManager::GetCubeMapWith(
 		}
 		
 		cubemap = new deoglRenderableColorCubeMap(pRenderThread, size, componentCount, isFloat);
-		if(!cubemap) DETHROW(deeOutOfMemory);
 		
 		pCubeMaps[pCubeMapCount] = cubemap;
 		pCubeMapCount++;

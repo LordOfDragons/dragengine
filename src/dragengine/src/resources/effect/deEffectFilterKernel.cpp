@@ -74,7 +74,6 @@ void deEffectFilterKernel::SetKernelSize(int rows, int cols){
 	
 	int i, count = rows * cols;
 	float *newKernel = new float[count];
-	if(!newKernel) DETHROW(deeOutOfMemory);
 	if(pKernel) delete [] pKernel;
 	pKernel = newKernel;
 	pKernelRows = rows;

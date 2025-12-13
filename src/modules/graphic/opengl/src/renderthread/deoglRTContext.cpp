@@ -280,9 +280,6 @@ void deoglRTContext::InitPhase3(deRenderWindow *renderWindow){
 	if(!renderWindow->GetPeerGraphic()){
 		// deoglRenderWindow is calling CreateWindow. this one is important to be in the main thread
 		renderWindow->SetPeerGraphic(new deoglRenderWindow(ogl, *renderWindow));
-		if(!renderWindow->GetPeerGraphic()){
-			DETHROW(deeOutOfMemory);
-		}
 	}
 	
 	if(!renderWindow->GetHostWindow()){

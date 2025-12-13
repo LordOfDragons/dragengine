@@ -90,15 +90,9 @@ pRestrictedImageBufferFormats(false)
 	
 	// full screen quad VBO and VAO
 	OGL_CHECK(renderThread, pglGenVertexArrays(1, &pFSQuadVAO));
-	if(!pFSQuadVAO){
-		DETHROW(deeOutOfMemory);
-	}
 	OGL_CHECK(renderThread, pglBindVertexArray(pFSQuadVAO));
 	
 	OGL_CHECK(renderThread, pglGenBuffers(1, &pFSQuadVBO));
-	if(!pFSQuadVBO){
-		DETHROW(deeOutOfMemory);
-	}
 	OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pFSQuadVBO));
 	OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(fsquad),
 		(const GLvoid *)&fsquad, GL_STATIC_DRAW));

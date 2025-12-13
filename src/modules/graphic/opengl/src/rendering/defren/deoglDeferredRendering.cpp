@@ -370,9 +370,6 @@ pTexRenderDocDebug(nullptr)
 		
 		// full screen quad vao
 		OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOFullScreenQuad));
-		if(!pVBOFullScreenQuad){
-			DETHROW(deeOutOfMemory);
-		}
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOFullScreenQuad));
 		OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(fsquad), (const GLvoid *)&fsquad, GL_STATIC_DRAW));
 		
@@ -386,9 +383,6 @@ pTexRenderDocDebug(nullptr)
 		
 		// billboard vao
 		OGL_CHECK(renderThread, pglGenBuffers(1, &pVBOBillboard));
-		if(!pVBOBillboard){
-			DETHROW(deeOutOfMemory);
-		}
 		OGL_CHECK(renderThread, pglBindBuffer(GL_ARRAY_BUFFER, pVBOBillboard));
 		OGL_CHECK(renderThread, pglBufferData(GL_ARRAY_BUFFER, sizeof(billboard), (const GLvoid *)&billboard, GL_STATIC_DRAW));
 		

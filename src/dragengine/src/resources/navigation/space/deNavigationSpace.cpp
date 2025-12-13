@@ -215,9 +215,6 @@ void deNavigationSpace::SetVertexCount(int count){
 		
 		if(count > 0){
 			pVertices = new decVector[count];
-			if(!pVertices){
-				DETHROW(deeOutOfMemory);
-			}
 			pVertexCount = count;
 		}
 	}
@@ -258,9 +255,6 @@ void deNavigationSpace::SetEdgeCount(int count){
 		
 		if(count > 0){
 			pEdges = new deNavigationSpaceEdge[count];
-			if(!pEdges){
-				DETHROW(deeOutOfMemory);
-			}
 			pEdgeCount = count;
 		}
 	}
@@ -293,9 +287,6 @@ void deNavigationSpace::SetCornerCount(int count){
 		
 		if(count > 0){
 			pCorners = new deNavigationSpaceCorner[count];
-			if(!pCorners){
-				DETHROW(deeOutOfMemory);
-			}
 			pCornerCount = count;
 		}
 	}
@@ -328,9 +319,6 @@ void deNavigationSpace::SetFaceCount(int count){
 		
 		if(count > 0){
 			pFaces = new deNavigationSpaceFace[count];
-			if(!pFaces){
-				DETHROW(deeOutOfMemory);
-			}
 			pFaceCount = count;
 		}
 	}
@@ -363,9 +351,6 @@ void deNavigationSpace::SetWallCount(int count){
 		
 		if(count > 0){
 			pWalls = new deNavigationSpaceWall[count];
-			if(!pWalls){
-				DETHROW(deeOutOfMemory);
-			}
 			pWallCount = count;
 		}
 	}
@@ -398,9 +383,6 @@ void deNavigationSpace::SetRoomCount(int count){
 		
 		if(count > 0){
 			pRooms = new deNavigationSpaceRoom[count];
-			if(!pRooms){
-				DETHROW(deeOutOfMemory);
-			}
 			pRoomCount = count;
 		}
 	}

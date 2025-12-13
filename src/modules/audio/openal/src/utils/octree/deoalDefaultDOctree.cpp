@@ -79,7 +79,6 @@ deoalDOctree *deoalDefaultDOctree::CreateOctree(int octant) const{
 	
 	// create child node
 	node = (deoalDefaultDOctree*)new deoalDefaultDOctree(nc, halfSize);
-	if(!node) DETHROW(deeOutOfMemory);
 	return node;
 }
 
@@ -126,7 +125,6 @@ void deoalDefaultDOctree::AddElement(void *element){
 	if(pElementCount == pElementSize){
 		int i, newSize = pElementSize * 3 / 2 + 1;
 		void **newArray = new void*[newSize];
-		if(!newArray) DETHROW(deeOutOfMemory);
 		if(pElements){
 			for(i=0; i<pElementSize; i++) newArray[i] = pElements[i];
 			delete [] pElements;
