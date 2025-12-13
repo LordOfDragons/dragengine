@@ -48,6 +48,8 @@
 class igdeDialogTexturePropertyList_ListBox : public igdeListBoxListener {
 	igdeDialogTexturePropertyList &pDialog;
 public:
+	typedef deTObjectReference<igdeDialogTexturePropertyList_ListBox> Ref;
+	
 	igdeDialogTexturePropertyList_ListBox(igdeDialogTexturePropertyList &dialog) : pDialog(dialog){}
 	
 	virtual void OnSelectionChanged(igdeListBox*){
@@ -72,7 +74,7 @@ igdeDialog(environment, "Texture Property List"){
 	igdeContainerSplitted::Ref content(igdeContainerSplitted::Ref::New(
 		environment, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(300)));
 	
-	helper.ListBox(15, "Textue Property", pListProperties, new igdeDialogTexturePropertyList_ListBox(*this));
+	helper.ListBox(15, "Textue Property", pListProperties, igdeDialogTexturePropertyList_ListBox::Ref::New(*this));
 	pListProperties->SetDefaultSorter();
 	content->AddChild(pListProperties, igdeContainerSplitted::eaSide);
 	
@@ -80,22 +82,22 @@ igdeDialog(environment, "Texture Property List"){
 		environment, igdeContainerForm::esLast));
 	content->AddChild(form, igdeContainerSplitted::eaCenter);
 	
-	helper.EditString(form, "Name:", "Property name", pEditName, nullptr);
+	helper.EditString(form, "Name:", "Property name", pEditName, {});
 	pEditName->SetEditable(false);
 	
-	helper.EditString(form, "Type:", "Property type", pEditType, nullptr);
+	helper.EditString(form, "Type:", "Property type", pEditType, {});
 	pEditType->SetEditable(false);
 	
-	helper.EditString(form, "Components:", "Used color components", pEditComponentCount, nullptr);
+	helper.EditString(form, "Components:", "Used color components", pEditComponentCount, {});
 	pEditComponentCount->SetEditable(false);
 	
-	helper.EditString(form, "Default Value:", "Default value", pEditDefault, nullptr);
+	helper.EditString(form, "Default Value:", "Default value", pEditDefault, {});
 	pEditDefault->SetEditable(false);
 	
-	helper.EditString(form, "Affects:", "Modules affected by property", pEditAffectedModules, nullptr);
+	helper.EditString(form, "Affects:", "Modules affected by property", pEditAffectedModules, {});
 	pEditAffectedModules->SetEditable(false);
 	
-	helper.EditString(form, "Description:", "Property description", pEditDescription, 40, 5, nullptr);
+	helper.EditString(form, "Description:", "Property description", pEditDescription, 40, 5, {});
 	pEditDescription->SetEditable(false);
 	
 	

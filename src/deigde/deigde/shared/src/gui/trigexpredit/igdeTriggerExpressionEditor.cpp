@@ -61,6 +61,8 @@
 class igdeTriggerExpressionEditor_ActionNegate : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
+	typedef deTObjectReference<igdeTriggerExpressionEditor_ActionNegate> Ref;
+	
 	igdeTriggerExpressionEditor_ActionNegate(igdeTriggerExpressionEditor &editor) :
 	igdeAction("Not", nullptr, "Negate Result"), pEditor(editor){}
 	
@@ -83,6 +85,8 @@ public:
 class igdeTriggerExpressionEditor_ActionCurState : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
+	typedef deTObjectReference<igdeTriggerExpressionEditor_ActionCurState> Ref;
+	
 	igdeTriggerExpressionEditor_ActionCurState(igdeTriggerExpressionEditor &editor) :
 	igdeAction("Now", nullptr, "Check if target is triggered now or ever"), pEditor(editor){}
 	
@@ -106,6 +110,8 @@ public:
 class igdeTriggerExpressionEditor_ActionAnd : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
+	typedef deTObjectReference<igdeTriggerExpressionEditor_ActionAnd> Ref;
+	
 	igdeTriggerExpressionEditor_ActionAnd(igdeTriggerExpressionEditor &editor) :
 	igdeAction("And", nullptr, "All children have to evaluate to true"), pEditor(editor){}
 	
@@ -128,6 +134,8 @@ public:
 class igdeTriggerExpressionEditor_ActionOr : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
+	typedef deTObjectReference<igdeTriggerExpressionEditor_ActionOr> Ref;
+	
 	igdeTriggerExpressionEditor_ActionOr(igdeTriggerExpressionEditor &editor) :
 	igdeAction("Or", nullptr, "One or more children have to evaluate to true"), pEditor(editor){}
 	
@@ -150,6 +158,8 @@ public:
 class igdeTriggerExpressionEditor_ActionTarget : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
+	typedef deTObjectReference<igdeTriggerExpressionEditor_ActionTarget> Ref;
+	
 	igdeTriggerExpressionEditor_ActionTarget(igdeTriggerExpressionEditor &editor) :
 	igdeAction("Target", nullptr, "Target to evaluate"), pEditor(editor){}
 	
@@ -174,6 +184,8 @@ public:
 class igdeTriggerExpressionEditor_ActionAddChild : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
+	typedef deTObjectReference<igdeTriggerExpressionEditor_ActionAddChild> Ref;
+	
 	igdeTriggerExpressionEditor_ActionAddChild(igdeTriggerExpressionEditor &editor) :
 	igdeAction("", editor.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 	"Add child to list"), pEditor(editor){}
@@ -196,6 +208,8 @@ public:
 class igdeTriggerExpressionEditor_ActionRemoveChild : public igdeAction {
 	igdeTriggerExpressionEditor &pEditor;
 public:
+	typedef deTObjectReference<igdeTriggerExpressionEditor_ActionRemoveChild> Ref;
+	
 	igdeTriggerExpressionEditor_ActionRemoveChild(igdeTriggerExpressionEditor &editor) :
 	igdeAction("", editor.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"Remove child from list"), pEditor(editor){}
@@ -228,6 +242,8 @@ public:
 class igdeTriggerExpressionEditor_TextExpression : public igdeTextFieldListener{
 	igdeTriggerExpressionEditor &pEditor;
 public:
+	typedef deTObjectReference<igdeTriggerExpressionEditor_TextExpression> Ref;
+	
 	igdeTriggerExpressionEditor_TextExpression(igdeTriggerExpressionEditor &editor) : pEditor(editor){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -242,6 +258,8 @@ public:
 class igdeTriggerExpressionEditor_TextTargetName : public igdeTextFieldListener{
 	igdeTriggerExpressionEditor &pEditor;
 public:
+	typedef deTObjectReference<igdeTriggerExpressionEditor_TextTargetName> Ref;
+	
 	igdeTriggerExpressionEditor_TextTargetName(igdeTriggerExpressionEditor &editor) : pEditor(editor){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -266,6 +284,8 @@ class igdeTriggerExpressionEditor_ListTargets : public igdeListBoxListener{
 	igdeTriggerExpressionEditor &pEditor;
 	igdeTextField &pTargetName;
 public:
+	typedef deTObjectReference<igdeTriggerExpressionEditor_ListTargets> Ref;
+	
 	igdeTriggerExpressionEditor_ListTargets(igdeTriggerExpressionEditor &editor, igdeTextField &targetName) :
 	pEditor(editor), pTargetName(targetName) {}
 	
@@ -282,6 +302,8 @@ public:
 class igdeTriggerExpressionEditor_TextFilterTargetName : public igdeTextFieldListener{
 	igdeTriggerExpressionEditor &pEditor;
 public:
+	typedef deTObjectReference<igdeTriggerExpressionEditor_TextFilterTargetName> Ref;
+	
 	igdeTriggerExpressionEditor_TextFilterTargetName(igdeTriggerExpressionEditor &editor) : pEditor(editor){}
 	
 	virtual void OnTextChanged(igdeTextField*){
@@ -297,6 +319,8 @@ public:
 class igdeTriggerExpressionEditor_TreeExpression : public igdeTreeListListener {
 	igdeTriggerExpressionEditor &pEditor;
 public:
+	typedef deTObjectReference<igdeTriggerExpressionEditor_TreeExpression> Ref;
+	
 	igdeTriggerExpressionEditor_TreeExpression(igdeTriggerExpressionEditor &editor) : pEditor(editor){}
 	
 	virtual void AddContextMenuEntries(igdeTreeList *treeList, igdeMenuCascade &menu){
@@ -674,7 +698,7 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	// expression string
 	form = igdeContainerForm::Ref::New(env);
 	helper.EditString(form, "Expression:", "Trigger expression", 50,
-		pEditExpression, new igdeTriggerExpressionEditor_TextExpression(*this));
+		pEditExpression, igdeTriggerExpressionEditor_TextExpression::Ref::New(*this));
 	AddChild(form);
 	
 	// content
@@ -687,8 +711,7 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	panelContent->AddChild(panel, igdeContainerSplitted::eaCenter);
 	
 	helper.GroupBoxStaticFlow(panel, groupBox, "Structure:", true);
-	helper.TreeList(groupBox, pTreeExpression, 10, "Trigger expression structure",
-		new igdeTriggerExpressionEditor_TreeExpression(*this));
+	helper.TreeList(groupBox, pTreeExpression, 10, "Trigger expression structure", igdeTriggerExpressionEditor_TreeExpression::Ref::New(*this));
 	
 	// target list
 	panel = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY, igdeContainerFlow::esLast);
@@ -697,28 +720,27 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	helper.GroupBoxStaticFlow(panel, groupBox, "Component Control:", false);
 	panel2 = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX);
 	groupBox->AddChild(panel2);
-	helper.ToggleButton(panel2, pBtnNegate, new igdeTriggerExpressionEditor_ActionNegate(*this), true);
-	helper.ToggleButton(panel2, pBtnCurState, new igdeTriggerExpressionEditor_ActionCurState(*this), true);
+	helper.ToggleButton(panel2, pBtnNegate, igdeTriggerExpressionEditor_ActionNegate::Ref::New(*this));
+	helper.ToggleButton(panel2, pBtnCurState, igdeTriggerExpressionEditor_ActionCurState::Ref::New(*this));
 	helper.Separator(panel2);
-	helper.ToggleButton(panel2, pBtnAnd, new igdeTriggerExpressionEditor_ActionAnd(*this), true);
-	helper.ToggleButton(panel2, pBtnOr, new igdeTriggerExpressionEditor_ActionOr(*this), true);
-	helper.ToggleButton(panel2, pBtnTarget, new igdeTriggerExpressionEditor_ActionTarget(*this), true);
+	helper.ToggleButton(panel2, pBtnAnd, igdeTriggerExpressionEditor_ActionAnd::Ref::New(*this));
+	helper.ToggleButton(panel2, pBtnOr, igdeTriggerExpressionEditor_ActionOr::Ref::New(*this));
+	helper.ToggleButton(panel2, pBtnTarget, igdeTriggerExpressionEditor_ActionTarget::Ref::New(*this));
 	helper.Separator(panel2);
-	helper.Button(panel2, pBtnAddChild, new igdeTriggerExpressionEditor_ActionAddChild(*this), true);
-	helper.Button(panel2, pBtnRemoveChild, new igdeTriggerExpressionEditor_ActionRemoveChild(*this), true);
+	helper.Button(panel2, pBtnAddChild, igdeTriggerExpressionEditor_ActionAddChild::Ref::New(*this));
+	helper.Button(panel2, pBtnRemoveChild, igdeTriggerExpressionEditor_ActionRemoveChild::Ref::New(*this));
 	
 	helper.GroupBoxStaticBorder(panel, groupBorder, "Target Name:", true);
 	
-	helper.EditString("Target name", pEditTargetName, new igdeTriggerExpressionEditor_TextTargetName(*this));
+	helper.EditString("Target name", pEditTargetName, igdeTriggerExpressionEditor_TextTargetName::Ref::New(*this));
 	groupBorder->AddChild(pEditTargetName, igdeContainerBorder::eaTop);
 	
-	helper.ListBox(10, "Target names found in trigger table", pListTargetName,
-		new igdeTriggerExpressionEditor_ListTargets(*this, pEditTargetName));
+	helper.ListBox(10, "Target names found in trigger table", pListTargetName, igdeTriggerExpressionEditor_ListTargets::Ref::New(*this, pEditTargetName));
 	pListTargetName->SetDefaultSorter();
 	groupBorder->AddChild(pListTargetName, igdeContainerBorder::eaCenter);
 	
 	form = igdeContainerForm::Ref::New(env);
 	helper.EditString(form, "Filter:", "Filter for list of found target names", 20,
-		pEditFilterTargetName, new igdeTriggerExpressionEditor_TextFilterTargetName(*this));
+		pEditFilterTargetName, igdeTriggerExpressionEditor_TextFilterTargetName::Ref::New(*this));
 	groupBorder->AddChild(form, igdeContainerBorder::eaBottom);
 }

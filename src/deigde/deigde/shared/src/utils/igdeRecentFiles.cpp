@@ -53,6 +53,8 @@ class igdeRecentFiles_ActionOpenFile : public igdeAction{
 	decString pFilename;
 	
 public:
+	typedef deTObjectReference<igdeRecentFiles_ActionOpenFile> Ref;
+	
 	igdeRecentFiles_ActionOpenFile(igdeRecentFiles &recentFiles, const char *filename) :
 	pRecentFiles(recentFiles), pFilename(filename){
 		/*
@@ -82,6 +84,8 @@ class igdeRecentFiles_ActionClear : public igdeAction{
 	igdeRecentFiles &pRecentFiles;
 	
 public:
+	typedef deTObjectReference<igdeRecentFiles_ActionClear> Ref;
+	
 	igdeRecentFiles_ActionClear(igdeRecentFiles &recentFiles) : igdeAction("Clear List",
 	recentFiles.GetEnvironment().GetStockIcon(igdeEnvironment::esiDelete),
 	"Clear List"), pRecentFiles(recentFiles){
@@ -286,11 +290,11 @@ void igdeRecentFiles::UpdateMenu(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		helper.MenuCommand(pMenu, new igdeRecentFiles_ActionOpenFile(*this, pFiles.GetAt(i)), true);
+		helper.MenuCommand(pMenu, igdeRecentFiles_ActionOpenFile::Ref::New(*this, pFiles.GetAt(i)));
 	}
 	
 	helper.MenuSeparator(pMenu);
-	helper.MenuCommand(pMenu, new igdeRecentFiles_ActionClear(*this), true);
+	helper.MenuCommand(pMenu, igdeRecentFiles_ActionClear::Ref::New(*this));
 }
 
 void igdeRecentFiles::FilesChanged(){

@@ -62,6 +62,8 @@ class igdeDEStatus_ActionStart : public igdeAction{
 	igdeDEStatus &pPanel;
 	
 public:
+	typedef deTObjectReference<igdeDEStatus_ActionStart> Ref;
+	
 	igdeDEStatus_ActionStart(igdeDEStatus &panel) :
 		igdeAction("Start Engine", nullptr, "Start game engine"), pPanel(panel){}
 	
@@ -78,6 +80,8 @@ class igdeDEStatus_ActionStop : public igdeAction{
 	igdeDEStatus &pPanel;
 	
 public:
+	typedef deTObjectReference<igdeDEStatus_ActionStop> Ref;
+	
 	igdeDEStatus_ActionStop(igdeDEStatus &panel) :
 		igdeAction("Stop Engine", nullptr, "Stop game engine"), pPanel(panel){}
 	
@@ -108,12 +112,12 @@ pDialogEngine(dialogEngine)
 	
 	
 	helper.GroupBoxStaticFlow(*this, groupBox, "Engine Status:");
-	helper.EditString(groupBox, "Engine status", pTextStatus, 3, nullptr);
+	helper.EditString(groupBox, "Engine status", pTextStatus, 3, {});
 	
 	panel = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX);
 	groupBox->AddChild(panel);
-	helper.Button(panel, pBtnStart, new igdeDEStatus_ActionStart(*this), true);
-	helper.Button(panel, pBtnStop, new igdeDEStatus_ActionStop(*this), true);
+	helper.Button(panel, pBtnStart, igdeDEStatus_ActionStart::Ref::New(*this));
+	helper.Button(panel, pBtnStop, igdeDEStatus_ActionStop::Ref::New(*this));
 	
 	
 	helper.GroupBoxStaticFlow(*this, groupBox, "System Status:", true);
@@ -124,7 +128,7 @@ pDialogEngine(dialogEngine)
 	};
 	helper.IconListBox(groupBox, pListSystems,
 		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
-		columns, 3, "System Status", nullptr);
+		columns, 3, "System Status", {});
 	
 	pAddSystem(GetEngine()->GetGraphicSystem());
 	pAddSystem(GetEngine()->GetAudioSystem());

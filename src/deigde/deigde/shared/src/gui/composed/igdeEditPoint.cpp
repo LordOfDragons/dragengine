@@ -209,9 +209,9 @@ void igdeEditPoint::OnDescriptionChanged(){
 void igdeEditPoint::pCreateContent(igdeUIHelper &helper){
 	// create widgets
 	helper.Label(*this, "(");
-	helper.EditInteger(*this, pDescription, pColumns, pTextX, nullptr);
+	helper.EditInteger(*this, pDescription, pColumns, pTextX, {});
 	helper.Label(*this, ",");
-	helper.EditInteger(*this, pDescription, pColumns, pTextY, nullptr);
+	helper.EditInteger(*this, pDescription, pColumns, pTextY, {});
 	helper.Label(*this, ")");
 	
 	// set value

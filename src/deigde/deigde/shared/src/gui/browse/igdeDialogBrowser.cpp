@@ -67,6 +67,8 @@ class igdeDialogBrowser_TreeCategories : public igdeTreeListListener{
 	igdeDialogBrowser &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogBrowser_TreeCategories> Ref;
+	
 	igdeDialogBrowser_TreeCategories(igdeDialogBrowser &dialog) : pDialog(dialog){}
 	
 	virtual void OnSelectionChanged(igdeTreeList*){
@@ -79,6 +81,8 @@ class igdeDialogBrowser_TextFilter : public igdeTextFieldListener{
 	igdeDialogBrowser &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogBrowser_TextFilter> Ref;
+	
 	igdeDialogBrowser_TextFilter(igdeDialogBrowser &dialog) : pDialog(dialog){}
 	
 	virtual void OnTextChanged(igdeTextField*){
@@ -153,6 +157,8 @@ class igdeDialogBrowser_ListItems : public igdeIconListBoxListener{
 	igdeDialogBrowser &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogBrowser_ListItems> Ref;
+	
 	igdeDialogBrowser_ListItems(igdeDialogBrowser &dialog) : pDialog(dialog){}
 	
 	virtual void OnSelectionChanged(igdeIconListBox*){
@@ -175,7 +181,7 @@ public:
 		helper.MenuOption(menu, pDialog.GetActionPIViewList());
 		
 		helper.MenuSeparator(menu);
-		helper.MenuCommand(menu, new igdeDialogBrowser_ActionPIRebuild(pDialog), true);
+		helper.MenuCommand(menu, igdeDialogBrowser_ActionPIRebuild::Ref::New(pDialog));
 	}
 };
 
@@ -219,10 +225,10 @@ pViewMode(evmPreview)
 	
 	igdeContainerForm::Ref filterLine(igdeContainerForm::Ref::New(environment));
 	helper.EditString(filterLine, "Filter:", "Show items containing filter case insensitive",
-		pEditFilter, new igdeDialogBrowser_TextFilter(*this));
+		pEditFilter, igdeDialogBrowser_TextFilter::Ref::New(*this));
 	panelCategory->AddChild(filterLine);
 	
-	helper.TreeList(panelCategory, pTreeCategories, 10, "Categories", new igdeDialogBrowser_TreeCategories(*this));
+	helper.TreeList(panelCategory, pTreeCategories, 10, "Categories", igdeDialogBrowser_TreeCategories::Ref::New(*this));
 	pTreeCategories->SetDefaultSorter();
 	
 	content->AddChild(panelCategory, igdeContainerSplitted::eaSide);
@@ -236,11 +242,11 @@ pViewMode(evmPreview)
 	};
 	helper.IconListBox(panelItems, pListItems,
 		igdeApplication::app().DisplayScaled(decPoint(100, 200)),
-		headers, 1, "Items", new igdeDialogBrowser_ListItems(*this));
+		headers, 1, "Items", igdeDialogBrowser_ListItems::Ref::New(*this));
 	pListItems->SetDefaultSorter();
 	pListItems->SetViewMode(igdeIconListBox::evmIconVertical);
 	
-	helper.EditString(panelItems, "Item information", pEditInfos, 50, 5, nullptr);
+	helper.EditString(panelItems, "Item information", pEditInfos, 50, 5, {});
 	pEditInfos->SetEditable(false);
 	
 	content->AddChild(panelItems, igdeContainerSplitted::eaCenter);

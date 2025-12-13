@@ -436,12 +436,12 @@ void igdeWPTriggerTable::pCreateContent(){
 	pActionReset = cActionReset::Ref::New(*this);
 	pActionFullReset = cActionFullReset::Ref::New(*this);
 	
-	helper.ListBox(*this, 8, "List of targets in the table", pListTriggerTable, new cListTable(*this));
+	helper.ListBox(*this, 8, "List of targets in the table", pListTriggerTable, cListTable::Ref::New(*this));
 	pListTriggerTable->SetDefaultSorter();
 	
 	igdeContainerFlow::Ref frameLine(igdeContainerFlow::Ref::New(env, eaX, esLast));
 	helper.Label(frameLine, "Filter:");
 	helper.EditString(frameLine, "Filter targets in the list case insensitive",
-		pEditTriggerTableFilter, new cTextFilter(*this));
+		pEditTriggerTableFilter, cTextFilter::Ref::New(*this));
 	AddChild(frameLine);
 }

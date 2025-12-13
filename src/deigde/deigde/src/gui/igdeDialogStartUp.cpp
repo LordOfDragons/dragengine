@@ -57,6 +57,8 @@
 class igdeDialogStartUp_ListRecentProjects : public igdeListBoxListener{
 	igdeDialogStartUp &pDialog;
 public:
+	typedef deTObjectReference<igdeDialogStartUp_ListRecentProjects> Ref;
+	
 	igdeDialogStartUp_ListRecentProjects(igdeDialogStartUp &dialog) : pDialog(dialog){}
 	
 	virtual void OnDoubleClickItem(igdeListBox*, int){
@@ -147,8 +149,7 @@ pWindowMain(windowMain)
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(600, 0)));
 	
-	helper.ListBox(10, "Recently loaded game projects", pListRecentProjects,
-		new igdeDialogStartUp_ListRecentProjects(*this));
+	helper.ListBox(10, "Recently loaded game projects", pListRecentProjects, igdeDialogStartUp_ListRecentProjects::Ref::New(*this));
 	
 	
 	pActionLoadRecent = igdeDialogStartUp_ActionLoadRecent::Ref::New(*this);

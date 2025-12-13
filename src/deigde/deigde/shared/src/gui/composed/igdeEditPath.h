@@ -66,6 +66,7 @@ protected:
 		igdeEditPath &pEditPath;
 		
 	public:
+		typedef deTObjectReference<cListenerTextField> Ref;
 		cListenerTextField(igdeEditPath &editPath);
 		virtual ~cListenerTextField();
 		virtual void OnTextChanged(igdeTextField *textField);

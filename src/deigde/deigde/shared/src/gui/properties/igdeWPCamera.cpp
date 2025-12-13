@@ -507,18 +507,18 @@ public:
 	
 	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
 		igdeUIHelper &helper = contextMenu.GetEnvironment().GetUIHelperProperties();
-		helper.MenuCommand(contextMenu, new cActionCameraSetDefaultParams(
-			pPanel, 1.0f, 1.0f, 0.1f, "Set Default Indoor"), true);
-		helper.MenuCommand(contextMenu, new cActionCameraSetDefaultParams(
-			pPanel, 20.0f, 20.0f, 0.1f, "Set Default Day"), true);
-		helper.MenuCommand(contextMenu, new cActionCameraSetDefaultParams(
-			pPanel, 0.1f, 0.1f, 0.1f, "Set Default Night"), true);
-		helper.MenuCommand(contextMenu, new cActionCameraSetDefaultParams(
-			pPanel, 1.0f, 20.0f, 0.1f, "Set Default Dynamic"), true);
+		helper.MenuCommand(contextMenu, cActionCameraSetDefaultParams::Ref::New(
+			pPanel, 1.0f, 1.0f, 0.1f, "Set Default Indoor"));
+		helper.MenuCommand(contextMenu, cActionCameraSetDefaultParams::Ref::New(
+			pPanel, 20.0f, 20.0f, 0.1f, "Set Default Day"));
+		helper.MenuCommand(contextMenu, cActionCameraSetDefaultParams::Ref::New(
+			pPanel, 0.1f, 0.1f, 0.1f, "Set Default Night"));
+		helper.MenuCommand(contextMenu, cActionCameraSetDefaultParams::Ref::New(
+			pPanel, 1.0f, 20.0f, 0.1f, "Set Default Dynamic"));
 		
 		helper.Separator(contextMenu);
-		helper.MenuCommand(contextMenu, new cActionCameraLoad(pPanel), true);
-		helper.MenuCommand(contextMenu, new cActionCameraSave(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionCameraLoad::Ref::New(pPanel));
+		helper.MenuCommand(contextMenu, cActionCameraSave::Ref::New(pPanel));
 	}
 	
 	void Update() override{
@@ -725,48 +725,45 @@ void igdeWPCamera::pCreateContent(){
 	AddChild(form);
 	
 	helper.EditVector(form, "Position:", "Position of the camera",
-		pEditPosition, new cEditCameraPosition(*this));
+		pEditPosition, cEditCameraPosition::Ref::New(*this));
 	helper.EditVector(form, "Rotation:", "Rotation of the camera",
-		pEditRotation, new cEditCameraRotation(*this));
+		pEditRotation, cEditCameraRotation::Ref::New(*this));
 	
 	helper.EditFloat(form, "Orbit Distance:", "Distance to center point",
-		pEditOrbitDistance, new cTextOrbitDistance(*this));
+		pEditOrbitDistance, cTextOrbitDistance::Ref::New(*this));
 	
-	helper.EditVector(form, "View:", "View direction of the camera", pEditViewDir, nullptr);
+	helper.EditVector(form, "View:", "View direction of the camera", pEditViewDir, {});
 	pEditViewDir->SetEditable(false);
 	
 	helper.FormLineStretchFirst(form, "", "", frameLine);
 	
-	helper.CheckBoxOnly(frameLine, pChkEnableHDRR, new cCheckEnableHDRR(*this), true);
+	helper.CheckBoxOnly(frameLine, pChkEnableHDRR, cCheckEnableHDRR::Ref::New(*this));
 	
 	cActionMenuCamera::Ref actionMenuCamera(cActionMenuCamera::Ref::New(*this));
 	helper.Button(frameLine, pBtnCamera, actionMenuCamera);
 	actionMenuCamera->SetWidget(pBtnCamera);
 	
-	helper.CheckBox(form, pChkEnableGI, new cCheckEnableGI(*this), true);
+	helper.CheckBox(form, pChkEnableGI, cCheckEnableGI::Ref::New(*this));
 	
 	
 	helper.GroupBox(*this, group, "Internal parameters:", true);
-	helper.EditFloat(group, "Field of view:", "Field of view in degrees", pEditFov,
-		new cTextFov(*this));
+	helper.EditFloat(group, "Field of view:", "Field of view in degrees", pEditFov, cTextFov::Ref::New(*this));
 	helper.EditFloat(group, "Field of view ratio:", "Field of view ratio (height / width)",
-		pEditFovRatio, new cTextFovRatio(*this));
+		pEditFovRatio, cTextFovRatio::Ref::New(*this));
 	
 	helper.EditFloat(group, "Image distance:", "Image distance in meters (near clipping plane)",
-		pEditImageDist, new cTextImageDistance(*this));
+		pEditImageDist, cTextImageDistance::Ref::New(*this));
 	helper.EditFloat(group, "View distance:", "View distance in meters (far clipping plane)",
-		pEditViewDist, new cTextViewDistance(*this));
+		pEditViewDist, cTextViewDistance::Ref::New(*this));
 	
 	
 	helper.GroupBox(*this, group, "Exposure controls:", true);
 	helper.EditFloat(group, "Lower intensity:", "Lower intensity to adapt to",
-		pEditLowInt, new cTextLowIntensity(*this));
+		pEditLowInt, cTextLowIntensity::Ref::New(*this));
 	helper.EditFloat(group, "Higher intensity:", "Higher intensity to adapt to",
-		pEditHiInt, new cTextHighIntensity(*this));
-	helper.EditFloat(group, "Exposure:", "Exposure multiplier", pEditExposure,
-		new cTextExposure(*this));
-	helper.EditFloat(group, "Adaption time:", "Adaption time in seconds", pEditAdaptTime,
-		new cTextAdaptionTime(*this));
+		pEditHiInt, cTextHighIntensity::Ref::New(*this));
+	helper.EditFloat(group, "Exposure:", "Exposure multiplier", pEditExposure, cTextExposure::Ref::New(*this));
+	helper.EditFloat(group, "Adaption time:", "Adaption time in seconds", pEditAdaptTime, cTextAdaptionTime::Ref::New(*this));
 	
 	
 	helper.GroupBoxFlow(*this, group, "Tone mapping:", true, true);
@@ -775,10 +772,10 @@ void igdeWPCamera::pCreateContent(){
 	
 	helper.EditFloat(form, "White intensity:",
 		"White intensity multiplier (avoid bright parts wash out to white)",
-		pEditWhiteIntensity, new cTextWhiteIntensity(*this));
+		pEditWhiteIntensity, cTextWhiteIntensity::Ref::New(*this));
 	
 	helper.Label(group, "Custom Curve:");
-	helper.ViewCurveBezier(group, pEditToneMapCurve, new cEditToneMapCurve(*this));
+	helper.ViewCurveBezier(group, pEditToneMapCurve, cEditToneMapCurve::Ref::New(*this));
 	pEditToneMapCurve->SetDefaultSize(decPoint(200, 150));
 	pEditToneMapCurve->ClearCurve();
 	pEditToneMapCurve->SetClamp(true);
@@ -788,13 +785,13 @@ void igdeWPCamera::pCreateContent(){
 	
 	helper.GroupBox(*this, group, "Bloom / Overbright:", true);
 	helper.EditSliderText(group, "Blend:", "Bloom blend factor (enable/disable bloom)",
-		0.0f, 1.0f, 4, 3, 0.1f, pSldBloomBlend, new cSliderBloomBlend(*this));
+		0.0f, 1.0f, 4, 3, 0.1f, pSldBloomBlend, cSliderBloomBlend::Ref::New(*this));
 	helper.EditFloat(group, "Intensity:",
 		"Bloom intensity multiplier (overbright begin threshold)",
-		pEditBloomIntensity, new cTextBloomIntensity(*this));
+		pEditBloomIntensity, cTextBloomIntensity::Ref::New(*this));
 	helper.EditFloat(group, "Strength:",
 		"Bloom strength (scale intensity above threshold)",
-		pEditBloomStrength, new cTextBloomStrength(*this));
+		pEditBloomStrength, cTextBloomStrength::Ref::New(*this));
 	helper.EditSliderText(group, "Size:", "Bloom size (blur size relative to screen width)",
-		0.0f, 1.0f, 4, 3, 0.1f, pSldBloomSize, new cSliderBloomSize(*this));
+		0.0f, 1.0f, 4, 3, 0.1f, pSldBloomSize, cSliderBloomSize::Ref::New(*this));
 }

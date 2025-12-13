@@ -51,6 +51,8 @@ class igdeDEConsole_TextCommand : public igdeTextFieldListener{
 	igdeDEConsole &pPanel;
 	
 public:
+	typedef deTObjectReference<igdeDEConsole_TextCommand> Ref;
+	
 	igdeDEConsole_TextCommand(igdeDEConsole &panel) : pPanel(panel){}
 	
 	virtual void OnEnterKey(igdeTextField*){
@@ -75,15 +77,15 @@ pLog(1000)
 	igdeUIHelper &helper = env.GetUIHelper();
 	
 	
-	helper.EditString(*this, "Console Logs", pEditLogs, 10, nullptr);
+	helper.EditString(*this, "Console Logs", pEditLogs, 10, {});
 	
 	igdeContainerFlow::Ref line(igdeContainerFlow::Ref::New(
 		env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
 	AddChild(line);
 	
-	helper.EditString(line, "Command to send", pEditCommand, new igdeDEConsole_TextCommand(*this));
+	helper.EditString(line, "Command to send", pEditCommand, igdeDEConsole_TextCommand::Ref::New(*this));
 	
-	helper.ComboBox(line, "Module to send command to", pCBModule, nullptr);
+	helper.ComboBox(line, "Module to send command to", pCBModule, {});
 	pCBModule->SetDefaultSorter();
 	
 	

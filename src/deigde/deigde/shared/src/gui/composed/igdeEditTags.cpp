@@ -101,6 +101,8 @@ class igdeEditTags_ListTags : public igdeListBoxListener {
 	igdeEditTags &pWidget;
 	
 public:
+	typedef deTObjectReference<igdeEditTags_ListTags> Ref;
+	
 	igdeEditTags_ListTags(igdeEditTags &widget) : pWidget(widget){
 	}
 	
@@ -255,12 +257,12 @@ void igdeEditTags::pCreateContent(igdeUIHelper &helper, int rows){
 	
 	igdeContainerFlow::Ref comboLine(igdeContainerFlow::Ref::New(
 		GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
-	helper.ComboBoxFilter(comboLine, true, "", pComboBox, nullptr);
+	helper.ComboBoxFilter(comboLine, true, "", pComboBox, {});
 	pComboBox->SetDefaultSorter();
 	pComboBox->SetFilterCaseInsentive(true);
 	helper.Button(comboLine, pActionAdd);
 	AddChild(comboLine);
 	
-	helper.ListBox(*this, rows, "", pListBox, new igdeEditTags_ListTags(*this));
+	helper.ListBox(*this, rows, "", pListBox, igdeEditTags_ListTags::Ref::New(*this));
 	pListBox->SetDefaultSorter();
 }

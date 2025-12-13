@@ -580,37 +580,37 @@ void igdeViewCurveBezier::ShowContextMenu(const decPoint &position){
 	// view supported menu entries
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	helper.MenuCommand(menu, new cActionResetView(*this), true);
-	helper.MenuCommand(menu, new cActionFitToCurve(*this), true);
+	helper.MenuCommand(menu, cActionResetView::Ref::New(*this));
+	helper.MenuCommand(menu, cActionFitToCurve::Ref::New(*this));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuOption(menu, new cActionSetInterpolationMode(*this, decCurveBezier::eimConstant,
-		"Constant Interpolation", nullptr, "Set curve to constant interpolation"), true);
-	helper.MenuOption(menu, new cActionSetInterpolationMode(*this, decCurveBezier::eimLinear,
-		"Linear Interpolation", nullptr, "Set curve to linear interpolation"), true);
-	helper.MenuOption(menu, new cActionSetInterpolationMode(*this, decCurveBezier::eimBezier,
-		"Bezier Interpolation", nullptr, "Set curve to bezier interpolation"), true);
+	helper.MenuOption(menu, cActionSetInterpolationMode::Ref::New(*this, decCurveBezier::eimConstant,
+		"Constant Interpolation", nullptr, "Set curve to constant interpolation"));
+	helper.MenuOption(menu, cActionSetInterpolationMode::Ref::New(*this, decCurveBezier::eimLinear,
+		"Linear Interpolation", nullptr, "Set curve to linear interpolation"));
+	helper.MenuOption(menu, cActionSetInterpolationMode::Ref::New(*this, decCurveBezier::eimBezier,
+		"Bezier Interpolation", nullptr, "Set curve to bezier interpolation"));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuCommand(menu, new cActionCopyCurve(*this), true);
-	helper.MenuCommand(menu, new cActionPasteCurve(*this), true);
+	helper.MenuCommand(menu, cActionCopyCurve::Ref::New(*this));
+	helper.MenuCommand(menu, cActionPasteCurve::Ref::New(*this));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuCommand(menu, new cActionClearCurve(*this), true);
-	helper.MenuCommand(menu, new cActionSetDefaultConstant(*this), true);
-	helper.MenuCommand(menu, new cActionSetDefaultLinear(*this), true);
-	helper.MenuCommand(menu, new cActionSetDefaultBezier(*this), true);
+	helper.MenuCommand(menu, cActionClearCurve::Ref::New(*this));
+	helper.MenuCommand(menu, cActionSetDefaultConstant::Ref::New(*this));
+	helper.MenuCommand(menu, cActionSetDefaultLinear::Ref::New(*this));
+	helper.MenuCommand(menu, cActionSetDefaultBezier::Ref::New(*this));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuCommand(menu, new cActionInvertCurveX(*this), true);
-	helper.MenuCommand(menu, new cActionInvertCurveY(*this), true);
-	helper.MenuCommand(menu, new cActionAutoHandles(*this), true);
+	helper.MenuCommand(menu, cActionInvertCurveX::Ref::New(*this));
+	helper.MenuCommand(menu, cActionInvertCurveY::Ref::New(*this));
+	helper.MenuCommand(menu, cActionAutoHandles::Ref::New(*this));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuCommand(menu, new cActionEditClamp(*this), true);
+	helper.MenuCommand(menu, cActionEditClamp::Ref::New(*this));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuCommand(menu, new cActionEditSelectedPoint(*this), true);
+	helper.MenuCommand(menu, cActionEditSelectedPoint::Ref::New(*this));
 	
 	// listener supported menu entries
 	const int count = pListeners.GetCount();

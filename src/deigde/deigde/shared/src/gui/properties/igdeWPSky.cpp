@@ -241,8 +241,7 @@ void igdeWPSky::RebuildControllers(){
 		
 		igdeEditSliderText::Ref slider;
 		helper.EditSliderText(pFraControllers, "", "Current value of the controller ''",
-			0.0f, 1.0f, 6, 3, 0.1f, slider,
-			new cEditControllerValue(*this, controller->controller));
+			0.0f, 1.0f, 6, 3, 0.1f, slider, cEditControllerValue::Ref::New(*this, controller->controller));
 		
 		controller->slider = slider;
 		controller->label = static_cast<igdeLabel*>(pFraControllers->GetChildAt(
@@ -356,9 +355,9 @@ void igdeWPSky::pCreateContent(){
 	
 	helper.FormLineStretchFirst(form, "Sky Path:", "", frameLine);
 	helper.EditString(frameLine, "Path to the sky to use.",
-		pEditSkyPath, new cTextPathSky(*this));
-	helper.Button(frameLine, pBtnSkyPath, new cActionPathSky(*this, pEditSkyPath), true);
-	helper.Button(frameLine, pBtnFromGDSky, new cActionFromGDSky(*this, pEditSkyPath), true);
+		pEditSkyPath, cTextPathSky::Ref::New(*this));
+	helper.Button(frameLine, pBtnSkyPath, cActionPathSky::Ref::New(*this, pEditSkyPath));
+	helper.Button(frameLine, pBtnFromGDSky, cActionFromGDSky::Ref::New(*this, pEditSkyPath));
 	
 	helper.GroupBox(*this, pFraControllers, "Controllers:");
 }

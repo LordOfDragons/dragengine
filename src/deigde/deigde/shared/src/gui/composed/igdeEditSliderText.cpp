@@ -228,9 +228,9 @@ void igdeEditSliderText::NotifySliderTextValueChanging(){
 void igdeEditSliderText::pCreateContent(igdeUIHelper &helper, float lower, float upper,
 int columns, int precision, float tickSpacing, const char *description){
 	helper.Slider(*this, description, lower, upper, precision, tickSpacing,
-		pSlider, new cListenerSlider(*this));
+		pSlider, cListenerSlider::Ref::New(*this));
 	helper.EditFloat(*this, description, columns, precision,
-		pText, new cListenerTextField(*this));
+		pText, cListenerTextField::Ref::New(*this));
 	
 	pText->SetFloat(lower);
 }

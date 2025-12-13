@@ -279,12 +279,12 @@ void igdeColorBox::ShowContextMenu(const decPoint &position){
 	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(GetEnvironment()));
 	
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
-	helper.MenuCommand(menu, new cActionCopy(*this), true);
-	helper.MenuCommand(menu, new cActionPaste(*this), true);
+	helper.MenuCommand(menu, cActionCopy::Ref::New(*this));
+	helper.MenuCommand(menu, cActionPaste::Ref::New(*this));
 	
 	helper.MenuSeparator(menu);
-	helper.MenuCommand(menu, new cActionEditValues(*this), true);
-	helper.MenuCommand(menu, new cActionEditHex(*this), true);
+	helper.MenuCommand(menu, cActionEditValues::Ref::New(*this));
+	helper.MenuCommand(menu, cActionEditHex::Ref::New(*this));
 	
 	menu->Popup(*this, position);
 }

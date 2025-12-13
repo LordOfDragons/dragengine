@@ -394,7 +394,7 @@ public:
 		}
 		
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, new cActionGenerateIdentifier(pPanel), true);
+		helper.MenuCommand(contextMenu, cActionGenerateIdentifier::Ref::New(pPanel));
 	}
 };
 
@@ -723,7 +723,7 @@ pWindowMain(windowMain)
 	sidePanel->SetWidgetGuiThemeName("");
 	AddChild(scroll, eaSide);
 	
-	helper.ListBox(sidePanel, 10, "Profiles", pListProfiles, new cListProfile(*this));
+	helper.ListBox(sidePanel, 10, "Profiles", pListProfiles, cListProfile::Ref::New(*this));
 	helper.Button(sidePanel, windowMain.GetActionProfileAdd());
 	helper.Button(sidePanel, windowMain.GetActionProfileRemove());
 	helper.Button(sidePanel, windowMain.GetActionProfileDuplicate());
@@ -751,9 +751,9 @@ pWindowMain(windowMain)
 	
 	groupBox = igdeContainerForm::Ref::New(env);
 	sidePanel->AddChild(groupBox);
-	helper.EditString(groupBox, "Name:", "Profile name.", pEditName, new cTextName(*this));
+	helper.EditString(groupBox, "Name:", "Profile name.", pEditName, cTextName::Ref::New(*this));
 	helper.EditString(groupBox, "Description:", "Profile description.",
-		pEditDescription, 5, new cTextDescription(*this));
+		pEditDescription, 5, cTextDescription::Ref::New(*this));
 	
 	
 	// game parameters
@@ -761,25 +761,23 @@ pWindowMain(windowMain)
 	
 	description = "VFS directory where the game scripts are located.";
 	helper.FormLineStretchFirst(groupBox, "Script Directory:", description, frameLine);
-	helper.EditString(frameLine, description, pEditScriptDirectory, new cTextScriptDirectory(*this));
+	helper.EditString(frameLine, description, pEditScriptDirectory, cTextScriptDirectory::Ref::New(*this));
 	pActionScriptDirectory = cActionScriptDirectory::Ref::New(*this);
 	helper.Button(frameLine, pActionScriptDirectory);
 	
 	helper.EditString(groupBox, "Game Object:",
 		"Game object the scripting module uses as entry point to run the game.",
-		pEditGameObject, new cTextGameObject(*this));
+		pEditGameObject, cTextGameObject::Ref::New(*this));
 	
 	description = "VFS directory where the game stores configuration files.";
 	helper.FormLineStretchFirst(groupBox, "Config Path:", description, frameLine);
-	helper.EditString(frameLine, description, pEditPathConfig,
-		new cTextPathConfig(*this));
+	helper.EditString(frameLine, description, pEditPathConfig, cTextPathConfig::Ref::New(*this));
 	pActionPathConfig = cActionPathConfig::Ref::New(*this);
 	helper.Button(frameLine, pActionPathConfig);
 	
 	description = "VFS directory where the game stores captured files.";
 	helper.FormLineStretchFirst(groupBox, "Capture Path:", description, frameLine);
-	helper.EditString(frameLine, description, pEditPathCapture,
-		new cTextPathCapture(*this));
+	helper.EditString(frameLine, description, pEditPathCapture, cTextPathCapture::Ref::New(*this));
 	pActionPathCapture = cActionPathCapture::Ref::New(*this);
 	helper.Button(frameLine, pActionPathCapture);
 	
@@ -787,27 +785,27 @@ pWindowMain(windowMain)
 	helper.FormLineStretchFirst(groupBox, "Identifier:",
 		"Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!", formLine);
 	helper.EditString(formLine, "Unique identifier of game used by Launchers. CHANGING THIS CAN BREAK YOUR GAME!",
-		pEditIdentifier, new cTextIdentifier(*this));
+		pEditIdentifier, cTextIdentifier::Ref::New(*this));
 	helper.Button(formLine, pBtnMenuIdentifier, pActionMenuIdentifier);
 	pActionMenuIdentifier->SetWidget(pBtnMenuIdentifier);
 	
 	helper.EditString(groupBox, "Alias Identifier:", "Alias identifier of game used by Launchers to simplify running the game.",
-		pEditAliasIdentifier, new cTextAliasIdentifier(*this));
+		pEditAliasIdentifier, cTextAliasIdentifier::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Title:", "Title to display for the game by Launchers.",
-		pEditTitle, new cTextTitle(*this));
+		pEditTitle, cTextTitle::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Description:", "Description to display for the game by Launchers.",
-		pEditGameDescription, 10, new cTextGameDescription(*this));
+		pEditGameDescription, 10, cTextGameDescription::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Creator:", "Creator (or author) of the game.",
-		pEditCreator, new cTextCreator(*this));
+		pEditCreator, cTextCreator::Ref::New(*this));
 	
 	helper.EditString(groupBox, "Website:", "Website (or any other kind of internet presence) of project or creator (author).",
-		pEditWebsite, new cTextWebsite(*this));
+		pEditWebsite, cTextWebsite::Ref::New(*this));
 	
 	helper.EditPoint(groupBox, "Window Size:", "Size of run-time window or 0 to run fullscreen.",
-		pEditWindowSize, new cEditWindowSize(*this));
+		pEditWindowSize, cEditWindowSize::Ref::New(*this));
 	
 	
 	// processing parameters
@@ -823,11 +821,11 @@ pWindowMain(windowMain)
 	
 	description = "Set of icons of different size representing the project.";
 	helper.FormLineStretchFirst(subGroup2, "Path:", description, frameLine);
-	helper.EditPath(frameLine, description, igdeEnvironment::efpltImage, pEditIconPath, nullptr);
+	helper.EditPath(frameLine, description, igdeEnvironment::efpltImage, pEditIconPath, {});
 	pActionAddIcon = cActionAddIcon::Ref::New(*this, pEditIconPath);
 	helper.Button(frameLine, pActionAddIcon);
 	
-	helper.ListBox(subGroup2, 4, description, pListIcons, nullptr);
+	helper.ListBox(subGroup2, 4, description, pListIcons, {});
 	pListIcons->SetDefaultSorter();
 	
 	pActionRemoveIcon = cActionRemoveIcon::Ref::New(*this, pListIcons);
@@ -838,11 +836,11 @@ pWindowMain(windowMain)
 	
 	description = "Set of file patterns to exclude from projribution process.";
 	helper.FormLineStretchFirst(subGroup2, "Pattern:", description, frameLine);
-	helper.EditString(frameLine, description, pEditExcludePattern, nullptr);
+	helper.EditString(frameLine, description, pEditExcludePattern, {});
 	pActionAddExcludePattern = cActionAddExcludePattern::Ref::New(*this, pEditExcludePattern);
 	helper.Button(frameLine, pActionAddExcludePattern);
 	
-	helper.ListBox(subGroup2, 4, description, pListExcludePatterns, nullptr);
+	helper.ListBox(subGroup2, 4, description, pListExcludePatterns, {});
 	pListExcludePatterns->SetDefaultSorter();
 	
 	pActionRemoveExcludePattern = cActionRemoveExcludePattern::Ref::New(*this, pListExcludePatterns);
@@ -853,11 +851,11 @@ pWindowMain(windowMain)
 	
 	description = "Set of resource file extensions (.extension) required by the project";
 	helper.FormLineStretchFirst(subGroup2, "Extension:", description, frameLine);
-	helper.EditString(frameLine, description, pEditRequiredExtension, nullptr);
+	helper.EditString(frameLine, description, pEditRequiredExtension, {});
 	pActionAddRequiredExtension = cActionAddRequiredExtension::Ref::New(*this, pEditRequiredExtension);
 	helper.Button(frameLine, pActionAddRequiredExtension);
 	
-	helper.ListBox(subGroup2, 4, description, pListRequiredExtensions, nullptr);
+	helper.ListBox(subGroup2, 4, description, pListRequiredExtensions, {});
 	pListRequiredExtensions->SetDefaultSorter();
 	
 	pActionRemoveRequiredExtension = cActionRemoveRequiredExtension::Ref::New(*this, pListRequiredExtensions);
@@ -873,7 +871,7 @@ pWindowMain(windowMain)
 	
 	description = "VFS directory where to place the build DELGA file.";
 	helper.FormLineStretchFirst(groupBox, "DELGA File:", description, frameLine);
-	helper.EditString(frameLine, description, pEditDelgaPath, new cTextDelgaPath(*this));
+	helper.EditString(frameLine, description, pEditDelgaPath, cTextDelgaPath::Ref::New(*this));
 	pActionDelgaPath = cActionDelgaPath::Ref::New(*this);
 	helper.Button(frameLine, pActionDelgaPath);
 	
@@ -882,7 +880,7 @@ pWindowMain(windowMain)
 	helper.GroupBox(subGroup, groupBox, "Test Run:");
 	
 	helper.EditString(groupBox, "Arguments:", "Arguments to use while test running",
-		pEditRunArguments, new cTextRunArguments(*this));
+		pEditRunArguments, cTextRunArguments::Ref::New(*this));
 }
 
 projPanelProfiles::~projPanelProfiles(){

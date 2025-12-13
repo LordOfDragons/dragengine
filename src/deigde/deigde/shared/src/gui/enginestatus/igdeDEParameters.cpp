@@ -54,6 +54,8 @@ class igdeDEParameters_ComboModule : public igdeComboBoxListener{
 	igdeDEParameters &pPanel;
 	
 public:
+	typedef deTObjectReference<igdeDEParameters_ComboModule> Ref;
+	
 	igdeDEParameters_ComboModule(igdeDEParameters &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -66,6 +68,8 @@ class igdeDEParameters_ComboParameter : public igdeComboBoxListener{
 	igdeDEParameters &pPanel;
 	
 public:
+	typedef deTObjectReference<igdeDEParameters_ComboParameter> Ref;
+	
 	igdeDEParameters_ComboParameter(igdeDEParameters &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -77,6 +81,8 @@ class igdeDEParameters_ActionSet : public igdeAction{
 	igdeDEParameters &pPanel;
 	
 public:
+	typedef deTObjectReference<igdeDEParameters_ActionSet> Ref;
+	
 	igdeDEParameters_ActionSet(igdeDEParameters &panel) :
 		igdeAction("Set", nullptr, "Set parameter value"), pPanel(panel){}
 	
@@ -93,6 +99,8 @@ class igdeDEParameters_ActionReset : public igdeAction{
 	igdeDEParameters &pPanel;
 	
 public:
+	typedef deTObjectReference<igdeDEParameters_ActionReset> Ref;
+	
 	igdeDEParameters_ActionReset(igdeDEParameters &panel) :
 		igdeAction("Reset", nullptr, "Reset parameter value"), pPanel(panel){}
 	
@@ -126,30 +134,30 @@ pDialogEngine(dialogEngine)
 	AddChild(line);
 	
 	helper.ComboBox(line, "Module:", "Module to show parameters for",
-		pCBModule, new igdeDEParameters_ComboModule(*this));
+		pCBModule, igdeDEParameters_ComboModule::Ref::New(*this));
 	pCBModule->SetDefaultSorter();
 	
 	helper.ComboBox(line, "Parameter:", "Parameter to show",
-		pCBParameter, new igdeDEParameters_ComboParameter(*this));
+		pCBParameter, igdeDEParameters_ComboParameter::Ref::New(*this));
 	pCBParameter->SetDefaultSorter();
 	
 	
 	// parameter information
 	helper.GroupBoxStatic(*this, groupBox, "Parameter:");
 	
-	helper.EditString(groupBox, "Description:", "Parameter description", pEditDescription, 3, nullptr);
+	helper.EditString(groupBox, "Description:", "Parameter description", pEditDescription, 3, {});
 	pEditDescription->SetEditable(false);
 	
-	helper.EditString(groupBox, "Type:", "Parameter type", pEditType, nullptr);
+	helper.EditString(groupBox, "Type:", "Parameter type", pEditType, {});
 	pEditType->SetEditable(false);
 	
-	helper.EditString(groupBox, "Allowed Values:", "Allowed Values", pEditAllowedValues, 5, nullptr);
+	helper.EditString(groupBox, "Allowed Values:", "Allowed Values", pEditAllowedValues, 5, {});
 	pEditAllowedValues->SetEditable(false);
 	
 	helper.FormLineStretchFirst(groupBox, "Value:", "Parameter value", line);
-	helper.EditString(line, "Parameter value", pEditValue, nullptr);
-	helper.Button(line, pBtnSet, new igdeDEParameters_ActionSet(*this), true);
-	helper.Button(line, pBtnReset, new igdeDEParameters_ActionReset(*this), true);
+	helper.EditString(line, "Parameter value", pEditValue, {});
+	helper.Button(line, pBtnSet, igdeDEParameters_ActionSet::Ref::New(*this));
+	helper.Button(line, pBtnReset, igdeDEParameters_ActionReset::Ref::New(*this));
 	
 	
 	// load the lists

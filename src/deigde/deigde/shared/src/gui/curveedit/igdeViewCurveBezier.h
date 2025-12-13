@@ -49,6 +49,7 @@ public:
 	class DE_DLL_EXPORT cActionResetView : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
+		typedef deTObjectReference<cActionResetView> Ref;
 		cActionResetView(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
@@ -56,6 +57,7 @@ public:
 	class DE_DLL_EXPORT cActionFitToCurve : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
+		typedef deTObjectReference<cActionFitToCurve> Ref;
 		cActionFitToCurve(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
@@ -63,6 +65,7 @@ public:
 	class DE_DLL_EXPORT cActionEditSelectedPoint : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
+		typedef deTObjectReference<cActionEditSelectedPoint> Ref;
 		cActionEditSelectedPoint(igdeViewCurveBezier &view);
 		virtual void OnAction();
 		virtual void Update();
@@ -72,6 +75,7 @@ public:
 		igdeViewCurveBezier &pView;
 		decCurveBezier::eInterpolationModes pMode;
 	public:
+		typedef deTObjectReference<cActionSetInterpolationMode> Ref;
 		cActionSetInterpolationMode(igdeViewCurveBezier &view,
 			decCurveBezier::eInterpolationModes mode, const char *text, igdeIcon *icon,
 			const char *description, deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined);
@@ -82,6 +86,7 @@ public:
 	class DE_DLL_EXPORT cActionCopyCurve : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
+		typedef deTObjectReference<cActionCopyCurve> Ref;
 		cActionCopyCurve(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
@@ -89,6 +94,7 @@ public:
 	class DE_DLL_EXPORT cActionPasteCurve : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
+		typedef deTObjectReference<cActionPasteCurve> Ref;
 		cActionPasteCurve(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
@@ -96,6 +102,7 @@ public:
 	class DE_DLL_EXPORT cActionClearCurve : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
+		typedef deTObjectReference<cActionClearCurve> Ref;
 		cActionClearCurve(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
@@ -103,6 +110,7 @@ public:
 	class DE_DLL_EXPORT cActionSetDefaultConstant : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
+		typedef deTObjectReference<cActionSetDefaultConstant> Ref;
 		cActionSetDefaultConstant(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
@@ -110,6 +118,7 @@ public:
 	class DE_DLL_EXPORT cActionSetDefaultLinear : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
+		typedef deTObjectReference<cActionSetDefaultLinear> Ref;
 		cActionSetDefaultLinear(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
@@ -117,6 +126,7 @@ public:
 	class DE_DLL_EXPORT cActionSetDefaultBezier : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
+		typedef deTObjectReference<cActionSetDefaultBezier> Ref;
 		cActionSetDefaultBezier(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
@@ -124,6 +134,7 @@ public:
 	class DE_DLL_EXPORT cActionInvertCurveX : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
+		typedef deTObjectReference<cActionInvertCurveX> Ref;
 		cActionInvertCurveX(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
@@ -131,6 +142,7 @@ public:
 	class DE_DLL_EXPORT cActionInvertCurveY : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
+		typedef deTObjectReference<cActionInvertCurveY> Ref;
 		cActionInvertCurveY(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
@@ -138,6 +150,7 @@ public:
 	class DE_DLL_EXPORT cActionEditClamp : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
+		typedef deTObjectReference<cActionEditClamp> Ref;
 		cActionEditClamp(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};
@@ -145,6 +158,7 @@ public:
 	class DE_DLL_EXPORT cActionAutoHandles : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:
+		typedef deTObjectReference<cActionAutoHandles> Ref;
 		cActionAutoHandles(igdeViewCurveBezier &view);
 		virtual void OnAction();
 	};

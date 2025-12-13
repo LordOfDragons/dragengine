@@ -313,7 +313,7 @@ pUseGameVFS(useGameVFS)
 	pActionButton = cActionButton::Ref::New(*this, description);
 	pActionButtonMenu = cActionButtonMenu::Ref::New(*this, description);
 	
-	helper.EditString(*this, description, pText, new cListenerTextField(*this));
+	helper.EditString(*this, description, pText, cListenerTextField::Ref::New(*this));
 	helper.Button(*this, pButton, pActionButton);
 	helper.Button(*this, pButtonMenu, pActionButtonMenu);
 	
@@ -333,7 +333,7 @@ pUseGameVFS(useGameVFS)
 	pActionButton = cActionButton::Ref::New(*this, description);
 	pActionButtonMenu = cActionButtonMenu::Ref::New(*this, description);
 	
-	helper.EditString(*this, description, pText, new cListenerTextField(*this));
+	helper.EditString(*this, description, pText, cListenerTextField::Ref::New(*this));
 	helper.Button(*this, pButton, pActionButton);
 	helper.Button(*this, pButtonMenu, pActionButtonMenu);
 	
@@ -616,12 +616,12 @@ void igdeEditPath::AddContextMenuEntries(igdeMenuCascade &contextMenu){
 	
 	if(!pBasePath.IsEmpty()){
 		helper.MenuSeparator(contextMenu);
-		helper.MenuCommand(contextMenu, new cActionConvertAbsolute(*this), true);
-		helper.MenuCommand(contextMenu, new cActionConvertRelative(*this), true);
+		helper.MenuCommand(contextMenu, cActionConvertAbsolute::Ref::New(*this));
+		helper.MenuCommand(contextMenu, cActionConvertRelative::Ref::New(*this));
 	}
 	
 	helper.MenuSeparator(contextMenu);
-	helper.MenuCommand(contextMenu, new cActionBrowseFile(*this), true);
+	helper.MenuCommand(contextMenu, cActionBrowseFile::Ref::New(*this));
 }
 
 void igdeEditPath::ToAbsolutePath(){

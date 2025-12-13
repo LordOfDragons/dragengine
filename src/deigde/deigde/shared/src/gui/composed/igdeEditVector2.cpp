@@ -227,9 +227,9 @@ void igdeEditVector2::OnPrecisionChanged(){
 void igdeEditVector2::pCreateContent(igdeUIHelper &helper){
 	// create widgets
 	helper.Label(*this, "(");
-	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextX, nullptr);
+	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextX, {});
 	helper.Label(*this, ",");
-	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextY, nullptr);
+	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextY, {});
 	helper.Label(*this, ")");
 	
 	// set values

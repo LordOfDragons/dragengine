@@ -44,6 +44,8 @@ class igdeDialogCurveBezierCoordEditPoint : public igdeEditVector2Listener {
 	igdeDialogCurveBezierCoord &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogCurveBezierCoordEditPoint> Ref;
+	
 	igdeDialogCurveBezierCoordEditPoint(igdeDialogCurveBezierCoord &dialog) :
 	pDialog(dialog){}
 	
@@ -59,6 +61,8 @@ class igdeDialogCurveBezierCoordEditHandle1 : public igdeEditVector2Listener {
 	igdeDialogCurveBezierCoord &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogCurveBezierCoordEditHandle1> Ref;
+	
 	igdeDialogCurveBezierCoordEditHandle1(igdeDialogCurveBezierCoord &dialog) :
 	pDialog(dialog){}
 	
@@ -73,6 +77,8 @@ class igdeDialogCurveBezierCoordEditHandle2 : public igdeEditVector2Listener {
 	igdeDialogCurveBezierCoord &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogCurveBezierCoordEditHandle2> Ref;
+	
 	igdeDialogCurveBezierCoordEditHandle2(igdeDialogCurveBezierCoord &dialog) :
 	pDialog(dialog){}
 	
@@ -135,11 +141,11 @@ void igdeDialogCurveBezierCoord::pCreateContent(igdeEnvironment &environment){
 	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(environment));
 	
 	helper.EditVector2(content, "Point:", "Point coordinates",
-		pEditPoint, new igdeDialogCurveBezierCoordEditPoint(*this));
+		pEditPoint, igdeDialogCurveBezierCoordEditPoint::Ref::New(*this));
 	helper.EditVector2(content, "Left Handle:", "Left handle coordinates",
-		pEditHandle1, new igdeDialogCurveBezierCoordEditHandle1(*this));
+		pEditHandle1, igdeDialogCurveBezierCoordEditHandle1::Ref::New(*this));
 	helper.EditVector2(content, "Right Handle:", "Right handle coordinates",
-		pEditHandle2, new igdeDialogCurveBezierCoordEditHandle2(*this));
+		pEditHandle2, igdeDialogCurveBezierCoordEditHandle2::Ref::New(*this));
 	
 	igdeContainer::Ref buttonBar;
 	CreateButtonBar(buttonBar, "Accept", "Discard");

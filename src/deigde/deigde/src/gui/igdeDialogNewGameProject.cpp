@@ -72,6 +72,8 @@ class igdeDialogNewGameProject_TextName : public igdeTextFieldListener {
 	igdeDialogNewGameProject &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogNewGameProject_TextName> Ref;
+	
 	igdeDialogNewGameProject_TextName(igdeDialogNewGameProject& dialog) : pDialog(dialog){}
 	
 	virtual void OnTextChanged(igdeTextField*){
@@ -88,6 +90,8 @@ class igdeDialogNewGameProject_DirectoryProject : public igdeEditDirectoryListen
 	igdeDialogNewGameProject &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogNewGameProject_DirectoryProject> Ref;
+	
 	igdeDialogNewGameProject_DirectoryProject(igdeDialogNewGameProject& dialog) : pDialog(dialog){}
 	
 	virtual void OnEditDirectoryChanged(igdeEditDirectory*){
@@ -100,6 +104,8 @@ class igdeDialogNewGameProject_TextPathGameDefProject : public igdeTextFieldList
 	igdeDialogNewGameProject &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogNewGameProject_TextPathGameDefProject> Ref;
+	
 	igdeDialogNewGameProject_TextPathGameDefProject(igdeDialogNewGameProject& dialog) : pDialog(dialog){}
 	
 	virtual void OnTextChanged(igdeTextField*){
@@ -117,6 +123,8 @@ class igdeDialogNewGameProject_ListPathGameDefBase : public igdeListBoxListener 
 	igdeDialogNewGameProject &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogNewGameProject_ListPathGameDefBase> Ref;
+	
 	igdeDialogNewGameProject_ListPathGameDefBase(igdeDialogNewGameProject& dialog) : pDialog(dialog){}
 	
 	virtual void OnSelectionChanged(igdeListBox*){
@@ -128,6 +136,8 @@ class igdeDialogNewGameProject_ComboSharedGameDef : public igdeComboBoxListener 
 	igdeDialogNewGameProject &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogNewGameProject_ComboSharedGameDef> Ref;
+	
 	igdeDialogNewGameProject_ComboSharedGameDef(igdeDialogNewGameProject& dialog) : pDialog(dialog){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -140,6 +150,8 @@ class igdeDialogNewGameProject_ActionGameDefBaseAdd : public igdeAction {
 	igdeListBox &pListPathGameDefBase;
 	
 public:
+	typedef deTObjectReference<igdeDialogNewGameProject_ActionGameDefBaseAdd> Ref;
+	
 	igdeDialogNewGameProject_ActionGameDefBaseAdd(
 		igdeDialogNewGameProject& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
@@ -168,6 +180,8 @@ class igdeDialogNewGameProject_ActionGameDefBaseRemove : public igdeAction {
 	igdeListBox &pListPathGameDefBase;
 	
 public:
+	typedef deTObjectReference<igdeDialogNewGameProject_ActionGameDefBaseRemove> Ref;
+	
 	igdeDialogNewGameProject_ActionGameDefBaseRemove(
 		igdeDialogNewGameProject& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
@@ -197,6 +211,8 @@ class igdeDialogNewGameProject_ActionGameDefBaseUp : public igdeAction {
 	igdeListBox &pListPathGameDefBase;
 	
 public:
+	typedef deTObjectReference<igdeDialogNewGameProject_ActionGameDefBaseUp> Ref;
+	
 	igdeDialogNewGameProject_ActionGameDefBaseUp(
 		igdeDialogNewGameProject& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallUp),
@@ -223,6 +239,8 @@ class igdeDialogNewGameProject_ActionGameDefBaseDown : public igdeAction {
 	igdeListBox &pListPathGameDefBase;
 	
 public:
+	typedef deTObjectReference<igdeDialogNewGameProject_ActionGameDefBaseDown> Ref;
+	
 	igdeDialogNewGameProject_ActionGameDefBaseDown(
 		igdeDialogNewGameProject& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
@@ -251,6 +269,8 @@ class igdeDialogNewGameProject_ComboTemplate : public igdeComboBoxListener {
 	igdeDialogNewGameProject &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogNewGameProject_ComboTemplate> Ref;
+	
 	igdeDialogNewGameProject_ComboTemplate(igdeDialogNewGameProject& dialog) : pDialog(dialog){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -263,6 +283,8 @@ class igdeDialogNewGameProject_ComboScriptModule : public igdeComboBoxListener {
 	igdeDialogNewGameProject &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogNewGameProject_ComboScriptModule> Ref;
+	
 	igdeDialogNewGameProject_ComboScriptModule(igdeDialogNewGameProject& dialog) : pDialog(dialog){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -290,51 +312,44 @@ pProjectGameDefPathChanged(false)
 	
 	content = igdeContainerForm::Ref::New(env);
 	
-	helper.EditString(content, "Name:", "Name of the game project.", 80, pEditName,
-		new igdeDialogNewGameProject_TextName(*this));
-	helper.EditString(content, "Description:", "Description of the game project.", pEditDescription, 5, nullptr);
+	helper.EditString(content, "Name:", "Name of the game project.", 80, pEditName, igdeDialogNewGameProject_TextName::Ref::New(*this));
+	helper.EditString(content, "Description:", "Description of the game project.", pEditDescription, 5, {});
 	
 	helper.EditDirectory(content, "Project Directory:",
 		"Project directory to store the project files in.", pEditPathProject,
-		new igdeDialogNewGameProject_DirectoryProject(*this), false);
+		igdeDialogNewGameProject_DirectoryProject::Ref::New(*this));
 	
 	helper.EditString(content, "Project Game Definition:",
-		"Filename of project game definition file relative to project directory.", pEditPathGameDefProject,
-		 new igdeDialogNewGameProject_TextPathGameDefProject(*this));
+		"Filename of project game definition file relative to project directory.", pEditPathGameDefProject, igdeDialogNewGameProject_TextPathGameDefProject::Ref::New(*this));
 	helper.EditString(content, "Data Directory:",
-		"Data directory relative to project directory.", pEditPathData, nullptr);
+		"Data directory relative to project directory.", pEditPathData, {});
 	helper.EditString(content, "Cache Directory:",
-		"Cache directory relative to project directory.", pEditPathCache, nullptr);
+		"Cache directory relative to project directory.", pEditPathCache, {});
 	
 	helper.ComboBox(content, "Project Template:",
 		"Project template to use. Enforces script module and some base game definitions.",
-		pCBTemplate, new igdeDialogNewGameProject_ComboTemplate(*this));
+		pCBTemplate, igdeDialogNewGameProject_ComboTemplate::Ref::New(*this));
 	pCBTemplate->SetDefaultSorter();
-	helper.EditString(content, "", "Template description.", pEditTemplateInfo, 30, 5, nullptr);
+	helper.EditString(content, "", "Template description.", pEditTemplateInfo, 30, 5, {});
 	pEditTemplateInfo->SetEditable(false);
 	
 	helper.ListBox(content, "Base Game Definitions:", 3,
-		"Game definitions to use as base for the project.", pListPathGameDefBase, nullptr);
+		"Game definitions to use as base for the project.", pListPathGameDefBase, {});
 	
 	helper.FormLineStretchFirst(content, "", "Available game definitions to add to project", panel);
 	
 	helper.ComboBox(panel, "Available game definitions to add to project",
-		pCBSharedGameDefs, new igdeDialogNewGameProject_ComboSharedGameDef(*this));
+		pCBSharedGameDefs, igdeDialogNewGameProject_ComboSharedGameDef::Ref::New(*this));
 	pCBSharedGameDefs->SetDefaultSorter();
 	
-	helper.Button(panel, pBtnPathGameDefBaseAdd,
-		new igdeDialogNewGameProject_ActionGameDefBaseAdd(*this, pListPathGameDefBase), true);
-	helper.Button(panel, pBtnPathGameDefBaseRemove,
-		new igdeDialogNewGameProject_ActionGameDefBaseRemove(*this, pListPathGameDefBase), true);
-	helper.Button(panel, pBtnPathGameDefBaseUp,
-		new igdeDialogNewGameProject_ActionGameDefBaseUp(*this, pListPathGameDefBase), true);
-	helper.Button(panel, pBtnPathGameDefBaseDown,
-		new igdeDialogNewGameProject_ActionGameDefBaseDown(*this, pListPathGameDefBase), true);
+	helper.Button(panel, pBtnPathGameDefBaseAdd, igdeDialogNewGameProject_ActionGameDefBaseAdd::Ref::New(*this, pListPathGameDefBase));
+	helper.Button(panel, pBtnPathGameDefBaseRemove, igdeDialogNewGameProject_ActionGameDefBaseRemove::Ref::New(*this, pListPathGameDefBase));
+	helper.Button(panel, pBtnPathGameDefBaseUp, igdeDialogNewGameProject_ActionGameDefBaseUp::Ref::New(*this, pListPathGameDefBase));
+	helper.Button(panel, pBtnPathGameDefBaseDown, igdeDialogNewGameProject_ActionGameDefBaseDown::Ref::New(*this, pListPathGameDefBase));
 	
-	helper.EditString(content, "", "Shared game definition information", pEditSharedGameDefInfo, 5, nullptr);
+	helper.EditString(content, "", "Shared game definition information", pEditSharedGameDefInfo, 5, {});
 	
-	helper.ComboBox(content, "Scripting Module:", "Scripting module to use.", pCBScriptModule,
-		new igdeDialogNewGameProject_ComboScriptModule(*this));
+	helper.ComboBox(content, "Scripting Module:", "Scripting module to use.", pCBScriptModule, igdeDialogNewGameProject_ComboScriptModule::Ref::New(*this));
 	pCBScriptModule->SetDefaultSorter();
 	
 	

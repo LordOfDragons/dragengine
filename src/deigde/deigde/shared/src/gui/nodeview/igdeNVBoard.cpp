@@ -54,6 +54,8 @@ class igdeNVBoardActionDeleteLink : public igdeAction {
 	igdeNVLink *pLink;
 	
 public:
+	typedef deTObjectReference<igdeNVBoardActionDeleteLink> Ref;
+	
 	igdeNVBoardActionDeleteLink(igdeNVBoard &board, igdeNVLink *link) : igdeAction("Delete Link",
 		board.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus), "Delete link"),
 	pBoard(board), pLink(link){
@@ -74,6 +76,8 @@ class igdeNVBoardActionClearLinks : public igdeAction {
 	igdeNVBoard &pBoard;
 	
 public:
+	typedef deTObjectReference<igdeNVBoardActionClearLinks> Ref;
+	
 	igdeNVBoardActionClearLinks(igdeNVBoard &board) : igdeAction("Clear Links",
 		board.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus), "Delete all links"),
 	pBoard(board){
@@ -383,9 +387,9 @@ void igdeNVBoard::ShowContextMenu(const decPoint &position){
 	// link
 	igdeNVLink * const link = native.GetHoverLink();
 	if(link){
-		helper.MenuCommand(menu, new igdeNVBoardActionDeleteLink(*this, link), true);
+		helper.MenuCommand(menu, igdeNVBoardActionDeleteLink::Ref::New(*this, link));
 	}
-	helper.MenuCommand(menu, new igdeNVBoardActionClearLinks(*this), true);
+	helper.MenuCommand(menu, igdeNVBoardActionClearLinks::Ref::New(*this));
 	
 	// listener provided
 	const int count = pListeners.GetCount();

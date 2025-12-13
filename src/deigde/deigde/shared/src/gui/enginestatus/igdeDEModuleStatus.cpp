@@ -51,6 +51,8 @@ class igdeDEModuleStatus_ComboModule : public igdeComboBoxListener{
 	igdeDEModuleStatus &pPanel;
 	
 public:
+	typedef deTObjectReference<igdeDEModuleStatus_ComboModule> Ref;
+	
 	igdeDEModuleStatus_ComboModule(igdeDEModuleStatus &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox*){
@@ -78,23 +80,23 @@ pDialogEngine(dialogEngine)
 	line = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaX, igdeContainerFlow::esLast);
 	AddChild(line);
 	helper.ComboBox(line, "Module:", "Module to show information for",
-		pCBModule, new igdeDEModuleStatus_ComboModule(*this));
+		pCBModule, igdeDEModuleStatus_ComboModule::Ref::New(*this));
 	pCBModule->SetDefaultSorter();
 	
 	
 	// module information
 	helper.GroupBoxStatic(*this, groupBox, "Module Information:");
 	
-	helper.EditString(groupBox, "Description:", "Module description", pEditDescription, 3, nullptr);
+	helper.EditString(groupBox, "Description:", "Module description", pEditDescription, 3, {});
 	pEditDescription->SetEditable(false);
 	
-	helper.EditString(groupBox, "Type:", "Module type", pEditType, nullptr);
+	helper.EditString(groupBox, "Type:", "Module type", pEditType, {});
 	pEditType->SetEditable(false);
 	
-	helper.EditString(groupBox, "Author:", "Module author", pEditAuthor, nullptr);
+	helper.EditString(groupBox, "Author:", "Module author", pEditAuthor, {});
 	pEditAuthor->SetEditable(false);
 	
-	helper.EditString(groupBox, "Version:", "Module version", pEditVersion, nullptr);
+	helper.EditString(groupBox, "Version:", "Module version", pEditVersion, {});
 	pEditVersion->SetEditable(false);
 	
 	helper.CheckBox(groupBox, "Fallback Module",
@@ -105,33 +107,33 @@ pDialogEngine(dialogEngine)
 	// file handling information
 	helper.GroupBoxStatic(*this, groupBox, "File Handling Information:");
 	
-	helper.EditString(groupBox, "Recognized File Pattern:", "Recognized File Pattern", pEditPattern, nullptr);
+	helper.EditString(groupBox, "Recognized File Pattern:", "Recognized File Pattern", pEditPattern, {});
 	pEditPattern->SetEditable(false);
 	
-	helper.EditString(groupBox, "Default Extension:", "Default Extension", pEditDefaultExtension, nullptr);
+	helper.EditString(groupBox, "Default Extension:", "Default Extension", pEditDefaultExtension, {});
 	pEditDefaultExtension->SetEditable(false);
 	
-	helper.EditString(groupBox, "Module Directory Name:", "Module Directory Name", pEditDirName, nullptr);
+	helper.EditString(groupBox, "Module Directory Name:", "Module Directory Name", pEditDirName, {});
 	pEditDirName->SetEditable(false);
 	
 	
 	// library information
 	helper.GroupBoxStatic(*this, groupBox, "Library Module Information:");
 	
-	helper.EditString(groupBox, "Library Filename:", "Library Filename", pEditLibName, nullptr);
+	helper.EditString(groupBox, "Library Filename:", "Library Filename", pEditLibName, {});
 	pEditLibName->SetEditable(false);
 	
-	helper.EditString(groupBox, "Library File Size:", "Library File Size", pEditLibSize, nullptr);
+	helper.EditString(groupBox, "Library File Size:", "Library File Size", pEditLibSize, {});
 	pEditLibSize->SetEditable(false);
 	
-	helper.EditString(groupBox, "Library Check Sum (SHA):", "Library Check Sum (SHA)", pEditLibHash, nullptr);
+	helper.EditString(groupBox, "Library Check Sum (SHA):", "Library Check Sum (SHA)", pEditLibHash, {});
 	pEditLibHash->SetEditable(false);
 	
 	
 	// library information
 	helper.GroupBoxStaticFlow(*this, groupBox, "Module Status:", true);
 	
-	helper.EditString(groupBox, "Module description", pEditStatus, 3, nullptr);
+	helper.EditString(groupBox, "Module description", pEditStatus, 3, {});
 	pEditStatus->SetEditable(false);
 	
 	

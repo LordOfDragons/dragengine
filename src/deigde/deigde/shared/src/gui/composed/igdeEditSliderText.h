@@ -60,6 +60,7 @@ protected:
 		igdeEditSliderText &pSliderText;
 		
 	public:
+		typedef deTObjectReference<cListenerSlider> Ref;
 		cListenerSlider(igdeEditSliderText &sliderText);
 		virtual ~cListenerSlider();
 		virtual void OnValueChanged(igdeSlider *slider);
@@ -72,6 +73,7 @@ protected:
 		igdeEditSliderText &pSliderText;
 		
 	public:
+		typedef deTObjectReference<cListenerTextField> Ref;
 		cListenerTextField(igdeEditSliderText &sliderText);
 		virtual ~cListenerTextField();
 		virtual void OnTextChanged(igdeTextField *textField);

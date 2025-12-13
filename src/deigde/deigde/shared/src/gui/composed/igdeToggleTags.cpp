@@ -82,6 +82,8 @@ class igdeToggleTags_ListTags : public igdeListBoxListener {
 	igdeToggleTags &pWidget;
 	
 public:
+	typedef deTObjectReference<igdeToggleTags_ListTags> Ref;
+	
 	igdeToggleTags_ListTags(igdeToggleTags &widget) : pWidget(widget){
 	}
 	
@@ -359,7 +361,7 @@ void igdeToggleTags::pCreateContent(igdeUIHelper &helper, int rows){
 	pActionEnableAll = cActionEnableAll::Ref::New(*this);
 	pActionDisableAll = cActionDisableAll::Ref::New(*this);
 	
-	helper.ListBox(*this, rows, "", pListBox, new igdeToggleTags_ListTags(*this));
+	helper.ListBox(*this, rows, "", pListBox, igdeToggleTags_ListTags::Ref::New(*this));
 	pListBox->SetDefaultSorter();
 }
 

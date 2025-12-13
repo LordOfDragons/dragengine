@@ -235,11 +235,11 @@ void igdeEditDVector::OnPrecisionChanged(){
 void igdeEditDVector::pCreateContent(igdeUIHelper &helper){
 	// create widgets
 	helper.Label(*this, "(");
-	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextX, nullptr);
+	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextX, {});
 	helper.Label(*this, ",");
-	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextY, nullptr);
+	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextY, {});
 	helper.Label(*this, ",");
-	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextZ, nullptr);
+	helper.EditFloat(*this, pDescription, pColumns, pPrecision, pTextZ, {});
 	helper.Label(*this, ")");
 	
 	// set values

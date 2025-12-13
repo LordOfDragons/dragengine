@@ -211,24 +211,24 @@ pMaxLines(500)
 	helper.GroupBoxFlow(sidePanel, groupBox, "Client:");
 	
 	helper.Label(groupBox, "Name:");
-	helper.EditString(groupBox, "Client name", 15, pEditName, nullptr);
+	helper.EditString(groupBox, "Client name", 15, pEditName, {});
 	pEditName->SetText(client->GetName().c_str());
 	pEditName->SetEditable(false);
 	
 	helper.Label(groupBox, "Address:");
-	helper.EditString(groupBox, "IP address of connected client", 15, pEditAddress, nullptr);
+	helper.EditString(groupBox, "IP address of connected client", 15, pEditAddress, {});
 	pEditAddress->SetText(client->GetAddress().c_str());
 	pEditAddress->SetEditable(false);
 	
-	helper.Button(groupBox, pBtnDisconnect, new cActionDisconnect(*this), true);
+	helper.Button(groupBox, pBtnDisconnect, cActionDisconnect::Ref::New(*this));
 	
 	
 	// synchronize
 	helper.GroupBoxFlow(sidePanel, groupBox, "Synchronize:");
 	
-	helper.Button(groupBox, pBtnSynchronize, new cActionSynchronize(*this), true);
+	helper.Button(groupBox, pBtnSynchronize, cActionSynchronize::Ref::New(*this));
 	
-	helper.EditString(groupBox, "Synchronize state", 15, pEditSyncState, nullptr);
+	helper.EditString(groupBox, "Synchronize state", 15, pEditSyncState, {});
 	pEditSyncState->SetText(client->GetSynchronizeDetails().c_str());
 	pEditSyncState->SetEditable(false);
 	
@@ -238,7 +238,7 @@ pMaxLines(500)
 	
 	helper.Label(groupBox, "Launch Profile:");
 	helper.ComboBox(groupBox, "Launcher profile to use for testing.",
-		pCBLaunchProfile, new cComboLaunchProfile(*this));
+		pCBLaunchProfile, cComboLaunchProfile::Ref::New(*this));
 	pCBLaunchProfile->SetDefaultSorter();
 	
 	helper.Button(groupBox, pBtnStart, cActionStart::Ref::New(*this));

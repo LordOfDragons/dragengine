@@ -289,14 +289,14 @@ pMaxLines(500)
 	igdeContainer::Ref groupBox(igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY));
 	helper.Label(groupBox, "Profile:");
 	helper.ComboBox(groupBox, "Distribution profile to run.",
-		pCBProfile, new cComboProfile(*this));
+		pCBProfile, cComboProfile::Ref::New(*this));
 	pCBProfile->SetDefaultSorter();
 	sidePanel->AddChild(groupBox);
 	
 	groupBox = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	helper.Label(groupBox, "Launch Profile:");
 	helper.ComboBox(groupBox, "Launcher profile to use for testing.",
-		pCBLaunchProfile, new cComboLaunchProfile(*this));
+		pCBLaunchProfile, cComboLaunchProfile::Ref::New(*this));
 	pCBLaunchProfile->SetDefaultSorter();
 	sidePanel->AddChild(groupBox);
 	
@@ -310,12 +310,12 @@ pMaxLines(500)
 	
 	igdeContainerForm::Ref form(igdeContainerForm::Ref::New(env));
 	helper.EditString(form, "Address:", "IP address to listen for remote client connections",
-		pEditRemoteAddress, new cEditRemoteAddress(*this));
+		pEditRemoteAddress, cEditRemoteAddress::Ref::New(*this));
 	groupBox->AddChild(form);
 	
-	helper.Button(groupBox, pBtnRemoteStartListen, new cActionRemoteStartListen(*this), true);
-	helper.Button(groupBox, pBtnRemoteStopListen, new cActionRemoteStopListen(*this), true);
-	helper.Button(groupBox, pBtnRemoteSynchronizeAll, new cActionRemoteSynchronizeAll(*this), true);
+	helper.Button(groupBox, pBtnRemoteStartListen, cActionRemoteStartListen::Ref::New(*this));
+	helper.Button(groupBox, pBtnRemoteStopListen, cActionRemoteStopListen::Ref::New(*this));
+	helper.Button(groupBox, pBtnRemoteSynchronizeAll, cActionRemoteSynchronizeAll::Ref::New(*this));
 	
 	
 	// logs / debug

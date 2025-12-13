@@ -66,6 +66,8 @@ class igdeDialogProjectSettings_ListPathGameDefBase : public igdeListBoxListener
 	igdeDialogProjectSettings &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogProjectSettings_ListPathGameDefBase> Ref;
+	
 	explicit igdeDialogProjectSettings_ListPathGameDefBase(igdeDialogProjectSettings& dialog) :
 	pDialog(dialog){}
 	
@@ -78,6 +80,8 @@ class igdeDialogProjectSettings_ComboSharedGameDef : public igdeComboBoxListener
 	igdeDialogProjectSettings &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogProjectSettings_ComboSharedGameDef> Ref;
+	
 	explicit igdeDialogProjectSettings_ComboSharedGameDef(igdeDialogProjectSettings& dialog) :
 	pDialog(dialog){}
 	
@@ -91,6 +95,8 @@ class igdeDialogProjectSettings_ActionGameDefBaseAdd : public igdeAction {
 	igdeListBox &pListPathGameDefBase;
 	
 public:
+	typedef deTObjectReference<igdeDialogProjectSettings_ActionGameDefBaseAdd> Ref;
+	
 	igdeDialogProjectSettings_ActionGameDefBaseAdd(
 		igdeDialogProjectSettings& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
@@ -119,6 +125,8 @@ class igdeDialogProjectSettings_ActionGameDefBaseRemove : public igdeAction {
 	igdeListBox &pListPathGameDefBase;
 	
 public:
+	typedef deTObjectReference<igdeDialogProjectSettings_ActionGameDefBaseRemove> Ref;
+	
 	igdeDialogProjectSettings_ActionGameDefBaseRemove(
 		igdeDialogProjectSettings& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
@@ -148,6 +156,8 @@ class igdeDialogProjectSettings_ActionGameDefBaseUp : public igdeAction {
 	igdeListBox &pListPathGameDefBase;
 	
 public:
+	typedef deTObjectReference<igdeDialogProjectSettings_ActionGameDefBaseUp> Ref;
+	
 	igdeDialogProjectSettings_ActionGameDefBaseUp(
 		igdeDialogProjectSettings& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallUp),
@@ -174,6 +184,8 @@ class igdeDialogProjectSettings_ActionGameDefBaseDown : public igdeAction {
 	igdeListBox &pListPathGameDefBase;
 	
 public:
+	typedef deTObjectReference<igdeDialogProjectSettings_ActionGameDefBaseDown> Ref;
+	
 	igdeDialogProjectSettings_ActionGameDefBaseDown(
 		igdeDialogProjectSettings& dialog, igdeListBox &listPathGameDefBase) :
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
@@ -202,6 +214,8 @@ class igdeDialogProjectSettings_ComboScriptModule : public igdeComboBoxListener 
 	igdeDialogProjectSettings &pDialog;
 	
 public:
+	typedef deTObjectReference<igdeDialogProjectSettings_ComboScriptModule> Ref;
+	
 	explicit igdeDialogProjectSettings_ComboScriptModule(igdeDialogProjectSettings& dialog) :
 	pDialog(dialog){}
 	
@@ -229,39 +243,34 @@ pBaseGameDefsChanged(false)
 	
 	content = igdeContainerForm::Ref::New(env);
 	
-	helper.EditString(content, "Name:", "Name of the game project.", 60, pEditName, nullptr);
+	helper.EditString(content, "Name:", "Name of the game project.", 60, pEditName, {});
 	helper.EditString(content, "Description:",
-		"Description of the game project.", pEditDescription, 5, nullptr);
+		"Description of the game project.", pEditDescription, 5, {});
 	helper.EditString(content, "Data Directory:",
-		"Data directory relative to project directory.", pEditPathData, nullptr);
+		"Data directory relative to project directory.", pEditPathData, {});
 	helper.EditString(content, "Cache Directory:",
-		"Cache directory relative to project directory.", pEditPathCache, nullptr);
+		"Cache directory relative to project directory.", pEditPathCache, {});
 	
 	helper.ListBox(content, "Base Game Definitions:", 3,
-		"Game definitions to use as base for the project.", pListPathGameDefBase, nullptr);
+		"Game definitions to use as base for the project.", pListPathGameDefBase, {});
 	
 	helper.FormLineStretchFirst(content, "", "Available game definitions to add to project", panel);
 	
 	helper.ComboBox(panel, "Available game definitions to add to project",
-		pCBSharedGameDefs, new igdeDialogProjectSettings_ComboSharedGameDef(*this));
+		pCBSharedGameDefs, igdeDialogProjectSettings_ComboSharedGameDef::Ref::New(*this));
 	pCBSharedGameDefs->SetDefaultSorter();
 	
-	helper.Button(panel, pBtnPathGameDefBaseAdd,
-		new igdeDialogProjectSettings_ActionGameDefBaseAdd(*this, pListPathGameDefBase), true);
-	helper.Button(panel, pBtnPathGameDefBaseRemove,
-		new igdeDialogProjectSettings_ActionGameDefBaseRemove(*this, pListPathGameDefBase), true);
-	helper.Button(panel, pBtnPathGameDefBaseUp,
-		new igdeDialogProjectSettings_ActionGameDefBaseUp(*this, pListPathGameDefBase), true);
-	helper.Button(panel, pBtnPathGameDefBaseDown,
-		new igdeDialogProjectSettings_ActionGameDefBaseDown(*this, pListPathGameDefBase), true);
+	helper.Button(panel, pBtnPathGameDefBaseAdd, igdeDialogProjectSettings_ActionGameDefBaseAdd::Ref::New(*this, pListPathGameDefBase));
+	helper.Button(panel, pBtnPathGameDefBaseRemove, igdeDialogProjectSettings_ActionGameDefBaseRemove::Ref::New(*this, pListPathGameDefBase));
+	helper.Button(panel, pBtnPathGameDefBaseUp, igdeDialogProjectSettings_ActionGameDefBaseUp::Ref::New(*this, pListPathGameDefBase));
+	helper.Button(panel, pBtnPathGameDefBaseDown, igdeDialogProjectSettings_ActionGameDefBaseDown::Ref::New(*this, pListPathGameDefBase));
 	
-	helper.EditString(content, "", "Shared game definition information", pEditSharedGameDefInfo, 3, nullptr);
+	helper.EditString(content, "", "Shared game definition information", pEditSharedGameDefInfo, 3, {});
 	
-	helper.ComboBox(content, "Scripting Module:", "Scripting module to use.", pCBScriptModule,
-		new igdeDialogProjectSettings_ComboScriptModule(*this));
+	helper.ComboBox(content, "Scripting Module:", "Scripting module to use.", pCBScriptModule, igdeDialogProjectSettings_ComboScriptModule::Ref::New(*this));
 	pCBScriptModule->SetDefaultSorter();
 	
-	helper.EditString(content, "Version:", "Scripting module version to use.", 6, pEditScriptModuleVersion, nullptr);
+	helper.EditString(content, "Version:", "Scripting module version to use.", 6, pEditScriptModuleVersion, {});
 	
 	
 	igdeContainer::Ref buttonBar;

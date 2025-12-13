@@ -236,7 +236,7 @@ const char *text, decString &value, const decStringList &proposals){
 	
 	igdeComboBoxFilter::Ref comboBox;
 	helper.Label(content, text);
-	helper.ComboBoxFilter(content, 50, 10, true, "Enter value or select from list", comboBox, nullptr);
+	helper.ComboBoxFilter(content, 50, 10, true, "Enter value or select from list", comboBox, {});
 	const int count = proposals.GetCount();
 	int i;
 	for(i=0; i<count; i++){
