@@ -64,32 +64,32 @@ public:
 	
 	/**
 	 * Index of controller target or -1 if not present in the list.
-	 * \throws deeInvalidParam \em target is \em NULL.
+	 * \throws deeInvalidParam \em target is \em nullptr.
 	 */
 	int IndexOf(aeControllerTarget *target) const;
 	
 	/**
 	 * Determine if a controller target is present in the list.
-	 * \throws deeInvalidParam \em target is \em NULL.
+	 * \throws deeInvalidParam \em target is \em nullptr.
 	 */
 	bool Has(aeControllerTarget *target) const;
 	
 	/**
 	 * Add controller target.
-	 * \throws deeInvalidParam \em target is \em NULL.
+	 * \throws deeInvalidParam \em target is \em nullptr.
 	 */
 	void Add(aeControllerTarget *target);
 	
 	/**
 	 * Insert controller target.
-	 * \throws deeInvalidParam \em target is \em NULL.
+	 * \throws deeInvalidParam \em target is \em nullptr.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
 	void Insert(aeControllerTarget *target, int index);
 	
 	/**
 	 * Move controller target.
-	 * \throws deeInvalidParam \em target is \em NULL.
+	 * \throws deeInvalidParam \em target is \em nullptr.
 	 * \throws deeInvalidParam \em from is less than 0 or greater than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or greater than GetCount().
 	 */
@@ -97,7 +97,7 @@ public:
 	
 	/**
 	 * Remove controller target.
-	 * \throws deeInvalidParam \em target is \em NULL.
+	 * \throws deeInvalidParam \em target is \em nullptr.
 	 * \throws deeInvalidParam \em target is not present in the list.
 	 */
 	void Remove(aeControllerTarget *target);

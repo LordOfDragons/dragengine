@@ -49,7 +49,7 @@ pAnimator(animator)
 	
 	int i;
 	for(i=0; i<linkCount; i++){
-		pLinkList.Add(aeLink::Ref::NewWith(*linkList.GetAt(i)));
+		pLinkList.Add(aeLink::Ref::New(*linkList.GetAt(i)));
 	}
 }
 

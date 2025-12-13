@@ -35,6 +35,10 @@
  * Undo set rule mirror enable size.
  */
 class aeURuleMirrorSetEnableVertexPositionSet : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleMirrorSetEnableVertexPositionSet> Ref;
+	
+	
 private:
 	const aeRuleMirror::Ref pRule;
 	

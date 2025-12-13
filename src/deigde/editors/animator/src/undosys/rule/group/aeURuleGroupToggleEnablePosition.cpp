@@ -44,12 +44,10 @@ aeURuleGroupToggleEnablePosition::aeURuleGroupToggleEnablePosition(aeRuleGroup *
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule group toggle enable position");
 		
 	}catch(const deException &){
@@ -81,7 +79,4 @@ void aeURuleGroupToggleEnablePosition::Redo(){
 //////////////////////
 
 void aeURuleGroupToggleEnablePosition::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

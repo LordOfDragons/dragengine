@@ -58,6 +58,7 @@ class cTextFilter : public igdeTextFieldListener{
 	igdeWPTriggerTable &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextFilter> Ref;
 	cTextFilter(igdeWPTriggerTable &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanging(igdeTextField*){
@@ -73,6 +74,7 @@ class cListTable : public igdeListBoxListener{
 	igdeWPTriggerTable &pPanel;
 	
 public:
+	typedef deTObjectReference<cListTable> Ref;
 	cListTable(igdeWPTriggerTable &panel) : pPanel(panel){}
 	
 	virtual void OnDoubleClickItem(igdeListBox*, int){

@@ -44,18 +44,14 @@ aeURuleLimitSetEnableScaleXMax::aeURuleLimitSetEnableScaleXMax(aeRuleLimit *rule
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	SetShortInfo("Limit toggle enable maximum x scaling");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableScaleXMax::~aeURuleLimitSetEnableScaleXMax(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

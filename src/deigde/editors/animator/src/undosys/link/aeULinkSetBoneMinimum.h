@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeLink;
+#include "../../animator/link/aeLink.h"
 
 
 
@@ -35,8 +35,12 @@ class aeLink;
  * Undo action set bone minimum.
  */
 class aeULinkSetBoneMinimum : public igdeUndo{
+public:
+	typedef deTObjectReference<aeULinkSetBoneMinimum> Ref;
+	
+	
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	float pOldValue;
 	float pNewValue;

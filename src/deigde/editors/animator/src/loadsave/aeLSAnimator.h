@@ -25,6 +25,8 @@
 #ifndef _AELSANIMATOR_H_
 #define _AELSANIMATOR_H_
 
+#include "../animator/rule/aeRule.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -35,7 +37,6 @@ class aeRuleLimit;
 class aeAnimator;
 class aeController;
 class aeLink;
-class aeRule;
 class aeRuleAnimation;
 class aeRuleAnimationDifference;
 class aeRuleAnimationSelect;
@@ -118,20 +119,20 @@ private:
 	void pLoadController(decXmlElementTag *root, aeAnimator &animator);
 	void pLoadControllerLimit(decXmlElementTag *root, aeController &controller);
 	void pLoadLink(decXmlElementTag *root, aeAnimator &animator);
-	aeRule *pLoadRule(decXmlElementTag *root, aeAnimator &animator);
-	aeRule *pLoadRuleAnimation(decXmlElementTag *root, aeAnimator &animator);
-	aeRule *pLoadRuleAnimationDifference(decXmlElementTag *root, aeAnimator &animator);
-	aeRule *pLoadRuleAnimationSelect(decXmlElementTag *root, aeAnimator &animator);
-	aeRule *pLoadRuleLimit(decXmlElementTag *root, aeAnimator &animator);
-	aeRule *pLoadRuleStateManipulator(decXmlElementTag *root, aeAnimator &animator);
-	aeRule *pLoadRuleStateSnapshot(decXmlElementTag *root, aeAnimator &animator);
-	aeRule *pLoadRuleInverseKinematic(decXmlElementTag *root, aeAnimator &animator);
-	aeRule *pLoadRuleForeignState(decXmlElementTag *root, aeAnimator &animator);
-	aeRule *pLoadRuleGroup(decXmlElementTag *root, aeAnimator &animator);
-	aeRule *pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimator &animator);
-	aeRule *pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &animator);
-	aeRule *pLoadRuleBoneTransformator(decXmlElementTag *root, aeAnimator &animator);
-	aeRule *pLoadRuleMirror(decXmlElementTag *root, aeAnimator &animator);
+	aeRule::Ref pLoadRule(decXmlElementTag *root, aeAnimator &animator);
+	aeRule::Ref pLoadRuleAnimation(decXmlElementTag *root, aeAnimator &animator);
+	aeRule::Ref pLoadRuleAnimationDifference(decXmlElementTag *root, aeAnimator &animator);
+	aeRule::Ref pLoadRuleAnimationSelect(decXmlElementTag *root, aeAnimator &animator);
+	aeRule::Ref pLoadRuleLimit(decXmlElementTag *root, aeAnimator &animator);
+	aeRule::Ref pLoadRuleStateManipulator(decXmlElementTag *root, aeAnimator &animator);
+	aeRule::Ref pLoadRuleStateSnapshot(decXmlElementTag *root, aeAnimator &animator);
+	aeRule::Ref pLoadRuleInverseKinematic(decXmlElementTag *root, aeAnimator &animator);
+	aeRule::Ref pLoadRuleForeignState(decXmlElementTag *root, aeAnimator &animator);
+	aeRule::Ref pLoadRuleGroup(decXmlElementTag *root, aeAnimator &animator);
+	aeRule::Ref pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimator &animator);
+	aeRule::Ref pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &animator);
+	aeRule::Ref pLoadRuleBoneTransformator(decXmlElementTag *root, aeAnimator &animator);
+	aeRule::Ref pLoadRuleMirror(decXmlElementTag *root, aeAnimator &animator);
 	bool pLoadRuleCommon(decXmlElementTag *root, aeAnimator &animator, aeRule &rule);
 	void pLoadControllerTarget(decXmlElementTag *root, aeAnimator &animator, aeControllerTarget &target);
 	void pLoadVector(decXmlElementTag *root, decVector &vector);

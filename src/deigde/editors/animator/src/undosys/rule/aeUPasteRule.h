@@ -31,7 +31,7 @@
 #include "../../animator/link/aeLinkList.h"
 #include "../../animator/controller/aeControllerList.h"
 
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 
 
 
@@ -39,8 +39,12 @@ class aeAnimator;
  * Undo action paste rule.
  */
 class aeUPasteRule : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUPasteRule> Ref;
+	
+	
 private:
-	aeAnimator *pAnimator;
+	aeAnimator::Ref pAnimator;
 	aeRuleList pRuleList;
 	aeLinkList pRemoveLinkList;
 	aeControllerList pRemoveControllerList;

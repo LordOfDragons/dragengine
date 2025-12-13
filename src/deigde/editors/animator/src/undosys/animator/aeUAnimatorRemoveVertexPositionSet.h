@@ -36,6 +36,10 @@ class aeAnimator;
  * Undo action animator remove vertex position set.
  */
 class aeUAnimatorRemoveVertexPositionSet : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUAnimatorRemoveVertexPositionSet> Ref;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	decStringSet pVertexPositionSets;

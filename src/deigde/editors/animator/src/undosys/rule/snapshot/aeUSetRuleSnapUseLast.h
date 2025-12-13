@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleStateSnapshot;
+#include "../../../animator/rule/aeRuleStateSnapshot.h"
 
 
 
@@ -41,8 +41,12 @@ class aeRuleStateSnapshot;
  * Undo to set local of a state snapshot rule.
  */
 class aeUSetRuleSnapUseLast : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleSnapUseLast> Ref;
+	
+	
 private:
-	aeRuleStateSnapshot *pRule;
+	aeRuleStateSnapshot::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

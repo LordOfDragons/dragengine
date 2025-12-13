@@ -128,7 +128,7 @@ public:
 	
 	/**
 	 * Set bone to use as reach origin or an empty string to use a constant position.
-	 * \throws deeInvalidParam \em bone is \em NULL.
+	 * \throws deeInvalidParam \em bone is \em nullptr.
 	 */
 	void SetReachBone(const char *bone);
 	
@@ -167,7 +167,7 @@ public:
 	
 	
 	/** Create engine animator rule. */
-	deAnimatorRule *CreateEngineRule() override;
+	deAnimatorRule::Ref CreateEngineRule() override;
 	
 	/** Update targets. */
 	void UpdateTargets() override;
@@ -184,7 +184,7 @@ public:
 	
 	
 	/** Create a copy of this rule. */
-	aeRule *CreateCopy() const override;
+	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLinkList& list) override;

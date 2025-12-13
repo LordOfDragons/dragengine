@@ -65,7 +65,7 @@ pPattern(".deac"){
 ///////////////////////
 
 void aeLoadSaveAttachmentConfig::LoadAttachmentConfig(aeAnimator &animator, decBaseFileReader &reader){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -194,74 +194,63 @@ void aeLoadSaveAttachmentConfig::pReadConfiguration(const decXmlElementTag &root
 }
 
 void aeLoadSaveAttachmentConfig::pReadAttachment(const decXmlElementTag &root, aeAnimator &animator){
+	const aeAttachment::Ref attachment(aeAttachment::Ref::New(animator.GetEnvironment()));
 	const int elementCount = root.GetElementCount();
-	aeAttachment *attachment = NULL;
 	int i;
 	
-	try{
-		attachment = new aeAttachment(animator.GetEnvironment());
+	for(i=0; i<elementCount; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
 		
-		for(i=0; i<elementCount; i++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			
-			if(tag){
-				if(strcmp(tag->GetName(), "name") == 0){
-					attachment->SetName(GetCDataString(*tag));
+		if(tag){
+			if(strcmp(tag->GetName(), "name") == 0){
+				attachment->SetName(GetCDataString(*tag));
+				
+			}else if(strcmp(tag->GetName(), "attachType") == 0){
+				const decString typeName(GetCDataString(*tag));
+				
+				if(typeName == "none"){
+					attachment->SetAttachType(aeAttachment::eatNone);
 					
-				}else if(strcmp(tag->GetName(), "attachType") == 0){
-					const decString typeName(GetCDataString(*tag));
+				}else if(typeName == "bone"){
+					attachment->SetAttachType(aeAttachment::eatBone);
 					
-					if(typeName == "none"){
-						attachment->SetAttachType(aeAttachment::eatNone);
-						
-					}else if(typeName == "bone"){
-						attachment->SetAttachType(aeAttachment::eatBone);
-						
-					}else if(typeName == "rig"){
-						attachment->SetAttachType(aeAttachment::eatRig);
-						
-					}else{
-						LogWarnUnknownValue(*tag, typeName);
-					}
-					
-				}else if(strcmp(tag->GetName(), "attachBone") == 0){
-					attachment->SetBoneName(GetCDataString(*tag));
-					
-				}else if(strcmp(tag->GetName(), "gdclass") == 0){
-					attachment->GetObjectWrapper()->SetGDClassName(GetCDataString(*tag));
-					
-				}else if(strcmp(tag->GetName(), "position") == 0){
-					attachment->GetObjectWrapper()->SetPosition(decDVector(GetAttributeDouble(*tag, "x"),
-						GetAttributeDouble(*tag, "y"), GetAttributeDouble(*tag, "z")));
-					
-				}else if(strcmp(tag->GetName(), "orientation") == 0){
-					attachment->GetObjectWrapper()->SetOrientation(decQuaternion::CreateFromEuler(
-						GetAttributeFloat(*tag, "x") * DEG2RAD, GetAttributeFloat(*tag, "y") * DEG2RAD,
-						GetAttributeFloat(*tag, "z") * DEG2RAD));
-					
-				}else if(strcmp(tag->GetName(), "scaling") == 0){
-					attachment->GetObjectWrapper()->SetScaling(decVector(GetAttributeFloat(*tag, "x"),
-						GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
-					
-				}else if(strcmp(tag->GetName(), "visible") == 0){
-					attachment->GetObjectWrapper()->SetVisible(GetCDataBool(*tag));
-					
-				}else if(strcmp(tag->GetName(), "dynamicCollider") == 0){
-					attachment->GetObjectWrapper()->SetDynamicCollider(GetCDataBool(*tag));
+				}else if(typeName == "rig"){
+					attachment->SetAttachType(aeAttachment::eatRig);
 					
 				}else{
-					LogWarnUnknownTag(root, *tag);
+					LogWarnUnknownValue(*tag, typeName);
 				}
+				
+			}else if(strcmp(tag->GetName(), "attachBone") == 0){
+				attachment->SetBoneName(GetCDataString(*tag));
+				
+			}else if(strcmp(tag->GetName(), "gdclass") == 0){
+				attachment->GetObjectWrapper()->SetGDClassName(GetCDataString(*tag));
+				
+			}else if(strcmp(tag->GetName(), "position") == 0){
+				attachment->GetObjectWrapper()->SetPosition(decDVector(GetAttributeDouble(*tag, "x"),
+					GetAttributeDouble(*tag, "y"), GetAttributeDouble(*tag, "z")));
+				
+			}else if(strcmp(tag->GetName(), "orientation") == 0){
+				attachment->GetObjectWrapper()->SetOrientation(decQuaternion::CreateFromEuler(
+					GetAttributeFloat(*tag, "x") * DEG2RAD, GetAttributeFloat(*tag, "y") * DEG2RAD,
+					GetAttributeFloat(*tag, "z") * DEG2RAD));
+				
+			}else if(strcmp(tag->GetName(), "scaling") == 0){
+				attachment->GetObjectWrapper()->SetScaling(decVector(GetAttributeFloat(*tag, "x"),
+					GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
+				
+			}else if(strcmp(tag->GetName(), "visible") == 0){
+				attachment->GetObjectWrapper()->SetVisible(GetCDataBool(*tag));
+				
+			}else if(strcmp(tag->GetName(), "dynamicCollider") == 0){
+				attachment->GetObjectWrapper()->SetDynamicCollider(GetCDataBool(*tag));
+				
+			}else{
+				LogWarnUnknownTag(root, *tag);
 			}
 		}
-		
-		animator.AddAttachment(attachment);
-		attachment->FreeReference();
-		
-	}catch(const deException &){
-		if(attachment){
-			attachment->FreeReference();
-		}
-		throw;
 	}
+	
+	animator.AddAttachment(attachment);
 }

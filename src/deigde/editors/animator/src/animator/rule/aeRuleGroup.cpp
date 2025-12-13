@@ -67,22 +67,16 @@ pTargetSelect(copy.pTargetSelect),
 pTreeListExpanded(copy.pTreeListExpanded)
 {
 	const int ruleCount = copy.pRules.GetCount();
-	aeRule *rule = NULL;
-	int i;
 	
 	try{
+		int i;
 		for(i=0; i<ruleCount; i++){
-			rule = copy.pRules.GetAt(i)->CreateCopy();
+			const aeRule::Ref rule(copy.pRules.GetAt(i)->CreateCopy());
 			pRules.Add(rule);
 			rule->SetParentGroup(this);
-			rule->FreeReference();
-			rule = NULL;
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 }
@@ -156,8 +150,8 @@ void aeRuleGroup::RemoveRule(aeRule *rule){
 		}
 	}
 	
-	rule->SetParentGroup(NULL);
-	rule->SetAnimator(NULL);
+	rule->SetParentGroup(nullptr);
+	rule->SetAnimator(nullptr);
 	
 	pRules.Remove(rule);
 	
@@ -179,8 +173,8 @@ void aeRuleGroup::RemoveAllRules(){
 	
 	for(i=0; i<count; i++){
 		aeRule * const rule = pRules.GetAt(i);
-		rule->SetParentGroup(NULL);
-		rule->SetAnimator(NULL);
+		rule->SetParentGroup(nullptr);
+		rule->SetAnimator(nullptr);
 	}
 	
 	pRules.RemoveAll();
@@ -330,52 +324,36 @@ void aeRuleGroup::RemoveLinksFromAllTargets(){
 
 
 
-deAnimatorRule *aeRuleGroup::CreateEngineRule(){
-	deAnimatorRuleGroup *engRule = NULL;
-	deAnimatorRule *subEngRule = NULL;
+deAnimatorRule::Ref aeRuleGroup::CreateEngineRule(){
 	const int count = pRules.GetCount();
 	int i;
 	
 	for(i=0; i<count; i++){
-		pRules.GetAt(i)->SetEngineRule(NULL);
+		pRules.GetAt(i)->SetEngineRule(nullptr);
 	}
 	
-	try{
-		engRule = new deAnimatorRuleGroup;
+	const deAnimatorRuleGroup::Ref engRule(deAnimatorRuleGroup::Ref::New());
+	
+	InitEngineRule(engRule);
+	
+	for(i=0; i<count; i++){
+		aeRule * const rule = pRules.GetAt(i);
 		
-		InitEngineRule(engRule);
-		
-		for(i=0; i<count; i++){
-			aeRule * const rule = pRules.GetAt(i);
-			
-			subEngRule = rule->CreateEngineRule();
-			engRule->AddRule(subEngRule);
-			rule->SetEngineRule(subEngRule);
-			subEngRule->FreeReference();
-			subEngRule = NULL;
-		}
-		
-		engRule->SetEnablePosition(pEnablePosition);
-		engRule->SetEnableOrientation(pEnableOrientation);
-		engRule->SetEnableSize(pEnableSize);
-		engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
-		
-		engRule->SetUseCurrentState(pUseCurrentState);
-		engRule->SetApplicationType(pApplicationType);
-		
-		pTargetSelect.UpdateEngineTarget(GetAnimator(), engRule->GetTargetSelect());
-		
-	}catch(const deException &){
-		if(subEngRule){
-			subEngRule->FreeReference();
-		}
-		if(engRule){
-			engRule->FreeReference();
-		}
-		throw;
+		const deAnimatorRule::Ref subEngRule(rule->CreateEngineRule());
+		engRule->AddRule(subEngRule);
+		rule->SetEngineRule(subEngRule);
 	}
 	
-	// finished
+	engRule->SetEnablePosition(pEnablePosition);
+	engRule->SetEnableOrientation(pEnableOrientation);
+	engRule->SetEnableSize(pEnableSize);
+	engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
+	
+	engRule->SetUseCurrentState(pUseCurrentState);
+	engRule->SetApplicationType(pApplicationType);
+	
+	pTargetSelect.UpdateEngineTarget(GetAnimator(), engRule->GetTargetSelect());
+	
 	return engRule;
 }
 
@@ -387,8 +365,8 @@ void aeRuleGroup::SetTreeListExpanded(bool expanded){
 
 
 
-aeRule *aeRuleGroup::CreateCopy() const{
-	return new aeRuleGroup(*this);
+aeRule::Ref aeRuleGroup::CreateCopy() const{
+	return Ref::New(*this);
 }
 
 void aeRuleGroup::ListLinks(aeLinkList &list){
@@ -430,7 +408,7 @@ aeRuleGroup &aeRuleGroup::operator=(const aeRuleGroup &copy){
 	pTargetSelect = copy.pTargetSelect;
 	
 	const int ruleCount = copy.pRules.GetCount();
-	aeRule *rule = NULL;
+	aeRule::Ref rule;
 	int i;
 	
 	RemoveAllRules();
@@ -439,14 +417,10 @@ aeRuleGroup &aeRuleGroup::operator=(const aeRuleGroup &copy){
 			rule = copy.pRules.GetAt(i)->CreateCopy();
 			AddRule(rule);
 			rule->SetParentGroup(this);
-			rule->FreeReference();
-			rule = NULL;
+			rule = nullptr;
 		}
 		
 	}catch(const deException &){
-		if(rule){
-			rule->FreeReference();
-		}
 		throw;
 	}
 	

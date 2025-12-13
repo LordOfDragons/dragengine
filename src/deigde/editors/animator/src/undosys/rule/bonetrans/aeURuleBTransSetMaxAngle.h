@@ -34,6 +34,10 @@
  * Undo action rule bone transformator set maximum angle.
  */
 class aeURuleBTransSetMaxAngle : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleBTransSetMaxAngle> Ref;
+	
+	
 private:
 	aeRuleBoneTransformator::Ref pRule;
 	float pOldValue;

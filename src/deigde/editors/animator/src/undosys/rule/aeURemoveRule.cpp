@@ -43,17 +43,14 @@
 aeURemoveRule::aeURemoveRule(aeAnimator *animator, aeRule *rule){
 	if(!animator || !rule) DETHROW(deeInvalidParam);
 	
-	pAnimator = NULL;
-	pRule = NULL;
+	pAnimator = nullptr;
+	pRule = nullptr;
 	
 	pIndex = animator->GetRules().IndexOf(rule);
 	if(pIndex == -1) DETHROW(deeInvalidParam);
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeURemoveRule::~aeURemoveRule(){

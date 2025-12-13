@@ -42,12 +42,10 @@
 aeUSetRuleFStaEnablePos::aeUSetRuleFStaEnablePos(aeRuleForeignState *rule){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Set bone rotator rule enable position");
 		
 	}catch(const deException &){

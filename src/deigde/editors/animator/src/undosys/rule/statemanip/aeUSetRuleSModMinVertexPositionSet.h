@@ -28,15 +28,19 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
 
-class aeRuleStateManipulator;
+#include "../../../animator/rule/aeRuleStateManipulator.h"
 
 
 /**
  * Undo set rule state modifier minimum vertex position set.
  */
 class aeUSetRuleSModMinVertexPositionSet : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleSModMinVertexPositionSet> Ref;
+	
+	
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 	float pOldMin;
 	float pNewMin;

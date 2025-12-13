@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleGroup;
+#include "../../../animator/rule/aeRuleGroup.h"
 
 
 
@@ -36,8 +36,12 @@ class aeRuleGroup;
  * Undo rule group set enable position.
  */
 class aeURuleGroupToggleEnablePosition : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleGroupToggleEnablePosition> Ref;
+	
+	
 private:
-	aeRuleGroup *pRule;
+	aeRuleGroup::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

@@ -42,12 +42,10 @@
 aeUSetRuleSModEnableRot::aeUSetRuleSModEnableRot(aeRuleStateManipulator *rule){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Set state manipulator rule enable position");
 		
 	}catch(const deException &){

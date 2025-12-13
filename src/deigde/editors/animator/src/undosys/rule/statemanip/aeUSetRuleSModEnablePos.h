@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleStateManipulator;
+#include "../../../animator/rule/aeRuleStateManipulator.h"
 
 
 
@@ -41,8 +41,12 @@ class aeRuleStateManipulator;
  * Undo to set enable position of a state modifier rule.
  */
 class aeUSetRuleSModEnablePos : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleSModEnablePos> Ref;
+	
+	
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

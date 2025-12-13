@@ -35,6 +35,10 @@
  * Undo set mirror add match name.
  */
 class aeURuleMirrorAddMatchName : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleMirrorAddMatchName> Ref;
+	
+	
 private:
 	aeRuleMirror::Ref pRule;
 	

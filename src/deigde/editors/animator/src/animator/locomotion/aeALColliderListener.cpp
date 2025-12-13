@@ -58,7 +58,7 @@
 ////////////////////////////
 
 aeALColliderListener::aeALColliderListener(){
-	pLocomotion = NULL;
+	pLocomotion = nullptr;
 }
 
 aeALColliderListener::~aeALColliderListener(){

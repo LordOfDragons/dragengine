@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeLink;
+#include "../../animator/link/aeLink.h"
 
 
 
@@ -35,8 +35,12 @@ class aeLink;
  * Undo action set link repeat count.
  */
 class aeULinkSetRepeat : public igdeUndo{
+public:
+	typedef deTObjectReference<aeULinkSetRepeat> Ref;
+	
+	
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	int pOldRepeat;
 	int pNewRepeat;

@@ -31,6 +31,10 @@
  * Undo action controller set default value.
  */
 class aeUControllerSetDefaultValue : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUControllerSetDefaultValue> Ref;
+	
+	
 private:
 	const aeController::Ref pController;
 	float pOldValue;

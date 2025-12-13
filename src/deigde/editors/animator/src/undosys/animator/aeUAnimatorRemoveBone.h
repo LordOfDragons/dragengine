@@ -36,6 +36,10 @@ class aeAnimator;
  * Undo action animator remove bones.
  */
 class aeUAnimatorRemoveBone : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUAnimatorRemoveBone> Ref;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	decStringSet pBones;

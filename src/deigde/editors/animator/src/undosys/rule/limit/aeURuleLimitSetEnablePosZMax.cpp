@@ -44,18 +44,14 @@ aeURuleLimitSetEnablePosZMax::aeURuleLimitSetEnablePosZMax(aeRuleLimit *rule){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	SetShortInfo("Limit toggle enable maximum z position");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnablePosZMax::~aeURuleLimitSetEnablePosZMax(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

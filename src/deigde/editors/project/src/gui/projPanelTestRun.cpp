@@ -127,6 +127,7 @@ public:
 class cComboProfile : public igdeComboBoxListener{
 	projPanelTestRun &pPanel;
 public:
+	typedef deTObjectReference<cComboProfile> Ref;
 	cComboProfile(projPanelTestRun &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -146,6 +147,7 @@ public:
 class cComboLaunchProfile : public igdeComboBoxListener{
 	projPanelTestRun &pPanel;
 public:
+	typedef deTObjectReference<cComboLaunchProfile> Ref;
 	cComboLaunchProfile(projPanelTestRun &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -174,6 +176,7 @@ public:
 class cEditRemoteAddress : public igdeTextFieldListener{
 	projPanelTestRun &pPanel;
 public:
+	typedef deTObjectReference<cEditRemoteAddress> Ref;
 	cEditRemoteAddress(projPanelTestRun &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeTextField *textField) override{
@@ -185,6 +188,7 @@ public:
 class cActionRemoteStartListen : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
+	typedef deTObjectReference<cActionRemoteStartListen> Ref;
 	cActionRemoteStartListen(projPanelTestRun &panel) : igdeAction("Start Listen",
 		nullptr, "Start listening for remote client connections"),
 	pPanel(panel){}
@@ -202,6 +206,7 @@ public:
 class cActionRemoteStopListen : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
+	typedef deTObjectReference<cActionRemoteStopListen> Ref;
 	cActionRemoteStopListen(projPanelTestRun &panel) : igdeAction("Stop Listen",
 		nullptr, "Stop listening for remote client connections"),
 	pPanel(panel){}
@@ -219,6 +224,7 @@ public:
 class cActionRemoteSynchronizeAll : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
+	typedef deTObjectReference<cActionRemoteSynchronizeAll> Ref;
 	cActionRemoteSynchronizeAll(projPanelTestRun &panel) : igdeAction("Synchronize All",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongRight),
 		"Synchronize all remote clients"),

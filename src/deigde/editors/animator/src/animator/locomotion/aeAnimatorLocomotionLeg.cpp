@@ -92,9 +92,9 @@ aeAnimatorLocomotionLeg::aeAnimatorLocomotionLeg(aeAnimatorLocomotion *locomotio
 }
 
 aeAnimatorLocomotionLeg::~aeAnimatorLocomotionLeg(){
-	pDDSPredict.SetParentDebugDrawer(NULL);
-	pDDSLockedCF.SetParentDebugDrawer(NULL);
-	pDDSLocked.SetParentDebugDrawer(NULL);
+	pDDSPredict.SetParentDebugDrawer(nullptr);
+	pDDSLockedCF.SetParentDebugDrawer(nullptr);
+	pDDSLocked.SetParentDebugDrawer(nullptr);
 }
 
 
@@ -376,7 +376,7 @@ void aeAnimatorLocomotionLeg::PostUpdate(){
 	decVector ikBoneRotation;
 	decDVector castOrigin;
 	decDMatrix boneMatrix;
-	deRig *engRig = NULL;
+	deRig *engRig = nullptr;
 	int boneIndex;
 	
 	// if there is no rig or component disable the ik
@@ -437,7 +437,7 @@ void aeAnimatorLocomotionLeg::PostUpdate(){
 void aeAnimatorLocomotionLeg::UpdateDebugDrawers(){
 	deComponent *engComponent = pLocomotion->GetAnimator()->GetEngineComponent();
 	decDMatrix boneMatrix;
-	deRig *engRig = NULL;
+	deRig *engRig = nullptr;
 	int boneIndex;
 	
 	if(engComponent){
@@ -462,22 +462,18 @@ void aeAnimatorLocomotionLeg::UpdateDebugDrawers(){
 
 
 void aeAnimatorLocomotionLeg::UpdateShapes(){
-	decShape *shape = NULL;
+	decShape *shape = nullptr;
 	
 	pDDSLocked.RemoveAllShapes();
 	pDDSPredict.RemoveAllShapes();
 	
 	try{
 		shape = new decShapeBox(decVector(0.06f, 0.05f, 0.15f), decVector(0.0f, 0.05f, 0.0f));
-		//shape = new decShapeSphere( 0.05 );
-		if(!shape) DETHROW(deeOutOfMemory);
-		pDDSLocked.AddShape(shape);
-		shape = NULL;
+		//shape = new decShapeSphere( 0.05 );		pDDSLocked.AddShape(shape);
+		shape = nullptr;
 		
-		shape = new decShapeSphere(0.05f);
-		if(!shape) DETHROW(deeOutOfMemory);
-		pDDSPredict.AddShape(shape);
-		shape = NULL;
+		shape = new decShapeSphere(0.05f);		pDDSPredict.AddShape(shape);
+		shape = nullptr;
 		
 	}catch(const deException &){
 		if(shape) delete shape;

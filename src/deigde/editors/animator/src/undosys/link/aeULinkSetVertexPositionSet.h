@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeLink;
+#include "../../animator/link/aeLink.h"
 
 
 
@@ -35,8 +35,12 @@ class aeLink;
  * Undo action set link bone.
  */
 class aeULinkSetVertexPositionSet : public igdeUndo{
+public:
+	typedef deTObjectReference<aeULinkSetVertexPositionSet> Ref;
+	
+	
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	decString pOldValue;
 	decString pNewValue;

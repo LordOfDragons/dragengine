@@ -28,18 +28,17 @@
 
 // includes
 #include <dragengine/common/math/decMath.h>
-
 #include <dragengine/common/string/decString.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 
 // predefinitions
 class aeLoadSaveSystem;
 
 class deEngine;
-class deAnimator;
 class deTouchSensor;
 class deComponent;
 class deAnimation;
-class deAnimatorInstance;
 class deCollider;
 class decCurveBezier;
 
@@ -55,8 +54,8 @@ class aeSubAnimator{
 private:
 	deEngine *pEngine;
 	
-	deAnimator *pEngAnimator;
-	deAnimatorInstance *pEngAnimatorInstance;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
 	
 	decString pPathAnimator;
 	
@@ -71,8 +70,8 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the engine animator or NULL if not existing. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	/** Retrieves the engine animator or nullptr if not existing. */
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	
 	/** Retrieves the path to the animator file. */
 	inline const decString &GetPathAnimator() const{ return pPathAnimator; }

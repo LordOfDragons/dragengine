@@ -44,12 +44,10 @@ aeURuleAnimDiffToggleEnableRotation::aeURuleAnimDiffToggleEnableRotation(aeRuleA
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule animation difference toggle enable rotation");
 		
 	}catch(const deException &){
@@ -81,7 +79,4 @@ void aeURuleAnimDiffToggleEnableRotation::Redo(){
 //////////////////////
 
 void aeURuleAnimDiffToggleEnableRotation::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

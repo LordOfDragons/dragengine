@@ -45,21 +45,16 @@ aeULinkSetRepeat::aeULinkSetRepeat(aeLink *link, int newRepeat){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pLink = NULL;
+	pLink = nullptr;
 	
 	SetShortInfo("Link set repeat");
 	
 	pLink = link;
-	pLink->AddReference();
-	
 	pOldRepeat = link->GetRepeat();
 	pNewRepeat = newRepeat;
 }
 
 aeULinkSetRepeat::~aeULinkSetRepeat(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

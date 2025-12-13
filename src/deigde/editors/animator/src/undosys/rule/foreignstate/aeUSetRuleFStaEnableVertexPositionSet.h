@@ -28,15 +28,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleForeignState;
+#include "../../../animator/rule/aeRuleForeignState.h"
 
 
 /**
  * Undo set rule foreign state enable vertex position set.
  */
 class aeUSetRuleFStaEnableVertexPositionSet : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleFStaEnableVertexPositionSet> Ref;
+	
+	
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

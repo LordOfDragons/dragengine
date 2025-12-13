@@ -37,6 +37,10 @@
  * Undo action paste link.
  */
 class aeULinkPaste : public igdeUndo{
+public:
+	typedef deTObjectReference<aeULinkPaste> Ref;
+	
+	
 private:
 	const aeAnimator::Ref pAnimator;
 	aeLinkList pLinkList;

@@ -69,18 +69,12 @@
 
 aeAnimatorLocomotion::aeAnimatorLocomotion(aeAnimator *animator) :
 pAnimator(animator),
-pDebugDrawer(NULL),
-pCollider(NULL),
 pColliderPosition(0.0f, 0.4f, 0.0f),
 pColliderRadius(0.4f),
-
-pTouchSensor(NULL),
 pTSGroundPosition(0.0f, 0.0f, 0.0f),
 pTSGroundExtents(0.4f, 0.1f, 0.4f),
 pTSDragonBodyPosition(0.0f, 0.8f, 0.0f),
 pTSDragonBodySize(2.5f, 0.81f, 2.5f),
-pGroundCheckCollider(NULL),
-pTGCollider(NULL),
 
 pGroundPlaneFront(0.2f),
 pGroundPlaneBack(-0.2f),
@@ -91,12 +85,10 @@ pGroundPlaneOffsetFL(0.0f),
 pGroundPlaneOffsetFR(0.0f),
 pGroundPlaneOffsetBL(0.0f),
 pGroundPlaneOffsetBR(0.0f),
-pGroundPlaneCollider (NULL),
 
 pDragonColBodyPos(0.0f, 0.8f, 0.0f),
 pDragonColBodyRot(0.0f, 0.0f, 0.0f),
 pDragonColBodySize(0.8f, 0.8f, 2.0f),
-pDragonColBody(NULL),
 pDragonColHeadPos(),
 pDragonColHeadRot(),
 pDragonColHeadSize(),
@@ -104,18 +96,17 @@ pDragonColHandsPos(0.0f, 0.45f, 0.5f),
 pDragonColHandsRadius(0.0f),
 pDragonColFeetPos(0.0f, 0.45f, -0.6f),
 pDragonColFeetRadius(0.45f),
-pFootCollider(NULL),
 pDragonFootGround(0.2f),
 pDragonFootFront(0.5f),
 pDragonFootBack(-0.6f),
 pDragonFootSpread(0.2f),
 pDragonFootRadius(0.2f),
 
-pLegs(NULL),
+pLegs(nullptr),
 pLegCount(0),
 pUseLegPairCount(1),
 pLegBlendTime(0.0f),
-pLegGCCollider(NULL),
+pLegGCCollider(nullptr),
 pLegGCColliderRadius(0.05f),
 
 pLocomotionType(eltNatural),
@@ -240,10 +231,7 @@ pTurnIP(0.0f)
 		if(!pLegs) DETHROW(deeInvalidParam);
 		
 		for(pLegCount=0; pLegCount<4; pLegCount++){
-			pLegs[pLegCount] = new aeAnimatorLocomotionLeg(this);
-			if(!pLegs[pLegCount]) DETHROW(deeOutOfMemory);
-			
-			pLegs[pLegCount]->SetShapesVisible(pLegCount < 2);
+			pLegs[pLegCount] = new aeAnimatorLocomotionLeg(this)			pLegs[pLegCount]->SetShapesVisible(pLegCount < 2);
 		}
 		
 		// update the leg pair information
@@ -328,36 +316,26 @@ void aeAnimatorLocomotion::SetColliderRadius(float radius){
 
 void aeAnimatorLocomotion::UpdateCollider(){
 	if(pCollider){
-		decShape *shape = NULL;
+		decShape *shape = nullptr;
 		decShapeList shapeList;
 		int i;
 		
 		// update shape of movement collider
 		try{
 			if(pUseLegPairCount == 1){
-				shape = new decShapeSphere(pColliderRadius, pColliderPosition);
-				if(!shape) DETHROW(deeOutOfMemory);
-				shapeList.Add(shape);
-				shape = NULL;
+				shape = new decShapeSphere(pColliderRadius, pColliderPosition);				shapeList.Add(shape);
+				shape = nullptr;
 				
 			}else{
-				shape = new decShapeSphere(pColliderRadius, pColliderPosition);
-				if(!shape) DETHROW(deeOutOfMemory);
-				shapeList.Add(shape);
-				shape = NULL;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));
-				if(!shape) DETHROW(deeOutOfMemory);
-				shapeList.Add(shape);
-				shape = NULL;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));
-				if(!shape) DETHROW(deeOutOfMemory);
-				shapeList.Add(shape);
-				shape = NULL;
+				shape = new decShapeSphere(pColliderRadius, pColliderPosition);				shapeList.Add(shape);
+				shape = nullptr;
+				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));				shapeList.Add(shape);
+				shape = nullptr;
+				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));				shapeList.Add(shape);
+				shape = nullptr;
 				/*
-				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());
-				if(!shape) DETHROW(deeOutOfMemory);
-				shapeList.AddShape(shape);
-				shape = NULL;
+				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());				shapeList.AddShape(shape);
+				shape = nullptr;
 				*/
 			}
 			
@@ -376,55 +354,37 @@ void aeAnimatorLocomotion::UpdateCollider(){
 		try{
 			if(pUseLegPairCount == 1){
 				/*
-				shape = new decShapeSphere(pColliderRadius, pColliderPosition);
-				if(!shape) DETHROW(deeOutOfMemory);
-				pGroundCheckCollider->AddShape(shape);
-				shape = NULL;
+				shape = new decShapeSphere(pColliderRadius, pColliderPosition);				pGroundCheckCollider->AddShape(shape);
+				shape = nullptr;
 				*/
 				/*
-				shape = new decShapeSphere(pColliderRadius);
-				if(!shape) DETHROW(deeOutOfMemory);
-				pGroundCheckCollider->AddShape(shape);
-				shape = NULL;
+				shape = new decShapeSphere(pColliderRadius);				pGroundCheckCollider->AddShape(shape);
+				shape = nullptr;
 				*/
-				shape = new decShapeBox(decVector(0.01f, 0.05f, 0.15f), decVector(0.0f, 0.05f, 0.0f));
-				if(!shape) DETHROW(deeOutOfMemory);
-				shapeListTG.Add(shape);
-				shape = NULL;
+				shape = new decShapeBox(decVector(0.01f, 0.05f, 0.15f), decVector(0.0f, 0.05f, 0.0f));				shapeListTG.Add(shape);
+				shape = nullptr;
 				
 			}else{
 				/*
-				shape = new decShapeSphere(pDragonColHandsRadius);
-				if(!shape) DETHROW(deeOutOfMemory);
-				pGroundCheckCollider->AddShape(shape);
-				shape = NULL;
+				shape = new decShapeSphere(pDragonColHandsRadius);				pGroundCheckCollider->AddShape(shape);
+				shape = nullptr;
 				*/
 				/*
-				shape = new decShapeSphere(pDragonFootRadius);
-				if(!shape) DETHROW(deeOutOfMemory);
-				pFootCollider->AddShape(shape);
-				shape = NULL;
+				shape = new decShapeSphere(pDragonFootRadius);				pFootCollider->AddShape(shape);
+				shape = nullptr;
 				*/
 				
 				/*
-				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());
-				if(!shape) DETHROW(deeOutOfMemory);
-				pDragonColBody->AddShape(shape);
-				shape = NULL;
+				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());				pDragonColBody->AddShape(shape);
+				shape = nullptr;
 				*/
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));
-				if(!shape) DETHROW(deeOutOfMemory);
-				shapeListDCB.Add(shape);
-				shape = NULL;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));
-				if(!shape) DETHROW(deeOutOfMemory);
-				shapeListDCB.Add(shape);
-				shape = NULL;
+				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));				shapeListDCB.Add(shape);
+				shape = nullptr;
+				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));				shapeListDCB.Add(shape);
+				shape = nullptr;
 				
-				shape = new decShapeBox(decVector(0.06f, 0.05f, 0.15f), decVector(0.0f, 0.05f, 0.0f));
-				if(!shape) DETHROW(deeOutOfMemory);
-				shapeListTG.Add(shape);
-				shape = NULL;
+				shape = new decShapeBox(decVector(0.06f, 0.05f, 0.15f), decVector(0.0f, 0.05f, 0.0f));				shapeListTG.Add(shape);
+				shape = nullptr;
 			}
 			
 		}catch(const deException &){
@@ -440,7 +400,7 @@ void aeAnimatorLocomotion::UpdateCollider(){
 		try{
 			shape = new decShapeSphere(pGroundPlaneRadius, decVector(0.0f, pGroundPlaneRadius, 0.0f));
 			shapeListGPC.Add(shape);
-			shape = NULL;
+			shape = nullptr;
 			
 		}catch(const deException &){
 			if(shape) delete shape;
@@ -461,72 +421,46 @@ void aeAnimatorLocomotion::UpdateCollider(){
 		
 		try{
 			if(pUseLegPairCount == 1){
-				shape = new decShapeSphere(pColliderRadius, pColliderPosition);
-				if(!shape) DETHROW(deeOutOfMemory);
-				pDDSCollider.AddShape(shape);
-				shape = NULL;
+				shape = new decShapeSphere(pColliderRadius, pColliderPosition);				pDDSCollider.AddShape(shape);
+				shape = nullptr;
 				
-				shape = new decShapeSphere(pColliderRadius);
-				if(!shape) DETHROW(deeOutOfMemory);
-				pDDSDragonColHands.AddShape(shape);
-				shape = NULL;
+				shape = new decShapeSphere(pColliderRadius);				pDDSDragonColHands.AddShape(shape);
+				shape = nullptr;
 				
-				shape = new decShapeSphere(pColliderRadius);
-				if(!shape) DETHROW(deeOutOfMemory);
-				pDDSDragonColFeet.AddShape(shape);
-				shape = NULL;
+				shape = new decShapeSphere(pColliderRadius);				pDDSDragonColFeet.AddShape(shape);
+				shape = nullptr;
 				
 			}else{
-				shape = new decShapeSphere(pColliderRadius, pColliderPosition);
-				if(!shape) DETHROW(deeOutOfMemory);
-				pDDSCollider.AddShape(shape);
-				shape = NULL;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));
-				if(!shape) DETHROW(deeOutOfMemory);
-				pDDSCollider.AddShape(shape);
-				shape = NULL;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));
-				if(!shape) DETHROW(deeOutOfMemory);
-				pDDSCollider.AddShape(shape);
-				shape = NULL;
+				shape = new decShapeSphere(pColliderRadius, pColliderPosition);				pDDSCollider.AddShape(shape);
+				shape = nullptr;
+				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));				pDDSCollider.AddShape(shape);
+				shape = nullptr;
+				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));				pDDSCollider.AddShape(shape);
+				shape = nullptr;
 				/*
-				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());
-				if(!shape) DETHROW(deeOutOfMemory);
-				pDDSCollider.AddShape(shape);
-				shape = NULL;
+				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());				pDDSCollider.AddShape(shape);
+				shape = nullptr;
 				*/
 				
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));
-				if(!shape) DETHROW(deeOutOfMemory);
-				pDDSDragonColBody.AddShape(shape);
-				shape = NULL;
-				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));
-				if(!shape) DETHROW(deeOutOfMemory);
-				pDDSDragonColBody.AddShape(shape);
-				shape = NULL;
+				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, 0.6f));				pDDSDragonColBody.AddShape(shape);
+				shape = nullptr;
+				shape = new decShapeSphere(0.4f, decVector(0.0f, 0.8f, -0.6f));				pDDSDragonColBody.AddShape(shape);
+				shape = nullptr;
 				/*
-				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());
-				if(!shape) DETHROW(deeOutOfMemory);
-				pDDSDragonColBody.AddShape(shape);
-				shape = NULL;
+				shape = new decShapeBox(pDragonColBodySize * 0.5f, pDragonColBodyPos, decMatrix::CreateRotation(pDragonColBodyRot * DEG2RAD).ToQuaternion());				pDDSDragonColBody.AddShape(shape);
+				shape = nullptr;
 				*/
 				
-				shape = new decShapeSphere(pDragonColHandsRadius);
-				if(!shape) DETHROW(deeOutOfMemory);
-				pDDSDragonColHands.AddShape(shape);
-				shape = NULL;
+				shape = new decShapeSphere(pDragonColHandsRadius);				pDDSDragonColHands.AddShape(shape);
+				shape = nullptr;
 				
-				shape = new decShapeSphere(pDragonColFeetRadius);
-				if(!shape) DETHROW(deeOutOfMemory);
-				pDDSDragonColFeet.AddShape(shape);
-				shape = NULL;
+				shape = new decShapeSphere(pDragonColFeetRadius);				pDDSDragonColFeet.AddShape(shape);
+				shape = nullptr;
 			}
 			
 			for(i=0; i<4; i++){
-				shape = new decShapeSphere(pGroundPlaneRadius, decVector(0.0f, pGroundPlaneRadius, 0.0f));
-				if(!shape) DETHROW(deeOutOfMemory);
-				pDDSGroundPlane[i].AddShape(shape);
-				shape = NULL;
+				shape = new decShapeSphere(pGroundPlaneRadius, decVector(0.0f, pGroundPlaneRadius, 0.0f));				pDDSGroundPlane[i].AddShape(shape);
+				shape = nullptr;
 			}
 			
 		}catch(const deException &){
@@ -538,17 +472,17 @@ void aeAnimatorLocomotion::UpdateCollider(){
 
 void aeAnimatorLocomotion::UpdateTouchSensors(){
 	// touch sensor shapes
-	decShapeBox *shape = NULL;
+	decShapeBox *shape = nullptr;
 	decShapeList list;
 	
 	try{
 		shape = new decShapeBox(pTSGroundExtents * 0.5f, pTSGroundPosition);
 		list.Add(shape);
-		shape = NULL;
+		shape = nullptr;
 		/*
 		shape = new decShapeBox(pTSDragonBodySize * 0.5f, pTSDragonBodyPosition);
 		list.Add(shape);
-		shape = NULL;
+		shape = nullptr;
 		*/
 		pTouchSensor->SetShape(list);
 		
@@ -563,15 +497,11 @@ void aeAnimatorLocomotion::UpdateTouchSensors(){
 	pDDSSensorGround.RemoveAllShapes();
 	
 	try{
-		shape = new decShapeBox(pTSGroundExtents * 0.5f, pTSGroundPosition);
-		if(!shape) DETHROW(deeOutOfMemory);
-		pDDSSensorGround.AddShape(shape);
-		shape = NULL;
+		shape = new decShapeBox(pTSGroundExtents * 0.5f, pTSGroundPosition);		pDDSSensorGround.AddShape(shape);
+		shape = nullptr;
 		
-		shape = new decShapeBox(pTSDragonBodySize * 0.5f, pTSDragonBodyPosition);
-		if(!shape) DETHROW(deeOutOfMemory);
-		pDDSSensorGround.AddShape(shape);
-		shape = NULL;
+		shape = new decShapeBox(pTSDragonBodySize * 0.5f, pTSDragonBodyPosition);		pDDSSensorGround.AddShape(shape);
+		shape = nullptr;
 		
 	}catch(const deException &){
 		if(shape) delete shape;
@@ -1195,15 +1125,15 @@ void aeAnimatorLocomotion::pCleanUp(){
 	}
 	
 	for(i=0; i<4; i++){
-		pDDSGroundPlane[i].SetParentDebugDrawer(NULL);
+		pDDSGroundPlane[i].SetParentDebugDrawer(nullptr);
 	}
 	
-	pDDSSensorGround.SetParentDebugDrawer(NULL);
-	pDDSDragonColBody.SetParentDebugDrawer(NULL);
-	pDDSDragonColHead.SetParentDebugDrawer(NULL);
-	pDDSDragonColHands.SetParentDebugDrawer(NULL);
-	pDDSDragonColFeet.SetParentDebugDrawer(NULL);
-	pDDSCollider.SetParentDebugDrawer(NULL);
+	pDDSSensorGround.SetParentDebugDrawer(nullptr);
+	pDDSDragonColBody.SetParentDebugDrawer(nullptr);
+	pDDSDragonColHead.SetParentDebugDrawer(nullptr);
+	pDDSDragonColHands.SetParentDebugDrawer(nullptr);
+	pDDSDragonColFeet.SetParentDebugDrawer(nullptr);
+	pDDSCollider.SetParentDebugDrawer(nullptr);
 	
 	if(pGroundPlaneCollider) pGroundPlaneCollider->FreeReference();
 	if(pFootCollider) pFootCollider->FreeReference();
@@ -1216,17 +1146,14 @@ void aeAnimatorLocomotion::pCleanUp(){
 		
 		if(pTouchSensor){
 			world->RemoveTouchSensor(pTouchSensor);
-			pTouchSensor->FreeReference();
 		}
 		
 		if(pCollider){
 			world->RemoveCollider(pCollider);
-			pCollider->FreeReference();
 		}
 		
 		if(pDebugDrawer){
 			world->RemoveDebugDrawer(pDebugDrawer);
-			pDebugDrawer->FreeReference();
 		}
 	}
 }

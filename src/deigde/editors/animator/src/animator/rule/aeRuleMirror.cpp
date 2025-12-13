@@ -58,11 +58,9 @@ bool aeRuleMirror::cMatchName::operator!=(const cMatchName &matchName) const{
 	return matchName.pFirst != pFirst || matchName.pSecond != pSecond || matchName.pType != pType;
 }
 
-aeRuleMirror *aeRuleMirror::CreateDefault(){
-	Ref rule(Ref::New(new aeRuleMirror));
-	rule->pMatchNames.Add(aeRuleMirror::cMatchName::Ref::NewWith(
-		".l", ".r", deAnimatorRuleMirror::emntLast));
-	rule->AddReference(); // caller inherits reference
+aeRuleMirror::Ref aeRuleMirror::CreateDefault(){
+	const Ref rule(aeRuleMirror::Ref::New());
+	rule->pMatchNames.Add(aeRuleMirror::cMatchName::Ref::New(".l", ".r", deAnimatorRuleMirror::emntLast));
 	return rule;
 }
 
@@ -213,8 +211,8 @@ void aeRuleMirror::RemoveAllMatchNames(){
 
 
 
-deAnimatorRule *aeRuleMirror::CreateEngineRule(){
-	const deAnimatorRuleMirror::Ref engRule(deAnimatorRuleMirror::Ref::NewWith());
+deAnimatorRule::Ref aeRuleMirror::CreateEngineRule(){
+	const deAnimatorRuleMirror::Ref engRule(deAnimatorRuleMirror::Ref::New());
 	
 	InitEngineRule(engRule);
 	
@@ -231,15 +229,13 @@ deAnimatorRule *aeRuleMirror::CreateEngineRule(){
 		const cMatchName &matchName = *((cMatchName*)pMatchNames.GetAt(i));
 		engRule->AddMatchName(matchName.GetFirst(), matchName.GetSecond(), matchName.GetType());
 	}
-	
-	engRule->AddReference(); // caller inherits reference
 	return engRule;
 }
 
 
 
-aeRule *aeRuleMirror::CreateCopy() const{
-	return new aeRuleMirror(*this);
+aeRule::Ref aeRuleMirror::CreateCopy() const{
+	return Ref::New(*this);
 }
 
 

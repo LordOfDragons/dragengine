@@ -74,7 +74,7 @@ aeController *aeControllerList::GetNamed(const char *name) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 int aeControllerList::IndexOf(aeController *controller) const{
@@ -97,7 +97,7 @@ bool aeControllerList::Has(aeController *controller) const{
 }
 
 bool aeControllerList::HasNamed(const char *name) const{
-	return GetNamed(name) != NULL;
+	return GetNamed(name) != nullptr;
 }
 
 void aeControllerList::Add(aeController *controller){

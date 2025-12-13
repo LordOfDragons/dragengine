@@ -44,18 +44,14 @@ aeURuleLimitSetEnableScaleXMin::aeURuleLimitSetEnableScaleXMin(aeRuleLimit *rule
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	SetShortInfo("Limit toggle enable minimum x scaling");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableScaleXMin::~aeURuleLimitSetEnableScaleXMin(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

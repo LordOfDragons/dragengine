@@ -39,6 +39,10 @@ class aeControllerTarget;
  * Undo Link Remove.
  */
 class aeULinkRemove : public igdeUndo{
+public:
+	typedef deTObjectReference<aeULinkRemove> Ref;
+	
+	
 private:
 	struct sTarget{
 		aeRule::Ref rule;

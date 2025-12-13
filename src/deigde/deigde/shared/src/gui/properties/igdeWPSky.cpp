@@ -64,6 +64,7 @@ class cTextPathSky : public igdeTextFieldListener{
 	igdeWPSky &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextPathSky> Ref;
 	cTextPathSky(igdeWPSky &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -82,6 +83,7 @@ class cActionFromGDSky : public igdeAction{
 	igdeTextField &pTextField;
 	
 public:
+	typedef deTObjectReference<cActionFromGDSky> Ref;
 	cActionFromGDSky(igdeWPSky &panel, igdeTextField &textField) :
 	igdeAction("GDef", "Show dialog to select sky from game definition"),
 	pPanel(panel), pTextField(textField){}
@@ -111,6 +113,7 @@ class cActionPathSky : public igdeAction{
 	igdeTextField &pTextField;
 	
 public:
+	typedef deTObjectReference<cActionPathSky> Ref;
 	cActionPathSky(igdeWPSky &panel, igdeTextField &textField) :
 	igdeAction("...", "Show dialog to select the sky from file"),
 	pPanel(panel), pTextField(textField){}
@@ -143,6 +146,7 @@ protected:
 	int pIndex;
 	
 public:
+	typedef deTObjectReference<cEditControllerValue> Ref;
 	cEditControllerValue(igdeWPSky &panel, int index) :
 	pPanel(panel), pIndex(index){}
 	

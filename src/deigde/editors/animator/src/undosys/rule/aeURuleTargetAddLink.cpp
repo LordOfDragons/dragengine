@@ -44,19 +44,16 @@
 aeURuleTargetAddLink::aeURuleTargetAddLink(aeRule *rule, aeControllerTarget *target, aeLink *link){
 	if(!rule || !target || !link) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
-	pTarget = NULL;
-	pLink = NULL;
+	pRule = nullptr;
+	pTarget = nullptr;
+	pLink = nullptr;
 	
 	SetShortInfo("Rule Target Add Link");
 	
 	pRule = rule;
-	pRule->AddReference();
-	
 	pTarget = target;
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 aeURuleTargetAddLink::~aeURuleTargetAddLink(){

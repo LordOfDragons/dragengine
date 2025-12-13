@@ -35,6 +35,10 @@
  * Undo set mirror set match name at.
  */
 class aeURuleMirrorSetMatchName : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleMirrorSetMatchName> Ref;
+	
+	
 private:
 	const aeRuleMirror::Ref pRule;
 	

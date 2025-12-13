@@ -44,18 +44,14 @@ aeURuleLimitSetEnablePosXMax::aeURuleLimitSetEnablePosXMax(aeRuleLimit *rule){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	SetShortInfo("Limit toggle enable maximum x position");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnablePosXMax::~aeURuleLimitSetEnablePosXMax(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

@@ -44,20 +44,16 @@ aeURuleTrackToSetLockedAxis::aeURuleTrackToSetLockedAxis(aeRuleTrackTo *rule, de
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	pOldAxis = rule->GetLockedAxis();
 	pNewAxis = newAxis;
 	
 	SetShortInfo("TrackTo Set Locked Axis");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleTrackToSetLockedAxis::~aeURuleTrackToSetLockedAxis(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

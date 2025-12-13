@@ -562,7 +562,7 @@ void aeController::InverseValue(){
 //////////////////////
 
 void aeController::pCleanUp(){
-	SetAnimator(NULL);
+	SetAnimator(nullptr);
 }
 
 float aeController::pCheckValue(float value){
@@ -613,7 +613,7 @@ void aeController::pCreateGizmos(){
 	
 	switch(pVectorSimulation){
 	case evsPosition:
-		pGizmoIKPosition.TakeOver(new aeGizmoControllerIKPosition(*pAnimator->GetEnvironment(), *this));
+		pGizmoIKPosition = aeGizmoControllerIKPosition::Ref::New(*pAnimator->GetEnvironment(), *this);
 		pGizmoIKPosition->SetWorld(pAnimator->GetEngineWorld());
 		break;
 		

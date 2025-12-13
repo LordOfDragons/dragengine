@@ -44,12 +44,10 @@ aeURuleLimitSetPosMin::aeURuleLimitSetPosMin(aeRuleLimit *rule, const decVector 
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumPosition();
 		pNewMin = newMin;
 		
@@ -84,7 +82,4 @@ void aeURuleLimitSetPosMin::Redo(){
 //////////////////////
 
 void aeURuleLimitSetPosMin::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

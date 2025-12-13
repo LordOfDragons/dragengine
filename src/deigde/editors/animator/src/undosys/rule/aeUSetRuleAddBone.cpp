@@ -48,7 +48,7 @@ aeUSetRuleAddBone::aeUSetRuleAddBone(aeRule *rule, const char *pattern){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	const decStringSet &ruleBoneList = rule->GetListBones();
 	const deRig *engRig = rule->GetAnimator()->GetEngineRig();
@@ -79,13 +79,9 @@ aeUSetRuleAddBone::aeUSetRuleAddBone(aeRule *rule, const char *pattern){
 	}
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleAddBone::~aeUSetRuleAddBone(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

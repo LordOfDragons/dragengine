@@ -44,18 +44,14 @@ aeURuleLimitSetEnableRotZMax::aeURuleLimitSetEnableRotZMax(aeRuleLimit *rule){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	SetShortInfo("Limit toggle enable maximum z rotation");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableRotZMax::~aeURuleLimitSetEnableRotZMax(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

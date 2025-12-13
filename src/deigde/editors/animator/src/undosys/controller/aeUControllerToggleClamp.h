@@ -33,6 +33,10 @@
  * Undo action controller toggle clamp.
  */
 class aeUControllerToggleClamp : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUControllerToggleClamp> Ref;
+	
+	
 private:
 	const aeController::Ref pController;
 	

@@ -42,12 +42,10 @@
 aeUSetRuleAniDLeadMoveTime::aeUSetRuleAniDLeadMoveTime(aeRuleAnimationDifference *rule, float newTime){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldTime = rule->GetLeadingMoveTime();
 		pNewTime = newTime;
 		

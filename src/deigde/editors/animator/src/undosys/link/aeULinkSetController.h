@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeLink;
-class aeController;
+#include "../../animator/link/aeLink.h"
+#include "../../animator/controller/aeController.h"
 
 
 
@@ -41,11 +41,15 @@ class aeController;
  * Sets the controller of a link.
  */
 class aeULinkSetController : public igdeUndo{
-private:
-	aeLink *pLink;
+public:
+	typedef deTObjectReference<aeULinkSetController> Ref;
 	
-	aeController *pOldController;
-	aeController *pNewController;
+	
+private:
+	aeLink::Ref pLink;
+	
+	aeController::Ref pOldController;
+	aeController::Ref pNewController;
 	
 public:
 	/** \brief Type holding strong reference. */

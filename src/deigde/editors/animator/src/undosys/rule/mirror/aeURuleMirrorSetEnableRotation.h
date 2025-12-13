@@ -35,6 +35,10 @@
  * Undo set rule mirror enable rotation.
  */
 class aeURuleMirrorSetEnableRotation : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleMirrorSetEnableRotation> Ref;
+	
+	
 private:
 	const aeRuleMirror::Ref pRule;
 	

@@ -44,6 +44,10 @@ class aeAnimator;
  * - ' left' with ' right'
  */
 class aeUAnimatorMirrorBones : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUAnimatorMirrorBones> Ref;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	decStringList pPatterns;

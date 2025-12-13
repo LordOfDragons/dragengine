@@ -56,7 +56,7 @@
 ////////////////////////////
 
 aeALTouchSensorListener::aeALTouchSensorListener(){
-	pLocomotion = NULL;
+	pLocomotion = nullptr;
 }
 
 aeALTouchSensorListener::~aeALTouchSensorListener(){

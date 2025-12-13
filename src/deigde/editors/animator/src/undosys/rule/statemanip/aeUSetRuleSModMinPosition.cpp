@@ -42,12 +42,10 @@
 aeUSetRuleSModMinPosition::aeUSetRuleSModMinPosition(aeRuleStateManipulator *rule, const decVector &newMin){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumPosition();
 		pNewMin = newMin;
 		

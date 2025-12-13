@@ -66,9 +66,9 @@
 ////////////////////////////
 
 aeRule::aeRule(deAnimatorRuleVisitorIdentify::eRuleTypes type) :
-pAnimator(NULL),
-pParentGroup(NULL),
-pEngRule(NULL),
+pAnimator(nullptr),
+pParentGroup(nullptr),
+pEngRule(nullptr),
 pName("Rule"),
 pType(type),
 pBlendMode(deAnimatorRule::ebmBlend),
@@ -78,9 +78,9 @@ pEnabled(true){
 }
 
 aeRule::aeRule(const aeRule &copy) :
-pAnimator(NULL),
-pParentGroup(NULL),
-pEngRule(NULL),
+pAnimator(nullptr),
+pParentGroup(nullptr),
+pEngRule(nullptr),
 pName(copy.pName),
 pType(copy.pType),
 pListBones(copy.pListBones),
@@ -93,7 +93,7 @@ pTargetBlendFactor(copy.pTargetBlendFactor){
 }
 
 aeRule::~aeRule(){
-	SetAnimator(NULL);
+	SetAnimator(nullptr);
 }
 
 
@@ -115,7 +115,7 @@ void aeRule::SetAnimator(aeAnimator *animator){
 		return;
 	}
 	
-	pEngRule = NULL;
+	pEngRule = nullptr;
 	pAnimator = animator;
 	
 	OnParentAnimatorChanged();

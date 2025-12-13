@@ -32,7 +32,7 @@
 class aeController;
 class aeLoadSaveSystem;
 
-class deAnimator;
+#include <dragengine/resources/animator/deAnimator.h>
 class deAnimatorRuleSubAnimator;
 
 
@@ -47,7 +47,7 @@ public:
 	
 private:
 	decString pPathSubAnimator;
-	deAnimator *pSubAnimator;
+	deAnimator::Ref pSubAnimator;
 	
 	bool pEnablePosition;
 	bool pEnableOrientation;
@@ -73,18 +73,18 @@ public:
 	inline const decString &GetPathSubAnimator() const{ return pPathSubAnimator; }
 	/** Set the path to the sub animator. */
 	void SetPathSubAnimator(const char *path);
-	/** Retrieve the sub animator or NULL if not existing. */
-	inline deAnimator *GetSubAnimator() const{ return pSubAnimator; }
+	/** Retrieve the sub animator or nullptr if not existing. */
+	inline const deAnimator::Ref &GetSubAnimator() const{ return pSubAnimator; }
 	/** Load the sub animator using the stored path. */
 	void LoadSubAnimator();
 	
 	/** Number of connections. */
 	int GetConnectionCount() const;
 	
-	/** Controller for target controller or \em NULL. */
+	/** Controller for target controller or \em nullptr. */
 	aeController *GetControllerAt(int position) const;
 	
-	/** Set controller for target controller or \em NULL. */
+	/** Set controller for target controller or \em nullptr. */
 	void SetControllerAt(int position, aeController *controller);
 	
 	/** Determine if position manipulation is enabled. */
@@ -109,13 +109,13 @@ public:
 	void SetEnableVertexPositionSet(bool enabled);
 	
 	/** Create an engine animator rule. */
-	deAnimatorRule *CreateEngineRule() override;
+	deAnimatorRule::Ref CreateEngineRule() override;
 	
 	/** Update Component and Animation. */
 	void UpdateCompAnim() override;
 	
 	/** Create a copy of this rule. */
-	aeRule *CreateCopy() const override;
+	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLinkList& list) override;

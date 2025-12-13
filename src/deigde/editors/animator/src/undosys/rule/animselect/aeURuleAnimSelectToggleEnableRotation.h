@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleAnimationSelect;
+#include "../../../animator/rule/aeRuleAnimationSelect.h"
 
 
 
@@ -36,8 +36,12 @@ class aeRuleAnimationSelect;
  * Undo rule animation select set enable rotation.
  */
 class aeURuleAnimSelectToggleEnableRotation : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleAnimSelectToggleEnableRotation> Ref;
+	
+	
 private:
-	aeRuleAnimationSelect *pRule;
+	aeRuleAnimationSelect::Ref pRule;
 	
 	
 	

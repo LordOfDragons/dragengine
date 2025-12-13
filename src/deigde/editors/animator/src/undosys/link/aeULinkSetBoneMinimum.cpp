@@ -45,21 +45,16 @@ aeULinkSetBoneMinimum::aeULinkSetBoneMinimum(aeLink *link, float newBoneMinimum)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pLink = NULL;
+	pLink = nullptr;
 	
 	SetShortInfo("Link set bone minimum");
 	
 	pLink = link;
-	pLink->AddReference();
-	
 	pOldValue = link->GetBoneMinimum();
 	pNewValue = newBoneMinimum;
 }
 
 aeULinkSetBoneMinimum::~aeULinkSetBoneMinimum(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

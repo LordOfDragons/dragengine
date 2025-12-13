@@ -33,6 +33,10 @@
  * Undo action rule bone transformat toggle use axis.
  */
 class aeURuleBTransSetUseAxis : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleBTransSetUseAxis> Ref;
+	
+	
 private:
 	aeRuleBoneTransformator::Ref pRule;
 	

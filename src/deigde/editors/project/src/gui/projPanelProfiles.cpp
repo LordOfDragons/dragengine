@@ -96,6 +96,7 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
+	typedef deTObjectReference<cActionBase> Ref;
 	cActionBase(projPanelProfiles &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
@@ -125,6 +126,7 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(projPanelProfiles &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -153,6 +155,7 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextAreaListener> Ref;
 	cBaseTextAreaListener(projPanelProfiles &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextArea *textArea){
@@ -181,6 +184,7 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditPointListener> Ref;
 	cBaseEditPointListener(projPanelProfiles &panel) : pPanel(panel){}
 	
 	virtual void OnPointChanged(igdeEditPoint *editPoint){
@@ -211,6 +215,7 @@ protected:
 	projPanelProfiles &pPanel;
 	
 public:
+	typedef deTObjectReference<cListProfile> Ref;
 	cListProfile(projPanelProfiles &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
@@ -233,6 +238,7 @@ public:
 
 class cTextName : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextName> Ref;
 	cTextName(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject *project,
@@ -255,6 +261,7 @@ public:
 
 class cTextDescription : public cBaseTextAreaListener{
 public:
+	typedef deTObjectReference<cTextDescription> Ref;
 	cTextDescription(projPanelProfiles &panel) : cBaseTextAreaListener(panel){}
 	
 	virtual igdeUndo::Ref OnChanged(igdeTextArea *textArea, projProject*,
@@ -268,6 +275,7 @@ public:
 
 class cTextScriptDirectory : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextScriptDirectory> Ref;
 	cTextScriptDirectory(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -292,6 +300,7 @@ public:
 
 class cTextGameObject : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextGameObject> Ref;
 	cTextGameObject(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -304,6 +313,7 @@ public:
 
 class cTextPathConfig : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextPathConfig> Ref;
 	cTextPathConfig(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -328,6 +338,7 @@ public:
 
 class cTextPathCapture : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextPathCapture> Ref;
 	cTextPathCapture(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -389,6 +400,7 @@ public:
 
 class cTextIdentifier : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextIdentifier> Ref;
 	cTextIdentifier(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -408,6 +420,7 @@ public:
 
 class cTextAliasIdentifier : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextAliasIdentifier> Ref;
 	cTextAliasIdentifier(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -420,6 +433,7 @@ public:
 
 class cTextTitle : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextTitle> Ref;
 	cTextTitle(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -432,6 +446,7 @@ public:
 
 class cTextGameDescription : public cBaseTextAreaListener{
 public:
+	typedef deTObjectReference<cTextGameDescription> Ref;
 	cTextGameDescription(projPanelProfiles &panel) : cBaseTextAreaListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextArea *textArea, projProject*, projProfile *profile) override{
@@ -444,6 +459,7 @@ public:
 
 class cTextCreator : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextCreator> Ref;
 	cTextCreator(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -456,6 +472,7 @@ public:
 
 class cTextWebsite : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextWebsite> Ref;
 	cTextWebsite(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -468,6 +485,7 @@ public:
 
 class cEditWindowSize : public cBaseEditPointListener{
 public:
+	typedef deTObjectReference<cEditWindowSize> Ref;
 	cEditWindowSize(projPanelProfiles &panel) : cBaseEditPointListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeEditPoint *editPoint, projProject*, projProfile *profile) override{
@@ -637,6 +655,7 @@ public:
 
 class cTextDelgaPath : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextDelgaPath> Ref;
 	cTextDelgaPath(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
@@ -663,6 +682,7 @@ public:
 
 class cTextRunArguments : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cTextRunArguments> Ref;
 	cTextRunArguments(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
 	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{

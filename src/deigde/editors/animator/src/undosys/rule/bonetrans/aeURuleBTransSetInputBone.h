@@ -27,15 +27,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleBoneTransformator;
+#include "../../../animator/rule/aeRuleBoneTransformator.h"
 
 
 /**
  * Undo action rule bone set input bone.
  */
 class aeURuleBTransSetInputBone : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleBTransSetInputBone> Ref;
+	
+	
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	decString pOldBone, pNewBone;
 	
 public:

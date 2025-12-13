@@ -44,7 +44,7 @@ aeURuleBTransSetTargetBone::aeURuleBTransSetTargetBone(aeRuleBoneTransformator *
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	pOldBone = rule->GetTargetBone().GetString();
 	pNewBone = newBone;
@@ -52,13 +52,9 @@ aeURuleBTransSetTargetBone::aeURuleBTransSetTargetBone(aeRuleBoneTransformator *
 	SetShortInfo("Bone transformator set target bone");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleBTransSetTargetBone::~aeURuleBTransSetTargetBone(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleForeignState;
+#include "../../../animator/rule/aeRuleForeignState.h"
 
 
 
@@ -41,8 +41,12 @@ class aeRuleForeignState;
  * Undo to set the position scaling of a foreign state rule.
  */
 class aeUSetRuleFStaPosition : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleFStaPosition> Ref;
+	
+	
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 	float pOldScale;
 	float pNewScale;

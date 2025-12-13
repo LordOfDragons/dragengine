@@ -132,7 +132,7 @@ void aeLSAnimator::LoadAnimator(aeAnimator *animator, decBaseFileReader *file){
 		DETHROW(deeInvalidParam);
 	}
 	
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(pLSSys->GetWindowMain()->GetEnvironment().GetLogger()).ParseXml(file, xmlDoc);
 	
@@ -1509,7 +1509,7 @@ const aeRuleLimit &rule){
 
 
 bool aeLSAnimator::pHasAttribute(decXmlElementTag *tag, const char *name) const{
-	return tag->FindAttribute(name) != NULL;
+	return tag->FindAttribute(name) != nullptr;
 }
 
 const char *aeLSAnimator::pGetAttributeString(decXmlElementTag *tag, const char *name) const{
@@ -1530,7 +1530,7 @@ int aeLSAnimator::pGetAttributeInt(decXmlElementTag *tag, const char *name) cons
 	decXmlAttValue *value = tag->FindAttribute(name);
 	
 	if(value){
-		return (int)strtol(value->GetValue(), NULL, 10);
+		return (int)strtol(value->GetValue(), nullptr, 10);
 		
 	}else{
 		deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
@@ -1544,7 +1544,7 @@ float aeLSAnimator::pGetAttributeFloat(decXmlElementTag *tag, const char *name) 
 	decXmlAttValue *value = tag->FindAttribute(name);
 	
 	if(value){
-		return strtof(value->GetValue(), NULL);
+		return strtof(value->GetValue(), nullptr);
 		
 	}else{
 		deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
@@ -1590,7 +1590,7 @@ void aeLSAnimator::pLoadAnimator(decXmlElementTag *root, aeAnimator &animator){
 				pLoadLink(tag, animator);
 				
 			}else{
-				const aeRule::Ref rule(aeRule::Ref::New(pLoadRule(tag, animator)));
+				const aeRule::Ref rule(aeRule::Ref::NewDeprecated(pLoadRule(tag, animator)));
 				if(rule){
 					animator.AddRule(rule);
 					
@@ -1671,16 +1671,16 @@ void aeLSAnimator::pLoadLocomotion(decXmlElementTag *root, aeAnimator &animator)
 				
 				
 			}else if(strcmp(tag->GetName(), "limitLookDown") == 0){
-				locomotion.SetLimitLookDown(strtof(GetCDataString(*tag), NULL));
+				locomotion.SetLimitLookDown(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "limitLookUp") == 0){
-				locomotion.SetLimitLookUp(strtof(GetCDataString(*tag), NULL));
+				locomotion.SetLimitLookUp(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "limitLookLeft") == 0){
-				locomotion.SetLimitLookLeft(strtof(GetCDataString(*tag), NULL));
+				locomotion.SetLimitLookLeft(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "limitLookRight") == 0){
-				locomotion.SetLimitLookRight(strtof(GetCDataString(*tag), NULL));
+				locomotion.SetLimitLookRight(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "limitLookUpDownSpeed") == 0){
 				// deprecated
@@ -1689,34 +1689,34 @@ void aeLSAnimator::pLoadLocomotion(decXmlElementTag *root, aeAnimator &animator)
 				// deprecated
 				
 			}else if(strcmp(tag->GetName(), "adjustTimeUpDown") == 0){
-				locomotion.GetLookUpDown().SetAdjustTime(strtof(GetCDataString(*tag), NULL));
+				locomotion.GetLookUpDown().SetAdjustTime(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "adjustTimeLeftRight") == 0){
-				locomotion.GetLookLeftRight().SetAdjustTime(strtof(GetCDataString(*tag), NULL));
+				locomotion.GetLookLeftRight().SetAdjustTime(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "adjustTimeStance") == 0){
-				locomotion.GetStance().SetAdjustTime(strtof(GetCDataString(*tag), NULL));
+				locomotion.GetStance().SetAdjustTime(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "adjustTimeTurnIP") == 0){
-				locomotion.SetAdjustTimeTurnIP(strtof(GetCDataString(*tag), NULL));
+				locomotion.SetAdjustTimeTurnIP(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "adjustTimeOrientation") == 0){
-				locomotion.GetOrientation().SetAdjustTime(strtof(GetCDataString(*tag), NULL));
+				locomotion.GetOrientation().SetAdjustTime(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "adjustTimeVelocity") == 0){
-				locomotion.GetLinearVelocity().SetAdjustTime(strtof(GetCDataString(*tag), NULL));
+				locomotion.GetLinearVelocity().SetAdjustTime(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "speedWalk") == 0){
-				locomotion.SetWalkSpeed(strtof(GetCDataString(*tag), NULL));
+				locomotion.SetWalkSpeed(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "speedRun") == 0){
-				locomotion.SetRunSpeed(strtof(GetCDataString(*tag), NULL));
+				locomotion.SetRunSpeed(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "legBlendTime") == 0){
-				locomotion.SetLegBlendTime(strtof(GetCDataString(*tag), NULL));
+				locomotion.SetLegBlendTime(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "useLegPairs") == 0){
-				locomotion.SetUseLegPairCount((int)strtol(GetCDataString(*tag), NULL, 10));
+				locomotion.SetUseLegPairCount((int)strtol(GetCDataString(*tag), nullptr, 10));
 				
 			}else if(strcmp(tag->GetName(), "leg") == 0){
 				if(leg >= locomotion.GetLegCount()){
@@ -1747,10 +1747,10 @@ void aeLSAnimator::pLoadLocomotionLeg(decXmlElementTag *root, aeAnimator &animat
 		tag = root->GetElementIfTag(i);
 		if(tag){
 			if(strcmp(tag->GetName(), "liftOffTime") == 0){
-				leg.SetLiftOffTime(strtof(GetCDataString(*tag), NULL));
+				leg.SetLiftOffTime(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "putDownTime") == 0){
-				leg.SetPutDownTime(strtof(GetCDataString(*tag), NULL));
+				leg.SetPutDownTime(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "putDownPosition") == 0){ // depracted
 				vector.SetZero();
@@ -1787,7 +1787,7 @@ void aeLSAnimator::pLoadController(decXmlElementTag *root, aeAnimator &animator)
 	decVector vector;
 	int i, leg;
 	
-	const aeController::Ref controller(aeController::Ref::NewWith());
+	const aeController::Ref controller(aeController::Ref::New());
 	animator.AddController(controller);
 	
 	// parse tag
@@ -1876,7 +1876,7 @@ void aeLSAnimator::pLoadController(decXmlElementTag *root, aeAnimator &animator)
 				}
 				
 			}else if(strcmp(tag->GetName(), "locomotionLeg") == 0){
-				leg = (int)strtol(GetCDataString(*tag), NULL, 10);
+				leg = (int)strtol(GetCDataString(*tag), nullptr, 10);
 				
 				if(leg >= 0 && leg < animator.GetLocomotion().GetLegCount()){
 					controller->SetLocomotionLeg(leg);
@@ -1922,10 +1922,10 @@ void aeLSAnimator::pLoadControllerLimit(decXmlElementTag *root, aeController &co
 		tag = root->GetElementIfTag(i);
 		if(tag){
 			if(strcmp(tag->GetName(), "minimum") == 0){
-				controller.SetMinimumValue(strtof(GetCDataString(*tag), NULL));
+				controller.SetMinimumValue(strtof(GetCDataString(*tag), nullptr));
 				
 			}else if(strcmp(tag->GetName(), "maximum") == 0){
-				controller.SetMaximumValue(strtof(GetCDataString(*tag), NULL));
+				controller.SetMaximumValue(strtof(GetCDataString(*tag), nullptr));
 				
 			}else{
 				logger.LogWarnFormat(LOGSOURCE, "limit(%i:%i): Unknown Tag %s, ignoring",
@@ -1940,7 +1940,7 @@ void aeLSAnimator::pLoadLink(decXmlElementTag *root, aeAnimator &animator){
 	decXmlElementTag *tag;
 	int i, index;
 	
-	const aeLink::Ref link(aeLink::Ref::NewWith());
+	const aeLink::Ref link(aeLink::Ref::New());
 	animator.AddLink(link);
 	
 	// parse tag
@@ -1954,17 +1954,17 @@ void aeLSAnimator::pLoadLink(decXmlElementTag *root, aeAnimator &animator){
 			link->SetName(GetCDataString(*tag));
 			
 		}else if(tag->GetName() == "controller"){
-			index = (int)strtol(GetCDataString(*tag), NULL, 10);
+			index = (int)strtol(GetCDataString(*tag), nullptr, 10);
 			
 			if(index == -1){
-				link->SetController(NULL, false);
+				link->SetController(nullptr, false);
 				
 			}else{
 				link->SetController(animator.GetControllers().GetAt(index), false);
 			}
 			
 		}else if(tag->GetName() == "repeat"){
-			link->SetRepeat((int)strtol(GetCDataString(*tag), NULL, 10));
+			link->SetRepeat((int)strtol(GetCDataString(*tag), nullptr, 10));
 			
 		}else if(tag->GetName() == "curve"){
 			decCurveBezier curve;
@@ -2030,7 +2030,7 @@ void aeLSAnimator::pLoadLink(decXmlElementTag *root, aeAnimator &animator){
 	}
 }
 
-aeRule *aeLSAnimator::pLoadRule(decXmlElementTag *root, aeAnimator &animator){
+aeRule::Ref aeLSAnimator::pLoadRule(decXmlElementTag *root, aeAnimator &animator){
 	if(strcmp(root->GetName(), "ruleAnimation") == 0){
 		return pLoadRuleAnimation(root, animator);
 		
@@ -2074,9 +2074,9 @@ aeRule *aeLSAnimator::pLoadRule(decXmlElementTag *root, aeAnimator &animator){
 	return nullptr;
 }
 
-aeRule *aeLSAnimator::pLoadRuleAnimation(decXmlElementTag *root, aeAnimator &animator){
+aeRule::Ref aeLSAnimator::pLoadRuleAnimation(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleAnimation::Ref rule(aeRuleAnimation::Ref::NewWith());
+	const aeRuleAnimation::Ref rule(aeRuleAnimation::Ref::New());
 	decXmlElementTag *tag;
 	const char *name;
 	int i;
@@ -2089,7 +2089,7 @@ aeRule *aeLSAnimator::pLoadRuleAnimation(decXmlElementTag *root, aeAnimator &ani
 					rule->SetMoveName(GetCDataString(*tag));
 					
 				}else if(strcmp(tag->GetName(), "moveTime") == 0){
-					rule->SetMoveTime(strtof(GetCDataString(*tag), NULL));
+					rule->SetMoveTime(strtof(GetCDataString(*tag), nullptr));
 					
 				}else if(strcmp(tag->GetName(), "enablePosition") == 0){
 					rule->SetEnablePosition(GetCDataBool(*tag));
@@ -2127,14 +2127,12 @@ aeRule *aeLSAnimator::pLoadRuleAnimation(decXmlElementTag *root, aeAnimator &ani
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-aeRule *aeLSAnimator::pLoadRuleAnimationDifference(decXmlElementTag *root, aeAnimator &animator){
+aeRule::Ref aeLSAnimator::pLoadRuleAnimationDifference(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleAnimationDifference::Ref rule(aeRuleAnimationDifference::Ref::NewWith());
+	const aeRuleAnimationDifference::Ref rule(aeRuleAnimationDifference::Ref::New());
 	decXmlElementTag *tag;
 	const char *name;
 	int i;
@@ -2147,13 +2145,13 @@ aeRule *aeLSAnimator::pLoadRuleAnimationDifference(decXmlElementTag *root, aeAni
 					rule->SetLeadingMoveName(GetCDataString(*tag));
 					
 				}else if(strcmp(tag->GetName(), "leadingMoveTime") == 0){
-					rule->SetLeadingMoveTime(strtof(GetCDataString(*tag), NULL));
+					rule->SetLeadingMoveTime(strtof(GetCDataString(*tag), nullptr));
 					
 				}else if(strcmp(tag->GetName(), "referenceMoveName") == 0){
 					rule->SetReferenceMoveName(GetCDataString(*tag));
 					
 				}else if(strcmp(tag->GetName(), "referenceMoveTime") == 0){
-					rule->SetReferenceMoveTime(strtof(GetCDataString(*tag), NULL));
+					rule->SetReferenceMoveTime(strtof(GetCDataString(*tag), nullptr));
 					
 				}else if(strcmp(tag->GetName(), "enablePosition") == 0){
 					rule->SetEnablePosition(GetCDataBool(*tag));
@@ -2194,14 +2192,12 @@ aeRule *aeLSAnimator::pLoadRuleAnimationDifference(decXmlElementTag *root, aeAni
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-aeRule *aeLSAnimator::pLoadRuleAnimationSelect(decXmlElementTag *root, aeAnimator &animator){
+aeRule::Ref aeLSAnimator::pLoadRuleAnimationSelect(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleAnimationSelect::Ref rule(aeRuleAnimationSelect::Ref::NewWith());
+	const aeRuleAnimationSelect::Ref rule(aeRuleAnimationSelect::Ref::New());
 	decXmlElementTag *tag;
 	decStringList moves;
 	const char *name;
@@ -2259,14 +2255,12 @@ aeRule *aeLSAnimator::pLoadRuleAnimationSelect(decXmlElementTag *root, aeAnimato
 	}
 	
 	rule->SetMoves(moves);
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-aeRule *aeLSAnimator::pLoadRuleBoneTransformator(decXmlElementTag *root, aeAnimator &animator){
+aeRule::Ref aeLSAnimator::pLoadRuleBoneTransformator(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleBoneTransformator::Ref rule(aeRuleBoneTransformator::Ref::NewWith());
+	const aeRuleBoneTransformator::Ref rule(aeRuleBoneTransformator::Ref::New());
 	decXmlElementTag *tag;
 	decVector vector;
 	const char *name;
@@ -2406,14 +2400,12 @@ aeRule *aeLSAnimator::pLoadRuleBoneTransformator(decXmlElementTag *root, aeAnima
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-aeRule *aeLSAnimator::pLoadRuleStateManipulator(decXmlElementTag *root, aeAnimator &animator){
+aeRule::Ref aeLSAnimator::pLoadRuleStateManipulator(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleStateManipulator::Ref rule(aeRuleStateManipulator::Ref::NewWith());
+	const aeRuleStateManipulator::Ref rule(aeRuleStateManipulator::Ref::New());
 	decXmlElementTag *tag;
 	decVector vector;
 	const char *name;
@@ -2504,14 +2496,12 @@ aeRule *aeLSAnimator::pLoadRuleStateManipulator(decXmlElementTag *root, aeAnimat
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-aeRule *aeLSAnimator::pLoadRuleStateSnapshot(decXmlElementTag *root, aeAnimator &animator){
+aeRule::Ref aeLSAnimator::pLoadRuleStateSnapshot(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleStateSnapshot::Ref rule(aeRuleStateSnapshot::Ref::NewWith());
+	const aeRuleStateSnapshot::Ref rule(aeRuleStateSnapshot::Ref::New());
 	decXmlElementTag *tag;
 	decVector vector;
 	const char *name;
@@ -2557,14 +2547,12 @@ aeRule *aeLSAnimator::pLoadRuleStateSnapshot(decXmlElementTag *root, aeAnimator 
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-aeRule *aeLSAnimator::pLoadRuleInverseKinematic(decXmlElementTag *root, aeAnimator &animator){
+aeRule::Ref aeLSAnimator::pLoadRuleInverseKinematic(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleInverseKinematic::Ref rule(aeRuleInverseKinematic::Ref::NewWith());
+	const aeRuleInverseKinematic::Ref rule(aeRuleInverseKinematic::Ref::New());
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	decVector vector;
@@ -2627,7 +2615,7 @@ aeRule *aeLSAnimator::pLoadRuleInverseKinematic(decXmlElementTag *root, aeAnimat
 					rule->SetUseSolverBone(GetCDataBool(*tag));
 					
 				}else if(strcmp(tag->GetName(), "reachRange") == 0){
-					rule->SetReachRange(strtof(GetCDataString(*tag), NULL));
+					rule->SetReachRange(strtof(GetCDataString(*tag), nullptr));
 					
 				}else if(strcmp(tag->GetName(), "reachBone") == 0){
 					cdata = tag->GetFirstData();
@@ -2689,14 +2677,12 @@ aeRule *aeLSAnimator::pLoadRuleInverseKinematic(decXmlElementTag *root, aeAnimat
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-aeRule *aeLSAnimator::pLoadRuleForeignState(decXmlElementTag *root, aeAnimator &animator){
+aeRule::Ref aeLSAnimator::pLoadRuleForeignState(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleForeignState::Ref rule(aeRuleForeignState::Ref::NewWith());
+	const aeRuleForeignState::Ref rule(aeRuleForeignState::Ref::New());
 	decXmlElementTag *tag;
 	const char *name;
 	int i;
@@ -2800,14 +2786,12 @@ aeRule *aeLSAnimator::pLoadRuleForeignState(decXmlElementTag *root, aeAnimator &
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-aeRule *aeLSAnimator::pLoadRuleMirror(decXmlElementTag *root, aeAnimator &animator){
+aeRule::Ref aeLSAnimator::pLoadRuleMirror(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleMirror::Ref rule(aeRuleMirror::Ref::NewWith());
+	const aeRuleMirror::Ref rule(aeRuleMirror::Ref::New());
 	int i;
 	
 	for(i=0; i<root->GetElementCount(); i++){
@@ -2876,7 +2860,7 @@ aeRule *aeLSAnimator::pLoadRuleMirror(decXmlElementTag *root, aeAnimator &animat
 				DETHROW(deeInvalidFileFormat);
 			}
 			
-			rule->AddMatchName(aeRuleMirror::cMatchName::Ref::NewWith(first, second, type));
+			rule->AddMatchName(aeRuleMirror::cMatchName::Ref::New(first, second, type));
 			
 		}else if(strcmp(tag->GetName(), "target") == 0){
 			const decString &name = pGetAttributeString(tag, "name");
@@ -2897,15 +2881,13 @@ aeRule *aeLSAnimator::pLoadRuleMirror(decXmlElementTag *root, aeAnimator &animat
 				tag->GetPositionNumber(), tag->GetName().GetString());
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-aeRule *aeLSAnimator::pLoadRuleGroup(decXmlElementTag *root, aeAnimator &animator){
+aeRule::Ref aeLSAnimator::pLoadRuleGroup(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
 	const int elementCount = root->GetElementCount();
-	const aeRuleGroup::Ref rule(aeRuleGroup::Ref::NewWith());
+	const aeRuleGroup::Ref rule(aeRuleGroup::Ref::New());
 	int i;
 	
 	for(i=0; i<elementCount; i++){
@@ -2979,14 +2961,12 @@ aeRule *aeLSAnimator::pLoadRuleGroup(decXmlElementTag *root, aeAnimator &animato
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-aeRule *aeLSAnimator::pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimator &animator){
+aeRule::Ref aeLSAnimator::pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleSubAnimator::Ref rule(aeRuleSubAnimator::Ref::NewWith());
+	const aeRuleSubAnimator::Ref rule(aeRuleSubAnimator::Ref::New());
 	decXmlCharacterData *cdata;
 	decXmlElementTag *tag;
 	const char *name;
@@ -3051,14 +3031,12 @@ aeRule *aeLSAnimator::pLoadRuleSubAnimator(decXmlElementTag *root, aeAnimator &a
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-aeRule *aeLSAnimator::pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &animator){
+aeRule::Ref aeLSAnimator::pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleTrackTo::Ref rule(aeRuleTrackTo::Ref::NewWith());
+	const aeRuleTrackTo::Ref rule(aeRuleTrackTo::Ref::New());
 	decXmlElementTag *tag;
 	const char *name;
 	int i;
@@ -3217,14 +3195,12 @@ aeRule *aeLSAnimator::pLoadRuleTrackTo(decXmlElementTag *root, aeAnimator &anima
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
-aeRule *aeLSAnimator::pLoadRuleLimit(decXmlElementTag *root, aeAnimator &animator){
+aeRule::Ref aeLSAnimator::pLoadRuleLimit(decXmlElementTag *root, aeAnimator &animator){
 	deLogger &logger = *pLSSys->GetWindowMain()->GetEnvironment().GetLogger();
-	const aeRuleLimit::Ref rule(aeRuleLimit::Ref::NewWith());
+	const aeRuleLimit::Ref rule(aeRuleLimit::Ref::New());
 	decXmlElementTag *tag;
 	decVector vector;
 	const char *name;
@@ -3349,8 +3325,6 @@ aeRule *aeLSAnimator::pLoadRuleLimit(decXmlElementTag *root, aeAnimator &animato
 			}
 		}
 	}
-	
-	rule->AddReference(); // caller inherits reference
 	return rule;
 }
 
@@ -3450,13 +3424,13 @@ void aeLSAnimator::pLoadVector(decXmlElementTag *root, decVector &vector){
 			tag = root->GetElementIfTag(i);
 			if(tag){
 				if(strcmp(tag->GetName(), "x") == 0){
-					vector.x = strtof(GetCDataString(*tag), NULL);
+					vector.x = strtof(GetCDataString(*tag), nullptr);
 					
 				}else if(strcmp(tag->GetName(), "y") == 0){
-					vector.y = strtof(GetCDataString(*tag), NULL);
+					vector.y = strtof(GetCDataString(*tag), nullptr);
 					
 				}else if(strcmp(tag->GetName(), "z") == 0){
-					vector.z = strtof(GetCDataString(*tag), NULL);
+					vector.z = strtof(GetCDataString(*tag), nullptr);
 					
 				}else{
 					logger.LogWarnFormat(LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",

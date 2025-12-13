@@ -44,15 +44,13 @@ aeUSetRuleBlendFactor::aeUSetRuleBlendFactor(aeRule *rule, float newFactor){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	pOldFactor = rule->GetBlendFactor();
 	pNewFactor = newFactor;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule set blend factor");
 		
 	}catch(const deException &){
@@ -84,7 +82,4 @@ void aeUSetRuleBlendFactor::Redo(){
 //////////////////////
 
 void aeUSetRuleBlendFactor::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

@@ -179,37 +179,27 @@ void aeRuleAnimationSelect::RemoveLinksFromAllTargets(){
 
 
 
-deAnimatorRule *aeRuleAnimationSelect::CreateEngineRule(){
-	deAnimatorRuleAnimationSelect *engRule = NULL;
+deAnimatorRule::Ref aeRuleAnimationSelect::CreateEngineRule(){
+	const deAnimatorRuleAnimationSelect::Ref engRule(deAnimatorRuleAnimationSelect::Ref::New());
 	
-	try{
-		engRule = new deAnimatorRuleAnimationSelect;
-		
-		InitEngineRule(engRule);
-		
-		engRule->GetMoves() = pMoves;
-		engRule->SetEnablePosition(pEnablePosition);
-		engRule->SetEnableOrientation(pEnableOrientation);
-		engRule->SetEnableSize(pEnableSize);
-		engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
-		
-		pTargetMoveTime.UpdateEngineTarget(GetAnimator(), engRule->GetTargetMoveTime());
-		pTargetSelect.UpdateEngineTarget(GetAnimator(), engRule->GetTargetSelect());
-		
-	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
-		throw;
-	}
+	InitEngineRule(engRule);
+	
+	engRule->GetMoves() = pMoves;
+	engRule->SetEnablePosition(pEnablePosition);
+	engRule->SetEnableOrientation(pEnableOrientation);
+	engRule->SetEnableSize(pEnableSize);
+	engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
+	
+	pTargetMoveTime.UpdateEngineTarget(GetAnimator(), engRule->GetTargetMoveTime());
+	pTargetSelect.UpdateEngineTarget(GetAnimator(), engRule->GetTargetSelect());
 	
 	return engRule;
 }
 
 
 
-aeRule *aeRuleAnimationSelect::CreateCopy() const{
-	return new aeRuleAnimationSelect(*this);
+aeRule::Ref aeRuleAnimationSelect::CreateCopy() const{
+	return Ref::New(*this);
 }
 
 void aeRuleAnimationSelect::ListLinks(aeLinkList &list){

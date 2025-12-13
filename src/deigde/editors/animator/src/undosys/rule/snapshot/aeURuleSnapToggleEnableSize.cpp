@@ -44,12 +44,10 @@ aeURuleSnapToggleEnableSize::aeURuleSnapToggleEnableSize(aeRuleStateSnapshot *ru
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule state snapshot toggle enable size");
 		
 	}catch(const deException &){
@@ -81,7 +79,4 @@ void aeURuleSnapToggleEnableSize::Redo(){
 //////////////////////
 
 void aeURuleSnapToggleEnableSize::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

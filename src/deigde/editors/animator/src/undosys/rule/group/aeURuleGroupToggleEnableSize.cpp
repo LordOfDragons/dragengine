@@ -44,12 +44,10 @@ aeURuleGroupToggleEnableSize::aeURuleGroupToggleEnableSize(aeRuleGroup *rule){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule group toggle enable size");
 		
 	}catch(const deException &){
@@ -81,7 +79,4 @@ void aeURuleGroupToggleEnableSize::Redo(){
 //////////////////////
 
 void aeURuleGroupToggleEnableSize::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

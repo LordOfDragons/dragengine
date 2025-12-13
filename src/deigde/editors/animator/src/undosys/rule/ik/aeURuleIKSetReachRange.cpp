@@ -44,7 +44,7 @@ aeURuleIKSetReachRange::aeURuleIKSetReachRange(aeRuleInverseKinematic *rule, flo
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	SetShortInfo("Inverse kinematic set reach range");
 	
@@ -52,13 +52,9 @@ aeURuleIKSetReachRange::aeURuleIKSetReachRange(aeRuleInverseKinematic *rule, flo
 	pNewValue = newValue;
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleIKSetReachRange::~aeURuleIKSetReachRange(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

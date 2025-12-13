@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleTrackTo;
+#include "../../../animator/rule/aeRuleTrackTo.h"
 
 
 
@@ -35,8 +35,12 @@ class aeRuleTrackTo;
  * Undo Action Rule Track To Set Track Bone.
  */
 class aeURuleTrackToSetTrackBone : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleTrackToSetTrackBone> Ref;
+	
+	
 private:
-	aeRuleTrackTo *pRule;
+	aeRuleTrackTo::Ref pRule;
 	
 	decString pOldName;
 	decString pNewName;

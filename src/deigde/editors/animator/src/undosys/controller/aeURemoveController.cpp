@@ -42,8 +42,8 @@
 ////////////////////////////
 
 aeURemoveController::aeURemoveController(aeAnimator *animator, aeController *controller) :
-pAnimator(NULL),
-pController(NULL),
+
+
 pIndex(-1)
 {
 	if(!animator || !controller){
@@ -68,10 +68,7 @@ pIndex(-1)
 	}
 	
 	pAnimator = animator;
-	animator->AddReference();
-	
 	pController = controller;
-	controller->AddReference();
 }
 
 aeURemoveController::~aeURemoveController(){
@@ -97,7 +94,7 @@ void aeURemoveController::Redo(){
 	const int count = pLinksUsingController.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		pLinksUsingController.GetAt(i)->SetController(NULL, false);
+		pLinksUsingController.GetAt(i)->SetController(nullptr, false);
 	}
 	
 	pAnimator->RemoveController(pController);
@@ -109,10 +106,4 @@ void aeURemoveController::Redo(){
 //////////////////////
 
 void aeURemoveController::pCleanUp(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pAnimator){
-		pAnimator->FreeReference();
-	}
 }

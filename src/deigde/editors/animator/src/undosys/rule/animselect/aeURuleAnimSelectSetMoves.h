@@ -29,7 +29,7 @@
 
 #include <dragengine/common/string/decStringList.h>
 
-class aeRuleAnimationSelect;
+#include "../../../animator/rule/aeRuleAnimationSelect.h"
 
 
 
@@ -37,8 +37,12 @@ class aeRuleAnimationSelect;
  * Undo set rule animation select set moves.
  */
 class aeURuleAnimSelectSetMoves : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleAnimSelectSetMoves> Ref;
+	
+	
 private:
-	aeRuleAnimationSelect *pRule;
+	aeRuleAnimationSelect::Ref pRule;
 	
 	decStringList pOldMoves;
 	decStringList pNewMoves;

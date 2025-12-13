@@ -42,12 +42,10 @@
 aeURuleIKSetSolverBone::aeURuleIKSetSolverBone(aeRuleInverseKinematic *rule, const char *newName){
 	if(!rule || !newName) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldName = rule->GetSolverBone();
 		pNewName = newName;
 		

@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 
-class aeRule;
+#include "../../animator/rule/aeRule.h"
 
 
 
@@ -37,8 +37,12 @@ class aeRule;
  * Undo action rule set blend mode.
  */
 class aeUSetRuleBlendMode : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleBlendMode> Ref;
+	
+	
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 	deAnimatorRule::eBlendModes pOldMode;
 	deAnimatorRule::eBlendModes pNewMode;

@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleAnimation;
+#include "../../../animator/rule/aeRuleAnimation.h"
 
 
 
@@ -36,8 +36,12 @@ class aeRuleAnimation;
  * Undo rule animation set enable vertex position set.
  */
 class aeURuleAnimToggleEnableVertexPositionSet : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleAnimToggleEnableVertexPositionSet> Ref;
+	
+	
 private:
-	aeRuleAnimation *pRule;
+	aeRuleAnimation::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

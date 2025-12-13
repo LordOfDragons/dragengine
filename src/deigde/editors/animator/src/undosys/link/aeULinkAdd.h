@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeLink;
-class aeAnimator;
+#include "../../animator/link/aeLink.h"
+#include "../../animator/aeAnimator.h"
 
 
 
@@ -41,9 +41,13 @@ class aeAnimator;
  * Adds a link.
  */
 class aeULinkAdd : public igdeUndo{
+public:
+	typedef deTObjectReference<aeULinkAdd> Ref;
+	
+	
 private:
-	aeAnimator *pAnimator;
-	aeLink *pLink;
+	aeAnimator::Ref pAnimator;
+	aeLink::Ref pLink;
 	
 public:
 	/** \brief Type holding strong reference. */

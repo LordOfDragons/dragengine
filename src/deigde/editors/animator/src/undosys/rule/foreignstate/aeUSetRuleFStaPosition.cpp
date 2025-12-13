@@ -42,12 +42,10 @@
 aeUSetRuleFStaPosition::aeUSetRuleFStaPosition(aeRuleForeignState *rule, float newScale){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldScale = rule->GetScalePosition();
 		pNewScale = newScale;
 		

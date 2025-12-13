@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleBoneTransformator;
+#include "../../../animator/rule/aeRuleBoneTransformator.h"
 
 
 
@@ -35,8 +35,12 @@ class aeRuleBoneTransformator;
  * Undo action rule bone set target bone.
  */
 class aeURuleBTransSetTargetBone : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleBTransSetTargetBone> Ref;
+	
+	
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	
 	decString pOldBone;
 	decString pNewBone;

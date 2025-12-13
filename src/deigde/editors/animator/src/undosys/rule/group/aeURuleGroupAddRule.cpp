@@ -45,15 +45,12 @@ aeURuleGroupAddRule::aeURuleGroupAddRule(aeRuleGroup *group, aeRule *rule, int i
 		DETHROW(deeInvalidParam);
 	}
 	
-	pGroup = NULL;
-	pRule = NULL;
+	pGroup = nullptr;
+	pRule = nullptr;
 	pIndex = index;
 	
 	pGroup = group;
-	group->AddReference();
-	
 	pRule = rule;
-	rule->AddReference();
 }
 
 aeURuleGroupAddRule::~aeURuleGroupAddRule(){
@@ -80,10 +77,4 @@ void aeURuleGroupAddRule::Redo(){
 //////////////////////
 
 void aeURuleGroupAddRule::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }

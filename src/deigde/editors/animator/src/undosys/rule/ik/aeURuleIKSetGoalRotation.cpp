@@ -42,12 +42,10 @@
 aeURuleIKSetGoalRotation::aeURuleIKSetGoalRotation(aeRuleInverseKinematic *rule, const decVector &newRot){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldRot = rule->GetGoalOrientation();
 		pNewRot = newRot;
 		

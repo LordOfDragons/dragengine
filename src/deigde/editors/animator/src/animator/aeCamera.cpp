@@ -30,11 +30,11 @@
 #include "aeAnimator.h"
 #include "locomotion/aeAnimatorLocomotion.h"
 
-#include "dragengine/deEngine.h"
-#include "dragengine/common/exceptions.h"
-#include "dragengine/resources/component/deComponent.h"
-#include "dragengine/resources/component/deComponentBone.h"
-#include "dragengine/resources/rig/deRig.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/component/deComponentBone.h>
+#include <dragengine/resources/rig/deRig.h>
 
 
 

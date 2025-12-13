@@ -44,18 +44,14 @@ aeURuleLimitSetEnablePosZMin::aeURuleLimitSetEnablePosZMin(aeRuleLimit *rule){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	SetShortInfo("Limit toggle enable minimum z position");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnablePosZMin::~aeURuleLimitSetEnablePosZMin(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

@@ -33,6 +33,13 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/resources/rig/deRig.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/light/deLight.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/collider/deColliderComponent.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
@@ -55,14 +62,7 @@ class igdeWSky;
 class igdeWCoordSysArrows;
 
 class deEngine;
-class deWorld;
-class deLight;
-class deComponent;
 class deColliderVolume;
-class deColliderComponent;
-class deDebugDrawer;
-class deAnimator;
-class deAnimatorInstance;
 class deAnimatorRule;
 class deLogger;
 
@@ -102,19 +102,19 @@ public:
 	
 private:
 	aeWindowMain &pWindowMain;
-	deWorld *pEngWorld;
+	deWorld::Ref pEngWorld;
 	
 	igdeWSky *pSky;
 	igdeWObject::Ref pEnvObject;
 	
-	deLight *pEngLight;
-	deComponent *pEngComponent;
-	deAnimator *pEngAnimator;
-	deAnimatorInstance *pEngAnimatorInstance;
-	deColliderComponent *pEngCollider;
+	deLight::Ref pEngLight;
+	deComponent::Ref pEngComponent;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
+	deColliderComponent::Ref pEngCollider;
 	deRig::Ref pEngRig;
 	
-	deDebugDrawer *pDDBones;
+	deDebugDrawer::Ref pDDBones;
 	igdeWCoordSysArrows *pDDSBones;
 	int pDDSBoneCount;
 	float pDDSBoneSize;
@@ -227,7 +227,7 @@ public:
 	void SetTimeStep(float timeStep);
 	
 	/** Retrieves the engine debug drawer for bones. */
-	inline deDebugDrawer *GetDDBones() const{ return pDDBones; }
+	inline const deDebugDrawer::Ref &GetDDBones() const{ return pDDBones; }
 	
 	/** Retrieves the sky wrapper. */
 	inline igdeWSky *GetSky() const{ return pSky; }
@@ -265,24 +265,24 @@ public:
 	/** \name Engine Specific */
 	/*@{*/
 	/** Retrieves the engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	/** Retrieves the engine animator. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	/** Retrieves the engine animator instance. */
-	inline deAnimatorInstance *GetEngineAnimatorInstance() const{ return pEngAnimatorInstance; }
+	inline const deAnimatorInstance::Ref &GetEngineAnimatorInstance() const{ return pEngAnimatorInstance; }
 	/** Retrieves the engine component. */
-	inline deComponent *GetEngineComponent() const{ return pEngComponent; }
+	inline const deComponent::Ref &GetEngineComponent() const{ return pEngComponent; }
 	/** Retrieves the engine light. */
-	inline deLight *GetEngineLight() const{ return pEngLight; }
+	inline const deLight::Ref &GetEngineLight() const{ return pEngLight; }
 	/** Retrieves the engine collider. */
-	inline deColliderComponent *GetEngineCollider() const{ return pEngCollider; }
+	inline const deColliderComponent::Ref &GetEngineCollider() const{ return pEngCollider; }
 	/** Updates the world. */
 	void UpdateWorld(float elapsed);
 	/** Retrieves the camera. */
 	inline aeCamera *GetCamera() const{ return pCamera; }
 	
 	/** Engine rig if present. */
-	inline deRig *GetEngineRig() const{ return pEngRig; }
+	inline const deRig::Ref &GetEngineRig() const{ return pEngRig; }
 	/*@}*/
 	
 	
@@ -307,10 +307,10 @@ public:
 	/** Remove all controllers. */
 	void RemoveAllControllers();
 	
-	/** Active controller or NULL. */
+	/** Active controller or nullptr. */
 	inline aeController *GetActiveController() const{ return pActiveController; }
 	
-	/** Set active controller or NULL. */
+	/** Set active controller or nullptr. */
 	void SetActiveController(aeController *controller);
 	
 	/** Reset all controllers for use with the locomotion system. */
@@ -342,10 +342,10 @@ public:
 	/** Remove all links. */
 	void RemoveAllLinks();
 	
-	/** Active link or NULL. */
+	/** Active link or nullptr. */
 	inline aeLink *GetActiveLink() const{ return pActiveLink; }
 	
-	/** Set active link or NULL. */
+	/** Set active link or nullptr. */
 	void SetActiveLink(aeLink *link);
 	
 	/** Number of targets using a given link. */
@@ -374,10 +374,10 @@ public:
 	/** Remove all rules. */
 	void RemoveAllRules();
 	
-	/** Active rule or NULL. */
+	/** Active rule or nullptr. */
 	inline aeRule *GetActiveRule() const{ return pActiveRule; }
 	
-	/** Set active rule or NULL. */
+	/** Set active rule or nullptr. */
 	void SetActiveRule(aeRule *rule);
 	
 	/** Rebuild rules. */
@@ -432,7 +432,7 @@ public:
 	inline int GetAttachmentCount() const{ return pAttachmentCount; }
 	/** Retrieves the attachment at the given index. */
 	aeAttachment *GetAttachmentAt(int index) const;
-	/** Retrieves the attachment with the given name or NULL if not found. */
+	/** Retrieves the attachment with the given name or nullptr if not found. */
 	aeAttachment *GetAttachmentNamed(const char *name) const;
 	/** Retrieves the index of the attachment or -1 if not found. */
 	int IndexOfAttachment(aeAttachment *attachment) const;
@@ -446,9 +446,9 @@ public:
 	void RemoveAttachment(aeAttachment *attachment);
 	/** Removes all attachments. */
 	void RemoveAllAttachments();
-	/** Retrieves the active attachment or NULL. */
+	/** Retrieves the active attachment or nullptr. */
 	inline aeAttachment *GetActiveAttachment() const{ return pActiveAttachment; }
-	/** Sets the active attachment or NULL. */
+	/** Sets the active attachment or nullptr. */
 	void SetActiveAttachment(aeAttachment *attachment);
 	
 	/** Attach all attachments. */

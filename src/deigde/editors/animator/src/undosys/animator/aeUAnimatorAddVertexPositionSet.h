@@ -35,6 +35,10 @@ class aeAnimator;
  * Undo action animator add bone.
  */
 class aeUAnimatorAddVertexPositionSet : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUAnimatorAddVertexPositionSet> Ref;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	decStringSet pVertexPositionSets;

@@ -36,6 +36,10 @@
  * Undo action paste controller.
  */
 class aeUControllerPaste : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUControllerPaste> Ref;
+	
+	
 private:
 	const aeAnimator::Ref pAnimator;
 	aeControllerList pControllerList;

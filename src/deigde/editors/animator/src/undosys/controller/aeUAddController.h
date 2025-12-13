@@ -31,8 +31,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeController;
-class aeAnimator;
+#include "../../animator/controller/aeController.h"
+#include "../../animator/aeAnimator.h"
 
 
 
@@ -42,9 +42,13 @@ class aeAnimator;
  * Undo object for adding a controller.
  */
 class aeUAddController : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUAddController> Ref;
+	
+	
 private:
-	aeAnimator *pAnimator;
-	aeController *pController;
+	aeAnimator::Ref pAnimator;
+	aeController::Ref pController;
 	
 public:
 	/** \brief Type holding strong reference. */

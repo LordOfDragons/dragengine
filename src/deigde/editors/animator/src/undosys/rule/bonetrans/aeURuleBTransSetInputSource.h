@@ -34,8 +34,12 @@
  * Undo action rule bone set input source.
  */
 class aeURuleBTransSetInputSource : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleBTransSetInputSource> Ref;
+	
+	
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	deAnimatorRuleBoneTransformator::eInputSources pOldValue, pNewValue;
 	
 public:

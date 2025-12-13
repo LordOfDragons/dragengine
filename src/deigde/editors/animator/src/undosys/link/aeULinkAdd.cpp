@@ -44,16 +44,13 @@
 aeULinkAdd::aeULinkAdd(aeAnimator *animator, aeLink *link){
 	if(!link || !animator) DETHROW(deeInvalidParam);
 	
-	pAnimator = NULL;
-	pLink = NULL;
+	pAnimator = nullptr;
+	pLink = nullptr;
 	
 	SetShortInfo("Add Link");
 	
 	pAnimator = animator;
-	pAnimator->AddReference();
-	
 	pLink = link;
-	pLink->AddReference();
 }
 
 aeULinkAdd::~aeULinkAdd(){

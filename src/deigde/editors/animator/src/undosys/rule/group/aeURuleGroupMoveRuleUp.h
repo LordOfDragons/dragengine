@@ -29,7 +29,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 class aeRule;
-class aeRuleGroup;
+#include "../../../animator/rule/aeRuleGroup.h"
 
 
 
@@ -37,9 +37,13 @@ class aeRuleGroup;
  * Undo action rule group move rule up.
  */
 class aeURuleGroupMoveRuleUp : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleGroupMoveRuleUp> Ref;
+	
+	
 private:
-	aeRuleGroup *pGroup;
-	aeRule *pRule;
+	aeRuleGroup::Ref pGroup;
+	aeRule::Ref pRule;
 	int pIndex;
 	
 public:

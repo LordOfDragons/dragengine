@@ -86,21 +86,21 @@ public:
 	/** Set the parent animator. */
 	void SetAnimator(aeAnimator *animator);
 	
-	/** Retrieve the engine animator rule or NULL. */
+	/** Retrieve the engine animator rule or nullptr. */
 	inline deAnimatorRule *GetEngineRule() const{ return pEngRule; }
-	/** Set the engine animator rule or NULL. */
+	/** Set the engine animator rule or nullptr. */
 	void SetEngineRule(deAnimatorRule *rule);
 	/** Create an engine animator rule. */
-	virtual deAnimatorRule *CreateEngineRule() = 0;
+	virtual deAnimatorRule::Ref CreateEngineRule() = 0;
 	/** Init the given engine rule with the default rule properties. */
 	void InitEngineRule(deAnimatorRule *engRule) const;
 	
 	/** Retrieve the rule type. */
 	inline deAnimatorRuleVisitorIdentify::eRuleTypes GetType() const{ return pType; }
 	
-	/** Retrieve the parent group or NULL if there is none. */
+	/** Retrieve the parent group or nullptr if there is none. */
 	inline aeRuleGroup *GetParentGroup() const{ return pParentGroup; }
-	/** Set the parent group or NULL if there is none. */
+	/** Set the parent group or nullptr if there is none. */
 	void SetParentGroup(aeRuleGroup *group);
 	
 	/** Retrieve the name. */
@@ -148,7 +148,7 @@ public:
 	void NotifyRuleChanged();
 	
 	/** Create a copy of this rule. */
-	virtual aeRule *CreateCopy() const = 0;
+	virtual aeRule::Ref CreateCopy() const = 0;
 	
 	/** Parent animator changed. */
 	virtual void OnParentAnimatorChanged();

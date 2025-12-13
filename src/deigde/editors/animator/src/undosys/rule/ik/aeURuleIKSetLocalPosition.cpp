@@ -42,12 +42,10 @@
 aeURuleIKSetLocalPosition::aeURuleIKSetLocalPosition(aeRuleInverseKinematic *rule, const decVector &newPos){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldPos = rule->GetLocalPosition();
 		pNewPos = newPos;
 		

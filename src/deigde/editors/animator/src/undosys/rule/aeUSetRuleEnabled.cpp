@@ -42,12 +42,10 @@
 aeUSetRuleEnabled::aeUSetRuleEnabled(aeRule *rule){
 	if(!rule) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Set rule enabled");
 		
 	}catch(const deException &){

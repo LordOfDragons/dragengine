@@ -44,18 +44,14 @@ aeURuleLimitSetEnableScaleYMax::aeURuleLimitSetEnableScaleYMax(aeRuleLimit *rule
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	SetShortInfo("Limit toggle enable maximum y scaling");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableScaleYMax::~aeURuleLimitSetEnableScaleYMax(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

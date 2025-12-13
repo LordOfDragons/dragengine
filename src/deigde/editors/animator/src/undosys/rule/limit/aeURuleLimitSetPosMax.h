@@ -30,7 +30,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class aeRuleLimit;
+#include "../../../animator/rule/aeRuleLimit.h"
 
 
 
@@ -38,8 +38,12 @@ class aeRuleLimit;
  * Undo action rule limitor set maximum translation.
  */
 class aeURuleLimitSetPosMax : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleLimitSetPosMax> Ref;
+	
+	
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	decVector pOldMax;
 	decVector pNewMax;

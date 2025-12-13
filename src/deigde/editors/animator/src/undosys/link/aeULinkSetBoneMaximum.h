@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeLink;
+#include "../../animator/link/aeLink.h"
 
 
 
@@ -35,8 +35,12 @@ class aeLink;
  * Undo action set link bone maximum.
  */
 class aeULinkSetBoneMaximum : public igdeUndo{
+public:
+	typedef deTObjectReference<aeULinkSetBoneMaximum> Ref;
+	
+	
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	float pOldValue;
 	float pNewValue;

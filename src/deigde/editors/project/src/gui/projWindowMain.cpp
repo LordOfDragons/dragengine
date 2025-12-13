@@ -431,6 +431,7 @@ protected:
 	projWindowMain &pWindow;
 	
 public:
+	typedef deTObjectReference<cActionBase> Ref;
 	cActionBase(projWindowMain &window, const char *text, igdeIcon *icon, const char *description,
 		int modifiers = deInputEvent::esmNone, deInputEvent::eKeyCodes keyCode = deInputEvent::ekcUndefined,
 		deInputEvent::eKeyCodes mnemonic = deInputEvent::ekcUndefined) :

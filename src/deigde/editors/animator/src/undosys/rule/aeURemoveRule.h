@@ -31,8 +31,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRule;
-class aeAnimator;
+#include "../../animator/rule/aeRule.h"
+#include "../../animator/aeAnimator.h"
 
 
 
@@ -42,9 +42,13 @@ class aeAnimator;
  * Undo object for removing a rule.
  */
 class aeURemoveRule : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURemoveRule> Ref;
+	
+	
 private:
-	aeAnimator *pAnimator;
-	aeRule *pRule;
+	aeAnimator::Ref pAnimator;
+	aeRule::Ref pRule;
 	int pIndex;
 	
 public:

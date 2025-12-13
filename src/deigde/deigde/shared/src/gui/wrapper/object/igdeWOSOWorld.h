@@ -151,9 +151,7 @@ private:
 	private:
 		class Texture : public deObject{
 		public:
-			/** \brief Type holding strong reference. */
 			typedef deTObjectReference<Texture> Ref;
-			
 			
 			const ChildObject::Ref object;
 			const ChildObjectTexture::Ref texture;

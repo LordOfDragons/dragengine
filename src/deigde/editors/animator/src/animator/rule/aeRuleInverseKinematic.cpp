@@ -230,12 +230,13 @@ void aeRuleInverseKinematic::SetReachCenter(const decVector &center){
 
 
 void aeRuleInverseKinematic::UpdateTargets(){
-	deAnimatorRuleInverseKinematic *engRule = (deAnimatorRuleInverseKinematic*)GetEngineRule();
+	deAnimatorRuleInverseKinematic * const engRule =
+		static_cast<deAnimatorRuleInverseKinematic*>(GetEngineRule());
 	
 	aeRule::UpdateTargets();
 	
 	if(engRule){
-		aeAnimator *animator = GetAnimator();
+		aeAnimator * const animator = GetAnimator();
 		
 		pTargetGoalPosition.UpdateEngineTarget(animator, engRule->GetTargetGoalPosition());
 		pTargetGoalOrientation.UpdateEngineTarget(animator, engRule->GetTargetGoalOrientation());
@@ -311,53 +312,39 @@ void aeRuleInverseKinematic::RemoveLinksFromAllTargets(){
 
 
 
-deAnimatorRule *aeRuleInverseKinematic::CreateEngineRule(){
-	deAnimatorRuleInverseKinematic *engRule = NULL;
-	aeAnimator *animator = GetAnimator();
+deAnimatorRule::Ref aeRuleInverseKinematic::CreateEngineRule(){
+	const deAnimatorRuleInverseKinematic::Ref engRule(deAnimatorRuleInverseKinematic::Ref::New());
 	
-	try{
-		// create rule
-		engRule = new deAnimatorRuleInverseKinematic;
-		if(!engRule) DETHROW(deeOutOfMemory);
-		
-		// init rule
-		InitEngineRule(engRule);
-		
-		engRule->SetGoalPosition(pGoalPosition);
-		engRule->SetGoalOrientation(decMatrix::CreateRotation(pGoalOrientation * DEG2RAD).ToQuaternion());
-		engRule->SetLocalPosition(pLocalPosition);
-		engRule->SetLocalOrientation(decMatrix::CreateRotation(pLocalOrientation * DEG2RAD).ToQuaternion());
-		engRule->SetAdjustOrientation(pAdjustOrientation);
-		
-		engRule->SetUseSolverBone(pUseSolverBone);
-		engRule->SetSolverBone(pSolverBone);
-		
-		engRule->SetReachRange(pReachRange);
-		engRule->SetReachCenter(pReachCenter);
-		engRule->SetReachBone(pReachBone);
-		
-		pTargetGoalPosition.UpdateEngineTarget(animator, engRule->GetTargetGoalPosition());
-		pTargetGoalOrientation.UpdateEngineTarget(animator, engRule->GetTargetGoalOrientation());
-		pTargetLocalPosition.UpdateEngineTarget(animator, engRule->GetTargetLocalPosition());
-		pTargetLocalOrientation.UpdateEngineTarget(animator, engRule->GetTargetLocalOrientation());
-		pTargetReachRange.UpdateEngineTarget(animator, engRule->GetTargetReachRange());
-		pTargetReachCenter.UpdateEngineTarget(animator, engRule->GetTargetReachCenter());
-		
-	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
-		throw;
-	}
+	InitEngineRule(engRule);
 	
-	// finished
+	engRule->SetGoalPosition(pGoalPosition);
+	engRule->SetGoalOrientation(decMatrix::CreateRotation(pGoalOrientation * DEG2RAD).ToQuaternion());
+	engRule->SetLocalPosition(pLocalPosition);
+	engRule->SetLocalOrientation(decMatrix::CreateRotation(pLocalOrientation * DEG2RAD).ToQuaternion());
+	engRule->SetAdjustOrientation(pAdjustOrientation);
+	
+	engRule->SetUseSolverBone(pUseSolverBone);
+	engRule->SetSolverBone(pSolverBone);
+	
+	engRule->SetReachRange(pReachRange);
+	engRule->SetReachCenter(pReachCenter);
+	engRule->SetReachBone(pReachBone);
+	
+	aeAnimator * const animator = GetAnimator();
+	pTargetGoalPosition.UpdateEngineTarget(animator, engRule->GetTargetGoalPosition());
+	pTargetGoalOrientation.UpdateEngineTarget(animator, engRule->GetTargetGoalOrientation());
+	pTargetLocalPosition.UpdateEngineTarget(animator, engRule->GetTargetLocalPosition());
+	pTargetLocalOrientation.UpdateEngineTarget(animator, engRule->GetTargetLocalOrientation());
+	pTargetReachRange.UpdateEngineTarget(animator, engRule->GetTargetReachRange());
+	pTargetReachCenter.UpdateEngineTarget(animator, engRule->GetTargetReachCenter());
+	
 	return engRule;
 }
 
 
 
-aeRule *aeRuleInverseKinematic::CreateCopy() const{
-	return new aeRuleInverseKinematic(*this);
+aeRule::Ref aeRuleInverseKinematic::CreateCopy() const{
+	return Ref::New(*this);
 }
 
 void aeRuleInverseKinematic::ListLinks(aeLinkList &list){

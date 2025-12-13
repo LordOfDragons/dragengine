@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleSubAnimator;
+#include "../../../animator/rule/aeRuleSubAnimator.h"
 
 
 
@@ -36,8 +36,12 @@ class aeRuleSubAnimator;
  * Undo rule sub animator set enable size.
  */
 class aeURuleSubAnimToggleEnableSize : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleSubAnimToggleEnableSize> Ref;
+	
+	
 private:
-	aeRuleSubAnimator *pRule;
+	aeRuleSubAnimator::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

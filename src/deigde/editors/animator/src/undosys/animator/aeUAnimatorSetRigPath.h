@@ -35,6 +35,10 @@ class aeAnimator;
  * Undo action animator set rig path.
  */
 class aeUAnimatorSetRigPath : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUAnimatorSetRigPath> Ref;
+	
+	
 private:
 	aeAnimator *pAnimator;
 	decString pOldValue;

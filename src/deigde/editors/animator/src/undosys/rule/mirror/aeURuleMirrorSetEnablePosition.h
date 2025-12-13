@@ -35,6 +35,10 @@
  * Undo set rule mirror enable position.
  */
 class aeURuleMirrorSetEnablePosition : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleMirrorSetEnablePosition> Ref;
+	
+	
 private:
 	const aeRuleMirror::Ref pRule;
 	

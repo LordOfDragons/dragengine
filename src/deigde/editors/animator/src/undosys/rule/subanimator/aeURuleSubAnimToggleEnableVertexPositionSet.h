@@ -27,15 +27,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleSubAnimator;
+#include "../../../animator/rule/aeRuleSubAnimator.h"
 
 
 /**
  * Undo rule sub animator set enable vertex position set.
  */
 class aeURuleSubAnimToggleEnableVertexPositionSet : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleSubAnimToggleEnableVertexPositionSet> Ref;
+	
+	
 private:
-	aeRuleSubAnimator *pRule;
+	aeRuleSubAnimator::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

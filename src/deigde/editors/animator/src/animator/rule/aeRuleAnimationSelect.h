@@ -114,7 +114,7 @@ public:
 	
 	
 	/** Create engine animator rule. */
-	deAnimatorRule *CreateEngineRule() override;
+	deAnimatorRule::Ref CreateEngineRule() override;
 	
 	
 	
@@ -133,7 +133,7 @@ public:
 	
 	
 	/** Create copy of rule. */
-	aeRule *CreateCopy() const override;
+	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLinkList& list) override;

@@ -29,7 +29,7 @@
 #include "../../animator/link/aeLinkList.h"
 
 class aeRule;
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 
 
 
@@ -37,8 +37,12 @@ class aeAnimator;
  * Undo action remove unused links.
  */
 class aeULinkRemoveUnused : public igdeUndo{
+public:
+	typedef deTObjectReference<aeULinkRemoveUnused> Ref;
+	
+	
 private:
-	aeAnimator *pAnimator;
+	aeAnimator::Ref pAnimator;
 	aeLinkList pLinks;
 	
 	

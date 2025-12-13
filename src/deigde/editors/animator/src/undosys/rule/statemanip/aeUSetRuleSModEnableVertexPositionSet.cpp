@@ -41,8 +41,6 @@ aeUSetRuleSModEnableVertexPositionSet::aeUSetRuleSModEnableVertexPositionSet(aeR
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Set state manipulator rule enable vertex position set");
 		
 	}catch(const deException &){
@@ -74,7 +72,4 @@ void aeUSetRuleSModEnableVertexPositionSet::Redo(){
 //////////////////////
 
 void aeUSetRuleSModEnableVertexPositionSet::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

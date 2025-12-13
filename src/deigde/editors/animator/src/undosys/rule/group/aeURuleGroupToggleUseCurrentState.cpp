@@ -44,12 +44,10 @@ aeURuleGroupToggleUseCurrentState::aeURuleGroupToggleUseCurrentState(aeRuleGroup
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule group toggle use current state");
 		
 	}catch(const deException &){
@@ -81,7 +79,4 @@ void aeURuleGroupToggleUseCurrentState::Redo(){
 //////////////////////
 
 void aeURuleGroupToggleUseCurrentState::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

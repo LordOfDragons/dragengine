@@ -71,9 +71,9 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 	decVector boxHalfSize(5.0f, 0.05f, 5.0f);
 	decVector boxPosition(0.0f, -boxHalfSize.y, 0.0f);
 	decLayerMask layermask;
-	deSkin *engSkin = NULL;
-	deModel *engModel = NULL;
-	decShape *shapeBox = NULL;
+	deSkin::Ref engSkin;
+	deModel::Ref engModel;
+	decShape *shapeBox = nullptr;
 	decShapeList shapeList;
 	
 	//layermask.SetBit( aeAnimator::eclTerrain );
@@ -83,8 +83,8 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 	
 	pAnimator = animator;
 	
-	pEngComponent = NULL;
-	pEngCollider = NULL;
+	pEngComponent = nullptr;
+	pEngCollider = nullptr;
 	
 	pEnabled = false;
 	
@@ -106,10 +106,8 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 		
 		pEngComponent = engine->GetComponentManager()->CreateComponent(engModel, engSkin);
 		pEngComponent->SetVisible(pEnabled);
-		engModel->FreeReference();
-		engModel = NULL;
-		engSkin->FreeReference();
-		engSkin = NULL;
+		engModel = nullptr;
+		engSkin = nullptr;
 		engWorld.AddComponent(pEngComponent);
 		
 		pEngCollider = engine->GetColliderManager()->CreateColliderVolume();
@@ -121,7 +119,7 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 		
 		shapeBox = new decShapeBox(boxHalfSize, boxPosition);
 		shapeList.Add(shapeBox);
-		shapeBox = NULL;
+		shapeBox = nullptr;
 		pEngCollider->SetShapes(shapeList);
 		
 		engWorld.AddCollider(pEngCollider);
@@ -129,12 +127,6 @@ aeWakeboard::aeWakeboard(aeAnimator *animator){
 	}catch(const deException &){
 		if(shapeBox){
 			delete shapeBox;
-		}
-		if(engSkin){
-			engSkin->FreeReference();
-		}
-		if(engModel){
-			engModel->FreeReference();
 		}
 		pCleanUp();
 		throw;
@@ -238,12 +230,10 @@ void aeWakeboard::pCleanUp(){
 		
 		if(pEngCollider){
 			engWorld.RemoveCollider(pEngCollider);
-			pEngCollider->FreeReference();
 		}
 		
 		if(pEngComponent){
 			engWorld.RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 		}
 	}
 }

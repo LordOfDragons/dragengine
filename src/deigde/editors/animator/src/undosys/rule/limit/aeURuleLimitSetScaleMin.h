@@ -30,7 +30,7 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class aeRuleLimit;
+#include "../../../animator/rule/aeRuleLimit.h"
 
 
 
@@ -38,8 +38,12 @@ class aeRuleLimit;
  * Undo action rule limitor set minimum scaling.
  */
 class aeURuleLimitSetScaleMin : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleLimitSetScaleMin> Ref;
+	
+	
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	decVector pOldMin;
 	decVector pNewMin;

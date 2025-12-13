@@ -28,7 +28,7 @@
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 
-class aeLink;
+#include "../../animator/link/aeLink.h"
 
 
 
@@ -36,8 +36,12 @@ class aeLink;
  * Undo action set bone parameter..
  */
 class aeULinkSetBoneParameter : public igdeUndo{
+public:
+	typedef deTObjectReference<aeULinkSetBoneParameter> Ref;
+	
+	
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	deAnimatorLink::eBoneParameter pOldValue;
 	deAnimatorLink::eBoneParameter pNewValue;

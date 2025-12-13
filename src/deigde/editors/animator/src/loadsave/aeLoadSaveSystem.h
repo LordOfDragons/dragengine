@@ -25,12 +25,12 @@
 #ifndef _AELOADSAVESYSTEM_H_
 #define _AELOADSAVESYSTEM_H_
 
+#include "../animator/aeAnimator.h"
 #include <deigde/gui/filedialog/igdeFilePatternList.h>
 
 class aeLoadSaveAttachmentConfig;
 class aeLSAnimator;
 class aeWindowMain;
-class aeAnimator;
 class igdeGameDefinition;
 class igdeFilePatternList;
 
@@ -55,7 +55,7 @@ public:
 	// actor animators management
 	inline aeWindowMain *GetWindowMain() const{ return pWndMain; }
 	inline aeLSAnimator *GetLSAnimator() const{ return pLSAnimator; }
-	aeAnimator *LoadAnimator(const char *filename);
+	aeAnimator::Ref LoadAnimator(const char *filename);
 	void SaveAnimator(aeAnimator *animator, const char *filename);
 	
 	

@@ -170,7 +170,7 @@ public:
 	
 	
 	/** Create an engine animator rule. */
-	deAnimatorRule *CreateEngineRule() override;
+	deAnimatorRule::Ref CreateEngineRule() override;
 	
 	/** Update targets. */
 	void UpdateTargets() override;
@@ -187,7 +187,7 @@ public:
 	
 	
 	/** Create a copy of this rule. */
-	aeRule *CreateCopy() const override;
+	aeRule::Ref CreateCopy() const override;
 	
 	
 	

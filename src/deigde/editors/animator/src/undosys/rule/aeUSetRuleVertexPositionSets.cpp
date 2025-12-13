@@ -37,7 +37,7 @@
 ////////////////////////////
 
 aeUSetRuleVertexPositionSets::aeUSetRuleVertexPositionSets(aeRule *rule, const decStringSet &newValue) :
-pRule(nullptr),
+
 pNewValue(newValue)
 {
 	DEASSERT_NOTNULL(rule)
@@ -46,13 +46,9 @@ pNewValue(newValue)
 	SetShortInfo("Set rule vertex position sets");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleVertexPositionSets::~aeUSetRuleVertexPositionSets(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleLimit;
+#include "../../../animator/rule/aeRuleLimit.h"
 
 
 
@@ -35,8 +35,12 @@ class aeRuleLimit;
  * Undo action rule limit toggle enable z scaling.
  */
 class aeURuleLimitSetEnableScaleZMax : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleLimitSetEnableScaleZMax> Ref;
+	
+	
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

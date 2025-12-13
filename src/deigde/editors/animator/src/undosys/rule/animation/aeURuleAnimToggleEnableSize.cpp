@@ -44,12 +44,10 @@ aeURuleAnimToggleEnableSize::aeURuleAnimToggleEnableSize(aeRuleAnimation *rule){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		SetShortInfo("Rule animation toggle enable size");
 		
 	}catch(const deException &){
@@ -81,7 +79,4 @@ void aeURuleAnimToggleEnableSize::Redo(){
 //////////////////////
 
 void aeURuleAnimToggleEnableSize::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

@@ -213,42 +213,28 @@ void aeRuleTrackTo::RemoveLinksFromAllTargets(){
 
 
 
-deAnimatorRule *aeRuleTrackTo::CreateEngineRule(){
-	deAnimatorRuleTrackTo *engRule = NULL;
-	aeAnimator *animator = GetAnimator();
+deAnimatorRule::Ref aeRuleTrackTo::CreateEngineRule(){
+	const deAnimatorRuleTrackTo::Ref engRule(deAnimatorRuleTrackTo::Ref::New());
 	
-	try{
-		// create rule
-		engRule = new deAnimatorRuleTrackTo;
-		if(!engRule) DETHROW(deeOutOfMemory);
-		
-		// init rule
-		InitEngineRule(engRule);
-		
-		engRule->SetTrackBone(pTrackBone);
-		engRule->SetTrackAxis(pTrackAxis);
-		engRule->SetUpAxis(pUpAxis);
-		engRule->SetUpTarget(pUpTarget);
-		engRule->SetLockedAxis(pLockedAxis);
-		
-		pTargetPosition.UpdateEngineTarget(animator, engRule->GetTargetPosition());
-		pTargetUp.UpdateEngineTarget(animator, engRule->GetTargetUp());
-		
-	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
-		throw;
-	}
+	InitEngineRule(engRule);
 	
-	// finished
+	engRule->SetTrackBone(pTrackBone);
+	engRule->SetTrackAxis(pTrackAxis);
+	engRule->SetUpAxis(pUpAxis);
+	engRule->SetUpTarget(pUpTarget);
+	engRule->SetLockedAxis(pLockedAxis);
+	
+	aeAnimator * const animator = GetAnimator();
+	pTargetPosition.UpdateEngineTarget(animator, engRule->GetTargetPosition());
+	pTargetUp.UpdateEngineTarget(animator, engRule->GetTargetUp());
+	
 	return engRule;
 }
 
 
 
-aeRule *aeRuleTrackTo::CreateCopy() const{
-	return new aeRuleTrackTo(*this);
+aeRule::Ref aeRuleTrackTo::CreateCopy() const{
+	return Ref::New(*this);
 }
 
 void aeRuleTrackTo::ListLinks(aeLinkList &list){

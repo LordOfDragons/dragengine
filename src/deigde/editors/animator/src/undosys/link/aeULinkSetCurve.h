@@ -35,6 +35,10 @@
  * Undo link set curve.
  */
 class aeULinkSetCurve : public igdeUndo{
+public:
+	typedef deTObjectReference<aeULinkSetCurve> Ref;
+	
+	
 private:
 	const aeLink::Ref pLink;
 	decCurveBezier pOldCurve;

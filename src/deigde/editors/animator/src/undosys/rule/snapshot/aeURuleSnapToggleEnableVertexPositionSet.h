@@ -28,15 +28,19 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleStateSnapshot;
+#include "../../../animator/rule/aeRuleStateSnapshot.h"
 
 
 /**
  * Undo rule state snapshot set enable vertex position set.
  */
 class aeURuleSnapToggleEnableVertexPositionSet : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleSnapToggleEnableVertexPositionSet> Ref;
+	
+	
 private:
-	aeRuleStateSnapshot *pRule;
+	aeRuleStateSnapshot::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

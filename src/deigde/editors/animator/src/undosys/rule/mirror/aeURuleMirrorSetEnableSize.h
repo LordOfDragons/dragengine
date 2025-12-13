@@ -35,6 +35,10 @@
  * Undo set rule mirror enable size.
  */
 class aeURuleMirrorSetEnableSize : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleMirrorSetEnableSize> Ref;
+	
+	
 private:
 	const aeRuleMirror::Ref pRule;
 	

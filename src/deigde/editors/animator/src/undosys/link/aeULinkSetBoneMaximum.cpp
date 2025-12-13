@@ -45,21 +45,16 @@ aeULinkSetBoneMaximum::aeULinkSetBoneMaximum(aeLink *link, float newBoneMaximum)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pLink = NULL;
+	pLink = nullptr;
 	
 	SetShortInfo("Link set bone maximum");
 	
 	pLink = link;
-	pLink->AddReference();
-	
 	pOldValue = link->GetBoneMaximum();
 	pNewValue = newBoneMaximum;
 }
 
 aeULinkSetBoneMaximum::~aeULinkSetBoneMaximum(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

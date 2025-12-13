@@ -161,7 +161,7 @@ public:
 	inline const aeControllerTarget &GetTargetScaling() const{ return pTargetScaling; }
 	
 	/** Creates an engine animator rule. */
-	deAnimatorRule *CreateEngineRule() override;
+	deAnimatorRule::Ref CreateEngineRule() override;
 	/** Update targets. */
 	void UpdateTargets() override;
 	/** Retrieve the number of targets using a given link. */
@@ -172,7 +172,7 @@ public:
 	void RemoveLinksFromAllTargets() override;
 	
 	/** Create a copy of this rule. */
-	aeRule *CreateCopy() const override;
+	aeRule::Ref CreateCopy() const override;
 	
 	/** List all links of all rule targets. */
 	void ListLinks(aeLinkList& list) override;

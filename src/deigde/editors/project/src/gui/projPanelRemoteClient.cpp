@@ -68,6 +68,7 @@ namespace{
 class cActionDisconnect : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
+	typedef deTObjectReference<cActionDisconnect> Ref;
 	cActionDisconnect(projPanelRemoteClient &panel) : igdeAction("Disconnect",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiQuit), "Disconnect remote client"),
 	pPanel(panel){}
@@ -80,6 +81,7 @@ public:
 class cComboLaunchProfile : public igdeComboBoxListener{
 	projPanelRemoteClient &pPanel;
 public:
+	typedef deTObjectReference<cComboLaunchProfile> Ref;
 	cComboLaunchProfile(projPanelRemoteClient &panel) : pPanel(panel){}
 	
 	void OnTextChanged(igdeComboBox *comboBox) override{
@@ -100,6 +102,7 @@ public:
 class cActionSynchronize : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
+	typedef deTObjectReference<cActionSynchronize> Ref;
 	cActionSynchronize(projPanelRemoteClient &panel) : igdeAction("Synchronize",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongRight),
 		"Synchronize profile specific project data to client"),

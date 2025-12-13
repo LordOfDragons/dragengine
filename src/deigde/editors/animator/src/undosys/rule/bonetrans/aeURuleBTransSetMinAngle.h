@@ -34,6 +34,10 @@
  * Undo action rule bone transformator set minimum angle.
  */
 class aeURuleBTransSetMinAngle : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleBTransSetMinAngle> Ref;
+	
+	
 private:
 	aeRuleBoneTransformator::Ref pRule;
 	float pOldValue;

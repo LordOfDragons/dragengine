@@ -41,7 +41,7 @@
 
 aeURuleAnimSelectToggleEnablePosition::aeURuleAnimSelectToggleEnablePosition(
 aeRuleAnimationSelect *rule) :
-pRule(NULL)
+pRule(nullptr)
 {
 	if(!rule){
 		DETHROW(deeInvalidParam);
@@ -50,13 +50,9 @@ pRule(NULL)
 	SetShortInfo("Rule animation select toggle enable position");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleAnimSelectToggleEnablePosition::~aeURuleAnimSelectToggleEnablePosition(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

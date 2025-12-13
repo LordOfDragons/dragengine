@@ -42,7 +42,7 @@
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/deAnimatorManager.h>
-#include "dragengine/resources/animator/deAnimatorLink.h"
+#include <dragengine/resources/animator/deAnimatorLink.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleSubAnimator.h>
@@ -65,7 +65,6 @@
 
 aeRuleSubAnimator::aeRuleSubAnimator() :
 aeRule(deAnimatorRuleVisitorIdentify::ertSubAnimator),
-pSubAnimator(NULL),
 pEnablePosition(true),
 pEnableOrientation(true),
 pEnableSize(true),
@@ -77,7 +76,6 @@ pEnableVertexPositionSet(true)
 aeRuleSubAnimator::aeRuleSubAnimator(const aeRuleSubAnimator &copy) :
 aeRule(copy),
 pPathSubAnimator(copy.pPathSubAnimator),
-pSubAnimator(NULL),
 pEnablePosition(copy.pEnablePosition),
 pEnableOrientation(copy.pEnableOrientation),
 pEnableSize(copy.pEnableSize),
@@ -85,9 +83,6 @@ pEnableVertexPositionSet(copy.pEnableVertexPositionSet),
 pConnections(copy.pConnections)
 {
 	pSubAnimator = copy.pSubAnimator;
-	if(pSubAnimator){
-		pSubAnimator->AddReference();
-	}
 }
 
 aeRuleSubAnimator::~aeRuleSubAnimator(){
@@ -124,8 +119,7 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	
 	// release the sub animator
 	if(pSubAnimator){
-		pSubAnimator->FreeReference();
-		pSubAnimator = NULL;
+		pSubAnimator = nullptr;
 	}
 	
 	// if there is no parent animator no loading can be done
@@ -137,10 +131,9 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	// otherwise try loading the animator
 	deAnimatorRuleSubAnimator *rule = (deAnimatorRuleSubAnimator*)GetEngineRule();
 	deEngine *engine = parentAnimator->GetEngine();
-	deAnimatorController *engController = NULL;
-	deAnimatorLink *engLink = NULL;
-	deAnimatorRule *engRule = NULL;
-	aeAnimator *animator = NULL;
+	deAnimatorController *engController = nullptr;
+	deAnimatorLink *engLink = nullptr;
+	aeAnimator::Ref animator;
 	int c, controllerCount;
 	int l, linkCount;
 	int r, ruleCount;
@@ -177,7 +170,7 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 				engController->SetVector(controller.GetVector());
 				
 				pSubAnimator->AddController(engController);
-				engController = NULL;
+				engController = nullptr;
 			}
 			
 			// add links
@@ -203,43 +196,29 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 					link.GetVertexPositionSetMinimum(), link.GetVertexPositionSetMaximum());
 				
 				pSubAnimator->AddLink(engLink);
-				engLink = NULL;
+				engLink = nullptr;
 			}
 			
 			// add rules
 			for(r=0; r<ruleCount; r++){
-				engRule = animator->GetRules().GetAt(r)->CreateEngineRule();
-				if(!engRule) DETHROW(deeOutOfMemory);
-				
-				pSubAnimator->AddRule(engRule);
-				engRule->FreeReference();
-				engRule = NULL;
+				pSubAnimator->AddRule(animator->GetRules().GetAt(r)->CreateEngineRule());
 			}
 			
 			// free the loaded animator as it is no more needed
-			animator->FreeReference();
-			
 		}catch(const deException &e){
 			parentAnimator->GetLogger()->LogException("Animator Editor", e);
-			
-			if(engRule){
-				engRule->FreeReference();
-			}
 			if(engLink){
 				delete engLink;
 			}
 			if(engController){
 				delete engController;
 			}
-			if(animator){
-				animator->FreeReference();
-			}
 		}
 	}
 	
 	if(pSubAnimator && autoConnections){
 		while(pConnections.GetCount() < pSubAnimator->GetControllerCount()){
-			pConnections.Add(NULL);
+			pConnections.Add(nullptr);
 		}
 	}
 	
@@ -327,31 +306,20 @@ void aeRuleSubAnimator::SetEnableVertexPositionSet(bool enabled){
 
 
 
-deAnimatorRule *aeRuleSubAnimator::CreateEngineRule(){
-	deAnimatorRuleSubAnimator *engRule = NULL;
+deAnimatorRule::Ref aeRuleSubAnimator::CreateEngineRule(){
+	const deAnimatorRuleSubAnimator *engRule(deAnimatorRuleSubAnimator::Ref::New());
 	
-	try{
-		engRule = new deAnimatorRuleSubAnimator;
-		
-		InitEngineRule(engRule);
-		
-		engRule->SetSubAnimator(pSubAnimator);
-		
-		pUpdateConnections(*engRule);
-		
-		engRule->SetEnablePosition(pEnablePosition);
-		engRule->SetEnableOrientation(pEnableOrientation);
-		engRule->SetEnableSize(pEnableSize);
-		engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
-		
-	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
-		throw;
-	}
+	InitEngineRule(engRule);
 	
-	// finished
+	engRule->SetSubAnimator(pSubAnimator);
+	
+	pUpdateConnections(*engRule);
+	
+	engRule->SetEnablePosition(pEnablePosition);
+	engRule->SetEnableOrientation(pEnableOrientation);
+	engRule->SetEnableSize(pEnableSize);
+	engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
+	
 	return engRule;
 }
 
@@ -378,18 +346,10 @@ aeRuleSubAnimator &aeRuleSubAnimator::operator=(const aeRuleSubAnimator &copy){
 	SetEnableSize(copy.pEnableSize);
 	SetEnableVertexPositionSet(copy.pEnableVertexPositionSet);
 	
-	if(pSubAnimator){
-		pSubAnimator->FreeReference();
-		pSubAnimator = NULL;
-	}
 	pSubAnimator = copy.pSubAnimator;
-	if(pSubAnimator){
-		pSubAnimator->AddReference();
-	}
-	
 	pConnections = copy.pConnections;
 	
-	deAnimatorRuleSubAnimator * const rule = (deAnimatorRuleSubAnimator*)GetEngineRule();
+	deAnimatorRuleSubAnimator * const rule = static_cast<deAnimatorRuleSubAnimator*>(GetEngineRule());
 	if(rule){
 		pUpdateConnections(*rule);
 	}
@@ -400,8 +360,8 @@ aeRuleSubAnimator &aeRuleSubAnimator::operator=(const aeRuleSubAnimator &copy){
 
 
 
-aeRule *aeRuleSubAnimator::CreateCopy() const{
-	return new aeRuleSubAnimator(*this);
+aeRule::Ref aeRuleSubAnimator::CreateCopy() const{
+	return Ref::New(*this);
 }
 
 void aeRuleSubAnimator::ListLinks(aeLinkList &list){

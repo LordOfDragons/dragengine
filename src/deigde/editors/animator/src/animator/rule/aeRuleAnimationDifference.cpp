@@ -216,36 +216,25 @@ void aeRuleAnimationDifference::RemoveLinksFromAllTargets(){
 
 
 
-deAnimatorRule *aeRuleAnimationDifference::CreateEngineRule(){
-	deAnimatorRuleAnimationDifference *engRule = NULL;
+deAnimatorRule::Ref aeRuleAnimationDifference::CreateEngineRule(){
+	// create rule
+	const deAnimatorRuleAnimationDifference::Ref engRule(deAnimatorRuleAnimationDifference::Ref::New());
 	
-	try{
-		// create rule
-		engRule = new deAnimatorRuleAnimationDifference;
-		if(!engRule) DETHROW(deeOutOfMemory);
-		
-		// init rule
-		InitEngineRule(engRule);
-		
-		engRule->SetLeadingMoveName(pMove1Name.GetString());
-		engRule->SetLeadingMoveTime(pMove1Time);
-		engRule->SetReferenceMoveName(pMove2Name.GetString());
-		engRule->SetReferenceMoveTime(pMove2Time);
-		engRule->SetUseSameMove(pUseSameMove);
-		engRule->SetEnablePosition(pEnablePosition);
-		engRule->SetEnableOrientation(pEnableOrientation);
-		engRule->SetEnableSize(pEnableSize);
-		engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
-		
-		pTargetLeadMoveTime.UpdateEngineTarget(GetAnimator(), engRule->GetTargetLeadingMoveTime());
-		pTargetRefMoveTime.UpdateEngineTarget(GetAnimator(), engRule->GetTargetReferenceMoveTime());
-		
-	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
-		throw;
-	}
+	// init rule
+	InitEngineRule(engRule);
+	
+	engRule->SetLeadingMoveName(pMove1Name.GetString());
+	engRule->SetLeadingMoveTime(pMove1Time);
+	engRule->SetReferenceMoveName(pMove2Name.GetString());
+	engRule->SetReferenceMoveTime(pMove2Time);
+	engRule->SetUseSameMove(pUseSameMove);
+	engRule->SetEnablePosition(pEnablePosition);
+	engRule->SetEnableOrientation(pEnableOrientation);
+	engRule->SetEnableSize(pEnableSize);
+	engRule->SetEnableVertexPositionSet(pEnableVertexPositionSet);
+	
+	pTargetLeadMoveTime.UpdateEngineTarget(GetAnimator(), engRule->GetTargetLeadingMoveTime());
+	pTargetRefMoveTime.UpdateEngineTarget(GetAnimator(), engRule->GetTargetReferenceMoveTime());
 	
 	// finished
 	return engRule;
@@ -253,8 +242,8 @@ deAnimatorRule *aeRuleAnimationDifference::CreateEngineRule(){
 
 
 
-aeRule *aeRuleAnimationDifference::CreateCopy() const{
-	return new aeRuleAnimationDifference(*this);
+aeRule::Ref aeRuleAnimationDifference::CreateCopy() const{
+	return Ref::New(*this);
 }
 
 void aeRuleAnimationDifference::ListLinks(aeLinkList &list){

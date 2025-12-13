@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleAnimationDifference;
+#include "../../../animator/rule/aeRuleAnimationDifference.h"
 
 
 
@@ -41,8 +41,12 @@ class aeRuleAnimationDifference;
  * Undo to set the leading move time of a animation difference rule.
  */
 class aeUSetRuleAniDLeadMoveTime : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleAniDLeadMoveTime> Ref;
+	
+	
 private:
-	aeRuleAnimationDifference *pRule;
+	aeRuleAnimationDifference::Ref pRule;
 	
 	float pOldTime;
 	float pNewTime;

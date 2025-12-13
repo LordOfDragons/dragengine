@@ -35,6 +35,10 @@
  * Undo set rule mirror mirror bone.
  */
 class aeURuleMirrorSetMirrorBone : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleMirrorSetMirrorBone> Ref;
+	
+	
 private:
 	const aeRuleMirror::Ref pRule;
 	

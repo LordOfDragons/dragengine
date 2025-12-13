@@ -44,18 +44,14 @@ aeURuleLimitSetEnableRotYMax::aeURuleLimitSetEnableRotYMax(aeRuleLimit *rule){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	SetShortInfo("Limit toggle enable maximum y rotation");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnableRotYMax::~aeURuleLimitSetEnableRotYMax(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

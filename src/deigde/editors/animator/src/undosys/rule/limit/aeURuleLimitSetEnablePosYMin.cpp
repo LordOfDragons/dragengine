@@ -44,18 +44,14 @@ aeURuleLimitSetEnablePosYMin::aeURuleLimitSetEnablePosYMin(aeRuleLimit *rule){
 		DETHROW(deeInvalidParam);
 	}
 	
-	pRule = NULL;
+	pRule = nullptr;
 	
 	SetShortInfo("Limit toggle enable minimum y position");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnablePosYMin::~aeURuleLimitSetEnablePosYMin(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

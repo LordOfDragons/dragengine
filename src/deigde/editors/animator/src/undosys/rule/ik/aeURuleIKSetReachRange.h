@@ -27,7 +27,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleInverseKinematic;
+#include "../../../animator/rule/aeRuleInverseKinematic.h"
 
 
 
@@ -35,8 +35,12 @@ class aeRuleInverseKinematic;
  * Undo action rule inverse kinematic set reach range.
  */
 class aeURuleIKSetReachRange : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleIKSetReachRange> Ref;
+	
+	
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 	float pOldValue;
 	float pNewValue;
@@ -49,7 +53,7 @@ public:
 	/*@{*/
 	/**
 	 * Create new undo action.
-	 * \throws deeInvalidParam \em rule is \em NULL.
+	 * \throws deeInvalidParam \em rule is \em nullptr.
 	 */
 	aeURuleIKSetReachRange(aeRuleInverseKinematic *rule, float newValue);
 	

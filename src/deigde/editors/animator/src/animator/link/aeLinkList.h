@@ -67,13 +67,13 @@ public:
 	
 	/**
 	 * Index of link or -1 if not present in the list.
-	 * \throws deeInvalidParam \em link is \em NULL.
+	 * \throws deeInvalidParam \em link is \em nullptr.
 	 */
 	int IndexOf(aeLink *link) const;
 	
 	/**
 	 * Determine if a link is present in the list.
-	 * \throws deeInvalidParam \em link is \em NULL.
+	 * \throws deeInvalidParam \em link is \em nullptr.
 	 */
 	bool Has(aeLink *link) const;
 	
@@ -84,20 +84,20 @@ public:
 	
 	/**
 	 * Add link.
-	 * \throws deeInvalidParam \em link is \em NULL.
+	 * \throws deeInvalidParam \em link is \em nullptr.
 	 */
 	void Add(aeLink *link);
 	
 	/**
 	 * Insert link.
-	 * \throws deeInvalidParam \em link is \em NULL.
+	 * \throws deeInvalidParam \em link is \em nullptr.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
 	void Insert(aeLink *link, int index);
 	
 	/**
 	 * Move link.
-	 * \throws deeInvalidParam \em link is \em NULL.
+	 * \throws deeInvalidParam \em link is \em nullptr.
 	 * \throws deeInvalidParam \em from is less than 0 or greater than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or greater than GetCount().
 	 */
@@ -105,7 +105,7 @@ public:
 	
 	/**
 	 * Remove link.
-	 * \throws deeInvalidParam \em link is \em NULL.
+	 * \throws deeInvalidParam \em link is \em nullptr.
 	 * \throws deeInvalidParam \em link is not present in the list.
 	 */
 	void Remove(aeLink *link);

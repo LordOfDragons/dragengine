@@ -35,6 +35,10 @@
  * Undo mirror remove match name.
  */
 class aeURuleMirrorRemoveMatchName : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleMirrorRemoveMatchName> Ref;
+	
+	
 private:
 	const aeRuleMirror::Ref pRule;
 	const aeRuleMirror::cMatchName::Ref pMatchName;

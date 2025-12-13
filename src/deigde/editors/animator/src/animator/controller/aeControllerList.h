@@ -67,44 +67,44 @@ public:
 	
 	/**
 	 * Index of controller or -1 if not present in the list.
-	 * \throws deeInvalidParam \em controller is \em NULL.
+	 * \throws deeInvalidParam \em controller is \em nullptr.
 	 */
 	int IndexOf(aeController *controller) const;
 	
 	/**
 	 * Index of named controller or -1 if not present in the list.
-	 * \throws deeInvalidParam \em controller is \em NULL.
+	 * \throws deeInvalidParam \em controller is \em nullptr.
 	 */
 	int IndexOfNamed(const char *name) const;
 	
 	/**
 	 * Determine if a controller is present in the list.
-	 * \throws deeInvalidParam \em controller is \em NULL.
+	 * \throws deeInvalidParam \em controller is \em nullptr.
 	 */
 	bool Has(aeController *controller) const;
 	
 	/**
 	 * Determine if named controller is present in the list.
-	 * \throws deeInvalidParam \em controller is \em NULL.
+	 * \throws deeInvalidParam \em controller is \em nullptr.
 	 */
 	bool HasNamed(const char *name) const;
 	
 	/**
 	 * Add controller.
-	 * \throws deeInvalidParam \em controller is \em NULL.
+	 * \throws deeInvalidParam \em controller is \em nullptr.
 	 */
 	void Add(aeController *controller);
 	
 	/**
 	 * Insert controller.
-	 * \throws deeInvalidParam \em controller is \em NULL.
+	 * \throws deeInvalidParam \em controller is \em nullptr.
 	 * \throws deeInvalidParam \em index is less than 0 or greater than GetCount()-1.
 	 */
 	void Insert(aeController *controller, int index);
 	
 	/**
 	 * Move controller.
-	 * \throws deeInvalidParam \em controller is \em NULL.
+	 * \throws deeInvalidParam \em controller is \em nullptr.
 	 * \throws deeInvalidParam \em from is less than 0 or greater than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or greater than GetCount().
 	 */
@@ -112,7 +112,7 @@ public:
 	
 	/**
 	 * Remove controller.
-	 * \throws deeInvalidParam \em controller is \em NULL.
+	 * \throws deeInvalidParam \em controller is \em nullptr.
 	 * \throws deeInvalidParam \em controller is not present in the list.
 	 */
 	void Remove(aeController *controller);

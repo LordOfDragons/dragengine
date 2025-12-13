@@ -396,42 +396,32 @@ void aeRuleBoneTransformator::RemoveLinksFromAllTargets(){
 
 
 
-deAnimatorRule *aeRuleBoneTransformator::CreateEngineRule(){
-	deAnimatorRuleBoneTransformator *engRule = NULL;
+deAnimatorRule::Ref aeRuleBoneTransformator::CreateEngineRule(){
+	const deAnimatorRuleBoneTransformator::Ref engRule(deAnimatorRuleBoneTransformator::Ref::New());
 	
-	try{
-		engRule = new deAnimatorRuleBoneTransformator;
-		
-		InitEngineRule(engRule);
-		
-		engRule->SetMinimumTranslation(pMinTranslation);
-		engRule->SetMaximumTranslation(pMaxTranslation);
-		engRule->SetMinimumRotation(pMinRotation * DEG2RAD);
-		engRule->SetMaximumRotation(pMaxRotation * DEG2RAD);
-		engRule->SetMinimumScaling(pMinScaling);
-		engRule->SetMaximumScaling(pMaxScaling);
-		engRule->SetAxis(pAxis);
-		engRule->SetMinimumAngle(pMinAngle * DEG2RAD);
-		engRule->SetMaximumAngle(pMaxAngle * DEG2RAD);
-		engRule->SetCoordinateFrame(pCoordinateFrame);
-		engRule->SetEnablePosition(pEnablePosition);
-		engRule->SetEnableOrientation(pEnableOrientation);
-		engRule->SetEnableSize(pEnableSize);
-		engRule->SetUseAxis(pUseAxis);
-		engRule->SetTargetBone(pTargetBone);
-		engRule->SetInputBone(pInputBone);
-		engRule->SetInputSource(pInputSource);
-		
-		pTargetTranslation.UpdateEngineTarget(GetAnimator(), engRule->GetTargetTranslation());
-		pTargetRotation.UpdateEngineTarget(GetAnimator(), engRule->GetTargetRotation());
-		pTargetScaling.UpdateEngineTarget(GetAnimator(), engRule->GetTargetScaling());
-		
-	}catch(const deException &){
-		if(engRule){
-			engRule->FreeReference();
-		}
-		throw;
-	}
+	InitEngineRule(engRule);
+	
+	engRule->SetMinimumTranslation(pMinTranslation);
+	engRule->SetMaximumTranslation(pMaxTranslation);
+	engRule->SetMinimumRotation(pMinRotation * DEG2RAD);
+	engRule->SetMaximumRotation(pMaxRotation * DEG2RAD);
+	engRule->SetMinimumScaling(pMinScaling);
+	engRule->SetMaximumScaling(pMaxScaling);
+	engRule->SetAxis(pAxis);
+	engRule->SetMinimumAngle(pMinAngle * DEG2RAD);
+	engRule->SetMaximumAngle(pMaxAngle * DEG2RAD);
+	engRule->SetCoordinateFrame(pCoordinateFrame);
+	engRule->SetEnablePosition(pEnablePosition);
+	engRule->SetEnableOrientation(pEnableOrientation);
+	engRule->SetEnableSize(pEnableSize);
+	engRule->SetUseAxis(pUseAxis);
+	engRule->SetTargetBone(pTargetBone);
+	engRule->SetInputBone(pInputBone);
+	engRule->SetInputSource(pInputSource);
+	
+	pTargetTranslation.UpdateEngineTarget(GetAnimator(), engRule->GetTargetTranslation());
+	pTargetRotation.UpdateEngineTarget(GetAnimator(), engRule->GetTargetRotation());
+	pTargetScaling.UpdateEngineTarget(GetAnimator(), engRule->GetTargetScaling());
 	
 	// finished
 	return engRule;
@@ -439,8 +429,8 @@ deAnimatorRule *aeRuleBoneTransformator::CreateEngineRule(){
 
 
 
-aeRule *aeRuleBoneTransformator::CreateCopy() const{
-	return new aeRuleBoneTransformator(*this);
+aeRule::Ref aeRuleBoneTransformator::CreateCopy() const{
+	return Ref::New(*this);
 }
 
 void aeRuleBoneTransformator::ListLinks(aeLinkList &list){

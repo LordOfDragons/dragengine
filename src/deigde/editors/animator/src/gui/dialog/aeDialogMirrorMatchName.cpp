@@ -48,7 +48,7 @@ igdeDialog(environment, windowTitle)
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerForm::Ref content(igdeContainerForm::Ref::NewWith(
+	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(
 		environment, igdeContainerForm::esLast));
 	
 	helper.ComboBox(content, "Type:", "How to match the name.", pCBType, nullptr);
@@ -81,7 +81,7 @@ void aeDialogMirrorMatchName::Set(const aeRuleMirror::cMatchName &matchName){
 }
 
 aeRuleMirror::cMatchName::Ref aeDialogMirrorMatchName::CreateMatchName() const{
-	return aeRuleMirror::cMatchName::Ref::NewWith(pEditFirst->GetText(), pEditSecond->GetText(),
+	return aeRuleMirror::cMatchName::Ref::New(pEditFirst->GetText(), pEditSecond->GetText(),
 		(deAnimatorRuleMirror::eMatchNameType)(intptr_t)pCBType->GetSelectedItem()->GetData());
 }
 

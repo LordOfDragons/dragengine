@@ -78,7 +78,7 @@ aeLink *aeLinkList::GetNamed(const char *name) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 int aeLinkList::IndexOf(aeLink *link) const{
@@ -90,7 +90,7 @@ bool aeLinkList::Has(aeLink *link) const{
 }
 
 bool aeLinkList::HasNamed(const char *name) const{
-	return GetNamed(name) != NULL;
+	return GetNamed(name) != nullptr;
 }
 
 void aeLinkList::Add(aeLink *link){

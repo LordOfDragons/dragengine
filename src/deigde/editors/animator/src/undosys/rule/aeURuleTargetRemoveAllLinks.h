@@ -26,10 +26,10 @@
 #define _AEURULETARGETREMOVEALLLINKS_H_
 
 #include "../../animator/link/aeLinkList.h"
+#include "../../animator/rule/aeRule.h"
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRule;
 class aeControllerTarget;
 
 
@@ -37,8 +37,12 @@ class aeControllerTarget;
  * Undo action rule target remove all links.
  */
 class aeURuleTargetRemoveAllLinks : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleTargetRemoveAllLinks> Ref;
+	
+	
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	aeControllerTarget *pTarget;
 	
 	aeLinkList pLinks;

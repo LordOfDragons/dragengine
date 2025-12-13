@@ -42,14 +42,13 @@
 aeUSetRuleAnimMoveName::aeUSetRuleAnimMoveName(aeRuleAnimation *rule, const char *newName){
 	if(!rule || !newName) DETHROW(deeInvalidParam);
 	
-	pRule = NULL;
+	pRule = nullptr;
 	pOldName = rule->GetMoveName();
 	pNewName = newName;
 	
 	SetShortInfo("Set animation rule move name");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleAnimMoveName::~aeUSetRuleAnimMoveName(){

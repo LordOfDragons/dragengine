@@ -43,8 +43,6 @@ aeUSetRuleSModMinVertexPositionSet::aeUSetRuleSModMinVertexPositionSet(
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
-		
 		pOldMin = rule->GetMinimumVertexPositionSet();
 		pNewMin = newMin;
 		
@@ -79,7 +77,4 @@ void aeUSetRuleSModMinVertexPositionSet::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMinVertexPositionSet::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

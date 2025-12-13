@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRuleInverseKinematic;
+#include "../../../animator/rule/aeRuleInverseKinematic.h"
 
 
 
@@ -41,8 +41,12 @@ class aeRuleInverseKinematic;
  * Undo to set the bone name of a inverse kinematic rule.
  */
 class aeURuleIKSetSolverBone : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleIKSetSolverBone> Ref;
+	
+	
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 	decString pOldName;
 	decString pNewName;

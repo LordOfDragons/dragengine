@@ -31,7 +31,7 @@
 #include <deigde/undo/igdeUndo.h>
 
 // predefinitions
-class aeRule;
+#include "../../animator/rule/aeRule.h"
 
 
 
@@ -41,8 +41,12 @@ class aeRule;
  * Undo to set the name of a rule.
  */
 class aeUSetRuleName : public igdeUndo{
+public:
+	typedef deTObjectReference<aeUSetRuleName> Ref;
+	
+	
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 	decString pOldName;
 	decString pNewName;

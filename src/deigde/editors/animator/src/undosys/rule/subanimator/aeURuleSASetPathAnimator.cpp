@@ -41,7 +41,7 @@
 ////////////////////////////
 
 aeURuleSASetPathAnimator::aeURuleSASetPathAnimator(aeRuleSubAnimator *rule, const char *newPath) :
-pRule(NULL),
+
 pNewPath(newPath)
 {
 	if(!rule){
@@ -59,13 +59,9 @@ pNewPath(newPath)
 	SetShortInfo("Sub-Animator: Set animator path");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleSASetPathAnimator::~aeURuleSASetPathAnimator(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

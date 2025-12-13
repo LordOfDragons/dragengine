@@ -28,7 +28,7 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-class aeRuleStateSnapshot;
+#include "../../../animator/rule/aeRuleStateSnapshot.h"
 
 
 
@@ -36,8 +36,12 @@ class aeRuleStateSnapshot;
  * Undo rule state snapshot set enable position.
  */
 class aeURuleSnapToggleEnablePosition : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleSnapToggleEnablePosition> Ref;
+	
+	
 private:
-	aeRuleStateSnapshot *pRule;
+	aeRuleStateSnapshot::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

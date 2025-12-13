@@ -31,7 +31,7 @@
 #include "../../../animator/link/aeLinkList.h"
 #include "../../../animator/controller/aeControllerList.h"
 
-class aeRuleGroup;
+#include "../../../animator/rule/aeRuleGroup.h"
 
 
 
@@ -39,8 +39,12 @@ class aeRuleGroup;
  * Undo action rule group paste rule.
  */
 class aeURuleGroupPasteRule : public igdeUndo{
+public:
+	typedef deTObjectReference<aeURuleGroupPasteRule> Ref;
+	
+	
 private:
-	aeRuleGroup *pGroup;
+	aeRuleGroup::Ref pGroup;
 	aeRuleList pRuleList;
 	aeLinkList pRemoveLinkList;
 	aeControllerList pRemoveControllerList;
