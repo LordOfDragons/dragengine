@@ -99,8 +99,8 @@ public:
 	explicit deTObjectReference(deTObjectReference<U> &&reference) : pObject(static_cast<T*>(reference.Pointer())){
 		if(pObject){
 			pObject->AddReference();
+			reference = nullptr;
 		}
-		reference = nullptr;
 	}
 	
 	/**
@@ -118,61 +118,6 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-#if 0
-	/**
-	 * \brief Set object without adding reference.
-	 * 
-	 * Use this method if the object to hold has been added a reference already. This is
-	 * the case with created objects as well as certain methods returning newly created
-	 * objects. In all these cases the object has to be held without adding a reference.
-	 * For all other situations use the constructor or assignment operator.
-	 * 
-	 * It is allowed for object to be a nullptr object.
-	 */
-	void TakeOver(T *object){
-		if(object == pObject){
-			if(object){
-				// this is required since we are asked to take over the reference. since we
-				// have the same reference already we refuse to take over the reference and
-				// thus without releasing it this reference would be dangling
-				object->FreeReference();
-			}
-			return;
-		}
-		
-		if(pObject){
-			pObject->FreeReference();
-		}
-		pObject = object;
-	}
-	
-private:
-	/** \brief Move reference. */
-	void TakeOver(deTObjectReference &reference){
-		if(pObject){
-			pObject->FreeReference();
-		}
-		
-		pObject = reference.pObject;
-		reference.pObject = nullptr;
-	}
-	
-	/** \brief Take over reference. */
-	void TakeOver(const deTObjectReference &reference){
-		*this = reference;
-	}
-	
-public:
-	/**
-	 * \brief Create instance taking over reference.
-	 * 
-	 * Same as calling TakeOver() but using provided arguments with a 'new' call.
-	 */
-	template<typename... A> void TakeOverWith(A&&... args){
-		TakeOver(new T(static_cast<A>(args)...));
-	}
-#endif
-	
 	/** \brief Pointer to object. */
 	inline T* Pointer() const{
 		return pObject;
@@ -202,7 +147,7 @@ public:
 	 */
 	static deTObjectReference NewDeprecated(T *object){
 		deTObjectReference reference;
-		reference.TakeOver(object);
+		reference = object;
 		return reference;
 	}
 #endif

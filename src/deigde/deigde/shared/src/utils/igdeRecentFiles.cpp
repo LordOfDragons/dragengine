@@ -73,7 +73,7 @@ public:
 	}
 	
 	void OnAction() override{
-		igdeAction::Ref guard(this);
+		const Ref guard(this);
 		pRecentFiles.OpenFile(pFilename);
 	}
 };

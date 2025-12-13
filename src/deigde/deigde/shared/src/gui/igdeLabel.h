@@ -39,6 +39,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeLabel> Ref;
 	
+	/** \brief Type holding weak reference. */
+	typedef deTWeakObjectReference<igdeLabel> WeakRef;
+	
 	
 	/** \brief Alignment. */
 	enum eAlignment{

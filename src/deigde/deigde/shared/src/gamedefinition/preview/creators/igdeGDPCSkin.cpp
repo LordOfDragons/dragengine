@@ -272,7 +272,7 @@ void igdeGDPCSkin::PrepareCanvasForRender(){
 	
 	// create light
 	/*
-	pLight.TakeOver(engine.GetLightManager()->CreateLight());
+	pLight = engine.GetLightManager()->CreateLight();
 	pLight->SetActivated(true);
 	pLight->SetCastShadows(true);
 	pLight->SetColor(decColor(1.0f, 1.0f, 1.0f));

@@ -115,7 +115,7 @@ public:
 private:
 	igdeApplication *pOwner;
 	FXToolTip *pToolTip;
-	bool pDisableModalUpdating;
+	bool pDisableModalUpdating, pDeleteNormalFont;
 	char **pFoxArgs;
 	int pFoxArgCount;
 	int pDisplayScaleFactor;

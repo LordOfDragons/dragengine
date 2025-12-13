@@ -1158,7 +1158,7 @@ void delEngineInstanceDirect::RunSingleFrameUpdate(){
 					
 					delGPModule::Ref gpmodule(pGameCollectChangedParams->GetNamed(moduleName));
 					if(!gpmodule){
-						gpmodule.TakeOver(new delGPModule(moduleName));
+						gpmodule = delGPModule::Ref::New(moduleName);
 						pGameCollectChangedParams->Add(gpmodule);
 					}
 					

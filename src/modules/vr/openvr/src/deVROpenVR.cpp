@@ -666,13 +666,13 @@ deModel *deVROpenVR::GetHiddenArea(eEye eye){
 	switch(eye){
 	case deBaseVRModule::evreLeft:
 		if(!pHiddenMeshLeftEye){
-			pHiddenMeshLeftEye.TakeOver(new deovrHiddenMesh(*this, vr::Eye_Left));
+			pHiddenMeshLeftEye = deovrHiddenMesh::Ref::New(*this, vr::Eye_Left);
 		}
 		return pHiddenMeshLeftEye->GetModel();
 		
 	case deBaseVRModule::evreRight:
 		if(!pHiddenMeshRightEye){
-			pHiddenMeshRightEye.TakeOver(new deovrHiddenMesh(*this, vr::Eye_Right));
+			pHiddenMeshRightEye = deovrHiddenMesh::Ref::New(*this, vr::Eye_Right);
 		}
 		return pHiddenMeshRightEye->GetModel();
 		

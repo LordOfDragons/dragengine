@@ -45,10 +45,12 @@ class igdeUIHelper;
  * widget. The text field is synchronized to the slider.
  */
 class DE_DLL_EXPORT igdeEditSliderText : public igdeContainerFlow{
-
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeEditSliderText> Ref;
+	
+	/** \brief Type holding weak reference. */
+	typedef deTWeakObjectReference<igdeEditSliderText> WeakRef;
 	
 	
 protected:

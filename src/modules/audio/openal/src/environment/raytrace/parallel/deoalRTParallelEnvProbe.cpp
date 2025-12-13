@@ -105,7 +105,7 @@ pBarrierTask(nullptr)
 		deoalRTPTTraceSoundRays::Ref task;
 		int i;
 		for(i=0; i<rayCount; i++){
-			task.TakeOver(new deoalRTPTTraceSoundRays(*this));
+			task = deoalRTPTTraceSoundRays::Ref::New(*this);
 			pTasksTraceSoundRays.Add(task);
 			pTasksReadyTraceSoundRays.Add(task);
 		}
@@ -115,7 +115,7 @@ pBarrierTask(nullptr)
 		deoalRTPTListen::Ref task;
 		int i;
 		for(i=0; i<rayCount; i++){
-			task.TakeOver(new deoalRTPTListen(*this));
+			task = deoalRTPTListen::Ref::New(*this);
 			pTasksListen.Add(task);
 			pTasksReadyListen.Add(task);
 		}
@@ -125,7 +125,7 @@ pBarrierTask(nullptr)
 // 		deoalRTPTEnvProbeFull::Ref task;
 // 		int i;
 // 		for( i=0; i<taskCount; i++ ){
-// 			task.TakeOver( new deoalRTPTEnvProbeFull( *this ) );
+// 			task = deoalRTPTEnvProbeFull::Ref::New(*this);
 // 			pTasksFull.Add( task );
 // 		}
 // 	}
@@ -134,7 +134,7 @@ pBarrierTask(nullptr)
 		deoalRTPTRoomEstimate::Ref task;
 		int i;
 		for(i=0; i<rayCount; i++){
-			task.TakeOver(new deoalRTPTRoomEstimate(*this));
+			task = deoalRTPTRoomEstimate::Ref::New(*this);
 			pTasksRoomEstimate.Add(task);
 			pTasksReadyRoomEstimate.Add(task);
 		}

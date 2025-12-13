@@ -255,7 +255,7 @@ void RunGameHandler::ProcessCustomEvent(BaseGameActivityAdapter &adapter, const 
 }
 
 void RunGameHandler::pCreateEngineLogger() {
-    pEngineLogger.TakeOver(new deLoggerChain);
+    pEngineLogger = deLoggerChain::Ref::New();
     pEngineLogger->AddLogger(deLoggerConsole::Ref::New());
 
     decPath diskPath(decPath::CreatePathNative(pLauncher->GetPathLogs()));

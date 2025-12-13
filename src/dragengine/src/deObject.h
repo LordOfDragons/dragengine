@@ -45,9 +45,41 @@ public:
 	typedef deTObjectReference<deObject> Ref;
 	
 	
+	/** \brief Weak reference data. */
+	class cWeakRefData{
+	private:
+		deObject *pObject;
+		int pRefCount;
+		
+		
+	public:
+		/** \brief Constructor. */
+		explicit cWeakRefData(deObject *object);
+		
+		/** \brief Destructor. */
+		~cWeakRefData();
+		
+		/** \brief Object or nullptr if deleted. */
+		inline deObject *Object() const{ return pObject; }
+		
+		/** \brief Reference count. */
+		inline int RefCount() const{ return pRefCount; }
+		
+		/** \brief Increase reference count by one. */
+		void AddReference();
+		
+		/** \brief Decrease reference count by one and delete data if count reaches 0. */
+		void FreeReference();
+		
+		friend class deObject;
+	};
+	
+	friend class cWeakRefData;
+	
+	
 private:
 	int pRefCount;
-	
+	cWeakRefData *pWeakRefData;
 	
 	
 public:
@@ -79,6 +111,9 @@ public:
 	
 	/** \brief Decrease reference count by one and delete object if count reaches 0. */
 	void FreeReference();
+	
+	/** \brief Add weak reference. */
+	cWeakRefData *AddWeakReference();
 	/*@}*/
 };
 

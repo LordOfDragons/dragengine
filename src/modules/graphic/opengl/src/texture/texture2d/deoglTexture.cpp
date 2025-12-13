@@ -316,7 +316,7 @@ void deoglTexture::CreateTexture(){
 		config.SetMipMapCount(pRealMipMapLevelCount);
 	}
 	
-	pImage.TakeOver(new devkImage(pRenderThread.GetContext().GetDevice(), config));
+	pImage = devkImage::Ref::New(pRenderThread.GetContext().GetDevice(), config);
 #endif
 	
 	UpdateMemoryUsage();

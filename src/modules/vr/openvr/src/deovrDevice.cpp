@@ -116,7 +116,7 @@ void deovrDevice::SetDisplayImages(const char *name){
 	decString filename;
 	
 	filename.Format("%s/%s/image.png", basePath, name);
-	pDisplayImage.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
+	pDisplayImage = imageManager.LoadImage(vfs, filename, "/");
 	
 	const int sizes[4] = {128, 64, 32, 16};
 	int i;
@@ -891,7 +891,7 @@ const char *name, const char *id, const char *displayText){
 	int i;
 	
 	for(i=0; i<2; i++){
-		axis.TakeOver(deovrDeviceAxis::Ref::New(*this));
+		axis = deovrDeviceAxis::Ref::New(*this);
 		axis->SetActionAnalogHandle(actionHandle);
 		axis->SetType(deInputDeviceAxis::eatStick);
 		axis->SetComponent(i);
@@ -927,7 +927,7 @@ const char *name, const char *id, const char *displayText){
 	int i;
 	
 	for(i=0; i<2; i++){
-		axis.TakeOver(deovrDeviceAxis::Ref::New(*this));
+		axis = deovrDeviceAxis::Ref::New(*this);
 		axis->SetActionAnalogHandle(actionHandle);
 		axis->SetType(deInputDeviceAxis::eatTouchPad);
 		axis->SetComponent(i);

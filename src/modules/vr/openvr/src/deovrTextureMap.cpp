@@ -140,8 +140,8 @@ void deovrTextureMap::pLoadTextureMap(){
 		int x, y;
 		
 		{
-		pImageColor.TakeOver(pOvr.GetGameEngine()->GetImageManager()->CreateImage(
-			textureMap->unWidth, textureMap->unHeight, 1, 3, 8));
+		pImageColor = pOvr.GetGameEngine()->GetImageManager()->CreateImage(
+			textureMap->unWidth, textureMap->unHeight, 1, 3, 8);
 		
 		sRGB8 * const destPixels = pImageColor->GetDataRGB8();
 		for(y=0; y<textureMap->unHeight; y++){
@@ -165,8 +165,8 @@ void deovrTextureMap::pLoadTextureMap(){
 		}
 		
 		{
-		pImageSolidity.TakeOver(pOvr.GetGameEngine()->GetImageManager()->CreateImage(
-			textureMap->unWidth, textureMap->unHeight, 1, 1, 8));
+		pImageSolidity = pOvr.GetGameEngine()->GetImageManager()->CreateImage(
+			textureMap->unWidth, textureMap->unHeight, 1, 1, 8);
 		
 		sGrayscale8 * const destPixels = pImageSolidity->GetDataGrayscale8();
 		for(y=0; y<textureMap->unHeight; y++){
@@ -195,7 +195,7 @@ void deovrTextureMap::pLoadTextureMap(){
 	
 	try{
 		deovrTextureMap_BuildSkin builder(pImageColor, pImageSolidity);
-		pSkin.TakeOver(pOvr.GetGameEngine()->GetSkinManager()->CreateSkin(path.GetPathUnix(), builder));
+		pSkin = pOvr.GetGameEngine()->GetSkinManager()->CreateSkin(path.GetPathUnix(), builder);
 		
 	}catch(const deException &){
 		vrrm.FreeTexture(textureMap);

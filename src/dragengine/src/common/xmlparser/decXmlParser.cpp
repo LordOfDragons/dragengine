@@ -303,7 +303,7 @@ bool decXmlParser::ParseElementTag(decXmlContainer *container, const char *requi
 					if(count > 0){
 						SetCleanString(count);
 						pAddCharacterData(tag, pCleanString, lineNumber, posNumber);
-						//charData.TakeOver(new decXmlCharacterData( pCleanString ));
+						//charData = decXmlCharacterData::Ref::New( pCleanString );
 						//charData->SetLineNumber( lineNumber );
 						//charData->SetPositionNumber( posNumber );
 						//tag->AddElement( charData );
@@ -390,7 +390,7 @@ bool decXmlParser::ParseReference(decXmlContainer *container){
 				if(character){
 					pAddCharacterData(container, (char)character, lineNumber, posNumber);
 				}else{
-//						charRef.TakeOver(new decXmlCharReference( pCleanString + 3, decXmlCharReference::erHexadecimal ));
+//						charRef = decXmlCharReference::Ref::New( pCleanString + 3, decXmlCharReference::erHexadecimal );
 				}
 			}else{
 				character = 0;
@@ -410,7 +410,7 @@ bool decXmlParser::ParseReference(decXmlContainer *container){
 				if(character){
 					pAddCharacterData(container, (char)character, lineNumber, posNumber);
 				}else{
-//						charRef.TakeOver(new decXmlCharReference( pCleanString + 2, decXmlCharReference::erDecimal ));
+//						charRef = decXmlCharReference::Ref::New( pCleanString + 2, decXmlCharReference::erDecimal );
 				}
 			}
 			if(charRef){

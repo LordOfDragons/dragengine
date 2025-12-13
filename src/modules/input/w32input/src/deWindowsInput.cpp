@@ -161,7 +161,7 @@ bool deWindowsInput::Init(){
 	
 	AppActivationChanged();
 	
-	pDevices.TakeOver(new dewiDeviceManager(*this));
+	pDevices = dewiDeviceManager::Ref::New(*this);
 	pDevices->UpdateDeviceList();
 	pDevices->LogDevices();
 	

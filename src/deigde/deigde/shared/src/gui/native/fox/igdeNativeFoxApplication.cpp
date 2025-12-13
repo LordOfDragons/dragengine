@@ -69,12 +69,17 @@ FXApp("DEIGDE", "Drag[en]gine"),
 pOwner(&powner),
 pToolTip(nullptr),
 pDisableModalUpdating(false),
+pDeleteNormalFont(false),
 pFoxArgs(nullptr),
 pFoxArgCount(0),
 pDisplayScaleFactor(100){
 }
 
 igdeNativeFoxApplication::~igdeNativeFoxApplication(){
+	if(pDeleteNormalFont){
+		delete getNormalFont();
+	}
+	
 	if(pFoxArgs){
 		int i;
 		for(i=0; i<pFoxArgCount; i++){
@@ -194,6 +199,7 @@ void igdeNativeFoxApplication::Initialize(decUnicodeStringList &arguments){
 	FXFontDesc fontDesc(fontNormal.getFontDesc());
 	fontDesc.size = (FXuint)((int)fontDesc.size * pDisplayScaleFactor / 100);
 	setNormalFont(new FXFont(this, fontDesc));
+	pDeleteNormalFont = true;
 	
 	// create tool tip and application
 	pToolTip = new FXToolTip(this, TOOLTIP_PERMANENT); // TOOLTIP_PERMANENT, TOOLTIP_VARIABLE

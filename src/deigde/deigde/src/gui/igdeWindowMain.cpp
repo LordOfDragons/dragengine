@@ -658,7 +658,7 @@ pTaskSyncGameDefinition(nullptr)
 		
 		// fill it
 		pCreateToolBarGame();
-// 		pTBEditors.TakeOver( new igdeToolBar( pEnvironmentIGDE ) );
+// 		pTBEditors = igdeToolBar::Ref::New(pEnvironmentIGDE);
 		
 		CreatePlaceholderGameProject();
 		
@@ -2232,7 +2232,7 @@ void igdeWindowMain::pCreateMenuSettings(igdeMenuCascade &menu){
 	
 	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsEngine);
 	menu.AddChild(entry);
-// 	entry.TakeOver( new igdeMenuCommand( pEnvironmentIGDE, pActionSettingsIgde ) );
+// 	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsIgde);
 // 	menu.AddChild( entry );
 	entry = igdeMenuCommand::Ref::New(pEnvironmentIGDE, pActionSettingsTexPropList);
 	menu.AddChild(entry);

@@ -32,7 +32,7 @@ void RemoteLauncherHandler::pInitGameForRun() {
 }
 
 void RemoteLauncherHandler::pCreateEngineLogger(){
-    pEngineLogger.TakeOver(new deLoggerChain);
+    pEngineLogger = deLoggerChain::Ref::New();
     pEngineLogger->AddLogger(pClient->GetEngineLogger());
 
     decPath diskPath(decPath::CreatePathNative(pLauncher->GetPathLogs()));

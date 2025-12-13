@@ -232,16 +232,17 @@ void igdeWPSky::RebuildControllers(){
 	
 	// add new widgets
 	while(pControllers.GetCount() < controllerCount){
-		Controller::Ref controller(Controller::Ref::New());
-		
+		const Controller::Ref controller(Controller::Ref::New());
 		controller->controller = pControllers.GetCount();
 		
+		igdeEditSliderText::Ref slider;
 		helper.EditSliderText(pFraControllers, "", "Current value of the controller ''",
-			0.0f, 1.0f, 6, 3, 0.1f, controller->slider,
+			0.0f, 1.0f, 6, 3, 0.1f, slider,
 			new cEditControllerValue(*this, controller->controller));
 		
-		controller->label = (igdeLabel*)pFraControllers->GetChildAt(
-			pFraControllers->IndexOfChild(controller->slider) - 1);
+		controller->slider = slider;
+		controller->label = static_cast<igdeLabel*>(pFraControllers->GetChildAt(
+			pFraControllers->IndexOfChild(controller->slider) - 1));
 		
 		pControllers.Add(controller);
 	}

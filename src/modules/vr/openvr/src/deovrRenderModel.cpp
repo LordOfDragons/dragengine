@@ -175,7 +175,7 @@ void deovrRenderModel::pLoadModel(){
 	
 	try{
 		deovrRenderModel_BuildModel builder(*renderModel);
-		pModel.TakeOver(pOvr.GetGameEngine()->GetModelManager()->CreateModel(path.GetPathUnix(), builder));
+		pModel = pOvr.GetGameEngine()->GetModelManager()->CreateModel(path.GetPathUnix(), builder);
 		
 	}catch(const deException &){
 		vrrm.FreeRenderModel(renderModel);

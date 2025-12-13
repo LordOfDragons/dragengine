@@ -79,7 +79,7 @@ pPatchManager(*this)
 	DEASSERT_FALSE(config.osConfig.pathEngine.IsEmpty())
 	
 	try{
-		pLogger.TakeOver(new deLoggerChain);
+		pLogger = deLoggerChain::Ref::New();
 		pLogger->AddLogger(deLoggerConsole::Ref::New());
 		pLogger->AddLogger(pLoggerHistory);
 		

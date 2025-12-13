@@ -22,12 +22,43 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "deObject.h"
 #include "common/exceptions.h"
 
+
+// Class deObject::cWeakRefData
+/////////////////////////////////
+
+deObject::cWeakRefData::cWeakRefData(deObject *object) :
+pObject(object),
+pRefCount(1)
+{
+	DEASSERT_NOTNULL(object)
+}
+
+deObject::cWeakRefData::~cWeakRefData(){
+	if(pObject){
+		pObject->pWeakRefData = nullptr;
+	}
+}
+
+void deObject::cWeakRefData::AddReference(){
+	pRefCount++;
+}
+
+void deObject::cWeakRefData::FreeReference(){
+	pRefCount--;
+	if(pRefCount > 0){
+		return;
+	}
+	
+	if(pRefCount < 0){
+		deeInvalidParam(__FILE__, __LINE__).PrintError();
+		return;
+	}
+	
+	delete this;
+}
 
 
 // Class deObject
@@ -37,12 +68,15 @@
 ////////////////////////////
 
 deObject::deObject() :
-pRefCount(1){
+pRefCount(1),
+pWeakRefData(nullptr){
 }
 
 deObject::~deObject(){
+	if(pWeakRefData){
+		pWeakRefData->pObject = nullptr;
+	}
 }
-
 
 
 // Management
@@ -64,4 +98,15 @@ void deObject::FreeReference(){
 	}
 	
 	delete this;
+}
+
+deObject::cWeakRefData *deObject::AddWeakReference(){
+	if(pWeakRefData){
+		pWeakRefData->AddReference();
+		
+	}else{
+		pWeakRefData = new cWeakRefData(this);
+	}
+	
+	return pWeakRefData;
 }

@@ -112,7 +112,7 @@ const std::string &parameter, const std::string &value){
 	
 	delGPModule::Ref gpmodule(pModuleParameters->GetNamed(module.c_str()));
 	if(!gpmodule){
-		gpmodule.TakeOver(new delGPModule(module.c_str()));
+		gpmodule = delGPModule::Ref::New(module.c_str());
 		pModuleParameters->Add(gpmodule);
 	}
 	
@@ -121,7 +121,7 @@ const std::string &parameter, const std::string &value){
 		gpparam->SetValue(value.c_str());
 		
 	}else{
-		gpparam.TakeOver(new delGPMParameter(parameter.c_str(), value.c_str()));
+		gpparam = delGPMParameter::Ref::New(parameter.c_str(), value.c_str());
 		gpmodule->GetParameters().Add(gpparam);
 	}
 }
@@ -389,7 +389,7 @@ void dewlLauncher::pApplyCustomModuleParameters(){
 	delGameProfile::Ref profile(pGame->GetCustomProfile());
 	
 	if(!profile){
-		profile.TakeOver(CreateGameProfile());
+		profile = CreateGameProfile();
 		*profile = *pRunParams.GetGameProfile(); // copy content not pointer
 		pGame->SetCustomProfile(profile);
 	}

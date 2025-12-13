@@ -1364,7 +1364,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 			0x000100fd,0x00010038
 		};
 		
-		mfshader.TakeOver(decMemoryFile::Ref::New("/shaders/vulkantest2_vert.spv"));
+		mfshader = decMemoryFile::Ref::New("/shaders/vulkantest2_vert.spv");
 		decMemoryFileWriter::Ref::New(mfshader, false)->Write(test2_vert_spv_data, sizeof(test2_vert_spv_data));
 		
 		devkShaderModule::Ref shaderVert;
@@ -1407,7 +1407,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 			0x0000000f,0x0003003e,0x0000000a,0x00000013,0x000100fd,0x00010038
 		};
 		
-		mfshader.TakeOver(decMemoryFile::Ref::New("/shaders/vulkantest2_frag.spv"));
+		mfshader = decMemoryFile::Ref::New("/shaders/vulkantest2_frag.spv");
 		decMemoryFileWriter::Ref::New(mfshader, false)->Write(test2_frag_spv_data, sizeof(test2_frag_spv_data));
 		
 		devkShaderModule::Ref shaderFrag;
@@ -1429,8 +1429,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 			{{0, -1, 0}, {0, 0, 0}, 0}
 		};
 		
-		bufferInput.TakeOver(devkBuffer::Ref::New(pVulkanDevice,
-			sizeof(vertices), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT));
+		bufferInput = devkBuffer::Ref::New(pVulkanDevice,
+			sizeof(vertices), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 		VKTLOG(bufferInput->SetData(vertices), "Buffer SetData")
 		{
 		VKTLOG(devkCommandBuffer &cbuf = bufferInput->BeginCommandBuffer(commandPool), "Buffer BeginCommandBuffer")
@@ -2017,7 +2017,7 @@ void deoglRenderThread::DebugMemoryUsage(const char *prefix){
 	FILE *minfoFile = open_memstream(&minfoString, &minfoSize);
 	if(minfoFile){
 		if(malloc_info(0, minfoFile) == 0){
-			decMemoryFile::Ref memFile.TakeOverWith("malloc_info");
+			decMemoryFile::Ref memFile(decMemoryFile::Ref::New("malloc_info"));
 			memFile->Resize(minfoSize);
 			memcpy(memFile->GetPointer(), minfoString, minfoSize);
 			decMemoryFileReader::Ref memFileReader(decMemoryFileReader::Ref::New(memFile));

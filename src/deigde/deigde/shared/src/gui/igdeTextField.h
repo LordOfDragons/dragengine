@@ -45,6 +45,9 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeTextField> Ref;
 	
+	/** \brief Type holding weak reference. */
+	typedef deTWeakObjectReference<igdeTextField> WeakRef;
+	
 	
 private:
 	bool pEnabled;

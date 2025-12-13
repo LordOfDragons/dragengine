@@ -81,7 +81,7 @@ public:
 	int count;
 	
 	cSpecialPrintShader() : count(0){
-		writer.TakeOver(new decDiskFileWriter("specialPrintShader.h", false));
+		writer = decDiskFileWriter::Ref::New("specialPrintShader.h", false);
 		writer->WriteString("#pragma once\n");
 		writer->WriteString("#include <stddef.h>\n");
 		writer->WriteString("\n");
@@ -94,7 +94,7 @@ public:
 		writer->WriteString("extern const sShaderSource vShaderSources[];\n");
 		writer->WriteString("extern const unsigned int vShaderSourceCount;\n");
 		
-		writer.TakeOver(new decDiskFileWriter("specialPrintShader.cpp", false));
+		writer = decDiskFileWriter::Ref::New("specialPrintShader.cpp", false);
 		writer->WriteString("#include \"specialPrintShader.h\"\n");
 		writer->WriteString("\n");
 		writer->WriteString("const sShaderSource vShaderSources[] = {");

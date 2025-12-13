@@ -391,7 +391,7 @@ mode is XIModeRelative, this device sends relative coordinates.
 			// device can only be added if it is core or extension device. all other uses
 			// are not useful since we can not open the device
 			
-			device.TakeOverWith(pModule, xdevices[i]);
+			device = dedsInputDevice::Ref::New(pModule, xdevices[i]);
 		}
 		
 	}catch(const deException &){

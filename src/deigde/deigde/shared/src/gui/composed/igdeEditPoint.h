@@ -54,8 +54,8 @@ protected:
 	class DE_DLL_EXPORT cListener : public igdeTextFieldListener{
 	protected:
 		igdeEditPoint &pEditPoint;
-		igdeTextField::Ref pTextX;
-		igdeTextField::Ref pTextY;
+		igdeTextField::WeakRef pTextX;
+		igdeTextField::WeakRef pTextY;
 		
 	public:
 		typedef deTObjectReference<cListener> Ref;

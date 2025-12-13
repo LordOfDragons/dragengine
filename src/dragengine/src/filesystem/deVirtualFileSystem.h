@@ -105,8 +105,6 @@ public:
 	 * \brief Open file for reading.
 	 * 
 	 * Throws an exception if file reader can not be created.
-	 * 
-	 * \warning File reader has reference counted added. Use decBaseFileReader::Ref::TakeOver().
 	 */
 	decBaseFileReader::Ref OpenFileForReading(const decPath &path) const;
 	
@@ -114,8 +112,6 @@ public:
 	 * \brief Open file for writing.
 	 * 
 	 * Throws an exception if file writer can not be created.
-	 * 
-	 * \warning File reader has reference counted added. Use decBaseFileWriter::Ref::TakeOver().
 	 */
 	decBaseFileWriter::Ref OpenFileForWriting(const decPath &path) const;
 	

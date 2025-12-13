@@ -354,8 +354,8 @@ void deoglHTSTexture::pPrepareParamBlock(){
 				GetWithRef(deoglSkinTexturePipelines::etGeometry).GetShader();
 			
 			/*if( deoglSkinShader::USE_SHARED_SPB ){
-				pParamBlockGeometry.TakeOver(new deoglSPBlockUBO(*pSector.GetHeightTerrain()
-					.GetRenderThread().GetBufferObject().GetLayoutSkinInstanceUBO()));
+				pParamBlockGeometry = deoglSPBlockUBO::Ref::New(*pSector.GetHeightTerrain()
+					.GetRenderThread().GetBufferObject().GetLayoutSkinInstanceUBO());
 				
 			}else{*/
 				pParamBlock = skinShader.CreateSPBInstParam();

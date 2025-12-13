@@ -318,10 +318,10 @@ pIsGACOpenGL(false),
 			*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etColor);
 		
 		if(pSystem.GetInstance().SupportsExtension(deoxrInstance::extKHRCompositionLayerDepth)){
-			// pSwapchainDepthLeftEye.TakeOver( new deoxrSwapchain(
-			// 	*this, pSystem.GetLeftEyeViewSize(), deoxrSwapchain::etDepth ) );
-			// pSwapchainDepthRightEye.TakeOver( new deoxrSwapchain(
-			// 	*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etDepth ) );
+			// pSwapchainDepthLeftEye = deoxrSwapchain::Ref::New(
+			// 	*this, pSystem.GetLeftEyeViewSize(), deoxrSwapchain::etDepth);
+			// pSwapchainDepthRightEye = deoxrSwapchain::Ref::New(
+			// 	*this, pSystem.GetRightEyeViewSize(), deoxrSwapchain::etDepth);
 		}
 		
 		if(pIsGACOpenGL){

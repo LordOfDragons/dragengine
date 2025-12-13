@@ -68,8 +68,8 @@ private:
 	
 	
 		int controller;
-		igdeLabel::Ref label;
-		igdeEditSliderText::Ref slider;
+		igdeLabel::WeakRef label;
+		igdeEditSliderText::WeakRef slider;
 		decString name;
 		float minimum;
 		float maximum;

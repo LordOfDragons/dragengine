@@ -28,6 +28,7 @@
 #include "theme/igdeGuiTheme.h"
 
 #include <dragengine/deObject.h>
+#include <dragengine/deTWeakObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -49,6 +50,9 @@ class DE_DLL_EXPORT igdeWidget : public deObject{
 public:
 	/** \brief Strong reference. */
 	typedef deTObjectReference<igdeWidget> Ref;
+	
+	/** \brief Weak reference. */
+	typedef deTWeakObjectReference<igdeWidget> WeakRef;
 	
 	
 private:

@@ -257,7 +257,7 @@ void igdeWindowLogger::pAddLog(const igdeLoggerHistoryEntry &entry){
 	
 	if(style){
 		igdeAction::Ref action;
-// 		action.TakeOver( new igdeWindowLogger_ActionTest( *this ) );
+// 		action = new igdeWindowLogger_ActionTest( *this );
 		pEditLogs->AppendText(text, style, action);
 		
 	}else{

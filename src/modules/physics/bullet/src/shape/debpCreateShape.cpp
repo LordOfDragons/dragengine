@@ -91,7 +91,7 @@ void debpCreateShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 		decVector(radius, cylinder.GetHalfHeight(), radius),
 		cylinder.GetPosition(), cylinder.GetOrientation()));
 	
-	//pShape.TakeOver( new debpShapeCylinder( &cylinder ) );
+	//pShape = debpShapeCylinder::Ref::New(&cylinder);
 }
 
 void debpCreateShape::VisitShapeCapsule(decShapeCapsule &capsule){

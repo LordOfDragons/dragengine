@@ -89,7 +89,7 @@ void deovrDeviceComponent::SetDisplayImages(const char *name){
 	decString filename;
 	
 	filename.Format("%s/%s/image.png", basePath, name);
-	pDisplayImage.TakeOver(imageManager.LoadImage(vfs, filename, "/"));
+	pDisplayImage = imageManager.LoadImage(vfs, filename, "/");
 	
 	const int sizes[4] = {128, 64, 32, 16};
 	int i;
