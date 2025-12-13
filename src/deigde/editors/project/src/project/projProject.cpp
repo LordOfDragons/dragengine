@@ -144,7 +144,7 @@ void projProject::RemoveProfile(projProfile *profile){
 	
 	if(profile == pActiveProfile){
 		if(pProfiles.GetCount() == 1){
-			SetActiveProfile(NULL);
+			SetActiveProfile(nullptr);
 			
 		}else{
 			if(pProfiles.GetAt(0) == profile){
@@ -156,7 +156,7 @@ void projProject::RemoveProfile(projProfile *profile){
 		}
 	}
 	
-	profile->SetProject(NULL);
+	profile->SetProject(nullptr);
 	pProfiles.Remove(profile);
 	NotifyProfileStructureChanged();
 }
@@ -165,10 +165,10 @@ void projProject::RemoveAllProfiles(){
 	const int count = pProfiles.GetCount();
 	int i;
 	
-	SetActiveProfile(NULL);
+	SetActiveProfile(nullptr);
 	
 	for(i=0; i<count; i++){
-		pProfiles.GetAt(i)->SetProject(NULL);
+		pProfiles.GetAt(i)->SetProject(nullptr);
 	}
 	pProfiles.RemoveAll();
 	NotifyProfileStructureChanged();

@@ -75,7 +75,7 @@ projProfile *projProfileList::GetNamed(const char *name) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 int projProfileList::IndexOf(projProfile *profile) const{

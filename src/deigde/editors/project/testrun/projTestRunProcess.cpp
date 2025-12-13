@@ -81,7 +81,7 @@
 
 projTestRunProcess::sRunParameters::sRunParameters() :
 parameterCount(0),
-parameters(NULL){
+parameters(nullptr){
 }
 
 projTestRunProcess::sRunParameters::~sRunParameters(){
@@ -104,7 +104,7 @@ pPipeOut(pipeOut),
 
 pLauncher(*this),
 pEngine(*this),
-pCommandThread(NULL){
+pCommandThread(nullptr){
 }
 
 projTestRunProcess::~projTestRunProcess(){
@@ -149,7 +149,7 @@ void projTestRunProcess::WriteToPipe(const void *data, int length){
 	#ifdef OS_W32
 	DWORD bytesWritten = 0;
 	
-	if(!WriteFile(pPipeOut, data, length, &bytesWritten, NULL)){
+	if(!WriteFile(pPipeOut, data, length, &bytesWritten, nullptr)){
 		DETHROW(deeInvalidAction);
 	}
 	if((int)bytesWritten < length){
@@ -197,7 +197,7 @@ void projTestRunProcess::ReadFromPipe(void *data, int length){
 	#ifdef OS_W32
 	DWORD bytesRead = 0;
 	
-	if(!ReadFile(pPipeIn, data, length, &bytesRead, NULL)){
+	if(!ReadFile(pPipeIn, data, length, &bytesRead, nullptr)){
 		pLogger->LogErrorFormat(LOGSOURCE, "ReadFromPipe failed with error %ld:",
 			GetLastError());
 		DETHROW(deeInvalidAction);
@@ -237,7 +237,7 @@ void projTestRunProcess::Run(){
 			
 		}else{
 #ifdef OS_W32
-			MessageBoxA(NULL, e.FormatOutput().Join("\n").GetString(),
+			MessageBoxA(nullptr, e.FormatOutput().Join("\n").GetString(),
 				"Test-Runner Error", MB_OK | MB_ICONERROR);
 #else
 			e.PrintError();
@@ -448,7 +448,7 @@ void projTestRunProcess::pStopEngine(){
 	if(pCommandThread){
 		pCommandThread->Abort();
 		delete pCommandThread;
-		pCommandThread = NULL;
+		pCommandThread = nullptr;
 	}
 	
 	pEngine.Stop();

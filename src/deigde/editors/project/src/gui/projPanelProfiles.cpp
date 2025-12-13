@@ -224,7 +224,7 @@ public:
 			project->SetActiveProfile((projProfile*)selection->GetData());
 			
 		}else{
-			project->SetActiveProfile(NULL);
+			project->SetActiveProfile(nullptr);
 		}
 	}
 };
@@ -270,7 +270,7 @@ class cTextScriptDirectory : public cBaseTextFieldListener{
 public:
 	cTextScriptDirectory(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetScriptDirectory()){
 			return {};
 		}
@@ -283,7 +283,7 @@ public:
 	typedef deTObjectReference<cActionScriptDirectory> Ref;
 	
 	cActionScriptDirectory(projPanelProfiles &panel) : cActionBase(panel,
-		"...", NULL, "VFS directory where the game scripts are located"){}
+		"...", nullptr, "VFS directory where the game scripts are located"){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile*) override{
 		return {}; // TODO we need a VFS version of FXDirDialog since this is VFS path
@@ -294,7 +294,7 @@ class cTextGameObject : public cBaseTextFieldListener{
 public:
 	cTextGameObject(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetGameObject()){
 			return {};
 		}
@@ -306,7 +306,7 @@ class cTextPathConfig : public cBaseTextFieldListener{
 public:
 	cTextPathConfig(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetPathConfig()){
 			return {};
 		}
@@ -319,7 +319,7 @@ public:
 	typedef deTObjectReference<cActionPathConfig> Ref;
 	
 	cActionPathConfig(projPanelProfiles &panel) : cActionBase(panel,
-		"...", NULL, "VFS directory where the game stores configuration files"){}
+		"...", nullptr, "VFS directory where the game stores configuration files"){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile*) override{
 		return {}; // TODO we need a VFS version of FXDirDialog since this is VFS path
@@ -330,7 +330,7 @@ class cTextPathCapture : public cBaseTextFieldListener{
 public:
 	cTextPathCapture(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetPathCapture()){
 			return {};
 		}
@@ -343,7 +343,7 @@ public:
 	typedef deTObjectReference<cActionPathCapture> Ref;
 	
 	cActionPathCapture(projPanelProfiles &panel) : cActionBase(panel,
-		"...", NULL, "VFS directory where the game stores captured files"){}
+		"...", nullptr, "VFS directory where the game stores captured files"){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile*) override{
 		return {}; // TODO we need a VFS version of FXDirDialog since this is VFS path
@@ -391,7 +391,7 @@ class cTextIdentifier : public cBaseTextFieldListener{
 public:
 	cTextIdentifier(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		try{
 			const decUuid value(textField->GetText(), false);
 			return value != profile->GetIdentifier()
@@ -410,7 +410,7 @@ class cTextAliasIdentifier : public cBaseTextFieldListener{
 public:
 	cTextAliasIdentifier(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetAliasIdentifier()){
 			return {};
 		}
@@ -422,7 +422,7 @@ class cTextTitle : public cBaseTextFieldListener{
 public:
 	cTextTitle(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetTitle()){
 			return {};
 		}
@@ -434,7 +434,7 @@ class cTextGameDescription : public cBaseTextAreaListener{
 public:
 	cTextGameDescription(projPanelProfiles &panel) : cBaseTextAreaListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeTextArea *textArea, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextArea *textArea, projProject*, projProfile *profile) override{
 		if(textArea->GetText() == profile->GetGameDescription()){
 			return {};
 		}
@@ -446,7 +446,7 @@ class cTextCreator : public cBaseTextFieldListener{
 public:
 	cTextCreator(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetCreator()){
 			return {};
 		}
@@ -458,7 +458,7 @@ class cTextWebsite : public cBaseTextFieldListener{
 public:
 	cTextWebsite(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetWebsite()){
 			return {};
 		}
@@ -470,7 +470,7 @@ class cEditWindowSize : public cBaseEditPointListener{
 public:
 	cEditWindowSize(projPanelProfiles &panel) : cBaseEditPointListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeEditPoint *editPoint, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeEditPoint *editPoint, projProject*, projProfile *profile) override{
 		if(editPoint->GetPoint() == profile->GetWindowSize()){
 			return {};
 		}
@@ -639,7 +639,7 @@ class cTextDelgaPath : public cBaseTextFieldListener{
 public:
 	cTextDelgaPath(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetDelgaPath()){
 			return {};
 		}
@@ -652,7 +652,7 @@ public:
 	typedef deTObjectReference<cActionDelgaPath> Ref;
 	
 	cActionDelgaPath(projPanelProfiles &panel) : cActionBase(panel,
-		"...", NULL, "VFS directory where to place the build DELGA file"){}
+		"...", nullptr, "VFS directory where to place the build DELGA file"){}
 	
 	igdeUndo::Ref OnAction(projProject*, projProfile*) override{
 		return {}; // TODO we need a VFS version of FXDirDialog since this is VFS path
@@ -665,7 +665,7 @@ class cTextRunArguments : public cBaseTextFieldListener{
 public:
 	cTextRunArguments(projPanelProfiles &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, projProject*, projProfile *profile) override{
 		if(textField->GetText() == profile->GetRunArguments()){
 			return {};
 		}
@@ -803,11 +803,11 @@ pWindowMain(windowMain)
 	
 	description = "Set of icons of different size representing the project.";
 	helper.FormLineStretchFirst(subGroup2, "Path:", description, frameLine);
-	helper.EditPath(frameLine, description, igdeEnvironment::efpltImage, pEditIconPath, NULL);
+	helper.EditPath(frameLine, description, igdeEnvironment::efpltImage, pEditIconPath, nullptr);
 	pActionAddIcon = cActionAddIcon::Ref::New(*this, pEditIconPath);
 	helper.Button(frameLine, pActionAddIcon);
 	
-	helper.ListBox(subGroup2, 4, description, pListIcons, NULL);
+	helper.ListBox(subGroup2, 4, description, pListIcons, nullptr);
 	pListIcons->SetDefaultSorter();
 	
 	pActionRemoveIcon = cActionRemoveIcon::Ref::New(*this, pListIcons);
@@ -818,11 +818,11 @@ pWindowMain(windowMain)
 	
 	description = "Set of file patterns to exclude from projribution process.";
 	helper.FormLineStretchFirst(subGroup2, "Pattern:", description, frameLine);
-	helper.EditString(frameLine, description, pEditExcludePattern, NULL);
+	helper.EditString(frameLine, description, pEditExcludePattern, nullptr);
 	pActionAddExcludePattern = cActionAddExcludePattern::Ref::New(*this, pEditExcludePattern);
 	helper.Button(frameLine, pActionAddExcludePattern);
 	
-	helper.ListBox(subGroup2, 4, description, pListExcludePatterns, NULL);
+	helper.ListBox(subGroup2, 4, description, pListExcludePatterns, nullptr);
 	pListExcludePatterns->SetDefaultSorter();
 	
 	pActionRemoveExcludePattern = cActionRemoveExcludePattern::Ref::New(*this, pListExcludePatterns);
@@ -833,11 +833,11 @@ pWindowMain(windowMain)
 	
 	description = "Set of resource file extensions (.extension) required by the project";
 	helper.FormLineStretchFirst(subGroup2, "Extension:", description, frameLine);
-	helper.EditString(frameLine, description, pEditRequiredExtension, NULL);
+	helper.EditString(frameLine, description, pEditRequiredExtension, nullptr);
 	pActionAddRequiredExtension = cActionAddRequiredExtension::Ref::New(*this, pEditRequiredExtension);
 	helper.Button(frameLine, pActionAddRequiredExtension);
 	
-	helper.ListBox(subGroup2, 4, description, pListRequiredExtensions, NULL);
+	helper.ListBox(subGroup2, 4, description, pListRequiredExtensions, nullptr);
 	pListRequiredExtensions->SetDefaultSorter();
 	
 	pActionRemoveRequiredExtension = cActionRemoveRequiredExtension::Ref::New(*this, pListRequiredExtensions);
@@ -866,7 +866,7 @@ pWindowMain(windowMain)
 }
 
 projPanelProfiles::~projPanelProfiles(){
-	SetProject(NULL);
+	SetProject(nullptr);
 }
 
 
@@ -903,7 +903,7 @@ void projPanelProfiles::UpdateProject(){
 
 projProfile *projPanelProfiles::GetActiveProfile() const{
 	if(!pProject){
-		return NULL;
+		return nullptr;
 	}
 	return pProject->GetActiveProfile();
 }
@@ -926,7 +926,7 @@ void projPanelProfiles::UpdateProfiles(){
 		
 		for(i=0; i<count; i++){
 			projProfile * const profile = list.GetAt(i);
-			pListProfiles->AddItem(profile->GetName(), NULL, profile);
+			pListProfiles->AddItem(profile->GetName(), nullptr, profile);
 		}
 		
 		pListProfiles->SortItems();
@@ -943,7 +943,7 @@ void projPanelProfiles::UpdateProfile(){
 	pActionPathConfig->Update();
 	pActionDelgaPath->Update();
 	
-	const bool enable = profile != NULL;
+	const bool enable = profile != nullptr;
 	pEditName->SetEnabled(enable);
 	pEditDescription->SetEnabled(enable);
 	pEditScriptDirectory->SetEnabled(enable);
@@ -1027,8 +1027,8 @@ void projPanelProfiles::UpdateIcons(){
 		pListIcons->SetSelection(0);
 	}
 	
-	pEditIconPath->SetEnabled(profile != NULL);
-	pListIcons->SetEnabled(profile != NULL);
+	pEditIconPath->SetEnabled(profile != nullptr);
+	pListIcons->SetEnabled(profile != nullptr);
 	
 	pActionAddIcon->Update();
 	pActionRemoveIcon->Update();
@@ -1063,8 +1063,8 @@ void projPanelProfiles::UpdateExcludePatterns(){
 		pListExcludePatterns->SetSelection(0);
 	}
 	
-	pEditExcludePattern->SetEnabled(profile != NULL);
-	pListExcludePatterns->SetEnabled(profile != NULL);
+	pEditExcludePattern->SetEnabled(profile != nullptr);
+	pListExcludePatterns->SetEnabled(profile != nullptr);
 	
 	pActionAddExcludePattern->Update();
 	pActionRemoveExcludePattern->Update();
@@ -1099,8 +1099,8 @@ void projPanelProfiles::UpdateRequiredExtensions(){
 		pListRequiredExtensions->SetSelection(0);
 	}
 	
-	pEditRequiredExtension->SetEnabled(profile != NULL);
-	pListRequiredExtensions->SetEnabled(profile != NULL);
+	pEditRequiredExtension->SetEnabled(profile != nullptr);
+	pListRequiredExtensions->SetEnabled(profile != nullptr);
 	
 	pActionAddRequiredExtension->Update();
 	pActionRemoveRequiredExtension->Update();

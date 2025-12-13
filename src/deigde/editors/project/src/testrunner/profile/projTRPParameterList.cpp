@@ -74,7 +74,7 @@ projTRPParameter *projTRPParameterList::GetWith(const char *module, const char *
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 bool projTRPParameterList::Has(projTRPParameter *parameter) const{
@@ -82,7 +82,7 @@ bool projTRPParameterList::Has(projTRPParameter *parameter) const{
 }
 
 bool projTRPParameterList::HasWith(const char *module, const char *name) const{
-	return GetWith(module, name) != NULL;
+	return GetWith(module, name) != nullptr;
 }
 
 int projTRPParameterList::IndexOf(projTRPParameter *parameter) const{

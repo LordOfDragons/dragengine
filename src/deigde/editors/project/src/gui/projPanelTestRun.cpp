@@ -136,7 +136,7 @@ public:
 			pPanel.SelectProfile((projProfile*)selection->GetData());
 			
 		}else{
-			pPanel.SelectProfile(NULL);
+			pPanel.SelectProfile(nullptr);
 		}
 		
 		pPanel.UpdateWidgetEnabled();
@@ -255,7 +255,7 @@ preventUpdateLaunchProfile(false),
 
 pWindowMain(windowMain),
 
-pTestRunner(NULL),
+pTestRunner(nullptr),
 pIsRunning(false),
 pMaxLines(500)
 {
@@ -348,7 +348,7 @@ pMaxLines(500)
 }
 
 projPanelTestRun::~projPanelTestRun(){
-	SetProject(NULL);
+	SetProject(nullptr);
 }
 
 
@@ -418,7 +418,7 @@ void projPanelTestRun::Start(){
 		return;
 	}
 	
-	projTRProfile *launchProfile = NULL;
+	projTRProfile *launchProfile = nullptr;
 	if(!pProject->GetActiveLaunchProfile().IsEmpty()){
 		launchProfile = pTestRunner->GetLauncherProfiles().GetNamed(
 			pProject->GetActiveLaunchProfile());
@@ -522,7 +522,7 @@ void projPanelTestRun::UpdateLogs(bool lastLogs){
 	// style text
 	const int logEnd = logs.GetLength();
 	const char *logPtr = logs.GetString();
-	const char *style = NULL;
+	const char *style = nullptr;
 	int logPosition = 0;
 	int styleBegin = 0;
 	int mode = 0;
@@ -535,7 +535,7 @@ void projPanelTestRun::UpdateLogs(bool lastLogs){
 			}
 			
 			if(strncmp(logPtr + logPosition, "II ", 3) == 0){
-				style = NULL;
+				style = nullptr;
 				
 			}else if(strncmp(logPtr + logPosition, "WW ", 3) == 0){
 				style = styleWarning;
@@ -544,7 +544,7 @@ void projPanelTestRun::UpdateLogs(bool lastLogs){
 				style = styleError;
 				
 			}else{
-				style = NULL;
+				style = nullptr;
 			}
 			
 			styleBegin = logPosition;
@@ -555,7 +555,7 @@ void projPanelTestRun::UpdateLogs(bool lastLogs){
 			if(logPtr[logPosition] == '\n' || logPtr[logPosition + 1] == 0){
 				if(style){
 					pEditLogs->SetTextSegment(startPosition + styleBegin,
-						startPosition + logPosition, style, NULL);
+						startPosition + logPosition, style, nullptr);
 				}
 				mode = 0;
 			}
@@ -618,7 +618,7 @@ void projPanelTestRun::UpdateProfiles(){
 		
 		for(i=0; i<count; i++){
 			projProfile * const profile = list.GetAt(i);
-			pCBProfile->AddItem(profile->GetName(), NULL, profile);
+			pCBProfile->AddItem(profile->GetName(), nullptr, profile);
 		}
 		
 		pCBProfile->SortItems();

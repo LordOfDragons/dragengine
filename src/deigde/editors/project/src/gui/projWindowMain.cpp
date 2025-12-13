@@ -163,11 +163,11 @@ void projWindowMain::SetProject(projProject *project){
 		return;
 	}
 	
-	pPanelProfiles->SetProject(NULL);
-	pPanelTestRun->SetProject(NULL);
-	pPanelUndoHistory->SetProject(NULL);
-	pActionEditUndo->SetUndoSystem(NULL);
-	pActionEditRedo->SetUndoSystem(NULL);
+	pPanelProfiles->SetProject(nullptr);
+	pPanelTestRun->SetProject(nullptr);
+	pPanelUndoHistory->SetProject(nullptr);
+	pActionEditUndo->SetUndoSystem(nullptr);
+	pActionEditRedo->SetUndoSystem(nullptr);
 	
 	if(pProject){
 		pProject->RemoveListener(pListener);
@@ -207,7 +207,7 @@ void projWindowMain::LoadProject(){
 		if(reader){
 			// file exists. parse it. should this fail we do show an error otherwise not
 			projProjectXml(GetLogger(), LOGSOURCE).ReadFromFile(reader, project);
-			reader = NULL;
+			reader = nullptr;
 		}
 		
 		// load local project settings if present

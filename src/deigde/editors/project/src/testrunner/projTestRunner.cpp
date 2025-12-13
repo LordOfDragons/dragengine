@@ -91,8 +91,8 @@
 
 projTestRunner::projTestRunner(projWindowMain &windowMain) :
 pWindowMain(windowMain),
-pProfile(NULL),
-pLauncherProfile(NULL),
+pProfile(nullptr),
+pLauncherProfile(nullptr),
 
 #ifdef OS_W32
 pPipeIn(INVALID_HANDLE_VALUE),
@@ -234,7 +234,7 @@ bool projTestRunner::IsRunning(){
 		return false; // not running
 	}
 	
-	const pid_t result = waitpid(pProcessID, NULL, WNOHANG); 
+	const pid_t result = waitpid(pProcessID, nullptr, WNOHANG); 
 	
 	if(result == 0){
 		return true; // process still running
@@ -295,7 +295,7 @@ void projTestRunner::Start(projProfile *profile, projTRProfile *launcherProfile)
 			memset(&secattr, '\0', sizeof(secattr));
 			secattr.nLength = sizeof(secattr);
 			secattr.bInheritHandle = TRUE;
-			secattr.lpSecurityDescriptor = NULL;
+			secattr.lpSecurityDescriptor = nullptr;
 			
 			if(!CreatePipe(&pipesInRead, &pipesInWrite, &secattr, 0)){
 				DETHROW(deeInvalidAction);
@@ -324,11 +324,11 @@ void projTestRunner::Start(projProfile *profile, projTRProfile *launcherProfile)
 			startInfo.hStdInput = pipesInRead;
 			startInfo.dwFlags |= STARTF_USESTDHANDLES;
 			
-			if(!CreateProcess(NULL, widePath, NULL, NULL, TRUE, 0, NULL, NULL, &startInfo, &procInfo)){
+			if(!CreateProcess(nullptr, widePath, nullptr, nullptr, TRUE, 0, nullptr, nullptr, &startInfo, &procInfo)){
 				DETHROW(deeInvalidAction);
 			}
 			
-			if(!WriteFile(pipesInWrite, &pipesOutWrite, sizeof(pipesOutWrite), &bytesWritten, NULL)){
+			if(!WriteFile(pipesInWrite, &pipesOutWrite, sizeof(pipesOutWrite), &bytesWritten, nullptr)){
 				DETHROW(deeInvalidAction);
 			}
 			if(bytesWritten < sizeof(pipesOutWrite)){
@@ -379,7 +379,7 @@ void projTestRunner::Start(projProfile *profile, projTRProfile *launcherProfile)
 	// avoid this problem either a separate process can be used like the one in the
 	// windows case or a flush can be forced of all open files. we use the second
 	// solution here
-	fflush(NULL);
+	fflush(nullptr);
 	
 	if(!pProcessID){
 		int pipesIn[2] = {0, 0};
@@ -427,7 +427,7 @@ void projTestRunner::Start(projProfile *profile, projTRProfile *launcherProfile)
 			decPath pathTestRunner(decPath::CreatePathNative(pWindowMain.GetEditorModule().GetEditorPathLib()));
 			pathTestRunner.AddComponent("testrunner");
 			const decString strPathTestRunner(pathTestRunner.GetPathNative());
-			execlp(strPathTestRunner.GetString(), "testrunner", arg1, arg2, NULL);
+			execlp(strPathTestRunner.GetString(), "testrunner", arg1, arg2, nullptr);
 			// we should never get here or something went wrong
 			exit(0);
 		}
@@ -488,7 +488,7 @@ void projTestRunner::Stop(){
 	
 	#else
 	if(pProcessID){
-		waitpid(pProcessID, NULL, 0);
+		waitpid(pProcessID, nullptr, 0);
 		pProcessID = 0;
 	}
 	
@@ -503,8 +503,8 @@ void projTestRunner::Stop(){
 	}
 	#endif
 	
-	pProfile = NULL;
-	pLauncherProfile = NULL;
+	pProfile = nullptr;
+	pLauncherProfile = nullptr;
 
 	pWindowMain.GetLogger()->LogInfo(LOGSOURCE, "Test-Runner stopped");
 }
@@ -547,7 +547,7 @@ void projTestRunner::Kill(){
 	#else
 	if(pProcessID){
 		kill(pProcessID, SIGKILL);
-		waitpid(pProcessID, NULL, 0);
+		waitpid(pProcessID, nullptr, 0);
 		pProcessID = 0;
 	}
 	
@@ -562,8 +562,8 @@ void projTestRunner::Kill(){
 	}
 	#endif
 	
-	pProfile = NULL;
-	pLauncherProfile = NULL;
+	pProfile = nullptr;
+	pLauncherProfile = nullptr;
 
 	pWindowMain.GetLogger()->LogInfo(LOGSOURCE, "Test-Runner killed");
 }
@@ -604,7 +604,7 @@ void projTestRunner::WriteToPipe(const void *data, int length){
 	#ifdef OS_W32
 	DWORD bytesWritten = 0;
 	
-	if(!WriteFile(pPipeIn, data, length, &bytesWritten, NULL)){
+	if(!WriteFile(pPipeIn, data, length, &bytesWritten, nullptr)){
 		DETHROW(deeInvalidAction);
 	}
 	if((int)bytesWritten < length){
@@ -652,7 +652,7 @@ void projTestRunner::ReadFromPipe(void *data, int length){
 	#ifdef OS_W32
 	DWORD bytesRead = 0;
 	
-	if(!ReadFile(pPipeOut, data, length, &bytesRead, NULL)){
+	if(!ReadFile(pPipeOut, data, length, &bytesRead, nullptr)){
 		DETHROW(deeInvalidAction);
 	}
 	if((int)bytesRead < length){
@@ -700,7 +700,7 @@ decString projTestRunner::ReadNextLogData(){
 	}
 	
 	if(!IsRunning()){
-		pLogFileReader = NULL;  // close log file
+		pLogFileReader = nullptr;  // close log file
 	}
 	
 	return content;
@@ -739,7 +739,7 @@ decString projTestRunner::GetLastLogContent(){
 
 void projTestRunner::pInitLogFile(){
 	// make sure no reader is open
-	pLogFileReader = NULL;
+	pLogFileReader = nullptr;
 	
 	// store path to log file to use
 	const igdeGameProject &project = *pWindowMain.GetGameProject();

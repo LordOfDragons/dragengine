@@ -59,7 +59,7 @@ igdeDialog(windowMain.GetEnvironment(), "Distribute"),
 
 pWindowMain(windowMain),
 pProfile(profile),
-pTaskDistribute(NULL),
+pTaskDistribute(nullptr),
 pCloseDialogOnFinished(false),
 pPrintToConsole(false),
 pSuccess(true)
@@ -81,16 +81,16 @@ pSuccess(true)
 	igdeContainer::Ref groupBox;
 	helper.GroupBoxStatic(content, groupBox, "DELGA:");
 	
-	helper.EditString(groupBox, "DELGA File:", "DELGA file being build.", pEditDelgaPath, NULL);
+	helper.EditString(groupBox, "DELGA File:", "DELGA file being build.", pEditDelgaPath, nullptr);
 	pEditDelgaPath->SetEditable(false);
 	
-	helper.EditString(groupBox, "DELGA Size:", "Size of DELGA file.", pEditDelgaSize, NULL);
+	helper.EditString(groupBox, "DELGA Size:", "Size of DELGA file.", pEditDelgaSize, nullptr);
 	pEditDelgaSize->SetEditable(false);
 	
-	helper.EditString(groupBox, "Files:", "Number of processed files.", pEditDelgaFileCount, NULL);
+	helper.EditString(groupBox, "Files:", "Number of processed files.", pEditDelgaFileCount, nullptr);
 	pEditDelgaFileCount->SetEditable(false);
 	
-	helper.EditString(groupBox, "Directories:", "Number of processed directories.", pEditDelgaDirCount, NULL);
+	helper.EditString(groupBox, "Directories:", "Number of processed directories.", pEditDelgaDirCount, nullptr);
 	pEditDelgaDirCount->SetEditable(false);
 	
 	// logs and info line
@@ -99,7 +99,7 @@ pSuccess(true)
 	
 	helper.GroupBoxStaticFlow(containerLogs, groupBox, "Logs:", true);
 	
-	helper.EditString(groupBox, "Building logs.", pEditLogs, 80, 12, NULL);
+	helper.EditString(groupBox, "Building logs.", pEditLogs, 80, 12, nullptr);
 	pEditLogs->SetEditable(false);
 	
 	// info line

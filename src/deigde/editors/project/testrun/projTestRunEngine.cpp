@@ -80,7 +80,7 @@
 
 projTestRunEngine::projTestRunEngine(projTestRunProcess &process) :
 pProcess(process),
-pEngine(NULL){
+pEngine(nullptr){
 }
 
 projTestRunEngine::~projTestRunEngine(){
@@ -100,7 +100,7 @@ projTestRunEngine::~projTestRunEngine(){
 void projTestRunEngine::Start(){
 	const projTestRunProcess::sRunParameters &runParameters = pProcess.GetRunParameters();
 	deLogger * const logger = pProcess.GetLogger();
-	deOS *os = NULL;
+	deOS *os = nullptr;
 	
 	try{
 		// create os
@@ -118,13 +118,13 @@ void projTestRunEngine::Start(){
 		#elif defined OS_W32
 		logger->LogInfo(LOGSOURCE, "Creating OS Windows");
 		os = new deOSWindows();
-		os->CastToOSWindows()->SetInstApp(GetModuleHandle(NULL));
+		os->CastToOSWindows()->SetInstApp(GetModuleHandle(nullptr));
 		#endif
 		
 		// create game engine
 		logger->LogInfo(LOGSOURCE, "Creating game engine");
 		pEngine = new deEngine(os);
-		os = NULL;
+		os = nullptr;
 		
 		pEngine->SetLogger(logger);
 		pEngine->SetCacheAppID(runParameters.identifier);
@@ -137,7 +137,7 @@ void projTestRunEngine::Start(){
 		logger->LogException(LOGSOURCE, e);
 		if(pEngine){
 			delete pEngine;
-			pEngine = NULL;
+			pEngine = nullptr;
 		}
 		if(os){
 			delete os;
@@ -218,7 +218,7 @@ void projTestRunEngine::ActivateModule(deModuleSystem::eModuleTypes type,
 const char *name, const char *version){
 	deModuleSystem &moduleSystem = *pEngine->GetModuleSystem();
 	const int count = moduleSystem.GetModuleCount();
-	deLoadableModule *module = NULL;
+	deLoadableModule *module = nullptr;
 	int i;
 	
 	if(name[0]){ // not empty
@@ -426,7 +426,7 @@ void projTestRunEngine::CreateMainWindow(){
 	
 	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "Creating window %i x %i", width, height);
 	pEngine->GetGraphicSystem()->CreateAndSetRenderWindow(width, height,
-		runParameters.fullScreen, runParameters.windowTitle, NULL);
+		runParameters.fullScreen, runParameters.windowTitle, nullptr);
 }
 
 void projTestRunEngine::Run(){
@@ -443,5 +443,5 @@ void projTestRunEngine::Stop(){
 	}
 	
 	delete pEngine;
-	pEngine = NULL;
+	pEngine = nullptr;
 }

@@ -131,14 +131,14 @@ pProfile(profile),
 
 pState(esInitial),
 
-pZipFile(NULL),
+pZipFile(nullptr),
 
 pDelgaSize(0),
 pDelgaPosition(0),
 pDelgaDirectoryCount(0),
 pDelgaFileCount(0),
 
-pReadBuffer(NULL),
+pReadBuffer(nullptr),
 pReadBufferSize(1024 * 8) // 8k
 {
 	pReadBuffer = new char[pReadBufferSize];
@@ -315,7 +315,7 @@ void projTaskDistribute::pCreateDelgaWriter(){
 	ffunc.zerror_file = fZipErrorFileFunc;
 	ffunc.opaque = this;
 	
-	pZipFile = zipOpen2(pDelgaPath, APPEND_STATUS_CREATE, NULL, &ffunc);
+	pZipFile = zipOpen2(pDelgaPath, APPEND_STATUS_CREATE, nullptr, &ffunc);
 	if(!pZipFile){
 		DETHROW_INFO(deeReadFile, pDelgaPath);
 	}
@@ -324,9 +324,9 @@ void projTaskDistribute::pCreateDelgaWriter(){
 void projTaskDistribute::pCloseDelgaWriter(){
 	if(pZipFile){
 		zipClose(pZipFile, "");
-		pZipFile = NULL;
+		pZipFile = nullptr;
 	}
-	pDelgaWriter = NULL;
+	pDelgaWriter = nullptr;
 }
 
 void projTaskDistribute::pScanDirectory(const decPath &path){
@@ -614,7 +614,7 @@ void projTaskDistribute::pZipWriteMemoryFile(const decMemoryFile &memoryFile){
 	
 	// NOTE: path contains '/' as prefix. delga files require path without prefix
 	if(zipOpenNewFileInZip(pZipFile, memoryFile.GetFilename().GetMiddle(1), &info,
-	NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION) != ZIP_OK){
+	nullptr, 0, nullptr, 0, nullptr, Z_DEFLATED, Z_DEFAULT_COMPRESSION) != ZIP_OK){
 		DETHROW(deeInvalidParam);
 	}
 	
@@ -735,7 +735,7 @@ void projTaskDistribute::pWriteGameXmlRequiredFormats(decXmlWriter &writer){
 
 projTaskDistribute::cProcessDirectory *projTaskDistribute::GetProcessDirectory(){
 	if(pStackDirectories.GetCount() == 0){
-		return NULL;
+		return nullptr;
 	}
 	return (cProcessDirectory*)pStackDirectories.GetAt(pStackDirectories.GetCount() - 1);
 }

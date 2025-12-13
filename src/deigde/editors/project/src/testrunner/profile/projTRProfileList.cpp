@@ -75,7 +75,7 @@ projTRProfile *projTRProfileList::GetNamed(const char *name) const{
 		}
 	}
 	
-	return NULL;
+	return nullptr;
 }
 
 bool projTRProfileList::Has(projTRProfile *profile) const{
@@ -83,7 +83,7 @@ bool projTRProfileList::Has(projTRProfile *profile) const{
 }
 
 bool projTRProfileList::HasNamed(const char *name) const{
-	return GetNamed(name) != NULL;
+	return GetNamed(name) != nullptr;
 }
 
 int projTRProfileList::IndexOf(projTRProfile *profile) const{

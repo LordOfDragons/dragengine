@@ -60,7 +60,7 @@ public:
 	/** \brief Parameter at index. */
 	projTRPParameter *GetAt(int index) const;
 	
-	/** \brief Named parameter with module or \em NULL if absent. */
+	/** \brief Named parameter with module or \em nullptr if absent. */
 	projTRPParameter *GetWith(const char *module, const char *name) const;
 	
 	/** \brief Parameter is present. */

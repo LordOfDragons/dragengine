@@ -46,7 +46,7 @@ pListener(projPanelUndoHistoryListener::Ref::New(*this)){
 }
 
 projPanelUndoHistory::~projPanelUndoHistory(){
-	SetProject(NULL);
+	SetProject(nullptr);
 }
 
 
@@ -59,7 +59,7 @@ void projPanelUndoHistory::SetProject(projProject *project){
 		return;
 	}
 	
-	SetUndoSystem(NULL);
+	SetUndoSystem(nullptr);
 	
 	if(pProject){
 		pProject->RemoveListener(pListener);

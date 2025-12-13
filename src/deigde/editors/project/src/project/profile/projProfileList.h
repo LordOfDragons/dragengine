@@ -63,7 +63,7 @@ public:
 	/** \brief Profile at position. */
 	projProfile *GetAt(int index) const;
 	
-	/** \brief Named profile or \em NULL if absent. */
+	/** \brief Named profile or \em nullptr if absent. */
 	projProfile *GetNamed(const char *name) const;
 	
 	/** \brief Index of named profile or -1 if absent. */

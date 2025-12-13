@@ -42,13 +42,13 @@
 ////////////////////////////
 
 projDownSizer::projDownSizer() :
-pProfile(NULL),
+pProfile(nullptr),
 pQuality(100),
 pScale(0){
 }
 
 projDownSizer::projDownSizer(const projDownSizer &downsizer) :
-pProfile(NULL),
+pProfile(nullptr),
 pDescription(downsizer.pDescription),
 pPatterns(downsizer.pPatterns),
 pQuality(downsizer.pQuality),

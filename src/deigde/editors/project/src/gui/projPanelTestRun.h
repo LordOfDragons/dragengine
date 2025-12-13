@@ -122,7 +122,7 @@ public:
 	/** \brief Set synthesizer. */
 	void SetProject(projProject *project);
 	
-	/** \brief Test runner or \em NULL. */
+	/** \brief Test runner or \em nullptr. */
 	inline projTestRunner *GetTestRunner() const{ return pTestRunner; }
 	
 	

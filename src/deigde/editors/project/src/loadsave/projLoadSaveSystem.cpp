@@ -75,7 +75,7 @@ projLoadSaveSystem::~projLoadSaveSystem(){
 //////////////////////
 
 void projLoadSaveSystem::pBuildFilePattern(){
-	igdeFilePattern *filePattern = NULL;
+	igdeFilePattern *filePattern = nullptr;
 	
 	try{
 		filePattern = new igdeFilePattern("DELGA", "*.delga", ".delga");
