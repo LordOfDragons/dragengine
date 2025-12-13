@@ -30,6 +30,7 @@
 #include "../skin/rendered/deoglSkinRendered.h"
 #include "../shaders/paramblock/shared/deoglSharedSPBRTIGroup.h"
 #include "../world/deoglWorldComputeElement.h"
+#include "../skin/deoglRSkin.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
@@ -39,7 +40,6 @@
 class deoglWorldOctree;
 class deoglRWorld;
 class deoglRenderThread;
-#include "../skin/deoglRSkin.h"
 class deoglSkinState;
 #include "../skin/dynamic/deoglRDynamicSkin.h"
 #include "../envmap/deoglEnvironmentMap.h"

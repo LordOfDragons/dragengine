@@ -39,18 +39,18 @@
 #include "../values/debnValueVector2.h"
 #include "../values/debnValueVector3.h"
 #include "../values/debnValueQuaternion.h"
-#include "dragengine/resources/network/value/deNetworkValue.h"
-#include "dragengine/resources/network/value/deNetworkValueInteger.h"
-#include "dragengine/resources/network/value/deNetworkValueFloat.h"
-#include "dragengine/resources/network/value/deNetworkValueString.h"
-#include "dragengine/resources/network/value/deNetworkValueData.h"
-#include "dragengine/resources/network/value/deNetworkValuePoint2.h"
-#include "dragengine/resources/network/value/deNetworkValuePoint3.h"
-#include "dragengine/resources/network/value/deNetworkValueVector2.h"
-#include "dragengine/resources/network/value/deNetworkValueVector3.h"
-#include "dragengine/resources/network/value/deNetworkValueQuaternion.h"
-#include "dragengine/common/math/decMath.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/resources/network/value/deNetworkValue.h>
+#include <dragengine/resources/network/value/deNetworkValueInteger.h>
+#include <dragengine/resources/network/value/deNetworkValueFloat.h>
+#include <dragengine/resources/network/value/deNetworkValueString.h>
+#include <dragengine/resources/network/value/deNetworkValueData.h>
+#include <dragengine/resources/network/value/deNetworkValuePoint2.h>
+#include <dragengine/resources/network/value/deNetworkValuePoint3.h>
+#include <dragengine/resources/network/value/deNetworkValueVector2.h>
+#include <dragengine/resources/network/value/deNetworkValueVector3.h>
+#include <dragengine/resources/network/value/deNetworkValueQuaternion.h>
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/exceptions.h>
 
 
 

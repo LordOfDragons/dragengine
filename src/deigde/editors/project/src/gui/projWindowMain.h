@@ -26,6 +26,11 @@
 #define _PROJWINDOWMAIN_H_
 
 #include "../loadsave/projLoadSaveSystem.h"
+#include "../project/projProject.h"
+#include "projPanelProfiles.h"
+#include "projPanelTestRun.h"
+#include "projPanelUndoHistory.h"
+#include "projWindowMainListener.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
@@ -39,11 +44,6 @@
 #include <deigde/gui/resources/igdeIcon.h>
 
 class projIGDEModule;
-#include "../project/projProject.h"
-#include "projPanelProfiles.h"
-#include "projPanelTestRun.h"
-#include "projPanelUndoHistory.h"
-#include "projWindowMainListener.h"
 class decUnicodeStringList;
 class projConfiguration;
 

@@ -26,16 +26,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include "igdeNullScriptModule.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/systems/deModuleSystem.h"
-#include "dragengine/systems/modules/deBaseModule.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingCollider.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingConnection.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingNetworkState.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingServer.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingTouchSensor.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingPropField.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/systems/deModuleSystem.h>
+#include <dragengine/systems/modules/deBaseModule.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingConnection.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingNetworkState.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingServer.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingTouchSensor.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingPropField.h>
+#include <dragengine/common/exceptions.h>
 
 
 // cModule

@@ -40,13 +40,13 @@
 #include "../utils/collision/deoglDCollisionTriangle.h"
 #include "../utils/collision/deoglDCollisionSphere.h"
 
-#include "dragengine/resources/light/deLight.h"
-#include "dragengine/resources/world/deWorld.h"
-#include "dragengine/common/math/decConvexVolume.h"
-#include "dragengine/common/math/decConvexVolumeFace.h"
-#include "dragengine/common/math/decConvexVolumeList.h"
-#include "dragengine/common/utils/decTimer.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/resources/light/deLight.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/common/math/decConvexVolume.h>
+#include <dragengine/common/math/decConvexVolumeFace.h>
+#include <dragengine/common/math/decConvexVolumeList.h>
+#include <dragengine/common/utils/decTimer.h>
+#include <dragengine/common/exceptions.h>
 
 
 

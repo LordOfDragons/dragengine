@@ -30,7 +30,7 @@
 #include "deoglBasics.h"
 #include "deoglShadowVolume.h"
 #include "component/deoglMeshData.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 

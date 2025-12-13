@@ -27,7 +27,7 @@
 
 #include "../../debpBulletShape.h"
 
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 class debpHeightTerrain;
 class debpHeightTerrainShape;

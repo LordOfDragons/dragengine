@@ -34,6 +34,8 @@
 #include "../../../model/deoalModelFace.h"
 #include "../../../model/octree/deoalModelOctree.h"
 #include "../../../model/octree/deoalModelRTOctree.h"
+#include "../../../audiothread/deoalAudioThread.h"
+#include "../../../audiothread/deoalATLogger.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -108,8 +110,6 @@ void deoalMOVRayHitsFaces::SetResultInWorldSpace(bool resultInWorldSpace){
 
 
 
-#include "../../../audiothread/deoalAudioThread.h"
-#include "../../../audiothread/deoalATLogger.h"
 
 void deoalMOVRayHitsFaces::VisitNode(deoalModelOctree &node){
 #ifdef MOVRAYHITSFACES_DO_TIMIING

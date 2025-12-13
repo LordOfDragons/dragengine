@@ -47,7 +47,7 @@
 #include <dragengine/resources/propfield/dePropFieldType.h>
 #include <dragengine/resources/propfield/dePropFieldInstance.h>
 #include <dragengine/resources/propfield/dePropFieldManager.h>
-#include "dragengine/resources/skin/deSkin.h"
+#include <dragengine/resources/skin/deSkin.h>
 #include <libdscript/exceptions.h>
 
 

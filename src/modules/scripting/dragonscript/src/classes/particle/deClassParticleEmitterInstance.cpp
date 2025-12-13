@@ -58,7 +58,7 @@
 #include <dragengine/resources/particle/deParticleEmitterInstanceManager.h>
 #include <dragengine/resources/particle/deParticleEmitterController.h>
 #include <dragengine/resources/particle/deParticleEmitterInstanceType.h>
-#include "dragengine/resources/skin/deSkin.h"
+#include <dragengine/resources/skin/deSkin.h>
 
 
 

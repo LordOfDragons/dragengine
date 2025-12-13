@@ -28,8 +28,8 @@
 #include <string.h>
 #include "debnMessage.h"
 #include "debnMessageManager.h"
-#include "dragengine/resources/network/deNetworkMessage.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/resources/network/deNetworkMessage.h>
+#include <dragengine/common/exceptions.h>
 
 
 

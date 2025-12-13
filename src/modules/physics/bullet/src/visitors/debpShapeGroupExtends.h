@@ -27,8 +27,8 @@
 #define _DEBPSHAPEGROUPEXTENDS_H_
 
 // includes
-#include "dragengine/common/shape/decShapeVisitor.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/shape/decShapeVisitor.h>
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
 class debpDCollisionVolume;

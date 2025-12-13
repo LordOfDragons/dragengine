@@ -44,12 +44,12 @@
 #include "../shaders/deoglShaderSources.h"
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 #include "../shaders/paramblock/deoglSPBParameter.h"
+#include "deoglCapsFmtSupportSetup.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
-#include "deoglCapsFmtSupportSetup.h"
 
 
 // Class deoglCapsFmtSupport

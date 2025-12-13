@@ -1,6 +1,8 @@
 #include "GameActivityHandler.h"
 #include "GameRunParams.h"
 #include "Launcher.h"
+#include "RunGameHandler.h"
+
 #include <thread>
 #include <android/log.h>
 #include <unordered_map>
@@ -12,7 +14,6 @@
 #include <dragengine/logger/deLoggerConsole.h>
 #include <dragengine/logger/deLoggerFile.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include "RunGameHandler.h"
 
 JavaVM *vJavaVM = nullptr;
 

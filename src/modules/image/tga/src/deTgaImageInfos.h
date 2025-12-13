@@ -27,8 +27,8 @@
 #define _DETGAIMAGEINFO_H_
 
 // includes
-#include "dragengine/systems/modules/image/deBaseImageInfo.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/systems/modules/image/deBaseImageInfo.h>
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
 

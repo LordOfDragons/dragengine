@@ -37,6 +37,7 @@
 #include "../coldet/collision/debpDCollisionSphere.h"
 #include "../coldet/collision/debpDCollisionTriangle.h"
 #include "../coldet/collision/debpDCollisionDetection.h"
+#include "../dePhysicsBullet.h"
 
 #include <dragengine/resources/decal/deDecal.h>
 //#include <dragengine/resources/model/deModel.h>
@@ -52,7 +53,6 @@
 
 // Constructor, destructor
 ////////////////////////////
-#include "../dePhysicsBullet.h"
 
 debpDecalMeshBuilder::debpDecalMeshBuilder(){
 	pCVolList = NULL;

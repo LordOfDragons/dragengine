@@ -27,9 +27,9 @@
 #define _DEOGLOPTIMIZERLIGHT_H_
 
 // includes
-#include "dragengine/common/math/decMath.h"
-#include "dragengine/common/utils/decTimer.h"
 #include "deoglOptimizer.h"
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/utils/decTimer.h>
 
 // predefinitions
 class deoglRLight;

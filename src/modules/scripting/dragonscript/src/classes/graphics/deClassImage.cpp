@@ -34,10 +34,10 @@
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 #include "../../resourceloader/dedsResourceLoader.h"
-#include "dragengine/resources/image/deImage.h"
-#include "dragengine/resources/image/deImageManager.h"
-#include "dragengine/resources/loader/deResourceLoader.h"
-#include "dragengine/deEngine.h"
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/image/deImageManager.h>
+#include <dragengine/resources/loader/deResourceLoader.h>
+#include <dragengine/deEngine.h>
 #include <libdscript/exceptions.h>
 
 

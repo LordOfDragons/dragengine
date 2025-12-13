@@ -36,11 +36,11 @@
 #include "../light/deoglRLight.h"
 #include "../particle/deoglRParticleEmitterInstance.h"
 #include "../sensor/deoglRLumimeter.h"
-
-#include <dragengine/common/exceptions.h>
-#include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/collision/deoglDCollisionVolume.h"
 #include "../utils/collision/deoglDCollisionDetection.h"
+#include "../utils/collision/deoglDCollisionBox.h"
+
+#include <dragengine/common/exceptions.h>
 
 
 

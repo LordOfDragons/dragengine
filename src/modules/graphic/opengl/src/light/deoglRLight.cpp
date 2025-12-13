@@ -67,13 +67,13 @@
 #include "../visitors/deoglTransformVolume.h"
 #include "../world/deoglRWorld.h"
 #include "../world/deoglWorldOctree.h"
-
-#include <dragengine/common/exceptions.h>
-#include "../utils/collision/deoglDCollisionDetection.h"
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/collision/deoglDCollisionSphere.h"
 #include "../utils/collision/deoglDCollisionTriangle.h"
 #include "../utils/collision/deoglDCollisionVolume.h"
+#include "../utils/collision/deoglDCollisionDetection.h"
+
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decConvexVolume.h>
 #include <dragengine/common/math/decConvexVolumeFace.h>
 #include <dragengine/common/math/decConvexVolumeList.h>

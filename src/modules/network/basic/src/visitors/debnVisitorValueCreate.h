@@ -27,7 +27,7 @@
 #define _DEBNVISITORVALUECREATE_H_
 
 // includes
-#include "dragengine/resources/network/value/deNetworkValueVisitor.h"
+#include <dragengine/resources/network/value/deNetworkValueVisitor.h>
 
 // predefinitions
 class debnValue;

@@ -404,7 +404,7 @@ void deoglRHTSector::pSetTextureCount(int count){
 
 
 
-//#include "dragengine/common/utils/decTimer.h"
+//#include <dragengine/common/utils/decTimer.h>
 //static decTimer timer;
 //#define DEBUG_RESET_TIMERS				timer.Reset();
 //#define DEBUG_PRINT_TIMER(what)			printf( "[OGL] Timer: %s = %iys\n", what, ( int )( timer.GetElapsedTime() * 1000000.0 ) )

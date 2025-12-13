@@ -27,8 +27,8 @@
 #define _DEBPSKIN_H_
 
 // includes
-#include "dragengine/systems/modules/physics/deBasePhysicsSkin.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/systems/modules/physics/deBasePhysicsSkin.h>
+#include <dragengine/common/math/decMath.h>
 
 // predefintions
 class deSkin;

@@ -37,13 +37,13 @@
 #include "../../deClassPathes.h"
 #include "../../peers/dedsConnection.h"
 #include "../../deScriptingDragonScript.h"
-#include "dragengine/resources/deResource.h"
-#include "dragengine/resources/deResourceManager.h"
-#include "dragengine/resources/network/deConnection.h"
-#include "dragengine/resources/network/deNetworkState.h"
-#include "dragengine/resources/network/deNetworkMessage.h"
-#include "dragengine/resources/network/deConnectionManager.h"
-#include "dragengine/deEngine.h"
+#include <dragengine/resources/deResource.h>
+#include <dragengine/resources/deResourceManager.h>
+#include <dragengine/resources/network/deConnection.h>
+#include <dragengine/resources/network/deNetworkState.h>
+#include <dragengine/resources/network/deNetworkMessage.h>
+#include <dragengine/resources/network/deConnectionManager.h>
+#include <dragengine/deEngine.h>
 #include <libdscript/exceptions.h>
 
 

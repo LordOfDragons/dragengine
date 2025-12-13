@@ -27,7 +27,7 @@
 #include <string.h>
 #include "deoglSPTree.h"
 #include "deoglSPTreeNode.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 

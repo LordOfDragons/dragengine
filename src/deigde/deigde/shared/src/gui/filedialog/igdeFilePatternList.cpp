@@ -26,7 +26,7 @@
 #include <string.h>
 #include "igdeFilePattern.h"
 #include "igdeFilePatternList.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 

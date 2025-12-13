@@ -28,9 +28,9 @@
 #include <string.h>
 #include "deTgaModule.h"
 #include "deTgaImageInfos.h"
-#include "dragengine/resources/image/deImage.h"
-#include "dragengine/common/file/decBaseFileReader.h"
-#include "dragengine/common/file/decBaseFileWriter.h"
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/exceptions.h>
 
 

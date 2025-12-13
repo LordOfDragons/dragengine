@@ -27,10 +27,10 @@
 
 #include "../../../deoglGL.h"
 #include "deoglSkinStateConstructedNode.h"
+#include "../../../vbo/deoglSharedVBOBlock.h"
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeShape.h>
 
-#include "../../../vbo/deoglSharedVBOBlock.h"
 
 
 /**

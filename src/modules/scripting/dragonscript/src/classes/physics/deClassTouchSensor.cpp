@@ -48,15 +48,15 @@
 #include "../../utils/dedsColliderListenerClosest.h"
 #include "../../utils/dedsColliderListenerAdaptor.h"
 
-#include "dragengine/resources/collider/deCollider.h"
-#include "dragengine/resources/sensor/deTouchSensor.h"
-#include "dragengine/resources/sensor/deTouchSensorManager.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/common/shape/decShapeBox.h"
-#include "dragengine/common/shape/decShapeSphere.h"
-#include "dragengine/common/shape/decShapeCapsule.h"
-#include "dragengine/common/shape/decShapeCylinder.h"
-#include "dragengine/common/utils/decCollisionFilter.h"
+#include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/resources/sensor/deTouchSensor.h>
+#include <dragengine/resources/sensor/deTouchSensorManager.h>
+#include <dragengine/deEngine.h>
+#include <dragengine/common/shape/decShapeBox.h>
+#include <dragengine/common/shape/decShapeSphere.h>
+#include <dragengine/common/shape/decShapeCapsule.h>
+#include <dragengine/common/shape/decShapeCylinder.h>
+#include <dragengine/common/utils/decCollisionFilter.h>
 #include <libdscript/exceptions.h>
 
 

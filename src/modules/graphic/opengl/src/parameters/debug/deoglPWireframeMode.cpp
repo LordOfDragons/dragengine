@@ -29,7 +29,7 @@
 #include "deoglPWireframeMode.h"
 #include "../../deGraphicOpenGl.h"
 #include "../../configuration/deoglConfiguration.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 
 
 

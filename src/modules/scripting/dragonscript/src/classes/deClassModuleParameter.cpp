@@ -32,9 +32,9 @@
 #include "deClassModuleParameter.h"
 #include "../deScriptingDragonScript.h"
 #include "../deClassPathes.h"
-#include "dragengine/systems/modules/deModuleParameter.h"
-#include "dragengine/systems/modules/deBaseModule.h"
-#include "dragengine/deEngine.h"
+#include <dragengine/systems/modules/deModuleParameter.h>
+#include <dragengine/systems/modules/deBaseModule.h>
+#include <dragengine/deEngine.h>
 #include <libdscript/exceptions.h>
 #include <libdscript/packages/default/dsClassEnumeration.h>
 

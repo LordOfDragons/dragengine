@@ -33,7 +33,7 @@
 #include "../gui/igdeWindowMain.h"
 
 #include <dragengine/deEngine.h>
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/exceptions.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingConnection.h>

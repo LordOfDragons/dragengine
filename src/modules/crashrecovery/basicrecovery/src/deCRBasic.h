@@ -27,7 +27,7 @@
 #define _DECRBASIC_H_
 
 // includes
-#include "dragengine/systems/modules/crashrecovery/deBaseCrashRecoveryModule.h"
+#include <dragengine/systems/modules/crashrecovery/deBaseCrashRecoveryModule.h>
 
 class deErrorTraceValue;
 // predefinitions

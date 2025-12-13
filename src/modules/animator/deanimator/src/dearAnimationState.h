@@ -27,7 +27,7 @@
 #define _DEARANIMATIONSTATE_H_
 
 // includes
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
 

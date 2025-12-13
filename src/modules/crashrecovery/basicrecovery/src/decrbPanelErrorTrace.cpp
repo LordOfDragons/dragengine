@@ -25,12 +25,12 @@
 // includes
 #include "decrbPanelErrorTrace.h"
 #include "decrbWindowMain.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/errortracing/deErrorTrace.h"
-#include "dragengine/errortracing/deErrorTracePoint.h"
-#include "dragengine/errortracing/deErrorTraceValue.h"
-#include "dragengine/systems/modules/deLoadableModule.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/errortracing/deErrorTrace.h>
+#include <dragengine/errortracing/deErrorTracePoint.h>
+#include <dragengine/errortracing/deErrorTraceValue.h>
+#include <dragengine/systems/modules/deLoadableModule.h>
+#include <dragengine/common/exceptions.h>
 
 
 

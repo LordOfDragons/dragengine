@@ -31,12 +31,12 @@
 #include "../coldet/collision/debpDCollisionCylinder.h"
 #include "../coldet/collision/debpDCollisionCapsule.h"
 
-#include "dragengine/common/shape/decShapeBox.h"
-#include "dragengine/common/shape/decShapeSphere.h"
-#include "dragengine/common/shape/decShapeCylinder.h"
-#include "dragengine/common/shape/decShapeCapsule.h"
-#include "dragengine/common/shape/decShapeHull.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/common/shape/decShapeBox.h>
+#include <dragengine/common/shape/decShapeSphere.h>
+#include <dragengine/common/shape/decShapeCylinder.h>
+#include <dragengine/common/shape/decShapeCapsule.h>
+#include <dragengine/common/shape/decShapeHull.h>
+#include <dragengine/common/exceptions.h>
 
 
 

@@ -41,16 +41,16 @@
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
-#include "dragengine/deEngine.h"
-#include "dragengine/resources/decal/deDecal.h"
-#include "dragengine/resources/image/deImage.h"
-#include "dragengine/resources/image/deImageManager.h"
-#include "dragengine/resources/skin/deSkin.h"
-#include "dragengine/resources/skin/deSkinManager.h"
-#include "dragengine/resources/terrain/heightmap/deHeightTerrain.h"
-#include "dragengine/resources/terrain/heightmap/deHeightTerrainManager.h"
-#include "dragengine/resources/terrain/heightmap/deHeightTerrainSector.h"
-#include "dragengine/resources/terrain/heightmap/deHeightTerrainTexture.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/resources/decal/deDecal.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/image/deImageManager.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/skin/deSkinManager.h>
+#include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
+#include <dragengine/resources/terrain/heightmap/deHeightTerrainManager.h>
+#include <dragengine/resources/terrain/heightmap/deHeightTerrainSector.h>
+#include <dragengine/resources/terrain/heightmap/deHeightTerrainTexture.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrainNavSpace.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrainNavSpaceEdge.h>
 #include <dragengine/resources/navigation/space/deNavigationSpaceFace.h>

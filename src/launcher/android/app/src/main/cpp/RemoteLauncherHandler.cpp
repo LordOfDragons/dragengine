@@ -1,6 +1,9 @@
 #include "GameActivityHandler.h"
 #include "GameRunParams.h"
 #include "Launcher.h"
+#include "RemoteLauncherHandler.h"
+#include "RemoteLauncherClient.h"
+
 #include <android/log.h>
 #include <delauncher/engine/delEngineInstanceDirect.h>
 #include <delauncher/game/delGameRunParams.h>
@@ -9,8 +12,6 @@
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/logger/deLoggerFile.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include "RemoteLauncherHandler.h"
-#include "RemoteLauncherClient.h"
 
 extern JavaVM *vJavaVM;
 

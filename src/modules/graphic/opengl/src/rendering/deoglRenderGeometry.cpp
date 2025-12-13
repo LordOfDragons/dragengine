@@ -86,12 +86,12 @@
 #include "../vao/deoglVAO.h"
 #include "../vbo/deoglSharedVBOListList.h"
 #include "../world/deoglRWorld.h"
-
-#include <dragengine/common/exceptions.h>
-#include "../utils/collision/deoglDCollisionFrustum.h"
 #include "../utils/collision/deoglDCollisionBox.h"
 #include "../utils/collision/deoglDCollisionSphere.h"
 #include "../utils/collision/deoglDCollisionVolume.h"
+#include "../utils/collision/deoglDCollisionFrustum.h"
+
+#include <dragengine/common/exceptions.h>
 
 
 

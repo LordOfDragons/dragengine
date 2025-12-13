@@ -33,8 +33,8 @@
 #include "deClassConnectionListener.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingConnection.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingConnection.h>
 #include <libdscript/exceptions.h>
 
 

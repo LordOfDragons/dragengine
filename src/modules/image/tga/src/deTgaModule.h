@@ -27,8 +27,8 @@
 #define _DETGAMODULE_H_
 
 // includes
-#include "dragengine/systems/modules/image/deBaseImageModule.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/systems/modules/image/deBaseImageModule.h>
+#include <dragengine/common/math/decMath.h>
 
 // predefinitions
 

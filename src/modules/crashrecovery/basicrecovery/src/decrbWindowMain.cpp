@@ -32,8 +32,8 @@
 #include "decrbPanelParameters.h"
 #include "decrbPanelModuleStatus.h"
 #include "decrbPanelConsole.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 
 
 

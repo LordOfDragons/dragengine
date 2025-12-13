@@ -26,10 +26,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "igdeNullInputModule.h"
-#include "dragengine/deEngine.h"
-#include "dragengine/systems/deModuleSystem.h"
-#include "dragengine/systems/modules/deBaseModule.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/deEngine.h>
+#include <dragengine/systems/deModuleSystem.h>
+#include <dragengine/systems/modules/deBaseModule.h>
+#include <dragengine/common/exceptions.h>
 
 
 

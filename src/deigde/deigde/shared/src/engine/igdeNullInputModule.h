@@ -26,8 +26,8 @@
 #define _IGDENULLINPUTMODULE_H_
 
 
-#include "dragengine/systems/modules/deInternalModule.h"
-#include "dragengine/systems/modules/input/deBaseInputModule.h"
+#include <dragengine/systems/modules/deInternalModule.h>
+#include <dragengine/systems/modules/input/deBaseInputModule.h>
 
 
 

@@ -26,9 +26,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "debpSkin.h"
-#include "dragengine/resources/skin/deSkin.h"
-#include "dragengine/resources/skin/deSkinTexture.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/skin/deSkinTexture.h>
+#include <dragengine/common/exceptions.h>
 
 
 

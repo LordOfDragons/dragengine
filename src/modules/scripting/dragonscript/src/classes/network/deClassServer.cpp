@@ -35,11 +35,11 @@
 #include "../../peers/dedsServer.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
-#include "dragengine/resources/deResource.h"
-#include "dragengine/resources/deResourceManager.h"
-#include "dragengine/resources/network/deServer.h"
-#include "dragengine/resources/network/deServerManager.h"
-#include "dragengine/deEngine.h"
+#include <dragengine/resources/deResource.h>
+#include <dragengine/resources/deResourceManager.h>
+#include <dragengine/resources/network/deServer.h>
+#include <dragengine/resources/network/deServerManager.h>
+#include <dragengine/deEngine.h>
 #include <libdscript/exceptions.h>
 
 

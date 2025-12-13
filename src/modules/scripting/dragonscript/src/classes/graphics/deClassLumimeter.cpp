@@ -37,10 +37,10 @@
 #include "../graphics/deClassColor.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
-#include "dragengine/resources/sensor/deLumimeter.h"
-#include "dragengine/resources/sensor/deLumimeterManager.h"
-#include "dragengine/resources/skin/deSkin.h"
-#include "dragengine/deEngine.h"
+#include <dragengine/resources/sensor/deLumimeter.h>
+#include <dragengine/resources/sensor/deLumimeterManager.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/deEngine.h>
 #include <libdscript/exceptions.h>
 
 

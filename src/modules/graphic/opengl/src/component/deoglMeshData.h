@@ -28,7 +28,7 @@
 
 // includes
 #include "../deoglGL.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/common/math/decMath.h>
 
 // definitions
 

@@ -27,7 +27,7 @@
 
 #include <libdscript/dsScriptSource.h>
 #include <dragengine/common/file/decPath.h>
-#include "dragengine/common/file/decBaseFileReader.h"
+#include <dragengine/common/file/decBaseFileReader.h>
 
 class deVirtualFileSystem;
 class decPath;

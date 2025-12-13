@@ -30,9 +30,9 @@
 #include "deNetworkBasic.h"
 #include "states/debnState.h"
 
-#include "dragengine/resources/network/deNetworkState.h"
-#include "dragengine/resources/world/deWorld.h"
-#include "dragengine/common/exceptions.h"
+#include <dragengine/resources/network/deNetworkState.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/common/exceptions.h>
 
 
 

@@ -26,12 +26,12 @@
 #define _DEOGLBILLBOARD_H_
 
 #include "../skin/dynamic/deoglDynamicSkinListener.h"
+#include "deoglRBillboard.h"
 
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicBillboard.h>
 
 class deGraphicOpenGl;
-#include "deoglRBillboard.h"
 class deoglDynamicSkin;
 class deoglSkinStateController;
 class deoglWorld;

@@ -105,6 +105,7 @@
 #include "../../utils/collision/deoglDCollisionBox.h"
 #include "../../utils/collision/deoglDCollisionSphere.h"
 #include "../../utils/collision/deoglDCollisionVolume.h"
+#include "../../debug/deoglDebugStateSnapshot.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShapeBox.h>
@@ -539,7 +540,6 @@ void deoglRenderLightSpot::RenderLights(deoglRenderPlan &plan, bool solid, const
 }
 
 
-#include "../../debug/deoglDebugStateSnapshot.h"
 void deoglRenderLightSpot::RenderLight(deoglRenderPlanLight &planLight, bool solid,
 const deoglRenderPlanMasked *mask){
 	// determine what needs to be rendered

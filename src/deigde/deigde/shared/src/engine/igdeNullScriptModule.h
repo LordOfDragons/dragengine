@@ -25,10 +25,10 @@
 #ifndef _IGDENULLSCRIPTMODULE_H_
 #define _IGDENULLSCRIPTMODULE_H_
 
-#include "dragengine/systems/modules/deInternalModule.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingModule.h"
-#include "dragengine/systems/modules/scripting/deBaseScriptingCollider.h"
-#include "dragengine/common/math/decMath.h"
+#include <dragengine/systems/modules/deInternalModule.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingModule.h>
+#include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
+#include <dragengine/common/math/decMath.h>
 
 
 
