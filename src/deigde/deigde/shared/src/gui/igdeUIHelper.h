@@ -971,15 +971,15 @@ public:
 	
 	
 	/** \brief Add menu command. */
-	void MenuCommand(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction = false);
+	void MenuCommand(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction);
 	void MenuCommand(igdeMenuCascade &menu, const igdeAction::Ref &action);
 	
 	/** \brief Add menu check. */
-	void MenuCheck(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction = false);
+	void MenuCheck(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction);
 	void MenuCheck(igdeMenuCascade &menu, const igdeAction::Ref &action);
 	
 	/** \brief Add menu option. */
-	void MenuOption(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction = false);
+	void MenuOption(igdeMenuCascade &menu, igdeAction *action, bool takeOverAction);
 	void MenuOption(igdeMenuCascade &menu, const igdeAction::Ref &action);
 	
 	/** \brief Add menu separator. */

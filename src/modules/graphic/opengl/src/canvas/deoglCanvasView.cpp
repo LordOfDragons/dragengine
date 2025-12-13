@@ -226,7 +226,7 @@ void deoglCanvasView::ContentChanged(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasView::CreateRCanvas(){
-	pRCanvasView.TakeOverWith(GetOgl().GetRenderThread());
+	pRCanvasView = deoglRCanvasView::Ref::New(GetOgl().GetRenderThread());
 	return pRCanvasView;
 }
 

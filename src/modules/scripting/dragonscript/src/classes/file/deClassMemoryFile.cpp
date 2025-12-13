@@ -67,7 +67,7 @@ void deClassMemoryFile::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	const char * const filename = rt->GetValue(0)->GetString();
 	
-	nd->memoryFile.TakeOverWith(filename);
+	nd->memoryFile = decMemoryFile::Ref::New(filename);
 }
 
 // public func new( MemoryFile memoryFile )
@@ -86,7 +86,7 @@ void deClassMemoryFile::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself){
 	}
 	
 	// create memory file
-	nd->memoryFile.TakeOverWith(copyMemoryFile->GetFilename());
+	nd->memoryFile = decMemoryFile::Ref::New(copyMemoryFile->GetFilename());
 	
 	const int size = copyMemoryFile->GetLength();
 	if(size > 0){

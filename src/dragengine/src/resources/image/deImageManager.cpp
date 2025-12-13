@@ -135,7 +135,7 @@ deImage::Ref deImageManager::LoadImage(deVirtualFileSystem *vfs, const char *fil
 			imageInfos = module->InitLoadImage(*fileReader);
 			if(!imageInfos) DETHROW(deeInvalidParam);
 			
-			image.TakeOverWith(this, vfs, path.GetPathUnix(), modificationTime,
+			image = deImage::Ref::New(this, vfs, path.GetPathUnix(), modificationTime,
 				imageInfos->GetWidth(), imageInfos->GetHeight(), imageInfos->GetDepth(),
 				imageInfos->GetComponentCount(), imageInfos->GetBitCount());
 			image->SetAsynchron(false);
@@ -182,7 +182,7 @@ deImage::Ref deImageManager::LoadDefault(){
 		}else{
 			// load image
 			xpmImage = new decXpmImage(no_tex_xpm, true);
-			image.TakeOverWith(this, GetEngine()->GetVirtualFileSystem(),
+			image = deImage::Ref::New(this, GetEngine()->GetVirtualFileSystem(),
 				IMAGE_NO_TEXTURE, decDateTime::GetSystemTime(), xpmImage);
 			delete xpmImage; xpmImage = NULL;
 			

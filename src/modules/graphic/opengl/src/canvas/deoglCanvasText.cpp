@@ -89,6 +89,6 @@ void deoglCanvasText::SyncContentToRender(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasText::CreateRCanvas(){
-	pRCanvasText.TakeOverWith(GetOgl().GetRenderThread());
+	pRCanvasText = deoglRCanvasText::Ref::New(GetOgl().GetRenderThread());
 	return pRCanvasText;
 }

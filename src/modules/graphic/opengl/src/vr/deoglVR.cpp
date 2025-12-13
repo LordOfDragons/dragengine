@@ -356,7 +356,7 @@ void deoglVR::pRenderStereo(){
 	pRightEye.GetRenderTarget()->PrepareFramebuffer();
 	
 	if(!pFBOStereo){
-		pFBOStereo.TakeOverWith(renderThread, false);
+		pFBOStereo = deoglFramebuffer::Ref::New(renderThread, false);
 		
 		renderThread.GetFramebuffer().Activate(pFBOStereo);
 		

@@ -66,7 +66,7 @@ void deClassCollisionTester::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sCTNatDat * const nd = new (p_GetNativeData(myself)) sCTNatDat;
 	const deClassCollisionTester &clsCT = *(static_cast<deClassCollisionTester*>(GetOwnerClass()));
 	
-	nd->collisionTester.TakeOverWith(clsCT.GetDS());
+	nd->collisionTester = dedsCollisionTester::Ref::New(clsCT.GetDS());
 }
 
 // public func new( CollisionTester collisionTester )
@@ -81,7 +81,8 @@ void deClassCollisionTester::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myse
 	if(!rt->GetValue(0)->GetRealObject()){
 		DSTHROW(dueNullPointer);
 	}
-	nd->collisionTester.TakeOverWith(static_cast<sCTNatDat*>(p_GetNativeData(rt->GetValue(0)))->collisionTester);
+	nd->collisionTester = dedsCollisionTester::Ref::New(
+		static_cast<sCTNatDat*>(p_GetNativeData(rt->GetValue(0)))->collisionTester);
 }
 
 // public func destructor()

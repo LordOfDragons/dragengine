@@ -202,7 +202,7 @@ void deoglRayTraceField::pPrepareRayTexFBO(){
 	bool setupFbo = false;
 	
 	if(!pFBORays){
-		pFBORays.TakeOverWith(pRenderThread, false);
+		pFBORays = deoglFramebuffer::Ref::New(pRenderThread, false);
 		setupFbo = true;
 	}
 	

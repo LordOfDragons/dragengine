@@ -107,7 +107,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 		const int character = state.GetNextCharacter();
 		
 		if(mode == 2 && !component->GetTargetName().IsEmpty()){
-			child.TakeOverWith();
+			child = igdeTriggerExpressionComponent::Ref::New();
 			child->SetTargetName(component->GetTargetName());
 			child->SetNegate(component->GetNegate());
 			child->SetCurState(component->GetCurState());
@@ -268,7 +268,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				
 			case 2:{
 				ParseTargetName(name, state, true);
-				child.TakeOverWith();
+				child = igdeTriggerExpressionComponent::Ref::New();
 				child->SetTargetName(name);
 				child->SetNegate(negate);
 				child->SetCurState(curState);
@@ -304,7 +304,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				
 			case 2:{
 				ParseTargetName(name, state, false);
-				child.TakeOverWith();
+				child = igdeTriggerExpressionComponent::Ref::New();
 				child->SetTargetName(name);
 				child->SetNegate(negate);
 				child->SetCurState(curState);
@@ -341,7 +341,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	if(mode != 5){
 		if(mode == 2){
 			// missing target after and/or. add an empty one to allow editors to work properly
-			child.TakeOverWith();
+			child = igdeTriggerExpressionComponent::Ref::New();
 			child->SetNegate(negate);
 			child->SetCurState(curState);
 			component->AddChild(child);

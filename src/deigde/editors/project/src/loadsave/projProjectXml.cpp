@@ -60,7 +60,7 @@ projProjectXml::~projProjectXml(){
 ///////////////
 
 void projProjectXml::ReadFromFile(decBaseFileReader &reader, projProject &project){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	
@@ -185,102 +185,92 @@ void projProjectXml::pReadProject(const decXmlElementTag &root, projProject &pro
 void projProjectXml::pReadProfile(const decXmlElementTag &root, projProject &project){
 	decStringSet requiredExtensions, excludePatterns, icons;
 	const int count = root.GetElementCount();
-	projProfile *profile = NULL;
 	int i;
 	
-	try{
-		profile = new projProfile;
+	const projProfile::Ref profile(projProfile::Ref::New());
+	
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
 		
-		for(i=0; i<count; i++){
-			const decXmlElementTag * const tag = root.GetElementIfTag(i);
-			if(!tag){
-				continue;
-			}
+		const decString &tagName = tag->GetName();
+		
+		if(tagName == "name"){
+			profile->SetName(GetCDataString(*tag));
 			
-			const decString &tagName = tag->GetName();
+		}else if(tagName == "description"){
+			profile->SetDescription(ReadMultilineString(*tag));
 			
-			if(tagName == "name"){
-				profile->SetName(GetCDataString(*tag));
-				
-			}else if(tagName == "description"){
-				profile->SetDescription(ReadMultilineString(*tag));
-				
-			}else if(tagName == "scriptDirectory"){
-				profile->SetScriptDirectory(GetCDataString(*tag));
-				
-			}else if(tagName == "gameObject"){
-				profile->SetGameObject(GetCDataString(*tag));
-				
-			}else if(tagName == "pathConfig"){
-				profile->SetPathConfig(GetCDataString(*tag));
-				
-			}else if(tagName == "pathCapture"){
-				profile->SetPathCapture(GetCDataString(*tag));
-				
-			}else if(tagName == "identifier"){
-				profile->SetIdentifier(decUuid(GetCDataString(*tag), false));
-				
-			}else if(tagName == "aliasIdentifier"){
-				profile->SetAliasIdentifier(GetCDataString(*tag));
-				
-			}else if(tagName == "title"){
-				profile->SetTitle(GetCDataString(*tag));
-				
-			}else if(tagName == "gameDescription"){
-				profile->SetGameDescription(ReadMultilineString(*tag));
-				
-			}else if(tagName == "creator"){
-				profile->SetCreator(GetCDataString(*tag));
-				
-			}else if(tagName == "website"){
-				profile->SetWebsite(GetCDataString(*tag));
-				
-			}else if(tagName == "windowSize"){
-				decPoint size;
-				ReadPoint(*tag, size);
-				profile->SetWindowSize(size);
-				
-			}else if(tagName == "icon"){
-				icons.Add(GetCDataString(*tag));
-				
-			}else if(tagName == "excludePattern"){
-				excludePatterns.Add(GetCDataString(*tag));
-				
-			}else if(tagName == "requiredExtension"){
-				requiredExtensions.Add(GetCDataString(*tag));
-				
-			}else if(tagName == "delgaPath"){
-				profile->SetDelgaPath(GetCDataString(*tag));
-				
-			}else if(tagName == "runArguments"){
-				profile->SetRunArguments(GetCDataString(*tag));
-				
-			}else{
-				LogWarnUnknownTag(root, *tag);
-			}
+		}else if(tagName == "scriptDirectory"){
+			profile->SetScriptDirectory(GetCDataString(*tag));
+			
+		}else if(tagName == "gameObject"){
+			profile->SetGameObject(GetCDataString(*tag));
+			
+		}else if(tagName == "pathConfig"){
+			profile->SetPathConfig(GetCDataString(*tag));
+			
+		}else if(tagName == "pathCapture"){
+			profile->SetPathCapture(GetCDataString(*tag));
+			
+		}else if(tagName == "identifier"){
+			profile->SetIdentifier(decUuid(GetCDataString(*tag), false));
+			
+		}else if(tagName == "aliasIdentifier"){
+			profile->SetAliasIdentifier(GetCDataString(*tag));
+			
+		}else if(tagName == "title"){
+			profile->SetTitle(GetCDataString(*tag));
+			
+		}else if(tagName == "gameDescription"){
+			profile->SetGameDescription(ReadMultilineString(*tag));
+			
+		}else if(tagName == "creator"){
+			profile->SetCreator(GetCDataString(*tag));
+			
+		}else if(tagName == "website"){
+			profile->SetWebsite(GetCDataString(*tag));
+			
+		}else if(tagName == "windowSize"){
+			decPoint size;
+			ReadPoint(*tag, size);
+			profile->SetWindowSize(size);
+			
+		}else if(tagName == "icon"){
+			icons.Add(GetCDataString(*tag));
+			
+		}else if(tagName == "excludePattern"){
+			excludePatterns.Add(GetCDataString(*tag));
+			
+		}else if(tagName == "requiredExtension"){
+			requiredExtensions.Add(GetCDataString(*tag));
+			
+		}else if(tagName == "delgaPath"){
+			profile->SetDelgaPath(GetCDataString(*tag));
+			
+		}else if(tagName == "runArguments"){
+			profile->SetRunArguments(GetCDataString(*tag));
+			
+		}else{
+			LogWarnUnknownTag(root, *tag);
 		}
-		
-		if(profile->GetName().IsEmpty()){
-			LogErrorGenericProblem(root, "Profile requires a non-empty name");
-		}
-		if(!profile->GetIdentifier()){
-			LogErrorGenericProblem(root, "Profile requires valid identifier");
-		}
-		if(project.GetProfiles().HasNamed(profile->GetName())){
-			LogErrorGenericProblem(root, "Duplicate profile name");
-		}
-		
-		profile->SetIcons(icons);
-		profile->SetExcludePatterns(excludePatterns);
-		profile->SetRequiredExtensions(requiredExtensions);
-		
-		project.AddProfile(profile);
-		profile->FreeReference();
-		
-	}catch(const deException &){
-		if(profile){
-			profile->FreeReference();
-		}
-		throw;
 	}
+	
+	if(profile->GetName().IsEmpty()){
+		LogErrorGenericProblem(root, "Profile requires a non-empty name");
+	}
+	if(!profile->GetIdentifier()){
+		LogErrorGenericProblem(root, "Profile requires valid identifier");
+	}
+	if(project.GetProfiles().HasNamed(profile->GetName())){
+		LogErrorGenericProblem(root, "Duplicate profile name");
+	}
+	
+	profile->SetIcons(icons);
+	profile->SetExcludePatterns(excludePatterns);
+	profile->SetRequiredExtensions(requiredExtensions);
+	
+	project.AddProfile(profile);
 }

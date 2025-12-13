@@ -1153,7 +1153,7 @@ void deoglRenderGI::RenderDebugOverlay(deoglRenderPlan &plan){
 		deoglGIRayCache &rayCache = giState->GetRayCache();
 		
 		if(!pSSBODebugRayLight){
-			pSSBODebugRayLight.TakeOver(new deoglSPBlockSSBO(renderThread, deoglSPBlockSSBO::etGpu));
+			pSSBODebugRayLight = deoglSPBlockSSBO::Ref::New(renderThread, deoglSPBlockSSBO::etGpu);
 			pSSBODebugRayLight->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 			pSSBODebugRayLight->SetParameterCount(1);
 			pSSBODebugRayLight->GetParameterAt(0).SetAll(deoglSPBParameter::evtFloat, 4, 1, GI_MAX_RAYS_PER_PROBE);
@@ -1370,7 +1370,7 @@ void deoglRenderGI::pCreateUBORenderLight(){
 	ubo->MapToStd140();
 	ubo->SetBindingPoint(1);
 	
-	pUBORenderLightSingleUse.TakeOver(new deoglSPBSingleUse(renderThread, ubo));
+	pUBORenderLightSingleUse = deoglSPBSingleUse::Ref::New(renderThread, ubo);
 }
 
 void deoglRenderGI::pClearTraceRays(const decPoint &size){

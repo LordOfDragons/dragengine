@@ -580,7 +580,7 @@ void deClassCachedVegetation::nfNew::RunFunction(dsRunTime *rt, dsValue *myself)
 	deEngine *engine = clsCVeg->GetDS()->GetGameEngine();
 	float sectorDim = rt->GetValue(0)->GetFloat();
 	int propfieldCellCount = rt->GetValue(1)->GetInt();
-	nd->cveg.TakeOverWith(engine, sectorDim, propfieldCellCount);
+	nd->cveg = dedsCachedVegetation::Ref::New(engine, sectorDim, propfieldCellCount);
 }
 
 // public func destructor()

@@ -61,7 +61,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PRIVATE | DSTM_NATIVE, init.clsVoid){
 void deClassCollisionInfo::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sCINatDat *nd = new (p_GetNativeData(myself)) sCINatDat;
 	
-	nd->info.TakeOverWith();
+	nd->info = deCollisionInfo::Ref::New();
 }
 
 // public func destructor()

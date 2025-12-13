@@ -56,7 +56,7 @@ void deClassNavigationInfo::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sNavInfoNatDat * const nd = new (p_GetNativeData(myself)) sNavInfoNatDat;
 	const deClassNavigationInfo &clsNavInfo = *static_cast<deClassNavigationInfo*>(GetOwnerClass());
 	
-	nd->navinfo.TakeOverWith(clsNavInfo.GetDS());
+	nd->navinfo = dedsNavigationInfo::Ref::New(clsNavInfo.GetDS());
 }
 
 // public func new( NavigationInfo copy )
@@ -73,7 +73,7 @@ void deClassNavigationInfo::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *mysel
 		DSTHROW(dueNullPointer);
 	}
 	
-	nd->navinfo.TakeOverWith(*copy);
+	nd->navinfo = dedsNavigationInfo::Ref::New(*copy);
 }
 
 // public func destructor()

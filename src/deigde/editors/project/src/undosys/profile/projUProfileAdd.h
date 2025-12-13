@@ -26,10 +26,10 @@
 #ifndef _PROJUPROFILEADD_H_
 #define _PROJUPROFILEADD_H_
 
-#include <deigde/undo/igdeUndo.h>
+#include "../../project/projProject.h"
+#include "../../project/profile/projProfile.h"
 
-class projProject;
-class projProfile;
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -38,8 +38,8 @@ class projProfile;
  */
 class projUProfileAdd : public igdeUndo{
 private:
-	projProject *pProject;
-	projProfile *pProfile;
+	projProject::Ref pProject;
+	projProfile::Ref pProfile;
 	
 	
 	

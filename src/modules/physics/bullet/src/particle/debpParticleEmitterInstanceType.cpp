@@ -601,7 +601,7 @@ void debpParticleEmitterInstanceType::KillParticle(int index){
 		DETHROW(deeInvalidParam);
 	}
 	
-	deParticleEmitterInstance * const trailEmitter = pParticles[index].trailEmitter;
+	const deParticleEmitterInstance::Ref &trailEmitter = pParticles[index].trailEmitter;
 	const int simtype = pInstance->GetParticleEmitter()->GetEmitter()->GetTypeAt(pType).GetSimulationType();
 	
 	//debpParticleInstance &P = pParticles[ index ];
@@ -610,18 +610,20 @@ void debpParticleEmitterInstanceType::KillParticle(int index){
 	if(trailEmitter){
 		trailEmitter->SetEnableCasting(false);
 		trailEmitter->SetRemoveAfterLastParticleDied(true);
-		trailEmitter->FreeReference();
-		pParticles[index].trailEmitter = NULL;
+		pParticles[index].trailEmitter = nullptr;
 	}
 	
 	if(simtype == deParticleEmitterType::estParticle){
 		if(index < pParticleCount - 1){
-			memcpy(pParticles + index, pParticles + (pParticleCount - 1), sizeof(sParticle));
+			pParticles[index] = pParticles[pParticleCount - 1];
 		}
 		
 	}else{ // ribbon or beam
 		if(index < pParticleCount - 1){
-			memmove(pParticles + index, pParticles + (index + 1), sizeof(sParticle) * (pParticleCount - 1 - index));
+			int i;
+			for(i=index; i<pParticleCount-1; i++){
+				pParticles[i] = pParticles[i + 1];
+			}
 		}
 	}
 	
@@ -644,8 +646,7 @@ void debpParticleEmitterInstanceType::KillAllParticles(){
 		if(trailEmitter){
 			trailEmitter->SetEnableCasting(false);
 			trailEmitter->SetRemoveAfterLastParticleDied(true);
-			trailEmitter->FreeReference();
-			pParticles[pParticleCount].trailEmitter = NULL;
+			pParticles[pParticleCount].trailEmitter = nullptr;
 		}
 	}
 	
@@ -661,7 +662,10 @@ void debpParticleEmitterInstanceType::CastSingleParticle(float distance, float t
 		sParticle * const newArray = new sParticle[newSize];
 		
 		if(pParticles){
-			memcpy(newArray, pParticles, sizeof(sParticle) * pParticleSize);
+			int i;
+			for(i=0; i<pParticleSize; i++){
+				newArray[i] = pParticles[i];
+			}
 			delete [] pParticles;
 		}
 		pParticles = newArray;
@@ -702,7 +706,10 @@ void debpParticleEmitterInstanceType::CastBeamParticle(float distance){
 			sParticle * const newArray = new sParticle[newSize];
 			
 			if(pParticles){
-				memcpy(newArray, pParticles, sizeof(sParticle) * pParticleSize);
+				int i;
+				for(i=0; i<pParticleSize; i++){
+					newArray[i] = pParticles[i];
+				}
 				delete [] pParticles;
 			}
 			pParticles = newArray;
@@ -722,7 +729,7 @@ void debpParticleEmitterInstanceType::CastBeamParticle(float distance){
 			const float simTimeStep = particleCast.timeToLive * lifetimeStep;
 			
 			for(i=1; i<particleCount; i++){
-				memcpy(pParticles + pParticleCount, pParticles + (pParticleCount - 1), sizeof(sParticle));
+				pParticles[pParticleCount] = pParticles[pParticleCount - 1];
 				
 				sParticle &particleProgress = pParticles[pParticleCount++];
 				particleProgress.lifetime += lifetimeStep;
@@ -756,7 +763,7 @@ void debpParticleEmitterInstanceType::CastBeamParticle(float distance){
 
 void debpParticleEmitterInstanceType::ParticleSetCastParams(sParticle &particle, float distance, float timeOffset){
 	// important to avoid problems later on in bad cases
-	particle.trailEmitter = NULL;
+	particle.trailEmitter = nullptr;
 	
 	// calculate cast matrix for the particle
 	decDMatrix castMatrix;
@@ -1086,10 +1093,7 @@ void debpParticleEmitterInstanceType::ParticleCreateTrailEmitter(sParticle &part
 		engWorld.AddParticleEmitter(particle.trailEmitter);
 		
 	}catch(const deException &){
-		if(particle.trailEmitter){
-			particle.trailEmitter->FreeReference();
-			particle.trailEmitter = NULL;
-		}
+		particle.trailEmitter = nullptr;
 		throw;
 	}
 }
@@ -1437,7 +1441,7 @@ bool debpParticleEmitterInstanceType::ParticleTestCollision(sParticle &particle,
 			}
 			
 			// set controller values
-			ParticleSetEmitterControllers(particle, *emitInstance, particleLinearVelocity);
+			ParticleSetEmitterControllers(particle, emitInstance, particleLinearVelocity);
 			
 			// add to the world. this has to come before casting just to be safe
 			pInstance->GetParentWorld()->GetWorld().AddParticleEmitter(emitInstance);
@@ -1527,7 +1531,7 @@ void debpParticleEmitterInstanceType::ParticleUpdateTrailEmitter(const sParticle
 	}
 	
 	// set controller values
-	ParticleSetTrailEmitterControllers(particle, *particle.trailEmitter, particle.linearVelocity.length());
+	ParticleSetTrailEmitterControllers(particle, particle.trailEmitter, particle.linearVelocity.length());
 }
 
 void debpParticleEmitterInstanceType::ParticleSetTrailEmitterControllers(const sParticle &particle,

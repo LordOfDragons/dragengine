@@ -112,8 +112,7 @@ private:
 	deoalWOVRayHitsElement *pWOVRayHitsElement;
 	deoalWOVCollectElements *pWOVCollectElements;
 	
-	deoalAMicrophone *pActiveMicrophone;
-	deoalAMicrophone::Ref pDeactiveMicrophone;
+	deoalAMicrophone::Ref pActiveMicrophone, pDeactiveMicrophone;
 	deoalAWorld::Ref pActiveWorld;
 	
 	decObjectSet pProcessOnceWorld; // audio thread
@@ -174,7 +173,7 @@ public:
 	
 	
 	/** Active microphone. */
-	inline deoalAMicrophone *GetActiveMicrophone() const{ return pActiveMicrophone; }
+	inline const deoalAMicrophone::Ref &GetActiveMicrophone() const{ return pActiveMicrophone; }
 	
 	/** Set active microphone. */
 	void SetActiveMicrophone(deoalAMicrophone *microphone);

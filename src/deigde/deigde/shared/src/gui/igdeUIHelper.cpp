@@ -1005,7 +1005,7 @@ bool takeOverAction){
 }
 
 void igdeUIHelper::Button(igdeButton::Ref &button, igdeAction *action, bool takeOverAction){
-	button.TakeOverWith(pEnvironment, action);
+	button = igdeButton::Ref::New(pEnvironment, action);
 	if(takeOverAction && action){
 		action->FreeReference();
 	}
@@ -1018,12 +1018,12 @@ void igdeUIHelper::Button(igdeContainer &parent, const igdeAction::Ref &action){
 }
 
 void igdeUIHelper::Button(igdeContainer &parent, igdeButton::Ref &button, const igdeAction::Ref &action){
-	button.TakeOverWith(pEnvironment, action);
+	button = igdeButton::Ref::New(pEnvironment, action);
 	parent.AddChild(button);
 }
 
 void igdeUIHelper::Button(igdeButton::Ref &button, const igdeAction::Ref &action){
-	button.TakeOverWith(pEnvironment, action);
+	button = igdeButton::Ref::New(pEnvironment, action);
 }
 
 

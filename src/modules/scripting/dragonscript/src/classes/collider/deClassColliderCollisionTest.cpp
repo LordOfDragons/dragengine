@@ -66,7 +66,7 @@ void deClassColliderCollisionTest::nfNew::RunFunction(dsRunTime *rt, dsValue *my
 	sCCTNatDat * const nd = new (p_GetNativeData(myself)) sCCTNatDat;
 	
 	// create collision test
-	nd->collisionTest.TakeOverWith();
+	nd->collisionTest = deColliderCollisionTest::Ref::New();
 }
 
 // public func new( ColliderCollisionTest collisionTest )
@@ -82,7 +82,7 @@ void deClassColliderCollisionTest::nfNewCopy::RunFunction(dsRunTime *rt, dsValue
 		DSTHROW(dueNullPointer);
 	}
 	const deColliderCollisionTest &other = *(static_cast<sCCTNatDat*>(p_GetNativeData(rt->GetValue(0)))->collisionTest);
-	nd->collisionTest.TakeOverWith(other);
+	nd->collisionTest = deColliderCollisionTest::Ref::New(other);
 }
 
 // public func new( CollisionFilter collisionFilter, Vector origin, Vector direction )
@@ -102,7 +102,7 @@ void deClassColliderCollisionTest::nfNewWorld::RunFunction(dsRunTime *rt, dsValu
 	const decVector &direction = ds.GetClassVector()->GetVector(rt->GetValue(2)->GetRealObject());
 	
 	// create collision test
-	nd->collisionTest.TakeOverWith();
+	nd->collisionTest = deColliderCollisionTest::Ref::New();
 	nd->collisionTest->SetCollisionFilter(collisionFilter);
 	nd->collisionTest->SetOrigin(origin);
 	nd->collisionTest->SetDirection(direction);
@@ -129,7 +129,7 @@ void deClassColliderCollisionTest::nfNewWorldBone::RunFunction(dsRunTime *rt, ds
 	const decVector &direction = ds.GetClassVector()->GetVector(rt->GetValue(4)->GetRealObject());
 	
 	// create collision test
-	nd->collisionTest.TakeOverWith();
+	nd->collisionTest = deColliderCollisionTest::Ref::New();
 	nd->collisionTest->SetCollisionFilter(collisionFilter);
 	nd->collisionTest->SetComponent(component);
 	nd->collisionTest->SetBone(bone);
@@ -162,7 +162,7 @@ void deClassColliderCollisionTest::nfNewTouchSensor::RunFunction(dsRunTime *rt, 
 	}
 	
 	// create collision test
-	nd->collisionTest.TakeOverWith();
+	nd->collisionTest = deColliderCollisionTest::Ref::New();
 	nd->collisionTest->SetTouchSensor(touchSensor);
 	nd->collisionTest->SetCollisionFilter(collisionFilter);
 	nd->collisionTest->SetOrigin(origin);
@@ -202,7 +202,7 @@ void deClassColliderCollisionTest::nfNewTouchSensorBone::RunFunction(dsRunTime *
 	}
 	
 	// create collision test
-	nd->collisionTest.TakeOverWith();
+	nd->collisionTest = deColliderCollisionTest::Ref::New();
 	nd->collisionTest->SetTouchSensor(touchSensor);
 	nd->collisionTest->SetCollisionFilter(collisionFilter);
 	nd->collisionTest->SetComponent(component);

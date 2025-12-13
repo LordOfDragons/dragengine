@@ -119,7 +119,7 @@ void deoglRenderTarget::PrepareFramebuffer(){
 	
 	PrepareTexture();
 	
-	pFBO.TakeOverWith(pRenderThread, false);
+	pFBO = deoglFramebuffer::Ref::New(pRenderThread, false);
 	
 	pRenderThread.GetFramebuffer().Activate(pFBO);
 	

@@ -185,7 +185,7 @@ dePhysicsBullet::~dePhysicsBullet(){
 
 bool dePhysicsBullet::Init(){
 	pCollisionDetection = new debpCollisionDetection(*this);
-	pColInfo.TakeOverWith();
+	pColInfo = deCollisionInfo::Ref::New();
 	
 	pConfiguration->LoadConfig();
 	

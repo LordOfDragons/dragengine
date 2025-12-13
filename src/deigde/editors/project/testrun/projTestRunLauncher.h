@@ -75,7 +75,7 @@ public:
 	inline const decString &GetPathShares() const{ return pPathShares; }
 	
 	/** \brief Virtual file system. */
-	inline deVirtualFileSystem* GetVFS() const{ return pVFS; }
+	inline const deVirtualFileSystem::Ref &GetVFS() const{ return pVFS; }
 	
 	/** \brief Locate path. */
 	void LocatePath();

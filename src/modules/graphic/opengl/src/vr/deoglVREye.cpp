@@ -409,7 +409,7 @@ void deoglVREye::pUpdateEyeViews(deBaseVRModule &vrmodule){
 		cViewImage &vi = pVRViewImages[pVRViewImageCount];
 		vi.texture = pVRGetViewsBuffer[pVRViewImageCount];
 		
-		vi.fbo.TakeOverWith(renderThread, false);
+		vi.fbo = deoglFramebuffer::Ref::New(renderThread, false);
 		renderThread.GetFramebuffer().Activate(vi.fbo);
 		
 		vi.fbo->AttachColorTextureLevel(0, vi.texture, 0);

@@ -26,11 +26,11 @@
 #ifndef _PROJUPROFILESETEXCLUDEPATTERNS_H_
 #define _PROJUPROFILESETEXCLUDEPATTERNS_H_
 
+#include "../../project/profile/projProfile.h"
+
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decStringSet.h>
-
-class projProfile;
 
 
 
@@ -39,7 +39,7 @@ class projProfile;
  */
 class projUProfileSetExcludePatterns : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;

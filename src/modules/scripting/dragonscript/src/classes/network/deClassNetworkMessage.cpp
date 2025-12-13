@@ -65,7 +65,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassNetworkMessage::nfNew::RunFunction(dsRunTime*, dsValue *myself){
 	sNMNatDat * const nd = new (p_GetNativeData(myself)) sNMNatDat;
 	
-	nd->message.TakeOverWith();
+	nd->message = deNetworkMessage::Ref::New();
 }
 
 // public func destructor()

@@ -182,7 +182,7 @@ printf("debpCreateBulletShape.VisitShapeSphere: r=%g as=(%g,%g) pos=(%g,%g,%g)\n
 	}
 	sphereShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
 	
-	bulletShapeSphere.TakeOverWith(sphereShape);
+	bulletShapeSphere = debpBulletShape::Ref::New(sphereShape);
 	shapeToAdd = bulletShapeSphere;
 	
 	if(isEllipsoid){
@@ -209,7 +209,7 @@ printf("debpCreateBulletShape.VisitShapeSphere: r=%g as=(%g,%g) pos=(%g,%g,%g)\n
 		compoundShape->setLocalScaling(btVector3((btScalar)axisScaling.x, BT_ONE, (btScalar)axisScaling.y));
 			// setLocalScaling has to come last or scaling does not propagate
 		
-		bulletShapeCompound.TakeOverWith(compoundShape);
+		bulletShapeCompound = debpBulletCompoundShape::Ref::New(compoundShape);
 		bulletShapeCompound->AddChildShape(bulletShapeSphere);
 		shapeToAdd = bulletShapeCompound;
 		
@@ -310,7 +310,7 @@ printf("debpCreateBulletShape.VisitShapeBox: hull\n");
 		
 		hullShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
 		
-		bulletShapeHull.TakeOverWith(hullShape);
+		bulletShapeHull = debpBulletShape::Ref::New(hullShape);
 		shapeToAdd = bulletShapeHull;
 		margin = BT_ZERO;
 		
@@ -318,7 +318,7 @@ printf("debpCreateBulletShape.VisitShapeBox: hull\n");
 		boxShape = new btBoxShape(btVector3((btScalar)halfExtends.x, (btScalar)halfExtends.y, (btScalar)halfExtends.z));
 		boxShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
 		
-		bulletShapeBox.TakeOverWith(boxShape);
+		bulletShapeBox = debpBulletShape::Ref::New(boxShape);
 		shapeToAdd = bulletShapeBox;
 #ifdef DEBUGGING
 printf("debpCreateBulletShape.VisitShapeBox: he=(%g,%g,%g)\n", boxShape->getHalfExtentsWithoutMargin().getX(),
@@ -370,7 +370,7 @@ void debpCreateBulletShape::VisitShapeCylinder(decShapeCylinder &cylinder){
 	}
 	cylinderShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
 	
-	bulletShapeCylinder.TakeOverWith(cylinderShape);
+	bulletShapeCylinder = debpBulletShape::Ref::New(cylinderShape);
 	
 	if(!orientation.IsEqualTo(decQuaternion())) needsTransform = true;
 	if(!position.IsZero()) needsTransform = true;
@@ -429,7 +429,7 @@ void debpCreateBulletShape::VisitShapeCapsule(decShapeCapsule &capsule){
 	}
 	capsuleShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
 	
-	bulletShapeCapsule.TakeOverWith(capsuleShape);
+	bulletShapeCapsule = debpBulletShape::Ref::New(capsuleShape);
 	
 	if(!orientation.IsEqualTo(decQuaternion())) needsTransform = true;
 	if(!position.IsZero()) needsTransform = true;
@@ -488,7 +488,7 @@ void debpCreateBulletShape::VisitShapeHull(decShapeHull &hull){
 	}
 	hullShape->setUserPointer((void*)(intptr_t)(pShapeIndex + 1));
 	
-	bulletShapeHull.TakeOverWith(hullShape);
+	bulletShapeHull = debpBulletShape::Ref::New(hullShape);
 	
 	if(!orientation.IsEqualTo(decQuaternion()) || !position.IsZero()){
 		needsTransform = true;
@@ -550,7 +550,7 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 		// setLocalScaling has to come last or scaling does not propagate.
 		// for this reason it is applied during Finish() not here
 	
-	bulletShape.TakeOverWith(compoundShape);
+	bulletShape = debpBulletCompoundShape::Ref::New(compoundShape);
 	
 	if(pBulletShape){
 		// place bullet shape in compound clearing the reference

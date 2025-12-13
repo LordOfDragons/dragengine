@@ -63,7 +63,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassNavigatorPath::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sNavPathNatDat * const nd = new (p_GetNativeData(myself)) sNavPathNatDat;
-	nd->path.TakeOverWith();
+	nd->path = deNavigatorPath::Ref::New();
 }
 
 // public func new( NavigatorPath path )
@@ -75,7 +75,7 @@ void deClassNavigatorPath::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself
 	sNavPathNatDat * const nd = new (p_GetNativeData(myself)) sNavPathNatDat;
 	const deClassNavigatorPath &clsNavPath = *static_cast<deClassNavigatorPath*>(GetOwnerClass());
 	
-	nd->path.TakeOverWith(clsNavPath.GetNavigatorPath(rt->GetValue(0)->GetRealObject()));
+	nd->path = deNavigatorPath::Ref::New(clsNavPath.GetNavigatorPath(rt->GetValue(0)->GetRealObject()));
 }
 
 // public func destructor()
@@ -590,7 +590,7 @@ void deClassNavigatorPath::PushNavigatorPath(dsRunTime *rt, const deNavigatorPat
 	sNavPathNatDat * const nd = new (p_GetNativeData(rt->GetValue(0)->GetRealObject()->GetBuffer())) sNavPathNatDat;
 	
 	try{
-		nd->path.TakeOverWith(path);
+		nd->path = deNavigatorPath::Ref::New(path);
 		
 	}catch(...){
 		rt->RemoveValues(1); // remove pushed object

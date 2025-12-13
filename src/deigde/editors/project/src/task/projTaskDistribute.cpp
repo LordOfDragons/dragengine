@@ -302,7 +302,7 @@ void projTaskDistribute::pCreateDelgaWriter(){
 	
 	path.RemoveLastComponent(); // parent directory
 	
-	pDelgaWriter.TakeOver(deVFSDiskDirectory::Ref::NewWith(path)->OpenFileForWriting(localPath));
+	pDelgaWriter = deVFSDiskDirectory::Ref::New(path)->OpenFileForWriting(localPath);
 	
 	// create zip file operating on the delga writer
 	zlib_filefunc_def ffunc;
@@ -330,50 +330,40 @@ void projTaskDistribute::pCloseDelgaWriter(){
 }
 
 void projTaskDistribute::pScanDirectory(const decPath &path){
-	cProcessDirectory *directory = NULL;
 	bool ignore = false;
 	
-	try{
-		directory = new cProcessDirectory;
-		directory->path = path.GetPathUnix();
-		directory->nextDirectory = 0;
-		directory->nextFile = 0;
-		directory->hasCountedDir = false;
-		
-		if(path.GetComponentCount() > 0){
-			// ignore igde path added by the IGDE itself
-			if(path.GetComponentAt(0) == "igde"){
-				ignore = true;
-				
-			// ignore path added by base game definitions
-			}else if(pExcludedByBaseGameDefPath(path)){
-				ignore = true;
-				
-			// ignore by user defined exlude pattern
-			}else if(pExcludedByPattern(path)){
-				ignore = true;
-			}
-		}
-		
-		if(!ignore){
-			deCollectDirectorySearchVisitor collectDirectories;
-			pVFS->SearchFiles(path, collectDirectories);
-			directory->directories = collectDirectories.GetDirectories();
+	const cProcessDirectory::Ref directory(cProcessDirectory::Ref::New());
+	directory->path = path.GetPathUnix();
+	directory->nextDirectory = 0;
+	directory->nextFile = 0;
+	directory->hasCountedDir = false;
+	
+	if(path.GetComponentCount() > 0){
+		// ignore igde path added by the IGDE itself
+		if(path.GetComponentAt(0) == "igde"){
+			ignore = true;
 			
-			deCollectFileSearchVisitor collectFiles;
-			pVFS->SearchFiles(path, collectFiles);
-			directory->files = collectFiles.GetFiles();
+		// ignore path added by base game definitions
+		}else if(pExcludedByBaseGameDefPath(path)){
+			ignore = true;
+			
+		// ignore by user defined exlude pattern
+		}else if(pExcludedByPattern(path)){
+			ignore = true;
 		}
-		
-		pStackDirectories.Add(directory);
-		directory->FreeReference();
-		
-	}catch(const deException &){
-		if(directory){
-			directory->FreeReference();
-		}
-		throw;
 	}
+	
+	if(!ignore){
+		deCollectDirectorySearchVisitor collectDirectories;
+		pVFS->SearchFiles(path, collectDirectories);
+		directory->directories = collectDirectories.GetDirectories();
+		
+		deCollectFileSearchVisitor collectFiles;
+		pVFS->SearchFiles(path, collectFiles);
+		directory->files = collectFiles.GetFiles();
+	}
+	
+	pStackDirectories.Add(directory);
 }
 
 void projTaskDistribute::pProcessFiles(){
@@ -545,7 +535,7 @@ const char *projTaskDistribute::pGetModuleTypeName(deModuleSystem::eModuleTypes 
 }
 
 void projTaskDistribute::pCopyFile(const decPath &path){
-	const decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(pVFS->OpenFileForReading(path)));
+	const decBaseFileReader::Ref reader(pVFS->OpenFileForReading(path));
 	
 	const long size = reader->GetLength();
 	if(size == 0){
@@ -660,9 +650,9 @@ void projTaskDistribute::pWriteGameXml(){
 		pathGameXml.AddComponent(pProfile.GetIdentifier().ToHexString(false) + ".degame");
 	}
 	
-	decMemoryFile::Ref memoryFile(decMemoryFile::Ref::NewWith(pathGameXml.GetPathUnix()));
+	decMemoryFile::Ref memoryFile(decMemoryFile::Ref::New(pathGameXml.GetPathUnix()));
 	{
-	decXmlWriter xmlWriter(decMemoryFileWriter::Ref::NewWith(memoryFile, false));
+	decXmlWriter xmlWriter(decMemoryFileWriter::Ref::New(memoryFile, false));
 	pWriteGameXml(xmlWriter);
 	}
 	pZipWriteMemoryFile(memoryFile);
@@ -687,10 +677,9 @@ void projTaskDistribute::pWriteGameXml(decXmlWriter &writer){
 	const int iconPathCount = iconPathList.GetCount();
 	if(iconPathCount > 0){
 		deImageManager &imageManager = *env.GetEngineController()->GetEngine()->GetImageManager();
-		deImage::Ref icon;
 		int i;
 		for(i=0; i<iconPathCount; i++){
-			icon.TakeOver(imageManager.LoadImage(iconPathList.GetAt(i), "/"));
+			const deImage::Ref icon(imageManager.LoadImage(iconPathList.GetAt(i), "/"));
 			writer.WriteOpeningTagStart("icon");
 			writer.WriteAttributeInt("size", icon->GetWidth());
 			writer.WriteOpeningTagEnd(false, false);

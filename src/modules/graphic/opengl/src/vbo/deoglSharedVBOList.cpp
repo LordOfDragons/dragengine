@@ -108,10 +108,10 @@ deoglSharedVBOBlock::Ref deoglSharedVBOList::AddData(int size, int indexCount){
 		// a little hack to deal with very large models. often they do not fit into the VBOs
 		// we have so for this case we create an oversized VBO for the time being. has to be
 		// made better later on
-		vbo.TakeOverWith(this, size, indexCount);
+		vbo = deoglSharedVBO::Ref::New(this, size, indexCount);
 		
 	}else{
-		vbo.TakeOverWith(this, pMaxPointCount, pMaxIndexCount);
+		vbo = deoglSharedVBO::Ref::New(this, pMaxPointCount, pMaxIndexCount);
 	}
 	
 	pVBOs.Add(vbo);

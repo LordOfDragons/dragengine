@@ -49,7 +49,7 @@ pRenderThread(renderThread)
 		}
 		
 	}else{
-		pFBO.TakeOverWith(renderThread, false);
+		pFBO = deoglFramebuffer::Ref::New(renderThread, false);
 	}
 }
 

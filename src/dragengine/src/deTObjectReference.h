@@ -118,6 +118,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+#if 0
 	/**
 	 * \brief Set object without adding reference.
 	 * 
@@ -170,6 +171,7 @@ public:
 	template<typename... A> void TakeOverWith(A&&... args){
 		TakeOver(new T(static_cast<A>(args)...));
 	}
+#endif
 	
 	/** \brief Pointer to object. */
 	inline T* Pointer() const{
@@ -192,6 +194,7 @@ public:
 		return pObject != nullptr;
 	}
 	
+#if 0
 	/**
 	 * \brief Create instance taking over reference.
 	 * 
@@ -202,6 +205,7 @@ public:
 		reference.TakeOver(object);
 		return reference;
 	}
+#endif
 	
 	/**
 	 * \brief Create instance taking over reference.

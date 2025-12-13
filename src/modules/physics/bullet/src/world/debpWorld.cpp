@@ -158,7 +158,7 @@ pProcessingPhysics(false)
 {
 	// init
 	try{
-		pColInfo.TakeOverWith();
+		pColInfo = deCollisionInfo::Ref::New();
 		pUnstuckCollider = new debpUnstuckCollider(*this);
 		
 		pSharedCollisionFiltering = new debpSharedCollisionFiltering;

@@ -41,7 +41,7 @@
 
 projUProfileSetRunArguments::projUProfileSetRunArguments(
 projProfile *profile, const char *newValue) :
-pProfile(NULL),
+
 pNewValue(newValue)
 {
 	DEASSERT_NOTNULL(profile)
@@ -51,13 +51,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetRunArguments();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetRunArguments::~projUProfileSetRunArguments(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

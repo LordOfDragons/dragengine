@@ -34,6 +34,10 @@ class projPanelTestRun;
  * \brief Panel test-run listener.
  */
 class projPanelTestRunListener : public projProjectListener{
+public:
+	typedef deTObjectReference<projPanelTestRunListener> Ref;
+	
+	
 private:
 	projPanelTestRun &pPanel;
 	

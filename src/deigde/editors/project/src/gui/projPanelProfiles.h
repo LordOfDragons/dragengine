@@ -38,8 +38,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-class projProject;
-class projPanelProfilesListener;
+#include "../project/projProject.h"
+#include "projPanelProfilesListener.h"
 class projProfile;
 class projWindowMain;
 
@@ -48,11 +48,15 @@ class projWindowMain;
  * \brief Profiles panel.
  */
 class projPanelProfiles : public igdeContainerSplitted{
+public:
+	typedef deTObjectReference<projPanelProfiles> Ref;
+	
+	
 private:
 	projWindowMain &pWindowMain;
 	
-	projProject *pProject;
-	projPanelProfilesListener *pListener;
+	projProject::Ref pProject;
+	projPanelProfilesListener::Ref pListener;
 	
 	igdeAction::Ref pActionScriptDirectory;
 	igdeAction::Ref pActionPathConfig;
@@ -118,7 +122,7 @@ public:
 	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Project. */
-	inline projProject *GetProject() const{ return pProject; }
+	inline const projProject::Ref &GetProject() const{ return pProject; }
 	
 	/** \brief Set synthesizer. */
 	void SetProject(projProject *project);

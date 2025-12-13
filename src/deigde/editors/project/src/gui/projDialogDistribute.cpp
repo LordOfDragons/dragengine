@@ -70,11 +70,11 @@ pSuccess(true)
 	igdeUIHelper &helper = env.GetUIHelper();
 	
 	
-	pActionShowInFSManager.TakeOver(new igdeActionExternOpen(env, "Show in File Manager",
-		env.GetStockIcon(igdeEnvironment::esiOpen), "Show DELGA file in File Manager"));
+	pActionShowInFSManager = igdeActionExternOpen::Ref::New(env, "Show in File Manager",
+		env.GetStockIcon(igdeEnvironment::esiOpen), "Show DELGA file in File Manager");
 	
 	
-	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::New(
 		env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5));
 	
 	// build information
@@ -94,7 +94,7 @@ pSuccess(true)
 	pEditDelgaDirCount->SetEditable(false);
 	
 	// logs and info line
-	igdeContainerFlow::Ref containerLogs(igdeContainerFlow::Ref::NewWith(
+	igdeContainerFlow::Ref containerLogs(igdeContainerFlow::Ref::New(
 		env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5));
 	
 	helper.GroupBoxStaticFlow(containerLogs, groupBox, "Logs:", true);
@@ -103,7 +103,7 @@ pSuccess(true)
 	pEditLogs->SetEditable(false);
 	
 	// info line
-	groupBox.TakeOver(new igdeContainerBox(env, igdeContainerBox::eaX, 5));
+	groupBox = igdeContainerBox::Ref::New(env, igdeContainerBox::eaX, 5);
 	containerLogs->AddChild(groupBox);
 	
 	helper.Button(groupBox, pActionShowInFSManager);

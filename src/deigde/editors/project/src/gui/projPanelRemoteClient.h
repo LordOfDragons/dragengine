@@ -25,6 +25,7 @@
 #ifndef _PROJPANELREMOTECLIENT_H_
 #define _PROJPANELREMOTECLIENT_H_
 
+#include "projPanelRemoteClientListener.h"
 #include "../project/remote/projRemoteClient.h"
 
 #include <deigde/gui/igdeLabel.h>
@@ -37,7 +38,6 @@
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
 class projPanelTestRun;
-class projPanelRemoteClientListener;
 
 
 /**
@@ -57,7 +57,7 @@ public:
 private:
 	projPanelTestRun &pPanelTestRun;
 	const projRemoteClient::Ref pClient;
-	projPanelRemoteClientListener *pListener;
+	projPanelRemoteClientListener::Ref pListener;
 	
 	int pMaxLines;
 	

@@ -86,7 +86,7 @@ pLLSyncWorld(this)
 	(void)pDirtyDynamicSkin; // not used yet
 	
 	try{
-		pAComponent.TakeOverWith(oal.GetAudioThread());
+		pAComponent = deoalAComponent::Ref::New(oal.GetAudioThread());
 		
 		ModelAndSkinChanged();
 		AudioModelChanged();

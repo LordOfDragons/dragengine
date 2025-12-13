@@ -611,7 +611,7 @@ void igdeEditPath::AddContextMenuEntries(igdeMenuCascade &contextMenu){
 	const int count = pSelectPathActions.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		helper.MenuCommand(contextMenu, (igdeAction*)pSelectPathActions.GetAt(i));
+		helper.MenuCommand(contextMenu, igdeAction::Ref(static_cast<igdeAction*>(pSelectPathActions.GetAt(i))));
 	}
 	
 	if(!pBasePath.IsEmpty()){

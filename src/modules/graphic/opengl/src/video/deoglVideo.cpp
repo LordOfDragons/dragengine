@@ -49,7 +49,7 @@ pCachedFrameCount(0),
 pCacheFrames(false)
 {
 	pDetermineCacheParams();
-	pRVideo.TakeOverWith(ogl.GetRenderThread(), pVideo.GetWidth(),
+	pRVideo = deoglRVideo::Ref::New(ogl.GetRenderThread(), pVideo.GetWidth(),
 		pVideo.GetHeight(), pVideo.GetComponentCount(), pCachedFrameCount);
 }
 

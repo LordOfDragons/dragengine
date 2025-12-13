@@ -189,7 +189,7 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel(deoglTexture &texture, int lev
 		deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		
 		if(true){
-			fbo.TakeOverWith(pRenderThread, false);
+			fbo = deoglFramebuffer::Ref::New(pRenderThread, false);
 			pRenderThread.GetFramebuffer().Activate(fbo);
 			fbo->AttachDepthTextureLevel(&texture, level);
 			const GLenum buffers[1] = {GL_NONE};
@@ -293,7 +293,7 @@ void deoglDebugSaveTexture::SaveStencilTexture(deoglTexture &texture, const char
 		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
 		
 		if(true){
-			fbo.TakeOverWith(pRenderThread, false);
+			fbo = deoglFramebuffer::Ref::New(pRenderThread, false);
 			pRenderThread.GetFramebuffer().Activate(fbo);
 			fbo->AttachDepthTextureLevel(&texture, 0);
 			fbo->AttachStencilTextureLevel(&texture, 0);
@@ -383,7 +383,7 @@ void deoglDebugSaveTexture::SaveStencilArrayTexture(deoglArrayTexture &texture, 
 		OGL_CHECK(pRenderThread, glPixelStorei(GL_PACK_ALIGNMENT, 1));
 		
 		if(true){
-			fbo.TakeOverWith(pRenderThread, false);
+			fbo = deoglFramebuffer::Ref::New(pRenderThread, false);
 			pRenderThread.GetFramebuffer().Activate(fbo);
 			fbo->AttachDepthArrayTextureLevel(&texture, 0);
 			fbo->AttachStencilArrayTextureLevel(&texture, 0);

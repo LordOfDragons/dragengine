@@ -2225,7 +2225,7 @@ void igdeXMLGameDefinition::pParseCategory(const decXmlElementTag &root, igdeGDC
 				LogErrorGenericProblemValue(*tag, categoryName, "Category with this name exists already");
 			}
 			
-			category.TakeOverWith(categoryName);
+			category = igdeGDCategory::Ref::New(categoryName);
 		}
 	}
 	if(!category){

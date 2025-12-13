@@ -69,7 +69,7 @@ void deClassSSSound::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	deClassSynthesizerSource * const baseClass = static_cast<deClassSynthesizerSource*>(GetOwnerClass()->GetBaseClass());
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
-	nd->source.TakeOverWith();
+	nd->source = deSynthesizerSourceSound::Ref::New();
 	baseClass->AssignSource(myself->GetRealObject(), nd->source);
 }
 

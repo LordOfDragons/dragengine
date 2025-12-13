@@ -239,7 +239,7 @@ void deoxrDPMndxDevSpace::pAddDeviceTracker(XrXDevListMNDX list, const Device::R
 	deoxrSession &session = *pGetSession();
 	deVROpenXR &oxr = instance.GetOxr();
 	
-	device->device.TakeOverWith(oxr, *this);
+	device->device = deoxrDevice::Ref::New(oxr, *this);
 	
 	device->device->SetType(deInputDevice::edtVRTracker);
 	device->device->SetName(device->name);

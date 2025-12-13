@@ -25,6 +25,7 @@
 #ifndef _PROJDISTRIBUTOR_H_
 #define _PROJDISTRIBUTOR_H_
 
+#include "profile/projProfile.h"
 #include "profile/projProfileList.h"
 #include "remote/projRemoteClient.h"
 #include "remote/projRemoteServer.h"
@@ -43,6 +44,10 @@ class igdeEnvironment;
  * \brief Project.
  */
 class projProject : public igdeEditableEntity{
+public:
+	typedef deTObjectReference<projProject> Ref;
+	
+	
 private:
 	decString pScriptDirectory;
 	decString pGameObject;
@@ -50,7 +55,7 @@ private:
 	decString pPathCapture;
 	
 	projProfileList pProfiles;
-	projProfile *pActiveProfile;
+	projProfile::Ref pActiveProfile;
 	
 	decString pActiveLaunchProfile;
 	
@@ -120,7 +125,7 @@ public:
 	
 	
 	/** \brief Active profile. */
-	inline projProfile *GetActiveProfile() const{ return pActiveProfile; }
+	inline const projProfile::Ref &GetActiveProfile() const{ return pActiveProfile; }
 	
 	/** \brief Set active profile. */
 	void SetActiveProfile(projProfile *profile);

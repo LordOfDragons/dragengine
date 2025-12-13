@@ -300,7 +300,7 @@ const deoglFramebuffer::Ref &deoglDeveloperMode::GetFBODebugImageWith(int width,
 		pTextureDebugImage->CreateTexture();
 		
 		if(!pFBODebugImage){
-			pFBODebugImage.TakeOverWith(pRenderThread, false);
+			pFBODebugImage = deoglFramebuffer::Ref::New(pRenderThread, false);
 			
 			pRenderThread.GetFramebuffer().Activate(pFBODebugImage);
 			

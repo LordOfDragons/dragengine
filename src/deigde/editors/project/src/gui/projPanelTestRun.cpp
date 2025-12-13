@@ -72,6 +72,8 @@ namespace {
 class cActionStart : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
+	typedef deTObjectReference<cActionStart> Ref;
+	
 	cActionStart(projPanelTestRun &panel) : igdeAction("Start",
 		panel.GetWindowMain().GetIconStart(), "Test-Run project using selected Launcher Profile"),
 	pPanel(panel){}
@@ -88,6 +90,8 @@ public:
 class cActionStop : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
+	typedef deTObjectReference<cActionStop> Ref;
+	
 	cActionStop(projPanelTestRun &panel) : igdeAction("Stop",
 		panel.GetWindowMain().GetIconStop(), "Stop Test-Run project"),
 	pPanel(panel){}
@@ -104,6 +108,8 @@ public:
 class cActionKill : public igdeAction{
 	projPanelTestRun &pPanel;
 public:
+	typedef deTObjectReference<cActionKill> Ref;
+	
 	cActionKill(projPanelTestRun &panel) : igdeAction("Kill",
 		panel.GetWindowMain().GetIconKill(), "Kill Test-Run project"),
 	pPanel(panel){}
@@ -249,9 +255,6 @@ preventUpdateLaunchProfile(false),
 
 pWindowMain(windowMain),
 
-pProject(NULL),
-pListener(NULL),
-
 pTestRunner(NULL),
 pIsRunning(false),
 pMaxLines(500)
@@ -259,13 +262,13 @@ pMaxLines(500)
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	pListener = new projPanelTestRunListener(*this);
+	pListener = projPanelTestRunListener::Ref::New(*this);
 	
 	
 	// create actions
-	pActionStart.TakeOver(new cActionStart(*this));
-	pActionQuit.TakeOver(new cActionStop(*this));
-	pActionKill.TakeOver(new cActionKill(*this));
+	pActionStart = cActionStart::Ref::New(*this);
+	pActionQuit = cActionStop::Ref::New(*this);
+	pActionKill = cActionKill::Ref::New(*this);
 	
 	
 	
@@ -277,14 +280,14 @@ pMaxLines(500)
 	AddChild(scroll, eaSide);
 	
 	
-	igdeContainer::Ref groupBox(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));
+	igdeContainer::Ref groupBox(igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY));
 	helper.Label(groupBox, "Profile:");
 	helper.ComboBox(groupBox, "Distribution profile to run.",
 		pCBProfile, new cComboProfile(*this));
 	pCBProfile->SetDefaultSorter();
 	sidePanel->AddChild(groupBox);
 	
-	groupBox.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	groupBox = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	helper.Label(groupBox, "Launch Profile:");
 	helper.ComboBox(groupBox, "Launcher profile to use for testing.",
 		pCBLaunchProfile, new cComboLaunchProfile(*this));
@@ -299,7 +302,7 @@ pMaxLines(500)
 	// remote launching
 	helper.GroupBoxFlow(sidePanel, groupBox, "Remote Launching:");
 	
-	igdeContainerForm::Ref form(igdeContainerForm::Ref::NewWith(env));
+	igdeContainerForm::Ref form(igdeContainerForm::Ref::New(env));
 	helper.EditString(form, "Address:", "IP address to listen for remote client connections",
 		pEditRemoteAddress, new cEditRemoteAddress(*this));
 	groupBox->AddChild(form);
@@ -318,18 +321,18 @@ pMaxLines(500)
 	
 	
 	// content
-	pTabContent.TakeOver(new igdeTabBook(env));
+	pTabContent = igdeTabBook::Ref::New(env);
 	AddChild(pTabContent, eaCenter);
 	
 	// logs widget
-	pEditLogs.TakeOver(new igdeTextArea(env, 60, 10, false));
+	pEditLogs = igdeTextArea::Ref::New(env, 60, 10, false);
 	
-	igdeTextStyle::Ref style(igdeTextStyle::Ref::NewWith(styleWarning));
+	igdeTextStyle::Ref style(igdeTextStyle::Ref::New(styleWarning));
 	style->SetColor(decColor(0.0f, 0.0f, 0.0f));
 	style->SetBgColor(decColor(1.0f, 0.815f, 0.0f));
 	pEditLogs->AddStyle(style);
 	
-	style.TakeOver(new igdeTextStyle(styleError));
+	style = igdeTextStyle::Ref::New(styleError);
 	style->SetColor(decColor(1.0f, 1.0f, 0.5f));
 	style->SetBgColor(decColor(0.75f, 0.0f, 0.0f));
 // 	style->SetBold( true );
@@ -346,10 +349,6 @@ pMaxLines(500)
 
 projPanelTestRun::~projPanelTestRun(){
 	SetProject(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -369,7 +368,6 @@ void projPanelTestRun::SetProject(projProject *project){
 	
 	if(pProject){
 		pProject->RemoveListener(pListener);
-		pProject->FreeReference();
 	}
 	
 	pEditLogs->ClearText();
@@ -377,7 +375,6 @@ void projPanelTestRun::SetProject(projProject *project){
 	pProject = project;
 	
 	if(project){
-		project->AddReference();
 		project->AddListener(pListener);
 	}
 	
@@ -729,7 +726,7 @@ void projPanelTestRun::UpdateRemoteClients(float elapsed){
 	}
 }
 
-projPanelRemoteClient::Ref projPanelTestRun::GetRemoteClientPanel(projRemoteClient *client) const{
+projPanelRemoteClient *projPanelTestRun::GetRemoteClientPanel(projRemoteClient *client) const{
 	const int count = pRemoteClients.GetCount();
 	int i;
 	
@@ -843,8 +840,7 @@ void projPanelTestRun::pProcessPendingAddRemoteClient(){
 			continue;
 		}
 		
-		const projPanelRemoteClient::Ref panel(projPanelRemoteClient::Ref::New(
-		new projPanelRemoteClient(*this, each)));
+		const projPanelRemoteClient::Ref panel(projPanelRemoteClient::Ref::New(*this, each));
 		pTabContent->AddChild(panel, each->GetName().c_str());
 		pRemoteClients.Add(panel);
 	}

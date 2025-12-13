@@ -132,8 +132,6 @@ pSRInteractionList(nullptr),
 pWOVRayHitsElement(nullptr),
 pWOVCollectElements(nullptr),
 
-pActiveMicrophone(nullptr),
-
 pElapsed(0.0f),
 pElapsedFull(0.0f),
 

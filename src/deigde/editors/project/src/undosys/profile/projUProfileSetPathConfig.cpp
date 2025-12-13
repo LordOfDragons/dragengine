@@ -41,7 +41,7 @@
 
 projUProfileSetPathConfig::projUProfileSetPathConfig(
 projProfile *profile, const char *newValue) :
-pProfile(NULL),
+
 pNewValue(newValue)
 {
 	if(!profile){
@@ -53,13 +53,9 @@ pNewValue(newValue)
 	pOldValue = profile->GetPathConfig();
 	
 	pProfile = profile;
-	profile->AddReference();
 }
 
 projUProfileSetPathConfig::~projUProfileSetPathConfig(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

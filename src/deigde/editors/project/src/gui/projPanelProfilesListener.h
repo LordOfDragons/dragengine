@@ -41,6 +41,9 @@ private:
 	
 	
 public:
+	typedef deTObjectReference<projPanelProfilesListener> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */

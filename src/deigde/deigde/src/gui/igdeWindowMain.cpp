@@ -1829,7 +1829,7 @@ void igdeWindowMain::pLoadStockModels(){
 
 void igdeWindowMain::pCreateGuiThemes(){
 	// default theme
-	pDefaultGuiTheme.TakeOverWith(igdeGuiThemeNames::defaultTheme);
+	pDefaultGuiTheme = igdeGuiTheme::Ref::New(igdeGuiThemeNames::defaultTheme);
 	
 	pDefaultGuiTheme->SetFloatProperty(igdeGuiThemePropertyNames::fontSize, 1.0f);
 	
@@ -1893,7 +1893,7 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 	
 	decDiskFileReader::Ref reader(decDiskFileReader::Ref::New(path.GetPathNative()));
 	
-	pIGDEGameDefinition.TakeOverWith(pEnvironmentIGDE);
+	pIGDEGameDefinition = igdeGameDefinition::Ref::New(pEnvironmentIGDE);
 	pIGDEGameDefinition->SetFilename(path.GetPathNative());
 	pIGDEGameDefinition->SetBasePath(pConfiguration.GetPathShares());
 	
@@ -1996,7 +1996,7 @@ void igdeWindowMain::pLoadTemplates(){
 		try{
 			reader = decDiskFileReader::Ref::New(pathXml);
 			
-			atemplate.TakeOverWith();
+			atemplate = igdeTemplate::Ref::New();
 			atemplate->SetBasePath(pathTemplate);
 			loadTemplate.Load(reader, atemplate);
 			
@@ -2049,7 +2049,7 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 		try{
 			reader = decDiskFileReader::Ref::New(path.GetPathNative());
 			
-			gameDefinition.TakeOverWith(pEnvironmentIGDE);
+			gameDefinition = igdeGameDefinition::Ref::New(pEnvironmentIGDE);
 			gameDefinition->SetFilename(path.GetPathNative());
 			loadGameDef.Load(reader, gameDefinition);
 			

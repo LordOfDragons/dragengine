@@ -51,13 +51,14 @@ class decXmlWriter;
  * \brief Distribute game task.
  */
 class projTaskDistribute : public igdeStepableTask{
+public:
+	typedef deTObjectReference<projTaskDistribute> Ref;
+	
 private:
 	class cProcessDirectory : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<cProcessDirectory> Ref;
-
-
 	public:
+		typedef deTObjectReference<cProcessDirectory> Ref;
+		
 		decString path;
 		dePathList directories;
 		dePathList files;

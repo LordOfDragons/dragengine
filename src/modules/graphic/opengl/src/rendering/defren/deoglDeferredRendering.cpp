@@ -1482,7 +1482,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 	int i;
 	
 	for(i=0; i<8; i++){
-		pFBOCopyDepth[i].TakeOverWith(pRenderThread, false);
+		pFBOCopyDepth[i] = deoglFramebuffer::Ref::New(pRenderThread, false);
 		pRenderThread.GetFramebuffer().Activate(pFBOCopyDepth[i]);
 		pFBOCopyDepth[i]->AttachDepthArrayTextureLayer(copyDepthTex[i / 2], decMath::min(i % 2, pLayerCount - 1));
 		const GLenum buffersNone[1] = {GL_NONE};
@@ -1521,7 +1521,7 @@ deoglArrayTexture *texture1, deoglArrayTexture *texture2, deoglArrayTexture *tex
 deoglArrayTexture *texture4, deoglArrayTexture *texture5, deoglArrayTexture *texture6,
 deoglArrayTexture *texture7, deoglArrayTexture *depth){
 	try{
-		pFBOs[index].TakeOverWith(pRenderThread, false);
+		pFBOs[index] = deoglFramebuffer::Ref::New(pRenderThread, false);
 		
 		pRenderThread.GetFramebuffer().Activate(pFBOs[index]);
 		

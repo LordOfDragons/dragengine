@@ -114,10 +114,11 @@ scons -h
 8. **Memory Management**:
    - Classes required to be reference counted have to subclass directly or indirectly `deObject` or `deThreadSafeObject`
       - Destructors must be protected or private to prevent direct deletion
-   - Use `A::Ref` typedef smart pointers for storing references
-      - If class is missing public Ref typedef add it
-   - For functions creating new objects, return `A::Ref` smart pointers
-   - Create objects of type `A` using `A::Ref::New(...)`
+   - Use `A::Ref` typedef smart pointers for reference counted class instances
+      - If class is missing public `Ref` typedef add it in a public section
+   - For functions creating new reference counted objects, return `A::Ref` smart pointers
+   - Create reference counted objects using `A::Ref::New(...)`
+   - A reference counted object of type `B::Ref` is automatically casted to `A::Ref` if `B` is a subclass of `A`
 
 9. **Member Ordering**:
    - First public declarations like typedefs, enums, inner classes or constants

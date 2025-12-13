@@ -116,6 +116,6 @@ void deoglCanvasRenderWorld::ContentChanged(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasRenderWorld::CreateRCanvas(){
-	pRCanvasRenderWorld.TakeOverWith(GetOgl().GetRenderThread());
+	pRCanvasRenderWorld = deoglRCanvasRenderWorld::Ref::New(GetOgl().GetRenderThread());
 	return pRCanvasRenderWorld;
 }

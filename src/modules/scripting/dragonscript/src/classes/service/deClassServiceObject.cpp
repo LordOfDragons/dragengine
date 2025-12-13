@@ -82,7 +82,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 
 void deClassServiceObject::nfNew::RunFunction(dsRunTime*, dsValue *myself){
 	sServiceObjectNatDat * const nd = new (p_GetNativeData(myself)) sServiceObjectNatDat;
-	nd->object.TakeOverWith();
+	nd->object = deServiceObject::Ref::New();
 }
 
 
@@ -217,7 +217,7 @@ void deClassServiceObject::nfNewCopy::RunFunction(dsRunTime *rt, dsValue *myself
 		DSTHROW(dueNullPointer);
 	}
 	
-	nd->object.TakeOverWith(*copy, deep);
+	nd->object = deServiceObject::Ref::New(*copy, deep);
 }
 
 

@@ -519,7 +519,6 @@ void debpColliderVolume::DetectCustomCollision(float elapsed){
 			// if the reference counts drops to 1 the collider has been removed while in use
 			// in this case release the collider and stop testing it
 			if(pColliderVolume.GetRefCount() == 1){
-				pColliderVolume.FreeReference();
 				return;
 			}
 		}

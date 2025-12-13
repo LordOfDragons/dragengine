@@ -80,7 +80,7 @@ void deClassARGroup::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd->rule.TakeOverWith();
+	nd->rule = deAnimatorRuleGroup::Ref::New();
 	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 

@@ -307,7 +307,7 @@ public:
 		}
 		
 		try{
-			pSkin.TakeOverWith(fullPath, genName);
+			pSkin = igdeGDSkin::Ref::New(fullPath, genName);
 			pSkin->SetDescription("Auto-Imported");
 			pOwner.AddSkin(pSkin);
 			

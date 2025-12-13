@@ -80,7 +80,7 @@ void deClassARAnimationDifference::nfNew::RunFunction(dsRunTime *rt, dsValue *my
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd->rule.TakeOverWith();
+	nd->rule = deAnimatorRuleAnimationDifference::Ref::New();
 	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 

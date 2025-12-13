@@ -125,6 +125,6 @@ void deoglCanvasVideoPlayer::ContentChanged(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasVideoPlayer::CreateRCanvas(){
-	pRCanvasVideoPlayer.TakeOverWith(GetOgl().GetRenderThread());
+	pRCanvasVideoPlayer = deoglRCanvasVideoPlayer::Ref::New(GetOgl().GetRenderThread());
 	return pRCanvasVideoPlayer;
 }

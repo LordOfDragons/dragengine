@@ -73,7 +73,7 @@ void deClassEasyXML::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	
 	// create document
 	try{
-		nd->document.TakeOverWith("");
+		nd->document = dedsXmlDocument::Ref::New("");
 		nd->document->AddElement(decXmlElementTag::Ref::New("root"));
 		
 	}catch(const deException &e){
@@ -106,7 +106,7 @@ void deClassEasyXML::nfNewFile::RunFunction(dsRunTime *rt, dsValue *myself){
 	dedsXmlParser parser(ds.GetGameEngine()->GetLogger());
 	
 	try{
-		nd->document.TakeOverWith(filename);
+		nd->document = dedsXmlDocument::Ref::New(filename);
 		
 		if(parser.ParseXml(vfs.OpenFileForReading(decPath::CreatePathUnix(filename)), nd->document)){
 			nd->document->StripComments();
@@ -152,7 +152,7 @@ void deClassEasyXML::nfNewFile2::RunFunction(dsRunTime *rt, dsValue *myself){
 	dedsXmlParser parser(ds.GetGameEngine()->GetLogger());
 	
 	try{
-		nd->document.TakeOverWith(filename);
+		nd->document = dedsXmlDocument::Ref::New(filename);
 		
 		if(parser.ParseXml(vfs.OpenFileForReading(decPath::CreatePathUnix(filename)), nd->document)){
 			if(stripComments){

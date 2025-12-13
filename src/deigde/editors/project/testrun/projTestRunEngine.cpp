@@ -157,54 +157,42 @@ void projTestRunEngine::Start(){
 
 void projTestRunEngine::PutIntoVFS(){
 	deVirtualFileSystem &vfs = *pProcess.GetLauncher().GetVFS();
-	deVFSContainer::Ref container;
 	decPath pathRootDir, pathDiskDir;
 	
 	if(!pEngine->GetOS()->GetPathSystemConfig().IsEmpty()){
 		pathRootDir.SetFromUnix("/engine/configSystem");
 		pathDiskDir.SetFromNative(pEngine->GetOS()->GetPathSystemConfig());
-		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
-		((deVFSDiskDirectory*)container.operator->())->SetReadOnly(true);
-		vfs.AddContainer(container);
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir, true));
 	}
 	
 	if(!pPathConfig.IsEmpty()){
 		pathRootDir.SetFromUnix("/engine/config");
 		pathDiskDir.SetFromNative(pPathConfig);
-		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
-		((deVFSDiskDirectory*)container.operator->())->SetReadOnly(true);
-		vfs.AddContainer(container);
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir, true));
 	}
 	
 	if(!pPathShare.IsEmpty()){
 		pathRootDir.SetFromUnix("/engine/share");
 		pathDiskDir.SetFromNative(pPathShare);
-		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
-		((deVFSDiskDirectory*)container.operator->())->SetReadOnly(true);
-		vfs.AddContainer(container);
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir, true));
 	}
 	
 	if(!pPathLib.IsEmpty()){
 		pathRootDir.SetFromUnix("/engine/lib");
 		pathDiskDir.SetFromNative(pPathLib);
-		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
-		((deVFSDiskDirectory*)container.operator->())->SetReadOnly(true);
-		vfs.AddContainer(container);
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir, true));
 	}
 	
 	if(!pEngine->GetOS()->GetPathUserCache().IsEmpty()){
 		pathRootDir.SetFromUnix("/engine/cache");
 		pathDiskDir.SetFromNative(pEngine->GetOS()->GetPathUserCache());
-		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
-		((deVFSDiskDirectory*)container.operator->())->SetReadOnly(true);
-		vfs.AddContainer(container);
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir, true));
 	}
 	
 	if(!pEngine->GetOS()->GetPathUserCapture().IsEmpty()){
 		pathRootDir.SetFromUnix("/engine/capture");
 		pathDiskDir.SetFromNative(pEngine->GetOS()->GetPathUserCapture());
-		container.TakeOver(new deVFSDiskDirectory(pathRootDir, pathDiskDir));
-		vfs.AddContainer(container);
+		vfs.AddContainer(deVFSDiskDirectory::Ref::New(pathRootDir, pathDiskDir));
 	}
 }
 
@@ -375,16 +363,13 @@ void projTestRunEngine::InitVFS(){
 	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
 	deScriptingSystem &scrsys = *pEngine->GetScriptingSystem();
 	deModuleSystem &modsys = *pEngine->GetModuleSystem();
-	deVFSContainer::Ref container;
 	decPath path;
 	
 	// add data directory as root directory
 	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "VFS: '/' => '%s' (read-only)",
 		runParameters.pathDataDirectory.GetString());
-	container.TakeOver(new deVFSDiskDirectory(decPath::CreatePathUnix("/"),
-		decPath::CreatePathNative(runParameters.pathDataDirectory)));
-	((deVFSDiskDirectory*)container.operator->())->SetReadOnly(true);
-	vfs.AddContainer(container);
+	vfs.AddContainer(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/"),
+		decPath::CreatePathNative(runParameters.pathDataDirectory), true));
 	
 	// add script module shared data if existing
 	scrsys.AddVFSSharedDataDir(vfs);
@@ -402,29 +387,26 @@ void projTestRunEngine::InitVFS(){
 	// add the game overlay directory (writeable).
 	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "VFS: '/' => '%s'",
 		runParameters.pathOverlay.GetString());
-	container.TakeOver(new deVFSDiskDirectory(decPath::CreatePathUnix("/"),
+	vfs.AddContainer(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/"),
 		decPath::CreatePathNative(runParameters.pathOverlay)));
-	vfs.AddContainer(container);
 	pEngine->SetPathOverlay(runParameters.pathOverlay);
 	
 	// add the user game configuration directory (writeable)
 	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "VFS: '%s' => '%s'",
 		runParameters.vfsPathConfig.GetString(),
 		runParameters.pathConfig.GetString());
-	container.TakeOver(new deVFSDiskDirectory(
+	vfs.AddContainer(deVFSDiskDirectory::Ref::New(
 		decPath::CreatePathUnix(runParameters.vfsPathConfig),
 		decPath::CreatePathNative(runParameters.pathConfig)));
-	vfs.AddContainer(container);
 	pEngine->SetPathConfig(runParameters.pathConfig);
 	
 	// add the user game capture directory (writeable)
 	pProcess.GetLogger()->LogInfoFormat(LOGSOURCE, "VFS: '%s' => '%s'",
 		runParameters.vfsPathCapture.GetString(),
 		runParameters.pathCapture.GetString());
-	container.TakeOver(new deVFSDiskDirectory(
+	vfs.AddContainer(deVFSDiskDirectory::Ref::New(
 		decPath::CreatePathUnix(runParameters.vfsPathCapture),
 		decPath::CreatePathNative(runParameters.pathCapture)));
-	vfs.AddContainer(container);
 	pEngine->SetPathCapture(runParameters.pathCapture);
 }
 

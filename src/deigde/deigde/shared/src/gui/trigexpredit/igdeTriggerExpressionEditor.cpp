@@ -414,7 +414,7 @@ void igdeTriggerExpressionEditor::RebuildTree(){
 	
 	if(!pWorkExpression || !pWorkExpression->GetRootComponent()){
 		if(!pWorkExpression){
-			pWorkExpression.TakeOverWith();
+			pWorkExpression = igdeTriggerExpression::Ref::New();
 		}
 		
 		try{

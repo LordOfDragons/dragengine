@@ -267,7 +267,7 @@ deVROpenXR::eInputActions actionAnalog, const char *name, const char *id, const 
 	int i;
 	
 	for(i=0; i<2; i++){
-		axis.TakeOverWith(*this);
+		axis = deoxrDeviceAxis::Ref::New(*this);
 		axis->SetActionAnalog(pOxr.GetAction(actionAnalog));
 		axis->SetType(deInputDeviceAxis::eatStick);
 		axis->SetComponent(i);
@@ -292,7 +292,7 @@ deVROpenXR::eInputActions actionAnalog, const char *name, const char *id, const 
 	int i;
 	
 	for(i=0; i<2; i++){
-		axis.TakeOverWith(*this);
+		axis = deoxrDeviceAxis::Ref::New(*this);
 		axis->SetActionAnalog(pOxr.GetAction(actionAnalog));
 		axis->SetType(deInputDeviceAxis::eatTouchPad);
 		axis->SetComponent(i);

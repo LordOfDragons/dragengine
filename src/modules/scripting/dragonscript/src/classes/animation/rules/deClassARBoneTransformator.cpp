@@ -80,7 +80,7 @@ void deClassARBoneTransformator::nfNew::RunFunction(dsRunTime *rt, dsValue *myse
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd->rule.TakeOverWith();
+	nd->rule = deAnimatorRuleBoneTransformator::Ref::New();
 	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 

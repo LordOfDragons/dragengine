@@ -132,27 +132,17 @@ void projTRPParameterList::RemoveAll(){
 
 
 void projTRPParameterList::Set(const char *module, const char *name, const char *value){
-	projTRPParameter *parameter = GetWith(module, name);
-	if(parameter){
-		parameter->SetValue(value);
+	projTRPParameter * const findParameter = GetWith(module, name);
+	if(findParameter){
+		findParameter->SetValue(value);
 		return;
 	}
 	
-	parameter = new projTRPParameter;
-	
-	try{
-		parameter->SetModule(module);
-		parameter->SetName(name);
-		parameter->SetValue(value);
-		pParameters.Add(parameter);
-		parameter->FreeReference();
-		
-	}catch(const deException &){
-		if(parameter){
-			parameter->FreeReference();
-		}
-		throw;
-	}
+	const projTRPParameter::Ref parameter(projTRPParameter::Ref::New());
+	parameter->SetModule(module);
+	parameter->SetName(name);
+	parameter->SetValue(value);
+	pParameters.Add(parameter);
 }
 
 void projTRPParameterList::Set(const projTRPParameter &parameter){

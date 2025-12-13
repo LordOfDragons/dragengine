@@ -62,7 +62,7 @@ deClassLocomotion::nfNew::nfNew(const sInitData &init) : dsFunction(init.clsLoco
 DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 }
 void deClassLocomotion::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
-	(new (p_GetNativeData(myself)) sLocoNatDat)->locomotion.TakeOverWith();
+	(new (p_GetNativeData(myself)) sLocoNatDat)->locomotion = dedsLocomotion::Ref::New();
 }
 
 // public func destructor()

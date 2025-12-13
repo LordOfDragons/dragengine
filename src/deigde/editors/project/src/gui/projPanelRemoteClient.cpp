@@ -118,6 +118,8 @@ public:
 class cActionStart : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
+	typedef deTObjectReference<cActionStart> Ref;
+	
 	cActionStart(projPanelRemoteClient &panel) : igdeAction("Start",
 		panel.GetPanelTestRun().GetWindowMain().GetIconStart(), "Test-Run project using selected profile"),
 	pPanel(panel){}
@@ -134,6 +136,8 @@ public:
 class cActionStop : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
+	typedef deTObjectReference<cActionStop> Ref;
+	
 	cActionStop(projPanelRemoteClient &panel) : igdeAction("Stop",
 		panel.GetPanelTestRun().GetWindowMain().GetIconStop(), "Stop Test-Run project"),
 	pPanel(panel){}
@@ -150,6 +154,8 @@ public:
 class cActionKill : public igdeAction{
 	projPanelRemoteClient &pPanel;
 public:
+	typedef deTObjectReference<cActionKill> Ref;
+	
 	cActionKill(projPanelRemoteClient &panel) : igdeAction("Kill",
 		panel.GetPanelTestRun().GetWindowMain().GetIconKill(), "Kill Test-Run project"),
 	pPanel(panel){}
@@ -183,7 +189,6 @@ igdeContainerSplitted(panelTestRun.GetEnvironment(), igdeContainerSplitted::espL
 preventUpdate(true),
 pPanelTestRun(panelTestRun),
 pClient(client),
-pListener(nullptr),
 pMaxLines(500)
 {
 	igdeEnvironment &env = panelTestRun.GetEnvironment();
@@ -233,24 +238,24 @@ pMaxLines(500)
 		pCBLaunchProfile, new cComboLaunchProfile(*this));
 	pCBLaunchProfile->SetDefaultSorter();
 	
-	helper.Button(groupBox, pBtnStart, new cActionStart(*this));
-	helper.Button(groupBox, pBtnStop, new cActionStop(*this));
-	helper.Button(groupBox, pBtnKill, new cActionKill(*this));
+	helper.Button(groupBox, pBtnStart, cActionStart::Ref::New(*this));
+	helper.Button(groupBox, pBtnStop, cActionStop::Ref::New(*this));
+	helper.Button(groupBox, pBtnKill, cActionKill::Ref::New(*this));
 	
 	
 	// content
-	pTabContent.TakeOver(new igdeTabBook(env));
+	pTabContent = igdeTabBook::Ref::New(env);
 	AddChild(pTabContent, eaCenter);
 	
 	// logs widget
-	pEditLogs.TakeOver(new igdeTextArea(env, 60, 10, false));
+	pEditLogs = igdeTextArea::Ref::New(env, 60, 10, false);
 	
-	igdeTextStyle::Ref style(igdeTextStyle::Ref::NewWith(styleWarning));
+	igdeTextStyle::Ref style(igdeTextStyle::Ref::New(styleWarning));
 	style->SetColor(decColor(0.0f, 0.0f, 0.0f));
 	style->SetBgColor(decColor(1.0f, 0.815f, 0.0f));
 	pEditLogs->AddStyle(style);
 	
-	style.TakeOver(new igdeTextStyle(styleError));
+	style = igdeTextStyle::Ref::New(styleError);
 	style->SetColor(decColor(1.0f, 1.0f, 0.5f));
 	style->SetBgColor(decColor(0.75f, 0.0f, 0.0f));
 // 	style->SetBold(true);
@@ -260,7 +265,7 @@ pMaxLines(500)
 	
 	
 	// finish
-	pListener = new projPanelRemoteClientListener(*this);
+	pListener = projPanelRemoteClientListener::Ref::New(*this);
 	client->AddListener(pListener);
 	
 	preventUpdate = false;
@@ -272,7 +277,6 @@ pMaxLines(500)
 projPanelRemoteClient::~projPanelRemoteClient(){
 	if(pListener){
 		pClient->RemoveListener(pListener);
-		pListener->FreeReference();
 	}
 }
 

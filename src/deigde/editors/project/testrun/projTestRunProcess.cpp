@@ -185,7 +185,7 @@ decString projTestRunProcess::ReadString16FromPipe(){
 	const int length = ReadUShortFromPipe();
 	decString string;
 	string.Set(' ', length);
-	ReadFromPipe((char*)string.GetString(), length);
+	ReadFromPipe(string.GetMutableString(), length);
 	return string;
 }
 
@@ -415,7 +415,7 @@ void projTestRunProcess::pLogConfiguration(){
 
 void projTestRunProcess::pCreateLogger(){
 	if(pRunParameters.pathLogFile.IsEmpty()){
-		pLogger.TakeOver(new deLoggerConsoleColor);
+		pLogger = deLoggerConsoleColor::Ref::New();
 		return;
 	}
 	
@@ -425,12 +425,10 @@ void projTestRunProcess::pCreateLogger(){
 	diskPath.RemoveLastComponent();
 	
 	deVFSContainer::Ref container;
-	decBaseFileWriter::Ref writer;
 	
-	container.TakeOver(new deVFSDiskDirectory(diskPath));
-	writer.TakeOver(container->OpenFileForWriting(filePath));
+	container = deVFSDiskDirectory::Ref::New(diskPath);
 	
-	pLogger.TakeOver(new deLoggerFile(writer));
+	pLogger = deLoggerFile::Ref::New(container->OpenFileForWriting(filePath));
 }
 
 void projTestRunProcess::pRunGame(){

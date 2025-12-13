@@ -50,11 +50,11 @@ pRenderThread(renderThread),
 pBlockUsageCount(0)
 {
 	try{
-		pTBONodeBox.TakeOverWith(renderThread, 4);
-		pTBOIndex.TakeOverWith(renderThread, 2);
-		pTBOFace.TakeOverWith(renderThread, 4);
-		pTBOVertex.TakeOverWith(renderThread, 4);
-		pTBOTexCoord.TakeOverWith(renderThread, 2);
+		pTBONodeBox = deoglDynamicTBOFloat32::Ref::New(renderThread, 4);
+		pTBOIndex = deoglDynamicTBOUInt16::Ref::New(renderThread, 2);
+		pTBOFace = deoglDynamicTBOUInt16::Ref::New(renderThread, 4);
+		pTBOVertex = deoglDynamicTBOFloat32::Ref::New(renderThread, 4);
+		pTBOTexCoord = deoglDynamicTBOFloat16::Ref::New(renderThread, 2);
 		
 	}catch(const deException &){
 		pCleanUp();

@@ -191,7 +191,7 @@ public:
 		}
 		
 		try{
-			pSky.TakeOverWith(fullPath, genName);
+			pSky = igdeGDSky::Ref::New(fullPath, genName);
 			pSky->SetDescription("Auto-Imported");
 			pOwner.AddSky(pSky);
 			

@@ -386,7 +386,7 @@ deoglRenderToneMap::deoglRenderToneMap(deoglRenderThread &renderThread) : deoglR
 		pAsyncGetPipeline(pPipelineLumPrepareStereo, pipconf, sources, defines);
 		
 		
-		pFBOToneMapParams.TakeOverWith(renderThread, false);
+		pFBOToneMapParams = deoglFramebuffer::Ref::New(renderThread, false);
 		
 		pTextureToneMapParams = new deoglTexture(renderThread);
 		pTextureToneMapParams->SetSize(1, 1);

@@ -88,6 +88,6 @@ void deoglCanvasPaint::SyncContentToRender(){
 ////////////////////////
 
 deoglRCanvas *deoglCanvasPaint::CreateRCanvas(){
-	pRCanvasPaint.TakeOverWith(GetOgl().GetRenderThread());
+	pRCanvasPaint = deoglRCanvasPaint::Ref::New(GetOgl().GetRenderThread());
 	return pRCanvasPaint;
 }

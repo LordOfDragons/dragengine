@@ -37,11 +37,11 @@ class projProfile;
  * \brief Project listener.
  */
 class projProjectListener : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<projProjectListener> Ref;
-
-
-public:
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create project listener. */

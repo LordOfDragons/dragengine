@@ -184,11 +184,10 @@ void projTestRunner::LoadEngineConfiguration(){
 	
 	// engine file
 	pathConfigUser.AddComponent("launcher.xml");
-	decBaseFileReader::Ref reader;
 	
 	try{
-		reader.TakeOver(new decDiskFileReader(pathConfigUser.GetPathNative()));
-		projLauncherEngineConfig(pWindowMain.GetLogger(), LOGSOURCE).ReadFromFile(reader, *this);
+		projLauncherEngineConfig(pWindowMain.GetLogger(), LOGSOURCE).ReadFromFile(
+			decDiskFileReader::Ref::New(pathConfigUser.GetPathNative()), *this);
 		
 	}catch(const deException &e){
 		pWindowMain.GetLogger()->LogException(LOGSOURCE, e);
@@ -642,7 +641,7 @@ float projTestRunner::ReadFloatFromPipe(){
 void projTestRunner::ReadString16FromPipe(decString &string){
 	const int length = ReadUShortFromPipe();
 	string.Set(' ', length);
-	ReadFromPipe((char*)string.GetString(), length);
+	ReadFromPipe(string.GetMutableString(), length);
 }
 
 void projTestRunner::ReadFromPipe(void *data, int length){
@@ -697,7 +696,7 @@ decString projTestRunner::ReadNextLogData(){
 	if(end > position){
 		content.Set(' ', end - position);
 		pLogFileReader->SetPosition(position);
-		pLogFileReader->Read((char*)content.GetString(), end - position);
+		pLogFileReader->Read(content.GetMutableString(), end - position);
 	}
 	
 	if(!IsRunning()){
@@ -713,9 +712,8 @@ decString projTestRunner::GetLastLogContent(){
 	path.SetFromNative(project.GetDirectoryPath());
 	path.AddUnixPath("testRun.log");
 	
-	decBaseFileReader::Ref reader;
 	try{
-		reader.TakeOver(new decDiskFileReader(path.GetPathNative()));
+		const decBaseFileReader::Ref reader(decDiskFileReader::Ref::New(path.GetPathNative()));
 		
 		const int length = reader->GetLength();
 		if(length == 0){
@@ -724,7 +722,7 @@ decString projTestRunner::GetLastLogContent(){
 		
 		decString content;
 		content.Set(' ', length);
-		reader->Read((char*)content.GetString(), length);
+		reader->Read(content.GetMutableString(), length);
 		return content;
 		
 	}catch(const deException &){
@@ -753,10 +751,10 @@ void projTestRunner::pInitLogFile(){
 	pPathLogFile = path.GetPathNative();
 	
 	// create log file or truncate it to 0 length if present
-	decDiskFileWriter::Ref::NewWith(pPathLogFile, false);
+	decDiskFileWriter::Ref::New(pPathLogFile, false);
 	
 	// open file for reading
-	pLogFileReader.TakeOver(new decDiskFileReader(pPathLogFile));
+	pLogFileReader = decDiskFileReader::Ref::New(pPathLogFile);
 }
 
 void projTestRunner::pSendLaunchParameters(){

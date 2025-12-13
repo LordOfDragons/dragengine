@@ -119,8 +119,7 @@ void projRemoteClientTaskProcessor::OpenFile(const std::string &path, bool write
 	pVfsFilePath = path;
 	
 	try{
-		pVfsFileReader.TakeOver(pTaskProfileData->vfs->OpenFileForReading(
-			decPath::CreatePathUnix(path.c_str())));
+		pVfsFileReader = pTaskProfileData->vfs->OpenFileForReading(decPath::CreatePathUnix(path.c_str()));
 		
 	}catch(const deException &e){
 		Log(denLogger::LogSeverity::error, "OpenFile", e.FormatOutput().Join("\n").GetString());

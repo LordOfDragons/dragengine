@@ -80,7 +80,7 @@ void deClassARStateManipulator::nfNew::RunFunction(dsRunTime *rt, dsValue *mysel
 	baseClass->CallBaseClassConstructor(rt, myself, baseClass->GetFirstConstructor(), 0);
 	
 	// create animator rule
-	nd->rule.TakeOverWith();
+	nd->rule = deAnimatorRuleStateManipulator::Ref::New();
 	baseClass->AssignRule(myself->GetRealObject(), nd->rule);
 }
 

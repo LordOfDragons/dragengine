@@ -280,7 +280,7 @@ void deoglGIInstance::SetComponent(deoglRComponent *component, bool dynamic){
 	pMaxExtend = component->GetMaximumExtend();
 	
 	if(!pComponentListener){
-		pComponentListener.TakeOverWith(*this);
+		pComponentListener = cComponentListener::Ref::New(*this);
 	}
 	component->AddListener(pComponentListener);
 	
@@ -331,12 +331,12 @@ void deoglGIInstance::SetDecal(deoglRDecal *decal, bool dynamic){
 	}
 	
 	if(!pDecalListener){
-		pDecalListener.TakeOverWith(*this);
+		pDecalListener = cDecalListener::Ref::New(*this);
 	}
 	decal->AddListener(pDecalListener);
 	
 	if(!pDecalComponentListener){
-		pDecalComponentListener.TakeOverWith(*this);
+		pDecalComponentListener = cDecalComponentListener::Ref::New(*this);
 	}
 	decal->GetParentComponent()->AddListener(pDecalComponentListener);
 	

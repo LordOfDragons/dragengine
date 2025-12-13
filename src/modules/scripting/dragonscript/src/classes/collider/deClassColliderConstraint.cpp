@@ -64,7 +64,7 @@ DSFUNC_CONSTRUCTOR, DSFT_CONSTRUCTOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
 void deClassColliderConstraint::nfNew::RunFunction(dsRunTime *rt, dsValue *myself){
 	sCConNatDat * const nd = new (p_GetNativeData(myself)) sCConNatDat;
 	
-	nd->constraint.TakeOverWith();
+	nd->constraint = deColliderConstraint::Ref::New();
 }
 
 // public func destructor()

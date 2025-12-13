@@ -69,7 +69,7 @@ pDirtyIcon(true)
 	try{
 		pCanvasView = (deoglCanvasView*)renderWindow.GetCanvasView()->GetPeerGraphic();
 		
-		pRRenderWindow.TakeOverWith(ogl.GetRenderThread());
+		pRRenderWindow = deoglRRenderWindow::Ref::New(ogl.GetRenderThread());
 		
 		pRRenderWindow->SetHostWindow(renderWindow.GetHostWindow());
 		pRRenderWindow->SetPosition(renderWindow.GetX(), renderWindow.GetY());

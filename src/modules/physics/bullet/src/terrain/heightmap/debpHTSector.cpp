@@ -260,7 +260,7 @@ void debpHTSector::pCreatePoints(){
 	pShape = new debpHeightTerrainShape(this);
 	pShape->setUserPointer(0); // means no shape index
 	
-	pBulletShape.TakeOverWith(pShape);
+	pBulletShape = debpBulletShape::Ref::New(pShape);
 	
 	// create body
 	pPhyBody = new debpPhysicsBody;

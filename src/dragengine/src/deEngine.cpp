@@ -1136,7 +1136,7 @@ void deEngine::pInit(){
 	pArgs = new deCmdLineArgs;
 	
 	pPathData = pOS->GetPathEngine();
-	pVFS.TakeOverWith();
+	pVFS = deVirtualFileSystem::Ref::New();
 	
 	// create systems and resource managers
 	pParallelProcessing = new deParallelProcessing(*this);

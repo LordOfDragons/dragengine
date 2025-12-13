@@ -52,13 +52,13 @@ projIGDEModule::~projIGDEModule(){
 
 void projIGDEModule::Start(){
 	if(!GetEditorWindow()){
-		SetEditorWindow(new projWindowMain(*this));
+		SetEditorWindow(projWindowMain::Ref::New(*this));
 	}
 }
 
 bool projIGDEModule::ProcessCommandLine(decUnicodeStringList &arguments){
 	if(GetEditorWindow()){
-		return ((projWindowMain*)GetEditorWindow())->ProcessCommandLine(arguments);
+		return static_cast<projWindowMain&>(*GetEditorWindow()).ProcessCommandLine(arguments);
 	}
 	return igdeEditorModule::ProcessCommandLine(arguments);
 }

@@ -131,7 +131,7 @@ void igdeCreateProject::CreateProject(){
 	path.AddUnixPath(pPathData);
 	pNativePathData = path.GetPathNative();
 	
-	pProject.TakeOverWith(pWindowMain.GetEnvironment());
+	pProject = igdeGameProject::Ref::New(pWindowMain.GetEnvironment());
 	pProject->SetName(pName);
 	pProject->SetDescription(pDescription);
 	pProject->SetPathProjectGameDefinition(pPathGameDefProject);
@@ -297,7 +297,7 @@ void igdeCreateProject::pCreateGameDefinition(){
 	// create project game definition from shared new game definition file. we store the
 	// file content aside so we can save it as new game definition with a bit of text
 	// replacing. avoids the need to implement a full save code for game definition xml
-	pGameDef.TakeOverWith(pWindowMain.GetEnvironment());
+	pGameDef = igdeGameDefinition::Ref::New(pWindowMain.GetEnvironment());
 	
 	pLoadSharedGameDefContent();
 	pSharedGameDefContentReplace();
@@ -392,7 +392,7 @@ void igdeCreateProject::pStoreBaseGameDefs(){
 
 void igdeCreateProject::pApplyTemplate(){
 	// create vfs directories to work with
-	pVFS.TakeOverWith();
+	pVFS = deVirtualFileSystem::Ref::New();
 	
 	pVFS->AddContainer(deVFSDiskDirectory::Ref::New(
 		decPath::CreatePathUnix(VFS_DIR_DATA), decPath::CreatePathNative(pNativePathData)));
