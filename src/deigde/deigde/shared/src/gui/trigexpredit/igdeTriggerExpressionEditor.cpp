@@ -64,7 +64,7 @@ public:
 	igdeTriggerExpressionEditor_ActionNegate(igdeTriggerExpressionEditor &editor) :
 	igdeAction("Not", nullptr, "Negate Result"), pEditor(editor){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		if(component){
 			component->SetNegate(!component->GetNegate());
@@ -73,7 +73,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		SetEnabled(component);
 		SetSelected(component && component->GetNegate());
@@ -86,7 +86,7 @@ public:
 	igdeTriggerExpressionEditor_ActionCurState(igdeTriggerExpressionEditor &editor) :
 	igdeAction("Now", nullptr, "Check if target is triggered now or ever"), pEditor(editor){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		if(component){
 			component->SetCurState(!component->GetCurState());
@@ -95,7 +95,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		SetEnabled(component && component->GetType() == igdeTriggerExpressionComponent::ectTarget);
 		SetSelected(component && component->GetCurState());
@@ -109,7 +109,7 @@ public:
 	igdeTriggerExpressionEditor_ActionAnd(igdeTriggerExpressionEditor &editor) :
 	igdeAction("And", nullptr, "All children have to evaluate to true"), pEditor(editor){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		if(component){
 			component->SetType(igdeTriggerExpressionComponent::ectAnd);
@@ -118,7 +118,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		SetEnabled(component);
 		SetSelected(component && component->GetType() == igdeTriggerExpressionComponent::ectAnd);
@@ -131,7 +131,7 @@ public:
 	igdeTriggerExpressionEditor_ActionOr(igdeTriggerExpressionEditor &editor) :
 	igdeAction("Or", nullptr, "One or more children have to evaluate to true"), pEditor(editor){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		if(component){
 			component->SetType(igdeTriggerExpressionComponent::ectOr);
@@ -140,7 +140,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		SetEnabled(component);
 		SetSelected(component && component->GetType() == igdeTriggerExpressionComponent::ectOr);
@@ -153,7 +153,7 @@ public:
 	igdeTriggerExpressionEditor_ActionTarget(igdeTriggerExpressionEditor &editor) :
 	igdeAction("Target", nullptr, "Target to evaluate"), pEditor(editor){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		if(component){
 			component->SetType(igdeTriggerExpressionComponent::ectTarget);
@@ -163,7 +163,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		SetEnabled(component);
 		SetSelected(component && component->GetType() == igdeTriggerExpressionComponent::ectTarget);
@@ -178,7 +178,7 @@ public:
 	igdeAction("", editor.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 	"Add child to list"), pEditor(editor){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		if(component && component->GetType() != igdeTriggerExpressionComponent::ectTarget){
 			component->AddChild(igdeTriggerExpressionComponent::Ref::New());
@@ -187,7 +187,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		SetEnabled(component && component->GetType() != igdeTriggerExpressionComponent::ectTarget);
 	}
@@ -200,7 +200,7 @@ public:
 	igdeAction("", editor.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 	"Remove child from list"), pEditor(editor){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		const igdeTreeItem * const selection = pEditor.GetSelectedTreeItem();
 		if(!component || !selection){
@@ -216,7 +216,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const igdeTreeItem * const selection = pEditor.GetSelectedTreeItem();
 		const igdeTriggerExpressionComponent * const parent = selection && selection->GetParent()
 			? (igdeTriggerExpressionComponent*)selection->GetParent()->GetData() : nullptr;

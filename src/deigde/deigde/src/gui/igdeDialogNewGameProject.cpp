@@ -145,7 +145,7 @@ public:
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallPlus),
 		"Add base game definition"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeGameDefinition * const sharedGameDef = pDialog.GetSelectedSharedGameDef();
 		if(!sharedGameDef){
 			return;
@@ -157,7 +157,7 @@ public:
 		pDialog.UpdateBaseGameDefButtons();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pDialog.GetSelectedSharedGameDef()
 			&& !pListPathGameDefBase.HasItem(pDialog.GetSelectedSharedGameDef()->GetID()));
 	}
@@ -173,7 +173,7 @@ public:
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallMinus),
 		"Remove base game definition"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		const int selection = pListPathGameDefBase.GetSelection();
 		if(selection == -1){
 			return;
@@ -187,7 +187,7 @@ public:
 		pDialog.UpdateBaseGameDefButtons();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pListPathGameDefBase.GetSelectedItem());
 	}
 };
@@ -202,7 +202,7 @@ public:
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallUp),
 		"Move base game definition up"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		const int selection = pListPathGameDefBase.GetSelection();
 		if(selection < 1){
 			return;
@@ -213,7 +213,7 @@ public:
 		pDialog.UpdateBaseGameDefButtons();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pListPathGameDefBase.GetSelection() > 0);
 	}
 };
@@ -228,7 +228,7 @@ public:
 	igdeAction("", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown),
 		"Move base game definition down"), pDialog(dialog), pListPathGameDefBase(listPathGameDefBase){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		const int selection = pListPathGameDefBase.GetSelection();
 		const int count = pListPathGameDefBase.GetItemCount();
 		if(selection == -1 || selection >= count - 1){
@@ -240,7 +240,7 @@ public:
 		pDialog.UpdateBaseGameDefButtons();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pListPathGameDefBase.GetSelection() != -1
 			&& pListPathGameDefBase.GetSelection() < pListPathGameDefBase.GetItemCount() - 1);
 	}

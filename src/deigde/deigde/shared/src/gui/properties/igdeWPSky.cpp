@@ -86,7 +86,7 @@ public:
 	igdeAction("GDef", "Show dialog to select sky from game definition"),
 	pPanel(panel), pTextField(textField){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pPanel.GetSky()){
 			return;
 		}
@@ -115,7 +115,7 @@ public:
 	igdeAction("...", "Show dialog to select the sky from file"),
 	pPanel(panel), pTextField(textField){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pPanel.GetSky()){
 			return;
 		}

@@ -161,7 +161,7 @@ public:
 	explicit cActionGameNew(igdeWindowMain &window) : cActionBase(window,
 		"New...", window.GetIconGameNew(), "Creates a new game", deInputEvent::ekcN){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		// RequestSaveDocuments returns true if user wants to continue creating a new project.
 		// this can mean to save the documents first or to not save them first.
 		if(pWindow.RequestSaveDocuments("New Game Project", nullptr)){
@@ -178,7 +178,7 @@ public:
 	explicit cActionGameOpen(igdeWindowMain &window) : cActionBase(window,
 		"Open...", window.GetIconGameOpen(), "Opens a game", deInputEvent::ekcO){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		// RequestSaveDocuments returns true if user wants to continue creating open a project.
 		// this can mean to save the documents first or to not save them first.
 		if(!pWindow.RequestSaveDocuments("Open Game Project", nullptr)){
@@ -217,7 +217,7 @@ public:
 	cActionBase(window, BuildText(filename), nullptr, "Open game project"),
 	pFilename(filename){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		// RequestSaveDocuments returns true if user wants to continue creating open a project.
 		// this can mean to save the documents first or to not save them first.
 		if(pWindow.RequestSaveDocuments("Open Game Project", nullptr)){
@@ -238,7 +238,7 @@ public:
 		"Save As...", window.GetIconGameSaveAs(), "Saves game under a differen file",
 		deInputEvent::ekcA){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pWindow.GetGameProject()){
 			return;
 		}
@@ -250,7 +250,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetGameProject() != nullptr);
 	}
 };
@@ -288,7 +288,7 @@ public:
 	explicit cActionGameSettings(igdeWindowMain &window) : cActionBase(window,
 		"Settings...", nullptr, "Game project settings", deInputEvent::ekcT){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeDialogProjectSettings::Ref dialog(igdeDialogProjectSettings::Ref::New(pWindow));
 		if(dialog->Run(&pWindow)
 		&& ((igdeDialogProjectSettings&)(igdeDialog&)dialog).GetBaseGameDefsChanged()){
@@ -296,7 +296,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetGameProject() != nullptr);
 	}
 };
@@ -310,13 +310,13 @@ public:
 		"Reload XML Element Classes", window.GetIconGameReloadXMLElementClasses(),
 		"Reload XML Element Classes"){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(!pWindow.IsSyncGameDefTaskRunning()){
 			pWindow.ReloadXMLElementClasses();
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(!pWindow.IsSyncGameDefTaskRunning());
 	}
 };
@@ -329,7 +329,7 @@ public:
 	explicit cActionGameQuit(igdeWindowMain &window) : cActionBase(window,
 		"Quit", window.GetIconGameExit(), "Quit IGDE", deInputEvent::ekcQ){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(pWindow.QuitRequest()){
 			pWindow.Close();
 		}
@@ -345,7 +345,7 @@ public:
 		"Engine Control Center...", window.GetIconSettingsEngine(),
 		"Shows the engine control system window", deInputEvent::ekcE){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeDialogEngine::Ref::New(pWindow)->Run(&pWindow);
 	}
 };
@@ -359,7 +359,7 @@ public:
 		"IGDE Settings...", window.GetIconSettingsTexPropList(),
 		"Change IGDE Settings", deInputEvent::ekcI){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		// TODO
 	}
 };
@@ -373,7 +373,7 @@ public:
 		"Texture Property List...", window.GetIconSettingsTexPropList(),
 		"Shows the list of texture properties", deInputEvent::ekcT){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeDialogTexturePropertyList::Ref::New(pWindow.GetEnvironment())->Run(&pWindow);
 	}
 };
@@ -387,7 +387,7 @@ public:
 		"Logging Window...", window.GetIconSettingsEngine(),
 		"Displays the logging window", deInputEvent::ekcL){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pWindow.ShowWindowLogger();
 	}
 };
@@ -425,11 +425,11 @@ public:
 		SetIcon(icon);
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pWindow.GetModuleManager().SetActiveModule(&pModule);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetSelected(&pModule == pWindow.GetModuleManager().GetActiveModule());
 	}
 };

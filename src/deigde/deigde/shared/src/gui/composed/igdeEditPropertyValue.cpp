@@ -151,11 +151,11 @@ public:
 	igdeEditPropertyValue_ActionBoolean(igdeEditPropertyValue &widget) : 
 	igdeAction("Value", "Boolean property value"), pWidget(widget){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pWidget.EditWidgetValueChanged(false);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWidget.GetEnabled());
 		SetSelected(pWidget.GetValue() != "0");
 	}
@@ -212,7 +212,7 @@ public:
 	igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiConfig),
 		"Edit raw property value"), pWidget(widget){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		decString value(pWidget.GetValue());
 		if(igdeCommonDialogs::GetMultilineString(&pWidget, "Edit Raw Property Value",
 			"Raw property value. Values entered here can violate the\n"
@@ -222,7 +222,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWidget.GetEnabled());
 	}
 };
@@ -237,11 +237,11 @@ public:
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
 			"Edit list"), pWidget(widget){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pWidget.GetActionEditRawValue()->OnAction();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWidget.GetEnabled());
 	}
 };
@@ -256,7 +256,7 @@ public:
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
 			"Edit trigger expression"), pWidget(widget){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTargetList *triggerTargetList = pWidget.GetTriggerTargets();
 		if(!triggerTargetList){
 			static igdeTriggerTargetList dummyList;
@@ -276,7 +276,7 @@ public:
 		pWidget.EditWidgetValueChanged(false);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWidget.GetEnabled());
 	}
 };
@@ -291,11 +291,11 @@ public:
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
 			"Edit shape"), pWidget(widget){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pWidget.GetActionEditRawValue()->OnAction();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWidget.GetEnabled());
 	}
 };
@@ -310,11 +310,11 @@ public:
 		igdeAction("", widget.GetEnvironment().GetStockIcon(igdeEnvironment::esiEdit),
 			"Edit shape list"), pWidget(widget){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pWidget.GetActionEditRawValue()->OnAction();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWidget.GetEnabled());
 	}
 };

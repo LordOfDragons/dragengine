@@ -453,7 +453,7 @@ public:
 		"Save project", deInputEvent::esmControl,
 		deInputEvent::ekcS, deInputEvent::ekcS){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
 		if(!project){
 			return;
@@ -464,7 +464,7 @@ public:
 		pWindow.SaveProjectLocal();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetProject() && pWindow.GetProject()->GetChanged());
 	}
 };
@@ -479,10 +479,10 @@ public:
 		"Cut selected objects", deInputEvent::esmControl,
 		deInputEvent::ekcX, deInputEvent::ekcT){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(false);
 	}
 };
@@ -497,10 +497,10 @@ public:
 		"Copy selected objects", deInputEvent::esmControl,
 		deInputEvent::ekcC, deInputEvent::ekcC){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(false);
 	}
 };
@@ -515,10 +515,10 @@ public:
 		"Paste objects", deInputEvent::esmControl,
 		deInputEvent::ekcV, deInputEvent::ekcP){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(false);//pWindow.GetClipboard().HasClip());
 	}
 };
@@ -532,7 +532,7 @@ public:
 		"Add...", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Add profile", deInputEvent::ekcA){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
 		if(!project){
 			return;
@@ -595,7 +595,7 @@ public:
 		"Remove", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
 		"Remove selected profile", deInputEvent::ekcR){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
 		if(!project){
 			return;
@@ -609,7 +609,7 @@ public:
 		project->GetUndoSystem()->Add(projUProfileRemove::Ref::New(project, profile));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetProject() && pWindow.GetProject()->GetActiveProfile());
 	}
 };
@@ -623,7 +623,7 @@ public:
 		"Duplicate", window.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Duplicate profile", deInputEvent::ekcD){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
 		if(!project){
 			return;
@@ -665,7 +665,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetProject() && pWindow.GetProject()->GetActiveProfile());
 	}
 };
@@ -678,7 +678,7 @@ public:
 	cActionProfileDistribute(projWindowMain &window) : cActionBase(window, "Build DELGA...",
 		window.GetIconDelga(), "Build DELGA file using selected profile", deInputEvent::ekcD){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
 		if(!project || !project->GetActiveProfile()){
 			return;
@@ -697,7 +697,7 @@ public:
 		projDialogDistribute::Ref::New(pWindow, project->GetActiveProfile())->Run(&pWindow);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetProject() && pWindow.GetProject()->GetActiveProfile());
 	}
 };
@@ -710,7 +710,7 @@ public:
 	cActionProfileTestRun(projWindowMain &window) : cActionBase(window,
 		"Test-Run...", window.GetIconStart(), "Test-Run selected profile", deInputEvent::ekcR){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		projProject * const project = pWindow.GetProject();
 		if(!project){
 			return;
@@ -725,7 +725,7 @@ public:
 		pWindow.GetPanelTestRun().SelectProfile(profile);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pWindow.GetProject() && pWindow.GetProject()->GetActiveProfile());
 	}
 };

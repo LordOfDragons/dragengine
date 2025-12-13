@@ -78,11 +78,11 @@ public:
 		panel.GetWindowMain().GetIconStart(), "Test-Run project using selected Launcher Profile"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pPanel.Start();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(!pPanel.IsRunning() && pPanel.GetSelectedProfile());
 	}
 };
@@ -96,11 +96,11 @@ public:
 		panel.GetWindowMain().GetIconStop(), "Stop Test-Run project"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pPanel.Quit();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.IsRunning());
 	}
 };
@@ -114,11 +114,11 @@ public:
 		panel.GetWindowMain().GetIconKill(), "Kill Test-Run project"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pPanel.Quit();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetTestRunner()->IsRunning());
 	}
 };
@@ -189,11 +189,11 @@ public:
 		nullptr, "Start listening for remote client connections"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pPanel.RemoteStartListen();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const projProject * const project = pPanel.GetProject();
 		SetEnabled(project && !project->GetRemoteServer()->IsListening());
 	}
@@ -206,11 +206,11 @@ public:
 		nullptr, "Stop listening for remote client connections"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pPanel.RemoteStopListen();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const projProject * const project = pPanel.GetProject();
 		SetEnabled(project && project->GetRemoteServer()->IsListening());
 	}
@@ -224,11 +224,11 @@ public:
 		"Synchronize all remote clients"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pPanel.RemoteSynchronizeAll();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		const projProject * const project = pPanel.GetProject();
 		SetEnabled(project && project->GetRemoteServer()->IsListening());
 	}

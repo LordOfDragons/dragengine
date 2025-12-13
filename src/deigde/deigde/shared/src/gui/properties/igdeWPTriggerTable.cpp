@@ -106,7 +106,7 @@ public:
 	igdeAction("Toggle State", nullptr, "Toggle selected target between fired and reset state"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
 		if(!target){
 			return;
@@ -122,7 +122,7 @@ public:
 		pPanel.OnAction();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSelectedTarget());
 	}
 };
@@ -137,7 +137,7 @@ public:
 	igdeAction("Clear Table", nullptr, "Remove all targets from the table"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTargetList * const list = pPanel.GetTriggerTargetList();
 		if(!list){
 			return;
@@ -147,7 +147,7 @@ public:
 		pPanel.OnAction();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetTriggerTargetList() && pPanel.GetTriggerTargetList()->GetCount() > 0);
 	}
 };
@@ -163,7 +163,7 @@ public:
 		"Add target to table"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTargetList * const list = pPanel.GetTriggerTargetList();
 		if(!list){
 			return;
@@ -185,7 +185,7 @@ public:
 		}
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetTriggerTargetList());
 	}
 };
@@ -201,7 +201,7 @@ public:
 		"Remove selected target from table"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTargetList * const list = pPanel.GetTriggerTargetList();
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
 		if(!list || !target){
@@ -212,7 +212,7 @@ public:
 		pPanel.OnAction();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSelectedTarget());
 	}
 };
@@ -227,7 +227,7 @@ public:
 	igdeAction("Fire Target", nullptr, "Fire selected target"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
 		if(!target){
 			return;
@@ -237,7 +237,7 @@ public:
 		pPanel.OnAction();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSelectedTarget() && !pPanel.GetSelectedTarget()->GetFired());
 	}
 };
@@ -252,7 +252,7 @@ public:
 	igdeAction("Reset Target", nullptr, "Reset selected target"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
 		if(!target){
 			return;
@@ -262,7 +262,7 @@ public:
 		pPanel.OnAction();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSelectedTarget() && pPanel.GetSelectedTarget()->GetFired());
 	}
 };
@@ -277,7 +277,7 @@ public:
 	igdeAction("Full Reset Target", nullptr, "Full reset selected target"),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeTriggerTarget * const target = pPanel.GetSelectedTarget();
 		if(!target){
 			return;
@@ -287,7 +287,7 @@ public:
 		pPanel.OnAction();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetSelectedTarget() && (pPanel.GetSelectedTarget()->GetFired()
 			|| pPanel.GetSelectedTarget()->GetHasFired()));
 	}

@@ -102,11 +102,11 @@ public:
 	const char *text, igdeIcon *icon, const char *description) :
 		igdeAction(text, icon, description), pDialog(dialog), pSize(size){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pDialog.SetPreviewSize(pSize);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetSelected(pDialog.GetPreviewSize() == pSize);
 	}
 };
@@ -122,11 +122,11 @@ public:
 	const char *text, igdeIcon *icon, const char *description) :
 		igdeAction(text, icon, description), pDialog(dialog), pMode(mode){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pDialog.SetViewMode(pMode);
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetSelected(pDialog.GetViewMode() == pMode);
 	}
 };
@@ -140,11 +140,11 @@ public:
 	igdeDialogBrowser_ActionPIRebuild(igdeDialogBrowser &dialog) : igdeAction(
 		"Rebuild Preview", nullptr, "Rebuild Preview"), pDialog(dialog){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pDialog.RebuildPISelectedItem();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pDialog.GetSelectedListItem());
 	}
 };

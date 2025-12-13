@@ -81,7 +81,7 @@ public:
 	cBaseAction(igdeWPWObject &panel, const char *text, const char *description) :
 	igdeAction(text, description), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		if(pPanel.GetObject()){
 			OnAction(*pPanel.GetObject());
 		}

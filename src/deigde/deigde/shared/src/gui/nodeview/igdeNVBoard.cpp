@@ -62,7 +62,7 @@ public:
 		}
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		const igdeNVSlot::Ref source(pLink->GetSource());
 		const igdeNVSlot::Ref target(pLink->GetTarget());
 		pBoard.RemoveLink(pLink);
@@ -79,12 +79,12 @@ public:
 	pBoard(board){
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pBoard.RemoveAllLinks();
 		pBoard.NotifyAllLinksRemoved();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pBoard.GetLinkCount() > 0);
 	}
 };

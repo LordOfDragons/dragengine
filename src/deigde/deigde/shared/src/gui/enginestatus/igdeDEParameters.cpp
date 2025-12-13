@@ -80,11 +80,11 @@ public:
 	igdeDEParameters_ActionSet(igdeDEParameters &panel) :
 		igdeAction("Set", nullptr, "Set parameter value"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pPanel.ParameterSetValue();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(!pPanel.GetSelectedParameter().IsEmpty());
 	}
 };
@@ -96,11 +96,11 @@ public:
 	igdeDEParameters_ActionReset(igdeDEParameters &panel) :
 		igdeAction("Reset", nullptr, "Reset parameter value"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pPanel.ParameterResetValue();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(!pPanel.GetSelectedParameter().IsEmpty());
 	}
 };

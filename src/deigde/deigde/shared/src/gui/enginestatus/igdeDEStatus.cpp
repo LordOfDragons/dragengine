@@ -65,11 +65,11 @@ public:
 	igdeDEStatus_ActionStart(igdeDEStatus &panel) :
 		igdeAction("Start Engine", nullptr, "Start game engine"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pPanel.StartEngine();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(!pPanel.GetEngineController().GetRunning());
 	}
 };
@@ -81,11 +81,11 @@ public:
 	igdeDEStatus_ActionStop(igdeDEStatus &panel) :
 		igdeAction("Stop Engine", nullptr, "Stop game engine"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pPanel.StopEngine();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetEngineController().GetRunning());
 	}
 };

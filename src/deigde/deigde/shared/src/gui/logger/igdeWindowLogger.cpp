@@ -53,7 +53,7 @@ public:
 	pWindow(window){
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeCommonDialogs::Information(&pWindow, "Clicked", "Clicked.");
 	}
 };

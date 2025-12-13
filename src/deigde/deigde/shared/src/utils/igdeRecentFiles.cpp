@@ -72,7 +72,7 @@ public:
 		SetDescription(decString("Load ") + filename);
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		igdeAction::Ref guard(this);
 		pRecentFiles.OpenFile(pFilename);
 	}
@@ -87,11 +87,11 @@ public:
 	"Clear List"), pRecentFiles(recentFiles){
 	}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pRecentFiles.RemoveAllFiles();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pRecentFiles.GetFiles().GetCount() > 0);
 	}
 };

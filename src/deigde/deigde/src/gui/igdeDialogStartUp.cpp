@@ -74,11 +74,11 @@ public:
 	igdeAction("Load Recent", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Load selected recent game project"), pDialog(dialog){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pDialog.LoadSelectedRecentProject();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pDialog.GetWindowMain().GetConfiguration().GetRecentProjectList().GetCount() > 0);
 		SetDefault(GetEnabled());
 	}
@@ -93,7 +93,7 @@ public:
 	igdeAction("Load Project", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiOpen),
 		"Load game project from file"), pDialog(dialog){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pDialog.LoadProjectFromFile();
 	}
 };
@@ -107,11 +107,11 @@ public:
 	igdeAction("New Project", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiNew),
 		"Create new game project"), pDialog(dialog){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pDialog.NewGameProject();
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetDefault(pDialog.GetWindowMain().GetConfiguration().GetRecentProjectList().GetCount() == 0);
 	}
 };
@@ -125,7 +125,7 @@ public:
 	igdeAction("Quit IGDE", dialog.GetEnvironment().GetStockIcon(igdeEnvironment::esiQuit),
 		"Quit the IGDE application"), pDialog(dialog){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		pDialog.Cancel();
 	}
 };
