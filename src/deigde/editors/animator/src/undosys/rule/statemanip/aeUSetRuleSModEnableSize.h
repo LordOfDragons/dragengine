@@ -49,9 +49,6 @@ private:
 	aeRuleStateManipulator::Ref pRule;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUSetRuleSModEnableSize> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

@@ -43,9 +43,6 @@ private:
 	aeRuleBoneTransformator::Ref pRule;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleBTransSetEnableSize> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

@@ -43,9 +43,6 @@ private:
 	deAnimatorRuleBoneTransformator::eInputSources pOldValue, pNewValue;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleBTransSetInputSource> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

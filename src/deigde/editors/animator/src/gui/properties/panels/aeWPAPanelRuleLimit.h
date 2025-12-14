@@ -35,6 +35,10 @@
  * Limit rule panel.
  */
 class aeWPAPanelRuleLimit : public aeWPAPanelRule{
+public:
+	typedef deTObjectReference<aeWPAPanelRuleLimit> Ref;
+	
+	
 private:
 	igdeEditVector::Ref pEditMinPos;
 	igdeEditVector::Ref pEditMaxPos;

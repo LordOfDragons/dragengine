@@ -80,5 +80,4 @@ void aeUSetRuleFStaRotation::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaRotation::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

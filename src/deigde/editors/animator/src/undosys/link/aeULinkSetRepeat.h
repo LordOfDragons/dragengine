@@ -46,9 +46,6 @@ private:
 	int pNewRepeat;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeULinkSetRepeat> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */

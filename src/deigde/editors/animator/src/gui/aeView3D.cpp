@@ -61,6 +61,7 @@ class cCameraInteraction : public igdeMouseCameraListener {
 	aeView3D &pView;
 	
 public:
+	typedef deTObjectReference<cCameraInteraction> Ref;
 	cCameraInteraction(aeView3D &view) : pView(view){}
 	
 public:
@@ -96,6 +97,7 @@ class cLocomotionInteraction : public igdeMouseKeyListener {
 	float pSpeed;
 	
 public:
+	typedef deTObjectReference<cLocomotionInteraction> Ref;
 	cLocomotionInteraction(aeView3D &view) : pView(view), pSpeed(0.3f){}
 	
 public:
@@ -203,6 +205,7 @@ class cWakeboardInteraction : public igdeMouseKeyListener {
 	float pSpeed;
 	
 public:
+	typedef deTObjectReference<cWakeboardInteraction> Ref;
 	cWakeboardInteraction(aeView3D &view) : pView(view), pSpeed(0.3f){}
 	
 public:
@@ -268,6 +271,7 @@ class cEditorInteraction : public igdeMouseKeyListener {
 	aeView3D &pView;
 	
 public:
+	typedef deTObjectReference<cEditorInteraction> Ref;
 	cEditorInteraction(aeView3D &view) : pView(view){}
 	
 public:
@@ -392,13 +396,12 @@ public:
 
 aeView3D::aeView3D(aeWindowMain &windowMain) :
 igdeViewRenderWindow(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-pAnimator(NULL)
+pWindowMain(windowMain)
 {
-	pCameraInteraction.TakeOver(new cCameraInteraction(*this));
-	pLocomotionInteraction.TakeOver(new cLocomotionInteraction(*this));
-	pWakeboardInteraction.TakeOver(new cWakeboardInteraction(*this));
-	pEditorInteraction.TakeOver(new cEditorInteraction(*this));
+	pCameraInteraction = cCameraInteraction::Ref::New(*this);
+	pLocomotionInteraction = cLocomotionInteraction::Ref::New(*this);
+	pWakeboardInteraction = cWakeboardInteraction::Ref::New(*this);
+	pEditorInteraction = cEditorInteraction::Ref::New(*this);
 	
 	AddListener(pCameraInteraction);
 	AddListener(pLocomotionInteraction);
@@ -426,9 +429,9 @@ void aeView3D::SetAnimator(aeAnimator *animator){
 	StopWakeboarding();
 	StopLocomotionTesting();
 	
-	pCameraInteraction->SetCamera(NULL);
+	pCameraInteraction->SetCamera(nullptr);
 	
-	SetRenderWorld(NULL);
+	SetRenderWorld(nullptr);
 	
 	if(pAnimator){
 		if(pAnimator->GetLocomotion().GetEnabled()){
@@ -437,14 +440,11 @@ void aeView3D::SetAnimator(aeAnimator *animator){
 		}else if(pAnimator->GetWakeboard().GetEnabled()){
 			StopWakeboarding();
 		}
-		
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
-		animator->AddReference();
 		SetRenderWorld(pAnimator->GetCamera()->GetEngineCamera());
 		pCameraInteraction->SetCamera(animator->GetCamera());
 	}

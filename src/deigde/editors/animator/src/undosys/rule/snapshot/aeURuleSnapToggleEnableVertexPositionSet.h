@@ -43,9 +43,6 @@ private:
 	aeRuleStateSnapshot::Ref pRule;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleSnapToggleEnableVertexPositionSet> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

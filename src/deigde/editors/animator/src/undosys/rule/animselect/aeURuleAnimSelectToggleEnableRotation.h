@@ -46,9 +46,6 @@ private:
 	
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleAnimSelectToggleEnableRotation> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */

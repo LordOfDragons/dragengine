@@ -32,6 +32,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
+#include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/resources/light/deLight.h>
@@ -140,9 +141,7 @@ private:
 	decStringSet pListBones;
 	decStringSet pListVertexPositionSets;
 	
-	aeAttachment **pAttachments;
-	int pAttachmentCount;
-	int pAttachmentSize;
+	decObjectOrderedSet pAttachments;
 	aeAttachment *pActiveAttachment;
 	
 	bool pPaused;
@@ -157,9 +156,7 @@ private:
 	
 	decString pPathAttConfig;
 	
-	aeAnimatorNotifier **pNotifiers;
-	int pNotifierCount;
-	int pNotifierSize;
+	decObjectOrderedSet pNotifiers;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -429,7 +426,7 @@ public:
 	/** \name Attachments */
 	/*@{*/
 	/** Retrieves the number of attachments. */
-	inline int GetAttachmentCount() const{ return pAttachmentCount; }
+	int GetAttachmentCount() const;
 	/** Retrieves the attachment at the given index. */
 	aeAttachment *GetAttachmentAt(int index) const;
 	/** Retrieves the attachment with the given name or nullptr if not found. */
@@ -462,7 +459,7 @@ public:
 	/** \name Notifiers */
 	/*@{*/
 	/** Retrieves the number of notifiers. */
-	inline int GetNotifierCount() const{ return pNotifierCount; }
+	int GetNotifierCount() const;
 	/** Retrieves the notifier at the given index. */
 	aeAnimatorNotifier *GetNotifierAt(int index) const;
 	/** Retrieves the index of the notifier or -1 if not found. */

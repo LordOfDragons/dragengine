@@ -49,9 +49,6 @@ private:
 	aeRuleInverseKinematic::Ref pRule;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleIKSetAdjustOrientation> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

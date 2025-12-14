@@ -44,9 +44,6 @@ private:
 	aeRuleSubAnimator::Ref pRule;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleSubAnimToggleEnablePosition> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

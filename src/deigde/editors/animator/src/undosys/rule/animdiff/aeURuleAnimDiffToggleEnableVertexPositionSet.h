@@ -44,9 +44,6 @@ private:
 	aeRuleAnimationDifference::Ref pRule;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleAnimDiffToggleEnableVertexPositionSet> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

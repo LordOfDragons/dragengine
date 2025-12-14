@@ -32,6 +32,10 @@
  * Track To Rule Panel.
  */
 class aeWPAPanelRuleTrackTo : public aeWPAPanelRule{
+public:
+	typedef deTObjectReference<aeWPAPanelRuleTrackTo> Ref;
+	
+	
 private:
 	igdeComboBoxFilter::Ref pCBTrackBone;
 	igdeComboBox::Ref pCBTrackAxis;

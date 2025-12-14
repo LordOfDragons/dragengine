@@ -53,9 +53,6 @@ private:
 	decVector pNewPos;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleIKSetGoalPosition> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

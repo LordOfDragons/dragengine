@@ -44,9 +44,6 @@ private:
 	aeRuleStateSnapshot::Ref pRule;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleSnapToggleEnablePosition> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

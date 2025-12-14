@@ -32,6 +32,10 @@
  * State Snapshot Rule Panel.
  */
 class aeWPAPanelRuleStateSnapshot : public aeWPAPanelRule{
+public:
+	typedef deTObjectReference<aeWPAPanelRuleStateSnapshot> Ref;
+	
+	
 private:
 	igdeCheckBox::Ref pChkUseLastState;
 	igdeButton::Ref pBtnSnapshot;

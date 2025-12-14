@@ -47,36 +47,29 @@
 
 aeWindowProperties::aeWindowProperties(aeWindowMain &windowMain) :
 igdeTabBook(windowMain.GetEnvironment()),
-pWindowMain(windowMain),
-
-pPropAnimator(NULL),
-pPropRule(NULL),
-pPropLink(NULL),
-pPropController(NULL),
-pPropView(NULL),
-pPropPlayground(NULL)
+pWindowMain(windowMain)
 {
 	SetWidgetGuiThemeName(igdeGuiThemeNames::properties);
 	
-	pPropAnimator = new aeWPAnimator(*this);
+	pPropAnimator = aeWPAnimator::Ref::New(*this);
 	AddChild(pPropAnimator, "Animator");
 	
-	pPropController = new aeWPController(*this);
+	pPropController = aeWPController::Ref::New(*this);
 	AddChild(pPropController, "Controller");
 	
-	pPropLink = new aeWPLink(*this);
+	pPropLink = aeWPLink::Ref::New(*this);
 	AddChild(pPropLink, "Link");
 	
-	pPropRule = new aeWPRule(*this);
+	pPropRule = aeWPRule::Ref::New(*this);
 	AddChild(pPropRule, "Rule");
 	
-	pPropPlayground = new aeWPPlayground(*this);
+	pPropPlayground = aeWPPlayground::Ref::New(*this);
 	AddChild(pPropPlayground, "Playground");
 	
-	pPropView = new aeWPView(*this);
+	pPropView = aeWPView::Ref::New(*this);
 	AddChild(pPropView, "View");
 	
-	pPanelUndoHistory.TakeOver(new aeWPUndoHistory(GetEnvironment()));
+	pPanelUndoHistory = aeWPUndoHistory::Ref::New(GetEnvironment());
 	AddChild(pPanelUndoHistory, "History");
 	
 	SetActivePanel(1); // controller

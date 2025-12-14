@@ -81,26 +81,27 @@ protected:
 	aeWPAPanelRuleStateManipulator &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(aeWPAPanelRuleStateManipulator &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleStateManipulator * const rule = (aeRuleStateManipulator*)pPanel.GetRule();
 		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(animator, rule)));
+		igdeUndo::Ref undo(OnAction(animator, rule));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeRuleStateManipulator *rule) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator, aeRuleStateManipulator *rule) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleStateManipulator * const rule = (aeRuleStateManipulator*)pPanel.GetRule();
 		if(animator && rule){
@@ -123,6 +124,7 @@ protected:
 	aeWPAPanelRuleStateManipulator &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(aeWPAPanelRuleStateManipulator &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -132,13 +134,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(editVector, animator, rule)));
+		igdeUndo::Ref undo(OnChanged(editVector, animator, rule));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator *animator, aeRuleStateManipulator *rule) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator *animator, aeRuleStateManipulator *rule) = 0;
 };
 
 class cBaseTextFieldListener : public igdeTextFieldListener{
@@ -146,6 +148,7 @@ protected:
 	aeWPAPanelRuleStateManipulator &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(aeWPAPanelRuleStateManipulator &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -155,106 +158,117 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, animator, rule)));
+		igdeUndo::Ref undo(OnChanged(textField, animator, rule));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator *animator, aeRuleStateManipulator *rule) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator *animator, aeRuleStateManipulator *rule) = 0;
 };
 
 
 class cEditPositionMinimum : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditPositionMinimum> Ref;
 	cEditPositionMinimum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule){
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule) override{
 		return !editVector->GetVector().IsEqualTo(rule->GetMinimumPosition())
-			? new aeUSetRuleSModMinPosition(rule, editVector->GetVector()) : NULL;
+			? aeUSetRuleSModMinPosition::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditPositionMaximum : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditPositionMaximum> Ref;
 	cEditPositionMaximum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule){
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule) override{
 		return !editVector->GetVector().IsEqualTo(rule->GetMaximumPosition())
-			? new aeUSetRuleSModMaxPosition(rule, editVector->GetVector()) : NULL;
+			? aeUSetRuleSModMaxPosition::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditRotationMinimum : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditRotationMinimum> Ref;
 	cEditRotationMinimum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule){
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule) override{
 		return !editVector->GetVector().IsEqualTo(rule->GetMinimumRotation())
-			? new aeUSetRuleSModMinRotation(rule, editVector->GetVector()) : NULL;
+			? aeUSetRuleSModMinRotation::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditRotationMaximum : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditRotationMaximum> Ref;
 	cEditRotationMaximum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule){
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule) override{
 		return !editVector->GetVector().IsEqualTo(rule->GetMaximumRotation())
-			? new aeUSetRuleSModMaxRotation(rule, editVector->GetVector()) : NULL;
+			? aeUSetRuleSModMaxRotation::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditScalingMinimum : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditScalingMinimum> Ref;
 	cEditScalingMinimum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule){
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule) override{
 		return !editVector->GetVector().IsEqualTo(rule->GetMinimumSize())
-			? new aeUSetRuleSModMinSize(rule, editVector->GetVector()) : NULL;
+			? aeUSetRuleSModMinSize::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditScalingMaximum : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditScalingMaximum> Ref;
 	cEditScalingMaximum(aeWPAPanelRuleStateManipulator &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule){
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleStateManipulator *rule) override{
 		return !editVector->GetVector().IsEqualTo(rule->GetMaximumSize())
-			? new aeUSetRuleSModMaxSize(rule, editVector->GetVector()) : NULL;
+			? aeUSetRuleSModMaxSize::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditVertexPositionSetMinimum : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cEditVertexPositionSetMinimum> Ref;
 	cEditVertexPositionSetMinimum(aeWPAPanelRuleStateManipulator &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator*, aeRuleStateManipulator *rule){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleStateManipulator *rule) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - rule->GetMinimumVertexPositionSet()) > FLOAT_SAFE_EPSILON
-			? new aeUSetRuleSModMinVertexPositionSet(rule, value) : nullptr;
+			? aeUSetRuleSModMinVertexPositionSet::Ref::New(rule, value) : igdeUndo::Ref();
 	}
 };
 
 class cEditVertexPositionSetMaximum : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cEditVertexPositionSetMaximum> Ref;
 	cEditVertexPositionSetMaximum(aeWPAPanelRuleStateManipulator &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator*, aeRuleStateManipulator *rule){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleStateManipulator *rule) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - rule->GetMaximumVertexPositionSet()) > FLOAT_SAFE_EPSILON
-			? new aeUSetRuleSModMaxVertexPositionSet(rule, value) : nullptr;
+			? aeUSetRuleSModMaxVertexPositionSet::Ref::New(rule, value) : igdeUndo::Ref();
 	}
 };
 
 
 class cActionEnablePosition : public cBaseAction{
 public:
-	cActionEnablePosition(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,
-		"Enable position manipulation", NULL, "Determines if the position is modified or kept as it is"){ }
+	typedef deTObjectReference<cActionEnablePosition> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleStateManipulator *rule){
-		return new aeUSetRuleSModEnablePos(rule);
+public:
+	cActionEnablePosition(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,
+		"Enable position manipulation", nullptr, "Determines if the position is modified or kept as it is"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateManipulator *rule) override{
+		return aeUSetRuleSModEnablePos::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleStateManipulator &rule) override{
@@ -265,11 +279,14 @@ public:
 
 class cActionEnableRotation : public cBaseAction{
 public:
-	cActionEnableRotation(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,
-		"Enable rotation manipulation", NULL, "Determines if the rotation is modified or kept as it is"){ }
+	typedef deTObjectReference<cActionEnableRotation> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleStateManipulator *rule){
-		return new aeUSetRuleSModEnableRot(rule);
+public:
+	cActionEnableRotation(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,
+		"Enable rotation manipulation", nullptr, "Determines if the rotation is modified or kept as it is"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateManipulator *rule) override{
+		return aeUSetRuleSModEnableRot::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleStateManipulator &rule) override{
@@ -280,11 +297,14 @@ public:
 
 class cActionEnableSize : public cBaseAction{
 public:
-	cActionEnableSize(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,
-		"Enable size manipulation", NULL, "Determines if the size is modified or kept as it is"){ }
+	typedef deTObjectReference<cActionEnableSize> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleStateManipulator *rule){
-		return new aeUSetRuleSModEnableSize(rule);
+public:
+	cActionEnableSize(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,
+		"Enable size manipulation", nullptr, "Determines if the size is modified or kept as it is"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateManipulator *rule) override{
+		return aeUSetRuleSModEnableSize::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleStateManipulator &rule) override{
@@ -295,12 +315,15 @@ public:
 
 class cActionEnableVertexPositionSet : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionEnableVertexPositionSet> Ref;
+	
+public:
 	cActionEnableVertexPositionSet(aeWPAPanelRuleStateManipulator &panel) : cBaseAction(panel,
 		"Enable vertex position set manipulation", nullptr,
 		"Determines if vertex position set is modified or kept as it is"){ }
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleStateManipulator *rule){
-		return new aeUSetRuleSModEnableVertexPositionSet(rule);
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleStateManipulator *rule) override{
+		return aeUSetRuleSModEnableVertexPositionSet::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleStateManipulator &rule) override{
@@ -330,29 +353,29 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertStateManipulator)
 	helper.GroupBox(*this, groupBox, "State Manipulator:");
 	
 	helper.EditVector(groupBox, "Min Position:", "Minimum position",
-		pEditMinPos, new cEditPositionMinimum(*this));
+		pEditMinPos, cEditPositionMinimum::Ref::New(*this));
 	helper.EditVector(groupBox, "Max Position:", "Maximum position",
-		pEditMaxPos, new cEditPositionMaximum(*this));
+		pEditMaxPos, cEditPositionMaximum::Ref::New(*this));
 	
 	helper.EditVector(groupBox, "Min Rotation:", "Minimum rotation",
-		pEditMinRot, new cEditRotationMinimum(*this));
+		pEditMinRot, cEditRotationMinimum::Ref::New(*this));
 	helper.EditVector(groupBox, "Max Rotation:", "Maximum rotation",
-		pEditMaxRot, new cEditRotationMaximum(*this));
+		pEditMaxRot, cEditRotationMaximum::Ref::New(*this));
 	
 	helper.EditVector(groupBox, "Min Scaling:", "Minimum scaling",
-		pEditMinSize, new cEditScalingMinimum(*this));
+		pEditMinSize, cEditScalingMinimum::Ref::New(*this));
 	helper.EditVector(groupBox, "Max Scaling:", "Maximum scaling",
-		pEditMaxSize, new cEditScalingMaximum(*this));
+		pEditMaxSize, cEditScalingMaximum::Ref::New(*this));
 	
 	helper.EditFloat(groupBox, "Min Vertex Position Set:", "Minimum vertex position set",
-		pEditMinVertexPositionSet, new cEditVertexPositionSetMinimum(*this));
+		pEditMinVertexPositionSet, cEditVertexPositionSetMinimum::Ref::New(*this));
 	helper.EditFloat(groupBox, "Max Vertex Position Set:", "Maximum vertex position set",
-		pEditMaxVertexPositionSet, new cEditVertexPositionSetMaximum(*this));
+		pEditMaxVertexPositionSet, cEditVertexPositionSetMaximum::Ref::New(*this));
 	
-	helper.CheckBox(groupBox, pChkEnablePosition, new cActionEnablePosition(*this), true);
-	helper.CheckBox(groupBox, pChkEnableRotation, new cActionEnableRotation(*this), true);
-	helper.CheckBox(groupBox, pChkEnableSize, new cActionEnableSize(*this), true);
-	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, new cActionEnableVertexPositionSet(*this), true);
+	helper.CheckBox(groupBox, pChkEnablePosition, cActionEnablePosition::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableRotation, cActionEnableRotation::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableSize, cActionEnableSize::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkEnableVertexPositionSet, cActionEnableVertexPositionSet::Ref::New(*this));
 }
 
 aeWPAPanelRuleStateManipulator::~aeWPAPanelRuleStateManipulator(){

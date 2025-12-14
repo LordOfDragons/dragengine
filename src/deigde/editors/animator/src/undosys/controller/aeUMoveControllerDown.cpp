@@ -76,6 +76,4 @@ void aeUMoveControllerDown::Redo(){
 //////////////////////
 
 void aeUMoveControllerDown::pCleanUp(){
-	if(pController) pController->FreeReference();
-	if(pAnimator) pAnimator->FreeReference();
 }

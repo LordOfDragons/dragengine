@@ -43,9 +43,6 @@ private:
 	aeLink::Ref pLink;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeULinkToggleWrapY> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */

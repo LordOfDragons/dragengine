@@ -37,6 +37,10 @@ class aeController;
  * Sub Animator Rule Panel.
  */
 class aeWPAPanelRuleSubAnimator : public aeWPAPanelRule{
+public:
+	typedef deTObjectReference<aeWPAPanelRuleSubAnimator> Ref;
+	
+	
 private:
 	igdeEditPath::Ref pEditPathAnimator;
 	igdeComboBox::Ref pCBConnection;

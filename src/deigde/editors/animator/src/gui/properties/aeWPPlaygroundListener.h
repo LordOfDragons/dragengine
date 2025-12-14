@@ -35,6 +35,10 @@ class aeWPPlayground;
  * Playground Panel Listener
  */
 class aeWPPlaygroundListener : public aeAnimatorNotifier{
+public:
+	typedef deTObjectReference<aeWPPlaygroundListener> Ref;
+	
+	
 private:
 	aeWPPlayground &pPanel;
 	

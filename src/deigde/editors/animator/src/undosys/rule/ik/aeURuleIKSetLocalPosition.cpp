@@ -80,5 +80,4 @@ void aeURuleIKSetLocalPosition::Redo(){
 //////////////////////
 
 void aeURuleIKSetLocalPosition::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

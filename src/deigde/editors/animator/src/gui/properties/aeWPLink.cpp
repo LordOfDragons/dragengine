@@ -96,26 +96,27 @@ protected:
 	aeWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(aeWPLink &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeLink * const link = pPanel.GetLink();
 		if(!animator || !link){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(animator, link)));
+		igdeUndo::Ref undo(OnAction(animator, link));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeLink *link) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator, aeLink *link) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeLink * const link = pPanel.GetLink();
 		if(animator && link){
@@ -136,31 +137,41 @@ public:
 
 class cActionCopy : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCopy> Ref;
+	
+public:
 	cActionCopy(aeWPLink &panel) : cBaseAction(panel, "Copy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copy link to clipboard"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeLink *link){
+	igdeUndo::Ref OnAction(aeAnimator*, aeLink *link) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
-			aeClipboardDataLink::Ref::NewWith(link));
-		return nullptr;
+			aeClipboardDataLink::Ref::New(link));
+		return {};
 	}
 };
 
 class cActionCut : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCut> Ref;
+	
+public:
 	cActionCut(aeWPLink &panel) : cBaseAction(panel, "Cut",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut link into clipboard"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeLink *link){
+	igdeUndo::Ref OnAction(aeAnimator*, aeLink *link) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
-			aeClipboardDataLink::Ref::NewWith(link));
-		return new aeULinkRemove(link);
+			aeClipboardDataLink::Ref::New(link));
+		return aeULinkRemove::Ref::New(link);
 	}
 };
 
 class cActionPaste : public igdeAction{
+public:
+	typedef deTObjectReference<cActionPaste> Ref;
+	
+private:
 	aeWPLink &pPanel;
 	
 public:
@@ -168,7 +179,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste link from clipboard"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(!animator){
 			return;
@@ -180,10 +191,10 @@ public:
 			return;
 		}
 		
-		animator->GetUndoSystem()->Add(aeULinkPaste::Ref::NewWith(animator, cdata->GetLinks()));
+		animator->GetUndoSystem()->Add(aeULinkPaste::Ref::New(animator, cdata->GetLinks()));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
 			.GetWithTypeName(aeClipboardDataLink::TYPE_NAME) && pPanel.GetAnimator());
 	}
@@ -193,12 +204,13 @@ class cListLinks : public igdeListBoxListener{
 	aeWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cListLinks> Ref;
 	cListLinks(aeWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
 		if(pPanel.GetAnimator()){
 			pPanel.GetAnimator()->SetActiveLink(listBox->GetSelectedItem()
-				? (aeLink*)listBox->GetSelectedItem()->GetData() : NULL);
+				? (aeLink*)listBox->GetSelectedItem()->GetData() : nullptr);
 		}
 	}
 	
@@ -212,9 +224,9 @@ public:
 		helper.MenuCommand(menu, windowMain.GetActionLinkRemoveUnused());
 		
 		helper.MenuSeparator(menu);
-		helper.MenuCommand(menu, new cActionCopy(pPanel), true);
-		helper.MenuCommand(menu, new cActionCut(pPanel), true);
-		helper.MenuCommand(menu, new cActionPaste(pPanel), true);
+		helper.MenuCommand(menu, cActionCopy::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionCut::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionPaste::Ref::New(pPanel));
 	}
 };
 
@@ -222,6 +234,7 @@ class cTextName : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextName> Ref;
 	cTextName(aeWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -231,7 +244,7 @@ public:
 			return;
 		}
 		
-		aeULinkSetName::Ref undo(aeULinkSetName::Ref::NewWith(link, value));
+		aeULinkSetName::Ref undo(aeULinkSetName::Ref::New(link, value));
 		if(undo){
 			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
@@ -243,6 +256,7 @@ class cComboBone : public igdeComboBoxListener{
 	bool &pPreventUpdate;
 	
 public:
+	typedef deTObjectReference<cComboBone> Ref;
 	cComboBone(aeWPLink &panel, bool &preventUpdate) :
 		pPanel(panel), pPreventUpdate(preventUpdate){}
 	
@@ -257,7 +271,7 @@ public:
 			return;
 		}
 		
-		aeULinkSetBone::Ref undo(aeULinkSetBone::Ref::NewWith(link, bone));
+		aeULinkSetBone::Ref undo(aeULinkSetBone::Ref::New(link, bone));
 		if(undo){
 			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
@@ -269,6 +283,7 @@ class cComboConnectionController : public igdeComboBoxListener{
 	bool &pPreventUpdate;
 	
 public:
+	typedef deTObjectReference<cComboConnectionController> Ref;
 	cComboConnectionController(aeWPLink &panel, bool &preventUpdate) :
 		pPanel(panel), pPreventUpdate(preventUpdate){}
 	
@@ -278,13 +293,13 @@ public:
 		}
 		
 		aeController * const controller = comboBox->GetSelectedItem()
-			? (aeController*)comboBox->GetSelectedItem()->GetData() : NULL;
+			? (aeController*)comboBox->GetSelectedItem()->GetData() : nullptr;
 		aeLink * const link = pPanel.GetLink();
 		if(!link || link->GetController() == controller){
 			return;
 		}
 		
-		aeULinkSetController::Ref undo(aeULinkSetController::Ref::NewWith(link, controller));
+		aeULinkSetController::Ref undo(aeULinkSetController::Ref::New(link, controller));
 		if(undo){
 			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
@@ -295,6 +310,7 @@ class cSpinRepeat : public igdeSpinTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cSpinRepeat> Ref;
 	cSpinRepeat(aeWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnValueChanged(igdeSpinTextField *textField){
@@ -304,7 +320,7 @@ public:
 			return;
 		}
 		
-		aeULinkSetRepeat::Ref undo(aeULinkSetRepeat::Ref::NewWith(link, value));
+		aeULinkSetRepeat::Ref undo(aeULinkSetRepeat::Ref::New(link, value));
 		if(undo){
 			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
@@ -313,13 +329,16 @@ public:
 
 class cActionCurveInsertAt : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCurveInsertAt> Ref;
+	
+public:
 	cActionCurveInsertAt(aeWPLink &panel) : cBaseAction(panel, "Insert Value At Controller",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus),
 		"Insert value at X coordinate matching linked controller value"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeLink *link){
+	igdeUndo::Ref OnAction(aeAnimator*, aeLink *link) override{
 		if(!link->GetController()){
-			return NULL;
+			return {};
 		}
 		
 		const aeController &controller = *link->GetController();
@@ -327,12 +346,12 @@ public:
 			controller.GetMinimumValue(), controller.GetMaximumValue());
 		float y = 0.0f;
 		if(!igdeCommonDialogs::GetFloat(&pPanel, "Insert Curve Value", "Y Value:", y)){
-			return NULL;
+			return {};
 		}
 		
 		decCurveBezier curve(link->GetCurve());
 		curve.AddPoint(decVector2(x, y));
-		return new aeULinkSetCurve(link, curve);
+		return aeULinkSetCurve::Ref::New(link, curve);
 	}
 };
 
@@ -341,6 +360,7 @@ class cEditCurve : public igdeViewCurveBezierListener{
 	igdeUndo::Ref pUndo;
 	
 public:
+	typedef deTObjectReference<cEditCurve> Ref;
 	cEditCurve(aeWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnCurveChanged(igdeViewCurveBezier *viewCurveBezier){
@@ -351,11 +371,11 @@ public:
 			return;
 			
 		}else{
-			pUndo.TakeOver(new aeULinkSetCurve(pPanel.GetLink(), viewCurveBezier->GetCurve()));
+			pUndo = aeULinkSetCurve::Ref::New(pPanel.GetLink(), viewCurveBezier->GetCurve());
 		}
 		
 		pPanel.GetAnimator()->GetUndoSystem()->Add(pUndo);
-		pUndo = NULL;
+		pUndo = nullptr;
 	}
 	
 	virtual void OnCurveChanging(igdeViewCurveBezier *viewCurveBezier){
@@ -364,7 +384,7 @@ public:
 			pUndo->Redo();
 			
 		}else if(pPanel.GetLink() && pPanel.GetLink()->GetCurve() != viewCurveBezier->GetCurve()){
-			pUndo.TakeOver(new aeULinkSetCurve(pPanel.GetLink(), viewCurveBezier->GetCurve()));
+			pUndo = aeULinkSetCurve::Ref::New(pPanel.GetLink(), viewCurveBezier->GetCurve());
 		}
 	}
 	
@@ -372,7 +392,7 @@ public:
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		helper.MenuSeparator(menu);
-		helper.MenuCommand(menu, new cActionCurveInsertAt(pPanel), true);
+		helper.MenuCommand(menu, cActionCurveInsertAt::Ref::New(pPanel));
 	}
 };
 
@@ -380,6 +400,7 @@ class cTextBone : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextBone> Ref;
 	cTextBone(aeWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -389,7 +410,7 @@ public:
 			return;
 		}
 		
-		aeULinkSetBone::Ref undo(aeULinkSetBone::Ref::NewWith(link, value));
+		aeULinkSetBone::Ref undo(aeULinkSetBone::Ref::New(link, value));
 		if(undo){
 			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
@@ -400,6 +421,7 @@ class cComboBoneParameter : public igdeComboBoxListener{
 	aeWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboBoneParameter> Ref;
 	cComboBoneParameter(aeWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -411,7 +433,7 @@ public:
 			return;
 		}
 		
-		aeULinkSetBoneParameter::Ref undo(aeULinkSetBoneParameter::Ref::NewWith(link, parameter));
+		aeULinkSetBoneParameter::Ref undo(aeULinkSetBoneParameter::Ref::New(link, parameter));
 		if(undo){
 			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
@@ -422,6 +444,7 @@ class cTextBoneMinimum : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextBoneMinimum> Ref;
 	cTextBoneMinimum(aeWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -431,7 +454,7 @@ public:
 			return;
 		}
 		
-		aeULinkSetBoneMinimum::Ref undo(aeULinkSetBoneMinimum::Ref::NewWith(link, value));
+		aeULinkSetBoneMinimum::Ref undo(aeULinkSetBoneMinimum::Ref::New(link, value));
 		if(undo){
 			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
@@ -442,6 +465,7 @@ class cTextBoneMaximum : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextBoneMaximum> Ref;
 	cTextBoneMaximum(aeWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -451,7 +475,7 @@ public:
 			return;
 		}
 		
-		aeULinkSetBoneMaximum::Ref undo(aeULinkSetBoneMaximum::Ref::NewWith(link, value));
+		aeULinkSetBoneMaximum::Ref undo(aeULinkSetBoneMaximum::Ref::New(link, value));
 		if(undo){
 			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
@@ -464,6 +488,7 @@ class cComboVertexPositionSet : public igdeComboBoxListener{
 	bool &pPreventUpdate;
 	
 public:
+	typedef deTObjectReference<cComboVertexPositionSet> Ref;
 	cComboVertexPositionSet(aeWPLink &panel, bool &preventUpdate) :
 		pPanel(panel), pPreventUpdate(preventUpdate){}
 	
@@ -478,7 +503,7 @@ public:
 			return;
 		}
 		
-		aeULinkSetVertexPositionSet::Ref undo(aeULinkSetVertexPositionSet::Ref::NewWith(link, vps));
+		aeULinkSetVertexPositionSet::Ref undo(aeULinkSetVertexPositionSet::Ref::New(link, vps));
 		if(undo){
 			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
@@ -489,6 +514,7 @@ class cTextVertexPositionSet : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextVertexPositionSet> Ref;
 	cTextVertexPositionSet(aeWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -498,7 +524,7 @@ public:
 			return;
 		}
 		
-		aeULinkSetVertexPositionSet::Ref undo(aeULinkSetVertexPositionSet::Ref::NewWith(link, value));
+		aeULinkSetVertexPositionSet::Ref undo(aeULinkSetVertexPositionSet::Ref::New(link, value));
 		if(undo){
 			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
 		}
@@ -509,6 +535,7 @@ class cTextVertexPositionSetMinimum : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextVertexPositionSetMinimum> Ref;
 	cTextVertexPositionSetMinimum(aeWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -518,7 +545,7 @@ public:
 			return;
 		}
 		
-		aeULinkSetVertexPositionSetMinimum::Ref undo(aeULinkSetVertexPositionSetMinimum::Ref::NewWith(
+		aeULinkSetVertexPositionSetMinimum::Ref undo(aeULinkSetVertexPositionSetMinimum::Ref::New(
 			link, value));
 		if(undo){
 			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
@@ -530,6 +557,7 @@ class cTextVertexPositionSetMaximum : public igdeTextFieldListener{
 	aeWPLink &pPanel;
 	
 public:
+	typedef deTObjectReference<cTextVertexPositionSetMaximum> Ref;
 	cTextVertexPositionSetMaximum(aeWPLink &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -539,7 +567,7 @@ public:
 			return;
 		}
 		
-		aeULinkSetVertexPositionSetMaximum::Ref undo(aeULinkSetVertexPositionSetMaximum::Ref::NewWith(
+		aeULinkSetVertexPositionSetMaximum::Ref undo(aeULinkSetVertexPositionSetMaximum::Ref::New(
 			link, value));
 		if(undo){
 			pPanel.GetAnimator()->GetUndoSystem()->Add(undo);
@@ -550,11 +578,14 @@ public:
 
 class cCheckWrapY : public cBaseAction{
 public:
+	typedef deTObjectReference<cCheckWrapY> Ref;
+	
+public:
 	cCheckWrapY(aeWPLink &panel) : cBaseAction(panel, "Wrap Y", nullptr,
 		"Wrap Y value instead of clamping"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeLink *link){
-		return new aeULinkToggleWrapY(link);
+	igdeUndo::Ref OnAction(aeAnimator*, aeLink *link) override{
+		return aeULinkToggleWrapY::Ref::New(link);
 	}
 	
 	void Update(const aeAnimator &animator, const aeLink &link) override{
@@ -574,45 +605,43 @@ public:
 aeWPLink::aeWPLink(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
 pWindowProperties(windowProperties),
-pListener(NULL),
-pAnimator(NULL),
 pPreventUpdate(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPLinkListener(*this);
+	pListener = aeWPLinkListener::Ref::New(*this);
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
 	// links
 	helper.GroupBoxFlow(content, groupBox, "Links:");
-	helper.ListBox(groupBox, 8, "Links", pListLink, new cListLinks(*this));
+	helper.ListBox(groupBox, 8, "Links", pListLink, cListLinks::Ref::New(*this));
 	pListLink->SetDefaultSorter();
 	
 	
 	// link settings
 	helper.GroupBox(content, groupBox, "Link Settings:");
-	helper.EditString(groupBox, "Name:", "Name of the link", pEditName, new cTextName(*this));
+	helper.EditString(groupBox, "Name:", "Name of the link", pEditName, cTextName::Ref::New(*this));
 	
 	helper.ComboBox(groupBox, "Controller:", "Sets the controller to query values from",
-		pCBController, new cComboConnectionController(*this, pPreventUpdate));
+		pCBController, cComboConnectionController::Ref::New(*this, pPreventUpdate));
 	pCBController->SetDefaultSorter();
 	
 	helper.EditSpinInteger(groupBox, "Repeat:", "Repeat curve along X direction", 1, 99,
-		pSpinRepeat, new cSpinRepeat(*this));
+		pSpinRepeat, cSpinRepeat::Ref::New(*this));
 	
 	helper.ComboBoxFilter(groupBox, "Bone:", true,
 		"Set bone to use parameter of as input or empty string to not use",
-		pCBBone, new cComboBone(*this, pPreventUpdate));
+		pCBBone, cComboBone::Ref::New(*this, pPreventUpdate));
 	pCBBone->SetDefaultSorter();
 	
 	helper.ComboBox(groupBox, "Bone Parameter:", "Set bone parameter to use as input",
-		pCBBoneParameter, new cComboBoneParameter(*this));
+		pCBBoneParameter, cComboBoneParameter::Ref::New(*this));
 	pCBBoneParameter->AddItem("Position X", nullptr, (void*)(intptr_t)deAnimatorLink::ebpPositionX);
 	pCBBoneParameter->AddItem("Position Y", nullptr, (void*)(intptr_t)deAnimatorLink::ebpPositionY);
 	pCBBoneParameter->AddItem("Position Z", nullptr, (void*)(intptr_t)deAnimatorLink::ebpPositionZ);
@@ -624,26 +653,26 @@ pPreventUpdate(false)
 	pCBBoneParameter->AddItem("Scale Z", nullptr, (void*)(intptr_t)deAnimatorLink::ebpScaleZ);
 	
 	helper.EditFloat(groupBox, "Bone Minimum Value:", "Minimum bone value",
-		pEditBoneMinimum, new cTextBoneMinimum(*this));
+		pEditBoneMinimum, cTextBoneMinimum::Ref::New(*this));
 	helper.EditFloat(groupBox, "Bone Maximum Value:", "Maximum bone value",
-		pEditBoneMaximum, new cTextBoneMaximum(*this));
+		pEditBoneMaximum, cTextBoneMaximum::Ref::New(*this));
 	
 	helper.ComboBoxFilter(groupBox, "Vertex Position Set:", true,
 		"Set vertex position set to use as input or empty string to not use",
-		pCBVertexPositionSet, new cComboVertexPositionSet(*this, pPreventUpdate));
+		pCBVertexPositionSet, cComboVertexPositionSet::Ref::New(*this, pPreventUpdate));
 	pCBVertexPositionSet->SetDefaultSorter();
 	
 	helper.EditFloat(groupBox, "VPS Minimum Value:", "Minimum vertex position set value",
-		pEditVertexPositionSetMinimum, new cTextVertexPositionSetMinimum(*this));
+		pEditVertexPositionSetMinimum, cTextVertexPositionSetMinimum::Ref::New(*this));
 	helper.EditFloat(groupBox, "VPS Maximum Value:", "Maximum vertex position set value",
-		pEditVertexPositionSetMaximum, new cTextVertexPositionSetMaximum(*this));
+		pEditVertexPositionSetMaximum, cTextVertexPositionSetMaximum::Ref::New(*this));
 	
-	helper.CheckBox(groupBox, pChkWrapY, new cCheckWrapY(*this), true);
+	helper.CheckBox(groupBox, pChkWrapY, cCheckWrapY::Ref::New(*this));
 	
 	
 	helper.GroupBoxFlow(content, groupBox, "Link Curve:");
 	
-	helper.ViewCurveBezier(groupBox, pEditCurve, new cEditCurve(*this));
+	helper.ViewCurveBezier(groupBox, pEditCurve, cEditCurve::Ref::New(*this));
 	pEditCurve->SetDefaultSize(decPoint(200, 250));
 	pEditCurve->ClearCurve();
 	pEditCurve->SetClamp(true);
@@ -652,11 +681,7 @@ pPreventUpdate(false)
 }
 
 aeWPLink::~aeWPLink(){
-	SetAnimator(NULL);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
+	SetAnimator(nullptr);
 }
 
 
@@ -671,14 +696,12 @@ void aeWPLink::SetAnimator(aeAnimator *animator){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
 	}
 	
 	UpdateRigBoneList();
@@ -688,7 +711,7 @@ void aeWPLink::SetAnimator(aeAnimator *animator){
 }
 
 aeLink *aeWPLink::GetLink() const{
-	return pAnimator ? pAnimator->GetActiveLink() : NULL;
+	return pAnimator ? pAnimator->GetActiveLink() : nullptr;
 }
 
 void aeWPLink::SelectActiveLink(){
@@ -707,7 +730,7 @@ void aeWPLink::UpdateLinkList(){
 		
 		for(i=0; i<count; i++){
 			aeLink * const link = list.GetAt(i);
-			pListLink->AddItem(link->GetName(), NULL, link);
+			pListLink->AddItem(link->GetName(), nullptr, link);
 		}
 		pListLink->SortItems();
 	}
@@ -738,7 +761,7 @@ void aeWPLink::UpdateLink(){
 		
 	}else{
 		pEditName->ClearText();
-		pCBController->SetSelectionWithData(NULL);
+		pCBController->SetSelectionWithData(nullptr);
 		pSpinRepeat->SetValue(1);
 		pCBBone->ClearText();
 		pCBBoneParameter->SetSelectionWithData((void*)(intptr_t)deAnimatorLink::ebpPositionZ);
@@ -827,12 +850,12 @@ void aeWPLink::UpdateModelVertexPositionSetList(){
 
 void aeWPLink::UpdateControllerList(){
 	aeController * const selection = pCBController->GetSelectedItem()
-		? (aeController*)pCBController->GetSelectedItem()->GetData() : NULL;
+		? (aeController*)pCBController->GetSelectedItem()->GetData() : nullptr;
 	
 	pPreventUpdate = true;
 	try{
 		pCBController->RemoveAllItems();
-		pCBController->AddItem("< No Controller >", NULL, NULL);
+		pCBController->AddItem("< No Controller >", nullptr, nullptr);
 		
 		if(pAnimator){
 			const aeControllerList &list = pAnimator->GetControllers();
@@ -843,7 +866,7 @@ void aeWPLink::UpdateControllerList(){
 			for(i=0; i<count; i++){
 				aeController * const controller = list.GetAt(i);
 				text.Format("%d: %s", i, controller->GetName().GetString());
-				pCBController->AddItem(text, NULL, controller);
+				pCBController->AddItem(text, nullptr, controller);
 			}
 		}
 		

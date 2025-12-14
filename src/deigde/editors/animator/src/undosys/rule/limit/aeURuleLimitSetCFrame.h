@@ -47,9 +47,6 @@ private:
 	deAnimatorRuleLimit::eCoordinateFrames pNewCoordFrame;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleLimitSetCFrame> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

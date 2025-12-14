@@ -130,28 +130,28 @@ public:
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertModel, this);
 		pCounter++;
 	}
-	inline deModel *GetAudioModel() const{ return pAudioModel; }
+	inline const deModel::Ref &GetAudioModel() const{ return pAudioModel; }
 	
 	void LoadOcclusionMesh(const char *path){
 		pPathOcclusionModel = path;
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertOcclusionMesh, this);
 		pCounter++;
 	}
-	inline deOcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
+	inline const deOcclusionMesh::Ref &GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	void LoadAnimation(const char *path){
 		pPathAnimation = path;
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertAnimation, this);
 		pCounter++;
 	}
-	inline deAnimation *GetAnimation() const{ return pAnimation; }
+	inline const deAnimation::Ref &GetAnimation() const{ return pAnimation; }
 	
 	void LoadModel(const char *path){
 		pPathModel = path;
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertModel, this);
 		pCounter++;
 	}
-	inline deModel *GetModel() const{ return pModel; }
+	inline const deModel::Ref &GetModel() const{ return pModel; }
 	
 	void LoadSkin(const char *path){
 		pPathSkin = path;
@@ -166,7 +166,7 @@ public:
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertRig, this);
 		pCounter++;
 	}
-	inline deRig *GetRig() const{ return pRig; }
+	inline const deRig::Ref &GetRig() const{ return pRig; }
 	
 	void LoadTextureSkin(const char *path){
 		if(pTextureSkins.Has(path)){

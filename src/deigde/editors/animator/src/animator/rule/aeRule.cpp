@@ -412,43 +412,43 @@ aeRule &aeRule::operator=(const aeRule &copy){
 // Helper
 ///////////
 
-aeRule *aeRule::CreateRuleFromType(deAnimatorRuleVisitorIdentify::eRuleTypes type){
+aeRule::Ref aeRule::CreateRuleFromType(deAnimatorRuleVisitorIdentify::eRuleTypes type){
 	switch(type){
 	case deAnimatorRuleVisitorIdentify::ertAnimation:
-		return new aeRuleAnimation;
+		return aeRuleAnimation::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertAnimationDifference:
-		return new aeRuleAnimationDifference;
+		return aeRuleAnimationDifference::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertAnimationSelect:
-		return new aeRuleAnimationSelect;
+		return aeRuleAnimationSelect::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertBoneTransformator:
-		return new aeRuleBoneTransformator;
+		return aeRuleBoneTransformator::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertForeignState:
-		return new aeRuleForeignState;
+		return aeRuleForeignState::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertGroup:
-		return new aeRuleGroup;
+		return aeRuleGroup::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertInverseKinematic:
-		return new aeRuleInverseKinematic;
+		return aeRuleInverseKinematic::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertLimit:
-		return new aeRuleLimit;
+		return aeRuleLimit::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertStateManipulator:
-		return new aeRuleStateManipulator;
+		return aeRuleStateManipulator::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertStateSnapshot:
-		return new aeRuleStateSnapshot;
+		return aeRuleStateSnapshot::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertSubAnimator:
-		return new aeRuleSubAnimator;
+		return aeRuleSubAnimator::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertTrackTo:
-		return new aeRuleTrackTo;
+		return aeRuleTrackTo::Ref::New();
 		
 	case deAnimatorRuleVisitorIdentify::ertMirror:
 		return aeRuleMirror::CreateDefault();

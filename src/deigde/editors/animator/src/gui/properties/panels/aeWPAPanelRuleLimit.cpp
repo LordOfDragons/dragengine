@@ -104,26 +104,27 @@ protected:
 	aeWPAPanelRuleLimit &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(aeWPAPanelRuleLimit &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleLimit * const rule = (aeRuleLimit*)pPanel.GetRule();
 		if(!animator || !rule){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(animator, rule)));
+		igdeUndo::Ref undo(OnAction(animator, rule));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeRuleLimit *rule) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator, aeRuleLimit *rule) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeRuleLimit * const rule = (aeRuleLimit*)pPanel.GetRule();
 		if(animator && rule){
@@ -146,6 +147,7 @@ protected:
 	aeWPAPanelRuleLimit &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseComboBoxListener> Ref;
 	cBaseComboBoxListener(aeWPAPanelRuleLimit &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -155,13 +157,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(comboBox, animator, rule)));
+		igdeUndo::Ref undo(OnChanged(comboBox, animator, rule));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator *animator, aeRuleLimit *rule) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator *animator, aeRuleLimit *rule) = 0;
 };
 
 class cBaseEditVectorListener : public igdeEditVectorListener{
@@ -169,6 +171,7 @@ protected:
 	aeWPAPanelRuleLimit &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseEditVectorListener> Ref;
 	cBaseEditVectorListener(aeWPAPanelRuleLimit &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -178,13 +181,13 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(editVector, animator, rule)));
+		igdeUndo::Ref undo(OnChanged(editVector, animator, rule));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator *animator, aeRuleLimit *rule) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator *animator, aeRuleLimit *rule) = 0;
 };
 
 class cBaseTextFieldListener : public igdeTextFieldListener{
@@ -192,6 +195,7 @@ protected:
 	aeWPAPanelRuleLimit &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextFieldListener> Ref;
 	cBaseTextFieldListener(aeWPAPanelRuleLimit &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -201,121 +205,133 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, animator, rule)));
+		igdeUndo::Ref undo(OnChanged(textField, animator, rule));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator *animator, aeRuleLimit *rule) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator *animator, aeRuleLimit *rule) = 0;
 };
 
 
 class cEditPositionMinimum : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditPositionMinimum> Ref;
 	cEditPositionMinimum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule){
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule) override{
 		return !editVector->GetVector().IsEqualTo(rule->GetMinimumPosition())
-			? new aeURuleLimitSetPosMin(rule, editVector->GetVector()) : NULL;
+			? aeURuleLimitSetPosMin::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditPositionMaximum : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditPositionMaximum> Ref;
 	cEditPositionMaximum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule){
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule) override{
 		return !editVector->GetVector().IsEqualTo(rule->GetMaximumPosition())
-			? new aeURuleLimitSetPosMax(rule, editVector->GetVector()) : NULL;
+			? aeURuleLimitSetPosMax::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditRotationMinimum : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditRotationMinimum> Ref;
 	cEditRotationMinimum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule){
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule) override{
 		return !editVector->GetVector().IsEqualTo(rule->GetMinimumRotation())
-			? new aeURuleLimitSetRotMin(rule, editVector->GetVector()) : NULL;
+			? aeURuleLimitSetRotMin::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditRotationMaximum : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditRotationMaximum> Ref;
 	cEditRotationMaximum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule){
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule) override{
 		return !editVector->GetVector().IsEqualTo(rule->GetMaximumRotation())
-			? new aeURuleLimitSetRotMax(rule, editVector->GetVector()) : NULL;
+			? aeURuleLimitSetRotMax::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditScalingMinimum : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditScalingMinimum> Ref;
 	cEditScalingMinimum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule){
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule) override{
 		return !editVector->GetVector().IsEqualTo(rule->GetMinimumScaling())
-			? new aeURuleLimitSetScaleMin(rule, editVector->GetVector()) : NULL;
+			? aeURuleLimitSetScaleMin::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditScalingMaximum : public cBaseEditVectorListener{
 public:
+	typedef deTObjectReference<cEditScalingMaximum> Ref;
 	cEditScalingMaximum(aeWPAPanelRuleLimit &panel) : cBaseEditVectorListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule){
+	igdeUndo::Ref OnChanged(igdeEditVector *editVector, aeAnimator*, aeRuleLimit *rule) override{
 		return !editVector->GetVector().IsEqualTo(rule->GetMaximumScaling())
-			? new aeURuleLimitSetScaleMax(rule, editVector->GetVector()) : NULL;
+			? aeURuleLimitSetScaleMax::Ref::New(rule, editVector->GetVector()) : igdeUndo::Ref();
 	}
 };
 
 class cEditVertexPositionSetMinimum : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cEditVertexPositionSetMinimum> Ref;
 	cEditVertexPositionSetMinimum(aeWPAPanelRuleLimit &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator*, aeRuleLimit *rule){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleLimit *rule) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - rule->GetMinimumVertexPositionSet()) > FLOAT_SAFE_EPSILON
-			? new aeURuleLimitSetVertexPositionSetMin(rule, value) : nullptr;
+			? aeURuleLimitSetVertexPositionSetMin::Ref::New(rule, value) : igdeUndo::Ref();
 	}
 };
 
 class cEditVertexPositionSetMaximum : public cBaseTextFieldListener{
 public:
+	typedef deTObjectReference<cEditVertexPositionSetMaximum> Ref;
 	cEditVertexPositionSetMaximum(aeWPAPanelRuleLimit &panel) : cBaseTextFieldListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator*, aeRuleLimit *rule){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeRuleLimit *rule) override{
 		const float value = textField->GetFloat();
 		return fabsf(value - rule->GetMaximumVertexPositionSet()) > FLOAT_SAFE_EPSILON
-			? new aeURuleLimitSetVertexPositionSetMax(rule, value) : nullptr;
+			? aeURuleLimitSetVertexPositionSetMax::Ref::New(rule, value) : igdeUndo::Ref();
 	}
 };
 
 class cComboCoordFrame : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboCoordFrame> Ref;
 	cComboCoordFrame(aeWPAPanelRuleLimit &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleLimit *rule){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleLimit *rule) override{
 		if(!comboBox->GetSelectedItem()){
-			return NULL;
+			return {};
 		}
 		
 		deAnimatorRuleLimit::eCoordinateFrames value = (deAnimatorRuleLimit::eCoordinateFrames)
 			(intptr_t)comboBox->GetSelectedItem()->GetData();
-		return rule->GetCoordinateFrame() != value ? new aeURuleLimitSetCFrame(rule, value) : NULL;
+		return rule->GetCoordinateFrame() != value ? aeURuleLimitSetCFrame::Ref::New(rule, value) : aeURuleLimitSetCFrame::Ref();
 	}
 };
 
 
 class cActionEnablePositionMinX : public cBaseAction{
 public:
-	cActionEnablePositionMinX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"X", NULL, "Determines if the x position of bones is limited against the minimum"){ }
+	typedef deTObjectReference<cActionEnablePositionMinX> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnablePosXMin(rule);
+public:
+	cActionEnablePositionMinX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"X", nullptr, "Determines if the x position of bones is limited against the minimum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnablePosXMin::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -326,11 +342,14 @@ public:
 
 class cActionEnablePositionMinY : public cBaseAction{
 public:
-	cActionEnablePositionMinY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"Y", NULL, "Determines if the y position of bones is limited against the minimum"){ }
+	typedef deTObjectReference<cActionEnablePositionMinY> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnablePosYMin(rule);
+public:
+	cActionEnablePositionMinY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"Y", nullptr, "Determines if the y position of bones is limited against the minimum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnablePosYMin::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -341,11 +360,14 @@ public:
 
 class cActionEnablePositionMinZ : public cBaseAction{
 public:
-	cActionEnablePositionMinZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"Z", NULL, "Determines if the z position of bones is limited against the minimum"){ }
+	typedef deTObjectReference<cActionEnablePositionMinZ> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnablePosZMin(rule);
+public:
+	cActionEnablePositionMinZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"Z", nullptr, "Determines if the z position of bones is limited against the minimum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnablePosZMin::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -356,11 +378,14 @@ public:
 
 class cActionEnablePositionMaxX : public cBaseAction{
 public:
-	cActionEnablePositionMaxX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"X", NULL, "Determines if the x position of bones is limited against the maximum"){ }
+	typedef deTObjectReference<cActionEnablePositionMaxX> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnablePosXMax(rule);
+public:
+	cActionEnablePositionMaxX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"X", nullptr, "Determines if the x position of bones is limited against the maximum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnablePosXMax::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -371,11 +396,14 @@ public:
 
 class cActionEnablePositionMaxY : public cBaseAction{
 public:
-	cActionEnablePositionMaxY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"Y", NULL, "Determines if the y position of bones is limited against the maximum"){ }
+	typedef deTObjectReference<cActionEnablePositionMaxY> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnablePosYMax(rule);
+public:
+	cActionEnablePositionMaxY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"Y", nullptr, "Determines if the y position of bones is limited against the maximum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnablePosYMax::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -386,11 +414,14 @@ public:
 
 class cActionEnablePositionMaxZ : public cBaseAction{
 public:
-	cActionEnablePositionMaxZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"Z", NULL, "Determines if the z position of bones is limited against the maximum"){ }
+	typedef deTObjectReference<cActionEnablePositionMaxZ> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnablePosZMax(rule);
+public:
+	cActionEnablePositionMaxZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"Z", nullptr, "Determines if the z position of bones is limited against the maximum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnablePosZMax::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -402,11 +433,14 @@ public:
 
 class cActionEnableRotationMinX : public cBaseAction{
 public:
-	cActionEnableRotationMinX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"X", NULL, "Determines if the x rotation of bones is limited against the minimum"){ }
+	typedef deTObjectReference<cActionEnableRotationMinX> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnableRotXMin(rule);
+public:
+	cActionEnableRotationMinX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"X", nullptr, "Determines if the x rotation of bones is limited against the minimum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnableRotXMin::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -417,11 +451,14 @@ public:
 
 class cActionEnableRotationMinY : public cBaseAction{
 public:
-	cActionEnableRotationMinY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"Y", NULL, "Determines if the y rotation of bones is limited against the minimum"){ }
+	typedef deTObjectReference<cActionEnableRotationMinY> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnableRotYMin(rule);
+public:
+	cActionEnableRotationMinY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"Y", nullptr, "Determines if the y rotation of bones is limited against the minimum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnableRotYMin::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -432,11 +469,14 @@ public:
 
 class cActionEnableRotationMinZ : public cBaseAction{
 public:
-	cActionEnableRotationMinZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"Z", NULL, "Determines if the z rotation of bones is limited against the minimum"){ }
+	typedef deTObjectReference<cActionEnableRotationMinZ> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnableRotZMin(rule);
+public:
+	cActionEnableRotationMinZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"Z", nullptr, "Determines if the z rotation of bones is limited against the minimum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnableRotZMin::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -447,11 +487,14 @@ public:
 
 class cActionEnableRotationMaxX : public cBaseAction{
 public:
-	cActionEnableRotationMaxX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"X", NULL, "Determines if the x rotation of bones is limited against the maximum"){ }
+	typedef deTObjectReference<cActionEnableRotationMaxX> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnableRotXMax(rule);
+public:
+	cActionEnableRotationMaxX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"X", nullptr, "Determines if the x rotation of bones is limited against the maximum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnableRotXMax::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -462,11 +505,14 @@ public:
 
 class cActionEnableRotationMaxY : public cBaseAction{
 public:
-	cActionEnableRotationMaxY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"Y", NULL, "Determines if the y rotation of bones is limited against the maximum"){ }
+	typedef deTObjectReference<cActionEnableRotationMaxY> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnableRotYMax(rule);
+public:
+	cActionEnableRotationMaxY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"Y", nullptr, "Determines if the y rotation of bones is limited against the maximum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnableRotYMax::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -477,11 +523,14 @@ public:
 
 class cActionEnableRotationMaxZ : public cBaseAction{
 public:
-	cActionEnableRotationMaxZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"Z", NULL, "Determines if the z rotation of bones is limited against the maximum"){ }
+	typedef deTObjectReference<cActionEnableRotationMaxZ> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnableRotZMax(rule);
+public:
+	cActionEnableRotationMaxZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"Z", nullptr, "Determines if the z rotation of bones is limited against the maximum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnableRotZMax::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -493,11 +542,14 @@ public:
 
 class cActionEnableScalingMinX : public cBaseAction{
 public:
-	cActionEnableScalingMinX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"X", NULL, "Determines if the x scaling of bones is limited against the minimum"){ }
+	typedef deTObjectReference<cActionEnableScalingMinX> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnableScaleXMin(rule);
+public:
+	cActionEnableScalingMinX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"X", nullptr, "Determines if the x scaling of bones is limited against the minimum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnableScaleXMin::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -508,11 +560,14 @@ public:
 
 class cActionEnableScalingMinY : public cBaseAction{
 public:
-	cActionEnableScalingMinY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"Y", NULL, "Determines if the y scaling of bones is limited against the minimum"){ }
+	typedef deTObjectReference<cActionEnableScalingMinY> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnableScaleYMin(rule);
+public:
+	cActionEnableScalingMinY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"Y", nullptr, "Determines if the y scaling of bones is limited against the minimum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnableScaleYMin::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -523,11 +578,14 @@ public:
 
 class cActionEnableScalingMinZ : public cBaseAction{
 public:
-	cActionEnableScalingMinZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"Z", NULL, "Determines if the z scaling of bones is limited against the minimum"){ }
+	typedef deTObjectReference<cActionEnableScalingMinZ> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnableScaleZMin(rule);
+public:
+	cActionEnableScalingMinZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"Z", nullptr, "Determines if the z scaling of bones is limited against the minimum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnableScaleZMin::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -538,11 +596,14 @@ public:
 
 class cActionEnableScalingMaxX : public cBaseAction{
 public:
-	cActionEnableScalingMaxX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"X", NULL, "Determines if the x scaling of bones is limited against the maximum"){ }
+	typedef deTObjectReference<cActionEnableScalingMaxX> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnableScaleXMax(rule);
+public:
+	cActionEnableScalingMaxX(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"X", nullptr, "Determines if the x scaling of bones is limited against the maximum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnableScaleXMax::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -553,11 +614,14 @@ public:
 
 class cActionEnableScalingMaxY : public cBaseAction{
 public:
-	cActionEnableScalingMaxY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"Y", NULL, "Determines if the y scaling of bones is limited against the maximum"){ }
+	typedef deTObjectReference<cActionEnableScalingMaxY> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnableScaleYMax(rule);
+public:
+	cActionEnableScalingMaxY(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"Y", nullptr, "Determines if the y scaling of bones is limited against the maximum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnableScaleYMax::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -568,11 +632,14 @@ public:
 
 class cActionEnableScalingMaxZ : public cBaseAction{
 public:
-	cActionEnableScalingMaxZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
-		"Z", NULL, "Determines if the z scaling of bones is limited against the maximum"){ }
+	typedef deTObjectReference<cActionEnableScalingMaxZ> Ref;
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnableScaleZMax(rule);
+public:
+	cActionEnableScalingMaxZ(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
+		"Z", nullptr, "Determines if the z scaling of bones is limited against the maximum"){ }
+	
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnableScaleZMax::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -583,11 +650,14 @@ public:
 
 class cActionEnableVertexPositionSetMin : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionEnableVertexPositionSetMin> Ref;
+	
+public:
 	cActionEnableVertexPositionSetMin(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
 		"Minimum", nullptr, "Scaling of vertex position sets is limited against the minimum"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnableVertexPositionSetMin(rule);
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnableVertexPositionSetMin::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -598,11 +668,14 @@ public:
 
 class cActionEnableVertexPositionSetMax : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionEnableVertexPositionSetMax> Ref;
+	
+public:
 	cActionEnableVertexPositionSetMax(aeWPAPanelRuleLimit &panel) : cBaseAction(panel,
 		"Maximum", nullptr, "Scaling of vertex position sets is limited against the maximum"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeRuleLimit *rule){
-		return new aeURuleLimitSetEnableVertexPositionSetMax(rule);
+	igdeUndo::Ref OnAction(aeAnimator*, aeRuleLimit *rule) override{
+		return aeURuleLimitSetEnableVertexPositionSetMax::Ref::New(rule);
 	}
 	
 	void Update(const aeAnimator & , const aeRuleLimit &rule) override{
@@ -614,11 +687,12 @@ public:
 
 class cComboTargetBone : public cBaseComboBoxListener{
 public:
+	typedef deTObjectReference<cComboTargetBone> Ref;
 	cComboTargetBone(aeWPAPanelRuleLimit &panel) : cBaseComboBoxListener(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleLimit *rule){
+	igdeUndo::Ref OnChanged(igdeComboBox *comboBox, aeAnimator*, aeRuleLimit *rule) override{
 		return comboBox->GetText() != rule->GetTargetBone()
-			? new aeURuleLimitSetTargetBone(rule, comboBox->GetText()) : NULL;
+			? aeURuleLimitSetTargetBone::Ref::New(rule, comboBox->GetText()) : igdeUndo::Ref();
 	}
 };
 
@@ -643,68 +717,68 @@ aeWPAPanelRule(wpRule, deAnimatorRuleVisitorIdentify::ertLimit)
 	helper.GroupBox(*this, groupBox, "Limit:");
 	
 	helper.EditVector(groupBox, "Min Position:", "Minimum position",
-		pEditMinPos, new cEditPositionMinimum(*this));
+		pEditMinPos, cEditPositionMinimum::Ref::New(*this));
 	helper.EditVector(groupBox, "Max Position:", "Maximum position",
-		pEditMaxPos, new cEditPositionMaximum(*this));
+		pEditMaxPos, cEditPositionMaximum::Ref::New(*this));
 	
 	helper.EditVector(groupBox, "Min Rotation:", "Minimum rotation",
-		pEditMinRot, new cEditRotationMinimum(*this));
+		pEditMinRot, cEditRotationMinimum::Ref::New(*this));
 	helper.EditVector(groupBox, "Max Rotation:", "Maximum rotation",
-		pEditMaxRot, new cEditRotationMaximum(*this));
+		pEditMaxRot, cEditRotationMaximum::Ref::New(*this));
 	
 	helper.EditVector(groupBox, "Min Scaling:", "Minimum scaling",
-		pEditMinScale, new cEditScalingMinimum(*this));
+		pEditMinScale, cEditScalingMinimum::Ref::New(*this));
 	helper.EditVector(groupBox, "Max Scaling:", "Maximum scaling",
-		pEditMaxScale, new cEditScalingMaximum(*this));
+		pEditMaxScale, cEditScalingMaximum::Ref::New(*this));
 	
 	helper.EditFloat(groupBox, "Min Vertex Position Set:", "Minimum vertex position set",
-		pEditMinVertexPositionSet, new cEditVertexPositionSetMinimum(*this));
+		pEditMinVertexPositionSet, cEditVertexPositionSetMinimum::Ref::New(*this));
 	helper.EditFloat(groupBox, "Max Vertex Position Set:", "Maximum vertex position set",
-		pEditMaxVertexPositionSet, new cEditVertexPositionSetMaximum(*this));
+		pEditMaxVertexPositionSet, cEditVertexPositionSetMaximum::Ref::New(*this));
 	
 	helper.ComboBox(groupBox, "Coord-Frame:", "Sets the coordinate frame to use for rotation",
-		pCBCoordFrame, new cComboCoordFrame(*this));
-	pCBCoordFrame->AddItem("Bone Local", NULL, (void*)(intptr_t)deAnimatorRuleLimit::ecfBoneLocal);
-	pCBCoordFrame->AddItem("Component", NULL, (void*)(intptr_t)deAnimatorRuleLimit::ecfComponent);
-	pCBCoordFrame->AddItem("Target Bone", NULL, (void*)(intptr_t)deAnimatorRuleLimit::ecfTargetBone);
+		pCBCoordFrame, cComboCoordFrame::Ref::New(*this));
+	pCBCoordFrame->AddItem("Bone Local", nullptr, (void*)(intptr_t)deAnimatorRuleLimit::ecfBoneLocal);
+	pCBCoordFrame->AddItem("Component", nullptr, (void*)(intptr_t)deAnimatorRuleLimit::ecfComponent);
+	pCBCoordFrame->AddItem("Target Bone", nullptr, (void*)(intptr_t)deAnimatorRuleLimit::ecfTargetBone);
 	
 	helper.ComboBoxFilter(groupBox, "Target Bone:", true, "Sets the bone to use as coordinate frame",
-		pCBTargetBone, new cComboTargetBone(*this));
+		pCBTargetBone, cComboTargetBone::Ref::New(*this));
 	pCBTargetBone->SetDefaultSorter();
 	
 	helper.FormLine(groupBox, "Enable Min Pos", "Limit minimum position", formLine);
-	helper.CheckBoxOnly(formLine, pChkEnablePosXMin, new cActionEnablePositionMinX(*this), true);
-	helper.CheckBoxOnly(formLine, pChkEnablePosYMin, new cActionEnablePositionMinY(*this), true);
-	helper.CheckBoxOnly(formLine, pChkEnablePosZMin, new cActionEnablePositionMinZ(*this), true);
+	helper.CheckBoxOnly(formLine, pChkEnablePosXMin, cActionEnablePositionMinX::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkEnablePosYMin, cActionEnablePositionMinY::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkEnablePosZMin, cActionEnablePositionMinZ::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "Enable Max Pos", "Limit maximum position", formLine);
-	helper.CheckBoxOnly(formLine, pChkEnablePosXMax, new cActionEnablePositionMaxX(*this), true);
-	helper.CheckBoxOnly(formLine, pChkEnablePosYMax, new cActionEnablePositionMaxY(*this), true);
-	helper.CheckBoxOnly(formLine, pChkEnablePosZMax, new cActionEnablePositionMaxZ(*this), true);
+	helper.CheckBoxOnly(formLine, pChkEnablePosXMax, cActionEnablePositionMaxX::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkEnablePosYMax, cActionEnablePositionMaxY::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkEnablePosZMax, cActionEnablePositionMaxZ::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "Enable Min Rot", "Limit minimum rotation", formLine);
-	helper.CheckBoxOnly(formLine, pChkEnableRotXMin, new cActionEnableRotationMinX(*this), true);
-	helper.CheckBoxOnly(formLine, pChkEnableRotYMin, new cActionEnableRotationMinY(*this), true);
-	helper.CheckBoxOnly(formLine, pChkEnableRotZMin, new cActionEnableRotationMinZ(*this), true);
+	helper.CheckBoxOnly(formLine, pChkEnableRotXMin, cActionEnableRotationMinX::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkEnableRotYMin, cActionEnableRotationMinY::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkEnableRotZMin, cActionEnableRotationMinZ::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "Enable Max Rot", "Limit maximum rotation", formLine);
-	helper.CheckBoxOnly(formLine, pChkEnableRotXMax, new cActionEnableRotationMaxX(*this), true);
-	helper.CheckBoxOnly(formLine, pChkEnableRotYMax, new cActionEnableRotationMaxY(*this), true);
-	helper.CheckBoxOnly(formLine, pChkEnableRotZMax, new cActionEnableRotationMaxZ(*this), true);
+	helper.CheckBoxOnly(formLine, pChkEnableRotXMax, cActionEnableRotationMaxX::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkEnableRotYMax, cActionEnableRotationMaxY::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkEnableRotZMax, cActionEnableRotationMaxZ::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "Enable Min Scale", "Limit minimum scaling", formLine);
-	helper.CheckBoxOnly(formLine, pChkEnableScaleXMin, new cActionEnableScalingMinX(*this), true);
-	helper.CheckBoxOnly(formLine, pChkEnableScaleYMin, new cActionEnableScalingMinY(*this), true);
-	helper.CheckBoxOnly(formLine, pChkEnableScaleZMin, new cActionEnableScalingMinZ(*this), true);
+	helper.CheckBoxOnly(formLine, pChkEnableScaleXMin, cActionEnableScalingMinX::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkEnableScaleYMin, cActionEnableScalingMinY::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkEnableScaleZMin, cActionEnableScalingMinZ::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "Enable Max Scale", "Limit maximum scaling", formLine);
-	helper.CheckBoxOnly(formLine, pChkEnableScaleXMax, new cActionEnableScalingMaxX(*this), true);
-	helper.CheckBoxOnly(formLine, pChkEnableScaleYMax, new cActionEnableScalingMaxY(*this), true);
-	helper.CheckBoxOnly(formLine, pChkEnableScaleZMax, new cActionEnableScalingMaxZ(*this), true);
+	helper.CheckBoxOnly(formLine, pChkEnableScaleXMax, cActionEnableScalingMaxX::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkEnableScaleYMax, cActionEnableScalingMaxY::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkEnableScaleZMax, cActionEnableScalingMaxZ::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "Enable Vertex Position Set", "Limit vertex position set", formLine);
-	helper.CheckBoxOnly(formLine, pChkEnableVertexPositionSetMin, new cActionEnableVertexPositionSetMin(*this), true);
-	helper.CheckBoxOnly(formLine, pChkEnableVertexPositionSetMax, new cActionEnableVertexPositionSetMax(*this), true);
+	helper.CheckBoxOnly(formLine, pChkEnableVertexPositionSetMin, cActionEnableVertexPositionSetMin::Ref::New(*this));
+	helper.CheckBoxOnly(formLine, pChkEnableVertexPositionSetMax, cActionEnableVertexPositionSetMax::Ref::New(*this));
 }
 
 aeWPAPanelRuleLimit::~aeWPAPanelRuleLimit(){

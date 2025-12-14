@@ -80,5 +80,4 @@ void aeUSetRuleSModMinSize::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMinSize::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

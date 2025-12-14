@@ -41,11 +41,11 @@ class aeAttachment;
  * Notifier for changes in a animator.
  */
 class aeAnimatorNotifier : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeAnimatorNotifier> Ref;
-
-
-public:
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new animator notifier. */

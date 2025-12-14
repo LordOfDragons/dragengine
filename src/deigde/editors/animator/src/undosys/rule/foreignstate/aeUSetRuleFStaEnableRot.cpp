@@ -77,5 +77,4 @@ void aeUSetRuleFStaEnableRot::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaEnableRot::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

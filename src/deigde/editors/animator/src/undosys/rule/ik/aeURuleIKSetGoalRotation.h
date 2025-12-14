@@ -53,9 +53,6 @@ private:
 	decVector pNewRot;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleIKSetGoalRotation> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

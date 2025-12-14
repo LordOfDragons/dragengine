@@ -77,5 +77,4 @@ void aeUSetRuleSnapUseLast::Redo(){
 //////////////////////
 
 void aeUSetRuleSnapUseLast::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

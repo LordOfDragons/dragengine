@@ -34,6 +34,10 @@
  * Inverse kinematic rule panel.
  */
 class aeWPAPanelRuleInverseKinematic : public aeWPAPanelRule{
+public:
+	typedef deTObjectReference<aeWPAPanelRuleInverseKinematic> Ref;
+	
+	
 private:
 	igdeEditVector::Ref pEditGoalPos;
 	igdeEditVector::Ref pEditGoalRot;

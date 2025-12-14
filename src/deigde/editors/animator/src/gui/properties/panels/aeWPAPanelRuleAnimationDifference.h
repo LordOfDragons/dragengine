@@ -33,6 +33,10 @@
  * Animation Difference Rule Panel.
  */
 class aeWPAPanelRuleAnimationDifference : public aeWPAPanelRule{
+public:
+	typedef deTObjectReference<aeWPAPanelRuleAnimationDifference> Ref;
+	
+	
 private:
 	igdeComboBoxFilter::Ref pCBLMoveName;
 	igdeTextField::Ref pEditLMoveTime;

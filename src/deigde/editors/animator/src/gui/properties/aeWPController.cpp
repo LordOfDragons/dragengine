@@ -91,26 +91,27 @@ protected:
 	aeWPController &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseAction> Ref;
 	cBaseAction(aeWPController &panel, const char *text, igdeIcon *icon, const char *description) :
 	igdeAction(text, icon, description),
 	pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeController * const controller = pPanel.GetController();
 		if(!animator || !controller){
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnAction(animator, controller)));
+		igdeUndo::Ref undo(OnAction(animator, controller));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeController *controller) = 0;
+	virtual igdeUndo::Ref OnAction(aeAnimator *animator, aeController *controller) = 0;
 	
-	virtual void Update(){
+	void Update() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		aeController * const controller = pPanel.GetController();
 		if(animator && controller){
@@ -133,6 +134,7 @@ protected:
 	aeWPController &pPanel;
 	
 public:
+	typedef deTObjectReference<cBaseTextField> Ref;
 	cBaseTextField(aeWPController &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeTextField *textField){
@@ -142,44 +144,54 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(textField, animator, controller)));
+		igdeUndo::Ref undo(OnChanged(textField, animator, controller));
 		if(undo){
 			animator->GetUndoSystem()->Add(undo);
 		}
 	}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator *animator, aeController *controller) = 0;
+	virtual igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator *animator, aeController *controller) = 0;
 };
 
 
 
 class cActionCopy : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCopy> Ref;
+	
+public:
 	cActionCopy(aeWPController &panel) : cBaseAction(panel, "Copy",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCopy),
 		"Copy controller to clipboard"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeController *controller){
+	igdeUndo::Ref OnAction(aeAnimator*, aeController *controller) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
-			aeClipboardDataController::Ref::NewWith(controller));
-		return nullptr;
+			aeClipboardDataController::Ref::New(controller));
+		return {};
 	}
 };
 
 class cActionCut : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionCut> Ref;
+	
+public:
 	cActionCut(aeWPController &panel) : cBaseAction(panel, "Cut",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiCut),
 		"Cut controller into clipboard"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeController *controller){
+	igdeUndo::Ref OnAction(aeAnimator *animator, aeController *controller) override{
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
-			aeClipboardDataController::Ref::NewWith(controller));
-		return new aeURemoveController(animator, controller);
+			aeClipboardDataController::Ref::New(controller));
+		return aeURemoveController::Ref::New(animator, controller);
 	}
 };
 
 class cActionPaste : public igdeAction{
+public:
+	typedef deTObjectReference<cActionPaste> Ref;
+	
+private:
 	aeWPController &pPanel;
 	
 public:
@@ -187,7 +199,7 @@ public:
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPaste),
 		"Paste controller from clipboard"), pPanel(panel){}
 	
-	virtual void OnAction(){
+	void OnAction() override{
 		aeAnimator * const animator = pPanel.GetAnimator();
 		if(!animator){
 			return;
@@ -200,10 +212,10 @@ public:
 		}
 		
 		animator->GetUndoSystem()->Add(
-			aeUControllerPaste::Ref::NewWith(animator, cdata->GetControllers()));
+			aeUControllerPaste::Ref::New(animator, cdata->GetControllers()));
 	}
 	
-	virtual void Update(){
+	void Update() override{
 		SetEnabled(pPanel.GetWindowProperties().GetWindowMain().GetClipboard()
 			.GetWithTypeName(aeClipboardDataController::TYPE_NAME) && pPanel.GetAnimator());
 	}
@@ -213,6 +225,7 @@ class cListControllers : public igdeListBoxListener{
 	aeWPController &pPanel;
 	
 public:
+	typedef deTObjectReference<cListControllers> Ref;
 	cListControllers(aeWPController &panel) : pPanel(panel){}
 	
 	virtual void OnSelectionChanged(igdeListBox *listBox){
@@ -235,58 +248,65 @@ public:
 		helper.MenuCommand(menu, windowMain.GetActionControllerDown());
 		
 		helper.MenuSeparator(menu);
-		helper.MenuCommand(menu, new cActionCopy(pPanel), true);
-		helper.MenuCommand(menu, new cActionCut(pPanel), true);
-		helper.MenuCommand(menu, new cActionPaste(pPanel), true);
+		helper.MenuCommand(menu, cActionCopy::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionCut::Ref::New(pPanel));
+		helper.MenuCommand(menu, cActionPaste::Ref::New(pPanel));
 	}
 };
 
 class cTextName : public cBaseTextField{
 public:
+	typedef deTObjectReference<cTextName> Ref;
+	
 	cTextName(aeWPController &panel) : cBaseTextField(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator *animator, aeController *controller){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator *animator, aeController *controller) override{
 		const decString value = textField->GetText();
 		if(controller->GetName() == value){
-			return nullptr;
+			return {};
 		}
 		if(animator->GetControllers().HasNamed(value)){
 			igdeCommonDialogs::Error(&pPanel, "Set Controller Name", "Duplicate Controller Name");
 			textField->SetText(controller->GetName());
-			return nullptr;
+			return {};
 		}
-		return new aeUControllerSetName(controller, value);
+		return aeUControllerSetName::Ref::New(controller, value);
 	}
 };
 
 class cTextMinimumValue : public cBaseTextField{
 public:
+	typedef deTObjectReference<cTextMinimumValue> Ref;
 	cTextMinimumValue(aeWPController &panel) : cBaseTextField(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator*, aeController *controller){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeController *controller) override{
 		const float value = textField->GetFloat();
 		return fabsf(controller->GetMinimumValue() - value) > FLOAT_SAFE_EPSILON
-			? new aeUControllerSetMinimumValue(controller, value) : nullptr;
+			? aeUControllerSetMinimumValue::Ref::New(controller, value) : igdeUndo::Ref();
 	}
 };
 
 class cTextMaximumValue : public cBaseTextField{
 public:
+	typedef deTObjectReference<cTextMaximumValue> Ref;
 	cTextMaximumValue(aeWPController &panel) : cBaseTextField(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator*, aeController *controller){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeController *controller) override{
 		const float value = textField->GetFloat();
 		return fabsf(controller->GetMaximumValue() - value) > FLOAT_SAFE_EPSILON
-			? new aeUControllerSetMaximumValue(controller, value) : nullptr;
+			? aeUControllerSetMaximumValue::Ref::New(controller, value) : igdeUndo::Ref();
 	}
 };
 
 class cActionSetFromMove : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionSetFromMove> Ref;
+	
+public:
 	cActionSetFromMove(aeWPController &panel) : cBaseAction(panel, "Set From Move",
 		nullptr, "Sets the ranges from the playtime of a move"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator *animator, aeController *controller){
+	igdeUndo::Ref OnAction(aeAnimator *animator, aeController *controller) override{
 		const deAnimation * const animation = animator->GetEngineAnimator()
 			? animator->GetEngineAnimator()->GetAnimation() : nullptr;
 		decStringList names;
@@ -303,23 +323,26 @@ public:
 		names.SortAscending();
 		if(names.GetCount() == 0 || !igdeCommonDialogs::SelectString(&pPanel, "Set range from move playtime",
 		"Range limits are set to the playtime of the selected move.", names, selection)){
-			return nullptr;
+			return {};
 		}
 		
 		const deAnimationMove &move = *animation->GetMove(animation->FindMove(names.GetAt(selection)));
-		return new aeUControllerSetFromMove(controller, 0.0f, move.GetPlaytime());
+		return aeUControllerSetFromMove::Ref::New(controller, 0.0f, move.GetPlaytime());
 	}
 };
 
 class cActionResetValue : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionResetValue> Ref;
+	
+public:
 	cActionResetValue(aeWPController &panel) : cBaseAction(panel, "Reset",
 		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiStrongLeft),
 		"Reset value to controller minimum"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeController *controller){
+	igdeUndo::Ref OnAction(aeAnimator*, aeController *controller) override{
 		controller->SetCurrentValue(controller->GetMinimumValue());
-		return nullptr;
+		return {};
 	}
 };
 
@@ -327,6 +350,7 @@ class cSlideValue : public igdeEditSliderTextListener{
 	aeWPController &pPanel;
 	
 public:
+	typedef deTObjectReference<cSlideValue> Ref;
 	cSlideValue(aeWPController &panel) : pPanel(panel){}
 	
 	virtual void OnSliderTextValueChanged(igdeEditSliderText *sliderText){
@@ -345,6 +369,7 @@ class cEditVector : public igdeEditVectorListener{
 	aeWPController &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditVector> Ref;
 	cEditVector(aeWPController &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -357,11 +382,14 @@ public:
 
 class cActionClamp : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionClamp> Ref;
+	
+public:
 	cActionClamp(aeWPController &panel) : cBaseAction(panel, "Clamp value to range",
 		nullptr, "Determines if the value of the controller is clamped to the given range"){ }
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeController *controller){
-		return new aeUControllerToggleClamp(controller);
+	igdeUndo::Ref OnAction(aeAnimator*, aeController *controller) override{
+		return aeUControllerToggleClamp::Ref::New(controller);
 	}
 	
 	void Update(const aeAnimator &, const aeController &controller) override{
@@ -372,11 +400,14 @@ public:
 
 class cActionFrozen : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionFrozen> Ref;
+	
+public:
 	cActionFrozen(aeWPController &panel) : cBaseAction(panel, "Freeze Controller value",
 		nullptr, "Prevents the controller from changing the current value"){}
 	
-	virtual igdeUndo *OnAction(aeAnimator*, aeController *controller){
-		return new aeUControllerToggleFrozen(controller);
+	igdeUndo::Ref OnAction(aeAnimator*, aeController *controller) override{
+		return aeUControllerToggleFrozen::Ref::New(controller);
 	}
 	
 	void Update(const aeAnimator &, const aeController &controller) override{
@@ -389,6 +420,7 @@ class cComboLocoAttr : public igdeComboBoxListener{
 	aeWPController &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboLocoAttr> Ref;
 	cComboLocoAttr(aeWPController &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -402,14 +434,15 @@ public:
 
 class cTextLocoLeg : public cBaseTextField{
 public:
+	typedef deTObjectReference<cTextLocoLeg> Ref;
 	cTextLocoLeg(aeWPController &panel) : cBaseTextField(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator *animator, aeController *controller){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator *animator, aeController *controller) override{
 		const int value = textField->GetInteger();
 		if(value >= 0 && value < animator->GetLocomotion().GetLegCount()){
 			controller->SetLocomotionLeg(value);
 		}
-		return nullptr;
+		return {};
 	}
 };
 
@@ -417,6 +450,7 @@ class cComboVectorSimulation : public igdeComboBoxListener{
 	aeWPController &pPanel;
 	
 public:
+	typedef deTObjectReference<cComboVectorSimulation> Ref;
 	cComboVectorSimulation(aeWPController &panel) : pPanel(panel){}
 	
 	virtual void OnTextChanged(igdeComboBox *comboBox){
@@ -430,12 +464,13 @@ public:
 
 class cTextDefaultValue : public cBaseTextField{
 public:
+	typedef deTObjectReference<cTextDefaultValue> Ref;
 	cTextDefaultValue(aeWPController &panel) : cBaseTextField(panel){}
 	
-	virtual igdeUndo *OnChanged(igdeTextField *textField, aeAnimator*, aeController *controller){
+	igdeUndo::Ref OnChanged(igdeTextField *textField, aeAnimator*, aeController *controller) override{
 		const float value = textField->GetFloat();
 		return fabsf(controller->GetDefaultValue() - value) > FLOAT_SAFE_EPSILON
-			? new aeUControllerSetDefaultValue(controller, value) : nullptr;
+			? aeUControllerSetDefaultValue::Ref::New(controller, value) : igdeUndo::Ref();
 	}
 };
 
@@ -443,6 +478,7 @@ class cEditDefaultVector : public igdeEditVectorListener{
 	aeWPController &pPanel;
 	
 public:
+	typedef deTObjectReference<cEditDefaultVector> Ref;
 	cEditDefaultVector(aeWPController &panel) : pPanel(panel){}
 	
 	virtual void OnVectorChanged(igdeEditVector *editVector){
@@ -455,7 +491,7 @@ public:
 		const decVector &vector = editVector->GetVector();
 		if(!controller->GetDefaultVector().IsEqualTo(vector)){
 			animator->GetUndoSystem()->Add(
-				aeUControllerSetDefaultVector::Ref::NewWith(controller, vector));
+				aeUControllerSetDefaultVector::Ref::New(controller, vector));
 		}
 	}
 };
@@ -472,56 +508,54 @@ public:
 
 aeWPController::aeWPController(aeWindowProperties &windowProperties) :
 igdeContainerScroll(windowProperties.GetEnvironment(), false, true),
-pWindowProperties(windowProperties),
-pListener(nullptr),
-pAnimator(nullptr)
+pWindowProperties(windowProperties)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainer::Ref content, groupBox, formLine;
 	
-	pListener = new aeWPControllerListener(*this);
+	pListener = aeWPControllerListener::Ref::New(*this);
 	
 	
-	content.TakeOver(new igdeContainerFlow(env, igdeContainerFlow::eaY));
+	content = igdeContainerFlow::Ref::New(env, igdeContainerFlow::eaY);
 	AddChild(content);
 	
 	
 	// controllers
 	helper.GroupBoxFlow(content, groupBox, "Controllers:");
-	helper.ListBox(groupBox, 8, "Controllers", pListController, new cListControllers(*this));
+	helper.ListBox(groupBox, 8, "Controllers", pListController, cListControllers::Ref::New(*this));
 	
 	
 	// controller settings
 	helper.GroupBox(content, groupBox, "Controller Settings:");
-	helper.EditString(groupBox, "Name:", "Name of the controller", pEditName, new cTextName(*this));
+	helper.EditString(groupBox, "Name:", "Name of the controller", pEditName, cTextName::Ref::New(*this));
 	helper.EditFloat(groupBox, "Minimum Value:", "Minimum controller value",
-		pEditMin, new cTextMinimumValue(*this));
+		pEditMin, cTextMinimumValue::Ref::New(*this));
 	helper.EditFloat(groupBox, "Maximum Value:", "Maximum controller value",
-		pEditMax, new cTextMaximumValue(*this));
+		pEditMax, cTextMaximumValue::Ref::New(*this));
 	helper.EditSliderText(groupBox, "Value:", "Current controller value",
-		0.0f, 1.0f, 6, 3, 0.1f, pSldValue, new cSlideValue(*this));
+		0.0f, 1.0f, 6, 3, 0.1f, pSldValue, cSlideValue::Ref::New(*this));
 	helper.EditVector(groupBox, "Vector:", "Vector value of controller",
-		pEditVector, new cEditVector(*this));
+		pEditVector, cEditVector::Ref::New(*this));
 	
 	helper.FormLine(groupBox, "", "", formLine);
-	helper.Button(formLine, pBtnSetFromMove, new cActionSetFromMove(*this), true);
-	helper.Button(formLine, pBtnResetValue, new cActionResetValue(*this), true);
+	helper.Button(formLine, pBtnSetFromMove, cActionSetFromMove::Ref::New(*this));
+	helper.Button(formLine, pBtnResetValue, cActionResetValue::Ref::New(*this));
 	
-	helper.CheckBox(groupBox, pChkClamp, new cActionClamp(*this), true);
-	helper.CheckBox(groupBox, pChkFrozen, new cActionFrozen(*this), true);
+	helper.CheckBox(groupBox, pChkClamp, cActionClamp::Ref::New(*this));
+	helper.CheckBox(groupBox, pChkFrozen, cActionFrozen::Ref::New(*this));
 	
 	helper.EditFloat(groupBox, "Default Value:", "Default controller value",
-		pEditDefaultValue, new cTextDefaultValue(*this));
+		pEditDefaultValue, cTextDefaultValue::Ref::New(*this));
 	helper.EditVector(groupBox, "Default Vector:", "Default vector value of controller",
-		pEditDefaultVector, new cEditDefaultVector(*this));
+		pEditDefaultVector, cEditDefaultVector::Ref::New(*this));
 	
 	
 	// locomotion testing
 	helper.GroupBox(content, groupBox, "Locomotion Testing:");
 	
 	helper.ComboBox(groupBox, "Attribute:", "Selects the locomotion attribute affecting this controller",
-		pCBLocoAttr, new cComboLocoAttr(*this));
+		pCBLocoAttr, cComboLocoAttr::Ref::New(*this));
 	pCBLocoAttr->AddItem("None", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaNone);
 	pCBLocoAttr->AddItem("Elapsed Time", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaElapsedTime);
 	pCBLocoAttr->AddItem("Look Up-Down", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLookUpDown);
@@ -544,10 +578,10 @@ pAnimator(nullptr)
 	pCBLocoAttr->AddItem("Leg Orientation", nullptr, (void*)(intptr_t)aeAnimatorLocomotion::eaLegOrientation);
 	
 	helper.EditInteger(groupBox, "Leg:", "Number of the leg to track starting with 0 (max 3)",
-		pEditLocoLeg, new cTextLocoLeg(*this));
+		pEditLocoLeg, cTextLocoLeg::Ref::New(*this));
 	
 	helper.ComboBox(groupBox, "Vector Simulation:", "Select how to simulate vector value",
-		pCBVectorSimulation, new cComboVectorSimulation(*this));
+		pCBVectorSimulation, cComboVectorSimulation::Ref::New(*this));
 	pCBVectorSimulation->AddItem("None", nullptr, (void*)(intptr_t)aeController::evsNone);
 	pCBVectorSimulation->AddItem("Position", nullptr, (void*)(intptr_t)aeController::evsPosition);
 	pCBVectorSimulation->AddItem("Rotation", nullptr, (void*)(intptr_t)aeController::evsRotation);
@@ -555,10 +589,6 @@ pAnimator(nullptr)
 
 aeWPController::~aeWPController(){
 	SetAnimator(nullptr);
-	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -573,14 +603,12 @@ void aeWPController::SetAnimator(aeAnimator *animator){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;
 	
 	if(animator){
 		animator->AddNotifier(pListener);
-		animator->AddReference();
 	}
 	
 	UpdateControllerList();

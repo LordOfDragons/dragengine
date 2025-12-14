@@ -77,5 +77,4 @@ void aeUSetRuleSModEnableRot::Redo(){
 //////////////////////
 
 void aeUSetRuleSModEnableRot::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

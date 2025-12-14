@@ -1590,7 +1590,7 @@ void aeLSAnimator::pLoadAnimator(decXmlElementTag *root, aeAnimator &animator){
 				pLoadLink(tag, animator);
 				
 			}else{
-				const aeRule::Ref rule(aeRule::Ref::NewDeprecated(pLoadRule(tag, animator)));
+				const aeRule::Ref rule(pLoadRule(tag, animator));
 				if(rule){
 					animator.AddRule(rule);
 					
@@ -2071,7 +2071,7 @@ aeRule::Ref aeLSAnimator::pLoadRule(decXmlElementTag *root, aeAnimator &animator
 		return pLoadRuleMirror(root, animator);
 	}
 	
-	return nullptr;
+	return {};
 }
 
 aeRule::Ref aeLSAnimator::pLoadRuleAnimation(decXmlElementTag *root, aeAnimator &animator){
@@ -2948,11 +2948,10 @@ aeRule::Ref aeLSAnimator::pLoadRuleGroup(decXmlElementTag *root, aeAnimator &ani
 			}
 			
 		}else{
-			aeRule * const srule = pLoadRule(tag, animator);
+			const aeRule::Ref srule(pLoadRule(tag, animator));
 			
 			if(srule){
 				rule->AddRule(srule);
-				srule->FreeReference();
 				
 			}else{
 				logger.LogWarnFormat(LOGSOURCE, "%s(%i:%i): Unknown Tag %s, ignoring",

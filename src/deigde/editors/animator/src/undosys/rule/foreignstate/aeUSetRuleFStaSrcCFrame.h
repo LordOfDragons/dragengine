@@ -48,9 +48,6 @@ private:
 	deAnimatorRuleForeignState::eCoordinateFrames pNewCFrame;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeUSetRuleFStaSrcCFrame> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

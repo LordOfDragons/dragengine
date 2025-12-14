@@ -36,6 +36,10 @@
  * Mirror Rule Panel.
  */
 class aeWPAPanelRuleMirror : public aeWPAPanelRule{
+public:
+	typedef deTObjectReference<aeWPAPanelRuleMirror> Ref;
+	
+	
 private:
 	igdeComboBox::Ref pCBMirrorAxis;
 	igdeComboBoxFilter::Ref pCBMirrorBone;

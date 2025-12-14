@@ -48,9 +48,6 @@ private:
 	decVector pNewValue;
 	
 public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<aeURuleIKSetReachCenter> Ref;
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**

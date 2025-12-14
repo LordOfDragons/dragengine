@@ -51,14 +51,14 @@ igdeDialog(environment, windowTitle)
 	igdeContainerForm::Ref content(igdeContainerForm::Ref::New(
 		environment, igdeContainerForm::esLast));
 	
-	helper.ComboBox(content, "Type:", "How to match the name.", pCBType, nullptr);
+	helper.ComboBox(content, "Type:", "How to match the name.", pCBType, {});
 	pCBType->AddItem("Begin of name", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntFirst);
 	pCBType->AddItem("End of name", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntLast);
 	pCBType->AddItem("Middle of name", nullptr, (void*)(intptr_t)deAnimatorRuleMirror::emntMiddle);
 	pCBType->SetSelectionWithData((void*)(intptr_t)deAnimatorRuleMirror::emntLast);
 	
-	helper.EditString(content, "First:", "First name string component to match.", 30, pEditFirst, nullptr);
-	helper.EditString(content, "Second:", "Second name string component to match.", 30, pEditSecond, nullptr);
+	helper.EditString(content, "First:", "First name string component to match.", 30, pEditFirst, {});
+	helper.EditString(content, "Second:", "Second name string component to match.", 30, pEditSecond, {});
 	
 	igdeContainer::Ref buttonBar;
 	CreateButtonBar(buttonBar, "Accept", "Cancel");

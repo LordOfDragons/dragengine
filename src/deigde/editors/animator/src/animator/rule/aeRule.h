@@ -205,7 +205,7 @@ public:
 	/** \name Helper */
 	/*@{*/
 	/** Create a new rule from a rule type. */
-	static aeRule *CreateRuleFromType(deAnimatorRuleVisitorIdentify::eRuleTypes type);
+	static aeRule::Ref CreateRuleFromType(deAnimatorRuleVisitorIdentify::eRuleTypes type);
 	/*@}*/
 };
 

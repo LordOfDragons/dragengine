@@ -37,11 +37,11 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 
-class aeAnimator;
+#include "../../animator/aeAnimator.h"
 class aeController;
 class aeWindowProperties;
 class aeAnimatorLocomotionLeg;
-class aeWPPlaygroundListener;
+#include "aeWPPlaygroundListener.h"
 
 
 
@@ -49,18 +49,22 @@ class aeWPPlaygroundListener;
  * Playground Panel.
  */
 class aeWPPlayground : public igdeContainerScroll{
+public:
+	typedef deTObjectReference<aeWPPlayground> Ref;
+	
+	
 private:
 	struct sController{
 		aeController *controller;
-		igdeEditSliderText::Ref slider;
+		igdeEditSliderText::WeakRef slider;
 	};
 	
 	
 	
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPPlaygroundListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPPlaygroundListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
 	igdeContainer::Ref pFraContent;
 	sController *pControllers;
@@ -112,7 +116,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

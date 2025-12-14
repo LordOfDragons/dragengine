@@ -160,7 +160,9 @@ public:
 // Constructor, destructor
 ////////////////////////////
 
-igdeWDebugDrawerShape::igdeWDebugDrawerShape(){
+igdeWDebugDrawerShape::igdeWDebugDrawerShape() :
+pEngDDShape(nullptr)
+{
 	pScale.Set(1.0f, 1.0f, 1.0f);
 	
 	pColorEdge.Set(0.0f, 0.0f, 0.0f, 1.0f);

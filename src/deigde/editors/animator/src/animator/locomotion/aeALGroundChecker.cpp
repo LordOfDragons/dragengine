@@ -44,11 +44,11 @@
 ////////////////////////////
 
 aeALGroundChecker::aeALGroundChecker(){
-	pColInfo = deCollisionInfo::Ref::New()	pHasCollision = false;
+	pColInfo = deCollisionInfo::Ref::New();
+	pHasCollision = false;
 }
 
 aeALGroundChecker::~aeALGroundChecker(){
-	if(pColInfo) pColInfo->FreeReference();
 }
 
 

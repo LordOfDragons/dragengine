@@ -80,5 +80,4 @@ void aeUSetRuleSModMinRotation::Redo(){
 //////////////////////
 
 void aeUSetRuleSModMinRotation::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

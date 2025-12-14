@@ -231,7 +231,8 @@ pTurnIP(0.0f)
 		if(!pLegs) DETHROW(deeInvalidParam);
 		
 		for(pLegCount=0; pLegCount<4; pLegCount++){
-			pLegs[pLegCount] = new aeAnimatorLocomotionLeg(this)			pLegs[pLegCount]->SetShapesVisible(pLegCount < 2);
+			pLegs[pLegCount] = new aeAnimatorLocomotionLeg(this);
+			pLegs[pLegCount]->SetShapesVisible(pLegCount < 2);
 		}
 		
 		// update the leg pair information
@@ -1134,12 +1135,6 @@ void aeAnimatorLocomotion::pCleanUp(){
 	pDDSDragonColHands.SetParentDebugDrawer(nullptr);
 	pDDSDragonColFeet.SetParentDebugDrawer(nullptr);
 	pDDSCollider.SetParentDebugDrawer(nullptr);
-	
-	if(pGroundPlaneCollider) pGroundPlaneCollider->FreeReference();
-	if(pFootCollider) pFootCollider->FreeReference();
-	if(pDragonColBody) pDragonColBody->FreeReference();
-	if(pGroundCheckCollider) pGroundCheckCollider->FreeReference();
-	if(pTGCollider) pTGCollider->FreeReference();
 	
 	if(pAnimator){
 		deWorld *world = pAnimator->GetEngineWorld();

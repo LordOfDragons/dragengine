@@ -34,6 +34,8 @@
  */
 class aeUSetRuleRemoveAllBones : public aeUSetRuleBones{
 public:
+	typedef deTObjectReference<aeUSetRuleRemoveAllBones> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

@@ -86,7 +86,6 @@ pConnections(copy.pConnections)
 }
 
 aeRuleSubAnimator::~aeRuleSubAnimator(){
-	if(pSubAnimator) pSubAnimator->FreeReference();
 }
 
 
@@ -307,7 +306,7 @@ void aeRuleSubAnimator::SetEnableVertexPositionSet(bool enabled){
 
 
 deAnimatorRule::Ref aeRuleSubAnimator::CreateEngineRule(){
-	const deAnimatorRuleSubAnimator *engRule(deAnimatorRuleSubAnimator::Ref::New());
+	const deAnimatorRuleSubAnimator::Ref engRule(deAnimatorRuleSubAnimator::Ref::New());
 	
 	InitEngineRule(engRule);
 	

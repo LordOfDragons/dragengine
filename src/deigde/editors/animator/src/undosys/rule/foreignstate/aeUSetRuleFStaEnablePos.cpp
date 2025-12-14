@@ -77,5 +77,4 @@ void aeUSetRuleFStaEnablePos::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaEnablePos::pCleanUp(){
-	if(pRule) pRule->FreeReference();
 }

@@ -79,7 +79,4 @@ void aeURuleSASetConController::Redo(){
 //////////////////////
 
 void aeURuleSASetConController::pCleanUp(){
-	if(pNewController) pNewController->FreeReference();
-	if(pOldController) pOldController->FreeReference();
-	if(pRule) pRule->FreeReference();
 }

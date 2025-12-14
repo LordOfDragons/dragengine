@@ -34,6 +34,10 @@
  * Animation select rule panel.
  */
 class aeWPAPanelRuleAnimationSelect : public aeWPAPanelRule{
+public:
+	typedef deTObjectReference<aeWPAPanelRuleAnimationSelect> Ref;
+	
+	
 private:
 	igdeComboBoxFilter::Ref pCBMoves;
 	igdeListBox::Ref pListMoves;

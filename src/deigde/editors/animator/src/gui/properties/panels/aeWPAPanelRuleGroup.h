@@ -33,6 +33,10 @@
  * Group rule panel.
  */
 class aeWPAPanelRuleGroup : public aeWPAPanelRule{
+public:
+	typedef deTObjectReference<aeWPAPanelRuleGroup> Ref;
+	
+	
 private:
 	igdeComboBox::Ref pCBApplicationType;
 	igdeCheckBox::Ref pChkEnablePosition;
