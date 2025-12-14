@@ -277,6 +277,10 @@
 			"path": ".github"
 		},
 		{
+			"name": "Low level testing",
+			"path": "src/tests"
+		},
+		{
 			"name": "Testing",
 			"path": "detesting"
 		},

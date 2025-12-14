@@ -25,6 +25,7 @@
 #ifndef _AEANIMATOR_H_
 #define _AEANIMATOR_H_
 
+#include "aeAnimatorNotifier.h"
 #include "attachment/aeAttachment.h"
 #include "controller/aeControllerList.h"
 #include "link/aeLinkList.h"
@@ -33,7 +34,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
-#include <dragengine/common/collection/decTObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/resources/light/deLight.h>
@@ -52,7 +53,6 @@ class igdeEnvironment;
 class aeAnimatorLocomotion;
 class aeWakeboard;
 class aeRule;
-class aeAnimatorNotifier;
 class aeUndoSystem;
 class aeCamera;
 class aeSubAnimator;

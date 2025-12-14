@@ -69,6 +69,7 @@ pByteCount(0)
 		}
 		
 	}else{
+		pBytes[0] = 0;
 		pByteCount = 1;
 	}
 }

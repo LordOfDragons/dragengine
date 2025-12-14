@@ -3,6 +3,7 @@
 #include <string.h>
 #include "detRunner.h"
 #include "detCase.h"
+#include "collection/detTOrderedSet.h"
 #include "curve/detCurve2D.h"
 #include "curve/detCurveBezier3D.h"
 #include "string/detString.h"
@@ -153,9 +154,7 @@ public:
 // entry point
 ////////////////
 int main(int argc, char **args){
-	detRunner runner;
-	runner.Run();
-	return 0;
+	return detRunner().Run() ? 0 : 1;
 }
 
 
@@ -181,6 +180,7 @@ detRunner::detRunner(){
 	pAddTest(new detUnicodeStringList);
 	pAddTest(new detUnicodeStringSet);
 	pAddTest(new detUnicodeStringDictionary);
+	pAddTest(new detTOrderedSet);
 	pAddTest(new detPath);
 	pAddTest(new detZFile);
 	pAddTest(new detMath);
@@ -200,9 +200,8 @@ detRunner::~detRunner(){
 		delete [] pCases;
 	}
 }
-void detRunner::Run(){
+bool detRunner::Run(){
 	int i, errorCount = 0;
-	detCase *curTest;
 	
 	setvbuf(stdout, NULL, _IONBF, 0);
 	
@@ -211,7 +210,7 @@ void detRunner::Run(){
 	printf("for a longer period of time.\n\n");
 	printf("*** Start Testing (%i Tests) ***", pCount);
 	for(i=0; i<pCount; i++){
-		curTest = pCases[i];
+		detCase * const curTest = pCases[i];
 		printf("\n- Test %s: P", curTest->GetTestName());
 		try{
 			curTest->Prepare();
@@ -227,8 +226,10 @@ void detRunner::Run(){
 	
 	if(errorCount > 0){
 		printf("*** %i tests failed ***\n", errorCount);
+		return false;
 	}else{
 		printf("\n*** All tests passed successfully ***\n");
+		return true;
 	}
 }
 

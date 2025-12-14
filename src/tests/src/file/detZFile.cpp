@@ -20,7 +20,9 @@
 // Constructors, Destructor
 /////////////////////////////
 
-detZFile::detZFile(){
+detZFile::detZFile() :
+pTestBuffer(nullptr)
+{
 	Prepare();
 }
 
@@ -34,16 +36,21 @@ detZFile::~detZFile(){
 ////////////
 
 void detZFile::Prepare(){
-	pMemoryFileCompressed = NULL;
-	pTestBuffer = NULL;
+	if(pTestBuffer){
+		delete [] pTestBuffer;
+		pTestBuffer = nullptr;
+	}
 	
-	pMemoryFileWriter = NULL;
-	pZWriter = NULL;
+	pMemoryFileCompressed = nullptr;
+	pTestBuffer = nullptr;
 	
-	pMemoryFileReader = NULL;
-	pZReader = NULL;
+	pMemoryFileWriter = nullptr;
+	pZWriter = nullptr;
 	
-	pMemoryFileCompressed.TakeOver(new decMemoryFile("compressed"));
+	pMemoryFileReader = nullptr;
+	pZReader = nullptr;
+	
+	pMemoryFileCompressed = decMemoryFile::Ref::New("compressed");
 	pTestBuffer = new char[16000];
 }
 
@@ -54,13 +61,12 @@ void detZFile::Run(){
 void detZFile::CleanUp(){
 	pDestroyZReader();
 	pDestroyZWriter();
+	pMemoryFileCompressed = nullptr;
 	
 	if(pTestBuffer){
 		delete [] pTestBuffer;
-		pTestBuffer = NULL;
+		pTestBuffer = nullptr;
 	}
-	
-	pMemoryFileCompressed = nullptr;
 }
 
 const char *detZFile::GetTestName(){
@@ -291,18 +297,18 @@ void detZFile::pTestZFile(){
 
 
 void detZFile::pOutputCompressedToFile(){
-	decDiskFileWriter::Ref::NewWith("detests_ztest_compressed", false)->Write(
+	decDiskFileWriter::Ref::New("detests_ztest_compressed", false)->Write(
 		pMemoryFileCompressed->GetPointer(), pMemoryFileCompressed->GetLength());
 }
 
 void detZFile::pOutputTestBufferToFile(int size){
-	decDiskFileWriter::Ref::NewWith("detests_ztest_uncompressed", false)->Write(pTestBuffer, size);
+	decDiskFileWriter::Ref::New("detests_ztest_uncompressed", false)->Write(pTestBuffer, size);
 }
 
 
 
 void detZFile::pCreateZWriter(){
-	pZWriter.TakeOverWith(decMemoryFileWriter::Ref::NewWith(pMemoryFileCompressed, false));
+	pZWriter = decZFileWriter::Ref::New(decMemoryFileWriter::Ref::New(pMemoryFileCompressed, false));
 	pMemoryFileWriter = nullptr;
 }
 
@@ -314,7 +320,7 @@ void detZFile::pDestroyZWriter(){
 
 
 void detZFile::pCreateZReader(){
-	pZReader.TakeOverWith(decMemoryFileReader::Ref::NewWith(pMemoryFileCompressed));
+	pZReader = decZFileReader::Ref::New(decMemoryFileReader::Ref::New(pMemoryFileCompressed));
 	pMemoryFileReader = nullptr;
 }
 
