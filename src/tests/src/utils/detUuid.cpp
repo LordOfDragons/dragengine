@@ -96,6 +96,10 @@ void detUuid::TestCompare(){
 	
 	// random uuids have to be different
 	decUuid id3(decUuid::Random()), id4(decUuid::Random());
+	if(id3 == id4){
+		// extremely unlikely that two random uuids are the same but it happened
+		id4 = decUuid::Random();
+	}
 	
 	ASSERT_FALSE(id3 == id4);
 	ASSERT_TRUE(id3 != id4);

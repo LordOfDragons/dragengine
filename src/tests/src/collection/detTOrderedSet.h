@@ -40,6 +40,17 @@ private:
 	void TestIntRemoveIf();
 	void TestIntSort();
 	void TestIntOperators();
+void TestIntGetHeadRef();
+void TestIntGetTailRef();
+void TestIntGetMiddleRef();
+void TestIntGetSliced();
+void TestIntVisitOverloads();
+void TestIntFindOverloads();
+void TestIntFindDefault();
+void TestIntCollectOverloads();
+void TestIntRemoveIfOverloads();
+void TestIntGetSorted();
+void TestIntOperatorNotEqual();
 
 	// Test methods for T=decString
 	void TestStringConstructors();
@@ -70,6 +81,17 @@ private:
 	void TestStringRemoveIf();
 	void TestStringSort();
 	void TestStringOperators();
+void TestStringGetHeadRef();
+void TestStringGetTailRef();
+void TestStringGetMiddleRef();
+void TestStringGetSliced();
+void TestStringVisitOverloads();
+void TestStringFindOverloads();
+void TestStringFindDefault();
+void TestStringCollectOverloads();
+void TestStringRemoveIfOverloads();
+void TestStringGetSorted();
+void TestStringOperatorNotEqual();
 
 	// Test methods for T=deObject::Ref, TP=deObject*
 	void TestObjectRefConstructors();
@@ -100,6 +122,17 @@ private:
 	void TestObjectRefRemoveIf();
 	void TestObjectRefSort();
 	void TestObjectRefOperators();
+void TestObjectRefGetHeadRef();
+void TestObjectRefGetTailRef();
+void TestObjectRefGetMiddleRef();
+void TestObjectRefGetSliced();
+void TestObjectRefVisitOverloads();
+void TestObjectRefFindOverloads();
+void TestObjectRefFindDefault();
+void TestObjectRefCollectOverloads();
+void TestObjectRefRemoveIfOverloads();
+void TestObjectRefGetSorted();
+void TestObjectRefOperatorNotEqual();
 
 public:
 	detTOrderedSet();

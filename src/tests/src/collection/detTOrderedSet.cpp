@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <cstdint>
 
 #include "detTOrderedSet.h"
 
@@ -14,7 +15,7 @@
 // Type definition for template with object references
 typedef decTOrderedSet<int> decTOrderedSetInt;
 typedef decTOrderedSet<decString> decTOrderedSetString;
-typedef decTOrderedSet<decXmlElementTag::Ref, decXmlElementTag*> decTOrderedSetXmlElementTag;
+typedef decTObjectOrderedSet<decXmlElementTag> decTOrderedSetXmlElementTag;
 
 
 // Class detTOrderedSet
@@ -68,7 +69,18 @@ void detTOrderedSet::Run(){
 	TestIntRemoveIf();
 	TestIntSort();
 	TestIntOperators();
-
+	TestIntGetHeadRef();
+	TestIntGetTailRef();
+	TestIntGetMiddleRef();
+	TestIntGetSliced();
+	TestIntVisitOverloads();
+	TestIntFindOverloads();
+	TestIntFindDefault();
+	TestIntCollectOverloads();
+	TestIntRemoveIfOverloads();
+	TestIntGetSorted();
+	TestIntOperatorNotEqual();
+	
 	// Test string type
 	TestStringConstructors();
 	TestStringGetCount();
@@ -98,7 +110,18 @@ void detTOrderedSet::Run(){
 	TestStringRemoveIf();
 	TestStringSort();
 	TestStringOperators();
-
+	TestStringGetHeadRef();
+	TestStringGetTailRef();
+	TestStringGetMiddleRef();
+	TestStringGetSliced();
+	TestStringVisitOverloads();
+	TestStringFindOverloads();
+	TestStringFindDefault();
+	TestStringCollectOverloads();
+	TestStringRemoveIfOverloads();
+	TestStringGetSorted();
+	TestStringOperatorNotEqual();
+	
 	// Test object reference type
 	TestObjectRefConstructors();
 	TestObjectRefGetCount();
@@ -128,6 +151,17 @@ void detTOrderedSet::Run(){
 	TestObjectRefRemoveIf();
 	TestObjectRefSort();
 	TestObjectRefOperators();
+	TestObjectRefGetHeadRef();
+	TestObjectRefGetTailRef();
+	TestObjectRefGetMiddleRef();
+	TestObjectRefGetSliced();
+	TestObjectRefVisitOverloads();
+	TestObjectRefFindOverloads();
+	TestObjectRefFindDefault();
+	TestObjectRefCollectOverloads();
+	TestObjectRefRemoveIfOverloads();
+	TestObjectRefGetSorted();
+	TestObjectRefOperatorNotEqual();
 }
 
 void detTOrderedSet::CleanUp(){
@@ -633,6 +667,8 @@ void detTOrderedSet::TestIntSort(){
 	decTOrderedSetInt sorted = set2.GetSorted(comparator);
 	ASSERT_EQUAL(set2.GetAt(0), 30); // Original unchanged
 	ASSERT_EQUAL(sorted.GetAt(0), 10);
+	ASSERT_EQUAL(sorted.GetAt(1), 20);
+	ASSERT_EQUAL(sorted.GetAt(2), 30);
 	ASSERT_EQUAL(sorted.GetAt(3), 40);
 }
 
@@ -1613,4 +1649,738 @@ void detTOrderedSet::TestObjectRefOperators(){
 	
 	set4 += set3;
 	ASSERT_EQUAL(set4.GetCount(), 3);
+}
+
+// ============================================================================
+// Additional Tests for Missing Overloads - INT
+// ============================================================================
+
+void detTOrderedSet::TestIntGetHeadRef(){
+	SetSubTestNum(84);
+
+	decTOrderedSetInt set1;
+	set1.Add(10);
+	set1.Add(20);
+	set1.Add(30);
+	set1.Add(40);
+	
+	// Test GetHead with reference parameter
+	decTOrderedSetInt head;
+	set1.GetHead(head, 2);
+	ASSERT_EQUAL(head.GetCount(), 2);
+	ASSERT_EQUAL(head.GetAt(0), 10);
+	ASSERT_EQUAL(head.GetAt(1), 20);
+}
+
+void detTOrderedSet::TestIntGetTailRef(){
+	SetSubTestNum(85);
+
+	decTOrderedSetInt set1;
+	set1.Add(10);
+	set1.Add(20);
+	set1.Add(30);
+	set1.Add(40);
+	
+	// Test GetTail with reference parameter
+	decTOrderedSetInt tail;
+	set1.GetTail(tail, 2);
+	ASSERT_EQUAL(tail.GetCount(), 2);
+	ASSERT_EQUAL(tail.GetAt(0), 30);
+	ASSERT_EQUAL(tail.GetAt(1), 40);
+}
+
+void detTOrderedSet::TestIntGetMiddleRef(){
+	SetSubTestNum(86);
+
+	decTOrderedSetInt set1;
+	set1.Add(10);
+	set1.Add(20);
+	set1.Add(30);
+	set1.Add(40);
+	set1.Add(50);
+	
+	// Test GetMiddle with reference parameter
+	decTOrderedSetInt middle;
+	set1.GetMiddle(middle, 1, 3);
+	ASSERT_EQUAL(middle.GetCount(), 3);
+	ASSERT_EQUAL(middle.GetAt(0), 20);
+	ASSERT_EQUAL(middle.GetAt(1), 30);
+	ASSERT_EQUAL(middle.GetAt(2), 40);
+}
+
+void detTOrderedSet::TestIntGetSliced(){
+	SetSubTestNum(87);
+
+	decTOrderedSetInt set1;
+	set1.Add(10);
+	set1.Add(20);
+	set1.Add(30);
+	set1.Add(40);
+	set1.Add(50);
+	
+	// GetSliced with step=1 uses GetMiddle internally
+	decTOrderedSetInt sliced = set1.GetSliced(1, 3, 1);
+	ASSERT_EQUAL(sliced.GetCount(), 3);
+	ASSERT_EQUAL(sliced.GetAt(0), 20);
+	ASSERT_EQUAL(sliced.GetAt(1), 30);
+	ASSERT_EQUAL(sliced.GetAt(2), 40);
+}
+
+void detTOrderedSet::TestIntVisitOverloads(){
+	SetSubTestNum(88);
+
+	decTOrderedSetInt set1;
+	set1.Add(10);
+	set1.Add(20);
+	set1.Add(30);
+	set1.Add(40);
+	
+	// Test Visit with from parameter only
+	int count = 0;
+	auto visitor1 = [&count](int val){ count++; };
+	set1.Visit(visitor1, 2);
+	ASSERT_EQUAL(count, 2);  // Visits index 2 and 3
+	
+	// Test Visit with from, to, step parameters
+	count = 0;
+	set1.Visit(visitor1, 0, 4, 2);
+	ASSERT_EQUAL(count, 2);  // Visits indices 0 and 2
+}
+
+void detTOrderedSet::TestIntFindOverloads(){
+	SetSubTestNum(89);
+
+	decTOrderedSetInt set1;
+	set1.Add(10);
+	set1.Add(20);
+	set1.Add(30);
+	set1.Add(40);
+	
+	// Test Find with from parameter only
+	const int *found = nullptr;
+	auto evaluator = [](int val){ return val == 30; };
+	ASSERT_TRUE(set1.Find(evaluator, found, 2));
+	ASSERT_EQUAL(*found, 30);
+	
+	// Test Find with from, to, step parameters
+	found = nullptr;
+	auto evaluator2 = [](int val){ return val == 30; };
+	ASSERT_TRUE(set1.Find(evaluator2, found, 0, 4, 2));
+	ASSERT_EQUAL(*found, 30);
+}
+
+void detTOrderedSet::TestIntFindDefault(){
+	SetSubTestNum(90);
+
+	decTOrderedSetInt set1;
+	set1.Add(10);
+	set1.Add(20);
+	set1.Add(30);
+	
+	// Test FindDefault - found case
+	auto evaluator1 = [](int val){ return val == 20; };
+	int result = set1.FindDefault(evaluator1, 99);
+	ASSERT_EQUAL(result, 20);
+	
+	// Test FindDefault - not found case
+	auto evaluator2 = [](int val){ return val == 50; };
+	result = set1.FindDefault(evaluator2, 99);
+	ASSERT_EQUAL(result, 99);
+	
+	// Test FindDefault with from parameter
+	auto evaluator3 = [](int val){ return val == 10; };
+	result = set1.FindDefault(evaluator3, 99, 1);  // Start from index 1
+	ASSERT_EQUAL(result, 99);  // 10 is at index 0, not found from index 1
+}
+
+void detTOrderedSet::TestIntCollectOverloads(){
+	SetSubTestNum(91);
+
+	decTOrderedSetInt set1;
+	set1.Add(10);
+	set1.Add(20);
+	set1.Add(30);
+	set1.Add(40);
+	
+	// Test Collect with from parameter only
+	auto evaluator1 = [](int val){ return val >= 30; };
+	decTOrderedSetInt collected1 = set1.Collect(evaluator1, 2);
+	ASSERT_EQUAL(collected1.GetCount(), 2);  // 30 and 40
+	ASSERT_TRUE(collected1.Has(30));
+	ASSERT_TRUE(collected1.Has(40));
+	
+	// Test Collect with from, to, step parameters
+	auto evaluator2 = [](int val){ return val == 10 || val == 30; };
+	decTOrderedSetInt collected2 = set1.Collect(evaluator2, 0, 4, 2);
+	ASSERT_EQUAL(collected2.GetCount(), 2);  // 10 and 30 (even indices)
+	ASSERT_TRUE(collected2.Has(10));
+	ASSERT_TRUE(collected2.Has(30));
+}
+
+void detTOrderedSet::TestIntRemoveIfOverloads(){
+	SetSubTestNum(92);
+
+	// Test RemoveIf with from parameter only
+	decTOrderedSetInt set1;
+	set1.Add(10);
+	set1.Add(20);
+	set1.Add(30);
+	set1.Add(40);
+	
+	auto evaluator1 = [](int val){ return val >= 30; };
+	set1.RemoveIf(evaluator1, 2);
+	ASSERT_EQUAL(set1.GetCount(), 2);
+	ASSERT_FALSE(set1.Has(30));
+	ASSERT_FALSE(set1.Has(40));
+	
+	// Test RemoveIf with from, to, step parameters
+	decTOrderedSetInt set2;
+	set2.Add(10);
+	set2.Add(20);
+	set2.Add(30);
+	set2.Add(40);
+	
+	auto evaluator2 = [](int val){ return val == 10 || val == 30; };
+	set2.RemoveIf(evaluator2, 0, 4, 2);
+	ASSERT_EQUAL(set2.GetCount(), 2);
+	ASSERT_FALSE(set2.Has(10));
+	ASSERT_FALSE(set2.Has(30));
+}
+
+void detTOrderedSet::TestIntGetSorted(){
+	SetSubTestNum(93);
+
+	decTOrderedSetInt set1;
+	set1.Add(30);
+	set1.Add(10);
+	set1.Add(40);
+	set1.Add(20);
+	
+	auto comparator = [](int a, int b){ return a - b; };
+	
+	// Test GetSorted - should not modify original
+	decTOrderedSetInt sorted = set1.GetSorted(comparator);
+	ASSERT_EQUAL(set1.GetAt(0), 30);  // Original unchanged
+	ASSERT_EQUAL(sorted.GetAt(0), 10);  // Sorted
+	ASSERT_EQUAL(sorted.GetAt(1), 20);
+	ASSERT_EQUAL(sorted.GetAt(2), 30);
+	ASSERT_EQUAL(sorted.GetAt(3), 40);
+}
+
+void detTOrderedSet::TestIntOperatorNotEqual(){
+	SetSubTestNum(94);
+
+	decTOrderedSetInt set1;
+	set1.Add(10);
+	set1.Add(20);
+	
+	decTOrderedSetInt set2;
+	set2.Add(10);
+	set2.Add(20);
+	
+	decTOrderedSetInt set3;
+	set3.Add(10);
+	set3.Add(30);
+	
+	ASSERT_FALSE(set1 != set2);  // Equal
+	ASSERT_TRUE(set1 != set3);   // Not equal
+}
+
+// ============================================================================
+// Additional Tests for Missing Overloads - STRING
+// ============================================================================
+
+void detTOrderedSet::TestStringGetHeadRef(){
+	SetSubTestNum(95);
+
+	decTOrderedSetString set1;
+	set1.Add("a");
+	set1.Add("b");
+	set1.Add("c");
+	set1.Add("d");
+	
+	decTOrderedSetString head;
+	set1.GetHead(head, 2);
+	ASSERT_EQUAL(head.GetCount(), 2);
+	ASSERT_EQUAL(head.GetAt(0), "a");
+	ASSERT_EQUAL(head.GetAt(1), "b");
+}
+
+void detTOrderedSet::TestStringGetTailRef(){
+	SetSubTestNum(96);
+
+	decTOrderedSetString set1;
+	set1.Add("a");
+	set1.Add("b");
+	set1.Add("c");
+	set1.Add("d");
+	
+	decTOrderedSetString tail;
+	set1.GetTail(tail, 2);
+	ASSERT_EQUAL(tail.GetCount(), 2);
+	ASSERT_EQUAL(tail.GetAt(0), "c");
+	ASSERT_EQUAL(tail.GetAt(1), "d");
+}
+
+void detTOrderedSet::TestStringGetMiddleRef(){
+	SetSubTestNum(97);
+
+	decTOrderedSetString set1;
+	set1.Add("a");
+	set1.Add("b");
+	set1.Add("c");
+	set1.Add("d");
+	set1.Add("e");
+	
+	decTOrderedSetString middle;
+	set1.GetMiddle(middle, 1, 3);
+	ASSERT_EQUAL(middle.GetCount(), 3);
+	ASSERT_EQUAL(middle.GetAt(0), "b");
+	ASSERT_EQUAL(middle.GetAt(1), "c");
+	ASSERT_EQUAL(middle.GetAt(2), "d");
+}
+
+void detTOrderedSet::TestStringGetSliced(){
+	SetSubTestNum(98);
+
+	decTOrderedSetString set1;
+	set1.Add("a");
+	set1.Add("b");
+	set1.Add("c");
+	set1.Add("d");
+	set1.Add("e");
+	
+	decTOrderedSetString sliced = set1.GetSliced(1, 3, 1);
+	ASSERT_EQUAL(sliced.GetCount(), 3);
+	ASSERT_EQUAL(sliced.GetAt(0), "b");
+	ASSERT_EQUAL(sliced.GetAt(1), "c");
+	ASSERT_EQUAL(sliced.GetAt(2), "d");
+}
+
+void detTOrderedSet::TestStringVisitOverloads(){
+	SetSubTestNum(99);
+
+	decTOrderedSetString set1;
+	set1.Add("a");
+	set1.Add("b");
+	set1.Add("c");
+	set1.Add("d");
+	
+	int count = 0;
+	auto visitor = [&count](decString val){ count++; };
+	set1.Visit(visitor, 2);
+	ASSERT_EQUAL(count, 2);
+	
+	count = 0;
+	set1.Visit(visitor, 0, 4, 2);
+	ASSERT_EQUAL(count, 2);
+}
+
+void detTOrderedSet::TestStringFindOverloads(){
+	SetSubTestNum(100);
+
+	decTOrderedSetString set1;
+	set1.Add("apple");
+	set1.Add("banana");
+	set1.Add("cherry");
+	set1.Add("date");
+	
+	const decString *found = nullptr;
+	auto evaluator = [](decString val){ return val == "cherry"; };
+	ASSERT_TRUE(set1.Find(evaluator, found, 2));
+	ASSERT_EQUAL(*found, "cherry");
+	
+	found = nullptr;
+	auto evaluator2 = [](decString val){ return val == "cherry"; };
+	ASSERT_TRUE(set1.Find(evaluator2, found, 0, 4, 2));
+	ASSERT_EQUAL(*found, "cherry");
+}
+
+void detTOrderedSet::TestStringFindDefault(){
+	SetSubTestNum(101);
+
+	decTOrderedSetString set1;
+	set1.Add("apple");
+	set1.Add("banana");
+	set1.Add("cherry");
+	
+	auto evaluator1 = [](decString val){ return val == "banana"; };
+	decString result = set1.FindDefault(evaluator1, "unknown");
+	ASSERT_EQUAL(result, "banana");
+	
+	auto evaluator2 = [](decString val){ return val == "grape"; };
+	result = set1.FindDefault(evaluator2, "unknown");
+	ASSERT_EQUAL(result, "unknown");
+	
+	auto evaluator3 = [](decString val){ return val == "apple"; };
+	result = set1.FindDefault(evaluator3, "unknown", 1);
+	ASSERT_EQUAL(result, "unknown");  // apple is at index 0
+}
+
+void detTOrderedSet::TestStringCollectOverloads(){
+	SetSubTestNum(102);
+
+	decTOrderedSetString set1;
+	set1.Add("apple");
+	set1.Add("banana");
+	set1.Add("cherry");
+	set1.Add("date");
+	
+	auto evaluator1 = [](decString val){ return val.Find("a") >= 0; };
+	decTOrderedSetString collected1 = set1.Collect(evaluator1, 2);
+	ASSERT_EQUAL(collected1.GetCount(), 1);  // "cherry" starts at index 2
+	
+	auto evaluator2 = [](decString val){ return val.GetLength() >= 5; };
+	decTOrderedSetString collected2 = set1.Collect(evaluator2, 0, 4, 2);
+	ASSERT_EQUAL(collected2.GetCount(), 2);  // "apple" and "cherry" have length 5 and 6
+}
+
+void detTOrderedSet::TestStringRemoveIfOverloads(){
+	SetSubTestNum(103);
+
+	decTOrderedSetString set1;
+	set1.Add("apple");
+	set1.Add("banana");
+	set1.Add("cherry");
+	set1.Add("date");
+	
+	auto evaluator1 = [](decString val){ return val.GetLength() > 4; };
+	set1.RemoveIf(evaluator1, 2);
+	ASSERT_FALSE(set1.Has("cherry"));
+	
+	decTOrderedSetString set2;
+	set2.Add("apple");
+	set2.Add("banana");
+	set2.Add("cherry");
+	set2.Add("date");
+	
+	auto evaluator2 = [](decString val){ return val == "apple" || val == "cherry"; };
+	set2.RemoveIf(evaluator2, 0, 4, 2);
+	ASSERT_FALSE(set2.Has("apple"));
+	ASSERT_FALSE(set2.Has("cherry"));
+}
+
+void detTOrderedSet::TestStringGetSorted(){
+	SetSubTestNum(104);
+
+	decTOrderedSetString set1;
+	set1.Add("cherry");
+	set1.Add("apple");
+	set1.Add("date");
+	set1.Add("banana");
+	
+	auto comparator = [](decString a, decString b){ return a.Compare(b); };
+	decTOrderedSetString sorted = set1.GetSorted(comparator);
+	ASSERT_EQUAL(set1.GetAt(0), "cherry");  // Original unchanged
+	ASSERT_EQUAL(set1.GetAt(1), "apple");
+	ASSERT_EQUAL(set1.GetAt(2), "date");
+	ASSERT_EQUAL(set1.GetAt(3), "banana");
+	ASSERT_EQUAL(sorted.GetAt(0), "apple");  // Sorted
+	ASSERT_EQUAL(sorted.GetAt(1), "banana");
+	ASSERT_EQUAL(sorted.GetAt(2), "cherry");
+	ASSERT_EQUAL(sorted.GetAt(3), "date");
+}
+
+void detTOrderedSet::TestStringOperatorNotEqual(){
+	SetSubTestNum(105);
+
+	decTOrderedSetString set1;
+	set1.Add("a");
+	set1.Add("b");
+	
+	decTOrderedSetString set2;
+	set2.Add("a");
+	set2.Add("b");
+	
+	decTOrderedSetString set3;
+	set3.Add("a");
+	set3.Add("c");
+	
+	ASSERT_FALSE(set1 != set2);
+	ASSERT_TRUE(set1 != set3);
+}
+
+// ============================================================================
+// Additional Tests for Missing Overloads - OBJECTREF
+// ============================================================================
+
+void detTOrderedSet::TestObjectRefGetHeadRef(){
+	SetSubTestNum(106);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj4(decXmlElementTag::Ref::New("tag4"));
+	
+	decTOrderedSetXmlElementTag set1;
+	set1.Add(obj1);
+	set1.Add(obj2);
+	set1.Add(obj3);
+	set1.Add(obj4);
+	
+	decTOrderedSetXmlElementTag head;
+	set1.GetHead(head, 2);
+	ASSERT_EQUAL(head.GetCount(), 2);
+	ASSERT_EQUAL(head.GetAt(0), obj1);
+	ASSERT_EQUAL(head.GetAt(1), obj2);
+}
+
+void detTOrderedSet::TestObjectRefGetTailRef(){
+	SetSubTestNum(107);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj4(decXmlElementTag::Ref::New("tag4"));
+	
+	decTOrderedSetXmlElementTag set1;
+	set1.Add(obj1);
+	set1.Add(obj2);
+	set1.Add(obj3);
+	set1.Add(obj4);
+	
+	decTOrderedSetXmlElementTag tail;
+	set1.GetTail(tail, 2);
+	ASSERT_EQUAL(tail.GetCount(), 2);
+	ASSERT_EQUAL(tail.GetAt(0), obj3);
+	ASSERT_EQUAL(tail.GetAt(1), obj4);
+}
+
+void detTOrderedSet::TestObjectRefGetMiddleRef(){
+	SetSubTestNum(108);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj4(decXmlElementTag::Ref::New("tag4"));
+	decXmlElementTag::Ref obj5(decXmlElementTag::Ref::New("tag5"));
+	
+	decTOrderedSetXmlElementTag set1;
+	set1.Add(obj1);
+	set1.Add(obj2);
+	set1.Add(obj3);
+	set1.Add(obj4);
+	set1.Add(obj5);
+	
+	decTOrderedSetXmlElementTag middle;
+	set1.GetMiddle(middle, 1, 3);
+	ASSERT_EQUAL(middle.GetCount(), 3);
+	ASSERT_EQUAL(middle.GetAt(0), obj2);
+	ASSERT_EQUAL(middle.GetAt(1), obj3);
+	ASSERT_EQUAL(middle.GetAt(2), obj4);
+}
+
+void detTOrderedSet::TestObjectRefGetSliced(){
+	SetSubTestNum(109);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj4(decXmlElementTag::Ref::New("tag4"));
+	decXmlElementTag::Ref obj5(decXmlElementTag::Ref::New("tag5"));
+	
+	decTOrderedSetXmlElementTag set1;
+	set1.Add(obj1);
+	set1.Add(obj2);
+	set1.Add(obj3);
+	set1.Add(obj4);
+	set1.Add(obj5);
+	
+	decTOrderedSetXmlElementTag sliced = set1.GetSliced(1, 3, 1);
+	ASSERT_EQUAL(sliced.GetCount(), 3);
+	ASSERT_EQUAL(sliced.GetAt(0), obj2);
+	ASSERT_EQUAL(sliced.GetAt(1), obj3);
+	ASSERT_EQUAL(sliced.GetAt(2), obj4);
+}
+
+void detTOrderedSet::TestObjectRefVisitOverloads(){
+	SetSubTestNum(110);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj4(decXmlElementTag::Ref::New("tag4"));
+	
+	decTOrderedSetXmlElementTag set1;
+	set1.Add(obj1);
+	set1.Add(obj2);
+	set1.Add(obj3);
+	set1.Add(obj4);
+	
+	int count = 0;
+	auto visitor = [&count](decXmlElementTag::Ref val){ count++; };
+	set1.Visit(visitor, 2);
+	ASSERT_EQUAL(count, 2);
+	
+	count = 0;
+	set1.Visit(visitor, 0, 4, 2);
+	ASSERT_EQUAL(count, 2);
+}
+
+void detTOrderedSet::TestObjectRefFindOverloads(){
+	SetSubTestNum(111);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj4(decXmlElementTag::Ref::New("tag4"));
+	
+	decTOrderedSetXmlElementTag set1;
+	set1.Add(obj1);
+	set1.Add(obj2);
+	set1.Add(obj3);
+	set1.Add(obj4);
+	
+	const decXmlElementTag::Ref *found = nullptr;
+	auto evaluator = [obj3](decXmlElementTag::Ref val){ return val == obj3; };
+	ASSERT_TRUE(set1.Find(evaluator, found, 2));
+	ASSERT_EQUAL(*found, obj3);
+	
+	found = nullptr;
+	auto evaluator2 = [obj3](decXmlElementTag::Ref val){ return val == obj3; };
+	ASSERT_TRUE(set1.Find(evaluator2, found, 0, 4, 2));
+	ASSERT_EQUAL(*found, obj3);
+}
+
+void detTOrderedSet::TestObjectRefFindDefault(){
+	SetSubTestNum(112);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref defaultObj(decXmlElementTag::Ref::New("tag3"));
+	
+	decTOrderedSetXmlElementTag set1;
+	set1.Add(obj1);
+	set1.Add(obj2);
+	set1.Add(obj3);
+	
+	auto evaluator1 = [obj2](decXmlElementTag::Ref val){ return val == obj2; };
+	decXmlElementTag::Ref result = set1.FindDefault(evaluator1, defaultObj);
+	ASSERT_EQUAL(result, obj2);
+	
+	auto evaluator2 = [](decXmlElementTag::Ref val){ return false; };
+	result = set1.FindDefault(evaluator2, defaultObj);
+	ASSERT_EQUAL(result, defaultObj);
+	
+	auto evaluator3 = [obj1](decXmlElementTag::Ref val){ return val == obj1; };
+	result = set1.FindDefault(evaluator3, defaultObj, 1);
+	ASSERT_EQUAL(result, defaultObj);  // obj1 is at index 0
+}
+
+void detTOrderedSet::TestObjectRefCollectOverloads(){
+	SetSubTestNum(113);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj4(decXmlElementTag::Ref::New("tag4"));
+	
+	decTOrderedSetXmlElementTag set1;
+	set1.Add(obj1);
+	set1.Add(obj2);
+	set1.Add(obj3);
+	set1.Add(obj4);
+	
+	auto evaluator1 = [obj3, obj4](decXmlElementTag::Ref val){ return val == obj3 || val == obj4; };
+	decTOrderedSetXmlElementTag collected1 = set1.Collect(evaluator1, 2);
+	ASSERT_EQUAL(collected1.GetCount(), 2);
+	ASSERT_TRUE(collected1.Has(obj3));
+	ASSERT_TRUE(collected1.Has(obj4));
+	
+	auto evaluator2 = [obj1, obj3](decXmlElementTag::Ref val){ return val == obj1 || val == obj3; };
+	decTOrderedSetXmlElementTag collected2 = set1.Collect(evaluator2, 0, 4, 2);
+	ASSERT_EQUAL(collected2.GetCount(), 2);
+	ASSERT_TRUE(collected2.Has(obj1));
+	ASSERT_TRUE(collected2.Has(obj3));
+}
+
+void detTOrderedSet::TestObjectRefRemoveIfOverloads(){
+	SetSubTestNum(114);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj4(decXmlElementTag::Ref::New("tag4"));
+	
+	decTOrderedSetXmlElementTag set1;
+	set1.Add(obj1);
+	set1.Add(obj2);
+	set1.Add(obj3);
+	set1.Add(obj4);
+	
+	auto evaluator1 = [obj3, obj4](decXmlElementTag::Ref val){ return val == obj3 || val == obj4; };
+	set1.RemoveIf(evaluator1, 2);
+	ASSERT_EQUAL(set1.GetCount(), 2);
+	ASSERT_FALSE(set1.Has(obj3));
+	ASSERT_FALSE(set1.Has(obj4));
+	
+	decXmlElementTag::Ref obj5(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj6(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj7(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj8(decXmlElementTag::Ref::New("tag4"));
+	
+	decTOrderedSetXmlElementTag set2;
+	set2.Add(obj5);
+	set2.Add(obj6);
+	set2.Add(obj7);
+	set2.Add(obj8);
+	
+	auto evaluator2 = [obj5, obj7](decXmlElementTag::Ref val){ return val == obj5 || val == obj7; };
+	set2.RemoveIf(evaluator2, 0, 4, 2);
+	ASSERT_EQUAL(set2.GetCount(), 2);
+	ASSERT_FALSE(set2.Has(obj5));
+	ASSERT_FALSE(set2.Has(obj7));
+}
+
+void detTOrderedSet::TestObjectRefGetSorted(){
+	SetSubTestNum(115);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj4(decXmlElementTag::Ref::New("tag4"));
+	
+	decTOrderedSetXmlElementTag set1;
+	set1.Add(obj3);
+	set1.Add(obj1);
+	set1.Add(obj4);
+	set1.Add(obj2);
+	
+	auto comparator = [](decXmlElementTag::Ref a, decXmlElementTag::Ref b){ 
+		return a->GetName().Compare(b->GetName()); 
+	};
+	decTOrderedSetXmlElementTag sorted = set1.GetSorted(comparator);
+	ASSERT_EQUAL(set1.GetAt(0), obj3);  // Original unchanged
+	ASSERT_EQUAL(set1.GetAt(1), obj1);
+	ASSERT_EQUAL(set1.GetAt(2), obj4);
+	ASSERT_EQUAL(set1.GetAt(3), obj2);
+	ASSERT_EQUAL(sorted.GetAt(0), obj1);  // Sorted
+	ASSERT_EQUAL(sorted.GetAt(1), obj2);
+	ASSERT_EQUAL(sorted.GetAt(2), obj3);
+	ASSERT_EQUAL(sorted.GetAt(3), obj4);
+	ASSERT_EQUAL(sorted.GetCount(), 4);
+}
+
+void detTOrderedSet::TestObjectRefOperatorNotEqual(){
+	SetSubTestNum(116);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	
+	decTOrderedSetXmlElementTag set1;
+	set1.Add(obj1);
+	set1.Add(obj2);
+	
+	decTOrderedSetXmlElementTag set2;
+	set2.Add(obj1);
+	set2.Add(obj2);
+	
+	decTOrderedSetXmlElementTag set3;
+	set3.Add(obj1);
+	set3.Add(obj3);
+	
+	ASSERT_FALSE(set1 != set2);
+	ASSERT_TRUE(set1 != set3);
 }
