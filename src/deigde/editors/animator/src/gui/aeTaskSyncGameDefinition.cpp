@@ -65,17 +65,14 @@ bool aeTaskSyncGameDefinition::Step(){
 		return false;
 	}
 	
-	aeAnimator &animator = *pWindowMain.GetAnimator();
+	const aeAnimator &animator = *pWindowMain.GetAnimator();
 	
 	animator.GetSky()->OnGameDefinitionChanged();
 	animator.GetEnvObject()->OnGameDefinitionChanged();
 	
-	const int attachmentCount = animator.GetAttachmentCount();
-	int i;
-	
-	for(i=0; i<attachmentCount; i++){
-		animator.GetAttachmentAt(i)->GetObjectWrapper()->OnGameDefinitionChanged();
-	}
+	animator.GetAttachments().Visit([&](aeAttachment *attachment){
+		attachment->GetObjectWrapper()->OnGameDefinitionChanged();
+	});
 	
 	return false;
 }

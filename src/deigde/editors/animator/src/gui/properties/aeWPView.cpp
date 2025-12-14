@@ -450,7 +450,7 @@ public:
 		const decString baseName("Attachment");
 		decString name(baseName);
 		int number = 1;
-		while(animator->HasAttachmentNamed(name)){
+		while(animator->GetAttachmentNamed(name)){
 			name.Format("%s #%d", baseName.GetString(), number);
 		}
 		
@@ -475,8 +475,8 @@ public:
 		}
 		
 		animator->RemoveAttachment(attachment);
-		if(animator->GetAttachmentCount() > 0){
-			animator->SetActiveAttachment(animator->GetAttachmentAt(0));
+		if(animator->GetAttachments().IsNotEmpty()){
+			animator->SetActiveAttachment(animator->GetAttachments().First());
 		}
 	}
 	
@@ -494,13 +494,11 @@ public:
 		nullptr, "Remove all attachment"){}
 	
 	void OnAction(aeAnimator *animator) override{
-		if(animator->GetAttachmentCount() > 0){
-			animator->RemoveAllAttachments();
-		}
+		animator->RemoveAllAttachments();
 	}
 	
 	void Update(const aeAnimator &animator) override{
-		SetEnabled(animator.GetAttachmentCount() > 0);
+		SetEnabled(animator.GetAttachments().IsNotEmpty());
 	}
 };
 
@@ -579,7 +577,7 @@ public:
 			return;
 		}
 		
-		if(animator->HasAttachmentNamed(textField->GetText())){
+		if(animator->GetAttachmentNamed(textField->GetText())){
 			textField->SetText(attachment->GetName());
 			
 		}else{
@@ -915,13 +913,9 @@ void aeWPView::UpdateAttachmentList(){
 	pCBAttachments->RemoveAllItems();
 	
 	if(pAnimator){
-		const int count = pAnimator->GetAttachmentCount();
-		int i;
-		
-		for(i=0; i<count; i++){
-			aeAttachment * const attachment = pAnimator->GetAttachmentAt(i);
+		pAnimator->GetAttachments().Visit([&](aeAttachment *attachment){
 			pCBAttachments->AddItem(attachment->GetName(), nullptr, attachment);
-		}
+		});
 		
 		pCBAttachments->SortItems();
 	}

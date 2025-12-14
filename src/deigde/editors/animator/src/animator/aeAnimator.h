@@ -25,6 +25,7 @@
 #ifndef _AEANIMATOR_H_
 #define _AEANIMATOR_H_
 
+#include "attachment/aeAttachment.h"
 #include "controller/aeControllerList.h"
 #include "link/aeLinkList.h"
 #include "rule/aeRuleList.h"
@@ -32,7 +33,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
-#include <dragengine/common/collection/decObjectOrderedSet.h>
+#include <dragengine/common/collection/decTObjectOrderedSet.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/resources/light/deLight.h>
@@ -50,7 +51,6 @@ class igdeEnvironment;
 
 class aeAnimatorLocomotion;
 class aeWakeboard;
-class aeAttachment;
 class aeRule;
 class aeAnimatorNotifier;
 class aeUndoSystem;
@@ -141,8 +141,8 @@ private:
 	decStringSet pListBones;
 	decStringSet pListVertexPositionSets;
 	
-	decObjectOrderedSet pAttachments;
-	aeAttachment *pActiveAttachment;
+	decTObjectOrderedSet<aeAttachment> pAttachments;
+	aeAttachment::Ref pActiveAttachment;
 	
 	bool pPaused;
 	float pPlaySpeed;
@@ -156,7 +156,7 @@ private:
 	
 	decString pPathAttConfig;
 	
-	decObjectOrderedSet pNotifiers;
+	decTObjectOrderedSet<aeAnimatorNotifier> pNotifiers;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -425,51 +425,49 @@ public:
 	
 	/** \name Attachments */
 	/*@{*/
-	/** Retrieves the number of attachments. */
-	int GetAttachmentCount() const;
-	/** Retrieves the attachment at the given index. */
-	aeAttachment *GetAttachmentAt(int index) const;
-	/** Retrieves the attachment with the given name or nullptr if not found. */
+	/** Attachments. */
+	inline const decTObjectOrderedSet<aeAttachment> &GetAttachments() const{ return pAttachments; }
+	
+	/** Visitor to find attachment by name. */
 	aeAttachment *GetAttachmentNamed(const char *name) const;
-	/** Retrieves the index of the attachment or -1 if not found. */
-	int IndexOfAttachment(aeAttachment *attachment) const;
-	/** Determines if the attachment exists. */
-	bool HasAttachment(aeAttachment *attachment) const;
-	/** Determines if the attachment exists. */
-	bool HasAttachmentNamed(const char *name) const;
-	/** Adds a new attachment. */
+	
+	/** Add attachment. */
 	void AddAttachment(aeAttachment *attachment);
-	/** Removes the given attachment. */
+	
+	/** Remove attachment. */
 	void RemoveAttachment(aeAttachment *attachment);
+	
 	/** Removes all attachments. */
 	void RemoveAllAttachments();
-	/** Retrieves the active attachment or nullptr. */
-	inline aeAttachment *GetActiveAttachment() const{ return pActiveAttachment; }
-	/** Sets the active attachment or nullptr. */
+	
+	/** Active attachment or nullptr. */
+	inline const aeAttachment::Ref &GetActiveAttachment() const{ return pActiveAttachment; }
+	
+	/** Set active attachment or nullptr. */
 	void SetActiveAttachment(aeAttachment *attachment);
 	
 	/** Attach all attachments. */
 	void AttachAttachments();
+	
 	/** Detach all attachments. */
 	void DetachAttachments();
+	
 	/** Reset physics states of all attachments. */
 	void AttachmentsResetPhysics();
 	/*@}*/
 	
+	
 	/** \name Notifiers */
 	/*@{*/
-	/** Retrieves the number of notifiers. */
-	int GetNotifierCount() const;
-	/** Retrieves the notifier at the given index. */
-	aeAnimatorNotifier *GetNotifierAt(int index) const;
-	/** Retrieves the index of the notifier or -1 if not found. */
-	int IndexOfNotifier(aeAnimatorNotifier *notifier) const;
-	/** Determines if the notifier exists. */
-	bool HasNotifier(aeAnimatorNotifier *notifier) const;
-	/** Adds a new notifier. */
+	/** Notifiers. */
+	inline const decTObjectOrderedSet<aeAnimatorNotifier> &GetNotifiers() const{ return pNotifiers; }
+	
+	/** Add notifier. */
 	void AddNotifier(aeAnimatorNotifier *notifier);
-	/** Removes the given notifier. */
+	
+	/** Remove notifier. */
 	void RemoveNotifier(aeAnimatorNotifier *notifier);
+	
 	/** Removes all notifiers. */
 	void RemoveAllNotifiers();
 	

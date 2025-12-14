@@ -204,9 +204,9 @@ public:
 	 * \param[in] to One past last index to visit. Negative counts from end of list.
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
-	void Visit(decObjectVisitor &visitor, int from, int to = -1, int step = 1) const;
-	
-	inline void Visit(decObjectVisitor &visitor) const{Visit(visitor, 0, pObjectCount);}
+	void Visit(decObjectVisitor &visitor, int from, int to, int step = 1) const;
+	void Visit(decObjectVisitor &visitor, int from) const;
+	void Visit(decObjectVisitor &visitor) const;
 	
 	/**
 	 * \brief Find object.
@@ -217,11 +217,9 @@ public:
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
 	bool Find(decObjectEvaluator &evaluator, deObject *&found,
-		int from = 0, int to = -1, int step = 1) const;
-	
-	inline bool Find(decObjectEvaluator &evaluator, deObject *&found) const{
-		return Find(evaluator, found, 0, pObjectCount);
-	}
+		int from, int to, int step = 1) const;
+	bool Find(decObjectEvaluator &evaluator, deObject *&found, int from) const;
+	bool Find(decObjectEvaluator &evaluator, deObject *&found) const;
 	
 	/**
 	 * \brief Collect object into a new list.
@@ -230,12 +228,9 @@ public:
 	 * \param[in] to One past last index to visit. Negative counts from end of list.
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
-	decObjectOrderedSet Collect(decObjectEvaluator &evaluator,
-		int from = 0, int to = -1, int step = 1) const;
-	
-	inline decObjectOrderedSet Collect(decObjectEvaluator &evaluator) const{
-		return Collect(evaluator, 0, pObjectCount);
-	}
+	decObjectOrderedSet Collect(decObjectEvaluator &evaluator, int from, int to, int step = 1) const;
+	decObjectOrderedSet Collect(decObjectEvaluator &evaluator, int from) const;
+	decObjectOrderedSet Collect(decObjectEvaluator &evaluator) const;
 	
 	/**
 	 * \brief Remove objects matching condition.
@@ -244,9 +239,9 @@ public:
 	 * \param[in] to One past last index to visit. Negative counts from end of list.
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
-	void RemoveIf(decObjectEvaluator &evaluator, int from, int to = -1, int step = 1);
-	
-	inline void RemoveIf(decObjectEvaluator &evaluator){RemoveIf(evaluator, 0, pObjectCount);}
+	void RemoveIf(decObjectEvaluator &evaluator, int from, int to, int step = 1);
+	void RemoveIf(decObjectEvaluator &evaluator, int from);
+	void RemoveIf(decObjectEvaluator &evaluator);
 	
 	/** \brief Sort objects in place. */
 	void Sort(decObjectComparator &comparator);

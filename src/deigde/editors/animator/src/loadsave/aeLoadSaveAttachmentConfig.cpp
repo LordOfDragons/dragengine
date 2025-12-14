@@ -96,12 +96,9 @@ void aeLoadSaveAttachmentConfig::SaveAttachmentConfig(const aeAnimator &animator
 void aeLoadSaveAttachmentConfig::pWriteConfiguration(decXmlWriter &writer, const aeAnimator &animator){
 	writer.WriteOpeningTag("attachmentConfig", false, true);
 	
-	const int attachmentCount = animator.GetAttachmentCount();
-	int i;
-	
-	for(i=0; i<attachmentCount; i++){
-		pWriteAttachment(writer, *animator.GetAttachmentAt(i));
-	}
+	animator.GetAttachments().Visit([&](const aeAttachment *attachment){
+		pWriteAttachment(writer, *attachment);
+	});
 	
 	writer.WriteClosingTag("attachmentConfig", true);
 }
