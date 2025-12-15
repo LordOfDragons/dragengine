@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _DECTORDEREDSET_H_
-#define _DECTORDEREDSET_H_
+#ifndef _DECTSET_H_
+#define _DECTSET_H_
 
 #include <iterator>
 #include <cstddef>
@@ -35,11 +35,12 @@
 
 
 /**
- * \brief Ordered element set template class.
- * Elements can be included only once in the set.
+ * \brief Set template class.
+ * 
+ * All elements including default constructed values are allowed and they can occure only once in the set.
  */
 template<typename T, typename TP = T>
-class decTOrderedSet{
+class decTSet{
 private:
 	T *pElements;
 	int pCount, pSize;
@@ -49,14 +50,14 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new set. */
-	decTOrderedSet() : pElements(nullptr), pCount(0), pSize(0){
+	decTSet() : pElements(nullptr), pCount(0), pSize(0){
 	}
 	
 	/**
 	 * \brief Create a new set with initial capacity.
 	 * \throws deeInvalidParam \em capacity is less than 0.
 	 */
-	explicit decTOrderedSet(int capacity) : pElements(nullptr), pCount(0), pSize(0){
+	explicit decTSet(int capacity) : pElements(nullptr), pCount(0), pSize(0){
 		DEASSERT_TRUE(capacity >= 0)
 		
 		if(capacity > 0){
@@ -66,7 +67,7 @@ public:
 	}
 	
 	/** \brief Create copy of a set. */
-	decTOrderedSet(const decTOrderedSet<T,TP> &set) : pElements(nullptr), pCount(0), pSize(0){
+	decTSet(const decTSet<T,TP> &set) : pElements(nullptr), pCount(0), pSize(0){
 		if(set.pCount == 0){
 			return;
 		}
@@ -80,7 +81,7 @@ public:
 	}
 	
 	/** \brief Clean up the set. */
-	~decTOrderedSet(){
+	~decTSet(){
 		RemoveAll();
 		
 		if(pElements){
@@ -92,13 +93,13 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Count of elements. */
+	/** \brief Number of elements. */
 	inline int GetCount() const{ return pCount; }
 	
-	/** \brief List is empty. */
+	/** \brief Set is empty. */
 	inline bool IsEmpty() const{ return pCount == 0; }
 	
-	/** \brief List is not empty. */
+	/** \brief Set is not empty. */
 	inline bool IsNotEmpty() const{ return pCount > 0; }
 	
 	/**
@@ -114,7 +115,7 @@ public:
 	
 	/**
 	 * \brief First element.
-	 * \throws deeInvalidParam if list is empty.
+	 * \throws deeInvalidParam if set is empty.
 	 */
 	const T &First() const{
 		DEASSERT_TRUE(pCount > 0)
@@ -123,11 +124,24 @@ public:
 	
 	/**
 	 * \brief Last element.
-	 * \throws deeInvalidParam if list is empty.
+	 * \throws deeInvalidParam if set is empty.
 	 */
 	const T &Last() const{
 		DEASSERT_TRUE(pCount > 0)
 		return pElements[pCount - 1];
+	}
+	
+	/** \brief Determine if element exists in the set. */
+	bool Has(const TP &element) const{
+		int p;
+		
+		for(p=0; p<pCount; p++){
+			if(element == pElements[p]){
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	/** \brief Index of the first occurance of an element or -1 if not found. */
@@ -143,35 +157,6 @@ public:
 		return -1;
 	}
 	
-	/** \brief Determine if element exists in the list. */
-	bool Has(const TP &element) const{
-		int p;
-		
-		for(p=0; p<pCount; p++){
-			if(element == pElements[p]){
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * \brief Set element at index.
-	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
-	 */
-	void SetAt(int index, const TP &element){
-		DEASSERT_TRUE(index >= 0)
-		DEASSERT_TRUE(index < pCount)
-		
-		if(element == pElements[index]){
-			return;
-		}
-		
-		DEASSERT_FALSE(Has(element))
-		pElements[index] = element;
-	}
-	
 	/**
 	 * \brief Add element.
 	 * \throws deeInvalidParam \em element is present in the set.
@@ -180,10 +165,7 @@ public:
 		DEASSERT_TRUE(AddIfAbsent(element))
 	}
 	
-	/**
-	 * \brief Add element if absent from the set.
-	 * \returns true if added.
-	 */
+	/** \brief Add element if absent from the set. */
 	bool AddIfAbsent(const TP &element){
 		if(Has(element)){
 			return false;
@@ -208,65 +190,6 @@ public:
 	}
 	
 	/**
-	 * \brief Insert element.
-	 * \throws deeInvalidParam \em element is present in the set.
-	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
-	 */
-	void Insert(const TP &element, int index){
-		DEASSERT_FALSE(Has(element))
-		DEASSERT_TRUE(index >= 0)
-		DEASSERT_TRUE(index <= pCount)
-		
-		if(pCount == pSize){
-			int newSize = pSize * 3 / 2 + 1;
-			T * const newArray = new T[newSize];
-			if(pElements){
-				int i;
-				for(i=0; i<pSize; i++){
-					newArray[i] = pElements[i];
-				}
-				delete [] pElements;
-			}
-			pElements = newArray;
-			pSize = newSize;
-		}
-		
-		int i;
-		for(i=pCount; i>index; i--){
-			pElements[i] = pElements[i - 1];
-		}
-		pElements[index] = element;
-		pCount++;
-	}
-	
-	/**
-	 * \brief Move element.
-	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount().
-	 */
-	void Move(const TP &element, int to){
-		const int from = IndexOf(element);
-		DEASSERT_TRUE(from != -1)
-		DEASSERT_TRUE(to >= 0)
-		DEASSERT_TRUE(to < pCount)
-		
-		const T tempElement(pElements[from]);
-		int i;
-		
-		if(to < from){
-			for(i=from; i>to; i--){
-				pElements[i] = pElements[i - 1];
-			}
-			
-		}else if(to > from){
-			for(i=from; i<to; i++){
-				pElements[i] = pElements[i + 1];
-			}
-		}
-		
-		pElements[to] = tempElement;
-	}
-	
-	/**
 	 * \brief Remove element.
 	 * \throws deeInvalidParam \em element is is absent from the set.
 	 */
@@ -274,37 +197,20 @@ public:
 		DEASSERT_TRUE(RemoveIfPresent(element))
 	}
 	
-	/**
-	 * \brief Remove element if present in the set.
-	 * \returns true if removed.
-	 */
+	/** \brief Remove element if present in the set. */
 	bool RemoveIfPresent(const TP &element){
-		int p, position = IndexOf(element);
+		const int position = IndexOf(element);
 		if(position == -1){
 			return false;
 		}
 		
+		int p;
 		for(p=position+1; p<pCount; p++){
 			pElements[p - 1] = pElements[p];
 		}
 		pCount--;
-		return true;
-	}
-	
-	/**
-	 * \brief Remove element from index.
-	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
-	 */
-	void RemoveFrom(int index){
-		DEASSERT_TRUE(index >= 0)
-		DEASSERT_TRUE(index < pCount)
-		
-		int i;
-		for(i=index+1; i<pCount; i++){
-			pElements[i - 1] = pElements[i];
-		}
-		pCount--;
 		pElements[pCount] = T();
+		return true;
 	}
 	
 	/** \brief Remove all elements. */
@@ -317,7 +223,7 @@ public:
 	}
 	
 	/** \brief Determine if this set is equal to another set. */
-	bool Equals(const decTOrderedSet<T,TP> &set) const{
+	bool Equals(const decTSet<T,TP> &set) const{
 		int p;
 		
 		if(set.pCount != pCount){
@@ -332,204 +238,6 @@ public:
 		
 		return true;
 	}
-	
-	/**
-	 * \brief New set with the elements from the beginning of this set.
-	 * \throws deeInvalidParam \em count is less than 0.
-	 */
-	decTOrderedSet<T,TP> GetHead(int count) const{
-		DEASSERT_TRUE(count >= 0)
-		
-		if(count > pCount){
-			count = pCount;
-		}
-		if(count == 0){
-			return decTOrderedSet<T,TP>();
-		}
-		
-		decTOrderedSet<T,TP> set(count);
-		for(set.pCount=0; set.pCount<count; set.pCount++){
-			set.pElements[set.pCount] = pElements[set.pCount];
-		}
-		
-		return set;
-	}
-	
-	/**
-	 * \brief Set set to elements from the beginning of this set.
-	 * \throws deeInvalidParam \em count is less than 0.
-	 */
-	void GetHead(decTOrderedSet<T,TP> &set, int count) const{
-		DEASSERT_TRUE(count >= 0)
-		
-		if(count > pCount){
-			count = pCount;
-		}
-		
-		if(count > set.pSize){
-			T * const newArray = new T[count];
-			if(set.pElements){
-				delete [] set.pElements;
-			}
-			set.pElements = newArray;
-			set.pSize = count;
-		}
-		
-		for(set.pCount=0; set.pCount<count; set.pCount++){
-			set.pElements[set.pCount] = pElements[set.pCount];
-		}
-	}
-	
-	/**
-	 * \brief New set with elements from the end of this set.
-	 * \throws deeInvalidParam \em count is less than 0.
-	 */
-	decTOrderedSet<T,TP> GetTail(int count) const{
-		DEASSERT_TRUE(count >= 0)
-		
-		if(count > pCount){
-			count = pCount;
-		}
-		if(count == 0){
-			return decTOrderedSet<T,TP>();
-		}
-		
-		decTOrderedSet<T,TP> set(count);
-		int from = pCount - count;
-		
-		for(set.pCount=0; set.pCount<count; set.pCount++){
-			set.pElements[set.pCount] = pElements[from + set.pCount];
-		}
-		
-		return set;
-	}
-	
-	/**
-	 * \brief Set set to elements from the end of this set.
-	 * \throws deeInvalidParam \em count is less than 0.
-	 */
-	void GetTail(decTOrderedSet<T,TP> &set, int count) const{
-		DEASSERT_TRUE(count >= 0)
-		
-		if(count > pCount){
-			count = pCount;
-		}
-		
-		if(count > set.pSize){
-			T * const newArray = new T[count];
-			if(set.pElements){
-				delete [] set.pElements;
-			}
-			set.pElements = newArray;
-			set.pSize = count;
-		}
-		
-		int from = pCount - count;
-		
-		for(set.pCount=0; set.pCount<count; set.pCount++){
-			set.pElements[set.pCount] = pElements[from + set.pCount];
-		}
-	}
-	
-	/**
-	 * \brief New set with elements from the middle of this set.
-	 * 
-	 * \em from and \em to are clamped to the last index in the set if larger.
-	 * 
-	 * \throws deeInvalidParam \em from is less than 0.
-	 * \throws deeInvalidParam \em to is less than \em from.
-	 */
-	decTOrderedSet<T,TP> GetMiddle(int from, int to) const{
-		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(to >= from)
-		
-		int count = to - from + 1;
-		if(count > pCount){
-			count = pCount - from;
-		}
-		if(count == 0){
-			return decTOrderedSet<T,TP>();
-		}
-		
-		decTOrderedSet<T,TP> set(count);
-		
-		for(set.pCount=0; set.pCount<count; set.pCount++){
-			set.pElements[set.pCount] = pElements[from + set.pCount];
-		}
-		
-		return set;
-		
-	}
-	
-	/**
-	 * \brief Set set to elements from the middle of this set.
-	 * 
-	 * \em from and \em to are clamped to the last index in the set if larger.
-	 * 
-	 * \throws deeInvalidParam \em from is less than 0.
-	 * \throws deeInvalidParam \em to is less than \em from.
-	 */
-	void GetMiddle(decTOrderedSet<T,TP> &set, int from, int to) const{
-		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(to >= from)
-		
-		int count = to - from + 1;
-		if(count > pCount){
-			count = pCount - from;
-		}
-		
-		if(count > set.pSize){
-			T * const newArray = new T[count];
-			if(set.pElements){
-				delete [] set.pElements;
-			}
-			set.pElements = newArray;
-			set.pSize = count;
-		}
-		
-		for(set.pCount=0; set.pCount<count; set.pCount++){
-			set.pElements[set.pCount] = pElements[from + set.pCount];
-		}
-	}
-	
-	/**
-	 * \brief New set with elements from the middle of this set using a step size.
-	 * 
-	 * \em from and \em to are clamped to the last index in the set if larger.
-	 * 
-	 * \throws deeInvalidParam \em from is less than 0.
-	 * \throws deeInvalidParam \em to is less than \em from.
-	 * \throws deeInvalidParam \em step is less than 1.
-	 */
-	decTOrderedSet<T,TP> GetSliced(int from, int to, int step) const{
-		if(step == 1){
-			return GetMiddle(from, to);
-			
-		}else{
-			// TODO Implementation
-			DETHROW_INFO(deeInvalidAction, "Not implemented yet");
-		}
-	}
-	
-	/**
-	 * \brief Set set to elements from the middle of this set using a step size.
-	 * 
-	 * \em from and \em to are clamped to the last index in the set if larger.
-	 * 
-	 * \throws deeInvalidParam \em from is less than 0.
-	 * \throws deeInvalidParam \em to is less than \em from.
-	 * \throws deeInvalidParam \em step is less than 1.
-	 */
-	void GetSliced(decTOrderedSet<T,TP> &set, int from, int to, int step) const{
-		if(step == 1){
-			GetMiddle(set, from, to);
-			
-		}else{
-			// TODO Implementation
-			DETHROW_INFO(deeInvalidAction, "Not implemented yet");
-		}
-	}
-	
 	
 	
 	/**
@@ -749,7 +457,7 @@ public:
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
 	template<typename Evaluator>
-	decTOrderedSet<T,TP> Collect(Evaluator &evaluator, int from, int to, int step = 1) const{
+	decTSet<T,TP> Collect(Evaluator &evaluator, int from, int to, int step = 1) const{
 		DEASSERT_TRUE(step != 0)
 		
 		if(from < 0){
@@ -763,7 +471,7 @@ public:
 		}
 		DEASSERT_TRUE(to >= 0)
 		
-		decTOrderedSet<T,TP> collected;
+		decTSet<T,TP> collected;
 		int i;
 		if(step > 0){
 			DEASSERT_TRUE(to <= pCount)
@@ -787,19 +495,19 @@ public:
 	}
 	
 	template<typename Evaluator>
-	decTOrderedSet<T,TP> Collect(Evaluator &&evaluator, int from, int to, int step = 1) const{
+	decTSet<T,TP> Collect(Evaluator &&evaluator, int from, int to, int step = 1) const{
 		return Collect<Evaluator>(evaluator, from, to, step);
 	}
 	
 	template<typename Evaluator>
-	decTOrderedSet<T,TP> Collect(Evaluator &evaluator, int from) const{
+	decTSet<T,TP> Collect(Evaluator &evaluator, int from) const{
 		if(from < 0){
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
 		DEASSERT_TRUE(from < pCount)
 		
-		decTOrderedSet<T,TP> collected;
+		decTSet<T,TP> collected;
 		int i;
 		for(i=from; i<pCount; i++){
 			if(evaluator(pElements[i])){
@@ -810,13 +518,13 @@ public:
 	}
 	
 	template<typename Evaluator>
-	decTOrderedSet<T,TP> Collect(Evaluator &&evaluator, int from) const{
+	decTSet<T,TP> Collect(Evaluator &&evaluator, int from) const{
 		return Collect<Evaluator>(evaluator, from);
 	}
 	
 	template<typename Evaluator>
-	inline decTOrderedSet<T,TP> Collect(Evaluator &evaluator) const{
-		decTOrderedSet<T,TP> collected;
+	inline decTSet<T,TP> Collect(Evaluator &evaluator) const{
+		decTSet<T,TP> collected;
 		int i;
 		for(i=0; i<pCount; i++){
 			if(evaluator(pElements[i])){
@@ -827,7 +535,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	inline decTOrderedSet<T,TP> Collect(Evaluator &&evaluator) const{
+	inline decTSet<T,TP> Collect(Evaluator &&evaluator) const{
 		return Collect<Evaluator>(evaluator);
 	}
 	
@@ -860,7 +568,7 @@ public:
 			
 			for(i=from; i<to; i+=step){
 				if(evaluator(pElements[i])){
-					RemoveFrom(i);
+					RemoveIfPresent(pElements[i]);
 					i--;
 					to--;
 				}
@@ -871,7 +579,7 @@ public:
 			
 			for(i=from; i>=to; i+=step){
 				if(evaluator(pElements[i])){
-					RemoveFrom(i);
+					RemoveIfPresent(pElements[i]);
 					i++;
 					to++;
 				}
@@ -895,7 +603,7 @@ public:
 		int i;
 		for(i=from; i<pCount; i++){
 			if(evaluator(pElements[i])){
-				RemoveFrom(i);
+				RemoveIfPresent(pElements[i]);
 				i--;
 			}
 		}
@@ -911,7 +619,7 @@ public:
 		int i;
 		for(i=0; i<pCount; i++){
 			if(evaluator(pElements[i])){
-				RemoveFrom(i);
+				RemoveIfPresent(pElements[i]);
 				i--;
 			}
 		}
@@ -919,55 +627,24 @@ public:
 	
 	template<typename Evaluator>
 	inline void RemoveIf(Evaluator &&evaluator){ RemoveIf<Evaluator>(evaluator); }
-	
-	
-	/** \brief Sort elements in place. */
-	template<typename Comparator>
-	void Sort(Comparator &comparator){
-		if(pCount > 1){
-			pSort<Comparator>(comparator, 0, pCount - 1);
-		}
-	}
-	
-	template<typename Comparator>
-	void Sort(Comparator &&comparator){
-		Sort<Comparator>(comparator);
-	}
-	
-	/** \brief Sort elements as new list. */
-	template<typename Comparator>
-	decTOrderedSet<T,TP> GetSorted(Comparator &comparator) const{
-		decTOrderedSet<T,TP> copy(*this);
-		copy.Sort<Comparator>(comparator);
-		return copy;
-	}
-	
-	template<typename Comparator>
-	decTOrderedSet<T,TP> GetSorted(Comparator &&comparator) const{
-		return GetSorted<Comparator>(comparator);
-	}
 	/*@}*/
 	
 	
 	/** \name Operators */
 	/*@{*/
 	/** \brief Determine if this set is equal to another set. */
-	bool operator==(const decTOrderedSet<T,TP> &set) const{
+	bool operator==(const decTSet<T,TP> &set) const{
 		return Equals(set);
 	}
 	
 	/** \brief Determine if this set is not equal to another set. */
-	bool operator!=(const decTOrderedSet<T,TP> &set) const{
+	bool operator!=(const decTSet<T,TP> &set) const{
 		return !Equals(set);
 	}
 	
-	/**
-	 * \brief New set containing all elements of this set followed by all elements of another set.
-	 * 
-	 * Duplicates are not added twice.
-	 */
-	decTOrderedSet<T,TP> operator+(const decTOrderedSet<T,TP> &set) const{
-		decTOrderedSet<T,TP> nset(pCount + set.pCount);
+	/** \brief New set containing all elements of this set followed by all elements of another set. */
+	decTSet<T,TP> operator+(const decTSet<T,TP> &set) const{
+		decTSet<T,TP> nset(pCount + set.pCount);
 		int i;
 		
 		for(i=0; i<pCount; i++){
@@ -991,7 +668,7 @@ public:
 	}
 	
 	/** \brief Copy set to this set. */
-	decTOrderedSet<T,TP> &operator=(const decTOrderedSet<T,TP> &set){
+	decTSet<T,TP> &operator=(const decTSet<T,TP> &set){
 		if(&set == this){
 			return *this;
 		}
@@ -1015,7 +692,7 @@ public:
 	}
 	
 	/** \brief Append elements of set to this set. */
-	decTOrderedSet<T,TP> &operator+=(const decTOrderedSet<T,TP> &set){
+	decTSet<T,TP> &operator+=(const decTSet<T,TP> &set){
 		if(set.pCount > 0){
 			int count = pCount + set.pCount;
 			
@@ -1053,7 +730,7 @@ public:
 		using pointer = const T*;
 		using reference = const T&;
 		
-		explicit const_iterator(const decTOrderedSet<T,TP>* owner = nullptr, int index = 0) :
+		explicit const_iterator(const decTSet<T,TP>* owner = nullptr, int index = 0) :
 		pOwner(owner), pIndex(index){
 		}
 		
@@ -1138,7 +815,7 @@ public:
 		}
 		
 	private:
-		const decTOrderedSet<T,TP>* pOwner;
+		const decTSet<T,TP>* pOwner;
 		int pIndex;
 	};
 	
@@ -1146,7 +823,7 @@ public:
 	using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 	
 	
-	/** Standard library iterator pointing at first element in list */
+	/** Standard library iterator pointing at first element in set */
 	const_iterator begin() const{
 		return cbegin();
 	}
@@ -1154,7 +831,7 @@ public:
 		return const_iterator(this, 0);
 	}
 	
-	/** Standard library iterator pointing at one past last element in list */
+	/** Standard library iterator pointing at one past last element in set */
 	const_iterator end() const {
 		return cend();
 	}
@@ -1162,7 +839,7 @@ public:
 		return const_iterator(this, pCount);
 	}
 	
-	/** Standard library reverse iterator pointing at one past last element in list */
+	/** Standard library reverse iterator pointing at one past last element in set */
 	const_reverse_iterator rbegin() const{
 		return const_reverse_iterator(end());
 	}
@@ -1170,7 +847,7 @@ public:
 		return const_reverse_iterator(cend());
 	}
 	
-	/** Standard library reverse iterator pointing at first element in list */
+	/** Standard library reverse iterator pointing at first element in set */
 	const_reverse_iterator rend() const{
 		return const_reverse_iterator(begin());
 	}
@@ -1178,63 +855,29 @@ public:
 		return const_reverse_iterator(cbegin());
 	}
 	/*@}*/
-	
-	
-private:
-	template<typename Comparator>
-	void pSort(Comparator &comparator, int left, int right){
-		const T pivot = pElements[left];
-		const int r_hold = right;
-		const int l_hold = left;
-		
-		while(left < right){
-			while(left < right && comparator(pElements[right], pivot) >= 0){
-				right--;
-			}
-			if(left != right){
-				pElements[left] = pElements[right];
-				left++;
-			}
-			while(left < right && comparator(pElements[left], pivot) <= 0){
-				left++;
-			}
-			if(left != right){
-				pElements[right] = pElements[left];
-				right--;
-			}
-		}
-		
-		pElements[left] = pivot;
-		if(l_hold < left){
-			pSort<Comparator>(comparator, l_hold, left - 1);
-		}
-		if(r_hold > left){
-			pSort<Comparator>(comparator, left + 1, r_hold);
-		}
-	}
 };
 
 
 
 /**
- * \brief Ordered object set template class.
+ * \brief Object set template class.
  * 
- * All objects including nullptr are allowed. Objects can be included only once in the set.
+ * All objects including nullptr are allowed. Objects can be included more than once in the set.
  * 
  * This template uses deTObjectReference.
  */
 template<typename T>
-using decTObjectOrderedSet = decTOrderedSet<deTObjectReference<T>, T*>;
+using decTObjectSet = decTSet<deTObjectReference<T>, T*>;
 
 /**
- * \brief Thread safe ordered object set template class.
+ * \brief Thread safe object set template class.
  * 
- * All objects including nullptr are allowed. Objects can be included only once in the set.
+ * All objects including nullptr are allowed. Objects can be included more than once in the set.
  * 
  * This template uses deTThreadSafeObjectReference to get thread safe assignment of
  * object references. This does not make the set itself thread safe though.
  */
 template<typename T>
-using decTThreadSafeObjectOrderedSet = decTOrderedSet<deTThreadSafeObjectReference<T>, T*>;
+using decTThreadSafeObjectSet = decTSet<deTThreadSafeObjectReference<T>, T*>;
 
 #endif

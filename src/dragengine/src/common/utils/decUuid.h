@@ -100,6 +100,9 @@ public:
 	
 	/** Set to empty. */
 	void Clear();
+	
+	/** Hash. */
+	unsigned int Hash() const;
 	/*@}*/
 	
 	
@@ -122,5 +125,12 @@ public:
 	operator bool() const;
 	/*@}*/
 };
+
+
+/** \brief Global hash functions used for example with decTDictionary. */
+
+inline unsigned int DEHash(const decUuid &key){
+	return key.Hash();
+}
 
 #endif

@@ -161,6 +161,11 @@ public:
 		return reference;
 	}
 	
+	/** Hash. */
+	inline unsigned int Hash() const{
+		return pObject ? DEHash(pObject) : 0;
+	}
+	
 	/** \brief Object is nullptr. */
 	inline bool operator!() const{
 		return pObject == nullptr;
@@ -297,5 +302,13 @@ public:
 	}
 	/*@}*/
 };
+
+
+/** \brief Global hash functions used for example with decTDictionary. */
+
+template<typename T>
+inline unsigned int DEHash(const deTObjectReference<T> &key){
+	return key.Hash();
+}
 
 #endif

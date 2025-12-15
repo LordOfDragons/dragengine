@@ -353,6 +353,17 @@ bool decUniqueID::IsZero() const{
 	return true;
 }
 
+unsigned int decUniqueID::Hash() const{
+	const int count = decMath::min(pByteCount, 4);
+	unsigned int hash = 0;
+	int i;
+	
+	for(i=0; i<count; i++){
+		hash |= pBytes[i] << (8 * i);
+	}
+	
+	return hash;
+}
 
 
 // Operators

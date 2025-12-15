@@ -4,6 +4,10 @@
 #include "detRunner.h"
 #include "detCase.h"
 #include "collection/detTOrderedSet.h"
+#include "collection/detTList.h"
+#include "collection/detTSet.h"
+#include "collection/detTDictionary.h"
+#include "collection/detTLinkedList.h"
 #include "curve/detCurve2D.h"
 #include "curve/detCurveBezier3D.h"
 #include "string/detString.h"
@@ -181,6 +185,10 @@ detRunner::detRunner(){
 	pAddTest(new detUnicodeStringSet);
 	pAddTest(new detUnicodeStringDictionary);
 	pAddTest(new detTOrderedSet);
+	pAddTest(new detTList);
+	pAddTest(new detTSet);
+	pAddTest(new detTDictionary);
+	pAddTest(new detTLinkedList);
 	pAddTest(new detPath);
 	pAddTest(new detZFile);
 	pAddTest(new detMath);

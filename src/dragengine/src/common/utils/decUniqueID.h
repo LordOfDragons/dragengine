@@ -122,6 +122,9 @@ public:
 	
 	/** \brief Id is 0. */
 	bool IsZero() const;
+	
+	/** \brief Hash. */
+	unsigned int Hash() const;
 	/*@}*/
 	
 	
@@ -150,5 +153,12 @@ public:
 	bool operator>=(const decUniqueID &id) const;
 	/*@}*/
 };
+
+
+/** \brief Global hash functions used for example with decTDictionary. */
+
+inline unsigned int DEHash(const decUniqueID &key){
+	return key.Hash();
+}
 
 #endif

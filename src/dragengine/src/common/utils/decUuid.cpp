@@ -179,6 +179,9 @@ void decUuid::Clear(){
 	memset(pValues, 0, sizeof(pValues));
 }
 
+unsigned int decUuid::Hash() const{
+	return pValues[0] | (pValues[1] << 8) | (pValues[2] << 16) | (pValues[3] << 24);
+}
 
 
 // Operators

@@ -501,4 +501,15 @@ private:
 	static bool fxfilematch(const char *pattern,const char *string, int flags);
 };
 
+
+/** \brief Global hash functions used for example with decTDictionary. */
+
+inline unsigned int DEHash(const decString &key){
+	return key.Hash();
+}
+
+inline unsigned int DEHash(const char *key){
+	return decString::Hash(key);
+}
+
 #endif

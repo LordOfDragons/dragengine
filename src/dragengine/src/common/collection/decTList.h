@@ -22,24 +22,27 @@
  * SOFTWARE.
  */
 
-#ifndef _DECTORDEREDSET_H_
-#define _DECTORDEREDSET_H_
+#ifndef _DECTLIST_H_
+#define _DECTLIST_H_
 
 #include <iterator>
 #include <cstddef>
 
 #include "decCollectionInterfaces.h"
+#include "../math/decMath.h"
 #include "../exceptions.h"
 #include "../../deTObjectReference.h"
 #include "../../threading/deTThreadSafeObjectReference.h"
 
 
 /**
- * \brief Ordered element set template class.
- * Elements can be included only once in the set.
+ * \brief List template class.
+ * 
+ * All elements including default constructed values are allowed. Elements can be included
+ * multiple times in the list.
  */
 template<typename T, typename TP = T>
-class decTOrderedSet{
+class decTList{
 private:
 	T *pElements;
 	int pCount, pSize;
@@ -48,15 +51,15 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create a new set. */
-	decTOrderedSet() : pElements(nullptr), pCount(0), pSize(0){
+	/** \brief Create a new list. */
+	decTList() : pElements(nullptr), pCount(0), pSize(0){
 	}
 	
 	/**
-	 * \brief Create a new set with initial capacity.
+	 * \brief Create a new list with an initial capacity.
 	 * \throws deeInvalidParam \em capacity is less than 0.
 	 */
-	explicit decTOrderedSet(int capacity) : pElements(nullptr), pCount(0), pSize(0){
+	explicit decTList(int capacity) : pElements(nullptr), pCount(0), pSize(0){
 		DEASSERT_TRUE(capacity >= 0)
 		
 		if(capacity > 0){
@@ -65,22 +68,22 @@ public:
 		}
 	}
 	
-	/** \brief Create copy of a set. */
-	decTOrderedSet(const decTOrderedSet<T,TP> &set) : pElements(nullptr), pCount(0), pSize(0){
-		if(set.pCount == 0){
+	/** \brief Create a copy of a list. */
+	decTList(const decTList<T,TP> &list) : pElements(nullptr), pCount(0), pSize(0){
+		if(list.pCount == 0){
 			return;
 		}
 		
-		pElements = new T[set.pCount];
-		pSize = set.pCount;
+		pElements = new T[list.pCount];
+		pSize = list.pCount;
 		
-		for(pCount=0; pCount<set.pCount; pCount++){
-			pElements[pCount] = set.pElements[pCount];
+		for(pCount=0; pCount<list.pCount; pCount++){
+			pElements[pCount] = list.pElements[pCount];
 		}
 	}
 	
-	/** \brief Clean up the set. */
-	~decTOrderedSet(){
+	/** \brief Clean up the list. */
+	~decTList(){
 		RemoveAll();
 		
 		if(pElements){
@@ -92,7 +95,7 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/** \brief Count of elements. */
+	/** \brief Number of elements. */
 	inline int GetCount() const{ return pCount; }
 	
 	/** \brief List is empty. */
@@ -106,6 +109,17 @@ public:
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
 	const T &GetAt(int index) const{
+		DEASSERT_TRUE(index >= 0)
+		DEASSERT_TRUE(index < pCount)
+		
+		return pElements[index];
+	}
+	
+	/**
+	 * \brief Element at index.
+	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
+	 */
+	T &GetAt(int index){
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index < pCount)
 		
@@ -130,11 +144,41 @@ public:
 		return pElements[pCount - 1];
 	}
 	
+	/**
+	 * \brief Set element at index.
+	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
+	 */
+	void SetAt(int index, const TP &element){
+		DEASSERT_TRUE(index >= 0)
+		DEASSERT_TRUE(index < pCount)
+		
+		pElements[index] = element;
+	}
+	
 	/** \brief Index of the first occurance of an element or -1 if not found. */
 	int IndexOf(const TP &element) const{
 		int p;
 		
 		for(p=0; p<pCount; p++){
+			if(element == pElements[p]){
+				return p;
+			}
+		}
+		
+		return -1;
+	}
+	
+	/**
+	 * \brief Index of the first occurance of an element or -1 if not found.
+	 * \throws deeInvalidParam \em start is less than 0 or larger than GetCount()-1.
+	 */
+	int IndexOf(const TP &element, int start) const{
+		DEASSERT_TRUE(start >= 0)
+		DEASSERT_TRUE(start < pCount)
+		
+		int p;
+		
+		for(p=start; p<pCount; p++){
 			if(element == pElements[p]){
 				return p;
 			}
@@ -156,39 +200,22 @@ public:
 		return false;
 	}
 	
-	/**
-	 * \brief Set element at index.
-	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
-	 */
-	void SetAt(int index, const TP &element){
-		DEASSERT_TRUE(index >= 0)
-		DEASSERT_TRUE(index < pCount)
+	/** \brief Number of times element exists in the list. */
+	int CountOccurance(const TP &element) const{
+		int count = 0;
+		int p;
 		
-		if(element == pElements[index]){
-			return;
+		for(p=0; p<pCount; p++){
+			if(element == pElements[p]){
+				count++;
+			}
 		}
 		
-		DEASSERT_FALSE(Has(element))
-		pElements[index] = element;
+		return count;
 	}
 	
-	/**
-	 * \brief Add element.
-	 * \throws deeInvalidParam \em element is present in the set.
-	 */
+	/** \brief Add element. */
 	void Add(const TP &element){
-		DEASSERT_TRUE(AddIfAbsent(element))
-	}
-	
-	/**
-	 * \brief Add element if absent from the set.
-	 * \returns true if added.
-	 */
-	bool AddIfAbsent(const TP &element){
-		if(Has(element)){
-			return false;
-		}
-		
 		if(pCount == pSize){
 			int newSize = pSize * 3 / 2 + 1;
 			T * const newArray = new T[newSize];
@@ -204,16 +231,13 @@ public:
 		}
 		
 		pElements[pCount++] = element;
-		return true;
 	}
 	
 	/**
 	 * \brief Insert element.
-	 * \throws deeInvalidParam \em element is present in the set.
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
 	void Insert(const TP &element, int index){
-		DEASSERT_FALSE(Has(element))
 		DEASSERT_TRUE(index >= 0)
 		DEASSERT_TRUE(index <= pCount)
 		
@@ -241,13 +265,18 @@ public:
 	
 	/**
 	 * \brief Move element.
+	 * \throws deeInvalidParam \em from is less than 0 or larger than GetCount()-1.
 	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount().
 	 */
-	void Move(const TP &element, int to){
-		const int from = IndexOf(element);
-		DEASSERT_TRUE(from != -1)
+	void Move(int from, int to){
+		DEASSERT_TRUE(from >= 0)
+		DEASSERT_TRUE(from < pCount)
 		DEASSERT_TRUE(to >= 0)
-		DEASSERT_TRUE(to < pCount)
+		DEASSERT_TRUE(to <= pCount)
+		
+		if(from == to){
+			return;
+		}
 		
 		const T tempElement(pElements[from]);
 		int i;
@@ -256,39 +285,14 @@ public:
 			for(i=from; i>to; i--){
 				pElements[i] = pElements[i - 1];
 			}
+			pElements[to] = tempElement;
 			
-		}else if(to > from){
-			for(i=from; i<to; i++){
+		}else{
+			for(i=from; i<to-1; i++){
 				pElements[i] = pElements[i + 1];
 			}
+			pElements[to - 1] = tempElement;
 		}
-		
-		pElements[to] = tempElement;
-	}
-	
-	/**
-	 * \brief Remove element.
-	 * \throws deeInvalidParam \em element is is absent from the set.
-	 */
-	void Remove(const TP &element){
-		DEASSERT_TRUE(RemoveIfPresent(element))
-	}
-	
-	/**
-	 * \brief Remove element if present in the set.
-	 * \returns true if removed.
-	 */
-	bool RemoveIfPresent(const TP &element){
-		int p, position = IndexOf(element);
-		if(position == -1){
-			return false;
-		}
-		
-		for(p=position+1; p<pCount; p++){
-			pElements[p - 1] = pElements[p];
-		}
-		pCount--;
-		return true;
 	}
 	
 	/**
@@ -316,16 +320,16 @@ public:
 		pCount = 0;
 	}
 	
-	/** \brief Determine if this set is equal to another set. */
-	bool Equals(const decTOrderedSet<T,TP> &set) const{
+	/** \brief Determine if this list is equal to another list. */
+	bool Equals(const decTList<T,TP> &list) const{
 		int p;
 		
-		if(set.pCount != pCount){
+		if(list.pCount != pCount){
 			return false;
 		}
 		
 		for(p=0; p<pCount; p++){
-			if(!set.Has(pElements[p])){
+			if(!(pElements[p] == list.pElements[p])){
 				return false;
 			}
 		}
@@ -334,112 +338,112 @@ public:
 	}
 	
 	/**
-	 * \brief New set with the elements from the beginning of this set.
+	 * \brief New list with the values from the beginning of this list.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	decTOrderedSet<T,TP> GetHead(int count) const{
+	decTList<T,TP> GetHead(int count) const{
 		DEASSERT_TRUE(count >= 0)
 		
 		if(count > pCount){
 			count = pCount;
 		}
 		if(count == 0){
-			return decTOrderedSet<T,TP>();
+			return decTList<T,TP>();
 		}
 		
-		decTOrderedSet<T,TP> set(count);
-		for(set.pCount=0; set.pCount<count; set.pCount++){
-			set.pElements[set.pCount] = pElements[set.pCount];
+		decTList<T,TP> list(count);
+		for(list.pCount=0; list.pCount<count; list.pCount++){
+			list.pElements[list.pCount] = pElements[list.pCount];
 		}
 		
-		return set;
+		return list;
 	}
 	
 	/**
-	 * \brief Set set to elements from the beginning of this set.
+	 * \brief Set list to values from the beginning of this list.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	void GetHead(decTOrderedSet<T,TP> &set, int count) const{
+	void GetHead(decTList<T,TP> &list, int count) const{
 		DEASSERT_TRUE(count >= 0)
 		
 		if(count > pCount){
 			count = pCount;
 		}
 		
-		if(count > set.pSize){
+		if(count > list.pSize){
 			T * const newArray = new T[count];
-			if(set.pElements){
-				delete [] set.pElements;
+			if(list.pElements){
+				delete [] list.pElements;
 			}
-			set.pElements = newArray;
-			set.pSize = count;
+			list.pElements = newArray;
+			list.pSize = count;
 		}
 		
-		for(set.pCount=0; set.pCount<count; set.pCount++){
-			set.pElements[set.pCount] = pElements[set.pCount];
+		for(list.pCount=0; list.pCount<count; list.pCount++){
+			list.pElements[list.pCount] = pElements[list.pCount];
 		}
 	}
 	
 	/**
-	 * \brief New set with elements from the end of this set.
+	 * \brief New list with values from the end of this list.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	decTOrderedSet<T,TP> GetTail(int count) const{
+	decTList<T,TP> GetTail(int count) const{
 		DEASSERT_TRUE(count >= 0)
 		
 		if(count > pCount){
 			count = pCount;
 		}
 		if(count == 0){
-			return decTOrderedSet<T,TP>();
+			return decTList<T,TP>();
 		}
 		
-		decTOrderedSet<T,TP> set(count);
+		decTList<T,TP> list(count);
 		int from = pCount - count;
 		
-		for(set.pCount=0; set.pCount<count; set.pCount++){
-			set.pElements[set.pCount] = pElements[from + set.pCount];
+		for(list.pCount=0; list.pCount<count; list.pCount++){
+			list.pElements[list.pCount] = pElements[from + list.pCount];
 		}
 		
-		return set;
+		return list;
 	}
 	
 	/**
-	 * \brief Set set to elements from the end of this set.
+	 * \brief Set list to values from the end of this list.
 	 * \throws deeInvalidParam \em count is less than 0.
 	 */
-	void GetTail(decTOrderedSet<T,TP> &set, int count) const{
+	void GetTail(decTList<T,TP> &list, int count) const{
 		DEASSERT_TRUE(count >= 0)
 		
 		if(count > pCount){
 			count = pCount;
 		}
 		
-		if(count > set.pSize){
+		if(count > list.pSize){
 			T * const newArray = new T[count];
-			if(set.pElements){
-				delete [] set.pElements;
+			if(list.pElements){
+				delete [] list.pElements;
 			}
-			set.pElements = newArray;
-			set.pSize = count;
+			list.pElements = newArray;
+			list.pSize = count;
 		}
 		
 		int from = pCount - count;
 		
-		for(set.pCount=0; set.pCount<count; set.pCount++){
-			set.pElements[set.pCount] = pElements[from + set.pCount];
+		for(list.pCount=0; list.pCount<count; list.pCount++){
+			list.pElements[list.pCount] = pElements[from + list.pCount];
 		}
 	}
 	
 	/**
-	 * \brief New set with elements from the middle of this set.
+	 * \brief New list with values from the middle of this list.
 	 * 
-	 * \em from and \em to are clamped to the last index in the set if larger.
+	 * \em from and \em to are clamped to the last index in the list if larger.
 	 * 
 	 * \throws deeInvalidParam \em from is less than 0.
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 */
-	decTOrderedSet<T,TP> GetMiddle(int from, int to) const{
+	decTList<T,TP> GetMiddle(int from, int to) const{
 		DEASSERT_TRUE(from >= 0)
 		DEASSERT_TRUE(to >= from)
 		
@@ -448,28 +452,27 @@ public:
 			count = pCount - from;
 		}
 		if(count == 0){
-			return decTOrderedSet<T,TP>();
+			return decTList<T,TP>();
 		}
 		
-		decTOrderedSet<T,TP> set(count);
+		decTList<T,TP> list(count);
 		
-		for(set.pCount=0; set.pCount<count; set.pCount++){
-			set.pElements[set.pCount] = pElements[from + set.pCount];
+		for(list.pCount=0; list.pCount<count; list.pCount++){
+			list.pElements[list.pCount] = pElements[from + list.pCount];
 		}
 		
-		return set;
-		
+		return list;
 	}
 	
 	/**
-	 * \brief Set set to elements from the middle of this set.
+	 * \brief Set list to values from the middle of this list.
 	 * 
-	 * \em from and \em to are clamped to the last index in the set if larger.
+	 * \em from and \em to are clamped to the last index in the list if larger.
 	 * 
 	 * \throws deeInvalidParam \em from is less than 0.
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 */
-	void GetMiddle(decTOrderedSet<T,TP> &set, int from, int to) const{
+	void GetMiddle(decTList<T,TP> &list, int from, int to) const{
 		DEASSERT_TRUE(from >= 0)
 		DEASSERT_TRUE(to >= from)
 		
@@ -478,58 +481,80 @@ public:
 			count = pCount - from;
 		}
 		
-		if(count > set.pSize){
+		if(count > list.pSize){
 			T * const newArray = new T[count];
-			if(set.pElements){
-				delete [] set.pElements;
+			if(list.pElements){
+				delete [] list.pElements;
 			}
-			set.pElements = newArray;
-			set.pSize = count;
+			list.pElements = newArray;
+			list.pSize = count;
 		}
 		
-		for(set.pCount=0; set.pCount<count; set.pCount++){
-			set.pElements[set.pCount] = pElements[from + set.pCount];
+		for(list.pCount=0; list.pCount<count; list.pCount++){
+			list.pElements[list.pCount] = pElements[from + list.pCount];
 		}
 	}
 	
 	/**
-	 * \brief New set with elements from the middle of this set using a step size.
+	 * \brief New list with values from the middle of this list using a step size.
 	 * 
-	 * \em from and \em to are clamped to the last index in the set if larger.
+	 * \em from and \em to are clamped to the last index in the list if larger.
 	 * 
 	 * \throws deeInvalidParam \em from is less than 0.
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 * \throws deeInvalidParam \em step is less than 1.
 	 */
-	decTOrderedSet<T,TP> GetSliced(int from, int to, int step) const{
+	decTList<T,TP> GetSliced(int from, int to, int step) const{
 		if(step == 1){
 			return GetMiddle(from, to);
 			
 		}else{
-			// TODO Implementation
-			DETHROW_INFO(deeInvalidAction, "Not implemented yet");
+			decTList<T,TP> list;
+			GetSliced(list, from, to, step);
+			return list;
 		}
 	}
 	
 	/**
-	 * \brief Set set to elements from the middle of this set using a step size.
+	 * \brief Set list to values from the middle of this list using a step size.
 	 * 
-	 * \em from and \em to are clamped to the last index in the set if larger.
+	 * \em from and \em to are clamped to the last index in the list if larger.
 	 * 
 	 * \throws deeInvalidParam \em from is less than 0.
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 * \throws deeInvalidParam \em step is less than 1.
 	 */
-	void GetSliced(decTOrderedSet<T,TP> &set, int from, int to, int step) const{
+	void GetSliced(decTList<T,TP> &list, int from, int to, int step) const{
 		if(step == 1){
-			GetMiddle(set, from, to);
-			
-		}else{
-			// TODO Implementation
-			DETHROW_INFO(deeInvalidAction, "Not implemented yet");
+			GetMiddle(list, from, to);
+			return;
 		}
+		
+		DEASSERT_TRUE(from >= 0)
+		DEASSERT_TRUE(to >= from)
+		DEASSERT_TRUE(step >= 1)
+		
+		const int count = decMath::min((to - from) / step + 1, pCount - from);
+		if(count <= 0){
+			list.RemoveAll();
+			return;
+		}
+		
+		if(count > list.pSize){
+			T * const newArray = new T[count];
+			if(list.pElements){
+				delete [] list.pElements;
+			}
+			list.pElements = newArray;
+			list.pSize = count;
+		}
+		
+		int i, written = 0;
+		for(i=from; written<count; i+=step, written++){
+			list.pElements[written] = pElements[i];
+		}
+		list.pCount = written;
 	}
-	
 	
 	
 	/**
@@ -749,7 +774,7 @@ public:
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
 	template<typename Evaluator>
-	decTOrderedSet<T,TP> Collect(Evaluator &evaluator, int from, int to, int step = 1) const{
+	decTList<T,TP> Collect(Evaluator &evaluator, int from, int to, int step = 1) const{
 		DEASSERT_TRUE(step != 0)
 		
 		if(from < 0){
@@ -763,7 +788,7 @@ public:
 		}
 		DEASSERT_TRUE(to >= 0)
 		
-		decTOrderedSet<T,TP> collected;
+		decTList<T,TP> collected;
 		int i;
 		if(step > 0){
 			DEASSERT_TRUE(to <= pCount)
@@ -787,19 +812,19 @@ public:
 	}
 	
 	template<typename Evaluator>
-	decTOrderedSet<T,TP> Collect(Evaluator &&evaluator, int from, int to, int step = 1) const{
+	decTList<T,TP> Collect(Evaluator &&evaluator, int from, int to, int step = 1) const{
 		return Collect<Evaluator>(evaluator, from, to, step);
 	}
 	
 	template<typename Evaluator>
-	decTOrderedSet<T,TP> Collect(Evaluator &evaluator, int from) const{
+	decTList<T,TP> Collect(Evaluator &evaluator, int from) const{
 		if(from < 0){
 			from = pCount + from;
 		}
 		DEASSERT_TRUE(from >= 0)
 		DEASSERT_TRUE(from < pCount)
 		
-		decTOrderedSet<T,TP> collected;
+		decTList<T,TP> collected;
 		int i;
 		for(i=from; i<pCount; i++){
 			if(evaluator(pElements[i])){
@@ -810,13 +835,13 @@ public:
 	}
 	
 	template<typename Evaluator>
-	decTOrderedSet<T,TP> Collect(Evaluator &&evaluator, int from) const{
+	decTList<T,TP> Collect(Evaluator &&evaluator, int from) const{
 		return Collect<Evaluator>(evaluator, from);
 	}
 	
 	template<typename Evaluator>
-	inline decTOrderedSet<T,TP> Collect(Evaluator &evaluator) const{
-		decTOrderedSet<T,TP> collected;
+	inline decTList<T,TP> Collect(Evaluator &evaluator) const{
+		decTList<T,TP> collected;
 		int i;
 		for(i=0; i<pCount; i++){
 			if(evaluator(pElements[i])){
@@ -827,7 +852,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	inline decTOrderedSet<T,TP> Collect(Evaluator &&evaluator) const{
+	inline decTList<T,TP> Collect(Evaluator &&evaluator) const{
 		return Collect<Evaluator>(evaluator);
 	}
 	
@@ -936,14 +961,14 @@ public:
 	
 	/** \brief Sort elements as new list. */
 	template<typename Comparator>
-	decTOrderedSet<T,TP> GetSorted(Comparator &comparator) const{
-		decTOrderedSet<T,TP> copy(*this);
+	decTList<T,TP> GetSorted(Comparator &comparator) const{
+		decTList<T,TP> copy(*this);
 		copy.Sort<Comparator>(comparator);
 		return copy;
 	}
 	
 	template<typename Comparator>
-	decTOrderedSet<T,TP> GetSorted(Comparator &&comparator) const{
+	decTList<T,TP> GetSorted(Comparator &&comparator) const{
 		return GetSorted<Comparator>(comparator);
 	}
 	/*@}*/
@@ -951,73 +976,80 @@ public:
 	
 	/** \name Operators */
 	/*@{*/
-	/** \brief Determine if this set is equal to another set. */
-	bool operator==(const decTOrderedSet<T,TP> &set) const{
-		return Equals(set);
+	/** \brief Determine if this list is equal to another list. */
+	bool operator==(const decTList<T,TP> &list) const{
+		return Equals(list);
 	}
 	
-	/** \brief Determine if this set is not equal to another set. */
-	bool operator!=(const decTOrderedSet<T,TP> &set) const{
-		return !Equals(set);
+	/** \brief Determine if this list is not equal to another list. */
+	bool operator!=(const decTList<T,TP> &list) const{
+		return !Equals(list);
 	}
 	
-	/**
-	 * \brief New set containing all elements of this set followed by all elements of another set.
-	 * 
-	 * Duplicates are not added twice.
-	 */
-	decTOrderedSet<T,TP> operator+(const decTOrderedSet<T,TP> &set) const{
-		decTOrderedSet<T,TP> nset(pCount + set.pCount);
+	/** \brief New list containing all values of this list followed by all values of another list. */
+	decTList<T,TP> operator+(const decTList<T,TP> &list) const{
+		decTList<T,TP> nlist(pCount + list.pCount);
 		int i;
 		
 		for(i=0; i<pCount; i++){
-			nset.pElements[i] = pElements[i];
+			nlist.pElements[i] = pElements[i];
 		}
-		nset.pCount = pCount;
+		nlist.pCount = pCount;
 		
-		for(i=0; i<set.pCount; i++){
-			nset.AddIfAbsent(set.pElements[i]);
+		for(i=0; i<list.pCount; i++){
+			nlist.pElements[pCount + i] = list.pElements[i];
 		}
+		nlist.pCount += list.pCount;
 		
-		return nset;
+		return nlist;
 	}
 	
 	/**
 	 * \brief Element at index.
+	 * 
 	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
 	 */
 	const T &operator[](int index) const{
 		return GetAt(index);
 	}
 	
-	/** \brief Copy set to this set. */
-	decTOrderedSet<T,TP> &operator=(const decTOrderedSet<T,TP> &set){
-		if(&set == this){
+	/**
+	 * \brief Element at index.
+	 * 
+	 * \throws deeInvalidParam \em index is less than 0 or larger than GetCount()-1.
+	 */
+	T &operator[](int index){
+		return GetAt(index);
+	}
+	
+	/** \brief Copy list to this list. */
+	decTList<T,TP> &operator=(const decTList<T,TP> &list){
+		if(&list == this){
 			return *this;
 		}
 		
 		RemoveAll();
 		
-		if(set.pCount > pSize){
-			T * const newArray = new T[set.pCount];
+		if(list.pCount > pSize){
+			T * const newArray = new T[list.pCount];
 			if(pElements){
 				delete [] pElements;
 			}
 			pElements = newArray;
-			pSize = set.pCount;
+			pSize = list.pCount;
 		}
 		
-		for(pCount=0; pCount<set.pCount; pCount++){
-			pElements[pCount] = set.pElements[pCount];
+		for(pCount=0; pCount<list.pCount; pCount++){
+			pElements[pCount] = list.pElements[pCount];
 		}
 		
 		return *this;
 	}
 	
-	/** \brief Append elements of set to this set. */
-	decTOrderedSet<T,TP> &operator+=(const decTOrderedSet<T,TP> &set){
-		if(set.pCount > 0){
-			int count = pCount + set.pCount;
+	/** \brief Append values of list to this list. */
+	decTList<T,TP> &operator+=(const decTList<T,TP> &list){
+		if(list.pCount > 0){
+			int count = pCount + list.pCount;
 			
 			if(count > pSize){
 				T * const newArray = new T[count];
@@ -1033,8 +1065,8 @@ public:
 			}
 			
 			int i;
-			for(i=0; i<set.pCount; i++){
-				AddIfAbsent(set.pElements[i]);
+			for(i=0; i<list.pCount; i++){
+				pElements[pCount++] = list.pElements[i];
 			}
 		}
 		
@@ -1053,7 +1085,7 @@ public:
 		using pointer = const T*;
 		using reference = const T&;
 		
-		explicit const_iterator(const decTOrderedSet<T,TP>* owner = nullptr, int index = 0) :
+		explicit const_iterator(const decTList<T,TP>* owner = nullptr, int index = 0) :
 		pOwner(owner), pIndex(index){
 		}
 		
@@ -1138,15 +1170,114 @@ public:
 		}
 		
 	private:
-		const decTOrderedSet<T,TP>* pOwner;
+		const decTList<T,TP>* pOwner;
 		int pIndex;
 	};
 	
+	class iterator{
+	public:
+		using iterator_category = std::random_access_iterator_tag;
+		using value_type = T;
+		using difference_type = std::ptrdiff_t;
+		using pointer = T*;
+		using reference = T&;
+		
+		explicit iterator(decTList<T,TP>* owner = nullptr, int index = 0) :
+		pOwner(owner), pIndex(index){
+		}
+		
+		reference operator*() const{
+			return pOwner->GetAt(pIndex);
+		}
+		
+		pointer operator->() const{
+			return &pOwner->GetAt(pIndex);
+		}
+		
+		iterator& operator++(){
+			pIndex++;
+			return *this;
+		}
+		
+		iterator operator++(int){
+			iterator tmp = *this;
+			pIndex++;
+			return tmp;
+		}
+		
+		iterator& operator--(){
+			pIndex--;
+			return *this;
+		}
+		
+		iterator operator--(int){
+			iterator tmp = *this;
+			pIndex--;
+			return tmp;
+		}
+		
+		iterator& operator+=(difference_type n){
+			pIndex += static_cast<int>(n);
+			return *this;
+		}
+		
+		iterator& operator-=(difference_type n){
+			pIndex -= static_cast<int>(n);
+			return *this;
+		}
+		
+		iterator operator+(difference_type n) const{
+			return iterator(pOwner, pIndex + static_cast<int>(n));
+		}
+		
+		iterator operator-(difference_type n) const{
+			return iterator(pOwner, pIndex - static_cast<int>(n));
+		}
+		
+		difference_type operator-(const iterator &other) const{
+			return static_cast<difference_type>(pIndex - other.pIndex);
+		}
+		
+		reference operator[](difference_type n) const{
+			return pOwner->GetAt(pIndex + static_cast<int>(n));
+		}
+		
+		bool operator==(const iterator &o) const{
+			return pOwner == o.pOwner && pIndex == o.pIndex;
+		}
+		
+		bool operator!=(const iterator &o) const{
+			return !(*this == o);
+		}
+		
+		bool operator<(const iterator &o) const{
+			return pIndex < o.pIndex;
+		}
+		
+		bool operator<=(const iterator &o) const{
+			return pIndex <= o.pIndex;
+		}
+		
+		bool operator>(const iterator &o) const{
+			return pIndex > o.pIndex;
+		}
+		
+		bool operator>=(const iterator &o) const{
+			return pIndex >= o.pIndex;
+		}
+		
+	private:
+		decTList<T,TP>* pOwner;
+		int pIndex;
+	};
 	
 	using const_reverse_iterator = std::reverse_iterator<const_iterator>;
-	
+	using reverse_iterator = std::reverse_iterator<iterator>;
 	
 	/** Standard library iterator pointing at first element in list */
+	iterator begin(){
+		return iterator(this, 0);
+	}
 	const_iterator begin() const{
 		return cbegin();
 	}
@@ -1155,6 +1286,9 @@ public:
 	}
 	
 	/** Standard library iterator pointing at one past last element in list */
+	iterator end(){
+		return iterator(this, pCount);
+	}
 	const_iterator end() const {
 		return cend();
 	}
@@ -1163,6 +1297,9 @@ public:
 	}
 	
 	/** Standard library reverse iterator pointing at one past last element in list */
+	reverse_iterator rbegin(){
+		return reverse_iterator(end());
+	}
 	const_reverse_iterator rbegin() const{
 		return const_reverse_iterator(end());
 	}
@@ -1171,6 +1308,9 @@ public:
 	}
 	
 	/** Standard library reverse iterator pointing at first element in list */
+	reverse_iterator rend(){
+		return reverse_iterator(begin());
+	}
 	const_reverse_iterator rend() const{
 		return const_reverse_iterator(begin());
 	}
@@ -1217,24 +1357,24 @@ private:
 
 
 /**
- * \brief Ordered object set template class.
+ * \brief Object list template class.
  * 
- * All objects including nullptr are allowed. Objects can be included only once in the set.
+ * All objects including nullptr are allowed.
  * 
  * This template uses deTObjectReference.
  */
 template<typename T>
-using decTObjectOrderedSet = decTOrderedSet<deTObjectReference<T>, T*>;
+using decTObjectList = decTList<deTObjectReference<T>, T*>;
 
 /**
- * \brief Thread safe ordered object set template class.
+ * \brief Thread safe object list template class.
  * 
- * All objects including nullptr are allowed. Objects can be included only once in the set.
+ * All objects including nullptr are allowed.
  * 
  * This template uses deTThreadSafeObjectReference to get thread safe assignment of
  * object references. This does not make the set itself thread safe though.
  */
 template<typename T>
-using decTThreadSafeObjectOrderedSet = decTOrderedSet<deTThreadSafeObjectReference<T>, T*>;
+using decTThreadSafeObjectList = decTList<deTThreadSafeObjectReference<T>, T*>;
 
 #endif
