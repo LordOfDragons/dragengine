@@ -204,7 +204,7 @@ void deRLTaskReadSkinInternal::AddInternalTask(cInternalTask *task){
 	
 	switch(task->GetTask()->GetState()){
 	case esPending:
-		if(!DoesDependOn(task->GetTask())){
+		if(!GetDependsOn().Has(task->GetTask())){
 			AddDependsOn(task->GetTask());
 		}
 		break;

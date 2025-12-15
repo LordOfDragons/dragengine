@@ -152,7 +152,7 @@ void deRLTaskReadFontInternal2::pLoadFontResources(){
 			
 			pTaskImage = GetResourceLoader().AddLoadRequest(GetVFS(), path, deResourceLoader::ertImage);
 			
-			if(pTaskImage->GetState() == esPending && !DoesDependOn(pTaskImage)){
+			if(pTaskImage->GetState() == esPending && !GetDependsOn().Has(pTaskImage)){
 				AddDependsOn(pTaskImage);
 			}
 		}

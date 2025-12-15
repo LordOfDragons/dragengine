@@ -1277,7 +1277,7 @@ private:
 		
 		switch(rlt->GetState()){
 		case deResourceLoaderTask::esPending:
-			if(!DoesDependOn(rlt)){
+			if(!GetDependsOn().Has(rlt)){
 				AddDependsOn(rlt);
 			}
 			break;

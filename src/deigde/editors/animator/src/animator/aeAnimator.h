@@ -77,7 +77,8 @@ class deLogger;
 class aeAnimator : public igdeEditableEntity{
 public:
 	typedef deTObjectReference<aeAnimator> Ref;
-	
+	typedef decTObjectOrderedSet<aeAttachment> AttachmentSet;
+	typedef decTObjectOrderedSet<aeAnimatorNotifier> NotifierSet;
 	
 public:
 	/** Collision Layers. */
@@ -141,7 +142,7 @@ private:
 	decStringSet pListBones;
 	decStringSet pListVertexPositionSets;
 	
-	decTObjectOrderedSet<aeAttachment> pAttachments;
+	AttachmentSet pAttachments;
 	aeAttachment::Ref pActiveAttachment;
 	
 	bool pPaused;
@@ -156,7 +157,7 @@ private:
 	
 	decString pPathAttConfig;
 	
-	decTObjectOrderedSet<aeAnimatorNotifier> pNotifiers;
+	NotifierSet pNotifiers;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -426,7 +427,7 @@ public:
 	/** \name Attachments */
 	/*@{*/
 	/** Attachments. */
-	inline const decTObjectOrderedSet<aeAttachment> &GetAttachments() const{ return pAttachments; }
+	inline const AttachmentSet &GetAttachments() const{ return pAttachments; }
 	
 	/** Visitor to find attachment by name. */
 	aeAttachment *GetAttachmentNamed(const char *name) const;
@@ -460,7 +461,7 @@ public:
 	/** \name Notifiers */
 	/*@{*/
 	/** Notifiers. */
-	inline const decTObjectOrderedSet<aeAnimatorNotifier> &GetNotifiers() const{ return pNotifiers; }
+	inline const NotifierSet &GetNotifiers() const{ return pNotifiers; }
 	
 	/** Add notifier. */
 	void AddNotifier(aeAnimatorNotifier *notifier);

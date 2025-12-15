@@ -703,35 +703,35 @@ public:
 	 * \return Found element or default value if not found.
 	 */
 	template<typename Evaluator>
-	const T &FindDefault(Evaluator &evaluator, const T &defaultValue, int from, int to, int step = 1) const{
+	T FindDefault(Evaluator &evaluator, const T &defaultValue, int from, int to, int step = 1) const{
 		const T *found = nullptr;
 		return Find<Evaluator>(evaluator, found, from, to, step) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	const T &FindDefault(Evaluator &&evaluator, const T &defaultValue, int from, int to, int step = 1) const{
+	T FindDefault(Evaluator &&evaluator, const T &defaultValue, int from, int to, int step = 1) const{
 		return FindDefault<Evaluator>(evaluator, defaultValue, from, to, step);
 	}
 	
 	template<typename Evaluator>
-	const T &FindDefault(Evaluator &evaluator, const T &defaultValue, int from) const{
+	T FindDefault(Evaluator &evaluator, const T &defaultValue, int from) const{
 		const T *found = nullptr;
 		return Find<Evaluator>(evaluator, found, from) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	const T &FindDefault(Evaluator &&evaluator, const T &defaultValue, int from) const{
+	T FindDefault(Evaluator &&evaluator, const T &defaultValue, int from) const{
 		return FindDefault<Evaluator>(evaluator, defaultValue, from);
 	}
 	
 	template<typename Evaluator>
-	inline const T &FindDefault(Evaluator &evaluator, const T &defaultValue) const{
+	inline T FindDefault(Evaluator &evaluator, const T &defaultValue) const{
 		const T *found = nullptr;
 		return Find<Evaluator>(evaluator, found) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	inline const T &FindDefault(Evaluator &&evaluator, const T &defaultValue) const{
+	inline T FindDefault(Evaluator &&evaluator, const T &defaultValue) const{
 		return FindDefault<Evaluator>(evaluator, defaultValue);
 	}
 	
@@ -1079,9 +1079,12 @@ private:
  * \brief Ordered object set template class.
  * 
  * All objects including nullptr are allowed. Objects can be included only once in the set.
+ * 
+ * \note
+ * This template can be used with deThreadSafeObject to get thread safe assignment of
+ * object references. This does not make the set itself thread safe though.
  */
 template<typename T>
 using decTObjectOrderedSet = decTOrderedSet<typename T::Ref, T*>;
-
 
 #endif

@@ -87,13 +87,13 @@ void deParallelProcessing::Update(){
 		// invariants to be violated. since removing a task from the system drops the strong
 		// reference we have to guard it here. this has a small performance penalty due to
 		// mutex proteced reference counting but that is necessary
-		if(pListFinishedTasks.GetCount() == 0){
+		if(pListFinishedTasks.IsEmpty()){
 			break;
 		}
 		
-		const deParallelTask::Ref task((deParallelTask*)pListFinishedTasks.GetAt(0));
+		const deParallelTask::Ref task(pListFinishedTasks.First());
 		pListFinishedTasks.RemoveFrom(0);
-		pTasks.Remove((deParallelTask*)task);
+		pTasks.Remove(task);
 		
 		if(pOutputDebugMessages){
 			const decString debugName(task->GetDebugName());
@@ -181,7 +181,7 @@ void deParallelProcessing::Resume(){
 	
 	pPaused = false;
 	
-	if(pListPendingTasks.GetCount() > 0 || pListPendingTasksLowPriority.GetCount() > 0){
+	if(pListPendingTasks.IsNotEmpty() || pListPendingTasksLowPriority.IsNotEmpty()){
 		pSemaphoreNewTasks.SignalAll();
 	}
 }
@@ -346,28 +346,24 @@ void deParallelProcessing::FinishAndRemoveTasksOwnedBy(deBaseModule *module){
 	// cancel pending tasks owned by module
 	deMutexGuard lock(pMutexTasks);
 	
-	int i, count = pListPendingTasks.GetCount();
-	for(i=0; i<count; i++){
-		deParallelTask * const task = (deParallelTask*)pListPendingTasks.GetAt(i);
+	pListPendingTasks.Visit([module](deParallelTask *task){
 		if(task->GetOwner() == module){
 			task->Cancel();
 		}
-	}
+	});
 	
-	count = pListPendingTasksLowPriority.GetCount();
-	for(i=0; i<count; i++){
-		deParallelTask * const task = (deParallelTask*)pListPendingTasksLowPriority.GetAt(i);
+	pListPendingTasksLowPriority.Visit([module](deParallelTask *task){
 		if(task->GetOwner() == module){
 			task->Cancel();
 		}
-	}
+	});
 	
 	// make sure the tasks are finished otherwise
 	// strange problems can happen with certain tasks
 	if(pPaused){
 		int nextIndex = 0;
 		while(pListPendingTasks.GetCount() > nextIndex){
-			deParallelTask * const task = (deParallelTask*)pListPendingTasks.GetAt(nextIndex);
+			deParallelTask * const task = pListPendingTasks.GetAt(nextIndex);
 			
 			if(task->IsCancelled()){
 				pListPendingTasks.RemoveFrom(nextIndex);
@@ -385,7 +381,7 @@ void deParallelProcessing::FinishAndRemoveTasksOwnedBy(deBaseModule *module){
 		
 		nextIndex = 0;
 		while(pListPendingTasksLowPriority.GetCount() > nextIndex){
-			deParallelTask * const task = (deParallelTask*)pListPendingTasksLowPriority.GetAt(nextIndex);
+			deParallelTask * const task = pListPendingTasksLowPriority.GetAt(nextIndex);
 			
 			if(task->IsCancelled()){
 				pListPendingTasksLowPriority.RemoveFrom(nextIndex);
@@ -401,15 +397,15 @@ void deParallelProcessing::FinishAndRemoveTasksOwnedBy(deBaseModule *module){
 			}
 		}
 		
-		while(pListFinishedTasks.GetCount() > 0){
+		while(pListFinishedTasks.IsNotEmpty()){
 			// we have to remove the finished task from the system before unlocking the mutex
 			// otherwise Finished() call can potentially trigger actions on the system causing
 			// invariants to be violated. since removing a task from the system drops the strong
 			// reference we have to guard it here. this has a small performance penalty due to
 			// mutex proteced reference counting but that is necessary
-			const deParallelTask::Ref task((deParallelTask*)pListFinishedTasks.GetAt(0));
+			const deParallelTask::Ref task(pListFinishedTasks.GetAt(0));
 			pListFinishedTasks.RemoveFrom(0);
-			pTasks.Remove((deParallelTask*)task);
+			pTasks.Remove(task);
 			
 			task->RemoveAllDependsOn();
 			
@@ -431,6 +427,7 @@ void deParallelProcessing::FinishAndRemoveTasksOwnedBy(deBaseModule *module){
 		
 	// cancel and wait for tasks in progress owned by module if not paused
 	}else{
+		int i;
 		for(i=0; i<pThreadCount; i++){
 			deParallelTask * const task = pThreads[i]->GetTask();
 			if(task && task->GetOwner() == module){
@@ -456,7 +453,7 @@ void deParallelProcessing::FinishAndRemoveTasksOwnedBy(deBaseModule *module){
 	
 	/*
 	for(i=0; i<pListPendingTasks.GetCount(); i++){
-		deParallelTask * const task = (deParallelTask*)pListPendingTasks.GetAt(i);
+		deParallelTask * const task = pListPendingTasks.GetAt(i);
 		if(task->GetOwner() != module){
 			continue;
 		}
@@ -467,7 +464,7 @@ void deParallelProcessing::FinishAndRemoveTasksOwnedBy(deBaseModule *module){
 	}
 	
 	for(i=0; i<pListPendingTasksLowPriority.GetCount(); i++){
-		deParallelTask * const task = (deParallelTask*)pListPendingTasksLowPriority.GetAt(i);
+		deParallelTask * const task = pListPendingTasksLowPriority.GetAt(i);
 		if(task->GetOwner() != module){
 			continue;
 		}
@@ -478,7 +475,7 @@ void deParallelProcessing::FinishAndRemoveTasksOwnedBy(deBaseModule *module){
 	}
 	
 	for(i=0; i<pListFinishedTasks.GetCount(); i++){
-		deParallelTask * const task = (deParallelTask*)pListFinishedTasks.GetAt(i);
+		deParallelTask * const task = pListFinishedTasks.GetAt(i);
 		if(task->GetOwner() == module){
 			continue;
 		}
@@ -494,21 +491,19 @@ void deParallelProcessing::FinishAndRemoveAllTasks(){
 	// cancel pending tasks
 	deMutexGuard lock(pMutexTasks);
 	
-	int i, count = pListPendingTasks.GetCount();
-	for(i=0; i<count; i++){
-		((deParallelTask*)pListPendingTasks.GetAt(i))->Cancel();
-	}
+	pListPendingTasks.Visit([](deParallelTask *task){
+		task->Cancel();
+	});
 	
-	count = pListPendingTasksLowPriority.GetCount();
-	for(i=0; i<count; i++){
-		((deParallelTask*)pListPendingTasksLowPriority.GetAt(i))->Cancel();
-	}
+	pListPendingTasksLowPriority.Visit([](deParallelTask *task){
+		task->Cancel();
+	});
 	
 	// make sure the tasks are finished otherwise strange problems can happen with certain tasks
 	if(pPaused){
 		int nextIndex = 0;
 		while(pListPendingTasks.GetCount() > nextIndex){
-			deParallelTask * const task = (deParallelTask*)pListPendingTasks.GetAt(nextIndex);
+			deParallelTask * const task = pListPendingTasks.GetAt(nextIndex);
 			
 			if(task->IsCancelled()){
 				pListPendingTasks.RemoveFrom(nextIndex);
@@ -526,7 +521,7 @@ void deParallelProcessing::FinishAndRemoveAllTasks(){
 		
 		nextIndex = 0;
 		while(pListPendingTasksLowPriority.GetCount() > nextIndex){
-			deParallelTask * const task = (deParallelTask*)pListPendingTasksLowPriority.GetAt(nextIndex);
+			deParallelTask * const task = pListPendingTasksLowPriority.GetAt(nextIndex);
 			
 			if(task->IsCancelled()){
 				pListPendingTasksLowPriority.RemoveFrom(nextIndex);
@@ -542,15 +537,15 @@ void deParallelProcessing::FinishAndRemoveAllTasks(){
 			}
 		}
 		
-		while(pListFinishedTasks.GetCount() > 0){
+		while(pListFinishedTasks.IsNotEmpty()){
 			// we have to remove the finished task from the system before unlocking the mutex
 			// otherwise Finished() call can potentially trigger actions on the system causing
 			// invariants to be violated. since removing a task from the system drops the strong
 			// reference we have to guard it here. this has a small performance penalty due to
 			// mutex proteced reference counting but that is necessary
-			const deParallelTask::Ref task((deParallelTask*)pListFinishedTasks.GetAt(0));
+			const deParallelTask::Ref task(pListFinishedTasks.GetAt(0));
 			pListFinishedTasks.RemoveFrom(0);
-			pTasks.Remove((deParallelTask*)task);
+			pTasks.Remove(task);
 			
 			task->RemoveAllDependsOn();
 			
@@ -572,6 +567,7 @@ void deParallelProcessing::FinishAndRemoveAllTasks(){
 		
 	// cancel and wait for all tasks in progress if not paused
 	}else{
+		int i;
 		for(i=0; i<pThreadCount; i++){
 			deParallelTask * const task = pThreads[i]->GetTask();
 			if(!task){
@@ -615,7 +611,7 @@ deParallelTask *deParallelProcessing::NextPendingTask(bool takeLowPriorityTasks)
 	deMutexGuard lock(pMutexTasks);
 	
 	while(pListPendingTasks.GetCount() > nextIndex){
-		deParallelTask * const task = (deParallelTask*)pListPendingTasks.GetAt(nextIndex);
+		deParallelTask * const task = pListPendingTasks.GetAt(nextIndex);
 		
 		if(task->IsCancelled()){
 			pListPendingTasks.RemoveFrom(nextIndex);
@@ -665,7 +661,7 @@ deParallelTask *deParallelProcessing::NextPendingTask(bool takeLowPriorityTasks)
 		//      taking low priority tasks. i doubt though this can cause a problem on regular
 		//      hardware. should this though be a problem using SignalAll() instead of Signal()
 		//      can help. using SignalAll() too often can though cause the counter to sky-rocket.
-		if(pListPendingTasksLowPriority.GetCount() > 0){
+		if(pListPendingTasksLowPriority.IsNotEmpty()){
 			pSemaphoreNewTasks.Signal();
 		}
 		return NULL;
@@ -674,7 +670,7 @@ deParallelTask *deParallelProcessing::NextPendingTask(bool takeLowPriorityTasks)
 	nextIndex = 0;
 	
 	while(pListPendingTasksLowPriority.GetCount() > nextIndex){
-		deParallelTask * const task = (deParallelTask*)pListPendingTasksLowPriority.GetAt(nextIndex);
+		deParallelTask * const task = pListPendingTasksLowPriority.GetAt(nextIndex);
 		
 		if(task->IsCancelled()){
 			pListPendingTasksLowPriority.RemoveFrom(nextIndex);
@@ -753,9 +749,9 @@ void deParallelProcessing::LogThreadAndTasks(){
 	const char * const paused = pPaused ? " (paused)" : "";
 	deLogger &logger = *pEngine.GetLogger();
 	decString taskName, taskDetails;
-	int i, count;
 	
 	logger.LogInfoFormat(LOGSOURCE, "Parallel Processing%s - Threads:", paused);
+	int i;
 	for(i=0; i<pThreadCount; i++){
 		const deParallelTask * const task = pThreads[i]->GetTask();
 		if(task){
@@ -767,22 +763,19 @@ void deParallelProcessing::LogThreadAndTasks(){
 	}
 	
 	logger.LogInfoFormat(LOGSOURCE, "Parallel Processing%s - Finished Tasks:", paused);
-	count = pListFinishedTasks.GetCount();
-	for(i=0; i<count; i++){
-		pLogTask("- ", "  ", *((const deParallelTask *)pListFinishedTasks.GetAt(i)));
-	}
+	pListFinishedTasks.Visit([this](deParallelTask *task){
+		pLogTask("- ", "  ", *task);
+	});
 	
 	logger.LogInfoFormat(LOGSOURCE, "Parallel Processing%s - Pending Tasks:", paused);
-	count = pListPendingTasks.GetCount();
-	for(i=0; i<count; i++){
-		pLogTask("- ", "  ", *((const deParallelTask *)pListPendingTasks.GetAt(i)));
-	}
+	pListPendingTasks.Visit([this](deParallelTask *task){
+		pLogTask("- ", "  ", *task);
+	});
 	
 	logger.LogInfoFormat(LOGSOURCE, "Parallel Processing%s - Pending Low Priority Tasks:", paused);
-	count = pListPendingTasksLowPriority.GetCount();
-	for(i=0; i<count; i++){
-		pLogTask("- ", "  ", *((const deParallelTask *)pListPendingTasksLowPriority.GetAt(i)));
-	}
+	pListPendingTasksLowPriority.Visit([this](deParallelTask *task){
+		pLogTask("- ", "  ", *task);
+	});
 }
 
 
@@ -934,10 +927,10 @@ void deParallelProcessing::pEnsureRunTaskNow(deParallelTask *task){
 	while(!task->GetFinished()){
 		if(task->IsCancelled()){
 			if(task->GetLowPriority()){
-				pListPendingTasksLowPriority.RemoveFrom(pListPendingTasksLowPriority.IndexOf(task));
+				pListPendingTasksLowPriority.Remove(task);
 				
 			}else{
-				pListPendingTasks.RemoveFrom(pListPendingTasks.IndexOf(task));
+				pListPendingTasks.Remove(task);
 			}
 			
 			if(task->GetMarkFinishedAfterRun()){
@@ -977,10 +970,10 @@ void deParallelProcessing::pEnsureRunTaskNow(deParallelTask *task){
 			}
 			
 			if(task->GetLowPriority()){
-				pListPendingTasksLowPriority.RemoveFrom(pListPendingTasksLowPriority.IndexOf(task));
+				pListPendingTasksLowPriority.Remove(task);
 				
 			}else{
-				pListPendingTasks.RemoveFrom(pListPendingTasks.IndexOf(task));
+				pListPendingTasks.Remove(task);
 			}
 			
 			if(task->GetMarkFinishedAfterRun()){
@@ -990,17 +983,9 @@ void deParallelProcessing::pEnsureRunTaskNow(deParallelTask *task){
 			return;
 		}
 		
-		const int count = task->GetDependsOnCount();
-		deParallelTask *deptask = NULL;
-		int i;
-		
-		for(i=0; i<count; i++){
-			deptask = task->GetDependsOnAt(i);
-			if(!deptask->GetFinished() && !deptask->IsCancelled()){
-				break;
-			}
-			deptask = NULL;
-		}
+		const deParallelTask::Ref deptask(task->GetDependsOn().FindDefault([](const deParallelTask *t){
+			return !t->GetFinished() && !t->IsCancelled();
+		}, {}));
 		
 		if(deptask){
 			deadLoopCheck = false;
@@ -1022,28 +1007,27 @@ const deParallelTask &task){
 	deLogger &logger = *pEngine.GetLogger();
 	const decString taskName(task.GetDebugName());
 	const decString taskDetails(task.GetDebugDetails());
+	const deParallelTask::TaskList &dependsOn = task.GetDependsOn();
+	const decString scontPrefix(contPrefix);
 	
 	logger.LogInfoFormat(LOGSOURCE, "%s%s[%c%c%c]: %s", prefix, taskName.GetString(),
 		task.GetFinished() ? 'F' : ' ', task.IsCancelled() ? 'C' : ' ',
 		task.GetLowPriority() ? 'L' : ' ', taskDetails.GetString());
 	
-	const int count = task.GetDependsOnCount();
-	const decString scontPrefix(contPrefix);
-	decString dependPrefix, dependContPrefix;
-	int i;
-	
-	for(i=0; i<count; i++){
-		if(i < count - 1){
+	dependsOn.Visit([&](const deParallelTask *t){
+		decString dependPrefix, dependContPrefix;
+		
+		if(dependsOn.Last() == t){
 			dependPrefix = scontPrefix + "+ ";
-			dependContPrefix = scontPrefix + "| ";
+			dependContPrefix = scontPrefix + "  ";
 			
 		}else{
 			dependPrefix = scontPrefix + "+ ";
-			dependContPrefix = scontPrefix + "  ";
+			dependContPrefix = scontPrefix + "| ";
 		}
 		
-		pLogTask(dependPrefix, dependContPrefix, *task.GetDependsOnAt(i));
-	}
+		pLogTask(dependPrefix, dependContPrefix, *t);
+	});
 }
 
 

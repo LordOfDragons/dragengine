@@ -112,8 +112,8 @@ void deoglLoaderThread::Run(){
 	while(!pShutdown){
 		{
 		const deMutexGuard guard(pMutex);
-		if(pTasks.GetCount() > 0){
-			task = (deoglLoaderThreadTask*)pTasks.GetAt(0);
+		if(pTasks.IsNotEmpty()){
+			task = pTasks.First();
 			pTasks.RemoveFrom(0);
 		}
 		}

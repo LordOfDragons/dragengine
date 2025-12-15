@@ -1779,18 +1779,15 @@ void detTOrderedSet::TestIntFindDefault(){
 	
 	// Test FindDefault - found case
 	auto evaluator1 = [](int val){ return val == 20; };
-	int result = set1.FindDefault(evaluator1, 99);
-	ASSERT_EQUAL(result, 20);
+	ASSERT_EQUAL(set1.FindDefault(evaluator1, 99), 20);
 	
 	// Test FindDefault - not found case
 	auto evaluator2 = [](int val){ return val == 50; };
-	result = set1.FindDefault(evaluator2, 99);
-	ASSERT_EQUAL(result, 99);
+	ASSERT_EQUAL(set1.FindDefault(evaluator2, 99), 99);
 	
 	// Test FindDefault with from parameter
 	auto evaluator3 = [](int val){ return val == 10; };
-	result = set1.FindDefault(evaluator3, 99, 1);  // Start from index 1
-	ASSERT_EQUAL(result, 99);  // 10 is at index 0, not found from index 1
+	ASSERT_EQUAL(set1.FindDefault(evaluator3, 99, 1), 99);  // Start from index 1. 10 is at index 0, not found from index 1
 }
 
 void detTOrderedSet::TestIntCollectOverloads(){
@@ -2005,16 +2002,13 @@ void detTOrderedSet::TestStringFindDefault(){
 	set1.Add("cherry");
 	
 	auto evaluator1 = [](decString val){ return val == "banana"; };
-	decString result = set1.FindDefault(evaluator1, "unknown");
-	ASSERT_EQUAL(result, "banana");
+	ASSERT_EQUAL(set1.FindDefault(evaluator1, "unknown"), "banana");
 	
 	auto evaluator2 = [](decString val){ return val == "grape"; };
-	result = set1.FindDefault(evaluator2, "unknown");
-	ASSERT_EQUAL(result, "unknown");
+	ASSERT_EQUAL(set1.FindDefault(evaluator2, "unknown"), "unknown");
 	
 	auto evaluator3 = [](decString val){ return val == "apple"; };
-	result = set1.FindDefault(evaluator3, "unknown", 1);
-	ASSERT_EQUAL(result, "unknown");  // apple is at index 0
+	ASSERT_EQUAL(set1.FindDefault(evaluator3, "unknown", 1), "unknown");  // apple is at index 0
 }
 
 void detTOrderedSet::TestStringCollectOverloads(){
@@ -2256,16 +2250,13 @@ void detTOrderedSet::TestObjectRefFindDefault(){
 	set1.Add(obj3);
 	
 	auto evaluator1 = [obj2](decXmlElementTag::Ref val){ return val == obj2; };
-	decXmlElementTag::Ref result = set1.FindDefault(evaluator1, defaultObj);
-	ASSERT_EQUAL(result, obj2);
+	ASSERT_EQUAL(set1.FindDefault(evaluator1, defaultObj), obj2);
 	
 	auto evaluator2 = [](decXmlElementTag::Ref val){ return false; };
-	result = set1.FindDefault(evaluator2, defaultObj);
-	ASSERT_EQUAL(result, defaultObj);
+	ASSERT_EQUAL(set1.FindDefault(evaluator2, defaultObj), defaultObj);
 	
 	auto evaluator3 = [obj1](decXmlElementTag::Ref val){ return val == obj1; };
-	result = set1.FindDefault(evaluator3, defaultObj, 1);
-	ASSERT_EQUAL(result, defaultObj);  // obj1 is at index 0
+	ASSERT_EQUAL(set1.FindDefault(evaluator3, defaultObj, 1), defaultObj);  // obj1 is at index 0
 }
 
 void detTOrderedSet::TestObjectRefCollectOverloads(){

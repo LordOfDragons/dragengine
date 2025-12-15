@@ -28,7 +28,7 @@
 #include "deoglLoaderThreadTask.h"
 #include "../deoglBasics.h"
 
-#include <dragengine/common/collection/decThreadSafeObjectOrderedSet.h>
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
 #include <dragengine/threading/deSemaphore.h>
 #include <dragengine/threading/deThread.h>
@@ -48,7 +48,7 @@ private:
 	bool pShutdown;
 	bool pContextEnabled;
 	
-	decThreadSafeObjectOrderedSet pTasks;
+	decTObjectOrderedSet<deoglLoaderThreadTask> pTasks;
 	
 	
 	

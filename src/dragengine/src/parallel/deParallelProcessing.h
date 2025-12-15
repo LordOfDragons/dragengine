@@ -25,13 +25,12 @@
 #ifndef _DEPARALLELPROCESSING_H_
 #define _DEPARALLELPROCESSING_H_
 
+#include "deParallelTask.h"
 #include "../common/string/decStringList.h"
 #include "../common/collection/decPointerList.h"
-#include "../common/collection/decThreadSafeObjectOrderedSet.h"
 #include "../threading/deMutex.h"
 #include "../threading/deSemaphore.h"
 
-class deParallelTask;
 class deParallelThread;
 class deEngine;
 class deBaseModule;
@@ -49,10 +48,10 @@ private:
 	int pThreadCount;
 	bool pPaused;
 	
-	decThreadSafeObjectOrderedSet pTasks;
-	decPointerList pListPendingTasks;
-	decPointerList pListPendingTasksLowPriority;
-	decPointerList pListFinishedTasks;
+	deParallelTask::TaskList pTasks;
+	deParallelTask::TaskPointerList pListPendingTasks;
+	deParallelTask::TaskPointerList pListPendingTasksLowPriority;
+	deParallelTask::TaskPointerList pListFinishedTasks;
 	deMutex pMutexTasks;
 	deSemaphore pSemaphoreNewTasks;
 	
