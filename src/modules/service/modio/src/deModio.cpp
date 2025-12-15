@@ -386,7 +386,6 @@ void deModio::pCheckFailureState(){
 		return;
 	}
 	
-	decStringSet &disabledMods = userConfig->GetDisabledMods();
 	const int count = pModConfigs.GetCount();
 	bool requiresSaving = false;
 	int i;
@@ -398,7 +397,7 @@ void deModio::pCheckFailureState(){
 		}
 		
 		LogWarnFormat("-> Disable modification: %s", modConfig.id.GetString());
-		disabledMods.Add(modConfig.id);
+		userConfig->GetDisabledMods().Add(modConfig.id);
 		requiresSaving = true;
 	}
 	

@@ -28,8 +28,9 @@
 #include "../modio.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/string/decStringSet.h>
-#include <dragengine/common/collection/decIntDictionary.h>
+#include <dragengine/common/string/decString.h>
+#include <dragengine/common/collection/decTDictionary.h>
+#include <dragengine/common/collection/decTSet.h>
 
 class deModio;
 class decBaseFileReader;
@@ -42,13 +43,15 @@ class decBaseFileWriter;
 class deModioUserConfig : public deObject{
 public:
 	typedef deTObjectReference<deModioUserConfig> Ref;
+	typedef decTDictionary<decString,Modio::Rating> UserRatings;
+	typedef decTSet<decString> DisabledMods;
 	
 	
 private:
 	deModio &pModule;
 	decString pId;
-	decStringSet pDisabledMods;
-	decIntDictionary pUserRatings;
+	DisabledMods pDisabledMods;
+	UserRatings pUserRatings;
 	
 	
 public:
@@ -76,13 +79,13 @@ public:
 	
 	
 	/** Disabled modifications. */
-	inline const decStringSet &GetDisabledMods() const{ return pDisabledMods; }
+	inline const DisabledMods &GetDisabledMods() const{ return pDisabledMods; }
 	
 	/** Disabled modifications. Saving on changing has to be done manually. */
-	inline decStringSet &GetDisabledMods(){ return pDisabledMods; }
+	inline DisabledMods &GetDisabledMods(){ return pDisabledMods; }
 	
 	/** Set disabled modifications. */
-	void SetDisabledMods(const decStringSet &mods);
+	void SetDisabledMods(const DisabledMods &mods);
 	
 	/** Mod disabled. */
 	bool GetModDisabled(const decString &id) const;
@@ -93,7 +96,7 @@ public:
 	
 	
 	/** User ratings. */
-	inline const decIntDictionary &GetUserRatings() const{ return pUserRatings; }
+	inline const UserRatings &GetUserRatings() const{ return pUserRatings; }
 	
 	/** User rating for mod. */
 	Modio::Rating GetUserRating(const decString &id) const;
