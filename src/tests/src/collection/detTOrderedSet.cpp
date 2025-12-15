@@ -80,6 +80,7 @@ void detTOrderedSet::Run(){
 	TestIntRemoveIfOverloads();
 	TestIntGetSorted();
 	TestIntOperatorNotEqual();
+	TestIntIterators();
 	
 	// Test string type
 	TestStringConstructors();
@@ -121,6 +122,7 @@ void detTOrderedSet::Run(){
 	TestStringRemoveIfOverloads();
 	TestStringGetSorted();
 	TestStringOperatorNotEqual();
+	TestStringIterators();
 	
 	// Test object reference type
 	TestObjectRefConstructors();
@@ -162,6 +164,7 @@ void detTOrderedSet::Run(){
 	TestObjectRefRemoveIfOverloads();
 	TestObjectRefGetSorted();
 	TestObjectRefOperatorNotEqual();
+	TestObjectRefIterators();
 }
 
 void detTOrderedSet::CleanUp(){
@@ -2374,4 +2377,108 @@ void detTOrderedSet::TestObjectRefOperatorNotEqual(){
 	
 	ASSERT_FALSE(set1 != set2);
 	ASSERT_TRUE(set1 != set3);
+}
+
+void detTOrderedSet::TestIntIterators(){
+	SetSubTestNum(117);
+
+	decTOrderedSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+
+	int sum = 0;
+	int count = 0;
+	for(auto it = set.begin(); it != set.end(); ++it){
+		sum += *it;
+		count++;
+	}
+	ASSERT_EQUAL(count, 3);
+	ASSERT_EQUAL(sum, 60);
+	ASSERT_EQUAL(set.begin()[1], 20);
+	ASSERT_TRUE(set.begin() < set.end());
+
+	// random access arithmetic
+	auto it0 = set.begin();
+	it0 += 2;
+	ASSERT_EQUAL(*it0, 30);
+	it0 -= 1;
+	ASSERT_EQUAL(*it0, 20);
+	ASSERT_EQUAL(set.end() - set.begin(), 3);
+	ASSERT_TRUE((set.begin() + 1) > set.begin());
+
+	// reverse iterator
+	int firstReverse = *set.rbegin();
+	ASSERT_EQUAL(firstReverse, 30);
+	auto r = set.rbegin();
+	++r;
+	ASSERT_EQUAL(*r, 20);
+}
+
+void detTOrderedSet::TestStringIterators(){
+	SetSubTestNum(118);
+
+	decTOrderedSetString set;
+	set.Add("a");
+	set.Add("b");
+	set.Add("c");
+
+	decString concat;
+	for(auto it = set.cbegin(); it != set.cend(); ++it){
+		concat += *it;
+	}
+	ASSERT_EQUAL(concat, "abc");
+	ASSERT_EQUAL(set.cbegin()[2], "c");
+	ASSERT_TRUE(set.cbegin() < set.cend());
+	ASSERT_EQUAL(set.cend() - set.cbegin(), 3);
+	auto itc = set.cbegin();
+	itc += 1;
+	ASSERT_EQUAL(*itc, "b");
+	itc -= 1;
+	ASSERT_EQUAL(*itc, "a");
+
+	decString revConcat;
+	for(auto it = set.crbegin(); it != set.crend(); ++it){
+		revConcat += *it;
+	}
+	ASSERT_EQUAL(revConcat, "cba");
+	auto r = set.crbegin();
+	++r;
+	ASSERT_EQUAL(*r, "b");
+}
+
+void detTOrderedSet::TestObjectRefIterators(){
+	SetSubTestNum(119);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+
+	decTOrderedSetXmlElementTag set;
+	set.Add(obj1);
+	set.Add(obj2);
+	set.Add(obj3);
+
+	decString concat;
+	for(auto it = set.begin(); it != set.end(); ++it){
+		concat += (*it)->GetName();
+	}
+	ASSERT_EQUAL(concat, "tag1tag2tag3");
+	ASSERT_EQUAL(set.begin()[1]->GetName(), decString("tag2"));
+	ASSERT_TRUE(set.begin() < set.end());
+	ASSERT_EQUAL(set.end() - set.begin(), 3);
+	auto ito = set.begin();
+	ito += 2;
+	ASSERT_EQUAL((*ito)->GetName(), decString("tag3"));
+	ito -= 1;
+	ASSERT_EQUAL((*ito)->GetName(), decString("tag2"));
+
+	decString rev;
+	for(auto it = set.rbegin(); it != set.rend(); ++it){
+		rev += (*it)->GetName();
+	}
+	ASSERT_EQUAL(rev, "tag3tag2tag1");
+	auto r = set.rbegin();
+	++r;
+	ASSERT_EQUAL((*r)->GetName(), decString("tag2"));
 }

@@ -25,6 +25,9 @@
 #ifndef _DECTORDEREDSET_H_
 #define _DECTORDEREDSET_H_
 
+#include <iterator>
+#include <cstddef>
+
 #include "decCollectionInterfaces.h"
 #include "../exceptions.h"
 #include "../../deTObjectReference.h"
@@ -946,7 +949,6 @@ public:
 	/*@}*/
 	
 	
-	
 	/** \name Operators */
 	/*@{*/
 	/** \brief Determine if this set is equal to another set. */
@@ -1037,6 +1039,143 @@ public:
 		}
 		
 		return *this;
+	}
+	/*@}*/
+	
+	
+	/** \name Standard library iterators. */
+	/*@{*/
+	class const_iterator{
+	public:
+		using iterator_category = std::random_access_iterator_tag;
+		using value_type = T;
+		using difference_type = std::ptrdiff_t;
+		using pointer = const T*;
+		using reference = const T&;
+		
+		explicit const_iterator(const decTOrderedSet<T,TP>* owner = nullptr, int index = 0) :
+		pOwner(owner), pIndex(index){
+		}
+		
+		reference operator*() const{
+			return pOwner->GetAt(pIndex);
+		}
+		
+		pointer operator->() const{
+			return &pOwner->GetAt(pIndex);
+		}
+		
+		const_iterator& operator++(){
+			pIndex++;
+			return *this;
+		}
+		
+		const_iterator operator++(int){
+			const_iterator tmp = *this;
+			pIndex++;
+			return tmp;
+		}
+		
+		const_iterator& operator--(){
+			pIndex--;
+			return *this;
+		}
+		
+		const_iterator operator--(int){
+			const_iterator tmp = *this;
+			pIndex--;
+			return tmp;
+		}
+		
+		const_iterator& operator+=(difference_type n){
+			pIndex += static_cast<int>(n);
+			return *this;
+		}
+		
+		const_iterator& operator-=(difference_type n){
+			pIndex -= static_cast<int>(n);
+			return *this;
+		}
+		
+		const_iterator operator+(difference_type n) const{
+			return const_iterator(pOwner, pIndex + static_cast<int>(n));
+		}
+		
+		const_iterator operator-(difference_type n) const{
+			return const_iterator(pOwner, pIndex - static_cast<int>(n));
+		}
+		
+		difference_type operator-(const const_iterator &other) const{
+			return static_cast<difference_type>(pIndex - other.pIndex);
+		}
+		
+		reference operator[](difference_type n) const{
+			return pOwner->GetAt(pIndex + static_cast<int>(n));
+		}
+		
+		bool operator==(const const_iterator &o) const{
+			return pOwner == o.pOwner && pIndex == o.pIndex;
+		}
+		
+		bool operator!=(const const_iterator &o) const{
+			return !(*this == o);
+		}
+		
+		bool operator<(const const_iterator &o) const{
+			return pIndex < o.pIndex;
+		}
+		
+		bool operator<=(const const_iterator &o) const{
+			return pIndex <= o.pIndex;
+		}
+		
+		bool operator>(const const_iterator &o) const{
+			return pIndex > o.pIndex;
+		}
+		
+		bool operator>=(const const_iterator &o) const{
+			return pIndex >= o.pIndex;
+		}
+		
+	private:
+		const decTOrderedSet<T,TP>* pOwner;
+		int pIndex;
+	};
+	
+	
+	using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+	
+	
+	/** Standard library iterator pointing at first element in list */
+	const_iterator begin() const{
+		return cbegin();
+	}
+	const_iterator cbegin() const {
+		return const_iterator(this, 0);
+	}
+	
+	/** Standard library iterator pointing at one past last element in list */
+	const_iterator end() const {
+		return cend();
+	}
+	const_iterator cend() const {
+		return const_iterator(this, pCount);
+	}
+	
+	/** Standard library reverse iterator pointing at one past last element in list */
+	const_reverse_iterator rbegin() const{
+		return const_reverse_iterator(end());
+	}
+	const_reverse_iterator crbegin() const {
+		return const_reverse_iterator(cend());
+	}
+	
+	/** Standard library reverse iterator pointing at first element in list */
+	const_reverse_iterator rend() const{
+		return const_reverse_iterator(begin());
+	}
+	const_reverse_iterator crend() const{
+		return const_reverse_iterator(cbegin());
 	}
 	/*@}*/
 	

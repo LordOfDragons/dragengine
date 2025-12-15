@@ -51,6 +51,7 @@ private:
 	void TestIntRemoveIfOverloads();
 	void TestIntGetSorted();
 	void TestIntOperatorNotEqual();
+	void TestIntIterators();
 
 	// Test methods for T=decString
 	void TestStringConstructors();
@@ -92,6 +93,7 @@ private:
 	void TestStringRemoveIfOverloads();
 	void TestStringGetSorted();
 	void TestStringOperatorNotEqual();
+	void TestStringIterators();
 
 	// Test methods for T=deObject::Ref, TP=deObject*
 	void TestObjectRefConstructors();
@@ -133,6 +135,7 @@ private:
 	void TestObjectRefRemoveIfOverloads();
 	void TestObjectRefGetSorted();
 	void TestObjectRefOperatorNotEqual();
+	void TestObjectRefIterators();
 
 public:
 	detTOrderedSet();
