@@ -25,7 +25,8 @@
 #ifndef _DERESOURCELOADER_H_
 #define _DERESOURCELOADER_H_
 
-#include "../../common/collection/decThreadSafeObjectOrderedSet.h"
+#include "../../common/collection/decTOrderedSet.h"
+#include "../../threading/deTThreadSafeObjectReference.h"
 
 class deResourceLoaderTask;
 class deResourceLoaderInfo;
@@ -103,10 +104,11 @@ public:
 	
 	
 private:
+	typedef decTOrderedSet<deTThreadSafeObjectReference<deResourceLoaderTask>, deResourceLoaderTask*> TaskList;
+	
 	deEngine &pEngine;
 	
-	decThreadSafeObjectOrderedSet pPendingTasks;
-	decThreadSafeObjectOrderedSet pFinishedTasks;
+	TaskList pPendingTasks, pFinishedTasks;
 	
 	bool pLoadAsynchron;
 	bool pOutputDebugMessages;

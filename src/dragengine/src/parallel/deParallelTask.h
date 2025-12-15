@@ -67,7 +67,7 @@ public:
 	typedef deTThreadSafeObjectReference<deParallelTask> Ref;
 	
 	/** \brief List of tasks. */
-	typedef decTObjectOrderedSet<deParallelTask> TaskList;
+	typedef decTThreadSafeObjectOrderedSet<deParallelTask> TaskList;
 	
 	/** \brief List of task pointers. */
 	typedef decTOrderedSet<deParallelTask*> TaskPointerList;

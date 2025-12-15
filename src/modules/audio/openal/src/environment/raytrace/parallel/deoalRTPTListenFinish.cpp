@@ -67,14 +67,14 @@ deoalRTPTListenFinish::~deoalRTPTListenFinish(){
 // Manegement
 ///////////////
 
-void deoalRTPTListenFinish::AddDependencies(const decPointerList &tasks){
+void deoalRTPTListenFinish::AddDependencies(const decTOrderedSet<deoalRTPTListen*> &tasks){
 	const int count = tasks.GetCount();
 	int i;
 	
 	pTasks.RemoveAll();
 	
 	for(i=0; i<count; i++){
-		deParallelTask * const task = (deParallelTask*)tasks.GetAt(i);
+		deoalRTPTListen * const task = tasks.GetAt(i);
 		AddDependsOn(task);
 		pTasks.Add(task);
 	}

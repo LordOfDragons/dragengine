@@ -291,8 +291,8 @@ bool deRLTaskReadSkinInternal::pApplyInternal(){
 	int i;
 	
 	for(i=0; i<count; i++){
-		const cInternalTask &internalTask = *((cInternalTask*)pInternalTasks.GetAt(i));
-		const deResourceLoaderTask &task = *internalTask.GetTask();
+		const cInternalTask &internalTask = pInternalTasks.GetAt(i);
+		const deResourceLoaderTask &task = internalTask.GetTask();
 		
 		if(task.GetState() != esSucceeded){
 			return false;

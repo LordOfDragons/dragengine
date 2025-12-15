@@ -69,7 +69,6 @@
     <ClCompile Include="..\..\src\dragengine\src\common\collection\decPointerList.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\collection\decPointerOrderedSet.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\collection\decPointerSet.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\common\collection\decThreadSafeObjectOrderedSet.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurve2D.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurveBezier.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurveBezier3D.cpp" />
@@ -675,7 +674,6 @@
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decPointerList.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decPointerOrderedSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decPointerSet.h" />
-    <ClInclude Include="..\..\src\dragengine\src\common\collection\decThreadSafeObjectOrderedSet.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurve2D.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurveBezier.h" />
     <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurveBezier3D.h" />

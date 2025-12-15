@@ -27,6 +27,8 @@
 
 #include "decCollectionInterfaces.h"
 #include "../exceptions.h"
+#include "../../deTObjectReference.h"
+#include "../../threading/deTThreadSafeObjectReference.h"
 
 
 /**
@@ -1080,11 +1082,20 @@ private:
  * 
  * All objects including nullptr are allowed. Objects can be included only once in the set.
  * 
- * \note
- * This template can be used with deThreadSafeObject to get thread safe assignment of
+ * This template uses deTObjectReference.
+ */
+template<typename T>
+using decTObjectOrderedSet = decTOrderedSet<deTObjectReference<T>, T*>;
+
+/**
+ * \brief Thread safe ordered object set template class.
+ * 
+ * All objects including nullptr are allowed. Objects can be included only once in the set.
+ * 
+ * This template uses deTThreadSafeObjectReference to get thread safe assignment of
  * object references. This does not make the set itself thread safe though.
  */
 template<typename T>
-using decTObjectOrderedSet = decTOrderedSet<typename T::Ref, T*>;
+using decTThreadSafeObjectOrderedSet = decTOrderedSet<deTThreadSafeObjectReference<T>, T*>;
 
 #endif

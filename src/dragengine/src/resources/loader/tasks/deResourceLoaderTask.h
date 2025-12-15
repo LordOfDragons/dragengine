@@ -22,8 +22,8 @@
  * SOFTWARE.
  */
 
-#ifndef _DERESOURCELOADERTASK_X_H_
-#define _DERESOURCELOADERTASK_X_H_
+#ifndef _DERESOURCELOADERTASK_H_
+#define _DERESOURCELOADERTASK_H_
 
 #include "../deResourceLoader.h"
 #include "../../deFileResource.h"

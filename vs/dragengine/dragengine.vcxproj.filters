@@ -81,9 +81,6 @@
     <ClCompile Include="..\..\src\dragengine\src\common\collection\decPointerSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\common\collection\decThreadSafeObjectOrderedSet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\common\curve\decCurve2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1893,9 +1890,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\collection\decPointerSet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\common\collection\decThreadSafeObjectOrderedSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\curve\decCurve2D.h">

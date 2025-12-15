@@ -76,17 +76,13 @@ deoalRTPTTraceSoundRaysFinish::~deoalRTPTTraceSoundRaysFinish(){
 // Manegement
 ///////////////
 
-void deoalRTPTTraceSoundRaysFinish::AddDependencies(const decPointerList &tasks){
-	const int count = tasks.GetCount();
-	int i;
-	
+void deoalRTPTTraceSoundRaysFinish::AddDependencies(
+const decTOrderedSet<deoalRTPTTraceSoundRays*> &tasks){
 	pTasks.RemoveAll();
-	
-	for(i=0; i<count; i++){
-		deParallelTask * const task = (deParallelTask*)tasks.GetAt(i);
-		AddDependsOn(task);
-		pTasks.Add(task);
-	}
+	tasks.Visit([this](deoalRTPTTraceSoundRays * const t){
+		AddDependsOn(t);
+		pTasks.Add(t);
+	});
 }
 
 void deoalRTPTTraceSoundRaysFinish::SetRange(float range){

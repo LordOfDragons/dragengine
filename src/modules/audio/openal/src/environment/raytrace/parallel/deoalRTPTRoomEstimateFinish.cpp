@@ -82,14 +82,14 @@ deoalRTPTRoomEstimateFinish::~deoalRTPTRoomEstimateFinish(){
 // Manegement
 ///////////////
 
-void deoalRTPTRoomEstimateFinish::AddDependencies(const decPointerList &tasks){
+void deoalRTPTRoomEstimateFinish::AddDependencies(const decTOrderedSet<deoalRTPTRoomEstimate*> &tasks){
 	const int count = tasks.GetCount();
 	int i;
 	
 	pTasks.RemoveAll();
 	
 	for(i=0; i<count; i++){
-		deParallelTask * const task = (deParallelTask*)tasks.GetAt(i);
+		deoalRTPTRoomEstimate * const task = tasks.GetAt(i);
 		AddDependsOn(task);
 		pTasks.Add(task);
 	}

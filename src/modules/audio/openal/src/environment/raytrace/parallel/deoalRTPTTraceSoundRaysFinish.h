@@ -27,12 +27,11 @@
 
 #include "deoalRTParallelEnvProbe.h"
 
+#include <dragengine/common/collection/decTOrderedSet.h>
 #include <dragengine/parallel/deParallelTask.h>
 
 class deoalRayTraceConfig;
 class deoalSoundRayList;
-
-class decPointerList;
 
 
 /**
@@ -47,7 +46,7 @@ public:
 private:
 	deoalRTParallelEnvProbe &pOwner;
 	
-	decPointerList pTasks;
+	decTOrderedSet<deoalRTPTTraceSoundRays*> pTasks;
 	float pRange;
 	const deoalRayTraceConfig *pProbeConfig;
 	
@@ -73,7 +72,7 @@ public:
 	/** \name Manegement */
 	/*@{*/
 	/** \brief Add dependencies. */
-	void AddDependencies(const decPointerList &tasks);
+	void AddDependencies(const decTOrderedSet<deoalRTPTTraceSoundRays*> &tasks);
 	
 	/** \brief Set range. */
 	void SetRange(float range);
@@ -88,7 +87,7 @@ public:
 	void SetRoomParameters(deoalRTParallelEnvProbe::sRoomParameters *roomParameters);
 	
 	/** \brief Trace tasks (deoalRTPTTraceSoundRays*). */
-	inline decPointerList GetTraceTasks(){ return pTasks; }
+	inline decTOrderedSet<deoalRTPTTraceSoundRays*> GetTraceTasks(){ return pTasks; }
 	
 	
 	

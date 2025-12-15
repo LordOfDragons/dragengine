@@ -27,7 +27,7 @@
 
 #include "deResourceLoaderTask.h"
 #include "../../skin/deSkin.h"
-#include "../../../common/collection/decThreadSafeObjectOrderedSet.h"
+#include "../../../common/collection/decTOrderedSet.h"
 
 class deSkinPropertyImage;
 class deSkinPropertyNodeImage;
@@ -81,7 +81,7 @@ public:
 	
 private:
 	deSkin::Ref pSkin;
-	decThreadSafeObjectOrderedSet pInternalTasks;
+	decTThreadSafeObjectOrderedSet<cInternalTask> pInternalTasks;
 	
 	
 	

@@ -241,8 +241,8 @@ bool deResourceLoader::NextFinishedRequest(deResourceLoaderInfo &info){
 	deResourceLoaderTask::Ref task;
 	
 	while(true){
-		if(pFinishedTasks.GetCount() > 0){
-			task = (deResourceLoaderTask*)pFinishedTasks.GetAt(0);
+		if(pFinishedTasks.IsNotEmpty()){
+			task = pFinishedTasks.First();
 			pFinishedTasks.Remove(task);
 		}
 		
@@ -287,15 +287,9 @@ void deResourceLoader::RemoveAllTasks(){
 		pEngine.GetLogger()->LogInfo(LOGSOURCE, "Stop tasks in progress and clear all tasks");
 	}
 	
-	int i, count = pPendingTasks.GetCount();
-	for(i=0; i<count; i++){
-		((deResourceLoaderTask*)pPendingTasks.GetAt(i))->Cancel();
-	}
-	
-	count = pFinishedTasks.GetCount();
-	for(i=0; i<count; i++){
-		((deResourceLoaderTask*)pFinishedTasks.GetAt(i))->Cancel();
-	}
+	pPendingTasks.Visit([](deResourceLoaderTask *task){
+		task->Cancel();
+	});
 	
 	const bool resumeParallel = !pEngine.GetParallelProcessing().GetPaused();
 	
@@ -335,40 +329,20 @@ void deResourceLoader::pCleanUp(){
 
 bool deResourceLoader::pHasTaskWith(deVirtualFileSystem *vfs,
 const char *path, eResourceType resourceType) const{
-	int i, count = pPendingTasks.GetCount();
-	for(i=0; i<count; i++){
-		if(((deResourceLoaderTask*)pPendingTasks.GetAt(i))->Matches(vfs, path, resourceType)){
-			return true;
-		}
-	}
+	auto visitor = [&](const deResourceLoaderTask::Ref &task) {
+		return task->Matches(vfs, path, resourceType);
+	};
 	
-	count = pFinishedTasks.GetCount();
-	for(i=0; i<count; i++){
-		if(((deResourceLoaderTask*)pFinishedTasks.GetAt(i))->Matches(vfs, path, resourceType)){
-			return true;
-		}
-	}
-	
-	return false;
+	const deResourceLoaderTask::Ref *t;
+	return pPendingTasks.Find(visitor, t) || pFinishedTasks.Find(visitor, t);
 }
 
 deResourceLoaderTask *deResourceLoader::pGetTaskWith(deVirtualFileSystem *vfs,
 const char *path, eResourceType resourceType) const{
-	int i, count = pPendingTasks.GetCount();
-	for(i=0; i<count; i++){
-		deResourceLoaderTask * const task = (deResourceLoaderTask*)pPendingTasks.GetAt(i);
-		if(task->Matches(vfs, path, resourceType)){
-			return task;
-		}
-	}
+	auto visitor = [&](const deResourceLoaderTask::Ref &task) {
+		return task->Matches(vfs, path, resourceType);
+	};
 	
-	count = pFinishedTasks.GetCount();
-	for(i=0; i<count; i++){
-		deResourceLoaderTask * const task = (deResourceLoaderTask*)pFinishedTasks.GetAt(i);
-		if(task->Matches(vfs, path, resourceType)){
-			return task;
-		}
-	}
-	
-	return NULL;
+	const deResourceLoaderTask::Ref *t;
+	return pPendingTasks.Find(visitor, t) || pFinishedTasks.Find(visitor, t) ? *t : nullptr;
 }

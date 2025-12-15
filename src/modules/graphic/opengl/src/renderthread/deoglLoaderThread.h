@@ -48,7 +48,7 @@ private:
 	bool pShutdown;
 	bool pContextEnabled;
 	
-	decTObjectOrderedSet<deoglLoaderThreadTask> pTasks;
+	decTThreadSafeObjectOrderedSet<deoglLoaderThreadTask> pTasks;
 	
 	
 	
