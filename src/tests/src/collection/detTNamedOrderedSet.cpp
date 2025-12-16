@@ -75,14 +75,13 @@ void detTNamedOrderedSet::TestGetNamed(){
 	set.Add(obj3);
 	
 	// GetNamed - found
-	TestNamedObject::Ref found = set.GetNamed("beta");
-	ASSERT_NOT_NULL(found.Pointer());
+	const TestNamedObject *found = set.GetNamed("beta");
+	ASSERT_NOT_NULL(found);
 	ASSERT_EQUAL(found->name, decString("beta"));
 	ASSERT_EQUAL(found->id, 2);
 	
 	// GetNamed - not found (returns null reference)
-	TestNamedObject::Ref notFound = set.GetNamed("delta");
-	ASSERT_NULL(notFound.Pointer());
+	ASSERT_NULL(set.GetNamed("delta"));
 }
 
 void detTNamedOrderedSet::TestIndexOfNamed(){

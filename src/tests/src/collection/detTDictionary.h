@@ -21,7 +21,7 @@ private:
 	void TestGetAtOrDefault();
 	void TestVisit();
 	void TestFind();
-	void TestFindDefault();
+	void TestFindOrDefault();
 	void TestCollect();
 	void TestRemoveIf();
 	void TestConstIterator();

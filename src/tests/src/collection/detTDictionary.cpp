@@ -36,7 +36,7 @@ void detTDictionary::Run(){
 	TestGetAtOrDefault();
 	TestVisit();
 	TestFind();
-	TestFindDefault();
+	TestFindOrDefault();
 	TestCollect();
 	TestRemoveIf();
 	TestConstIterator();
@@ -435,7 +435,7 @@ void detTDictionary::TestFind(){
 	ASSERT_TRUE(*foundTag == tag2);
 }
 
-void detTDictionary::TestFindDefault(){
+void detTDictionary::TestFindOrDefault(){
 	SetSubTestNum(8);
 
 	decTStringIntDict dict;
@@ -443,24 +443,24 @@ void detTDictionary::TestFindDefault(){
 	dict.SetAt(decString("b"), 20);
 	dict.SetAt(decString("c"), 30);
 
-	// FindDefault with existing element (lvalue evaluator)
+	// FindOrDefault with existing element (lvalue evaluator)
 	auto evaluator = [](const decString &key, const int &value) -> bool {
 		return value == 20;
 	};
-	ASSERT_EQUAL(dict.FindDefault(evaluator, 999), 20);
+	ASSERT_EQUAL(dict.FindOrDefault(evaluator, 999), 20);
 
-	// FindDefault with rvalue evaluator
-	ASSERT_EQUAL(dict.FindDefault([](const decString &key, const int &value) -> bool {
+	// FindOrDefault with rvalue evaluator
+	ASSERT_EQUAL(dict.FindOrDefault([](const decString &key, const int &value) -> bool {
 		return key == "a";
 	}, -1), 10);
 
-	// FindDefault with non-existent element (returns default)
-	ASSERT_EQUAL(dict.FindDefault([](const decString &key, const int &value) -> bool {
+	// FindOrDefault with non-existent element (returns default)
+	ASSERT_EQUAL(dict.FindOrDefault([](const decString &key, const int &value) -> bool {
 		return value == 999;
 	}, 777), 777);
 
-	// FindDefault with complex condition
-	ASSERT_EQUAL(dict.FindDefault([](const decString &key, const int &value) -> bool {
+	// FindOrDefault with complex condition
+	ASSERT_EQUAL(dict.FindOrDefault([](const decString &key, const int &value) -> bool {
 		return value > 25;
 	}, 0), 30);
 
@@ -472,12 +472,12 @@ void detTDictionary::TestFindDefault(){
 	dictObj.SetAt(decString("k1"), tag1);
 	dictObj.SetAt(decString("k2"), tag2);
 
-	auto result = dictObj.FindDefault([](const decString &key, const decXmlElementTag::Ref &value) -> bool {
+	auto result = dictObj.FindOrDefault([](const decString &key, const decXmlElementTag::Ref &value) -> bool {
 		return value->GetName() == "tag1";
 	}, defaultTag);
 	ASSERT_TRUE(result == tag1);
 
-	auto notFound = dictObj.FindDefault([](const decString &key, const decXmlElementTag::Ref &value) -> bool {
+	auto notFound = dictObj.FindOrDefault([](const decString &key, const decXmlElementTag::Ref &value) -> bool {
 		return value->GetName() == "missing";
 	}, defaultTag);
 	ASSERT_TRUE(notFound == defaultTag);

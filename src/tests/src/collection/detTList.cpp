@@ -267,8 +267,8 @@ void detTList::TestIntAlgorithms(){
 	ASSERT_NOT_NULL(result);
 	ASSERT_EQUAL(*result, 8);
 
-	// FindDefault
-	ASSERT_EQUAL(list.FindDefault([](const int &v){ return v > 100; }, 999), 999);
+	// FindOrDefault
+	ASSERT_EQUAL(list.FindOrDefault([](const int &v){ return v > 100; }, 999), 999);
 
 	// Collect
 	auto collected = list.Collect([](const int &v){ return v > 5; });
@@ -382,13 +382,13 @@ void detTList::TestIntAlgorithms(){
 	ASSERT_TRUE(list3.Find([](const int &v){ return v < 5; }, foundRev, 5, 0, -1));
 	ASSERT_EQUAL(*foundRev, 4);
 
-	// FindDefault with from parameter
-	ASSERT_EQUAL(list3.FindDefault([](const int &v){ return v > 100; }, 999, 5), 999);
-	ASSERT_EQUAL(list3.FindDefault([](const int &v){ return v > 8; }, 999, 8), 9);
+	// FindOrDefault with from parameter
+	ASSERT_EQUAL(list3.FindOrDefault([](const int &v){ return v > 100; }, 999, 5), 999);
+	ASSERT_EQUAL(list3.FindOrDefault([](const int &v){ return v > 8; }, 999, 8), 9);
 
-	// FindDefault with from/to/step parameters
-	ASSERT_EQUAL(list3.FindDefault([](const int &v){ return v == 5; }, 999, 0, 10, 1), 5);
-	ASSERT_EQUAL(list3.FindDefault([](const int &v){ return v > 100; }, 999, 0, 10, 1), 999);
+	// FindOrDefault with from/to/step parameters
+	ASSERT_EQUAL(list3.FindOrDefault([](const int &v){ return v == 5; }, 999, 0, 10, 1), 5);
+	ASSERT_EQUAL(list3.FindOrDefault([](const int &v){ return v > 100; }, 999, 0, 10, 1), 999);
 
 	// Collect with from parameter
 	auto collFrom = list3.Collect([](const int &v){ return v > 7; }, 5);

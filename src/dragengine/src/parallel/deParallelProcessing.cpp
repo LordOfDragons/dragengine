@@ -983,7 +983,7 @@ void deParallelProcessing::pEnsureRunTaskNow(deParallelTask *task){
 			return;
 		}
 		
-		const deParallelTask::Ref deptask(task->GetDependsOn().FindDefault([](const deParallelTask *t){
+		const deParallelTask::Ref deptask(task->GetDependsOn().FindOrDefault([](const deParallelTask *t){
 			return !t->GetFinished() && !t->IsCancelled();
 		}, {}));
 		

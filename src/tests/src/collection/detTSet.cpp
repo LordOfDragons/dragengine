@@ -259,17 +259,17 @@ void detTSet::TestIntAlgorithms(){
 	ASSERT_TRUE(set.Find([](const int &v){ return v < 5; }, foundRev, 4, 0, -1));
 	ASSERT_EQUAL(*foundRev, 1);
 
-	// FindDefault - no parameters
-	ASSERT_EQUAL(set.FindDefault([](const int &v){ return v > 100; }, 999), 999);
-	ASSERT_EQUAL(set.FindDefault([](const int &v){ return v > 7; }, 999), 8);
+	// FindOrDefault - no parameters
+	ASSERT_EQUAL(set.FindOrDefault([](const int &v){ return v > 100; }, 999), 999);
+	ASSERT_EQUAL(set.FindOrDefault([](const int &v){ return v > 7; }, 999), 8);
 
-	// FindDefault with from parameter
-	ASSERT_EQUAL(set.FindDefault([](const int &v){ return v > 100; }, 999, 2), 999);
-	ASSERT_EQUAL(set.FindDefault([](const int &v){ return v > 7; }, 999, 2), 8);
+	// FindOrDefault with from parameter
+	ASSERT_EQUAL(set.FindOrDefault([](const int &v){ return v > 100; }, 999, 2), 999);
+	ASSERT_EQUAL(set.FindOrDefault([](const int &v){ return v > 7; }, 999, 2), 8);
 
-	// FindDefault with from/to/step parameters
-	ASSERT_EQUAL(set.FindDefault([](const int &v){ return v == 2; }, 999, 0, 5, 1), 2);
-	ASSERT_EQUAL(set.FindDefault([](const int &v){ return v > 100; }, 999, 0, 5, 1), 999);
+	// FindOrDefault with from/to/step parameters
+	ASSERT_EQUAL(set.FindOrDefault([](const int &v){ return v == 2; }, 999, 0, 5, 1), 2);
+	ASSERT_EQUAL(set.FindOrDefault([](const int &v){ return v > 100; }, 999, 0, 5, 1), 999);
 
 	// Collect - no parameters
 	auto collected = set.Collect([](const int &v){ return v > 5; });

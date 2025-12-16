@@ -725,7 +725,7 @@ public:
 	}
 	
 	/**
-	 * \brief Find element with default value.
+	 * \brief Find element or default value if absent.
 	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
 	 * \param[in] from First index to visit. Negative counts from end of list.
 	 * \param[in] to One past last index to visit. Negative counts from end of list.
@@ -733,36 +733,36 @@ public:
 	 * \return Found element or default value if not found.
 	 */
 	template<typename Evaluator>
-	T FindDefault(Evaluator &evaluator, const T &defaultValue, int from, int to, int step = 1) const{
+	T FindOrDefault(Evaluator &evaluator, const T &defaultValue, int from, int to, int step = 1) const{
 		const T *found = nullptr;
 		return Find<Evaluator>(evaluator, found, from, to, step) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	T FindDefault(Evaluator &&evaluator, const T &defaultValue, int from, int to, int step = 1) const{
-		return FindDefault<Evaluator>(evaluator, defaultValue, from, to, step);
+	T FindOrDefault(Evaluator &&evaluator, const T &defaultValue, int from, int to, int step = 1) const{
+		return FindOrDefault<Evaluator>(evaluator, defaultValue, from, to, step);
 	}
 	
 	template<typename Evaluator>
-	T FindDefault(Evaluator &evaluator, const T &defaultValue, int from) const{
+	T FindOrDefault(Evaluator &evaluator, const T &defaultValue, int from) const{
 		const T *found = nullptr;
 		return Find<Evaluator>(evaluator, found, from) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	T FindDefault(Evaluator &&evaluator, const T &defaultValue, int from) const{
-		return FindDefault<Evaluator>(evaluator, defaultValue, from);
+	T FindOrDefault(Evaluator &&evaluator, const T &defaultValue, int from) const{
+		return FindOrDefault<Evaluator>(evaluator, defaultValue, from);
 	}
 	
 	template<typename Evaluator>
-	inline T FindDefault(Evaluator &evaluator, const T &defaultValue) const{
+	inline T FindOrDefault(Evaluator &evaluator, const T &defaultValue) const{
 		const T *found = nullptr;
 		return Find<Evaluator>(evaluator, found) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	inline T FindDefault(Evaluator &&evaluator, const T &defaultValue) const{
-		return FindDefault<Evaluator>(evaluator, defaultValue);
+	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue) const{
+		return FindOrDefault<Evaluator>(evaluator, defaultValue);
 	}
 	
 	

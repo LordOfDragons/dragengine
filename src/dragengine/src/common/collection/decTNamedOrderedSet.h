@@ -38,11 +38,11 @@ class decTNamedOrderedSet : public decTOrderedSet<T,TP>{
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Named element or nullptr if absent. */
-	T GetNamed(const char *name) const{
-		return this->FindDefault([&name](const T &element){
+	/** \brief Named element or default value if absent. */
+	T GetNamed(const char *name, const T &defaultValue = {}) const{
+		return this->FindOrDefault([&name](const T &element){
 			return element->GetName() == name;
-		}, {});
+		}, defaultValue);
 	}
 	
 	/** \brief Index of named element or -1 if absent. */

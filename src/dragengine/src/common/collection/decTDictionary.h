@@ -25,10 +25,11 @@
 #ifndef _DECTDICTIONARY_H_
 #define _DECTDICTIONARY_H_
 
+#include "decTList.h"
+#include "decHashFunctions.h"
+#include "../exceptions.h"
 #include "../string/decString.h"
 #include "../string/decStringList.h"
-#include "../exceptions.h"
-#include "decTList.h"
 
 
 /**
@@ -189,7 +190,7 @@ public:
 	/**
 	 * \brief Value for key or default value if absent.
 	 */
-	V GetAtOrDefault(const K &key, const V &defaultValue) const{
+	V GetAtOrDefault(const K &key, const V &defaultValue = {}) const{
 		const sDictEntry * const entry = pGetEntry(key);
 		return entry ? entry->value : defaultValue;
 	}
@@ -421,14 +422,14 @@ public:
 	 * \return Found value or default value if not found.
 	 */
 	template<typename Evaluator>
-	V FindDefault(Evaluator &evaluator, const V &defaultValue) const{
+	V FindOrDefault(Evaluator &evaluator, const V &defaultValue) const{
 		const V *found = nullptr;
 		return Find<Evaluator>(evaluator, found) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	V FindDefault(Evaluator &&evaluator, const V &defaultValue) const{
-		return FindDefault<Evaluator>(evaluator, defaultValue);
+	V FindOrDefault(Evaluator &&evaluator, const V &defaultValue) const{
+		return FindOrDefault<Evaluator>(evaluator, defaultValue);
 	}
 	
 	
@@ -684,6 +685,24 @@ private:
 	}
 };
 
+
+
+/**
+ * \brief String keyed object dictionary template class.
+ * 
+ * This template uses deTObjectReference.
+ */
+template<typename V, typename K = decString>
+using decTObjectDictionary = decTDictionary<K, deTObjectReference<V>, V*>;
+
+/**
+ * \brief String keyed thread safe object dictionary template class.
+ * 
+ * This template uses deTThreadSafeObjectReference to get thread safe assignment of
+ * object references. This does not make the set itself thread safe though.
+ */
+template<typename V, typename K = decString>
+using decTThreadSafeObjectDictionary = decTDictionary<K, deTThreadSafeObjectReference<V>, V*>;
 
 /**
  * \brief Dictionary template class mapping values to string keys.

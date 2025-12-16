@@ -75,7 +75,7 @@ void detTOrderedSet::Run(){
 	TestIntGetSliced();
 	TestIntVisitOverloads();
 	TestIntFindOverloads();
-	TestIntFindDefault();
+	TestIntFindOrDefault();
 	TestIntCollectOverloads();
 	TestIntRemoveIfOverloads();
 	TestIntGetSorted();
@@ -117,7 +117,7 @@ void detTOrderedSet::Run(){
 	TestStringGetSliced();
 	TestStringVisitOverloads();
 	TestStringFindOverloads();
-	TestStringFindDefault();
+	TestStringFindOrDefault();
 	TestStringCollectOverloads();
 	TestStringRemoveIfOverloads();
 	TestStringGetSorted();
@@ -159,7 +159,7 @@ void detTOrderedSet::Run(){
 	TestObjectRefGetSliced();
 	TestObjectRefVisitOverloads();
 	TestObjectRefFindOverloads();
-	TestObjectRefFindDefault();
+	TestObjectRefFindOrDefault();
 	TestObjectRefCollectOverloads();
 	TestObjectRefRemoveIfOverloads();
 	TestObjectRefGetSorted();
@@ -600,12 +600,12 @@ void detTOrderedSet::TestIntFind(){
 	ASSERT_NOT_NULL(found);
 	ASSERT_EQUAL(*found, 20);
 	
-	ASSERT_EQUAL(set.FindDefault(evaluator, -1), 20);
+	ASSERT_EQUAL(set.FindOrDefault(evaluator, -1), 20);
 	
 	auto evaluator2 = [](int value){ return value > 100; };
 	ASSERT_FALSE(set.Find(evaluator2, found));
 	
-	ASSERT_EQUAL(set.FindDefault(evaluator2, -1), -1);
+	ASSERT_EQUAL(set.FindOrDefault(evaluator2, -1), -1);
 }
 
 void detTOrderedSet::TestIntCollect(){
@@ -1049,12 +1049,12 @@ void detTOrderedSet::TestStringFind(){
 	ASSERT_NOT_NULL(found);
 	ASSERT_EQUAL(*found, "banana");
 	
-	ASSERT_EQUAL(set.FindDefault(evaluator, ""), "banana");
+	ASSERT_EQUAL(set.FindOrDefault(evaluator, ""), "banana");
 	
 	auto evaluator2 = [](const decString &value){ return value.GetLength() > 10; };
 	ASSERT_FALSE(set.Find(evaluator2, found));
 	
-	ASSERT_EQUAL(set.FindDefault(evaluator2, ""), "");
+	ASSERT_EQUAL(set.FindOrDefault(evaluator2, ""), "");
 }
 
 void detTOrderedSet::TestStringCollect(){
@@ -1547,12 +1547,12 @@ void detTOrderedSet::TestObjectRefFind(){
 	ASSERT_NOT_NULL(found);
 	ASSERT_EQUAL(*found, obj2);
 	
-	ASSERT_EQUAL(set.FindDefault(evaluator, {}), obj2);
+	ASSERT_EQUAL(set.FindOrDefault(evaluator, {}), obj2);
 	
 	auto evaluator2 = [](const decXmlElementTag *val){ return val->GetName() == "nonexistent"; };
 	ASSERT_FALSE(set.Find(evaluator2, found));
 	
-	ASSERT_NULL(set.FindDefault(evaluator2, {}));
+	ASSERT_NULL(set.FindOrDefault(evaluator2, {}));
 }
 
 void detTOrderedSet::TestObjectRefCollect(){
@@ -1772,7 +1772,7 @@ void detTOrderedSet::TestIntFindOverloads(){
 	ASSERT_EQUAL(*found, 30);
 }
 
-void detTOrderedSet::TestIntFindDefault(){
+void detTOrderedSet::TestIntFindOrDefault(){
 	SetSubTestNum(90);
 
 	decTOrderedSetInt set1;
@@ -1780,17 +1780,17 @@ void detTOrderedSet::TestIntFindDefault(){
 	set1.Add(20);
 	set1.Add(30);
 	
-	// Test FindDefault - found case
+	// Test FindOrDefault - found case
 	auto evaluator1 = [](int val){ return val == 20; };
-	ASSERT_EQUAL(set1.FindDefault(evaluator1, 99), 20);
+	ASSERT_EQUAL(set1.FindOrDefault(evaluator1, 99), 20);
 	
-	// Test FindDefault - not found case
+	// Test FindOrDefault - not found case
 	auto evaluator2 = [](int val){ return val == 50; };
-	ASSERT_EQUAL(set1.FindDefault(evaluator2, 99), 99);
+	ASSERT_EQUAL(set1.FindOrDefault(evaluator2, 99), 99);
 	
-	// Test FindDefault with from parameter
+	// Test FindOrDefault with from parameter
 	auto evaluator3 = [](int val){ return val == 10; };
-	ASSERT_EQUAL(set1.FindDefault(evaluator3, 99, 1), 99);  // Start from index 1. 10 is at index 0, not found from index 1
+	ASSERT_EQUAL(set1.FindOrDefault(evaluator3, 99, 1), 99);  // Start from index 1. 10 is at index 0, not found from index 1
 }
 
 void detTOrderedSet::TestIntCollectOverloads(){
@@ -1996,7 +1996,7 @@ void detTOrderedSet::TestStringFindOverloads(){
 	ASSERT_EQUAL(*found, "cherry");
 }
 
-void detTOrderedSet::TestStringFindDefault(){
+void detTOrderedSet::TestStringFindOrDefault(){
 	SetSubTestNum(101);
 
 	decTOrderedSetString set1;
@@ -2005,13 +2005,13 @@ void detTOrderedSet::TestStringFindDefault(){
 	set1.Add("cherry");
 	
 	auto evaluator1 = [](decString val){ return val == "banana"; };
-	ASSERT_EQUAL(set1.FindDefault(evaluator1, "unknown"), "banana");
+	ASSERT_EQUAL(set1.FindOrDefault(evaluator1, "unknown"), "banana");
 	
 	auto evaluator2 = [](decString val){ return val == "grape"; };
-	ASSERT_EQUAL(set1.FindDefault(evaluator2, "unknown"), "unknown");
+	ASSERT_EQUAL(set1.FindOrDefault(evaluator2, "unknown"), "unknown");
 	
 	auto evaluator3 = [](decString val){ return val == "apple"; };
-	ASSERT_EQUAL(set1.FindDefault(evaluator3, "unknown", 1), "unknown");  // apple is at index 0
+	ASSERT_EQUAL(set1.FindOrDefault(evaluator3, "unknown", 1), "unknown");  // apple is at index 0
 }
 
 void detTOrderedSet::TestStringCollectOverloads(){
@@ -2239,7 +2239,7 @@ void detTOrderedSet::TestObjectRefFindOverloads(){
 	ASSERT_EQUAL(*found, obj3);
 }
 
-void detTOrderedSet::TestObjectRefFindDefault(){
+void detTOrderedSet::TestObjectRefFindOrDefault(){
 	SetSubTestNum(112);
 
 	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
@@ -2253,13 +2253,13 @@ void detTOrderedSet::TestObjectRefFindDefault(){
 	set1.Add(obj3);
 	
 	auto evaluator1 = [obj2](decXmlElementTag::Ref val){ return val == obj2; };
-	ASSERT_EQUAL(set1.FindDefault(evaluator1, defaultObj), obj2);
+	ASSERT_EQUAL(set1.FindOrDefault(evaluator1, defaultObj), obj2);
 	
 	auto evaluator2 = [](decXmlElementTag::Ref val){ return false; };
-	ASSERT_EQUAL(set1.FindDefault(evaluator2, defaultObj), defaultObj);
+	ASSERT_EQUAL(set1.FindOrDefault(evaluator2, defaultObj), defaultObj);
 	
 	auto evaluator3 = [obj1](decXmlElementTag::Ref val){ return val == obj1; };
-	ASSERT_EQUAL(set1.FindDefault(evaluator3, defaultObj, 1), defaultObj);  // obj1 is at index 0
+	ASSERT_EQUAL(set1.FindOrDefault(evaluator3, defaultObj, 1), defaultObj);  // obj1 is at index 0
 }
 
 void detTOrderedSet::TestObjectRefCollectOverloads(){

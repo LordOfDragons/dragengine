@@ -560,16 +560,17 @@ public:
 	/**
 	 * \brief Find element or nullptr if absent.
 	 * \param[in] evaluator Evaluator callable invoked as evaluator(T*).
+	 * \param[in] defaultValue Default value returned if not found.
 	 */
 	template<typename Evaluator>
-	T *FindOrNull(Evaluator &evaluator) const{
+	T *FindOrNull(Evaluator &evaluator, T *defaultValue = nullptr) const{
 		T *found = nullptr;
-		return Find<Evaluator>(evaluator, found) ? found : nullptr;
+		return Find<Evaluator>(evaluator, found) ? found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	T *FindOrNull(Evaluator &&evaluator) const{
-		return FindOrNull<Evaluator>(evaluator);
+	T *FindOrNull(Evaluator &&evaluator, T *defaultValue = nullptr) const{
+		return FindOrNull<Evaluator>(evaluator, defaultValue);
 	}
 	
 	

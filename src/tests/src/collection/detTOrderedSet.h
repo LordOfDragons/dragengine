@@ -46,7 +46,7 @@ private:
 	void TestIntGetSliced();
 	void TestIntVisitOverloads();
 	void TestIntFindOverloads();
-	void TestIntFindDefault();
+	void TestIntFindOrDefault();
 	void TestIntCollectOverloads();
 	void TestIntRemoveIfOverloads();
 	void TestIntGetSorted();
@@ -88,7 +88,7 @@ private:
 	void TestStringGetSliced();
 	void TestStringVisitOverloads();
 	void TestStringFindOverloads();
-	void TestStringFindDefault();
+	void TestStringFindOrDefault();
 	void TestStringCollectOverloads();
 	void TestStringRemoveIfOverloads();
 	void TestStringGetSorted();
@@ -130,7 +130,7 @@ private:
 	void TestObjectRefGetSliced();
 	void TestObjectRefVisitOverloads();
 	void TestObjectRefFindOverloads();
-	void TestObjectRefFindDefault();
+	void TestObjectRefFindOrDefault();
 	void TestObjectRefCollectOverloads();
 	void TestObjectRefRemoveIfOverloads();
 	void TestObjectRefGetSorted();
