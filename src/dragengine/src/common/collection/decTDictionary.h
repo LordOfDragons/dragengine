@@ -189,7 +189,7 @@ public:
 	/**
 	 * \brief Value for key or default value if absent.
 	 */
-	V GetAtOrDefault(const K &key, const VP &defaultValue) const{
+	V GetAtOrDefault(const K &key, const V &defaultValue) const{
 		const sDictEntry * const entry = pGetEntry(key);
 		return entry ? entry->value : defaultValue;
 	}

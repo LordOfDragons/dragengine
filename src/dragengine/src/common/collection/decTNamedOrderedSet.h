@@ -70,7 +70,7 @@ public:
 	 * \throws deeInvalidParam \em element with same name is already present in the set.
 	 */
 	void SetAt(int index, const TP &element){
-		if(this->GetAt(index).GetName() != element->GetName()){
+		if(this->GetAt(index)->GetName() != element->GetName()){
 			DEASSERT_FALSE(HasNamed(element->GetName()))
 		}
 		
@@ -94,6 +94,9 @@ public:
 	 * \returns true if added.
 	 */
 	bool AddIfAbsent(const TP &element){
+		if(this->Has(element)){
+			return false;
+		}
 		DEASSERT_FALSE(HasNamed(element->GetName()))
 		return decTOrderedSet<T,TP>::AddIfAbsent(element);
 	}

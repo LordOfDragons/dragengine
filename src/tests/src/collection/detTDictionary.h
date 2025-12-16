@@ -17,6 +17,15 @@ private:
 	void TestStringObjectRefBasic();
 	void TestStringObjectRefOperations();
 
+	// Test methods for new functions in commit 1d5552384445f75f7cf67ed21a59f55c7127cae5
+	void TestGetAtOrDefault();
+	void TestVisit();
+	void TestFind();
+	void TestFindDefault();
+	void TestCollect();
+	void TestRemoveIf();
+	void TestConstIterator();
+
 public:
 	detTDictionary();
 	~detTDictionary() override;

@@ -33,6 +33,13 @@ void detTDictionary::Run(){
 	TestStringIntKeysValues();
 	TestStringObjectRefBasic();
 	TestStringObjectRefOperations();
+	TestGetAtOrDefault();
+	TestVisit();
+	TestFind();
+	TestFindDefault();
+	TestCollect();
+	TestRemoveIf();
+	TestConstIterator();
 }
 
 void detTDictionary::CleanUp(){
@@ -292,4 +299,385 @@ void detTDictionary::TestStringObjectRefOperations(){
 	ASSERT_TRUE(dict1[decString("second")] == tag2);
 	dict1[decString("second")] = tag4;
 	ASSERT_TRUE(dict1[decString("second")] == tag4);
+}
+
+
+// Tests for new functions in commit 1d5552384445f75f7cf67ed21a59f55c7127cae5
+/////////////////////////////////////////////////////////////////////////
+
+void detTDictionary::TestGetAtOrDefault(){
+	SetSubTestNum(5);
+
+	decTStringIntDict dict;
+	dict.SetAt(decString("a"), 10);
+	dict.SetAt(decString("b"), 20);
+	dict.SetAt(decString("c"), 30);
+
+	// GetAtOrDefault with existing key
+	ASSERT_EQUAL(dict.GetAtOrDefault(decString("a"), 999), 10);
+	ASSERT_EQUAL(dict.GetAtOrDefault(decString("b"), -1), 20);
+
+	// GetAtOrDefault with missing key (returns default)
+	ASSERT_EQUAL(dict.GetAtOrDefault(decString("missing"), 999), 999);
+	ASSERT_EQUAL(dict.GetAtOrDefault(decString("x"), 0), 0);
+
+	// Verify dictionary not modified
+	ASSERT_EQUAL(dict.GetCount(), 3);
+	ASSERT_FALSE(dict.Has(decString("missing")));
+
+	// Test with ObjectRef values
+	decTStringXmlTagDict dictObj;
+	decXmlElementTag::Ref tag1 = decXmlElementTag::Ref::New("tag1");
+	decXmlElementTag::Ref defaultTag = decXmlElementTag::Ref::New("default");
+	dictObj.SetAt(decString("key1"), tag1);
+
+	// GetAtOrDefault with pointer types (VP) for ObjectRef
+	ASSERT_TRUE(dictObj.GetAtOrDefault(decString("key1"), defaultTag) == tag1);
+	ASSERT_TRUE(dictObj.GetAtOrDefault(decString("missing"), defaultTag) == defaultTag);
+}
+
+void detTDictionary::TestVisit(){
+	SetSubTestNum(6);
+
+	decTStringIntDict dict;
+	dict.SetAt(decString("a"), 1);
+	dict.SetAt(decString("b"), 2);
+	dict.SetAt(decString("c"), 3);
+
+	// Test Visit with lambda (lvalue reference)
+	int sum = 0;
+	auto visitor = [&sum](const decString &key, const int &value){
+		sum += value;
+	};
+	dict.Visit(visitor);
+	ASSERT_EQUAL(sum, 6);
+
+	// Test Visit with rvalue lambda
+	int count = 0;
+	dict.Visit([&count](const decString &key, const int &value){
+		count++;
+	});
+	ASSERT_EQUAL(count, 3);
+
+	// Test Visit with key checking
+	bool hasKeyB = false;
+	dict.Visit([&hasKeyB](const decString &key, const int &value){
+		if(key == "b"){
+			hasKeyB = true;
+		}
+	});
+	ASSERT_TRUE(hasKeyB);
+
+	// Test Visit with ObjectRef values
+	decTStringXmlTagDict dictObj;
+	decXmlElementTag::Ref tag1 = decXmlElementTag::Ref::New("tag1");
+	decXmlElementTag::Ref tag2 = decXmlElementTag::Ref::New("tag2");
+	dictObj.SetAt(decString("k1"), tag1);
+	dictObj.SetAt(decString("k2"), tag2);
+
+	int objCount = 0;
+	dictObj.Visit([&objCount](const decString &key, const decXmlElementTag::Ref &value){
+		objCount++;
+	});
+	ASSERT_EQUAL(objCount, 2);
+}
+
+void detTDictionary::TestFind(){
+	SetSubTestNum(7);
+
+	decTStringIntDict dict;
+	dict.SetAt(decString("a"), 10);
+	dict.SetAt(decString("b"), 20);
+	dict.SetAt(decString("c"), 30);
+
+	// Find existing element (lvalue evaluator)
+	const int *found = nullptr;
+	auto evaluator = [](const decString &key, const int &value) -> bool {
+		return value == 20;
+	};
+	ASSERT_TRUE(dict.Find(evaluator, found));
+	ASSERT_NOT_NULL(found);
+	ASSERT_EQUAL(*found, 20);
+
+	// Find with rvalue evaluator
+	const int *found2 = nullptr;
+	ASSERT_TRUE(dict.Find([](const decString &key, const int &value) -> bool {
+		return key == "c";
+	}, found2));
+	ASSERT_NOT_NULL(found2);
+	ASSERT_EQUAL(*found2, 30);
+
+	// Find non-existent element
+	const int *notFound = nullptr;
+	ASSERT_FALSE(dict.Find([](const decString &key, const int &value) -> bool {
+		return value == 999;
+	}, notFound));
+	ASSERT_TRUE(notFound == nullptr);
+
+	// Find with key pattern
+	const int *foundA = nullptr;
+	ASSERT_TRUE(dict.Find([](const decString &key, const int &value) -> bool {
+		return key.BeginsWith("a");
+	}, foundA));
+	ASSERT_EQUAL(*foundA, 10);
+
+	// Test with ObjectRef values
+	decTStringXmlTagDict dictObj;
+	decXmlElementTag::Ref tag1 = decXmlElementTag::Ref::New("tag1");
+	decXmlElementTag::Ref tag2 = decXmlElementTag::Ref::New("tag2");
+	dictObj.SetAt(decString("k1"), tag1);
+	dictObj.SetAt(decString("k2"), tag2);
+
+	const decXmlElementTag::Ref *foundTag = nullptr;
+	ASSERT_TRUE(dictObj.Find([](const decString &key, const decXmlElementTag::Ref &value) -> bool {
+		return value->GetName() == "tag2";
+	}, foundTag));
+	ASSERT_TRUE(*foundTag == tag2);
+}
+
+void detTDictionary::TestFindDefault(){
+	SetSubTestNum(8);
+
+	decTStringIntDict dict;
+	dict.SetAt(decString("a"), 10);
+	dict.SetAt(decString("b"), 20);
+	dict.SetAt(decString("c"), 30);
+
+	// FindDefault with existing element (lvalue evaluator)
+	auto evaluator = [](const decString &key, const int &value) -> bool {
+		return value == 20;
+	};
+	ASSERT_EQUAL(dict.FindDefault(evaluator, 999), 20);
+
+	// FindDefault with rvalue evaluator
+	ASSERT_EQUAL(dict.FindDefault([](const decString &key, const int &value) -> bool {
+		return key == "a";
+	}, -1), 10);
+
+	// FindDefault with non-existent element (returns default)
+	ASSERT_EQUAL(dict.FindDefault([](const decString &key, const int &value) -> bool {
+		return value == 999;
+	}, 777), 777);
+
+	// FindDefault with complex condition
+	ASSERT_EQUAL(dict.FindDefault([](const decString &key, const int &value) -> bool {
+		return value > 25;
+	}, 0), 30);
+
+	// Test with ObjectRef values
+	decTStringXmlTagDict dictObj;
+	decXmlElementTag::Ref tag1 = decXmlElementTag::Ref::New("tag1");
+	decXmlElementTag::Ref tag2 = decXmlElementTag::Ref::New("tag2");
+	decXmlElementTag::Ref defaultTag = decXmlElementTag::Ref::New("default");
+	dictObj.SetAt(decString("k1"), tag1);
+	dictObj.SetAt(decString("k2"), tag2);
+
+	auto result = dictObj.FindDefault([](const decString &key, const decXmlElementTag::Ref &value) -> bool {
+		return value->GetName() == "tag1";
+	}, defaultTag);
+	ASSERT_TRUE(result == tag1);
+
+	auto notFound = dictObj.FindDefault([](const decString &key, const decXmlElementTag::Ref &value) -> bool {
+		return value->GetName() == "missing";
+	}, defaultTag);
+	ASSERT_TRUE(notFound == defaultTag);
+}
+
+void detTDictionary::TestCollect(){
+	SetSubTestNum(9);
+
+	decTStringIntDict dict;
+	dict.SetAt(decString("a"), 10);
+	dict.SetAt(decString("b"), 20);
+	dict.SetAt(decString("c"), 30);
+	dict.SetAt(decString("d"), 40);
+
+	// Collect with lvalue evaluator (filter values >= 20)
+	auto evaluator = [](const decString &key, const int &value) -> bool {
+		return value >= 20;
+	};
+	auto collected = dict.Collect(evaluator);
+	ASSERT_EQUAL(collected.GetCount(), 3);
+	ASSERT_TRUE(collected.Has(decString("b")));
+	ASSERT_TRUE(collected.Has(decString("c")));
+	ASSERT_TRUE(collected.Has(decString("d")));
+	ASSERT_FALSE(collected.Has(decString("a")));
+	ASSERT_EQUAL(collected.GetAt(decString("b")), 20);
+
+	// Collect with rvalue evaluator (filter by key pattern)
+	auto collected2 = dict.Collect([](const decString &key, const int &value) -> bool {
+		return key.BeginsWith("c") || key.BeginsWith("d");
+	});
+	ASSERT_EQUAL(collected2.GetCount(), 2);
+	ASSERT_TRUE(collected2.Has(decString("c")));
+	ASSERT_TRUE(collected2.Has(decString("d")));
+
+	// Collect with no matches
+	auto empty = dict.Collect([](const decString &key, const int &value) -> bool {
+		return value > 100;
+	});
+	ASSERT_TRUE(empty.IsEmpty());
+
+	// Collect all elements
+	auto all = dict.Collect([](const decString &key, const int &value) -> bool {
+		return true;
+	});
+	ASSERT_EQUAL(all.GetCount(), 4);
+	ASSERT_TRUE(all == dict);
+
+	// Test with ObjectRef values
+	decTStringXmlTagDict dictObj;
+	decXmlElementTag::Ref tag1 = decXmlElementTag::Ref::New("tag1");
+	decXmlElementTag::Ref tag2 = decXmlElementTag::Ref::New("tag2");
+	decXmlElementTag::Ref tag3 = decXmlElementTag::Ref::New("tag3");
+	dictObj.SetAt(decString("k1"), tag1);
+	dictObj.SetAt(decString("k2"), tag2);
+	dictObj.SetAt(decString("k3"), tag3);
+
+	auto collectedObj = dictObj.Collect([](const decString &key, const decXmlElementTag::Ref &value) -> bool {
+		return value->GetName() == "tag2";
+	});
+	ASSERT_EQUAL(collectedObj.GetCount(), 1);
+	ASSERT_TRUE(collectedObj.GetAt(decString("k2")) == tag2);
+}
+
+void detTDictionary::TestRemoveIf(){
+	SetSubTestNum(10);
+
+	decTStringIntDict dict;
+	dict.SetAt(decString("a"), 10);
+	dict.SetAt(decString("b"), 20);
+	dict.SetAt(decString("c"), 30);
+	dict.SetAt(decString("d"), 40);
+
+	// RemoveIf with lvalue evaluator (remove values < 25)
+	auto evaluator = [](const decString &key, const int &value) -> bool {
+		return value < 25;
+	};
+	dict.RemoveIf(evaluator);
+	ASSERT_EQUAL(dict.GetCount(), 2);
+	ASSERT_FALSE(dict.Has(decString("a")));
+	ASSERT_FALSE(dict.Has(decString("b")));
+	ASSERT_TRUE(dict.Has(decString("c")));
+	ASSERT_TRUE(dict.Has(decString("d")));
+
+	// RemoveIf with rvalue evaluator (remove specific key)
+	dict.RemoveIf([](const decString &key, const int &value) -> bool {
+		return key == "c";
+	});
+	ASSERT_EQUAL(dict.GetCount(), 1);
+	ASSERT_FALSE(dict.Has(decString("c")));
+	ASSERT_TRUE(dict.Has(decString("d")));
+
+	// RemoveIf with no matches
+	dict.SetAt(decString("e"), 50);
+	dict.RemoveIf([](const decString &key, const int &value) -> bool {
+		return value > 100;
+	});
+	ASSERT_EQUAL(dict.GetCount(), 2);
+
+	// RemoveIf all elements
+	dict.RemoveIf([](const decString &key, const int &value) -> bool {
+		return true;
+	});
+	ASSERT_TRUE(dict.IsEmpty());
+
+	// Test with ObjectRef values
+	decTStringXmlTagDict dictObj;
+	decXmlElementTag::Ref tag1 = decXmlElementTag::Ref::New("tag1");
+	decXmlElementTag::Ref tag2 = decXmlElementTag::Ref::New("tag2");
+	decXmlElementTag::Ref tag3 = decXmlElementTag::Ref::New("tag3");
+	dictObj.SetAt(decString("k1"), tag1);
+	dictObj.SetAt(decString("k2"), tag2);
+	dictObj.SetAt(decString("k3"), tag3);
+
+	dictObj.RemoveIf([](const decString &key, const decXmlElementTag::Ref &value) -> bool {
+		return value->GetName() != "tag2";
+	});
+	ASSERT_EQUAL(dictObj.GetCount(), 1);
+	ASSERT_TRUE(dictObj.GetAt(decString("k2")) == tag2);
+}
+
+void detTDictionary::TestConstIterator(){
+	SetSubTestNum(11);
+
+	decTStringIntDict dict;
+	dict.SetAt(decString("a"), 10);
+	dict.SetAt(decString("b"), 20);
+	dict.SetAt(decString("c"), 30);
+
+	// Test cbegin/cend iteration
+	int sum = 0;
+	int count = 0;
+	for(auto it = dict.cbegin(); it != dict.cend(); ++it){
+		const auto &pair = *it;
+		sum += pair.second;
+		count++;
+	}
+	ASSERT_EQUAL(count, 3);
+	ASSERT_EQUAL(sum, 60);
+
+	// Test begin/end iteration (should also be const for const dict)
+	const decTStringIntDict &constDict = dict;
+	int sum2 = 0;
+	for(auto it = constDict.begin(); it != constDict.end(); ++it){
+		const auto &pair = *it;
+		sum2 += pair.second;
+	}
+	ASSERT_EQUAL(sum2, 60);
+
+	// Test iterator dereferencing to std::pair<const K&, const V&>
+	auto it = dict.cbegin();
+	const auto &pair = *it;
+	// pair.first is const decString&, pair.second is const int&
+	ASSERT_TRUE(dict.Has(pair.first));
+	ASSERT_EQUAL(dict.GetAt(pair.first), pair.second);
+
+	// Test iterator dereferencing again
+	auto it2 = dict.cbegin();
+	const auto &pair2 = *it2;
+	ASSERT_TRUE(dict.Has(pair2.first));
+
+	// Test post-increment
+	auto it3 = dict.cbegin();
+	auto it4 = it3++;
+	ASSERT_TRUE(it3 != it4);
+	ASSERT_TRUE(it4 == dict.cbegin());
+
+	// Test iterator equality
+	auto it5 = dict.cbegin();
+	auto it6 = dict.cbegin();
+	ASSERT_TRUE(it5 == it6);
+	++it6;
+	ASSERT_FALSE(it5 == it6);
+	ASSERT_TRUE(it5 != it6);
+
+	// Test end iterator
+	auto itEnd = dict.cend();
+	auto itEnd2 = dict.cend();
+	ASSERT_TRUE(itEnd == itEnd2);
+
+	// Test empty dictionary iteration
+	decTStringIntDict emptyDict;
+	ASSERT_TRUE(emptyDict.cbegin() == emptyDict.cend());
+	int emptyCount = 0;
+	for(auto it7 = emptyDict.cbegin(); it7 != emptyDict.cend(); ++it7){
+		emptyCount++;
+	}
+	ASSERT_EQUAL(emptyCount, 0);
+
+	// Test with ObjectRef values
+	decTStringXmlTagDict dictObj;
+	decXmlElementTag::Ref tag1 = decXmlElementTag::Ref::New("tag1");
+	decXmlElementTag::Ref tag2 = decXmlElementTag::Ref::New("tag2");
+	dictObj.SetAt(decString("k1"), tag1);
+	dictObj.SetAt(decString("k2"), tag2);
+
+	int objCount = 0;
+	for(auto it7 = dictObj.cbegin(); it7 != dictObj.cend(); ++it7){
+		const auto &pair3 = *it7;
+		objCount++;
+		ASSERT_NOT_NULL(pair3.second);
+	}
+	ASSERT_EQUAL(objCount, 2);
 }

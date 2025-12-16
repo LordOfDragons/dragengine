@@ -538,7 +538,7 @@ public:
 	 * \param[out] found Found element if true is returned.
 	 */
 	template<typename Evaluator>
-	bool Find(Evaluator &evaluator, const T* &found) const{
+	bool Find(Evaluator &evaluator, T* &found) const{
 		Element *entry = pRoot;
 		while(entry){
 			if(evaluator(entry->pOwner)){
@@ -552,7 +552,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	bool Find(Evaluator &&evaluator, const T* &found) const{
+	bool Find(Evaluator &&evaluator, T* &found) const{
 		return Find<Evaluator>(evaluator, found);
 	}
 	
@@ -563,7 +563,7 @@ public:
 	 */
 	template<typename Evaluator>
 	T *FindOrNull(Evaluator &evaluator) const{
-		const T *found = nullptr;
+		T *found = nullptr;
 		return Find<Evaluator>(evaluator, found) ? found : nullptr;
 	}
 	
@@ -627,10 +627,7 @@ public:
 	public:
 		const_iterator() : pCurrent(nullptr), pList(nullptr) {}
 		
-		// iterator to first element of list (end if empty)
-		explicit const_iterator(const decTLinkedList<T,TR> &list) : pCurrent(nullptr), pList(&list){
-			pCurrent = list.GetRoot();
-		}
+		explicit const_iterator(const decTLinkedList<T,TR> &list, Element *current) : pCurrent(current), pList(&list){}
 		
 		const_iterator(const const_iterator &o) = default;
 		const_iterator& operator=(const const_iterator &o) = default;
@@ -691,17 +688,17 @@ public:
 	using cend_t = const_iterator;
 	
 	inline const_iterator begin() const{
-		return const_iterator(*this);
+		return const_iterator(*this, pRoot);
 	}
 	inline const_iterator cbegin() const{
-		return const_iterator(*this);
+		return const_iterator(*this, pRoot);
 	}
 	
 	inline const_iterator end() const{
-		return const_iterator();
+		return const_iterator(*this, nullptr);
 	}
 	inline const_iterator cend() const{
-		return const_iterator();
+		return const_iterator(*this, nullptr);
 	}
 	/*@}*/
 };

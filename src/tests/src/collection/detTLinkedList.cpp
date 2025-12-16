@@ -43,6 +43,11 @@ void detTLinkedList::Run(){
 	TestIterators();
 	TestElementIteratorAdvanced();
 	TestStability();
+	TestVisit();
+	TestFind();
+	TestFindOrNull();
+	TestRemoveIf();
+	TestBidirectionalIterator();
 }
 
 void detTLinkedList::CleanUp(){
@@ -320,4 +325,283 @@ void detTLinkedList::TestStability(){
 	ASSERT_TRUE(list.Has(&r1->entry));
 	ASSERT_TRUE(list.Has(&stillAlive->entry));
 	ASSERT_TRUE(list.Has(&r3->entry));
+}
+
+
+// Tests for new functions in commit 1d5552384445f75f7cf67ed21a59f55c7127cae5
+/////////////////////////////////////////////////////////////////////////
+
+void detTLinkedList::TestVisit(){
+	SetSubTestNum(6);
+
+	TestLLObject::Ref a = TestLLObject::Ref::New(10);
+	TestLLObject::Ref b = TestLLObject::Ref::New(20);
+	TestLLObject::Ref c = TestLLObject::Ref::New(30);
+
+	TestLLList list;
+	list.Add(&a->entry);
+	list.Add(&b->entry);
+	list.Add(&c->entry);
+
+	// Test Visit with lvalue visitor
+	int sum = 0;
+	auto visitor = [&sum](TestLLObject *obj){
+		sum += obj->id;
+	};
+	list.Visit(visitor);
+	ASSERT_EQUAL(sum, 60);
+
+	// Test Visit with rvalue visitor
+	int count = 0;
+	list.Visit([&count](TestLLObject *obj){
+		count++;
+	});
+	ASSERT_EQUAL(count, 3);
+
+	// Test Visit with condition check
+	bool hasId20 = false;
+	list.Visit([&hasId20](TestLLObject *obj){
+		if(obj->id == 20){
+			hasId20 = true;
+		}
+	});
+	ASSERT_TRUE(hasId20);
+
+	// Test Visit on empty list
+	TestLLList emptyList;
+	int emptyCount = 0;
+	emptyList.Visit([&emptyCount](TestLLObject *obj){
+		emptyCount++;
+	});
+	ASSERT_EQUAL(emptyCount, 0);
+}
+
+void detTLinkedList::TestFind(){
+	SetSubTestNum(7);
+
+	TestLLObject::Ref a = TestLLObject::Ref::New(10);
+	TestLLObject::Ref b = TestLLObject::Ref::New(20);
+	TestLLObject::Ref c = TestLLObject::Ref::New(30);
+
+	TestLLList list;
+	list.Add(&a->entry);
+	list.Add(&b->entry);
+	list.Add(&c->entry);
+
+	// Find with lvalue evaluator
+	TestLLObject *found = nullptr;
+	auto evaluator = [](TestLLObject *obj) -> bool {
+		return obj->id == 20;
+	};
+	ASSERT_TRUE(list.Find(evaluator, found));
+	ASSERT_NOT_NULL(found);
+	ASSERT_EQUAL(found->id, 20);
+
+	// Find with rvalue evaluator
+	TestLLObject *found2 = nullptr;
+	ASSERT_TRUE(list.Find([](TestLLObject *obj) -> bool {
+		return obj->id == 30;
+	}, found2));
+	ASSERT_NOT_NULL(found2);
+	ASSERT_EQUAL(found2->id, 30);
+
+	// Find non-existent element
+	TestLLObject *notFound = nullptr;
+	ASSERT_FALSE(list.Find([](TestLLObject *obj) -> bool {
+		return obj->id == 999;
+	}, notFound));
+	ASSERT_TRUE(notFound == nullptr);
+
+	// Find first matching element (when multiple could match)
+	TestLLObject *foundFirst = nullptr;
+	ASSERT_TRUE(list.Find([](TestLLObject *obj) -> bool {
+		return obj->id >= 10;
+	}, foundFirst));
+	ASSERT_EQUAL(foundFirst->id, 10); // first element matches
+
+	// Find on empty list
+	TestLLList emptyList;
+	TestLLObject *emptyFound = nullptr;
+	ASSERT_FALSE(emptyList.Find([](TestLLObject *obj) -> bool {
+		return true;
+	}, emptyFound));
+	ASSERT_TRUE(emptyFound == nullptr);
+}
+
+void detTLinkedList::TestFindOrNull(){
+	SetSubTestNum(8);
+
+	TestLLObject::Ref a = TestLLObject::Ref::New(10);
+	TestLLObject::Ref b = TestLLObject::Ref::New(20);
+	TestLLObject::Ref c = TestLLObject::Ref::New(30);
+
+	TestLLList list;
+	list.Add(&a->entry);
+	list.Add(&b->entry);
+	list.Add(&c->entry);
+
+	// FindOrNull with lvalue evaluator
+	auto evaluator = [](TestLLObject *obj) -> bool {
+		return obj->id == 20;
+	};
+	const TestLLObject *found = list.FindOrNull(evaluator);
+	ASSERT_NOT_NULL(found);
+	ASSERT_EQUAL(found->id, 20);
+
+	// FindOrNull with rvalue evaluator
+	TestLLObject *found2 = list.FindOrNull([](TestLLObject *obj) -> bool {
+		return obj->id == 10;
+	});
+	ASSERT_NOT_NULL(found2);
+	ASSERT_EQUAL(found2->id, 10);
+
+	// FindOrNull with non-existent element
+	TestLLObject *notFound = list.FindOrNull([](TestLLObject *obj) -> bool {
+		return obj->id == 999;
+	});
+	ASSERT_TRUE(notFound == nullptr);
+
+	// FindOrNull with complex condition
+	TestLLObject *foundGreater = list.FindOrNull([](TestLLObject *obj) -> bool {
+		return obj->id > 25;
+	});
+	ASSERT_NOT_NULL(foundGreater);
+	ASSERT_EQUAL(foundGreater->id, 30);
+
+	// FindOrNull on empty list
+	TestLLList emptyList;
+	TestLLObject *emptyFound = emptyList.FindOrNull([](TestLLObject *obj) -> bool {
+		return true;
+	});
+	ASSERT_TRUE(emptyFound == nullptr);
+}
+
+void detTLinkedList::TestRemoveIf(){
+	SetSubTestNum(9);
+
+	TestLLObject::Ref a = TestLLObject::Ref::New(10);
+	TestLLObject::Ref b = TestLLObject::Ref::New(20);
+	TestLLObject::Ref c = TestLLObject::Ref::New(30);
+	TestLLObject::Ref d = TestLLObject::Ref::New(40);
+
+	TestLLList list;
+	list.Add(&a->entry);
+	list.Add(&b->entry);
+	list.Add(&c->entry);
+	list.Add(&d->entry);
+	ASSERT_EQUAL(list.GetCount(), 4);
+
+	// RemoveIf with lvalue evaluator (remove elements with id < 25)
+	auto evaluator = [](TestLLObject *obj) -> bool {
+		return obj->id < 25;
+	};
+	list.RemoveIf(evaluator);
+	ASSERT_EQUAL(list.GetCount(), 2);
+	ASSERT_FALSE(list.Has(&a->entry));
+	ASSERT_FALSE(list.Has(&b->entry));
+	ASSERT_TRUE(list.Has(&c->entry));
+	ASSERT_TRUE(list.Has(&d->entry));
+
+	// RemoveIf with rvalue evaluator (remove specific element)
+	list.RemoveIf([](TestLLObject *obj) -> bool {
+		return obj->id == 30;
+	});
+	ASSERT_EQUAL(list.GetCount(), 1);
+	ASSERT_FALSE(list.Has(&c->entry));
+	ASSERT_TRUE(list.Has(&d->entry));
+
+	// RemoveIf with no matches
+	TestLLObject::Ref e = TestLLObject::Ref::New(50);
+	list.Add(&e->entry);
+	list.RemoveIf([](TestLLObject *obj) -> bool {
+		return obj->id > 100;
+	});
+	ASSERT_EQUAL(list.GetCount(), 2);
+
+	// RemoveIf all elements
+	list.RemoveIf([](TestLLObject *obj) -> bool {
+		return true;
+	});
+	ASSERT_TRUE(list.IsEmpty());
+
+	// RemoveIf on empty list (should not crash)
+	list.RemoveIf([](TestLLObject *obj) -> bool {
+		return true;
+	});
+	ASSERT_TRUE(list.IsEmpty());
+
+	// Test removing while iterating (important edge case)
+	TestLLObject::Ref r1 = TestLLObject::Ref::New(1);
+	TestLLObject::Ref r2 = TestLLObject::Ref::New(2);
+	TestLLObject::Ref r3 = TestLLObject::Ref::New(3);
+	TestLLObject::Ref r4 = TestLLObject::Ref::New(4);
+	TestLLObject::Ref r5 = TestLLObject::Ref::New(5);
+	TestLLList list2;
+	list2.Add(&r1->entry);
+	list2.Add(&r2->entry);
+	list2.Add(&r3->entry);
+	list2.Add(&r4->entry);
+	list2.Add(&r5->entry);
+
+	// Remove even IDs
+	list2.RemoveIf([](TestLLObject *obj) -> bool {
+		return obj->id % 2 == 0;
+	});
+	ASSERT_EQUAL(list2.GetCount(), 3);
+	ASSERT_TRUE(list2.Has(&r1->entry));
+	ASSERT_FALSE(list2.Has(&r2->entry));
+	ASSERT_TRUE(list2.Has(&r3->entry));
+	ASSERT_FALSE(list2.Has(&r4->entry));
+	ASSERT_TRUE(list2.Has(&r5->entry));
+}
+
+void detTLinkedList::TestBidirectionalIterator(){
+	SetSubTestNum(10);
+
+	TestLLObject::Ref a = TestLLObject::Ref::New(10);
+	TestLLObject::Ref b = TestLLObject::Ref::New(20);
+	TestLLObject::Ref c = TestLLObject::Ref::New(30);
+
+	TestLLList list;
+	list.Add(&a->entry);
+	list.Add(&b->entry);
+	list.Add(&c->entry);
+
+	// Test basic forward iteration
+	int count = 0;
+	for(auto it = list.cbegin(); it != list.cend(); ++it){
+		count++;
+	}
+	ASSERT_EQUAL(count, 3);
+
+	// Test basic operator-> access
+	auto it = list.cbegin();
+	ASSERT_EQUAL(it->id, 10);
+
+	// Test post-increment
+	auto it2 = list.cbegin();
+	auto it3 = it2++;
+	ASSERT_TRUE(it3 == list.cbegin());
+	ASSERT_TRUE(it2 != list.cbegin());
+
+	// Test const list iteration
+	const TestLLList &constList = list;
+	int count2 = 0;
+	for(auto it4 = constList.begin(); it4 != constList.end(); ++it4){
+		count2++;
+	}
+	ASSERT_EQUAL(count2, 3);
+
+	// Test post-decrement
+	it2 = list.cend();
+	it3 = it2--;
+	ASSERT_TRUE(it3 == list.cend());
+	ASSERT_TRUE(it2 != list.cend());
+
+	// Test const list iteration
+	count2 = 0;
+	for(auto it4 = constList.end(); it4 != constList.begin(); --it4){
+		count2++;
+	}
+	ASSERT_EQUAL(count2, 3);
 }
