@@ -144,6 +144,21 @@ public:
 		return false;
 	}
 	
+	/**
+	 * \brief One or more elements match condition.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 */
+	template<typename Evaluator>
+	bool HasMatching(Evaluator &evaluator) const{
+		const T *f;
+		return Find<Evaluator>(evaluator, f);
+	}
+	
+	template<typename Evaluator>
+	bool HasMatching(Evaluator &&evaluator) const{
+		return HasMatching<Evaluator>(evaluator);
+	}
+	
 	/** \brief Index of the first occurance of an element or -1 if not found. */
 	int IndexOf(const TP &element) const{
 		int p;
@@ -438,13 +453,13 @@ public:
 	}
 	
 	template<typename Evaluator>
-	inline T FindOrDefault(Evaluator &evaluator, const T &defaultValue) const{
+	inline T FindOrDefault(Evaluator &evaluator, const T &defaultValue = {}) const{
 		const T *found = nullptr;
 		return Find<Evaluator>(evaluator, found) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue) const{
+	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue = {}) const{
 		return FindOrDefault<Evaluator>(evaluator, defaultValue);
 	}
 	

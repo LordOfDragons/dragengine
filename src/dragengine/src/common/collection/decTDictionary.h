@@ -150,6 +150,21 @@ public:
 	}
 	
 	/**
+	 * \brief One or more elements match condition.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(K,V).
+	 */
+	template<typename Evaluator>
+	bool HasMatching(Evaluator &evaluator) const{
+		const V *f;
+		return Find<Evaluator>(evaluator, f);
+	}
+	
+	template<typename Evaluator>
+	bool HasMatching(Evaluator &&evaluator) const{
+		return HasMatching<Evaluator>(evaluator);
+	}
+	
+	/**
 	 * \brief Value for key.
 	 * \throws deeInvalidParam \em key is not present in the dictionary.
 	 */
@@ -422,13 +437,13 @@ public:
 	 * \return Found value or default value if not found.
 	 */
 	template<typename Evaluator>
-	V FindOrDefault(Evaluator &evaluator, const V &defaultValue) const{
+	V FindOrDefault(Evaluator &evaluator, const V &defaultValue = {}) const{
 		const V *found = nullptr;
 		return Find<Evaluator>(evaluator, found) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	V FindOrDefault(Evaluator &&evaluator, const V &defaultValue) const{
+	V FindOrDefault(Evaluator &&evaluator, const V &defaultValue = {}) const{
 		return FindOrDefault<Evaluator>(evaluator, defaultValue);
 	}
 	

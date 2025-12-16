@@ -395,6 +395,21 @@ public:
 		return entry && entry->GetList() == this;
 	}
 	
+	/**
+	 * \brief One or more elements match condition.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 */
+	template<typename Evaluator>
+	bool HasMatching(Evaluator &evaluator) const{
+		const T *f;
+		return Find<Evaluator>(evaluator, f);
+	}
+	
+	template<typename Evaluator>
+	bool HasMatching(Evaluator &&evaluator) const{
+		return HasMatching<Evaluator>(evaluator);
+	}
+	
 	/** \brief Add element. */
 	void Add(Element *entry){
 		DEASSERT_NOTNULL(entry)

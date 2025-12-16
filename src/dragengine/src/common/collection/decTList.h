@@ -157,34 +157,62 @@ public:
 	
 	/** \brief Index of the first occurance of an element or -1 if not found. */
 	int IndexOf(const TP &element) const{
-		int p;
-		
-		for(p=0; p<pCount; p++){
-			if(element == pElements[p]){
-				return p;
-			}
-		}
-		
-		return -1;
+		return IndexOf(element, 0);
 	}
 	
 	/**
 	 * \brief Index of the first occurance of an element or -1 if not found.
-	 * \throws deeInvalidParam \em start is less than 0 or larger than GetCount()-1.
+	 * \throws deeInvalidParam \em start is less than 0 or larger than GetCount().
 	 */
 	int IndexOf(const TP &element, int start) const{
 		DEASSERT_TRUE(start >= 0)
-		DEASSERT_TRUE(start < pCount)
+		DEASSERT_TRUE(start <= pCount)
 		
-		int p;
-		
-		for(p=start; p<pCount; p++){
-			if(element == pElements[p]){
-				return p;
+		int i;
+		for(i=start; i<pCount; i++){
+			if(element == pElements[i]){
+				return i;
 			}
 		}
-		
 		return -1;
+	}
+	
+	/**
+	 * \brief Index of first element match condition or -1 if not found.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 */
+	template<typename Evaluator>
+	int IndexOfMatching(Evaluator &evaluator) const{
+		return IndexOfMatching<Evaluator>(evaluator, 0);
+	}
+	
+	template<typename Evaluator>
+	int IndexOfMatching(Evaluator &&evaluator) const{
+		return IndexOfMatching<Evaluator>(evaluator);
+	}
+	
+	/**
+	 * \brief Index of first element match condition or -1 if not found.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 * \throws deeInvalidParam \em start is less than 0 or larger than GetCount().
+	 */
+	template<typename Evaluator>
+	int IndexOfMatching(Evaluator &evaluator, int start) const{
+		DEASSERT_TRUE(start >= 0)
+		DEASSERT_TRUE(start <= pCount)
+		
+		int i;
+		for(i=start; i<pCount; i++){
+			if(evaluator(pElements[i])){
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	template<typename Evaluator>
+	int IndexOfMatching(Evaluator &&evaluator, int start) const{
+		return IndexOfMatching<Evaluator>(evaluator, start);
 	}
 	
 	/** \brief Determine if element exists in the list. */
@@ -198,6 +226,21 @@ public:
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * \brief One or more elements match condition.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
+	 */
+	template<typename Evaluator>
+	bool HasMatching(Evaluator &evaluator) const{
+		const T *f;
+		return Find<Evaluator>(evaluator, f);
+	}
+	
+	template<typename Evaluator>
+	bool HasMatching(Evaluator &&evaluator) const{
+		return HasMatching<Evaluator>(evaluator);
 	}
 	
 	/** \brief Number of times element exists in the list. */
@@ -755,13 +798,13 @@ public:
 	}
 	
 	template<typename Evaluator>
-	inline T FindOrDefault(Evaluator &evaluator, const T &defaultValue) const{
+	inline T FindOrDefault(Evaluator &evaluator, const T &defaultValue = {}) const{
 		const T *found = nullptr;
 		return Find<Evaluator>(evaluator, found) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue) const{
+	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue = {}) const{
 		return FindOrDefault<Evaluator>(evaluator, defaultValue);
 	}
 	
