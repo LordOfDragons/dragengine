@@ -534,7 +534,7 @@ public:
 	
 	/**
 	 * \brief Visit elements.
-	 * \param[in] visitor Visitor callable invoked as visitor(T*).
+	 * \param[in] visitor Visitor callable invoked as visitor(T).
 	 * \param[in] from First index to visit. Negative counts from end of list.
 	 * \param[in] to One past last index to visit. Negative counts from end of list.
 	 * \param[in] step Step size. Can be negative but not 0.
@@ -609,7 +609,7 @@ public:
 	
 	/**
 	 * \brief Find element.
-	 * \param[in] evaluator Evaluator callable invoked as evaluator(T*).
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
 	 * \param[out] found Found element if true is returned.
 	 * \param[in] from First index to visit. Negative counts from end of list.
 	 * \param[in] to One past last index to visit. Negative counts from end of list.
@@ -701,7 +701,7 @@ public:
 	
 	/**
 	 * \brief Find element with default value.
-	 * \param[in] evaluator Evaluator callable invoked as evaluator(T*).
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
 	 * \param[in] from First index to visit. Negative counts from end of list.
 	 * \param[in] to One past last index to visit. Negative counts from end of list.
 	 * \param[in] step Step size. Can be negative but not 0.
@@ -743,7 +743,7 @@ public:
 	
 	/**
 	 * \brief Collect element into a new list.
-	 * \param[in] evaluator Evaluator callable invoked as evaluator(T*).
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
 	 * \param[in] from First index to visit. Negative counts from end of list.
 	 * \param[in] to One past last index to visit. Negative counts from end of list.
 	 * \param[in] step Step size. Can be negative but not 0.
@@ -834,7 +834,7 @@ public:
 	
 	/**
 	 * \brief Remove elements matching condition.
-	 * \param[in] evaluator Evaluator callable invoked as evaluator(T*).
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
 	 * \param[in] from First index to visit. Negative counts from end of list.
 	 * \param[in] to One past last index to visit. Negative counts from end of list.
 	 * \param[in] step Step size. Can be negative but not 0.

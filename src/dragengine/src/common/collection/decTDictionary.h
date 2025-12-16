@@ -187,6 +187,14 @@ public:
 	}
 	
 	/**
+	 * \brief Value for key or default value if absent.
+	 */
+	V GetAtOrDefault(const K &key, const VP &defaultValue) const{
+		const sDictEntry * const entry = pGetEntry(key);
+		return entry ? entry->value : defaultValue;
+	}
+	
+	/**
 	 * \brief Set key to value.
 	 */
 	void SetAt(const K &key, const VP &value){
@@ -354,6 +362,143 @@ public:
 		pBuckets = newBuckets;
 		pBucketCount = newBucketCount;
 	}
+	
+	
+	/**
+	 * \brief Visit elements.
+	 * \param[in] visitor Visitor callable invoked as visitor(K,V).
+	 */
+	template<typename Visitor>
+	void Visit(Visitor &visitor) const {
+		int i;
+		for(i=0; i<pBucketCount; i++){
+			const sDictEntry *iterEntry = pBuckets[i];
+			while(iterEntry){
+				visitor(iterEntry->key, iterEntry->value);
+				iterEntry = iterEntry->next;
+			}
+		}
+	}
+	
+	template<typename Visitor>
+	void Visit(Visitor &&visitor) const{
+		Visit<Visitor>(visitor);
+	}
+	
+	
+	/**
+	 * \brief Find value.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(K,V).
+	 * \param[out] found Found value if true is returned.
+	 */
+	template<typename Evaluator>
+	bool Find(Evaluator &evaluator, const V* &found) const{
+		int i;
+		for(i=0; i<pBucketCount; i++){
+			const sDictEntry *iterEntry = pBuckets[i];
+			while(iterEntry){
+				if(evaluator(iterEntry->key, iterEntry->value)){
+					found = &iterEntry->value;
+					return true;
+				}
+				iterEntry = iterEntry->next;
+			}
+		}
+		
+		found = nullptr;
+		return false;
+	}
+	
+	template<typename Evaluator>
+	bool Find(Evaluator &&evaluator, const V* &found) const{
+		return Find<Evaluator>(evaluator, found);
+	}
+	
+	
+	/**
+	 * \brief Find value with default value.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(K,V).
+	 * \return Found value or default value if not found.
+	 */
+	template<typename Evaluator>
+	V FindDefault(Evaluator &evaluator, const V &defaultValue) const{
+		const V *found = nullptr;
+		return Find<Evaluator>(evaluator, found) ? *found : defaultValue;
+	}
+	
+	template<typename Evaluator>
+	V FindDefault(Evaluator &&evaluator, const V &defaultValue) const{
+		return FindDefault<Evaluator>(evaluator, defaultValue);
+	}
+	
+	
+	/**
+	 * \brief Collect elements into a new dictionary.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(K,V).
+	 */
+	template<typename Evaluator>
+	decTDictionary<K,V,VP> Collect(Evaluator &evaluator) const{
+		decTDictionary<K,V,VP> collected;
+		int i;
+		
+		for(i=0; i<pBucketCount; i++){
+			const sDictEntry *iterEntry = pBuckets[i];
+			
+			while(iterEntry){
+				if(evaluator(iterEntry->key, iterEntry->value)){
+					collected.SetAt(iterEntry->key, iterEntry->value);
+				}
+				iterEntry = iterEntry->next;
+			}
+		}
+		
+		return collected;
+	}
+	
+	template<typename Evaluator>
+	decTDictionary<K,V,VP> Collect(Evaluator &&evaluator) const{
+		return Collect<Evaluator>(evaluator);
+	}
+	
+	
+	/**
+	 * \brief Remove elements matching condition.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(K,V).
+	 */
+	template<typename Evaluator>
+	void RemoveIf(Evaluator &evaluator){
+		int i;
+		for(i=0; i<pBucketCount; i++){
+			sDictEntry *iterEntry = pBuckets[i];
+			sDictEntry *lastEntry = nullptr;
+			
+			while(iterEntry){
+				if(evaluator(iterEntry->key, iterEntry->value)){
+					sDictEntry * const delEntry = iterEntry;
+					
+					if(lastEntry){
+						lastEntry->next = iterEntry->next;
+						
+					}else{
+						pBuckets[i] = iterEntry->next;
+					}
+					
+					iterEntry = iterEntry->next;
+					delete delEntry;
+					pEntryCount--;
+					
+				}else{
+					lastEntry = iterEntry;
+					iterEntry = iterEntry->next;
+				}
+			}
+		}
+	}
+	
+	template<typename Evaluator>
+	void RemoveIf(Evaluator &&evaluator){
+		RemoveIf<Evaluator>(evaluator);
+	}
 	/*@}*/
 	
 	
@@ -438,6 +583,87 @@ public:
 		
 		return *this;
 	}
+	/*@}*/
+	
+	
+	/** \name Standard library iterators. */
+	/*@{*/
+	class const_iterator{
+	public:
+		using value_type = std::pair<const K&, const V&>;
+		using reference = value_type;
+		using pointer = void;
+		using difference_type = std::ptrdiff_t;
+
+		const_iterator() : pDict(nullptr), bucketIndex(0), entry(nullptr) {}
+		const_iterator(const decTDictionary *d, int b, const sDictEntry *e)
+			: pDict(d), bucketIndex(b), entry(e)
+		{
+			if(pDict && bucketIndex < pDict->pBucketCount && entry == nullptr){
+				entry = pDict->pBuckets[bucketIndex];
+			}
+			advance_to_valid();
+		}
+
+		bool operator==(const const_iterator &o) const {
+			return pDict == o.pDict && bucketIndex == o.bucketIndex && entry == o.entry;
+		}
+		bool operator!=(const const_iterator &o) const { return !(*this == o); }
+
+		const_iterator &operator++(){
+			if(!entry) return *this;
+			entry = entry->next;
+			if(entry) return *this;
+
+			++bucketIndex;
+			while(pDict && bucketIndex < pDict->pBucketCount){
+				entry = pDict->pBuckets[bucketIndex];
+				if(entry) return *this;
+				++bucketIndex;
+			}
+			entry = nullptr;
+			return *this;
+		}
+
+		const_iterator operator++(int){
+			const_iterator tmp = *this;
+			++*this;
+			return tmp;
+		}
+
+		value_type operator*() const {
+			return value_type(entry->key, entry->value);
+		}
+
+	private:
+		const decTDictionary *pDict;
+		int bucketIndex;
+		const sDictEntry *entry;
+
+		void advance_to_valid(){
+			if(!pDict){
+				entry = nullptr;
+				bucketIndex = 0;
+				return;
+			}
+			while(bucketIndex < pDict->pBucketCount && entry == nullptr){
+				entry = pDict->pBuckets[bucketIndex];
+				if(entry) break;
+				++bucketIndex;
+			}
+			if(bucketIndex >= pDict->pBucketCount){
+				entry = nullptr;
+				bucketIndex = pDict->pBucketCount;
+			}
+		}
+	}; /* end const_iterator */
+
+	const_iterator cbegin() const { return const_iterator(this, 0, nullptr); }
+	const_iterator cend()   const { return const_iterator(this, pBucketCount, nullptr); }
+
+	/* convenience const begin/end */
+	const_iterator begin() const { return cbegin(); }
+	const_iterator end()   const { return cend(); }
 	/*@}*/
 	
 	

@@ -31,123 +31,93 @@ class deObject;
 class deThreadSafeObject;
 
 
-/** \brief Object comparator. */
-class DE_DLL_EXPORT decObjectComparator{
+/** \brief Comparator. */
+template<typename T>
+class decTComparator{
 public:
-	decObjectComparator() = default;
+	decTComparator() = default;
 	
 	/**
-	 * \brief Compare objects.
-	 * \param[in] a First object to compare.
-	 * \param[in] b Second object to compare.
+	 * \brief Compare elements.
+	 * \param[in] a First element to compare.
+	 * \param[in] b Second element to compare.
 	 * \returns 0 if a equals b, >0 if a is greater than b otherwise <0.
 	 */
-	virtual int operator() (deObject *a, deObject *b) = 0;
+	virtual int operator() (T *a, T *b) = 0;
 };
+
+
+/** \brief Visitor. */
+template<typename T>
+class decTVisitor{
+public:
+	decTVisitor() = default;
+	
+	/**
+	 * \brief Visit element.
+	 * \param[in] element Element to visit.
+	 */
+	virtual void operator() (T *element) = 0;
+};
+
+
+/** \brief Key/value visitor. */
+template<typename K, typename V>
+class decTKeyValueVisitor{
+public:
+	decTKeyValueVisitor() = default;
+	
+	/**
+	 * \brief Visit element.
+	 * \param[in] key Key to visit.
+	 * \param[in] value Value to visit.
+	 */
+	virtual void operator() (K *key, V *value) = 0;
+};
+
+
+/** \brief Evaluator. */
+template<typename T>
+class decTEvaluator{
+public:
+	decTEvaluator() = default;
+	
+	/**
+	 * \brief Evaluate element.
+	 * \param[in] element Element to evaluate.
+	 * \returns true if element matches criterias otherwise false.
+	 */
+	virtual bool operator() (T *element) = 0;
+};
+
+
+/** \brief Object comparator. */
+using decObjectComparator = decTComparator<deObject>;
 
 /** \brief Object visitor. */
-class DE_DLL_EXPORT decObjectVisitor{
-public:
-	decObjectVisitor() = default;
-	
-	/**
-	 * \brief Visit object.
-	 * \param[in] object Object to visit.
-	 */
-	virtual void operator() (deObject *object) = 0;
-};
+using decObjectVisitor = decTVisitor<deObject>;
 
 /** \brief Object evaluator. */
-class DE_DLL_EXPORT decObjectEvaluator{
-public:
-	decObjectEvaluator() = default;
-	
-	/**
-	 * \brief Evaluate object.
-	 * \param[in] object Object to evaluate.
-	 * \returns true if object matches criterias otherwise false.
-	 */
-	virtual bool operator() (deObject *object) = 0;
-};
+using decObjectEvaluator = decTEvaluator<deObject>;
 
 
 /** \brief Pointer comparator. */
-class DE_DLL_EXPORT decPointerComparator{
-public:
-	decPointerComparator() = default;
-	
-	/**
-	 * \brief Compare pointers.
-	 * \param[in] a First pointer to compare.
-	 * \param[in] b Second pointer to compare.
-	 * \returns 0 if a equals b, >0 if a is greater than b otherwise <0.
-	 */
-	virtual int operator() (void *a, void *b) = 0;
-};
+using decPointerComparator = decTComparator<void>;
 
 /** \brief Pointer visitor. */
-class DE_DLL_EXPORT decPointerVisitor{
-public:
-	decPointerVisitor() = default;
-	
-	/**
-	 * \brief Visit pointer.
-	 * \param[in] pointer Pointer to visit.
-	 */
-	virtual void operator() (void *pointer) = 0;
-};
+using decPointerVisitor = decTVisitor<void>;
 
 /** \brief Pointer evaluator. */
-class DE_DLL_EXPORT decPointerEvaluator{
-public:
-	decPointerEvaluator() = default;
-	
-	/**
-	 * \brief Evaluate pointer.
-	 * \param[in] pointer Pointer to evaluate.
-	 * \returns true if pointer matches criterias otherwise false.
-	 */
-	virtual bool operator() (void *pointer) = 0;
-};
+using decPointerEvaluator = decTEvaluator<void>;
 
 
 /** \brief ThreadSafeObject comparator. */
-class DE_DLL_EXPORT decThreadSafeObjectComparator{
-public:
-	decThreadSafeObjectComparator() = default;
-	
-	/**
-	 * \brief Compare threadsafeobjects.
-	 * \param[in] a First threadsafeobject to compare.
-	 * \param[in] b Second threadsafeobject to compare.
-	 * \returns 0 if a equals b, >0 if a is greater than b otherwise <0.
-	 */
-	virtual int operator() (deThreadSafeObject *a, deThreadSafeObject *b) = 0;
-};
+using decThreadSafeObjectComparator = decTComparator<deThreadSafeObject>;
 
 /** \brief ThreadSafeObject visitor. */
-class DE_DLL_EXPORT decThreadSafeObjectVisitor{
-public:
-	decThreadSafeObjectVisitor() = default;
-	
-	/**
-	 * \brief Visit threadsafeobject.
-	 * \param[in] threadsafeobject ThreadSafeObject to visit.
-	 */
-	virtual void operator() (deThreadSafeObject *threadsafeobject) = 0;
-};
+using decThreadSafeObjectVisitor = decTVisitor<deThreadSafeObject>;
 
 /** \brief ThreadSafeObject evaluator. */
-class DE_DLL_EXPORT decThreadSafeObjectEvaluator{
-public:
-	decThreadSafeObjectEvaluator() = default;
-	
-	/**
-	 * \brief Evaluate threadsafeobject.
-	 * \param[in] threadsafeobject ThreadSafeObject to evaluate.
-	 * \returns true if threadsafeobject matches criterias otherwise false.
-	 */
-	virtual bool operator() (deThreadSafeObject *threadsafeobject) = 0;
-};
+using decThreadSafeObjectEvaluator = decTEvaluator<deThreadSafeObject>;
 
 #endif

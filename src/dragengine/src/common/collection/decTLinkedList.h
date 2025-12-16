@@ -511,6 +511,88 @@ public:
 			Remove(pRoot);
 		}
 	}
+	
+	
+	/**
+	 * \brief Visit elements.
+	 * \param[in] visitor Visitor callable invoked as visitor(T*).
+	 */
+	template<typename Visitor>
+	void Visit(Visitor &visitor) const {
+		Element *entry = pRoot;
+		while(entry){
+			visitor(entry->pOwner);
+			entry = entry->pNext;
+		}
+	}
+	
+	template<typename Visitor>
+	void Visit(Visitor &&visitor) const{
+		Visit<Visitor>(visitor);
+	}
+	
+	
+	/**
+	 * \brief Find element.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T*).
+	 * \param[out] found Found element if true is returned.
+	 */
+	template<typename Evaluator>
+	bool Find(Evaluator &evaluator, const T* &found) const{
+		Element *entry = pRoot;
+		while(entry){
+			if(evaluator(entry->pOwner)){
+				found = entry->pOwner;
+				return true;
+			}
+			entry = entry->pNext;
+		}
+		found = nullptr;
+		return false;
+	}
+	
+	template<typename Evaluator>
+	bool Find(Evaluator &&evaluator, const T* &found) const{
+		return Find<Evaluator>(evaluator, found);
+	}
+	
+	
+	/**
+	 * \brief Find element or nullptr if absent.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T*).
+	 */
+	template<typename Evaluator>
+	T *FindOrNull(Evaluator &evaluator) const{
+		const T *found = nullptr;
+		return Find<Evaluator>(evaluator, found) ? found : nullptr;
+	}
+	
+	template<typename Evaluator>
+	T *FindOrNull(Evaluator &&evaluator) const{
+		return FindOrNull<Evaluator>(evaluator);
+	}
+	
+	
+	/**
+	 * \brief Remove elements matching condition.
+	 * \param[in] evaluator Evaluator callable invoked as evaluator(T*).
+	 */
+	template<typename Evaluator>
+	void RemoveIf(Evaluator &evaluator){
+		Element *entry = pRoot;
+		while(entry){
+			Element *nextEntry = entry->pNext;
+			if(evaluator(entry->pOwner)){
+				Remove(entry);
+			}
+			entry = nextEntry;
+		}
+	}
+	
+	template<typename Evaluator>
+	void RemoveIf(Evaluator &&evaluator){
+		RemoveIf<Evaluator>(evaluator);
+	}
 	/*@}*/
 	
 	
@@ -530,82 +612,69 @@ public:
 	/*@{*/
 	class const_iterator{
 	public:
-		using iterator_category = std::forward_iterator_tag;
+		using iterator_category = std::bidirectional_iterator_tag;
 		using value_type = const T;
 		using difference_type = std::ptrdiff_t;
 		using pointer = const T*;
 		using reference = const T&;
 		
 	private:
-		ElementIterator *pIter; // owned when not end
-		const T *pCurrent; // nullptr indicates end
+		// current element (nullptr means end)
+		Element *pCurrent;
+		// owning list (may be nullptr for default constructed iterator)
 		const decTLinkedList<T,TR> *pList;
 		
-		void clearIter(){
-			if(pIter){
-				delete pIter;
-				pIter = nullptr;
-			}
-		}
-		
 	public:
-		const_iterator() : pIter(nullptr), pCurrent(nullptr), pList(nullptr) {}
+		const_iterator() : pCurrent(nullptr), pList(nullptr) {}
 		
-		explicit const_iterator(const decTLinkedList<T,TR> &list) : pIter(nullptr), pCurrent(nullptr), pList(&list){
-			pIter = new ElementIterator(const_cast<decTLinkedList<T,TR>&>(list));
-			if(pIter->Advance()){
-				pCurrent = static_cast<const T*>(*pIter);
-			}else{
-				clearIter();
-				pCurrent = nullptr;
-			}
+		// iterator to first element of list (end if empty)
+		explicit const_iterator(const decTLinkedList<T,TR> &list) : pCurrent(nullptr), pList(&list){
+			pCurrent = list.GetRoot();
 		}
 		
-		const_iterator(const const_iterator &o) : pIter(nullptr), pCurrent(o.pCurrent), pList(o.pList){
-			if(o.pIter){
-				pIter = new ElementIterator(*o.pIter);
-			}
-		}
-		
-		const_iterator& operator=(const const_iterator &o){
-			if(this != &o){
-				clearIter();
-				pList = o.pList;
-				pCurrent = o.pCurrent;
-				pIter = o.pIter ? new ElementIterator(*o.pIter) : nullptr;
-			}
-			return *this;
-		}
-		
-		~const_iterator(){
-			clearIter();
-		}
+		const_iterator(const const_iterator &o) = default;
+		const_iterator& operator=(const const_iterator &o) = default;
+		~const_iterator() = default;
 		
 		reference operator*() const{
 			DEASSERT_NOTNULL(pCurrent)
-			return *pCurrent;
+			return *pCurrent->GetOwner();
 		}
 		
 		pointer operator->() const{
 			DEASSERT_NOTNULL(pCurrent)
-			return pCurrent;
+			return pCurrent->GetOwner();
 		}
 		
 		const_iterator& operator++(){
-			if(pIter){
-				if(pIter->Advance()){
-					pCurrent = static_cast<const T*>(*pIter);
-				}else{
-					clearIter();
-					pCurrent = nullptr;
-				}
+			if(pCurrent){
+				pCurrent = pCurrent->GetNext();
 			}
+			// if pCurrent becomes nullptr, this is end()
 			return *this;
 		}
 		
 		const_iterator operator++(int){
 			const_iterator tmp(*this);
 			++(*this);
+			return tmp;
+		}
+		
+		const_iterator& operator--(){
+			// if currently end() (pCurrent == nullptr) and we have a list, move to tail
+			if(!pCurrent){
+				if(pList){
+					pCurrent = pList->GetTail();
+				}
+			}else{
+				pCurrent = pCurrent->GetPrevious();
+			}
+			return *this;
+		}
+		
+		const_iterator operator--(int){
+			const_iterator tmp(*this);
+			--(*this);
 			return tmp;
 		}
 		
@@ -634,6 +703,7 @@ public:
 	inline const_iterator cend() const{
 		return const_iterator();
 	}
+	/*@}*/
 };
 
 

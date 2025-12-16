@@ -124,25 +124,13 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\controller\ceActorController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\controller\ceActorControllerList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\gesture\ceActorGesture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\gesture\ceActorGestureList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\parameters\ceActorParameter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\parameters\ceActorParameterList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\pose\ceActorPose.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\pose\ceActorPoseList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAPhoneme.cpp">
@@ -1689,25 +1677,13 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\controller\ceActorController.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\controller\ceActorControllerList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\gesture\ceActorGesture.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\gesture\ceActorGestureList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\parameters\ceActorParameter.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\parameters\ceActorParameterList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\pose\ceActorPose.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\pose\ceActorPoseList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAPhoneme.h">

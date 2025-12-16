@@ -74,13 +74,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\ceConversationActor.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\ceConversationActorList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\controller\ceActorController.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\controller\ceActorControllerList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\gesture\ceActorGesture.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\gesture\ceActorGestureList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\parameters\ceActorParameter.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\parameters\ceActorParameterList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\pose\ceActorPose.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\pose\ceActorPoseList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAPhoneme.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAPhonemeList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAWord.cpp" />
@@ -597,13 +593,9 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\ceConversationActor.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\ceConversationActorList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\controller\ceActorController.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\controller\ceActorControllerList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\gesture\ceActorGesture.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\gesture\ceActorGestureList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\parameters\ceActorParameter.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\parameters\ceActorParameterList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\pose\ceActorPose.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\pose\ceActorPoseList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAPhoneme.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAPhonemeList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\speechAnimation\ceSAWord.h" />
