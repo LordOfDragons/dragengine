@@ -666,6 +666,17 @@ public:
 	template<typename Visitor>
 	inline void Visit(Visitor &&visitor) const{ Visit<Visitor>(visitor); }
 	
+	template<typename Visitor>
+	void VisitReverse(Visitor &visitor) const{
+		int i;
+		for(i=pCount-1; i>=0; i--){
+			visitor(pElements[i]);
+		}
+	}
+	
+	template<typename Visitor>
+	inline void VisitReverse(Visitor &&visitor) const{ VisitReverse<Visitor>(visitor); }
+	
 	
 	/**
 	 * \brief Find element.
@@ -759,6 +770,23 @@ public:
 		return Find<Evaluator>(evaluator, found);
 	}
 	
+	template<typename Evaluator>
+	inline bool FindReverse(Evaluator &evaluator, const T* &found) const{
+		int i;
+		for(i=pCount-1; i>=0; i--){
+			if(evaluator(pElements[i])){
+				found = &pElements[i];
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	template<typename Evaluator>
+	inline bool FindReverse(Evaluator &&evaluator, const T* &found) const{
+		return FindReverse<Evaluator>(evaluator, found);
+	}
+	
 	/**
 	 * \brief Find element or default value if absent.
 	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
@@ -798,6 +826,17 @@ public:
 	template<typename Evaluator>
 	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue = {}) const{
 		return FindOrDefault<Evaluator>(evaluator, defaultValue);
+	}
+	
+	template<typename Evaluator>
+	inline T FindReverseOrDefault(Evaluator &evaluator, const T &defaultValue = {}) const{
+		const T *found = nullptr;
+		return FindReverse<Evaluator>(evaluator, found) ? *found : defaultValue;
+	}
+	
+	template<typename Evaluator>
+	inline T FindReverseOrDefault(Evaluator &&evaluator, const T &defaultValue = {}) const{
+		return FindReverseOrDefault<Evaluator>(evaluator, defaultValue);
 	}
 	
 	
@@ -889,6 +928,32 @@ public:
 	template<typename Evaluator>
 	inline decTOrderedSet<T,TP> Collect(Evaluator &&evaluator) const{
 		return Collect<Evaluator>(evaluator);
+	}
+	
+	
+	/**
+	 * \brief Reverse order of elements.
+	 */
+	void Reverse(){
+		int i;
+		for(i=0; i<pCount / 2; i++){
+			const T temp = pElements[i];
+			pElements[i] = pElements[pCount - 1 - i];
+			pElements[pCount - 1 - i] = temp;
+		}
+	}
+	
+	/**
+	 * \brief Set with elements in reverse order.
+	 */
+	decTOrderedSet<T,TP> GetReversed() const{
+		decTOrderedSet<T,TP> reversed(pCount);
+		int i;
+		for(i=0; i<pCount; i++){
+			reversed.pElements[i] = pElements[pCount - 1 - i];
+		}
+		reversed.pCount = pCount;
+		return reversed;
 	}
 	
 	

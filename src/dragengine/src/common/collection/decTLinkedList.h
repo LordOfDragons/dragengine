@@ -546,6 +546,18 @@ public:
 		Visit<Visitor>(visitor);
 	}
 	
+	template<typename Visitor>
+	void VisitReverse(Visitor &visitor) const{
+		Element *entry = pTail;
+		while(entry){
+			visitor(entry->pOwner);
+			entry = entry->pPrev;
+		}
+	}
+	
+	template<typename Visitor>
+	inline void VisitReverse(Visitor &&visitor) const{ VisitReverse<Visitor>(visitor); }
+	
 	
 	/**
 	 * \brief Find element.
@@ -571,6 +583,25 @@ public:
 		return Find<Evaluator>(evaluator, found);
 	}
 	
+	template<typename Evaluator>
+	inline bool FindReverse(Evaluator &evaluator, const T* &found) const{
+		Element *entry = pTail;
+		while(entry){
+			if(evaluator(entry->pOwner)){
+				found = entry->pOwner;
+				return true;
+			}
+			entry = entry->pPrev;
+		}
+		found = nullptr;
+		return false;
+	}
+	
+	template<typename Evaluator>
+	inline bool FindReverse(Evaluator &&evaluator, const T* &found) const{
+		return FindReverse<Evaluator>(evaluator, found);
+	}
+	
 	
 	/**
 	 * \brief Find element or nullptr if absent.
@@ -586,6 +617,17 @@ public:
 	template<typename Evaluator>
 	T *FindOrNull(Evaluator &&evaluator, T *defaultValue = nullptr) const{
 		return FindOrNull<Evaluator>(evaluator, defaultValue);
+	}
+	
+	template<typename Evaluator>
+	inline T *FindReverseOrNull(Evaluator &evaluator, T *defaultValue = nullptr) const{
+		const T *found = nullptr;
+		return FindReverse<Evaluator>(evaluator, found) ? found : defaultValue;
+	}
+	
+	template<typename Evaluator>
+	inline T *FindReverseOrNull(Evaluator &&evaluator, T *defaultValue = nullptr) const{
+		return FindReverseOrNull<Evaluator>(evaluator, defaultValue);
 	}
 	
 	
