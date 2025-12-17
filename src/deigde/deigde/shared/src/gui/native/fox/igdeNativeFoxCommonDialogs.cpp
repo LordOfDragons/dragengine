@@ -36,6 +36,7 @@
 #include "../../filedialog/igdeFilePatternList.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -212,14 +213,14 @@ const char *text, decString &value){
 }
 
 bool igdeNativeFoxCommonDialogs::SelectString(igdeWidget *owner, const char *title,
-const char *text, const decStringList &list, int &selection){
+const char *text, const decTList<decString> &list, int &selection){
 	if(!owner || !owner->GetNativeWidget() || !title || !text || list.GetCount() == 0){
 		DETHROW(deeInvalidParam);
 	}
 	
 	FXWindow * const foxOwner = (FXWindow*)owner->GetNativeWidget();
 	
-	FXChoiceBox dialog(foxOwner, title, text, nullptr, list.Join("\n").GetString());
+	FXChoiceBox dialog(foxOwner, title, text, nullptr, DEJoin(list, "\n").GetString());
 	
 	//dialog.setCurrentItem( selection );
 	// TODO fox does not expose "list" member to set selection. create an own dialog anyways

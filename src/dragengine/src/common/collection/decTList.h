@@ -1225,6 +1225,16 @@ public:
 		Sort<Comparator>(comparator);
 	}
 	
+	/** \brief Sort using decAscendingComparator. */
+	void SortAscending(){
+		Sort<decAscendingComparator<T>>(decAscendingComparator<T>());
+	}
+	
+	/** \brief Sort using decDescendingComparator. */
+	void SortDescending(){
+		Sort<decDesendingComparator<T>>(decDesendingComparator<T>());
+	}
+	
 	/** \brief Sort elements as new list. */
 	template<typename Comparator>
 	decTList<T,TP> GetSorted(Comparator &comparator) const{
@@ -1236,6 +1246,16 @@ public:
 	template<typename Comparator>
 	decTList<T,TP> GetSorted(Comparator &&comparator) const{
 		return GetSorted<Comparator>(comparator);
+	}
+	
+	/** \brief Sort as new list using decAscendingComparator. */
+	decTList<T,TP> GetSortedAscending() const{
+		return GetSorted<decAscendingComparator<T>>(decAscendingComparator<T>());
+	}
+	
+	/** \brief Sort as new list using decDescendingComparator. */
+	decTList<T,TP> GetSortedDescending() const{
+		return GetSorted<decDesendingComparator<T>>(decDesendingComparator<T>());
 	}
 	/*@}*/
 	

@@ -27,6 +27,7 @@
 
 #include <string.h>
 
+#include "decCollectionInterfaces.h"
 #include "../math/decMath.h"
 #include "../string/decString.h"
 #include "../string/decStringList.h"

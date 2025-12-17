@@ -36,6 +36,9 @@ void detHelperFunctions::Run(){
 	
 	// DEAppend tests
 	TestDEAppend();
+	
+	// Comparators
+	TestComparators();
 }
 
 void detHelperFunctions::CleanUp(){
@@ -218,5 +221,120 @@ void detHelperFunctions::TestDEAppend(){
 	ASSERT_EQUAL(collection.GetAt(0), "alpha");
 	ASSERT_EQUAL(collection.GetAt(1), "beta");
 	ASSERT_EQUAL(collection.GetAt(2), "gamma");
+	}
+}
+
+
+// Test Comparators
+/////////////////////
+
+void detHelperFunctions::TestComparators(){
+	SetSubTestNum(7);
+	
+	{
+	decTList<decString> list;
+	list.Add("banana");
+	list.Add("apple");
+	list.Add("cherry");
+	
+	list.SortAscending();
+	ASSERT_EQUAL(list.GetAt(0), "apple");
+	ASSERT_EQUAL(list.GetAt(1), "banana");
+	ASSERT_EQUAL(list.GetAt(2), "cherry");
+	
+	list.SortDescending();
+	ASSERT_EQUAL(list.GetAt(0), "cherry");
+	ASSERT_EQUAL(list.GetAt(1), "banana");
+	ASSERT_EQUAL(list.GetAt(2), "apple");
+	}
+
+	{
+	decTList<decString> list;
+	list.Add("banana");
+	list.Add("apple");
+	list.Add("cherry");
+	
+	const decTList<decString> list2(list.GetSortedAscending());
+	ASSERT_EQUAL(list2.GetAt(0), "apple");
+	ASSERT_EQUAL(list2.GetAt(1), "banana");
+	ASSERT_EQUAL(list2.GetAt(2), "cherry");
+	
+	ASSERT_EQUAL(list.GetAt(0), "banana");
+	ASSERT_EQUAL(list.GetAt(1), "apple");
+	ASSERT_EQUAL(list.GetAt(2), "cherry");
+	
+	const decTList<decString> list3(list.GetSortedDescending());
+	ASSERT_EQUAL(list3.GetAt(0), "cherry");
+	ASSERT_EQUAL(list3.GetAt(1), "banana");
+	ASSERT_EQUAL(list3.GetAt(2), "apple");
+	
+	ASSERT_EQUAL(list.GetAt(0), "banana");
+	ASSERT_EQUAL(list.GetAt(1), "apple");
+	ASSERT_EQUAL(list.GetAt(2), "cherry");
+	}
+
+	{
+	decTList<decString> list;
+	list.Add("banana");
+	list.Add("apple");
+	list.Add("cherry");
+	
+	list.Sort(decAscendingComparator<decString>());
+	ASSERT_EQUAL(list.GetAt(0), "apple");
+	ASSERT_EQUAL(list.GetAt(1), "banana");
+	ASSERT_EQUAL(list.GetAt(2), "cherry");
+	
+	list.Sort(decDesendingComparator<decString>());
+	ASSERT_EQUAL(list.GetAt(0), "cherry");
+	ASSERT_EQUAL(list.GetAt(1), "banana");
+	ASSERT_EQUAL(list.GetAt(2), "apple");
+	}
+
+	{
+	decTList<int> list;
+	list.Add(20);
+	list.Add(10);
+	list.Add(30);
+	list.SortAscending();
+	ASSERT_EQUAL(list.GetAt(0), 10);
+	ASSERT_EQUAL(list.GetAt(1), 20);
+	ASSERT_EQUAL(list.GetAt(2), 30);
+	
+	list.SortDescending();
+	ASSERT_EQUAL(list.GetAt(0), 30);
+	ASSERT_EQUAL(list.GetAt(1), 20);
+	ASSERT_EQUAL(list.GetAt(2), 10);
+	}
+
+	{
+	decTList<float> list;
+	list.Add(2.5f);
+	list.Add(1.5f);
+	list.Add(3.5f);
+	list.SortAscending();
+	ASSERT_EQUAL(list.GetAt(0), 1.5f);
+	ASSERT_EQUAL(list.GetAt(1), 2.5f);
+	ASSERT_EQUAL(list.GetAt(2), 3.5f);
+	
+	list.SortDescending();
+	ASSERT_EQUAL(list.GetAt(0), 3.5f);
+	ASSERT_EQUAL(list.GetAt(1), 2.5f);
+	ASSERT_EQUAL(list.GetAt(2), 1.5f);
+	}
+
+	{
+	decTList<double> list;
+	list.Add(2.5);
+	list.Add(1.5);
+	list.Add(3.5);
+	list.SortAscending();
+	ASSERT_EQUAL(list.GetAt(0), 1.5);
+	ASSERT_EQUAL(list.GetAt(1), 2.5);
+	ASSERT_EQUAL(list.GetAt(2), 3.5);
+	
+	list.SortDescending();
+	ASSERT_EQUAL(list.GetAt(0), 3.5);
+	ASSERT_EQUAL(list.GetAt(1), 2.5);
+	ASSERT_EQUAL(list.GetAt(2), 1.5);
 	}
 }

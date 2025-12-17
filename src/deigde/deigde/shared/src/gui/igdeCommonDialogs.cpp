@@ -39,6 +39,7 @@
 #include "native/toolkit.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -222,10 +223,8 @@ const char *text, decString &value){
 }
 
 bool igdeCommonDialogs::GetString(igdeWidget *owner, const char *title,
-const char *text, decString &value, const decStringList &proposals){
-	if(!owner){
-		DETHROW(deeInvalidParam);
-	}
+const char *text, decString &value, const decTList<decString> &proposals){
+	DEASSERT_NOTNULL(owner)
 	
 	igdeEnvironment &environment = owner->GetEnvironment();
 	igdeUIHelper &helper = environment.GetUIHelper();
@@ -237,11 +236,7 @@ const char *text, decString &value, const decStringList &proposals){
 	igdeComboBoxFilter::Ref comboBox;
 	helper.Label(content, text);
 	helper.ComboBoxFilter(content, 50, 10, true, "Enter value or select from list", comboBox, {});
-	const int count = proposals.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		comboBox->AddItem(proposals.GetAt(i));
-	}
+	proposals.Visit([&](const decString &item){ comboBox->AddItem(item); });
 	comboBox->StoreFilterItems();
 	comboBox->SetText(value);
 	
@@ -259,9 +254,23 @@ const char *text, decString &value, const decStringList &proposals){
 	}
 }
 
+bool igdeCommonDialogs::GetString(igdeWidget *owner, const char *title,
+const char *text, decString &value, const decStringList &proposals){
+	decTList<decString> convertedProposals;
+	DEAppend(convertedProposals, proposals);
+	return GetString(owner, title, text, value, convertedProposals);
+}
+
+bool igdeCommonDialogs::SelectString(igdeWidget *owner, const char *title,
+const char *text, const decTList<decString> &list, int &selection){
+	return igdeNativeCommonDialogs::SelectString(owner, title, text, list, selection);
+}
+
 bool igdeCommonDialogs::SelectString(igdeWidget *owner, const char *title,
 const char *text, const decStringList &list, int &selection){
-	return igdeNativeCommonDialogs::SelectString(owner, title, text, list, selection);
+	decTList<decString> convertedList;
+	DEAppend(convertedList, list);
+	return SelectString(owner, title, text, convertedList, selection);
 }
 
 

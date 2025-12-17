@@ -20,6 +20,9 @@ private:
 	
 	// String collection append tests
 	void TestDEAppend();
+	
+	// Comparators
+	void TestComparators();
 
 public:
 	detHelperFunctions();

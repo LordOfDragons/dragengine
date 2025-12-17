@@ -43,7 +43,7 @@ public:
 	 * \param[in] b Second element to compare.
 	 * \returns 0 if a equals b, >0 if a is greater than b otherwise <0.
 	 */
-	virtual int operator() (T *a, T *b) = 0;
+	virtual int operator() (const T &a, const T &b) = 0;
 };
 
 
@@ -57,7 +57,7 @@ public:
 	 * \brief Visit element.
 	 * \param[in] element Element to visit.
 	 */
-	virtual void operator() (T *element) = 0;
+	virtual void operator() (T &element) = 0;
 };
 
 
@@ -72,7 +72,7 @@ public:
 	 * \param[in] key Key to visit.
 	 * \param[in] value Value to visit.
 	 */
-	virtual void operator() (K *key, V *value) = 0;
+	virtual void operator() (const K &key, V &value) = 0;
 };
 
 
@@ -87,37 +87,115 @@ public:
 	 * \param[in] element Element to evaluate.
 	 * \returns true if element matches criterias otherwise false.
 	 */
-	virtual bool operator() (T *element) = 0;
+	virtual bool operator() (const T &element) = 0;
+};
+
+
+/** \brief Ascending comparator using Compare() function. */
+template<typename T>
+class decAscendingComparator : public decTComparator<T>{
+public:
+	decAscendingComparator() = default;
+	int operator() (const T &a, const T &b) override {
+		return a.Compare(b);
+	}
+};
+
+/** \brief Ascending comparator for int, float and double. */
+template<>
+class decAscendingComparator<int> : public decTComparator<int> {
+public:
+	decAscendingComparator() = default;
+	int operator() (const int &a, const int &b) override {
+		return a - b;
+	}
+};
+
+template<>
+class decAscendingComparator<float> : public decTComparator<float> {
+public:
+	decAscendingComparator() = default;
+	int operator() (const float &a, const float &b) override {
+		return (a < b) ? -1 : ((a > b) ? 1 : 0);
+	}
+};
+
+template<>
+class decAscendingComparator<double> : public decTComparator<double> {
+public:
+	decAscendingComparator() = default;
+	int operator() (const double &a, const double &b) override {
+		return (a < b) ? -1 : ((a > b) ? 1 : 0);
+	}
+};
+
+
+/** \brief Descending comparator using Compare() function. */
+template<typename T>
+class decDesendingComparator : public decTComparator<T>{
+public:
+	decDesendingComparator() = default;
+	int operator() (const T &a, const T &b) override {
+		return b.Compare(a);
+	}
+};
+
+/** \brief Descending comparator for int, float and double. */
+template<>
+class decDesendingComparator<int> : public decTComparator<int> {
+public:
+	decDesendingComparator() = default;
+	int operator() (const int &a, const int &b) override {
+		return b - a;
+	}
+};
+
+template<>
+class decDesendingComparator<float> : public decTComparator<float> {
+public:
+	decDesendingComparator() = default;
+	int operator() (const float &a, const float &b) override {
+		return (b < a) ? -1 : ((b > a) ? 1 : 0);
+	}
+};
+
+template<>
+class decDesendingComparator<double> : public decTComparator<double> {
+public:
+	decDesendingComparator() = default;
+	int operator() (const double &a, const double &b) override {
+		return (b < a) ? -1 : ((b > a) ? 1 : 0);
+	}
 };
 
 
 /** \brief Object comparator. */
-using decObjectComparator = decTComparator<deObject>;
+using decObjectComparator = decTComparator<deObject*>;
 
 /** \brief Object visitor. */
-using decObjectVisitor = decTVisitor<deObject>;
+using decObjectVisitor = decTVisitor<deObject*>;
 
 /** \brief Object evaluator. */
-using decObjectEvaluator = decTEvaluator<deObject>;
+using decObjectEvaluator = decTEvaluator<deObject*>;
 
 
 /** \brief Pointer comparator. */
-using decPointerComparator = decTComparator<void>;
+using decPointerComparator = decTComparator<void*>;
 
 /** \brief Pointer visitor. */
-using decPointerVisitor = decTVisitor<void>;
+using decPointerVisitor = decTVisitor<void*>;
 
 /** \brief Pointer evaluator. */
-using decPointerEvaluator = decTEvaluator<void>;
+using decPointerEvaluator = decTEvaluator<void*>;
 
 
 /** \brief ThreadSafeObject comparator. */
-using decThreadSafeObjectComparator = decTComparator<deThreadSafeObject>;
+using decThreadSafeObjectComparator = decTComparator<deThreadSafeObject*>;
 
 /** \brief ThreadSafeObject visitor. */
-using decThreadSafeObjectVisitor = decTVisitor<deThreadSafeObject>;
+using decThreadSafeObjectVisitor = decTVisitor<deThreadSafeObject*>;
 
 /** \brief ThreadSafeObject evaluator. */
-using decThreadSafeObjectEvaluator = decTEvaluator<deThreadSafeObject>;
+using decThreadSafeObjectEvaluator = decTEvaluator<deThreadSafeObject*>;
 
 #endif

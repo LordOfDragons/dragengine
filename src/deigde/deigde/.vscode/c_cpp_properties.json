@@ -13,7 +13,7 @@
                 "IGDE_TOOLKIT_FOX=1"
             ],
             "cStandard": "c11",
-            "cppStandard": "c++11"
+            "cppStandard": "c++17"
         }
     ],
     "version": 4

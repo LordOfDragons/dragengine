@@ -67,7 +67,7 @@ bool igdeNativeNullCommonDialogs::GetString(igdeWidget*, const char *, const cha
 	return false;
 }
 
-bool igdeNativeNullCommonDialogs::SelectString(igdeWidget*, const char *, const char *, const decStringList &, int&){
+bool igdeNativeNullCommonDialogs::SelectString(igdeWidget*, const char *, const char *, const decTList<decString> &, int&){
 	return false;
 }
 

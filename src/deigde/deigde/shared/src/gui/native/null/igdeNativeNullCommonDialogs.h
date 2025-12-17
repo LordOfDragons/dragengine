@@ -27,7 +27,7 @@
 
 #include "../../igdeCommonDialogs.h"
 
-#include <dragengine/common/string/decStringList.h>
+#include <dragengine/common/collection/decTList.h>
 
 
 class igdeFilePatternList;
@@ -89,7 +89,7 @@ public:
 	 * and \em true returned. If the user cancelled the input \em false is returned.
 	 */
 	static bool SelectString(igdeWidget *owner, const char *title, const char *text,
-		const decStringList &list, int &selection);
+		const decTList<decString> &list, int &selection);
 	
 	
 	

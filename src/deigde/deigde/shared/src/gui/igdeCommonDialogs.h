@@ -28,6 +28,7 @@
 
 #include "resources/igdeFont.h"
 
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/common/string/decStringList.h>
 
 
@@ -258,6 +259,9 @@ public:
 	 * the input \em false is returned.
 	 */
 	static bool GetString(igdeWidget *owner, const char *title, const char *text,
+		decString &value, const decTList<decString> &proposals);
+	
+	static bool GetString(igdeWidget *owner, const char *title, const char *text,
 		decString &value, const decStringList &proposals);
 	
 	/**
@@ -267,6 +271,9 @@ public:
 	 * If the user accepts the input \em selection is updated with the user selection
 	 * and \em true returned. If the user cancelled the input \em false is returned.
 	 */
+	static bool SelectString(igdeWidget *owner, const char *title, const char *text,
+		const decTList<decString> &list, int &selection);
+	
 	static bool SelectString(igdeWidget *owner, const char *title, const char *text,
 		const decStringList &list, int &selection);
 	
