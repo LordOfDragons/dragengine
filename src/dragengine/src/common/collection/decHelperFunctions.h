@@ -25,6 +25,13 @@
 #ifndef _DECHELPERFUNCTIONS_H_
 #define _DECHELPERFUNCTIONS_H_
 
+#include <string.h>
+
+#include "../math/decMath.h"
+#include "../string/decString.h"
+#include "../string/decStringList.h"
+#include "../string/decStringSet.h"
+
 
 /**
  * \brief Helper function to find named elements.
@@ -39,13 +46,96 @@
  * \endcode
  */
 template<typename C, typename T>
-const T &DEFindNamed(const C &collection, const char *name){
+const T *DEFindNamed(const C &collection, const char *name){
 	const T *found = nullptr;
 	collection.Find([&name](const T &e){
 		return e.GetName() == name;
 	}, found);
-	
-	return found ? *found : defaultValue;
+	return found;
 }
+
+
+/**
+ * \brief Helper function to join strings.
+ * 
+ * This is typically used with decTList<decString> or similar collection.
+ */
+template<typename C>
+decString DEJoin(const C &collection, const decString &separator){
+	if(collection.IsEmpty()){
+		return {};
+	}
+	
+	int notEmptyCount = 0;
+	int resultLength = collection.Inject(0, [&](int l, const decString &s){
+		if(!s.IsEmpty()){
+			notEmptyCount++;
+		}
+		return l + s.GetLength();
+	});
+	
+	const int separatorLength = separator.GetLength();
+	resultLength += separatorLength * decMath::max(notEmptyCount - 1, 0);
+	
+	decString result;
+	result.Set(' ', resultLength);
+	
+	int position = 0;
+	bool addSeparator = false;
+	collection.Visit([&](const decString &s){
+		if(s.IsEmpty()){
+			return;
+		}
+		
+		if(addSeparator){
+			memcpy(result.GetMutableString() + position, separator.GetString(), separatorLength);
+			position += separatorLength;
+			
+		}else{
+			addSeparator = true;
+		}
+		
+		const int length = s.GetLength();
+		memcpy(result.GetMutableString() + position, s.GetString(), length);
+		position += length;
+	});
+	
+	return result;
+}
+
+
+/** \brief Append string collection to decStringList. */
+template<typename C>
+inline void DEAppend(decStringList &list, const C &collection){
+	collection.Visit([&list](const decString &s){ list.Add(s); });
+}
+
+/** \brief Append string collection to decStringSet. */
+template<typename C>
+inline void DEAppend(decStringSet &set, const C &collection){
+	collection.Visit([&set](const decString &s){ set.Add(s); });
+}
+
+
+/** \brief Append decStringList to string collection. */
+template<typename C>
+inline void DEAppend(C &collection, const decStringList &list){
+	const int count = list.GetCount();
+	int i;
+	for(i=0; i<count; i++){
+		collection.Add(list.GetAt(i));
+	}
+}
+
+/** \brief Append decStringSet to string collection. */
+template<typename C>
+inline void DEAppend(C &collection, const decStringSet &set){
+	const int count = set.GetCount();
+	int i;
+	for(i=0; i<count; i++){
+		collection.Add(set.GetAt(i));
+	}
+}
+
 
 #endif

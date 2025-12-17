@@ -52,6 +52,13 @@ private:
 	void TestIntGetSorted();
 	void TestIntOperatorNotEqual();
 	void TestIntIterators();
+	void TestIntIndexOfMatching();
+	void TestIntHasMatching();
+	void TestIntFold();
+	void TestIntInject();
+	void TestIntReverse();
+	void TestIntGetReversed();
+	void TestIntFindReverseOrDefault();
 
 	// Test methods for T=decString
 	void TestStringConstructors();
@@ -94,6 +101,13 @@ private:
 	void TestStringGetSorted();
 	void TestStringOperatorNotEqual();
 	void TestStringIterators();
+	void TestStringIndexOfMatching();
+	void TestStringHasMatching();
+	void TestStringFold();
+	void TestStringInject();
+	void TestStringReverse();
+	void TestStringGetReversed();
+	void TestStringFindReverseOrDefault();
 
 	// Test methods for T=deObject::Ref, TP=deObject*
 	void TestObjectRefConstructors();
@@ -136,6 +150,13 @@ private:
 	void TestObjectRefGetSorted();
 	void TestObjectRefOperatorNotEqual();
 	void TestObjectRefIterators();
+	void TestObjectRefIndexOfMatching();
+	void TestObjectRefHasMatching();
+	void TestObjectRefFold();
+	void TestObjectRefInject();
+	void TestObjectRefReverse();
+	void TestObjectRefGetReversed();
+	void TestObjectRefFindReverseOrDefault();
 
 public:
 	detTOrderedSet();

@@ -15,14 +15,26 @@ private:
 	void TestIntOperators();
 	void TestIntIterators();
 	void TestIntAlgorithms();
+	void TestIntIndexOfMatching();
+	void TestIntHasMatching();
+	void TestIntFold();
+	void TestIntInject();
 
 	// Test methods for T=decString
 	void TestStringBasic();
 	void TestStringOperators();
+	void TestStringIndexOfMatching();
+	void TestStringHasMatching();
+	void TestStringFold();
+	void TestStringInject();
 
 	// Test methods for T=decXmlElementTag::Ref, TP=decXmlElementTag*
 	void TestObjectRefBasic();
 	void TestObjectRefOperations();
+	void TestObjectRefIndexOfMatching();
+	void TestObjectRefHasMatching();
+	void TestObjectRefFold();
+	void TestObjectRefInject();
 
 public:
 	detTList();

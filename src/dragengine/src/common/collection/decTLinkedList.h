@@ -401,7 +401,7 @@ public:
 	 */
 	template<typename Evaluator>
 	bool HasMatching(Evaluator &evaluator) const{
-		const T *f;
+		T *f;
 		return Find<Evaluator>(evaluator, f);
 	}
 	
@@ -584,7 +584,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	inline bool FindReverse(Evaluator &evaluator, const T* &found) const{
+	inline bool FindReverse(Evaluator &evaluator, T* &found) const{
 		Element *entry = pTail;
 		while(entry){
 			if(evaluator(entry->pOwner)){
@@ -598,7 +598,7 @@ public:
 	}
 	
 	template<typename Evaluator>
-	inline bool FindReverse(Evaluator &&evaluator, const T* &found) const{
+	inline bool FindReverse(Evaluator &&evaluator, T* &found) const{
 		return FindReverse<Evaluator>(evaluator, found);
 	}
 	
@@ -621,13 +621,35 @@ public:
 	
 	template<typename Evaluator>
 	inline T *FindReverseOrNull(Evaluator &evaluator, T *defaultValue = nullptr) const{
-		const T *found = nullptr;
+		T *found = nullptr;
 		return FindReverse<Evaluator>(evaluator, found) ? found : defaultValue;
 	}
 	
 	template<typename Evaluator>
 	inline T *FindReverseOrNull(Evaluator &&evaluator, T *defaultValue = nullptr) const{
 		return FindReverseOrNull<Evaluator>(evaluator, defaultValue);
+	}
+	
+	
+	/**
+	 * \brief Inject (reduce) elements using a combiner starting with initial value.
+	 * \param[in] value Initial value.
+	 * \param[in] combiner Combiner callable invoked as combiner(accumulator, element) -> accumulator.
+	 */
+	template<typename R, typename Combiner>
+	R Inject(const R &value, Combiner &combiner) const{
+		R acc = value;
+		Element *entry = pRoot;
+		while(entry){
+			acc = combiner(acc, entry->pOwner);
+			entry = entry->pNext;
+		}
+		return acc;
+	}
+	
+	template<typename R, typename Combiner>
+	R Inject(const R &value, Combiner &&combiner) const{
+		return Inject<R,Combiner>(value, combiner);
 	}
 	
 	

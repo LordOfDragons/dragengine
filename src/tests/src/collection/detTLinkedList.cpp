@@ -43,9 +43,13 @@ void detTLinkedList::Run(){
 	TestIterators();
 	TestElementIteratorAdvanced();
 	TestStability();
+	TestHasMatching();
 	TestVisit();
 	TestFind();
+	TestFindReverse();
 	TestFindOrNull();
+	TestFindReverseOrNull();
+	TestInject();
 	TestRemoveIf();
 	TestBidirectionalIterator();
 }
@@ -604,4 +608,123 @@ void detTLinkedList::TestBidirectionalIterator(){
 		count2++;
 	}
 	ASSERT_EQUAL(count2, 3);
+}
+
+
+// ============================================================================
+// New Function Tests
+// ============================================================================
+
+void detTLinkedList::TestHasMatching(){
+	SetSubTestNum(11);
+
+	TestLLObject::Ref a = TestLLObject::Ref::New(10);
+	TestLLObject::Ref b = TestLLObject::Ref::New(20);
+	TestLLObject::Ref c = TestLLObject::Ref::New(30);
+	
+	TestLLList list;
+	list.Add(&a->entry);
+	list.Add(&b->entry);
+	list.Add(&c->entry);
+	
+	auto evaluator1 = [](TestLLObject *obj){ return obj->id == 20; };
+	ASSERT_TRUE(list.HasMatching(evaluator1));
+	
+	auto evaluator2 = [](TestLLObject *obj){ return obj->id > 50; };
+	ASSERT_FALSE(list.HasMatching(evaluator2));
+	
+	auto evaluator3 = [](TestLLObject *obj){ return obj->id < 15; };
+	ASSERT_TRUE(list.HasMatching(evaluator3));
+}
+
+void detTLinkedList::TestFindReverse(){
+	SetSubTestNum(12);
+
+	TestLLObject::Ref a = TestLLObject::Ref::New(10);
+	TestLLObject::Ref b = TestLLObject::Ref::New(20);
+	TestLLObject::Ref c = TestLLObject::Ref::New(30);
+	
+	TestLLList list;
+	list.Add(&a->entry);
+	list.Add(&b->entry);
+	list.Add(&c->entry);
+	
+	TestLLObject *found = nullptr;
+	auto evaluator1 = [](const TestLLObject *obj){ return obj->id == 20; };
+	ASSERT_TRUE(list.FindReverse(evaluator1, found));
+	ASSERT_NOT_NULL(found);
+	ASSERT_EQUAL(found->id, 20);
+	
+	found = nullptr;
+	auto evaluator2 = [](const TestLLObject *obj){ return obj->id > 50; };
+	ASSERT_FALSE(list.FindReverse(evaluator2, found));
+	ASSERT_NULL(found);
+	
+	// FindReverse should find last matching element
+	found = nullptr;
+	auto evaluator3 = [](const TestLLObject *obj){ return obj->id >= 10; };
+	ASSERT_TRUE(list.FindReverse(evaluator3, found));
+	ASSERT_EQUAL(found->id, 30);
+}
+
+void detTLinkedList::TestFindReverseOrNull(){
+	SetSubTestNum(13);
+
+	TestLLObject::Ref a = TestLLObject::Ref::New(10);
+	TestLLObject::Ref b = TestLLObject::Ref::New(20);
+	TestLLObject::Ref c = TestLLObject::Ref::New(30);
+	
+	TestLLList list;
+	list.Add(&a->entry);
+	list.Add(&b->entry);
+	list.Add(&c->entry);
+	
+	auto evaluator1 = [](TestLLObject *obj){ return obj->id == 20; };
+	TestLLObject *found1 = list.FindReverseOrNull(evaluator1);
+	ASSERT_NOT_NULL(found1);
+	ASSERT_EQUAL(found1->id, 20);
+	
+	auto evaluator2 = [](TestLLObject *obj){ return obj->id > 50; };
+	TestLLObject *found2 = list.FindReverseOrNull(evaluator2);
+	ASSERT_NULL(found2);
+	
+	// FindReverse should find last matching element
+	auto evaluator3 = [](TestLLObject *obj){ return obj->id >= 10; };
+	TestLLObject *found3 = list.FindReverseOrNull(evaluator3);
+	ASSERT_NOT_NULL(found3);
+	ASSERT_EQUAL(found3->id, 30);
+	
+	// Test with default value
+	TestLLObject::Ref defaultObj = TestLLObject::Ref::New(999);
+	TestLLObject *found4 = list.FindReverseOrNull(evaluator2, defaultObj);
+	ASSERT_NOT_NULL(found4);
+	ASSERT_EQUAL(found4->id, 999);
+}
+
+void detTLinkedList::TestInject(){
+	SetSubTestNum(15);
+
+	TestLLObject::Ref a = TestLLObject::Ref::New(10);
+	TestLLObject::Ref b = TestLLObject::Ref::New(20);
+	TestLLObject::Ref c = TestLLObject::Ref::New(30);
+	
+	TestLLList list;
+	list.Add(&a->entry);
+	list.Add(&b->entry);
+	list.Add(&c->entry);
+	
+	// Test with int accumulator
+	auto combiner = [](int acc, TestLLObject *val){ 
+		return acc + val->id; 
+	};
+	ASSERT_EQUAL(list.Inject(100, combiner), 160);
+	
+	TestLLList emptyList;
+	ASSERT_EQUAL(emptyList.Inject(100, combiner), 100);
+	
+	// Test counting elements
+	auto counter = [](int acc, TestLLObject *){ 
+		return acc + 1; 
+	};
+	ASSERT_EQUAL(list.Inject(0, counter), 3);
 }

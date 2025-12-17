@@ -9,6 +9,7 @@
 #include "collection/detTSet.h"
 #include "collection/detTDictionary.h"
 #include "collection/detTLinkedList.h"
+#include "collection/detHelperFunctions.h"
 #include "curve/detCurve2D.h"
 #include "curve/detCurveBezier3D.h"
 #include "string/detString.h"
@@ -191,6 +192,7 @@ detRunner::detRunner(){
 	pAddTest(new detTSet);
 	pAddTest(new detTDictionary);
 	pAddTest(new detTLinkedList);
+	pAddTest(new detHelperFunctions);
 	pAddTest(new detPath);
 	pAddTest(new detZFile);
 	pAddTest(new detMath);

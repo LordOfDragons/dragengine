@@ -33,9 +33,18 @@ void detTSet::Run(){
 	TestIntOperators();
 	TestIntIterators();
 	TestIntAlgorithms();
+	TestIntIndexOf();
+	TestIntHasMatching();
+	TestIntFindOrDefault();
+	TestIntFold();
+	TestIntInject();
 	// string
 	TestStringBasic();
 	TestStringOperators();
+	TestStringHasMatching();
+	TestStringFindOrDefault();
+	TestStringFold();
+	TestStringInject();
 }
 
 void detTSet::CleanUp(){
@@ -219,24 +228,6 @@ void detTSet::TestIntAlgorithms(){
 	set.Visit([&visitSum](const int &v){ visitSum += v; });
 	ASSERT_EQUAL(visitSum, 25);
 
-	// Visit with from parameter
-	int sumFrom = 0;
-	set.Visit([&sumFrom](const int &v){ sumFrom += v; }, 2);
-	// Set doesn't have predictable order, just check count
-	ASSERT_TRUE(sumFrom > 0);
-
-	// Visit with from/to/step parameters
-	int sumRange = 0;
-	int countRange = 0;
-	set.Visit([&sumRange, &countRange](const int &v){ sumRange += v; countRange++; }, 1, 4, 1);
-	ASSERT_EQUAL(countRange, 3); // 3 elements visited
-
-	// Visit with negative step
-	int sumReverse = 0;
-	int countReverse = 0;
-	set.Visit([&sumReverse, &countReverse](const int &v){ sumReverse += v; countReverse++; }, 3, 0, -1);
-	ASSERT_EQUAL(countReverse, 4); // 4 elements visited (indices 3,2,1,0)
-
 	// Find - returns pointer
 	const int *resultPtr = nullptr;
 	bool found = set.Find([](const int &v){ return v > 7; }, resultPtr);
@@ -244,32 +235,9 @@ void detTSet::TestIntAlgorithms(){
 	ASSERT_NOT_NULL(resultPtr);
 	ASSERT_EQUAL(*resultPtr, 8);
 
-	// Find with from parameter
-	const int *foundFrom = nullptr;
-	ASSERT_TRUE(set.Find([](const int &v){ return v < 5; }, foundFrom, 2));
-	ASSERT_EQUAL(*foundFrom, 1);
-
-	// Find with from/to/step parameters
-	const int *foundRange = nullptr;
-	ASSERT_TRUE(set.Find([](const int &v){ return v > 6; }, foundRange, 0, 5, 1));
-	ASSERT_EQUAL(*foundRange, 8);
-
-	// Find with negative step
-	const int *foundRev = nullptr;
-	ASSERT_TRUE(set.Find([](const int &v){ return v < 5; }, foundRev, 4, 0, -1));
-	ASSERT_EQUAL(*foundRev, 1);
-
 	// FindOrDefault - no parameters
 	ASSERT_EQUAL(set.FindOrDefault([](const int &v){ return v > 100; }, 999), 999);
 	ASSERT_EQUAL(set.FindOrDefault([](const int &v){ return v > 7; }, 999), 8);
-
-	// FindOrDefault with from parameter
-	ASSERT_EQUAL(set.FindOrDefault([](const int &v){ return v > 100; }, 999, 2), 999);
-	ASSERT_EQUAL(set.FindOrDefault([](const int &v){ return v > 7; }, 999, 2), 8);
-
-	// FindOrDefault with from/to/step parameters
-	ASSERT_EQUAL(set.FindOrDefault([](const int &v){ return v == 2; }, 999, 0, 5, 1), 2);
-	ASSERT_EQUAL(set.FindOrDefault([](const int &v){ return v > 100; }, 999, 0, 5, 1), 999);
 
 	// Collect - no parameters
 	auto collected = set.Collect([](const int &v){ return v > 5; });
@@ -277,40 +245,12 @@ void detTSet::TestIntAlgorithms(){
 	ASSERT_TRUE(collected.Has(8));
 	ASSERT_TRUE(collected.Has(9));
 
-	// Collect with from parameter
-	auto collFrom = set.Collect([](const int &v){ return v > 5; }, 2);
-	ASSERT_EQUAL(collFrom.GetCount(), 2); // 8, 9
-
-	// Collect with from/to/step
-	auto collRange = set.Collect([](const int &v){ return v < 10; }, 0, 5, 1);
-	ASSERT_EQUAL(collRange.GetCount(), 5); // all elements
-
 	// RemoveIf - no parameters
 	set.RemoveIf([](const int &v){ return v < 5; });
 	ASSERT_EQUAL(set.GetCount(), 3); // 5, 8, 9
 	ASSERT_TRUE(set.Has(5));
 	ASSERT_TRUE(set.Has(8));
 	ASSERT_TRUE(set.Has(9));
-
-	// RemoveIf with from parameter
-	decTSetInt set2;
-	for(int i=1; i<=10; i++) set2.Add(i);
-	set2.RemoveIf([](const int &v){ return v > 7; }, 5);
-	ASSERT_FALSE(set2.Has(8));
-	ASSERT_FALSE(set2.Has(9));
-	ASSERT_FALSE(set2.Has(10));
-	ASSERT_TRUE(set2.Has(7));
-
-	// RemoveIf with from/to/step
-	decTSetInt set3;
-	for(int i=1; i<=10; i++) set3.Add(i);
-	set3.RemoveIf([](const int &v){ return v % 2 == 0; }, 1, 8, 1);
-	ASSERT_FALSE(set3.Has(2));
-	ASSERT_FALSE(set3.Has(4));
-	ASSERT_FALSE(set3.Has(6));
-	ASSERT_TRUE(set3.Has(1));
-	ASSERT_TRUE(set3.Has(3));
-	ASSERT_TRUE(set3.Has(5));
 
 	// Equals method
 	decTSetInt setA;
@@ -387,4 +327,188 @@ void detTSet::TestStringOperators(){
 	decTSetString set5;
 	set5 = set1;
 	ASSERT_TRUE(set5 == set1);
+}
+
+
+// ============================================================================
+// New Function Tests - INT
+// ============================================================================
+
+void detTSet::TestIntIndexOf(){
+	SetSubTestNum(7);
+
+	decTSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	set.Add(40);
+	
+	ASSERT_EQUAL(set.IndexOf(20), 1);
+	ASSERT_EQUAL(set.IndexOf(40), 3);
+	ASSERT_EQUAL(set.IndexOf(99), -1);
+	ASSERT_EQUAL(set.IndexOf(10), 0);
+}
+
+void detTSet::TestIntHasMatching(){
+	SetSubTestNum(8);
+
+	decTSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	
+	auto evaluator1 = [](int val){ return val == 20; };
+	ASSERT_TRUE(set.HasMatching(evaluator1));
+	
+	auto evaluator2 = [](int val){ return val > 50; };
+	ASSERT_FALSE(set.HasMatching(evaluator2));
+	
+	auto evaluator3 = [](int val){ return val >= 10; };
+	ASSERT_TRUE(set.HasMatching(evaluator3));
+}
+
+void detTSet::TestIntFindOrDefault(){
+	SetSubTestNum(9);
+
+	decTSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	
+	auto evaluator1 = [](int val){ return val == 20; };
+	ASSERT_EQUAL(set.FindOrDefault(evaluator1, 99), 20);
+	
+	auto evaluator2 = [](int val){ return val > 50; };
+	ASSERT_EQUAL(set.FindOrDefault(evaluator2, 99), 99);
+	
+	auto evaluator3 = [](int val){ return val < 15; };
+	ASSERT_EQUAL(set.FindOrDefault(evaluator3, 99), 10);
+	
+	// Test without default value
+	ASSERT_EQUAL(set.FindOrDefault(evaluator2), 0);
+}
+
+void detTSet::TestIntFold(){
+	SetSubTestNum(10);
+
+	decTSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	
+	auto combiner = [](int acc, int val){ return acc + val; };
+	ASSERT_EQUAL(set.Fold(combiner), 60);
+	
+	decTSetInt emptySet;
+	ASSERT_DOES_FAIL(emptySet.Fold(combiner));
+	
+	decTSetInt set2;
+	set2.Add(2);
+	set2.Add(3);
+	set2.Add(4);
+	auto multiplier = [](int acc, int val){ return acc * val; };
+	ASSERT_EQUAL(set2.Fold(multiplier), 24);
+}
+
+void detTSet::TestIntInject(){
+	SetSubTestNum(11);
+
+	decTSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	
+	auto combiner = [](int acc, int val){ return acc + val; };
+	ASSERT_EQUAL(set.Inject(100, combiner), 160);
+	
+	decTSetInt emptySet;
+	ASSERT_EQUAL(emptySet.Inject(100, combiner), 100);
+	
+	// Test with different return type
+	auto stringCombiner = [](decString acc, int val){ 
+		decString str;
+		str.Format("%d", val);
+		return acc + str; 
+	};
+	ASSERT_EQUAL(set.Inject(decString("values:"), stringCombiner), decString("values:102030"));
+}
+
+
+// ============================================================================
+// New Function Tests - STRING
+// ============================================================================
+
+void detTSet::TestStringHasMatching(){
+	SetSubTestNum(12);
+
+	decTSetString set;
+	set.Add("apple");
+	set.Add("banana");
+	set.Add("cherry");
+	
+	auto evaluator1 = [](const decString &val){ return val == "banana"; };
+	ASSERT_TRUE(set.HasMatching(evaluator1));
+	
+	auto evaluator2 = [](const decString &val){ return val == "fig"; };
+	ASSERT_FALSE(set.HasMatching(evaluator2));
+	
+	auto evaluator3 = [](const decString &val){ return val.GetLength() == 5; };
+	ASSERT_TRUE(set.HasMatching(evaluator3));
+}
+
+void detTSet::TestStringFindOrDefault(){
+	SetSubTestNum(13);
+
+	decTSetString set;
+	set.Add("apple");
+	set.Add("banana");
+	set.Add("cherry");
+	
+	auto evaluator1 = [](const decString &val){ return val == "banana"; };
+	ASSERT_EQUAL(set.FindOrDefault(evaluator1, decString("default")), decString("banana"));
+	
+	auto evaluator2 = [](const decString &val){ return val == "fig"; };
+	ASSERT_EQUAL(set.FindOrDefault(evaluator2, decString("default")), decString("default"));
+	
+	// Test without explicit default value
+	ASSERT_EQUAL(set.FindOrDefault(evaluator2), decString());
+	
+	auto evaluator3 = [](const decString &val){ return val.GetLength() > 6; };
+	ASSERT_EQUAL(set.FindOrDefault(evaluator3, decString("default")), decString("default"));
+}
+
+void detTSet::TestStringFold(){
+	SetSubTestNum(14);
+
+	decTSetString set;
+	set.Add("a");
+	set.Add("b");
+	set.Add("c");
+	
+	auto combiner = [](const decString &acc, const decString &val){ return acc + val; };
+	ASSERT_EQUAL(set.Fold(combiner), decString("abc"));
+	
+	decTSetString emptySet;
+	ASSERT_DOES_FAIL(emptySet.Fold(combiner));
+}
+
+void detTSet::TestStringInject(){
+	SetSubTestNum(15);
+
+	decTSetString set;
+	set.Add("a");
+	set.Add("b");
+	set.Add("c");
+	
+	auto combiner = [](const decString &acc, const decString &val){ return acc + val; };
+	ASSERT_EQUAL(set.Inject(decString("start:"), combiner), decString("start:abc"));
+	
+	decTSetString emptySet;
+	ASSERT_EQUAL(emptySet.Inject(decString("start:"), combiner), decString("start:"));
+	
+	// Test with different return type
+	auto lengthCombiner = [](int acc, const decString &val){ 
+		return acc + val.GetLength(); 
+	};
+	ASSERT_EQUAL(set.Inject(0, lengthCombiner), 3);
 }

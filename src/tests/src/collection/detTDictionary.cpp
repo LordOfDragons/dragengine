@@ -34,10 +34,13 @@ void detTDictionary::Run(){
 	TestStringObjectRefBasic();
 	TestStringObjectRefOperations();
 	TestGetAtOrDefault();
+	TestHasMatching();
 	TestVisit();
 	TestFind();
 	TestFindOrDefault();
 	TestCollect();
+	TestFold();
+	TestInject();
 	TestRemoveIf();
 	TestConstIterator();
 }
@@ -89,10 +92,11 @@ void detTDictionary::TestStringIntBasic(){
 	ASSERT_EQUAL(dict.GetCount(), 3); // count unchanged
 
 	// GetAt with output parameter
-	int value = 0;
-	ASSERT_TRUE(dict.GetAt(decString("b"), &value));
-	ASSERT_EQUAL(value, 2);
-	ASSERT_FALSE(dict.GetAt(decString("missing"), &value));
+	const int *value = 0;
+	ASSERT_TRUE(dict.GetAt(decString("b"), value));
+	ASSERT_NOT_NULL(value);
+	ASSERT_EQUAL(*value, 2);
+	ASSERT_FALSE(dict.GetAt(decString("missing"), value));
 
 	// GetAt non-const version (returns V&)
 	decTStringIntDict dict4;
@@ -680,4 +684,76 @@ void detTDictionary::TestConstIterator(){
 		ASSERT_NOT_NULL(pair3.second);
 	}
 	ASSERT_EQUAL(objCount, 2);
+}
+
+
+// ============================================================================
+// New Function Tests
+// ============================================================================
+
+void detTDictionary::TestHasMatching(){
+	SetSubTestNum(8);
+
+	decTStringIntDict dict;
+	dict.SetAt("a", 10);
+	dict.SetAt("b", 20);
+	dict.SetAt("c", 30);
+	
+	auto evaluator1 = [](const decString &key, int val){ return val == 20; };
+	ASSERT_TRUE(dict.HasMatching(evaluator1));
+	
+	auto evaluator2 = [](const decString &key, int val){ return val > 50; };
+	ASSERT_FALSE(dict.HasMatching(evaluator2));
+	
+	auto evaluator3 = [](const decString &key, int val){ return key == "c"; };
+	ASSERT_TRUE(dict.HasMatching(evaluator3));
+}
+
+void detTDictionary::TestFold(){
+	SetSubTestNum(13);
+
+	decTStringIntDict dict;
+	dict.SetAt("a", 10);
+	dict.SetAt("b", 20);
+	dict.SetAt("c", 30);
+	
+	auto combiner = [](int acc, int val){ return acc + val; };
+	ASSERT_EQUAL(dict.Fold(combiner), 60);
+	
+	decTStringIntDict emptyDict;
+	ASSERT_DOES_FAIL(emptyDict.Fold(combiner));
+	
+	decTStringIntDict dict2;
+	dict2.SetAt("x", 2);
+	dict2.SetAt("y", 3);
+	dict2.SetAt("z", 4);
+	auto multiplier = [](int acc, int val){ return acc * val; };
+	ASSERT_EQUAL(dict2.Fold(multiplier), 24);
+}
+
+void detTDictionary::TestInject(){
+	SetSubTestNum(14);
+
+	decTStringIntDict dict;
+	dict.SetAt("a", 10);
+	dict.SetAt("b", 20);
+	dict.SetAt("c", 30);
+	
+	auto combiner = [](int acc, int val){ return acc + val; };
+	ASSERT_EQUAL(dict.Inject(100, combiner), 160);
+	
+	decTStringIntDict emptyDict;
+	ASSERT_EQUAL(emptyDict.Inject(100, combiner), 100);
+	
+	// Test with different return type
+	auto stringCombiner = [](decString acc, int val){ 
+		decString str;
+		str.Format("%d,", val);
+		return acc + str; 
+	};
+	decString result = dict.Inject(decString("values:"), stringCombiner);
+	ASSERT_TRUE(result.BeginsWith("values:"));
+	ASSERT_TRUE(result.Find("10,") >= 0);
+	ASSERT_TRUE(result.Find("20,") >= 0);
+	ASSERT_TRUE(result.Find("30,") >= 0);
 }

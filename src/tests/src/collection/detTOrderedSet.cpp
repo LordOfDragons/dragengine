@@ -81,6 +81,13 @@ void detTOrderedSet::Run(){
 	TestIntGetSorted();
 	TestIntOperatorNotEqual();
 	TestIntIterators();
+	TestIntIndexOfMatching();
+	TestIntHasMatching();
+	TestIntFold();
+	TestIntInject();
+	TestIntReverse();
+	TestIntGetReversed();
+	TestIntFindReverseOrDefault();
 	
 	// Test string type
 	TestStringConstructors();
@@ -123,6 +130,13 @@ void detTOrderedSet::Run(){
 	TestStringGetSorted();
 	TestStringOperatorNotEqual();
 	TestStringIterators();
+	TestStringIndexOfMatching();
+	TestStringHasMatching();
+	TestStringFold();
+	TestStringInject();
+	TestStringReverse();
+	TestStringGetReversed();
+	TestStringFindReverseOrDefault();
 	
 	// Test object reference type
 	TestObjectRefConstructors();
@@ -165,6 +179,13 @@ void detTOrderedSet::Run(){
 	TestObjectRefGetSorted();
 	TestObjectRefOperatorNotEqual();
 	TestObjectRefIterators();
+	TestObjectRefIndexOfMatching();
+	TestObjectRefHasMatching();
+	TestObjectRefFold();
+	TestObjectRefInject();
+	TestObjectRefReverse();
+	TestObjectRefGetReversed();
+	TestObjectRefFindReverseOrDefault();
 }
 
 void detTOrderedSet::CleanUp(){
@@ -2481,4 +2502,478 @@ void detTOrderedSet::TestObjectRefIterators(){
 	auto r = set.rbegin();
 	++r;
 	ASSERT_EQUAL((*r)->GetName(), decString("tag2"));
+}
+
+// ============================================================================
+// New Function Tests - INT
+// ============================================================================
+
+void detTOrderedSet::TestIntIndexOfMatching(){
+	SetSubTestNum(120);
+
+	decTOrderedSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	set.Add(40);
+	
+	auto evaluator1 = [](int val){ return val == 30; };
+	ASSERT_EQUAL(set.IndexOfMatching(evaluator1), 2);
+	
+	auto evaluator2 = [](int val){ return val > 50; };
+	ASSERT_EQUAL(set.IndexOfMatching(evaluator2), -1);
+	
+	auto evaluator3 = [](int val){ return val >= 30; };
+	ASSERT_EQUAL(set.IndexOfMatching(evaluator3, 3), 3);
+	ASSERT_EQUAL(set.IndexOfMatching(evaluator3, 2), 2);
+}
+
+void detTOrderedSet::TestIntHasMatching(){
+	SetSubTestNum(121);
+
+	decTOrderedSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	
+	auto evaluator1 = [](int val){ return val == 20; };
+	ASSERT_TRUE(set.HasMatching(evaluator1));
+	
+	auto evaluator2 = [](int val){ return val > 50; };
+	ASSERT_FALSE(set.HasMatching(evaluator2));
+	
+	auto evaluator3 = [](int val){ return val < 15; };
+	ASSERT_TRUE(set.HasMatching(evaluator3));
+}
+
+void detTOrderedSet::TestIntFold(){
+	SetSubTestNum(122);
+
+	decTOrderedSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	
+	auto combiner = [](int acc, int val){ return acc + val; };
+	ASSERT_EQUAL(set.Fold(combiner), 60);
+	
+	decTOrderedSetInt emptySet;
+	ASSERT_DOES_FAIL(emptySet.Fold(combiner));
+	
+	decTOrderedSetInt set2;
+	set2.Add(2);
+	set2.Add(3);
+	set2.Add(4);
+	auto multiplier = [](int acc, int val){ return acc * val; };
+	ASSERT_EQUAL(set2.Fold(multiplier), 24);
+}
+
+void detTOrderedSet::TestIntInject(){
+	SetSubTestNum(123);
+
+	decTOrderedSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	
+	auto combiner = [](int acc, int val){ return acc + val; };
+	ASSERT_EQUAL(set.Inject(100, combiner), 160);
+	
+	decTOrderedSetInt emptySet;
+	ASSERT_EQUAL(emptySet.Inject(100, combiner), 100);
+	
+	// Test with different return type
+	auto stringCombiner = [](decString acc, int val){ 
+		decString str;
+		str.Format("%d", val);
+		return acc + str; 
+	};
+	ASSERT_EQUAL(set.Inject(decString("values:"), stringCombiner), decString("values:102030"));
+}
+
+void detTOrderedSet::TestIntReverse(){
+	SetSubTestNum(124);
+
+	decTOrderedSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	set.Add(40);
+	
+	set.Reverse();
+	
+	ASSERT_EQUAL(set.GetCount(), 4);
+	ASSERT_EQUAL(set.GetAt(0), 40);
+	ASSERT_EQUAL(set.GetAt(1), 30);
+	ASSERT_EQUAL(set.GetAt(2), 20);
+	ASSERT_EQUAL(set.GetAt(3), 10);
+}
+
+void detTOrderedSet::TestIntGetReversed(){
+	SetSubTestNum(125);
+
+	decTOrderedSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	set.Add(40);
+	
+	decTOrderedSetInt reversed = set.GetReversed();
+	
+	// Original unchanged
+	ASSERT_EQUAL(set.GetAt(0), 10);
+	ASSERT_EQUAL(set.GetAt(1), 20);
+	ASSERT_EQUAL(set.GetAt(2), 30);
+	ASSERT_EQUAL(set.GetAt(3), 40);
+	
+	// Reversed copy
+	ASSERT_EQUAL(reversed.GetCount(), 4);
+	ASSERT_EQUAL(reversed.GetAt(0), 40);
+	ASSERT_EQUAL(reversed.GetAt(1), 30);
+	ASSERT_EQUAL(reversed.GetAt(2), 20);
+	ASSERT_EQUAL(reversed.GetAt(3), 10);
+}
+
+void detTOrderedSet::TestIntFindReverseOrDefault(){
+	SetSubTestNum(126);
+
+	decTOrderedSetInt set;
+	set.Add(10);
+	set.Add(20);
+	set.Add(30);
+	set.Add(40);
+	
+	auto evaluator1 = [](int val){ return val == 30; };
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator1, 99), 30);
+	
+	auto evaluator2 = [](int val){ return val > 50; };
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator2, 99), 99);
+	
+	// FindReverse should find last matching element
+	auto evaluator3 = [](int val){ return val >= 20; };
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator3, 99), 40);
+}
+
+
+// ============================================================================
+// New Function Tests - STRING
+// ============================================================================
+
+void detTOrderedSet::TestStringIndexOfMatching(){
+	SetSubTestNum(127);
+
+	decTOrderedSetString set;
+	set.Add("apple");
+	set.Add("banana");
+	set.Add("cherry");
+	set.Add("date");
+	
+	auto evaluator1 = [](const decString &val){ return val == "cherry"; };
+	ASSERT_EQUAL(set.IndexOfMatching(evaluator1), 2);
+	
+	auto evaluator2 = [](const decString &val){ return val == "fig"; };
+	ASSERT_EQUAL(set.IndexOfMatching(evaluator2), -1);
+	
+	auto evaluator3 = [](const decString &val){ return val.GetLength() == 4; };
+	ASSERT_EQUAL(set.IndexOfMatching(evaluator3, 3), 3);
+}
+
+void detTOrderedSet::TestStringHasMatching(){
+	SetSubTestNum(128);
+
+	decTOrderedSetString set;
+	set.Add("apple");
+	set.Add("banana");
+	set.Add("cherry");
+	
+	auto evaluator1 = [](const decString &val){ return val == "banana"; };
+	ASSERT_TRUE(set.HasMatching(evaluator1));
+	
+	auto evaluator2 = [](const decString &val){ return val == "fig"; };
+	ASSERT_FALSE(set.HasMatching(evaluator2));
+	
+	auto evaluator3 = [](const decString &val){ return val.GetLength() == 5; };
+	ASSERT_TRUE(set.HasMatching(evaluator3));
+}
+
+void detTOrderedSet::TestStringFold(){
+	SetSubTestNum(129);
+
+	decTOrderedSetString set;
+	set.Add("a");
+	set.Add("b");
+	set.Add("c");
+	
+	auto combiner = [](const decString &acc, const decString &val){ return acc + val; };
+	ASSERT_EQUAL(set.Fold(combiner), decString("abc"));
+	
+	decTOrderedSetString emptySet;
+	ASSERT_DOES_FAIL(emptySet.Fold(combiner));
+}
+
+void detTOrderedSet::TestStringInject(){
+	SetSubTestNum(130);
+
+	decTOrderedSetString set;
+	set.Add("a");
+	set.Add("b");
+	set.Add("c");
+	
+	auto combiner = [](const decString &acc, const decString &val){ return acc + val; };
+	ASSERT_EQUAL(set.Inject(decString("start:"), combiner), decString("start:abc"));
+	
+	decTOrderedSetString emptySet;
+	ASSERT_EQUAL(emptySet.Inject(decString("start:"), combiner), decString("start:"));
+	
+	// Test with different return type
+	auto lengthCombiner = [](int acc, const decString &val){ 
+		return acc + val.GetLength(); 
+	};
+	ASSERT_EQUAL(set.Inject(0, lengthCombiner), 3);
+}
+
+void detTOrderedSet::TestStringReverse(){
+	SetSubTestNum(131);
+
+	decTOrderedSetString set;
+	set.Add("first");
+	set.Add("second");
+	set.Add("third");
+	set.Add("fourth");
+	
+	set.Reverse();
+	
+	ASSERT_EQUAL(set.GetCount(), 4);
+	ASSERT_EQUAL(set.GetAt(0), decString("fourth"));
+	ASSERT_EQUAL(set.GetAt(1), decString("third"));
+	ASSERT_EQUAL(set.GetAt(2), decString("second"));
+	ASSERT_EQUAL(set.GetAt(3), decString("first"));
+}
+
+void detTOrderedSet::TestStringGetReversed(){
+	SetSubTestNum(132);
+
+	decTOrderedSetString set;
+	set.Add("first");
+	set.Add("second");
+	set.Add("third");
+	set.Add("fourth");
+	
+	decTOrderedSetString reversed = set.GetReversed();
+	
+	// Original unchanged
+	ASSERT_EQUAL(set.GetAt(0), decString("first"));
+	ASSERT_EQUAL(set.GetAt(1), decString("second"));
+	ASSERT_EQUAL(set.GetAt(2), decString("third"));
+	ASSERT_EQUAL(set.GetAt(3), decString("fourth"));
+	
+	// Reversed copy
+	ASSERT_EQUAL(reversed.GetCount(), 4);
+	ASSERT_EQUAL(reversed.GetAt(0), decString("fourth"));
+	ASSERT_EQUAL(reversed.GetAt(1), decString("third"));
+	ASSERT_EQUAL(reversed.GetAt(2), decString("second"));
+	ASSERT_EQUAL(reversed.GetAt(3), decString("first"));
+}
+
+void detTOrderedSet::TestStringFindReverseOrDefault(){
+	SetSubTestNum(133);
+
+	decTOrderedSetString set;
+	set.Add("apple");
+	set.Add("banana");
+	set.Add("cherry");
+	set.Add("date");
+	
+	auto evaluator1 = [](const decString &val){ return val == "cherry"; };
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator1, decString("default")), decString("cherry"));
+	
+	auto evaluator2 = [](const decString &val){ return val == "fig"; };
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator2, decString("default")), decString("default"));
+	
+	// FindReverse should find last matching element
+	auto evaluator3 = [](const decString &val){ return val.GetLength() >= 5; };
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator3, decString("default")), decString("cherry"));
+}
+
+
+// ============================================================================
+// New Function Tests - OBJECTREF
+// ============================================================================
+
+void detTOrderedSet::TestObjectRefIndexOfMatching(){
+	SetSubTestNum(134);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj4(decXmlElementTag::Ref::New("tag4"));
+	
+	decTOrderedSetXmlElementTag set;
+	set.Add(obj1);
+	set.Add(obj2);
+	set.Add(obj3);
+	set.Add(obj4);
+	
+	auto evaluator1 = [obj3](decXmlElementTag::Ref val){ return val == obj3; };
+	ASSERT_EQUAL(set.IndexOfMatching(evaluator1), 2);
+	
+	auto evaluator2 = [](decXmlElementTag::Ref val){ return val->GetName() == "tag5"; };
+	ASSERT_EQUAL(set.IndexOfMatching(evaluator2), -1);
+	
+	auto evaluator3 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() == 4; };
+	ASSERT_EQUAL(set.IndexOfMatching(evaluator3, 2), 2);
+}
+
+void detTOrderedSet::TestObjectRefHasMatching(){
+	SetSubTestNum(135);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	
+	decTOrderedSetXmlElementTag set;
+	set.Add(obj1);
+	set.Add(obj2);
+	set.Add(obj3);
+	
+	auto evaluator1 = [obj2](decXmlElementTag::Ref val){ return val == obj2; };
+	ASSERT_TRUE(set.HasMatching(evaluator1));
+	
+	auto evaluator2 = [](decXmlElementTag::Ref val){ return val->GetName() == "tag5"; };
+	ASSERT_FALSE(set.HasMatching(evaluator2));
+	
+	auto evaluator3 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() == 4; };
+	ASSERT_TRUE(set.HasMatching(evaluator3));
+}
+
+void detTOrderedSet::TestObjectRefFold(){
+	SetSubTestNum(136);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("a"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("b"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("c"));
+	
+	decTOrderedSetXmlElementTag set;
+	set.Add(obj1);
+	set.Add(obj2);
+	set.Add(obj3);
+	
+	// Since Fold returns T (which is deTObjectReference<decXmlElementTag>), we can't
+	// easily concatenate. Let's use a test that makes sense for object references.
+	// We'll just test that it returns the first element since the combiner will
+	// keep returning the first value
+	auto combiner = [](decXmlElementTag::Ref acc, decXmlElementTag::Ref val){ 
+		return acc; 
+	};
+	ASSERT_EQUAL(set.Fold(combiner), obj1);
+	
+	decTOrderedSetXmlElementTag emptySet;
+	ASSERT_DOES_FAIL(emptySet.Fold(combiner));
+}
+
+void detTOrderedSet::TestObjectRefInject(){
+	SetSubTestNum(137);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("a"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("b"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("c"));
+	
+	decTOrderedSetXmlElementTag set;
+	set.Add(obj1);
+	set.Add(obj2);
+	set.Add(obj3);
+	
+	// Test with string accumulator
+	auto combiner = [](decString acc, decXmlElementTag::Ref val){ 
+		return acc + val->GetName(); 
+	};
+	ASSERT_EQUAL(set.Inject(decString("names:"), combiner), decString("names:abc"));
+	
+	decTOrderedSetXmlElementTag emptySet;
+	ASSERT_EQUAL(emptySet.Inject(decString("names:"), combiner), decString("names:"));
+	
+	// Test with int accumulator (count elements)
+	auto counter = [](int acc, decXmlElementTag::Ref val){ 
+		return acc + 1; 
+	};
+	ASSERT_EQUAL(set.Inject(0, counter), 3);
+}
+
+void detTOrderedSet::TestObjectRefReverse(){
+	SetSubTestNum(138);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj4(decXmlElementTag::Ref::New("tag4"));
+	
+	decTOrderedSetXmlElementTag set;
+	set.Add(obj1);
+	set.Add(obj2);
+	set.Add(obj3);
+	set.Add(obj4);
+	
+	set.Reverse();
+	
+	ASSERT_EQUAL(set.GetCount(), 4);
+	ASSERT_EQUAL(set.GetAt(0), obj4);
+	ASSERT_EQUAL(set.GetAt(1), obj3);
+	ASSERT_EQUAL(set.GetAt(2), obj2);
+	ASSERT_EQUAL(set.GetAt(3), obj1);
+}
+
+void detTOrderedSet::TestObjectRefGetReversed(){
+	SetSubTestNum(139);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj4(decXmlElementTag::Ref::New("tag4"));
+	
+	decTOrderedSetXmlElementTag set;
+	set.Add(obj1);
+	set.Add(obj2);
+	set.Add(obj3);
+	set.Add(obj4);
+	
+	decTOrderedSetXmlElementTag reversed = set.GetReversed();
+	
+	// Original unchanged
+	ASSERT_EQUAL(set.GetAt(0), obj1);
+	ASSERT_EQUAL(set.GetAt(1), obj2);
+	ASSERT_EQUAL(set.GetAt(2), obj3);
+	ASSERT_EQUAL(set.GetAt(3), obj4);
+	
+	// Reversed copy
+	ASSERT_EQUAL(reversed.GetCount(), 4);
+	ASSERT_EQUAL(reversed.GetAt(0), obj4);
+	ASSERT_EQUAL(reversed.GetAt(1), obj3);
+	ASSERT_EQUAL(reversed.GetAt(2), obj2);
+	ASSERT_EQUAL(reversed.GetAt(3), obj1);
+}
+
+void detTOrderedSet::TestObjectRefFindReverseOrDefault(){
+	SetSubTestNum(140);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj4(decXmlElementTag::Ref::New("tag4"));
+	decXmlElementTag::Ref defaultObj(decXmlElementTag::Ref::New("default"));
+	
+	decTOrderedSetXmlElementTag set;
+	set.Add(obj1);
+	set.Add(obj2);
+	set.Add(obj3);
+	set.Add(obj4);
+	
+	auto evaluator1 = [obj3](decXmlElementTag::Ref val){ return val == obj3; };
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator1, defaultObj), obj3);
+	
+	auto evaluator2 = [](decXmlElementTag::Ref val){ return val->GetName() == "tag5"; };
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator2, defaultObj), defaultObj);
+	
+	// FindReverse should find last matching element
+	auto evaluator3 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() == 4; };
+	ASSERT_EQUAL(set.FindReverseOrDefault(evaluator3, defaultObj), obj4);
 }

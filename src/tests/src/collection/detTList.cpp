@@ -36,12 +36,24 @@ void detTList::Run(){
 	TestIntOperators();
 	TestIntIterators();
 	TestIntAlgorithms();
+	TestIntIndexOfMatching();
+	TestIntHasMatching();
+	TestIntFold();
+	TestIntInject();
 	// string
 	TestStringBasic();
 	TestStringOperators();
+	TestStringIndexOfMatching();
+	TestStringHasMatching();
+	TestStringFold();
+	TestStringInject();
 	// object ref
 	TestObjectRefBasic();
 	TestObjectRefOperations();
+	TestObjectRefIndexOfMatching();
+	TestObjectRefHasMatching();
+	TestObjectRefFold();
+	TestObjectRefInject();
 }
 
 void detTList::CleanUp(){
@@ -549,4 +561,270 @@ void detTList::TestObjectRefOperations(){
 		count++;
 	}
 	ASSERT_EQUAL(count, 3);
+}
+
+
+// ============================================================================
+// New Function Tests - INT
+// ============================================================================
+
+void detTList::TestIntIndexOfMatching(){
+	SetSubTestNum(12);
+
+	decTListInt list;
+	list.Add(10);
+	list.Add(20);
+	list.Add(30);
+	list.Add(40);
+	
+	auto evaluator1 = [](int val){ return val == 30; };
+	ASSERT_EQUAL(list.IndexOfMatching(evaluator1), 2);
+	
+	auto evaluator2 = [](int val){ return val > 50; };
+	ASSERT_EQUAL(list.IndexOfMatching(evaluator2), -1);
+	
+	auto evaluator3 = [](int val){ return val >= 30; };
+	ASSERT_EQUAL(list.IndexOfMatching(evaluator3, 3), 3);
+	ASSERT_EQUAL(list.IndexOfMatching(evaluator3, 2), 2);
+}
+
+void detTList::TestIntHasMatching(){
+	SetSubTestNum(13);
+
+	decTListInt list;
+	list.Add(10);
+	list.Add(20);
+	list.Add(30);
+	
+	auto evaluator1 = [](int val){ return val == 20; };
+	ASSERT_TRUE(list.HasMatching(evaluator1));
+	
+	auto evaluator2 = [](int val){ return val > 50; };
+	ASSERT_FALSE(list.HasMatching(evaluator2));
+	
+	auto evaluator3 = [](int val){ return val < 15; };
+	ASSERT_TRUE(list.HasMatching(evaluator3));
+}
+
+void detTList::TestIntFold(){
+	SetSubTestNum(14);
+
+	decTListInt list;
+	list.Add(10);
+	list.Add(20);
+	list.Add(30);
+	
+	auto combiner = [](int acc, int val){ return acc + val; };
+	ASSERT_EQUAL(list.Fold(combiner), 60);
+	
+	decTListInt emptyList;
+	ASSERT_DOES_FAIL(emptyList.Fold(combiner));
+	
+	decTListInt list2;
+	list2.Add(2);
+	list2.Add(3);
+	list2.Add(4);
+	auto multiplier = [](int acc, int val){ return acc * val; };
+	ASSERT_EQUAL(list2.Fold(multiplier), 24);
+}
+
+void detTList::TestIntInject(){
+	SetSubTestNum(15);
+
+	decTListInt list;
+	list.Add(10);
+	list.Add(20);
+	list.Add(30);
+	
+	auto combiner = [](int acc, int val){ return acc + val; };
+	ASSERT_EQUAL(list.Inject(100, combiner), 160);
+	
+	decTListInt emptyList;
+	ASSERT_EQUAL(emptyList.Inject(100, combiner), 100);
+	
+	// Test with different return type
+	auto stringCombiner = [](decString acc, int val){ 
+		decString str;
+		str.Format("%d", val);
+		return acc + str; 
+	};
+	ASSERT_EQUAL(list.Inject(decString("values:"), stringCombiner), decString("values:102030"));
+}
+
+
+// ============================================================================
+// New Function Tests - STRING
+// ============================================================================
+
+void detTList::TestStringIndexOfMatching(){
+	SetSubTestNum(16);
+
+	decTListString list;
+	list.Add("apple");
+	list.Add("banana");
+	list.Add("cherry");
+	list.Add("date");
+	
+	auto evaluator1 = [](const decString &val){ return val == "cherry"; };
+	ASSERT_EQUAL(list.IndexOfMatching(evaluator1), 2);
+	
+	auto evaluator2 = [](const decString &val){ return val == "fig"; };
+	ASSERT_EQUAL(list.IndexOfMatching(evaluator2), -1);
+	
+	auto evaluator3 = [](const decString &val){ return val.GetLength() == 4; };
+	ASSERT_EQUAL(list.IndexOfMatching(evaluator3, 3), 3);
+}
+
+void detTList::TestStringHasMatching(){
+	SetSubTestNum(17);
+
+	decTListString list;
+	list.Add("apple");
+	list.Add("banana");
+	list.Add("cherry");
+	
+	auto evaluator1 = [](const decString &val){ return val == "banana"; };
+	ASSERT_TRUE(list.HasMatching(evaluator1));
+	
+	auto evaluator2 = [](const decString &val){ return val == "fig"; };
+	ASSERT_FALSE(list.HasMatching(evaluator2));
+	
+	auto evaluator3 = [](const decString &val){ return val.GetLength() == 5; };
+	ASSERT_TRUE(list.HasMatching(evaluator3));
+}
+
+void detTList::TestStringFold(){
+	SetSubTestNum(18);
+
+	decTListString list;
+	list.Add("a");
+	list.Add("b");
+	list.Add("c");
+	
+	auto combiner = [](const decString &acc, const decString &val){ return acc + val; };
+	ASSERT_EQUAL(list.Fold(combiner), decString("abc"));
+	
+	decTListString emptyList;
+	ASSERT_DOES_FAIL(emptyList.Fold(combiner));
+}
+
+void detTList::TestStringInject(){
+	SetSubTestNum(19);
+
+	decTListString list;
+	list.Add("a");
+	list.Add("b");
+	list.Add("c");
+	
+	auto combiner = [](const decString &acc, const decString &val){ return acc + val; };
+	ASSERT_EQUAL(list.Inject(decString("start:"), combiner), decString("start:abc"));
+	
+	decTListString emptyList;
+	ASSERT_EQUAL(emptyList.Inject(decString("start:"), combiner), decString("start:"));
+	
+	// Test with different return type
+	auto lengthCombiner = [](int acc, const decString &val){ 
+		return acc + val.GetLength(); 
+	};
+	ASSERT_EQUAL(list.Inject(0, lengthCombiner), 3);
+}
+
+
+// ============================================================================
+// New Function Tests - OBJECTREF
+// ============================================================================
+
+void detTList::TestObjectRefIndexOfMatching(){
+	SetSubTestNum(20);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	decXmlElementTag::Ref obj4(decXmlElementTag::Ref::New("tag4"));
+	
+	decTListXmlElementTag list;
+	list.Add(obj1);
+	list.Add(obj2);
+	list.Add(obj3);
+	list.Add(obj4);
+	
+	auto evaluator1 = [obj3](decXmlElementTag::Ref val){ return val == obj3; };
+	ASSERT_EQUAL(list.IndexOfMatching(evaluator1), 2);
+	
+	auto evaluator2 = [](decXmlElementTag::Ref val){ return val->GetName() == "tag5"; };
+	ASSERT_EQUAL(list.IndexOfMatching(evaluator2), -1);
+	
+	auto evaluator3 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() == 4; };
+	ASSERT_EQUAL(list.IndexOfMatching(evaluator3, 2), 2);
+}
+
+void detTList::TestObjectRefHasMatching(){
+	SetSubTestNum(21);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("tag1"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("tag2"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("tag3"));
+	
+	decTListXmlElementTag list;
+	list.Add(obj1);
+	list.Add(obj2);
+	list.Add(obj3);
+	
+	auto evaluator1 = [obj2](decXmlElementTag::Ref val){ return val == obj2; };
+	ASSERT_TRUE(list.HasMatching(evaluator1));
+	
+	auto evaluator2 = [](decXmlElementTag::Ref val){ return val->GetName() == "tag5"; };
+	ASSERT_FALSE(list.HasMatching(evaluator2));
+	
+	auto evaluator3 = [](decXmlElementTag::Ref val){ return val->GetName().GetLength() == 4; };
+	ASSERT_TRUE(list.HasMatching(evaluator3));
+}
+
+void detTList::TestObjectRefFold(){
+	SetSubTestNum(22);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("a"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("b"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("c"));
+	
+	decTListXmlElementTag list;
+	list.Add(obj1);
+	list.Add(obj2);
+	list.Add(obj3);
+	
+	auto combiner = [](decXmlElementTag::Ref acc, decXmlElementTag::Ref val){ 
+		return acc; 
+	};
+	ASSERT_EQUAL(list.Fold(combiner), obj1);
+	
+	decTListXmlElementTag emptyList;
+	ASSERT_DOES_FAIL(emptyList.Fold(combiner));
+}
+
+void detTList::TestObjectRefInject(){
+	SetSubTestNum(23);
+
+	decXmlElementTag::Ref obj1(decXmlElementTag::Ref::New("a"));
+	decXmlElementTag::Ref obj2(decXmlElementTag::Ref::New("b"));
+	decXmlElementTag::Ref obj3(decXmlElementTag::Ref::New("c"));
+	
+	decTListXmlElementTag list;
+	list.Add(obj1);
+	list.Add(obj2);
+	list.Add(obj3);
+	
+	// Test with string accumulator
+	auto combiner = [](decString acc, decXmlElementTag::Ref val){ 
+		return acc + val->GetName(); 
+	};
+	ASSERT_EQUAL(list.Inject(decString("names:"), combiner), decString("names:abc"));
+	
+	decTListXmlElementTag emptyList;
+	ASSERT_EQUAL(emptyList.Inject(decString("names:"), combiner), decString("names:"));
+	
+	// Test with int accumulator (count elements)
+	auto counter = [](int acc, decXmlElementTag::Ref val){ 
+		return acc + 1; 
+	};
+	ASSERT_EQUAL(list.Inject(0, counter), 3);
 }

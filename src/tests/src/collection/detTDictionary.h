@@ -19,10 +19,13 @@ private:
 
 	// Test methods for new functions in commit 1d5552384445f75f7cf67ed21a59f55c7127cae5
 	void TestGetAtOrDefault();
+	void TestHasMatching();
 	void TestVisit();
 	void TestFind();
 	void TestFindOrDefault();
 	void TestCollect();
+	void TestFold();
+	void TestInject();
 	void TestRemoveIf();
 	void TestConstIterator();
 

@@ -191,12 +191,10 @@ public:
 	 * \retval true Value of \em key stored in \em value.
 	 * \retval false \em key is not present in the dictionary.
 	 */
-	bool GetAt(const K &key, V *value) const{
+	bool GetAt(const K &key, const V *&value) const{
 		const sDictEntry * const entry = pGetEntry(key);
 		if(entry){
-			if(value){
-				*value = entry->value;
-			}
+			value = &entry->value;
 			return true;
 		}
 		return false;
@@ -474,6 +472,64 @@ public:
 	template<typename Evaluator>
 	decTDictionary<K,V,VP> Collect(Evaluator &&evaluator) const{
 		return Collect<Evaluator>(evaluator);
+	}
+	
+	
+	/**
+	 * \brief Fold (reduce) elements using a combiner.
+	 * \param[in] combiner Combiner callable invoked as combiner(accumulator, element) -> accumulator.
+	 * \return Accumulated value or default constructed T() if no elements.
+	 */
+	template<typename Combiner>
+	V Fold(Combiner &combiner) const{
+		DEASSERT_TRUE(IsNotEmpty())
+		bool accInitialized = false;
+		V acc{};
+		int i;
+		for(i=0; i<pBucketCount; i++){
+			const sDictEntry *iterEntry = pBuckets[i];
+			while(iterEntry){
+				if(!accInitialized){
+					acc = iterEntry->value;
+					accInitialized = true;
+					
+				}else{
+					acc = combiner(acc, iterEntry->value);
+				}
+				iterEntry = iterEntry->next;
+			}
+		}
+		return acc;
+	}
+	
+	template<typename Combiner>
+	V Fold(Combiner &&combiner) const{
+		return Fold<Combiner>(combiner);
+	}
+	
+	
+	/**
+	 * \brief Inject (reduce) elements using a combiner starting with initial value.
+	 * \param[in] value Initial value.
+	 * \param[in] combiner Combiner callable invoked as combiner(accumulator, element) -> accumulator.
+	 */
+	template<typename R, typename Combiner>
+	R Inject(const R &value, Combiner &combiner) const{
+		R acc = value;
+		int i;
+		for(i=0; i<pBucketCount; i++){
+			const sDictEntry *iterEntry = pBuckets[i];
+			while(iterEntry){
+				acc = combiner(acc, iterEntry->value);
+				iterEntry = iterEntry->next;
+			}
+		}
+		return acc;
+	}
+	
+	template<typename R, typename Combiner>
+	R Inject(const R &value, Combiner &&combiner) const{
+		return Inject<R,Combiner>(value, combiner);
 	}
 	
 	

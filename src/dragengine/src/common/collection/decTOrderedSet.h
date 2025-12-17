@@ -932,6 +932,164 @@ public:
 	
 	
 	/**
+	 * \brief Fold over a range [from, to) (to is one-past-last for positive step,
+	 *        inclusive for negative step) with given step.
+	 * \param[in] combiner Combiner callable invoked as combiner(accumulator, element) -> accumulator.
+	 * \throws deeInvalidParam \em from is less than 0.
+	 * \throws deeInvalidParam \em to is less than 0.
+	 * \throws deeInvalidParam \em step is 0.
+	 * \return Accumulated value or default constructed T() if no elements in range.
+	 */
+	template<typename Combiner>
+	T Fold(Combiner &combiner, int from, int to, int step = 1) const{
+		DEASSERT_TRUE(step != 0)
+		
+		if(from < 0){
+			from = pCount + from;
+		}
+		DEASSERT_TRUE(from >= 0)
+		DEASSERT_TRUE(from < pCount)
+		
+		if(to < 0){
+			to = pCount + to;
+		}
+		DEASSERT_TRUE(to >= 0)
+		
+		int i;
+		if(step > 0){
+			DEASSERT_TRUE(to <= pCount)
+			DEASSERT_TRUE(from < to)
+			T acc = pElements[from];
+			
+			for(i=from+step; i<to; i+=step){
+				acc = combiner(acc, pElements[i]);
+			}
+			return acc;
+			
+		}else{
+			DEASSERT_TRUE(to < pCount)
+			DEASSERT_TRUE(from > to)
+			T acc = pElements[from];
+			
+			for(i=from+step; i>=to; i+=step){
+				acc = combiner(acc, pElements[i]);
+			}
+			return acc;
+		}
+	}
+	
+	template<typename Combiner>
+	T Fold(Combiner &&combiner, int from, int to, int step = 1) const{
+		return Fold<Combiner>(combiner, from, to, step);
+	}
+	
+	/**
+	 * \brief Fold starting at index from to end.
+	 * \param[in] combiner Combiner callable invoked as combiner(accumulator, element) -> accumulator.
+	 * \throws deeInvalidParam \em from is less than 0 or larger than GetCount()-1.
+	 * \return Accumulated value or default constructed T() if no elements in range.
+	 */
+	template<typename Combiner>
+	T Fold(Combiner &combiner, int from) const{
+		return Fold<Combiner>(combiner, from, pCount);
+	}
+	
+	template<typename Combiner>
+	T Fold(Combiner &&combiner, int from) const{
+		return Fold<Combiner>(combiner, from);
+	}
+	
+	/**
+	 * \brief Fold (reduce) elements using a combiner.
+	 * \param[in] combiner Combiner callable invoked as combiner(accumulator, element) -> accumulator.
+	 * \return Accumulated value or default constructed T() if no elements.
+	 */
+	template<typename Combiner>
+	T Fold(Combiner &combiner) const{
+		DEASSERT_TRUE(IsNotEmpty())
+		T acc = pElements[0];
+		int i;
+		for(i=1; i<pCount; i++){
+			acc = combiner(acc, pElements[i]);
+		}
+		return acc;
+	}
+	
+	template<typename Combiner>
+	T Fold(Combiner &&combiner) const{
+		return Fold<Combiner>(combiner);
+	}
+	
+	
+	/**
+	 * \brief Inject (reduce) elements using a combiner starting with initial value.
+	 * \param[in] value Initial value.
+	 * \param[in] combiner Combiner callable invoked as combiner(accumulator, element) -> accumulator.
+	 */
+	template<typename R, typename Combiner>
+	R Inject(const R &value, Combiner &combiner, int from, int to, int step = 1) const{
+		DEASSERT_TRUE(step != 0)
+		
+		if(from < 0){
+			from = pCount + from;
+		}
+		DEASSERT_TRUE(from >= 0)
+		DEASSERT_TRUE(from < pCount)
+		
+		if(to < 0){
+			to = pCount + to;
+		}
+		DEASSERT_TRUE(to >= 0)
+		
+		R acc = value;
+		int i;
+		if(step > 0){
+			DEASSERT_TRUE(to <= pCount)
+			for(i=from; i<to; i+=step){
+				acc = combiner(acc, pElements[i]);
+			}
+			
+		}else{
+			DEASSERT_TRUE(to < pCount)
+			for(i=from; i>=to; i+=step){
+				acc = combiner(acc, pElements[i]);
+			}
+		}
+		return acc;
+	}
+	
+	template<typename R, typename Combiner>
+	R Inject(const R &value, Combiner &&combiner, int from, int to, int step = 1) const{
+		return Inject<R,Combiner>(value, combiner, from, to, step);
+	}
+	
+	template<typename R, typename Combiner>
+	R Inject(const R &value, Combiner &combiner, int from) const{
+		return Inject<R,Combiner>(value, combiner, from, pCount);
+	}
+	
+	template<typename R, typename Combiner>
+	R Inject(const R &value, Combiner &&combiner, int from) const{
+		return Inject<R,Combiner>(value, combiner, from);
+	}
+	
+	template<typename R, typename Combiner>
+	R Inject(const R &value, Combiner &combiner) const{
+		R acc = value;
+		int i;
+		for(i=0; i<pCount; i++){
+			acc = combiner(acc, pElements[i]);
+		}
+		return acc;
+	}
+	
+	template<typename R, typename Combiner>
+	R Inject(const R &value, Combiner &&combiner) const{
+		return Inject<R,Combiner>(value, combiner);
+	}
+	
+	
+	/**
 	 * \brief Reverse order of elements.
 	 */
 	void Reverse(){

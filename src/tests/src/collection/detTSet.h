@@ -14,10 +14,19 @@ private:
 	void TestIntOperators();
 	void TestIntIterators();
 	void TestIntAlgorithms();
+	void TestIntIndexOf();
+	void TestIntHasMatching();
+	void TestIntFindOrDefault();
+	void TestIntFold();
+	void TestIntInject();
 
 	// Test methods for T=decString
 	void TestStringBasic();
 	void TestStringOperators();
+	void TestStringHasMatching();
+	void TestStringFindOrDefault();
+	void TestStringFold();
+	void TestStringInject();
 
 public:
 	detTSet();

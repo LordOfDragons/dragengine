@@ -258,66 +258,7 @@ public:
 	/**
 	 * \brief Visit elements.
 	 * \param[in] visitor Visitor callable invoked as visitor(T).
-	 * \param[in] from First index to visit. Negative counts from end of list.
-	 * \param[in] to One past last index to visit. Negative counts from end of list.
-	 * \param[in] step Step size. Can be negative but not 0.
 	 */
-	template<typename Visitor>
-	void Visit(Visitor &visitor, int from, int to, int step = 1) const {
-		DEASSERT_TRUE(step != 0)
-		
-		if(from < 0){
-			from = pCount + from;
-		}
-		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
-		
-		if(to < 0){
-			to = pCount + to;
-		}
-		DEASSERT_TRUE(to >= 0)
-		
-		int i;
-		if(step > 0){
-			DEASSERT_TRUE(to <= pCount)
-			
-			for(i=from; i<to; i+=step){
-				visitor(pElements[i]);
-			}
-			
-		}else{
-			DEASSERT_TRUE(to < pCount)
-			
-			for(i=from; i>=to; i+=step){
-				visitor(pElements[i]);
-			}
-		}
-	}
-	
-	template<typename Visitor>
-	void Visit(Visitor &&visitor, int from, int to, int step = 1) const{
-		Visit<Visitor>(visitor, from, to, step);
-	}
-	
-	template<typename Visitor>
-	void Visit(Visitor &visitor, int from) const {
-		if(from < 0){
-			from = pCount + from;
-		}
-		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
-		
-		int i;
-		for(i=from; i<pCount; i++){
-			visitor(pElements[i]);
-		}
-	}
-	
-	template<typename Visitor>
-	void Visit(Visitor &&visitor, int from) const{
-		Visit<Visitor>(visitor, from);
-	}
-	
 	template<typename Visitor>
 	void Visit(Visitor &visitor) const{
 		int i;
@@ -334,77 +275,7 @@ public:
 	 * \brief Find element.
 	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
 	 * \param[out] found Found element if true is returned.
-	 * \param[in] from First index to visit. Negative counts from end of list.
-	 * \param[in] to One past last index to visit. Negative counts from end of list.
-	 * \param[in] step Step size. Can be negative but not 0.
 	 */
-	template<typename Evaluator>
-	bool Find(Evaluator &evaluator, const T* &found, int from, int to, int step = 1) const{
-		DEASSERT_TRUE(step != 0)
-		
-		if(from < 0){
-			from = pCount + from;
-		}
-		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
-		
-		if(to < 0){
-			to = pCount + to;
-		}
-		DEASSERT_TRUE(to >= 0)
-		
-		int i;
-		if(step > 0){
-			DEASSERT_TRUE(to <= pCount)
-			
-			for(i=from; i<to; i+=step){
-				if(evaluator(pElements[i])){
-					found = &pElements[i];
-					return true;
-				}
-			}
-			
-		}else{
-			DEASSERT_TRUE(to < pCount)
-			
-			for(i=from; i>=to; i+=step){
-				if(evaluator(pElements[i])){
-					found = &pElements[i];
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	template<typename Evaluator>
-	bool Find(Evaluator &&evaluator, const T* &found, int from, int to, int step = 1) const{
-		return Find<Evaluator>(evaluator, found, from, to, step);
-	}
-	
-	template<typename Evaluator>
-	bool Find(Evaluator &evaluator, const T* &found, int from) const{
-		if(from < 0){
-			from = pCount + from;
-		}
-		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
-		
-		int i;
-		for(i=from; i<pCount; i++){
-			if(evaluator(pElements[i])){
-				found = &pElements[i];
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	template<typename Evaluator>
-	bool Find(Evaluator &&evaluator, const T* &found, int from) const{
-		return Find<Evaluator>(evaluator, found, from);
-	}
-	
 	template<typename Evaluator>
 	inline bool Find(Evaluator &evaluator, const T* &found) const{
 		int i;
@@ -425,33 +296,8 @@ public:
 	/**
 	 * \brief Find element with default value.
 	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
-	 * \param[in] from First index to visit. Negative counts from end of list.
-	 * \param[in] to One past last index to visit. Negative counts from end of list.
-	 * \param[in] step Step size. Can be negative but not 0.
 	 * \return Found element or default value if not found.
 	 */
-	template<typename Evaluator>
-	T FindOrDefault(Evaluator &evaluator, const T &defaultValue, int from, int to, int step = 1) const{
-		const T *found = nullptr;
-		return Find<Evaluator>(evaluator, found, from, to, step) ? *found : defaultValue;
-	}
-	
-	template<typename Evaluator>
-	T FindOrDefault(Evaluator &&evaluator, const T &defaultValue, int from, int to, int step = 1) const{
-		return FindOrDefault<Evaluator>(evaluator, defaultValue, from, to, step);
-	}
-	
-	template<typename Evaluator>
-	T FindOrDefault(Evaluator &evaluator, const T &defaultValue, int from) const{
-		const T *found = nullptr;
-		return Find<Evaluator>(evaluator, found, from) ? *found : defaultValue;
-	}
-	
-	template<typename Evaluator>
-	T FindOrDefault(Evaluator &&evaluator, const T &defaultValue, int from) const{
-		return FindOrDefault<Evaluator>(evaluator, defaultValue, from);
-	}
-	
 	template<typename Evaluator>
 	inline T FindOrDefault(Evaluator &evaluator, const T &defaultValue = {}) const{
 		const T *found = nullptr;
@@ -467,76 +313,7 @@ public:
 	/**
 	 * \brief Collect element into a new list.
 	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
-	 * \param[in] from First index to visit. Negative counts from end of list.
-	 * \param[in] to One past last index to visit. Negative counts from end of list.
-	 * \param[in] step Step size. Can be negative but not 0.
 	 */
-	template<typename Evaluator>
-	decTSet<T,TP> Collect(Evaluator &evaluator, int from, int to, int step = 1) const{
-		DEASSERT_TRUE(step != 0)
-		
-		if(from < 0){
-			from = pCount + from;
-		}
-		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
-		
-		if(to < 0){
-			to = pCount + to;
-		}
-		DEASSERT_TRUE(to >= 0)
-		
-		decTSet<T,TP> collected;
-		int i;
-		if(step > 0){
-			DEASSERT_TRUE(to <= pCount)
-			
-			for(i=from; i<to; i+=step){
-				if(evaluator(pElements[i])){
-					collected.Add(pElements[i]);
-				}
-			}
-			
-		}else{
-			DEASSERT_TRUE(to < pCount)
-			
-			for(i=from; i>=to; i+=step){
-				if(evaluator(pElements[i])){
-					collected.Add(pElements[i]);
-				}
-			}
-		}
-		return collected;
-	}
-	
-	template<typename Evaluator>
-	decTSet<T,TP> Collect(Evaluator &&evaluator, int from, int to, int step = 1) const{
-		return Collect<Evaluator>(evaluator, from, to, step);
-	}
-	
-	template<typename Evaluator>
-	decTSet<T,TP> Collect(Evaluator &evaluator, int from) const{
-		if(from < 0){
-			from = pCount + from;
-		}
-		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
-		
-		decTSet<T,TP> collected;
-		int i;
-		for(i=from; i<pCount; i++){
-			if(evaluator(pElements[i])){
-				collected.Add(pElements[i]);
-			}
-		}
-		return collected;
-	}
-	
-	template<typename Evaluator>
-	decTSet<T,TP> Collect(Evaluator &&evaluator, int from) const{
-		return Collect<Evaluator>(evaluator, from);
-	}
-	
 	template<typename Evaluator>
 	inline decTSet<T,TP> Collect(Evaluator &evaluator) const{
 		decTSet<T,TP> collected;
@@ -556,79 +333,52 @@ public:
 	
 	
 	/**
+	 * \brief Fold (reduce) elements using a combiner.
+	 * \param[in] combiner Combiner callable invoked as combiner(accumulator, element) -> accumulator.
+	 * \return Accumulated value or default constructed T() if no elements.
+	 */
+	template<typename Combiner>
+	T Fold(Combiner &combiner) const{
+		DEASSERT_TRUE(IsNotEmpty())
+		T acc = pElements[0];
+		int i;
+		for(i=1; i<pCount; i++){
+			acc = combiner(acc, pElements[i]);
+		}
+		return acc;
+	}
+	
+	template<typename Combiner>
+	T Fold(Combiner &&combiner) const{
+		return Fold<Combiner>(combiner);
+	}
+	
+	
+	/**
+	 * \brief Inject (reduce) elements using a combiner starting with initial value.
+	 * \param[in] value Initial value.
+	 * \param[in] combiner Combiner callable invoked as combiner(accumulator, element) -> accumulator.
+	 */
+	template<typename R, typename Combiner>
+	R Inject(const R &value, Combiner &combiner) const{
+		R acc = value;
+		int i;
+		for(i=0; i<pCount; i++){
+			acc = combiner(acc, pElements[i]);
+		}
+		return acc;
+	}
+	
+	template<typename R, typename Combiner>
+	R Inject(const R &value, Combiner &&combiner) const{
+		return Inject<R,Combiner>(value, combiner);
+	}
+	
+	
+	/**
 	 * \brief Remove elements matching condition.
 	 * \param[in] evaluator Evaluator callable invoked as evaluator(T).
-	 * \param[in] from First index to visit. Negative counts from end of list.
-	 * \param[in] to One past last index to visit. Negative counts from end of list.
-	 * \param[in] step Step size. Can be negative but not 0.
 	 */
-	template<typename Evaluator>
-	void RemoveIf(Evaluator &evaluator, int from, int to, int step = 1){
-		DEASSERT_TRUE(step != 0)
-		
-		if(from < 0){
-			from = pCount + from;
-		}
-		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
-		
-		if(to < 0){
-			to = pCount + to;
-		}
-		DEASSERT_TRUE(to >= 0)
-		
-		int i;
-		if(step > 0){
-			DEASSERT_TRUE(to <= pCount)
-			
-			for(i=from; i<to; i+=step){
-				if(evaluator(pElements[i])){
-					RemoveIfPresent(pElements[i]);
-					i--;
-					to--;
-				}
-			}
-			
-		}else{
-			DEASSERT_TRUE(to < pCount)
-			
-			for(i=from; i>=to; i+=step){
-				if(evaluator(pElements[i])){
-					RemoveIfPresent(pElements[i]);
-					i++;
-					to++;
-				}
-			}
-		}
-	}
-	
-	template<typename Evaluator>
-	void RemoveIf(Evaluator &&evaluator, int from, int to, int step = 1){
-		RemoveIf<Evaluator>(evaluator, from, to, step);
-	}
-	
-	template<typename Evaluator>
-	void RemoveIf(Evaluator &evaluator, int from){
-		if(from < 0){
-			from = pCount + from;
-		}
-		DEASSERT_TRUE(from >= 0)
-		DEASSERT_TRUE(from < pCount)
-		
-		int i;
-		for(i=from; i<pCount; i++){
-			if(evaluator(pElements[i])){
-				RemoveIfPresent(pElements[i]);
-				i--;
-			}
-		}
-	}
-	
-	template<typename Evaluator>
-	void RemoveIf(Evaluator &&evaluator, int from){
-		RemoveIf<Evaluator>(evaluator, from);
-	}
-	
 	template<typename Evaluator>
 	void RemoveIf(Evaluator &evaluator){
 		int i;
