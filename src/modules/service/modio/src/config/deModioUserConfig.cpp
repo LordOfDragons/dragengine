@@ -103,8 +103,8 @@ void deModioUserConfig::SetModDisabled(const decString &id, bool disabled){
 
 
 Modio::Rating deModioUserConfig::GetUserRating(const decString &id) const{
-	Modio::Rating r;
-	return pUserRatings.GetAt(id, &r) ? r : Modio::Rating::Neutral;
+	const Modio::Rating *r = nullptr;
+	return pUserRatings.GetAt(id, r) ? *r : Modio::Rating::Neutral;
 }
 
 void deModioUserConfig::SetUserRating(const decString &id, Modio::Rating rating){
