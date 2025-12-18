@@ -134,6 +134,20 @@ igdeListItem *igdeListBox::GetItemWithData(void *data) const{
 	return nullptr;
 }
 
+igdeListItem *igdeListBox::GetItemWithRefData(const deObject::Ref &refData) const{
+	const int count = pItems.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		igdeListItem * const item = (igdeListItem*)pItems.GetAt(i);
+		if(item->GetRefData() == refData){
+			return item;
+		}
+	}
+	
+	return nullptr;
+}
+
 bool igdeListBox::HasItem(igdeListItem *item) const{
 	return pItems.Has(item);
 }
@@ -144,6 +158,10 @@ bool igdeListBox::HasItem(const char *item) const{
 
 bool igdeListBox::HasItemWithData(void *data) const{
 	return IndexOfItemWithData(data) != -1;
+}
+
+bool igdeListBox::HasItemWithRefData(const deObject::Ref &refData) const{
+	return IndexOfItemWithRefData(refData) != -1;
 }
 
 int igdeListBox::IndexOfItem(igdeListItem *item) const{
@@ -180,6 +198,19 @@ int igdeListBox::IndexOfItemWithData(void *data) const{
 	return -1;
 }
 
+int igdeListBox::IndexOfItemWithRefData(const deObject::Ref &refData) const{
+	const int count = pItems.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		if(((const igdeListItem*)pItems.GetAt(i))->GetRefData() == refData){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
 void igdeListBox::AddItem(igdeListItem *item){
 	if(!item){
 		DETHROW(deeInvalidParam);
@@ -197,8 +228,18 @@ void igdeListBox::AddItem(const char *text, igdeIcon *icon, void *data){
 	AddItem(item, text, icon, data);
 }
 
+void igdeListBox::AddItemRef(const char *text, igdeIcon *icon, const deObject::Ref &refData){
+	igdeListItem::Ref item;
+	AddItemRef(item, text, icon, refData);
+}
+
 void igdeListBox::AddItem(igdeListItem::Ref &item, const char *text, igdeIcon *icon, void *data){
 	item = igdeListItem::Ref::New(text, icon, data);
+	AddItem(item);
+}
+
+void igdeListBox::AddItemRef(igdeListItem::Ref &item, const char *text, igdeIcon *icon, const deObject::Ref &refData){
+	item = igdeListItem::Ref::New(text, icon, refData);
 	AddItem(item);
 }
 
@@ -224,9 +265,21 @@ void igdeListBox::InsertItem(int index, const char *text, igdeIcon *icon, void *
 	InsertItem(item, index, text, icon, data);
 }
 
+void igdeListBox::InsertItemRef(int index, const char *text, igdeIcon *icon,
+const deObject::Ref &refData){
+	igdeListItem::Ref item;
+	InsertItemRef(item, index, text, icon, refData);
+}
+
 void igdeListBox::InsertItem(igdeListItem::Ref &item, int index, const char *text,
 igdeIcon *icon, void *data){
 	item = igdeListItem::Ref::New(text, icon, data);
+	InsertItem(index, item);
+}
+
+void igdeListBox::InsertItemRef(igdeListItem::Ref &item, int index, const char *text,
+igdeIcon *icon, const deObject::Ref &refData){
+	item = igdeListItem::Ref::New(text, icon, refData);
 	InsertItem(index, item);
 }
 
@@ -375,6 +428,10 @@ void *igdeListBox::GetSelectedItemData() const{
 	return pSelection != -1 ? ((igdeListItem*)pItems.GetAt(pSelection))->GetData() : nullptr;
 }
 
+deObject::Ref igdeListBox::GetSelectedItemRefData() const{
+	return pSelection != -1 ? ((igdeListItem*)pItems.GetAt(pSelection))->GetRefData() : deObject::Ref();
+}
+
 void igdeListBox::SetSelection(int selection){
 	if(selection < -1 || selection >= pItems.GetCount()){
 		DETHROW(deeInvalidParam);
@@ -391,6 +448,10 @@ void igdeListBox::SetSelection(int selection){
 
 void igdeListBox::SetSelectionWithData(void *data){
 	SetSelection(IndexOfItemWithData(data));
+}
+
+void igdeListBox::SetSelectionWithRefData(const deObject::Ref &refData){
+	SetSelection(IndexOfItemWithRefData(refData));
 }
 
 void igdeListBox::SelectItem(int index){

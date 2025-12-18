@@ -51,6 +51,7 @@ private:
 	decString pDescription;
 	igdeIcon::Ref pIcon;
 	void *pData;
+	deObject::Ref pRefData;
 	decStringList pDetails;
 	bool pSelected;
 	
@@ -68,10 +69,13 @@ public:
 	
 	/** \brief Create list item. */
 	igdeListItem(const char *text, void *data);
+	igdeListItem(const char *text, const deObject::Ref &refData);
 	
 	igdeListItem(const char *text, igdeIcon *icon, void *data);
+	igdeListItem(const char *text, igdeIcon *icon, const deObject::Ref &refData);
 	
 	igdeListItem(const char *text, igdeIcon *icon, const char *description, void *data);
+	igdeListItem(const char *text, igdeIcon *icon, const char *description, const deObject::Ref &refData);
 	
 	/** \brief Create copy of list item. */
 	igdeListItem(const igdeListItem &listItem);
@@ -116,6 +120,12 @@ public:
 	
 	/** \brief Set user data pointer. */
 	void SetData(void *data);
+	
+	/** \brief User reference data. */
+	inline const deObject::Ref &GetRefData() const{ return pRefData; }
+	
+	/** \brief Set user reference data. */
+	void SetRefData(const deObject::Ref &refData);
 	
 	/**
 	 * \brief Details used for igdeListBox only in detail mode.

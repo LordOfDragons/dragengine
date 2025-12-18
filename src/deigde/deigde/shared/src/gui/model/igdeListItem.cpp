@@ -64,10 +64,25 @@ pData(data),
 pSelected(false){
 }
 
+igdeListItem::igdeListItem(const char *text, const deObject::Ref &refData) :
+pText(text),
+pData(nullptr),
+pRefData(refData),
+pSelected(false){
+}
+
 igdeListItem::igdeListItem(const char *text, igdeIcon *icon, void *data) :
 pText(text),
 pIcon(icon),
 pData(data),
+pSelected(false){
+}
+
+igdeListItem::igdeListItem(const char *text, igdeIcon *icon, const deObject::Ref &refData) :
+pText(text),
+pIcon(icon),
+pData(nullptr),
+pRefData(refData),
 pSelected(false){
 }
 
@@ -79,11 +94,21 @@ pData(data),
 pSelected(false){
 }
 
+igdeListItem::igdeListItem(const char *text, igdeIcon *icon, const char *description, const deObject::Ref &refData) :
+pText(text),
+pDescription(description),
+pIcon(icon),
+pData(nullptr),
+pRefData(refData),
+pSelected(false){
+}
+
 igdeListItem::igdeListItem(const igdeListItem &listItem) :
 pText(listItem.pText),
 pDescription(listItem.pDescription),
 pIcon(listItem.pIcon),
 pData(listItem.pData),
+pRefData(listItem.pRefData),
 pDetails(listItem.pDetails),
 pSelected(false){
 }
@@ -112,6 +137,10 @@ void igdeListItem::SetData(void *data){
 	pData = data;
 }
 
+void igdeListItem::SetRefData(const deObject::Ref &refData){
+	pRefData = refData;
+}
+
 void igdeListItem::SetSelected(bool selected){
 	pSelected = selected;
 }
@@ -123,6 +152,7 @@ igdeListItem &igdeListItem::operator=(const igdeListItem &listItem){
 	pDescription = listItem.pDescription;
 	pIcon = listItem.pIcon;
 	pData = listItem.pData;
+	pRefData = listItem.pRefData;
 	pDetails = listItem.pDetails;
 	return *this;
 }

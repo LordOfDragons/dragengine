@@ -192,6 +192,10 @@ bool igdeComboBox::HasItemWithData(void *data) const{
 	return IndexOfItemWithData(data) != -1;
 }
 
+bool igdeComboBox::HasItemWithRefData(const deObject::Ref &refData) const{
+	return IndexOfItemWithRefData(refData) != -1;
+}
+
 int igdeComboBox::IndexOfItem(igdeListItem *item) const{
 	return pItems.IndexOf(item);
 }
@@ -226,6 +230,19 @@ int igdeComboBox::IndexOfItemWithData(void *data) const{
 	return -1;
 }
 
+int igdeComboBox::IndexOfItemWithRefData(const deObject::Ref &refData) const{
+	const int count = pItems.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		if(((const igdeListItem*)pItems.GetAt(i))->GetRefData() == refData){
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
 void igdeComboBox::AddItem(igdeListItem *item){
 	if(!item){
 		DETHROW(deeInvalidParam);
@@ -240,6 +257,12 @@ void igdeComboBox::AddItem(igdeListItem *item){
 
 igdeListItem *igdeComboBox::AddItem(const char *text, igdeIcon *icon, void *data){
 	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon, data));
+	AddItem(item);
+	return item;
+}
+
+igdeListItem *igdeComboBox::AddItemRef(const char *text, igdeIcon *icon, const deObject::Ref &refData){
+	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon, refData));
 	AddItem(item);
 	return item;
 }
@@ -263,6 +286,12 @@ void igdeComboBox::InsertItem(int index, igdeListItem *item){
 
 igdeListItem *igdeComboBox::InsertItem(int index, const char *text, igdeIcon *icon, void *data){
 	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon, data));
+	InsertItem(index, item);
+	return item;
+}
+
+igdeListItem *igdeComboBox::InsertItemRef(int index, const char *text, igdeIcon *icon, const deObject::Ref &refData){
+	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon, refData));
 	InsertItem(index, item);
 	return item;
 }
@@ -423,6 +452,10 @@ void *igdeComboBox::GetSelectedItemData() const{
 	return pSelection != -1 ? ((igdeListItem*)pItems.GetAt(pSelection))->GetData() : nullptr;
 }
 
+deObject::Ref igdeComboBox::GetSelectedItemRefData() const{
+	return pSelection != -1 ? ((igdeListItem*)pItems.GetAt(pSelection))->GetRefData() : deObject::Ref();
+}
+
 void igdeComboBox::SetSelection(int selection){
 	if(selection < -1 || selection >= pItems.GetCount()){
 		DETHROW(deeInvalidParam);
@@ -448,6 +481,10 @@ void igdeComboBox::SetSelection(int selection){
 
 void igdeComboBox::SetSelectionWithData(void *data){
 	SetSelection(IndexOfItemWithData(data));
+}
+
+void igdeComboBox::SetSelectionWithRefData(const deObject::Ref &refData){
+	SetSelection(IndexOfItemWithRefData(refData));
 }
 
 

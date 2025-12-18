@@ -153,6 +153,9 @@ public:
 	/** \brief Item with data is present. */
 	bool HasItemWithData(void *data) const;
 	
+	/** \brief Item with reference data is present. */
+	bool HasItemWithRefData(const deObject::Ref &data) const;
+	
 	/** \brief Index of item or -1 if absent. */
 	int IndexOfItem(igdeListItem *item) const;
 	
@@ -162,17 +165,22 @@ public:
 	/** \brief Index of item with data or -1 if absent. */
 	int IndexOfItemWithData(void *data) const;
 	
+	/** \brief Index of item with reference data or -1 if absent. */
+	int IndexOfItemWithRefData(const deObject::Ref &refData) const;
+	
 	/** \brief Add item. */
 	void AddItem(igdeListItem *item);
 	
 	/** \brief Add item of type igdeListItem with text. */
 	igdeListItem *AddItem(const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
+	igdeListItem *AddItemRef(const char *text, igdeIcon *icon = nullptr, const deObject::Ref &refData = {});
 	
 	/** \brief Insert item at index. */
 	void InsertItem(int index, igdeListItem *item);
 	
 	/** \brief Insert item of type igdeListItem with text at index. */
 	igdeListItem *InsertItem(int index, const char *text, igdeIcon *icon = nullptr, void *data = nullptr);
+	igdeListItem *InsertItemRef(int index, const char *text, igdeIcon *icon = nullptr, const deObject::Ref &data = {});
 	
 	/** \brief Move item. */
 	void MoveItem(int fromIndex, int toIndex);
@@ -211,6 +219,9 @@ public:
 	/** \brief Selected item date or nullptr. */
 	void *GetSelectedItemData() const;
 	
+	/** \brief Selected item reference date or nullptr. */
+	deObject::Ref GetSelectedItemRefData() const;
+	
 	/** \brief Set index of selected item or -1. */
 	void SetSelection(int selection);
 	
@@ -220,6 +231,13 @@ public:
 	 * Short-cut for calling SetSelection(IndexOfItemWithData(data)).
 	 */
 	void SetSelectionWithData(void *data);
+	
+	/**
+	 * \brief Set selected item matching reference data.
+	 * 
+	 * Short-cut for calling SetSelection(IndexOfItemWithRefData(refData)).
+	 */
+	void SetSelectionWithRefData(const deObject::Ref &refData);
 	
 	
 	
