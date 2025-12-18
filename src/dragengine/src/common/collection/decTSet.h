@@ -219,22 +219,18 @@ public:
 			return false;
 		}
 		
-		int p;
-		for(p=position+1; p<pCount; p++){
-			pElements[p - 1] = pElements[p];
+		if(position < pCount - 1){
+			pElements[position] = pElements[pCount - 1];
 		}
-		pCount--;
-		pElements[pCount] = T();
+		pElements[--pCount] = T();
 		return true;
 	}
 	
 	/** \brief Remove all elements. */
 	void RemoveAll(){
-		int i;
-		for(i=0; i<pCount; i++){
-			pElements[i] = T();
+		while(pCount > 0){
+			pElements[--pCount] = T();
 		}
-		pCount = 0;
 	}
 	
 	/** \brief Determine if this set is equal to another set. */
@@ -299,13 +295,13 @@ public:
 	 * \return Found element or default value if not found.
 	 */
 	template<typename Evaluator>
-	inline T FindOrDefault(Evaluator &evaluator, const T &defaultValue = {}) const{
+	inline T FindOrDefault(Evaluator &evaluator, const T &defaultValue = T()) const{
 		const T *found = nullptr;
 		return Find<Evaluator>(evaluator, found) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue = {}) const{
+	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue = T()) const{
 		return FindOrDefault<Evaluator>(evaluator, defaultValue);
 	}
 	
@@ -381,12 +377,19 @@ public:
 	 */
 	template<typename Evaluator>
 	void RemoveIf(Evaluator &evaluator){
-		int i;
+		int i, last = 0;
 		for(i=0; i<pCount; i++){
 			if(evaluator(pElements[i])){
-				RemoveIfPresent(pElements[i]);
-				i--;
+				continue;
 			}
+			
+			if(last < i){
+				pElements[last] = pElements[i];
+			}
+			last++;
+		}
+		while(pCount > last){
+			pElements[--pCount] = T();
 		}
 	}
 	

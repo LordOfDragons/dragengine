@@ -203,7 +203,7 @@ public:
 	/**
 	 * \brief Value for key or default value if absent.
 	 */
-	V GetAtOrDefault(const K &key, const V &defaultValue = {}) const{
+	V GetAtOrDefault(const K &key, const V &defaultValue = V()) const{
 		const sDictEntry * const entry = pGetEntry(key);
 		return entry ? entry->value : defaultValue;
 	}
@@ -435,13 +435,13 @@ public:
 	 * \return Found value or default value if not found.
 	 */
 	template<typename Evaluator>
-	V FindOrDefault(Evaluator &evaluator, const V &defaultValue = {}) const{
+	V FindOrDefault(Evaluator &evaluator, const V &defaultValue = V()) const{
 		const V *found = nullptr;
 		return Find<Evaluator>(evaluator, found) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	V FindOrDefault(Evaluator &&evaluator, const V &defaultValue = {}) const{
+	V FindOrDefault(Evaluator &&evaluator, const V &defaultValue = V()) const{
 		return FindOrDefault<Evaluator>(evaluator, defaultValue);
 	}
 	
@@ -484,7 +484,7 @@ public:
 	V Fold(Combiner &combiner) const{
 		DEASSERT_TRUE(IsNotEmpty())
 		bool accInitialized = false;
-		V acc{};
+		V acc = V();
 		int i;
 		for(i=0; i<pBucketCount; i++){
 			const sDictEntry *iterEntry = pBuckets[i];
@@ -667,7 +667,7 @@ public:
 		using pointer = void;
 		using difference_type = std::ptrdiff_t;
 
-		const_iterator() : pDict(nullptr), bucketIndex(0), entry(nullptr) {}
+		const_iterator() : pDict(nullptr), bucketIndex(0), entry(nullptr){}
 		const_iterator(const decTDictionary *d, int b, const sDictEntry *e)
 			: pDict(d), bucketIndex(b), entry(e)
 		{

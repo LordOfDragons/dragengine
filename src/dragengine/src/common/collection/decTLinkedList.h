@@ -515,7 +515,7 @@ public:
 		// before clearing the Element is in a proper cleared state before the reference goes
 		// out of scope
 		const TR guard(entry->pReference);
-		entry->pReference = {};
+		entry->pReference = TR();
 		
 		pCount--;
 	}
@@ -705,7 +705,7 @@ public:
 		const decTLinkedList<T,TR> *pList;
 		
 	public:
-		const_iterator() : pCurrent(nullptr), pList(nullptr) {}
+		const_iterator() : pCurrent(nullptr), pList(nullptr){}
 		
 		explicit const_iterator(const decTLinkedList<T,TR> &list, Element *current) : pCurrent(current), pList(&list){}
 		

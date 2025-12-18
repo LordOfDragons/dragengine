@@ -339,16 +339,14 @@ public:
 	 * \returns true if removed.
 	 */
 	bool RemoveIfPresent(const TP &element){
-		int p, position = IndexOf(element);
-		if(position == -1){
+		const int position = IndexOf(element);
+		if(position != -1){
+			RemoveFrom(position);
+			return true;
+			
+		}else{
 			return false;
 		}
-		
-		for(p=position+1; p<pCount; p++){
-			pElements[p - 1] = pElements[p];
-		}
-		pCount--;
-		return true;
 	}
 	
 	/**
@@ -363,17 +361,14 @@ public:
 		for(i=index+1; i<pCount; i++){
 			pElements[i - 1] = pElements[i];
 		}
-		pCount--;
-		pElements[pCount] = T();
+		pElements[--pCount] = T();
 	}
 	
 	/** \brief Remove all elements. */
 	void RemoveAll(){
-		int i;
-		for(i=0; i<pCount; i++){
-			pElements[i] = T();
+		while(pCount > 0){
+			pElements[--pCount] = T();
 		}
-		pCount = 0;
 	}
 	
 	/** \brief Determine if this set is equal to another set. */
@@ -818,24 +813,24 @@ public:
 	}
 	
 	template<typename Evaluator>
-	inline T FindOrDefault(Evaluator &evaluator, const T &defaultValue = {}) const{
+	inline T FindOrDefault(Evaluator &evaluator, const T &defaultValue = T()) const{
 		const T *found = nullptr;
 		return Find<Evaluator>(evaluator, found) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue = {}) const{
+	inline T FindOrDefault(Evaluator &&evaluator, const T &defaultValue = T()) const{
 		return FindOrDefault<Evaluator>(evaluator, defaultValue);
 	}
 	
 	template<typename Evaluator>
-	inline T FindReverseOrDefault(Evaluator &evaluator, const T &defaultValue = {}) const{
+	inline T FindReverseOrDefault(Evaluator &evaluator, const T &defaultValue = T()) const{
 		const T *found = nullptr;
 		return FindReverse<Evaluator>(evaluator, found) ? *found : defaultValue;
 	}
 	
 	template<typename Evaluator>
-	inline T FindReverseOrDefault(Evaluator &&evaluator, const T &defaultValue = {}) const{
+	inline T FindReverseOrDefault(Evaluator &&evaluator, const T &defaultValue = T()) const{
 		return FindReverseOrDefault<Evaluator>(evaluator, defaultValue);
 	}
 	
@@ -1191,12 +1186,19 @@ public:
 	
 	template<typename Evaluator>
 	void RemoveIf(Evaluator &evaluator){
-		int i;
+		int i, last = 0;
 		for(i=0; i<pCount; i++){
 			if(evaluator(pElements[i])){
-				RemoveFrom(i);
-				i--;
+				continue;
 			}
+			
+			if(last < i){
+				pElements[last] = pElements[i];
+			}
+			last++;
+		}
+		while(pCount > last){
+			pElements[--pCount] = T();
 		}
 	}
 	
