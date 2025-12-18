@@ -27,7 +27,6 @@
 
 #include "deParallelTask.h"
 #include "../common/string/decStringList.h"
-#include "../common/collection/decPointerList.h"
 #include "../threading/deMutex.h"
 #include "../threading/deSemaphore.h"
 

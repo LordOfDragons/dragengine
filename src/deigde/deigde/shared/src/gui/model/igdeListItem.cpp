@@ -47,7 +47,8 @@ pSelected(false){
 igdeListItem::igdeListItem(const char *text, igdeIcon *icon) :
 pText(text),
 pIcon(icon),
-pData(nullptr){
+pData(nullptr),
+pSelected(false){
 }
 
 igdeListItem::igdeListItem(const char *text, igdeIcon *icon, const char *description) :
@@ -64,25 +65,10 @@ pData(data),
 pSelected(false){
 }
 
-igdeListItem::igdeListItem(const char *text, const deObject::Ref &refData) :
-pText(text),
-pData(nullptr),
-pRefData(refData),
-pSelected(false){
-}
-
 igdeListItem::igdeListItem(const char *text, igdeIcon *icon, void *data) :
 pText(text),
 pIcon(icon),
 pData(data),
-pSelected(false){
-}
-
-igdeListItem::igdeListItem(const char *text, igdeIcon *icon, const deObject::Ref &refData) :
-pText(text),
-pIcon(icon),
-pData(nullptr),
-pRefData(refData),
 pSelected(false){
 }
 
@@ -91,15 +77,6 @@ pText(text),
 pDescription(description),
 pIcon(icon),
 pData(data),
-pSelected(false){
-}
-
-igdeListItem::igdeListItem(const char *text, igdeIcon *icon, const char *description, const deObject::Ref &refData) :
-pText(text),
-pDescription(description),
-pIcon(icon),
-pData(nullptr),
-pRefData(refData),
 pSelected(false){
 }
 

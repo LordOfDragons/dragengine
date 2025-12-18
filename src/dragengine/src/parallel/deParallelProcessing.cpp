@@ -346,13 +346,13 @@ void deParallelProcessing::FinishAndRemoveTasksOwnedBy(deBaseModule *module){
 	// cancel pending tasks owned by module
 	deMutexGuard lock(pMutexTasks);
 	
-	pListPendingTasks.Visit([module](deParallelTask *task){
+	pListPendingTasks.Visit([&](deParallelTask *task){
 		if(task->GetOwner() == module){
 			task->Cancel();
 		}
 	});
 	
-	pListPendingTasksLowPriority.Visit([module](deParallelTask *task){
+	pListPendingTasksLowPriority.Visit([&](deParallelTask *task){
 		if(task->GetOwner() == module){
 			task->Cancel();
 		}
@@ -403,7 +403,7 @@ void deParallelProcessing::FinishAndRemoveTasksOwnedBy(deBaseModule *module){
 			// invariants to be violated. since removing a task from the system drops the strong
 			// reference we have to guard it here. this has a small performance penalty due to
 			// mutex proteced reference counting but that is necessary
-			const deParallelTask::Ref task(pListFinishedTasks.GetAt(0));
+			const deParallelTask::Ref task(pListFinishedTasks.First());
 			pListFinishedTasks.RemoveFrom(0);
 			pTasks.Remove(task);
 			
@@ -543,7 +543,7 @@ void deParallelProcessing::FinishAndRemoveAllTasks(){
 			// invariants to be violated. since removing a task from the system drops the strong
 			// reference we have to guard it here. this has a small performance penalty due to
 			// mutex proteced reference counting but that is necessary
-			const deParallelTask::Ref task(pListFinishedTasks.GetAt(0));
+			const deParallelTask::Ref task(pListFinishedTasks.First());
 			pListFinishedTasks.RemoveFrom(0);
 			pTasks.Remove(task);
 			
@@ -763,17 +763,17 @@ void deParallelProcessing::LogThreadAndTasks(){
 	}
 	
 	logger.LogInfoFormat(LOGSOURCE, "Parallel Processing%s - Finished Tasks:", paused);
-	pListFinishedTasks.Visit([this](deParallelTask *task){
+	pListFinishedTasks.Visit([&](const deParallelTask *task){
 		pLogTask("- ", "  ", *task);
 	});
 	
 	logger.LogInfoFormat(LOGSOURCE, "Parallel Processing%s - Pending Tasks:", paused);
-	pListPendingTasks.Visit([this](deParallelTask *task){
+	pListPendingTasks.Visit([&](const deParallelTask *task){
 		pLogTask("- ", "  ", *task);
 	});
 	
 	logger.LogInfoFormat(LOGSOURCE, "Parallel Processing%s - Pending Low Priority Tasks:", paused);
-	pListPendingTasksLowPriority.Visit([this](deParallelTask *task){
+	pListPendingTasksLowPriority.Visit([&](const deParallelTask *task){
 		pLogTask("- ", "  ", *task);
 	});
 }
@@ -985,7 +985,7 @@ void deParallelProcessing::pEnsureRunTaskNow(deParallelTask *task){
 		
 		const deParallelTask::Ref deptask(task->GetDependsOn().FindOrDefault([](const deParallelTask *t){
 			return !t->GetFinished() && !t->IsCancelled();
-		}, {}));
+		}));
 		
 		if(deptask){
 			deadLoopCheck = false;

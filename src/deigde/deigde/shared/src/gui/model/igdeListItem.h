@@ -69,13 +69,10 @@ public:
 	
 	/** \brief Create list item. */
 	igdeListItem(const char *text, void *data);
-	igdeListItem(const char *text, const deObject::Ref &refData);
 	
 	igdeListItem(const char *text, igdeIcon *icon, void *data);
-	igdeListItem(const char *text, igdeIcon *icon, const deObject::Ref &refData);
 	
 	igdeListItem(const char *text, igdeIcon *icon, const char *description, void *data);
-	igdeListItem(const char *text, igdeIcon *icon, const char *description, const deObject::Ref &refData);
 	
 	/** \brief Create copy of list item. */
 	igdeListItem(const igdeListItem &listItem);

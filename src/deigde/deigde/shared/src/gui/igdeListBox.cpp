@@ -239,7 +239,8 @@ void igdeListBox::AddItem(igdeListItem::Ref &item, const char *text, igdeIcon *i
 }
 
 void igdeListBox::AddItemRef(igdeListItem::Ref &item, const char *text, igdeIcon *icon, const deObject::Ref &refData){
-	item = igdeListItem::Ref::New(text, icon, refData);
+	item = igdeListItem::Ref::New(text, icon);
+	item->SetRefData(refData);
 	AddItem(item);
 }
 
@@ -279,7 +280,8 @@ igdeIcon *icon, void *data){
 
 void igdeListBox::InsertItemRef(igdeListItem::Ref &item, int index, const char *text,
 igdeIcon *icon, const deObject::Ref &refData){
-	item = igdeListItem::Ref::New(text, icon, refData);
+	item = igdeListItem::Ref::New(text, icon);
+	item->SetRefData(refData);
 	InsertItem(index, item);
 }
 

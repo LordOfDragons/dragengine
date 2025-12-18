@@ -262,7 +262,8 @@ igdeListItem *igdeComboBox::AddItem(const char *text, igdeIcon *icon, void *data
 }
 
 igdeListItem *igdeComboBox::AddItemRef(const char *text, igdeIcon *icon, const deObject::Ref &refData){
-	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon, refData));
+	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon));
+	item->SetRefData(refData);
 	AddItem(item);
 	return item;
 }
@@ -291,7 +292,8 @@ igdeListItem *igdeComboBox::InsertItem(int index, const char *text, igdeIcon *ic
 }
 
 igdeListItem *igdeComboBox::InsertItemRef(int index, const char *text, igdeIcon *icon, const deObject::Ref &refData){
-	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon, refData));
+	igdeListItem::Ref item(igdeListItem::Ref::New(text, icon));
+	item->SetRefData(refData);
 	InsertItem(index, item);
 	return item;
 }
