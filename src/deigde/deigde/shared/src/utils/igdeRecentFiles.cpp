@@ -197,7 +197,7 @@ void igdeRecentFiles::AddFile(const char *filename){
 	if(index != -1){
 		pFiles.RemoveFrom(index);
 	}
-	pFiles.InsertAt(filename, 0);
+	pFiles.Insert(filename, 0);
 	EnsureSize();
 	UpdateMenu();
 	FilesChanged();

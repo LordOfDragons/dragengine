@@ -34,6 +34,7 @@
 #include "../../igdeMainWindow.h"
 #include "../../igdeWindow.h"
 
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
@@ -283,7 +284,7 @@ void igdeNativeFoxApplication::GetAppFontConfig(igdeFont::sConfiguration &config
 }
 
 void igdeNativeFoxApplication::ShowError(const deException &exception) const{
-	const decString foxMessage(exception.FormatOutput().Join("\n"));
+	const decString foxMessage(DEJoin(exception.FormatOutput(), "\n"));
 	FXMessageBox::error(FXApp::instance(), FX::MBOX_OK, "Application Error", "%s", foxMessage.GetString());
 }
 

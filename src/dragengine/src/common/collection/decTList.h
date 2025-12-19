@@ -30,7 +30,7 @@
 
 #include "decCollectionInterfaces.h"
 #include "../math/decMath.h"
-#include "../exceptions.h"
+#include "../exceptions_reduced.h"
 #include "../../deTObjectReference.h"
 #include "../../threading/deTThreadSafeObjectReference.h"
 
@@ -80,6 +80,13 @@ public:
 		for(pCount=0; pCount<list.pCount; pCount++){
 			pElements[pCount] = list.pElements[pCount];
 		}
+	}
+	
+	/** \brief Move list. */
+	decTList(decTList<T,TP> &&list) : pElements(list.pElements), pCount(list.pCount), pSize(list.pSize){
+		list.pElements = nullptr;
+		list.pCount = 0;
+		list.pSize = 0;
 	}
 	
 	/** \brief Clean up the list. */
@@ -312,6 +319,12 @@ public:
 	 * \throws deeInvalidParam \em to is less than 0 or larger than GetCount().
 	 */
 	void Move(int from, int to){
+		if(from < 0){
+			from = pCount + from;
+		}
+		if(to < 0){
+			to = pCount + to;
+		}
 		DEASSERT_TRUE(from >= 0)
 		DEASSERT_TRUE(from < pCount)
 		DEASSERT_TRUE(to >= 0)
@@ -484,6 +497,12 @@ public:
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 */
 	decTList<T,TP> GetMiddle(int from, int to) const{
+		if(from < 0){
+			from = pCount + from;
+		}
+		if(to < 0){
+			to = pCount + to;
+		}
 		DEASSERT_TRUE(from >= 0)
 		DEASSERT_TRUE(to >= from)
 		
@@ -513,6 +532,12 @@ public:
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 */
 	void GetMiddle(decTList<T,TP> &list, int from, int to) const{
+		if(from < 0){
+			from = pCount + from;
+		}
+		if(to < 0){
+			to = pCount + to;
+		}
 		DEASSERT_TRUE(from >= 0)
 		DEASSERT_TRUE(to >= from)
 		
@@ -570,6 +595,12 @@ public:
 			return;
 		}
 		
+		if(from < 0){
+			from = pCount + from;
+		}
+		if(to < 0){
+			to = pCount + to;
+		}
 		DEASSERT_TRUE(from >= 0)
 		DEASSERT_TRUE(to >= from)
 		DEASSERT_TRUE(step >= 1)
@@ -1332,6 +1363,29 @@ public:
 		for(pCount=0; pCount<list.pCount; pCount++){
 			pElements[pCount] = list.pElements[pCount];
 		}
+		
+		return *this;
+	}
+	
+	/** \brief Move list. */
+	decTList<T,TP> &operator=(decTList<T,TP> &&list) noexcept{
+		if(&list == this){
+			return *this;
+		}
+		
+		RemoveAll();
+		
+		if(pElements){
+			delete [] pElements;
+		}
+		
+		pElements = list.pElements;
+		pCount = list.pCount;
+		pSize = list.pSize;
+		
+		list.pElements = nullptr;
+		list.pCount = 0;
+		list.pSize = 0;
 		
 		return *this;
 	}

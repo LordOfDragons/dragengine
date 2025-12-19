@@ -28,6 +28,8 @@
 #include "deMCCommon.h"
 #include "../config/deModioUserConfig.h"
 
+#include <dragengine/common/exceptions.h>
+
 
 // Class deMCModInfo
 //////////////////////

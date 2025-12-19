@@ -29,6 +29,7 @@
 #include "../texture/deoglRImage.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 
+#include <dragengine/common/exceptions.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
 #include <dragengine/resources/font/deFontGlyph.h>

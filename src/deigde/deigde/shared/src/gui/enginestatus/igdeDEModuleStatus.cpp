@@ -36,6 +36,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
@@ -182,7 +183,7 @@ void igdeDEModuleStatus::UpdateModuleStatus(){
 	for(i=0; i<patternCount; i++){
 		patterns.Add(decString("*") + patternList.GetAt(i));
 	}
-	pEditPattern->SetText(patterns.Join(", "));
+	pEditPattern->SetText(DEJoin(patterns, ", "));
 	
 	pEditDefaultExtension->SetText(loadedModule->GetDefaultExtension());
 	pEditDirName->SetText(loadedModule->GetDirectoryName());

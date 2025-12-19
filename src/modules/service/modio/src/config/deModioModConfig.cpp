@@ -24,6 +24,7 @@
 
 #include "deModioModConfig.h"
 
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 

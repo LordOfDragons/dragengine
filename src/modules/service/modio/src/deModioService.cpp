@@ -37,6 +37,7 @@
 #include "parameters/deMPLogLevel.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deFileSearchVisitor.h>

@@ -33,6 +33,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
@@ -204,5 +205,5 @@ void deoglDeveloperModeTests::AnswerTestPassed(decUnicodeString &answer){
 
 void deoglDeveloperModeTests::AnswerTestFailedWithException(decUnicodeString &answer, const deException &exception){
 	answer.AppendFromUTF8("Test failed\n");
-	answer.AppendFromUTF8(exception.FormatOutput().Join("\n"));
+	answer.AppendFromUTF8(DEJoin(exception.FormatOutput(), "\n"));
 }

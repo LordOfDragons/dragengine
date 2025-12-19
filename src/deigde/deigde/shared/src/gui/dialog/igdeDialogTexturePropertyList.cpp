@@ -39,6 +39,7 @@
 #include "../../engine/textureProperties/igdeTexturePropertyList.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 
 
 
@@ -198,7 +199,7 @@ void igdeDialogTexturePropertyList::UpdateProperty(){
 		for(i=0; i<affectedCount; i++){
 			affects.Add(affectedList.GetAt(i));
 		}
-		pEditAffectedModules->SetText(affects.Join(", "));
+		pEditAffectedModules->SetText(DEJoin(affects, ", "));
 		
 	}else{
 		pEditName->ClearText();

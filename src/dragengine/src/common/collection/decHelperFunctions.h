@@ -30,7 +30,6 @@
 #include "decCollectionInterfaces.h"
 #include "../math/decMath.h"
 #include "../string/decString.h"
-#include "../string/decStringList.h"
 #include "../string/decStringSet.h"
 
 
@@ -105,28 +104,12 @@ decString DEJoin(const C &collection, const decString &separator){
 }
 
 
-/** \brief Append string collection to decStringList. */
-template<typename C>
-inline void DEAppend(decStringList &list, const C &collection){
-	collection.Visit([&list](const decString &s){ list.Add(s); });
-}
-
 /** \brief Append string collection to decStringSet. */
 template<typename C>
 inline void DEAppend(decStringSet &set, const C &collection){
 	collection.Visit([&set](const decString &s){ set.Add(s); });
 }
 
-
-/** \brief Append decStringList to string collection. */
-template<typename C>
-inline void DEAppend(C &collection, const decStringList &list){
-	const int count = list.GetCount();
-	int i;
-	for(i=0; i<count; i++){
-		collection.Add(list.GetAt(i));
-	}
-}
 
 /** \brief Append decStringSet to string collection. */
 template<typename C>

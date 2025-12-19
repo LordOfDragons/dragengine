@@ -35,6 +35,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/common/string/unicode/decUnicodeLineBuffer.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
@@ -179,7 +180,7 @@ void igdeDEConsole::SendCommand(){
 		module->SendCommand(argList, answer);
 		
 	}catch(const deException &e){
-		answer.SetFromUTF8(e.FormatOutput().Join("\n"));
+		answer.SetFromUTF8(DEJoin(e.FormatOutput(), "\n"));
 	}
 	
 	if(answer.GetLength() > 0 && answer.GetAt(answer.GetLength() - 1) != '\n'){

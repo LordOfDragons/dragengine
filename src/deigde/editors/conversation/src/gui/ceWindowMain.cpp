@@ -74,10 +74,11 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/exceptions.h>
 #include <dragengine/systems/deAudioSystem.h>
 
 
@@ -305,7 +306,7 @@ void ceWindowMain::ShowFoundMissingWordsDialog(decStringSet &missingWords){
 	for(i=0; i<count; i++){
 		list.Add(missingWords.GetAt(i));
 	}
-	decString result(list.Join("\n"));
+	decString result(DEJoin(list, "\n"));
 	igdeCommonDialogs::GetMultilineString(this, "Missing Words", "Found missing words", result);
 }
 

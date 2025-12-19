@@ -42,8 +42,8 @@
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
 
+#include <dragengine/common/string/decStringList.h>
 
-class decStringList;
 class decStringSet;
 class ceIGDEModule;
 class igdeStepableTask;

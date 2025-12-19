@@ -29,7 +29,6 @@
 #include <ctype.h>
 
 #include "decString.h"
-#include "decStringList.h"
 #include "../exceptions.h"
 #include "../../dragengine_configuration.h"
 
@@ -54,8 +53,7 @@ enum {
 ////////////////////////////
 
 decString::decString(){
-	pString = new char[1];
-	pString[0] = '\0';
+	pString = new char[1]{0};
 }
 
 decString::decString(const char *string){
@@ -113,6 +111,12 @@ decString::decString(const decString &string1, const char *string2){
 		strcpy(pString, string1.pString);
 		strcpy(pString + length1, string2);
 	#endif
+}
+
+decString::decString(decString &&string) :
+pString(string.pString)
+{
+	string.pString = new char[1]{0};
 }
 
 decString::~decString(){
@@ -1063,9 +1067,9 @@ decString decString::GetReversed() const{
 	return string;
 }
 
-decStringList decString::Split(int character) const{
+decTList<decString> decString::Split(int character) const{
 	const int len = GetLength();
-	decStringList list;
+	decTList<decString> list;
 	int i, start = -1;
 	
 	for(i=0; i<len; i++){
@@ -1089,14 +1093,14 @@ decStringList decString::Split(int character) const{
 	return list;
 }
 
-decStringList decString::Split(const char *characters) const{
+decTList<decString> decString::Split(const char *characters) const{
 	if(!characters){
 		DETHROW(deeInvalidParam);
 	}
 	
 	const int clen = (int)strlen(characters);
 	const int len = GetLength();
-	decStringList list;
+	decTList<decString> list;
 	int i, j, start = -1;
 	
 	for(i=0; i<len; i++){
@@ -1128,7 +1132,7 @@ decStringList decString::Split(const char *characters) const{
 	return list;
 }
 
-decStringList decString::Split(const decString &characters) const{
+decTList<decString> decString::Split(const decString &characters) const{
 	return Split(characters.GetString());
 }
 
@@ -1782,6 +1786,13 @@ decString &decString::operator=(const decString &string){
 
 decString &decString::operator=(const char *string){
 	Set(string);
+	return *this;
+}
+
+decString & decString::operator=(decString &&string){
+	delete [] pString;
+	pString = string.pString;
+	string.pString = new char[1]{0};
 	return *this;
 }
 

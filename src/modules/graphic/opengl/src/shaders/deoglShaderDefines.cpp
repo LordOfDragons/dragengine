@@ -28,6 +28,7 @@
 #include "deoglShaderDefines.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 
 
 
@@ -271,7 +272,7 @@ decString deoglShaderDefines::CalcCacheId() const{
 		parts.Add(GetDefineValueFor(name, ""));
 	}
 	
-	return parts.Join(",");
+	return DEJoin(parts, ",");
 }
 
 

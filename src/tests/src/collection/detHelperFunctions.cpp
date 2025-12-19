@@ -162,37 +162,7 @@ void detHelperFunctions::TestDEFindNamedNotFound(){
 
 void detHelperFunctions::TestDEAppend(){
 	SetSubTestNum(6);
-
-	// Test appending to decStringList
-	{
-	decTList<decString> collection;
-	collection.Add("one");
-	collection.Add("two");
-	collection.Add("three");
 	
-	decStringList list;
-	DEAppend(list, collection);
-	ASSERT_EQUAL(list.GetCount(), 3);
-	ASSERT_TRUE(list.Has("one"));
-	ASSERT_TRUE(list.Has("two"));
-	ASSERT_TRUE(list.Has("three"));
-	}
-	
-	// Test appending decStringList to decTList<decString>
-	{
-	decStringList list;
-	list.Add("alpha");
-	list.Add("beta");
-	list.Add("gamma");
-
-	decTList<decString> collection;
-	DEAppend(collection, list);
-	ASSERT_EQUAL(collection.GetCount(), 3);
-	ASSERT_EQUAL(collection.GetAt(0), "alpha");
-	ASSERT_EQUAL(collection.GetAt(1), "beta");
-	ASSERT_EQUAL(collection.GetAt(2), "gamma");
-	}
-
 	// Test appending to decStringSet
 	{
 	decTSet<decString> collection;

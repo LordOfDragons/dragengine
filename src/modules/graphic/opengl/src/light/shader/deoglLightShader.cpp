@@ -44,6 +44,7 @@
 #include "../../texture/deoglTextureStageManager.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 
 
 // Definitions
@@ -298,12 +299,12 @@ void deoglLightShader::GenerateShader(cShaderPreparedListener *listener){
 		cacheIdComponents.Add(pSources->GetPathVertexSourceCode());
 		cacheIdComponents.Add(pSources->GetPathGeometrySourceCode());
 		cacheIdComponents.Add(pSources->GetPathFragmentSourceCode());
-		cacheIdParts.Add(cacheIdComponents.Join(","));
+		cacheIdParts.Add(DEJoin(cacheIdComponents, ","));
 		cacheIdComponents.RemoveAll();
 		
 		cacheIdParts.Add(defines.CalcCacheId());
 		
-		pShader->SetCacheId(cacheIdParts.Join(";"));
+		pShader->SetCacheId(DEJoin(cacheIdParts, ";"));
 		
 		// compile shader
 		if(listener){

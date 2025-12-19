@@ -95,6 +95,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOS.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/file/decBaseFileReader.h>
@@ -853,7 +854,7 @@ void igdeWindowMain::AddRecentGameProject(const char *filename){
 	const int recentProjectIndex = recentProjectList.IndexOf(filename);
 	
 	if(recentProjectIndex == -1){
-		recentProjectList.InsertAt(filename, 0);
+		recentProjectList.Insert(filename, 0);
 		
 		while(recentProjectList.GetCount() > pConfiguration.GetMaxRecentProjectEntries()){
 			recentProjectList.RemoveFrom(recentProjectList.GetCount() - 1);
@@ -1434,7 +1435,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 	if(changedDocuments.GetCount() > 0){
 		decStringList choices;
 		for(i=0; i<changedDocuments.GetCount(); i++){
-			choices += changedDocuments.GetAt(i);
+			choices.Add(changedDocuments.GetAt(i));
 		}
 		
 		/*
@@ -1459,7 +1460,7 @@ bool igdeWindowMain::RequestSaveDocuments(const char *title, const char *message
 		}
 		text += "\n\n";
 		
-		text += choices.Join(", ");
+		text += DEJoin(choices, ", ");
 		
 		//MBOX_QUIT_SAVE_CANCEL
 		switch(igdeCommonDialogs::Question(this, igdeCommonDialogs::ebsYesNoCancel, title, text)){

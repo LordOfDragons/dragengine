@@ -39,6 +39,7 @@
 #include "../model/igdeListItem.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/systems/deModuleSystem.h>
@@ -223,7 +224,7 @@ void igdeDEParameters::UpdateParameter(){
 		for(i=0; i<count; i++){
 			list.Add(pParameterInfo.GetSelectionEntryAt(i).value);
 		}
-		pEditAllowedValues->SetText(text + list.Join(", "));
+		pEditAllowedValues->SetText(text + DEJoin(list, ", "));
 		}break;
 		
 	case deModuleParameter::eptString:

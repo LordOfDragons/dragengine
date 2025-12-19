@@ -209,35 +209,35 @@ void cePlayback::PlaySingleAction(ceConversationAction *action, float time){
 	SetRunning(false);
 	SetPaused(false);
 	
-	pTestActionList.RemoveAll();
-	
-	if(action){//&& action->GetType() == ceConversationAction::eatActorSpeak){
-		pTestActionList.Add(action);
-		
-		if(action->GetType() != ceConversationAction::eatActorSpeak){
-			time = 0.0f;
-		}
-		
-		//time += action->GetDelay();
+	if(!action){
+		return;
 	}
 	
-	if(pTestActionList.IsNotEmpty()){
-		const float timeStep = 0.1f;
-		
-		AdvanceToNextAction();
-		SetRunning(true);
-		pConversation.Update(0.0f);
-		
-		while(time > 1e-5f){
-			if(time > timeStep){
-				pConversation.Update(timeStep);
-				
-			}else{
-				pConversation.Update(time);
-			}
+	pTestActionList.RemoveAll();
+	pTestActionList.Add(action);
+	
+	if(action->GetType() != ceConversationAction::eatActorSpeak){
+		time = 0.0f;
+	}
+	//time += action->GetDelay();
+	
+	pSideActionStacks.RemoveAll();
+	pMainActionStack->Clear();
+	
+	AdvanceToNextAction();
+	SetRunning(true);
+	pConversation.Update(0.0f);
+	
+	const float timeStep = 0.1f;
+	while(time > 1e-5f){
+		if(time > timeStep){
+			pConversation.Update(timeStep);
 			
-			time -= timeStep;
+		}else{
+			pConversation.Update(time);
 		}
+		
+		time -= timeStep;
 	}
 }
 
@@ -423,7 +423,7 @@ void cePlayback::AdvanceToNextAction(){
 }
 
 void cePlayback::FastForwardSpeaking(){
-	if(pTopic && pTestActionList.GetCount() == 0 && pRunning && !pPaused){
+	if(pTopic && pTestActionList.IsEmpty() && pRunning && !pPaused){
 		float timeToForward = pActors.Inject(0.0f, [](float t, const cePlaybackActor &a){
 			if(!a.IsSpeechDone()){
 				t = decMath::max(t, a.GetSpeechLength() - a.GetElapsedTime());

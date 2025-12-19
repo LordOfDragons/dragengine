@@ -47,7 +47,6 @@
 
 
 class deVROpenXR;
-class decStringList;
 class decPath;
 
 

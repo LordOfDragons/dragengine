@@ -261,9 +261,6 @@ public:
 	static bool GetString(igdeWidget *owner, const char *title, const char *text,
 		decString &value, const decTList<decString> &proposals);
 	
-	static bool GetString(igdeWidget *owner, const char *title, const char *text,
-		decString &value, const decStringList &proposals);
-	
 	/**
 	 * \brief Request string selection input from user.
 	 * 
@@ -273,9 +270,6 @@ public:
 	 */
 	static bool SelectString(igdeWidget *owner, const char *title, const char *text,
 		const decTList<decString> &list, int &selection);
-	
-	static bool SelectString(igdeWidget *owner, const char *title, const char *text,
-		const decStringList &list, int &selection);
 	
 	
 	

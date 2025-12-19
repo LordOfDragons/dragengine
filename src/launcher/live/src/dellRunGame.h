@@ -36,7 +36,6 @@ class dellLauncher;
 class dellGame;
 class dellGameProfile;
 class dellGPModuleList;
-class decStringList;
 
 
 /**

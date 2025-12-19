@@ -24,14 +24,17 @@
 
 // includes
 #include <stdint.h>
+
 #include "decrbPanelParameters.h"
 #include "decrbWindowMain.h"
+
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
-#include <dragengine/common/exceptions.h>
 
 
 
@@ -291,7 +294,7 @@ long decrbPanelParameters::onBtnSetCommand(FXObject* , FXSelector, void*){
 			module->SetParameterValue(name, pEditValue->getText().text());
 		}catch(const deException &e){
 			FXMessageBox::error(this, FX::MBOX_OK, "Set Parameter failed", "%s",
-				e.FormatOutput().Join("\n").GetString());
+				DEJoin(e.FormatOutput(), "\n").GetString());
 		}
 		
 		pEditValue->setText(module->GetParameterValue(name).GetString());

@@ -57,6 +57,7 @@
 #include "../../texture/texunitsconfig/deoglTexUnitConfig.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 
 
 
@@ -1480,7 +1481,7 @@ void deoglSkinShader::GenerateShader(cShaderPreparedListener *listener){
 		cacheIdComponents.Add(pSources->GetPathFragmentSourceCode());
 		cacheIdComponents.Add(pSources->GetPathTessellationControlSourceCode());
 		cacheIdComponents.Add(pSources->GetPathTessellationEvaluationSourceCode());
-		cacheIdParts.Add(cacheIdComponents.Join(","));
+		cacheIdParts.Add(DEJoin(cacheIdComponents, ","));
 		cacheIdComponents.RemoveAll();
 		
 		cacheIdParts.Add(defines.CalcCacheId());
@@ -1502,7 +1503,7 @@ void deoglSkinShader::GenerateShader(cShaderPreparedListener *listener){
 			| (pRenderThread.GetCapabilities().GetMaxDrawBuffers() >= 8 ? 0x2 : 0));
 		cacheIdParts.Add(cacheIdBuffer);
 		
-		pShader->SetCacheId(cacheIdParts.Join(";"));
+		pShader->SetCacheId(DEJoin(cacheIdParts, ";"));
 		
 		// compile shader
 		if(listener){

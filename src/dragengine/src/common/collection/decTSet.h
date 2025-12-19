@@ -29,7 +29,7 @@
 #include <cstddef>
 
 #include "decCollectionInterfaces.h"
-#include "../exceptions.h"
+#include "../exceptions_reduced.h"
 #include "../../deTObjectReference.h"
 #include "../../threading/deTThreadSafeObjectReference.h"
 
@@ -78,6 +78,13 @@ public:
 		for(pCount=0; pCount<set.pCount; pCount++){
 			pElements[pCount] = set.pElements[pCount];
 		}
+	}
+	
+	/** \briev Move set. */
+	decTSet(decTSet<T,TP> &&set) : pElements(set.pElements), pCount(set.pCount), pSize(set.pSize){
+		set.pElements = nullptr;
+		set.pCount = 0;
+		set.pSize = 0;
 	}
 	
 	/** \brief Clean up the set. */
@@ -455,6 +462,29 @@ public:
 		for(pCount=0; pCount<set.pCount; pCount++){
 			pElements[pCount] = set.pElements[pCount];
 		}
+		
+		return *this;
+	}
+	
+	/** \brief Move set. */
+	decTSet<T,TP> &operator=(decTSet<T,TP> &&set){
+		if(&set == this){
+			return *this;
+		}
+		
+		RemoveAll();
+		
+		if(pElements){
+			delete [] pElements;
+		}
+		
+		pElements = set.pElements;
+		pCount = set.pCount;
+		pSize = set.pSize;
+		
+		set.pElements = nullptr;
+		set.pCount = 0;
+		set.pSize = 0;
 		
 		return *this;
 	}

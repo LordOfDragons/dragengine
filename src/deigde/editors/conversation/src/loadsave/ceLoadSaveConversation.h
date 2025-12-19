@@ -33,6 +33,7 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringList.h>
 
 class ceCAIfElseCase;
 class ceCAComment;
@@ -75,7 +76,6 @@ class ceGesture;
 class ceLoadSaveSystem;
 class ceTarget;
 
-class decStringList;
 class decCurveBezier;
 class decCurveBezierPoint;
 class decBaseFileReader;

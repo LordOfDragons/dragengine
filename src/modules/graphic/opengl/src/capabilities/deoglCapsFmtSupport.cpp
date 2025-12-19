@@ -48,6 +48,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
 
@@ -1022,5 +1023,5 @@ const deoglCapsTextureFormatList &listSupported) const{
 	for(i=0; i<count; i++){
 		supnames.Add(listSupported.GetFormatAt(i)->GetName());
 	}
-	return supnames.Join(", ");
+	return DEJoin(supnames, ", ");
 }

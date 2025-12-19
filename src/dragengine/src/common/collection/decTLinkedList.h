@@ -28,7 +28,7 @@
 #include <iterator>
 #include <cstddef>
 
-#include "../exceptions.h"
+#include "../exceptions_reduced.h"
 #include "../../deTObjectReference.h"
 #include "../../threading/deTThreadSafeObjectReference.h"
 
@@ -332,6 +332,9 @@ public:
 	/** \brief Create a new linked list. */
 	decTLinkedList() : pRoot(nullptr), pTail(nullptr), pCount(0){
 	}
+	
+	decTLinkedList(const decTLinkedList<T,TR> &) = delete;
+	decTLinkedList(decTLinkedList<T,TR> &&) = delete;
 	
 	/** \brief Clean up linked list. */
 	~decTLinkedList(){
@@ -685,6 +688,9 @@ public:
 	Element *operator[](int position) const{
 		return GetAt(position);
 	}
+	
+	decTLinkedList &operator=(const decTLinkedList &) = delete;
+	decTLinkedList &operator=(decTLinkedList &&) = delete;
 	/*@}*/
 	
 	

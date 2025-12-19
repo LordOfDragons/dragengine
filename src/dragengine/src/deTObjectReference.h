@@ -27,7 +27,7 @@
 
 #include <type_traits>
 
-#include "common/exceptions.h"
+#include "common/exceptions_reduced.h"
 
 /**
  * \brief Object reference template.

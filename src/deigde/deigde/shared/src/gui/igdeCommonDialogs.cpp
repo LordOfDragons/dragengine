@@ -254,23 +254,9 @@ const char *text, decString &value, const decTList<decString> &proposals){
 	}
 }
 
-bool igdeCommonDialogs::GetString(igdeWidget *owner, const char *title,
-const char *text, decString &value, const decStringList &proposals){
-	decTList<decString> convertedProposals;
-	DEAppend(convertedProposals, proposals);
-	return GetString(owner, title, text, value, convertedProposals);
-}
-
 bool igdeCommonDialogs::SelectString(igdeWidget *owner, const char *title,
 const char *text, const decTList<decString> &list, int &selection){
 	return igdeNativeCommonDialogs::SelectString(owner, title, text, list, selection);
-}
-
-bool igdeCommonDialogs::SelectString(igdeWidget *owner, const char *title,
-const char *text, const decStringList &list, int &selection){
-	decTList<decString> convertedList;
-	DEAppend(convertedList, list);
-	return SelectString(owner, title, text, convertedList, selection);
 }
 
 

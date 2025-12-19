@@ -39,6 +39,7 @@
 
 #include "decPath.h"
 #include "../exceptions.h"
+#include "../collection/decHelperFunctions.h"
 
 
 
@@ -205,11 +206,11 @@ void decPath::SetEmpty(){
 }
 
 decString decPath::GetPathUnix() const{
-	return pPrefix + pComponents.Join("/");
+	return pPrefix + DEJoin(pComponents, "/");
 }
 
 decString decPath::GetPathNative() const{
-	return pPrefix + pComponents.Join(PATH_SEPARATOR_STRING);
+	return pPrefix + DEJoin(pComponents, PATH_SEPARATOR_STRING);
 }
 
 bool decPath::IsEmpty() const{
@@ -425,11 +426,22 @@ bool decPath::IsEqualOrDirectParentOf(const decPath &path) const{
 }
 
 decPath decPath::GetParent() const{
-	DEASSERT_TRUE(pComponents.GetCount() > 0)
+	DEASSERT_TRUE(pComponents.IsNotEmpty())
 	
 	decPath path;
 	path.pPrefix = pPrefix;
-	path.pComponents = pComponents.Splice(0, -1);
+	
+	const int count = pComponents.GetCount();
+	if(count > 1){
+		path.pComponents = pComponents.GetMiddle(0, count - 2);
+	
+	}else{ // single component path
+		// relative path with single component has no valid parent
+		DEASSERT_FALSE(pPrefix.IsEmpty())
+		
+		// absolute path with single component has prefix as parent
+	}
+	
 	return path;
 }
 
@@ -475,7 +487,7 @@ void decPath::RemoveAllComponents(){
 }
 
 bool decPath::HasComponents() const{
-	return pComponents.GetCount() > 0;
+	return pComponents.IsNotEmpty();
 }
 
 

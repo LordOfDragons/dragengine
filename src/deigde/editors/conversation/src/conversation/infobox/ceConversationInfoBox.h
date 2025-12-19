@@ -26,12 +26,11 @@
 #define _CECONVERSATIONINFOBOX_H_
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/common/string/decStringList.h>
-#include <dragengine/common/collection/decIntList.h>
+#include <dragengine/common/collection/decTList.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
-
 #include <dragengine/resources/canvas/deCanvasView.h>
+
 class deGraphicContext;
 class ceConversation;
 
@@ -60,8 +59,8 @@ private:
 	
 	decString pText;
 	
-	decStringList pLayoutTexts;
-	decIntList pLayoutWidths;
+	decTList<decString> pLayoutTexts;
+	decTList<int> pLayoutWidths;
 	
 	deCanvasView::Ref pCanvasView;
 	

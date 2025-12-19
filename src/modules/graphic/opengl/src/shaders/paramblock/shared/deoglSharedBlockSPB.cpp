@@ -33,6 +33,7 @@
 #include "../../../renderthread/deoglRTLogger.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 
 
 
@@ -199,7 +200,7 @@ void deoglSharedBlockSPB::DebugPrint(deoglRTLogger &logger) const{
 		string.Format("[%c:%d,%d]", element->GetEmpty() ? 'E' : 'U', element->GetIndex(), element->GetCount());
 		list.Add(string);
 	}
-	logger.LogInfo(list.Join(" "));
+	logger.LogInfo(DEJoin(list, " "));
 }
 
 int deoglSharedBlockSPB::pIndexOfEmptyElementWithMinCount(int count){

@@ -26,9 +26,9 @@
 #define _DECSTRING_H_
 
 #include <stdarg.h>
-#include "../../dragengine_export.h"
 
-class decStringList;
+#include "../collection/decTList.h"
+#include "../../dragengine_export.h"
 
 
 /**
@@ -64,6 +64,9 @@ public:
 	
 	/** \brief Create new string being the concatenation of two other strings. */
 	decString(const decString &string1, const char *string2);
+	
+	/** \brief Move string. */
+	decString(decString &&string);
 	
 	/** \brief Clean up string. */
 	~decString();
@@ -265,11 +268,11 @@ public:
 	decString GetReversed() const;
 	
 	/** \brief Split string. */
-	decStringList Split(int character) const;
+	decTList<decString> Split(int character) const;
 	
 	/** \brief Split string on multiple characters. */
-	decStringList Split(const char *characters) const;
-	decStringList Split(const decString &characters) const;
+	decTList<decString> Split(const char *characters) const;
+	decTList<decString> Split(const decString &characters) const;
 	
 	/** \brief Replace all occurances of a character. */
 	void Replace(int replaceCharacter, int withCharacter);
@@ -472,6 +475,9 @@ public:
 	
 	/** \brief Set string to another string. */
 	decString &operator=(const char *string);
+	
+	/** \brief Move string. */
+	decString &operator=(decString &&string);
 	
 	/** \brief Appends a string to this string. */
 	decString &operator+=(const decString &string);

@@ -59,6 +59,7 @@
 #include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringList.h>
@@ -631,7 +632,7 @@ void delEngineProcess::CommandGetInternalModules(){
 		WriteString16ToPipe(mod.GetAuthor());
 		WriteString16ToPipe(mod.GetVersion());
 		WriteString16ToPipe(mod.GetDirectoryName());
-		WriteString16ToPipe(mod.GetPatternList().Join(","));
+		WriteString16ToPipe(DEJoin(mod.GetPatternList(), ","));
 		WriteUShortToPipe(mod.GetPriority());
 		WriteUCharToPipe(mod.GetIsFallback() ? 1 : 0);
 	}

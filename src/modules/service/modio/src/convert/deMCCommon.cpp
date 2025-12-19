@@ -24,6 +24,7 @@
 
 #include "deMCCommon.h"
 
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>
 
 

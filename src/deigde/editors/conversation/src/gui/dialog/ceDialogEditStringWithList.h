@@ -28,8 +28,7 @@
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
-class decStringList;
-
+#include <dragengine/common/string/decStringList.h>
 
 
 /**

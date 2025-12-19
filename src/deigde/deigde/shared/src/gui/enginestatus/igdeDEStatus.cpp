@@ -39,6 +39,7 @@
 #include "../../engine/igdeEngineController.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/deGraphicSystem.h>
 #include <dragengine/systems/deInputSystem.h>
@@ -220,7 +221,7 @@ void igdeDEStatus::StartEngine(){
 		pDialogEngine.GetMainWindow().StartEngine();
 		
 	}catch(const deException &e){
-		pTextStatus->SetText(e.FormatOutput().Join("\n"));
+		pTextStatus->SetText(DEJoin(e.FormatOutput(), "\n"));
 	}
 	
 	UpdateStatus();
@@ -237,7 +238,7 @@ void igdeDEStatus::StopEngine(){
 		pDialogEngine.GetMainWindow().StopEngine();
 		
 	}catch(const deException &e){
-		pTextStatus->SetText(e.FormatOutput().Join("\n"));
+		pTextStatus->SetText(DEJoin(e.FormatOutput(), "\n"));
 	}
 	
 	UpdateStatus();

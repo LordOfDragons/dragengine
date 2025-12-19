@@ -28,6 +28,7 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeWidget.h>
 
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
@@ -90,7 +91,7 @@ bool igdeRealApplication::Initialize(const decUnicodeStringList &arguments){
 			}
 			
 			igdeCommonDialogs::ErrorFormat(nullptr, "Failed starting IGDE",
-				"Please see logs for details:\n%s", e.FormatOutput().Join("\n").GetString());
+				"Please see logs for details:\n%s", DEJoin(e.FormatOutput(), "\n").GetString());
 		}
 		return false;
 	}

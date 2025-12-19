@@ -26,8 +26,7 @@
 #define _DECSTRINGDICTIONARY_H_
 
 #include "decString.h"
-
-class decStringList;
+#include "decStringList.h"
 
 
 /**

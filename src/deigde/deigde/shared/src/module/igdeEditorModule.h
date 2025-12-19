@@ -28,8 +28,8 @@
 #include "../gui/igdeEditorWindow.h"
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/common/string/decStringList.h>
 
-class decStringList;
 class igdeEnvironment;
 class igdeStepableTask;
 class deEngine;

@@ -26,6 +26,7 @@
 #define _DEOBJECT_H_
 
 #include "deTObjectReference.h"
+#include "dragengine_export.h"
 
 
 /**

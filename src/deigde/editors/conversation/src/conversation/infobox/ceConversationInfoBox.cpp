@@ -185,7 +185,7 @@ void ceConversationInfoBox::UpdateCanvas(){
 	pCanvasView->SetPosition(decPoint((parentView->GetSize().x - pWidth) / 2, 10));
 	
 	// make canvas visible if any text is inside
-	pCanvasView->SetVisible(pLayoutTexts.GetCount() > 0);
+	pCanvasView->SetVisible(pLayoutTexts.IsNotEmpty());
 	
 	// add background color canvas
 	deCanvasManager &canvasManager = *pConversation.GetEngine()->GetCanvasManager();

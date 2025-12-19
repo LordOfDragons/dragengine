@@ -30,6 +30,7 @@
 #include "convert/deSCCommon.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decUniqueID.h>
 #include <dragengine/common/utils/decBase64.h>
 #include <dragengine/resources/image/deImage.h>

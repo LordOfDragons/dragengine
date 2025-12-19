@@ -27,7 +27,7 @@
 
 #include "decTList.h"
 #include "decHashFunctions.h"
-#include "../exceptions.h"
+#include "../exceptions_reduced.h"
 #include "../string/decString.h"
 #include "../string/decStringList.h"
 
@@ -119,6 +119,13 @@ public:
 				iterEntry = iterEntry->next;
 			}
 		}
+	}
+	
+	/** \brief Move dictionary. */
+	decTDictionary(decTDictionary<K,V,VP> &&dict) : pBuckets(dict.pBuckets), pBucketCount(dict.pBucketCount), pEntryCount(dict.pEntryCount){
+		dict.pBuckets = nullptr;
+		dict.pBucketCount = 0;
+		dict.pEntryCount = 0;
 	}
 	
 	/** \brief Clean up the dictionary. */
@@ -636,6 +643,29 @@ public:
 				iterEntry = iterEntry->next;
 			}
 		}
+		
+		return *this;
+	}
+	
+	/** \brief Move dictionary. */
+	decTDictionary<K,V,VP> &operator=(decTDictionary<K,V,VP> &&dict){
+		if(&dict == this){
+			return *this;
+		}
+		
+		RemoveAll();
+		
+		if(pBuckets){
+			delete [] pBuckets;
+		}
+		
+		pBuckets = dict.pBuckets;
+		pBucketCount = dict.pBucketCount;
+		pEntryCount = dict.pEntryCount;
+		
+		dict.pBuckets = nullptr;
+		dict.pBucketCount = 0;
+		dict.pEntryCount = 0;
 		
 		return *this;
 	}

@@ -31,6 +31,7 @@
 #include "../../delLauncher.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decDiskFileReader.h>
@@ -68,7 +69,7 @@ pDescription(decUnicodeString::NewFromUTF8(module.GetDescription())),
 pAuthor(decUnicodeString::NewFromUTF8(module.GetAuthor())),
 pVersion(module.GetVersion()),
 pDirName(module.GetDirectoryName()),
-pPattern(module.GetPatternList().Join(",")),
+pPattern(DEJoin(module.GetPatternList(), ",")),
 pPriority(module.GetPriority()),
 pIsFallback(module.GetIsFallback()),
 pStatus(emsNotTested),

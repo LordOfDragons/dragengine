@@ -31,6 +31,7 @@
 #include "patch/delPatch.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 
 
 
@@ -141,7 +142,7 @@ const decUuid &useCustomPatch, decString &error){
 				name.Format("'%s'", verifyPatch.GetRequiredPatches().GetAt(i).ToHexString(false).GetString());
 				names.Add(name);
 			}
-			name = names.Join(", ");
+			name = DEJoin(names, ", ");
 			
 			error.Format("Required patches not found for patch with identifier '%s'."
 				" Requires one of: %s", verifyPatch.GetIdentifier().ToHexString(false).GetString(), name.GetString());

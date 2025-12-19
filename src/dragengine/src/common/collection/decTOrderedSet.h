@@ -29,7 +29,8 @@
 #include <cstddef>
 
 #include "decCollectionInterfaces.h"
-#include "../exceptions.h"
+#include "../math/decMath.h"
+#include "../exceptions_reduced.h"
 #include "../../deTObjectReference.h"
 #include "../../threading/deTThreadSafeObjectReference.h"
 
@@ -77,6 +78,13 @@ public:
 		for(pCount=0; pCount<set.pCount; pCount++){
 			pElements[pCount] = set.pElements[pCount];
 		}
+	}
+	
+	/** \brief Move set. */
+	decTOrderedSet(decTOrderedSet<T,TP> &&set) : pElements(set.pElements), pCount(set.pCount), pSize(set.pSize){
+		set.pElements = nullptr;
+		set.pCount = 0;
+		set.pSize = 0;
 	}
 	
 	/** \brief Clean up the set. */
@@ -306,6 +314,10 @@ public:
 	void Move(const TP &element, int to){
 		const int from = IndexOf(element);
 		DEASSERT_TRUE(from != -1)
+		
+		if(to < 0){
+			to = pCount + to;
+		}
 		DEASSERT_TRUE(to >= 0)
 		DEASSERT_TRUE(to < pCount)
 		
@@ -495,6 +507,12 @@ public:
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 */
 	decTOrderedSet<T,TP> GetMiddle(int from, int to) const{
+		if(from < 0){
+			from = pCount + from;
+		}
+		if(to < 0){
+			to = pCount + to;
+		}
 		DEASSERT_TRUE(from >= 0)
 		DEASSERT_TRUE(to >= from)
 		
@@ -525,6 +543,12 @@ public:
 	 * \throws deeInvalidParam \em to is less than \em from.
 	 */
 	void GetMiddle(decTOrderedSet<T,TP> &set, int from, int to) const{
+		if(from < 0){
+			from = pCount + from;
+		}
+		if(to < 0){
+			to = pCount + to;
+		}
 		DEASSERT_TRUE(from >= 0)
 		DEASSERT_TRUE(to >= from)
 		
@@ -561,8 +585,9 @@ public:
 			return GetMiddle(from, to);
 			
 		}else{
-			// TODO Implementation
-			DETHROW_INFO(deeInvalidAction, "Not implemented yet");
+			decTOrderedSet<T,TP> list;
+			GetSliced(list, from, to, step);
+			return list;
 		}
 	}
 	
@@ -578,11 +603,39 @@ public:
 	void GetSliced(decTOrderedSet<T,TP> &set, int from, int to, int step) const{
 		if(step == 1){
 			GetMiddle(set, from, to);
-			
-		}else{
-			// TODO Implementation
-			DETHROW_INFO(deeInvalidAction, "Not implemented yet");
+			return;
 		}
+		
+		if(from < 0){
+			from = pCount + from;
+		}
+		if(to < 0){
+			to = pCount + to;
+		}
+		DEASSERT_TRUE(from >= 0)
+		DEASSERT_TRUE(to >= from)
+		DEASSERT_TRUE(step >= 1)
+		
+		const int count = decMath::min((to - from) / step + 1, pCount - from);
+		if(count <= 0){
+			set.RemoveAll();
+			return;
+		}
+		
+		if(count > set.pSize){
+			T * const newArray = new T[count];
+			if(set.pElements){
+				delete [] set.pElements;
+			}
+			set.pElements = newArray;
+			set.pSize = count;
+		}
+		
+		int i, written = 0;
+		for(i=from; written<count; i+=step, written++){
+			set.pElements[written] = pElements[i];
+		}
+		set.pCount = written;
 	}
 	
 	
@@ -1315,6 +1368,29 @@ public:
 		for(pCount=0; pCount<set.pCount; pCount++){
 			pElements[pCount] = set.pElements[pCount];
 		}
+		
+		return *this;
+	}
+	
+	/** \brief Move set. */
+	decTOrderedSet<T,TP> &operator=(decTOrderedSet<T,TP> &&set) noexcept{
+		if(&set == this){
+			return *this;
+		}
+		
+		RemoveAll();
+		
+		if(pElements){
+			delete [] pElements;
+		}
+		
+		pElements = set.pElements;
+		pCount = set.pCount;
+		pSize = set.pSize;
+		
+		set.pElements = nullptr;
+		set.pCount = 0;
+		set.pSize = 0;
 		
 		return *this;
 	}

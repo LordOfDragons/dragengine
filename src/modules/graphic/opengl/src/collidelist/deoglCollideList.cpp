@@ -60,6 +60,7 @@
 #include "../utils/collision/deoglDCollisionFrustum.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 
 
 
@@ -234,14 +235,14 @@ void deoglCollideList::DebugSingleLine(deoglRTLogger &logger, bool sorted) const
 		pointers.Add(temp);
 	}
 	if(sorted) pointers.SortAscending();
-	string.AppendFormat("c[%s]", pointers.Join(", ").GetString());
+	string.AppendFormat("c[%s]", DEJoin(pointers, ", ").GetString());
 	
 	for(i=0; i<pBillboardCount; i++){
 		temp.Format("%p", pBillboards[i]);
 		pointers.Add(temp);
 	}
 	if(sorted) pointers.SortAscending();
-	string.AppendFormat(" b[%s]", pointers.Join(", ").GetString());
+	string.AppendFormat(" b[%s]", DEJoin(pointers, ", ").GetString());
 	
 	logger.LogInfoFormat("CollideList %p: %s", this, string.GetString());
 }

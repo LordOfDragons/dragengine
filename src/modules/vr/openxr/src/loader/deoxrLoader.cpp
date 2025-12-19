@@ -242,8 +242,8 @@ void deoxrLoader::pFindRuntimeConfigFile(){
 		directories += decString(envPath).Split(':');
 	}
 	
-	directories += "~/.config";
-	directories += "/etc";
+	directories.Add("~/.config");
+	directories.Add("/etc");
 	
 	const int count = directories.GetCount();
 	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/"), decPath::CreatePathUnix("/"), true));
@@ -401,8 +401,8 @@ void deoxrLoader::pFindApiLayers(){
 		directories += decString(envPath).Split(':');
 	}
 	
-	directories += "~/.config";
-	directories += "/etc";
+	directories.Add("~/.config");
+	directories.Add("/etc");
 	
 	const int count = directories.GetCount();
 	const deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(decPath::CreatePathUnix("/"), decPath::CreatePathUnix("/"), true));

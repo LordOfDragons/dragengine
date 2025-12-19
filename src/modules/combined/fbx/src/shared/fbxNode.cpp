@@ -40,6 +40,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/math/decMath.h>
@@ -456,7 +457,7 @@ void fbxNode::DebugPrintStructure(deBaseModule &module, const decString &prefix,
 			properties.Add(GetPropertyAt(i)->DebugTypeName());
 		}
 		module.LogInfoFormat("%sNode (%s): %s", prefix.GetString(),
-			pName.GetString(), properties.Join(", ").GetString());
+			pName.GetString(), DEJoin(properties, ", ").GetString());
 		
 		for(i=0; i<nodeCount; i++){
 			GetNodeAt(i)->DebugPrintStructure(module, childPrefix, false);

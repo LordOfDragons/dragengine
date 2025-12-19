@@ -29,6 +29,7 @@
 #include "deoglRTLogger.h"
 #include "../window/deoglRRenderWindow.h"
 
+#include <dragengine/common/exceptions.h>
 #include <dragengine/threading/deMutexGuard.h>
 
 

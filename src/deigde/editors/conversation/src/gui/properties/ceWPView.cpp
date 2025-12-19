@@ -83,6 +83,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 
 
 
@@ -1883,7 +1884,7 @@ public:
 		}
 		ordered.SortAscending();
 		
-		decString text(ordered.Join("\n"));
+		decString text(DEJoin(ordered, "\n"));
 		igdeCommonDialogs::GetMultilineString(&pPanel.GetWindowProperties().GetWindowMain(),
 			"Copy To Clipboard", "Text for you to copy to the clipboard", text);
 		return {};

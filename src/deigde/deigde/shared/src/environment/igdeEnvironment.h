@@ -27,6 +27,7 @@
 
 #include "../gui/resources/igdeFont.h"
 
+#include <dragengine/common/string/decStringList.h>
 #include <dragengine/resources/loader/deResourceLoader.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/rig/deRig.h>
@@ -56,7 +57,6 @@ class dePropField;
 class deTouchSensor;
 class deVirtualFileSystem;
 class deRig;
-class decStringList;
 
 
 

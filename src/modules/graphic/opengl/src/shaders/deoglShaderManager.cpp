@@ -41,6 +41,7 @@
 #include "../renderthread/deoglRTLogger.h"
 
 #include <dragengine/deEngine.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
@@ -160,7 +161,7 @@ void deoglShaderManager::ValidateCaches(){
 	// but running on the same machine with the same operating system and the same file system
 	// usually returns identical file listings. in the worst case the cache is invalidate when
 	// it could be kept valid
-	const decString validationString(pCacheValidationString.Join("\n"));
+	const decString validationString(DEJoin(pCacheValidationString, "\n"));
 	
 	// if the validation string differs from the cached validation string drop all
 	// cached shaders

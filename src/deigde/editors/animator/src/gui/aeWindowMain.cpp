@@ -96,6 +96,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decPath.h>
@@ -809,7 +810,7 @@ public:
 		
 		if(usageCount > 0){
 			names.SortAscending();
-			const decString strNames((names.GetCount() <= 5 ? names : names.Splice(0, 4)).Join(", "));
+			const decString strNames(DEJoin((names.GetCount() <= 5 ? names : names.GetHead(5)), ", "));
 			
 			if(igdeCommonDialogs::QuestionFormat(&pWindow, igdeCommonDialogs::ebsYesNo,
 			"Remove Controller", "%d links are using this controller (%s). Remove controller?",

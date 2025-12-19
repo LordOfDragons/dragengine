@@ -36,6 +36,7 @@
 #include "../shaders/paramblock/deoglSPBMapBuffer.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 
 
 
@@ -755,7 +756,7 @@ void deoglWorldCompute::pDebugPrintElements(){
 			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetCount() : -1);
 		list.Add(string);
 	}
-	logger.LogInfo(list.Join(" "));
+	logger.LogInfo(DEJoin(list, " "));
 }
 
 void deoglWorldCompute::pDebugPrintUpdateElements(){
@@ -773,7 +774,7 @@ void deoglWorldCompute::pDebugPrintUpdateElements(){
 			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetCount() : -1);
 		list.Add(string);
 	}
-	logger.LogInfo(list.Join(" "));
+	logger.LogInfo(DEJoin(list, " "));
 }
 
 void deoglWorldCompute::pDebugPrintUpdateGeometries(){
@@ -791,7 +792,7 @@ void deoglWorldCompute::pDebugPrintUpdateGeometries(){
 			element.GetSPBGeometries() ? element.GetSPBGeometries()->GetCount() : -1);
 		list.Add(string);
 	}
-	logger.LogInfo(list.Join(" "));
+	logger.LogInfo(DEJoin(list, " "));
 }
 
 void deoglWorldCompute::pDebugPrintClearGeometries(){
@@ -806,5 +807,5 @@ void deoglWorldCompute::pDebugPrintClearGeometries(){
 		string.Format("[%d:%d,%d]", i, pClearGeometries[i].first, pClearGeometries[i].count);
 		list.Add(string);
 	}
-	logger.LogInfo(list.Join(" "));
+	logger.LogInfo(DEJoin(list, " "));
 }

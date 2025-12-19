@@ -25,9 +25,10 @@
 #ifndef _AEWINDOWMAIN_H_
 #define _AEWINDOWMAIN_H_
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include "aeView3D.h"
+#include "aeWindowMainListener.h"
+#include "properties/aeWindowProperties.h"
+#include "../animator/aeAnimator.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
@@ -39,18 +40,14 @@
 #include <deigde/gui/resources/igdeIcon.h>
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decStringList.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
 
 
 class aeRule;
-class decStringList;
 class aeConfiguration;
-#include "aeView3D.h"
-#include "../animator/aeAnimator.h"
-#include "properties/aeWindowProperties.h"
 class deCmdLineArgs;
 class aeLoadSaveSystem;
-#include "aeWindowMainListener.h"
 class aeIGDEModule;
 class igdeGameDefinition;
 class igdeEnvironment;

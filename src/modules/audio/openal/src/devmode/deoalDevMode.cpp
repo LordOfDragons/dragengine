@@ -34,6 +34,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 
@@ -127,7 +128,7 @@ bool deoalDevMode::ExecuteCommand(const decUnicodeArgumentList &command, decUnic
 		}
 		
 	}catch(const deException &exception){
-		answer.AppendFromUTF8(exception.FormatOutput().Join("\n"));
+		answer.AppendFromUTF8(DEJoin(exception.FormatOutput(), "\n"));
 	}
 	return false;
 }

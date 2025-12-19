@@ -42,6 +42,7 @@
 #include "../../theme/propertyNames.h"
 #include "../../../environment/igdeEnvironment.h"
 
+#include <dragengine/common/collection/decHelperFunctions.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -102,7 +103,7 @@ void igdeNativeFoxIconListBoxItem::UpdateFromItem(){
 	
 	FXIcon * const iicon = pListItem->GetIcon() ? (FXIcon*)pListItem->GetIcon()->GetNativeIcon() : nullptr;
 	
-	setText(text.Join("\t").GetString());
+	setText(DEJoin(text, "\t").GetString());
 	setBigIcon(iicon);
 	setMiniIcon(iicon);
 	setData(pListItem->GetData());

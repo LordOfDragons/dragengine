@@ -49,6 +49,7 @@
 #include "../world/deoglRWorld.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/common/collection/decHelperFunctions.h>
 
 
 
@@ -881,7 +882,7 @@ void deoglRenderCompute::pDebugPrintSSBOGeometries(const deoglRenderPlan &plan, 
 		s.Format("[%d:%d,%x,%d]", i, data[i].element, data[i].renderFilter, rtsp.GetVAOAt(data[i].vao).GetVAO() != nullptr);
 		list.Add(s);
 	}
-	logger.LogInfo(list.Join(" "));
+	logger.LogInfo(DEJoin(list, " "));
 	
 	OGL_CHECK(renderThread, pglUnmapBuffer(GL_PIXEL_PACK_BUFFER));
 	OGL_CHECK(renderThread, pglBindBuffer(GL_PIXEL_PACK_BUFFER, 0));
